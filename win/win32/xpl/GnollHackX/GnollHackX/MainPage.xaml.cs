@@ -176,83 +176,90 @@ namespace GnollHackX
 
         private async Task GeneralTimerTasksAsync()
         {
-            bool hasinternet = GHApp.HasInternetAccess;
-            if (!CheckAndSetGeneralTimerWorkOnTasks)
+            try
             {
-                bool dopostbones = GHApp.PostingBonesFiles && GHApp.AllowBones;
-                bool dopostreplays = GHApp.AutoUploadReplays;
-                string directory = Path.Combine(GHApp.GHPath, GHConstants.ForumPostQueueDirectory);
-                string directory2 = Path.Combine(GHApp.GHPath, GHConstants.XlogPostQueueDirectory);
-                string directory3 = Path.Combine(GHApp.GHPath, GHConstants.BonesPostQueueDirectory);
-                string directory4 = Path.Combine(GHApp.GHPath, GHConstants.ReplayPostQueueDirectory);
-                bool has_files = Directory.Exists(directory) && Directory.GetFiles(directory)?.Length > 0;
-                bool has_files2 = Directory.Exists(directory2) && Directory.GetFiles(directory2)?.Length > 0;
-                bool has_files3 = Directory.Exists(directory3) && Directory.GetFiles(directory3)?.Length > 0;
-                bool has_files4 = Directory.Exists(directory4) && Directory.GetFiles(directory4)?.Length > 0;
-                bool missingcredentials = string.IsNullOrEmpty(GHApp.XlogUserName);
-                bool incorrectcredentials = GHApp.XlogCredentialsIncorrect;
-                bool missingorincorrectcredentials = missingcredentials || incorrectcredentials;
-                bool postingqueueempty = _postingQueue.Count == 0;
-
-                PendingGeneralTimerTasks = CalculatePendingGeneralTimerTasks();
-                UpdateGeneralTimerTasksLabel(false);
-
-                if (postingqueueempty
-                    && (GHApp.XlogUserNameVerified || missingorincorrectcredentials || (!GHApp.PostingXlogEntries && !dopostbones && !dopostreplays))
-                    && (!has_files || !GHApp.PostingGameStatus)
-                    && (!has_files2 || !GHApp.PostingXlogEntries || missingorincorrectcredentials)
-                    && (!has_files3 || !dopostbones || GameStarted || missingorincorrectcredentials)
-                    && (!has_files4 || !dopostreplays || incorrectcredentials)
-                    )
+                bool hasinternet = GHApp.HasInternetAccess;
+                if (!CheckAndSetGeneralTimerWorkOnTasks)
                 {
-                    StopGeneralTimer = true;
-                }
-                else
-                {
-                    if (_postingQueue.Count > 0)
-                    {
-                        ProcessPostingQueue(); //Saves now posts first to disk in the case app is switched off very quickly before sending is finished
-                        has_files = Directory.Exists(directory) && Directory.GetFiles(directory)?.Length > 0;
-                        has_files2 = Directory.Exists(directory2) && Directory.GetFiles(directory2)?.Length > 0;
-                        has_files3 = Directory.Exists(directory3) && Directory.GetFiles(directory3)?.Length > 0;
-                        has_files4 = Directory.Exists(directory4) && Directory.GetFiles(directory4)?.Length > 0;
-                    }
-
-                    if (hasinternet && !GHApp.XlogUserNameVerified && (GHApp.PostingXlogEntries || dopostbones || dopostreplays) && !missingorincorrectcredentials)
-                        await GHApp.TryVerifyXlogUserNameAsync();
+                    bool dopostbones = GHApp.PostingBonesFiles && GHApp.AllowBones;
+                    bool dopostreplays = GHApp.AutoUploadReplays;
+                    string directory = Path.Combine(GHApp.GHPath, GHConstants.ForumPostQueueDirectory);
+                    string directory2 = Path.Combine(GHApp.GHPath, GHConstants.XlogPostQueueDirectory);
+                    string directory3 = Path.Combine(GHApp.GHPath, GHConstants.BonesPostQueueDirectory);
+                    string directory4 = Path.Combine(GHApp.GHPath, GHConstants.ReplayPostQueueDirectory);
+                    bool has_files = Directory.Exists(directory) && Directory.GetFiles(directory)?.Length > 0;
+                    bool has_files2 = Directory.Exists(directory2) && Directory.GetFiles(directory2)?.Length > 0;
+                    bool has_files3 = Directory.Exists(directory3) && Directory.GetFiles(directory3)?.Length > 0;
+                    bool has_files4 = Directory.Exists(directory4) && Directory.GetFiles(directory4)?.Length > 0;
+                    bool missingcredentials = string.IsNullOrEmpty(GHApp.XlogUserName);
+                    bool incorrectcredentials = GHApp.XlogCredentialsIncorrect;
+                    bool missingorincorrectcredentials = missingcredentials || incorrectcredentials;
+                    bool postingqueueempty = _postingQueue.Count == 0;
 
                     PendingGeneralTimerTasks = CalculatePendingGeneralTimerTasks();
                     UpdateGeneralTimerTasksLabel(false);
 
-                    if (hasinternet && has_files && GHApp.PostingGameStatus)
+                    if (postingqueueempty
+                        && (GHApp.XlogUserNameVerified || missingorincorrectcredentials || (!GHApp.PostingXlogEntries && !dopostbones && !dopostreplays))
+                        && (!has_files || !GHApp.PostingGameStatus)
+                        && (!has_files2 || !GHApp.PostingXlogEntries || missingorincorrectcredentials)
+                        && (!has_files3 || !dopostbones || GameStarted || missingorincorrectcredentials)
+                        && (!has_files4 || !dopostreplays || incorrectcredentials)
+                        )
                     {
-                        await ProcessSavedPosts(0, directory, GHConstants.ForumPostFileNamePrefix);
-                        PendingGeneralTimerTasks = CalculatePendingGeneralTimerTasks();
-                        UpdateGeneralTimerTasksLabel(false);
+                        StopGeneralTimer = true;
                     }
+                    else
+                    {
+                        if (_postingQueue.Count > 0)
+                        {
+                            ProcessPostingQueue(); //Saves now posts first to disk in the case app is switched off very quickly before sending is finished
+                            has_files = Directory.Exists(directory) && Directory.GetFiles(directory)?.Length > 0;
+                            has_files2 = Directory.Exists(directory2) && Directory.GetFiles(directory2)?.Length > 0;
+                            has_files3 = Directory.Exists(directory3) && Directory.GetFiles(directory3)?.Length > 0;
+                            has_files4 = Directory.Exists(directory4) && Directory.GetFiles(directory4)?.Length > 0;
+                        }
 
-                    if (hasinternet && has_files2 && GHApp.PostingXlogEntries && !missingorincorrectcredentials)
-                    {
-                        await ProcessSavedPosts(1, directory2, GHConstants.XlogPostFileNamePrefix);
-                        PendingGeneralTimerTasks = CalculatePendingGeneralTimerTasks();
-                        UpdateGeneralTimerTasksLabel(false);
-                    }
+                        if (hasinternet && !GHApp.XlogUserNameVerified && (GHApp.PostingXlogEntries || dopostbones || dopostreplays) && !missingorincorrectcredentials)
+                            await GHApp.TryVerifyXlogUserNameAsync();
 
-                    if (hasinternet && has_files3 && dopostbones && !GameStarted && !missingorincorrectcredentials) // Do not fetch bones files while the game is on
-                    {
-                        await ProcessSavedPosts(2, directory3, GHConstants.BonesPostFileNamePrefix);
                         PendingGeneralTimerTasks = CalculatePendingGeneralTimerTasks();
                         UpdateGeneralTimerTasksLabel(false);
-                    }
 
-                    if (hasinternet && has_files4 && dopostreplays && !incorrectcredentials)
-                    {
-                        await ProcessSavedPosts(3, directory4, GHConstants.ReplayPostFileNamePrefix);
-                        PendingGeneralTimerTasks = CalculatePendingGeneralTimerTasks();
-                        UpdateGeneralTimerTasksLabel(false);
+                        if (hasinternet && has_files && GHApp.PostingGameStatus)
+                        {
+                            await ProcessSavedPosts(0, directory, GHConstants.ForumPostFileNamePrefix);
+                            PendingGeneralTimerTasks = CalculatePendingGeneralTimerTasks();
+                            UpdateGeneralTimerTasksLabel(false);
+                        }
+
+                        if (hasinternet && has_files2 && GHApp.PostingXlogEntries && !missingorincorrectcredentials)
+                        {
+                            await ProcessSavedPosts(1, directory2, GHConstants.XlogPostFileNamePrefix);
+                            PendingGeneralTimerTasks = CalculatePendingGeneralTimerTasks();
+                            UpdateGeneralTimerTasksLabel(false);
+                        }
+
+                        if (hasinternet && has_files3 && dopostbones && !GameStarted && !missingorincorrectcredentials) // Do not fetch bones files while the game is on
+                        {
+                            await ProcessSavedPosts(2, directory3, GHConstants.BonesPostFileNamePrefix);
+                            PendingGeneralTimerTasks = CalculatePendingGeneralTimerTasks();
+                            UpdateGeneralTimerTasksLabel(false);
+                        }
+
+                        if (hasinternet && has_files4 && dopostreplays && !incorrectcredentials)
+                        {
+                            await ProcessSavedPosts(3, directory4, GHConstants.ReplayPostFileNamePrefix);
+                            PendingGeneralTimerTasks = CalculatePendingGeneralTimerTasks();
+                            UpdateGeneralTimerTasksLabel(false);
+                        }
                     }
+                    GeneralTimerWorkOnTasks = false;
                 }
-                GeneralTimerWorkOnTasks = false;
+            }
+            catch (Exception ex)
+            {
+                GHApp.MaybeWriteGHLog("Exception (GeneralTimerTasks): " + ex.Message);
             }
         }
 
@@ -467,23 +474,31 @@ namespace GnollHackX
                     case 1:
                         if (post.status_type == (int)game_status_types.GAME_STATUS_RESULT_ATTACHMENT)
                         {
-                            switch (post.status_datatype)
+                            lock (_attachmentLock)
                             {
-                                case (int)game_status_data_types.GAME_STATUS_ATTACHMENT_GENERIC:
-                                    _xlogPostAttachments.Add(new GHPostAttachment(post.status_string, "application/zip", "game data", false, post.status_type, false));
-                                    break;
-                                case (int)game_status_data_types.GAME_STATUS_ATTACHMENT_DUMPLOG_TEXT:
-                                    _xlogPostAttachments.Add(new GHPostAttachment(post.status_string, "text/plain", "dumplog", false, post.status_type, false));
-                                    break;
-                                case (int)game_status_data_types.GAME_STATUS_ATTACHMENT_DUMPLOG_HTML:
-                                    _xlogPostAttachments.Add(new GHPostAttachment(post.status_string, "text/html", "HTML dumplog", false, post.status_type, false));
-                                    break;
+                                switch (post.status_datatype)
+                                {
+                                    case (int)game_status_data_types.GAME_STATUS_ATTACHMENT_GENERIC:
+                                        _xlogPostAttachments.Add(new GHPostAttachment(post.status_string, "application/zip", "game data", false, post.status_type, false));
+                                        break;
+                                    case (int)game_status_data_types.GAME_STATUS_ATTACHMENT_DUMPLOG_TEXT:
+                                        _xlogPostAttachments.Add(new GHPostAttachment(post.status_string, "text/plain", "dumplog", false, post.status_type, false));
+                                        break;
+                                    case (int)game_status_data_types.GAME_STATUS_ATTACHMENT_DUMPLOG_HTML:
+                                        _xlogPostAttachments.Add(new GHPostAttachment(post.status_string, "text/html", "HTML dumplog", false, post.status_type, false));
+                                        break;
+                                }
                             }
                         }
                         else
                         {
-                            GHApp.SaveXLogEntryToDisk(post.status_type, post.status_datatype, post.status_string, _xlogPostAttachments);
-                            _xlogPostAttachments.Clear();
+                            List<GHPostAttachment> forumPosts = new List<GHPostAttachment>();
+                            lock (_attachmentLock)
+                            {
+                                forumPosts.AddRange(_xlogPostAttachments);
+                                _xlogPostAttachments.Clear();
+                            }
+                            GHApp.SaveXLogEntryToDisk(post.status_type, post.status_datatype, post.status_string, forumPosts);
                         }
                         break;
                     case 0:
@@ -496,10 +511,15 @@ namespace GnollHackX
                         }
                         else
                         {
+                            List <GHPostAttachment> forumPosts = new List < GHPostAttachment >();
+                            lock (_attachmentLock)
+                            {
+                                forumPosts.AddRange(_forumPostAttachments);
+                                _forumPostAttachments.Clear();
+                            }
                             GHApp.SaveForumPostToDisk(post.is_game_status, post.status_type, post.status_datatype,
                                 post.is_game_status ? GHApp.AddForumPostInfo(post.status_string) : GHApp.AddDiagnosticInfo(GHApp.AddForumPostInfo(post.status_string), post.status_type),
-                                _forumPostAttachments, post.forcesend);
-                            _forumPostAttachments.Clear();
+                                forumPosts, post.forcesend);
                         }
                         break;
                 }
@@ -511,29 +531,35 @@ namespace GnollHackX
         {
             if (is_game_status && status_string != null && status_string != "" && status_type == (int)game_status_types.GAME_STATUS_RESULT_ATTACHMENT)
             {
-                switch (status_datatype)
+                lock (_attachmentLock)
                 {
-                    case (int)game_status_data_types.GAME_STATUS_ATTACHMENT_GENERIC:
-                        _forumPostAttachments.Add(new GHPostAttachment(status_string, "application/zip", "game data", !is_game_status, status_type, false));
-                        break;
-                    case (int)game_status_data_types.GAME_STATUS_ATTACHMENT_DUMPLOG_TEXT:
-                        _forumPostAttachments.Add(new GHPostAttachment(status_string, "text/plain", "dumplog", !is_game_status, status_type, false));
-                        break;
-                    case (int)game_status_data_types.GAME_STATUS_ATTACHMENT_DUMPLOG_HTML:
-                        _forumPostAttachments.Add(new GHPostAttachment(status_string, "text/html", "HTML dumplog", !is_game_status, status_type, false));
-                        break;
+                    switch (status_datatype)
+                    {
+                        case (int)game_status_data_types.GAME_STATUS_ATTACHMENT_GENERIC:
+                            _forumPostAttachments.Add(new GHPostAttachment(status_string, "application/zip", "game data", !is_game_status, status_type, false));
+                            break;
+                        case (int)game_status_data_types.GAME_STATUS_ATTACHMENT_DUMPLOG_TEXT:
+                            _forumPostAttachments.Add(new GHPostAttachment(status_string, "text/plain", "dumplog", !is_game_status, status_type, false));
+                            break;
+                        case (int)game_status_data_types.GAME_STATUS_ATTACHMENT_DUMPLOG_HTML:
+                            _forumPostAttachments.Add(new GHPostAttachment(status_string, "text/html", "HTML dumplog", !is_game_status, status_type, false));
+                            break;
+                    }
                 }
             }
             else if (!is_game_status && status_string != null && status_string != "" && status_type == (int)diagnostic_data_types.DIAGNOSTIC_DATA_ATTACHMENT)
             {
-                switch (status_datatype)
+                lock (_attachmentLock)
                 {
-                    case (int)diagnostic_data_attachment_types.DIAGNOSTIC_DATA_ATTACHMENT_GENERIC:
-                        _forumPostAttachments.Add(new GHPostAttachment(status_string, "application/zip", "diagnostic data", !is_game_status, status_type, false));
-                        break;
-                    case (int)diagnostic_data_attachment_types.DIAGNOSTIC_DATA_ATTACHMENT_FILE_DESCRIPTOR_LIST:
-                        _forumPostAttachments.Add(new GHPostAttachment(status_string, "text/plain", "file descriptor list", !is_game_status, status_type, true));
-                        break;
+                    switch (status_datatype)
+                    {
+                        case (int)diagnostic_data_attachment_types.DIAGNOSTIC_DATA_ATTACHMENT_GENERIC:
+                            _forumPostAttachments.Add(new GHPostAttachment(status_string, "application/zip", "diagnostic data", !is_game_status, status_type, false));
+                            break;
+                        case (int)diagnostic_data_attachment_types.DIAGNOSTIC_DATA_ATTACHMENT_FILE_DESCRIPTOR_LIST:
+                            _forumPostAttachments.Add(new GHPostAttachment(status_string, "text/plain", "file descriptor list", !is_game_status, status_type, true));
+                            break;
+                    }
                 }
             }
             else if (!is_game_status && status_string != null && status_string != "" && status_type == (int)diagnostic_data_types.DIAGNOSTIC_DATA_CREATE_ATTACHMENT_FROM_TEXT)
@@ -570,10 +596,14 @@ namespace GnollHackX
                 {
                     Debug.WriteLine(e.Message);
                 }
-                _forumPostAttachments.Add(new GHPostAttachment(temp_string, "text/plain", "diagnostic data", !is_game_status, status_type, true));
+                lock (_attachmentLock)
+                {
+                    _forumPostAttachments.Add(new GHPostAttachment(temp_string, "text/plain", "diagnostic data", !is_game_status, status_type, true));
+                }
             }
         }
 
+        private readonly object _attachmentLock = new object();
         private List<GHPostAttachment> _forumPostAttachments = new List<GHPostAttachment>();
         private List<GHPostAttachment> _xlogPostAttachments = new List<GHPostAttachment>();
 
