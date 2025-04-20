@@ -15,7 +15,7 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 		<!--<InvariantGlobalization>true</InvariantGlobalization>-->
-		<DefineConstants>$(DefineConstants);GNH_MAUI;BITFIELDS;SENTRY;BETA;USE_SPAN_FOR_SUBSTRING</DefineConstants>
+		<DefineConstants>$(DefineConstants);GNH_MAUI;BITFIELDS;SENTRY;USE_SPAN_FOR_SUBSTRING</DefineConstants>
 
 		<!-- Display name -->
 		<ApplicationTitle>GnollHack</ApplicationTitle>
