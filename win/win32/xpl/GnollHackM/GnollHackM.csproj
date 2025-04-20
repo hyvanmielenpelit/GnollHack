@@ -108,15 +108,15 @@
   <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)'=='Debug|net9.0-ios'">
     <ProvisioningType>manual</ProvisioningType>
     <CodesignKey>Apple Development: Janne Gustafsson (3JF32923Y3)</CodesignKey>
-    <CodesignProvision>Apple Dev M July 2024 Profile</CodesignProvision>
+    <CodesignProvision>Apple Dev X July 2024 Profile</CodesignProvision>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)'=='Release|net9.0-ios'">
     <ProvisioningType>manual</ProvisioningType>
-    <!--<CodesignKey>Apple Distribution: Hyvan mielen pelit ry (CUG8RS847T)</CodesignKey>-->
-    <!--<CodesignProvision>Apple Dev M July 2024 Distribution Profile</CodesignProvision>-->
-    <CodesignKey>Apple Development: Janne Gustafsson (3JF32923Y3)</CodesignKey>
-    <CodesignProvision>Apple Dev M July 2024 Profile</CodesignProvision>
+    <CodesignKey>Apple Distribution: Hyvan mielen pelit ry (CUG8RS847T)</CodesignKey>
+    <CodesignProvision>Apple Dev X July 2024 Distribution Profile</CodesignProvision>
+    <!--<CodesignKey>Apple Development: Janne Gustafsson (3JF32923Y3)</CodesignKey>-->
+    <!--<CodesignProvision>Apple Dev M July 2024 Profile</CodesignProvision>-->
     <!--<MtouchUseLlvm>false</MtouchUseLlvm>-->
   </PropertyGroup>
 

@@ -31,7 +31,7 @@
 	<key>MinimumOSVersion</key>
 	<string>14.0</string>
 	<key>CFBundleIdentifier</key>
-	<string></string>
+	<string>com.soundmindgames.GnollHack</string>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
 	<key>UIStatusBarHidden</key>
