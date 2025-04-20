@@ -176,11 +176,13 @@ namespace GnollHackX
 
         private async Task GeneralTimerTasksAsync()
         {
+            bool workingOnTasks = false;
             try
             {
                 bool hasinternet = GHApp.HasInternetAccess;
                 if (!CheckAndSetGeneralTimerWorkOnTasks)
                 {
+                    workingOnTasks = true;
                     bool dopostbones = GHApp.PostingBonesFiles && GHApp.AllowBones;
                     bool dopostreplays = GHApp.AutoUploadReplays;
                     string directory = Path.Combine(GHApp.GHPath, GHConstants.ForumPostQueueDirectory);
@@ -260,6 +262,8 @@ namespace GnollHackX
             catch (Exception ex)
             {
                 GHApp.MaybeWriteGHLog("Exception (GeneralTimerTasks): " + ex.Message);
+                if(workingOnTasks)
+                    GeneralTimerWorkOnTasks = false;
             }
         }
 
