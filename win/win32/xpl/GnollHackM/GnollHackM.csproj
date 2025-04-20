@@ -97,12 +97,11 @@
     <MauiIcon Include="Resources\AppIcon\appicon.png" ForegroundScale="1.0" />
   </ItemGroup>
   <ItemGroup Condition="'$(TargetFramework)'=='net9.0-ios'">
-    <MauiIcon Include="Resources\AppIcon\appicon.png" Color="#FFCCCC" ForegroundScale="1.0" />
+    <MauiIcon Include="Resources\AppIcon\iOS\appicon.png" ForegroundFile="Resources\AppIcon\iOS\appiconios.png" />
   </ItemGroup>
   <ItemGroup Condition="'$(TargetFramework)'=='net9.0-maccatalyst'">
-    <MauiIcon Include="Resources\AppIcon\appicon.png" Color="#FFCCCC" ForegroundScale="1.0" />
+    <MauiIcon Include="Resources\AppIcon\iOS\appicon.png" ForegroundFile="Resources\AppIcon\iOS\appiconios.png" />
   </ItemGroup>
-
 
   <!-- CONFIGURATION + FRAMEWORK SPECIFIC PROPERTIES -->
   <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)'=='Debug|net9.0-ios'">
