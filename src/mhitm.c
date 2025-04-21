@@ -341,7 +341,7 @@ register struct monst *magr, *mdef;
         && magr->my != mdef->my)
         return MM_MISS;
 
-    reset_monster_origin_coordinates(&youmonst);
+    //reset_monster_origin_coordinates(&youmonst);
 
     /* Update facing */
     update_m_facing(magr, mdef->mx - magr->mx, TRUE);
