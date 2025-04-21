@@ -652,10 +652,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Views\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <Compile Update="Controls\SimpleImageButton.xaml.cs">
       <DependentUpon>SimpleImageButton.xaml</DependentUpon>
     </Compile>
