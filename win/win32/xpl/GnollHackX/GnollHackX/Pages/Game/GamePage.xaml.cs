@@ -3857,6 +3857,7 @@ namespace GnollHackX.Pages.Game
             if (GHApp.GameMuteMode)
                 GHApp.GameMuteMode = false;
             GHApp.CurrentGamePage = null;
+            GHApp.ReportLockDataResults();
             var page = await GHApp.Navigation.PopModalAsync();
             _mainPage.StartGeneralTimer(); /* Just to be doubly sure */
             GHApp.DisconnectIViewHandlers(page);
@@ -6684,10 +6685,13 @@ namespace GnollHackX.Pages.Game
             curGame.GetMapDataCursorXY(out _mapCursorX, out _mapCursorY, out _cursorType, out _force_paint_at_cursor, out _show_cursor_on_u);
             MapData[,] mapBuffer;
             ObjectData[,] objectBuffer;
-            if (curGame.GetMapDataBuffer(out mapBuffer, out objectBuffer, out _uBall, out _uChain))
+            ObjectDataItem uBall, uChain;
+            if (curGame.GetMapDataBuffer(out mapBuffer, out objectBuffer, out uBall, out uChain))
             {
                 _mapData = mapBuffer;
                 _objectData = objectBuffer;
+                _uBall = uBall;
+                _uChain = uChain;
             }
             if (_mapData == null)
                 return;

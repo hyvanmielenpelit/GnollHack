@@ -830,35 +830,60 @@ namespace GnollHackX
 
         public bool GetMapDataBuffer(out MapData[,] mapBuffer, out ObjectData[,] objectBuffer, out ObjectDataItem uBall, out ObjectDataItem uChain)
         {
-            lock(_mapDataBufferLock)
+            //long timeStamp = Stopwatch.GetTimestamp();
+            bool lockTaken = false;
+            //lock(_mapDataBufferLock)
+            try
             {
-                if(_mapDataCurrentUpdated)
+                Monitor.TryEnter(_mapDataBufferLock, TimeSpan.FromTicks(100), ref lockTaken);
+                if (lockTaken)
                 {
-                    mapBuffer = _mapDataCurrent;
-                    objectBuffer = _objectDataCurrent;
-                    uBall = _uBall;
-                    uChain = _uChain;
-                    _mapDataCurrentIs2 = !_mapDataCurrentIs2;
-                    _mapDataCurrent = _mapDataCurrentIs2 ? _mapDataBuffer2 : _mapDataBuffer1;
-                    _objectDataCurrent = _mapDataCurrentIs2 ? _objectDataBuffer2 : _objectDataBuffer1;
-                    _mapDataCurrentUpdated = false;
-                    return true;
+                    //TimeSpan ts = Stopwatch.GetElapsedTime(timeStamp);
+                    //GHApp.AddLockBlockData(ts);
+                    if (_mapDataCurrentUpdated)
+                    {
+                        mapBuffer = _mapDataCurrent;
+                        objectBuffer = _objectDataCurrent;
+                        uBall = _uBall;
+                        uChain = _uChain;
+                        _mapDataCurrentIs2 = !_mapDataCurrentIs2;
+                        _mapDataCurrent = _mapDataCurrentIs2 ? _mapDataBuffer2 : _mapDataBuffer1;
+                        _objectDataCurrent = _mapDataCurrentIs2 ? _objectDataBuffer2 : _objectDataBuffer1;
+                        _mapDataCurrentUpdated = false;
+                        return true;
+                    }
+                    else
+                    {
+                        mapBuffer = null;
+                        objectBuffer = null;
+                        uBall = null;
+                        uChain = null;
+                        return false;
+                    }
                 }
                 else
                 {
                     mapBuffer = null;
                     objectBuffer = null;
-                    uBall = _uBall;
-                    uChain = _uChain;
+                    uBall = null;
+                    uChain = null;
                     return false;
                 }
+            }
+            finally
+            {
+                if (lockTaken) 
+                    Monitor.Exit(_mapDataBufferLock);
             }
         }
 
         public void GetMapDataCursorXY(out int x, out int y, out game_cursor_types cursorType, out bool force_paint_at_cursor, out bool show_cursor_on_u)
         {
+            long timeStamp = Stopwatch.GetTimestamp();
             lock (_mapDataCursorLock)
             {
+                TimeSpan ts = Stopwatch.GetElapsedTime(timeStamp);
+                GHApp.AddLockBlockData(ts);
                 x = _mapCursorX;
                 y = _mapCursorY;
                 cursorType = _cursorType;
