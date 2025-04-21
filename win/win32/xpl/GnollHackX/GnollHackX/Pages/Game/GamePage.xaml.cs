@@ -6589,6 +6589,10 @@ namespace GnollHackX.Pages.Game
         private GHAnimationTimerList _localAnimationTimers = new GHAnimationTimerList();
         private ObjectDataItem[] _localWeaponStyleObjDataItem = new ObjectDataItem[3];
         private GHStatusField[] _localStatusFields = new GHStatusField[(int)NhStatusFields.MAXBLSTATS];
+        private int _local_ux = 0;
+        private int _local_uy = 0;
+        private ulong _local_u_condition_bits = 0;
+        private ulong _local_u_status_bits = 0;
         private ulong[] _local_u_buff_bits = new ulong[GHConstants.NUM_BUFF_BIT_ULONGS];
 
         public List<GHFloatingText> _localFloatingTexts = new List<GHFloatingText>();
@@ -6664,34 +6668,30 @@ namespace GnollHackX.Pages.Game
             int u_y;
             ulong status_bits;
             ulong condition_bits;
-            //lock (_uLock)
-            //{
-            //    u_x = _ux;
-            //    u_y = _uy;
-            //    status_bits = _u_status_bits;
-            //    condition_bits = _u_condition_bits;
-            //    _u_buff_bits.CopyTo(_local_u_buff_bits, 0);
-            //}
             GHGame curGame = CurrentGame;
             if (curGame == null)
                 return;
 
-            curGame.GetUData(out u_x, out u_y, out condition_bits, out status_bits, ref _local_u_buff_bits);
-            lock (_uLock)
-            {
-                _ux = u_x;
-                _uy = u_y;
-            }
+            //curGame.GetUData(out u_x, out u_y, out condition_bits, out status_bits, ref _local_u_buff_bits);
             curGame.GetMapDataCursorXY(out _mapCursorX, out _mapCursorY, out _cursorType, out _force_paint_at_cursor, out _show_cursor_on_u);
             MapData[,] mapBuffer;
             ObjectData[,] objectBuffer;
             ObjectDataItem uBall, uChain;
-            if (curGame.GetMapDataBuffer(out mapBuffer, out objectBuffer, out uBall, out uChain))
+            if (curGame.GetMapDataBuffer(out mapBuffer, out objectBuffer, out uBall, out uChain, out u_x, out u_y, out condition_bits, out status_bits, ref _local_u_buff_bits))
             {
                 _mapData = mapBuffer;
                 _objectData = objectBuffer;
                 _uBall = uBall;
                 _uChain = uChain;
+                _local_u_condition_bits = condition_bits;
+                _local_u_status_bits = status_bits;
+                _local_ux = u_x;
+                _local_uy = u_y;
+                lock (_uLock)
+                {
+                    _ux = u_x;
+                    _uy = u_y;
+                }
             }
             if (_mapData == null)
                 return;
@@ -7444,7 +7444,7 @@ namespace GnollHackX.Pages.Game
                                                                     && (_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_CAN_SEE) != 0;
                                                                 if (ascension_radiance)
                                                                 {
-                                                                    float multiplier = 1.0f - Math.Min(1.0f, 0.3f + (float)Math.Sqrt(Math.Pow(mapx - u_x, 2) + Math.Pow(mapy - u_y, 2)) / 6.0f);
+                                                                    float multiplier = 1.0f - Math.Min(1.0f, 0.3f + (float)Math.Sqrt(Math.Pow(mapx - _local_ux, 2) + Math.Pow(mapy - _local_uy, 2)) / 6.0f);
                                                                     int val = (int)(multiplier * 255);
                                                                     SKColor color = new SKColor((byte)val, (byte)val, (byte)val);
 
@@ -9694,13 +9694,13 @@ namespace GnollHackX.Pages.Game
                                     /* Condition, status and buff marks */
                                     float marksize = rowheight * 0.80f;
                                     float markpadding = marksize / 8;
-                                    if (status_bits != 0)
+                                    if (_local_u_status_bits != 0)
                                     {
                                         int tiles_per_row = GHConstants.TileWidth / GHConstants.StatusMarkWidth;
                                         foreach (int status_mark in _statusmarkorder)
                                         {
                                             ulong statusbit = 1UL << status_mark;
-                                            if ((status_bits & statusbit) != 0)
+                                            if ((_local_u_status_bits & statusbit) != 0)
                                             {
                                                 int mglyph = (int)game_ui_tile_types.STATUS_MARKS + status_mark / GHConstants.MAX_UI_TILE_16_x_16_COMPONENTS + GHApp.UITileOff;
                                                 int mtile = GHApp.Glyph2Tile[mglyph];
@@ -9737,13 +9737,13 @@ namespace GnollHackX.Pages.Game
                                         }
                                     }
 
-                                    if (condition_bits != 0)
+                                    if (_local_u_condition_bits != 0)
                                     {
                                         int tiles_per_row = GHConstants.TileWidth / GHConstants.StatusMarkWidth;
                                         for (int condition_mark = 0; condition_mark < (int)bl_conditions.NUM_BL_CONDITIONS; condition_mark++)
                                         {
                                             ulong conditionbit = 1UL << condition_mark;
-                                            if ((condition_bits & conditionbit) != 0)
+                                            if ((_local_u_condition_bits & conditionbit) != 0)
                                             {
                                                 int mglyph = (int)game_ui_tile_types.CONDITION_MARKS + condition_mark / GHConstants.MAX_UI_TILE_16_x_16_COMPONENTS + GHApp.UITileOff;
                                                 int mtile = GHApp.Glyph2Tile[mglyph];
@@ -11181,13 +11181,13 @@ namespace GnollHackX.Pages.Game
 
                         float marksize = textPaint.FontSpacing * 0.85f;
                         float markpadding = marksize / 4;
-                        if (status_bits != 0)
+                        if (_local_u_status_bits != 0)
                         {
                             int tiles_per_row = GHConstants.TileWidth / GHConstants.StatusMarkWidth;
                             foreach (int status_mark in _statusmarkorder)
                             {
                                 ulong statusbit = 1UL << status_mark;
-                                if ((status_bits & statusbit) != 0)
+                                if ((_local_u_status_bits & statusbit) != 0)
                                 {
                                     string statusname = _status_names[status_mark];
                                     int mglyph = (int)game_ui_tile_types.STATUS_MARKS + status_mark / GHConstants.MAX_UI_TILE_16_x_16_COMPONENTS + GHApp.UITileOff;
@@ -11224,13 +11224,13 @@ namespace GnollHackX.Pages.Game
                             }
                         }
 
-                        if (condition_bits != 0)
+                        if (_local_u_condition_bits != 0)
                         {
                             int tiles_per_row = GHConstants.TileWidth / GHConstants.StatusMarkWidth;
                             for (int condition_mark = 0; condition_mark < (int)bl_conditions.NUM_BL_CONDITIONS; condition_mark++)
                             {
                                 ulong conditionbit = 1UL << condition_mark;
-                                if ((condition_bits & conditionbit) != 0)
+                                if ((_local_u_condition_bits & conditionbit) != 0)
                                 {
                                     string conditionname = _condition_names[condition_mark];
                                     int mglyph = (int)game_ui_tile_types.CONDITION_MARKS + condition_mark / GHConstants.MAX_UI_TILE_16_x_16_COMPONENTS + GHApp.UITileOff;
@@ -12706,13 +12706,8 @@ namespace GnollHackX.Pages.Game
 
         private void DrawChain(SKCanvas canvas, SKPaint paint, int mapx, int mapy, int autodraw, bool autodraw_u_punished, float width, float height, float ty, float tx, float scale, float targetscale, bool usingGL, bool highFilterQuality, bool fixRects)
         {
-            int u_x;
-            int u_y;
-            lock (_uLock)
-            {
-                u_x = _ux;
-                u_y = _uy;
-            }
+            int u_x = _local_ux;
+            int u_y = _local_uy;
             if (_uChain != null && _uBall != null && (_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_CAN_SEE) != 0)
             {
                 int chain_x = _uChain.OtypData.obj_loc_x;

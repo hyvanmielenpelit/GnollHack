@@ -770,7 +770,6 @@ namespace GnollHackX
         private bool _force_paint_at_cursor;
         private bool _show_cursor_on_u;
 
-        private readonly object _uLock = new object();
         private int _ux = 0;
         private int _uy = 0;
         private ulong _u_condition_bits = 0;
@@ -828,7 +827,7 @@ namespace GnollHackX
             SetMapSymbol(x, y, glyph, bkglyph, symbol, ocolor, special, ref layers);
         }
 
-        public bool GetMapDataBuffer(out MapData[,] mapBuffer, out ObjectData[,] objectBuffer, out ObjectDataItem uBall, out ObjectDataItem uChain)
+        public bool GetMapDataBuffer(out MapData[,] mapBuffer, out ObjectData[,] objectBuffer, out ObjectDataItem uBall, out ObjectDataItem uChain, out int ux, out int uy, out ulong u_condition_bits, out ulong u_status_bits, ref ulong[] u_buff_bits)
         {
             //long timeStamp = Stopwatch.GetTimestamp();
             bool lockTaken = false;
@@ -846,6 +845,13 @@ namespace GnollHackX
                         objectBuffer = _objectDataCurrent;
                         uBall = _uBall;
                         uChain = _uChain;
+                        ux = _ux;
+                        uy = _uy;
+                        u_condition_bits = _u_condition_bits;
+                        u_status_bits = _u_status_bits;
+                        for (int i = 0; i < GHConstants.NUM_BUFF_BIT_ULONGS; i++)
+                            u_buff_bits[i] = _u_buff_bits[i];
+
                         _mapDataCurrentIs2 = !_mapDataCurrentIs2;
                         _mapDataCurrent = _mapDataCurrentIs2 ? _mapDataBuffer2 : _mapDataBuffer1;
                         _objectDataCurrent = _mapDataCurrentIs2 ? _objectDataBuffer2 : _objectDataBuffer1;
@@ -858,6 +864,10 @@ namespace GnollHackX
                         objectBuffer = null;
                         uBall = null;
                         uChain = null;
+                        ux = 0;
+                        uy = 0;
+                        u_condition_bits = 0;
+                        u_status_bits = 0;
                         return false;
                     }
                 }
@@ -867,6 +877,10 @@ namespace GnollHackX
                     objectBuffer = null;
                     uBall = null;
                     uChain = null;
+                    ux = 0;
+                    uy = 0;
+                    u_condition_bits = 0;
+                    u_status_bits = 0;
                     return false;
                 }
             }
@@ -892,18 +906,18 @@ namespace GnollHackX
             }
         }
 
-        public void GetUData(out int ux, out int uy, out ulong u_condition_bits, out ulong u_status_bits, ref ulong[] u_buff_bits)
-        {
-            lock (_uLock)
-            {
-                ux = _ux;
-                uy = _uy;
-                u_condition_bits = _u_condition_bits;
-                u_status_bits = _u_status_bits;
-                for (int i = 0; i < GHConstants.NUM_BUFF_BIT_ULONGS; i++)
-                    u_buff_bits[i] = _u_buff_bits[i];
-            }
-        }
+        //public void GetUData(out int ux, out int uy, out ulong u_condition_bits, out ulong u_status_bits, ref ulong[] u_buff_bits)
+        //{
+        //    lock (_uLock)
+        //    {
+        //        ux = _ux;
+        //        uy = _uy;
+        //        u_condition_bits = _u_condition_bits;
+        //        u_status_bits = _u_status_bits;
+        //        for (int i = 0; i < GHConstants.NUM_BUFF_BIT_ULONGS; i++)
+        //            u_buff_bits[i] = _u_buff_bits[i];
+        //    }
+        //}
 
         private void SetMapSymbol(int x, int y, int glyph, int bkglyph, int c, int color, uint special, ref LayerInfo layers)
         {
@@ -936,18 +950,15 @@ namespace GnollHackX
             }
             if ((layers.layer_flags & (ulong)LayerFlags.LFLAGS_UXUY) != 0)
             {
-                lock (_uLock)
+                _ux = x;
+                _uy = y;
+                _u_condition_bits = layers.condition_bits;
+                _u_status_bits = layers.status_bits;
+                if (layers.buff_bits != null)
                 {
-                    _ux = x;
-                    _uy = y;
-                    _u_condition_bits = layers.condition_bits;
-                    _u_status_bits = layers.status_bits;
-                    if (layers.buff_bits != null)
+                    for (int i = 0; i < GHConstants.NUM_BUFF_BIT_ULONGS; i++)
                     {
-                        for (int i = 0; i < GHConstants.NUM_BUFF_BIT_ULONGS; i++)
-                        {
-                            _u_buff_bits[i] = layers.buff_bits[i];
-                        }
+                        _u_buff_bits[i] = layers.buff_bits[i];
                     }
                 }
             }
