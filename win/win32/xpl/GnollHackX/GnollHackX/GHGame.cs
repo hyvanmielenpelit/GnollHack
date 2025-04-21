@@ -2793,11 +2793,11 @@ namespace GnollHackX
                     {
                         if (cmd_param == (int)game_status_types.GAME_STATUS_RESULT_ATTACHMENT)
                         {
-                            GHApp.WriteGHLog("Forum Post: Attaching the file " + cmd_str + " to the next post.");
+                            GHApp.MaybeWriteGHLog("Forum Post: Attaching the file " + cmd_str + " to the next post.");
                         }
                         else
                         {
-                            GHApp.WriteGHLog("Forum Post: Posting game progress to the server: " + status_str);
+                            GHApp.MaybeWriteGHLog("Forum Post: Posting game progress to the server: " + status_str);
                         }
                         RequestQueue.Enqueue(new GHRequest(this,
                             GHRequestType.PostGameStatus,
@@ -2805,7 +2805,7 @@ namespace GnollHackX
                     }
                     else
                     {
-                        GHApp.WriteGHLog("Forum Post: Received a request to " + (cmd_param == (int)game_status_types.GAME_STATUS_RESULT_ATTACHMENT ? "attach a file to the next forum post" : "post game progress to the server") + ", but Post Game Progress setting is off.");
+                        GHApp.MaybeWriteGHLog("Forum Post: Received a request to " + (cmd_param == (int)game_status_types.GAME_STATUS_RESULT_ATTACHMENT ? "attach a file to the next forum post" : "post game progress to the server") + ", but Post Game Progress setting is off.");
                     }
                     break;
                 case (int)gui_command_types.GUI_CMD_POST_XLOG_ENTRY:
@@ -2817,14 +2817,14 @@ namespace GnollHackX
                     if (GHApp.PostingXlogEntries)
                     {
                         if(cmd_param == (int)game_status_types.GAME_STATUS_RESULT_ATTACHMENT)
-                            GHApp.WriteGHLog("XLog Post: Attaching the file " + cmd_str + " to the next post.");
+                            GHApp.MaybeWriteGHLog("XLog Post: Attaching the file " + cmd_str + " to the next post.");
                         else
-                            GHApp.WriteGHLog("XLog Post: Posting the top score entry to the server.");
+                            GHApp.MaybeWriteGHLog("XLog Post: Posting the top score entry to the server.");
                         RequestQueue.Enqueue(new GHRequest(this, GHRequestType.PostXlogEntry, cmd_param, cmd_param2, status_str));
                     }
                     else
                     {
-                        GHApp.WriteGHLog("Received a request to " + (cmd_param == (int)game_status_types.GAME_STATUS_RESULT_ATTACHMENT ? "attach a file to the next top score post" : "post the top score entry to the server") + ", but Post Top Scores setting is off.");
+                        GHApp.MaybeWriteGHLog("Received a request to " + (cmd_param == (int)game_status_types.GAME_STATUS_RESULT_ATTACHMENT ? "attach a file to the next top score post" : "post the top score entry to the server") + ", but Post Top Scores setting is off.");
                     }
                     break;
                 case (int)gui_command_types.GUI_CMD_POST_BONES_FILE:
@@ -2839,17 +2839,17 @@ namespace GnollHackX
                         Random rnd = new Random();
                         if (GHApp.ForcePostBones || rnd.NextDouble() < GHConstants.BonesPostBaseChance)
                         {
-                            GHApp.WriteGHLog("Bones Post: Chose to post the bones file (" + status_str + ") to the server for user " + GHApp.XlogUserName + ".");
+                            GHApp.MaybeWriteGHLog("Bones Post: Chose to post the bones file (" + status_str + ") to the server for user " + GHApp.XlogUserName + ".");
                             RequestQueue.Enqueue(new GHRequest(this, GHRequestType.PostBonesFile, cmd_param, cmd_param2, status_str));
                         }
                         else
                         {
-                            GHApp.WriteGHLog("Bones Retention: Chose not to post the bones file (" + status_str + ") to the server for user " + GHApp.XlogUserName + ". Bones file retained locally.");
+                            GHApp.MaybeWriteGHLog("Bones Retention: Chose not to post the bones file (" + status_str + ") to the server for user " + GHApp.XlogUserName + ". Bones file retained locally.");
                         }
                     }
                     else
                     {
-                        GHApp.WriteGHLog("Received a request to post the bones file " + status_str + " to the server, but "
+                        GHApp.MaybeWriteGHLog("Received a request to post the bones file " + status_str + " to the server, but "
                             + (!GHApp.AllowBones && !GHApp.PostingBonesFiles ? "Allow Ghost Levels and Share Bones Files settings are both off" : GHApp.AllowBones ? "Allow Ghost Levels setting is off" : "Bones File Sharing setting is off")
                             + (!GHApp.AllowBones ? ". Allow Ghost Levels was probably on when the game was started" : "")
                             + ". Retaining the bones file locally.");
@@ -2918,8 +2918,8 @@ namespace GnollHackX
                     }
                     break;
                 case (int)gui_command_types.GUI_CMD_DEBUGLOG:
-                    if(!string.IsNullOrWhiteSpace(cmd_str) && GHApp.DebugLogMessages)
-                        GHApp.WriteGHLog(cmd_str + (cmd_param2 != 0 ? " [" + cmd_param2 + "]" : ""));
+                    if(!string.IsNullOrWhiteSpace(cmd_str))
+                        GHApp.MaybeWriteGHLog(cmd_str + (cmd_param2 != 0 ? " [" + cmd_param2 + "]" : ""));
                     //if (GHGame.RequestDictionary.TryGetValue(this, out queue))
                     //{
                     //    RequestQueue.Enqueue(new GHRequest(this, GHRequestType.DebugLog, cmd_param, cmd_param2, cmd_str));
@@ -2956,7 +2956,7 @@ namespace GnollHackX
                     }
                     catch (Exception ex)
                     {
-                        GHApp.WriteGHLog("Delete tracking file: " + ex.Message);
+                        GHApp.MaybeWriteGHLog("Delete tracking file: " + ex.Message);
                     }
                     break;
                 case (int)gui_command_types.GUI_CMD_START_FLUSH:
@@ -3114,8 +3114,8 @@ namespace GnollHackX
                         break;
                     }
                 case (int)special_view_types.SPECIAL_VIEW_DEBUGLOG:
-                    if (!string.IsNullOrWhiteSpace(text) && GHApp.DebugLogMessages)
-                        GHApp.WriteGHLog(text + (attr != 0 ? " [" + attr + "]" : ""));
+                    if (!string.IsNullOrWhiteSpace(text))
+                        GHApp.MaybeWriteGHLog(text + (attr != 0 ? " [" + attr + "]" : ""));
                     break;
                 case (int)special_view_types.SPECIAL_VIEW_MESSAGE:
                     {

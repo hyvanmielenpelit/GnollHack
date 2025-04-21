@@ -3909,7 +3909,7 @@ namespace GnollHackX
                             if (res.IsSuccess)
                             {
                                 SetXlogUserNameVerified(true, username, password);
-                                WriteGHLog((string.IsNullOrEmpty(xlogentry_string) ? "Server authentication successful" : "XLog entry successfully sent") + (is_from_queue ? " from the post queue" : "") + ". (" + (int)res.StatusCode + ")");
+                                MaybeWriteGHLog((string.IsNullOrEmpty(xlogentry_string) ? "Server authentication successful" : "XLog entry successfully sent") + (is_from_queue ? " from the post queue" : "") + ". (" + (int)res.StatusCode + ")");
                             }
                             else
                             {
@@ -3922,7 +3922,7 @@ namespace GnollHackX
 
                             if (!res.IsSuccess && !is_from_queue && !string.IsNullOrWhiteSpace(xlogentry_string))
                             {
-                                WriteGHLog((string.IsNullOrEmpty(xlogentry_string) ? "Server authentication failed." : "Sending XLog entry failed.") + " Writing the send request to disk. Status Code: " + (int)res.StatusCode + ", Message: "+ res.Message);
+                                MaybeWriteGHLog((string.IsNullOrEmpty(xlogentry_string) ? "Server authentication failed." : "Sending XLog entry failed.") + " Writing the send request to disk. Status Code: " + (int)res.StatusCode + ", Message: "+ res.Message);
                                 SaveXLogEntryToDisk(status_type, status_datatype, xlogentry_string, xlogattachments);
                             }                            
                         }
@@ -4067,7 +4067,7 @@ namespace GnollHackX
                                 if (res.IsSuccess)
                                 {
                                     SetXlogUserNameVerified(true, username, password);
-                                    WriteGHLog("Save file tracking on save successfully sent");
+                                    MaybeWriteGHLog("Save file tracking on save successfully sent");
                                     bool writeAgain = false;
                                     do
                                     {
@@ -4239,7 +4239,7 @@ namespace GnollHackX
                                 if (res.IsSuccess)
                                 {
                                     SetXlogUserNameVerified(true, username, password);
-                                    WriteGHLog("Save file tracking on load successful");
+                                    MaybeWriteGHLog("Save file tracking on load successful");
                                 }
                                 else
                                 {
@@ -4357,12 +4357,12 @@ namespace GnollHackX
                         string json = JsonConvert.SerializeObject(fp);
                         Debug.WriteLine(json);
                         sw.Write(json);
-                        WriteGHLog((string.IsNullOrEmpty(xlogentry_string) ? "Server authentication request" : "XLog entry send request") + " written to the queue on disk: " + targetfilepath);
+                        MaybeWriteGHLog((string.IsNullOrEmpty(xlogentry_string) ? "Server authentication request" : "XLog entry send request") + " written to the queue on disk: " + targetfilepath);
                     }
                 }
                 catch (Exception ex)
                 {
-                    WriteGHLog("Writing the " + (string.IsNullOrEmpty(xlogentry_string) ? "server authentication request" : "XLog entry send request") + " to the queue on disk using path " + targetfilepath + " failed: " + ex.Message);
+                    MaybeWriteGHLog("Writing the " + (string.IsNullOrEmpty(xlogentry_string) ? "server authentication request" : "XLog entry send request") + " to the queue on disk using path " + targetfilepath + " failed: " + ex.Message);
                 }
             }
         }
@@ -4455,12 +4455,12 @@ namespace GnollHackX
 
                             if(res.IsSuccess)
                             {
-                                WriteGHLog("Forum post successfully sent" + (is_from_queue ? " from the post queue" : "") + ". (" + (int)res.StatusCode + ")");
+                                MaybeWriteGHLog("Forum post successfully sent" + (is_from_queue ? " from the post queue" : "") + ". (" + (int)res.StatusCode + ")");
                             }
 
                             if (!res.IsSuccess && !is_from_queue)
                             {
-                                WriteGHLog("Forum post send request redirected to the queue on disk. Status Code: " + (int)res.StatusCode + ", Message: " + res.Message);
+                                MaybeWriteGHLog("Forum post send request redirected to the queue on disk. Status Code: " + (int)res.StatusCode + ", Message: " + res.Message);
                                 SaveForumPostToDisk(is_game_status, status_type, status_datatype, message, forumpostattachments, forcesend);
                             }
                         }
@@ -4536,12 +4536,12 @@ namespace GnollHackX
                         GHPost fp = new GHPost(0, is_game_status, status_type, status_datatype, message, forumpostattachments != null ? forumpostattachments : new List<GHPostAttachment>(), forcesend);
                         string json = JsonConvert.SerializeObject(fp);
                         sw.Write(json);
-                        WriteGHLog("Forum post send request written to the queue on disk: " + targetfilepath);
+                        MaybeWriteGHLog("Forum post send request written to the queue on disk: " + targetfilepath);
                     }
                 }
                 catch (Exception ex)
                 {
-                    WriteGHLog("Writing the forum post send request to the queue on disk using path " + targetfilepath + " failed: " + ex.Message);
+                    MaybeWriteGHLog("Writing the forum post send request to the queue on disk using path " + targetfilepath + " failed: " + ex.Message);
                 }
             }
         }
@@ -4691,18 +4691,18 @@ namespace GnollHackX
                                     res.StatusCode = response.StatusCode;
                                     if(res.IsSuccess)
                                     {
-                                        WriteGHLog("Bones file successfully sent" + (is_from_queue ? " from the post queue" : "") + ". (" + (int)res.StatusCode + "): " + full_filepath);
+                                        MaybeWriteGHLog("Bones file successfully sent" + (is_from_queue ? " from the post queue" : "") + ". (" + (int)res.StatusCode + "): " + full_filepath);
                                         if (res.StatusCode == HttpStatusCode.OK)
                                         {
                                             // Delete sent file first on OK status code
                                             try
                                             {
                                                 File.Delete(full_filepath);
-                                                WriteGHLog("Deleted the sent bones file: " + full_filepath);
+                                                MaybeWriteGHLog("Deleted the sent bones file: " + full_filepath);
                                             }
                                             catch (Exception ex)
                                             {
-                                                WriteGHLog("Deleting the sent bones file from client failed: " + ex.Message);
+                                                MaybeWriteGHLog("Deleting the sent bones file from client failed: " + ex.Message);
                                             }
                                         }
                                         else
@@ -4713,7 +4713,7 @@ namespace GnollHackX
                                         //We may or may not have received another bones file in return
                                         if (bytearray != null && bytearray.Length > 0)
                                         {
-                                            WriteGHLog("Bones file received from the server. Writing the bones file to disk.");
+                                            MaybeWriteGHLog("Bones file received from the server. Writing the bones file to disk.");
                                             didReceiveBonesFile = true;
                                             Debug.WriteLine("Response Headers: " + response.Headers.ToString());
                                             if (response.Headers.TryGetValues("X-GH-OriginalFileName", out IEnumerable<string> origFileNames))
@@ -4747,27 +4747,27 @@ namespace GnollHackX
                                                                 }
                                                                 catch (Exception ex)
                                                                 {
-                                                                    WriteGHLog("Writing the received bones file " + savepath + " to disk failed: " + ex.Message);
+                                                                    MaybeWriteGHLog("Writing the received bones file " + savepath + " to disk failed: " + ex.Message);
                                                                 }
                                                             }
                                                             else
-                                                                WriteGHLog("Bones file already exists: " + savepath + ". Ignoring the received bones file.");
+                                                                MaybeWriteGHLog("Bones file already exists: " + savepath + ". Ignoring the received bones file.");
                                                         }
                                                         else
-                                                            WriteGHLog("Bones file name is null or empty.");
+                                                            MaybeWriteGHLog("Bones file name is null or empty.");
                                                     }
                                                     else
-                                                        WriteGHLog("Bones original file name list is empty in the server response.");
+                                                        MaybeWriteGHLog("Bones original file name list is empty in the server response.");
                                                 }
                                                 else
-                                                    WriteGHLog("Bones original file name list is null in the server response.");
+                                                    MaybeWriteGHLog("Bones original file name list is null in the server response.");
                                             }
                                             else
-                                                WriteGHLog("Bones original file name header could not be found in the server response.");
+                                                MaybeWriteGHLog("Bones original file name header could not be found in the server response.");
                                         }
                                         else
                                         {
-                                            WriteGHLog("No bones file received from the server: Bones byte array was null or empty.");
+                                            MaybeWriteGHLog("No bones file received from the server: Bones byte array was null or empty.");
                                             string str = "";
                                             try
                                             {
@@ -4775,14 +4775,14 @@ namespace GnollHackX
                                             }
                                             catch (Exception ex)
                                             {
-                                                WriteGHLog("Reading bones response content failed: " + ex.Message);
+                                                MaybeWriteGHLog("Reading bones response content failed: " + ex.Message);
                                             }
-                                            WriteGHLog("Bones response content: " + str);
+                                            MaybeWriteGHLog("Bones response content: " + str);
                                         }
                                     }
                                     else
                                     {
-                                        Debug.WriteLine("Sending the bones file " + full_filepath + " failed. No bones file received in exchange. (" + (int)res.StatusCode + ")");
+                                        MaybeWriteGHLog("Sending the bones file " + full_filepath + " failed. No bones file received in exchange. (" + (int)res.StatusCode + ")");
                                         string str = "";
                                         try
                                         {
@@ -4790,7 +4790,7 @@ namespace GnollHackX
                                         }
                                         catch (Exception ex) 
                                         {
-                                            Debug.WriteLine("Reading bones response content failed: " + ex.Message);
+                                            MaybeWriteGHLog("Reading bones response content failed: " + ex.Message);
                                         }
                                         Debug.WriteLine("Bones response content: " + str);
                                     }
@@ -4807,7 +4807,7 @@ namespace GnollHackX
                             if (res.IsSuccess)
                             {
                                 SetXlogUserNameVerified(true, username, password);
-                                WriteGHLog("Bones file exchange successfully completed. (" + (int)res.StatusCode + ")");
+                                MaybeWriteGHLog("Bones file exchange successfully completed. (" + (int)res.StatusCode + ")");
                             }
                             else
                             {
@@ -4820,7 +4820,7 @@ namespace GnollHackX
 
                             if (!res.IsSuccess && !is_from_queue && !string.IsNullOrWhiteSpace(bones_filename))
                             {
-                                WriteGHLog("Bones file send request redirected to the queue on disk. Status Code: " + (int)res.StatusCode + ", Message: " + res.Message);
+                                MaybeWriteGHLog("Bones file send request redirected to the queue on disk. Status Code: " + (int)res.StatusCode + ", Message: " + res.Message);
                                 SaveBonesPostToDisk(status_type, status_datatype, bones_filename);
                             }
                         }
@@ -4961,7 +4961,7 @@ namespace GnollHackX
                                     {
                                         if(response.IsSuccessStatusCode)
                                         {
-                                            WriteGHLog("Bones receipt confirmation of server bones file " + receivedBonesServerFilePath + " sent successfully (" + (int)response.StatusCode + ").");
+                                            MaybeWriteGHLog("Bones receipt confirmation of server bones file " + receivedBonesServerFilePath + " sent successfully (" + (int)response.StatusCode + ").");
                                         }
                                         else
                                         {
@@ -5036,11 +5036,11 @@ namespace GnollHackX
                         Debug.WriteLine(json);
                         sw.Write(json);
                     }
-                    WriteGHLog("Bones file send request written to the queue on disk: " + targetfilepath);
+                    MaybeWriteGHLog("Bones file send request written to the queue on disk: " + targetfilepath);
                 }
                 catch (Exception ex)
                 {
-                    WriteGHLog("Writing the bones file send request to the queue on disk using path " + targetfilepath + " failed: " + ex.Message);
+                    MaybeWriteGHLog("Writing the bones file send request to the queue on disk using path " + targetfilepath + " failed: " + ex.Message);
                 }
             }
         }
@@ -5111,7 +5111,7 @@ namespace GnollHackX
                             }
                             catch (Exception ex)
                             {
-                                WriteGHLog(ex.Message);
+                                MaybeWriteGHLog(ex.Message);
                             }
                         }
 
@@ -5156,11 +5156,11 @@ namespace GnollHackX
                         Debug.WriteLine(json);
                         sw.Write(json);
                     }
-                    WriteGHLog("Replay file send request written to the queue on disk: " + targetfilepath);
+                    MaybeWriteGHLog("Replay file send request written to the queue on disk: " + targetfilepath);
                 }
                 catch (Exception ex)
                 {
-                    WriteGHLog("Writing the replay file send request to the queue on disk using path " + targetfilepath + " failed: " + ex.Message);
+                    MaybeWriteGHLog("Writing the replay file send request to the queue on disk using path " + targetfilepath + " failed: " + ex.Message);
                 }
             }
         }
