@@ -834,7 +834,7 @@ namespace GnollHackX
             //lock(_mapDataBufferLock)
             try
             {
-                Monitor.TryEnter(_mapDataBufferLock, TimeSpan.FromTicks(100), ref lockTaken);
+                Monitor.TryEnter(_mapDataBufferLock, TimeSpan.FromTicks(GHConstants.MapDataLockTimeOutTicks), ref lockTaken);
                 if (lockTaken)
                 {
                     //TimeSpan ts = Stopwatch.GetElapsedTime(timeStamp);
@@ -891,23 +891,55 @@ namespace GnollHackX
             }
         }
 
-        public void GetMapDataCursorXY(out int x, out int y, out game_cursor_types cursorType, out bool force_paint_at_cursor, out bool show_cursor_on_u)
+        public bool GetMapDataCursorXY(out int x, out int y, out game_cursor_types cursorType, out bool force_paint_at_cursor, out bool show_cursor_on_u)
         {
+            bool ret = false;
+            bool lockTaken = false;
 #if GNH_MAUI
             //long timeStamp = Stopwatch.GetTimestamp();
 #endif
-            lock (_mapDataCursorLock)
+            //lock (_mapDataCursorLock)
+            try
             {
+                Monitor.TryEnter(_mapDataCursorLock, TimeSpan.FromTicks(GHConstants.MapDataLockTimeOutTicks), ref lockTaken);
+                if (lockTaken)
+                {
 #if GNH_MAUI
-                //TimeSpan ts = Stopwatch.GetElapsedTime(timeStamp);
-                //GHApp.AddLockBlockData(ts);
+                    //TimeSpan ts = Stopwatch.GetElapsedTime(timeStamp);
+                    //GHApp.AddLockBlockData(ts);
 #endif
-                x = _mapCursorX;
-                y = _mapCursorY;
-                cursorType = _cursorType;
-                force_paint_at_cursor = _force_paint_at_cursor;
-                show_cursor_on_u = _show_cursor_on_u;
+                    x = _mapCursorX;
+                    y = _mapCursorY;
+                    cursorType = _cursorType;
+                    force_paint_at_cursor = _force_paint_at_cursor;
+                    show_cursor_on_u = _show_cursor_on_u;
+                    ret = true;
+                }
+                else
+                {
+                    x = 0;
+                    y = 0;
+                    cursorType = game_cursor_types.CURSOR_STYLE_GENERIC_CURSOR;
+                    force_paint_at_cursor = false;
+                    show_cursor_on_u = false;
+                    ret = false;
+                }
             }
+            catch
+            {
+                x = 0;
+                y = 0;
+                cursorType = game_cursor_types.CURSOR_STYLE_GENERIC_CURSOR;
+                force_paint_at_cursor = false;
+                show_cursor_on_u = false;
+                ret = false;
+            }
+            finally
+            {
+                if (lockTaken)
+                    Monitor.Exit(_mapDataCursorLock);
+            }
+            return ret;
         }
 
         //public void GetUData(out int ux, out int uy, out ulong u_condition_bits, out ulong u_status_bits, ref ulong[] u_buff_bits)

@@ -946,9 +946,12 @@ namespace GnollHackX.Pages.Game
 
             _mainPage = mainPage;
 
+            for (int i = 0; i < GHConstants.NUM_BUFF_BIT_ULONGS; i++)
+                _local_u_buff_bits[i] = 0;
+
             //lock (_mapDataLock)
             //{
-                for (int i = 0; i < GHConstants.MapCols; i++)
+            for (int i = 0; i < GHConstants.MapCols; i++)
                 {
                     for (int j = 0; j < GHConstants.MapRows; j++)
                     {
@@ -6645,6 +6648,7 @@ namespace GnollHackX.Pages.Game
             float messageTextMultiplier = UIUtils.CalculateMessageFontSizeMultiplier(StandardMeasurementButton.Width, StandardMeasurementButton.Height, statusBarSkiaHeight, textscale * GHConstants.WindowMessageFontSize, 
                 canvaswidth, canvasheight, canvasView.Width, canvasView.Height, usingDesktopButtons, usingSimpleCmdLayout, inverse_canvas_scale, customScale);
             float messageTextScale = textscale * messageTextMultiplier;
+            bool lockTaken = false;
 
             long generalcountervalue, maincountervalue;
             lock (AnimationTimerLock)
@@ -6656,14 +6660,39 @@ namespace GnollHackX.Pages.Game
             {
                 maincountervalue = _mainCounterValue;
             }
-            lock (_weaponStyleObjDataItemLock)
+
+            //lock (_weaponStyleObjDataItemLock)
+            try
             {
-                _weaponStyleObjDataItem.CopyTo(_localWeaponStyleObjDataItem, 0);
+                Monitor.TryEnter(_weaponStyleObjDataItemLock, TimeSpan.FromTicks(GHConstants.EffectLockTimeOutTicks), ref lockTaken);
+                if (lockTaken)
+                {
+                    _weaponStyleObjDataItem.CopyTo(_localWeaponStyleObjDataItem, 0);
+                }
             }
-            lock (StatusFieldLock)
+            finally
             {
-                StatusFields.CopyTo(_localStatusFields, 0);
+                if (lockTaken)
+                    Monitor.Exit(_weaponStyleObjDataItemLock);
             }
+            lockTaken = false;
+
+            //lock (StatusFieldLock)
+            try
+            {
+                Monitor.TryEnter(StatusFieldLock, TimeSpan.FromTicks(GHConstants.MapDataLockTimeOutTicks), ref lockTaken);
+                if (lockTaken)
+                {
+                    StatusFields.CopyTo(_localStatusFields, 0);
+                }
+            }
+            finally
+            {
+                if (lockTaken)
+                    Monitor.Exit(StatusFieldLock);
+            }
+            lockTaken = false;
+
             int u_x;
             int u_y;
             ulong status_bits;
@@ -6672,8 +6701,18 @@ namespace GnollHackX.Pages.Game
             if (curGame == null)
                 return;
 
+            int mapCursorX, mapCursorY;
+            game_cursor_types cursorType;
+            bool force_paint_at_cursor,show_cursor_on_u;
             //curGame.GetUData(out u_x, out u_y, out condition_bits, out status_bits, ref _local_u_buff_bits);
-            curGame.GetMapDataCursorXY(out _mapCursorX, out _mapCursorY, out _cursorType, out _force_paint_at_cursor, out _show_cursor_on_u);
+            if (curGame.GetMapDataCursorXY(out mapCursorX, out mapCursorY, out cursorType, out force_paint_at_cursor, out show_cursor_on_u))
+            {
+                _mapCursorX = mapCursorX;
+                _mapCursorY = mapCursorY;
+                _cursorType = cursorType;
+                _force_paint_at_cursor = force_paint_at_cursor;
+                _show_cursor_on_u = show_cursor_on_u;
+            }
             MapData[,] mapBuffer;
             ObjectData[,] objectBuffer;
             ObjectDataItem uBall, uChain;
@@ -6696,31 +6735,90 @@ namespace GnollHackX.Pages.Game
             if (_mapData == null)
                 return;
 
-            lock (_floatingTextLock)
+            //lock (_floatingTextLock)
+            try
             {
-                _localFloatingTexts.Clear();
-                _localFloatingTexts.AddRange(_floatingTexts);
+                Monitor.TryEnter(_floatingTextLock, TimeSpan.FromTicks(GHConstants.EffectLockTimeOutTicks), ref lockTaken);
+                if (lockTaken)
+                {
+                    _localFloatingTexts.Clear();
+                    _localFloatingTexts.AddRange(_floatingTexts);
+                }
             }
+            finally
+            {
+                if (lockTaken)
+                    Monitor.Exit(_floatingTextLock);
+            }
+            lockTaken = false;
+
             GHScreenText localScreenText = null;
-            lock (_screenTextLock)
+            //lock (_screenTextLock)
+            try
             {
-                localScreenText = _screenText;
+                Monitor.TryEnter(_screenTextLock, TimeSpan.FromTicks(GHConstants.EffectLockTimeOutTicks), ref lockTaken);
+                if (lockTaken)
+                {
+                    localScreenText = _screenText;
+                }
             }
-            lock (_conditionTextLock)
+            finally
             {
-                _localConditionTexts.Clear();
-                _localConditionTexts.AddRange(_conditionTexts);
+                if (lockTaken)
+                    Monitor.Exit(_screenTextLock);
             }
-            lock (_screenFilterLock)
+            lockTaken = false;
+
+            //lock (_conditionTextLock)
+            try
             {
-                _localScreenFilters.Clear();
-                _localScreenFilters.AddRange(_screenFilters);
+                Monitor.TryEnter(_conditionTextLock, TimeSpan.FromTicks(GHConstants.EffectLockTimeOutTicks), ref lockTaken);
+                if (lockTaken)
+                {
+                    _localConditionTexts.Clear();
+                    _localConditionTexts.AddRange(_conditionTexts);
+                }
             }
-            lock (_guiEffectLock)
+            finally
             {
-                _localGuiEffects.Clear();
-                _localGuiEffects.AddRange(_guiEffects);
+                if (lockTaken)
+                    Monitor.Exit(_conditionTextLock);
             }
+            lockTaken = false;
+
+            //lock (_screenFilterLock)
+            try
+            {
+                Monitor.TryEnter(_screenFilterLock, TimeSpan.FromTicks(GHConstants.EffectLockTimeOutTicks), ref lockTaken);
+                if (lockTaken)
+                {
+                    _localScreenFilters.Clear();
+                    _localScreenFilters.AddRange(_screenFilters);
+                }
+            }
+            finally
+            {
+                if (lockTaken)
+                    Monitor.Exit(_screenFilterLock);
+            }
+            lockTaken = false;
+
+            //lock (_guiEffectLock)
+            try
+            {
+                Monitor.TryEnter(_guiEffectLock, TimeSpan.FromTicks(GHConstants.EffectLockTimeOutTicks), ref lockTaken);
+                if (lockTaken)
+                {
+                    _localGuiEffects.Clear();
+                    _localGuiEffects.AddRange(_guiEffects);
+                }
+            }
+            finally
+            {
+                if (lockTaken)
+                    Monitor.Exit(_guiEffectLock);
+            }
+            lockTaken = false;
 
             long moveIntervals = Math.Max(2, (long)Math.Ceiling((double)UIUtils.GetMainCanvasAnimationFrequency(MapRefreshRate) / 10.0));
             bool lighter_darkening = LighterDarkening;
