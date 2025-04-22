@@ -6598,10 +6598,12 @@ namespace GnollHackX.Pages.Game
         private ulong _local_u_status_bits = 0;
         private ulong[] _local_u_buff_bits = new ulong[GHConstants.NUM_BUFF_BIT_ULONGS];
 
-        public List<GHFloatingText> _localFloatingTexts = new List<GHFloatingText>();
-        public List<GHConditionText> _localConditionTexts = new List<GHConditionText>();
-        public List<GHScreenFilter> _localScreenFilters = new List<GHScreenFilter>();
-        public List<GHGUIEffect> _localGuiEffects = new List<GHGUIEffect>();
+        private List<GHFloatingText> _localFloatingTexts = new List<GHFloatingText>();
+        private List<GHConditionText> _localConditionTexts = new List<GHConditionText>();
+        private List<GHScreenFilter> _localScreenFilters = new List<GHScreenFilter>();
+        private List<GHGUIEffect> _localGuiEffects = new List<GHGUIEffect>();
+
+        private GHMsgHistoryItem[] _localMsgHistory = null;
 
         private void PaintMainGamePage(object sender, SKPaintSurfaceEventArgs e)
         {
@@ -6817,6 +6819,22 @@ namespace GnollHackX.Pages.Game
             {
                 if (lockTaken)
                     Monitor.Exit(_guiEffectLock);
+            }
+            lockTaken = false;
+
+            //lock (_msgHistoryLock)
+            try
+            {
+                Monitor.TryEnter(_msgHistoryLock, TimeSpan.FromTicks(GHConstants.MessageLockTimeOutTicks), ref lockTaken);
+                if (lockTaken)
+                {
+                    _localMsgHistory = _msgHistory;
+                }
+            }
+            finally
+            {
+                if (lockTaken)
+                    Monitor.Exit(_msgHistoryLock);
             }
             lockTaken = false;
 
@@ -7600,23 +7618,20 @@ namespace GnollHackX.Pages.Game
                     }
 
                     /* Screen Filter */
-                    lock (_screenFilterLock)
+                    foreach (GHScreenFilter ft in _localScreenFilters)
                     {
-                        foreach (GHScreenFilter ft in _screenFilters)
-                        {
-                            SKColor fillcolor = SKColors.White;
-                            fillcolor = ft.GetColor(generalcountervalue);
-                            textPaint.Style = SKPaintStyle.Fill;
-                            textPaint.Color = fillcolor;
-                            SKRect filterrect = new SKRect(0, 0, canvaswidth, canvasheight);
+                        SKColor fillcolor = SKColors.White;
+                        fillcolor = ft.GetColor(generalcountervalue);
+                        textPaint.Style = SKPaintStyle.Fill;
+                        textPaint.Color = fillcolor;
+                        SKRect filterrect = new SKRect(0, 0, canvaswidth, canvasheight);
 #if GNH_MAP_PROFILING && DEBUG
                             StartProfiling(GHProfilingStyle.Rect);
 #endif
-                            canvas.DrawRect(filterrect, textPaint.Paint);
+                        canvas.DrawRect(filterrect, textPaint.Paint);
 #if GNH_MAP_PROFILING && DEBUG
                             StopProfiling(GHProfilingStyle.Rect);
 #endif
-                        }
                     }
 
                     /* Floating Texts */
@@ -8512,12 +8527,7 @@ namespace GnollHackX.Pages.Game
 
                             if (ghWindow.WindowType == GHWinType.Message)
                             {
-                                GHMsgHistoryItem[] msgHistoryPtr;
-                                lock (_msgHistoryLock)
-                                {
-                                    msgHistoryPtr = _msgHistory;
-                                }
-                                if (msgHistoryPtr != null)
+                                if (_localMsgHistory != null)
                                 {
                                     int j = ActualDisplayedMessages - 1, idx;
                                     float lineLengthLimit = 0.85f * canvaswidth;
@@ -8525,9 +8535,9 @@ namespace GnollHackX.Pages.Game
 
                                     bool refreshsmallesttop = false;
                                     GHSubstring printedsubline = new GHSubstring("");
-                                    for (idx = msgHistoryPtr.Length - 1; idx >= 0 && j >= 0; idx--)
+                                    for (idx = _localMsgHistory.Length - 1; idx >= 0 && j >= 0; idx--)
                                     {
-                                        GHMsgHistoryItem msgHistoryItem = msgHistoryPtr[idx];
+                                        GHMsgHistoryItem msgHistoryItem = _localMsgHistory[idx];
                                         //longLine = msgHistoryItem.Text;
                                         SKColor printColor = UIUtils.NHColor2SKColor(
                                             msgHistoryItem.Colors != null && msgHistoryItem.Colors.Length > 0 ? msgHistoryItem.Colors[0] : msgHistoryItem.NHColor < (int)NhColor.CLR_MAX ? msgHistoryItem.NHColor : (int)NhColor.CLR_WHITE, 
@@ -8684,9 +8694,9 @@ namespace GnollHackX.Pages.Game
                                         {
                                             _messageSmallestTop = canvasheight;
                                             j = ActualDisplayedMessages - 1;
-                                            for (idx = msgHistoryPtr.Length - 1; idx >= 0 && j >= 0; idx--)
+                                            for (idx = _localMsgHistory.Length - 1; idx >= 0 && j >= 0; idx--)
                                             {
-                                                GHMsgHistoryItem msgHistoryItem = msgHistoryPtr[idx];
+                                                GHMsgHistoryItem msgHistoryItem = _localMsgHistory[idx];
                                                 if (!msgHistoryItem.MatchFilter)
                                                     continue;
                                                 int lineidx;

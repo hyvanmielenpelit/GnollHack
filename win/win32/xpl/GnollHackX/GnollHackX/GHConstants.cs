@@ -1908,6 +1908,7 @@ namespace GnollHackX
         public const bool DefaultDiceAsRanges = true;
         public const long MapDataLockTimeOutTicks = 100L;
         public const long EffectLockTimeOutTicks = 50L;
+        public const long MessageLockTimeOutTicks = 50L;
     }
 
     [StructLayout(LayoutKind.Sequential)]
