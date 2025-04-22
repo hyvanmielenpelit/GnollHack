@@ -106,7 +106,7 @@ namespace GnollHackX.Pages.Game
         public GHGame CurrentGame { get { lock (_currentGameLock) { return _currentGame; } } set { lock (_currentGameLock) { _currentGame = value; } } }
 
         private MapData[,] _mapData = new MapData[GHConstants.MapCols, GHConstants.MapRows];
-        private readonly object _mapDataLock = new object();
+        //private readonly object _mapDataLock = new object();
         private int _mapCursorX;
         private int _mapCursorY;
 
@@ -6598,6 +6598,7 @@ namespace GnollHackX.Pages.Game
         private ulong _local_u_status_bits = 0;
         private ulong[] _local_u_buff_bits = new ulong[GHConstants.NUM_BUFF_BIT_ULONGS];
 
+        private GHScreenText _localScreenText = null;
         private List<GHFloatingText> _localFloatingTexts = new List<GHFloatingText>();
         private List<GHConditionText> _localConditionTexts = new List<GHConditionText>();
         private List<GHScreenFilter> _localScreenFilters = new List<GHScreenFilter>();
@@ -6666,7 +6667,7 @@ namespace GnollHackX.Pages.Game
             //lock (_weaponStyleObjDataItemLock)
             try
             {
-                Monitor.TryEnter(_weaponStyleObjDataItemLock, TimeSpan.FromTicks(GHConstants.EffectLockTimeOutTicks), ref lockTaken);
+                Monitor.TryEnter(_weaponStyleObjDataItemLock, ref lockTaken);
                 if (lockTaken)
                 {
                     _weaponStyleObjDataItem.CopyTo(_localWeaponStyleObjDataItem, 0);
@@ -6682,7 +6683,7 @@ namespace GnollHackX.Pages.Game
             //lock (StatusFieldLock)
             try
             {
-                Monitor.TryEnter(StatusFieldLock, TimeSpan.FromTicks(GHConstants.MapDataLockTimeOutTicks), ref lockTaken);
+                Monitor.TryEnter(StatusFieldLock, ref lockTaken);
                 if (lockTaken)
                 {
                     StatusFields.CopyTo(_localStatusFields, 0);
@@ -6740,7 +6741,7 @@ namespace GnollHackX.Pages.Game
             //lock (_floatingTextLock)
             try
             {
-                Monitor.TryEnter(_floatingTextLock, TimeSpan.FromTicks(GHConstants.EffectLockTimeOutTicks), ref lockTaken);
+                Monitor.TryEnter(_floatingTextLock, ref lockTaken);
                 if (lockTaken)
                 {
                     _localFloatingTexts.Clear();
@@ -6754,14 +6755,13 @@ namespace GnollHackX.Pages.Game
             }
             lockTaken = false;
 
-            GHScreenText localScreenText = null;
             //lock (_screenTextLock)
             try
             {
-                Monitor.TryEnter(_screenTextLock, TimeSpan.FromTicks(GHConstants.EffectLockTimeOutTicks), ref lockTaken);
+                Monitor.TryEnter(_screenTextLock, ref lockTaken);
                 if (lockTaken)
                 {
-                    localScreenText = _screenText;
+                    _localScreenText = _screenText;
                 }
             }
             finally
@@ -6774,7 +6774,7 @@ namespace GnollHackX.Pages.Game
             //lock (_conditionTextLock)
             try
             {
-                Monitor.TryEnter(_conditionTextLock, TimeSpan.FromTicks(GHConstants.EffectLockTimeOutTicks), ref lockTaken);
+                Monitor.TryEnter(_conditionTextLock, ref lockTaken);
                 if (lockTaken)
                 {
                     _localConditionTexts.Clear();
@@ -6791,7 +6791,7 @@ namespace GnollHackX.Pages.Game
             //lock (_screenFilterLock)
             try
             {
-                Monitor.TryEnter(_screenFilterLock, TimeSpan.FromTicks(GHConstants.EffectLockTimeOutTicks), ref lockTaken);
+                Monitor.TryEnter(_screenFilterLock, ref lockTaken);
                 if (lockTaken)
                 {
                     _localScreenFilters.Clear();
@@ -6808,7 +6808,7 @@ namespace GnollHackX.Pages.Game
             //lock (_guiEffectLock)
             try
             {
-                Monitor.TryEnter(_guiEffectLock, TimeSpan.FromTicks(GHConstants.EffectLockTimeOutTicks), ref lockTaken);
+                Monitor.TryEnter(_guiEffectLock, ref lockTaken);
                 if (lockTaken)
                 {
                     _localGuiEffects.Clear();
@@ -6825,7 +6825,7 @@ namespace GnollHackX.Pages.Game
             //lock (_msgHistoryLock)
             try
             {
-                Monitor.TryEnter(_msgHistoryLock, TimeSpan.FromTicks(GHConstants.MessageLockTimeOutTicks), ref lockTaken);
+                Monitor.TryEnter(_msgHistoryLock, ref lockTaken);
                 if (lockTaken)
                 {
                     _localMsgHistory = _msgHistory;
@@ -6936,7 +6936,7 @@ namespace GnollHackX.Pages.Game
                 {
                     lock (GHApp.Glyph2TileLock)
                     {
-                        lock (_mapDataLock)
+                        //lock (_mapDataLock)
                         {
                             if (GraphicsStyle == GHGraphicsStyle.ASCII || ForceAscii)
                             {
@@ -7678,21 +7678,21 @@ namespace GnollHackX.Pages.Game
                                 StopProfiling(GHProfilingStyle.Bitmap);
 #endif
                         }
-                        if (localScreenText != null)
+                        if (_localScreenText != null)
                         {
                             float targetwidth = 0, yoffsetpct = 0, relativestrokewidth = 0, relativesuperstrokewidth = 0, relativesubstrokewidth = 0;
                             SKColor strokecolor = SKColors.White, superstrokecolor = SKColors.White, substrokecolor = SKColors.White;
                             SKColor fillcolor = SKColors.White;
                             float maxfontsize = 9999.0f;
                             double canvasheightscale = this.Height / canvasView.Height;
-                            fillcolor = localScreenText.GetTextColor(maincountervalue);
-                            textPaint.Typeface = localScreenText.GetTextTypeface(maincountervalue);
-                            targetwidth = Math.Min(canvaswidth, canvasheight * (float)canvasheightscale) * localScreenText.GetMainTextSizeRelativeToScreenWidth(maincountervalue);
-                            maxfontsize = localScreenText.GetMainTextMaxFontSize(maincountervalue);
-                            yoffsetpct = localScreenText.GetYOffsetPctOfScreen(maincountervalue);
-                            relativestrokewidth = localScreenText.GetRelativeTextOutlineWidth(maincountervalue);
-                            strokecolor = localScreenText.GetTextOutlineColor(maincountervalue);
-                            str = localScreenText.GetText(maincountervalue);
+                            fillcolor = _localScreenText.GetTextColor(maincountervalue);
+                            textPaint.Typeface = _localScreenText.GetTextTypeface(maincountervalue);
+                            targetwidth = Math.Min(canvaswidth, canvasheight * (float)canvasheightscale) * _localScreenText.GetMainTextSizeRelativeToScreenWidth(maincountervalue);
+                            maxfontsize = _localScreenText.GetMainTextMaxFontSize(maincountervalue);
+                            yoffsetpct = _localScreenText.GetYOffsetPctOfScreen(maincountervalue);
+                            relativestrokewidth = _localScreenText.GetRelativeTextOutlineWidth(maincountervalue);
+                            strokecolor = _localScreenText.GetTextOutlineColor(maincountervalue);
+                            str = _localScreenText.GetText(maincountervalue);
                             bool useFontSizeStr = str == null || str.Length < 5;
                             textPaint.TextSize = usedFontSize;
                             textPaint.MeasureText(useFontSizeStr ? _fontSizeString : str, ref textBounds);
@@ -7744,14 +7744,14 @@ namespace GnollHackX.Pages.Game
                             float maintextspacing = textPaint.FontSpacing;
                             float maintexty = ty;
 
-                            if (localScreenText.HasSuperText)
+                            if (_localScreenText.HasSuperText)
                             {
-                                fillcolor = localScreenText.GetSuperTextColor(maincountervalue);
-                                textPaint.Typeface = localScreenText.GetSuperTextTypeface(maincountervalue);
-                                textPaint.TextSize = maintextsize * localScreenText.GetSuperTextSizeRelativeToMainText(maincountervalue);
-                                relativesuperstrokewidth = localScreenText.GetRelativeSuperTextOutlineWidth(maincountervalue);
-                                superstrokecolor = localScreenText.GetSuperTextOutlineColor(maincountervalue);
-                                str = localScreenText.GetSuperText(maincountervalue);
+                                fillcolor = _localScreenText.GetSuperTextColor(maincountervalue);
+                                textPaint.Typeface = _localScreenText.GetSuperTextTypeface(maincountervalue);
+                                textPaint.TextSize = maintextsize * _localScreenText.GetSuperTextSizeRelativeToMainText(maincountervalue);
+                                relativesuperstrokewidth = _localScreenText.GetRelativeSuperTextOutlineWidth(maincountervalue);
+                                superstrokecolor = _localScreenText.GetSuperTextOutlineColor(maincountervalue);
+                                str = _localScreenText.GetSuperText(maincountervalue);
                                 textPaint.MeasureText(str, ref textBounds);
                                 tx = (canvaswidth / 2 - textBounds.Width / 2);
                                 ty = maintexty + maintextascent - textPaint.FontMetrics.Descent;
@@ -7788,14 +7788,14 @@ namespace GnollHackX.Pages.Game
 #endif
                             }
 
-                            if (localScreenText.HasSubText)
+                            if (_localScreenText.HasSubText)
                             {
-                                fillcolor = localScreenText.GetSubTextColor(maincountervalue);
-                                textPaint.Typeface = localScreenText.GetSubTextTypeface(maincountervalue);
-                                textPaint.TextSize = maintextsize * localScreenText.GetSubTextSizeRelativeToMainText(maincountervalue);
-                                relativesubstrokewidth = localScreenText.GetRelativeSubTextOutlineWidth(maincountervalue);
-                                substrokecolor = localScreenText.GetSubTextOutlineColor(maincountervalue);
-                                str = localScreenText.GetSubText(maincountervalue);
+                                fillcolor = _localScreenText.GetSubTextColor(maincountervalue);
+                                textPaint.Typeface = _localScreenText.GetSubTextTypeface(maincountervalue);
+                                textPaint.TextSize = maintextsize * _localScreenText.GetSubTextSizeRelativeToMainText(maincountervalue);
+                                relativesubstrokewidth = _localScreenText.GetRelativeSubTextOutlineWidth(maincountervalue);
+                                substrokecolor = _localScreenText.GetSubTextOutlineColor(maincountervalue);
+                                str = _localScreenText.GetSubText(maincountervalue);
                                 textPaint.MeasureText(str, ref textBounds);
                                 tx = (canvaswidth / 2 - textBounds.Width / 2);
                                 ty = maintexty + maintextdescent - textPaint.FontMetrics.Ascent;
