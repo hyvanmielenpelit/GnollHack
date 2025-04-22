@@ -763,7 +763,6 @@ namespace GnollHackX
         private MapData[,] _mapDataBuffer1 = new MapData[GHConstants.MapCols, GHConstants.MapRows];
         private MapData[,] _mapDataBuffer2 = new MapData[GHConstants.MapCols, GHConstants.MapRows];
         private readonly object _mapDataBufferLock = new object();
-        private readonly object _mapDataCursorLock = new object();
         private int _mapCursorX;
         private int _mapCursorY;
         private game_cursor_types _cursorType;
@@ -798,7 +797,7 @@ namespace GnollHackX
                 gHWindow.CursY = y;
                 if (gHWindow.WindowType == GHWinType.Map)
                 {
-                    lock (_mapDataCursorLock)
+                    lock (_mapDataBufferLock)
                     {
                         _mapCursorX = x;
                         _mapCursorY = y;
@@ -827,14 +826,15 @@ namespace GnollHackX
             SetMapSymbol(x, y, glyph, bkglyph, symbol, ocolor, special, ref layers);
         }
 
-        public bool GetMapDataBuffer(out MapData[,] mapBuffer, out ObjectData[,] objectBuffer, out ObjectDataItem uBall, out ObjectDataItem uChain, out int ux, out int uy, out ulong u_condition_bits, out ulong u_status_bits, ref ulong[] u_buff_bits)
+        public bool GetMapDataBuffer(out MapData[,] mapBuffer, out ObjectData[,] objectBuffer, out ObjectDataItem uBall, out ObjectDataItem uChain, out int ux, out int uy, out ulong u_condition_bits, out ulong u_status_bits, ref ulong[] u_buff_bits,
+            out int cursx, out int cursy, out game_cursor_types cursorType, out bool force_paint_at_cursor, out bool show_cursor_on_u)
         {
             //long timeStamp = Stopwatch.GetTimestamp();
             bool lockTaken = false;
             //lock(_mapDataBufferLock)
             try
             {
-                Monitor.TryEnter(_mapDataBufferLock, TimeSpan.FromTicks(GHConstants.MapDataLockTimeOutTicks), ref lockTaken);
+                Monitor.TryEnter(_mapDataBufferLock, ref lockTaken); //TimeSpan.FromTicks(GHConstants.MapDataLockTimeOutTicks), 
                 if (lockTaken)
                 {
                     //TimeSpan ts = Stopwatch.GetElapsedTime(timeStamp);
@@ -851,6 +851,11 @@ namespace GnollHackX
                         u_status_bits = _u_status_bits;
                         for (int i = 0; i < GHConstants.NUM_BUFF_BIT_ULONGS; i++)
                             u_buff_bits[i] = _u_buff_bits[i];
+                        cursx = _mapCursorX;
+                        cursy = _mapCursorY;
+                        cursorType = _cursorType;
+                        force_paint_at_cursor = _force_paint_at_cursor;
+                        show_cursor_on_u = _show_cursor_on_u;
 
                         _mapDataCurrentIs2 = !_mapDataCurrentIs2;
                         _mapDataCurrent = _mapDataCurrentIs2 ? _mapDataBuffer2 : _mapDataBuffer1;
@@ -868,6 +873,11 @@ namespace GnollHackX
                         uy = 0;
                         u_condition_bits = 0;
                         u_status_bits = 0;
+                        cursx = 0;
+                        cursy = 0;
+                        cursorType = game_cursor_types.CURSOR_STYLE_GENERIC_CURSOR;
+                        force_paint_at_cursor = false;
+                        show_cursor_on_u = false;
                         return false;
                     }
                 }
@@ -881,6 +891,11 @@ namespace GnollHackX
                     uy = 0;
                     u_condition_bits = 0;
                     u_status_bits = 0;
+                    cursx = 0;
+                    cursy = 0;
+                    cursorType = game_cursor_types.CURSOR_STYLE_GENERIC_CURSOR;
+                    force_paint_at_cursor = false;
+                    show_cursor_on_u = false;
                     return false;
                 }
             }
@@ -890,70 +905,6 @@ namespace GnollHackX
                     Monitor.Exit(_mapDataBufferLock);
             }
         }
-
-        public bool GetMapDataCursorXY(out int x, out int y, out game_cursor_types cursorType, out bool force_paint_at_cursor, out bool show_cursor_on_u)
-        {
-            bool ret = false;
-            bool lockTaken = false;
-#if GNH_MAUI
-            //long timeStamp = Stopwatch.GetTimestamp();
-#endif
-            //lock (_mapDataCursorLock)
-            try
-            {
-                Monitor.TryEnter(_mapDataCursorLock, TimeSpan.FromTicks(GHConstants.MapDataLockTimeOutTicks), ref lockTaken);
-                if (lockTaken)
-                {
-#if GNH_MAUI
-                    //TimeSpan ts = Stopwatch.GetElapsedTime(timeStamp);
-                    //GHApp.AddLockBlockData(ts);
-#endif
-                    x = _mapCursorX;
-                    y = _mapCursorY;
-                    cursorType = _cursorType;
-                    force_paint_at_cursor = _force_paint_at_cursor;
-                    show_cursor_on_u = _show_cursor_on_u;
-                    ret = true;
-                }
-                else
-                {
-                    x = 0;
-                    y = 0;
-                    cursorType = game_cursor_types.CURSOR_STYLE_GENERIC_CURSOR;
-                    force_paint_at_cursor = false;
-                    show_cursor_on_u = false;
-                    ret = false;
-                }
-            }
-            catch
-            {
-                x = 0;
-                y = 0;
-                cursorType = game_cursor_types.CURSOR_STYLE_GENERIC_CURSOR;
-                force_paint_at_cursor = false;
-                show_cursor_on_u = false;
-                ret = false;
-            }
-            finally
-            {
-                if (lockTaken)
-                    Monitor.Exit(_mapDataCursorLock);
-            }
-            return ret;
-        }
-
-        //public void GetUData(out int ux, out int uy, out ulong u_condition_bits, out ulong u_status_bits, ref ulong[] u_buff_bits)
-        //{
-        //    lock (_uLock)
-        //    {
-        //        ux = _ux;
-        //        uy = _uy;
-        //        u_condition_bits = _u_condition_bits;
-        //        u_status_bits = _u_status_bits;
-        //        for (int i = 0; i < GHConstants.NUM_BUFF_BIT_ULONGS; i++)
-        //            u_buff_bits[i] = _u_buff_bits[i];
-        //    }
-        //}
 
         private void SetMapSymbol(int x, int y, int glyph, int bkglyph, int c, int color, uint special, ref LayerInfo layers)
         {
@@ -2527,7 +2478,7 @@ namespace GnollHackX
 
         public void UpdateCursor(int style, int force_paint, int show_on_u)
         {
-            lock (_mapDataCursorLock)
+            lock (_mapDataBufferLock)
             {
                 _cursorType = (game_cursor_types)style;
                 _force_paint_at_cursor = (force_paint != 0);

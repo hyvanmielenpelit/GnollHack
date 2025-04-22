@@ -6714,19 +6714,11 @@ namespace GnollHackX.Pages.Game
             int mapCursorX, mapCursorY;
             game_cursor_types cursorType;
             bool force_paint_at_cursor,show_cursor_on_u;
-            //curGame.GetUData(out u_x, out u_y, out condition_bits, out status_bits, ref _local_u_buff_bits);
-            if (curGame.GetMapDataCursorXY(out mapCursorX, out mapCursorY, out cursorType, out force_paint_at_cursor, out show_cursor_on_u))
-            {
-                _mapCursorX = mapCursorX;
-                _mapCursorY = mapCursorY;
-                _cursorType = cursorType;
-                _force_paint_at_cursor = force_paint_at_cursor;
-                _show_cursor_on_u = show_cursor_on_u;
-            }
             MapData[,] mapBuffer;
             ObjectData[,] objectBuffer;
             ObjectDataItem uBall, uChain;
-            if (curGame.GetMapDataBuffer(out mapBuffer, out objectBuffer, out uBall, out uChain, out u_x, out u_y, out condition_bits, out status_bits, ref _local_u_buff_bits))
+            if (curGame.GetMapDataBuffer(out mapBuffer, out objectBuffer, out uBall, out uChain, out u_x, out u_y, out condition_bits, out status_bits, ref _local_u_buff_bits,
+                out mapCursorX, out mapCursorY, out cursorType, out force_paint_at_cursor, out show_cursor_on_u))
             {
                 _mapData = mapBuffer;
                 _objectData = objectBuffer;
@@ -6736,6 +6728,11 @@ namespace GnollHackX.Pages.Game
                 _local_u_status_bits = status_bits;
                 _local_ux = u_x;
                 _local_uy = u_y;
+                _mapCursorX = mapCursorX;
+                _mapCursorY = mapCursorY;
+                _cursorType = cursorType;
+                _force_paint_at_cursor = force_paint_at_cursor;
+                _show_cursor_on_u = show_cursor_on_u;
                 lock (_uLock)
                 {
                     _ux = u_x;
