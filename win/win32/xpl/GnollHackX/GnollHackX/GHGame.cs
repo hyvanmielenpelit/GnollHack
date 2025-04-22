@@ -893,11 +893,15 @@ namespace GnollHackX
 
         public void GetMapDataCursorXY(out int x, out int y, out game_cursor_types cursorType, out bool force_paint_at_cursor, out bool show_cursor_on_u)
         {
-            long timeStamp = Stopwatch.GetTimestamp();
+#if GNH_MAUI
+            //long timeStamp = Stopwatch.GetTimestamp();
+#endif
             lock (_mapDataCursorLock)
             {
-                TimeSpan ts = Stopwatch.GetElapsedTime(timeStamp);
-                GHApp.AddLockBlockData(ts);
+#if GNH_MAUI
+                //TimeSpan ts = Stopwatch.GetElapsedTime(timeStamp);
+                //GHApp.AddLockBlockData(ts);
+#endif
                 x = _mapCursorX;
                 y = _mapCursorY;
                 cursorType = _cursorType;
