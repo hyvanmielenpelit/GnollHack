@@ -97,6 +97,7 @@ namespace GnollHackX
         AddPetData,
         UpdateGHWindow,
         UpdateGHWindowVisibility,
+        KeyboardFocus,
     }
 
     public struct AddContextMenuData

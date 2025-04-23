@@ -3024,6 +3024,9 @@ namespace GnollHackX
                     break;
                 case (int)gui_command_types.GUI_CMD_RESTORE_ZOOM:
                     break;
+                case (int)gui_command_types.GUI_CMD_KEYBOARD_FOCUS:
+                    RequestQueue.Enqueue(new GHRequest(this, GHRequestType.KeyboardFocus));
+                    break;
                 default:
                     break;
             }

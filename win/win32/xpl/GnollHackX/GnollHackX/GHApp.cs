@@ -110,6 +110,7 @@ namespace GnollHackX
         public static Microsoft.UI.Xaml.Window WindowsXamlWindow = null;
         public static Microsoft.UI.Input.InputCursor WindowsCursor = null;
         public static Microsoft.UI.Input.InputCursor WindowsInfoCursor = null;
+        public static bool WindowFocused = false;
 #endif
         private static Assembly _assembly = null;
 

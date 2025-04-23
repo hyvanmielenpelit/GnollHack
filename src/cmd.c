@@ -7715,7 +7715,9 @@ register char *cmd;
     if (program_state.done_hup)
         end_of_input();
 #endif
-    if (firsttime) {
+    if (firsttime) 
+    {
+        issue_simple_gui_command(GUI_CMD_KEYBOARD_FOCUS);
         context.nopick = 0;
         cmd = parse();
     }

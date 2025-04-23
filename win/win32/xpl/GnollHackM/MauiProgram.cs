@@ -32,6 +32,7 @@ using Sentry.Profiling;
 using Microsoft.UI.Windowing;
 using System.Runtime.InteropServices;
 using System.Diagnostics;
+using Microsoft.UI.Xaml;
 #endif
 #endif
 
@@ -282,6 +283,23 @@ public static class MauiProgram
                             };
                         }
                     });
+                    windowsLifecycleBuilder.OnActivated( (window, args) =>
+                    {
+                        // For WinUI, use WindowActivationState
+                        if (args.WindowActivationState == WindowActivationState.CodeActivated ||
+                            args.WindowActivationState == WindowActivationState.PointerActivated)
+                        {
+                            // Focused
+                            GHApp.WindowFocused = true;
+                            Debug.WriteLine("Window is focused.");
+                        }
+                        else
+                        {
+                            // Not focused
+                            GHApp.WindowFocused = false;
+                            Debug.WriteLine("Window is not focused.");
+                        }
+                    });
                 });
             })
 #endif
@@ -426,6 +444,14 @@ public class KeyboardHook
 
     private static IntPtr HookCallback(int nCode, IntPtr wParam, IntPtr lParam)
     {
+        //Wrong window
+        if (!GHApp.WindowFocused)
+            return CallNextHookEx(_hookID, nCode, wParam, lParam);
+
+        //No game on to send key strokes to
+        if (GHApp.CurrentGHGame == null)
+            return CallNextHookEx(_hookID, nCode, wParam, lParam);
+
         Debug.WriteLine("HookCallback: " + nCode + ", " + wParam + ", " + lParam);
         if (nCode >= 0)
         {

@@ -2972,9 +2972,18 @@ namespace GnollHackX.Pages.Game
                         case GHRequestType.UpdateGHWindowVisibility:
                             UpdateGHWindowVisibility(req.RequestInt, req.RequestBool);
                             break;
+                        case GHRequestType.KeyboardFocus:
+                            DoFocusKeyboard();
+                            break;
                     }
                 }
             }
+        }
+
+
+        private void DoFocusKeyboard()
+        {
+            _mainPage?.DoKeyboardFocus();
         }
 
         private readonly object _localWindowLock = new object();
