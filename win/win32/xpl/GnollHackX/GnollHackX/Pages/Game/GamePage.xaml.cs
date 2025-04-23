@@ -3480,6 +3480,7 @@ namespace GnollHackX.Pages.Game
                     break;
             }
             YnGrid.IsVisible = true;
+            GHApp.DoKeyboardFocus();
         }
 
         private string GetYnImgSourcePath(char ch, string desc)
@@ -3533,6 +3534,7 @@ namespace GnollHackX.Pages.Game
         private void HideYnResponses()
         {
             YnGrid.IsVisible = false;
+            GHApp.DoKeyboardFocus();
         }
         private void DoShowDirections()
         {
@@ -3733,6 +3735,7 @@ namespace GnollHackX.Pages.Game
             GetLineCaption.Text = "";
             GetLineEntryText.IsEnabled = false;
             GetLineEntryText.Unfocus();
+            GHApp.DoKeyboardFocus();
         }
 
         private void EnterGetLineText(string enteredLine)
@@ -4260,6 +4263,7 @@ namespace GnollHackX.Pages.Game
                 {
                     TextGrid.IsVisible = false;
                 }
+                GHApp.DoKeyboardFocus();
             }
         }
 
@@ -4281,6 +4285,7 @@ namespace GnollHackX.Pages.Game
                 MenuStack.ForceLayout();
 #endif
                 await MenuStack.FadeTo(1.0, 256);
+                GHApp.DoKeyboardFocus();
             });
         }
 
@@ -4317,6 +4322,7 @@ namespace GnollHackX.Pages.Game
                     RefreshScreen = true;
                 }
                 StartMainCanvasAnimation();
+                GHApp.DoKeyboardFocus();
             }
             else if (GetLineGrid.IsVisible)
             {
@@ -4353,6 +4359,7 @@ namespace GnollHackX.Pages.Game
                     RefreshScreen = true;
                 }
                 StartMainCanvasAnimation();
+                GHApp.DoKeyboardFocus();
             }
             else if (MenuGrid.IsVisible)
             {
@@ -4373,6 +4380,7 @@ namespace GnollHackX.Pages.Game
                     RefreshScreen = true;
                 }
                 StartMainCanvasAnimation();
+                GHApp.DoKeyboardFocus();
             }
             else
             {
@@ -14974,6 +14982,7 @@ namespace GnollHackX.Pages.Game
             GHGame curGame = CurrentGame;
             curGame.RequestQueue.Enqueue(new GHRequest(curGame, GHRequestType.HideYnResponses));
             GenericButton_Clicked(sender, e, resp);
+            GHApp.DoKeyboardFocus();
         }
 
         private void ESCButton_Clicked(object sender, EventArgs e)
@@ -14981,6 +14990,7 @@ namespace GnollHackX.Pages.Game
             GHApp.PlayButtonClickedSound();
             TouchDictionary.Clear();
             GenericButton_Clicked(sender, e, GHConstants.CancelChar);
+            GHApp.DoKeyboardFocus();
         }
 
         public void ToggleAutoCenterMode()
@@ -15133,6 +15143,7 @@ namespace GnollHackX.Pages.Game
         private void PopupOkButton_Clicked(object sender, EventArgs e)
         {
             GenericButton_Clicked(sender, e, GHConstants.CancelChar);
+            GHApp.DoKeyboardFocus();
         }
 
         private void HidePopupGrid()
@@ -16767,6 +16778,7 @@ namespace GnollHackX.Pages.Game
                     RefreshScreen = true;
                 }
                 StartMainCanvasAnimation();
+                GHApp.DoKeyboardFocus();
             });
         }
 
@@ -16834,6 +16846,7 @@ namespace GnollHackX.Pages.Game
                     RefreshScreen = true;
                 }
                 StartMainCanvasAnimation();
+                GHApp.DoKeyboardFocus();
             });
         }
 
@@ -17903,6 +17916,7 @@ namespace GnollHackX.Pages.Game
                 RefreshScreen = true;
             }
             StartMainCanvasAnimation();
+            GHApp.DoKeyboardFocus();
         }
 
         private void CommandCanvas_MouseWheel(object sender, GHMouseWheelEventArgs e)
