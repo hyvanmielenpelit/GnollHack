@@ -1255,9 +1255,9 @@ namespace GnollHackX
                 return; /* No clip mode ignores cliparound commands */
 
             //This may be slightly slower to register, but likely more often in UI thread, so should cause fewer lock conflicts
-            RequestQueue.Enqueue(new GHRequest(this, GHRequestType.ClipAround, x, y, force == 1));
+            //RequestQueue.Enqueue(new GHRequest(this, GHRequestType.ClipAround, x, y, force == 1));
 
-            //_gamePage.SetTargetClip(x, y, force == 1);
+            _gamePage.SetTargetClip(x, y, force == 1);
         }
 
         public void ClientCallback_RawPrint(string str)

@@ -6547,6 +6547,28 @@ namespace GnollHackX.Pages.Game
             return ntile;
         }
 
+        private void GetMapOffsetsLocal(float canvaswidth, float canvasheight, float mapwidth, float mapheight, float width, float height, out float offsetX, out float offsetY, out float usedOffsetX, out float usedOffsetY)
+        {
+            offsetX = (canvaswidth - mapwidth) / 2;
+            offsetY = (canvasheight - mapheight) / 2;
+            usedOffsetX = _localMapOffsetX;
+            usedOffsetY = _localMapOffsetY;
+
+            if (ZoomMiniMode)
+            {
+                usedOffsetX = _localMapMiniOffsetX;
+                usedOffsetY = _localMapMiniOffsetY;
+            }
+            else
+            {
+                if (_localClipX > 0 && (mapwidth > canvaswidth || mapheight > canvasheight))
+                {
+                    offsetX -= (_localClipX - (GHConstants.MapCols - 1) / 2) * width;
+                    offsetY -= (_localClipY - GHConstants.MapRows / 2) * height;
+                }
+            }
+        }
+
         private void GetMapOffsets(float canvaswidth, float canvasheight, float mapwidth, float mapheight, float width, float height, out float offsetX, out float offsetY, out float usedOffsetX, out float usedOffsetY)
         {
             offsetX = (canvaswidth - mapwidth) / 2;
@@ -6556,11 +6578,8 @@ namespace GnollHackX.Pages.Game
                 usedOffsetX = _mapOffsetX;
                 usedOffsetY = _mapOffsetY;
             }
-
             if (ZoomMiniMode)
             {
-                //offsetX -= usedOffsetX;
-                //offsetY -= usedOffsetY;
                 lock (_mapOffsetLock)
                 {
                     usedOffsetX = _mapMiniOffsetX;
@@ -6579,7 +6598,6 @@ namespace GnollHackX.Pages.Game
                 }
             }
         }
-
 
         //private SKBitmap _enlargementBitmap = null;
 
@@ -6605,6 +6623,12 @@ namespace GnollHackX.Pages.Game
         private List<GHGUIEffect> _localGuiEffects = new List<GHGUIEffect>();
 
         private GHMsgHistoryItem[] _localMsgHistory = null;
+        private int _localClipX = 0;
+        private int _localClipY = 0;
+        public float _localMapOffsetX = 0;
+        public float _localMapOffsetY = 0;
+        public float _localMapMiniOffsetX = 0;
+        public float _localMapMiniOffsetY = 0;
 
         private void PaintMainGamePage(object sender, SKPaintSurfaceEventArgs e)
         {
@@ -6682,6 +6706,40 @@ namespace GnollHackX.Pages.Game
             {
                 maincountervalue = _mainCounterValue;
             }
+
+            try
+            {
+                Monitor.TryEnter(_clipLock, ref lockTaken);
+                if (lockTaken)
+                {
+                    _localClipX = _clipX;
+                    _localClipY = _clipY;
+                }
+            }
+            finally
+            {
+                if (lockTaken)
+                    Monitor.Exit(_clipLock);
+            }
+            lockTaken = false;
+
+            try
+            {
+                Monitor.TryEnter(_mapOffsetLock, ref lockTaken);
+                if (lockTaken)
+                {
+                    _localMapOffsetX = _mapOffsetX;
+                    _localMapOffsetY = _mapOffsetY;
+                    _localMapMiniOffsetX = _mapMiniOffsetX;
+                    _localMapMiniOffsetY = _mapMiniOffsetY;
+                }
+            }
+            finally
+            {
+                if (lockTaken)
+                    Monitor.Exit(_mapOffsetLock);
+            }
+            lockTaken = false;
 
             //lock (_weaponStyleObjDataItemLock)
             try
@@ -6929,7 +6987,7 @@ namespace GnollHackX.Pages.Game
                 float offsetY;
                 float usedOffsetX;
                 float usedOffsetY;
-                GetMapOffsets(canvaswidth, canvasheight, mapwidth, mapheight, width, height, out offsetX, out offsetY, out usedOffsetX, out usedOffsetY);
+                GetMapOffsetsLocal(canvaswidth, canvasheight, mapwidth, mapheight, width, height, out offsetX, out offsetY, out usedOffsetX, out usedOffsetY);
 
                 float tx = 0, ty = 0;
                 float startx = 0, starty = 0;
@@ -15019,7 +15077,7 @@ namespace GnollHackX.Pages.Game
             if (ZoomAlternateMode)
             {
                 ToggleZoomAlternateButton.ImgSourcePath = "resource://" + GHApp.AppResourceName + ".Assets.UI.stone-altmap-on.png";
-                lock(_mapOffsetLock)
+                lock (_mapOffsetLock)
                 {
                     if(MapFontSize > 0)
                     {
