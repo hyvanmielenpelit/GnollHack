@@ -475,11 +475,6 @@ namespace GnollHackX.Pages.Game
                 }
             }
         }
-        public bool LighterDarkeningUpdated
-        {
-            get { lock (_lighterDarkeningLock) { return _lighterDarkeningUpdated; } }
-            set { lock (_lighterDarkeningLock) { _lighterDarkeningUpdated = value; } }
-        }
 
         private readonly object _drawWallEndsLock = new object();
         private bool _drawWallEnds = false;
@@ -6658,7 +6653,16 @@ namespace GnollHackX.Pages.Game
             float messageTextScale = textscale * messageTextMultiplier;
             bool lockTaken = false;
 
-            if (LighterDarkeningUpdated)
+            bool clearDarkeningCaches = false;
+            lock(_lighterDarkeningLock)
+            {
+                if (_lighterDarkeningUpdated)
+                {
+                    clearDarkeningCaches = true;
+                    _lighterDarkeningUpdated = false;
+                }
+            }
+            if(clearDarkeningCaches)
             {
                 foreach (SKImage bmp in _darkenedBitmaps.Values)
                     bmp.Dispose();
@@ -6666,7 +6670,6 @@ namespace GnollHackX.Pages.Game
                 foreach (SKImage bmp in _darkenedAutodrawBitmaps.Values)
                     bmp.Dispose();
                 _darkenedAutodrawBitmaps.Clear();
-                LighterDarkeningUpdated = false;
             }
 
             long generalcountervalue, maincountervalue;
