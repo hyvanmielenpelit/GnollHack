@@ -1485,7 +1485,7 @@ namespace GnollHackX
             Microsoft.UI.Xaml.Controls.Button fbtn = KeyboardFocusButton.Handler?.PlatformView as Microsoft.UI.Xaml.Controls.Button;
             if (fbtn != null)
             {
-                fbtn.Focus(FocusState.Keyboard);
+                fbtn.Focus(FocusState.Programmatic);
             }
 #endif
         }
