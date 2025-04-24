@@ -853,7 +853,7 @@ namespace GnollHackX
             get
             {
 #if GNH_MAUI
-                return IsPackaged;
+                return IsPackaged && !IsWindows;
 #else
                 return !HasUnstableGPU();
 #endif
@@ -5192,6 +5192,11 @@ namespace GnollHackX
             else
                 platid = "";
 
+            if (IsPlaytest)
+                platid += "t";
+            else if (IsSteam)
+                platid += "s";
+
             message = message + " [" + portver + platid + "]";
             return message;
         }
@@ -5207,6 +5212,10 @@ namespace GnollHackX
                 manufacturer = manufacturer.Substring(0, 1).ToUpper() + manufacturer.Substring(1);
             string device_model = manufacturer + " " + DeviceInfo.Model;
             string platform_with_version = DeviceInfo.Platform + " " + DeviceInfo.VersionString;
+            if (IsPlaytest)
+                platform_with_version += " Playtest";
+            else if (IsSteam)
+                platform_with_version += " Steam";
 
             ulong TotalMemInBytes = TotalMemory;
             ulong TotalMemInMB = (TotalMemInBytes / 1024) / 1024;
