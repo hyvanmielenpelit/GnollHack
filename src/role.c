@@ -371,7 +371,7 @@ const struct Role roles[] = {
       ART_MAGIC_MIRROR_OF_MERLIN,
       MH_HUMAN | MH_DWARF | ROLE_MALE | ROLE_FEMALE | ROLE_LAWFUL,
       /* Str Int Wis Dex Con Cha */
-      { 15,  7, 12,  8, 14, 17 },
+      { 15,  7, 13,  8, 14, 16 },
       { 30, 5, 15, 20, 25, 5 },
       /* Init   Lower  Higher */
       { 15, 0, 1, 11, 3, 1 }, /* Hit points */
