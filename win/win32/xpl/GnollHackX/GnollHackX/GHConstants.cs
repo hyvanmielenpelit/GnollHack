@@ -41,7 +41,7 @@ namespace GnollHackX
         CLR_ALT_BLUE,
         CLR_ALT_MAGENTA,
         CLR_ALT_CYAN,
-        CLR_ALT_GRAY,
+        CLR_ALT_GRAYED_OUT,
         NO_ALT_COLOR,
         CLR_ALT_ORANGE,
         CLR_ALT_BRIGHT_GREEN,

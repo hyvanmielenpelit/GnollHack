@@ -32,6 +32,7 @@
 #define CLR_MAX 16
 
 #define CLR_ALT_GOLD 3 /* Gold instead of brown */
+#define CLR_ALT_GRAY 7 /* Grayed-out gray instead of normal font color */
 
 /* The "half-way" point for tty based color systems.  This is used in */
 /* the tty color setup code.  (IMHO, it should be removed - dean).    */

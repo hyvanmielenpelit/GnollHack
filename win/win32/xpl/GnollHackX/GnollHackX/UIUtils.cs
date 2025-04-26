@@ -20,8 +20,10 @@ namespace GnollHackX
 {
     public static class UIUtils
     {
+        private static readonly SKColor GHGray = new SKColor(128, 128, 128);
         private static readonly SKColor GHDarkGray = new SKColor(96, 96, 96);
         private static readonly SKColor GHVeryDarkGray = new SKColor(64, 64, 64);
+        private static readonly SKColor GHVeryVeryDarkGray = new SKColor(32, 32, 32);
         private static readonly SKColor GHTitleGold = new SKColor(0xD4, 0xA0, 0x17);
         private static readonly SKColor GHRed = new SKColor(255, 32, 32);
         private static readonly SKColor GHDarkRed = new SKColor(224, 0, 0);
@@ -110,10 +112,20 @@ namespace GnollHackX
                         res = SKColors.Cyan;
                     break;
                 case NhColor.CLR_GRAY:
-                    if (isselected)
-                        res = revertblackwhite ? GHVeryDarkGray : SKColors.Gray;
+                    if (usealtcolors)
+                    {
+                        if (isselected)
+                            res = revertblackwhite ? GHDarkGray : GHVeryDarkGray;
+                        else
+                            res = revertblackwhite ? GHGray : GHDarkGray;
+                    }
                     else
-                        res = revertblackwhite ? GHDarkGray : SKColors.LightGray;
+                    {
+                        if (isselected)
+                            res = revertblackwhite ? GHVeryDarkGray : SKColors.Gray;
+                        else
+                            res = revertblackwhite ? GHDarkGray : SKColors.LightGray;
+                    }
                     break;
                 case NhColor.NO_COLOR:
                     break;

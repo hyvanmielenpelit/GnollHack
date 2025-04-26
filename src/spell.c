@@ -4557,11 +4557,18 @@ int splaction;
     boolean inactive = FALSE;
     struct extended_menu_info info = zeroextendedmenuinfo;
     int mcolor = NO_COLOR;
+    int mattr = ATR_NONE;
     info.menu_flags |= MENU_FLAGS_USE_SPECIAL_SYMBOLS;
-    if (spellcooldownleft(splnum) > 0 || spellknow(splnum) <= 0)
+    if (spellknow(splnum) <= 0)
     {
         mcolor = CLR_GRAY;
+        mattr = ATR_ALT_COLORS;
         info.menu_flags |= MENU_FLAGS_USE_COLOR_FOR_SUFFIXES;
+        inactive = TRUE;
+    }
+    else if (spellcooldownleft(splnum) > 0)
+    {
+        mcolor = CLR_MAGENTA;
         inactive = TRUE;
     }
     if (!inactive)
@@ -4583,7 +4590,7 @@ int splaction;
 
     any.a_int = inactive ? 0 : splnum + 1; /* must be non-zero */
 
-    add_extended_menu(tmpwin, glyph, &any, 0, 0, ATR_NONE, mcolor, buf,
+    add_extended_menu(tmpwin, glyph, &any, 0, 0, mattr, mcolor, buf,
         (splnum == splaction) ? MENU_SELECTED : MENU_UNSELECTED, info);
 
 }
@@ -4800,10 +4807,17 @@ boolean usehotkey;
 
     boolean inactive = FALSE;
     int mcolor = NO_COLOR;
-    if ((spellcooldownleft(splnum) > 0 && splaction != SPELLMENU_PREPARE) || spellknow(splnum) <= 0)
+    int mattr = ATR_NONE;
+    if (spellknow(splnum) <= 0)
     {
         inactive = TRUE;
         mcolor = CLR_GRAY;
+        mattr = ATR_ALT_COLORS;
+    }
+    else if (spellcooldownleft(splnum) > 0 && splaction != SPELLMENU_PREPARE)
+    {
+        inactive = TRUE;
+        mcolor = CLR_MAGENTA;
     }
     if (!inactive && splaction == SPELLMENU_CAST)
     {
@@ -4821,7 +4835,7 @@ boolean usehotkey;
         }
     }
 
-    add_menu(tmpwin, NO_GLYPH, &any, letter, 0, ATR_NONE, mcolor, buf,
+    add_menu(tmpwin, NO_GLYPH, &any, letter, 0, mattr, mcolor, buf,
         (splnum == splaction) ? MENU_SELECTED : MENU_UNSELECTED);
 
     //Strcat(shortenedname, "=black");
