@@ -2275,7 +2275,7 @@ dochat(VOID_ARGS)
 struct available_chat_item
 {
     int charnum;
-    char name[PL_PSIZ + 40];
+    char name[PL_PSIZ + 64];
     boolean stops_dialogue;
     int (*function_ptr)();
 };
