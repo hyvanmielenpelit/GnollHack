@@ -18475,7 +18475,7 @@ namespace GnollHackX.Pages.Game
                 {
                     introDisplayed = true;
                     answer = await DisplayAlert("Crash Detected", intro + "Do you want to switch sending diagnostic data on? This will report any panic to the development team and send basic data on your the state of your device upon each such panic." 
-                        + (GHApp.IsiOS ? Environment.NewLine + Environment.NewLine + "To enable us to get information on crashes, please make sure that Share With App Developers is switched on in the Settings app under Privacy -> Analytics." : "") 
+                        //+ (GHApp.IsiOS ? Environment.NewLine + Environment.NewLine + "Further, to enable us to get information on crashes, please make sure that Share With App Developers is switched on in the Settings app under Privacy & Security > Analytics & Improvements." : "") 
                         + (UseMainGLCanvas ? Environment.NewLine + Environment.NewLine + "If the problem persists, try switching GPU Acceleration off in Settings." : ""), "Yes", "No");
                     if (answer)
                     {

@@ -3004,19 +3004,24 @@ namespace GnollHackX
                     _gamePage.SetQuickCastSpell(cmd_param, cmd_param2, cmd_str);
                     break;
                 case (int)gui_command_types.GUI_CMD_ZOOM_NORMAL:
-                    RequestQueue.Enqueue(new GHRequest(this, GHRequestType.ZoomNormal));
+                    if (!PlayingReplay)
+                        RequestQueue.Enqueue(new GHRequest(this, GHRequestType.ZoomNormal));
                     break;
                 case (int)gui_command_types.GUI_CMD_ZOOM_IN:
-                    RequestQueue.Enqueue(new GHRequest(this, GHRequestType.ZoomIn));
+                    if (!PlayingReplay)
+                        RequestQueue.Enqueue(new GHRequest(this, GHRequestType.ZoomIn));
                     break;
                 case (int)gui_command_types.GUI_CMD_ZOOM_OUT:
-                    RequestQueue.Enqueue(new GHRequest(this, GHRequestType.ZoomOut));
+                    if (!PlayingReplay)
+                        RequestQueue.Enqueue(new GHRequest(this, GHRequestType.ZoomOut));
                     break;
                 case (int)gui_command_types.GUI_CMD_ZOOM_MINI:
-                    RequestQueue.Enqueue(new GHRequest(this, GHRequestType.ZoomMini));
+                    if (!PlayingReplay)
+                        RequestQueue.Enqueue(new GHRequest(this, GHRequestType.ZoomMini));
                     break;
                 case (int)gui_command_types.GUI_CMD_ZOOM_HALF:
-                    RequestQueue.Enqueue(new GHRequest(this, GHRequestType.ZoomHalf));
+                    if (!PlayingReplay)
+                        RequestQueue.Enqueue(new GHRequest(this, GHRequestType.ZoomHalf));
                     break;
                 case (int)gui_command_types.GUI_CMD_ZOOM_TO_SCALE:
                     break;
@@ -3025,7 +3030,8 @@ namespace GnollHackX
                 case (int)gui_command_types.GUI_CMD_RESTORE_ZOOM:
                     break;
                 case (int)gui_command_types.GUI_CMD_KEYBOARD_FOCUS:
-                    RequestQueue.Enqueue(new GHRequest(this, GHRequestType.KeyboardFocus));
+                    if(!PlayingReplay)
+                        RequestQueue.Enqueue(new GHRequest(this, GHRequestType.KeyboardFocus));
                     break;
                 default:
                     break;
