@@ -3105,23 +3105,6 @@ struct monst* mtmp;
                     chatnum++;
                 }
             }
-
-            /* Last, display inventory */
-            if (mtmp->minvent)
-            {
-                Strcpy(available_chat_list[chatnum].name, "Display inventory");
-                available_chat_list[chatnum].function_ptr = &do_chat_pet_display_inventory;
-                available_chat_list[chatnum].charnum = 'a' + chatnum;
-
-                any = zeroany;
-                any.a_char = available_chat_list[chatnum].charnum;
-
-                add_menu(win, NO_GLYPH, &any,
-                    any.a_char, 0, ATR_NONE, NO_COLOR,
-                    available_chat_list[chatnum].name, MENU_UNSELECTED);
-
-                chatnum++;
-            }
         }
 
         /* These are available also for hostile creatures */
@@ -4278,6 +4261,23 @@ struct monst* mtmp;
                 available_chat_list[chatnum].name, MENU_UNSELECTED);
 
             chatnum++;
+
+            /* Last, display inventory */
+            if (mtmp->minvent)
+            {
+                Strcpy(available_chat_list[chatnum].name, "Display inventory");
+                available_chat_list[chatnum].function_ptr = &do_chat_pet_display_inventory;
+                available_chat_list[chatnum].charnum = 'a' + chatnum;
+
+                any = zeroany;
+                any.a_char = available_chat_list[chatnum].charnum;
+
+                add_menu(win, NO_GLYPH, &any,
+                    any.a_char, 0, ATR_NONE, NO_COLOR,
+                    available_chat_list[chatnum].name, MENU_UNSELECTED);
+
+                chatnum++;
+            }
         }
 
         /* Finish the menu */
