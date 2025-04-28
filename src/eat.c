@@ -1649,7 +1649,7 @@ uchar gender UNUSED; /* 0 = male, 1 = female, 2 = unknown */
         else if (conveys_WIS && !rn2(3))
             You_feel_ex(ATR_NONE, CLR_MSG_ATTENTION, "that flavor gave you more perspective on the world for a moment.");
         else if (conveys_CHA && !rn2(3))
-            You_feel_ex(ATR_NONE, CLR_MSG_ATTENTION, "that had beneficial effect on your skin.");
+            You_feel_ex(ATR_NONE, CLR_MSG_ATTENTION, "that had a beneficial effect on your skin.");
 
     } /* check_intrinsics */
 
