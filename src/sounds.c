@@ -2272,6 +2272,17 @@ dochat(VOID_ARGS)
     return dochatmon(mtmp);
 }
 
+struct available_chat_item
+{
+    int charnum;
+    char name[PL_PSIZ + 40];
+    boolean stops_dialogue;
+    int (*function_ptr)();
+};
+
+#define MAXCHATNUM 50
+struct available_chat_item available_chat_list[MAXCHATNUM] = { {0} };
+
 int
 dochatmon(mtmp)
 struct monst* mtmp;
@@ -2363,15 +2374,6 @@ struct monst* mtmp;
     if (!canspotmon(mtmp))
         map_invisible(mtmp->mx, mtmp->my);
 
-#define MAXCHATNUM 50
-    struct available_chat_item
-    {
-        int charnum;
-        char name[80];
-        boolean stops_dialogue;
-        int (*function_ptr)();
-    };
-
     int i = '\0';
     int result = 0;
     boolean stopsdialogue = FALSE;
@@ -2379,6 +2381,7 @@ struct monst* mtmp;
     do
     {
         i = '\0';
+        memset(available_chat_list, 0, sizeof(available_chat_list));
 
         menu_item* pick_list = (menu_item*)0;
         winid win;
@@ -2388,9 +2391,7 @@ struct monst* mtmp;
         win = create_nhwindow_ex(NHW_MENU, GHWINDOW_STYLE_CHAT_MENU, get_seen_monster_glyph(mtmp), extended_create_window_info_from_mon(mtmp));
         start_menu_ex(win, GHMENU_STYLE_CHAT);
 
-        struct available_chat_item available_chat_list[MAXCHATNUM] = { {0} };
         int chatnum = 0;
-
         any = zeroany;
 
         /* Hello! This is the old chat, i.e., domonnoise function */
