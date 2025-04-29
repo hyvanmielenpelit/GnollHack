@@ -8759,6 +8759,19 @@ boolean donewsym;
 }
 
 void
+create_simple_location_with_carpet(x, y, type, subtype, vartype, location_flags, carpet_typ, carpet_piece, carpet_flags, floor_doodad, floortype, floorsubtype, floorvartype, donewsym)
+xchar x, y;
+int type, subtype, vartype, floor_doodad, floortype, floorsubtype, floorvartype;
+unsigned short location_flags;
+schar carpet_typ, carpet_piece;
+uchar carpet_flags;
+boolean donewsym;
+{
+    full_location_transform(x, y, type, subtype, vartype, location_flags, carpet_typ, carpet_piece, carpet_flags, 0, 0, 0, 0, floor_doodad, floortype, floorsubtype, floorvartype, FALSE, FALSE, 0, 0, donewsym);
+    initialize_location(&levl[x][y]);
+}
+
+void
 create_simple_initial_location(x, y, type, location_flags, floor_doodad, floortype, donewsym)
 xchar x, y;
 int type, floor_doodad, floortype;
@@ -8803,21 +8816,29 @@ boolean donewsym;
         return; /* Do nothing, floor already */
 
     int type, subtype, vartype;
+    schar carpet_typ, carpet_piece;
+    uchar carpet_flags;
     if (!levl[x][y].floortyp)
     {
         /* Backup */
         type = location_type_definitions[levl[x][y].typ].initial_floor_type;
         subtype = get_initial_location_subtype(type);
         vartype = get_initial_location_vartype(type, subtype);
+        carpet_typ = 0;
+        carpet_piece = 0;
+        carpet_flags = 0;
     }
     else
     {
         type = levl[x][y].floortyp;
         subtype = levl[x][y].floorsubtyp;
         vartype = levl[x][y].floorvartyp;
+        carpet_typ = levl[x][y].carpet_typ;
+        carpet_piece = levl[x][y].carpet_piece;
+        carpet_flags = levl[x][y].carpet_flags;
     }
 
-    create_simple_location(x, y, type, subtype, vartype, location_flags, floor_doodad, 0, 0, 0, donewsym);
+    create_simple_location_with_carpet(x, y, type, subtype, vartype, location_flags, carpet_typ, carpet_piece, carpet_flags, floor_doodad, 0, 0, 0, donewsym);
 }
 
 void

@@ -687,6 +687,7 @@ E void FDECL(full_location_transform, (XCHAR_P, XCHAR_P, int, int, int, UNSIGNED
 E void FDECL(full_initial_location_transform, (XCHAR_P, XCHAR_P, int, UNSIGNED_SHORT_P, SCHAR_P, SCHAR_P, UCHAR_P, SCHAR_P, SCHAR_P, SCHAR_P, UCHAR_P, int, int, BOOLEAN_P, BOOLEAN_P, SHORT_P, SHORT_P, BOOLEAN_P));
 E void FDECL(create_simple_location, (XCHAR_P, XCHAR_P, int, int, int, UNSIGNED_SHORT_P, int, int, int, int, BOOLEAN_P));
 E void FDECL(create_simple_initial_location, (XCHAR_P, XCHAR_P, int, UNSIGNED_SHORT_P, int, int, BOOLEAN_P));
+E void FDECL(create_simple_location_with_carpet, (XCHAR_P, XCHAR_P, int, int, int, UNSIGNED_SHORT_P, SCHAR_P, SCHAR_P, UCHAR_P, int, int, int, int, BOOLEAN_P));
 E void FDECL(create_location_with_current_floor, (XCHAR_P, XCHAR_P, int, int, int, UNSIGNED_SHORT_P, int, BOOLEAN_P));
 E void FDECL(create_initial_location_with_current_floor, (XCHAR_P, XCHAR_P, int, UNSIGNED_SHORT_P, int, BOOLEAN_P));
 E void FDECL(create_current_floor_location, (XCHAR_P, XCHAR_P, UNSIGNED_SHORT_P, int, BOOLEAN_P));
