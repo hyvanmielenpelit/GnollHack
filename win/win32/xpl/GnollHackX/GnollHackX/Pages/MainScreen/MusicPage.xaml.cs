@@ -91,7 +91,7 @@ namespace GnollHackX.Pages.MainScreen
                 int sec = length % 60;
                 bool hasSongwriter = !string.IsNullOrWhiteSpace(track.Songwriter);
                 bool hasDuration = length > 0;
-                string durationString = hasDuration ? min + ":" + sec : "";
+                string durationString = hasDuration ? min + ":" + string.Format("{0:D2}", sec) : "";
                 RowImageButton rib = new RowImageButton();
                 rib.ImgSourcePath = "resource://" + GHApp.AppResourceName + ".Assets.UI.soundtrack.png";
                 rib.ImgHighFilterQuality = true;
