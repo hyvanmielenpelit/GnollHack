@@ -19350,7 +19350,19 @@ namespace GnollHackX.Pages.Game
         public bool HandleSpecialKeyPress(GHSpecialKey key, bool isCtrl, bool isMeta, bool isShift)
         {
             bool handled = false;
-            if (LoadingGrid.IsVisible || !GHApp.IsPageOnTopOfModalNavigationStack(this))
+            OutRipPage orPage = GHApp.OutRipPageFromTopOfModalNavigationStack();
+            NamePage namePage;
+            if (orPage != null && (key == GHSpecialKey.Escape || key == GHSpecialKey.Enter || key == GHSpecialKey.Space))
+            {
+                orPage.CloseOutrip();
+                handled = true;
+            }
+            else if ((namePage = GHApp.NamePageFromTopOfModalNavigationStack()) != null && key == GHSpecialKey.Escape)
+            {
+                namePage.PressCancel();
+                handled = true;
+            }
+            else if (LoadingGrid.IsVisible || !GHApp.IsPageOnTopOfModalNavigationStack(this))
             {
                 /* Nothing */
             }

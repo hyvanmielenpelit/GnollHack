@@ -470,6 +470,11 @@ public class KeyboardHook
                     GHApp.CtrlDown = false;
                     Debug.WriteLine("HookCallback: Control Up");
                 }
+                else if (vkCode == 0x12 || vkCode == 0xA4 || vkCode == 0xA5)
+                {
+                    GHApp.AltDown = false;
+                    Debug.WriteLine("HookCallback: Alt Up");
+                }
                 else
                 {
                     // Translate virtual key to actual character

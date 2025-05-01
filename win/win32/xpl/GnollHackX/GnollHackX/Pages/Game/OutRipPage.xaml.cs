@@ -67,6 +67,18 @@ namespace GnollHackX.Pages.Game
             }
         }
 
+        public async void CloseOutrip()
+        {
+            if (!_playingReplay)
+            {
+                _tapHide = true;
+                OutRipGrid.IsEnabled = false;
+                var page = await GHApp.Navigation.PopModalAsync();
+                _gamePage.GenericButton_Clicked(this, new EventArgs(), GHConstants.CancelChar);
+                GHApp.DisconnectIViewHandlers(page);
+            }
+        }
+
         private GlyphImageSource _glyphImageSource = new GlyphImageSource();
 
         public GlyphImageSource GlyphImage

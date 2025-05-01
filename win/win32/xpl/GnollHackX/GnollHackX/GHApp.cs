@@ -6941,6 +6941,28 @@ namespace GnollHackX
             return topPage == page;
         }
 
+        public static OutRipPage OutRipPageFromTopOfModalNavigationStack()
+        {
+            int cnt = Navigation.ModalStack.Count;
+            if (cnt == 0)
+                return null;
+            Page topPage = Navigation?.ModalStack[cnt - 1];
+            if (topPage == null)
+                return null;
+            return topPage as OutRipPage;
+        }
+
+        public static NamePage NamePageFromTopOfModalNavigationStack()
+        {
+            int cnt = Navigation.ModalStack.Count;
+            if (cnt == 0)
+                return null;
+            Page topPage = Navigation?.ModalStack[cnt - 1];
+            if (topPage == null)
+                return null;
+            return topPage as NamePage;
+        }
+
         public static string ParseSkiaSharpVersionString(string fullverid)
         {
             if (fullverid == null)

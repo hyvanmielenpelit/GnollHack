@@ -205,6 +205,16 @@ namespace GnollHackX.Pages.Game
 
         private async void btnCancel_Clicked(object sender, EventArgs e)
         {
+            await DoPressCancel();
+        }
+
+        public async void PressCancel()
+        {
+            await DoPressCancel();
+        }
+
+        public async Task DoPressCancel()
+        {
             btnOK.IsEnabled = false;
             btnCancel.IsEnabled = false;
             GHApp.PlayButtonClickedSound();
