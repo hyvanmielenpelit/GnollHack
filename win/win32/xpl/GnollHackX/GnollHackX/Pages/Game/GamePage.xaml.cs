@@ -19370,6 +19370,13 @@ namespace GnollHackX.Pages.Game
             {
                 handled = true;
             }
+            else if (TipView.IsVisible && (key == GHSpecialKey.Escape || key == GHSpecialKey.Enter || key == GHSpecialKey.Space))
+            {
+                if (key == GHSpecialKey.Escape)
+                    ShownTip = 100; //Move to end
+                TipView_Touch(this, new SKTouchEventArgs(0L, SKTouchAction.Released, new SKPoint(0, 0), true));
+                handled = true;
+            }
             else if (MoreCommandsGrid.IsVisible && (key == GHSpecialKey.Escape || key == GHSpecialKey.Enter || key == GHSpecialKey.Space))
             {
                 CommandCanvas_Pressed(null, null);

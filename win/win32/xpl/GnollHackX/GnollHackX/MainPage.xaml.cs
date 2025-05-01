@@ -1564,6 +1564,52 @@ namespace GnollHackX
             else
                 DisplayAlertGrid(title, message, buttonText, titleColor);
         }
+
+        public bool HandleMainPageKeyPress(int key, bool isCtrl, bool isMeta)
+        {
+            bool handled = false;
+            switch(key)
+            {
+                case (int)'p':
+                    if(StartLocalGameButton.IsEnabled && StartLocalGrid.IsEnabled && StartLocalGameButton.IsVisible && StartLocalGrid.IsVisible)
+                        StartLocalGameButton_Clicked(this, EventArgs.Empty);
+                    handled = true;
+                    break;
+                case (int)'s':
+                    if (SettingsButton.IsEnabled && SettingsButton.IsVisible)
+                        SettingsButton_Clicked(this, EventArgs.Empty);
+                    handled = true;
+                    break;
+                case (int)'o':
+                    if (OptionsButton.IsEnabled && OptionsButton.IsVisible)
+                        OptionsButton_Clicked(this, EventArgs.Empty);
+                    handled = true;
+                    break;
+                case (int)'r':
+                    if (ResetButton.IsEnabled && ResetButton.IsVisible)
+                        ResetButton_Clicked(this, EventArgs.Empty);
+                    handled = true;
+                    break;
+                case (int)'a':
+                    if (AboutButton.IsEnabled && AboutButton.IsVisible)
+                        CreditsButton_Clicked(this, EventArgs.Empty);
+                    handled = true;
+                    break;
+                case (int)'v':
+                    if (VaultButton.IsEnabled && VaultButton.IsVisible)
+                        VaultButton_Clicked(this, EventArgs.Empty);
+                    handled = true;
+                    break;
+                case (int)'e':
+                case (int)'x':
+                case (int)'q':
+                    ExitAppButton_Clicked(this, EventArgs.Empty);
+                    break;
+                default:
+                    break;
+            }
+            return handled;
+        }
     }
 
 }

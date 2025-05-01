@@ -450,8 +450,8 @@ public class KeyboardHook
             return CallNextHookEx(_hookID, nCode, wParam, lParam);
 
         //No game on to send key strokes to
-        if (GHApp.CurrentGHGame == null)
-            return CallNextHookEx(_hookID, nCode, wParam, lParam);
+        //if (GHApp.CurrentGHGame == null)
+        //    return CallNextHookEx(_hookID, nCode, wParam, lParam);
 
         Debug.WriteLine("HookCallback: " + nCode + ", " + wParam + ", " + lParam);
         if (nCode >= 0)

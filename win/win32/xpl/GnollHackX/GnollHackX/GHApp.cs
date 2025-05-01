@@ -6943,10 +6943,7 @@ namespace GnollHackX
 
         public static OutRipPage OutRipPageFromTopOfModalNavigationStack()
         {
-            int cnt = Navigation.ModalStack.Count;
-            if (cnt == 0)
-                return null;
-            Page topPage = Navigation?.ModalStack[cnt - 1];
+            Page topPage = PageFromTopOfModalNavigationStack();
             if (topPage == null)
                 return null;
             return topPage as OutRipPage;
@@ -6954,13 +6951,21 @@ namespace GnollHackX
 
         public static NamePage NamePageFromTopOfModalNavigationStack()
         {
+            Page topPage = PageFromTopOfModalNavigationStack();
+            if (topPage == null)
+                return null;
+            return topPage as NamePage;
+        }
+
+        public static Page PageFromTopOfModalNavigationStack()
+        {
             int cnt = Navigation.ModalStack.Count;
             if (cnt == 0)
                 return null;
             Page topPage = Navigation?.ModalStack[cnt - 1];
             if (topPage == null)
                 return null;
-            return topPage as NamePage;
+            return topPage;
         }
 
         public static string ParseSkiaSharpVersionString(string fullverid)
@@ -7483,7 +7488,8 @@ namespace GnollHackX
 
         public static bool SendKeyPress(int key, bool isCtrl, bool isMeta)
         {
-            return CurrentGamePage?.HandleKeyPress(key, isCtrl, isMeta) ?? false;
+            return CurrentGamePage?.HandleKeyPress(key, isCtrl, isMeta) 
+                ?? (PageFromTopOfModalNavigationStack() == null ? (CurrentMainPage?.HandleMainPageKeyPress(key, isCtrl, isMeta) ?? false) : false);
         }
         public static bool SendSpecialKeyPress(GHSpecialKey spkey, bool isCtrl, bool isMeta, bool isShift)
         {
