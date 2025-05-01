@@ -524,6 +524,19 @@ public class KeyboardHook
                             if (GHApp.SendSpecialKeyPress(GHSpecialKey.Enter, GHApp.CtrlDown, GHApp.AltDown, GHApp.ShiftDown))
                                 return 1;
                             break;
+                        //case 0x60:
+                        //case 0x61:
+                        //case 0x62:
+                        //case 0x63:
+                        //case 0x64:
+                        //case 0x65:
+                        //case 0x66:
+                        //case 0x67:
+                        //case 0x68:
+                        //case 0x69:
+                        //    if (GHApp.SendSpecialKeyPress(GHSpecialKey.NumberPad0 + vkCode - 0x60, GHApp.CtrlDown, GHApp.AltDown, GHApp.ShiftDown))
+                        //        return 1;
+                        //    break;
                         default:
                             string character = VkCodeToUnicode((uint)vkCode);
                             if (!string.IsNullOrEmpty(character) && character.Length > 0)
