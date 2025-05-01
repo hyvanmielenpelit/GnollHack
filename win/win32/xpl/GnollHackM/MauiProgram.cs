@@ -505,11 +505,11 @@ public class KeyboardHook
                                 return 1;
                             break;
                         case 0x21:
-                            if (GHApp.SendSpecialKeyPress(GHSpecialKey.PageDown, GHApp.CtrlDown, GHApp.AltDown, GHApp.ShiftDown))
+                            if (GHApp.SendSpecialKeyPress(GHSpecialKey.PageUp, GHApp.CtrlDown, GHApp.AltDown, GHApp.ShiftDown))
                                 return 1;
                             break;
                         case 0x22:
-                            if (GHApp.SendSpecialKeyPress(GHSpecialKey.PageUp, GHApp.CtrlDown, GHApp.AltDown, GHApp.ShiftDown))
+                            if (GHApp.SendSpecialKeyPress(GHSpecialKey.PageDown, GHApp.CtrlDown, GHApp.AltDown, GHApp.ShiftDown))
                                 return 1;
                             break;
                         case 0x23:
