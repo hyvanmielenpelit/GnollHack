@@ -33,6 +33,7 @@ using Microsoft.UI.Windowing;
 using System.Runtime.InteropServices;
 using System.Diagnostics;
 using Microsoft.UI.Xaml;
+using System.Text;
 #endif
 #endif
 
@@ -469,6 +470,69 @@ public class KeyboardHook
                     GHApp.CtrlDown = false;
                     Debug.WriteLine("HookCallback: Control Up");
                 }
+                else
+                {
+                    // Translate virtual key to actual character
+                    switch (vkCode)
+                    {
+                        case 0x20://VK_SPACE
+                            if (GHApp.SendSpecialKeyPress(GHSpecialKey.Space, GHApp.CtrlDown, GHApp.AltDown, GHApp.ShiftDown))
+                                return 1;
+                            break;
+                        case 0x21:
+                            if (GHApp.SendSpecialKeyPress(GHSpecialKey.PageDown, GHApp.CtrlDown, GHApp.AltDown, GHApp.ShiftDown))
+                                return 1;
+                            break;
+                        case 0x22:
+                            if (GHApp.SendSpecialKeyPress(GHSpecialKey.PageUp, GHApp.CtrlDown, GHApp.AltDown, GHApp.ShiftDown))
+                                return 1;
+                            break;
+                        case 0x23:
+                            if (GHApp.SendSpecialKeyPress(GHSpecialKey.End, GHApp.CtrlDown, GHApp.AltDown, GHApp.ShiftDown))
+                                return 1;
+                            break;
+                        case 0x24:
+                            if (GHApp.SendSpecialKeyPress(GHSpecialKey.Home, GHApp.CtrlDown, GHApp.AltDown, GHApp.ShiftDown))
+                                return 1;
+                            break;
+                        case 0x25:
+                            if (GHApp.SendSpecialKeyPress(GHSpecialKey.Left, GHApp.CtrlDown, GHApp.AltDown, GHApp.ShiftDown))
+                                return 1;
+                            break;
+                        case 0x26:
+                            if (GHApp.SendSpecialKeyPress(GHSpecialKey.Up, GHApp.CtrlDown, GHApp.AltDown, GHApp.ShiftDown))
+                                return 1;
+                            break;
+                        case 0x27:
+                            if (GHApp.SendSpecialKeyPress(GHSpecialKey.Right, GHApp.CtrlDown, GHApp.AltDown, GHApp.ShiftDown))
+                                return 1;
+                            break;
+                        case 0x28:
+                            if (GHApp.SendSpecialKeyPress(GHSpecialKey.Down, GHApp.CtrlDown, GHApp.AltDown, GHApp.ShiftDown))
+                                return 1;
+                            break;
+                        case 0x1B:
+                            if (GHApp.SendSpecialKeyPress(GHSpecialKey.Escape, GHApp.CtrlDown, GHApp.AltDown, GHApp.ShiftDown))
+                                return 1;
+                            break;
+                        case 0x0D:
+                            if (GHApp.SendSpecialKeyPress(GHSpecialKey.Enter, GHApp.CtrlDown, GHApp.AltDown, GHApp.ShiftDown))
+                                return 1;
+                            break;
+                        default:
+                            string character = VkCodeToUnicode((uint)vkCode);
+                            if (!string.IsNullOrEmpty(character) && character.Length > 0)
+                            {
+                                int key = character[0];
+                                bool handled = GHApp.SendKeyPress(key, GHApp.CtrlDown, GHApp.AltDown);
+                                if (handled)
+                                    return 1;
+                                else
+                                    return CallNextHookEx(_hookID, nCode, wParam, lParam);
+                            }
+                            break;
+                    }
+                }
             }
             else if (wParam == (IntPtr)WM_KEYDOWN)
             {
@@ -488,7 +552,7 @@ public class KeyboardHook
             else if (wParam == (IntPtr)WM_SYSKEYUP)
             {
                 Debug.WriteLine("HookCallback: WM_SYSKEYUP");
-
+                bool handled = false;
                 bool isShiftDown = GHApp.ShiftDown;
                 bool isCtrlDown = GHApp.CtrlDown;
 
@@ -514,6 +578,13 @@ public class KeyboardHook
                 else if (isCtrlDown) /* AltGr, also includes $ on Finnish keyboard */
                 {
                     Debug.WriteLine("HookCallback: Syskey with Ctrl (AltGr)");
+                    // Translate virtual key to actual character
+                    string character = VkCodeToUnicode((uint)vkCode);
+                    if (!string.IsNullOrEmpty(character) && character.Length > 0)
+                    {
+                        int key = character[0];
+                        GHApp.SendKeyPress(key, false, false);
+                    }
                     return CallNextHookEx(_hookID, nCode, wParam, lParam);
                 }
 
@@ -542,8 +613,11 @@ public class KeyboardHook
                             break;
                     }
                 }
-                GHApp.SendSpecialKeyPress(spkey, isCtrlDown, true, isShiftDown);
-                return 1;
+                handled = GHApp.SendSpecialKeyPress(spkey, isCtrlDown, true, isShiftDown);
+                if (handled)
+                    return 1;
+                else
+                    return CallNextHookEx(_hookID, nCode, wParam, lParam);
             }
             else if (wParam == (IntPtr)WM_SYSKEYDOWN)
             {
@@ -579,6 +653,22 @@ public class KeyboardHook
         return CallNextHookEx(_hookID, nCode, wParam, lParam);
     }
 
+    private static string VkCodeToUnicode(uint vkCode)
+    {
+        byte[] keyboardState = new byte[256];
+        if (!GetKeyboardState(keyboardState))
+            return "";
+
+        uint scanCode = MapVirtualKey(vkCode, 0);
+        StringBuilder sb = new StringBuilder(10);
+
+        IntPtr keyboardLayout = GetKeyboardLayout(0);
+
+        int result = ToUnicodeEx(vkCode, scanCode, keyboardState, sb, sb.Capacity, 0, keyboardLayout);
+
+        return result > 0 ? sb.ToString() : "";
+    }
+
     [DllImport("user32.dll", SetLastError = true)]
     private static extern IntPtr SetWindowsHookEx(int idHook, LowLevelKeyboardProc lpfn, IntPtr hMod, uint dwThreadId);
 
@@ -596,6 +686,17 @@ public class KeyboardHook
 
     [DllImport("user32.dll", SetLastError = true)]
     private static extern bool GetKeyboardState(byte[] lpKeyState);
+
+    [DllImport("user32.dll")]
+    private static extern uint MapVirtualKey(uint uCode, uint uMapType);
+
+    [DllImport("user32.dll")]
+    private static extern int ToUnicodeEx(uint wVirtKey, uint wScanCode,
+        byte[] lpKeyState, [Out, MarshalAs(UnmanagedType.LPWStr)] StringBuilder pwszBuff,
+        int cchBuff, uint wFlags, IntPtr dwhkl);
+
+    [DllImport("user32.dll")]
+    private static extern IntPtr GetKeyboardLayout(uint idThread);
 
 }
 #endif

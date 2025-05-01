@@ -18994,53 +18994,53 @@ namespace GnollHackX.Pages.Game
 
         private void SetupKeyListening()
         {
-#if WINDOWS
-            try
-            {
-                var window = this.Window;
-                var handler = window.Handler;
-                var platformView = handler.PlatformView;
-                Microsoft.UI.Xaml.Window xamlWindow = platformView as Microsoft.UI.Xaml.Window;
-                if (xamlWindow != null)
-                {
-                    xamlWindow.Content.KeyDown += PageContent_KeyDown;
-                    xamlWindow.Content.KeyUp += PageContent_KeyUp;
-                    xamlWindow.Content.PreviewKeyDown += Content_PreviewKeyDown;
-                    xamlWindow.Content.PreviewKeyUp += Content_PreviewKeyUp;
-                    xamlWindow.Content.CharacterReceived += PageContent_CharacterReceived;
-                    xamlWindow.Content.Focus(Microsoft.UI.Xaml.FocusState.Keyboard);
-                }
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine(ex.Message);
-            }
-#endif
+//#if WINDOWS
+//            try
+//            {
+//                var window = this.Window;
+//                var handler = window.Handler;
+//                var platformView = handler.PlatformView;
+//                Microsoft.UI.Xaml.Window xamlWindow = platformView as Microsoft.UI.Xaml.Window;
+//                if (xamlWindow != null)
+//                {
+//                    xamlWindow.Content.KeyDown += PageContent_KeyDown;
+//                    xamlWindow.Content.KeyUp += PageContent_KeyUp;
+//                    xamlWindow.Content.PreviewKeyDown += Content_PreviewKeyDown;
+//                    xamlWindow.Content.PreviewKeyUp += Content_PreviewKeyUp;
+//                    xamlWindow.Content.CharacterReceived += PageContent_CharacterReceived;
+//                    xamlWindow.Content.Focus(Microsoft.UI.Xaml.FocusState.Keyboard);
+//                }
+//            }
+//            catch (Exception ex)
+//            {
+//                Debug.WriteLine(ex.Message);
+//            }
+//#endif
         }
 
         private void StopKeyListening()
         {
-#if WINDOWS
-            try
-            {
-                var window = this.Window;
-                var handler = window.Handler;
-                var platformView = handler.PlatformView;
-                Microsoft.UI.Xaml.Window xamlWindow = platformView as Microsoft.UI.Xaml.Window;
-                if (xamlWindow != null)
-                {
-                    xamlWindow.Content.KeyDown -= PageContent_KeyDown;
-                    xamlWindow.Content.KeyUp -= PageContent_KeyUp;
-                    xamlWindow.Content.PreviewKeyDown -= Content_PreviewKeyDown;
-                    xamlWindow.Content.PreviewKeyUp -= Content_PreviewKeyUp;
-                    xamlWindow.Content.CharacterReceived -= PageContent_CharacterReceived;
-                }
-            }
-            catch(Exception ex)
-            {
-                Debug.WriteLine(ex.Message);
-            }
-#endif
+//#if WINDOWS
+//            try
+//            {
+//                var window = this.Window;
+//                var handler = window.Handler;
+//                var platformView = handler.PlatformView;
+//                Microsoft.UI.Xaml.Window xamlWindow = platformView as Microsoft.UI.Xaml.Window;
+//                if (xamlWindow != null)
+//                {
+//                    xamlWindow.Content.KeyDown -= PageContent_KeyDown;
+//                    xamlWindow.Content.KeyUp -= PageContent_KeyUp;
+//                    xamlWindow.Content.PreviewKeyDown -= Content_PreviewKeyDown;
+//                    xamlWindow.Content.PreviewKeyUp -= Content_PreviewKeyUp;
+//                    xamlWindow.Content.CharacterReceived -= PageContent_CharacterReceived;
+//                }
+//            }
+//            catch(Exception ex)
+//            {
+//                Debug.WriteLine(ex.Message);
+//            }
+//#endif
         }
 
         private void GotoTurnEntryText_Completed(object sender, EventArgs e)
@@ -19201,6 +19201,7 @@ namespace GnollHackX.Pages.Game
 
         public bool HandleKeyPress(int key, bool isCtrl, bool isMeta)
         {
+            Debug.WriteLine("HandleKeyPress: " + key);
             bool handled = false;
             if (LoadingGrid.IsVisible || key == 13 || !GHApp.IsPageOnTopOfModalNavigationStack(this))
             {
@@ -19210,6 +19211,20 @@ namespace GnollHackX.Pages.Game
             {
                 handled = false;
             }
+            else if (GetLineGrid.IsVisible && (key == 27))
+            {
+                //if (key == 13)
+                //    GetLineOkButton_Clicked(null, null);
+                //else if (key == 27)
+                    GetLineCancelButton_Clicked(null, null);
+
+                handled = false;
+            }
+            else if (PopupGrid.IsVisible && (key == 27))
+            {
+                PopupOkButton_Clicked(null, null);
+                handled = true;
+            }
             else if (YnGrid.IsVisible && !string.IsNullOrWhiteSpace(_ynResponses) && _ynResponses.Contains((char)key))
             {
                 YnButton_Pressed(null, null, key);
@@ -19218,7 +19233,12 @@ namespace GnollHackX.Pages.Game
             else if (MenuGrid.IsVisible && !MenuCountGrid.IsVisible)
             {
                 char c = (char)key;
-                if (MenuCanvas.SelectionHow == SelectionMode.Multiple && c == '.')
+                if(key == 27 && MenuCancelButton.IsEnabled)
+                {
+                    MenuCancelButton_Clicked(null, null);
+                    handled = true;
+                }
+                else if (MenuCanvas.SelectionHow == SelectionMode.Multiple && c == '.')
                 {
                     MenuTapGestureRecognizer_Tapped(null, null);
                     handled = true;

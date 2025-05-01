@@ -247,7 +247,7 @@ namespace GnollHackX
         {
             get
             {
-                return !IsKeyboardConnected; /* Keyboard handling does not fire */
+                return !IsKeyboardConnected || IsWindows; /* Keyboard handling does not fire */
             }
         }
 
@@ -7459,13 +7459,13 @@ namespace GnollHackX
         }
 
 
-        public static void SendKeyPress(int key, bool isCtrl, bool isMeta)
+        public static bool SendKeyPress(int key, bool isCtrl, bool isMeta)
         {
-            CurrentGamePage?.HandleKeyPress(key, isCtrl, isMeta);
+            return CurrentGamePage?.HandleKeyPress(key, isCtrl, isMeta) ?? false;
         }
-        public static void SendSpecialKeyPress(GHSpecialKey spkey, bool isCtrl, bool isMeta, bool isShift)
+        public static bool SendSpecialKeyPress(GHSpecialKey spkey, bool isCtrl, bool isMeta, bool isShift)
         {
-            CurrentGamePage?.HandleSpecialKeyPress(spkey, isCtrl, isMeta, isShift);
+            return CurrentGamePage?.HandleSpecialKeyPress(spkey, isCtrl, isMeta, isShift) ?? false;
         }
 #if GNH_MAUI
         /* Note: var page = await GHApp.Navigation.PopModalAsync(); GHApp.DisconnectIViewHandlers(page); is preferred to await GHApp.Navigation.PopModalAsync(); GHApp.DisconnectIViewHandlers(this); since this ensures that the program does not crash if the wrong page is accidentally popped  */
