@@ -475,6 +475,26 @@ public class KeyboardHook
                     GHApp.AltDown = false;
                     Debug.WriteLine("HookCallback: Alt Up");
                 }
+            }
+            else if (wParam == (IntPtr)WM_KEYDOWN)
+            {
+                Debug.WriteLine("HookCallback: WM_KEYDOWN");
+                int vkCode = Marshal.ReadInt32(lParam);
+                if (vkCode == 0x10 || vkCode == 0xA0 || vkCode == 0xA1)
+                {
+                    GHApp.ShiftDown = true;
+                    Debug.WriteLine("HookCallback: Shift Down");
+                }
+                else if (vkCode == 0x11 || vkCode == 0xA2 || vkCode == 0xA3)
+                {
+                    GHApp.CtrlDown = true;
+                    Debug.WriteLine("HookCallback: Control Down");
+                }
+                else if (vkCode == 0x12 || vkCode == 0xA4 || vkCode == 0xA5)
+                {
+                    GHApp.AltDown = true;
+                    Debug.WriteLine("HookCallback: Alt Down");
+                }
                 else
                 {
                     // Translate virtual key to actual character
@@ -550,21 +570,6 @@ public class KeyboardHook
                             }
                             break;
                     }
-                }
-            }
-            else if (wParam == (IntPtr)WM_KEYDOWN)
-            {
-                Debug.WriteLine("HookCallback: WM_KEYDOWN");
-                int vkCode = Marshal.ReadInt32(lParam);
-                if (vkCode == 0x10 || vkCode == 0xA0 || vkCode == 0xA1)
-                {
-                    GHApp.ShiftDown = true;
-                    Debug.WriteLine("HookCallback: Shift Down");
-                }
-                else if (vkCode == 0x11 || vkCode == 0xA2 || vkCode == 0xA3)
-                {
-                    GHApp.CtrlDown = true;
-                    Debug.WriteLine("HookCallback: Control Down");
                 }
             }
             else if (wParam == (IntPtr)WM_SYSKEYUP)
