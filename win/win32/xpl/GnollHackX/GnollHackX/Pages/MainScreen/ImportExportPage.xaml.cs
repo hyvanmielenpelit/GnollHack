@@ -54,7 +54,7 @@ namespace GnollHackX.Pages.MainScreen
             }
             catch (Exception ex)
             {
-                await DisplayAlert("Archive Creation Failure", "GnollHack failed to create a saved games archive: " + ex.Message, "OK");
+                await GHApp.DisplayMessageBox(this, "Archive Creation Failure", "GnollHack failed to create a saved games archive: " + ex.Message, "OK");
                 ImportExportGrid.IsEnabled = true;
                 return;
             }
@@ -65,7 +65,7 @@ namespace GnollHackX.Pages.MainScreen
             }
             catch (Exception ex)
             {
-                await DisplayAlert("Share File Failure", "GnollHack failed to share a saved games archive: " + ex.Message, "OK");
+                await GHApp.DisplayMessageBox(this, "Share File Failure", "GnollHack failed to share a saved games archive: " + ex.Message, "OK");
                 ImportExportGrid.IsEnabled = true;
                 return;
             }
@@ -136,11 +136,11 @@ namespace GnollHackX.Pages.MainScreen
                                                 System.IO.File.Move(filestr, finalname);
                                                 nextracted++;
                                                 if (!string.IsNullOrWhiteSpace(out_str) && GHApp.DebugLogMessages)
-                                                    await DisplayAlert("ValidateSaveFile Message", out_str, "OK");
+                                                    await GHApp.DisplayMessageBox(this, "ValidateSaveFile Message", out_str, "OK");
                                             }
                                             else
                                             {
-                                                await DisplayAlert("Invalid Save Game in Zip", "Saved game \'" + filestr + "\' is invalid: " + out_str, "OK");
+                                                await GHApp.DisplayMessageBox(this, "Invalid Save Game in Zip", "Saved game \'" + filestr + "\' is invalid: " + out_str, "OK");
                                             }
                                         }
                                     }
@@ -148,11 +148,11 @@ namespace GnollHackX.Pages.MainScreen
                                 Directory.Delete(tempdirpath, true);
                                 Directory.Delete(temp2dirpath, true);
                                 if (extractedfiles.Length == 0)
-                                    await DisplayAlert("No Files in Zip", "There are no files in \'" + ziptargetfilename + "\'.", "OK");
+                                    await GHApp.DisplayMessageBox(this, "No Files in Zip", "There are no files in \'" + ziptargetfilename + "\'.", "OK");
                                 else if (nextracted > 0)
-                                    await DisplayAlert("Games Saved from Zip", "Saved games from \'" + ziptargetfilename + "\' have been saved to the save directory as non-scoring imported saved games.", "OK");
+                                    await GHApp.DisplayMessageBox(this, "Games Saved from Zip", "Saved games from \'" + ziptargetfilename + "\' have been saved to the save directory as non-scoring imported saved games.", "OK");
                                 else
-                                    await DisplayAlert("No Games Saved in Zip", "No saved games from \'" + ziptargetfilename + "\' were saved to the save directory.", "OK");
+                                    await GHApp.DisplayMessageBox(this, "No Games Saved in Zip", "No saved games from \'" + ziptargetfilename + "\' were saved to the save directory.", "OK");
                             }
                             else
                             {
@@ -170,13 +170,13 @@ namespace GnollHackX.Pages.MainScreen
                                     {
                                         s.CopyTo(t);
                                     }
-                                    await DisplayAlert("Game Saved", "Saved game \'" + file.FileName + "\' has been saved to the save directory as a non-scoring imported saved game.", "OK");
+                                    await GHApp.DisplayMessageBox(this, "Game Saved", "Saved game \'" + file.FileName + "\' has been saved to the save directory as a non-scoring imported saved game.", "OK");
                                     if (!string.IsNullOrWhiteSpace(out_str) && GHApp.DebugLogMessages)
-                                        await DisplayAlert("ValidateSaveFile Message", out_str, "OK");
+                                        await GHApp.DisplayMessageBox(this, "ValidateSaveFile Message", out_str, "OK");
                                 }
                                 else
                                 {
-                                    await DisplayAlert("Invalid Saved Game", "Saved game \'" + file.FullPath + "\' is invalid: " + out_str, "OK");
+                                    await GHApp.DisplayMessageBox(this, "Invalid Saved Game", "Saved game \'" + file.FullPath + "\' is invalid: " + out_str, "OK");
                                 }
                             }
                         }
@@ -185,7 +185,7 @@ namespace GnollHackX.Pages.MainScreen
             }
             catch (Exception ex)
             {
-                await DisplayAlert("Error", "An error occurred while trying to import a saved game: " + ex.Message, "OK");
+                await GHApp.DisplayMessageBox(this, "Error", "An error occurred while trying to import a saved game: " + ex.Message, "OK");
             }
             ImportExportGrid.IsEnabled = true;
         }
@@ -203,7 +203,7 @@ namespace GnollHackX.Pages.MainScreen
             }
             catch (Exception ex)
             {
-                await DisplayAlert("Archive Creation Failure", "GnollHack failed to create a replay archive: " + ex.Message, "OK");
+                await GHApp.DisplayMessageBox(this, "Archive Creation Failure", "GnollHack failed to create a replay archive: " + ex.Message, "OK");
                 ImportExportGrid.IsEnabled = true;
                 return;
             }
@@ -214,7 +214,7 @@ namespace GnollHackX.Pages.MainScreen
             }
             catch (Exception ex)
             {
-                await DisplayAlert("Share File Failure", "GnollHack failed to share a replay archive: " + ex.Message, "OK");
+                await GHApp.DisplayMessageBox(this, "Share File Failure", "GnollHack failed to share a replay archive: " + ex.Message, "OK");
                 ImportExportGrid.IsEnabled = true;
                 return;
             }
@@ -331,15 +331,15 @@ namespace GnollHackX.Pages.MainScreen
                                 Directory.Delete(tempdirpath, true);
                                 Directory.Delete(temp2dirpath, true);
                                 if (extractedfiles.Length == 0)
-                                    await DisplayAlert("No Files in Zip", "There are no files in \'" + ziptargetfilename + "\'.", "OK");
+                                    await GHApp.DisplayMessageBox(this, "No Files in Zip", "There are no files in \'" + ziptargetfilename + "\'.", "OK");
                                 else if (nextracted > 0)
-                                    await DisplayAlert("Replays Saved from Zip", nextracted + " replay " + (nextracted == 1 ? "" : "s") + " (" + ntotalfiles + " file" + (ntotalfiles == 1 ? "" : "s") + ") from \'" + ziptargetfilename + "\' have been saved to the replay directory." + (ninvalid > 0 ? " (" + ninvalid + " were invalid.)" : ""), "OK");
+                                    await GHApp.DisplayMessageBox(this, "Replays Saved from Zip", nextracted + " replay " + (nextracted == 1 ? "" : "s") + " (" + ntotalfiles + " file" + (ntotalfiles == 1 ? "" : "s") + ") from \'" + ziptargetfilename + "\' have been saved to the replay directory." + (ninvalid > 0 ? " (" + ninvalid + " were invalid.)" : ""), "OK");
                                 else
-                                    await DisplayAlert("No Replays Saved from Zip", "No replays from \'" + ziptargetfilename + "\' were saved to the replay directory." + (ninvalid > 0 ? " (" + ninvalid + " were invalid.)" : ""), "OK");
+                                    await GHApp.DisplayMessageBox(this, "No Replays Saved from Zip", "No replays from \'" + ziptargetfilename + "\' were saved to the replay directory." + (ninvalid > 0 ? " (" + ninvalid + " were invalid.)" : ""), "OK");
                             }
                             else
                             {
-                                await DisplayAlert("Shared Zip File Not Recognized", file.FileName + " is not recognized as a shared replay zip file. Its file name must end with " + GHConstants.ReplaySharedZipFileNameSuffix + ".", "OK");
+                                await GHApp.DisplayMessageBox(this, "Shared Zip File Not Recognized", file.FileName + " is not recognized as a shared replay zip file. Its file name must end with " + GHConstants.ReplaySharedZipFileNameSuffix + ".", "OK");
                             }
                         }
                     }
@@ -347,7 +347,7 @@ namespace GnollHackX.Pages.MainScreen
             }
             catch (Exception ex)
             {
-                await DisplayAlert("Error", "An error occurred while trying to import a replay: " + ex.Message, "OK");
+                await GHApp.DisplayMessageBox(this, "Error", "An error occurred while trying to import a replay: " + ex.Message, "OK");
             }
             ImportExportGrid.IsEnabled = true;
         }
@@ -365,7 +365,7 @@ namespace GnollHackX.Pages.MainScreen
             }
             catch (Exception ex)
             {
-                await DisplayAlert("Archive Creation Failure", "GnollHack failed to create a dumplog archive: " + ex.Message, "OK");
+                await GHApp.DisplayMessageBox(this, "Archive Creation Failure", "GnollHack failed to create a dumplog archive: " + ex.Message, "OK");
                 ImportExportGrid.IsEnabled = true;
                 return;
             }
@@ -376,7 +376,7 @@ namespace GnollHackX.Pages.MainScreen
             }
             catch (Exception ex)
             {
-                await DisplayAlert("Share File Failure", "GnollHack failed to share a dumplog archive: " + ex.Message, "OK");
+                await GHApp.DisplayMessageBox(this, "Share File Failure", "GnollHack failed to share a dumplog archive: " + ex.Message, "OK");
                 ImportExportGrid.IsEnabled = true;
                 return;
             }
@@ -433,7 +433,7 @@ namespace GnollHackX.Pages.MainScreen
         {
             ImportExportGrid.IsEnabled = false;
             GHApp.PlayButtonClickedSound();
-            bool answer = await DisplayAlert("Delete Saved Games?", "Are you sure to delete all saved games?", "Yes", "No");
+            bool answer = await GHApp.DisplayMessageBox(this, "Delete Saved Games?", "Are you sure to delete all saved games?", "Yes", "No");
             if (answer)
             {
                 GHApp.GnollHackService.ClearSavedGames();
@@ -487,11 +487,11 @@ namespace GnollHackX.Pages.MainScreen
 
             if (nofiles1 == 0)
             {
-                await DisplayAlert("No Local Replays to Delete", "There are no files in the " + GHConstants.ReplayDirectory + " directory.", "OK");
+                await GHApp.DisplayMessageBox(this, "No Local Replays to Delete", "There are no files in the " + GHConstants.ReplayDirectory + " directory.", "OK");
             }
             else
             {
-                bool answer = await DisplayAlert("Delete All Local Replays?", "Are you sure to delete all files ("
+                bool answer = await GHApp.DisplayMessageBox(this, "Delete All Local Replays?", "Are you sure to delete all files ("
                     + nofiles1 + ": " + nofiles_main + " main, " + nofiles_cont + " continuation, "/* + nofiles_shared + " shared, "*/ + nofiles_other + " other) in the "
                     + GHConstants.ReplayDirectory + " directory?", "Yes", "No");
                 if (answer)
@@ -506,14 +506,14 @@ namespace GnollHackX.Pages.MainScreen
                     catch (Exception ex)
                     {
                         wasSuccess = false;
-                        await DisplayAlert("Deletion Failed", "GnollHack failed to delete the files in " + GHConstants.ReplayDirectory + ": " + ex.Message, "OK");
+                        await GHApp.DisplayMessageBox(this, "Deletion Failed", "GnollHack failed to delete the files in " + GHConstants.ReplayDirectory + ": " + ex.Message, "OK");
                     }
                 }
             }
 
             if(Directory.Exists(directory2))
             {
-                bool answer = await DisplayAlert("Delete All Downloaded Replays?", "Are you sure to delete all downloaded replays in the "
+                bool answer = await GHApp.DisplayMessageBox(this, "Delete All Downloaded Replays?", "Are you sure to delete all downloaded replays in the "
                     + GHConstants.ReplayDownloadFromCloudDirectory + " directory?", "Yes", "No");
                 if (answer)
                 {
@@ -527,7 +527,7 @@ namespace GnollHackX.Pages.MainScreen
                     catch (Exception ex)
                     {
                         wasSuccess = false;
-                        await DisplayAlert("Deletion Failed", "GnollHack failed to delete the files in " + GHConstants.ReplayDownloadFromCloudDirectory + ": " + ex.Message, "OK");
+                        await GHApp.DisplayMessageBox(this, "Deletion Failed", "GnollHack failed to delete the files in " + GHConstants.ReplayDownloadFromCloudDirectory + ": " + ex.Message, "OK");
                     }
                 }
             }
@@ -549,7 +549,7 @@ namespace GnollHackX.Pages.MainScreen
         {
             ImportExportGrid.IsEnabled = false;
             GHApp.PlayButtonClickedSound();
-            bool answer = await DisplayAlert("Delete Dumplogs?", "Are you sure to delete all dumplogs?", "Yes", "No");
+            bool answer = await GHApp.DisplayMessageBox(this, "Delete Dumplogs?", "Are you sure to delete all dumplogs?", "Yes", "No");
             if (answer)
             {
                 GHApp.GnollHackService.ClearDumplogs();
@@ -563,7 +563,7 @@ namespace GnollHackX.Pages.MainScreen
         {
             ImportExportGrid.IsEnabled = false;
             GHApp.PlayButtonClickedSound();
-            bool answer = await DisplayAlert("Delete Snapshots?", "Are you sure to delete all snapshots?", "Yes", "No");
+            bool answer = await GHApp.DisplayMessageBox(this, "Delete Snapshots?", "Are you sure to delete all snapshots?", "Yes", "No");
             if (answer)
             {
                 GHApp.GnollHackService.ClearSnapshots();
@@ -620,7 +620,7 @@ namespace GnollHackX.Pages.MainScreen
             }
             int totalfiles = nofiles1 + nofiles2 + nofiles3 + nofiles4;
 
-            bool answer = await DisplayAlert("Clear Pending Tasks?", "Are you sure to delete all pending tasks on disk (" + totalfiles + " file" + (totalfiles == 1 ? "" : "s") + ")?", "Yes", "No");
+            bool answer = await GHApp.DisplayMessageBox(this, "Clear Pending Tasks?", "Are you sure to delete all pending tasks on disk (" + totalfiles + " file" + (totalfiles == 1 ? "" : "s") + ")?", "Yes", "No");
             if (answer)
             {
                 try
@@ -700,7 +700,7 @@ namespace GnollHackX.Pages.MainScreen
                         else
                         {
                             conversionsFound++;
-                            bool answer = await DisplayAlert("Convert Backup into Imported?", "A backup for saved game \'" + fileNameWithoutExtension + "' has been found. Convert it into a non-scoring imported saved game?" 
+                            bool answer = await GHApp.DisplayMessageBox(this, "Convert Backup into Imported?", "A backup for saved game \'" + fileNameWithoutExtension + "' has been found. Convert it into a non-scoring imported saved game?" 
                                 + (errorFound ? " This will delete the existing error save file." : ""), "Yes", "No");
                             if(answer)
                             {
@@ -747,7 +747,7 @@ namespace GnollHackX.Pages.MainScreen
             }
             if(conversionsFound == 0)
             {
-                await DisplayAlert("No Convertible Backups", "No backup saved games that are convertible to imported saved games were found.", "OK");
+                await GHApp.DisplayMessageBox(this, "No Convertible Backups", "No backup saved games that are convertible to imported saved games were found.", "OK");
             }
             else
             {
@@ -756,12 +756,12 @@ namespace GnollHackX.Pages.MainScreen
                     if(conversionsDone == 0)
                     {
                         if(conversionsRequested == 1)
-                            await DisplayAlert("No Backups Converted", "The requested backup saved game was not converted to an imported saved game.", "OK");
+                            await GHApp.DisplayMessageBox(this, "No Backups Converted", "The requested backup saved game was not converted to an imported saved game.", "OK");
                         else
-                            await DisplayAlert("No Backups Converted", "None of the requested " + conversionsRequested + " backup saved games were converted to imported saved games.", "OK");
+                            await GHApp.DisplayMessageBox(this, "No Backups Converted", "None of the requested " + conversionsRequested + " backup saved games were converted to imported saved games.", "OK");
                     }
                     else
-                        await DisplayAlert("Backups Converted", (conversionsDone == conversionsRequested ? "The requested " :  conversionsDone + " of the requested ") + conversionsRequested + " backup saved game" + (conversionsRequested == 1 ? " was" : "s were") + " converted to " + (conversionsRequested == 1 ? "an imported saved game" : "imported saved games") + ".", "OK");
+                        await GHApp.DisplayMessageBox(this, "Backups Converted", (conversionsDone == conversionsRequested ? "The requested " :  conversionsDone + " of the requested ") + conversionsRequested + " backup saved game" + (conversionsRequested == 1 ? " was" : "s were") + " converted to " + (conversionsRequested == 1 ? "an imported saved game" : "imported saved games") + ".", "OK");
                 }
             }
             ImportExportGrid.IsEnabled = true;

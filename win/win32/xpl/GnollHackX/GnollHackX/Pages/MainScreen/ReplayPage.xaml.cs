@@ -585,7 +585,7 @@ namespace GnollHackX.Pages.MainScreen
                     }
                     catch (Exception ex)
                     {
-                        await DisplayAlert("Share File Failure", "GnollHack failed to share " + noEntries + " selected item" + (noEntries != 1 ? "s" : "") + ": " + ex.Message, "OK");
+                        await GHApp.DisplayMessageBox(this, "Share File Failure", "GnollHack failed to share " + noEntries + " selected item" + (noEntries != 1 ? "s" : "") + ": " + ex.Message, "OK");
                     }
                 }
             }
@@ -735,7 +735,7 @@ namespace GnollHackX.Pages.MainScreen
                     }
                     catch (Exception ex)
                     {
-                        await DisplayAlert("Share File Failure", "GnollHack failed to share " + filePath + ": " + ex.Message, "OK");
+                        await GHApp.DisplayMessageBox(this, "Share File Failure", "GnollHack failed to share " + filePath + ": " + ex.Message, "OK");
                     }
                 }
             }
@@ -798,7 +798,7 @@ namespace GnollHackX.Pages.MainScreen
                 else
                 {
                     FileInfo fi = new FileInfo(filePath);
-                    bool ans = await DisplayAlert("Replay Invalid", "Replay " + fi.Name + " is invalid: " + outstr + ". Delete it?", "Yes", "No");
+                    bool ans = await GHApp.DisplayMessageBox(this, "Replay Invalid", "Replay " + fi.Name + " is invalid: " + outstr + ". Delete it?", "Yes", "No");
                     if(ans)
                     {
                         try
@@ -808,7 +808,7 @@ namespace GnollHackX.Pages.MainScreen
                         }
                         catch (Exception ex)
                         {
-                            await DisplayAlert("Deletion Failed", "GnollHack failed to delete game recording " + filePath + ": " + ex.Message, "OK");
+                            await GHApp.DisplayMessageBox(this, "Deletion Failed", "GnollHack failed to delete game recording " + filePath + ": " + ex.Message, "OK");
                         }
                     }
                 }
@@ -1059,7 +1059,7 @@ namespace GnollHackX.Pages.MainScreen
                                areAllFiles ? "replay" + (noEntries != 1 ? "s" : "") : 
                                "replay" + (noFiles != 1 ? "s" : "") + " and folder" + (noFolders != 1 ? "s" : "")) + 
                             "?";
-                    if (await DisplayAlert("Confirm Deletion", qText, "Yes", "No"))
+                    if (await GHApp.DisplayMessageBox(this, "Confirm Deletion", qText, "Yes", "No"))
                     {
                         foreach (object selItem in ReplayCollectionView.SelectedItems)
                         {
@@ -1090,7 +1090,7 @@ namespace GnollHackX.Pages.MainScreen
                         }
                         if (noErrors > 0)
                         {
-                            await DisplayAlert("Deletion Failed",
+                            await GHApp.DisplayMessageBox(this, "Deletion Failed",
                                 noErrors + " error" + (noErrors != 1 ? "s" : "") + " occurred when trying to delete " + noEntries + " replay" + (noEntries != 1 ? "s" : "") + "."
                                 + (GHApp.DebugLogMessages ? " See App Log for details." : ""),
                                 "OK");
@@ -1114,7 +1114,7 @@ namespace GnollHackX.Pages.MainScreen
 
                 if (filePath != null && recfile != null)
                 {
-                    if (await DisplayAlert("Confirm Deletion", "Are you sure to delete the " + 
+                    if (await GHApp.DisplayMessageBox(this, "Confirm Deletion", "Are you sure to delete the " + 
                         (recfile.IsFolder ? "folder" : "game recording") + " " + recfile.FileName + "?", "Yes", "No"))
                     {
                         try
@@ -1127,7 +1127,7 @@ namespace GnollHackX.Pages.MainScreen
                         }
                         catch (Exception ex)
                         {
-                            await DisplayAlert("Deletion Failed", "GnollHack failed to delete game recording " + filePath + ": " + ex.Message, "OK");
+                            await GHApp.DisplayMessageBox(this, "Deletion Failed", "GnollHack failed to delete game recording " + filePath + ": " + ex.Message, "OK");
                         }
                     }
                 }
@@ -1533,7 +1533,7 @@ namespace GnollHackX.Pages.MainScreen
                     }
                     catch (Exception ex)
                     {
-                        await DisplayAlert("Upload File Failure", "GnollHack failed to upload " + noFiles + " replay" + (noFiles != 1 ? "s" : "") + ": " + ex.Message, "OK");
+                        await GHApp.DisplayMessageBox(this, "Upload File Failure", "GnollHack failed to upload " + noFiles + " replay" + (noFiles != 1 ? "s" : "") + ": " + ex.Message, "OK");
                     }
                 }
             }
@@ -1629,7 +1629,7 @@ namespace GnollHackX.Pages.MainScreen
                     }
                     catch (Exception ex)
                     {
-                        await DisplayAlert("Upload File Failure", "GnollHack failed to upload " + filePath + ": " + ex.Message, "OK");
+                        await GHApp.DisplayMessageBox(this, "Upload File Failure", "GnollHack failed to upload " + filePath + ": " + ex.Message, "OK");
                     }
                 }
             }
@@ -1755,7 +1755,7 @@ namespace GnollHackX.Pages.MainScreen
                     }
                     catch (Exception ex)
                     {
-                        await DisplayAlert("Download File Failure", "GnollHack failed to download " + noFiles + " replay" + (noFiles != 1 ? "s" : "") + ": " + ex.Message, "OK");
+                        await GHApp.DisplayMessageBox(this, "Download File Failure", "GnollHack failed to download " + noFiles + " replay" + (noFiles != 1 ? "s" : "") + ": " + ex.Message, "OK");
                     }
                 }
             }
@@ -1819,7 +1819,7 @@ namespace GnollHackX.Pages.MainScreen
                     }
                     catch (Exception ex)
                     {
-                        await DisplayAlert("Download File Failure", "GnollHack failed to download " + filePath + ": " + ex.Message, "OK");
+                        await GHApp.DisplayMessageBox(this, "Download File Failure", "GnollHack failed to download " + filePath + ": " + ex.Message, "OK");
                     }
                 }
             }

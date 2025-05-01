@@ -2748,9 +2748,9 @@ namespace GnollHackX
                 {
                     output += proc.StandardOutput.ReadLine() + "\n";
                 }
-                await page.DisplayAlert("File Descriptors", "GnollHack will now attempt to send critical diagnostic data." + (output != "" ? "The information is as follows:\n\n" + output : ""), "OK");
+                await DisplayMessageBox(page, "File Descriptors", "GnollHack will now attempt to send critical diagnostic data." + (output != "" ? "The information is as follows:\n\n" + output : ""), "OK");
 #else
-                await page.DisplayAlert("Unsupported Function", "ListFileDescriptors is unsupported.", "OK");
+                await DisplayMessageBox(page, "Unsupported Function", "ListFileDescriptors is unsupported.", "OK");
 #endif
             }
         }
@@ -3699,7 +3699,7 @@ namespace GnollHackX
         {
             if (!File.Exists(filename))
             {
-                await page.DisplayAlert("File Sharing Failure", "GnollHack cannot find file \'" + filename + "\'", "OK");
+                await DisplayMessageBox(page, "File Sharing Failure", "GnollHack cannot find file \'" + filename + "\'", "OK");
                 return false;
             }
             await Share.RequestAsync(new ShareFileRequest
@@ -3721,13 +3721,13 @@ namespace GnollHackX
             {
                 // Prompt the user to turn on in settings
                 // On iOS once a permission has been denied it may not be requested again from the application
-                await page.DisplayAlert("Permission Needed", "GnollHack needs the file write permission to create a zip file. Please turn it on in Settings.", "OK");
+                await DisplayMessageBox(page, "Permission Needed", "GnollHack needs the file write permission to create a zip file. Please turn it on in Settings.", "OK");
                 return status;
             }
 
             if (Permissions.ShouldShowRationale<Permissions.StorageWrite>())
             {
-                await page.DisplayAlert("Permission Needed", "GnollHack needs the file write permission to create a zip file.", "OK");
+                await DisplayMessageBox(page, "Permission Needed", "GnollHack needs the file write permission to create a zip file.", "OK");
             }
 
             status = await Permissions.RequestAsync<Permissions.StorageWrite>();
@@ -3745,13 +3745,13 @@ namespace GnollHackX
             {
                 // Prompt the user to turn on in settings
                 // On iOS once a permission has been denied it may not be requested again from the application
-                await page.DisplayAlert("Permission Needed", "GnollHack needs the file read permission to work with a zip file. Please turn it on in Settings.", "OK");
+                await DisplayMessageBox(page, "Permission Needed", "GnollHack needs the file read permission to work with a zip file. Please turn it on in Settings.", "OK");
                 return status;
             }
 
             if (Permissions.ShouldShowRationale<Permissions.StorageRead>())
             {
-                await page.DisplayAlert("Permission Needed", "GnollHack needs the file read permission to work with a zip file.", "OK");
+                await DisplayMessageBox(page, "Permission Needed", "GnollHack needs the file read permission to work with a zip file.", "OK");
             }
 
             status = await Permissions.RequestAsync<Permissions.StorageRead>();
@@ -3770,7 +3770,7 @@ namespace GnollHackX
             }
             catch (Exception ex)
             {
-                await page.DisplayAlert("Archive Creation Failure", "GnollHack failed to create a crash report archive: " + ex.Message, "OK");
+                await DisplayMessageBox(page, "Archive Creation Failure", "GnollHack failed to create a crash report archive: " + ex.Message, "OK");
                 return false;
             }
             try
@@ -3782,7 +3782,7 @@ namespace GnollHackX
             }
             catch (Exception ex)
             {
-                await page.DisplayAlert("Share File Failure", "GnollHack failed to share a crash report archive: " + ex.Message, "OK");
+                await DisplayMessageBox(page, "Share File Failure", "GnollHack failed to share a crash report archive: " + ex.Message, "OK");
                 return false;
             }
         }
@@ -4058,7 +4058,7 @@ namespace GnollHackX
                                 }
                                 catch (Exception ex)
                                 {
-                                    tryAgain = await displayPage.DisplayAlert("Save File Tracking Exception", "Exception occurred while sending save file tracking information to the server after saving the game: " + ex.Message + "\n\nTry again?", "Yes", "No");
+                                    tryAgain = await DisplayMessageBox(displayPage, "Save File Tracking Exception", "Exception occurred while sending save file tracking information to the server after saving the game: " + ex.Message + "\n\nTry again?", "Yes", "No");
                                     res.IsSuccess = false;
                                     res.IsException = true;
                                     res.Message = ex.Message;
@@ -4079,7 +4079,7 @@ namespace GnollHackX
                                         catch (Exception ex)
                                         {
                                             Debug.WriteLine(ex.Message);
-                                            writeAgain = await displayPage.DisplayAlert("Tracking File Write Exception", "Could not write the tracking file \'" + fileName + GHConstants.SaveFileTrackingSuffix + "\'. Please check that you have enough disk space available. Exception: " + ex.Message + "\n\nTry again?", "Yes", "No");
+                                            writeAgain = await DisplayMessageBox(displayPage, "Tracking File Write Exception", "Could not write the tracking file \'" + fileName + GHConstants.SaveFileTrackingSuffix + "\'. Please check that you have enough disk space available. Exception: " + ex.Message + "\n\nTry again?", "Yes", "No");
                                             res.IsSuccess = false;
                                             res.IsException = true;
                                             res.Message = ex.Message;
@@ -4089,7 +4089,7 @@ namespace GnollHackX
                                 else
                                 {
                                     if (res.HasHttpStatusCode && res.StatusCode == HttpStatusCode.NotFound)
-                                        tryAgain = await displayPage.DisplayAlert("Save File Tracking Server Unavailable", "Save file tracking server is not available for recording save file information.\n\nTry again?", "Yes", "No");
+                                        tryAgain = await DisplayMessageBox(displayPage, "Save File Tracking Server Unavailable", "Save file tracking server is not available for recording save file information.\n\nTry again?", "Yes", "No");
                                     else
                                     {
                                         if (XlogUserNameVerified && res.HasHttpStatusCode && (res.StatusCode == HttpStatusCode.Forbidden /* 403 */)) // || res.StatusCode == HttpStatusCode.Locked /* 423 */
@@ -4100,14 +4100,14 @@ namespace GnollHackX
                                         if (!XlogCredentialsIncorrect && XlogUserNameVerified)
                                         {
                                             if (res.HasHttpStatusCode && res.StatusCode == HttpStatusCode.Conflict)
-                                                await displayPage.DisplayAlert("Save File Recorded Before", "Information of this save file has already been recorded on the server before and cannot be recorded more than once. Status Code: " + (int)res.StatusCode + ", Error: " + res.Message, "OK");
+                                                await DisplayMessageBox(displayPage, "Save File Recorded Before", "Information of this save file has already been recorded on the server before and cannot be recorded more than once. Status Code: " + (int)res.StatusCode + ", Error: " + res.Message, "OK");
                                             else
-                                                tryAgain = await displayPage.DisplayAlert("Save File Tracking Error", "Sending save file tracking information to the server failed. Status Code: " + (int)res.StatusCode + ", Error: " + res.Message + "\n\nTry again?", "Yes", "No");
+                                                tryAgain = await DisplayMessageBox(displayPage, "Save File Tracking Error", "Sending save file tracking information to the server failed. Status Code: " + (int)res.StatusCode + ", Error: " + res.Message + "\n\nTry again?", "Yes", "No");
                                         }
                                         else if (XlogCredentialsIncorrect)
-                                            await displayPage.DisplayAlert("Save File Tracking Credentials Error", "Sending save file tracking information to the server failed, likely due to incorrect credentials. Please check your user name and password. Status Code: " + (int)res.StatusCode + ", Error: " + res.Message, "OK");
+                                            await DisplayMessageBox(displayPage, "Save File Tracking Credentials Error", "Sending save file tracking information to the server failed, likely due to incorrect credentials. Please check your user name and password. Status Code: " + (int)res.StatusCode + ", Error: " + res.Message, "OK");
                                         else
-                                            await displayPage.DisplayAlert("Save File Tracking Error", "Sending save file tracking information to the server failed. Status Code: " + (int)res.StatusCode + ", Error: " + res.Message, "OK");
+                                            await DisplayMessageBox(displayPage, "Save File Tracking Error", "Sending save file tracking information to the server failed. Status Code: " + (int)res.StatusCode + ", Error: " + res.Message, "OK");
                                     }
                                 }
 
@@ -4130,7 +4130,7 @@ namespace GnollHackX
                 catch (Exception ex)
                 {
                     Debug.WriteLine(ex.Message);
-                    await displayPage.DisplayAlert("Save File Tracking Exception", "Exception occurred while sending save file tracking information to the server after saving the game: " + ex.Message, "OK");
+                    await DisplayMessageBox(displayPage, "Save File Tracking Exception", "Exception occurred while sending save file tracking information to the server after saving the game: " + ex.Message, "OK");
                     res.IsSuccess = false;
                     res.IsException = true;
                     res.Message = ex.Message;
@@ -4230,7 +4230,7 @@ namespace GnollHackX
                                 }
                                 catch (Exception ex)
                                 {
-                                    tryAgain = await displayPage.DisplayAlert("Save File Tracking Exception", "Exception occurred while sending a save file tracking request upon loading a saved game: " + ex.Message + "\n\nTry again?", "Yes", "No");
+                                    tryAgain = await DisplayMessageBox(displayPage, "Save File Tracking Exception", "Exception occurred while sending a save file tracking request upon loading a saved game: " + ex.Message + "\n\nTry again?", "Yes", "No");
                                     res.IsSuccess = false;
                                     res.IsException = true;
                                     res.Message = ex.Message;
@@ -4245,7 +4245,7 @@ namespace GnollHackX
                                 else
                                 {
                                     if (res.HasHttpStatusCode && res.StatusCode == HttpStatusCode.NotFound)
-                                        tryAgain = await displayPage.DisplayAlert("Save File Tracking Server Unavailable", "Save file tracking server is not available for verifying the save file.\n\nTry again?", "Yes", "No");
+                                        tryAgain = await DisplayMessageBox(displayPage, "Save File Tracking Server Unavailable", "Save file tracking server is not available for verifying the save file.\n\nTry again?", "Yes", "No");
                                     else
                                     {
                                         if (XlogUserNameVerified && res.HasHttpStatusCode && (res.StatusCode == HttpStatusCode.Forbidden /* 403 */)) // || res.StatusCode == HttpStatusCode.Locked /* 423 */
@@ -4256,14 +4256,14 @@ namespace GnollHackX
                                         if (!XlogCredentialsIncorrect && XlogUserNameVerified)
                                         {
                                             if (res.HasHttpStatusCode && res.StatusCode == HttpStatusCode.Conflict)
-                                                await displayPage.DisplayAlert("Save File Loaded Before", "This save file has already been loaded before and cannot be loaded more than once. Status Code: " + (int)res.StatusCode + ", Error: " + res.Message, "OK");
+                                                await DisplayMessageBox(displayPage, "Save File Loaded Before", "This save file has already been loaded before and cannot be loaded more than once. Status Code: " + (int)res.StatusCode + ", Error: " + res.Message, "OK");
                                             else
-                                                tryAgain = await displayPage.DisplayAlert("Save File Tracking Error", "Save file tracking verification failed upon loading a saved game. Status Code: " + (int)res.StatusCode + ", Error: " + res.Message + "\n\nTry again?", "Yes", "No");
+                                                tryAgain = await DisplayMessageBox(displayPage, "Save File Tracking Error", "Save file tracking verification failed upon loading a saved game. Status Code: " + (int)res.StatusCode + ", Error: " + res.Message + "\n\nTry again?", "Yes", "No");
                                         }
                                         else if (XlogCredentialsIncorrect)
-                                            await displayPage.DisplayAlert("Credentials Error", "Sending a save file tracking verification request to the server upon loading a saved game failed, likely due to incorrect credentials provided to the server. Please check your user name and password. Status Code: " + (int)res.StatusCode + ", Error: " + res.Message, "OK");
+                                            await DisplayMessageBox(displayPage, "Credentials Error", "Sending a save file tracking verification request to the server upon loading a saved game failed, likely due to incorrect credentials provided to the server. Please check your user name and password. Status Code: " + (int)res.StatusCode + ", Error: " + res.Message, "OK");
                                         else
-                                            await displayPage.DisplayAlert("Save File Tracking Error", "Save file tracking verification failed upon loading a saved game. Status Code: " + (int)res.StatusCode + ", Error: " + res.Message, "OK");
+                                            await DisplayMessageBox(displayPage, "Save File Tracking Error", "Save file tracking verification failed upon loading a saved game. Status Code: " + (int)res.StatusCode + ", Error: " + res.Message, "OK");
                                     }
                                 }
 
@@ -4286,7 +4286,7 @@ namespace GnollHackX
                 catch (Exception ex)
                 {
                     Debug.WriteLine(ex.Message);
-                    await displayPage.DisplayAlert("Save File Tracking Exception", "Exception occurred while sending a save file tracking verification request upon loading a saved game: " + ex.Message, "OK");
+                    await DisplayMessageBox(displayPage, "Save File Tracking Exception", "Exception occurred while sending a save file tracking verification request upon loading a saved game: " + ex.Message, "OK");
                     res.IsSuccess = false;
                     res.IsException = true;
                     res.Message = ex.Message;
@@ -6924,7 +6924,7 @@ namespace GnollHackX
             }
             catch (Exception ex)
             {
-                await page.DisplayAlert("Cannot Open Web Page", "GnollHack cannot open the webpage at " + uri.OriginalString + ". Error: " + ex.Message, "OK");
+                await DisplayMessageBox(page, "Cannot Open Web Page", "GnollHack cannot open the webpage at " + uri.OriginalString + ". Error: " + ex.Message, "OK");
             }
         }
 
@@ -7536,9 +7536,31 @@ namespace GnollHackX
                     return false;
                 }
                 else
-                    return false;
+                {
+                    return CurrentMainPage?.HandleMainPageSpecialKeyPress(spkey, isCtrl, isMeta, isShift) ?? false;
+                }
             }
         }
+
+        private static readonly object _keyboardHookLock = new object();
+        private static bool _isKeyboardHookEnabled = true;
+        public static bool IsKeyboardHookEnabled { get { lock (_keyboardHookLock) { return _isKeyboardHookEnabled; } } set { lock (_keyboardHookLock) { _isKeyboardHookEnabled = value; } } }
+
+        public static async Task DisplayMessageBox(Page page, string title, string message, string cancel)
+        {
+            IsKeyboardHookEnabled = false;
+            await page.DisplayAlert(title, message, cancel);
+            IsKeyboardHookEnabled = true;
+        }
+
+        public static async Task<bool> DisplayMessageBox(Page page, string title, string message, string accept, string cancel)
+        {
+            IsKeyboardHookEnabled = false;
+            bool res = await page.DisplayAlert(title, message, accept, cancel);
+            IsKeyboardHookEnabled = true;
+            return res;
+        }
+
 #if GNH_MAUI
         /* Note: var page = await GHApp.Navigation.PopModalAsync(); GHApp.DisconnectIViewHandlers(page); is preferred to await GHApp.Navigation.PopModalAsync(); GHApp.DisconnectIViewHandlers(this); since this ensures that the program does not crash if the wrong page is accidentally popped  */
         public static void DisconnectIViewHandlers(IView view)

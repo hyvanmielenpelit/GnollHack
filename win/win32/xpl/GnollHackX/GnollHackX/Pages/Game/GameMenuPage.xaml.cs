@@ -273,13 +273,13 @@ namespace GnollHackX.Pages.Game
                 }
                 else
                 {
-                    await DisplayAlert("Message File Not Found", "GnollHack could not find " + filepath + ".", "OK");
+                    await GHApp.DisplayMessageBox(this, "Message File Not Found", "GnollHack could not find " + filepath + ".", "OK");
                 }
             }
             catch (Exception ex) 
             {
                 Debug.WriteLine(ex.Message);
-                await DisplayAlert("Error Creating Message File", "An error occurred while creating the message file: " + ex.Message, "OK");
+                await GHApp.DisplayMessageBox(this, "Error Creating Message File", "An error occurred while creating the message file: " + ex.Message, "OK");
             }
 
             MainLayout.IsEnabled = true;

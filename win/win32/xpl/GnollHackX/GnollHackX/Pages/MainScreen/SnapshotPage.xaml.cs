@@ -169,7 +169,7 @@ namespace GnollHackX.Pages.MainScreen
                         if (dispfilepage.ReadFile(out errormsg))
                             await GHApp.Navigation.PushModalAsync(dispfilepage);
                         else
-                            await DisplayAlert("Error Reading Snapshot", "Error reading snapshot at " + usedFilePath + ": " + errormsg, "OK");
+                            await GHApp.DisplayMessageBox(this, "Error Reading Snapshot", "Error reading snapshot at " + usedFilePath + ": " + errormsg, "OK");
                     }
                 }
             }

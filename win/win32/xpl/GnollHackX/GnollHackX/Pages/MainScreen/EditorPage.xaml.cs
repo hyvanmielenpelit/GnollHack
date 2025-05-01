@@ -65,7 +65,7 @@ namespace GnollHackX.Pages.MainScreen
             GHApp.PlayButtonClickedSound();
             if (_textChanged)
             {
-                bool answer = await DisplayAlert("Save Changes?", "Are you sure to save changes to the options file?", "Yes", "No");
+                bool answer = await GHApp.DisplayMessageBox(this, "Save Changes?", "Are you sure to save changes to the options file?", "Yes", "No");
                 if (answer)
                 {
                     try
@@ -111,7 +111,7 @@ namespace GnollHackX.Pages.MainScreen
             GHApp.PlayButtonClickedSound();
             if (_textChanged)
             {
-                bool answer = await DisplayAlert("Close without Saving?", "Are you sure to close without saving changes?", "Yes", "No");
+                bool answer = await GHApp.DisplayMessageBox(this, "Close without Saving?", "Are you sure to close without saving changes?", "Yes", "No");
                 if (answer)
                 {
                     ErrorLabel.Text = "";
@@ -143,7 +143,7 @@ namespace GnollHackX.Pages.MainScreen
         {
             ResetButton.IsEnabled = false;
             GHApp.PlayButtonClickedSound();
-            bool answer = await DisplayAlert("Reset Options File?", "Are you sure to reset the options file?", "Yes", "No");
+            bool answer = await GHApp.DisplayMessageBox(this, "Reset Options File?", "Are you sure to reset the options file?", "Yes", "No");
             if(answer)
             {
                 ErrorLabel.Text = "";

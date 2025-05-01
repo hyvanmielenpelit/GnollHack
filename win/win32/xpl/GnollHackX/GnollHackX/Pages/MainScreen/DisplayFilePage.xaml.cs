@@ -206,7 +206,7 @@ namespace GnollHackX.Pages.MainScreen
             }
             catch (Exception ex)
             {
-                await DisplayAlert("Share File Failure", "GnollHack failed to share " + HeaderLabel.Text + ": " + ex.Message, "OK");
+                await GHApp.DisplayMessageBox(this, "Share File Failure", "GnollHack failed to share " + HeaderLabel.Text + ": " + ex.Message, "OK");
             }
             ShareButton.IsEnabled = true;
         }

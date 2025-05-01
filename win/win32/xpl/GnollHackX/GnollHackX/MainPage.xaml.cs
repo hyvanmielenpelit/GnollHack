@@ -708,7 +708,7 @@ namespace GnollHackX
                     bool removeanimationson = GHApp.PlatformService.IsRemoveAnimationsOn();
                     if (removeanimationson)
                     {
-                        await DisplayAlert("Invalid Animator Duration Scale",
+                        await GHApp.DisplayMessageBox(this, "Invalid Animator Duration Scale",
                             "GnollHack has detected invalid animator settings. If your device has a setting named \"Remove Animations\" under Settings -> Accessibility -> Visibility Enhancements, this setting must be set to Off. If your device does not have this setting, please manually adjust the value of \"Animator duration scale\" to 1x under Settings -> Developer Options -> Animator duration scale. ", "OK");
                         await CloseApp();
                     }
@@ -719,10 +719,10 @@ namespace GnollHackX
                         if (scalecurrent == 0.0f)
                         {
                             if (scalesetting == 0.0f)
-                                await DisplayAlert("Invalid Animator Duration Scale",
+                                await GHApp.DisplayMessageBox(this, "Invalid Animator Duration Scale",
                                     "GnollHack failed to automatically adjust Animator Duration Scale and it remains set to Off. Please manually adjust the value to 1x under Settings -> Developer Options -> Animator duration scale. If your device has a setting named \"Remove Animations\" under Settings -> Accessibility -> Visibility Enhancements, this setting needs to be disabled, too.", "OK");
                             else
-                                await DisplayAlert("Invalid Animator Duration Scale",
+                                await GHApp.DisplayMessageBox(this, "Invalid Animator Duration Scale",
                                     "GnollHack failed to automatically adjust Animator Duration Scale and it has become turned Off. Please check that the value is 1x under Settings -> Developer Options -> Animator duration scale. If your device has a setting named \"Remove Animations\" under Settings -> Accessibility -> Visibility Enhancements, this setting needs to be disabled, too.", "OK");
                             await CloseApp();
                         }
@@ -1560,15 +1560,47 @@ namespace GnollHackX
         private async Task DisplayAlertOrGrid(string title, string message, string buttonText, Color titleColor)
         {
             if (AlertGrid.IsVisible)
-                await DisplayAlert(title, message, buttonText);
+                await GHApp.DisplayMessageBox(this, title, message, buttonText);
             else
                 DisplayAlertGrid(title, message, buttonText, titleColor);
+        }
+
+        public bool HandleMainPageSpecialKeyPress(GHSpecialKey key, bool isCtrl, bool isMeta, bool isShift)
+        {
+            bool handled = false;
+            if (key == GHSpecialKey.Escape || key == GHSpecialKey.Enter || key == GHSpecialKey.Space)
+            {
+                if (AlertGrid.IsVisible && AlertOkButton.IsEnabled)
+                {
+                    AlertOkButton_Clicked(this, EventArgs.Empty);
+                    handled = true;
+                }
+                else if (PopupGrid.IsVisible && ((PopupOkButton.IsVisible && PopupOkButton.IsEnabled) || (PopupButtonGrid.IsVisible && PopupOkButton2.IsVisible && PopupOkButton2.IsEnabled)))
+                {
+                    PopupOkButton_Clicked(this, EventArgs.Empty);
+                    handled = true;
+                }
+                else if (PendingTasksGrid.IsVisible && key == GHSpecialKey.Escape && PendingTasksCancelButton.IsVisible && PendingTasksCancelButton.IsEnabled)
+                {
+                    PendingTasksCancelButton_Clicked(this, EventArgs.Empty);
+                    handled = true;
+                }
+                else if (PendingTasksGrid.IsVisible && (key == GHSpecialKey.Enter || key == GHSpecialKey.Space) && PendingTasksOkButton.IsVisible && PendingTasksOkButton.IsEnabled)
+                {
+                    PendingTasksOkButton_Clicked(this, EventArgs.Empty);
+                    handled = true;
+                }
+            }
+            return handled;
         }
 
         public bool HandleMainPageKeyPress(int key, bool isCtrl, bool isMeta)
         {
             bool handled = false;
-            switch(key)
+            if (AlertGrid.IsVisible || PopupGrid.IsVisible || PendingTasksGrid.IsVisible)
+                return false;
+
+            switch (key)
             {
                 case (int)'p':
                     if(StartLocalGameButton.IsEnabled && StartLocalGrid.IsEnabled && StartLocalGameButton.IsVisible && StartLocalGrid.IsVisible && UpperButtonGrid.IsVisible)

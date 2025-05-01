@@ -112,7 +112,7 @@ namespace GnollHackX.Pages.MainScreen
                     if (dispfilepage.ReadFile(out errormsg))
                         await GHApp.Navigation.PushModalAsync(dispfilepage);
                     else
-                        await DisplayAlert("Error Reading Manual", "Reading the manual entitled " + sm.Name + " failed: " + errormsg, "OK");
+                        await GHApp.DisplayMessageBox(this, "Error Reading Manual", "Reading the manual entitled " + sm.Name + " failed: " + errormsg, "OK");
                 }
             }
             LibraryLayout.IsEnabled = true;

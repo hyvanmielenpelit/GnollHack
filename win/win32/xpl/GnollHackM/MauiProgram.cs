@@ -445,8 +445,7 @@ public class KeyboardHook
 
     private static IntPtr HookCallback(int nCode, IntPtr wParam, IntPtr lParam)
     {
-        //Wrong window
-        if (!GHApp.WindowFocused)
+        if (!GHApp.WindowFocused || !GHApp.IsKeyboardHookEnabled)
             return CallNextHookEx(_hookID, nCode, wParam, lParam);
 
         //No game on to send key strokes to

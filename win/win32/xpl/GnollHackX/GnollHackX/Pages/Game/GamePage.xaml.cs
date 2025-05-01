@@ -1425,7 +1425,7 @@ namespace GnollHackX.Pages.Game
 #if SENTRY
                 SentrySdk.CaptureException(ex);
 #endif
-                await DisplayAlert("Error", "Error occurred when setting up the game: " + ex.Message, "OK");
+                await GHApp.DisplayMessageBox(this, "Error", "Error occurred when setting up the game: " + ex.Message, "OK");
             }
         }
 
@@ -3036,13 +3036,13 @@ namespace GnollHackX.Pages.Game
         {
             if (!GHApp.HasInternetAccess)
             {
-                await DisplayAlert("No Internet for Save File Tracking", "You have no internet access. Please switch the internet on before proceeding.", "OK");
+                await GHApp.DisplayMessageBox(this, "No Internet for Save File Tracking", "You have no internet access. Please switch the internet on before proceeding.", "OK");
             }
 
             GHGame curGame = CurrentGame;
             if (string.IsNullOrEmpty(fileName))
             {
-                await DisplayAlert("No File Name for Save File Tracking", "The file name for save file tracking is null or empty. Aborting tracking after saving.", "OK");
+                await GHApp.DisplayMessageBox(this, "No File Name for Save File Tracking", "The file name for save file tracking is null or empty. Aborting tracking after saving.", "OK");
                 curGame.ResponseQueue.Enqueue(new GHResponse(curGame, GHRequestType.SaveFileTrackingSave, 10));
                 return;
             }
@@ -3055,19 +3055,19 @@ namespace GnollHackX.Pages.Game
         {
             if (!GHApp.HasInternetAccess)
             {
-                await DisplayAlert("No Internet for Save File Tracking", "You have no internet access. Please switch the internet on before proceeding.", "OK");
+                await GHApp.DisplayMessageBox(this, "No Internet for Save File Tracking", "You have no internet access. Please switch the internet on before proceeding.", "OK");
             }
 
             GHGame curGame = CurrentGame;
             if (string.IsNullOrEmpty(fileName))
             {
-                await DisplayAlert("No File Name for Save File Tracking", "The file name for save file tracking is null or empty. Aborting tracking after loading.", "OK");
+                await GHApp.DisplayMessageBox(this, "No File Name for Save File Tracking", "The file name for save file tracking is null or empty. Aborting tracking after loading.", "OK");
                 curGame.ResponseQueue.Enqueue(new GHResponse(curGame, GHRequestType.SaveFileTrackingLoad, 10));
                 return;
             }
             if (!File.Exists(fileName + GHConstants.SaveFileTrackingSuffix))
             {
-                await DisplayAlert("No Tracking File for Save File", "The tracking file for the save file \'" + fileName + "' does not exist. Aborting tracking after loading.", "OK");
+                await GHApp.DisplayMessageBox(this, "No Tracking File for Save File", "The tracking file for the save file \'" + fileName + "' does not exist. Aborting tracking after loading.", "OK");
                 curGame.ResponseQueue.Enqueue(new GHResponse(curGame, GHRequestType.SaveFileTrackingLoad, 11));
                 return;
             }
@@ -3092,7 +3092,7 @@ namespace GnollHackX.Pages.Game
 
         private async void InformRecordingWentOff()
         {
-            await DisplayAlert("Recording Switched Off", "Game recording has been switched off due to critically low disk space.", "OK");
+            await GHApp.DisplayMessageBox(this, "Recording Switched Off", "Game recording has been switched off due to critically low disk space.", "OK");
         }
 
         private void CloseAllDialogs()
@@ -3141,11 +3141,11 @@ namespace GnollHackX.Pages.Game
                 {
                     default:
                     case (int)debug_log_types.DEBUGLOG_GENERAL: /* Both release and debug modes */
-                        await DisplayAlert(titlestring, log_str, "OK");
+                        await GHApp.DisplayMessageBox(this, titlestring, log_str, "OK");
                         break;
                     case (int)debug_log_types.DEBUGLOG_DEBUG_ONLY: /* Debug mode only */
 #if DEBUG
-                        await DisplayAlert(titlestring, log_str, "OK");
+                        await GHApp.DisplayMessageBox(this, titlestring, log_str, "OK");
 #endif
                         break;
                     case (int)debug_log_types.DEBUGLOG_FILE_DESCRIPTOR:
@@ -18428,7 +18428,7 @@ namespace GnollHackX.Pages.Game
         {
             if (!PlayingReplay)
             {
-                bool answer = await DisplayAlert("Panic", (text != null ? text : "GnollHack has panicked. See the Panic Log.") +
+                bool answer = await GHApp.DisplayMessageBox(this, "Panic", (text != null ? text : "GnollHack has panicked. See the Panic Log.") +
                     "\nDo you want to report the panic and send a crash report to help the developer fix the cause? This will create a zip archive of the files in your game directory and ask it to be shared further.",
                     "Yes", "No");
 
@@ -18440,7 +18440,7 @@ namespace GnollHackX.Pages.Game
             }
             else
             {
-                await DisplayAlert("Panic (Replay: Press OK)", (text != null ? text : "GnollHack has panicked. See the Panic Log."), "OK");
+                await GHApp.DisplayMessageBox(this, "Panic (Replay: Press OK)", (text != null ? text : "GnollHack has panicked. See the Panic Log."), "OK");
             }
 
             GHGame curGame = CurrentGame;
@@ -18449,7 +18449,7 @@ namespace GnollHackX.Pages.Game
 
         public async void ShowMessage(string text)
         {
-            await DisplayAlert("Message", text != null ? text : "No message.", "OK");
+            await GHApp.DisplayMessageBox(this, "Message", text != null ? text : "No message.", "OK");
 
             GHGame curGame = CurrentGame;
             curGame?.ResponseQueue.Enqueue(new GHResponse(curGame, GHRequestType.Message));
@@ -18457,7 +18457,7 @@ namespace GnollHackX.Pages.Game
 
         public async void YnConfirmation(string title, string text, string accept, string cancel)
         {
-            bool res = await DisplayAlert(title != null ? title : "Confirmation", text != null ? text : "Confirm?",
+            bool res = await GHApp.DisplayMessageBox(this, title != null ? title : "Confirmation", text != null ? text : "Confirm?",
                 accept != null ? accept : "Yes", cancel != null ? cancel : "No");
 
             GHGame curGame = CurrentGame;
@@ -18474,7 +18474,7 @@ namespace GnollHackX.Pages.Game
                 if (!GHApp.PostingDiagnosticData)
                 {
                     introDisplayed = true;
-                    answer = await DisplayAlert("Crash Detected", intro + "Do you want to switch sending diagnostic data on? This will report any panic to the development team and send basic data on your the state of your device upon each such panic." 
+                    answer = await GHApp.DisplayMessageBox(this, "Crash Detected", intro + "Do you want to switch sending diagnostic data on? This will report any panic to the development team and send basic data on your the state of your device upon each such panic." 
                         //+ (GHApp.IsiOS ? Environment.NewLine + Environment.NewLine + "Further, to enable us to get information on crashes, please make sure that Share With App Developers is switched on in the Settings app under Privacy & Security > Analytics & Improvements." : "") 
                         + (UseMainGLCanvas ? Environment.NewLine + Environment.NewLine + "If the problem persists, try switching GPU Acceleration off in Settings." : ""), "Yes", "No");
                     if (answer)
@@ -18483,7 +18483,7 @@ namespace GnollHackX.Pages.Game
                         Preferences.Set("PostingDiagnosticData", true);
                     }
                 }
-                answer = await DisplayAlert(introDisplayed ? "Send Crash Report?" : "Crash Detected", (!introDisplayed ? intro : "")+ "Do you want to create a crash report? This will create a zip archive of the files in your game directory and ask it to be shared further.", "Yes", "No");
+                answer = await GHApp.DisplayMessageBox(this, introDisplayed ? "Send Crash Report?" : "Crash Detected", (!introDisplayed ? intro : "")+ "Do you want to create a crash report? This will create a zip archive of the files in your game directory and ask it to be shared further.", "Yes", "No");
                 if (answer)
                 {
                     await GHApp.CreateCrashReport(this);

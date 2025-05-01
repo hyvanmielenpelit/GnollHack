@@ -786,7 +786,7 @@ namespace GnollHackX.Pages.MainScreen
                 }
                 catch (Exception ex)
                 {
-                    await DisplayAlert("Secrets Initialization Failed", "Initializing secrets failed: " + ex.Message, "OK");
+                    await GHApp.DisplayMessageBox(this, "Secrets Initialization Failed", "Initializing secrets failed: " + ex.Message, "OK");
                 }
                 await GHApp.SetSoundBanksUpForLoading();
             }

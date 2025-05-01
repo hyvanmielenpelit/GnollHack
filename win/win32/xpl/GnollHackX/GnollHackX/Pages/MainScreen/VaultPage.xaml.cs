@@ -244,7 +244,7 @@ namespace GnollHackX.Pages.MainScreen
                 string errormsg = "";
                 if (!topScorePage.ReadFile(out errormsg))
                 {
-                    await DisplayAlert("Reading Top Scores Failed", "GnollHack failed to read the top scores file: " + errormsg, "OK");
+                    await GHApp.DisplayMessageBox(this, "Reading Top Scores Failed", "GnollHack failed to read the top scores file: " + errormsg, "OK");
                     VaultLayout.IsEnabled = true;
                 }
                 else
