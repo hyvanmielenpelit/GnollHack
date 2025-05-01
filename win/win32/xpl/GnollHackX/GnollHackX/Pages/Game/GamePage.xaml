@@ -28,7 +28,7 @@
                 <Frame x:Name="MessageFilterFrame" BackgroundColor="#66000000" BorderColor="Black" CornerRadius="10" IsVisible="False" HorizontalOptions="Start" VerticalOptions="Start" >
                     <StackLayout> <!-- Some versions of MAUI do not support placing Entrys in Frames -->
                         <Entry x:Name="MessageFilterEntry" FontFamily="Underwood" FontSize="18" TextColor="White" BackgroundColor="#66000000" Placeholder="Search" PlaceholderColor="LightGray"
-                                   WidthRequest="200" Keyboard="Default" HorizontalTextAlignment="Center" TextChanged="MessageFilterEntry_TextChanged" />
+                                   WidthRequest="200" Keyboard="Plain" HorizontalTextAlignment="Center" TextChanged="MessageFilterEntry_TextChanged" />
                     </StackLayout>
                 </Frame>
                 <Grid x:Name="UIGrid" Grid.Row="0" RowSpacing="0" ColumnSpacing="0" InputTransparent="True" CascadeInputTransparent="False" HorizontalOptions="Fill" VerticalOptions="Fill">
@@ -372,7 +372,7 @@
                     <controls:SimpleImageButton x:Name="MoreNextButton" IsVisible="False" ImgSourcePath="resource://GnollHackX.Assets.UI.page-next.png" BtnClicked="MoreNextButton_BtnClicked" HorizontalOptions="End" VerticalOptions="Center" />
                 </Grid>
                 <Entry x:Name="MoreCommandsFilterEntry" FontFamily="Underwood" FontSize="14" TextColor="White" BackgroundColor="#FF111111" Placeholder="Search" PlaceholderColor="#FF666666"
-                                   WidthRequest="120" Keyboard="Default" HorizontalTextAlignment="Start" TextChanged="MoreCommandsFilterEntry_TextChanged" 
+                                   WidthRequest="120" Keyboard="Plain" HorizontalTextAlignment="Start" TextChanged="MoreCommandsFilterEntry_TextChanged" 
                                    HorizontalOptions="Start" VerticalOptions="End" Margin="5" />
             </Grid>
             <controls:SwitchableCanvasView x:Name="TipView" 
