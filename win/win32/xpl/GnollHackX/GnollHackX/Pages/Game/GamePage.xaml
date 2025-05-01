@@ -275,7 +275,7 @@
                             </Label>
                             <StackLayout Spacing="6" Orientation="Horizontal" HorizontalOptions="CenterAndExpand">
                                 <Entry x:Name="GetLineEntryText" WidthRequest="320" HorizontalOptions="Center" Placeholder="Enter the text here" PlaceholderColor="Gray" TextColor="White" BackgroundColor="#40000000"
-                                       HorizontalTextAlignment="Center" FontSize="20" TextChanged="GetLineEntryText_TextChanged" Completed="GetLineEntryText_Completed" />
+                                       Keyboard="Plain" HorizontalTextAlignment="Center" FontSize="20" TextChanged="GetLineEntryText_TextChanged" Completed="GetLineEntryText_Completed" />
                                 <controls:CustomImageButton x:Name="GetLineQuestionMarkButton" IsVisible="False" Text="?" FontSize="18" WidthRequest="50" HeightRequest="50" FontFamily="Diablo" HorizontalOptions="Start" VerticalOptions="CenterAndExpand" 
                                             BackgroundColor="Transparent" TextColor="White"
                                             Clicked="GetLineQuestionMarkButton_Clicked" />

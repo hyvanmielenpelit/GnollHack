@@ -1100,7 +1100,7 @@
                                     VerticalOptions="Center" 
                                     HorizontalOptions="Start" />
                                 <Entry Grid.Column="1" x:Name="PostXlogUserNameEntry" MaxLength="31" HorizontalOptions="End" VerticalOptions="Center" Placeholder="Enter user name" PlaceholderColor="Gray"
-                                    TextColor="Black" FontFamily="DejaVuSansMono" FontSize="16" BackgroundColor="Transparent" HorizontalTextAlignment="Center" WidthRequest="200" />
+                                    Keyboard="Plain" TextColor="Black" FontFamily="DejaVuSansMono" FontSize="16" BackgroundColor="Transparent" HorizontalTextAlignment="Center" WidthRequest="200" />
                             </Grid>
                             <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
                                 <Label Text="Password"
@@ -1110,7 +1110,7 @@
                                     VerticalOptions="Center" 
                                     HorizontalOptions="Start" />
                                 <Entry Grid.Column="1" x:Name="PostXlogPasswordEntry" IsPassword="True" MaxLength="63" HorizontalOptions="End" VerticalOptions="Center" Placeholder="Enter password" PlaceholderColor="Gray"
-                                    TextColor="Black" FontFamily="DejaVuSansMono" FontSize="16" BackgroundColor="Transparent" HorizontalTextAlignment="Center" WidthRequest="200" />
+                                    Keyboard="Plain" TextColor="Black" FontFamily="DejaVuSansMono" FontSize="16" BackgroundColor="Transparent" HorizontalTextAlignment="Center" WidthRequest="200" />
                             </Grid>
                             <Grid ColumnSpacing="6" ColumnDefinitions="Auto,*" HeightRequest="40" HorizontalOptions="Fill">
                                 <StackLayout Grid.Column="0" Spacing="12" Orientation="Horizontal" HeightRequest="40" HorizontalOptions="Start">
@@ -1196,7 +1196,7 @@
                                     </Label.GestureRecognizers>
                                 </Label>
                                 <Entry Grid.Column="1" x:Name="BonesAllowedUsersEntry" MaxLength="2047" HorizontalOptions="End" VerticalOptions="Center" Placeholder="All users" PlaceholderColor="Gray"
-                                    TextColor="Black" FontFamily="DejaVuSansMono" FontSize="16" BackgroundColor="Transparent" HorizontalTextAlignment="Center" WidthRequest="200" />
+                                    Keyboard="Plain" TextColor="Black" FontFamily="DejaVuSansMono" FontSize="16" BackgroundColor="Transparent" HorizontalTextAlignment="Center" WidthRequest="200" />
                             </Grid>
                             <Grid x:Name="ForcePostBonesGrid" ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40" IsVisible="False">
                                 <Label Text="  Force Post Bones"
@@ -1476,7 +1476,7 @@
                         <StackLayout x:Name="TextLayout" Spacing="6" HorizontalOptions="Fill" VerticalOptions="Center">
                             <Label x:Name="TextCaption" Text="" FontFamily="Immortal" FontSize="20" HorizontalOptions="CenterAndExpand" TextColor="White" />
                             <Entry x:Name="TextEntry" WidthRequest="320" HorizontalOptions="Center" Placeholder="Enter the link here" PlaceholderColor="Gray" TextColor="White" BackgroundColor="#40000000"
-                                       HorizontalTextAlignment="Center" FontSize="20" FontFamily="LatoRegular" Completed="TextEntry_Completed" />
+                                       Keyboard="Plain" HorizontalTextAlignment="Center" FontSize="20" FontFamily="LatoRegular" Completed="TextEntry_Completed" />
                             <Grid ColumnSpacing="6" WidthRequest="360" HorizontalOptions="Center" VerticalOptions="CenterAndExpand">
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="65" />
