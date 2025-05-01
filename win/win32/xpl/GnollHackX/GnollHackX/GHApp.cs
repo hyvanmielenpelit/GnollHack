@@ -7488,12 +7488,56 @@ namespace GnollHackX
 
         public static bool SendKeyPress(int key, bool isCtrl, bool isMeta)
         {
-            return CurrentGamePage?.HandleKeyPress(key, isCtrl, isMeta) 
-                ?? (PageFromTopOfModalNavigationStack() == null ? (CurrentMainPage?.HandleMainPageKeyPress(key, isCtrl, isMeta) ?? false) : false);
+            if (CurrentGamePage != null)
+                return CurrentGamePage?.HandleKeyPress(key, isCtrl, isMeta) ?? false;
+            else
+            {
+                Page topPage = PageFromTopOfModalNavigationStack();
+                if (topPage == null)
+                {
+                    return CurrentMainPage?.HandleMainPageKeyPress(key, isCtrl, isMeta) ?? false;
+                }
+                else
+                    return false;
+            }
         }
         public static bool SendSpecialKeyPress(GHSpecialKey spkey, bool isCtrl, bool isMeta, bool isShift)
         {
-            return CurrentGamePage?.HandleSpecialKeyPress(spkey, isCtrl, isMeta, isShift) ?? false;
+            if (CurrentGamePage != null)
+                return CurrentGamePage?.HandleSpecialKeyPress(spkey, isCtrl, isMeta, isShift) ?? false;
+            else
+            {
+                Page topPage = PageFromTopOfModalNavigationStack();
+                if (topPage != null)
+                {
+                    if (spkey == GHSpecialKey.Escape)
+                    {
+                        if (topPage is AboutPage)
+                        {
+                            ((AboutPage)topPage).ClosePage();
+                            return true;
+                        }
+                        else if (topPage is ResetPage)
+                        {
+                            ((ResetPage)topPage).ClosePage();
+                            return true;
+                        }
+                        else if (topPage is VaultPage)
+                        {
+                            ((VaultPage)topPage).ClosePage();
+                            return true;
+                        }
+                        else if (topPage is EditorPage)
+                        {
+                            ((EditorPage)topPage).ClosePage();
+                            return true;
+                        }
+                    }
+                    return false;
+                }
+                else
+                    return false;
+            }
         }
 #if GNH_MAUI
         /* Note: var page = await GHApp.Navigation.PopModalAsync(); GHApp.DisconnectIViewHandlers(page); is preferred to await GHApp.Navigation.PopModalAsync(); GHApp.DisconnectIViewHandlers(this); since this ensures that the program does not crash if the wrong page is accidentally popped  */

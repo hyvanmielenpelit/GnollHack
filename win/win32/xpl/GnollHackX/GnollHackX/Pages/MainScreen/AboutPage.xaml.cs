@@ -150,6 +150,12 @@ namespace GnollHackX.Pages.MainScreen
             GHApp.DisconnectIViewHandlers(page);
         }
 
+        public void ClosePage()
+        {
+            if(AboutGrid.IsEnabled)
+                Button_Clicked(this, EventArgs.Empty);
+        }
+
         private bool _backPressed = false;
         private async Task<bool> BackButtonPressed(object sender, EventArgs e)
         {

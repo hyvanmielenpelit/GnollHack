@@ -133,6 +133,12 @@ namespace GnollHackX.Pages.MainScreen
             }
         }
 
+        public void ClosePage()
+        {
+            if (CancelButton.IsEnabled)
+                CancelButton_Clicked(this, EventArgs.Empty);
+        }
+
         private async void ResetButton_Clicked(object sender, EventArgs e)
         {
             ResetButton.IsEnabled = false;

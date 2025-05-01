@@ -1571,39 +1571,56 @@ namespace GnollHackX
             switch(key)
             {
                 case (int)'p':
-                    if(StartLocalGameButton.IsEnabled && StartLocalGrid.IsEnabled && StartLocalGameButton.IsVisible && StartLocalGrid.IsVisible)
+                    if(StartLocalGameButton.IsEnabled && StartLocalGrid.IsEnabled && StartLocalGameButton.IsVisible && StartLocalGrid.IsVisible && UpperButtonGrid.IsVisible)
                         StartLocalGameButton_Clicked(this, EventArgs.Empty);
                     handled = true;
                     break;
                 case (int)'s':
-                    if (SettingsButton.IsEnabled && SettingsButton.IsVisible)
+                    if (SettingsButton.IsEnabled && SettingsButton.IsVisible && UpperButtonGrid.IsVisible)
                         SettingsButton_Clicked(this, EventArgs.Empty);
                     handled = true;
                     break;
                 case (int)'o':
-                    if (OptionsButton.IsEnabled && OptionsButton.IsVisible)
+                    if (OptionsButton.IsEnabled && OptionsButton.IsVisible && UpperButtonGrid.IsVisible)
                         OptionsButton_Clicked(this, EventArgs.Empty);
                     handled = true;
                     break;
                 case (int)'r':
-                    if (ResetButton.IsEnabled && ResetButton.IsVisible)
+                    if (ResetButton.IsEnabled && ResetButton.IsVisible && UpperButtonGrid.IsVisible)
                         ResetButton_Clicked(this, EventArgs.Empty);
                     handled = true;
                     break;
                 case (int)'a':
-                    if (AboutButton.IsEnabled && AboutButton.IsVisible)
+                    if (AboutButton.IsEnabled && AboutButton.IsVisible && UpperButtonGrid.IsVisible)
                         CreditsButton_Clicked(this, EventArgs.Empty);
                     handled = true;
                     break;
                 case (int)'v':
-                    if (VaultButton.IsEnabled && VaultButton.IsVisible)
+                    if (VaultButton.IsEnabled && VaultButton.IsVisible && UpperButtonGrid.IsVisible)
                         VaultButton_Clicked(this, EventArgs.Empty);
+                    handled = true;
+                    break;
+                case (int)'w': //Wizard mode
+                    if (wizardModeSwitch.IsEnabled && wizardModeGrid.IsVisible && StartButtonLayout.IsVisible)
+                        wizardModeSwitch.IsToggled = !wizardModeSwitch.IsToggled;
+                    handled = true;
+                    break;
+                case (int)'c': //Classic mode
+                    if (classicModeSwitch.IsEnabled && classicModeGrid.IsVisible && StartButtonLayout.IsVisible)
+                        classicModeSwitch.IsToggled = !classicModeSwitch.IsToggled;
+                    handled = true;
+                    break;
+                case (int)'C': //Casual mode
+                    if (casualModeSwitch.IsEnabled && casualModeGrid.IsVisible && StartButtonLayout.IsVisible)
+                        casualModeSwitch.IsToggled = !casualModeSwitch.IsToggled;
                     handled = true;
                     break;
                 case (int)'e':
                 case (int)'x':
                 case (int)'q':
-                    ExitAppButton_Clicked(this, EventArgs.Empty);
+                    if(ExitButton.IsEnabled && ExitButton.IsVisible && StartButtonLayout.IsVisible)
+                        ExitAppButton_Clicked(this, EventArgs.Empty);
+                    handled = true;
                     break;
                 default:
                     break;
