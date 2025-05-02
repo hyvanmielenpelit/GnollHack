@@ -1200,6 +1200,7 @@ namespace GnollHackX.Pages.Game
             {
                 ReplayFileName = replayFileName;
                 _mainPage.GameStarted = true;
+                LoadingDetailsLabel.Text = "Initializing...";
                 LoadingProgressBar.Progress = 0.0;
                 canvasView.Focus();
 
