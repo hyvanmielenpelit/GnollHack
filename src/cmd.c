@@ -6196,7 +6196,7 @@ struct ext_func_tab extcmdlist[] = {
     { C('c'), "call", "call (name) something", docallcmd, IFBURIED | AUTOCOMPLETE, 0, getobj_callable, "call" },
     { 'Z', "cast", "cast a spell", docast, AUTOCOMPLETE | IFBURIED | INSPELLMENU },
     { M(26), "castquick", "cast the quick spell", docastquick, AUTOCOMPLETE | IFBURIED | INSPELLMENU },
-    { 'C', "chat", "talk to someone", dotalk, IFBURIED | AUTOCOMPLETE },
+    { 'C', "chat", "talk to or interact with someone", dotalk, IFBURIED | AUTOCOMPLETE },
     { M(10), "chatsteed", "talk to steed", dotalksteed, IFBURIED },
     { M(11), "chatnearby", "talk to someone nearby", dotalknearby, IFBURIED },
     { M(13), "chronicle", "show journal of major events", do_gamelog, IFBURIED | AUTOCOMPLETE | GENERALCMD },
