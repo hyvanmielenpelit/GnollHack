@@ -6941,22 +6941,6 @@ namespace GnollHackX
             return topPage == page;
         }
 
-        public static OutRipPage OutRipPageFromTopOfModalNavigationStack()
-        {
-            Page topPage = PageFromTopOfModalNavigationStack();
-            if (topPage == null)
-                return null;
-            return topPage as OutRipPage;
-        }
-
-        public static NamePage NamePageFromTopOfModalNavigationStack()
-        {
-            Page topPage = PageFromTopOfModalNavigationStack();
-            if (topPage == null)
-                return null;
-            return topPage as NamePage;
-        }
-
         public static Page PageFromTopOfModalNavigationStack()
         {
             int cnt = Navigation.ModalStack.Count;
