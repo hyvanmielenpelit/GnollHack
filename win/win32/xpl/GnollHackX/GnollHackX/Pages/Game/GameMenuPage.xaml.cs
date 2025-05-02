@@ -102,6 +102,12 @@ namespace GnollHackX.Pages.Game
             GHApp.DoKeyboardFocus();
         }
 
+        public void ClosePage()
+        {
+            if(MainLayout.IsEnabled)
+                btnBackToGame_Clicked(this, EventArgs.Empty);
+        }
+
         private async void btnBackToGame_Clicked(object sender, EventArgs e)
         {
             MainLayout.IsEnabled = false;

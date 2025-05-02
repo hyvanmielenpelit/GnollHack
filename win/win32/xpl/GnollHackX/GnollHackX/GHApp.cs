@@ -7506,57 +7506,53 @@ namespace GnollHackX
 
         public static bool SendKeyPress(int key, bool isCtrl, bool isMeta)
         {
-            if (CurrentGamePage != null)
-                return CurrentGamePage?.HandleKeyPress(key, isCtrl, isMeta) ?? false;
+            Page topPage = PageFromTopOfModalNavigationStack();
+            if (topPage == null)
+                return CurrentMainPage?.HandleMainPageKeyPress(key, isCtrl, isMeta) ?? false;
+            else if (topPage is GamePage)
+                return ((GamePage)topPage).HandleKeyPress(key, isCtrl, isMeta);
             else
-            {
-                Page topPage = PageFromTopOfModalNavigationStack();
-                if (topPage == null)
-                {
-                    return CurrentMainPage?.HandleMainPageKeyPress(key, isCtrl, isMeta) ?? false;
-                }
-                else
-                    return false;
-            }
+                return false;
         }
         public static bool SendSpecialKeyPress(GHSpecialKey spkey, bool isCtrl, bool isMeta, bool isShift)
         {
-            if (CurrentGamePage != null)
-                return CurrentGamePage?.HandleSpecialKeyPress(spkey, isCtrl, isMeta, isShift) ?? false;
+            Page topPage = PageFromTopOfModalNavigationStack();
+            if(topPage == null)
+                return CurrentMainPage?.HandleMainPageSpecialKeyPress(spkey, isCtrl, isMeta, isShift) ?? false;
+            else if (topPage is GamePage)
+                return ((GamePage)topPage).HandleSpecialKeyPress(spkey, isCtrl, isMeta, isShift);
+            else if (spkey == GHSpecialKey.Escape) //GamePage is somewhere in the stack so check only the related pages
+            {
+                if (topPage is GameMenuPage)
+                {
+                    ((GameMenuPage)topPage).ClosePage();
+                    return true;
+                }
+                else if (topPage is AboutPage)
+                {
+                    ((AboutPage)topPage).ClosePage();
+                    return true;
+                }
+                else if (topPage is ResetPage)
+                {
+                    ((ResetPage)topPage).ClosePage();
+                    return true;
+                }
+                else if (topPage is VaultPage)
+                {
+                    ((VaultPage)topPage).ClosePage();
+                    return true;
+                }
+                else if (topPage is EditorPage)
+                {
+                    ((EditorPage)topPage).ClosePage();
+                    return true;
+                }
+                return false;
+            }
             else
             {
-                Page topPage = PageFromTopOfModalNavigationStack();
-                if (topPage != null)
-                {
-                    if (spkey == GHSpecialKey.Escape)
-                    {
-                        if (topPage is AboutPage)
-                        {
-                            ((AboutPage)topPage).ClosePage();
-                            return true;
-                        }
-                        else if (topPage is ResetPage)
-                        {
-                            ((ResetPage)topPage).ClosePage();
-                            return true;
-                        }
-                        else if (topPage is VaultPage)
-                        {
-                            ((VaultPage)topPage).ClosePage();
-                            return true;
-                        }
-                        else if (topPage is EditorPage)
-                        {
-                            ((EditorPage)topPage).ClosePage();
-                            return true;
-                        }
-                    }
-                    return false;
-                }
-                else
-                {
-                    return CurrentMainPage?.HandleMainPageSpecialKeyPress(spkey, isCtrl, isMeta, isShift) ?? false;
-                }
+                return false;
             }
         }
 
