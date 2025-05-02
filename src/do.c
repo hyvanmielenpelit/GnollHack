@@ -3820,7 +3820,7 @@ struct item_description_stats* stats_ptr; /* If non-null, only returns item stat
             if (ocflags6 & O6_THROWING_REQUIRES_STR_18_00)
             {
                 powercnt++;
-                Sprintf(buf, " %2d - Throwing requires strength of 18/00 or higher", powercnt);
+                Sprintf(buf, " %2d - Throwing requires strength of 18/** or higher", powercnt);
                 putstr(datawin, ATR_INDENT_AT_DASH | ATR_ORDERED_LIST, buf);
             }
 
