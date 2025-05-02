@@ -543,6 +543,22 @@ public class KeyboardHook
                             if (GHApp.SendSpecialKeyPress(GHSpecialKey.Enter, GHApp.CtrlDown, GHApp.AltDown, GHApp.ShiftDown))
                                 return 1;
                             break;
+                        case 0x60:
+                            if (GHApp.SendSpecialKeyPress(GHSpecialKey.NumberPad0, GHApp.CtrlDown, GHApp.AltDown, GHApp.ShiftDown))
+                                return 1;
+                            break;
+                        case 0x6B:
+                            if (GHApp.SendSpecialKeyPress(GHSpecialKey.Add, GHApp.CtrlDown, GHApp.AltDown, GHApp.ShiftDown))
+                                return 1;
+                            break;
+                        case 0x6D:
+                            if (GHApp.SendSpecialKeyPress(GHSpecialKey.Subtract, GHApp.CtrlDown, GHApp.AltDown, GHApp.ShiftDown))
+                                return 1;
+                            break;
+                        case 0x6E:
+                            if (GHApp.SendSpecialKeyPress(GHSpecialKey.Decimal, GHApp.CtrlDown, GHApp.AltDown, GHApp.ShiftDown))
+                                return 1;
+                            break;
                         //case 0x60:
                         //case 0x61:
                         //case 0x62:
