@@ -462,12 +462,15 @@
             <Grid x:Name="LoadingGrid" HorizontalOptions="Fill" VerticalOptions="Fill" >
                 <gnh:GHCachedImage Source="resource://GnollHackX.Assets.dgn_entrance.jpg" HorizontalOptions="Fill" VerticalOptions="Fill" 
                                 Aspect="AspectFill" CacheImage="False" />
-                <StackLayout Spacing="6" HeightRequest="150" WidthRequest="250" HorizontalOptions="Center" VerticalOptions="Center">
+                <StackLayout Spacing="6" HeightRequest="150" WidthRequest="360" HorizontalOptions="Center" VerticalOptions="Center">
                     <Label x:Name="LoadingLabel" Text="Loading..." FontFamily="Diablo" TextColor="White" FontSize="36"
                        HorizontalOptions="CenterAndExpand" HorizontalTextAlignment="Center" 
                        VerticalOptions="End" VerticalTextAlignment="Center"/>
+                    <Label x:Name="LoadingDetailsLabel" Text="" FontFamily="DejaVuSansMono" TextColor="White" FontSize="14"
+                       HorizontalOptions="Fill" HorizontalTextAlignment="Center" 
+                       VerticalOptions="Start" VerticalTextAlignment="Center"/>
                     <ProgressBar x:Name="LoadingProgressBar" HorizontalOptions="Fill" VerticalOptions="Start" 
-                                 ProgressColor="LightBlue" Progress="0" />
+                                 ProgressColor="LightBlue" Progress="0" Margin="0,10" />
                 </StackLayout>
             </Grid>
         </Grid>

@@ -1207,6 +1207,8 @@ namespace GnollHackX.Pages.Game
                 await _gnollHackService.InitializeGnollHack();
  
                 var tasks = new List<Task>();
+
+                LoadingDetailsLabel.Text = "Loading Music Bank...";
                 tasks.Add(LoadingProgressBar.ProgressTo(0.1, 400, Easing.Linear));
                 tasks.Add(Task.Run(() =>
                 {
@@ -1218,6 +1220,7 @@ namespace GnollHackX.Pages.Game
                 if (!GHApp.StartGameDataSet)
                 {
                     Task<SKImage> tileSetTask;
+                    LoadingDetailsLabel.Text = "Loading Master Sound Banks...";
                     tasks.Add(LoadingProgressBar.ProgressTo(0.30, 400, Easing.Linear));
                     tasks.Add(Task.Run(() =>
                     {
@@ -1226,6 +1229,7 @@ namespace GnollHackX.Pages.Game
                     await Task.WhenAll(tasks);
                     tasks.Clear();
 
+                    LoadingDetailsLabel.Text = "Loading Tile Sheet 1/2...";
                     tasks.Add(LoadingProgressBar.ProgressTo(0.45, 400, Easing.Linear));
                     tileSetTask = GHApp.LoadTilesetAsync("gnollhack_64x96_transparent_32bits.ghpng");
                     tasks.Add(tileSetTask);
@@ -1233,6 +1237,7 @@ namespace GnollHackX.Pages.Game
                     GHApp._tileMap[0] = tileSetTask.Result;
                     tasks.Clear();
 
+                    LoadingDetailsLabel.Text = "Loading Tile Sheet 2/2...";
                     tasks.Add(LoadingProgressBar.ProgressTo(0.55, 200, Easing.Linear));
                     tileSetTask = GHApp.LoadTilesetAsync("gnollhack_64x96_transparent_32bits-2.ghpng");
                     tasks.Add(tileSetTask);
@@ -1240,7 +1245,8 @@ namespace GnollHackX.Pages.Game
                     GHApp._tileMap[1] = tileSetTask.Result;
                     tasks.Clear();
 
-                    tasks.Add(LoadingProgressBar.ProgressTo(0.575, 100, Easing.Linear));
+                    LoadingDetailsLabel.Text = "Loading GnollHack icon...";
+                    tasks.Add(LoadingProgressBar.ProgressTo(0.575, 50, Easing.Linear));
                     tasks.Add(Task.Run(() =>
                     {
                         GHApp._logoBitmap = GHApp.LoadEmbeddedAssetsBitmap("gnollhack-icon-v2-512.png");
@@ -1248,7 +1254,8 @@ namespace GnollHackX.Pages.Game
                     await Task.WhenAll(tasks);
                     tasks.Clear();
 
-                    tasks.Add(LoadingProgressBar.ProgressTo(0.6, 100, Easing.Linear));
+                    LoadingDetailsLabel.Text = "Loading embedded bitmaps...";
+                    tasks.Add(LoadingProgressBar.ProgressTo(0.65, 100, Easing.Linear));
                     tasks.Add(Task.Run(() =>
                     {
                         GHApp._skillBitmap = GHApp.LoadEmbeddedUIBitmap("skill.png");
@@ -1261,7 +1268,14 @@ namespace GnollHackX.Pages.Game
 
                         GHApp.UnexploredGlyph = _gnollHackService.GetUnexploredGlyph();
                         GHApp.NoGlyph = _gnollHackService.GetNoGlyph();
+                    }));
+                    await Task.WhenAll(tasks);
+                    tasks.Clear();
 
+                    LoadingDetailsLabel.Text = "Loading tile offset data...";
+                    tasks.Add(LoadingProgressBar.ProgressTo(0.675, 50, Easing.Linear));
+                    tasks.Add(Task.Run(() =>
+                    {
                         int animoff, enloff, reoff, general_tile_off, hit_tile_off, ui_tile_off, spell_tile_off, skill_tile_off, command_tile_off, buff_tile_off, cursor_off;
                         _gnollHackService.GetOffs(out animoff, out enloff, out reoff, out general_tile_off, out hit_tile_off, out ui_tile_off, out spell_tile_off, out skill_tile_off, out command_tile_off, out buff_tile_off,
                             out cursor_off);
@@ -1281,26 +1295,46 @@ namespace GnollHackX.Pages.Game
                     await Task.WhenAll(tasks);
                     tasks.Clear();
 
-                    tasks.Add(LoadingProgressBar.ProgressTo(0.7, 100, Easing.Linear));
+                    LoadingDetailsLabel.Text = "Loading graphics definitions 1/4...";
+                    tasks.Add(LoadingProgressBar.ProgressTo(0.700, 50, Easing.Linear));
                     tasks.Add(Task.Run(() =>
                     {
                         GHApp._animationDefs = _gnollHackService.GetAnimationArray();
+                    }));
+                    await Task.WhenAll(tasks);
+                    tasks.Clear();
+
+                    LoadingDetailsLabel.Text = "Loading graphics definitions 2/4...";
+                    tasks.Add(LoadingProgressBar.ProgressTo(0.725, 50, Easing.Linear));
+                    tasks.Add(Task.Run(() =>
+                    {
                         GHApp._enlargementDefs = _gnollHackService.GetEnlargementArray();
                     }));
                     await Task.WhenAll(tasks);
                     tasks.Clear();
 
-                    tasks.Add(LoadingProgressBar.ProgressTo(0.80, 100, Easing.Linear));
+                    LoadingDetailsLabel.Text = "Loading graphics definitions 3/4...";
+                    tasks.Add(LoadingProgressBar.ProgressTo(0.75, 50, Easing.Linear));
                     tasks.Add(Task.Run(() =>
                     {
                         GHApp._replacementDefs = _gnollHackService.GetReplacementArray();
+                    }));
+                    await Task.WhenAll(tasks);
+                    tasks.Clear();
+
+                    LoadingDetailsLabel.Text = "Loading graphics definitions 4/4...";
+                    tasks.Add(LoadingProgressBar.ProgressTo(0.775, 50, Easing.Linear));
+                    tasks.Add(Task.Run(() =>
+                    {
                         GHApp._autodraws = _gnollHackService.GetAutoDrawArray();
                     }));
                     await Task.WhenAll(tasks);
                     tasks.Clear();
+
                     GHApp.StartGameDataSet = true;
                 }
 
+                LoadingDetailsLabel.Text = "Loading extended commands...";
                 tasks.Add(LoadingProgressBar.ProgressTo(0.90, 100, Easing.Linear));
                 tasks.Add(Task.Run(() =>
                 {
@@ -1309,8 +1343,14 @@ namespace GnollHackX.Pages.Game
                 await Task.WhenAll(tasks);
                 tasks.Clear();
 
-                await LoadingProgressBar.ProgressTo(0.95, 50, Easing.Linear);
-                GHApp.CalculateFoundManuals();
+                LoadingDetailsLabel.Text = "Loading manuals...";
+                tasks.Add(LoadingProgressBar.ProgressTo(0.95, 50, Easing.Linear));
+                tasks.Add(Task.Run(() =>
+                {
+                    GHApp.CalculateFoundManuals();
+                }));
+                await Task.WhenAll(tasks);
+                tasks.Clear();
 
                 if (PlayingReplay)
                 {
@@ -1367,6 +1407,7 @@ namespace GnollHackX.Pages.Game
 
                 _stopWatch.Start();
 
+                LoadingDetailsLabel.Text = "Finishing up...";
                 await LoadingProgressBar.ProgressTo(0.99, 40, Easing.Linear);
 
                 canvasView._gamePage = this;
@@ -1416,6 +1457,7 @@ namespace GnollHackX.Pages.Game
 #endif
 
                 await LoadingProgressBar.ProgressTo(1.0, 20, Easing.Linear);
+                LoadingDetailsLabel.Text = "Done loading.";
                 SetupKeyListening();
                 GHApp.DebugCheckCurrentFileDescriptor("StartGameFinished");
             }
