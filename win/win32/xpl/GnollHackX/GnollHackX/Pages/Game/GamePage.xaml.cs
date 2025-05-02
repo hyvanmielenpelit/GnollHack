@@ -1200,11 +1200,12 @@ namespace GnollHackX.Pages.Game
             {
                 ReplayFileName = replayFileName;
                 _mainPage.GameStarted = true;
-                LoadingDetailsLabel.Text = "Initializing...";
+                LoadingDetailsLabel.Text = "Starting loading...";
                 LoadingProgressBar.Progress = 0.0;
                 canvasView.Focus();
 
                 _gnollHackService = GHApp.GnollHackService;
+                LoadingDetailsLabel.Text = "Initializing GnollHack...";
                 await _gnollHackService.InitializeGnollHack();
  
                 var tasks = new List<Task>();
@@ -1296,7 +1297,7 @@ namespace GnollHackX.Pages.Game
                     await Task.WhenAll(tasks);
                     tasks.Clear();
 
-                    LoadingDetailsLabel.Text = "Loading graphics definitions 1/4...";
+                    LoadingDetailsLabel.Text = "Loading animations...";
                     tasks.Add(LoadingProgressBar.ProgressTo(0.700, 50, Easing.Linear));
                     tasks.Add(Task.Run(() =>
                     {
@@ -1305,7 +1306,7 @@ namespace GnollHackX.Pages.Game
                     await Task.WhenAll(tasks);
                     tasks.Clear();
 
-                    LoadingDetailsLabel.Text = "Loading graphics definitions 2/4...";
+                    LoadingDetailsLabel.Text = "Loading enlargements...";
                     tasks.Add(LoadingProgressBar.ProgressTo(0.725, 50, Easing.Linear));
                     tasks.Add(Task.Run(() =>
                     {
@@ -1314,7 +1315,7 @@ namespace GnollHackX.Pages.Game
                     await Task.WhenAll(tasks);
                     tasks.Clear();
 
-                    LoadingDetailsLabel.Text = "Loading graphics definitions 3/4...";
+                    LoadingDetailsLabel.Text = "Loading replacements...";
                     tasks.Add(LoadingProgressBar.ProgressTo(0.75, 50, Easing.Linear));
                     tasks.Add(Task.Run(() =>
                     {
@@ -1323,7 +1324,7 @@ namespace GnollHackX.Pages.Game
                     await Task.WhenAll(tasks);
                     tasks.Clear();
 
-                    LoadingDetailsLabel.Text = "Loading graphics definitions 4/4...";
+                    LoadingDetailsLabel.Text = "Loading autodraws...";
                     tasks.Add(LoadingProgressBar.ProgressTo(0.775, 50, Easing.Linear));
                     tasks.Add(Task.Run(() =>
                     {

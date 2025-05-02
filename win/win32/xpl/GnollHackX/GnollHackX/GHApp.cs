@@ -7521,7 +7521,7 @@ namespace GnollHackX
                 return CurrentMainPage?.HandleMainPageSpecialKeyPress(spkey, isCtrl, isMeta, isShift) ?? false;
             else if (topPage is GamePage)
                 return ((GamePage)topPage).HandleSpecialKeyPress(spkey, isCtrl, isMeta, isShift);
-            else if (spkey == GHSpecialKey.Escape) //GamePage is somewhere in the stack so check only the related pages
+            else if (spkey == GHSpecialKey.Escape)
             {
                 if (topPage is GameMenuPage)
                 {
