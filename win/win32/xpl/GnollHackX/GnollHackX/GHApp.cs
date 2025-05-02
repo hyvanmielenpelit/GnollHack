@@ -11,6 +11,7 @@ using Xamarin.Essentials;
 using Xamarin.Forms;
 using Xamarin.Forms.PlatformConfiguration;
 using GnollHackX.Pages.Game;
+using GnollHackX.Pages.MainScreen;
 #endif
 using Newtonsoft.Json;
 using System;
