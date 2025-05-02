@@ -354,6 +354,33 @@ namespace GnollHackX
             }
         }
 
+        public static string GetPortVersionString()
+        {
+            string str;
+#if GNH_MAUI
+            Version ver = AppInfo.Current.Version;
+            str = (ver?.Major.ToString() ?? "?") + "." + (ver?.Minor.ToString() ?? "?");
+#else
+            str = VersionTracking.CurrentVersion;
+#endif
+            return str != null ? str : "?";
+        }
+
+        public static string GetPortBuildString()
+        {
+            string str;
+#if GNH_MAUI
+#if WINDOWS
+            str = AppInfo.Current.Version.Build.ToString();
+#else
+            str = AppInfo.Current.BuildString;
+#endif
+#else
+            str = VersionTracking.CurrentBuild;
+#endif
+            return str != null ? str : "?";
+        }
+
         public static void SaveWindowPosition()
         {
 #if WINDOWS
@@ -3830,8 +3857,8 @@ namespace GnollHackX
                                     + "\tplatform=" + DeviceInfo.Platform.ToString()?.ToLower()
                                     + "\tplatformversion=" + DeviceInfo.VersionString?.ToLower()
                                     + "\tport=" + GHConstants.PortName?.ToLower()
-                                    + "\tportversion=" + VersionTracking.CurrentVersion?.ToLower()
-                                    + "\tportbuild=" + VersionTracking.CurrentBuild?.ToLower()
+                                    + "\tportversion=" + GetPortVersionString()?.ToLower()
+                                    + "\tportbuild=" + GetPortBuildString()?.ToLower()
                                     + "\tportseclvl=" + GetPortSecurityLevel()
                                     + "\tstore=" + GetStoreString()
                                     + Environment.NewLine;
@@ -4629,19 +4656,19 @@ namespace GnollHackX
                         multicontent.Add(contentE3);
                         Debug.WriteLine("Port: " + GHConstants.PortName);
 
-                        StringContent contentE4 = new StringContent(VersionTracking.CurrentVersion, Encoding.UTF8, "text/plain");
+                        StringContent contentE4 = new StringContent(GetPortVersionString(), Encoding.UTF8, "text/plain");
                         ContentDispositionHeaderValue cdhve4 = new ContentDispositionHeaderValue("form-data");
                         cdhve4.Name = "PortVersion";
                         contentE4.Headers.ContentDisposition = cdhve4;
                         multicontent.Add(contentE4);
-                        Debug.WriteLine("PortVersion: " + VersionTracking.CurrentVersion);
+                        Debug.WriteLine("PortVersion: " + GetPortVersionString());
 
-                        StringContent contentE5 = new StringContent(VersionTracking.CurrentBuild, Encoding.UTF8, "text/plain");
+                        StringContent contentE5 = new StringContent(GetPortBuildString(), Encoding.UTF8, "text/plain");
                         ContentDispositionHeaderValue cdhve5 = new ContentDispositionHeaderValue("form-data");
                         cdhve5.Name = "PortBuild";
                         contentE5.Headers.ContentDisposition = cdhve5;
                         multicontent.Add(contentE5);
-                        Debug.WriteLine("PortBuild: " + VersionTracking.CurrentBuild);
+                        Debug.WriteLine("PortBuild: " + GetPortBuildString());
 
                         StringContent contentE6 = new StringContent(GHApp.GHVersionNumber.ToString(), Encoding.UTF8, "text/plain");
                         ContentDispositionHeaderValue cdhve6 = new ContentDispositionHeaderValue("form-data");
@@ -4925,19 +4952,19 @@ namespace GnollHackX
                             multicontent.Add(contentE3);
                             Debug.WriteLine("Port: " + GHConstants.PortName);
 
-                            StringContent contentE4 = new StringContent(VersionTracking.CurrentVersion, Encoding.UTF8, "text/plain");
+                            StringContent contentE4 = new StringContent(GetPortVersionString(), Encoding.UTF8, "text/plain");
                             ContentDispositionHeaderValue cdhve4 = new ContentDispositionHeaderValue("form-data");
                             cdhve4.Name = "PortVersion";
                             contentE4.Headers.ContentDisposition = cdhve4;
                             multicontent.Add(contentE4);
-                            Debug.WriteLine("PortVersion: " + VersionTracking.CurrentVersion);
+                            Debug.WriteLine("PortVersion: " + GetPortVersionString());
 
-                            StringContent contentE5 = new StringContent(VersionTracking.CurrentBuild, Encoding.UTF8, "text/plain");
+                            StringContent contentE5 = new StringContent(GetPortBuildString(), Encoding.UTF8, "text/plain");
                             ContentDispositionHeaderValue cdhve5 = new ContentDispositionHeaderValue("form-data");
                             cdhve5.Name = "PortBuild";
                             contentE5.Headers.ContentDisposition = cdhve5;
                             multicontent.Add(contentE5);
-                            Debug.WriteLine("PortBuild: " + VersionTracking.CurrentBuild);
+                            Debug.WriteLine("PortBuild: " + GetPortBuildString());
 
                             StringContent contentE6 = new StringContent(GHApp.GHVersionNumber.ToString(), Encoding.UTF8, "text/plain");
                             ContentDispositionHeaderValue cdhve6 = new ContentDispositionHeaderValue("form-data");
@@ -5176,12 +5203,7 @@ namespace GnollHackX
             if (PostingXlogEntries && !string.IsNullOrWhiteSpace(username) && XlogUserNameVerified)
                 message = message + (isCustomXlogServerLink ? " {" : " [") + username + (isCustomXlogServerLink ? "}" : "]");
 
-#if GNH_MAUI
-            Version ver = AppInfo.Current.Version;
-            string portver = (ver?.Major.ToString() ?? "?") + "." + (ver?.Minor.ToString() ?? "?");
-#else
-            string portver = VersionTracking.CurrentVersion;
-#endif
+            string portver = GetPortVersionString();
             DevicePlatform platform = DeviceInfo.Platform;
             string platstr = platform.ToString();
             if (platstr == null)
@@ -5206,7 +5228,7 @@ namespace GnollHackX
             if (info_str == null)
                 info_str = "";
 
-            string ver = GHApp.GHVersionString + " / " + VersionTracking.CurrentVersion + " / " + VersionTracking.CurrentBuild;
+            string ver = GHApp.GHVersionString + " / " + GetPortVersionString() + " / " + GetPortBuildString();
             string manufacturer = DeviceInfo.Manufacturer;
             if (manufacturer.Length > 0)
                 manufacturer = manufacturer.Substring(0, 1).ToUpper() + manufacturer.Substring(1);
@@ -5295,7 +5317,7 @@ namespace GnollHackX
                         var now = DateTime.UtcNow;
                         File.AppendAllText(logfullpath, now.ToString("yyyy-MM-dd HH:mm:ss") + ": "
                             + loggedtext
-                            + " [" + VersionTracking.CurrentVersion + "]"
+                            + " [" + GetPortVersionString() + "]"
                             + Environment.NewLine);
                     }
                 }

@@ -244,27 +244,12 @@ namespace GnollHackX.Pages.MainScreen
             ActiveGPURowDefinition.Height = 0;
 #endif
 
+            PortVersionLabel.Text = GHApp.GetPortVersionString();
+            PortBuildLabel.Text = GHApp.GetPortBuildString();
 #if GNH_MAUI
-            Version ver = AppInfo.Current.Version;
-            string portVersion = (ver?.Major.ToString() ?? "?") + "." + (ver?.Minor.ToString() ?? "?");
-            PortVersionLabel.Text = portVersion; // GetAssemblyInformationalVersion(Assembly.GetEntryAssembly()); //This can also be AppInfo.Current.VersionString, but it is longer and the build number
             UIFrameworkVersionLabel.Text = ".NET MAUI " + GHApp.UIFrameworkVersionString;
-#if WINDOWS
-            PortBuildLabel.Text = AppInfo.Current.Version.Build.ToString();
 #else
-            PortBuildLabel.Text = AppInfo.Current.BuildString;
-#endif
-#else
-            PortVersionLabel.Text = VersionTracking.CurrentVersion;
-            PortBuildLabel.Text = VersionTracking.CurrentBuild;
-
             UIFrameworkVersionLabel.Text = "XF " + GHApp.UIFrameworkVersionString;
-            //UIFrameworkVersionLabel.Text = "";
-            //UIFrameworkVersionLabel.IsVisible = false;
-            //UIFrameworkVersionTitleLabel.IsVisible = false;
-            //VersionInfoGrid.Children.Remove(UIFrameworkVersionLabel);
-            //VersionInfoGrid.Children.Remove(UIFrameworkVersionTitleLabel);
-            //UIFrameworkVersionRowDefinition.Height = 0;
 #endif
             PortVersionTitleLabel.Text = GHApp.RuntimePlatform + " Port Version:";
             PortBuildTitleLabel.Text = GHApp.RuntimePlatform + " Port Build:";
