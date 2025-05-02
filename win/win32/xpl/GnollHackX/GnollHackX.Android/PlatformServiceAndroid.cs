@@ -82,7 +82,8 @@ namespace GnollHackX.Droid
         {
             try
             {
-                return DeviceInfo.Model?.ToLower() == "hpe device";
+                string str = DeviceInfo.Model?.ToLower();
+                return str == "hpe device";
             }
             catch
             {
