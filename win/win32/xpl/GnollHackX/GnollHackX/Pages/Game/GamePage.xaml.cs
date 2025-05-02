@@ -16545,6 +16545,15 @@ namespace GnollHackX.Pages.Game
             }
         }
 
+        private bool IsMenuAtBottomScrollLimit()
+        {
+            float bottomScrollLimit = Math.Min(0, MenuCanvas.CanvasSize.Height - TotalMenuHeight);
+            lock (_menuScrollLock)
+            {
+                return _menuScrollOffset == bottomScrollLimit;
+            }
+        }
+
 #pragma warning disable 414
         private readonly object _menuHoverLock = new object();
         private bool _menuIsHovering = false;
@@ -19470,7 +19479,12 @@ namespace GnollHackX.Pages.Game
                 else if (key == GHSpecialKey.End)
                     ScrollMenu(-1200000);
                 else if (key == GHSpecialKey.Space)
-                    ScrollMenu(-1200);
+                {
+                    if (!IsMenuAtBottomScrollLimit())
+                        ScrollMenu(-1200);
+                    else if (MenuOKButton.IsEnabled && !PlayingReplay)
+                        MenuOKButton_Clicked(null, null);
+                }
                 handled = true;
             }
             else if (MenuGrid.IsVisible && MenuCountGrid.IsVisible && !PlayingReplay && (key == GHSpecialKey.Escape || key == GHSpecialKey.Enter))
