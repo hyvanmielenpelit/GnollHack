@@ -18,6 +18,7 @@ namespace GnollHackX
         void HideKeyboard();
         float GetPlatformScreenScale();
         Task<Stream> GetPlatformAssetsStreamAsync(string directory, string fileName);
+        bool IsRunningOnDesktop();
 
         string GetVersionString();
         ulong GetDeviceMemoryInBytes();

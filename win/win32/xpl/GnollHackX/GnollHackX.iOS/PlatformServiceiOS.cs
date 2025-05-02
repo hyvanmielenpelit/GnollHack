@@ -32,6 +32,18 @@ namespace GnollHackX.iOS
             return ver.ToString();
         }
 
+        public bool IsRunningOnDesktop()
+        {
+            try
+            {
+                return NSProcessInfo.ProcessInfo?.IsiOSApplicationOnMac ?? false;
+            }
+            catch 
+            { 
+                return false;
+            }
+        }
+
         public ulong GetDeviceMemoryInBytes()
         {
             try

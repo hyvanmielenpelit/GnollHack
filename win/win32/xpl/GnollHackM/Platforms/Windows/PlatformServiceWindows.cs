@@ -63,6 +63,11 @@ namespace GnollHackM
             return DeviceInfo.Current.VersionString;
         }
 
+        public bool IsRunningOnDesktop()
+        {
+            return true;
+        }
+
         public ulong GetDeviceMemoryInBytes()
         {
             try

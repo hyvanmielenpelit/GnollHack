@@ -22,6 +22,7 @@ using Xamarin.Google.Android.Play.Core.Review.Testing;
 using Xamarin.Forms;
 using Xamarin.Google.Android.Play.Core.AssetPacks;
 using System.Runtime.Remoting.Contexts;
+using Xamarin.Essentials;
 #endif
 using System.Threading.Tasks;
 using System.Threading;
@@ -74,6 +75,18 @@ namespace GnollHackX.Droid
             catch
             {
                 return 0;
+            }
+        }
+
+        public bool IsRunningOnDesktop()
+        {
+            try
+            {
+                return DeviceInfo.Model?.ToLower() == "hpe device";
+            }
+            catch
+            {
+                return false;
             }
         }
 

@@ -1541,6 +1541,17 @@ namespace GnollHackX
         public static readonly bool IsPackaged = true;
 #endif
 
+        public static bool IsMobileRunningOnDesktop
+        {
+            get
+            {
+                if (_platformService == null)
+                    return true;
+                else
+                    return _platformService.IsRunningOnDesktop();
+            }
+        }
+
         private static readonly object _displayDataLock = new object();
         public static float DisplayDensity
         {
@@ -3470,7 +3481,7 @@ namespace GnollHackX
         private static readonly object _saveFileTrackingLock = new object();
         private static bool _saveFileTracking = false;
         public static bool SaveFileTracking { get { bool t = TournamentMode; lock (_saveFileTrackingLock) { return _saveFileTracking || t; } } set { lock (_saveFileTrackingLock) { _saveFileTracking = value; } } }
-        public static bool IsSaveFileTrackingNeeded { get { return IsDesktop; } }
+        public static bool IsSaveFileTrackingNeeded { get { return IsDesktop || IsMobileRunningOnDesktop; } }
 
         private static readonly object _xlogCreditialLock = new object();
         private static string _xlogUserName = "";

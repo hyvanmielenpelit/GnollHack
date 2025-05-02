@@ -87,6 +87,11 @@ namespace GnollHackM
             throw new NotImplementedException();
         }
 
+        public bool IsRunningOnDesktop()
+        {
+            throw new NotImplementedException();
+        }
+
         public float GetWindowAnimationScaleSetting()
         {
             throw new NotImplementedException();
