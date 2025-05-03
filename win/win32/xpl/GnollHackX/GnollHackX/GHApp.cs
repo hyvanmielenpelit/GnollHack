@@ -111,7 +111,10 @@ namespace GnollHackX
         public static Microsoft.UI.Xaml.Window WindowsXamlWindow = null;
         public static Microsoft.UI.Input.InputCursor WindowsCursor = null;
         public static Microsoft.UI.Input.InputCursor WindowsInfoCursor = null;
-        public static bool WindowFocused = false;
+
+        private static readonly object _windowFocusedLock = new object();
+        private static bool _windowFocused = false;
+        public static bool WindowFocused { get { lock (_windowFocusedLock) { return _windowFocused; } } set { lock (_windowFocusedLock) { _windowFocused = value; } } }
 #endif
         private static Assembly _assembly = null;
 
