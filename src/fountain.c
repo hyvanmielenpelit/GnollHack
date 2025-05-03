@@ -1396,7 +1396,7 @@ drinksink()
     case 10:
         play_sfx_sound(SFX_QUAFF);
         pline_ex(ATR_NONE, CLR_MSG_WARNING, "This %s contains toxic wastes!", hliquid("water"));
-        if (!Unchanging) {
+        if (!Unchanging && !Polymorph_resistance) {
             You("undergo a freakish metamorphosis!");
             polyself(0);
         }

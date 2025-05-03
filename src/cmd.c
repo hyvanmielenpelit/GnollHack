@@ -4518,6 +4518,8 @@ int final;
         you_are("stun resistant", from_what(STUN_RESISTANCE));
     if (Slime_resistance)
         you_are("sliming resistant", from_what(SLIME_RESISTANCE));
+    if (Polymorph_resistance)
+        you_are("polymorph resistant", from_what(POLYMORPH_RESISTANCE));
     if (Bisection_resistance)
         you_cannot("be bisected", from_what(BISECTION_RESISTANCE));
     if (Halluc_resistance)
@@ -4872,8 +4874,7 @@ int final;
         you_are("receiving double spell damage", from_what(DOUBLE_SPELL_DAMAGE));
     /* polymorph and other shape change */
     if (Protection_from_shape_changers)
-        you_are("protected from shape changers",
-                from_what(PROT_FROM_SHAPE_CHANGERS));
+        you_are("protected from shape changers", from_what(PROT_FROM_SHAPE_CHANGERS));
     if (Unchanging) {
         const char *what = 0;
 

@@ -1032,7 +1032,7 @@ struct monst* origmonst;
                the current zap and shouldn't be affected if hit again */
             ;
         } 
-        else if (resists_magic(mtmp))
+        else if (resists_magic(mtmp) || resists_polymorph(mtmp))
         {
             /* magic missile resistance protects from polymorph traps, so make
                it guard against involuntary polymorph attacks too... */
@@ -1117,7 +1117,7 @@ struct monst* origmonst;
         res = 1;
         if (disguised_mimic)
             seemimic(mtmp);
-        if (mtmp->cham && !mtmp->mprops[UNCHANGING])
+        if (mtmp->cham && !has_unchanging(mtmp))
             revert_mon_polymorph(mtmp, FALSE, TRUE, TRUE);
         if (!has_cancellation_resistance(mtmp))
         {
@@ -1135,7 +1135,7 @@ struct monst* origmonst;
         res = 1;
         if (disguised_mimic)
             seemimic(mtmp);
-        if (mtmp->cham && !mtmp->mprops[UNCHANGING])
+        if (mtmp->cham && !has_unchanging(mtmp))
             revert_mon_polymorph(mtmp, FALSE, TRUE, TRUE);
         /* Unaffected by cancellation resistance */
         play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, 0, mtmp->mx, mtmp->my, FALSE);
@@ -1941,6 +1941,13 @@ struct permonst* ptr;
     {
         abilcnt++;
         Sprintf(buf, " %2d - %s", abilcnt, "Resists magic");
+        putstr(datawin, ATR_INDENT_AT_DASH | ATR_ORDERED_LIST, buf);
+    }
+
+    if (mtmp ? resists_polymorph(mtmp) : pm_resists_polymorph(ptr))
+    {
+        abilcnt++;
+        Sprintf(buf, " %2d - %s", abilcnt, "Resists polymorph");
         putstr(datawin, ATR_INDENT_AT_DASH | ATR_ORDERED_LIST, buf);
     }
 
@@ -6731,7 +6738,7 @@ boolean ordinary;
     case WAN_POLYMORPH:
     case SPE_POLYMORPH:
         damage = 0;
-        if (!Unchanging) {
+        if (!Unchanging && !Polymorph_resistance) {
             learn_it = TRUE;
             polyself(0);
         }

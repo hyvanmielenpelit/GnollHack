@@ -92,6 +92,7 @@ set_uasmon(VOID_ARGS)
     PROPSET(STUN_RESISTANCE, resists_stun(&youmonst));
     PROPSET(BISECTION_RESISTANCE, resists_bisection(&youmonst));
     PROPSET(SLIME_RESISTANCE, resists_slime(&youmonst));
+    PROPSET(POLYMORPH_RESISTANCE, resists_polymorph(&youmonst));
 
     PROPSET(FIRE_IMMUNITY, is_mon_immune_to_fire(&youmonst));
     PROPSET(COLD_IMMUNITY, is_mon_immune_to_cold(&youmonst));

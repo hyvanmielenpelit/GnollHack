@@ -186,6 +186,7 @@ const struct propname propertynames[] = {
     { LAUGHING, "laughing uncontrollably", "uncontrollable laughter" },
     { TOTTERING, "shaking and tottering", "shaking and tottering" },
     { MARTIAL_PROWESS, "imbued with martial prowess", "martial prowess" },
+    { POLYMORPH_RESISTANCE, "resistant to polymorph", "polymorph resistance" },
     {  0, 0, 0 },
 };
 
@@ -361,7 +362,7 @@ NEARDATA struct prop_info property_definitions[MAX_PROPS] =
     { "laughing",                     0, 0, 1,  0, 20,  PCLR_WHITE, PCLR_NONE, PROPFLAGS_NONE},  /* LAUGHING = 167 */
     { "tottering",                    0, 0, 0,  0, 0,  PCLR_WHITE, PCLR_NONE, PROPFLAGS_NONE },  /* TOTTERING = 168 */
     { "martial-prowess",              0, 0, 0,  0, 0,  PCLR_WHITE, PCLR_NONE, PROPFLAGS_NONE },  /* MARTIAL_PROWESS = 169 */
-    { "reserved-prop-1",              0, 0, 0,  0, 0,  PCLR_WHITE, PCLR_NONE, PROPFLAGS_NONE },  /* RESERVED_PROP_1 = 170 */
+    { "polymorph-resistance",         0, 0, 0,  0, 0,  PCLR_WHITE, PCLR_NONE, PROPFLAGS_NONE },  /* POLYMORPH_RESISTANCE = 170 */
     { "reserved-prop-2",              0, 0, 0,  0, 0,  PCLR_WHITE, PCLR_NONE, PROPFLAGS_NONE },  /* RESERVED_PROP_X */
     { "reserved-prop-3",              0, 0, 0,  0, 0,  PCLR_WHITE, PCLR_NONE, PROPFLAGS_NONE },  /* RESERVED_PROP_X */
     { "reserved-prop-4",              0, 0, 0,  0, 0,  PCLR_WHITE, PCLR_NONE, PROPFLAGS_NONE },  /* RESERVED_PROP_X */

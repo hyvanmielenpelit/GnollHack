@@ -291,6 +291,9 @@
 #define has_unchanging(mon) \
     has_property(mon, UNCHANGING)
 
+#define has_polymorph_resistance(mon) \
+    has_property(mon, POLYMORPH_RESISTANCE)
+
 /* mind shielding */
 #define has_mind_shielding(mon) \
     has_property(mon, MIND_SHIELDING)
@@ -749,6 +752,8 @@
     (has_innate(ptr, MR_STUN) || mindless(ptr) || is_not_living(ptr))
 #define pm_resists_bisection(ptr) \
     (is_incorporeal(ptr) || amorphous(ptr))
+#define pm_resists_polymorph(ptr) \
+    (has_innate2(ptr, MR2_POLYMORPH_RESISTANCE))
 
 /* resistances at the time of acquisition */
 #define is_mon_immune_to_fire(mon) \
@@ -771,7 +776,7 @@
 #define mon_resists_magic_missile_weakly(mon) \
     (has_innate2((mon)->data, MR2_MAGIC_MISSILE_RESISTANCE) || has_property(mon, MAGIC_MISSILE_RESISTANCE))
 #define mon_resists_acid_weakly(mon) \
-    (has_innate((mon)->data, MR2_ACID_RESISTANCE) || has_property(mon, ACID_RESISTANCE))
+    (has_innate2((mon)->data, MR2_ACID_RESISTANCE) || has_property(mon, ACID_RESISTANCE))
 
 #define mon_resists_fire_strongly(mon) \
     (has_property(mon, IMPROVED_FIRE_RESISTANCE))
@@ -819,6 +824,8 @@
     (pm_resists_bisection((mon)->data) || has_bisection_resistance(mon))
 #define resists_slime(mon) \
     (slimeproof((mon)->data) || has_slime_resistance(mon))
+#define resists_polymorph(mon) \
+    (pm_resists_polymorph((mon)->data) || has_property(mon, POLYMORPH_RESISTANCE))
 
 /* other similar definitions */
 #define is_reflecting(mon) \

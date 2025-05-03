@@ -3513,6 +3513,9 @@ int otyp;
         case SLIME_RESISTANCE:
             Your_ex(ATR_NONE, CLR_MSG_POSITIVE, "skin feels fiery!");
             break;
+        case POLYMORPH_RESISTANCE:
+            You_feel_ex(ATR_NONE, CLR_MSG_POSITIVE, "less prone to change!");
+            break;
         default:
             break;
         }

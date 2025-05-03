@@ -1988,7 +1988,7 @@ struct obj *otmp;
         play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, 0, u.ux, u.uy, FALSE);
         special_effect_wait_until_action(0);
         You_feel_ex(ATR_NONE, CLR_MSG_ATTENTION, "a little %s.", Hallucination ? "normal" : "strange");
-        if (!Unchanging)
+        if (!Unchanging && !Polymorph_resistance)
         {
             if (isdiluted && !rn2(2))
             {
@@ -2369,7 +2369,7 @@ int how;
         case POT_POLYMORPH:
             Sprintf(dcbuf, "You feel a little %s.", Hallucination ? "normal" : "strange");
             pline_ex1(ATR_NONE, Hallucination ? CLR_MSG_HALLUCINATED : CLR_MSG_MYSTICAL, dcbuf);
-            if (!Unchanging && !Antimagic)
+            if (!Unchanging && !Polymorph_resistance && !Antimagic_or_resistance)
                 polyself(0);
             break;
         case POT_ACID:

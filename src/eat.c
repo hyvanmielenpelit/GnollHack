@@ -1456,7 +1456,7 @@ uchar gender UNUSED; /* 0 = male, 1 = female, 2 = unknown */
     case PM_CHAMELEON:
     case PM_DOPPELGANGER:
     case PM_SANDESTIN: /* moot--they don't leave corpses */
-        if (Unchanging) {
+        if (Unchanging || Polymorph_resistance) {
             You_feel("momentarily different."); /* same as poly trap */
         } else {
             You_feel("a change coming over you.");

@@ -1851,7 +1851,7 @@ unsigned short trflags;
                     Levitation ? (const char *) "float"
                                : locomotion(youmonst.data, "step"));
         You_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s a polymorph trap!", verbbuf);
-        if (Antimagic_or_resistance || Unchanging) {
+        if (Antimagic_or_resistance || Polymorph_resistance || Unchanging) {
             play_sfx_sound(SFX_POLYMORPH_FAIL);
             u_shieldeff();
             You_feel("momentarily different.");
@@ -2103,7 +2103,7 @@ struct obj *otmp;
         steedhit = TRUE;
         break;
     case POLY_TRAP:
-        if (!resists_magic(steed) && !has_unchanging(steed) && !check_magic_resistance_and_inflict_damage(steed, (struct obj*)0, (struct monst*)0, FALSE, 0, 0, NOTELL)) {
+        if (!resists_magic(steed) && !resists_polymorph(steed) && !has_unchanging(steed) && !check_magic_resistance_and_inflict_damage(steed, (struct obj*)0, (struct monst*)0, FALSE, 0, 0, NOTELL)) {
             (void) newcham(steed, (struct permonst *) 0, 0, FALSE, FALSE);
             if (!can_saddle(steed) || !can_ride(steed))
                 dismount_steed(DISMOUNT_POLY);
@@ -3507,7 +3507,7 @@ register struct monst *mtmp;
                 special_effect_wait_until_action(0);
             }
 
-            if (resists_magic(mtmp) || has_unchanging(mtmp))
+            if (resists_magic(mtmp) || resists_polymorph(mtmp) || has_unchanging(mtmp))
             {
                 play_sfx_sound_at_location(SFX_POLYMORPH_FAIL, mtmp->mx, mtmp->my);
                 m_shieldeff(mtmp);

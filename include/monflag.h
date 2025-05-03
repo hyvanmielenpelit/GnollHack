@@ -104,6 +104,7 @@
 #define MR2_SLIME_RESISTANCE               0x00000080UL        
 #define MR2_ENERGY_REGENERATION            0x00000100UL        
 #define MR2_WOUNDING_RESISTANCE            0x00000200UL        
+#define MR2_POLYMORPH_RESISTANCE           0x00000400UL        
 
 /* conveyances: resistances, teleport, teleport control, telepathy, as well as other properties from eating the corpse */
 #define MC_NONE            0x00000000UL

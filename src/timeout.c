@@ -1293,6 +1293,9 @@ nh_timeout()
             case SLIME_RESISTANCE:
                 Your_ex(ATR_NONE, CLR_MSG_ATTENTION, "skin is starting to feel less fiery than before.");
                 break;
+            case POLYMORPH_RESISTANCE:
+                You_ex(ATR_NONE, CLR_MSG_ATTENTION, "are starting to feel more prone to change than before.");
+                break;
             }
         }
         else if ((upp->intrinsic & TIMEOUT) > 0)
@@ -4403,6 +4406,13 @@ boolean was_flying;
         {
             play_sfx_sound(SFX_PROTECTION_END_WARNING);
             Your_ex(ATR_NONE, CLR_MSG_ATTENTION, "skin feels less fiery than before.");
+        }
+        break;
+    case POLYMORPH_RESISTANCE:
+        if (!Polymorph_resistance)
+        {
+            play_sfx_sound(SFX_PROTECTION_END_WARNING);
+            You_feel_ex(ATR_NONE, CLR_MSG_ATTENTION, "more prone to change than before.");
         }
         break;
     default:

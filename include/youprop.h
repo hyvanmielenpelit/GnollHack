@@ -631,6 +631,10 @@
 #define EUnchanging u.uprops[UNCHANGING].extrinsic
 #define Unchanging (HUnchanging || EUnchanging) /* KMH */
 
+#define HPolymorph_resistance u.uprops[POLYMORPH_RESISTANCE].intrinsic
+#define EPolymorph_resistance u.uprops[POLYMORPH_RESISTANCE].extrinsic
+#define Polymorph_resistance (HPolymorph_resistance || EPolymorph_resistance) /* JG */
+
 #define HCancelled u.uprops[CANCELLED].intrinsic
 #define ECancelled u.uprops[CANCELLED].extrinsic
 #define Cancelled (HCancelled || ECancelled)
