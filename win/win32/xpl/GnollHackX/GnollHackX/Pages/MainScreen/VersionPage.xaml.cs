@@ -5,6 +5,8 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using System.Globalization;
+
 
 #if GNH_MAUI
 using GnollHackX;
@@ -263,6 +265,7 @@ namespace GnollHackX.Pages.MainScreen
             GnollHackConfigurationLabel.Text = GHApp.GHDebug ? "Debug" : "Release";
             PortConfigurationLabel.Text = GHApp.IsDebug ? "Debug" : "Release";
             PackagingModelLabel.Text = GHApp.IsPackaged ? "Packaged" : "Unpackaged";
+            CultureLabel.Text = CultureInfo.CurrentCulture?.EnglishName; // + " / " + CultureInfo.InstalledUICulture.EnglishName + " / " + CultureInfo.CurrentUICulture.EnglishName;
 
             GnollHackCompatibilityLabel.Text = compatstr == "" ? "" : "From " + compatstr;
             FMODVersionLabel.Text = GHApp.FMODVersionString;
