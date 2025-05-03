@@ -45,6 +45,7 @@
                                     <RowDefinition Height="Auto" />
                                     <RowDefinition Height="Auto" />
                                     <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
 
                                     <RowDefinition Height="Auto" x:Name="ActiveGPURowDefinition" />
                                     <RowDefinition Height="Auto" x:Name="GPUBackendRowDefinition" />
