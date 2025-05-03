@@ -466,7 +466,7 @@
                     <Label x:Name="LoadingLabel" Text="Loading..." FontFamily="Diablo" TextColor="White" FontSize="36"
                        HorizontalOptions="CenterAndExpand" HorizontalTextAlignment="Center" 
                        VerticalOptions="End" VerticalTextAlignment="Center"/>
-                    <Label x:Name="LoadingDetailsLabel" Text="" FontFamily="DejaVuSansMono" TextColor="White" FontSize="14"
+                    <Label x:Name="LoadingDetailsLabel" Text="" FontFamily="Underwood" TextColor="White" FontSize="14"
                        HorizontalOptions="Fill" HorizontalTextAlignment="Center" 
                        VerticalOptions="Start" VerticalTextAlignment="Center"/>
                     <ProgressBar x:Name="LoadingProgressBar" HorizontalOptions="Fill" VerticalOptions="Start" 
