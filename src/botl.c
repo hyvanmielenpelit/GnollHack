@@ -94,14 +94,14 @@ int st;
 
 
 char *
-get_strength_str()
+get_strength_str(VOID_ARGS)
 {
     int st = ACURR(A_STR);
     return get_strength_string(st);
 }
 
 void
-check_gold_symbol()
+check_gold_symbol(VOID_ARGS)
 {
     nhsym goldch = showsyms[COIN_CLASS + SYM_OFF_O];
 
@@ -109,7 +109,7 @@ check_gold_symbol()
 }
 
 char *
-do_statusline1()
+do_statusline1(VOID_ARGS)
 {
     static char newbot1[BUFSZ];
     register char *nb;
@@ -243,7 +243,7 @@ char* cond; /* buffer */
 }
 
 char *
-do_statusline2()
+do_statusline2(VOID_ARGS)
 {
     static char newbot2[BUFSZ * 2], /* MAXCO: botl.h */
          /* dungeon location (and gold), hero health (HP, PW, AC),
@@ -498,7 +498,7 @@ do_statusline2()
 }
 
 char*
-do_statusline3()
+do_statusline3(VOID_ARGS)
 {
     static char newbot3[BUFSZ * 2] = "", cond[QBUFSZ * 2] = "", moneybuf[QBUFSZ] = "";
     size_t cln;
@@ -588,7 +588,7 @@ do_statusline3()
 }
 
 void
-bot()
+bot(VOID_ARGS)
 {
     if (context.skip_botl)
         return;
@@ -613,7 +613,7 @@ bot()
 }
 
 void
-timebot()
+timebot(VOID_ARGS)
 {
     if (flags.time && iflags.status_updates) {
         if (VIA_WINDOWPORT()) {
@@ -681,7 +681,7 @@ boolean female;
 }
 
 const char *
-rank()
+rank(VOID_ARGS)
 {
     return rank_of(u.ulevel, Role_switch, flags.female);
 }
@@ -720,7 +720,7 @@ size_t* title_length;
 }
 
 void
-max_rank_sz()
+max_rank_sz(VOID_ARGS)
 {
     register int i;
     size_t r, maxr = 0;
@@ -735,7 +735,7 @@ max_rank_sz()
 }
 
 int64_t
-botl_score()
+botl_score(VOID_ARGS)
 {
     return get_current_game_score();
 }
@@ -1019,8 +1019,8 @@ STATIC_VAR int64_t bl_hilite_moves = 0L;
 STATIC_VAR uint64_t cond_hilites[BL_ATTCLR_MAX];
 STATIC_VAR int now_or_before_idx = 0; /* 0..1 for array[2][] first index */
 
-void
-bot_via_windowport()
+STATIC_OVL void
+bot_via_windowport(VOID_ARGS)
 {
     char buf[BUFSZ];
     const char *titl;
@@ -1240,7 +1240,7 @@ bot_via_windowport()
 }
 
 uint64_t
-get_u_condition_bits()
+get_u_condition_bits(VOID_ARGS)
 {
     uint64_t conditions = 0UL;
 
@@ -1726,7 +1726,7 @@ size_t bufsize;
 
 /* update just the status lines' 'time' field */
 STATIC_OVL void
-stat_update_time()
+stat_update_time(VOID_ARGS)
 {
     int idx = now_or_before_idx; /* no 0/1 toggle */
     int fld = BL_TIME;
@@ -2389,7 +2389,7 @@ struct istat_s *bl, *maxbl;
    to reconstruct that from the encumbrance string or asking the general
    core what the value is */
 int
-stat_cap_indx()
+stat_cap_indx(VOID_ARGS)
 {
     int cap;
 
@@ -2404,7 +2404,7 @@ stat_cap_indx()
 /* callback so that interface can get hunger index rather than trying to
    reconstruct that from the hunger string or dipping into core internals */
 int
-stat_hunger_indx()
+stat_hunger_indx(VOID_ARGS)
 {
     int uhs;
 
@@ -2536,7 +2536,7 @@ int64_t augmented_time; /* no longer augmented; it once encoded fractional
 
 /* called from moveloop(); sets context.botl if temp hilites have timed out */
 void
-status_eval_next_unhilite()
+status_eval_next_unhilite(VOID_ARGS)
 {
     int i;
     struct istat_s *curr;
@@ -3407,7 +3407,7 @@ const struct condmap condition_aliases[] = {
 };
 
 uint64_t
-query_conditions()
+query_conditions(VOID_ARGS)
 {
     int i,res;
     uint64_t ret = 0UL;
@@ -3670,7 +3670,7 @@ int sidx;
 }
 
 void
-clear_status_hilites()
+clear_status_hilites(VOID_ARGS)
 {
     int i;
 
@@ -3765,7 +3765,7 @@ const char *str;
 }
 
 STATIC_OVL void
-status_hilite_linestr_done()
+status_hilite_linestr_done(VOID_ARGS)
 {
     struct _status_hilite_line_str *nxt, *tmp = status_hilite_str;
 
@@ -3807,7 +3807,7 @@ count_status_hilites(VOID_ARGS)
 }
 
 STATIC_OVL void
-status_hilite_linestr_gather_conditions()
+status_hilite_linestr_gather_conditions(VOID_ARGS)
 {
     int i;
     struct _cond_map {
@@ -3887,7 +3887,7 @@ status_hilite_linestr_gather_conditions()
 }
 
 STATIC_OVL void
-status_hilite_linestr_gather()
+status_hilite_linestr_gather(VOID_ARGS)
 {
     int i;
     struct hilite_s *hl;
@@ -3986,7 +3986,7 @@ struct hilite_s *hl;
 }
 
 STATIC_OVL int
-status_hilite_menu_choose_field()
+status_hilite_menu_choose_field(VOID_ARGS)
 {
     winid tmpwin;
     int i, res, fld = BL_FLUSH;
@@ -4800,7 +4800,7 @@ shlmenu_free:
 }
 
 void
-status_hilites_viewall()
+status_hilites_viewall(VOID_ARGS)
 {
     winid datawin;
     struct _status_hilite_line_str *hlstr = status_hilite_str;
@@ -4821,7 +4821,7 @@ status_hilites_viewall()
 }
 
 boolean
-status_hilite_menu()
+status_hilite_menu(VOID_ARGS)
 {
     winid tmpwin;
     int i, res;
