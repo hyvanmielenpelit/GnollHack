@@ -2131,7 +2131,7 @@ struct monst* mtmp;
 {
     if (is_silenced(mtmp))
     {
-        char Mhis[BUFSZ * 2];
+        char Mhis[BUFSZ];
         Strcpy(Mhis, mhis(mtmp));
         *Mhis = highc(*Mhis);
         pline("%s cannot answer you. %s voice is gone!", noittame_Monnam(mtmp), Mhis);
@@ -2170,7 +2170,7 @@ genl_chat_message(VOID_ARGS)
 {
     while (1)
     {
-        char buf[BUFSZ * 2] = "";
+        char buf[BUFSZ] = "";
         getlin("Chat>", buf);
         if (!*buf || *buf == '\033')
             return;
@@ -3786,7 +3786,7 @@ struct monst* mtmp;
             {
                 shp_indx = ESHK(mtmp)->shoptype - SHOPBASE;
                 const struct shclass* shp = &shtypes[shp_indx];
-                char itembuf[BUFSZ * 2] = "";
+                char itembuf[BUFSZ] = "";
                 Strcpy(itembuf, shp->identified_item_description_plural);
             
                 Sprintf(available_chat_list[chatnum].name, "Identify %s", itembuf);
@@ -4158,7 +4158,7 @@ struct monst* mtmp;
 
                 if (npc_subtype_definitions[ENPC(mtmp)->npc_typ].service_flags & NPC_SERVICE_IDENTIFY_GEMS_AND_STONES)
                 {
-                    char sbuf[BUFSZ * 2];
+                    char sbuf[BUFSZ];
                     Sprintf(sbuf, "Identify gems and stones");
                     Strcpy(available_chat_list[chatnum].name, sbuf);
                     available_chat_list[chatnum].function_ptr = &do_chat_npc_identify_gems_and_stones;
@@ -4292,7 +4292,7 @@ struct monst* mtmp;
 
                 if (npc_subtype_definitions[ENPC(mtmp)->npc_typ].service_flags & NPC_SERVICE_IDENTIFY_ACCESSORIES_AND_CHARGED_ITEMS)
                 {
-                    char sbuf[BUFSZ * 2];
+                    char sbuf[BUFSZ];
                     Sprintf(sbuf, "Identify accessories and charged items");
                     Strcpy(available_chat_list[chatnum].name, sbuf);
                     available_chat_list[chatnum].function_ptr = &do_chat_npc_identify_accessories_and_charged_items;
@@ -4312,7 +4312,7 @@ struct monst* mtmp;
 
                 if (npc_subtype_definitions[ENPC(mtmp)->npc_typ].service_flags & NPC_SERVICE_IDENTIFY_GEMS_STONES_AND_CHARGED_ITEMS)
                 {
-                    char sbuf[BUFSZ * 2];
+                    char sbuf[BUFSZ];
                     Sprintf(sbuf, "Identify gems, stones and charged items");
                     Strcpy(available_chat_list[chatnum].name, sbuf);
                     available_chat_list[chatnum].function_ptr = &do_chat_npc_identify_gems_stones_and_charged_items;
@@ -4350,7 +4350,7 @@ struct monst* mtmp;
 
                 if (npc_subtype_definitions[ENPC(mtmp)->npc_typ].service_flags & NPC_SERVICE_TEACH_SPELLS_MASK)
                 {
-                    char sbuf[BUFSZ * 2];
+                    char sbuf[BUFSZ];
                     Sprintf(sbuf, "Teach spells");
                     Strcpy(available_chat_list[chatnum].name, sbuf);
                     available_chat_list[chatnum].function_ptr = &do_chat_npc_teach_spells;

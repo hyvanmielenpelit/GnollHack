@@ -4956,10 +4956,8 @@ render_status(VOID_ARGS)
                 } 
                 else if((idx == BL_PARTYSTATS || idx == BL_PARTYSTATS2 || idx == BL_PARTYSTATS3 || idx == BL_PARTYSTATS4 || idx == BL_PARTYSTATS5) && flags.partylinecolor)
                 {
-                     char printbuf[BUFSZ * 4];
-                     *printbuf = 0;
-                     if (text)
-                         Strcpy(printbuf, text);
+                     char printbuf[BUFSZ * 2];
+                     Strcpy(printbuf, text);
                      char* bp = 0, *bp2 = 0, *bp3 = 0, *startbp = printbuf;
                      do
                      {
@@ -4977,14 +4975,14 @@ render_status(VOID_ARGS)
                              *bp2 = '\0';
 
                              *bp3 = '\0';
-                             char maxbuf[BUFSZ * 2];
+                             char maxbuf[BUFSZ];
                              Strcpy(maxbuf, bp2 + 1);
                              int hpmax = atoi(maxbuf);
                              *bp3 = ')';
 
-                             char hpbuf[BUFSZ * 2];
+                             char hpbuf[BUFSZ];
                              Strcpy(hpbuf, bp + 3);
-                             char hpbuf2[BUFSZ * 2];
+                             char hpbuf2[BUFSZ];
                              Strcpy(hpbuf2, bp);
                              *bp = '\0';
                              int hp = atoi(hpbuf);

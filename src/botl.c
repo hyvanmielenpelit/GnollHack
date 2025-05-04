@@ -177,7 +177,7 @@ char* cond; /* buffer */
     char* nb;
     size_t cln;
     int cap;
-    char buf[BUFSZ * 2] = "";
+    char buf[QBUFSZ * 2] = "";
     buf[0] = '\0'; /* once non-empty, cond will have a leading space */
     nb = buf;
 
