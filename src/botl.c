@@ -1702,11 +1702,14 @@ size_t bufsize;
                     strncpy(eos(targetbuf), tempbuf, (size_t)copylen);
                     targetbuf[bufsize - 1] = 0;
                 }
+                
+                if (line_idx == maxlines)
+                    break;
             }
             else
                 Strcat(targetbuf, tempbuf);
 
-            if (!flags.partymultiline && line_idx == maxlines && strlen(outbuf) >= MAXVALWIDTH - 1)
+            if (!flags.partymultiline && line_idx == maxlines && strlen(targetbuf) >= MAXVALWIDTH - 1)
                 break;
         }
     }
