@@ -49,6 +49,7 @@ namespace GnollHackX
         private bool _useLongerMessageHistory = false;
         private bool _useHideMessageHistory = false;
         private int _saveFileTrackingFinished = -1;
+        private bool _abortShowMenuPage = false;
 
         private readonly GamePage _gamePage;
         public GamePage ActiveGamePage { get { return _gamePage; } }
@@ -149,7 +150,7 @@ namespace GnollHackX
                 if (!GHApp.CancelSaveGame)
                 {
                     GHApp.SavingGame = true;
-                    GHApp.GnollHackService.SaveAndRestoreSavedGame(GHApp.AppSwitchSaveStyle);
+                    GHApp.GnollHackService?.SaveAndRestoreSavedGame(GHApp.AppSwitchSaveStyle);
                     GameOverHandling();
                 }
                 GHApp.GameSaved = false;
@@ -158,14 +159,14 @@ namespace GnollHackX
             else if (_checkPointRequested)
             {
                 _checkPointRequested = false;
-                GHApp.GnollHackService.SaveAndRestoreSavedGame(2); /* Check point and return immediately */
+                GHApp.GnollHackService?.SaveAndRestoreSavedGame(2); /* Check point and return immediately */
                 GameOverHandling();
             }
 
             if (_timeTallyRequested)
             {
                 _timeTallyRequested = false;
-                GHApp.GnollHackService.TallyRealTime();
+                GHApp.GnollHackService?.TallyRealTime();
             }
 
             GHApp.SaveDiscoveredMusic();
@@ -206,8 +207,7 @@ namespace GnollHackX
                         }
                         else
                         {
-                            response.RequestingGHWindow.SelectedMenuItems = new List<GHMenuItem>(); /* Empty selection */
-                            response.RequestingGHWindow.WasCancelled = true;
+                            _abortShowMenuPage = true;
                         }
                         break;
                     case GHRequestType.DisplayScreenText:
@@ -215,7 +215,7 @@ namespace GnollHackX
                         break;
                     case GHRequestType.SetPetMID:
                         if (_gamePage != null)
-                            _gamePage.GnollHackService.SetPetMID(response.ResponseUIntValue);
+                            _gamePage.GnollHackService?.SetPetMID(response.ResponseUIntValue);
                         break;
                     case GHRequestType.ShowGUITips:
                         _guiTipsFinished = true;
@@ -263,17 +263,17 @@ namespace GnollHackX
                         EndReplayFile();
                         break;
                     case GHRequestType.SetCharacterClickAction:
-                        GHApp.GnollHackService.SetCharacterClickAction(response.ResponseBoolValue);
+                        GHApp.GnollHackService?.SetCharacterClickAction(response.ResponseBoolValue);
                         break;
                     case GHRequestType.SetGetPositionArrows:
-                        GHApp.GnollHackService.SetGetPositionArrows(response.ResponseBoolValue);
+                        GHApp.GnollHackService?.SetGetPositionArrows(response.ResponseBoolValue);
                         break;
                     case GHRequestType.SetDiceAsRanges:
-                        GHApp.GnollHackService.SetDiceAsRanges(response.ResponseBoolValue);
+                        GHApp.GnollHackService?.SetDiceAsRanges(response.ResponseBoolValue);
                         break;
                     case GHRequestType.SetRightMouseCommand:
                     case GHRequestType.SetMiddleMouseCommand:
-                        GHApp.GnollHackService.SetMouseCommand(response.ResponseIntValue, response.RequestType == GHRequestType.SetMiddleMouseCommand);
+                        GHApp.GnollHackService?.SetMouseCommand(response.ResponseIntValue, response.RequestType == GHRequestType.SetMiddleMouseCommand);
                         break;
                     case GHRequestType.SaveFileTrackingLoad:
                     case GHRequestType.SaveFileTrackingSave:
@@ -1904,6 +1904,7 @@ namespace GnollHackX
 
             //ConcurrentQueue<GHRequest> queue;
             bool enqueued = DoShowMenu(winid, how);
+            _abortShowMenuPage = false;
 
             //lock (_ghWindowsLock)
             //{
@@ -1929,7 +1930,7 @@ namespace GnollHackX
             //    _gamePage.RefreshScreen = false;
             //}
 
-            if(enqueued)
+            if (enqueued)
             {
                 bool continuepolling = true;
                 while (continuepolling)
@@ -1941,7 +1942,7 @@ namespace GnollHackX
                         else
                             continuepolling = (_ghWindows[winid].SelectedMenuItems == null);
                     }
-                    if (!continuepolling || _fastForwardGameOver)
+                    if (!continuepolling || _fastForwardGameOver || _abortShowMenuPage)
                         break;
 
                     Thread.Sleep(GHConstants.PollingInterval);
@@ -1962,7 +1963,7 @@ namespace GnollHackX
 
             //lock (_ghWindowsLock)
             {
-                if (_ghWindows[winid] == null || _ghWindows[winid].SelectedMenuItems == null || _ghWindows[winid].WasCancelled || _fastForwardGameOver)
+                if (_abortShowMenuPage || _ghWindows[winid] == null || _ghWindows[winid].SelectedMenuItems == null || _ghWindows[winid].WasCancelled || _fastForwardGameOver)
                     cnt = -1;
                 else if (_ghWindows[winid].SelectedMenuItems.Count <= 0)
                     cnt = 0;
@@ -1995,6 +1996,7 @@ namespace GnollHackX
             //{
             //    _gamePage.RefreshScreen = true;
             //}
+            _abortShowMenuPage = false;
             RecordFunctionCall(RecordedFunctionID.SelectMenu, winid, how, picklist, listsize, cnt);
             return cnt;
         }

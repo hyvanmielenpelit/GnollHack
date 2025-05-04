@@ -1054,10 +1054,10 @@ struct permonst **for_supplement;
 {
     static const char mon_interior[] = "the interior of a monster",
                       unreconnoitered[] = "unreconnoitered";
-    static char look_buf[BUFSZ];
-    static char simple_buf[BUFSZ];
-    static char x_buf[BUFSZ] = "";
-    char prefix[BUFSZ];
+    static char look_buf[BUFSZ * 5];
+    static char simple_buf[BUFSZ * 2];
+    static char x_buf[BUFSZ * 2] = "";
+    char prefix[BUFSZ * 2];
     int i, alt_i, glyph = NO_GLYPH,
         skipped_venom = 0, found = 0; /* count of matching syms found */
     boolean hit_trap, need_to_look = FALSE,
@@ -1255,7 +1255,7 @@ struct permonst **for_supplement;
                 x_str = defsyms[i].explanation;
                 if (defsyms[i].explanation && *defsyms[i].explanation)
                 {
-                    static char decoration_buf[BUFSZ] = "";
+                    static char decoration_buf[BUFSZ * 2] = "";
                     const char* dec_descr = get_decoration_description(cc.x, cc.y);
                     const char* carpet_descr = get_carpet_description(cc.x, cc.y);
                     if (dec_descr && *dec_descr)
@@ -1292,7 +1292,7 @@ struct permonst **for_supplement;
             /* alt_i is now 3 or more and no longer of interest */
         }
 
-        if (sym == (looked ? showsyms[i] : defsyms[i].sym) && *x_str) 
+        if (sym == (looked ? showsyms[i] : defsyms[i].sym) && x_str && *x_str)
         {
             /* avoid "an unexplored", "an stone", "an air", "a water",
                "a floor of a room", "a dark part of a room";
@@ -1414,8 +1414,8 @@ struct permonst **for_supplement;
 
         if (found > 1 || need_to_look)
         {
-            char temp_buf[BUFSZ];
-            char extrabuf[BUFSZ];
+            char temp_buf[BUFSZ * 5];
+            char extrabuf[BUFSZ * 2];
 
             pm = lookat(cc.x, cc.y, look_buf, simple_buf, extrabuf);
             if (pm && for_supplement)
@@ -1424,11 +1424,11 @@ struct permonst **for_supplement;
 
             if (*look_buf)
             {
-                char mdescbuf[BUFSZ];
+                char mdescbuf[BUFSZ * 2];
                 Strcpy(mdescbuf, "");
                 if (!Hallucination && pm && pm->mdescription && strcmp(pm->mdescription, ""))
                 {
-                    char mdescbuf2[BUFSZ];
+                    char mdescbuf2[BUFSZ * 2];
                     Strcpy(mdescbuf2, pm->mdescription);
                     //*mdescbuf2 = lowc(*mdescbuf2);
                     Sprintf(mdescbuf, ", %s", mdescbuf2);
@@ -1437,14 +1437,23 @@ struct permonst **for_supplement;
                 if (iflags.using_gui_tiles)
                 {
                     Sprintf(temp_buf, "%s%s", look_buf, mdescbuf);
-                    Strcpy(out_str, temp_buf);
+                    int clen = BUFSZ - (int)strlen(out_str) - 1;
+                    if (clen > 0)
+                    {
+                        (void)strncat(out_str, temp_buf, (size_t)clen);
+                        out_str[BUFSZ - 1] = 0;
+                    }
                 }
                 else
                 {
                     Sprintf(temp_buf, " (%s%s)", look_buf, mdescbuf);
 
-                    (void)strncat(out_str, temp_buf,
-                        BUFSZ - strlen(out_str) - 1);
+                    int clen = BUFSZ - (int)strlen(out_str) - 1;
+                    if (clen > 0)
+                    {
+                        (void)strncat(out_str, temp_buf, (size_t)clen);
+                        out_str[BUFSZ - 1] = 0;
+                    }
                 }
                 found = 1; /* we have something to look up */
             }
@@ -1452,8 +1461,12 @@ struct permonst **for_supplement;
             if (extrabuf[0])
             {
                 Sprintf(temp_buf, " [seen: %s]", extrabuf);
-                (void) strncat(out_str, temp_buf,
-                               BUFSZ - strlen(out_str) - 1);
+                int clen = BUFSZ - (int)strlen(out_str) - 1;
+                if (clen > 0)
+                {
+                    (void)strncat(out_str, temp_buf, clen);
+                    out_str[BUFSZ - 1] = 0;
+                }
             }
         }
     }
@@ -1474,7 +1487,7 @@ coord *click_cc;
 {
     boolean quick = (mode == 1); /* use cursor; don't search for "more info" */
     boolean clicklook = (mode == 2); /* right mouse-click method */
-    char out_str[BUFSZ] = DUMMY;
+    char out_str[BUFSZ * 5] = DUMMY;
     const char *firstmatch = 0;
     struct permonst *pm = 0, *supplemental_pm = 0;
     int i = '\0', ans = 0;

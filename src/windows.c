@@ -2969,13 +2969,15 @@ int x, y, sym, color;
 nhsym ch;
 uint64_t special;
 {
-    char descbuf[BUFSZ] = "";
+    if (!dumphtml_file)
+        return;
+
     const char* firstmatch = 0;
     coord cc;
     int desc_found = 0;
     unsigned attr;
-
-    if (!dumphtml_file) return;
+    char descbuf[BUFSZ * 5];
+    *descbuf = 0;
 
     if (x == 1) /* start row */
         fprintf(dumphtml_file, "<div class=\"nh_screen\">  "); /* 2 space left margin */

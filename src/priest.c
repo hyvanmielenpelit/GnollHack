@@ -1732,7 +1732,7 @@ void
 mstatusline(mtmp)
 struct monst *mtmp;
 {
-    char buf[BUFSZ];
+    char buf[BUFSZ * 5];
     print_mstatusline(buf, mtmp, ARTICLE_THE, FALSE);
     pline("Status of %s", buf);
 }
@@ -1885,7 +1885,7 @@ boolean showheads;
 void
 ustatusline()
 {
-    char info[BUFSZ];
+    char info[BUFSZ * 2];
 
     info[0] = '\0';
 

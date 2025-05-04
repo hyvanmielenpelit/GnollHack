@@ -32,8 +32,12 @@ namespace GnollHackX.iOS
 
         public override void PressesEnded(NSSet<UIPress> presses, UIPressesEvent evt)
         {
+            if (presses == null || evt == null)
+                return;
+
             bool wasHandled = false;
             int cnt = 0;
+
             //GHApp.MaybeWriteGHLog("PressesEnded started (" + presses.Count + ", " + evt.AllPresses.Count + ")");
             foreach (UIPress p in presses) 
             {
@@ -48,7 +52,7 @@ namespace GnollHackX.iOS
                     //GHApp.MaybeWriteGHLog("Press #" + cnt + "/" + presses.Count + " has no characters");
                     continue;
                 }
-                string strcharsim = p.Key.CharactersIgnoringModifiers;
+                string strcharsim = p?.Key?.CharactersIgnoringModifiers;
                 if (strcharsim == UIKeyCommand.UpArrow)
                 {
                     GHApp.SendSpecialKeyPress(GHSpecialKey.Up, (evt.ModifierFlags & UIKeyModifierFlags.Control) != 0, (evt.ModifierFlags & UIKeyModifierFlags.Alternate) != 0, (evt.ModifierFlags & UIKeyModifierFlags.Shift) != 0);
@@ -100,7 +104,7 @@ namespace GnollHackX.iOS
                     //GHApp.MaybeWriteGHLog("Press #" + cnt + "/" + presses.Count);
                     //GHApp.MaybeWriteGHLog("Chars (" + p.Key.Characters.Length + (p.Key.Characters.Length >= 1 ? ", " + (int)p.Key.Characters[0] : "") + (p.Key.Characters.Length >= 2 ? ", " + (int)p.Key.Characters[1] : "") + "): " + p.Key.Characters);
                     //GHApp.MaybeWriteGHLog("CharsIM (" + p.Key.CharactersIgnoringModifiers.Length + (p.Key.CharactersIgnoringModifiers.Length >= 1 ? ", " + (int)p.Key.CharactersIgnoringModifiers[0] : "") + (p.Key.CharactersIgnoringModifiers.Length >= 2 ? ", " + (int)p.Key.CharactersIgnoringModifiers[1] : "") + "): " + p.Key.CharactersIgnoringModifiers);
-                    string strchars = p.Key.Characters;
+                    string strchars = p?.Key?.Characters;
                     if(strchars?.Length > 0 && strcharsim?.Length > 0)
                     {
                         if ((int)strchars[0] == 13)

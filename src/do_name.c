@@ -602,8 +602,8 @@ int cx, cy;
 {
     coord cc;
     nhsym sym = 0;
-    char tmpbuf[BUFSZ];
-    char descbuf[BUFSZ];
+    char tmpbuf[BUFSZ * 2];
+    char descbuf[BUFSZ * 5];
     const char *firstmatch = "unknown";
 
     cc.x = cx;
@@ -637,8 +637,8 @@ int gloc;
     anything any;
     int i, pick_cnt;
     menu_item *picks = (menu_item *) 0;
-    char descbuf[BUFSZ];
-    char tmpbuf[BUFSZ];
+    char descbuf[BUFSZ * 5];
+    char tmpbuf[BUFSZ * 2];
 
     gather_locs(&garr, &gcount, gloc);
 
@@ -657,7 +657,7 @@ int gloc;
 
     /* gather_locs returns array[0] == you. skip it. */
     for (i = 1; i < gcount; i++) {
-        char fullbuf[BUFSZ];
+        char fullbuf[BUFSZ * 5];
         coord tmpcc;
         const char *firstmatch = "unknown";
         nhsym sym = 0;

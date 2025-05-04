@@ -309,7 +309,7 @@ E char* NDECL(botl_realtime);
 E int64_t NDECL(get_current_game_duration);
 E int64_t FDECL(calculate_current_game_duration, (struct u_realtime));
 E size_t FDECL(print_conditions, (char*));
-E void FDECL(compose_partystatline, (char*, char*, char*, char*, char*));
+E void FDECL(compose_partystatline, (char*, char*, char*, char*, char*, size_t));
 E char* FDECL(format_duration_with_units, (int64_t));
 
 

@@ -286,6 +286,9 @@ public static class MauiProgram
                     });
                     windowsLifecycleBuilder.OnActivated( (window, args) =>
                     {
+                        if (args == null)
+                            return;
+
                         // For WinUI, use WindowActivationState
                         if (args.WindowActivationState == WindowActivationState.CodeActivated ||
                             args.WindowActivationState == WindowActivationState.PointerActivated)

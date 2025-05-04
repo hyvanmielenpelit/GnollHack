@@ -220,6 +220,14 @@ namespace GnollHackX
             DeviceDisplay.MainDisplayInfoChanged += DeviceDisplay_MainDisplayInfoChanged;
         }
 
+
+        public static void BeforeExitApp()
+        {
+            Connectivity.ConnectivityChanged -= Connectivity_ConnectivityChanged;
+            Battery.BatteryInfoChanged -= Battery_BatteryInfoChanged;
+            DeviceDisplay.MainDisplayInfoChanged -= DeviceDisplay_MainDisplayInfoChanged;
+        }
+
         private static void DeviceDisplay_MainDisplayInfoChanged(object sender, DisplayInfoChangedEventArgs e)
         {
             DisplayDensity = (float)e?.DisplayInfo.Density;

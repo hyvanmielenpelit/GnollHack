@@ -967,12 +967,12 @@ STATIC_VAR const struct istat_s initblstats[MAXBLSTATS] = {
     INIT_BLSTAT("alignment", " %s", ANY_STR, 40, BL_ALIGN),
     INIT_BLSTAT("score", " S:%s", ANY_INT64, 30, BL_SCORE),
     INIT_BLSTAT("carrying-capacity", " %s", ANY_INT, 20, BL_CAP),
-    INIT_BLSTATP("power", " MP:%s", ANY_INT, 10, BL_ENEMAX, BL_ENE),
-    INIT_BLSTATM("power-max", "(%s)", ANY_INT, 10, BL_ENE, BL_ENEMAX),
+    INIT_BLSTATP("power", " MP:%s", ANY_INT, 15, BL_ENEMAX, BL_ENE),
+    INIT_BLSTATM("power-max", "(%s)", ANY_INT, 15, BL_ENE, BL_ENEMAX),
     INIT_BLSTAT("experience-level", " XL:%s", ANY_INT, 10, BL_XP),
     INIT_BLSTAT("two-weapon-fighting", " %s", ANY_INT, 10, BL_2WEP),
     INIT_BLSTAT("skill-availability", " %s", ANY_INT, 10, BL_SKILL),
-    INIT_BLSTAT("armor-class", " AC:%s", ANY_INT, 10, BL_AC),
+    INIT_BLSTAT("armor-class", " AC:%s", ANY_INT, 15, BL_AC),
     INIT_BLSTAT("magic-cancellation-level", " MC:%s", ANY_INT, 10, BL_MC_LVL),
     INIT_BLSTAT("magic-cancellation-percentage", "/%s%%", ANY_INT, 10, BL_MC_PCT),
     INIT_BLSTAT("move", " MS:%s", ANY_INT64, 10, BL_MOVE),
@@ -984,8 +984,8 @@ STATIC_VAR const struct istat_s initblstats[MAXBLSTATS] = {
     INIT_BLSTAT("realtime", " %s", ANY_STR, MAXVALWIDTH, BL_REALTIME),
     /* hunger used to be 'ANY_UINT'; see note below in bot_via_windowport() */
     INIT_BLSTAT("hunger", " %s", ANY_INT, 40, BL_HUNGER),
-    INIT_BLSTATP("hitpoints", " HP:%s", ANY_INT, 10, BL_HPMAX, BL_HP),
-    INIT_BLSTATM("hitpoints-max", "(%s)", ANY_INT, 10, BL_HP, BL_HPMAX),
+    INIT_BLSTATP("hitpoints", " HP:%s", ANY_INT, 15, BL_HPMAX, BL_HP),
+    INIT_BLSTATM("hitpoints-max", "(%s)", ANY_INT, 15, BL_HP, BL_HPMAX),
     INIT_BLSTAT("game-mode", "%s", ANY_STR, 10, BL_MODE),
     INIT_BLSTAT("dungeon-level", " %s", ANY_STR, MAXVALWIDTH, BL_LEVELDESC),
     INIT_BLSTAT("experience", "/%s", ANY_INT64, 20, BL_EXP),
@@ -1209,12 +1209,12 @@ bot_via_windowport()
     valset[BL_CONDITION] = TRUE;
 
     /* Partyline */
-    char partybuf[BUFSZ + MAXVALWIDTH];
-    char partybuf2[BUFSZ + MAXVALWIDTH];
-    char partybuf3[BUFSZ + MAXVALWIDTH];
-    char partybuf4[BUFSZ + MAXVALWIDTH];
-    char partybuf5[BUFSZ + MAXVALWIDTH];
-    compose_partystatline(partybuf, partybuf2, partybuf3, partybuf4, partybuf5);
+    char partybuf[BUFSZ * 2 + MAXVALWIDTH];
+    char partybuf2[BUFSZ * 2 + MAXVALWIDTH];
+    char partybuf3[BUFSZ * 2 + MAXVALWIDTH];
+    char partybuf4[BUFSZ * 2 + MAXVALWIDTH];
+    char partybuf5[BUFSZ * 2 + MAXVALWIDTH];
+    compose_partystatline(partybuf, partybuf2, partybuf3, partybuf4, partybuf5, BUFSZ * 2 + MAXVALWIDTH);
     blstats[idx][BL_PARTYSTATS].a.a_int = strcmp(partybuf, "") ? 1 : 0;
     blstats[idx][BL_PARTYSTATS2].a.a_int = strcmp(partybuf2, "") ? 1 : 0;
     blstats[idx][BL_PARTYSTATS3].a.a_int = strcmp(partybuf3, "") ? 1 : 0;
@@ -1548,12 +1548,13 @@ boolean loc_is_you;
 }
 
 void
-compose_partystatline(outbuf, outbuf2, outbuf3, outbuf4, outbuf5)
+compose_partystatline(outbuf, outbuf2, outbuf3, outbuf4, outbuf5, bufsize)
 char* outbuf;
 char* outbuf2;
 char* outbuf3;
 char* outbuf4;
 char* outbuf5;
+size_t bufsize;
 {
     Strcpy(outbuf, "");
     Strcpy(outbuf2, "");
@@ -1570,11 +1571,11 @@ char* outbuf5;
     if (maxlines == 0)
         return;
 
+    char tempbuf[BUFSZ * 4 + MAXVALWIDTH];
     struct monst* mtmp;
     for (mtmp = fmon; mtmp; mtmp = mtmp->nmon)
     {
         char* targetbuf = outbufs[line_idx - 1];
-        char tempbuf[BUFSZ + MAXVALWIDTH];
         Strcpy(tempbuf, "");
 
         if (!DEADMONSTER(mtmp) && is_tame(mtmp))
@@ -1692,13 +1693,28 @@ char* outbuf5;
                 Strcat(tempbuf, " Cooldown");
 
             changepartyline();
-            Strcat(targetbuf, tempbuf);
+            size_t targetlen = strlen(targetbuf);
+            if (targetlen + strlen(tempbuf) >= bufsize)
+            {
+                int copylen = (int)bufsize - (int)targetlen - 1;
+                if (copylen > 0)
+                {
+                    strncpy(eos(targetbuf), tempbuf, (size_t)copylen);
+                    targetbuf[bufsize - 1] = 0;
+                }
+            }
+            else
+                Strcat(targetbuf, tempbuf);
 
             if (!flags.partymultiline && line_idx == maxlines && strlen(outbuf) >= MAXVALWIDTH - 1)
                 break;
         }
     }
     outbuf[MAXVALWIDTH - 1] = '\0';
+    outbuf2[MAXVALWIDTH - 1] = '\0';
+    outbuf3[MAXVALWIDTH - 1] = '\0';
+    outbuf4[MAXVALWIDTH - 1] = '\0';
+    outbuf5[MAXVALWIDTH - 1] = '\0';
 }
 
 /* update just the status lines' 'time' field */

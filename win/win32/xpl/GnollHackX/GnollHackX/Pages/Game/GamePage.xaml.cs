@@ -1478,16 +1478,6 @@ namespace GnollHackX.Pages.Game
         {
             MainThread.BeginInvokeOnMainThread(() =>
             {
-                //if (!StartingPositionsSet && !canvasView.CanvasSize.IsEmpty && IsSizeAllocatedProcessed && StandardReferenceButton.Width > 0)
-                //{
-                //    double statusBarHeight = GetStatusBarHeight();
-                //    lAbilitiesButton.HeightRequest = statusBarHeight;
-                //    lWornItemsButton.HeightRequest = statusBarHeight;
-                //    UpperCmdLayout.Margin = new Thickness(0, statusBarHeight, 0, 0);
-                //    SimpleUpperCmdLayout.Margin = new Thickness(0, statusBarHeight, 0, 0);
-                //    StartingPositionsSet = true;
-                //}
-
                 pollRequestQueue();
             });
         }
@@ -4442,14 +4432,17 @@ namespace GnollHackX.Pages.Game
                 RefreshScreen = false;
             }
 
-            Preferences.Set("MapFontSize", Math.Max(GHConstants.MinimumMapFontSize, MapFontSize));
-            Preferences.Set("MapFontAlternateSize", Math.Max(GHConstants.MinimumMapFontSize, MapFontAlternateSize));
-            Preferences.Set("MapFontMiniRelativeSize", Math.Min(GHConstants.MaximumMapMiniRelativeFontSize, Math.Max(GHConstants.MinimumMapMiniRelativeFontSize, MapFontMiniRelativeSize)));
-            lock (_mapOffsetLock)
+            MainThread.BeginInvokeOnMainThread(() =>
             {
-                Preferences.Set("MapMiniOffsetX", _mapMiniOffsetX);
-                Preferences.Set("MapMiniOffsetY", _mapMiniOffsetY);
-            }
+                Preferences.Set("MapFontSize", Math.Max(GHConstants.MinimumMapFontSize, MapFontSize));
+                Preferences.Set("MapFontAlternateSize", Math.Max(GHConstants.MinimumMapFontSize, MapFontAlternateSize));
+                Preferences.Set("MapFontMiniRelativeSize", Math.Min(GHConstants.MaximumMapMiniRelativeFontSize, Math.Max(GHConstants.MinimumMapMiniRelativeFontSize, MapFontMiniRelativeSize)));
+                lock (_mapOffsetLock)
+                {
+                    Preferences.Set("MapMiniOffsetX", _mapMiniOffsetX);
+                    Preferences.Set("MapMiniOffsetY", _mapMiniOffsetY);
+                }
+            });
         }
 
 

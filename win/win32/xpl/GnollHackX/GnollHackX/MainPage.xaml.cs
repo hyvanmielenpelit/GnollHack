@@ -1243,6 +1243,7 @@ namespace GnollHackX
             carouselView.Stop();
             GHApp.FmodService.StopAllSounds((uint)StopSoundFlags.All, 0U);
             await Task.Delay(200);
+            GHApp.BeforeExitApp();
             GHApp.PlatformService.CloseApplication();
 
 #if !GNH_MAUI
