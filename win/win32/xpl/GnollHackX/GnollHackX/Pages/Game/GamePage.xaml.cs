@@ -3894,7 +3894,7 @@ namespace GnollHackX.Pages.Game
             if (GHApp.GameMuteMode)
                 GHApp.GameMuteMode = false;
             GHApp.CurrentGamePage = null;
-            GHApp.ReportLockDataResults();
+            //GHApp.ReportLockDataResults();
             var page = await GHApp.Navigation.PopModalAsync();
             _mainPage.StartGeneralTimer(); /* Just to be doubly sure */
             GHApp.DisconnectIViewHandlers(page);

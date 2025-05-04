@@ -7477,43 +7477,43 @@ namespace GnollHackX
             }
         }
 
-        private static long _lockCount = 0;
-        private static long _lock5tickCount = 0;
-        private static long _lock10tickCount = 0;
-        private static long _lock50tickCount = 0;
-        private static long _lock100tickCount = 0;
-        private static long _lock500tickCount = 0;
-        private static TimeSpan _lockTotalElapsed = new TimeSpan(0);
+        //private static long _lockCount = 0;
+        //private static long _lock5tickCount = 0;
+        //private static long _lock10tickCount = 0;
+        //private static long _lock50tickCount = 0;
+        //private static long _lock100tickCount = 0;
+        //private static long _lock500tickCount = 0;
+        //private static TimeSpan _lockTotalElapsed = new TimeSpan(0);
 
-        public static void AddLockBlockData(TimeSpan elapsed)
-        {
-            _lockCount++;
-            _lockTotalElapsed += elapsed;
-            if (elapsed.Ticks >= 500)
-                _lock500tickCount++;
-            else if (elapsed.Ticks >= 100)
-                _lock100tickCount++;
-            else if (elapsed.Ticks >= 50)
-                _lock50tickCount++;
-            else if (elapsed.Ticks >= 10)
-                _lock10tickCount++;
-            else if (elapsed.Ticks >= 5)
-                _lock5tickCount++;
-        }
+        //public static void AddLockBlockData(TimeSpan elapsed)
+        //{
+        //    _lockCount++;
+        //    _lockTotalElapsed += elapsed;
+        //    if (elapsed.Ticks >= 500)
+        //        _lock500tickCount++;
+        //    else if (elapsed.Ticks >= 100)
+        //        _lock100tickCount++;
+        //    else if (elapsed.Ticks >= 50)
+        //        _lock50tickCount++;
+        //    else if (elapsed.Ticks >= 10)
+        //        _lock10tickCount++;
+        //    else if (elapsed.Ticks >= 5)
+        //        _lock5tickCount++;
+        //}
 
-        public static void ReportLockDataResults()
-        {
-            if (_lockCount == 0)
-                MaybeWriteGHLog("LockData: #:" + _lockCount);
-            else
-                MaybeWriteGHLog("LockData: #:" + _lockCount + ", Avg.Ticks:" + _lockTotalElapsed.Ticks / _lockCount 
-                    + ", 500+:"+ _lock500tickCount
-                    + ", 100+:" + _lock100tickCount
-                    + ", 50+:" + _lock50tickCount
-                    + ", 10+:" + _lock10tickCount
-                    + ", 5+:" + _lock5tickCount
-                    );
-        }
+        //public static void ReportLockDataResults()
+        //{
+        //    if (_lockCount == 0)
+        //        MaybeWriteGHLog("LockData: #:" + _lockCount);
+        //    else
+        //        MaybeWriteGHLog("LockData: #:" + _lockCount + ", Avg.Ticks:" + _lockTotalElapsed.Ticks / _lockCount 
+        //            + ", 500+:"+ _lock500tickCount
+        //            + ", 100+:" + _lock100tickCount
+        //            + ", 50+:" + _lock50tickCount
+        //            + ", 10+:" + _lock10tickCount
+        //            + ", 5+:" + _lock5tickCount
+        //            );
+        //}
 
 
         public static bool SendKeyPress(int key, bool isCtrl, bool isMeta)
