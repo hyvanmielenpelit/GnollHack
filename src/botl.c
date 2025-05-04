@@ -1220,17 +1220,21 @@ bot_via_windowport()
     blstats[idx][BL_PARTYSTATS3].a.a_int = strcmp(partybuf3, "") ? 1 : 0;
     blstats[idx][BL_PARTYSTATS4].a.a_int = strcmp(partybuf4, "") ? 1 : 0;
     blstats[idx][BL_PARTYSTATS5].a.a_int = strcmp(partybuf5, "") ? 1 : 0;
-    Strcpy(blstats[idx][BL_PARTYSTATS].val, partybuf);
-    Strcpy(blstats[idx][BL_PARTYSTATS2].val, partybuf2);
-    Strcpy(blstats[idx][BL_PARTYSTATS3].val, partybuf3);
-    Strcpy(blstats[idx][BL_PARTYSTATS4].val, partybuf4);
-    Strcpy(blstats[idx][BL_PARTYSTATS5].val, partybuf5);
+    Strncpy(blstats[idx][BL_PARTYSTATS].val, partybuf, MAXVALWIDTH - 1);
+    Strncpy(blstats[idx][BL_PARTYSTATS2].val, partybuf2, MAXVALWIDTH - 1);
+    Strncpy(blstats[idx][BL_PARTYSTATS3].val, partybuf3, MAXVALWIDTH - 1);
+    Strncpy(blstats[idx][BL_PARTYSTATS4].val, partybuf4, MAXVALWIDTH - 1);
+    Strncpy(blstats[idx][BL_PARTYSTATS5].val, partybuf5, MAXVALWIDTH - 1);
+    blstats[idx][BL_PARTYSTATS].val[MAXVALWIDTH - 1] = '\0';
+    blstats[idx][BL_PARTYSTATS2].val[MAXVALWIDTH - 1] = '\0';
+    blstats[idx][BL_PARTYSTATS3].val[MAXVALWIDTH - 1] = '\0';
+    blstats[idx][BL_PARTYSTATS4].val[MAXVALWIDTH - 1] = '\0';
+    blstats[idx][BL_PARTYSTATS5].val[MAXVALWIDTH - 1] = '\0';
     valset[BL_PARTYSTATS] = TRUE;
     valset[BL_PARTYSTATS2] = TRUE;
     valset[BL_PARTYSTATS3] = TRUE;
     valset[BL_PARTYSTATS4] = TRUE;
     valset[BL_PARTYSTATS5] = TRUE;
-
 
     evaluate_and_notify_windowport(valset, idx);
 }
