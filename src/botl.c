@@ -1703,7 +1703,7 @@ size_t bufsize;
                 int copylen = (int)bufsize - (int)targetlen - 1;
                 if (copylen > 0)
                 {
-                    strncpy(eos(targetbuf), tempbuf, (size_t)copylen);
+                    (void)strncpy(eos(targetbuf), tempbuf, (size_t)copylen);
                     targetbuf[bufsize - 1] = 0;
                 }
                 
