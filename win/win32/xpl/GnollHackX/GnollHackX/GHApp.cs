@@ -40,6 +40,7 @@ using Azure;
 using System.Text.RegularExpressions;
 using System.ComponentModel;
 using System.Runtime.InteropServices;
+using System.Reflection.Metadata;
 
 namespace GnollHackX
 {
@@ -7532,6 +7533,14 @@ namespace GnollHackX
                 return CurrentMainPage?.HandleMainPageSpecialKeyPress(spkey, isCtrl, isMeta, isShift) ?? false;
             else if (topPage is GamePage)
                 return ((GamePage)topPage).HandleSpecialKeyPress(spkey, isCtrl, isMeta, isShift);
+            else if (topPage is OutRipPage)
+            {
+                if (spkey == GHSpecialKey.Escape || spkey == GHSpecialKey.Enter || spkey == GHSpecialKey.Space)
+                {
+                    ((OutRipPage)topPage).CloseOutrip();
+                    return true;
+                }
+            }
             else if (spkey == GHSpecialKey.Escape)
             {
                 if (topPage is GameMenuPage)
@@ -7559,12 +7568,14 @@ namespace GnollHackX
                     ((EditorPage)topPage).ClosePage();
                     return true;
                 }
-                return false;
+                else if (topPage is NamePage)
+                {
+                    ((NamePage)topPage).PressCancel();
+                    return true;
+                }
             }
-            else
-            {
-                return false;
-            }
+
+            return false;
         }
 
         private static readonly object _keyboardHookLock = new object();
