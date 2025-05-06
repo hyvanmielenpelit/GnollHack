@@ -259,8 +259,7 @@
 /* note: "larger" is in comparison with 'record', the high-scores file
    (whose name can be overridden via #define in global.h if desired) */
 #ifdef LOGDIR
-#define CONFIG_STR(A) #A
-#define CONFIG_XSTR(A) CONFIG_STR(A)
+#define CONFIG_XSTR(A) A
 #define LOGFILE  CONFIG_XSTR(LOGDIR) "/" "logfile"  /* larger file for debugging purposes */
 #define XLOGFILE CONFIG_XSTR(LOGDIR) "/" "xlogfile" /* even larger logfile */
 #else
