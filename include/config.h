@@ -256,13 +256,11 @@
 #define GREPPATH "/bin/grep"
 #endif
 
-#define CONFIG_STRCAT(a, b, c) a b c
- 
  /* note: "larger" is in comparison with 'record', the high-scores file
    (whose name can be overridden via #define in global.h if desired) */
 #ifdef LOGDIR
-#define LOGFILE  CONFIG_STRCAT(LOGDIR, "/", "logfile")  /* larger file for debugging purposes */
-#define XLOGFILE CONFIG_STRCAT(LOGDIR, "/", "xlogfile") /* even larger logfile */
+#define LOGFILE  LOGDIR "/" "logfile"  /* larger file for debugging purposes */
+#define XLOGFILE LOGDIR "/" "xlogfile" /* even larger logfile */
 #else
 #define LOGFILE  "logfile"  /* larger file for debugging purposes */
 #define XLOGFILE "xlogfile" /* even larger logfile */
