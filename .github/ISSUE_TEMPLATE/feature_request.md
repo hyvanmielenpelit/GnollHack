@@ -1,8 +1,8 @@
 ---
 name: Feature request
 about: Suggest an idea for this project
-title: "[FEATURE] "
-labels: ''
+title: ''
+labels: enhancement
 assignees: ''
 
 ---
@@ -11,11 +11,3 @@ assignees: ''
 
 
 ## Describe why you want the feature
-
-
-## Describe alternatives you've considered
-*(Optional)*
-
-
-## Additional context
-*(Optional)*
