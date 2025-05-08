@@ -125,7 +125,7 @@
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)'=='Release|net9.0-android'">
-    <EnableLLVM>true</EnableLLVM>
+    <EnableLLVM>false</EnableLLVM>
     <RunAOTCompilation>true</RunAOTCompilation>
     <AndroidEnableProfiledAot>false</AndroidEnableProfiledAot>
   </PropertyGroup>
