@@ -160,26 +160,28 @@
             </Grid>
             <Grid x:Name="MenuGrid" HorizontalOptions="Fill" VerticalOptions="Fill" BackgroundColor="#AA000000" IsVisible="False">
                 <gnh:BackgroundView x:Name="MenuBackground" BackgroundStyle="Automatic" BackgroundBitmap="AutoMenuBackground" BorderStyle="Simple" HorizontalOptions="Fill" VerticalOptions="Fill"/>
-                <StackLayout x:Name="MenuStack" Spacing="6" VerticalOptions="Fill" HorizontalOptions="Fill" Orientation="Vertical"  BackgroundColor="Transparent">
-                    <gnh:CustomLabel x:Name="MenuHeaderLabel"
-                       TextColor="Black" FontAttributes="Bold" BackgroundColor="Transparent"
-                       HorizontalOptions="FillAndExpand" VerticalOptions="Center" HorizontalTextAlignment="Center" VerticalTextAlignment="Center">
-                        <gnh:CustomLabel.GestureRecognizers>
-                            <TapGestureRecognizer Tapped="MenuTapGestureRecognizer_Tapped" />
-                        </gnh:CustomLabel.GestureRecognizers>
-                    </gnh:CustomLabel>
-                    <gnh:CustomLabel x:Name="MenuSubtitleLabel" UseSpecialSymbols="False"
-                       TextColor="Black" Margin="1,2,1,6" BackgroundColor="Transparent"
-                       HorizontalOptions="FillAndExpand" VerticalOptions="Center" HorizontalTextAlignment="Center" VerticalTextAlignment="Center">
-                        <gnh:CustomLabel.GestureRecognizers>
-                            <TapGestureRecognizer Tapped="MenuTapGestureRecognizer_Tapped" />
-                        </gnh:CustomLabel.GestureRecognizers>
-                    </gnh:CustomLabel>
-                    <Grid HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
+                <Grid x:Name="MenuStack" RowDefinitions="Auto,*,Auto" RowSpacing="6" ColumnSpacing="0" Margin="0" Padding="0" VerticalOptions="Fill" HorizontalOptions="Fill">
+                    <StackLayout Grid.Row="0" Spacing="6" VerticalOptions="Start" HorizontalOptions="Fill" Orientation="Vertical"  BackgroundColor="Transparent">
+                        <gnh:CustomLabel x:Name="MenuHeaderLabel"
+                           TextColor="Black" FontAttributes="Bold" BackgroundColor="Transparent"
+                           HorizontalOptions="Fill" VerticalOptions="Center" HorizontalTextAlignment="Center" VerticalTextAlignment="Center">
+                            <gnh:CustomLabel.GestureRecognizers>
+                                <TapGestureRecognizer Tapped="MenuTapGestureRecognizer_Tapped" />
+                            </gnh:CustomLabel.GestureRecognizers>
+                        </gnh:CustomLabel>
+                        <gnh:CustomLabel x:Name="MenuSubtitleLabel" UseSpecialSymbols="False"
+                           TextColor="Black" Margin="1,2,1,6" BackgroundColor="Transparent"
+                           HorizontalOptions="Fill" VerticalOptions="Center" HorizontalTextAlignment="Center" VerticalTextAlignment="Center">
+                            <gnh:CustomLabel.GestureRecognizers>
+                                <TapGestureRecognizer Tapped="MenuTapGestureRecognizer_Tapped" />
+                            </gnh:CustomLabel.GestureRecognizers>
+                        </gnh:CustomLabel>
+                    </StackLayout>
+                    <Grid Grid.Row="1" HorizontalOptions="Fill" VerticalOptions="Fill">
                         <gnh:GHCachedImage x:Name="MenuWindowGlyphImage" HorizontalOptions="End" VerticalOptions="Start" Margin="15,15" WidthRequest="75" HeightRequest="75" Aspect="AspectFit" />
-                        <controls:SwitchableCanvasView x:Name="MenuCanvas" UseGL="False" CanvasType="MenuCanvas" RevertBlackAndWhite="True" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" PaintSurface="MenuCanvas_PaintSurface" Touch="MenuCanvas_Touch" MouseWheel="MenuCanvas_MouseWheel" MousePointer="MenuCanvas_MousePointer" EnableTouchEvents="True" />
+                        <controls:SwitchableCanvasView x:Name="MenuCanvas" UseGL="False" CanvasType="MenuCanvas" RevertBlackAndWhite="True" HorizontalOptions="Fill" VerticalOptions="Fill" PaintSurface="MenuCanvas_PaintSurface" Touch="MenuCanvas_Touch" MouseWheel="MenuCanvas_MouseWheel" MousePointer="MenuCanvas_MousePointer" EnableTouchEvents="True" />
                     </Grid>
-                    <Grid x:Name="MenuCloseGrid" ColumnSpacing="6" BackgroundColor="Transparent" >
+                    <Grid Grid.Row="2" x:Name="MenuCloseGrid" ColumnSpacing="6" BackgroundColor="Transparent" >
                         <Grid.RowDefinitions>
                             <RowDefinition Height="*" />
                         </Grid.RowDefinitions>
@@ -190,7 +192,10 @@
                         <controls:CustomImageButton Grid.Column="0" HorizontalOptions="End" WidthRequest="135" HeightRequest="60" UseVaryingTextColors="True" Text="OK" x:Name="MenuOKButton" Clicked="MenuOKButton_Clicked" FontFamily="Diablo" FontSize="19" TextColor="White" BackgroundColor="Transparent" />
                         <controls:CustomImageButton Grid.Column="1" HorizontalOptions="Start" WidthRequest="135"  HeightRequest="60" UseVaryingTextColors="True" Text="Cancel" x:Name="MenuCancelButton" Clicked="MenuCancelButton_Clicked" FontFamily="Diablo" FontSize="19" TextColor="White" BackgroundColor="Transparent" />
                     </Grid>
-                </StackLayout>
+                    <Grid.GestureRecognizers>
+                        <TapGestureRecognizer />
+                    </Grid.GestureRecognizers>
+                </Grid>
                 <Grid x:Name="MenuCountGrid" HorizontalOptions="Fill" VerticalOptions="Fill" 
                          BackgroundColor="#66000000" IsVisible="False">
                     <Grid x:Name="MenuCountWidthGrid" MaximumWidthRequest="360" HorizontalOptions="Center" VerticalOptions="Center">
