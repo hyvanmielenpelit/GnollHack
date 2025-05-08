@@ -201,7 +201,7 @@
                     <Grid x:Name="MenuCountWidthGrid" MaximumWidthRequest="360" HorizontalOptions="Center" VerticalOptions="Center">
                         <Border x:Name="MenuCountFrame" BackgroundColor="#66000000" Stroke="Black" Padding="12,12" StrokeThickness="1" StrokeShape="RoundRectangle 10,10,10,10" HorizontalOptions="Fill" VerticalOptions="Center">
                             <StackLayout Spacing="6" x:Name="MenuCountLayout" HorizontalOptions="Fill" VerticalOptions="Center">
-                                <Label x:Name="MenuCountCaption" Text="Select Count" FontFamily="Immortal" FontSize="20" HorizontalOptions="CenterAndExpand" TextColor="White" />
+                                <Label x:Name="MenuCountCaption" Text="Select Count" FontFamily="Immortal" FontSize="20" HorizontalOptions="Center" TextColor="White" />
                                 <Picker x:Name="CountPicker"
                                         VerticalOptions="Center"
                                         VerticalTextAlignment="Center"
@@ -230,7 +230,7 @@
                                     WidthRequest="180"
                                     Completed="MenuCountEntry_Completed"
                                     />
-                                <Grid x:Name="MenuCountButtonGrid" ColumnSpacing="6" HorizontalOptions="Center" VerticalOptions="CenterAndExpand" WidthRequest="360">
+                                <Grid x:Name="MenuCountButtonGrid" ColumnSpacing="6" HorizontalOptions="Center" VerticalOptions="Center" WidthRequest="360">
                                     <Grid.RowDefinitions>
                                         <RowDefinition x:Name="MenuCountButtonRowDefinition" Height="65" />
                                     </Grid.RowDefinitions>
@@ -238,10 +238,10 @@
                                         <ColumnDefinition Width="*" />
                                         <ColumnDefinition Width="*" />
                                     </Grid.ColumnDefinitions>
-                                    <controls:CustomImageButton Grid.Column="0" x:Name="MenuCountOkButton" Text="OK" FontSize="19" WidthRequest="135" HeightRequest="60" FontFamily="Diablo" HorizontalOptions="End" VerticalOptions="CenterAndExpand" 
+                                    <controls:CustomImageButton Grid.Column="0" x:Name="MenuCountOkButton" Text="OK" FontSize="19" WidthRequest="135" HeightRequest="60" FontFamily="Diablo" HorizontalOptions="End" VerticalOptions="Center" 
                                             BackgroundColor="Transparent" TextColor="White"
                                             Clicked="MenuCountOkButton_Clicked" />
-                                    <controls:CustomImageButton Grid.Column="1" x:Name="MenuCountCancelButton" Text="Cancel" FontSize="19" WidthRequest="135" HeightRequest="60" FontFamily="Diablo" HorizontalOptions="Start" VerticalOptions="CenterAndExpand" 
+                                    <controls:CustomImageButton Grid.Column="1" x:Name="MenuCountCancelButton" Text="Cancel" FontSize="19" WidthRequest="135" HeightRequest="60" FontFamily="Diablo" HorizontalOptions="Start" VerticalOptions="Center" 
                                             BackgroundColor="Transparent" TextColor="White"
                                             Clicked="MenuCountCancelButton_Clicked" />
                                 </Grid>
@@ -273,24 +273,24 @@
                 <Grid x:Name="GetLineWidthGrid" MaximumWidthRequest="440" HorizontalOptions="Fill" VerticalOptions="Start" Margin="0,50,0,10" >
                     <Border x:Name="GetLineFrame" BackgroundColor="#66000000" Stroke="Black" Padding="12,12" StrokeThickness="1" StrokeShape="RoundRectangle 10,10,10,10" HorizontalOptions="Fill" VerticalOptions="Center">
                         <StackLayout x:Name="GetLineLayout" Spacing="6" HorizontalOptions="Fill" VerticalOptions="Center">
-                            <Label x:Name="GetLineCaption" Text="" FontFamily="Immortal" FontSize="20" HorizontalOptions="CenterAndExpand" TextColor="White">
+                            <Label x:Name="GetLineCaption" Text="" FontFamily="Immortal" FontSize="20" HorizontalOptions="Center" TextColor="White">
                                 <Label.GestureRecognizers>
                                     <TapGestureRecognizer Tapped="GetLineCaptionTapGestureRecognizer_Tapped" />
                                 </Label.GestureRecognizers>
                             </Label>
-                            <StackLayout Spacing="6" Orientation="Horizontal" HorizontalOptions="CenterAndExpand">
+                            <StackLayout Spacing="6" Orientation="Horizontal" HorizontalOptions="Center">
                                 <Entry x:Name="GetLineEntryText" WidthRequest="320" HorizontalOptions="Center" Placeholder="Enter the text here" PlaceholderColor="Gray" TextColor="White" BackgroundColor="#40000000"
                                        Keyboard="Plain" HorizontalTextAlignment="Center" FontSize="20" TextChanged="GetLineEntryText_TextChanged" Completed="GetLineEntryText_Completed" />
-                                <controls:CustomImageButton x:Name="GetLineQuestionMarkButton" IsVisible="False" Text="?" FontSize="18" WidthRequest="50" HeightRequest="50" FontFamily="Diablo" HorizontalOptions="Start" VerticalOptions="CenterAndExpand" 
+                                <controls:CustomImageButton x:Name="GetLineQuestionMarkButton" IsVisible="False" Text="?" FontSize="18" WidthRequest="50" HeightRequest="50" FontFamily="Diablo" HorizontalOptions="Start" VerticalOptions="Center" 
                                             BackgroundColor="Transparent" TextColor="White"
                                             Clicked="GetLineQuestionMarkButton_Clicked" />
                             </StackLayout>
-                            <Label x:Name="GetLineAutoComplete" IsVisible="False" Text="" FontSize="18" HorizontalOptions="CenterAndExpand" TextColor="LightGray" >
+                            <Label x:Name="GetLineAutoComplete" IsVisible="False" Text="" FontSize="18" HorizontalOptions="Center" TextColor="LightGray" >
                                 <Label.GestureRecognizers>
                                     <TapGestureRecognizer Tapped="GetLineAutoCompleteTapGestureRecognizer_Tapped" />
                                 </Label.GestureRecognizers>
                             </Label>
-                            <Grid x:Name="GetLineButtonGrid" ColumnSpacing="6" WidthRequest="360" HorizontalOptions="Center" VerticalOptions="CenterAndExpand">
+                            <Grid x:Name="GetLineButtonGrid" ColumnSpacing="6" WidthRequest="360" HorizontalOptions="Center" VerticalOptions="Center">
                                 <Grid.RowDefinitions>
                                     <RowDefinition x:Name="GetLineButtonRowDefinition" Height="65" />
                                 </Grid.RowDefinitions>
@@ -318,7 +318,7 @@
                     <Border x:Name="YnFrame" BackgroundColor="#66000000" Stroke="Black" Padding="12,12" StrokeThickness="1" StrokeShape="RoundRectangle 10,10,10,10" HorizontalOptions="Center" VerticalOptions="Center">
                         <StackLayout x:Name="YnLayout" Padding="5" Spacing="6" HorizontalOptions="Center" VerticalOptions="Center" >
                             <StackLayout x:Name="YnTitleLayout" Orientation="Horizontal" Spacing="6"
-                                     HorizontalOptions="CenterAndExpand" VerticalOptions="Center">
+                                     HorizontalOptions="Center" VerticalOptions="Center">
                                 <gnh:GHCachedImage x:Name="YnImage" IsVisible="False" HorizontalOptions="Start" VerticalOptions="Center"
                                                 Margin="0,0,5,0" WidthRequest="32" HeightRequest="48"/>
                                 <Label Text="?" x:Name="YnTitleLabel" FontFamily="Immortal" FontSize="22" TextColor="White"
@@ -326,7 +326,7 @@
                             </StackLayout>
                             <Label Text="?" x:Name="YnQuestionLabel" FontFamily="Immortal" FontSize="19" TextColor="White"
                                VerticalTextAlignment="Center" HorizontalOptions="Center"  />
-                            <StackLayout x:Name="YnButtonStack" Spacing="6" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand" Orientation="Horizontal" Margin="0,10,0,0" >
+                            <StackLayout x:Name="YnButtonStack" Spacing="6" HorizontalOptions="Center" VerticalOptions="Center" Orientation="Horizontal" Margin="0,10,0,0" >
                                 <controls:LabeledImageButton x:Name="ZeroButton" ImgSourcePath="resource://GnollHackM.Assets.UI.missing_icon.png" BtnClicked="YnButton_Clicked" PortraitButtonsInRow="5" LandscapeButtonsInRow="5" LargerFont="True"  />
                                 <controls:LabeledImageButton x:Name="FirstButton" ImgSourcePath="resource://GnollHackM.Assets.UI.missing_icon.png" BtnClicked="YnButton_Clicked" PortraitButtonsInRow="5" LandscapeButtonsInRow="5" LargerFont="True"  />
                                 <controls:LabeledImageButton x:Name="SecondButton" ImgSourcePath="resource://GnollHackM.Assets.UI.missing_icon.png" BtnClicked="YnButton_Clicked" PortraitButtonsInRow="5" LandscapeButtonsInRow="5" LargerFont="True" />
@@ -347,7 +347,7 @@
                         <StackLayout x:Name="PopupLayout" Padding="5" Spacing="6"
                                      HorizontalOptions="Center" VerticalOptions="Center">
                             <StackLayout x:Name="PopupTitleLayout" Orientation="Horizontal" Spacing="6"
-                                     HorizontalOptions="CenterAndExpand" VerticalOptions="Center">
+                                     HorizontalOptions="Center" VerticalOptions="Center">
                                 <gnh:GHCachedImage x:Name="PopupImage" IsVisible="False" HorizontalOptions="Start" VerticalOptions="Center"
                                                 Margin="0,0,5,0" WidthRequest="32" HeightRequest="48"/>
                                 <Label Text="" x:Name="PopupTitleLabel" FontFamily="Immortal" FontSize="20" TextColor="White"
@@ -439,12 +439,11 @@
                                 </Picker.ItemsSource>
                             </Picker>
 
-                            <!--<Label x:Name="GotoTurnCaption" Text="Go to Turn" FontFamily="Immortal" FontSize="20" HorizontalOptions="CenterAndExpand" TextColor="White" />-->
-                            <StackLayout Orientation="Horizontal" HorizontalOptions="CenterAndExpand">
+                            <StackLayout Orientation="Horizontal" HorizontalOptions="Center">
                                 <Entry x:Name="GotoTurnEntryText" Keyboard="Numeric" MaximumWidthRequest="360" HorizontalOptions="Fill" Placeholder="Enter the turn here" PlaceholderColor="Gray" TextColor="White" BackgroundColor="#40000000"
                                        HorizontalTextAlignment="Center" FontSize="20" FontFamily="Underwood" MaxLength="255" Completed="GotoTurnEntryText_Completed" />
                             </StackLayout>
-                            <Grid ColumnSpacing="6" WidthRequest="360" HorizontalOptions="Center" VerticalOptions="CenterAndExpand">
+                            <Grid ColumnSpacing="6" WidthRequest="360" HorizontalOptions="Center" VerticalOptions="Center">
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="65" />
                                 </Grid.RowDefinitions>
@@ -452,10 +451,10 @@
                                     <ColumnDefinition Width="*" />
                                     <ColumnDefinition Width="*" />
                                 </Grid.ColumnDefinitions>
-                                <controls:CustomImageButton Grid.Column="0" x:Name="GotoTurnOkButton" Text="OK" FontSize="19" WidthRequest="135" HeightRequest="60" FontFamily="Diablo" HorizontalOptions="End" VerticalOptions="CenterAndExpand" 
+                                <controls:CustomImageButton Grid.Column="0" x:Name="GotoTurnOkButton" Text="OK" FontSize="19" WidthRequest="135" HeightRequest="60" FontFamily="Diablo" HorizontalOptions="End" VerticalOptions="Center" 
                                             BackgroundColor="Transparent" TextColor="White"
                                             Clicked="GotoTurnOkButton_Clicked" />
-                                <controls:CustomImageButton Grid.Column="1" x:Name="GotoTurnCancelButton" Text="Cancel" FontSize="19" WidthRequest="135" HeightRequest="60" FontFamily="Diablo" HorizontalOptions="Start" VerticalOptions="CenterAndExpand" 
+                                <controls:CustomImageButton Grid.Column="1" x:Name="GotoTurnCancelButton" Text="Cancel" FontSize="19" WidthRequest="135" HeightRequest="60" FontFamily="Diablo" HorizontalOptions="Start" VerticalOptions="Center" 
                                             BackgroundColor="Transparent" TextColor="White"
                                             Clicked="GotoTurnCancelButton_Clicked" />
                             </Grid>
@@ -469,7 +468,7 @@
                                 Aspect="AspectFill" CacheImage="False" />
                 <StackLayout Spacing="6" HeightRequest="150" WidthRequest="360" HorizontalOptions="Center" VerticalOptions="Center">
                     <Label x:Name="LoadingLabel" Text="Loading..." FontFamily="Diablo" TextColor="White" FontSize="36"
-                       HorizontalOptions="CenterAndExpand" HorizontalTextAlignment="Center" 
+                       HorizontalOptions="Fill" HorizontalTextAlignment="Center" 
                        VerticalOptions="End" VerticalTextAlignment="Center"/>
                     <Label x:Name="LoadingDetailsLabel" Text="" FontFamily="Underwood" TextColor="White" FontSize="14"
                        HorizontalOptions="Fill" HorizontalTextAlignment="Center" 
