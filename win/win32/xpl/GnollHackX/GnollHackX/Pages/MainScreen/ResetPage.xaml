@@ -15,7 +15,7 @@
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
                 <Label Grid.Row="0" x:Name="lblHeader" Text="Reset Menu" FontSize="23" FontAttributes="Bold" FontFamily="Diablo" TextColor="Black"
-                    HorizontalOptions="CenterAndExpand" VerticalOptions="Fill" Margin="0,10,0,30" />
+                    HorizontalOptions="Center" VerticalOptions="Fill" Margin="0,10,0,30" />
                 <Grid Grid.Row="1" WidthRequest  ="400" HorizontalOptions  ="Center" VerticalOptions="Fill">
                     <ScrollView x:Name="ResetScrollView" HorizontalOptions="Fill" VerticalOptions="Fill" BackgroundColor="Transparent">
                         <StackLayout x:Name="ResetLayout" HorizontalOptions="Fill" Orientation="Vertical" Spacing="2">

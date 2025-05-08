@@ -1023,19 +1023,19 @@
                                         Text="  Webhook Link"
                                         FontFamily="Underwood" TextColor="Black"
                                         FontSize="15"
-                                        VerticalOptions="CenterAndExpand" 
+                                        VerticalOptions="Center" 
                                         HorizontalOptions="Start" />
                                 <StackLayout Grid.Column="1" Spacing="6" Orientation="Horizontal" HeightRequest="40" HorizontalOptions="End">
                                     <Label x:Name="CustomLinkLabel"
                                         Text="Default"
                                         FontFamily="Underwood" TextColor="Blue"
                                         FontSize="14"
-                                        VerticalOptions="CenterAndExpand" 
+                                        VerticalOptions="Center" 
                                         HorizontalOptions="End" />
                                     <controls:CustomImageButton Grid.Column="1" x:Name="CustomLinkButton" Text="Edit" FontSize="13" WidthRequest="80" HeightRequest="35" FontFamily="Diablo"
                                         BackgroundColor="Transparent" TextColor="White"
                                         Clicked="CustomLinkButton_Clicked"
-                                        VerticalOptions="CenterAndExpand" 
+                                        VerticalOptions="Center" 
                                         HorizontalOptions="End" />
                                 </StackLayout>
                             </Grid>
@@ -1070,12 +1070,12 @@
                                         Text="Account"
                                         FontFamily="Underwood" TextColor="Black"
                                         FontSize="15"
-                                        VerticalOptions="CenterAndExpand" 
+                                        VerticalOptions="Center" 
                                         HorizontalOptions="Start" />
                                     <controls:CustomImageButton x:Name="XlogAccountButton" Text="Setup" FontSize="13" WidthRequest="90" HeightRequest="35" FontFamily="Diablo"
                                         BackgroundColor="Transparent" TextColor="White"
                                         Clicked="XlogAccountButton_Clicked"
-                                        VerticalOptions="CenterAndExpand" 
+                                        VerticalOptions="Center" 
                                         HorizontalOptions="Start" />
                                 </StackLayout>
                                 <StackLayout Grid.Column="1" Orientation="Horizontal" Spacing="12" HeightRequest="40" HorizontalOptions="End">
@@ -1083,12 +1083,12 @@
                                         Text="Default"
                                         FontFamily="Underwood" TextColor="Blue"
                                         FontSize="14"
-                                        VerticalOptions="CenterAndExpand" 
+                                        VerticalOptions="Center" 
                                         HorizontalOptions="End" />
                                     <controls:CustomImageButton x:Name="CustomXlogAccountButton" Text="Link" FontSize="13" WidthRequest="80" HeightRequest="35" FontFamily="Diablo"
                                         BackgroundColor="Transparent" TextColor="White"
                                         Clicked="CustomXlogAccountButton_Clicked"
-                                        VerticalOptions="CenterAndExpand" 
+                                        VerticalOptions="Center" 
                                         HorizontalOptions="End" />
                                 </StackLayout>
                             </Grid>
@@ -1118,12 +1118,12 @@
                                         Text="Posting"
                                         FontFamily="Underwood" TextColor="Black"
                                         FontSize="15"
-                                        VerticalOptions="CenterAndExpand" 
+                                        VerticalOptions="Center" 
                                         HorizontalOptions="Start" />
                                     <controls:CustomImageButton x:Name="XlogTestButton" Text="Test" FontSize="13" WidthRequest="90" HeightRequest="35" FontFamily="Diablo"
                                         BackgroundColor="Transparent" TextColor="White"
                                         Clicked="XlogTestButton_Clicked"
-                                        VerticalOptions="CenterAndExpand" 
+                                        VerticalOptions="Center" 
                                         HorizontalOptions="Start" />
                                 </StackLayout>
                                 <StackLayout Grid.Column="1" Spacing="12" Orientation="Horizontal" HeightRequest="40" HorizontalOptions="End">
@@ -1131,12 +1131,12 @@
                                         Text="Default"
                                         FontFamily="Underwood" TextColor="Blue"
                                         FontSize="14"
-                                        VerticalOptions="CenterAndExpand" 
+                                        VerticalOptions="Center" 
                                         HorizontalOptions="End" />
                                     <controls:CustomImageButton x:Name="CustomXlogPostButton" Text="Link" FontSize="13" WidthRequest="80" HeightRequest="35" FontFamily="Diablo"
                                         BackgroundColor="Transparent" TextColor="White"
                                         Clicked="CustomXlogPostButton_Clicked"
-                                        VerticalOptions="CenterAndExpand" 
+                                        VerticalOptions="Center" 
                                         HorizontalOptions="End" />
                                 </StackLayout>
                             </Grid>
@@ -1245,19 +1245,19 @@
                                         Text="Cloud Storage"
                                         FontFamily="Underwood" TextColor="Black"
                                         FontSize="15"
-                                        VerticalOptions="CenterAndExpand" 
+                                        VerticalOptions="Center" 
                                         HorizontalOptions="Start" />
                                 <StackLayout Grid.Column="1" Spacing="6" Orientation="Horizontal" HeightRequest="40" HorizontalOptions="End">
                                     <Label x:Name="CustomCloudStorageLabel"
                                         Text="Default"
                                         FontFamily="Underwood" TextColor="Blue"
                                         FontSize="14"
-                                        VerticalOptions="CenterAndExpand" 
+                                        VerticalOptions="Center" 
                                         HorizontalOptions="End" />
                                     <controls:CustomImageButton x:Name="CustomCloudStorageButton" Text="Edit" FontSize="13" WidthRequest="80" HeightRequest="35" FontFamily="Diablo"
                                         BackgroundColor="Transparent" TextColor="White"
                                         Clicked="CustomCloudStorageButton_Clicked"
-                                        VerticalOptions="CenterAndExpand" 
+                                        VerticalOptions="Center" 
                                         HorizontalOptions="End" />
                                 </StackLayout>
                             </Grid>
@@ -1483,10 +1483,10 @@
                 <Grid WidthRequest  ="440" HorizontalOptions="Center" VerticalOptions="Start" Margin="0,50,0,10" >
                     <Frame x:Name="TextFrame" BackgroundColor="#66000000" BorderColor="Black" CornerRadius="10" HorizontalOptions="Fill" VerticalOptions="Center">
                         <StackLayout x:Name="TextLayout" Spacing="6" HorizontalOptions="Fill" VerticalOptions="Center">
-                            <Label x:Name="TextCaption" Text="" FontFamily="Immortal" FontSize="20" HorizontalOptions="CenterAndExpand" TextColor="White" />
+                            <Label x:Name="TextCaption" Text="" FontFamily="Immortal" FontSize="20" HorizontalOptions="Center" TextColor="White" />
                             <Entry x:Name="TextEntry" WidthRequest="320" HorizontalOptions="Center" Placeholder="Enter the link here" PlaceholderColor="Gray" TextColor="White" BackgroundColor="#40000000"
                                        Keyboard="Plain" HorizontalTextAlignment="Center" FontSize="20" FontFamily="LatoRegular" Completed="TextEntry_Completed" />
-                            <Grid ColumnSpacing="6" WidthRequest="360" HorizontalOptions="Center" VerticalOptions="CenterAndExpand">
+                            <Grid ColumnSpacing="6" WidthRequest="360" HorizontalOptions="Center" VerticalOptions="Center">
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="65" />
                                 </Grid.RowDefinitions>

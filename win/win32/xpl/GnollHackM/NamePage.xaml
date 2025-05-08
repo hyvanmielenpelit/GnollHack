@@ -11,12 +11,12 @@
             <gnollhackclient:BackgroundView x:Name="bkgView" BackgroundStyle="Automatic" BackgroundBitmap="AutoMenuBackground" BorderStyle="Simple" HorizontalOptions="Fill" VerticalOptions="Fill"/>
             <StackLayout x:Name="mainStack" Spacing="6" Padding="10">
                 <Label x:Name="WhatNameLabel" Text="What is your name?" FontFamily="Diablo" FontSize="19" Margin="0,10,0,30" TextColor="Black" HorizontalTextAlignment="Center"
-                    HorizontalOptions="CenterAndExpand" />
+                    HorizontalOptions="Center" />
                 <Entry x:Name="eName" WidthRequest="320" HorizontalOptions="Center" HorizontalTextAlignment="Center" PlaceholderColor="Gray" Placeholder="Enter your name here" FontSize="20" FontFamily="Underwood" TextColor="Black" BackgroundColor="#20404040"
                        Keyboard="Plain" Completed="eName_Completed" />
                 <Label Text="Name can contain only letters, numbers, and underscores.&#x0a;Its length must be 1–31 characters." FontSize="Small" FontAttributes="Italic"
-                       HorizontalOptions="CenterAndExpand" HorizontalTextAlignment="Center" TextColor="Gray" />
-                <Label x:Name="lblError" HorizontalOptions="CenterAndExpand" Text="" />
+                       HorizontalOptions="Center" HorizontalTextAlignment="Center" TextColor="Gray" />
+                <Label x:Name="lblError" HorizontalOptions="Center" Text="" />
                 <Grid x:Name="MenuCloseGrid" BackgroundColor="Transparent" HorizontalOptions="Center" ColumnSpacing="6" >
                     <Grid.RowDefinitions>
                         <RowDefinition Height="*" />
@@ -30,8 +30,8 @@
                     <controls:CustomImageButton Grid.Column="1" x:Name="btnCancel" Text="Cancel" WidthRequest="135" HeightRequest="60" FontFamily="Diablo" FontSize="19" HorizontalOptions="Start" VerticalOptions="Fill" BackgroundColor="Transparent" TextColor="White"
                         Clicked="btnCancel_Clicked" />
                 </Grid>
-                <Label x:Name="lblModeName"  FontFamily="Immortal" FontSize="14" Margin="0,10,0,0" VerticalOptions="End" HorizontalOptions="CenterAndExpand" TextColor="Gray" Text="" />
-                <Label x:Name="lblModeDescription" FontFamily="Immortal" FontSize="10" Margin="0" VerticalOptions="Start" HorizontalOptions="CenterAndExpand" TextColor="Gray" Text="" />
+                <Label x:Name="lblModeName"  FontFamily="Immortal" FontSize="14" Margin="0,10,0,0" VerticalOptions="End" HorizontalOptions="Center" TextColor="Gray" Text="" />
+                <Label x:Name="lblModeDescription" FontFamily="Immortal" FontSize="10" Margin="0" VerticalOptions="Start" HorizontalOptions="Center" TextColor="Gray" Text="" />
             </StackLayout>
         </Grid>
     

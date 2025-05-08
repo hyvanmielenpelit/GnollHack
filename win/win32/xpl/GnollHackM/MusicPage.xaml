@@ -16,13 +16,13 @@
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
                 <Label Grid.Row="0" x:Name="lblHeader" Text="Sound Tracks" HorizontalTextAlignment="Center" FontSize="23" FontAttributes="Bold" FontFamily="Diablo" TextColor="Black"
-                    HorizontalOptions="CenterAndExpand" VerticalOptions="Fill" Margin="30,10,30,10" >
+                    HorizontalOptions="Center" VerticalOptions="Fill" Margin="30,10,30,10" >
                     <Label.GestureRecognizers>
                         <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped" />
                     </Label.GestureRecognizers>
                 </Label>
                 <Label Grid.Row="1" x:Name="lblSubtitle" TextColor="Black" Margin="1,2,1,6" BackgroundColor="Transparent" FontFamily="Immortal"
-                       HorizontalOptions="CenterAndExpand" VerticalOptions="Fill" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" />
+                       HorizontalOptions="Center" VerticalOptions="Fill" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" />
                 <Grid Grid.Row="2" MaximumWidthRequest="480" HorizontalOptions="Fill" VerticalOptions="Fill">
                     <ScrollView HorizontalOptions="Fill" VerticalOptions="Fill">
                         <StackLayout x:Name="SoundTrackLayout" Spacing="6" HorizontalOptions="Fill">

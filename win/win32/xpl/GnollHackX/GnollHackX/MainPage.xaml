@@ -115,10 +115,10 @@
                         </local:CustomLabel.GestureRecognizers>
                     </local:CustomLabel>
                 </Grid>
-                <Grid x:Name="StartLocalGrid" WidthRequest="300" HeightRequest="70" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand">
+                <Grid x:Name="StartLocalGrid" WidthRequest="300" HeightRequest="70" HorizontalOptions="Center" VerticalOptions="Center">
                     <controls:CustomImageButton Text="Play Game" x:Name="StartLocalGameButton" Clicked="StartLocalGameButton_Clicked" 
                         FontFamily="Diablo" FontSize="24" TextColor="White" BackgroundColor="Transparent"  
-                        HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" />
+                        HorizontalOptions="Fill" VerticalOptions="Fill" />
                 </Grid>
             </StackLayout>
 
