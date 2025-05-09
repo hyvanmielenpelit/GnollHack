@@ -14,7 +14,7 @@ assignees: ''
 1. 
 2. 
 
-## Device
+## Operating System
 
 
 ## Game Version
