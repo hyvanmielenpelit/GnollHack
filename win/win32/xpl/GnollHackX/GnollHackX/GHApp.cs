@@ -1280,10 +1280,12 @@ namespace GnollHackX
         private static bool _ctrlDown = false;
         private static bool _altDown = false;
         private static bool _shiftDown = false;
+        private static bool _windowsKeyDown = false;
 
         public static bool CtrlDown { get { lock (_keyboardLock) { return _ctrlDown; } } set { lock (_keyboardLock) { _ctrlDown = value; } } }
         public static bool AltDown { get { lock (_keyboardLock) { return _altDown; } } set { lock (_keyboardLock) { _altDown = value; } } }
         public static bool ShiftDown { get { lock (_keyboardLock) { return _shiftDown; } } set { lock (_keyboardLock) { _shiftDown = value; } } }
+        public static bool WindowsKeyDown { get { lock (_keyboardLock) { return _windowsKeyDown; } } set { lock (_keyboardLock) { _windowsKeyDown = value; } } }
 
         public static bool DownloadOnDemandPackage
         {

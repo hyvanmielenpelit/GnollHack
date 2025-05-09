@@ -34,6 +34,7 @@ using System.Runtime.InteropServices;
 using System.Diagnostics;
 using Microsoft.UI.Xaml;
 using System.Text;
+using System.Reflection.Emit;
 #endif
 #endif
 
@@ -477,6 +478,12 @@ public class KeyboardHook
                     GHApp.AltDown = false;
                     Debug.WriteLine("HookCallback: Alt Up");
                 }
+                else if (vkCode == 0x5B || vkCode == 0x5C)
+                {
+                    GHApp.WindowsKeyDown = false;
+                    Debug.WriteLine("HookCallback: Windows Key Up");
+                    return CallNextHookEx(_hookID, nCode, wParam, lParam);
+                }
             }
             else if (wParam == (IntPtr)WM_KEYDOWN)
             {
@@ -497,8 +504,17 @@ public class KeyboardHook
                     GHApp.AltDown = true;
                     Debug.WriteLine("HookCallback: Alt Down");
                 }
+                else if (vkCode == 0x5B || vkCode == 0x5C)
+                {
+                    GHApp.WindowsKeyDown = true;
+                    Debug.WriteLine("HookCallback: Windows Key Down");
+                    return CallNextHookEx(_hookID, nCode, wParam, lParam);
+                }
                 else
                 {
+                    if (GHApp.WindowsKeyDown)
+                        return CallNextHookEx(_hookID, nCode, wParam, lParam);
+
                     // Translate virtual key to actual character
                     switch (vkCode)
                     {
@@ -616,6 +632,14 @@ public class KeyboardHook
                     Debug.WriteLine("HookCallback: Tab Up");
                     return CallNextHookEx(_hookID, nCode, wParam, lParam);
                 }
+                else if (vkCode == 0x5B || vkCode == 0x5C)
+                {
+                    GHApp.WindowsKeyDown = false;
+                    Debug.WriteLine("HookCallback: Sys Windows Key Up");
+                    return CallNextHookEx(_hookID, nCode, wParam, lParam);
+                }
+                else if (GHApp.WindowsKeyDown)
+                    return CallNextHookEx(_hookID, nCode, wParam, lParam);
                 else if (isCtrlDown) /* AltGr, also includes $ on Finnish keyboard */
                 {
                     Debug.WriteLine("HookCallback: Syskey with Ctrl (AltGr)");
@@ -683,9 +707,18 @@ public class KeyboardHook
                 {
                     Debug.WriteLine("HookCallback: Tab Down");
                 }
+                else if (vkCode == 0x5B || vkCode == 0x5C)
+                {
+                    GHApp.WindowsKeyDown = true;
+                    Debug.WriteLine("HookCallback: Sys Windows Key Down");
+                }
                 else if (GHApp.CtrlDown)
                 {
                     Debug.WriteLine("HookCallback: Syskey Down with Ctrl (AltGr)");
+                }
+                else if (GHApp.WindowsKeyDown)
+                {
+                    Debug.WriteLine("HookCallback: SyskeyDown, but WindowsKey is down");
                 }
                 else
                     return 1;
