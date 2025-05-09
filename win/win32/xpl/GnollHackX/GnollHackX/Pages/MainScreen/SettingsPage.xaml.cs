@@ -603,6 +603,13 @@ namespace GnollHackX.Pages.MainScreen
 
             Preferences.Set("DefaultMapNoClipMode", !YesClipNormalSwitch.IsToggled);
 
+            if (DisableWindowsKeyGrid.IsVisible && DisableWindowsKeySwitch.IsEnabled)
+            {
+                GHApp.DisableWindowsKey = DisableWindowsKeySwitch.IsToggled;
+                Preferences.Set("DisableWindowsKey", DisableWindowsKeySwitch.IsToggled);
+            }
+
+
 #if GNH_MAUI
             Microsoft.Maui.Controls.Picker[] simplePickers = new Microsoft.Maui.Controls.Picker[6] 
 #else
@@ -862,7 +869,7 @@ namespace GnollHackX.Pages.MainScreen
             bool devmode = GHConstants.DefaultDeveloperMode, logmessages = GHConstants.DefaultLogMessages, debugpostchannel = GHConstants.DefaultDebugPostChannel, tournament = false, hpbars = false, nhstatusbarclassic = GHConstants.IsDefaultStatusBarClassic, desktopstatusbar = false, rightaligned2ndrow = false, showscore = false, showxp = false, desktopbuttons = false, menufadeeffects = false, menuhighfilterquality = true, menuhighlightedkeys = false, pets = true, orbs = true, orbmaxhp = false, orbmaxmana = false, mapgrid = false, playermark = false, monstertargeting = false, walkarrows = true;
             bool forcemaxmsg = false, showexstatus = false, noclipmode = GHConstants.DefaultMapNoClipMode, silentmode = false, characterclickaction = false, diceasranges = true;
             bool postgamestatus = GHConstants.DefaultPosting, postdiagnostics = GHConstants.DefaultPosting, postxlog = GHConstants.DefaultPosting, postreplays = GHConstants.DefaultPosting, postbones = GHConstants.DefaultPosting, boneslistisblack = false;
-            bool longermsghistory = false, hidemsghistory = false, xlog_release_account = false, forcepostbones = false, fixrects = false, save_file_tracking = false;
+            bool longermsghistory = false, hidemsghistory = false, xlog_release_account = false, forcepostbones = false, fixrects = false, save_file_tracking = false, disablewindowskey = false;
             long primarygpucache = -2, secondarygpucache = -2;
             int rightmouse = GHConstants.DefaultRightMouseCommand, middlemouse = GHConstants.DefaultMiddleMouseCommand;
             float screenscale = 0.0f;
@@ -943,6 +950,7 @@ namespace GnollHackX.Pages.MainScreen
             disableauxgpu = Preferences.Get("DisableAuxiliaryGLCanvas", GHApp.IsDisableAuxGPUDefault);
             screenscale = Preferences.Get("CustomScreenScale", 0.0f);
             save_file_tracking = GHApp.SaveFileTracking;
+            disablewindowskey = Preferences.Get("DisableWindowsKey", false);
             if (_gamePage == null)
             {
                 cursor = Preferences.Get("CursorStyle", 1);
@@ -1409,7 +1417,8 @@ namespace GnollHackX.Pages.MainScreen
             //PrevWepSwitch.IsToggled = prevwep;
             LongerMessageHistorySwitch.IsToggled = longermsghistory;
             HideMessageHistorySwitch.IsToggled = hidemsghistory;
-
+            DisableWindowsKeySwitch.IsToggled = disablewindowskey;
+            DisableWindowsKeyGrid.IsVisible = GHApp.IsWindows;
             _doChangeVolume = !GHApp.IsMuted;
         }
 

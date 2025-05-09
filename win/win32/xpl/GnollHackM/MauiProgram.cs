@@ -482,7 +482,10 @@ public class KeyboardHook
                 {
                     GHApp.WindowsKeyDown = false;
                     Debug.WriteLine("HookCallback: Windows Key Up");
-                    return CallNextHookEx(_hookID, nCode, wParam, lParam);
+                    if (GHApp.DisableWindowsKey)
+                        return 1;
+                    else
+                        return CallNextHookEx(_hookID, nCode, wParam, lParam);
                 }
             }
             else if (wParam == (IntPtr)WM_KEYDOWN)
@@ -508,11 +511,14 @@ public class KeyboardHook
                 {
                     GHApp.WindowsKeyDown = true;
                     Debug.WriteLine("HookCallback: Windows Key Down");
-                    return CallNextHookEx(_hookID, nCode, wParam, lParam);
+                    if (GHApp.DisableWindowsKey)
+                        return 1;
+                    else
+                        return CallNextHookEx(_hookID, nCode, wParam, lParam);
                 }
                 else
                 {
-                    if (GHApp.WindowsKeyDown)
+                    if (!GHApp.DisableWindowsKey && GHApp.WindowsKeyDown)
                         return CallNextHookEx(_hookID, nCode, wParam, lParam);
 
                     // Translate virtual key to actual character
@@ -636,10 +642,15 @@ public class KeyboardHook
                 {
                     GHApp.WindowsKeyDown = false;
                     Debug.WriteLine("HookCallback: Sys Windows Key Up");
+                    if (GHApp.DisableWindowsKey)
+                        return 1;
+                    else
+                        return CallNextHookEx(_hookID, nCode, wParam, lParam);
+                }
+                else if (!GHApp.DisableWindowsKey && GHApp.WindowsKeyDown)
+                {
                     return CallNextHookEx(_hookID, nCode, wParam, lParam);
                 }
-                else if (GHApp.WindowsKeyDown)
-                    return CallNextHookEx(_hookID, nCode, wParam, lParam);
                 else if (isCtrlDown) /* AltGr, also includes $ on Finnish keyboard */
                 {
                     Debug.WriteLine("HookCallback: Syskey with Ctrl (AltGr)");
@@ -711,12 +722,14 @@ public class KeyboardHook
                 {
                     GHApp.WindowsKeyDown = true;
                     Debug.WriteLine("HookCallback: Sys Windows Key Down");
+                    if (GHApp.DisableWindowsKey)
+                        return 1;
                 }
                 else if (GHApp.CtrlDown)
                 {
                     Debug.WriteLine("HookCallback: Syskey Down with Ctrl (AltGr)");
                 }
-                else if (GHApp.WindowsKeyDown)
+                else if (!GHApp.DisableWindowsKey && GHApp.WindowsKeyDown)
                 {
                     Debug.WriteLine("HookCallback: SyskeyDown, but WindowsKey is down");
                 }
