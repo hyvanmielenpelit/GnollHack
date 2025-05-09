@@ -726,7 +726,7 @@ namespace GnollHackX
 
             //lock (_ghWindowsLock)
             {
-                for(int winHandle = 0; winHandle <= _lastWindowHandle; winHandle++)
+                for(int winHandle = 0; winHandle <= _lastWindowHandle && winHandle < GHConstants.MaxGHWindows; winHandle++)
                 {
                     GHWindow ghwin = _ghWindows[winHandle];
                     if (ghwin == null)
@@ -744,7 +744,6 @@ namespace GnollHackX
                 }
                 _lastWindowHandle = -1;
             }
-
         }
 
         public int ClientCallback_PlayerSelection()
