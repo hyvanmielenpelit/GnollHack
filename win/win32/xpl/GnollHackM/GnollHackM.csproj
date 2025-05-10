@@ -74,7 +74,8 @@
 		<UseInterpreter>false</UseInterpreter>
 		<MtouchInterpreter>-all</MtouchInterpreter>
     <RuntimeIdentifier>ios-arm64</RuntimeIdentifier>
-	</PropertyGroup>
+    <DefineConstants>$(DefineConstants);UNITY_IPHONE</DefineConstants>
+  </PropertyGroup>
 
   <!--<ItemGroup Condition=" '$(IncludeWindowsSDKRefFrameworkReferences)' == 'True'">
     <FrameworkReference Include="Microsoft.Windows.SDK.NET.Ref" IsImplicitlyDefined="true" Pack="false" PrivateAssets="All" />
@@ -108,6 +109,7 @@
     <ProvisioningType>manual</ProvisioningType>
     <CodesignKey>Apple Development: Janne Gustafsson (3JF32923Y3)</CodesignKey>
     <CodesignProvision>Apple Dev X July 2024 Profile</CodesignProvision>
+    <MtouchLink>None</MtouchLink>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)'=='Release|net9.0-ios'">
@@ -117,18 +119,31 @@
     <!--<CodesignKey>Apple Development: Janne Gustafsson (3JF32923Y3)</CodesignKey>-->
     <!--<CodesignProvision>Apple Dev M July 2024 Profile</CodesignProvision>-->
     <!--<MtouchUseLlvm>false</MtouchUseLlvm>-->
+    <MtouchLink>SdkOnly</MtouchLink>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)'=='Debug|net9.0-android'">
     <EmbedAssembliesIntoApk>true</EmbedAssembliesIntoApk>
     <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+    <PublishTrimmed>False</PublishTrimmed>
+    <Debugger>Xamarin</Debugger>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)'=='Release|net9.0-android'">
     <EnableLLVM>false</EnableLLVM>
     <RunAOTCompilation>true</RunAOTCompilation>
     <AndroidEnableProfiledAot>false</AndroidEnableProfiledAot>
+    <PublishTrimmed>true</PublishTrimmed>
+    <TrimMode>partial</TrimMode>
+    <Debugger>Xamarin</Debugger>
   </PropertyGroup>
+
+  <!--<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net9.0-android|AnyCPU'">
+    <Debugger>Xamarin</Debugger>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net9.0-android|AnyCPU'">
+    <Debugger>Xamarin</Debugger>
+  </PropertyGroup>-->
 
   <!-- GENERAL PROPERTIES -->
   <ItemGroup>
@@ -781,30 +796,6 @@
     </MauiAsset>
   </ItemGroup>
 	
-	<PropertyGroup Condition="'$(TargetFramework)'=='net9.0-ios'">
-		<DefineConstants>$(DefineConstants);UNITY_IPHONE</DefineConstants>
-	</PropertyGroup>
-	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)'=='Debug|net9.0-ios'">
-	  <MtouchLink>None</MtouchLink>
-  </PropertyGroup>
-	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)'=='Release|net9.0-ios'">
-	  <MtouchLink>SdkOnly</MtouchLink>
-  </PropertyGroup>
-	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)'=='Debug|net9.0-android'">
-	  <PublishTrimmed>False</PublishTrimmed>
-	</PropertyGroup>
-	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)'=='Release|net9.0-android'">
-    <PublishTrimmed>True</PublishTrimmed>
-    <TrimMode>partial</TrimMode>
-    <!--<PublishTrimmed>False</PublishTrimmed>-->
-    <!--<RunAOTCompilation>False</RunAOTCompilation>-->
-  </PropertyGroup>
-	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net9.0-android|AnyCPU'">
-	  <Debugger>Xamarin</Debugger>
-	</PropertyGroup>
-	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net9.0-android|AnyCPU'">
-	  <Debugger>Xamarin</Debugger>
-	</PropertyGroup>
 	<ItemGroup>
 	  <AndroidNativeLibrary Include="Platforms\Android\libs\x86_64\libc++_shared.so" />
 	  <AndroidNativeLibrary Include="Platforms\Android\libs\x86_64\libfmod.so" />
