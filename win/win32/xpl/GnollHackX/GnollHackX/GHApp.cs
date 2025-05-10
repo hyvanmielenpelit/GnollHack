@@ -261,7 +261,7 @@ namespace GnollHackX
         {
             get
             {
-                return !IsKeyboardConnected || IsWindows; /* Keyboard handling does not fire */
+                return !IsKeyboardConnected; /* Keyboard handling does not fire */
             }
         }
 

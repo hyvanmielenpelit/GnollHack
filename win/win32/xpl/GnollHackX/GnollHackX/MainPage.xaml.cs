@@ -1527,10 +1527,10 @@ namespace GnollHackX
 
         private void KeyboardFocusButton_Clicked(object sender, EventArgs e)
         {
-            if (GHApp.CurrentGamePage != null)
-            {
-                GHApp.CurrentGamePage.SendEnterPressed();
-            }
+            //if (GHApp.CurrentGamePage != null)
+            //{
+            //    GHApp.CurrentGamePage.SendEnterPressed();
+            //}
         }
 
         private async void PopupViewButton_Clicked(object sender, EventArgs e)
