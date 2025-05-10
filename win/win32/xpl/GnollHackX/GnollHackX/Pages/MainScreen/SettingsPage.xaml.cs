@@ -2156,6 +2156,7 @@ namespace GnollHackX.Pages.MainScreen
             {
                 ShowTournamentInfoPopup();
             }
+            GHApp.TournamentMode = e.Value;
             SetTournamentModeLabelColors(e.Value);
         }
 

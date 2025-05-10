@@ -1487,13 +1487,10 @@ namespace GnollHackX
         public static bool DebugLogMessages { get { lock (_debugLock) { return _debugLogMessages; } } set { lock (_debugLock) { _debugLogMessages = value; } } }
 
         private static bool _debugPostChannel = GHConstants.DefaultDebugPostChannel;
-        public static bool DebugPostChannel 
+        public static bool DebugPostChannel /* This is the setting value on Settings Page */
         { 
             get 
-            { 
-                if (TournamentMode) 
-                    return false;
-
+            {
                 lock (_debugLock) 
                 { 
                     return _debugPostChannel; 
@@ -1506,6 +1503,20 @@ namespace GnollHackX
                     _debugPostChannel = value; 
                 } 
             } 
+        }
+
+        public static bool UseDebugPostChannel  /* This should be used to check which channel to use */
+        {
+            get
+            {
+                if (IsDebug)
+                    return true;
+
+                if (TournamentMode)
+                    return false;
+
+                return DebugPostChannel;
+            }
         }
 
         private static readonly object _tournamentLock = new object();
@@ -3396,7 +3407,7 @@ namespace GnollHackX
                 }
                 else
                 {
-                    if(DebugPostChannel)
+                    if (UseDebugPostChannel)
                         return CurrentUserSecrets?.DefaultDiagnosticDataPostAddress;
                     else
                         return CurrentUserSecrets?.DefaultGamePostAddress;
@@ -3450,7 +3461,7 @@ namespace GnollHackX
                 else
                     return address?.Replace("https://", "https://test-");
 #else
-                if (DebugPostChannel)
+                if (UseDebugPostChannel)
                     return address?.Replace("https://", "https://test-");
                 else
                     return address;
@@ -3477,7 +3488,7 @@ namespace GnollHackX
                 else
                     return address?.Replace("https://", "https://test-");
 #else
-                if (DebugPostChannel)
+                if (UseDebugPostChannel)
                     return address?.Replace("https://", "https://test-");
                 else
                     return address;
