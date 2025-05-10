@@ -4349,7 +4349,7 @@ SPELL("major consultation","scratched", None, None, "The caster receives a major
     O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE),
 SPELL("detect blessedness",     "orichalcum-plated", None, None, "Detects whether an item is cursed, uncursed, or blessed",
     P_DIVINATION_SPELL, 4,   1, 0, 
-    1, 12, A_MAX_INT_WIS_CHA, 0, 0, 100, 0, 1, NODIR, NODIR_NONE, 0, 0, 0, 0, 0, 0, 0,
+    1, 4, A_MAX_INT_WIS_CHA, 0, 0, 100, 0, 1, NODIR, NODIR_NONE, 0, 0, 0, 0, 0, 0, 0,
     S1_NO_SOMATIC_COMPONENT, S2_NONE, ALL_TARGETS, AD_NONE, CLR_YELLOW, OBJECT_SOUNDSET_SPELLBOOK,
     O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE),
 
