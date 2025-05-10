@@ -1,10 +1,13 @@
 ---
 name: Balance change
 about: Balance change recommendation
-title: "[Balance] "
-labels: ''
+title: ''
+labels: balance
 assignees: ''
 
 ---
 
-## Balance change
+## Describe the balance change
+
+
+## Why do you want the balance change?
