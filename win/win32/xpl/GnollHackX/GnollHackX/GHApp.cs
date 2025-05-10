@@ -143,8 +143,8 @@ namespace GnollHackX
             HideAndroidNavigationBar = Preferences.Get("HideAndroidNavigationBar", GHConstants.DefaultHideNavigation);
             HideiOSStatusBar = Preferences.Get("HideiOSStatusBar", GHConstants.DefaultHideStatusBar);
             DeveloperMode = Preferences.Get("DeveloperMode", GHConstants.DefaultDeveloperMode);
-            DebugLogMessages = Preferences.Get("DebugLogMessages", GHConstants.DefaultLogMessages);
-            DebugPostChannel = Preferences.Get("DebugPostChannel", GHConstants.DefaultDebugPostChannel);
+            DebugLogMessages = DeveloperMode && Preferences.Get("DebugLogMessages", GHConstants.DefaultLogMessages);
+            DebugPostChannel = DeveloperMode && Preferences.Get("DebugPostChannel", GHConstants.DefaultDebugPostChannel);
             TournamentMode = Preferences.Get("TournamentMode", false);
             FullVersionMode = true; // Preferences.Get("FullVersion", true);
             ClassicMode = Preferences.Get("ClassicMode", false);

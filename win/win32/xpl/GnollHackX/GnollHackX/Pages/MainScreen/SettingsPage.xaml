@@ -1287,7 +1287,7 @@
                                     FontSize="15"
                                     VerticalOptions="Center" 
                                     HorizontalOptions="Start" />
-                                <Switch Grid.Column="1" x:Name="DebugPostChannelSwitch" HorizontalOptions="End" VerticalOptions="Center" />
+                                <Switch Grid.Column="1" x:Name="DebugPostChannelSwitch" HorizontalOptions="End" VerticalOptions="Center" Toggled="DebugPostChannelSwitch_Toggled" />
                             </Grid>
                             <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
                                 <Label Text="Show Memory"

@@ -915,6 +915,7 @@ namespace GnollHackX.Pages.MainScreen
             statusbar = GHApp.HideiOSStatusBar;
             devmode = GHApp.DeveloperMode;
             logmessages = GHApp.DebugLogMessages;
+            debugpostchannel = GHApp.DebugPostChannel;
             tournament = GHApp.TournamentMode;
             bank = Preferences.Get("LoadSoundBanks", true);
             html = Preferences.Get("UseHTMLDumpLogs", GHConstants.DefaultHTMLDumpLogs);
@@ -1175,17 +1176,23 @@ namespace GnollHackX.Pages.MainScreen
                 StatusBarStackLayout.IsVisible = false;
             }
             DeveloperSwitch.IsToggled = devmode;
-            LogMessageSwitch.IsToggled = logmessages;
-            DebugPostChannelSwitch.IsToggled = debugpostchannel;
-            if (!devmode)
+            if (devmode)
             {
+                LogMessageSwitch.IsToggled = logmessages;
+                DebugPostChannelSwitch.IsToggled = debugpostchannel;
+            }
+            else
+            {
+                LogMessageSwitch.IsToggled = false;
                 LogMessageSwitch.IsEnabled = false;
                 LogMessageLabel.IsEnabled = false;
                 LogMessageLabel.TextColor = GHColors.Gray;
+                DebugPostChannelSwitch.IsToggled = false;
                 DebugPostChannelSwitch.IsEnabled = false;
                 DebugPostChannelLabel.IsEnabled = false;
                 DebugPostChannelLabel.TextColor = GHColors.Gray;
             }
+
             TournamentSwitch.IsToggled = tournament;
             if (_gamePage != null) /* Cannot turn on or off in the middle of the game */
             {
@@ -2279,6 +2286,11 @@ namespace GnollHackX.Pages.MainScreen
                     BonesListSwitch_Toggled(null, new ToggledEventArgs(BonesListSwitch.IsToggled));
                 }
             }
+        }
+
+        private void DebugPostChannelSwitch_Toggled(object sender, ToggledEventArgs e)
+        {
+            GHApp.DebugPostChannel = e.Value;
         }
     }
 }
