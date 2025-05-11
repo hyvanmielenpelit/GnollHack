@@ -688,6 +688,13 @@ namespace GnollHackX
             false;
 #endif
 
+        public static readonly bool IsLLVM =
+#if LLVM
+            true;
+#else
+            false;
+#endif
+
         private static readonly object _useGPULock = new object();
         private static bool _useMipMap = false;
         private static bool _useGPU = false;

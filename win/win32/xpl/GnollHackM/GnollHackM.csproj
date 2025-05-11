@@ -1131,4 +1131,13 @@
 
 	<!--<Import Project="AppxIcons.targets" Condition="'$(TargetFramework)'=='net9.0-windows10.0.19041.0'" />-->
 
+  <!-- IMPLIED DEFINE CONSTANTS -->
+  <PropertyGroup Condition="$(TargetFramework.Contains('-android'))">
+    <DefineConstants Condition="'$(EnableLLVM)'=='True'">$(DefineConstants);LLVM</DefineConstants>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="$(TargetFramework.Contains('-ios'))">
+    <DefineConstants Condition="'$(MtouchUseLlvm)'=='True'">$(DefineConstants);LLVM</DefineConstants>
+  </PropertyGroup>
+
 </Project>
