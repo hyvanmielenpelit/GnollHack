@@ -1036,6 +1036,7 @@ namespace GnollHackX.Pages.Game
             ToggleZoomAlternateButton_Clicked(null, null);
             MapNoClipMode = !MapNoClipMode;
             ToggleAutoCenterModeButton_Clicked(null, null);
+            LoadingDetailsLabel.Text = " "; /* Just make sure it shows up */
             StartAtBlack();
             GHApp.DoKeyboardFocus();
 

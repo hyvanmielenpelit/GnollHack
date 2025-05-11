@@ -7029,12 +7029,7 @@ namespace GnollHackX
 
         public static bool IsPageOnTopOfModalNavigationStack(Page page)
         {
-            if(page == null) 
-                return false;
-            int cnt = Navigation.ModalStack.Count;
-            if (cnt == 0)
-                return false;
-            Page topPage = Navigation?.ModalStack[cnt - 1];
+            Page topPage = PageFromTopOfModalNavigationStack();
             if (topPage == null) 
                 return false;
             return topPage == page;
@@ -7042,10 +7037,7 @@ namespace GnollHackX
 
         public static Page PageFromTopOfModalNavigationStack()
         {
-            int cnt = Navigation.ModalStack.Count;
-            if (cnt == 0)
-                return null;
-            Page topPage = Navigation?.ModalStack[cnt - 1];
+            Page topPage = Navigation?.ModalStack?.Count <= 0 ? null : Navigation?.ModalStack[Navigation.ModalStack.Count - 1];
             if (topPage == null)
                 return null;
             return topPage;
