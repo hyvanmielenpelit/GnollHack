@@ -42,7 +42,6 @@ using GnollHackX.Pages.MainScreen;
 using Xamarin.Essentials;
 using Xamarin.Forms.PlatformConfiguration;
 using Xamarin.Forms.PlatformConfiguration.iOSSpecific;
-using Azure.Storage.Blobs;
 
 namespace GnollHackX
 #endif

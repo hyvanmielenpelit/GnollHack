@@ -33,13 +33,14 @@
                                     <RowDefinition Height="Auto" />
                                     <RowDefinition Height="Auto" />
                                     <RowDefinition Height="Auto" x:Name="UIFrameworkVersionRowDefinition" />
-                                    <RowDefinition Height="Auto" x:Name="CompilerRowDefinition" />
                                     <RowDefinition Height="Auto" />
 
                                     <RowDefinition Height="Auto" x:Name="WinRTRowDefinition" />
                                     <RowDefinition Height="Auto" x:Name="WinUIRowDefinition" />
                                     <RowDefinition Height="Auto" x:Name="WinSDKRowDefinition" />
                                     <RowDefinition Height="Auto" x:Name="WinAppSDKRowDefinition" />
+
+                                    <RowDefinition Height="Auto" x:Name="CompilerRowDefinition" />
 
                                     <RowDefinition Height="Auto" />
                                     <RowDefinition Height="Auto" />
@@ -84,15 +85,15 @@
                                TextColor="Black" BackgroundColor="Transparent" FontFamily="DejaVuSansMono" FontSize="13" Margin="0,0,0,4" />
                                 <Label Grid.Row="10" Text="Runtime:" HorizontalOptions="Start" VerticalOptions="Start" HorizontalTextAlignment="Start" VerticalTextAlignment="Start"
                                TextColor="Black" BackgroundColor="Transparent" FontFamily="DejaVuSansMono" FontSize="13" Margin="0,0,0,4" />
-                                <Label Grid.Row="11" x:Name="CompilerTitleLabel" Text="Compiler:" HorizontalOptions="Start" VerticalOptions="Start" HorizontalTextAlignment="Start" VerticalTextAlignment="Start"
+                                <Label Grid.Row="11" x:Name="WinRTTitleLabel" Text="WinRT Version:" HorizontalOptions="Start" VerticalOptions="Start" HorizontalTextAlignment="Start" VerticalTextAlignment="Start"
                                TextColor="Black" BackgroundColor="Transparent" FontFamily="DejaVuSansMono" FontSize="13" Margin="0,0,0,4" />
-                                <Label Grid.Row="12" x:Name="WinRTTitleLabel" Text="WinRT Version:" HorizontalOptions="Start" VerticalOptions="Start" HorizontalTextAlignment="Start" VerticalTextAlignment="Start"
+                                <Label Grid.Row="12" x:Name="WinUITitleLabel" Text="WinUI Version:" HorizontalOptions="Start" VerticalOptions="Start" HorizontalTextAlignment="Start" VerticalTextAlignment="Start"
                                TextColor="Black" BackgroundColor="Transparent" FontFamily="DejaVuSansMono" FontSize="13" Margin="0,0,0,4" />
-                                <Label Grid.Row="13" x:Name="WinUITitleLabel" Text="WinUI Version:" HorizontalOptions="Start" VerticalOptions="Start" HorizontalTextAlignment="Start" VerticalTextAlignment="Start"
+                                <Label Grid.Row="13" x:Name="WinSDKTitleLabel" Text="WinSDK Version:" HorizontalOptions="Start" VerticalOptions="Start" HorizontalTextAlignment="Start" VerticalTextAlignment="Start"
                                TextColor="Black" BackgroundColor="Transparent" FontFamily="DejaVuSansMono" FontSize="13" Margin="0,0,0,4" />
-                                <Label Grid.Row="14" x:Name="WinSDKTitleLabel" Text="WinSDK Version:" HorizontalOptions="Start" VerticalOptions="Start" HorizontalTextAlignment="Start" VerticalTextAlignment="Start"
+                                <Label Grid.Row="14" x:Name="WinAppSDKTitleLabel" Text="AppSDK Version:" HorizontalOptions="Start" VerticalOptions="Start" HorizontalTextAlignment="Start" VerticalTextAlignment="Start"
                                TextColor="Black" BackgroundColor="Transparent" FontFamily="DejaVuSansMono" FontSize="13" Margin="0,0,0,4" />
-                                <Label Grid.Row="15" x:Name="WinAppSDKTitleLabel" Text="AppSDK Version:" HorizontalOptions="Start" VerticalOptions="Start" HorizontalTextAlignment="Start" VerticalTextAlignment="Start"
+                                <Label Grid.Row="15" x:Name="CompilerTitleLabel" Text="Compiler:" HorizontalOptions="Start" VerticalOptions="Start" HorizontalTextAlignment="Start" VerticalTextAlignment="Start"
                                TextColor="Black" BackgroundColor="Transparent" FontFamily="DejaVuSansMono" FontSize="13" Margin="0,0,0,4" />
 
                                 <Label Grid.Row="16" Text="Saved games valid:" HorizontalOptions="Start" VerticalOptions="Start" HorizontalTextAlignment="Start" VerticalTextAlignment="Start"
@@ -147,15 +148,15 @@
                                TextColor="Black" BackgroundColor="Transparent" FontFamily="DejaVuSansMono" FontSize="13" Margin="0,0,0,4" />
                                 <Label Grid.Row="10" Grid.Column="1" x:Name="RuntimeVersionLabel" Text="" HorizontalOptions="Start" VerticalOptions="Start" HorizontalTextAlignment="Start" VerticalTextAlignment="Start"
                                TextColor="Black" BackgroundColor="Transparent" FontFamily="DejaVuSansMono" FontSize="13" Margin="0,0,0,4" />
-                                <Label Grid.Row="11" Grid.Column="1" x:Name="CompilerLabel" Text="" HorizontalOptions="Start" VerticalOptions="Start" HorizontalTextAlignment="Start" VerticalTextAlignment="Start"
+                                <Label Grid.Row="11" Grid.Column="1" x:Name="WinRTLabel" Text="" HorizontalOptions="Start" VerticalOptions="Start" HorizontalTextAlignment="Start" VerticalTextAlignment="Start"
                                TextColor="Black" BackgroundColor="Transparent" FontFamily="DejaVuSansMono" FontSize="13" Margin="0,0,0,4" />
-                                <Label Grid.Row="12" Grid.Column="1" x:Name="WinRTLabel" Text="" HorizontalOptions="Start" VerticalOptions="Start" HorizontalTextAlignment="Start" VerticalTextAlignment="Start"
+                                <Label Grid.Row="12" Grid.Column="1" x:Name="WinUILabel" Text="" HorizontalOptions="Start" VerticalOptions="Start" HorizontalTextAlignment="Start" VerticalTextAlignment="Start"
                                TextColor="Black" BackgroundColor="Transparent" FontFamily="DejaVuSansMono" FontSize="13" Margin="0,0,0,4" />
-                                <Label Grid.Row="13" Grid.Column="1" x:Name="WinUILabel" Text="" HorizontalOptions="Start" VerticalOptions="Start" HorizontalTextAlignment="Start" VerticalTextAlignment="Start"
+                                <Label Grid.Row="13" Grid.Column="1" x:Name="WinSDKLabel" Text="" HorizontalOptions="Start" VerticalOptions="Start" HorizontalTextAlignment="Start" VerticalTextAlignment="Start"
                                TextColor="Black" BackgroundColor="Transparent" FontFamily="DejaVuSansMono" FontSize="13" Margin="0,0,0,4" />
-                                <Label Grid.Row="14" Grid.Column="1" x:Name="WinSDKLabel" Text="" HorizontalOptions="Start" VerticalOptions="Start" HorizontalTextAlignment="Start" VerticalTextAlignment="Start"
+                                <Label Grid.Row="14" Grid.Column="1" x:Name="WinAppSDKLabel" Text="" HorizontalOptions="Start" VerticalOptions="Start" HorizontalTextAlignment="Start" VerticalTextAlignment="Start"
                                TextColor="Black" BackgroundColor="Transparent" FontFamily="DejaVuSansMono" FontSize="13" Margin="0,0,0,4" />
-                                <Label Grid.Row="15" Grid.Column="1" x:Name="WinAppSDKLabel" Text="" HorizontalOptions="Start" VerticalOptions="Start" HorizontalTextAlignment="Start" VerticalTextAlignment="Start"
+                                <Label Grid.Row="15" Grid.Column="1" x:Name="CompilerLabel" Text="" HorizontalOptions="Start" VerticalOptions="Start" HorizontalTextAlignment="Start" VerticalTextAlignment="Start"
                                TextColor="Black" BackgroundColor="Transparent" FontFamily="DejaVuSansMono" FontSize="13" Margin="0,0,0,4" />
 
                                 <Label Grid.Row="16" Grid.Column="1" x:Name="GnollHackCompatibilityLabel" Text="" HorizontalOptions="Start" VerticalOptions="Start" HorizontalTextAlignment="Start" VerticalTextAlignment="Start"
