@@ -487,6 +487,10 @@ public class KeyboardHook
                     else
                         return CallNextHookEx(_hookID, nCode, wParam, lParam);
                 }
+                else if (vkCode == 0x73)
+                {
+                    Debug.WriteLine("HookCallback: F4 Up");
+                }
             }
             else if (wParam == (IntPtr)WM_KEYDOWN)
             {
@@ -506,6 +510,10 @@ public class KeyboardHook
                 {
                     GHApp.AltDown = true;
                     Debug.WriteLine("HookCallback: Alt Down");
+                }
+                else if (vkCode == 0x73)
+                {
+                    Debug.WriteLine("HookCallback: F4 Down");
                 }
                 else if (vkCode == 0x5B || vkCode == 0x5C)
                 {
@@ -647,6 +655,10 @@ public class KeyboardHook
                     else
                         return CallNextHookEx(_hookID, nCode, wParam, lParam);
                 }
+                else if (vkCode == 0x73)
+                {
+                    Debug.WriteLine("HookCallback: F4 Syskey Up");
+                }
                 else if (!GHApp.DisableWindowsKey && GHApp.WindowsKeyDown)
                 {
                     return CallNextHookEx(_hookID, nCode, wParam, lParam);
@@ -716,7 +728,11 @@ public class KeyboardHook
                 }
                 else if (vkCode == 0x09)
                 {
-                    Debug.WriteLine("HookCallback: Tab Down");
+                    Debug.WriteLine("HookCallback: Tab Syskey Down");
+                }
+                else if (vkCode == 0x73)
+                {
+                    Debug.WriteLine("HookCallback: F4 Syskey Down");
                 }
                 else if (vkCode == 0x5B || vkCode == 0x5C)
                 {
