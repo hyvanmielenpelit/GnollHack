@@ -1440,7 +1440,7 @@ struct permonst **for_supplement;
                     int clen = BUFSZ - (int)strlen(out_str) - 1;
                     if (clen > 0)
                     {
-                        (void)strncat(out_str, temp_buf, (size_t)clen);
+                        (void)strncpy(out_str, temp_buf, (size_t)clen);
                         out_str[BUFSZ - 1] = 0;
                     }
                 }
