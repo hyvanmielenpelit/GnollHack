@@ -1437,12 +1437,8 @@ struct permonst **for_supplement;
                 if (iflags.using_gui_tiles)
                 {
                     Sprintf(temp_buf, "%s%s", look_buf, mdescbuf);
-                    int clen = BUFSZ - (int)strlen(out_str) - 1;
-                    if (clen > 0)
-                    {
-                        (void)strncpy(out_str, temp_buf, (size_t)clen);
-                        out_str[BUFSZ - 1] = 0;
-                    }
+                    (void)strncpy(out_str, temp_buf, BUFSZ - 1);
+                    out_str[BUFSZ - 1] = 0;
                 }
                 else
                 {
