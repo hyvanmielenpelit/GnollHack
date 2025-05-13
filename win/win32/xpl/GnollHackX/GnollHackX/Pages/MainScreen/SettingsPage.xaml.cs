@@ -1909,6 +1909,17 @@ namespace GnollHackX.Pages.MainScreen
                     PopupOkButton.IsEnabled = true;
                     PopupGrid.IsVisible = true;
                 }
+#if GNH_MAUI
+                else if (res.StatusCode == System.Net.HttpStatusCode.Locked)
+                {
+                    XlogTestButton.TextColor = GHColors.Red;
+                    PopupTitleLabel.TextColor = UIUtils.NHColor2XColor((int)NhColor.NO_COLOR, 0, false, true);
+                    PopupTitleLabel.Text = "Locked Out";
+                    PopupLabel.Text = "You have been locked out of your account on " + (GHApp.IsDebug && !GHApp.XlogReleaseAccount ? "Test " : "") + "GnollHack Server. Please contact customer support.";
+                    PopupOkButton.IsEnabled = true;
+                    PopupGrid.IsVisible = true;
+                }
+#endif
                 else
                 {
                     XlogTestButton.TextColor = GHColors.Red;
