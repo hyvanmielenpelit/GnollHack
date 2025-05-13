@@ -1402,10 +1402,15 @@ namespace GnollHackX.Pages.MainScreen
             if(_uploadDownloadCts == null)
                 _uploadDownloadCts = new CancellationTokenSource();
 
+            GHApp.MaybeWriteGHLog("UploadButton_Clicked: GetBlobServiceClient");
             BlobServiceClient blobServiceClient = GHApp.GetBlobServiceClient();
+            GHApp.MaybeWriteGHLog("UploadButton_Clicked: GetAzureBlobStorageReplayContainerName");
             string containerName = GHApp.GetAzureBlobStorageReplayContainerName();
+            GHApp.MaybeWriteGHLog("UploadButton_Clicked: CheckCreateReplayContainer, " + containerName);
             await GHApp.CheckCreateReplayContainer(containerName);
+            GHApp.MaybeWriteGHLog("UploadButton_Clicked: GetBlobContainerClient");
             BlobContainerClient blobContainerClient = blobServiceClient.GetBlobContainerClient(containerName);
+            GHApp.MaybeWriteGHLog("UploadButton_Clicked: prefix");
             string prefix = GHApp.XlogUserNameVerified ? GHApp.XlogUserName : GHConstants.AzureBlobStorageGeneralDirectoryName;
 
             if (IsMultiSelect && ReplayCollectionView.SelectedItems != null && ReplayCollectionView.SelectedItems.Count != 1)
@@ -1473,6 +1478,7 @@ namespace GnollHackX.Pages.MainScreen
                                     fileIdx++;
                                     UploadDownloadFileLabel.Text = fileName;
                                     UploadDownloadStatusLabel.Text = "Main replay file " + fileIdx + " of " + noValidFiles;
+                                    GHApp.MaybeWriteGHLog("UploadButton_Clicked: UploadFromFileAsync, " + fileName + ", " + UploadDownloadStatusLabel.Text);
                                     await GHApp.UploadFromFileAsync(blobContainerClient, prefix, filePath, _uploadDownloadCts.Token);
                                     recfile.Uploaded = true;
                                     if (UploadDownloadCancelled)
@@ -1520,6 +1526,7 @@ namespace GnollHackX.Pages.MainScreen
                                                         {
                                                             UploadDownloadFileLabel.Text = contFI.Name;
                                                             UploadDownloadStatusLabel.Text = "Continuation " + subFileIdx + " of " + noSubFiles + " for file " + fileIdx + " of " + noValidFiles;
+                                                            GHApp.MaybeWriteGHLog("UploadButton_Clicked: UploadFromFileAsync, cont, " + contFI.Name + ", " + UploadDownloadStatusLabel.Text);
                                                             await GHApp.UploadFromFileAsync(blobContainerClient, prefix, file, _uploadDownloadCts.Token);
                                                         }
                                                     }
