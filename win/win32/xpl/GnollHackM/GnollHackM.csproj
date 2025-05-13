@@ -130,7 +130,7 @@
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)'=='Release|net9.0-android'">
-    <EnableLLVM>false</EnableLLVM>
+    <EnableLLVM>true</EnableLLVM>
     <RunAOTCompilation>true</RunAOTCompilation>
     <AndroidEnableProfiledAot>false</AndroidEnableProfiledAot>
     <PublishTrimmed>true</PublishTrimmed>
@@ -1131,7 +1131,7 @@
 
 	<!--<Import Project="AppxIcons.targets" Condition="'$(TargetFramework)'=='net9.0-windows10.0.19041.0'" />-->
 
-	<Import Project="MonoAoTLibraries.targets" Condition="'$(TargetFramework)|$(EnableLLVM)'=='net9.0-android|true'" />
+	<Import Project="MonoAoTLibraries.targets" Condition="'$(TargetFramework)|$(EnableLLVM)'=='net9.0-android|True'" />
 	
   <!-- IMPLIED DEFINE CONSTANTS -->
   <PropertyGroup Condition="$(TargetFramework.Contains('-android'))">
