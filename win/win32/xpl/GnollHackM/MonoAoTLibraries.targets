@@ -1,0 +1,27 @@
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+	<Target Name="CopyMonoAotLibraries" AfterTargets="_AndroidAotCompilation">
+		<PropertyGroup>
+			<_AoTFolder>$(IntermediateOutputPath)\aot</_AoTFolder>
+			<_AndroidAbi Condition="$([System.String]::Copy('$(IntermediateOutputPath)').Contains('android-arm64'))">arm64-v8a</_AndroidAbi>
+			<_AndroidAbi Condition="$([System.String]::Copy('$(IntermediateOutputPath)').Contains('android-x64'))">x86_64</_AndroidAbi>
+		</PropertyGroup>
+		<ItemGroup>
+			<SourceMonoAoTLibraries Include="Platforms\Android\prebuilt\MonoAoT\$(_AndroidAbi)\*.*"/>
+		</ItemGroup>
+
+		<!--<WriteLinesToFile
+			File="$(IntermediateOutputPath)\SourceMonoAoTLibrariesPath-$(_AndroidAbi).txt"
+			Lines="Platforms\Android\prebuilt\MonoAoT\$(_AndroidAbi)\*.*"
+			Overwrite="true" />-->
+		
+		<!--<WriteLinesToFile
+			File="$(IntermediateOutputPath)\SourceMonoAoTLibraries-$(_AndroidAbi).txt"
+			Lines="@(SourceMonoAoTLibraries)"
+			Overwrite="true" />-->
+		
+		<Copy SourceFiles="@(SourceMonoAoTLibraries)"
+			  DestinationFolder="$(_AoTFolder)"
+			   />
+		
+	</Target>
+</Project>

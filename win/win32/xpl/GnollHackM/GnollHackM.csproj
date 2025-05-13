@@ -1131,6 +1131,8 @@
 
 	<!--<Import Project="AppxIcons.targets" Condition="'$(TargetFramework)'=='net9.0-windows10.0.19041.0'" />-->
 
+	<Import Project="MonoAoTLibraries.targets" Condition="'$(TargetFramework)|$(EnableLLVM)'=='net9.0-android|true'" />
+	
   <!-- IMPLIED DEFINE CONSTANTS -->
   <PropertyGroup Condition="$(TargetFramework.Contains('-android'))">
     <DefineConstants Condition="'$(EnableLLVM)'=='True'">$(DefineConstants);LLVM</DefineConstants>
