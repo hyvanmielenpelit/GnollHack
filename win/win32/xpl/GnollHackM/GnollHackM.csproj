@@ -1129,6 +1129,10 @@
 		<BundleResource Include="Platforms\iOS\PrivacyInfo.xcprivacy" LogicalName="PrivacyInfo.xcprivacy" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <Folder Include="Platforms\Android\prebuilt\MonoAoT\x86_64\" />
+	</ItemGroup>
+
 	<!--<Import Project="AppxIcons.targets" Condition="'$(TargetFramework)'=='net9.0-windows10.0.19041.0'" />-->
 
 	<Import Project="MonoAoTLibraries.targets" Condition="'$(TargetFramework)|$(EnableLLVM)'=='net9.0-android|True'" />
