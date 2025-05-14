@@ -5160,7 +5160,7 @@ namespace GnollHackX
 
         public static async Task CheckCreateReplayContainer(string replayContainerName)
         {
-            MaybeWriteGHLog("CheckCreateReplayContainer: GetBlobServiceClient");
+            //MaybeWriteGHLog("CheckCreateReplayContainer: GetBlobServiceClient");
             BlobServiceClient blobServiceClient = GetBlobServiceClient();
             if (blobServiceClient == null || string.IsNullOrEmpty(replayContainerName))
                 return;
@@ -5174,7 +5174,7 @@ namespace GnollHackX
             {
                 MaybeWriteGHLog("CheckCreateReplayContainer: Exception: " + ex.Message);
             }
-            MaybeWriteGHLog("CheckCreateReplayContainer: Finished");
+            //MaybeWriteGHLog("CheckCreateReplayContainer: Finished");
 
             //try
             //{
@@ -5219,13 +5219,13 @@ namespace GnollHackX
             SendResult res = new SendResult();
             try
             {
-                MaybeWriteGHLog("SendReplayFile: GetBlobServiceClient");
+                //MaybeWriteGHLog("SendReplayFile: GetBlobServiceClient");
                 BlobServiceClient blobServiceClient = GetBlobServiceClient();
                 if (blobServiceClient != null)
                 {
-                    MaybeWriteGHLog("SendReplayFile: GetAzureBlobStorageReplayContainerName");
+                    //MaybeWriteGHLog("SendReplayFile: GetAzureBlobStorageReplayContainerName");
                     string replayContainerName = GetAzureBlobStorageReplayContainerName();
-                    MaybeWriteGHLog("SendReplayFile: GetBlobContainerClient");
+                    //MaybeWriteGHLog("SendReplayFile: GetBlobContainerClient");
                     BlobContainerClient blobContainerClient = blobServiceClient.GetBlobContainerClient(replayContainerName);
                     if (blobContainerClient != null)
                     {
@@ -5239,7 +5239,7 @@ namespace GnollHackX
 
                             try
                             {
-                                MaybeWriteGHLog("SendReplayFile: UploadFromFileAsync");
+                                MaybeWriteGHLog("SendReplayFile: UploadFromFileAsync: " + prefix + ", " + full_filepath);
                                 await UploadFromFileAsync(blobContainerClient, prefix, full_filepath, _uploadCts.Token);
                                 res.IsSuccess = true;
                             }
@@ -5259,7 +5259,7 @@ namespace GnollHackX
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex.Message);
+                MaybeWriteGHLog(ex.Message);
             }
             return res;
         }
@@ -6991,9 +6991,8 @@ namespace GnollHackX
 
         public static async Task UploadFromFileAsync(BlobContainerClient containerClient, string prefix, string localFilePath, CancellationToken cancellationToken)
         {
-            MaybeWriteGHLog("UploadFromFileAsync: Start");
             string blobName;
-            if (prefix == null)
+            if (string.IsNullOrEmpty(prefix))
             {
                 blobName = Path.GetFileName(localFilePath);
             }
@@ -7002,9 +7001,8 @@ namespace GnollHackX
                 blobName = prefix + GHConstants.AzureBlobStorageDelimiter + Path.GetFileName(localFilePath);
             }
 
-            MaybeWriteGHLog("UploadFromFileAsync: GetBlobClient");
             BlobClient blobClient = containerClient.GetBlobClient(blobName);
-            MaybeWriteGHLog("UploadFromFileAsync: UploadAsync");
+            MaybeWriteGHLog("UploadFromFileAsync: UploadAsync: " + prefix + ", " + localFilePath);
             await blobClient.UploadAsync(localFilePath, true, cancellationToken);
         }
 
@@ -7013,7 +7011,6 @@ namespace GnollHackX
             if (string.IsNullOrWhiteSpace(blobName))
                 return;
 
-            MaybeWriteGHLog("DownloadFileAsync: GetBlobClient");
             BlobClient blobClient = containerClient.GetBlobClient(blobName);
             string baseDir = Path.Combine(GHApp.GHPath, GHConstants.ReplayDownloadFromCloudDirectory);
             if (!Directory.Exists(baseDir))
@@ -7040,7 +7037,7 @@ namespace GnollHackX
                 else /* Skip files with the right length */
                     return;
             }
-            MaybeWriteGHLog("DownloadFileAsync: DownloadToAsync");
+            MaybeWriteGHLog("DownloadFileAsync: DownloadToAsync: " + targetPath);
             await blobClient.DownloadToAsync(targetPath, cancellationToken);
         }
 

@@ -1402,15 +1402,10 @@ namespace GnollHackX.Pages.MainScreen
             if(_uploadDownloadCts == null)
                 _uploadDownloadCts = new CancellationTokenSource();
 
-            GHApp.MaybeWriteGHLog("UploadButton_Clicked: GetBlobServiceClient");
             BlobServiceClient blobServiceClient = GHApp.GetBlobServiceClient();
-            GHApp.MaybeWriteGHLog("UploadButton_Clicked: GetAzureBlobStorageReplayContainerName");
             string containerName = GHApp.GetAzureBlobStorageReplayContainerName();
-            GHApp.MaybeWriteGHLog("UploadButton_Clicked: CheckCreateReplayContainer, " + containerName);
             await GHApp.CheckCreateReplayContainer(containerName);
-            GHApp.MaybeWriteGHLog("UploadButton_Clicked: GetBlobContainerClient");
             BlobContainerClient blobContainerClient = blobServiceClient.GetBlobContainerClient(containerName);
-            GHApp.MaybeWriteGHLog("UploadButton_Clicked: prefix");
             string prefix = GHApp.XlogUserNameVerified ? GHApp.XlogUserName : GHConstants.AzureBlobStorageGeneralDirectoryName;
 
             if (IsMultiSelect && ReplayCollectionView.SelectedItems != null && ReplayCollectionView.SelectedItems.Count != 1)
