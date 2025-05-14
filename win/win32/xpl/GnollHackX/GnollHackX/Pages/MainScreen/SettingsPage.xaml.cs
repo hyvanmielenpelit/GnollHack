@@ -250,6 +250,7 @@ namespace GnollHackX.Pages.MainScreen
             Color onColor = GHApp.DarkMode ? GHColors.LightGreen : GHColors.Green;
             Color usedColor = isTournament ? onColor : offColor;
 
+            TournamentLabel.TextColor = TournamentSwitch.IsEnabled ? usedColor : GHColors.Gray;
             RecordLabel.TextColor = RecordSwitch.IsEnabled ? usedColor : GHColors.Gray;
             AutoUploadReplaysLabel.TextColor = AutoUploadReplaysSwitch.IsEnabled ? usedColor : GHColors.Gray;
             SaveStyleLabel.TextColor = SaveStylePicker.IsEnabled ? usedColor : GHColors.Gray;
@@ -260,6 +261,7 @@ namespace GnollHackX.Pages.MainScreen
             AllowBonesLabel.TextColor= AllowBonesSwitch.IsEnabled ? usedColor : GHColors.Gray;
             GZipLabel.TextColor = GZipSwitch.IsEnabled ? usedColor : GHColors.Gray;
             SaveFileTrackingLabel.TextColor = SaveFileTrackingSwitch.IsEnabled ? usedColor : GHColors.Gray;
+            DebugPostChannelLabel.TextColor = DebugPostChannelSwitch.IsEnabled ? usedColor : GHColors.Gray;
 
             CustomWebHookLinkTitleLabel.TextColor = usedColor;
             AccountTitleLabel.TextColor = usedColor;
