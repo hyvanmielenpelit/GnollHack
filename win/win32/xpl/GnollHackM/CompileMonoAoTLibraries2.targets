@@ -1,0 +1,60 @@
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+	<ImportGroup Condition="'$(TargetPlatformIdentifier)' == 'android' and '$(RunAOTCompilation)' == 'true'">
+		<Import Project="Sdk.props" Sdk="Microsoft.NET.Runtime.MonoAOTCompiler.Task" />
+		<Import Project="Sdk.props" Sdk="Microsoft.NETCore.App.Runtime.AOT.Cross.android-x86" />
+		<Import Project="Sdk.props" Sdk="Microsoft.NETCore.App.Runtime.AOT.Cross.android-x64" />
+		<Import Project="Sdk.props" Sdk="Microsoft.NETCore.App.Runtime.AOT.Cross.android-arm" />
+		<Import Project="Sdk.props" Sdk="Microsoft.NETCore.App.Runtime.AOT.Cross.android-arm64" />
+	</ImportGroup>
+	
+	<Target Name="CompileMonoAotLibraries" AfterTargets="_AndroidAotCompilation">
+		<PropertyGroup>
+			<_AoTFolder>$(IntermediateOutputPath)aot\</_AoTFolder>
+			<_AoTFolderGnollHack>$(IntermediateOutputPath)aot2\</_AoTFolderGnollHack>
+		</PropertyGroup>
+
+		<ItemGroup>
+			<GnollHackSourceMonoAssemblies Include="$(IntermediateOutputPath)linked\System.Net.Sockets.dll" Condition="'$(RuntimeIdentifier)'=='android-arm64'" />
+		</ItemGroup>
+
+		<MakeDir Directories="$(_AoTFolderGnollHack)" Condition="'@(GnollHackSourceMonoAssemblies)' != '' "/>
+		<MonoAOTCompiler
+			Triple="$(_Triple)"
+			ToolPrefix="$(_ToolPrefix)"
+			MsymPath="$(_MsymPath)"
+			Assemblies="@(GnollHackSourceMonoAssemblies)"
+			CompilerBinaryPath="$(_MonoAOTCompilerPath)"
+			DisableParallelAot="$(_DisableParallelAot)"
+			IntermediateOutputPath="$(IntermediateOutputPath)"
+			LibraryFormat="So"
+			OutputDir="$(_AoTFolderGnollHack)"
+			OutputType="Library"
+			UseAotDataFile="false"
+			UseLLVM="false"
+			LLVMPath=""
+			TrimmingEligibleMethodsOutputDirectory="$(IntermediateOutputPath)tokens2"
+			WorkingDirectory="$(MSBuildProjectDirectory)"
+			LdFlags="$(_LdFlags)"
+			Mode="$(AndroidAotMode)"
+			LdName="$(_LdName)"
+			AotArguments="$(AndroidAotAdditionalArguments)"
+			Condition="'@(GnollHackSourceMonoAssemblies)' != '' ">
+			<Output TaskParameter="CompiledAssemblies" ItemName="GnollHackMonoAOTCompiledAssemblies" />
+			<Output TaskParameter="FileWrites"         ItemName="GnollHackFileWrites" />
+		</MonoAOTCompiler>
+
+		<ItemGroup>
+			<GnollHackCopyMonoAssemblies Include="$(_AoTFolderGnollHack)*.*" Condition="'@(GnollHackSourceMonoAssemblies)' != '' " />
+		</ItemGroup>
+
+		<!--<WriteLinesToFile
+			File="$(IntermediateOutputPath)\CompiledMonoAoTLibraries.txt"
+			Lines="Compile Sources:;@(GnollHackSourceMonoAssemblies);Copy Sources:;@(GnollHackCopyMonoAssemblies)"
+			Overwrite="true" />-->
+
+		<Copy SourceFiles="@(GnollHackCopyMonoAssemblies)"
+		  DestinationFolder="$(_AoTFolder)" 
+		  Condition="'@(GnollHackSourceMonoAssemblies)' != '' "/>
+
+	</Target>
+</Project>
