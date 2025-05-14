@@ -192,8 +192,8 @@ namespace GnollHackX.Pages.MainScreen
             string winSDKAssemblyVersion = GetAssemblyInformationalVersion(typeof(Windows.UI.Color));
             WinSDKLabel.Text = !string.IsNullOrEmpty(winSDKAssemblyVersion) ? winSDKAssemblyVersion : "?";
 
-            //string winAppSDKAssemblyVersion = typeof(Microsoft.Windows.ApplicationModel.DynamicDependency.Bootstrap)?.Assembly?.GetName()?.Version?.ToString();
-            string winAppSDKAssemblyVersion = Microsoft.Windows.ApplicationModel.WindowsAppRuntime.ReleaseInfo.AsString;
+            string winAppSDKAssemblyVersion = typeof(Microsoft.Windows.ApplicationModel.DynamicDependency.Bootstrap)?.Assembly?.GetName()?.Version?.ToString();
+            //string winAppSDKAssemblyVersion = Microsoft.Windows.ApplicationModel.WindowsAppRuntime.ReleaseInfo.AsString;
             WinAppSDKLabel.Text = !string.IsNullOrEmpty(winAppSDKAssemblyVersion) ? winAppSDKAssemblyVersion : "?";
 
             if (GHApp.DeviceGPUs.Count > 1)

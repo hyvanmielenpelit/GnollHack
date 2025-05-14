@@ -116,8 +116,8 @@
 		<ProvisioningType>manual</ProvisioningType>
 		<CodesignKey>Apple Distribution: Hyvan mielen pelit ry (CUG8RS847T)</CodesignKey>
 		<CodesignProvision>Apple Dev X July 2024 Distribution Profile</CodesignProvision>
-		<!--<CodesignKey>Apple Development: Janne Gustafsson (3JF32923Y3)</CodesignKey>-->
-		<!--<CodesignProvision>Apple Dev M July 2024 Profile</CodesignProvision>-->
+		<!--<CodesignKey>Apple Development: Janne Gustafsson (3JF32923Y3)</CodesignKey>
+		<CodesignProvision>Apple Dev X July 2024 Profile</CodesignProvision>-->
 		<!--<MtouchUseLlvm>false</MtouchUseLlvm>-->
 		<MtouchLink>SdkOnly</MtouchLink>
 	</PropertyGroup>
@@ -1073,8 +1073,8 @@
 	<ItemGroup>
 		<PackageReference Include="Azure.Identity" Version="1.13.2" />
 		<PackageReference Include="Azure.Storage.Blobs" Version="12.24.0" />
-		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="9.0.5" />
-		<PackageReference Include="System.Text.Json" Version="9.0.5" />
+		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="9.0.3" />
+		<PackageReference Include="System.Text.Json" Version="9.0.3" />
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
 
 		<PackageReference Include="SkiaSharp" Version="3.116.1" />
@@ -1092,19 +1092,19 @@
 		<!--<PackageReference Include="Microsoft.Maui.Controls" Version="$(MauiVersion)" />
 		<PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="$(MauiVersion)" />-->
 
-		<PackageReference Include="Microsoft.Maui.Controls" Version="9.0.70" Condition="'$(TargetFramework)'!='net9.0-windows10.0.19041.0' or '$(WindowsPackageType)'!='MSIX'" />
-		<PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="9.0.70" Condition="'$(TargetFramework)'!='net9.0-windows10.0.19041.0' or '$(WindowsPackageType)'!='MSIX'" />
+		<PackageReference Include="Microsoft.Maui.Controls" Version="9.0.50" Condition="'$(TargetFramework)'!='net9.0-windows10.0.19041.0'" />
+		<PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="9.0.50" Condition="'$(TargetFramework)'!='net9.0-windows10.0.19041.0'" />
 
-		<PackageReference Include="Microsoft.Maui.Controls" Version="9.0.70" Condition="'$(TargetFramework)'=='net9.0-windows10.0.19041.0' and '$(WindowsPackageType)'=='MSIX'" />
-		<PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="9.0.70" Condition="'$(TargetFramework)'=='net9.0-windows10.0.19041.0' and '$(WindowsPackageType)'=='MSIX'" />
+		<PackageReference Include="Microsoft.Maui.Controls" Version="9.0.50" Condition="'$(TargetFramework)'=='net9.0-windows10.0.19041.0'" />
+		<PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="9.0.50" Condition="'$(TargetFramework)'=='net9.0-windows10.0.19041.0'" />
 
-		<!--<PackageReference Include="Microsoft.Maui.Controls" Version="9.0.40" />
-    <PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="9.0.40" />
+		<!--<PackageReference Include="Microsoft.Maui.Controls" Version="9.0.50" />
+    <PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="9.0.50" />-->
 
-    <PackageReference Include="Microsoft.WindowsAppSDK" Version="[1.6.241114003]" Condition="'$(TargetFramework)'!='net9.0-windows10.0.19041.0' or '$(WindowsPackageType)'!='MSIX'" />-->
+    <!--<PackageReference Include="Microsoft.WindowsAppSDK" Version="[1.6.241114003]" Condition="'$(TargetFramework)'!='net9.0-windows10.0.19041.0' or '$(WindowsPackageType)'!='MSIX'" />-->
 
 		<!-- Platform-specific packages -->
-		<PackageReference Include="System.Management" Version="9.0.5" Condition="'$(TargetFramework)'=='net9.0-windows10.0.19041.0'" />
+		<PackageReference Include="System.Management" Version="9.0.3" Condition="'$(TargetFramework)'=='net9.0-windows10.0.19041.0'" />
 		<PackageReference Include="Xamarin.Google.Android.Play.Core" Version="1.10.3.17" Condition="'$(TargetFramework)'=='net9.0-android'" />
 
 	</ItemGroup>
@@ -1131,10 +1131,10 @@
 	</ItemGroup>
 
   <!-- Potentially empty folders -->
-  <ItemGroup>
+  <!--<ItemGroup>
     <Folder Include="Platforms\Android\prebuilt\MonoAoT\arm64-v8a\" />
     <Folder Include="Platforms\Android\prebuilt\MonoAoT\x86_64\" />
-	</ItemGroup>
+	</ItemGroup>-->
 
 	<!--<Import Project="AppxIcons.targets" Condition="'$(TargetFramework)'=='net9.0-windows10.0.19041.0'" />-->
 
