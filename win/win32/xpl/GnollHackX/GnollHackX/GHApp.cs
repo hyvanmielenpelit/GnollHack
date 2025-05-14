@@ -190,7 +190,7 @@ namespace GnollHackX
             RealPlayTime = Preferences.Get("RealPlayTime", 0L);
             DrawWallEnds = Preferences.Get("DrawWallEnds", GHConstants.DefaultDrawWallEnds);
             CustomScreenScale = Preferences.Get("CustomScreenScale", 0.0f); /* Note that preferences have a default of zero but the property return 1.0f */
-            SaveFileTracking = Preferences.Get("SaveFileTracking", IsDesktop && !string.IsNullOrEmpty(XlogUserName) && !string.IsNullOrEmpty(XlogPassword));
+            SaveFileTracking = Preferences.Get("SaveFileTracking", IsSaveFileTrackingNeeded && !string.IsNullOrEmpty(XlogUserName) && !string.IsNullOrEmpty(XlogPassword));
 
             SetAvailableGPUCacheLimits(TotalMemory);
             PrimaryGPUCacheLimit = Preferences.Get("PrimaryGPUCacheLimit", -2L);
