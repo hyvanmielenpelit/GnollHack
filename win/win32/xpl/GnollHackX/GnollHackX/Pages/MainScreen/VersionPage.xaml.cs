@@ -268,7 +268,7 @@ namespace GnollHackX.Pages.MainScreen
             SkiaVersionLabel.Text = GHApp.SkiaVersionString + " (# " + GHApp.SkiaSharpVersionString + ")";
             FrameworkVersionLabel.Text = GHApp.FrameworkVersionString;
             UIFrameworkVersionLabel.Text = (GHApp.IsMaui ? ".NET MAUI " : "XF ") + GHApp.UIFrameworkVersionString;
-            CompilerLabel.Text = GHApp.IsLLVM ? "LLVM" : GHApp.IsWindows ? "Standard" : "Mono AOT";
+            CompilerLabel.Text = GHApp.IsLLVM ? "LLVM" : GHApp.IsiOS ? "Clang" : GHApp.IsWindows ? "Standard" : "Mono AOT";
             RuntimeVersionLabel.Text = GHApp.RuntimeVersionString;
             PlatformLabel.Text = DeviceInfo.Platform + " " + DeviceInfo.VersionString;
             DeviceLabel.Text = manufacturer + " " + DeviceInfo.Model;
