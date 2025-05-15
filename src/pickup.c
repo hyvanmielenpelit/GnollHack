@@ -1973,27 +1973,28 @@ boolean bynexthere;
     struct obj* bag_of_treasure_hauling = 0;
     struct obj* bag_of_wizardry = 0;
     struct obj* normal_bag = 0;
+    boolean maybe_cancellation = (objects[obj->otyp].oc_name_known || objects[WAN_CANCELLATION].oc_name_known ? (objects[obj->otyp].oc_flags5 & O5_MBAG_DESTROYING_ITEM) != 0 : obj->oclass == WAND_CLASS);
 
     for (curr = objchn_container; curr; curr = (bynexthere ? curr->nexthere : curr->nobj))
     {
         if (objects[curr->otyp].oc_name_known && curr != obj && !curr->olocked)
         {
-            if (curr->otyp == BAG_OF_HOLDING && curr->bknown && !curr->cursed && obj->oclass != WAND_CLASS)
+            if (curr->otyp == BAG_OF_HOLDING && curr->bknown && !curr->cursed && !maybe_cancellation)
             {
                 if (!bag_of_holding || (curr->blessed && !bag_of_holding->blessed))
                     bag_of_holding = curr;
             }
-            else if (curr->otyp == BAG_OF_THE_GLUTTON && curr->bknown && !curr->cursed)
+            else if (curr->otyp == BAG_OF_THE_GLUTTON && curr->bknown && !curr->cursed && !maybe_cancellation)
             {
                 if (!bag_of_the_glutton || (curr->blessed && !bag_of_the_glutton->blessed))
                     bag_of_the_glutton = curr;
             }
-            else if (curr->otyp == BAG_OF_TREASURE_HAULING && curr->bknown && !curr->cursed)
+            else if (curr->otyp == BAG_OF_TREASURE_HAULING && curr->bknown && !curr->cursed && !maybe_cancellation)
             {
                 if (!bag_of_treasure_hauling || (curr->blessed && !bag_of_treasure_hauling->blessed))
                     bag_of_treasure_hauling = curr;
             }
-            else if (curr->otyp == BAG_OF_WIZARDRY && curr->bknown && !curr->cursed)
+            else if (curr->otyp == BAG_OF_WIZARDRY && curr->bknown && !curr->cursed && !maybe_cancellation)
             {
                 if (!bag_of_wizardry || (curr->blessed && !bag_of_wizardry->blessed))
                     bag_of_wizardry = curr;
@@ -2023,28 +2024,27 @@ boolean bynexthere;
     if (!num_choices)
         return 0;
 
-    boolean maybe_cancellation = (objects[obj->otyp].oc_name_known || objects[WAN_CANCELLATION].oc_name_known ? (objects[obj->otyp].oc_flags5 & O5_MBAG_DESTROYING_ITEM) != 0 : obj->oclass == WAND_CLASS);
     switch (flags.auto_bag_in_style)
     {
     case 0:
     default:
     {
         struct obj* used_container = 0;
-        if (!used_container && bag_of_treasure_hauling && is_obj_weight_reduced_by_treasure_hauling(obj) && !maybe_cancellation)
+        if (!used_container && bag_of_treasure_hauling && is_obj_weight_reduced_by_treasure_hauling(obj))
             used_container = bag_of_treasure_hauling;
-        if (!used_container && bag_of_wizardry && is_obj_weight_reduced_by_wizardry(obj) && !maybe_cancellation)
+        if (!used_container && bag_of_wizardry && is_obj_weight_reduced_by_wizardry(obj))
             used_container = bag_of_wizardry;
-        if (!used_container && bag_of_the_glutton && is_obj_weight_reduced_by_the_glutton(obj) && !maybe_cancellation)
+        if (!used_container && bag_of_the_glutton && is_obj_weight_reduced_by_the_glutton(obj))
             used_container = bag_of_the_glutton;
-        if (!used_container && bag_of_holding && !maybe_cancellation)
+        if (!used_container && bag_of_holding)
             used_container = bag_of_holding;
         if (!used_container && normal_bag)
             used_container = normal_bag;
-        if (!used_container && bag_of_treasure_hauling && !maybe_cancellation)
+        if (!used_container && bag_of_treasure_hauling)
             used_container = bag_of_treasure_hauling;
-        if (!used_container && bag_of_wizardry && !maybe_cancellation)
+        if (!used_container && bag_of_wizardry)
             used_container = bag_of_wizardry;
-        if (!used_container && bag_of_the_glutton && !maybe_cancellation)
+        if (!used_container && bag_of_the_glutton)
             used_container = bag_of_the_glutton;
         if (used_container)
             return stash_obj_in_container(obj, used_container);
