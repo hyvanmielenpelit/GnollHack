@@ -1973,6 +1973,7 @@ boolean bynexthere;
     struct obj* bag_of_treasure_hauling = 0;
     struct obj* bag_of_wizardry = 0;
     struct obj* normal_bag = 0;
+    /* Note: If you know cancellation, then you know all other similar wands such as Rod of Disjunction / wand of disjunction */
     boolean maybe_cancellation = (objects[obj->otyp].oc_name_known || objects[WAN_CANCELLATION].oc_name_known ? (objects[obj->otyp].oc_flags5 & O5_MBAG_DESTROYING_ITEM) != 0 : obj->oclass == WAND_CLASS);
 
     for (curr = objchn_container; curr; curr = (bynexthere ? curr->nexthere : curr->nobj))
@@ -3487,6 +3488,8 @@ boolean dobot;
             play_object_container_in_sound(obj, current_container);
             delay_output_milliseconds(ITEM_PICKUP_DROP_DELAY);
         }
+
+        obj->bypass = 0; /* It will now leave the inventory */
 
         /* gold in container always needs to be added to credit */
         if (floor_container && obj->oclass == COIN_CLASS)
