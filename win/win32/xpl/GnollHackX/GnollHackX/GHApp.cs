@@ -7068,7 +7068,15 @@ namespace GnollHackX
 
         public static Page PageFromTopOfModalNavigationStack()
         {
-            Page topPage = Navigation?.ModalStack?.Count <= 0 ? null : Navigation?.ModalStack[Navigation.ModalStack.Count - 1];
+            Page topPage = null;
+            try
+            {
+                topPage = Navigation?.ModalStack?.Count <= 0 ? null : Navigation?.ModalStack[Navigation.ModalStack.Count - 1];
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+            }
             if (topPage == null)
                 return null;
             return topPage;

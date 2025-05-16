@@ -80,6 +80,7 @@ public static class MauiProgram
                   options.ProfilesSampleRate = 1.0;
 
                   // Other Sentry options can be set here.
+                  options.CaptureFailedRequests = false;
             })
 #endif
 #if SENTRY && WINDOWS
@@ -113,6 +114,9 @@ public static class MauiProgram
                     // prefer profiling to start asynchronously
                     TimeSpan.FromMilliseconds(500)
                 ));
+
+                // Other Sentry options can be set here.
+                options.CaptureFailedRequests = false;
             })
 #endif
 
