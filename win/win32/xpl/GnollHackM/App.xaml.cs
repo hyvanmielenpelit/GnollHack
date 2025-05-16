@@ -57,7 +57,29 @@ public partial class App : Application
     protected override Window CreateWindow(IActivationState activationState)
     {
         Window window = new Window(new AppShell());
+        window.Activated += WindowActivated;
+        window.Deactivated += WindowDeactivated;
+        window.Destroying += WindowDestroying;
         return window;  
+    }
+
+    public static void WindowActivated(object sender, EventArgs e)
+    {
+        GHApp.MaybeWriteGHLog("MAUI Window has been activated.");
+    }
+    public static void WindowDeactivated(object sender, EventArgs e)
+    {
+        GHApp.MaybeWriteGHLog("MAUI Window has been deactivated.");
+    }
+    public static void WindowDestroying(object sender, EventArgs e)
+    {
+        Window window = sender as Window;
+        if (window != null)
+        {
+            window.Activated -= WindowActivated;
+            window.Deactivated -= WindowDeactivated;
+            window.Destroying -= WindowDestroying;
+        }
     }
 
     protected override void OnStart()
