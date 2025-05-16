@@ -1499,6 +1499,11 @@ namespace GnollHackX
         private popup_style _popupStyle = popup_style.GeneralDialog;
         private async void PopupOkButton_Clicked(object sender, EventArgs e)
         {
+            await ClosePopup();
+        }
+
+        private async Task ClosePopup()
+        {
             PopupOkButton.IsEnabled = false;
             PopupOkButton2.IsEnabled = false;
             GHApp.PlayButtonClickedSound();
@@ -1589,6 +1594,11 @@ namespace GnollHackX
 
         private async void PendingTasksOkButton_Clicked(object sender, EventArgs e)
         {
+            await PendingTasksOk();
+        }
+
+        private async Task PendingTasksOk()
+        {
             PendingTasksGrid.IsEnabled = false;
             await CloseApp();
             PendingTasksGrid.IsVisible = false; /* Insurance */
@@ -1665,28 +1675,45 @@ namespace GnollHackX
         public bool HandleMainPageSpecialKeyPress(GHSpecialKey key, bool isCtrl, bool isMeta, bool isShift)
         {
             bool handled = false;
-            if (key == GHSpecialKey.Escape || key == GHSpecialKey.Enter || key == GHSpecialKey.Space)
+            try
             {
-                if (AlertGrid.IsVisible && AlertOkButton.IsEnabled)
+                MainThread.BeginInvokeOnMainThread(async () =>
                 {
-                    AlertOkButton_Clicked(this, EventArgs.Empty);
-                    handled = true;
-                }
-                else if (PopupGrid.IsVisible && ((PopupOkButton.IsVisible && PopupOkButton.IsEnabled) || (PopupButtonGrid.IsVisible && PopupOkButton2.IsVisible && PopupOkButton2.IsEnabled)))
-                {
-                    PopupOkButton_Clicked(this, EventArgs.Empty);
-                    handled = true;
-                }
-                else if (PendingTasksGrid.IsVisible && key == GHSpecialKey.Escape && PendingTasksCancelButton.IsVisible && PendingTasksCancelButton.IsEnabled)
-                {
-                    PendingTasksCancelButton_Clicked(this, EventArgs.Empty);
-                    handled = true;
-                }
-                else if (PendingTasksGrid.IsVisible && (key == GHSpecialKey.Enter || key == GHSpecialKey.Space) && PendingTasksOkButton.IsVisible && PendingTasksOkButton.IsEnabled)
-                {
-                    PendingTasksOkButton_Clicked(this, EventArgs.Empty);
-                    handled = true;
-                }
+                    try
+                    {
+                        if (key == GHSpecialKey.Escape || key == GHSpecialKey.Enter || key == GHSpecialKey.Space)
+                        {
+                            if (AlertGrid.IsVisible && AlertOkButton.IsEnabled)
+                            {
+                                AlertOkButton_Clicked(this, EventArgs.Empty);
+                                handled = true;
+                            }
+                            else if (PopupGrid.IsVisible && ((PopupOkButton.IsVisible && PopupOkButton.IsEnabled) || (PopupButtonGrid.IsVisible && PopupOkButton2.IsVisible && PopupOkButton2.IsEnabled)))
+                            {
+                                await ClosePopup();
+                                handled = true;
+                            }
+                            else if (PendingTasksGrid.IsVisible && key == GHSpecialKey.Escape && PendingTasksCancelButton.IsVisible && PendingTasksCancelButton.IsEnabled)
+                            {
+                                PendingTasksCancelButton_Clicked(this, EventArgs.Empty);
+                                handled = true;
+                            }
+                            else if (PendingTasksGrid.IsVisible && (key == GHSpecialKey.Enter || key == GHSpecialKey.Space) && PendingTasksOkButton.IsVisible && PendingTasksOkButton.IsEnabled)
+                            {
+                                await PendingTasksOk();
+                                handled = true;
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.WriteLine(ex);
+                    }
+                });
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
             }
             return handled;
         }
