@@ -114,7 +114,7 @@ namespace GnollHackX
             _generalTimer.IsRepeating = true;
             _generalTimer.Tick += async (s, e) => 
             { 
-                bool res = await DoGeneralTimerTick();
+                bool res = await DoGeneralTimerTickAsync();
                 if (!res) 
                     _generalTimer.Stop(); 
             };
@@ -154,14 +154,26 @@ namespace GnollHackX
 #if GNH_MAUI
             _generalTimer.Start();
 #else
-                Device.StartTimer(TimeSpan.FromSeconds(GHConstants.MainScreenGeneralCounterIntervalInSeconds), () =>
-                {
-                    return DoGeneralTimerTick();
-                });
+            Device.StartTimer(TimeSpan.FromSeconds(GHConstants.MainScreenGeneralCounterIntervalInSeconds), () =>
+            {
+                return DoGeneralTimerTick();
+            });
 #endif
         }
 
-        private async Task<bool> DoGeneralTimerTick()
+        private bool DoGeneralTimerTick()
+        {
+            if (GameStarted || StopGeneralTimer)
+            {
+                GeneralTimerIsOn = false;
+                StopGeneralTimer = false;
+                return false;
+            }
+            GeneralTimerTasks();
+            return true;
+        }
+
+        private async Task<bool> DoGeneralTimerTickAsync()
         {
             if (GameStarted || StopGeneralTimer)
             {
