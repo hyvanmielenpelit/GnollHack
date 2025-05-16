@@ -2512,7 +2512,7 @@ do_animation_offsets()
     Fprintf(ofp, "#ifndef ANIMTOTALS_H\n#define ANIMTOTALS_H\n");
     Fprintf(ofp, "\n#define\tTOTAL_NUM_ANIMATION_FRAMES\t%d", animtot);
     Fprintf(ofp, "\n#define\tTOTAL_NUM_ENLARGEMENT_TILES\t%d", enltot);
-    Fprintf(ofp, "\n#define\tTOTAL_NUM_REPLACEMENT_TILES\t%d", repltot);
+    Fprintf(ofp, "\n#define\tTOTAL_NUM_REPLACEMENT_GLYPHS\t%d", repltot);
     Fprintf(ofp, "\n\n#endif /* ANIMTOTALS_H */\n");
 
     Fclose(ofp);
