@@ -43,7 +43,7 @@ namespace GnollHackX
         string GetCanonicalPath(string fileName);
         string GetAbsoluteOnDemandAssetPath(string assetPack);
         string GetAbsoluteOnDemandAssetPath(string assetPack, string relativeAssetPath);
-        void RequestAppReview(ContentPage page);
+        Task RequestAppReview(ContentPage page);
         int FetchOnDemandPack(string pack);
         event EventHandler<AssetPackStatusEventArgs> OnDemandPackStatusNotification;
     }

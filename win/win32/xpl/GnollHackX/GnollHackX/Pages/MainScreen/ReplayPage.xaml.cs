@@ -71,19 +71,24 @@ namespace GnollHackX.Pages.MainScreen
             SelectButton.IsEnabled = false;
             FolderPicker.SelectedIndex = 0;
 
-            UpdateRecordings();
+            Appearing += ReplayPage_Appearing;
         }
 
-        private void UpdateRecordings()
+        private async void ReplayPage_Appearing(object sender, EventArgs e)
         {
-            UpdateLocalOrServerRecordings(IsCloud);
+            await UpdateRecordings();
         }
 
-        private void UpdateLocalOrServerRecordings(bool isServer)
+        private async Task UpdateRecordings()
+        {
+            await UpdateLocalOrServerRecordings(IsCloud);
+        }
+
+        private async Task UpdateLocalOrServerRecordings(bool isServer)
         {
             if (isServer)
             {
-                UpdateServerRecordings();
+                await UpdateServerRecordings();
             }
             else
             {
@@ -767,7 +772,7 @@ namespace GnollHackX.Pages.MainScreen
                     _subDirectoryDownload = string.IsNullOrWhiteSpace(rgf.FilePath) ? null : rgf.FileName + rgf.Extension;
                 else if (IsLocal)
                     _subDirectoryLocal = string.IsNullOrWhiteSpace(rgf.FilePath) ? null : rgf.FileName + rgf.Extension;
-                UpdateRecordings();
+                await UpdateRecordings();
                 return;
             }
 
@@ -793,7 +798,7 @@ namespace GnollHackX.Pages.MainScreen
                     var gamePage = new GamePage(_mainPage);
                     GHApp.CurrentGamePage = gamePage;
                     await GHApp.Navigation.PushModalAsync(gamePage);
-                    gamePage.StartReplay(filePath, -1);
+                    await gamePage.StartReplay(filePath, -1);
                 }
                 else
                 {
@@ -804,7 +809,7 @@ namespace GnollHackX.Pages.MainScreen
                         try
                         {
                             GHApp.DeleteReplay(filePath);
-                            UpdateRecordings();
+                            await UpdateRecordings();
                         }
                         catch (Exception ex)
                         {
@@ -1095,7 +1100,7 @@ namespace GnollHackX.Pages.MainScreen
                                 + (GHApp.DebugLogMessages ? " See App Log for details." : ""),
                                 "OK");
                         }
-                        UpdateRecordings();
+                        await UpdateRecordings();
                     }
                 }
             }
@@ -1123,7 +1128,7 @@ namespace GnollHackX.Pages.MainScreen
                                 Directory.Delete(filePath, true);
                             else
                                 GHApp.DeleteReplay(filePath);
-                            UpdateRecordings();
+                            await UpdateRecordings();
                         }
                         catch (Exception ex)
                         {
@@ -1156,7 +1161,7 @@ namespace GnollHackX.Pages.MainScreen
             UpdateRecordingsLabel();
         }
 
-        private async void UpdateServerRecordings()
+        private async Task UpdateServerRecordings()
         {
             BlobServiceClient client = GHApp.GetBlobServiceClient();
             if (client == null)
@@ -1836,7 +1841,7 @@ namespace GnollHackX.Pages.MainScreen
             UploadDownloadGrid.IsVisible = false;
             UploadButton.IsEnabled = true;
             PopupCancelButton_Clicked(sender, e);
-            UpdateRecordings();
+            await UpdateRecordings();
         }
 
         private async void ServerButton_Clicked(object sender, EventArgs e)
@@ -1870,15 +1875,15 @@ namespace GnollHackX.Pages.MainScreen
             UploadDownloadGrid.IsVisible = false;
         }
 
-        private void ServerSwitch_Toggled(object sender, ToggledEventArgs e)
+        private async void ServerSwitch_Toggled(object sender, ToggledEventArgs e)
         {
-            UpdateLocalOrServerRecordings(e.Value);
+            await UpdateLocalOrServerRecordings(e.Value);
             UpdateButtons();
         }
 
-        private void FolderPicker_SelectedIndexChanged(object sender, EventArgs e)
+        private async void FolderPicker_SelectedIndexChanged(object sender, EventArgs e)
         {
-            UpdateLocalOrServerRecordings(IsCloud);
+            await UpdateLocalOrServerRecordings(IsCloud);
             UpdateButtons();
         }
     }

@@ -107,6 +107,37 @@ namespace GnollHackX.Pages.MainScreen
 
         private async void CancelButton_Clicked(object sender, EventArgs e)
         {
+            await CloseCore();
+        }
+
+        public void ClosePage()
+        {
+            if (CancelButton.IsEnabled)
+            {
+                try
+                {
+                    MainThread.BeginInvokeOnMainThread(async () =>
+                    {
+                        try
+                        {
+                            await CloseCore();
+                        }
+                        catch (Exception ex)
+                        {
+                            System.Diagnostics.Debug.WriteLine(ex);
+                        }
+
+                    });
+                }
+                catch (Exception ex)
+                {
+                    System.Diagnostics.Debug.WriteLine(ex);
+                }
+            }
+        }
+
+        private async Task CloseCore()
+        {
             CancelButton.IsEnabled = false;
             GHApp.PlayButtonClickedSound();
             if (_textChanged)
@@ -119,7 +150,7 @@ namespace GnollHackX.Pages.MainScreen
                     var page = await GHApp.Navigation.PopModalAsync();
                     GHApp.DisconnectIViewHandlers(page);
                 }
-                else 
+                else
                 {
                     CancelButton.IsEnabled = true;
                 }
@@ -131,12 +162,6 @@ namespace GnollHackX.Pages.MainScreen
                 var page = await GHApp.Navigation.PopModalAsync();
                 GHApp.DisconnectIViewHandlers(page);
             }
-        }
-
-        public void ClosePage()
-        {
-            if (CancelButton.IsEnabled)
-                CancelButton_Clicked(this, EventArgs.Empty);
         }
 
         private async void ResetButton_Clicked(object sender, EventArgs e)

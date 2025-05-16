@@ -221,17 +221,42 @@ namespace GnollHackX.Pages.MainScreen
 
         private async void Button_Clicked(object sender, EventArgs e)
         {
-            ResetGrid.IsEnabled = false;
-            GHApp.PlayButtonClickedSound();
-            GHApp.CurrentMainPage?.InvalidateCarousel();
-            var page = await GHApp.Navigation.PopModalAsync();
-            GHApp.DisconnectIViewHandlers(page);
+            await CloseCore();
         }
 
         public void ClosePage()
         {
             if (ResetGrid.IsEnabled)
-                Button_Clicked(this, EventArgs.Empty);
+            {
+                try
+                {
+                    MainThread.BeginInvokeOnMainThread(async () =>
+                    {
+                        try
+                        {
+                            await CloseCore();
+                        }
+                        catch (Exception ex)
+                        {
+                            System.Diagnostics.Debug.WriteLine(ex);
+                        }
+
+                    });
+                }
+                catch (Exception ex)
+                {
+                    System.Diagnostics.Debug.WriteLine(ex);
+                }
+            }
+        }
+
+        private async Task CloseCore()
+        {
+            ResetGrid.IsEnabled = false;
+            GHApp.PlayButtonClickedSound();
+            GHApp.CurrentMainPage?.InvalidateCarousel();
+            var page = await GHApp.Navigation.PopModalAsync();
+            GHApp.DisconnectIViewHandlers(page);
         }
 
 

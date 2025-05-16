@@ -208,9 +208,26 @@ namespace GnollHackX.Pages.Game
             await DoPressCancel();
         }
 
-        public async void PressCancel()
+        public void PressCancel()
         {
-            await DoPressCancel();
+            try
+            {
+                MainThread.BeginInvokeOnMainThread(async () =>
+                {
+                    try
+                    {
+                        await DoPressCancel();
+                    }
+                    catch (Exception ex)
+                    {
+                        System.Diagnostics.Debug.WriteLine(ex);
+                    }
+                });
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine(ex);
+            }
         }
 
         public async Task DoPressCancel()

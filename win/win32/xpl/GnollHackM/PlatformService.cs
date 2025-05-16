@@ -112,7 +112,7 @@ namespace GnollHackM
             throw new NotImplementedException();
         }
 
-        public void RequestAppReview(ContentPage page)
+        public Task RequestAppReview(ContentPage page)
         {
             throw new NotImplementedException();
         }

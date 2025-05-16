@@ -276,7 +276,7 @@ namespace GnollHackX.Droid
         public List<string> Log = new List<string>();
         public TaskCompletionSource<bool> Tcs2 { get { return _tcs2; } set { _tcs2 = value; } }
 
-        public async void RequestAppReview(ContentPage page)
+        public async System.Threading.Tasks.Task RequestAppReview(ContentPage page)
         {
             lock(LogLock)
             {

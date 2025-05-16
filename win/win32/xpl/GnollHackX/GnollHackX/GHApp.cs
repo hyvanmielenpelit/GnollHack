@@ -3591,9 +3591,26 @@ namespace GnollHackX
             }
         }
 
-        public static async void TryVerifyXlogUserName()
+        public static void TryVerifyXlogUserName()
         {
-            await TryVerifyXlogUserNameAsync();
+            try
+            {
+                MainThread.BeginInvokeOnMainThread(async () =>
+                {
+                    try
+                    {
+                        await TryVerifyXlogUserNameAsync();
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.WriteLine(ex);
+                    }
+                });
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+            }
         }
 
         public static async Task TryVerifyXlogUserNameAsync()

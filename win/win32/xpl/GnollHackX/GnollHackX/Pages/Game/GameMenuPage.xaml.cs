@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.IO.Compression;
 using System.IO;
 
+
 #if GNH_MAUI
 using GnollHackX;
 using Microsoft.Maui.Controls.PlatformConfiguration;
@@ -18,6 +19,7 @@ using Xamarin.Forms;
 using Xamarin.Forms.PlatformConfiguration;
 using Xamarin.Forms.PlatformConfiguration.iOSSpecific;
 using Xamarin.Forms.Xaml;
+using Xamarin.Essentials;
 using GnollHackX.Pages.MainScreen;
 
 namespace GnollHackX.Pages.Game
@@ -105,10 +107,26 @@ namespace GnollHackX.Pages.Game
         public void ClosePage()
         {
             if(MainLayout.IsEnabled)
-                btnBackToGame_Clicked(this, EventArgs.Empty);
+            {
+                try
+                {
+                    MainThread.BeginInvokeOnMainThread(async () =>
+                    {
+                        await BackToGame();
+                    });
+                }
+                catch
+                {
+
+                }
+            }
         }
 
         private async void btnBackToGame_Clicked(object sender, EventArgs e)
+        {
+            await BackToGame();
+        }
+        private async Task BackToGame()
         {
             MainLayout.IsEnabled = false;
             GHApp.PlayButtonClickedSound();

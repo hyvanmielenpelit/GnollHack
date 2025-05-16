@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+
 #if GNH_MAUI
 using GnollHackX;
 using Microsoft.Maui.Controls.PlatformConfiguration;
@@ -14,6 +15,7 @@ using Xamarin.Forms;
 using Xamarin.Forms.PlatformConfiguration;
 using Xamarin.Forms.PlatformConfiguration.iOSSpecific;
 using Xamarin.Forms.Xaml;
+using Xamarin.Essentials;
 
 namespace GnollHackX.Pages.Game
 #endif
@@ -67,15 +69,32 @@ namespace GnollHackX.Pages.Game
             }
         }
 
-        public async void CloseOutrip()
+        public void CloseOutrip()
         {
-            if (!_playingReplay)
+            try
             {
-                _tapHide = true;
-                OutRipGrid.IsEnabled = false;
-                var page = await GHApp.Navigation.PopModalAsync();
-                _gamePage.GenericButton_Clicked(this, new EventArgs(), GHConstants.CancelChar);
-                GHApp.DisconnectIViewHandlers(page);
+                MainThread.BeginInvokeOnMainThread(async () =>
+                {
+                    try
+                    {
+                        if (!_playingReplay)
+                        {
+                            _tapHide = true;
+                            OutRipGrid.IsEnabled = false;
+                            var page = await GHApp.Navigation.PopModalAsync();
+                            _gamePage.GenericButton_Clicked(this, new EventArgs(), GHConstants.CancelChar);
+                            GHApp.DisconnectIViewHandlers(page);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        System.Diagnostics.Debug.WriteLine(ex);
+                    }
+                });
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine(ex);
             }
         }
 

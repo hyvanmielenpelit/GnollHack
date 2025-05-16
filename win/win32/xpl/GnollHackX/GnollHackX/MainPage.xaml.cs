@@ -112,7 +112,12 @@ namespace GnollHackX
             _generalTimer = Microsoft.Maui.Controls.Application.Current.Dispatcher.CreateTimer();
             _generalTimer.Interval = TimeSpan.FromSeconds(GHConstants.MainScreenGeneralCounterIntervalInSeconds);
             _generalTimer.IsRepeating = true;
-            _generalTimer.Tick += (s, e) => { if (!DoGeneralTimerTick()) _generalTimer.Stop(); };
+            _generalTimer.Tick += async (s, e) => 
+            { 
+                bool res = await DoGeneralTimerTick();
+                if (!res) 
+                    _generalTimer.Stop(); 
+            };
 
             HandlerChanged += (s, e) => {
                 GHApp.DisplayRefreshRate = Math.Max(60.0f, DeviceDisplay.Current.MainDisplayInfo.RefreshRate);
@@ -131,18 +136,32 @@ namespace GnollHackX
             if (!CheckAndSetGeneralTimerIsOn)
             {
                 GeneralTimerTasks();
+                StartTimerCore();
+            }
+        }
+
+        public async Task StartGeneralTimerAsync()
+        {
+            if (!CheckAndSetGeneralTimerIsOn)
+            {
+                await GeneralTimerTasksAsync();
+                StartTimerCore();
+            }
+        }
+
+        private void StartTimerCore()
+        {
 #if GNH_MAUI
-                _generalTimer.Start();
+            _generalTimer.Start();
 #else
                 Device.StartTimer(TimeSpan.FromSeconds(GHConstants.MainScreenGeneralCounterIntervalInSeconds), () =>
                 {
                     return DoGeneralTimerTick();
                 });
 #endif
-            }
         }
 
-        private bool DoGeneralTimerTick()
+        private async Task<bool> DoGeneralTimerTick()
         {
             if (GameStarted || StopGeneralTimer)
             {
@@ -150,13 +169,30 @@ namespace GnollHackX
                 StopGeneralTimer = false;
                 return false;
             }
-            GeneralTimerTasks();
+            await GeneralTimerTasksAsync();
             return true;
         }
 
-        private async void GeneralTimerTasks()
+        private void GeneralTimerTasks()
         {
-            await GeneralTimerTasksAsync();
+            try
+            {
+                MainThread.BeginInvokeOnMainThread(async () =>
+                {
+                    try
+                    {
+                        await GeneralTimerTasksAsync();
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.WriteLine(ex);
+                    }
+                });
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+            }
         }
 
         private readonly object _pendingGeneralTimerTasksLock = new object();
@@ -433,23 +469,37 @@ namespace GnollHackX
         {
             if (force || PendingTasksGrid.IsVisible)
             {
-                MainThread.BeginInvokeOnMainThread(() =>
+                try
                 {
-                    int tasks = PendingGeneralTimerTasks;
-                    PendingTasksLabel.Text = "There " + (tasks == 1 ? "is" : "are") + " " + tasks + " task" + (tasks == 1 ? "" : "s") + " pending.";
-                    if (tasks <= 0)
+                    MainThread.BeginInvokeOnMainThread(() =>
                     {
-                        PendingTasksGrid.IsEnabled = false;
-                        PendingTasksGrid.IsVisible = false;
-                    }
-                });
-                MainThread.BeginInvokeOnMainThread(async () =>
+                        int tasks = PendingGeneralTimerTasks;
+                        PendingTasksLabel.Text = "There " + (tasks == 1 ? "is" : "are") + " " + tasks + " task" + (tasks == 1 ? "" : "s") + " pending.";
+                        if (tasks <= 0)
+                        {
+                            PendingTasksGrid.IsEnabled = false;
+                            PendingTasksGrid.IsVisible = false;
+                        }
+                    });
+                    MainThread.BeginInvokeOnMainThread(async () =>
+                    {
+                        try
+                        {
+                            if (PendingGeneralTimerTasks <= 0)
+                            {
+                                await CloseApp();
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            Debug.WriteLine(ex);
+                        }
+                    });
+                }
+                catch (Exception ex)
                 {
-                    if (PendingGeneralTimerTasks <= 0)
-                    {
-                        await CloseApp();
-                    }
-                });
+                    Debug.WriteLine(ex);
+                }
             }
         }
 
@@ -618,6 +668,11 @@ namespace GnollHackX
 
         private async void StartLocalGameButton_Clicked(object sender, EventArgs e)
         {
+            await StartLocalGame();
+        }
+
+        public async Task StartLocalGame()
+        {
             try
             {
                 StartLocalGrid.IsEnabled = false;
@@ -661,7 +716,7 @@ namespace GnollHackX
                 gamePage.EnableCasualMode = casualModeSwitch.IsToggled;
                 gamePage.EnableModernMode = !classicModeSwitch.IsToggled;
                 await GHApp.Navigation.PushModalAsync(gamePage);
-                gamePage.StartNewGame();
+                await gamePage.StartNewGame();
             }
             catch (Exception ex)
             {
@@ -790,7 +845,7 @@ namespace GnollHackX
                         Preferences.Set("StoreReviewRequested", true);
                         UpperButtonGrid.IsEnabled = true; /* Just in case of a hangup */
                         LogoGrid.IsEnabled = true; /* Just in case of a hangup */
-                        GHApp.PlatformService?.RequestAppReview(this); /* Platform implementation is async, so this should return immediately */
+                        await GHApp.PlatformService?.RequestAppReview(this); /* Platform implementation is async, so this should return immediately */
                     }
                 }
             }
@@ -804,7 +859,7 @@ namespace GnollHackX
             LogoGrid.IsEnabled = true;
 
             GHApp.InitializeConnectivity();
-            StartGeneralTimer();
+            await StartGeneralTimerAsync();
         }
 
         public async Task InitializeServices()
@@ -1164,6 +1219,11 @@ namespace GnollHackX
 
         private async void ExitAppButton_Clicked(object sender, EventArgs e)
         {
+            await ExitApp();
+        }
+
+        private async Task ExitApp()
+        {
             UpperButtonGrid.IsEnabled = false;
             GHApp.PlayButtonClickedSound();
             ExitButton.IsEnabled = false;
@@ -1183,11 +1243,11 @@ namespace GnollHackX
                     PopupLabel.Text = "Updating GnollHack may cause your saved games to become invalid. We recommend that you disable automatic updates by toggling off App Updates under App Store section in the Settings app, and manually apply updates when you have no saved games.";
                 else if (GHApp.IsWindows)
                 {
-                    if(GHApp.IsPackaged)
+                    if (GHApp.IsPackaged)
                         PopupLabel.Text = "Updating GnollHack may cause your saved games to become invalid. We recommend that you disable automatic updates by toggling off App Updates under Profile > Settings in the Microsoft Store app, and manually apply updates when you have no saved games.";
                     else
                     {
-                        if(GHApp.IsSteam)
+                        if (GHApp.IsSteam)
                         {
                             PopupLabel.Text = "Some updates of GnollHack may be incompatible with your saved games. In such a case, you can revert to an old version of the game by going to the Betas tab under GnollHack Properties and activating a compatible version therein.";
                         }
@@ -1212,7 +1272,7 @@ namespace GnollHackX
             PendingGeneralTimerTasks = CalculatePendingGeneralTimerTasks();
             if (PendingGeneralTimerTasks > 0)
             {
-                StartGeneralTimer();
+                await StartGeneralTimerAsync();
                 UpdateGeneralTimerTasksLabel(true);
                 PendingTasksGrid.IsEnabled = true;
                 PendingTasksGrid.IsVisible = true;
@@ -1270,6 +1330,11 @@ namespace GnollHackX
 
         private async void ResetButton_Clicked(object sender, EventArgs e)
         {
+            await OpenResetPage();
+        }
+
+        private async Task OpenResetPage()
+        {
             UpperButtonGrid.IsEnabled = false;
             GHApp.PlayButtonClickedSound();
             carouselView.Stop();
@@ -1277,11 +1342,16 @@ namespace GnollHackX
             var resetPage = new ResetPage(this);
             await GHApp.Navigation.PushModalAsync(resetPage);
             StopGeneralTimer = false;
-            StartGeneralTimer();
+            await StartGeneralTimerAsync();
             UpperButtonGrid.IsEnabled = true;
         }
 
         private async void SettingsButton_Clicked(object sender, EventArgs e)
+        {
+            await OpenSettingsPage();
+        }
+
+        public async Task OpenSettingsPage()
         {
             UpperButtonGrid.IsEnabled = false;
             GHApp.PlayButtonClickedSound();
@@ -1292,6 +1362,11 @@ namespace GnollHackX
         }
 
         private async void OptionsButton_Clicked(object sender, EventArgs e)
+        {
+            await OpenOptionsPage();
+        }
+
+        public async Task OpenOptionsPage()
         {
             UpperButtonGrid.IsEnabled = false;
             GHApp.PlayButtonClickedSound();
@@ -1313,6 +1388,11 @@ namespace GnollHackX
 
         private async void CreditsButton_Clicked(object sender, EventArgs e)
         {
+            await OpenAboutPage();
+        }
+
+        private async Task OpenAboutPage()
+        {
             UpperButtonGrid.IsEnabled = false;
             GHApp.PlayButtonClickedSound();
             carouselView.Stop();
@@ -1320,7 +1400,7 @@ namespace GnollHackX
             var aboutPage = new AboutPage(this);
             await GHApp.Navigation.PushModalAsync(aboutPage);
             StopGeneralTimer = false;
-            StartGeneralTimer();
+            await StartGeneralTimerAsync();
             UpperButtonGrid.IsEnabled = true;
         }
 
@@ -1354,6 +1434,11 @@ namespace GnollHackX
         }
 
         private async void VaultButton_Clicked(object sender, EventArgs e)
+        {
+            await OpenVaultPage();
+        }
+
+        private async Task OpenVaultPage()
         {
             UpperButtonGrid.IsEnabled = false;
             GHApp.PlayButtonClickedSound();
@@ -1600,62 +1685,79 @@ namespace GnollHackX
             if (AlertGrid.IsVisible || PopupGrid.IsVisible || PendingTasksGrid.IsVisible)
                 return false;
 
-            switch (key)
+            try
             {
-                case (int)'p':
-                    if(StartLocalGameButton.IsEnabled && StartLocalGrid.IsEnabled && StartLocalGameButton.IsVisible && StartLocalGrid.IsVisible && UpperButtonGrid.IsVisible)
-                        StartLocalGameButton_Clicked(this, EventArgs.Empty);
-                    handled = true;
-                    break;
-                case (int)'s':
-                    if (SettingsButton.IsEnabled && SettingsButton.IsVisible && UpperButtonGrid.IsVisible)
-                        SettingsButton_Clicked(this, EventArgs.Empty);
-                    handled = true;
-                    break;
-                case (int)'o':
-                    if (OptionsButton.IsEnabled && OptionsButton.IsVisible && UpperButtonGrid.IsVisible)
-                        OptionsButton_Clicked(this, EventArgs.Empty);
-                    handled = true;
-                    break;
-                case (int)'r':
-                    if (ResetButton.IsEnabled && ResetButton.IsVisible && UpperButtonGrid.IsVisible)
-                        ResetButton_Clicked(this, EventArgs.Empty);
-                    handled = true;
-                    break;
-                case (int)'a':
-                    if (AboutButton.IsEnabled && AboutButton.IsVisible && UpperButtonGrid.IsVisible)
-                        CreditsButton_Clicked(this, EventArgs.Empty);
-                    handled = true;
-                    break;
-                case (int)'v':
-                    if (VaultButton.IsEnabled && VaultButton.IsVisible && UpperButtonGrid.IsVisible)
-                        VaultButton_Clicked(this, EventArgs.Empty);
-                    handled = true;
-                    break;
-                case (int)'w': //Wizard mode
-                    if (wizardModeSwitch.IsEnabled && wizardModeGrid.IsVisible && StartButtonLayout.IsVisible)
-                        wizardModeSwitch.IsToggled = !wizardModeSwitch.IsToggled;
-                    handled = true;
-                    break;
-                case (int)'c': //Classic mode
-                    if (classicModeSwitch.IsEnabled && classicModeGrid.IsVisible && StartButtonLayout.IsVisible)
-                        classicModeSwitch.IsToggled = !classicModeSwitch.IsToggled;
-                    handled = true;
-                    break;
-                case (int)'C': //Casual mode
-                    if (casualModeSwitch.IsEnabled && casualModeGrid.IsVisible && StartButtonLayout.IsVisible)
-                        casualModeSwitch.IsToggled = !casualModeSwitch.IsToggled;
-                    handled = true;
-                    break;
-                case (int)'e':
-                case (int)'x':
-                case (int)'q':
-                    if(ExitButton.IsEnabled && ExitButton.IsVisible && StartButtonLayout.IsVisible)
-                        ExitAppButton_Clicked(this, EventArgs.Empty);
-                    handled = true;
-                    break;
-                default:
-                    break;
+                MainThread.BeginInvokeOnMainThread(async () =>
+                {
+                    try
+                    {
+                        switch (key)
+                        {
+                            case (int)'p':
+                                if (StartLocalGameButton.IsEnabled && StartLocalGrid.IsEnabled && StartLocalGameButton.IsVisible && StartLocalGrid.IsVisible && UpperButtonGrid.IsVisible)
+                                    await StartLocalGame();
+                                handled = true;
+                                break;
+                            case (int)'s':
+                                if (SettingsButton.IsEnabled && SettingsButton.IsVisible && UpperButtonGrid.IsVisible)
+                                    await OpenSettingsPage();
+                                handled = true;
+                                break;
+                            case (int)'o':
+                                if (OptionsButton.IsEnabled && OptionsButton.IsVisible && UpperButtonGrid.IsVisible)
+                                    await OpenOptionsPage();
+                                handled = true;
+                                break;
+                            case (int)'r':
+                                if (ResetButton.IsEnabled && ResetButton.IsVisible && UpperButtonGrid.IsVisible)
+                                    await OpenResetPage();
+                                handled = true;
+                                break;
+                            case (int)'a':
+                                if (AboutButton.IsEnabled && AboutButton.IsVisible && UpperButtonGrid.IsVisible)
+                                    await OpenAboutPage();
+                                handled = true;
+                                break;
+                            case (int)'v':
+                                if (VaultButton.IsEnabled && VaultButton.IsVisible && UpperButtonGrid.IsVisible)
+                                    await OpenVaultPage();
+                                handled = true;
+                                break;
+                            case (int)'w': //Wizard mode
+                                if (wizardModeSwitch.IsEnabled && wizardModeGrid.IsVisible && StartButtonLayout.IsVisible)
+                                    wizardModeSwitch.IsToggled = !wizardModeSwitch.IsToggled;
+                                handled = true;
+                                break;
+                            case (int)'c': //Classic mode
+                                if (classicModeSwitch.IsEnabled && classicModeGrid.IsVisible && StartButtonLayout.IsVisible)
+                                    classicModeSwitch.IsToggled = !classicModeSwitch.IsToggled;
+                                handled = true;
+                                break;
+                            case (int)'C': //Casual mode
+                                if (casualModeSwitch.IsEnabled && casualModeGrid.IsVisible && StartButtonLayout.IsVisible)
+                                    casualModeSwitch.IsToggled = !casualModeSwitch.IsToggled;
+                                handled = true;
+                                break;
+                            case (int)'e':
+                            case (int)'x':
+                            case (int)'q':
+                                if (ExitButton.IsEnabled && ExitButton.IsVisible && StartButtonLayout.IsVisible)
+                                    await ExitApp();
+                                handled = true;
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.WriteLine(ex);
+                    }
+                });
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
             }
             return handled;
         }

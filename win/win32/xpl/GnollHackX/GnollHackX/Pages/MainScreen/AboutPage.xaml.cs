@@ -143,17 +143,43 @@ namespace GnollHackX.Pages.MainScreen
 
         private async void Button_Clicked(object sender, EventArgs e)
         {
+            await CloseCore();
+        }
+
+        public void ClosePage()
+        {
+            if (AboutGrid.IsEnabled)
+            {
+                try
+                {
+                    MainThread.BeginInvokeOnMainThread(async () =>
+                    {
+                        try
+                        {
+                            await CloseCore();
+                        }
+                        catch (Exception ex)
+                        {
+                            System.Diagnostics.Debug.WriteLine(ex);
+                        }
+
+                    });
+                }
+                catch (Exception ex)
+                {
+                    System.Diagnostics.Debug.WriteLine(ex);
+                }
+            }
+        }
+
+        private async Task CloseCore()
+        {
             AboutGrid.IsEnabled = false;
             GHApp.PlayButtonClickedSound();
             GHApp.CurrentMainPage?.InvalidateCarousel();
             var page = await GHApp.Navigation.PopModalAsync();
             GHApp.DisconnectIViewHandlers(page);
-        }
 
-        public void ClosePage()
-        {
-            if(AboutGrid.IsEnabled)
-                Button_Clicked(this, EventArgs.Empty);
         }
 
         private bool _backPressed = false;

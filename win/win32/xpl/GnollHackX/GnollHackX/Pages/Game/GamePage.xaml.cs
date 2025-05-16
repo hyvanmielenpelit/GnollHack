@@ -1176,12 +1176,12 @@ namespace GnollHackX.Pages.Game
             curGame?.ResponseQueue.Enqueue(new GHResponse(curGame, GHRequestType.SetMiddleMouseCommand, newValue));
         }
 
-        public async void StartNewGame()
+        public async Task StartNewGame()
         {
             await StartGame(null, -1);
         }
 
-        public async void StartReplay(string replayFileName, int fromTurn)
+        public async Task StartReplay(string replayFileName, int fromTurn)
         {
             await StartGame(replayFileName, fromTurn);
         }
@@ -1477,10 +1477,24 @@ namespace GnollHackX.Pages.Game
         //private bool StartingPositionsSet { get; set; }
         private void DoPolling()
         {
-            MainThread.BeginInvokeOnMainThread(() =>
+            try
             {
-                pollRequestQueue();
-            });
+                MainThread.BeginInvokeOnMainThread(async () =>
+                {
+                    try
+                    {
+                        await pollRequestQueue();
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.WriteLine(ex);
+                    }
+                });
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+            }
         }
 
         private void DoUpdateTimer()
@@ -1557,7 +1571,7 @@ namespace GnollHackX.Pages.Game
             });
         }
 
-        public async void RestartGame()
+        public async Task RestartGame()
         {
             if (_gnhthread != null)
             {
@@ -1580,7 +1594,7 @@ namespace GnollHackX.Pages.Game
             _gnhthread.Start();
         }
 
-        public async void RestartReplay()
+        public async Task RestartReplay()
         {
             /* Replay thread should have finished by now since it does not have any outstanding things to do, but wait for 50 millisecs just in case if this is not the case */
             if (_gnhthread != null && _gnhthread.IsAlive)
@@ -2251,16 +2265,30 @@ namespace GnollHackX.Pages.Game
         }
         private void DoFadeFromBlackAtStart()
         {
-            MainThread.BeginInvokeOnMainThread(() =>
+            try
             {
-                if (_delayedMenuShow)
+                MainThread.BeginInvokeOnMainThread(async () =>
                 {
-                    _delayedMenuShow = false;
-                    DoShowMenuCanvas(_delayedMenuShowDoTextHide);
-                }
-                FadeFromBlackAtStart(GHConstants.FadeFromBlackDurationAtStart);
-                _delayedFadeFromBlackAtStartOn = false;
-            });
+                    try
+                    { 
+                        if (_delayedMenuShow)
+                        {
+                            _delayedMenuShow = false;
+                            DoShowMenuCanvas(_delayedMenuShowDoTextHide);
+                        }
+                        await FadeFromBlackAtStart(GHConstants.FadeFromBlackDurationAtStart);
+                        _delayedFadeFromBlackAtStartOn = false;
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.WriteLine(ex);
+                    }
+                });
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+            }
         }
 
 
@@ -2754,7 +2782,7 @@ namespace GnollHackX.Pages.Game
             GHApp.PlayReplay(curGame, ReplayFileName);
         }
 
-        private void pollRequestQueue()
+        private async Task pollRequestQueue()
         {
             GHGame curGame = CurrentGame;
             if (curGame != null)
@@ -2789,10 +2817,10 @@ namespace GnollHackX.Pages.Game
                             GetChar();
                             break;
                         case GHRequestType.AskName:
-                            AskName(req.RequestString, req.RequestString2, req.RequestString3);
+                            await AskName(req.RequestString, req.RequestString2, req.RequestString3);
                             break;
                         case GHRequestType.HideAskNamePage:
-                            HideAskNamePage();
+                            await HideAskNamePage();
                             break;
                         case GHRequestType.GetLine:
                             GetLine(req.RequestString, req.PlaceHolderString, req.DefValueString, req.IntroLineString, req.RequestInt, req.RequestAttr, req.RequestNhColor);
@@ -2813,13 +2841,13 @@ namespace GnollHackX.Pages.Game
                             CurrentGame = null;
                             GHApp.CurrentGHGame = null;
                             _mainPage.GameStarted = false;
-                            ReturnToMainMenu();
+                            await ReturnToMainMenu();
                             break;
                         case GHRequestType.RestartGame:
-                            RestartGame();
+                            await RestartGame();
                             break;
                         case GHRequestType.RestartReplay:
-                            RestartReplay();
+                            await RestartReplay();
                             break;
                         case GHRequestType.ShowMenuPage:
                             ShowMenuCanvas(req.RequestMenuInfo != null ? req.RequestMenuInfo : new GHMenuInfo(ghmenu_styles.GHMENU_STYLE_GENERAL), req.RequestingGHWindow);
@@ -2828,10 +2856,10 @@ namespace GnollHackX.Pages.Game
                             DelayedMenuHide();
                             break;
                         case GHRequestType.ShowOutRipPage:
-                            ShowOutRipPage(req.RequestOutRipInfo != null ? req.RequestOutRipInfo : new GHOutRipInfo("", 0, "", ""), req.RequestingGHWindow);
+                            await ShowOutRipPage(req.RequestOutRipInfo != null ? req.RequestOutRipInfo : new GHOutRipInfo("", 0, "", ""), req.RequestingGHWindow);
                             break;
                         case GHRequestType.HideOutRipPage:
-                            HideOutRipPage();
+                            await HideOutRipPage();
                             break;
                         case GHRequestType.DestroyWindowView:
                             DestroyWindowView(req.RequestInt);
@@ -2876,7 +2904,7 @@ namespace GnollHackX.Pages.Game
                             FadeToBlack((uint)req.RequestInt);
                             break;
                         case GHRequestType.FadeFromBlack:
-                            FadeFromBlack((uint)req.RequestInt);
+                            await FadeFromBlack((uint)req.RequestInt);
                             break;
                         case GHRequestType.SetToBlack:
                             SetToBlack();
@@ -2885,16 +2913,16 @@ namespace GnollHackX.Pages.Game
                             ShowGUITips(true);
                             break;
                         case GHRequestType.CrashReport:
-                            ReportCrashDetected();
+                            await ReportCrashDetected();
                             break;
                         case GHRequestType.Panic:
-                            ReportPanic(req.RequestString);
+                            await ReportPanic(req.RequestString);
                             break;
                         case GHRequestType.Message:
-                            ShowMessage(req.RequestString);
+                            await ShowMessage(req.RequestString);
                             break;
                         case GHRequestType.YnConfirmation:
-                            YnConfirmation(req.TitleString, req.RequestString, req.RequestString2, req.DefValueString);
+                            await YnConfirmation(req.TitleString, req.RequestString, req.RequestString2, req.DefValueString);
                             break;
                         case GHRequestType.DisplayConditionText:
                             DisplayConditionText(req.ConditionTextData);
@@ -2936,7 +2964,7 @@ namespace GnollHackX.Pages.Game
                             _mainPage.EnqueuePost(new GHPost(3, true, req.RequestInt, req.RequestInt2, req.RequestString, null, false));
                             break;
                         case GHRequestType.DebugLog:
-                            DisplayDebugLog(req.RequestString, req.RequestInt, req.RequestInt2);
+                            await DisplayDebugLog(req.RequestString, req.RequestInt, req.RequestInt2);
                             break;
                         case GHRequestType.CloseAllDialogs:
                             CloseAllDialogs();
@@ -2952,7 +2980,7 @@ namespace GnollHackX.Pages.Game
                         case GHRequestType.InformRecordingWentOff:
                             GHApp.RecordGame = false;
                             Preferences.Set("RecordGame", false);
-                            InformRecordingWentOff();
+                            await InformRecordingWentOff();
                             break;
                         case GHRequestType.ToggleMenuPositionSaving:
                             ToggleMenuPositionSaving(req.RequestInt, req.RequestInt2);
@@ -2985,10 +3013,10 @@ namespace GnollHackX.Pages.Game
                         case GHRequestType.RestoreZoom:
                             break;
                         case GHRequestType.SaveFileTrackingSave:
-                            DoSaveFileTrackingSave(req.RequestLong, req.RequestString, req.RequestLong2, req.RequestString2);
+                            await DoSaveFileTrackingSave(req.RequestLong, req.RequestString, req.RequestLong2, req.RequestString2);
                             break;
                         case GHRequestType.SaveFileTrackingLoad:
-                            DoSaveFileTrackingLoad(req.RequestLong, req.RequestString, req.RequestLong2, req.RequestString2);
+                            await DoSaveFileTrackingLoad(req.RequestLong, req.RequestString, req.RequestLong2, req.RequestString2);
                             break;
                         case GHRequestType.ClearPetData:
                             ClearPetData();
@@ -3067,7 +3095,7 @@ namespace GnollHackX.Pages.Game
             }
         }
 
-        public async void DoSaveFileTrackingSave(long timeStamp, string fileName, long fileLength, string sha256hash)
+        public async Task DoSaveFileTrackingSave(long timeStamp, string fileName, long fileLength, string sha256hash)
         {
             if (!GHApp.HasInternetAccess)
             {
@@ -3086,7 +3114,7 @@ namespace GnollHackX.Pages.Game
             curGame.ResponseQueue.Enqueue(new GHResponse(curGame, GHRequestType.SaveFileTrackingSave, res.IsSuccess ? 0 : res.IsException ? 1000 : (int)res.StatusCode));
         }
 
-        public async void DoSaveFileTrackingLoad(long timeStamp, string fileName, long fileLength, string sha256hash)
+        public async Task DoSaveFileTrackingLoad(long timeStamp, string fileName, long fileLength, string sha256hash)
         {
             if (!GHApp.HasInternetAccess)
             {
@@ -3125,7 +3153,7 @@ namespace GnollHackX.Pages.Game
             }
         }
 
-        private async void InformRecordingWentOff()
+        private async Task InformRecordingWentOff()
         {
             await GHApp.DisplayMessageBox(this, "Recording Switched Off", "Game recording has been switched off due to critically low disk space.", "OK");
         }
@@ -3158,7 +3186,7 @@ namespace GnollHackX.Pages.Game
             }
         }
 
-        private async void DisplayDebugLog(string log_str, int log_type, int log_param)
+        private async Task DisplayDebugLog(string log_str, int log_type, int log_param)
         {
             if (log_str != null)
                 Debug.WriteLine("DebugLog: " + log_str + ", Type: " + log_type + ", Param: " + log_param);
@@ -3354,23 +3382,37 @@ namespace GnollHackX.Pages.Game
 
         private void DoiOSShowTextStack(bool dohidemenu)
         {
-            MainThread.InvokeOnMainThreadAsync(async () =>
+            try
             {
-                TextStack.CancelAnimations();
-                TextStack.Opacity = 0.0;
-                TextStack.IsVisible = true;
-
-                TextGrid.IsVisible = true;
-                IsMainCanvasOn = false;
-                if (dohidemenu)
+                MainThread.BeginInvokeOnMainThread(async () =>
                 {
-                    MenuGrid.IsVisible = false;
-                }
-#if !GNH_MAUI
-                TextStack.ForceLayout();
-#endif
-                await TextStack.FadeTo(1.0, 256);
-            });
+                    try
+                    {
+                        TextStack.CancelAnimations();
+                        TextStack.Opacity = 0.0;
+                        TextStack.IsVisible = true;
+
+                        TextGrid.IsVisible = true;
+                        IsMainCanvasOn = false;
+                        if (dohidemenu)
+                        {
+                            MenuGrid.IsVisible = false;
+                        }
+    #if !GNH_MAUI
+                        TextStack.ForceLayout();
+    #endif
+                        await TextStack.FadeTo(1.0, 256);
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.WriteLine(ex);
+                    }
+                });
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+            }
         }
 
         private GlyphImageSource _menuGlyphImageSource = new GlyphImageSource();
@@ -3614,7 +3656,7 @@ namespace GnollHackX.Pages.Game
         //    RefreshMsgHistoryRowCounts = true;
         //}
 
-        private async void AskName(string modeName, string modeDescription, string replayEnteredPlayerName)
+        private async Task AskName(string modeName, string modeDescription, string replayEnteredPlayerName)
         {
             var namePage = new NamePage(this, modeName, modeDescription, replayEnteredPlayerName);
             await GHApp.Navigation.PushModalAsync(namePage);
@@ -3872,7 +3914,7 @@ namespace GnollHackX.Pages.Game
 
         public bool MainPageBackgroundNeedsUpdate { get; set; }
 
-        private async void ReturnToMainMenu()
+        private async Task ReturnToMainMenu()
         {
             /* These need to be returned to their non-game default values */
             GHApp.TournamentMode = Preferences.Get("TournamentMode", false);
@@ -3897,7 +3939,7 @@ namespace GnollHackX.Pages.Game
             GHApp.CurrentGamePage = null;
             //GHApp.ReportLockDataResults();
             var page = await GHApp.Navigation.PopModalAsync();
-            _mainPage.StartGeneralTimer(); /* Just to be doubly sure */
+            await _mainPage.StartGeneralTimerAsync(); /* Just to be doubly sure */
             GHApp.DisconnectIViewHandlers(page);
         }
 
@@ -4300,36 +4342,50 @@ namespace GnollHackX.Pages.Game
 
         private void DoiOSShowMenuCanvas(bool dohidetext)
         {
-            MainThread.InvokeOnMainThreadAsync(async () =>
+            try
             {
-                MenuStack.CancelAnimations();
-                MenuStack.Opacity = 0.0;
-                MenuStack.IsVisible = true;
-
-                MenuGrid.IsVisible = true;
-                IsMainCanvasOn = false;
-                if (dohidetext)
+                MainThread.BeginInvokeOnMainThread(async () =>
                 {
-                    TextGrid.IsVisible = false;
-                }
-#if !GNH_MAUI
-                MenuStack.ForceLayout();
-#endif
-                await MenuStack.FadeTo(1.0, 256);
-            });
+                    try
+                    {
+                        MenuStack.CancelAnimations();
+                        MenuStack.Opacity = 0.0;
+                        MenuStack.IsVisible = true;
+
+                        MenuGrid.IsVisible = true;
+                        IsMainCanvasOn = false;
+                        if (dohidetext)
+                        {
+                            TextGrid.IsVisible = false;
+                        }
+    #if !GNH_MAUI
+                        MenuStack.ForceLayout();
+    #endif
+                        await MenuStack.FadeTo(1.0, 256);
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.WriteLine(ex);
+                    }
+                });
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+            }
         }
 
-        private async void ShowOutRipPage(GHOutRipInfo outripinfo, GHWindow ghwindow)
+        private async Task ShowOutRipPage(GHOutRipInfo outripinfo, GHWindow ghwindow)
         {
             var outRipPage = new OutRipPage(this, ghwindow, outripinfo);
             await GHApp.Navigation.PushModalAsync(outRipPage);
         }
-        private async void HideOutRipPage()
+        private async Task HideOutRipPage()
         {
             var page = await GHApp.Navigation.PopModalAsync();
             GHApp.DisconnectIViewHandlers(page);
         }
-        private async void HideAskNamePage()
+        private async Task HideAskNamePage()
         {
             var page = await GHApp.Navigation.PopModalAsync();
             GHApp.DisconnectIViewHandlers(page);
@@ -14924,7 +14980,7 @@ namespace GnollHackX.Pages.Game
             FadeFrameAtStart.IsVisible = true;
         }
 
-        public async void FadeFromBlackAtStart(uint milliseconds)
+        public async Task FadeFromBlackAtStart(uint milliseconds)
         {
             FadeFrameAtStart.Opacity = 1.0;
             await FadeFrameAtStart.FadeTo(0.0, milliseconds);
@@ -14954,7 +15010,7 @@ namespace GnollHackX.Pages.Game
 #endif
         }
 
-        public async void FadeFromBlack(uint milliseconds)
+        public async Task FadeFromBlack(uint milliseconds)
         {
             MainGrid.IsEnabled = true;
 #if WINDOWS
@@ -18471,7 +18527,7 @@ namespace GnollHackX.Pages.Game
             //textPaint.TextAlign = SKTextAlign.Left;
         }
 
-        public async void ReportPanic(string text)
+        public async Task ReportPanic(string text)
         {
             if (!PlayingReplay)
             {
@@ -18494,7 +18550,7 @@ namespace GnollHackX.Pages.Game
             curGame?.ResponseQueue.Enqueue(new GHResponse(curGame, GHRequestType.Panic));
         }
 
-        public async void ShowMessage(string text)
+        public async Task ShowMessage(string text)
         {
             await GHApp.DisplayMessageBox(this, "Message", text != null ? text : "No message.", "OK");
 
@@ -18502,7 +18558,7 @@ namespace GnollHackX.Pages.Game
             curGame?.ResponseQueue.Enqueue(new GHResponse(curGame, GHRequestType.Message));
         }
 
-        public async void YnConfirmation(string title, string text, string accept, string cancel)
+        public async Task YnConfirmation(string title, string text, string accept, string cancel)
         {
             bool res = await GHApp.DisplayMessageBox(this, title != null ? title : "Confirmation", text != null ? text : "Confirm?",
                 accept != null ? accept : "Yes", cancel != null ? cancel : "No");
@@ -18511,7 +18567,7 @@ namespace GnollHackX.Pages.Game
             curGame?.ResponseQueue.Enqueue(new GHResponse(curGame, GHRequestType.YnConfirmation, res));
         }
 
-        public async void ReportCrashDetected()
+        public async Task ReportCrashDetected()
         {
             if(GHApp.InformAboutCrashReport && !PlayingReplay)
             {
