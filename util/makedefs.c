@@ -2490,7 +2490,7 @@ do_animation_offsets()
 
         Fprintf(ofp, "\n\t%d, /* %s */", cnt, replacements[i].replacement_name);
         //Fprintf(ofp, "\n#define\t%s_%d_OFFSET\t%d /* %s */", "REPLACEMENT_NAME_HERE", i, cnt, replacements[i].replacement_name);
-        cnt += (int)replacements[i].number_of_tiles;
+        cnt += (int)replacements[i].number_of_tiles * (replacements[i].missile_dir >= 0 ? 8 : 1);
     }
     Fprintf(ofp, "\n};\n");
     repltot = cnt;

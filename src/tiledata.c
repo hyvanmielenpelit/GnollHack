@@ -2144,6 +2144,7 @@ uchar* tilemapflags;
     tile_section_name = "replacement";
     for (i = 1; i < MAX_REPLACEMENTS; i++)  /* replacement number, starts at 1 */
     {
+        int rgl_cnt = 0;
         short base_tile = get_replacement_base_tile(i);
         for (j = 0; j < max(0, min(replacements[i].number_of_tiles, MAX_TILES_PER_REPLACEMENT)); j++) /* tile number */
         {
@@ -2167,7 +2168,12 @@ uchar* tilemapflags;
             }
             else if (process_style == 1)
             {
-                tilemaparray[j + replacement_offsets[i] /* replacements[i].glyph_offset */ + GLYPH_REPLACEMENT_OFF] = tile_count;
+                l = replacements[i].missile_dir >= 0 ? NUM_MISSILE_DIRS : 1;
+                for (k = 0; k < l; k++)
+                {
+                    tilemaparray[rgl_cnt + replacement_offsets[i] /* replacements[i].glyph_offset */ + GLYPH_REPLACEMENT_OFF] = tile_count;
+                    rgl_cnt++;
+                }
             }
             tile_count++;
         }
@@ -2647,7 +2653,7 @@ uchar* tilemapflags;
                                 tile2autodraw[mtile] = replacements[mrepl].general_autodraw;
                                 for (j = 0; j < replacements[mrepl].number_of_tiles; j++)
                                 {
-                                    int mrglyph = j + replacement_offsets[mrepl] + GLYPH_REPLACEMENT_OFF;
+                                    int mrglyph = l + j * NUM_MISSILE_DIRS + replacement_offsets[mrepl] + GLYPH_REPLACEMENT_OFF;
                                     glyphtileflags[mrglyph] = glyphtileflags[mglyph];
                                     glyphtileflags[mrglyph] &= ~GLYPH_TILE_FLAG_NORMAL_ITEM_AS_MISSILE;
                                     if (hflip)

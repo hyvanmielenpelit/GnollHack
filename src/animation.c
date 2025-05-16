@@ -1469,6 +1469,9 @@ struct replacement_info info;
         if (replacements[replacement_idx].number_of_tiles < 1)
             return glyph;
 
+        boolean is_missile_with_dirs = glyph_is_missile(glyph) && replacements[replacement_idx].missile_dir >= 0;
+        int glyph_missile_dir = glyph_missile_direction(glyph);
+
         switch (replacements[replacement_idx].replacement_action)
         {
         case REPLACEMENT_ACTION_BOTTOM_TILE:
@@ -1960,7 +1963,8 @@ struct replacement_info info;
             default:
                 return glyph;
             }
-            return sign * (glyph_idx + replacement_offsets[replacement_idx] /* replacements[replacement_idx].glyph_offset */ + GLYPH_REPLACEMENT_OFF);
+            int adj_glyph_idx = is_missile_with_dirs ? glyph_missile_dir + glyph_idx * NUM_MISSILE_DIRS : glyph_idx;
+            return sign * (adj_glyph_idx + replacement_offsets[replacement_idx] /* replacements[replacement_idx].glyph_offset */ + GLYPH_REPLACEMENT_OFF);
             break;
         }
         case REPLACEMENT_ACTION_SILVER_BONE_MATERIAL:
@@ -1985,7 +1989,8 @@ struct replacement_info info;
             default:
                 return glyph;
             }
-            return sign * (glyph_idx + replacement_offsets[replacement_idx] /* replacements[replacement_idx].glyph_offset */ + GLYPH_REPLACEMENT_OFF);
+            int adj_glyph_idx = is_missile_with_dirs ? glyph_missile_dir + glyph_idx * NUM_MISSILE_DIRS : glyph_idx;
+            return sign * (adj_glyph_idx + replacement_offsets[replacement_idx] /* replacements[replacement_idx].glyph_offset */ + GLYPH_REPLACEMENT_OFF);
             break;
         }
         case REPLACEMENT_ACTION_SILVER_LEAD_MATERIAL:
@@ -2010,7 +2015,8 @@ struct replacement_info info;
             default:
                 return glyph;
             }
-            return sign * (glyph_idx + replacement_offsets[replacement_idx] /* replacements[replacement_idx].glyph_offset */ + GLYPH_REPLACEMENT_OFF);            break;
+            int adj_glyph_idx = is_missile_with_dirs ? glyph_missile_dir + glyph_idx * NUM_MISSILE_DIRS : glyph_idx;
+            return sign * (adj_glyph_idx + replacement_offsets[replacement_idx] /* replacements[replacement_idx].glyph_offset */ + GLYPH_REPLACEMENT_OFF);            break;
         }
         case REPLACEMENT_ACTION_SILVER_MATERIAL:
         {
@@ -2031,7 +2037,8 @@ struct replacement_info info;
             default:
                 return glyph;
             }
-            return sign * (glyph_idx + replacement_offsets[replacement_idx] /* replacements[replacement_idx].glyph_offset */ + GLYPH_REPLACEMENT_OFF);            break;
+            int adj_glyph_idx = is_missile_with_dirs ? glyph_missile_dir + glyph_idx * NUM_MISSILE_DIRS : glyph_idx;
+            return sign * (adj_glyph_idx + replacement_offsets[replacement_idx] /* replacements[replacement_idx].glyph_offset */ + GLYPH_REPLACEMENT_OFF);            break;
         }
         case REPLACEMENT_ACTION_STEEL_MITHRIL_GEMSTONE_MATERIAL:
         {
@@ -2058,7 +2065,8 @@ struct replacement_info info;
             default:
                 return glyph;
             }
-            return sign * (glyph_idx + replacement_offsets[replacement_idx] /* replacements[replacement_idx].glyph_offset */ + GLYPH_REPLACEMENT_OFF);            break;
+            int adj_glyph_idx = is_missile_with_dirs ? glyph_missile_dir + glyph_idx * NUM_MISSILE_DIRS : glyph_idx;
+            return sign * (adj_glyph_idx + replacement_offsets[replacement_idx] /* replacements[replacement_idx].glyph_offset */ + GLYPH_REPLACEMENT_OFF);            break;
         }
         case REPLACEMENT_ACTION_ADAMANTIUM_MITHRIL_SILVER_BONE_MATERIAL:
         {
@@ -2088,7 +2096,8 @@ struct replacement_info info;
             default:
                 return glyph;
             }
-            return sign * (glyph_idx + replacement_offsets[replacement_idx] /* replacements[replacement_idx].glyph_offset */ + GLYPH_REPLACEMENT_OFF);            break;
+            int adj_glyph_idx = is_missile_with_dirs ? glyph_missile_dir + glyph_idx * NUM_MISSILE_DIRS : glyph_idx;
+            return sign * (adj_glyph_idx + replacement_offsets[replacement_idx] /* replacements[replacement_idx].glyph_offset */ + GLYPH_REPLACEMENT_OFF);            break;
         }
         case REPLACEMENT_ACTION_SILVER_CRYSTAL_MATERIAL:
         {
@@ -2114,7 +2123,8 @@ struct replacement_info info;
             default:
                 return glyph;
             }
-            return sign * (glyph_idx + replacement_offsets[replacement_idx] /* replacements[replacement_idx].glyph_offset */ + GLYPH_REPLACEMENT_OFF);            break;
+            int adj_glyph_idx = is_missile_with_dirs ? glyph_missile_dir + glyph_idx * NUM_MISSILE_DIRS : glyph_idx;
+            return sign * (adj_glyph_idx + replacement_offsets[replacement_idx] /* replacements[replacement_idx].glyph_offset */ + GLYPH_REPLACEMENT_OFF);            break;
         }
         case REPLACEMENT_ACTION_BONE_MATERIAL:
         {
@@ -2135,7 +2145,8 @@ struct replacement_info info;
             default:
                 return glyph;
             }
-            return sign * (glyph_idx + replacement_offsets[replacement_idx] /* replacements[replacement_idx].glyph_offset */ + GLYPH_REPLACEMENT_OFF);            break;
+            int adj_glyph_idx = is_missile_with_dirs ? glyph_missile_dir + glyph_idx * NUM_MISSILE_DIRS : glyph_idx;
+            return sign * (adj_glyph_idx + replacement_offsets[replacement_idx] /* replacements[replacement_idx].glyph_offset */ + GLYPH_REPLACEMENT_OFF);            break;
         }
         case REPLACEMENT_ACTION_PAINTING:
         {

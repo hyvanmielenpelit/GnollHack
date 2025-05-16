@@ -726,6 +726,9 @@
 #define glyph_is_missile(glyph) \
      (glyph_is_object_missile(glyph) || glyph_is_artifact_missile(glyph))
 
+#define glyph_missile_direction(glyph) \
+     (!glyph_is_missile(glyph) ? -1 : glyph_is_object_missile(glyph) ? (abs(glyph) - GLYPH_OBJ_MISSILE_OFF) % NUM_MISSILE_DIRS : (abs(glyph) - GLYPH_ARTIFACT_MISSILE_OFF) % NUM_MISSILE_DIRS)
+
 #define glyph_is_player(glyph) \
     ((abs(glyph)) >= GLYPH_PLAYER_OFF && (abs(glyph)) < (GLYPH_PLAYER_OFF + NUM_PLAYER_CHARACTERS))
 
