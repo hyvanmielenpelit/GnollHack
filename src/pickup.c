@@ -3246,7 +3246,16 @@ boolean dobot;
             pline_ex(ATR_NONE, CLR_MSG_FAIL, "Putting %s into itself would be an interesting topological exercise.", thecxname(obj));
         goto default_incontainer_end_here;
     }
-    else if (obj->owornmask & (W_ARMOR | W_ACCESSORY)) 
+    else if (unfit_for_container(obj))
+    {
+        play_sfx_sound(SFX_GENERAL_CANNOT);
+        if (dobot)
+            pline_ex(ATR_NONE, CLR_MSG_FAIL, "That does not fit into %s.", thecxname(current_container));
+        else
+            You_cant_ex(ATR_NONE, CLR_MSG_FAIL, "put %s into %s; it is too big.", thecxname(obj), thecxname(current_container));
+        goto default_incontainer_end_here;
+    }
+    else if (obj->owornmask & (W_ARMOR | W_ACCESSORY))
     {
         play_sfx_sound(SFX_GENERAL_CANNOT);
         if (dobot)

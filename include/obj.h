@@ -797,7 +797,7 @@ enum elemental_enchantments {
     ((o)->oclass == POTION_CLASS || is_obj_normally_edible(o))
 
 #define unfit_for_container(o) \
-    ((o)->otyp == ICE_BOX || (o)->otyp == BOOKSHELF || Is_box(o) || (o)->otyp == BOULDER \
+    ((o)->otyp == ICE_BOX || (o)->otyp == BOOKSHELF || (o)->otyp == COFFIN || (o)->otyp == SARCOPHAGUS || Is_box(o) || (o)->otyp == BOULDER \
     || ((o)->otyp == STATUE && (o)->corpsenm >= LOW_PM && bigmonst(&mons[(o)->corpsenm])))
 
 /* 'PRIZE' values override obj->corpsenm so prizes mustn't be object types
