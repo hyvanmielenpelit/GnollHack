@@ -3859,7 +3859,7 @@ uchar apply_extra_bonuses; /* 1 = normal bonus and extra bonuses, 2 = Just the e
     {
         int skill = min(P_MAX_SKILL_LEVEL(P_DUAL_WEAPON_COMBAT), use_this_level > 0 ? use_this_level : P_SKILL_LEVEL(P_DUAL_WEAPON_COMBAT) + (nextlevel ? 1 : 0));
         int wep_skill = min(P_MAX_SKILL_LEVEL(wep_type), use_this_level > 0 ? use_this_level : P_SKILL_LEVEL(wep_type) + (nextlevel ? 1 : 0));
-        if (wep_type != P_NONE && wep_skill < skill)
+        if (wep_type != P_NONE && wep_skill < skill && type != P_DUAL_WEAPON_COMBAT)
             skill = wep_skill;
         switch (skill) 
         {
@@ -4076,7 +4076,7 @@ uchar apply_extra_bonuses; /* 1 = normal bonus and extra bonuses, 2 = Just the e
     {
         int skill = min(P_MAX_SKILL_LEVEL(P_DUAL_WEAPON_COMBAT), use_this_level > 0 ? use_this_level : P_SKILL_LEVEL(P_DUAL_WEAPON_COMBAT) + (nextlevel ? 1 : 0));
         int wep_skill = min(P_MAX_SKILL_LEVEL(wep_type), use_this_level > 0 ? use_this_level : P_SKILL_LEVEL(wep_type) + (nextlevel ? 1 : 0));
-        if (wep_type != P_NONE && wep_skill < skill)
+        if (wep_type != P_NONE && wep_skill < skill && type != P_DUAL_WEAPON_COMBAT)
             skill = wep_skill;
         switch (skill) 
         {
