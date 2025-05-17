@@ -406,6 +406,8 @@ MONSTER:'s',random
 
 MAZE: "Tou-goal", ' '
 GEOMETRY:center,center
+#         1         2         3         4         5         6         7         8
+#12345678901234567890123456789012345678901234567890123456789012345678901234567890
 MAP
 ----------------------------------------------------------------------------
 |.........|.........|..........|..| |.................|........|........|..|
@@ -423,9 +425,9 @@ MAP
 |---..----|......|..|..|..|.......| |......................--------------..|
 |..|..|...|......--F-F--F--.......| |......................+............|..|
 |..+..+...|.......................| |--.---...-----+-----..|............|..|
-|--|..----|--+-----------+------..| |.....|...|.........|..|------------|..|
-|..+..+...|.........|..........|..| |.....|...|.........|..+............|..|
-|..|..|...|.........|..........|..| |.....|...|.........|..|............|..|
+|--|..----|--+-----------+------..| |:::::|...|.........|..|------------|..|
+|..+..+...|.........|..........|..| |:::::|...|.........|..+............|..|
+|..|..|...|.........|..........|..| |:::::|...|.........|..|............|..|
 ----------------------------------------------------------------------------
 ENDMAP
 # Dungeon Description
@@ -433,17 +435,17 @@ REGION:(00,00,75,19),lit,"ordinary"
 # The Inn
 REGION:(01,01,09,02),lit,"ordinary"
 REGION:(01,04,09,05),lit,"barracks"
-REGION:(01,07,02,10),unlit,"ordinary"
-REGION:(07,07,09,10),unlit,"ordinary"
+REGION:(01,07,02,10),lit,"armory"
+REGION:(07,07,09,10),lit,"armory"
 REGION:(01,14,02,15),unlit,"ordinary"
 REGION:(07,14,09,15),unlit,"ordinary"
 REGION:(01,17,02,18),unlit,"ordinary"
 REGION:(07,17,09,18),unlit,"ordinary"
 #
-REGION:(11,01,19,02),unlit,"barracks"
-REGION:(21,01,30,02),unlit,"ordinary"
-REGION:(11,17,19,18),unlit,"barracks"
-REGION:(21,17,30,18),unlit,"ordinary"
+REGION:(11,01,19,02),lit,"barracks"
+REGION:(21,01,30,02),lit,"armory"
+REGION:(11,17,19,18),lit,"barracks"
+REGION:(21,17,30,18),lit,"armory"
 # Police Station
 REGION:(18,07,25,11),lit,"ordinary"
 REGION:(18,13,19,13),unlit,"ordinary"
@@ -458,6 +460,59 @@ REGION:(55,01,62,03),unlit,"ordinary"
 REGION:(64,01,71,03),unlit,"ordinary"
 REGION:(60,14,71,15),lit,"shop"
 REGION:(60,17,71,18),lit,"shop"
+# Cobblestone streets
+SUBTYPE:fillrect(11,04,16,15),location_floor,floor_cobblestone
+SUBTYPE:fillrect(27,04,31,15),location_floor,floor_cobblestone
+SUBTYPE:fillrect(17,04,26,05),location_floor,floor_cobblestone
+SUBTYPE:fillrect(17,15,26,15),location_floor,floor_cobblestone
+SUBTYPE:fillrect(32,01,33,18),location_floor,floor_cobblestone
+SUBTYPE:fillrect(73,01,74,18),location_floor,floor_cobblestone
+SUBTYPE:fillrect(65,05,72,12),location_floor,floor_cobblestone
+SUBTYPE:fillrect(61,05,64,06),location_floor,floor_cobblestone
+SUBTYPE:fillrect(61,11,64,12),location_floor,floor_cobblestone
+SUBTYPE:fillrect(52,05,60,14),location_floor,floor_cobblestone
+SUBTYPE:fillrect(59,15,60,18),location_floor,floor_cobblestone
+SUBTYPE:fillrect(49,01,53,06),location_floor,floor_cobblestone
+SUBTYPE:fillrect(41,01,48,01),location_floor,floor_cobblestone
+SUBTYPE:fillrect(37,01,40,14),location_floor,floor_cobblestone
+SUBTYPE:fillrect(41,13,51,14),location_floor,floor_cobblestone
+SUBTYPE:fillrect(43,15,45,18),location_floor,floor_cobblestone
+SUBTYPE:fillrect(57,15,58,18),location_floor,floor_cobblestone
+SUBTYPE:fillrect(39,15,39,15),location_floor,floor_cobblestone
+
+# Floors
+SUBTYPE:fillrect(55,01,62,03),location_floor,floor_parquet
+SUBTYPE:fillrect(64,01,71,03),location_floor,floor_parquet
+SUBTYPE:fillrect(60,14,71,15),location_floor,floor_parquet
+SUBTYPE:fillrect(60,17,71,18),location_floor,floor_parquet
+SUBTYPE:fillrect(47,16,55,18),location_floor,floor_parquet
+SUBTYPE:fillrect(01,14,02,15),location_floor,floor_marble
+SUBTYPE:fillrect(07,14,09,15),location_floor,floor_marble
+SUBTYPE:fillrect(01,17,02,18),location_floor,floor_marble
+SUBTYPE:fillrect(07,17,09,18),location_floor,floor_marble
+SUBTYPE:fillrect(01,01,09,02),location_floor,floor_marble
+
+# Carpets
+CARPET:(01,01,09,02),carpet_purple
+CARPET:(42,03,47,06),carpet_blue
+CARPET:(42,08,50,11),carpet_purple
+CARPET:(60,14,71,15),carpet_yellow
+CARPET:(60,17,71,18),carpet_beige
+
+# Braziers
+BRAZIER:(13,05)
+BRAZIER:(30,05)
+BRAZIER:(13,14)
+BRAZIER:(30,14)
+BRAZIER:(55,06)
+BRAZIER:(55,11)
+BRAZIER:(70,06)
+BRAZIER:(70,11)
+BRAZIER:(19,08)
+BRAZIER:(24,10)
+BRAZIER:(19,10)
+BRAZIER:(24,08)
+
 # Non diggable walls
 NON_DIGGABLE:(00,00,75,19)
 # Stairs
