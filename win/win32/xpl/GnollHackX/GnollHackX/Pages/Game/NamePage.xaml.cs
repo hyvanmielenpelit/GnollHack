@@ -87,6 +87,11 @@ namespace GnollHackX.Pages.Game
 
         private async void btnOK_Clicked(object sender, EventArgs e)
         {
+            await DoPressOk();
+        }
+
+        private async Task DoPressOk()
+        {
             btnOK.IsEnabled = false;
             btnCancel.IsEnabled = false;
             GHApp.PlayButtonClickedSound();
@@ -241,11 +246,11 @@ namespace GnollHackX.Pages.Game
             GHApp.DisconnectIViewHandlers(page);
         }
 
-        private void eName_Completed(object sender, EventArgs e)
+        private async void eName_Completed(object sender, EventArgs e)
         {
             if (btnOK.IsEnabled)
             {
-                btnOK_Clicked(sender, e);
+                await DoPressOk();
             }
         }
 

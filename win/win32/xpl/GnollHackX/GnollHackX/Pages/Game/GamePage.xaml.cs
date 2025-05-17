@@ -4474,7 +4474,7 @@ namespace GnollHackX.Pages.Game
 
             return false;
         }
-        public async Task ShowGameMenu(object sender, EventArgs e)
+        public async Task ShowGameMenu()
         {
             var menu = new GameMenuPage(this);
             SendRequestForTallyRealTime();
@@ -15208,6 +15208,11 @@ namespace GnollHackX.Pages.Game
 
         private async void GameMenuButton_Clicked(object sender, EventArgs e)
         {
+            await OpenGameMenuAsync();
+        }
+
+        private async Task OpenGameMenuAsync()
+        {
             GameMenuButton.IsEnabled = false;
             SimpleGameMenuButton.IsEnabled = false;
             GHApp.PlayButtonClickedSound();
@@ -15215,13 +15220,35 @@ namespace GnollHackX.Pages.Game
             StopMainCanvasAnimation();
             TouchDictionary.Clear();
 
-            await ShowGameMenu(sender, e);
+            await ShowGameMenu();
 
             if (!canvasView.AnimationIsRunning("GeneralAnimationCounter"))
                 StartMainCanvasAnimation();
 
             GameMenuButton.IsEnabled = true;
             SimpleGameMenuButton.IsEnabled = true;
+        }
+
+        private void OpenGameMenu()
+        {
+            try
+            {
+                MainThread.BeginInvokeOnMainThread(async () => 
+                {
+                    try
+                    {
+                        await OpenGameMenuAsync();
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.WriteLine(ex);
+                    }
+                });
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+            }
         }
 
         private void PopupOkButton_Clicked(object sender, EventArgs e)
@@ -15254,7 +15281,7 @@ namespace GnollHackX.Pages.Game
                     GenericButton_Clicked(sender, e, '.');
                     break;
                 case -104:
-                    GameMenuButton_Clicked(sender, e);
+                    OpenGameMenu();
                     break;
                 case -105:
                     GenericButton_Clicked(sender, e, 'n');
@@ -17888,7 +17915,7 @@ namespace GnollHackX.Pages.Game
                                                         GenericButton_Clicked(sender, e, '.');
                                                         break;
                                                     case -104:
-                                                        GameMenuButton_Clicked(sender, e);
+                                                        OpenGameMenu();
                                                         break;
                                                     case -105:
                                                         GenericButton_Clicked(sender, e, 'n');

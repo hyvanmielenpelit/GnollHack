@@ -779,7 +779,7 @@ namespace GnollHackX.Pages.MainScreen
             if (IsCloud)
             {
                 /* Download */
-                DownloadButton_Clicked(sender, e);
+                await DoDownload();
                 return;
             }
 
@@ -1655,6 +1655,11 @@ namespace GnollHackX.Pages.MainScreen
 
         private async void DownloadButton_Clicked(object sender, EventArgs e)
         {
+            await DoDownload();
+        }
+
+        private async Task DoDownload()
+        {
             SelectButton.IsEnabled = false;
             GHApp.PlayButtonClickedSound();
 
@@ -1840,7 +1845,7 @@ namespace GnollHackX.Pages.MainScreen
             UploadDownloadStatusLabel.Text = "";
             UploadDownloadGrid.IsVisible = false;
             UploadButton.IsEnabled = true;
-            PopupCancelButton_Clicked(sender, e);
+            PopupCancelButton_Clicked(this, EventArgs.Empty);
             await UpdateRecordings();
         }
 
