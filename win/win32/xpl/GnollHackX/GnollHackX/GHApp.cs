@@ -7088,7 +7088,7 @@ namespace GnollHackX
             Page topPage = null;
             try
             {
-                topPage = Navigation?.ModalStack?.Count <= 0 ? null : Navigation?.ModalStack[Navigation.ModalStack.Count - 1];
+                topPage = (Navigation?.ModalStack?.Count ?? 0) <= 0 ? null : Navigation?.ModalStack[Navigation.ModalStack.Count - 1];
             }
             catch (Exception ex)
             {
