@@ -226,27 +226,25 @@ namespace GnollHackX.Pages.MainScreen
 
         public void ClosePage()
         {
-            if (ResetGrid.IsEnabled)
+            try
             {
-                try
+                MainThread.BeginInvokeOnMainThread(async () =>
                 {
-                    MainThread.BeginInvokeOnMainThread(async () =>
+                    try
                     {
-                        try
-                        {
+                        if (ResetGrid.IsEnabled)
                             await CloseCore();
-                        }
-                        catch (Exception ex)
-                        {
-                            System.Diagnostics.Debug.WriteLine(ex);
-                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        System.Diagnostics.Debug.WriteLine(ex);
+                    }
 
-                    });
-                }
-                catch (Exception ex)
-                {
-                    System.Diagnostics.Debug.WriteLine(ex);
-                }
+                });
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine(ex);
             }
         }
 

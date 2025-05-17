@@ -106,21 +106,19 @@ namespace GnollHackX.Pages.Game
 
         public void ClosePage()
         {
-            if(MainLayout.IsEnabled)
+            try
             {
-                try
+                MainThread.BeginInvokeOnMainThread(async () =>
                 {
-                    MainThread.BeginInvokeOnMainThread(async () =>
-                    {
+                    if (MainLayout.IsEnabled)
                         await BackToGame();
-                    });
-                }
-                catch
-                {
-
-                }
+                });
             }
-        }
+            catch
+            {
+
+            }
+    }
 
         private async void btnBackToGame_Clicked(object sender, EventArgs e)
         {
