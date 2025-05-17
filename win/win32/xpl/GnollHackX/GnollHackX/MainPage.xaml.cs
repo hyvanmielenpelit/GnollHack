@@ -112,9 +112,9 @@ namespace GnollHackX
             _generalTimer = Microsoft.Maui.Controls.Application.Current.Dispatcher.CreateTimer();
             _generalTimer.Interval = TimeSpan.FromSeconds(GHConstants.MainScreenGeneralCounterIntervalInSeconds);
             _generalTimer.IsRepeating = true;
-            _generalTimer.Tick += async (s, e) => 
+            _generalTimer.Tick += (s, e) => 
             { 
-                bool res = await DoGeneralTimerTickAsync();
+                bool res = DoGeneralTimerTick();
                 if (!res) 
                     _generalTimer.Stop(); 
             };
@@ -173,17 +173,17 @@ namespace GnollHackX
             return true;
         }
 
-        private async Task<bool> DoGeneralTimerTickAsync()
-        {
-            if (GameStarted || StopGeneralTimer)
-            {
-                GeneralTimerIsOn = false;
-                StopGeneralTimer = false;
-                return false;
-            }
-            await GeneralTimerTasksAsync();
-            return true;
-        }
+        //private async Task<bool> DoGeneralTimerTickAsync()
+        //{
+        //    if (GameStarted || StopGeneralTimer)
+        //    {
+        //        GeneralTimerIsOn = false;
+        //        StopGeneralTimer = false;
+        //        return false;
+        //    }
+        //    await GeneralTimerTasksAsync();
+        //    return true;
+        //}
 
         private void GeneralTimerTasks()
         {
