@@ -40,13 +40,15 @@ ENDMAP
 # Dungeon Description
 REGION:(00,00,75,19),lit,"ordinary"
 REGION:(14,01,20,03),unlit,"morgue"
+# Cottages
 REGION:(07,10,11,12),unlit,"ordinary"
 REGION:(04,16,08,18),unlit,"ordinary"
 REGION:(17,16,21,18),unlit,"ordinary"
-REGION:(27,02,32,04),unlit,"ordinary"
-REGION:(34,02,39,04),unlit,"ordinary"
-REGION:(41,02,53,04),unlit,"ordinary"
-REGION:(55,02,60,04),unlit,"ordinary"
+# Main House
+REGION:(27,02,32,04),lit,"ordinary"
+REGION:(34,02,39,04),lit,"ordinary"
+REGION:(41,02,53,04),lit,"ordinary"
+REGION:(55,02,60,04),lit,"ordinary"
 REGION:(62,02,67,04),lit,"ordinary"
 # Stairs
 STAIR:(66,03),down
@@ -60,6 +62,14 @@ CARPET:(34,02,39,04),carpet_crimson
 CARPET:(41,02,53,04),carpet_yellow
 CARPET:(55,02,60,04),carpet_crimson
 CARPET:(63,02,65,04),carpet_brown_hide
+CARPET:(07,10,11,12),carpet_beige
+CARPET:(04,16,08,18),carpet_blue
+CARPET:(17,16,21,18),carpet_yellow
+# Items
+OBJECT:('(',"bookshelf"),(09,10)
+OBJECT:('(',"large box"),(04,18)
+OBJECT:('(',"large five-branched candelabrum"),(19,17)
+
 # Doors
 DOOR:locked,(31,05)
 DOOR:locked,(36,05)
