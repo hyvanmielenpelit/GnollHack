@@ -1301,7 +1301,7 @@ int64_t nmv; /* number of moves */
         mtmp->mspecialsummon2_used -= imv;
 
     /* reduce tameness for every 300 moves you are separated */
-    if (mtmp->mtame && !mtmp->isfaithful) 
+    if (mtmp->mtame && !mtmp->isfaithful && !mindless(mtmp->data)) 
     {
         int wilder = (imv + 0) / 300;
         if (mtmp->mtame > wilder)
@@ -1537,7 +1537,8 @@ coord *cc;   /* optional destination coordinates */
     }
 
     if (mtmp->mleashed) {
-        mtmp->mtame--;
+        if(!mindless(mtmp->data) && !mtmp->isfaithful)
+            mtmp->mtame--;
         if (!mtmp->mtame)
             mtmp->ispartymember = 0;
         m_unleash(mtmp, TRUE);
@@ -1955,6 +1956,9 @@ wary_dog(mtmp, was_dead)
 struct monst *mtmp;
 boolean was_dead;
 {
+    if (!mtmp)
+        return;
+
     struct edog *edog;
     boolean quietly = was_dead;
     schar was_tame = mtmp->mtame;
@@ -1969,7 +1973,7 @@ boolean was_dead;
         update_mon_maxhp(mtmp);
     }
 
-    if (edog && (edog->killed_by_u == 1 || edog->abuse > 2)) 
+    if (edog && (edog->killed_by_u == 1 || edog->abuse > 2) && !mindless(mtmp->data))
     {
         mtmp->mpeaceful = mtmp->mtame = 0;
         if (!mtmp->mtame)
@@ -1995,7 +1999,7 @@ boolean was_dead;
     else
     {
         /* chance it goes wild anyway - Pet Sematary */
-        if(mtmp->mtame)
+        if (mtmp->mtame && !mindless(mtmp->data) && !mtmp->isfaithful)
             mtmp->mtame = rn2(mtmp->mtame + 1);
         if (!mtmp->mtame)
             mtmp->mpeaceful = rn2(2);
@@ -2038,10 +2042,10 @@ void
 abuse_dog(mtmp)
 struct monst *mtmp;
 {
-    if (!mtmp->mtame)
+    if (!mtmp || !mtmp->mtame || mindless(mtmp->data))
         return;
 
-    if (Aggravate_monster || Conflict || is_crazed(mtmp))
+    if ((Aggravate_monster || Conflict || is_crazed(mtmp)) && !mtmp->isfaithful)
         mtmp->mtame /= 2;
     else
         mtmp->mtame--;

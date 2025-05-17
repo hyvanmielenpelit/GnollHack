@@ -388,7 +388,8 @@ struct monst *mtmp; /* The animal */
     }
 
     /* Reduce tameness */
-    if (!force && mtmp->mtame > 0 && P_SKILL_LEVEL(P_RIDING) < P_EXPERT &&
+    if (!force && mtmp->mtame > 0 && !mindless(mtmp->data) && !mtmp->isfaithful &&
+        P_SKILL_LEVEL(P_RIDING) < P_EXPERT &&
         !rn2(
             P_SKILL_LEVEL(P_RIDING) < P_BASIC ? 10 : 
             P_SKILL_LEVEL(P_RIDING) == P_BASIC ? 20 : 50 /* P_SKILLED */
@@ -582,7 +583,7 @@ kick_steed()
     }
 
     /* Make the steed less tame and check if it resists */
-    if (u.usteed->mtame)
+    if (u.usteed->mtame && !mindless(u.usteed->data))
         u.usteed->mtame--;
     if (!u.usteed->mtame && u.usteed->mleashed)
         m_unleash(u.usteed, TRUE);

@@ -1242,7 +1242,7 @@ register xchar x, y;
                 {
                     pline("%s is choked by the leash!", Monnam(mtmp));
                     /* tameness eventually drops to 1 here (never 0) */
-                    if (mtmp->mtame/**/ && rn2(mtmp->mtame/**/))
+                    if (mtmp->mtame/**/ && !mindless(mtmp->data) && rn2(mtmp->mtame/**/))
                         mtmp->mtame--;
 
                     if (!mtmp->mtame)
