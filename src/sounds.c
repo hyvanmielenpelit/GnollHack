@@ -2551,6 +2551,7 @@ struct monst* mtmp;
                 Sprintf(available_chat_list[chatnum].name, "Ask about %s", thesimpleoname(tpwand));
                 available_chat_list[chatnum].function_ptr = &do_chat_quantum_special_wand;
                 //available_chat_list[chatnum].charnum = 'a' + chatnum;
+                available_chat_list[chatnum].category = CHAT_CATEGORY_INFORMATION;
 
                 //any = zeroany;
                 //any.a_char = available_chat_list[chatnum].charnum;
@@ -2951,7 +2952,7 @@ struct monst* mtmp;
                 Strcpy(available_chat_list[chatnum].name, "Ask about advanced adventuring tactics");
                 available_chat_list[chatnum].function_ptr = &do_chat_npc_special_hints;
                 //available_chat_list[chatnum].charnum = 'a' + chatnum;
-                available_chat_list[chatnum].category = CHAT_CATEGORY_SERVICE;
+                available_chat_list[chatnum].category = CHAT_CATEGORY_INFORMATION;
 
                 //any = zeroany;
                 //any.a_char = available_chat_list[chatnum].charnum;
