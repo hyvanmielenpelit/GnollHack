@@ -13,6 +13,7 @@ using Xamarin.Essentials;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using GnollHackX;
+using System.Diagnostics;
 
 #if __IOS__
 using Foundation;
@@ -829,18 +830,25 @@ namespace GnollHackX.Unknown
                         {
                             long curlength = curfile.Length;
                             long used_length = GHApp.IsDesktop ? sfile.length_desktop : sfile.length_mobile;
-                            if (curlength == used_length)
+                            try
                             {
-                                Preferences.Set("Verify_" + sfile.id + "_Version", sfile.version);
-                                Preferences.Set("Verify_" + sfile.id + "_LastWriteTime", curfile.LastWriteTimeUtc);
+                                if (curlength == used_length)
+                                {
+                                    Preferences.Set("Verify_" + sfile.id + "_Version", sfile.version);
+                                    Preferences.Set("Verify_" + sfile.id + "_LastWriteTime", curfile.LastWriteTimeUtc);
+                                }
+                                else
+                                {
+                                    File.Delete(fulltargetpath);
+                                    if (Preferences.ContainsKey("Verify_" + sfile.id + "_Version"))
+                                        Preferences.Remove("Verify_" + sfile.id + "_Version");
+                                    if (Preferences.ContainsKey("Verify_" + sfile.id + "_LastWriteTime"))
+                                        Preferences.Remove("Verify_" + sfile.id + "_LastWriteTime");
+                                }
                             }
-                            else
+                            catch (Exception ex)
                             {
-                                File.Delete(fulltargetpath);
-                                if (Preferences.ContainsKey("Verify_" + sfile.id + "_Version"))
-                                    Preferences.Remove("Verify_" + sfile.id + "_Version");
-                                if (Preferences.ContainsKey("Verify_" + sfile.id + "_LastWriteTime"))
-                                    Preferences.Remove("Verify_" + sfile.id + "_LastWriteTime");
+                                Debug.WriteLine(ex);
                             }
                             //}
                         }

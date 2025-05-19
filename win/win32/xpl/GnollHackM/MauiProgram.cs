@@ -276,14 +276,21 @@ public static class MauiProgram
                                             isMaximized = true;
                                         }
                                     }
-                                    Preferences.Set("WindowedSizeDisplayDensity", GHApp.DisplayDensity);
-                                    Preferences.Set("WindowedSizeIsMaximized", isMaximized);
-                                    if (!isMaximized)
+                                    try
                                     {
-                                        Preferences.Set("WindowedSizeX", sender.Position.X);
-                                        Preferences.Set("WindowedSizeY", sender.Position.Y);
-                                        Preferences.Set("WindowedSizeWidth", sender.Size.Width);
-                                        Preferences.Set("WindowedSizeHeight", sender.Size.Height);
+                                        Preferences.Set("WindowedSizeDisplayDensity", GHApp.DisplayDensity);
+                                        Preferences.Set("WindowedSizeIsMaximized", isMaximized);
+                                        if (!isMaximized)
+                                        {
+                                            Preferences.Set("WindowedSizeX", sender.Position.X);
+                                            Preferences.Set("WindowedSizeY", sender.Position.Y);
+                                            Preferences.Set("WindowedSizeWidth", sender.Size.Width);
+                                            Preferences.Set("WindowedSizeHeight", sender.Size.Height);
+                                        }
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        Debug.WriteLine(ex);
                                     }
                                 }
                             };

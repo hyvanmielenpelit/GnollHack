@@ -2979,7 +2979,14 @@ namespace GnollHackX.Pages.Game
                             break;
                         case GHRequestType.InformRecordingWentOff:
                             GHApp.RecordGame = false;
-                            Preferences.Set("RecordGame", false);
+                            try
+                            {
+                                Preferences.Set("RecordGame", false);
+                            }
+                            catch (Exception ex)
+                            {
+                                Debug.WriteLine(ex);
+                            }
                             await InformRecordingWentOff();
                             break;
                         case GHRequestType.ToggleMenuPositionSaving:
@@ -3916,12 +3923,19 @@ namespace GnollHackX.Pages.Game
 
         private async Task ReturnToMainMenu()
         {
-            /* These need to be returned to their non-game default values */
-            GHApp.TournamentMode = Preferences.Get("TournamentMode", false);
-            GHApp.SetMirroredOptionsToDefaults();
-            /* These need to be set also here in the case game over was fast forwarded */
-            Preferences.Set("WentToSleepWithGameOn", false);
-            Preferences.Set("GameSaveResult", 0);
+            try
+            {
+                /* These need to be returned to their non-game default values */
+                GHApp.TournamentMode = Preferences.Get("TournamentMode", false);
+                GHApp.SetMirroredOptionsToDefaults();
+                /* These need to be set also here in the case game over was fast forwarded */
+                Preferences.Set("WentToSleepWithGameOn", false);
+                Preferences.Set("GameSaveResult", 0);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+            }
 
             StopKeyListening();
             if (MainPageBackgroundNeedsUpdate)
@@ -4491,13 +4505,20 @@ namespace GnollHackX.Pages.Game
 
             MainThread.BeginInvokeOnMainThread(() =>
             {
-                Preferences.Set("MapFontSize", Math.Max(GHConstants.MinimumMapFontSize, MapFontSize));
-                Preferences.Set("MapFontAlternateSize", Math.Max(GHConstants.MinimumMapFontSize, MapFontAlternateSize));
-                Preferences.Set("MapFontMiniRelativeSize", Math.Min(GHConstants.MaximumMapMiniRelativeFontSize, Math.Max(GHConstants.MinimumMapMiniRelativeFontSize, MapFontMiniRelativeSize)));
-                lock (_mapOffsetLock)
+                try
                 {
-                    Preferences.Set("MapMiniOffsetX", _mapMiniOffsetX);
-                    Preferences.Set("MapMiniOffsetY", _mapMiniOffsetY);
+                    Preferences.Set("MapFontSize", Math.Max(GHConstants.MinimumMapFontSize, MapFontSize));
+                    Preferences.Set("MapFontAlternateSize", Math.Max(GHConstants.MinimumMapFontSize, MapFontAlternateSize));
+                    Preferences.Set("MapFontMiniRelativeSize", Math.Min(GHConstants.MaximumMapMiniRelativeFontSize, Math.Max(GHConstants.MinimumMapMiniRelativeFontSize, MapFontMiniRelativeSize)));
+                    lock (_mapOffsetLock)
+                    {
+                        Preferences.Set("MapMiniOffsetX", _mapMiniOffsetX);
+                        Preferences.Set("MapMiniOffsetY", _mapMiniOffsetY);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine(ex);
                 }
             });
         }
@@ -18292,7 +18313,14 @@ namespace GnollHackX.Pages.Game
                     {
                         TipView.IsVisible = false;
                         ShownTip = -1;
-                        Preferences.Set("GUITipsShown", true);
+                        try
+                        {
+                            Preferences.Set("GUITipsShown", true);
+                        }
+                        catch (Exception ex)
+                        {
+                            Debug.WriteLine(ex);
+                        }
                         if (_blockingTipView)
                         {
                             GHGame curGame = CurrentGame;
@@ -18610,7 +18638,14 @@ namespace GnollHackX.Pages.Game
                     if (answer)
                     {
                         GHApp.PostingDiagnosticData = true;
-                        Preferences.Set("PostingDiagnosticData", true);
+                        try
+                        {
+                            Preferences.Set("PostingDiagnosticData", true);
+                        }
+                        catch (Exception ex)
+                        {
+                            Debug.WriteLine(ex);
+                        }
                     }
                 }
                 answer = await GHApp.DisplayMessageBox(this, introDisplayed ? "Send Crash Report?" : "Crash Detected", (!introDisplayed ? intro : "")+ "Do you want to create a crash report? This will create a zip archive of the files in your game directory and ask it to be shared further.", "Yes", "No");

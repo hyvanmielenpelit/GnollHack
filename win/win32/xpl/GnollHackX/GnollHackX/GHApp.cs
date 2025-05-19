@@ -416,14 +416,21 @@ namespace GnollHackX
 
                 if (appWindow != null)
                 {
-                    Preferences.Set("WindowedSizeDisplayDensity", DisplayDensity);
-                    Preferences.Set("WindowedSizeIsMaximized", isMaximized);
-                    if(!isMaximized)
+                    try
                     {
-                        Preferences.Set("WindowedSizeX", appWindow.Position.X);
-                        Preferences.Set("WindowedSizeY", appWindow.Position.Y);
-                        Preferences.Set("WindowedSizeWidth", appWindow.Size.Width);
-                        Preferences.Set("WindowedSizeHeight", appWindow.Size.Height);
+                        Preferences.Set("WindowedSizeDisplayDensity", DisplayDensity);
+                        Preferences.Set("WindowedSizeIsMaximized", isMaximized);
+                        if (!isMaximized)
+                        {
+                            Preferences.Set("WindowedSizeX", appWindow.Position.X);
+                            Preferences.Set("WindowedSizeY", appWindow.Position.Y);
+                            Preferences.Set("WindowedSizeWidth", appWindow.Size.Width);
+                            Preferences.Set("WindowedSizeHeight", appWindow.Size.Height);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.WriteLine(ex);
                     }
                 }
             }
@@ -876,11 +883,26 @@ namespace GnollHackX
         {
             get
             {
-                return Preferences.Get("HasInformedAboutGPU", false);
+                try
+                {
+                    return Preferences.Get("HasInformedAboutGPU", false);
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine(ex);
+                    return false;
+                }
             }
             set
             {
-                Preferences.Set("HasInformedAboutGPU", value);
+                try
+                {
+                    Preferences.Set("HasInformedAboutGPU", value);
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine(ex);
+                }
             }
         }
 
@@ -1142,7 +1164,38 @@ namespace GnollHackX
 
 
         private static readonly object _gameSaveResultLock = new object();
-        public static int GameSaveResult { get { lock (_gameSaveResultLock) { return Preferences.Get("GameSaveResult", 0); } } set { lock (_gameSaveResultLock) { Preferences.Set("GameSaveResult", value); } } }
+        public static int GameSaveResult 
+        { 
+            get 
+            { 
+                lock (_gameSaveResultLock) 
+                {
+                    try
+                    {
+                        return Preferences.Get("GameSaveResult", 0);
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.WriteLine(ex);
+                        return 0;
+                    }
+                } 
+            } 
+            set 
+            { 
+                lock (_gameSaveResultLock) 
+                {
+                    try
+                    {
+                        Preferences.Set("GameSaveResult", value);
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.WriteLine(ex);
+                    }
+                } 
+            } 
+        }
 
         public static void CollectGarbage()
         {
@@ -1187,8 +1240,16 @@ namespace GnollHackX
                 if (CurrentGHGame != null && !CurrentGHGame.PlayingReplay)
                 {
                     //Detect background app killing OS, check if last exit is through going to sleep, and notify player that the app probably had been terminated by OS but game has been saved
-                    bool wenttosleep = Preferences.Get("WentToSleepWithGameOn", false);
-                    Preferences.Set("WentToSleepWithGameOn", false);
+                    bool wenttosleep = false;
+                    try
+                    {
+                        wenttosleep = Preferences.Get("WentToSleepWithGameOn", false);
+                        Preferences.Set("WentToSleepWithGameOn", false);
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.WriteLine(ex);
+                    }
                     if (wenttosleep && (GameSaved || SavingGame))
                     {
                         CurrentGHGame.ActiveGamePage.StopWaitAndResumeSavedGame();
@@ -1215,8 +1276,15 @@ namespace GnollHackX
                 if (CurrentGHGame != null && !CurrentGHGame.PlayingReplay)
                 {
                     //Detect background app killing OS, mark that exit has been through going to sleep, and save the game
-                    Preferences.Set("WentToSleepWithGameOn", true);
-                    Preferences.Set("GameSaveResult", 0);
+                    try
+                    {
+                        Preferences.Set("WentToSleepWithGameOn", true);
+                        Preferences.Set("GameSaveResult", 0);
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.WriteLine(ex);
+                    }
                     if (BatteryChargeLevel > 3) /* Save only if there is enough battery left to prevent save file corruption when the phone powers off */
                     {
                         CurrentGHGame.ActiveGamePage.SaveGameAndWaitForResume();
@@ -1273,9 +1341,17 @@ namespace GnollHackX
                 if (CurrentGHGame != null && !CurrentGHGame.PlayingReplay)
                 {
                     //Detect background app killing OS, check if last exit is through going to sleep & game has been saved, and load previously saved game
-                    bool wenttosleep = Preferences.Get("WentToSleepWithGameOn", false);
-                    Preferences.Set("WentToSleepWithGameOn", false);
-                    Preferences.Set("GameSaveResult", 0);
+                    bool wenttosleep = false;
+                    try 
+                    {
+                        wenttosleep = Preferences.Get("WentToSleepWithGameOn", false);
+                        Preferences.Set("WentToSleepWithGameOn", false);
+                        Preferences.Set("GameSaveResult", 0);
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.WriteLine(ex);
+                    }
                     if (wenttosleep && (GameSaved || SavingGame))
                     {
                         CurrentGHGame.ActiveGamePage.StopWaitAndResumeSavedGame();
@@ -1444,10 +1520,17 @@ namespace GnollHackX
                             FileInfo file = new FileInfo(sfile);
                             file.Delete();
                         }
-                        if (Preferences.ContainsKey("Verify_" + sf.id + "_Version"))
-                            Preferences.Remove("Verify_" + sf.id + "_Version");
-                        if (Preferences.ContainsKey("Verify_" + sf.id + "_LastWriteTime"))
-                            Preferences.Remove("Verify_" + sf.id + "_LastWriteTime");
+                        try
+                        {
+                            if (Preferences.ContainsKey("Verify_" + sf.id + "_Version"))
+                                Preferences.Remove("Verify_" + sf.id + "_Version");
+                            if (Preferences.ContainsKey("Verify_" + sf.id + "_LastWriteTime"))
+                                Preferences.Remove("Verify_" + sf.id + "_LastWriteTime");
+                        }
+                        catch (Exception ex)
+                        {
+                            Debug.WriteLine(ex);
+                        }
                     }
                 }
                 Preferences.Set("ResetExternalFiles", false);
@@ -7151,8 +7234,15 @@ namespace GnollHackX
         {
             LastUsedTournamentPlayerName = used_player_name;
             MainThread.BeginInvokeOnMainThread(() => 
-            { 
-                Preferences.Set("LastUsedTournamentPlayerName", used_player_name);
+            {
+                try
+                {
+                    Preferences.Set("LastUsedTournamentPlayerName", used_player_name);
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine(ex);
+                }
             });
         }
 
@@ -7161,7 +7251,14 @@ namespace GnollHackX
             LastUsedPlayerName = used_player_name;
             MainThread.BeginInvokeOnMainThread(() =>
             {
-                Preferences.Set("LastUsedPlayerName", used_player_name);
+                try
+                {
+                    Preferences.Set("LastUsedPlayerName", used_player_name);
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine(ex);
+                }
             });
         }
 
@@ -7170,7 +7267,14 @@ namespace GnollHackX
             RealPlayTime = totaltime;
             MainThread.BeginInvokeOnMainThread(() =>
             {
-                Preferences.Set("RealPlayTime", totaltime);
+                try
+                {
+                    Preferences.Set("RealPlayTime", totaltime);
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine(ex);
+                }
             });
         }
 
@@ -7383,27 +7487,34 @@ namespace GnollHackX
 
         public static void CheckUserData()
         {
-            if(Preferences.ContainsKey("DiscoveredMusicBits"))
+            try
             {
-                long val = Preferences.Get("DiscoveredMusicBits", 0L);
-                if(UserDataContainsDiscoveredTracks())
+                if (Preferences.ContainsKey("DiscoveredMusicBits"))
                 {
-                    long val2 = GetDiscoveredTracks();
-                    if (val != val2)
+                    long val = Preferences.Get("DiscoveredMusicBits", 0L);
+                    if (UserDataContainsDiscoveredTracks())
                     {
-                        DeleteUserData();
+                        long val2 = GetDiscoveredTracks();
+                        if (val != val2)
+                        {
+                            DeleteUserData();
+                            SetDiscoveredTracks(val, false);
+                        }
+                    }
+                    else
+                    {
                         SetDiscoveredTracks(val, false);
                     }
                 }
                 else
                 {
-                    SetDiscoveredTracks(val, false);
+                    if (UserDataContainsDiscoveredTracks())
+                        Preferences.Set("DiscoveredMusicBits", GetDiscoveredTracks());
                 }
             }
-            else
+            catch (Exception ex)
             {
-                if(UserDataContainsDiscoveredTracks())
-                    Preferences.Set("DiscoveredMusicBits", GetDiscoveredTracks());
+                Debug.WriteLine(ex.Message);
             }
         }
 
@@ -7433,9 +7544,16 @@ namespace GnollHackX
         {
             MainThread.BeginInvokeOnMainThread(() => 
             {
-                if (preferencesToo)
-                    Preferences.Set("DiscoveredMusicBits", val);
-                AddAndWriteUserData("DiscoveredMusicBits", val);
+                try
+                {
+                    if (preferencesToo)
+                        Preferences.Set("DiscoveredMusicBits", val);
+                    AddAndWriteUserData("DiscoveredMusicBits", val);
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine(ex);
+                }
             });
         }
 

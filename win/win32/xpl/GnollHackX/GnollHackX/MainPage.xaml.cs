@@ -848,16 +848,23 @@ namespace GnollHackX
                 }
                 if (!previousInformationShown)
                 {
-                    bool ReviewRequested = Preferences.Get("StoreReviewRequested", false);
-                    long NumberOfGames = Preferences.Get("NumberOfGames", 0L);
-                    long TotalPlayTime = GHApp.RealPlayTime;
-
-                    if (!ReviewRequested && ((NumberOfGames >= GHConstants.StoreReviewRequestNumberOfGames && TotalPlayTime >= GHConstants.StoreReviewRequestTotalPlayTime) || GHApp.DeveloperMode))
+                    try
                     {
-                        Preferences.Set("StoreReviewRequested", true);
-                        UpperButtonGrid.IsEnabled = true; /* Just in case of a hangup */
-                        LogoGrid.IsEnabled = true; /* Just in case of a hangup */
-                        await GHApp.PlatformService?.RequestAppReview(this); /* Platform implementation is async, so this should return immediately */
+                        bool ReviewRequested = Preferences.Get("StoreReviewRequested", false);
+                        long NumberOfGames = Preferences.Get("NumberOfGames", 0L);
+                        long TotalPlayTime = GHApp.RealPlayTime;
+
+                        if (!ReviewRequested && ((NumberOfGames >= GHConstants.StoreReviewRequestNumberOfGames && TotalPlayTime >= GHConstants.StoreReviewRequestTotalPlayTime) || GHApp.DeveloperMode))
+                        {
+                            Preferences.Set("StoreReviewRequested", true);
+                            UpperButtonGrid.IsEnabled = true; /* Just in case of a hangup */
+                            LogoGrid.IsEnabled = true; /* Just in case of a hangup */
+                            await GHApp.PlatformService?.RequestAppReview(this); /* Platform implementation is async, so this should return immediately */
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.WriteLine(ex);
                     }
                 }
             }
@@ -876,14 +883,21 @@ namespace GnollHackX
 
         public async Task InitializeServices()
         {
-            bool resetFiles = Preferences.Get("ResetAtStart", true);
-            if (resetFiles)
+            try
             {
-                GHApp.GnollHackService.ClearFiles();
-                Preferences.Set("ResetAtStart", false);
-                Preferences.Set("ResetExternalFiles", true);
+                bool resetFiles = Preferences.Get("ResetAtStart", true);
+                if (resetFiles)
+                {
+                    GHApp.GnollHackService.ClearFiles();
+                    Preferences.Set("ResetAtStart", false);
+                    Preferences.Set("ResetExternalFiles", true);
+                }
+                GHApp.ResetAcquiredFiles();
             }
-            GHApp.ResetAcquiredFiles();
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+            }
 
             await TryInitializeGnollHack();
             await TryInitializeSecrets();
@@ -1067,21 +1081,28 @@ namespace GnollHackX
             //VersionLabel.Text = verid;
             GnollHackLabel.Text = "GnollHack";
 
-            string prev_version = Preferences.Get("VersionId", "");
-            ulong prev_vernum = (ulong)Preferences.Get("VersionNumber", 0L);
-            GHApp.GHPreviousVersionNumber = prev_vernum;
-
-            if (prev_version != verid || prev_vernum != vernum)
+            try
             {
-                await TryClearCoreFiles();
-                await TryInitializeGnollHack();
-                await TryInitializeSecrets();
-            }
-            if (prev_vernum > 0 && prev_vernum < vercompat)
-                GHApp.CheckForIncompatibleSavedGames();
+                string prev_version = Preferences.Get("VersionId", "");
+                ulong prev_vernum = (ulong)Preferences.Get("VersionNumber", 0L);
+                GHApp.GHPreviousVersionNumber = prev_vernum;
 
-            Preferences.Set("VersionId", verid);
-            Preferences.Set("VersionNumber", (long)vernum);
+                if (prev_version != verid || prev_vernum != vernum)
+                {
+                    await TryClearCoreFiles();
+                    await TryInitializeGnollHack();
+                    await TryInitializeSecrets();
+                }
+                if (prev_vernum > 0 && prev_vernum < vercompat)
+                    GHApp.CheckForIncompatibleSavedGames();
+
+                Preferences.Set("VersionId", verid);
+                Preferences.Set("VersionNumber", (long)vernum);
+            }
+            catch (Exception ex)
+            { 
+                Debug.WriteLine(ex.Message); 
+            }
 
             try
             {
