@@ -19638,7 +19638,7 @@ namespace GnollHackX.Pages.Game
                     MenuCountOkButton_Clicked(null, null);
                 handled = true;
             }
-            else if (GetLineGrid.IsVisible && (key == GHSpecialKey.Escape || key == GHSpecialKey.Enter || key == GHSpecialKey.Tab) && !PlayingReplay)
+            else if (GetLineGrid.IsVisible && (key == GHSpecialKey.Escape || key == GHSpecialKey.Enter || key == GHSpecialKey.Tab || key == GHSpecialKey.F1) && !PlayingReplay)
             {
                 if (key == GHSpecialKey.Enter && GetLineOkButton.IsEnabled)
                     GetLineOkButton_Clicked(null, null);
@@ -19646,6 +19646,8 @@ namespace GnollHackX.Pages.Game
                     GetLineCancelButton_Clicked(null, null);
                 else if (key == GHSpecialKey.Tab && GetLineAutoComplete.IsVisible && GetLineAutoComplete.IsEnabled)
                     GetLineAutoCompleteTapGestureRecognizer_Tapped(null, null);
+                else if (key == GHSpecialKey.F1 && GetLineQuestionMarkButton.IsVisible && GetLineQuestionMarkButton.IsEnabled)
+                    GetLineQuestionMarkButton_Clicked(null, null);
                 handled = true;
             }
             else if (YnGrid.IsVisible && (key == GHSpecialKey.Escape) && !PlayingReplay)
