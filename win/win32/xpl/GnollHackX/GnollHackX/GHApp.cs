@@ -7747,6 +7747,9 @@ namespace GnollHackX
         }
         public static bool SendSpecialKeyPress(GHSpecialKey spkey, bool isCtrl, bool isMeta, bool isShift)
         {
+            if (spkey == GHSpecialKey.Tab && isMeta) /* Windows switch apps */
+                return false;
+
             Page topPage = PageFromTopOfModalNavigationStack();
             if(topPage == null)
                 return CurrentMainPage?.HandleMainPageSpecialKeyPress(spkey, isCtrl, isMeta, isShift) ?? false;

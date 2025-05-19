@@ -2160,6 +2160,7 @@ namespace GnollHackX
         Escape,
         Enter,
         Space,
+        Tab,
         Add,
         Subtract,
         Multiply,

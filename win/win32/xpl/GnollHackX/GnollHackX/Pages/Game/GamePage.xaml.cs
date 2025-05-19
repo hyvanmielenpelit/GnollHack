@@ -19638,12 +19638,14 @@ namespace GnollHackX.Pages.Game
                     MenuCountOkButton_Clicked(null, null);
                 handled = true;
             }
-            else if (GetLineGrid.IsVisible && (key == GHSpecialKey.Escape || key == GHSpecialKey.Enter) && !PlayingReplay)
+            else if (GetLineGrid.IsVisible && (key == GHSpecialKey.Escape || key == GHSpecialKey.Enter || key == GHSpecialKey.Tab) && !PlayingReplay)
             {
                 if (key == GHSpecialKey.Enter && GetLineOkButton.IsEnabled)
                     GetLineOkButton_Clicked(null, null);
                 else if (key == GHSpecialKey.Escape && GetLineCancelButton.IsEnabled)
                     GetLineCancelButton_Clicked(null, null);
+                else if (key == GHSpecialKey.Tab && GetLineAutoComplete.IsVisible && GetLineAutoComplete.IsEnabled)
+                    GetLineAutoCompleteTapGestureRecognizer_Tapped(null, null);
                 handled = true;
             }
             else if (YnGrid.IsVisible && (key == GHSpecialKey.Escape) && !PlayingReplay)
