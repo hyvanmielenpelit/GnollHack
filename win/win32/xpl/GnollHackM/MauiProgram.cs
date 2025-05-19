@@ -603,6 +603,10 @@ public class KeyboardHook
                             if (GHApp.SendSpecialKeyPress(GHSpecialKey.Decimal, GHApp.CtrlDown, GHApp.AltDown, GHApp.ShiftDown))
                                 return 1;
                             break;
+                        case 0x09:
+                            if (GHApp.SendSpecialKeyPress(GHSpecialKey.Tab, GHApp.CtrlDown, GHApp.AltDown, GHApp.ShiftDown))
+                                return 1;
+                            break;
                         //case 0x60:
                         //case 0x61:
                         //case 0x62:
