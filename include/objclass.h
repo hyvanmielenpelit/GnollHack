@@ -46,7 +46,11 @@ enum multigen_types {
     MULTIGEN_1D4_2        = 29,
     MULTIGEN_1D3_3        = 30,
     MULTIGEN_1D4_3        = 31,
-    MULTIGEN_1D4_4        = 32
+    MULTIGEN_1D4_4        = 32,
+    MULTIGEN_1D30         = 33,
+    MULTIGEN_1_OR_1D6_IN_HELL = 34,
+    MULTIGEN_1_OR_2       = 35,
+    MULTIGEN_CANDLE       = 36,
 };
 
 enum multishot_types {
@@ -1093,6 +1097,7 @@ struct objclass {
 #define O6_NORMALLY_NON_EXCEPTIONAL    0x00000004UL
 #define O6_ALWAYS_FULL_INK_COST        0x00000008UL
 #define O6_THROWING_REQUIRES_STR_18_00 0x00000010UL
+
 
 /* flag values for CONFERS_POWERS_TO_SPECIFIED_CHARACTERS_ONLY in nonspell_oc7 */
 #define PERMITTED_ALL                 0x00000000UL

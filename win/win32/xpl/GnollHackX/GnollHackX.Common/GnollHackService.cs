@@ -848,7 +848,7 @@ namespace GnollHackX.Unknown
                             }
                             catch (Exception ex)
                             {
-                                Debug.WriteLine(ex);
+                                System.Diagnostics.Debug.WriteLine(ex);
                             }
                             //}
                         }

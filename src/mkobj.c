@@ -1606,7 +1606,7 @@ uint64_t mkflags;
 
         switch (let) {
         case WEAPON_CLASS:
-            otmp->quan = get_multigen_quan(objects[otmp->otyp].oc_multigen_type);// is_multigen(otmp) ? (int64_t) rn1(6, 6) : 1L;
+            //otmp->quan = get_multigen_quan(objects[otmp->otyp].oc_multigen_type);// is_multigen(otmp) ? (int64_t) rn1(6, 6) : 1L;
             if (!rn2(11) && !is_cursed_magic_item(otmp))
             {
                 otmp->enchantment = rne(3);
@@ -1706,7 +1706,7 @@ uint64_t mkflags;
                 flags.made_fruit = TRUE;
                 break;
             case KELP_FROND:
-                otmp->quan = (int64_t) rnd(2);
+                //otmp->quan = (int64_t) rnd(2);
                 break;
             }
             if (Is_pudding(otmp)) 
@@ -1716,27 +1716,31 @@ uint64_t mkflags;
                 otmp->corpsenm = PM_GRAY_OOZE
                                  + (otmp->otyp - GLOB_OF_GRAY_OOZE);
             } 
-            else 
-            {
-                if (otmp->otyp != CORPSE && otmp->otyp != MEAT_RING
-                    && otmp->otyp != KELP_FROND && !rn2(6)) 
-                {
-                    otmp->quan = 2L;
-                }
-            }
+            //else 
+            //{
+            //    if (otmp->otyp != CORPSE && otmp->otyp != MEAT_RING
+            //        && otmp->otyp != KELP_FROND && !rn2(6))
+            //    {
+            //        otmp->quan = 2L;
+            //    }
+            //}
             break;
         case GEM_CLASS:
             otmp->corpsenm = 0; /* LOADSTONE hack */
-            if (is_rock(otmp))
-                otmp->quan = (int64_t) rn1(6, 6);
-            else if (otmp->otyp == FLINT)
-                otmp->quan = (int64_t)rnd(30);
-            else if (is_ore(otmp) && Inhell)
-                otmp->quan = (int64_t)rnd(6);
-            else if (otmp->otyp != LUCKSTONE && !rn2(6))
-                otmp->quan = 2L;
-            else
-                otmp->quan = 1L;
+            //if (objects[otmp->otyp].oc_merge && !is_obj_unique(otmp))
+            //{
+                /* NetHack override of quantities */
+                //if (is_rock(otmp))
+                //    otmp->quan = (int64_t)rn1(6, 6);
+                //else if (otmp->otyp == FLINT)
+                //    otmp->quan = (int64_t)rnd(30);
+                //else if (is_ore(otmp) && Inhell)
+                //    otmp->quan = (int64_t)rnd(6); /* Replace the single generation */
+                //else if (otmp->otyp != LUCKSTONE && otmp->otyp != TOUCHSTONE && !rn2(6))
+                //    otmp->quan = 2L;
+                //else
+                //    otmp->quan = 1L;
+            //}
             break;
         case TOOL_CLASS:
             /* Primary initialization */
@@ -1746,13 +1750,13 @@ uint64_t mkflags;
             case WAX_CANDLE:
                 otmp->special_quality = SPEQUAL_LIGHT_SOURCE_FUNCTIONAL;
                 otmp->age = candle_starting_burn_time(otmp);
-                otmp->quan = 1L + (int64_t) (rn2(2) ? rn2(7) : 0);
+                //otmp->quan = 1L + (int64_t) (rn2(2) ? rn2(7) : 0);
                 blessorcurse(otmp, 5);
                 break;
             case TORCH:
                 otmp->special_quality = SPEQUAL_LIGHT_SOURCE_FUNCTIONAL;
                 otmp->age = torch_starting_burn_time(otmp);
-                otmp->quan = 1L;
+                //otmp->quan = 1L;
                 blessorcurse(otmp, 5);
                 break;
             case LARGE_FIVE_BRANCHED_CANDELABRUM:
@@ -2906,6 +2910,18 @@ uchar multigen_index;
         break;
     case MULTIGEN_1D4_4:
         quan = rnd(4) + 4;
+        break;
+    case MULTIGEN_1D30:
+        quan = rnd(30);
+        break;
+    case MULTIGEN_1_OR_1D6_IN_HELL:
+        quan = Inhell ? rnd(6) : 1;
+        break;
+    case MULTIGEN_1_OR_2:
+        quan = !rn2(6) ? 2 : 1;
+        break;
+    case MULTIGEN_CANDLE:
+        quan = 1 + (int64_t)(rn2(2) ? rn2(7) : 0);
         break;
     default:
         break;
