@@ -2921,7 +2921,7 @@ uchar multigen_index;
         quan = !rn2(6) ? 2 : 1;
         break;
     case MULTIGEN_CANDLE:
-        quan = 1 + (int64_t)(rn2(2) ? rn2(7) : 0);
+        quan = 1 + (rn2(2) ? rn2(7) : 0);
         break;
     default:
         break;
