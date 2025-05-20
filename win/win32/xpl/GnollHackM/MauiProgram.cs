@@ -611,6 +611,10 @@ public class KeyboardHook
                             if (GHApp.SendSpecialKeyPress(GHSpecialKey.F1, GHApp.CtrlDown, GHApp.AltDown, GHApp.ShiftDown))
                                 return 1;
                             break;
+                        case 0x79:
+                            if (GHApp.SendSpecialKeyPress(GHSpecialKey.F10, GHApp.CtrlDown, GHApp.AltDown, GHApp.ShiftDown))
+                                return 1;
+                            break;
                         //case 0x60:
                         //case 0x61:
                         //case 0x62:

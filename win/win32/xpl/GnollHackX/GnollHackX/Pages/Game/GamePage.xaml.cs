@@ -16687,6 +16687,15 @@ namespace GnollHackX.Pages.Game
             }
         }
 
+        private bool IsTextWindowAtBottomScrollLimit()
+        {
+            float bottomScrollLimit = Math.Min(0, TextCanvas.CanvasSize.Height - TotalTextHeight);
+            lock (_textScrollLock)
+            {
+                return _textScrollOffset == bottomScrollLimit;
+            }
+        }
+
         private bool IsMenuAtBottomScrollLimit()
         {
             float bottomScrollLimit = Math.Min(0, MenuCanvas.CanvasSize.Height - TotalMenuHeight);
@@ -19600,7 +19609,12 @@ namespace GnollHackX.Pages.Game
                 else if (key == GHSpecialKey.End)
                     ScrollTextWindow(-1200000);
                 else if (key == GHSpecialKey.Space)
-                    ScrollTextWindow(-1200);
+                {
+                    if (!IsTextWindowAtBottomScrollLimit())
+                        ScrollTextWindow(-1200);
+                    else if (!PlayingReplay)
+                        TextCanvas_Pressed(null, null);
+                }
                 handled = true;
             }
             else if (MenuGrid.IsVisible && !MenuCountGrid.IsVisible && (key == GHSpecialKey.Escape || key == GHSpecialKey.Enter || key == GHSpecialKey.Up || key == GHSpecialKey.Down || key == GHSpecialKey.Space || key == GHSpecialKey.PageUp || key == GHSpecialKey.PageDown || key == GHSpecialKey.Home || key == GHSpecialKey.End))
@@ -19690,8 +19704,12 @@ namespace GnollHackX.Pages.Game
                 {
                     CommandCanvas_Pressed(null, null);
                 }
-
-                if ((isCtrl || isMeta) && (key == GHSpecialKey.Number0 || key == GHSpecialKey.NumberPad0))
+                else if (key == GHSpecialKey.F10)
+                {
+                    OpenGameMenu();
+                    handled = true;
+                }
+                else if ((isCtrl || isMeta) && (key == GHSpecialKey.Number0 || key == GHSpecialKey.NumberPad0))
                 {
                     SetZoomNormalInCurrentMode();
                     handled = true;
