@@ -23,7 +23,7 @@ namespace GnollHackX.Pages.MainScreen
 #endif
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class EditorPage : ContentPage
+    public partial class EditorPage : ContentPage, ICloseablePage
     {
         private string _fileName;
         private MainPage _mainPage;

@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+
 #if GNH_MAUI
 using GnollHackX;
 using Microsoft.Maui.Controls.PlatformConfiguration;
@@ -18,11 +19,13 @@ using Xamarin.Forms.PlatformConfiguration;
 using Xamarin.Forms.PlatformConfiguration.iOSSpecific;
 using Xamarin.Forms.Xaml;
 using GnollHackX.Controls;
+using Xamarin.Essentials;
+
 namespace GnollHackX.Pages.MainScreen
 #endif
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class SnapshotPage : ContentPage
+    public partial class SnapshotPage : ContentPage, ICloseablePage
     {
         public SnapshotPage()
         {
@@ -178,10 +181,39 @@ namespace GnollHackX.Pages.MainScreen
 
         private async void Button_Clicked(object sender, EventArgs e)
         {
+            await ClosePageAsync();
+        }
+
+        private async Task ClosePageAsync()
+        {
             CloseButton.IsEnabled = false;
             GHApp.PlayButtonClickedSound();
             var page = await GHApp.Navigation.PopModalAsync();
             GHApp.DisconnectIViewHandlers(page);
+        }
+
+        public void ClosePage()
+        {
+            try
+            {
+                MainThread.BeginInvokeOnMainThread(async () =>
+                {
+                    try
+                    {
+                        if (CloseButton.IsEnabled)
+                            await ClosePageAsync();
+                    }
+                    catch (Exception ex)
+                    {
+                        System.Diagnostics.Debug.WriteLine(ex);
+                    }
+
+                });
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine(ex);
+            }
         }
 
         private double _currentPageWidth = 0;

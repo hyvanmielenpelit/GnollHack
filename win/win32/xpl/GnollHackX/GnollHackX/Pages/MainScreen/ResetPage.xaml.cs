@@ -24,7 +24,7 @@ namespace GnollHackX.Pages.MainScreen
 #endif
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class ResetPage : ContentPage
+    public partial class ResetPage : ContentPage, ICloseablePage
     {
         private MainPage _mainPage;
         public ResetPage(MainPage mainPage)

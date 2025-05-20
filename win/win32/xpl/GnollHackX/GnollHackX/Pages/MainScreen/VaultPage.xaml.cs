@@ -24,7 +24,7 @@ namespace GnollHackX.Pages.MainScreen
 #endif
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class VaultPage : ContentPage
+    public partial class VaultPage : ContentPage, ICloseablePage
     {
         private MainPage _mainPage;
         List<LabeledImageButton> _buttons = new List<LabeledImageButton>();
@@ -140,7 +140,7 @@ namespace GnollHackX.Pages.MainScreen
 
         private async void Button_Clicked(object sender, EventArgs e)
         {
-            await CloseCore();
+            await ClosePageAsync();
         }
 
         public void ClosePage()
@@ -152,7 +152,7 @@ namespace GnollHackX.Pages.MainScreen
                     try
                     {
                         if (CloseButton.IsEnabled)
-                            await CloseCore();
+                            await ClosePageAsync();
                     }
                     catch (Exception ex)
                     {
@@ -167,7 +167,7 @@ namespace GnollHackX.Pages.MainScreen
             }
         }
 
-        private async Task CloseCore()
+        private async Task ClosePageAsync()
         {
             CloseButton.IsEnabled = false;
             GHApp.PlayButtonClickedSound();

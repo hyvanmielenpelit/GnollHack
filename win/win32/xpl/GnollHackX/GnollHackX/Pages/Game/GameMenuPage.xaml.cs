@@ -26,7 +26,7 @@ namespace GnollHackX.Pages.Game
 #endif
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class GameMenuPage : ContentPage
+    public partial class GameMenuPage : ContentPage, ICloseablePage
     {
         public GamePage _gamePage;
  

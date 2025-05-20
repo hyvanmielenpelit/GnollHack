@@ -1739,7 +1739,7 @@ namespace GnollHackX
             return handled;
         }
 
-        public bool HandleMainPageKeyPress(int key, bool isCtrl, bool isMeta)
+        public bool HandleKeyPress(int key, bool isCtrl, bool isMeta)
         {
             bool handled = false;
             if (AlertGrid.IsVisible || PopupGrid.IsVisible || PendingTasksGrid.IsVisible)

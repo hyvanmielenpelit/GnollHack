@@ -23,7 +23,7 @@ namespace GnollHackX.Pages.MainScreen
 #endif
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class DisplayFilePage : ContentPage
+    public partial class DisplayFilePage : ContentPage, ICloseablePage
     {
         private string _fileName;
         private int _fixedWidth;
@@ -72,10 +72,39 @@ namespace GnollHackX.Pages.MainScreen
 
         private async void CloseButton_Clicked(object sender, EventArgs e)
         {
+            await ClosePageAsync();
+        }
+
+        private async Task ClosePageAsync()
+        {
             CloseButton.IsEnabled = false;
             GHApp.PlayButtonClickedSound();
             var page = await GHApp.Navigation.PopModalAsync();
             GHApp.DisconnectIViewHandlers(page);
+        }
+
+        public void ClosePage()
+        {
+            try
+            {
+                MainThread.BeginInvokeOnMainThread(async () =>
+                {
+                    try
+                    {
+                        if (CloseButton.IsEnabled)
+                            await ClosePageAsync();
+                    }
+                    catch (Exception ex)
+                    {
+                        System.Diagnostics.Debug.WriteLine(ex);
+                    }
+
+                });
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine(ex);
+            }
         }
 
         public bool ReadFile(out string errorMessage)

@@ -27,7 +27,7 @@ namespace GnollHackX.Pages.MainScreen
 #endif
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class VersionPage : ContentPage
+    public partial class VersionPage : ContentPage, ICloseablePage
     {
         private GamePage _gamePage = null;
         public VersionPage(GamePage gamePage)

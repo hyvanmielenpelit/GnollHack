@@ -220,7 +220,8 @@
 		<None Remove="..\GnollHackX\GnollHackX\IGnollHackService.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\IPlatformService.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\IFMODService.cs" />
-		<None Remove="..\GnollHackX\GnollHackX\ImageCarousel.cs" />
+    <None Remove="..\GnollHackX\GnollHackX\ICloseablePage.cs" />
+    <None Remove="..\GnollHackX\GnollHackX\ImageCarousel.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\MapData.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\NoTabStopButton.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\ObjectData.cs" />
@@ -383,7 +384,8 @@
 		<Compile Include="..\GnollHackX\GnollHackX.Common\GnollHackService.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\IGnollHackService.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\IPlatformService.cs" />
-		<Compile Include="..\GnollHackX\GnollHackX\IFMODService.cs" />
+    <Compile Include="..\GnollHackX\GnollHackX\ICloseablePage.cs" />
+    <Compile Include="..\GnollHackX\GnollHackX\IFMODService.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\ImageCarousel.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\MapData.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\NoTabStopButton.cs" />

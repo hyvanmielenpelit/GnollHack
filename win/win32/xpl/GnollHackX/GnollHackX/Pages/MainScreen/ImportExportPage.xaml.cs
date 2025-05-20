@@ -26,7 +26,7 @@ namespace GnollHackX.Pages.MainScreen
 #endif
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
-	public partial class ImportExportPage : ContentPage
+	public partial class ImportExportPage : ContentPage, ICloseablePage
 	{
 		public ImportExportPage ()
 		{
@@ -385,11 +385,41 @@ namespace GnollHackX.Pages.MainScreen
 
         private async void CloseButton_Clicked(object sender, EventArgs e)
         {
+            await ClosePageAsync();
+        }
+
+        private async Task ClosePageAsync()
+        {
             ImportExportGrid.IsEnabled = false;
             GHApp.PlayButtonClickedSound();
             var page = await GHApp.Navigation.PopModalAsync();
             GHApp.DisconnectIViewHandlers(page);
         }
+
+        public void ClosePage()
+        {
+            try
+            {
+                MainThread.BeginInvokeOnMainThread(async () =>
+                {
+                    try
+                    {
+                        if (CloseButton.IsEnabled)
+                            await ClosePageAsync();
+                    }
+                    catch (Exception ex)
+                    {
+                        System.Diagnostics.Debug.WriteLine(ex);
+                    }
+
+                });
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine(ex);
+            }
+        }
+
 
         private bool _backPressed = false;
         private async Task<bool> BackButtonPressed(object sender, EventArgs e)

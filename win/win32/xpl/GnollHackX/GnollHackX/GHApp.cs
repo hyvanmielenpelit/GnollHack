@@ -7739,11 +7739,13 @@ namespace GnollHackX
         {
             Page topPage = PageFromTopOfModalNavigationStack();
             if (topPage == null)
-                return CurrentMainPage?.HandleMainPageKeyPress(key, isCtrl, isMeta) ?? false;
+                return CurrentMainPage?.HandleKeyPress(key, isCtrl, isMeta) ?? false;
             else if (topPage is GamePage)
                 return ((GamePage)topPage).HandleKeyPress(key, isCtrl, isMeta);
             else if (topPage is GameMenuPage)
                 return ((GameMenuPage)topPage).HandleKeyPress(key, isCtrl, isMeta);
+            else if (topPage is AboutPage)
+                return ((AboutPage)topPage).HandleKeyPress(key, isCtrl, isMeta);
             else
                 return false;
         }
@@ -7767,43 +7769,10 @@ namespace GnollHackX
                     return true;
                 }
             }
-            else if (spkey == GHSpecialKey.Escape)
+            else if (spkey == GHSpecialKey.Escape && topPage is ICloseablePage)
             {
-                if (topPage is GameMenuPage)
-                {
-                    ((GameMenuPage)topPage).ClosePage();
-                    return true;
-                }
-                else if (topPage is AboutPage)
-                {
-                    ((AboutPage)topPage).ClosePage();
-                    return true;
-                }
-                else if (topPage is ResetPage)
-                {
-                    ((ResetPage)topPage).ClosePage();
-                    return true;
-                }
-                else if (topPage is VaultPage)
-                {
-                    ((VaultPage)topPage).ClosePage();
-                    return true;
-                }
-                else if (topPage is EditorPage)
-                {
-                    ((EditorPage)topPage).ClosePage();
-                    return true;
-                }
-                else if (topPage is NamePage)
-                {
-                    ((NamePage)topPage).PressCancel();
-                    return true;
-                }
-                else if (topPage is VersionPage)
-                {
-                    ((VersionPage)topPage).ClosePage();
-                    return true;
-                }
+                ((ICloseablePage)topPage).ClosePage();
+                return true;
             }
 
             return false;
