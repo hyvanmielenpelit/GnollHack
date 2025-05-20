@@ -47,8 +47,8 @@
 	<!-- CONFIGURATION SPECIFIC PROPERTIES -->
 	<PropertyGroup Condition="'$(Configuration)' == 'Debug'">
 		<!--<UseInterpreter>false</UseInterpreter>-->
-		<_MauiForceXamlCForDebug>true</_MauiForceXamlCForDebug>
-		<DebugSymbols>true</DebugSymbols>
+		<_MauiForceXamlCForDebug Condition="'$(TargetFramework)'!='net9.0-windows10.0.19041.0'">true</_MauiForceXamlCForDebug>
+    <DebugSymbols>true</DebugSymbols>
 	</PropertyGroup>
 
 	<PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
