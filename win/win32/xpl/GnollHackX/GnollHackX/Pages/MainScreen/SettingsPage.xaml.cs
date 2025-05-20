@@ -1600,6 +1600,11 @@ namespace GnollHackX.Pages.MainScreen
 
         private async void CloseButton_Clicked(object sender, EventArgs e)
         {
+            await ClosePageAsync();
+        }
+
+        private async Task ClosePageAsync()
+        {
             CloseButton.IsEnabled = false;
             GHApp.PlayButtonClickedSound();
             SetTournamentModeLabelColors(TournamentSwitch.IsToggled);
@@ -1627,9 +1632,9 @@ namespace GnollHackX.Pages.MainScreen
                     return;
                 }
             }
-            if(TournamentSwitch.IsToggled)
+            if (TournamentSwitch.IsToggled)
             {
-                if(!GHApp.XlogUserNameVerified)
+                if (!GHApp.XlogUserNameVerified)
                 {
                     PopupTitleLabel.TextColor = GHColors.Orange;
                     PopupTitleLabel.Text = "Tournament Verification";

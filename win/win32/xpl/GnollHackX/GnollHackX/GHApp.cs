@@ -7742,6 +7742,8 @@ namespace GnollHackX
                 return CurrentMainPage?.HandleMainPageKeyPress(key, isCtrl, isMeta) ?? false;
             else if (topPage is GamePage)
                 return ((GamePage)topPage).HandleKeyPress(key, isCtrl, isMeta);
+            else if (topPage is GameMenuPage)
+                return ((GameMenuPage)topPage).HandleKeyPress(key, isCtrl, isMeta);
             else
                 return false;
         }
@@ -7755,6 +7757,8 @@ namespace GnollHackX
                 return CurrentMainPage?.HandleMainPageSpecialKeyPress(spkey, isCtrl, isMeta, isShift) ?? false;
             else if (topPage is GamePage)
                 return ((GamePage)topPage).HandleSpecialKeyPress(spkey, isCtrl, isMeta, isShift);
+            else if (topPage is GameMenuPage)
+                return ((GameMenuPage)topPage).HandleSpecialKeyPress(spkey, isCtrl, isMeta, isShift);
             else if (topPage is OutRipPage)
             {
                 if (spkey == GHSpecialKey.Escape || spkey == GHSpecialKey.Enter || spkey == GHSpecialKey.Space)
@@ -7793,6 +7797,11 @@ namespace GnollHackX
                 else if (topPage is NamePage)
                 {
                     ((NamePage)topPage).PressCancel();
+                    return true;
+                }
+                else if (topPage is VersionPage)
+                {
+                    ((VersionPage)topPage).ClosePage();
                     return true;
                 }
             }

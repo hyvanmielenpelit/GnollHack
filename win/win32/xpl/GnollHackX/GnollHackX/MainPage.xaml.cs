@@ -1822,5 +1822,4 @@ namespace GnollHackX
             return handled;
         }
     }
-
 }
