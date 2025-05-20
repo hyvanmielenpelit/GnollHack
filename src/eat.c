@@ -3123,7 +3123,12 @@ struct obj *otmp;
             cured = TRUE;
             make_vomiting(0L, TRUE);
         }
-        if(cured)
+        if (Slimed && !otmp->cursed)
+        {
+            cured = TRUE;
+            make_slimed(0L, "The slime disappears!", 0, (char*)0, 0);
+        }
+        if (cured)
             play_sfx_sound(SFX_CURE_DISEASE);
         break;
     }
