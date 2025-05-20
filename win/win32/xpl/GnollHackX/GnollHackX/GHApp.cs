@@ -7756,7 +7756,7 @@ namespace GnollHackX
 
             Page topPage = PageFromTopOfModalNavigationStack();
             if(topPage == null)
-                return CurrentMainPage?.HandleMainPageSpecialKeyPress(spkey, isCtrl, isMeta, isShift) ?? false;
+                return CurrentMainPage?.HandleSpecialKeyPress(spkey, isCtrl, isMeta, isShift) ?? false;
             else if (topPage is GamePage)
                 return ((GamePage)topPage).HandleSpecialKeyPress(spkey, isCtrl, isMeta, isShift);
             else if (topPage is GameMenuPage)

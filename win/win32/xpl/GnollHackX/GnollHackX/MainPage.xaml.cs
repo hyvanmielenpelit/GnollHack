@@ -1693,7 +1693,7 @@ namespace GnollHackX
                 DisplayAlertGrid(title, message, buttonText, titleColor);
         }
 
-        public bool HandleMainPageSpecialKeyPress(GHSpecialKey key, bool isCtrl, bool isMeta, bool isShift)
+        public bool HandleSpecialKeyPress(GHSpecialKey key, bool isCtrl, bool isMeta, bool isShift)
         {
             bool handled = false;
             try
