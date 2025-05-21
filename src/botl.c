@@ -254,7 +254,6 @@ do_statusline2(VOID_ARGS)
     size_t gln, dln, hln, xln, mln, tln, cln, sln, wln;
     int hp, hpmax;
     Strcpy(newbot2, "");
-    Strcpy(dloc, "");
     /*
      * Various min(x,9999)'s are to avoid having excessive values
      * violate the field width assumptions in botl.h and should not
@@ -275,6 +274,7 @@ do_statusline2(VOID_ARGS)
     }
 
     /* dungeon location */
+    Strcpy(dloc, "");
     (void)describe_level(dloc); /* includes at least one trailing space */
     (void)trimspaces(dloc);
     dln = strlen(dloc);
