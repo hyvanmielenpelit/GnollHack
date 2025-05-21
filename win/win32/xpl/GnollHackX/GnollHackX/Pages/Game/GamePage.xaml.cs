@@ -3759,7 +3759,7 @@ namespace GnollHackX.Pages.Game
                 case (int)getline_types.GETLINE_GENOCIDE:
                 case (int)getline_types.GETLINE_MONSTER:
                     GetLineEntryText.Placeholder = "Type the monster here";
-                    _getLineRegex = new Regex(@"^[A-Za-z0-9_ ]{0,64}$");
+                    _getLineRegex = new Regex(@"^[A-Za-z0-9_ \-]{0,64}$");
                     GetLineMenuButton.IsVisible = true;
                     break;
                 case (int)getline_types.GETLINE_MONSTER_CLASS:
