@@ -254,6 +254,7 @@ do_statusline2(VOID_ARGS)
     size_t gln, dln, hln, xln, mln, tln, cln, sln, wln;
     int hp, hpmax;
     Strcpy(newbot2, "");
+    Strcpy(dloc, "");
     /*
      * Various min(x,9999)'s are to avoid having excessive values
      * violate the field width assumptions in botl.h and should not
@@ -331,11 +332,12 @@ do_statusline2(VOID_ARGS)
         else
             tmmv[0] = '\0';
         tln = strlen(tmmv);
-
     }
 
     skll[0] = '\0';
     sln = 0;
+    cond[0] = '\0';
+    cln = 0;
 
     if (iflags.wc2_statuslines < 3)
     {
@@ -346,8 +348,6 @@ do_statusline2(VOID_ARGS)
 
         cln = print_conditions(cond);
     }
-    else
-        cln = 0;
 
     /*
      * Put the pieces together.  If they all fit, keep the traditional
@@ -509,15 +509,11 @@ do_statusline3(VOID_ARGS)
         return newbot3;
     }
 
-    if (iflags.wc2_statuslines > 2)
-        cln = print_conditions(cond);
-    else
-        cln = 0;
+    cond[0] = '\0';
+    cln = 0;
 
     if (iflags.wc2_statuslines > 2)
         cln = print_conditions(cond);
-    else
-        cln = 0;
 
     int64_t money;
     if ((money = money_cnt(invent)) < 0L)
@@ -566,7 +562,6 @@ do_statusline3(VOID_ARGS)
                 Strcat(newbot3, " ");
 
             Strcat(newbot3, cond);
-
         }
     }
     else
