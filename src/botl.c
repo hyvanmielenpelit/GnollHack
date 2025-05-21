@@ -253,7 +253,7 @@ do_statusline2(VOID_ARGS)
 
     size_t gln, dln, hln, xln, mln, tln, cln, sln, wln;
     int hp, hpmax;
-
+    Strcpy(newbot2, "");
     /*
      * Various min(x,9999)'s are to avoid having excessive values
      * violate the field width assumptions in botl.h and should not
@@ -503,9 +503,9 @@ do_statusline3(VOID_ARGS)
     static char newbot3[BUFSZ * 2] = "", cond[QBUFSZ * 2] = "", moneybuf[QBUFSZ] = "";
     size_t cln;
 
+    Strcpy(newbot3, "");
     if (iflags.wc2_statuslines < 3)
     {
-        Strcpy(newbot3, "");
         return newbot3;
     }
 
@@ -524,7 +524,6 @@ do_statusline3(VOID_ARGS)
         money = 0L;
     Sprintf(moneybuf, "%s:%lld", (iflags.in_dumplog || iflags.invis_goldsym) ? "$" : encglyph(objnum_to_glyph(GOLD_PIECE)), (long long)money);
 
-    Strcpy(newbot3, "");
     if (flags.fullstatuslineorder)
     {
         char gmode[QBUFSZ];
