@@ -494,7 +494,7 @@ namespace GnollHackX.Droid
             return MainActivity.IsHardKeyboardConnected;
         }
 
-        public static bool HandleOnKeyUp([GeneratedEnum] Keycode keyCode, KeyEvent e)
+        public static bool HandleOnKeyDown([GeneratedEnum] Keycode keyCode, KeyEvent e)
         {
             bool wasHandled = false;
             switch(keyCode)

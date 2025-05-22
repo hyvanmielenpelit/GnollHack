@@ -30,7 +30,7 @@ namespace GnollHackX.iOS
 
         }
 
-        public override void PressesEnded(NSSet<UIPress> presses, UIPressesEvent evt)
+        public override void PressesBegan(NSSet<UIPress> presses, UIPressesEvent evt)
         {
             if (presses == null || evt == null)
                 return;
@@ -38,7 +38,7 @@ namespace GnollHackX.iOS
             bool wasHandled = false;
             int cnt = 0;
 
-            //GHApp.MaybeWriteGHLog("PressesEnded started (" + presses.Count + ", " + evt.AllPresses.Count + ")");
+            //GHApp.MaybeWriteGHLog("PressesBegan started (" + presses.Count + ", " + evt.AllPresses.Count + ")");
             foreach (UIPress p in presses) 
             {
                 cnt++;
@@ -122,7 +122,7 @@ namespace GnollHackX.iOS
                 }
             }
             if (!wasHandled)
-                base.PressesEnded(presses, evt);
+                base.PressesBegan(presses, evt);
         }
     }
 }

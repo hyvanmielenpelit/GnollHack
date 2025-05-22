@@ -246,6 +246,45 @@ namespace GnollHackX.Pages.Game
             GHApp.DisconnectIViewHandlers(page);
         }
 
+        public bool HandleSpecialKeyPress(GHSpecialKey key, bool isCtrl, bool isMeta, bool isShift)
+        {
+            bool handled = false;
+            try
+            {
+                MainThread.BeginInvokeOnMainThread(async () =>
+                {
+                    try
+                    {
+                        if (key == GHSpecialKey.Escape)
+                        {
+                            if (btnCancel.IsEnabled)
+                            {
+                                await DoPressCancel();
+                                handled = true;
+                            }
+                        }
+                        else if (key == GHSpecialKey.Enter)
+                        {
+                            if (btnOK.IsEnabled)
+                            {
+                                await DoPressOk();
+                                handled = true;
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        System.Diagnostics.Debug.WriteLine(ex);
+                    }
+                });
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine(ex);
+            }
+            return handled;
+        }
+
         private async void eName_Completed(object sender, EventArgs e)
         {
             if (btnOK.IsEnabled)

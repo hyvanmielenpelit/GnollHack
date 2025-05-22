@@ -399,8 +399,8 @@ public static class MauiProgram
     public static void AndroidDialogKeyPress(object sender, DialogKeyEventArgs e)
     {
         e.Handled = false;
-        if (e.Event.Action == KeyEventActions.Up)
-            e.Handled = PlatformService.HandleOnKeyUp(e.KeyCode, e.Event);
+        if (e.Event.Action == KeyEventActions.Down)
+            e.Handled = PlatformService.HandleOnKeyDown(e.KeyCode, e.Event);
     }
 #endif
 }
