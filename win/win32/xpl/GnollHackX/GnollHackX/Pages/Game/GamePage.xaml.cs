@@ -16692,7 +16692,7 @@ namespace GnollHackX.Pages.Game
             float bottomScrollLimit = Math.Min(0, TextCanvas.CanvasSize.Height - TotalTextHeight);
             lock (_textScrollLock)
             {
-                return Math.Abs(_textScrollOffset - bottomScrollLimit) < 0.1f; //_textScrollOffset == bottomScrollLimit
+                return Math.Abs(_textScrollOffset - bottomScrollLimit) < 1f; //_textScrollOffset == bottomScrollLimit
             }
         }
 
@@ -16701,7 +16701,7 @@ namespace GnollHackX.Pages.Game
             float bottomScrollLimit = Math.Min(0, MenuCanvas.CanvasSize.Height - TotalMenuHeight);
             lock (_menuScrollLock)
             {
-                return Math.Abs(_menuScrollOffset - bottomScrollLimit) < 0.1f; //_menuScrollOffset == bottomScrollLimit;
+                return Math.Abs(_menuScrollOffset - bottomScrollLimit) < 1f; //_menuScrollOffset == bottomScrollLimit;
             }
         }
 

@@ -501,77 +501,65 @@ namespace GnollHackX.Droid
             {
                 case Keycode.SystemNavigationUp:
                 case Keycode.DpadUp:
-                    GHApp.SendSpecialKeyPress(GHSpecialKey.Up, e.IsCtrlPressed, e.IsAltPressed || e.IsMetaPressed, e.IsShiftPressed);
-                    wasHandled = true;
+                    wasHandled = GHApp.SendSpecialKeyPress(GHSpecialKey.Up, e.IsCtrlPressed, e.IsAltPressed || e.IsMetaPressed, e.IsShiftPressed);
                     break;
                 case Keycode.SystemNavigationDown:
                 case Keycode.DpadDown:
-                    GHApp.SendSpecialKeyPress(GHSpecialKey.Down, e.IsCtrlPressed, e.IsAltPressed || e.IsMetaPressed, e.IsShiftPressed);
-                    wasHandled = true;
+                    wasHandled = GHApp.SendSpecialKeyPress(GHSpecialKey.Down, e.IsCtrlPressed, e.IsAltPressed || e.IsMetaPressed, e.IsShiftPressed);
                     break;
                 case Keycode.SystemNavigationLeft:
                 case Keycode.DpadLeft:
-                    GHApp.SendSpecialKeyPress(GHSpecialKey.Left, e.IsCtrlPressed, e.IsAltPressed || e.IsMetaPressed, e.IsShiftPressed);
-                    wasHandled = true;
+                    wasHandled = GHApp.SendSpecialKeyPress(GHSpecialKey.Left, e.IsCtrlPressed, e.IsAltPressed || e.IsMetaPressed, e.IsShiftPressed);
                     break;
                 case Keycode.SystemNavigationRight:
                 case Keycode.DpadRight:
-                    GHApp.SendSpecialKeyPress(GHSpecialKey.Right, e.IsCtrlPressed, e.IsAltPressed || e.IsMetaPressed, e.IsShiftPressed);
-                    wasHandled = true;
+                    wasHandled = GHApp.SendSpecialKeyPress(GHSpecialKey.Right, e.IsCtrlPressed, e.IsAltPressed || e.IsMetaPressed, e.IsShiftPressed);
                     break;
                 case Keycode.DpadUpLeft:
                     GHApp.SendSpecialKeyPress(GHSpecialKey.UpLeft, e.IsCtrlPressed, e.IsAltPressed || e.IsMetaPressed, e.IsShiftPressed);
                     wasHandled = true;
                     break;
                 case Keycode.DpadUpRight:
-                    GHApp.SendSpecialKeyPress(GHSpecialKey.UpRight, e.IsCtrlPressed, e.IsAltPressed || e.IsMetaPressed, e.IsShiftPressed);
-                    wasHandled = true;
+                    wasHandled = GHApp.SendSpecialKeyPress(GHSpecialKey.UpRight, e.IsCtrlPressed, e.IsAltPressed || e.IsMetaPressed, e.IsShiftPressed);
                     break;
                 case Keycode.DpadDownLeft:
-                    GHApp.SendSpecialKeyPress(GHSpecialKey.DownLeft, e.IsCtrlPressed, e.IsAltPressed || e.IsMetaPressed, e.IsShiftPressed);
-                    wasHandled = true;
+                    wasHandled = GHApp.SendSpecialKeyPress(GHSpecialKey.DownLeft, e.IsCtrlPressed, e.IsAltPressed || e.IsMetaPressed, e.IsShiftPressed);
                     break;
                 case Keycode.DpadDownRight:
-                    GHApp.SendSpecialKeyPress(GHSpecialKey.DownRight, e.IsCtrlPressed, e.IsAltPressed || e.IsMetaPressed, e.IsShiftPressed);
-                    wasHandled = true;
+                    wasHandled = GHApp.SendSpecialKeyPress(GHSpecialKey.DownRight, e.IsCtrlPressed, e.IsAltPressed || e.IsMetaPressed, e.IsShiftPressed);
                     break;
                 case Keycode.PageUp:
-                    GHApp.SendSpecialKeyPress(GHSpecialKey.PageUp, e.IsCtrlPressed, e.IsAltPressed || e.IsMetaPressed, e.IsShiftPressed);
-                    wasHandled = true;
+                    wasHandled = GHApp.SendSpecialKeyPress(GHSpecialKey.PageUp, e.IsCtrlPressed, e.IsAltPressed || e.IsMetaPressed, e.IsShiftPressed);
                     break;
                 case Keycode.PageDown:
-                    GHApp.SendSpecialKeyPress(GHSpecialKey.PageDown, e.IsCtrlPressed, e.IsAltPressed || e.IsMetaPressed, e.IsShiftPressed);
-                    wasHandled = true;
+                    wasHandled = GHApp.SendSpecialKeyPress(GHSpecialKey.PageDown, e.IsCtrlPressed, e.IsAltPressed || e.IsMetaPressed, e.IsShiftPressed);
                     break;
                 case Keycode.MoveHome:
-                    GHApp.SendSpecialKeyPress(GHSpecialKey.Home, e.IsCtrlPressed, e.IsAltPressed || e.IsMetaPressed, e.IsShiftPressed);
-                    wasHandled = true;
+                    wasHandled = GHApp.SendSpecialKeyPress(GHSpecialKey.Home, e.IsCtrlPressed, e.IsAltPressed || e.IsMetaPressed, e.IsShiftPressed);
                     break;
                 case Keycode.MoveEnd:
-                    GHApp.SendSpecialKeyPress(GHSpecialKey.End, e.IsCtrlPressed, e.IsAltPressed || e.IsMetaPressed, e.IsShiftPressed);
-                    wasHandled = true;
+                    wasHandled = GHApp.SendSpecialKeyPress(GHSpecialKey.End, e.IsCtrlPressed, e.IsAltPressed || e.IsMetaPressed, e.IsShiftPressed);
                     break;
                 case Keycode.Escape:
-                    GHApp.SendSpecialKeyPress(GHSpecialKey.Escape, e.IsCtrlPressed, e.IsAltPressed || e.IsMetaPressed, e.IsShiftPressed);
-                    wasHandled = true;
+                    wasHandled = GHApp.SendSpecialKeyPress(GHSpecialKey.Escape, e.IsCtrlPressed, e.IsAltPressed || e.IsMetaPressed, e.IsShiftPressed);
                     break;
                 case Keycode.Tab:
                     if(!e.IsAltPressed && !e.IsMetaPressed)
                     {
-                        GHApp.SendSpecialKeyPress(GHSpecialKey.Tab, e.IsCtrlPressed, e.IsAltPressed || e.IsMetaPressed, e.IsShiftPressed);
-                        wasHandled = true;
+                        wasHandled = GHApp.SendSpecialKeyPress(GHSpecialKey.Tab, e.IsCtrlPressed, e.IsAltPressed || e.IsMetaPressed, e.IsShiftPressed);
                     }
                     break;
                 default:
                     if (keyCode == Keycode.Enter)
-                        GHApp.SendSpecialKeyPress(GHSpecialKey.Enter, e.IsCtrlPressed, e.IsAltPressed || e.IsMetaPressed, e.IsShiftPressed);
+                        wasHandled = GHApp.SendSpecialKeyPress(GHSpecialKey.Enter, e.IsCtrlPressed, e.IsAltPressed || e.IsMetaPressed, e.IsShiftPressed);
+                    else if (keyCode == Keycode.Space)
+                        wasHandled = GHApp.SendSpecialKeyPress(GHSpecialKey.Space, e.IsCtrlPressed, e.IsAltPressed || e.IsMetaPressed, e.IsShiftPressed);
                     else if (e.UnicodeChar == (int)'$' || e.UnicodeChar == (int)'¢' /* || (keyCode == Keycode.Num4 && e.IsAltPressed) */)
-                        GHApp.SendKeyPress((int)'$', false, false);
+                        wasHandled = GHApp.SendKeyPress((int)'$', false, false);
                     else if (e.KeyCode >= Keycode.A && e.KeyCode <= Keycode.Z && (e.IsCtrlPressed || e.IsAltPressed || e.IsMetaPressed))
-                        GHApp.SendKeyPress((int)'a' + (int)e.KeyCode - (int)Keycode.A, e.IsCtrlPressed, e.IsAltPressed || e.IsMetaPressed);
+                        wasHandled = GHApp.SendKeyPress((int)'a' + (int)e.KeyCode - (int)Keycode.A, e.IsCtrlPressed, e.IsAltPressed || e.IsMetaPressed);
                     else if (e.UnicodeChar != 0)
-                        GHApp.SendKeyPress(e.UnicodeChar, e.IsCtrlPressed, e.IsAltPressed || e.IsMetaPressed);
-                    wasHandled = true;
+                        wasHandled = GHApp.SendKeyPress(e.UnicodeChar, e.IsCtrlPressed, e.IsAltPressed || e.IsMetaPressed);
                     break;
             }
             return wasHandled;

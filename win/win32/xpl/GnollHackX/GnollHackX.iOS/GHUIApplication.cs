@@ -55,49 +55,40 @@ namespace GnollHackX.iOS
                 string strcharsim = p?.Key?.CharactersIgnoringModifiers;
                 if (strcharsim == UIKeyCommand.UpArrow)
                 {
-                    GHApp.SendSpecialKeyPress(GHSpecialKey.Up, (evt.ModifierFlags & UIKeyModifierFlags.Control) != 0, (evt.ModifierFlags & UIKeyModifierFlags.Alternate) != 0, (evt.ModifierFlags & UIKeyModifierFlags.Shift) != 0);
-                    wasHandled = true;
+                    wasHandled = GHApp.SendSpecialKeyPress(GHSpecialKey.Up, (evt.ModifierFlags & UIKeyModifierFlags.Control) != 0, (evt.ModifierFlags & UIKeyModifierFlags.Alternate) != 0, (evt.ModifierFlags & UIKeyModifierFlags.Shift) != 0);
                 }
                 else if (strcharsim == UIKeyCommand.DownArrow)
                 {
-                    GHApp.SendSpecialKeyPress(GHSpecialKey.Down, (evt.ModifierFlags & UIKeyModifierFlags.Control) != 0, (evt.ModifierFlags & UIKeyModifierFlags.Alternate) != 0, (evt.ModifierFlags & UIKeyModifierFlags.Shift) != 0);
-                    wasHandled = true;
+                    wasHandled = GHApp.SendSpecialKeyPress(GHSpecialKey.Down, (evt.ModifierFlags & UIKeyModifierFlags.Control) != 0, (evt.ModifierFlags & UIKeyModifierFlags.Alternate) != 0, (evt.ModifierFlags & UIKeyModifierFlags.Shift) != 0);
                 }
                 else if (strcharsim == UIKeyCommand.LeftArrow)
                 {
-                    GHApp.SendSpecialKeyPress(GHSpecialKey.Left, (evt.ModifierFlags & UIKeyModifierFlags.Control) != 0, (evt.ModifierFlags & UIKeyModifierFlags.Alternate) != 0, (evt.ModifierFlags & UIKeyModifierFlags.Shift) != 0);
-                    wasHandled = true;
+                    wasHandled = GHApp.SendSpecialKeyPress(GHSpecialKey.Left, (evt.ModifierFlags & UIKeyModifierFlags.Control) != 0, (evt.ModifierFlags & UIKeyModifierFlags.Alternate) != 0, (evt.ModifierFlags & UIKeyModifierFlags.Shift) != 0);
                 }
                 else if (strcharsim == UIKeyCommand.RightArrow)
                 {
-                    GHApp.SendSpecialKeyPress(GHSpecialKey.Right, (evt.ModifierFlags & UIKeyModifierFlags.Control) != 0, (evt.ModifierFlags & UIKeyModifierFlags.Alternate) != 0, (evt.ModifierFlags & UIKeyModifierFlags.Shift) != 0);
-                    wasHandled = true;
+                    wasHandled = GHApp.SendSpecialKeyPress(GHSpecialKey.Right, (evt.ModifierFlags & UIKeyModifierFlags.Control) != 0, (evt.ModifierFlags & UIKeyModifierFlags.Alternate) != 0, (evt.ModifierFlags & UIKeyModifierFlags.Shift) != 0);
                 }
                 else if (strcharsim == UIKeyCommand.PageUp)
                 {
-                    GHApp.SendSpecialKeyPress(GHSpecialKey.PageUp, (evt.ModifierFlags & UIKeyModifierFlags.Control) != 0, (evt.ModifierFlags & UIKeyModifierFlags.Alternate) != 0, (evt.ModifierFlags & UIKeyModifierFlags.Shift) != 0);
-                    wasHandled = true;
+                    wasHandled = GHApp.SendSpecialKeyPress(GHSpecialKey.PageUp, (evt.ModifierFlags & UIKeyModifierFlags.Control) != 0, (evt.ModifierFlags & UIKeyModifierFlags.Alternate) != 0, (evt.ModifierFlags & UIKeyModifierFlags.Shift) != 0);
                 }
                 else if (strcharsim == UIKeyCommand.PageDown)
                 {
-                    GHApp.SendSpecialKeyPress(GHSpecialKey.PageDown, (evt.ModifierFlags & UIKeyModifierFlags.Control) != 0, (evt.ModifierFlags & UIKeyModifierFlags.Alternate) != 0, (evt.ModifierFlags & UIKeyModifierFlags.Shift) != 0);
-                    wasHandled = true;
+                    wasHandled = GHApp.SendSpecialKeyPress(GHSpecialKey.PageDown, (evt.ModifierFlags & UIKeyModifierFlags.Control) != 0, (evt.ModifierFlags & UIKeyModifierFlags.Alternate) != 0, (evt.ModifierFlags & UIKeyModifierFlags.Shift) != 0);
                 }
                 else if (strcharsim == UIKeyCommand.Home)
                 {
-                    GHApp.SendSpecialKeyPress(GHSpecialKey.Home, (evt.ModifierFlags & UIKeyModifierFlags.Control) != 0, (evt.ModifierFlags & UIKeyModifierFlags.Alternate) != 0, (evt.ModifierFlags & UIKeyModifierFlags.Shift) != 0);
-                    wasHandled = true;
+                    wasHandled = GHApp.SendSpecialKeyPress(GHSpecialKey.Home, (evt.ModifierFlags & UIKeyModifierFlags.Control) != 0, (evt.ModifierFlags & UIKeyModifierFlags.Alternate) != 0, (evt.ModifierFlags & UIKeyModifierFlags.Shift) != 0);
                 }
                 else if (strcharsim == UIKeyCommand.End)
                 {
-                    GHApp.SendSpecialKeyPress(GHSpecialKey.End, (evt.ModifierFlags & UIKeyModifierFlags.Control) != 0, (evt.ModifierFlags & UIKeyModifierFlags.Alternate) != 0, (evt.ModifierFlags & UIKeyModifierFlags.Shift) != 0);
-                    wasHandled = true;
+                    wasHandled = GHApp.SendSpecialKeyPress(GHSpecialKey.End, (evt.ModifierFlags & UIKeyModifierFlags.Control) != 0, (evt.ModifierFlags & UIKeyModifierFlags.Alternate) != 0, (evt.ModifierFlags & UIKeyModifierFlags.Shift) != 0);
                 }
                 else if (strcharsim == UIKeyCommand.Escape)
                 {
                     //GHApp.SendKeyPress(GHConstants.CancelChar, (evt.ModifierFlags & UIKeyModifierFlags.Control) != 0, (evt.ModifierFlags & UIKeyModifierFlags.Alternate) != 0);
-                    GHApp.SendSpecialKeyPress(GHSpecialKey.Escape, (evt.ModifierFlags & UIKeyModifierFlags.Control) != 0, (evt.ModifierFlags & UIKeyModifierFlags.Alternate) != 0, (evt.ModifierFlags & UIKeyModifierFlags.Shift) != 0);
-                    wasHandled = true;
+                    wasHandled = GHApp.SendSpecialKeyPress(GHSpecialKey.Escape, (evt.ModifierFlags & UIKeyModifierFlags.Control) != 0, (evt.ModifierFlags & UIKeyModifierFlags.Alternate) != 0, (evt.ModifierFlags & UIKeyModifierFlags.Shift) != 0);
                 }
                 else
                 {
@@ -108,17 +99,18 @@ namespace GnollHackX.iOS
                     if(strchars?.Length > 0 && strcharsim?.Length > 0)
                     {
                         if ((int)strchars[0] == 13)
-                            GHApp.SendSpecialKeyPress(GHSpecialKey.Enter, (evt.ModifierFlags & UIKeyModifierFlags.Control) != 0, (evt.ModifierFlags & UIKeyModifierFlags.Alternate) != 0, (evt.ModifierFlags & UIKeyModifierFlags.Shift) != 0);
+                            wasHandled = GHApp.SendSpecialKeyPress(GHSpecialKey.Enter, (evt.ModifierFlags & UIKeyModifierFlags.Control) != 0, (evt.ModifierFlags & UIKeyModifierFlags.Alternate) != 0, (evt.ModifierFlags & UIKeyModifierFlags.Shift) != 0);
+                        else if ((int)strchars[0] == ' ')
+                            wasHandled = GHApp.SendSpecialKeyPress(GHSpecialKey.Space, (evt.ModifierFlags & UIKeyModifierFlags.Control) != 0, (evt.ModifierFlags & UIKeyModifierFlags.Alternate) != 0, (evt.ModifierFlags & UIKeyModifierFlags.Shift) != 0);
                         else if ((int)strchars[0] == 9 && (evt.ModifierFlags & UIKeyModifierFlags.Alternate) == 0) /* Tab */
-                            GHApp.SendSpecialKeyPress(GHSpecialKey.Tab, (evt.ModifierFlags & UIKeyModifierFlags.Control) != 0, (evt.ModifierFlags & UIKeyModifierFlags.Alternate) != 0, (evt.ModifierFlags & UIKeyModifierFlags.Shift) != 0);
+                            wasHandled = GHApp.SendSpecialKeyPress(GHSpecialKey.Tab, (evt.ModifierFlags & UIKeyModifierFlags.Control) != 0, (evt.ModifierFlags & UIKeyModifierFlags.Alternate) != 0, (evt.ModifierFlags & UIKeyModifierFlags.Shift) != 0);
                         else if ((int)strchars[0] == (int)'$' || (int)strcharsim[0] == (int)'$' || (int)strchars[0] == (int)'¢')
-                            GHApp.SendKeyPress((int)'$', false, false);
+                            wasHandled = GHApp.SendKeyPress((int)'$', false, false);
                         else if ((evt.ModifierFlags & UIKeyModifierFlags.Control) != 0 || (evt.ModifierFlags & UIKeyModifierFlags.Alternate) != 0)
-                            GHApp.SendKeyPress((int)strcharsim[0], (evt.ModifierFlags & UIKeyModifierFlags.Control) != 0, (evt.ModifierFlags & UIKeyModifierFlags.Alternate) != 0);
+                            wasHandled = GHApp.SendKeyPress((int)strcharsim[0], (evt.ModifierFlags & UIKeyModifierFlags.Control) != 0, (evt.ModifierFlags & UIKeyModifierFlags.Alternate) != 0);
                         else
-                            GHApp.SendKeyPress((int)strchars[0], (evt.ModifierFlags & UIKeyModifierFlags.Control) != 0, (evt.ModifierFlags & UIKeyModifierFlags.Alternate) != 0);
+                            wasHandled = GHApp.SendKeyPress((int)strchars[0], (evt.ModifierFlags & UIKeyModifierFlags.Control) != 0, (evt.ModifierFlags & UIKeyModifierFlags.Alternate) != 0);
                     }
-                    wasHandled = true;
                 }
             }
             if (!wasHandled)
