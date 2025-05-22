@@ -555,6 +555,13 @@ namespace GnollHackX.Droid
                     GHApp.SendSpecialKeyPress(GHSpecialKey.Escape, e.IsCtrlPressed, e.IsAltPressed || e.IsMetaPressed, e.IsShiftPressed);
                     wasHandled = true;
                     break;
+                case Keycode.Tab:
+                    if(!e.IsAltPressed && !e.IsMetaPressed)
+                    {
+                        GHApp.SendSpecialKeyPress(GHSpecialKey.Tab, e.IsCtrlPressed, e.IsAltPressed || e.IsMetaPressed, e.IsShiftPressed);
+                        wasHandled = true;
+                    }
+                    break;
                 default:
                     if (keyCode == Keycode.Enter)
                         GHApp.SendSpecialKeyPress(GHSpecialKey.Enter, e.IsCtrlPressed, e.IsAltPressed || e.IsMetaPressed, e.IsShiftPressed);

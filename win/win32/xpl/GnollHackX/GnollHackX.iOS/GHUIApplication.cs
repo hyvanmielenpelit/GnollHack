@@ -109,6 +109,8 @@ namespace GnollHackX.iOS
                     {
                         if ((int)strchars[0] == 13)
                             GHApp.SendSpecialKeyPress(GHSpecialKey.Enter, (evt.ModifierFlags & UIKeyModifierFlags.Control) != 0, (evt.ModifierFlags & UIKeyModifierFlags.Alternate) != 0, (evt.ModifierFlags & UIKeyModifierFlags.Shift) != 0);
+                        else if ((int)strchars[0] == 9 && (evt.ModifierFlags & UIKeyModifierFlags.Alternate) == 0) /* Tab */
+                            GHApp.SendSpecialKeyPress(GHSpecialKey.Tab, (evt.ModifierFlags & UIKeyModifierFlags.Control) != 0, (evt.ModifierFlags & UIKeyModifierFlags.Alternate) != 0, (evt.ModifierFlags & UIKeyModifierFlags.Shift) != 0);
                         else if ((int)strchars[0] == (int)'$' || (int)strcharsim[0] == (int)'$' || (int)strchars[0] == (int)'¢')
                             GHApp.SendKeyPress((int)'$', false, false);
                         else if ((evt.ModifierFlags & UIKeyModifierFlags.Control) != 0 || (evt.ModifierFlags & UIKeyModifierFlags.Alternate) != 0)
