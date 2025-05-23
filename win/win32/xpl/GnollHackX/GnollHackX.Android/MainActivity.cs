@@ -223,11 +223,11 @@ namespace GnollHackX.Droid
             base.OnConfigurationChanged(newConfig);
         }
 
-        public override bool OnKeyUp([GeneratedEnum] Keycode keyCode, KeyEvent e)
+        public override bool OnKeyDown([GeneratedEnum] Keycode keyCode, KeyEvent e)
         {
-            bool wasHandled = PlatformService.HandleOnKeyUp(keyCode, e);
+            bool wasHandled = PlatformService.HandleOnKeyDown(keyCode, e);
             if (!wasHandled)
-                return base.OnKeyUp(keyCode, e);
+                return base.OnKeyDown(keyCode, e);
             else
                 return true;
         }
