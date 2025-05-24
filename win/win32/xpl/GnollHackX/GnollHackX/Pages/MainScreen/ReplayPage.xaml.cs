@@ -38,7 +38,7 @@ namespace GnollHackX.Pages.MainScreen
 #endif
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class ReplayPage : ContentPage
+    public partial class ReplayPage : ContentPage, ICloseablePage
     {
         MainPage _mainPage = null;
         string _subDirectoryLocal = null;
@@ -822,6 +822,11 @@ namespace GnollHackX.Pages.MainScreen
         }
 
         private async void CloseButton_Clicked(object sender, EventArgs e)
+        {
+            await ClosePageAsync();
+        }
+
+        private async Task ClosePageAsync()
         {
             CloseButton.IsEnabled = false;
             GHApp.PlayButtonClickedSound();
@@ -1890,6 +1895,47 @@ namespace GnollHackX.Pages.MainScreen
         {
             await UpdateLocalOrServerRecordings(IsCloud);
             UpdateButtons();
+        }
+
+        public void ClosePage()
+        {
+            try
+            {
+                MainThread.BeginInvokeOnMainThread(async () =>
+                {
+                    try
+                    {
+                        if (UploadDownloadGrid.IsVisible)
+                        {
+                            if (UploadDownloadCancelButton.IsEnabled)
+                            {
+                                UploadDownloadCancelButton_Clicked(UploadDownloadCancelButton, EventArgs.Empty);
+                            }
+                        }
+                        else if (PopupGrid.IsVisible)
+                        {
+                            if (PopupCancelButton.IsEnabled)
+                            {
+                                PopupCancelButton_Clicked(PopupCancelButton, EventArgs.Empty);
+                            }
+                        }
+                        else
+                        {
+                            if (CloseButton.IsEnabled)
+                                await ClosePageAsync();
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        System.Diagnostics.Debug.WriteLine(ex);
+                    }
+
+                });
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine(ex);
+            }
         }
     }
 

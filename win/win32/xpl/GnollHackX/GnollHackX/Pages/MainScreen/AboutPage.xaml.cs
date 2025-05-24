@@ -427,6 +427,5 @@ namespace GnollHackX.Pages.MainScreen
             }
             return handled;
         }
-
     }
 }

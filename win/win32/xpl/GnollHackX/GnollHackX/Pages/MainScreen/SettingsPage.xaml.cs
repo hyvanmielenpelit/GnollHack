@@ -1653,6 +1653,58 @@ namespace GnollHackX.Pages.MainScreen
             GHApp.DisconnectIViewHandlers(page);
         }
 
+        public bool HandleSpecialKeyPress(GHSpecialKey key, bool isCtrl, bool isMeta, bool isShift)
+        {
+            bool handled = false;
+            if (WaitLayout.IsVisible)
+                return true;
+
+            try
+            {
+                MainThread.BeginInvokeOnMainThread(async () =>
+                {
+                    try
+                    {
+                        if (key == GHSpecialKey.Escape || key == GHSpecialKey.Enter)
+                        {
+                            if (PopupGrid.IsVisible)
+                            {
+                                if (PopupOkButton.IsEnabled)
+                                {
+                                    PopupOkButton_Clicked(PopupOkButton, EventArgs.Empty);
+                                }
+                            }
+                            else if (TextGrid.IsVisible)
+                            {
+                                if (TextCancelButton.IsEnabled && key == GHSpecialKey.Escape)
+                                {
+                                    TextCancelButton_Clicked(TextCancelButton, EventArgs.Empty);
+                                }
+                                else if (TextOkButton.IsEnabled && key == GHSpecialKey.Enter)
+                                {
+                                    TextOkButton_Clicked(TextOkButton, EventArgs.Empty);
+                                }
+                            }
+                            else
+                            {
+                                if (CloseButton.IsEnabled)
+                                    await ClosePageAsync();
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.WriteLine(ex);
+                    }
+                });
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+            }
+            return handled;
+        }
+
 
         private CustomImageButton _linkButtonClicked = null;
         private Label _linkLabel = null;

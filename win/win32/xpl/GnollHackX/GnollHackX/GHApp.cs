@@ -7746,6 +7746,8 @@ namespace GnollHackX
                 return ((GameMenuPage)topPage).HandleKeyPress(key, isCtrl, isMeta);
             else if (topPage is AboutPage)
                 return ((AboutPage)topPage).HandleKeyPress(key, isCtrl, isMeta);
+            else if (topPage is VaultPage)
+                return ((VaultPage)topPage).HandleKeyPress(key, isCtrl, isMeta);
             else
                 return false;
         }
@@ -7763,6 +7765,8 @@ namespace GnollHackX
                 return ((GameMenuPage)topPage).HandleSpecialKeyPress(spkey, isCtrl, isMeta, isShift);
             else if (topPage is NamePage)
                 return ((NamePage)topPage).HandleSpecialKeyPress(spkey, isCtrl, isMeta, isShift);
+            else if (topPage is SettingsPage)
+                return ((SettingsPage)topPage).HandleSpecialKeyPress(spkey, isCtrl, isMeta, isShift);
             else if (topPage is OutRipPage)
             {
                 if (spkey == GHSpecialKey.Escape || spkey == GHSpecialKey.Enter || spkey == GHSpecialKey.Space)

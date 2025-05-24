@@ -258,6 +258,11 @@ namespace GnollHackX.Pages.MainScreen
 
         private async void btnTopScores_Clicked(object sender, EventArgs e)
         {
+            await OpenTopScorePage();
+        }
+
+        private async Task OpenTopScorePage()
+        {
             VaultLayout.IsEnabled = false;
             GHApp.PlayButtonClickedSound();
             string fulltargetpath = Path.Combine(GHApp.GHPath, "xlogfile");
@@ -286,6 +291,11 @@ namespace GnollHackX.Pages.MainScreen
 
         private async void btnLibrary_Clicked(object sender, EventArgs e)
         {
+            await OpenLibraryPage();
+        }
+
+        private async Task OpenLibraryPage()
+        {
             VaultLayout.IsEnabled = false;
             GHApp.PlayButtonClickedSound();
             var libPage = new LibraryPage();
@@ -296,6 +306,11 @@ namespace GnollHackX.Pages.MainScreen
 
         private async void btnSoundTracks_Clicked(object sender, EventArgs e)
         {
+            await OpenMusicPage();
+        }
+
+        private async Task OpenMusicPage()
+        {
             VaultLayout.IsEnabled = false;
             GHApp.PlayButtonClickedSound();
             var musicPage = new MusicPage();
@@ -304,6 +319,11 @@ namespace GnollHackX.Pages.MainScreen
         }
 
         private async void btnSnapshots_Clicked(object sender, EventArgs e)
+        {
+            await OpenSnapshotPage();
+        }
+
+        private async Task OpenSnapshotPage()
         {
             VaultLayout.IsEnabled = false;
             GHApp.PlayButtonClickedSound();
@@ -315,13 +335,74 @@ namespace GnollHackX.Pages.MainScreen
 
         private async void btnReplays_Clicked(object sender, EventArgs e)
         {
+            await OpenReplayPage();
+        }
+
+        private async Task OpenReplayPage()
+        {
             VaultLayout.IsEnabled = false;
             GHApp.PlayButtonClickedSound();
-
             ReplayPage selectFilePage = new ReplayPage(_mainPage);
             await GHApp.Navigation.PushModalAsync(selectFilePage);
-
             VaultLayout.IsEnabled = true;
+        }
+
+        public bool HandleKeyPress(int key, bool isCtrl, bool isMeta)
+        {
+            bool handled = false;
+            try
+            {
+                MainThread.BeginInvokeOnMainThread(async () =>
+                {
+                    try
+                    {
+                        switch (key)
+                        {
+                            case (int)'t':
+                            case (int)'T':
+                                if (VaultLayout.IsEnabled)
+                                    await OpenTopScorePage();
+                                handled = true;
+                                break;
+                            case (int)'l':
+                            case (int)'L':
+                                if (VaultLayout.IsEnabled)
+                                    await OpenLibraryPage();
+                                handled = true;
+                                break;
+                            case (int)'m':
+                            case (int)'M':
+                                if (VaultLayout.IsEnabled)
+                                    await OpenMusicPage();
+                                handled = true;
+                                break;
+                            case (int)'s':
+                            case (int)'S':
+                                if (VaultLayout.IsEnabled)
+                                    await OpenSnapshotPage();
+                                handled = true;
+                                break;
+                            case (int)'r':
+                            case (int)'R':
+                                if (VaultLayout.IsEnabled)
+                                    await OpenReplayPage();
+                                handled = true;
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        System.Diagnostics.Debug.WriteLine(ex);
+                    }
+                });
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine(ex);
+            }
+            return handled;
         }
     }
 }
