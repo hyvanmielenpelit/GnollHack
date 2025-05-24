@@ -328,7 +328,12 @@
 		<None Remove="Platforms\Android\tileset\gnollhack_64x96_transparent_32bits.ghpng" />
 		<None Remove="Resources\AppIcon\appicon.svg" />
 		<None Remove="Resources\AppIcon\appiconfg.svg" />
-	</ItemGroup>
+
+    <!-- Platform specific files that are outside of folders -->
+    <None Remove="..\GnollHackX\GnollHackX.Android\PlatformServiceAndroid.cs" />
+    <None Remove="..\GnollHackX\GnollHackX.iOS\PlatformServiceiOS.cs" />
+    <None Remove="..\GnollHackX\GnollHackX.iOS\GHUIApplication.cs" />
+  </ItemGroup>
 
 	<ItemGroup>
 		<Compile Include="..\GnollHackX\GnollHackX\BackgroundView.cs" />
@@ -427,7 +432,12 @@
 		<Compile Include="..\GnollHackX\GnollHackX\Pages\Game\OutRipPage.xaml.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\Pages\Game\WikiPage.xaml.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\MainPage.xaml.cs" />
-	</ItemGroup>
+    
+    <!-- Show some platform specific files that are outside of folders -->
+    <None Include="..\GnollHackX\GnollHackX.Android\PlatformServiceAndroid.cs" />
+    <None Include="..\GnollHackX\GnollHackX.iOS\PlatformServiceiOS.cs" />
+    <None Include="..\GnollHackX\GnollHackX.iOS\GHUIApplication.cs" />
+  </ItemGroup>
 
 	<ItemGroup>
 		<None Remove="Assets\archristy.ttf" />

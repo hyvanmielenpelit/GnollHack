@@ -516,8 +516,7 @@ namespace GnollHackX.Droid
                     wasHandled = GHApp.SendSpecialKeyPress(GHSpecialKey.Right, e.IsCtrlPressed, e.IsAltPressed || e.IsMetaPressed, e.IsShiftPressed);
                     break;
                 case Keycode.DpadUpLeft:
-                    GHApp.SendSpecialKeyPress(GHSpecialKey.UpLeft, e.IsCtrlPressed, e.IsAltPressed || e.IsMetaPressed, e.IsShiftPressed);
-                    wasHandled = true;
+                    wasHandled = GHApp.SendSpecialKeyPress(GHSpecialKey.UpLeft, e.IsCtrlPressed, e.IsAltPressed || e.IsMetaPressed, e.IsShiftPressed);
                     break;
                 case Keycode.DpadUpRight:
                     wasHandled = GHApp.SendSpecialKeyPress(GHSpecialKey.UpRight, e.IsCtrlPressed, e.IsAltPressed || e.IsMetaPressed, e.IsShiftPressed);
