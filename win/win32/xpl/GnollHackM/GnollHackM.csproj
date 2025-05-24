@@ -91,19 +91,6 @@
     <SelfContained Condition="'$(WindowsPackageType)'=='None'">true</SelfContained>-->
 	</PropertyGroup>
 
-	<ItemGroup Condition="'$(TargetFramework)'=='net9.0-android'">
-		<MauiIcon Include="Resources\AppIcon\appicon.png" Color="#FFFFFF" ForegroundScale="0.6" />
-	</ItemGroup>
-	<ItemGroup Condition="'$(TargetFramework)'=='net9.0-windows10.0.19041.0'">
-		<MauiIcon Include="Resources\AppIcon\appicon.png" ForegroundScale="1.0" />
-	</ItemGroup>
-	<ItemGroup Condition="'$(TargetFramework)'=='net9.0-ios'">
-		<MauiIcon Include="Resources\AppIcon\iOS\appicon.png" ForegroundFile="Resources\AppIcon\iOS\appiconios.png" />
-	</ItemGroup>
-	<ItemGroup Condition="'$(TargetFramework)'=='net9.0-maccatalyst'">
-		<MauiIcon Include="Resources\AppIcon\iOS\appicon.png" ForegroundFile="Resources\AppIcon\iOS\appiconios.png" />
-	</ItemGroup>
-
 	<!-- CONFIGURATION + FRAMEWORK SPECIFIC PROPERTIES -->
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)'=='Debug|net9.0-ios'">
 		<ProvisioningType>manual</ProvisioningType>
@@ -145,11 +132,15 @@
     <Debugger>Xamarin</Debugger>
   </PropertyGroup>-->
 
-	<!-- GENERAL PROPERTIES -->
+  <!-- GENERAL PROPERTIES -->
 	<ItemGroup>
-		<!-- MauiIcon has been set above on a platform-specific manner -->
+		<!-- MauiIcon -->
+    <MauiIcon Condition="'$(TargetFramework)'=='net9.0-android'" Include="Resources\AppIcon\appicon.png" Color="#FFFFFF" ForegroundScale="0.6" />
+    <MauiIcon Condition="'$(TargetFramework)'=='net9.0-windows10.0.19041.0'" Include="Resources\AppIcon\appicon.png" ForegroundScale="1.0" />
+    <MauiIcon Condition="'$(TargetFramework)'=='net9.0-ios'" Include="Resources\AppIcon\iOS\appicon.png" ForegroundFile="Resources\AppIcon\iOS\appiconios.png" />
+    <MauiIcon Condition="'$(TargetFramework)'=='net9.0-maccatalyst'" Include="Resources\AppIcon\iOS\appicon.png" ForegroundFile="Resources\AppIcon\iOS\appiconios.png" />
 
-		<!-- Splash Screen -->
+    <!-- Splash Screen -->
 		<MauiSplashScreen Include="Resources\Splash\gnollhackicon.png" Color="#000000" BaseSize="160,160" />
 
 		<!-- Images -->
