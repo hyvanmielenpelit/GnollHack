@@ -8219,7 +8219,7 @@ struct monst* mtmp;
         "Forge 10 elite silver sling-bullets", MENU_UNSELECTED);
 
     /* Finish the menu */
-    end_menu(win, "Which type of armor do you want to forge?");
+    end_menu(win, "Which type of sling-bullets do you want to forge?");
 
     int i = 0;
     /* Now generate the menu */
