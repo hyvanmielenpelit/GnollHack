@@ -172,10 +172,10 @@ namespace GnollHackX.Unknown
             if (res != RESULT.OK)
                 return;
 
-#if __IOS__ 
+#if __IOS__ || (GNH_MAUI && IOS)
             AVAudioSession si = AVAudioSession.SharedInstance();
             if(si != null)
-                si.SetCategory(AVAudioSessionCategory.Ambient);
+                si.SetCategory(AVAudioSessionCategory.Playback);
 #endif
             _initialized = true;
             GHApp.MaybeWriteGHLog("FMOD initialized successfully.");
