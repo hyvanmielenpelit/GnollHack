@@ -1441,6 +1441,9 @@ struct monst* mtmp;
     else if (alignment == A_CHAOTIC)
         mkflags |= MKOBJ_FLAGS_OWNER_IS_CHAOTIC;
 
+    if (is_demon(mtmp->data))
+        mkflags |= MKOBJ_FLAGS_OWNER_IS_DEMON;
+
     return mkflags;
 }
 
@@ -1503,7 +1506,7 @@ uint64_t mkflags;
     {
         mkflags |= mkobj_ownerflags(mowner);
     }
-
+    boolean no_celestial_or_primordial = (mkflags & MKOBJ_FLAGS_OWNER_IS_DEMON) != 0;
     otmp = newobj();
     *otmp = zeroobj;
     otmp->age = monstermoves;
@@ -2149,9 +2152,9 @@ uint64_t mkflags;
             boolean iswand = otmp->oclass == WAND_CLASS || (otmp->oclass == TOOL_CLASS && is_spelltool(otmp));
             boolean halfchance = !!(objects[otmp->otyp].oc_flags5 & O5_HALF_EXCEPTIONALITY_CHANCE);
             boolean doublechance = !!(objects[otmp->otyp].oc_flags5 & O5_DOUBLE_EXCEPTIONALITY_CHANCE);
-            uchar ownerimpliedexcep = (mkflags & MKOBJ_FLAGS_OWNER_IS_LAWFUL) ? EXCEPTIONALITY_CELESTIAL :
-                (mkflags & MKOBJ_FLAGS_OWNER_IS_NEUTRAL) ? EXCEPTIONALITY_PRIMORDIAL : (mkflags & MKOBJ_FLAGS_OWNER_IS_LAWFUL) ? EXCEPTIONALITY_INFERNAL : 
-                (mkflags & MKOBJ_FLAGS_OWNER_IS_NONALIGNED) ? EXCEPTIONALITY_ELITE : 0;
+            uchar ownerimpliedexcep = (mkflags & MKOBJ_FLAGS_OWNER_IS_LAWFUL) != 0 && !no_celestial_or_primordial ? EXCEPTIONALITY_CELESTIAL :
+                (mkflags & MKOBJ_FLAGS_OWNER_IS_NEUTRAL) != 0 && !no_celestial_or_primordial ? EXCEPTIONALITY_PRIMORDIAL : (mkflags & MKOBJ_FLAGS_OWNER_IS_CHAOTIC) != 0 ? EXCEPTIONALITY_INFERNAL :
+                (mkflags & MKOBJ_FLAGS_OWNER_IS_NONALIGNED) != 0 ? EXCEPTIONALITY_ELITE : 0;
             if (In_endgame(&u.uz))
             {
                 if (!iswand && (doublechance || !rn2(halfchance ? 4 : 2)))

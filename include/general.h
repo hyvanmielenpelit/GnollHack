@@ -600,6 +600,7 @@ enum context_menu_styles {
 #define MKOBJ_FLAGS_PARAM_IS_SPECIAL_QUALITY           0x00008000
 #define MKOBJ_FLAGS_PARAM_IS_MNUM                      0x00010000
 #define MKOBJ_FLAGS_FOUND_THIS_TURN                    0x00020000
+#define MKOBJ_FLAGS_OWNER_IS_DEMON                     0x00040000
 
 #define MONDEAD_FLAGS_NONE                             0x00000000
 #define MONDEAD_FLAGS_NO_DEATH_ACTION                  0x00000001
