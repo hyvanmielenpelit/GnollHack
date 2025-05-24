@@ -2548,7 +2548,9 @@ register size_t len;
             restoreprocs.mread_flags = -2;
             return;
         } else {
-            pline("Read %d instead of %zu bytes.", rlen, len);
+            char errorbuf[BUFSZ];
+            Sprintf(errorbuf, "Read %d instead of %zu bytes.", rlen, len);
+            raw_print(errorbuf);
             if (restoring) {
                 (void) nhclose(fd);
                 (void) delete_tmp_backup_savefile();
