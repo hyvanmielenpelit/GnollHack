@@ -26,7 +26,7 @@
 
 		<!-- Versions -->
 		<ApplicationDisplayVersion>2.40</ApplicationDisplayVersion>
-		<ApplicationVersion>258</ApplicationVersion>
+		<ApplicationVersion>259</ApplicationVersion>
 
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">14.0</SupportedOSPlatformVersion>
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst'">13.1</SupportedOSPlatformVersion>
