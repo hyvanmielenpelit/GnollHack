@@ -4597,27 +4597,30 @@ maybe_finished_meal(stopping)
 boolean stopping;
 {
     /* in case consume_oeaten() has decided that the food is all gone */
-    if (occupation == eatfood
-        && context.victual.usedtime >= context.victual.reqtime) {
-        if (stopping)
-        {
-            occupation = 0; /* for do_reset_eat */
-            if (occsoundset > 0)
-            {
-                stop_occupation_ambient_sound(occsoundset, occtyp);
-                play_occupation_immediate_sound(occsoundset, occtyp, OCCUPATION_SOUND_TYPE_INTERRUPTED);
-                occsoundset = 0;
-                occtyp = 0;
-            }
-        }
-        (void) eatfood();   /* calls done_eating() to use up
-                               context.victual.piece */
-        return TRUE;
-    }
-    if (stopping && context.victual.piece)
+    if (occupation == eatfood)
     {
-        int nutr = context.victual.total_nutrition - context.victual.piece->oeaten;
-        display_nutrition_floating_text(u.ux, u.uy, nutr);
+        if (context.victual.usedtime >= context.victual.reqtime) 
+        {
+            if (stopping)
+            {
+                occupation = 0; /* for do_reset_eat */
+                if (occsoundset > 0)
+                {
+                    stop_occupation_ambient_sound(occsoundset, occtyp);
+                    play_occupation_immediate_sound(occsoundset, occtyp, OCCUPATION_SOUND_TYPE_INTERRUPTED);
+                    occsoundset = 0;
+                    occtyp = 0;
+                }
+            }
+            (void)eatfood();   /* calls done_eating() to use up
+                                   context.victual.piece */
+            return TRUE;
+        }
+        if (stopping && context.victual.piece)
+        {
+            int nutr = context.victual.total_nutrition - context.victual.piece->oeaten;
+            display_nutrition_floating_text(u.ux, u.uy, nutr);
+        }
     }
     return FALSE;
 }
