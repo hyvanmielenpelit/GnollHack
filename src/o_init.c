@@ -133,7 +133,7 @@ const struct material_definition material_definitions[MAX_MATERIAL_TYPES] = {
     {5, 4, 4, 4, 4, 0, 0, 0, 4}, {0, 0, 0, 0, 0, 0, 0, 0, 0}, {1.0, 0, 0, 0, 0 ,0 ,0 ,0 ,0}, 1.0, 1.0, 2.5, 100.0,
     { DISINTEGRATION_RESISTANCE, DISINTEGRATION_RESISTANCE, NO_POWER, NO_POWER, NO_POWER, NO_POWER, NO_POWER, NO_POWER, NO_POWER }, 
     { BISECTION_RESISTANCE, NO_POWER, NO_POWER, NO_POWER, NO_POWER, NO_POWER, NO_POWER, NO_POWER, NO_POWER }, 
-    0, 6, 0, 0, 6, 0, NO_POWER, NO_POWER, 5, 4, 20,
+    0, 4, 0, 0, 4, 0, NO_POWER, NO_POWER, 5, 4, 20,
     O1_INDESTRUCTIBLE | O1_DISINTEGRATION_RESISTANT, 0UL, 0UL, O4_VERY_RARE, O5_HALF_EXCEPTIONALITY_CHANCE, 0UL },
 {"mithril",     "mithril",     "mithril",     PHASE_SOLID,    HIT_SURFACE_METAL,      FLOOR_SURFACE_METAL,    FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, TRUE, FALSE,    FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, TRUE,  TRUE,        "metal",         "silvery",            HI_SILVER,
     {3, 2, 2, 2, 2, 0, 0, 0, 2}, {3, 1, 1, 1, 1 ,0 ,0 ,0 ,1}, {-1.0, 0, 0, 0, 0 ,0 ,0 ,0 ,0}, 0.9, 0.5, 2.5, 100.0,
