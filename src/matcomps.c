@@ -496,7 +496,7 @@ struct materialcomponentlist matlists[] =
     { SPE_TELEPORT_MONSTER,
         "Blue glass, sporal powder",
         STRANGE_OBJECT,
-        8,
+        4,
         {
             {
                 {WORTHLESS_PIECE_OF_BLUE_GLASS, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT},
@@ -3728,7 +3728,7 @@ struct materialcomponentlist matlists[] =
     { SPE_CIRCLE_OF_TELEPORTATION,
     "Blue glass, 2 sporal powder",
     STRANGE_OBJECT,
-    7,
+    4,
         {
             {
                 {WORTHLESS_PIECE_OF_BLUE_GLASS, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT},
