@@ -3624,7 +3624,7 @@ struct materialcomponentlist matlists[] =
     { SPE_HOLD_MONSTER,
     "Bat guano, spider silk",
     STRANGE_OBJECT,
-    6,
+    2,
         {
             {
                 {CLUMP_OF_BAT_GUANO, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT}, 
@@ -3641,7 +3641,7 @@ struct materialcomponentlist matlists[] =
     { SPE_MASS_HOLD,
     "Bat guano, spider silk, sporal powder",
     STRANGE_OBJECT,
-    6,
+    2,
         {
             {
                 {CLUMP_OF_BAT_GUANO, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT},
@@ -3662,7 +3662,7 @@ struct materialcomponentlist matlists[] =
     { SPE_HOLD_UNDEAD,
     "Garlic, spider silk",
     STRANGE_OBJECT,
-    8,
+    3,
         {
             {
                 {CLOVE_OF_GARLIC, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT},
