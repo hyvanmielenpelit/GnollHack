@@ -14077,6 +14077,8 @@ namespace GnollHackX.Pages.Game
                             else if (_touchWithinStatusBar)
                             {
                                 ShowExtendedStatusBar = !ShowExtendedStatusBar;
+                                //if (ShowExtendedStatusBar)
+                                //    ToggleShowUI();
                                 lock (_statusOffsetLock)
                                 {
                                     _statusOffsetY = 0.0f;
@@ -14184,6 +14186,21 @@ namespace GnollHackX.Pages.Game
             }
             return 0;
 
+        }
+
+        private bool _showUI = true;
+        private void ToggleShowUI()
+        {
+            MainThread.BeginInvokeOnMainThread(() =>
+            {
+                _showUI = !_showUI;
+                UIGrid.IsVisible = _showUI;
+                if (!DesktopButtons)
+                {
+                    lWornItemsButton.IsVisible = _showUI;
+                    lAbilitiesButton.IsVisible = _showUI;
+                }
+            });
         }
 
         private void AdjustZoomByRatio(float ratio, SKPoint curloc, SKPoint prevloc, SKPoint otherloc)
