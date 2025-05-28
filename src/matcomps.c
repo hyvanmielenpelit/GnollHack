@@ -1690,7 +1690,7 @@ struct materialcomponentlist matlists[] =
     { SPE_MASS_CONFLICT,
     "Mandrake, wolfsbane, sporal powder",
     STRANGE_OBJECT,
-    4,
+    2,
         {
             {
                 {SPRIG_OF_WOLFSBANE, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT}, 
