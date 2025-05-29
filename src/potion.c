@@ -2691,6 +2691,7 @@ do_illness: /* Pestilence's potion of healing effect */
             (void) stolen_value(obj, u.ux, u.uy, is_peaceful(shkp),
                                 FALSE);
     }
+    Sprintf(priority_debug_buf_4, "potionhit: %d", obj->otyp);
     obfree(obj, (struct obj *) 0);
     *obj_ptr = (struct obj *)0;
 
@@ -3980,6 +3981,7 @@ dodip()
                 case 4: {
                     struct obj* otmp = mkobj(POTION_CLASS, FALSE, FALSE);
                     obj->otyp = otmp->otyp;
+                    Sprintf(priority_debug_buf_4, "dodip: %d", otmp->otyp);
                     obfree(otmp, (struct obj*)0);
                     if(neutralizingliquid && (obj->otyp == POT_SICKNESS || obj->otyp == POT_POISON))
                         obj->otyp = POT_WATER;

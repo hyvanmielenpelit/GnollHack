@@ -2392,7 +2392,7 @@ struct monst* mon;
                         {
                             u.uarcherybonus += (schar)(multiplier * objects[otyp].oc_attribute_bonus);
                             if (objects[otyp].oc_enchantable && !(objects[otyp].oc_bonus_attributes & IGNORE_ENCHANTMENT))
-                                u.uarcherybonus += (schar)applicable_enchantment;
+                                u.uarcherybonus += (schar)(applicable_enchantment * 2);
                         }
                         else if (i == A_MAX + 7 && is_you)
                         {

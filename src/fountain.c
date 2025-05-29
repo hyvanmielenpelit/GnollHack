@@ -1345,7 +1345,8 @@ drinksink()
     case 4:
         do {
             otmp = mkobj(POTION_CLASS, FALSE, FALSE);
-            if (otmp->otyp == POT_WATER) {
+            if (otmp && otmp->otyp == POT_WATER) {
+                Sprintf(priority_debug_buf_4, "really_done: %d", otmp->otyp);
                 obfree(otmp, (struct obj *) 0);
                 otmp = (struct obj *) 0;
             }
@@ -1357,6 +1358,7 @@ drinksink()
         otmp->quan++;       /* Avoid panic upon useup() */
         otmp->speflags |= SPEFLAGS_FROM_SINK; /* kludge for docall() */
         (void) dopotion(otmp);
+        Sprintf(priority_debug_buf_4, "drinksink: %d", otmp->otyp);
         obfree(otmp, (struct obj *) 0);
         break;
     case 5:

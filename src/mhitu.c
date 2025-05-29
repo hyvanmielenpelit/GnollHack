@@ -3284,6 +3284,7 @@ register struct obj* omonwep;
         )
     ))
     {
+        Sprintf(priority_debug_buf_4, "hitmu: %d", omonwep->otyp);
         if(omonwep->where == OBJ_MINVENT)
             m_useup(mtmp, omonwep);
         else if (omonwep->where == OBJ_FLOOR)

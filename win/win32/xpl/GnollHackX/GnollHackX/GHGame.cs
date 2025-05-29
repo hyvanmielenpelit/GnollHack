@@ -2942,7 +2942,16 @@ namespace GnollHackX
                     break;
                 case (int)gui_command_types.GUI_CMD_DEBUGLOG:
                     if(!string.IsNullOrWhiteSpace(cmd_str))
-                        GHApp.MaybeWriteGHLog(cmd_str + (cmd_param2 != 0 ? " [" + cmd_param2 + "]" : ""));
+                    {
+                        string logged_str = cmd_str + (cmd_param2 != 0 ? " [" + cmd_param2 + "]" : "");
+                        GHApp.MaybeWriteGHLog(logged_str);
+                        if (cmd_param == (int)debug_log_types.DEBUGLOG_PRIORITY)
+                        {
+#if SENTRY
+                            SentrySdk.CaptureMessage("Priority Debug Log: " + logged_str);
+#endif
+                        }
+                    }
                     //if (GHGame.RequestDictionary.TryGetValue(this, out queue))
                     //{
                     //    RequestQueue.Enqueue(new GHRequest(this, GHRequestType.DebugLog, cmd_param, cmd_param2, cmd_str));

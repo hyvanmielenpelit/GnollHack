@@ -3437,6 +3437,7 @@ boolean dobot;
             addtobill(obj, FALSE, FALSE, TRUE);
 
         boolean destroyobj = !(is_obj_indestructible(obj) || obj->oartifact);
+        Sprintf(priority_debug_buf_4, "in_container_core: %d", obj->otyp);
         if (destroyobj)
             obfree(obj, (struct obj *) 0);
 
@@ -3827,6 +3828,7 @@ struct obj *item;
             loss = stolen_value(item, u.ux, u.uy, is_peaceful(shkp),
                                 TRUE);
     }
+    Sprintf(priority_debug_buf_4, "mbag_item_gone: %d", item->otyp);
     obfree(item, (struct obj *) 0);
     return loss;
 }
@@ -3877,6 +3879,7 @@ boolean makecat, givemsg;
             {
                 Strcpy(debug_buf_2, "observe_quantum_cat");
                 obj_extract_self(deadcat);
+                Sprintf(priority_debug_buf_4, "observe_quantum_cat: %d", deadcat->otyp);
                 obfree(deadcat, (struct obj *) 0), deadcat = 0;
             }
             box->owt = weight(box);

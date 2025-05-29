@@ -1482,7 +1482,10 @@ boolean* obj_destroyed;
 #define useup_eggs(o)                    \
     do { \
             if (thrown)                      \
-                obfree(o, (struct obj*) 0); \
+            { \
+                    Sprintf(priority_debug_buf_4, "useup_eggs: %d", (o)->otyp); \
+                    obfree(o, (struct obj*)0); \
+            } \
             else                             \
                 useupall(o);                 \
             o = (struct obj*) 0;            \
@@ -1623,7 +1626,10 @@ boolean* obj_destroyed;
                         setmangry(mon, TRUE);
                     }
                     if (thrown)
-                        obfree(obj, (struct obj*) 0);
+                    {
+                        Sprintf(priority_debug_buf_4, "hmon_hitmon: %d", obj->otyp);
+                        obfree(obj, (struct obj*)0);
+                    }
                     else
                         useup(obj);
                     hittxt = TRUE;
@@ -1645,6 +1651,7 @@ boolean* obj_destroyed;
                         extratmp = weapon_extra_dmg_value(obj, mon, &youmonst, basedmg);
                         damage += adjust_damage(extratmp, &youmonst, mon, objects[obj->otyp].oc_extra_damagetype, ADFLAGS_NONE);
                     }
+                    Sprintf(priority_debug_buf_4, "hmon_hitmon2: %d", obj->otyp);
                     if (thrown)
                         obfree(obj, (struct obj*) 0);
                     else
@@ -2501,6 +2508,7 @@ boolean* obj_destroyed;
         }
         else if (obj->where == OBJ_FREE)
         {
+            Sprintf(priority_debug_buf_4, "hmon_hitmon3: %d", obj->otyp);
             obfree(obj, (struct obj*)0);
             obj = (struct obj*)0;
         }

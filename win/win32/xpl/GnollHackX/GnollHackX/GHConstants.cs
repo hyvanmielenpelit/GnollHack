@@ -1435,6 +1435,7 @@ namespace GnollHackX
     public enum debug_log_types
     {
         DEBUGLOG_GENERAL = 0,
+        DEBUGLOG_PRIORITY,
         DEBUGLOG_DEBUG_ONLY,
         DEBUGLOG_FILE_DESCRIPTOR,
     }

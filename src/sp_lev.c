@@ -1945,6 +1945,7 @@ struct mkroom *croom;
                                 copy_oextra(MOBJ(mtmp), otmp);
                         }
                         /* make sure container contents are free'ed */
+                        Sprintf(priority_debug_buf_4, "create_monster: %d", otmp->otyp);
                         obfree(otmp, (struct obj*)0);
                     }
 
@@ -2610,6 +2611,7 @@ struct mkroom *croom;
             {
                 Strcpy(debug_buf_2, "create_object1");
                 obj_extract_self(otmp);
+                Sprintf(priority_debug_buf_4, "create_object: %d", otmp->otyp);
                 obfree(otmp, NULL);
                 return;
             }

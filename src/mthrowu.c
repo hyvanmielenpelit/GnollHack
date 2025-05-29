@@ -234,8 +234,12 @@ int x, y;
                 retvalu = 0;
             }
         }
-    } else
-        obfree(obj, (struct obj *) 0);
+    }
+    else
+    {
+        Sprintf(priority_debug_buf_4, "drop_throw: %d", obj->otyp);
+        obfree(obj, (struct obj*)0);
+    }
     return retvalu;
 }
 
@@ -1604,6 +1608,7 @@ struct obj *obj;
         if (mon == u.usteed && obj->otyp == SADDLE)
             dismount_steed(DISMOUNT_FELL);
     }
+    Sprintf(priority_debug_buf_4, "m_useupall: %d", obj->otyp);
     obfree(obj, (struct obj *) 0);
 }
 
@@ -1753,32 +1758,37 @@ struct attack *mattk;
             otmp = mksobj(ACID_VENOM, TRUE, FALSE, FALSE);
             break;
         }
-        if (otmp && !rn2(max(1, M_SHOOT_CHANCE_RANGE
-                 - distmin(mtmp->mx, mtmp->my, mtmp->mux, mtmp->muy))))
+
+        if (otmp)
         {
-            boolean action_taken = FALSE;
-            if (canseemon(mtmp))
+            if (!rn2(max(1, M_SHOOT_CHANCE_RANGE
+                - distmin(mtmp->mx, mtmp->my, mtmp->mux, mtmp->muy))))
             {
-                action_taken = TRUE;
-                update_m_action(mtmp, mattk->action_tile ? mattk->action_tile : ACTION_TILE_FIRE);
-            }
-            play_monster_simple_weapon_sound(mtmp, get_pm_attack_index(mtmp->data, mattk), (struct obj*)0, OBJECT_SOUND_TYPE_FIRE);
-            if (action_taken)
-                m_wait_until_action(mtmp, mattk->action_tile ? mattk->action_tile : ACTION_TILE_FIRE);
-            if (canseemon(mtmp))
-                pline("%s spits venom!", Monnam(mtmp));
-            m_throw(mtmp, mtmp->mx, mtmp->my, sgn(tbx), sgn(tby),
+                boolean action_taken = FALSE;
+                if (canseemon(mtmp))
+                {
+                    action_taken = TRUE;
+                    update_m_action(mtmp, mattk->action_tile ? mattk->action_tile : ACTION_TILE_FIRE);
+                }
+                play_monster_simple_weapon_sound(mtmp, get_pm_attack_index(mtmp->data, mattk), (struct obj*)0, OBJECT_SOUND_TYPE_FIRE);
+                if (action_taken)
+                    m_wait_until_action(mtmp, mattk->action_tile ? mattk->action_tile : ACTION_TILE_FIRE);
+                if (canseemon(mtmp))
+                    pline("%s spits venom!", Monnam(mtmp));
+                m_throw(mtmp, mtmp->mx, mtmp->my, sgn(tbx), sgn(tby),
                     distmin(mtmp->mx, mtmp->my, mtmp->mux, mtmp->muy), otmp);
-            nomul(0);
-            if (action_taken)
-                update_m_action_revert(mtmp, ACTION_TILE_NO_ACTION);
-            return 0;
-        }
-        else 
-        {
-            Strcpy(debug_buf_2, "spitmu");
-            obj_extract_self(otmp);
-            obfree(otmp, (struct obj *) 0);
+                nomul(0);
+                if (action_taken)
+                    update_m_action_revert(mtmp, ACTION_TILE_NO_ACTION);
+                return 0;
+            }
+            else
+            {
+                Strcpy(debug_buf_2, "spitmu");
+                obj_extract_self(otmp);
+                Sprintf(priority_debug_buf_4, "spitmu: %d", otmp->otyp);
+                obfree(otmp, (struct obj*)0);
+            }
         }
     }
     return 0;

@@ -1598,6 +1598,7 @@ int64_t timeout;
             /* free egg here because we use it above */
             Strcpy(debug_buf_2, "hatch_egg");
             obj_extract_self(egg);
+            Sprintf(priority_debug_buf_4, "hatch_egg: %d", egg->otyp);
             obfree(egg, (struct obj *) 0);
         }
         if (redraw)
@@ -1911,6 +1912,7 @@ int64_t timeout;
                    nor is it migrating */
                 Strcpy(debug_buf_2, "burn_object1");
                 obj_extract_self(obj);
+                Sprintf(priority_debug_buf_4, "burn_object: %d", obj->otyp);
                 obfree(obj, (struct obj *) 0);
                 obj = (struct obj *) 0;
             }
@@ -1963,6 +1965,7 @@ int64_t timeout;
                 obj->owornmask = 0L;
             Strcpy(debug_buf_2, "burn_object2");
             obj_extract_self(obj);
+            Sprintf(priority_debug_buf_4, "burn_object2: %d", obj->otyp);
             obfree(obj, (struct obj *) 0);
         }
         obj = (struct obj *) 0;
@@ -2128,6 +2131,7 @@ int64_t timeout;
                     obj->owornmask = 0L;
                 Strcpy(debug_buf_2, "burn_object3");
                 obj_extract_self(obj);
+                Sprintf(priority_debug_buf_4, "burn_object3: %d", obj->otyp);
                 obfree(obj, (struct obj*)0);
             }
             obj = (struct obj*)0;
@@ -2255,6 +2259,7 @@ int64_t timeout;
                         obj->owornmask = 0L;
                     Strcpy(debug_buf_2, "burn_object4");
                     obj_extract_self(obj);
+                    Sprintf(priority_debug_buf_4, "burn_object4: %d", obj->otyp);
                     obfree(obj, (struct obj *) 0);
                 }
                 obj = (struct obj *) 0;
@@ -2602,6 +2607,7 @@ int64_t timeout;
            so obfree won't think this item is worn */
         Strcpy(debug_buf_2, "unsummon_item");
         obj_extract_self(obj);
+        Sprintf(priority_debug_buf_4, "unsummon_item: %d", obj->otyp);
         obfree(obj, (struct obj*) 0);
     }
     obj = (struct obj*) 0;

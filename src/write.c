@@ -313,6 +313,7 @@ found_novel_or_manual:
     if (pen->charges < basecost / 2) {
         play_sfx_sound(SFX_GENERAL_OUT_OF_CHARGES);
         Your_ex(ATR_NONE, CLR_MSG_FAIL, "marker is too dry to write that!");
+        Sprintf(priority_debug_buf_4, "dowrite: %d", new_obj->otyp);
         obfree(new_obj, (struct obj *) 0);
         return 1;
     }
@@ -343,6 +344,7 @@ found_novel_or_manual:
             useup(paper);
         }
         update_inventory(); /* pen charges */
+        Sprintf(priority_debug_buf_4, "dowrite2: %d", new_obj->otyp);
         obfree(new_obj, (struct obj *) 0);
         return 1;
     }
@@ -365,6 +367,7 @@ found_novel_or_manual:
         {
             impossible("Writing a novel or manual without bookname or bookidx?");
         }
+        Sprintf(priority_debug_buf_4, "dowrite3: %d", new_obj->otyp);
         obfree(new_obj, (struct obj*)0);
         return 1;
     }
@@ -420,6 +423,7 @@ found_novel_or_manual:
             You_multi_ex(ATR_NONE, CLR_MSG_FAIL, no_multiattrs, multicolor_text1, "write \"%s\" and the scroll disappears.", namebuf);
             useup(paper);
         }
+        Sprintf(priority_debug_buf_4, "dowrite5: %d", new_obj->otyp);
         obfree(new_obj, (struct obj *) 0);
         return 1;
     }
@@ -434,6 +438,7 @@ found_novel_or_manual:
         play_sfx_sound(SFX_GENERAL_TRIED_ACTION_BUT_IT_FAILED);
         You_ex(ATR_NONE, CLR_MSG_FAIL, "fail to write the scroll correctly and it disappears.");
         useup(paper);
+        Sprintf(priority_debug_buf_4, "dowrite6: %d", new_obj->otyp);
         obfree(new_obj, (struct obj *) 0);
         return 1;
     }

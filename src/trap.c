@@ -1147,8 +1147,13 @@ unsigned short trflags;
         else if (thitu(8, weapon_total_dmg_value(otmp, &youmonst, (struct monst*)0, 1), &otmp, (const char*)0, (struct monst*)0, (char*)0))
         {
             if (otmp)
-                obfree(otmp, (struct obj *) 0);
-        } else {
+            {
+                Sprintf(priority_debug_buf_4, "dotrap: %d", otmp->otyp);
+                obfree(otmp, (struct obj*)0);
+            }
+        } 
+        else 
+        {
             place_object(otmp, u.ux, u.uy);
             if (!Blind)
                 otmp->dknown = 1;
@@ -1187,6 +1192,7 @@ unsigned short trflags;
                              /* if damage triggered life-saving,
                                 poison is limited to attrib loss */
                              0, TRUE, 2);
+                Sprintf(priority_debug_buf_4, "dotrap2: %d", otmp->otyp);
                 obfree(otmp, (struct obj *) 0);
             }
         } 
@@ -7391,7 +7397,10 @@ boolean nocorpse;
         stackobj(obj);
     }
     else if (obj)
+    {
+        Sprintf(priority_debug_buf_4, "thitm: %d", obj->otyp);
         obfree(obj, (struct obj*)0);
+    }
 
     return trapkilled;
 }

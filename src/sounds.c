@@ -10364,6 +10364,7 @@ int special_dialogue_sound_id;
         money2mon(mtmp, u_pay);
         bot();
     }
+    Sprintf(priority_debug_buf_4, "spell_service_query: %d", pseudo->otyp);
     obfree(pseudo, (struct obj*)0);
     /* gnostic handled in seffects */
 

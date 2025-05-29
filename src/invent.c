@@ -823,6 +823,7 @@ struct obj **potmp, **pobj;
             return 1;
         }
 
+        Sprintf(priority_debug_buf_4, "merged: %d", obj->otyp);
         obfree(obj, otmp); /* free(obj), bill->otmp */
         return 1;
     }
@@ -1956,6 +1957,7 @@ struct obj *obj;
 {
     setnotworn(obj);
     freeinv(obj);
+    Sprintf(priority_debug_buf_4, "useupall: %d", obj->otyp);
     obfree(obj, (struct obj *) 0); /* deletes contents also */
 }
 
@@ -2126,6 +2128,7 @@ uint64_t newsym_flags;
     obj_extract_self(obj);
     if (update_map)
         newsym_with_flags(obj->ox, obj->oy, newsym_flags);
+    Sprintf(priority_debug_buf_4, "delobj_with_flags: %d", obj->otyp);
     obfree(obj, (struct obj *) 0); /* frees contents also */
 }
 

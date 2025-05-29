@@ -816,6 +816,7 @@ register struct monst *mtmp;
                     else
                     {
                         /* free object */
+                        Sprintf(priority_debug_buf_4, "m_initweap: %d", otmp->otyp);
                         obfree(otmp, (struct obj*) 0);
                     }
                 }
@@ -1604,6 +1605,7 @@ register struct monst *mtmp;
                     else
                     {
                         /* free object */
+                        Sprintf(priority_debug_buf_4, "m_initweap2: %d", otmp->otyp);
                         obfree(otmp, (struct obj*) 0);
                     }
                 }
@@ -4514,6 +4516,7 @@ int otyp;
                 copy_oextra(MOBJ(mtmp), otmp);
         }
         /* make sure container contents are free'ed */
+        Sprintf(priority_debug_buf_4, "set_mimic_new_mobj: %d", otmp->otyp);
         obfree(otmp, (struct obj*)0);
     }
 }
@@ -4677,6 +4680,7 @@ register struct monst *mtmp;
                         copy_oextra(MOBJ(mtmp), otmp);
                 }
                 /* make sure container contents are free'ed */
+                Sprintf(priority_debug_buf_4, "set_mimic_sym: %d", otmp->otyp);
                 obfree(otmp, (struct obj *) 0);
             }
         }

@@ -680,6 +680,11 @@ E char debug_buf_2[BUFSZ * 2];
 E char debug_buf_3[BUFSZ * 2];
 E char debug_buf_4[BUFSZ * 2];
 
+E char priority_debug_buf_1[BUFSZ * 2];
+E char priority_debug_buf_2[BUFSZ * 2];
+E char priority_debug_buf_3[BUFSZ * 2];
+E char priority_debug_buf_4[BUFSZ * 2];
+
 #undef E
 
 #endif /* DECL_H */

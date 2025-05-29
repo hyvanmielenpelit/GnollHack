@@ -724,6 +724,7 @@ xchar x, y; /* coordinates where object was before the impact, not after */
             } else {
                 Strcpy(debug_buf_2, "container_impact_dmg");
                 obj_extract_self(otmp);
+                Sprintf(priority_debug_buf_4, "container_impact_dmg: %d", otmp->otyp);
                 obfree(otmp, (struct obj *) 0);
             }
             /* contents of this container are no longer known */
@@ -2267,6 +2268,7 @@ boolean shop_floor_obj;
         }
         Strcpy(debug_buf_2, "ship_object");
         obj_extract_self(otmp);
+        Sprintf(priority_debug_buf_4, "ship_object: %d", otmp->otyp);
         obfree(otmp, (struct obj *) 0);
         return TRUE;
     }

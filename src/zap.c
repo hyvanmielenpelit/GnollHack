@@ -3074,10 +3074,12 @@ boolean replaceundead;
     case OBJ_CONTAINED:
         Strcpy(debug_buf_2, "revive2");
         obj_extract_self(corpse);
+        Sprintf(priority_debug_buf_4, "revive: %d", corpse->otyp);
         obfree(corpse, (struct obj *) 0);
         break;
     case OBJ_MAGIC:
         obj_extract_self(corpse);
+        Sprintf(priority_debug_buf_4, "revive2: %d", corpse->otyp);
         obfree(corpse, (struct obj*)0);
         break;
     default:
@@ -9827,6 +9829,7 @@ const char *fltxt;
             }
             Strcpy(debug_buf_2, "disintegrate_mon");
             obj_extract_self(otmp);
+            Sprintf(priority_debug_buf_4, "disintegrate_mon: %d", otmp->otyp);
             obfree(otmp, (struct obj *) 0);
         }
     }

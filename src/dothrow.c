@@ -2151,6 +2151,7 @@ uchar* hitres_ptr;
                 {
                     if (*u.ushops || obj->unpaid)
                         check_shop_obj(obj, bhitpos.x, bhitpos.y, TRUE, FALSE);
+                    Sprintf(priority_debug_buf_4, "thitmonst: %d", obj->otyp);
                     obfree(obj, (struct obj *) 0);
                     return 1;
                 }

@@ -590,6 +590,7 @@ register struct monst *magr, *mdef;
                                 )
                             )
                         {
+                            Sprintf(priority_debug_buf_4, "mattackm: %d", omonwep->otyp);
                             if (omonwep->where == OBJ_MINVENT)
                                 m_useup(magr, omonwep);
                             else if (omonwep->where == OBJ_FREE)

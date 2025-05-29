@@ -969,6 +969,7 @@ register struct obj *obj;
     register struct obj *curr;
 
     Strcpy(debug_buf_2, "delete_contents");
+    Strcpy(priority_debug_buf_4, "delete_contents");
     while ((curr = obj->cobj) != 0) {
         obj_extract_self(curr);
         obfree(curr, (struct obj *) 0);
@@ -994,6 +995,13 @@ register struct obj *obj, *merge;
         delete_contents(obj);
     if (Is_container(obj))
         maybe_reset_pick(obj);
+    
+    if (!context.in_memory_objs && Is_proper_container(obj))
+    {
+        char debugbuf[BUFSZ * 17];
+        Sprintf(debugbuf, "obfree on container: %s, %s, %s, %s, %s, %s, %s, %s", priority_debug_buf_1, priority_debug_buf_2, priority_debug_buf_3, priority_debug_buf_4, debug_buf_1, debug_buf_2, debug_buf_3, debug_buf_4);
+        issue_gui_command(GUI_CMD_DEBUGLOG, DEBUGLOG_PRIORITY, obj->in_use, debugbuf);
+    }
 
     shkp = 0;
     if (obj->unpaid) {
@@ -4155,6 +4163,7 @@ boolean catchup; /* restoring a level */
             if (otmp->otyp == BOULDER || otmp->otyp == ROCK) {
                 Strcpy(debug_buf_2, "repair_damage");
                 obj_extract_self(otmp);
+                Strcpy(priority_debug_buf_4, "repair_damage");
                 obfree(otmp, (struct obj *) 0);
             } else {
                 int trylimit = 50;

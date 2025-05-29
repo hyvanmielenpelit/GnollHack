@@ -837,6 +837,7 @@ boolean is_mon_dead;
                   canseemon(mtmp) ? "vanishes" : "seems to vanish");
         Strcpy(debug_buf_2, "release_monster_objects1");
         obj_extract_self(otmp);
+        Sprintf(priority_debug_buf_4, "release_monster_objects: %d", otmp->otyp);
         obfree(otmp, (struct obj *) 0);
     } /* isgd && has gold */
 
@@ -898,6 +899,7 @@ boolean is_mon_dead;
             {
                 artifact_taken_away(otmp->oartifact); //It can now be generated again some time later
             }
+            Sprintf(priority_debug_buf_4, "release_monster_objects2: %d", otmp->otyp);
             obfree(otmp, (struct obj*) 0); //Delete the item
         }
         else

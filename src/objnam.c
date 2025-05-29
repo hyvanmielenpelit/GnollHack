@@ -5749,6 +5749,7 @@ retry:
          || (otmp->oartifact && rn2(nartifact_exist()) > 1)) && !wiz_wishing)
     {
         artifact_exists(otmp, safe_oname(otmp), FALSE);
+        Sprintf(priority_debug_buf_4, "readobjnam: %d", otmp->otyp);
         obfree(otmp, (struct obj *) 0);
         otmp = (struct obj *) &zeroobj;
         pline("For a moment, you feel %s in your %s, but it disappears!",

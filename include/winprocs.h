@@ -176,6 +176,7 @@ extern
 #define issue_parametered_gui_command(x, y) (*windowprocs.win_issue_gui_command)(x, y, 0, (char*)0)
 #define issue_boolean_gui_command(x, y) (*windowprocs.win_issue_gui_command)(x, (int)(y), 0, (char*)0)
 #define issue_debuglog(e, s) if(windowprocs.win_issue_gui_command) (*windowprocs.win_issue_gui_command)(GUI_CMD_DEBUGLOG, DEBUGLOG_GENERAL, e, s)
+#define issue_debuglog_priority(e, s) if(windowprocs.win_issue_gui_command) (*windowprocs.win_issue_gui_command)(GUI_CMD_DEBUGLOG, DEBUGLOG_PRIORITY, e, s)
 #define issue_debuglog_fd(f, s) if(windowprocs.win_issue_gui_command) (*windowprocs.win_issue_gui_command)(GUI_CMD_DEBUGLOG, DEBUGLOG_FILE_DESCRIPTOR, f, s)
 #define raw_print (*windowprocs.win_raw_print)
 #define raw_print_bold (*windowprocs.win_raw_print_bold)

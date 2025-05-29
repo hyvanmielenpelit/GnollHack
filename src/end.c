@@ -1639,6 +1639,7 @@ int how;
                 bless(potion);
                 (void) peffects(potion); /* always -1 for restore ability */
                 /* not useup(); we haven't put this potion into inventory */
+                Sprintf(priority_debug_buf_4, "done: %d", potion->otyp);
                 obfree(potion, (struct obj *) 0);
             }
             killer.name[0] = '\0';
@@ -1935,9 +1936,15 @@ int how;
     /* maybe not on object lists; if an active light source, would cause
        big trouble (`obj_is_local' panic) for savebones() -> savelev() */
     if (thrownobj && thrownobj->where == OBJ_FREE)
+    {
+        Sprintf(priority_debug_buf_4, "really_done: %d", thrownobj->otyp);
         obfree(thrownobj, (struct obj*)0);
+    }
     if (kickedobj && kickedobj->where == OBJ_FREE)
+    {
+        Sprintf(priority_debug_buf_4, "really_done2: %d", kickedobj->otyp);
         obfree(kickedobj, (struct obj*)0);
+    }
 
     /* remember time of death here instead of having bones, rip, and
        topten figure it out separately and possibly getting different

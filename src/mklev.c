@@ -2846,6 +2846,7 @@ int dist;
         } else {
             Strcpy(debug_buf_2, "mkinvpos");
             obj_extract_self(otmp);
+            Sprintf(priority_debug_buf_4, "mkinvpos: %d", otmp->otyp);
             obfree(otmp, (struct obj *) 0);
         }
     }

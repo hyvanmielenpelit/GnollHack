@@ -3042,6 +3042,7 @@ boolean *dealloced;
         /* merges into burying material */
         if (dealloced)
             *dealloced = TRUE;
+        Sprintf(priority_debug_buf_4, "bury_an_obj: %d", otmp->otyp);
         obfree(otmp, (struct obj *) 0);
         return otmp2;
     }
@@ -3186,6 +3187,7 @@ int64_t timeout UNUSED;
     }
     Strcpy(debug_buf_2, "rot_organic");
     obj_extract_self(obj);
+    Sprintf(priority_debug_buf_4, "rot_organic: %d", obj->otyp);
     obfree(obj, (struct obj *) 0);
 }
 

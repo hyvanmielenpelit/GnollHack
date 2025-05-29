@@ -5496,6 +5496,7 @@ boolean pushing;
         }
 
         /* boulder is now gone */
+        Sprintf(priority_debug_buf_4, "boulder_hits_pool: %d", otmp->otyp);
         if (pushing)
             delobj(otmp);
         else

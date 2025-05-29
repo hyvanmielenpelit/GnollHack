@@ -352,6 +352,7 @@ boolean destroyit;
                     loss += stolen_value(otmp, u.ux, u.uy, peaceful_shk, TRUE);
                 if (otmp->quan == 1L) 
                 {
+                    Sprintf(priority_debug_buf_4, "breakchestlock: %d", otmp->otyp);
                     obfree(otmp, (struct obj *) 0);
                     continue;
                 }

@@ -3072,6 +3072,7 @@ struct obj *otmp;
         pseudo->cursed = otmp->cursed;
         pseudo->quan = 20L; /* do not let useup get it */
         peffects(pseudo);
+        Sprintf(priority_debug_buf_4, "food_after_effect: %d", pseudo->otyp);
         obfree(pseudo, (struct obj*)0);
         break;
     }
@@ -3083,6 +3084,7 @@ struct obj *otmp;
         pseudo->cursed = FALSE;
         pseudo->quan = 20L; /* do not let useup get it */
         peffects(pseudo);
+        Sprintf(priority_debug_buf_4, "food_after_effect2: %d", pseudo->otyp);
         obfree(pseudo, (struct obj*)0);
         break;
     }

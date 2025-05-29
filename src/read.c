@@ -3476,6 +3476,7 @@ boolean confused, byu;
         }
         wake_nearto(x, y, 4 * 4);
     } else if (u.uswallow && mtmp == u.ustuck) {
+        Sprintf(priority_debug_buf_4, "drop_boulder_on_monster: %d", otmp2->otyp);
         obfree(otmp2, (struct obj *) 0);
         /* fall through to player */
         drop_boulder_on_player(confused, TRUE, FALSE, TRUE);
