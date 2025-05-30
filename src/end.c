@@ -777,7 +777,15 @@ VA_DECL(const char *, str)
         Vsprintf(buf, str, VA_ARGS);
         raw_print(buf);
         paniclog("panic", buf);
+
 #ifdef GNOLLHACK_MAIN_PROGRAM
+        if (issue_gui_command)
+        {
+            char dbufs[BUFSZ * 18];
+            Sprintf(dbufs, "panic debugbufs: panic: %s, bufs: %s, %s, %s, %s, %s, %s, %s, %s", buf, priority_debug_buf_1, priority_debug_buf_2, priority_debug_buf_3, priority_debug_buf_4, debug_buf_1, debug_buf_2, debug_buf_3, debug_buf_4);
+            issue_debuglog_priority(0, dbufs);
+        }
+
         if (open_special_view)
         {
             /* Add mode to posted panic */
