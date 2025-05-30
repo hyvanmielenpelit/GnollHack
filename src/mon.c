@@ -3879,6 +3879,7 @@ struct monst *mdef;
     } else
         otmp = mksobj_at(ROCK, x, y, TRUE, FALSE);
 
+    Sprintf(priority_debug_buf_3, "monstone: %d", obj->otyp);
     stackobj(otmp);
     /* mondead() already does this, but we must do it before the newsym */
     if (glyph_is_invisible(levl[x][y].hero_memory_layers.glyph))

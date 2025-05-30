@@ -1967,7 +1967,7 @@ boolean dopopup;
                 Sprintf(buf, "%s.", Yobjnam2(weapon, "evaporate"));
                 pline_ex1_popup(ATR_NONE, CLR_MSG_NEGATIVE, buf, "Evaporation", dopopup);
             }
-
+            Sprintf(priority_debug_buf_3, "enchant_weapon: %d", weapon->otyp);
             useupall(weapon); /* let all of them disappear */
         }
         return 1;
