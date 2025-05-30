@@ -2868,6 +2868,7 @@ eatspecial()
     context.victual.o_id = 0;
     context.victual.eating = 0;
     context.victual.total_nutrition = 0;
+    Sprintf(priority_debug_buf_3, "eatspecial: %d", otmp->otyp);
     if (otmp->oclass == COIN_CLASS) {
         if (carried(otmp))
             useupall(otmp);

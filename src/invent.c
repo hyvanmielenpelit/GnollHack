@@ -1730,6 +1730,7 @@ struct obj *obj;
     /* merge with quiver in preference to any other inventory slot
        in case quiver and wielded weapon are both eligible; adding
        extra to quivered stack is more useful than to wielded one */
+    Sprintf(priority_debug_buf_3, "addinv: %d", obj->otyp);
     if (uquiver && merged(&uquiver, &obj)) {
         obj = uquiver;
         if (!obj)
@@ -1973,6 +1974,7 @@ register struct obj *obj;
         obj->owt = weight(obj);
         update_inventory();
     } else {
+        Sprintf(priority_debug_buf_3, "useup: %d", obj->otyp);
         useupall(obj);
     }
 }
@@ -3906,6 +3908,7 @@ int FDECL((*fn), (OBJ_P)), FDECL((*ckfn), (OBJ_P));
                     otmp = 0; /* and return */
                 } else if (otmp && otmp != otmpo) {
                     /* split occurred, merge again */
+                    Sprintf(priority_debug_buf_3, "askchain: %d", otmp->otyp);
                     (void) merged(&otmpo, &otmp);
                 }
                 goto ret;
@@ -4715,6 +4718,7 @@ boolean* return_to_inv_ptr;
             repeatmenu = (boolean)((extcmdlist[selected_action].flags & ALLOW_RETURN_TO_CMD_MENU) != 0) && !res;
             returntoinv = (boolean)((extcmdlist[selected_action].flags & ALLOW_RETURN_TO_INVENTORY) != 0) && !res;
 
+            Sprintf(priority_debug_buf_3, "display_item_command_menu: %d", otmp->otyp);
             if ((repeatmenu || returntoinv) && otmpsplit && otmpsplit != otmp)
                 (void)merged(&otmp, &otmpsplit); /* Merge the split object back to the original */
 
@@ -6876,6 +6880,7 @@ struct obj *obj;
     if (!obj || !isok(obj->ox, obj->oy))
         return;
 
+    Sprintf(priority_debug_buf_3, "stackobj: %d", obj->otyp);
     for (otmp = level.objects[obj->ox][obj->oy]; otmp; otmp = otmp->nexthere)
         if (otmp != obj && merged(&obj, &otmp))
             break;
@@ -7526,6 +7531,7 @@ doorganize() /* inventory organizer by Del Lamb */
                but splitting to same slot is not */
             || (splitting && let == obj->invlet)) {
  noadjust:
+            Sprintf(priority_debug_buf_3, "doorganize: %d", obj->otyp);
             if (splitting)
                 (void) merged(&splitting, &obj);
             if (!ever_mind)
@@ -7570,6 +7576,7 @@ doorganize() /* inventory organizer by Del Lamb */
                with compatible named ones; we only want that if it is
                the 'from' stack (obj) with a name and candidate (otmp)
                without one, not unnamed 'from' with named candidate. */
+            Sprintf(priority_debug_buf_3, "doorganize2: %d", otmp->otyp);
             otmpname = has_oname(otmp) ? ONAME(otmp) : (char *) 0;
             uotmpname = has_uoname(otmp) ? UONAME(otmp) : (char*)0;
             if ((!otmpname || (objname && !strcmp(objname, otmpname)))
@@ -7602,11 +7609,13 @@ doorganize() /* inventory organizer by Del Lamb */
                         free((genericptr_t) objname), objname = 0;
                 }
 
+                Sprintf(priority_debug_buf_3, "doorganize3: %d", obj->otyp);
                 if (merged(&otmp, &obj)) {
                     adj_type = "Splitting and merging:";
                     obj = otmp;
                     extract_nobj(obj, &invent);
                 } else if (inv_cnt(FALSE) >= 52) {
+                    Sprintf(priority_debug_buf_3, "doorganize4: %d", obj->otyp);
                     (void) merged(&splitting, &obj); /* undo split */
                     /* "inventory cannot accommodate any more items" */
                     Your("pack is too full.");

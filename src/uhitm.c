@@ -1487,7 +1487,10 @@ boolean* obj_destroyed;
                     obfree(o, (struct obj*)0); \
             } \
             else                             \
+            {\
+                Sprintf(priority_debug_buf_3, "useup_eggs: %d", (o)->otyp); \
                 useupall(o);                 \
+            }\
             o = (struct obj*) 0;            \
     } while (0) /* now gone */
                 case EGG: 
@@ -2493,6 +2496,7 @@ boolean* obj_destroyed;
                     uwepgone(); /* set unweapon */
                 else if (obj == uarms)
                     uwep2gone(); /* set unweapon */
+                Sprintf(priority_debug_buf_3, "hmon_hitmon: %d", obj->otyp);
                 useupall(obj);
                 obj = 0;
             }

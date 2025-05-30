@@ -4754,6 +4754,7 @@ int applymode;
                     else if (otmp && otmp != pick_list[i].item.a_obj) 
                     {
                         /* split occurred, merge again */
+                        Sprintf(priority_debug_buf_3, "menu_loot: %d", otmp->otyp);
                         (void) merged(&pick_list[i].item.a_obj, &otmp);
                     }
                     break;

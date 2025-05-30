@@ -3947,6 +3947,7 @@ dodip()
                 exercise(A_STR, FALSE);
                 if (!has_innate_breathless(youmonst.data) || haseyes(youmonst.data))
                     potionbreathe(obj, dcbuf3);
+                Sprintf(priority_debug_buf_3, "dodip: %d", obj->otyp);
                 useupall(obj);
                 losehp(adjust_damage(amt + rnd(9), (struct monst*)0, &youmonst, AD_MAGM, ADFLAGS_NONE), /* not physical damage */
                     "alchemic blast", KILLED_BY_AN);
@@ -3988,6 +3989,7 @@ dodip()
                     break;
                 }
                 default:
+                    Sprintf(priority_debug_buf_3, "dodip2: %d", obj->otyp);
                     useupall(obj);
                     if (!Blind)
                     {

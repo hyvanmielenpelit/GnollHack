@@ -1016,6 +1016,7 @@ coord *cc;
             pline("KADOOM!  The boulder falls in!");
             (void) delfloortrap(ttmp);
         }
+        Sprintf(priority_debug_buf_3, "dighole: %d", boulder_here->otyp);
         delobj(boulder_here);
         return TRUE;
 
@@ -2674,6 +2675,7 @@ struct obj* origobj;
                 if(see_it)
                     pline("%s!", Tobjnam(otmp, "evaporate"));
 
+                Sprintf(priority_debug_buf_3, "zap_evaporation: %d", otmp->otyp);
                 delobj(otmp);
             }
         }

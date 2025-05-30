@@ -2275,6 +2275,7 @@ struct obj **optr;
         end_burn(obj, TRUE);
 
     /* candles are now gone */
+    Sprintf(priority_debug_buf_3, "sell_to_npc: %d", obj->otyp);
     useupall(obj);
     /* candelabrum's weight is changing */
     otmp->owt = weight(otmp);
@@ -4091,6 +4092,7 @@ struct obj* obj;
                 pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s disintegrated!", Yobjnam2(otmp, "are"));
                 wandknown = TRUE;
                 //Destroy item;
+                Sprintf(priority_debug_buf_3, "use_wand_on_object: %d", otmp->otyp);
                 useupall(otmp);
                 break;
             case WAN_POLYMORPH:
@@ -4129,6 +4131,7 @@ struct obj* obj;
                 {
                     pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s!", Yobjnam2(otmp, "evaporate"));
                     wandknown = TRUE;
+                    Sprintf(priority_debug_buf_3, "use_wand_on_object2: %d", otmp->otyp);
                     useupall(otmp);
                 }
                 else
@@ -5260,6 +5263,7 @@ struct obj *obj;
     costly_alteration(obj, COST_SPLAT);
     Strcpy(debug_buf_2, "use_cream_pie");
     obj_extract_self(obj);
+    Sprintf(priority_debug_buf_3, "use_cream_pie: %d", obj->otyp);
     delobj(obj);
     return 0;
 }
@@ -5686,7 +5690,10 @@ discard_broken_wand:
     obj = current_wand; /* [see dozap() and destroy_item()] */
     current_wand = 0;
     if (obj)
+    {
+        Sprintf(priority_debug_buf_3, "do_break_wand: %d", obj->otyp);
         delobj(obj);
+    }
     nomul(0);
     return 1;
 }

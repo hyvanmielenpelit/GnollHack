@@ -9602,6 +9602,7 @@ boolean auto_yes;
 merge_obj_back:
     if (obj->where == OBJ_INVENT)
     {
+        Sprintf(priority_debug_buf_3, "sell_to_npc: %d", obj->otyp);
         for (otmp = invent; otmp; otmp = otmp->nobj)
             if (merged(&otmp, &obj)) 
             {
@@ -10989,6 +10990,7 @@ boolean initialize;
     }
     else
     {
+        Sprintf(priority_debug_buf_3, "forge_special_func: %d", otmp->otyp);
         useupall(otmp);
         otmp = 0;
     }

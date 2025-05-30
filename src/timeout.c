@@ -1957,6 +1957,7 @@ int64_t timeout;
         Strcpy(debug_buf_3, "burn_object2");
         end_burn(obj, FALSE); /* turn off light source */
         if (carried(obj)) {
+            Sprintf(priority_debug_buf_3, "burn_object: %d", obj->otyp);
             useupall(obj);
         } else {
             /* clear migrating obj's destination code before obfree
@@ -2121,6 +2122,7 @@ int64_t timeout;
 
             if (carried(obj)) 
             {
+                Sprintf(priority_debug_buf_3, "burn_object2: %d", obj->otyp);
                 useupall(obj);
             }
             else
@@ -2251,6 +2253,7 @@ int64_t timeout;
                 obj->owt = weight(obj);
             } else {
                 if (carried(obj)) {
+                    Sprintf(priority_debug_buf_3, "burn_object3: %d", obj->otyp);
                     useupall(obj);
                 } else {
                     /* clear migrating obj's destination code
@@ -2600,6 +2603,7 @@ int64_t timeout;
 
     //Destroy item
     if (carried(obj)) {
+        Sprintf(priority_debug_buf_3, "burn_object4: %d", obj->otyp);
         useupall(obj);
     }
     else {

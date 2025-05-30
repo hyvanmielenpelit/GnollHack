@@ -3870,6 +3870,7 @@ struct monst *mdef;
         while ((obj = oldminvent) != 0) {
             oldminvent = obj->nobj;
             obj->nobj = 0; /* avoid merged-> obfree-> dealloc_obj-> panic */
+            Sprintf(priority_debug_buf_2, "monstone2: %d, %d", otmp->otyp, obj->otyp);
             (void) add_to_container(otmp, obj);
         }
         /* Archaeologists should not break unique statues */
@@ -3879,7 +3880,7 @@ struct monst *mdef;
     } else
         otmp = mksobj_at(ROCK, x, y, TRUE, FALSE);
 
-    Sprintf(priority_debug_buf_3, "monstone: %d", obj->otyp);
+    Sprintf(priority_debug_buf_2, "monstone: %d", otmp->otyp);
     stackobj(otmp);
     /* mondead() already does this, but we must do it before the newsym */
     if (glyph_is_invisible(levl[x][y].hero_memory_layers.glyph))

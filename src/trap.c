@@ -4508,9 +4508,14 @@ xchar x, y;
         }
         if (carried(obj)) { /* shouldn't happen */
             remove_worn_item(obj, TRUE);
+            Sprintf(priority_debug_buf_3, "lava_damage: %d", obj->otyp);
             useupall(obj);
-        } else
+        }
+        else
+        {
+            Sprintf(priority_debug_buf_3, "lava_damage2: %d", obj->otyp);
             delobj(obj);
+        }
         return TRUE;
     }
     return fire_damage(obj, TRUE, x, y);
@@ -7507,6 +7512,7 @@ lava_effects()
                         pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s into flame!", Yobjnam2(obj, "burst"));
                     remove_worn_item(obj, TRUE);
                 }
+                Sprintf(priority_debug_buf_3, "lava_effects: %d", obj->otyp);
                 useupall(obj);
             }
         }

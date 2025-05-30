@@ -977,6 +977,8 @@ struct obj *obj;
     }
     /* if we have both parent and child, try to merge them;
        if successful, return the combined stack, otherwise return null */
+    if(oparent && ochild)
+        Sprintf(priority_debug_buf_3, "unsplitobj: %d", ochild->otyp);
     return (oparent && ochild && merged(&oparent, &ochild)) ? oparent : 0;
 }
 
@@ -4204,6 +4206,7 @@ struct obj *obj;
         return 0;
     }
     /* merge if possible */
+    Sprintf(priority_debug_buf_3, "add_to_minv: %d", obj->otyp);
     for (otmp = mon->minvent; otmp; otmp = otmp->nobj)
         if (merged(&otmp, &obj))
             return 1; /* obj merged and then free'd */
@@ -4234,6 +4237,7 @@ struct obj *container, *obj;
         obj_no_longer_held(obj);
 
     /* merge if possible */
+    Sprintf(priority_debug_buf_3, "add_to_container: %d", obj->otyp);
     for (otmp = container->cobj; otmp; otmp = otmp->nobj)
         if (merged(&otmp, &obj))
             return otmp;
@@ -4279,6 +4283,7 @@ struct obj* obj;
         maybe_reset_pick(obj);
 
     /* merge if possible */
+    Sprintf(priority_debug_buf_3, "add_to_magic_chest: %d", obj->otyp);
     struct obj* otmp;
     for (otmp = magic_objs; otmp; otmp = otmp->nobj)
         if (merged(&otmp, &obj))

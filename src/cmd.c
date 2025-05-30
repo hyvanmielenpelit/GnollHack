@@ -1944,6 +1944,7 @@ wiz_deleteitem(VOID_ARGS)
         if (!obj)
             return 0;
         char* objname = upstart(thecxname(obj));
+        Sprintf(priority_debug_buf_3, "wiz_deleteitem: %d", obj->otyp);
         useupall(obj);
         pline("%s has been deleted.", objname);
     }

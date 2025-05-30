@@ -5630,6 +5630,7 @@ int spell;
             else
             {
                 impossible("There should always be enough material components at this stage");
+                Sprintf(priority_debug_buf_3, "domaterialcomponentsmenu: %d", otmp->otyp);
                 useupall(otmp);
                 failure = TRUE;
             }
