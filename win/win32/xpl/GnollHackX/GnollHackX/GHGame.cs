@@ -2941,7 +2941,7 @@ namespace GnollHackX
                     }
                     break;
                 case (int)gui_command_types.GUI_CMD_DEBUGLOG:
-                    if(!string.IsNullOrWhiteSpace(cmd_str))
+                    if(!PlayingReplay && !string.IsNullOrWhiteSpace(cmd_str))
                     {
                         string logged_str = cmd_str + (cmd_param2 != 0 ? " [" + cmd_param2 + "]" : "");
                         GHApp.MaybeWriteGHLog(logged_str);

@@ -184,7 +184,7 @@ boolean quietly;
                 char dbuf[BUFSZ * 2];
                 Sprintf(dbuf, "Mysterious force prevents finishing off %s...", xname(otmp));
                 if (!quietly)
-                    impossible(dbuf);
+                    impossible("%s", dbuf);
                 issue_debuglog_priority(0, dbuf);
             }
             else

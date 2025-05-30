@@ -2716,26 +2716,25 @@ nexttry: /* eels prefer the water, but if there is no water nearby,
                             continue;
                     }
                     /* The if excludes the types of the traps the mon should not care about */
-                    if ((ttmp->ttyp != RUST_TRAP
-                         || is_iron(mdat))
+                    if ((ttmp->ttyp != RUST_TRAP || is_iron(mdat))
                         && !(trap_type_definitions[ttmp->ttyp].tdflags & TRAPDEF_FLAGS_IGNORED_BY_MONSTERS)
-                        && ((!is_pit(ttmp->ttyp)) /* exclude/include pits for flyers/nonflyers */
+                        && (!is_pit(ttmp->ttyp) /* exclude/include pits for flyers/nonflyers */
                             || (!has_pitwalk(mdat) && !(is_flying(mon) || is_levitating(mon))
-                                && !is_clinger(mdat)) || Sokoban)
-                        && ((!is_hole(ttmp->ttyp)) /* exclude/include holes or flyers/nonflyers */
+                                && !is_clinger(mdat) && mdat->difficulty < 15) || Sokoban)
+                        && (!is_hole(ttmp->ttyp) /* exclude/include holes or flyers/nonflyers */
                             || (!(is_flying(mon) || is_levitating(mon))
                                 && !is_clinger(mdat)) || Sokoban)
                         && (ttmp->ttyp != SLP_GAS_TRAP || !resists_sleep(mon))
                         && (ttmp->ttyp != BEAR_TRAP
                             || (mdat->msize > MZ_SMALL && !amorphous(mdat)
                                 && !(is_flying(mon) || is_levitating(mon))
-                                && !is_whirly(mdat) && !unsolid(mdat)))
+                                && !is_whirly(mdat) && !unsolid(mdat) && mdat->difficulty < 10))
                         && (ttmp->ttyp != FIRE_TRAP || !is_mon_immune_to_fire(mon))
-                        && (ttmp->ttyp != SQKY_BOARD || !(is_flying(mon) || is_levitating(mon)))
+                        && (ttmp->ttyp != SQKY_BOARD || !(is_flying(mon) || is_levitating(mon) || mdat->difficulty >= 4 || !rn2(2)))
                         && (ttmp->ttyp != WEB
                             || (!amorphous(mdat) && !webmaker(mdat)
-                                && !is_whirly(mdat) && !unsolid(mdat)))
-                        && (ttmp->ttyp != ANTI_MAGIC_TRAP || !resists_magic(mon)))
+                                && !is_whirly(mdat) && !unsolid(mdat) && mdat->difficulty < 10 && rn2(3)))
+                        && (ttmp->ttyp != ANTI_MAGIC_TRAP || (!resists_magic(mon) && attacktype(mon->data, AT_MAGC) && mdat->difficulty < 25 && rn2(3))))
                     {
                         /* Here are all relevant traps the mon should care about */
                         if (flag & ALLOW_TRAPS)

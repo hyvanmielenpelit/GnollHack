@@ -173,6 +173,7 @@ STATIC_PTR int NDECL(wiz_detect);
 #if defined(DEBUG)
 STATIC_PTR int NDECL(wiz_panic);
 STATIC_PTR int NDECL(wiz_debug);
+STATIC_PTR int NDECL(wiz_deleteitem);
 #endif
 STATIC_PTR int NDECL(wiz_polyself);
 STATIC_PTR int NDECL(wiz_level_tele);
@@ -1932,6 +1933,22 @@ wiz_debug(VOID_ARGS)
     }
     else
         pline(unavailcmd, visctrl((int)cmd_from_func(wiz_debug)));
+    return 0;
+}
+STATIC_PTR int
+wiz_deleteitem(VOID_ARGS)
+{
+    if (wizard)
+    {
+        struct obj* obj = getobj(getobj_allobj, "delete", 0, "");
+        if (!obj)
+            return 0;
+        char* objname = upstart(thecxname(obj));
+        useupall(obj);
+        pline("%s has been deleted.", objname);
+    }
+    else
+        pline(unavailcmd, visctrl((int)cmd_from_func(wiz_deleteitem)));
     return 0;
 }
 #endif
@@ -6400,6 +6417,8 @@ struct ext_func_tab extcmdlist[] = {
             wiz_debug_cmd_bury, IFBURIED | AUTOCOMPLETE | WIZMODECMD },
     { '\0', "wizdebug", "choose and execute a debug command",
             wiz_debug, IFBURIED | AUTOCOMPLETE | WIZMODECMD },
+    { '\0', "wizdeleteitem", "delete an item from inventory",
+            wiz_deleteitem, IFBURIED | AUTOCOMPLETE | WIZMODECMD },
 #endif
     { C('e'), "wizdetect", "reveal hidden things within a small radius",
             wiz_detect, IFBURIED | AUTOCOMPLETE | WIZMODECMD },
