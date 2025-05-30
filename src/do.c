@@ -6028,8 +6028,12 @@ register struct obj *obj;
         obj->ox = u.ux;
         obj->oy = u.uy;
         add_to_buried(obj);
-    } else
+    }
+    else
+    {
+        Sprintf(priority_debug_buf_2, "dosinkring: %d", obj->otyp);
         useup(obj);
+    }
 }
 
 /* some common tests when trying to drop or throw items */

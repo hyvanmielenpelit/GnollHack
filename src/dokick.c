@@ -720,6 +720,7 @@ xchar x, y; /* coordinates where object was before the impact, not after */
                     stolen_value(otmp, x, y, is_peaceful(shkp), TRUE);
             }
             if (otmp->quan > 1L) {
+                Sprintf(priority_debug_buf_2, "container_impact_dmg: %d", otmp->otyp);
                 useup(otmp);
             } else {
                 Strcpy(debug_buf_2, "container_impact_dmg");

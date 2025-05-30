@@ -3057,6 +3057,7 @@ boolean replaceundead;
     /* finally, get rid of the corpse--it's gone now */
     switch (corpse->where) {
     case OBJ_INVENT:
+        Sprintf(priority_debug_buf_2, "revive: %d", corpse->otyp);
         useup(corpse);
         break;
     case OBJ_FLOOR:
@@ -4176,6 +4177,7 @@ struct obj *obj;
                     }
                     if (obj->timed)
                         obj_stop_timers(obj);
+                    Sprintf(priority_debug_buf_2, "stone_to_flesh_obj: %d", obj->otyp);
                     if (carried(obj))
                         useup(obj);
                     else
@@ -6228,6 +6230,7 @@ struct obj *otmp;
     pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s suddenly explodes!", The(xname(otmp)));
     dmg = d(otmp->charges + 2, 6);
     losehp(adjust_damage(dmg, (struct monst*)0, &youmonst, AD_MAGM, ADFLAGS_NONE), "exploding wand", KILLED_BY_AN);
+    Sprintf(priority_debug_buf_2, "backfire: %d", otmp->otyp);
     useup(otmp);
 }
 
@@ -6416,6 +6419,7 @@ struct obj* obj;
     {
         play_sfx_sound(SFX_ITEM_CRUMBLES_TO_DUST);
         pline("%s to dust.", Tobjnam(obj, "turn"));
+        Sprintf(priority_debug_buf_2, "backfire: %d", obj->otyp);
         useup(obj);
     }
     update_inventory(); /* maybe used a charge */
@@ -11361,6 +11365,7 @@ boolean forcedestroy;
         if (obj == current_wand)
             current_wand = 0; /* destroyed */
 
+        Sprintf(priority_debug_buf_2, "destroy_one_item: %d", obj->otyp);
         for (i = 0; i < cnt; i++)
             useup(obj);
 

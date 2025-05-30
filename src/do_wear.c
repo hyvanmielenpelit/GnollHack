@@ -847,6 +847,7 @@ struct obj* uitem;
         && !objects[uitem->otyp].oc_name_known
         && !objects[uitem->otyp].oc_uname)
         docall(uitem, dcbuf);
+    Sprintf(priority_debug_buf_2, "item_change_sex_and_useup: %d", uitem->otyp);
     useup(uitem);
     newsym(u.ux, u.uy);
 }
@@ -3981,6 +3982,7 @@ register struct obj *atmp;
         play_sfx_sound(SFX_ITEM_CRUMBLES_TO_DUST);
         Your_ex(ATR_NONE, CLR_MSG_WARNING, "%s crumbles and turns to dust!", cloak_simple_name(uarmc));
         (void) Cloak_off();
+        Sprintf(priority_debug_buf_2, "destroy_arm: %d", otmp->otyp);
         useup(otmp);
     } else if (DESTROY_ARM(uarmo)) {
         if (donning(otmp))
@@ -3988,6 +3990,7 @@ register struct obj *atmp;
         play_sfx_sound(SFX_ITEM_CRUMBLES_TO_DUST);
         Your_ex(ATR_NONE, CLR_MSG_WARNING, "%s crumbles and turns to dust!", robe_simple_name(uarmc));
         (void)Robe_off();
+        Sprintf(priority_debug_buf_2, "destroy_arm2: %d", otmp->otyp);
         useup(otmp);
     } else if (DESTROY_ARM(uarm)) {
         if (donning(otmp))
@@ -3995,6 +3998,7 @@ register struct obj *atmp;
         play_sfx_sound(SFX_ITEM_CRUMBLES_TO_DUST);
         Your_ex(ATR_NONE, CLR_MSG_WARNING, "armor turns to dust and falls to the %s!", surface(u.ux, u.uy));
         (void) Armor_gone();
+        Sprintf(priority_debug_buf_2, "destroy_arm3: %d", otmp->otyp);
         useup(otmp);
     } else if (DESTROY_ARM(uarmu)) {
         if (donning(otmp))
@@ -4002,6 +4006,7 @@ register struct obj *atmp;
         play_sfx_sound(SFX_ITEM_CRUMBLES_TO_DUST);
         Your_ex(ATR_NONE, CLR_MSG_WARNING, "shirt crumbles into tiny threads and falls apart!");
         (void) Shirt_off();
+        Sprintf(priority_debug_buf_2, "destroy_arm4: %d", otmp->otyp);
         useup(otmp);
     } else if (DESTROY_ARM(uarmh)) {
         if (donning(otmp))
@@ -4009,6 +4014,7 @@ register struct obj *atmp;
         play_sfx_sound(SFX_ITEM_CRUMBLES_TO_DUST);
         Your_ex(ATR_NONE, CLR_MSG_WARNING, "%s turns to dust and is blown away!", helm_simple_name(uarmh));
         (void) Helmet_off();
+        Sprintf(priority_debug_buf_2, "destroy_arm5: %d", otmp->otyp);
         useup(otmp);
     } else if (DESTROY_ARM(uarmb)) {
         if (donning(otmp))
@@ -4016,6 +4022,7 @@ register struct obj *atmp;
         play_sfx_sound(SFX_ITEM_VANISHES);
         Your_ex(ATR_NONE, CLR_MSG_WARNING, "bracers vanish!");
         (void)Bracers_off();
+        Sprintf(priority_debug_buf_2, "destroy_arm6: %d", otmp->otyp);
         useup(otmp);
     } else if (DESTROY_ARM(uarmg)) {
         if (donning(otmp))
@@ -4023,6 +4030,7 @@ register struct obj *atmp;
         play_sfx_sound(SFX_ITEM_VANISHES);
         Your_ex(ATR_NONE, CLR_MSG_WARNING, "gloves vanish!");
         (void) Gloves_off();
+        Sprintf(priority_debug_buf_2, "destroy_arm7: %d", otmp->otyp);
         useup(otmp);
         selftouch("You");
     } else if (DESTROY_ARM(uarmf)) {
@@ -4031,6 +4039,7 @@ register struct obj *atmp;
         play_sfx_sound(SFX_ITEM_CRUMBLES_TO_DUST);
         Your_ex(ATR_NONE, CLR_MSG_WARNING, "boots disintegrate!");
         (void) Boots_off();
+        Sprintf(priority_debug_buf_2, "destroy_arm8: %d", otmp->otyp);
         useup(otmp);
     }
     else if (uarms && is_shield(uarms) && DESTROY_ARM(uarms)) {
@@ -4039,6 +4048,7 @@ register struct obj *atmp;
         play_sfx_sound(SFX_ITEM_CRUMBLES_TO_DUST);
         Your_ex(ATR_NONE, CLR_MSG_WARNING, "shield crumbles away!");
         (void) Shield_off();
+        Sprintf(priority_debug_buf_2, "destroy_arm9: %d", otmp->otyp);
         useup(otmp);
     } else {
         return 0; /* could not destroy anything */

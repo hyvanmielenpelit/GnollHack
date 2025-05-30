@@ -204,6 +204,7 @@ struct obj *spellbook;
         if (!objects[spellbook->otyp].oc_name_known
             && !objects[spellbook->otyp].oc_uname)
             docall(spellbook, dcbuf);
+        Sprintf(priority_debug_buf_2, "confused_book: %d", spellbook->otyp);
         useup(spellbook);
         gone = TRUE;
     } else {
@@ -488,6 +489,7 @@ learn(VOID_ARGS)
             if (!objects[book->otyp].oc_name_known
                 && !objects[book->otyp].oc_uname)
                 docall(book, (char*)0);
+            Sprintf(priority_debug_buf_2, "learn: %d", book->otyp);
             useup(book);
         }
         else
@@ -620,6 +622,7 @@ learn(VOID_ARGS)
     { /* maybe a demon cursed it */
         if (cursed_book(book)) 
         {
+            Sprintf(priority_debug_buf_2, "learn2: %d", book->otyp);
             useup(book);
             gone = TRUE;
             context.spbook.book = 0;
@@ -634,6 +637,7 @@ learn(VOID_ARGS)
     {
         play_sfx_sound(SFX_ITEM_CRUMBLES_TO_DUST);
         pline_The_ex(ATR_NONE, CLR_MSG_ATTENTION, "spellbook crumbles to dust.");
+        Sprintf(priority_debug_buf_2, "learn3: %d", book->otyp);
         useup(book);
         gone = TRUE;
     }
@@ -5622,6 +5626,7 @@ int spell;
             int used_amount = (failure ? 1 : selected_multiplier) * mc->amount;
             if(otmp->quan >= used_amount)
             {
+                Sprintf(priority_debug_buf_2, "domaterialcomponentsmenu: %d", otmp->otyp);
                 for (i = 0; i < used_amount; i++)
                     useup(otmp);
 

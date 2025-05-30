@@ -1077,6 +1077,7 @@ doengrave()
             You(
     "are not going to get anywhere trying to write in the %s with your dust.",
                 is_ice(u.ux, u.uy) ? "frost" : "dust");
+        Sprintf(priority_debug_buf_2, "doengrave: %d", otmp->otyp);
         useup(otmp);
         otmp = 0; /* wand is now gone */
         ptext = FALSE;

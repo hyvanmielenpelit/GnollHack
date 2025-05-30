@@ -872,6 +872,7 @@ nh_timeout()
                 if (uamul && uamul->otyp == AMULET_OF_STRANGULATION) {
                     play_sfx_sound(SFX_ITEM_VANISHES);
                     Your_ex(ATR_NONE, CLR_MSG_ATTENTION, "amulet vanishes!");
+                    Sprintf(priority_debug_buf_2, "nh_timeout: %d", uamul->otyp);
                     useup(uamul);
                 }
                 break;
@@ -1593,6 +1594,7 @@ int64_t timeout;
             /* Instead of ordinary egg timeout use a short one */
             attach_egg_hatch_timeout(egg, (int64_t) rnd(12));
         } else if (carried(egg)) {
+            Sprintf(priority_debug_buf_2, "hatch_egg: %d", egg->otyp);
             useup(egg);
         } else {
             /* free egg here because we use it above */

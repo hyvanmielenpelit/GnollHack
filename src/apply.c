@@ -1814,6 +1814,7 @@ struct obj **optr;
             You_ex(ATR_NONE, CLR_MSG_WARNING, "summon %s!", a_monnam(mtmp));
             if (!obj_resists(obj, 93, 100)) {
                 pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s shattered!", Tobjnam(obj, "have"));
+                Sprintf(priority_debug_buf_2, "use_bell: %d", obj->otyp);
                 useup(obj);
                 *optr = 0;
             } else
@@ -3272,6 +3273,7 @@ struct obj *obj;
                     verbalize_angry1(you_buy_it);
                 }
             }
+            Sprintf(priority_debug_buf_2, "use_tinning_kit: %d", corpse->otyp);
             useup(corpse);
         } else {
             if (costly_spot(corpse->ox, corpse->oy) && !corpse->no_charge)
@@ -4283,6 +4285,7 @@ struct obj *tstone;
         else
             pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "A sharp crack shatters %s%s.",
                   (obj->quan > 1L) ? "one of " : "", the(xname(obj)));
+        Sprintf(priority_debug_buf_2, "use_stone: %d", obj->otyp);
         useup(obj);
         return;
     }
@@ -4540,6 +4543,7 @@ set_trap(VOID_ARGS)
         /* this shouldn't happen */
         Your_ex(ATR_NONE, CLR_MSG_FAIL, "trap setting attempt fails.");
     }
+    Sprintf(priority_debug_buf_2, "set_trap: %d", otmp->otyp);
     useup(otmp);
     reset_trapset();
     return 0;

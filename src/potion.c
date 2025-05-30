@@ -849,6 +849,7 @@ dodrink()
             && !rn2(POTION_OCCUPANT_CHANCE(mvitals[PM_GHOST].born)))
         {
             ghost_from_bottle();
+            Sprintf(priority_debug_buf_2, "dodrink: %d", otmp->otyp);
             useup(otmp);
             gone = TRUE;
             if (action_taken)
@@ -861,6 +862,7 @@ dodrink()
                    && ((otmp->speflags & SPEFLAGS_CERTAIN_WISH) != 0 || !rn2(POTION_OCCUPANT_CHANCE(mvitals[PM_DJINNI].born))))
         {
             djinni_from_bottle(otmp);
+            Sprintf(priority_debug_buf_2, "dodrink2: %d", otmp->otyp);
             useup(otmp);
             gone = TRUE;
             if (action_taken)
@@ -935,6 +937,7 @@ struct obj *otmp;
             docall(otmp, (char*)0);
     }
 
+    Sprintf(priority_debug_buf_2, "dopotion: %d", otmp->otyp);
     useup(otmp);
     gone = TRUE;
 
@@ -2140,6 +2143,7 @@ boolean dopopup;
         }
     }
 
+    Sprintf(priority_debug_buf_2, "strange_feeling: %d", obj->otyp);
     useup(obj);
 }
 
@@ -3725,6 +3729,7 @@ dodip()
                 {
                     delay_output_milliseconds(1000);
                 }
+                Sprintf(priority_debug_buf_2, "dodip: %d", obj->otyp);
                 if (obj->otyp == POT_ACID)
                     obj->in_use = 1;
                 if (water_damage(obj, 0, TRUE) != ER_DESTROYED && obj->in_use)
@@ -3758,6 +3763,7 @@ dodip()
             } 
             else 
             {
+                Sprintf(priority_debug_buf_2, "dodip2: %d", obj->otyp);
                 if (obj->otyp == POT_ACID)
                     obj->in_use = 1;
                 if (water_damage(obj, 0, TRUE) != ER_DESTROYED && obj->in_use)
@@ -3821,6 +3827,7 @@ dodip()
             else if (obj->otyp != save_otyp) 
             {
                 makeknown(POT_POLYMORPH);
+                Sprintf(priority_debug_buf_2, "dodip3: %d", potion->otyp);
                 useup(potion);
                 prinv((char *) 0, obj, 0L);
                 return 1;
@@ -3926,6 +3933,7 @@ dodip()
                KMH, balance patch -- acid is particularly unstable */
             if (obj->cursed || obj->otyp == POT_ACID || !rn2(10))
             {
+                Sprintf(priority_debug_buf_2, "dodip4: %d", potion->otyp);
                 if (useupliquidonly)
                     potion->charges = 0;
                 if (!potion->oartifact && !is_obj_indestructible(potion))
@@ -3954,6 +3962,7 @@ dodip()
                 return 1;
             }
 
+            Sprintf(priority_debug_buf_2, "dodip5: %d", potion->otyp);
             /* get rid of 'dippee' before potential perm_invent updates */
             if (!useupliquidonly && !potion->oartifact && !is_obj_indestructible(potion))
                 useup(potion); /* now gone */
@@ -4124,6 +4133,7 @@ dodip()
         }
         exercise(A_WIS, wisx);
         makeknown(potion->otyp);
+        Sprintf(priority_debug_buf_2, "dodip6: %d", potion->otyp);
         useup(potion);
         return 1;
     }
@@ -4208,6 +4218,7 @@ dodip()
     if (!objects[potion->otyp].oc_name_known
         && !objects[potion->otyp].oc_uname)
         docall(potion, (char*)0);
+    Sprintf(priority_debug_buf_2, "dodip7: %d", potion->otyp);
     useup(potion);
     return 1;
 }
@@ -4223,6 +4234,7 @@ struct obj* obj, * potion;
     if (obj->lamplit || potion->lamplit)
     {
         pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s fire!", Tobjnam(potion, "catch"));
+        Sprintf(priority_debug_buf_2, "refill_obj_with_oil: %d", potion->otyp);
         useup(potion);
         explode(u.ux, u.uy, 11, &youmonst, 6, 6, 0, obj->otyp, 0, EXPL_FIERY);
         exercise(A_WIS, FALSE);
@@ -4251,6 +4263,7 @@ struct obj* obj, * potion;
         obj->age += (!potion->odiluted ? 4L : 3L) * potion->age / 2L;
         if (obj->age > 1500L)
             obj->age = 1500L;
+        Sprintf(priority_debug_buf_2, "refill_obj_with_oil2: %d", potion->otyp);
         useup(potion);
         exercise(A_WIS, TRUE);
     }

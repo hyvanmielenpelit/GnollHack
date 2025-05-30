@@ -1232,6 +1232,7 @@ boolean* obj_destroyed;
                         else if (obj == uarms)
                             uwep2gone(); /* set unweapon */
                     }
+                    Sprintf(priority_debug_buf_2, "hmon_hitmon: %d", obj->otyp);
                     useup(obj);
                     if (!more_than_1)
                         obj = (struct obj*) 0;
@@ -1417,6 +1418,7 @@ boolean* obj_destroyed;
                         play_simple_object_sound(obj, OBJECT_SOUND_TYPE_BREAK);
                         You_ex(ATR_NONE, CLR_MSG_WARNING, "break %s.  That's bad luck!", ysimple_name(obj));
                         change_luck(-2, TRUE);
+                        Sprintf(priority_debug_buf_2, "hmon_hitmon2: %d", obj->otyp);
                         useup(obj);
                         obj = (struct obj*) 0;
                         unarmed = FALSE; /* avoid obj==0 confusion */
@@ -1437,6 +1439,7 @@ boolean* obj_destroyed;
                     You_ex(ATR_NONE, CLR_MSG_WARNING, "succeed in destroying %s.  Congratulations!",
                         ysimple_name(obj));
                     release_camera_demon(obj, u.ux, u.uy);
+                    Sprintf(priority_debug_buf_2, "hmon_hitmon3: %d", obj->otyp);
                     useup(obj);
                     return TRUE;
                 case CORPSE: /* fixed by polder@cs.vu.nl */
@@ -1634,7 +1637,10 @@ boolean* obj_destroyed;
                         obfree(obj, (struct obj*)0);
                     }
                     else
+                    {
+                        Sprintf(priority_debug_buf_2, "hmon_hitmon4: %d", obj->otyp);
                         useup(obj);
+                    }
                     hittxt = TRUE;
                     get_dmg_bonus = FALSE;
                     damage = 0;
@@ -1655,6 +1661,7 @@ boolean* obj_destroyed;
                         damage += adjust_damage(extratmp, &youmonst, mon, objects[obj->otyp].oc_extra_damagetype, ADFLAGS_NONE);
                     }
                     Sprintf(priority_debug_buf_4, "hmon_hitmon2: %d", obj->otyp);
+                    Sprintf(priority_debug_buf_2, "hmon_hitmon5: %d", obj->otyp);
                     if (thrown)
                         obfree(obj, (struct obj*) 0);
                     else
@@ -1968,6 +1975,7 @@ boolean* obj_destroyed;
             if (obj == uarms)
                 uwep2gone(); /* set unweapon */
             /* minor side-effect: broken lance won't split puddings */
+            Sprintf(priority_debug_buf_2, "hmon_hitmon6: %d", obj->otyp);
             useup(obj);
             obj = 0;
         }
@@ -2488,6 +2496,7 @@ boolean* obj_destroyed;
 
         if (obj->where == OBJ_INVENT)
         {
+            Sprintf(priority_debug_buf_2, "hmon_hitmon7: %d", obj->otyp);
             if (obj->quan > 1)
                 useup(obj);
             else

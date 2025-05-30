@@ -210,6 +210,7 @@ doread()
                 livelog_printf(LL_CONDUCT, "%s",
                     "became literate by reading a fortune cookie");
 
+        Sprintf(priority_debug_buf_2, "doread: %d", scroll->otyp);
         useup(scroll);
         return 1;
     } 
@@ -517,6 +518,7 @@ doread()
         scroll->in_use = FALSE;
         if (scroll->otyp != SCR_BLANK_PAPER && scroll->otyp != SCR_IDENTIFY)
         {
+            Sprintf(priority_debug_buf_2, "doread2: %d", scroll->otyp);
             useup(scroll);
             gone = TRUE;
         }
@@ -1265,6 +1267,7 @@ boolean dopopup;
             if (is_on)
                 Ring_gone(obj);
             s = rnd(3 * abs(obj->enchantment)); /* amount of damage */
+            Sprintf(priority_debug_buf_2, "enchant_ring: %d", obj->otyp);
             useup(obj);
             losehp(adjust_damage(s, (struct monst*)0, &youmonst, AD_PHYS, ADFLAGS_NONE), "exploding ring", KILLED_BY_AN);
         }
@@ -1896,6 +1899,7 @@ struct monst* targetmonst;
                         : NH_SILVER),
                     otense(otmp, "evaporate"));
                 remove_worn_item(otmp, FALSE);
+                Sprintf(priority_debug_buf_2, "seffects: %d", otmp->otyp);
                 useup(otmp);
                 break;
             }
@@ -2659,6 +2663,7 @@ struct monst* targetmonst;
         if (confused)
         {
             pline_ex(ATR_NONE, NO_COLOR, "The scroll disappears.");
+            Sprintf(priority_debug_buf_2, "seffects2: %d", sobj->otyp);
             useup(sobj);
             sobj = 0; /* it's gone */
             break;
@@ -2672,6 +2677,7 @@ struct monst* targetmonst;
             if (res > 0)
             {
                 pline_ex(ATR_NONE, NO_COLOR, "The scroll disappears.");
+                Sprintf(priority_debug_buf_2, "seffects3: %d", sobj->otyp);
                 useup(sobj);
                 sobj = 0; /* it's gone */
             }
@@ -2792,6 +2798,7 @@ struct monst* targetmonst;
             /* use it up now to prevent it from showing in the
                getobj picklist because the "disappears" message
                was already delivered */
+            Sprintf(priority_debug_buf_2, "seffects4: %d", sobj->otyp);
             useup(sobj);
             sobj = 0; /* it's gone */
         }
@@ -3061,6 +3068,7 @@ struct monst* targetmonst;
 
         cc.x = u.ux;
         cc.y = u.uy;
+        Sprintf(priority_debug_buf_2, "seffects5: %d", sobj->otyp);
         useup(sobj);
         sobj = 0; /* it's gone */
         if (!already_known)
@@ -3547,6 +3555,7 @@ int chg; /* recharging */
         pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s %s explodes!", Yname2(obj), expl);
         losehp(adjust_damage(dmg, (struct monst*)0, &youmonst, AD_MAGM, ADFLAGS_SPELL_DAMAGE), "exploding wand", KILLED_BY_AN);
     }
+    Sprintf(priority_debug_buf_2, "wand_explode: %d", obj->otyp);
     useup(obj);
     /* obscure side-effect */
     exercise(A_STR, FALSE);

@@ -1143,6 +1143,7 @@ break_armor()
                 You_ex(ATR_NONE, CLR_MSG_NEGATIVE, "break out of %s!", yname(otmp));
                 exercise(A_STR, FALSE);
                 (void)Armor_gone();
+                Sprintf(priority_debug_buf_2, "break_armor: %d", otmp->otyp);
                 useup(otmp);
             }
         }
@@ -1162,6 +1163,7 @@ break_armor()
                 play_simple_object_sound(otmp, OBJECT_SOUND_TYPE_BREAK);
                 Your_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s tears apart!", cloak_simple_name(otmp));
                 (void) Cloak_off();
+                Sprintf(priority_debug_buf_2, "break_armor2: %d", otmp->otyp);
                 useup(otmp);
             }
         }
@@ -1182,6 +1184,7 @@ break_armor()
                 play_simple_object_sound(otmp, OBJECT_SOUND_TYPE_BREAK);
                 Your_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s is torn to pieces!", robe_simple_name(otmp));
                 (void)Robe_off();
+                Sprintf(priority_debug_buf_2, "break_armor3: %d", otmp->otyp);
                 useup(otmp);
             }
         }
@@ -1202,6 +1205,7 @@ break_armor()
                 play_simple_object_sound(otmp, OBJECT_SOUND_TYPE_BREAK);
                 Your_ex(ATR_NONE, CLR_MSG_NEGATIVE, "shirt rips to shreds!");
                 (void)Shirt_off();
+                Sprintf(priority_debug_buf_2, "break_armor4: %d", otmp->otyp);
                 useup(otmp);
             }
         }
@@ -1397,6 +1401,7 @@ break_armor()
                     pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s!", Yobjnam2(otmp, "break"));
                     exercise(A_STR, FALSE);
                     (void)MiscellaneousItem_off(otmp);
+                    Sprintf(priority_debug_buf_2, "break_armor5: %d", otmp->otyp);
                     useup(otmp);
                 }
             }

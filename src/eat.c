@@ -579,6 +579,7 @@ boolean message;
                 piece->speflags |= SPEFLAGS_ADDED_TO_YOUR_BILL;
             }
         }
+        Sprintf(priority_debug_buf_2, "done_eating: %d", piece->otyp);
         useup(piece);
     }
     else
@@ -1975,6 +1976,7 @@ const char *mesg;
     }
 
 use_up_tin:
+    Sprintf(priority_debug_buf_2, "consume_tin: %d", tin->otyp);
     if (carried(tin))
         useup(tin);
     else
@@ -2238,6 +2240,7 @@ struct obj *otmp;
             pline_ex(ATR_NONE, CLR_MSG_WARNING, "(It must have died too long ago to be safe to eat.)");
             standard_hint("Corpses rot and become dangerous to eat after a while. You can check their status out by using a wand of probing.", &u.uhint.ate_rotten_corpse);
         }
+        Sprintf(priority_debug_buf_2, "eatcorpse: %d", otmp->otyp);
         if (carried(otmp))
             useup(otmp);
         else
@@ -2339,6 +2342,7 @@ struct obj *otmp;
             /* no nutrition: rots away, no message if you passed out */
             if (!retcode)
                 pline_The_ex(ATR_NONE, CLR_MSG_ATTENTION, "corpse rots away completely.");
+            Sprintf(priority_debug_buf_2, "eatcorpse2: %d", otmp->otyp);
             if (carried(otmp))
                 useup(otmp);
             else
@@ -2841,6 +2845,7 @@ struct obj* obj;
 {
     if (pre_break_statue(obj))
     {
+        Sprintf(priority_debug_buf_2, "eat_statue: %d", obj->otyp);
         if (carried(obj))
             useup(obj);
         else
@@ -2927,6 +2932,7 @@ eatspecial()
     if (otmp == uswapwep2 && otmp->quan == 1L)
         uswapwep2gone();
 
+    Sprintf(priority_debug_buf_2, "eatspecial: %d", otmp->otyp);
     if (otmp == uball)
         unpunish();
     if (otmp == uchain)
@@ -3786,6 +3792,7 @@ doeat()
                 standard_hint("Some food items can be inherently tainted. You can check this out by identifying the item.", &u.uhint.ate_tainted_food);
                 make_food_poisoned(sick_time, doname(otmp), TRUE, HINT_KILLED_TAINTED_CORPSE);
             }
+            Sprintf(priority_debug_buf_2, "doeat: %d", otmp->otyp);
             if (carried(otmp))
                 useup(otmp);
             else

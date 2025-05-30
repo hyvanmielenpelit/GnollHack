@@ -7464,6 +7464,7 @@ lava_effects()
             pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s into flame!", Yobjnam2(obj, "burst"));
             iflags.in_lava_effects++; /* (see above) */
             (void)Boots_off();
+            Sprintf(priority_debug_buf_2, "lava_effects: %d", obj->otyp);
             useup(obj);
             iflags.in_lava_effects--;
         }

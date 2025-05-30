@@ -5947,6 +5947,7 @@ struct monst* mtmp;
                 const char* obj_glows = Yobjnam2(obj, "glow");
                 if (H2Opotion_dip(otmp, obj, TRUE, obj_glows))
                 {
+                    Sprintf(priority_debug_buf_2, "do_chat_uncurse_items: %d", otmp->otyp);
                     useup(otmp);
                     return 1;
                 }
@@ -5965,6 +5966,7 @@ struct monst* mtmp;
             if (otmp->otyp == SCR_REMOVE_CURSE)
             {
                 (void)remove_curse(otmp, mtmp, !!mtmp->mprops[CONFUSION]);
+                Sprintf(priority_debug_buf_2, "do_chat_uncurse_items2: %d", otmp->otyp);
                 useup(otmp);
                 otmp = 0;
             }

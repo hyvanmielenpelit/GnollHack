@@ -215,6 +215,7 @@ picklock(VOID_ARGS)
             else
                 pline("%s.", Yobjnam2(xlock.key, "vanish"));
 
+            Sprintf(priority_debug_buf_2, "picklock: %d", xlock.key->otyp);
             useup(xlock.key);
             xlock.key = 0;
         }
@@ -257,6 +258,7 @@ picklock(VOID_ARGS)
             else
                 pline("%s.", Yobjnam2(xlock.key, "vanish"));
 
+            Sprintf(priority_debug_buf_2, "picklock2: %d", xlock.key->otyp);
             useup(xlock.key);
             xlock.key = 0;
         }
@@ -358,6 +360,7 @@ boolean destroyit;
                 }
                 /* this works because we're sure to have at least 1 left;
                    otherwise it would fail since otmp is not in inventory */
+                Sprintf(priority_debug_buf_2, "breakchestlock: %d", otmp->otyp);
                 useup(otmp);
             }
             if (box->otyp == ICE_BOX && otmp->otyp == CORPSE) 
@@ -410,8 +413,8 @@ forcelock(VOID_ARGS)
              * attempt to force the lock is (.992)^50 = .67
              */
             play_simple_object_sound(uwep, OBJECT_SOUND_TYPE_BREAK);
-            pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%sour %s broke!", (uwep->quan > 1L) ? "One of y" : "Y",
-                  xname(uwep));
+            pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%sour %s broke!", (uwep->quan > 1L) ? "One of y" : "Y", xname(uwep));
+            Sprintf(priority_debug_buf_2, "forcelock: %d", uwep->otyp);
             useup(uwep);
             You_ex(ATR_NONE, CLR_MSG_ATTENTION, "give up your attempt to force the lock.");
             exercise(A_DEX, TRUE);

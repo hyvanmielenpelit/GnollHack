@@ -341,6 +341,7 @@ found_novel_or_manual:
         else
         {
             pline_The_ex(ATR_NONE, CLR_MSG_FAIL, "scroll is now useless and disappears!");
+            Sprintf(priority_debug_buf_2, "dowrite: %d", paper->otyp);
             useup(paper);
         }
         update_inventory(); /* pen charges */
@@ -421,6 +422,7 @@ found_novel_or_manual:
             } else
                 Sprintf(namebuf, "%s was here!", plname);
             You_multi_ex(ATR_NONE, CLR_MSG_FAIL, no_multiattrs, multicolor_text1, "write \"%s\" and the scroll disappears.", namebuf);
+            Sprintf(priority_debug_buf_2, "dowrite2: %d", paper->otyp);
             useup(paper);
         }
         Sprintf(priority_debug_buf_4, "dowrite5: %d", new_obj->otyp);
@@ -437,6 +439,7 @@ found_novel_or_manual:
            hard to write an unknown scroll while blind */
         play_sfx_sound(SFX_GENERAL_TRIED_ACTION_BUT_IT_FAILED);
         You_ex(ATR_NONE, CLR_MSG_FAIL, "fail to write the scroll correctly and it disappears.");
+        Sprintf(priority_debug_buf_2, "dowrite3: %d", paper->otyp);
         useup(paper);
         Sprintf(priority_debug_buf_4, "dowrite6: %d", new_obj->otyp);
         obfree(new_obj, (struct obj *) 0);
@@ -444,6 +447,7 @@ found_novel_or_manual:
     }
 
     /* useup old scroll / spellbook */
+    Sprintf(priority_debug_buf_2, "dowrite4: %d", paper->otyp);
     useup(paper);
 
     /* success */

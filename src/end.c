@@ -1704,7 +1704,10 @@ int how;
                 play_sfx_sound(SFX_ITEM_CRUMBLES_TO_DUST);
                 pline_The_ex(ATR_NONE, CLR_MSG_ATTENTION, "medallion crumbles to dust!");
                 if (uamul)
+                {
+                    Sprintf(priority_debug_buf_2, "done: %d", uamul->otyp);
                     useup(uamul);
+                }
             }
             else
             {
@@ -1718,7 +1721,10 @@ int how;
                     play_sfx_sound(SFX_ITEM_CRUMBLES_TO_DUST);
                     pline_The_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s crumbles to dust!", cxname(lifesaver));
                     if (lifesaver)
+                    {
+                        Sprintf(priority_debug_buf_2, "done2: %d", lifesaver->otyp);
                         useup(lifesaver);
+                    }
                 }
             }
             special_effect_wait_until_end(0);

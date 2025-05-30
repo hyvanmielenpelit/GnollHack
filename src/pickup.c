@@ -3473,6 +3473,7 @@ boolean dobot;
             (void)scatter(obj->ox, obj->oy, 3, VIS_EFFECTS | MAY_HIT | MAY_DESTROY | MAY_FRACTURE, obj);
         }
 
+        Sprintf(priority_debug_buf_2, "in_container_core: %d", current_container->otyp);
         if (!floor_container)
             useup(current_container);
         else if (obj_here(current_container, u.ux, u.uy))

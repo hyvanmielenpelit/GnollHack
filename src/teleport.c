@@ -705,6 +705,7 @@ struct monst* mtmp;
             if (otmp && !(ttmp->tflags & TRAPFLAGS_ACTIVATED))
             {
                 pline("%s%s has vanished!", otmp->quan > 1 ? "One of " : "", otmp->quan > 1 ? yname(otmp) : Yname2(otmp));
+                Sprintf(priority_debug_buf_2, "modronportaltele: %d", otmp->otyp);
                 if (mtmp == u.usteed)
                     m_useup(mtmp, otmp);
                 else
@@ -767,6 +768,7 @@ struct monst* mtmp;
                 if (otmp && !(ttmp->tflags & TRAPFLAGS_ACTIVATED))
                 {
                     pline("%s%s has vanished!", otmp->quan > 1 ? "One of " : "", otmp->quan > 1 ? yname(otmp) : Yname2(otmp));
+                    Sprintf(priority_debug_buf_2, "modronportaltele2: %d", otmp->otyp);
                     if(mtmp == u.usteed)
                         m_useup(mtmp, otmp);
                     else
