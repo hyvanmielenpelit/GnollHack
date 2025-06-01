@@ -2791,11 +2791,17 @@ namespace GnollHackX
                     if (PlayingReplay)
                         break;
 
+                    if (cmd_str != null)
+                        status_str = cmd_str;
+#if SENTRY
+                    string data_title = cmd_param == (int)diagnostic_data_types.DIAGNOSTIC_DATA_IMPOSSIBLE ? "Diagnostic - Impossible" :
+                        cmd_param == (int)diagnostic_data_types.DIAGNOSTIC_DATA_PANIC ? "Diagnostic - Panic" :
+                        cmd_param == (int)diagnostic_data_types.DIAGNOSTIC_DATA_CRITICAL ? "Diagnostic - Critical" :
+                        "Diagnostic - General";
+                    SentrySdk.CaptureMessage(data_title + ": " + status_str);
+#endif
                     if (GHApp.PostingDiagnosticData)
                     {
-                        if (cmd_str != null)
-                            status_str = cmd_str;
-
                         RequestQueue.Enqueue(new GHRequest(this,
                             GHRequestType.PostDiagnosticData,
                             cmd_param, cmd_param2, status_str));

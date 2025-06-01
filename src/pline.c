@@ -1198,9 +1198,14 @@ VA_DECL(const char *, s)
         panic("%s", pbuf);
         return;
     }
-    pline_ex(ATR_NONE, CLR_MSG_ERROR, "impossible: %s", VA_PASS1(pbuf));
     if (issue_gui_command)
-        issue_gui_command(GUI_CMD_POST_DIAGNOSTIC_DATA, DIAGNOSTIC_DATA_IMPOSSIBLE, 0, pbuf);
+    {
+        char dbufs[BUFSZ * 18];
+        Sprintf(dbufs, "impossible: %s, bufs: %s, %s, %s, %s, %s, %s, %s, %s", pbuf, priority_debug_buf_1, priority_debug_buf_2, priority_debug_buf_3, priority_debug_buf_4, debug_buf_1, debug_buf_2, debug_buf_3, debug_buf_4);
+        issue_gui_command(GUI_CMD_POST_DIAGNOSTIC_DATA, DIAGNOSTIC_DATA_IMPOSSIBLE, 0, dbufs);
+    }
+
+    pline_ex(ATR_NONE, CLR_MSG_ERROR, "impossible: %s", VA_PASS1(pbuf));
 
     /* reuse pbuf[] */
     Strcpy(pbuf, "Program in disorder!");

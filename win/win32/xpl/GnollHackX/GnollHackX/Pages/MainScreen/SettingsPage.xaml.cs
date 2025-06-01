@@ -246,29 +246,33 @@ namespace GnollHackX.Pages.MainScreen
 
         private void SetTournamentModeLabelColors(bool isTournament)
         {
-            Color offColor = GHApp.DarkMode ? GHColors.White : GHColors.Black;
+            Color normalColor = GHApp.DarkMode ? GHColors.White : GHColors.Black;
+            Color offColor = GHApp.DarkMode ? GHColors.BrighterRed : GHColors.Red;
+            Color defColor = GHApp.DarkMode ? GHColors.LightPink : GHColors.Magenta;
             Color onColor = GHApp.DarkMode ? GHColors.LightGreen : GHColors.Green;
-            Color usedColor = isTournament ? onColor : offColor;
+            Color usedOnColor = isTournament ? onColor : normalColor;
+            Color usedOffColor = isTournament ? offColor : normalColor;
+            Color usedDefColor = isTournament ? defColor : normalColor;
 
-            TournamentLabel.TextColor = TournamentSwitch.IsEnabled ? usedColor : GHColors.Gray;
-            RecordLabel.TextColor = RecordSwitch.IsEnabled ? usedColor : GHColors.Gray;
-            AutoUploadReplaysLabel.TextColor = AutoUploadReplaysSwitch.IsEnabled ? usedColor : GHColors.Gray;
-            SaveStyleLabel.TextColor = SaveStylePicker.IsEnabled ? usedColor : GHColors.Gray;
-            PostGameStatusLabel.TextColor = PostGameStatusSwitch.IsEnabled ? usedColor : GHColors.Gray;
-            PostXlogLabel.TextColor = PostXlogSwitch.IsEnabled ? usedColor : GHColors.Gray;
-            PostReplaysLabel.TextColor = PostReplaysSwitch.IsEnabled ? usedColor : GHColors.Gray;
-            PostBonesLabel.TextColor = PostBonesSwitch.IsEnabled ? usedColor : GHColors.Gray;
-            AllowBonesLabel.TextColor= AllowBonesSwitch.IsEnabled ? usedColor : GHColors.Gray;
-            GZipLabel.TextColor = GZipSwitch.IsEnabled ? usedColor : GHColors.Gray;
-            SaveFileTrackingLabel.TextColor = SaveFileTrackingSwitch.IsEnabled ? usedColor : GHColors.Gray;
-            DebugPostChannelLabel.TextColor = DebugPostChannelSwitch.IsEnabled ? usedColor : GHColors.Gray;
+            TournamentLabel.TextColor = TournamentSwitch.IsEnabled ? usedOnColor : GHColors.Gray;
+            RecordLabel.TextColor = RecordSwitch.IsEnabled ? usedOnColor : GHColors.Gray;
+            AutoUploadReplaysLabel.TextColor = AutoUploadReplaysSwitch.IsEnabled ? usedOnColor : GHColors.Gray;
+            SaveStyleLabel.TextColor = SaveStylePicker.IsEnabled ? usedDefColor : GHColors.Gray;
+            PostGameStatusLabel.TextColor = PostGameStatusSwitch.IsEnabled ? usedOnColor : GHColors.Gray;
+            PostXlogLabel.TextColor = PostXlogSwitch.IsEnabled ? usedOnColor : GHColors.Gray;
+            PostReplaysLabel.TextColor = PostReplaysSwitch.IsEnabled ? usedOnColor : GHColors.Gray;
+            PostBonesLabel.TextColor = PostBonesSwitch.IsEnabled ? usedOnColor : GHColors.Gray;
+            AllowBonesLabel.TextColor= AllowBonesSwitch.IsEnabled ? usedOnColor : GHColors.Gray;
+            GZipLabel.TextColor = GZipSwitch.IsEnabled ? usedOnColor : GHColors.Gray;
+            SaveFileTrackingLabel.TextColor = SaveFileTrackingSwitch.IsEnabled ? usedOnColor : GHColors.Gray;
+            DebugPostChannelLabel.TextColor = DebugPostChannelSwitch.IsEnabled ? usedOffColor : GHColors.Gray;
 
-            CustomWebHookLinkTitleLabel.TextColor = usedColor;
-            AccountTitleLabel.TextColor = usedColor;
-            PostingTitleLabel.TextColor = usedColor;
-            PostXlogUserNameLabel.TextColor = usedColor;
-            PostXlogPasswordLabel.TextColor = usedColor;
-            CloudStorageTitleLabel.TextColor = usedColor;
+            CustomWebHookLinkTitleLabel.TextColor = usedDefColor;
+            AccountTitleLabel.TextColor = usedDefColor;
+            PostingTitleLabel.TextColor = usedDefColor;
+            PostXlogUserNameLabel.TextColor = usedOnColor;
+            PostXlogPasswordLabel.TextColor = usedOnColor;
+            CloudStorageTitleLabel.TextColor = usedDefColor;
         }
 
         private void ContentPage_Disappearing(object sender, EventArgs e)

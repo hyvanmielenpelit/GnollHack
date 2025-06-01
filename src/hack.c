@@ -4126,7 +4126,7 @@ mark_spotted_monsters_in_run(VOID_ARGS)
     struct monst* mtmp;
     for (mtmp = fmon; mtmp; mtmp = mtmp->nmon)
     {
-        if (!DEADMONSTER(mtmp) && canspotmon(mtmp) && isok(mtmp->mx, mtmp->my) && couldsee(mtmp->mx, mtmp->my))
+        if (!DEADMONSTER(mtmp) && isok(mtmp->mx, mtmp->my) && canspotmon(mtmp) && couldsee(mtmp->mx, mtmp->my))
             mtmp->mon_flags |= MON_FLAGS_SPOTTED_IN_RUN_AT_START;
         else
             mtmp->mon_flags &= ~MON_FLAGS_SPOTTED_IN_RUN_AT_START;
