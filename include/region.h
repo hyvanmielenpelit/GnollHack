@@ -7,6 +7,10 @@
 #ifndef REGION_H
 #define REGION_H
 
+#include "global.h"
+#include "rect.h"
+#include "soundset.h"
+
 /* generic callback function */
 
 typedef boolean FDECL((*callback_proc), (genericptr_t, genericptr_t));

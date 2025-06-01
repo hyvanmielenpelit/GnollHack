@@ -3949,7 +3949,7 @@ mswin_toggle_animation_timer(int timertype, int timerid, int state, int x, int y
         animation_timers.special_effect_animation_counter_on[timerid] = !!state;
         animation_timers.spef_action_animation_x[timerid] = x;
         animation_timers.spef_action_animation_y[timerid] = y;
-        animation_timers.spef_action_animation_layer[timerid] = (enum animation_timer_types)layer;
+        animation_timers.spef_action_animation_layer[timerid] = (enum layer_types)layer;
         break;
     default:
         break;
