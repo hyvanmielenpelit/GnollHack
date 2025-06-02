@@ -275,29 +275,14 @@ namespace GnollHackX
 
         public static bool IsSteam { get; set; }
         public static bool IsPlaytest { get; set; }
+        public static bool IsNoStore { get; set; }
 
         private static void ProcessEnvironment()
         {
             IsPlaytest = false;
             IsSteam = false;
+            IsNoStore = false;
 #if WINDOWS
-            try
-            {
-                string packstr = AppInfo.PackageName;
-                if (!string.IsNullOrEmpty(packstr))
-                {
-                    if (packstr.EndsWith(".Playtest"))
-                    {
-                        IsPlaytest = true;
-                        IsSteam = true;
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine(ex.Message);
-            }
-
             try
             {
                 string packstr = AppInfo.PackageName;
@@ -306,6 +291,15 @@ namespace GnollHackX
                     if (packstr.EndsWith(".Steam") || packstr.Contains(".Steam."))
                     {
                         IsSteam = true;
+                    }
+                    if (packstr.EndsWith(".Playtest"))
+                    {
+                        IsPlaytest = true;
+                        IsSteam = true;
+                    }
+                    if (packstr.EndsWith(".NoStore"))
+                    {
+                        IsNoStore = true;
                     }
                 }
             }
@@ -4520,7 +4514,12 @@ namespace GnollHackX
             else if (IsWindows)
             {
                 if (IsPackaged)
-                    return "microsoft";
+                {
+                    if (IsNoStore)
+                        return "packaged";
+                    else
+                        return "microsoft";
+                }
                 else
                 {
                     if (IsSteam)
@@ -4530,6 +4529,8 @@ namespace GnollHackX
                         else
                             return "steam";
                     }
+                    else if (IsNoStore)
+                        return "unpackaged";
                     else
                         return "none";
                 }
@@ -5420,10 +5421,22 @@ namespace GnollHackX
             else
                 platid = "";
 
-            if (IsPlaytest)
-                platid += "t";
-            else if (IsSteam)
-                platid += "s";
+            if (IsWindows)
+            {
+                if (IsPackaged)
+                {
+                    if (IsNoStore)
+                        platid += "p";
+                    else
+                        platid += "m";
+                }
+                else if (IsPlaytest)
+                    platid += "t";
+                else if (IsSteam)
+                    platid += "s";
+                else
+                    platid += "u";
+            }
 
             message = message + " [" + portver + platid + "]";
             return message;

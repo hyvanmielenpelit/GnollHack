@@ -662,7 +662,7 @@ double *dmg_p; /* for dishing out extra damage in lieu of Int loss */
             if (!Stone_resistance && !Stoned)
                 make_stoned(5L, (char *) 0, KILLED_BY_AN, mon_monster_name(mdef), HINT_KILLED_ATE_COCKATRICE_CORPSE);
         }
-        else
+        else if (!resists_ston(magr))
         {
             /* no need to check for poly_when_stoned or Stone_resistance;
                tentacled ones don't have those capabilities */
