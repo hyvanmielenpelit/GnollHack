@@ -5434,8 +5434,10 @@ namespace GnollHackX
                     platid += "t";
                 else if (IsSteam)
                     platid += "s";
-                else
+                else if (IsNoStore)
                     platid += "u";
+                else
+                    platid += "n";
             }
 
             message = message + " [" + portver + platid + "]";

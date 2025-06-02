@@ -991,7 +991,7 @@ register struct obj *spellbook;
     if (context.spbook.book)
         context.spbook.o_id = context.spbook.book->o_id;
 
-    set_occupation(learn, "studying", objects[spellbook->otyp].oc_soundset, OCCUPATION_STUDYING, resume ? OCCUPATION_SOUND_TYPE_RESUME : OCCUPATION_SOUND_TYPE_START, 0);
+    set_occupation(learn, "studying", ATR_NONE, CLR_MSG_ATTENTION, objects[spellbook->otyp].oc_soundset, OCCUPATION_STUDYING, resume ? OCCUPATION_SOUND_TYPE_RESUME : OCCUPATION_SOUND_TYPE_START, 0);
     return 1;
 }
 

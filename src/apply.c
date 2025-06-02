@@ -4445,7 +4445,7 @@ struct obj *otmp;
     if (otmp == trapinfo.tobj && u.ux == trapinfo.tx && u.uy == trapinfo.ty) {
         You("resume setting %s%s.", shk_your(buf, otmp),
             defsyms[trap_to_defsym(what_trap(ttyp, rn2))].explanation);
-        set_occupation(set_trap, occutext, objects[otmp->otyp].oc_soundset, OCCUPATION_SETTING_TRAP, OCCUPATION_SOUND_TYPE_RESUME, 0);
+        set_occupation(set_trap, occutext, ATR_NONE, CLR_MSG_ATTENTION, objects[otmp->otyp].oc_soundset, OCCUPATION_SETTING_TRAP, OCCUPATION_SOUND_TYPE_RESUME, 0);
         return;
     }
     trapinfo.tobj = otmp;
@@ -4495,7 +4495,7 @@ struct obj *otmp;
     You("begin setting %s%s.", shk_your(buf, otmp),
         defsyms[trap_to_defsym(what_trap(ttyp, rn2))].explanation);
 
-    set_occupation(set_trap, occutext, objects[otmp->otyp].oc_soundset, OCCUPATION_SETTING_TRAP, OCCUPATION_SOUND_TYPE_START, 0);
+    set_occupation(set_trap, occutext, ATR_NONE, CLR_MSG_ATTENTION, objects[otmp->otyp].oc_soundset, OCCUPATION_SETTING_TRAP, OCCUPATION_SOUND_TYPE_START, 0);
     return;
 }
 

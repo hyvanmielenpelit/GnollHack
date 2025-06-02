@@ -1901,7 +1901,8 @@ domove_core()
                     && !(mtmp2->mon_flags & MON_FLAGS_SPOTTED_IN_RUN_AT_START) /* Hasn't been spotted at the start of running */
                     )
                 {
-                    You("spot %s%s.", a_monnam(mtmp2), iflags.run_spot_distance < 0 ? "" : distu(mtmp2->mx, mtmp2->my) <= RUN_SPOT_NEARBY_DISTANCE * RUN_SPOT_NEARBY_DISTANCE ? " nearby" : " at a distance");
+                    int multicolors[2] = { CLR_MSG_WARNING, NO_COLOR };
+                    You_multi_ex(ATR_NONE, CLR_MSG_ATTENTION, no_multiattrs, multicolors, "spot %s%s.", a_monnam(mtmp2), iflags.run_spot_distance < 0 ? "" : distu(mtmp2->mx, mtmp2->my) <= RUN_SPOT_NEARBY_DISTANCE * RUN_SPOT_NEARBY_DISTANCE ? " nearby" : " at a distance");
                     You("stop %s.", context.travel ? "travelling" : "running");
                     nomul(0);
                     context.move = 0;

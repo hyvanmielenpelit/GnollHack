@@ -1686,7 +1686,7 @@ int* result_style_ptr;
         if (contoccupation)
         {
             You("continue %s.", context.takeoff.disrobing);
-            set_occupation(take_off, context.takeoff.disrobing, occsoundset, occtyp, OCCUPATION_SOUND_TYPE_RESUME, 0);
+            set_occupation(take_off, context.takeoff.disrobing, ATR_NONE, CLR_MSG_WARNING, occsoundset, occtyp, OCCUPATION_SOUND_TYPE_RESUME, 0);
             return 0;
         }
         else
@@ -3662,7 +3662,7 @@ take_off(VOID_ARGS)
         if (don->delay > 0)
             don->delay--;
 
-        set_occupation(take_off, doff->disrobing, otmp ? objects[otmp->otyp].oc_soundset : OBJECT_SOUNDSET_NONE, OCCUPATION_TAKING_OFF, OCCUPATION_SOUND_TYPE_RESUME, 0);
+        set_occupation(take_off, doff->disrobing, ATR_NONE, CLR_MSG_WARNING, otmp ? objects[otmp->otyp].oc_soundset : OBJECT_SOUNDSET_NONE, OCCUPATION_TAKING_OFF, OCCUPATION_SOUND_TYPE_RESUME, 0);
         return 1; /* get busy */
 
     } 
@@ -3777,7 +3777,7 @@ take_off(VOID_ARGS)
     if (doff->delay > 0)
         doff->delay--;
 
-    set_occupation(take_off, doff->disrobing, otmp ? objects[otmp->otyp].oc_soundset : OBJECT_SOUNDSET_NONE, OCCUPATION_TAKING_OFF, OCCUPATION_SOUND_TYPE_RESUME, 0);
+    set_occupation(take_off, doff->disrobing, ATR_NONE, CLR_MSG_WARNING, otmp ? objects[otmp->otyp].oc_soundset : OBJECT_SOUNDSET_NONE, OCCUPATION_TAKING_OFF, OCCUPATION_SOUND_TYPE_RESUME, 0);
     return 1; /* get busy */
 }
 
@@ -3803,7 +3803,7 @@ doddoremarm()
 
     if (context.takeoff.what || context.takeoff.mask) {
         You("continue %s.", context.takeoff.disrobing);
-        set_occupation(take_off, context.takeoff.disrobing, occsoundset, occtyp, OCCUPATION_SOUND_TYPE_RESUME, 0);
+        set_occupation(take_off, context.takeoff.disrobing, ATR_NONE, CLR_MSG_WARNING, occsoundset, occtyp, OCCUPATION_SOUND_TYPE_RESUME, 0);
         return 0;
     } else if (!uwep && !uarms && !uswapwep && !uswapwep2 && !uquiver && !uamul && !ublindf && !uleft
                && !uright && !umisc && !umisc2 && !umisc3 && !umisc4 && !umisc5 && !wearing_armor()) {
@@ -3945,7 +3945,7 @@ ddowear()
 
     if (context.wear.what || context.wear.mask) {
         You("continue %s.", context.takeoff.disrobing);
-        set_occupation(take_off, context.takeoff.disrobing, occsoundset, occtyp, OCCUPATION_SOUND_TYPE_RESUME, 0);
+        set_occupation(take_off, context.takeoff.disrobing, ATR_NONE, CLR_MSG_WARNING, occsoundset, occtyp, OCCUPATION_SOUND_TYPE_RESUME, 0);
         return 0;
     }
 

@@ -533,7 +533,7 @@ struct obj *pick;
 
             You("resume your attempt at %s.", action);
             xlock.magic_key = is_magic_key(&youmonst, pick);
-            set_occupation(picklock, action, objects[pick->otyp].oc_soundset, OCCUPATION_PICKING_LOCK, OCCUPATION_SOUND_TYPE_START, 0);
+            set_occupation(picklock, action, ATR_NONE, CLR_MSG_ATTENTION, objects[pick->otyp].oc_soundset, OCCUPATION_PICKING_LOCK, OCCUPATION_SOUND_TYPE_START, 0);
             return PICKLOCK_DID_SOMETHING;
         }
     }
@@ -827,7 +827,7 @@ boolean is_auto;
     xlock.key = pick;
     xlock.magic_key = is_magic_key(&youmonst, pick);
     xlock.usedtime = 0;
-    set_occupation(picklock, lock_action(), objects[pick->otyp].oc_soundset, OCCUPATION_PICKING_LOCK, OCCUPATION_SOUND_TYPE_START, 0);
+    set_occupation(picklock, lock_action(), ATR_NONE, CLR_MSG_ATTENTION, objects[pick->otyp].oc_soundset, OCCUPATION_PICKING_LOCK, OCCUPATION_SOUND_TYPE_START, 0);
     return PICKLOCK_DID_SOMETHING;
 }
 
@@ -886,7 +886,7 @@ doforce()
     picktyp = is_blade(uwep) && !is_pick(uwep);
     if (xlock.usedtime && xlock.box && picktyp == xlock.picktyp) {
         You("resume your attempt to force the lock.");
-        set_occupation(forcelock, "forcing the lock", objects[uwep->otyp].oc_soundset, OCCUPATION_FORCING_LOCK, OCCUPATION_SOUND_TYPE_RESUME, 0);
+        set_occupation(forcelock, "forcing the lock", ATR_NONE, CLR_MSG_ATTENTION, objects[uwep->otyp].oc_soundset, OCCUPATION_FORCING_LOCK, OCCUPATION_SOUND_TYPE_RESUME, 0);
         return 1;
     }
 
@@ -932,7 +932,7 @@ doforce()
 
     if (xlock.box)
     {
-        set_occupation(forcelock, "forcing the lock", objects[uwep->otyp].oc_soundset, OCCUPATION_FORCING_LOCK, OCCUPATION_SOUND_TYPE_START, 0);
+        set_occupation(forcelock, "forcing the lock", ATR_NONE, CLR_MSG_ATTENTION, objects[uwep->otyp].oc_soundset, OCCUPATION_FORCING_LOCK, OCCUPATION_SOUND_TYPE_START, 0);
     }
     else
         You("decide not to force the issue.");

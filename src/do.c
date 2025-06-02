@@ -8458,7 +8458,7 @@ dowipe()
 
         static NEARDATA char buf[39];
         Sprintf(buf, "wiping off your %s", body_part(FACE));
-        set_occupation(wipeoff, buf, used_oss, OCCUPATION_WIPING_OFF, OCCUPATION_SOUND_TYPE_START, 0);
+        set_occupation(wipeoff, buf, ATR_NONE, NO_COLOR, used_oss, OCCUPATION_WIPING_OFF, OCCUPATION_SOUND_TYPE_START, 0);
         /* Not totally correct; what if they change back after now
          * but before they're finished wiping?
          */

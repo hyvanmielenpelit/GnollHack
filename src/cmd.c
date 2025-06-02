@@ -294,13 +294,13 @@ reset_occupations(VOID_ARGS)
  * function times out by its own means.
  */
 void
-set_occupation(fn, txt, soundset_id, occ_type, sound_type, xtime)
+set_occupation(fn, txt, attr, color, soundset_id, occ_type, sound_type, xtime)
 int NDECL((*fn));
 const char *txt;
 enum object_soundset_types soundset_id;
 enum object_occupation_types occ_type;
 enum occupation_sound_types sound_type;
-int xtime;
+int xtime, attr, color;
 {
     if (xtime) 
     {
@@ -311,6 +311,8 @@ int xtime;
         occupation = fn;
 
     occtxt = txt;
+    occattr = attr;
+    occclr = color;
     occtime = 0;
     occsoundset = soundset_id;
     occtyp = occ_type;
@@ -8027,7 +8029,7 @@ register char *cmd;
                 {
                     context.first_time_cmd = TRUE;
                     if (tlist->f_text && !occupation && multi)
-                        set_occupation(func, tlist->f_text, 0, 0, 0, multi);
+                        set_occupation(func, tlist->f_text, ATR_NONE, NO_COLOR, 0, 0, 0, multi);
                     res = (*func)(); /* perform the command */
                     context.first_time_cmd = FALSE;
                 }

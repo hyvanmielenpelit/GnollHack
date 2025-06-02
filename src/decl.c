@@ -77,6 +77,8 @@ NEARDATA boolean ransacked = 0;
 NEARDATA uint64_t n_game_recoveries = 0;
 
 const char *occtxt = DUMMY;
+int occattr = ATR_NONE;
+int occclr = NO_COLOR;
 enum object_soundset_types occsoundset = OBJECT_SOUNDSET_NONE; /* defined when occupation != NULL */
 enum object_occupation_types occtyp = OCCUPATION_NONE; /* defined when occupation != NULL */
 

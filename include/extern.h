@@ -347,7 +347,7 @@ E int NDECL(wiz_where);
 E int NDECL(wiz_wish);
 #endif /* USE_TRAMPOLI */
 E void NDECL(reset_occupations);
-E void FDECL(set_occupation, (int (*)(void), const char *, enum object_soundset_types, enum object_occupation_types, enum occupation_sound_types, int));
+E void FDECL(set_occupation, (int (*)(void), const char *, int, int, enum object_soundset_types, enum object_occupation_types, enum occupation_sound_types, int));
 E char NDECL(pgetchar);
 E void FDECL(pushch, (CHAR_P));
 E void FDECL(savech, (CHAR_P));
