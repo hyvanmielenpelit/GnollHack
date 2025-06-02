@@ -1264,7 +1264,7 @@ namespace GnollHackX
 
             bool hideautoupdatealert = Preferences.Get("HideAutoUpdateAlert", false);
             bool isfromgoogleplay = true;
-            if (!hideautoupdatealert)
+            if (!hideautoupdatealert && !GHApp.IsNoStore)
             {
                 _popupStyle = popup_style.DisableAutoUpdate;
                 PopupCheckBoxLayout.IsVisible = true;
