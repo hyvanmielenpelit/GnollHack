@@ -2446,7 +2446,7 @@ boolean resume;
     }
 
     Sprintf(msgbuf, "eating %s", food_xname(otmp, TRUE));
-    set_occupation(eatfood, msgbuf, ATR_NONE, NO_COLOR, objects[otmp->otyp].oc_soundset, OCCUPATION_EATING, MAX_OCCUPATION_SOUND_TYPES, 0);
+    set_occupation(eatfood, msgbuf, ATR_NONE, CLR_MSG_ATTENTION, objects[otmp->otyp].oc_soundset, OCCUPATION_EATING, MAX_OCCUPATION_SOUND_TYPES, 0);
 }
 
 /*
@@ -2865,7 +2865,7 @@ eatspecial()
 
     /* lesshungry wants an occupation to handle choke messages correctly */
     play_occupation_immediate_sound(objects[otmp->otyp].oc_soundset, OCCUPATION_EATING, OCCUPATION_SOUND_TYPE_START);
-    set_occupation(eatfood, "eating non-food", ATR_NONE, NO_COLOR, 0, 0, 0, 0);
+    set_occupation(eatfood, "eating non-food", ATR_NONE, CLR_MSG_ATTENTION, 0, 0, 0, 0);
     lesshungry(context.victual.nmod);
     display_nutrition_floating_text(u.ux, u.uy, context.victual.nmod);
     occupation = 0;

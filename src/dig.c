@@ -1574,7 +1574,7 @@ struct obj *obj;
                 if (action_taken)
                     update_u_action_revert(ACTION_TILE_NO_ACTION);
             }
-            set_occupation(dig, verbing, ATR_NONE, NO_COLOR, objects[obj->otyp].oc_soundset,
+            set_occupation(dig, verbing, ATR_NONE, CLR_MSG_ATTENTION, objects[obj->otyp].oc_soundset,
                 d_action_soundset[dig_target],
                 context.digging.chew ? OCCUPATION_SOUND_TYPE_START : OCCUPATION_SOUND_TYPE_RESUME, 0);
         }
@@ -1667,7 +1667,7 @@ struct obj *obj;
             resume = TRUE;
         }
         did_dig_msg = FALSE;
-        set_occupation(dig, verbing, ATR_NONE, NO_COLOR, objects[obj->otyp].oc_soundset,
+        set_occupation(dig, verbing, ATR_NONE, CLR_MSG_ATTENTION, objects[obj->otyp].oc_soundset,
             (context.digging.down && (levl[u.ux][u.uy].typ == GROUND || levl[u.ux][u.uy].typ == GRASS ||
                 levl[u.ux][u.uy].floortyp == GROUND || levl[u.ux][u.uy].floortyp == GRASS)) 
             ? OCCUPATION_DIGGING_GROUND : OCCUPATION_DIGGING_ROCK, 
