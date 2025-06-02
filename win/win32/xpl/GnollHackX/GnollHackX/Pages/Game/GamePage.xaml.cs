@@ -2833,6 +2833,7 @@ namespace GnollHackX.Pages.Game
                             break;
                         case GHRequestType.ReturnToMainMenu:
                             IsGameOn = false;
+                            MainGrid.IsEnabled = false;
                             //ClearMap();
                             StopMainCanvasAnimation();
                             StopCommandCanvasAnimation();
@@ -3952,9 +3953,14 @@ namespace GnollHackX.Pages.Game
                 GHApp.GameMuteMode = false;
             GHApp.CurrentGamePage = null;
             //GHApp.ReportLockDataResults();
-            var page = await GHApp.Navigation.PopModalAsync();
+            bool popagain = false;
+            do
+            {
+                var page = await GHApp.Navigation.PopModalAsync();
+                popagain = !(page is GamePage || page == null);
+                GHApp.DisconnectIViewHandlers(page);
+            } while (popagain);
             await _mainPage.StartGeneralTimerAsync(); /* Just to be doubly sure */
-            GHApp.DisconnectIViewHandlers(page);
         }
 
         private readonly object _menuDrawOnlyLock = new object();
