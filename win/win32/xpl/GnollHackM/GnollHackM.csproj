@@ -35,12 +35,13 @@
 		<TargetPlatformMinVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</TargetPlatformMinVersion>
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'tizen'">6.5</SupportedOSPlatformVersion>
 		<GenerateAppInstallerFile>False</GenerateAppInstallerFile>
-		<AppxPackageSigningEnabled>False</AppxPackageSigningEnabled>
+		<AppxPackageSigningEnabled>True</AppxPackageSigningEnabled>
 		<AppxPackageSigningTimestampDigestAlgorithm>SHA256</AppxPackageSigningTimestampDigestAlgorithm>
 		<AppxAutoIncrementPackageRevision>False</AppxAutoIncrementPackageRevision>
 		<AppxSymbolPackageEnabled>True</AppxSymbolPackageEnabled>
 		<GenerateTestArtifacts>True</GenerateTestArtifacts>
 		<HoursBetweenUpdateChecks>0</HoursBetweenUpdateChecks>
+		<PackageCertificateThumbprint>0DE60AC858971DC05E45C172A6D7462CBA45C98A</PackageCertificateThumbprint>
 	</PropertyGroup>
 
 
@@ -129,7 +130,8 @@
 	<ItemGroup>
 		<!-- MauiIcon -->
     <MauiIcon Condition="'$(TargetFramework)'=='net9.0-android'" Include="Resources\AppIcon\appicon.png" Color="#FFFFFF" ForegroundScale="0.6" />
-    <MauiIcon Condition="'$(TargetFramework)'=='net9.0-windows10.0.19041.0'" Include="Resources\AppIcon\appicon.png" ForegroundScale="1.0" />
+    <MauiIcon Condition="'$(TargetFramework)'=='net9.0-windows10.0.19041.0' and '$(WindowsPackageType)'!='MSIX'" Include="Resources\AppIcon\appicon.png" ForegroundScale="1.0" />
+    <MauiIcon Condition="'$(TargetFramework)'=='net9.0-windows10.0.19041.0' and '$(WindowsPackageType)'=='MSIX'" Include="Resources\AppIcon\Windows\MSIX\appicon.png" ForegroundFile="Resources\AppIcon\Windows\MSIX\appiconmsix.png" ForegroundScale="1.0" />
     <MauiIcon Condition="'$(TargetFramework)'=='net9.0-ios'" Include="Resources\AppIcon\iOS\appicon.png" ForegroundFile="Resources\AppIcon\iOS\appiconios.png" />
     <MauiIcon Condition="'$(TargetFramework)'=='net9.0-maccatalyst'" Include="Resources\AppIcon\iOS\appicon.png" ForegroundFile="Resources\AppIcon\iOS\appiconios.png" />
 
