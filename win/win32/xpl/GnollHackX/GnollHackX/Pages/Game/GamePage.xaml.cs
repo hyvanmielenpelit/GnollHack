@@ -4594,9 +4594,15 @@ namespace GnollHackX.Pages.Game
 
         private GlyphImageSource _paintGlyphImageSource = new GlyphImageSource();
         private SKBitmap _paintBitmap = new SKBitmap(GHConstants.TileWidth, GHConstants.TileHeight);
-
+        private bool _mainCanvasThreadChecked = false;
         private void canvasView_PaintSurface(object sender, SKPaintSurfaceEventArgs e)
         {
+            if (!_mainCanvasThreadChecked && !MainThread.IsMainThread)
+            {
+                _mainCanvasThreadChecked = true;
+                GHApp.MaybeWriteGHLog("canvasView_PaintSurface not on main thread!");
+            }
+
             if (MenuGrid.IsVisible || TextGrid.IsVisible || MoreCommandsGrid.IsVisible || !IsGameOn)
                 return;
 
@@ -15359,9 +15365,15 @@ namespace GnollHackX.Pages.Game
         private bool _refreshMenuRowCounts = true;
         private readonly object _refreshMenuRowCountLock = new object();
         private bool RefreshMenuRowCounts { get { lock (_refreshMenuRowCountLock) { return _refreshMenuRowCounts; } } set { lock (_refreshMenuRowCountLock) { _refreshMenuRowCounts = value; } } }
-
+        private bool _menuCanvasThreadChecked = false;
         private void MenuCanvas_PaintSurface(object sender, SKPaintSurfaceEventArgs e)
         {
+            if (!_menuCanvasThreadChecked && !MainThread.IsMainThread)
+            {
+                _menuCanvasThreadChecked = true;
+                GHApp.MaybeWriteGHLog("MenuCanvas_PaintSurface not on main thread!");
+            }
+
             if (!MenuGrid.IsVisible)
                 return;
 
@@ -17163,9 +17175,16 @@ namespace GnollHackX.Pages.Game
         private SKTouchEventArgs _savedTextEventArgs = null;
         private DateTime _savedTextTimeStamp;
         private bool _textTouchMoved = false;
+        private bool _textCanvasThreadChecked = false;
 
         private void TextCanvas_PaintSurface(object sender, SKPaintSurfaceEventArgs e)
         {
+            if (!_textCanvasThreadChecked && !MainThread.IsMainThread)
+            {
+                _textCanvasThreadChecked = true;
+                GHApp.MaybeWriteGHLog("TextCanvas_PaintSurface not on main thread!");
+            }
+
             if (!TextGrid.IsVisible)
                 return;
 
@@ -17631,8 +17650,15 @@ namespace GnollHackX.Pages.Game
 
         public int CurrentMoreButtonPageMaxNumber { get { return UseSimpleCmdLayout ? GHConstants.MoreButtonPages - 1 : GHConstants.MoreButtonPages; } }
 
+        private bool _commandCanvasThreadChecked = false;
         private void CommandCanvas_PaintSurface(object sender, SKPaintSurfaceEventArgs e)
         {
+            if (!_commandCanvasThreadChecked && !MainThread.IsMainThread)
+            {
+                _commandCanvasThreadChecked = true;
+                GHApp.MaybeWriteGHLog("CommandCanvas_PaintSurface not on main thread!");
+            }
+
             if (!MoreCommandsGrid.IsVisible)
                 return;
 

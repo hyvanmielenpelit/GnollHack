@@ -917,7 +917,7 @@ namespace GnollHackX
             get
             {
 #if GNH_MAUI
-                return IsPackaged && !IsWindows;
+                return IsPackaged && !IsWindows && !IsAndroid;
 #else
                 return !HasUnstableGPU();
 #endif
