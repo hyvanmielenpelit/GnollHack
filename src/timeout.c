@@ -3044,6 +3044,7 @@ run_timers()
         if (curr->kind == TIMER_OBJECT)
         {
             (curr->arg.a_obj)->timed--;
+            Sprintf(priority_debug_buf_2, "run_timers: %d, %d", (curr->arg.a_obj)->otyp, (curr->arg.a_obj)->corpsenm);
         }
         else if (curr->kind == TIMER_MONSTER)
         {

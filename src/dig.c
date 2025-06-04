@@ -3056,6 +3056,7 @@ boolean *dealloced;
         ; /* should cancel timer if under_ice */
     } else if ((under_ice ? otmp->oclass == POTION_CLASS : is_rottable(otmp))
                && !obj_resists(otmp, 5, 95)) {
+        Sprintf(priority_debug_buf_1, "bury_an_obj (timed): %d, %d", otmp->otyp, otmp->corpsenm);
         (void) start_timer((under_ice ? 0L : 250L) + (int64_t) rnd(250),
                            TIMER_OBJECT, ROT_ORGANIC, obj_to_any(otmp));
 #if 0
@@ -3246,6 +3247,7 @@ int64_t timeout;
            freeing a worn object doesn't get a false hit */
         obj->owornmask = 0L;
     }
+    Sprintf(priority_debug_buf_3, "rot_corpse: %d, %d", obj->otyp, obj->corpsenm);
     rot_organic(arg, timeout);
     if (on_floor) {
         struct monst *mtmp = m_at(x, y);
