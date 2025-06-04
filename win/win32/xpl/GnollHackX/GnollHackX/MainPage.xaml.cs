@@ -692,18 +692,7 @@ namespace GnollHackX
 
                 if (GHApp.TournamentMode)
                 {
-                    if (!GHApp.XlogUserNameVerified)
-                    {
-                        _popupStyle = popup_style.GeneralDialog;
-                        PopupCheckBoxLayout.IsVisible = false;
-                        PopupTitleLabel.TextColor = GHColors.Orange;
-                        PopupTitleLabel.Text = "Tournament Verification Failed";
-                        PopupLabel.Text = "User name and password for Server Posting have not been verified. Please set and verify these in Settings in the Server Posting section.";
-                        PopupGrid.IsVisible = true;
-                        StartLocalGrid.IsEnabled = true;
-                        return;
-                    }
-                    else if (!GHApp.HasInternetAccess)
+                    if (!GHApp.HasInternetAccess)
                     {
                         _popupStyle = popup_style.GeneralDialog;
                         PopupCheckBoxLayout.IsVisible = false;
@@ -713,6 +702,30 @@ namespace GnollHackX
                         PopupGrid.IsVisible = true;
                         StartLocalGrid.IsEnabled = true;
                         return;
+                    }
+
+                    if (!GHApp.XlogUserNameVerified)
+                    {
+                        bool missingcredentials = string.IsNullOrEmpty(GHApp.XlogUserName);
+                        bool incorrectcredentials = GHApp.XlogCredentialsIncorrect;
+                        bool missingorincorrectcredentials = missingcredentials || incorrectcredentials;
+                        if (!missingorincorrectcredentials)
+                        {
+                            DisplayAlertGrid("Credentials Verification", "Credentials verification is in progress...\n\nPlease wait.", "OK", GHColors.TitleGoldColor);
+                            await GHApp.TryVerifyXlogUserNameAsync();
+                            AlertGrid.IsVisible = false;
+                        }
+                        if (!GHApp.XlogUserNameVerified)
+                        {
+                            _popupStyle = popup_style.GeneralDialog;
+                            PopupCheckBoxLayout.IsVisible = false;
+                            PopupTitleLabel.TextColor = GHColors.Orange;
+                            PopupTitleLabel.Text = "Tournament Verification Failed";
+                            PopupLabel.Text = "User name and password for Server Posting have not been verified. Please set and verify these in Settings in the Server Posting section.";
+                            PopupGrid.IsVisible = true;
+                            StartLocalGrid.IsEnabled = true;
+                            return;
+                        }
                     }
                 }
 
