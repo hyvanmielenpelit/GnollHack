@@ -115,6 +115,7 @@ STATIC_DCL int FDECL(do_chat_shk_payitems, (struct monst*));
 STATIC_DCL int FDECL(do_chat_shk_pricequote, (struct monst*));
 STATIC_DCL int FDECL(do_chat_shk_chat, (struct monst*));
 STATIC_DCL int FDECL(do_chat_shk_identify, (struct monst*));
+STATIC_DCL int FDECL(do_chat_shk_credit, (struct monst*));
 STATIC_DCL int FDECL(do_chat_shk_reconciliation, (struct monst*));
 STATIC_DCL int FDECL(do_chat_smith_reconciliation, (struct monst*));
 STATIC_DCL int FDECL(do_chat_smith_enchant_armor, (struct monst*));
@@ -3802,6 +3803,11 @@ struct monst* mtmp;
                 //    any.a_char, 0, ATR_NONE, NO_COLOR,
                 //    available_chat_list[chatnum].name, MENU_UNSELECTED);
 
+                chatnum++;
+
+                Strcpy(available_chat_list[chatnum].name, "Check your credit and debit");
+                available_chat_list[chatnum].function_ptr = &do_chat_shk_credit;
+                available_chat_list[chatnum].category = CHAT_CATEGORY_INFORMATION;
                 chatnum++;
             }
 
@@ -7715,6 +7721,34 @@ struct monst* mtmp;
     //} while (res > 0 && unided > 0 && umoney >= (int64_t)minor_id_cost && cnt < 100); /* Paranoid limit */
 
     return (res > 0);
+}
+
+STATIC_OVL int
+do_chat_shk_credit(mtmp)
+struct monst* mtmp;
+{
+    if (!mtmp || !has_eshk(mtmp))
+        return 0;
+
+    multi = 0;
+    if (!m_general_talk_check(mtmp, "checking your credit or debit") || !m_speak_check(mtmp))
+        return 0;
+
+    int64_t credit = ESHK(mtmp)->credit;
+    int64_t debit = ESHK(mtmp)->debit;
+    int64_t loan = ESHK(mtmp)->loan;
+
+    char buf[BUFSZ];
+    if(!credit && !debit && !loan)
+        Strcpy(buf, "You have no credit, debit, or debt with me.");
+    else if (credit && !debit && !loan)
+        Sprintf(buf, "You have %lld %s in credit, and no debit or debt with me.", (long long)credit, currency(credit));
+    else if (!credit && (debit || loan))
+        Sprintf(buf, "You have no credit, but %lld %s in debit and %lld %s in debt with me.", (long long)debit, currency(debit), (long long)loan, currency(loan));
+    else
+        Sprintf(buf, "You have %lld %s in credit, %lld %s in debit, and %lld %s in debt with me.", (long long)credit, currency(credit), (long long)debit, currency(debit), (long long)loan, currency(loan));
+    popup_talk_line(mtmp, buf);
+    return 0;
 }
 
 boolean

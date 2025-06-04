@@ -3480,6 +3480,7 @@ xchar x, y;
                     : "relinquish %s and acquire %ld gold piece%s in %scredit.",
                 tmpcr, (eshkp->credit > 0L) ? "additional " : "");
             eshkp->credit += tmpcr;
+            play_sfx_sound(SFX_TRANSACT_SINGLE_ITEM);
             subfrombill(obj, shkp);
         } else {
             if (c == 'q')
