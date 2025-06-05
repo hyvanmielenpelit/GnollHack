@@ -490,7 +490,7 @@ namespace GnollHackX.Pages.MainScreen
             GHApp.XlogCredentialsIncorrect = false;
             if (!GHApp.AreCredentialsVerified(PostXlogUserNameEntry.Text, PostXlogPasswordEntry.Text))
                 GHApp.SetXlogUserNameVerified(false, null, null);
-            GHApp.TryVerifyXlogUserName();
+            await GHApp.TryVerifyXlogUserNameAsync();
 
             if (_gamePage != null)
                 _gamePage.MapGrid = GridSwitch.IsToggled;
@@ -1640,14 +1640,34 @@ namespace GnollHackX.Pages.MainScreen
             {
                 if (!GHApp.XlogUserNameVerified)
                 {
-                    PopupTitleLabel.TextColor = GHColors.Orange;
-                    PopupTitleLabel.Text = "Tournament Verification";
-                    PopupLabel.Text = "User name and password in the Server Posting section must be verified for the Tournament Mode.";
-                    PopupOkButton.IsEnabled = true;
-                    PopupGrid.IsVisible = true;
-                    CloseButton.IsEnabled = true;
-                    await MainScrollView.ScrollToAsync(0, PostXlogUserNameGrid.Y, true);
-                    return;
+                    bool hasNoUserName = string.IsNullOrEmpty(PostXlogUserNameEntry.Text);
+                    bool hasNoPassword = string.IsNullOrEmpty(PostXlogPasswordEntry.Text);
+                    if (!hasNoUserName && !hasNoPassword)
+                    {
+                        PopupTitleLabel.TextColor = GHColors.TitleGoldColor;
+                        PopupTitleLabel.Text = "Credentials Verification";
+                        PopupLabel.Text = "Verifying credentials... Please wait.";
+                        PopupOkButton.IsEnabled = true;
+                        PopupGrid.IsVisible = true;
+                        GHApp.XlogUserName = PostXlogUserNameEntry.Text;
+                        GHApp.XlogPassword = PostXlogPasswordEntry.Text;
+                        GHApp.XlogReleaseAccount = XlogReleaseAccountSwitch.IsToggled;
+                        GHApp.SetXlogUserNameVerified(false, null, null);
+                        GHApp.XlogCredentialsIncorrect = false;
+                        await GHApp.SendXLogEntry("", 1, 0, new List<GHPostAttachment>(), true);
+                        PopupGrid.IsVisible = false;
+                    }
+                    if (!GHApp.XlogUserNameVerified)
+                    {
+                        PopupTitleLabel.TextColor = GHColors.Orange;
+                        PopupTitleLabel.Text = "Tournament Verification";
+                        PopupLabel.Text = "User name and password in the Server Posting section must be verified for the Tournament Mode.";
+                        PopupOkButton.IsEnabled = true;
+                        PopupGrid.IsVisible = true;
+                        CloseButton.IsEnabled = true;
+                        await MainScrollView.ScrollToAsync(0, PostXlogUserNameGrid.Y, true);
+                        return;
+                    }
                 }
             }
             await MaybeShowPleaseWait();
