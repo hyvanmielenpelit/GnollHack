@@ -842,12 +842,16 @@ struct monst* oracl;
     Sprintf(qbuf, "\"Dost thou desire to enlighten yourself?\" (%lld %s)",
         (long long)enl_cost, currency(enl_cost));
     if (yn_query(qbuf) != 'y')
+    {
+        stop_all_dialogue_of_mon_on_mobile(oracl);
         return 0;
+    }
 
     if (umoney < enl_cost)
     {
         play_sfx_sound(SFX_NOT_ENOUGH_MONEY);
         You_ex1_popup("don't have enough money for that!", "Not Enough Money", ATR_NONE, CLR_MSG_FAIL, NO_GLYPH, POPUP_FLAGS_NONE);
+        stop_all_dialogue_of_mon_on_mobile(oracl);
         return 0;
     }
     u_pay = enl_cost;
@@ -860,6 +864,7 @@ struct monst* oracl;
     display_nhwindow(WIN_MESSAGE, FALSE);
     enlightenment(MAGICENLIGHTENMENT, ENL_GAMEINPROGRESS);
 
+    stop_all_dialogue_of_mon_on_mobile(oracl);
     return 1;
 }
 

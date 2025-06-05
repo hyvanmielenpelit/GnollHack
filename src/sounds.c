@@ -6431,10 +6431,10 @@ struct monst* mtmp;
         Sprintf(qbuf, "\"I can join you for a fee of %lld %s. Is this acceptable?\"", (long long)join_cost, currency(join_cost));
     }
 
-    int res = 0;
     switch (yn_query_mon(mtmp, qbuf)) {
     default:
-        break;
+        stop_all_dialogue_of_mon_on_mobile(mtmp);
+        return 0;
     case 'y':
         if (join_cost > 0)
         {
@@ -6442,6 +6442,7 @@ struct monst* mtmp;
             {
                 play_sfx_sound(SFX_NOT_ENOUGH_MONEY);
                 You_ex1_popup("don't have enough money for that!", "Not Enough Money", ATR_NONE, CLR_MSG_FAIL, NO_GLYPH, POPUP_FLAGS_NONE);
+                stop_all_dialogue_of_mon_on_mobile(mtmp);
                 return 0;
             }
             u_pay = join_cost;
@@ -6466,11 +6467,10 @@ struct monst* mtmp;
             Sprintf(jbuf, "%s takes your money but refuses join your party after all!", noittame_Monnam(mtmp));
             popup_talk_line_ex(mtmp, jbuf, ATR_NONE, NO_COLOR, TRUE, FALSE);
         }
-        res = 1;
         break;
     }
     stop_all_dialogue_of_mon_on_mobile(mtmp);
-    return res;
+    return 1;
 }
 
 STATIC_OVL int
@@ -6521,11 +6521,11 @@ struct monst* mtmp;
         Sprintf(qbuf, "\"I can explain my statistics to you for a fee of %lld %s.\" Do you accept?", (long long)explain_cost, currency(explain_cost));
     }
 
-    int res = 0;
     switch (yn_query_mon(mtmp, qbuf))
     {
     default:
-        break;
+        stop_all_dialogue_of_mon_on_mobile(mtmp);
+        return 0;
     case 'y':
         if (umoney < explain_cost)
         {
@@ -6538,11 +6538,11 @@ struct monst* mtmp;
         money2mon(mtmp, u_pay);
         bot();
         monsterdescription(mtmp);
-        res = 1;
-        break;
+        stop_all_dialogue_of_mon_on_mobile(mtmp);
+        return 1;
     }
     stop_all_dialogue_of_mon_on_mobile(mtmp);
-    return res;
+    return 0;
 }
 
 
@@ -7216,6 +7216,7 @@ struct monst* mtmp;
         if (umoney < extrahealing_cost) {
             play_sfx_sound(SFX_NOT_ENOUGH_MONEY);
             You_ex(ATR_NONE, CLR_MSG_FAIL, "don't have enough money for that!");
+            stop_all_dialogue_of_mon_on_mobile(mtmp);
             return 0;
         }
         u_pay = extrahealing_cost;
