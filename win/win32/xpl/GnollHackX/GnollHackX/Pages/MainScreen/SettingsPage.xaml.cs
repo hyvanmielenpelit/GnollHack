@@ -1640,6 +1640,7 @@ namespace GnollHackX.Pages.MainScreen
             {
                 if (!GHApp.XlogUserNameVerified || !GHApp.AreCredentialsVerified(PostXlogUserNameEntry.Text, PostXlogPasswordEntry.Text))
                 {
+                    GHApp.SetXlogUserNameVerified(false, null, null);
                     bool hasNoUserName = string.IsNullOrEmpty(PostXlogUserNameEntry.Text);
                     bool hasNoPassword = string.IsNullOrEmpty(PostXlogPasswordEntry.Text);
                     if (!hasNoUserName && !hasNoPassword)
@@ -1652,7 +1653,6 @@ namespace GnollHackX.Pages.MainScreen
                         GHApp.XlogUserName = PostXlogUserNameEntry.Text;
                         GHApp.XlogPassword = PostXlogPasswordEntry.Text;
                         GHApp.XlogReleaseAccount = XlogReleaseAccountSwitch.IsToggled;
-                        GHApp.SetXlogUserNameVerified(false, null, null);
                         GHApp.XlogCredentialsIncorrect = false;
                         await GHApp.SendXLogEntry("", 1, 0, new List<GHPostAttachment>(), true);
                         PopupGrid.IsVisible = false;
