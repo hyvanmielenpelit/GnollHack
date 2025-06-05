@@ -1900,6 +1900,8 @@ struct monst* targetmonst;
                     otense(otmp, "evaporate"));
                 remove_worn_item(otmp, FALSE);
                 Sprintf(priority_debug_buf_2, "seffects: %d", otmp->otyp);
+                Strcpy(priority_debug_buf_3, "seffects");
+                Strcpy(priority_debug_buf_4, "seffects");
                 useup(otmp);
                 break;
             }

@@ -3437,9 +3437,12 @@ boolean dobot;
             addtobill(obj, FALSE, FALSE, TRUE);
 
         boolean destroyobj = !(is_obj_indestructible(obj) || obj->oartifact);
-        Sprintf(priority_debug_buf_4, "in_container_core: %d", obj->otyp);
         if (destroyobj)
-            obfree(obj, (struct obj *) 0);
+        {
+            Sprintf(priority_debug_buf_4, "in_container_core1: %d, %d", current_container->otyp, obj->otyp);
+            obfree(obj, (struct obj*)0);
+            obj = 0;
+        }
 
         /* if carried, shop goods will be flagged 'unpaid' and obfree() will
            handle bill issues, but if on floor, we need to put them on bill
@@ -3467,13 +3470,15 @@ boolean dobot;
         }
 
         /* The artifact flies out last */
-        if (!destroyobj)
+        if (!destroyobj && obj)
         {
             dropy(obj);
             (void)scatter(obj->ox, obj->oy, 3, VIS_EFFECTS | MAY_HIT | MAY_DESTROY | MAY_FRACTURE, obj);
         }
 
-        Sprintf(priority_debug_buf_2, "in_container_core: %d", current_container->otyp);
+        Sprintf(priority_debug_buf_2, "in_container_core2: %d, %d", current_container->otyp, saved_otyp);
+        Strcpy(priority_debug_buf_3, "in_container_core2");
+        Strcpy(priority_debug_buf_4, "in_container_core2");
         if (!floor_container)
             useup(current_container);
         else if (obj_here(current_container, u.ux, u.uy))
@@ -3490,7 +3495,7 @@ boolean dobot;
         standard_hint("Putting a wand of cancellation into a magical bag will typically cause it to explode. To avoid doing this accidently, put unidentified wands into a non-magical bag.", &u.uhint.bag_destroyed_by_cancellation);
     }
 
-    if (current_container) 
+    if (current_container && obj) 
     {
         Strcpy(buf, the(xname(current_container)));
         You("put %s into %s.", doname(obj), buf);

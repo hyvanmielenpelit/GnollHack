@@ -11366,6 +11366,8 @@ boolean forcedestroy;
             current_wand = 0; /* destroyed */
 
         Sprintf(priority_debug_buf_2, "destroy_one_item: %d", obj->otyp);
+        Strcpy(priority_debug_buf_3, "destroy_one_item");
+        Strcpy(priority_debug_buf_4, "destroy_one_item");
         for (i = 0; i < cnt; i++)
             useup(obj);
 

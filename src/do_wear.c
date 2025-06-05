@@ -848,6 +848,8 @@ struct obj* uitem;
         && !objects[uitem->otyp].oc_uname)
         docall(uitem, dcbuf);
     Sprintf(priority_debug_buf_2, "item_change_sex_and_useup: %d", uitem->otyp);
+    Strcpy(priority_debug_buf_3, "item_change_sex_and_useup");
+    Strcpy(priority_debug_buf_4, "item_change_sex_and_useup");
     useup(uitem);
     newsym(u.ux, u.uy);
 }
@@ -3975,6 +3977,9 @@ register struct obj *atmp;
              && (!obj_resists(otmp, 0, 90))       \
          ? (otmp->in_use = TRUE) != 0             \
          : FALSE)
+
+    Strcpy(priority_debug_buf_3, "destroy_arm");
+    Strcpy(priority_debug_buf_4, "destroy_arm");
 
     if (DESTROY_ARM(uarmc)) {
         if (donning(otmp))

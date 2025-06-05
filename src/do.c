@@ -6032,6 +6032,8 @@ register struct obj *obj;
     else
     {
         Sprintf(priority_debug_buf_2, "dosinkring: %d", obj->otyp);
+        Strcpy(priority_debug_buf_3, "dosinkring");
+        Strcpy(priority_debug_buf_4, "dosinkring");
         useup(obj);
     }
 }

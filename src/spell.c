@@ -5627,6 +5627,8 @@ int spell;
             if(otmp->quan >= used_amount)
             {
                 Sprintf(priority_debug_buf_2, "domaterialcomponentsmenu: %d", otmp->otyp);
+                Strcpy(priority_debug_buf_3, "domaterialcomponentsmenu");
+                Strcpy(priority_debug_buf_4, "domaterialcomponentsmenu");
                 for (i = 0; i < used_amount; i++)
                     useup(otmp);
 

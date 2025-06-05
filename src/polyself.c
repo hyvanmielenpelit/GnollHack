@@ -1125,6 +1125,8 @@ break_armor()
     //Suit, cloak, robe, shirt
     if (breakarm(youmonst.data)) 
     {
+        Strcpy(priority_debug_buf_3, "break_armor");
+        Strcpy(priority_debug_buf_4, "break_armor");
         if ((otmp = uarm) != 0)
         {
             if (donning(otmp))

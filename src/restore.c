@@ -192,6 +192,8 @@ boolean quietly;
                 if (!quietly)
                     pline("Finishing off %s...", xname(otmp));
                 Sprintf(priority_debug_buf_2, "inven_inuse: %d", otmp->otyp);
+                Strcpy(priority_debug_buf_3, "inven_inuse");
+                Strcpy(priority_debug_buf_4, "inven_inuse");
                 useup(otmp);
             }
         }

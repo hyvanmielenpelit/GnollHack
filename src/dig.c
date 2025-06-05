@@ -3057,6 +3057,9 @@ boolean *dealloced;
     } else if ((under_ice ? otmp->oclass == POTION_CLASS : is_rottable(otmp))
                && !obj_resists(otmp, 5, 95)) {
         Sprintf(priority_debug_buf_1, "bury_an_obj (timed): %d, %d", otmp->otyp, otmp->corpsenm);
+        Strcpy(priority_debug_buf_2, "bury_an_obj");
+        Strcpy(priority_debug_buf_3, "bury_an_obj");
+        Strcpy(priority_debug_buf_4, "bury_an_obj");
         (void) start_timer((under_ice ? 0L : 250L) + (int64_t) rnd(250),
                            TIMER_OBJECT, ROT_ORGANIC, obj_to_any(otmp));
 #if 0

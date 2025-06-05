@@ -7465,6 +7465,8 @@ lava_effects()
             iflags.in_lava_effects++; /* (see above) */
             (void)Boots_off();
             Sprintf(priority_debug_buf_2, "lava_effects: %d", obj->otyp);
+            Strcpy(priority_debug_buf_3, "lava_effects");
+            Strcpy(priority_debug_buf_4, "lava_effects");
             useup(obj);
             iflags.in_lava_effects--;
         }
@@ -7513,7 +7515,8 @@ lava_effects()
                         pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s into flame!", Yobjnam2(obj, "burst"));
                     remove_worn_item(obj, TRUE);
                 }
-                Sprintf(priority_debug_buf_3, "lava_effects: %d", obj->otyp);
+                Sprintf(priority_debug_buf_3, "lava_effects2: %d", obj->otyp);
+                Strcpy(priority_debug_buf_4, "lava_effects2");
                 useupall(obj);
             }
         }

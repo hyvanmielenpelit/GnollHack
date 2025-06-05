@@ -40,7 +40,6 @@ using Azure;
 using System.Text.RegularExpressions;
 using System.ComponentModel;
 using System.Runtime.InteropServices;
-using static Java.Interop.JniEnvironment;
 
 namespace GnollHackX
 {

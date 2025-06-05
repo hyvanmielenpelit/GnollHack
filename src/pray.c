@@ -2297,6 +2297,8 @@ register struct obj *otmp;
             u.ualign.type == A_LAWFUL ? "flash of light" : "burst of flame");
     }
     Sprintf(priority_debug_buf_2, "consume_offering: %d", otmp->otyp);
+    Strcpy(priority_debug_buf_3, "consume_offering");
+    Strcpy(priority_debug_buf_4, "consume_offering");
     if (carried(otmp))
         useup(otmp);
     else
@@ -2487,6 +2489,8 @@ dosacrifice()
             change_luck(luck_change, TRUE);
 
             Sprintf(priority_debug_buf_2, "dosacrifice: %d", otmp->otyp);
+            Strcpy(priority_debug_buf_3, "dosacrifice");
+            Strcpy(priority_debug_buf_4, "dosacrifice");
             if (carried(otmp))
                 useup(otmp);
             else
@@ -2584,6 +2588,8 @@ dosacrifice()
                 Amulet_off();
             u.uevent.ascended = 1;
             Sprintf(priority_debug_buf_2, "dosacrifice2: %d", otmp->otyp);
+            Strcpy(priority_debug_buf_3, "dosacrifice2");
+            Strcpy(priority_debug_buf_4, "dosacrifice2");
             if (carried(otmp))
                 useup(otmp); /* well, it's gone now */
             else

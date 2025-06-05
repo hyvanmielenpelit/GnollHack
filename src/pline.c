@@ -1201,7 +1201,7 @@ VA_DECL(const char *, s)
     if (issue_gui_command)
     {
         char dbufs[BUFSZ * 18];
-        Sprintf(dbufs, "impossible: %s, bufs: %s, %s, %s, %s, %s, %s, %s, %s", pbuf, priority_debug_buf_1, priority_debug_buf_2, priority_debug_buf_3, priority_debug_buf_4, debug_buf_1, debug_buf_2, debug_buf_3, debug_buf_4);
+        Sprintf(dbufs, "impossible: %s, P1:%s, P2:%s, P3:%s, P4:%s, B1:%s, B2:%s, B3:%s, B4:%s", pbuf, priority_debug_buf_1, priority_debug_buf_2, priority_debug_buf_3, priority_debug_buf_4, debug_buf_1, debug_buf_2, debug_buf_3, debug_buf_4);
         issue_gui_command(GUI_CMD_POST_DIAGNOSTIC_DATA, DIAGNOSTIC_DATA_IMPOSSIBLE, 0, dbufs);
     }
 
