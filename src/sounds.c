@@ -2419,6 +2419,8 @@ struct monst* mtmp;
     stop_chat = FALSE;
     do
     {
+        stop_all_dialogue_of_mon_on_mobile(mtmp);
+
         i = '\0';
         memset(available_chat_list, 0, sizeof(available_chat_list));
 
