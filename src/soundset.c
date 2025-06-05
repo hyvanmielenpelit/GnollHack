@@ -20531,6 +20531,15 @@ stop_all_long_immediate_sounds()
 }
 
 void
+stop_all_dialogue_of_mon_on_mobile(mon)
+struct monst* mon;
+{
+#ifdef GNH_MOBILE
+    stop_all_dialogue_of_mon(mon);
+#endif
+}
+
+void
 stop_all_dialogue_of_mon(mon)
 struct monst* mon;
 {

@@ -6430,9 +6430,11 @@ struct monst* mtmp;
         play_monster_standard_dialogue_line(mtmp, MONSTER_STANDARD_DIALOGUE_LINE_I_CAN_JOIN_YOU);
         Sprintf(qbuf, "\"I can join you for a fee of %lld %s. Is this acceptable?\"", (long long)join_cost, currency(join_cost));
     }
+
+    int res = 0;
     switch (yn_query_mon(mtmp, qbuf)) {
     default:
-        return 0;
+        break;
     case 'y':
         if (join_cost > 0)
         {
@@ -6464,12 +6466,11 @@ struct monst* mtmp;
             Sprintf(jbuf, "%s takes your money but refuses join your party after all!", noittame_Monnam(mtmp));
             popup_talk_line_ex(mtmp, jbuf, ATR_NONE, NO_COLOR, TRUE, FALSE);
         }
-        return 1;
-
+        res = 1;
         break;
     }
-
-    return 0; 
+    stop_all_dialogue_of_mon_on_mobile(mtmp);
+    return res;
 }
 
 STATIC_OVL int
@@ -6519,10 +6520,12 @@ struct monst* mtmp;
         play_monster_standard_dialogue_line(mtmp, MONSTER_STANDARD_DIALOGUE_LINE_I_CAN_EXPLAIN_MY_STATISTICS);
         Sprintf(qbuf, "\"I can explain my statistics to you for a fee of %lld %s.\" Do you accept?", (long long)explain_cost, currency(explain_cost));
     }
+
+    int res = 0;
     switch (yn_query_mon(mtmp, qbuf))
     {
     default:
-        return 0;
+        break;
     case 'y':
         if (umoney < explain_cost)
         {
@@ -6535,10 +6538,11 @@ struct monst* mtmp;
         money2mon(mtmp, u_pay);
         bot();
         monsterdescription(mtmp);
-        return 1;
+        res = 1;
+        break;
     }
-
-    return 0;
+    stop_all_dialogue_of_mon_on_mobile(mtmp);
+    return res;
 }
 
 
@@ -6790,15 +6794,17 @@ struct monst* mtmp;
                 //pline("%s nods appreciatively at you for the purchase!", Monnam(mtmp));
             }
         }
-
+        stop_all_dialogue_of_mon_on_mobile(mtmp);
         if (buy_count > 0)
             return 1;
         else
             return 0;
     }
     else
+    {
+        stop_all_dialogue_of_mon_on_mobile(mtmp);
         return 0;
-
+    }
 }
 
 
@@ -7110,11 +7116,13 @@ struct monst* mtmp;
     switch (ynq_mon(mtmp, qbuf)) {
     default:
     case 'q':
+        stop_all_dialogue_of_mon_on_mobile(mtmp);
         return 0;
     case 'y':
             if (umoney < bless_cost) {
                 play_sfx_sound(SFX_NOT_ENOUGH_MONEY);
                 You_ex1_popup("don't have enough money for that!", "Not Enough Money", ATR_NONE, CLR_MSG_FAIL, NO_GLYPH, POPUP_FLAGS_NONE);
+                stop_all_dialogue_of_mon_on_mobile(mtmp);
                 return 0;
             }
             u_pay = bless_cost;
@@ -7126,11 +7134,15 @@ struct monst* mtmp;
         Sprintf(qbuf, "Then would you like to curse one? (%lld %s)",
             (long long)curse_cost, currency(curse_cost));
         if (yn_query_mon(mtmp, qbuf) != 'y')
+        {
+            stop_all_dialogue_of_mon_on_mobile(mtmp);
             return 0;
+        }
         if (umoney < curse_cost)
         {
             play_sfx_sound(SFX_NOT_ENOUGH_MONEY);
             You_ex1_popup("don't have enough money for that!", "Not Enough Money", ATR_NONE, CLR_MSG_FAIL, NO_GLYPH, POPUP_FLAGS_NONE);
+            stop_all_dialogue_of_mon_on_mobile(mtmp);
             return 0;
         }
         u_pay = curse_cost;
@@ -7167,7 +7179,7 @@ struct monst* mtmp;
     }
 
     /* gnostic handled in seffects */
-
+    stop_all_dialogue_of_mon_on_mobile(mtmp);
     return 1;
 }
 
@@ -7198,6 +7210,7 @@ struct monst* mtmp;
     Sprintf(qbuf, "Would you like to have a standard healing? (%lld %s)", (long long)extrahealing_cost, currency(extrahealing_cost));
     switch (yn_query_mon(mtmp, qbuf)) {
     default:
+        stop_all_dialogue_of_mon_on_mobile(mtmp);
         return 0;
     case 'y':
         if (umoney < extrahealing_cost) {
@@ -7223,6 +7236,7 @@ struct monst* mtmp;
     else
         bhitm(targetmonst, &pseudo, mtmp);
 
+    stop_all_dialogue_of_mon_on_mobile(mtmp);
     return 1;
 }
 
@@ -7252,11 +7266,13 @@ struct monst* mtmp;
     Sprintf(qbuf, "Would you like to have a full healing? (%lld %s)", (long long)fullhealing_cost, currency(fullhealing_cost));
     switch (yn_query_mon(mtmp, qbuf)) {
     default:
+        stop_all_dialogue_of_mon_on_mobile(mtmp);
         return 0;
     case 'y':
         if (umoney < fullhealing_cost) {
             play_sfx_sound(SFX_NOT_ENOUGH_MONEY);
             You_ex1_popup("don't have enough money for that!", "Not Enough Money", ATR_NONE, CLR_MSG_FAIL, NO_GLYPH, POPUP_FLAGS_NONE);
+            stop_all_dialogue_of_mon_on_mobile(mtmp);
             return 0;
         }
         u_pay = fullhealing_cost;
@@ -7277,6 +7293,7 @@ struct monst* mtmp;
     else
         bhitm(targetmonst, &pseudo, mtmp);
 
+    stop_all_dialogue_of_mon_on_mobile(mtmp);
     return 1;
 }
 
@@ -7306,11 +7323,13 @@ struct monst* mtmp;
     Sprintf(qbuf, "Would you like to have your sickness cured? (%lld %s)", (long long)cure_sickness_cost, currency(cure_sickness_cost));
     switch (yn_query_mon(mtmp, qbuf)) {
     default:
+        stop_all_dialogue_of_mon_on_mobile(mtmp);
         return 0;
     case 'y':
         if (umoney < cure_sickness_cost) {
             play_sfx_sound(SFX_NOT_ENOUGH_MONEY);
             You_ex1_popup("don't have enough money for that!", "Not Enough Money", ATR_NONE, CLR_MSG_FAIL, NO_GLYPH, POPUP_FLAGS_NONE);
+            stop_all_dialogue_of_mon_on_mobile(mtmp);
             return 0;
         }
         u_pay = cure_sickness_cost;
@@ -7331,6 +7350,7 @@ struct monst* mtmp;
     else
         bhitm(targetmonst, &pseudo, mtmp);
 
+    stop_all_dialogue_of_mon_on_mobile(mtmp);
     return 1;
 }
 
@@ -7364,11 +7384,13 @@ struct monst* mtmp;
     switch (ynq_mon(mtmp, qbuf)) {
     default:
     case 'q':
+        stop_all_dialogue_of_mon_on_mobile(mtmp);
         return 0;
     case 'y':
         if (umoney < major_cost) {
             play_sfx_sound(SFX_NOT_ENOUGH_MONEY);
             You_ex1_popup("don't have enough money for that!", "Not Enough Money", ATR_NONE, CLR_MSG_FAIL, NO_GLYPH, POPUP_FLAGS_NONE);
+            stop_all_dialogue_of_mon_on_mobile(mtmp);
             return 0;
         }
         u_pay = major_cost;
@@ -7380,11 +7402,15 @@ struct monst* mtmp;
         Sprintf(qbuf, "Then would you like to make a minor donation instead? (%lld %s)",
             (long long)minor_cost, currency(minor_cost));
         if (yn_query_mon(mtmp, qbuf) != 'y')
+        {
+            stop_all_dialogue_of_mon_on_mobile(mtmp);
             return 0;
+        }
         if (umoney < minor_cost)
         {
             play_sfx_sound(SFX_NOT_ENOUGH_MONEY);
             You_ex1_popup("don't have enough money for that!", "Not Enough Money", ATR_NONE, CLR_MSG_FAIL, NO_GLYPH, POPUP_FLAGS_NONE);
+            stop_all_dialogue_of_mon_on_mobile(mtmp);
             return 0;
         }
         u_pay = minor_cost;
@@ -7454,6 +7480,7 @@ struct monst* mtmp;
     find_ac();
     find_mc();
 
+    stop_all_dialogue_of_mon_on_mobile(mtmp);
     return 1;
 }
 
@@ -7478,11 +7505,13 @@ struct monst* mtmp;
     Sprintf(qbuf, "Would you like to see your fortune? (%lld %s)", (long long)divination_cost, currency(divination_cost));
     switch (yn_query_mon(mtmp, qbuf)) {
     default:
+        stop_all_dialogue_of_mon_on_mobile(mtmp);
         return 0;
     case 'y':
         if (umoney < divination_cost) {
             play_sfx_sound(SFX_NOT_ENOUGH_MONEY);
             You_ex1_popup("don't have enough money for that!", "Not Enough Money", ATR_NONE, CLR_MSG_FAIL, NO_GLYPH, POPUP_FLAGS_NONE);
+            stop_all_dialogue_of_mon_on_mobile(mtmp);
             return 0;
         }
         u_pay = divination_cost;
@@ -7582,6 +7611,7 @@ struct monst* mtmp;
     play_monster_special_dialogue_line(mtmp, PRIEST_SPECIAL_DIALOGUE_THANK_YOU_FOR_YOUR_INTEREST);
     popup_talk_line(mtmp, "That's all for now. Thank you for your interest in divine matters.");
 
+    stop_all_dialogue_of_mon_on_mobile(mtmp);
     return 1;
 }
 
@@ -7668,11 +7698,13 @@ struct monst* mtmp;
     switch (yn_query_mon(mtmp, qbuf)) 
     {
     default:
+        stop_all_dialogue_of_mon_on_mobile(mtmp);
         return 0;
     case 'y':
         if (umoney < minor_id_cost) {
             play_sfx_sound(SFX_NOT_ENOUGH_MONEY);
             You_ex1_popup("don't have enough money for that!", "Not Enough Money", ATR_NONE, CLR_MSG_FAIL, NO_GLYPH, POPUP_FLAGS_NONE);
+            stop_all_dialogue_of_mon_on_mobile(mtmp);
             return 0;
         }
         break;
@@ -7720,6 +7752,7 @@ struct monst* mtmp;
     //    }
     //} while (res > 0 && unided > 0 && umoney >= (int64_t)minor_id_cost && cnt < 100); /* Paranoid limit */
 
+    stop_all_dialogue_of_mon_on_mobile(mtmp);
     return (res > 0);
 }
 
@@ -7820,11 +7853,13 @@ struct monst* mtmp;
 
     switch (yn_query_mon(mtmp, qbuf)) {
     default:
+        stop_all_dialogue_of_mon_on_mobile(mtmp);
         return 0;
     case 'y':
         if (umoney < reconcile_cost) {
             play_sfx_sound(SFX_NOT_ENOUGH_MONEY);
             You_ex1_popup("don't have enough money for that!", "Not Enough Money", ATR_NONE, CLR_MSG_FAIL, NO_GLYPH, POPUP_FLAGS_NONE);
+            stop_all_dialogue_of_mon_on_mobile(mtmp);
             return 0;
         }
         u_pay = reconcile_cost;
@@ -7849,6 +7884,7 @@ struct monst* mtmp;
         popup_talk_line(mtmp, "On second thought, maybe you should hang for your crimes anyway.");
     }
 
+    stop_all_dialogue_of_mon_on_mobile(mtmp);
     return 1;
 }
 
@@ -7884,11 +7920,13 @@ struct monst* mtmp;
 
     switch (yn_query_mon(mtmp, qbuf)) {
     default:
+        stop_all_dialogue_of_mon_on_mobile(mtmp);
         return 0;
     case 'y':
         if (umoney < reconcile_cost) {
             play_sfx_sound(SFX_NOT_ENOUGH_MONEY);
             You_ex1_popup("don't have enough money for that!", "Not Enough Money", ATR_NONE, CLR_MSG_FAIL, NO_GLYPH, POPUP_FLAGS_NONE);
+            stop_all_dialogue_of_mon_on_mobile(mtmp);
             return 0;
         }
         u_pay = reconcile_cost;
@@ -7912,6 +7950,7 @@ struct monst* mtmp;
         popup_talk_line(mtmp, "On second thought, maybe you should hang for your crimes anyway.");
     }
 
+    stop_all_dialogue_of_mon_on_mobile(mtmp);
     return 1;
 }
 
@@ -8503,12 +8542,14 @@ struct monst* mtmp;
     switch (yn_query_mon(mtmp, qbuf))
     {
     default:
+        stop_all_dialogue_of_mon_on_mobile(mtmp);
         return 0;
     case 'y':
         if (umoney < service_cost)
         {
             play_sfx_sound(SFX_NOT_ENOUGH_MONEY);
             You_ex1_popup("don't have enough money for that!", "Not Enough Money", ATR_NONE, CLR_MSG_FAIL, NO_GLYPH, POPUP_FLAGS_NONE);
+            stop_all_dialogue_of_mon_on_mobile(mtmp);
             return 0;
         }
         u_pay = service_cost;
@@ -8530,7 +8571,8 @@ struct monst* mtmp;
     bot();
 
     /* Make sure mtmp is not used anywhere anymore; it is not invalid */
-    return 2; 
+    stop_all_dialogue_of_mon_on_mobile(mtmp);
+    return 2;
 }
 
 boolean
@@ -8721,11 +8763,13 @@ struct monst* mtmp;
 
     switch (yn_query(qbuf)) {
     default:
+        stop_all_dialogue_of_mon_on_mobile(mtmp);
         return 0;
     case 'y':
         if (umoney < reconcile_cost) {
             play_sfx_sound(SFX_NOT_ENOUGH_MONEY);
             You_ex1_popup("don't have enough money for that!", "Not Enough Money", ATR_NONE, CLR_MSG_FAIL, NO_GLYPH, POPUP_FLAGS_NONE);
+            stop_all_dialogue_of_mon_on_mobile(mtmp);
             return 0;
         }
         u_pay = reconcile_cost;
@@ -8751,6 +8795,7 @@ struct monst* mtmp;
         pline("%s seems mysteriously disappointed.", noittame_Monnam(mtmp));
     }
 
+    stop_all_dialogue_of_mon_on_mobile(mtmp);
     return 1;
 }
 
@@ -8794,11 +8839,13 @@ struct monst* mtmp;
 
         switch (yn_query(qbuf)) {
         default:
+            stop_all_dialogue_of_mon_on_mobile(mtmp);
             return 0;
         case 'y':
             if (umoney < observe_cost) {
                 play_sfx_sound(SFX_NOT_ENOUGH_MONEY);
                 You_ex1_popup("don't have enough money for that!", "Not Enough Money", ATR_NONE, CLR_MSG_FAIL, NO_GLYPH, POPUP_FLAGS_NONE);
+                stop_all_dialogue_of_mon_on_mobile(mtmp);
                 return 0;
             }
             u_pay = observe_cost;
@@ -8835,6 +8882,7 @@ struct monst* mtmp;
     play_monster_special_dialogue_line(mtmp, QUANTUM_MECHANIC_LINE_POSITION_EXACTLY_WHERE_YOU_ARE);
     pline("%s tells that your position was observed to be exactly where you are.", noittame_Monnam(mtmp));
 
+    stop_all_dialogue_of_mon_on_mobile(mtmp);
     return 1;
 }
 
@@ -8877,11 +8925,13 @@ struct monst* mtmp;
 
         switch (yn_query(qbuf)) {
         default:
+            stop_all_dialogue_of_mon_on_mobile(mtmp);
             return 0;
         case 'y':
             if (umoney < observe_cost) {
                 play_sfx_sound(SFX_NOT_ENOUGH_MONEY);
                 You_ex1_popup("don't have enough money for that!", "Not Enough Money", ATR_NONE, CLR_MSG_FAIL, NO_GLYPH, POPUP_FLAGS_NONE);
+                stop_all_dialogue_of_mon_on_mobile(mtmp);
                 return 0;
             }
             u_pay = observe_cost;
@@ -8910,6 +8960,7 @@ struct monst* mtmp;
         pline("%s tells that your speed was observed to be zero.", noittame_Monnam(mtmp));
     }
 
+    stop_all_dialogue_of_mon_on_mobile(mtmp);
     return 1;
 }
 
@@ -8948,12 +8999,14 @@ struct monst* mtmp;
 
     switch (yn_query_mon(mtmp, qbuf)) {
     default:
+        stop_all_dialogue_of_mon_on_mobile(mtmp);
         return 0;
     case 'y':
         if (umoney < reconcile_cost) {
             play_sfx_sound(SFX_NOT_ENOUGH_MONEY);
             You_ex1_popup("don't have enough money for that!", "Not Enough Money", ATR_NONE, CLR_MSG_FAIL, NO_GLYPH, POPUP_FLAGS_NONE);
             return 0;
+            stop_all_dialogue_of_mon_on_mobile(mtmp);
         }
         u_pay = reconcile_cost;
         break;
@@ -8978,6 +9031,7 @@ struct monst* mtmp;
         verbalize_ex(ATR_NONE, CLR_MSG_TALK_ANGRY, "On second thought, maybe you should hang for your crimes anyway.");
     }
 
+    stop_all_dialogue_of_mon_on_mobile(mtmp);
     return 1;
 }
 
@@ -9170,11 +9224,13 @@ struct monst* mtmp;
     }
     switch (yn_query_mon(mtmp, qbuf)) {
     default:
+        stop_all_dialogue_of_mon_on_mobile(mtmp);
         return 0;
     case 'y':
         if (umoney < reconcile_cost) {
             play_sfx_sound(SFX_NOT_ENOUGH_MONEY);
             You_ex1_popup("don't have enough money for that!", "Not Enough Money", ATR_NONE, CLR_MSG_FAIL, NO_GLYPH, POPUP_FLAGS_NONE);
+            stop_all_dialogue_of_mon_on_mobile(mtmp);
             return 0;
         }
         u_pay = reconcile_cost;
@@ -9198,7 +9254,8 @@ struct monst* mtmp;
         verbalize_ex(ATR_NONE, CLR_MSG_TALK_ANGRY, "On second thought, maybe I'll hang you anyway.");
     }
 
-    return 1; 
+    stop_all_dialogue_of_mon_on_mobile(mtmp);
+    return 1;
 }
 
 STATIC_OVL int
@@ -9325,11 +9382,13 @@ int64_t minor_id_cost;
 
     switch (yn_query_mon(mtmp, qbuf)) {
     default:
+        stop_all_dialogue_of_mon_on_mobile(mtmp);
         return 0;
     case 'y':
         if (umoney < minor_id_cost) {
             play_sfx_sound(SFX_NOT_ENOUGH_MONEY);
             You_ex1_popup("don't have enough money for that!", "Not Enough Money", ATR_NONE, CLR_MSG_FAIL, NO_GLYPH, POPUP_FLAGS_NONE);
+            stop_all_dialogue_of_mon_on_mobile(mtmp);
             return 0;
         }
         break;
@@ -9339,6 +9398,7 @@ int64_t minor_id_cost;
     res = service_identify(mtmp, minor_id_cost);
     context.npc_identify_type = 0;
 
+    stop_all_dialogue_of_mon_on_mobile(mtmp);
     return (res > 0);
 }
 
@@ -9784,6 +9844,7 @@ boolean addquotes;
                     pline_ex1(attr, color, hermit_txt);
             }
             display_popup_text(hermit_txt, namebuf, POPUP_TEXT_DIALOGUE, attr, color, glyph, addquotes ? POPUP_FLAGS_ADD_QUOTES : 0);
+            stop_all_dialogue_of_mon_on_mobile(mtmp);
         }
         idx++;
     }
@@ -10371,12 +10432,14 @@ int special_dialogue_sound_id;
     switch (yn_query_mon(mtmp, qbuf))
     {
     default:
+        stop_all_dialogue_of_mon_on_mobile(mtmp);
         return 0;
     case 'y':
         if (umoney < service_cost) 
         {
             play_sfx_sound(SFX_NOT_ENOUGH_MONEY);
             You_ex1_popup("don't have enough money for that!", "Not Enough Money", ATR_NONE, CLR_MSG_FAIL, NO_GLYPH, POPUP_FLAGS_NONE);
+            stop_all_dialogue_of_mon_on_mobile(mtmp);
             return 0;
         }
         u_pay = service_cost;
@@ -10405,6 +10468,7 @@ int special_dialogue_sound_id;
     obfree(pseudo, (struct obj*)0);
     /* gnostic handled in seffects */
 
+    stop_all_dialogue_of_mon_on_mobile(mtmp);
     return 1;
 }
 
@@ -10467,12 +10531,14 @@ int special_dialogue_sound_id;
     switch (yn_query_mon(mtmp, qbuf))
     {
     default:
+        stop_all_dialogue_of_mon_on_mobile(mtmp);
         return 0;
     case 'y':
         if (umoney < service_cost)
         {
             play_sfx_sound(SFX_NOT_ENOUGH_MONEY);
             You_ex(ATR_NONE, CLR_MSG_FAIL, "don't have enough money for that!");
+            stop_all_dialogue_of_mon_on_mobile(mtmp);
             return 0;
         }
         u_pay = service_cost;
@@ -10486,6 +10552,7 @@ int special_dialogue_sound_id;
         bot();
     }
 
+    stop_all_dialogue_of_mon_on_mobile(mtmp);
     return 1;
 }
 
@@ -10537,12 +10604,14 @@ int special_dialogue_sound_id;
     switch (yn_query_mon(mtmp, qbuf))
     {
     default:
+        stop_all_dialogue_of_mon_on_mobile(mtmp);
         return 0;
     case 'y':
         if (umoney < service_cost)
         {
             play_sfx_sound(SFX_NOT_ENOUGH_MONEY);
             You_ex(ATR_NONE, CLR_MSG_FAIL, "don't have enough money for that!");
+            stop_all_dialogue_of_mon_on_mobile(mtmp);
             return 0;
         }
         u_pay = service_cost;
@@ -10556,6 +10625,7 @@ int special_dialogue_sound_id;
         bot();
     }
 
+    stop_all_dialogue_of_mon_on_mobile(mtmp);
     return 1;
 }
 
