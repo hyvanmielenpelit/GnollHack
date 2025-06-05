@@ -711,7 +711,7 @@ namespace GnollHackX
                         bool missingorincorrectcredentials = missingcredentials || incorrectcredentials;
                         if (!missingorincorrectcredentials)
                         {
-                            DisplayAlertGrid("Credentials Verification", "Credentials verification is in progress...\n\nPlease wait.", "OK", GHColors.TitleGoldColor);
+                            DisplayAlertGrid("Credentials Verification", "Verifying credentials... Please wait.", "OK", GHColors.TitleGoldColor);
                             await GHApp.TryVerifyXlogUserNameAsync();
                             AlertGrid.IsVisible = false;
                         }
