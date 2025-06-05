@@ -40,6 +40,7 @@ using Azure;
 using System.Text.RegularExpressions;
 using System.ComponentModel;
 using System.Runtime.InteropServices;
+using static Java.Interop.JniEnvironment;
 
 namespace GnollHackX
 {
@@ -136,6 +137,20 @@ namespace GnollHackX
             InitBaseTypefaces();
             InitBaseCachedBitmaps();
             InitBaseButtonBitmaps();
+
+#if GNH_MAUI && ANDROID
+            /* Switch off GPU once on Android on MAUI if it is already on, until Microsoft fixes SKGLView PaintSurface thread to be on the main thread */
+            if(IsAndroid && !IsGPUDefault && !Preferences.Get("AndroidGPUCheckCompleted", false))
+            {
+                if (Preferences.Get("UseMainGLCanvas", IsUseMainGPUDefault))
+                    Preferences.Set("UseMainGLCanvas", false);
+                if (Preferences.Get("UseAuxiliaryGLCanvas", IsUseAuxGPUDefault))
+                    Preferences.Set("UseAuxiliaryGLCanvas", false);
+                if (!Preferences.Get("DisableAuxiliaryGLCanvas", IsDisableAuxGPUDefault))
+                    Preferences.Set("DisableAuxiliaryGLCanvas", true);
+                Preferences.Set("AndroidGPUCheckCompleted", true);
+            }
+#endif
 
             SetMirroredOptionsToDefaults();
             DarkMode = Preferences.Get("DarkMode", false);
