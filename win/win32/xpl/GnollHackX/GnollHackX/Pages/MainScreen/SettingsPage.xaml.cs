@@ -1638,7 +1638,7 @@ namespace GnollHackX.Pages.MainScreen
             }
             if (TournamentSwitch.IsToggled)
             {
-                if (!GHApp.XlogUserNameVerified)
+                if (!GHApp.XlogUserNameVerified || !GHApp.AreCredentialsVerified(PostXlogUserNameEntry.Text, PostXlogPasswordEntry.Text))
                 {
                     bool hasNoUserName = string.IsNullOrEmpty(PostXlogUserNameEntry.Text);
                     bool hasNoPassword = string.IsNullOrEmpty(PostXlogPasswordEntry.Text);
