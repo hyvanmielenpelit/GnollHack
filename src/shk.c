@@ -968,8 +968,9 @@ register struct obj *obj;
 {
     register struct obj *curr;
 
-    Strcpy(debug_buf_2, "delete_contents");
-    Strcpy(priority_debug_buf_4, "delete_contents");
+    Sprintf(debug_buf_2, "delete_contents: container otyp=%d", obj->otyp);
+    Sprintf(debug_buf_3, "delete_contents: container otyp=%d", obj->otyp);
+    Sprintf(debug_buf_4, "delete_contents: container otyp=%d", obj->otyp);
     while ((curr = obj->cobj) != 0) {
         obj_extract_self(curr);
         obfree(curr, (struct obj *) 0);
@@ -985,6 +986,8 @@ register struct obj *obj, *merge;
     register struct bill_x *bpm;
     register struct monst *shkp;
 
+    int had_contents = Has_contents(obj);
+
     if (obj->otyp == LEASH && obj->leashmon)
         o_unleash(obj);
     if (obj->oclass == FOOD_CLASS)
@@ -999,8 +1002,9 @@ register struct obj *obj, *merge;
     if (!context.in_memory_objs && Is_proper_container(obj))
     {
         char debugbuf[BUFSZ * 17];
-        Sprintf(debugbuf, "obfree on container: %s, %s, %s, %s, %s, %s, %s, %s", priority_debug_buf_1, priority_debug_buf_2, priority_debug_buf_3, priority_debug_buf_4, debug_buf_1, debug_buf_2, debug_buf_3, debug_buf_4);
-        issue_gui_command(GUI_CMD_DEBUGLOG, DEBUGLOG_PRIORITY, obj->in_use, debugbuf);
+        Sprintf(debugbuf, "obfree on container: has_cobjs:%d, in_use:%d, P1:%s, P2:%s, P3:%s, P4:%s, B1:%s, B2:%s, B3:%s, B4:%s", had_contents, (int)obj->in_use, 
+            priority_debug_buf_1, priority_debug_buf_2, priority_debug_buf_3, priority_debug_buf_4, debug_buf_1, debug_buf_2, debug_buf_3, debug_buf_4);
+        issue_gui_command(GUI_CMD_DEBUGLOG, DEBUGLOG_PRIORITY, 0, debugbuf);
     }
 
     shkp = 0;
