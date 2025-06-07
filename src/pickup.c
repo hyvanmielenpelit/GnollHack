@@ -2071,7 +2071,7 @@ boolean bynexthere_container, bynexthere_obj;
         if (!Is_container(curr) && !unfit_for_container(curr))
         {
             fitcnt++;
-            if (!(objects[curr->otyp].oc_name_known ? (objects[curr->otyp].oc_flags5 & O5_MBAG_DESTROYING_ITEM) != 0 : curr->oclass == WAND_CLASS))
+            if (!(objects[curr->otyp].oc_name_known || objects[WAN_CANCELLATION].oc_name_known ? (objects[curr->otyp].oc_flags5 & O5_MBAG_DESTROYING_ITEM) != 0 : curr->oclass == WAND_CLASS))
                 no_cancellation_cnt++;
         }
     }
@@ -2082,7 +2082,7 @@ boolean bynexthere_container, bynexthere_obj;
     int cnt = 0;
     for (curr = objchn_container; curr; curr = (bynexthere_container ? curr->nexthere : curr->nobj))
     {
-        if (objects[curr->otyp].oc_name_known)
+        if (objects[curr->otyp].oc_name_known || (curr->cknown && Is_proper_container(curr)))
         {
             if (curr->otyp == BAG_OF_HOLDING && curr->bknown && !curr->cursed && no_cancellation_cnt > 0)
             {
