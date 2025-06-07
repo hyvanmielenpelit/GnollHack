@@ -4848,8 +4848,7 @@ struct item_description_stats* stats_ptr; /* If non-null, only returns item stat
             stats_ptr->mc_bonus = totalmcbonus;
         }
 
-        if ((stats_known && (is_armor(obj) || (objects[(obj)->otyp].oc_flags & O1_IS_ARMOR_WHEN_WIELDED)))
-            || totalacbonus != 0 || totalmcbonus != 0 || (has_obj_mythic_defense(obj) && obj->mknown))
+        if (is_armor(obj) || (objects[(obj)->otyp].oc_flags & O1_IS_ARMOR_WHEN_WIELDED) || (has_obj_mythic_defense(obj) && obj->mknown))
         {
             armor_stats_printed = TRUE;
             int powercnt = 0;
