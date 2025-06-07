@@ -562,9 +562,9 @@ namespace GnollHackX.Pages.Game
         private bool _drawWeaponStyleAsGlyphs = true;
 
         public SimpleImageButton StandardMeasurementButton { get { return UseSimpleCmdLayout ? SimpleESCButton : ESCButton; } }
-        public StackLayout StandardMeasurementCmdLayout { get { return UseSimpleCmdLayout ? SimpleUpperCmdLayout : UpperCmdLayout; } }
+        public MeasurableStackLayout StandardMeasurementCmdLayout { get { return UseSimpleCmdLayout ? SimpleUpperCmdLayout : UpperCmdLayout; } }
         public LabeledImageButton StandardReferenceButton { get { return UseSimpleCmdLayout ? lSimpleInventoryButton : lInventoryButton; } } // { get { return DesktopButtons ? lRowAbilitiesButton : lAbilitiesButton; } }
-        public StackLayout UsedButtonRowStack { get { return UseSimpleCmdLayout ? SimpleButtonRowStack : ButtonRowStack; } }
+        public MeasurableStackLayout UsedButtonRowStack { get { return UseSimpleCmdLayout ? SimpleButtonRowStack : ButtonRowStack; } }
 
         private readonly object _petDataLock = new object();
         private List<GHPetDataItem> _petData = new List<GHPetDataItem>();
@@ -597,7 +597,7 @@ namespace GnollHackX.Pages.Game
                     _mapRefreshRate = value;
                 }
                 StopMainCanvasAnimation();
-                if (!LoadingGrid.IsVisible)
+                if (!LoadingGrid.ThreadSafeIsVisible)
                     StartMainCanvasAnimation();
             }
         }
@@ -934,6 +934,8 @@ namespace GnollHackX.Pages.Game
             UIUtils.SetPageThemeOnHandler(this, GHApp.DarkMode);
             UIUtils.SetViewCursorOnHandler(RootGrid, GameCursorType.Normal);
             UIUtils.SetViewCursorOnHandler(ToggleMessageNumberButton, GameCursorType.Info);
+            SizeChanged += GamePage_SizeChanged;
+            PropertyChanged += GamePage_PropertyChanged;
 
             _mainPage = mainPage;
 
@@ -1051,6 +1053,27 @@ namespace GnollHackX.Pages.Game
                 TextCanvas.InvalidateSurface();
             };
 #endif
+        }
+
+        private void GamePage_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(Width))
+            {
+                ThreadSafeWidth = Width;
+            }
+            else if (e.PropertyName == nameof(Height))
+            {
+                ThreadSafeWidth = Height;
+            }
+        }
+
+        private void GamePage_SizeChanged(object sender, EventArgs e)
+        {
+            lock (_propertyLock)
+            {
+                _threadSafeWidth = Width;
+                _threadSafeHeight = Height;
+            }
         }
 
         ~GamePage()
@@ -4503,6 +4526,9 @@ namespace GnollHackX.Pages.Game
 
         private void ContentPage_Disappearing(object sender, EventArgs e)
         {
+            PropertyChanged -= GamePage_PropertyChanged;
+            SizeChanged -= GamePage_SizeChanged;
+
             GHApp.BackButtonPressed -= BackButtonPressed;
             lock (RefreshScreenLock)
             {
@@ -4597,19 +4623,20 @@ namespace GnollHackX.Pages.Game
         private bool _mainCanvasThreadChecked = false;
         private void canvasView_PaintSurface(object sender, SKPaintSurfaceEventArgs e)
         {
-            if (!_mainCanvasThreadChecked && !MainThread.IsMainThread)
+            bool isCanvasOnMainThread = MainThread.IsMainThread;
+            if (!_mainCanvasThreadChecked && !isCanvasOnMainThread)
             {
                 _mainCanvasThreadChecked = true;
                 GHApp.MaybeWriteGHLog("canvasView_PaintSurface not on main thread!");
             }
 
-            if (MenuGrid.IsVisible || TextGrid.IsVisible || MoreCommandsGrid.IsVisible || !IsGameOn)
+            if (MenuGrid.ThreadSafeIsVisible || TextGrid.ThreadSafeIsVisible || MoreCommandsGrid.ThreadSafeIsVisible || !IsGameOn)
                 return;
 
             if (IsMainCanvasDrawingAndSetTrue) /* In the case of some sort of reentrancy or new draw before previous is finished */
                 return;
 
-            PaintMainGamePage(sender, e);
+            PaintMainGamePage(sender, e, isCanvasOnMainThread);
 
             lock (_mainFPSCounterLock)
             {
@@ -6756,17 +6783,18 @@ namespace GnollHackX.Pages.Game
         public float _localMapOffsetY = 0;
         public float _localMapMiniOffsetX = 0;
         public float _localMapMiniOffsetY = 0;
+        /* Note that ContextMenuData items are not immutable, and therefore cannot be copied to a local list */
 
-        private void PaintMainGamePage(object sender, SKPaintSurfaceEventArgs e)
+        private void PaintMainGamePage(object sender, SKPaintSurfaceEventArgs e, bool isCanvasOnMainThread)
         {
-            if (!IsMainCanvasOn || /* !MainGrid.IsVisible || */ GHApp.IsReplaySearching)
+            if (!IsMainCanvasOn || GHApp.IsReplaySearching)
                 return;
 
             SKImageInfo info = e.Info;
             SKSurface surface = e.Surface;
             SKCanvas canvas = surface.Canvas;
-            float canvaswidth = canvasView.CanvasSize.Width;
-            float canvasheight = canvasView.CanvasSize.Height;
+            float canvaswidth = e.Info.Width; // canvasView.CanvasSize.Width;
+            float canvasheight = e.Info.Height; // canvasView.CanvasSize.Height;
 
             canvas.Clear(SKColors.Black);
             if (canvaswidth <= 16 || canvasheight <= 16)
@@ -6793,14 +6821,26 @@ namespace GnollHackX.Pages.Game
 
             //double canvas_scale = GetCanvasScale();
             //float inverse_canvas_scale = canvas_scale == 0 ? 0.0f : 1.0f / (float)canvas_scale;
+            double stdButtonWidth = StandardMeasurementButton.ThreadSafeWidth;
+            double stdButtonHeight = StandardMeasurementButton.ThreadSafeHeight;
+            double stdButtonY = StandardMeasurementButton.ThreadSafeY;
+            double canvasViewWidth = canvasView.ThreadSafeWidth;
+            double canvasViewHeight = canvasView.ThreadSafeHeight;
+            Thickness stdCmdLayoutMargin = StandardMeasurementCmdLayout.ThreadSafeMargin;
+            double stdCmdLayoutHeight = StandardMeasurementCmdLayout.ThreadSafeHeight;
+            double usedButtonRowStackHeight = UsedButtonRowStack.ThreadSafeHeight;
+            double stdRefButtonWidth = StandardReferenceButton.ThreadSafeWidth;
+            double stdRefButtonHeight = StandardReferenceButton.ThreadSafeHeight;
+            double gamePageHeight = this.ThreadSafeHeight;
+
             float inverse_canvas_scale = GHApp.DisplayDensity;
             float customScale = GHApp.CustomScreenScale;
             float textscale = UIUtils.CalculateTextScale(inverse_canvas_scale, customScale);// GetTextScaleEx(canvasView.Width, canvasView.Height, usingDesktopButtons, usingSimpleCmdLayout, inverse_canvas_scale, customScale);
-            float statusBarTextMultiplier = UIUtils.CalculateStatusBarFontSizeMultiplier(canvasView.Width, canvasView.Height);
+            float statusBarTextMultiplier = UIUtils.CalculateStatusBarFontSizeMultiplier(canvasViewWidth, canvasViewHeight);
             float statusBarTextScale = textscale * statusBarTextMultiplier;
             float statusBarSkiaHeight = UIUtils.CalculateStatusBarSkiaHeight(statusBarTextScale); // GetStatusBarSkiaHeightEx(textscale);
-            float messageTextMultiplier = UIUtils.CalculateMessageFontSizeMultiplier(StandardMeasurementButton.Width, StandardMeasurementButton.Height, statusBarSkiaHeight, textscale * GHConstants.WindowMessageFontSize, 
-                canvaswidth, canvasheight, canvasView.Width, canvasView.Height, usingDesktopButtons, usingSimpleCmdLayout, inverse_canvas_scale, customScale);
+            float messageTextMultiplier = UIUtils.CalculateMessageFontSizeMultiplier(stdButtonWidth, stdButtonHeight, statusBarSkiaHeight, textscale * GHConstants.WindowMessageFontSize, 
+                canvaswidth, canvasheight, canvasViewWidth, canvasViewHeight, usingDesktopButtons, usingSimpleCmdLayout, inverse_canvas_scale, customScale);
             float messageTextScale = textscale * messageTextMultiplier;
             bool lockTaken = false;
 
@@ -7885,7 +7925,7 @@ namespace GnollHackX.Pages.Game
                             SKColor strokecolor = SKColors.White, superstrokecolor = SKColors.White, substrokecolor = SKColors.White;
                             SKColor fillcolor = SKColors.White;
                             float maxfontsize = 9999.0f;
-                            double canvasheightscale = this.Height / canvasView.Height;
+                            double canvasheightscale = gamePageHeight / Math.Max(1.0, canvasViewHeight);
                             fillcolor = _localScreenText.GetTextColor(maincountervalue);
                             textPaint.Typeface = _localScreenText.GetTextTypeface(maincountervalue);
                             targetwidth = Math.Min(canvaswidth, canvasheight * (float)canvasheightscale) * _localScreenText.GetMainTextSizeRelativeToScreenWidth(maincountervalue);
@@ -8059,7 +8099,7 @@ namespace GnollHackX.Pages.Game
 
                             //textPaint.TextAlign = SKTextAlign.Center;
                             tx = canvaswidth / 2;
-                            ty = statusBarSkiaHeight + 1.5f * inverse_canvas_scale * (float)StandardMeasurementButton.Height - textPaint.FontMetrics.Ascent;
+                            ty = statusBarSkiaHeight + 1.5f * inverse_canvas_scale * (float)stdButtonHeight - textPaint.FontMetrics.Ascent;
 #if GNH_MAP_PROFILING && DEBUG
                                 StartProfiling(GHProfilingStyle.Text);
 #endif
@@ -8594,7 +8634,7 @@ namespace GnollHackX.Pages.Game
                                 if (ghWindow.WindowType == GHWinType.Message)
                                 {
                                     float newleft = 0;
-                                    float newtop = canvasheight - height * ActualDisplayedMessages - (float)UsedButtonRowStack.Height * inverse_canvas_scale - GHConstants.ContextButtonBottomStartMargin;
+                                    float newtop = canvasheight - height * ActualDisplayedMessages - (float)usedButtonRowStackHeight * inverse_canvas_scale - GHConstants.ContextButtonBottomStartMargin;
                                     ghWindow.Left = newleft;
                                     ghWindow.Top = newtop;
                                 }
@@ -8929,8 +8969,8 @@ namespace GnollHackX.Pages.Game
                     }
                     
 
-                    float abilitybuttonbottom = (float)(StandardMeasurementCmdLayout.Margin.Top / canvasView.Height) * canvasheight; ; // (float)((lAbilitiesButton.Y + lAbilitiesButton.Height) / canvasView.Height) * canvasheight;
-                    float escbuttonbottom = (float)((StandardMeasurementButton.Y + StandardMeasurementButton.Height) / canvasView.Height) * canvasheight;
+                    float abilitybuttonbottom = (float)(stdCmdLayoutMargin.Top / canvasViewHeight) * canvasheight; ; // (float)((lAbilitiesButton.Y + lAbilitiesButton.Height) / canvasView.Height) * canvasheight;
+                    float escbuttonbottom = (float)((stdButtonY + stdButtonHeight) / canvasViewHeight) * canvasheight;
                     if (_canvasButtonRect.Top < escbuttonbottom)
                         _canvasButtonRect.Top = escbuttonbottom;
                     if (_canvasButtonRect.Top < abilitybuttonbottom)
@@ -8945,7 +8985,7 @@ namespace GnollHackX.Pages.Game
                     _skillRectDrawn = false;
                     _prevWepRectDrawn = false;
                     float orbleft = 5.0f;
-                    float orbbordersize = (float)(StandardReferenceButton.Width * inverse_canvas_scale);
+                    float orbbordersize = (float)(stdRefButtonWidth * inverse_canvas_scale);
 
                     if (statusfieldsok && !ForceAllMessages)
                     {
@@ -8970,7 +9010,7 @@ namespace GnollHackX.Pages.Game
                             SKRect darkenrect = new SKRect(0, 0, canvaswidth, statusbarheight);
                             StatusBarRect = darkenrect;
                             _statusBarRectDrawn = true;
-                            _canvasButtonRect.Top = StatusBarRect.Bottom + 1.25f * inverse_canvas_scale * (float)StandardMeasurementButton.Width;
+                            _canvasButtonRect.Top = StatusBarRect.Bottom + 1.25f * inverse_canvas_scale * (float)stdButtonWidth;
 #if GNH_MAP_PROFILING && DEBUG
                             StartProfiling(GHProfilingStyle.Rect);
 #endif
@@ -10480,7 +10520,7 @@ namespace GnollHackX.Pages.Game
                                         textPaint.Color = SKColors.White;
                                         textPaint.Typeface = GHApp.LatoRegular;
                                         textPaint.TextSize = 36;
-                                        float pet_target_height = inverse_canvas_scale * (float)(StandardMeasurementButton.Height + StandardReferenceButton.Width) / 2;
+                                        float pet_target_height = inverse_canvas_scale * (float)(stdButtonHeight + stdRefButtonWidth) / 2;
                                         float pet_picture_target_height = pet_target_height * 0.56f;
                                         float pet_hp_target_height = pet_target_height * 0.24f;
                                         float pet_status_target_height = pet_target_height * 0.2f;
@@ -10892,13 +10932,13 @@ namespace GnollHackX.Pages.Game
                     /* Context Menu */
                     lock(_contextMenuDataLock)
                     {
-                        float startBottom = canvasheight - (float)UsedButtonRowStack.Height * inverse_canvas_scale - GHConstants.ContextButtonBottomStartMargin;
+                        float startBottom = canvasheight - (float)usedButtonRowStackHeight * inverse_canvas_scale - GHConstants.ContextButtonBottomStartMargin;
                         float textSize = GHConstants.ContextButtonBaseFontSize * orbbordersize / 50.0f;
                         float internalPadding = (float)GHConstants.ContextButtonSpacing * inverse_canvas_scale;
                         float startTop = startBottom + internalPadding;
                         float horizontalPadding = 2f * inverse_canvas_scale;
                         float startLeft = canvaswidth - orbbordersize - horizontalPadding;
-                        float topLimit = (float)(StandardMeasurementCmdLayout.Height + StandardMeasurementCmdLayout.Margin.Top) * inverse_canvas_scale;
+                        float topLimit = (float)(stdCmdLayoutHeight + stdCmdLayoutMargin.Top) * inverse_canvas_scale;
                         bool isFirstCmb = true;
                         foreach (ContextMenuButton cmb in _contextMenuData) /* foreach, since _contextMenuData may in theory be cleared concurrently in the same thread */
                         {
@@ -11126,14 +11166,14 @@ namespace GnollHackX.Pages.Game
                     canvas.DrawRect(0, 0, canvaswidth, canvasheight, textPaint.Paint);
                     textPaint.Color = SKColors.White;
 
-                    float box_left = canvaswidth < canvasheight ? 1.25f * inverse_canvas_scale * (float)StandardMeasurementButton.Width :
-                        3.25f * inverse_canvas_scale * (float)StandardMeasurementButton.Width;
+                    float box_left = canvaswidth < canvasheight ? 1.25f * inverse_canvas_scale * (float)stdButtonWidth :
+                        3.25f * inverse_canvas_scale * (float)stdButtonWidth;
                     float box_right = canvaswidth - box_left;
                     if (box_right < box_left)
                         box_right = box_left;
-                    float box_top = canvaswidth < canvasheight ? statusBarSkiaHeight + 1.25f * inverse_canvas_scale * (float)StandardMeasurementButton.Height :
-                        statusBarSkiaHeight + 0.25f * inverse_canvas_scale * (float)StandardMeasurementButton.Height;
-                    float box_bottom = canvasheight - 1.25f * inverse_canvas_scale * (float)UsedButtonRowStack.Height;
+                    float box_top = canvaswidth < canvasheight ? statusBarSkiaHeight + 1.25f * inverse_canvas_scale * (float)stdButtonHeight :
+                        statusBarSkiaHeight + 0.25f * inverse_canvas_scale * (float)stdButtonHeight;
+                    float box_bottom = canvasheight - 1.25f * inverse_canvas_scale * (float)usedButtonRowStackHeight;
                     if (box_bottom < box_top)
                         box_bottom = box_top;
 
@@ -15368,20 +15408,21 @@ namespace GnollHackX.Pages.Game
         private bool _menuCanvasThreadChecked = false;
         private void MenuCanvas_PaintSurface(object sender, SKPaintSurfaceEventArgs e)
         {
-            if (!_menuCanvasThreadChecked && !MainThread.IsMainThread)
+            bool isMenuOnMainThread = MainThread.IsMainThread;
+            if (!_menuCanvasThreadChecked && !isMenuOnMainThread)
             {
                 _menuCanvasThreadChecked = true;
                 GHApp.MaybeWriteGHLog("MenuCanvas_PaintSurface not on main thread!");
             }
 
-            if (!MenuGrid.IsVisible)
+            if (!MenuGrid.ThreadSafeIsVisible)
                 return;
 
             SKSurface surface = e.Surface;
             SKCanvas canvas = surface.Canvas;
             SwitchableCanvasView referenceCanvasView = MenuCanvas;
-            float canvaswidth = referenceCanvasView.CanvasSize.Width;
-            float canvasheight = referenceCanvasView.CanvasSize.Height;
+            float canvaswidth = e.Info.Width; // referenceCanvasView.CanvasSize.Width;
+            float canvasheight = e.Info.Height; // referenceCanvasView.CanvasSize.Height;
 
             canvas.Clear();
             lock (_menuDrawOnlyLock)
@@ -15487,7 +15528,7 @@ namespace GnollHackX.Pages.Game
                             textPaint.TextSize = mainfontsize;
                             //textPaint.TextAlign = SKTextAlign.Left;
 
-                            if (MenuWindowGlyphImage.IsVisible && wrapglyph)
+                            if (MenuWindowGlyphImage.ThreadSafeIsVisible && wrapglyph)
                                 glyphpadding = scale * (float)Math.Max(0.0, MenuCanvas.X + MenuCanvas.Width - MenuWindowGlyphImage.X);
                             else
                                 glyphpadding = 0;
@@ -17179,20 +17220,21 @@ namespace GnollHackX.Pages.Game
 
         private void TextCanvas_PaintSurface(object sender, SKPaintSurfaceEventArgs e)
         {
-            if (!_textCanvasThreadChecked && !MainThread.IsMainThread)
+            bool isTextOnMainThread = MainThread.IsMainThread;
+            if (!_textCanvasThreadChecked && !isTextOnMainThread)
             {
                 _textCanvasThreadChecked = true;
                 GHApp.MaybeWriteGHLog("TextCanvas_PaintSurface not on main thread!");
             }
 
-            if (!TextGrid.IsVisible)
+            if (!TextGrid.ThreadSafeIsVisible)
                 return;
 
             SKImageInfo info = e.Info;
             SKSurface surface = e.Surface;
             SKCanvas canvas = surface.Canvas;
-            float canvaswidth = TextCanvas.CanvasSize.Width;
-            float canvasheight = TextCanvas.CanvasSize.Height;
+            float canvaswidth = e.Info.Width; // TextCanvas.CanvasSize.Width;
+            float canvasheight = e.Info.Height; // TextCanvas.CanvasSize.Height;
             float x = 0, y = 0;
             string str;
             float scale = canvaswidth / (float)TextCanvas.Width;
@@ -17287,7 +17329,7 @@ namespace GnollHackX.Pages.Game
                             indent_start_x += textPaint.MeasureText(indentstr);
                         }
 
-                        if (TextWindowGlyphImage.IsVisible && (wrapglyph || (putstritem.InstructionList.Count > 0 && (putstritem.InstructionList[0].Attributes & (int)MenuItemAttributes.Title) != 0)))
+                        if (TextWindowGlyphImage.ThreadSafeIsVisible && (wrapglyph || (putstritem.InstructionList.Count > 0 && (putstritem.InstructionList[0].Attributes & (int)MenuItemAttributes.Title) != 0)))
                             glyphpadding = scale * (float)Math.Max(0.0, TextCanvas.X + TextCanvas.Width - TextWindowGlyphImage.X);
                         else
                             glyphpadding = 0;
@@ -17653,21 +17695,22 @@ namespace GnollHackX.Pages.Game
         private bool _commandCanvasThreadChecked = false;
         private void CommandCanvas_PaintSurface(object sender, SKPaintSurfaceEventArgs e)
         {
-            if (!_commandCanvasThreadChecked && !MainThread.IsMainThread)
+            bool isCommandOnMainThread = MainThread.IsMainThread;
+            if (!_commandCanvasThreadChecked && !isCommandOnMainThread)
             {
                 _commandCanvasThreadChecked = true;
                 GHApp.MaybeWriteGHLog("CommandCanvas_PaintSurface not on main thread!");
             }
 
-            if (!MoreCommandsGrid.IsVisible)
+            if (!MoreCommandsGrid.ThreadSafeIsVisible)
                 return;
 
             SKImageInfo info = e.Info;
             SKSurface surface = e.Surface;
             SKCanvas canvas = surface.Canvas;
-            float canvaswidth = CommandCanvas.CanvasSize.Width;
-            float canvasheight = CommandCanvas.CanvasSize.Height;
-            float scale = canvaswidth / (float)CommandCanvas.Width;
+            float canvaswidth = e.Info.Width; // CommandCanvas.CanvasSize.Width;
+            float canvasheight = e.Info.Height; // CommandCanvas.CanvasSize.Height;
+            float scale = canvaswidth / Math.Max(1, (float)CommandCanvas.ThreadSafeWidth);
             bool isLandscape = canvaswidth > canvasheight;
 
             canvas.Clear(SKColors.Black);
@@ -17842,7 +17885,7 @@ namespace GnollHackX.Pages.Game
             float btnMatrixHeight = btnRect.Height;
             float canvaswidth = CommandCanvas.CanvasSize.Width;
             float canvasheight = CommandCanvas.CanvasSize.Height;
-            float scale = canvaswidth / (float)CommandCanvas.Width;
+            float scale = canvaswidth / Math.Max(1f, (float)CommandCanvas.Width);
             bool isLandscape = canvaswidth > canvasheight;
 
             lock (CommandButtonLock)
@@ -18186,8 +18229,8 @@ namespace GnollHackX.Pages.Game
 
             using (GHSkiaFontPaint textPaint = new GHSkiaFontPaint())
             {
-                float canvaswidth = canvasView.CanvasSize.Width;
-                float canvasheight = canvasView.CanvasSize.Height;
+                float canvaswidth = e.Info.Width; // canvasView.CanvasSize.Width;
+                float canvasheight = e.Info.Height; // canvasView.CanvasSize.Height;
                 bool landscape = (canvaswidth > canvasheight);
                 float tx = 0, ty = 0;
                 SKRect bounds = new SKRect();
@@ -18258,43 +18301,43 @@ namespace GnollHackX.Pages.Game
                         textPaint.DrawTextOnCanvas(canvas, str, tx, ty);
                         break;
                     case 1:
-                        PaintTipButton(canvas, textPaint, UseSimpleCmdLayout ? SimpleGameMenuButton : GameMenuButton, "This opens the main menu.", "Main Menu", 1.5f, centerfontsize, fontsize, false, -0.15f, 0);
+                        PaintTipButton(canvas, textPaint, UseSimpleCmdLayout ? SimpleGameMenuButton : GameMenuButton, "This opens the main menu.", "Main Menu", 1.5f, centerfontsize, fontsize, false, -0.15f, 0, canvaswidth, canvasheight);
                         break;
                     case 2:
-                        PaintTipButton(canvas, textPaint, UseSimpleCmdLayout ? SimpleESCButton : ESCButton, "This cancels any command.", "Escape Button", 1.5f, centerfontsize, fontsize, false, -1.5f, 0);
+                        PaintTipButton(canvas, textPaint, UseSimpleCmdLayout ? SimpleESCButton : ESCButton, "This cancels any command.", "Escape Button", 1.5f, centerfontsize, fontsize, false, -1.5f, 0, canvaswidth, canvasheight);
                         break;
                     case 3:
-                        PaintTipButton(canvas, textPaint, UseSimpleCmdLayout ? SimpleToggleAutoCenterModeButton : ToggleAutoCenterModeButton, "This toggles auto-center on player.", "Map Auto-Center", 1.5f, centerfontsize, fontsize, false, -1.5f, 0);
+                        PaintTipButton(canvas, textPaint, UseSimpleCmdLayout ? SimpleToggleAutoCenterModeButton : ToggleAutoCenterModeButton, "This toggles auto-center on player.", "Map Auto-Center", 1.5f, centerfontsize, fontsize, false, -1.5f, 0, canvaswidth, canvasheight);
                         break;
                     case 4:
-                        PaintTipButton(canvas, textPaint, UseSimpleCmdLayout ? SimpleToggleZoomMiniButton : ToggleZoomMiniButton, "This zoom shows the entire level.", "Minimap", 1.5f, centerfontsize, fontsize, false, landscape ? -0.15f : -0.5f, landscape ? 0 : 1.5f);
+                        PaintTipButton(canvas, textPaint, UseSimpleCmdLayout ? SimpleToggleZoomMiniButton : ToggleZoomMiniButton, "This zoom shows the entire level.", "Minimap", 1.5f, centerfontsize, fontsize, false, landscape ? -0.15f : -0.5f, landscape ? 0 : 1.5f, canvaswidth, canvasheight);
                         break;
                     case 5:
-                        PaintTipButton(canvas, textPaint, ToggleZoomAlternateButton, "This is the secondary zoom.", "Alternative Zoom", 1.5f, centerfontsize, fontsize, false, landscape ? -1.5f : -0.15f, 0);
+                        PaintTipButton(canvas, textPaint, ToggleZoomAlternateButton, "This is the secondary zoom.", "Alternative Zoom", 1.5f, centerfontsize, fontsize, false, landscape ? -1.5f : -0.15f, 0, canvaswidth, canvasheight);
                         break;
                     case 6:
-                        PaintTipButton(canvas, textPaint, UseSimpleCmdLayout ? SimpleLookModeButton : LookModeButton, "This allows you to inspect the map.", "Look Mode", 1.5f, centerfontsize, fontsize, false, -0.15f, landscape ? -0.5f : 0);
+                        PaintTipButton(canvas, textPaint, UseSimpleCmdLayout ? SimpleLookModeButton : LookModeButton, "This allows you to inspect the map.", "Look Mode", 1.5f, centerfontsize, fontsize, false, -0.15f, landscape ? -0.5f : 0, canvaswidth, canvasheight);
                         break;
                     case 7:
-                        PaintTipButton(canvas, textPaint, ToggleTravelModeButton, "Use this to set how you move around.", "Travel Mode", 1.5f, centerfontsize, fontsize, false, landscape ? -1.5f : -0.15f, landscape ? -0.5f : 0);
+                        PaintTipButton(canvas, textPaint, ToggleTravelModeButton, "Use this to set how you move around.", "Travel Mode", 1.5f, centerfontsize, fontsize, false, landscape ? -1.5f : -0.15f, landscape ? -0.5f : 0, canvaswidth, canvasheight);
                         break;
                     case 8:
-                        PaintTipButtonByRect(canvas, textPaint, statusBarCenterRect, "You can " + GHApp.GetClickTapWord(false, false) + " the status bar.", "Open status screen", 1.0f, centerfontsize, fontsize, false, -0.15f, 1.0f);
+                        PaintTipButtonByRect(canvas, textPaint, statusBarCenterRect, "You can " + GHApp.GetClickTapWord(false, false) + " the status bar.", "Open status screen", 1.0f, centerfontsize, fontsize, false, -0.15f, 1.0f, canvaswidth, canvasheight);
                         break;
                     case 9:
-                        PaintTipButton(canvas, textPaint, DesktopButtons ? lRowAbilitiesButton : lAbilitiesButton, DesktopButtons ? "Some commands are specially located." : "Some commands do not have buttons.", "Character and game status", 1.0f, centerfontsize, fontsize, true, 0.15f, DesktopButtons ? -1.0f : 1.0f);
+                        PaintTipButton(canvas, textPaint, DesktopButtons ? lRowAbilitiesButton : lAbilitiesButton, DesktopButtons ? "Some commands are specially located." : "Some commands do not have buttons.", "Character and game status", 1.0f, centerfontsize, fontsize, true, 0.15f, DesktopButtons ? -1.0f : 1.0f, canvaswidth, canvasheight);
                         break;
                     case 10:
-                        PaintTipButton(canvas, textPaint, DesktopButtons ? lRowWornItemsButton : lWornItemsButton, "", GHApp.GetClickTapWord(true, false) + " here to access worn items", 1.0f, centerfontsize, fontsize, false, landscape ? -2.0f : -0.5f, DesktopButtons ? -2.0f : 2.0f);
+                        PaintTipButton(canvas, textPaint, DesktopButtons ? lRowWornItemsButton : lWornItemsButton, "", GHApp.GetClickTapWord(true, false) + " here to access worn items", 1.0f, centerfontsize, fontsize, false, landscape ? -2.0f : -0.5f, DesktopButtons ? -2.0f : 2.0f, canvaswidth, canvasheight);
                         break;
                     case 11:
-                        PaintTipButton(canvas, textPaint, ToggleMessageNumberButton, "", GHApp.GetClickTapWord(true, false) + " here to see more messages", 1.0f, centerfontsize, fontsize, true, 0.5f, -1.0f);
+                        PaintTipButton(canvas, textPaint, ToggleMessageNumberButton, "", GHApp.GetClickTapWord(true, false) + " here to see more messages", 1.0f, centerfontsize, fontsize, true, 0.5f, -1.0f, canvaswidth, canvasheight);
                         break;
                     case 12:
-                        PaintTipButtonByRect(canvas, textPaint, HealthRect, GHApp.GetClickTapWord(true, true) + " shows your maximum health.", "Health Orb", 1.1f, centerfontsize, fontsize, true, 0.15f, 0.0f);
+                        PaintTipButtonByRect(canvas, textPaint, HealthRect, GHApp.GetClickTapWord(true, true) + " shows your maximum health.", "Health Orb", 1.1f, centerfontsize, fontsize, true, 0.15f, 0.0f, canvaswidth, canvasheight);
                         break;
                     case 13:
-                        PaintTipButtonByRect(canvas, textPaint, ManaRect, GHApp.GetClickTapWord(true, true) + " reveals your maximum mana.", "Mana Orb", 1.1f, centerfontsize, fontsize, true, 0.15f, 0.0f);
+                        PaintTipButtonByRect(canvas, textPaint, ManaRect, GHApp.GetClickTapWord(true, true) + " reveals your maximum mana.", "Mana Orb", 1.1f, centerfontsize, fontsize, true, 0.15f, 0.0f, canvaswidth, canvasheight);
                         break;
                     case 14:
                         textPaint.TextSize = 36;
@@ -18445,8 +18488,8 @@ namespace GnollHackX.Pages.Game
             }
             float relX = (float)(screenCoordinateX * scale); // / canvasView.Width) * canvaswidth;
             float relY = (float)(screenCoordinateY * scale); // / canvasView.Height) * canvasheight;
-            float relWidth = (float)(StandardMeasurementButton.Width * scale); // / canvasView.Width) * canvaswidth;
-            float relHeight = (float)(StandardMeasurementButton.Height * scale); // / canvasView.Height) * canvasheight;
+            float relWidth = (float)(StandardMeasurementButton.ThreadSafeWidth * scale); // / canvasView.Width) * canvaswidth;
+            float relHeight = (float)(StandardMeasurementButton.ThreadSafeHeight * scale); // / canvasView.Height) * canvasheight;
 
             SKRect res = new SKRect(relX, relY, relX + relWidth, relY + relHeight);
             return res;
@@ -18458,18 +18501,16 @@ namespace GnollHackX.Pages.Game
 #else
             Xamarin.Forms.VisualElement view, 
 #endif
-            string centertext, string boxtext, float radius_mult, float centertextfontsize, float boxfontsize, bool linefromright, float lineoffsetx, float lineoffsety)
+            string centertext, string boxtext, float radius_mult, float centertextfontsize, float boxfontsize, bool linefromright, float lineoffsetx, float lineoffsety, float canvaswidth, float canvasheight)
         {
             SKRect viewrect = GetViewScreenRect(view);
             SKRect tiprect = GetViewScreenRect(TipView);
             SKRect adjustedrect = new SKRect(viewrect.Left - tiprect.Left, viewrect.Top - tiprect.Top, viewrect.Right - tiprect.Left, viewrect.Bottom - tiprect.Top);
-            PaintTipButtonByRect(canvas, textPaint, adjustedrect, centertext, boxtext, radius_mult, centertextfontsize, boxfontsize, linefromright, lineoffsetx, lineoffsety);
+            PaintTipButtonByRect(canvas, textPaint, adjustedrect, centertext, boxtext, radius_mult, centertextfontsize, boxfontsize, linefromright, lineoffsetx, lineoffsety, canvaswidth, canvasheight);
         }
 
-        public void PaintTipButtonByRect(SKCanvas canvas, GHSkiaFontPaint textPaint, SKRect viewrect, string centertext, string boxtext, float radius_mult, float centertextfontsize, float boxfontsize, bool linefromright, float lineoffsetx, float lineoffsety)
+        public void PaintTipButtonByRect(SKCanvas canvas, GHSkiaFontPaint textPaint, SKRect viewrect, string centertext, string boxtext, float radius_mult, float centertextfontsize, float boxfontsize, bool linefromright, float lineoffsetx, float lineoffsety, float canvaswidth, float canvasheight)
         {
-            float canvaswidth = canvasView.CanvasSize.Width;
-            float canvasheight = canvasView.CanvasSize.Height;
             float tx = 0, ty = 0;
             SKRect bounds = new SKRect();
             float padding = 0.0f;
@@ -19836,6 +19877,13 @@ namespace GnollHackX.Pages.Game
 
         }
 
+
+        private readonly object _propertyLock = new object();
+        private double _threadSafeWidth = 0;
+        private double _threadSafeHeight = 0;
+        public double ThreadSafeWidth { get { lock (_propertyLock) { return _threadSafeWidth; } } private set { lock (_propertyLock) { _threadSafeWidth = value; } } }
+        public double ThreadSafeHeight { get { lock (_propertyLock) { return _threadSafeHeight; } } private set { lock (_propertyLock) { _threadSafeHeight = value; } } }
+
 #if WINDOWS
         private void PageContent_CharacterReceived(Microsoft.UI.Xaml.UIElement sender, Microsoft.UI.Xaml.Input.CharacterReceivedRoutedEventArgs args)
         {
@@ -20224,6 +20272,6 @@ namespace GnollHackX.Pages.Game
 
         }
 #endif
-    }
+        }
 
-}
+    }

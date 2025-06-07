@@ -209,7 +209,9 @@
     <None Remove="..\GnollHackX\GnollHackX\ICloseablePage.cs" />
     <None Remove="..\GnollHackX\GnollHackX\ImageCarousel.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\MapData.cs" />
-		<None Remove="..\GnollHackX\GnollHackX\NoTabStopButton.cs" />
+    <None Remove="..\GnollHackX\GnollHackX\MeasurableGrid.cs" />
+    <None Remove="..\GnollHackX\GnollHackX\MeasurableStackLayout.cs" />
+    <None Remove="..\GnollHackX\GnollHackX\NoTabStopButton.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\ObjectData.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\ObjectDataItem.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\PointableButton.cs" />
@@ -379,7 +381,9 @@
     <Compile Include="..\GnollHackX\GnollHackX\IFMODService.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\ImageCarousel.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\MapData.cs" />
-		<Compile Include="..\GnollHackX\GnollHackX\NoTabStopButton.cs" />
+    <Compile Include="..\GnollHackX\GnollHackX\MeasurableGrid.cs" />
+    <Compile Include="..\GnollHackX\GnollHackX\MeasurableStackLayout.cs" />
+    <Compile Include="..\GnollHackX\GnollHackX\NoTabStopButton.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\ObjectData.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\ObjectDataItem.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\PointableButton.cs" />

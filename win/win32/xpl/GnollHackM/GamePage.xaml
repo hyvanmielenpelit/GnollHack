@@ -37,7 +37,7 @@
                         <RowDefinition Height="*" />
                         <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
-                    <StackLayout Grid.Row="0" x:Name="UpperCmdLayout" IsVisible="True" Orientation="Vertical" InputTransparent="true" CascadeInputTransparent="false" Spacing="6" HorizontalOptions="End">
+                    <gnh:MeasurableStackLayout Grid.Row="0" x:Name="UpperCmdLayout" IsVisible="True" Orientation="Vertical" InputTransparent="true" CascadeInputTransparent="false" Spacing="6" HorizontalOptions="End">
                         <StackLayout x:Name="GameMenuLayout" Padding="0" Orientation="Horizontal" Spacing="6"
                             HorizontalOptions="End" VerticalOptions="Start" BackgroundColor="Transparent" >
                             <controls:SimpleImageButton x:Name="GameMenuButton" ImgSourcePath="resource://GnollHackM.Assets.UI.stone-menu.png" BtnClicked="GameMenuButton_Clicked"/>
@@ -57,8 +57,8 @@
                                 <controls:SimpleImageButton x:Name="ToggleTravelModeButton" ImgSourcePath="resource://GnollHackM.Assets.UI.stone-travel-off.png" BtnClicked="ToggleTravelModeButton_Clicked"/>
                             </StackLayout>
                         </StackLayout>
-                    </StackLayout>
-                    <StackLayout Grid.Row="0" x:Name="SimpleUpperCmdLayout" IsVisible="True" Orientation="Vertical" InputTransparent="true" CascadeInputTransparent="false" Spacing="6"
+                    </gnh:MeasurableStackLayout>
+                    <gnh:MeasurableStackLayout Grid.Row="0" x:Name="SimpleUpperCmdLayout" IsVisible="True" Orientation="Vertical" InputTransparent="true" CascadeInputTransparent="false" Spacing="6"
                         HorizontalOptions="End">
                         <StackLayout x:Name="SimpleGameMenuLayout" Padding="0" Orientation="Horizontal" Spacing="6"
                             HorizontalOptions="End" VerticalOptions="Start" BackgroundColor="Transparent" >
@@ -77,7 +77,7 @@
                                 <controls:SimpleImageButton x:Name="SimpleLookModeButton" ImgSourcePath="resource://GnollHackM.Assets.UI.stone-look-off.png" BtnClicked="LookModeButton_Clicked"/>
                             </StackLayout>
                         </StackLayout>
-                    </StackLayout>
+                    </gnh:MeasurableStackLayout>
                     <!--<FlexLayout Grid.Row="1" x:Name="ContextLayout" InputTransparent="True" CascadeInputTransparent="False" Padding="0,2" Direction="Column" Wrap="Reverse" 
                                 JustifyContent="End" AlignItems="End" AlignContent="Start" HorizontalOptions="End" VerticalOptions="End" >
                     </FlexLayout>-->
@@ -88,7 +88,7 @@
                     <Grid Grid.Row="2" x:Name="ButtonRowGrid" HorizontalOptions="Fill" VerticalOptions="End" BackgroundColor="#66000000">
                         <controls:LabeledImageButton x:Name="lRowAbilitiesButton" IsVisible="False" LblText="Stats" BtnLetter="A" ImgSourcePath="resource://GnollHackM.Assets.UI.home.png" BtnClicked="GHButton_Clicked" Margin="0,2" HorizontalOptions="Start" VerticalOptions="End" />
                         <controls:LabeledImageButton x:Name="lRowWornItemsButton" IsVisible="False" LblText="Equipment" BtnLetter="]" ImgSourcePath="resource://GnollHackM.Assets.UI.worn.png" ImgHighFilterQuality="True" BtnClicked="GHButton_Clicked" Margin="0,2" HorizontalOptions="End" VerticalOptions="End" />
-                        <StackLayout x:Name="ButtonRowStack" IsVisible="True" HorizontalOptions="Center" VerticalOptions="Center" Orientation="Vertical" Spacing="6">
+                        <gnh:MeasurableStackLayout x:Name="ButtonRowStack" IsVisible="True" HorizontalOptions="Center" VerticalOptions="Center" Orientation="Vertical" Spacing="6">
                             <Grid x:Name="UpperCmdGrid" ColumnSpacing="6" HeightRequest="60" HorizontalOptions="End" >
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="*" />
@@ -131,8 +131,8 @@
                                 <controls:LabeledImageButton Grid.Column="5" x:Name="lApplyButton" LblText="Apply" BtnLetter="a" ImgSourcePath="resource://GnollHackM.Assets.UI.apply.png" BtnClicked="GHButton_Clicked" />
                                 <controls:LabeledImageButton Grid.Column="6" x:Name="lMoreButton" LblText="More" ImgSourcePath="resource://GnollHackM.Assets.UI.more.png" BtnClicked="MoreButton_Clicked" />
                             </Grid>
-                        </StackLayout>
-                        <StackLayout x:Name="SimpleButtonRowStack" IsVisible="False" HorizontalOptions="Center" VerticalOptions="Center" Orientation="Vertical" Spacing="6">
+                        </gnh:MeasurableStackLayout>
+                        <gnh:MeasurableStackLayout x:Name="SimpleButtonRowStack" IsVisible="False" HorizontalOptions="Center" VerticalOptions="Center" Orientation="Vertical" Spacing="6">
                             <Grid x:Name="SimpleCmdGrid" ColumnSpacing="6" HeightRequest="60" HorizontalOptions="Center" >
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="*" />
@@ -154,11 +154,11 @@
                                 <controls:LabeledImageButton Grid.Column="5" x:Name="lSimpleRepeatButton" LblText="Repeat" BtnLetter="A" BtnCtrl="True" ImgSourcePath="resource://GnollHackM.Assets.UI.repeat.png" BtnClicked="GHButton_Clicked" />
                                 <controls:LabeledImageButton Grid.Column="6" x:Name="lSimpleMoreButton" LblText="More" ImgSourcePath="resource://GnollHackM.Assets.UI.more.png" BtnClicked="MoreButton_Clicked" />
                             </Grid>
-                        </StackLayout>
+                        </gnh:MeasurableStackLayout>
                     </Grid>
                 </Grid>
             </Grid>
-            <Grid x:Name="MenuGrid" HorizontalOptions="Fill" VerticalOptions="Fill" BackgroundColor="#AA000000" IsVisible="False">
+            <gnh:MeasurableGrid x:Name="MenuGrid" HorizontalOptions="Fill" VerticalOptions="Fill" BackgroundColor="#AA000000" IsVisible="False">
                 <gnh:BackgroundView x:Name="MenuBackground" BackgroundStyle="Automatic" BackgroundBitmap="AutoMenuBackground" BorderStyle="Simple" HorizontalOptions="Fill" VerticalOptions="Fill"/>
                 <Grid x:Name="MenuStack" RowDefinitions="Auto,*,Auto" RowSpacing="6" ColumnSpacing="0" Margin="0" Padding="0" VerticalOptions="Fill" HorizontalOptions="Fill">
                     <StackLayout Grid.Row="0" Spacing="6" VerticalOptions="Start" HorizontalOptions="Fill" Orientation="Vertical"  BackgroundColor="Transparent">
@@ -252,20 +252,20 @@
                         <TapGestureRecognizer />
                     </Grid.GestureRecognizers>
                 </Grid>
-                <Grid.GestureRecognizers>
+                <gnh:MeasurableGrid.GestureRecognizers>
                     <TapGestureRecognizer />
-                </Grid.GestureRecognizers>
-            </Grid>
-            <Grid x:Name="TextGrid" HorizontalOptions="Fill" VerticalOptions="Fill" BackgroundColor="#AA000000" IsVisible="False">
+                </gnh:MeasurableGrid.GestureRecognizers>
+            </gnh:MeasurableGrid>
+            <gnh:MeasurableGrid x:Name="TextGrid" HorizontalOptions="Fill" VerticalOptions="Fill" BackgroundColor="#AA000000" IsVisible="False">
                 <gnh:BackgroundView x:Name="TextBackground"  BackgroundStyle="Automatic" BackgroundBitmap="AutoMenuBackground" BorderStyle="Small" HorizontalOptions="Fill" VerticalOptions="Fill"/>
                 <Grid x:Name="TextStack" HorizontalOptions="Fill" VerticalOptions="Fill">
                     <gnh:GHCachedImage x:Name="TextWindowGlyphImage" HorizontalOptions="End" VerticalOptions="Start" Margin="15" WidthRequest="75" HeightRequest="75" Aspect="AspectFit" />
                     <controls:SwitchableCanvasView x:Name="TextCanvas" UseGL="False" CanvasType="TextCanvas" RevertBlackAndWhite="True" UseTextOutline="False" HorizontalOptions="Fill" VerticalOptions="Fill" PaintSurface="TextCanvas_PaintSurface" Touch="TextCanvas_Touch" MouseWheel="TextCanvas_MouseWheel" EnableTouchEvents="True" />
                 </Grid>
-                <Grid.GestureRecognizers>
+                <gnh:MeasurableGrid.GestureRecognizers>
                     <TapGestureRecognizer />
-                </Grid.GestureRecognizers>
-            </Grid>
+                </gnh:MeasurableGrid.GestureRecognizers>
+            </gnh:MeasurableGrid>
             <Grid x:Name="GetLineGrid" HorizontalOptions="Fill" VerticalOptions="Fill" 
                          Padding="10" BackgroundColor="#66000000" IsVisible="False">
                 <controls:SimpleImageButton x:Name="GetLineMenuButton" IsVisible="False" ImgSourcePath="resource://GnollHackM.Assets.UI.wiki.png" WidthRequest="50" HeightRequest="50" 
@@ -364,7 +364,7 @@
                     <TapGestureRecognizer />
                 </Grid.GestureRecognizers>
             </Grid>
-            <Grid x:Name="MoreCommandsGrid" HorizontalOptions="Fill" VerticalOptions="Fill" BackgroundColor="#FF000000" IsVisible="False">
+            <gnh:MeasurableGrid x:Name="MoreCommandsGrid" HorizontalOptions="Fill" VerticalOptions="Fill" BackgroundColor="#FF000000" IsVisible="False">
                 <controls:SwitchableCanvasView x:Name="CommandCanvas" UseGL="False" CanvasType="CommandCanvas" HorizontalOptions="Fill" VerticalOptions="Fill" BackgroundColor="#FF000000"
                                                PaintSurface="CommandCanvas_PaintSurface" Touch="CommandCanvas_Touch" MouseWheel="CommandCanvas_MouseWheel" MousePointer="CommandCanvas_MousePointer"
                                                EnableTouchEvents="True" />
@@ -379,7 +379,7 @@
                 <Entry x:Name="MoreCommandsFilterEntry" FontFamily="Underwood" FontSize="14" TextColor="White" BackgroundColor="#FF111111" Placeholder="Search" PlaceholderColor="#FF666666"
                                    WidthRequest="120" Keyboard="Plain" HorizontalTextAlignment="Start" TextChanged="MoreCommandsFilterEntry_TextChanged" 
                                    HorizontalOptions="Start" VerticalOptions="End" Margin="5" />
-            </Grid>
+            </gnh:MeasurableGrid>
             <controls:SwitchableCanvasView x:Name="TipView" 
                                            IsVisible="False"
                                            UseGL="False"
@@ -463,7 +463,7 @@
                 </Grid>
             </Grid>
             <Border x:Name="FadeFrameAtStart" IsVisible="False" InputTransparent="True" BackgroundColor="Black" Stroke="Black" Padding="12,12" StrokeThickness="1" StrokeShape="Rectangle" HorizontalOptions="Fill" VerticalOptions="Fill" />
-            <Grid x:Name="LoadingGrid" HorizontalOptions="Fill" VerticalOptions="Fill" >
+            <gnh:MeasurableGrid x:Name="LoadingGrid" HorizontalOptions="Fill" VerticalOptions="Fill" >
                 <gnh:GHCachedImage Source="resource://GnollHackM.Assets.dgn_entrance.jpg" HorizontalOptions="Fill" VerticalOptions="Fill" 
                                 Aspect="AspectFill" CacheImage="False" />
                 <StackLayout Spacing="6" HeightRequest="150" WidthRequest="360" HorizontalOptions="Center" VerticalOptions="Center">
@@ -476,7 +476,7 @@
                     <ProgressBar x:Name="LoadingProgressBar" HorizontalOptions="Fill" VerticalOptions="Start" 
                                  ProgressColor="LightBlue" Progress="0" Margin="0,10" />
                 </StackLayout>
-            </Grid>
+            </gnh:MeasurableGrid>
         </Grid>
     
 </ContentPage>

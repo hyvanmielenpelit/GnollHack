@@ -11,13 +11,8 @@ using GnollHackX;
 #if GNH_MAUI
 using SkiaSharp.Views.Maui;
 using SkiaSharp.Views.Maui.Controls;
-using Microsoft.Maui.Controls;
-using static System.Collections.Specialized.BitVector32;
-
-
 
 #if WINDOWS
-using Microsoft.UI.Xaml;
 using Microsoft.UI.Input;
 #endif
 
@@ -105,6 +100,69 @@ namespace GnollHackX.Controls
             if(gpuAvailable)
             {
                 RootGrid.Children.Add(internalGLView);
+            }
+            lock (_propertyLock)
+            {
+                _threadSafeWidth = Width;
+                _threadSafeHeight = Height;
+                _threadSafeX = X;
+                _threadSafeY = Y;
+                _threadSafeIsVisible = IsVisible;
+                _threadSafeMargin = Margin;
+            }
+            SizeChanged += SwitchableCanvasView_SizeChanged;
+            PropertyChanged += SwitchableCanvasView_PropertyChanged;
+        }
+
+        private void SwitchableCanvasView_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(IsVisible))
+            {
+                ThreadSafeIsVisible = IsVisible;
+            }
+            else if (e.PropertyName == nameof(Width))
+            {
+                ThreadSafeWidth = Width;
+            }
+            else if (e.PropertyName == nameof(Height))
+            {
+                ThreadSafeWidth = Height;
+            }
+            else if (e.PropertyName == nameof(X))
+            {
+                ThreadSafeX = X;
+            }
+            else if (e.PropertyName == nameof(Y))
+            {
+                ThreadSafeY = Y;
+            }
+            else if (e.PropertyName == nameof(Margin))
+            {
+                ThreadSafeMargin = Margin;
+            }
+        }
+
+        private readonly object _propertyLock = new object();
+        private double _threadSafeWidth = 0;
+        private double _threadSafeHeight = 0;
+        private double _threadSafeX = 0;
+        private double _threadSafeY = 0;
+        private bool _threadSafeIsVisible = true;
+        private Thickness _threadSafeMargin = new Thickness();
+
+        public double ThreadSafeWidth { get { lock (_propertyLock) { return _threadSafeWidth; } } private set { lock (_propertyLock) { _threadSafeWidth = value; } } }
+        public double ThreadSafeHeight { get { lock (_propertyLock) { return _threadSafeHeight; } } private set { lock (_propertyLock) { _threadSafeHeight = value; } } }
+        public double ThreadSafeX { get { lock (_propertyLock) { return _threadSafeX; } } private set { lock (_propertyLock) { _threadSafeX = value; } } }
+        public double ThreadSafeY { get { lock (_propertyLock) { return _threadSafeY; } } private set { lock (_propertyLock) { _threadSafeY = value; } } }
+        public bool ThreadSafeIsVisible { get { lock (_propertyLock) { return _threadSafeIsVisible; } } private set { lock (_propertyLock) { _threadSafeIsVisible = value; } } }
+        public Thickness ThreadSafeMargin { get { lock (_propertyLock) { return _threadSafeMargin; } } private set { lock (_propertyLock) { _threadSafeMargin = value; } } }
+
+        private void SwitchableCanvasView_SizeChanged(object sender, EventArgs e)
+        {
+            lock (_propertyLock)
+            {
+                _threadSafeWidth = Width;
+                _threadSafeHeight = Height;
             }
         }
 
@@ -315,9 +373,9 @@ namespace GnollHackX.Controls
                     GHApp.CurrentGPUCacheSize = ResourceCacheLimit;
             }
 
-            SKImageInfo info = new SKImageInfo();
-            info.ColorType = e.ColorType;
-            SKPaintSurfaceEventArgs convargs = new SKPaintSurfaceEventArgs(e.Surface, info);
+            //SKImageInfo info = new SKImageInfo();
+            //info.ColorType = e.ColorType;
+            SKPaintSurfaceEventArgs convargs = new SKPaintSurfaceEventArgs(e.Surface, e.Info);
             PaintSurface?.Invoke(sender, convargs);
         }
 
@@ -446,10 +504,12 @@ namespace GnollHackX.Controls
         protected override void OnPropertyChanged(string propertyName = null)
         {
             base.OnPropertyChanged(propertyName);
-            if (!IsVisible || (_parentGrid != null && !_parentGrid.IsVisible))
-                return;
-            if (_gamePage != null)
+
+            if (_gamePage != null && propertyName == nameof(GeneralAnimationCounter))
             {
+                if (!IsVisible || (_parentGrid != null && !_parentGrid.IsVisible))
+                    return;
+
                 _tickCounter++;
                 _tickCounter = _tickCounter % GHConstants.MaxRefreshRate;
                 int auxRefreshRate = UIUtils.GetAuxiliaryCanvasAnimationFrequency();
@@ -530,9 +590,9 @@ namespace GnollHackX.Controls
 #if WINDOWS
         private void View_PointerWheelChanged(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e)
         {
-            if(sender is UIElement)
+            if(sender is Microsoft.UI.Xaml.UIElement)
             {
-                var delta = e.GetCurrentPoint((UIElement)sender).Properties.MouseWheelDelta;
+                var delta = e.GetCurrentPoint((Microsoft.UI.Xaml.UIElement)sender).Properties.MouseWheelDelta;
                 if (delta != 0)
                 {
                     MainThread.BeginInvokeOnMainThread(() =>

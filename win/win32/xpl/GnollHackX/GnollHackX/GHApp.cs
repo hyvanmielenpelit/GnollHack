@@ -137,7 +137,7 @@ namespace GnollHackX
             InitBaseCachedBitmaps();
             InitBaseButtonBitmaps();
 
-#if GNH_MAUI && ANDROID
+#if false // GNH_MAUI && ANDROID
             /* Switch off GPU once on Android on MAUI if it is already on, until Microsoft fixes SKGLView PaintSurface thread to be on the main thread */
             if(IsAndroid && !IsGPUDefault && !Preferences.Get("AndroidGPUCheckCompleted", false))
             {
@@ -931,7 +931,7 @@ namespace GnollHackX
             get
             {
 #if GNH_MAUI
-                return IsPackaged && !IsWindows && !IsAndroid;
+                return IsPackaged && !IsWindows; // && !IsAndroid;
 #else
                 return !HasUnstableGPU();
 #endif
