@@ -2082,7 +2082,7 @@ boolean bynexthere_container, bynexthere_obj;
     int cnt = 0;
     for (curr = objchn_container; curr; curr = (bynexthere_container ? curr->nexthere : curr->nobj))
     {
-        if (objects[curr->otyp].oc_name_known || (curr->cknown && Is_proper_container(curr)))
+        if (objects[curr->otyp].oc_name_known)
         {
             if (curr->otyp == BAG_OF_HOLDING && curr->bknown && !curr->cursed && no_cancellation_cnt > 0)
             {
@@ -2104,6 +2104,11 @@ boolean bynexthere_container, bynexthere_obj;
             {
                 cnt++;
             }
+        }
+        else if (curr->cknown && Is_proper_container(curr) && curr->bknown && !curr->cursed && no_cancellation_cnt > 0 && (objects[curr->otyp].oc_flags4 & (O4_CONTAINER_ACCEPTS_ONLY_SCROLLS_AND_BOOKS | O4_CONTAINER_ACCEPTS_ONLY_WEAPONS)) == 0)
+        {
+            /* Is a real container based on contents, but it may or may not be a magic bag, so we need to know that it is not cursed */
+            cnt++;
         }
     }
     return cnt;
