@@ -7431,7 +7431,8 @@ struct monst* mtmp;
     if (priest_action == 2)
     {
         play_monster_special_dialogue_line(mtmp, PRIEST_SPECIAL_DIALOGUE_PIOUS_INDIVIDUAL);
-        verbalize_ex(ATR_NONE, CLR_MSG_TALK_HAPPY, "Thou art indeed a pious individual.");
+        popup_talk_line_ex(mtmp, "Thou art indeed a pious individual.", ATR_NONE, CLR_MSG_TALK_HAPPY, TRUE, TRUE);
+        //verbalize_ex(ATR_NONE, CLR_MSG_TALK_HAPPY, "Thou art indeed a pious individual.");
         if (coaligned && u.ualign.record <= ALGN_SINNED)
         {
             play_sfx_sound(SFX_ALTAR_ADD_ALIGNMENT);
@@ -7439,7 +7440,8 @@ struct monst* mtmp;
         }
         play_sfx_sound(SFX_PRAY_BLESS_WATER);
         play_monster_special_dialogue_line(mtmp, PRIEST_SPECIAL_DIALOGUE_BESTOW_BLESSING);
-        verbalize_ex(ATR_NONE, CLR_MSG_TALK_HAPPY, "I bestow upon thee a blessing.");
+        popup_talk_line_ex(mtmp, "I bestow upon thee a blessing.", ATR_NONE, CLR_MSG_TALK_HAPPY, TRUE, TRUE);
+        //verbalize_ex(ATR_NONE, CLR_MSG_TALK_HAPPY, "I bestow upon thee a blessing.");
         incr_itimeout(&HClairvoyant, rn1(500, 500));
         refresh_u_tile_gui_info(TRUE);
     }
@@ -7454,7 +7456,8 @@ struct monst* mtmp;
     {
         play_sfx_sound(SFX_ALTAR_GIFT);
         play_monster_special_dialogue_line(mtmp, PRIEST_SPECIAL_DIALOGUE_DEVOTION_REWARDED);
-        verbalize_ex(ATR_NONE, CLR_MSG_TALK_HAPPY, "Thy devotion has been rewarded.");
+        popup_talk_line_ex(mtmp, "Thy devotion has been rewarded.", ATR_NONE, CLR_MSG_TALK_HAPPY, TRUE, TRUE);
+        //verbalize_ex(ATR_NONE, CLR_MSG_TALK_HAPPY, "Thy devotion has been rewarded.");
         if (u.ublessed == 0)
             u.ublessed = rnd(3);
         else
@@ -7463,7 +7466,8 @@ struct monst* mtmp;
     else
     {
         play_monster_special_dialogue_line(mtmp, PRIEST_SPECIAL_DIALOGUE_GENEROSITY_APPRECIATED);
-        verbalize_ex(ATR_NONE, CLR_MSG_TALK_HAPPY, "Thy selfless generosity is deeply appreciated.");
+        popup_talk_line_ex(mtmp, "Thy selfless generosity is deeply appreciated.", ATR_NONE, CLR_MSG_TALK_HAPPY, TRUE, TRUE);
+        //verbalize_ex(ATR_NONE, CLR_MSG_TALK_HAPPY, "Thy selfless generosity is deeply appreciated.");
         if (coaligned)
         {
             if (strayed && (moves - u.ucleansed) > 5000L)
@@ -8789,13 +8793,14 @@ struct monst* mtmp;
     if (is_peaceful(mtmp))
     {
         play_monster_special_dialogue_line(mtmp, QUANTUM_MECHANIC_LINE_THANK_YOU_FOR_YOUR_SUPPOORT);
-        pline("%s thanks you for your support.", noittame_Monnam(mtmp));
-
+        popup_talk_line(mtmp, "Thank you for your support.");
+        //pline("%s thanks you for your support.", noittame_Monnam(mtmp));
     }
     else
     {
         play_monster_special_dialogue_line(mtmp, QUANTUM_MECHANIC_LINE_THATS_NOT_WHAT_I_WAS_EXPECTING);
         pline("%s seems mysteriously disappointed.", noittame_Monnam(mtmp));
+        popup_talk_line(mtmp, "That's not what I was expecting.");
     }
 
     stop_all_dialogue_of_mon_on_mobile(mtmp);
@@ -8830,8 +8835,9 @@ struct monst* mtmp;
     if (mtmp->mspec_used)
     {
         play_monster_special_dialogue_line(mtmp, QUANTUM_MECHANIC_LINE_WAVE_FUNCTION_ALREADY_COLLAPSED);
-        pline("%s explains something about your wave function having already collapsed.", noittame_Monnam(mtmp));
-        pline1("It all sounds pretty serious!");
+        popup_talk_line(mtmp, "Unfortunately, it looks like your wave function has already collapsed."); // , noittame_Monnam(mtmp));
+        pline_ex1(ATR_NONE, CLR_MSG_HINT, "It all sounds pretty serious!");
+        stop_all_dialogue_of_mon_on_mobile(mtmp);
         return 0;
     }
 
@@ -8883,7 +8889,7 @@ struct monst* mtmp;
         play_sfx_sound(SFX_BUY_FROM_NPC);
     }
     play_monster_special_dialogue_line(mtmp, QUANTUM_MECHANIC_LINE_POSITION_EXACTLY_WHERE_YOU_ARE);
-    pline("%s tells that your position was observed to be exactly where you are.", noittame_Monnam(mtmp));
+    popup_talk_line(mtmp, "Your position is exactly where you are.");
 
     stop_all_dialogue_of_mon_on_mobile(mtmp);
     return 1;
@@ -8916,8 +8922,10 @@ struct monst* mtmp;
     if (mtmp->mspec_used)
     {
         play_monster_special_dialogue_line(mtmp, QUANTUM_MECHANIC_LINE_WAVE_FUNCTION_ALREADY_COLLAPSED);
-        pline("%s explains something about your wave function having already collapsed.", noittame_Monnam(mtmp));
-        pline1("It all sounds pretty serious!");
+        //pline("%s explains something about your wave function having already collapsed.", noittame_Monnam(mtmp));
+        //pline1("It all sounds pretty serious!");
+        popup_talk_line(mtmp, "Unfortunately, it looks like your wave function has already collapsed."); // , noittame_Monnam(mtmp));
+        pline_ex1(ATR_NONE, CLR_MSG_HINT, "It all sounds pretty serious!");
         return 0;
     }
 
@@ -8960,7 +8968,8 @@ struct monst* mtmp;
     if (canspotmon(mtmp) && m_canseeu(mtmp))
     {
         play_monster_special_dialogue_line(mtmp, QUANTUM_MECHANIC_LINE_SPEED_IS_ZERO);
-        pline("%s tells that your speed was observed to be zero.", noittame_Monnam(mtmp));
+        //pline("%s tells that your speed was observed to be zero.", noittame_Monnam(mtmp));
+        popup_talk_line(mtmp, "Your speed is exactly zero.");
     }
 
     stop_all_dialogue_of_mon_on_mobile(mtmp);
@@ -9208,7 +9217,7 @@ struct monst* mtmp;
         return 0;
     else if (mvitals[PM_WATCHMAN].died > 0 || mvitals[PM_WATCH_CAPTAIN].died > 0) {
         play_monster_special_dialogue_line(mtmp, WATCHMAN_LINE_YOU_WILL_HANG_FOR_YOUR_CRIMES_SCUM);
-        verbalize_ex(ATR_NONE, CLR_MSG_TALK_ANGRY, "You will hang for your crimes, scum!");
+        popup_talk_line_ex(mtmp, "You will hang for your crimes, scum!", ATR_NONE, CLR_MSG_TALK_ANGRY, TRUE, TRUE);
         return 0;
     }
     else if (mtmp->mhp < (3 * mtmp->mhpmax) / 4) {
@@ -9249,12 +9258,12 @@ struct monst* mtmp;
     if (is_peaceful(mtmp))
     {
         play_monster_special_dialogue_line(mtmp, WATCHMAN_LINE_FINE_ITS_ALRIGHT_NOW_BE_MORE_CAREFUL_NEXT_TIME);
-        verbalize_ex(ATR_NONE, CLR_MSG_TALK_HAPPY, "Fine, it's alright now. Be more careful next time.");
+        popup_talk_line_ex(mtmp,"Fine, it's alright now. Be more careful next time.", ATR_NONE, CLR_MSG_TALK_HAPPY, TRUE, TRUE);
     }
     else
     {
         play_monster_special_dialogue_line(mtmp, WATCHMAN_LINE_ON_SECOND_THOUGHT_MAYBE_ILL_HANG_YOU_ANYWAY);
-        verbalize_ex(ATR_NONE, CLR_MSG_TALK_ANGRY, "On second thought, maybe I'll hang you anyway.");
+        popup_talk_line_ex(mtmp, "On second thought, maybe I'll hang you anyway.", ATR_NONE, CLR_MSG_TALK_ANGRY, TRUE, TRUE);
     }
 
     stop_all_dialogue_of_mon_on_mobile(mtmp);
