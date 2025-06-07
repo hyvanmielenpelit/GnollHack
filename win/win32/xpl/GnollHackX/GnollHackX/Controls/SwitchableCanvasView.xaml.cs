@@ -373,9 +373,15 @@ namespace GnollHackX.Controls
                     GHApp.CurrentGPUCacheSize = ResourceCacheLimit;
             }
 
-            //SKImageInfo info = new SKImageInfo();
-            //info.ColorType = e.ColorType;
+#if GNH_MAUI
             SKPaintSurfaceEventArgs convargs = new SKPaintSurfaceEventArgs(e.Surface, e.Info);
+#else
+            SKImageInfo info = new SKImageInfo();
+            info.ColorType = e.ColorType;
+            info.Width = e.BackendRenderTarget?.Width ?? 0;
+            info.Height = e.BackendRenderTarget?.Height ?? 0;
+            SKPaintSurfaceEventArgs convargs = new SKPaintSurfaceEventArgs(e.Surface, info);
+#endif
             PaintSurface?.Invoke(sender, convargs);
         }
 
