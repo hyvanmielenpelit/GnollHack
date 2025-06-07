@@ -118,6 +118,8 @@ namespace GnollHackX
                 }
             }
             _mapDataCurrent = _mapDataBuffer1;
+            _objectDataCurrent = _objectDataBuffer1;
+
             _gamePage = gamePage;
             if(_gamePage != null)
                 _useLongerMessageHistory = _gamePage.LongerMessageHistory;
@@ -2085,7 +2087,7 @@ namespace GnollHackX
                 lock (_mapDataBufferLock)
                 {
                     CheckUpdateCurrentMapBufferUnlocked();
-                    if (_objectDataMaster[x, y] != null && _objectDataCurrent[x, y] != null)
+                    if (_objectDataMaster[x, y] != null && _objectDataCurrent != null && _objectDataCurrent[x, y] != null)
                     {
                         bool is_memoryobj = (where == (int)obj_where_types.OBJ_HEROMEMORY);
                         bool is_drawn_in_front = (oflags & (ulong)objdata_flags.OBJDATA_FLAGS_DRAWN_IN_FRONT) != 0UL;
