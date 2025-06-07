@@ -1509,10 +1509,10 @@ MONSTER:'z',random
 MONSTER:'z',random
 MONSTER:'z',random
 MONSTER:'V',random
-MONSTER:'e',random
-MONSTER:'e',random
-MONSTER:'e',random
-MONSTER:'e',random
+MONSTER:'V',random
+MONSTER:'V',random
+MONSTER:'Z',random
+MONSTER:'Z',random
 
 
 # end mines.des
