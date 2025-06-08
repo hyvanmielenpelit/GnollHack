@@ -10,10 +10,14 @@
     
         <Grid x:Name="RootGrid" HorizontalOptions="Fill" VerticalOptions="Fill">
             <gnh:BackgroundView x:Name="bkgView" BackgroundStyle="Automatic" BackgroundBitmap="AutoMenuBackground" BorderStyle="Simple" HorizontalOptions="Fill" VerticalOptions="Fill"/>
-            <StackLayout x:Name="MainLayout" Spacing="6" MaximumWidthRequest="400" HorizontalOptions="Fill" VerticalOptions="Fill">
-                <Label x:Name="lblHeader" Text="Menu" FontSize="23" FontAttributes="Bold" FontFamily="Diablo" TextColor="Black"
+            <Grid x:Name="MainLayout" RowSpacing="6" MaximumWidthRequest="400" HorizontalOptions="Fill" VerticalOptions="Fill">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <Label Grid.Row="0" x:Name="lblHeader" Text="Menu" FontSize="23" FontAttributes="Bold" FontFamily="Diablo" TextColor="Black"
                     HorizontalOptions="Center" Margin="0,10,0,20" />
-                <ScrollView x:Name="GameMenuScrollView" HorizontalOptions="Center" VerticalOptions="Fill" BackgroundColor="Transparent">
+                <ScrollView Grid.Row="1" x:Name="GameMenuScrollView" HorizontalOptions="Fill" VerticalOptions="Fill" BackgroundColor="Transparent">
                     <StackLayout HorizontalOptions="Fill" Orientation="Vertical" Spacing="2">
                         <controls:CustomImageButton x:Name="btnSave" Margin="0,0,0,20" Text="Save &amp; Exit Game" WidthRequest="320" HeightRequest="50" FontFamily="Diablo" BackgroundColor="Transparent" TextColor="#FFDDFFDD"
                                         HorizontalOptions="Center" VerticalOptions="Center"  Clicked="btnSave_Clicked" UseVaryingBackgroundImages ="True" />
@@ -41,7 +45,7 @@
                                         HorizontalOptions="Center" VerticalOptions="Center"  Clicked="btnBackToGame_Clicked" UseVaryingBackgroundImages ="True" />
                     </StackLayout>
                 </ScrollView>
-            </StackLayout>
+            </Grid>
         </Grid>
     
 </ContentPage>
