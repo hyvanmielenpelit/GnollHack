@@ -2416,10 +2416,15 @@ struct monst* mtmp;
     int i = '\0';
     int result = 0;
     boolean stopsdialogue = FALSE;
+    boolean firsttime = TRUE;
     stop_chat = FALSE;
     do
     {
-        stop_all_dialogue_of_mon_on_mobile(mtmp);
+        if (!firsttime)
+        {
+            stop_all_dialogue_of_mon_on_mobile(mtmp);
+            firsttime = FALSE;
+        }
 
         i = '\0';
         memset(available_chat_list, 0, sizeof(available_chat_list));

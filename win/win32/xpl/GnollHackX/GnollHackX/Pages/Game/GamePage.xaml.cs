@@ -4822,7 +4822,7 @@ namespace GnollHackX.Pages.Game
                     SKRect smaller_rect = new SKRect();
                     SKRect even_smaller_rect = new SKRect();
                     smaller_rect.Bottom = ty + height;
-                    smaller_rect.Top = ty + height - Math.Max(1, (height) / 12);
+                    smaller_rect.Top = ty + height - Math.Max(1f, (height) / 12);
                     smaller_rect.Left = tx;
                     smaller_rect.Right = tx + width;
                     even_smaller_rect.Bottom = smaller_rect.Bottom - 1 * targetscale;
@@ -14280,7 +14280,7 @@ namespace GnollHackX.Pages.Game
                     newfontsize = GHConstants.MinimumMapFontSize;
             }
 
-            float newratio = newfontsize / Math.Max(1, curfontsize);
+            float newratio = newfontsize / Math.Max(1f, curfontsize);
             float mapFontAscent = UsedMapFontAscent;
             if (ZoomMiniMode)
                 MapFontMiniRelativeSize = newfontsize;
@@ -15465,7 +15465,7 @@ namespace GnollHackX.Pages.Game
                 }
                 y = curmenuoffset;
                 double menumarginx = MenuCanvas.MenuButtonStyle ? 30.0 : 15.0;
-                double menuwidth = Math.Max(1, Math.Min(MenuCanvas.Width - menumarginx * 2, UIUtils.MenuViewWidthRequest(referenceCanvasView.MenuStyle) * customScale));
+                double menuwidth = Math.Max(1.0, Math.Min(MenuCanvas.Width - menumarginx * 2, UIUtils.MenuViewWidthRequest(referenceCanvasView.MenuStyle) * customScale));
                 float menuwidthoncanvas = (float)(menuwidth * scale);
                 float leftmenupadding = Math.Max(0, (canvaswidth - menuwidthoncanvas) / 2);
                 float rightmenupadding = leftmenupadding;
@@ -17274,7 +17274,7 @@ namespace GnollHackX.Pages.Game
                 }
                 y += curmenuoffset;
                 double canvasmaxwidth = TextCanvas.GHWindow != null ? TextCanvas.GHWindow.TextWindowMaximumWidth : GHConstants.DefaultTextWindowMaxWidth;
-                double menuwidth = Math.Max(1, Math.Min(TextCanvas.Width, canvasmaxwidth) * customScale);
+                double menuwidth = Math.Max(1.0, Math.Min(TextCanvas.Width, canvasmaxwidth) * customScale);
                 float menuwidthoncanvas = (float)(menuwidth * scale);
                 float leftmenupadding = Math.Max(0, (canvaswidth - menuwidthoncanvas) / 2);
                 float rightmenupadding = leftmenupadding;
@@ -17710,7 +17710,7 @@ namespace GnollHackX.Pages.Game
             SKCanvas canvas = surface.Canvas;
             float canvaswidth = e.Info.Width; // CommandCanvas.CanvasSize.Width;
             float canvasheight = e.Info.Height; // CommandCanvas.CanvasSize.Height;
-            float scale = canvaswidth / Math.Max(1, (float)CommandCanvas.ThreadSafeWidth);
+            float scale = canvaswidth / Math.Max(1f, (float)CommandCanvas.ThreadSafeWidth);
             bool isLandscape = canvaswidth > canvasheight;
 
             canvas.Clear(SKColors.Black);
@@ -18240,13 +18240,13 @@ namespace GnollHackX.Pages.Game
                 textPaint.Typeface = GHApp.LatoRegular;
                 textPaint.TextSize = 36;
                 textPaint.MeasureText(str, ref bounds);
-                float fontsize = Math.Min(48, 36 * 0.18f / Math.Max(0.01f, (bounds.Width / Math.Max(1, Math.Min(canvaswidth, canvasheight)))));
+                float fontsize = Math.Min(48, 36 * 0.18f / Math.Max(0.01f, (bounds.Width / Math.Max(1f, Math.Min(canvaswidth, canvasheight)))));
 
                 str = "This is an explanation.";
                 textPaint.Typeface = GHApp.UnderwoodTypeface;
                 textPaint.TextSize = 36;
                 textPaint.MeasureText(str, ref bounds);
-                float centerfontsize = Math.Min(72, 36 * 0.62f / Math.Max(0.01f, (bounds.Width / Math.Max(1, Math.Min(canvaswidth, canvasheight)))));
+                float centerfontsize = Math.Min(72, 36 * 0.62f / Math.Max(0.01f, (bounds.Width / Math.Max(1f, Math.Min(canvaswidth, canvasheight)))));
 
                 float scale_canvas = 1.0f;
                 float target_scale_canvas = 1.0f;
@@ -18262,7 +18262,7 @@ namespace GnollHackX.Pages.Game
                         textPaint.Typeface = GHApp.ARChristyTypeface;
                         str = "Welcome to GnollHack";
                         textPaint.MeasureText(str, ref bounds);
-                        scale_canvas = bounds.Width / Math.Max(1, Math.Min(canvaswidth, canvasheight)); //Math.Max(bounds.Width / canvaswidth, bounds.Height / canvasheight);
+                        scale_canvas = bounds.Width / Math.Max(1f, Math.Min(canvaswidth, canvasheight)); //Math.Max(bounds.Width / canvaswidth, bounds.Height / canvasheight);
                         target_scale_canvas = 0.8f;
                         mult_canvas = target_scale_canvas / scale_canvas;
                         textPaint.TextSize = textPaint.TextSize * mult_canvas;
@@ -18284,7 +18284,7 @@ namespace GnollHackX.Pages.Game
                         textPaint.Typeface = GHApp.UnderwoodTypeface;
                         str = "Let's review the user interface";
                         textPaint.MeasureText(str, ref bounds);
-                        scale_canvas = bounds.Width / Math.Max(1, Math.Min(canvaswidth, canvasheight)); //Math.Max(bounds.Width / canvaswidth, bounds.Height / canvasheight);
+                        scale_canvas = bounds.Width / Math.Max(1f, Math.Min(canvaswidth, canvasheight)); //Math.Max(bounds.Width / canvaswidth, bounds.Height / canvasheight);
                         target_scale_canvas = 0.8f;
                         mult_canvas = target_scale_canvas / scale_canvas;
                         textPaint.TextSize = textPaint.TextSize * mult_canvas;
@@ -18344,7 +18344,7 @@ namespace GnollHackX.Pages.Game
                         textPaint.Typeface = GHApp.ARChristyTypeface;
                         str = "You are all set";
                         textPaint.MeasureText(str, ref bounds);
-                        scale_canvas = bounds.Width / Math.Max(1, Math.Min(canvaswidth, canvasheight)); //Math.Max(bounds.Width / canvaswidth, bounds.Height / canvasheight);
+                        scale_canvas = bounds.Width / Math.Max(1f, Math.Min(canvaswidth, canvasheight)); //Math.Max(bounds.Width / canvaswidth, bounds.Height / canvasheight);
                         target_scale_canvas = 0.8f;
                         mult_canvas = target_scale_canvas / scale_canvas;
                         textPaint.TextSize = textPaint.TextSize * mult_canvas;
@@ -18366,7 +18366,7 @@ namespace GnollHackX.Pages.Game
                         textPaint.Typeface = GHApp.UnderwoodTypeface;
                         str = GHApp.GetClickTapWord(true, false) + " to start playing";
                         textPaint.MeasureText(str, ref bounds);
-                        scale_canvas = bounds.Width / Math.Max(1, Math.Min(canvaswidth, canvasheight)); //Math.Max(bounds.Width / canvaswidth, bounds.Height / canvasheight);
+                        scale_canvas = bounds.Width / Math.Max(1f, Math.Min(canvaswidth, canvasheight)); //Math.Max(bounds.Width / canvaswidth, bounds.Height / canvasheight);
                         target_scale_canvas = 0.8f;
                         mult_canvas = target_scale_canvas / scale_canvas;
                         textPaint.TextSize = textPaint.TextSize * mult_canvas;
