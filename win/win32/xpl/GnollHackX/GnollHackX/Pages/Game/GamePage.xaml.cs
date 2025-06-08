@@ -10527,10 +10527,13 @@ namespace GnollHackX.Pages.Game
                                         float pet_hp_size = textPaint.TextSize * pet_hp_target_height / textPaint.FontSpacing;
                                         float pet_target_width = pet_target_height;
 
-                                        SKRect menubuttonrect = GetViewScreenRect(UseSimpleCmdLayout ? SimpleGameMenuButton : GameMenuButton);
-                                        SKRect canvasrect = GetViewScreenRect(canvasView);
-                                        SKRect adjustedrect = new SKRect(menubuttonrect.Left - canvasrect.Left, menubuttonrect.Top - canvasrect.Top, menubuttonrect.Right - canvasrect.Left, menubuttonrect.Bottom - canvasrect.Top);
-                                        float menu_button_left = adjustedrect.Left;
+                                        //SKRect menubuttonrect = GetViewScreenRect(UseSimpleCmdLayout ? SimpleGameMenuButton : GameMenuButton);
+                                        //SKRect canvasrect = GetViewScreenRect(canvasView);
+                                        //SKRect adjustedrect = new SKRect(menubuttonrect.Left - canvasrect.Left, menubuttonrect.Top - canvasrect.Top, menubuttonrect.Right - canvasrect.Left, menubuttonrect.Bottom - canvasrect.Top);
+                                        //float menu_button_left = adjustedrect.Left;
+                                        float menu_button_left = (float)(UseSimpleCmdLayout ? UIGrid.ThreadSafeX + SimpleUpperCmdLayout.ThreadSafeX + SimpleGameMenuLayout.ThreadSafeX + SimpleGameMenuButton.ThreadSafeX
+                                            : UIGrid.ThreadSafeX + UpperCmdLayout.ThreadSafeX + GameMenuLayout.ThreadSafeX + GameMenuButton.ThreadSafeX)
+                                            * inverse_canvas_scale;
                                         float pet_tx_start = orbleft + orbbordersize * 1.1f;
                                         tx = pet_tx_start;
                                         ty = statusbarheight + 5.0f;

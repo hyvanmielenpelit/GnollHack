@@ -31,19 +31,19 @@
                                    WidthRequest="200" Keyboard="Plain" HorizontalTextAlignment="Center" TextChanged="MessageFilterEntry_TextChanged" />
                     </StackLayout>
                 </Border>
-                <Grid x:Name="UIGrid" Grid.Row="0" RowSpacing="0" ColumnSpacing="0" InputTransparent="True" CascadeInputTransparent="False" HorizontalOptions="Fill" VerticalOptions="Fill">
-                    <Grid.RowDefinitions>
+                <gnh:MeasurableGrid x:Name="UIGrid" Grid.Row="0" RowSpacing="0" ColumnSpacing="0" InputTransparent="True" CascadeInputTransparent="False" HorizontalOptions="Fill" VerticalOptions="Fill">
+                    <gnh:MeasurableGrid.RowDefinitions>
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="*" />
                         <RowDefinition Height="Auto" />
-                    </Grid.RowDefinitions>
+                    </gnh:MeasurableGrid.RowDefinitions>
                     <gnh:MeasurableStackLayout Grid.Row="0" x:Name="UpperCmdLayout" IsVisible="True" Orientation="Vertical" InputTransparent="true" CascadeInputTransparent="false" Spacing="6" HorizontalOptions="End">
-                        <StackLayout x:Name="GameMenuLayout" Padding="0" Orientation="Horizontal" Spacing="6"
+                        <gnh:MeasurableStackLayout x:Name="GameMenuLayout" Padding="0" Orientation="Horizontal" Spacing="6"
                             HorizontalOptions="End" VerticalOptions="Start" BackgroundColor="Transparent" >
                             <controls:SimpleImageButton x:Name="GameMenuButton" ImgSourcePath="resource://GnollHackM.Assets.UI.stone-menu.png" BtnClicked="GameMenuButton_Clicked"/>
                             <controls:SimpleImageButton x:Name="ESCButton" ImgSourcePath="resource://GnollHackM.Assets.UI.stone-cancel.png" BtnClicked="ESCButton_Clicked"/>
                             <controls:SimpleImageButton x:Name="ToggleAutoCenterModeButton" ImgSourcePath="resource://GnollHackM.Assets.UI.stone-autocenter-on.png" BtnClicked="ToggleAutoCenterModeButton_Clicked"/>
-                        </StackLayout>
+                        </gnh:MeasurableStackLayout>
                         <StackLayout x:Name="ModeLayout" Padding="0" Orientation="Vertical" Spacing="6"
                             HorizontalOptions="End" BackgroundColor="Transparent" >
                             <StackLayout x:Name="ModeSubLayout1" Padding="0" Orientation="Vertical" Spacing="6"
@@ -60,11 +60,11 @@
                     </gnh:MeasurableStackLayout>
                     <gnh:MeasurableStackLayout Grid.Row="0" x:Name="SimpleUpperCmdLayout" IsVisible="True" Orientation="Vertical" InputTransparent="true" CascadeInputTransparent="false" Spacing="6"
                         HorizontalOptions="End">
-                        <StackLayout x:Name="SimpleGameMenuLayout" Padding="0" Orientation="Horizontal" Spacing="6"
+                        <gnh:MeasurableStackLayout x:Name="SimpleGameMenuLayout" Padding="0" Orientation="Horizontal" Spacing="6"
                             HorizontalOptions="End" VerticalOptions="Start" BackgroundColor="Transparent" >
                             <controls:SimpleImageButton x:Name="SimpleGameMenuButton" ImgSourcePath="resource://GnollHackM.Assets.UI.stone-menu.png" BtnClicked="GameMenuButton_Clicked"/>
                             <controls:SimpleImageButton x:Name="SimpleESCButton" ImgSourcePath="resource://GnollHackM.Assets.UI.stone-cancel.png" BtnClicked="ESCButton_Clicked"/>
-                        </StackLayout>
+                        </gnh:MeasurableStackLayout>
                         <StackLayout x:Name="SimpleModeLayout" Padding="0" Orientation="Vertical" Spacing="6"
                             HorizontalOptions="End" BackgroundColor="Transparent" >
                             <StackLayout x:Name="SimpleModeSubLayout1" Padding="0" Orientation="Vertical" Spacing="6"
@@ -156,7 +156,7 @@
                             </Grid>
                         </gnh:MeasurableStackLayout>
                     </Grid>
-                </Grid>
+                </gnh:MeasurableGrid>
             </Grid>
             <gnh:MeasurableGrid x:Name="MenuGrid" HorizontalOptions="Fill" VerticalOptions="Fill" BackgroundColor="#AA000000" IsVisible="False">
                 <gnh:BackgroundView x:Name="MenuBackground" BackgroundStyle="Automatic" BackgroundBitmap="AutoMenuBackground" BorderStyle="Simple" HorizontalOptions="Fill" VerticalOptions="Fill"/>
