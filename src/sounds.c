@@ -6548,7 +6548,7 @@ struct monst* mtmp;
         stop_all_dialogue_of_mon_on_mobile(mtmp);
         return 1;
     }
-    stop_all_dialogue_of_mon_on_mobile(mtmp);
+    //stop_all_dialogue_of_mon_on_mobile(mtmp);
     return 0;
 }
 
@@ -9022,8 +9022,8 @@ struct monst* mtmp;
         if (umoney < reconcile_cost) {
             play_sfx_sound(SFX_NOT_ENOUGH_MONEY);
             You_ex1_popup("don't have enough money for that!", "Not Enough Money", ATR_NONE, CLR_MSG_FAIL, NO_GLYPH, POPUP_FLAGS_NONE);
-            return 0;
             stop_all_dialogue_of_mon_on_mobile(mtmp);
+            return 0;
         }
         u_pay = reconcile_cost;
         break;
