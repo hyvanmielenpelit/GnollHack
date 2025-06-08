@@ -786,6 +786,9 @@ namespace GnollHackX
         {
             RecordFunctionCall(RecordedFunctionID.Curs, winHandle, x, y);
 
+            if (winHandle < 0 || winHandle >= GHConstants.MaxGHWindows)
+                return;
+
             GHWindow gHWindow = _ghWindows[winHandle];
             ////lock (_ghWindowsLock)
             //{
