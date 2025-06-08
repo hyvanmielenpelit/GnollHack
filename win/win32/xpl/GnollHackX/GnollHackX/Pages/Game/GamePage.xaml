@@ -72,10 +72,10 @@
                                 <controls:SimpleImageButton x:Name="SimpleToggleAutoCenterModeButton" ImgSourcePath="resource://GnollHackX.Assets.UI.stone-autocenter-on.png" BtnClicked="ToggleAutoCenterModeButton_Clicked"/>
                                 <controls:SimpleImageButton x:Name="SimpleToggleZoomMiniButton" ImgSourcePath="resource://GnollHackX.Assets.UI.stone-minimap-off.png" BtnClicked="ToggleZoomMiniButton_Clicked"/>
                             </gnh:MeasurableStackLayout>
-                            <StackLayout x:Name="SimpleModeSubLayout2" Padding="0" Orientation="Vertical" Spacing="6"
+                            <gnh:MeasurableStackLayout x:Name="SimpleModeSubLayout2" Padding="0" Orientation="Vertical" Spacing="6"
                                 HorizontalOptions="End" BackgroundColor="Transparent" >
                                 <controls:SimpleImageButton x:Name="SimpleLookModeButton" ImgSourcePath="resource://GnollHackX.Assets.UI.stone-look-off.png" BtnClicked="LookModeButton_Clicked"/>
-                            </StackLayout>
+                            </gnh:MeasurableStackLayout>
                         </gnh:MeasurableStackLayout>
                     </gnh:MeasurableStackLayout>
                     <!--<FlexLayout Grid.Row="1" x:Name="ContextLayout" InputTransparent="True" CascadeInputTransparent="False" Padding="0,2" Direction="Column" Wrap="Reverse" 
