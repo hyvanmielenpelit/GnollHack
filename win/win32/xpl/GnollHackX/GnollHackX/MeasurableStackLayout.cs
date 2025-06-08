@@ -10,7 +10,7 @@ using Xamarin.Forms;
 namespace GnollHackX
 #endif
 {
-    public class MeasurableStackLayout : StackLayout
+    public class MeasurableStackLayout : StackLayout, IThreadSafeView
     {
         public MeasurableStackLayout() : base()
         {
@@ -24,6 +24,10 @@ namespace GnollHackX
                 _threadSafeY = Y;
                 _threadSafeIsVisible = IsVisible;
                 _threadSafeMargin = Margin;
+                if (Parent == null || !(Parent is IThreadSafeView))
+                    _threadSafeParent = null;
+                else
+                    _threadSafeParent = new WeakReference<IThreadSafeView>((IThreadSafeView)Parent);
             }
         }
 
@@ -62,6 +66,13 @@ namespace GnollHackX
             {
                 ThreadSafeMargin = Margin;
             }
+            else if (e.PropertyName == nameof(Parent))
+            {
+                if (Parent == null || !(Parent is IThreadSafeView))
+                    ThreadSafeParent = null;
+                else
+                    ThreadSafeParent = new WeakReference<IThreadSafeView>((IThreadSafeView)Parent);
+            }
         }
 
         private readonly object _propertyLock = new object();
@@ -71,6 +82,7 @@ namespace GnollHackX
         private double _threadSafeY = 0;
         private bool _threadSafeIsVisible = true;
         private Thickness _threadSafeMargin = new Thickness();
+        WeakReference<IThreadSafeView> _threadSafeParent = null;
 
         public double ThreadSafeWidth { get { lock (_propertyLock) { return _threadSafeWidth; } } private set { lock (_propertyLock) { _threadSafeWidth = value; } } }
         public double ThreadSafeHeight { get { lock (_propertyLock) { return _threadSafeHeight; } } private set { lock (_propertyLock) { _threadSafeHeight = value; } } }
@@ -78,6 +90,7 @@ namespace GnollHackX
         public double ThreadSafeY { get { lock (_propertyLock) { return _threadSafeY; } } private set { lock (_propertyLock) { _threadSafeY = value; } } }
         public bool ThreadSafeIsVisible { get { lock (_propertyLock) { return _threadSafeIsVisible; } } private set { lock (_propertyLock) { _threadSafeIsVisible = value; } } }
         public Thickness ThreadSafeMargin { get { lock (_propertyLock) { return _threadSafeMargin; } } private set { lock (_propertyLock) { _threadSafeMargin = value; } } }
+        public WeakReference<IThreadSafeView> ThreadSafeParent { get { lock (_propertyLock) { return _threadSafeParent; } } private set { lock (_propertyLock) { _threadSafeParent = value; } } }
 
     }
 }

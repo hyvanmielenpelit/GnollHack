@@ -16,7 +16,7 @@ namespace GnollHackX.Controls
 #endif
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class LabeledImageButton : ContentView
+    public partial class LabeledImageButton : ContentView, IThreadSafeView
     {
         public static readonly BindableProperty LblTextProperty = BindableProperty.Create(nameof(LblText), typeof(string), typeof(LabeledImageButton), string.Empty);
         public static readonly BindableProperty LblFontSizeProperty = BindableProperty.Create(nameof(LblFontSize), typeof(double), typeof(LabeledImageButton), 9.0);
@@ -152,6 +152,7 @@ namespace GnollHackX.Controls
         private double _threadSafeY = 0;
         private bool _threadSafeIsVisible = true;
         private Thickness _threadSafeMargin = new Thickness();
+        WeakReference<IThreadSafeView> _threadSafeParent = null;
 
         public double ThreadSafeWidth { get { lock (_propertyLock) { return _threadSafeWidth; } } private set { lock (_propertyLock) { _threadSafeWidth = value; } } }
         public double ThreadSafeHeight { get { lock (_propertyLock) { return _threadSafeHeight; } } private set { lock (_propertyLock) { _threadSafeHeight = value; } } }
@@ -159,6 +160,7 @@ namespace GnollHackX.Controls
         public double ThreadSafeY { get { lock (_propertyLock) { return _threadSafeY; } } private set { lock (_propertyLock) { _threadSafeY = value; } } }
         public bool ThreadSafeIsVisible { get { lock (_propertyLock) { return _threadSafeIsVisible; } } private set { lock (_propertyLock) { _threadSafeIsVisible = value; } } }
         public Thickness ThreadSafeMargin { get { lock (_propertyLock) { return _threadSafeMargin; } } private set { lock (_propertyLock) { _threadSafeMargin = value; } } }
+        public WeakReference<IThreadSafeView> ThreadSafeParent { get { lock (_propertyLock) { return _threadSafeParent; } } private set { lock (_propertyLock) { _threadSafeParent = value; } } }
 
         private void LabeledImageButton_SizeChanged(object sender, EventArgs e)
         {
@@ -187,6 +189,10 @@ namespace GnollHackX.Controls
                 _threadSafeY = Y;
                 _threadSafeIsVisible = IsVisible;
                 _threadSafeMargin = Margin;
+                if (Parent == null || !(Parent is IThreadSafeView))
+                    _threadSafeParent = null;
+                else
+                    _threadSafeParent = new WeakReference<IThreadSafeView>((IThreadSafeView)Parent);
             }
             ViewButton.Clicked += ViewButton_Clicked;
 #if WINDOWS
@@ -248,6 +254,13 @@ namespace GnollHackX.Controls
             else if (e.PropertyName == nameof(Margin))
             {
                 ThreadSafeMargin = Margin;
+            }
+            else if (e.PropertyName == nameof(Parent))
+            {
+                if (Parent == null || !(Parent is IThreadSafeView))
+                    ThreadSafeParent = null;
+                else
+                    ThreadSafeParent = new WeakReference<IThreadSafeView>((IThreadSafeView)Parent);
             }
         }
 

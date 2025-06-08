@@ -207,6 +207,7 @@
 		<None Remove="..\GnollHackX\GnollHackX\IPlatformService.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\IFMODService.cs" />
     <None Remove="..\GnollHackX\GnollHackX\ICloseablePage.cs" />
+    <None Remove="..\GnollHackX\GnollHackX\IThreadSafeView.cs" />
     <None Remove="..\GnollHackX\GnollHackX\ImageCarousel.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\MapData.cs" />
     <None Remove="..\GnollHackX\GnollHackX\MeasurableGrid.cs" />
@@ -378,6 +379,7 @@
 		<Compile Include="..\GnollHackX\GnollHackX\IGnollHackService.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\IPlatformService.cs" />
     <Compile Include="..\GnollHackX\GnollHackX\ICloseablePage.cs" />
+    <Compile Include="..\GnollHackX\GnollHackX\IThreadSafeView.cs" />
     <Compile Include="..\GnollHackX\GnollHackX\IFMODService.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\ImageCarousel.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\MapData.cs" />

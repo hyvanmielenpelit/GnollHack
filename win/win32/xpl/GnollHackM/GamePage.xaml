@@ -44,19 +44,19 @@
                             <controls:SimpleImageButton x:Name="ESCButton" ImgSourcePath="resource://GnollHackM.Assets.UI.stone-cancel.png" BtnClicked="ESCButton_Clicked"/>
                             <controls:SimpleImageButton x:Name="ToggleAutoCenterModeButton" ImgSourcePath="resource://GnollHackM.Assets.UI.stone-autocenter-on.png" BtnClicked="ToggleAutoCenterModeButton_Clicked"/>
                         </gnh:MeasurableStackLayout>
-                        <StackLayout x:Name="ModeLayout" Padding="0" Orientation="Vertical" Spacing="6"
+                        <gnh:MeasurableStackLayout x:Name="ModeLayout" Padding="0" Orientation="Vertical" Spacing="6"
                             HorizontalOptions="End" BackgroundColor="Transparent" >
-                            <StackLayout x:Name="ModeSubLayout1" Padding="0" Orientation="Vertical" Spacing="6"
+                            <gnh:MeasurableStackLayout x:Name="ModeSubLayout1" Padding="0" Orientation="Vertical" Spacing="6"
                                 HorizontalOptions="End" BackgroundColor="Transparent" >
                                 <controls:SimpleImageButton x:Name="ToggleZoomMiniButton" ImgSourcePath="resource://GnollHackM.Assets.UI.stone-minimap-off.png" BtnClicked="ToggleZoomMiniButton_Clicked"/>
                                 <controls:SimpleImageButton x:Name="ToggleZoomAlternateButton" ImgSourcePath="resource://GnollHackM.Assets.UI.stone-altmap-off.png" BtnClicked="ToggleZoomAlternateButton_Clicked"/>
-                            </StackLayout>
-                            <StackLayout x:Name="ModeSubLayout2" Padding="0" Orientation="Vertical" Spacing="6"
+                            </gnh:MeasurableStackLayout>
+                            <gnh:MeasurableStackLayout x:Name="ModeSubLayout2" Padding="0" Orientation="Vertical" Spacing="6"
                                 HorizontalOptions="End" BackgroundColor="Transparent" >
                                 <controls:SimpleImageButton x:Name="LookModeButton" ImgSourcePath="resource://GnollHackM.Assets.UI.stone-look-off.png" BtnClicked="LookModeButton_Clicked"/>
                                 <controls:SimpleImageButton x:Name="ToggleTravelModeButton" ImgSourcePath="resource://GnollHackM.Assets.UI.stone-travel-off.png" BtnClicked="ToggleTravelModeButton_Clicked"/>
-                            </StackLayout>
-                        </StackLayout>
+                            </gnh:MeasurableStackLayout>
+                        </gnh:MeasurableStackLayout>
                     </gnh:MeasurableStackLayout>
                     <gnh:MeasurableStackLayout Grid.Row="0" x:Name="SimpleUpperCmdLayout" IsVisible="True" Orientation="Vertical" InputTransparent="true" CascadeInputTransparent="false" Spacing="6"
                         HorizontalOptions="End">
@@ -65,27 +65,27 @@
                             <controls:SimpleImageButton x:Name="SimpleGameMenuButton" ImgSourcePath="resource://GnollHackM.Assets.UI.stone-menu.png" BtnClicked="GameMenuButton_Clicked"/>
                             <controls:SimpleImageButton x:Name="SimpleESCButton" ImgSourcePath="resource://GnollHackM.Assets.UI.stone-cancel.png" BtnClicked="ESCButton_Clicked"/>
                         </gnh:MeasurableStackLayout>
-                        <StackLayout x:Name="SimpleModeLayout" Padding="0" Orientation="Vertical" Spacing="6"
+                        <gnh:MeasurableStackLayout x:Name="SimpleModeLayout" Padding="0" Orientation="Vertical" Spacing="6"
                             HorizontalOptions="End" BackgroundColor="Transparent" >
-                            <StackLayout x:Name="SimpleModeSubLayout1" Padding="0" Orientation="Vertical" Spacing="6"
+                            <gnh:MeasurableStackLayout x:Name="SimpleModeSubLayout1" Padding="0" Orientation="Vertical" Spacing="6"
                                 HorizontalOptions="End" BackgroundColor="Transparent" >
                                 <controls:SimpleImageButton x:Name="SimpleToggleAutoCenterModeButton" ImgSourcePath="resource://GnollHackM.Assets.UI.stone-autocenter-on.png" BtnClicked="ToggleAutoCenterModeButton_Clicked"/>
                                 <controls:SimpleImageButton x:Name="SimpleToggleZoomMiniButton" ImgSourcePath="resource://GnollHackM.Assets.UI.stone-minimap-off.png" BtnClicked="ToggleZoomMiniButton_Clicked"/>
-                            </StackLayout>
+                            </gnh:MeasurableStackLayout>
                             <StackLayout x:Name="SimpleModeSubLayout2" Padding="0" Orientation="Vertical" Spacing="6"
                                 HorizontalOptions="End" BackgroundColor="Transparent" >
                                 <controls:SimpleImageButton x:Name="SimpleLookModeButton" ImgSourcePath="resource://GnollHackM.Assets.UI.stone-look-off.png" BtnClicked="LookModeButton_Clicked"/>
                             </StackLayout>
-                        </StackLayout>
+                        </gnh:MeasurableStackLayout>
                     </gnh:MeasurableStackLayout>
                     <!--<FlexLayout Grid.Row="1" x:Name="ContextLayout" InputTransparent="True" CascadeInputTransparent="False" Padding="0,2" Direction="Column" Wrap="Reverse" 
                                 JustifyContent="End" AlignItems="End" AlignContent="Start" HorizontalOptions="End" VerticalOptions="End" >
                     </FlexLayout>-->
-                    <StackLayout Grid.Row="1" x:Name="MessageNumberGrid" Padding="0,2" Spacing="6"
+                    <gnh:MeasurableStackLayout Grid.Row="1" x:Name="MessageNumberGrid" Padding="0,2" Spacing="6"
                         HorizontalOptions="Start" VerticalOptions="End">
-                        <gnh:NoTabStopButton x:Name="ToggleMessageNumberButton" Text="" Clicked="ToggleMessageNumberButton_Clicked" HeightRequest="80" WidthRequest="80" BackgroundColor="Transparent" />
-                    </StackLayout>
-                    <Grid Grid.Row="2" x:Name="ButtonRowGrid" HorizontalOptions="Fill" VerticalOptions="End" BackgroundColor="#66000000">
+                        <controls:SimpleImageButton x:Name="ToggleMessageNumberButton" BtnClicked="ToggleMessageNumberButton_Clicked" HeightRequest="80" WidthRequest="80" BackgroundColor="Transparent" />
+                    </gnh:MeasurableStackLayout>
+                    <gnh:MeasurableGrid Grid.Row="2" x:Name="ButtonRowGrid" HorizontalOptions="Fill" VerticalOptions="End" BackgroundColor="#66000000">
                         <controls:LabeledImageButton x:Name="lRowAbilitiesButton" IsVisible="False" LblText="Stats" BtnLetter="A" ImgSourcePath="resource://GnollHackM.Assets.UI.home.png" BtnClicked="GHButton_Clicked" Margin="0,2" HorizontalOptions="Start" VerticalOptions="End" />
                         <controls:LabeledImageButton x:Name="lRowWornItemsButton" IsVisible="False" LblText="Equipment" BtnLetter="]" ImgSourcePath="resource://GnollHackM.Assets.UI.worn.png" ImgHighFilterQuality="True" BtnClicked="GHButton_Clicked" Margin="0,2" HorizontalOptions="End" VerticalOptions="End" />
                         <gnh:MeasurableStackLayout x:Name="ButtonRowStack" IsVisible="True" HorizontalOptions="Center" VerticalOptions="Center" Orientation="Vertical" Spacing="6">
@@ -155,7 +155,7 @@
                                 <controls:LabeledImageButton Grid.Column="6" x:Name="lSimpleMoreButton" LblText="More" ImgSourcePath="resource://GnollHackM.Assets.UI.more.png" BtnClicked="MoreButton_Clicked" />
                             </Grid>
                         </gnh:MeasurableStackLayout>
-                    </Grid>
+                    </gnh:MeasurableGrid>
                 </gnh:MeasurableGrid>
             </Grid>
             <gnh:MeasurableGrid x:Name="MenuGrid" HorizontalOptions="Fill" VerticalOptions="Fill" BackgroundColor="#AA000000" IsVisible="False">

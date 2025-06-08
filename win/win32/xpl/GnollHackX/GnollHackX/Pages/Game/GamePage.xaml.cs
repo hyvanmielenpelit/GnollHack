@@ -10527,13 +10527,14 @@ namespace GnollHackX.Pages.Game
                                         float pet_hp_size = textPaint.TextSize * pet_hp_target_height / textPaint.FontSpacing;
                                         float pet_target_width = pet_target_height;
 
-                                        //SKRect menubuttonrect = GetViewScreenRect(UseSimpleCmdLayout ? SimpleGameMenuButton : GameMenuButton);
-                                        //SKRect canvasrect = GetViewScreenRect(canvasView);
-                                        //SKRect adjustedrect = new SKRect(menubuttonrect.Left - canvasrect.Left, menubuttonrect.Top - canvasrect.Top, menubuttonrect.Right - canvasrect.Left, menubuttonrect.Bottom - canvasrect.Top);
-                                        //float menu_button_left = adjustedrect.Left;
-                                        float menu_button_left = (float)(UseSimpleCmdLayout ? UIGrid.ThreadSafeX + SimpleUpperCmdLayout.ThreadSafeX + SimpleGameMenuLayout.ThreadSafeX + SimpleGameMenuButton.ThreadSafeX
-                                            : UIGrid.ThreadSafeX + UpperCmdLayout.ThreadSafeX + GameMenuLayout.ThreadSafeX + GameMenuButton.ThreadSafeX)
-                                            * inverse_canvas_scale;
+                                        SKRect menubuttonrect = GetThreadSafeViewScreenRect(UseSimpleCmdLayout ? SimpleGameMenuButton : GameMenuButton);
+                                        SKRect canvasrect = GetThreadSafeViewScreenRect(canvasView);
+                                        SKRect adjustedrect = new SKRect(menubuttonrect.Left - canvasrect.Left, menubuttonrect.Top - canvasrect.Top, menubuttonrect.Right - canvasrect.Left, menubuttonrect.Bottom - canvasrect.Top);
+                                        float menu_button_left = adjustedrect.Left;
+                                        /* Below is a bit more efficient, but needs to be updated if UI is changed */
+                                        //float menu_button_left = (float)(UseSimpleCmdLayout ? UIGrid.ThreadSafeX + SimpleUpperCmdLayout.ThreadSafeX + SimpleGameMenuLayout.ThreadSafeX + SimpleGameMenuButton.ThreadSafeX
+                                        //    : UIGrid.ThreadSafeX + UpperCmdLayout.ThreadSafeX + GameMenuLayout.ThreadSafeX + GameMenuButton.ThreadSafeX)
+                                        //    * inverse_canvas_scale;
                                         float pet_tx_start = orbleft + orbbordersize * 1.1f;
                                         tx = pet_tx_start;
                                         ty = statusbarheight + 5.0f;
@@ -18498,16 +18499,57 @@ namespace GnollHackX.Pages.Game
             return res;
         }
 
-        public void PaintTipButton(SKCanvas canvas, GHSkiaFontPaint textPaint,
+        public SKRect GetThreadSafeViewScreenRect(IThreadSafeView view)
+        {
+            //float canvaswidth = canvasView.CanvasSize.Width;
+            //float canvasheight = canvasView.CanvasSize.Height;
+            float scale = GHApp.DisplayDensity;
+
+            double screenCoordinateX = view.ThreadSafeX;
+            double screenCoordinateY = view.ThreadSafeY;
+            // Get the view's parent (if it has one...)
+            if(view.ThreadSafeParent != null && view.ThreadSafeParent.TryGetTarget(out IThreadSafeView parent))
+            {
+                if (!(parent is App))
+                {
+                    // Loop through all parents
+                    while (parent != null)
+                    {
+                        screenCoordinateX += parent.ThreadSafeX;
+                        screenCoordinateY += parent.ThreadSafeY;
+
+                        // If the parent of this parent isn't the app itself, get the parent's parent.
+                        if (parent.ThreadSafeParent == null || !parent.ThreadSafeParent.TryGetTarget(out parent))
+                            parent = null;
+                        else if (parent is App)
+                            parent = null;
 #if GNH_MAUI
-            Microsoft.Maui.Controls.VisualElement view,
-#else
-            Xamarin.Forms.VisualElement view, 
+                        else if (parent is Microsoft.Maui.Controls.Window)
+                            parent = null;
 #endif
+                    }
+                }
+            }
+
+            float relX = (float)(screenCoordinateX * scale); // / canvasView.Width) * canvaswidth;
+            float relY = (float)(screenCoordinateY * scale); // / canvasView.Height) * canvasheight;
+            float relWidth = (float)(StandardMeasurementButton.ThreadSafeWidth * scale); // / canvasView.Width) * canvaswidth;
+            float relHeight = (float)(StandardMeasurementButton.ThreadSafeHeight * scale); // / canvasView.Height) * canvasheight;
+
+            SKRect res = new SKRect(relX, relY, relX + relWidth, relY + relHeight);
+            return res;
+        }
+
+        public void PaintTipButton(SKCanvas canvas, GHSkiaFontPaint textPaint, IThreadSafeView view,
+//#if GNH_MAUI
+//            Microsoft.Maui.Controls.VisualElement view,
+//#else
+//            Xamarin.Forms.VisualElement view, 
+//#endif
             string centertext, string boxtext, float radius_mult, float centertextfontsize, float boxfontsize, bool linefromright, float lineoffsetx, float lineoffsety, float canvaswidth, float canvasheight)
         {
-            SKRect viewrect = GetViewScreenRect(view);
-            SKRect tiprect = GetViewScreenRect(TipView);
+            SKRect viewrect = GetThreadSafeViewScreenRect(view);
+            SKRect tiprect = GetThreadSafeViewScreenRect(TipView);
             SKRect adjustedrect = new SKRect(viewrect.Left - tiprect.Left, viewrect.Top - tiprect.Top, viewrect.Right - tiprect.Left, viewrect.Bottom - tiprect.Top);
             PaintTipButtonByRect(canvas, textPaint, adjustedrect, centertext, boxtext, radius_mult, centertextfontsize, boxfontsize, linefromright, lineoffsetx, lineoffsety, canvaswidth, canvasheight);
         }
