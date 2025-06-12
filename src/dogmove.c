@@ -92,6 +92,7 @@ struct monst *mon;
             }
             break;
 
+        case MASTER_KEY:
         case SKELETON_KEY:
             /* keep key in preference to lock-pick */
             if (key && key->otyp == LOCK_PICK

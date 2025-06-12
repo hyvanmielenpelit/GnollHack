@@ -2159,7 +2159,7 @@ int whodidit;   /* 1==hero, 0=other, -1==just check whether it'll pass thru */
             hits = (objects[obj_type].oc_armor_category != ARM_GLOVES);
             break;
         case TOOL_CLASS:
-            hits = (obj_type != SKELETON_KEY && obj_type != LOCK_PICK
+            hits = (obj_type != SKELETON_KEY && obj_type != MASTER_KEY && obj_type != LOCK_PICK
                     && obj_type != CREDIT_CARD && obj_type != TALLOW_CANDLE
                     && obj_type != WAX_CANDLE && obj_type != MAGIC_CANDLE
                     && obj_type != TIN_WHISTLE && obj_type != MAGIC_WHISTLE);

@@ -5959,6 +5959,7 @@ int applymode; /* 0 = normal, 1 = take out items, 2 = put in items */
         case LOCK_PICK:
         case CREDIT_CARD:
         case SKELETON_KEY:
+        case MASTER_KEY:
             res = (pick_lock(obj) != 0);
             break;
         case PICK_AXE:

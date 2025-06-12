@@ -8570,7 +8570,7 @@ int x, y;
             add_herecmd_menuitem(win, doopen, "Open the door"), ++K;
             /* unfortunately there's no lknown flag for doors to
                remember the locked/unlocked state */
-            key_or_pick = (carrying(SKELETON_KEY) || carrying(LOCK_PICK));
+            key_or_pick = (carrying(SKELETON_KEY) || carrying(MASTER_KEY) || carrying(LOCK_PICK));
             card = (carrying(CREDIT_CARD) != 0);
             if (key_or_pick || card) {
                 Sprintf(buf, "%sunlock the door",

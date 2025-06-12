@@ -101,7 +101,7 @@ picklock(VOID_ARGS)
             return ((xlock.usedtime = 0)); /* you or it moved */
         }
         if (has_box_normal_lock(xlock.box)
-            && (xlock.picktyp == SKELETON_KEY || xlock.picktyp == CREDIT_CARD || xlock.picktyp == LOCK_PICK))
+            && (xlock.picktyp == SKELETON_KEY || xlock.picktyp == MASTER_KEY || xlock.picktyp == CREDIT_CARD || xlock.picktyp == LOCK_PICK))
         {
             //nothing, normal case
         }
@@ -142,7 +142,7 @@ picklock(VOID_ARGS)
         }
 
         if (has_door_normal_lock_at_ptr(xlock.door)
-            && (xlock.picktyp == SKELETON_KEY || xlock.picktyp == CREDIT_CARD || xlock.picktyp == LOCK_PICK))
+            && (xlock.picktyp == SKELETON_KEY || xlock.picktyp == MASTER_KEY || xlock.picktyp == CREDIT_CARD || xlock.picktyp == LOCK_PICK))
         {
             //nothing, normal case
         }
@@ -281,7 +281,7 @@ struct obj *key, *box;
         return FALSE;
 
     if (has_box_normal_lock(box)
-        && (key->otyp == SKELETON_KEY || key->otyp == CREDIT_CARD || key->otyp == LOCK_PICK))
+        && (key->otyp == SKELETON_KEY || key->otyp == MASTER_KEY || key->otyp == CREDIT_CARD || key->otyp == LOCK_PICK))
     {
         return TRUE;
     }
@@ -301,7 +301,7 @@ struct rm* door;
         return FALSE;
 
     if (has_door_normal_lock_at_ptr(door)
-        && (key->otyp == SKELETON_KEY || key->otyp == CREDIT_CARD || key->otyp == LOCK_PICK))
+        && (key->otyp == SKELETON_KEY || key->otyp == MASTER_KEY || key->otyp == CREDIT_CARD || key->otyp == LOCK_PICK))
     {
         return TRUE;
     }
@@ -691,6 +691,7 @@ boolean is_auto;
                 case LOCK_PICK:
                     ch = 4 * ACURR(A_DEX) + 25 * Role_if(PM_ROGUE);
                     break;
+                case MASTER_KEY:
                 case SKELETON_KEY:
                     ch = 75 + ACURR(A_DEX);
                     break;
@@ -806,6 +807,7 @@ boolean is_auto;
             case LOCK_PICK:
                 ch = 3 * ACURR(A_DEX) + 30 * Role_if(PM_ROGUE);
                 break;
+            case MASTER_KEY:
             case SKELETON_KEY:
                 ch = 70 + ACURR(A_DEX);
                 break;

@@ -3334,7 +3334,7 @@ struct obj *obj;
     if (!*line)
         line = "GnollHack rumors file closed for renovation.";
     pline_ex(ATR_NONE, CLR_MSG_GOD, "%s:", Tobjnam(obj, "whisper"));
-    verbalize1(line);
+    verbalize_ex1(ATR_NONE, CLR_MSG_HINT, line);
     display_popup_text(line, cxname(obj), POPUP_TEXT_DIALOGUE, ATR_NONE, NO_COLOR, obj_to_glyph(obj, rn2_on_display_rng), POPUP_FLAGS_ADD_QUOTES);
     return;
 }

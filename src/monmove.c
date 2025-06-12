@@ -75,7 +75,7 @@ boolean for_unlocking; /* true => credit card ok, false => not ok */
 {
     if (for_unlocking && m_carrying(mon, CREDIT_CARD))
         return TRUE;
-    return m_carrying(mon, SKELETON_KEY) || m_carrying(mon, LOCK_PICK);
+    return m_carrying(mon, SKELETON_KEY) || m_carrying(mon, MASTER_KEY) || m_carrying(mon, LOCK_PICK);
 }
 
 void
@@ -2350,7 +2350,7 @@ struct monst *mtmp;
             && !is_candle_or_torch(obj) && typ != OILSKIN_SACK && typ != LEASH
             && typ != STETHOSCOPE && typ != BLINDFOLD && typ != TOWEL
             && typ != TIN_WHISTLE && typ != MAGIC_WHISTLE
-            && typ != MAGIC_MARKER && typ != TIN_OPENER && typ != SKELETON_KEY
+            && typ != MAGIC_MARKER && typ != TIN_OPENER && typ != SKELETON_KEY && typ != MASTER_KEY
             && typ != LOCK_PICK)
             return TRUE;
         if (Is_container(obj) && obj->cobj)

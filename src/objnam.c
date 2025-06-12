@@ -5421,6 +5421,7 @@ retry:
         if (wetness)
             otmp->special_quality = wetness;
         break;
+    case MASTER_KEY:
     case SKELETON_KEY:
         break;
     case SLIME_MOLD:
