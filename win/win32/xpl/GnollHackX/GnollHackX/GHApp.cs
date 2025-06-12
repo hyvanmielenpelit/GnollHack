@@ -7782,7 +7782,9 @@ namespace GnollHackX
         }
         public static bool SendSpecialKeyPress(GHSpecialKey spkey, bool isCtrl, bool isMeta, bool isShift)
         {
-            if (spkey == GHSpecialKey.Tab && isMeta) /* Windows switch apps */
+            if (spkey == GHSpecialKey.Tab && (isMeta || (IsSteam && (isShift || isCtrl)))) /* Windows switch apps and Steam overlay navigation */
+                return false;
+            if (IsSteam && (spkey == GHSpecialKey.F12)) /* Keys reserved for Steam use */
                 return false;
 
             Page topPage = PageFromTopOfModalNavigationStack();
