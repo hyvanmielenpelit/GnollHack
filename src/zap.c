@@ -2769,6 +2769,9 @@ boolean by_hero;
 int animateintomon;
 boolean replaceundead;
 {
+    if (!corpse)
+        return (struct monst*)0;
+
     struct monst *mtmp = 0;
     struct permonst *mptr = 0;
     struct obj *container;
@@ -2925,6 +2928,17 @@ boolean replaceundead;
     {
         /* make a new monster */
         mtmp = makemon2(mptr, x, y, MM_NO_MONSTER_INVENTORY | MM_NOWAIT | MM_NOCOUNTBIRTH | MM_PLAY_SUMMON_ANIMATION | MM_ANIMATE_DEAD_ANIMATION | MM_PLAY_SUMMON_SOUND, MM2_REVIVING);
+        if (mtmp)
+        {
+            if ((corpse->speflags & SPEFLAGS_SCHROEDINGERS_BOX) != 0) /* Dead cat straight from the box */
+                mtmp->mon_flags |= MON_FLAGS_SCHROEDINGERS_CAT;
+            if (has_oname(corpse))
+            {
+                (void) christen_monst(mtmp, ONAME(corpse));
+                if (corpse->nknown) /* If you know corpse name, then you will know revived monster's name */
+                    mtmp->u_know_mname = 1;
+            }
+        }
     }
 
     if (!mtmp)

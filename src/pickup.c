@@ -3874,6 +3874,7 @@ boolean makecat, givemsg;
         if (livecat) 
         {
             livecat->mpeaceful = 1;
+            livecat->mon_flags |= MON_FLAGS_SCHROEDINGERS_CAT;
             set_mhostility(livecat);
             if (givemsg) 
             {
@@ -3908,6 +3909,7 @@ boolean makecat, givemsg;
             deadcat->age = monstermoves;
             set_corpsenm(deadcat, PM_HOUSECAT);
             deadcat = oname(deadcat, sc);
+            deadcat->nknown = 1;
         }
         if (givemsg)
             pline_The_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s inside the box is dead!",

@@ -400,6 +400,7 @@ boolean ghostly, frozen;
              */
             if ((catcorpse = mksobj(CORPSE, TRUE, FALSE, FALSE)) != 0) {
                 otmp->speflags |= SPEFLAGS_SCHROEDINGERS_BOX;  //otmp->enchantment = 1; /* flag for special SchroedingersBox */
+                catcorpse->speflags |= SPEFLAGS_SCHROEDINGERS_BOX; /* Schroedinger's cat in fact */
                 set_corpsenm(catcorpse, PM_HOUSECAT);
                 (void) stop_timer(ROT_CORPSE, obj_to_any(catcorpse));
                 add_to_container(otmp, catcorpse);

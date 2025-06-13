@@ -1936,6 +1936,7 @@ register struct monst *mtmp;
                otherwise it's given a rot timer; weight is now ordinary */
             if ((catcorpse = mksobj(CORPSE, TRUE, FALSE, FALSE)) != 0) {
                 otmp->speflags |= SPEFLAGS_SCHROEDINGERS_BOX; /* flag for special SchroedingersBox */
+                catcorpse->speflags |= SPEFLAGS_SCHROEDINGERS_BOX; /* Schroedinger's cat in fact */
                 set_corpsenm(catcorpse, PM_HOUSECAT);
                 (void)stop_timer(ROT_CORPSE, obj_to_any(catcorpse));
                 add_to_container(otmp, catcorpse);
