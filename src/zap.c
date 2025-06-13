@@ -12084,7 +12084,8 @@ retry:
                                    (const char *) 0);
         u.uprayer_timeout += rn1(100, 50) / (Role_if(PM_PRIEST) ? 2 : 1); /* the gods take notice */
     }
-    context.save_checkpoint = TRUE; /* A good point to save to make sure that obtained item remains and is not lost via crash or changed due to cheating */
+    if(!is_wiz_wish)
+        context.save_checkpoint = TRUE; /* A good point to save to make sure that obtained item remains and is not lost via crash or changed due to cheating */
     ignore_onsleep_autosave = FALSE;
 }
 
