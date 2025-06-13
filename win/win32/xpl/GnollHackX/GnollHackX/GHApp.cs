@@ -7782,10 +7782,21 @@ namespace GnollHackX
         }
         public static bool SendSpecialKeyPress(GHSpecialKey spkey, bool isCtrl, bool isMeta, bool isShift)
         {
-            if (spkey == GHSpecialKey.Tab && (isMeta || (IsSteam && (isShift || isCtrl)))) /* Windows switch apps and Steam overlay navigation */
-                return false;
-            if (IsSteam && (spkey == GHSpecialKey.F12)) /* Keys reserved for Steam use */
-                return false;
+            /* Special unblocked keypresses on Windows */
+            if (IsWindows)
+            {
+                if (spkey == GHSpecialKey.Tab && isMeta) /* Windows switch apps */
+                    return false;
+                if (spkey == GHSpecialKey.F4) /* Windows close window */
+                    return false;
+                if (IsSteam)
+                {
+                    if (spkey == GHSpecialKey.F12) /* Keys reserved for Steam use */
+                        return false;
+                    if (spkey == GHSpecialKey.Tab && (isShift || isCtrl)) /* Keys reserved for Steam overlay navigation */
+                        return false;
+                }
+            }
 
             Page topPage = PageFromTopOfModalNavigationStack();
             if(topPage == null)

@@ -460,8 +460,8 @@ public class KeyboardHook
 
     private static IntPtr HookCallback(int nCode, IntPtr wParam, IntPtr lParam)
     {
-        if (!GHApp.WindowFocused || !GHApp.IsKeyboardHookEnabled)
-            return CallNextHookEx(_hookID, nCode, wParam, lParam);
+        //if (!GHApp.WindowFocused || !GHApp.IsKeyboardHookEnabled)
+        //    return CallNextHookEx(_hookID, nCode, wParam, lParam);
 
         //No game on to send key strokes to
         //if (GHApp.CurrentGHGame == null)
@@ -493,15 +493,17 @@ public class KeyboardHook
                 {
                     GHApp.WindowsKeyDown = false;
                     Debug.WriteLine("HookCallback: Windows Key Up");
+                    if (!GHApp.WindowFocused || !GHApp.IsKeyboardHookEnabled)
+                        return CallNextHookEx(_hookID, nCode, wParam, lParam);
                     if (GHApp.DisableWindowsKey)
                         return 1;
                     else
                         return CallNextHookEx(_hookID, nCode, wParam, lParam);
                 }
-                else if (vkCode == 0x73)
-                {
-                    Debug.WriteLine("HookCallback: F4 Up");
-                }
+                //else if (vkCode == 0x73)
+                //{
+                //    Debug.WriteLine("HookCallback: F4 Up");
+                //}
             }
             else if (wParam == (IntPtr)WM_KEYDOWN)
             {
@@ -522,14 +524,16 @@ public class KeyboardHook
                     GHApp.AltDown = true;
                     Debug.WriteLine("HookCallback: Alt Down");
                 }
-                else if (vkCode == 0x73)
-                {
-                    Debug.WriteLine("HookCallback: F4 Down");
-                }
+                //else if (vkCode == 0x73)
+                //{
+                //    Debug.WriteLine("HookCallback: F4 Down");
+                //}
                 else if (vkCode == 0x5B || vkCode == 0x5C)
                 {
                     GHApp.WindowsKeyDown = true;
                     Debug.WriteLine("HookCallback: Windows Key Down");
+                    if (!GHApp.WindowFocused || !GHApp.IsKeyboardHookEnabled)
+                        return CallNextHookEx(_hookID, nCode, wParam, lParam);
                     if (GHApp.DisableWindowsKey)
                         return 1;
                     else
@@ -537,6 +541,9 @@ public class KeyboardHook
                 }
                 else
                 {
+                    if (!GHApp.WindowFocused || !GHApp.IsKeyboardHookEnabled)
+                        return CallNextHookEx(_hookID, nCode, wParam, lParam);
+
                     if (!GHApp.DisableWindowsKey && GHApp.WindowsKeyDown)
                         return CallNextHookEx(_hookID, nCode, wParam, lParam);
 
@@ -651,6 +658,7 @@ public class KeyboardHook
                 bool isCtrlDown = GHApp.CtrlDown;
 
                 GHApp.AltDown = false;
+                GHApp.WindowsKeyDown = false;
                 int vkCode = Marshal.ReadInt32(lParam);
                 if (vkCode == 0x10 || vkCode == 0xA0 || vkCode == 0xA1)
                 {
@@ -664,23 +672,27 @@ public class KeyboardHook
                     Debug.WriteLine("HookCallback: Syskey Control Up");
                     return CallNextHookEx(_hookID, nCode, wParam, lParam);
                 }
-                else if (vkCode == 0x09)
-                {
-                    Debug.WriteLine("HookCallback: Tab Up");
-                    return CallNextHookEx(_hookID, nCode, wParam, lParam);
-                }
                 else if (vkCode == 0x5B || vkCode == 0x5C)
                 {
                     GHApp.WindowsKeyDown = false;
                     Debug.WriteLine("HookCallback: Sys Windows Key Up");
+                    if (!GHApp.WindowFocused || !GHApp.IsKeyboardHookEnabled)
+                        return CallNextHookEx(_hookID, nCode, wParam, lParam);
                     if (GHApp.DisableWindowsKey)
                         return 1;
                     else
                         return CallNextHookEx(_hookID, nCode, wParam, lParam);
                 }
-                else if (vkCode == 0x73)
+                //else if (vkCode == 0x73)
+                //{
+                //    Debug.WriteLine("HookCallback: F4 Syskey Up");
+                //}
+                else if (!GHApp.WindowFocused || !GHApp.IsKeyboardHookEnabled)
+                    return CallNextHookEx(_hookID, nCode, wParam, lParam);
+                else if (vkCode == 0x09)
                 {
-                    Debug.WriteLine("HookCallback: F4 Syskey Up");
+                    Debug.WriteLine("HookCallback: Tab Up");
+                    return CallNextHookEx(_hookID, nCode, wParam, lParam);
                 }
                 else if (!GHApp.DisableWindowsKey && GHApp.WindowsKeyDown)
                 {
@@ -749,6 +761,17 @@ public class KeyboardHook
                     GHApp.AltDown = true;
                     Debug.WriteLine("HookCallback: Syskey Alt Down");
                 }
+                else if (vkCode == 0x5B || vkCode == 0x5C)
+                {
+                    GHApp.WindowsKeyDown = true;
+                    Debug.WriteLine("HookCallback: Sys Windows Key Down");
+                    if (!GHApp.WindowFocused || !GHApp.IsKeyboardHookEnabled)
+                        return CallNextHookEx(_hookID, nCode, wParam, lParam);
+                    if (GHApp.DisableWindowsKey)
+                        return 1;
+                }
+                else if (!GHApp.WindowFocused || !GHApp.IsKeyboardHookEnabled)
+                    return CallNextHookEx(_hookID, nCode, wParam, lParam);
                 else if (vkCode == 0x09)
                 {
                     Debug.WriteLine("HookCallback: Tab Syskey Down");
@@ -756,13 +779,6 @@ public class KeyboardHook
                 else if (vkCode == 0x73)
                 {
                     Debug.WriteLine("HookCallback: F4 Syskey Down");
-                }
-                else if (vkCode == 0x5B || vkCode == 0x5C)
-                {
-                    GHApp.WindowsKeyDown = true;
-                    Debug.WriteLine("HookCallback: Sys Windows Key Down");
-                    if (GHApp.DisableWindowsKey)
-                        return 1;
                 }
                 else if (GHApp.CtrlDown)
                 {
