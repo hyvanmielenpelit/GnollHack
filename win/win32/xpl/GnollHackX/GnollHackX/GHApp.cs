@@ -1426,40 +1426,141 @@ namespace GnollHackX
 #endif
         }
 
-        public static bool IsMuted { get { return SilentMode || SleepMuteMode || GameMuteMode; } }
+        public static bool IsMuted { get { lock (_muteLock) { return _gameMuteMode || _silentMode || _sleepMuteMode || _unfocusedMuteMode; } } }
+        private readonly static object _muteLock = new object();
 
-        private readonly static object _silentModeLock = new object();
-        private static bool _silentMode = false;
-        public static bool SilentMode { get { lock (_silentModeLock) { return _silentMode; } } set { UpdateSoundMuteness(GameMuteMode, value, SleepMuteMode); lock (_silentModeLock) { _silentMode = value; } } }    /* Manual mute by user  */
-
-        private readonly static object _sleepMuteModeLock = new object();
-        private static bool _sleepMuteMode = false;
-        public static bool SleepMuteMode { get { lock (_sleepMuteModeLock) { return _sleepMuteMode; } } set { UpdateSoundMuteness(GameMuteMode, SilentMode, value); lock (_sleepMuteModeLock) { _sleepMuteMode = value; } } }    /* Muteness because switched apps */
-
-        private readonly static object _gameMuteModeLock = new object();
         private static bool _gameMuteMode = false;
-        public static bool GameMuteMode { get { lock (_gameMuteModeLock) { return _gameMuteMode; } } set { UpdateSoundMuteness(value, SilentMode, SleepMuteMode); lock (_gameMuteModeLock) { _gameMuteMode = value; } } }    /* Muteness due to game state */
-
-        public static void UpdateSoundMuteness(bool newGameMuted, bool newSilentMode, bool newSleepMuteMode)
+        public static bool GameMuteMode /* Muteness due to game state */
         {
-            UpdateSoundMutenessCore(newGameMuted, newSilentMode, newSleepMuteMode, GameMuteMode, SleepMuteMode, SilentMode);
+            get
+            {
+                lock (_muteLock)
+                {
+                    return _gameMuteMode;
+                }
+            }
+            set
+            {
+                //UpdateSoundMuteness(value, SilentMode, SleepMuteMode, UnfocusedMuteMode); 
+                bool oldGameMuted, oldSilentMode, oldSleepMuteMode, oldUnfocusedMuteMode;
+                lock (_muteLock)
+                {
+                    oldGameMuted = _gameMuteMode;
+                    oldSilentMode = _silentMode;
+                    oldSleepMuteMode = _sleepMuteMode;
+                    oldUnfocusedMuteMode = _unfocusedMuteMode;
+                    _gameMuteMode = value;
+                }
+                UpdateSoundMuteness(value, oldSilentMode, oldSleepMuteMode, oldUnfocusedMuteMode, oldGameMuted, oldSilentMode, oldSleepMuteMode, oldUnfocusedMuteMode);
+            }
         }
 
-        public static void UpdateSoundMutenessCore(bool newGameMuted, bool newSilentMode, bool newSleepMuteMode, bool oldGameMuted, bool oldSilentMode, bool oldSleepMuteMode)
-        {
-            if (newGameMuted || newSilentMode || newSleepMuteMode)
+        private static bool _silentMode = false;
+        public static bool SilentMode /* Manual mute by user  */
+        { 
+            get 
+            { 
+                lock (_muteLock) 
+                { 
+                    return _silentMode; 
+                } 
+            } 
+            set 
             {
-                if (!oldGameMuted && !oldSilentMode && !oldSleepMuteMode)
+                //UpdateSoundMuteness(GameMuteMode, value, SleepMuteMode, UnfocusedMuteMode); 
+                bool oldGameMuted, oldSilentMode, oldSleepMuteMode, oldUnfocusedMuteMode;
+                lock (_muteLock)
+                {
+                    oldGameMuted = _gameMuteMode;
+                    oldSilentMode = _silentMode;
+                    oldSleepMuteMode = _sleepMuteMode;
+                    oldUnfocusedMuteMode = _unfocusedMuteMode;
+                    _silentMode = value;
+                }
+                UpdateSoundMuteness(oldGameMuted, value, oldSleepMuteMode, oldUnfocusedMuteMode, oldGameMuted, oldSilentMode, oldSleepMuteMode, oldUnfocusedMuteMode);
+            } 
+        }
+
+        private static bool _sleepMuteMode = false;
+        public static bool SleepMuteMode /* Muteness because switched apps */
+        { 
+            get 
+            { 
+                lock (_muteLock) 
+                { 
+                    return _sleepMuteMode; 
+                } 
+            } 
+            set 
+            {
+                //UpdateSoundMuteness(GameMuteMode, SilentMode, value, UnfocusedMuteMode);
+                bool oldGameMuted, oldSilentMode, oldSleepMuteMode, oldUnfocusedMuteMode;
+                lock (_muteLock)
+                {
+                    oldGameMuted = _gameMuteMode;
+                    oldSilentMode = _silentMode;
+                    oldSleepMuteMode = _sleepMuteMode;
+                    oldUnfocusedMuteMode = _unfocusedMuteMode;
+                    _sleepMuteMode = value;
+                }
+                UpdateSoundMuteness(oldGameMuted, oldSilentMode, value, oldUnfocusedMuteMode, oldGameMuted, oldSilentMode, oldSleepMuteMode, oldUnfocusedMuteMode);
+            }
+        }
+
+        private static bool _unfocusedMuteMode = false;
+        public static bool UnfocusedMuteMode /* Muteness due to window being unfocused  */
+        { 
+            get 
+            { 
+                lock (_muteLock) 
+                { 
+                    return _unfocusedMuteMode; 
+                } 
+            } 
+            set 
+            {
+                //UpdateSoundMuteness(GameMuteMode, SilentMode, SleepMuteMode, value); 
+                bool oldGameMuted, oldSilentMode, oldSleepMuteMode, oldUnfocusedMuteMode;
+                lock (_muteLock)
+                {
+                    oldGameMuted = _gameMuteMode;
+                    oldSilentMode = _silentMode;
+                    oldSleepMuteMode = _sleepMuteMode;
+                    oldUnfocusedMuteMode = _unfocusedMuteMode;
+                    _unfocusedMuteMode = value;
+                }
+                UpdateSoundMuteness(oldGameMuted, oldSilentMode, oldSleepMuteMode, value, oldGameMuted, oldSilentMode, oldSleepMuteMode, oldUnfocusedMuteMode);
+            } 
+        }
+
+        //public static void UpdateSoundMuteness(bool newGameMuted, bool newSilentMode, bool newSleepMuteMode, bool newUnfocusedMuteMode)
+        //{
+        //    bool oldGameMuted, oldSilentMode, oldSleepMuteMode, oldUnfocusedMuteMode;
+        //    lock (_muteLock)
+        //    {
+        //        oldGameMuted = _gameMuteMode;
+        //        oldSilentMode = _silentMode;
+        //        oldSleepMuteMode = _sleepMuteMode;
+        //        oldUnfocusedMuteMode = _unfocusedMuteMode;
+        //    }
+        //    UpdateSoundMutenessCore(newGameMuted, newSilentMode, newSleepMuteMode, newUnfocusedMuteMode, oldGameMuted, oldSilentMode, oldSleepMuteMode, oldUnfocusedMuteMode);
+        //}
+
+        public static void UpdateSoundMuteness(bool newGameMuted, bool newSilentMode, bool newSleepMuteMode, bool newUnfocusedMuteMode, bool oldGameMuted, bool oldSilentMode, bool oldSleepMuteMode, bool oldUnfocusedMuteMode)
+        {
+            if (newGameMuted || newSilentMode || newSleepMuteMode || newUnfocusedMuteMode)
+            {
+                if (!oldGameMuted && !oldSilentMode && !oldSleepMuteMode && !oldUnfocusedMuteMode)
                     MuteSounds();
             }
             else
             {
-                if (oldGameMuted || oldSilentMode || oldSleepMuteMode)
+                if (oldGameMuted || oldSilentMode || oldSleepMuteMode || oldUnfocusedMuteMode)
                     UnmuteSounds();
             }
         }
 
-        public static void MuteSounds()
+        private static void MuteSounds()
         {
             try
             {
@@ -1472,7 +1573,7 @@ namespace GnollHackX
             }
         }
 
-        public static void UnmuteSounds()
+        private static void UnmuteSounds()
         {
             if (FmodService != null)
             {

@@ -307,12 +307,14 @@ public static class MauiProgram
                         {
                             // Focused
                             GHApp.WindowFocused = true;
+                            GHApp.UnfocusedMuteMode = false;
                             Debug.WriteLine("Window is focused.");
                         }
                         else
                         {
                             // Not focused
                             GHApp.WindowFocused = false;
+                            GHApp.UnfocusedMuteMode = true;
                             Debug.WriteLine("Window is not focused.");
                         }
                     });
