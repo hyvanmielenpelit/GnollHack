@@ -25,7 +25,7 @@ namespace GnollHackX
         private static readonly SKColor GHVeryDarkGray = new SKColor(64, 64, 64);
         private static readonly SKColor GHVeryVeryDarkGray = new SKColor(32, 32, 32);
         private static readonly SKColor GHTitleGold = new SKColor(0xD4, 0xA0, 0x17);
-        private static readonly SKColor GHRed = new SKColor(255, 32, 32);
+        private static readonly SKColor GHRed = new SKColor(255, 64, 64);
         private static readonly SKColor GHDarkRed = new SKColor(224, 0, 0);
         private static readonly SKColor GHGreen = new SKColor(0, 255, 0);
         private static readonly SKColor GHRevertedBrightGreen = new SKColor(0, 160, 0);

@@ -3700,6 +3700,8 @@ register struct attack *mattk;
                         nomul(-tmp);
                         multi_reason = "digesting something";
                         nomovemsg = msgbuf;
+                        nomovemsg_attr = ATR_NONE;
+                        nomovemsg_color = NO_COLOR;
                     }
                     else
                         pline_ex1(ATR_NONE, CLR_MSG_SUCCESS, msgbuf);

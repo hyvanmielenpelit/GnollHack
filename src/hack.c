@@ -2502,6 +2502,8 @@ finish_move:
         nomul(-2);
         multi_reason = "dragging an iron ball";
         nomovemsg = "";
+        nomovemsg_attr = ATR_NONE;
+        nomovemsg_color = NO_COLOR;
     }
 
     if (context.run && (flags.runmode != RUN_TPORT || (context.travel && context.travel_mode > TRAVEL_MODE_NORMAL))) {
@@ -3708,14 +3710,27 @@ register int nval;
 /* called when a non-movement, multi-turn action has completed */
 void
 unmul(msg_override)
+const char* msg_override;
+{
+    unmul_ex(ATR_NONE, NO_COLOR, msg_override);
+}
+
+void
+unmul_ex(attr, color, msg_override)
+int attr, color;
 const char *msg_override;
 {
     multi = 0; /* caller will usually have done this already */
     if (msg_override)
+    {
         nomovemsg = msg_override;
+        nomovemsg_attr = attr;
+        nomovemsg_color = color;
+    }
     else if (!nomovemsg)
     {
         nomovemsg = You_can_move_again;
+        nomovemsg_attr = ATR_NONE;
         nomovemsg_color = CLR_MSG_SUCCESS;
     }
     if (*nomovemsg)

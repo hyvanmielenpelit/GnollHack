@@ -997,6 +997,8 @@ int spellnum;
             refresh_u_tile_gui_info(TRUE);
         }
         nomovemsg = 0;
+        nomovemsg_attr = ATR_NONE;
+        nomovemsg_color = NO_COLOR;
         damage = 0;
         break;
     case CLC_CONFUSE_YOU:

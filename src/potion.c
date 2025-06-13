@@ -717,6 +717,8 @@ ghost_from_bottle()
     nomul(-3);
     multi_reason = "being frightened to death";
     nomovemsg = "You regain your composure.";
+    nomovemsg_attr = ATR_NONE;
+    nomovemsg_color = NO_COLOR;
 }
 
 /* "Quaffing is like drinking, except you spill more." - Terry Pratchett */
@@ -1172,6 +1174,8 @@ struct obj *otmp;
             You("pass out.");
             multi = -rnd(max(1, extra_data1));
             nomovemsg = "You awake with a headache.";
+            nomovemsg_attr = ATR_NONE;
+            nomovemsg_color = NO_COLOR;
         }
         break;
     case POT_URINE:
@@ -2902,6 +2906,7 @@ const char* introline;
             nomul(-d(3 - 1 * bcsign(obj), 4)); // rnd(5));
             multi_reason = "frozen by a potion";
             nomovemsg = You_can_move_again;
+            nomovemsg_attr = ATR_NONE;
             nomovemsg_color = CLR_MSG_SUCCESS;
             exercise(A_DEX, FALSE);
 #endif

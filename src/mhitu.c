@@ -674,7 +674,7 @@ register struct monst *mtmp;
             Sprintf(buf, "You appear to be %s again.",
                     Upolyd ? (const char *) an(mon_monster_name(&youmonst))
                            : (const char *) "yourself");
-            unmul(buf); /* immediately stop mimicking */
+            unmul_ex(ATR_NONE, CLR_MSG_ATTENTION, buf); /* immediately stop mimicking */
         }
         return 0;
     }
@@ -1321,6 +1321,8 @@ register struct monst *mtmp;
             if (u.usleep && u.usleep < monstermoves && !rn2(10)) {
                 multi = -1;
                 nomovemsg = "The combat suddenly awakens you.";
+                nomovemsg_attr = ATR_NONE;
+                nomovemsg_color = CLR_MSG_ATTENTION;
             }
         }
 

@@ -2084,6 +2084,8 @@ dogaze()
                                     : -200);
                                 multi_reason = "frozen by a monster's gaze";
                                 nomovemsg = 0;
+                                nomovemsg_attr = ATR_NONE;
+                                nomovemsg_color = NO_COLOR;
                                 standard_hint("Do not gaze at floating eyes unless you have paralysis resistance. Use ranged weapons against them.", &u.uhint.paralyzed_by_floating_eye);
                                 return 1;
                             }

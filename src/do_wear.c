@@ -1194,6 +1194,8 @@ cancel_don()
          || afternmv == Gloves_on || afternmv == Armor_on);
     afternmv = (int NDECL((*))) 0;
     nomovemsg = (char *) 0;
+    nomovemsg_attr = ATR_NONE;
+    nomovemsg_color = NO_COLOR;
     multi = 0;
     context.takeoff.delay = 0;
     context.takeoff.what = 0L;
@@ -1233,7 +1235,7 @@ struct obj *stolenobj; /* no message if stolenobj is already being doffing */
         buf[0] = '\0';   /* silently stop doffing stolenobj */
         result = -multi; /* remember this before calling unmul() */
     }
-    unmul(buf);
+    unmul_ex(ATR_NONE, CLR_MSG_WARNING, buf);
     /* while putting on, item becomes worn immediately but side-effects are
        deferred until the delay expires; when interrupted, make it unworn
        (while taking off, item stays worn until the delay expires; when
@@ -1497,6 +1499,8 @@ register struct obj *otmp;
     if (delay) {
         nomul(delay);
         multi_reason = "disrobing";
+        nomovemsg_attr = ATR_NONE;
+        nomovemsg_color = NO_COLOR;
         if (is_helmet(otmp)) {
             /* ick... */
             nomovemsg = !strcmp(helm_simple_name(otmp), "hat")
@@ -2594,7 +2598,9 @@ int* result_style_ptr;
             nomul(delay);
             multi_reason = "dressing up";
             nomovemsg = "You finish your dressing maneuver.";
-        } 
+            nomovemsg_attr = ATR_NONE;
+            nomovemsg_color = NO_COLOR;
+        }
         else 
         {
             unmul(""); /* call (*aftermv)(), clear it+nomovemsg+multi_reason */

@@ -2469,6 +2469,8 @@ dosacrifice()
                         nomul(-3);
                         multi_reason = "being terrified of a demon";
                         nomovemsg = 0;
+                        nomovemsg_attr = ATR_NONE;
+                        nomovemsg_color = NO_COLOR;
                     }
                 }
                 else
@@ -3220,6 +3222,8 @@ dopray()
     nomul(-3);
     multi_reason = "praying";
     nomovemsg = "You finish your prayer.";
+    nomovemsg_attr = ATR_NONE;
+    nomovemsg_color = NO_COLOR;
     afternmv = prayer_done;
 
     if (iflags.using_gui_sounds)
@@ -3455,6 +3459,7 @@ doturn()
     nomul(-(5 - ((u.ulevel - 1) / 6))); /* -5 .. -1 */
     multi_reason = "trying to turn the monsters";
     nomovemsg = You_can_move_again;
+    nomovemsg_attr = ATR_NONE;
     nomovemsg_color = CLR_MSG_SUCCESS;
     return 1;
 }

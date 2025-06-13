@@ -1401,7 +1401,9 @@ struct obj *obj;
                 nomul(-d(2, 2));
                 multi_reason = "stuck in a spider web";
                 nomovemsg = "You pull free.";
-            } 
+                nomovemsg_attr = ATR_NONE;
+                nomovemsg_color = CLR_MSG_SUCCESS;
+            }
             else if (lev->typ == IRONBARS) 
             {
                 play_object_hit_sound(obj, HIT_SURFACE_SOURCE_LOCATION, xy_to_any(rx, ry), 0, HMON_MELEE);

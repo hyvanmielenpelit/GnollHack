@@ -190,7 +190,11 @@ eatmdone(VOID_ARGS)
     /* release `eatmbuf' */
     if (eatmbuf) {
         if (nomovemsg == eatmbuf)
+        {
             nomovemsg = 0;
+            nomovemsg_attr = ATR_NONE;
+            nomovemsg_color = NO_COLOR;
+        }
         free((genericptr_t) eatmbuf), eatmbuf = 0;
     }
     /* update display */
@@ -230,6 +234,8 @@ eatmupdate()
             eatmbuf = (char *) alloc(strlen(altmsg) + 1);
         }
         nomovemsg = strcpy(eatmbuf, altmsg);
+        nomovemsg_attr = ATR_NONE;
+        nomovemsg_color = NO_COLOR;
         /* update current image */
         youmonst.mappearance = altapp;
         if (has_mobj(&youmonst))
@@ -541,8 +547,10 @@ boolean message;
     update_hunger_status(FALSE);
     if (nomovemsg) {
         if (message)
-            pline1(nomovemsg);
+            pline_ex1(nomovemsg_attr, nomovemsg_color, nomovemsg);
         nomovemsg = 0;
+        nomovemsg_attr = ATR_NONE;
+        nomovemsg_color = NO_COLOR;
     } else if (message)
         You("finish eating %s.", food_xname(piece, TRUE));
 
@@ -1423,6 +1431,8 @@ uchar gender UNUSED; /* 0 = male, 1 = female, 2 = unknown */
                     an(Upolyd ? mon_monster_name(&youmonst) : urace.noun));
             eatmbuf = dupstr(buf);
             nomovemsg = eatmbuf;
+            nomovemsg_attr = ATR_NONE;
+            nomovemsg_color = NO_COLOR;
             afternmv = eatmdone;
             /* ??? what if this was set before? */
             //youmonst.m_ap_type = M_AP_OBJECT;
@@ -2156,6 +2166,7 @@ struct obj *obj;
         nomul(-duration);
         multi_reason = "unconscious from rotten food";
         nomovemsg = "You are conscious again.";
+        nomovemsg_attr = ATR_NONE;
         nomovemsg_color = CLR_MSG_ATTENTION;
         afternmv = Hear_again;
         return 1;
@@ -4133,7 +4144,9 @@ int num;
             {
                 const char* hardtimetxt = "You're having a hard time getting all of it down.";
                 nomovemsg = "You're finally finished.";
-                if (!context.victual.eating) 
+                nomovemsg_attr = ATR_NONE;
+                nomovemsg_color = NO_COLOR;
+                if (!context.victual.eating)
                 {
                     pline1(hardtimetxt);
                     multi = -2;
@@ -4151,6 +4164,8 @@ int num;
                         {
                             reset_eat();
                             nomovemsg = (char *) 0;
+                            nomovemsg_attr = ATR_NONE;
+                            nomovemsg_color = NO_COLOR;
                         }
                     }
                     else
@@ -4187,7 +4202,7 @@ void
 reset_faint()
 {
     if (afternmv == unfaint)
-        unmul("You revive.");
+        unmul_ex(ATR_NONE, CLR_MSG_ATTENTION, "You revive.");
 }
 
 STATIC_VAR unsigned save_hs;
@@ -4271,6 +4286,7 @@ boolean incr;
                 nomul(-duration);
                 multi_reason = "fainted from lack of food";
                 nomovemsg = "You regain consciousness.";
+                nomovemsg_attr = ATR_NONE;
                 nomovemsg_color = CLR_MSG_ATTENTION;
                 afternmv = unfaint;
                 newhs = FAINTED;
@@ -4524,6 +4540,7 @@ vomit() /* A good idea from David Neves */
         nomul(-2);
         multi_reason = "vomiting";
         nomovemsg = You_can_move_again;
+        nomovemsg_attr = ATR_NONE;
         nomovemsg_color = CLR_MSG_SUCCESS;
     }
 }

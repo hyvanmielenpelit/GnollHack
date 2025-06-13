@@ -1343,6 +1343,8 @@ struct obj *obj;
                         multi_reason = "gazing into a mirror";
                     }
                     nomovemsg = 0; /* default, "you can move again" */
+                    nomovemsg_attr = ATR_NONE;
+                    nomovemsg_color = NO_COLOR;
                 }
             } 
             else if (youmonst.data->mlet == S_VAMPIRE)
@@ -1826,6 +1828,8 @@ struct obj **optr;
                     break;
                 case 2: /* no explanation; it just happens... */
                     nomovemsg = "";
+                    nomovemsg_attr = ATR_NONE;
+                    nomovemsg_color = NO_COLOR;
                     multi_reason = NULL;
                     nomul(-rnd(2));
                     break;
@@ -3145,6 +3149,8 @@ int magic; /* 0=Physical, otherwise skill level */
         nomul(-1);
         multi_reason = "jumping around";
         nomovemsg = "";
+        nomovemsg_attr = ATR_NONE;
+        nomovemsg_color = NO_COLOR;
         morehungry(rnd(25));
         return 1;
     }

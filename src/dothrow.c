@@ -1096,6 +1096,8 @@ boolean verbose;
     nomul(-range);
     multi_reason = "moving through the air";
     nomovemsg = ""; /* it just happens */
+    nomovemsg_attr = ATR_NONE;
+    nomovemsg_color = NO_COLOR;
     if (verbose)
         You_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s in the opposite direction.", range > 1 ? "hurtle" : "float");
     /* if we're in the midst of shooting multiple projectiles, stop */

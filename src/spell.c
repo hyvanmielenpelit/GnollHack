@@ -432,6 +432,8 @@ learn(VOID_ARGS)
         nomul(context.spbook.delay); /* remaining delay is uninterrupted */
         multi_reason = "reading a book";
         nomovemsg = 0;
+        nomovemsg_attr = ATR_NONE;
+        nomovemsg_color = NO_COLOR;
         context.spbook.delay = 0;
         return 0;
 #endif
@@ -947,6 +949,8 @@ register struct obj *spellbook;
             nomul(context.spbook.delay); /* study time */
             multi_reason = "reading a book";
             nomovemsg = 0;
+            nomovemsg_attr = ATR_NONE;
+            nomovemsg_color = NO_COLOR;
             context.spbook.delay = 0;
             if (gone || !rn2(2)) {
                 if (!gone)
@@ -971,6 +975,8 @@ register struct obj *spellbook;
             nomul(context.spbook.delay);
             multi_reason = "reading a book";
             nomovemsg = 0;
+            nomovemsg_attr = ATR_NONE;
+            nomovemsg_color = NO_COLOR;
             context.spbook.delay = 0;
             return 1;
 #endif

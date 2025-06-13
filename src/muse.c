@@ -3001,6 +3001,8 @@ struct monst *mtmp;
     if (unconscious()) {
         multi = -1;
         nomovemsg = "Aggravated, you are jolted into full consciousness.";
+        nomovemsg_attr = ATR_NONE;
+        nomovemsg_color = CLR_MSG_ATTENTION;
     }
     newsym(mtmp->mx, mtmp->my);
     if (!canspotmon(mtmp))

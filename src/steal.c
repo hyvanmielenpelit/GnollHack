@@ -477,6 +477,8 @@ gotobj:
                 nomul(-armordelay);
                 multi_reason = "taking off clothes";
                 nomovemsg = 0;
+                nomovemsg_attr = ATR_NONE;
+                nomovemsg_color = NO_COLOR;
                 remove_worn_item(otmp, TRUE);
                 otmp->cursed = curssv;
                 if (multi < 0) {

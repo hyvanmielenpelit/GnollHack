@@ -591,6 +591,8 @@ doengrave()
 
     multi = 0;              /* moves consumed */
     nomovemsg = (char *) 0; /* occupation end message */
+    nomovemsg_attr = ATR_NONE;
+    nomovemsg_color = NO_COLOR;
 
     buf[0] = (char) 0;
     ebuf[0] = (char) 0;
@@ -1242,12 +1244,20 @@ doengrave()
     default:
         multi = -(len / 10);
         if (multi)
+        {
             nomovemsg = "You finish your weird engraving.";
+            nomovemsg_attr = ATR_NONE;
+            nomovemsg_color = NO_COLOR;
+        }
         break;
     case DUST:
         multi = -(len / 10);
         if (multi)
+        {
             nomovemsg = "You finish writing in the dust.";
+            nomovemsg_attr = ATR_NONE;
+            nomovemsg_color = NO_COLOR;
+        }
         break;
     case ENGR_HEADSTONE:
     case ENGR_SIGNPOST:
@@ -1275,14 +1285,22 @@ doengrave()
             multi = -len;
         }
         if (multi)
+        {
             nomovemsg = "You finish engraving.";
+            nomovemsg_attr = ATR_NONE;
+            nomovemsg_color = NO_COLOR;
+        }
         break;
     case BURN:
         multi = -(len / 10);
         if (multi)
+        {
             nomovemsg = is_ice(u.ux, u.uy)
-                          ? "You finish melting your message into the ice."
-                          : "You finish burning your message into the floor.";
+                ? "You finish melting your message into the ice."
+                : "You finish burning your message into the floor.";
+            nomovemsg_attr = ATR_NONE;
+            nomovemsg_color = NO_COLOR;
+        }
         break;
     case MARK:
         multi = -(len / 10);
@@ -1298,12 +1316,20 @@ doengrave()
                 otmp->charges -= 1; /* Prevent infinite graffiti */
         }
         if (multi)
+        {
             nomovemsg = "You finish defacing the dungeon.";
+            nomovemsg_attr = ATR_NONE;
+            nomovemsg_color = NO_COLOR;
+        }
         break;
     case ENGR_BLOOD:
         multi = -(len / 10);
         if (multi)
+        {
             nomovemsg = "You finish scrawling.";
+            nomovemsg_attr = ATR_NONE;
+            nomovemsg_color = NO_COLOR;
+        }
         break;
     }
 
@@ -1315,7 +1341,11 @@ doengrave()
         if (!maxelen && *sp) {
             *sp = '\0';
             if (multi)
+            {
                 nomovemsg = "You cannot write any more.";
+                nomovemsg_attr = ATR_NONE;
+                nomovemsg_color = NO_COLOR;
+            }
             pline_multi_ex(ATR_NONE, NO_COLOR, no_multiattrs, multicolor_text1, "You are only able to write \"%s\".", ebuf);
         }
     }

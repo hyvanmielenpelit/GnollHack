@@ -4036,6 +4036,8 @@ int applymode; /* 0 = normal, 1 = take out items, 2 = put in items */
             nomul(-1);
             multi_reason = "opening a container";
             nomovemsg = "";
+            nomovemsg_attr = ATR_NONE;
+            nomovemsg_color = NO_COLOR;
         }
         abort_looting = TRUE;
         return 1;
@@ -5157,6 +5159,8 @@ struct obj *box; /* or bag */
             nomul(-1);
             multi_reason = "tipping a container";
             nomovemsg = "";
+            nomovemsg_attr = ATR_NONE;
+            nomovemsg_color = NO_COLOR;
         }
     } else if (box->otyp == BAG_OF_TRICKS || box->otyp == HORN_OF_PLENTY) {
         boolean bag = box->otyp == BAG_OF_TRICKS;

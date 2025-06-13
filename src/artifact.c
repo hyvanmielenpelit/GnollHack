@@ -1400,6 +1400,8 @@ char *hittee;              /* target's name: "you" or mon_nam(mdef) */
                 nomul(-3);
                 multi_reason = "being scared stiff";
                 nomovemsg = "";
+                nomovemsg_attr = ATR_NONE;
+                nomovemsg_color = NO_COLOR;
                 if (magr && magr == u.ustuck && sticks(youmonst.data)) {
                     u.ustuck = (struct monst *) 0;
                     You("release %s!", mon_nam(magr));

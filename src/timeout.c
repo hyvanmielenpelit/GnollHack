@@ -269,6 +269,7 @@ stoned_dialogue()
         nomul(-3); /* can't move anymore */
         multi_reason = "getting stoned";
         nomovemsg = You_can_move_again; /* not unconscious */
+        nomovemsg_attr = ATR_NONE;
         nomovemsg_color = CLR_MSG_SUCCESS;
         /* "your limbs have turned to stone" so terminate wounded legs */
         if (Wounded_legs && !u.usteed)
@@ -921,6 +922,8 @@ nh_timeout()
                     nomul(-2);
                     multi_reason = "fumbling";
                     nomovemsg = "";
+                    nomovemsg_attr = ATR_NONE;
+                    nomovemsg_color = NO_COLOR;
                     /* The more you are carrying the more likely you
                      * are to make noise when you fumble.  Adjustments
                      * to this number must be thoroughly play tested.
@@ -2772,6 +2775,8 @@ do_storms()
             nomul(-3);
             multi_reason = "hiding from thunderstorm";
             nomovemsg = 0;
+            nomovemsg_attr = ATR_NONE;
+            nomovemsg_color = NO_COLOR;
         }
     } else
         You_hear("a rumbling noise.");

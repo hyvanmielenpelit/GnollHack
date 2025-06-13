@@ -3496,6 +3496,8 @@ register struct monst *mtmp;
             {
                 multi = -1;
                 nomovemsg = "The explosion awakens you!";
+                nomovemsg_attr = ATR_NONE;
+                nomovemsg_color = NO_COLOR;
             }
             if (spef_on)
             {
@@ -4972,7 +4974,7 @@ drown()
        while still asleep; we can't do that the same way that waking
        due to combat is handled; note unmul() clears u.usleep */
     if (u.usleep)
-        unmul("Suddenly you wake up!");
+        unmul_ex(ATR_NONE, CLR_MSG_ATTENTION, "Suddenly you wake up!");
     /* being doused will revive from fainting */
     if (is_fainted())
         reset_faint();
@@ -7050,6 +7052,7 @@ boolean disarm;
                 exercise(A_DEX, FALSE);
 #endif
                 nomovemsg = You_can_move_again;
+                nomovemsg_attr = ATR_NONE;
                 nomovemsg_color = CLR_MSG_SUCCESS;
             }
             else

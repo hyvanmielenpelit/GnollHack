@@ -1530,6 +1530,8 @@ bark_here:
         nomul(-2);
         multi_reason = "scared by rattling";
         nomovemsg = 0;
+        nomovemsg_attr = ATR_NONE;
+        nomovemsg_color = NO_COLOR;
         break;
     case MS_LAUGH: {
         static const char *const laugh_msg[4] = {
