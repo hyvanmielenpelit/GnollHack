@@ -889,14 +889,17 @@ namespace GnollHackX.Pages.Game
         private List<ContextMenuButton> _contextMenuData = new List<ContextMenuButton>();
         private class ContextMenuButton
         {
-            public string LblText;
-            public string ImgSourcePath;
-            public SKImage Bitmap;
-            public int BtnCommand;
-            public SKRect Rect;
-            public ContextMenuButton()
+            public readonly string LblText;
+            public readonly string ImgSourcePath;
+            public readonly SKImage Bitmap;
+            public readonly int BtnCommand;
+            //public SKRect Rect;
+            public ContextMenuButton(string lblText, string imgSourcePath, SKImage bitmap, int btnCommand)
             {
-
+                LblText = lblText;
+                ImgSourcePath = imgSourcePath;
+                Bitmap = bitmap;
+                BtnCommand = btnCommand;
             }
         }
 
@@ -2508,11 +2511,12 @@ namespace GnollHackX.Pages.Game
                     break;
             }
 
-            ContextMenuButton cmb = new ContextMenuButton();
-            cmb.ImgSourcePath = "resource://" + icon_string;
-            cmb.Bitmap = GHApp.GetCachedImageSourceBitmap(cmb.ImgSourcePath, true);
-            cmb.LblText = data.cmd_text;
-            cmb.BtnCommand = cmdcurchar;
+            string sourcePath = "resource://" + icon_string;
+            ContextMenuButton cmb = new ContextMenuButton(data.cmd_text, sourcePath, GHApp.GetCachedImageSourceBitmap(sourcePath, true), cmdcurchar);
+            //cmb.ImgSourcePath = "resource://" + icon_string;
+            //cmb.Bitmap = GHApp.GetCachedImageSourceBitmap(cmb.ImgSourcePath, true);
+            //cmb.LblText = data.cmd_text;
+            //cmb.BtnCommand = cmdcurchar;
             lock (_contextMenuDataLock)
             {
                 _contextMenuData.Add(cmb);
@@ -6785,6 +6789,8 @@ namespace GnollHackX.Pages.Game
         private float _localMapMiniOffsetY = 0;
         private List<GHPetDataItem> _localPetData = new List<GHPetDataItem>(8);
         private List<SKRect> _localPetRects = new List<SKRect>(8);
+        private List<ContextMenuButton> _localContextMenuData = new List<ContextMenuButton>(10);
+        private List<SKRect> _localContextMenuRects = new List<SKRect>(10);
 
         private void PaintMainGamePage(object sender, SKPaintSurfaceEventArgs e, bool isCanvasOnMainThread)
         {
@@ -7082,6 +7088,27 @@ namespace GnollHackX.Pages.Game
             {
                 if (lockTaken)
                     Monitor.Exit(_petDataLock);
+            }
+            lockTaken = false;
+
+            //lock (_contextMenuDataLock)
+            try
+            {
+                Monitor.TryEnter(_contextMenuDataLock, ref lockTaken);
+                if (lockTaken)
+                {
+                    _localContextMenuData.Clear();
+                    _localContextMenuData.AddRange(_contextMenuData);
+                    _localContextMenuRects.Clear();
+                    int cbCnt = _contextMenuData.Count;
+                    for (int i = 0; i < cbCnt; i++)
+                        _localContextMenuRects.Add(SKRect.Empty);
+                }
+            }
+            finally
+            {
+                if (lockTaken)
+                    Monitor.Exit(_contextMenuDataLock);
             }
             lockTaken = false;
 
@@ -10960,7 +10987,7 @@ namespace GnollHackX.Pages.Game
                     }
 
                     /* Context Menu */
-                    lock(_contextMenuDataLock)
+                    //lock(_contextMenuDataLock)
                     {
                         float startBottom = canvasheight - (float)usedButtonRowStackHeight * inverse_canvas_scale - GHConstants.ContextButtonBottomStartMargin;
                         float textSize = GHConstants.ContextButtonBaseFontSize * orbbordersize / 50.0f;
@@ -10970,8 +10997,11 @@ namespace GnollHackX.Pages.Game
                         float startLeft = canvaswidth - orbbordersize - horizontalPadding;
                         float topLimit = (float)(stdCmdLayoutHeight + stdCmdLayoutMargin.Top) * inverse_canvas_scale;
                         bool isFirstCmb = true;
-                        foreach (ContextMenuButton cmb in _contextMenuData) /* foreach, since _contextMenuData may in theory be cleared concurrently in the same thread */
+                        int cbIdx = -1;
+                        foreach (ContextMenuButton cmb in _localContextMenuData) /* foreach, since _contextMenuData may in theory be cleared concurrently in the same thread */
                         {
+                            cbIdx++;
+                            SKRect usedRect = new SKRect();
                             startTop -= (orbbordersize + internalPadding + textSize);
                             if (startTop < topLimit && !isFirstCmb)
                             {
@@ -10982,7 +11012,8 @@ namespace GnollHackX.Pages.Game
                             {
                                 isFirstCmb = false;
                             }
-                            cmb.Rect = new SKRect(startLeft, startTop, startLeft + orbbordersize, startTop + orbbordersize + textSize);
+                            if(cbIdx < _localContextMenuRects.Count)
+                                _localContextMenuRects[cbIdx] = usedRect = new SKRect(startLeft, startTop, startLeft + orbbordersize, startTop + orbbordersize + textSize);
                             SKRect imgDest = new SKRect(startLeft, startTop, startLeft + orbbordersize, startTop + orbbordersize);
                             textPaint.Color = SKColors.White;
                             textPaint.Typeface = GHApp.LatoRegular;
@@ -10993,7 +11024,7 @@ namespace GnollHackX.Pages.Game
 #endif
                             using (SKPaint btnPaint = new SKPaint())
                             {
-                                if (isPointerHovering && cmb.Rect.Contains(pointerHoverLocation))
+                                if (isPointerHovering && usedRect.Contains(pointerHoverLocation))
                                 {
                                     btnPaint.ColorFilter = UIUtils.HighlightColorFilter;
                                 }
@@ -11742,6 +11773,25 @@ namespace GnollHackX.Pages.Game
             {
                 if (lockTaken)
                     Monitor.Exit(_uiPetRectLock);
+            }
+            lockTaken = false;
+
+            //lock (_uiContextMenuRectLock)
+            try
+            {
+                Monitor.TryEnter(_uiContextMenuRectLock, ref lockTaken);
+                if (lockTaken)
+                {
+                    _uiContextMenuData.Clear();
+                    _uiContextMenuData.AddRange(_localContextMenuData);
+                    _uiContextMenuRects.Clear();
+                    _uiContextMenuRects.AddRange(_localContextMenuRects);
+                }
+            }
+            finally
+            {
+                if (lockTaken)
+                    Monitor.Exit(_uiContextMenuRectLock);
             }
             lockTaken = false;
 
@@ -14277,14 +14327,20 @@ namespace GnollHackX.Pages.Game
             }
         }
 
+        private readonly object _uiContextMenuRectLock = new object();
+        private List<ContextMenuButton> _uiContextMenuData = new List<ContextMenuButton>(10);
+        private List<SKRect> _uiContextMenuRects = new List<SKRect>(10);
+
         private int PointWithinContextMenuButton(SKPoint point)
         {
-            lock (_contextMenuDataLock)
+            lock (_uiContextMenuRectLock)
             {
-                foreach (ContextMenuButton cmb in _contextMenuData)
+                int cbIdx = -1;
+                foreach (ContextMenuButton cmb in _uiContextMenuData)
                 {
-                    if (cmb.Rect.Contains(point))
-                        return cmb.BtnCommand;
+                    cbIdx++;
+                    if (cbIdx < _uiContextMenuRects.Count && _uiContextMenuRects[cbIdx].Contains(point))
+                        return cmb?.BtnCommand ?? 0;
                 }
             }
             return 0;
@@ -14497,12 +14553,12 @@ namespace GnollHackX.Pages.Game
         {
             lock(_uiPetRectLock)
             {
-                int i = -1;
-                foreach (SKRect rect in _uiPetRects)
+                int pdiIdx = -1;
+                foreach (GHPetDataItem pdi in _uiPetData)
                 {
-                    i++;
-                    if (rect.Contains(p) && _uiPetData.Count > i)
-                        return _uiPetData[i]?.Data.m_id ?? 0;
+                    pdiIdx++;
+                    if (pdiIdx < _uiPetRects.Count && _uiPetRects[pdiIdx].Contains(p))
+                        return pdi?.Data.m_id ?? 0;
                 }
             }
             return 0;

@@ -7,7 +7,7 @@ namespace GnollHackX
 {
     public class GHPetDataItem
     {
-        public monst_info Data { get; private set; }
+        public readonly monst_info Data;
 
         public GHPetDataItem(monst_info data)
         {
