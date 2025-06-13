@@ -258,7 +258,7 @@ struct context_info
     int quick_cast_spell_no;
     boolean quick_cast_spell_set;
     boolean in_memory_objs;
-    boolean reserved_boolB;
+    boolean save_checkpoint;
     boolean reserved_boolC;
     boolean reserved_boolD;
     boolean reserved_boolE;

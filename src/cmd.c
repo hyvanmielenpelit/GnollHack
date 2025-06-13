@@ -7733,6 +7733,14 @@ register char *cmd;
     check_mobbed_hint();
     check_closed_for_inventory_hint();
 
+    if (context.save_checkpoint)
+    {
+        context.save_checkpoint = FALSE;
+#ifdef INSURANCE
+        save_currentstate();
+#endif
+    }
+
     iflags.menu_requested = FALSE;
 #ifdef SAFERHANGUP
     if (program_state.done_hup)
