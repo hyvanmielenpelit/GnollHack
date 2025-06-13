@@ -2086,6 +2086,8 @@ delallobj(x, y)
 int x, y;
 {
     struct obj *otmp, *otmp2;
+    Strcpy(priority_debug_buf_2, "delallobj");
+    Strcpy(priority_debug_buf_3, "delallobj");
 
     for (otmp = level.objects[x][y]; otmp; otmp = otmp2) {
         if (otmp == uball)
@@ -7249,6 +7251,7 @@ uint64_t newsym_flags;
         else
             (void) stolen_value(otmp, otmp->ox, otmp->oy, FALSE, FALSE);
     }
+    Sprintf(priority_debug_buf_3, "useupf_with_flags: %d", otmp->otyp);
     delobj_with_flags(otmp, newsym_flags);
     if (at_u && u.uundetected && hides_under(youmonst.data))
         (void) hideunder(&youmonst);

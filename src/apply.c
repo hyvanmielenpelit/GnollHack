@@ -5273,6 +5273,7 @@ struct obj *obj;
     costly_alteration(obj, COST_SPLAT);
     Strcpy(debug_buf_2, "use_cream_pie");
     obj_extract_self(obj);
+    Sprintf(priority_debug_buf_2, "use_cream_pie: %d", obj->otyp);
     Sprintf(priority_debug_buf_3, "use_cream_pie: %d", obj->otyp);
     delobj(obj);
     return 0;
@@ -5701,6 +5702,7 @@ discard_broken_wand:
     current_wand = 0;
     if (obj)
     {
+        Sprintf(priority_debug_buf_2, "do_break_wand: %d", obj->otyp);
         Sprintf(priority_debug_buf_3, "do_break_wand: %d", obj->otyp);
         delobj(obj);
     }

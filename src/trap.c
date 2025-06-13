@@ -338,6 +338,7 @@ int ef_flags;
             costly_alteration(otmp, cost_type);
 
         setnotworn(otmp);
+        Sprintf(priority_debug_buf_3, "erode_obj: %d", otmp->otyp);
         delobj(otmp);
         return ER_DESTROYED;
     } 
@@ -4352,7 +4353,8 @@ xchar x, y;
     if (catch_lit(obj))
         return FALSE;
 
-    if (Is_container(obj))
+    Sprintf(priority_debug_buf_2, "fire_damage: %d", obj->otyp);
+    if (Is_container(obj) && !oresist_fire(obj))
     {
         switch (obj->otyp) 
         {
@@ -4392,6 +4394,7 @@ xchar x, y;
             }
         }
         setnotworn(obj);
+        Sprintf(priority_debug_buf_3, "fire_damage: %d", obj->otyp);
         delobj(obj);
         return TRUE;
     } 
