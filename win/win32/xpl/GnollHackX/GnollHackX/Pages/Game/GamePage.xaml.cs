@@ -18884,6 +18884,7 @@ namespace GnollHackX.Pages.Game
                 bool introDisplayed = false;
                 string intro = "A crashed game has been detected. GnollHack will attempt to restore this game." + Environment.NewLine + Environment.NewLine;
                 bool answer;
+#if !SENTRY
                 if (!GHApp.PostingDiagnosticData)
                 {
                     introDisplayed = true;
@@ -18903,6 +18904,7 @@ namespace GnollHackX.Pages.Game
                         }
                     }
                 }
+#endif
                 answer = await GHApp.DisplayMessageBox(this, introDisplayed ? "Send Crash Report?" : "Crash Detected", (!introDisplayed ? intro : "")+ "Do you want to create a crash report? This will create a zip archive of the files in your game directory and ask it to be shared further.", "Yes", "No");
                 if (answer)
                 {

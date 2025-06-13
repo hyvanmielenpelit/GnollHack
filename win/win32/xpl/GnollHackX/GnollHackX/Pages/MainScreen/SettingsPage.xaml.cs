@@ -447,8 +447,10 @@ namespace GnollHackX.Pages.MainScreen
 
             GHApp.PostingGameStatus = PostGameStatusSwitch.IsToggled;
             Preferences.Set("PostingGameStatus", PostGameStatusSwitch.IsToggled);
+#if !SENTRY
             GHApp.PostingDiagnosticData = PostDiagnosticDataSwitch.IsToggled;
             Preferences.Set("PostingDiagnosticData", PostDiagnosticDataSwitch.IsToggled);
+#endif
             GHApp.PostingXlogEntries = PostXlogSwitch.IsToggled;
             Preferences.Set("PostingXlogEntries", PostXlogSwitch.IsToggled);
             GHApp.PostingReplays = PostReplaysSwitch.IsToggled;
@@ -874,7 +876,10 @@ namespace GnollHackX.Pages.MainScreen
             bool breatheanimations = GHConstants.DefaultBreatheAnimations; //, put2bag = GHConstants.DefaultShowPickNStashContextCommand, prevwep = GHConstants.DefaultShowPrevWepContextCommand;
             bool devmode = GHConstants.DefaultDeveloperMode, logmessages = GHConstants.DefaultLogMessages, debugpostchannel = GHConstants.DefaultDebugPostChannel, tournament = false, hpbars = false, nhstatusbarclassic = GHConstants.IsDefaultStatusBarClassic, desktopstatusbar = false, rightaligned2ndrow = false, showscore = false, showxp = false, desktopbuttons = false, menufadeeffects = false, menuhighfilterquality = true, menuhighlightedkeys = false, pets = true, orbs = true, orbmaxhp = false, orbmaxmana = false, mapgrid = false, playermark = false, monstertargeting = false, walkarrows = true;
             bool forcemaxmsg = false, showexstatus = false, noclipmode = GHConstants.DefaultMapNoClipMode, silentmode = false, characterclickaction = false, diceasranges = true;
-            bool postgamestatus = GHConstants.DefaultPosting, postdiagnostics = GHConstants.DefaultPosting, postxlog = GHConstants.DefaultPosting, postreplays = GHConstants.DefaultPosting, postbones = GHConstants.DefaultPosting, boneslistisblack = false;
+            bool postgamestatus = GHConstants.DefaultPosting, postxlog = GHConstants.DefaultPosting, postreplays = GHConstants.DefaultPosting, postbones = GHConstants.DefaultPosting, boneslistisblack = false;
+#if !SENTRY
+            bool postdiagnostics = GHConstants.DefaultPosting;
+#endif
             bool longermsghistory = false, hidemsghistory = false, xlog_release_account = false, forcepostbones = false, fixrects = false, save_file_tracking = false, disablewindowskey = false;
             long primarygpucache = -2, secondarygpucache = -2;
             int rightmouse = GHConstants.DefaultRightMouseCommand, middlemouse = GHConstants.DefaultMiddleMouseCommand;
@@ -929,7 +934,9 @@ namespace GnollHackX.Pages.MainScreen
             streamingbanktomemory = Preferences.Get("ReadStreamingBankToMemory", GHApp.DefaultStreamingBankToMemory);
             streamingbanktodisk = Preferences.Get("CopyStreamingBankToDisk", GHConstants.DefaultCopyStreamingBankToDisk);
             postgamestatus = Preferences.Get("PostingGameStatus", GHConstants.DefaultPosting);
+#if !SENTRY
             postdiagnostics = Preferences.Get("PostingDiagnosticData", GHConstants.DefaultPosting);
+#endif
             postxlog = Preferences.Get("PostingXlogEntries", GHConstants.DefaultPosting);
             postreplays = Preferences.Get("PostingReplays", GHConstants.DefaultPosting);
             postbones = Preferences.Get("PostingBonesFiles", GHConstants.DefaultPosting);
@@ -1275,7 +1282,11 @@ namespace GnollHackX.Pages.MainScreen
             }
 
             PostGameStatusSwitch.IsToggled = postgamestatus;
+#if !SENTRY
             PostDiagnosticDataSwitch.IsToggled = postdiagnostics;
+#else
+            PostDiagnosticDataGrid.IsVisible = false;
+#endif
             PostXlogSwitch.IsToggled = postxlog;
             PostReplaysSwitch.IsToggled = postreplays;
             PostBonesSwitch.IsToggled = postbones;
@@ -2256,6 +2267,7 @@ namespace GnollHackX.Pages.MainScreen
 
         private void PostDiagnosticDataSwitch_Toggled(object sender, ToggledEventArgs e)
         {
+#if !SENTRY
             if (e.Value && !GHApp.PostingDiagnosticData && GHApp.IsiOS)
             {
                 PopupTitleLabel.TextColor = GHColors.Orange;
@@ -2264,6 +2276,7 @@ namespace GnollHackX.Pages.MainScreen
                 PopupOkButton.IsEnabled = true;
                 PopupGrid.IsVisible = true;
             }
+#endif
         }
 
         private void DarkModeSwitch_Toggled(object sender, ToggledEventArgs e)

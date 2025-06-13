@@ -2804,13 +2804,14 @@ namespace GnollHackX
                         cmd_param == (int)diagnostic_data_types.DIAGNOSTIC_DATA_CRITICAL ? "Diagnostic - Critical" :
                         "Diagnostic - General";
                     SentrySdk.CaptureMessage(data_title + ": " + status_str);
-#endif
+#else
                     if (GHApp.PostingDiagnosticData)
                     {
                         RequestQueue.Enqueue(new GHRequest(this,
                             GHRequestType.PostDiagnosticData,
                             cmd_param, cmd_param2, status_str));
                     }
+#endif
                     break;
                 case (int)gui_command_types.GUI_CMD_POST_GAME_STATUS:
                     if (PlayingReplay)

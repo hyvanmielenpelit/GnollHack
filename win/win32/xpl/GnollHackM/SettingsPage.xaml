@@ -1039,7 +1039,7 @@
                                         HorizontalOptions="End" />
                                 </StackLayout>
                             </Grid>
-                            <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
+                            <Grid x:Name="PostDiagnosticDataGrid" ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
                                 <Label Text="Post Diagnostic Data"
                                        x:Name="PostDiagnosticDataLabel"
                                        FontFamily="Underwood" TextColor="Black"

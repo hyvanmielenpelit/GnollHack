@@ -93,7 +93,11 @@ STATIC_DCL char FDECL(special_yn_query, (const char*, const char*));
 #define NH_abort_() (void) abort()
 #else
 #ifdef WIN32
+#ifdef GNH_MOBILE
+#define NH_abort_() gnollhack_exit(EXIT_FAILURE)
+#else
 #define NH_abort_() win32_abort()
+#endif
 #else
 #define NH_abort_() abort()
 #endif
@@ -803,7 +807,7 @@ VA_DECL(const char *, str)
         //    issue_gui_command(GUI_CMD_POST_DIAGNOSTIC_DATA, DIAGNOSTIC_DATA_PANIC, 0, buf);
 #endif
     }
-#ifdef WIN32
+#if defined(WIN32) && !defined(GNH_MOBILE)
     interject(INTERJECT_PANIC);
 #endif
 

@@ -170,7 +170,9 @@ namespace GnollHackX
             Preferences.Set("GameSaveResult", 0);
             InformAboutCrashReport = !InformAboutGameTermination;
             PostingGameStatus = Preferences.Get("PostingGameStatus", GHConstants.DefaultPosting);
+#if !SENTRY
             PostingDiagnosticData = Preferences.Get("PostingDiagnosticData", GHConstants.DefaultPosting);
+#endif
             PostingXlogEntries = Preferences.Get("PostingXlogEntries", GHConstants.DefaultPosting);
             PostingReplays = Preferences.Get("PostingReplays", GHConstants.DefaultPosting);
             PostingBonesFiles = Preferences.Get("PostingBonesFiles", GHConstants.DefaultPosting);
@@ -3549,10 +3551,14 @@ namespace GnollHackX
         private static bool _postingGameStatus;
         public static bool PostingGameStatus { get { bool t = TournamentMode; lock (_postingGameStatusLock) { return _postingGameStatus || t; } } set { lock (_postingGameStatusLock) { _postingGameStatus = value; } } }
 
+#if SENTRY
+        public static readonly bool HasSentry = true;
+#else
+        public static readonly bool HasSentry = false;
         private static readonly object _postingDiagnosticDataLock = new object();
         private static bool _postingDiagnosticData;
         public static bool PostingDiagnosticData { get { lock (_postingDiagnosticDataLock) { return _postingDiagnosticData; } } set { lock (_postingDiagnosticDataLock) { _postingDiagnosticData = value; } } }
-
+#endif
         private static readonly object _postingXlogEntriesLock = new object();
         private static bool _postingXlogEntries;
         public static bool PostingXlogEntries { get { bool t = TournamentMode; lock (_postingXlogEntriesLock) { return _postingXlogEntries || t; } } set { lock (_postingXlogEntriesLock) { _postingXlogEntries = value; } } }
