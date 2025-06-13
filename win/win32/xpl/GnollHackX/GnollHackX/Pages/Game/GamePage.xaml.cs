@@ -567,7 +567,7 @@ namespace GnollHackX.Pages.Game
         public MeasurableStackLayout UsedButtonRowStack { get { return UseSimpleCmdLayout ? SimpleButtonRowStack : ButtonRowStack; } }
 
         private readonly object _petDataLock = new object();
-        private List<GHPetDataItem> _petData = new List<GHPetDataItem>();
+        private List<GHPetDataItem> _petData = new List<GHPetDataItem>(8);
 
         private readonly object _styleLock = new object();
         private int _shownMessageRows = GHConstants.DefaultMessageRows;
@@ -6779,11 +6779,12 @@ namespace GnollHackX.Pages.Game
         private GHMsgHistoryItem[] _localMsgHistory = null;
         private int _localClipX = 0;
         private int _localClipY = 0;
-        public float _localMapOffsetX = 0;
-        public float _localMapOffsetY = 0;
-        public float _localMapMiniOffsetX = 0;
-        public float _localMapMiniOffsetY = 0;
-        /* Note that ContextMenuData items are not immutable, and therefore cannot be copied to a local list */
+        private float _localMapOffsetX = 0;
+        private float _localMapOffsetY = 0;
+        private float _localMapMiniOffsetX = 0;
+        private float _localMapMiniOffsetY = 0;
+        private List<GHPetDataItem> _localPetData = new List<GHPetDataItem>(8);
+        private List<SKRect> _localPetRects = new List<SKRect>(8);
 
         private void PaintMainGamePage(object sender, SKPaintSurfaceEventArgs e, bool isCanvasOnMainThread)
         {
@@ -7060,6 +7061,27 @@ namespace GnollHackX.Pages.Game
             {
                 if (lockTaken)
                     Monitor.Exit(_guiEffectLock);
+            }
+            lockTaken = false;
+
+            //lock (_petDataLock)
+            try
+            {
+                Monitor.TryEnter(_petDataLock, ref lockTaken);
+                if (lockTaken)
+                {
+                    _localPetData.Clear();
+                    _localPetData.AddRange(_petData);
+                    _localPetRects.Clear();
+                    int petCnt = _petData.Count;
+                    for (int i = 0; i < petCnt; i++)
+                        _localPetRects.Add(SKRect.Empty);
+                }
+            }
+            finally
+            {
+                if (lockTaken)
+                    Monitor.Exit(_petDataLock);
             }
             lockTaken = false;
 
@@ -10515,7 +10537,7 @@ namespace GnollHackX.Pages.Game
                                 /* Pets */
                                 if (ShowPets)
                                 {
-                                    lock (_petDataLock)
+                                    //lock (_petDataLock)
                                     {
                                         textPaint.Color = SKColors.White;
                                         textPaint.Typeface = GHApp.LatoRegular;
@@ -10539,14 +10561,18 @@ namespace GnollHackX.Pages.Game
                                         tx = pet_tx_start;
                                         ty = statusbarheight + 5.0f;
                                         int petrownum = 0;
+                                        int petidx = -1;
 
-                                        foreach (GHPetDataItem pdi in _petData)
+                                        foreach (GHPetDataItem pdi in _localPetData)
                                         {
+                                            petidx++;
                                             monst_info mi = pdi.Data;
                                             using (new SKAutoCanvasRestore(canvas, true))
                                             {
                                                 canvas.ClipRect(new SKRect(tx - 1, ty - 1, tx + pet_target_width + 1, ty + pet_target_height + 2));
-                                                pdi.Rect = new SKRect(tx, ty, tx + pet_target_width, ty + pet_target_height);
+                                                SKRect usedRect = new SKRect();
+                                                if(petidx < _localPetRects.Count)
+                                                    _localPetRects[petidx] = usedRect = new SKRect(tx, ty, tx + pet_target_width, ty + pet_target_height);
 
                                                 float petpicturewidth = 0f;
                                                 float petpictureheight = 0f;
@@ -10566,7 +10592,7 @@ namespace GnollHackX.Pages.Game
 #if GNH_MAP_PROFILING && DEBUG
                                                     StartProfiling(GHProfilingStyle.Bitmap);
 #endif
-                                                    gis.DrawOnCanvas(canvas, usingGL, isPointerHovering && pdi.Rect.Contains(pointerHoverLocation), false, fixRects);
+                                                    gis.DrawOnCanvas(canvas, usingGL, isPointerHovering && usedRect.Contains(pointerHoverLocation), false, fixRects);
 #if GNH_MAP_PROFILING && DEBUG
                                                     StopProfiling(GHProfilingStyle.Bitmap);
 #endif
@@ -10780,16 +10806,16 @@ namespace GnollHackX.Pages.Game
                                         }
                                     }
                                 }
-                                else
-                                {
-                                    lock (_petDataLock)
-                                    {
-                                        foreach (GHPetDataItem pdi in _petData)
-                                        {
-                                            pdi.Rect = new SKRect();
-                                        }
-                                    }
-                                }
+                                //else
+                                //{
+                                //    //lock (_petDataLock)
+                                //    {
+                                //        for (int i = 0; i < _localPetRects.Count; i++)
+                                //        {
+                                //            _localPetRects[i] = new SKRect();
+                                //        }
+                                //    }
+                                //}
                             }
                         }
 
@@ -11697,6 +11723,27 @@ namespace GnollHackX.Pages.Game
                     UIUtils.ChangeElementCursor(RootGrid, newCursor);
 #endif
             }
+
+
+            lockTaken = false;
+            //lock (_uiPetRectLock)
+            try
+            {
+                Monitor.TryEnter(_uiPetRectLock, ref lockTaken);
+                if (lockTaken)
+                {
+                    _uiPetData.Clear();
+                    _uiPetData.AddRange(_localPetData);
+                    _uiPetRects.Clear();
+                    _uiPetRects.AddRange(_localPetRects);
+                }
+            }
+            finally
+            {
+                if (lockTaken)
+                    Monitor.Exit(_uiPetRectLock);
+            }
+            lockTaken = false;
 
 #if GNH_MAP_PROFILING && DEBUG
             if ((_totalFrames % 120) == 0)
@@ -14442,14 +14489,20 @@ namespace GnollHackX.Pages.Game
             return true; /* Continue until cancelled */
         }
 
+        private readonly object _uiPetRectLock = new object();
+        private List<GHPetDataItem> _uiPetData = new List<GHPetDataItem>(8);
+        private List<SKRect> _uiPetRects = new List<SKRect>(8);
+
         public uint PetRectContains(SKPoint p)
         {
-            lock(_petDataLock)
+            lock(_uiPetRectLock)
             {
-                foreach (GHPetDataItem pdi in _petData)
+                int i = -1;
+                foreach (SKRect rect in _uiPetRects)
                 {
-                    if (pdi.Rect.Contains(p))
-                        return pdi.Data.m_id;
+                    i++;
+                    if (rect.Contains(p) && _uiPetData.Count > i)
+                        return _uiPetData[i]?.Data.m_id ?? 0;
                 }
             }
             return 0;
