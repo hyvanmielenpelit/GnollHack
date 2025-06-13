@@ -432,18 +432,12 @@ uint64_t abil;
 
 boolean
 artifact_confers_monster_power(mon, otmp, prop_index)
-struct monst* mon; /* not used at the moment, but here in case artifact powers will depend on the wielder */
+struct monst* mon UNUSED; /* not used at the moment, but here in case artifact powers will depend on the wielder */
 struct obj* otmp;
 int prop_index;
 {
-    if (!otmp)
+    if (!otmp || prop_index <= 0)
         return FALSE;
-
-    /* Remove gcc warning */
-    if (!mon)
-    {
-        /* Do nothing, since mon is not being used */
-    }
 
     const struct artifact* arti = get_artifact(otmp);
     if (!arti)
@@ -476,6 +470,85 @@ int prop_index;
     return FALSE;
 }
 
+boolean
+mythic_confers_monster_power(mon, otmp, prop_index)
+struct monst* mon UNUSED; /* not used at the moment, but here in just case */
+struct obj* otmp;
+int prop_index;
+{
+    if (!otmp || prop_index <= 0)
+        return FALSE;
+
+    if ((otmp->owornmask & ~W_CARRIED) != 0)
+    {
+        /* Mythic */
+        for (uchar j = 0; j <= 1; j++)
+        {
+            uchar mythic_quality = (j == 0 ? otmp->mythic_prefix : otmp->mythic_suffix);
+            if (mythic_quality == 0)
+                continue;
+
+            const struct mythic_power_definition* mythic_powers = (j == 0 ? mythic_prefix_powers : mythic_suffix_powers);
+            const struct mythic_definition* mythic_definitions = (j == 0 ? mythic_prefix_qualities : mythic_suffix_qualities);
+            uchar max_mythic_powers = (j == 0 ? MAX_MYTHIC_PREFIX_POWERS : MAX_MYTHIC_SUFFIX_POWERS);
+
+            for (uchar i = 0; i < max_mythic_powers; i++)
+            {
+                if (!mythic_powers[i].name)
+                    break;
+
+                uint64_t mythic_power_bit = (uint64_t)1 << ((uint64_t)i);
+
+                if ((mythic_definitions[mythic_quality].mythic_powers & mythic_power_bit) && mythic_power_applies_to_obj(otmp, mythic_powers[i].power_flags))
+                {
+                    if (mythic_powers[i].power_type == MYTHIC_POWER_TYPE_CONFERS_PROPERTY)
+                    {
+                        if ((int)mythic_powers[i].parameter1 == prop_index)
+                            return TRUE;
+                    }
+                }
+            }
+        }
+    }
+
+    return FALSE;
+}
+
+boolean
+material_confers_monster_power(mon, otmp, prop_index)
+struct monst* mon UNUSED; /* not used at the moment, but here in just case */
+struct obj* otmp;
+int prop_index;
+{
+    if (!otmp || prop_index <= 0)
+        return FALSE;
+
+    /* Material */
+    if (otmp->material != objects[otmp->otyp].oc_material && (otmp->owornmask & ~W_CARRIED) != 0)
+    {
+        if (is_armor(otmp))
+        {
+            int power = material_definitions[otmp->material].power_armor[objects[otmp->otyp].oc_armor_category];
+            if (power == prop_index)
+                return TRUE;
+            int power2 = material_definitions[otmp->material].power2_armor[objects[otmp->otyp].oc_armor_category];
+            if (power2 == prop_index)
+                return TRUE;
+        }
+
+        if (is_weapon(otmp))
+        {
+            int power = material_definitions[otmp->material].power_weapon;
+            if (power == prop_index)
+                return TRUE;
+            int power2 = material_definitions[otmp->material].power2_weapon;
+            if (power2 == prop_index)
+                return TRUE;
+        }
+    }
+
+    return FALSE;
+}
 
 /* used so that callers don't need to known about SPFX_ codes */
 boolean
@@ -3487,8 +3560,9 @@ uint64_t spfx_bit;
  * Return the first item that is conveying a particular extrinsic.
  */
 struct obj *
-what_gives(prop_index)
+what_gives(prop_index, require_known)
 int prop_index;
+boolean require_known;
 {
     struct obj *obj;
     int64_t wornbits;
@@ -3498,32 +3572,44 @@ int prop_index;
 
     for (obj = invent; obj; obj = obj->nobj) 
     {
-        if ((wornbits & W_ARTIFACT_CARRIED) && obj->oartifact && (artilist[obj->oartifact].carried_prop == prop_index || (artilist[obj->oartifact].cspfx & spfx)))
+        if ((wornbits & W_ARTIFACT_CARRIED) && obj->oartifact && (!require_known || object_stats_known(obj)) && (artilist[obj->oartifact].carried_prop == prop_index || (artilist[obj->oartifact].cspfx & spfx)))
             return obj;
 
-        if ((wornbits & W_ARTIFACT_INVOKED) && obj->oartifact && artilist[obj->oartifact].inv_prop == prop_index && obj->invokeon)
+        if ((wornbits & W_ARTIFACT_INVOKED) && obj->oartifact && (!require_known || object_stats_known(obj)) && artilist[obj->oartifact].inv_prop == prop_index && obj->invokeon)
             return obj;
 
         if (wornbits & W_CARRIED)
         {
-            if (carried_item_is_giving_monster_power(&youmonst, obj, prop_index))
+            if (carried_base_item_is_giving_monster_power(&youmonst, obj, prop_index, require_known))
                 return obj;
         }
 
-        if (wornbits & obj->owornmask)
-            return obj;
+        if (!require_known)
+        {
+            if (wornbits & obj->owornmask)
+                return obj;
+        }
+        else
+        {
+            if (item_is_giving_monster_power(&youmonst, obj, prop_index, TRUE))
+                return obj;
+        }
     }
     return (struct obj *) 0;
 }
 
 /* assumes obj is in mon inventory */
 boolean
-carried_item_is_giving_monster_power(mon, obj, prop_index)
+carried_base_item_is_giving_monster_power(mon, obj, prop_index, require_known)
 struct monst* mon;
 struct obj* obj;
 int prop_index;
+boolean require_known;
 {
     if (!obj)
+        return FALSE;
+
+    if (require_known && !object_stats_known(obj))
         return FALSE;
 
     int otyp = obj->otyp;
@@ -3574,22 +3660,26 @@ int prop_index;
 }
 
 boolean
-worn_item_is_giving_monster_power(mon, obj, prop_index)
+worn_base_item_is_giving_monster_power(mon, obj, prop_index, require_known)
 struct monst* mon;
 struct obj* obj;
 int prop_index;
+boolean require_known;
 {
     if (!obj)
         return FALSE;
 
     if (!obj->owornmask)
-        return carried_item_is_giving_monster_power(mon, obj, prop_index);
+        return carried_base_item_is_giving_monster_power(mon, obj, prop_index, require_known);
 
     if ((obj->owornmask & W_WEP) && !is_wielded_item(obj))
-        return carried_item_is_giving_monster_power(mon, obj, prop_index);
+        return carried_base_item_is_giving_monster_power(mon, obj, prop_index, require_known);
 
     if ((obj->owornmask & W_WEP2) && !is_wielded_item(obj))
-        return carried_item_is_giving_monster_power(mon, obj, prop_index);
+        return carried_base_item_is_giving_monster_power(mon, obj, prop_index, require_known);
+
+    if (require_known && !object_stats_known(obj))
+        return FALSE;
 
     int otyp = obj->otyp;
     boolean inappr = inappropriate_monster_character_type(mon, obj);
@@ -3619,16 +3709,23 @@ int prop_index;
 }
 
 boolean
-item_is_giving_monster_power(mon, obj, prop_index)
+item_is_giving_monster_power(mon, obj, prop_index, require_known)
 struct monst* mon;
 struct obj* obj;
 int prop_index;
+boolean require_known;
 {
 
-    if (worn_item_is_giving_monster_power(mon, obj, prop_index))
+    if (worn_base_item_is_giving_monster_power(mon, obj, prop_index, require_known))
         return TRUE;
 
-    if (obj->oartifact && artifact_confers_monster_power(mon, obj, prop_index))
+    if (obj->oartifact && (!require_known || object_stats_known(obj)) && artifact_confers_monster_power(mon, obj, prop_index))
+        return TRUE;
+
+    if ((obj->mythic_prefix || obj->mythic_suffix) && (!require_known || obj->mknown) && mythic_confers_monster_power(mon, obj, prop_index))
+        return TRUE;
+
+    if ((!require_known || obj->dknown) && material_confers_monster_power(mon, obj, prop_index))
         return TRUE;
 
     return FALSE;
@@ -3639,9 +3736,16 @@ item_is_giving_power(obj, prop_index)
 struct obj* obj;
 int prop_index;
 {
-    return item_is_giving_monster_power(&youmonst, obj, prop_index);
+    return item_is_giving_monster_power(&youmonst, obj, prop_index, FALSE);
 }
 
+boolean
+item_is_giving_known_power(obj, prop_index)
+struct obj* obj;
+int prop_index;
+{
+    return item_is_giving_monster_power(&youmonst, obj, prop_index, TRUE);
+}
 
 const char *
 glow_color(arti_indx)

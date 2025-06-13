@@ -3255,10 +3255,10 @@ int propindx; /* index of a property which can be conveyed by worn item */
 
     for (o = invent; o; o = o->nobj) 
     {
-        if (!object_stats_known(o))
-            continue;
+        //if (!object_stats_known(o))
+        //    continue;
 
-        if (item_is_giving_power(o, propindx))
+        if (item_is_giving_known_power(o, propindx))
             return TRUE;
     }
     return FALSE;
@@ -3271,7 +3271,7 @@ struct obj* obj;
     if (!obj)
         return FALSE;
 
-    boolean statsknown = ((!obj->oartifact && objects[obj->otyp].oc_name_known) || (obj->oartifact && obj->aknown && obj->nknown));
+    boolean statsknown = obj->oartifact ? obj->aknown && obj->nknown : objects[obj->otyp].oc_name_known;
     boolean dknown = obj->dknown;
     return (statsknown && dknown);
 }

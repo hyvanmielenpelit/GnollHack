@@ -274,14 +274,11 @@ docharacterstatistics(VOID_ARGS)
         int64_t temporary_intrinsic = u.uprops[i].intrinsic & TIMEOUT;
         int64_t extrinsic = u.uprops[i].extrinsic;
         boolean is_recurring = property_definitions[i].recurring;
-        boolean o_stats_known = FALSE;
         if (extrinsic)
         {
-            obj = what_gives(i);
-            if (obj)
-                o_stats_known = object_stats_known(obj);
+            obj = what_gives(i, TRUE);
         }
-        if (innate_intrinsic || o_stats_known || (temporary_intrinsic && !is_recurring))
+        if (innate_intrinsic || obj || (temporary_intrinsic && !is_recurring))
         {
             intrinsic_count++;
 
@@ -319,7 +316,7 @@ docharacterstatistics(VOID_ARGS)
 
                 Sprintf(eos(dbuf3), "polymorphed form");
             }
-            else if (o_stats_known)
+            else if (obj)
             {
                 if (strcmp(dbuf3, ""))
                     Sprintf(eos(dbuf3), ", ");

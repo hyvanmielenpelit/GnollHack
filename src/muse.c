@@ -3221,7 +3221,7 @@ int prop_index;
 
     for (struct obj* otmp = (mon == &youmonst ? invent : mon->minvent); otmp; otmp = otmp->nobj)
     {
-        if(item_is_giving_monster_power(mon, otmp, prop_index))
+        if(item_is_giving_monster_power(mon, otmp, prop_index, FALSE))
             return otmp;
     }
 
@@ -3379,7 +3379,7 @@ const char *fmt, *str;
         struct obj* selobj = (struct obj*)0;
         for (struct obj* otmp = invent; otmp; otmp = otmp->nobj)
         {
-            if (carried_item_is_giving_monster_power(&youmonst, otmp, REFLECTING))
+            if (carried_base_item_is_giving_monster_power(&youmonst, otmp, REFLECTING, FALSE))
             {
                 selobj = otmp;
                 break;

@@ -16661,7 +16661,7 @@ enum climbing_types climbingid;
         if (is_flyer(mtmp->data) || Flying)
         {
             sound_type = OBJECT_SOUND_TYPE_FLY;
-            struct obj* otmp = what_gives(FLYING);
+            struct obj* otmp = what_gives(FLYING, FALSE);
             if (otmp)
             {
                 enum object_soundset_types oss2 = objects[otmp->otyp].oc_soundset;
@@ -16679,7 +16679,7 @@ enum climbing_types climbingid;
         else if (is_floater(mtmp->data) || Levitation)
         {
             sound_type = OBJECT_SOUND_TYPE_LEVITATION;
-            struct obj* otmp = what_gives(LEVITATION);
+            struct obj* otmp = what_gives(LEVITATION, FALSE);
             if (otmp)
             {
                 enum object_soundset_types oss2 = objects[otmp->otyp].oc_soundset;
@@ -16697,7 +16697,7 @@ enum climbing_types climbingid;
         else if ((is_swimmer(mtmp->data) || amphibious(mtmp->data) || Swimming) && floorid == FLOOR_SURFACE_LIQUID)
         {
             sound_type = OBJECT_SOUND_TYPE_SWIM;
-            struct obj* otmp = what_gives(SWIMMING);
+            struct obj* otmp = what_gives(SWIMMING, FALSE);
             if (otmp)
             {
                 enum object_soundset_types oss2 = objects[otmp->otyp].oc_soundset;

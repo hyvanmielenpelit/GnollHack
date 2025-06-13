@@ -1832,9 +1832,7 @@ int propidx; /* OBSOLETE: special cases can have negative values */
                 Sprintf(buf, because_of, ustuckbuf);
                 because_used = TRUE;
             }
-            else if (
-                ((obj = what_gives(propidx)) != 0 && (wizard || object_stats_known(obj)))
-                )
+            else if ((obj = what_gives(propidx, !wizard)) != 0)
             {
                 Sprintf(buf, because_of, yname(obj));
                 because_used = TRUE;

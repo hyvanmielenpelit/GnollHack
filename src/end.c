@@ -1719,7 +1719,7 @@ int how;
             }
             else
             {
-                struct obj* lifesaver = what_gives(LIFESAVED);
+                struct obj* lifesaver = what_gives(LIFESAVED, FALSE);
                 if (lifesaver)
                 {
                     pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s %s!", Yname2(lifesaver), !Blind ? "begins to glow" : "feels warm");
