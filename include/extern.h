@@ -2582,6 +2582,7 @@ E char* FDECL(str_upper_start, (const char*));
 E void FDECL(print_comparison_stats, (struct obj*, char*, winid, int, int, UCHAR_P, BOOLEAN_P, char*, char*, char*));
 E void FDECL(concatenate_colored_text, (const char*, const char*, int, int, char*, char*, char*));
 E const char* FDECL(Japanese_item_name, (int i));
+E boolean FDECL(is_obj_semi_transparent, (struct obj*));
 
 /* ### options.c ### */
 

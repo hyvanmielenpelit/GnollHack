@@ -1124,7 +1124,7 @@ namespace GnollHackX
         public int tile_height;
         public short special_quality;
         public short max_charges;
-        public byte nh_color;
+        public byte semitransparent;
 
         public byte lamplit;
         public byte poisoned;
@@ -1141,6 +1141,9 @@ namespace GnollHackX
         public byte is_uball;
         public sbyte obj_loc_x;
         public sbyte obj_loc_y;
+
+        public byte reserved_1;
+        public byte reserved_2;
     }
 
     public enum obj_class_types
@@ -1281,27 +1284,27 @@ namespace GnollHackX
     [Flags]
     public enum objdata_flags : ulong
     {
-        None = 0x00000000U,
-        OBJDATA_FLAGS_DRAWN_IN_FRONT =  0x00000001U,
-        OBJDATA_FLAGS_HALLUCINATION =   0x00000002U,
-        OBJDATA_FLAGS_UCHAIN =          0x00000004U,
-        OBJDATA_FLAGS_UBALL =           0x00000008U,
-        OBJDATA_FLAGS_UWEP =            0x00000010U,
-        OBJDATA_FLAGS_UWEP2 =           0x00000020U,
-        OBJDATA_FLAGS_UQUIVER =         0x00000040U,
-        OBJDATA_FLAGS_OUT_OF_AMMO1 =    0x00000080U,
-        OBJDATA_FLAGS_WRONG_AMMO_TYPE1 =0x00000100U,
-        OBJDATA_FLAGS_NOT_BEING_USED1 = 0x00000200U,
-        OBJDATA_FLAGS_NOT_WEAPON1 =     0x00000400U,
-        OBJDATA_FLAGS_OUT_OF_AMMO2 =    0x00000800U,
-        OBJDATA_FLAGS_WRONG_AMMO_TYPE2 =0x00001000U,
-        OBJDATA_FLAGS_NOT_BEING_USED2 = 0x00002000U,
-        OBJDATA_FLAGS_NOT_WEAPON2 =     0x00004000U,
-        OBJDATA_FLAGS_FOUND_THIS_TURN = 0x00008000U,
-        OBJDATA_FLAGS_IS_AMMO =         0x00010000U, /* is_ammo is TRUE */
-        OBJDATA_FLAGS_THROWING_WEAPON = 0x00020000U, /* throwing_weapon is TRUE */
-        OBJDATA_FLAGS_PREV_WEP_FOUND =  0x00040000U,
-        OBJDATA_FLAGS_PREV_UNWIELD =    0x00080000U,
+        None = 0x00000000UL,
+        OBJDATA_FLAGS_DRAWN_IN_FRONT =  0x00000001UL,
+        OBJDATA_FLAGS_HALLUCINATION =   0x00000002UL,
+        OBJDATA_FLAGS_UCHAIN =          0x00000004UL,
+        OBJDATA_FLAGS_UBALL =           0x00000008UL,
+        OBJDATA_FLAGS_UWEP =            0x00000010UL,
+        OBJDATA_FLAGS_UWEP2 =           0x00000020UL,
+        OBJDATA_FLAGS_UQUIVER =         0x00000040UL,
+        OBJDATA_FLAGS_OUT_OF_AMMO1 =    0x00000080UL,
+        OBJDATA_FLAGS_WRONG_AMMO_TYPE1 =0x00000100UL,
+        OBJDATA_FLAGS_NOT_BEING_USED1 = 0x00000200UL,
+        OBJDATA_FLAGS_NOT_WEAPON1 =     0x00000400UL,
+        OBJDATA_FLAGS_OUT_OF_AMMO2 =    0x00000800UL,
+        OBJDATA_FLAGS_WRONG_AMMO_TYPE2 =0x00001000UL,
+        OBJDATA_FLAGS_NOT_BEING_USED2 = 0x00002000UL,
+        OBJDATA_FLAGS_NOT_WEAPON2 =     0x00004000UL,
+        OBJDATA_FLAGS_FOUND_THIS_TURN = 0x00008000UL,
+        OBJDATA_FLAGS_IS_AMMO =         0x00010000UL, /* is_ammo is TRUE */
+        OBJDATA_FLAGS_THROWING_WEAPON = 0x00020000UL, /* throwing_weapon is TRUE */
+        OBJDATA_FLAGS_PREV_WEP_FOUND =  0x00040000UL,
+        OBJDATA_FLAGS_PREV_UNWIELD =    0x00080000UL,
     }
 
     [Flags]

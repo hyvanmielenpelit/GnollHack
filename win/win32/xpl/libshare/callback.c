@@ -15,7 +15,7 @@ get_objclassdata(struct obj* otmp)
     otypdata.tile_height = get_obj_height(otmp);
     otypdata.special_quality = objects[otmp->otyp].oc_special_quality;
     otypdata.max_charges = get_obj_max_charge(otmp);
-    otypdata.nh_color = objects[otmp->otyp].oc_color;
+    otypdata.semitransparent = (uchar)is_obj_semi_transparent(otmp);
 
     otypdata.lamplit = (uchar)otmp->lamplit;
     otypdata.poisoned = (uchar)otmp->opoisoned;
@@ -27,6 +27,7 @@ get_objclassdata(struct obj* otmp)
     otypdata.flammable = (uchar)is_flammable(otmp);
     otypdata.rustprone = (uchar)is_rustprone(otmp);
     otypdata.poisonable = (uchar)is_poisonable(otmp);
+
 
     if (otmp == uchain || otmp == uball)
     {

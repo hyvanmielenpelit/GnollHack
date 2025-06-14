@@ -384,7 +384,11 @@ namespace GnollHackX
                     else if (isHighlighted)
                         paint.ColorFilter = UIUtils.HighlightColorFilter;
 
-                    paint.Color = paint.Color.WithAlpha((byte)(0xFF * Math.Min(1.0f, Math.Max(0.0f, Opacity))));
+                    float opaqueness = 1.0f;
+                    if (ObjData != null && ObjData.OtypData.semitransparent != 0)
+                        opaqueness = 0.5f;
+
+                    paint.Color = paint.Color.WithAlpha((byte)(0xFF * Math.Min(1.0f, Math.Max(0.0f, opaqueness * Opacity))));
 
                     if (enlargement_idx == 0)
                     {

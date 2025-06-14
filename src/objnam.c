@@ -6504,4 +6504,22 @@ boolean use_symbols;
     }
 }
 
+boolean
+is_obj_semi_transparent(otmp)
+struct obj* otmp;
+{
+    if (otmp && otmp->otyp == CORPSE)
+    {
+        if (has_omonst(otmp))
+        {
+            struct monst* mtmp = get_mtraits(otmp, FALSE);
+            if (mtmp && mtmp->data && (mtmp->data->mflags5 & M5_SEMI_TRANSPARENT) != 0)
+                return TRUE;
+        }
+        else if (otmp->corpsenm >= LOW_PM && (mons[otmp->corpsenm].mflags5 & M5_SEMI_TRANSPARENT) != 0)
+            return TRUE;
+    }
+    return FALSE;
+}
+
 /*objnam.c*/

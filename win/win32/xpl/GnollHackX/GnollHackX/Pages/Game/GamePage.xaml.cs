@@ -5350,6 +5350,9 @@ namespace GnollHackX.Pages.Game
             {
                 move_offset_x = object_move_offset_x;
                 move_offset_y = object_move_offset_y;
+                /* Object transparency */
+                if (otmp_round.OtypData.semitransparent != 0)
+                    opaqueness = 0.5f;
             }
             else if (layer_idx == (int)layer_types.LAYER_COVER_TRAP)
             {

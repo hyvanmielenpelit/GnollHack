@@ -24,7 +24,7 @@ struct objclassdata
     int tile_height;
     short special_quality;
     short max_charges;
-    uchar nh_color;
+    uchar semitransparent;
 
     /* Temporary extra data */
     uchar lamplit;
@@ -43,6 +43,9 @@ struct objclassdata
     uchar is_uball;
     schar obj_loc_x;
     schar obj_loc_y;
+
+    uchar reserved_1;
+    uchar reserved_2;
 };
 
  /* General callback types */
