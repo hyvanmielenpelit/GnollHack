@@ -418,6 +418,12 @@ int mtype;
                         (void)mpickobj(priest, otmp);
                 }
 
+                /* Holy symbol(s) for potential sale*/
+                if (rn2(5))
+                    (void) mongets(priest, HOLY_SYMBOL);
+                if (!rn2(3))
+                    (void) mongets(priest, HOLY_SYMBOL);
+
                 /* Reagents */
                 int cnt = 10 + rnd(10);
                 int i;

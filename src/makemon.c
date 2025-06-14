@@ -309,7 +309,8 @@ struct obj* obj;
             otmp->speflags |= SPEFLAGS_CLONED_ITEM; /* This item will disappear when Aleax dies / is gone */
         }
         otmp->owt = weight(otmp);
-        (void)mpickobj(mtmp, otmp);
+        if (mpickobj(mtmp, otmp))
+            otmp = 0;
     }
 
     return otmp;
@@ -1339,7 +1340,7 @@ register struct monst *mtmp;
             for (i = 0; i < num; i++)
             {
                 if (!rn2(2))
-                    otmp = mongets(mtmp, randomtruegem());
+                    (void) mongets(mtmp, randomtruegem());
                 else
                 {
                     otmp = mkobj(GEM_CLASS, TRUE, 0);
@@ -1501,7 +1502,8 @@ register struct monst *mtmp;
             if (ptr == &mons[PM_HIGH_PRIEST])
             {
                 otmp = mongets(mtmp, !rn2(2) ? ROBE_OF_STARRY_WISDOM : GOWN_OF_THE_ARCHBISHOPS);
-                otmp->enchantment = max(otmp->enchantment, rn2(3));
+                if (otmp)
+                    otmp->enchantment = max(otmp->enchantment, rn2(3));
             }
             else
             {
@@ -4252,7 +4254,8 @@ uchar material;
             otmp->special_tileset = levl[mtmp->mx][mtmp->my].use_special_tileset ? levl[mtmp->mx][mtmp->my].special_tileset : get_current_cmap_type_index();
         }
 
-        (void) mpickobj(mtmp, otmp); /* might free otmp */
+        if (mpickobj(mtmp, otmp))
+            otmp = 0; /* might free otmp */
     }
 
     return otmp;

@@ -534,8 +534,8 @@ int mtype;
                 (void)mpickobj(npc, otmp);
 
             /* Sling bullets */
-            mongets_with_material(npc, SLING_BULLET, MAT_LEAD);
-            mongets(npc, SLING_BULLET);
+            (void) mongets_with_material(npc, SLING_BULLET, MAT_LEAD);
+            (void) mongets(npc, SLING_BULLET);
             for (i = 0; i < 3; i++)
             {
                 if(!rn2(2))
