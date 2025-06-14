@@ -126,48 +126,48 @@ public static class MauiProgram
                 // Make sure to add "using Microsoft.Maui.LifecycleEvents;" in the top of the file 
                 events.AddWindows(windowsLifecycleBuilder =>
                 {
-                    windowsLifecycleBuilder.OnPlatformMessage((window, e) => 
-                    {
-                        switch(e.MessageId)
-                        {
-                            case 0x0112: /* WM_SYSCOMMAND */
-                                {
-                                    switch (e.WParam)
-                                    {
-                                        case 0xF100:
-                                            //System.Diagnostics.Debug.WriteLine("MenuKey Pressed!");
-                                            return;
-                                        case 0xF020:
-                                            //System.Diagnostics.Debug.WriteLine("Minimizing!");
-                                            break;
-                                        case 0xF120:
-                                            //System.Diagnostics.Debug.WriteLine("Restoring!");
-                                            GHApp.DoKeyboardFocus();
-                                            break;
-                                    }
+                    //windowsLifecycleBuilder.OnPlatformMessage((window, e) => 
+                    //{
+                    //    switch(e.MessageId)
+                    //    {
+                    //        case 0x0112: /* WM_SYSCOMMAND */
+                    //            {
+                    //                switch (e.WParam)
+                    //                {
+                    //                    case 0xF100:
+                    //                        //System.Diagnostics.Debug.WriteLine("MenuKey Pressed!");
+                    //                        return;
+                    //                    case 0xF020:
+                    //                        //System.Diagnostics.Debug.WriteLine("Minimizing!");
+                    //                        break;
+                    //                    case 0xF120:
+                    //                        //System.Diagnostics.Debug.WriteLine("Restoring!");
+                    //                        GHApp.DoKeyboardFocus();
+                    //                        break;
+                    //                }
 
-                                }
-                                break;
-                            case 0x0005: /* WM_SIZE */
-                                {
-                                    switch (e.WParam)
-                                    {
-                                        case 0:
-                                            //System.Diagnostics.Debug.WriteLine("SIZE_RESTORED!");
-                                            GHApp.DoKeyboardFocus();
-                                            break;
-                                        case 1:
-                                            //System.Diagnostics.Debug.WriteLine("SIZE_MINIMIZED!");
-                                            break;
-                                        case 2:
-                                            //System.Diagnostics.Debug.WriteLine("SIZE_MAXIMIZED!");
-                                            GHApp.DoKeyboardFocus();
-                                            break;
-                                    }
-                                }
-                                break;
-                        }
-                    });
+                    //            }
+                    //            break;
+                    //        case 0x0005: /* WM_SIZE */
+                    //            {
+                    //                switch (e.WParam)
+                    //                {
+                    //                    case 0:
+                    //                        //System.Diagnostics.Debug.WriteLine("SIZE_RESTORED!");
+                    //                        GHApp.DoKeyboardFocus();
+                    //                        break;
+                    //                    case 1:
+                    //                        //System.Diagnostics.Debug.WriteLine("SIZE_MINIMIZED!");
+                    //                        break;
+                    //                    case 2:
+                    //                        //System.Diagnostics.Debug.WriteLine("SIZE_MAXIMIZED!");
+                    //                        GHApp.DoKeyboardFocus();
+                    //                        break;
+                    //                }
+                    //            }
+                    //            break;
+                    //    }
+                    //});
                     windowsLifecycleBuilder.OnWindowCreated(window =>
                     {
                         GHApp.WindowsXamlWindow = window;

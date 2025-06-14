@@ -1043,7 +1043,7 @@ namespace GnollHackX.Pages.Game
             ToggleAutoCenterModeButton_Clicked(null, null);
             LoadingDetailsLabel.Text = " "; /* Just make sure it shows up */
             StartAtBlack();
-            GHApp.DoKeyboardFocus();
+            //GHApp.DoKeyboardFocus();
 
             /* Do this last just in case */
             DesktopButtons = Preferences.Get("DesktopButtons", GHApp.IsDesktop);
@@ -3066,17 +3066,11 @@ namespace GnollHackX.Pages.Game
                             UpdateGHWindowVisibility(req.RequestInt, req.RequestBool);
                             break;
                         case GHRequestType.KeyboardFocus:
-                            DoFocusKeyboard();
+                            GHApp.DoKeyboardFocus();
                             break;
                     }
                 }
             }
-        }
-
-
-        private void DoFocusKeyboard()
-        {
-            _mainPage?.DoKeyboardFocus();
         }
 
         private readonly object _localWindowLock = new object();
@@ -19011,11 +19005,11 @@ namespace GnollHackX.Pages.Game
             targetButton.ImgSourcePath = sourceButton.ImageSourcePath;
         }
 
-        public void StopWaitAndResumeSavedGame()
-        {
-            GHGame curGame = CurrentGame;
-            curGame?.ResponseQueue.Enqueue(new GHResponse(curGame, GHRequestType.StopWaitAndRestoreSavedGame));
-        }
+        //public void StopWaitAndResumeSavedGame()
+        //{
+        //    GHGame curGame = CurrentGame;
+        //    curGame?.ResponseQueue.Enqueue(new GHResponse(curGame, GHRequestType.StopWaitAndRestoreSavedGame));
+        //}
 
         //public bool IgnoreSave()
         //{
@@ -19023,17 +19017,17 @@ namespace GnollHackX.Pages.Game
         //    return GetLineGrid.IsVisible && _getLineStyle == (int)getline_types.GETLINE_WISHING;
         //}
 
-        public void SaveGameAndWaitForResume()
-        {
-            GHGame curGame = CurrentGame;
-            curGame?.ResponseQueue.Enqueue(new GHResponse(curGame, GHRequestType.SaveGameAndWaitForResume));
-        }
+        //public void SaveGameAndWaitForResume()
+        //{
+        //    GHGame curGame = CurrentGame;
+        //    curGame?.ResponseQueue.Enqueue(new GHResponse(curGame, GHRequestType.SaveGameAndWaitForResume));
+        //}
 
-        public void SaveCheckPoint()
-        {
-            GHGame curGame = CurrentGame;
-            curGame?.ResponseQueue.Enqueue(new GHResponse(curGame, GHRequestType.SaveInsuranceCheckPoint));
-        }
+        //public void SaveCheckPoint()
+        //{
+        //    GHGame curGame = CurrentGame;
+        //    curGame?.ResponseQueue.Enqueue(new GHResponse(curGame, GHRequestType.SaveInsuranceCheckPoint));
+        //}
 
         public void SendRequestForTallyRealTime()
         {

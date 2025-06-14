@@ -775,7 +775,7 @@ namespace GnollHackX
                     {
                         _previousBatteryCheckPointChargeLevel = e.ChargeLevel;
                     }
-                    CurrentGHGame.ActiveGamePage.SaveCheckPoint();
+                    CurrentGHGame?.SaveCheckPoint();
                 }
             }
             catch (Exception ex)
@@ -1232,6 +1232,18 @@ namespace GnollHackX
                 CurrentMainPage.DoKeyboardFocus();
         }
 
+        public static void OnFocus()
+        {
+            // Nothing currently
+        }
+
+        public static void OnUnfocus()
+        {
+            GHGame game = CurrentGHGame;
+            if (game != null && !game.PlayingReplay && game.ActiveGamePage.IsGameOn)
+                game.SaveCheckPoint();
+        }
+
         public static void OnStart()
         {
             if (PlatformService != null)
@@ -1242,12 +1254,13 @@ namespace GnollHackX
             ShiftDown = false;
             SleepMuteMode = false;
 
-            DoKeyboardFocus();
+            //DoKeyboardFocus();
 
             if (IsAutoSaveUponSwitchingAppsOn)
             {
                 CancelSaveGame = true;
-                if (CurrentGHGame != null && !CurrentGHGame.PlayingReplay)
+                GHGame game = CurrentGHGame;
+                if (game != null && !game.PlayingReplay && game.ActiveGamePage.IsGameOn)
                 {
                     //Detect background app killing OS, check if last exit is through going to sleep, and notify player that the app probably had been terminated by OS but game has been saved
                     bool wenttosleep = false;
@@ -1262,7 +1275,7 @@ namespace GnollHackX
                     }
                     if (wenttosleep && (GameSaved || SavingGame))
                     {
-                        CurrentGHGame.ActiveGamePage.StopWaitAndResumeSavedGame();
+                        game.StopWaitAndResumeSavedGame();
                     }
                 }
             }
@@ -1283,7 +1296,8 @@ namespace GnollHackX
             if (IsAutoSaveUponSwitchingAppsOn)
             {
                 CancelSaveGame = false;
-                if (CurrentGHGame != null && !CurrentGHGame.PlayingReplay)
+                GHGame game = CurrentGHGame;
+                if (game != null && !game.PlayingReplay && game.ActiveGamePage.IsGameOn)
                 {
                     //Detect background app killing OS, mark that exit has been through going to sleep, and save the game
                     try
@@ -1297,7 +1311,7 @@ namespace GnollHackX
                     }
                     if (BatteryChargeLevel > 3) /* Save only if there is enough battery left to prevent save file corruption when the phone powers off */
                     {
-                        CurrentGHGame.ActiveGamePage.SaveGameAndWaitForResume();
+                        game.SaveGameAndWaitForResume();
                     }
                 }
             }
@@ -1348,7 +1362,8 @@ namespace GnollHackX
             if (IsAutoSaveUponSwitchingAppsOn)
             {
                 CancelSaveGame = true;
-                if (CurrentGHGame != null && !CurrentGHGame.PlayingReplay)
+                GHGame game = CurrentGHGame;
+                if (game != null && !game.PlayingReplay && game.ActiveGamePage.IsGameOn)
                 {
                     //Detect background app killing OS, check if last exit is through going to sleep & game has been saved, and load previously saved game
                     bool wenttosleep = false;
@@ -1364,7 +1379,7 @@ namespace GnollHackX
                     }
                     if (wenttosleep && (GameSaved || SavingGame))
                     {
-                        CurrentGHGame.ActiveGamePage.StopWaitAndResumeSavedGame();
+                        game.StopWaitAndResumeSavedGame();
                     }
                 }
             }

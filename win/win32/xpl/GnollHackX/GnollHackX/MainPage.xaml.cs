@@ -1612,7 +1612,7 @@ namespace GnollHackX
             }
             StopGeneralTimer = false;
             StartGeneralTimer();
-            DoKeyboardFocus();
+            //DoKeyboardFocus();
         }
 
         public void DoKeyboardFocus()

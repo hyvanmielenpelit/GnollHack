@@ -405,6 +405,22 @@ namespace GnollHackX
             RequestQueue.Enqueue(new GHRequest(this, GHRequestType.HideLoadingScreen));
         }
 
+        public void StopWaitAndResumeSavedGame()
+        {
+            ResponseQueue.Enqueue(new GHResponse(this, GHRequestType.StopWaitAndRestoreSavedGame));
+        }
+
+        public void SaveGameAndWaitForResume()
+        {
+            ResponseQueue.Enqueue(new GHResponse(this, GHRequestType.SaveGameAndWaitForResume));
+        }
+
+        public void SaveCheckPoint()
+        {
+            ResponseQueue.Enqueue(new GHResponse(this, GHRequestType.SaveInsuranceCheckPoint));
+        }
+
+
         public int ClientCallback_CreateGHWindow(int wintype, int style, int glyph, byte dataflags, IntPtr objdata_ptr, IntPtr otypdata_ptr)
         {
             Obj objdata = objdata_ptr == IntPtr.Zero ? new Obj() : (Obj)Marshal.PtrToStructure(objdata_ptr, typeof(Obj));
