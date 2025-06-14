@@ -1193,21 +1193,27 @@ namespace GnollHackX
         {
 #if WINDOWS
             Microsoft.UI.Input.InputCursor usedCursor = cursorType == GameCursorType.Normal ? GHApp.WindowsCursor : GHApp.WindowsInfoCursor;
-            if (usedCursor == null || layout == null || layout.Handler == null)
+            if (usedCursor == null || layout == null)
                 return;
 
-            if (layout.Handler.PlatformView is Microsoft.UI.Xaml.UIElement)
+            MainThread.BeginInvokeOnMainThread(() => 
             {
-                try
+                if (layout.Handler == null)
+                    return;
+
+                if (layout.Handler.PlatformView is Microsoft.UI.Xaml.UIElement)
                 {
-                    Microsoft.UI.Xaml.UIElement element = (Microsoft.UI.Xaml.UIElement)layout.Handler.PlatformView;
-                    element.ChangeCursor(usedCursor);
+                    try
+                    {
+                        Microsoft.UI.Xaml.UIElement element = (Microsoft.UI.Xaml.UIElement)layout.Handler.PlatformView;
+                        element.ChangeCursor(usedCursor);
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.WriteLine(ex.Message);
+                    }
                 }
-                catch (Exception ex)
-                {
-                    Debug.WriteLine(ex.Message);
-                }
-            }
+            });
 #endif
         }
 

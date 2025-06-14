@@ -74,6 +74,7 @@ namespace GnollHackX.Pages.Game
 
         private readonly object _canvasButtonLock = new object();
         private SKRect _canvasButtonRect = new SKRect(0, 0, 0, 0);
+
         private SKColor _cursorDefaultGreen = new SKColor(0, 255, 0);
 
         private object _isGameOnLock = new object();
@@ -670,7 +671,6 @@ namespace GnollHackX.Pages.Game
         public bool ShowRecording { get { lock (_showRecordingLock) { return _showRecording; } } set { lock (_showRecordingLock) { _showRecording = value; } } }
 
         private double _fps;
-        private long _counterValueDiff;
         private long _previousMainFPSCounterValue = 0L;
         private long _previousCommandFPSCounterValue = 0L;
         private readonly object _fpslock = new object();
@@ -1547,13 +1547,14 @@ namespace GnollHackX.Pages.Game
                     {
                         _stopWatch.Stop();
                         TimeSpan ts = _stopWatch.Elapsed;
-                        lock (_fpslock)
+                        //lock (_fpslock)
                         {
+                            long counterDiff = 0;
                             if (MoreCommandsGrid.IsVisible)
                             {
                                 lock (_commandFPSCounterLock)
                                 {
-                                    _counterValueDiff = _commandFPSCounterValue - _previousCommandFPSCounterValue;
+                                    counterDiff = _commandFPSCounterValue - _previousCommandFPSCounterValue;
                                     _previousCommandFPSCounterValue = _commandFPSCounterValue;
                                 }
                             }
@@ -1561,7 +1562,7 @@ namespace GnollHackX.Pages.Game
                             {
                                 lock (_mainFPSCounterLock)
                                 {
-                                    _counterValueDiff = _mainFPSCounterValue - _previousMainFPSCounterValue;
+                                    counterDiff = _mainFPSCounterValue - _previousMainFPSCounterValue;
                                     _previousMainFPSCounterValue = _mainFPSCounterValue;
                                 }
                                 //lock (AnimationTimerLock)
@@ -1569,11 +1570,14 @@ namespace GnollHackX.Pages.Game
                                 //    currentCounterValue = AnimationTimers.general_animation_counter;
                                 //}
                             }
-                            _fps = ts.TotalMilliseconds == 0.0 ? 0.0 : _counterValueDiff / (ts.TotalMilliseconds / 1000.0);
-                            if (_fps < 0.0f || _fps > 500.0f) /* Just in case if it is off somehow */
+                            lock (_fpslock)
                             {
-                                _fps = 0.0;
-                                _counterValueDiff = 0;
+                                _fps = ts.TotalMilliseconds == 0.0 ? 0.0 : counterDiff / (ts.TotalMilliseconds / 1000.0);
+                                if (_fps < 0.0f || _fps > 500.0f) /* Just in case if it is off somehow */
+                                {
+                                    _fps = 0.0;
+                                    counterDiff = 0;
+                                }
                             }
                         }
                         _stopWatch.Restart();
@@ -3082,6 +3086,9 @@ namespace GnollHackX.Pages.Game
         {
             if (ghWindow == null)
                 return;
+            if (winid < 0 || winid >= GHConstants.MaxGHWindows)
+                return;
+
             lock (_localWindowLock)
             {
                 if (ghWindow.AutoPlacement && _localGHWindows[winid] != null)
@@ -3108,6 +3115,9 @@ namespace GnollHackX.Pages.Game
         }
         private void UpdateGHWindowVisibility(int winid, bool isVisible)
         {
+            if (winid < 0 || winid >= GHConstants.MaxGHWindows)
+                return;
+
             lock (_localWindowLock)
             {
                 if (_localGHWindows[winid] != null)
@@ -3248,34 +3258,41 @@ namespace GnollHackX.Pages.Game
 
         private void DestroyWindowView(int winid)
         {
+            if (winid < 0 || winid >= GHConstants.MaxGHWindows)
+                return;
+
+            GHWindow win = null;
             lock (_localWindowLock)
             {
-                GHWindow win = _localGHWindows[winid];
-                if (win != null)
+                win = _localGHWindows[winid];
+            }
+            if (win != null)
+            {
+                _localGHWindows[winid] = null;
+                win.Visible = false;
+                switch (win.WindowType)
                 {
-                    _localGHWindows[winid] = null;
-                    win.Visible = false;
-                    switch (win.WindowType)
-                    {
-                        case GHWinType.Map:
-                            _localMapWindowId = 0;
-                            break;
-                        case GHWinType.Message:
-                            _localMessageWindowId = 0;
-                            break;
-                        case GHWinType.Status:
-                            _localStatusWindowId = 0;
-                            break;
-                        default:
-                            break;
-                    }
+                    case GHWinType.Map:
+                        _localMapWindowId = 0;
+                        break;
+                    case GHWinType.Message:
+                        _localMessageWindowId = 0;
+                        break;
+                    case GHWinType.Status:
+                        _localStatusWindowId = 0;
+                        break;
+                    default:
+                        break;
                 }
             }
         }
 
         private void DisplayWindowView(int winid)
         {
-            GHWindow window;
+            if (winid < 0 || winid >= GHConstants.MaxGHWindows)
+                return;
+
+            GHWindow window = null;
             lock (_localWindowLock)
             {
                 window = _localGHWindows[winid];
@@ -6788,6 +6805,19 @@ namespace GnollHackX.Pages.Game
         private List<SKRect> _localPetRects = new List<SKRect>(8);
         private List<ContextMenuButton> _localContextMenuData = new List<ContextMenuButton>(10);
         private List<SKRect> _localContextMenuRects = new List<SKRect>(10);
+        private bool _localIsPointerHovering = false;
+        private SKPoint _localPointerHoverLocation = new SKPoint();
+#if WINDOWS
+        GameCursorType _localCurrentCursorType = GameCursorType.Normal;
+#endif
+        private SKRect _localCanvasButtonRect = new SKRect(0, 0, 0, 0);
+        private int _localQuickWandGlyph, _localQuickWandExceptinality, _localQuickSpellGlyph, _localQuickSpellOtyp;
+        private string _localQuickWandName, _localQuickSpellName;
+        private double _localFps = 0.0;
+        private long _localMemUsage = 0L;
+        public float _localStatusOffsetY = 0;
+        public float _localStatusLargestBottom = 0;
+        public float _localStatusClipBottom = 0;
 
         private void PaintMainGamePage(object sender, SKPaintSurfaceEventArgs e, bool isCanvasOnMainThread)
         {
@@ -6912,6 +6942,22 @@ namespace GnollHackX.Pages.Game
             }
             lockTaken = false;
 
+            //lock (_statusOffsetLock)
+            try
+            {
+                Monitor.TryEnter(_statusOffsetLock, ref lockTaken);
+                if (lockTaken)
+                {
+                    _localStatusOffsetY = _statusOffsetY;
+                }
+            }
+            finally
+            {
+                if (lockTaken)
+                    Monitor.Exit(_statusOffsetLock);
+            }
+            lockTaken = false;
+
             //lock (_weaponStyleObjDataItemLock)
             try
             {
@@ -6974,15 +7020,28 @@ namespace GnollHackX.Pages.Game
                 _cursorType = cursorType;
                 _force_paint_at_cursor = force_paint_at_cursor;
                 _show_cursor_on_u = show_cursor_on_u;
-                lock (_uLock)
+                lockTaken = false;
+                //lock (_uLock)
+                try
                 {
-                    _ux = u_x;
-                    _uy = u_y;
+                    Monitor.TryEnter(_uLock, ref lockTaken);
+                    if (lockTaken)
+                    {
+                        _ux = u_x;
+                        _uy = u_y;
+                    }
                 }
+                finally
+                {
+                    if (lockTaken)
+                        Monitor.Exit(_uLock);
+                }
+                lockTaken = false;
             }
             if (_mapData == null)
                 return;
 
+            lockTaken = false;
             //lock (_floatingTextLock)
             try
             {
@@ -7127,14 +7186,24 @@ namespace GnollHackX.Pages.Game
 
             long moveIntervals = Math.Max(2, (long)Math.Ceiling((double)UIUtils.GetMainCanvasAnimationFrequency(MapRefreshRate) / 10.0));
             bool lighter_darkening = LighterDarkening;
-            bool isPointerHovering = false;
-            SKPoint pointerHoverLocation = new SKPoint();
 #if WINDOWS
-            lock (_canvasPointerLock)
+            //lock (_canvasPointerLock)
+            try
             {
-                isPointerHovering = _isCanvasHovering;
-                pointerHoverLocation = _canvasHoverLocation;
+                Monitor.TryEnter(_canvasPointerLock, ref lockTaken);
+                if (lockTaken)
+                {
+                    _localIsPointerHovering = _isCanvasHovering;
+                    _localPointerHoverLocation = _canvasHoverLocation;
+                }
             }
+            finally
+            {
+                if (lockTaken)
+                    Monitor.Exit(_canvasPointerLock);
+            }
+            lockTaken = false;
+
 #endif
             using (GHSkiaFontPaint textPaint = new GHSkiaFontPaint())
             {
@@ -7180,13 +7249,25 @@ namespace GnollHackX.Pages.Game
                 float mapwidth = width * (GHConstants.MapCols - 1);
                 float mapheight = height * (GHConstants.MapRows);
 
-                lock (_tileSizeLock)
+                //lock (_tileSizeLock)
+                try
                 {
-                    _usedTileWidth = width;
-                    _usedTileHeight = height;
-                    _mapWidth = mapwidth;
-                    _mapHeight = mapheight;
+                    Monitor.TryEnter(_tileSizeLock, ref lockTaken);
+                    if (lockTaken)
+                    {
+                        _usedTileWidth = width;
+                        _usedTileHeight = height;
+                        _mapWidth = mapwidth;
+                        _mapHeight = mapheight;
+                    }
                 }
+                finally
+                {
+                    if (lockTaken)
+                        Monitor.Exit(_tileSizeLock);
+                }
+                lockTaken = false;
+
                 float mapFontAscent = textPaint.FontMetrics.Ascent;
                 UsedMapFontAscent = mapFontAscent;
                 float targetscale = height / (float)GHConstants.TileHeight;
@@ -7208,14 +7289,15 @@ namespace GnollHackX.Pages.Game
                 if (curGame != null)
                 {
                     GetWindowIds(out mapWindowId, out messageWindowId, out statusWindowId);
+                    GHWindow win = null;
                     lock (_localWindowLock)
                     {
-                        GHWindow win = _localGHWindows[mapWindowId];
-                        if (win != null)
-                        {
-                            startx = win.Left;
-                            starty = win.Top;
-                        }
+                        win = _localGHWindows[mapWindowId];
+                    }
+                    if (win != null)
+                    {
+                        startx = win.Left;
+                        starty = win.Top;
                     }
                 }
 
@@ -8643,10 +8725,10 @@ namespace GnollHackX.Pages.Game
                 float herewindowtop = canvasheight;
                 float messagewindowtop = canvasheight;
 
-                lock (_canvasButtonLock)
+                //lock (_canvasButtonLock)
                 {
-                    _canvasButtonRect.Top = 0; /* Maybe overrwritten below */
-                    _canvasButtonRect.Bottom = canvasheight; /* Maybe overrwritten below */
+                    _localCanvasButtonRect.Top = 0; /* Maybe overrwritten below */
+                    _localCanvasButtonRect.Bottom = canvasheight; /* Maybe overrwritten below */
                     GHWindow ghWindow = null;
                     GHWindow messageWindow = null;
                     GHSubstring substr = new GHSubstring("");
@@ -8735,9 +8817,9 @@ namespace GnollHackX.Pages.Game
                                 }
 
                                 if (i == statusWindowId && ClassicStatusBar)
-                                    _canvasButtonRect.Top = winRect.Bottom;
+                                    _localCanvasButtonRect.Top = winRect.Bottom;
                                 else if (i == messageWindowId)
-                                    _canvasButtonRect.Bottom = winRect.Top;
+                                    _localCanvasButtonRect.Bottom = winRect.Top;
                             }
 
                             if (ghWindow.WindowType != GHWinType.Message && !ForceAllMessages)
@@ -8977,9 +9059,10 @@ namespace GnollHackX.Pages.Game
                                     /* Calculate smallest top */
                                     if(refreshsmallesttop)
                                     {
-                                        lock (_messageScrollLock)
+                                        //lock (_messageScrollLock)
                                         {
-                                            _messageSmallestTop = canvasheight;
+                                            float localSmallestTop = canvasheight;
+                                            //_messageSmallestTop = canvasheight;
                                             j = ActualDisplayedMessages - 1;
                                             for (idx = _localMsgHistory.Length - 1; idx >= 0 && j >= 0; idx--)
                                             {
@@ -8994,18 +9077,22 @@ namespace GnollHackX.Pages.Game
                                                     if (window_row_idx < 0)
                                                         continue;
                                                     ty = winRect.Top + ghWindow.Padding.Top - textPaint.FontMetrics.Ascent + window_row_idx * height;
-                                                    if (ty + textPaint.FontMetrics.Ascent < _messageSmallestTop)
-                                                        _messageSmallestTop = ty + textPaint.FontMetrics.Ascent;
+                                                    if (ty + textPaint.FontMetrics.Ascent < localSmallestTop)
+                                                        localSmallestTop = ty + textPaint.FontMetrics.Ascent;
                                                 }
                                                 j -= msgHistoryItem.WrappedTextRows.Count;
                                             }
-                                            float topScrollLimit = Math.Max(0, -_messageSmallestTop);
-                                            if (_messageScrollOffset > topScrollLimit)
+                                            float topScrollLimit = Math.Max(0, -localSmallestTop);
+                                            lock (_messageScrollLock)
                                             {
-                                                _messageScrollOffset = topScrollLimit;
-                                                _messageScrollSpeed = 0;
-                                                _messageScrollSpeedOn = false;
-                                                _messageScrollSpeedRecords.Clear();
+                                                _messageSmallestTop = localSmallestTop;
+                                                if (_messageScrollOffset > topScrollLimit)
+                                                {
+                                                    _messageScrollOffset = topScrollLimit;
+                                                    _messageScrollSpeed = 0;
+                                                    _messageScrollSpeedOn = false;
+                                                    _messageScrollSpeedRecords.Clear();
+                                                }
                                             }
                                         }
                                     }
@@ -9017,10 +9104,10 @@ namespace GnollHackX.Pages.Game
 
                     float abilitybuttonbottom = (float)(stdCmdLayoutMargin.Top / canvasViewHeight) * canvasheight; ; // (float)((lAbilitiesButton.Y + lAbilitiesButton.Height) / canvasView.Height) * canvasheight;
                     float escbuttonbottom = (float)((stdButtonY + stdButtonHeight) / canvasViewHeight) * canvasheight;
-                    if (_canvasButtonRect.Top < escbuttonbottom)
-                        _canvasButtonRect.Top = escbuttonbottom;
-                    if (_canvasButtonRect.Top < abilitybuttonbottom)
-                        _canvasButtonRect.Top = abilitybuttonbottom;
+                    if (_localCanvasButtonRect.Top < escbuttonbottom)
+                        _localCanvasButtonRect.Top = escbuttonbottom;
+                    if (_localCanvasButtonRect.Top < abilitybuttonbottom)
+                        _localCanvasButtonRect.Top = abilitybuttonbottom;
 
                     bool statusfieldsok = false;
                     statusfieldsok = _localStatusFields != null;
@@ -9056,7 +9143,7 @@ namespace GnollHackX.Pages.Game
                             SKRect darkenrect = new SKRect(0, 0, canvaswidth, statusbarheight);
                             StatusBarRect = darkenrect;
                             _statusBarRectDrawn = true;
-                            _canvasButtonRect.Top = StatusBarRect.Bottom + 1.25f * inverse_canvas_scale * (float)stdButtonWidth;
+                            _localCanvasButtonRect.Top = darkenrect.Bottom + 1.25f * inverse_canvas_scale * (float)stdButtonWidth;
 #if GNH_MAP_PROFILING && DEBUG
                             StartProfiling(GHProfilingStyle.Rect);
 #endif
@@ -9854,18 +9941,29 @@ namespace GnollHackX.Pages.Game
                                 }
 
                                 /* Quick spell and wand */
-                                int qWandGlyph, qWandExceptinality, qSpellGlyph, qSpellOtyp;
-                                string qWandName, qSpellName;
-                                lock (_quickLock)
+                                lockTaken = false;
+                                //lock (_quickLock)
+                                try
                                 {
-                                    qWandExceptinality = _quickWandExceptionality;
-                                    qWandGlyph = _quickWandGlyph;
-                                    qWandName = _quickWandName;
-                                    qSpellOtyp = _quickSpellOtyp;
-                                    qSpellGlyph = _quickSpellGlyph;
-                                    qSpellName = _quickSpellName;
+                                    Monitor.TryEnter(_quickLock, ref lockTaken);
+                                    if (lockTaken)
+                                    {
+                                        _localQuickWandExceptinality = _quickWandExceptionality;
+                                        _localQuickWandGlyph = _quickWandGlyph;
+                                        _localQuickWandName = _quickWandName;
+                                        _localQuickSpellOtyp = _quickSpellOtyp;
+                                        _localQuickSpellGlyph = _quickSpellGlyph;
+                                        _localQuickSpellName = _quickSpellName;
+                                    }
                                 }
-                                if (qWandGlyph != GHApp.NoGlyph)
+                                finally
+                                {
+                                    if (lockTaken)
+                                        Monitor.Exit(_quickLock);
+                                }
+                                lockTaken = false;
+
+                                if (_localQuickWandGlyph != GHApp.NoGlyph)
                                 {
                                     target_width = target_scale * GHApp._statusQuickWandBitmap.Width;
                                     target_height = target_scale * GHApp._statusQuickWandBitmap.Height;
@@ -9880,8 +9978,8 @@ namespace GnollHackX.Pages.Game
                                         gis.ReferenceGamePage = this;
                                         gis.UseUpperSide = false;
                                         gis.AutoSize = true;
-                                        gis.Glyph = Math.Abs(_quickWandGlyph);
-                                        gis.ObjData = new ObjectDataItem(new Obj() { exceptionality = (byte)qWandExceptinality }, new ObjClassData(), false);
+                                        gis.Glyph = Math.Abs(_localQuickWandGlyph);
+                                        gis.ObjData = new ObjectDataItem(new Obj() { exceptionality = (byte)_localQuickWandExceptinality }, new ObjClassData(), false);
                                         gis.DoAutoSize();
                                         float wep_scale = gis.Height == 0 ? 1.0f : target_height / gis.Height;
                                         float weppicturewidth = wep_scale * gis.Width;
@@ -9893,7 +9991,7 @@ namespace GnollHackX.Pages.Game
                                     }
                                     curx += stdspacing;
                                 }
-                                if (qSpellGlyph != GHApp.NoGlyph)
+                                if (_localQuickSpellGlyph != GHApp.NoGlyph)
                                 {
                                     target_width = target_scale * GHApp._statusQuickSpellBitmap.Width;
                                     target_height = target_scale * GHApp._statusQuickSpellBitmap.Height;
@@ -9908,7 +10006,7 @@ namespace GnollHackX.Pages.Game
                                         gis.UseUpperSide = true;
                                         gis.AutoSize = true;
                                         gis.ObjData = null;
-                                        gis.Glyph = Math.Abs(_quickSpellGlyph);
+                                        gis.Glyph = Math.Abs(_localQuickSpellGlyph);
                                         gis.DoAutoSize();
                                         float wep_scale = gis.Height == 0 ? 1.0f : target_height / gis.Height;
                                         float weppicturewidth = wep_scale * gis.Width;
@@ -10458,10 +10556,24 @@ namespace GnollHackX.Pages.Game
                                     desktopleft = curx;
 
                                     string drawtext;
-                                    lock (_fpslock)
+                                    lockTaken = false;
+                                    //lock (_fpslock)
+                                    try
                                     {
-                                        drawtext = string.Format("{0:0.0}", _fps);
+                                        Monitor.TryEnter(_fpslock, ref lockTaken);
+                                        if (lockTaken)
+                                        {
+                                            _localFps = _fps;
+                                        }
                                     }
+                                    finally
+                                    {
+                                        if (lockTaken)
+                                            Monitor.Exit(_fpslock);
+                                    }
+                                    lockTaken = false;
+
+                                    drawtext = string.Format("{0:0.0}", _localFps);
 
                                     const int topMargin = 4, bottomMargin = 16;
                                     textPaint.Color = SKColors.White;
@@ -10486,10 +10598,24 @@ namespace GnollHackX.Pages.Game
                                     desktopleft = curx;
 
                                     string drawtext;
-                                    lock (_showMemoryLock)
+                                    lockTaken = false;
+                                    //lock (_showMemoryLock)
+                                    try
                                     {
-                                        drawtext = (_memUsage / 1024).ToString();
+                                        Monitor.TryEnter(_showMemoryLock, ref lockTaken);
+                                        if (lockTaken)
+                                        {
+                                            _localMemUsage = _memUsage;
+                                        }
                                     }
+                                    finally
+                                    {
+                                        if (lockTaken)
+                                            Monitor.Exit(_showMemoryLock);
+                                    }
+                                    lockTaken = false;
+
+                                    drawtext = (_localMemUsage / 1024).ToString();
 
                                     const int topMargin = 7, bottomMargin = 20;
                                     textPaint.Color = SKColors.White;
@@ -10616,7 +10742,7 @@ namespace GnollHackX.Pages.Game
 #if GNH_MAP_PROFILING && DEBUG
                                                     StartProfiling(GHProfilingStyle.Bitmap);
 #endif
-                                                    gis.DrawOnCanvas(canvas, usingGL, isPointerHovering && usedRect.Contains(pointerHoverLocation), false, fixRects);
+                                                    gis.DrawOnCanvas(canvas, usingGL, _localIsPointerHovering && usedRect.Contains(_localPointerHoverLocation), false, fixRects);
 #if GNH_MAP_PROFILING && DEBUG
                                                     StopProfiling(GHProfilingStyle.Bitmap);
 #endif
@@ -10925,7 +11051,7 @@ namespace GnollHackX.Pages.Game
 #endif
                             using(SKPaint btnPaint = new SKPaint())
                             {
-                                if (isPointerHovering && skillDest.Contains(pointerHoverLocation))
+                                if (_localIsPointerHovering && skillDest.Contains(_localPointerHoverLocation))
                                 {
                                     btnPaint.ColorFilter = UIUtils.HighlightColorFilter;
                                 }
@@ -10961,7 +11087,7 @@ namespace GnollHackX.Pages.Game
 #endif
                             using (SKPaint btnPaint = new SKPaint())
                             {
-                                if (isPointerHovering && prevWepDest.Contains(pointerHoverLocation))
+                                if (_localIsPointerHovering && prevWepDest.Contains(_localPointerHoverLocation))
                                 {
                                     btnPaint.ColorFilter = UIUtils.HighlightColorFilter;
                                 }
@@ -11021,7 +11147,7 @@ namespace GnollHackX.Pages.Game
 #endif
                             using (SKPaint btnPaint = new SKPaint())
                             {
-                                if (isPointerHovering && usedRect.Contains(pointerHoverLocation))
+                                if (_localIsPointerHovering && usedRect.Contains(_localPointerHoverLocation))
                                 {
                                     btnPaint.ColorFilter = UIUtils.HighlightColorFilter;
                                 }
@@ -11054,8 +11180,8 @@ namespace GnollHackX.Pages.Game
                         PrevWepRect = new SKRect();
 
                     /* Number Pad and Direction Arrows */
-                    _canvasButtonRect.Right = canvaswidth * (float)(0.8);
-                    _canvasButtonRect.Left = canvaswidth * (float)(0.2);
+                    _localCanvasButtonRect.Right = canvaswidth * (float)(0.8);
+                    _localCanvasButtonRect.Left = canvaswidth * (float)(0.2);
                 }
 
                 if (ShowDirections || (MapWalkMode && WalkArrows))
@@ -11067,51 +11193,51 @@ namespace GnollHackX.Pages.Game
 
                     for (int i = 0; i < 9; i++)
                     {
-                        lock (_canvasButtonLock)
+                        //lock (_canvasButtonLock)
                         {
                             switch (i)
                             {
                                 case 0:
-                                    tx = _canvasButtonRect.Left;
-                                    ty = _canvasButtonRect.Top + _canvasButtonRect.Height / 2 - _canvasButtonRect.Height * (buttonsize / 2);
+                                    tx = _localCanvasButtonRect.Left;
+                                    ty = _localCanvasButtonRect.Top + _localCanvasButtonRect.Height / 2 - _localCanvasButtonRect.Height * (buttonsize / 2);
                                     break;
                                 case 1:
-                                    tx = _canvasButtonRect.Left + _canvasButtonRect.Width / 2 - _canvasButtonRect.Width * (buttonsize / 2);
-                                    ty = _canvasButtonRect.Top;
+                                    tx = _localCanvasButtonRect.Left + _localCanvasButtonRect.Width / 2 - _localCanvasButtonRect.Width * (buttonsize / 2);
+                                    ty = _localCanvasButtonRect.Top;
                                     break;
                                 case 2:
-                                    tx = _canvasButtonRect.Left + _canvasButtonRect.Width - _canvasButtonRect.Width * buttonsize;
-                                    ty = _canvasButtonRect.Top + _canvasButtonRect.Height / 2 - _canvasButtonRect.Height * (buttonsize / 2);
+                                    tx = _localCanvasButtonRect.Left + _localCanvasButtonRect.Width - _localCanvasButtonRect.Width * buttonsize;
+                                    ty = _localCanvasButtonRect.Top + _localCanvasButtonRect.Height / 2 - _localCanvasButtonRect.Height * (buttonsize / 2);
                                     break;
                                 case 3:
-                                    tx = _canvasButtonRect.Left + _canvasButtonRect.Width / 2 - _canvasButtonRect.Width * (buttonsize / 2);
-                                    ty = _canvasButtonRect.Top + _canvasButtonRect.Height - _canvasButtonRect.Height * buttonsize;
+                                    tx = _localCanvasButtonRect.Left + _localCanvasButtonRect.Width / 2 - _localCanvasButtonRect.Width * (buttonsize / 2);
+                                    ty = _localCanvasButtonRect.Top + _localCanvasButtonRect.Height - _localCanvasButtonRect.Height * buttonsize;
                                     break;
                                 case 4:
-                                    tx = _canvasButtonRect.Left;
-                                    ty = _canvasButtonRect.Top;
+                                    tx = _localCanvasButtonRect.Left;
+                                    ty = _localCanvasButtonRect.Top;
                                     break;
                                 case 5:
                                     continue;
                                 case 6:
-                                    tx = _canvasButtonRect.Left + _canvasButtonRect.Width * (1.0f - buttonsize);
-                                    ty = _canvasButtonRect.Top;
+                                    tx = _localCanvasButtonRect.Left + _localCanvasButtonRect.Width * (1.0f - buttonsize);
+                                    ty = _localCanvasButtonRect.Top;
                                     break;
                                 case 7:
-                                    tx = _canvasButtonRect.Left + _canvasButtonRect.Width * (1.0f - buttonsize);
-                                    ty = _canvasButtonRect.Top + _canvasButtonRect.Height * (1.0f - buttonsize);
+                                    tx = _localCanvasButtonRect.Left + _localCanvasButtonRect.Width * (1.0f - buttonsize);
+                                    ty = _localCanvasButtonRect.Top + _localCanvasButtonRect.Height * (1.0f - buttonsize);
                                     break;
                                 case 8:
-                                    tx = _canvasButtonRect.Left;
-                                    ty = _canvasButtonRect.Top + _canvasButtonRect.Height * (1.0f - buttonsize);
+                                    tx = _localCanvasButtonRect.Left;
+                                    ty = _localCanvasButtonRect.Top + _localCanvasButtonRect.Height * (1.0f - buttonsize);
                                     break;
                                 default:
                                     continue;
                             }
 
-                            float px = Math.Max(0, _canvasButtonRect.Width - _canvasButtonRect.Height) * buttonsize / 2;
-                            float py = Math.Max(0, _canvasButtonRect.Height - _canvasButtonRect.Width) * buttonsize / 2;
-                            float truesize = Math.Min(_canvasButtonRect.Width, _canvasButtonRect.Height) * buttonsize;
+                            float px = Math.Max(0, _localCanvasButtonRect.Width - _localCanvasButtonRect.Height) * buttonsize / 2;
+                            float py = Math.Max(0, _localCanvasButtonRect.Height - _localCanvasButtonRect.Width) * buttonsize / 2;
+                            float truesize = Math.Min(_localCanvasButtonRect.Width, _localCanvasButtonRect.Height) * buttonsize;
                             targetrect = new SKRect(tx + px, ty + py, tx + px + truesize, ty + py + truesize);
                         }
                         canvas.DrawImage(GHApp._arrowBitmap[i], targetrect, textPaint.Paint);
@@ -11149,61 +11275,61 @@ namespace GnollHackX.Pages.Game
                         float avgwidth = textPaint.MeasureText("A");
                         for (int i = 0; i <= 9; i++)
                         {
-                            lock (_canvasButtonLock)
+                            //lock (_canvasButtonLock)
                             {
                                 switch (i)
                                 {
                                     case 0:
                                         str = "4";
-                                        tx = _canvasButtonRect.Left + _canvasButtonRect.Width * (buttonsize / 2) - avgwidth / 2;
-                                        ty = _canvasButtonRect.Top + _canvasButtonRect.Height / 2 + textPaint.FontMetrics.Descent;
+                                        tx = _localCanvasButtonRect.Left + _localCanvasButtonRect.Width * (buttonsize / 2) - avgwidth / 2;
+                                        ty = _localCanvasButtonRect.Top + _localCanvasButtonRect.Height / 2 + textPaint.FontMetrics.Descent;
                                         break;
                                     case 1:
                                         str = "8";
-                                        tx = _canvasButtonRect.Left + _canvasButtonRect.Width / 2 - avgwidth / 2;
-                                        ty = _canvasButtonRect.Top + _canvasButtonRect.Height * (buttonsize / 2) + textPaint.FontMetrics.Descent;
+                                        tx = _localCanvasButtonRect.Left + _localCanvasButtonRect.Width / 2 - avgwidth / 2;
+                                        ty = _localCanvasButtonRect.Top + _localCanvasButtonRect.Height * (buttonsize / 2) + textPaint.FontMetrics.Descent;
                                         break;
                                     case 2:
                                         str = "6";
-                                        tx = _canvasButtonRect.Left + _canvasButtonRect.Width * (1.0f - buttonsize / 2) - avgwidth / 2;
-                                        ty = _canvasButtonRect.Top + _canvasButtonRect.Height / 2 + textPaint.FontMetrics.Descent;
+                                        tx = _localCanvasButtonRect.Left + _localCanvasButtonRect.Width * (1.0f - buttonsize / 2) - avgwidth / 2;
+                                        ty = _localCanvasButtonRect.Top + _localCanvasButtonRect.Height / 2 + textPaint.FontMetrics.Descent;
                                         break;
                                     case 3:
                                         str = "2";
-                                        tx = _canvasButtonRect.Left + _canvasButtonRect.Width / 2 - avgwidth / 2;
-                                        ty = _canvasButtonRect.Top + _canvasButtonRect.Height * (1.0f - buttonsize / 2) + textPaint.FontMetrics.Descent;
+                                        tx = _localCanvasButtonRect.Left + _localCanvasButtonRect.Width / 2 - avgwidth / 2;
+                                        ty = _localCanvasButtonRect.Top + _localCanvasButtonRect.Height * (1.0f - buttonsize / 2) + textPaint.FontMetrics.Descent;
                                         break;
                                     case 4:
                                         str = "7";
-                                        tx = _canvasButtonRect.Left + _canvasButtonRect.Width * (buttonsize / 2) - avgwidth / 2;
-                                        ty = _canvasButtonRect.Top + _canvasButtonRect.Height * (buttonsize / 2) + textPaint.FontMetrics.Descent;
+                                        tx = _localCanvasButtonRect.Left + _localCanvasButtonRect.Width * (buttonsize / 2) - avgwidth / 2;
+                                        ty = _localCanvasButtonRect.Top + _localCanvasButtonRect.Height * (buttonsize / 2) + textPaint.FontMetrics.Descent;
                                         break;
                                     case 5:
                                         str = "5";
-                                        tx = _canvasButtonRect.Left + _canvasButtonRect.Width / 2 - avgwidth / 2;
-                                        ty = _canvasButtonRect.Top + _canvasButtonRect.Height / 2 + textPaint.FontMetrics.Descent;
+                                        tx = _localCanvasButtonRect.Left + _localCanvasButtonRect.Width / 2 - avgwidth / 2;
+                                        ty = _localCanvasButtonRect.Top + _localCanvasButtonRect.Height / 2 + textPaint.FontMetrics.Descent;
                                         break;
                                     case 6:
                                         str = "9";
-                                        tx = _canvasButtonRect.Left + _canvasButtonRect.Width * (1.0f - buttonsize / 2) - avgwidth / 2;
-                                        ty = _canvasButtonRect.Top + _canvasButtonRect.Height * (buttonsize / 2) + textPaint.FontMetrics.Descent;
+                                        tx = _localCanvasButtonRect.Left + _localCanvasButtonRect.Width * (1.0f - buttonsize / 2) - avgwidth / 2;
+                                        ty = _localCanvasButtonRect.Top + _localCanvasButtonRect.Height * (buttonsize / 2) + textPaint.FontMetrics.Descent;
                                         break;
                                     case 7:
                                         str = "3";
-                                        tx = _canvasButtonRect.Left + _canvasButtonRect.Width * (1.0f - buttonsize / 2) - avgwidth / 2;
-                                        ty = _canvasButtonRect.Top + _canvasButtonRect.Height * (1.0f - buttonsize / 2) + textPaint.FontMetrics.Descent;
+                                        tx = _localCanvasButtonRect.Left + _localCanvasButtonRect.Width * (1.0f - buttonsize / 2) - avgwidth / 2;
+                                        ty = _localCanvasButtonRect.Top + _localCanvasButtonRect.Height * (1.0f - buttonsize / 2) + textPaint.FontMetrics.Descent;
                                         break;
                                     case 8:
                                         str = "1";
-                                        tx = _canvasButtonRect.Left + _canvasButtonRect.Width * (buttonsize / 2) - avgwidth / 2;
-                                        ty = _canvasButtonRect.Top + _canvasButtonRect.Height * (1.0f - buttonsize / 2) + textPaint.FontMetrics.Descent;
+                                        tx = _localCanvasButtonRect.Left + _localCanvasButtonRect.Width * (buttonsize / 2) - avgwidth / 2;
+                                        ty = _localCanvasButtonRect.Top + _localCanvasButtonRect.Height * (1.0f - buttonsize / 2) + textPaint.FontMetrics.Descent;
                                         break;
                                     case 9:
                                         str = "0";
-                                        tx = 0 + _canvasButtonRect.Left / 2 - avgwidth / 2;
-                                        //ty = _canvasButtonRect.Top + _canvasButtonRect.Height * (buttonsize / 2) + textPaint.FontMetrics.Descent;
-                                        ty = _canvasButtonRect.Top + _canvasButtonRect.Height * (1.0f - buttonsize / 2) + textPaint.FontMetrics.Descent;
-                                        textPaint.TextSize = Math.Max(10.0f, textPaint.TextSize * Math.Min(1.0f, _canvasButtonRect.Left / (_canvasButtonRect.Width * buttonsize)));
+                                        tx = 0 + _localCanvasButtonRect.Left / 2 - avgwidth / 2;
+                                        //ty = _localCanvasButtonRect.Top + _localCanvasButtonRect.Height * (buttonsize / 2) + textPaint.FontMetrics.Descent;
+                                        ty = _localCanvasButtonRect.Top + _localCanvasButtonRect.Height * (1.0f - buttonsize / 2) + textPaint.FontMetrics.Descent;
+                                        textPaint.TextSize = Math.Max(10.0f, textPaint.TextSize * Math.Min(1.0f, _localCanvasButtonRect.Left / (_localCanvasButtonRect.Width * buttonsize)));
                                         break;
                                 }
                             }
@@ -11310,10 +11436,10 @@ namespace GnollHackX.Pages.Game
                         SKRect cliprect = new SKRect(0, ty + textPaint.FontMetrics.Ascent, canvaswidth, bkgrect.Bottom - bkgrect.Height / 8.5f);
                         canvas.ClipRect(cliprect);
 
-                        lock (_statusOffsetLock)
+                        //lock (_statusOffsetLock)
                         {
-                            ty += _statusOffsetY;
-                            _statusClipBottom = cliprect.Bottom;
+                            ty += _localStatusOffsetY;
+                            _localStatusClipBottom = cliprect.Bottom;
                         }
                         base_ty = ty;
 
@@ -11434,9 +11560,9 @@ namespace GnollHackX.Pages.Game
                         }
                         if (valtext != "")
                         {
-                            lock (_statusOffsetLock)
+                            //lock (_statusOffsetLock)
                             {
-                                _statusLargestBottom = ty + textPaint.FontMetrics.Descent;
+                                _localStatusLargestBottom = ty + textPaint.FontMetrics.Descent;
                             }
                             textPaint.DrawTextOnCanvas(canvas, "Armor class:", tx, ty);
                             textPaint.DrawTextOnCanvas(canvas, valtext, tx + indentation, ty);
@@ -11460,9 +11586,9 @@ namespace GnollHackX.Pages.Game
                         }
                         if (valtext != "")
                         {
-                            lock (_statusOffsetLock)
+                            //lock (_statusOffsetLock)
                             {
-                                _statusLargestBottom = ty + textPaint.FontMetrics.Descent;
+                                _localStatusLargestBottom = ty + textPaint.FontMetrics.Descent;
                             }
                             textPaint.DrawTextOnCanvas(canvas, "Magic cancellation:", tx, ty);
                             string printtext = valtext2 != "" ? valtext + "/" + valtext2 + "%" : valtext;
@@ -11482,9 +11608,9 @@ namespace GnollHackX.Pages.Game
                         }
                         if (valtext != "")
                         {
-                            lock (_statusOffsetLock)
+                            //lock (_statusOffsetLock)
                             {
-                                _statusLargestBottom = ty + textPaint.FontMetrics.Descent;
+                                _localStatusLargestBottom = ty + textPaint.FontMetrics.Descent;
                             }
                             textPaint.DrawTextOnCanvas(canvas, "Move:", tx, ty);
                             textPaint.DrawTextOnCanvas(canvas, valtext, tx + indentation, ty);
@@ -11513,9 +11639,9 @@ namespace GnollHackX.Pages.Game
                         }
                         if (valtext != "" || valtext2 != "" || valtext3 != "")
                         {
-                            lock (_statusOffsetLock)
+                            //lock (_statusOffsetLock)
                             {
-                                _statusLargestBottom = ty + textPaint.FontMetrics.Descent;
+                                _localStatusLargestBottom = ty + textPaint.FontMetrics.Descent;
                             }
                             textPaint.DrawTextOnCanvas(canvas, "Weapon style:", tx, ty);
                             string printtext = valtext;
@@ -11541,9 +11667,9 @@ namespace GnollHackX.Pages.Game
                         }
                         if (valtext != "")
                         {
-                            lock (_statusOffsetLock)
+                            //lock (_statusOffsetLock)
                             {
-                                _statusLargestBottom = ty + textPaint.FontMetrics.Descent;
+                                _localStatusLargestBottom = ty + textPaint.FontMetrics.Descent;
                             }
                             GHSubstring printtext = valtext.Length > 11 && valtext[0] == '\\' ? new GHSubstring(valtext, 11) : new GHSubstring(valtext);
                             textPaint.DrawTextOnCanvas(canvas, "Gold:", tx, ty);
@@ -11563,9 +11689,9 @@ namespace GnollHackX.Pages.Game
                         }
                         if (valtext != "")
                         {
-                            lock (_statusOffsetLock)
+                            //lock (_statusOffsetLock)
                             {
-                                _statusLargestBottom = ty + textPaint.FontMetrics.Descent;
+                                _localStatusLargestBottom = ty + textPaint.FontMetrics.Descent;
                             }
                             textPaint.DrawTextOnCanvas(canvas, "Turns:", tx, ty);
                             textPaint.DrawTextOnCanvas(canvas, valtext, tx + indentation, ty);
@@ -11622,9 +11748,9 @@ namespace GnollHackX.Pages.Game
                                     GHApp.MaybeFixRects(ref source_rt, ref target_rt, 1.0f, usingGL, fixRects);
                                     canvas.DrawImage(TileMap[sheet_idx], source_rt, target_rt);
                                     textPaint.DrawTextOnCanvas(canvas, statusname, tx + marksize + markpadding, ty);
-                                    lock (_statusOffsetLock)
+                                    //lock (_statusOffsetLock)
                                     {
-                                        _statusLargestBottom = ty + textPaint.FontMetrics.Descent;
+                                        _localStatusLargestBottom = ty + textPaint.FontMetrics.Descent;
                                     }
                                     ty += textPaint.FontSpacing;
                                 }
@@ -11665,9 +11791,9 @@ namespace GnollHackX.Pages.Game
                                     GHApp.MaybeFixRects(ref source_rt, ref target_rt, 1.0f, usingGL, fixRects);
                                     canvas.DrawImage(TileMap[sheet_idx], source_rt, target_rt);
                                     textPaint.DrawTextOnCanvas(canvas, conditionname, tx + marksize + markpadding, ty);
-                                    lock (_statusOffsetLock)
+                                    //lock (_statusOffsetLock)
                                     {
-                                        _statusLargestBottom = ty + textPaint.FontMetrics.Descent;
+                                        _localStatusLargestBottom = ty + textPaint.FontMetrics.Descent;
                                     }
                                     ty += textPaint.FontSpacing;
                                 }
@@ -11721,9 +11847,9 @@ namespace GnollHackX.Pages.Game
                                         canvas.DrawImage(TileMap[sheet_idx], source_rt, target_rt);
                                         if (propname != null)
                                             textPaint.DrawTextOnCanvas(canvas, propname, tx + marksize + markpadding, ty);
-                                        lock (_statusOffsetLock)
+                                        //lock (_statusOffsetLock)
                                         {
-                                            _statusLargestBottom = ty + textPaint.FontMetrics.Descent;
+                                            _localStatusLargestBottom = ty + textPaint.FontMetrics.Descent;
                                         }
                                         ty += textPaint.FontSpacing;
                                     }
@@ -11738,13 +11864,13 @@ namespace GnollHackX.Pages.Game
 #if WINDOWS
                 GameCursorType newCursor = GameCursorType.Normal;
                 bool doChangeCursor = false;
-                lock (_canvasPointerLock)
+                //lock (_canvasPointerLock)
                 {
-                    GameCursorType usedCursor = _isCanvasHovering && (StatusBarRect.Contains(_canvasHoverLocation) || YouRect.Contains(_canvasHoverLocation) || HealthRect.Contains(_canvasHoverLocation) || ManaRect.Contains(_canvasHoverLocation)) ? GameCursorType.Info : GameCursorType.Normal;
-                    if (usedCursor != _currentCursorType)
+                    GameCursorType usedCursor = _localIsPointerHovering && (StatusBarRect.Contains(_localPointerHoverLocation) || YouRect.Contains(_localPointerHoverLocation) || HealthRect.Contains(_localPointerHoverLocation) || ManaRect.Contains(_localPointerHoverLocation)) ? GameCursorType.Info : GameCursorType.Normal;
+                    if (usedCursor != _localCurrentCursorType)
                     {
                         doChangeCursor = true;
-                        _currentCursorType = newCursor = usedCursor;
+                        _localCurrentCursorType = newCursor = usedCursor;
                     }
                 }
                 if (doChangeCursor)
@@ -11789,6 +11915,39 @@ namespace GnollHackX.Pages.Game
             {
                 if (lockTaken)
                     Monitor.Exit(_uiContextMenuRectLock);
+            }
+            lockTaken = false;
+
+            //lock (_canvasButtonLock)
+            try
+            {
+                Monitor.TryEnter(_canvasButtonLock, ref lockTaken);
+                if (lockTaken)
+                {
+                    _canvasButtonRect = _localCanvasButtonRect;
+                }
+            }
+            finally
+            {
+                if (lockTaken)
+                    Monitor.Exit(_canvasButtonLock);
+            }
+            lockTaken = false;
+
+            //lock (_statusOffsetLock)
+            try
+            {
+                Monitor.TryEnter(_statusOffsetLock, ref lockTaken);
+                if (lockTaken)
+                {
+                    _statusClipBottom = _localStatusClipBottom;
+                    _statusLargestBottom = _localStatusLargestBottom;
+                }
+            }
+            finally
+            {
+                if (lockTaken)
+                    Monitor.Exit(_statusOffsetLock);
             }
             lockTaken = false;
 
@@ -14485,7 +14644,6 @@ namespace GnollHackX.Pages.Game
         private readonly object _canvasPointerLock = new object();
         private bool _isCanvasHovering = false;
         private SKPoint _canvasHoverLocation = new SKPoint();
-        GameCursorType _currentCursorType = GameCursorType.Normal;
 #endif
 
         private void canvasView_MousePointer(object sender, SKTouchEventArgs e)
@@ -14635,28 +14793,33 @@ namespace GnollHackX.Pages.Game
             else
             {
                 float buttonsize = ShowNumberPad ? GHConstants.NumberButtonSize : ShowDirections ? GHConstants.ArrowButtonSize : GHConstants.MoveArrowButtonSize;
+                SKRect canvasRect;
                 lock (_canvasButtonLock)
                 {
-                    if (e.Location.X >= _canvasButtonRect.Left && e.Location.X <= _canvasButtonRect.Right && e.Location.Y >= _canvasButtonRect.Top && e.Location.Y <= _canvasButtonRect.Bottom)
+                    canvasRect = _canvasButtonRect;
+                }
+                //lock (_canvasButtonLock)
+                {
+                    if (e.Location.X >= canvasRect.Left && e.Location.X <= canvasRect.Right && e.Location.Y >= canvasRect.Top && e.Location.Y <= canvasRect.Bottom)
                     {
                         int resp = 0;
-                        SKPoint RectLoc = new SKPoint(e.Location.X - _canvasButtonRect.Left, e.Location.Y - _canvasButtonRect.Top);
+                        SKPoint RectLoc = new SKPoint(e.Location.X - canvasRect.Left, e.Location.Y - canvasRect.Top);
 
-                        if (RectLoc.Y < _canvasButtonRect.Height * buttonsize && RectLoc.X < _canvasButtonRect.Width * buttonsize)
+                        if (RectLoc.Y < canvasRect.Height * buttonsize && RectLoc.X < canvasRect.Width * buttonsize)
                             resp += -7;
-                        else if (RectLoc.Y < _canvasButtonRect.Height * buttonsize && RectLoc.X > _canvasButtonRect.Width * (1.0f - buttonsize))
+                        else if (RectLoc.Y < canvasRect.Height * buttonsize && RectLoc.X > canvasRect.Width * (1.0f - buttonsize))
                             resp += -9;
-                        else if (RectLoc.Y > _canvasButtonRect.Height * (1.0f - buttonsize) && RectLoc.X < _canvasButtonRect.Width * buttonsize)
+                        else if (RectLoc.Y > canvasRect.Height * (1.0f - buttonsize) && RectLoc.X < canvasRect.Width * buttonsize)
                             resp += -1;
-                        else if (RectLoc.Y > _canvasButtonRect.Height * (1.0f - buttonsize) && RectLoc.X > _canvasButtonRect.Width * (1.0f - buttonsize))
+                        else if (RectLoc.Y > canvasRect.Height * (1.0f - buttonsize) && RectLoc.X > canvasRect.Width * (1.0f - buttonsize))
                             resp += -3;
-                        else if (RectLoc.Y < _canvasButtonRect.Height * buttonsize)
+                        else if (RectLoc.Y < canvasRect.Height * buttonsize)
                             resp += -8; //ch = "k";
-                        else if (RectLoc.Y > _canvasButtonRect.Height * (1.0f - buttonsize))
+                        else if (RectLoc.Y > canvasRect.Height * (1.0f - buttonsize))
                             resp += -2; // ch = "j";
-                        else if (RectLoc.X < _canvasButtonRect.Width * buttonsize)
+                        else if (RectLoc.X < canvasRect.Width * buttonsize)
                             resp += -4; // ch = "h";
-                        else if (RectLoc.X > _canvasButtonRect.Width * (1.0f - buttonsize))
+                        else if (RectLoc.X > canvasRect.Width * (1.0f - buttonsize))
                             resp += -6; // ch = "l";
                         else
                         {
@@ -14695,9 +14858,9 @@ namespace GnollHackX.Pages.Game
 
                         curGame?.ResponseQueue.Enqueue(new GHResponse(curGame, GHRequestType.GetChar, resp));
                     }
-                    else if (ShowNumberPad && e.Location.X < _canvasButtonRect.Left
-                        && e.Location.Y >= _canvasButtonRect.Top + _canvasButtonRect.Height * (1.0f - buttonsize)
-                        && e.Location.Y <= _canvasButtonRect.Top + _canvasButtonRect.Height)
+                    else if (ShowNumberPad && e.Location.X < canvasRect.Left
+                        && e.Location.Y >= canvasRect.Top + canvasRect.Height * (1.0f - buttonsize)
+                        && e.Location.Y <= canvasRect.Top + canvasRect.Height)
                     {
                         int resp = -10;
                         curGame?.ResponseQueue.Enqueue(new GHResponse(curGame, GHRequestType.GetChar, resp));
@@ -17803,6 +17966,7 @@ namespace GnollHackX.Pages.Game
         public int CurrentMoreButtonPageMaxNumber { get { return UseSimpleCmdLayout ? GHConstants.MoreButtonPages - 1 : GHConstants.MoreButtonPages; } }
 
         private bool _commandCanvasThreadChecked = false;
+        private double _commandFps = 0.0;
         private void CommandCanvas_PaintSurface(object sender, SKPaintSurfaceEventArgs e)
         {
             bool isCommandOnMainThread = MainThread.IsMainThread;
@@ -17959,10 +18123,24 @@ namespace GnollHackX.Pages.Game
                     canvas.DrawImage(GHApp._fpsBitmap, statusDest);
 
                     string drawtext;
-                    lock (_fpslock)
+                    bool lockTaken = false;
+                    //lock (_fpslock)
+                    try
                     {
-                        drawtext = string.Format("{0:0.0}", _fps);
+                        Monitor.TryEnter(_fpslock, ref lockTaken);
+                        if (lockTaken)
+                        {
+                            _commandFps = _fps;
+                        }
                     }
+                    finally
+                    {
+                        if (lockTaken)
+                            Monitor.Exit(_fpslock);
+                    }
+                    lockTaken = false;
+
+                    drawtext = string.Format("{0:0.0}", _commandFps);
 
                     const int topMargin = 4, bottomMargin = 16;
                     textPaint.Color = SKColors.White;
