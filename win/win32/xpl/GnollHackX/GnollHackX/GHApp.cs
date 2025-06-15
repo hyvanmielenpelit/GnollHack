@@ -1810,6 +1810,15 @@ namespace GnollHackX
         public static readonly bool IsPackaged = true;
 #endif
 
+        public static bool IsSamsung 
+        { 
+            get
+            {
+                string manufacturer = DeviceInfo.Manufacturer;
+                return (manufacturer != null && manufacturer.ToLower() == "samsung");
+            }
+        }
+
         public static bool IsMobileRunningOnDesktop
         {
             get

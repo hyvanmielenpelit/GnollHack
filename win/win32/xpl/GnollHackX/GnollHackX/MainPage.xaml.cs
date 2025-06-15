@@ -119,6 +119,9 @@ namespace GnollHackX
                     _generalTimer.Stop(); 
             };
 
+            FinishedLogoFadeIn = false;
+            StartStartUpTimer();
+
             HandlerChanged += (s, e) => {
                 GHApp.DisplayRefreshRate = Math.Max(60.0f, DeviceDisplay.Current.MainDisplayInfo.RefreshRate);
                 GHApp.DisplayDensity = DeviceDisplay.Current.MainDisplayInfo.Density <= 0.0 ? 1.0f : (float)DeviceDisplay.Current.MainDisplayInfo.Density;
@@ -1223,14 +1226,50 @@ namespace GnollHackX
             }
         }
 
+        private readonly object _startUpLock = new object();
+        private bool _finishedLogoFadeIn = false;
+        private bool FinishedLogoFadeIn { get { lock (_startUpLock) { return _finishedLogoFadeIn; } } set { lock (_startUpLock) { _finishedLogoFadeIn = value; } } }
+#if GNH_MAUI
+        IDispatcherTimer _startUpTimer;
+#endif
+
         private async Task StartFadeLogoIn()
         {
             await StartLogoImage.FadeTo(1, 250);
             StartLogoImage.Opacity = 1.0; /* To make sure */
             await FmodLogoImage.FadeTo(1, 250);
             FmodLogoImage.Opacity = 1.0; /* To make sure */
+            FinishedLogoFadeIn = true;
+
             //List<Task> tasklist = new List<Task> { t1, t2 };
             //await Task.WhenAll(tasklist);
+        }
+
+        private void StartStartUpTimer()
+        {
+#if GNH_MAUI
+            _startUpTimer = Microsoft.Maui.Controls.Application.Current.Dispatcher.CreateTimer();
+            _startUpTimer.Interval = TimeSpan.FromSeconds(GHConstants.StartUpTimeOut);
+            _startUpTimer.IsRepeating = false;
+            _startUpTimer.Tick += (s, e) =>
+            {
+                if (!FinishedLogoFadeIn)
+                    ShowStartUpTimeOutAlert();
+            };
+            _startUpTimer.Start();
+#else
+            Device.StartTimer(TimeSpan.FromSeconds(GHConstants.StartUpTimeOut), () =>
+            {
+                if (!FinishedLogoFadeIn)
+                    ShowStartUpTimeOutAlert();
+                return false;
+            });
+#endif
+        }
+
+        private void ShowStartUpTimeOutAlert()
+        {
+            DisplayAlertGrid("Startup Timeout", "GnollHack has exceeded its startup timeout limit, possibly due to animations being turned off." + (GHApp.IsAndroid && GHApp.IsSamsung ? " In Android Settings, please switch off Accessibility > Visual Enhancements > Remove Animations." : " Please check your device animation settings."), "OK", GHColors.Orange, true);
         }
 
         private async Task StartFadeIn()
@@ -1681,21 +1720,29 @@ namespace GnollHackX
                 await DisplayAlertOrGrid("Malformed URL", "The URL was malformed: " + _popupViewUrl, "OK", GHColors.Orange);
         }
 
-        private void AlertOkButton_Clicked(object sender, EventArgs e)
+        private async void AlertOkButton_Clicked(object sender, EventArgs e)
         {
             AlertOkButton.IsEnabled = false;
             GHApp.PlayButtonClickedSound();
             AlertGrid.IsVisible = false;
+            if (_alertGridCloseAppOnOk)
+                await CloseApp();
             AlertOkButton.IsEnabled = true;
         }
 
-        private void DisplayAlertGrid(string title, string message, string buttonText, Color titleColor)
+        private bool _alertGridCloseAppOnOk = false;
+
+        private void DisplayAlertGrid(string title, string message, string buttonText, Color titleColor, bool closeAppOnOk = false)
         {
-            AlertTitleLabel.Text = title;
-            AlertTitleLabel.TextColor = titleColor;
-            AlertLabel.Text = message;
-            AlertOkButton.Text = buttonText;
-            AlertGrid.IsVisible = true;
+            MainThread.BeginInvokeOnMainThread(() =>
+            {
+                _alertGridCloseAppOnOk = closeAppOnOk;
+                AlertTitleLabel.Text = title;
+                AlertTitleLabel.TextColor = titleColor;
+                AlertLabel.Text = message;
+                AlertOkButton.Text = buttonText;
+                AlertGrid.IsVisible = true;
+            });
         }
 
         private async Task DisplayAlertOrGrid(string title, string message, string buttonText, Color titleColor)

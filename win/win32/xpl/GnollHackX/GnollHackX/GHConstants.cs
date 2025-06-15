@@ -1889,6 +1889,7 @@ namespace GnollHackX
         //public const GHlong GPUResourceCacheSize = 800000000L;
         public const string AssetsTilesetDirectory = "tileset";
         public const string AssetsBanksDirectory = "banks";
+        public const double StartUpTimeOut = 6.0;
 
 #if GNH_MAUI
         public const string PortName = "GnollHackM";

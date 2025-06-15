@@ -58,7 +58,7 @@ namespace GnollHackX.Pages.MainScreen
 
             string compatstr = GHApp.GHVersionCompatibilityString;
             string manufacturer = DeviceInfo.Manufacturer;
-            if (manufacturer.Length > 0)
+            if (manufacturer?.Length > 0)
                 manufacturer = manufacturer.Substring(0, 1).ToUpper() + manufacturer.Substring(1);
 
             ulong TotalMemInBytes = GHApp.PlatformService.GetDeviceMemoryInBytes();
