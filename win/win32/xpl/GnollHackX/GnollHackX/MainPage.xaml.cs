@@ -19,6 +19,7 @@ using System.Net.Http.Headers;
 using System.Collections;
 using System.Collections.Concurrent;
 
+
 #if GNH_MAUI
 using GnollHackX;
 using Microsoft.Maui.Controls.PlatformConfiguration;
@@ -752,7 +753,7 @@ namespace GnollHackX
 #if SENTRY
                 SentrySdk.CaptureException(ex);
 #endif
-                await DisplayAlertOrGrid("Error", "Error occurred when starting the game: " + ex.Message, "OK", GHColors.Red);
+                DisplayAlertGrid("Error", "Error occurred when starting the game: " + ex.Message, "OK", GHColors.Red);
             }
         }
 
@@ -790,9 +791,8 @@ namespace GnollHackX
                     bool removeanimationson = GHApp.PlatformService.IsRemoveAnimationsOn();
                     if (removeanimationson)
                     {
-                        await GHApp.DisplayMessageBox(this, "Invalid Animator Duration Scale",
-                            "GnollHack has detected invalid animator settings. If your device has a setting named \"Remove Animations\" under Settings -> Accessibility -> Visibility Enhancements, this setting must be set to Off. If your device does not have this setting, please manually adjust the value of \"Animator duration scale\" to 1x under Settings -> Developer Options -> Animator duration scale. ", "OK");
-                        await CloseApp();
+                        DisplayAlertGrid(GHApp.IsAndroid && GHApp.IsSamsung ? "Remove Animations Setting is On" : "Invalid Animator Duration Scale",
+                            "GnollHack has detected invalid animation settings." + (GHApp.IsAndroid  ? (GHApp.IsSamsung ? " In the Android Settings app, please switch off \"Remove Animations\" under Accessibility > Visibility Enhancements." : " In the Android settings app, please adjust the value of \"Animator duration scale\" to 1x under Developer Options > Animator duration scale.") : " Please check your device animation settings."), "OK", GHColors.Orange, 2);
                     }
                     else
                     {
@@ -801,12 +801,11 @@ namespace GnollHackX
                         if (scalecurrent == 0.0f)
                         {
                             if (scalesetting == 0.0f)
-                                await GHApp.DisplayMessageBox(this, "Invalid Animator Duration Scale",
-                                    "GnollHack failed to automatically adjust Animator Duration Scale and it remains set to Off. Please manually adjust the value to 1x under Settings -> Developer Options -> Animator duration scale. If your device has a setting named \"Remove Animations\" under Settings -> Accessibility -> Visibility Enhancements, this setting needs to be disabled, too.", "OK");
+                                DisplayAlertGrid("Invalid Animator Duration Scale",
+                                    "GnollHack failed to automatically adjust Animator Duration Scale and it remains switched off." + (GHApp.IsAndroid ? " In the Android Settings app, please adjust the value to 1x under Developer Options > Animator duration scale. If your device has a setting named \"Remove Animations\" under Accessibility > Visibility Enhancements, this setting needs to be disabled, too." : ""), "OK", GHColors.Orange, 2);
                             else
-                                await GHApp.DisplayMessageBox(this, "Invalid Animator Duration Scale",
-                                    "GnollHack failed to automatically adjust Animator Duration Scale and it has become turned Off. Please check that the value is 1x under Settings -> Developer Options -> Animator duration scale. If your device has a setting named \"Remove Animations\" under Settings -> Accessibility -> Visibility Enhancements, this setting needs to be disabled, too.", "OK");
-                            await CloseApp();
+                                DisplayAlertGrid("Invalid Animator Duration Scale",
+                                    "GnollHack failed to automatically adjust Animator Duration Scale and it has become turned off." + (GHApp.IsAndroid ? " In the Android Settings app, please check that the value is 1x under Developer Options > Animator duration scale. If your device has a setting named \"Remove Animations\" under Accessibility > Visibility Enhancements, this setting needs to be disabled, too." : ""), "OK", GHColors.Orange, 2);
                         }
                         else if (scalecurrent == -1.0f)
                         {
@@ -825,41 +824,41 @@ namespace GnollHackX
                 if (GHApp.InformAboutGameTermination && (GHApp.DebugLogMessages || GHApp.GameSaveStatus == 0))
                 {
                     GHApp.InformAboutGameTermination = false;
-                    await DisplayAlertOrGrid("Unexpected Game Termination", "GnollHack was unexpectedly terminated when running on background. This may have been instructed by the operating system or the user." + (GHApp.GameSaveStatus == 0 ? " Your game may be recoverable from the crash." : " Your game was saved before the termination."), "OK", GHColors.Orange);
+                    DisplayAlertGrid("Unexpected Game Termination", "GnollHack was unexpectedly terminated when running on background. This may have been instructed by the operating system or the user." + (GHApp.GameSaveStatus == 0 ? " Your game may be recoverable from the crash." : " Your game was saved before the termination."), "OK", GHColors.Orange);
                     previousInformationShown = true;
                 }
                 if (GHApp.InformAboutIncompatibleSavedGames)
                 {
                     GHApp.InformAboutIncompatibleSavedGames = false;
-                    await DisplayAlertOrGrid("Incompatible Saved Games", "GnollHack has been updated to a newer version, for which your existing saved games are incompatible.", "OK", GHColors.Orange); // To downgrade back to the earlier version, back up first your save files using About -> Export Saved Games and then follow the instructions at About -> Downgrade.
+                    DisplayAlertGrid("Incompatible Saved Games", "GnollHack has been updated to a newer version, for which your existing saved games are incompatible.", "OK", GHColors.Orange); // To downgrade back to the earlier version, back up first your save files using About -> Export Saved Games and then follow the instructions at About -> Downgrade.
                     previousInformationShown = true;
                 }
                 if (GHApp.InformAboutSlowSounds)
                 {
-                    await DisplayAlertOrGrid("Slow Sounds", "GnollHack is running on Android in Debug Mode using the APK format, which causes sounds to play slow. Please switch Streaming Banks to Memory on in Settings.", "OK", GHColors.Orange);
+                    DisplayAlertGrid("Slow Sounds", "GnollHack is running on Android in Debug Mode using the APK format, which causes sounds to play slow. Please switch Streaming Banks to Memory on in Settings.", "OK", GHColors.Orange);
                     previousInformationShown = true;
                 }
                 if (GHApp.InformAboutGPU)
                 {
                     if (GHApp.IsSteam)
                     {
-                        await DisplayAlertOrGrid("Multiple GPUs", "GnollHack is currently not using a high-performance GPU, which may impact performance. Please switch to a high performance graphics preference in Windows Settings App at System > Display > Graphics > Add Desktop App > the .exe file under C:\\Program Files (x86)\\Steam\\steamapps\\common\\GnollHack.", "OK", GHColors.Orange);
+                        DisplayAlertGrid("Multiple GPUs", "GnollHack is currently not using a high-performance GPU, which may impact performance. Please switch to a high performance graphics preference in Windows Settings App at System > Display > Graphics > Add Desktop App > the .exe file under C:\\Program Files (x86)\\Steam\\steamapps\\common\\GnollHack.", "OK", GHColors.Orange);
                     }
                     else
                     {
-                        await DisplayAlertOrGrid("Multiple GPUs", "GnollHack is currently not using a high-performance GPU, which may impact performance. Please switch to a high performance graphics preference in Windows Settings App at System > Display > Graphics > Add App > Microsoft Store App > Options.", "OK", GHColors.Orange);
+                        DisplayAlertGrid("Multiple GPUs", "GnollHack is currently not using a high-performance GPU, which may impact performance. Please switch to a high performance graphics preference in Windows Settings App at System > Display > Graphics > Add App > Microsoft Store App > Options.", "OK", GHColors.Orange);
                     }
                     GHApp.HasInformedAboutGPU = true;
                     previousInformationShown = true;
                 }
                 if (GHApp.InformAboutRecordingSetOff)
                 {
-                    await DisplayAlertOrGrid("Recording Switched Off", string.Format("You are are running low on free disk space ({0:0.00} GB). Game recording has been switched off in Settings." + (GHApp.InformAboutFreeDiskSpace ? " Please consider freeing disk space on your device." : ""), (double)GHConstants.LowFreeDiskSpaceThresholdInBytes / (1024 * 1024 * 1024)), "OK", GHColors.Orange);
+                    DisplayAlertGrid("Recording Switched Off", string.Format("You are are running low on free disk space ({0:0.00} GB). Game recording has been switched off in Settings." + (GHApp.InformAboutFreeDiskSpace ? " Please consider freeing disk space on your device." : ""), (double)GHConstants.LowFreeDiskSpaceThresholdInBytes / (1024 * 1024 * 1024)), "OK", GHColors.Orange);
                     previousInformationShown = true;
                 }
                 else if (GHApp.InformAboutFreeDiskSpace)
                 {
-                    await DisplayAlertOrGrid("Very Low Free Disk Space", string.Format("You are are running very low on free disk space ({0:0.00} GB). Please consider freeing disk space on your device.", (double)GHConstants.VeryLowFreeDiskSpaceThresholdInBytes / (1024 * 1024 * 1024)), "OK", GHColors.Orange);
+                    DisplayAlertGrid("Very Low Free Disk Space", string.Format("You are are running very low on free disk space ({0:0.00} GB). Please consider freeing disk space on your device.", (double)GHConstants.VeryLowFreeDiskSpaceThresholdInBytes / (1024 * 1024 * 1024)), "OK", GHColors.Orange);
                     previousInformationShown = true;
                 }
                 if (!previousInformationShown)
@@ -917,10 +916,10 @@ namespace GnollHackX
 
             await TryInitializeGnollHack();
             await TryInitializeSecrets();
-            await TryInitializeFMOD();
+            TryInitializeFMOD();
         }
 
-        public async Task TryReadSecrets()
+        public void TryReadSecrets()
         {
             try
             {
@@ -929,7 +928,7 @@ namespace GnollHackX
             }
             catch (Exception ex)
             {
-                await DisplayAlertOrGrid("Reading Secrets File Failed", "GnollHack failed to read secrets file: " + ex.Message, "OK", GHColors.Red);
+                DisplayAlertGrid("Reading Secrets File Failed", "GnollHack failed to read secrets file: " + ex.Message, "OK", GHColors.Red);
             }
             try
             {
@@ -937,7 +936,7 @@ namespace GnollHackX
             }
             catch (Exception ex)
             {
-                await DisplayAlertOrGrid("Reading User Secrets File Failed", "GnollHack failed to read user secrets file: " + ex.Message, "OK", GHColors.Red);
+                DisplayAlertGrid("Reading User Secrets File Failed", "GnollHack failed to read user secrets file: " + ex.Message, "OK", GHColors.Red);
             }
         }
 
@@ -949,7 +948,7 @@ namespace GnollHackX
             }
             catch (Exception ex)
             {
-                await DisplayAlertOrGrid("GnollHack Initialization Failed", "Initializing GnollHack failed: " + ex.Message, "OK", GHColors.Red);
+                DisplayAlertGrid("GnollHack Initialization Failed", "Initializing GnollHack failed: " + ex.Message, "OK", GHColors.Red);
             }
         }
         public async Task TryInitializeSecrets()
@@ -960,11 +959,11 @@ namespace GnollHackX
             }
             catch (Exception ex)
             {
-                await DisplayAlertOrGrid("Secrets Initialization Failed", "Initializing secrets failed: " + ex.Message, "OK", GHColors.Red);
+                DisplayAlertGrid("Secrets Initialization Failed", "Initializing secrets failed: " + ex.Message, "OK", GHColors.Red);
             }
         }
 
-        public async Task TryInitializeFMOD()
+        public void TryInitializeFMOD()
         {
             try
             {
@@ -972,11 +971,11 @@ namespace GnollHackX
             }
             catch (Exception ex)
             {
-                await DisplayAlertOrGrid("FMOD Initialization Failed", "Initializing FMOD failed: " + ex.Message, "OK", GHColors.Red);
+                DisplayAlertGrid("FMOD Initialization Failed", "Initializing FMOD failed: " + ex.Message, "OK", GHColors.Red);
             }
         }
 
-        public async Task TryClearCoreFiles()
+        public void TryClearCoreFiles()
         {
             try
             {
@@ -984,7 +983,7 @@ namespace GnollHackX
             }
             catch (Exception ex)
             {
-                await DisplayAlertOrGrid("File Clearing Failure", "GnollHack failed to clear core files: " + ex.Message, "OK", GHColors.Orange);
+                DisplayAlertGrid("File Clearing Failure", "GnollHack failed to clear core files: " + ex.Message, "OK", GHColors.Orange);
             }
         }
 
@@ -992,7 +991,7 @@ namespace GnollHackX
         {
             GHApp.InitFileDescriptors();
 
-            await TryReadSecrets();
+            TryReadSecrets();
             await InitializeServices();
 
             GHApp.InitAdditionalTypefaces();
@@ -1105,7 +1104,7 @@ namespace GnollHackX
 
                 if (prev_version != verid || prev_vernum != vernum)
                 {
-                    await TryClearCoreFiles();
+                    TryClearCoreFiles();
                     await TryInitializeGnollHack();
                     await TryInitializeSecrets();
                 }
@@ -1269,7 +1268,7 @@ namespace GnollHackX
 
         private void ShowStartUpTimeOutAlert()
         {
-            DisplayAlertGrid("Startup Timeout", "GnollHack has exceeded its startup timeout limit, possibly due to animations being turned off." + (GHApp.IsAndroid && GHApp.IsSamsung ? " In Android Settings, please switch off Accessibility > Visual Enhancements > Remove Animations." : " Please check your device animation settings."), "OK", GHColors.Orange, true);
+            DisplayAlertGrid("Startup Timeout", "GnollHack has exceeded its startup timeout limit, possibly due to animations being turned off." + (GHApp.IsAndroid && GHApp.IsSamsung ? " In Android Settings, please switch off Accessibility > Visual Enhancements > Remove Animations." : " Please check your device animation settings."), "OK", GHColors.Orange, 1);
         }
 
         private async Task StartFadeIn()
@@ -1466,7 +1465,7 @@ namespace GnollHackX
             catch (Exception ex)
             {
                 editorPage.ClearTextEditor();
-                await DisplayAlertOrGrid("Reading Options File Failed", "GnollHack failed to read the options file: " + ex.Message, "OK", GHColors.Red);
+                DisplayAlertGrid("Reading Options File Failed", "GnollHack failed to read the options file: " + ex.Message, "OK", GHColors.Red);
             }
             UpperButtonGrid.IsEnabled = true;
         }
@@ -1717,7 +1716,7 @@ namespace GnollHackX
             if (!string.IsNullOrWhiteSpace(_popupViewUrl) && Uri.IsWellFormedUriString(_popupViewUrl, UriKind.Absolute))
                 await GHApp.OpenBrowser(this, _popupViewTitle, new Uri(_popupViewUrl));
             else
-                await DisplayAlertOrGrid("Malformed URL", "The URL was malformed: " + _popupViewUrl, "OK", GHColors.Orange);
+                DisplayAlertGrid("Malformed URL", "The URL was malformed: " + _popupViewUrl, "OK", GHColors.Orange);
         }
 
         private async void AlertOkButton_Clicked(object sender, EventArgs e)
@@ -1725,33 +1724,77 @@ namespace GnollHackX
             AlertOkButton.IsEnabled = false;
             GHApp.PlayButtonClickedSound();
             AlertGrid.IsVisible = false;
-            if (_alertGridCloseAppOnOkIfNoLogoFinish && !FinishedLogoFadeIn)
+            if ((_alertGridCloseAppStyle == 1 && !FinishedLogoFadeIn) || _alertGridCloseAppStyle == 2)
                 await CloseApp();
             AlertOkButton.IsEnabled = true;
+            DisplayNewAlert(); //Show next alert if there are more in the queue
         }
 
-        private bool _alertGridCloseAppOnOkIfNoLogoFinish = false;
+        private class DisplayAlertGridItem
+        {
+            public DisplayAlertGridItem()
+            {
 
-        private void DisplayAlertGrid(string title, string message, string buttonText, Color titleColor, bool closeAppOnOkIfNoLogoFinish = false)
+            }
+            public DisplayAlertGridItem(string title, string message, string buttonText, Color titleColor, int closeAppStyle = 0)
+            {
+                Title = title;
+                Message = message;
+                ButtonText = buttonText;
+                TitleColor = titleColor;
+                CloseAppStyle = closeAppStyle;
+            }
+            public string Title;
+            public string Message;
+            public string ButtonText;
+            public Color TitleColor;
+            public int CloseAppStyle;
+        }
+
+        private readonly Queue<DisplayAlertGridItem> _alertQueue = new Queue<DisplayAlertGridItem>();
+        private int _alertGridCloseAppStyle = 0;
+
+        private void DisplayAlertGrid(string title, string message, string buttonText, Color titleColor, int closeAppStyle = 0)
         {
             MainThread.BeginInvokeOnMainThread(() =>
             {
-                _alertGridCloseAppOnOkIfNoLogoFinish = closeAppOnOkIfNoLogoFinish;
-                AlertTitleLabel.Text = title;
-                AlertTitleLabel.TextColor = titleColor;
-                AlertLabel.Text = message;
-                AlertOkButton.Text = buttonText;
-                AlertGrid.IsVisible = true;
+                _alertQueue.Enqueue(new DisplayAlertGridItem(title, message, buttonText, titleColor, closeAppStyle));
+                if (!AlertGrid.IsVisible)
+                    DisplayNewAlert();
             });
         }
 
-        private async Task DisplayAlertOrGrid(string title, string message, string buttonText, Color titleColor)
+        private void DisplayNewAlert()
         {
-            if (AlertGrid.IsVisible)
-                await GHApp.DisplayMessageBox(this, title, message, buttonText);
-            else
-                DisplayAlertGrid(title, message, buttonText, titleColor);
+            if (_alertQueue.Count > 0)
+            {
+                try
+                {
+                    DisplayAlertGridItem alert = _alertQueue.Dequeue();
+                    if (alert != null)
+                    {
+                        _alertGridCloseAppStyle = alert.CloseAppStyle;
+                        AlertTitleLabel.Text = alert.Title;
+                        AlertTitleLabel.TextColor = alert.TitleColor;
+                        AlertLabel.Text = alert.Message;
+                        AlertOkButton.Text = alert.ButtonText;
+                        AlertGrid.IsVisible = true;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine(ex);
+                }
+            }
         }
+
+        //private async Task DisplayAlertOrGrid(string title, string message, string buttonText, Color titleColor)
+        //{
+        //    if (AlertGrid.IsVisible)
+        //        await GHApp.DisplayMessageBox(this, title, message, buttonText);
+        //    else
+        //        DisplayAlertGrid(title, message, buttonText, titleColor);
+        //}
 
         public bool HandleSpecialKeyPress(GHSpecialKey key, bool isCtrl, bool isMeta, bool isShift)
         {

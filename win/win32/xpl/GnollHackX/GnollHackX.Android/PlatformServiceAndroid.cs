@@ -196,11 +196,11 @@ namespace GnollHackX.Droid
 
         public bool IsRemoveAnimationsOn()
         {
-            var scale1 = GetAnimatorDurationScaleSetting();
-            var scale2 = GetTransitionAnimationScaleSetting();
-            var scale3 = GetWindowAnimationScaleSetting();
+            float scale1 = GetAnimatorDurationScaleSetting();
+            float scale2 = GetTransitionAnimationScaleSetting();
+            float scale3 = GetWindowAnimationScaleSetting();
 
-            return scale1 == 0 && scale2 == 0 && scale3 == 0;
+            return scale1 == 0f && scale2 == 0f && scale3 == 0f;
         }
 
         public float GetCurrentAnimatorDurationScale()
