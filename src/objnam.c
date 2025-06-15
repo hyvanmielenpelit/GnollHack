@@ -2289,7 +2289,7 @@ unsigned cxn_flags; /* bitmask of CXN_xxx values */
     char *nambuf = nextobuf() + PREFIXBUFSZ;
     int omndx = otmp->corpsenm;
     struct monst* mtmp = get_mtraits(otmp, FALSE);
-    boolean isfemale = (mtmp && mtmp->female) || is_female(&mons[omndx]);
+    boolean isfemale = (mtmp && mtmp->female) || (omndx > NON_PM && is_female(&mons[omndx]));
 
     boolean ignore_quan = (cxn_flags & CXN_SINGULAR) != 0,
             /* suppress "the" from "the unique monster corpse" */

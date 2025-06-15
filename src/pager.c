@@ -193,8 +193,13 @@ struct obj **obj_p;
             otmp->quan = 2L; /* to force pluralization */
         else if (otmp->otyp == SLIME_MOLD)
             otmp->special_quality = context.current_fruit; /* give it a type */
+        else if (otmp->otyp == EGG)
+            otmp->corpsenm = LOW_PM; /* make sure it is not NON_PM */
+        
         if (mtmp && has_mcorpsenm(mtmp)) /* mimic as corpse/statue */
             otmp->corpsenm = MCORPSENM(mtmp);
+        else if (mtmp && has_mobj(mtmp)) /* mimic as corpse/statue via MOBJ */
+            otmp->corpsenm = MOBJ(mtmp)->corpsenm;
         else if (otmp->otyp == CORPSE && glyph_is_body(glyph))
         {
             otmp->corpsenm = abs(glyph) - GLYPH_BODY_OFF;
@@ -224,6 +229,9 @@ struct obj **obj_p;
                 otmp->speflags |= SPEFLAGS_FACING_RIGHT;
 
         }
+        if ((otmp->otyp == CORPSE || otmp->otyp == STATUE || otmp->otyp == EGG) && otmp->corpsenm == NON_PM) /* Insurance */
+            otmp->corpsenm == LOW_PM;
+
         if (otmp->otyp == LEASH)
             otmp->leashmon = 0;
         /* extra fields needed for shop price with doname() formatting */
