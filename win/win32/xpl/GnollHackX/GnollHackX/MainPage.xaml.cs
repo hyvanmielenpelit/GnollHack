@@ -1725,18 +1725,18 @@ namespace GnollHackX
             AlertOkButton.IsEnabled = false;
             GHApp.PlayButtonClickedSound();
             AlertGrid.IsVisible = false;
-            if (_alertGridCloseAppOnOk)
+            if (_alertGridCloseAppOnOkIfNoLogoFinish && !FinishedLogoFadeIn)
                 await CloseApp();
             AlertOkButton.IsEnabled = true;
         }
 
-        private bool _alertGridCloseAppOnOk = false;
+        private bool _alertGridCloseAppOnOkIfNoLogoFinish = false;
 
-        private void DisplayAlertGrid(string title, string message, string buttonText, Color titleColor, bool closeAppOnOk = false)
+        private void DisplayAlertGrid(string title, string message, string buttonText, Color titleColor, bool closeAppOnOkIfNoLogoFinish = false)
         {
             MainThread.BeginInvokeOnMainThread(() =>
             {
-                _alertGridCloseAppOnOk = closeAppOnOk;
+                _alertGridCloseAppOnOkIfNoLogoFinish = closeAppOnOkIfNoLogoFinish;
                 AlertTitleLabel.Text = title;
                 AlertTitleLabel.TextColor = titleColor;
                 AlertLabel.Text = message;
