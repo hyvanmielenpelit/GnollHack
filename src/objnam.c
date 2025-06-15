@@ -2414,7 +2414,7 @@ prepend_quan(quan, name)
 int64_t quan;
 const char* name; /* Should be already in plural */
 {
-    char* buf = nextobuf(); /* no prefix size addition needed here */
+    char* buf = nextobuf() + PREFIXBUFSZ;
     Sprintf(buf, "%lld %s", (long long)quan, name);
     return buf;
 }

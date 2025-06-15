@@ -2172,6 +2172,9 @@ any_obj_at(otyp, x, y)
 int otyp;
 int x, y;
 {
+    if (!isok(x, y))
+        return (struct obj*)0;
+
     register struct obj* otmp;
 
 #if 0
@@ -2183,14 +2186,16 @@ int x, y;
 
     /* Then actual */
     for (otmp = level.objects[x][y]; otmp; otmp = otmp->nexthere)
+    {
         if (otmp->otyp == otyp)
             return otmp;
-        else if (Is_container(otmp))
+        else if (Is_proper_container(otmp))
         {
-            struct obj* otmp2 = (struct obj*)0;
-            if ((otmp2 = otyp_in_objchn(otyp, otmp->cobj)) != 0)
+            struct obj* otmp2 = otyp_in_objchn(otyp, otmp->cobj);
+            if (otmp2)
                 return otmp2;
         }
+    }
 
     /* Then buried, note that you have to check x and y here */
     for (otmp = level.buriedobjlist; otmp; otmp = otmp->nobj)
@@ -2198,10 +2203,10 @@ int x, y;
         {
             if(otmp->otyp == otyp)
                 return otmp;
-            else if (Is_container(otmp))
+            else if (Is_proper_container(otmp))
             {
-                struct obj* otmp2 = (struct obj*)0;
-                if ((otmp2 = otyp_in_objchn(otyp, otmp->cobj)) != 0)
+                struct obj* otmp2 = otyp_in_objchn(otyp, otmp->cobj);
+                if (otmp2)
                     return otmp2;
             }
         }
@@ -2217,14 +2222,16 @@ struct obj* objchn;
 {
     struct obj* otmp;
     for (otmp = objchn; otmp; otmp = otmp->nobj)
+    {
         if (otmp->otyp == otyp)
             return otmp;
-        else if (Is_container(otmp))
+        else if (Is_proper_container(otmp))
         {
-            struct obj* otmp2 = (struct obj*)0;
-            if ((otmp2 = otyp_in_objchn(otyp, otmp->cobj)) != 0)
+            struct obj* otmp2 = otyp_in_objchn(otyp, otmp->cobj);
+            if (otmp2)
                 return otmp2;
         }
+    }
 
     return (struct obj*)0;
 }
