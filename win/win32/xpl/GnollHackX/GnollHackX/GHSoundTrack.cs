@@ -198,7 +198,7 @@ namespace GnollHackX
                 Songwriter = "Eric Matyas",
                 Contact = "soundimage.org",
                 GHSoundList = new List<int>()
-                { 90, 146, 150 },
+                { 142, 146, 150 },
                 GameAppearanceList = new List<string>()
                 { "Plane of the Modron", "Endgame", "Plane of Fire" },
             },
