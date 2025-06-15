@@ -230,7 +230,7 @@ struct obj **obj_p;
 
         }
         if ((otmp->otyp == CORPSE || otmp->otyp == STATUE || otmp->otyp == EGG) && otmp->corpsenm == NON_PM) /* Insurance */
-            otmp->corpsenm == LOW_PM;
+            otmp->corpsenm = LOW_PM;
 
         if (otmp->otyp == LEASH)
             otmp->leashmon = 0;
