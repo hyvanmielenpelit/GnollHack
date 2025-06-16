@@ -2789,7 +2789,7 @@ namespace GnollHackX.Pages.Game
 
         protected void GNHThreadProc()
         {
-            GHGame curGame = new GHGame(this);
+            GHGame curGame = new GHGame(this, RunGnollHackFlags.None);
             CurrentGame = curGame;
             GHApp.CurrentGHGame = curGame;
             _gnollHackService.StartGnollHack(curGame);
@@ -2797,19 +2797,17 @@ namespace GnollHackX.Pages.Game
 
         protected void GNHThreadProcForRestart()
         {
-            GHGame curGame = new GHGame(this);
+            GHGame curGame = new GHGame(this, RunGnollHackFlags.ForceLastPlayerName);
             CurrentGame = curGame;
             GHApp.CurrentGHGame = curGame;
-            curGame.StartFlags = RunGnollHackFlags.ForceLastPlayerName;
             _gnollHackService.StartGnollHack(curGame);
         }
 
         protected void GNHThreadProcForReplay()
         {
-            GHGame curGame = new GHGame(this);
+            GHGame curGame = new GHGame(this, RunGnollHackFlags.PlayingReplay);
             CurrentGame = curGame;
             GHApp.CurrentGHGame = curGame;
-            curGame.StartFlags = RunGnollHackFlags.PlayingReplay;
             GHApp.PlayReplay(curGame, ReplayFileName);
         }
 

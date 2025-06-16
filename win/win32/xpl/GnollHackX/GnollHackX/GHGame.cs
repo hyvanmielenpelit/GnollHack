@@ -28,7 +28,7 @@ namespace GnollHackX
 {
     public class GHGame
     {
-        public RunGnollHackFlags StartFlags { get; set; }
+        public readonly RunGnollHackFlags StartFlags;
         public bool PlayingReplay { get { return (StartFlags & RunGnollHackFlags.PlayingReplay) != 0; } }
         //private static ConcurrentDictionary<GHGame, ConcurrentQueue<GHRequest>> _concurrentRequestDictionary = new ConcurrentDictionary<GHGame, ConcurrentQueue<GHRequest>>();
         //private static ConcurrentDictionary<GHGame, ConcurrentQueue<GHResponse>> _concurrentResponseDictionary = new ConcurrentDictionary<GHGame, ConcurrentQueue<GHResponse>>();
@@ -96,10 +96,12 @@ namespace GnollHackX
         public bool CasualMode { get { return _gamePage != null ? _gamePage.EnableCasualMode : false; } }
         public bool ModernMode { get { return _gamePage != null ? _gamePage.EnableModernMode : false; } }
 
-        public GHGame(GamePage gamePage)
+        public GHGame(GamePage gamePage, RunGnollHackFlags startFlags)
         {
             //GHGame.RequestDictionary.TryAdd(this, new ConcurrentQueue<GHRequest>());
             //GHGame.ResponseDictionary.TryAdd(this, new ConcurrentQueue<GHResponse>());
+            StartFlags = startFlags;
+
             lock (_mapDataBufferLock)
             {
                 for (int i = 0; i < GHConstants.MapCols; i++)
