@@ -4662,6 +4662,7 @@ register struct monst *mtmp;
                 appear = STRANGE_OBJECT;
             } else if (s_sym == COIN_CLASS) {
                 appear = GOLD_PIECE;
+                set_mimic_new_mobj(mtmp, appear);
             } else {
                 otmp = mkobj((char) s_sym, FALSE, FALSE);
                 appear = otmp->otyp;

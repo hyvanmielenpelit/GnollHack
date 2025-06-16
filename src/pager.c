@@ -177,13 +177,19 @@ struct obj **obj_p;
 
     /* there might be a mimic here posing as an object */
     mtmp = m_at(x, y);
-    if (mtmp && is_obj_mappear(mtmp, (unsigned) glyphotyp)) {
-        otmp = 0;
+    if (mtmp && is_obj_mappear(mtmp, (unsigned) glyphotyp)) 
+    {
+        if (has_mobj(mtmp))
+            otmp = MOBJ(mtmp);
+        else
+            otmp = 0;
         mimic_obj = TRUE;
-    } else
+    } 
+    else
         mtmp = 0;
 
-    if (!otmp || otmp->otyp != glyphotyp) {
+    if (!otmp || otmp->otyp != glyphotyp) 
+    {
         /* this used to exclude STRANGE_OBJECT; now caller deals with it */
         otmp = mksobj(glyphotyp, FALSE, FALSE, FALSE);
         if (!otmp)
@@ -199,7 +205,10 @@ struct obj **obj_p;
         if (mtmp && has_mcorpsenm(mtmp)) /* mimic as corpse/statue */
             otmp->corpsenm = MCORPSENM(mtmp);
         else if (mtmp && has_mobj(mtmp)) /* mimic as corpse/statue via MOBJ */
+        {
+            otmp->quan = MOBJ(mtmp)->quan;
             otmp->corpsenm = MOBJ(mtmp)->corpsenm;
+        }
         else if (otmp->otyp == CORPSE && glyph_is_body(glyph))
         {
             otmp->corpsenm = abs(glyph) - GLYPH_BODY_OFF;
@@ -229,7 +238,7 @@ struct obj **obj_p;
                 otmp->speflags |= SPEFLAGS_FACING_RIGHT;
 
         }
-        if ((otmp->otyp == CORPSE || otmp->otyp == STATUE || otmp->otyp == EGG) && otmp->corpsenm == NON_PM) /* Insurance */
+        if ((otmp->otyp == CORPSE || otmp->otyp == STATUE || otmp->otyp == EGG || otmp->otyp == FIGURINE) && otmp->corpsenm == NON_PM) /* Insurance */
             otmp->corpsenm = LOW_PM;
 
         if (otmp->otyp == LEASH)
@@ -251,8 +260,10 @@ struct obj **obj_p;
         /* terrain mode views what's already known, doesn't learn new stuff */
         && !iflags.terrainmode) /* so don't set dknown when in terrain mode */
         otmp->dknown = 1; /* if a pile, clearly see the top item only */
+
     if (fakeobj && mtmp && mimic_obj &&
-        (otmp->dknown || (M_AP_FLAG(mtmp) & M_AP_F_DKNOWN))) {
+        (otmp->dknown || (M_AP_FLAG(mtmp) & M_AP_F_DKNOWN))) 
+    {
             mtmp->m_ap_type |= M_AP_F_DKNOWN;
             otmp->dknown = 1;
     }
