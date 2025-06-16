@@ -2177,12 +2177,18 @@ int x, y;
 
     register struct obj* otmp;
 
-#if 0
     /* Memory objects first */
     for (otmp = level.locations[x][y].hero_memory_layers.memory_objchn; otmp; otmp = otmp->nexthere)
+    {
         if (otmp->otyp == otyp)
             return otmp;
-#endif
+        else if (Is_proper_container(otmp))
+        {
+            struct obj* otmp2 = otyp_in_objchn(otyp, otmp->cobj);
+            if (otmp2)
+                return otmp2;
+        }
+    }
 
     /* Then actual */
     for (otmp = level.objects[x][y]; otmp; otmp = otmp->nexthere)
