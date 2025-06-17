@@ -786,13 +786,14 @@ namespace GnollHackX
             {
                 GHApp.DebugWriteProfilingStopwatchTimeAndRestart("MainPage First Time");
                 _firsttime = false;
-                if (GHApp.PlatformService != null)
+                if (GHApp.IsAndroid && GHApp.PlatformService != null)
                 {
+                    string animationSettingName = GHApp.OneUIAnimationSettingName;
                     bool removeanimationson = GHApp.PlatformService.IsRemoveAnimationsOn();
                     if (removeanimationson)
                     {
-                        DisplayAlertGrid(GHApp.IsAndroid && GHApp.IsSamsung ? "Remove Animations Setting is On" : "Invalid Animator Duration Scale",
-                            "GnollHack has detected invalid animation settings." + (GHApp.IsAndroid  ? (GHApp.IsSamsung ? " In the Android Settings app, please switch off \"Remove Animations\" under Accessibility > Visibility Enhancements." : " In the Android settings app, please adjust the value of \"Animator duration scale\" to 1x under Developer Options > Animator duration scale.") : " Please check your device animation settings."), "OK", GHColors.Orange, 2);
+                        DisplayAlertGrid(GHApp.IsSamsung ? animationSettingName + " is On" : "Invalid Animator Duration Scale",
+                            "GnollHack has detected invalid animation settings." + (GHApp.IsAndroid  ? (GHApp.IsSamsung ? " In the Android Settings app, please switch off \"" + animationSettingName + "\" under Accessibility > Visibility Enhancements." : " In the Android settings app, please adjust the value of \"Animator duration scale\" to 1x under Developer Options > Animator duration scale.") : " Please check your device animation settings."), "OK", GHColors.Orange, 2);
                     }
                     else
                     {
@@ -802,10 +803,10 @@ namespace GnollHackX
                         {
                             if (scalesetting == 0.0f)
                                 DisplayAlertGrid("Invalid Animator Duration Scale",
-                                    "GnollHack failed to automatically adjust Animator Duration Scale and it remains switched off." + (GHApp.IsAndroid ? " In the Android Settings app, please adjust the value to 1x under Developer Options > Animator duration scale. If your device has a setting named \"Remove Animations\" under Accessibility > Visibility Enhancements, this setting needs to be disabled, too." : ""), "OK", GHColors.Orange, 2);
+                                    "GnollHack failed to automatically adjust Animator Duration Scale and it remains switched off." + (GHApp.IsAndroid ? " In the Android Settings app, please adjust the value to 1x under Developer Options > Animator duration scale. If your device has a setting named \"" + animationSettingName + "\" under Accessibility > Visibility Enhancements, this setting needs to be disabled, too." : ""), "OK", GHColors.Orange, 2);
                             else
                                 DisplayAlertGrid("Invalid Animator Duration Scale",
-                                    "GnollHack failed to automatically adjust Animator Duration Scale and it has become turned off." + (GHApp.IsAndroid ? " In the Android Settings app, please check that the value is 1x under Developer Options > Animator duration scale. If your device has a setting named \"Remove Animations\" under Accessibility > Visibility Enhancements, this setting needs to be disabled, too." : ""), "OK", GHColors.Orange, 2);
+                                    "GnollHack failed to automatically adjust Animator Duration Scale and it has become turned off." + (GHApp.IsAndroid ? " In the Android Settings app, please check that the value is 1x under Developer Options > Animator duration scale. If your device has a setting named \"" + animationSettingName + "\" under Accessibility > Visibility Enhancements, this setting needs to be disabled, too." : ""), "OK", GHColors.Orange, 2);
                         }
                         else if (scalecurrent == -1.0f)
                         {
@@ -1268,7 +1269,12 @@ namespace GnollHackX
 
         private void ShowStartUpTimeOutAlert()
         {
-            DisplayAlertGrid("Startup Timeout", "GnollHack has exceeded its startup timeout limit, possibly due to animations being turned off." + (GHApp.IsAndroid && GHApp.IsSamsung ? " In Android Settings, please switch off Accessibility > Visual Enhancements > Remove Animations." : " Please check your device animation settings."), "OK", GHColors.Orange, 1);
+            DisplayAlertGrid("Startup Timeout", 
+                "GnollHack has exceeded its startup timeout limit, possibly due to animations being turned off." 
+                    + (GHApp.IsAndroid && GHApp.IsSamsung ? " In Android Settings, please switch off Accessibility > Visual Enhancements > " 
+                    + GHApp.OneUIAnimationSettingName + "." 
+                : " Please check your device animation settings."), 
+                "OK", GHColors.Orange, 1);
         }
 
         private async Task StartFadeIn()

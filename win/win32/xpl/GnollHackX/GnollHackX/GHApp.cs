@@ -1819,6 +1819,71 @@ namespace GnollHackX
             }
         }
 
+        public static int OneUIVersionIdentifier
+        {
+            get
+            {
+#if ANDROID
+                try
+                {
+                    var verClass = Java.Lang.Class.FromType(typeof(Android.OS.Build.VERSION));
+                    if (verClass != null)
+                    {
+                        var semPlatformIntField = verClass.GetDeclaredField("SEM_PLATFORM_INT");
+                        if (semPlatformIntField != null)
+                            return semPlatformIntField.GetInt(null) - 90000;
+                    }
+                }
+                catch (Exception)
+                {
+                    return -1;
+                }
+#endif
+                return -1;
+            }
+        }
+
+        public static string OneUIVersionString
+        {
+            get
+            {
+#if ANDROID
+                try
+                {
+                    int version = OneUIVersionIdentifier;
+                    if (version < 0)
+                    {
+                        return "";
+                    }
+                    return (version / 10000) + "." + ((version % 10000) / 100);
+                }
+                catch (Exception)
+                {
+                    return "";
+                }
+#else
+                return "";
+#endif
+            }
+        }
+        public static bool OneUIUsesReduceAnimations
+        {
+            get
+            {
+                int verId = OneUIVersionIdentifier;
+                return verId >= 60000;
+            }
+        }
+
+        public static string OneUIAnimationSettingName
+        {
+            get
+            {
+                return OneUIUsesReduceAnimations ? "Reduce Animations" : "Remove Animations";
+            }
+        }
+
+
         public static bool IsMobileRunningOnDesktop
         {
             get
