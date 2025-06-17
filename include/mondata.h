@@ -278,6 +278,9 @@
 #define has_innate_energy_regeneration(ptr) \
     has_innate2(ptr, MR2_ENERGY_REGENERATION)
 
+#define has_innate_polymorph_control(ptr) \
+    has_innate2(ptr, MR2_POLYMORPH_CONTROL)
+
 #define has_innate_sick_resistance(ptr) \
     has_innate(ptr, MR_SICK)
 
@@ -882,6 +885,8 @@
     (has_property(mon, DETECT_MONSTERS))
 #define has_water_walking(mon) \
     (has_property(mon, WATER_WALKING))
+#define has_polymorph_control(mon) \
+    (has_innate_polymorph_control((mon)->data) || has_property(mon, POLYMORPH_CONTROL))
 
 #define has_stunning_corpse(ptr) (((ptr)->mconveys & MC_STUNNING_CORPSE) != 0L)
 #define has_acidic_corpse(ptr) (((ptr)->mconveys & MC_ACIDIC_CORPSE) != 0L)

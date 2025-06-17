@@ -4210,7 +4210,7 @@ cleanup:
     { /* REAL BAD! */
         play_sfx_sound(SFX_GUILTY);
         adjalign(-(u.ualign.record + ALIGNLIM / 2));
-        pline("That was %sa bad idea...",
+        pline_ex(ATR_NONE, u.uevent.qcompleted ? CLR_MSG_WARNING : CLR_MSG_NEGATIVE, "That was %sa bad idea...",
               u.uevent.qcompleted ? "probably " : "");
     } 
     else if (mdat->msound == MS_NEMESIS)
@@ -4221,9 +4221,9 @@ cleanup:
     { /* Bad */
         adjalign(-(ALIGNLIM / 8));
         if (!Hallucination)
-            pline("That was probably a bad idea...");
+            pline_ex(ATR_NONE, CLR_MSG_WARNING, "That was probably a bad idea...");
         else
-            pline("Whoopsie-daisy!");
+            pline_ex(ATR_NONE, CLR_MSG_HALLUCINATED, "Whoopsie-daisy!");
     } 
     else if (mtmp->ispriest) 
     {
@@ -4241,12 +4241,12 @@ cleanup:
         if (!Hallucination)
         {
             play_sfx_sound(SFX_RUMBLE_OF_DISTANT_THUNDER);
-            You_hear("the rumble of distant thunder...");
+            You_hear_ex(ATR_NONE, CLR_MSG_WARNING, "the rumble of distant thunder...");
         }
         else
         {
             play_sfx_sound(SFX_STUDIO_AUDIENCE_APPLAUDS);
-            You_hear("the studio audience applaud!");
+            You_hear_ex(ATR_NONE, CLR_MSG_HALLUCINATED, "the studio audience applaud!");
         }
     }
     else if (is_peaceful(mtmp))
@@ -4269,17 +4269,17 @@ struct monst *mtmp;
     {
         /* it's a golem, and not a stone golem */
         if (canseemon(mtmp))
-            pline("%s solidifies...", Monnam(mtmp));
+            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s solidifies...", Monnam(mtmp));
 
         if (newcham(mtmp, &mons[PM_STONE_GOLEM], 0, FALSE, FALSE))
         {
             if (canseemon(mtmp))
-                pline("Now it's %s.", an(mon_monster_name(mtmp)));
+                pline_multi_ex(ATR_NONE, CLR_MSG_ATTENTION, no_multiattrs, multicolor_text1, "Now it's %s.", an(mon_monster_name(mtmp)));
         } 
         else 
         {
             if (canseemon(mtmp))
-                pline("... and returns to normal.");
+                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "... and returns to normal.");
         }
     } 
     else
@@ -5445,16 +5445,267 @@ struct monst *mon;
             mndx = pickvampshape(mon); /* don't resort to arbitrary */
     }
 
+    boolean try_highest_level_first = FALSE;
+    boolean allow_diff_below_mons = FALSE;
+    int minmlev = 0, maxmlev = 0;
+    get_generated_monster_minmax_levels(3, &minmlev, &maxmlev, 0);
+
+#define mon_poly_ok(idx, maxlvl) (mndx == NON_PM && idx >= LOW_PM && polyok(&mons[idx]) && !(mvitals[idx].mvflags & MV_GONE) && mons[idx].difficulty <= maxlvl && mons[idx].difficulty > mon->data->difficulty)
+    /* Polymorph control */
+    if (mndx == NON_PM && has_polymorph_control(mon))
+    {
+        try_highest_level_first = TRUE;
+
+        int testidx = NON_PM;
+        if (maxmlev > mon->data->difficulty)
+        {
+            boolean wielding_cockatrice = (mon->mw && mon->mw->otyp == CORPSE && mon->mw->corpsenm >= LOW_PM && touch_petrifies(&mons[mon->mw->corpsenm]));
+            if (mndx == NON_PM && wielding_cockatrice)
+            {
+                testidx = PM_SKELETON_KING;
+                if (mon_poly_ok(testidx, maxmlev))
+                    mndx = testidx;
+                testidx = PM_SKELETON_LORD;
+                if (mon_poly_ok(testidx, maxmlev))
+                    mndx = testidx;
+                testidx = PM_SKELETON_WARRIOR;
+                if (mon_poly_ok(testidx, maxmlev))
+                    mndx = testidx;
+            }
+
+            if (mndx == NON_PM && is_quantum_mechanic(mon->data))
+            {
+                testidx = PM_ELDER_TENTACLED_ONE;
+                if (mon_poly_ok(testidx, maxmlev))
+                    mndx = testidx;
+                testidx = PM_TENTACLED_ONE;
+                if (mon_poly_ok(testidx, maxmlev))
+                    mndx = testidx;
+                testidx = PM_VAMPIRE_MAGE;
+                if (mon_poly_ok(testidx, maxmlev))
+                    mndx = testidx;
+            }
+
+            if (mndx == NON_PM && humanoid(mon->data))
+            {
+                if (!rn2(3))
+                {
+                    testidx = PM_SKELETON_KING;
+                    if (mon_poly_ok(testidx, maxmlev))
+                        mndx = testidx;
+                    testidx = PM_SKELETON_LORD;
+                    if (mon_poly_ok(testidx, maxmlev))
+                        mndx = testidx;
+                    testidx = PM_SKELETON_WARRIOR;
+                    if (mon_poly_ok(testidx, maxmlev))
+                        mndx = testidx;
+                    testidx = PM_VAMPIRE_KING;
+                    if (mon_poly_ok(testidx, maxmlev))
+                        mndx = testidx;
+                    testidx = PM_VAMPIRE_LORD;
+                    if (mon_poly_ok(testidx, maxmlev))
+                        mndx = testidx;
+                    testidx = PM_VAMPIRE_MAGE;
+                    if (mon_poly_ok(testidx, maxmlev))
+                        mndx = testidx;
+                }
+                else
+                {
+                    testidx = PM_VAMPIRE_KING;
+                    if (mon_poly_ok(testidx, maxmlev))
+                        mndx = testidx;
+                    testidx = PM_VAMPIRE_LORD;
+                    if (mon_poly_ok(testidx, maxmlev))
+                        mndx = testidx;
+                    testidx = PM_VAMPIRE_MAGE;
+                    if (mon_poly_ok(testidx, maxmlev))
+                        mndx = testidx;
+                    testidx = PM_SKELETON_KING;
+                    if (mon_poly_ok(testidx, maxmlev))
+                        mndx = testidx;
+                    testidx = PM_SKELETON_LORD;
+                    if (mon_poly_ok(testidx, maxmlev))
+                        mndx = testidx;
+                    testidx = PM_SKELETON_WARRIOR;
+                    if (mon_poly_ok(testidx, maxmlev))
+                        mndx = testidx;
+                }
+            }
+            if (mndx == NON_PM && is_steed(mon->data))
+            {
+                testidx = PM_KI_RIN;
+                if (mon_poly_ok(testidx, maxmlev))
+                    mndx = testidx;
+                testidx = PM_GORGON;
+                if (mon_poly_ok(testidx, maxmlev))
+                    mndx = testidx;
+            }
+            if (mndx == NON_PM && mon->data->mlet == S_QUADRUPED)
+            {
+                testidx = PM_MASTODON;
+                if (mon_poly_ok(testidx, maxmlev))
+                    mndx = testidx;
+                testidx = PM_OLIPHANT;
+                if (mon_poly_ok(testidx, maxmlev))
+                    mndx = testidx;
+            }
+            if (mndx == NON_PM && is_bird(mon->data) && rn2(3))
+            {
+                testidx = PM_GARGANTUAN_COCKATRICE;
+                if (mon_poly_ok(testidx, maxmlev))
+                    mndx = testidx;
+                testidx = PM_ROC;
+                if (mon_poly_ok(testidx, maxmlev))
+                    mndx = testidx;
+                testidx = PM_GIANT_COCKATRICE;
+                if (mon_poly_ok(testidx, maxmlev))
+                    mndx = testidx;
+                testidx = PM_VROCK;
+                if (mon_poly_ok(testidx, maxmlev))
+                    mndx = testidx;
+            }
+            if (mndx == NON_PM && is_gnoll(mon->data) && !rn2(2))
+            {
+                testidx = PM_FLIND_LORD;
+                if (mon_poly_ok(testidx, maxmlev))
+                    mndx = testidx;
+                testidx = PM_FLIND;
+                if (mon_poly_ok(testidx, maxmlev))
+                    mndx = testidx;
+            }
+
+            if (mndx == NON_PM && is_demon(mon->data) && rn2(4))
+            {
+                testidx = PM_BALOR;
+                if (mon_poly_ok(testidx, maxmlev))
+                    mndx = testidx;
+                testidx = PM_MARILITH;
+                if (mon_poly_ok(testidx, maxmlev))
+                    mndx = testidx;
+                testidx = PM_NALFESHNEE;
+                if (mon_poly_ok(testidx, maxmlev))
+                    mndx = testidx;
+                testidx = PM_GLABREZU;
+                if (mon_poly_ok(testidx, maxmlev))
+                    mndx = testidx;
+                testidx = PM_HEZROU;
+                if (mon_poly_ok(testidx, maxmlev))
+                    mndx = testidx;
+                testidx = PM_VROCK;
+                if (mon_poly_ok(testidx, maxmlev))
+                    mndx = testidx;
+            }
+
+            if (mndx == NON_PM && !rn2(3))
+            {
+                testidx = PM_ELDER_DRACOLICH;
+                if (mon_poly_ok(testidx, maxmlev))
+                    mndx = testidx;
+
+                testidx = PM_DRACOLICH;
+                if (mon_poly_ok(testidx, maxmlev))
+                    mndx = testidx;
+            }
+
+            if (mndx == NON_PM && !rn2(2))
+            {
+                testidx = PM_ARCH_LICH;
+                if (mon_poly_ok(testidx, maxmlev))
+                    mndx = testidx;
+
+                testidx = PM_MASTER_LICH;
+                if (mon_poly_ok(testidx, maxmlev))
+                    mndx = testidx;
+
+                testidx = PM_LICH;
+                if (mon_poly_ok(testidx, maxmlev))
+                    mndx = testidx;
+
+                testidx = PM_DEMILICH;
+                if (mon_poly_ok(testidx, maxmlev))
+                    mndx = testidx;
+            }
+
+            if (mndx == NON_PM && rn2(3))
+            {
+                if (!rn2(2))
+                {
+                    testidx = PM_ANCIENT_BLACK_DRAGON;
+                    if (mon_poly_ok(testidx, maxmlev))
+                        mndx = testidx;
+                }
+
+                testidx = PM_ANCIENT_GRAY_DRAGON + rn2(PM_ANCIENT_YELLOW_DRAGON - PM_ANCIENT_GRAY_DRAGON + 1);
+                if (mon_poly_ok(testidx, maxmlev))
+                    mndx = testidx;
+
+                if (mndx == NON_PM && !rn2(2))
+                {
+                    testidx = PM_BLACK_DRAGON;
+                    if (mon_poly_ok(testidx, maxmlev))
+                        mndx = testidx;
+                }
+            }
+
+            if (mndx == NON_PM && (!rn2(4) || ((mon->data->mlet == S_SPIDER || mon->data->mlet == S_WORM) && rn2(3))))
+            {
+                testidx = PM_PURPLE_WORM;
+                if (mon_poly_ok(testidx, maxmlev))
+                    mndx = testidx;
+            }
+
+            if (mndx == NON_PM && !rn2(3))
+            {
+                testidx = PM_ELDER_TENTACLED_ONE;
+                if (mon_poly_ok(testidx, maxmlev))
+                    mndx = testidx;
+                testidx = PM_DEATH_FLAYER;
+                if (mon_poly_ok(testidx, maxmlev))
+                    mndx = testidx;
+                testidx = PM_TENTACLED_ONE;
+                if (mon_poly_ok(testidx, maxmlev))
+                    mndx = testidx;
+            }
+
+            if (mndx == NON_PM && !rn2(4))
+            {
+                testidx = PM_OWLBEAR_PATRIARCH;
+                if (mon_poly_ok(testidx, maxmlev))
+                    mndx = testidx;
+            }
+
+            if (mndx == NON_PM && !rn2(4))
+            {
+                testidx = rn2(2) ? PM_MINOTAUR : PM_TITAN;
+                if (mon_poly_ok(testidx, maxmlev))
+                    mndx = testidx;
+            }
+
+            if (mndx == NON_PM)
+            {
+                testidx = pick_nasty(mon->data->difficulty);
+                if (mon_poly_ok(testidx, maxmlev))
+                    mndx = testidx;
+            }
+        }
+        else
+            allow_diff_below_mons = TRUE;
+    }
+#undef mon_poly_ok
+
     /* if no form was specified above, pick one at random now */
     if (mndx == NON_PM) 
     {
-        tryct = 50;
+        tryct = try_highest_level_first ? 70 : 50;
         struct permonst* pm = 0;
         do 
         {
             if ((pm = rndmonst()) != 0)
             {/* try to find first a monster of approriate level */
-                mndx = monsndx(pm);
+                if (tryct <= 50 || pm->difficulty > (allow_diff_below_mons ? min(mon->data->difficulty, maxmlev) - 3 : mon->data->difficulty))
+                    mndx = monsndx(pm);
+                else
+                    mndx = NON_PM;
             }
             else if (tryct < 30) /* and if that does not work out, randomize any monster */
                 mndx = rn1(SPECIAL_PM - LOW_PM, LOW_PM);
