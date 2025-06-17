@@ -1153,6 +1153,10 @@ register struct obj* otmp;
     dummy->timed = 0;
     dummy->lamplit = 0;
     dummy->makingsound = 0;
+    /* Insurance not to copy insane bits */
+    dummy->in_use = 0;
+    dummy->bypass = 0;
+    dummy->nomerge = 0;
     copy_oextra(dummy, otmp);
     if (has_omid(dummy))
         free_omid(dummy); /* only one association with m_id*/
