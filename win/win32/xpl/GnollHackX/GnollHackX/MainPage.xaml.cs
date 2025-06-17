@@ -803,10 +803,10 @@ namespace GnollHackX
                         {
                             if (scalesetting == 0.0f)
                                 DisplayAlertGrid("Invalid Animator Duration Scale",
-                                    "GnollHack failed to automatically adjust Animator Duration Scale and it remains switched off." + (GHApp.IsAndroid ? " In the Android Settings app, please adjust the value to 1x under Developer Options > Animator duration scale. If your device has a setting named \"" + animationSettingName + "\" under Accessibility > Visibility Enhancements, this setting needs to be disabled, too." : ""), "OK", GHColors.Orange, 2);
+                                    "GnollHack failed to automatically adjust Animator Duration Scale and it remains switched off." + (GHApp.IsAndroid ? " In the Android Settings app, please adjust the value to 1x under Developer Options > Animator duration scale. If your device has a setting named \"" + animationSettingName + "\" under Accessibility > Visibility Enhancements, this setting needs to be disabled, too." : ""), "OK", GHColors.Orange, 3);
                             else
                                 DisplayAlertGrid("Invalid Animator Duration Scale",
-                                    "GnollHack failed to automatically adjust Animator Duration Scale and it has become turned off." + (GHApp.IsAndroid ? " In the Android Settings app, please check that the value is 1x under Developer Options > Animator duration scale. If your device has a setting named \"" + animationSettingName + "\" under Accessibility > Visibility Enhancements, this setting needs to be disabled, too." : ""), "OK", GHColors.Orange, 2);
+                                    "GnollHack failed to automatically adjust Animator Duration Scale and it has become turned off." + (GHApp.IsAndroid ? " In the Android Settings app, please check that the value is 1x under Developer Options > Animator duration scale. If your device has a setting named \"" + animationSettingName + "\" under Accessibility > Visibility Enhancements, this setting needs to be disabled, too." : ""), "OK", GHColors.Orange, 3);
                         }
                         else if (scalecurrent == -1.0f)
                         {
@@ -1730,7 +1730,10 @@ namespace GnollHackX
             AlertOkButton.IsEnabled = false;
             GHApp.PlayButtonClickedSound();
             AlertGrid.IsVisible = false;
-            if ((_alertGridCloseAppStyle == 1 && !FinishedLogoFadeIn) || _alertGridCloseAppStyle == 2)
+            if ((_alertGridCloseAppStyle == 1 && !FinishedLogoFadeIn)
+                || (_alertGridCloseAppStyle == 2 && (!FinishedLogoFadeIn || (GHApp.PlatformService?.IsRemoveAnimationsOn() ?? true)))
+                || (_alertGridCloseAppStyle == 3 && (!FinishedLogoFadeIn || ((GHApp.PlatformService?.GetCurrentAnimatorDurationScale() ?? -1.0f) <= 0.0f)))
+                || _alertGridCloseAppStyle == 4)
                 await CloseApp();
             AlertOkButton.IsEnabled = true;
             DisplayNewAlert(); //Show next alert if there are more in the queue
