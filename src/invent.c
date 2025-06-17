@@ -999,7 +999,7 @@ struct obj *obj;
         }
         u.uachieve.mines_luckstone = 1;
         obj->speflags &= ~(SPEFLAGS_MINES_PRIZE);
-        obj->nomerge = 0;
+        //obj->nomerge = 0;
     }
     else if (is_soko_prize(obj)) 
     {
@@ -1012,7 +1012,7 @@ struct obj *obj;
         }
         u.uachieve.finish_sokoban = 1;
         obj->speflags &= ~(SPEFLAGS_SOKO_PRIZE1 | SPEFLAGS_SOKO_PRIZE2);
-        obj->nomerge = 0;
+        //obj->nomerge = 0;
     }
     else if (obj->otyp == GRAIL_OF_HEALING && Role_if(PM_KNIGHT)) // Holy Grail
     {
@@ -6911,8 +6911,10 @@ register struct obj *otmp, *obj;
 
     /* fail if already the same object, if different types, if either is
        explicitly marked to prevent merge, or if not mergable in general */
-    if (obj == otmp || obj->otyp != otmp->otyp
-        || obj->nomerge || otmp->nomerge || !objects[obj->otyp].oc_merge)
+    if (obj == otmp || obj->otyp != otmp->otyp || !objects[obj->otyp].oc_merge
+        || obj->nomerge || otmp->nomerge
+        || (obj->speflags & (SPEFLAGS_MINES_PRIZE | SPEFLAGS_SOKO_PRIZE1 | SPEFLAGS_SOKO_PRIZE2)) != 0
+        || (otmp->speflags & (SPEFLAGS_MINES_PRIZE | SPEFLAGS_SOKO_PRIZE1 | SPEFLAGS_SOKO_PRIZE2)) != 0)
         return FALSE;
 
     /* coins of the same kind will always merge */

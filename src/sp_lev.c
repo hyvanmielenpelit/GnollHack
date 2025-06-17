@@ -2691,7 +2691,7 @@ struct mkroom *croom;
             {
                 otmp->speflags |= SPEFLAGS_MINES_PRIZE;
                 /* prevent stacking; cleared when achievement is recorded */
-                otmp->nomerge = 1;
+                //otmp->nomerge = 1;
                 if (++mines_prize_count > 1)
                     impossible(prize_warning, "mines end");
             }
@@ -2701,14 +2701,14 @@ struct mkroom *croom;
             if (otmp->otyp == iflags.soko_prize_type1)
             {
                 otmp->speflags |= SPEFLAGS_SOKO_PRIZE1;
-                otmp->nomerge = 1; /* redundant; Sokoban prizes don't stack */
+                //otmp->nomerge = 1; /* redundant; Sokoban prizes don't stack */
                 if (++soko_prize_count > 1)
                     impossible(prize_warning, "sokoban end");
             } 
             else if (otmp->otyp == iflags.soko_prize_type2) 
             {
                 otmp->speflags |= SPEFLAGS_SOKO_PRIZE2;
-                otmp->nomerge = 1; /* redundant; Sokoban prizes don't stack */
+                //otmp->nomerge = 1; /* redundant; Sokoban prizes don't stack */
                 if (++soko_prize_count > 1)
                     impossible(prize_warning, "sokoban end");
             }

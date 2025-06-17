@@ -4628,7 +4628,7 @@ struct monst* mon;
 
     o_in_use = obj->in_use;
     o_bypass = obj->bypass;
-    o_nomerge = obj->nomerge && !(obj->speflags & (SPEFLAGS_MINES_PRIZE | SPEFLAGS_SOKO_PRIZE1 | SPEFLAGS_SOKO_PRIZE2));
+    o_nomerge = obj->nomerge;
 
     if (o_in_use || o_bypass || o_nomerge) {
         char infobuf[QBUFSZ];
