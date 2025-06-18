@@ -10744,7 +10744,7 @@ int64_t service_cost;
     int curench = otmp->enchantment;
     int enchbuffer = max(0, maxench - curench);
     int services_afforded = (int)max(0, service_cost > 0 ? umoney / service_cost : 9999);
-    int max_services = min(stats_known && otmp->known ? max(1, enchbuffer) : 1, services_afforded);
+    int max_services = min(stats_known ? (otmp->known ? max(1, enchbuffer) : 1) : (otmp->known ? max(1, -curench) : 1), services_afforded);
 
     if (!services_afforded)
     {
@@ -10762,13 +10762,13 @@ int64_t service_cost;
 
     boolean quan_asked = FALSE;
     int selno_services = 1;
+    const char* ifmt_known2 = "You can afford up to %d enchantment%s, %lld %s each.";
+    int multicolors_known2[4] = { CLR_MSG_HINT, NO_COLOR, CLR_MSG_ATTENTION, NO_COLOR };
     if (stats_known)
     {
         const char* ifmt_known1 = "%s has a current enchantment of %s%d and can be safely enchanted to %s%d (%d time%s).";
-        const char* ifmt_known2 = "You can afford up to %d enchantment%s, %lld %s each.";
         const char* ifmt_notknown = "%s can be safely enchanted to %s%d, but its current enchantment is not known.";
         int multicolors_known1[7] = { NO_COLOR, CLR_MSG_HINT, CLR_MSG_HINT, CLR_MSG_HINT, CLR_MSG_HINT, CLR_MSG_HINT, NO_COLOR };
-        int multicolors_known2[4] = { CLR_MSG_HINT, NO_COLOR, CLR_MSG_ATTENTION, NO_COLOR };
         int multicolors_notknown[3] = { NO_COLOR, CLR_MSG_HINT, CLR_MSG_HINT };
         if (otmp->known)
         {
@@ -10781,59 +10781,70 @@ int64_t service_cost;
         else
             pline_multi_ex(ATR_NONE, NO_COLOR, no_multiattrs, multicolors_notknown, ifmt_notknown,
                 Yname2(otmp), maxench >= 0 ? "+" : "", maxench, services_afforded, plur(services_afforded), (long long)service_cost, currency(service_cost));
-    
-        if (max_services > 1)
-        {
-            //char ibuf[IBUFSZ] = "";
-            //char ibuf1[BUFSZ] = "";
-            //char ibuf2[BUFSZ] = "";
-            //char qbuf[QBUFSZ] = "";
-            char ebuf[BUFSZ] = "";
-            char buf[BUFSZ] = "";
-            //if (otmp->known)
-            //{
-            //    Sprintf(ibuf1, ifmt_known1,
-            //        Yname2(otmp), curench >= 0 ? "+" : "", curench, maxench >= 0 ? "+" : "", maxench, enchbuffer, plur(enchbuffer));
-            //    if (enchbuffer > 0)
-            //    {
-            //        Sprintf(ibuf2, ifmt_known2,
-            //            services_afforded, plur(services_afforded), (long long)service_cost, currency(service_cost));
-            //        Sprintf(ibuf, "%s %s", ibuf1, ibuf2);
-            //    }
-            //    else
-            //    {
-            //        Sprintf(ibuf, "%s", ibuf1);
-            //    }
-            //}
-            //else
-            //    Sprintf(ibuf2, ifmt_notknown,
-            //        Yname2(otmp), maxench >= 0 ? "+" : "", maxench);
-#if GNH_MOBILE
-            Sprintf(qbuf, "How many times to enchant %s? (%lld %s each)", yname(otmp), (long long)service_cost, currency(service_cost));
-#else
-            Strcpy(qbuf, "How many times to enchant?");
-#endif
-            Sprintf(ebuf, "[max %d] (1)", max_services);
-            getlin_ex(GETLINE_NUMBERS_ONLY, ATR_NONE, NO_COLOR, qbuf, buf, (char*)0, ebuf, (char*)0 /* ibuf */);
-            (void)mungspaces(buf);
-            quan_asked = TRUE;
+    }
+    else if (otmp->known && curench < 0)
+    {
+        const char* ifmt_known3 = "%s has a current enchantment of %s%d and can be safely enchanted at least %d time%s.";
+        int multicolors_known3[5] = { NO_COLOR, CLR_MSG_HINT, CLR_MSG_HINT, CLR_MSG_HINT, NO_COLOR };
+        int enchbufferneg = max(0, -curench);
+        pline_multi_ex(ATR_NONE, NO_COLOR, no_multiattrs, multicolors_known3, ifmt_known3,
+            Yname2(otmp), curench >= 0 ? "+" : "", curench, enchbufferneg, plur(enchbufferneg));
+        if (enchbufferneg > 0)
+            pline_multi_ex(ATR_NONE, NO_COLOR, no_multiattrs, multicolors_known2, ifmt_known2,
+                services_afforded, plur(services_afforded), (long long)service_cost, currency(service_cost));
+    }
 
-            if (buf[0] == '\033')
-            {
-                return 0;
-            }
-            else if (buf[0] == ' ' || buf[0] == '\0')
-            {
-                selno_services = 1;
-            }
+    if (max_services > 1)
+    {
+        //char ibuf[IBUFSZ] = "";
+        //char ibuf1[BUFSZ] = "";
+        //char ibuf2[BUFSZ] = "";
+        //char qbuf[QBUFSZ] = "";
+        char ebuf[BUFSZ] = "";
+        char buf[BUFSZ] = "";
+        //if (otmp->known)
+        //{
+        //    Sprintf(ibuf1, ifmt_known1,
+        //        Yname2(otmp), curench >= 0 ? "+" : "", curench, maxench >= 0 ? "+" : "", maxench, enchbuffer, plur(enchbuffer));
+        //    if (enchbuffer > 0)
+        //    {
+        //        Sprintf(ibuf2, ifmt_known2,
+        //            services_afforded, plur(services_afforded), (long long)service_cost, currency(service_cost));
+        //        Sprintf(ibuf, "%s %s", ibuf1, ibuf2);
+        //    }
+        //    else
+        //    {
+        //        Sprintf(ibuf, "%s", ibuf1);
+        //    }
+        //}
+        //else
+        //    Sprintf(ibuf2, ifmt_notknown,
+        //        Yname2(otmp), maxench >= 0 ? "+" : "", maxench);
+#if GNH_MOBILE
+        Sprintf(qbuf, "How many times to enchant %s? (%lld %s each)", yname(otmp), (long long)service_cost, currency(service_cost));
+#else
+        Strcpy(qbuf, "How many times to enchant?");
+#endif
+        Sprintf(ebuf, "[max %d] (1)", max_services);
+        getlin_ex(GETLINE_NUMBERS_ONLY, ATR_NONE, NO_COLOR, qbuf, buf, (char*)0, ebuf, (char*)0 /* ibuf */);
+        (void)mungspaces(buf);
+        quan_asked = TRUE;
+
+        if (buf[0] == '\033')
+        {
+            return 0;
+        }
+        else if (buf[0] == ' ' || buf[0] == '\0')
+        {
+            selno_services = 1;
+        }
+        else
+        {
+            int count = atoi(buf);
+            if (count > 0)
+                selno_services = min(max_services, count);
             else
-            {
-                int count = atoi(buf);
-                if (count > 0)
-                    selno_services = min(max_services, count);
-                else
-                    return 0;
-            }
+                return 0;
         }
     }
 
