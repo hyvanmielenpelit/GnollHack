@@ -159,6 +159,7 @@ STATIC_DCL int FDECL(spell_service_query, (struct monst*, int, int, const char*,
 STATIC_DCL int FDECL(general_service_query, (struct monst*, int (*)(struct monst*), const char*, int64_t, const char*, int));
 STATIC_DCL int FDECL(general_service_query_with_extra, (struct monst*, int (*)(struct monst*), const char*, int64_t, const char*, int, const char*, int));
 STATIC_DCL int FDECL(general_service_query_with_item_cost_adjustment_and_extra, (struct monst*, int (*)(struct monst*, struct obj*), const char*, const char*, int64_t, int64_t, int64_t, const char*, int, const char*, int));
+STATIC_DCL int FDECL(item_enchant_service_query, (struct monst*, int, int64_t));
 STATIC_DCL int FDECL(recharge_item_func, (struct monst*, struct obj*));
 STATIC_DCL int FDECL(blessed_recharge_item_func, (struct monst*, struct obj*));
 STATIC_DCL int FDECL(repair_armor_func, (struct monst*));
@@ -10742,7 +10743,7 @@ int64_t service_cost;
     int maxench = get_obj_max_enchantment(otmp);
     int curench = otmp->enchantment;
     int enchbuffer = max(0, maxench - curench);
-    int services_afforded = max(0, service_cost > 0 ? umoney / service_cost : 999);
+    int services_afforded = (int)max(0, service_cost > 0 ? umoney / service_cost : 9999);
     int max_services = min(stats_known && otmp->known ? max(1, enchbuffer) : 1, services_afforded);
 
     if (!services_afforded)

@@ -1917,8 +1917,8 @@ struct monst* targetmonst;
     case SPE_ENCHANT_ARMOR:
     case SCR_ENCHANT_ARMOR: 
     {
-        register schar s;
-        boolean same_color;
+        //register schar s;
+        //boolean same_color;
 
         if (otyp == SPE_PROTECT_ARMOR || otyp == SPE_ENCHANT_ARMOR)
         {
