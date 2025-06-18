@@ -7976,7 +7976,8 @@ struct monst* mtmp;
         return 0;
 
     int64_t cost = max(1L, (int64_t)((1000 + 50 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
-    return spell_service_query(mtmp, SPE_ENCHANT_ARMOR, 0, "enchant an armor", cost, "enchanting an armor", SMITH_LINE_WOULD_YOU_LIKE_TO_ENCHANT_AN_ARMOR);
+    //return spell_service_query(mtmp, SPE_ENCHANT_ARMOR, 0, "enchant an armor", cost, "enchanting an armor", SMITH_LINE_WOULD_YOU_LIKE_TO_ENCHANT_AN_ARMOR);
+    return item_enchant_service_query(mtmp, 1, cost);
 }
 
 STATIC_OVL int
@@ -7987,7 +7988,8 @@ struct monst* mtmp;
         return 0;
 
     int64_t cost = max(1L, (int64_t)((1000 + 50 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
-    return spell_service_query(mtmp, SPE_ENCHANT_WEAPON, 0, "enchant a weapon", cost, "enchanting a weapon", SMITH_LINE_WOULD_YOU_LIKE_TO_ENCHANT_A_WEAPON);
+    //return spell_service_query(mtmp, SPE_ENCHANT_WEAPON, 0, "enchant a weapon", cost, "enchanting a weapon", SMITH_LINE_WOULD_YOU_LIKE_TO_ENCHANT_A_WEAPON);
+    return item_enchant_service_query(mtmp, 0, cost);
 }
 
 STATIC_OVL int
@@ -9062,7 +9064,8 @@ struct monst* mtmp;
         return 0;
 
     int64_t cost = max(1L, (int64_t)((1000 + 50 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
-    return spell_service_query(mtmp, SCR_ENCHANT_ACCESSORY, 0, "enchant an accessory", cost, "enchanting an accessory", NPC_LINE_WOULD_YOU_LIKE_TO_ENCHANT_AN_ACCESSORY);
+    //return spell_service_query(mtmp, SCR_ENCHANT_ACCESSORY, 0, "enchant an accessory", cost, "enchanting an accessory", NPC_LINE_WOULD_YOU_LIKE_TO_ENCHANT_AN_ACCESSORY);
+    return item_enchant_service_query(mtmp, 2, cost);
 }
 
 STATIC_OVL int
@@ -10647,6 +10650,242 @@ int special_dialogue_sound_id;
     stop_all_dialogue_of_mon_on_mobile(mtmp);
     return 1;
 }
+
+STATIC_OVL int
+item_enchant_service_query(mtmp, enchant_type, service_cost)
+struct monst* mtmp;
+int enchant_type;/* 0 = enchant weapon, 1 = enchant armor, 2 = enchant accessory */
+int64_t service_cost;
+{
+
+    int64_t umoney = money_cnt(invent);
+    int64_t u_pay;
+    char qbuf[QBUFSZ];
+
+    const char* selectable_item_categories;
+    const char* no_mood_string;
+    int special_dialogue_sound_id;
+    switch (enchant_type)
+    {
+    case 0:
+        selectable_item_categories = getobj_enchant_weapon_objects;
+        no_mood_string = "enchanting a weapon";
+        special_dialogue_sound_id = mtmp->issmith ? SMITH_LINE_WOULD_YOU_LIKE_TO_ENCHANT_A_WEAPON : 0;
+        break;
+    case 1:
+        selectable_item_categories = getobj_enchant_armor_objects;
+        no_mood_string = "enchanting an armor";
+        special_dialogue_sound_id = mtmp->issmith ? SMITH_LINE_WOULD_YOU_LIKE_TO_ENCHANT_AN_ARMOR : 0;
+        break;
+    case 2:
+        selectable_item_categories = getobj_enchant_accessory_objects;
+        no_mood_string = "enchanting an accessory";
+        special_dialogue_sound_id = mtmp->issmith ? 0 : mtmp->isnpc ? NPC_LINE_WOULD_YOU_LIKE_TO_ENCHANT_AN_ACCESSORY : 0;
+        break;
+    default:
+        selectable_item_categories = getobj_allobj;
+        no_mood_string = "enchanting anything";
+        special_dialogue_sound_id = 0;
+        break;
+    }
+
+    if (!m_general_talk_check(mtmp, no_mood_string) || !m_speak_check(mtmp))
+        return 0;
+    else if (!umoney)
+    {
+        play_sfx_sound(SFX_NOT_ENOUGH_MONEY);
+        You_ex1_popup("have no money.", "No Money", ATR_NONE, CLR_MSG_ATTENTION, NO_GLYPH, POPUP_FLAGS_NONE);
+        return 0;
+    }
+
+    if (special_dialogue_sound_id > 0)
+    {
+        play_monster_special_dialogue_line(mtmp, special_dialogue_sound_id);
+    }
+
+    struct obj* otmp = getobj(selectable_item_categories, "enchant", 0, "");
+    if (!otmp)
+        return 0;
+
+    if (otmp->dknown && objects[otmp->otyp].oc_name_known && !objects[otmp->otyp].oc_enchantable)
+    {
+        play_sfx_sound(SFX_GENERAL_CANNOT);
+        You_ex1_popup("cannot enchant that.", "Unenchantable Item", ATR_NONE, CLR_MSG_ATTENTION, NO_GLYPH, POPUP_FLAGS_NONE);
+        return 0;
+    }
+
+    boolean acceptable_item;
+    switch (enchant_type)
+    {
+    case 0:
+        acceptable_item = is_weapon(otmp) || is_ammo(otmp);
+        break;
+    case 1:
+        acceptable_item = is_armor(otmp);
+        break;
+    case 2:
+        acceptable_item = otmp->oclass == RING_CLASS || otmp->oclass == MISCELLANEOUS_CLASS;
+        break;
+    default:
+        acceptable_item = TRUE;
+        break;
+    }
+
+    if (!acceptable_item)
+    {
+        play_sfx_sound(SFX_GENERAL_CANNOT);
+        You_ex1_popup("cannot enchant that with this service.", "Wrong Item Type", ATR_NONE, CLR_MSG_ATTENTION, NO_GLYPH, POPUP_FLAGS_NONE);
+        return 0;
+    }
+
+    boolean stats_known = object_stats_known(otmp);
+    int maxench = get_obj_max_enchantment(otmp);
+    int curench = otmp->enchantment;
+    int enchbuffer = max(0, maxench - curench);
+    int services_afforded = max(0, service_cost > 0 ? umoney / service_cost : 999);
+    int max_services = min(stats_known && otmp->known ? max(1, enchbuffer) : 1, services_afforded);
+
+    if (!services_afforded)
+    {
+        play_sfx_sound(SFX_NOT_ENOUGH_MONEY);
+        You_ex1_popup("don't have enough money for this service.", "Not Enough Money", ATR_NONE, CLR_MSG_ATTENTION, NO_GLYPH, POPUP_FLAGS_NONE);
+        return 0;
+    }
+
+    //if (!enchbuffer)
+    //{
+    //    play_sfx_sound(SFX_GENERAL_CANNOT);
+    //    You_ex1_popup("cannot enchant items beyond their safe enchantable level with this service.", "Cannot Enchant More", ATR_NONE, CLR_MSG_ATTENTION, NO_GLYPH, POPUP_FLAGS_NONE);
+    //    return 0;
+    //}
+
+    boolean quan_asked = FALSE;
+    int selno_services = 1;
+    if (stats_known)
+    {
+        const char* ifmt_known1 = "%s has a current enchantment of %s%d and can safely be enchanted to %s%d (%d time%s).";
+        const char* ifmt_known2 = "You can afford up to %d enchantment%s, %lld %s each.";
+        const char* ifmt_notknown = "%s can safely be enchanted to %s%d, but its current enchantment is not known.";
+        int multicolors_known1[7] = { NO_COLOR, CLR_MSG_HINT, CLR_MSG_HINT, CLR_MSG_HINT, CLR_MSG_HINT, CLR_MSG_HINT, NO_COLOR };
+        int multicolors_known2[4] = { CLR_MSG_HINT, NO_COLOR, CLR_MSG_ATTENTION, NO_COLOR };
+        int multicolors_notknown[3] = { NO_COLOR, CLR_MSG_HINT, CLR_MSG_HINT };
+        if (otmp->known)
+        {
+            pline_multi_ex(ATR_NONE, NO_COLOR, no_multiattrs, multicolors_known1, ifmt_known1,
+                Yname2(otmp), curench >= 0 ? "+" : "", curench, maxench >= 0 ? "+" : "", maxench, enchbuffer, plur(enchbuffer));
+            if (enchbuffer > 0)
+                pline_multi_ex(ATR_NONE, NO_COLOR, no_multiattrs, multicolors_known2, ifmt_known2,
+                    services_afforded, plur(services_afforded), (long long)service_cost, currency(service_cost));
+        }
+        else
+            pline_multi_ex(ATR_NONE, NO_COLOR, no_multiattrs, multicolors_notknown, ifmt_notknown,
+                Yname2(otmp), maxench >= 0 ? "+" : "", maxench, services_afforded, plur(services_afforded), (long long)service_cost, currency(service_cost));
+    
+        if (max_services > 1)
+        {
+            char ibuf[IBUFSZ] = "";
+            char ibuf1[BUFSZ] = "";
+            char ibuf2[BUFSZ] = "";
+            char qbuf[QBUFSZ] = "";
+            char ebuf[BUFSZ] = "";
+            char buf[BUFSZ] = "";
+            if (otmp->known)
+            {
+                Sprintf(ibuf1, ifmt_known1,
+                    Yname2(otmp), curench >= 0 ? "+" : "", curench, maxench >= 0 ? "+" : "", maxench, enchbuffer, plur(enchbuffer));
+                if (enchbuffer > 0)
+                {
+                    Sprintf(ibuf2, ifmt_known2,
+                        services_afforded, plur(services_afforded), (long long)service_cost, currency(service_cost));
+                    Sprintf(ibuf, "%s %s", ibuf1, ibuf2);
+                }
+                else
+                {
+                    Sprintf(ibuf, "%s", ibuf1);
+                }
+            }
+            else
+                Sprintf(ibuf2, ifmt_notknown,
+                    Yname2(otmp), maxench >= 0 ? "+" : "", maxench);
+
+            Strcpy(qbuf, "How many times to enchant?");
+            Sprintf(ebuf, "[max %d] (1)", max_services);
+            getlin_ex(GETLINE_NUMBERS_ONLY, ATR_NONE, NO_COLOR, qbuf, buf, (char*)0, ebuf, ibuf);
+            (void)mungspaces(buf);
+            quan_asked = TRUE;
+
+            if (buf[0] == '\033')
+            {
+                return 0;
+            }
+            else if (buf[0] == ' ' || buf[0] == '\0')
+            {
+                selno_services = 1;
+            }
+            else
+            {
+                int count = atoi(buf);
+                if (count > 0)
+                    selno_services = min(max_services, count);
+                else
+                    return 0;
+            }
+        }
+    }
+
+    if (!selno_services)
+        return 0;
+
+    char ans = 'y';
+    int64_t total_cost = service_cost * selno_services;
+    if (!quan_asked)
+    {
+        if (selno_services == 1)
+            Sprintf(qbuf, "Would you like to enchant %s? (%lld %s)", yname(otmp), (long long)total_cost, currency(total_cost));
+        else
+            Sprintf(qbuf, "Would you like to enchant %s %d times? (%lld %s in total)", yname(otmp), selno_services, (long long)total_cost, currency(total_cost));
+        ans = yn_query_mon(mtmp, qbuf);
+    }
+
+    switch (ans)
+    {
+    default:
+        stop_all_dialogue_of_mon_on_mobile(mtmp);
+        return 0;
+    case 'y':
+        if (umoney < total_cost)
+        {
+            play_sfx_sound(SFX_NOT_ENOUGH_MONEY);
+            You_ex(ATR_NONE, CLR_MSG_FAIL, "don't have enough money for that!");
+            stop_all_dialogue_of_mon_on_mobile(mtmp);
+            return 0;
+        }
+        u_pay = total_cost;
+        break;
+    }
+
+    switch (enchant_type)
+    {
+    case 0:
+        (void) enchant_weapon((struct obj*)0, otmp, selno_services, TRUE);
+        break;
+    case 1:
+        enchant_armor(otmp, 0, selno_services, TRUE);
+        break;
+    case 2:
+        if (otmp->oclass == RING_CLASS)
+            enchant_ring(otmp, 0, selno_services, TRUE);
+        else
+            enchant_armor(otmp, 0, selno_services, TRUE);
+        break;
+    }
+
+    money2mon(mtmp, u_pay);
+    bot();
+    stop_all_dialogue_of_mon_on_mobile(mtmp);
+    return 1;
+}
+
 
 STATIC_OVL int
 recharge_item_func(mtmp, otmp)

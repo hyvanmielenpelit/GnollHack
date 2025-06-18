@@ -1882,7 +1882,7 @@ boolean dopopup;
     } 
     else if (weapon->otyp == CRYSKNIFE && amount < 0) 
     {
-        if (otyp != STRANGE_OBJECT && otmp->bknown)
+        if (otyp != STRANGE_OBJECT && otmp && otmp->bknown)
         {
             makeknown(otyp);
             enchwepknown = TRUE;
@@ -1980,7 +1980,7 @@ boolean dopopup;
 
     if (!Blind)
     {
-        if (otyp != STRANGE_OBJECT && weapon->known && (amount > 0 || (amount < 0 && otmp->bknown)))
+        if (otyp != STRANGE_OBJECT && weapon->known && (amount > 0 || (amount < 0 && otmp && otmp->bknown)))
         {
             makeknown(otyp);
             enchwepknown = TRUE;

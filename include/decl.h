@@ -293,6 +293,9 @@ E NEARDATA const char getobj_toss_objs[];
 E NEARDATA const char getobj_tippables[];
 E NEARDATA const char getobj_zap_syms[];
 E NEARDATA const char getobj_favorites[];
+E NEARDATA const char getobj_enchant_weapon_objects[];
+E NEARDATA const char getobj_enchant_armor_objects[];
+E NEARDATA const char getobj_enchant_accessory_objects[];
 
 E NEARDATA boolean is_gui_in_debug_mode;
 

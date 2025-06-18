@@ -367,6 +367,10 @@ NEARDATA const char getobj_favorites[] = {
     ROCK_CLASS,      BALL_CLASS,   CHAIN_CLASS,  SPBOOK_CLASS, 0
 };
 
+NEARDATA const char getobj_enchant_weapon_objects[] = { ALL_CLASSES, WEAPON_CLASS, TOOL_CLASS, 0 };
+NEARDATA const char getobj_enchant_armor_objects[] = { ALL_CLASSES, ARMOR_CLASS, 0 };
+NEARDATA const char getobj_enchant_accessory_objects[] = { ALL_CLASSES, RING_CLASS, MISCELLANEOUS_CLASS, 0 };
+
 /* originally from dog.c */
 NEARDATA char dogname[PL_PSIZ] = DUMMY;
 NEARDATA char catname[PL_PSIZ] = DUMMY;

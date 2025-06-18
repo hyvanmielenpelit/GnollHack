@@ -22,7 +22,6 @@ STATIC_VAR const char all_count[] = { ALLOW_COUNT, ALL_CLASSES, 0 };
 STATIC_DCL boolean FDECL(learnscrolltyp, (SHORT_P));
 STATIC_DCL char *FDECL(erode_obj_text, (struct obj *, char *));
 STATIC_DCL char *FDECL(apron_text, (struct obj *, char *buf));
-STATIC_DCL void FDECL(enchant_ring, (struct obj*, int, BOOLEAN_P));
 STATIC_DCL void FDECL(forget_single_object, (int));
 #if 0 /* not used */
 STATIC_DCL void FDECL(forget_objclass, (int));
@@ -1219,12 +1218,12 @@ boolean verbose, dopopup;
     else
     {
     not_chargable:
-        if (verbose)
-        {
-            play_sfx_sound(SFX_RECHARGE_FAIL);
-            Strcpy(effbuf, "You have a feeling of loss.");
-            pline_ex1_popup(ATR_NONE, CLR_MSG_WARNING, effbuf, "Feeling of Loss", dopopup);
-        }
+    if (verbose)
+    {
+        play_sfx_sound(SFX_RECHARGE_FAIL);
+        Strcpy(effbuf, "You have a feeling of loss.");
+        pline_ex1_popup(ATR_NONE, CLR_MSG_WARNING, effbuf, "Feeling of Loss", dopopup);
+    }
     }
 
     if (play_effect)
@@ -1238,10 +1237,152 @@ boolean verbose, dopopup;
     }
 }
 
-STATIC_OVL void
-enchant_ring(obj, curse_bless, dopopup)
+void
+enchant_armor(otmp, curse_bless, amount, dopopup)
+struct obj* otmp;
+int curse_bless, amount;
+boolean dopopup;
+{
+    if (!otmp)
+        return;
+
+    if (!objects[otmp->otyp].oc_enchantable)
+    {
+        play_sfx_sound(SFX_ENCHANT_ITEM_GENERAL_FAIL);
+        pline_ex1_popup(ATR_NONE, CLR_MSG_WARNING, "You have a feeling of loss.", "Feeling of Loss", dopopup);
+        return;
+    }
+
+    boolean same_color;
+    boolean scursed = curse_bless < 0;
+    boolean sblessed = curse_bless > 0;
+    if (scursed)
+        same_color = (otmp->otyp == BLACK_DRAGON_SCALE_MAIL
+            || otmp->otyp == BLACK_DRAGON_SCALES);
+    else
+        same_color = (otmp->otyp == SILVER_DRAGON_SCALE_MAIL
+            || otmp->otyp == SILVER_DRAGON_SCALES
+            || otmp->otyp == SHIELD_OF_REFLECTION);
+    if (Blind)
+        same_color = FALSE;
+
+    int max_ench = get_obj_max_enchantment(otmp);
+    int s = scursed ? -otmp->enchantment : otmp->enchantment;
+    if (s > max_ench && rn2(max(1, s)))
+    {
+        if (((otmp->speflags & SPEFLAGS_GIVEN_OUT_BLUE_SMOKE) == 0 || rn2(3)) && (otmp->material == MAT_ORICHALCUM || obj_resists(otmp, 0, 75)))
+        {
+            play_special_effect_at(SPECIAL_EFFECT_PUFF_OF_SMOKE, u.ux, u.uy, 0, FALSE);
+            play_sfx_sound(SFX_VANISHES_IN_PUFF_OF_SMOKE);
+            special_effect_wait_until_action(0);
+            pline_multi_ex_popup(ATR_NONE, CLR_MSG_NEGATIVE, no_multiattrs, multicolor_buffer, Blind ? "Puff of Smoke" : "Puff of Blue Smoke", dopopup,
+                "%s violently %s%s%s for a while, then suddenly %s out a puff of%s smoke.", Yname2(otmp),
+                otense(otmp, Blind ? "vibrate" : "glow"),
+                (!Blind && !same_color) ? " " : "",
+                hcolor_multi_buf3((Blind || same_color) ? "" : scursed ? NH_BLACK
+                    : NH_SILVER),
+                otense(otmp, "give"), Blind ? "" : " blue");
+            otmp->enchantment = 0;
+            otmp->speflags |= SPEFLAGS_GIVEN_OUT_BLUE_SMOKE;
+            update_inventory();
+            special_effect_wait_until_end(0);
+            return;
+        }
+        else
+        {
+            play_sfx_sound(SFX_ENCHANT_ITEM_VIBRATE_AND_DESTROY);
+            otmp->in_use = TRUE;
+            pline_multi_ex_popup(ATR_NONE, CLR_MSG_NEGATIVE, no_multiattrs, multicolor_buffer, "Evaporation", dopopup,
+                "%s violently %s%s%s for a while, then %s.", Yname2(otmp),
+                otense(otmp, Blind ? "vibrate" : "glow"),
+                (!Blind && !same_color) ? " " : "",
+                hcolor_multi_buf3((Blind || same_color) ? "" : scursed ? NH_BLACK
+                    : NH_SILVER),
+                otense(otmp, "evaporate"));
+            remove_worn_item(otmp, FALSE);
+            Sprintf(priority_debug_buf_2, "seffects: %d", otmp->otyp);
+            Strcpy(priority_debug_buf_3, "seffects");
+            Strcpy(priority_debug_buf_4, "seffects");
+            useup(otmp);
+            return;
+        }
+    }
+
+    s = amount ? amount : scursed ? -1
+        : (otmp->enchantment >= (3 * max_ench) / 2)
+        ? (!rn2(max(2, otmp->enchantment / (sblessed ? 2 : 1))))
+        : sblessed ? rnd(2) : 1;
+
+    if (s >= 0 && is_dragon_scales(otmp))
+    {
+        dragon_scales_to_scale_mail(otmp, sblessed, FALSE);
+        return;
+    }
+
+    play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, 0, u.ux, u.uy, FALSE);
+
+    if (s == 0)
+        play_sfx_sound(SFX_ENCHANT_ITEM_VIOLENT_GLOW);
+    else if (s < 0)
+        play_sfx_sound(SFX_ENCHANT_ITEM_NEGATIVE);
+    else if (s > 1)
+        play_sfx_sound(SFX_ENCHANT_ITEM_BLESSED_SUCCESS);
+    else
+        play_sfx_sound(SFX_ENCHANT_ITEM_SUCCESS);
+
+    special_effect_wait_until_action(0);
+
+    pline_multi_ex_popup(ATR_NONE, Hallucination ? CLR_MSG_HALLUCINATED : scursed ? CLR_MSG_NEGATIVE : s == 0 ? CLR_MSG_WARNING : CLR_MSG_POSITIVE, no_multiattrs, multicolor_buffer,
+        known || otmp->oclass == SPBOOK_CLASS ? "Enchant Armor" : Blind ? "Magical Vibration" : "Magical Glow",
+        dopopup,
+        "%s %s%s%s%s for a %s.", Yname2(otmp),
+        s == 0 ? "violently " : "",
+        otense(otmp, Blind ? "vibrate" : "glow"),
+        (!Blind && !same_color) ? " " : "",
+        hcolor_multi_buf4((Blind || same_color) ? "" : scursed ? NH_BLACK : NH_SILVER),
+        (s * s > 1) ? "while" : "moment");
+
+    /* [this cost handling will need updating if shop pricing is
+       ever changed to care about curse/bless status of armor] */
+    if (s < 0)
+        costly_alteration(otmp, COST_DECHNT);
+    if (scursed && !otmp->cursed)
+        curse(otmp);
+    else if (sblessed && !otmp->blessed)
+        bless(otmp);
+    else if (!scursed && otmp->cursed)
+        uncurse(otmp);
+
+    if (s)
+    {
+        otmp->enchantment += s;
+        //adj_abon(otmp, s);
+        updateabon();
+        updatemaxen();
+        updatemaxhp();
+        known = otmp->known;
+        /* update shop bill to reflect new higher price */
+        if (s > 0 && otmp->unpaid)
+            alter_cost(otmp, 0L);
+    }
+
+    if (otmp->enchantment > max_ench)
+    {
+        char effbuf[BUFSZ] = "";
+        play_sfx_sound(SFX_ENCHANT_ITEM_VIBRATE_WARNING);
+        Sprintf(effbuf, "%s %s.", Yobjnam2(otmp, "suddenly vibrate"),
+            Blind ? "again" : "unexpectedly");
+        pline_ex1_popup(ATR_NONE, CLR_MSG_WARNING, effbuf, "Vibration", dopopup);
+    }
+
+    special_effect_wait_until_end(0);
+    update_inventory();
+}
+
+void
+enchant_ring(obj, curse_bless, amount, dopopup)
 struct obj* obj;
-int curse_bless;
+int curse_bless, amount;
 boolean dopopup;
 {
     boolean is_cursed, is_blessed;
@@ -1254,8 +1395,11 @@ boolean dopopup;
     {
         /* enchantment does not affect ring's curse/bless status */
         int maxcharge = get_obj_max_enchantment(obj);
-        int s = is_blessed ? rnd(max(1, maxcharge / 3)) : is_cursed ? -rnd(max(1, maxcharge / 3)) : maxcharge >= 12 ? rnd(max(1, maxcharge / 6)) : 1;
+        int s = amount ? amount : is_blessed ? rnd(max(1, maxcharge / 3)) : is_cursed ? -rnd(max(1, maxcharge / 3)) : maxcharge >= 12 ? rnd(max(1, maxcharge / 6)) : 1;
         boolean is_on = (obj == uleft || obj == uright);
+
+        play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, 0, u.ux, u.uy, FALSE);
+        special_effect_wait_until_action(0);
 
         /* destruction depends on current state, not adjustment */
         if ((obj->enchantment > maxcharge || obj->enchantment < -maxcharge) && rn2(3))
@@ -1309,6 +1453,7 @@ boolean dopopup;
             update_all_character_properties(obj, TRUE);
             update_inventory();
         }
+        special_effect_wait_until_end(0);
     }
     else
     {
@@ -1775,18 +1920,16 @@ struct monst* targetmonst;
         register schar s;
         boolean same_color;
 
-        const char enchant_armor_objects[] = { ALL_CLASSES, ARMOR_CLASS, 0 };
-
         if (otyp == SPE_PROTECT_ARMOR || otyp == SPE_ENCHANT_ARMOR)
         {
-            otmp = getobj(enchant_armor_objects, otyp == SPE_ENCHANT_ARMOR ? "enchant" : "protect", 0, "");
+            otmp = getobj(getobj_enchant_armor_objects, otyp == SPE_ENCHANT_ARMOR ? "enchant" : "protect", 0, "");
             if (!otmp)
             {
                 *effect_happened_ptr = 0;
                 return 0;
             }
 
-            if(otmp && otmp->oclass != ARMOR_CLASS)
+            if(otmp && !is_armor(otmp))
             {
                 play_sfx_sound(SFX_ENCHANT_ITEM_GENERAL_FAIL);
                 Sprintf(effbuf, !Blind
@@ -1854,127 +1997,128 @@ struct monst* targetmonst;
             break;
         }
 
-        int max_ench = get_obj_max_enchantment(otmp);
-        if (scursed)
-            same_color = (otmp->otyp == BLACK_DRAGON_SCALE_MAIL
-                || otmp->otyp == BLACK_DRAGON_SCALES);
-        else
-            same_color = (otmp->otyp == SILVER_DRAGON_SCALE_MAIL
-                || otmp->otyp == SILVER_DRAGON_SCALES
-                || otmp->otyp == SHIELD_OF_REFLECTION);
-        if (Blind)
-            same_color = FALSE;
+        enchant_armor(otmp, scursed ? -1 : sblessed ? 1 : 0, 0, is_serviced_spell);
+        //int max_ench = get_obj_max_enchantment(otmp);
+        //if (scursed)
+        //    same_color = (otmp->otyp == BLACK_DRAGON_SCALE_MAIL
+        //        || otmp->otyp == BLACK_DRAGON_SCALES);
+        //else
+        //    same_color = (otmp->otyp == SILVER_DRAGON_SCALE_MAIL
+        //        || otmp->otyp == SILVER_DRAGON_SCALES
+        //        || otmp->otyp == SHIELD_OF_REFLECTION);
+        //if (Blind)
+        //    same_color = FALSE;
 
-        /* KMH -- catch underflow */
-        s = scursed ? -otmp->enchantment : otmp->enchantment;
-        if (s > max_ench && rn2(max(1, s)))
-        {
-            if (((otmp->speflags & SPEFLAGS_GIVEN_OUT_BLUE_SMOKE) == 0 || rn2(3)) && (otmp->material == MAT_ORICHALCUM || obj_resists(otmp, 0, 75)))
-            {
-                play_special_effect_at(SPECIAL_EFFECT_PUFF_OF_SMOKE, u.ux, u.uy, 0, FALSE);
-                play_sfx_sound(SFX_VANISHES_IN_PUFF_OF_SMOKE);
-                special_effect_wait_until_action(0);
-                pline_multi_ex_popup(ATR_NONE, CLR_MSG_NEGATIVE, no_multiattrs, multicolor_buffer, Blind ? "Puff of Smoke" : "Puff of Blue Smoke", is_serviced_spell,
-                    "%s violently %s%s%s for a while, then suddenly %s out a puff of%s smoke.", Yname2(otmp),
-                    otense(otmp, Blind ? "vibrate" : "glow"),
-                    (!Blind && !same_color) ? " " : "",
-                    hcolor_multi_buf3((Blind || same_color) ? "" : scursed ? NH_BLACK
-                        : NH_SILVER),
-                    otense(otmp, "give"), Blind ? "" : " blue");
-                otmp->enchantment = 0;
-                otmp->speflags |= SPEFLAGS_GIVEN_OUT_BLUE_SMOKE;
-                update_inventory();
-                special_effect_wait_until_end(0);
-                break;
-            }
-            else
-            {
-                play_sfx_sound(SFX_ENCHANT_ITEM_VIBRATE_AND_DESTROY);
-                otmp->in_use = TRUE;
-                pline_multi_ex_popup(ATR_NONE, CLR_MSG_NEGATIVE, no_multiattrs, multicolor_buffer, "Evaporation", is_serviced_spell,
-                    "%s violently %s%s%s for a while, then %s.", Yname2(otmp),
-                    otense(otmp, Blind ? "vibrate" : "glow"),
-                    (!Blind && !same_color) ? " " : "",
-                    hcolor_multi_buf3((Blind || same_color) ? "" : scursed ? NH_BLACK
-                        : NH_SILVER),
-                    otense(otmp, "evaporate"));
-                remove_worn_item(otmp, FALSE);
-                Sprintf(priority_debug_buf_2, "seffects: %d", otmp->otyp);
-                Strcpy(priority_debug_buf_3, "seffects");
-                Strcpy(priority_debug_buf_4, "seffects");
-                useup(otmp);
-                break;
-            }
-        }
+        ///* KMH -- catch underflow */
+        //s = scursed ? -otmp->enchantment : otmp->enchantment;
+        //if (s > max_ench && rn2(max(1, s)))
+        //{
+        //    if (((otmp->speflags & SPEFLAGS_GIVEN_OUT_BLUE_SMOKE) == 0 || rn2(3)) && (otmp->material == MAT_ORICHALCUM || obj_resists(otmp, 0, 75)))
+        //    {
+        //        play_special_effect_at(SPECIAL_EFFECT_PUFF_OF_SMOKE, u.ux, u.uy, 0, FALSE);
+        //        play_sfx_sound(SFX_VANISHES_IN_PUFF_OF_SMOKE);
+        //        special_effect_wait_until_action(0);
+        //        pline_multi_ex_popup(ATR_NONE, CLR_MSG_NEGATIVE, no_multiattrs, multicolor_buffer, Blind ? "Puff of Smoke" : "Puff of Blue Smoke", is_serviced_spell,
+        //            "%s violently %s%s%s for a while, then suddenly %s out a puff of%s smoke.", Yname2(otmp),
+        //            otense(otmp, Blind ? "vibrate" : "glow"),
+        //            (!Blind && !same_color) ? " " : "",
+        //            hcolor_multi_buf3((Blind || same_color) ? "" : scursed ? NH_BLACK
+        //                : NH_SILVER),
+        //            otense(otmp, "give"), Blind ? "" : " blue");
+        //        otmp->enchantment = 0;
+        //        otmp->speflags |= SPEFLAGS_GIVEN_OUT_BLUE_SMOKE;
+        //        update_inventory();
+        //        special_effect_wait_until_end(0);
+        //        break;
+        //    }
+        //    else
+        //    {
+        //        play_sfx_sound(SFX_ENCHANT_ITEM_VIBRATE_AND_DESTROY);
+        //        otmp->in_use = TRUE;
+        //        pline_multi_ex_popup(ATR_NONE, CLR_MSG_NEGATIVE, no_multiattrs, multicolor_buffer, "Evaporation", is_serviced_spell,
+        //            "%s violently %s%s%s for a while, then %s.", Yname2(otmp),
+        //            otense(otmp, Blind ? "vibrate" : "glow"),
+        //            (!Blind && !same_color) ? " " : "",
+        //            hcolor_multi_buf3((Blind || same_color) ? "" : scursed ? NH_BLACK
+        //                : NH_SILVER),
+        //            otense(otmp, "evaporate"));
+        //        remove_worn_item(otmp, FALSE);
+        //        Sprintf(priority_debug_buf_2, "seffects: %d", otmp->otyp);
+        //        Strcpy(priority_debug_buf_3, "seffects");
+        //        Strcpy(priority_debug_buf_4, "seffects");
+        //        useup(otmp);
+        //        break;
+        //    }
+        //}
 
-        s = scursed ? -1
-            : (otmp->enchantment >= (3 * max_ench) / 2)
-            ? (!rn2(max(2, otmp->enchantment / (sblessed ? 2 : 1))))
-            : sblessed ? rnd(2) : 1;
+        //s = scursed ? -1
+        //    : (otmp->enchantment >= (3 * max_ench) / 2)
+        //    ? (!rn2(max(2, otmp->enchantment / (sblessed ? 2 : 1))))
+        //    : sblessed ? rnd(2) : 1;
 
-        if (s >= 0 && is_dragon_scales(otmp)) 
-        {
-            dragon_scales_to_scale_mail(otmp, sblessed, FALSE);
-            break;
-        }
+        //if (s >= 0 && is_dragon_scales(otmp)) 
+        //{
+        //    dragon_scales_to_scale_mail(otmp, sblessed, FALSE);
+        //    break;
+        //}
 
-        play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, 0, u.ux, u.uy, FALSE);
+        //play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, 0, u.ux, u.uy, FALSE);
 
-        if(s == 0)
-            play_sfx_sound(SFX_ENCHANT_ITEM_VIOLENT_GLOW);
-        else if(s < 0)
-            play_sfx_sound(SFX_ENCHANT_ITEM_NEGATIVE);
-        else if(s > 1)
-            play_sfx_sound(SFX_ENCHANT_ITEM_BLESSED_SUCCESS);
-        else
-            play_sfx_sound(SFX_ENCHANT_ITEM_SUCCESS);
+        //if(s == 0)
+        //    play_sfx_sound(SFX_ENCHANT_ITEM_VIOLENT_GLOW);
+        //else if(s < 0)
+        //    play_sfx_sound(SFX_ENCHANT_ITEM_NEGATIVE);
+        //else if(s > 1)
+        //    play_sfx_sound(SFX_ENCHANT_ITEM_BLESSED_SUCCESS);
+        //else
+        //    play_sfx_sound(SFX_ENCHANT_ITEM_SUCCESS);
 
-        special_effect_wait_until_action(0);
+        //special_effect_wait_until_action(0);
 
-        pline_multi_ex_popup(ATR_NONE, Hallucination ? CLR_MSG_HALLUCINATED : scursed ? CLR_MSG_NEGATIVE : s == 0 ? CLR_MSG_WARNING : CLR_MSG_POSITIVE, no_multiattrs, multicolor_buffer,
-            known || otmp->oclass == SPBOOK_CLASS ? "Enchant Armor" : Blind ? "Magical Vibration" : "Magical Glow", 
-            is_serviced_spell,
-            "%s %s%s%s%s for a %s.", Yname2(otmp),
-            s == 0 ? "violently " : "",
-            otense(otmp, Blind ? "vibrate" : "glow"),
-            (!Blind && !same_color) ? " " : "",
-            hcolor_multi_buf4((Blind || same_color) ? "" : scursed ? NH_BLACK : NH_SILVER),
-            (s* s > 1) ? "while" : "moment");
+        //pline_multi_ex_popup(ATR_NONE, Hallucination ? CLR_MSG_HALLUCINATED : scursed ? CLR_MSG_NEGATIVE : s == 0 ? CLR_MSG_WARNING : CLR_MSG_POSITIVE, no_multiattrs, multicolor_buffer,
+        //    known || otmp->oclass == SPBOOK_CLASS ? "Enchant Armor" : Blind ? "Magical Vibration" : "Magical Glow", 
+        //    is_serviced_spell,
+        //    "%s %s%s%s%s for a %s.", Yname2(otmp),
+        //    s == 0 ? "violently " : "",
+        //    otense(otmp, Blind ? "vibrate" : "glow"),
+        //    (!Blind && !same_color) ? " " : "",
+        //    hcolor_multi_buf4((Blind || same_color) ? "" : scursed ? NH_BLACK : NH_SILVER),
+        //    (s* s > 1) ? "while" : "moment");
 
-        /* [this cost handling will need updating if shop pricing is
-           ever changed to care about curse/bless status of armor] */
-        if (s < 0)
-            costly_alteration(otmp, COST_DECHNT);
-        if (scursed && !otmp->cursed)
-            curse(otmp);
-        else if (sblessed && !otmp->blessed)
-            bless(otmp);
-        else if (!scursed && otmp->cursed)
-            uncurse(otmp);
-        
-        if (s) 
-        {
-            otmp->enchantment += s;
-            //adj_abon(otmp, s);
-            updateabon();
-            updatemaxen();
-            updatemaxhp();
-            known = otmp->known;
-            /* update shop bill to reflect new higher price */
-            if (s > 0 && otmp->unpaid)
-                alter_cost(otmp, 0L);
-        }
+        ///* [this cost handling will need updating if shop pricing is
+        //   ever changed to care about curse/bless status of armor] */
+        //if (s < 0)
+        //    costly_alteration(otmp, COST_DECHNT);
+        //if (scursed && !otmp->cursed)
+        //    curse(otmp);
+        //else if (sblessed && !otmp->blessed)
+        //    bless(otmp);
+        //else if (!scursed && otmp->cursed)
+        //    uncurse(otmp);
+        //
+        //if (s) 
+        //{
+        //    otmp->enchantment += s;
+        //    //adj_abon(otmp, s);
+        //    updateabon();
+        //    updatemaxen();
+        //    updatemaxhp();
+        //    known = otmp->known;
+        //    /* update shop bill to reflect new higher price */
+        //    if (s > 0 && otmp->unpaid)
+        //        alter_cost(otmp, 0L);
+        //}
 
-        if (otmp->enchantment > max_ench)
-        {
-            play_sfx_sound(SFX_ENCHANT_ITEM_VIBRATE_WARNING);
-            Sprintf(effbuf, "%s %s.", Yobjnam2(otmp, "suddenly vibrate"),
-                Blind ? "again" : "unexpectedly");
-            pline_ex1_popup(ATR_NONE, CLR_MSG_WARNING, effbuf, "Vibration", is_serviced_spell);
-        }
+        //if (otmp->enchantment > max_ench)
+        //{
+        //    play_sfx_sound(SFX_ENCHANT_ITEM_VIBRATE_WARNING);
+        //    Sprintf(effbuf, "%s %s.", Yobjnam2(otmp, "suddenly vibrate"),
+        //        Blind ? "again" : "unexpectedly");
+        //    pline_ex1_popup(ATR_NONE, CLR_MSG_WARNING, effbuf, "Vibration", is_serviced_spell);
+        //}
 
-        special_effect_wait_until_end(0);
-        update_inventory();
+        //special_effect_wait_until_end(0);
+        //update_inventory();
         break;
     }
     case SCR_DESTROY_ARMOR:
@@ -2203,12 +2347,10 @@ struct monst* targetmonst;
     case SPE_ENCHANT_WEAPON:
     case SCR_ENCHANT_WEAPON:
     {
-        const char enchant_weapon_objects[] = { ALL_CLASSES, WEAPON_CLASS, TOOL_CLASS, 0 };
-
         /* Allow object selection for spells */
         if (otyp == SPE_PROTECT_WEAPON || otyp == SPE_ENCHANT_WEAPON)
         {
-            otmp = getobj(enchant_weapon_objects, otyp == SPE_ENCHANT_WEAPON ? "enchant" : "protect", 0, "");
+            otmp = getobj(getobj_enchant_weapon_objects, otyp == SPE_ENCHANT_WEAPON ? "enchant" : "protect", 0, "");
             if (!otmp)
             {
                 *effect_happened_ptr = 0;
@@ -2821,8 +2963,7 @@ struct monst* targetmonst;
         otmp = (struct obj*)0;
         if (is_serviced_spell)
         {
-            const char enchant_accessory_objects[] = { ALL_CLASSES, RING_CLASS, MISCELLANEOUS_CLASS, 0 };
-            otmp = getobj(enchant_accessory_objects, "enchant", 0, "");
+            otmp = getobj(getobj_enchant_accessory_objects, "enchant", 0, "");
             if (!otmp)
             {
                 if (!is_serviced_spell)
@@ -2946,10 +3087,7 @@ struct monst* targetmonst;
         {
             if (otmp->oclass == RING_CLASS)
             {
-                play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, 0, u.ux, u.uy, FALSE);
-                special_effect_wait_until_action(0);
-                enchant_ring(otmp, scursed ? -1 : sblessed ? 1 : 0, is_serviced_spell);
-                special_effect_wait_until_end(0);
+                enchant_ring(otmp, scursed ? -1 : sblessed ? 1 : 0, 0, is_serviced_spell);
             }
             else
             {
@@ -3367,6 +3505,8 @@ struct monst* targetmonst;
         update_inventory();
     return sobj ? 0 : 1;
 }
+
+
 
 void
 drop_boulder_on_player(confused, helmet_protects, byu, skip_uswallow)
