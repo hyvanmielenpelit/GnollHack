@@ -10782,16 +10782,25 @@ int64_t service_cost;
             pline_multi_ex(ATR_NONE, NO_COLOR, no_multiattrs, multicolors_notknown, ifmt_notknown,
                 Yname2(otmp), maxench >= 0 ? "+" : "", maxench, services_afforded, plur(services_afforded), (long long)service_cost, currency(service_cost));
     }
-    else if (otmp->known && curench < 0)
+    else if (otmp->known)
     {
-        const char* ifmt_known3 = "%s has a current enchantment of %s%d and can be safely enchanted at least %d time%s.";
-        int multicolors_known3[5] = { NO_COLOR, CLR_MSG_HINT, CLR_MSG_HINT, CLR_MSG_HINT, NO_COLOR };
-        int enchbufferneg = max(0, -curench);
-        pline_multi_ex(ATR_NONE, NO_COLOR, no_multiattrs, multicolors_known3, ifmt_known3,
-            Yname2(otmp), curench >= 0 ? "+" : "", curench, enchbufferneg, plur(enchbufferneg));
-        if (enchbufferneg > 0)
+        if (curench < 0)
+        {
+            const char* ifmt_known3 = "%s has a current enchantment of %s%d and can be safely enchanted at least %d time%s.";
+            int multicolors_known3[5] = { NO_COLOR, CLR_MSG_HINT, CLR_MSG_HINT, CLR_MSG_HINT, NO_COLOR };
+            int enchbufferneg = max(0, -curench);
+            pline_multi_ex(ATR_NONE, NO_COLOR, no_multiattrs, multicolors_known3, ifmt_known3,
+                Yname2(otmp), curench >= 0 ? "+" : "", curench, enchbufferneg, plur(enchbufferneg));
             pline_multi_ex(ATR_NONE, NO_COLOR, no_multiattrs, multicolors_known2, ifmt_known2,
                 services_afforded, plur(services_afforded), (long long)service_cost, currency(service_cost));
+        }
+        else
+        {
+            const char* ifmt_known4 = "%s has a current enchantment of %s%d, but the number of safe enchantments is not known.";
+            int multicolors_known4[3] = { NO_COLOR, CLR_MSG_HINT, CLR_MSG_HINT };
+            pline_multi_ex(ATR_NONE, NO_COLOR, no_multiattrs, multicolors_known4, ifmt_known4,
+                Yname2(otmp), curench >= 0 ? "+" : "", curench);
+        }
     }
 
     if (max_services > 1)
