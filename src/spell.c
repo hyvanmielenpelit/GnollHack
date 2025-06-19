@@ -5782,22 +5782,22 @@ boolean also_possible;
     boolean acceptable = is_acceptable_component_object_type(mc, otmp->otyp);
     boolean buc_acceptable = TRUE;
 
-    if ((mc->flags & MATCOMP_DEATH_ENCHANTMENT_REQUIRED) && otmp->elemental_enchantment != DEATH_ENCHANTMENT)
+    if (acceptable && (mc->flags & MATCOMP_DEATH_ENCHANTMENT_REQUIRED) != 0 && otmp->elemental_enchantment != DEATH_ENCHANTMENT)
         acceptable = FALSE;
 
-    if ((is_acceptable_component_object_type(mc, CORPSE) || is_acceptable_component_object_type(mc, TIN) || is_acceptable_component_object_type(mc, EGG))
+    if (acceptable && (is_acceptable_component_object_type(mc, CORPSE) || is_acceptable_component_object_type(mc, TIN) || is_acceptable_component_object_type(mc, EGG))
         && mc->monsterid[0] >= 0 && !is_acceptable_component_monster_type(mc, otmp->corpsenm))
         acceptable = FALSE;
 
     if (acceptable)
     {
-        if (buc_acceptable && (mc->flags & MATCOMP_BLESSED_REQUIRED) && !otmp->blessed)
+        if (buc_acceptable && (mc->flags & MATCOMP_BLESSED_REQUIRED) != 0 && !otmp->blessed)
             buc_acceptable = otmp->bknown || !also_possible ? FALSE : 2;
 
-        if (buc_acceptable && (mc->flags & MATCOMP_CURSED_REQUIRED) && !otmp->cursed)
+        if (buc_acceptable && (mc->flags & MATCOMP_CURSED_REQUIRED) != 0 && !otmp->cursed)
             buc_acceptable = otmp->bknown || !also_possible ? FALSE : 2;
 
-        if (buc_acceptable && (mc->flags & MATCOMP_NOT_CURSED) && otmp->cursed)
+        if (buc_acceptable && (mc->flags & MATCOMP_NOT_CURSED) != 0 && otmp->cursed)
             buc_acceptable = otmp->bknown || !also_possible ? FALSE : 2;
     }
 

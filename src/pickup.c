@@ -3484,15 +3484,18 @@ boolean dobot;
         Sprintf(priority_debug_buf_2, "in_container_core2: %d, %d", current_container->otyp, saved_otyp);
         Strcpy(priority_debug_buf_3, "in_container_core2");
         Strcpy(priority_debug_buf_4, "in_container_core2");
+        context.surpress_container_deletion_warning = 1;
         if (!floor_container)
             useup(current_container);
         else if (obj_here(current_container, u.ux, u.uy))
             useupf(current_container, current_container->quan);
         else
         {
+            context.surpress_container_deletion_warning = 0;
             panic("in_container:  bag not found.");
             return 0;
         }
+        context.surpress_container_deletion_warning = 0;
 
         losehp(adjust_damage(d(6, 6), (struct monst*)0, &youmonst, AD_PHYS, ADFLAGS_SPELL_DAMAGE), "magical explosion", KILLED_BY_AN);
         current_container = 0; /* baggone = TRUE; */
