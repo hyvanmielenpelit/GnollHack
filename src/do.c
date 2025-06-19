@@ -4437,7 +4437,8 @@ struct item_description_stats* stats_ptr; /* If non-null, only returns item stat
 
 
     /* Note if used as a component for a spell */
-    if (obj && objects[otyp].oc_name_known)
+    if (obj && objects[otyp].oc_name_known && !objects[otyp].oc_unique && !obj->owornmask && !obj->oartifact
+        && !is_obj_unremovable_from_the_game(obj) && !is_obj_indestructible(obj))
     {
         int spellcnt = 0;
         for (i = 0; i < MAXSPELL && spellid(i) != NO_SPELL; i++)
