@@ -5779,18 +5779,8 @@ struct materialcomponent* mc;
 struct obj* otmp;
 boolean also_possible;
 {
-    boolean acceptable = FALSE;
-    if (is_acceptable_component_object_type(mc, otmp->otyp))
-        acceptable = TRUE;
-
-    if ((mc->flags & MATCOMP_BLESSED_REQUIRED) && !otmp->blessed)
-        acceptable = otmp->bknown || !also_possible ? FALSE : 2;
-
-    if ((mc->flags & MATCOMP_CURSED_REQUIRED) && !otmp->cursed)
-        acceptable = otmp->bknown || !also_possible ? FALSE : 2;
-
-    if ((mc->flags & MATCOMP_NOT_CURSED) && otmp->cursed)
-        acceptable = otmp->bknown || !also_possible ? FALSE : 2;
+    boolean acceptable = is_acceptable_component_object_type(mc, otmp->otyp);
+    boolean buc_acceptable = TRUE;
 
     if ((mc->flags & MATCOMP_DEATH_ENCHANTMENT_REQUIRED) && otmp->elemental_enchantment != DEATH_ENCHANTMENT)
         acceptable = FALSE;
@@ -5799,7 +5789,19 @@ boolean also_possible;
         && mc->monsterid[0] >= 0 && !is_acceptable_component_monster_type(mc, otmp->corpsenm))
         acceptable = FALSE;
 
-    return acceptable;
+    if (acceptable)
+    {
+        if (buc_acceptable && (mc->flags & MATCOMP_BLESSED_REQUIRED) && !otmp->blessed)
+            buc_acceptable = otmp->bknown || !also_possible ? FALSE : 2;
+
+        if (buc_acceptable && (mc->flags & MATCOMP_CURSED_REQUIRED) && !otmp->cursed)
+            buc_acceptable = otmp->bknown || !also_possible ? FALSE : 2;
+
+        if (buc_acceptable && (mc->flags & MATCOMP_NOT_CURSED) && otmp->cursed)
+            buc_acceptable = otmp->bknown || !also_possible ? FALSE : 2;
+    }
+
+    return acceptable ? buc_acceptable : 0;
 }
 
 uchar
