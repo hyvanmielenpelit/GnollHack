@@ -1808,6 +1808,7 @@ WEAPONBOOTS("spiked boots", None,
 #undef HELM
 #undef GENERAL_HELM
 #undef CLOAK
+#undef GENERAL_CLOAK
 #undef SHIELD
 #undef GENERAL_SHIELD
 #undef SHIRT
@@ -2331,8 +2332,6 @@ MISCELLANEOUSITEM("belt of storm giant strength", "rudimentary belt", MISC_BELT,
     NO_POWER, NO_POWER, NO_POWER, P1_NONE, 0, 0, BONUS_TO_STR | SETS_FIXED_ATTRIBUTE, STR19(24), 0,
     20, MAT_LEATHER, HI_LEATHER, 24, OBJECT_SOUNDSET_GENERIC,
     O1_NONE, O2_NONE, O3_CONSUMES_NUTRITION_EVERY_20_ROUNDS, O4_FLOOR_TILE | O4_VERY_RARE, O5_NONE, O6_NONE, PERMITTED_ALL),
-
-
 #undef MISCELLANEOUSITEM
 
 /* tools ... */
@@ -2926,10 +2925,10 @@ OBJECT(OBJ("Bell of Opening", "silver bell", None, None, None, 32, OD_NONE, 0, 0
     50, HI_SILVER, OBJECT_SOUNDSET_BELL, 0, 0, 0, 0, PERMITTED_ALL, ALL_TARGETS, 
     O1_INDESTRUCTIBLE, O2_NONE, O3_NO_GENERATION | O3_NO_WISH | O3_UNBURIABLE, O4_NONE, O5_NONE, O6_NONE),
 #undef TOOL
-#undef WEPTOOL
+#undef GENERAL_TOOL
 #undef SPELLTOOL
-#undef CONTAINER
-#undef UNICORNHORN
+#undef GENERAL_SPELLTOOL
+#undef WEPTOOL
 
 /* Comestibles ... */
 #define GENERAL_FOOD(name, desc, itemdesc, sub, known, prob, multigen, delay, wt, uses_known, material, ediblesubtype, edibleeffect, acquireprob, durdice, durdiesize, durplus, nutrition, color, height,soundset, \
@@ -3177,6 +3176,7 @@ FOOD("tin", None, None, FOODTYPE_TIN, 1,
     0, HI_METAL, 16, OBJECT_SOUNDSET_GENERIC, 
     O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
 #undef FOOD
+#undef GENERAL_FOOD
 
 /* potions ... */
 #define POTION(name,desc,itemdesc,mgc,power1,power2,power3,prob,cost,\
@@ -5311,8 +5311,6 @@ GENERAL_ROCK("nugget of mithril ore", None, None,       //Ore endmarker
     0, P_NONE, 0,
     O1_NONE, O2_ORE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL,
     OD_NONE, NO_ANIMATION, NO_ENLARGEMENT, NO_REPLACEMENT),
-
-
 #undef GEM
 #undef ROCK
 #undef GENERAL_ROCK
@@ -5430,8 +5428,6 @@ REAGENT("feather", None,
     1, 50, MULTIGEN_SINGLE, 0, 1, 10, MAT_ORGANIC,
     EDIBLETYPE_NORMAL, EDIBLEFX_NO_EFFECT, 0, 10, CLR_BLACK, 24, OBJECT_SOUNDSET_GENERIC,
     O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL), /* ENDMARKER 1&2 */
-
-
 #undef REAGENT
 
     /* Potentially valuable objects of art */
@@ -5491,7 +5487,6 @@ ARTOBJECT("modronite icosahedron", "alien twenty-faced polyhedral object",
     160, CLR_WHITE, 24, OBJECT_SOUNDSET_GENERIC,
     O1_NONE, O2_MODRON_ITEM, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL,
     OD_NONE, NO_ANIMATION, NO_ENLARGEMENT, NO_REPLACEMENT),
-
 #undef ARTOBJECT
 
 
