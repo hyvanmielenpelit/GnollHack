@@ -839,7 +839,7 @@ update_mlstmv(VOID_ARGS)
 }
 
 void
-handle_monster_level_migration(VOID_ARGS)
+handle_monster_level_migration_arrival(VOID_ARGS)
 {
     register struct monst *mtmp, *mtmp0, *mtmp2;
     int dismissKops = 0;
@@ -899,9 +899,12 @@ handle_monster_level_migration(VOID_ARGS)
     /* time for migrating monsters to arrive;
        monsters who belong on this level but fail to arrive get put
        back onto the list (at head), so traversing it is tricky */
+    coord cc = { 0 };
     for (mtmp = migrating_mons; mtmp; mtmp = mtmp2) {
         mtmp2 = mtmp->nmon;
-        if (mtmp->mux == u.uz.dnum && mtmp->muy == u.uz.dlevel) {
+        if (mtmp->mux == u.uz.dnum && mtmp->muy == u.uz.dlevel
+            || (mtmp->mtrack[0].x == MIGR_MAGIC_CHEST && get_magic_chest_location(&cc.x, &cc.y, 0) && enexto(&cc, cc.x, cc.y, mtmp->data)))
+        {
             /* remove mtmp from migrating_mons list */
             if (mtmp == migrating_mons) {
                 migrating_mons = mtmp->nmon;
@@ -913,7 +916,7 @@ handle_monster_level_migration(VOID_ARGS)
                     }
                 if (!mtmp0)
                 {
-                    panic("handle_monster_level_migration: can't find migrating mon");
+                    panic("handle_monster_level_migration_arrival: can't find migrating mon");
                     return;
                 }
             }
@@ -922,7 +925,7 @@ handle_monster_level_migration(VOID_ARGS)
     }
 }
 
-/* called from resurrect() in addition to handle_monster_level_migration() */
+/* called from resurrect() in addition to handle_monster_level_migration_arrival() */
 void
 mon_arrive(mtmp, with_you)
 struct monst *mtmp;
@@ -938,7 +941,7 @@ boolean with_you;
     if (mtmp->isshk)
         set_residency(mtmp, FALSE);
 
-    num_segs = mtmp->wormno;
+    num_segs = (int)mtmp->wormno;
 
     /* baby long worms have no tail so don't use is_long_worm() */
     if (is_long_worm_with_tail(mtmp->data))
@@ -1007,6 +1010,10 @@ boolean with_you;
         break;
     case MIGR_WITH_HERO:
         xlocale = u.ux, ylocale = u.uy;
+        break;
+    case MIGR_MAGIC_CHEST:
+        if (!get_magic_chest_location(&xlocale, &ylocale, 0)) /* No buried magic chests */
+            xlocale = ylocale = 0;
         break;
     case MIGR_STAIRS_UP:
         xlocale = xupstair, ylocale = yupstair;
@@ -1383,7 +1390,7 @@ int64_t nmv; /* number of moves */
 
 /* called when you move to another level */
 void
-keepdogs(pets_only, nearby_only)
+prepare_level_migration_for_following_monsters(pets_only, nearby_only)
 boolean pets_only, nearby_only; /* pets_only is true for ascension or final escape */
 {
     register struct monst *mtmp, *mtmp2;
@@ -1484,7 +1491,7 @@ boolean pets_only, nearby_only; /* pets_only is true for ascension or final esca
                 obj->no_charge = 0;
             }
 
-            relmon(mtmp, &mydogs);   /* move it from map to mydogs */
+            move_mon_to_migration_list(mtmp, &mydogs);   /* move it from map to mydogs */
             mtmp->mx = mtmp->my = 0; /* avoid mnexto()/MON_AT() problem */
             mtmp->wormno = num_segs;
             mtmp->mlstmv = monstermoves;
@@ -1512,9 +1519,7 @@ xchar xyloc; /* MIGR_xxx destination xy location: */
 coord *cc;   /* optional destination coordinates */
 {
     struct obj *obj;
-    d_level new_lev;
-    xchar xyflags;
-    int num_segs = 0; /* count of worm segments */
+    unsigned int num_segs = 0; /* count of worm segments */
 
     if (mtmp->isshk)
         set_residency(mtmp, TRUE);
@@ -1523,9 +1528,9 @@ coord *cc;   /* optional destination coordinates */
         int cnt = count_wsegs(mtmp);
 
         /* **** NOTE: worm is truncated to # segs = max wormno size **** */
-        num_segs = min(cnt, MAX_NUM_WORMS - 1); /* used below */
+        num_segs = (unsigned int)min(cnt, MAX_NUM_WORMS - 1); /* used below */
         wormgone(mtmp); /* destroys tail and takes head off map */
-        /* there used to be a place_monster() here for the relmon() below,
+        /* there used to be a place_monster() here for the move_mon_to_migration_list() below,
            but it doesn't require the monster to be on the map anymore */
     }
 
@@ -1543,10 +1548,27 @@ coord *cc;   /* optional destination coordinates */
             mtmp->ispartymember = 0;
         m_unleash(mtmp, TRUE);
     }
-    relmon(mtmp, &migrating_mons); /* move it from map to migrating_mons */
+    move_mon_to_migration_list(mtmp, &migrating_mons); /* move it from map to migrating_mons */
+    set_mon_migration_info(mtmp, tolev, xyloc, cc, num_segs);
 
-    new_lev.dnum = ledger_to_dnum((xchar) tolev);
-    new_lev.dlevel = ledger_to_dlev((xchar) tolev);
+    mtmp->mon_flags &= ~MON_FLAGS_SPLEVEL_RESIDENT; /* Not level's original resident anymore */
+    if (mtmp == context.polearm.hitmon)
+        context.polearm.hitmon = (struct monst *) 0;
+}
+
+void
+set_mon_migration_info(mtmp, tolev, xyloc, cc, num_segs)
+register struct monst* mtmp;
+xchar tolev; /* destination level */
+xchar xyloc; /* MIGR_xxx destination xy location: */
+coord* cc;   /* optional destination coordinates */
+unsigned int num_segs;
+{
+    d_level new_lev;
+    xchar xyflags;
+
+    new_lev.dnum = ledger_to_dnum((xchar)tolev);
+    new_lev.dlevel = ledger_to_dlev((xchar)tolev);
     /* overload mtmp->[mx,my], mtmp->[mux,muy], and mtmp->mtrack[] as */
     /* destination codes (setup flag bits before altering mx or my) */
     xyflags = (depth(&new_lev) < depth(&u.uz)); /* 1 => up */
@@ -1561,9 +1583,6 @@ coord *cc;   /* optional destination coordinates */
     mtmp->mux = new_lev.dnum;
     mtmp->muy = new_lev.dlevel;
     mtmp->mx = mtmp->my = 0; /* this implies migration */
-    mtmp->mon_flags &= ~MON_FLAGS_SPLEVEL_RESIDENT; /* Not level's original resident anymore */
-    if (mtmp == context.polearm.hitmon)
-        context.polearm.hitmon = (struct monst *) 0;
 }
 
 /* return quality of food; the lower the better */

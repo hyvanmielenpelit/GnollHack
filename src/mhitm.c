@@ -1107,7 +1107,7 @@ register struct attack *mattk;
     else if (status & MM_DEF_DIED) 
     { /* defender died */
         /*
-         *  Note:  remove_monster() was called in relmon(), wiping out
+         *  Note:  remove_monster() was called in move_mon_to_migration_list(), wiping out
          *  magr from level.monsters[mdef->mx][mdef->my].  We need to
          *  put it back and display it.  -kd
          */

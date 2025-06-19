@@ -2720,54 +2720,58 @@ aligntyp alignment;
     boolean maybe_extinct = ((mmflags2 & MM2_MAYBE_ALLOW_EXTINCT) != 0);
     boolean reviving = ((mmflags2 & MM2_REVIVING) != 0);
     boolean randomize_subtype = ((mmflags2 & MM2_RANDOMIZE_SUBTYPE) != 0);
-    
+    boolean migrating = ((mmflags2 & MM2_LEVEL_MIGRATING) != 0);
+
     uint64_t gpflags = (mmflags & MM_IGNOREWATER) ? MM_IGNOREWATER : 0;
     int origin_x = x, origin_y = y;
     
     /* if caller wants random location, do it here */
-    if (x == 0 && y == 0) 
+    if (!migrating)
     {
-        coord cc;
-        struct monst fakemon;
-
-        cc.x = cc.y = 0; /* lint suppression */
-        fakemon.data = ptr; /* set up for goodpos */
-        if (!makemon_rnd_goodpos(ptr ? &fakemon : (struct monst *)0,
-                                 gpflags, &cc))
-            return (struct monst *) 0;
-        x = cc.x;
-        y = cc.y;
-    } 
-    else if (byyou && !in_mklev) 
-    {
-        coord bypos;
-
-        if (enexto_core(&bypos, u.ux, u.uy, ptr, gpflags)) 
+        if (x == 0 && y == 0)
         {
-            x = bypos.x;
-            y = bypos.y;
-        }
-        else
-            return (struct monst *) 0;
-    }
+            coord cc;
+            struct monst fakemon;
 
-    /* Does monster already exist at the position? */
-    if (MON_AT(x, y)) 
-    {
-        if ((mmflags & MM_ADJACENTOK) != 0) 
+            cc.x = cc.y = 0; /* lint suppression */
+            fakemon.data = ptr; /* set up for goodpos */
+            if (!makemon_rnd_goodpos(ptr ? &fakemon : (struct monst*)0,
+                gpflags, &cc))
+                return (struct monst*)0;
+            x = cc.x;
+            y = cc.y;
+        }
+        else if (byyou && !in_mklev)
         {
             coord bypos;
-            if (enexto_core(&bypos, x, y, ptr, gpflags)) 
+
+            if (enexto_core(&bypos, u.ux, u.uy, ptr, gpflags))
             {
                 x = bypos.x;
                 y = bypos.y;
-            } 
+            }
             else
-                return (struct monst *) 0;
+                return (struct monst*)0;
+        }
 
-        } 
-        else
-            return (struct monst *) 0;
+        /* Does monster already exist at the position? */
+        if (MON_AT(x, y))
+        {
+            if ((mmflags & MM_ADJACENTOK) != 0)
+            {
+                coord bypos;
+                if (enexto_core(&bypos, x, y, ptr, gpflags))
+                {
+                    x = bypos.x;
+                    y = bypos.y;
+                }
+                else
+                    return (struct monst*)0;
+
+            }
+            else
+                return (struct monst*)0;
+        }
     }
 
     if (ptr)
@@ -2809,7 +2813,7 @@ aligntyp alignment;
                  /* in Sokoban, don't accept a giant on first try;
                     after that, boulder carriers are fair game */
                  && ((tryct == 1 && throws_rocks(ptr) && In_sokoban(&u.uz))
-                     || !goodpos(x, y, &fakemon, gpflags)));
+                     || (!migrating && !goodpos(x, y, &fakemon, gpflags))));
 
         if (ptr)
             mndx = monsndx(ptr);
@@ -2819,7 +2823,7 @@ aligntyp alignment;
 
     /* Play animation */
     enum special_effect_types spef_type = SPECIAL_EFFECT_SUMMON_MONSTER;
-    if (!in_mklev && (mmflags & MM_PLAY_SUMMON_ANIMATION))
+    if (!in_mklev && !migrating && (mmflags & MM_PLAY_SUMMON_ANIMATION))
     {
         uint64_t atype = (mmflags & MM_SUMMON_ANIMATION_TYPE_MASK);
         enum sfx_sound_types startsound = SFX_GENERAL_SUMMON_START;
@@ -2899,8 +2903,18 @@ aligntyp alignment;
         newedog(mtmp);
     if (mmflags & MM_ASLEEP)
         mtmp->msleeping = 1;
-    mtmp->nmon = fmon;
-    fmon = mtmp;
+    
+    if (migrating)
+    {
+        mtmp->nmon = migrating_mons;
+        migrating_mons = mtmp;
+    }
+    else
+    {
+        mtmp->nmon = fmon;
+        fmon = mtmp;
+    }
+
     mtmp->m_id = context.ident++;
     if (!mtmp->m_id)
         mtmp->m_id = context.ident++; /* ident overflowed */
@@ -3015,7 +3029,11 @@ aligntyp alignment;
 
     mtmp->facing_right = (mmflags2 & MM2_FACING_LEFT) ? 0 : (mmflags2 & MM2_FACING_RIGHT) ? 1 : rn2(2);
 
-    place_monster(mtmp, x, y);
+    if (migrating)
+        mtmp->mx = mtmp->my = 0;
+    else
+        place_monster(mtmp, x, y);
+    
     if (setorigin)
     {
         mtmp->mx0 = origin_x;
@@ -3033,16 +3051,20 @@ aligntyp alignment;
         break;
     case S_SPIDER:
     case S_SNAKE:
-        if (in_mklev)
-            if (x && y)
-                (void) mkobj_at(0, x, y, TRUE);
-        (void) hideunder(mtmp);
+        if (!migrating)
+        {
+            if (in_mklev)
+                if (x && y)
+                    (void)mkobj_at(0, x, y, TRUE);
+            (void)hideunder(mtmp);
+        }
         break;
     case S_LIGHT:
     case S_ELEMENTAL:
         break;
     case S_EEL:
-        (void) hideunder(mtmp);
+        if (!migrating)
+            (void) hideunder(mtmp);
         break;
     case S_LEPRECHAUN:
         //mtmp->msleeping = 1;
@@ -3080,34 +3102,34 @@ aligntyp alignment;
     mtmp->cham = NON_PM; /* default is "not a shapechanger" */
     mtmp->cham_subtype = 0;
 
-    if (!Protection_from_shape_changers
-        && (mcham = pm_to_cham(mndx)) != NON_PM) 
+    if (!Protection_from_shape_changers && !migrating
+        && (mcham = pm_to_cham(mndx)) != NON_PM)
     {
         /* this is a shapechanger after all */
         mtmp->cham = mcham;
         /* Vlad stays in his normal shape so he can carry the Candelabrum */
         if (mndx != PM_VLAD_THE_IMPALER
             /* Note:  shapechanger's initial form used to be chosen here
-               with rndmonst(), yielding a monster which was appropriate
-               to the level's difficulty but ignoring the changer's usual
-               type selection, so was inappropriate for vampshifters.
-               Let newcham() pick the shape. */
-            && newcham(mtmp, (struct permonst *) 0, 0, FALSE, FALSE))
+                with rndmonst(), yielding a monster which was appropriate
+                to the level's difficulty but ignoring the changer's usual
+                type selection, so was inappropriate for vampshifters.
+                Let newcham() pick the shape. */
+            && newcham(mtmp, (struct permonst*)0, 0, FALSE, FALSE))
             allow_minvent = FALSE;
     }
-    else if (mndx == PM_WIZARD_OF_YENDOR) 
+    else if (mndx == PM_WIZARD_OF_YENDOR)
     {
         mtmp->iswiz = TRUE;
         context.no_of_wizards++;
         if (context.no_of_wizards == 1 && Is_earthlevel(&u.uz))
             mitem = SPE_DIG;
-    } 
-    else if (mndx == PM_GHOST && !(mmflags & MM_NONAME)) 
+    }
+    else if (mndx == PM_GHOST && !(mmflags & MM_NONAME))
     {
         mtmp = christen_monst(mtmp, rndghostname());
         mtmp->u_know_mname = TRUE;
-    } 
-    else if (mndx == PM_CROESUS) 
+    }
+    else if (mndx == PM_CROESUS)
     {
         mitem = TWO_HANDED_SWORD;
     }
@@ -3115,26 +3137,26 @@ aligntyp alignment;
     {
         mitem = BELL_OF_OPENING;
     }
-    else if (mndx == PM_PESTILENCE) 
+    else if (mndx == PM_PESTILENCE)
     {
         mitem = POT_SICKNESS;
     }
 
     if (mitem && allow_minvent)
-        (void) mongets(mtmp, mitem);
+        (void)mongets(mtmp, mitem);
 
-    if (in_mklev) 
+    if (in_mklev)
     {
-        if ((/* is_ndemon(ptr) ||mndx == PM_WUMPUS ||  */ 
-             is_long_worm_with_tail(&mons[mndx]) || mndx == PM_GIANT_EEL)
+        if ((/* is_ndemon(ptr) ||mndx == PM_WUMPUS ||  */
+            is_long_worm_with_tail(&mons[mndx]) || mndx == PM_GIANT_EEL)
             && !u.uhave.amulet && rn2(5))
             mtmp->msleeping = TRUE;
-    } 
-    else 
+    }
+    else
     {
-        if (byyou) 
+        if (byyou && !migrating)
         {
-            newsym_with_flags(mtmp->mx, mtmp->my, (mmflags& MM_PLAY_SUMMON_ANIMATION) ? NEWSYM_FLAGS_KEEP_OLD_EFFECT_GLYPHS : NEWSYM_FLAGS_NONE); /* make sure the mon shows up */
+            newsym_with_flags(mtmp->mx, mtmp->my, (mmflags & MM_PLAY_SUMMON_ANIMATION) ? NEWSYM_FLAGS_KEEP_OLD_EFFECT_GLYPHS : NEWSYM_FLAGS_NONE); /* make sure the mon shows up */
             //newsym(mtmp->mx, mtmp->my);
             set_apparxy(mtmp);
             flush_screen(1);
@@ -3142,31 +3164,43 @@ aligntyp alignment;
     }
 
 #if 0
-    if (is_dprince(ptr) && ptr->msound == MS_BRIBE) 
-    {
-        mtmp->mpeaceful = 1;
-        increase_mon_property(mtmp, INVISIBILITY, 500);
-        mtmp->mavenge = 0;
-        if ((uwep && uwep->oartifact && artifact_has_flag(uwep, AF_ANGERS_DEMONS))
-            || (uarms && uarms->oartifact && artifact_has_flag(uarms, AF_ANGERS_DEMONS))
-            )
-            mtmp->mpeaceful = mtmp->mtame = FALSE;
-    }
+        if (is_dprince(ptr) && ptr->msound == MS_BRIBE)
+        {
+            mtmp->mpeaceful = 1;
+            increase_mon_property(mtmp, INVISIBILITY, 500);
+            mtmp->mavenge = 0;
+            if ((uwep && uwep->oartifact && artifact_has_flag(uwep, AF_ANGERS_DEMONS))
+                || (uarms && uarms->oartifact && artifact_has_flag(uarms, AF_ANGERS_DEMONS))
+                )
+                mtmp->mpeaceful = mtmp->mtame = FALSE;
+        }
 #endif
 
-#ifndef DCC30_BUG
-    if (is_long_worm_with_tail(&mons[mndx]) && (mtmp->wormno = get_wormno()) != 0)
-#else
-    /* DICE 3.0 doesn't like assigning and comparing mtmp->wormno in the
-       same expression. */
-    if (is_long_worm_with_tail(&mons[mndx])
-        && (mtmp->wormno = get_wormno(), mtmp->wormno != 0))
-#endif
+//#ifndef DCC30_BUG
+//        if (is_long_worm_with_tail(&mons[mndx]))
+//#else
+//        /* DICE 3.0 doesn't like assigning and comparing mtmp->wormno in the
+//           same expression. */
+//        if (is_long_worm_with_tail(&mons[mndx])
+//            && (mtmp->wormno = get_wormno(), mtmp->wormno != 0))
+//#endif
+    if (is_long_worm_with_tail(&mons[mndx]))
     {
-        /* we can now create worms with tails - 11/91 */
-        initworm(mtmp, rn2(5));
-        if (count_wsegs(mtmp))
-            place_worm_tail_randomly(mtmp, x, y);
+        if (migrating)
+        {
+            mtmp->wormno = (unsigned int)rn2(5); /* Number of segments is stored temporarily here for migrating long worms */
+        }
+        else
+        {
+            mtmp->wormno = get_wormno();
+            if (mtmp->wormno)
+            {
+                /* we can now create worms with tails - 11/91 */
+                initworm(mtmp, rn2(5));
+                if (count_wsegs(mtmp))
+                    place_worm_tail_randomly(mtmp, x, y);
+            }
+        }
     }
 
     /* Set roamer stuff */
@@ -3263,12 +3297,12 @@ aligntyp alignment;
     if (mmflags & MM_WAITFORU)
         mtmp->mstrategy |= STRAT_WAITFORU;
 
-    if (allow_minvent && migrating_objs)
+    if (allow_minvent && migrating_objs && !migrating)
         deliver_obj_to_mon(mtmp, 1, DF_NONE); /* in case of waiting items */
 
     update_all_mon_statistics(mtmp, TRUE);
 
-    if (!in_mklev)
+    if (!in_mklev && !migrating)
     {
         newsym_with_flags(mtmp->mx, mtmp->my, (mmflags & MM_PLAY_SUMMON_ANIMATION) ? NEWSYM_FLAGS_KEEP_OLD_EFFECT_GLYPHS : NEWSYM_FLAGS_NONE); /* make sure the mon shows up */
 
@@ -4571,23 +4605,36 @@ register struct monst *mtmp;
         return;
     mx = mtmp->mx;
     my = mtmp->my;
-    typ = levl[mx][my].typ;
-    /* only valid for INSIDE of room */
-    roomno = levl[mx][my].roomno - ROOMOFFSET;
-    if (roomno >= 0)
-        rt = rooms[roomno].rtype;
+    boolean xyok = isok(mx, my);
+    if (xyok)
+    {
+        typ = levl[mx][my].typ;
+        /* only valid for INSIDE of room */
+        roomno = levl[mx][my].roomno - ROOMOFFSET;
+        if (roomno >= 0)
+            rt = rooms[roomno].rtype;
 #ifdef SPECIALIZATION
-    else if (IS_ROOM(typ))
-        rt = OROOM, roomno = 0;
+        else if (IS_ROOM(typ))
+            rt = OROOM, roomno = 0;
 #endif
+        else
+            rt = 0; /* roomno < 0 case for GCC_WARN */
+    }
     else
-        rt = 0; /* roomno < 0 case for GCC_WARN */
+    {
+        typ = ROOM;
+        roomno = OROOM;
+        rt = 0;
+    }
 
-    if (OBJ_AT(mx, my)) {
+    if (xyok && OBJ_AT(mx, my)) 
+    {
         ap_type = M_AP_OBJECT;
         appear = level.objects[mx][my]->otyp;
         set_mimic_existing_mobj(mtmp, level.objects[mx][my]);
-    } else if (IS_DOOR(typ) || IS_WALL(typ) || typ == SDOOR || typ == SCORR) {
+    } 
+    else if (xyok && (IS_DOOR(typ) || IS_WALL(typ) || typ == SDOOR || typ == SCORR)) 
+    {
         ap_type = M_AP_FURNITURE;
         /*
          *  If there is a wall to the left that connects to this
@@ -4606,25 +4653,38 @@ register struct monst *mtmp;
             appear = Is_really_rogue_level(&u.uz) ? S_hwall : S_hcdoor;
         else
             appear = Is_really_rogue_level(&u.uz) ? S_vwall : S_vcdoor;
-    } else if (level.flags.is_maze_lev && !In_sokoban(&u.uz) && rn2(2)) {
+    } 
+    else if (xyok && level.flags.is_maze_lev && !In_sokoban(&u.uz) && rn2(2)) 
+    {
         ap_type = M_AP_OBJECT;
         appear = STATUE;
-    } else if (roomno < 0 && !t_at(mx, my)) {
+    } 
+    else if (xyok && roomno < 0 && !t_at(mx, my)) 
+    {
         ap_type = M_AP_OBJECT;
         appear = BOULDER;
-    } else if (rt == ZOO || rt == VAULT) {
+    }
+    else if (xyok && (rt == ZOO || rt == VAULT))
+    {
         ap_type = M_AP_OBJECT;
         appear = GOLD_PIECE;
         set_mimic_new_mobj(mtmp, appear);
-    } else if (rt == DELPHI) {
-        if (rn2(2)) {
+    }
+    else if (xyok && rt == DELPHI) 
+    {
+        if (rn2(2)) 
+        {
             ap_type = M_AP_OBJECT;
             appear = STATUE;
-        } else {
+        } 
+        else
+        {
             ap_type = M_AP_FURNITURE;
             appear = S_fountain;
         }
-    } else if (rt == TEMPLE) {
+    } 
+    else if (xyok && rt == TEMPLE) 
+    {
         ap_type = M_AP_FURNITURE;
         appear = S_altar;
         /*
@@ -4632,16 +4692,22 @@ register struct monst *mtmp;
          * since they shouldn't contain too many mimics anyway...
          */
     }
-    else if (rt == SMITHY) {
+    else if (xyok && rt == SMITHY)
+    {
         ap_type = M_AP_FURNITURE;
         appear = S_anvil;
-    } else if (rt >= SHOPBASE) {
+    } 
+    else if (xyok && rt >= SHOPBASE) 
+    {
         s_sym = get_shop_item(rt - SHOPBASE);
-        if (s_sym < 0) {
+        if (s_sym < 0)
+        {
             ap_type = M_AP_OBJECT;
             appear = -s_sym;
             set_mimic_new_mobj(mtmp, appear);
-        } else {
+        }
+        else
+        {
             if (s_sym == RANDOM_CLASS)
             {
                 roll = rn2((int)sizeof(syms) - 2) + 2;
@@ -4649,21 +4715,31 @@ register struct monst *mtmp;
             }
             goto assign_sym;
         }
-    } else {
+    } 
+    else 
+    {
         roll = rn2((int)sizeof(syms));
         s_sym = syms[roll];
  assign_sym:
-        if (s_sym == MAX_OBJECT_CLASSES || s_sym == MAX_OBJECT_CLASSES + 1) {
+        if (s_sym == MAX_OBJECT_CLASSES || s_sym == MAX_OBJECT_CLASSES + 1)
+        {
             ap_type = M_AP_FURNITURE;
             appear = (s_sym == MAX_OBJECT_CLASSES) ? S_upstair : S_dnstair;
-        } else {
+        }
+        else 
+        {
             ap_type = M_AP_OBJECT;
-            if (s_sym == S_MIMIC_DEF) {
+            if (s_sym == S_MIMIC_DEF) 
+            {
                 appear = STRANGE_OBJECT;
-            } else if (s_sym == COIN_CLASS) {
+            } 
+            else if (s_sym == COIN_CLASS) 
+            {
                 appear = GOLD_PIECE;
                 set_mimic_new_mobj(mtmp, appear);
-            } else {
+            }
+            else 
+            {
                 otmp = mkobj((char) s_sym, FALSE, FALSE);
                 appear = otmp->otyp;
                 set_mimic_existing_mobj(mtmp, otmp);
@@ -4716,7 +4792,7 @@ register struct monst *mtmp;
             MCORPSENM(mtmp) = mndx;
     }
 
-    if (does_block(mx, my, &levl[mx][my]))
+    if (xyok && does_block(mx, my, &levl[mx][my]))
         block_vision_and_hearing_at_point(mx, my);
 }
 

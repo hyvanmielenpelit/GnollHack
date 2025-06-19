@@ -19386,6 +19386,9 @@ void
 snuff_sound_source(x, y)
 int x, y;
 {
+    if (!isok(x, y))
+        return;
+
     sound_source* ss;
     struct obj* obj;
 

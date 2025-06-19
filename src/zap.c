@@ -2484,37 +2484,46 @@ int locflags;
             return get_obj_location(obj->ocontainer, xp, yp, locflags);
         break;
     case OBJ_MAGIC:
-    {
-        struct obj* otmp;
-        for (otmp = invent; otmp; otmp = otmp->nobj)
+        return get_magic_chest_location(xp, yp, locflags);
+    }
+    *xp = *yp = 0;
+    return FALSE;
+}
+
+boolean
+get_magic_chest_location(xp, yp, locflags)
+xchar* xp, * yp;
+int locflags;
+{
+    struct obj* otmp;
+    for (otmp = invent; otmp; otmp = otmp->nobj)
+        if (Is_magic_chest(otmp))
+        {
+            *xp = u.ux;
+            *yp = u.uy;
+            return TRUE;
+        }
+
+    for (otmp = fobj; otmp; otmp = otmp->nobj)
+        if (Is_magic_chest(otmp))
+            return get_obj_location(otmp, xp, yp, locflags);
+
+    if (locflags & BURIED_TOO) {
+        for (otmp = level.buriedobjlist; otmp; otmp = otmp->nobj)
+            if (Is_magic_chest(otmp))
+                return get_obj_location(otmp, xp, yp, locflags);
+    }
+
+    struct monst* mtmp;
+    for (mtmp = fmon; mtmp; mtmp = mtmp->nmon)
+        for (otmp = mtmp->minvent; otmp; otmp = otmp->nobj)
             if (Is_magic_chest(otmp))
             {
-                *xp = u.ux;
-                *yp = u.uy;
+                *xp = mtmp->mx;
+                *yp = mtmp->my;
                 return TRUE;
             }
 
-        for (otmp = fobj; otmp; otmp = otmp->nobj)
-            if (Is_magic_chest(otmp))
-                return get_obj_location(otmp, xp, yp, locflags);
-
-        if (locflags & BURIED_TOO) {
-            for (otmp = level.buriedobjlist; otmp; otmp = otmp->nobj)
-                if (Is_magic_chest(otmp))
-                    return get_obj_location(otmp, xp, yp, locflags);
-        }
-
-        struct monst* mtmp;
-        for (mtmp = fmon; mtmp; mtmp = mtmp->nmon)
-            for (otmp = mtmp->minvent; otmp; otmp = otmp->nobj)
-                if (Is_magic_chest(otmp))
-                {
-                    *xp = mtmp->mx;
-                    *yp = mtmp->my;
-                    return TRUE;
-                }
-    }
-    }
     *xp = *yp = 0;
     return FALSE;
 }

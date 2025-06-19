@@ -2302,8 +2302,8 @@ void
 obj_delivery(near_hero)
 boolean near_hero;
 {
-    register struct obj *otmp, *otmp2;
-    register int nx, ny;
+    struct obj *otmp, *otmp2;
+    xchar nx, ny;
     int where;
     boolean nobreak, noscatter;
 
@@ -2339,6 +2339,10 @@ boolean near_hero;
             break;
         case MIGR_WITH_HERO:
             nx = u.ux, ny = u.uy;
+            break;
+        case MIGR_MAGIC_CHEST:
+            if (!get_magic_chest_location(&nx, &ny, 0))
+                nx = ny = 0;
             break;
         default:
         case MIGR_RANDOM:

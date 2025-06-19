@@ -159,6 +159,9 @@ does_block(x, y, lev)
 int x, y;
 register struct rm *lev;
 {
+    if (!isok(x, y))
+        return 0;
+
     struct obj *obj;
     struct monst *mon;
 

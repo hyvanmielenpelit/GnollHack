@@ -7272,7 +7272,7 @@ xchar portal; /* 1 = Magic portal, 2 = Modron portal down (find portal up), 3 = 
     u.ustuck = 0; /* idem */
     u.uinwater = 0;
     u.uundetected = 0; /* not hidden, even if means are available */
-    keepdogs(context.reviving, TRUE);
+    prepare_level_migration_for_following_monsters(context.reviving, TRUE);
     removealtarsummons();
     if (u.uswallow) /* idem */
         u.uswldtim = u.uswallow = 0;
@@ -7524,12 +7524,12 @@ xchar portal; /* 1 = Magic portal, 2 = Modron portal down (find portal up), 3 = 
     if (Punished)
         placebc();
     obj_delivery(FALSE);
-    handle_monster_level_migration();
+    handle_monster_level_migration_arrival();
     kill_genocided_monsters(); /* for those wiped out while in limbo */
     /*
      * Expire all timers that have gone off while away.  Must be
      * after migrating monsters and objects are delivered
-     * (handle_monster_level_migration and obj_delivery).
+     * (handle_monster_level_migration_arrival and obj_delivery).
      */
     run_timers();
 

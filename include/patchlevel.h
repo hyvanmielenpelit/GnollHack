@@ -233,7 +233,7 @@
 /*  Patch 1, May 28, 1996
  *  eliminate `#qualifications'; fix weapon proficiency handling for missiles
  *  keep Medusa from continuing to move after she's been killed by reflection
- *      of her own gaze (fixes relmon panic)
+ *      of her own gaze (fixes move_mon_to_migration_list panic)
  *  make monsters a little smarter; assorted eating and chatting changes
  *  fix object amnesia for spellbooks; fix Nazgul's sleep gas attack
  *  fix bullwhip usage for case of having recently been in a trap
@@ -301,7 +301,7 @@
  *  Patch 1, February 25, 1993
  *  add Windows NT console port (courtesy Michael Allison)
  *  polishing of Amiga, Mac, and X11 windowing
- *  fixing many small bugs, including the infamous 3.0 nurse relmon bug
+ *  fixing many small bugs, including the infamous 3.0 nurse move_mon_to_migration_list bug
  */
 
 /*

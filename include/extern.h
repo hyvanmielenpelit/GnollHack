@@ -869,11 +869,12 @@ E struct monst *FDECL(make_familiar,
                       (struct obj *, XCHAR_P, XCHAR_P, BOOLEAN_P));
 E struct monst *NDECL(makedog);
 E void NDECL(update_mlstmv);
-E void NDECL(handle_monster_level_migration);
+E void NDECL(handle_monster_level_migration_arrival);
 E void FDECL(mon_arrive, (struct monst *, BOOLEAN_P));
 E void FDECL(mon_catchup_elapsed_time, (struct monst *, int64_t));
-E void FDECL(keepdogs, (BOOLEAN_P, BOOLEAN_P));
+E void FDECL(prepare_level_migration_for_following_monsters, (BOOLEAN_P, BOOLEAN_P));
 E void FDECL(migrate_to_level, (struct monst *, XCHAR_P, XCHAR_P, coord *));
+E void FDECL(set_mon_migration_info, (struct monst*, XCHAR_P, XCHAR_P, coord*, unsigned int));
 E int FDECL(dogfood, (struct monst *, struct obj *));
 E boolean FDECL(tamedog, (struct monst *, struct obj *, UCHAR_P, int, UNSIGNED_SHORT_P, BOOLEAN_P, BOOLEAN_P));
 E void FDECL(abuse_dog, (struct monst *));
@@ -2117,7 +2118,7 @@ E void NDECL(dmonsfree);
 E int FDECL(mcalcmove, (struct monst *, BOOLEAN_P));
 E void NDECL(update_monster_timeouts);
 E void FDECL(replmon, (struct monst *, struct monst *));
-E void FDECL(relmon, (struct monst *, struct monst **));
+E void FDECL(move_mon_to_migration_list, (struct monst *, struct monst **));
 E struct obj *FDECL(mlifesaver, (struct monst *));
 E boolean FDECL(corpse_chance, (struct monst *, struct monst *, BOOLEAN_P));
 E void FDECL(mondead, (struct monst *));
@@ -4380,7 +4381,7 @@ E boolean FDECL(cuss, (struct monst *));
 
 /* ### worm.c ### */
 
-E int NDECL(get_wormno);
+E unsigned int NDECL(get_wormno);
 E void FDECL(initworm, (struct monst *, int));
 E void FDECL(worm_move, (struct monst *));
 E void FDECL(worm_nomove, (struct monst *));
@@ -4466,6 +4467,7 @@ E void FDECL(print_monster_wearables, (winid win, struct monst*, struct permonst
 E void FDECL(print_monster_status, (winid win, struct monst*));
 E void FDECL(print_monster_statistics, (winid win, struct monst*, struct permonst*));
 E void FDECL(display_monster_inventory, (struct monst*, BOOLEAN_P));
+E boolean FDECL(get_magic_chest_location, (xchar*, xchar*, int));
 E boolean FDECL(get_obj_location, (struct obj *, xchar *, xchar *, int));
 E boolean FDECL(get_mon_location, (struct monst *, xchar *, xchar *, int));
 E boolean FDECL(get_region_location, (struct nhregion*, xchar*, xchar*, int));

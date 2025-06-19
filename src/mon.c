@@ -1630,7 +1630,7 @@ movemon()
      * of the pass.
      *
      * The only other actions which cause monsters to be removed from
-     * the chain are level migrations and handle_monster_level_migration().  I believe handle_monster_level_migration()
+     * the chain are level migrations and handle_monster_level_migration_arrival().  I believe handle_monster_level_migration_arrival()
      * is a cleanup routine not associated with monster movements, and
      * monsters can only affect level migrations on themselves, not others
      * (hence the fetching of nmon before moving the monster).  Currently,
@@ -2899,7 +2899,7 @@ struct monst *mtmp, *mtmp2;
     mtmp->minvent = 0;
 
     /* remove the old monster from the map and from `fmon' list */
-    relmon(mtmp, (struct monst **) 0);
+    move_mon_to_migration_list(mtmp, (struct monst **) 0);
 
     /* finish adding its replacement */
     if (mtmp != u.usteed) /* don't place steed onto the map */
@@ -2940,7 +2940,7 @@ struct monst *mtmp, *mtmp2;
 /* release mon from the display and the map's monster list,
    maybe transfer it to one of the other monster lists */
 void
-relmon(mon, monst_list)
+move_mon_to_migration_list(mon, monst_list)
 struct monst *mon;
 struct monst **monst_list; /* &migrating_mons or &mydogs or null */
 {
@@ -2954,7 +2954,7 @@ struct monst **monst_list; /* &migrating_mons or &mydogs or null */
 
     if (!fmon)
     {
-        panic("relmon: no fmon available.");
+        panic("move_mon_to_migration_list: no fmon available.");
         return;
 
     }
@@ -2992,7 +2992,7 @@ struct monst **monst_list; /* &migrating_mons or &mydogs or null */
             mtmp->nmon = mon->nmon;
         else
         {
-            panic("relmon: mon not in list.");
+            panic("move_mon_to_migration_list: mon not in list.");
             return;
         }
     }

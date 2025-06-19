@@ -629,6 +629,9 @@ void
 snuff_light_source(x, y)
 int x, y;
 {
+    if (!isok(x, y))
+        return;
+
     light_source* ls;
     struct obj* obj;
 

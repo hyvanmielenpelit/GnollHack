@@ -1455,23 +1455,30 @@ int64_t timeout;
     tamed = yours || (!flags.female && carried(egg) && !rn2(2));
     silent = (timeout != monstermoves); /* hatched while away */
 
-    /* only can hatch when in INVENT, FLOOR, MINVENT */
-    if (get_obj_location(egg, &x, &y, 0)) 
+    /* only can hatch when in INVENT, FLOOR, MINVENT, MAGIC_OBJS */
+    boolean locfound = get_obj_location(egg, &x, &y, 0);
+    boolean inmagic = egg->where == OBJ_MAGIC;
+    if (locfound || inmagic)
     {
         hatchcount = rnd((int) egg->quan);
-        cansee_hatchspot = isok(x, y) && cansee(x, y) && !silent;
-        if (isok(x, y) && !(mons[mnum].geno & G_UNIQ) && !(mvitals[mnum].mvflags & (MV_GENOCIDED | MV_EXTINCT))) 
+        cansee_hatchspot = locfound && isok(x, y) && cansee(x, y) && !silent;
+        if (!(mons[mnum].geno & G_UNIQ) && !(mvitals[mnum].mvflags & (MV_GENOCIDED | MV_EXTINCT))) 
         {
             for (i = hatchcount; i > 0; i--) 
             {
-                if (!enexto(&cc, x, y, &mons[mnum])
-                    || !(mon = makemon(&mons[mnum], cc.x, cc.y, MM_NO_MONSTER_INVENTORY)))
+                if (locfound && !enexto(&cc, x, y, &mons[mnum]))
                     break;
+                if (!(mon = makemon2(&mons[mnum], cc.x, cc.y, MM_NO_MONSTER_INVENTORY, !locfound && inmagic ? MM2_LEVEL_MIGRATING : 0)))
+                    break;
+                mon2 = mon; /* in case makemon() fails on 2nd egg */
+                if (!locfound && inmagic) /* the magic chest is not found on the level, so set monster for migration (to astral or to magic chest if found earlier) */
+                {
+                    set_mon_migration_info(mon, ledger_no(&astral_level), MIGR_MAGIC_CHEST, (coord*)0, mon->wormno);
+                }
                 /* tame if your own egg hatches while you're on the
                    same dungeon level, or any dragon egg which hatches
                    while it's in your inventory */
-                if ((tamed && !silent)
-                    || (carried(egg) && mon->data->mlet == S_DRAGON)) 
+                if ((tamed && !silent) || (carried(egg) && mon->data->mlet == S_DRAGON)) 
                 {
                     if (tamedog(mon, (struct obj *) 0, TAMEDOG_NO_FORCED_TAMING, FALSE, 0, FALSE, FALSE)) {
                         if (carried(egg) && mon->data->mlet != S_DRAGON)
@@ -1481,15 +1488,11 @@ int64_t timeout;
                         }
                     }
                 }
-                if (mon) /* Hatched monsters do not have rumors obviously */
-                {
-                    mon->rumorsleft = 0;
-                    if (yours)
-                        mon->mon_flags |= MON_FLAGS_YOUR_CHILD;
-                }
+                mon->rumorsleft = 0; /* Hatched monsters do not have rumors obviously */
+                if (yours)
+                    mon->mon_flags |= MON_FLAGS_YOUR_CHILD;
                 if (mvitals[mnum].mvflags & MV_EXTINCT)
                     break;  /* just made last one */
-                mon2 = mon; /* in case makemon() fails on 2nd egg */
             }
             if (!mon)
                 mon = mon2;

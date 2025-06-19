@@ -172,8 +172,9 @@ typedef struct branch {
 #define MIGR_MODRON_PORTAL_UP 9 /* midgrate to modron up portal */
 #define MIGR_MODRON_PORTAL_DOWN 10 /* midgrate to modron down portal */
 #define MIGR_WITH_HERO 11    /* mon: followers; obj: trap door */
-#define MIGR_NOBREAK 1024   /* bitmask: don't break on delivery */
-#define MIGR_NOSCATTER 2048 /* don't scatter on delivery */
+#define MIGR_MAGIC_CHEST 12  /* to the magic chest if found, otherwise random */
+#define MIGR_NOBREAK 1024    /* bitmask: don't break on delivery */
+#define MIGR_NOSCATTER 2048  /* don't scatter on delivery */
 #define MIGR_TO_SPECIES 4096 /* migrating to species as they are made */ 
 #define MIGR_LEFTOVERS 8192  /* grab remaining MIGR_TO_SPECIES objects */
 /* level information (saved via ledger number) */

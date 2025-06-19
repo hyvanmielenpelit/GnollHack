@@ -86,10 +86,10 @@ int64_t wgrowtime[MAX_NUM_WORMS] = DUMMY;
  *
  *  Implementation is left to the interested hacker.
  */
-int
+unsigned int
 get_wormno()
 {
-    register int new_wormno = 1;
+    register unsigned int new_wormno = 1;
 
     while (new_wormno < MAX_NUM_WORMS) {
         if (!wheads[new_wormno])
@@ -329,7 +329,8 @@ boolean cuttier; /* hit is by wielded blade or axe or by thrown axe */
     register struct wseg *curr, *new_tail;
     register struct monst *new_worm;
     int wnum = worm->wormno;
-    int cut_chance, new_wnum;
+    int cut_chance;
+    unsigned int new_wnum;
 
     if (!wnum)
         return; /* bullet proofing */

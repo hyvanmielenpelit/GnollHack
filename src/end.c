@@ -2143,9 +2143,9 @@ int how;
        be done even sooner, but we need it to come after dump_everything()
        so that any accompanying pets are still on the map during dump) */
     if (how == ESCAPED)
-        keepdogs(TRUE, TRUE); /* Just nearby pets following to the ground level */
+        prepare_level_migration_for_following_monsters(TRUE, TRUE); /* Just nearby pets following to the ground level */
     else if (how == ASCENDED)
-        keepdogs(TRUE, FALSE); /* All pets surviving to the point of ascension */
+        prepare_level_migration_for_following_monsters(TRUE, FALSE); /* All pets surviving to the point of ascension */
 
     /* calculate score, before creating bones [container gold] */
     {
