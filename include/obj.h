@@ -9,6 +9,7 @@
 #define OBJ_H
 
 #include "general.h"
+#include "mondata.h"
 #include "objclass.h"
 
 /* #define obj obj_nh */ /* uncomment for SCO UNIX, which has a conflicting
