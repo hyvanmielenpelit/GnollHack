@@ -3151,7 +3151,7 @@ struct obj *obj;
             play_sfx_sound(SFX_RUMBLING_EARTH);
             You_feel_ex(ATR_NONE, CLR_MSG_MYSTICAL, "a surge of power from %s, and then a heavy, thunderous rolling fills the air!", yname(obj));
             pline_The_ex(ATR_NONE, CLR_MSG_WARNING, "entire %s is shaking around you!", generic_lvl_desc());
-            do_earthquake((u.ulevel - 1) / 3 + 1);
+            do_earthquake((u.ulevel - 1) / 4 + 1);
             /* shake up monsters in a much larger radius... */
             awaken_monsters(ROWNO * COLNO, TRUE);
             break;

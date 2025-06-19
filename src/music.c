@@ -300,7 +300,7 @@ int force;
                     newsym(x, y);
                 }
             }
-            if (!rn2(14 - force))
+            if (!rn2(max(3, 16 - force)))
                 switch (levl[x][y].typ) {
                 case FOUNTAIN: /* Make the fountain disappear */
                     if (cansee(x, y))
@@ -737,7 +737,7 @@ struct obj *instr;
         play_sfx_sound(SFX_RUMBLING_EARTH);
         You_ex(ATR_NONE, CLR_MSG_WARNING, "produce a heavy, thunderous rolling!");
         pline_The_ex(ATR_NONE, CLR_MSG_WARNING, "entire %s is shaking around you!", generic_lvl_desc());
-        do_earthquake((u.ulevel - 1) / 3 + 1);
+        do_earthquake((u.ulevel - 1) / 4 + 1);
         /* shake up monsters in a much larger radius... */
         awaken_monsters(ROWNO * COLNO, TRUE);
         makeknown(DRUM_OF_EARTHQUAKE);
