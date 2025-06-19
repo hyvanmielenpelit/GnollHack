@@ -304,34 +304,34 @@ int force;
                 switch (levl[x][y].typ) {
                 case FOUNTAIN: /* Make the fountain disappear */
                     if (cansee(x, y))
-                        pline_The_ex(ATR_NONE, CLR_MSG_WARNING, "fountain falls into a chasm.");
+                        pline_The_ex1(ATR_NONE, CLR_MSG_WARNING, "fountain falls into a chasm.");
                     goto do_pit;
                 case SINK:
                     if (cansee(x, y))
-                        pline_The_ex(ATR_NONE, CLR_MSG_WARNING, "kitchen sink falls into a chasm.");
+                        pline_The_ex1(ATR_NONE, CLR_MSG_WARNING, "kitchen sink falls into a chasm.");
                     goto do_pit;
                 case ALTAR:
                     if (Is_astralevel(&u.uz) || Is_sanctum(&u.uz))
                         break;
 
                     if (cansee(x, y))
-                        pline_The_ex(ATR_NONE, CLR_MSG_WARNING, "altar falls into a chasm.");
+                        pline_The_ex1(ATR_NONE, CLR_MSG_WARNING, "altar falls into a chasm.");
                     goto do_pit;
                 case GRAVE:
                     if (cansee(x, y))
-                        pline_The_ex(ATR_NONE, CLR_MSG_WARNING, "headstone topples into a chasm.");
+                        pline_The_ex1(ATR_NONE, CLR_MSG_WARNING, "headstone topples into a chasm.");
                     goto do_pit;
                 case BRAZIER:
                     if (cansee(x, y))
-                        pline_The_ex(ATR_NONE, CLR_MSG_WARNING, "brazier falls into a chasm.");
+                        pline_The_ex1(ATR_NONE, CLR_MSG_WARNING, "brazier falls into a chasm.");
                     goto do_pit;
                 case SIGNPOST:
                     if (cansee(x, y))
-                        pline_The_ex(ATR_NONE, CLR_MSG_WARNING, "signpost falls into a chasm.");
+                        pline_The_ex1(ATR_NONE, CLR_MSG_WARNING, "signpost falls into a chasm.");
                     goto do_pit;
                 case THRONE:
                     if (cansee(x, y))
-                        pline_The_ex(ATR_NONE, CLR_MSG_WARNING, "throne falls into a chasm.");
+                        pline_The_ex1(ATR_NONE, CLR_MSG_WARNING, "throne falls into a chasm.");
                     /*FALLTHRU*/
                 case ROOM:
                 case CORR: /* Try to make a pit */
@@ -481,7 +481,7 @@ int force;
                     if ((levl[x][y].doormask & D_MASK) == D_PORTCULLIS)
                         break;
                     if (cansee(x, y))
-                        pline_The_ex(ATR_NONE, CLR_MSG_WARNING, "door collapses.");
+                        pline_The_ex1(ATR_NONE, CLR_MSG_WARNING, "door collapses.");
                     if (*in_rooms(x, y, SHOPBASE))
                         add_damage(x, y, 0L);
                     levl[x][y].doormask &= ~D_MASK;
