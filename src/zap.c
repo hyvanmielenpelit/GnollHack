@@ -2498,6 +2498,12 @@ int locflags;
             if (Is_magic_chest(otmp))
                 return get_obj_location(otmp, xp, yp, locflags);
 
+        if (locflags & BURIED_TOO) {
+            for (otmp = level.buriedobjlist; otmp; otmp = otmp->nobj)
+                if (Is_magic_chest(otmp))
+                    return get_obj_location(otmp, xp, yp, locflags);
+        }
+
         struct monst* mtmp;
         for (mtmp = fmon; mtmp; mtmp = mtmp->nmon)
             for (otmp = mtmp->minvent; otmp; otmp = otmp->nobj)
