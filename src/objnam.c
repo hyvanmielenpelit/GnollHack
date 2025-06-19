@@ -6111,7 +6111,7 @@ int otyp, sq;
 {
     int i;
     for (i = 0; key_special_descriptions[i].otyp > STRANGE_OBJECT; i++)
-        if (key_special_descriptions[i].otyp == otyp && key_special_descriptions[i].special_quality == sq)
+        if (key_special_descriptions[i].otyp == otyp && key_special_descriptions[i].special_quality == sq && key_special_descriptions[i].description)
             return key_special_descriptions[i].description;
 
     return "";
@@ -6143,7 +6143,7 @@ boolean normally_without_lock;
     {
         int i;
         for (i = 0; key_special_descriptions[i].otyp > STRANGE_OBJECT; i++)
-            if (key_special_descriptions[i].otyp == otyp && key_special_descriptions[i].special_quality == sq)
+            if (key_special_descriptions[i].otyp == otyp && key_special_descriptions[i].special_quality == sq && key_special_descriptions[i].lock_description)
                 return key_special_descriptions[i].lock_description;
 
         return "";

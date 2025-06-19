@@ -4454,7 +4454,7 @@ SPELL("death-enchant item","diabolical", None, None, "Death-enchants one suitabl
     8,160, A_MAX_INT_CHA, 0, 0, 100, 0, 1, NODIR, NODIR_NONE, 0, 0, 0, 0, 0, 0, 0,
     S1_NO_SOMATIC_COMPONENT, S2_NONE, ALL_TARGETS, AD_NONE, CLR_BLACK, OBJECT_SOUNDSET_SPELLBOOK,
     O1_NONE, O2_NONE, O3_NONE, O4_VERY_RARE, O5_NONE, O6_NONE),
-SPELL("mass conflict","odious", None, None, "Causes all monsters to attach each other on the level",
+SPELL("mass conflict","odious", None, None, "Causes all monsters to attack each other on the caster's dungeon level",
     P_ENCHANTMENT_SPELL,3, 3, 0, 
     9, 100, A_MAX_INT_CHA, 0, 0, 100, 0, 1, NODIR, CONFLICT, 0, 0, 0, 0, 3, 10, 50,
     S1_NO_SOMATIC_COMPONENT | S1_FLAGS_EFFECT_USES_SAVING_THROW_VS_WIS, S2_NONE, ALL_TARGETS, AD_NONE, CLR_BLACK, OBJECT_SOUNDSET_SPELLBOOK,
