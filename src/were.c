@@ -117,12 +117,13 @@ int pm;
 
 void
 new_were(mon)
-register struct monst *mon;
+struct monst *mon;
 {
     if (!mon)
         return;
 
-    register int pm;
+    int pm;
+    boolean migrating = !isok(mon->mx, mon->my);
 
     pm = counter_were(mon->mnum);
     if (pm < LOW_PM) {
@@ -130,7 +131,7 @@ register struct monst *mon;
         return;
     }
 
-    if (canseemon(mon) && !Hallucination)
+    if (!migrating && canseemon(mon) && !Hallucination)
     {
         play_sfx_sound_at_location(SFX_POLYMORPH_SUCCESS, mon->mx, mon->my);
         pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s changes into a %s.", Monnam(mon),
@@ -149,9 +150,12 @@ register struct monst *mon;
     }
     /* regenerate by 1/4 of the lost hit points */
     mon->mhp += (mon->mhpmax - mon->mhp) / 4;
-    newsym(mon->mx, mon->my);
-    mon_break_armor(mon, FALSE);
-    possibly_unwield(mon, FALSE);
+    if (!migrating)
+    {
+        newsym(mon->mx, mon->my);
+        mon_break_armor(mon, FALSE);
+        possibly_unwield(mon, FALSE);
+    }
 }
 
 /* a lycanthrope (even you) summons a horde */

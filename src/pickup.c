@@ -2423,7 +2423,7 @@ struct obj* cobj;
         if (has_omonst(cobj))
         {
             coord xy = { x, y };
-            mtmp = montraits(cobj, &xy, FALSE, NON_PM, NON_PM, 0UL);
+            mtmp = montraits(cobj, &xy, FALSE, NON_PM, NON_PM, 0UL, 0UL);
             if (mtmp)
             {
                 free_omonst(cobj);

@@ -2799,7 +2799,7 @@ aligntyp alignment;
          * for instance.)
          */
         int tryct = 0; /* maybe there are no good choices */
-        struct monst fakemon;
+        struct monst fakemon = { 0 };
 
         do
         {
@@ -3046,7 +3046,7 @@ aligntyp alignment;
     switch (ptr->mlet) 
     {
     case S_MIMIC:
-        if(is_mimic(ptr))
+        if(!migrating && is_mimic(ptr))
             set_mimic_sym(mtmp);
         break;
     case S_SPIDER:
@@ -4643,7 +4643,7 @@ register struct monst *mtmp;
          *  Since rogue has no closed doors, mimic a wall there
          *  (yes, mimics can end up on this level by various means).
          */
-        if (mx != 0 && (levl[mx - 1][my].typ == HWALL
+        if (mx > 0 && (levl[mx - 1][my].typ == HWALL
                         || levl[mx - 1][my].typ == TLCORNER
                         || levl[mx - 1][my].typ == TRWALL
                         || levl[mx - 1][my].typ == BLCORNER

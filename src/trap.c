@@ -706,7 +706,7 @@ int *fail_reason;
     {
         /* restore a petrified monster */
         cc.x = x, cc.y = y;
-        mon = montraits(statue, &cc, (cause == ANIMATE_SPELL), NON_PM, NON_PM, 0UL);
+        mon = montraits(statue, &cc, (cause == ANIMATE_SPELL), NON_PM, NON_PM, 0UL, 0UL);
         if (mon && has_edog(mon))
             EDOG(mon)->hungrytime = monstermoves + 500L;
         if (mon && mon->mtame && !mon->isminion)

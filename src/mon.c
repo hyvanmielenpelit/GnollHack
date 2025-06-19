@@ -2885,8 +2885,9 @@ dmonsfree()
 
 /* called when monster is moved to larger structure */
 void
-replmon(mtmp, mtmp2)
+replmon(mtmp, mtmp2, migrating)
 struct monst *mtmp, *mtmp2;
+boolean migrating;
 {
     struct obj *otmp;
 
@@ -2898,14 +2899,39 @@ struct monst *mtmp, *mtmp2;
     }
     mtmp->minvent = 0;
 
-    /* remove the old monster from the map and from `fmon' list */
-    move_mon_to_migration_list(mtmp, (struct monst **) 0);
+    if (migrating)
+    {
+        if (mtmp == migrating_mons)
+        {
+            migrating_mons = mtmp->nmon;
+        }
+        else
+        {
+            struct monst* mtmp0;
+            for (mtmp0 = migrating_mons; mtmp0; mtmp0 = mtmp0->nmon)
+                if (mtmp0->nmon == mtmp)
+                {
+                    mtmp0->nmon = mtmp->nmon;
+                    break;
+                }
 
-    /* finish adding its replacement */
-    if (mtmp != u.usteed) /* don't place steed onto the map */
-        place_monster(mtmp2, mtmp2->mx, mtmp2->my);
-    if (mtmp2->wormno)      /* update level.monsters[wseg->wx][wseg->wy] */
-        place_wsegs(mtmp2, NULL); /* locations to mtmp2 not mtmp. */
+            if (!mtmp0)
+            {
+                impossible("replmon: can't find migrating mon");
+            }
+        }
+    }
+    else
+    {
+        /* remove the old monster from the map and from `fmon' list */
+        move_mon_to_migration_list(mtmp, (struct monst**)0);
+
+        /* finish adding its replacement */
+        if (mtmp != u.usteed) /* don't place steed onto the map */
+            place_monster(mtmp2, mtmp2->mx, mtmp2->my);
+        if (mtmp2->wormno)      /* update level.monsters[wseg->wx][wseg->wy] */
+            place_wsegs(mtmp2, NULL); /* locations to mtmp2 not mtmp. */
+    }
 
     if (emitted_light_range(mtmp2->data)) 
     {
@@ -2924,14 +2950,22 @@ struct monst *mtmp, *mtmp2;
         del_sound_source(SOUNDSOURCE_MONSTER, monst_to_any(mtmp));
     }
 
-    mtmp2->nmon = fmon;
-    fmon = mtmp2;
-    if (u.ustuck == mtmp)
-        u.ustuck = mtmp2;
-    if (u.usteed == mtmp)
-        u.usteed = mtmp2;
-    if (mtmp2->isshk)
-        replshk(mtmp, mtmp2);
+    if (migrating)
+    {
+        mtmp2->nmon = migrating_mons;
+        migrating_mons = mtmp2;
+    }
+    else
+    {
+        mtmp2->nmon = fmon;
+        fmon = mtmp2;
+        if (u.ustuck == mtmp)
+            u.ustuck = mtmp2;
+        if (u.usteed == mtmp)
+            u.usteed = mtmp2;
+        if (mtmp2->isshk)
+            replshk(mtmp, mtmp2);
+    }
 
     /* discard the old monster */
     dealloc_monst(mtmp);
@@ -4873,11 +4907,15 @@ register struct monst *mtmp;
     /*
      *  Discovered mimics don't block light.
      */
-    if (is_blocker_appear
-        && !does_block(mtmp->mx, mtmp->my, &levl[mtmp->mx][mtmp->my]))
-        unblock_vision_and_hearing_at_point(mtmp->mx, mtmp->my);
 
-    newsym(mtmp->mx, mtmp->my);
+    if (isok(mtmp->mx, mtmp->my))
+    {
+        if (is_blocker_appear
+            && !does_block(mtmp->mx, mtmp->my, &levl[mtmp->mx][mtmp->my]))
+            unblock_vision_and_hearing_at_point(mtmp->mx, mtmp->my);
+
+        newsym(mtmp->mx, mtmp->my);
+    }
 }
 
 /* force all chameleons to become normal */
@@ -4936,12 +4974,13 @@ restartcham()
    against shape-changing might be different now than it was at the
    time the level was saved. */
 void
-restore_cham(mon)
+restore_cham(mon, migrating)
 struct monst *mon;
+boolean migrating;
 {
     int mcham;
 
-    if (Protection_from_shape_changers) 
+    if (Protection_from_shape_changers && !migrating)
     {
         mcham = (int) mon->cham;
         if (mcham >= LOW_PM) 
@@ -5001,6 +5040,9 @@ struct monst *mtmp;
     struct trap *t;
     boolean undetected = FALSE, is_u = (mtmp == &youmonst);
     xchar x = is_u ? u.ux : mtmp->mx, y = is_u ? u.uy : mtmp->my;
+
+    if (!isok(x, y))
+        return FALSE;
 
     if (mtmp == u.ustuck) {
         ; /* can't hide if holding you or held by you */
@@ -5775,6 +5817,7 @@ boolean msg;      /* "The oldmon turns into a newmon!" */
     struct permonst *olddata = mtmp->data;
     int oldmnum = mtmp->mnum;
     char *p, oldname[BUFSZ], l_oldname[BUFSZ], newname[BUFSZ];
+    boolean migrating = !isok(mtmp->mx, mtmp->my);
 
     /* Riders are immune to polymorph and green slime
        (but apparent Rider might actually be a doppelganger) */
@@ -5854,7 +5897,8 @@ boolean msg;      /* "The oldmon turns into a newmon!" */
         && has_mname(mtmp) && (p = strstr(MNAME(mtmp), " the ")) != 0)
         *p = '\0';
 
-    if (mtmp->wormno) { /* throw tail away */
+    if (mtmp->wormno && !migrating) /* if migrating, wormno indicates the no of migrating segments */
+    { /* throw tail away */
         wormgone(mtmp);
         place_monster(mtmp, mtmp->mx, mtmp->my);
     }
@@ -5911,111 +5955,155 @@ boolean msg;      /* "The oldmon turns into a newmon!" */
                 SOUNDSOURCE_MONSTER, mon_ambient_subtype(mtmp->data), monst_to_any(mtmp));
     }
 
-    if (mtmp->mundetected)
-        (void) hideunder(mtmp);
-    if (u.ustuck == mtmp) {
-        if (u.uswallow) {
-            if (!attacktype(mdat, AT_ENGL)) {
-                /* Does mdat care? */
-                if (!is_incorporeal(mdat) && !amorphous(mdat)
-                    && !is_whirly(mdat) && (mdat != &mons[PM_YELLOW_LIGHT])) {
-                    char msgtrail[BUFSZ];
+    if (!migrating)
+    {
+        if (mtmp->mundetected)
+            (void)hideunder(mtmp);
+        if (u.ustuck == mtmp) 
+        {
+            if (u.uswallow) 
+            {
+                if (!attacktype(mdat, AT_ENGL)) 
+                {
+                    /* Does mdat care? */
+                    if (!is_incorporeal(mdat) && !amorphous(mdat)
+                        && !is_whirly(mdat) && (mdat != &mons[PM_YELLOW_LIGHT])) 
+                    {
+                        char msgtrail[BUFSZ];
 
-                    if (is_vampshifter(mtmp)) {
-                        Sprintf(msgtrail, " which was a shapeshifted %s",
+                        if (is_vampshifter(mtmp)) 
+                        {
+                            Sprintf(msgtrail, " which was a shapeshifted %s",
                                 noname_monnam(mtmp, ARTICLE_NONE));
-                    } else if (is_animal(mdat)) {
-                        Strcpy(msgtrail, "'s stomach");
-                    } else {
-                        msgtrail[0] = '\0';
-                    }
+                        }
+                        else if (is_animal(mdat)) 
+                        {
+                            Strcpy(msgtrail, "'s stomach");
+                        }
+                        else 
+                        {
+                            msgtrail[0] = '\0';
+                        }
 
-                    /* Do this even if msg is FALSE */
-                    You_ex(ATR_NONE, CLR_MSG_WARNING, "%s %s%s!",
-                        (amorphous(olddata) || is_whirly(olddata))
+                        /* Do this even if msg is FALSE */
+                        You_ex(ATR_NONE, CLR_MSG_WARNING, "%s %s%s!",
+                            (amorphous(olddata) || is_whirly(olddata))
                             ? "emerge from" : "break out of",
-                        l_oldname, msgtrail);
-                    msg = FALSE; /* message has been given */
-                    mtmp->mhp = 1; /* almost dead */
+                            l_oldname, msgtrail);
+                        msg = FALSE; /* message has been given */
+                        mtmp->mhp = 1; /* almost dead */
+                    }
+                    expels(mtmp, olddata, FALSE);
                 }
-                expels(mtmp, olddata, FALSE);
-            } else {
-                /* update swallow glyphs for new monster */
-                swallowed(0);
+                else 
+                {
+                    /* update swallow glyphs for new monster */
+                    swallowed(0);
+                }
             }
-        } else if (!sticks(mdat) && !sticks(youmonst.data))
-            unstuck(mtmp);
+            else if (!sticks(mdat) && !sticks(youmonst.data))
+                unstuck(mtmp);
+        }
     }
 
-#ifndef DCC30_BUG
-    if (is_long_worm_with_tail(mdat) && (mtmp->wormno = get_wormno()) != 0) {
-#else
-    /* DICE 3.0 doesn't like assigning and comparing mtmp->wormno in the
-     * same expression.
-     */
-    if (is_long_worm_with_tail(mdat)
-        && (mtmp->wormno = get_wormno(), mtmp->wormno != 0)) {
-#endif
-        /* we can now create worms with tails - 11/91 */
-        initworm(mtmp, rn2(5));
-        place_worm_tail_randomly(mtmp, mtmp->mx, mtmp->my);
-    }
-
-    newsym(mtmp->mx, mtmp->my);
-
-    if (msg) {
-        play_sfx_sound_at_location(SFX_POLYMORPH_SUCCESS, mtmp->mx, mtmp->my);
-        Strcpy(newname, noname_monnam(mtmp, ARTICLE_A));
-        /* oldname was capitalized above; newname will be lower case */
-        if (!strcmpi(newname, "it")) { /* can't see or sense it now */
-            if (!!strcmpi(oldname, "it")) /* could see or sense it before */
-                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s disappears!", oldname);
-            (void) usmellmon(mdat);
-        } else { /* can see or sense it now */
-            if (!strcmpi(oldname, "it")) /* couldn't see or sense it before */
-                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s appears!", upstart(newname));
-            else
-                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s turns into %s!", oldname, newname);
+//#ifndef DCC30_BUG
+//    if (is_long_worm_with_tail(mdat) && (mtmp->wormno = get_wormno()) != 0)
+//    {
+//#else
+//    /* DICE 3.0 doesn't like assigning and comparing mtmp->wormno in the
+//     * same expression.
+//     */
+//    if (is_long_worm_with_tail(mdat)
+//        && (mtmp->wormno = get_wormno(), mtmp->wormno != 0)) 
+//    {
+//#endif
+    if (is_long_worm_with_tail(mdat))
+    {
+        if (migrating)
+        {
+            mtmp->wormno = rn2(5);
+        }
+        else
+        {
+            unsigned int wormno = get_wormno();
+            mtmp->wormno = wormno;
+            if (wormno)
+            {
+                /* we can now create worms with tails - 11/91 */
+                initworm(mtmp, rn2(5));
+                place_worm_tail_randomly(mtmp, mtmp->mx, mtmp->my);
+            }
         }
     }
 
     /* when polymorph trap/wand/potion produces a vampire, turn in into
        a full-fledged vampshifter unless shape-changing is blocked */
     if (mtmp->cham == NON_PM && mdat->mlet == S_VAMPIRE
-        && !Protection_from_shape_changers)
+        && (!Protection_from_shape_changers || migrating))
     {
         mtmp->cham = pm_to_cham(monsndx(mdat));
         mtmp->cham_subtype = 0;
     }
-    possibly_unwield(mtmp, polyspot); /* might lose use of weapon */
-    mon_break_armor(mtmp, polyspot);
-    if (!(mtmp->worn_item_flags & W_ARMG))
-        mselftouch(mtmp, "No longer petrify-resistant, ", !context.mon_moving);
 
-    m_dowear(mtmp, FALSE, FALSE);
+    /* The following relies on the monster being on the map */
+    if (!migrating)
+    {
+        newsym(mtmp->mx, mtmp->my);
 
-    /* This ought to re-test can_carry() on each item in the inventory
-     * rather than just checking ex-giants & boulders, but that'd be
-     * pretty expensive to perform.  If implemented, then perhaps
-     * minvent should be sorted in order to drop heaviest items first.
-     */
-    /* former giants can't continue carrying boulders */
-    if (mtmp->minvent && !throws_rocks(mdat)) {
-        register struct obj *otmp, *otmp2;
+        if (msg) 
+        {
+            play_sfx_sound_at_location(SFX_POLYMORPH_SUCCESS, mtmp->mx, mtmp->my);
+            Strcpy(newname, noname_monnam(mtmp, ARTICLE_A));
+            /* oldname was capitalized above; newname will be lower case */
 
-        for (otmp = mtmp->minvent; otmp; otmp = otmp2) {
-            otmp2 = otmp->nobj;
-            if (otmp->otyp == BOULDER) {
-                /* this keeps otmp from being polymorphed in the
-                   same zap that the monster that held it is polymorphed */
-                if (polyspot)
-                    bypass_obj(otmp);
-                Strcpy(debug_buf_2, "newcham");
-                obj_extract_self(otmp);
-                /* probably ought to give some "drop" message here */
-                if (flooreffects(otmp, mtmp->mx, mtmp->my, ""))
-                    continue;
-                place_object(otmp, mtmp->mx, mtmp->my);
+            if (!strcmpi(newname, "it")) 
+            { /* can't see or sense it now */
+                if (!!strcmpi(oldname, "it")) /* could see or sense it before */
+                    pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s disappears!", oldname);
+                (void)usmellmon(mdat);
+            }
+            else 
+            { /* can see or sense it now */
+                if (!strcmpi(oldname, "it")) /* couldn't see or sense it before */
+                    pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s appears!", upstart(newname));
+                else
+                    pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s turns into %s!", oldname, newname);
+            }
+        }
+
+        possibly_unwield(mtmp, polyspot); /* might lose use of weapon */
+        mon_break_armor(mtmp, polyspot);
+        if (!(mtmp->worn_item_flags & W_ARMG))
+            mselftouch(mtmp, "No longer petrify-resistant, ", !context.mon_moving);
+
+        m_dowear(mtmp, FALSE, FALSE);
+
+        /* This ought to re-test can_carry() on each item in the inventory
+         * rather than just checking ex-giants & boulders, but that'd be
+         * pretty expensive to perform.  If implemented, then perhaps
+         * minvent should be sorted in order to drop heaviest items first.
+         */
+         /* former giants can't continue carrying boulders */
+        if (mtmp->minvent && !throws_rocks(mdat)) 
+        {
+            register struct obj* otmp, * otmp2;
+
+            for (otmp = mtmp->minvent; otmp; otmp = otmp2) 
+            {
+                otmp2 = otmp->nobj;
+                if (otmp->otyp == BOULDER) 
+                {
+                    /* this keeps otmp from being polymorphed in the
+                       same zap that the monster that held it is polymorphed */
+                    if (polyspot)
+                        bypass_obj(otmp);
+                    Strcpy(debug_buf_2, "newcham");
+                    obj_extract_self(otmp);
+                    /* probably ought to give some "drop" message here */
+                    if (flooreffects(otmp, mtmp->mx, mtmp->my, ""))
+                        continue;
+                    place_object(otmp, mtmp->mx, mtmp->my);
+                }
             }
         }
     }

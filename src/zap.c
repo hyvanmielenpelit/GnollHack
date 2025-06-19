@@ -2609,15 +2609,17 @@ int locflags; /* Unused */
 
 /* used by revive() and animate_statue() */
 struct monst *
-montraits(obj, cc, adjacentok, mnum_override, mnum_replaceundead, mmflags)
+montraits(obj, cc, adjacentok, mnum_override, mnum_replaceundead, mmflags, mmflags2)
 struct obj *obj;
 coord *cc;
 boolean adjacentok; /* False: at obj's spot only, True: nearby is allowed */
 int mnum_override, mnum_replaceundead; /* Use this mnum instead */
 uint64_t mmflags;
+uint64_t mmflags2;
 {
     struct monst *mtmp = (struct monst *) 0;
     struct monst *mtmp2 = (struct monst *) 0;
+    boolean migrating = (mmflags2 & MM2_LEVEL_MIGRATING) != 0;
 
     if (has_omonst(obj))
         mtmp2 = get_mtraits(obj, TRUE);
@@ -2638,7 +2640,7 @@ uint64_t mmflags;
         
         mtmp = makemon2(mtmp2->data, cc->x, cc->y,
                        (mmflags | MM_NO_MONSTER_INVENTORY | MM_NOWAIT | MM_NOCOUNTBIRTH
-                        | (adjacentok ? MM_ADJACENTOK : 0)), MM2_REVIVING);
+                        | (adjacentok ? MM_ADJACENTOK : 0)), MM2_REVIVING | mmflags2);
         if (!mtmp)
             return mtmp;
 
@@ -2726,12 +2728,12 @@ uint64_t mmflags;
         update_mon_maxhp(mtmp2);
         mtmp2->mhp = mtmp2->mhpmax;
 
-        replmon(mtmp, mtmp2);
+        replmon(mtmp, mtmp2, migrating);
         newsym(mtmp2->mx, mtmp2->my); /* Might now be invisible */
 
         /* in case Protection_from_shape_changers is different
            now than it was when the traits were stored */
-        restore_cham(mtmp2);
+        restore_cham(mtmp2, migrating);
     }
     return mtmp2;
 }
@@ -2802,12 +2804,13 @@ boolean replaceundead;
     }
 
     x = y = 0;
+    boolean obj_found = TRUE;
 
     if (corpse->where != OBJ_CONTAINED)
     {
         /* only for invent, minvent, or floor */
         container = 0;
-        (void) get_obj_location(corpse, &x, &y, 0);
+        obj_found = get_obj_location(corpse, &x, &y, 0);
     }
     else 
     {
@@ -2816,26 +2819,31 @@ boolean replaceundead;
         int holder = OBJ_FREE;
 
         container = corpse->ocontainer;
-        carrier =
-            get_container_location(container, &holder, &container_nesting);
+        carrier = get_container_location(container, &holder, &container_nesting);
         switch (holder) 
         {
         case OBJ_MINVENT:
-            x = carrier->mx, y = carrier->my;
+            if (carrier)
+                x = carrier->mx, y = carrier->my;
             break;
         case OBJ_INVENT:
             x = u.ux, y = u.uy;
             break;
         case OBJ_MAGIC:
+            obj_found = get_obj_location(corpse, &x, &y, CONTAINED_TOO);
+            break;
         case OBJ_FLOOR:
-            (void) get_obj_location(corpse, &x, &y, CONTAINED_TOO);
+            obj_found = get_obj_location(corpse, &x, &y, CONTAINED_TOO);
             break;
         default:
             break; /* x,y are 0 */
         }
     }
     
-    if (!x || !y
+    boolean migrating = corpse->where == OBJ_MAGIC && !obj_found;
+    boolean xyok = isok(x, y);
+
+    if (!migrating && (!x || !y
         /* Rules for revival from containers:
          *  - the container cannot be locked
          *  - the container cannot be heavily nested (>2 is arbitrary)
@@ -2848,7 +2856,7 @@ boolean replaceundead;
                           || (container->otyp == BAG_OF_WIZARDRY && rn2(60))
                           || (container->otyp == BAG_OF_TREASURE_HAULING && rn2(80))
                           || (container->otyp == BAG_OF_THE_GLUTTON && rn2(80))
-            )))
+            ))))
         return (struct monst *) 0;
 
     /* record the object's location now that we're sure where it is */
@@ -2887,26 +2895,26 @@ boolean replaceundead;
     /* [should probably handle recorporealization first; if corpse and
        ghost are at same location, revived creature shouldn't be bumped
        to an adjacent spot by ghost which joins with it] */
-    if (MON_AT(x, y)) 
+    if (xyok && MON_AT(x, y))
     {
         if (enexto(&xy, x, y, mptr))
             x = xy.x, y = xy.y;
     }
 
-    if ((mons[montype].mlet == S_EEL && !IS_POOL(levl[x][y].typ)) 
-        || item_prevents_revival(montype)) 
+    if (!migrating && ((xyok && mons[montype].mlet == S_EEL && !IS_POOL(levl[x][y].typ))
+        || item_prevents_revival(montype)))
     {
-        if (by_hero && cansee(x, y))
+        if (by_hero && xyok && cansee(x, y))
             pline_ex(ATR_NONE, CLR_MSG_FAIL, "%s twitches feebly.",
                 upstart(corpse_xname(corpse, (const char *) 0, CXN_PFX_THE)));
         return (struct monst *) 0;
     }
 
-    if (cant_revive(&montype, TRUE, corpse)) 
+    if (cant_revive(&montype, TRUE, corpse))
     {
         /* make a zombie or doppelganger instead */
         /* note: montype has changed; mptr keeps old value for newcham() */
-        mtmp = makemon(montype < LOW_PM ? 0 : &mons[montype], x, y, MM_NO_MONSTER_INVENTORY | MM_NOWAIT | MM_PLAY_SUMMON_ANIMATION | MM_ANIMATE_DEAD_ANIMATION | MM_PLAY_SUMMON_SOUND);
+        mtmp = makemon2(montype < LOW_PM ? 0 : &mons[montype], x, y, MM_NO_MONSTER_INVENTORY | MM_NOWAIT | MM_PLAY_SUMMON_ANIMATION | MM_ANIMATE_DEAD_ANIMATION | MM_PLAY_SUMMON_SOUND, migrating ? MM2_LEVEL_MIGRATING : 0);
         if (mtmp)
         {
             int subtype = 0;
@@ -2919,10 +2927,12 @@ boolean replaceundead;
                 subtype = omon->subtype;
                 free_omonst(corpse);
             }
-            if (mtmp->cham == PM_DOPPELGANGER) {
+            if (mtmp->cham == PM_DOPPELGANGER) 
+            {
                 /* change shape to match the corpse */
                 (void) newcham(mtmp, mptr, subtype, FALSE, FALSE);
-            } else if (mtmp->data->mlet == S_LESSER_UNDEAD) 
+            } 
+            else if (mtmp->data->mlet == S_LESSER_UNDEAD) 
             {
                 mtmp->mhp = mtmp->mhpmax = 100;
                 mtmp->mprops[VERY_FAST] |= M_INTRINSIC_ACQUIRED;
@@ -2933,7 +2943,7 @@ boolean replaceundead;
     {
         /* use saved traits */
         xy.x = x, xy.y = y;
-        mtmp = montraits(corpse, &xy, FALSE, animateintomon >= 0 ? montype : NON_PM, animateintomon < 0 && replaceundead ? montype : NON_PM, MM_PLAY_SUMMON_ANIMATION | MM_ANIMATE_DEAD_ANIMATION | MM_PLAY_SUMMON_SOUND);
+        mtmp = montraits(corpse, &xy, FALSE, animateintomon >= 0 ? montype : NON_PM, animateintomon < 0 && replaceundead ? montype : NON_PM, MM_PLAY_SUMMON_ANIMATION | MM_ANIMATE_DEAD_ANIMATION | MM_PLAY_SUMMON_SOUND, migrating ? MM2_LEVEL_MIGRATING : 0);
         if (mtmp && has_edog(mtmp))
             EDOG(mtmp)->hungrytime = monstermoves + 500L;
         if (mtmp && mtmp->mtame && !mtmp->isminion && !mtmp->isfaithful)
@@ -2942,7 +2952,7 @@ boolean replaceundead;
     else 
     {
         /* make a new monster */
-        mtmp = makemon2(mptr, x, y, MM_NO_MONSTER_INVENTORY | MM_NOWAIT | MM_NOCOUNTBIRTH | MM_PLAY_SUMMON_ANIMATION | MM_ANIMATE_DEAD_ANIMATION | MM_PLAY_SUMMON_SOUND, MM2_REVIVING);
+        mtmp = makemon2(mptr, x, y, MM_NO_MONSTER_INVENTORY | MM_NOWAIT | MM_NOCOUNTBIRTH | MM_PLAY_SUMMON_ANIMATION | MM_ANIMATE_DEAD_ANIMATION | MM_PLAY_SUMMON_SOUND, MM2_REVIVING | (migrating ? MM2_LEVEL_MIGRATING : 0));
         if (mtmp)
         {
             if ((corpse->speflags & SPEFLAGS_SCHROEDINGERS_BOX) != 0) /* Dead cat straight from the box */
@@ -2974,7 +2984,7 @@ boolean replaceundead;
         corpse = splitobj(corpse, 1L);
 
     /* if this is caused by the hero there might be a shop charge */
-    if (by_hero)
+    if (by_hero && xyok && !migrating)
     {
         struct monst *shkp = 0;
 

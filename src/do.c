@@ -8182,72 +8182,77 @@ struct obj *corpse;
     }
     mtmp = revive(corpse, FALSE, -1, FALSE); /* corpse is gone if successful */
 
-    if (mtmp) 
+    if (mtmp)
     {
-        revive_handle_magic_chest(&where, &container, &container_where, &mcarry);
-        int clr = is_tame(mtmp) || is_peaceful(mtmp) ? CLR_MSG_ATTENTION : CLR_MSG_WARNING;
-        switch (where) 
+        if (isok(mtmp->mx, mtmp->my)) /* mtmp not migrating from magic chest */
         {
-        case OBJ_INVENT:
-            if (is_uwep)
-                pline_The_ex(ATR_NONE, clr, "%s writhes out of your grasp!", cname);
-            else
-                You_feel_ex(ATR_NONE, clr, "squirming in your backpack!");
-
-            reviver_hint(mtmp);
-            break;
-
-        case OBJ_FLOOR:
-            if (cansee(mtmp->mx, mtmp->my))
+            revive_handle_magic_chest(&where, &container, &container_where, &mcarry);
+            int clr = is_tame(mtmp) || is_peaceful(mtmp) ? CLR_MSG_ATTENTION : CLR_MSG_WARNING;
+            switch (where)
             {
-                pline_ex(ATR_NONE, clr, "%s rises from the dead!",
-                    chewed ? Adjmonnam(mtmp, "bite-covered")
-                    : Monnam(mtmp));
-                reviver_hint(mtmp);
-            }
-            break;
-
-        case OBJ_MINVENT: /* probably a nymph's */
-            if (cansee(mtmp->mx, mtmp->my)) {
-                if (canseemon(mcarry))
-                    pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "Startled, %s drops %s as it revives!",
-                          mon_nam(mcarry), an(cname));
+            case OBJ_INVENT:
+                if (is_uwep)
+                    pline_The_ex(ATR_NONE, clr, "%s writhes out of your grasp!", cname);
                 else
-                    pline_ex(ATR_NONE, clr, "%s suddenly appears!",
-                          chewed ? Adjmonnam(mtmp, "bite-covered")
-                                 : Monnam(mtmp));
-                reviver_hint(mtmp);
-            }
-            break;
-        case OBJ_CONTAINED: {
-            char sackname[BUFSZ];
+                    You_feel_ex(ATR_NONE, clr, "squirming in your backpack!");
 
-            if (container_where == OBJ_MINVENT && cansee(mtmp->mx, mtmp->my)
-                && mcarry && canseemon(mcarry) && container) {
-                pline_ex(ATR_NONE, clr, "%s writhes out of %s!", Amonnam(mtmp),
-                      yname(container));
                 reviver_hint(mtmp);
-            } else if (container_where == OBJ_INVENT && container) {
-                Strcpy(sackname, an(xname(container)));
-                pline_ex(ATR_NONE, clr, "%s %s out of %s in your pack!",
-                      Blind ? Something : Amonnam(mtmp),
-                      locomotion(mtmp->data, "writhes"), sackname);
-                reviver_hint(mtmp);
-            } else if (container_where == OBJ_FLOOR && container
-                       && cansee(mtmp->mx, mtmp->my)) {
-                Strcpy(sackname, an(xname(container)));
-                pline_ex(ATR_NONE, clr, "%s escapes from %s!", Amonnam(mtmp), sackname);
-                reviver_hint(mtmp);
+                break;
+
+            case OBJ_FLOOR:
+                if (cansee(mtmp->mx, mtmp->my))
+                {
+                    pline_ex(ATR_NONE, clr, "%s rises from the dead!",
+                        chewed ? Adjmonnam(mtmp, "bite-covered")
+                        : Monnam(mtmp));
+                    reviver_hint(mtmp);
+                }
+                break;
+
+            case OBJ_MINVENT: /* probably a nymph's */
+                if (cansee(mtmp->mx, mtmp->my)) {
+                    if (canseemon(mcarry))
+                        pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "Startled, %s drops %s as it revives!",
+                            mon_nam(mcarry), an(cname));
+                    else
+                        pline_ex(ATR_NONE, clr, "%s suddenly appears!",
+                            chewed ? Adjmonnam(mtmp, "bite-covered")
+                            : Monnam(mtmp));
+                    reviver_hint(mtmp);
+                }
+                break;
+            case OBJ_CONTAINED: {
+                char sackname[BUFSZ];
+
+                if (container_where == OBJ_MINVENT && cansee(mtmp->mx, mtmp->my)
+                    && mcarry && canseemon(mcarry) && container) {
+                    pline_ex(ATR_NONE, clr, "%s writhes out of %s!", Amonnam(mtmp),
+                        yname(container));
+                    reviver_hint(mtmp);
+                }
+                else if (container_where == OBJ_INVENT && container) {
+                    Strcpy(sackname, an(xname(container)));
+                    pline_ex(ATR_NONE, clr, "%s %s out of %s in your pack!",
+                        Blind ? Something : Amonnam(mtmp),
+                        locomotion(mtmp->data, "writhes"), sackname);
+                    reviver_hint(mtmp);
+                }
+                else if (container_where == OBJ_FLOOR && container
+                    && cansee(mtmp->mx, mtmp->my)) {
+                    Strcpy(sackname, an(xname(container)));
+                    pline_ex(ATR_NONE, clr, "%s escapes from %s!", Amonnam(mtmp), sackname);
+                    reviver_hint(mtmp);
+                }
+                break;
             }
-            break;
-        }
-        case OBJ_MAGIC:
-            /* Should not happen */
-            break;
-        default:
-            /* we should be able to handle the other cases... */
-            impossible("revive_corpse: lost corpse @ %d", where);
-            break;
+            case OBJ_MAGIC:
+                /* We should not arrive here: if revived on a level with no magic chest, mtmp should be now in migrating_mons with mx = my = 0, rather than in fmon */
+                break;
+            default:
+                /* we should be able to handle the other cases... */
+                impossible("revive_corpse: lost corpse @ %d", where);
+                break;
+            }
         }
         return TRUE;
     }
@@ -8294,7 +8299,7 @@ int animateintomon; // monstid to be animated into
     }
     mtmp = revive(corpse, TRUE, animateintomon, FALSE); /* corpse is gone if successful */
 
-    if (mtmp)
+    if (mtmp && isok(mtmp->mx, mtmp->my))
     {
         revive_handle_magic_chest(&where, &container, &container_where, &mcarry);
         int clr = is_tame(mtmp) || is_peaceful(mtmp) ? CLR_MSG_ATTENTION : CLR_MSG_WARNING;
@@ -8348,6 +8353,9 @@ int animateintomon; // monstid to be animated into
             }
             break;
         }
+        case OBJ_MAGIC:
+            /* We should not arrive here: if revived on a level with no magic chest, mtmp should be now in migrating_mons with mx = my = 0, rather than in fmon */
+            break;
         default:
             /* we should be able to handle the other cases... */
             impossible("animate_corpse: lost corpse @ %d", where);

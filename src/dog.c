@@ -1775,6 +1775,7 @@ boolean thrown;
     boolean was_tame = is_tame(mtmp);
     boolean has_edog = has_edog(mtmp);
     boolean is_cerberus = mtmp->data == &mons[PM_CERBERUS];
+    boolean migrating = !isok(mtmp->mx, mtmp->my);
 
     if (!charm_type && !is_cerberus)
     {
@@ -1795,7 +1796,7 @@ boolean thrown;
     /* make grabber let go now, whether it becomes tame or not */
     if (mtmp == u.ustuck)
     {
-        if (u.uswallow)
+        if (u.uswallow && !migrating)
             expels(mtmp, mtmp->data, TRUE);
         else if (!(Upolyd && sticks(youmonst.data)))
             unstuck(mtmp);
@@ -1804,8 +1805,10 @@ boolean thrown;
     /* feeding it treats makes it tamer */
     if (mtmp->mtame && obj && has_edog(mtmp))
     {
-        int tasty;
+        if (migrating)
+            return FALSE;
 
+        int tasty;
         if (!thrown || (mon_can_move(mtmp) && !is_confused(mtmp) && !mtmp->meating
             && (((tasty = dogfood(mtmp, obj)) == DOGFOOD && dog_wants_to_eat(mtmp))
                 || (tasty <= ACCFOOD && EDOG(mtmp)->hungrytime <= monstermoves)))) 
@@ -1905,38 +1908,41 @@ boolean thrown;
         }
     }
 
-    if (obj) 
-    { /* thrown food */
-        int headnum = (int)min(mtmp->heads_left, mtmp->heads_tamed);
-        if (is_cerberus && headnum > 0 && headnum <= mtmp->heads_left)
-        {
-            const char* headstr[4] = { "first", "second", "third", "ancillary" };
-            pline_ex(ATR_NONE, CLR_MSG_SUCCESS, "%s %s head %s %s and seems to appreciate it a lot.",
-                s_suffix(Monnam(mtmp)), headstr[min(3, headnum - 1)],
-                thrown ? "catches" : "takes", yname(obj));
-            if(headnum < mtmp->heads_left)
-                pline_ex(ATR_NONE, CLR_MSG_WARNING, "However, %d other head%s still remain %s.", mtmp->heads_left - headnum, plur(mtmp->heads_left - headnum), is_peaceful(mtmp) ? "untamed" : "hostile");
-            place_object(obj, mtmp->mx, mtmp->my); /* put on floor */
-            /* devour the food (might grow into larger, genocided monster) */
-            useupf(obj, 1L);
-        }
-        else if (!thrown)
-        {
-            pline_ex(ATR_NONE, CLR_MSG_SUCCESS, "%s takes %s and seems to appreciate it a lot.", Monnam(mtmp), yname(obj));
-            /* defer eating until the edog extension has been set up */
-            place_object(obj, mtmp->mx, mtmp->my); /* put on floor */
-            /* devour the food (might grow into larger, genocided monster) */
-            if (dog_eat(mtmp, obj, mtmp->mx, mtmp->my, TRUE) == 2)
-                return TRUE; /* oops, it died... */
-            /* `obj' is now obsolete */
-        }
-    }
-
-    newsym_with_flags(mtmp->mx, mtmp->my, NEWSYM_FLAGS_KEEP_OLD_EFFECT_GLYPHS);
-    if (attacktype(mtmp->data, AT_WEAP))
+    if (!migrating)
     {
-        mtmp->weapon_strategy = NEED_HTH_WEAPON;
-        (void) mon_wield_item(mtmp, FALSE, 0, 0);
+        if (obj)
+        { /* thrown food */
+            int headnum = (int)min(mtmp->heads_left, mtmp->heads_tamed);
+            if (is_cerberus && headnum > 0 && headnum <= mtmp->heads_left)
+            {
+                const char* headstr[4] = { "first", "second", "third", "ancillary" };
+                pline_ex(ATR_NONE, CLR_MSG_SUCCESS, "%s %s head %s %s and seems to appreciate it a lot.",
+                    s_suffix(Monnam(mtmp)), headstr[min(3, headnum - 1)],
+                    thrown ? "catches" : "takes", yname(obj));
+                if (headnum < mtmp->heads_left)
+                    pline_ex(ATR_NONE, CLR_MSG_WARNING, "However, %d other head%s still remain %s.", mtmp->heads_left - headnum, plur(mtmp->heads_left - headnum), is_peaceful(mtmp) ? "untamed" : "hostile");
+                place_object(obj, mtmp->mx, mtmp->my); /* put on floor */
+                /* devour the food (might grow into larger, genocided monster) */
+                useupf(obj, 1L);
+            }
+            else if (!thrown)
+            {
+                pline_ex(ATR_NONE, CLR_MSG_SUCCESS, "%s takes %s and seems to appreciate it a lot.", Monnam(mtmp), yname(obj));
+                /* defer eating until the edog extension has been set up */
+                place_object(obj, mtmp->mx, mtmp->my); /* put on floor */
+                /* devour the food (might grow into larger, genocided monster) */
+                if (dog_eat(mtmp, obj, mtmp->mx, mtmp->my, TRUE) == 2)
+                    return TRUE; /* oops, it died... */
+                /* `obj' is now obsolete */
+            }
+        }
+
+        newsym_with_flags(mtmp->mx, mtmp->my, NEWSYM_FLAGS_KEEP_OLD_EFFECT_GLYPHS);
+        if (attacktype(mtmp->data, AT_WEAP))
+        {
+            mtmp->weapon_strategy = NEED_HTH_WEAPON;
+            (void)mon_wield_item(mtmp, FALSE, 0, 0);
+        }
     }
     return TRUE;
 }
@@ -2002,7 +2008,7 @@ boolean was_dead;
             if (!rn2(edog->abuse + 1))
                 mtmp->mpeaceful = 1;
 
-        if (!quietly && cansee(mtmp->mx, mtmp->my)) 
+        if (!quietly && isok(mtmp->mx, mtmp->my) && cansee(mtmp->mx, mtmp->my))
         {
             if (haseyes(youmonst.data)) 
             {
@@ -2024,7 +2030,7 @@ boolean was_dead;
             mtmp->mpeaceful = rn2(2);
     }
 
-    if (was_tame && !mtmp->mtame)
+    if (was_tame && !mtmp->mtame && isok(mtmp->mx, mtmp->my))
     {
         if (!quietly && canspotmon(mtmp))
             pline("%s %s.", Monnam(mtmp),

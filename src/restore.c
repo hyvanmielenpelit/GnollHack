@@ -1461,7 +1461,7 @@ boolean ghostly;
         }
         /* update shape-changers in case protection against
            them is different now than when the level was saved */
-        restore_cham(mtmp);
+        restore_cham(mtmp, FALSE);
         /* give hiders a chance to hide before their next move */
         if (ghostly || elapsed > (int64_t) rnd(10))
             hide_monst(mtmp);
