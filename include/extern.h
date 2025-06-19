@@ -869,7 +869,7 @@ E struct monst *FDECL(make_familiar,
                       (struct obj *, XCHAR_P, XCHAR_P, BOOLEAN_P));
 E struct monst *NDECL(makedog);
 E void NDECL(update_mlstmv);
-E void NDECL(losedogs);
+E void NDECL(handle_monster_level_migration);
 E void FDECL(mon_arrive, (struct monst *, BOOLEAN_P));
 E void FDECL(mon_catchup_elapsed_time, (struct monst *, int64_t));
 E void FDECL(keepdogs, (BOOLEAN_P, BOOLEAN_P));

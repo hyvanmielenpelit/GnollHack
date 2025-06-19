@@ -1630,7 +1630,7 @@ movemon()
      * of the pass.
      *
      * The only other actions which cause monsters to be removed from
-     * the chain are level migrations and losedogs().  I believe losedogs()
+     * the chain are level migrations and handle_monster_level_migration().  I believe handle_monster_level_migration()
      * is a cleanup routine not associated with monster movements, and
      * monsters can only affect level migrations on themselves, not others
      * (hence the fetching of nmon before moving the monster).  Currently,

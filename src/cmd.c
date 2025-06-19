@@ -1739,8 +1739,8 @@ wiz_makemap(VOID_ARGS)
            on levels which have such; we don't force stairs, just area */
         u_on_rndspot((u.uhave.amulet ? 1 : 0) /* 'going up' flag */
                      | (was_in_W_tower ? 2 : 0));
-        losedogs();
-        /* u_on_rndspot() might pick a spot that has a monster, or losedogs()
+        handle_monster_level_migration();
+        /* u_on_rndspot() might pick a spot that has a monster, or handle_monster_level_migration()
            might pick the hero's spot (only if there isn't already a monster
            there), so we might have to move hero or the co-located monster */
         if ((mtmp = m_at(u.ux, u.uy)) != 0)

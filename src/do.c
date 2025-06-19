@@ -7524,12 +7524,12 @@ xchar portal; /* 1 = Magic portal, 2 = Modron portal down (find portal up), 3 = 
     if (Punished)
         placebc();
     obj_delivery(FALSE);
-    losedogs();
+    handle_monster_level_migration();
     kill_genocided_monsters(); /* for those wiped out while in limbo */
     /*
      * Expire all timers that have gone off while away.  Must be
      * after migrating monsters and objects are delivered
-     * (losedogs and obj_delivery).
+     * (handle_monster_level_migration and obj_delivery).
      */
     run_timers();
 

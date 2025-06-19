@@ -489,7 +489,7 @@ boolean isfemale;
 }
 
 struct monst *
-makedog()
+makedog(VOID_ARGS)
 {
     register struct monst *mtmp;
     register struct obj *otmp;
@@ -825,7 +825,7 @@ makedog()
 /* record `last move time' for all monsters prior to level save so that
    mon_arrive() can catch up for lost time when they're restored later */
 void
-update_mlstmv()
+update_mlstmv(VOID_ARGS)
 {
     struct monst *mon;
 
@@ -839,7 +839,7 @@ update_mlstmv()
 }
 
 void
-losedogs()
+handle_monster_level_migration(VOID_ARGS)
 {
     register struct monst *mtmp, *mtmp0, *mtmp2;
     int dismissKops = 0;
@@ -913,7 +913,7 @@ losedogs()
                     }
                 if (!mtmp0)
                 {
-                    panic("losedogs: can't find migrating mon");
+                    panic("handle_monster_level_migration: can't find migrating mon");
                     return;
                 }
             }
@@ -922,7 +922,7 @@ losedogs()
     }
 }
 
-/* called from resurrect() in addition to losedogs() */
+/* called from resurrect() in addition to handle_monster_level_migration() */
 void
 mon_arrive(mtmp, with_you)
 struct monst *mtmp;
