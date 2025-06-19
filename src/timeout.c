@@ -1456,12 +1456,14 @@ int64_t timeout;
     silent = (timeout != monstermoves); /* hatched while away */
 
     /* only can hatch when in INVENT, FLOOR, MINVENT */
-    if (get_obj_location(egg, &x, &y, 0)) {
+    if (get_obj_location(egg, &x, &y, 0)) 
+    {
         hatchcount = rnd((int) egg->quan);
-        cansee_hatchspot = cansee(x, y) && !silent;
-        if (!(mons[mnum].geno & G_UNIQ)
-            && !(mvitals[mnum].mvflags & (MV_GENOCIDED | MV_EXTINCT))) {
-            for (i = hatchcount; i > 0; i--) {
+        cansee_hatchspot = isok(x, y) && cansee(x, y) && !silent;
+        if (isok(x, y) && !(mons[mnum].geno & G_UNIQ) && !(mvitals[mnum].mvflags & (MV_GENOCIDED | MV_EXTINCT))) 
+        {
+            for (i = hatchcount; i > 0; i--) 
+            {
                 if (!enexto(&cc, x, y, &mons[mnum])
                     || !(mon = makemon(&mons[mnum], cc.x, cc.y, MM_NO_MONSTER_INVENTORY)))
                     break;
@@ -1469,7 +1471,8 @@ int64_t timeout;
                    same dungeon level, or any dragon egg which hatches
                    while it's in your inventory */
                 if ((tamed && !silent)
-                    || (carried(egg) && mon->data->mlet == S_DRAGON)) {
+                    || (carried(egg) && mon->data->mlet == S_DRAGON)) 
+                {
                     if (tamedog(mon, (struct obj *) 0, TAMEDOG_NO_FORCED_TAMING, FALSE, 0, FALSE, FALSE)) {
                         if (carried(egg) && mon->data->mlet != S_DRAGON)
                         {
@@ -1517,11 +1520,13 @@ int64_t timeout;
 #endif
     }
 
-    if (mon) {
+    if (mon) 
+    {
         char monnambuf[BUFSZ], carriedby[BUFSZ];
         boolean siblings = (hatchcount > 1), redraw = FALSE;
 
-        if (cansee_hatchspot) {
+        if (cansee_hatchspot) 
+        {
             /* [bug?  m_monnam() yields accurate monster type
                regardless of hallucination] */
             Sprintf(monnambuf, "%s%s", siblings ? "some " : "",
@@ -1554,6 +1559,7 @@ int64_t timeout;
             }
             break;
 
+        case OBJ_MAGIC:
         case OBJ_FLOOR:
             if (cansee_hatchspot) {
                 knows_egg = TRUE;
