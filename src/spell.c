@@ -5946,12 +5946,12 @@ int splidx;
         return;
 
     int i;
-    for (i = 0; i < MAXSPELL && spl_orderindx[i] != NO_SPELL; i++)
+    for (i = 0; i < MAXSPELL; i++)
     {
         if (spl_orderindx[i] == splidx)
             break;
     }
-    if (i >= MAXSPELL || spl_book[i].sp_id == NO_SPELL)
+    if (i >= MAXSPELL)
         return;
 
     int j;
@@ -5973,23 +5973,27 @@ int splidx;
         return;
 
     int i;
-    for (i = 0; i < MAXSPELL && spl_book[i].sp_id != NO_SPELL; i++)
+    for (i = 0; i < MAXSPELL; i++)
     {
         if (spl_orderindx[i] == splidx)
             break;
     }
-    if (i >= MAXSPELL || spl_orderindx[i] == NO_SPELL)
+    if (i >= MAXSPELL)
         return;
 
-    if (i == MAXSPELL - 1 || spl_book[i + 1].sp_id == NO_SPELL)
+    int cnt;
+    for (cnt = 0; cnt < MAXSPELL && spl_book[cnt].sp_id != NO_SPELL; cnt++)
+        ;
+
+    if (i == MAXSPELL - 1 || i == cnt - 1 || cnt == 0)
         return;
 
     int j;
-    for (j = i + 1; j < MAXSPELL && spl_book[j].sp_id != NO_SPELL; j++)
+    for (j = i + 1; j < MAXSPELL && j < cnt; j++)
     {
         spl_orderindx[j - 1] = spl_orderindx[j];
     }
-    spl_orderindx[j - 1] = splidx;
+    spl_orderindx[cnt - 1] = splidx;
 
     flags.spellorder = SORTBY_CURRENT; /* sorting needs to be turned off */
     sortspells();
