@@ -1956,7 +1956,7 @@ namespace GnollHackX
             var handler = BackButtonPressed;
             if (handler != null)
             {
-                var result = await handler.Invoke(App.Current, new EventArgs());
+                var result = await handler.Invoke(App.Current, EventArgs.Empty);
                 return result;
             }
             return true;

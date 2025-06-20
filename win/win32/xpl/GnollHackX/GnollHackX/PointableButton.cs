@@ -61,7 +61,7 @@ namespace GnollHackX
                 e.Handled = true;
                 MainThread.BeginInvokeOnMainThread(() =>
                 {
-                    PointerEntered?.Invoke(sender, new EventArgs());
+                    PointerEntered?.Invoke(sender, EventArgs.Empty);
                 });
             }
         }
@@ -73,7 +73,7 @@ namespace GnollHackX
                 e.Handled = true;
                 MainThread.BeginInvokeOnMainThread(() =>
                 {
-                    PointerExited?.Invoke(sender, new EventArgs());
+                    PointerExited?.Invoke(sender, EventArgs.Empty);
                 });
             }
         }

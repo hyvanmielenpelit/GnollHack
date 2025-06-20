@@ -192,7 +192,7 @@ public static class MauiProgram
                             if(GHApp.CurrentGamePage != null)
                             {
                                 e.Cancel = true;
-                                GHApp.CurrentGamePage?.GenericButton_Clicked(s, new EventArgs(), GHUtils.Meta('s'));
+                                GHApp.CurrentGamePage?.GenericButton_Clicked(s, EventArgs.Empty, GHUtils.Meta('s'));
                             }
                             else
                             {
