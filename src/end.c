@@ -86,6 +86,9 @@ STATIC_DCL char FDECL(special_yn_query, (const char*, const char*));
 #define NH_abort NH_abort_
 #endif
 
+#ifdef GNH_MOBILE
+#define NH_abort_() gnollhack_exit(EXIT_FAILURE)
+#else
 #ifdef AMIGA
 #define NH_abort_() Abort(0)
 #else
@@ -93,16 +96,13 @@ STATIC_DCL char FDECL(special_yn_query, (const char*, const char*));
 #define NH_abort_() (void) abort()
 #else
 #ifdef WIN32
-#ifdef GNH_MOBILE
-#define NH_abort_() gnollhack_exit(EXIT_FAILURE)
-#else
 #define NH_abort_() win32_abort()
-#endif
 #else
 #define NH_abort_() abort()
 #endif
 #endif /* !SYSV */
 #endif /* !AMIGA */
+#endif /* GNH_MOBILE */
 
 #ifdef PANICTRACE
 #include <errno.h>
