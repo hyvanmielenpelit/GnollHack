@@ -63,7 +63,7 @@ const char* critical_strike_special_percentage_names[MAX_CRITICAL_STRIKE_SPECIAL
 };
 
 #define SCHAR_LIM 127
-#define NUMOBUF 12
+#define NUMOBUF 24
 
 STATIC_DCL char *FDECL(strprepend, (char *, const char *));
 STATIC_DCL short FDECL(rnd_otyp_by_wpnskill, (SCHAR_P));
