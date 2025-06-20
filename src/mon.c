@@ -1861,6 +1861,7 @@ register struct monst *mtmp;
                 if (otmp == uball)
                 {
                     unpunish();
+                    Sprintf(priority_debug_buf_3, "meatmetal: %d", otmp->otyp);
                     delobj(otmp);
                 }
                 else if (otmp == uchain) 
@@ -1873,6 +1874,7 @@ register struct monst *mtmp;
                     grow = mlevelgain(otmp);
                     heal = mhealup(otmp);
                     mstone = mstoning(otmp);
+                    Sprintf(priority_debug_buf_3, "meatmetal2: %d", otmp->otyp);
                     delobj(otmp);
                     ptr = mtmp->data;
                     if (poly) 
@@ -1976,6 +1978,7 @@ register struct monst* mtmp;
             if (otmp == uball)
             {
                 unpunish();
+                Sprintf(priority_debug_buf_3, "meatrock: %d", otmp->otyp);
                 delobj(otmp);
             }
             else if (otmp == uchain)
@@ -1990,6 +1993,7 @@ register struct monst* mtmp;
                 mstone = mstoning(otmp);
                 if (isstatue)
                     (void)pre_break_statue(otmp);
+                Sprintf(priority_debug_buf_3, "meatrock2: %d", otmp->otyp);
                 delobj(otmp);
                 ptr = mtmp->data;
                 if (poly)
@@ -2163,6 +2167,7 @@ struct monst *mtmp;
             grow = mlevelgain(otmp);
             heal = mhealup(otmp);
             eyes = (otmp->otyp == CARROT);
+            Sprintf(priority_debug_buf_3, "meatobj: %d", otmp->otyp);
             delobj(otmp); /* munch */
             ptr = mtmp->data;
             if (poly) 
@@ -4139,6 +4144,7 @@ int xkill_flags; /* 1: suppress message, 2: suppress corpse, 4: pacifist */
                 /* oc_big is also oc_bimanual and oc_bulky */
                 && (otmp->owt > 30 || objects[otyp].oc_big))
             {
+                Sprintf(priority_debug_buf_3, "xkilled: %d", otmp->otyp);
                 delobj(otmp);
             }
             else if (!flooreffects(otmp, x, y, nomsg ? "" : "fall")) 

@@ -1157,7 +1157,10 @@ register struct obj *obj;
                             otmp->quan -= coin_loss;
                             money -= coin_loss * denomination;
                             if (!otmp->quan)
+                            {
+                                Sprintf(priority_debug_buf_3, "dipfountain: %d", otmp->otyp);
                                 delobj(otmp);
+                            }
                         }
                     You_ex(ATR_NONE, CLR_MSG_WARNING, "lost some of your money in the fountain!");
                     CLEAR_FOUNTAIN_LOOTED(u.ux, u.uy);

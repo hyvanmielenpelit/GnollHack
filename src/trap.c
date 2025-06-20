@@ -884,6 +884,7 @@ int *fail_reason;
     if (statue->owornmask)
         remove_worn_item(statue, TRUE);
     /* statue no longer exists */
+    Sprintf(priority_debug_buf_3, "animate_statue: %d", statue->otyp);
     delobj(statue);
 
     /* avoid hiding under nothing */
@@ -4426,6 +4427,7 @@ xchar x, y;
             pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s %s.", Yname2(obj),
                   destroy_strings[dindx][(obj->quan > 1L)]);
         setnotworn(obj);
+        Sprintf(priority_debug_buf_3, "fire_damage2: %d", obj->otyp);
         delobj(obj);
         return TRUE;
     } 
@@ -4440,6 +4442,7 @@ xchar x, y;
             pline("%s %s.", Yname2(obj),
                   destroy_strings[dindx][(obj->quan > 1L)]);
         setnotworn(obj);
+        Sprintf(priority_debug_buf_3, "fire_damage3: %d", obj->otyp);
         delobj(obj);
         return TRUE;
     }
@@ -4742,6 +4745,7 @@ boolean force;
                     acid_ctx.unk_boom++;
             }
             setnotworn(obj);
+            Sprintf(priority_debug_buf_3, "water_damage: %d", obj->otyp);
             delobj(obj);
             if (update)
                 update_inventory();
@@ -6934,6 +6938,7 @@ boolean disarm;
                                  && uball->ox == u.ux && uball->oy == u.uy)))
                 unpunish();
 
+            Strcpy(priority_debug_buf_3, "chest_trap");
             for (otmp = level.objects[u.ux][u.uy]; otmp; otmp = otmp2)
             {
                 otmp2 = otmp->nexthere;

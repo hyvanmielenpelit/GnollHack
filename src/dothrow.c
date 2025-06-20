@@ -2271,6 +2271,7 @@ uchar* hitres_ptr;
                 /* Don't leave a cockatrice corpse available in a statue */
                 if (!u.uswallow) 
                 {
+                    Sprintf(priority_debug_buf_3, "thitmonst: %d", obj->otyp);
                     delobj(obj);
                     return 1;
                 }
@@ -2546,7 +2547,10 @@ boolean from_invent;
         }
     }
     if (!fracture)
+    {
+        Sprintf(priority_debug_buf_3, "breakobj: %d", obj->otyp);
         delobj(obj);
+    }
 }
 
 /*

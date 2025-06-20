@@ -2515,6 +2515,7 @@ boolean* obj_destroyed;
             /* in case MON_AT+enexto for invisible mon */
             int x = obj->ox, y = obj->oy;
             /* not useupf(), which charges */
+            Sprintf(priority_debug_buf_3, "hmon_hitmon-delobj1: %d", obj->otyp);
             delobj(obj);
             newsym(x, y);
             obj = (struct obj*)0;

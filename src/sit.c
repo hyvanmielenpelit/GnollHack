@@ -19,6 +19,7 @@ take_gold()
         if (otmp->oclass == COIN_CLASS) {
             lost_money = 1;
             remove_worn_item(otmp, FALSE);
+            Sprintf(priority_debug_buf_3, "take_gold: %d", otmp->otyp);
             delobj(otmp);
         }
     }

@@ -3292,6 +3292,7 @@ register struct obj* omonwep;
         else if (omonwep->where == OBJ_FLOOR)
         {
             int x = omonwep->ox, y = omonwep->oy;
+            Sprintf(priority_debug_buf_3, "hitmu: %d", omonwep->otyp);
             delobj(omonwep);
             newsym(x, y);
         }

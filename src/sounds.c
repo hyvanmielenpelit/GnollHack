@@ -5773,6 +5773,7 @@ struct monst* mtmp;
                                     currency(oprice));
                                 /* delobj->obfree will handle actual shop billing update */
                             }
+                            Sprintf(priority_debug_buf_3, "do_chat_feed: %d", otmp->otyp);
                             delobj(otmp);
                         }
                     }

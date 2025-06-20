@@ -317,6 +317,7 @@ moverock()
                               trap_type_definitions[ttmp->ttyp].name,
                               surface(rx, ry));
                     deltrap(ttmp);
+                    Sprintf(priority_debug_buf_3, "moverock: %d", otmp->otyp);
                     delobj(otmp);
                     bury_objs(rx, ry);
                     levl[rx][ry].wall_info &= ~W_NONDIGGABLE;
@@ -606,6 +607,7 @@ xchar x, y;
     if (boulder)
     {
         play_occupation_immediate_sound(oss, OCCUPATION_EATING, OCCUPATION_SOUND_TYPE_START);
+        Sprintf(priority_debug_buf_3, "still_chewing: %d", boulder->otyp);
         delobj(boulder);         /* boulder goes bye-bye */
         You("eat the boulder."); /* yum */
 

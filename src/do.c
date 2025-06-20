@@ -5929,6 +5929,7 @@ register struct obj *obj;
                           otense(otmp, "vanish"));
                     ideed = TRUE;
                 }
+                Sprintf(priority_debug_buf_3, "dosinkring: %d", otmp->otyp);
                 delobj(otmp);
             }
         }
@@ -6279,7 +6280,7 @@ boolean with_impact;
             if (is_unpaid(obj))
                 (void) stolen_value(obj, u.ux, u.uy, TRUE, FALSE);
 
-            (void) mpickobj(u.ustuck, obj);
+            int was_obj_freed = mpickobj(u.ustuck, obj);
 
             if (is_animal(u.ustuck->data)) 
             {
@@ -6287,7 +6288,11 @@ boolean with_impact;
                 {
                     (void) newcham(u.ustuck, could_poly ? (struct permonst *) 0 : &mons[PM_GREEN_SLIME], 0,
                                    FALSE, could_slime);
-                    delobj(obj); /* corpse is digested */
+                    if (!was_obj_freed)
+                    {
+                        Sprintf(priority_debug_buf_3, "dropz1: %d", obj->otyp);
+                        delobj(obj); /* corpse is digested */
+                    }
                 }
                 else if (could_petrify) 
                 {
@@ -6295,18 +6300,29 @@ boolean with_impact;
                     (void)set_mon_property_verbosely(u.ustuck, STONED, max(1, min(existing_stoning - 1, 5)));
                     //minstapetrify(u.ustuck, TRUE);
                     /* Don't leave a cockatrice corpse in a statue */
-                    if (!u.uswallow)
+                    if (!u.uswallow && !was_obj_freed)
+                    {
+                        Sprintf(priority_debug_buf_3, "dropz2: %d", obj->otyp);
                         delobj(obj);
+                    }
                 } 
                 else if (could_grow)
                 {
                     (void) grow_up(u.ustuck, (struct monst *) 0);
-                    delobj(obj); /* corpse is digested */
+                    if (!was_obj_freed)
+                    {
+                        Sprintf(priority_debug_buf_3, "dropz3: %d", obj->otyp);
+                        delobj(obj); /* corpse is digested */
+                    }
                 } 
                 else if (could_heal)
                 {
                     u.ustuck->mhp = u.ustuck->mhpmax;
-                    delobj(obj); /* corpse is digested */
+                    if (!was_obj_freed)
+                    {
+                        Sprintf(priority_debug_buf_3, "dropz4: %d", obj->otyp);
+                        delobj(obj); /* corpse is digested */
+                    }
                 }
             }
         }

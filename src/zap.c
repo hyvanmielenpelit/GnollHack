@@ -3086,6 +3086,7 @@ boolean replaceundead;
         /* not useupf(), which charges */
         if (corpse->quan > 1L)
             corpse = splitobj(corpse, 1L);
+        Sprintf(priority_debug_buf_3, "revive: %d", corpse->otyp);
         delobj(corpse);
         newsym(x, y);
         break;
@@ -3596,6 +3597,7 @@ int mat, minwt;
                 minwt -= (int) otmp->quan;
             else
                 minwt = 0;
+            Sprintf(priority_debug_buf_3, "polyuse: %d", otmp->otyp);
             delobj(otmp);
         }
     }
@@ -3764,6 +3766,7 @@ struct obj *obj;
     }
 
     /* zap the object */
+    Sprintf(priority_debug_buf_3, "do_osshock: %d", obj->otyp);
     delobj(obj);
 }
 
@@ -3801,6 +3804,7 @@ int id;
 
         /* Try up to 3 times to make the magic-or-not status of
            the new item be the same as it was for the old one. */
+        Strcpy(priority_debug_buf_3, "poly_obj");
         otmp = (struct obj *) 0;
         do 
         {
@@ -4140,6 +4144,7 @@ int id;
                 Norep_ex(ATR_NONE, CLR_MSG_WARNING, "%s is furious!", Monnam(shkp));
         }
     }
+    Sprintf(priority_debug_buf_3, "poly_obj2: %d", obj->otyp);
     delobj(obj);
     return otmp;
 }
@@ -4197,6 +4202,7 @@ struct obj *obj;
                     if (obj->timed)
                         obj_stop_timers(obj);
                     Sprintf(priority_debug_buf_2, "stone_to_flesh_obj: %d", obj->otyp);
+                    Sprintf(priority_debug_buf_3, "stone_to_flesh_obj: %d", obj->otyp);
                     if (carried(obj))
                         useup(obj);
                     else

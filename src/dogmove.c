@@ -423,6 +423,7 @@ boolean devour;
     else if (obj == uball) 
     {
         unpunish();
+        Sprintf(priority_debug_buf_3, "dog_eat: %d", obj->otyp);
         delobj(obj); /* we assume this can't be unpaid */
     } 
     else if (obj == uchain) 
@@ -449,6 +450,7 @@ boolean devour;
         if (obj->otyp == STATUE)
             pre_break_statue(obj);
 
+        Sprintf(priority_debug_buf_3, "dog_eat2: %d", obj->otyp);
         delobj(obj);
     }
 

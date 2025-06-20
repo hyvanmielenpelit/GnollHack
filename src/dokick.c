@@ -2353,6 +2353,7 @@ boolean near_hero;
                         continue;
                 } else if (breaktest(otmp)) {
                     /* assume it broke before player arrived, no messages */
+                    Sprintf(priority_debug_buf_3, "obj_delivery: %d", otmp->otyp);
                     delobj(otmp);
                     continue;
                 }
@@ -2368,6 +2369,7 @@ boolean near_hero;
             otmp->ox = otmp->oy = 0;
             if (rloco(otmp) && !nobreak && breaktest(otmp)) {
                 /* assume it broke before player arrived, no messages */
+                Sprintf(priority_debug_buf_3, "obj_delivery2: %d", otmp->otyp);
                 delobj(otmp);
             }
         }
