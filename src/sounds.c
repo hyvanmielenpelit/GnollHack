@@ -7114,7 +7114,7 @@ struct monst* mtmp;
     else if (!umoney)
     {
         play_sfx_sound(SFX_NOT_ENOUGH_MONEY);
-        You_ex1_popup("have no money.", "No Money", ATR_NONE, CLR_MSG_ATTENTION, NO_GLYPH, POPUP_FLAGS_NONE);
+        You_ex1_popup("have no money.", "No Money", ATR_NONE, CLR_MSG_FAIL, NO_GLYPH, POPUP_FLAGS_NONE);
         return 0;
     }
 
@@ -7209,7 +7209,7 @@ struct monst* mtmp;
     else if (!umoney)
     {
         play_sfx_sound(SFX_NOT_ENOUGH_MONEY);
-        You_ex1_popup("have no money.", "No Money", ATR_NONE, CLR_MSG_ATTENTION, NO_GLYPH, POPUP_FLAGS_NONE);
+        You_ex1_popup("have no money.", "No Money", ATR_NONE, CLR_MSG_FAIL, NO_GLYPH, POPUP_FLAGS_NONE);
         return 0;
     }
 
@@ -7266,7 +7266,7 @@ struct monst* mtmp;
     else if (!umoney)
     {
         play_sfx_sound(SFX_NOT_ENOUGH_MONEY);
-        You_ex1_popup("have no money.", "No Money", ATR_NONE, CLR_MSG_ATTENTION, NO_GLYPH, POPUP_FLAGS_NONE);
+        You_ex1_popup("have no money.", "No Money", ATR_NONE, CLR_MSG_FAIL, NO_GLYPH, POPUP_FLAGS_NONE);
         return 0;
     }
 
@@ -7323,7 +7323,7 @@ struct monst* mtmp;
     else if (!umoney)
     {
         play_sfx_sound(SFX_NOT_ENOUGH_MONEY);
-        You_ex1_popup("have no money.", "No Money", ATR_NONE, CLR_MSG_ATTENTION, NO_GLYPH, POPUP_FLAGS_NONE);
+        You_ex1_popup("have no money.", "No Money", ATR_NONE, CLR_MSG_FAIL, NO_GLYPH, POPUP_FLAGS_NONE);
         return 0;
     }
 
@@ -7387,7 +7387,7 @@ struct monst* mtmp;
     else if (!umoney)
     {
         play_sfx_sound(SFX_NOT_ENOUGH_MONEY);
-        You_ex1_popup("have no money.", "No Money", ATR_NONE, CLR_MSG_ATTENTION, NO_GLYPH, POPUP_FLAGS_NONE);
+        You_ex1_popup("have no money.", "No Money", ATR_NONE, CLR_MSG_FAIL, NO_GLYPH, POPUP_FLAGS_NONE);
         return 0;
     }
 
@@ -7513,7 +7513,7 @@ struct monst* mtmp;
     else if (!umoney)
     {
         play_sfx_sound(SFX_NOT_ENOUGH_MONEY);
-        You_ex1_popup("have no money.", "No Money", ATR_NONE, CLR_MSG_ATTENTION, NO_GLYPH, POPUP_FLAGS_NONE);
+        You_ex1_popup("have no money.", "No Money", ATR_NONE, CLR_MSG_FAIL, NO_GLYPH, POPUP_FLAGS_NONE);
         return 0;
     }
 
@@ -7694,7 +7694,7 @@ struct monst* mtmp;
     else if (umoney <= 0) 
     {
         play_sfx_sound(SFX_NOT_ENOUGH_MONEY);
-        You_ex1_popup("have no money.", "No Money", ATR_NONE, CLR_MSG_ATTENTION, NO_GLYPH, POPUP_FLAGS_NONE);
+        You_ex1_popup("have no money.", "No Money", ATR_NONE, CLR_MSG_FAIL, NO_GLYPH, POPUP_FLAGS_NONE);
         return 0;
     }
 
@@ -8551,7 +8551,7 @@ struct monst* mtmp;
     else if (!umoney)
     {
         play_sfx_sound(SFX_NOT_ENOUGH_MONEY);
-        You_ex1_popup("have no money.", "No Money", ATR_NONE, CLR_MSG_ATTENTION, NO_GLYPH, POPUP_FLAGS_NONE);
+        You_ex1_popup("have no money.", "No Money", ATR_NONE, CLR_MSG_FAIL, NO_GLYPH, POPUP_FLAGS_NONE);
         return 0;
     }
 
@@ -9385,7 +9385,7 @@ int64_t minor_id_cost;
     else if (!umoney) 
     {
         play_sfx_sound(SFX_NOT_ENOUGH_MONEY);
-        You_ex1_popup("have no money.", "No Money", ATR_NONE, CLR_MSG_ATTENTION, NO_GLYPH, POPUP_FLAGS_NONE);
+        You_ex1_popup("have no money.", "No Money", ATR_NONE, CLR_MSG_FAIL, NO_GLYPH, POPUP_FLAGS_NONE);
         return 0;
     }
 
@@ -10445,7 +10445,7 @@ int special_dialogue_sound_id;
     else if (!umoney)
     {
         play_sfx_sound(SFX_NOT_ENOUGH_MONEY);
-        You_ex1_popup("have no money.", "No Money", ATR_NONE, CLR_MSG_ATTENTION, NO_GLYPH, POPUP_FLAGS_NONE);
+        You_ex1_popup("have no money.", "No Money", ATR_NONE, CLR_MSG_FAIL, NO_GLYPH, POPUP_FLAGS_NONE);
         return 0;
     }
 
@@ -10530,7 +10530,7 @@ int special_dialogue_sound_id;
     else if (!umoney)
     {
         play_sfx_sound(SFX_NOT_ENOUGH_MONEY);
-        You_ex1_popup("have no money.", "No Money", ATR_NONE, CLR_MSG_ATTENTION, NO_GLYPH, POPUP_FLAGS_NONE);
+        You_ex1_popup("have no money.", "No Money", ATR_NONE, CLR_MSG_FAIL, NO_GLYPH, POPUP_FLAGS_NONE);
         return 0;
     }
 
@@ -10601,7 +10601,7 @@ int special_dialogue_sound_id;
     else if (!umoney)
     {
         play_sfx_sound(SFX_NOT_ENOUGH_MONEY);
-        You_ex1_popup("have no money.", "No Money", ATR_NONE, CLR_MSG_ATTENTION, NO_GLYPH, POPUP_FLAGS_NONE);
+        You_ex1_popup("have no money.", "No Money", ATR_NONE, CLR_MSG_FAIL, NO_GLYPH, POPUP_FLAGS_NONE);
         return 0;
     }
     if (special_dialogue_sound_id > 0)
@@ -10696,7 +10696,7 @@ int64_t service_cost;
     else if (!umoney)
     {
         play_sfx_sound(SFX_NOT_ENOUGH_MONEY);
-        You_ex1_popup("have no money.", "No Money", ATR_NONE, CLR_MSG_ATTENTION, NO_GLYPH, POPUP_FLAGS_NONE);
+        You_ex1_popup("have no money.", "No Money", ATR_NONE, CLR_MSG_FAIL, NO_GLYPH, POPUP_FLAGS_NONE);
         return 0;
     }
 
@@ -10712,7 +10712,7 @@ int64_t service_cost;
     if (otmp->dknown && objects[otmp->otyp].oc_name_known && !objects[otmp->otyp].oc_enchantable)
     {
         play_sfx_sound(SFX_GENERAL_CANNOT);
-        You_ex1_popup("cannot enchant that.", "Unenchantable Item", ATR_NONE, CLR_MSG_ATTENTION, NO_GLYPH, POPUP_FLAGS_NONE);
+        You_ex1_popup("cannot enchant that.", "Unenchantable Item", ATR_NONE, CLR_MSG_FAIL, NO_GLYPH, POPUP_FLAGS_NONE);
         return 0;
     }
 
@@ -10736,7 +10736,7 @@ int64_t service_cost;
     if (!acceptable_item)
     {
         play_sfx_sound(SFX_GENERAL_CANNOT);
-        You_ex1_popup("cannot enchant that with this service.", "Wrong Item Type", ATR_NONE, CLR_MSG_ATTENTION, NO_GLYPH, POPUP_FLAGS_NONE);
+        You_ex1_popup("cannot enchant that with this service.", "Wrong Item Type", ATR_NONE, CLR_MSG_FAIL, NO_GLYPH, POPUP_FLAGS_NONE);
         return 0;
     }
 
@@ -10750,7 +10750,9 @@ int64_t service_cost;
     if (!services_afforded)
     {
         play_sfx_sound(SFX_NOT_ENOUGH_MONEY);
-        You_ex1_popup("don't have enough money for this service.", "Not Enough Money", ATR_NONE, CLR_MSG_ATTENTION, NO_GLYPH, POPUP_FLAGS_NONE);
+        char nmbuf[BUFSZ];
+        Sprintf(nmbuf, "Enchanting costs %lld %s; you don't have enough money.", (long long)service_cost, currency(service_cost));
+        pline_ex1_popup(ATR_NONE, CLR_MSG_FAIL, nmbuf, "Not Enough Money", TRUE);
         return 0;
     }
 
