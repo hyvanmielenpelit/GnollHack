@@ -6817,6 +6817,10 @@ namespace GnollHackX.Pages.Game
         public float _localStatusLargestBottom = 0;
         public float _localStatusClipBottom = 0;
 
+        private readonly object _savedCanvasLock = new object();
+        private float _savedCanvasWidth = 0;
+        private float _savedCanvasHeight = 0;
+
         private void PaintMainGamePage(object sender, SKPaintSurfaceEventArgs e, bool isCanvasOnMainThread)
         {
             if (!IsMainCanvasOn || GHApp.IsReplaySearching)
@@ -6831,6 +6835,23 @@ namespace GnollHackX.Pages.Game
             canvas.Clear(SKColors.Black);
             if (canvaswidth <= 16 || canvasheight <= 16)
                 return;
+
+            bool lockTaken = false;
+            try
+            {
+                Monitor.TryEnter(_savedCanvasLock, ref lockTaken);
+                if (lockTaken)
+                {
+                    _savedCanvasWidth = canvaswidth;
+                    _savedCanvasHeight = canvasheight;
+                }
+            }
+            finally
+            {
+                if (lockTaken)
+                    Monitor.Exit(_savedCanvasLock);
+            }
+            lockTaken = false;
 
             bool drawwallends = DrawWallEnds;
             bool breatheanimations = BreatheAnimations;
@@ -6874,7 +6895,6 @@ namespace GnollHackX.Pages.Game
             float messageTextMultiplier = UIUtils.CalculateMessageFontSizeMultiplier(stdButtonWidth, stdButtonHeight, statusBarSkiaHeight, textscale * GHConstants.WindowMessageFontSize, 
                 canvaswidth, canvasheight, canvasViewWidth, canvasViewHeight, usingDesktopButtons, usingSimpleCmdLayout, inverse_canvas_scale, customScale);
             float messageTextScale = textscale * messageTextMultiplier;
-            bool lockTaken = false;
 
             bool clearDarkeningCaches = false;
             lock(_lighterDarkeningLock)
@@ -18109,7 +18129,7 @@ namespace GnollHackX.Pages.Game
                 if (ShowFPS)
                 {
                     float textscale = UIUtils.CalculateTextScale();
-                    float landscapeMultiplier = UIUtils.CalculateStatusBarFontSizeMultiplier(canvasView.Width, canvasView.Height);
+                    float landscapeMultiplier = UIUtils.CalculateStatusBarFontSizeMultiplier(canvasView.ThreadSafeWidth, canvasView.ThreadSafeHeight);
                     float statusBarTextScale = landscapeMultiplier * textscale;
                     textPaint.TextSize = GHConstants.StatusBarBaseFontSize * statusBarTextScale;
                     float target_scale = textPaint.FontSpacing / GHApp._statusWizardBitmap.Height; // All are 64px high
@@ -18518,6 +18538,17 @@ namespace GnollHackX.Pages.Game
                 float canvaswidth = e.Info.Width; // canvasView.CanvasSize.Width;
                 float canvasheight = e.Info.Height; // canvasView.CanvasSize.Height;
                 bool landscape = (canvaswidth > canvasheight);
+                float maincanvaswidth = 0;
+                float maincanvasheight = 0;
+                lock (_savedCanvasLock)
+                {
+                    maincanvaswidth = _savedCanvasWidth;
+                    maincanvasheight = _savedCanvasHeight;
+                }
+
+                float xscale = maincanvaswidth <= 0 || canvaswidth <= 0 ? 1.0f : canvaswidth / maincanvaswidth;
+                float yscale = maincanvasheight <= 0 || canvasheight <= 0 ? 1.0f : canvasheight / maincanvasheight;
+
                 float tx = 0, ty = 0;
                 SKRect bounds = new SKRect();
                 textPaint.Color = SKColors.White;
@@ -18538,7 +18569,7 @@ namespace GnollHackX.Pages.Game
                 float target_scale_canvas = 1.0f;
                 float mult_canvas = 1.0f;
                 float prev_bottom = 0;
-                float sbheight = UIUtils.CalculateStatusBarSkiaHeight(canvasView.Width, canvasView.Height); // GetStatusBarSkiaHeightEx(canvasView.Width, canvasView.Height, DesktopButtons, UseSimpleCmdLayout);
+                float sbheight = yscale * UIUtils.CalculateStatusBarSkiaHeight(canvasView.ThreadSafeWidth, canvasView.ThreadSafeHeight); // GetStatusBarSkiaHeightEx(canvasView.Width, canvasView.Height, DesktopButtons, UseSimpleCmdLayout);
                 SKRect statusBarCenterRect = new SKRect(canvaswidth / 2 - sbheight / 2, 0, canvaswidth / 2 + sbheight / 2, sbheight);
 
                 switch (ShownTip)
@@ -18608,7 +18639,7 @@ namespace GnollHackX.Pages.Game
                         PaintTipButton(canvas, textPaint, ToggleTravelModeButton, "Use this to set how you move around.", "Travel Mode", 1.5f, centerfontsize, fontsize, false, landscape ? -1.5f : -0.15f, landscape ? -0.5f : 0, canvaswidth, canvasheight);
                         break;
                     case 8:
-                        PaintTipButtonByRect(canvas, textPaint, statusBarCenterRect, "You can " + GHApp.GetClickTapWord(false, false) + " the status bar.", "Open status screen", 1.0f, centerfontsize, fontsize, false, -0.15f, 1.0f, canvaswidth, canvasheight);
+                        PaintTipButtonByRect(canvas, textPaint, statusBarCenterRect, "You can " + GHApp.GetClickTapWord(false, false) + " the status bar.", "Open status screen", 1.0f, centerfontsize, fontsize, false, -0.15f, 1.0f, canvaswidth, canvasheight, 1.0f, 1.0f);
                         break;
                     case 9:
                         PaintTipButton(canvas, textPaint, DesktopButtons ? lRowAbilitiesButton : lAbilitiesButton, DesktopButtons ? "Some commands are specially located." : "Some commands do not have buttons.", "Character and game status", 1.0f, centerfontsize, fontsize, true, 0.15f, DesktopButtons ? -1.0f : 1.0f, canvaswidth, canvasheight);
@@ -18620,10 +18651,10 @@ namespace GnollHackX.Pages.Game
                         PaintTipButton(canvas, textPaint, ToggleMessageNumberButton, "", GHApp.GetClickTapWord(true, false) + " here to see more messages", 1.0f, centerfontsize, fontsize, true, 0.5f, -1.0f, canvaswidth, canvasheight);
                         break;
                     case 12:
-                        PaintTipButtonByRect(canvas, textPaint, HealthRect, GHApp.GetClickTapWord(true, true) + " shows your maximum health.", "Health Orb", 1.1f, centerfontsize, fontsize, true, 0.15f, 0.0f, canvaswidth, canvasheight);
+                        PaintTipButtonByRect(canvas, textPaint, HealthRect, GHApp.GetClickTapWord(true, true) + " shows your maximum health.", "Health Orb", 1.1f, centerfontsize, fontsize, true, 0.15f, 0.0f, canvaswidth, canvasheight, xscale, yscale);
                         break;
                     case 13:
-                        PaintTipButtonByRect(canvas, textPaint, ManaRect, GHApp.GetClickTapWord(true, true) + " reveals your maximum mana.", "Mana Orb", 1.1f, centerfontsize, fontsize, true, 0.15f, 0.0f, canvaswidth, canvasheight);
+                        PaintTipButtonByRect(canvas, textPaint, ManaRect, GHApp.GetClickTapWord(true, true) + " reveals your maximum mana.", "Mana Orb", 1.1f, centerfontsize, fontsize, true, 0.15f, 0.0f, canvaswidth, canvasheight, xscale, yscale);
                         break;
                     case 14:
                         textPaint.TextSize = 36;
@@ -18833,10 +18864,10 @@ namespace GnollHackX.Pages.Game
             SKRect viewrect = GetThreadSafeViewScreenRect(view);
             SKRect tiprect = GetThreadSafeViewScreenRect(TipView);
             SKRect adjustedrect = new SKRect(viewrect.Left - tiprect.Left, viewrect.Top - tiprect.Top, viewrect.Right - tiprect.Left, viewrect.Bottom - tiprect.Top);
-            PaintTipButtonByRect(canvas, textPaint, adjustedrect, centertext, boxtext, radius_mult, centertextfontsize, boxfontsize, linefromright, lineoffsetx, lineoffsety, canvaswidth, canvasheight);
+            PaintTipButtonByRect(canvas, textPaint, adjustedrect, centertext, boxtext, radius_mult, centertextfontsize, boxfontsize, linefromright, lineoffsetx, lineoffsety, canvaswidth, canvasheight, 1.0f, 1.0f);
         }
 
-        public void PaintTipButtonByRect(SKCanvas canvas, GHSkiaFontPaint textPaint, SKRect viewrect, string centertext, string boxtext, float radius_mult, float centertextfontsize, float boxfontsize, bool linefromright, float lineoffsetx, float lineoffsety, float canvaswidth, float canvasheight)
+        public void PaintTipButtonByRect(SKCanvas canvas, GHSkiaFontPaint textPaint, SKRect viewrect, string centertext, string boxtext, float radius_mult, float centertextfontsize, float boxfontsize, bool linefromright, float lineoffsetx, float lineoffsety, float canvaswidth, float canvasheight, float xscale, float yscale)
         {
             float tx = 0, ty = 0;
             SKRect bounds = new SKRect();
@@ -18869,10 +18900,10 @@ namespace GnollHackX.Pages.Game
             textPaint.MaskFilter = null;
             textPaint.DrawTextOnCanvas(canvas, str, tx, ty);
 
-            relX = viewrect.Left;
-            relY = viewrect.Top;
-            relWidth = viewrect.Width;
-            relHeight = viewrect.Height;
+            relX = viewrect.Left * xscale;
+            relY = viewrect.Top * yscale;
+            relWidth = viewrect.Width * xscale;
+            relHeight = viewrect.Height * yscale;
 
             textPaint.Typeface = GHApp.LatoRegular;
             textPaint.TextSize = boxfontsize;
