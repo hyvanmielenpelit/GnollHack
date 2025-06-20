@@ -3843,8 +3843,25 @@ namespace GnollHackX.Pages.Game
             if(!PlayingReplay)
             {
                 if(GHApp.AutoFocusOnEntry)
+                {
+#if GNH_MAUI
+                    var timer = Microsoft.Maui.Controls.Application.Current.Dispatcher.CreateTimer();
+                    timer.Interval = TimeSpan.FromSeconds(GHConstants.KeyboardFocusDelay);
+                    timer.IsRepeating = false;
+                    timer.Tick += (s, e) => { FocusToGetLineEntry(); };
+                    timer.Start();
+#else
                     GetLineEntryText.Focus();
+#endif
+                }
             }
+        }
+        private void FocusToGetLineEntry()
+        {
+            MainThread.BeginInvokeOnMainThread(() =>
+            {
+                GetLineEntryText.Focus();
+            });
         }
 
         private void HideGetLine()
@@ -4414,9 +4431,9 @@ namespace GnollHackX.Pages.Game
                         {
                             TextGrid.IsVisible = false;
                         }
-    #if !GNH_MAUI
+#if !GNH_MAUI
                         MenuStack.ForceLayout();
-    #endif
+#endif
                         await MenuStack.FadeTo(1.0, 256);
                     }
                     catch (Exception ex)

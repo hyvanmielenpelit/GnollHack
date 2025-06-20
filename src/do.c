@@ -8382,13 +8382,18 @@ anything *arg;
 int64_t timeout UNUSED;
 {
     struct obj *body = arg->a_obj;
-    struct permonst *mptr = &mons[body->corpsenm];
+    struct permonst *mptr = body->corpsenm >= LOW_PM ? &mons[body->corpsenm] : 0;
     struct monst *mtmp;
     xchar x, y;
 
+    if (!mptr)
+        return;
+
+    int body_where = body->where;
+
     /* corpse will revive somewhere else if there is a monster in the way;
        Riders get a chance to try to bump the obstacle out of their way */
-    if ((mptr->mflags3 & M3_DISPLACES) != 0 && body->where == OBJ_FLOOR
+    if ((mptr->mflags3 & M3_DISPLACES) != 0 && body_where == OBJ_FLOOR
         && get_obj_location(body, &x, &y, 0) && (mtmp = m_at(x, y)) != 0) {
         boolean notice_it = canseemon(mtmp); /* before rloc() */
         char *monname = Monnam(mtmp);
@@ -8404,16 +8409,20 @@ int64_t timeout UNUSED;
     }
 
     /* if we succeed, the corpse is gone */
-    if (!revive_corpse(body)) {
+    if (!revive_corpse(body)) 
+    {
         int64_t when;
         int action;
 
-        if (is_rider_or_tarrasque(mptr) && rn2(99)) { /* Rider usually tries again */
+        if (is_rider_or_tarrasque(mptr) && (body_where == OBJ_MAGIC || rn2(99)))  /* Rider usually tries again; and always if in magic chest */
+        {
             action = REVIVE_MON;
             for (when = 3L; when < 67L; when++)
                 if (!rn2(3))
                     break;
-        } else { /* rot this corpse away */
+        } 
+        else 
+        { /* rot this corpse away */
             You_feel_ex(ATR_NONE, CLR_MSG_ATTENTION, "%sless hassled.", is_rider_or_tarrasque(mptr) ? "much " : "");
             action = ROT_CORPSE;
             when = 250L - (monstermoves - body->age);
