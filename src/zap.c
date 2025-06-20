@@ -9683,6 +9683,7 @@ boolean u_caused;
                     obj->quan = scrquan;
                 }
                 /* useupf(), which charges, only if hero caused damage */
+                Sprintf(priority_debug_buf_2, "burn_floor_objects: %d", obj->otyp);
                 Sprintf(priority_debug_buf_3, "burn_floor_objects: %d", obj->otyp);
                 if (u_caused)
                     useupf_with_flags(obj, delquan, NEWSYM_FLAGS_KEEP_OLD_EFFECT_MISSILE_ZAP_GLYPHS);

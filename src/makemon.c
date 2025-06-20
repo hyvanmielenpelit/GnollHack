@@ -4521,7 +4521,9 @@ int otyp;
         }
         /* make sure container contents are free'ed */
         Sprintf(priority_debug_buf_4, "set_mimic_new_mobj: %d", otmp->otyp);
+        context.surpress_container_deletion_warning = 1;
         obfree(otmp, (struct obj*)0);
+        context.surpress_container_deletion_warning = 0;
     }
 }
 
