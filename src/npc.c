@@ -673,6 +673,17 @@ int mtype;
             if (otmp)
                 (void)mpickobj(npc, otmp);
 
+            otmp = mksobj_with_flags(RIN_INCREASE_ACCURACY, TRUE, FALSE, MKOBJ_TYPE_NPC_SELLING, npc, MAT_NONE, 0L, 0L, 0UL);
+            if (otmp)
+            {
+                if (otmp->enchantment < 5)
+                    otmp->enchantment = 5 + rn2(3);
+                if (otmp->cursed)
+                    uncurse(otmp);
+                otmp = uoname(otmp, "Xanbane");
+                if (otmp)
+                    (void)mpickobj(npc, otmp);
+            }
             break;
         }
         case NPC_HERMIT3:
@@ -703,8 +714,20 @@ int mtype;
             if (otmp)
                 (void)mpickobj(npc, otmp);
 
-            mongets(npc, GNOMISH_FELT_HAT);
-            cnt = 2 + rnd(2);
+            otmp = mksobj_with_flags(RIN_INCREASE_ACCURACY, TRUE, FALSE, MKOBJ_TYPE_NPC_SELLING, npc, MAT_NONE, 0L, 0L, 0UL);
+            if (otmp)
+            {
+                if (otmp->enchantment < 5)
+                    otmp->enchantment = 5 + rn2(3);
+                if (otmp->cursed)
+                    uncurse(otmp);
+                otmp = uoname(otmp, "Xanbane");
+                if (otmp)
+                    (void)mpickobj(npc, otmp);
+            }
+
+            (void) mongets(npc, GNOMISH_FELT_HAT);
+            cnt = rn2(3);
             for (i = 0; i < cnt; i++)
             {
                 otmp = mksobj_with_flags(GNOMISH_FELT_HAT, TRUE, FALSE, MKOBJ_TYPE_NPC_SELLING, npc, MAT_NONE, 0L, 0L, MKOBJ_FLAGS_FORCE_MYTHIC_OR_LEGENDARY);

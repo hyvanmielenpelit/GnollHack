@@ -11470,12 +11470,19 @@ int* spell_otyps;
 
         any.a_int = i;
         char let = 'a' + spell_count;
-        int glyph = obj_to_glyph(&pseudo, rn2_on_display_rng);
-        int gui_glyph = maybe_get_replaced_glyph(glyph, mtmp->mx, mtmp->my, data_to_replacement_info(glyph, LAYER_OBJECT, &pseudo, (struct monst*)0, 0UL, 0UL, 0UL, MAT_NONE, 0));
+        int spellnum = pseudo.otyp - FIRST_SPELL;
+        boolean use_obj_glyph = Hallucination || spellnum < 0 || spellnum >= MAXSPELL;
+        int glyph = use_obj_glyph ? obj_to_glyph(&pseudo, rn2_on_display_rng) : spellnum + GLYPH_SPELL_TILE_OFF;
+        int gui_glyph = !use_obj_glyph ? glyph : maybe_get_replaced_glyph(glyph, mtmp->mx, mtmp->my, data_to_replacement_info(glyph, LAYER_OBJECT, &pseudo, (struct monst*)0, 0UL, 0UL, 0UL, MAT_NONE, 0));
+        struct extended_menu_info info = zeroextendedmenuinfo;
+        if (use_obj_glyph)
+            info = obj_to_extended_menu_info(&pseudo);
+        else
+            info.menu_flags |= MENU_FLAGS_ACTIVE;
 
-        add_menu(win, gui_glyph, &any,
+        add_extended_menu(win, gui_glyph, &any,
             let, 0, ATR_NONE, NO_COLOR,
-            spellbuf, MENU_UNSELECTED);
+            spellbuf, MENU_UNSELECTED, info);
 
         spell_count++;
     }
