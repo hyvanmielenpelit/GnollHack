@@ -8079,8 +8079,8 @@ get_smith_forge_special_armor_service_info(forge_idx, text_ptr, func_ptr_ptr, ve
     forge_any_target_otyp_ptr, forge_any_target_quan_ptr, forge_any_material_component_otyp_ptr, forge_any_material_component_quan_ptr, forge_any_target_exceptionality_ptr, forge_any_target_material_ptr)
 int forge_idx;
 int* query_style_ptr, * special_dialogue_sound_id_ptr;
-int* forge_any_target_otyp_ptr, * forge_any_material_component_otyp_ptr, * forge_any_material_component_quan_ptr, * forge_any_target_exceptionality_ptr, * forge_any_target_material_ptr;
-int64_t *cost_ptr, *forge_any_target_quan_ptr;
+int* forge_any_target_otyp_ptr, * forge_any_target_quan_ptr, * forge_any_material_component_otyp_ptr, * forge_any_material_component_quan_ptr, * forge_any_target_exceptionality_ptr, * forge_any_target_material_ptr;
+int64_t *cost_ptr;
 const char** text_ptr, ** verb_ptr, ** nomood_ptr, ** extra_cost_descr_ptr;
 int (**func_ptr_ptr)(struct monst*);
 {
@@ -8405,8 +8405,8 @@ const char* title_text;
 
     int forge_idx;
     int query_style = 0, special_dialogue_sound_id = 0;
-    int forge_any_target_otyp_temp = 0, forge_any_material_component_otyp_temp = 0, forge_any_material_component_quan_temp = 0, forge_any_target_exceptionality_temp = 0, forge_any_target_material_temp = 0;
-    int64_t cost = 0, forge_any_target_quan_temp = 0;
+    int forge_any_target_otyp_temp = 0, forge_any_target_quan_temp = 0, forge_any_material_component_otyp_temp = 0, forge_any_material_component_quan_temp = 0, forge_any_target_exceptionality_temp = 0, forge_any_target_material_temp = 0;
+    int64_t cost = 0;
     const char* text = 0, * verb = 0, * nomood = 0, * extra_cost_descr = 0;
     int (*func_ptr)(struct monst*) = 0;
     char menubuf[BUFSZ];
@@ -8419,7 +8419,7 @@ const char* title_text;
         any.a_char = (char)forge_idx;
         struct obj pseudo = zeroobj;
         pseudo.otyp = forge_any_target_otyp_temp;
-        pseudo.quan = forge_any_target_quan_temp;
+        pseudo.quan = (int64_t)forge_any_target_quan_temp;
         pseudo.exceptionality = forge_any_target_exceptionality_temp;
         pseudo.material = forge_any_target_material_temp;
         int glyph = obj_to_glyph(&pseudo, rn2_on_display_rng);
