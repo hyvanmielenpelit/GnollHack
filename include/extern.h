@@ -1565,7 +1565,7 @@ E boolean FDECL(is_wearable, (struct obj*));
 E struct obj *FDECL(g_at, (int, int));
 E boolean FDECL(splittable, (struct obj *));
 E struct obj *FDECL(getobj, (const char *, const char *, int, const char*));
-E struct obj* FDECL(getobj_ex, (const char*, const char*, int, const char*, boolean (*)(struct obj*)));
+E struct obj* FDECL(getobj_ex, (const char*, const char*, int, const char*, boolean (*)(struct obj*), int64_t, unsigned int));
 void FDECL(construct_getobj_letters, (const char*, const char*, boolean(*)(struct obj*), char*, char*, char*, size_t, size_t, size_t, int*, xchar*, char**, xchar*, boolean*, boolean*, boolean*, boolean*, struct obj*));
 
 E boolean FDECL(acceptable_getobj_obj, (struct obj*, const char*, const char*));

@@ -2610,15 +2610,17 @@ register const char* let, * word;
 int show_weights;
 const char* headertext;
 {
-    return getobj_ex(let, word, show_weights, headertext, (boolean (*)(struct obj*))0);
+    return getobj_ex(let, word, show_weights, headertext, (boolean (*)(struct obj*))0, (int64_t)0, 0U);
 }
 
 struct obj *
-getobj_ex(let, word, show_weights, headertext, validitemfunc)
+getobj_ex(let, word, show_weights, headertext, validitemfunc, cost, getobjflags)
 register const char *let, *word;
 int show_weights;
 const char* headertext;
 boolean (*validitemfunc)(struct obj*);
+int64_t cost;
+unsigned int getobjflags; /* 1 = cost is specified; 2 = header text is about cost */
 {
     register struct obj *otmp;
     register char ilet = 0;
@@ -2638,6 +2640,12 @@ boolean (*validitemfunc)(struct obj*);
     boolean oneloop = FALSE;
     //int64_t dummymask;
     //Loot *sortedinvent, *srtinv;
+#ifndef GNH_MOBILE
+    if ((getobjflags & 3) == 3) /* On legacy versions, if header text also is about cost, keep just the cost in the title */
+    {
+        headertext = "";
+    }
+#endif
 
     construct_getobj_letters(let, word, validitemfunc, lets, altlets, buf, sizeof lets, sizeof altlets, sizeof buf, &foo, &foox, &bp, &allowcnt, &usegold, &allowall, &allownone, &useboulder, getobj_autoselect_obj);
     if (getobj_autoselect_obj)
@@ -2938,13 +2946,17 @@ boolean (*validitemfunc)(struct obj*);
     }
     
 
-    if (!iflags.force_invmenu && strcmp(headertext, "") != 0)
+    if (!iflags.force_invmenu && headertext && strcmp(headertext, "") != 0)
         pline("%s", headertext);
 
     for (;;) {
         cnt = 0;
         cntgiven = FALSE;
         Sprintf(qbuf, "What do you want to %s?", word);
+        if ((getobjflags & 1) != 0 && !(headertext && strcmp(headertext, "") && (getobjflags & 2) != 0))  /* On modern versions, if header text also is about cost, keep just the headertext */
+        {
+            Sprintf(eos(qbuf), " (%lld %s)", (long long)cost, currency(cost));
+        }
         if (in_doagain)
             ilet = readchar();
         else if (iflags.force_invmenu) {
@@ -3013,6 +3025,9 @@ boolean (*validitemfunc)(struct obj*);
             menuquery[0] = qbuf[0] = '\0';
             if (iflags.force_invmenu)
                 Sprintf(menuquery, "What do you want to %s?", word);
+            if ((getobjflags & 1) != 0 && !(headertext && strcmp(headertext, "") && (getobjflags & 2) != 0))  /* On modern versions, if header text also is about cost, keep just the headertext */
+                Sprintf(eos(menuquery), " (%lld %s)", (long long)cost, currency(cost));
+
             if (!strcmp(word, "grease"))
                 Sprintf(qbuf, "your %s", makeplural(body_part(FINGER)));
             else if (!strcmp(word, "write with"))
@@ -5040,7 +5055,7 @@ boolean addinventoryheader, wornonly;
     }
 
 #if !defined(GNH_MOBILE)
-   if(strcmp(headertext, "") != 0)
+   if(headertext && strcmp(headertext, "") != 0)
    {
        add_menu(win, NO_GLYPH, &any, ' ', 0, ATR_NONE, NO_COLOR,
            headertext, MENU_UNSELECTED);

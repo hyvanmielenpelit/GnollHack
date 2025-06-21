@@ -10667,6 +10667,9 @@ int64_t service_cost;
     const char* selectable_item_categories;
     const char* no_mood_string;
     int special_dialogue_sound_id;
+    char costbuf[BUFSZ];
+    Sprintf(costbuf, "Enchanting costs %lld %s", (long long)service_cost, currency(service_cost));
+
     switch (enchant_type)
     {
     case 0:
@@ -10705,7 +10708,7 @@ int64_t service_cost;
         play_monster_special_dialogue_line(mtmp, special_dialogue_sound_id);
     }
 
-    struct obj* otmp = getobj(selectable_item_categories, "enchant", 0, "");
+    struct obj* otmp = getobj_ex(selectable_item_categories, "enchant", 0, costbuf, (boolean(*)(struct obj*))0, service_cost, 3U);
     if (!otmp)
         return 0;
 
@@ -10751,7 +10754,7 @@ int64_t service_cost;
     {
         play_sfx_sound(SFX_NOT_ENOUGH_MONEY);
         char nmbuf[BUFSZ];
-        Sprintf(nmbuf, "Enchanting costs %lld %s; you don't have enough money.", (long long)service_cost, currency(service_cost));
+        Sprintf(nmbuf, "%s. You don't have enough money.", costbuf);
         pline_ex1_popup(ATR_NONE, CLR_MSG_FAIL, nmbuf, "Not Enough Money", TRUE);
         return 0;
     }
@@ -11041,7 +11044,7 @@ refill_lantern_func(mtmp)
 struct monst* mtmp;
 {
     const char refill_lantern_objects[] = { ALL_CLASSES, TOOL_CLASS, 0 };
-    struct obj* otmp = getobj_ex(refill_lantern_objects, "refill", 0, "", maybe_refillable_with_oil);
+    struct obj* otmp = getobj_ex(refill_lantern_objects, "refill", 0, "", maybe_refillable_with_oil, 0, 0U);
     char talkbuf[BUFSZ];
 
     if (!otmp)
@@ -11127,7 +11130,7 @@ forge_dragon_scale_mail_func(mtmp)
 struct monst* mtmp;
 {
     const char forge_objects[] = { ALL_CLASSES, ARMOR_CLASS, 0 };
-    struct obj* otmp = getobj_ex(forge_objects, "forge into a dragon scale mail", 0, "", maybe_dragon_scales);
+    struct obj* otmp = getobj_ex(forge_objects, "forge into a dragon scale mail", 0, "", maybe_dragon_scales, 0, 0U);
     char talkbuf[BUFSZ];
 
     if (!otmp)
@@ -11293,7 +11296,7 @@ boolean initialize;
     Sprintf(forge_string, "forge into %s", an(OBJ_NAME(objects[forge_dest_otyp])));
 
     otyp_for_maybe_otyp = forge_source_otyp;
-    struct obj* otmp = getobj_ex((const char*)forge_objects, forge_string, 0, "", maybe_otyp);
+    struct obj* otmp = getobj_ex((const char*)forge_objects, forge_string, 0, "", maybe_otyp, 0, 0U);
 
     if (!otmp)
         return 0;
