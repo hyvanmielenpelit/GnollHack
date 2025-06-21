@@ -1677,7 +1677,7 @@ int skill;
     case P_NECROMANCY_SPELL:
         return "necromancy";
     default:
-        impossible("Unknown spell skill, %d;", skill);
+        impossible("spelltypemnemonic: Unknown spell skill, %d;", skill);
         return empty_string;
     }
 }
@@ -1714,7 +1714,7 @@ int skill;
         case P_NECROMANCY_SPELL:
             return "&spnec;";
         default:
-            impossible("Unknown spell skill, %d;", skill);
+            impossible("spelltypesymbol (special symbols): unknown spell skill, %d;", skill);
             return empty_string;
         }
     }
@@ -1746,7 +1746,7 @@ int skill;
         case P_NECROMANCY_SPELL:
             return "Nec";
         default:
-            impossible("Unknown spell skill, %d;", skill);
+            impossible("spelltypesymbol: unknown spell skill, %d;", skill);
             return empty_string;
         }
     }
