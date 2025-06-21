@@ -2214,6 +2214,7 @@ namespace GnollHackX
         private static SKImage _castsBitmap;
         private static SKImage _addsBitmap;
         private static SKImage _foodBitmap;
+        private static SKImage _goldBitmap;
 
         private static SKImage _spellAbjurationBitmap;
         private static SKImage _spellArcaneBitmap;
@@ -2236,6 +2237,7 @@ namespace GnollHackX
             _castsBitmap = LoadEmbeddedUIBitmap("symbol-casts.png");
             _addsBitmap = LoadEmbeddedUIBitmap("symbol-adds.png");
             _foodBitmap = LoadEmbeddedUIBitmap("symbol-food.png");
+            _goldBitmap = LoadEmbeddedUIBitmap("symbol-gold.png");
 
             _spellAbjurationBitmap = LoadEmbeddedUIBitmap("symbol-spell-abjuration.png");
             _spellArcaneBitmap = LoadEmbeddedUIBitmap("symbol-spell-arcane.png");
@@ -3421,6 +3423,10 @@ namespace GnollHackX
             else if (trimmed_str == "&food;")
             {
                 bitmap = _foodBitmap;
+            }
+            else if (trimmed_str == "&gold;")
+            {
+                bitmap = _goldBitmap;
             }
             else if (trimmed_str == "&spabj;")
             {

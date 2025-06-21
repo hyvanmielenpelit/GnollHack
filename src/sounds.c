@@ -11468,7 +11468,9 @@ int* spell_otyps;
         pseudo.otyp = i;
         pseudo.blessed = 1;
         int64_t cost = get_cost(&pseudo, mtmp);
-        Sprintf(spellbuf, "%s (%lld %s)", OBJ_NAME(objects[i]), (long long)cost, currency(cost));
+        Sprintf(spellbuf, "%s (%s%lld %s)", OBJ_NAME(objects[i]),
+            ((windowprocs.wincap2& WC2_SPECIAL_SYMBOLS) != 0) ? " &gold; " : "",
+            (long long)cost, currency(cost));
         *spellbuf = highc(*spellbuf);
 
         any.a_int = i;
@@ -11482,6 +11484,9 @@ int* spell_otyps;
             info = obj_to_extended_menu_info(&pseudo);
         else
             info.menu_flags |= MENU_FLAGS_ACTIVE;
+        
+        if (((windowprocs.wincap2 & WC2_SPECIAL_SYMBOLS) != 0))
+            info.menu_flags |= MENU_FLAGS_USE_SPECIAL_SYMBOLS;
 
         add_extended_menu(win, gui_glyph, &any,
             let, 0, ATR_NONE, NO_COLOR,

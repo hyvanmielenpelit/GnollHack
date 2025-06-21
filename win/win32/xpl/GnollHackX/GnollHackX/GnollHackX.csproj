@@ -263,6 +263,7 @@
     <None Remove="Assets\UI\symbol-damage.png" />
     <None Remove="Assets\UI\symbol-food.png" />
     <None Remove="Assets\UI\symbol-mana.png" />
+    <None Remove="Assets\UI\symbol-gold.png" />
     <None Remove="Assets\UI\symbol-spell-abjuration.png" />
     <None Remove="Assets\UI\symbol-spell-arcane.png" />
     <None Remove="Assets\UI\symbol-spell-celestial.png" />
@@ -524,6 +525,7 @@
     <EmbeddedResource Include="Assets\UI\symbol-cooldown.png" />
     <EmbeddedResource Include="Assets\UI\symbol-food.png" />
     <EmbeddedResource Include="Assets\UI\symbol-mana.png" />
+    <EmbeddedResource Include="Assets\UI\symbol-gold.png" />
     <EmbeddedResource Include="Assets\UI\symbol-spell-abjuration.png" />
     <EmbeddedResource Include="Assets\UI\symbol-spell-arcane.png" />
     <EmbeddedResource Include="Assets\UI\symbol-spell-celestial.png" />
