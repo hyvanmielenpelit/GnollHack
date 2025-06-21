@@ -10161,6 +10161,9 @@ void
 create_context_menu(menu_type)
 enum create_context_menu_types menu_type;
 {
+    if (!clear_context_menu)
+        return;
+
     clear_context_menu();
 
     switch (menu_type)
@@ -10225,22 +10228,23 @@ enum create_context_menu_types menu_type;
 
         struct obj* otmp = level.objects[u.ux][u.uy];
         struct rm* lev = &levl[u.ux][u.uy];
+        int levtyp = lev ? lev->typ : UNDEFINED_LOCATION;
         struct trap* t = t_at(u.ux, u.uy);
-        if (IS_ALTAR(lev->typ))
+        if (IS_ALTAR(levtyp))
         {
             add_context_menu(M('o'), cmd_from_func(dosacrifice), CONTEXT_MENU_STYLE_GENERAL, back_to_glyph(u.ux, u.uy), "Offer", 0, 0, NO_COLOR);
             add_context_menu(M('p'), cmd_from_func(dopray), CONTEXT_MENU_STYLE_GENERAL, back_to_glyph(u.ux, u.uy), "Pray", 0, 0, NO_COLOR);
         }
-        else if (IS_FOUNTAIN(lev->typ) || IS_SINK(lev->typ))
+        else if (IS_FOUNTAIN(levtyp) || IS_SINK(levtyp))
         {
             add_context_menu('q', cmd_from_func(dodrink), CONTEXT_MENU_STYLE_GENERAL, back_to_glyph(u.ux, u.uy), "Drink", 0, 0, NO_COLOR);
             add_context_menu(M('d'), cmd_from_func(dodip), CONTEXT_MENU_STYLE_GENERAL, back_to_glyph(u.ux, u.uy), "Dip", 0, 0, NO_COLOR);
         }
-        else if (IS_POOL(lev->typ))
+        else if (IS_POOL(levtyp))
         {
             add_context_menu(M('d'), cmd_from_func(dodip), CONTEXT_MENU_STYLE_GENERAL, back_to_glyph(u.ux, u.uy), "Dip", 0, 0, NO_COLOR);
         }
-        else if (IS_THRONE(lev->typ))
+        else if (IS_THRONE(levtyp))
         {
             add_context_menu(C('s'), cmd_from_func(dosit), CONTEXT_MENU_STYLE_GENERAL, back_to_glyph(u.ux, u.uy), "Sit", "on Throne", 0, NO_COLOR);
         }
