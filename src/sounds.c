@@ -11531,7 +11531,7 @@ struct monst* mtmp;
     if (forge_any_target_otyp == STRANGE_OBJECT)
         return 0;
 
-    return forge_special_func(mtmp, forge_any_material_component_otyp, forge_any_material_component_quan, forge_any_target_otyp, forge_any_target_quan, forge_any_target_exceptionality, forge_any_target_material, FALSE);
+    return forge_special_func(mtmp, forge_any_material_component_otyp, forge_any_material_component_quan, forge_any_target_otyp, forge_any_target_quan, forge_any_target_exceptionality, (uchar)forge_any_target_material, FALSE);
 }
 
 STATIC_OVL int
