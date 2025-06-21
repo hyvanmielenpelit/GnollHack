@@ -2836,8 +2836,8 @@ boolean replaceundead;
         || (container && (container->olocked || container_nesting > 2
                           || container->otyp == STATUE
                           || (container->otyp == BAG_OF_HOLDING && rn2(40))
-                          || (container->otyp == BAG_OF_WIZARDRY && rn2(60))
-                          || (container->otyp == BAG_OF_TREASURE_HAULING && rn2(80))
+                          || (container->otyp == BAG_OF_WIZARDRY && rn2(2))
+                          || (container->otyp == BAG_OF_TREASURE_HAULING && rn2(2))
                           || (container->otyp == BAG_OF_THE_GLUTTON && rn2(80))
             )))
         return (struct monst *) 0;
