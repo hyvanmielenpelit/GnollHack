@@ -1934,7 +1934,7 @@ uchar* hitres_ptr;
                     break;
                 }
                 if(!context.hide_melee_range_warning)
-                    You_ex(ATR_NONE, CLR_MSG_HINT, "find it very hard to hit with %s at melee range.", acxname(uwep));
+                    You_ex(ATR_NONE, CLR_MSG_WARNING, "find it very hard to hit with %s at melee range.", acxname(uwep));
 
                 context.hide_melee_range_warning = TRUE;
         }
@@ -1942,7 +1942,7 @@ uchar* hitres_ptr;
         {
             tmp -= THROWN_WEAPON_TO_HIT_MELEE_PENALTY;
             if (!context.hide_melee_range_warning && !is_obj_normally_edible(obj))
-                You_ex(ATR_NONE, CLR_MSG_HINT, "find it very hard to hit by throwing %s at melee range.", acxname(obj));
+                You_ex(ATR_NONE, CLR_MSG_WARNING, "find it very hard to hit by throwing %s at melee range.", acxname(obj));
 
             context.hide_melee_range_warning = TRUE;
         }

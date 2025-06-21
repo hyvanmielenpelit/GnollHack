@@ -1904,7 +1904,8 @@ domove_core()
                     )
                 {
                     int multicolors[2] = { CLR_MSG_WARNING, NO_COLOR };
-                    You_multi_ex(ATR_NONE, CLR_MSG_ATTENTION, no_multiattrs, multicolors, "spot %s%s.", a_monnam(mtmp2), iflags.run_spot_distance < 0 ? "" : distu(mtmp2->mx, mtmp2->my) <= RUN_SPOT_NEARBY_DISTANCE * RUN_SPOT_NEARBY_DISTANCE ? " nearby" : " at a distance");
+                    int d2 = distu(mtmp2->mx, mtmp2->my);
+                    You_multi_ex(ATR_NONE, CLR_MSG_ATTENTION, no_multiattrs, multicolors, "spot %s%s.", a_monnam(mtmp2), iflags.run_spot_distance < 0 ? "" : d2 <= 2 ? " next to you" : d2 <= RUN_SPOT_NEARBY_DISTANCE * RUN_SPOT_NEARBY_DISTANCE ? " nearby" : " at a distance");
                     You("stop %s.", context.travel ? "travelling" : "running");
                     nomul(0);
                     context.move = 0;
@@ -3690,7 +3691,14 @@ monster_nearby()
                 && (!is_hider(mtmp->data) || !mtmp->mundetected)
                 && mon_can_move(mtmp)
                 && !onscary(u.ux, u.uy, mtmp) && canspotmon(mtmp))
+            {
+                if (!Hallucination && !is_peaceful(mtmp))
+                {
+                    int multicolors[2] = { CLR_MSG_WARNING, NO_COLOR };
+                    You_multi_ex(ATR_NONE, CLR_MSG_ATTENTION, no_multiattrs, multicolors, "spot %s%s.", a_monnam(mtmp), " next to you");
+                }
                 return 1;
+            }
         }
     return 0;
 }

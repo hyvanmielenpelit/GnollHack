@@ -310,7 +310,15 @@ register struct monst *mtmp;
         && canspotmon(mtmp) && couldsee(x2, y2)
         && mon_can_move(mtmp)
         && !onscary(u.ux, u.uy, mtmp))
+    {
+        if (!Hallucination && !is_peaceful(mtmp))
+        {
+            int multicolors[2] = { CLR_MSG_WARNING, NO_COLOR };
+            int d2 = distu(mtmp->mx, mtmp->my);
+            You_multi_ex(ATR_NONE, CLR_MSG_ATTENTION, no_multiattrs, multicolors, "spot %s%s.", a_monnam(mtmp), d2 <= 2 ? " next to you" : d2 <= RUN_SPOT_NEARBY_DISTANCE * RUN_SPOT_NEARBY_DISTANCE ? " nearby" : " at a distance");
+        }
         stop_occupation();
+    }
 
     return rd;
 }

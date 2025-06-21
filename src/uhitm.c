@@ -302,7 +302,7 @@ int *attk_count, *role_roll_penalty;
     {
         if (weapon && nonmelee_throwing_weapon(weapon))
         {
-            pline_ex(ATR_NONE, CLR_MSG_HINT, "It is complicated to hit with %s in melee combat.", the(cxname(weapon)));
+            pline_ex(ATR_NONE, CLR_MSG_WARNING, "It is complicated to hit with %s in melee combat.", the(cxname(weapon)));
             tmp -= THROWING_WEAPON_TO_HIT_MELEE_PENALTY_WHEN_USED_AS_MELEE_WEAPON;
         }
 
