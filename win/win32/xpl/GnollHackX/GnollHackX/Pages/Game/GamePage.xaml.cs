@@ -284,7 +284,7 @@ namespace GnollHackX.Pages.Game
         };
 
         private SKPoint[] _swimAnimation = new SKPoint[]
-{
+        {
             new SKPoint(0f, -0f),
             new SKPoint(0f, -0.1f),
             new SKPoint(0f, -0.2f),
@@ -323,7 +323,7 @@ namespace GnollHackX.Pages.Game
         };
 
         private SKPoint[] _sharkAnimation = new SKPoint[]
-{
+        {
             new SKPoint(0f, 0f),
             new SKPoint(0f, 0.1f),
             new SKPoint(0f, 0.25f),
@@ -2811,21 +2811,11 @@ namespace GnollHackX.Pages.Game
             GHApp.PlayReplay(curGame, ReplayFileName);
         }
 
-        private readonly object _pollingLock = new object();
-        private bool _pollingOngoing = false;
-
         private async Task pollRequestQueue()
         {
             GHGame curGame = CurrentGame;
             if (curGame != null)
             {
-                lock (_pollingLock)
-                {
-                    if (_pollingOngoing)
-                        return;
-                    _pollingOngoing = true;
-                }
-
                 GHRequest req;
                 while (curGame.RequestQueue.TryDequeue(out req))
                 {
@@ -3081,11 +3071,6 @@ namespace GnollHackX.Pages.Game
                             GHApp.DoKeyboardFocus();
                             break;
                     }
-                }
-
-                lock (_pollingLock)
-                {
-                    _pollingOngoing = false;
                 }
             }
         }
