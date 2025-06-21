@@ -8139,7 +8139,7 @@ int (**func_ptr_ptr)(struct monst*);
     case 4:
         *func_ptr_ptr = forge_any_special_func;
         *cost_ptr = max(1L, (int64_t)((600 + 60 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
-        *text_ptr = "Forge a crystal plate mail";
+        *text_ptr = "Forge an adamantium full plate mail";
         *verb_ptr = "forge an adamantium full plate mail";
         *nomood_ptr = "forging any full plate mails";
         *special_dialogue_sound_id_ptr = SMITH_LINE_WOULD_YOU_LIKE_TO_FORGE_AN_ADAMANTIUM_FULL_PLATE_MAIL;
