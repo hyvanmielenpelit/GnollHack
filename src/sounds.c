@@ -8548,9 +8548,9 @@ const char* title_text;
 
     int forge_idx;
     int query_style = 0, special_dialogue_sound_id = 0;
-    int forge_any_target_otyp_temp = 0, forge_any_material_component_otyp_temp = 0, forge_any_target_exceptionality_temp = 0;
+    int forge_any_target_otyp_temp = 0, forge_any_target_exceptionality_temp = 0; //forge_any_material_component_otyp_temp = 0, 
     uchar forge_any_target_material_temp = 0;
-    int64_t cost = 0, forge_any_target_quan_temp = 0, forge_any_material_component_quan_temp = 0;
+    int64_t cost = 0, forge_any_target_quan_temp = 0; // , forge_any_material_component_quan_temp = 0;
     const char* text = 0, * verb = 0, * nomood = 0, * extra_cost_descr = 0;
     int (*func_ptr)(struct monst*) = 0;
     char menubuf[BUFSZ];
@@ -8572,8 +8572,8 @@ const char* title_text;
         forge_any_target_quan_temp = forge_services[forge_idx].forge_target_quan;
         forge_any_target_exceptionality_temp = forge_services[forge_idx].forge_target_exceptionality;
         forge_any_target_material_temp = forge_services[forge_idx].forge_target_material;
-        forge_any_material_component_otyp_temp = forge_services[forge_idx].forge_material_component_otyp;
-        forge_any_material_component_quan_temp = forge_services[forge_idx].forge_material_component_quan;
+        //forge_any_material_component_otyp_temp = forge_services[forge_idx].forge_material_component_otyp;
+        //forge_any_material_component_quan_temp = forge_services[forge_idx].forge_material_component_quan;
 
         any = zeroany;
         any.a_char = (char)forge_idx + 1;
