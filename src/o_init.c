@@ -106,7 +106,7 @@ const struct material_definition material_definitions[MAX_MATERIAL_TYPES] = {
     0, -1, 0, 0, 0, 0, NO_POWER, NO_POWER, 4, 3, -5,
     0UL, 0UL, 0UL, O4_DOUBLE_MYTHIC_CHANCE, O5_DOUBLE_EXCEPTIONALITY_CHANCE, 0UL },
 {"silver",      "silver",      "silvery",     PHASE_SOLID,    HIT_SURFACE_METAL,      FLOOR_SURFACE_METAL,    FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, TRUE, FALSE,    FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, TRUE,  TRUE,        "silver",        "silvery",            HI_SILVER,
-    {0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0}, 1.0, 1.0, 2.0, 25.0,
+    {0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0}, 1.0, 1.0, SILVER_COST_MULTIPIER, 25.0,
     { NO_POWER, NO_POWER, NO_POWER, NO_POWER, NO_POWER, NO_POWER, NO_POWER, NO_POWER, NO_POWER }, 
     { NO_POWER, NO_POWER, NO_POWER, NO_POWER, NO_POWER, NO_POWER, NO_POWER, NO_POWER, NO_POWER }, 
     0, 0, 0, 0, 0, 0, NO_POWER, NO_POWER, 1, 1, -5,

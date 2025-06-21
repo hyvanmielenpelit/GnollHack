@@ -166,7 +166,7 @@ STATIC_DCL int FDECL(blessed_recharge_item_func, (struct monst*, struct obj*));
 STATIC_DCL int FDECL(repair_armor_func, (struct monst*));
 STATIC_DCL int FDECL(repair_weapon_func, (struct monst*));
 STATIC_DCL int FDECL(refill_lantern_func, (struct monst*));
-STATIC_DCL int FDECL(forge_special_func, (struct monst*, int, int, int, int, int, UCHAR_P, BOOLEAN_P));
+STATIC_DCL int FDECL(forge_special_func, (struct monst*, int, int64_t, int, int64_t, int, UCHAR_P, BOOLEAN_P));
 STATIC_DCL int FDECL(forge_any_special_func, (struct monst*));
 STATIC_DCL int FDECL(forge_cubic_gate_func, (struct monst*));
 STATIC_DCL int FDECL(forge_artificial_wings_func, (struct monst*));
@@ -8057,11 +8057,11 @@ struct monst* mtmp;
 }
 
 STATIC_VAR int forge_any_target_otyp = STRANGE_OBJECT;
-STATIC_VAR int forge_any_target_quan = 1;
+STATIC_VAR int64_t forge_any_target_quan = 1;
 STATIC_VAR int forge_any_target_exceptionality = EXCEPTIONALITY_NORMAL;
-STATIC_VAR int forge_any_target_material = MAT_NONE;
+STATIC_VAR uchar forge_any_target_material = MAT_NONE;
 STATIC_VAR int forge_any_material_component_otyp = STRANGE_OBJECT;
-STATIC_VAR int forge_any_material_component_quan = 0;
+STATIC_VAR int64_t forge_any_material_component_quan = 0;
 
 STATIC_OVL void
 reset_forge_any_special(VOID_ARGS)
@@ -8074,307 +8074,448 @@ reset_forge_any_special(VOID_ARGS)
     forge_any_target_material = MAT_NONE;
 }
 
-STATIC_OVL void
-get_forge_service_info(forge_idx, text_ptr, func_ptr_ptr, verb_ptr, nomood_ptr, cost_ptr, query_style_ptr, extra_cost_descr_ptr, special_dialogue_sound_id_ptr, 
-    forge_any_target_otyp_ptr, forge_any_target_quan_ptr, forge_any_material_component_otyp_ptr, forge_any_material_component_quan_ptr, forge_any_target_exceptionality_ptr, forge_any_target_material_ptr)
-int forge_idx;
-int* query_style_ptr, * special_dialogue_sound_id_ptr;
-int* forge_any_target_otyp_ptr, * forge_any_target_quan_ptr, * forge_any_material_component_otyp_ptr, * forge_any_material_component_quan_ptr, * forge_any_target_exceptionality_ptr, * forge_any_target_material_ptr;
-int64_t *cost_ptr;
-const char** text_ptr, ** verb_ptr, ** nomood_ptr, ** extra_cost_descr_ptr;
-int (**func_ptr_ptr)(struct monst*);
+struct forge_service_data_item {
+    int (*func)(struct monst*);
+    int64_t cost_constant;
+    int64_t cost_level_multiplier;
+    const char* title_text;
+    const char* verb;
+    const char* nomood;
+    int query_style;
+    int special_dialogue_sound_id;
+
+    int forge_target_otyp;
+    int64_t forge_target_quan;
+    int forge_target_exceptionality;
+    uchar forge_target_material;
+
+    int forge_material_component_otyp;
+    int64_t forge_material_component_quan;
+    const char* extra_cost_descr;
+};
+
+STATIC_VAR struct forge_service_data_item forge_services[] = 
 {
-    switch (forge_idx)
+    /* Smith special armor */
+    { 
+        forge_dragon_scale_mail_func, 1000, 50,
+        "Forge dragon scales into a dragon scale mail", "forge a dragon scale mail", "forging a dragon scale mail", 
+        QUERY_STYLE_COMPONENTS, SMITH_LINE_WOULD_YOU_LIKE_TO_FORGE_A_DRAGON_SCALE_MAIL, 
+        RED_DRAGON_SCALE_MAIL, 1, EXCEPTIONALITY_NORMAL, MAT_NONE, 
+        STRANGE_OBJECT, 0, (const char*)0
+    },
     {
-    case 1:
-        *func_ptr_ptr = forge_dragon_scale_mail_func;
-        *cost_ptr = max(1L, (int64_t)((1000 + 50 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
-        *text_ptr = "Forge dragon scales into a dragon scale mail";
-        *verb_ptr = "forge a dragon scale mail";
-        *nomood_ptr = "forging a dragon scale mail";
-        *query_style_ptr = QUERY_STYLE_COMPONENTS;
-        *extra_cost_descr_ptr = (const char*)0;
-        *special_dialogue_sound_id_ptr = SMITH_LINE_WOULD_YOU_LIKE_TO_FORGE_A_DRAGON_SCALE_MAIL;
-        *forge_any_target_otyp_ptr = RED_DRAGON_SCALE_MAIL;
-        *forge_any_target_quan_ptr = 1;
-        *forge_any_material_component_otyp_ptr = STRANGE_OBJECT;
-        *forge_any_material_component_quan_ptr = 0;
-        *forge_any_target_exceptionality_ptr = EXCEPTIONALITY_NORMAL;
-        *forge_any_target_material_ptr = objects[RED_DRAGON_SCALE_MAIL].oc_material;
-        break;
-    case 2:
-        *func_ptr_ptr = forge_any_special_func;
-        *cost_ptr = max(1L, (int64_t)((800 + 80 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
-        *text_ptr = "Forge a shield of reflection";
-        *verb_ptr = "forge a shield of reflection";
-        *nomood_ptr = "forging any shields";
-        *special_dialogue_sound_id_ptr = SMITH_LINE_WOULD_YOU_LIKE_TO_FORGE_A_SHIELD_OF_REFLECTION;
-        *query_style_ptr = QUERY_STYLE_COMPONENTS;
-        *extra_cost_descr_ptr = "8 nuggets of silver ore";
-        *forge_any_target_otyp_ptr = SHIELD_OF_REFLECTION;
-        *forge_any_target_quan_ptr = 1;
-        *forge_any_material_component_otyp_ptr = NUGGET_OF_SILVER_ORE;
-        *forge_any_material_component_quan_ptr = 8;
-        *forge_any_target_exceptionality_ptr = EXCEPTIONALITY_NORMAL;
-        *forge_any_target_material_ptr = MAT_NONE;
-        break;
+        forge_any_special_func, 800, 80,
+        "Forge a shield of reflection", "forge a shield of reflection", "forging any shields",
+        QUERY_STYLE_COMPONENTS, SMITH_LINE_WOULD_YOU_LIKE_TO_FORGE_A_SHIELD_OF_REFLECTION,
+        SHIELD_OF_REFLECTION, 1, EXCEPTIONALITY_NORMAL, MAT_NONE,
+        NUGGET_OF_SILVER_ORE, 8, "8 nuggets of silver ore"
+    },
+    {
+        forge_any_special_func, 600, 60,
+        "Forge a crystal plate mail", "forge a crystal plate mail", "forging any plate mails",
+        QUERY_STYLE_COMPONENTS, SMITH_LINE_WOULD_YOU_LIKE_TO_FORGE_A_CRYSTAL_PLATE_MAIL,
+        PLATE_MAIL, 1, EXCEPTIONALITY_NORMAL, MAT_HARD_CRYSTAL,
+        DILITHIUM_CRYSTAL, 2, "2 dilithium crystals"
+    },
+    {
+        forge_any_special_func, 600, 60,
+        "Forge an adamantium full plate mail", "forge an adamantium full plate mail", "forging any full plate mails",
+        QUERY_STYLE_COMPONENTS, SMITH_LINE_WOULD_YOU_LIKE_TO_FORGE_AN_ADAMANTIUM_FULL_PLATE_MAIL,
+        FULL_PLATE_MAIL, 1, EXCEPTIONALITY_NORMAL, MAT_ADAMANTIUM,
+        NUGGET_OF_ADAMANTIUM_ORE, 4, "4 nuggets of adamantium ore"
+    },
+    {
+        forge_any_special_func, 600, 60,
+        "Forge an mithril full plate mail", "forge an mithril full plate mail", "forging any full plate mails",
+        QUERY_STYLE_COMPONENTS, SMITH_LINE_WOULD_YOU_LIKE_TO_FORGE_A_MITHRIL_FULL_PLATE_MAIL,
+        FULL_PLATE_MAIL, 1, EXCEPTIONALITY_NORMAL, MAT_MITHRIL,
+        NUGGET_OF_MITHRIL_ORE, 4, "4 nuggets of mithril ore"
+    },
+    {
+        forge_any_special_func, 600, 60,
+        "Forge an orichalcum full plate mail", "forge an orichalcum full plate mail", "forging any full plate mails",
+        QUERY_STYLE_COMPONENTS, SMITH_LINE_WOULD_YOU_LIKE_TO_FORGE_AN_ORICHALCUM_FULL_PLATE_MAIL,
+        FULL_PLATE_MAIL, 1, EXCEPTIONALITY_NORMAL, MAT_ORICHALCUM,
+        NUGGET_OF_ORICHALCUM_ORE, 4, "4 nuggets of orichalcum ore"
+    },
 
-    case 3:
-        *func_ptr_ptr = forge_any_special_func;
-        *cost_ptr = max(1L, (int64_t)((600 + 60 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
-        *text_ptr = "Forge a crystal plate mail";
-        *verb_ptr = "forge a crystal plate mail";
-        *nomood_ptr = "forging any plate mails";
-        *special_dialogue_sound_id_ptr = SMITH_LINE_WOULD_YOU_LIKE_TO_FORGE_A_CRYSTAL_PLATE_MAIL;
-        *query_style_ptr = QUERY_STYLE_COMPONENTS;
-        *extra_cost_descr_ptr = "2 dilithium crystals";
-        *forge_any_target_otyp_ptr = PLATE_MAIL;
-        *forge_any_target_quan_ptr = 1;
-        *forge_any_material_component_otyp_ptr = DILITHIUM_CRYSTAL;
-        *forge_any_material_component_quan_ptr = 2;
-        *forge_any_target_exceptionality_ptr = EXCEPTIONALITY_NORMAL;
-        *forge_any_target_material_ptr = MAT_HARD_CRYSTAL;
-        break;
+    /* Smith plate armor */
+    {
+        forge_any_special_func, 100, 10,
+        "Forge a plate mail", "forge a plate mail", "forging any plate mails",
+        QUERY_STYLE_COMPONENTS, SMITH_LINE_WOULD_YOU_LIKE_TO_FORGE_A_PLATE_MAIL,
+        PLATE_MAIL, 1, EXCEPTIONALITY_NORMAL, MAT_NONE,
+        NUGGET_OF_IRON_ORE, 4, "4 nuggets of iron ore"
+    },
+    {
+        forge_any_special_func, 50, 5,
+        "Forge a bronze plate mail", "forge a bronze plate mail", "forging any plate mails",
+        QUERY_STYLE_COMPONENTS, SMITH_LINE_WOULD_YOU_LIKE_TO_FORGE_A_BRONZE_PLATE_MAIL,
+        PLATE_MAIL, 1, EXCEPTIONALITY_NORMAL, MAT_BRONZE,
+        NUGGET_OF_COPPER_ORE, 4, "4 nuggets of copper ore"
+    },
+    {
+        forge_any_special_func, 200, 20,
+        "Forge a field plate mail", "forge a field plate mail", "forging any field plate mails",
+        QUERY_STYLE_COMPONENTS, SMITH_LINE_WOULD_YOU_LIKE_TO_FORGE_A_FIELD_PLATE_MAIL,
+        FIELD_PLATE_MAIL, 1, EXCEPTIONALITY_NORMAL, MAT_NONE,
+        NUGGET_OF_IRON_ORE, 6, "6 nuggets of iron ore"
+    },
+    {
+        forge_any_special_func, 400, 40,
+        "Forge a full plate mail", "forge a full plate mail", "forging any full plate mails",
+        QUERY_STYLE_COMPONENTS, SMITH_LINE_WOULD_YOU_LIKE_TO_FORGE_A_FULL_PLATE_MAIL,
+        FULL_PLATE_MAIL, 1, EXCEPTIONALITY_NORMAL, MAT_NONE,
+        NUGGET_OF_IRON_ORE, 8, "8 nuggets of iron ore"
+    },
 
-    case 4:
-        *func_ptr_ptr = forge_any_special_func;
-        *cost_ptr = max(1L, (int64_t)((600 + 60 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
-        *text_ptr = "Forge an adamantium full plate mail";
-        *verb_ptr = "forge an adamantium full plate mail";
-        *nomood_ptr = "forging any full plate mails";
-        *special_dialogue_sound_id_ptr = SMITH_LINE_WOULD_YOU_LIKE_TO_FORGE_AN_ADAMANTIUM_FULL_PLATE_MAIL;
-        *query_style_ptr = QUERY_STYLE_COMPONENTS;
-        *extra_cost_descr_ptr = "4 nuggets of adamantium ore";
-        *forge_any_target_otyp_ptr = FULL_PLATE_MAIL;
-        *forge_any_target_quan_ptr = 1;
-        *forge_any_material_component_otyp_ptr = NUGGET_OF_ADAMANTIUM_ORE;
-        *forge_any_material_component_quan_ptr = 4;
-        *forge_any_target_exceptionality_ptr = EXCEPTIONALITY_NORMAL;
-        *forge_any_target_material_ptr = MAT_ADAMANTIUM;
-        break;
+    /* Geologist sling-bullets */
+    {
+        forge_any_special_func, COST_OF_SLING_BULLET * 3, 0,
+        "Forge 10 iron sling-bullets", "forge 10 iron sling-bullets", "forging any sling-bullets",
+        QUERY_STYLE_COMPONENTS, NPC_LINE_WOULD_YOU_LIKE_TO_FORGE_10_IRON_SLING_BULLETS,
+        SLING_BULLET, 10, EXCEPTIONALITY_NORMAL, MAT_NONE,
+        NUGGET_OF_IRON_ORE, 2, "2 nuggets of iron ore"
+    },
+    {
+        forge_any_special_func, COST_OF_SLING_BULLET * 12, 0,
+        "Forge 10 exceptional iron sling-bullets", "forge 10 exceptional iron sling-bullets", "forging any sling-bullets",
+        QUERY_STYLE_COMPONENTS, NPC_LINE_WOULD_YOU_LIKE_TO_FORGE_10_EXCEPTIONAL_IRON_SLING_BULLETS,
+        SLING_BULLET, 10, EXCEPTIONALITY_EXCEPTIONAL, MAT_NONE,
+        NUGGET_OF_IRON_ORE, 3, "3 nuggets of iron ore"
+    },
+    {
+        forge_any_special_func, COST_OF_SLING_BULLET * 48, 0,
+        "Forge 10 elite iron sling-bullets", "forge 10 elite iron sling-bullets", "forging any sling-bullets",
+        QUERY_STYLE_COMPONENTS, NPC_LINE_WOULD_YOU_LIKE_TO_FORGE_10_ELITE_IRON_SLING_BULLETS,
+        SLING_BULLET, 10, EXCEPTIONALITY_ELITE, MAT_NONE,
+        NUGGET_OF_IRON_ORE, 4, "4 nuggets of iron ore"
+    },
+    {
+        forge_any_special_func, COST_OF_SLING_BULLET * 3 * SILVER_COST_MULTIPIER, 0,
+        "Forge 10 silver sling-bullets", "forge 10 silver sling-bullets", "forging any sling-bullets",
+        QUERY_STYLE_COMPONENTS, NPC_LINE_WOULD_YOU_LIKE_TO_FORGE_10_SILVER_SLING_BULLETS,
+        SLING_BULLET, 10, EXCEPTIONALITY_NORMAL, MAT_SILVER,
+        NUGGET_OF_SILVER_ORE, 2, "2 nuggets of silver ore"
+    },
+    {
+        forge_any_special_func, COST_OF_SLING_BULLET * 12 * SILVER_COST_MULTIPIER, 0,
+        "Forge 10 exceptional silver sling-bullets", "forge 10 exceptional silver sling-bullets", "forging any sling-bullets",
+        QUERY_STYLE_COMPONENTS, NPC_LINE_WOULD_YOU_LIKE_TO_FORGE_10_EXCEPTIONAL_SILVER_SLING_BULLETS,
+        SLING_BULLET, 10, EXCEPTIONALITY_EXCEPTIONAL, MAT_SILVER,
+        NUGGET_OF_SILVER_ORE, 3, "3 nuggets of silver ore"
+    },
+    {
+        forge_any_special_func, COST_OF_SLING_BULLET * 48 * SILVER_COST_MULTIPIER, 0,
+        "Forge 10 elite silver sling-bullets", "forge 10 elite silver sling-bullets", "forging any sling-bullets",
+        QUERY_STYLE_COMPONENTS, NPC_LINE_WOULD_YOU_LIKE_TO_FORGE_10_ELITE_SILVER_SLING_BULLETS,
+        SLING_BULLET, 10, EXCEPTIONALITY_ELITE, MAT_SILVER,
+        NUGGET_OF_SILVER_ORE, 4, "4 nuggets of silver ore"
+    },
+};
 
-    case 5:
-        *func_ptr_ptr = forge_any_special_func;
-        *cost_ptr = max(1L, (int64_t)((600 + 60 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
-        *text_ptr = "Forge a mithril full plate mail";
-        *verb_ptr = "forge a mithril full plate mail";
-        *nomood_ptr = "forging any full plate mails";
-        *special_dialogue_sound_id_ptr = SMITH_LINE_WOULD_YOU_LIKE_TO_FORGE_A_MITHRIL_FULL_PLATE_MAIL;
-        *query_style_ptr = QUERY_STYLE_COMPONENTS;
-        *extra_cost_descr_ptr = "4 nuggets of mithril ore";
-        *forge_any_target_otyp_ptr = FULL_PLATE_MAIL;
-        *forge_any_target_quan_ptr = 1;
-        *forge_any_material_component_otyp_ptr = NUGGET_OF_MITHRIL_ORE;
-        *forge_any_material_component_quan_ptr = 4;
-        *forge_any_target_exceptionality_ptr = EXCEPTIONALITY_NORMAL;
-        *forge_any_target_material_ptr = MAT_MITHRIL;
-        break;
-
-    case 6:
-        *func_ptr_ptr = forge_any_special_func;
-        *cost_ptr = max(1L, (int64_t)((600 + 60 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
-        *text_ptr = "Forge a orichalcum full plate mail";
-        *verb_ptr = "forge a orichalcum full plate mail";
-        *nomood_ptr = "forging any full plate mails";
-        *special_dialogue_sound_id_ptr = SMITH_LINE_WOULD_YOU_LIKE_TO_FORGE_AN_ORICHALCUM_FULL_PLATE_MAIL;
-        *query_style_ptr = QUERY_STYLE_COMPONENTS;
-        *extra_cost_descr_ptr = "4 nuggets of orichalcum ore";
-        *forge_any_target_otyp_ptr = FULL_PLATE_MAIL;
-        *forge_any_target_quan_ptr = 1;
-        *forge_any_material_component_otyp_ptr = NUGGET_OF_ORICHALCUM_ORE;
-        *forge_any_material_component_quan_ptr = 4;
-        *forge_any_target_exceptionality_ptr = EXCEPTIONALITY_NORMAL;
-        *forge_any_target_material_ptr = MAT_ORICHALCUM;
-        break;
-
-    case 11:
-        *func_ptr_ptr = forge_any_special_func;
-        *cost_ptr = max(1L, (int64_t)((100 + 10 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
-        *text_ptr = "Forge a plate mail";
-        *verb_ptr = "forge a plate mail";
-        *nomood_ptr = "forging any plate mails";
-        *special_dialogue_sound_id_ptr = SMITH_LINE_WOULD_YOU_LIKE_TO_FORGE_A_PLATE_MAIL;
-        *query_style_ptr = QUERY_STYLE_COMPONENTS;
-        *extra_cost_descr_ptr = "4 nuggets of iron ore";
-        *forge_any_target_otyp_ptr = PLATE_MAIL;
-        *forge_any_target_quan_ptr = 1;
-        *forge_any_material_component_otyp_ptr = NUGGET_OF_IRON_ORE;
-        *forge_any_material_component_quan_ptr = 4;
-        *forge_any_target_exceptionality_ptr = EXCEPTIONALITY_NORMAL;
-        *forge_any_target_material_ptr = MAT_NONE;
-        break;
-
-    case 12:
-        *func_ptr_ptr = forge_any_special_func;
-        *cost_ptr = max(1L, (int64_t)((50 + 5 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
-        *text_ptr = "Forge a bronze plate mail";
-        *verb_ptr = "forge a bronze plate mail";
-        *nomood_ptr = "forging any plate mails";
-        *special_dialogue_sound_id_ptr = SMITH_LINE_WOULD_YOU_LIKE_TO_FORGE_A_BRONZE_PLATE_MAIL;
-        *query_style_ptr = QUERY_STYLE_COMPONENTS;
-        *extra_cost_descr_ptr = "4 nuggets of copper ore";
-        *forge_any_target_otyp_ptr = PLATE_MAIL;
-        *forge_any_target_quan_ptr = 1;
-        *forge_any_material_component_otyp_ptr = NUGGET_OF_COPPER_ORE;
-        *forge_any_material_component_quan_ptr = 4;
-        *forge_any_target_exceptionality_ptr = EXCEPTIONALITY_NORMAL;
-        *forge_any_target_material_ptr = MAT_BRONZE;
-        break;
-
-    case 13:
-        *func_ptr_ptr = forge_any_special_func;
-        *cost_ptr = max(1L, (int64_t)((200 + 20 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
-        *text_ptr = "Forge a field plate mail";
-        *verb_ptr = "forge a field plate mail";
-        *nomood_ptr = "forging any field plate mails";
-        *special_dialogue_sound_id_ptr = SMITH_LINE_WOULD_YOU_LIKE_TO_FORGE_A_FIELD_PLATE_MAIL;
-        *query_style_ptr = QUERY_STYLE_COMPONENTS;
-        *extra_cost_descr_ptr = "6 nuggets of iron ore";
-        *forge_any_target_otyp_ptr = FIELD_PLATE_MAIL;
-        *forge_any_target_quan_ptr = 1;
-        *forge_any_material_component_otyp_ptr = NUGGET_OF_IRON_ORE;
-        *forge_any_material_component_quan_ptr = 6;
-        *forge_any_target_exceptionality_ptr = EXCEPTIONALITY_NORMAL;
-        *forge_any_target_material_ptr = MAT_NONE;
-        break;
-
-    case 14:
-        *func_ptr_ptr = forge_any_special_func;
-        *cost_ptr = max(1L, (int64_t)((400 + 40 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
-        *text_ptr = "Forge a full plate mail";
-        *verb_ptr = "forge a full plate mail";
-        *nomood_ptr = "forging any full plate mails";
-        *special_dialogue_sound_id_ptr = SMITH_LINE_WOULD_YOU_LIKE_TO_FORGE_A_FULL_PLATE_MAIL;
-        *query_style_ptr = QUERY_STYLE_COMPONENTS;
-        *extra_cost_descr_ptr = "8 nuggets of iron ore";
-        *forge_any_target_otyp_ptr = FULL_PLATE_MAIL;
-        *forge_any_target_quan_ptr = 1;
-        *forge_any_material_component_otyp_ptr = NUGGET_OF_IRON_ORE;
-        *forge_any_material_component_quan_ptr = 8;
-        *forge_any_target_exceptionality_ptr = EXCEPTIONALITY_NORMAL;
-        *forge_any_target_material_ptr = MAT_NONE;
-        break;
-
-    case 21:
-        *func_ptr_ptr = forge_any_special_func;
-        *cost_ptr = max(1L, (int64_t)((double)(objects[SLING_BULLET].oc_cost) * 3 * service_cost_charisma_adjustment(ACURR(A_CHA))));
-        *text_ptr = "Forge 10 iron sling-bullets";
-        *verb_ptr = "forge 10 iron sling-bullets";
-        *nomood_ptr = "forging any sling-bullets";
-        *special_dialogue_sound_id_ptr = NPC_LINE_WOULD_YOU_LIKE_TO_FORGE_10_IRON_SLING_BULLETS;
-        *query_style_ptr = QUERY_STYLE_COMPONENTS;
-        *extra_cost_descr_ptr = "2 nuggets of iron ore";
-        *forge_any_target_otyp_ptr = SLING_BULLET;
-        *forge_any_target_quan_ptr = 10;
-        *forge_any_material_component_otyp_ptr = NUGGET_OF_IRON_ORE;
-        *forge_any_material_component_quan_ptr = 2;
-        *forge_any_target_exceptionality_ptr = EXCEPTIONALITY_NORMAL;
-        *forge_any_target_material_ptr = MAT_NONE;
-        break;
-
-    case 22:
-        *func_ptr_ptr = forge_any_special_func;
-        *cost_ptr = max(1L, (int64_t)((double)(objects[SLING_BULLET].oc_cost) * 12 * service_cost_charisma_adjustment(ACURR(A_CHA))));
-        *text_ptr = "Forge 10 exceptional iron sling-bullets";
-        *verb_ptr = "forge 10 exceptional iron sling-bullets";
-        *nomood_ptr = "forging any sling-bullets";
-        *special_dialogue_sound_id_ptr = NPC_LINE_WOULD_YOU_LIKE_TO_FORGE_10_EXCEPTIONAL_IRON_SLING_BULLETS;
-        *query_style_ptr = QUERY_STYLE_COMPONENTS;
-        *extra_cost_descr_ptr = "3 nuggets of iron ore";
-        *forge_any_target_otyp_ptr = SLING_BULLET;
-        *forge_any_target_quan_ptr = 10;
-        *forge_any_material_component_otyp_ptr = NUGGET_OF_IRON_ORE;
-        *forge_any_material_component_quan_ptr = 3;
-        *forge_any_target_exceptionality_ptr = EXCEPTIONALITY_EXCEPTIONAL;
-        *forge_any_target_material_ptr = MAT_NONE;
-        break;
-
-    case 23:
-        *func_ptr_ptr = forge_any_special_func;
-        *cost_ptr = max(1L, (int64_t)((double)(objects[SLING_BULLET].oc_cost) * 48 * service_cost_charisma_adjustment(ACURR(A_CHA))));
-        *text_ptr = "Forge 10 elite iron sling-bullets";
-        *verb_ptr = "forge 10 elite iron sling-bullets";
-        *nomood_ptr = "forging any sling-bullets";
-        *special_dialogue_sound_id_ptr = NPC_LINE_WOULD_YOU_LIKE_TO_FORGE_10_ELITE_IRON_SLING_BULLETS;
-        *query_style_ptr = QUERY_STYLE_COMPONENTS;
-        *extra_cost_descr_ptr = "4 nuggets of iron ore";
-        *forge_any_target_otyp_ptr = SLING_BULLET;
-        *forge_any_target_quan_ptr = 10;
-        *forge_any_material_component_otyp_ptr = NUGGET_OF_IRON_ORE;
-        *forge_any_material_component_quan_ptr = 4;
-        *forge_any_target_exceptionality_ptr = EXCEPTIONALITY_ELITE;
-        *forge_any_target_material_ptr = MAT_NONE;
-        break;
-
-    case 24:
-        *func_ptr_ptr = forge_any_special_func;
-        *cost_ptr = max(1L, (int64_t)(((double)objects[SLING_BULLET].oc_cost * material_definitions[MAT_SILVER].cost_multiplier) * 3 * service_cost_charisma_adjustment(ACURR(A_CHA))));
-        *text_ptr = "Forge 10 silver sling-bullets";
-        *verb_ptr = "forge 10 silver sling-bullets";
-        *nomood_ptr = "forging any sling-bullets";
-        *special_dialogue_sound_id_ptr = NPC_LINE_WOULD_YOU_LIKE_TO_FORGE_10_SILVER_SLING_BULLETS;
-        *query_style_ptr = QUERY_STYLE_COMPONENTS;
-        *extra_cost_descr_ptr = "2 nuggets of silver ore";
-        *forge_any_target_otyp_ptr = SLING_BULLET;
-        *forge_any_target_quan_ptr = 10;
-        *forge_any_material_component_otyp_ptr = NUGGET_OF_SILVER_ORE;
-        *forge_any_material_component_quan_ptr = 2;
-        *forge_any_target_exceptionality_ptr = EXCEPTIONALITY_NORMAL;
-        *forge_any_target_material_ptr = MAT_SILVER;
-        break;
-
-    case 25:
-        *func_ptr_ptr = forge_any_special_func;
-        *cost_ptr = max(1L, (int64_t)(((double)objects[SLING_BULLET].oc_cost * material_definitions[MAT_SILVER].cost_multiplier) * 12 * service_cost_charisma_adjustment(ACURR(A_CHA))));
-        *text_ptr = "Forge 10 exceptional silver sling-bullets";
-        *verb_ptr = "forge 10 exceptional silver sling-bullets";
-        *nomood_ptr = "forging any sling-bullets";
-        *special_dialogue_sound_id_ptr = NPC_LINE_WOULD_YOU_LIKE_TO_FORGE_10_EXCEPTIONAL_SILVER_SLING_BULLETS;
-        *query_style_ptr = QUERY_STYLE_COMPONENTS;
-        *extra_cost_descr_ptr = "3 nuggets of silver ore";
-        *forge_any_target_otyp_ptr = SLING_BULLET;
-        *forge_any_target_quan_ptr = 10;
-        *forge_any_material_component_otyp_ptr = NUGGET_OF_SILVER_ORE;
-        *forge_any_material_component_quan_ptr = 3;
-        *forge_any_target_exceptionality_ptr = EXCEPTIONALITY_EXCEPTIONAL;
-        *forge_any_target_material_ptr = MAT_SILVER;
-        break;
-
-    case 26:
-        *func_ptr_ptr = forge_any_special_func;
-        *cost_ptr = max(1L, (int64_t)(((double)objects[SLING_BULLET].oc_cost * material_definitions[MAT_SILVER].cost_multiplier) * 48 * service_cost_charisma_adjustment(ACURR(A_CHA))));
-        *text_ptr = "Forge 10 elite silver sling-bullets";
-        *verb_ptr = "forge 10 elite silver sling-bullets";
-        *nomood_ptr = "forging any sling-bullets";
-        *special_dialogue_sound_id_ptr = NPC_LINE_WOULD_YOU_LIKE_TO_FORGE_10_ELITE_SILVER_SLING_BULLETS;
-        *query_style_ptr = QUERY_STYLE_COMPONENTS;
-        *extra_cost_descr_ptr = "4 nuggets of silver ore";
-        *forge_any_target_otyp_ptr = SLING_BULLET;
-        *forge_any_target_quan_ptr = 10;
-        *forge_any_material_component_otyp_ptr = NUGGET_OF_SILVER_ORE;
-        *forge_any_material_component_quan_ptr = 4;
-        *forge_any_target_exceptionality_ptr = EXCEPTIONALITY_ELITE;
-        *forge_any_target_material_ptr = MAT_SILVER;
-        break;
-
-    default:
-        *func_ptr_ptr = forge_any_special_func;
-        *cost_ptr = 0;
-        *text_ptr = "";
-        *verb_ptr = "";
-        *nomood_ptr = "";
-        *special_dialogue_sound_id_ptr = 0;
-        *query_style_ptr = QUERY_STYLE_COMPONENTS;
-        *extra_cost_descr_ptr = "";
-        *forge_any_target_otyp_ptr = STRANGE_OBJECT;
-        *forge_any_target_quan_ptr = 1;
-        *forge_any_material_component_otyp_ptr = STRANGE_OBJECT;
-        *forge_any_material_component_quan_ptr = 0;
-        *forge_any_target_exceptionality_ptr = EXCEPTIONALITY_NORMAL;
-        *forge_any_target_material_ptr = MAT_NONE;
-        break;
-    }
-}
+//STATIC_OVL void
+//get_forge_service_info(forge_idx, text_ptr, func_ptr_ptr, verb_ptr, nomood_ptr, cost_ptr, query_style_ptr, extra_cost_descr_ptr, special_dialogue_sound_id_ptr, 
+//    forge_any_target_otyp_ptr, forge_any_target_quan_ptr, forge_any_material_component_otyp_ptr, forge_any_material_component_quan_ptr, forge_any_target_exceptionality_ptr, forge_any_target_material_ptr)
+//int forge_idx;
+//int* query_style_ptr, * special_dialogue_sound_id_ptr;
+//int* forge_any_target_otyp_ptr, * forge_any_target_quan_ptr, * forge_any_material_component_otyp_ptr, * forge_any_material_component_quan_ptr, * forge_any_target_exceptionality_ptr, * forge_any_target_material_ptr;
+//int64_t *cost_ptr;
+//const char** text_ptr, ** verb_ptr, ** nomood_ptr, ** extra_cost_descr_ptr;
+//int (**func_ptr_ptr)(struct monst*);
+//{
+//    switch (forge_idx)
+//    {
+//    case 1:
+//        *func_ptr_ptr = forge_dragon_scale_mail_func;
+//        *cost_ptr = max(1L, (int64_t)((1000 + 50 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
+//        *text_ptr = "Forge dragon scales into a dragon scale mail";
+//        *verb_ptr = "forge a dragon scale mail";
+//        *nomood_ptr = "forging a dragon scale mail";
+//        *query_style_ptr = QUERY_STYLE_COMPONENTS;
+//        *extra_cost_descr_ptr = (const char*)0;
+//        *special_dialogue_sound_id_ptr = SMITH_LINE_WOULD_YOU_LIKE_TO_FORGE_A_DRAGON_SCALE_MAIL;
+//        *forge_any_target_otyp_ptr = RED_DRAGON_SCALE_MAIL;
+//        *forge_any_target_quan_ptr = 1;
+//        *forge_any_target_exceptionality_ptr = EXCEPTIONALITY_NORMAL;
+//        *forge_any_target_material_ptr = MAT_NONE;
+//        *forge_any_material_component_otyp_ptr = STRANGE_OBJECT;
+//        *forge_any_material_component_quan_ptr = 0;
+//        break;
+//    case 2:
+//        *func_ptr_ptr = forge_any_special_func;
+//        *cost_ptr = max(1L, (int64_t)((800 + 80 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
+//        *text_ptr = "Forge a shield of reflection";
+//        *verb_ptr = "forge a shield of reflection";
+//        *nomood_ptr = "forging any shields";
+//        *special_dialogue_sound_id_ptr = SMITH_LINE_WOULD_YOU_LIKE_TO_FORGE_A_SHIELD_OF_REFLECTION;
+//        *query_style_ptr = QUERY_STYLE_COMPONENTS;
+//        *extra_cost_descr_ptr = "8 nuggets of silver ore";
+//        *forge_any_target_otyp_ptr = SHIELD_OF_REFLECTION;
+//        *forge_any_target_quan_ptr = 1;
+//        *forge_any_material_component_otyp_ptr = NUGGET_OF_SILVER_ORE;
+//        *forge_any_material_component_quan_ptr = 8;
+//        *forge_any_target_exceptionality_ptr = EXCEPTIONALITY_NORMAL;
+//        *forge_any_target_material_ptr = MAT_NONE;
+//        break;
+//
+//    case 3:
+//        *func_ptr_ptr = forge_any_special_func;
+//        *cost_ptr = max(1L, (int64_t)((600 + 60 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
+//        *text_ptr = "Forge a crystal plate mail";
+//        *verb_ptr = "forge a crystal plate mail";
+//        *nomood_ptr = "forging any plate mails";
+//        *special_dialogue_sound_id_ptr = SMITH_LINE_WOULD_YOU_LIKE_TO_FORGE_A_CRYSTAL_PLATE_MAIL;
+//        *query_style_ptr = QUERY_STYLE_COMPONENTS;
+//        *extra_cost_descr_ptr = "2 dilithium crystals";
+//        *forge_any_target_otyp_ptr = PLATE_MAIL;
+//        *forge_any_target_quan_ptr = 1;
+//        *forge_any_material_component_otyp_ptr = DILITHIUM_CRYSTAL;
+//        *forge_any_material_component_quan_ptr = 2;
+//        *forge_any_target_exceptionality_ptr = EXCEPTIONALITY_NORMAL;
+//        *forge_any_target_material_ptr = MAT_HARD_CRYSTAL;
+//        break;
+//
+//    case 4:
+//        *func_ptr_ptr = forge_any_special_func;
+//        *cost_ptr = max(1L, (int64_t)((600 + 60 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
+//        *text_ptr = "Forge an adamantium full plate mail";
+//        *verb_ptr = "forge an adamantium full plate mail";
+//        *nomood_ptr = "forging any full plate mails";
+//        *special_dialogue_sound_id_ptr = SMITH_LINE_WOULD_YOU_LIKE_TO_FORGE_AN_ADAMANTIUM_FULL_PLATE_MAIL;
+//        *query_style_ptr = QUERY_STYLE_COMPONENTS;
+//        *extra_cost_descr_ptr = "4 nuggets of adamantium ore";
+//        *forge_any_target_otyp_ptr = FULL_PLATE_MAIL;
+//        *forge_any_target_quan_ptr = 1;
+//        *forge_any_material_component_otyp_ptr = NUGGET_OF_ADAMANTIUM_ORE;
+//        *forge_any_material_component_quan_ptr = 4;
+//        *forge_any_target_exceptionality_ptr = EXCEPTIONALITY_NORMAL;
+//        *forge_any_target_material_ptr = MAT_ADAMANTIUM;
+//        break;
+//
+//    case 5:
+//        *func_ptr_ptr = forge_any_special_func;
+//        *cost_ptr = max(1L, (int64_t)((600 + 60 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
+//        *text_ptr = "Forge a mithril full plate mail";
+//        *verb_ptr = "forge a mithril full plate mail";
+//        *nomood_ptr = "forging any full plate mails";
+//        *special_dialogue_sound_id_ptr = SMITH_LINE_WOULD_YOU_LIKE_TO_FORGE_A_MITHRIL_FULL_PLATE_MAIL;
+//        *query_style_ptr = QUERY_STYLE_COMPONENTS;
+//        *extra_cost_descr_ptr = "4 nuggets of mithril ore";
+//        *forge_any_target_otyp_ptr = FULL_PLATE_MAIL;
+//        *forge_any_target_quan_ptr = 1;
+//        *forge_any_material_component_otyp_ptr = NUGGET_OF_MITHRIL_ORE;
+//        *forge_any_material_component_quan_ptr = 4;
+//        *forge_any_target_exceptionality_ptr = EXCEPTIONALITY_NORMAL;
+//        *forge_any_target_material_ptr = MAT_MITHRIL;
+//        break;
+//
+//    case 6:
+//        *func_ptr_ptr = forge_any_special_func;
+//        *cost_ptr = max(1L, (int64_t)((600 + 60 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
+//        *text_ptr = "Forge a orichalcum full plate mail";
+//        *verb_ptr = "forge a orichalcum full plate mail";
+//        *nomood_ptr = "forging any full plate mails";
+//        *special_dialogue_sound_id_ptr = SMITH_LINE_WOULD_YOU_LIKE_TO_FORGE_AN_ORICHALCUM_FULL_PLATE_MAIL;
+//        *query_style_ptr = QUERY_STYLE_COMPONENTS;
+//        *extra_cost_descr_ptr = "4 nuggets of orichalcum ore";
+//        *forge_any_target_otyp_ptr = FULL_PLATE_MAIL;
+//        *forge_any_target_quan_ptr = 1;
+//        *forge_any_material_component_otyp_ptr = NUGGET_OF_ORICHALCUM_ORE;
+//        *forge_any_material_component_quan_ptr = 4;
+//        *forge_any_target_exceptionality_ptr = EXCEPTIONALITY_NORMAL;
+//        *forge_any_target_material_ptr = MAT_ORICHALCUM;
+//        break;
+//
+//    case 11:
+//        *func_ptr_ptr = forge_any_special_func;
+//        *cost_ptr = max(1L, (int64_t)((100 + 10 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
+//        *text_ptr = "Forge a plate mail";
+//        *verb_ptr = "forge a plate mail";
+//        *nomood_ptr = "forging any plate mails";
+//        *special_dialogue_sound_id_ptr = SMITH_LINE_WOULD_YOU_LIKE_TO_FORGE_A_PLATE_MAIL;
+//        *query_style_ptr = QUERY_STYLE_COMPONENTS;
+//        *extra_cost_descr_ptr = "4 nuggets of iron ore";
+//        *forge_any_target_otyp_ptr = PLATE_MAIL;
+//        *forge_any_target_quan_ptr = 1;
+//        *forge_any_material_component_otyp_ptr = NUGGET_OF_IRON_ORE;
+//        *forge_any_material_component_quan_ptr = 4;
+//        *forge_any_target_exceptionality_ptr = EXCEPTIONALITY_NORMAL;
+//        *forge_any_target_material_ptr = MAT_NONE;
+//        break;
+//
+//    case 12:
+//        *func_ptr_ptr = forge_any_special_func;
+//        *cost_ptr = max(1L, (int64_t)((50 + 5 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
+//        *text_ptr = "Forge a bronze plate mail";
+//        *verb_ptr = "forge a bronze plate mail";
+//        *nomood_ptr = "forging any plate mails";
+//        *special_dialogue_sound_id_ptr = SMITH_LINE_WOULD_YOU_LIKE_TO_FORGE_A_BRONZE_PLATE_MAIL;
+//        *query_style_ptr = QUERY_STYLE_COMPONENTS;
+//        *extra_cost_descr_ptr = "4 nuggets of copper ore";
+//        *forge_any_target_otyp_ptr = PLATE_MAIL;
+//        *forge_any_target_quan_ptr = 1;
+//        *forge_any_material_component_otyp_ptr = NUGGET_OF_COPPER_ORE;
+//        *forge_any_material_component_quan_ptr = 4;
+//        *forge_any_target_exceptionality_ptr = EXCEPTIONALITY_NORMAL;
+//        *forge_any_target_material_ptr = MAT_BRONZE;
+//        break;
+//
+//    case 13:
+//        *func_ptr_ptr = forge_any_special_func;
+//        *cost_ptr = max(1L, (int64_t)((200 + 20 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
+//        *text_ptr = "Forge a field plate mail";
+//        *verb_ptr = "forge a field plate mail";
+//        *nomood_ptr = "forging any field plate mails";
+//        *special_dialogue_sound_id_ptr = SMITH_LINE_WOULD_YOU_LIKE_TO_FORGE_A_FIELD_PLATE_MAIL;
+//        *query_style_ptr = QUERY_STYLE_COMPONENTS;
+//        *extra_cost_descr_ptr = "6 nuggets of iron ore";
+//        *forge_any_target_otyp_ptr = FIELD_PLATE_MAIL;
+//        *forge_any_target_quan_ptr = 1;
+//        *forge_any_material_component_otyp_ptr = NUGGET_OF_IRON_ORE;
+//        *forge_any_material_component_quan_ptr = 6;
+//        *forge_any_target_exceptionality_ptr = EXCEPTIONALITY_NORMAL;
+//        *forge_any_target_material_ptr = MAT_NONE;
+//        break;
+//
+//    case 14:
+//        *func_ptr_ptr = forge_any_special_func;
+//        *cost_ptr = max(1L, (int64_t)((400 + 40 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
+//        *text_ptr = "Forge a full plate mail";
+//        *verb_ptr = "forge a full plate mail";
+//        *nomood_ptr = "forging any full plate mails";
+//        *special_dialogue_sound_id_ptr = SMITH_LINE_WOULD_YOU_LIKE_TO_FORGE_A_FULL_PLATE_MAIL;
+//        *query_style_ptr = QUERY_STYLE_COMPONENTS;
+//        *extra_cost_descr_ptr = "8 nuggets of iron ore";
+//        *forge_any_target_otyp_ptr = FULL_PLATE_MAIL;
+//        *forge_any_target_quan_ptr = 1;
+//        *forge_any_material_component_otyp_ptr = NUGGET_OF_IRON_ORE;
+//        *forge_any_material_component_quan_ptr = 8;
+//        *forge_any_target_exceptionality_ptr = EXCEPTIONALITY_NORMAL;
+//        *forge_any_target_material_ptr = MAT_NONE;
+//        break;
+//
+//    case 21:
+//        *func_ptr_ptr = forge_any_special_func;
+//        *cost_ptr = max(1L, (int64_t)((double)(objects[SLING_BULLET].oc_cost) * 3 * service_cost_charisma_adjustment(ACURR(A_CHA))));
+//        *text_ptr = "Forge 10 iron sling-bullets";
+//        *verb_ptr = "forge 10 iron sling-bullets";
+//        *nomood_ptr = "forging any sling-bullets";
+//        *special_dialogue_sound_id_ptr = NPC_LINE_WOULD_YOU_LIKE_TO_FORGE_10_IRON_SLING_BULLETS;
+//        *query_style_ptr = QUERY_STYLE_COMPONENTS;
+//        *extra_cost_descr_ptr = "2 nuggets of iron ore";
+//        *forge_any_target_otyp_ptr = SLING_BULLET;
+//        *forge_any_target_quan_ptr = 10;
+//        *forge_any_material_component_otyp_ptr = NUGGET_OF_IRON_ORE;
+//        *forge_any_material_component_quan_ptr = 2;
+//        *forge_any_target_exceptionality_ptr = EXCEPTIONALITY_NORMAL;
+//        *forge_any_target_material_ptr = MAT_NONE;
+//        break;
+//
+//    case 22:
+//        *func_ptr_ptr = forge_any_special_func;
+//        *cost_ptr = max(1L, (int64_t)((double)(objects[SLING_BULLET].oc_cost) * 12 * service_cost_charisma_adjustment(ACURR(A_CHA))));
+//        *text_ptr = "Forge 10 exceptional iron sling-bullets";
+//        *verb_ptr = "forge 10 exceptional iron sling-bullets";
+//        *nomood_ptr = "forging any sling-bullets";
+//        *special_dialogue_sound_id_ptr = NPC_LINE_WOULD_YOU_LIKE_TO_FORGE_10_EXCEPTIONAL_IRON_SLING_BULLETS;
+//        *query_style_ptr = QUERY_STYLE_COMPONENTS;
+//        *extra_cost_descr_ptr = "3 nuggets of iron ore";
+//        *forge_any_target_otyp_ptr = SLING_BULLET;
+//        *forge_any_target_quan_ptr = 10;
+//        *forge_any_material_component_otyp_ptr = NUGGET_OF_IRON_ORE;
+//        *forge_any_material_component_quan_ptr = 3;
+//        *forge_any_target_exceptionality_ptr = EXCEPTIONALITY_EXCEPTIONAL;
+//        *forge_any_target_material_ptr = MAT_NONE;
+//        break;
+//
+//    case 23:
+//        *func_ptr_ptr = forge_any_special_func;
+//        *cost_ptr = max(1L, (int64_t)((double)(objects[SLING_BULLET].oc_cost) * 48 * service_cost_charisma_adjustment(ACURR(A_CHA))));
+//        *text_ptr = "Forge 10 elite iron sling-bullets";
+//        *verb_ptr = "forge 10 elite iron sling-bullets";
+//        *nomood_ptr = "forging any sling-bullets";
+//        *special_dialogue_sound_id_ptr = NPC_LINE_WOULD_YOU_LIKE_TO_FORGE_10_ELITE_IRON_SLING_BULLETS;
+//        *query_style_ptr = QUERY_STYLE_COMPONENTS;
+//        *extra_cost_descr_ptr = "4 nuggets of iron ore";
+//        *forge_any_target_otyp_ptr = SLING_BULLET;
+//        *forge_any_target_quan_ptr = 10;
+//        *forge_any_material_component_otyp_ptr = NUGGET_OF_IRON_ORE;
+//        *forge_any_material_component_quan_ptr = 4;
+//        *forge_any_target_exceptionality_ptr = EXCEPTIONALITY_ELITE;
+//        *forge_any_target_material_ptr = MAT_NONE;
+//        break;
+//
+//    case 24:
+//        *func_ptr_ptr = forge_any_special_func;
+//        *cost_ptr = max(1L, (int64_t)(((double)objects[SLING_BULLET].oc_cost * material_definitions[MAT_SILVER].cost_multiplier) * 3 * service_cost_charisma_adjustment(ACURR(A_CHA))));
+//        *text_ptr = "Forge 10 silver sling-bullets";
+//        *verb_ptr = "forge 10 silver sling-bullets";
+//        *nomood_ptr = "forging any sling-bullets";
+//        *special_dialogue_sound_id_ptr = NPC_LINE_WOULD_YOU_LIKE_TO_FORGE_10_SILVER_SLING_BULLETS;
+//        *query_style_ptr = QUERY_STYLE_COMPONENTS;
+//        *extra_cost_descr_ptr = "2 nuggets of silver ore";
+//        *forge_any_target_otyp_ptr = SLING_BULLET;
+//        *forge_any_target_quan_ptr = 10;
+//        *forge_any_material_component_otyp_ptr = NUGGET_OF_SILVER_ORE;
+//        *forge_any_material_component_quan_ptr = 2;
+//        *forge_any_target_exceptionality_ptr = EXCEPTIONALITY_NORMAL;
+//        *forge_any_target_material_ptr = MAT_SILVER;
+//        break;
+//
+//    case 25:
+//        *func_ptr_ptr = forge_any_special_func;
+//        *cost_ptr = max(1L, (int64_t)(((double)objects[SLING_BULLET].oc_cost * material_definitions[MAT_SILVER].cost_multiplier) * 12 * service_cost_charisma_adjustment(ACURR(A_CHA))));
+//        *text_ptr = "Forge 10 exceptional silver sling-bullets";
+//        *verb_ptr = "forge 10 exceptional silver sling-bullets";
+//        *nomood_ptr = "forging any sling-bullets";
+//        *special_dialogue_sound_id_ptr = NPC_LINE_WOULD_YOU_LIKE_TO_FORGE_10_EXCEPTIONAL_SILVER_SLING_BULLETS;
+//        *query_style_ptr = QUERY_STYLE_COMPONENTS;
+//        *extra_cost_descr_ptr = "3 nuggets of silver ore";
+//        *forge_any_target_otyp_ptr = SLING_BULLET;
+//        *forge_any_target_quan_ptr = 10;
+//        *forge_any_material_component_otyp_ptr = NUGGET_OF_SILVER_ORE;
+//        *forge_any_material_component_quan_ptr = 3;
+//        *forge_any_target_exceptionality_ptr = EXCEPTIONALITY_EXCEPTIONAL;
+//        *forge_any_target_material_ptr = MAT_SILVER;
+//        break;
+//
+//    case 26:
+//        *func_ptr_ptr = forge_any_special_func;
+//        *cost_ptr = max(1L, (int64_t)(((double)objects[SLING_BULLET].oc_cost * material_definitions[MAT_SILVER].cost_multiplier) * 48 * service_cost_charisma_adjustment(ACURR(A_CHA))));
+//        *text_ptr = "Forge 10 elite silver sling-bullets";
+//        *verb_ptr = "forge 10 elite silver sling-bullets";
+//        *nomood_ptr = "forging any sling-bullets";
+//        *special_dialogue_sound_id_ptr = NPC_LINE_WOULD_YOU_LIKE_TO_FORGE_10_ELITE_SILVER_SLING_BULLETS;
+//        *query_style_ptr = QUERY_STYLE_COMPONENTS;
+//        *extra_cost_descr_ptr = "4 nuggets of silver ore";
+//        *forge_any_target_otyp_ptr = SLING_BULLET;
+//        *forge_any_target_quan_ptr = 10;
+//        *forge_any_material_component_otyp_ptr = NUGGET_OF_SILVER_ORE;
+//        *forge_any_material_component_quan_ptr = 4;
+//        *forge_any_target_exceptionality_ptr = EXCEPTIONALITY_ELITE;
+//        *forge_any_target_material_ptr = MAT_SILVER;
+//        break;
+//
+//    default:
+//        *func_ptr_ptr = forge_any_special_func;
+//        *cost_ptr = 0;
+//        *text_ptr = "";
+//        *verb_ptr = "";
+//        *nomood_ptr = "";
+//        *special_dialogue_sound_id_ptr = 0;
+//        *query_style_ptr = QUERY_STYLE_COMPONENTS;
+//        *extra_cost_descr_ptr = "";
+//        *forge_any_target_otyp_ptr = STRANGE_OBJECT;
+//        *forge_any_target_quan_ptr = 1;
+//        *forge_any_material_component_otyp_ptr = STRANGE_OBJECT;
+//        *forge_any_material_component_quan_ptr = 0;
+//        *forge_any_target_exceptionality_ptr = EXCEPTIONALITY_NORMAL;
+//        *forge_any_target_material_ptr = MAT_NONE;
+//        break;
+//    }
+//}
 
 STATIC_OVL int
 do_chat_smith_forge_special_armor(mtmp)
@@ -8382,7 +8523,7 @@ struct monst* mtmp;
 {
     if (!mtmp || !mtmp->issmith || !mtmp->mextra || !ESMI(mtmp))
         return 0;
-    return do_chat_forge_menu(mtmp, 1, 6, "Which type of armor do you want to forge?");
+    return do_chat_forge_menu(mtmp, 0, 5, "Which type of armor do you want to forge?");
 }
 
 STATIC_OVL int
@@ -8407,23 +8548,40 @@ const char* title_text;
 
     int forge_idx;
     int query_style = 0, special_dialogue_sound_id = 0;
-    int forge_any_target_otyp_temp = 0, forge_any_target_quan_temp = 0, forge_any_material_component_otyp_temp = 0, forge_any_material_component_quan_temp = 0, forge_any_target_exceptionality_temp = 0, forge_any_target_material_temp = 0;
-    int64_t cost = 0;
+    int forge_any_target_otyp_temp = 0, forge_any_material_component_otyp_temp = 0, forge_any_target_exceptionality_temp = 0;
+    uchar forge_any_target_material_temp = 0;
+    int64_t cost = 0, forge_any_target_quan_temp = 0, forge_any_material_component_quan_temp = 0;
     const char* text = 0, * verb = 0, * nomood = 0, * extra_cost_descr = 0;
     int (*func_ptr)(struct monst*) = 0;
     char menubuf[BUFSZ];
 
     for (forge_idx = forge_idx_start; forge_idx <= forge_idx_end; forge_idx++)
     {
-        get_forge_service_info(forge_idx, &text, &func_ptr, &verb, &nomood, &cost, &query_style, &extra_cost_descr, &special_dialogue_sound_id,
-            &forge_any_target_otyp_temp, &forge_any_target_quan_temp, &forge_any_material_component_otyp_temp, &forge_any_material_component_quan_temp, &forge_any_target_exceptionality_temp, &forge_any_target_material_temp);
+        //get_forge_service_info(forge_idx, &text, &func_ptr, &verb, &nomood, &cost, &query_style, &extra_cost_descr, &special_dialogue_sound_id,
+        //    &forge_any_target_otyp_temp, &forge_any_target_quan_temp, &forge_any_material_component_otyp_temp, &forge_any_material_component_quan_temp, &forge_any_target_exceptionality_temp, &forge_any_target_material_temp);
+
+        cost = max(1L, (int64_t)(((double)forge_services[forge_idx].cost_constant + (double)forge_services[forge_idx].cost_level_multiplier * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
+        text = forge_services[forge_idx].title_text;
+        func_ptr = forge_services[forge_idx].func;
+        verb = forge_services[forge_idx].verb;
+        nomood = forge_services[forge_idx].nomood;
+        query_style = forge_services[forge_idx].query_style;
+        extra_cost_descr = forge_services[forge_idx].extra_cost_descr;
+        special_dialogue_sound_id = forge_services[forge_idx].special_dialogue_sound_id;
+        forge_any_target_otyp_temp = forge_services[forge_idx].forge_target_otyp;
+        forge_any_target_quan_temp = forge_services[forge_idx].forge_target_quan;
+        forge_any_target_exceptionality_temp = forge_services[forge_idx].forge_target_exceptionality;
+        forge_any_target_material_temp = forge_services[forge_idx].forge_target_material;
+        forge_any_material_component_otyp_temp = forge_services[forge_idx].forge_material_component_otyp;
+        forge_any_material_component_quan_temp = forge_services[forge_idx].forge_material_component_quan;
+
         any = zeroany;
-        any.a_char = (char)forge_idx;
+        any.a_char = (char)forge_idx + 1;
         struct obj pseudo = zeroobj;
         pseudo.otyp = forge_any_target_otyp_temp;
         pseudo.quan = (int64_t)forge_any_target_quan_temp;
         pseudo.exceptionality = forge_any_target_exceptionality_temp;
-        pseudo.material = forge_any_target_material_temp;
+        pseudo.material = forge_any_target_material_temp == MAT_NONE ? objects[forge_any_target_otyp_temp].oc_material : forge_any_target_material_temp;
         int glyph = obj_to_glyph(&pseudo, rn2_on_display_rng);
         int gui_glyph = maybe_get_replaced_glyph(glyph, mtmp->mx, mtmp->my, data_to_replacement_info(glyph, LAYER_OBJECT, &pseudo, (struct monst*)0, 0UL, 0UL, 0UL, MAT_NONE, 0));
 
@@ -8498,20 +8656,35 @@ const char* title_text;
 #endif
     end_menu_ex(win, title_text, txt);
 
-    int i = 0;
+    int i = -1;
     /* Now generate the menu */
     if (select_menu(win, PICK_ONE, &pick_list) > 0)
     {
-        i = (int)pick_list->item.a_char;
+        i = (int)pick_list->item.a_char - 1;
         free((genericptr_t)pick_list);
     }
     destroy_nhwindow(win);
 
-    if (i < 1)
+    if (i < 0)
         return 0;
 
-    get_forge_service_info(i, &text, &func_ptr, &verb, &nomood, &cost, &query_style, &extra_cost_descr, &special_dialogue_sound_id,
-        &forge_any_target_otyp, &forge_any_target_quan, &forge_any_material_component_otyp, &forge_any_material_component_quan, &forge_any_target_exceptionality, &forge_any_target_material);
+    //get_forge_service_info(i, &text, &func_ptr, &verb, &nomood, &cost, &query_style, &extra_cost_descr, &special_dialogue_sound_id,
+    //    &forge_any_target_otyp, &forge_any_target_quan, &forge_any_material_component_otyp, &forge_any_material_component_quan, &forge_any_target_exceptionality, &forge_any_target_material);
+
+    cost = max(1L, (int64_t)(((double)forge_services[i].cost_constant + (double)forge_services[i].cost_level_multiplier * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
+    text = forge_services[i].title_text;
+    func_ptr = forge_services[i].func;
+    verb = forge_services[i].verb;
+    nomood = forge_services[i].nomood;
+    query_style = forge_services[i].query_style;
+    extra_cost_descr = forge_services[i].extra_cost_descr;
+    special_dialogue_sound_id = forge_services[i].special_dialogue_sound_id;
+    forge_any_target_otyp = forge_services[i].forge_target_otyp;
+    forge_any_target_quan = forge_services[i].forge_target_quan;
+    forge_any_target_exceptionality = forge_services[i].forge_target_exceptionality;
+    forge_any_target_material = forge_services[i].forge_target_material;
+    forge_any_material_component_otyp = forge_services[i].forge_material_component_otyp;
+    forge_any_material_component_quan = forge_services[i].forge_material_component_quan;
 
     int res = general_service_query_with_extra(mtmp, func_ptr, verb, cost, nomood, query_style, extra_cost_descr, special_dialogue_sound_id);
     reset_forge_any_special(); /* Just in case */
@@ -8559,7 +8732,7 @@ struct monst* mtmp;
 {
     if (!mtmp || !mtmp->issmith || !mtmp->mextra || !ESMI(mtmp))
         return 0;
-    return do_chat_forge_menu(mtmp, 11, 14, "Which type of armor do you want to forge?");
+    return do_chat_forge_menu(mtmp, 6, 9, "Which type of armor do you want to forge?");
 }
 
 //STATIC_OVL int
@@ -8663,7 +8836,7 @@ struct monst* mtmp;
     if (!mtmp || !mtmp->isnpc || !mtmp->mextra || !ENPC(mtmp))
         return 0;
 
-    return do_chat_forge_menu(mtmp, 21, 26, "Which type of sling-bullets do you want to forge?");
+    return do_chat_forge_menu(mtmp, 10, 15, "Which type of sling-bullets do you want to forge?");
 }
 
 //STATIC_OVL int
@@ -11531,7 +11704,7 @@ struct monst* mtmp;
     if (forge_any_target_otyp == STRANGE_OBJECT)
         return 0;
 
-    return forge_special_func(mtmp, forge_any_material_component_otyp, forge_any_material_component_quan, forge_any_target_otyp, forge_any_target_quan, forge_any_target_exceptionality, (uchar)forge_any_target_material, FALSE);
+    return forge_special_func(mtmp, forge_any_material_component_otyp, forge_any_material_component_quan, forge_any_target_otyp, forge_any_target_quan, forge_any_target_exceptionality, forge_any_target_material, FALSE);
 }
 
 STATIC_OVL int
@@ -11705,7 +11878,8 @@ struct monst* mtmp;
 STATIC_OVL int
 forge_special_func(mtmp, forge_source_otyp, forge_source_quan, forge_dest_otyp, quan, exceptionality, material, initialize)
 struct monst* mtmp;
-int forge_source_otyp, forge_source_quan, forge_dest_otyp, quan, exceptionality;
+int forge_source_otyp, forge_dest_otyp, exceptionality;
+int64_t forge_source_quan, quan;
 uchar material;
 boolean initialize;
 {
@@ -11736,7 +11910,7 @@ boolean initialize;
     }
     popup_talk_line_ex(mtmp, talkbuf, ATR_NONE, NO_COLOR, TRUE, FALSE);
 
-    int quan_needed = forge_source_quan;
+    int64_t quan_needed = forge_source_quan;
     /* Check if the selection is appropriate */
     if (otmp && !maybe_otyp(otmp))
     {
@@ -11759,12 +11933,12 @@ boolean initialize;
         if (iflags.using_gui_sounds)
         {
             play_monster_special_dialogue_line(mtmp, mtmp->issmith ? SMITH_LINE_SORRY_YOU_NEED_MORE_COMPONENTS_TO_FORGE_THE_REQUESTED_ITEM : NPC_LINE_SORRY_YOU_NEED_MORE_COMPONENTS_TO_FORGE_THE_REQUESTED_ITEM);
-            Sprintf(talkbuf, "\"Sorry, you need more components to forge the requested item.\" (You need %d %s for %s.) ", quan_needed, cxname(&pseudo), an(OBJ_NAME(objects[forge_dest_otyp])));
+            Sprintf(talkbuf, "\"Sorry, you need more components to forge the requested item.\" (You need %lld %s for %s.) ", (long long)quan_needed, cxname(&pseudo), an(OBJ_NAME(objects[forge_dest_otyp])));
             popup_talk_line_ex(mtmp, talkbuf, ATR_NONE, NO_COLOR, TRUE, FALSE);
         }
         else
         {
-            Sprintf(talkbuf, "Sorry, you need %d %s to forge %s.", quan_needed, cxname(&pseudo), an(OBJ_NAME(objects[forge_dest_otyp])));
+            Sprintf(talkbuf, "Sorry, you need %lld %s to forge %s.", (long long)quan_needed, cxname(&pseudo), an(OBJ_NAME(objects[forge_dest_otyp])));
             popup_talk_line_ex(mtmp, talkbuf, ATR_NONE, NO_COLOR, TRUE, FALSE);
         }
         return 0;

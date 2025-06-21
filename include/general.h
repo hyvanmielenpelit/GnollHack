@@ -21,6 +21,8 @@
 #define NATTK 8             /* Maximum number of attacks per monster */
 #define MAXNASTIES 10    /* more than this can be created */
 #define WARNCOUNT 7         /* number of different warning levels */
+#define COST_OF_SLING_BULLET 3
+#define SILVER_COST_MULTIPIER 2.0
 
 /* types of calls to bhit() */
 enum bhit_call_types {
