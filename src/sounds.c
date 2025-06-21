@@ -171,21 +171,21 @@ STATIC_DCL int FDECL(forge_any_special_func, (struct monst*));
 STATIC_DCL int FDECL(forge_cubic_gate_func, (struct monst*));
 STATIC_DCL int FDECL(forge_artificial_wings_func, (struct monst*));
 STATIC_DCL int FDECL(forge_dragon_scale_mail_func, (struct monst*));
-STATIC_DCL int FDECL(forge_shield_of_reflection_func, (struct monst*));
-STATIC_DCL int FDECL(forge_crystal_plate_mail_func, (struct monst*));
-STATIC_DCL int FDECL(forge_adamantium_full_plate_mail_func, (struct monst*));
-STATIC_DCL int FDECL(forge_mithril_full_plate_mail_func, (struct monst*));
-STATIC_DCL int FDECL(forge_orichalcum_full_plate_mail_func, (struct monst*));
-STATIC_DCL int FDECL(forge_plate_mail_func, (struct monst*));
-STATIC_DCL int FDECL(forge_bronze_plate_mail_func, (struct monst*));
-STATIC_DCL int FDECL(forge_field_plate_mail_func, (struct monst*));
-STATIC_DCL int FDECL(forge_full_plate_mail_func, (struct monst*));
-STATIC_DCL int FDECL(forge_iron_sling_bullets_func, (struct monst*));
-STATIC_DCL int FDECL(forge_ex_iron_sling_bullets_func, (struct monst*));
-STATIC_DCL int FDECL(forge_el_iron_sling_bullets_func, (struct monst*));
-STATIC_DCL int FDECL(forge_silver_sling_bullets_func, (struct monst*));
-STATIC_DCL int FDECL(forge_ex_silver_sling_bullets_func, (struct monst*));
-STATIC_DCL int FDECL(forge_el_silver_sling_bullets_func, (struct monst*));
+//STATIC_DCL int FDECL(forge_shield_of_reflection_func, (struct monst*));
+//STATIC_DCL int FDECL(forge_crystal_plate_mail_func, (struct monst*));
+//STATIC_DCL int FDECL(forge_adamantium_full_plate_mail_func, (struct monst*));
+//STATIC_DCL int FDECL(forge_mithril_full_plate_mail_func, (struct monst*));
+//STATIC_DCL int FDECL(forge_orichalcum_full_plate_mail_func, (struct monst*));
+//STATIC_DCL int FDECL(forge_plate_mail_func, (struct monst*));
+//STATIC_DCL int FDECL(forge_bronze_plate_mail_func, (struct monst*));
+//STATIC_DCL int FDECL(forge_field_plate_mail_func, (struct monst*));
+//STATIC_DCL int FDECL(forge_full_plate_mail_func, (struct monst*));
+//STATIC_DCL int FDECL(forge_iron_sling_bullets_func, (struct monst*));
+//STATIC_DCL int FDECL(forge_ex_iron_sling_bullets_func, (struct monst*));
+//STATIC_DCL int FDECL(forge_el_iron_sling_bullets_func, (struct monst*));
+//STATIC_DCL int FDECL(forge_silver_sling_bullets_func, (struct monst*));
+//STATIC_DCL int FDECL(forge_ex_silver_sling_bullets_func, (struct monst*));
+//STATIC_DCL int FDECL(forge_el_silver_sling_bullets_func, (struct monst*));
 STATIC_DCL int FDECL(learn_spell_func, (struct monst*));
 STATIC_DCL int FDECL(spell_teaching, (struct monst*, int*));
 STATIC_DCL boolean FDECL(maybe_dilithium_crystal, (struct obj*));
@@ -11596,110 +11596,110 @@ struct monst* mtmp;
     return 1;
 }
 
-STATIC_OVL int
-forge_orichalcum_full_plate_mail_func(mtmp)
-struct monst* mtmp;
-{
-    return forge_special_func(mtmp, NUGGET_OF_ORICHALCUM_ORE, 4, FULL_PLATE_MAIL, 0, 0, MAT_ORICHALCUM, FALSE);
-}
-
-STATIC_OVL int
-forge_crystal_plate_mail_func(mtmp)
-struct monst* mtmp;
-{
-    return forge_special_func(mtmp, DILITHIUM_CRYSTAL, 2, PLATE_MAIL, 0, 0, MAT_HARD_CRYSTAL, FALSE);
-}
-
-STATIC_OVL int
-forge_shield_of_reflection_func(mtmp)
-struct monst* mtmp;
-{
-    return forge_special_func(mtmp, NUGGET_OF_SILVER_ORE, 8, SHIELD_OF_REFLECTION, 0, 0, MAT_NONE, FALSE);
-}
-
-STATIC_OVL int
-forge_adamantium_full_plate_mail_func(mtmp)
-struct monst* mtmp;
-{
-    return forge_special_func(mtmp, NUGGET_OF_ADAMANTIUM_ORE, 4, FULL_PLATE_MAIL, 0, 0, MAT_ADAMANTIUM, FALSE);
-}
-
-STATIC_OVL int
-forge_mithril_full_plate_mail_func(mtmp)
-struct monst* mtmp;
-{
-    return forge_special_func(mtmp, NUGGET_OF_MITHRIL_ORE, 4, FULL_PLATE_MAIL, 0, 0, MAT_MITHRIL, FALSE);
-}
-
-STATIC_OVL int
-forge_plate_mail_func(mtmp)
-struct monst* mtmp;
-{
-    return forge_special_func(mtmp, NUGGET_OF_IRON_ORE, 4, PLATE_MAIL, 0, 0, MAT_NONE, FALSE);
-}
-
-STATIC_OVL int
-forge_bronze_plate_mail_func(mtmp)
-struct monst* mtmp;
-{
-    return forge_special_func(mtmp, NUGGET_OF_COPPER_ORE, 4, PLATE_MAIL, 0, 0, MAT_BRONZE, FALSE);
-}
-
-STATIC_OVL int
-forge_field_plate_mail_func(mtmp)
-struct monst* mtmp;
-{
-    return forge_special_func(mtmp, NUGGET_OF_IRON_ORE, 6, FIELD_PLATE_MAIL, 0, 0, MAT_NONE, FALSE);
-}
-
-STATIC_OVL int
-forge_full_plate_mail_func(mtmp)
-struct monst* mtmp;
-{
-    return forge_special_func(mtmp, NUGGET_OF_IRON_ORE, 8, FULL_PLATE_MAIL, 0, 0, MAT_NONE, FALSE);
-}
-
-STATIC_OVL int
-forge_iron_sling_bullets_func(mtmp)
-struct monst* mtmp;
-{
-    return forge_special_func(mtmp, NUGGET_OF_IRON_ORE, 2, SLING_BULLET, 10, EXCEPTIONALITY_NORMAL, MAT_NONE, FALSE);
-}
-
-STATIC_OVL int
-forge_ex_iron_sling_bullets_func(mtmp)
-struct monst* mtmp;
-{
-    return forge_special_func(mtmp, NUGGET_OF_IRON_ORE, 3, SLING_BULLET, 10, EXCEPTIONALITY_EXCEPTIONAL, MAT_NONE, FALSE);
-}
-
-STATIC_OVL int
-forge_el_iron_sling_bullets_func(mtmp)
-struct monst* mtmp;
-{
-    return forge_special_func(mtmp, NUGGET_OF_IRON_ORE, 4, SLING_BULLET, 10, EXCEPTIONALITY_ELITE, MAT_NONE, FALSE);
-}
-
-STATIC_OVL int
-forge_silver_sling_bullets_func(mtmp)
-struct monst* mtmp;
-{
-    return forge_special_func(mtmp, NUGGET_OF_SILVER_ORE, 2, SLING_BULLET, 10, EXCEPTIONALITY_NORMAL, MAT_SILVER, FALSE);
-}
-
-STATIC_OVL int
-forge_ex_silver_sling_bullets_func(mtmp)
-struct monst* mtmp;
-{
-    return forge_special_func(mtmp, NUGGET_OF_SILVER_ORE, 3, SLING_BULLET, 10, EXCEPTIONALITY_EXCEPTIONAL, MAT_SILVER, FALSE);
-}
-
-STATIC_OVL int
-forge_el_silver_sling_bullets_func(mtmp)
-struct monst* mtmp;
-{
-    return forge_special_func(mtmp, NUGGET_OF_SILVER_ORE, 4, SLING_BULLET, 10, EXCEPTIONALITY_ELITE, MAT_SILVER, FALSE);
-}
+//STATIC_OVL int
+//forge_orichalcum_full_plate_mail_func(mtmp)
+//struct monst* mtmp;
+//{
+//    return forge_special_func(mtmp, NUGGET_OF_ORICHALCUM_ORE, 4, FULL_PLATE_MAIL, 0, 0, MAT_ORICHALCUM, FALSE);
+//}
+//
+//STATIC_OVL int
+//forge_crystal_plate_mail_func(mtmp)
+//struct monst* mtmp;
+//{
+//    return forge_special_func(mtmp, DILITHIUM_CRYSTAL, 2, PLATE_MAIL, 0, 0, MAT_HARD_CRYSTAL, FALSE);
+//}
+//
+//STATIC_OVL int
+//forge_shield_of_reflection_func(mtmp)
+//struct monst* mtmp;
+//{
+//    return forge_special_func(mtmp, NUGGET_OF_SILVER_ORE, 8, SHIELD_OF_REFLECTION, 0, 0, MAT_NONE, FALSE);
+//}
+//
+//STATIC_OVL int
+//forge_adamantium_full_plate_mail_func(mtmp)
+//struct monst* mtmp;
+//{
+//    return forge_special_func(mtmp, NUGGET_OF_ADAMANTIUM_ORE, 4, FULL_PLATE_MAIL, 0, 0, MAT_ADAMANTIUM, FALSE);
+//}
+//
+//STATIC_OVL int
+//forge_mithril_full_plate_mail_func(mtmp)
+//struct monst* mtmp;
+//{
+//    return forge_special_func(mtmp, NUGGET_OF_MITHRIL_ORE, 4, FULL_PLATE_MAIL, 0, 0, MAT_MITHRIL, FALSE);
+//}
+//
+//STATIC_OVL int
+//forge_plate_mail_func(mtmp)
+//struct monst* mtmp;
+//{
+//    return forge_special_func(mtmp, NUGGET_OF_IRON_ORE, 4, PLATE_MAIL, 0, 0, MAT_NONE, FALSE);
+//}
+//
+//STATIC_OVL int
+//forge_bronze_plate_mail_func(mtmp)
+//struct monst* mtmp;
+//{
+//    return forge_special_func(mtmp, NUGGET_OF_COPPER_ORE, 4, PLATE_MAIL, 0, 0, MAT_BRONZE, FALSE);
+//}
+//
+//STATIC_OVL int
+//forge_field_plate_mail_func(mtmp)
+//struct monst* mtmp;
+//{
+//    return forge_special_func(mtmp, NUGGET_OF_IRON_ORE, 6, FIELD_PLATE_MAIL, 0, 0, MAT_NONE, FALSE);
+//}
+//
+//STATIC_OVL int
+//forge_full_plate_mail_func(mtmp)
+//struct monst* mtmp;
+//{
+//    return forge_special_func(mtmp, NUGGET_OF_IRON_ORE, 8, FULL_PLATE_MAIL, 0, 0, MAT_NONE, FALSE);
+//}
+//
+//STATIC_OVL int
+//forge_iron_sling_bullets_func(mtmp)
+//struct monst* mtmp;
+//{
+//    return forge_special_func(mtmp, NUGGET_OF_IRON_ORE, 2, SLING_BULLET, 10, EXCEPTIONALITY_NORMAL, MAT_NONE, FALSE);
+//}
+//
+//STATIC_OVL int
+//forge_ex_iron_sling_bullets_func(mtmp)
+//struct monst* mtmp;
+//{
+//    return forge_special_func(mtmp, NUGGET_OF_IRON_ORE, 3, SLING_BULLET, 10, EXCEPTIONALITY_EXCEPTIONAL, MAT_NONE, FALSE);
+//}
+//
+//STATIC_OVL int
+//forge_el_iron_sling_bullets_func(mtmp)
+//struct monst* mtmp;
+//{
+//    return forge_special_func(mtmp, NUGGET_OF_IRON_ORE, 4, SLING_BULLET, 10, EXCEPTIONALITY_ELITE, MAT_NONE, FALSE);
+//}
+//
+//STATIC_OVL int
+//forge_silver_sling_bullets_func(mtmp)
+//struct monst* mtmp;
+//{
+//    return forge_special_func(mtmp, NUGGET_OF_SILVER_ORE, 2, SLING_BULLET, 10, EXCEPTIONALITY_NORMAL, MAT_SILVER, FALSE);
+//}
+//
+//STATIC_OVL int
+//forge_ex_silver_sling_bullets_func(mtmp)
+//struct monst* mtmp;
+//{
+//    return forge_special_func(mtmp, NUGGET_OF_SILVER_ORE, 3, SLING_BULLET, 10, EXCEPTIONALITY_EXCEPTIONAL, MAT_SILVER, FALSE);
+//}
+//
+//STATIC_OVL int
+//forge_el_silver_sling_bullets_func(mtmp)
+//struct monst* mtmp;
+//{
+//    return forge_special_func(mtmp, NUGGET_OF_SILVER_ORE, 4, SLING_BULLET, 10, EXCEPTIONALITY_ELITE, MAT_SILVER, FALSE);
+//}
 
 
 STATIC_OVL int
@@ -11922,11 +11922,11 @@ int* spell_otyps;
     char moneybuf[BUFSZ];
     int64_t umoney = money_cnt(invent);
     Sprintf(moneybuf, "You have %lld %s.", (long long)umoney, currency(umoney));
-    char* txt = 0;
+    char* subtxt = 0;
 #ifdef GNH_MOBILE
-    txt = moneybuf;
+    subtxt = moneybuf;
 #endif
-    end_menu_ex(win, "Which spell do you want to learn?", txt);
+    end_menu_ex(win, "Which spell do you want to learn?", subtxt);
 
     if (spell_count <= 0)
     {
