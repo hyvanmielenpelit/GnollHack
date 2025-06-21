@@ -8417,9 +8417,14 @@ int64_t timeout UNUSED;
         if (is_rider_or_tarrasque(mptr) && (body_where == OBJ_MAGIC || rn2(99)))  /* Rider usually tries again; and always if in magic chest */
         {
             action = REVIVE_MON;
-            for (when = 3L; when < 67L; when++)
-                if (!rn2(3))
-                    break;
+            if (body_where == OBJ_MAGIC) /* While in a magic chest that cannot be located, try to revive every 9 turns in the case player changed levels, recovered the magic chest, or the like */
+                when = 9L;
+            else
+            {
+                for (when = 3L; when < 67L; when++)
+                    if (!rn2(3))
+                        break;
+            }
         } 
         else 
         { /* rot this corpse away */
