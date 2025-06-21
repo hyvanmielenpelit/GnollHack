@@ -166,6 +166,7 @@ STATIC_DCL int FDECL(repair_armor_func, (struct monst*));
 STATIC_DCL int FDECL(repair_weapon_func, (struct monst*));
 STATIC_DCL int FDECL(refill_lantern_func, (struct monst*));
 STATIC_DCL int FDECL(forge_special_func, (struct monst*, int, int, int, int, int, UCHAR_P, BOOLEAN_P));
+STATIC_DCL int FDECL(forge_any_special_func, (struct monst*));
 STATIC_DCL int FDECL(forge_cubic_gate_func, (struct monst*));
 STATIC_DCL int FDECL(forge_artificial_wings_func, (struct monst*));
 STATIC_DCL int FDECL(forge_dragon_scale_mail_func, (struct monst*));
@@ -6619,9 +6620,13 @@ struct monst* mtmp;
 
                 int64_t price = get_cost_of_monster_item(otmp, mtmp);
                 if (price > 0L)
-                    Sprintf(eos(itembuf), " (%s, %lld %s%s)", "for sale", (long long)price, currency(price), otmp->quan > 1 ? " each" : "");
+                    Sprintf(eos(itembuf), " (%s %lld %s%s)", ((windowprocs.wincap2 & WC2_SPECIAL_SYMBOLS) != 0) ? " &gold;" : "for sale,", (long long)price, currency(price), otmp->quan > 1 ? " each" : "");
                 else
                     Strcat(itembuf, " (no charge)");
+
+                struct extended_menu_info info = obj_to_extended_menu_info(otmp);
+                if (((windowprocs.wincap2 & WC2_SPECIAL_SYMBOLS) != 0))
+                    info.menu_flags |= MENU_FLAGS_USE_SPECIAL_SYMBOLS;
 
                 any.a_obj = otmp;
 //                char let = 'a' + sellable_item_count;
@@ -6631,7 +6636,7 @@ struct monst* mtmp;
                 int gui_glyph = maybe_get_replaced_glyph(glyph, mtmp->mx, mtmp->my, data_to_replacement_info(glyph, LAYER_OBJECT, otmp, (struct monst*)0, 0UL, 0UL, 0UL, MAT_NONE, 0));
                 add_extended_menu(win, gui_glyph, & any, 
                     0, 0, ATR_NONE, NO_COLOR,
-                    itembuf, MENU_UNSELECTED, obj_to_extended_menu_info(otmp));
+                    itembuf, MENU_UNSELECTED, info);
 
                 sellable_item_count++;
 
@@ -8050,6 +8055,156 @@ struct monst* mtmp;
     return general_service_query(mtmp, refill_lantern_func, "refill a lamp or lantern", cost, "refilling a lamp or lantern", SMITH_LINE_WOULD_YOU_LIKE_TO_REFILL_A_LAMP_OR_LANTERN);
 }
 
+STATIC_VAR int forge_any_target_otyp = STRANGE_OBJECT;
+STATIC_VAR int forge_any_target_quan = 1;
+STATIC_VAR int forge_any_target_exceptionality = EXCEPTIONALITY_NORMAL;
+STATIC_VAR int forge_any_target_material = MAT_NONE;
+STATIC_VAR int forge_any_material_component_otyp = STRANGE_OBJECT;
+STATIC_VAR int forge_any_material_component_quan = 0;
+
+STATIC_OVL void
+reset_forge_any_special(VOID_ARGS)
+{
+    forge_any_target_otyp = STRANGE_OBJECT;
+    forge_any_target_quan = 1;
+    forge_any_material_component_otyp = STRANGE_OBJECT;
+    forge_any_material_component_quan = 0;
+    forge_any_target_exceptionality = EXCEPTIONALITY_NORMAL;
+    forge_any_target_material = MAT_NONE;
+}
+
+STATIC_OVL void
+get_smith_forge_special_armor_service_info(forge_idx, text_ptr, func_ptr_ptr, verb_ptr, nomood_ptr, cost_ptr, query_style_ptr, extra_cost_descr_ptr, special_dialogue_sound_id_ptr, 
+    forge_any_target_otyp_ptr, forge_any_target_quan_ptr, forge_any_material_component_otyp_ptr, forge_any_material_component_quan_ptr, forge_any_target_exceptionality_ptr, forge_any_target_material_ptr)
+int forge_idx;
+int* query_style_ptr, * special_dialogue_sound_id_ptr;
+int* forge_any_target_otyp_ptr, * forge_any_material_component_otyp_ptr, * forge_any_material_component_quan_ptr, * forge_any_target_exceptionality_ptr, * forge_any_target_material_ptr;
+int64_t *cost_ptr, *forge_any_target_quan_ptr;
+const char** text_ptr, ** verb_ptr, ** nomood_ptr, ** extra_cost_descr_ptr;
+int (**func_ptr_ptr)(struct monst*);
+{
+    switch (forge_idx)
+    {
+    case 1:
+        *func_ptr_ptr = forge_dragon_scale_mail_func;
+        *cost_ptr = max(1L, (int64_t)((1000 + 50 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
+        *text_ptr = "Forge dragon scales into a dragon scale mail";
+        *verb_ptr = "forge a dragon scale mail";
+        *nomood_ptr = "forging a dragon scale mail";
+        *query_style_ptr = QUERY_STYLE_COMPONENTS;
+        *extra_cost_descr_ptr = (const char*)0;
+        *special_dialogue_sound_id_ptr = SMITH_LINE_WOULD_YOU_LIKE_TO_FORGE_A_DRAGON_SCALE_MAIL;
+        *forge_any_target_otyp_ptr = RED_DRAGON_SCALE_MAIL;
+        *forge_any_target_quan_ptr = 1;
+        *forge_any_material_component_otyp_ptr = STRANGE_OBJECT;
+        *forge_any_material_component_quan_ptr = 0;
+        *forge_any_target_exceptionality_ptr = EXCEPTIONALITY_NORMAL;
+        *forge_any_target_material_ptr = objects[RED_DRAGON_SCALE_MAIL].oc_material;
+        break;
+    case 2:
+        *func_ptr_ptr = forge_any_special_func;
+        *cost_ptr = max(1L, (int64_t)((800 + 80 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
+        *text_ptr = "Forge a shield of reflection";
+        *verb_ptr = "forge a dragon scale mail";
+        *nomood_ptr = "forging any shields";
+        *special_dialogue_sound_id_ptr = SMITH_LINE_WOULD_YOU_LIKE_TO_FORGE_A_SHIELD_OF_REFLECTION;
+        *query_style_ptr = QUERY_STYLE_COMPONENTS;
+        *extra_cost_descr_ptr = "8 nuggets of silver ore";
+        *forge_any_target_otyp_ptr = SHIELD_OF_REFLECTION;
+        *forge_any_target_quan_ptr = 1;
+        *forge_any_material_component_otyp_ptr = NUGGET_OF_SILVER_ORE;
+        *forge_any_material_component_quan_ptr = 8;
+        *forge_any_target_exceptionality_ptr = EXCEPTIONALITY_NORMAL;
+        *forge_any_target_material_ptr = MAT_NONE;
+        break;
+
+    case 3:
+        *func_ptr_ptr = forge_any_special_func;
+        *cost_ptr = max(1L, (int64_t)((600 + 60 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
+        *text_ptr = "Forge a crystal plate mail";
+        *verb_ptr = "forge a crystal plate mail";
+        *nomood_ptr = "forging any plate mails";
+        *special_dialogue_sound_id_ptr = SMITH_LINE_WOULD_YOU_LIKE_TO_FORGE_A_CRYSTAL_PLATE_MAIL;
+        *query_style_ptr = QUERY_STYLE_COMPONENTS;
+        *extra_cost_descr_ptr = "2 dilithium crystals";
+        *forge_any_target_otyp_ptr = PLATE_MAIL;
+        *forge_any_target_quan_ptr = 1;
+        *forge_any_material_component_otyp_ptr = DILITHIUM_CRYSTAL;
+        *forge_any_material_component_quan_ptr = 2;
+        *forge_any_target_exceptionality_ptr = EXCEPTIONALITY_NORMAL;
+        *forge_any_target_material_ptr = MAT_HARD_CRYSTAL;
+        break;
+
+    case 4:
+        *func_ptr_ptr = forge_any_special_func;
+        *cost_ptr = max(1L, (int64_t)((600 + 60 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
+        *text_ptr = "Forge a crystal plate mail";
+        *verb_ptr = "forge an adamantium full plate mail";
+        *nomood_ptr = "forging any full plate mails";
+        *special_dialogue_sound_id_ptr = SMITH_LINE_WOULD_YOU_LIKE_TO_FORGE_AN_ADAMANTIUM_FULL_PLATE_MAIL;
+        *query_style_ptr = QUERY_STYLE_COMPONENTS;
+        *extra_cost_descr_ptr = "4 nuggets of adamantium ore";
+        *forge_any_target_otyp_ptr = FULL_PLATE_MAIL;
+        *forge_any_target_quan_ptr = 1;
+        *forge_any_material_component_otyp_ptr = NUGGET_OF_ADAMANTIUM_ORE;
+        *forge_any_material_component_quan_ptr = 4;
+        *forge_any_target_exceptionality_ptr = EXCEPTIONALITY_NORMAL;
+        *forge_any_target_material_ptr = MAT_ADAMANTIUM;
+        break;
+
+    case 5:
+        *func_ptr_ptr = forge_any_special_func;
+        *cost_ptr = max(1L, (int64_t)((600 + 60 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
+        *text_ptr = "Forge a mithril full plate mail";
+        *verb_ptr = "forge a mithril full plate mail";
+        *nomood_ptr = "forging any full plate mails";
+        *special_dialogue_sound_id_ptr = SMITH_LINE_WOULD_YOU_LIKE_TO_FORGE_A_MITHRIL_FULL_PLATE_MAIL;
+        *query_style_ptr = QUERY_STYLE_COMPONENTS;
+        *extra_cost_descr_ptr = "4 nuggets of mithril ore";
+        *forge_any_target_otyp_ptr = FULL_PLATE_MAIL;
+        *forge_any_target_quan_ptr = 1;
+        *forge_any_material_component_otyp_ptr = NUGGET_OF_MITHRIL_ORE;
+        *forge_any_material_component_quan_ptr = 4;
+        *forge_any_target_exceptionality_ptr = EXCEPTIONALITY_NORMAL;
+        *forge_any_target_material_ptr = MAT_MITHRIL;
+        break;
+
+    case 6:
+        *func_ptr_ptr = forge_any_special_func;
+        *cost_ptr = max(1L, (int64_t)((600 + 60 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
+        *text_ptr = "Forge a orichalcum full plate mail";
+        *verb_ptr = "forge a orichalcum full plate mail";
+        *nomood_ptr = "forging any full plate mails";
+        *special_dialogue_sound_id_ptr = SMITH_LINE_WOULD_YOU_LIKE_TO_FORGE_AN_ORICHALCUM_FULL_PLATE_MAIL;
+        *query_style_ptr = QUERY_STYLE_COMPONENTS;
+        *extra_cost_descr_ptr = "4 nuggets of orichalcum ore";
+        *forge_any_target_otyp_ptr = FULL_PLATE_MAIL;
+        *forge_any_target_quan_ptr = 1;
+        *forge_any_material_component_otyp_ptr = NUGGET_OF_ORICHALCUM_ORE;
+        *forge_any_material_component_quan_ptr = 4;
+        *forge_any_target_exceptionality_ptr = EXCEPTIONALITY_NORMAL;
+        *forge_any_target_material_ptr = MAT_ORICHALCUM;
+        break;
+
+    default:
+        *func_ptr_ptr = forge_any_special_func;
+        *cost_ptr = 0;
+        *text_ptr = "";
+        *verb_ptr = "";
+        *nomood_ptr = "";
+        *special_dialogue_sound_id_ptr = 0;
+        *query_style_ptr = QUERY_STYLE_COMPONENTS;
+        *extra_cost_descr_ptr = "";
+        *forge_any_target_otyp_ptr = STRANGE_OBJECT;
+        *forge_any_target_quan_ptr = 1;
+        *forge_any_material_component_otyp_ptr = STRANGE_OBJECT;
+        *forge_any_material_component_quan_ptr = 0;
+        *forge_any_target_exceptionality_ptr = EXCEPTIONALITY_NORMAL;
+        *forge_any_target_material_ptr = MAT_NONE;
+        break;
+    }
+}
+
 STATIC_OVL int
 do_chat_smith_forge_special_armor(mtmp)
 struct monst* mtmp;
@@ -8065,50 +8220,95 @@ struct monst* mtmp;
     win = create_nhwindow_ex(NHW_MENU, GHWINDOW_STYLE_CHAT_ITEM_MENU, get_seen_monster_glyph(mtmp), extended_create_window_info_from_mon(mtmp));
     start_menu_ex(win, GHMENU_STYLE_CHAT_CHOOSE_ITEM);
 
-    any = zeroany;
-    any.a_char = 1;
+    int forge_idx;
+    int query_style = 0, special_dialogue_sound_id = 0;
+    int forge_any_target_otyp_temp = 0, forge_any_material_component_otyp_temp = 0, forge_any_material_component_quan_temp = 0, forge_any_target_exceptionality_temp = 0, forge_any_target_material_temp = 0;
+    int64_t cost = 0, forge_any_target_quan_temp = 0;
+    const char* text = 0, * verb = 0, * nomood = 0, * extra_cost_descr = 0;
+    int (*func_ptr)(struct monst*) = 0;
+    char menubuf[BUFSZ];
+    struct extended_menu_info info = zeroextendedmenuinfo;
+    if (((windowprocs.wincap2 & WC2_SPECIAL_SYMBOLS) != 0))
+        info.menu_flags |= MENU_FLAGS_USE_SPECIAL_SYMBOLS;
 
-    add_menu(win, NO_GLYPH, &any,
-        0, 0, ATR_NONE, NO_COLOR,
-        "Forge dragon scales into a dragon scale mail", MENU_UNSELECTED);
+    for (forge_idx = 1; forge_idx <= 6; forge_idx++)
+    {
+        get_smith_forge_special_armor_service_info(forge_idx, &text, &func_ptr, &verb, &nomood, &cost, &query_style, &extra_cost_descr, &special_dialogue_sound_id,
+            &forge_any_target_otyp_temp, &forge_any_target_quan_temp, &forge_any_material_component_otyp_temp, &forge_any_material_component_quan_temp, &forge_any_target_exceptionality_temp, &forge_any_target_material_temp);
+        any = zeroany;
+        any.a_char = (char)forge_idx;
+        struct obj pseudo = zeroobj;
+        pseudo.otyp = forge_any_target_otyp_temp;
+        pseudo.quan = forge_any_target_quan_temp;
+        pseudo.exceptionality = forge_any_target_exceptionality_temp;
+        pseudo.material = forge_any_target_material_temp;
+        int glyph = obj_to_glyph(&pseudo, rn2_on_display_rng);
+        int gui_glyph = maybe_get_replaced_glyph(glyph, mtmp->mx, mtmp->my, data_to_replacement_info(glyph, LAYER_OBJECT, &pseudo, (struct monst*)0, 0UL, 0UL, 0UL, MAT_NONE, 0));
+        Sprintf(menubuf, "%s (%s%lld %s", text,
+            ((windowprocs.wincap2& WC2_SPECIAL_SYMBOLS) != 0) ? " &gold; " : "",
+            (long long)cost, currency(cost));
+        if (extra_cost_descr && *extra_cost_descr)
+        {
+            Strcat(menubuf, ", ");
+            Strcat(menubuf, extra_cost_descr);
+        }
+        Strcat(menubuf, ")");
 
-    any = zeroany;
-    any.a_char = 2;
+        add_extended_menu(win, gui_glyph, &any,
+            0, 0, ATR_NONE, NO_COLOR,
+            menubuf, MENU_UNSELECTED, info);
+    }
+    //any = zeroany;
+    //any.a_char = 1;
 
-    add_menu(win, NO_GLYPH, &any,
-        0, 0, ATR_NONE, NO_COLOR,
-        "Forge a shield of reflection", MENU_UNSELECTED);
+    //add_menu(win, NO_GLYPH, &any,
+    //    0, 0, ATR_NONE, NO_COLOR,
+    //    "Forge dragon scales into a dragon scale mail", MENU_UNSELECTED);
 
-    any = zeroany;
-    any.a_char = 3;
+    //any = zeroany;
+    //any.a_char = 2;
 
-    add_menu(win, NO_GLYPH, &any,
-        0, 0, ATR_NONE, NO_COLOR,
-        "Forge a crystal plate mail", MENU_UNSELECTED);
+    //add_menu(win, NO_GLYPH, &any,
+    //    0, 0, ATR_NONE, NO_COLOR,
+    //    "Forge a shield of reflection", MENU_UNSELECTED);
 
-    any = zeroany;
-    any.a_char = 4;
+    //any = zeroany;
+    //any.a_char = 3;
 
-    add_menu(win, NO_GLYPH, &any,
-        0, 0, ATR_NONE, NO_COLOR,
-        "Forge an adamantium full plate mail", MENU_UNSELECTED);
+    //add_menu(win, NO_GLYPH, &any,
+    //    0, 0, ATR_NONE, NO_COLOR,
+    //    "Forge a crystal plate mail", MENU_UNSELECTED);
 
-    any = zeroany;
-    any.a_char = 5;
+    //any = zeroany;
+    //any.a_char = 4;
 
-    add_menu(win, NO_GLYPH, &any,
-        0, 0, ATR_NONE, NO_COLOR,
-        "Forge a mithril full plate mail", MENU_UNSELECTED);
+    //add_menu(win, NO_GLYPH, &any,
+    //    0, 0, ATR_NONE, NO_COLOR,
+    //    "Forge an adamantium full plate mail", MENU_UNSELECTED);
 
-    any = zeroany;
-    any.a_char = 6;
+    //any = zeroany;
+    //any.a_char = 5;
 
-    add_menu(win, NO_GLYPH, &any,
-        0, 0, ATR_NONE, NO_COLOR,
-        "Forge an orichalcum full plate mail", MENU_UNSELECTED);
+    //add_menu(win, NO_GLYPH, &any,
+    //    0, 0, ATR_NONE, NO_COLOR,
+    //    "Forge a mithril full plate mail", MENU_UNSELECTED);
+
+    //any = zeroany;
+    //any.a_char = 6;
+
+    //add_menu(win, NO_GLYPH, &any,
+    //    0, 0, ATR_NONE, NO_COLOR,
+    //    "Forge an orichalcum full plate mail", MENU_UNSELECTED);
 
     /* Finish the menu */
-    end_menu(win, "Which type of armor do you want to forge?");
+    char moneybuf[BUFSZ];
+    int64_t umoney = money_cnt(invent);
+    Sprintf(moneybuf, "You have %lld %s.", (long long)umoney, currency(umoney));
+    char* txt = 0;
+#ifdef GNH_MOBILE
+    txt = moneybuf;
+#endif
+    end_menu_ex(win, "Which type of armor do you want to forge?", txt);
 
     int i = 0;
     /* Now generate the menu */
@@ -8122,40 +8322,47 @@ struct monst* mtmp;
     if (i < 1)
         return 0;
 
-    int64_t cost = 0;
+    get_smith_forge_special_armor_service_info(i, &text, &func_ptr, &verb, &nomood, &cost, &query_style, &extra_cost_descr, &special_dialogue_sound_id,
+        &forge_any_target_otyp, &forge_any_target_quan, &forge_any_material_component_otyp, &forge_any_material_component_quan, &forge_any_target_exceptionality, &forge_any_target_material);
 
-    switch(i)
-    {
-    case 1:
-        cost = max(1L, (int64_t)((1000 + 50 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
-        return general_service_query(mtmp, forge_dragon_scale_mail_func, "forge a dragon scale mail", cost, "forging a dragon scale mail", SMITH_LINE_WOULD_YOU_LIKE_TO_FORGE_A_DRAGON_SCALE_MAIL);
-        break;
-    case 2:
-        cost = max(1L, (int64_t)((800 + 80 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
-        return general_service_query_with_extra(mtmp, forge_shield_of_reflection_func, "forge a shield of reflection", cost, "forging any armor", QUERY_STYLE_COMPONENTS, "8 nuggets of silver ore", SMITH_LINE_WOULD_YOU_LIKE_TO_FORGE_A_SHIELD_OF_REFLECTION);
-        break;
-    case 3:
-        cost = max(1L, (int64_t)((600 + 60 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
-        return general_service_query_with_extra(mtmp, forge_crystal_plate_mail_func, "forge a crystal plate mail", cost, "forging any armor", QUERY_STYLE_COMPONENTS, "2 dilithium crystals", SMITH_LINE_WOULD_YOU_LIKE_TO_FORGE_A_CRYSTAL_PLATE_MAIL);
-        break;
-    case 4:
-        cost = max(1L, (int64_t)((600 + 60 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
-        return general_service_query_with_extra(mtmp, forge_adamantium_full_plate_mail_func, "forge an adamantium full plate mail", cost, "forging any armor", QUERY_STYLE_COMPONENTS, "4 nuggets of adamantium ore", SMITH_LINE_WOULD_YOU_LIKE_TO_FORGE_AN_ADAMANTIUM_FULL_PLATE_MAIL);
-        break;
-    case 5:
-        cost = max(1L, (int64_t)((600 + 60 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
-        return general_service_query_with_extra(mtmp, forge_mithril_full_plate_mail_func, "forge a mithril full plate mail", cost, "forging any armor", QUERY_STYLE_COMPONENTS, "4 nuggets of mithril ore", SMITH_LINE_WOULD_YOU_LIKE_TO_FORGE_A_MITHRIL_FULL_PLATE_MAIL);
-        break;
-    case 6:
-        cost = max(1L, (int64_t)((600 + 60 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
-        return general_service_query_with_extra(mtmp, forge_orichalcum_full_plate_mail_func, "forge an orichalcum full plate mail", cost, "forging any armor", QUERY_STYLE_COMPONENTS, "4 nuggets of orichalcum ore", SMITH_LINE_WOULD_YOU_LIKE_TO_FORGE_AN_ORICHALCUM_FULL_PLATE_MAIL);
-        break;
-    default:
-        pline1(Never_mind);
-        break;
-    }
+    int res = general_service_query_with_extra(mtmp, func_ptr, verb, cost, nomood, query_style, extra_cost_descr, special_dialogue_sound_id);
+    reset_forge_any_special(); /* Just in case */
+    return res;
 
-    return 0;
+    //int64_t cost = 0;
+
+    //switch(i)
+    //{
+    //case 1:
+    //    cost = max(1L, (int64_t)((1000 + 50 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
+    //    return general_service_query(mtmp, forge_dragon_scale_mail_func, "forge a dragon scale mail", cost, "forging a dragon scale mail", SMITH_LINE_WOULD_YOU_LIKE_TO_FORGE_A_DRAGON_SCALE_MAIL);
+    //    break;
+    //case 2:
+    //    cost = max(1L, (int64_t)((800 + 80 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
+    //    return general_service_query_with_extra(mtmp, forge_shield_of_reflection_func, "forge a shield of reflection", cost, "forging any armor", QUERY_STYLE_COMPONENTS, "8 nuggets of silver ore", SMITH_LINE_WOULD_YOU_LIKE_TO_FORGE_A_SHIELD_OF_REFLECTION);
+    //    break;
+    //case 3:
+    //    cost = max(1L, (int64_t)((600 + 60 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
+    //    return general_service_query_with_extra(mtmp, forge_crystal_plate_mail_func, "forge a crystal plate mail", cost, "forging any armor", QUERY_STYLE_COMPONENTS, "2 dilithium crystals", SMITH_LINE_WOULD_YOU_LIKE_TO_FORGE_A_CRYSTAL_PLATE_MAIL);
+    //    break;
+    //case 4:
+    //    cost = max(1L, (int64_t)((600 + 60 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
+    //    return general_service_query_with_extra(mtmp, forge_adamantium_full_plate_mail_func, "forge an adamantium full plate mail", cost, "forging any armor", QUERY_STYLE_COMPONENTS, "4 nuggets of adamantium ore", SMITH_LINE_WOULD_YOU_LIKE_TO_FORGE_AN_ADAMANTIUM_FULL_PLATE_MAIL);
+    //    break;
+    //case 5:
+    //    cost = max(1L, (int64_t)((600 + 60 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
+    //    return general_service_query_with_extra(mtmp, forge_mithril_full_plate_mail_func, "forge a mithril full plate mail", cost, "forging any armor", QUERY_STYLE_COMPONENTS, "4 nuggets of mithril ore", SMITH_LINE_WOULD_YOU_LIKE_TO_FORGE_A_MITHRIL_FULL_PLATE_MAIL);
+    //    break;
+    //case 6:
+    //    cost = max(1L, (int64_t)((600 + 60 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
+    //    return general_service_query_with_extra(mtmp, forge_orichalcum_full_plate_mail_func, "forge an orichalcum full plate mail", cost, "forging any armor", QUERY_STYLE_COMPONENTS, "4 nuggets of orichalcum ore", SMITH_LINE_WOULD_YOU_LIKE_TO_FORGE_AN_ORICHALCUM_FULL_PLATE_MAIL);
+    //    break;
+    //default:
+    //    pline1(Never_mind);
+    //    break;
+    //}
+
+    //return 0;
 }
 
 STATIC_OVL int
@@ -11112,6 +11319,16 @@ struct monst* mtmp;
 }
 
 STATIC_OVL int
+forge_any_special_func(mtmp)
+struct monst* mtmp;
+{
+    if (forge_any_target_otyp == STRANGE_OBJECT)
+        return 0;
+
+    return forge_special_func(mtmp, forge_any_material_component_otyp, forge_any_material_component_quan, forge_any_target_otyp, forge_any_target_quan, forge_any_target_exceptionality, forge_any_target_material, FALSE);
+}
+
+STATIC_OVL int
 forge_cubic_gate_func(mtmp)
 struct monst* mtmp;
 {
@@ -11496,7 +11713,14 @@ int* spell_otyps;
     }
 
     /* Finish the menu */
-    end_menu(win, "Which spell do you want to learn?");
+    char moneybuf[BUFSZ];
+    int64_t umoney = money_cnt(invent);
+    Sprintf(moneybuf, "You have %lld %s.", (long long)umoney, currency(umoney));
+    char* txt = 0;
+#ifdef GNH_MOBILE
+    txt = moneybuf;
+#endif
+    end_menu_ex(win, "Which spell do you want to learn?", txt);
 
     if (spell_count <= 0)
     {
