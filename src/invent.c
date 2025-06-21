@@ -2641,7 +2641,7 @@ unsigned int getobjflags; /* 1 = cost is specified; 2 = header text is about cos
     //int64_t dummymask;
     //Loot *sortedinvent, *srtinv;
 #ifndef GNH_MOBILE
-    if ((getobjflags & 3) == 3) /* On legacy versions, if header text also is about cost, keep just the cost in the title */
+    if ((getobjflags & 3U) == 3U) /* On legacy versions, if the header text also is about cost and cost is separately specified, keep just the cost in the title */
     {
         headertext = "";
     }
@@ -2953,7 +2953,7 @@ unsigned int getobjflags; /* 1 = cost is specified; 2 = header text is about cos
         cnt = 0;
         cntgiven = FALSE;
         Sprintf(qbuf, "What do you want to %s?", word);
-        if ((getobjflags & 1) != 0 && !(headertext && strcmp(headertext, "") && (getobjflags & 2) != 0))  /* On modern versions, if header text also is about cost, keep just the headertext */
+        if ((getobjflags & 1) != 0 && !(headertext && strcmp(headertext, "") && (getobjflags & 2) != 0))  /* On modern versions, if the header text also is about cost and cost is separately specified, keep just the header text */
         {
             Sprintf(eos(qbuf), " (%lld %s)", (long long)cost, currency(cost));
         }
