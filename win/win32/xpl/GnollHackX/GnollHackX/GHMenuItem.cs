@@ -252,6 +252,7 @@ namespace GnollHackX
                         res = 1;
                         break;
                     case ghmenu_styles.GHMENU_STYLE_CHAT_CHOOSE_ITEM:
+                        res = 1;
                         break;
                     case ghmenu_styles.GHMENU_STYLE_CHOOSE_SIMPLE:
                         break;
