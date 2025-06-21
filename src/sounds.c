@@ -8075,7 +8075,7 @@ reset_forge_any_special(VOID_ARGS)
 }
 
 STATIC_OVL void
-get_smith_forge_special_armor_service_info(forge_idx, text_ptr, func_ptr_ptr, verb_ptr, nomood_ptr, cost_ptr, query_style_ptr, extra_cost_descr_ptr, special_dialogue_sound_id_ptr, 
+get_smith_forge_service_info(forge_idx, text_ptr, func_ptr_ptr, verb_ptr, nomood_ptr, cost_ptr, query_style_ptr, extra_cost_descr_ptr, special_dialogue_sound_id_ptr, 
     forge_any_target_otyp_ptr, forge_any_target_quan_ptr, forge_any_material_component_otyp_ptr, forge_any_material_component_quan_ptr, forge_any_target_exceptionality_ptr, forge_any_target_material_ptr)
 int forge_idx;
 int* query_style_ptr, * special_dialogue_sound_id_ptr;
@@ -8395,6 +8395,8 @@ const char* title_text;
     if (!mtmp)
         return 0;
 
+    reset_forge_any_special();
+
     menu_item* pick_list = (menu_item*)0;
     winid win;
     anything any;
@@ -8413,7 +8415,7 @@ const char* title_text;
 
     for (forge_idx = forge_idx_start; forge_idx <= forge_idx_end; forge_idx++)
     {
-        get_smith_forge_special_armor_service_info(forge_idx, &text, &func_ptr, &verb, &nomood, &cost, &query_style, &extra_cost_descr, &special_dialogue_sound_id,
+        get_smith_forge_service_info(forge_idx, &text, &func_ptr, &verb, &nomood, &cost, &query_style, &extra_cost_descr, &special_dialogue_sound_id,
             &forge_any_target_otyp_temp, &forge_any_target_quan_temp, &forge_any_material_component_otyp_temp, &forge_any_material_component_quan_temp, &forge_any_target_exceptionality_temp, &forge_any_target_material_temp);
         any = zeroany;
         any.a_char = (char)forge_idx;
@@ -8508,7 +8510,7 @@ const char* title_text;
     if (i < 1)
         return 0;
 
-    get_smith_forge_special_armor_service_info(i, &text, &func_ptr, &verb, &nomood, &cost, &query_style, &extra_cost_descr, &special_dialogue_sound_id,
+    get_smith_forge_service_info(i, &text, &func_ptr, &verb, &nomood, &cost, &query_style, &extra_cost_descr, &special_dialogue_sound_id,
         &forge_any_target_otyp, &forge_any_target_quan, &forge_any_material_component_otyp, &forge_any_material_component_quan, &forge_any_target_exceptionality, &forge_any_target_material);
 
     int res = general_service_query_with_extra(mtmp, func_ptr, verb, cost, nomood, query_style, extra_cost_descr, special_dialogue_sound_id);
