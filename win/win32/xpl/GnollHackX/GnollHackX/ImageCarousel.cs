@@ -160,8 +160,8 @@ namespace GnollHackX
             SKImageInfo info = e.Info;
             SKSurface surface = e.Surface;
             SKCanvas canvas = surface.Canvas;
-            float canvaswidth = this.CanvasSize.Width;
-            float canvasheight = this.CanvasSize.Height;
+            float canvaswidth = info.Width;
+            float canvasheight = info.Height;
 
             canvas.Clear();
 

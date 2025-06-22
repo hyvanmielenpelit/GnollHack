@@ -1670,6 +1670,14 @@ namespace GnollHackX.Pages.Game
                         _mapUpdateStopWatch.Restart();
                     }
 
+                    float canvasheight;
+                    lock (_savedCanvasLock)
+                    {
+                        canvasheight = _savedCanvasHeight;
+                    }
+                    if (canvasheight <= 0)
+                        return;
+
                     lock (_messageScrollLock)
                     {
                         float speed = _messageScrollSpeed; /* pixels per second */
@@ -1693,13 +1701,13 @@ namespace GnollHackX.Pages.Game
                             }
                             else if (_messageScrollOffset > topScrollLimit || _messageScrollOffset < 0)
                             {
-                                float deceleration1 = canvasView.CanvasSize.Height * GHConstants.ScrollConstantDeceleration * GHConstants.ScrollConstantDecelerationOverEdgeMultiplier;
+                                float deceleration1 = canvasheight * GHConstants.ScrollConstantDeceleration * GHConstants.ScrollConstantDecelerationOverEdgeMultiplier;
                                 float deceleration2 = Math.Abs(_messageScrollSpeed) * GHConstants.ScrollSpeedDeceleration * GHConstants.ScrollSpeedDecelerationOverEdgeMultiplier;
                                 float deceleration_per_second = deceleration1 + deceleration2;
                                 float distance_from_edge = _messageScrollOffset > topScrollLimit ? _messageScrollOffset - topScrollLimit : _messageScrollOffset - 0;
-                                float deceleration3 = (distance_from_edge + (float)Math.Sign(distance_from_edge) * GHConstants.ScrollDistanceEdgeConstant * canvasView.CanvasSize.Height) * GHConstants.ScrollOverEdgeDeceleration;
-                                float distance_anchor_distance = canvasView.CanvasSize.Height * GHConstants.ScrollDistanceAnchorFactor;
-                                float close_anchor_distance = canvasView.CanvasSize.Height * GHConstants.ScrollCloseAnchorFactor;
+                                float deceleration3 = (distance_from_edge + (float)Math.Sign(distance_from_edge) * GHConstants.ScrollDistanceEdgeConstant * canvasheight) * GHConstants.ScrollOverEdgeDeceleration;
+                                float distance_anchor_distance = canvasheight * GHConstants.ScrollDistanceAnchorFactor;
+                                float close_anchor_distance = canvasheight * GHConstants.ScrollCloseAnchorFactor;
                                 float target_speed_at_distance = GHConstants.ScrollTargetSpeedAtDistanceAnchor;
                                 float target_speed_at_close = GHConstants.ScrollTargetSpeedAtCloseAnchor;
                                 float target_speed_at_edge = GHConstants.ScrollTargetSpeedAtEdge;
@@ -1711,7 +1719,7 @@ namespace GnollHackX.Pages.Game
                                     + Math.Min(1f, close_factor) * (target_speed_at_close - target_speed_at_edge)
                                     + target_speed_at_edge
                                     )
-                                    * canvasView.CanvasSize.Height;
+                                    * canvasheight;
                                 if (_messageScrollOffset > topScrollLimit ? _messageScrollSpeed <= 0 : _messageScrollSpeed >= 0)
                                 {
                                     float target_factor = Math.Abs(distance_from_edge) / distance_anchor_distance;
@@ -1731,7 +1739,7 @@ namespace GnollHackX.Pages.Game
                                     long millisecs_elapsed = (DateTime.Now.Ticks - _messageScrollSpeedReleaseStamp.Ticks) / TimeSpan.TicksPerMillisecond;
                                     if (millisecs_elapsed > GHConstants.FreeScrollingTime)
                                     {
-                                        float deceleration1 = (float)canvasView.CanvasSize.Height * GHConstants.ScrollConstantDeceleration;
+                                        float deceleration1 = (float)canvasheight * GHConstants.ScrollConstantDeceleration;
                                         float deceleration2 = Math.Abs(_messageScrollSpeed) * GHConstants.ScrollSpeedDeceleration;
                                         float deceleration_per_second = deceleration1 + deceleration2;
                                         _messageScrollSpeed += -1.0f * (float)sgn * (deceleration_per_second * timePassed);
@@ -1750,47 +1758,9 @@ namespace GnollHackX.Pages.Game
 
         public void UpdateCommandCanvas()
         {
-            if (MoreCommandsGrid.IsVisible)
+            MainThread.BeginInvokeOnMainThread(() =>
             {
-                float timePassed = 1.0f / UIUtils.GetAuxiliaryCanvasAnimationFrequency();
-                //float timePassed = 0;
-                //if (!_mapUpdateStopWatch.IsRunning)
-                //{
-                //    timePassed = 1.0f / UIUtils.GetAuxiliaryCanvasAnimationFrequency();
-                //    _mapUpdateStopWatch.Restart();
-                //}
-                //else
-                //{
-                //    _mapUpdateStopWatch.Stop();
-                //    timePassed = (float)_mapUpdateStopWatch.ElapsedMilliseconds / 1000f;
-                //    _mapUpdateStopWatch.Restart();
-                //}
-                float offx = MoreCmdOffsetX;
-                if (offx != 0 && (CommandTouchDictionary.Count == 0 || _commandChangedPage))
-                {
-                    float delta = -1 * Math.Sign(offx) * CommandCanvas.CanvasSize.Width * _moreCmdOffsetAutoSpeed * timePassed;
-                    if (offx > 0 && offx + delta < 0)
-                        MoreCmdOffsetX = 0;
-                    else if (offx < 0 && offx + delta > 0)
-                        MoreCmdOffsetX = 0;
-                    else
-                        MoreCmdOffsetX = offx + delta;
-                }
-                CommandCanvas.InvalidateSurface();
-            }
-        }
-
-        //private int _menuUpdateGCCounter = 0;
-        public void UpdateMenuCanvas()
-        {
-            bool refresh = false;
-            if (MenuGrid.IsVisible)
-            {
-                lock (_menuDrawOnlyLock)
-                {
-                    refresh = _menuRefresh;
-                }
-                if (refresh)
+                if (MoreCommandsGrid.IsVisible)
                 {
                     float timePassed = 1.0f / UIUtils.GetAuxiliaryCanvasAnimationFrequency();
                     //float timePassed = 0;
@@ -1805,38 +1775,193 @@ namespace GnollHackX.Pages.Game
                     //    timePassed = (float)_mapUpdateStopWatch.ElapsedMilliseconds / 1000f;
                     //    _mapUpdateStopWatch.Restart();
                     //}
-                    //bool doGC = false;
-                    lock (_menuScrollLock)
+                    float offx = MoreCmdOffsetX;
+                    if (offx != 0 && (CommandTouchDictionary.Count == 0 || _commandChangedPage))
                     {
-                        float speed = _menuScrollSpeed; /* pixels per second */
-                        float bottomScrollLimit = 0;
-                        bottomScrollLimit = Math.Min(0, MenuCanvas.CanvasSize.Height - TotalMenuHeight);
-                        if (_menuScrollSpeedOn)
+                        float delta = -1 * Math.Sign(offx) * CommandCanvas.CanvasSize.Width * _moreCmdOffsetAutoSpeed * timePassed;
+                        if (offx > 0 && offx + delta < 0)
+                            MoreCmdOffsetX = 0;
+                        else if (offx < 0 && offx + delta > 0)
+                            MoreCmdOffsetX = 0;
+                        else
+                            MoreCmdOffsetX = offx + delta;
+                    }
+                    CommandCanvas.InvalidateSurface();
+                }
+            });
+        }
+
+        //private int _menuUpdateGCCounter = 0;
+        public void UpdateMenuCanvas()
+        {
+            MainThread.BeginInvokeOnMainThread(() =>
+            {
+                bool refresh = false;
+                if (MenuGrid.IsVisible)
+                {
+                    lock (_menuDrawOnlyLock)
+                    {
+                        refresh = _menuRefresh;
+                    }
+                    if (refresh)
+                    {
+                        float timePassed = 1.0f / UIUtils.GetAuxiliaryCanvasAnimationFrequency();
+                        //float timePassed = 0;
+                        //if (!_mapUpdateStopWatch.IsRunning)
+                        //{
+                        //    timePassed = 1.0f / UIUtils.GetAuxiliaryCanvasAnimationFrequency();
+                        //    _mapUpdateStopWatch.Restart();
+                        //}
+                        //else
+                        //{
+                        //    _mapUpdateStopWatch.Stop();
+                        //    timePassed = (float)_mapUpdateStopWatch.ElapsedMilliseconds / 1000f;
+                        //    _mapUpdateStopWatch.Restart();
+                        //}
+                        //bool doGC = false;
+                        lock (_menuScrollLock)
                         {
-                            int sgn = Math.Sign(_menuScrollSpeed);
-                            float delta = speed * timePassed;
-                            _menuScrollOffset += delta;
-                            if (_menuScrollOffset < 0 && _menuScrollOffset - delta > 0)
+                            float speed = _menuScrollSpeed; /* pixels per second */
+                            float bottomScrollLimit = 0;
+                            bottomScrollLimit = Math.Min(0, MenuCanvas.CanvasSize.Height - TotalMenuHeight);
+                            if (_menuScrollSpeedOn)
                             {
-                                _menuScrollOffset = 0;
-                                _menuScrollSpeed = 0;
-                                _menuScrollSpeedOn = false;
+                                int sgn = Math.Sign(_menuScrollSpeed);
+                                float delta = speed * timePassed;
+                                _menuScrollOffset += delta;
+                                if (_menuScrollOffset < 0 && _menuScrollOffset - delta > 0)
+                                {
+                                    _menuScrollOffset = 0;
+                                    _menuScrollSpeed = 0;
+                                    _menuScrollSpeedOn = false;
+                                }
+                                else if (_menuScrollOffset > bottomScrollLimit && _menuScrollOffset - delta < bottomScrollLimit)
+                                {
+                                    _menuScrollOffset = bottomScrollLimit;
+                                    _menuScrollSpeed = 0;
+                                    _menuScrollSpeedOn = false;
+                                }
+                                else if (_menuScrollOffset > 0 || _menuScrollOffset < bottomScrollLimit)
+                                {
+                                    float deceleration1 = MenuCanvas.CanvasSize.Height * GHConstants.ScrollConstantDeceleration * GHConstants.ScrollConstantDecelerationOverEdgeMultiplier;
+                                    float deceleration2 = Math.Abs(_menuScrollSpeed) * GHConstants.ScrollSpeedDeceleration * GHConstants.ScrollSpeedDecelerationOverEdgeMultiplier;
+                                    float deceleration_per_second = deceleration1 + deceleration2;
+                                    float distance_from_edge = _menuScrollOffset > 0 ? _menuScrollOffset : _menuScrollOffset - bottomScrollLimit;
+                                    float deceleration3 = (distance_from_edge + (float)Math.Sign(distance_from_edge) * GHConstants.ScrollDistanceEdgeConstant * MenuCanvas.CanvasSize.Height) * GHConstants.ScrollOverEdgeDeceleration;
+                                    float distance_anchor_distance = MenuCanvas.CanvasSize.Height * GHConstants.ScrollDistanceAnchorFactor;
+                                    float close_anchor_distance = MenuCanvas.CanvasSize.Height * GHConstants.ScrollCloseAnchorFactor;
+                                    float target_speed_at_distance = GHConstants.ScrollTargetSpeedAtDistanceAnchor;
+                                    float target_speed_at_close = GHConstants.ScrollTargetSpeedAtCloseAnchor;
+                                    float target_speed_at_edge = GHConstants.ScrollTargetSpeedAtEdge;
+                                    float dist_factor = (Math.Abs(distance_from_edge) - close_anchor_distance) / (distance_anchor_distance - close_anchor_distance);
+                                    float close_factor = Math.Abs(distance_from_edge) / close_anchor_distance;
+                                    float target_speed = -1.0f * (float)Math.Sign(distance_from_edge)
+                                        * (
+                                        Math.Max(0f, dist_factor) * (target_speed_at_distance - target_speed_at_close)
+                                        + Math.Min(1f, close_factor) * (target_speed_at_close - target_speed_at_edge)
+                                        + target_speed_at_edge
+                                        )
+                                        * MenuCanvas.CanvasSize.Height;
+                                    if (_menuScrollOffset > 0 ? _menuScrollSpeed <= 0 : _menuScrollSpeed >= 0)
+                                    {
+                                        float target_factor = Math.Abs(distance_from_edge) / distance_anchor_distance;
+                                        _menuScrollSpeed += (-1.0f * deceleration3) * (float)UIUtils.GetAuxiliaryCanvasAnimationInterval() / 1000;
+                                        if (target_factor < 1.0f)
+                                        {
+                                            _menuScrollSpeed = _menuScrollSpeed * target_factor + target_speed * (1.0f - target_factor);
+                                        }
+                                    }
+                                    else
+                                        _menuScrollSpeed += (-1.0f * (float)sgn * deceleration_per_second - deceleration3) * (float)UIUtils.GetAuxiliaryCanvasAnimationInterval() / 1000;
+                                }
+                                else
+                                {
+                                    //if(_menuScrollSpeedReleaseStamp != null)
+                                    {
+                                        long millisecs_elapsed = (DateTime.Now.Ticks - _menuScrollSpeedReleaseStamp.Ticks) / TimeSpan.TicksPerMillisecond;
+                                        if (millisecs_elapsed > GHConstants.FreeScrollingTime)
+                                        {
+                                            float deceleration1 = (float)MenuCanvas.CanvasSize.Height * GHConstants.ScrollConstantDeceleration;
+                                            float deceleration2 = Math.Abs(_menuScrollSpeed) * GHConstants.ScrollSpeedDeceleration;
+                                            float deceleration_per_second = deceleration1 + deceleration2;
+                                            _menuScrollSpeed += -1.0f * (float)sgn * ((deceleration_per_second * (float)UIUtils.GetAuxiliaryCanvasAnimationInterval()) / 1000);
+                                            if (sgn == 0 || (sgn > 0 && _menuScrollSpeed < 0) || (sgn < 0 && _menuScrollSpeed > 0))
+                                                _menuScrollSpeed = 0;
+                                        }
+                                    }
+                                }
                             }
-                            else if (_menuScrollOffset > bottomScrollLimit && _menuScrollOffset - delta < bottomScrollLimit)
+                            //if (!_menuScrollSpeedOn && GHApp.IsAndroid)
+                            //{
+                            //    if (_menuUpdateGCCounter >= 20)
+                            //        doGC = true;
+                            //    else
+                            //        _menuUpdateGCCounter++;
+                            //}
+                        }
+
+                        MenuCanvas.InvalidateSurface();
+                        //if(doGC)
+                        //{
+                        //    _menuUpdateGCCounter = 0;
+                        //    GHApp.PlatformService?.CollectGarbage();
+                        //    GC.Collect();
+                        //}
+                    }
+                }
+            });
+        }
+
+        public void UpdateTextCanvas()
+        {
+            MainThread.BeginInvokeOnMainThread(() =>
+            {
+                if (TextGrid.IsVisible)
+                {
+                    float timePassed = 1.0f / UIUtils.GetAuxiliaryCanvasAnimationFrequency();
+                    //float timePassed = 0;
+                    //if (!_mapUpdateStopWatch.IsRunning)
+                    //{
+                    //    timePassed = 1.0f / UIUtils.GetAuxiliaryCanvasAnimationFrequency();
+                    //    _mapUpdateStopWatch.Restart();
+                    //}
+                    //else
+                    //{
+                    //    _mapUpdateStopWatch.Stop();
+                    //    timePassed = (float)_mapUpdateStopWatch.ElapsedMilliseconds / 1000f;
+                    //    _mapUpdateStopWatch.Restart();
+                    //}
+                    lock (_textScrollLock)
+                    {
+                        float speed = _textScrollSpeed; /* pixels per second */
+                        float bottomScrollLimit = 0;
+                        bottomScrollLimit = Math.Min(0, TextCanvas.CanvasSize.Height - TotalTextHeight);
+                        if (_textScrollSpeedOn)
+                        {
+                            int sgn = Math.Sign(_textScrollSpeed);
+                            float delta = speed * timePassed; /* pixels */
+                            _textScrollOffset += delta;
+                            if (_textScrollOffset < 0 && _textScrollOffset - delta > 0)
                             {
-                                _menuScrollOffset = bottomScrollLimit;
-                                _menuScrollSpeed = 0;
-                                _menuScrollSpeedOn = false;
+                                _textScrollOffset = 0;
+                                _textScrollSpeed = 0;
+                                _textScrollSpeedOn = false;
                             }
-                            else if (_menuScrollOffset > 0 || _menuScrollOffset < bottomScrollLimit)
+                            else if (_textScrollOffset > bottomScrollLimit && _textScrollOffset - delta < bottomScrollLimit)
                             {
-                                float deceleration1 = MenuCanvas.CanvasSize.Height * GHConstants.ScrollConstantDeceleration * GHConstants.ScrollConstantDecelerationOverEdgeMultiplier;
-                                float deceleration2 = Math.Abs(_menuScrollSpeed) * GHConstants.ScrollSpeedDeceleration * GHConstants.ScrollSpeedDecelerationOverEdgeMultiplier;
+                                _textScrollOffset = bottomScrollLimit;
+                                _textScrollSpeed = 0;
+                                _textScrollSpeedOn = false;
+                            }
+                            else if (_textScrollOffset > 0 || _textScrollOffset < bottomScrollLimit)
+                            {
+                                float deceleration1 = TextCanvas.CanvasSize.Height * GHConstants.ScrollConstantDeceleration * GHConstants.ScrollConstantDecelerationOverEdgeMultiplier;
+                                float deceleration2 = Math.Abs(_textScrollSpeed) * GHConstants.ScrollSpeedDeceleration * GHConstants.ScrollSpeedDecelerationOverEdgeMultiplier;
                                 float deceleration_per_second = deceleration1 + deceleration2;
-                                float distance_from_edge = _menuScrollOffset > 0 ? _menuScrollOffset : _menuScrollOffset - bottomScrollLimit;
-                                float deceleration3 = (distance_from_edge + (float)Math.Sign(distance_from_edge) * GHConstants.ScrollDistanceEdgeConstant * MenuCanvas.CanvasSize.Height) * GHConstants.ScrollOverEdgeDeceleration;
-                                float distance_anchor_distance = MenuCanvas.CanvasSize.Height * GHConstants.ScrollDistanceAnchorFactor;
-                                float close_anchor_distance = MenuCanvas.CanvasSize.Height * GHConstants.ScrollCloseAnchorFactor;
+                                float distance_from_edge = _textScrollOffset > 0 ? _textScrollOffset : _textScrollOffset - bottomScrollLimit;
+                                float deceleration3 = (distance_from_edge + (float)Math.Sign(distance_from_edge) * GHConstants.ScrollDistanceEdgeConstant * TextCanvas.CanvasSize.Height) * GHConstants.ScrollOverEdgeDeceleration;
+                                float distance_anchor_distance = TextCanvas.CanvasSize.Height * GHConstants.ScrollDistanceAnchorFactor;
+                                float close_anchor_distance = TextCanvas.CanvasSize.Height * GHConstants.ScrollCloseAnchorFactor;
                                 float target_speed_at_distance = GHConstants.ScrollTargetSpeedAtDistanceAnchor;
                                 float target_speed_at_close = GHConstants.ScrollTargetSpeedAtCloseAnchor;
                                 float target_speed_at_edge = GHConstants.ScrollTargetSpeedAtEdge;
@@ -1848,149 +1973,41 @@ namespace GnollHackX.Pages.Game
                                     + Math.Min(1f, close_factor) * (target_speed_at_close - target_speed_at_edge)
                                     + target_speed_at_edge
                                     )
-                                    * MenuCanvas.CanvasSize.Height;
-                                if (_menuScrollOffset > 0 ? _menuScrollSpeed <= 0 : _menuScrollSpeed >= 0)
+                                    * TextCanvas.CanvasSize.Height;
+                                if (_textScrollOffset > 0 ? _textScrollSpeed <= 0 : _textScrollSpeed >= 0)
                                 {
                                     float target_factor = Math.Abs(distance_from_edge) / distance_anchor_distance;
-                                    _menuScrollSpeed += (-1.0f * deceleration3) * (float)UIUtils.GetAuxiliaryCanvasAnimationInterval() / 1000;
+                                    _textScrollSpeed += (-1.0f * deceleration3) * (float)UIUtils.GetAuxiliaryCanvasAnimationInterval() / 1000;
                                     if (target_factor < 1.0f)
                                     {
-                                        _menuScrollSpeed = _menuScrollSpeed * target_factor + target_speed * (1.0f - target_factor);
+                                        _textScrollSpeed = _textScrollSpeed * target_factor + target_speed * (1.0f - target_factor);
                                     }
                                 }
                                 else
-                                    _menuScrollSpeed += (-1.0f * (float)sgn * deceleration_per_second - deceleration3) * (float)UIUtils.GetAuxiliaryCanvasAnimationInterval() / 1000;
+                                    _textScrollSpeed += (-1.0f * (float)sgn * deceleration_per_second - deceleration3) * (float)UIUtils.GetAuxiliaryCanvasAnimationInterval() / 1000;
                             }
                             else
                             {
-                                //if(_menuScrollSpeedReleaseStamp != null)
+                                //if (_textScrollSpeedReleaseStamp != null)
                                 {
-                                    long millisecs_elapsed = (DateTime.Now.Ticks - _menuScrollSpeedReleaseStamp.Ticks) / TimeSpan.TicksPerMillisecond;
+                                    long millisecs_elapsed = (DateTime.Now.Ticks - _textScrollSpeedReleaseStamp.Ticks) / TimeSpan.TicksPerMillisecond;
                                     if (millisecs_elapsed > GHConstants.FreeScrollingTime)
                                     {
-                                        float deceleration1 = (float)MenuCanvas.CanvasSize.Height * GHConstants.ScrollConstantDeceleration;
-                                        float deceleration2 = Math.Abs(_menuScrollSpeed) * GHConstants.ScrollSpeedDeceleration;
+                                        float deceleration1 = (float)TextCanvas.CanvasSize.Height * GHConstants.ScrollConstantDeceleration;
+                                        float deceleration2 = Math.Abs(_textScrollSpeed) * GHConstants.ScrollSpeedDeceleration;
                                         float deceleration_per_second = deceleration1 + deceleration2;
-                                        _menuScrollSpeed += -1.0f * (float)sgn * ((deceleration_per_second * (float)UIUtils.GetAuxiliaryCanvasAnimationInterval()) / 1000);
-                                        if (sgn == 0 || (sgn > 0 && _menuScrollSpeed < 0) || (sgn < 0 && _menuScrollSpeed > 0))
-                                            _menuScrollSpeed = 0;
+                                        _textScrollSpeed += -1.0f * (float)sgn * ((deceleration_per_second * (float)UIUtils.GetAuxiliaryCanvasAnimationInterval()) / 1000);
+                                        if (sgn == 0 || (sgn > 0 && _textScrollSpeed < 0) || (sgn < 0 && _textScrollSpeed > 0))
+                                            _textScrollSpeed = 0;
                                     }
                                 }
                             }
                         }
-                        //if (!_menuScrollSpeedOn && GHApp.IsAndroid)
-                        //{
-                        //    if (_menuUpdateGCCounter >= 20)
-                        //        doGC = true;
-                        //    else
-                        //        _menuUpdateGCCounter++;
-                        //}
                     }
 
-                    MenuCanvas.InvalidateSurface();
-                    //if(doGC)
-                    //{
-                    //    _menuUpdateGCCounter = 0;
-                    //    GHApp.PlatformService?.CollectGarbage();
-                    //    GC.Collect();
-                    //}
+                    TextCanvas.InvalidateSurface();
                 }
-            }
-        }
-
-        public void UpdateTextCanvas()
-        {
-            if (TextGrid.IsVisible)
-            {
-                float timePassed = 1.0f / UIUtils.GetAuxiliaryCanvasAnimationFrequency();
-                //float timePassed = 0;
-                //if (!_mapUpdateStopWatch.IsRunning)
-                //{
-                //    timePassed = 1.0f / UIUtils.GetAuxiliaryCanvasAnimationFrequency();
-                //    _mapUpdateStopWatch.Restart();
-                //}
-                //else
-                //{
-                //    _mapUpdateStopWatch.Stop();
-                //    timePassed = (float)_mapUpdateStopWatch.ElapsedMilliseconds / 1000f;
-                //    _mapUpdateStopWatch.Restart();
-                //}
-                lock (_textScrollLock)
-                {
-                    float speed = _textScrollSpeed; /* pixels per second */
-                    float bottomScrollLimit = 0;
-                    bottomScrollLimit = Math.Min(0, TextCanvas.CanvasSize.Height - TotalTextHeight);
-                    if (_textScrollSpeedOn)
-                    {
-                        int sgn = Math.Sign(_textScrollSpeed);
-                        float delta = speed * timePassed; /* pixels */
-                        _textScrollOffset += delta;
-                        if (_textScrollOffset < 0 && _textScrollOffset - delta > 0)
-                        {
-                            _textScrollOffset = 0;
-                            _textScrollSpeed = 0;
-                            _textScrollSpeedOn = false;
-                        }
-                        else if (_textScrollOffset > bottomScrollLimit && _textScrollOffset - delta < bottomScrollLimit)
-                        {
-                            _textScrollOffset = bottomScrollLimit;
-                            _textScrollSpeed = 0;
-                            _textScrollSpeedOn = false;
-                        }
-                        else if (_textScrollOffset > 0 || _textScrollOffset < bottomScrollLimit)
-                        {
-                            float deceleration1 = TextCanvas.CanvasSize.Height * GHConstants.ScrollConstantDeceleration * GHConstants.ScrollConstantDecelerationOverEdgeMultiplier;
-                            float deceleration2 = Math.Abs(_textScrollSpeed) * GHConstants.ScrollSpeedDeceleration * GHConstants.ScrollSpeedDecelerationOverEdgeMultiplier;
-                            float deceleration_per_second = deceleration1 + deceleration2;
-                            float distance_from_edge = _textScrollOffset > 0 ? _textScrollOffset : _textScrollOffset - bottomScrollLimit;
-                            float deceleration3 = (distance_from_edge + (float)Math.Sign(distance_from_edge) * GHConstants.ScrollDistanceEdgeConstant * TextCanvas.CanvasSize.Height) * GHConstants.ScrollOverEdgeDeceleration;
-                            float distance_anchor_distance = TextCanvas.CanvasSize.Height * GHConstants.ScrollDistanceAnchorFactor;
-                            float close_anchor_distance = TextCanvas.CanvasSize.Height * GHConstants.ScrollCloseAnchorFactor;
-                            float target_speed_at_distance = GHConstants.ScrollTargetSpeedAtDistanceAnchor;
-                            float target_speed_at_close = GHConstants.ScrollTargetSpeedAtCloseAnchor;
-                            float target_speed_at_edge = GHConstants.ScrollTargetSpeedAtEdge;
-                            float dist_factor = (Math.Abs(distance_from_edge) - close_anchor_distance) / (distance_anchor_distance - close_anchor_distance);
-                            float close_factor = Math.Abs(distance_from_edge) / close_anchor_distance;
-                            float target_speed = -1.0f * (float)Math.Sign(distance_from_edge)
-                                * (
-                                Math.Max(0f, dist_factor) * (target_speed_at_distance - target_speed_at_close)
-                                + Math.Min(1f, close_factor) * (target_speed_at_close - target_speed_at_edge)
-                                + target_speed_at_edge
-                                )
-                                * TextCanvas.CanvasSize.Height;
-                            if (_textScrollOffset > 0 ? _textScrollSpeed <= 0 : _textScrollSpeed >= 0)
-                            {
-                                float target_factor = Math.Abs(distance_from_edge) / distance_anchor_distance;
-                                _textScrollSpeed += (-1.0f * deceleration3) * (float)UIUtils.GetAuxiliaryCanvasAnimationInterval() / 1000;
-                                if (target_factor < 1.0f)
-                                {
-                                    _textScrollSpeed = _textScrollSpeed * target_factor + target_speed * (1.0f - target_factor);
-                                }
-                            }
-                            else
-                                _textScrollSpeed += (-1.0f * (float)sgn * deceleration_per_second - deceleration3) * (float)UIUtils.GetAuxiliaryCanvasAnimationInterval() / 1000;
-                        }
-                        else
-                        {
-                            //if (_textScrollSpeedReleaseStamp != null)
-                            {
-                                long millisecs_elapsed = (DateTime.Now.Ticks - _textScrollSpeedReleaseStamp.Ticks) / TimeSpan.TicksPerMillisecond;
-                                if (millisecs_elapsed > GHConstants.FreeScrollingTime)
-                                {
-                                    float deceleration1 = (float)TextCanvas.CanvasSize.Height * GHConstants.ScrollConstantDeceleration;
-                                    float deceleration2 = Math.Abs(_textScrollSpeed) * GHConstants.ScrollSpeedDeceleration;
-                                    float deceleration_per_second = deceleration1 + deceleration2;
-                                    _textScrollSpeed += -1.0f * (float)sgn * ((deceleration_per_second * (float)UIUtils.GetAuxiliaryCanvasAnimationInterval()) / 1000);
-                                    if (sgn == 0 || (sgn > 0 && _textScrollSpeed < 0) || (sgn < 0 && _textScrollSpeed > 0))
-                                        _textScrollSpeed = 0;
-                                }
-                            }
-                        }
-                    }
-                }
-
-                TextCanvas.InvalidateSurface();
-            }
+            });
         }
 
         private uint _auxAnimationLength = GHConstants.AuxiliaryCanvasAnimationTime / UIUtils.GetAuxiliaryCanvasAnimationInterval();
@@ -14178,11 +14195,16 @@ namespace GnollHackX.Pages.Game
                                                 long millisecs_elapsed = (now.Ticks - entry.PressTime.Ticks) / TimeSpan.TicksPerMillisecond;
                                                 if (dist > GHConstants.MoveDistanceThreshold || millisecs_elapsed > GHConstants.MoveOrPressTimeThreshold)
                                                 {
+                                                    float canvasheight;
+                                                    lock (_savedCanvasLock)
+                                                    {
+                                                        canvasheight = _savedCanvasHeight;
+                                                    }
                                                     lock (_messageScrollLock)
                                                     {
                                                         float topScrollLimit = Math.Max(0, -_messageSmallestTop);
-                                                        float stretchLimit = GHConstants.ScrollStretchLimit * canvasView.CanvasSize.Height;
-                                                        float stretchConstant = GHConstants.ScrollConstantStretch * canvasView.CanvasSize.Height;
+                                                        float stretchLimit = GHConstants.ScrollStretchLimit * canvasheight;
+                                                        float stretchConstant = GHConstants.ScrollConstantStretch * canvasheight;
                                                         float adj_factor = 1.0f;
                                                         if (_messageScrollOffset > topScrollLimit)
                                                             adj_factor = _messageScrollOffset >= topScrollLimit + stretchLimit ? 0 : (1 - ((_messageScrollOffset - topScrollLimit + stretchConstant) / (stretchLimit + stretchConstant)));
@@ -14358,6 +14380,11 @@ namespace GnollHackX.Pages.Game
                                     }
                                     else if (TouchDictionary.Count == 1) /* Not removed yet */
                                     {
+                                        float canvasheight;
+                                        lock (_savedCanvasLock)
+                                        {
+                                            canvasheight = _savedCanvasHeight;
+                                        }
                                         lock (_messageScrollLock)
                                         {
                                             float topScrollLimit = Math.Max(0, -_messageSmallestTop);
@@ -14370,7 +14397,7 @@ namespace GnollHackX.Pages.Game
                                             if (_messageScrollOffset > topScrollLimit || _messageScrollOffset < 0)
                                             {
                                                 if (lastrecord_ms > GHConstants.ScrollRecordThreshold
-                                                    || Math.Abs(_messageScrollSpeed) < GHConstants.ScrollSpeedThreshold * MenuCanvas.CanvasSize.Height)
+                                                    || Math.Abs(_messageScrollSpeed) < GHConstants.ScrollSpeedThreshold * canvasheight)
                                                     _messageScrollSpeed = 0;
 
                                                 _messageScrollSpeedOn = true;
@@ -14381,7 +14408,7 @@ namespace GnollHackX.Pages.Game
                                                 _messageScrollSpeedOn = false;
                                                 _messageScrollSpeed = 0;
                                             }
-                                            else if (Math.Abs(_messageScrollSpeed) >= GHConstants.ScrollSpeedThreshold * canvasView.CanvasSize.Height)
+                                            else if (Math.Abs(_messageScrollSpeed) >= GHConstants.ScrollSpeedThreshold * canvasheight)
                                             {
                                                 _messageScrollSpeedOn = true;
                                                 _messageScrollSpeedReleaseStamp = DateTime.Now;
@@ -14486,6 +14513,11 @@ namespace GnollHackX.Pages.Game
 
                         if(ForceAllMessages)
                         {
+                            float canvasheight;
+                            lock (_savedCanvasLock)
+                            {
+                                canvasheight = _savedCanvasHeight;
+                            }
                             lock (_messageScrollLock)
                             {
                                 float topScrollLimit = Math.Max(0, -_messageSmallestTop);
@@ -14498,7 +14530,7 @@ namespace GnollHackX.Pages.Game
                                     }
 
                                     if (lastrecord_ms > GHConstants.ScrollRecordThreshold
-                                        || Math.Abs(_messageScrollSpeed) < GHConstants.ScrollSpeedThreshold * MenuCanvas.CanvasSize.Height)
+                                        || Math.Abs(_messageScrollSpeed) < GHConstants.ScrollSpeedThreshold * canvasheight)
                                         _messageScrollSpeed = 0;
 
                                     _messageScrollSpeedOn = true;
@@ -14621,8 +14653,16 @@ namespace GnollHackX.Pages.Game
                 float height = usedTileHeight;
                 float mapwidth = width * (GHConstants.MapCols - 1);
                 float mapheight = height * (GHConstants.MapRows);
-                float canvaswidth = canvasView.CanvasSize.Width;
-                float canvasheight = canvasView.CanvasSize.Height;
+                float canvaswidth;
+                float canvasheight;
+                lock (_savedCanvasLock)
+                {
+                    canvaswidth = _savedCanvasWidth;
+                    canvasheight = _savedCanvasHeight;
+                }
+                if (canvaswidth <= 0 || canvasheight <= 0)
+                    return;
+
                 float offsetX, offsetY, usedOffsetX, usedOffsetY;
                 GetMapOffsets(canvaswidth, canvasheight, mapwidth, mapheight, width, height, out offsetX, out offsetY, out usedOffsetX, out usedOffsetY);
                 float totalOffsetX = offsetX + usedOffsetX;
@@ -14666,8 +14706,15 @@ namespace GnollHackX.Pages.Game
                 else
                 {
                     float ratio = 1.1f * (float)Math.Abs(e.MouseWheelDelta) / 120;
-                    float canvaswidth = canvasView.CanvasSize.Width;
-                    float canvasheight = canvasView.CanvasSize.Height;
+                    float canvaswidth;
+                    float canvasheight;
+                    lock (_savedCanvasLock)
+                    {
+                        canvaswidth = _savedCanvasWidth;
+                        canvasheight = _savedCanvasHeight;
+                    }
+                    if (canvaswidth <= 0 || canvasheight <= 0)
+                        return;
                     SKPoint point = new SKPoint(canvaswidth / 2, canvasheight / 2);
                     AdjustZoomByRatio(e.MouseWheelDelta < 0 ? 1.0f / ratio : ratio, point, point, point);
                     MapFontShowPercentageDecimal = false;
@@ -14706,10 +14753,18 @@ namespace GnollHackX.Pages.Game
         {
             if (delta != 0)
             {
+                float canvasheight;
+                lock (_savedCanvasLock)
+                {
+                    canvasheight = _savedCanvasHeight;
+                }
+                if (canvasheight <= 0)
+                    return;
+
                 lock (_menuScrollLock)
                 {
                     float topScrollLimit = Math.Max(0, -_messageSmallestTop);
-                    float scrollAmount = (canvasView.CanvasSize.Height * delta) / (10 * 120);
+                    float scrollAmount = (canvasheight * delta) / (10 * 120);
                     _messageScrollOffset += scrollAmount;
 
                     if (_messageScrollOffset > topScrollLimit)
@@ -16470,7 +16525,8 @@ namespace GnollHackX.Pages.Game
                 if (_menuDrawOnlyClear)
                     return;
             }
-            float bottomScrollLimit = Math.Min(0, MenuCanvas.CanvasSize.Height - TotalMenuHeight);
+            float canvasheight = MenuCanvas.CanvasSize.Height;
+            float bottomScrollLimit = Math.Min(0, canvasheight - TotalMenuHeight);
             switch (e?.ActionType)
             {
                 case SKTouchAction.Entered:
@@ -16553,8 +16609,8 @@ namespace GnollHackX.Pages.Game
                                     {
                                         lock (_menuScrollLock)
                                         {
-                                            float stretchLimit = GHConstants.ScrollStretchLimit * MenuCanvas.CanvasSize.Height;
-                                            float stretchConstant = GHConstants.ScrollConstantStretch * MenuCanvas.CanvasSize.Height;
+                                            float stretchLimit = GHConstants.ScrollStretchLimit * canvasheight;
+                                            float stretchConstant = GHConstants.ScrollConstantStretch * canvasheight;
                                             float adj_factor = 1.0f;
                                             if (_menuScrollOffset > 0)
                                                 adj_factor = _menuScrollOffset >= stretchLimit ? 0 : (1 - ((_menuScrollOffset + stretchConstant) / (stretchLimit + stretchConstant)));
@@ -16701,7 +16757,7 @@ namespace GnollHackX.Pages.Game
                                     if (_menuScrollOffset > 0 || _menuScrollOffset < bottomScrollLimit)
                                     {
                                         if(lastrecord_ms > GHConstants.ScrollRecordThreshold
-                                            || Math.Abs(_menuScrollSpeed) < GHConstants.ScrollSpeedThreshold * MenuCanvas.CanvasSize.Height)
+                                            || Math.Abs(_menuScrollSpeed) < GHConstants.ScrollSpeedThreshold * canvasheight)
                                             _menuScrollSpeed = 0;
 
                                         _menuScrollSpeedOn = true;
@@ -16712,7 +16768,7 @@ namespace GnollHackX.Pages.Game
                                         _menuScrollSpeedOn = false;
                                         _menuScrollSpeed = 0;
                                     }
-                                    else if (Math.Abs(_menuScrollSpeed) >= GHConstants.ScrollSpeedThreshold * MenuCanvas.CanvasSize.Height)
+                                    else if (Math.Abs(_menuScrollSpeed) >= GHConstants.ScrollSpeedThreshold * canvasheight)
                                     {
                                         _menuScrollSpeedOn = true;
                                         _menuScrollSpeedReleaseStamp = DateTime.Now;
@@ -16753,7 +16809,7 @@ namespace GnollHackX.Pages.Game
                             }
 
                             if (lastrecord_ms > GHConstants.ScrollRecordThreshold
-                                || Math.Abs(_menuScrollSpeed) < GHConstants.ScrollSpeedThreshold * MenuCanvas.CanvasSize.Height)
+                                || Math.Abs(_menuScrollSpeed) < GHConstants.ScrollSpeedThreshold * canvasheight)
                                 _menuScrollSpeed = 0;
 
                             _menuScrollSpeedOn = true;
@@ -17061,21 +17117,25 @@ namespace GnollHackX.Pages.Game
         {
             if (delta != 0)
             {
-                float bottomScrollLimit = Math.Min(0, MenuCanvas.CanvasSize.Height - TotalMenuHeight);
-                float scrollAmount = (MenuCanvas.CanvasSize.Height * delta) / (10 * 120);
-                lock (_menuScrollLock)
+                MainThread.BeginInvokeOnMainThread(() =>
                 {
-                    _menuScrollOffset += scrollAmount;
-                    if (_menuScrollOffset < bottomScrollLimit)
-                        _menuScrollOffset = bottomScrollLimit;
-                    if (_menuScrollOffset > 0)
-                        _menuScrollOffset = 0;
+                    float canvasheight = MenuCanvas.CanvasSize.Height;
+                    float bottomScrollLimit = Math.Min(0, canvasheight - TotalMenuHeight);
+                    float scrollAmount = (canvasheight * delta) / (10 * 120);
+                    lock (_menuScrollLock)
+                    {
+                        _menuScrollOffset += scrollAmount;
+                        if (_menuScrollOffset < bottomScrollLimit)
+                            _menuScrollOffset = bottomScrollLimit;
+                        if (_menuScrollOffset > 0)
+                            _menuScrollOffset = 0;
 
-                    _menuScrollSpeedOn = false;
-                    _menuScrollSpeed = 0;
-                    _menuScrollSpeedRecordOn = false;
-                    _menuScrollSpeedRecords.Clear();
-                }
+                        _menuScrollSpeedOn = false;
+                        _menuScrollSpeed = 0;
+                        _menuScrollSpeedRecordOn = false;
+                        _menuScrollSpeedRecords.Clear();
+                    }
+                });
             }
         }
 
@@ -17734,7 +17794,8 @@ namespace GnollHackX.Pages.Game
         {
             lock (TextCanvas.TextItemLock)
             {
-                float bottomScrollLimit = Math.Min(0, TextCanvas.CanvasSize.Height - TotalTextHeight);
+                float canvasheight = TextCanvas.CanvasSize.Height;
+                float bottomScrollLimit = Math.Min(0, canvasheight - TotalTextHeight);
                 switch (e?.ActionType)
                 {
                     case SKTouchAction.Entered:
@@ -17804,8 +17865,8 @@ namespace GnollHackX.Pages.Game
                                             {
                                                 lock (_textScrollLock)
                                                 {
-                                                    float stretchLimit = GHConstants.ScrollStretchLimit * TextCanvas.CanvasSize.Height;
-                                                    float stretchConstant = GHConstants.ScrollConstantStretch * TextCanvas.CanvasSize.Height;
+                                                    float stretchLimit = GHConstants.ScrollStretchLimit * canvasheight;
+                                                    float stretchConstant = GHConstants.ScrollConstantStretch * canvasheight;
                                                     float adj_factor = 1.0f;
                                                     if (_textScrollOffset > 0)
                                                         adj_factor = _textScrollOffset >= stretchLimit ? 0 : (1 - ((_textScrollOffset + stretchConstant) / (stretchLimit + stretchConstant)));
@@ -17919,7 +17980,7 @@ namespace GnollHackX.Pages.Game
                                         if (_textScrollOffset > 0 || _textScrollOffset < bottomScrollLimit)
                                         {
                                             if (lastrecord_ms > GHConstants.ScrollRecordThreshold
-                                                || Math.Abs(_textScrollSpeed) < GHConstants.ScrollSpeedThreshold * TextCanvas.CanvasSize.Height)
+                                                || Math.Abs(_textScrollSpeed) < GHConstants.ScrollSpeedThreshold * canvasheight)
                                                 _textScrollSpeed = 0;
 
                                             _textScrollSpeedOn = true;
@@ -17930,7 +17991,7 @@ namespace GnollHackX.Pages.Game
                                             _textScrollSpeedOn = false;
                                             _textScrollSpeed = 0;
                                         }
-                                        else if (Math.Abs(_textScrollSpeed) >= GHConstants.ScrollSpeedThreshold * TextCanvas.CanvasSize.Height)
+                                        else if (Math.Abs(_textScrollSpeed) >= GHConstants.ScrollSpeedThreshold * canvasheight)
                                         {
                                             _textScrollSpeedOn = true;
                                             _textScrollSpeedReleaseStamp = DateTime.Now;
@@ -17969,7 +18030,7 @@ namespace GnollHackX.Pages.Game
                                 }
 
                                 if (lastrecord_ms > GHConstants.ScrollRecordThreshold
-                                    || Math.Abs(_textScrollSpeed) < GHConstants.ScrollSpeedThreshold * TextCanvas.CanvasSize.Height)
+                                    || Math.Abs(_textScrollSpeed) < GHConstants.ScrollSpeedThreshold * canvasheight)
                                     _textScrollSpeed = 0;
 
                                 _textScrollSpeedOn = true;
@@ -18021,8 +18082,9 @@ namespace GnollHackX.Pages.Game
         {
             if (delta != 0)
             {
-                float bottomScrollLimit = Math.Min(0, TextCanvas.CanvasSize.Height - TotalTextHeight);
-                float scrollAmount = (TextCanvas.CanvasSize.Height * delta) / (10 * 120);
+                float canvasheight = TextCanvas.CanvasSize.Height;
+                float bottomScrollLimit = Math.Min(0, canvasheight - TotalTextHeight);
+                float scrollAmount = (canvasheight * delta) / (10 * 120);
                 lock (_textScrollLock)
                 {
                     _textScrollOffset += scrollAmount;
@@ -19881,8 +19943,15 @@ namespace GnollHackX.Pages.Game
             bool isMeta = isSmallChange;
             if (ZoomMiniMode)
             {
-                float canvaswidth = canvasView.CanvasSize.Width;
-                float canvasheight = canvasView.CanvasSize.Height;
+                float canvaswidth;
+                float canvasheight;
+                lock (_savedCanvasLock)
+                {
+                    canvaswidth = _savedCanvasWidth;
+                    canvasheight = _savedCanvasHeight;
+                }
+                if (canvaswidth <= 0 || canvasheight <= 0)
+                    return;
                 SKPoint point = new SKPoint(canvaswidth / 2, canvasheight / 2);
                 float ratio = !isOut ? (1 + (isMeta ? 0.001f : 0.01f)) : 1 / (1 + (isMeta ? 0.001f : 0.01f));
                 AdjustZoomByRatio(ratio, point, point, point);
@@ -19896,8 +19965,15 @@ namespace GnollHackX.Pages.Game
                 else
                     newfontsize = MapFontSize + multiplier * (isMeta ? 0.001f : 0.01f) * DefaultMapFontSize;
 
-                float canvaswidth = canvasView.CanvasSize.Width;
-                float canvasheight = canvasView.CanvasSize.Height;
+                float canvaswidth;
+                float canvasheight;
+                lock (_savedCanvasLock)
+                {
+                    canvaswidth = _savedCanvasWidth;
+                    canvasheight = _savedCanvasHeight;
+                }
+                if (canvaswidth <= 0 || canvasheight <= 0)
+                    return;
                 SKPoint point = new SKPoint(canvaswidth / 2, canvasheight / 2);
                 SetZoomFontSize(newfontsize, point, point, point);
             }

@@ -543,8 +543,8 @@ namespace GnollHackX
             SKImageInfo info = e.Info;
             SKSurface surface = e.Surface;
             SKCanvas canvas = surface.Canvas;
-            float canvaswidth = this.CanvasSize.Width;
-            float canvasheight = this.CanvasSize.Height;
+            float canvaswidth = info.Width; // this.CanvasSize.Width;
+            float canvasheight = info.Height; // this.CanvasSize.Height;
             float scale = GHApp.DisplayDensity;
             float scale2 = this.Width == 0 ? 1.0f : canvaswidth / (float)this.Width;
 
@@ -588,7 +588,7 @@ namespace GnollHackX
                     {
                         CalculateInitialYPos = false;
                         float textHeight = textRows.Length * textPaint.FontSpacing;
-                        float bottomScrollLimit = Math.Min(0, CanvasSize.Height - textHeight);
+                        float bottomScrollLimit = Math.Min(0, canvasheight - textHeight);
                         lock (_textScrollLock)
                         {
                             usedTextOffset = _textScrollOffset = bottomScrollLimit;
@@ -782,7 +782,8 @@ namespace GnollHackX
         private void Base_Touch(object sender, SKTouchEventArgs e)
         {
             float textHeight = TextHeight;
-            float bottomScrollLimit = Math.Min(0, CanvasSize.Height - textHeight);
+            float canvasheight = CanvasSize.Height;
+            float bottomScrollLimit = Math.Min(0, canvasheight - textHeight);
             switch (e?.ActionType)
             {
                 case SKTouchAction.Entered:
@@ -825,9 +826,9 @@ namespace GnollHackX
                                         {
                                             float oldoffset = _textScrollOffset;
                                             //_textScrollOffset += diffY;
-                                            //if (_textScrollOffset < -(textHeight - CanvasSize.Height))
+                                            //if (_textScrollOffset < -(textHeight - canvasheight))
                                             //{
-                                            //    _textScrollOffset = -(textHeight - CanvasSize.Height);
+                                            //    _textScrollOffset = -(textHeight - canvasheight);
                                             //}
                                             //if (_textScrollOffset > 0)
                                             //{
@@ -840,8 +841,8 @@ namespace GnollHackX
 
                                             lock (_textScrollLock)
                                             {
-                                                float stretchLimit = GHConstants.ScrollStretchLimit * CanvasSize.Height;
-                                                float stretchConstant = GHConstants.ScrollConstantStretch * CanvasSize.Height;
+                                                float stretchLimit = GHConstants.ScrollStretchLimit * canvasheight;
+                                                float stretchConstant = GHConstants.ScrollConstantStretch * canvasheight;
                                                 float adj_factor = 1.0f;
                                                 if (_textScrollOffset > 0)
                                                     adj_factor = _textScrollOffset >= stretchLimit ? 0 : (1 - ((_textScrollOffset + stretchConstant) / (stretchLimit + stretchConstant)));
@@ -959,7 +960,7 @@ namespace GnollHackX
                                 if (_textScrollOffset > 0 || _textScrollOffset < bottomScrollLimit)
                                 {
                                     if (lastrecord_ms > GHConstants.ScrollRecordThreshold
-                                        || Math.Abs(_textScrollSpeed) < GHConstants.ScrollSpeedThreshold * CanvasSize.Height)
+                                        || Math.Abs(_textScrollSpeed) < GHConstants.ScrollSpeedThreshold * canvasheight)
                                         _textScrollSpeed = 0;
 
                                     TextScrollSpeedOn = true;
@@ -970,7 +971,7 @@ namespace GnollHackX
                                     TextScrollSpeedOn = false;
                                     _textScrollSpeed = 0;
                                 }
-                                else if (Math.Abs(_textScrollSpeed) >= GHConstants.ScrollSpeedThreshold * CanvasSize.Height)
+                                else if (Math.Abs(_textScrollSpeed) >= GHConstants.ScrollSpeedThreshold * canvasheight)
                                 {
                                     TextScrollSpeedOn = true;
                                     _textScrollSpeedReleaseStamp = DateTime.Now;
@@ -1008,7 +1009,7 @@ namespace GnollHackX
                             }
 
                             if (lastrecord_ms > GHConstants.ScrollRecordThreshold
-                                || Math.Abs(_textScrollSpeed) < GHConstants.ScrollSpeedThreshold * CanvasSize.Height)
+                                || Math.Abs(_textScrollSpeed) < GHConstants.ScrollSpeedThreshold * canvasheight)
                                 _textScrollSpeed = 0;
 
                             TextScrollSpeedOn = true;
@@ -1033,7 +1034,8 @@ namespace GnollHackX
             {
                 float speed = _textScrollSpeed; /* pixels per second */
                 float bottomScrollLimit = 0;
-                bottomScrollLimit = Math.Min(0, CanvasSize.Height - TextHeight);
+                float canvasheight = CanvasSize.Height;
+                bottomScrollLimit = Math.Min(0, canvasheight - TextHeight);
                 int sgn = Math.Sign(_textScrollSpeed);
                 float delta = speed / UIUtils.GetAuxiliaryCanvasAnimationFrequency(); /* pixels */
                 _textScrollOffset += delta;
@@ -1051,13 +1053,13 @@ namespace GnollHackX
                 }
                 else if (_textScrollOffset > 0 || _textScrollOffset < bottomScrollLimit)
                 {
-                    float deceleration1 = CanvasSize.Height * GHConstants.ScrollConstantDeceleration * GHConstants.ScrollConstantDecelerationOverEdgeMultiplier;
+                    float deceleration1 = canvasheight * GHConstants.ScrollConstantDeceleration * GHConstants.ScrollConstantDecelerationOverEdgeMultiplier;
                     float deceleration2 = Math.Abs(_textScrollSpeed) * GHConstants.ScrollSpeedDeceleration * GHConstants.ScrollSpeedDecelerationOverEdgeMultiplier;
                     float deceleration_per_second = deceleration1 + deceleration2;
                     float distance_from_edge = _textScrollOffset > 0 ? _textScrollOffset : _textScrollOffset - bottomScrollLimit;
-                    float deceleration3 = (distance_from_edge + (float)Math.Sign(distance_from_edge) * GHConstants.ScrollDistanceEdgeConstant * CanvasSize.Height) * GHConstants.ScrollOverEdgeDeceleration;
-                    float distance_anchor_distance = CanvasSize.Height * GHConstants.ScrollDistanceAnchorFactor;
-                    float close_anchor_distance = CanvasSize.Height * GHConstants.ScrollCloseAnchorFactor;
+                    float deceleration3 = (distance_from_edge + (float)Math.Sign(distance_from_edge) * GHConstants.ScrollDistanceEdgeConstant * canvasheight) * GHConstants.ScrollOverEdgeDeceleration;
+                    float distance_anchor_distance = canvasheight * GHConstants.ScrollDistanceAnchorFactor;
+                    float close_anchor_distance = canvasheight * GHConstants.ScrollCloseAnchorFactor;
                     float target_speed_at_distance = GHConstants.ScrollTargetSpeedAtDistanceAnchor;
                     float target_speed_at_close = GHConstants.ScrollTargetSpeedAtCloseAnchor;
                     float target_speed_at_edge = GHConstants.ScrollTargetSpeedAtEdge;
@@ -1069,7 +1071,7 @@ namespace GnollHackX
                         + Math.Min(1f, close_factor) * (target_speed_at_close - target_speed_at_edge)
                         + target_speed_at_edge
                         )
-                        * CanvasSize.Height;
+                        * canvasheight;
                     if (_textScrollOffset > 0 ? _textScrollSpeed <= 0 : _textScrollSpeed >= 0)
                     {
                         float target_factor = Math.Abs(distance_from_edge) / distance_anchor_distance;
@@ -1089,7 +1091,7 @@ namespace GnollHackX
                         long millisecs_elapsed = (DateTime.Now.Ticks - _textScrollSpeedReleaseStamp.Ticks) / TimeSpan.TicksPerMillisecond;
                         if (millisecs_elapsed > GHConstants.FreeScrollingTime)
                         {
-                            float deceleration1 = (float)CanvasSize.Height * GHConstants.ScrollConstantDeceleration;
+                            float deceleration1 = (float)canvasheight * GHConstants.ScrollConstantDeceleration;
                             float deceleration2 = Math.Abs(_textScrollSpeed) * GHConstants.ScrollSpeedDeceleration;
                             float deceleration_per_second = deceleration1 + deceleration2;
                             _textScrollSpeed += -1.0f * (float)sgn * ((deceleration_per_second * (float)UIUtils.GetAuxiliaryCanvasAnimationInterval()) / 1000);
@@ -1133,8 +1135,9 @@ namespace GnollHackX
             {
                 lock (_textScrollLock)
                 {
-                    float bottomScrollLimit =  Math.Min(0, CanvasSize.Height - TextHeight);
-                    _textScrollOffset += (CanvasSize.Height * e.MouseWheelDelta) / (10 * 120);
+                    float canvasheight = CanvasSize.Height;
+                    float bottomScrollLimit =  Math.Min(0, canvasheight - TextHeight);
+                    _textScrollOffset += (canvasheight * e.MouseWheelDelta) / (10 * 120);
                     if (_textScrollOffset > 0)
                     {
                         _textScrollOffset = 0;
