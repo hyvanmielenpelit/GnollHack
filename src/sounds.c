@@ -11893,7 +11893,7 @@ boolean initialize;
     Sprintf(forge_string, "forge into %s", an(OBJ_NAME(objects[forge_dest_otyp])));
 
     char header_string[BUFSZ] = "";
-#if GNH_MOBILE
+#ifdef GNH_MOBILE
     if (forge_source_otyp > STRANGE_OBJECT && forge_source_quan > 0)
     {
         if (forge_source_quan == 1)
