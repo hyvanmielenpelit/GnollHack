@@ -7232,7 +7232,7 @@ struct monst* mtmp;
     case 'y':
         if (umoney < extrahealing_cost) {
             play_sfx_sound(SFX_NOT_ENOUGH_MONEY);
-            You_ex(ATR_NONE, CLR_MSG_FAIL, "don't have enough money for that!");
+            You_ex1_popup("don't have enough money for that!", "Not Enough Money", ATR_NONE, CLR_MSG_FAIL, NO_GLYPH, POPUP_FLAGS_NONE);
             stop_all_dialogue_of_mon_on_mobile(mtmp);
             return 0;
         }
@@ -11147,7 +11147,7 @@ int special_dialogue_sound_id;
         if (umoney < service_cost)
         {
             play_sfx_sound(SFX_NOT_ENOUGH_MONEY);
-            You_ex(ATR_NONE, CLR_MSG_FAIL, "don't have enough money for that!");
+            You_ex1_popup("don't have enough money for that!", "Not Enough Money", ATR_NONE, CLR_MSG_FAIL, NO_GLYPH, POPUP_FLAGS_NONE);
             stop_all_dialogue_of_mon_on_mobile(mtmp);
             return 0;
         }
@@ -11220,7 +11220,7 @@ int special_dialogue_sound_id;
         if (umoney < service_cost)
         {
             play_sfx_sound(SFX_NOT_ENOUGH_MONEY);
-            You_ex(ATR_NONE, CLR_MSG_FAIL, "don't have enough money for that!");
+            You_ex1_popup("don't have enough money for that!", "Not Enough Money", ATR_NONE, CLR_MSG_FAIL, NO_GLYPH, POPUP_FLAGS_NONE);
             stop_all_dialogue_of_mon_on_mobile(mtmp);
             return 0;
         }
@@ -11450,7 +11450,7 @@ int64_t service_cost;
         if (umoney < total_cost)
         {
             play_sfx_sound(SFX_NOT_ENOUGH_MONEY);
-            You_ex(ATR_NONE, CLR_MSG_FAIL, "don't have enough money for that!");
+            You_ex1_popup("don't have enough money for that!", "Not Enough Money", ATR_NONE, CLR_MSG_FAIL, NO_GLYPH, POPUP_FLAGS_NONE);
             stop_all_dialogue_of_mon_on_mobile(mtmp);
             return 0;
         }
