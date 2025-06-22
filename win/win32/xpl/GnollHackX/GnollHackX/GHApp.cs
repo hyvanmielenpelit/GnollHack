@@ -1239,9 +1239,9 @@ namespace GnollHackX
 
         public static void OnUnfocus()
         {
-            GHGame game = CurrentGHGame;
-            if (game != null && !game.PlayingReplay && game.ActiveGamePage.IsGameOn)
-                game.SaveCheckPoint();
+            //GHGame game = CurrentGHGame;
+            //if (game != null && !game.PlayingReplay && game.ActiveGamePage.IsGameOn)
+            //    game.SaveCheckPoint();
         }
 
         public static void OnStart()
