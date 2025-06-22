@@ -5047,6 +5047,9 @@ int
 forgetspell(spell)
 int spell;
 {
+    if (spell < 0 || spell >= MAXSPELL || spellid(spell) == STRANGE_OBJECT)
+        return 0;
+
     char qbuf[BUFSZ] = "";
     char spellnamebuf[BUFSZ] = "";
     Strcpy(spellnamebuf, spellname(spell));
