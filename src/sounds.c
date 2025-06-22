@@ -11399,7 +11399,7 @@ int64_t service_cost;
     {
         char ebuf[BUFSZ] = "";
         char buf[BUFSZ] = "";
-#if GNH_MOBILE
+#ifdef GNH_MOBILE
         Sprintf(qbuf, "How many times to enchant %s? (%lld %s each)", yname(otmp), (long long)service_cost, currency(service_cost));
 #else
         Strcpy(qbuf, "How many times to enchant?");
