@@ -8127,7 +8127,7 @@ STATIC_VAR struct forge_service_data_item forge_services[] =
     },
     {
         forge_any_special_func, 600, 60,
-        "Forge an mithril full plate mail", "forge an mithril full plate mail", "forging any full plate mails",
+        "Forge a mithril full plate mail", "forge a mithril full plate mail", "forging any full plate mails",
         QUERY_STYLE_COMPONENTS, SMITH_LINE_WOULD_YOU_LIKE_TO_FORGE_A_MITHRIL_FULL_PLATE_MAIL,
         FULL_PLATE_MAIL, 1, EXCEPTIONALITY_NORMAL, MAT_MITHRIL,
         NUGGET_OF_MITHRIL_ORE, 4, "4 nuggets of mithril ore"
@@ -8193,21 +8193,21 @@ STATIC_VAR struct forge_service_data_item forge_services[] =
         NUGGET_OF_IRON_ORE, 4, "4 nuggets of iron ore"
     },
     {
-        forge_any_special_func, COST_OF_SLING_BULLET * 3 * SILVER_COST_MULTIPIER, 0,
+        forge_any_special_func, (int64_t)(COST_OF_SLING_BULLET * 3 * SILVER_COST_MULTIPIER), 0,
         "Forge 10 silver sling-bullets", "forge 10 silver sling-bullets", "forging any sling-bullets",
         QUERY_STYLE_COMPONENTS, NPC_LINE_WOULD_YOU_LIKE_TO_FORGE_10_SILVER_SLING_BULLETS,
         SLING_BULLET, 10, EXCEPTIONALITY_NORMAL, MAT_SILVER,
         NUGGET_OF_SILVER_ORE, 2, "2 nuggets of silver ore"
     },
     {
-        forge_any_special_func, COST_OF_SLING_BULLET * 12 * SILVER_COST_MULTIPIER, 0,
+        forge_any_special_func, (int64_t)(COST_OF_SLING_BULLET * 12 * SILVER_COST_MULTIPIER), 0,
         "Forge 10 exceptional silver sling-bullets", "forge 10 exceptional silver sling-bullets", "forging any sling-bullets",
         QUERY_STYLE_COMPONENTS, NPC_LINE_WOULD_YOU_LIKE_TO_FORGE_10_EXCEPTIONAL_SILVER_SLING_BULLETS,
         SLING_BULLET, 10, EXCEPTIONALITY_EXCEPTIONAL, MAT_SILVER,
         NUGGET_OF_SILVER_ORE, 3, "3 nuggets of silver ore"
     },
     {
-        forge_any_special_func, COST_OF_SLING_BULLET * 48 * SILVER_COST_MULTIPIER, 0,
+        forge_any_special_func, (int64_t)(COST_OF_SLING_BULLET * 48 * SILVER_COST_MULTIPIER), 0,
         "Forge 10 elite silver sling-bullets", "forge 10 elite silver sling-bullets", "forging any sling-bullets",
         QUERY_STYLE_COMPONENTS, NPC_LINE_WOULD_YOU_LIKE_TO_FORGE_10_ELITE_SILVER_SLING_BULLETS,
         SLING_BULLET, 10, EXCEPTIONALITY_ELITE, MAT_SILVER,
@@ -8560,7 +8560,7 @@ const char* title_text;
         //get_forge_service_info(forge_idx, &text, &func_ptr, &verb, &nomood, &cost, &query_style, &extra_cost_descr, &special_dialogue_sound_id,
         //    &forge_any_target_otyp_temp, &forge_any_target_quan_temp, &forge_any_material_component_otyp_temp, &forge_any_material_component_quan_temp, &forge_any_target_exceptionality_temp, &forge_any_target_material_temp);
 
-        cost = max(1L, (int64_t)(((double)forge_services[forge_idx].cost_constant + (double)forge_services[forge_idx].cost_level_multiplier * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
+        cost = max((int64_t)1, (int64_t)((double)(forge_services[forge_idx].cost_constant + forge_services[forge_idx].cost_level_multiplier * (int64_t)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
         text = forge_services[forge_idx].title_text;
         func_ptr = forge_services[forge_idx].func;
         verb = forge_services[forge_idx].verb;
@@ -8671,7 +8671,7 @@ const char* title_text;
     //get_forge_service_info(i, &text, &func_ptr, &verb, &nomood, &cost, &query_style, &extra_cost_descr, &special_dialogue_sound_id,
     //    &forge_any_target_otyp, &forge_any_target_quan, &forge_any_material_component_otyp, &forge_any_material_component_quan, &forge_any_target_exceptionality, &forge_any_target_material);
 
-    cost = max(1L, (int64_t)(((double)forge_services[i].cost_constant + (double)forge_services[i].cost_level_multiplier * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
+    cost = max((int64_t)1, (int64_t)((double)(forge_services[i].cost_constant + forge_services[i].cost_level_multiplier * (int64_t)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
     text = forge_services[i].title_text;
     func_ptr = forge_services[i].func;
     verb = forge_services[i].verb;
