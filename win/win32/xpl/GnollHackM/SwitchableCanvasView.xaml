@@ -6,7 +6,7 @@
              x:Class="GnollHackM.SwitchableCanvasView">
   
       <Grid x:Name="RootGrid">
-          <skia:SKCanvasView x:Name="internalCanvasView" IsVisible="true" PaintSurface="internalCanvasView_PaintSurface" Touch="internalCanvasView_Touch" HorizontalOptions="Fill" VerticalOptions="Fill" />
+          <skia:SKCanvasView x:Name="internalCanvasView" IsVisible="true" PaintSurface="internalCanvasView_PaintSurface" Touch="internalCanvasView_Touch" HorizontalOptions="Fill" VerticalOptions="Fill" />  <!--PropertyChanged="internalCanvasView_PropertyChanged"--> 
           <!--<skia:SKGLView x:Name="internalGLView" IsVisible="false" PaintSurface="internalGLView_PaintSurface" Touch="internalGLView_Touch" HorizontalOptions="Fill" VerticalOptions="Fill" />-->
       </Grid>
   

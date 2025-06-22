@@ -66,7 +66,8 @@ namespace GnollHackX.Controls
                     VerticalOptions = LayoutOptions.Fill,
                 };
                 internalGLView.PaintSurface += internalGLView_PaintSurface;
-                internalGLView.Touch += internalCanvasView_Touch;
+                internalGLView.Touch += internalGLView_Touch;
+                //internalGLView.PropertyChanged += internalGLView_PropertyChanged;
 #if WINDOWS
                 internalGLView.HandlerChanged += (s, e) =>
                 {
@@ -114,6 +115,9 @@ namespace GnollHackX.Controls
                     _threadSafeParent = null;
                 else
                     _threadSafeParent = new WeakReference<IThreadSafeView>((IThreadSafeView)Parent);
+                //_threadSafeInternalCanvasSize = internalCanvasView.CanvasSize;
+                //if (HasGL)
+                //    _threadSafeInternalGLCanvasSize = internalGLView.CanvasSize;
             }
             SizeChanged += SwitchableCanvasView_SizeChanged;
             PropertyChanged += SwitchableCanvasView_PropertyChanged;
@@ -154,6 +158,34 @@ namespace GnollHackX.Controls
             }
         }
 
+        //private void internalCanvasView_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        //{
+        //    if (!HasGL || !UseGL)
+        //    {
+        //        if (e.PropertyName == nameof(internalCanvasView.CanvasSize))
+        //        {
+        //            lock (_propertyLock)
+        //            {
+        //                _threadSafeInternalCanvasSize = internalCanvasView.CanvasSize;
+        //            }
+        //        }
+        //    }
+        //}
+
+        //private void internalGLView_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        //{
+        //    if (HasGL)
+        //    {
+        //        if (e.PropertyName == nameof(internalGLView.CanvasSize))
+        //        {
+        //            lock (_propertyLock)
+        //            {
+        //                _threadSafeInternalGLCanvasSize = internalGLView.CanvasSize;
+        //            }
+        //        }
+        //    }
+        //}
+
         private readonly object _propertyLock = new object();
         private double _threadSafeWidth = 0;
         private double _threadSafeHeight = 0;
@@ -162,6 +194,8 @@ namespace GnollHackX.Controls
         private bool _threadSafeIsVisible = true;
         private Thickness _threadSafeMargin = new Thickness();
         WeakReference<IThreadSafeView> _threadSafeParent = null;
+        //private SKSize _threadSafeInternalCanvasSize = new SKSize(0, 0);
+        //private SKSize _threadSafeInternalGLCanvasSize = new SKSize(0, 0);
 
         public double ThreadSafeWidth { get { lock (_propertyLock) { return _threadSafeWidth; } } private set { lock (_propertyLock) { _threadSafeWidth = value; } } }
         public double ThreadSafeHeight { get { lock (_propertyLock) { return _threadSafeHeight; } } private set { lock (_propertyLock) { _threadSafeHeight = value; } } }
@@ -170,6 +204,17 @@ namespace GnollHackX.Controls
         public bool ThreadSafeIsVisible { get { lock (_propertyLock) { return _threadSafeIsVisible; } } private set { lock (_propertyLock) { _threadSafeIsVisible = value; } } }
         public Thickness ThreadSafeMargin { get { lock (_propertyLock) { return _threadSafeMargin; } } private set { lock (_propertyLock) { _threadSafeMargin = value; } } }
         public WeakReference<IThreadSafeView> ThreadSafeParent { get { lock (_propertyLock) { return _threadSafeParent; } } private set { lock (_propertyLock) { _threadSafeParent = value; } } }
+        
+        //public SKSize ThreadSafeCanvasSize { 
+        //    get 
+        //    { 
+        //        bool usingGL = UseGL && HasGL; 
+        //        lock (_propertyLock) 
+        //        { 
+        //            return usingGL ? _threadSafeInternalGLCanvasSize : _threadSafeInternalCanvasSize; 
+        //        } 
+        //    }  
+        //}
 
         private void SwitchableCanvasView_SizeChanged(object sender, EventArgs e)
         {
@@ -671,7 +716,7 @@ namespace GnollHackX.Controls
             {
                 PointerPoint point = e.GetCurrentPoint(element);
                 float canvasWidth = CanvasSize.Width;
-                float scale = canvasWidth / Math.Max(1.0f, (float)Width);
+                float scale = canvasWidth / Math.Max(1.0f, (float)ThreadSafeWidth);
                 SKPoint pointerPosition = point == null ? new SKPoint() : new SKPoint((float)point.Position.X * scale, (float)point.Position.Y * scale);
                 SKTouchEventArgs args = new SKTouchEventArgs(-1, action, pointerPosition, false);
                 if(MousePointer != null)
