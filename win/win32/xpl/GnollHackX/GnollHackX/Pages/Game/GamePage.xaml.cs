@@ -14758,8 +14758,16 @@ namespace GnollHackX.Pages.Game
         {
             GHGame curGame = CurrentGame;
             int x = 0, y = 0, mod = 0;
-            float canvaswidth = canvasView.CanvasSize.Width;
-            float canvasheight = canvasView.CanvasSize.Height;
+            float canvaswidth;
+            float canvasheight;
+            lock(_savedCanvasLock)
+            {
+                canvaswidth = _savedCanvasWidth;
+                canvasheight = _savedCanvasHeight;
+            }
+            if (canvaswidth <= 0 || canvasheight <= 0)
+                return;
+
             float usedTileWidth;
             float usedTileHeight;
             float mapWidth;
@@ -18590,14 +18598,17 @@ namespace GnollHackX.Pages.Game
                 _messageScrollSpeedOn = false;
                 _messageScrollSpeedRecords.Clear();
             }
-            if(MessageFilterFrame.IsVisible && MessageFilterEntry.IsVisible)
+            MainThread.BeginInvokeOnMainThread(() =>
             {
-                MessageFilterEntry.Unfocus();
-                if(UpperCmdGrid.IsVisible)
-                    ESCButton.Focus();
-                else
-                    SimpleESCButton.Focus();
-            }
+                if (MessageFilterFrame.IsVisible && MessageFilterEntry.IsVisible)
+                {
+                    MessageFilterEntry.Unfocus();
+                    if (UpperCmdGrid.IsVisible)
+                        ESCButton.Focus();
+                    else
+                        SimpleESCButton.Focus();
+                }
+            });
             bool prevForceAllMessages = ForceAllMessages;
             ForceAllMessages = !prevForceAllMessages;
         }

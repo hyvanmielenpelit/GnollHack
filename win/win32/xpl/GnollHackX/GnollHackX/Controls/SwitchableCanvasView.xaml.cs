@@ -22,6 +22,7 @@ using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 using GnollHackX.Pages.Game;
 using SkiaSharp.Views.Forms;
+using Xamarin.Essentials;
 
 namespace GnollHackX.Controls
 #endif
@@ -263,9 +264,19 @@ namespace GnollHackX.Controls
             PaintSurface?.Invoke(sender, e);
         }
 
+        private bool _canvasTouchThreadChecked = false;
         private void internalCanvasView_Touch(object sender, SKTouchEventArgs e)
         {
-            Touch?.Invoke(sender, e);
+            bool isCanvasOnMainThread = MainThread.IsMainThread;
+            if (!_canvasTouchThreadChecked && !isCanvasOnMainThread)
+            {
+                _canvasTouchThreadChecked = true;
+                GHApp.MaybeWriteGHLog("internalCanvasView_Touch not on main thread!");
+            }
+            MainThread.BeginInvokeOnMainThread(() =>
+            {
+                Touch?.Invoke(sender, e);
+            });
         }
 
         private bool _firstDraw = true;
@@ -398,9 +409,20 @@ namespace GnollHackX.Controls
             PaintSurface?.Invoke(sender, convargs);
         }
 
+        private bool _glTouchThreadChecked = false;
+
         private void internalGLView_Touch(object sender, SKTouchEventArgs e)
         {
-            Touch?.Invoke(sender, e);
+            bool isCanvasOnMainThread = MainThread.IsMainThread;
+            if (!_glTouchThreadChecked && !isCanvasOnMainThread)
+            {
+                _glTouchThreadChecked = true;
+                GHApp.MaybeWriteGHLog("internalGLView_Touch not on main thread!");
+            }
+            MainThread.BeginInvokeOnMainThread(() =>
+            {
+                Touch?.Invoke(sender, e);
+            });
         }
 
         public GamePage _gamePage;
