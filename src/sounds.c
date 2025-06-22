@@ -11892,8 +11892,19 @@ boolean initialize;
     char forge_string[BUFSZ];
     Sprintf(forge_string, "forge into %s", an(OBJ_NAME(objects[forge_dest_otyp])));
 
+    char header_string[BUFSZ] = "";
+#if GNH_MOBILE
+    if (forge_source_otyp > STRANGE_OBJECT && forge_source_quan > 0)
+    {
+        if (forge_source_quan == 1)
+            Sprintf(header_string, "You need %s", an(OBJ_NAME(objects[forge_source_otyp])));
+        else
+            Sprintf(header_string, "You need %lld %s", (long long)forge_source_quan, makeplural(OBJ_NAME(objects[forge_source_otyp])));
+    }
+#endif
+
     otyp_for_maybe_otyp = forge_source_otyp;
-    struct obj* otmp = getobj_ex((const char*)forge_objects, forge_string, 0, "", maybe_otyp, 0, 0U);
+    struct obj* otmp = getobj_ex((const char*)forge_objects, forge_string, 0, header_string, maybe_otyp, 0, 0U);
 
     if (!otmp)
         return 0;
