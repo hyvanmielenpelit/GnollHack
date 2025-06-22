@@ -1723,7 +1723,7 @@ wiz_makemap(VOID_ARGS)
         dmonsfree(); /* purge dead monsters from 'fmon' */
         /* keep steed and other adjacent pets after releasing them
            from traps, stopping eating, &c as if hero were ascending */
-        keepdogs(TRUE, TRUE); /* (pets-only; normally we'd be using 'FALSE' here) */
+        move_monsters_to_mydogs(TRUE, TRUE); /* (pets-only; normally we'd be using 'FALSE' here) */
 
         /* discard current level; "saving" is used to release dynamic data */
         savelev(-1, ledger_no(&u.uz), FREE_SAVE);
@@ -1739,8 +1739,8 @@ wiz_makemap(VOID_ARGS)
            on levels which have such; we don't force stairs, just area */
         u_on_rndspot((u.uhave.amulet ? 1 : 0) /* 'going up' flag */
                      | (was_in_W_tower ? 2 : 0));
-        handle_monster_level_migration();
-        /* u_on_rndspot() might pick a spot that has a monster, or handle_monster_level_migration()
+        arrival_from_mydogs_and_migrating_mons();
+        /* u_on_rndspot() might pick a spot that has a monster, or arrival_from_mydogs_and_migrating_mons()
            might pick the hero's spot (only if there isn't already a monster
            there), so we might have to move hero or the co-located monster */
         if ((mtmp = m_at(u.ux, u.uy)) != 0)

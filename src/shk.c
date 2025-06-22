@@ -1263,7 +1263,7 @@ register boolean silentkops;
     make_happy_shoppers(silentkops);
 }
 
-/* called by make_happy_shk() and also by handle_monster_level_migration() for migrating shk */
+/* called by make_happy_shk() and also by arrival_from_mydogs_and_migrating_mons() for migrating shk */
 void
 make_happy_shoppers(silentkops)
 boolean silentkops;

@@ -839,7 +839,7 @@ update_mlstmv(VOID_ARGS)
 }
 
 void
-handle_monster_level_migration(VOID_ARGS)
+arrival_from_mydogs_and_migrating_mons(VOID_ARGS)
 {
     register struct monst *mtmp, *mtmp0, *mtmp2;
     int dismissKops = 0;
@@ -913,7 +913,7 @@ handle_monster_level_migration(VOID_ARGS)
                     }
                 if (!mtmp0)
                 {
-                    panic("handle_monster_level_migration: can't find migrating mon");
+                    panic("arrival_from_mydogs_and_migrating_mons: can't find migrating mon");
                     return;
                 }
             }
@@ -922,7 +922,7 @@ handle_monster_level_migration(VOID_ARGS)
     }
 }
 
-/* called from resurrect() in addition to handle_monster_level_migration() */
+/* called from resurrect() in addition to arrival_from_mydogs_and_migrating_mons() */
 void
 mon_arrive(mtmp, with_you)
 struct monst *mtmp;
@@ -1383,7 +1383,7 @@ int64_t nmv; /* number of moves */
 
 /* called when you move to another level */
 void
-keepdogs(pets_only, nearby_only)
+move_monsters_to_mydogs(pets_only, nearby_only)
 boolean pets_only, nearby_only; /* pets_only is true for ascension or final escape */
 {
     register struct monst *mtmp, *mtmp2;
