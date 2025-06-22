@@ -15949,7 +15949,7 @@ namespace GnollHackX.Pages.Game
                             //textPaint.TextAlign = SKTextAlign.Left;
 
                             if (MenuWindowGlyphImage.ThreadSafeIsVisible && wrapglyph)
-                                glyphpadding = scale * (float)Math.Max(0.0, MenuCanvas.ThreadSafeX + MenuCanvas.ThreadSafeWidth - MenuWindowGlyphImage.X);
+                                glyphpadding = scale * (float)Math.Max(0.0, MenuCanvas.ThreadSafeX + MenuCanvas.ThreadSafeWidth - MenuWindowGlyphImage.ThreadSafeX);
                             else
                                 glyphpadding = 0;
 
