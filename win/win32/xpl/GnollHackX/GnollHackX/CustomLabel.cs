@@ -1091,7 +1091,7 @@ namespace GnollHackX
                         long millisecs_elapsed = (DateTime.Now.Ticks - _textScrollSpeedReleaseStamp.Ticks) / TimeSpan.TicksPerMillisecond;
                         if (millisecs_elapsed > GHConstants.FreeScrollingTime)
                         {
-                            float deceleration1 = (float)canvasheight * GHConstants.ScrollConstantDeceleration;
+                            float deceleration1 = canvasheight * GHConstants.ScrollConstantDeceleration;
                             float deceleration2 = Math.Abs(_textScrollSpeed) * GHConstants.ScrollSpeedDeceleration;
                             float deceleration_per_second = deceleration1 + deceleration2;
                             _textScrollSpeed += -1.0f * (float)sgn * ((deceleration_per_second * (float)UIUtils.GetAuxiliaryCanvasAnimationInterval()) / 1000);
