@@ -6936,8 +6936,10 @@ struct monst* mtmp;
                 any.a_obj = !otmp->owornmask && (is_packmule(mtmp->data) || (otmp->item_flags & ITEM_FLAGS_GIVEN_BY_HERO) != 0) ? otmp : 0; /* if 0, selection is not possible */
                 char let = 0; /* automatic */
                 char accel = def_oc_syms[(int)otmp->oclass].sym;
+                int glyph = obj_to_glyph(otmp, rn2_on_display_rng);
+                int gui_glyph = maybe_get_replaced_glyph(glyph, u.ux, u.uy, data_to_replacement_info(glyph, LAYER_OBJECT, otmp, (struct monst*)0, 0UL, 0UL, 0UL, MAT_NONE, 0));
 
-                add_extended_menu(win, NO_GLYPH, &any,
+                add_extended_menu(win, gui_glyph, &any,
                     let, accel, ATR_NONE, NO_COLOR,
                     itembuf, MENU_UNSELECTED, obj_to_extended_menu_info(otmp));
 
