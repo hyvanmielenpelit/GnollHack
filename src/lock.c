@@ -377,7 +377,9 @@ boolean destroyit;
             You("owe %ld %s for objects destroyed.", loss, currency(loss));
         Sprintf(priority_debug_buf_2, "breakchestlock: %d", box->otyp);
         Sprintf(priority_debug_buf_3, "breakchestlock: %d", box->otyp);
+        context.surpress_container_deletion_warning = 1;
         delobj(box);
+        context.surpress_container_deletion_warning = 0;
     }
 }
 
