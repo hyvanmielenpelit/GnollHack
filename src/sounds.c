@@ -5562,11 +5562,12 @@ struct monst* mtmp;
     /* should coordinate with perm invent, maybe not show worn items */
     n = query_objlist(qbuf, &invent,
         (USE_INVLET | INVORDER_SORT | OBJECT_COMPARISON), &pick_list, PICK_ANY,
-        allow_all, SHOWWEIGHTS_DROP);
+        is_packmule(mtmp->data) ? allow_all : allow_all_but_coins, SHOWWEIGHTS_DROP);
     if (n > 0) 
     {
         bypass_objlist(invent, TRUE);
-        for (i = 0; i < n; i++) {
+        for (i = 0; i < n; i++) 
+        {
             otmp = pick_list[i].item.a_obj;
             
             for (otmp2 = invent; otmp2; otmp2 = otmp2->nobj)
@@ -5617,7 +5618,7 @@ struct monst* mtmp;
                         {
                             play_simple_object_sound_at_location(otmp, u.ux, u.uy, OBJECT_SOUND_TYPE_GIVE);
                             Sprintf(pbuf, "You give %s to %s.", doname(otmp), noittame_mon_nam(mtmp));
-                            pline_ex1_popup(ATR_NONE, NO_COLOR, pbuf, "Item Given", TRUE);
+                            pline_ex1_popup(ATR_NONE, NO_COLOR, pbuf, "Item Given", n == 1);
                         }
 
                         boolean abort_pickup = FALSE;
@@ -5662,6 +5663,11 @@ struct monst* mtmp;
         }
         bypass_objlist(invent, FALSE); /* reset invent to normal */
         free((genericptr_t)pick_list);
+        if (flags.verbose && n > 1 && n_given > 0)
+        {
+            Sprintf(pbuf, "You give %d item%s to %s.", n_given, plur(n_given), noittame_mon_nam(mtmp));
+            display_popup_text(pbuf, n_given != 1 ? "Items Given" : "Item Given", POPUP_TEXT_GENERAL, ATR_NONE, NO_COLOR, NO_GLYPH, 0);
+        }
     }
     else
     {
@@ -6931,7 +6937,7 @@ struct monst* mtmp;
                 char itembuf[BUFSZ * 2] = "";
                 //char ownedbuf[BUFSZ];
                 //Sprintf(ownedbuf, " (owned by %s)", mon_nam(mtmp));
-                Sprintf(itembuf, "%s%s", doname(otmp), !is_packmule(mtmp->data) && (otmp->item_flags & ITEM_FLAGS_GIVEN_BY_HERO) == 0 ? " (own)" : "");
+                Sprintf(itembuf, "%s%s", doname(otmp), !is_packmule(mtmp->data) && (otmp->item_flags & ITEM_FLAGS_GIVEN_BY_HERO) == 0 ? " (owned)" : "");
 
                 any.a_obj = !otmp->owornmask && (is_packmule(mtmp->data) || (otmp->item_flags & ITEM_FLAGS_GIVEN_BY_HERO) != 0) ? otmp : 0; /* if 0, selection is not possible */
                 char let = 0; /* automatic */
@@ -6975,6 +6981,7 @@ struct monst* mtmp;
     /* Now generate the menu */
     int pick_count = 0;
     int take_count = 0;
+    char itembuf[BUFSZ] = "";
     if ((pick_count = select_menu(win, PICK_ANY, &pick_list)) > 0)
     {
         for (i = 0; i < pick_count; i++)
@@ -6997,7 +7004,8 @@ struct monst* mtmp;
                     item_to_take->item_flags &= ~ITEM_FLAGS_GIVEN_BY_HERO;
 
                     play_simple_object_sound_at_location(item_to_take, mtmp->mx, mtmp->my, OBJECT_SOUND_TYPE_GIVE);
-                    You("took %s from %s.", doname(item_to_take), noittame_mon_nam(mtmp));
+                    //You("took %s from %s.", doname(item_to_take), noittame_mon_nam(mtmp));
+                    Strcpy(itembuf, doname(item_to_take));
 
                     hold_another_object(item_to_take, "Oops!  %s out of your grasp!",
                         The(aobjnam(item_to_take, "slip")),
@@ -7011,9 +7019,16 @@ struct monst* mtmp;
         destroy_nhwindow(win);
 
         if (take_count > 0)
-            return 1;
-        else
-            return 0;
+        {
+            char pbuf[BUFSZ];
+            if (take_count == 1 && *itembuf)
+                Sprintf(pbuf, "You took %s from %s.", itembuf, noittame_mon_nam(mtmp));
+            else
+                Sprintf(pbuf, "You took %d item%s from %s.", take_count, plur(take_count), noittame_mon_nam(mtmp));
+            display_popup_text(pbuf, take_count != 1 ? "Items Taken" : "Item Taken", POPUP_TEXT_GENERAL, ATR_NONE, NO_COLOR, NO_GLYPH, 0);
+        }
+
+        return take_count > 0;
     }
     else
         return 0;
