@@ -5665,7 +5665,7 @@ struct monst* mtmp;
         free((genericptr_t)pick_list);
         if (flags.verbose && n > 1 && n_given > 0)
         {
-            Sprintf(pbuf, "You give %d item%s to %s.", n_given, plur(n_given), noittame_mon_nam(mtmp));
+            Sprintf(pbuf, "You gave %d item%s to %s.", n_given, plur(n_given), noittame_mon_nam(mtmp));
             display_popup_text(pbuf, n_given != 1 ? "Items Given" : "Item Given", POPUP_TEXT_GENERAL, ATR_NONE, NO_COLOR, NO_GLYPH, 0);
         }
     }
