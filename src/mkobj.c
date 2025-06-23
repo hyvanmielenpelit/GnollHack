@@ -4048,7 +4048,7 @@ struct monst *mtmp;
     struct obj *otmp, *mwep = MON_WEP(mtmp);
     boolean keeping_mon = (!DEADMONSTER(mtmp));
     Strcpy(debug_buf_2, "discard_minvent");
-
+    context.surpress_container_deletion_warning = 1;
     while ((otmp = mtmp->minvent) != 0) {
         /* this has now become very similar to m_useupall()... */
         obj_extract_self(otmp);
@@ -4073,6 +4073,7 @@ struct monst *mtmp;
         Sprintf(priority_debug_buf_4, "discard_minvent: %d", otmp->otyp);
         obfree(otmp, (struct obj *) 0); /* dealloc_obj() isn't sufficient */
     }
+    context.surpress_container_deletion_warning = 0;
 }
 
 /*
