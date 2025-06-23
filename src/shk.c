@@ -999,7 +999,7 @@ register struct obj *obj, *merge;
     if (Is_container(obj))
         maybe_reset_pick(obj);
     
-    if (!context.surpress_container_deletion_warning && Is_proper_container(obj))
+    if (!context.suppress_container_deletion_warning && Is_proper_container(obj))
     {
         char debugbuf[BUFSZ * 17];
         Sprintf(debugbuf, "obfree on container: otyp:%d, has_cobjs:%d, in_use:%d, P1:%s, P2:%s, P3:%s, P4:%s, B1:%s, B2:%s, B3:%s, B4:%s", obj->otyp, had_contents, (int)obj->in_use, 
