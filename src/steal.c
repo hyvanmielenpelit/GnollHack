@@ -731,7 +731,8 @@ boolean verbosely, set_found;
     int omx = mon->mx, omy = mon->my;
     boolean update_mon = FALSE;
 
-    if (obj->owornmask) 
+    obj->item_flags &= ~ITEM_FLAGS_GIVEN_BY_HERO;
+    if (obj->owornmask)
     {
         /* perform worn item handling if the monster is still alive */
         if (!DEADMONSTER(mon)) 
@@ -798,6 +799,7 @@ struct monst *mon;
            for the other roles are not */
         if (is_obj_unremovable_from_the_game(obj) || is_quest_artifact(obj))
         {
+            obj->item_flags &= ~ITEM_FLAGS_GIVEN_BY_HERO;
             Strcpy(debug_buf_2, "mdrop_special_objs");
             obj_extract_self(obj);
             if (mon->mx) 

@@ -19,6 +19,7 @@ STATIC_DCL int NDECL(dochat);
 STATIC_DCL int FDECL(do_chat_whoareyou, (struct monst*));
 STATIC_DCL int FDECL(do_chat_rumors, (struct monst*));
 STATIC_DCL struct monst* FDECL(ask_target_monster, (struct monst*));
+STATIC_DCL int FDECL(count_takeable_items, (struct monst*));
 
 STATIC_DCL void FDECL(hermit_talk, (struct monst*, const char**, enum ghsound_types));
 STATIC_DCL void FDECL(popup_talk, (struct monst*, const char**, enum ghsound_types, int, int, BOOLEAN_P, BOOLEAN_P));
@@ -2327,6 +2328,23 @@ const genericptr q;
     return strcmpi(item1.name, item2.name);
 }
 
+STATIC_OVL int
+count_takeable_items(mtmp)
+struct monst* mtmp;
+{
+    if (!mtmp)
+        return 0;
+
+    int give_item_cnt = 0;
+    struct obj* otmp;
+    for (otmp = mtmp->minvent; otmp; otmp = otmp->nobj)
+    {
+        if (otmp->oclass > ILLOBJ_CLASS && !otmp->owornmask && (is_packmule(mtmp->data) || (otmp->item_flags & ITEM_FLAGS_GIVEN_BY_HERO) != 0))
+            give_item_cnt++;
+    }
+    return give_item_cnt;
+}
+
 int
 dochatmon(mtmp)
 struct monst* mtmp;
@@ -3276,7 +3294,8 @@ struct monst* mtmp;
 
             chatnum++;
 
-            if (is_packmule(mtmp->data) && mtmp->minvent)
+            int takecnt = count_takeable_items(mtmp);
+            if (takecnt > 0)
             {
                 Sprintf(available_chat_list[chatnum].name, "Take items from %s", noittame_mon_nam(mtmp));
                 available_chat_list[chatnum].function_ptr = &do_chat_pet_takeitems;
@@ -5610,6 +5629,7 @@ struct monst* mtmp;
                                 struct monst* shkp = shop_keeper(inside_shop(mtmp->mx, mtmp->my));
                                 if (shkp)
                                 {
+                                    otmp->bypass = 0;
                                     play_voice_shopkeeper_simple_line(shkp, SHOPKEEPER_LINE_DROP_THAT_NOW);
                                     pline("%s shouts:", Monnam(shkp));
                                     verbalize_ex(ATR_NONE, CLR_MSG_TALK_NORMAL, "Drop that, now!");
@@ -5628,7 +5648,14 @@ struct monst* mtmp;
                         if (abort_pickup)
                             break;
                         else
-                            (void)mpickobj(mtmp, otmp);
+                        {
+                            if (otmp->oclass != COIN_CLASS)
+                                otmp->item_flags |= ITEM_FLAGS_GIVEN_BY_HERO;
+                            if(mpickobj(mtmp, otmp))
+                                otmp = 0;
+                            else
+                                otmp->bypass = 0;
+                        }
                     }
                 }
             }
@@ -6829,7 +6856,7 @@ STATIC_OVL int
 do_chat_pet_takeitems(mtmp)
 struct monst* mtmp;
 {
-    int item_count = 0;
+    int item_count = 0, selectable_item_count = 0;;
 
     menu_item* pick_list = (menu_item*)0;
     winid win;
@@ -6839,21 +6866,43 @@ struct monst* mtmp;
     win = create_nhwindow_ex(NHW_MENU, GHWINDOW_STYLE_CHAT_ITEM_MENU, get_seen_monster_glyph(mtmp), extended_create_window_info_from_mon(mtmp));
     start_menu_ex(win, GHMENU_STYLE_OTHERS_INVENTORY);
 
-
     static const char def_srt_order[MAX_OBJECT_CLASSES] = {
-    COIN_CLASS, AMULET_CLASS, ART_CLASS, MISCELLANEOUS_CLASS, RING_CLASS, WAND_CLASS, POTION_CLASS,
-    SCROLL_CLASS, SPBOOK_CLASS, GEM_CLASS, FOOD_CLASS, REAGENT_CLASS, TOOL_CLASS,
-    WEAPON_CLASS, ARMOR_CLASS, ROCK_CLASS, BALL_CLASS, CHAIN_CLASS, 0,
+        COIN_CLASS, AMULET_CLASS, ART_CLASS, MISCELLANEOUS_CLASS, RING_CLASS, WAND_CLASS, POTION_CLASS,
+        SCROLL_CLASS, SPBOOK_CLASS, GEM_CLASS, FOOD_CLASS, REAGENT_CLASS, TOOL_CLASS,
+        WEAPON_CLASS, ARMOR_CLASS, ROCK_CLASS, BALL_CLASS, CHAIN_CLASS, 0,
     };
 
     const char* classorder = flags.sortpack ? flags.inv_order : def_srt_order;
     boolean classhasitems[MAX_OBJECT_CLASSES] = { 0 };
     struct obj* otmp;
+    int cnt = 0, give_item_cnt = 0;
 
     for (otmp = mtmp->minvent; otmp; otmp = otmp->nobj)
     {
+        cnt++;
         if (otmp->oclass > ILLOBJ_CLASS)
+        {
             classhasitems[(int)otmp->oclass] = TRUE;
+            if (!otmp->owornmask && (is_packmule(mtmp->data) || (otmp->item_flags & ITEM_FLAGS_GIVEN_BY_HERO) != 0))
+                give_item_cnt++;
+        }
+    }
+
+    if (!cnt)
+    {
+        char nibuf[BUFSZ];
+        Sprintf(nibuf, "%s doesn't have any items.", noittame_Monnam(mtmp));
+        pline_ex1_popup(ATR_NONE, NO_COLOR, nibuf, "No Items", TRUE);
+        destroy_nhwindow(win);
+        return 0;
+    }
+    if (!give_item_cnt)
+    {
+        char nibuf[BUFSZ];
+        Sprintf(nibuf, "%s doesn't have any items that it can give to you.", noittame_Monnam(mtmp));
+        pline_ex1_popup(ATR_NONE, NO_COLOR, nibuf, "No Items to Take", TRUE);
+        destroy_nhwindow(win);
+        return 0;
     }
 
     int i;
@@ -6867,7 +6916,7 @@ struct monst* mtmp;
 
         for (otmp = mtmp->minvent; otmp; otmp = otmp->nobj)
         {
-            if ((!flags.sortpack || (flags.sortpack && otmp->oclass == oclass)) && otmp->owornmask == 0)
+            if ((!flags.sortpack || (flags.sortpack && otmp->oclass == oclass)))
             {
                 if (flags.sortpack && !madeheader)
                 {
@@ -6880,18 +6929,21 @@ struct monst* mtmp;
 
                 any = zeroany;
                 char itembuf[BUFSZ * 2] = "";
-                Sprintf(itembuf, "%s", doname(otmp));
+                //char ownedbuf[BUFSZ];
+                //Sprintf(ownedbuf, " (owned by %s)", mon_nam(mtmp));
+                Sprintf(itembuf, "%s%s", doname(otmp), !is_packmule(mtmp->data) && (otmp->item_flags & ITEM_FLAGS_GIVEN_BY_HERO) == 0 ? " (own)" : "");
 
-                any.a_obj = otmp;
-                char let = 'a' + item_count;
+                any.a_obj = !otmp->owornmask && (is_packmule(mtmp->data) || (otmp->item_flags & ITEM_FLAGS_GIVEN_BY_HERO) != 0) ? otmp : 0; /* if 0, selection is not possible */
+                char let = 0; /* automatic */
                 char accel = def_oc_syms[(int)otmp->oclass].sym;
 
-                add_menu(win, NO_GLYPH, &any,
+                add_extended_menu(win, NO_GLYPH, &any,
                     let, accel, ATR_NONE, NO_COLOR,
-                    itembuf, MENU_UNSELECTED);
+                    itembuf, MENU_UNSELECTED, obj_to_extended_menu_info(otmp));
 
                 item_count++;
-
+                if (any.a_obj)
+                    selectable_item_count++;
             }
         }
         if (!flags.sortpack)
@@ -6903,7 +6955,17 @@ struct monst* mtmp;
 
     if (item_count <= 0)
     {
-        pline("%s doesn't have any items.", noittame_Monnam(mtmp));
+        char nibuf[BUFSZ];
+        Sprintf(nibuf, "%s doesn't have any items to give to you.", noittame_Monnam(mtmp));
+        pline_ex1_popup(ATR_NONE, NO_COLOR, nibuf, "No Items to Take", TRUE);
+        destroy_nhwindow(win);
+        return 0;
+    }
+    if (selectable_item_count <= 0)
+    {
+        char nibuf[BUFSZ];
+        Sprintf(nibuf, "%s doesn't have any items it wants to give to you.", noittame_Monnam(mtmp));
+        pline_ex1_popup(ATR_NONE, NO_COLOR, nibuf, "No Items to Take", TRUE);
         destroy_nhwindow(win);
         return 0;
     }
@@ -6930,6 +6992,7 @@ struct monst* mtmp;
 
                     Strcpy(debug_buf_2, "do_chat_pet_take_items");
                     obj_extract_self(item_to_take);
+                    item_to_take->item_flags &= ~ITEM_FLAGS_GIVEN_BY_HERO;
 
                     play_simple_object_sound_at_location(item_to_take, mtmp->mx, mtmp->my, OBJECT_SOUND_TYPE_GIVE);
                     You("took %s from %s.", doname(item_to_take), noittame_mon_nam(mtmp));

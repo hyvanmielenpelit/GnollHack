@@ -6927,6 +6927,7 @@ register struct obj *otmp, *obj;
     /* fail if already the same object, if different types, if either is
        explicitly marked to prevent merge, or if not mergable in general */
     if (obj == otmp || obj->otyp != otmp->otyp || !objects[obj->otyp].oc_merge
+        || obj->item_flags != otmp->item_flags
         || obj->nomerge || otmp->nomerge
         || (obj->speflags & (SPEFLAGS_MINES_PRIZE | SPEFLAGS_SOKO_PRIZE1 | SPEFLAGS_SOKO_PRIZE2)) != 0
         || (otmp->speflags & (SPEFLAGS_MINES_PRIZE | SPEFLAGS_SOKO_PRIZE1 | SPEFLAGS_SOKO_PRIZE2)) != 0)

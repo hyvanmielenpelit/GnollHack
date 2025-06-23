@@ -51,7 +51,9 @@ struct obj {
     int64_t quan; /* number of items */
     int64_t age;               /* creation date */
     int64_t owornmask;
-    uint64_t item_flags;  /* general purpose object flags, like speflags */
+    uint64_t item_flags;  /* general purpose object flags, like speflags; different item_flags will prevent merging */
+#define ITEM_FLAGS_GIVEN_BY_HERO               0x00000001UL
+
     uint64_t speflags;    /* anything else that might be going on with an item, not affected by cancellation */
 
 #define SPEFLAGS_YOURS                         0x00000001UL
