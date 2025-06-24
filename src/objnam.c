@@ -564,8 +564,9 @@ unsigned cxn_flags; /* bitmask of CXN_xxx values */
             int len = (int)(p - dn);
             if (len > 0 && (int)strlen(dn) > len)
             {
-                Strncpy(dn_startbuf, dn, (size_t)len);
-                dn_startbuf[len + 1] = '\0';
+                size_t copylen = min((size_t)len, sizeof(dn_startbuf) - 1);
+                Strncpy(dn_startbuf, dn, copylen);
+                dn_startbuf[copylen] = '\0';
                 dn += len;
             }
         }
