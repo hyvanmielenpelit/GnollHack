@@ -8,6 +8,7 @@
 #ifndef DECL_H
 #define DECL_H
 
+#include "config.h"
 #include "general.h"
 #include "layer.h"
 #include "monsym.h"
@@ -600,7 +601,7 @@ E const char *const monexplain[], invisexplain[], *const oclass_names[];
 #define PREFIX_COUNT 10
 /* used in files.c; xxconf.h can override if needed */
 #ifndef FQN_MAX_FILENAME
-#define FQN_MAX_FILENAME 512
+#define FQN_MAX_FILENAME (SAVESIZE + 512)
 #endif
 
 #if defined(NOCWD_ASSUMPTIONS) || defined(VAR_PLAYGROUND)

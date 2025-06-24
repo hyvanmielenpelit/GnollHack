@@ -386,6 +386,23 @@ struct savefile_info {
 #define UTF8QBUFSZ (QBUFSZ * 4)  /* for building question text in UTF8 */
 #define UTF8IBUFSZ (IBUFSZ * 4)  /* for getlin introline buffers in UTF8 */
 
+#define GNH_FILEPATH_SIZ 4096
+#define GNH_EXTRA_BSIZ 32
+
+#if defined(UNIX) || defined(__BEOS__) || defined(GNH_MOBILE)
+#define SAVESIZE (PL_NSIZ + 13 + GNH_EXTRA_BSIZ) /* save/99999player.e */
+#else
+#ifdef VMS
+#define SAVESIZE (PL_NSIZ + 22 + GNH_EXTRA_BSIZ) /* [.save]<uid>player.e;1 */
+#else
+#if defined(WIN32)
+#define SAVESIZE (PL_NSIZ + 40 + GNH_EXTRA_BSIZ) /* username-player.GnollHack-saved-game */
+#else
+#define SAVESIZE (FILENAME + GNH_EXTRA_BSIZ) /* from macconf.h or pcconf.h */
+#endif
+#endif
+#endif
+
 /* plus longest prefix plus a few extra words */
 
 #define MAXDUNGEON 16 /* current maximum number of dungeons */
