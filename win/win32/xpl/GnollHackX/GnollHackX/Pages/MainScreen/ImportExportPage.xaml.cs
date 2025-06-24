@@ -135,8 +135,8 @@ namespace GnollHackX.Pages.MainScreen
                                                     System.IO.File.Delete(finalname);
                                                 System.IO.File.Move(filestr, finalname);
                                                 nextracted++;
-                                                if (!string.IsNullOrWhiteSpace(out_str) && GHApp.DebugLogMessages)
-                                                    await GHApp.DisplayMessageBox(this, "ValidateSaveFile Message", out_str, "OK");
+                                                if (!string.IsNullOrWhiteSpace(out_str))
+                                                    GHApp.MaybeWriteGHLog("ValidateSaveFile Message: " + out_str);
                                             }
                                             else
                                             {

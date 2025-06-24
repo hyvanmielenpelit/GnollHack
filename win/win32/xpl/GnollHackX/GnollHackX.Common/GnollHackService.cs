@@ -1102,8 +1102,18 @@ namespace GnollHackX.Unknown
         public bool ValidateSaveFile(string filename, out string res_str)
         {
             byte[] buffer = new byte[256 * 4];
+            Array.Clear(buffer, 0, buffer.Length);
             int res = LibValidateSaveFile(filename, buffer);
-            res_str = Encoding.UTF8.GetString(buffer);
+            if (buffer[0] == 0)
+                res_str = "";
+            else
+                res_str = Encoding.UTF8.GetString(buffer);
+            if (!string.IsNullOrEmpty(res_str))
+            {
+                int index = res_str.IndexOf('\0');
+                if (index >= 0)
+                    res_str = res_str.Remove(index); 
+            }
             return res != 0;
         }
 
