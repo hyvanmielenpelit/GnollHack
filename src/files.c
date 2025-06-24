@@ -1487,6 +1487,21 @@ open_savefile()
     return fd;
 }
 
+/* open savefile for reading */
+int
+open_savefilepath(filepath)
+const char* filepath;
+{
+    int fd;
+#ifdef MAC
+    fd = macopen(filepath, O_RDONLY | O_BINARY, SAVE_TYPE);
+#else
+    fd = open(filepath, O_RDONLY | O_BINARY, 0);
+#endif
+    return fd;
+}
+
+
 /* delete savefile */
 int
 delete_savefile(VOID_ARGS)
@@ -2681,7 +2696,7 @@ docompress_file(filename, uncomp)
 const char *filename;
 boolean uncomp;
 {
-#define MAX_FILE_NAME_BUFFER_SIZE 512
+#define MAX_FILE_NAME_BUFFER_SIZE GNH_FILEPATH_SIZ
     char cfn[MAX_FILE_NAME_BUFFER_SIZE];
     FILE *cf;
     const char *args[10];
@@ -2903,7 +2918,7 @@ boolean uncomp;
 {
     gzFile compressedfile;
     FILE *uncompressedfile;
-    char cfn[256];
+    char cfn[GNH_FILEPATH_SIZ];
     char buf[1024];
     unsigned len, len2;
 
@@ -3085,7 +3100,7 @@ int retryct;
 #pragma unused(retryct)
 #endif
 #ifndef USE_FCNTL
-    char locknambuf[BUFSZ];
+    char locknambuf[GNH_FILEPATH_SIZ];
     const char *lockname;
 #endif
 
@@ -3245,7 +3260,7 @@ unlock_file(filename)
 const char *filename;
 {
 #ifndef USE_FCNTL
-    char locknambuf[BUFSZ];
+    char locknambuf[GNH_FILEPATH_SIZ];
     const char *lockname;
 #endif
 

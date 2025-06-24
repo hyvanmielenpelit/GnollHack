@@ -541,12 +541,8 @@ LibValidateSaveFile(const char* filename, char* output_str)
     windowprocs.win_raw_print = gnhapi_raw_print;
     windowprocs.win_issue_gui_command = gnhapi_issue_gui_command;
 
-    Strcpy(SAVEF, filename);
-#ifdef COMPRESS_EXTENSION
-    SAVEF[strlen(SAVEF) - strlen(COMPRESS_EXTENSION)] = '\0';
-#endif
-    nh_uncompress(SAVEF);
-    if ((fd = open_savefile()) >= 0) 
+    nh_uncompress(filename);
+    if ((fd = open_savefilepath(filename)) >= 0)
     {
         if (validate(fd, filename) == 0) 
         {
@@ -554,7 +550,7 @@ LibValidateSaveFile(const char* filename, char* output_str)
         }
         (void)nhclose(fd);
     }
-    nh_compress(SAVEF);
+    nh_compress(filename);
     windowprocs = oldprocs;
 
     if (output_str && *gnhapi_putstr_buffer)

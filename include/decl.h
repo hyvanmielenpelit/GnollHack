@@ -29,9 +29,9 @@ E int locknum;
 E char *catmore;
 #endif /* DEF_PAGER */
 
-E char SAVEF[];
+E char SAVEF[SAVESIZE];
 #ifdef MICRO
-E char SAVEP[];
+E char SAVEP[SAVESIZE];
 #endif
 
 /* max size of a windowtype option */
