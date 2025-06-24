@@ -149,6 +149,8 @@ obj_typename(otyp)
 register int otyp;
 {
     char *buf = nextobuf() + PREFIXBUFSZ; /* Just in case */
+    buf[0] = '\0';
+
     struct objclass *ocl = &objects[otyp];
     const char *actualn = OBJ_NAME(*ocl);
     const char *dn = OBJ_DESCR(*ocl);
@@ -290,6 +292,8 @@ fruitname(juice)
 boolean juice; /* whether or not to append " juice" to the name */
 {
     char *buf = nextobuf() + PREFIXBUFSZ; /* Just in case */
+    buf[0] = '\0';
+
     const char *fruit_nam = strstri(pl_fruit, " of ");
 
     if (fruit_nam)
@@ -433,7 +437,7 @@ char*
 str_upper_start(str)
 const char* str;
 {
-    char* buf = nextobuf();
+    char* buf = nextobuf() + PREFIXBUFSZ;
     if(!str)
         Strcpy(buf, empty_string);
     else
@@ -484,6 +488,7 @@ unsigned cxn_flags; /* bitmask of CXN_xxx values */
     boolean hasnamed = FALSE;
 
     buf = nextobuf() + PREFIXBUFSZ; /* leave room for "17 -3 " */
+    buf[0] = '\0';
 
     if (Role_if(PM_SAMURAI) && Japanese_item_name(typ))
         actualn = Japanese_item_name(typ);
@@ -561,7 +566,6 @@ unsigned cxn_flags; /* bitmask of CXN_xxx values */
         }
     }
 
-    buf[0] = '\0';
     /*
      * clean up known when it's tied to oc_name_known, eg after AD_DRIN
      * This is only required for unique objects since the article
@@ -2287,6 +2291,7 @@ const char *adjective;
 unsigned cxn_flags; /* bitmask of CXN_xxx values */
 {
     char *nambuf = nextobuf() + PREFIXBUFSZ;
+    nambuf[0] = '\0';
     int omndx = otmp->corpsenm;
     struct monst* mtmp = get_mtraits(otmp, FALSE);
     boolean isfemale = (mtmp && mtmp->female) || (omndx > NON_PM && is_female(&mons[omndx]));
@@ -2673,6 +2678,7 @@ an(str)
 const char *str;
 {
     char *buf = nextobuf() + PREFIXBUFSZ; /* Just in case */
+    buf[0] = '\0';
 
     if (!str || !*str) {
         impossible("Alphabet soup: 'an(%s)'.", str ? "\"\"" : "<null>");
@@ -2697,6 +2703,7 @@ an_prefix(str)
 const char* str;
 {
     char* buf = nextobuf() + PREFIXBUFSZ; /* Just in case */
+    buf[0] = '\0';
 
     if (!str || !*str) {
         impossible("Alphabet soup: 'an(%s)'.", str ? "\"\"" : "<null>");
@@ -2725,6 +2732,7 @@ const char *str;
 {
     char *buf = nextobuf() + PREFIXBUFSZ; /* Just in case */
     boolean insert_the = FALSE;
+    buf[0] = '\0';
 
     if (!str || !*str) {
         impossible("Alphabet soup: 'the(%s)'.", str ? "\"\"" : "<null>");
@@ -2822,11 +2830,16 @@ const char *verb;
     /* leave off "your" for most of your artifacts, but prepend
      * "your" for unique objects and "foo of bar" quest artifacts */
     if (!carried(obj) || !obj_is_pname(obj)
-        || any_quest_artifact(obj)) {
-        char *outbuf = shk_your(nextobuf() + PREFIXBUFSZ, obj);
-        size_t space_left = OBUFSZ - 1 - strlen(outbuf);
-
-        s = strncat(outbuf, s, space_left);
+        || any_quest_artifact(obj))
+    {
+        char* buf = nextobuf() + PREFIXBUFSZ;
+        buf[0] = '\0';
+        char *outbuf = shk_your(buf, obj);
+        int space_left = OBUFSZ - PREFIXBUFSZ - 1 - (int)strlen(outbuf);
+        if (space_left <= 0)
+            return s;
+        else
+            s = strncat(outbuf, s, (size_t)space_left);
     }
     return s;
 }
@@ -2881,10 +2894,14 @@ struct obj *obj;
     if (!carried(obj) || !obj_is_pname(obj)
         || any_quest_artifact(obj)) 
     {
-        char *outbuf = shk_your(nextobuf() + PREFIXBUFSZ, obj);
-        size_t space_left = OBUFSZ - 1 - strlen(outbuf);
-
-        s = strncat(outbuf, s, space_left);
+        char* buf = nextobuf() + PREFIXBUFSZ;
+        buf[0] = '\0';
+        char *outbuf = shk_your(buf, obj);
+        int space_left = OBUFSZ - PREFIXBUFSZ - 1 - (int)strlen(outbuf);
+        if (space_left <= 0)
+            return s;
+        else
+            s = strncat(outbuf, s, (size_t)space_left);
     }
     else if (obj_is_pname(obj) || the_unique_obj(obj))
     {
@@ -2919,12 +2936,15 @@ ysimple_name(obj)
 struct obj *obj;
 {
     char *outbuf = nextobuf() + PREFIXBUFSZ; /* Just in case */;
+    outbuf[0] = '\0';
     char *s = shk_your(outbuf, obj); /* assert( s == outbuf ); */
-    size_t space_left = OBUFSZ - PREFIXBUFSZ - 1 - strlen(s);
+    int space_left = OBUFSZ - PREFIXBUFSZ - 1 - (int)strlen(s);
 
     char* min_name = minimal_xname(obj);
-
-    return strncat(s, min_name, space_left);
+    if (space_left <= 0)
+        return min_name;
+    else
+        return strncat(s, min_name, (size_t)space_left);
 }
 
 /* capitalized variant of ysimple_name() */
@@ -3069,6 +3089,7 @@ register const char *verb;
     size_t len, ltmp;
     const char *sp, *spot;
     const char *const *spec;
+    buf[0] = '\0';
 
     /*
      * verb is given in plural (without trailing s).  Return as input
@@ -3338,6 +3359,7 @@ const char *oldstr;
     char lo_c, *str = nextobuf() + PREFIXBUFSZ; /* Just in case */;
     const char *excess = (char *) 0;
     size_t len;
+    str[0] = '\0';
 
     if (oldstr)
         while (*oldstr == ' ')
@@ -3502,6 +3524,7 @@ const char *oldstr;
     register char *p, *bp;
     const char *excess = 0;
     char *str = nextobuf() + PREFIXBUFSZ; /* Just in case */;
+    str[0] = '\0';
 
     if (oldstr)
         while (*oldstr == ' ')

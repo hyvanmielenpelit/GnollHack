@@ -3156,7 +3156,9 @@ boolean ismana;
     if (roleid < 0 || raceid < 0 || roleid >= NUM_ROLES || raceid >= NUM_RACES)
         return "";
 
-    char* buf = nextobuf();
+    char* buf = nextobuf() + PREFIXBUFSZ;
+    buf[0] = '\0';
+
     int fix, rolernd, racernd;
     const struct RoleAdvance* roleadv_ptr = ismana ? &roles[roleid].enadv : &roles[roleid].hpadv;
     const struct RoleAdvance* raceadv_ptr = ismana ? &races[raceid].enadv : &races[raceid].hpadv;
@@ -3180,7 +3182,6 @@ boolean ismana;
         break;
     }
 
-    *buf = 0;
     if (rolernd > 0 || racernd > 0)
     {
         int totalrnd = rolernd + racernd + 1;
