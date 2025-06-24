@@ -40,20 +40,6 @@ static void nhce_message(FILE *, const char *, ...);
 
 #define Close (void) close
 
-#if defined (UNIX) || defined (GNH_MOBILE)
-#define SAVESIZE (PL_NSIZ + 13) /* save/99999player.e */
-#else
-#ifdef VMS
-#define SAVESIZE (PL_NSIZ + 22) /* [.save]<uid>player.e;1 */
-#else
-#ifdef WIN32
-#define SAVESIZE (PL_NSIZ + 40) /* username-player.NetHack-saved-game */
-#else
-#define SAVESIZE FILENAME /* from macconf.h or pcconf.h */
-#endif
-#endif
-#endif
-
 #if defined(EXEPATH)
 char *FDECL(exepath, (char *));
 #endif
