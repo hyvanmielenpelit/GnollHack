@@ -6610,9 +6610,7 @@ uchar style; /* 0 = dwarf lords and dwarf ladies, 1 = dwarf lords and ladies,
         return makeplural(malename);
 
     const char* conjunction = (style & 2) ? "or" : "and";
-    char *str = nextobuf() + PREFIXBUFSZ;
-    str[0] = '\0';
-
+    char *str = next_offset_init_obuf;
     char usedfemalename[BUFSZ];
     Strcpy(usedfemalename, femalename);
     if (style & 1)

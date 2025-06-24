@@ -129,6 +129,14 @@ nextobuf()
     return obufs[obufidx];
 }
 
+char*
+next_offset_init_obuf()
+{
+    char* buf = nextobuf() + PREFIXBUFSZ;
+    buf[0] = '\0';
+    return buf;
+}
+
 /* put the most recently allocated buffer back if possible */
 STATIC_OVL void
 releaseobuf(bufp)
@@ -148,9 +156,7 @@ char *
 obj_typename(otyp)
 register int otyp;
 {
-    char *buf = nextobuf() + PREFIXBUFSZ; /* Just in case */
-    buf[0] = '\0';
-
+    char *buf = next_offset_init_obuf();
     struct objclass *ocl = &objects[otyp];
     const char *actualn = OBJ_NAME(*ocl);
     const char *dn = OBJ_DESCR(*ocl);
@@ -291,9 +297,7 @@ char *
 fruitname(juice)
 boolean juice; /* whether or not to append " juice" to the name */
 {
-    char *buf = nextobuf() + PREFIXBUFSZ; /* Just in case */
-    buf[0] = '\0';
-
+    char *buf = next_offset_init_obuf();
     const char *fruit_nam = strstri(pl_fruit, " of ");
 
     if (fruit_nam)
@@ -437,7 +441,7 @@ char*
 str_upper_start(str)
 const char* str;
 {
-    char* buf = nextobuf() + PREFIXBUFSZ;
+    char* buf = next_offset_init_obuf();
     if(!str)
         Strcpy(buf, empty_string);
     else
@@ -462,7 +466,7 @@ unsigned cxn_flags; /* bitmask of CXN_xxx values */
 
     if (!obj)
     {
-        buf = nextobuf() + PREFIXBUFSZ;
+        buf = next_offset_init_obuf();
         Strcpy(buf, empty_string);
         return buf;
     }
@@ -487,8 +491,7 @@ unsigned cxn_flags; /* bitmask of CXN_xxx values */
     boolean makeThelower = FALSE;
     boolean hasnamed = FALSE;
 
-    buf = nextobuf() + PREFIXBUFSZ; /* leave room for "17 -3 " */
-    buf[0] = '\0';
+    buf = next_offset_init_obuf(); /* leave room for "17 -3 " */
 
     if (Role_if(PM_SAMURAI) && Japanese_item_name(typ))
         actualn = Japanese_item_name(typ);
@@ -2290,8 +2293,7 @@ struct obj *otmp;
 const char *adjective;
 unsigned cxn_flags; /* bitmask of CXN_xxx values */
 {
-    char *nambuf = nextobuf() + PREFIXBUFSZ;
-    nambuf[0] = '\0';
+    char *nambuf = next_offset_init_obuf();
     int omndx = otmp->corpsenm;
     struct monst* mtmp = get_mtraits(otmp, FALSE);
     boolean isfemale = (mtmp && mtmp->female) || (omndx > NON_PM && is_female(&mons[omndx]));
@@ -2419,7 +2421,7 @@ prepend_quan(quan, name)
 int64_t quan;
 const char* name; /* Should be already in plural */
 {
-    char* buf = nextobuf() + PREFIXBUFSZ;
+    char* buf = next_offset_init_obuf();
     Sprintf(buf, "%lld %s", (long long)quan, name);
     return buf;
 }
@@ -2471,7 +2473,7 @@ unsigned kxnflags;
 
     if (!obj)
     {
-        buf = nextobuf() + PREFIXBUFSZ; /* Just in case */
+        buf = next_offset_init_obuf();
         Strcpy(buf, empty_string);
         return buf;
     }
@@ -2512,17 +2514,17 @@ unsigned kxnflags;
 
     /* format the object */
     if (obj->otyp == CORPSE) {
-        buf = nextobuf() + PREFIXBUFSZ; /* Just in case */
+        buf = next_offset_init_obuf();
         Strcpy(buf, corpse_xname(obj, (const char *) 0, CXN_NORMAL));
     } else if (obj->otyp == SLIME_MOLD) {
         /* concession to "most unique deaths competition" in the annual
            devnull tournament, suppress player supplied fruit names because
            those can be used to fake other objects and dungeon features */
-        buf = nextobuf() + PREFIXBUFSZ; /* Just in case */
+        buf = next_offset_init_obuf();
         Sprintf(buf, "deadly slime mold%s", plur(obj->quan));
     } else if (obj->oclass == SPBOOK_CLASS && (kxnflags & KXNFLAGS_SPELL) != 0) {
         /* It is a spell rather than the book itself */
-        buf = nextobuf() + PREFIXBUFSZ; /* Just in case */
+        buf = next_offset_init_obuf();
         Sprintf(buf, "spell of %s", OBJ_NAME(objects[obj->otyp]));
     } else {
         buf = xname(obj);
@@ -2677,8 +2679,7 @@ char *
 an(str)
 const char *str;
 {
-    char *buf = nextobuf() + PREFIXBUFSZ; /* Just in case */
-    buf[0] = '\0';
+    char* buf = next_offset_init_obuf();
 
     if (!str || !*str) {
         impossible("Alphabet soup: 'an(%s)'.", str ? "\"\"" : "<null>");
@@ -2702,8 +2703,7 @@ char*
 an_prefix(str)
 const char* str;
 {
-    char* buf = nextobuf() + PREFIXBUFSZ; /* Just in case */
-    buf[0] = '\0';
+    char* buf = next_offset_init_obuf();
 
     if (!str || !*str) {
         impossible("Alphabet soup: 'an(%s)'.", str ? "\"\"" : "<null>");
@@ -2730,9 +2730,8 @@ char *
 the(str)
 const char *str;
 {
-    char *buf = nextobuf() + PREFIXBUFSZ; /* Just in case */
+    char* buf = next_offset_init_obuf();
     boolean insert_the = FALSE;
-    buf[0] = '\0';
 
     if (!str || !*str) {
         impossible("Alphabet soup: 'the(%s)'.", str ? "\"\"" : "<null>");
@@ -2832,8 +2831,7 @@ const char *verb;
     if (!carried(obj) || !obj_is_pname(obj)
         || any_quest_artifact(obj))
     {
-        char* buf = nextobuf() + PREFIXBUFSZ;
-        buf[0] = '\0';
+        char* buf = next_offset_init_obuf();
         char *outbuf = shk_your(buf, obj);
         int space_left = OBUFSZ - PREFIXBUFSZ - 1 - (int)strlen(outbuf);
         if (space_left <= 0)
@@ -2894,8 +2892,7 @@ struct obj *obj;
     if (!carried(obj) || !obj_is_pname(obj)
         || any_quest_artifact(obj)) 
     {
-        char* buf = nextobuf() + PREFIXBUFSZ;
-        buf[0] = '\0';
+        char* buf = next_offset_init_obuf();
         char *outbuf = shk_your(buf, obj);
         int space_left = OBUFSZ - PREFIXBUFSZ - 1 - (int)strlen(outbuf);
         if (space_left <= 0)
@@ -2935,8 +2932,7 @@ char *
 ysimple_name(obj)
 struct obj *obj;
 {
-    char *outbuf = nextobuf() + PREFIXBUFSZ; /* Just in case */;
-    outbuf[0] = '\0';
+    char* outbuf = next_offset_init_obuf();
     char *s = shk_your(outbuf, obj); /* assert( s == outbuf ); */
     int space_left = OBUFSZ - PREFIXBUFSZ - 1 - (int)strlen(s);
 
@@ -3023,7 +3019,7 @@ struct obj *obj;
     char *outbuf;
 
     if (obj->oartifact) {
-        outbuf = nextobuf() + PREFIXBUFSZ; /* Just in case */;
+        outbuf = next_offset_init_obuf();
         Strcpy(outbuf, artiname(obj->oartifact));
         if (!strncmp(outbuf, "The ", 4))
             outbuf[0] = lowc(outbuf[0]);
@@ -3061,7 +3057,7 @@ const char *verb;
     if (!is_plural(otmp))
         return vtense((char *) 0, verb);
 
-    buf = nextobuf() + PREFIXBUFSZ; /* Just in case */;
+    buf = next_offset_init_obuf();
     Strcpy(buf, verb);
     return buf;
 }
@@ -3085,11 +3081,10 @@ vtense(subj, verb)
 register const char *subj;
 register const char *verb;
 {
-    char *buf = nextobuf() + PREFIXBUFSZ, *bspot;
+    char *buf = next_offset_init_obuf(), *bspot;
     size_t len, ltmp;
     const char *sp, *spot;
     const char *const *spec;
-    buf[0] = '\0';
 
     /*
      * verb is given in plural (without trailing s).  Return as input
@@ -3356,10 +3351,9 @@ makeplural(oldstr)
 const char *oldstr;
 {
     register char *spot;
-    char lo_c, *str = nextobuf() + PREFIXBUFSZ; /* Just in case */;
+    char lo_c, *str = next_offset_init_obuf();
     const char *excess = (char *) 0;
     size_t len;
-    str[0] = '\0';
 
     if (oldstr)
         while (*oldstr == ' ')
@@ -3523,8 +3517,7 @@ const char *oldstr;
 {
     register char *p, *bp;
     const char *excess = 0;
-    char *str = nextobuf() + PREFIXBUFSZ; /* Just in case */;
-    str[0] = '\0';
+    char *str = next_offset_init_obuf();
 
     if (oldstr)
         while (*oldstr == ' ')

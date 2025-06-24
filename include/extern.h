@@ -2579,6 +2579,7 @@ E const char* FDECL(get_lock_description_by_otyp, (int, int, BOOLEAN_P));
 E boolean FDECL(find_key_otyp_by_description, (char*, int*, int*));
 E void FDECL(print_lock_with_buf, (char*, int, int, BOOLEAN_P));
 E char* NDECL(nextobuf);
+E char* NDECL(next_offset_init_obuf);
 E char* FDECL(str_upper_start, (const char*));
 E void FDECL(print_comparison_stats, (struct obj*, char*, winid, int, int, UCHAR_P, BOOLEAN_P, char*, char*, char*));
 E void FDECL(concatenate_colored_text, (const char*, const char*, int, int, char*, char*, char*));
