@@ -3688,7 +3688,7 @@ boolean retry_inverted; /* optional extra "of" handling */
 {
     STATIC_VAR NEARDATA const char detect_SP[] = "detect ",
                                SP_detection[] = " detection";
-    char *p, buf[OBUFSZ];
+    char *p, buf[OBUFSZ] = "";
 
     /* ignore spaces & hyphens and upper/lower case when comparing */
     if (fuzzymatch(u_str, o_str, " -", TRUE))
