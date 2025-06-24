@@ -3079,7 +3079,7 @@ E void FDECL(inven_inuse, (BOOLEAN_P));
 E void FDECL(restcemetery, (int, struct cemetery **));
 E void FDECL(trickery, (char *));
 E void FDECL(getlev, (int, int, XCHAR_P, BOOLEAN_P));
-E void FDECL(get_plname_from_file, (int, char *));
+E boolean FDECL(get_plname_from_file, (int, char *, size_t));
 E void FDECL(get_save_game_stats_from_file, (int, struct save_game_stats*));
 #ifdef SELECTSAVED
 E int FDECL(restore_menu, (winid));

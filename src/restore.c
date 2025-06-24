@@ -1008,10 +1008,18 @@ register int fd;
     Strcpy(debug_buf_4, "dorestore0");
 
     restoring = TRUE;
-    get_plname_from_file(fd, plname);
+    boolean readok = get_plname_from_file(fd, plname, sizeof(plname));
+    if (!readok)
+    {
+        (void)nhclose(fd);
+        (void)delete_savefile();
+        restoring = FALSE;
+        return 0;
+    }
     get_save_game_stats_from_file(fd, &game_stats);
     getlev(fd, 0, (xchar) 0, FALSE);
-    if (!restgamestate(fd, &stuckid, &steedid)) {
+    if (!restgamestate(fd, &stuckid, &steedid)) 
+    {
         display_nhwindow(WIN_MESSAGE, TRUE);
         savelev(-1, 0, FREE_SAVE); /* discard current level */
         (void) nhclose(fd);
@@ -1115,7 +1123,14 @@ register int fd;
     (void) lseek(fd, (off_t) 0, 0);
 #endif
     (void) validate(fd, (char *) 0); /* skip version and savefile info */
-    get_plname_from_file(fd, plname);
+    readok = get_plname_from_file(fd, plname, sizeof(plname));
+    if (!readok)
+    {
+        (void)nhclose(fd);
+        (void)delete_savefile();
+        restoring = FALSE;
+        return 0;
+    }
     get_save_game_stats_from_file(fd, &dummy_stats);
     n_game_recoveries = dummy_stats.num_recoveries;
 
@@ -1534,15 +1549,18 @@ boolean ghostly;
         clear_id_mapping();
 }
 
-void
-get_plname_from_file(fd, plbuf)
+boolean
+get_plname_from_file(fd, plbuf, plbuf_size)
 int fd;
 char *plbuf;
+size_t plbuf_size;
 {
     int pltmpsiz = 0;
     (void) read(fd, (genericptr_t) &pltmpsiz, (readLenType)sizeof(pltmpsiz));
+    if (pltmpsiz < 0 || (size_t)pltmpsiz > plbuf_size)
+        return FALSE;
     (void) read(fd, (genericptr_t) plbuf, (readLenType) pltmpsiz);
-    return;
+    return TRUE; /* Might want to check if the read length is the same as requested */
 }
 
 void

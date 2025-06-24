@@ -1575,7 +1575,7 @@ const char* filename; /* Filename must have already been uncompressed */
         {
             return -3; /* given savefile does not exist, cannot copy it */
         }
-        char tobuf[GNH_FILEPATH_SIZ];
+        char tobuf[GNH_FILEPATH_SIZ] = "";
         size_t len = strlen(filename);
         char extbuf[BUFSZ];
         Strcpy(extbuf, "");
@@ -1586,7 +1586,7 @@ const char* filename; /* Filename must have already been uncompressed */
         size_t tmpextlen = strlen(extbuf);
         if (len + bupextlen + tmpextlen + 1 > sizeof(tobuf))
             return -2;
-        size_t copy_len = min(sizeof(tobuf) - 1, len);
+        size_t copy_len = min(max(0, sizeof(tobuf) - 64), len);
         Strncpy(tobuf, filename, copy_len);
         tobuf[copy_len] = 0;
         print_special_savefile_extension(tobuf, BACKUP_EXTENSION);
@@ -2153,17 +2153,27 @@ struct save_game_stats* stats_ptr;
     char *result = 0;
     boolean dodeletefile = FALSE;
 
-    Strcpy(SAVEF, filename);
+    //Strcpy(SAVEF, filename);
+    Strncpy(SAVEF, filename, sizeof(SAVEF) - 1);
+    SAVEF[sizeof(SAVEF) - 1] = 0;
+
 #ifdef COMPRESS_EXTENSION
     SAVEF[strlen(SAVEF) - strlen(COMPRESS_EXTENSION)] = '\0';
 #endif
     nh_uncompress(SAVEF);
     if ((fd = open_savefile()) >= 0) {
         if (validate(fd, filename) == 0) {
-            char tplname[PL_NSIZ] = "";
-            get_plname_from_file(fd, tplname);
-            get_save_game_stats_from_file(fd, stats_ptr);
-            result = dupstr(tplname);
+            char tplname[PL_NSIZ + BUFSZ] = "";
+            boolean readok = get_plname_from_file(fd, tplname, sizeof(tplname));
+            if (readok)
+            {
+                get_save_game_stats_from_file(fd, stats_ptr);
+                result = dupstr(tplname);
+            }
+            else
+            {
+                dodeletefile = TRUE;
+            }
         }
         else
         {
@@ -2343,14 +2353,14 @@ get_saved_games()
 #ifdef WIN32
     {
         char *foundfile;
-        char  usedfoundfile[GNH_FILEPATH_SIZ];
-        char  foundfileprefix[32];
+        char  usedfoundfile[GNH_FILEPATH_SIZ] = "";
+        char  foundfileprefix[32] = "";
 
         const char *fq_save;
-        char fq_save_ebuf[SAVESIZE + BUFSZ];
-        char fq_save_ibuf[SAVESIZE + BUFSZ];
-        char fq_lock_rbuf[SAVESIZE + BUFSZ];
-        char saved_plname[PL_NSIZ];
+        char fq_save_ebuf[SAVESIZE + BUFSZ] = "";
+        char fq_save_ibuf[SAVESIZE + BUFSZ] = "";
+        char fq_lock_rbuf[SAVESIZE + BUFSZ] = "";
+        char saved_plname[PL_NSIZ] = "";
 
         Strcpy(saved_plname, plname);
         Strcpy(plname, "*");
@@ -2429,6 +2439,8 @@ get_saved_games()
                                 continue;
                             result[j++] = newsavegamedata(r, usedfoundfile, gamestats, FALSE, FALSE, FALSE);
                         }
+                        else
+                            continue;
                         ++n;
                     } while (findnext());
                 }
@@ -2451,6 +2463,8 @@ get_saved_games()
                                 continue;
                             result[j++] = newsavegamedata(r, usedfoundfile, gamestats, FALSE, TRUE, FALSE);
                         }
+                        else
+                            continue;
                         ++n2;
                     } while (findnext());
                 }
@@ -2472,6 +2486,8 @@ get_saved_games()
                             boolean isimportederror = is_imported_error_savefile_name(usedfoundfile);
                             result[j++] = newsavegamedata(r, usedfoundfile, gamestats, FALSE, isimportederror, TRUE);
                         }
+                        else
+                            continue;
                         ++n3;
                     } while (findnext());
                 }
@@ -2556,7 +2572,7 @@ get_saved_games()
     if (n2 < 0) n2 = 0;
 
     int i, uid;
-    char name[64]; /* more than PL_NSIZ */
+    char name[PL_NSIZ + 64]; /* more than PL_NSIZ */
     if (n1 > 0 || n2 > 0) {
         result = (struct save_game_data*)alloc((n1 + n2 + 1) * sizeof(struct save_game_data)); /* at most */
         (void)memset((genericptr_t)result, 0, (n1 + n2 + 1) * sizeof(struct save_game_data));
@@ -2569,7 +2585,7 @@ get_saved_games()
                 boolean isimportedfile = !!filter_imported(namelist[i]);
                 if (isbackupfile || isimportedbackupfile || (TournamentMode && isimportedfile))
                     continue;
-                char filename[BUFSZ];
+                char filename[BUFSZ + PL_NSIZ + 64];
                 char* r;
                 Sprintf(filename, "save/%d%s", uid, name);
                 r = plname_from_file(filename, &gamestats);
