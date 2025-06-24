@@ -529,8 +529,9 @@ unsigned cxn_flags; /* bitmask of CXN_xxx values */
             int len = (int)(p - actualn);
             if (len > 0 && (int)strlen(actualn) > len)
             {
-                Strncpy(actualn_startbuf, actualn, (size_t)len);
-                actualn_startbuf[len + 1] = '\0';
+                size_t copylen = min((size_t)len, sizeof(actualn_startbuf) - 1);
+                Strncpy(actualn_startbuf, actualn, (size_t)copylen);
+                actualn_startbuf[copylen] = '\0';
                 actualn += len;
             }
         }
