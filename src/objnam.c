@@ -134,7 +134,8 @@ next_offset_init_obuf()
 {
     char* buf = nextobuf() + PREFIXBUFSZ;
     buf[0] = '\0';
-    buf[OBUFSZ - PREFIXBUFSZ - 1] = '\0'; /* Null termination fail-safe */
+    buf[OBUFSZ - PREFIXBUFSZ - BUFSZ - 1] = '\0'; /* A zero in the middle of the buf to avoid overflows from strcat or eos() that accidently starts after intended zero at start */
+    buf[OBUFSZ - PREFIXBUFSZ - 1] = '\0'; /* Null termination fail-safe for strlen etc. */
     return buf;
 }
 
