@@ -85,34 +85,36 @@ char whereis_file[255] = WHEREIS_FILE;
 STATIC_VAR char fqn_filename_buffer[FQN_NUMBUF][FQN_MAX_FILENAME];
 #endif
 
+#define GNH_EXTRA_BSIZ 32
+
 #if !defined(MFLOPPY) && !defined(VMS) && !defined(WIN32)
 char bones[] = "bones-ynn.xxx";
-char lock[PL_NSIZ + 16] = "1lock"; /* long enough for uid+name+.99 */
+char lock[PL_NSIZ + 16 + GNH_EXTRA_BSIZ] = "1lock"; /* long enough for uid+name+.99 */
 #else
 #if defined(MFLOPPY)
-char bones[FILENAME]; /* pathname of bones files */
-char lock[FILENAME];  /* pathname of level files */
+char bones[FILENAME + GNH_EXTRA_BSIZ]; /* pathname of bones files */
+char lock[FILENAME + GNH_EXTRA_BSIZ];  /* pathname of level files */
 #endif
 #if defined(VMS)
 char bones[] = "bones-ynn.xxx;1";
-char lock[PL_NSIZ + 19] = "1lock"; /* long enough for _uid+name+.99;1 */
+char lock[PL_NSIZ + 19 + GNH_EXTRA_BSIZ] = "1lock"; /* long enough for _uid+name+.99;1 */
 #endif
 #if defined(WIN32)
 char bones[] = "bones-ynn.xxx";
-char lock[PL_NSIZ + 27]; /* long enough for username+-+name+.99 */
+char lock[PL_NSIZ + 27 + GNH_EXTRA_BSIZ]; /* long enough for username+-+name+.99 */
 #endif
 #endif
 
 #if defined(UNIX) || defined(__BEOS__) || defined(GNH_MOBILE)
-#define SAVESIZE (PL_NSIZ + 13) /* save/99999player.e */
+#define SAVESIZE (PL_NSIZ + 13 + GNH_EXTRA_BSIZ) /* save/99999player.e */
 #else
 #ifdef VMS
-#define SAVESIZE (PL_NSIZ + 22) /* [.save]<uid>player.e;1 */
+#define SAVESIZE (PL_NSIZ + 22 + GNH_EXTRA_BSIZ) /* [.save]<uid>player.e;1 */
 #else
 #if defined(WIN32)
-#define SAVESIZE (PL_NSIZ + 40) /* username-player.GnollHack-saved-game */
+#define SAVESIZE (PL_NSIZ + 40 + GNH_EXTRA_BSIZ) /* username-player.GnollHack-saved-game */
 #else
-#define SAVESIZE FILENAME /* from macconf.h or pcconf.h */
+#define SAVESIZE (FILENAME + GNH_EXTRA_BSIZ) /* from macconf.h or pcconf.h */
 #endif
 #endif
 #endif
