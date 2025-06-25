@@ -1945,19 +1945,11 @@ domove_core()
             boolean blocksflying = loc_blocks_flying_and_leviation(x, y);
             if (is_pool_or_lava(x, y))
             {
+                boolean plunges_in_water_but_survives = Amphibious || Breathless || Swimming || is_swimmer(youmonst.data);
+                boolean does_not_plunge_in_water = Walks_on_water || (Flying && !blocksflying) || (Levitation && !blocksflying)
+                    || (is_flyer(youmonst.data) && !blocksflying) || (is_floater(youmonst.data) && !blocksflying);
                 if (
-                    (is_pool(x, y) && 
-                        (Walks_on_water
-                            || Amphibious 
-                            || Breathless
-                            || Swimming
-                            || (Flying && !blocksflying)
-                            || (Levitation && !blocksflying)
-                            || is_swimmer(youmonst.data)
-                            || (is_flyer(youmonst.data) && !blocksflying)
-                            || (is_floater(youmonst.data) && !blocksflying)
-                        )
-                    )
+                    (is_pool(x, y) && (does_not_plunge_in_water || (plunges_in_water_but_survives && !invent)))
                     || 
                     (is_lava(x, y) && 
                         ((Levitation && !blocksflying)
@@ -1973,7 +1965,6 @@ domove_core()
                 else
                 {
                     /* If blind, you still get the question */
-
                     char ynqbuf[BUFSZ];
                     Sprintf(ynqbuf, "Are you sure you want to enter the %s?", is_pool(x, y) ? (Is_waterlevel(&u.uz) ? "water" : "pool") : is_lava(x, y) ? "lava" : "location");
                     char tbuf[BUFSZ];
