@@ -1424,6 +1424,7 @@ namespace GnollHackX.Pages.Game
                     UpdateReplaySpeedButtons();
                     UpdateReplayPauseButton();
                     ReplayGrid.IsVisible = true;
+                    DeviceDisplay.KeepScreenOn = true;
                 }
 
                 Thread t;
@@ -2916,6 +2917,8 @@ namespace GnollHackX.Pages.Game
                             CurrentGame = null;
                             GHApp.CurrentGHGame = null;
                             _mainPage.GameStarted = false;
+                            if (PlayingReplay)
+                                DeviceDisplay.KeepScreenOn = false;
                             await ReturnToMainMenu();
                             break;
                         case GHRequestType.RestartGame:
