@@ -7222,18 +7222,27 @@ namespace GnollHackX
                             /* GlyphTileFlags should work as is */
                             if (!g2tOnly)
                             {
-                                for (int i = Tile2Animation.Length - 1; i >= offset.Position + offset.Amount; i--)
+                                short[] NewTile2Animation = new short[Tile2Animation.Length + offset.Amount];
+                                short[] NewTile2Enlargement = new short[Tile2Enlargement.Length + offset.Amount];
+                                short[] NewTile2Autodraw = new short[Tile2Autodraw.Length + offset.Amount];
+                                Array.Copy(Tile2Animation, NewTile2Animation, Tile2Animation.Length);
+                                Array.Copy(Tile2Enlargement, NewTile2Enlargement, Tile2Enlargement.Length);
+                                Array.Copy(Tile2Autodraw, NewTile2Autodraw, Tile2Autodraw.Length);
+                                for (int i = NewTile2Animation.Length - 1; i >= offset.Position + offset.Amount; i--)
                                 {
-                                    Tile2Animation[i] = Tile2Animation[i - offset.Amount];
-                                    Tile2Enlargement[i] = Tile2Enlargement[i - offset.Amount];
-                                    Tile2Autodraw[i] = Tile2Autodraw[i - offset.Amount];
+                                    NewTile2Animation[i] = NewTile2Animation[i - offset.Amount];
+                                    NewTile2Enlargement[i] = NewTile2Enlargement[i - offset.Amount];
+                                    NewTile2Autodraw[i] = NewTile2Autodraw[i - offset.Amount];
                                 }
                                 for (int i = offset.Position + offset.Amount - 1; i >= offset.Position; i--)
                                 {
-                                    Tile2Animation[i] = 0;
-                                    Tile2Enlargement[i] = 0;
-                                    Tile2Autodraw[i] = 0;
+                                    NewTile2Animation[i] = 0;
+                                    NewTile2Enlargement[i] = 0;
+                                    NewTile2Autodraw[i] = 0;
                                 }
+                                Tile2Animation = NewTile2Animation;
+                                Tile2Enlargement = NewTile2Enlargement;
+                                Tile2Autodraw = NewTile2Autodraw;
                             }
                         }
                     }
