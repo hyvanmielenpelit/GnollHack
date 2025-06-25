@@ -6230,8 +6230,6 @@ namespace GnollHackX
                                                             Glyph2Tile = gl2ti;
                                                         if(gltifl.Length > 0)
                                                             GlyphTileFlags = gltifl;
-                                                        gl2ti = Glyph2Tile;
-                                                        gltifl = GlyphTileFlags;
                                                         Tile2Animation = ti2an;
                                                         Tile2Enlargement = ti2en;
                                                         Tile2Autodraw = ti2ad;
@@ -6243,6 +6241,9 @@ namespace GnollHackX
                                                         for (int j = 0; j < tilesperrow_sz; j++)
                                                             TilesPerRow[j] = tilesperrow[j];
                                                         AdjustReplayTiles(verno, false);
+                                                        gl2ti = Glyph2Tile;
+                                                        gltifl = GlyphTileFlags;
+                                                        ti2an = Tile2Animation;
                                                     }
                                                     unsafe
                                                     {
@@ -7025,6 +7026,8 @@ namespace GnollHackX
                                                                 Glyph2Tile = gl2ti;
                                                                 GlyphTileFlags = gltifl;
                                                                 AdjustReplayTiles(verno, true);
+                                                                gl2ti = Glyph2Tile;
+                                                                gltifl = GlyphTileFlags;
                                                             }
                                                             unsafe
                                                             {
@@ -7210,6 +7213,7 @@ namespace GnollHackX
         {
             try
             {
+                int totalTileAdjustment = 0;
                 foreach (TilesetAdjustment adjustment in _tilesetAdjustments)
                 {
                     if (replayVersion < adjustment.Version)
@@ -7217,7 +7221,7 @@ namespace GnollHackX
                         foreach (TileOffset offset in adjustment.Offsets)
                         {
                             for (int i = 0; i < Glyph2Tile.Length; i++)
-                                if (Glyph2Tile[i] >= offset.Position)
+                                if (Glyph2Tile[i] >= offset.Position + totalTileAdjustment)
                                     Glyph2Tile[i] += offset.Amount;
                             /* GlyphTileFlags should work as is */
                             if (!g2tOnly)
@@ -7228,13 +7232,13 @@ namespace GnollHackX
                                 Array.Copy(Tile2Animation, NewTile2Animation, Tile2Animation.Length);
                                 Array.Copy(Tile2Enlargement, NewTile2Enlargement, Tile2Enlargement.Length);
                                 Array.Copy(Tile2Autodraw, NewTile2Autodraw, Tile2Autodraw.Length);
-                                for (int i = NewTile2Animation.Length - 1; i >= offset.Position + offset.Amount; i--)
+                                for (int i = NewTile2Animation.Length - 1; i >= offset.Position + totalTileAdjustment + offset.Amount; i--)
                                 {
                                     NewTile2Animation[i] = NewTile2Animation[i - offset.Amount];
                                     NewTile2Enlargement[i] = NewTile2Enlargement[i - offset.Amount];
                                     NewTile2Autodraw[i] = NewTile2Autodraw[i - offset.Amount];
                                 }
-                                for (int i = offset.Position + offset.Amount - 1; i >= offset.Position; i--)
+                                for (int i = offset.Position + totalTileAdjustment + offset.Amount - 1; i >= offset.Position + totalTileAdjustment; i--)
                                 {
                                     NewTile2Animation[i] = 0;
                                     NewTile2Enlargement[i] = 0;
@@ -7244,6 +7248,7 @@ namespace GnollHackX
                                 Tile2Enlargement = NewTile2Enlargement;
                                 Tile2Autodraw = NewTile2Autodraw;
                             }
+                            totalTileAdjustment += offset.Amount;
                         }
                     }
                 }
