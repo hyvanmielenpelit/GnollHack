@@ -6242,6 +6242,7 @@ namespace GnollHackX
                                                         TotalTiles = notiles;
                                                         for (int j = 0; j < tilesperrow_sz; j++)
                                                             TilesPerRow[j] = tilesperrow[j];
+                                                        AdjustReplayTiles(verno, false);
                                                     }
                                                     unsafe
                                                     {
@@ -7023,6 +7024,7 @@ namespace GnollHackX
                                                             {
                                                                 Glyph2Tile = gl2ti;
                                                                 GlyphTileFlags = gltifl;
+                                                                AdjustReplayTiles(verno, true);
                                                             }
                                                             unsafe
                                                             {
@@ -7170,6 +7172,80 @@ namespace GnollHackX
                 }
             }
         }
+
+        struct TileOffset
+        {
+            public readonly int Position;
+            public readonly int Amount;
+            public TileOffset(int position, int amount)
+            {
+                Position = position;
+                Amount = amount;
+            }
+        }
+
+        struct TilesetAdjustment
+        {
+            public readonly ulong Version;
+            public readonly List<TileOffset> Offsets;
+            public TilesetAdjustment(ulong version, List<TileOffset> offsets)
+            {
+                Version = version;
+                Offsets = offsets != null ? offsets : new List<TileOffset>();
+            }
+        }
+
+        private static List<TilesetAdjustment> _tilesetAdjustments = new List<TilesetAdjustment>()
+        {
+            new TilesetAdjustment(
+                0x04020035UL,
+                new List<TileOffset>
+                {
+                    new TileOffset(1081, 3),
+                    new TileOffset(1336, 1),
+                }),
+        };
+
+        private static void AdjustReplayTiles(ulong replayVersion, bool g2tOnly)
+        {
+            try
+            {
+                foreach (TilesetAdjustment adjustment in _tilesetAdjustments)
+                {
+                    if (replayVersion < adjustment.Version)
+                    {
+                        foreach (TileOffset offset in adjustment.Offsets)
+                        {
+                            for (int i = 0; i < Glyph2Tile.Length; i++)
+                                if (Glyph2Tile[i] >= offset.Position)
+                                    Glyph2Tile[i] += offset.Amount;
+                            /* GlyphTileFlags should work as is */
+                            if (!g2tOnly)
+                            {
+                                for (int i = Tile2Animation.Length - 1; i >= offset.Position + offset.Amount; i--)
+                                {
+                                    Tile2Animation[i] = Tile2Animation[i - offset.Amount];
+                                    Tile2Enlargement[i] = Tile2Enlargement[i - offset.Amount];
+                                    Tile2Autodraw[i] = Tile2Autodraw[i - offset.Amount];
+                                }
+                                for (int i = offset.Position + offset.Amount - 1; i >= offset.Position; i--)
+                                {
+                                    Tile2Animation[i] = 0;
+                                    Tile2Enlargement[i] = 0;
+                                    Tile2Autodraw[i] = 0;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+            }
+
+        }
+
 
 
         private static BlobServiceClient _blobServiceClient = null;
