@@ -6244,6 +6244,8 @@ namespace GnollHackX
                                                         gl2ti = Glyph2Tile;
                                                         gltifl = GlyphTileFlags;
                                                         ti2an = Tile2Animation;
+                                                        ti2en = Tile2Enlargement;
+                                                        ti2ad = Tile2Autodraw;
                                                     }
                                                     unsafe
                                                     {
@@ -6260,6 +6262,31 @@ namespace GnollHackX
                                                         {
                                                             IntPtr ptr_ti2an = (IntPtr)p3;
                                                             GnollHackService.SetTile2AnimationArray(ptr_ti2an, ti2an.Length); /* Need to initialize since the drawing routine uses the library table to do the animations */
+                                                        }
+                                                        fixed (short* p4 = ti2en)
+                                                        {
+                                                            IntPtr ptr_ti2en = (IntPtr)p4;
+                                                            GnollHackService.SetTile2EnlargementArray(ptr_ti2en, ti2en.Length); /* Need to initialize, too */
+                                                        }
+                                                        fixed (short* p5 = ti2ad)
+                                                        {
+                                                            IntPtr ptr_ti2ad = (IntPtr)p5;
+                                                            GnollHackService.SetTile2AutodrawArray(ptr_ti2ad, ti2ad.Length); /* Need to initialize, too */
+                                                        }
+                                                        fixed (int* p6 = anoff)
+                                                        {
+                                                            IntPtr ptr_anoff = (IntPtr)p6;
+                                                            GnollHackService.SetAnimationOffsetArray(ptr_anoff, anoff.Length); /* Need to initialize, too */
+                                                        }
+                                                        fixed (int* p7 = enoff)
+                                                        {
+                                                            IntPtr ptr_enoff = (IntPtr)p7;
+                                                            GnollHackService.SetEnlargementOffsetArray(ptr_enoff, enoff.Length); /* Need to initialize, too */
+                                                        }
+                                                        fixed (int* p8 = reoff)
+                                                        {
+                                                            IntPtr ptr_reoff = (IntPtr)p8;
+                                                            GnollHackService.SetReplacementOffsetArray(ptr_reoff, reoff.Length); /* Need to initialize, too */
                                                         }
                                                     }
                                                     game.ClientCallback_InitWindows();

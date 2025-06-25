@@ -201,6 +201,16 @@ namespace GnollHackX.Unknown
         [DllImport(PlatformConstants.dll)]
         public static extern void LibSetTile2AnimationArray(IntPtr ptr_ti2an, int size_ti2an);
         [DllImport(PlatformConstants.dll)]
+        public static extern void LibSetTile2EnlargementArray(IntPtr ptr_ti2en, int size_ti2en);
+        [DllImport(PlatformConstants.dll)]
+        public static extern void LibSetTile2AutodrawArray(IntPtr ptr_ti2ad, int size_ti2ad);
+        [DllImport(PlatformConstants.dll)]
+        public static extern void LibSetAnimationOffsetArray(IntPtr ptr_anoff, int size_anoff);
+        [DllImport(PlatformConstants.dll)]
+        public static extern void LibSetEnlargementOffsetArray(IntPtr ptr_enoff, int size_enoff);
+        [DllImport(PlatformConstants.dll)]
+        public static extern void LibSetReplacementOffsetArray(IntPtr ptr_reoff, int size_reoff);
+        [DllImport(PlatformConstants.dll)]
         public static extern int LibGetUnexploredGlyph();
         [DllImport(PlatformConstants.dll)]
         public static extern int LibGetNoGlyph();
@@ -989,6 +999,26 @@ namespace GnollHackX.Unknown
         public void SetTile2AnimationArray(IntPtr ptr_ti2an, int size_ti2an)
         {
             LibSetTile2AnimationArray(ptr_ti2an, size_ti2an);
+        }
+        public void SetTile2EnlargementArray(IntPtr ptr_ti2en, int size_ti2en)
+        {
+            LibSetTile2EnlargementArray(ptr_ti2en, size_ti2en);
+        }
+        public void SetTile2AutodrawArray(IntPtr ptr_ti2ad, int size_ti2ad)
+        {
+            LibSetTile2AutodrawArray(ptr_ti2ad, size_ti2ad);
+        }
+        public void SetAnimationOffsetArray(IntPtr ptr_anoff, int size_anoff)
+        {
+            LibSetAnimationOffsetArray(ptr_anoff, size_anoff);
+        }
+        public void SetEnlargementOffsetArray(IntPtr ptr_enoff, int size_enoff)
+        {
+            LibSetEnlargementOffsetArray(ptr_enoff, size_enoff);
+        }
+        public void SetReplacementOffsetArray(IntPtr ptr_reoff, int size_reoff)
+        {
+            LibSetReplacementOffsetArray(ptr_reoff, size_reoff);
         }
 
         public int GetTileAnimationIndexFromGlyph(int glyph)

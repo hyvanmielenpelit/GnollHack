@@ -161,13 +161,88 @@ DLLEXPORT void LibSetGlyphArrays(int* gl2ti, int size_gl2ti, uchar* gltifl, int 
 DLLEXPORT void LibSetTile2AnimationArray(short* ti2an, int size_ti2an)
 {
 #ifdef USE_TILES
-    int i;
     if (ti2an)
     {
+        int i;
         int arrsiz_ti2an = min(size_ti2an, (int)SIZE(tile2animation));
         for (i = 0; i < arrsiz_ti2an; i++)
         {
             tile2animation[i] = ti2an[i];
+        }
+    }
+#endif
+}
+
+DLLEXPORT void LibSetTile2EnlargementArray(short* ti2en, int size_ti2en)
+{
+#ifdef USE_TILES
+    if (ti2en)
+    {
+        int i;
+        int arrsiz_ti2en = min(size_ti2en, (int)SIZE(tile2enlargement));
+        for (i = 0; i < arrsiz_ti2en; i++)
+        {
+            tile2enlargement[i] = ti2en[i];
+        }
+    }
+#endif
+}
+
+DLLEXPORT void LibSetTile2AutodrawArray(short* ti2ad, int size_ti2ad)
+{
+#ifdef USE_TILES
+    if (ti2ad)
+    {
+        int i;
+        int arrsiz_ti2ad = min(size_ti2ad, (int)SIZE(tile2autodraw));
+        for (i = 0; i < arrsiz_ti2ad; i++)
+        {
+            tile2autodraw[i] = ti2ad[i];
+        }
+    }
+#endif
+}
+
+DLLEXPORT void LibSetAnimationOffsetArray(int* anoff, int size_anoff)
+{
+#ifdef USE_TILES
+    if (anoff)
+    {
+        int i;
+        int arrsiz_anoff = min(size_anoff, (int)SIZE(animation_offsets));
+        for (i = 0; i < arrsiz_anoff; i++)
+        {
+            animation_offsets[i] = anoff[i];
+        }
+    }
+#endif
+}
+
+DLLEXPORT void LibSetEnlargementOffsetArray(int* enoff, int size_enoff)
+{
+#ifdef USE_TILES
+    if (enoff)
+    {
+        int i;
+        int arrsiz_enoff = min(size_enoff, (int)SIZE(enlargement_offsets));
+        for (i = 0; i < arrsiz_enoff; i++)
+        {
+            enlargement_offsets[i] = enoff[i];
+        }
+    }
+#endif
+}
+
+DLLEXPORT void LibSetReplacementOffsetArray(int* reoff, int size_reoff)
+{
+#ifdef USE_TILES
+    if (reoff)
+    {
+        int i;
+        int arrsiz_reoff = min(size_reoff, (int)SIZE(replacement_offsets));
+        for (i = 0; i < arrsiz_reoff; i++)
+        {
+            replacement_offsets[i] = reoff[i];
         }
     }
 #endif
