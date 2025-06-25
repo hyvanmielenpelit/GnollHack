@@ -11812,15 +11812,11 @@ struct monst* mtmp;
     if (!otmp)
         return 0;
 
+    play_monster_special_dialogue_line(mtmp, SMITH_LINE_LETS_HAVE_A_LOOK);
     if (iflags.using_gui_sounds)
-    {
-        play_monster_special_dialogue_line(mtmp, SMITH_LINE_LETS_HAVE_A_LOOK);
         Sprintf(talkbuf, "%s says: \"Let's have a look.\"", noittame_Monnam(mtmp));
-    }
     else
-    {
         Sprintf(talkbuf, "%s says: \"Let's have a look at %s.\"", noittame_Monnam(mtmp), yname(otmp));
-    }
     popup_talk_line_ex(mtmp, talkbuf, ATR_NONE, NO_COLOR, TRUE, FALSE);
 
     /* Check if the selection is appropriate */
@@ -11834,12 +11830,13 @@ struct monst* mtmp;
     }
 
     play_sfx_sound(SFX_NEARBY_LOUD_CLANGING);
-    Sprintf(talkbuf, "%s starts working on %s.", noittame_Monnam(mtmp), yname(otmp));
-    popup_talk_line_ex(mtmp, talkbuf, ATR_NONE, NO_COLOR, TRUE, FALSE);
-#ifndef GNH_MOBILE
+    pline_ex(ATR_NONE, NO_COLOR, "%s starts working on %s.", noittame_Monnam(mtmp), yname(otmp));
+    //Sprintf(talkbuf, "%s starts working on %s.", noittame_Monnam(mtmp), yname(otmp));
+    //popup_talk_line_ex(mtmp, talkbuf, ATR_NONE, NO_COLOR, TRUE, FALSE);
+//#ifndef GNH_MOBILE
     if (iflags.using_gui_sounds)
         delay_output_milliseconds(2000);
-#endif
+//#endif
 
     dragon_scales_to_scale_mail(otmp, FALSE, TRUE);
 
@@ -11989,18 +11986,12 @@ boolean initialize;
     if (!otmp)
         return 0;
 
+    play_monster_special_dialogue_line(mtmp, mtmp->issmith ? SMITH_LINE_LETS_HAVE_A_LOOK : NPC_LINE_LETS_HAVE_A_LOOK);
     if (iflags.using_gui_sounds)
-    {
-        play_monster_special_dialogue_line(mtmp, mtmp->issmith ? SMITH_LINE_LETS_HAVE_A_LOOK : NPC_LINE_LETS_HAVE_A_LOOK);
         Sprintf(talkbuf, "%s says: \"Let's have a look.\"", noittame_Monnam(mtmp));
-        delay_output_milliseconds(750);
-    }
     else
-    {
         Sprintf(talkbuf, "%s says: \"Let's have a look at %s.\"", noittame_Monnam(mtmp), yname(otmp));
-    }
     popup_talk_line_ex(mtmp, talkbuf, ATR_NONE, NO_COLOR, TRUE, FALSE);
-
     int64_t quan_needed = forge_source_quan;
     /* Check if the selection is appropriate */
     if (otmp && !maybe_otyp(otmp))
@@ -12036,12 +12027,13 @@ boolean initialize;
     }
 
     play_sfx_sound(SFX_NEARBY_LOUD_CLANGING);
-    Sprintf(talkbuf, "%s starts working on %s.", noittame_Monnam(mtmp), yname(otmp));
-    popup_talk_line_ex(mtmp, talkbuf, ATR_NONE, NO_COLOR, TRUE, FALSE);
-#ifndef GNH_MOBILE
+    pline_ex(ATR_NONE, NO_COLOR, "%s starts working on %s.", noittame_Monnam(mtmp), yname(otmp));
+    //Sprintf(talkbuf, "%s starts working on %s.", noittame_Monnam(mtmp), yname(otmp));
+    //popup_talk_line_ex(mtmp, talkbuf, ATR_NONE, NO_COLOR, TRUE, FALSE);
+//#ifndef GNH_MOBILE
     if (iflags.using_gui_sounds)
         delay_output_milliseconds(2000);
-#endif
+//#endif
 
     if (otmp->quan > quan_needed)
     {
