@@ -6467,13 +6467,24 @@ namespace GnollHackX
                                                 break;
                                             case (int)RecordedFunctionID.DelayOutput:
                                                 {
-                                                    game.ClientCallback_DelayOutput();
+                                                    //game.ClientCallback_DelayOutput();
+                                                    double speed = ReplaySpeed;
+                                                    if (speed == 0)
+                                                        speed = 1.0;
+                                                    int used_ms = (int)((double)GHConstants.DelayOutputDurationInMilliseconds / speed);
+                                                    if (used_ms > 0)
+                                                        game.ClientCallback_DelayOutputMilliseconds(used_ms);
                                                 }
                                                 break;
                                             case (int)RecordedFunctionID.DelayOutputMilliseconds:
                                                 {
                                                     int ms = br.ReadInt32();
-                                                    game.ClientCallback_DelayOutputMilliseconds(ms);
+                                                    double speed = ReplaySpeed;
+                                                    if (speed == 0) 
+                                                        speed = 1.0;
+                                                    int used_ms = (int)((double)ms / speed);
+                                                    if (used_ms > 0)
+                                                        game.ClientCallback_DelayOutputMilliseconds(used_ms);
                                                 }
                                                 break;
                                             case (int)RecordedFunctionID.DelayOutputIntervals:

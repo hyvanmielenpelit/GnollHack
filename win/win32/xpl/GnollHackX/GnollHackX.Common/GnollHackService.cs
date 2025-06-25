@@ -177,6 +177,8 @@ namespace GnollHackX.Unknown
         );
 
         [DllImport(PlatformConstants.dll)]
+        public static extern int LibInitializeTileData();
+        [DllImport(PlatformConstants.dll)]
         public static extern int GetGlyph2Tile(out IntPtr array_ptr, out int size);
         [DllImport(PlatformConstants.dll)]
         public static extern int GetGlyphTileFlags(out IntPtr array_ptr, out int size);
@@ -876,6 +878,11 @@ namespace GnollHackX.Unknown
                     await Task.Delay(5);
                 }
             }            
+        }
+
+        public void InitializeTileData()
+        {
+            LibInitializeTileData();
         }
 
         public void GetGlyphArrays(out IntPtr gl2ti, out int size1, out IntPtr gltifl, out int gltifl_size)

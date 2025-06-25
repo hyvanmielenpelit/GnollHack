@@ -17,6 +17,15 @@
 extern int FDECL(GnollHackMain, (int, char**));
 extern void FDECL(set_wincaps, (uint64_t, uint64_t));
 
+
+DLLEXPORT void LibInitializeTileData(VOID_ARGS)
+{
+    init_tiledata();
+#ifdef USE_TILES
+    process_tiledata(1, (const char*)0, glyph2tile, glyphtileflags);
+#endif
+}
+
 DLLEXPORT void GetGlyph2Tile(int** gl2ti_ptr, int* size_ptr)
 {
     if (!gl2ti_ptr || !size_ptr)
