@@ -2554,7 +2554,6 @@ int
 doloot(VOID_ARGS)
 {
     int res = doloot_core(0);
-    issue_gui_command(GUI_CMD_COLLECT_GARBAGE, 1, 0, (char*)0);
     return res;
 }
 
@@ -2562,7 +2561,6 @@ int
 dolootout(VOID_ARGS)
 {
     int res = doloot_core(1);
-    issue_gui_command(GUI_CMD_COLLECT_GARBAGE, 1, 0, (char*)0);
     return res;
 }
 
@@ -2570,7 +2568,6 @@ int
 dolootin(VOID_ARGS)
 {
     int res = doloot_core(2);
-    issue_gui_command(GUI_CMD_COLLECT_GARBAGE, 1, 0, (char*)0);
     return res;
 }
 
