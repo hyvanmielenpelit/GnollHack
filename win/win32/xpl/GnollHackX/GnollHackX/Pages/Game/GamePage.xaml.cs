@@ -1301,29 +1301,6 @@ namespace GnollHackX.Pages.Game
                     await Task.WhenAll(tasks);
                     tasks.Clear();
 
-                    LoadingDetailsLabel.Text = "Loading tile offset data...";
-                    tasks.Add(LoadingProgressBar.ProgressTo(0.675, 50, Easing.Linear));
-                    tasks.Add(Task.Run(() =>
-                    {
-                        int animoff, enloff, reoff, general_tile_off, hit_tile_off, ui_tile_off, spell_tile_off, skill_tile_off, command_tile_off, buff_tile_off, cursor_off;
-                        _gnollHackService.GetOffs(out animoff, out enloff, out reoff, out general_tile_off, out hit_tile_off, out ui_tile_off, out spell_tile_off, out skill_tile_off, out command_tile_off, out buff_tile_off,
-                            out cursor_off);
-                        GHApp.AnimationOff = animoff;
-                        GHApp.EnlargementOff = enloff;
-                        GHApp.ReplacementOff = reoff;
-                        GHApp.GeneralTileOff = general_tile_off;
-                        GHApp.HitTileOff = hit_tile_off;
-                        GHApp.UITileOff = ui_tile_off;
-                        GHApp.SpellTileOff = spell_tile_off;
-                        GHApp.SkillTileOff = skill_tile_off;
-                        GHApp.CommandTileOff = command_tile_off;
-                        GHApp.BuffTileOff = buff_tile_off;
-                        GHApp.CursorOff = cursor_off;
-
-                    }));
-                    await Task.WhenAll(tasks);
-                    tasks.Clear();
-
                     LoadingDetailsLabel.Text = "Loading animations...";
                     tasks.Add(LoadingProgressBar.ProgressTo(0.700, 50, Easing.Linear));
                     tasks.Add(Task.Run(() =>
@@ -1362,6 +1339,29 @@ namespace GnollHackX.Pages.Game
 
                     GHApp.StartGameDataSet = true;
                 }
+
+                LoadingDetailsLabel.Text = "Loading tile offset data...";
+                tasks.Add(LoadingProgressBar.ProgressTo(0.825, 50, Easing.Linear));
+                tasks.Add(Task.Run(() =>
+                {
+                    int animoff, enloff, reoff, general_tile_off, hit_tile_off, ui_tile_off, spell_tile_off, skill_tile_off, command_tile_off, buff_tile_off, cursor_off;
+                    _gnollHackService.GetOffs(out animoff, out enloff, out reoff, out general_tile_off, out hit_tile_off, out ui_tile_off, out spell_tile_off, out skill_tile_off, out command_tile_off, out buff_tile_off,
+                        out cursor_off);
+                    GHApp.AnimationOff = animoff;
+                    GHApp.EnlargementOff = enloff;
+                    GHApp.ReplacementOff = reoff;
+                    GHApp.GeneralTileOff = general_tile_off;
+                    GHApp.HitTileOff = hit_tile_off;
+                    GHApp.UITileOff = ui_tile_off;
+                    GHApp.SpellTileOff = spell_tile_off;
+                    GHApp.SkillTileOff = skill_tile_off;
+                    GHApp.CommandTileOff = command_tile_off;
+                    GHApp.BuffTileOff = buff_tile_off;
+                    GHApp.CursorOff = cursor_off;
+
+                }));
+                await Task.WhenAll(tasks);
+                tasks.Clear();
 
                 LoadingDetailsLabel.Text = "Loading extended commands...";
                 tasks.Add(LoadingProgressBar.ProgressTo(0.90, 100, Easing.Linear));
@@ -4865,7 +4865,7 @@ namespace GnollHackX.Pages.Game
                 int anim_frame_idx = 0, main_tile_idx = 0;
                 sbyte mapAnimated = 0;
                 int tile_animation_idx = _gnollHackService.GetTileAnimationIndexFromGlyph(cglyph);
-                ctile = _gnollHackService.GetAnimatedTile(ctile, tile_animation_idx, (int)animation_play_types.ANIMATION_PLAY_TYPE_ALWAYS, generalcountervalue, out anim_frame_idx, out main_tile_idx, out mapAnimated, ref autodraw);
+                ctile = _gnollHackService.GetAnimatedTile(ctile, tile_animation_idx, (int)animation_play_types.ANIMATION_PLAY_TYPE_ALWAYS, generalcountervalue, out anim_frame_idx, out main_tile_idx, out mapAnimated, ref autodraw, custom_animoff);
                 int sheet_idx = GHApp.TileSheetIdx(ctile);
                 int tile_x = GHApp.TileSheetX(ctile);
                 int tile_y = GHApp.TileSheetY(ctile);
@@ -4957,7 +4957,7 @@ namespace GnollHackX.Pages.Game
                 int anim_frame_idx = 0, main_tile_idx = 0;
                 sbyte mapAnimated = 0;
                 int tile_animation_idx = _gnollHackService.GetTileAnimationIndexFromGlyph(cglyph);
-                ctile = _gnollHackService.GetAnimatedTile(ctile, tile_animation_idx, (int)animation_play_types.ANIMATION_PLAY_TYPE_ALWAYS, generalcountervalue, out anim_frame_idx, out main_tile_idx, out mapAnimated, ref autodraw);
+                ctile = _gnollHackService.GetAnimatedTile(ctile, tile_animation_idx, (int)animation_play_types.ANIMATION_PLAY_TYPE_ALWAYS, generalcountervalue, out anim_frame_idx, out main_tile_idx, out mapAnimated, ref autodraw, custom_animoff);
                 int sheet_idx = GHApp.TileSheetIdx(ctile);
                 int tile_x = GHApp.TileSheetX(ctile);
                 int tile_y = GHApp.TileSheetY(ctile);
@@ -4983,7 +4983,7 @@ namespace GnollHackX.Pages.Game
                 int anim_frame_idx = 0, main_tile_idx = 0;
                 sbyte mapAnimated = 0;
                 int tile_animation_idx = _gnollHackService.GetTileAnimationIndexFromGlyph(cglyph);
-                ctile = _gnollHackService.GetAnimatedTile(ctile, tile_animation_idx, (int)animation_play_types.ANIMATION_PLAY_TYPE_ALWAYS, generalcountervalue, out anim_frame_idx, out main_tile_idx, out mapAnimated, ref autodraw);
+                ctile = _gnollHackService.GetAnimatedTile(ctile, tile_animation_idx, (int)animation_play_types.ANIMATION_PLAY_TYPE_ALWAYS, generalcountervalue, out anim_frame_idx, out main_tile_idx, out mapAnimated, ref autodraw, custom_animoff);
                 int sheet_idx = GHApp.TileSheetIdx(ctile);
                 int tile_x = GHApp.TileSheetX(ctile);
                 int tile_y = GHApp.TileSheetY(ctile);
@@ -6744,11 +6744,11 @@ namespace GnollHackX.Pages.Game
             int tile_animation_idx = _gnollHackService.GetTileAnimationIndexFromGlyph(glyph);
             bool is_dropping_piercer = (_mapData[mapx, mapy].Layers.monster_flags & (ulong)LayerMonsterFlags.LMFLAGS_DROPPING_PIERCER) != 0;
             if (localTimers.u_action_animation_counter_on && is_monster_or_shadow_layer && ((_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_UXUY) != 0))
-                ntile = _gnollHackService.GetAnimatedTile(ntile, tile_animation_idx, (int)animation_play_types.ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, localTimers.u_action_animation_counter, out anim_frame_idx, out main_tile_idx, out mapAnimated, ref autodraw);
+                ntile = _gnollHackService.GetAnimatedTile(ntile, tile_animation_idx, (int)animation_play_types.ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, localTimers.u_action_animation_counter, out anim_frame_idx, out main_tile_idx, out mapAnimated, ref autodraw, custom_animoff);
             else if (localTimers.m_action_animation_counter_on && ((!is_dropping_piercer && is_monster_or_shadow_layer) || (is_dropping_piercer && layer_idx == (int)layer_types.LAYER_MISSILE)) && localTimers.m_action_animation_x == mapx && localTimers.m_action_animation_y == mapy)
-                ntile = _gnollHackService.GetAnimatedTile(ntile, tile_animation_idx, (int)animation_play_types.ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, localTimers.m_action_animation_counter, out anim_frame_idx, out main_tile_idx, out mapAnimated, ref autodraw);
+                ntile = _gnollHackService.GetAnimatedTile(ntile, tile_animation_idx, (int)animation_play_types.ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, localTimers.m_action_animation_counter, out anim_frame_idx, out main_tile_idx, out mapAnimated, ref autodraw, custom_animoff);
             else if (_gnollHackService.GlyphIsExplosion(glyph))
-                ntile = _gnollHackService.GetAnimatedTile(ntile, tile_animation_idx, (int)animation_play_types.ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, localTimers.explosion_animation_counter, out anim_frame_idx, out main_tile_idx, out mapAnimated, ref autodraw);
+                ntile = _gnollHackService.GetAnimatedTile(ntile, tile_animation_idx, (int)animation_play_types.ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, localTimers.explosion_animation_counter, out anim_frame_idx, out main_tile_idx, out mapAnimated, ref autodraw, custom_animoff);
             else if (_gnollHackService.GlyphIsZap(glyph))
             {
                 for (int zap_anim_idx = 0; zap_anim_idx < GHConstants.MaxPlayedZapAnimations; zap_anim_idx++)
@@ -6757,7 +6757,7 @@ namespace GnollHackX.Pages.Game
                         && mapx == localTimers.zap_animation_x[zap_anim_idx]
                         && mapy == localTimers.zap_animation_y[zap_anim_idx])
                     {
-                        ntile = _gnollHackService.GetAnimatedTile(ntile, tile_animation_idx, (int)animation_play_types.ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, localTimers.zap_animation_counter[zap_anim_idx], out anim_frame_idx, out main_tile_idx, out mapAnimated, ref autodraw);
+                        ntile = _gnollHackService.GetAnimatedTile(ntile, tile_animation_idx, (int)animation_play_types.ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, localTimers.zap_animation_counter[zap_anim_idx], out anim_frame_idx, out main_tile_idx, out mapAnimated, ref autodraw, custom_animoff);
                         break;
                     }
                 }
@@ -6773,7 +6773,7 @@ namespace GnollHackX.Pages.Game
                         && mapx == localTimers.spef_action_animation_x[spef_idx]
                         && mapy == localTimers.spef_action_animation_y[spef_idx])
                     {
-                        ntile = _gnollHackService.GetAnimatedTile(ntile, tile_animation_idx, (int)animation_play_types.ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, localTimers.special_effect_animation_counter[spef_idx], out anim_frame_idx, out main_tile_idx, out mapAnimated, ref autodraw);
+                        ntile = _gnollHackService.GetAnimatedTile(ntile, tile_animation_idx, (int)animation_play_types.ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, localTimers.special_effect_animation_counter[spef_idx], out anim_frame_idx, out main_tile_idx, out mapAnimated, ref autodraw, custom_animoff);
                         spef_found = true;
                         break;
                     }
@@ -6781,7 +6781,7 @@ namespace GnollHackX.Pages.Game
 
                 /* Otherwise, normal animation check */
                 if (!spef_found)
-                    ntile = _gnollHackService.GetAnimatedTile(ntile, tile_animation_idx, (int)animation_play_types.ANIMATION_PLAY_TYPE_ALWAYS, generalcountervalue, out anim_frame_idx, out main_tile_idx, out mapAnimated, ref autodraw);
+                    ntile = _gnollHackService.GetAnimatedTile(ntile, tile_animation_idx, (int)animation_play_types.ANIMATION_PLAY_TYPE_ALWAYS, generalcountervalue, out anim_frame_idx, out main_tile_idx, out mapAnimated, ref autodraw, custom_animoff);
             }
             return ntile;
         }
@@ -6925,6 +6925,7 @@ namespace GnollHackX.Pages.Game
             bool drawwallends = DrawWallEnds;
             bool breatheanimations = BreatheAnimations;
             bool fixRects = GHApp.FixRects;
+            int custom_animoff = GHApp.CustomAnimationOff;
             bool usingGL = UseMainGLCanvas;
             bool usingMipMap = UseMainMipMap;
             bool usingDesktopButtons = DesktopButtons;
@@ -9712,7 +9713,7 @@ namespace GnollHackX.Pages.Game
 #if GNH_MAP_PROFILING && DEBUG
                                                         StartProfiling(GHProfilingStyle.Bitmap);
 #endif
-                                                        gis.DrawOnCanvas(canvas, usingGL, false, true, fixRects);
+                                                        gis.DrawOnCanvas(canvas, usingGL, false, true, fixRects, custom_animoff);
 #if GNH_MAP_PROFILING && DEBUG
                                                         StopProfiling(GHProfilingStyle.Bitmap);
 #endif
@@ -9846,7 +9847,7 @@ namespace GnollHackX.Pages.Game
 #if GNH_MAP_PROFILING && DEBUG
                                                         StartProfiling(GHProfilingStyle.Bitmap);
 #endif
-                                                        gis.DrawOnCanvas(canvas, usingGL, false, true, fixRects);
+                                                        gis.DrawOnCanvas(canvas, usingGL, false, true, fixRects, custom_animoff);
 #if GNH_MAP_PROFILING && DEBUG
                                                         StopProfiling(GHProfilingStyle.Bitmap);
 #endif
@@ -9992,7 +9993,7 @@ namespace GnollHackX.Pages.Game
                                                         float weppictureheight = wep_scale * gis.Height;
                                                         canvas.Translate(curx + 0, cury + (target_height - weppictureheight) / 2);
                                                         canvas.Scale(wep_scale);
-                                                        gis.DrawOnCanvas(canvas, usingGL, false, true, fixRects);
+                                                        gis.DrawOnCanvas(canvas, usingGL, false, true, fixRects, custom_animoff);
                                                         curx += weppicturewidth;
                                                         curx += innerspacing;
                                                     }
@@ -10073,7 +10074,7 @@ namespace GnollHackX.Pages.Game
                                         float weppictureheight = wep_scale * gis.Height;
                                         canvas.Translate(curx + 0, cury + (target_height - weppictureheight) / 2);
                                         canvas.Scale(wep_scale);
-                                        gis.DrawOnCanvas(canvas, usingGL, false, true, fixRects);
+                                        gis.DrawOnCanvas(canvas, usingGL, false, true, fixRects, custom_animoff);
                                         curx += weppicturewidth;
                                     }
                                     curx += stdspacing;
@@ -10100,7 +10101,7 @@ namespace GnollHackX.Pages.Game
                                         float weppictureheight = wep_scale * gis.Height;
                                         canvas.Translate(curx + 0, cury + (target_height - weppictureheight) / 2);
                                         canvas.Scale(wep_scale);
-                                        gis.DrawOnCanvas(canvas, usingGL, false, true, fixRects);
+                                        gis.DrawOnCanvas(canvas, usingGL, false, true, fixRects, custom_animoff);
                                         curx += weppicturewidth;
                                     }
                                     curx += stdspacing;
@@ -10829,7 +10830,7 @@ namespace GnollHackX.Pages.Game
 #if GNH_MAP_PROFILING && DEBUG
                                                     StartProfiling(GHProfilingStyle.Bitmap);
 #endif
-                                                    gis.DrawOnCanvas(canvas, usingGL, _localIsPointerHovering && usedRect.Contains(_localPointerHoverLocation), false, fixRects);
+                                                    gis.DrawOnCanvas(canvas, usingGL, _localIsPointerHovering && usedRect.Contains(_localPointerHoverLocation), false, fixRects, custom_animoff);
 #if GNH_MAP_PROFILING && DEBUG
                                                     StopProfiling(GHProfilingStyle.Bitmap);
 #endif
@@ -15873,6 +15874,7 @@ namespace GnollHackX.Pages.Game
             bool isHighlightedKeys = MenuHighlightedKeys;
             bool usingGL = MenuCanvas.UseGL;
             bool fixRects = GHApp.FixRects;
+            int custom_animoff = GHApp.CustomAnimationOff;
             bool revertBW = MenuCanvas.RevertBlackAndWhite;
             float x, y;
             string str;
@@ -16113,7 +16115,7 @@ namespace GnollHackX.Pages.Game
                                                 float glyphxcenterpadding = (picturewidth - minrowheight * mi.GlyphImageSource.Width / mi.GlyphImageSource.Height) / 2;
                                                 canvas.Translate(x + glyphxcenterpadding, glyph_start_y);
                                                 canvas.Scale(minrowheight / mi.GlyphImageSource.Height);
-                                                mi.GlyphImageSource.DrawOnCanvas(canvas, usingGL, false, isHighFilterQuality, fixRects);
+                                                mi.GlyphImageSource.DrawOnCanvas(canvas, usingGL, false, isHighFilterQuality, fixRects, custom_animoff);
                                             }
                                         }
                                     }

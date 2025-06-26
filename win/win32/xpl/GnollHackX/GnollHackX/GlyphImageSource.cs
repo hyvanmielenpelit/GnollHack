@@ -285,7 +285,7 @@ namespace GnollHackX
             using (var canvas = new SKCanvas(bitmap))
             {
                 canvas.Clear(SKColors.Transparent);
-                DrawOnCanvas(canvas, false, false, false, GHApp.FixRects);
+                DrawOnCanvas(canvas, false, false, false, GHApp.FixRects, GHApp.CustomAnimationOff);
             }
 
             var skImage = SKImage.FromBitmap(bitmap);            
@@ -337,7 +337,7 @@ namespace GnollHackX
             }
         }
 
-        public void DrawOnCanvas(SKCanvas canvas, bool usingGL, bool isHighlighted, bool highFilterQuality, bool fixRects)
+        public void DrawOnCanvas(SKCanvas canvas, bool usingGL, bool isHighlighted, bool highFilterQuality, bool fixRects, int custom_animoff)
         {
             int signed_glyph = Glyph;
             int abs_glyph = Math.Abs(signed_glyph);
@@ -366,7 +366,7 @@ namespace GnollHackX
                         counter_value = refPage.AnimationTimers.general_animation_counter;
                     }
                 }
-                ntile = GHApp.GnollHackService.GetAnimatedTile(ntile, tile_animation_idx, (int)animation_play_types.ANIMATION_PLAY_TYPE_ALWAYS, counter_value, out anim_frame_idx, out main_tile_idx, out mapAnimated, ref autodraw);
+                ntile = GHApp.GnollHackService.GetAnimatedTile(ntile, tile_animation_idx, (int)animation_play_types.ANIMATION_PLAY_TYPE_ALWAYS, counter_value, out anim_frame_idx, out main_tile_idx, out mapAnimated, ref autodraw, custom_animoff);
 
                 int enlargement_idx = GHApp.Tile2Enlargement[ntile];
                 int sheet_idx = GHApp.TileSheetIdx(ntile);

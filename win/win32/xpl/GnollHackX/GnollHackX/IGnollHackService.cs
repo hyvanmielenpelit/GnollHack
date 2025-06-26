@@ -43,7 +43,7 @@ namespace GnollHackX
         bool GlyphIsZap(int glyph);
         bool GlyphIsAnyDying(int glyph);
         int GetAnimatedTile(int ntile, int tile_animation_idx, int play_type, long interval_counter,
-            out int frame_idx_ptr, out int main_tile_idx_ptr, out sbyte mapAnimated, ref int autodraw_ptr);
+            out int frame_idx_ptr, out int main_tile_idx_ptr, out sbyte mapAnimated, ref int autodraw_ptr, int custom_animoff);
 
         int ZapGlyphToCornerGlyph(int adjglyph, ulong adjflags, int source_dir);
         int Test();

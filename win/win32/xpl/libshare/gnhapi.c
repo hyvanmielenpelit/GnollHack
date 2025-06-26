@@ -486,16 +486,17 @@ LibGetTileAnimationIndexFromGlyph(int glyph)
 }
 
 DLLEXPORT int
-LibMaybeGetAnimatedTile(ntile, tile_animation_idx, play_type, interval_counter, frame_idx_ptr, main_tile_idx_ptr, mapAnimated, autodraw_ptr)
+LibMaybeGetAnimatedTile(ntile, tile_animation_idx, play_type, interval_counter, frame_idx_ptr, main_tile_idx_ptr, mapAnimated, autodraw_ptr, custom_animoff)
 int ntile;
 int tile_animation_idx;
 enum animation_play_types play_type;
 long interval_counter;
 int* frame_idx_ptr, * main_tile_idx_ptr;
 char* mapAnimated;
-enum autodraw_types* autodraw_ptr; 
+enum autodraw_types* autodraw_ptr;
+int custom_animoff;
 {
-    return maybe_get_animated_tile(ntile, tile_animation_idx, play_type, interval_counter, frame_idx_ptr, main_tile_idx_ptr, mapAnimated, autodraw_ptr);
+    return maybe_get_animated_tile(ntile, tile_animation_idx, play_type, interval_counter, frame_idx_ptr, main_tile_idx_ptr, mapAnimated, autodraw_ptr, custom_animoff);
 }
 
 

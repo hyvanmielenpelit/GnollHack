@@ -2516,7 +2516,7 @@ struct rm *lev, *above_lev, *left_lev, *right_lev;
 }
 
 int
-maybe_get_animated_tile(ntile, tile_animation_idx, play_type, interval_counter, frame_idx_ptr, main_tile_idx_ptr, mapAnimated, autodraw_ptr)
+maybe_get_animated_tile(ntile, tile_animation_idx, play_type, interval_counter, frame_idx_ptr, main_tile_idx_ptr, mapAnimated, autodraw_ptr, custom_animoff)
 int ntile;
 int tile_animation_idx;
 enum animation_play_types play_type;
@@ -2524,6 +2524,7 @@ int64_t interval_counter;
 int *frame_idx_ptr, *main_tile_idx_ptr;
 char* mapAnimated;
 enum autodraw_types* autodraw_ptr;
+int custom_animoff; /* May be needed with older replays */
 {
 #ifdef USE_TILES
     if (frame_idx_ptr)
@@ -2594,7 +2595,7 @@ enum autodraw_types* autodraw_ptr;
                 *autodraw_ptr = animations[animation_idx].frame_autodraw[animation_frame_index];
 
             int tile_anim_idx = (tile_animation_idx < 0 || tile_animation_idx >= animations[animation_idx].number_of_tile_animations ? 0 : tile_animation_idx);
-            int animation_glyph = animation_frame_index + tile_anim_idx * (int)animations[animation_idx].number_of_frames + animation_offsets[animation_idx] /* animations[animation_idx].glyph_offset */ + GLYPH_ANIMATION_OFF;
+            int animation_glyph = animation_frame_index + tile_anim_idx * (int)animations[animation_idx].number_of_frames + animation_offsets[animation_idx] /* animations[animation_idx].glyph_offset */ + (custom_animoff >= 0 ? custom_animoff : GLYPH_ANIMATION_OFF);
             int res = glyph2tile[animation_glyph]; /* animated version selected */
 
             return res;

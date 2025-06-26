@@ -244,6 +244,7 @@ namespace GnollHackX
             Connectivity.ConnectivityChanged -= Connectivity_ConnectivityChanged;
             Battery.BatteryInfoChanged -= Battery_BatteryInfoChanged;
             DeviceDisplay.MainDisplayInfoChanged -= DeviceDisplay_MainDisplayInfoChanged;
+            CollectGarbage();
         }
 
         private static void DeviceDisplay_MainDisplayInfoChanged(object sender, DisplayInfoChangedEventArgs e)
@@ -2352,6 +2353,17 @@ namespace GnollHackX
         public static int CommandTileOff { get; set; }
         public static int BuffTileOff { get; set; }
         public static int CursorOff { get; set; }
+
+        public static int CustomAnimationOff
+        {
+            get
+            {
+                lock (Glyph2Tile)
+                {
+                    return (CurrentGamePage?.PlayingReplay ?? false) ? AnimationOff : -1;
+                }
+            }
+        }
 
         public static int NumberOfGlyphs
         {
@@ -6246,6 +6258,7 @@ namespace GnollHackX
                                                         for (int j = 0; j < tilesperrow_sz; j++)
                                                             TilesPerRow[j] = tilesperrow[j];
                                                         AdjustReplayTiles(verno, false);
+                                                        AdjustReplayOffs(verno);
                                                         gl2ti = Glyph2Tile;
                                                         gltifl = GlyphTileFlags;
                                                         ti2an = Tile2Animation;
@@ -7214,6 +7227,7 @@ namespace GnollHackX
                 }),
         };
 
+        /* This adjusts glyph mapping to tiles */
         private static void AdjustReplayTiles(ulong replayVersion, bool g2tOnly)
         {
             try
@@ -7263,6 +7277,24 @@ namespace GnollHackX
 
         }
 
+        /* This adjusts glyphs */
+        private static void AdjustReplayOffs(ulong replayVersion)
+        {
+            if (replayVersion < 0x0402002CUL)
+            {
+                AnimationOff -= 6 * (24 - 3);
+                EnlargementOff -= 6 * (24 - 3);
+                //GHApp.ReplacementOff += 0;
+                //GHApp.GeneralTileOff += 0;
+                //GHApp.HitTileOff += 0;
+                //GHApp.UITileOff += 0;
+                //GHApp.SpellTileOff += 0;
+                //GHApp.SkillTileOff += 0;
+                //GHApp.CommandTileOff += 0;
+                //GHApp.BuffTileOff += 0;
+                //GHApp.CursorOff += 0;
+            }
+        }
 
 
         private static BlobServiceClient _blobServiceClient = null;
