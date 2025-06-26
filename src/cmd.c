@@ -9978,7 +9978,12 @@ doviewpet(VOID_ARGS)
                 if (abs(mtmp->mx - u.ux) <= 1 && abs(mtmp->my - u.uy) <= 1 && !mtmp->meating && mon_can_move(mtmp))
                     return dochatmon(mtmp);
                 else
-                    return doviewpetstatistics(mtmp);
+                {
+                    int res = doviewpetstatistics(mtmp);
+                    if (!res)
+                        issue_gui_command(GUI_CMD_COLLECT_GARBAGE, 1, 0, (char*)0);
+                    return res;
+                }
             }
         }
     }
