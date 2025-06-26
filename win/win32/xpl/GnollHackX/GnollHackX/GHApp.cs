@@ -1216,6 +1216,11 @@ namespace GnollHackX
 #endif
         }
 
+        public static void CollectNursery()
+        {
+            GC.Collect(0);
+        }
+
         public static bool IsAutoSaveUponSwitchingAppsOn
         {
             get { return true; }

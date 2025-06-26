@@ -802,6 +802,10 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <AndroidEnvironment Include="Platforms\Android\Environment.txt" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<AndroidNativeLibrary Include="Platforms\Android\libs\x86_64\libc++_shared.so" />
 		<AndroidNativeLibrary Include="Platforms\Android\libs\x86_64\libfmod.so" />
 		<AndroidNativeLibrary Include="Platforms\Android\libs\x86_64\libfmodstudio.so" />

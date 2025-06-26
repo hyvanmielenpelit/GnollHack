@@ -2700,7 +2700,16 @@ namespace GnollHackX
                 case (int)gui_command_types.GUI_CMD_COLLECT_GARBAGE:
                     if (PlayingReplay && GHApp.IsReplaySearching)
                         return;
-                    GHApp.CollectGarbage();
+                    switch (cmd_param)
+                    {
+                        case 0:
+                            GHApp.CollectGarbage(); /* Collect all, may take a lot of time */
+                            break;
+                        case 1:
+                            //GC.Collect(cmd_param2); /* Collect only from 0 up to the specified generation, 0 = only nursery */
+                            GHApp.CollectNursery();
+                            break;
+                    }
                     break;
                 case (int)gui_command_types.GUI_CMD_FADE_FROM_BLACK:
                     if (PlayingReplay && GHApp.IsReplaySearching)
