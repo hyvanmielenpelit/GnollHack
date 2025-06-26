@@ -1381,6 +1381,10 @@ namespace GnollHackX.Pages.Game
                 await Task.WhenAll(tasks);
                 tasks.Clear();
 
+                LoadingDetailsLabel.Text = "Cleaning up memory...";
+                GHApp.CollectGarbage();
+                await LoadingProgressBar.ProgressTo(0.98, 40, Easing.Linear);
+
                 if (PlayingReplay)
                 {
                     //MainGrid.IsEnabled = false;
