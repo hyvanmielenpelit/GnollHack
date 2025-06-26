@@ -5011,12 +5011,8 @@ struct monst* mtmp;
         pline("%s answers:", noittame_Monnam(mtmp));
         Sprintf(ansbuf, "Unfortunately, I don't have any %s advice for you.", mtmp->told_rumor ? "further" : "useful");
         if (is_death)
-        {
             (void)ucase(ansbuf);
-            popup_talk_line_ex(mtmp, ansbuf, ATR_NONE, CLR_MSG_GOD, TRUE, FALSE);
-        }
-        else
-            popup_talk_line(mtmp, ansbuf);
+        popup_talk_line_ex(mtmp, ansbuf, ATR_NONE, is_death ? CLR_MSG_GOD : CLR_MSG_HINT, TRUE, !is_death);
         mtmp->rumorsleft = 0;
     }
     else
@@ -5029,31 +5025,17 @@ struct monst* mtmp;
             Sprintf(ansbuf, "Yes, here's a piece of advice for you%s", iflags.using_gui_sounds || Deaf ? "." : ":");
         
         if (is_death)
-        {
             (void)ucase(ansbuf);
-            popup_talk_line_ex(mtmp, ansbuf, ATR_NONE, CLR_MSG_GOD, TRUE, FALSE);
-        }
-        else
-            popup_talk_line(mtmp, ansbuf);
+        popup_talk_line_ex(mtmp, ansbuf, ATR_NONE, is_death ? CLR_MSG_GOD : CLR_MSG_HINT, TRUE, !is_death);
 
         /* Tell a rumor */
-        boolean isspeaking = TRUE;
-        if (iflags.using_gui_sounds || Deaf)
-        {
-            isspeaking = FALSE;
-            pline("(%s hands a note over to you.)  It reads:", noittame_Monnam(mtmp));
-            if (!u.uconduct.literate++)
-                livelog_printf(LL_CONDUCT, "became literate by reading a note handed over by %s.", noittame_mon_nam(mtmp));
-        }
-        if (is_death && isspeaking)
-        {
+        if (iflags.using_gui_sounds && !is_death)
+            pline("%s whispers silently to your ear:", noittame_Monnam(mtmp));
+        if (is_death)
             (void)ucase(rumorbuf);
-            popup_talk_line_ex(mtmp, rumorbuf, ATR_NONE, CLR_MSG_GOD, TRUE, FALSE);
-        }
-        else
-            verbalize_ex(ATR_NONE, CLR_MSG_HINT, "%s", rumorbuf);
-
-        display_popup_text(rumorbuf, "Advice", POPUP_TEXT_ADVICE, ATR_NONE, is_death ? CLR_MSG_GOD : CLR_MSG_HINT, NO_GLYPH, POPUP_FLAGS_ADD_QUOTES);
+        popup_talk_line_ex(mtmp, rumorbuf, ATR_NONE, is_death ? CLR_MSG_GOD : CLR_MSG_HINT, TRUE, !is_death);
+        //verbalize_ex(ATR_NONE, is_death ? CLR_MSG_GOD : CLR_MSG_HINT, "%s", rumorbuf);
+        //display_popup_text(rumorbuf, "Advice", POPUP_TEXT_ADVICE, ATR_NONE, is_death ? CLR_MSG_GOD : CLR_MSG_HINT, NO_GLYPH, POPUP_FLAGS_ADD_QUOTES);
 
         mtmp->told_rumor = TRUE;
     }
@@ -7130,7 +7112,7 @@ struct monst* mtmp;
                (otmp->oclass != WEAPON_CLASS /* monsters do not currently sell their weapons */
             && otmp->oclass != ROCK_CLASS /* or giants their boulders */
             && !(is_pick(otmp) && needspick(mtmp->data)) /* or dwarves their picks */
-            && !((mtmp->data->geno & G_UNIQ)) /* or unique monsters */
+            && !((mtmp->data->geno & G_UNIQ) != 0 && !(is_key(otmp) && is_peaceful(mtmp))) /* or unique monsters, except for keys when peaceful */
             && !(is_dwarvish_obj(otmp) && is_dwarf(mtmp->data)) /* or dwarves any other of their items */
             && !mtmp->isshk
                )
