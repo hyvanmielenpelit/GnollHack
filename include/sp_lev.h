@@ -198,6 +198,7 @@ enum sp_mon_var_flags {
     SP_M_V_KEEP_ORIGINAL_INVENTORY,
     SP_M_V_LEVEL_BOSS,
     SP_M_V_BOSS_HOSTILITY,
+    SP_M_V_HAS_BACKUP,
 
     SP_M_V_END
 };
@@ -476,7 +477,7 @@ typedef struct {
     schar peaceful, asleep;
     schar female, invis, cancelled, revived, avenge, fleeing, blinded,
         paralyzed, stunned, confused, waitforu, protector, maxhp, level_adjustment, keep_original_invent,
-        level_boss, use_boss_hostility;
+        level_boss, use_boss_hostility, has_backup;
     int64_t seentraps;
     schar has_invent;
 } monster;

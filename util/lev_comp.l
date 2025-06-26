@@ -292,6 +292,7 @@ protector	ST_RET(PROTECTOR_ID);
 maxhp		ST_RET(MAXHP_ID);
 level_boss	ST_RET(LEVEL_BOSS_ID);
 use_boss_hostility	ST_RET(BOSS_HOSTILITY_ID);
+has_backup	ST_RET(HAS_BACKUP_ID);
 level_adjustment  ST_RET(LEVEL_ADJUSTMENT_ID);
 keep_original_inventory	ST_RET(KEEP_ORIGINAL_INVENTORY_ID);
 switchable	ST_RET(SWITCHABLE_ID);

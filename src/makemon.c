@@ -2720,7 +2720,8 @@ aligntyp alignment;
     boolean maybe_extinct = ((mmflags2 & MM2_MAYBE_ALLOW_EXTINCT) != 0);
     boolean reviving = ((mmflags2 & MM2_REVIVING) != 0);
     boolean randomize_subtype = ((mmflags2 & MM2_RANDOMIZE_SUBTYPE) != 0);
-    
+    boolean mon_name_known = ((mmflags2 & MM2_NAME_KNOWN) != 0);
+
     uint64_t gpflags = (mmflags & MM_IGNOREWATER) ? MM_IGNOREWATER : 0;
     int origin_x = x, origin_y = y;
     
@@ -3221,6 +3222,8 @@ aligntyp alignment;
 #endif
 
     m_init_background(mtmp);
+    if (mon_name_known && has_mname(mtmp))
+        mtmp->u_know_mname = TRUE;
 
     if (allow_minvent)
     {

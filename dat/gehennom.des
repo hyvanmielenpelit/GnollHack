@@ -565,7 +565,7 @@ OBJECT:random,random
 OBJECT:random,random
 
 # The resident nasty
-MONSTER:('&',"Orcus"),(33,15),keep_original_inventory,level_boss
+MONSTER:('&',"Orcus"),(33,15),keep_original_inventory,level_boss,has_backup
 {
   OBJECT:('(',"ornamental key"),special_quality:4
 }
@@ -667,7 +667,7 @@ SPECIAL_REGION:(01,01,20,10),region_special_level_seen
 
 # The fellow in residence
 
-MONSTER:('&',"Dispater"),(12,07),level_boss {
+MONSTER:('&',"Dispater"),(12,07),level_boss,has_backup {
    OBJECT:('(',"ornamental key"),special_quality:3
 }
 CONTAINER:('(',"chest"),trapped,locked,(12,07),keytype:('(',"ornamental key"),special_quality:3,no_pickup {
@@ -875,7 +875,7 @@ BRAZIER:(30,06)
 BRAZIER:(41,06)
 
 # The fellow in residence
-MONSTER:('&',"Baalzebub"),(35,06),level_boss {
+MONSTER:('&',"Baalzebub"),(35,06),level_boss,has_backup {
   OBJECT:('(',"ornamental key"),special_quality:5
 }
 CONTAINER:('(',"chest"),trapped,locked,(35,06),keytype:('(',"ornamental key"),special_quality:5,no_pickup {
@@ -1052,7 +1052,7 @@ MAZEWALK:(00,06),west
 REGION:(00,05,20,07),unlit,"ordinary"
 
 # The fellow in residence
-MONSTER:('&',"Yeenaghu"),(18,06),keep_original_inventory,level_boss,waitforu {
+MONSTER:('&',"Yeenaghu"),(18,06),keep_original_inventory,level_boss,waitforu,has_backup {
   OBJECT:('(',"ornamental key"),special_quality:6
 }
 
