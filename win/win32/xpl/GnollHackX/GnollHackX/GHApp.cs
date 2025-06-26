@@ -244,6 +244,19 @@ namespace GnollHackX
             Connectivity.ConnectivityChanged -= Connectivity_ConnectivityChanged;
             Battery.BatteryInfoChanged -= Battery_BatteryInfoChanged;
             DeviceDisplay.MainDisplayInfoChanged -= DeviceDisplay_MainDisplayInfoChanged;
+#if WINDOWS
+            if (GHApp.ScreenResolutionChanged)
+            {
+                try
+                {
+                    DisplaySettingsHelper.RestoreResolution();
+                }
+                catch (Exception ex)
+                {
+                    GHApp.MaybeWriteGHLog("Resolution restore failed: " + ex.Message);
+                }
+            }
+#endif
         }
 
         private static void DeviceDisplay_MainDisplayInfoChanged(object sender, DisplayInfoChangedEventArgs e)
@@ -640,6 +653,7 @@ namespace GnollHackX
             return list;
         }
 
+        public static bool ScreenResolutionChanged { get; set; }
         public static bool RecommendedSettingsChecked { get; set; }
 
         private static readonly object _recordGameLock = new object();

@@ -6,6 +6,8 @@ using System.Diagnostics;
 
 #if GNH_MAUI
 using GnollHackM;
+using System.Runtime.InteropServices;
+
 
 #if WINDOWS
 using GnollHackM.Platforms.Windows;
@@ -1545,4 +1547,99 @@ namespace GnollHackX
             TimeStamp = time;
         }
     }
+
+#if WINDOWS
+
+    public static class DisplaySettingsHelper
+    {
+        private const int ENUM_CURRENT_SETTINGS = -1;
+        private const int CDS_UPDATEREGISTRY = 0x01;
+        private const int CDS_TEST = 0x02;
+        private const int DISP_CHANGE_SUCCESSFUL = 0;
+
+        [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi)]
+        public struct DEVMODE
+        {
+            private const int CCHDEVICENAME = 32;
+            private const int CCHFORMNAME = 32;
+
+            [MarshalAs(UnmanagedType.ByValTStr, SizeConst = CCHDEVICENAME)]
+            public string dmDeviceName;
+
+            public ushort dmSpecVersion;
+            public ushort dmDriverVersion;
+            public ushort dmSize;
+            public ushort dmDriverExtra;
+            public uint dmFields;
+
+            public int dmPositionX;
+            public int dmPositionY;
+            public uint dmDisplayOrientation;
+            public uint dmDisplayFixedOutput;
+
+            public short dmColor;
+            public short dmDuplex;
+            public short dmYResolution;
+            public short dmTTOption;
+            public short dmCollate;
+
+            [MarshalAs(UnmanagedType.ByValTStr, SizeConst = CCHFORMNAME)]
+            public string dmFormName;
+
+            public ushort dmLogPixels;
+            public uint dmBitsPerPel;
+            public uint dmPelsWidth;
+            public uint dmPelsHeight;
+            public uint dmDisplayFlags;
+            public uint dmDisplayFrequency;
+            public uint dmICMMethod;
+            public uint dmICMIntent;
+            public uint dmMediaType;
+            public uint dmDitherType;
+            public uint dmReserved1;
+            public uint dmReserved2;
+            public uint dmPanningWidth;
+            public uint dmPanningHeight;
+        }
+
+        [DllImport("user32.dll")]
+        private static extern int ChangeDisplaySettings(ref DEVMODE devMode, int flags);
+
+        [DllImport("user32.dll")]
+        private static extern bool EnumDisplaySettings(string lpszDeviceName, int iModeNum, ref DEVMODE lpDevMode);
+
+        private static DEVMODE originalMode;
+
+        public static void ChangeResolution(uint width, uint height)
+        {
+            DEVMODE dm = GetDevMode();
+
+            originalMode = dm; // Store original mode to restore later
+
+            dm.dmPelsWidth = width;
+            dm.dmPelsHeight = height;
+            dm.dmFields = 0x00080000 | 0x00100000; // DM_PELSWIDTH | DM_PELSHEIGHT
+
+            int result = ChangeDisplaySettings(ref dm, CDS_UPDATEREGISTRY);
+
+            if (result != DISP_CHANGE_SUCCESSFUL)
+                throw new InvalidOperationException("Failed to change resolution");
+        }
+
+        public static void RestoreResolution()
+        {
+            ChangeDisplaySettings(ref originalMode, CDS_UPDATEREGISTRY);
+        }
+
+        private static DEVMODE GetDevMode()
+        {
+            DEVMODE dm = new DEVMODE();
+            dm.dmSize = (ushort)Marshal.SizeOf(typeof(DEVMODE));
+            if (!EnumDisplaySettings(null, ENUM_CURRENT_SETTINGS, ref dm))
+                throw new InvalidOperationException("Cannot get display settings");
+            return dm;
+        }
+    }
+#endif
+
 }
