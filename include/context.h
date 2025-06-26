@@ -271,7 +271,8 @@ struct context_info
     int64_t reserved_int64_3;
     int64_t reserved_int64_4;
     
-    int reserved_int1;
+    int yeenaghu_wishes;
+
     int reserved_int2;
     int reserved_int3;
     int reserved_int4;

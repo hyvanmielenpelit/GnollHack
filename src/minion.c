@@ -819,8 +819,8 @@ boolean* stop_chat_ptr;
                 break;
             }
 
-        if ((u.ualign.type == A_CHAOTIC && (u.ualign.record >= 14 || !(2-rnl(3)))) || (u.ualign.type == A_NEUTRAL && !rnl(3))
-            || has_howling_flail)
+        if (((u.ualign.type == A_CHAOTIC && (u.ualign.record >= 14 || !(2-rnl(3)))) || (u.ualign.type == A_NEUTRAL && !rnl(3))
+            || has_howling_flail) && (!context.yeenaghu_wishes || !rn2(1 + context.yeenaghu_wishes)))
         {
             struct monst tmpmon = *mtmp; /* Save Yeenaghu's data */
             play_monster_special_dialogue_line(mtmp, YEENAGHU_LINE_PLEASED);
@@ -830,6 +830,7 @@ boolean* stop_chat_ptr;
             //mongrantswish removes the monster (calls mongone)
             play_simple_monster_sound(&tmpmon, MONSTER_SOUND_TYPE_LAUGHTER);
             pline_ex1(ATR_NONE, CLR_MSG_ATTENTION, "The demon lord laughs, then vanishes.");
+            context.yeenaghu_wishes++;
             if (stop_chat_ptr)
                 *stop_chat_ptr = TRUE;
             return 1;
