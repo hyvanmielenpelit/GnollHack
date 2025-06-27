@@ -325,9 +325,11 @@ namespace GnollHackX.Pages.MainScreen
                     GHApp.CustomScreenResolutionWidth = item.Width;
                     GHApp.CustomScreenResolutionHeight = item.Height;
                     GHApp.CustomScreenResolutionRefreshRate = item.RefreshRate;
+                    GHApp.CustomScreenResolutionPriority = item.ListPriority;
                     Preferences.Set("CustomScreenResolutionWidth", (int)item.Width);
                     Preferences.Set("CustomScreenResolutionHeight", (int)item.Height);
                     Preferences.Set("CustomScreenResolutionRefreshRate", (int)item.RefreshRate);
+                    Preferences.Set("CustomScreenResolutionPriority", (int)item.ListPriority);
                 }
             }
 
@@ -903,7 +905,7 @@ namespace GnollHackX.Pages.MainScreen
             long primarygpucache = -2, secondarygpucache = -2;
             int rightmouse = GHConstants.DefaultRightMouseCommand, middlemouse = GHConstants.DefaultMiddleMouseCommand;
             float screenscale = 0.0f;
-            uint screenresolutionwidth = 0, screenresolutionheight = 0, screenresolutionrefreshrate = 0;
+            uint screenresolutionwidth = 0, screenresolutionheight = 0, screenresolutionrefreshrate = 0, screenresolutionpriority = 1;
             float generalVolume, musicVolume, ambientVolume, dialogueVolume, effectsVolume, UIVolume;
             string customlink = "";
             string customxlogaccountlink = "";
@@ -986,6 +988,7 @@ namespace GnollHackX.Pages.MainScreen
             screenresolutionwidth = (uint)Preferences.Get("CustomScreenResolutionWidth", 0);
             screenresolutionheight = (uint)Preferences.Get("CustomScreenResolutionHeight", 0);
             screenresolutionrefreshrate = (uint)Preferences.Get("CustomScreenResolutionRefreshRate", 0);
+            screenresolutionpriority = (uint)Preferences.Get("CustomScreenResolutionPriority", 1);
             save_file_tracking = GHApp.SaveFileTracking;
             disablewindowskey = Preferences.Get("DisableWindowsKey", false);
             if (_gamePage == null)
@@ -1118,9 +1121,13 @@ namespace GnollHackX.Pages.MainScreen
 
             if (ScreenResolutionGrid.IsVisible && ScreenResolutionPicker.ItemsSource != null && ScreenResolutionPicker.ItemsSource.Count > 0)
             {
-                if (ScreenResolutionPicker.ItemsSource.Count == 1)
+                if (ScreenResolutionPicker.ItemsSource.Count == 1 || screenresolutionpriority == 2)
                 {
                     ScreenResolutionPicker.SelectedIndex = 0;
+                }
+                else if (GHApp.RecommendedScreenResolution != null && screenresolutionpriority == 1 && ScreenResolutionPicker.ItemsSource.Count >= 2 && (ScreenResolutionPicker.ItemsSource[1] as ScreenResolutionItem)?.ListPriority == 1)
+                {
+                    ScreenResolutionPicker.SelectedIndex = 1;
                 }
                 else
                 {
@@ -2459,7 +2466,8 @@ namespace GnollHackX.Pages.MainScreen
                     GHApp.CustomScreenResolutionWidth = item.Width;
                     GHApp.CustomScreenResolutionHeight = item.Height;
                     GHApp.CustomScreenResolutionRefreshRate = item.RefreshRate;
-                    if (item.Width == 0 || item.Height == 0 || item.RefreshRate == 0)
+                    GHApp.CustomScreenResolutionPriority = item.ListPriority;
+                    if (item.ListPriority == 2 || item.Width == 0 || item.Height == 0 || item.RefreshRate == 0)
                         GHApp.RevertScreenResolution();
                     else
                         GHApp.ChangeScreenResolution(item.Width, item.Height, item.RefreshRate);

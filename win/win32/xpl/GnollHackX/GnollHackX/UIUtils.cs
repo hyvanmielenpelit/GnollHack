@@ -1615,6 +1615,21 @@ namespace GnollHackX
             originalMode = GetDevMode(); // Store original mode to restore later
         }
 
+        public static ScreenResolutionItem GetCurrentResolution()
+        {
+            return GetScreenResolution("Current", GetDevMode());
+        }
+
+        public static ScreenResolutionItem GetOriginalResolution()
+        {
+            return GetScreenResolution("Original", originalMode);
+        }
+
+        private static ScreenResolutionItem GetScreenResolution(string name, DEVMODE dm)
+        {
+            return new ScreenResolutionItem(name, dm.dmPelsWidth, dm.dmPelsHeight, dm.dmDisplayFrequency, 0);
+        }
+
         public static void ChangeResolution(uint width, uint height, uint refreshRate)
         {
             DEVMODE dm = GetDevMode();
@@ -1660,7 +1675,7 @@ namespace GnollHackX
                     // Avoid duplicate entries (some drivers report duplicates)
                     if (!seen.Contains(uniqueKey))
                     {
-                        resolutions.Add(new ScreenResolutionItem(displayName, devMode.dmPelsWidth, devMode.dmPelsHeight, devMode.dmDisplayFrequency));
+                        resolutions.Add(new ScreenResolutionItem(displayName, devMode.dmPelsWidth, devMode.dmPelsHeight, devMode.dmDisplayFrequency, 0));
                         seen.Add(uniqueKey);
                     }
 

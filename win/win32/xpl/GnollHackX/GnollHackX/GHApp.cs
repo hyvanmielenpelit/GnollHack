@@ -241,6 +241,7 @@ namespace GnollHackX
             CustomScreenResolutionWidth = (uint)Preferences.Get("CustomScreenResolutionWidth", 0);
             CustomScreenResolutionHeight = (uint)Preferences.Get("CustomScreenResolutionHeight", 0);
             CustomScreenResolutionRefreshRate = (uint)Preferences.Get("CustomScreenResolutionRefreshRate", 0);
+            CustomScreenResolutionPriority = (uint)Preferences.Get("CustomScreenResolutionPriority", 1);
             SaveScreenResolution();
             ChangeToCustomScreenResolution();
         }
@@ -260,6 +261,30 @@ namespace GnollHackX
             List<ScreenResolutionItem> supportedResolutions = DisplaySettingsHelper.GetSupportedScreenResolutions();
             if (supportedResolutions != null)
             {
+                uint widestWidth = 0, secondWidestWidth = 0, thirdWidestWidth = 0;
+                supportedResolutions.Sort((i1, i2) =>
+                {
+                    if (i1.Width != i2.Width)
+                        return 1 * ((int)i1.Width - (int)i2.Width);
+                    if (i1.Height != i2.Height)
+                        return 1 * ((int)i1.Height - (int)i2.Height);
+                    if (i1.RefreshRate != i2.RefreshRate)
+                        return -1 * ((int)i1.RefreshRate - (int)i2.RefreshRate);
+                    if (i1.DisplayName != null && i2.DisplayName != null)
+                        return 1 * i1.DisplayName.CompareTo(i2.DisplayName);
+                    return 0;
+                }); 
+                foreach (ScreenResolutionItem item in supportedResolutions)
+                {
+                    if (item.Width > GHConstants.TargetDesktopScreenWidth)
+                        continue;
+                    if (item.Width > widestWidth)
+                    {
+                        thirdWidestWidth = secondWidestWidth;
+                        secondWidestWidth = widestWidth;
+                        widestWidth = item.Width;
+                    }
+                }
                 supportedResolutions.Sort((i1, i2) => 
                 {
                     if (i1 == null && i2 == null)
@@ -273,6 +298,8 @@ namespace GnollHackX
                     if (i1.Width > 0 && i2.Width == 0)
                         return -1;
 
+                    if (i1.ListPriority != i2.ListPriority)
+                        return -1 * ((int)i1.ListPriority - (int)i2.ListPriority);
                     if (i1.Width != i2.Width)
                         return -1 * ((int)i1.Width - (int)i2.Width);
                     if (i1.Height != i2.Height)
@@ -283,8 +310,82 @@ namespace GnollHackX
                         return -1 * i1.DisplayName.CompareTo(i2.DisplayName);
                     return 0;
                 });
+                /* Add recommended */
+                if (supportedResolutions.Count > 0)
+                {
+                    ScreenResolutionItem origResolution = DisplaySettingsHelper.GetCurrentResolution();
+                    double aspectRatio = origResolution.Height != 0 ? (double)origResolution.Width / (double)origResolution.Height : 0;
+                    double roundedAspectRatio = Math.Round(aspectRatio, 5);
+                    List<ScreenResolutionItem> resolutionsOfRightWidth = new List<ScreenResolutionItem>();
+                    foreach (ScreenResolutionItem item in supportedResolutions)
+                    {
+                        if (item.Width == widestWidth || ((item.Width == secondWidestWidth || item.Width == thirdWidestWidth) && item.Width >= 3 * widestWidth / 4))
+                            resolutionsOfRightWidth.Add(item);
+                    }
+
+                    if (resolutionsOfRightWidth.Count > 0)
+                    {
+                        //List<ScreenResolutionItem> resolutionsOfRightAspect = new List<ScreenResolutionItem>();
+                        //foreach (ScreenResolutionItem item in resolutionsOfRightWidth)
+                        //{
+                        //    double itemAspectRatio = item.Height != 0 ? (double)item.Width / (double)item.Height : 0;
+                        //    double roundedItemAspectRatio = Math.Round(itemAspectRatio, 5);
+                        //    if (roundedItemAspectRatio == roundedAspectRatio)
+                        //        resolutionsOfRightAspect.Add(item);
+                        //}
+                        //if (resolutionsOfRightAspect.Count == 0)
+                        //{
+                        //    double bestAspectRatio = resolutionsOfRightWidth[0].Height != 0 ? (double)resolutionsOfRightWidth[0].Width / (double)resolutionsOfRightWidth[0].Height : 0;
+                        //    double roundedBestAspectRatio = Math.Round(bestAspectRatio, 5);
+                        //    foreach (ScreenResolutionItem item in resolutionsOfRightWidth)
+                        //    {
+                        //        double itemAspectRatio = item.Height != 0 ? (double)item.Width / (double)item.Height : 0;
+                        //        double roundedItemAspectRatio = Math.Round(itemAspectRatio, 5);
+                        //        if (roundedItemAspectRatio == bestAspectRatio)
+                        //            resolutionsOfRightAspect.Add(item);
+                        //        else
+                        //            break;
+                        //    }
+                        //}
+                        resolutionsOfRightWidth.Sort((i1, i2) =>
+                        {
+                            double item1AspectRatio = i1.Height != 0 ? (double)i1.Width / (double)i1.Height : 0;
+                            double roundedItem1AspectRatio = Math.Round(item1AspectRatio, 5);
+                            double item2AspectRatio = i2.Height != 0 ? (double)i2.Width / (double)i2.Height : 0;
+                            double roundedItem2AspectRatio = Math.Round(item2AspectRatio, 5);
+                            long d1 = (long)(Math.Round(Math.Abs(roundedItem1AspectRatio - roundedAspectRatio), 5) * 10000);
+                            long d2 = (long)(Math.Round(Math.Abs(roundedItem2AspectRatio - roundedAspectRatio), 5) * 10000);
+                            if (d1 != d2)
+                                return Convert.ToInt32(d1 - d2);
+                            if (i1.Width != i2.Width)
+                                return -1 * ((int)i1.Width - (int)i2.Width);
+                            if (i1.RefreshRate != i2.RefreshRate)
+                                return -1 * ((int)i1.RefreshRate - (int)i2.RefreshRate);
+                            return 0;
+                        });
+
+                        uint width = resolutionsOfRightWidth[0].Width;
+                        uint height = resolutionsOfRightWidth[0].Height;
+                        uint frequency = resolutionsOfRightWidth[0].RefreshRate;
+                        if (width == origResolution.Width && height == origResolution.Height)
+                            RecommendedScreenResolution = new ScreenResolutionItem("Recommended (Default)", 0, 0, 0, 1);
+                        else
+                            RecommendedScreenResolution = new ScreenResolutionItem("Recommended (" + width + "x" + height + " @ " + frequency + " Hz)", width, height, frequency, 1);
+                        ScreenResolutionItems.Add(RecommendedScreenResolution);
+
+                        //if (resolutionsOfRightAspect.Count > 0)
+                        //{
+                        //    resolutionsOfRightAspect.Sort((i1, i2) =>
+                        //    {
+                        //        return -1 * ((int)i1.RefreshRate - (int)i2.RefreshRate);
+                        //    });
+                        //}
+                    }
+                }
+                /* Add supported resolutions */
                 ScreenResolutionItems.AddRange(supportedResolutions);
             }
+
 #endif
         }
 
@@ -298,10 +399,14 @@ namespace GnollHackX
         public static uint CustomScreenResolutionWidth = 0;
         public static uint CustomScreenResolutionHeight = 0;
         public static uint CustomScreenResolutionRefreshRate = 0;
+        public static uint CustomScreenResolutionPriority = 1;
 
         public static void ChangeToCustomScreenResolution()
         {
-            ChangeScreenResolution(CustomScreenResolutionWidth, CustomScreenResolutionHeight, CustomScreenResolutionRefreshRate);
+            if (CustomScreenResolutionPriority == 1 && RecommendedScreenResolution != null)
+                ChangeScreenResolution(RecommendedScreenResolution.Width, RecommendedScreenResolution.Height, RecommendedScreenResolution.RefreshRate);
+            else if (CustomScreenResolutionPriority == 0)
+                ChangeScreenResolution(CustomScreenResolutionWidth, CustomScreenResolutionHeight, CustomScreenResolutionRefreshRate);
         }
 
         public static void ChangeScreenResolution(uint requestedWidth, uint requestedHeight, uint requestedRefreshRate)
@@ -330,7 +435,7 @@ namespace GnollHackX
                         }
                         else
                         {
-                            MaybeWriteGHLog("Could not find the requested custom screen resolution of " + requestedWidth + "x" + requestedHeight + " @ " + requestedRefreshRate + " in the list of acceptable resolutions.");
+                            MaybeWriteGHLog("Could not find the requested custom screen resolution of " + requestedWidth + "x" + requestedHeight + " @ " + requestedRefreshRate + " Hz in the list of acceptable resolutions.");
                         }
                     }
                 }
@@ -3161,9 +3266,10 @@ namespace GnollHackX
             new ScreenScaleItem("500%", 5.0f),
         };
 
+        public static ScreenResolutionItem RecommendedScreenResolution = null;
         public static readonly List<ScreenResolutionItem> ScreenResolutionItems = new List<ScreenResolutionItem>()
         {
-            new ScreenResolutionItem("Default", 0, 0, 0),
+            new ScreenResolutionItem("Default", 0, 0, 0, 2),
         };
 
 #if DEBUG
@@ -8368,12 +8474,14 @@ namespace GnollHackX
         public readonly uint Width = 0;
         public readonly uint Height = 0;
         public readonly uint RefreshRate = 0;
-        public ScreenResolutionItem(string displayName, uint width, uint height, uint refreshRate)
+        public readonly uint ListPriority = 0;
+        public ScreenResolutionItem(string displayName, uint width, uint height, uint refreshRate, uint listPriority)
         {
             DisplayName = displayName;
             Width = width;
             Height = height;
-            RefreshRate = refreshRate;
+            RefreshRate = refreshRate;  
+            ListPriority = listPriority;
         }
 
         public override string ToString()

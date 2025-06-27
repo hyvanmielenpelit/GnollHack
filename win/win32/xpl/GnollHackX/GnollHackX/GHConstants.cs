@@ -1917,6 +1917,7 @@ namespace GnollHackX
         public const long MapDataLockTimeOutTicks = 100L;
         public const long EffectLockTimeOutTicks = 50L;
         public const long MessageLockTimeOutTicks = 50L;
+        public const uint TargetDesktopScreenWidth = 1920;
     }
 
     [StructLayout(LayoutKind.Sequential)]
