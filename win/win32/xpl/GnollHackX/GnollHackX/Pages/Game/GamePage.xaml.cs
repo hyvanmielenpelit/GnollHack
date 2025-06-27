@@ -2983,10 +2983,10 @@ namespace GnollHackX.Pages.Game
                             //lSkillButton.IsVisible = false;
                             break;
                         case GHRequestType.FadeToBlack:
-                            await FadeToBlack(Convert.ToUInt32(req.RequestInt));
+                            await FadeToBlack((uint)req.RequestInt);
                             break;
                         case GHRequestType.FadeFromBlack:
-                            await FadeFromBlack(Convert.ToUInt32(req.RequestInt));
+                            await FadeFromBlack((uint)req.RequestInt);
                             break;
                         case GHRequestType.SetToBlack:
                             SetToBlack();

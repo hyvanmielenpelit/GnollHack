@@ -238,9 +238,9 @@ namespace GnollHackX
             BackButtonPressed += EmptyBackButtonPressed;
             DeviceDisplay.MainDisplayInfoChanged += DeviceDisplay_MainDisplayInfoChanged;
 
-            CustomScreenResolutionWidth = Convert.ToUInt32(Preferences.Get("CustomScreenResolutionWidth", 0));
-            CustomScreenResolutionHeight = Convert.ToUInt32(Preferences.Get("CustomScreenResolutionHeight", 0));
-            CustomScreenResolutionRefreshRate = Convert.ToUInt32(Preferences.Get("CustomScreenResolutionRefreshRate", 0));
+            CustomScreenResolutionWidth = (uint)Preferences.Get("CustomScreenResolutionWidth", 0);
+            CustomScreenResolutionHeight = (uint)Preferences.Get("CustomScreenResolutionHeight", 0);
+            CustomScreenResolutionRefreshRate = (uint)Preferences.Get("CustomScreenResolutionRefreshRate", 0);
             SaveScreenResolution();
             ChangeToCustomScreenResolution();
         }

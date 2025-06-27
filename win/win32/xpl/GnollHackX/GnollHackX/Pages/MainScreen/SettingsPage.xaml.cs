@@ -325,9 +325,9 @@ namespace GnollHackX.Pages.MainScreen
                     GHApp.CustomScreenResolutionWidth = item.Width;
                     GHApp.CustomScreenResolutionHeight = item.Height;
                     GHApp.CustomScreenResolutionRefreshRate = item.RefreshRate;
-                    Preferences.Set("CustomScreenResolutionWidth", item.Width);
-                    Preferences.Set("CustomScreenResolutionHeight", item.Height);
-                    Preferences.Set("CustomScreenResolutionRefreshRate", item.RefreshRate);
+                    Preferences.Set("CustomScreenResolutionWidth", (int)item.Width);
+                    Preferences.Set("CustomScreenResolutionHeight", (int)item.Height);
+                    Preferences.Set("CustomScreenResolutionRefreshRate", (int)item.RefreshRate);
                 }
             }
 
@@ -983,9 +983,9 @@ namespace GnollHackX.Pages.MainScreen
             secondarygpucache = Preferences.Get("SecondaryGPUCacheLimit", -2L);
             disableauxgpu = Preferences.Get("DisableAuxiliaryGLCanvas", GHApp.IsDisableAuxGPUDefault);
             screenscale = Preferences.Get("CustomScreenScale", 0.0f);
-            screenresolutionwidth = Convert.ToUInt32(Preferences.Get("CustomScreenResolutionWidth", 0));
-            screenresolutionheight = Convert.ToUInt32(Preferences.Get("CustomScreenResolutionHeight", 0));
-            screenresolutionrefreshrate = Convert.ToUInt32(Preferences.Get("CustomScreenResolutionRefreshRate", 0));
+            screenresolutionwidth = (uint)Preferences.Get("CustomScreenResolutionWidth", 0);
+            screenresolutionheight = (uint)Preferences.Get("CustomScreenResolutionHeight", 0);
+            screenresolutionrefreshrate = (uint)Preferences.Get("CustomScreenResolutionRefreshRate", 0);
             save_file_tracking = GHApp.SaveFileTracking;
             disablewindowskey = Preferences.Get("DisableWindowsKey", false);
             if (_gamePage == null)
