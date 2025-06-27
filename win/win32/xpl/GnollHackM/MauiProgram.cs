@@ -638,7 +638,7 @@ public class KeyboardHook
                         //        return 1;
                         //    break;
                         default:
-                            string character = VkCodeToUnicode((uint)vkCode);
+                            string character = VkCodeToUnicode(Convert.ToUInt32(vkCode));
                             if (!string.IsNullOrEmpty(character) && character.Length > 0)
                             {
                                 int key = character[0];
@@ -704,7 +704,7 @@ public class KeyboardHook
                 {
                     Debug.WriteLine("HookCallback: Syskey with Ctrl (AltGr)");
                     // Translate virtual key to actual character
-                    string character = VkCodeToUnicode((uint)vkCode);
+                    string character = VkCodeToUnicode(Convert.ToUInt32(vkCode));
                     if (!string.IsNullOrEmpty(character) && character.Length > 0)
                     {
                         int key = character[0];

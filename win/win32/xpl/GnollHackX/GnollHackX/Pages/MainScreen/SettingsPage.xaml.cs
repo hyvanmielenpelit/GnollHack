@@ -983,9 +983,9 @@ namespace GnollHackX.Pages.MainScreen
             secondarygpucache = Preferences.Get("SecondaryGPUCacheLimit", -2L);
             disableauxgpu = Preferences.Get("DisableAuxiliaryGLCanvas", GHApp.IsDisableAuxGPUDefault);
             screenscale = Preferences.Get("CustomScreenScale", 0.0f);
-            screenresolutionwidth = (uint)Preferences.Get("CustomScreenResolutionWidth", 0);
-            screenresolutionheight = (uint)Preferences.Get("CustomScreenResolutionHeight", 0);
-            screenresolutionrefreshrate = (uint)Preferences.Get("CustomScreenResolutionRefreshRate", 0);
+            screenresolutionwidth = Convert.ToUInt32(Preferences.Get("CustomScreenResolutionWidth", 0));
+            screenresolutionheight = Convert.ToUInt32(Preferences.Get("CustomScreenResolutionHeight", 0));
+            screenresolutionrefreshrate = Convert.ToUInt32(Preferences.Get("CustomScreenResolutionRefreshRate", 0));
             save_file_tracking = GHApp.SaveFileTracking;
             disablewindowskey = Preferences.Get("DisableWindowsKey", false);
             if (_gamePage == null)

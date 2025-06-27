@@ -28,7 +28,7 @@ namespace GnollHackM
 
         public MEMORYSTATUSEX()
         {
-            dwLength = (uint)Marshal.SizeOf(typeof(MEMORYSTATUSEX));
+            dwLength = Convert.ToUInt32(Marshal.SizeOf(typeof(MEMORYSTATUSEX)));
         }
     }
 
