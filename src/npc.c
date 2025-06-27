@@ -529,7 +529,13 @@ int mtype;
                 mongets(npc, rnd_class(FIRST_GEM, LAST_GEM));
             }
 
+            /* Manual */
             struct obj* otmp = mksobj_with_flags(SPE_MANUAL, TRUE, FALSE, MKOBJ_TYPE_NPC_SELLING, npc,  MAT_NONE, MANUAL_CATALOGUE_OF_GEMS_AND_STONES, 0L, MKOBJ_FLAGS_PARAM_IS_TITLE);
+            if (otmp)
+                (void)mpickobj(npc, otmp);
+
+            /* Pick-axe */
+            otmp = mksobj(PICK_AXE, FALSE, FALSE, MKOBJ_TYPE_NORMAL);
             if (otmp)
                 (void)mpickobj(npc, otmp);
 
