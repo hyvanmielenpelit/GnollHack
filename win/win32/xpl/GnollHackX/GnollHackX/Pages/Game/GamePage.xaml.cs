@@ -1510,17 +1510,17 @@ namespace GnollHackX.Pages.Game
         {
             try
             {
-                MainThread.BeginInvokeOnMainThread(async () =>
+                var tasks = pollRequestQueue();
+                if (tasks != null)
                 {
-                    try
+                    MainThread.InvokeOnMainThreadAsync(async () =>
                     {
-                        await pollRequestQueue();
-                    }
-                    catch (Exception ex)
-                    {
-                        Debug.WriteLine(ex);
-                    }
-                });
+                        while (tasks.TryDequeue(out Task task))
+                        {
+                            await task;
+                        }
+                    });
+                }
             }
             catch (Exception ex)
             {
@@ -2861,8 +2861,16 @@ namespace GnollHackX.Pages.Game
             GHApp.PlayReplay(curGame, ReplayFileName);
         }
 
-        private async Task pollRequestQueue()
+        private void EnqueueTask(ConcurrentQueue<Task> tasks, Task task)
         {
+            if (tasks == null)
+                tasks = new ConcurrentQueue<Task>();
+            tasks.Enqueue(task);
+        }
+
+        private ConcurrentQueue<Task> pollRequestQueue()
+        {
+            ConcurrentQueue<Task> tasks = null;
             GHGame curGame = CurrentGame;
             if (curGame != null)
             {
@@ -2896,10 +2904,10 @@ namespace GnollHackX.Pages.Game
                             GetChar();
                             break;
                         case GHRequestType.AskName:
-                            await AskName(req.RequestString, req.RequestString2, req.RequestString3);
+                            EnqueueTask(tasks, AskName(req.RequestString, req.RequestString2, req.RequestString3));
                             break;
                         case GHRequestType.HideAskNamePage:
-                            await HideAskNamePage();
+                            EnqueueTask(tasks, HideAskNamePage());
                             break;
                         case GHRequestType.GetLine:
                             GetLine(req.RequestString, req.PlaceHolderString, req.DefValueString, req.IntroLineString, req.RequestInt, req.RequestAttr, req.RequestNhColor);
@@ -2923,34 +2931,34 @@ namespace GnollHackX.Pages.Game
                             _mainPage.GameStarted = false;
                             if (PlayingReplay)
                                 DeviceDisplay.KeepScreenOn = false;
-                            await ReturnToMainMenu();
+                            EnqueueTask(tasks, ReturnToMainMenu());
                             break;
                         case GHRequestType.RestartGame:
-                            await RestartGame();
+                            EnqueueTask(tasks, RestartGame());
                             break;
                         case GHRequestType.RestartReplay:
-                            await RestartReplay();
+                            EnqueueTask(tasks, RestartReplay());
                             break;
                         case GHRequestType.ShowMenuPage:
-                            await ShowMenuCanvas(req.RequestMenuInfo != null ? req.RequestMenuInfo : new GHMenuInfo(ghmenu_styles.GHMENU_STYLE_GENERAL), req.RequestingGHWindow);
+                            EnqueueTask(tasks, ShowMenuCanvas(req.RequestMenuInfo != null ? req.RequestMenuInfo : new GHMenuInfo(ghmenu_styles.GHMENU_STYLE_GENERAL), req.RequestingGHWindow));
                             break;
                         case GHRequestType.HideMenuPage:
-                            await DelayedMenuHide();
+                            EnqueueTask(tasks, DelayedMenuHide());
                             break;
                         case GHRequestType.ShowOutRipPage:
-                            await ShowOutRipPage(req.RequestOutRipInfo != null ? req.RequestOutRipInfo : new GHOutRipInfo("", 0, "", ""), req.RequestingGHWindow);
+                            EnqueueTask(tasks, ShowOutRipPage(req.RequestOutRipInfo != null ? req.RequestOutRipInfo : new GHOutRipInfo("", 0, "", ""), req.RequestingGHWindow));
                             break;
                         case GHRequestType.HideOutRipPage:
-                            await HideOutRipPage();
+                            EnqueueTask(tasks, HideOutRipPage());
                             break;
                         case GHRequestType.DestroyWindowView:
                             DestroyWindowView(req.RequestInt);
                             break;
                         case GHRequestType.DisplayWindowView:
-                            await DisplayWindowView(req.RequestInt);
+                            EnqueueTask(tasks, DisplayWindowView(req.RequestInt));
                             break;
                         case GHRequestType.HideTextWindow:
-                            await DelayedTextHide();
+                            EnqueueTask(tasks, DelayedTextHide());
                             break;
                         case GHRequestType.HideLoadingScreen:
                             HideLoadingScreen();
@@ -2983,10 +2991,10 @@ namespace GnollHackX.Pages.Game
                             //lSkillButton.IsVisible = false;
                             break;
                         case GHRequestType.FadeToBlack:
-                            await FadeToBlack((uint)req.RequestInt);
+                            EnqueueTask(tasks, FadeToBlack((uint)req.RequestInt));
                             break;
                         case GHRequestType.FadeFromBlack:
-                            await FadeFromBlack((uint)req.RequestInt);
+                            EnqueueTask(tasks, FadeFromBlack((uint)req.RequestInt));
                             break;
                         case GHRequestType.SetToBlack:
                             SetToBlack();
@@ -2995,16 +3003,16 @@ namespace GnollHackX.Pages.Game
                             ShowGUITips(true);
                             break;
                         case GHRequestType.CrashReport:
-                            await ReportCrashDetected();
+                            EnqueueTask(tasks, ReportCrashDetected());
                             break;
                         case GHRequestType.Panic:
-                            await ReportPanic(req.RequestString);
+                            EnqueueTask(tasks, ReportPanic(req.RequestString));
                             break;
                         case GHRequestType.Message:
-                            await ShowMessage(req.RequestString);
+                            EnqueueTask(tasks, ShowMessage(req.RequestString));
                             break;
                         case GHRequestType.YnConfirmation:
-                            await YnConfirmation(req.TitleString, req.RequestString, req.RequestString2, req.DefValueString);
+                            EnqueueTask(tasks, YnConfirmation(req.TitleString, req.RequestString, req.RequestString2, req.DefValueString));
                             break;
                         case GHRequestType.DisplayConditionText:
                             DisplayConditionText(req.ConditionTextData);
@@ -3046,7 +3054,7 @@ namespace GnollHackX.Pages.Game
                             _mainPage.EnqueuePost(new GHPost(3, true, req.RequestInt, req.RequestInt2, req.RequestString, null, false));
                             break;
                         case GHRequestType.DebugLog:
-                            await DisplayDebugLog(req.RequestString, req.RequestInt, req.RequestInt2);
+                            EnqueueTask(tasks, DisplayDebugLog(req.RequestString, req.RequestInt, req.RequestInt2));
                             break;
                         case GHRequestType.CloseAllDialogs:
                             CloseAllDialogs();
@@ -3069,7 +3077,7 @@ namespace GnollHackX.Pages.Game
                             {
                                 Debug.WriteLine(ex);
                             }
-                            await InformRecordingWentOff();
+                            EnqueueTask(tasks, InformRecordingWentOff());
                             break;
                         case GHRequestType.ToggleMenuPositionSaving:
                             ToggleMenuPositionSaving(req.RequestInt, req.RequestInt2);
@@ -3102,10 +3110,10 @@ namespace GnollHackX.Pages.Game
                         case GHRequestType.RestoreZoom:
                             break;
                         case GHRequestType.SaveFileTrackingSave:
-                            await DoSaveFileTrackingSave(req.RequestLong, req.RequestString, req.RequestLong2, req.RequestString2);
+                            EnqueueTask(tasks, DoSaveFileTrackingSave(req.RequestLong, req.RequestString, req.RequestLong2, req.RequestString2));
                             break;
                         case GHRequestType.SaveFileTrackingLoad:
-                            await DoSaveFileTrackingLoad(req.RequestLong, req.RequestString, req.RequestLong2, req.RequestString2);
+                            EnqueueTask(tasks, DoSaveFileTrackingLoad(req.RequestLong, req.RequestString, req.RequestLong2, req.RequestString2));
                             break;
                         case GHRequestType.ClearPetData:
                             ClearPetData();
@@ -3125,6 +3133,7 @@ namespace GnollHackX.Pages.Game
                     }
                 }
             }
+            return tasks;
         }
 
         private readonly object _localWindowLock = new object();
