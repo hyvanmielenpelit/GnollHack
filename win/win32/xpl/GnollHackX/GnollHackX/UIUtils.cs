@@ -1610,25 +1610,69 @@ namespace GnollHackX
 
         private static DEVMODE originalMode;
 
-        public static void ChangeResolution(uint width, uint height)
+        public static void SaveOriginalResolution()
+        {
+            originalMode = GetDevMode(); // Store original mode to restore later
+        }
+
+        public static void ChangeResolution(uint width, uint height, uint refreshRate)
         {
             DEVMODE dm = GetDevMode();
 
-            originalMode = dm; // Store original mode to restore later
-
             dm.dmPelsWidth = width;
             dm.dmPelsHeight = height;
-            dm.dmFields = 0x00080000 | 0x00100000; // DM_PELSWIDTH | DM_PELSHEIGHT
+            dm.dmDisplayFrequency = refreshRate;
+            dm.dmFields = 0x00080000 | 0x00100000 | 0x400000; // DM_PELSWIDTH | DM_PELSHEIGHT | DM_DISPLAYFREQUENCY
 
             int result = ChangeDisplaySettings(ref dm, CDS_UPDATEREGISTRY);
-
             if (result != DISP_CHANGE_SUCCESSFUL)
-                throw new InvalidOperationException("Failed to change resolution");
+            {
+                GHApp.MaybeWriteGHLog("Failed to change resolution");
+            }
         }
 
         public static void RestoreResolution()
         {
-            ChangeDisplaySettings(ref originalMode, CDS_UPDATEREGISTRY);
+            DEVMODE dm = originalMode;
+            dm.dmFields = 0x00080000 | 0x00100000 | 0x400000; // DM_PELSWIDTH | DM_PELSHEIGHT | DM_DISPLAYFREQUENCY
+            int result = ChangeDisplaySettings(ref dm, CDS_UPDATEREGISTRY);
+            if (result != DISP_CHANGE_SUCCESSFUL)
+            {
+                GHApp.MaybeWriteGHLog("Failed to revert screen resolution");
+            }
+        }
+
+        public static List<ScreenResolutionItem> GetSupportedScreenResolutions()
+        {
+            var resolutions = new List<ScreenResolutionItem>();
+            var devMode = new DEVMODE();
+            devMode.dmSize = (ushort)Marshal.SizeOf(typeof(DEVMODE));
+            int i = 0;
+            HashSet<string> seen = new HashSet<string>();
+
+            try
+            {
+                while (EnumDisplaySettings(null, i, ref devMode))
+                {
+                    string displayName = $"{devMode.dmPelsWidth}x{devMode.dmPelsHeight} @ {devMode.dmDisplayFrequency}Hz";
+                    string uniqueKey = $"{devMode.dmPelsWidth}x{devMode.dmPelsHeight}@{devMode.dmDisplayFrequency}";
+
+                    // Avoid duplicate entries (some drivers report duplicates)
+                    if (!seen.Contains(uniqueKey))
+                    {
+                        resolutions.Add(new ScreenResolutionItem(displayName, devMode.dmPelsWidth, devMode.dmPelsHeight, devMode.dmDisplayFrequency));
+                        seen.Add(uniqueKey);
+                    }
+
+                    i++;
+                }
+            }
+            catch(Exception ex)
+            {
+                GHApp.MaybeWriteGHLog(ex.Message);
+            }
+
+            return resolutions;
         }
 
         private static DEVMODE GetDevMode()
@@ -1639,6 +1683,7 @@ namespace GnollHackX
                 throw new InvalidOperationException("Cannot get display settings");
             return dm;
         }
+
     }
 #endif
 

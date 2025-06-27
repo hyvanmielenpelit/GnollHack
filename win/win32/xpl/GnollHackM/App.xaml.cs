@@ -17,25 +17,6 @@ public partial class App : Application
 		InitializeComponent();
 
 #if WINDOWS
-        try
-        {
-            bool fullScreen = !Preferences.Get("WindowedMode", false);
-            if (fullScreen)
-            {
-                bool useCustom = Preferences.Get("UseCustomScreenResolution", false);
-                if (useCustom)
-                {
-                    uint preferredScreenWidth = (uint)Preferences.Get("ScreenResolutionWidth", 1600);
-                    uint preferredScreenHeight = (uint)Preferences.Get("ScreenResolutionWidth", 900);
-                    DisplaySettingsHelper.ChangeResolution(preferredScreenWidth, preferredScreenHeight);
-                    GHApp.ScreenResolutionChanged = true;
-                }
-            }
-        }
-        catch (Exception ex)
-        {
-            GHApp.MaybeWriteGHLog("Resolution change failed: " + ex.Message);
-        }
         Microsoft.Maui.Handlers.PickerHandler.Mapper.AppendToMapping(nameof(IPicker.Title), (handler, view) =>
         {
             if (handler.PlatformView is not null && view is Picker pick && !String.IsNullOrWhiteSpace(pick.Title))
@@ -146,8 +127,9 @@ public partial class App : Application
     //    GHApp.OnResume();
     //}
 
-    //protected override void CleanUp()
-    //{
-    //    base.CleanUp();
-    //}
+    protected override void CleanUp()
+    {
+        GHApp.RevertScreenResolution();
+        base.CleanUp();
+    }
 }

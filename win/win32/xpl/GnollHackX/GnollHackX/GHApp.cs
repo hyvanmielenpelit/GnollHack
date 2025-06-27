@@ -129,6 +129,7 @@ namespace GnollHackX
             InitializeBattery();
             ProcessCommandLineArguments();
             ProcessEnvironment();
+            InitializeScreenResolutions();
 
             TotalMemory = PlatformService.GetDeviceMemoryInBytes();
             PlatformScreenScale = PlatformService.GetPlatformScreenScale();
@@ -236,6 +237,12 @@ namespace GnollHackX
 
             BackButtonPressed += EmptyBackButtonPressed;
             DeviceDisplay.MainDisplayInfoChanged += DeviceDisplay_MainDisplayInfoChanged;
+
+            CustomScreenResolutionWidth = (uint)Preferences.Get("CustomScreenResolutionWidth", 0);
+            CustomScreenResolutionHeight = (uint)Preferences.Get("CustomScreenResolutionHeight", 0);
+            CustomScreenResolutionRefreshRate = (uint)Preferences.Get("CustomScreenResolutionRefreshRate", 0);
+            SaveScreenResolution();
+            ChangeToCustomScreenResolution();
         }
 
 
@@ -244,16 +251,110 @@ namespace GnollHackX
             Connectivity.ConnectivityChanged -= Connectivity_ConnectivityChanged;
             Battery.BatteryInfoChanged -= Battery_BatteryInfoChanged;
             DeviceDisplay.MainDisplayInfoChanged -= DeviceDisplay_MainDisplayInfoChanged;
+            RevertScreenResolution();
+        }
+
+        private static void InitializeScreenResolutions()
+        {
 #if WINDOWS
-            if (GHApp.ScreenResolutionChanged)
+            List<ScreenResolutionItem> supportedResolutions = DisplaySettingsHelper.GetSupportedScreenResolutions();
+            if (supportedResolutions != null)
+            {
+                supportedResolutions.Sort((i1, i2) => 
+                {
+                    if (i1 == null && i2 == null)
+                        return 0;
+                    if (i1 == null)
+                        return 1;
+                    if (i2 == null)
+                        return -1;
+                    if (i1.Width == 0 && i2.Width > 0)
+                        return 1;
+                    if (i1.Width > 0 && i2.Width == 0)
+                        return -1;
+
+                    if (i1.Width != i2.Width)
+                        return -1 * ((int)i1.Width - (int)i2.Width);
+                    if (i1.Height != i2.Height)
+                        return -1 * ((int)i1.Height - (int)i2.Height);
+                    if (i1.RefreshRate != i2.RefreshRate)
+                        return -1 * ((int)i1.RefreshRate - (int)i2.RefreshRate);
+                    if (i1.DisplayName != null && i2.DisplayName != null)
+                        return -1 * i1.DisplayName.CompareTo(i2.DisplayName);
+                    return 0;
+                });
+                ScreenResolutionItems.AddRange(supportedResolutions);
+            }
+#endif
+        }
+
+        public static void SaveScreenResolution()
+        {
+#if WINDOWS
+            DisplaySettingsHelper.SaveOriginalResolution();
+#endif
+        }
+
+        public static uint CustomScreenResolutionWidth = 0;
+        public static uint CustomScreenResolutionHeight = 0;
+        public static uint CustomScreenResolutionRefreshRate = 0;
+
+        public static void ChangeToCustomScreenResolution()
+        {
+            ChangeScreenResolution(CustomScreenResolutionWidth, CustomScreenResolutionHeight, CustomScreenResolutionRefreshRate);
+        }
+
+        public static void ChangeScreenResolution(uint requestedWidth, uint requestedHeight, uint requestedRefreshRate)
+        {
+#if WINDOWS
+            try
+            {
+                bool fullScreen = !WindowedMode;
+                if (fullScreen)
+                {
+                    if (requestedWidth > 0 && requestedHeight > 0)
+                    {
+                        bool found = false;
+                        foreach (ScreenResolutionItem ri in ScreenResolutionItems)
+                        {
+                            if (ri.Width == requestedWidth && ri.Height == requestedHeight && ri.RefreshRate == requestedRefreshRate)
+                            {
+                                found = true;
+                                break;
+                            }
+                        }
+                        if (found)
+                        {
+                            DisplaySettingsHelper.ChangeResolution(requestedWidth, requestedHeight, requestedRefreshRate);
+                            ScreenResolutionChanged = true;
+                        }
+                        else
+                        {
+                            MaybeWriteGHLog("Could not find the requested custom screen resolution of " + requestedWidth + "x" + requestedHeight + " @ " + requestedRefreshRate + " in the list of acceptable resolutions.");
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MaybeWriteGHLog("Resolution change failed: " + ex.Message);
+            }
+#endif
+        }
+
+        public static void RevertScreenResolution()
+        {
+#if WINDOWS
+            if (ScreenResolutionChanged)
             {
                 try
                 {
                     DisplaySettingsHelper.RestoreResolution();
+                    ScreenResolutionChanged = false;
                 }
                 catch (Exception ex)
                 {
-                    GHApp.MaybeWriteGHLog("Resolution restore failed: " + ex.Message);
+                    MaybeWriteGHLog("Resolution restore failed: " + ex.Message);
                 }
             }
 #endif
@@ -1253,11 +1354,12 @@ namespace GnollHackX
 
         public static void OnFocus()
         {
-            // Nothing currently
+            ChangeToCustomScreenResolution();
         }
 
         public static void OnUnfocus()
         {
+            RevertScreenResolution();
             //GHGame game = CurrentGHGame;
             //if (game != null && !game.PlayingReplay && game.ActiveGamePage.IsGameOn)
             //    game.SaveCheckPoint();
@@ -3057,6 +3159,11 @@ namespace GnollHackX
             new ScreenScaleItem("400%", 4.0f),
             new ScreenScaleItem("450%", 4.5f),
             new ScreenScaleItem("500%", 5.0f),
+        };
+
+        public static readonly List<ScreenResolutionItem> ScreenResolutionItems = new List<ScreenResolutionItem>()
+        {
+            new ScreenResolutionItem("Default", 0, 0, 0),
         };
 
 #if DEBUG
@@ -8238,15 +8345,32 @@ namespace GnollHackX
 
     public class ScreenScaleItem
     {
-        public string DisplayName = "";
-        public float Value = 0.0f;
-        public ScreenScaleItem()
-        {
-        }
+        public readonly string DisplayName = "";
+        public readonly float Value = 0.0f;
         public ScreenScaleItem(string displayName, float value)
         {
             DisplayName = displayName;
             Value = value;
+        }
+
+        public override string ToString()
+        {
+            return DisplayName;
+        }
+    }
+
+    public class ScreenResolutionItem
+    {
+        public readonly string DisplayName = "";
+        public readonly uint Width = 0;
+        public readonly uint Height = 0;
+        public readonly uint RefreshRate = 0;
+        public ScreenResolutionItem(string displayName, uint width, uint height, uint refreshRate)
+        {
+            DisplayName = displayName;
+            Width = width;
+            Height = height;
+            RefreshRate = refreshRate;
         }
 
         public override string ToString()

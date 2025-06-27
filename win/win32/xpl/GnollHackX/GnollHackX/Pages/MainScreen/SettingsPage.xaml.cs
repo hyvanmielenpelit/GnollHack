@@ -101,6 +101,11 @@ namespace GnollHackX.Pages.MainScreen
             MiddleMousePicker.ItemsSource = mouseCommandItems;
 
             ScreenScalePicker.ItemsSource = GHApp.ScreenScaleItems;
+            ScreenResolutionPicker.ItemsSource = GHApp.ScreenResolutionItems;
+            if (!GHApp.IsWindows)
+            {
+                ScreenResolutionGrid.IsVisible = false;
+            }
 
             SimpleCommandBarButton1Picker.ItemsSource = GHApp.SelectableShortcutButtons;
             SimpleCommandBarButton2Picker.ItemsSource = GHApp.SelectableShortcutButtons;
@@ -310,6 +315,20 @@ namespace GnollHackX.Pages.MainScreen
                 float val = ((ScreenScaleItem)ScreenScalePicker.SelectedItem).Value;
                 GHApp.CustomScreenScale = val;
                 Preferences.Set("CustomScreenScale", val);
+            }
+
+            if (ScreenResolutionGrid.IsVisible && ScreenResolutionPicker.SelectedIndex >= 0 && ScreenResolutionPicker.SelectedItem != null)
+            {
+                ScreenResolutionItem item = ScreenResolutionPicker.SelectedItem as ScreenResolutionItem;
+                if (item != null)
+                {
+                    GHApp.CustomScreenResolutionWidth = item.Width;
+                    GHApp.CustomScreenResolutionHeight = item.Height;
+                    GHApp.CustomScreenResolutionRefreshRate = item.RefreshRate;
+                    Preferences.Set("CustomScreenResolutionWidth", item.Width);
+                    Preferences.Set("CustomScreenResolutionHeight", item.Height);
+                    Preferences.Set("CustomScreenResolutionRefreshRate", item.RefreshRate);
+                }
             }
 
             if (PrimaryGPUCachePicker.SelectedIndex > -1 && PrimaryGPUCachePicker.SelectedItem != null && PrimaryGPUCachePicker.SelectedItem is CacheSizeItem)
@@ -884,6 +903,7 @@ namespace GnollHackX.Pages.MainScreen
             long primarygpucache = -2, secondarygpucache = -2;
             int rightmouse = GHConstants.DefaultRightMouseCommand, middlemouse = GHConstants.DefaultMiddleMouseCommand;
             float screenscale = 0.0f;
+            uint screenresolutionwidth = 0, screenresolutionheight = 0, screenresolutionrefreshrate = 0;
             float generalVolume, musicVolume, ambientVolume, dialogueVolume, effectsVolume, UIVolume;
             string customlink = "";
             string customxlogaccountlink = "";
@@ -963,6 +983,9 @@ namespace GnollHackX.Pages.MainScreen
             secondarygpucache = Preferences.Get("SecondaryGPUCacheLimit", -2L);
             disableauxgpu = Preferences.Get("DisableAuxiliaryGLCanvas", GHApp.IsDisableAuxGPUDefault);
             screenscale = Preferences.Get("CustomScreenScale", 0.0f);
+            screenresolutionwidth = (uint)Preferences.Get("CustomScreenResolutionWidth", 0);
+            screenresolutionheight = (uint)Preferences.Get("CustomScreenResolutionHeight", 0);
+            screenresolutionrefreshrate = (uint)Preferences.Get("CustomScreenResolutionRefreshRate", 0);
             save_file_tracking = GHApp.SaveFileTracking;
             disablewindowskey = Preferences.Get("DisableWindowsKey", false);
             if (_gamePage == null)
@@ -1090,6 +1113,31 @@ namespace GnollHackX.Pages.MainScreen
                             break;
                         }
                     }
+                }
+            }
+
+            if (ScreenResolutionGrid.IsVisible && ScreenResolutionPicker.ItemsSource != null && ScreenResolutionPicker.ItemsSource.Count > 0)
+            {
+                if (ScreenResolutionPicker.ItemsSource.Count == 1)
+                {
+                    ScreenResolutionPicker.SelectedIndex = 0;
+                }
+                else
+                {
+                    for (int i = 0; i < ScreenResolutionPicker.ItemsSource.Count; i++)
+                    {
+                        ScreenResolutionItem item = ScreenResolutionPicker.ItemsSource[i] as ScreenResolutionItem;
+                        if (item != null)
+                        {
+                            if (item.Width == screenresolutionwidth && item.Height == screenresolutionheight && item.RefreshRate == screenresolutionrefreshrate)
+                            {
+                                ScreenResolutionPicker.SelectedIndex = i;
+                                break;
+                            }
+                        }
+                    }
+                    if (ScreenResolutionPicker.SelectedIndex < 0)
+                        ScreenResolutionPicker.SelectedIndex = 0;
                 }
             }
 
@@ -2399,6 +2447,24 @@ namespace GnollHackX.Pages.MainScreen
         private void DebugPostChannelSwitch_Toggled(object sender, ToggledEventArgs e)
         {
             GHApp.DebugPostChannel = e.Value;
+        }
+
+        private void ScreenResolutionPicker_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (_isManualTogglingEnabled && ScreenResolutionGrid.IsVisible && ScreenResolutionPicker.SelectedIndex >= 0)
+            {
+                ScreenResolutionItem item = ScreenResolutionPicker.SelectedItem as ScreenResolutionItem;
+                if (item != null)
+                {
+                    GHApp.CustomScreenResolutionWidth = item.Width;
+                    GHApp.CustomScreenResolutionHeight = item.Height;
+                    GHApp.CustomScreenResolutionRefreshRate = item.RefreshRate;
+                    if (item.Width == 0 || item.Height == 0 || item.RefreshRate == 0)
+                        GHApp.RevertScreenResolution();
+                    else
+                        GHApp.ChangeScreenResolution(item.Width, item.Height, item.RefreshRate);
+                }
+            }
         }
     }
 }

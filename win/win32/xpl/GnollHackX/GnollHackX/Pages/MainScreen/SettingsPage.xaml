@@ -74,6 +74,26 @@
                                             HorizontalOptions="End" >
                                 </Picker>
                             </Grid>
+                            <Grid x:Name="ScreenResolutionGrid" ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
+                                <Label Text="Screen Resolution"
+                                            FontFamily="Underwood" TextColor="Black"
+                                            FontSize="15"
+                                            VerticalOptions="Center" 
+                                            HorizontalOptions="Start" />
+                                <Picker Grid.Column="1" x:Name="ScreenResolutionPicker"
+                                            Title="Select resolution"
+                                            FontFamily="Underwood" 
+                                            FontSize="17"
+                                            TextColor="Black"
+                                            TitleColor="Black"
+                                            HorizontalTextAlignment="End"
+                                            BackgroundColor="Transparent"
+                                            WidthRequest="150"
+                                            VerticalOptions="Center"
+                                            HorizontalOptions="End"
+                                            SelectedIndexChanged="ScreenResolutionPicker_SelectedIndexChanged">
+                                </Picker>
+                            </Grid>
                             <Grid x:Name="ScreenScaleGrid" ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
                                 <Label Text="Screen Scale"
                                             FontFamily="Underwood" TextColor="Black"
