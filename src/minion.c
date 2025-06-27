@@ -820,7 +820,7 @@ boolean* stop_chat_ptr;
             }
 
         if (((u.ualign.type == A_CHAOTIC && (u.ualign.record >= 14 || !(2-rnl(3)))) || (u.ualign.type == A_NEUTRAL && !rnl(3))
-            || has_howling_flail) && (!context.yeenaghu_wishes || !rn2(3 * context.yeenaghu_wishes)))
+            || has_howling_flail) && (!context.yeenaghu_wishes || !rn2(3 * max(1, context.yeenaghu_wishes))))
         {
             struct monst tmpmon = *mtmp; /* Save Yeenaghu's data */
             play_monster_special_dialogue_line(mtmp, YEENAGHU_LINE_PLEASED);
