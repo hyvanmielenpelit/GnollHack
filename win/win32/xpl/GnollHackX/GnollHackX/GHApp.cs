@@ -4457,7 +4457,7 @@ namespace GnollHackX
                             }
                             else
                             {
-                                Debug.WriteLine("Sending " + (string.IsNullOrEmpty(xlogentry_string) ? "server authentication" : "XLog entry") + " failed. Status Code: " + (int)res.StatusCode);
+                                Debug.WriteLine("Sending " + (string.IsNullOrEmpty(xlogentry_string) ? "server authentication" : "XLog entry") + " failed. Status Code: " + (int)res.StatusCode + ", Message: " + res.Message);
                                 if (XlogUserNameVerified && res.HasHttpStatusCode && (res.StatusCode == HttpStatusCode.Forbidden /* 403 */)) // || res.StatusCode == HttpStatusCode.Locked /* 423 */
                                     SetXlogUserNameVerified(false, null, null);
                                 if (res.StatusCode == HttpStatusCode.Forbidden)
@@ -5333,7 +5333,7 @@ namespace GnollHackX
                                     }
                                     else
                                     {
-                                        MaybeWriteGHLog("Sending the bones file " + full_filepath + " failed. No bones file received in exchange. (" + (int)res.StatusCode + ")");
+                                        MaybeWriteGHLog("Sending the bones file " + full_filepath + " failed. No bones file received in exchange. (" + (int)res.StatusCode + ", Message: " + res.Message + ")");
                                         string str = "";
                                         try
                                         {
