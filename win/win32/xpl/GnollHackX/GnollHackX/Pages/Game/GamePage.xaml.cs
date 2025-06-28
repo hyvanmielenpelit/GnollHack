@@ -541,12 +541,18 @@ namespace GnollHackX.Pages.Game
         private bool _accurateLayerDrawing = false;
         public bool AlternativeLayerDrawing { get { lock (_accurateLayerDrawingLock) { return _accurateLayerDrawing; } } set { lock (_accurateLayerDrawingLock) { _accurateLayerDrawing = value; } } }
 
-        public readonly object RefreshScreenLock = new object();
+        private readonly object _refreshScreenLock = new object();
         private bool _refreshScreen = true;
         public bool RefreshScreen
         {
-            get { return _refreshScreen; }
-            set { _refreshScreen = value; }
+            get 
+            {
+                lock (_refreshScreenLock) { return _refreshScreen; } 
+            }
+            set
+            {
+                lock (_refreshScreenLock) { _refreshScreen = value; } 
+            }
         }
 
         private game_cursor_types _cursorType;
@@ -1558,10 +1564,14 @@ namespace GnollHackX.Pages.Game
         }
 
         private bool _counterDiffZeroObserved = false;
+        private long _updateTimerTickCount = 0L;
         private void DoUpdateTimer()
         {
             MainThread.BeginInvokeOnMainThread(() =>
             {
+                _updateTimerTickCount++;
+                if (_updateTimerTickCount == long.MaxValue)
+                    _updateTimerTickCount = 0;
                 lock (_cursorIsOnLock)
                 {
                     _cursorIsOn = !_cursorIsOn;
@@ -1602,12 +1612,13 @@ namespace GnollHackX.Pages.Game
                                 }
                                 if (GHApp.IsWindows)
                                 {
-                                    if (counterDiff == 0 && !_counterDiffZeroObserved && IsGameOn && !LoadingGrid.IsVisible && !MoreCommandsGrid.IsVisible && !MenuGrid.IsVisible && !TextGrid.IsVisible)
+                                    if (counterDiff == 0 && (_mainFPSCounterValue > 0 || _updateTimerTickCount > 10) && !_counterDiffZeroObserved && IsGameOn && IsMainCanvasOn && !LoadingGrid.IsVisible && !MoreCommandsGrid.IsVisible && !MenuGrid.IsVisible && !TextGrid.IsVisible)
                                     {
                                         _counterDiffZeroObserved = true;
                                         GHApp.MaybeWriteGHLog("MainCanvas counterDiff is 0");
                                         PleaseWaitLabel.IsVisible = true;
                                         StopMainCanvasAnimation();
+                                        RefreshScreen = true;
                                         StartMainCanvasAnimation();
                                     }
                                     else if (counterDiff > 0 && _counterDiffZeroObserved)
@@ -1699,12 +1710,7 @@ namespace GnollHackX.Pages.Game
         {
             IncrementCounters();
 
-            bool refresh;
-            lock (RefreshScreenLock)
-            {
-                refresh = RefreshScreen;
-            }
-            if (refresh)
+            if (RefreshScreen)
             {
                 if (canvasView.ThreadSafeIsVisible)
                 {
@@ -2866,12 +2872,9 @@ namespace GnollHackX.Pages.Game
         private /*async*/ void ContentPage_Appearing(object sender, EventArgs e)
         {
             GHApp.BackButtonPressed += BackButtonPressed;
-            lock (RefreshScreenLock)
-            {
-                RefreshScreen = true;
-            }
+            RefreshScreen = true;
 
-            if(!PlayingReplay)
+            if (!PlayingReplay)
             {
                 GameMenuButton.IsEnabled = true;
                 SimpleGameMenuButton.IsEnabled = true;
@@ -3331,10 +3334,7 @@ namespace GnollHackX.Pages.Game
             {
                 //MainGrid.IsVisible = true;
                 IsMainCanvasOn = true;
-                lock (RefreshScreenLock)
-                {
-                    RefreshScreen = true;
-                }
+                RefreshScreen = true;
                 StartMainCanvasAnimation();
             }
         }
@@ -3447,10 +3447,7 @@ namespace GnollHackX.Pages.Game
                 TextStack.IsVisible = false;
             }
 
-            lock (RefreshScreenLock)
-            {
-                RefreshScreen = false;
-            }
+            RefreshScreen = false;
 
             lock (_textScrollLock)
             {
@@ -4171,11 +4168,7 @@ namespace GnollHackX.Pages.Game
                     dohidetext = true;
                 }
             }
-
-            lock (RefreshScreenLock)
-            {
-                RefreshScreen = false;
-            }
+            RefreshScreen = false;
 
             lock (_menuDrawOnlyLock)
             {
@@ -4592,10 +4585,7 @@ namespace GnollHackX.Pages.Game
                 IsMainCanvasOn = true;
                 UpdateMoreNextPrevButtonVisibility(true, true);
                 StopCommandCanvasAnimation();
-                lock (RefreshScreenLock)
-                {
-                    RefreshScreen = true;
-                }
+                RefreshScreen = true;
                 StartMainCanvasAnimation();
             }
             else if (GetLineGrid.IsVisible)
@@ -4628,10 +4618,7 @@ namespace GnollHackX.Pages.Game
                 //MainGrid.IsVisible = true;
                 IsMainCanvasOn = true;
                 StopTextCanvasAnimation();
-                lock (RefreshScreenLock)
-                {
-                    RefreshScreen = true;
-                }
+                RefreshScreen = true;
                 StartMainCanvasAnimation();
             }
             else if (MenuGrid.IsVisible)
@@ -4648,10 +4635,7 @@ namespace GnollHackX.Pages.Game
                 //MainGrid.IsVisible = true;
                 IsMainCanvasOn = true;
                 StopMenuCanvasAnimation();
-                lock (RefreshScreenLock)
-                {
-                    RefreshScreen = true;
-                }
+                RefreshScreen = true;
                 StartMainCanvasAnimation();
             }
             else
@@ -4676,10 +4660,7 @@ namespace GnollHackX.Pages.Game
             SizeChanged -= GamePage_SizeChanged;
 
             GHApp.BackButtonPressed -= BackButtonPressed;
-            lock (RefreshScreenLock)
-            {
-                RefreshScreen = false;
-            }
+            RefreshScreen = false;
 
             MainThread.BeginInvokeOnMainThread(() =>
             {
@@ -15600,17 +15581,13 @@ namespace GnollHackX.Pages.Game
 
         private void ShowMoreCanvas(object sender, EventArgs e)
         {
-            lock (RefreshScreenLock)
-            {
-                RefreshScreen = false;
-            }
-
             UpdateMoreNextPrevButtonVisibility(true, true);
             MoreCommandsGrid.IsVisible = true;
             MoreCommandsFilterEntry.Text = "";
             MoreCommandsFilterEntry.IsVisible = GHApp.IsDesktop;
             MoreCommandsFilterEntry.IsEnabled = GHApp.IsDesktop;
             //MainGrid.IsVisible = false;
+            RefreshScreen = false;
             IsMainCanvasOn = false;
             StopMainCanvasAnimation();
             StartCommandCanvasAnimation();
@@ -17563,10 +17540,7 @@ namespace GnollHackX.Pages.Game
                 IsMainCanvasOn = true;
                 StopMenuCanvasAnimation();
                 MenuWindowGlyphImage.StopAnimation();
-                lock (RefreshScreenLock)
-                {
-                    RefreshScreen = true;
-                }
+                RefreshScreen = true;
                 StartMainCanvasAnimation();
             });
         }
@@ -17630,10 +17604,7 @@ namespace GnollHackX.Pages.Game
                     _textScrollSpeedOn = false;
                 }
                 StopTextCanvasAnimation();
-                lock (RefreshScreenLock)
-                {
-                    RefreshScreen = true;
-                }
+                RefreshScreen = true;
                 StartMainCanvasAnimation();
             });
         }
@@ -18805,10 +18776,7 @@ namespace GnollHackX.Pages.Game
             IsMainCanvasOn = true;
             UpdateMoreNextPrevButtonVisibility(true, true);
             StopCommandCanvasAnimation();
-            lock (RefreshScreenLock)
-            {
-                RefreshScreen = true;
-            }
+            RefreshScreen = true;
             StartMainCanvasAnimation();
         }
 
