@@ -469,7 +469,7 @@ int trouble;
         updatemaxhp();
         u.uhp = u.uhpmax;
         context.botl = 1;
-        refresh_u_tile_gui_info(TRUE);
+        //refresh_u_tile_gui_info(TRUE);
         break;
     case TROUBLE_COLLAPSING:
         play_sfx_sound(SFX_GAIN_ABILITY);
@@ -1757,6 +1757,7 @@ aligntyp g_align;
      * If your luck is at least 0, then you are guaranteed rescued from
      * your worst major problem.
      */
+    boolean dorefresh = FALSE;
     if (!trouble && u.ualign.record >= DEVOUT) 
     {
         /* if hero was in trouble, but got better, no special favor */
@@ -1816,6 +1817,8 @@ aligntyp g_align;
         case 0:
             break; /* your god blows you off, too bad */
         }
+        if (action > 0)
+            dorefresh = TRUE;
     }
 
     /* note: can't get pat_on_head unless all troubles have just been
@@ -1953,7 +1956,7 @@ aligntyp g_align;
             u.ucreamed = 0;
             make_blinded(0L, TRUE);
             context.botl = context.botlx = 1;
-            refresh_u_tile_gui_info(TRUE);
+            dorefresh = TRUE;
             break;
         case 4: 
         {
@@ -2096,6 +2099,8 @@ crown_here:
     find_ac();
     find_mc();
     context.botl = 1;
+    if (dorefresh)
+        refresh_u_tile_gui_info(TRUE);
 
     return;
 }
