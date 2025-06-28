@@ -25,6 +25,10 @@
                 <controls:LabeledImageButton x:Name="lWornItemsButton" LblText="" BtnLetter="]" LargerFont="True" BtnClicked="GHButton_Clicked" Margin="0,2" HorizontalOptions="End" VerticalOptions="Start" />
                 <controls:LabeledImageButton x:Name="lAbilitiesButton" LblText="" BtnLetter="A" LargerFont="True" BtnClicked="GHButton_Clicked" Margin="0,2" HorizontalOptions="Start" VerticalOptions="Start" />
 
+                <Label x:Name="PleaseWaitLabel" Text="Please wait..." IsVisible="False" FontFamily="Diablo" TextColor="White" FontSize="36"
+                       HorizontalOptions="Center" HorizontalTextAlignment="Center" 
+                       VerticalOptions="Center" VerticalTextAlignment="Center"/>
+
                 <Border x:Name="MessageFilterFrame" BackgroundColor="#66000000" Stroke="Black" Padding="12,12" StrokeThickness="1" StrokeShape="RoundRectangle 10,10,10,10" IsVisible="False" HorizontalOptions="Start" VerticalOptions="Start" >
                     <StackLayout> <!-- Some versions of MAUI do not support placing Entrys in Frames -->
                         <Entry x:Name="MessageFilterEntry" FontFamily="Underwood" FontSize="18" TextColor="White" BackgroundColor="#66000000" Placeholder="Search" PlaceholderColor="LightGray"

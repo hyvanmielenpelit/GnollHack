@@ -296,6 +296,7 @@ namespace GnollHackX
         public void ClientCallback_InitWindows()
         {
             Debug.WriteLine("ClientCallback_InitWindows");
+            int animoff = 0, enloff = 0, reoff = 0, general_tile_off = 0, hit_tile_off = 0, ui_tile_off = 0, spell_tile_off = 0, skill_tile_off = 0, command_tile_off = 0, buff_tile_off = 0, cursor_off = 0;
 
             if (!PlayingReplay)
             {
@@ -362,6 +363,19 @@ namespace GnollHackX
                         GHApp.ReplacementOffsets = new int[reoff_size];
                         Marshal.Copy(reoff_ptr, GHApp.ReplacementOffsets, 0, reoff_size);
                     }
+                    _gamePage.GnollHackService.GetOffs(out animoff, out enloff, out reoff, out general_tile_off, out hit_tile_off, out ui_tile_off, out spell_tile_off, out skill_tile_off, out command_tile_off, out buff_tile_off,
+                        out cursor_off);
+                    GHApp.AnimationOff = animoff;
+                    GHApp.EnlargementOff = enloff;
+                    GHApp.ReplacementOff = reoff;
+                    GHApp.GeneralTileOff = general_tile_off;
+                    GHApp.HitTileOff = hit_tile_off;
+                    GHApp.UITileOff = ui_tile_off;
+                    GHApp.SpellTileOff = spell_tile_off;
+                    GHApp.SkillTileOff = skill_tile_off;
+                    GHApp.CommandTileOff = command_tile_off;
+                    GHApp.BuffTileOff = buff_tile_off;
+                    GHApp.CursorOff = cursor_off;
                 }
 
                 int total_tiles_used = _gamePage.GnollHackService.GetTotalTiles();
@@ -383,9 +397,9 @@ namespace GnollHackX
             short[] ti2an = null;
             short[] ti2en = null;
             short[] ti2ad = null;
-            int[] anoff = null;
-            int[] enoff = null;
-            int[] reoff = null;
+            int[] anoffs = null;
+            int[] enoffs = null;
+            int[] reoffs = null;
             int nosheets = 0;
             int notiles = 0;
             int[] tilesperrow = null;
@@ -396,14 +410,15 @@ namespace GnollHackX
                 ti2an = GHApp.Tile2Animation;
                 ti2en = GHApp.Tile2Enlargement;
                 ti2ad = GHApp.Tile2Autodraw;
-                anoff = GHApp.AnimationOffsets;
-                enoff = GHApp.EnlargementOffsets;
-                reoff = GHApp.ReplacementOffsets;
+                anoffs = GHApp.AnimationOffsets;
+                enoffs = GHApp.EnlargementOffsets;
+                reoffs = GHApp.ReplacementOffsets;
                 nosheets = GHApp.UsedTileSheets;
                 notiles = GHApp.TotalTiles;
                 tilesperrow = GHApp.TilesPerRow;
             }
-            RecordFunctionCall(RecordedFunctionID.InitializeWindows, gl2ti, gltifl, ti2an, ti2en, ti2ad, anoff, enoff, reoff, nosheets, notiles, tilesperrow);
+            RecordFunctionCall(RecordedFunctionID.InitializeWindows, gl2ti, gltifl, ti2an, ti2en, ti2ad, anoffs, enoffs, reoffs, nosheets, notiles, tilesperrow,
+                animoff, enloff, reoff, general_tile_off, hit_tile_off, ui_tile_off, spell_tile_off, skill_tile_off, command_tile_off, buff_tile_off, cursor_off);
             RequestQueue.Enqueue(new GHRequest(this, GHRequestType.HideLoadingScreen));
         }
 
@@ -3576,8 +3591,11 @@ namespace GnollHackX
                                         writer.Write(CasualMode);
                                         writer.Write(0); /* Recording type: 0 = full; 1 = ascii only */
                                         writer.Write((int)GHApp.PlatformId);
-                                        writer.Write(0UL); /* flags for future use */
-                                        writer.Write(0UL); /* flags for future use */
+                                        ulong versionFlags = 0L;
+                                        versionFlags |= (ulong)ReplayVersionFlags.HasOffsetData; /* This was missing from replays before 4.2.0 Build 55 */
+                                        writer.Write(versionFlags);
+                                        ulong flags2 = 0L;
+                                        writer.Write(flags2); /* flags for future use */
                                         _headerSize += 3 * 8L + (long)configString.Length + 1L + 3 * 1L + 2 * 4L + 2 * 8L;
                                         appendSize += _headerSize;
                                     }

@@ -6346,7 +6346,7 @@ namespace GnollHackX
                                     bool casualmode = br.ReadBoolean();
                                     int replayType = br.ReadInt32();
                                     int platformType = br.ReadInt32();
-                                    ulong flags1 = br.ReadUInt64();
+                                    ulong versionFlags = br.ReadUInt64();
                                     ulong flags2 = br.ReadUInt64();
 
                                     if (game.ActiveGamePage != null)
@@ -6459,6 +6459,32 @@ namespace GnollHackX
                                                     for (int j = 0; j < tilesperrow_sz; j++)
                                                         tilesperrow[j] = br.ReadInt32();
 
+                                                    int animoff = 0;
+                                                    int enloff = 0;
+                                                    int reploff = 0;
+                                                    int general_tile_off = 0;
+                                                    int hit_tile_off = 0;
+                                                    int ui_tile_off = 0;
+                                                    int spell_tile_off = 0;
+                                                    int skill_tile_off = 0;
+                                                    int command_tile_off = 0;
+                                                    int buff_tile_off = 0;
+                                                    int cursor_off = 0;
+
+                                                    if ((versionFlags & (ulong)ReplayVersionFlags.HasOffsetData) != 0)
+                                                    {
+                                                        animoff = br.ReadInt32();
+                                                        enloff = br.ReadInt32();
+                                                        reploff = br.ReadInt32();
+                                                        general_tile_off = br.ReadInt32();
+                                                        hit_tile_off = br.ReadInt32();
+                                                        ui_tile_off = br.ReadInt32();
+                                                        spell_tile_off = br.ReadInt32();
+                                                        skill_tile_off = br.ReadInt32();
+                                                        command_tile_off = br.ReadInt32();
+                                                        buff_tile_off = br.ReadInt32();
+                                                        cursor_off = br.ReadInt32();
+                                                    }
                                                     lock (Glyph2TileLock)
                                                     {
                                                         if(gl2ti.Length > 0)
@@ -6475,6 +6501,20 @@ namespace GnollHackX
                                                         TotalTiles = notiles;
                                                         for (int j = 0; j < tilesperrow_sz; j++)
                                                             TilesPerRow[j] = tilesperrow[j];
+                                                        if ((versionFlags & (ulong)ReplayVersionFlags.HasOffsetData) != 0)
+                                                        {
+                                                            AnimationOff = animoff;
+                                                            EnlargementOff = enloff;
+                                                            ReplacementOff = reploff;
+                                                            GeneralTileOff = general_tile_off;
+                                                            HitTileOff = hit_tile_off;
+                                                            UITileOff = ui_tile_off;
+                                                            SpellTileOff = spell_tile_off;
+                                                            SkillTileOff = skill_tile_off;
+                                                            CommandTileOff = command_tile_off;
+                                                            BuffTileOff = buff_tile_off;
+                                                            CursorOff = cursor_off;
+                                                        }
                                                         AdjustReplayTiles(verno, false);
                                                         gl2ti = Glyph2Tile;
                                                         gltifl = GlyphTileFlags;

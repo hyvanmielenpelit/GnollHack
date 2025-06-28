@@ -10,6 +10,14 @@ namespace GnollHackM
 namespace GnollHackX
 #endif
 {
+
+    [Flags]
+    public enum ReplayVersionFlags : ulong
+    {
+        None = 0UL,
+        HasOffsetData = 1UL,
+    }
+
     /* Colors */
     public enum NhColor
     {
