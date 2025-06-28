@@ -86,7 +86,21 @@ namespace GnollHackX.Pages.Game
         private object _isMainCanvasOnLock = new object();
         private bool _isMainCanvasOn = false;
         private bool _isMainCanvasDrawing = false;
-        public bool IsMainCanvasOn { get { lock (_isMainCanvasOnLock) { return _isMainCanvasOn; } } set { lock (_isMainCanvasOnLock) { _isMainCanvasOn = value; } } }
+        public bool IsMainCanvasOn 
+        { 
+            get { lock (_isMainCanvasOnLock) { return _isMainCanvasOn; } } 
+            set 
+            { 
+                lock (_isMainCanvasOnLock) 
+                { 
+                    _isMainCanvasOn = value; 
+                } 
+                lock (_updateTimerTickCountLock)
+                { 
+                    _updateTimerTickCount = 0L; 
+                } 
+            } 
+        }
         public bool IsMainCanvasDrawing { get { lock (_isMainCanvasOnLock) { return _isMainCanvasDrawing; } } set { lock (_isMainCanvasOnLock) { _isMainCanvasDrawing = value; } } }
         public bool IsMainCanvasDrawingAndSetTrue { get { lock (_isMainCanvasOnLock) { bool val = _isMainCanvasDrawing; _isMainCanvasDrawing = true; return val; } } }
 
@@ -1564,14 +1578,21 @@ namespace GnollHackX.Pages.Game
         }
 
         private bool _counterDiffZeroObserved = false;
+
+        private readonly object _updateTimerTickCountLock = new object();
         private long _updateTimerTickCount = 0L;
+        public long UpdateTimerTickCount { get { lock (_updateTimerTickCountLock) { return _updateTimerTickCount; } } }
+
         private void DoUpdateTimer()
         {
             MainThread.BeginInvokeOnMainThread(() =>
             {
-                _updateTimerTickCount++;
-                if (_updateTimerTickCount == long.MaxValue)
-                    _updateTimerTickCount = 0;
+                lock (_updateTimerTickCountLock)
+                {
+                    _updateTimerTickCount++;
+                    if (_updateTimerTickCount == long.MaxValue)
+                        _updateTimerTickCount = 0L;
+                }
                 lock (_cursorIsOnLock)
                 {
                     _cursorIsOn = !_cursorIsOn;
@@ -1612,7 +1633,7 @@ namespace GnollHackX.Pages.Game
                                 }
                                 if (GHApp.IsWindows)
                                 {
-                                    if (counterDiff == 0 && (_mainFPSCounterValue > 0 || _updateTimerTickCount > 10) && !_counterDiffZeroObserved && IsGameOn && IsMainCanvasOn && !LoadingGrid.IsVisible && !MoreCommandsGrid.IsVisible && !MenuGrid.IsVisible && !TextGrid.IsVisible)
+                                    if (counterDiff == 0 && (_mainFPSCounterValue > 0 || UpdateTimerTickCount > 10) && !_counterDiffZeroObserved && IsGameOn && IsMainCanvasOn && !LoadingGrid.IsVisible && !MoreCommandsGrid.IsVisible && !MenuGrid.IsVisible && !TextGrid.IsVisible)
                                     {
                                         _counterDiffZeroObserved = true;
                                         GHApp.MaybeWriteGHLog("MainCanvas counterDiff is 0");
