@@ -194,7 +194,7 @@ namespace GnollHackM
 
         public async Task RequestAppReview(ContentPage page)
         {
-            if (GHApp.IsPackaged) /* Microsoft Store */
+            if (GHApp.IsPackaged && !GHApp.IsSteam && !GHApp.IsNoStore) /* Microsoft Store */
             {
                 try
                 {

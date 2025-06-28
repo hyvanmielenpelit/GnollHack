@@ -5986,8 +5986,8 @@ namespace GnollHackX
                                 File.AppendAllLines(logfullpath, halflines);
                             }
                         }
-                        var now = DateTime.UtcNow;
-                        File.AppendAllText(logfullpath, now.ToString("yyyy-MM-dd HH:mm:ss") + ": "
+                        var now = DateTime.Now;
+                        File.AppendAllText(logfullpath, now.ToString("yyyy-MM-dd HH:mm:ss zzz") + ": "
                             + loggedtext
                             + " [" + GetPortVersionString() + "]"
                             + Environment.NewLine);
