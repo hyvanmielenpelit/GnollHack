@@ -1301,28 +1301,27 @@ namespace GnollHackX.Pages.Game
                     await Task.WhenAll(tasks);
                     tasks.Clear();
 
-                    /* Moved to initialize windows so the offsets get recorded in replays */
-                    //LoadingDetailsLabel.Text = "Loading tile offset data...";
-                    //tasks.Add(LoadingProgressBar.ProgressTo(0.675, 50, Easing.Linear));
-                    //tasks.Add(Task.Run(() =>
-                    //{
-                    //    int animoff, enloff, reoff, general_tile_off, hit_tile_off, ui_tile_off, spell_tile_off, skill_tile_off, command_tile_off, buff_tile_off, cursor_off;
-                    //    _gnollHackService.GetOffs(out animoff, out enloff, out reoff, out general_tile_off, out hit_tile_off, out ui_tile_off, out spell_tile_off, out skill_tile_off, out command_tile_off, out buff_tile_off,
-                    //        out cursor_off);
-                    //    GHApp.AnimationOff = animoff;
-                    //    GHApp.EnlargementOff = enloff;
-                    //    GHApp.ReplacementOff = reoff;
-                    //    GHApp.GeneralTileOff = general_tile_off;
-                    //    GHApp.HitTileOff = hit_tile_off;
-                    //    GHApp.UITileOff = ui_tile_off;
-                    //    GHApp.SpellTileOff = spell_tile_off;
-                    //    GHApp.SkillTileOff = skill_tile_off;
-                    //    GHApp.CommandTileOff = command_tile_off;
-                    //    GHApp.BuffTileOff = buff_tile_off;
-                    //    GHApp.CursorOff = cursor_off;
-                    //}));
-                    //await Task.WhenAll(tasks);
-                    //tasks.Clear();
+                    LoadingDetailsLabel.Text = "Loading tile offset data...";
+                    tasks.Add(LoadingProgressBar.ProgressTo(0.675, 50, Easing.Linear));
+                    tasks.Add(Task.Run(() =>
+                    {
+                        int animoff, enloff, reoff, general_tile_off, hit_tile_off, ui_tile_off, spell_tile_off, skill_tile_off, command_tile_off, buff_tile_off, cursor_off;
+                        _gnollHackService.GetOffs(out animoff, out enloff, out reoff, out general_tile_off, out hit_tile_off, out ui_tile_off, out spell_tile_off, out skill_tile_off, out command_tile_off, out buff_tile_off,
+                            out cursor_off);
+                        GHApp.AnimationOff = animoff;
+                        GHApp.EnlargementOff = enloff;
+                        GHApp.ReplacementOff = reoff;
+                        GHApp.GeneralTileOff = general_tile_off;
+                        GHApp.HitTileOff = hit_tile_off;
+                        GHApp.UITileOff = ui_tile_off;
+                        GHApp.SpellTileOff = spell_tile_off;
+                        GHApp.SkillTileOff = skill_tile_off;
+                        GHApp.CommandTileOff = command_tile_off;
+                        GHApp.BuffTileOff = buff_tile_off;
+                        GHApp.CursorOff = cursor_off;
+                    }));
+                    await Task.WhenAll(tasks);
+                    tasks.Clear();
 
                     LoadingDetailsLabel.Text = "Loading animations...";
                     tasks.Add(LoadingProgressBar.ProgressTo(0.700, 50, Easing.Linear));
