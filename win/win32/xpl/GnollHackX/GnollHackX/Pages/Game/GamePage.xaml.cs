@@ -1508,53 +1508,52 @@ namespace GnollHackX.Pages.Game
         //private bool StartingPositionsSet { get; set; }
         private void DoPolling()
         {
-            ConcurrentQueue<Task> tasks = null;
             try
             {
-                tasks = pollRequestQueue();
+                MainThread.BeginInvokeOnMainThread(() =>
+                {
+                    try
+                    {
+                        List<Task> tasks = null;
+                        try
+                        {
+                            tasks = pollRequestQueue();
+                        }
+                        catch (Exception ex)
+                        {
+                            Debug.WriteLine(ex);
+                        }
+                        if (tasks != null)
+                        {
+                            try
+                            {
+                                MainThread.InvokeOnMainThreadAsync(async () =>
+                                {
+                                    try
+                                    {
+                                        await Task.WhenAll(tasks);
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        Debug.WriteLine(ex);
+                                    }
+                                });
+                            }
+                            catch (Exception ex)
+                            {
+                                Debug.WriteLine(ex);
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.WriteLine(ex);
+                    }
+                });
             }
             catch (Exception ex)
             {
                 Debug.WriteLine(ex);
-            }
-            if (tasks != null)
-            {
-                try
-                {
-                    MainThread.InvokeOnMainThreadAsync(async () =>
-                    {
-                        bool successful = false;
-                        do
-                        {
-                            Task task = null;
-                            try
-                            {
-                                successful = tasks.TryDequeue(out task);
-                            }
-                            catch (Exception ex)
-                            {
-                                task = null;
-                                Debug.WriteLine(ex);
-                            }
-                            if (successful && task != null)
-                            {
-                                try
-                                {
-                                    await task;
-                                }
-                                catch (Exception ex)
-                                {
-                                    Debug.WriteLine(ex);
-                                }
-                            }
-                        } while (successful);
-                    });
-                }
-                catch (Exception ex)
-                {
-                    Debug.WriteLine(ex);
-                }
-
             }
         }
 
@@ -2891,16 +2890,16 @@ namespace GnollHackX.Pages.Game
             GHApp.PlayReplay(curGame, ReplayFileName);
         }
 
-        private void EnqueueTask(ConcurrentQueue<Task> tasks, Task task)
+        private void EnqueueTask(List<Task> tasks, Task task)
         {
             if (tasks == null)
-                tasks = new ConcurrentQueue<Task>();
-            tasks.Enqueue(task);
+                tasks = new List<Task>();
+            tasks.Add(task);
         }
 
-        private ConcurrentQueue<Task> pollRequestQueue()
+        private List<Task> pollRequestQueue()
         {
-            ConcurrentQueue<Task> tasks = null;
+            List<Task> tasks = null;
             GHGame curGame = CurrentGame;
             if (curGame != null)
             {
