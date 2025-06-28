@@ -2247,13 +2247,28 @@ namespace GnollHackX.Pages.MainScreen
             MipMapSwitch.IsEnabled = e.Value;
             MipMapLabel.TextColor = e.Value ? (GHApp.DarkMode ? GHColors.White : GHColors.Black) : GHColors.Gray;
 
-            if (_isManualTogglingEnabled && e.Value && !GHApp.IsGPUDefault)
+            if (_isManualTogglingEnabled)
             {
-                PopupTitleLabel.TextColor = GHColors.Orange;
-                PopupTitleLabel.Text = "Unstable GPU Acceleration";
-                PopupLabel.Text = "Your device has been detected as potentially causing crashes when GPU acceleration is switched on. Proceed with care.";
-                PopupOkButton.IsEnabled = true;
-                PopupGrid.IsVisible = true;
+                if (e.Value && !GHApp.IsGPUDefault)
+                {
+                    PopupTitleLabel.TextColor = GHColors.Orange;
+                    PopupTitleLabel.Text = "Unstable GPU Acceleration";
+                    PopupLabel.Text = "Your device has been detected as potentially causing crashes when GPU acceleration is switched on. Proceed with care.";
+                    PopupOkButton.IsEnabled = true;
+                    PopupGrid.IsVisible = true;
+                }
+                if (ScreenResolutionGrid.IsVisible)
+                {
+                    GHApp.UpdateRecommendedScreenResolution(e.Value);
+                    _isManualTogglingEnabled = false;
+                    int selIdx = ScreenResolutionPicker.SelectedIndex;
+                    ScreenResolutionPicker.ItemsSource = null;
+                    ScreenResolutionPicker.ItemsSource = GHApp.ScreenResolutionItems;
+                    if (selIdx >= 0 && selIdx < ScreenResolutionPicker.ItemsSource.Count)
+                        ScreenResolutionPicker.SelectedIndex = selIdx;
+                    _isManualTogglingEnabled = true;
+                    ScreenResolutionPicker_SelectedIndexChanged(this, EventArgs.Empty);
+                }
             }
         }
 
