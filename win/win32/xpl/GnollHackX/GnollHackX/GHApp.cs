@@ -1560,7 +1560,7 @@ namespace GnollHackX
                     }
                     if (BatteryChargeLevel > 3) /* Save only if there is enough battery left to prevent save file corruption when the phone powers off */
                     {
-                        if (game.ActiveGamePage.GameEnded)
+                        if (game.ActiveGamePage.GameEnded && OperatingSystemKillsAppsOnBackground)
                             game.ActiveGamePage.FastForwardRequested = true;
                         game.SaveGameAndWaitForResume();
                     }
