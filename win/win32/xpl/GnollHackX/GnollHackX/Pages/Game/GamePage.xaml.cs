@@ -4192,7 +4192,7 @@ namespace GnollHackX.Pages.Game
             GHApp.CurrentGamePage = null;
             //GHApp.ReportLockDataResults();
             bool fastForward = FastForwardRequested;
-            if (fastForward && GHApp.IsAndroid) /* FragementManager cannot deal with closing pages when going to sleep; needs to be done with a delay when returning */
+            if (fastForward && GHApp.IsAndroid) /* FragmentManager cannot deal with closing pages when going to sleep; needs to be done with a delay after returning */
             {
                 GHApp.PopAllModalRequested = true;
             }
