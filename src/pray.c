@@ -992,36 +992,34 @@ gcrownu()
     {
         if (!gauntlets_already_exists)
         {
-            class_gift = GAUNTLETS_OF_BALANCE;
-
-            obj = mksobj(class_gift, FALSE, FALSE, MKOBJ_TYPE_ARTIFACT_BASE);
+            obj = mksobj(GAUNTLETS_OF_BALANCE, FALSE, FALSE, MKOBJ_TYPE_ARTIFACT_BASE);
             if (obj)
             {
+                class_gift = GAUNTLETS_OF_BALANCE;
                 obj = oname(obj, artiname(ART_GAUNTLETS_OF_YIN_AND_YANG));
-                if (obj)
+                at_your_feet("A pair of gauntlets");
+                dropyf(obj);
+                u.ugifts++;
+                if (obj && obj->oartifact == ART_GAUNTLETS_OF_YIN_AND_YANG)
                 {
-                    at_your_feet("A pair of gauntlets");
-                    dropyf(obj);
-                    u.ugifts++;
-                    if (obj && obj->oartifact == ART_GAUNTLETS_OF_YIN_AND_YANG)
-                    {
-                        obj->enchantment = 1;
-                        obj->aknown = obj->nknown = 1;
-                        discover_artifact(ART_GAUNTLETS_OF_YIN_AND_YANG);
-                        livelog_printf(LL_DIVINEGIFT | LL_ARTIFACT,
-                            "was bestowed with %s",
-                            artiname(ART_GAUNTLETS_OF_YIN_AND_YANG));
-                    }
+                    obj->enchantment = 1;
+                    obj->aknown = obj->nknown = 1;
+                    discover_artifact(ART_GAUNTLETS_OF_YIN_AND_YANG);
+                    livelog_printf(LL_DIVINEGIFT | LL_ARTIFACT,
+                        "was bestowed with %s",
+                        artiname(ART_GAUNTLETS_OF_YIN_AND_YANG));
                 }
             }
         }
-        else
+
+        if (class_gift == STRANGE_OBJECT)
         {
             /* monks rarely wield a weapon */
-            class_gift = !carrying(BELT_OF_STORM_GIANT_STRENGTH) ? BELT_OF_STORM_GIANT_STRENGTH : BELT_OF_FORTITUDE;
-            obj = mksobj(class_gift, TRUE, FALSE, FALSE);
+            int gifttype = !carrying(BELT_OF_STORM_GIANT_STRENGTH) ? BELT_OF_STORM_GIANT_STRENGTH : BELT_OF_FORTITUDE;
+            obj = mksobj(gifttype, TRUE, FALSE, FALSE);
             if (obj)
             {
+                class_gift = gifttype;
                 bless(obj);
                 obj->bknown = TRUE;
                 livelog_printf(LL_DIVINEGIFT | LL_ARTIFACT | LL_SPOILER,
@@ -1495,12 +1493,18 @@ gcrownu()
             if (obj)
             {
                 if (!obj->blessed)
+                {
                     bless(obj);
+                    class_gift = gifttype;
+                }
             }
             else if (obj2)
             {
                 if (!obj2->blessed)
+                {
                     bless(obj2);
+                    class_gift = gifttype2;
+                }
             }
             else
             {
@@ -1526,6 +1530,7 @@ gcrownu()
                 obj->enchantment = max(1, obj->enchantment + 1 + rnd(3));
                 obj->exceptionality = max(obj->exceptionality, EXCEPTIONALITY_ELITE);
                 obj->oerodeproof = 1;
+                class_gift = gifttype;
             }
             else if (obj2)
             {
@@ -1535,6 +1540,7 @@ gcrownu()
                 obj2->enchantment = max(1, obj2->enchantment + 1 + rnd(3));
                 obj2->exceptionality = max(obj2->exceptionality, EXCEPTIONALITY_ELITE);
                 obj2->oerodeproof = 1;
+                class_gift = gifttype2;
             }
             else
             {
@@ -1562,6 +1568,7 @@ gcrownu()
                 obj->enchantment = max(1, obj->enchantment + 1 + rnd(3));
                 obj->oerodeproof = 1;
                 pline_ex(ATR_NONE, CLR_MSG_POSITIVE, "%s shines brightly for a while!", Yname2(obj));
+                class_gift = gifttype;
             }
             else if (obj2)
             {
@@ -1570,6 +1577,7 @@ gcrownu()
                 obj2->enchantment = max(1, obj2->enchantment + 1 + rnd(3));
                 obj2->oerodeproof = 1;
                 pline_ex(ATR_NONE, CLR_MSG_POSITIVE, "%s shines brightly for a while!", Yname2(obj2));
+                class_gift = gifttype2;
             }
             else
             {
@@ -1590,8 +1598,11 @@ gcrownu()
             if (obj)
             {
                 if (!obj->blessed)
+                {
                     bless(obj);
-                pline_ex(ATR_NONE, CLR_MSG_POSITIVE, "%s shines brightly for a while!", Yname2(obj));
+                    pline_ex(ATR_NONE, CLR_MSG_POSITIVE, "%s shines brightly for a while!", Yname2(obj));
+                    class_gift = gifttype;
+                }
             }
             else
             {
