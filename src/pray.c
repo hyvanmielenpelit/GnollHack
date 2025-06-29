@@ -1381,8 +1381,8 @@ gcrownu()
             livelog_printf(LL_DIVINEGIFT | LL_ARTIFACT | LL_SPOILER,
                 "was bestowed with %s", an(actualoname(obj)));
         }
-        /* acquire sword skill regardless of weapon or gift */
-        unrestrict_weapon_skill(P_SWORD);
+        /* acquire axe or sword skill */
+        unrestrict_weapon_skill(gifttype  == DWARVISH_AXE ? P_AXE : P_SWORD);
     }
     else if (Role_if(PM_KNIGHT))
     {
@@ -1484,7 +1484,7 @@ gcrownu()
     }
     else if (Role_if(PM_TOURIST) && !(mvitals[PM_GIANT_LUGGAGE].mvflags & MV_GONE))
     {
-        struct monst* luggage = summoncreature(STRANGE_OBJECT, PM_GIANT_LUGGAGE, "%s appears in a puff of smoke.", MM_SUMMON_IN_SMOKE_ANIMATION, SUMMONCREATURE_FLAGS_CAPITALIZE);
+        struct monst* luggage = summoncreature(STRANGE_OBJECT, PM_GIANT_LUGGAGE, "%s appears in a puff of smoke.", MM_SUMMON_IN_SMOKE_ANIMATION | MM_NO_MONSTER_INVENTORY, SUMMONCREATURE_FLAGS_CAPITALIZE);
         if (luggage)
         {
             int gifttype = EYEGLASSES_OF_X_RAY_VISION;
