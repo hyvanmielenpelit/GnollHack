@@ -1499,7 +1499,7 @@ gcrownu()
             }
             else if (obj2)
             {
-                if (!obj->blessed)
+                if (!obj2->blessed)
                     bless(obj2);
             }
             else
