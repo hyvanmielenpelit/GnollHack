@@ -80,8 +80,10 @@ namespace GnollHackX.Pages.Game
         private object _isGameOnLock = new object();
         private bool _isGameOn = false;
         private bool _gameEnded = false;
+        private bool _fastForwardRequested = false;
         public bool IsGameOn { get { lock (_isGameOnLock) { return _isGameOn; } } set { lock (_isGameOnLock) { _isGameOn = value; } } }
         public bool GameEnded { get { lock (_isGameOnLock) { return _gameEnded; } } set { lock (_isGameOnLock) { _gameEnded = value; } } }
+        public bool FastForwardRequested { get { lock (_isGameOnLock) { return _fastForwardRequested; } } set { lock (_isGameOnLock) { _fastForwardRequested = value; } } }
 
         private object _isMainCanvasOnLock = new object();
         private bool _isMainCanvasOn = false;
@@ -4189,13 +4191,23 @@ namespace GnollHackX.Pages.Game
                 GHApp.GameMuteMode = false;
             GHApp.CurrentGamePage = null;
             //GHApp.ReportLockDataResults();
-            bool popagain = false;
-            do
+            bool fastForward = FastForwardRequested;
+            if (fastForward && GHApp.IsAndroid) /* FragementManager cannot deal with closing pages when going to sleep; needs to be done with a delay when returning */
             {
-                var page = await GHApp.Navigation.PopModalAsync();
-                popagain = !(page is GamePage || page == null);
-                GHApp.DisconnectIViewHandlers(page);
-            } while (popagain);
+                GHApp.PopAllModalRequested = true;
+            }
+            else
+            {
+                await GHApp.PopAllModalPagesAsync(!fastForward);
+            }
+            //bool popagain = false;
+            //bool animated = !FastForwardRequested;
+            //do
+            //{
+            //    var page = await GHApp.Navigation.PopModalAsync(animated);
+            //    popagain = !(page is GamePage || page == null);
+            //    GHApp.DisconnectIViewHandlers(page);
+            //} while (popagain);
             await _mainPage.StartGeneralTimerAsync(); /* Just to be doubly sure */
         }
 
@@ -4634,8 +4646,11 @@ namespace GnollHackX.Pages.Game
         }
         private async Task HideOutRipPage()
         {
-            var page = await GHApp.Navigation.PopModalAsync();
-            GHApp.DisconnectIViewHandlers(page);
+            if (!FastForwardRequested) /* If FastForwardRequested, then this will be handled by GHApp.PopAllModalPages async */
+            {
+                var page = await GHApp.Navigation.PopModalAsync();
+                GHApp.DisconnectIViewHandlers(page);
+            }
         }
         private async Task HideAskNamePage()
         {

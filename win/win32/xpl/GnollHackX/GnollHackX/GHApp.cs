@@ -1560,11 +1560,25 @@ namespace GnollHackX
                     }
                     if (BatteryChargeLevel > 3) /* Save only if there is enough battery left to prevent save file corruption when the phone powers off */
                     {
+                        if (game.ActiveGamePage.GameEnded)
+                            game.ActiveGamePage.FastForwardRequested = true;
                         game.SaveGameAndWaitForResume();
                     }
                 }
             }
             CollectGarbage();
+        }
+
+        public static bool PopAllModalRequested = false; /* Always used from MainThread */
+        public static async Task PopAllModalPagesAsync(bool animated)
+        {
+            bool popagain = false;
+            do
+            {
+                var page = await Navigation.PopModalAsync(animated);
+                popagain = !(page is GamePage || page == null);
+                DisconnectIViewHandlers(page);
+            } while (popagain);
         }
 
         public static void OnResume()
@@ -1575,6 +1589,52 @@ namespace GnollHackX
             CtrlDown = false;
             AltDown = false;
             ShiftDown = false;
+
+            if (PopAllModalRequested)
+            {
+                PopAllModalRequested = false;
+#if GNH_MAUI
+                var timer = Microsoft.Maui.Controls.Application.Current.Dispatcher.CreateTimer();
+                timer.Interval = TimeSpan.FromSeconds(0.25);
+                timer.IsRepeating = false;
+                timer.Tick += async (s, e) => 
+                {
+                    try
+                    {
+                        await PopAllModalPagesAsync(true); /* It is now ok to animate */
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.WriteLine(ex);
+                    }
+                };
+                timer.Start();
+#else
+                Device.StartTimer(TimeSpan.FromSeconds(0.25), () =>
+                {
+                    try
+                    {
+                        MainThread.InvokeOnMainThreadAsync(async () =>
+                        {
+                            try
+                            {
+                                await PopAllModalPagesAsync(false);
+                            }
+                            catch (Exception ex)
+                            {
+                                Debug.WriteLine(ex);
+                            }
+                        });
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.WriteLine(ex);
+                    }
+                    return false;
+                });
+#endif
+
+            }
 
             /* Check current battery level, internet connection, and xlog user name when returning to app */
             try

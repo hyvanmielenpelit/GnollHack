@@ -1174,6 +1174,11 @@ namespace GnollHackX
                     Thread.Sleep((int)(GHConstants.ReplayStandardDelay / GHApp.ReplaySpeed));
                 return 0;
             }
+            if (_fastForwardGameOver)
+            {
+                RecordFunctionCall(RecordedFunctionID.PosKey, x, y, mod, 0);
+                return 0;
+            }
 
             RequestQueue.Enqueue(new GHRequest(this, GHRequestType.PosKey));
             while (_inputBufferLocation < 0)
@@ -1216,6 +1221,12 @@ namespace GnollHackX
                 RawPrintEx(question, attr, color, false);
 
             WriteFunctionCallsAndCheckEnd();
+
+            if (_fastForwardGameOver)
+            {
+                RecordFunctionCall(RecordedFunctionID.YnFunction, style, attr, color, glyph, title, question, responses, def, descriptions, introline, ynflags, GHConstants.CancelChar);
+                return GHConstants.CancelChar;
+            }
 
             if (string.IsNullOrEmpty(responses))
             {
@@ -3104,6 +3115,9 @@ namespace GnollHackX
         public void ClientCallback_OutRip(int winid, string plname, int points, string killer, string time)
         {
             RecordFunctionCall(RecordedFunctionID.OutRip, winid, plname, points, killer, time);
+
+            if (_fastForwardGameOver)
+                return;
 
             if (_ghWindows[winid] != null)
             {

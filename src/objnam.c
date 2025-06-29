@@ -1320,7 +1320,7 @@ char** attrs_ptr, ** colors_ptr;
     char tmpbuf[PREFIXBUFSZ + 1]; /* for when we have to add something at
                                 the start of prefix instead of the
                                 end (Strcat is used on the end) */
-    register char *bp = xname(obj);
+    char *bp = xname(obj);
 
     if (iflags.override_ID) {
         known = dknown = cknown = bknown = lknown = tknown = TRUE;
