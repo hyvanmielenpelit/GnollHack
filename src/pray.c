@@ -1897,7 +1897,7 @@ gcrownu()
     }
 
     /* Summon steed last */
-    if (steed_gift > NON_PM)
+    if (steed_gift > NON_PM && !(mvitals[steed_gift].mvflags & MV_GONE))
     {
         steed_gift_mon = summoncreature(STRANGE_OBJECT, steed_gift, "%s appears in a puff of smoke.", MM_SUMMON_IN_SMOKE_ANIMATION | MM_SADDLED,
             SUMMONCREATURE_FLAGS_CAPITALIZE | SUMMONCREATURE_FLAGS_MARK_AS_SUMMONED | SUMMONCREATURE_FLAGS_DISREGARDS_STRENGTH | SUMMONCREATURE_FLAGS_DISREGARDS_HEALTH);
