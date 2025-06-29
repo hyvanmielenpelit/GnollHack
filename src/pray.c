@@ -1592,9 +1592,10 @@ gcrownu()
             }
 
             /* Robe of eyes as a backup */
-            if (item_cnt < 3 && !carrying(ROBE_OF_EYES))
+            gifttype = ROBE_OF_EYES;
+            if (item_cnt < 3 && !carrying(gifttype))
             {
-                obj = mksobj(ROBE_OF_EYES, FALSE, FALSE, MKOBJ_TYPE_CONTAINER);
+                obj = mksobj(gifttype, FALSE, FALSE, MKOBJ_TYPE_CONTAINER);
                 if (obj)
                 {
                     bless(obj);
