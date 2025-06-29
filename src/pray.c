@@ -969,7 +969,7 @@ gcrownu()
         u.uevent.uhand_of_elbereth = 3;
         in_hand = (uwep && uwep->oartifact == chaotic_crowning_gift_oartifact);
         in_hand2 = (uarms && uarms->oartifact == chaotic_crowning_gift_oartifact);
-        if (Role_if(PM_WIZARD) || Role_if(PM_PRIEST) || Role_if(PM_MONK))
+        if (Role_if(PM_WIZARD) || Role_if(PM_PRIEST) || Role_if(PM_MONK) || Role_if(PM_TOURIST))
         {
             play_voice_god_simple_line_by_align(u.ualign.type, GOD_LINE_I_CROWN_THEE_THE_GLORY_OF_ARIOCH);
             verbalize_ex(ATR_NONE, CLR_MSG_GOD, "I crown thee... The Glory of Arioch!");
@@ -1493,6 +1493,7 @@ gcrownu()
         {
             steed_gift_mon = luggage;
 
+            int item_cnt = 0;
             int gifttype = EYEGLASSES_OF_X_RAY_VISION;
             int gifttype2 = RIN_X_RAY_VISION;
             /* Eyeglasses */
@@ -1522,6 +1523,7 @@ gcrownu()
                     bless(obj);
                     (void)mpickobj(luggage, obj);
                     class_gift = gifttype;
+                    item_cnt++;
                 }
             }
 
@@ -1561,42 +1563,7 @@ gcrownu()
                     obj->oerodeproof = 1;
                     (void)mpickobj(luggage, obj);
                     class_gift = gifttype;
-                }
-            }
-
-            /* Robe of eyes */
-            gifttype = ROBE_OF_EYES;
-            gifttype2 = ROBE_OF_MAGIC_RESISTANCE;
-            obj = carrying(gifttype);
-            obj2 = carrying(gifttype2);
-            if (obj)
-            {
-                if (!obj->blessed)
-                    bless(obj);
-                obj->enchantment = max(1, obj->enchantment + 1 + rnd(3));
-                obj->oerodeproof = 1;
-                pline_ex(ATR_NONE, CLR_MSG_POSITIVE, "%s shines brightly for a while!", Yname2(obj));
-                class_gift = gifttype;
-            }
-            else if (obj2)
-            {
-                if (!obj2->blessed)
-                    bless(obj2);
-                obj2->enchantment = max(1, obj2->enchantment + 1 + rnd(3));
-                obj2->oerodeproof = 1;
-                pline_ex(ATR_NONE, CLR_MSG_POSITIVE, "%s shines brightly for a while!", Yname2(obj2));
-                class_gift = gifttype2;
-            }
-            else
-            {
-                obj = mksobj(gifttype, FALSE, FALSE, MKOBJ_TYPE_CONTAINER);
-                if (obj)
-                {
-                    bless(obj);
-                    obj->enchantment = 1 + rnd(3);
-                    obj->oerodeproof = 1;
-                    (void)mpickobj(luggage, obj);
-                    class_gift = gifttype;
+                    item_cnt++;
                 }
             }
 
@@ -1618,6 +1585,21 @@ gcrownu()
                 if (obj)
                 {
                     bless(obj);
+                    (void)mpickobj(luggage, obj);
+                    class_gift = gifttype;
+                    item_cnt++;
+                }
+            }
+
+            /* Robe of eyes as a backup */
+            if (item_cnt < 3 && !carrying(ROBE_OF_EYES))
+            {
+                obj = mksobj(ROBE_OF_EYES, FALSE, FALSE, MKOBJ_TYPE_CONTAINER);
+                if (obj)
+                {
+                    bless(obj);
+                    obj->enchantment = 1 + rnd(3);
+                    obj->oerodeproof = 1;
                     (void)mpickobj(luggage, obj);
                     class_gift = gifttype;
                 }
