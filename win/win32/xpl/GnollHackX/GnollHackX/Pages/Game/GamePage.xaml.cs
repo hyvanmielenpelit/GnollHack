@@ -2183,13 +2183,10 @@ namespace GnollHackX.Pages.Game
             //    _mapUpdateStopWatch.Stop();
         }
 
-        private int _subCounter = 0;
-        public long GetAnimationCounterIncrement()
+        private double GetAnimationCounterFrameSpeed(MapRefreshRateStyle refreshRateStyle)
         {
-            long counter_increment = 1;
-            int subCounterMax = 0;
             double framespeed = 1.0;
-            switch (MapRefreshRate)
+            switch (refreshRateStyle)
             {
                 case MapRefreshRateStyle.MapFPS20:
                     framespeed = 2.0; /* Animations skip at every other frame at 20fps to get 40fps */
@@ -2215,6 +2212,58 @@ namespace GnollHackX.Pages.Game
                     //subCounterMax = 2; /* Animations proceed at every third frame at 120fps to get 40fps */
                     break;
             }
+            return framespeed;
+        }
+
+        /* Main counter runs at the defined MapRefreshRateStyle rate, e.g. 60 fps, 120 fps or 20 fps. It may, however, run at a different speed if the animation system cannot adhere to the full speed. This case is not considered currently. */
+        /* General animation counter runs at 30fps or 40 fps based on the factor from GetAnimationCounterFrameSpeed applied on the main counter. This counter is intended for tile animations (also found in the legacy Windows version), which are designed to run at this rate so that there are not overly many frames to take memory / to be drawn by the artist. */ 
+        /* However, this rate is too low for GUI animations, which need to be run at 60 FPS. Note also that if the main counter runs at a speed different from the intended full speed, then the animation counter runs equally differently as well. */
+        
+        /* Main counter and general animation counters are incremented on animation system call to UpdateMainCanvas(). Main counter practically measures the calls by the animation system to InvalidateSurface. */
+        /* GUI animations such as found item animations (item bounces), death animations (the tile rotates), fading animations etc. are designed to run at 60 fps (specication have arrays just for this rate). These animations are not found in the legacy Windows version, and they require continuous refresh and redraw of the screen, which the legacy Windows version does not do. */
+        /* One cannot use here the general animation counter, since it advances too slowly, so you need to use the main counter and adjust it for the GUI animation's target 60 FPS speed */
+
+        /* Side note: */
+        /* There is also _mainFPSCounterValue, which is updated on every call to PaintSurface, and it measures the calls to PaintSurface, which may be different from calls to UpdateMainCanvas / InvalidateSurface. */
+        /* _mainFPSCounterValue, however, does not necessarily measure how often the map bitmap on the screen is updated, as this depends on further factors than just running through the drawing instructions in PaintSurface. */
+        /* One could potentially use StopWatch to determine the necessary counter increments, but this could lead to unnecessarily dropped frames, so we have decided that it is better to advance animations potentially at an uneven speed rather than drop some frames. */
+
+        private double GetMainCounterIncrementMultiplierForGUIAnimations(MapRefreshRateStyle refreshRateStyle)
+        {
+            double framespeed = 1.0;
+            switch (refreshRateStyle)
+            {
+                case MapRefreshRateStyle.MapFPS20:
+                    framespeed = 3.0;
+                    break;
+                case MapRefreshRateStyle.MapFPS30:
+                    framespeed = 2.0;
+                    break;
+                case MapRefreshRateStyle.MapFPS40:
+                    framespeed = 1.5;
+                    break;
+                case MapRefreshRateStyle.MapFPS60:
+                    framespeed = 1;
+                    break;
+                case MapRefreshRateStyle.MapFPS80:
+                    framespeed = 0.75;
+                    break;
+                case MapRefreshRateStyle.MapFPS90:
+                    framespeed = 2.0 / 3.0;
+                    break;
+                case MapRefreshRateStyle.MapFPS120:
+                    framespeed = 0.5;
+                    break;
+            }
+            return framespeed;
+        }
+
+        private int _subCounter = 0;
+        public long GetAnimationCounterIncrement()
+        {
+            long counter_increment = 1;
+            int subCounterMax = 0;
+            double framespeed = GetAnimationCounterFrameSpeed(MapRefreshRate);
             if(PlayingReplay)
             {
                 double rpspeed = GHApp.ReplaySpeed;
@@ -7030,6 +7079,10 @@ namespace GnollHackX.Pages.Game
             float messageTextMultiplier = UIUtils.CalculateMessageFontSizeMultiplier(stdButtonWidth, stdButtonHeight, statusBarSkiaHeight, textscale * GHConstants.WindowMessageFontSize, 
                 canvaswidth, canvasheight, canvasViewWidth, canvasViewHeight, usingDesktopButtons, usingSimpleCmdLayout, inverse_canvas_scale, customScale);
             float messageTextScale = textscale * messageTextMultiplier;
+            MapRefreshRateStyle mapRefreshRate = MapRefreshRate;
+            double mainCounter2AnimationMultiplier = GetMainCounterIncrementMultiplierForGUIAnimations(mapRefreshRate); /* Many animations using generalcounterdiff used to be benchmarked to 60 FPS */
+            if (mainCounter2AnimationMultiplier <= 0.0)
+                mainCounter2AnimationMultiplier = 1.0;
 
             bool clearDarkeningCaches = false;
             lock(_lighterDarkeningLock)
@@ -7337,7 +7390,7 @@ namespace GnollHackX.Pages.Game
             }
             lockTaken = false;
 
-            long moveIntervals = Math.Max(2, (long)Math.Ceiling((double)UIUtils.GetMainCanvasAnimationFrequency(MapRefreshRate) / 10.0));
+            long moveIntervals = Math.Max(2, (long)Math.Ceiling((double)UIUtils.GetMainCanvasAnimationFrequency(mapRefreshRate) / 10.0));
             bool lighter_darkening = LighterDarkening;
 #if WINDOWS
             //lock (_canvasPointerLock)
@@ -7592,7 +7645,7 @@ namespace GnollHackX.Pages.Game
                                                             long glyphobjectprintmaincountervalue = _mapData[source_x, source_y].GlyphObjectPrintMainCounterValue;
                                                             long objectcounterdiff = maincountervalue - glyphobjectprintmaincountervalue;
                                                             long glyphgeneralprintmaincountervalue = _mapData[source_x, source_y].GlyphGeneralPrintMainCounterValue;
-                                                            long generalcounterdiff = maincountervalue - glyphgeneralprintmaincountervalue;
+                                                            long generalcounterdiff = (long)((double)(maincountervalue - glyphgeneralprintmaincountervalue) * mainCounter2AnimationMultiplier);
                                                             short missile_height = _mapData[source_x, source_y].Layers.missile_height;
                                                             bool obj_in_pit = (_mapData[source_x, source_y].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_O_IN_PIT) != 0;
 
@@ -7724,7 +7777,7 @@ namespace GnollHackX.Pages.Game
                                                         long glyphobjectprintmaincountervalue = _mapData[mapx, mapy].GlyphObjectPrintMainCounterValue;
                                                         long objectcounterdiff = maincountervalue - glyphobjectprintmaincountervalue;
                                                         long glyphgeneralprintmaincountervalue = _mapData[mapx, mapy].GlyphGeneralPrintMainCounterValue;
-                                                        long generalcounterdiff = maincountervalue - glyphgeneralprintmaincountervalue;
+                                                        long generalcounterdiff = (long)((maincountervalue - glyphgeneralprintmaincountervalue) * mainCounter2AnimationMultiplier);
                                                         short missile_height = _mapData[mapx, mapy].Layers.missile_height;
                                                         bool obj_in_pit = (_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_O_IN_PIT) != 0;
 
