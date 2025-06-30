@@ -1176,7 +1176,7 @@ namespace GnollHackX
             get
             {
 #if GNH_MAUI
-                return IsPackaged;
+                return true; //IsPackaged;
 #else
                 return !HasUnstableGPU();
 #endif
@@ -1187,11 +1187,12 @@ namespace GnollHackX
         {
             get
             {
-#if WINDOWS
-                return IsPackaged;
-#else
                 return true;
-#endif
+//#if WINDOWS
+//                return IsPackaged;
+//#else
+//                return true;
+//#endif
             }
         }
 

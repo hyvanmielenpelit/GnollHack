@@ -1,0 +1,12 @@
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+	<Target Name="CopyAngleAssemblies" AfterTargets="Build">
+		<ItemGroup>
+			<AngleSourceAssemblies Include="$(MSBuildProjectDirectory)\Platforms\Windows\libs\libEGL.dll" />
+		</ItemGroup>
+
+		<Copy SourceFiles="@(AngleSourceAssemblies)"
+		  DestinationFolder="$(OutDir)" 
+		  Condition="'@(AngleSourceAssemblies)' != '' "/>
+
+	</Target>
+</Project>

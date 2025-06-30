@@ -1150,6 +1150,7 @@
 
 	<!--<Import Project="MonoAoTLibraries.targets" Condition="'$(TargetFramework)|$(EnableLLVM)'=='net9.0-android|True'" />-->
 	<Import Project="CompileMonoAoTLibraries2.targets" Condition="'$(TargetFramework)|$(EnableLLVM)'=='net9.0-android|True'" />
+	<Import Project="Angle.targets" Condition="'$(TargetFramework)'=='net9.0-windows10.0.19041.0'" />
 
 	<!-- IMPLIED DEFINE CONSTANTS -->
 	<PropertyGroup Condition="$(TargetFramework.Contains('-android'))">
