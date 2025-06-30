@@ -1831,7 +1831,7 @@ struct mkroom *croom;
                     int orig_level = orig_pm->mlevel;
                     //int pm_difficulty = pm->difficulty;
                     //int orig_difficulty = mons[m->id].difficulty;
-                    level_adjustment += min(pm->mlevel, max(0, orig_level - pm_level) / 2);
+                    level_adjustment += min((int)pm->mlevel, max(0, orig_level - pm_level) / 2);
                 }
                 else
                     return;

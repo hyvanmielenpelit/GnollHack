@@ -673,7 +673,7 @@ nh_timeout()
         phaze_dialogue();
     if (u.mtimedone && !--u.mtimedone) {
         if (Unchanging)
-            u.mtimedone = rnd(100 * youmonst.data->mlevel + 1);
+            u.mtimedone = rnd(100 * (int)youmonst.data->mlevel + 1);
         else if (is_were(youmonst.data))
             you_unwere(FALSE); /* if polycontrl, asks whether to rehumanize */
         else

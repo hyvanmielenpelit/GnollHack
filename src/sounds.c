@@ -883,7 +883,7 @@ register struct monst *mtmp;
         pline("%s %s!", Monnam(mtmp), vtense((char *) 0, growl_verb));
         if (context.run)
             nomul(0);
-        wake_nearto(mtmp->mx, mtmp->my, mtmp->data->mlevel * 18);
+        wake_nearto(mtmp->mx, mtmp->my, (int)mtmp->data->mlevel * 18);
     }
 }
 
@@ -928,7 +928,7 @@ register struct monst *mtmp;
         pline("%s %s!", Monnam(mtmp), vtense((char *) 0, yelp_verb));
         if (context.run)
             nomul(0);
-        wake_nearto(mtmp->mx, mtmp->my, mtmp->data->mlevel * 12);
+        wake_nearto(mtmp->mx, mtmp->my, (int)mtmp->data->mlevel * 12);
         break_charm(mtmp, TRUE);
 
     }
@@ -965,7 +965,7 @@ register struct monst *mtmp;
         pline("%s %s.", Monnam(mtmp), vtense((char *) 0, whimper_verb));
         if (context.run)
             nomul(0);
-        wake_nearto(mtmp->mx, mtmp->my, mtmp->data->mlevel * 6);
+        wake_nearto(mtmp->mx, mtmp->my, (int)mtmp->data->mlevel * 6);
     }
 }
 

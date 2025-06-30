@@ -4757,7 +4757,7 @@ boolean via_attack;
                         if (mon->isshk || mon->ispriest || mon->issmith || mon->isnpc)
                             continue;
 
-                        if (mon->data->mlevel < rn2(10)) 
+                        if ((int)mon->data->mlevel < rn2(10))
                         {
                             monflee(mon, rn2(50) + 25, TRUE, !exclaimed);
                             exclaimed = TRUE;

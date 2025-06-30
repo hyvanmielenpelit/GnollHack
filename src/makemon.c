@@ -2514,7 +2514,7 @@ uint64_t mmflags;
     int hp = 0;
     int basemaxhp = 0;
 
-    mon->m_lev = use_normalhd ? ptr->mlevel : adj_lev(ptr, level_adjustment);
+    mon->m_lev = (uchar)(use_normalhd ? (int)ptr->mlevel : adj_lev(ptr, level_adjustment));
 
     if (mon->m_lev <= 0) 
     {
@@ -3921,13 +3921,13 @@ int manual_adj;
         /* does not depend on other strengths, but does get stronger
          * every time he is killed
          */
-        tmp = ptr->mlevel + mvitals[PM_WIZARD_OF_YENDOR].died;
+        tmp = (int)ptr->mlevel + (int)mvitals[PM_WIZARD_OF_YENDOR].died;
         if (tmp > MAX_MONSTER_LEVEL)
             tmp = MAX_MONSTER_LEVEL;
         return tmp;
     }
 
-    tmp = ptr->mlevel + manual_adj;
+    tmp = (int)ptr->mlevel + manual_adj;
     if (tmp > MAX_MONSTER_LEVEL)
         return MAX_MONSTER_LEVEL; /* "special" demons/devils */
     tmp2 = (level_difficulty() - tmp);
@@ -3936,7 +3936,7 @@ int manual_adj;
     else
         tmp += (tmp2 / 5); /* else increment 1 per five diff */
 
-    tmp2 = (u.ulevel - ptr->mlevel); /* adjust vs. the player */
+    tmp2 = (u.ulevel - (int)ptr->mlevel); /* adjust vs. the player */
     if (tmp2 > 0)
         tmp += (tmp2 / 4); /* level as well */
 
@@ -3983,7 +3983,7 @@ struct monst *mtmp, *victim;
 
         lev_limit = 3 * (int) ptr->mlevel / 2; /* same as adj_lev() */
         /* If they can grow up, be sure the level is high enough for that */
-        if (oldtype != newtype && mons[newtype].mlevel > lev_limit)
+        if (oldtype != newtype && (int)mons[newtype].mlevel > lev_limit)
             lev_limit = (int) mons[newtype].mlevel;
         /* number of hit points to gain; unlike for the player, we put
            the limit at the bottom of the next level rather than the top */
@@ -4015,7 +4015,7 @@ struct monst *mtmp, *victim;
     else if (lev_limit > MAX_MONSTER_LEVEL)
         lev_limit = MAX_MONSTER_LEVEL; //(ptr->mlevel > 49 ? 50 : 49);
 
-    if ((int) ++mtmp->m_lev >= mons[newtype].mlevel && newtype != oldtype)
+    if ((int) ++mtmp->m_lev >= (int)mons[newtype].mlevel && newtype != oldtype)
     {
         ptr = &mons[newtype];
         /* new form might force gender change */

@@ -1994,7 +1994,7 @@ ustatusline()
 
     pline("Status of %s (%s):  Level %d  HP %d(%d)  AC %d%s.", plname,
           piousness(FALSE, align_str(u.ualign.type)),
-          Upolyd ? mons[u.umonnum].mlevel : u.ulevel, Upolyd ? u.mh : u.uhp,
+          Upolyd ? (int)mons[u.umonnum].mlevel : u.ulevel, Upolyd ? u.mh : u.uhp,
           Upolyd ? u.mhmax : u.uhpmax, u.uac, info);
 }
 

@@ -2855,7 +2855,7 @@ boolean pick;
                     delay_output_milliseconds(25);
                     play_player_ouch_sound(MONSTER_OUCH_SOUND_OUCH);
                 }
-                damage = adjust_damage(d(max(1, mtmp->data->mlevel - 1), 6), (struct monst*)0, &youmonst, AD_PHYS, ADFLAGS_NONE);
+                damage = adjust_damage(d(max(1, (int)mtmp->data->mlevel - 1), 6), (struct monst*)0, &youmonst, AD_PHYS, ADFLAGS_NONE);
                 mdamageu(mtmp, damage, TRUE);
             }
             break;

@@ -219,9 +219,9 @@ boolean foundyou;
     
     //Assumes that attack type is AT_MAGC when this function is called
     if(mattk->mlevel > 0)
-        ml = mattk->mlevel;
+        ml = (int)mattk->mlevel;
     else
-        ml = mtmp->m_lev;
+        ml = (int)mtmp->m_lev;
 
     /* Three cases:
      * -- monster is attacking you.  Search for a useful spell.

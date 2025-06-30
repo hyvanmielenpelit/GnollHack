@@ -890,7 +890,7 @@ register struct monst *mdef, *magr;
                 || (adtyp == AD_FIRE && !is_mon_immune_to_fire(magr))
                 || (adtyp == AD_ELEC && !is_mon_immune_to_elec(magr))
                 || adtyp == AD_PHYS) {
-                dmg = max(0, (mdef->data->mattk[i].damn > 0 ? mdef->data->mattk[i].damn : mdef->data->mlevel / 2 + 2) * (mdef->data->mattk[i].damd > 0 ? mdef->data->mattk[i].damd : 6) + mdef->data->mattk[i].damp);
+                dmg = max(0, (mdef->data->mattk[i].damn > 0 ? mdef->data->mattk[i].damn : (int)mdef->data->mlevel / 2 + 2) * (mdef->data->mattk[i].damd > 0 ? mdef->data->mattk[i].damd : 6) + mdef->data->mattk[i].damp);
             } else
                 dmg = 0;
 

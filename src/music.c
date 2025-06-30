@@ -192,7 +192,7 @@ boolean isscary;
     int distance, distm, cnt = 0;
 
     /* distance of affected non-soldier monsters to bugler */
-    distance = ((bugler == &youmonst) ? u.ulevel : bugler->data->mlevel) * 30;
+    distance = ((bugler == &youmonst) ? u.ulevel : (int)bugler->data->mlevel) * 30;
 
     for (mtmp = fmon; mtmp; mtmp = mtmp->nmon) {
         if (DEADMONSTER(mtmp))

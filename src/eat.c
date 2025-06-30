@@ -1088,7 +1088,7 @@ register struct permonst *ptr;
             break;
         }
 
-        if (ptr->mlevel <= rn2(chance))
+        if ((int) ptr->mlevel <= rn2(chance))
             return; /* failed die roll */
     }
 
@@ -1304,7 +1304,7 @@ uchar gender UNUSED; /* 0 = male, 1 = female, 2 = unknown */
     {
         if (!Stunned)
             play_sfx_sound(SFX_ACQUIRE_STUN);
-        make_stunned((HStun & TIMEOUT) + mons[pm].mlevel * 2 + 5 + rnd(20), FALSE);
+        make_stunned((HStun & TIMEOUT) + (int)mons[pm].mlevel * 2 + 5 + rnd(20), FALSE);
         standard_hint("Some corpses make you stunned. You can also check this out by using a wand of probing.", &u.uhint.ate_stunning_corpse);
         donotcheckfurther = TRUE;
     }

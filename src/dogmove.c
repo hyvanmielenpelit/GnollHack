@@ -702,7 +702,7 @@ register struct permonst* ptr;
             break;
         }
 
-        if (ptr->mlevel <= rn2(chance))
+        if ((int)ptr->mlevel <= rn2(chance))
             return; /* failed die roll */
     }
 
@@ -853,7 +853,7 @@ uchar gender UNUSED; /* 0 = male, 1 = female, 2 = unknown */
     {
         if (!is_stunned(mon))
             play_sfx_sound_at_location(SFX_ACQUIRE_STUN, mon->mx, mon->my);
-        increase_mon_property_b(mon, STUNNED, mons[pm].mlevel * 2 + 5 + rnd(20), canspotmon(mon));
+        increase_mon_property_b(mon, STUNNED, (int)mons[pm].mlevel * 2 + 5 + rnd(20), canspotmon(mon));
         donotcheckfurther = TRUE;
     }
 

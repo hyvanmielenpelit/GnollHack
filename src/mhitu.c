@@ -4622,7 +4622,7 @@ struct attack *mattk;
 
     if (oldu_mattk->damd > 0 || oldu_mattk->damn > 0)
         damage = adjust_damage(
-            max(0, d(oldu_mattk->damn > 0 ? oldu_mattk->damn : olduasmon->mlevel / 2 + 2, oldu_mattk->damd > 0 ? oldu_mattk->damd : 6) + oldu_mattk->damp), 
+            max(0, d(oldu_mattk->damn > 0 ? oldu_mattk->damn : (int)olduasmon->mlevel / 2 + 2, oldu_mattk->damd > 0 ? oldu_mattk->damd : 6) + oldu_mattk->damp),
             &youmonst, mtmp, mattk->adtyp, ADFLAGS_NONE);
     else
         damage = max(0, oldu_mattk->damp);
@@ -4782,7 +4782,7 @@ struct attack *mattk;
             if (u.mh - u.mhmax > 0)
                 u.basemhmax += u.mh - u.mhmax;
             updatemaxhp();
-            if (u.mhmax > ((youmonst.data->mlevel + 1) * 8))
+            if (u.mhmax > (((int)youmonst.data->mlevel + 1) * 8))
                 (void) split_mon(&youmonst, mtmp);
             break;
         case AD_STUN: /* Yellow mold */
@@ -4878,7 +4878,7 @@ cloneu()
     mon = christen_monst(mon, plname);
     mon->u_know_mname = TRUE;
     initedog(mon, TRUE);
-    mon->m_lev = youmonst.data->mlevel;
+    mon->m_lev = (uchar)youmonst.data->mlevel;
     //mon might need mbasehpmax stat
     mon->mbasehpmax = u.basemhmax;
     mon->mbasehpdrain = u.basemhdrain;

@@ -2590,7 +2590,7 @@ do_illness: /* Pestilence's potion of healing effect */
                           is_silent(mon->data) ? "writhes" : "shrieks");
                     pline_ex1(ATR_NONE, CLR_MSG_ATTENTION, dcbuf);
                     if (!is_silent(mon->data))
-                        wake_nearto(tx, ty, mon->data->mlevel * 10);
+                        wake_nearto(tx, ty, (int)mon->data->mlevel * 10);
                     deduct_monster_hp(mon, adjust_damage(duration, &youmonst, mon, AD_CLRC, ADFLAGS_NONE));
                     /* should only be by you */
                     if (DEADMONSTER(mon))
@@ -2640,7 +2640,7 @@ do_illness: /* Pestilence's potion of healing effect */
                       is_silent(mon->data) ? "writhes" : "shrieks");
                 pline_ex1(ATR_NONE, CLR_MSG_ATTENTION, dcbuf);
                 if (!is_silent(mon->data))
-                    wake_nearto(tx, ty, mon->data->mlevel * 10);
+                    wake_nearto(tx, ty, (int)mon->data->mlevel * 10);
                 deduct_monster_hp(mon, adjust_damage(d(obj->cursed ? 4 : 3, obj->blessed ? 6 : 8), &youmonst, mon, AD_ACID, ADFLAGS_NONE));
                 if (DEADMONSTER(mon)) {
                     if (your_fault)

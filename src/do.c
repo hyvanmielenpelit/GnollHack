@@ -4662,7 +4662,7 @@ struct item_description_stats* stats_ptr; /* If non-null, only returns item stat
                     if ((is_thrown_weapon_only(obj) || is_ammo(obj)) && !(obj == uwep || obj == uwep2 || obj == uswapwep || obj == uswapwep2))
                     {
                         roll_to_hit = -1 + Luck + u_ranged_strdex_to_hit_bonus() + find_mac(&youmonst) + u.ubasehitinc + u.uhitinc
-                            + maybe_polyd(youmonst.data->mlevel, u.ulevel);
+                            + maybe_polyd((int)youmonst.data->mlevel, u.ulevel);
 
                         roll_to_hit += omon_adj(&youmonst, obj, FALSE);
 
@@ -5175,9 +5175,9 @@ struct permonst* ptr;
     int relevant_level = !mon || is_you ? ptr->mlevel : mon->m_lev;
 
     Strcpy(buf2, "");
-    if (relevant_level != ptr->mlevel)
+    if (relevant_level != (int)ptr->mlevel)
     {
-        Sprintf(buf2, " (base %d)", ptr->mlevel);
+        Sprintf(buf2, " (base %d)", (int)ptr->mlevel);
     }
 
     Sprintf(buf, "Hit dice:               %d%s", relevant_level, buf2);    

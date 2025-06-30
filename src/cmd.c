@@ -3617,7 +3617,7 @@ int final;
             Strcpy(buf, "1 hit die");
             break;
         default:
-            Sprintf(buf, "%d hit dice", mons[u.umonnum].mlevel);
+            Sprintf(buf, "%d hit dice", (int)mons[u.umonnum].mlevel);
             break;
         }
         you_have(buf, "");

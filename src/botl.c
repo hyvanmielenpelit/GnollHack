@@ -292,7 +292,7 @@ do_statusline2(VOID_ARGS)
 
     /* experience */
     if (Upolyd)
-        Sprintf(expr, "HD:%d", mons[u.umonnum].mlevel);
+        Sprintf(expr, "HD:%d", (int)mons[u.umonnum].mlevel);
     else if (flags.showexp)
         Sprintf(expr, "XL:%u/%-1lld", u.ulevel, (long long)u.uexp);
     else
