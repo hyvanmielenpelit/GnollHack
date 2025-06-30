@@ -4839,6 +4839,7 @@ struct monst* origmonst;
 
     switch (otyp) 
     {
+    case WAN_DISJUNCTION:
     case WAN_CANCELLATION:
         switch (ttyp)
         {

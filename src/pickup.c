@@ -3485,8 +3485,8 @@ boolean dobot;
         }
 
         Sprintf(priority_debug_buf_2, "in_container_core2: %d, %d", current_container->otyp, saved_otyp);
-        Strcpy(priority_debug_buf_3, "in_container_core2");
-        Strcpy(priority_debug_buf_4, "in_container_core2");
+        Sprintf(priority_debug_buf_3, "in_container_core2: %d, %d", current_container->otyp, saved_otyp);
+        Sprintf(priority_debug_buf_4, "in_container_core2: %d, %d", current_container->otyp, saved_otyp);
         context.suppress_container_deletion_warning = 1;
         if (!floor_container)
             useup(current_container);

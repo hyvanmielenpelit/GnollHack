@@ -730,11 +730,13 @@ struct obj *box;
                 } 
                 else
                 {
-                    while (otmp->otyp == WAN_CANCELLATION || otmp->otyp == WAN_DISJUNCTION)
+                    while (otmp->otyp == WAN_CANCELLATION)
                     {
                         otmp->otyp = rnd_class(WAN_LIGHT, WAN_LIGHTNING);
                         otmp->material = objects[otmp->otyp].oc_material;
                     }
+                    if (otmp->otyp == WAN_DISJUNCTION) /* We can't replace disjunction because it is an artifact, so it has zero charges instead */
+                        otmp->charges = 0;
                 }
             }
         }
