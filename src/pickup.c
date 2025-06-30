@@ -860,7 +860,7 @@ uchar noncoin_nonmergeable_found;
     {
         if (*used_container_ptr)
         {
-            if (!stash_obj_in_container(obj, *used_container_ptr))
+            if (stash_obj_in_container(obj, *used_container_ptr) <= 0) /* -1 if BoH blew up, 0 if couldn't do; stop in both cases */
                 return -1;
         }
         else if (i < n - 1 && inv_cnt(FALSE) >= 52)
@@ -878,14 +878,15 @@ uchar noncoin_nonmergeable_found;
                     {
                     default:
                     case 'a':
-                        (void)auto_bag_in(invent, obj, FALSE);
                         *do_auto_in_bag_ptr = TRUE;
+                        if (auto_bag_in(invent, obj, FALSE) <= 0) /* -1 if BoH blew up, 0 if couldn't do; stop in both cases */
+                            return -1;
                         break;
                     case 'y':
                         *used_container_ptr = select_other_container(invent, (struct obj*)0, FALSE);
                         if (*used_container_ptr)
                         {
-                            if (!stash_obj_in_container(obj, *used_container_ptr))
+                            if (stash_obj_in_container(obj, *used_container_ptr) <= 0) /* -1 if BoH blew up, 0 if couldn't do; stop in both cases */
                                 return -1;
                         }
                         else
@@ -895,10 +896,6 @@ uchar noncoin_nonmergeable_found;
                         return -1;
                     case 'q':
                         return -1;
-                    }
-                    if (ans == 'a')
-                    {
-                        *do_auto_in_bag_ptr = TRUE;
                     }
                 }
                 else
@@ -3200,6 +3197,9 @@ int
 stash_obj_in_container(obj, container)
 struct obj* obj, *container;
 {
+    if (!obj || !container)
+        return -1;
+
     struct obj* saved_container = current_container;
     current_container = container;
     int res = in_container(obj);
@@ -5357,7 +5357,7 @@ dostash()
         return 0;
     }
 
-    if (!stash_obj_in_container(otmp, container))
+    if (!stash_obj_in_container(otmp, container))  /* Do not unsplit with -1 if BoH blew up; both obj and container maybe gone */
     {
         /* couldn't put selected item into container for some
            reason; might need to undo splitobj() */
@@ -5400,7 +5400,7 @@ dostashfloor()
         return 0;
     }
 
-    if (!stash_obj_in_container(otmp, container))
+    if (!stash_obj_in_container(otmp, container)) /* Do not unsplit with -1 if BoH blew up; both obj and container maybe gone */
     {
         /* couldn't put selected item into container for some
            reason; might need to undo splitobj() */

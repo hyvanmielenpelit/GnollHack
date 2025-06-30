@@ -3869,7 +3869,7 @@ dodip()
         }
         else if (Is_proper_container(potion) && !potion->olocked)
         {
-            if (!stash_obj_in_container(obj, potion))
+            if (!stash_obj_in_container(obj, potion)) /* Do not unsplit with -1 if BoH blew up; both obj and potion maybe gone */
             {
                 /* couldn't put selected item into container for some
                    reason; might need to undo splitobj() */
