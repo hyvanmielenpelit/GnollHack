@@ -2150,7 +2150,10 @@ boolean called;
                 if ((bp = strstri(name, " the ")) != 0)
                     Sprintf(buf, "%s%s %s", tmpbuf, pm_name, name);
                 else
-                    Sprintf(buf, "%s%s the %s", tmpbuf, name, pm_name);
+                {
+                    boolean is_high_level = mtmp->m_lev >= mdat->mlevel + 5;
+                    Sprintf(buf, "%s%s the %s%s", tmpbuf, name, is_high_level ? "high-level " : "", pm_name);
+                }
             }
             else
                 Sprintf(buf, "%s%s", tmpbuf, name);
