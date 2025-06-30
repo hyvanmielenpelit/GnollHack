@@ -695,6 +695,8 @@ namespace GnollHackX.Pages.Game
         private double _fps;
         private long _previousMainFPSCounterValue = 0L;
         private long _previousCommandFPSCounterValue = 0L;
+        private long _previousRenderingCounterValue = 0L;
+
         private readonly object _fpslock = new object();
         private Stopwatch _stopWatch = new Stopwatch();
         private Stopwatch _mapUpdateStopWatch = new Stopwatch();
@@ -1635,13 +1637,18 @@ namespace GnollHackX.Pages.Game
                                 }
                                 if (GHApp.IsWindows)
                                 {
-                                    if (counterDiff == 0 && (_mainFPSCounterValue > 0 || UpdateTimerTickCount > 10) && !_counterDiffZeroObserved && IsGameOn && IsMainCanvasOn && !LoadingGrid.IsVisible && !MoreCommandsGrid.IsVisible && !MenuGrid.IsVisible && !TextGrid.IsVisible)
+                                    long renderingCounter = GHApp.RenderingCounter;
+                                    long renderingCounterDiff = renderingCounter - _previousRenderingCounterValue;
+                                    _previousRenderingCounterValue = renderingCounter;
+                                    if ((renderingCounterDiff == 0 || (counterDiff == 0 && _mainFPSCounterValue > 0)) && UpdateTimerTickCount > 10 && !_counterDiffZeroObserved && IsGameOn && IsMainCanvasOn && !LoadingGrid.IsVisible && !MoreCommandsGrid.IsVisible && !MenuGrid.IsVisible && !TextGrid.IsVisible)
                                     {
                                         _counterDiffZeroObserved = true;
                                         GHApp.MaybeWriteGHLog("MainCanvas counterDiff is 0");
                                         PleaseWaitLabel.IsVisible = true;
                                         StopMainCanvasAnimation();
+                                        canvasView.IsVisible = false;
                                         RefreshScreen = true;
+                                        canvasView.IsVisible = true;
                                         StartMainCanvasAnimation();
                                     }
                                     else if (counterDiff > 0 && _counterDiffZeroObserved)
@@ -3627,9 +3634,9 @@ namespace GnollHackX.Pages.Game
                         {
                             MenuGrid.IsVisible = false;
                         }
-    #if !GNH_MAUI
+#if !GNH_MAUI
                         TextStack.ForceLayout();
-    #endif
+#endif
                         await TextStack.FadeTo(1.0, 256);
                     }
                     catch (Exception ex)

@@ -244,8 +244,24 @@ namespace GnollHackX
             CustomScreenResolutionPriority = (uint)Preferences.Get("CustomScreenResolutionPriority", 1);
             SaveScreenResolution();
             ChangeToCustomScreenResolution();
+#if WINDOWS
+            Microsoft.UI.Xaml.Media.CompositionTarget.Rendering += CompositionTarget_Rendering;
+#endif
         }
 
+        private static readonly object _renderingLock = new object();
+        private static long _renderingCounter = 0;
+        public static long RenderingCounter { get { lock (_renderingLock) { return _renderingCounter; } } } 
+
+        private static void CompositionTarget_Rendering(object sender, object e)
+        {
+            lock (_renderingLock)
+            {
+                _renderingCounter++;
+                if (_renderingCounter == long.MaxValue)
+                    _renderingCounter = 0;
+            }
+        }
 
         public static void BeforeExitApp()
         {
@@ -253,6 +269,9 @@ namespace GnollHackX
             Battery.BatteryInfoChanged -= Battery_BatteryInfoChanged;
             DeviceDisplay.MainDisplayInfoChanged -= DeviceDisplay_MainDisplayInfoChanged;
             RevertScreenResolution();
+#if WINDOWS
+            Microsoft.UI.Xaml.Media.CompositionTarget.Rendering -= CompositionTarget_Rendering;
+#endif
         }
 
         private static void InitializeScreenResolutions()
