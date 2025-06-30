@@ -1581,7 +1581,8 @@ namespace GnollHackX.Pages.Game
             }
         }
 
-        private bool _counterDiffZeroObserved = false;
+        private bool _mainCounterDiffZeroObserved = false;
+        private bool _renderingCounterDiffZeroObserved = false;
 
         private readonly object _updateTimerTickCountLock = new object();
         private long _updateTimerTickCount = 0L;
@@ -1640,22 +1641,42 @@ namespace GnollHackX.Pages.Game
                                     long renderingCounter = GHApp.RenderingCounter;
                                     long renderingCounterDiff = renderingCounter - _previousRenderingCounterValue;
                                     _previousRenderingCounterValue = renderingCounter;
-                                    if ((renderingCounterDiff == 0 || (counterDiff == 0 && _mainFPSCounterValue > 0)) && UpdateTimerTickCount > 10 && !_counterDiffZeroObserved && IsGameOn && IsMainCanvasOn && !LoadingGrid.IsVisible && !MoreCommandsGrid.IsVisible && !MenuGrid.IsVisible && !TextGrid.IsVisible)
+                                    if (((renderingCounterDiff == 0 &&  !_renderingCounterDiffZeroObserved) || (counterDiff == 0 && _mainFPSCounterValue > 0 && !_mainCounterDiffZeroObserved)) && UpdateTimerTickCount > 10 && IsGameOn && IsMainCanvasOn && !LoadingGrid.IsVisible && !MoreCommandsGrid.IsVisible && !MenuGrid.IsVisible && !TextGrid.IsVisible)
                                     {
-                                        _counterDiffZeroObserved = true;
-                                        GHApp.MaybeWriteGHLog("MainCanvas counterDiff is 0");
-                                        PleaseWaitLabel.IsVisible = true;
-                                        StopMainCanvasAnimation();
-                                        canvasView.IsVisible = false;
-                                        RefreshScreen = true;
-                                        canvasView.IsVisible = true;
-                                        StartMainCanvasAnimation();
+                                        if (counterDiff == 0 && !_mainCounterDiffZeroObserved)
+                                        {
+                                            _mainCounterDiffZeroObserved = true;
+                                            GHApp.MaybeWriteGHLog("MainCanvas counterDiff is 0");
+                                        }
+                                        if (renderingCounterDiff == 0 && !_renderingCounterDiffZeroObserved)
+                                        {
+                                            _renderingCounterDiffZeroObserved = true;
+                                            GHApp.MaybeWriteGHLog("Rendering counterDiff is 0");
+                                        }
+                                        if ((_mainCounterDiffZeroObserved || _renderingCounterDiffZeroObserved) && !PleaseWaitLabel.IsVisible)
+                                        {
+                                            PleaseWaitLabel.IsVisible = true;
+                                            StopMainCanvasAnimation();
+                                            canvasView.IsVisible = false;
+                                            RefreshScreen = true;
+                                            canvasView.IsVisible = true;
+                                            StartMainCanvasAnimation();
+                                        }
                                     }
-                                    else if (counterDiff > 0 && _counterDiffZeroObserved)
+                                    else if ((renderingCounterDiff > 0 && _renderingCounterDiffZeroObserved) || (counterDiff > 0 && _mainCounterDiffZeroObserved))
                                     {
-                                        _counterDiffZeroObserved = false;
-                                        GHApp.MaybeWriteGHLog("MainCanvas counter is back on");
-                                        PleaseWaitLabel.IsVisible = false;
+                                        if (counterDiff > 0)
+                                        {
+                                            _mainCounterDiffZeroObserved = false;
+                                            GHApp.MaybeWriteGHLog("MainCanvas counter is back on");
+                                        }
+                                        if (renderingCounterDiff > 0)
+                                        {
+                                            _renderingCounterDiffZeroObserved = false;
+                                            GHApp.MaybeWriteGHLog("Rendering counter is back on");
+                                        }
+                                        if (!_mainCounterDiffZeroObserved && !_renderingCounterDiffZeroObserved && PleaseWaitLabel.IsVisible)
+                                            PleaseWaitLabel.IsVisible = false;
                                     }
                                 }
                                 //lock (AnimationTimerLock)
