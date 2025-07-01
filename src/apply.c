@@ -1542,7 +1542,10 @@ struct obj* obj;
         return 0;
 
     update_u_facing(TRUE);
-    u.uconduct.gnostic++;
+    if (!u.uconduct.gnostic++)
+        livelog_printf(LL_CONDUCT,
+            "eschewed atheism, by using %s",
+            doname(obj));
 
     if (obj->charges <= 0)
     {
