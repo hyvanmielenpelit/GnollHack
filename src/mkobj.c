@@ -4340,11 +4340,11 @@ dealloc_obj(obj)
 struct obj *obj;
 {
     if (obj->where != OBJ_FREE)
-        panic("dealloc_obj: obj not free: otyp=%d", obj->otyp);
+        panic("dealloc_obj: obj not free: otyp=%d, where=%d, ox=%d, oy=%d", obj->otyp, obj->where, obj->ox, obj->oy);
     if (obj->nobj)
-        panic("dealloc_obj with nobj: otyp=%d", obj->otyp);
+        panic("dealloc_obj with nobj: otyp=%d, where=%d, ox=%d, oy=%d", obj->otyp, obj->where, obj->ox, obj->oy);
     if (obj->cobj)
-        panic("dealloc_obj with cobj: otyp=%d", obj->otyp);
+        panic("dealloc_obj with cobj: otyp=%d, where=%d, ox=%d, oy=%d", obj->otyp, obj->where, obj->ox, obj->oy);
 
     /* free up any timers attached to the object */
     if (obj->timed)
