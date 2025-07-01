@@ -4340,11 +4340,11 @@ dealloc_obj(obj)
 struct obj *obj;
 {
     if (obj->where != OBJ_FREE)
-        panic("dealloc_obj: obj not free");
+        panic("dealloc_obj: obj not free: otyp=%d, where=%d, ox=%d, oy=%d", obj->otyp, obj->where, obj->ox, obj->oy);
     if (obj->nobj)
-        panic("dealloc_obj with nobj");
+        panic("dealloc_obj with nobj: otyp=%d, where=%d, ox=%d, oy=%d", obj->otyp, obj->where, obj->ox, obj->oy);
     if (obj->cobj)
-        panic("dealloc_obj with cobj");
+        panic("dealloc_obj with cobj: otyp=%d, where=%d, ox=%d, oy=%d", obj->otyp, obj->where, obj->ox, obj->oy);
 
     /* free up any timers attached to the object */
     if (obj->timed)
@@ -4358,7 +4358,7 @@ struct obj *obj;
      * list must track all objects that can have a light source
      * attached to it (and also requires lamplit to be set).
      */
-    Strcpy(debug_buf_4, "dealloc_obj");
+    Sprintf(debug_buf_4, "dealloc_obj: %d", obj->otyp);
     if (obj_sheds_light(obj))
         del_light_source(LS_OBJECT, obj_to_any(obj));
 

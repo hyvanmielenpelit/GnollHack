@@ -2857,11 +2857,7 @@ struct monst* targetmonst;
             otmp = getobj(getobj_allowall, "detect blessedness for", 0, "");
             if (otmp)
             {
-                if (otmp->oclass != COIN_CLASS) 
-                {
-                    u.uconduct.gnostic++;
-                }
-                else 
+                if (otmp->oclass == COIN_CLASS) 
                 {
                     /* coins */
                     otmp->blessed = otmp->cursed = 0; /* just in case */
@@ -4699,8 +4695,6 @@ boolean confused; /* Is caster confused */
         {
             otmp = pick_list[0].item.a_obj;
             free((genericptr_t)pick_list);
-            if(!(is_serviced_spell && !isyou))
-                u.uconduct.gnostic++;
             if (!is_serviced_spell && confused)
                 pline_ex1(ATR_NONE, CLR_MSG_FAIL, "Oops... You mispronounce the magic words.");
 
@@ -4715,6 +4709,11 @@ boolean confused; /* Is caster confused */
                     glowcolor = NH_AMBER;
                     costchange = COST_UNCURS;
                     soundid = SFX_UNCURSE_ITEM_SUCCESS;
+                    if (!(is_serviced_spell && !isyou))
+                    {
+                        if (!u.uconduct.gnostic++)
+                            livelog_printf(LL_CONDUCT, "rejected atheism by uncursing %s", doname(otmp));
+                    }
                 }
                 else if (!otmp->blessed)
                 {
@@ -4724,6 +4723,11 @@ boolean confused; /* Is caster confused */
                     costchange = COST_alter;
                     altfmt = TRUE; /* "with a <color> aura" */
                     soundid = SFX_BLESS_ITEM_SUCCESS;
+                    if (!(is_serviced_spell && !isyou))
+                    {
+                        if (!u.uconduct.gnostic++)
+                            livelog_printf(LL_CONDUCT, "rejected atheism by blessing %s", doname(otmp));
+                    }
                 }
             }
             else
@@ -4735,6 +4739,11 @@ boolean confused; /* Is caster confused */
                     glowcolor = NH_BROWN;
                     costchange = COST_UNBLSS;
                     soundid = SFX_UNBLESS_ITEM_SUCCESS;
+                    if (!(is_serviced_spell && !isyou))
+                    {
+                        if (!u.uconduct.gnostic++)
+                            livelog_printf(LL_CONDUCT, "rejected atheism by unblessing %s", doname(otmp));
+                    }
                 }
                 else if (!otmp->cursed)
                 {
@@ -4744,6 +4753,11 @@ boolean confused; /* Is caster confused */
                     costchange = COST_alter;
                     altfmt = TRUE;
                     soundid = SFX_CURSE_ITEM_SUCCESS;
+                    if (!(is_serviced_spell && !isyou))
+                    {
+                        if (!u.uconduct.gnostic++)
+                            livelog_printf(LL_CONDUCT, "rejected atheism by cursing %s", doname(otmp));
+                    }
                 }
             }
             if (func)

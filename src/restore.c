@@ -674,7 +674,7 @@ unsigned int *stuckid, *steedid;
     char timebuf[15];
     uint64_t uid;
     boolean defer_perm_invent;
-    Strcpy(debug_buf_2, "restgamestate");
+    Strcpy(debug_buf_2, "restgamestate1");
     Strcpy(debug_buf_3, "restgamestate");
     Strcpy(debug_buf_4, "restgamestate");
 
@@ -784,10 +784,12 @@ unsigned int *stuckid, *steedid;
     restore_timers(fd, RANGE_GLOBAL, FALSE, 0L);
     restore_light_sources(fd);
     restore_sound_sources(fd);
+    Strcpy(debug_buf_2, "restgamestate2");
     invent = restobjchn(fd, FALSE, FALSE);
     /* tmp_bc only gets set here if the ball & chain were orphaned
        because you were swallowed; otherwise they will be on the floor
        or in your inventory */
+    Strcpy(debug_buf_2, "restgamestate3");
     tmp_bc = restobjchn(fd, FALSE, FALSE);
     if (tmp_bc) {
         for (otmp = tmp_bc; otmp; otmp = otmp->nobj) {
@@ -798,9 +800,13 @@ unsigned int *stuckid, *steedid;
             impossible("restgamestate: lost ball & chain");
     }
 
+    Strcpy(debug_buf_2, "restgamestate4");
     magic_objs = restobjchn(fd, FALSE, FALSE);
+    Strcpy(debug_buf_2, "restgamestate5");
     migrating_objs = restobjchn(fd, FALSE, FALSE);
+    Strcpy(debug_buf_2, "restgamestate6");
     migrating_mons = restmonchn(fd, FALSE);
+    Strcpy(debug_buf_2, "restgamestate7");
     mread(fd, (genericptr_t) mvitals, sizeof(mvitals));
 
     /*
@@ -1361,9 +1367,9 @@ boolean ghostly;
 #ifdef TOS
     short tlev;
 #endif
-    Strcpy(debug_buf_2, "getlev");
-    Strcpy(debug_buf_3, "getlev");
-    Strcpy(debug_buf_4, "getlev");
+    Sprintf(debug_buf_2, "getlev1: %d", lev);
+    Sprintf(debug_buf_3, "getlev: %d", lev);
+    Sprintf(debug_buf_4, "getlev: %d", lev);
 
     if (ghostly)
         clear_id_mapping();
@@ -1425,6 +1431,7 @@ boolean ghostly;
     restore_timers(fd, RANGE_LEVEL, ghostly, elapsed);
     restore_light_sources(fd);
     restore_sound_sources(fd);
+    Sprintf(debug_buf_2, "getlev2: %d", lev);
     fmon = restmonchn(fd, ghostly);
 
     rest_worm(fd); /* restore worm information */
@@ -1436,13 +1443,18 @@ boolean ghostly;
         ftrap = trap;
     }
     dealloc_trap(trap);
+    Sprintf(debug_buf_2, "getlev3: %d", lev);
     fobj = restobjchn(fd, ghostly, FALSE);
     find_lev_obj();
     /* restobjchn()'s `frozen' argument probably ought to be a callback
        routine so that we can check for objects being buried under ice */
+    Sprintf(debug_buf_2, "getlev4: %d", lev);
     level.buriedobjlist = restobjchn(fd, ghostly, FALSE);
+    Sprintf(debug_buf_2, "getlev5: %d", lev);
     billobjs = restobjchn(fd, ghostly, FALSE);
+    Sprintf(debug_buf_2, "getlev6: %d", lev);
     memoryobjs = restobjchn(fd, ghostly, FALSE);
+    Sprintf(debug_buf_2, "getlev7: %d", lev);
     find_memory_obj();
     rest_engravings(fd);
 

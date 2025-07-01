@@ -72,7 +72,9 @@ boolean restore;
         
         if (otmp->in_use) 
         {
-            Strcpy(debug_buf_2, "resetobjs");
+            Sprintf(debug_buf_2, "resetobjs: %d", otmp->otyp);
+            Sprintf(debug_buf_3, "resetobjs: %d", otmp->otyp);
+            Sprintf(debug_buf_4, "resetobjs: %d", otmp->otyp);
             obj_extract_self(otmp);
             dealloc_obj(otmp);
             continue;

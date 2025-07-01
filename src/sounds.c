@@ -7311,7 +7311,8 @@ struct monst* mtmp;
     if (targetmonst == &youmonst)
     {
         zapyourself(&pseudo, TRUE);
-        u.uconduct.gnostic++;
+        if (!u.uconduct.gnostic++)
+            livelog_printf(LL_CONDUCT, "rejected atheism by requesting a healing from %s", noit_mon_nam(mtmp));
     }
     else
         bhitm(targetmonst, &pseudo, mtmp);
@@ -7368,7 +7369,8 @@ struct monst* mtmp;
     if (targetmonst == &youmonst)
     {
         zapyourself(&pseudo, TRUE);
-        u.uconduct.gnostic++;
+        if (!u.uconduct.gnostic++)
+            livelog_printf(LL_CONDUCT, "rejected atheism by requesting a full healing from %s", noit_mon_nam(mtmp));
     }
     else
         bhitm(targetmonst, &pseudo, mtmp);
@@ -7425,7 +7427,8 @@ struct monst* mtmp;
     if (targetmonst == &youmonst)
     {
         zapyourself(&pseudo, TRUE);
-        u.uconduct.gnostic++;
+        if (!u.uconduct.gnostic++)
+            livelog_printf(LL_CONDUCT, "rejected atheism by curing sickness with %s", noit_mon_nam(mtmp));
     }
     else
         bhitm(targetmonst, &pseudo, mtmp);
@@ -7604,7 +7607,8 @@ struct monst* mtmp;
     money2mon(mtmp, u_pay);
     bot();
 
-    u.uconduct.gnostic++;
+    if (!u.uconduct.gnostic++)
+        livelog_printf(LL_CONDUCT, "rejected atheism by requesting divination from %s", mon_nam(mtmp));
 
     char talkbuf[BUFSZ];
     play_monster_special_dialogue_line(mtmp, PRIEST_SPECIAL_DIALOGUE_FORTUNE_IS_LIKE);
