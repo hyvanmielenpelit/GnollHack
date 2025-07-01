@@ -7608,7 +7608,7 @@ struct monst* mtmp;
     bot();
 
     if (!u.uconduct.gnostic++)
-        livelog_printf(LL_CONDUCT, "rejected atheism by requesting divination from %s", mon_nam(mtmp));
+        livelog_printf(LL_CONDUCT, "rejected atheism by requesting divination from %s", noit_mon_nam(mtmp));
 
     char talkbuf[BUFSZ];
     play_monster_special_dialogue_line(mtmp, PRIEST_SPECIAL_DIALOGUE_FORTUNE_IS_LIKE);
