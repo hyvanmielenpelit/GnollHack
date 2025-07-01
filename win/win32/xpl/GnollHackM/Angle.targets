@@ -1,12 +1,36 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-	<Target Name="CopyAngleAssemblies" AfterTargets="Build">
+
+	<!-- Remove libEGL.dll from NativeCopyLocalItems-->
+	<Target Name="Angle1" AfterTargets="ResolvePackageAssets">
+		<ItemGroup>
+			<NativeCopyLocalItems Remove="@(NativeCopyLocalItems)" Condition="'%(Filename)%(Extension)' == 'libEGL.dll'" />
+		</ItemGroup>
+	</Target>
+
+	<!-- Copy libEGL.dll to OutDir (for an unpackaged app)-->
+	<Target Name="Angle2" AfterTargets="CopyFilesToOutputDirectory">
 		<ItemGroup>
 			<AngleSourceAssemblies Include="$(MSBuildProjectDirectory)\Platforms\Windows\libs\libEGL.dll" />
 		</ItemGroup>
 
 		<Copy SourceFiles="@(AngleSourceAssemblies)"
-		  DestinationFolder="$(OutDir)" 
-		  Condition="'@(AngleSourceAssemblies)' != '' "/>
-
+		  DestinationFolder="$(OutDir)" />
 	</Target>
+
+	<!-- Include libEGL.dll in the MSIX package -->
+	<Target Name="Angle3" AfterTargets="_ComputeAppxPackagePayload">
+		<ItemGroup>
+			<AppxPackagePayload Remove="@(AppxPackagePayload)" Condition="'%(Filename)%(Extension)' == 'libEGL.dll'" />
+			<AppxPackagePayload Include="$(MSBuildProjectDirectory)\Platforms\Windows\libs\libEGL.dll">
+				<DestinationSubPath>libEGL.dll</DestinationSubPath>
+				<TargetPath>libEGL.dll</TargetPath>
+				<RelativePath>libEGL.dll</RelativePath>
+				<OutputGroup>CopyLocalFilesToOutputGroup</OutputGroup>
+				<AssetType>native</AssetType>
+				<ProjectName>GnollHackM</ProjectName>
+				<CopyLocal>true</CopyLocal>
+			</AppxPackagePayload>
+		</ItemGroup>
+	</Target>
+
 </Project>
