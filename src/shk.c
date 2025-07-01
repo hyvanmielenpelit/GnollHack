@@ -1072,6 +1072,7 @@ register struct obj *obj, *merge;
            can't call remove_worn_item() to get <X>_off() side-effects */
         setnotworn(obj);
     }
+    Sprintf(debug_buf_4, "obfree: %d", obj->otyp);
     dealloc_obj(obj);
 }
 
@@ -1831,7 +1832,7 @@ boolean itemize;
             bp->useup = 0;
             buy = PAY_SOME;
         } else { /* completely used-up, so get rid of it */
-            Strcpy(debug_buf_2, "dopayobj");
+            Sprintf(debug_buf_2, "dopayobj: %d", obj->otyp);
             obj_extract_self(obj);
             /* assert( obj == *obj_p ); */
             dealloc_obj(obj);
