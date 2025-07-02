@@ -21085,6 +21085,6 @@ namespace GnollHackX.Pages.Game
 
         }
 #endif
-        }
-
     }
+
+}
