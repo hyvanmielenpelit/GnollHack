@@ -1301,6 +1301,15 @@
                                 <Switch Grid.Column="1" x:Name="LogMessageSwitch" HorizontalOptions="End" VerticalOptions="Center" />
                             </Grid>
                             <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
+                                <Label Text="  Low-Level Logging"
+                                    x:Name="LowLevelLogLabel"
+                                    FontFamily="Underwood" TextColor="Black"
+                                    FontSize="15"
+                                    VerticalOptions="Center" 
+                                    HorizontalOptions="Start" />
+                                <Switch Grid.Column="1" x:Name="LowLevelLogSwitch" HorizontalOptions="End" VerticalOptions="Center" />
+                            </Grid>
+                            <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
                                 <Label Text="Debug Post Channel"
                                     x:Name="DebugPostChannelLabel"
                                     FontFamily="Underwood" TextColor="Black"

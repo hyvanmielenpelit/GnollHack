@@ -158,6 +158,7 @@ namespace GnollHackX
             HideiOSStatusBar = Preferences.Get("HideiOSStatusBar", GHConstants.DefaultHideStatusBar);
             DeveloperMode = Preferences.Get("DeveloperMode", GHConstants.DefaultDeveloperMode);
             DebugLogMessages = DeveloperMode && Preferences.Get("DebugLogMessages", GHConstants.DefaultLogMessages);
+            LowLevelLogging = DeveloperMode && Preferences.Get("LowLevelLogging", false);
             DebugPostChannel = DeveloperMode && Preferences.Get("DebugPostChannel", GHConstants.DefaultDebugPostChannel);
             TournamentMode = Preferences.Get("TournamentMode", false);
             FullVersionMode = true; // Preferences.Get("FullVersion", true);
@@ -2029,7 +2030,10 @@ namespace GnollHackX
 
         private static readonly object _debugLock = new object();
         private static bool _debugLogMessages = GHConstants.DefaultLogMessages;
+        private static bool _lowLevelLogging = false;
         public static bool DebugLogMessages { get { lock (_debugLock) { return _debugLogMessages; } } set { lock (_debugLock) { _debugLogMessages = value; } } }
+        public static bool LowLevelLogging { get { lock (_debugLock) { return _lowLevelLogging; } } set { lock (_debugLock) { _lowLevelLogging = value; } } }
+        public static bool IsDebugLowLevelLoggingOn { get { lock (_debugLock) { return _debugLogMessages && _lowLevelLogging; } } }
 
         private static bool _debugPostChannel = GHConstants.DefaultDebugPostChannel;
         public static bool DebugPostChannel /* This is the setting value on Settings Page */
@@ -6051,6 +6055,16 @@ namespace GnollHackX
                 return;
 
             if (DebugLogMessages)
+                WriteGHLog(loggedtext);
+            else
+                Debug.WriteLine(loggedtext);
+        }
+        public static void MaybeWriteLowLevelGHLog(string loggedtext)
+        {
+            if (string.IsNullOrWhiteSpace(loggedtext))
+                return;
+
+            if (IsDebugLowLevelLoggingOn)
                 WriteGHLog(loggedtext);
             else
                 Debug.WriteLine(loggedtext);

@@ -625,6 +625,8 @@ namespace GnollHackX.Pages.MainScreen
             Preferences.Set("DeveloperMode", GHApp.DeveloperMode);
             GHApp.DebugLogMessages = LogMessageSwitch.IsToggled;
             Preferences.Set("DebugLogMessages", GHApp.DebugLogMessages);
+            GHApp.LowLevelLogging = LowLevelLogSwitch.IsToggled;
+            Preferences.Set("LowLevelLogging", GHApp.LowLevelLogging);
             GHApp.DebugPostChannel = DebugPostChannelSwitch.IsToggled;
             Preferences.Set("DebugPostChannel", GHApp.DebugPostChannel);
             GHApp.TournamentMode = TournamentSwitch.IsToggled;
@@ -895,7 +897,7 @@ namespace GnollHackX.Pages.MainScreen
             bool mem = false, fps = false, zoom = false, battery = false, showrecording = true, autoupload = false, gpu = GHApp.IsGPUDefault, disableauxgpu = false, mipmap = false, simplecmdlayout = GHConstants.DefaultSimpleCmdLayout, darkmode = false, windowedmode = false, bank = true, navbar = GHConstants.DefaultHideNavigation, statusbar = GHConstants.DefaultHideStatusBar;
             bool allowbones = true, allowpet = true, emptywishisnothing = true, doubleclick = GHApp.IsDesktop, getpositionarrows = false, recordgame = false, gzip = GHConstants.GZipIsDefaultReplayCompression, lighterdarkening = false, accuratedrawing = GHConstants.DefaultAlternativeLayerDrawing, html = GHConstants.DefaultHTMLDumpLogs, singledumplog = GHConstants.DefaultUseSingleDumpLog, streamingbanktomemory = false, streamingbanktodisk = false, wallends = GHConstants.DefaultDrawWallEnds;
             bool breatheanimations = GHConstants.DefaultBreatheAnimations; //, put2bag = GHConstants.DefaultShowPickNStashContextCommand, prevwep = GHConstants.DefaultShowPrevWepContextCommand;
-            bool devmode = GHConstants.DefaultDeveloperMode, logmessages = GHConstants.DefaultLogMessages, debugpostchannel = GHConstants.DefaultDebugPostChannel, tournament = false, hpbars = false, nhstatusbarclassic = GHConstants.IsDefaultStatusBarClassic, desktopstatusbar = false, rightaligned2ndrow = false, showscore = false, showxp = false, desktopbuttons = false, menufadeeffects = false, menuhighfilterquality = true, menuhighlightedkeys = false, pets = true, orbs = true, orbmaxhp = false, orbmaxmana = false, mapgrid = false, playermark = false, monstertargeting = false, walkarrows = true;
+            bool devmode = GHConstants.DefaultDeveloperMode, logmessages = GHConstants.DefaultLogMessages, lowlevellogging = false, debugpostchannel = GHConstants.DefaultDebugPostChannel, tournament = false, hpbars = false, nhstatusbarclassic = GHConstants.IsDefaultStatusBarClassic, desktopstatusbar = false, rightaligned2ndrow = false, showscore = false, showxp = false, desktopbuttons = false, menufadeeffects = false, menuhighfilterquality = true, menuhighlightedkeys = false, pets = true, orbs = true, orbmaxhp = false, orbmaxmana = false, mapgrid = false, playermark = false, monstertargeting = false, walkarrows = true;
             bool forcemaxmsg = false, showexstatus = false, noclipmode = GHConstants.DefaultMapNoClipMode, silentmode = false, characterclickaction = false, diceasranges = true;
             bool postgamestatus = GHConstants.DefaultPosting, postxlog = GHConstants.DefaultPosting, postreplays = GHConstants.DefaultPosting, postbones = GHConstants.DefaultPosting, boneslistisblack = false;
 #if !SENTRY
@@ -948,6 +950,7 @@ namespace GnollHackX.Pages.MainScreen
             statusbar = GHApp.HideiOSStatusBar;
             devmode = GHApp.DeveloperMode;
             logmessages = GHApp.DebugLogMessages;
+            lowlevellogging = GHApp.LowLevelLogging;
             debugpostchannel = GHApp.DebugPostChannel;
             tournament = GHApp.TournamentMode;
             bank = Preferences.Get("LoadSoundBanks", true);
@@ -1247,6 +1250,7 @@ namespace GnollHackX.Pages.MainScreen
             if (devmode)
             {
                 LogMessageSwitch.IsToggled = logmessages;
+                LowLevelLogSwitch.IsToggled = lowlevellogging;
                 DebugPostChannelSwitch.IsToggled = debugpostchannel;
             }
             else
@@ -1255,6 +1259,10 @@ namespace GnollHackX.Pages.MainScreen
                 LogMessageSwitch.IsEnabled = false;
                 LogMessageLabel.IsEnabled = false;
                 LogMessageLabel.TextColor = GHColors.Gray;
+                LowLevelLogSwitch.IsToggled = false;
+                LowLevelLogSwitch.IsEnabled = false;
+                LowLevelLogLabel.IsEnabled = false;
+                LowLevelLogLabel.TextColor = GHColors.Gray;
                 DebugPostChannelSwitch.IsToggled = false;
                 DebugPostChannelSwitch.IsEnabled = false;
                 DebugPostChannelLabel.IsEnabled = false;
@@ -1594,6 +1602,9 @@ namespace GnollHackX.Pages.MainScreen
                 LogMessageSwitch.IsEnabled = true;
                 LogMessageLabel.IsEnabled = true;
                 LogMessageLabel.TextColor = GHApp.DarkMode ? GHColors.White : GHColors.Black;
+                LowLevelLogSwitch.IsEnabled = true;
+                LowLevelLogLabel.IsEnabled = true;
+                LowLevelLogLabel.TextColor = GHApp.DarkMode ? GHColors.White : GHColors.Black;
                 DebugPostChannelSwitch.IsEnabled = true;
                 DebugPostChannelLabel.IsEnabled = true;
                 DebugPostChannelLabel.TextColor = GHApp.DarkMode ? GHColors.White : GHColors.Black;
@@ -1604,6 +1615,10 @@ namespace GnollHackX.Pages.MainScreen
                 LogMessageSwitch.IsToggled = false;
                 LogMessageLabel.IsEnabled = false;
                 LogMessageLabel.TextColor = GHColors.Gray;
+                LowLevelLogSwitch.IsEnabled = false;
+                LowLevelLogSwitch.IsToggled = false;
+                LowLevelLogLabel.IsEnabled = false;
+                LowLevelLogLabel.TextColor = GHColors.Gray;
                 DebugPostChannelSwitch.IsEnabled = false;
                 DebugPostChannelSwitch.IsToggled = false;
                 DebugPostChannelLabel.IsEnabled = false;

@@ -135,13 +135,13 @@ public static class MauiProgram
                     //                switch (e.WParam)
                     //                {
                     //                    case 0xF100:
-                    //                        //System.Diagnostics.Debug.WriteLine("MenuKey Pressed!");
+                    //                        //GHApp.MaybeWriteLowLevelGHLog("MenuKey Pressed!");
                     //                        return;
                     //                    case 0xF020:
-                    //                        //System.Diagnostics.Debug.WriteLine("Minimizing!");
+                    //                        //GHApp.MaybeWriteLowLevelGHLog("Minimizing!");
                     //                        break;
                     //                    case 0xF120:
-                    //                        //System.Diagnostics.Debug.WriteLine("Restoring!");
+                    //                        //GHApp.MaybeWriteLowLevelGHLog("Restoring!");
                     //                        GHApp.DoKeyboardFocus();
                     //                        break;
                     //                }
@@ -153,14 +153,14 @@ public static class MauiProgram
                     //                switch (e.WParam)
                     //                {
                     //                    case 0:
-                    //                        //System.Diagnostics.Debug.WriteLine("SIZE_RESTORED!");
+                    //                        //GHApp.MaybeWriteLowLevelGHLog("SIZE_RESTORED!");
                     //                        GHApp.DoKeyboardFocus();
                     //                        break;
                     //                    case 1:
-                    //                        //System.Diagnostics.Debug.WriteLine("SIZE_MINIMIZED!");
+                    //                        //GHApp.MaybeWriteLowLevelGHLog("SIZE_MINIMIZED!");
                     //                        break;
                     //                    case 2:
-                    //                        //System.Diagnostics.Debug.WriteLine("SIZE_MAXIMIZED!");
+                    //                        //GHApp.MaybeWriteLowLevelGHLog("SIZE_MAXIMIZED!");
                     //                        GHApp.DoKeyboardFocus();
                     //                        break;
                     //                }
@@ -290,7 +290,7 @@ public static class MauiProgram
                                     }
                                     catch (Exception ex)
                                     {
-                                        Debug.WriteLine(ex);
+                                        GHApp.MaybeWriteLowLevelGHLog(ex.Message);
                                     }
                                 }
                             };
@@ -308,14 +308,14 @@ public static class MauiProgram
                             // Focused
                             GHApp.WindowFocused = true;
                             GHApp.UnfocusedMuteMode = false;
-                            Debug.WriteLine("Window is focused.");
+                            GHApp.MaybeWriteLowLevelGHLog("Window is focused.");
                         }
                         else
                         {
                             // Not focused
                             GHApp.WindowFocused = false;
                             GHApp.UnfocusedMuteMode = true;
-                            Debug.WriteLine("Window is not focused.");
+                            GHApp.MaybeWriteLowLevelGHLog("Window is not focused.");
                         }
                     });
                 });
@@ -469,32 +469,32 @@ public class KeyboardHook
         //if (GHApp.CurrentGHGame == null)
         //    return CallNextHookEx(_hookID, nCode, wParam, lParam);
 
-        Debug.WriteLine("HookCallback: " + nCode + ", " + wParam + ", " + lParam);
+        GHApp.MaybeWriteLowLevelGHLog("HookCallback: " + nCode + ", " + wParam + ", " + lParam);
         if (nCode >= 0)
         {
             if (wParam == (IntPtr)WM_KEYUP)
             {
-                Debug.WriteLine("HookCallback: WM_KEYUP");
+                GHApp.MaybeWriteLowLevelGHLog("HookCallback: WM_KEYUP");
                 int vkCode = Marshal.ReadInt32(lParam);
                 if (vkCode == 0x10 || vkCode == 0xA0 || vkCode == 0xA1)
                 {
                     GHApp.ShiftDown = false;
-                    Debug.WriteLine("HookCallback: Shift Up");
+                    GHApp.MaybeWriteLowLevelGHLog("HookCallback: Shift Up");
                 }
                 else if (vkCode == 0x11 || vkCode == 0xA2 || vkCode == 0xA3)
                 {
                     GHApp.CtrlDown = false;
-                    Debug.WriteLine("HookCallback: Control Up");
+                    GHApp.MaybeWriteLowLevelGHLog("HookCallback: Control Up");
                 }
                 else if (vkCode == 0x12 || vkCode == 0xA4 || vkCode == 0xA5)
                 {
                     GHApp.AltDown = false;
-                    Debug.WriteLine("HookCallback: Alt Up");
+                    GHApp.MaybeWriteLowLevelGHLog("HookCallback: Alt Up");
                 }
                 else if (vkCode == 0x5B || vkCode == 0x5C)
                 {
                     GHApp.WindowsKeyDown = false;
-                    Debug.WriteLine("HookCallback: Windows Key Up");
+                    GHApp.MaybeWriteLowLevelGHLog("HookCallback: Windows Key Up");
                     if (!GHApp.WindowFocused || !GHApp.IsKeyboardHookEnabled)
                         return CallNextHookEx(_hookID, nCode, wParam, lParam);
                     if (GHApp.DisableWindowsKey)
@@ -504,36 +504,36 @@ public class KeyboardHook
                 }
                 //else if (vkCode == 0x73)
                 //{
-                //    Debug.WriteLine("HookCallback: F4 Up");
+                //    GHApp.MaybeWriteLowLevelGHLog("HookCallback: F4 Up");
                 //}
             }
             else if (wParam == (IntPtr)WM_KEYDOWN)
             {
-                Debug.WriteLine("HookCallback: WM_KEYDOWN");
+                GHApp.MaybeWriteLowLevelGHLog("HookCallback: WM_KEYDOWN");
                 int vkCode = Marshal.ReadInt32(lParam);
                 if (vkCode == 0x10 || vkCode == 0xA0 || vkCode == 0xA1)
                 {
                     GHApp.ShiftDown = true;
-                    Debug.WriteLine("HookCallback: Shift Down");
+                    GHApp.MaybeWriteLowLevelGHLog("HookCallback: Shift Down");
                 }
                 else if (vkCode == 0x11 || vkCode == 0xA2 || vkCode == 0xA3)
                 {
                     GHApp.CtrlDown = true;
-                    Debug.WriteLine("HookCallback: Control Down");
+                    GHApp.MaybeWriteLowLevelGHLog("HookCallback: Control Down");
                 }
                 else if (vkCode == 0x12 || vkCode == 0xA4 || vkCode == 0xA5)
                 {
                     GHApp.AltDown = true;
-                    Debug.WriteLine("HookCallback: Alt Down");
+                    GHApp.MaybeWriteLowLevelGHLog("HookCallback: Alt Down");
                 }
                 //else if (vkCode == 0x73)
                 //{
-                //    Debug.WriteLine("HookCallback: F4 Down");
+                //    GHApp.MaybeWriteLowLevelGHLog("HookCallback: F4 Down");
                 //}
                 else if (vkCode == 0x5B || vkCode == 0x5C)
                 {
                     GHApp.WindowsKeyDown = true;
-                    Debug.WriteLine("HookCallback: Windows Key Down");
+                    GHApp.MaybeWriteLowLevelGHLog("HookCallback: Windows Key Down");
                     if (!GHApp.WindowFocused || !GHApp.IsKeyboardHookEnabled)
                         return CallNextHookEx(_hookID, nCode, wParam, lParam);
                     if (GHApp.DisableWindowsKey)
@@ -654,30 +654,31 @@ public class KeyboardHook
             }
             else if (wParam == (IntPtr)WM_SYSKEYUP)
             {
-                Debug.WriteLine("HookCallback: WM_SYSKEYUP");
+                GHApp.MaybeWriteLowLevelGHLog("HookCallback: WM_SYSKEYUP");
                 bool handled = false;
                 bool isShiftDown = GHApp.ShiftDown;
                 bool isCtrlDown = GHApp.CtrlDown;
 
                 GHApp.AltDown = false;
+                GHApp.CtrlDown = false;
                 GHApp.WindowsKeyDown = false;
                 int vkCode = Marshal.ReadInt32(lParam);
                 if (vkCode == 0x10 || vkCode == 0xA0 || vkCode == 0xA1)
                 {
                     GHApp.ShiftDown = false;
-                    Debug.WriteLine("HookCallback: Syskey Shift Up");
+                    GHApp.MaybeWriteLowLevelGHLog("HookCallback: Syskey Shift Up");
                     return CallNextHookEx(_hookID, nCode, wParam, lParam);
                 }
                 else if (vkCode == 0x11 || vkCode == 0xA2 || vkCode == 0xA3)
                 {
                     GHApp.CtrlDown = false;
-                    Debug.WriteLine("HookCallback: Syskey Control Up");
+                    GHApp.MaybeWriteLowLevelGHLog("HookCallback: Syskey Control Up");
                     return CallNextHookEx(_hookID, nCode, wParam, lParam);
                 }
                 else if (vkCode == 0x5B || vkCode == 0x5C)
                 {
                     GHApp.WindowsKeyDown = false;
-                    Debug.WriteLine("HookCallback: Sys Windows Key Up");
+                    GHApp.MaybeWriteLowLevelGHLog("HookCallback: Sys Windows Key Up");
                     if (!GHApp.WindowFocused || !GHApp.IsKeyboardHookEnabled)
                         return CallNextHookEx(_hookID, nCode, wParam, lParam);
                     if (GHApp.DisableWindowsKey)
@@ -687,13 +688,13 @@ public class KeyboardHook
                 }
                 //else if (vkCode == 0x73)
                 //{
-                //    Debug.WriteLine("HookCallback: F4 Syskey Up");
+                //    GHApp.MaybeWriteLowLevelGHLog("HookCallback: F4 Syskey Up");
                 //}
                 else if (!GHApp.WindowFocused || !GHApp.IsKeyboardHookEnabled)
                     return CallNextHookEx(_hookID, nCode, wParam, lParam);
                 else if (vkCode == 0x09)
                 {
-                    Debug.WriteLine("HookCallback: Tab Up");
+                    GHApp.MaybeWriteLowLevelGHLog("HookCallback: Tab Up");
                     return CallNextHookEx(_hookID, nCode, wParam, lParam);
                 }
                 else if (!GHApp.DisableWindowsKey && GHApp.WindowsKeyDown)
@@ -702,7 +703,7 @@ public class KeyboardHook
                 }
                 else if (isCtrlDown) /* AltGr, also includes $ on Finnish keyboard */
                 {
-                    Debug.WriteLine("HookCallback: Syskey with Ctrl (AltGr)");
+                    GHApp.MaybeWriteLowLevelGHLog("HookCallback: Syskey with Ctrl (AltGr)");
                     // Translate virtual key to actual character
                     string character = VkCodeToUnicode(Convert.ToUInt32(vkCode));
                     if (!string.IsNullOrEmpty(character) && character.Length > 0)
@@ -747,26 +748,26 @@ public class KeyboardHook
             else if (wParam == (IntPtr)WM_SYSKEYDOWN)
             {
                 int vkCode = Marshal.ReadInt32(lParam);
-                Debug.WriteLine("HookCallback: WM_SYSKEYDOWN, vkCode=" + vkCode);
+                GHApp.MaybeWriteLowLevelGHLog("HookCallback: WM_SYSKEYDOWN, vkCode=" + vkCode);
                 if (vkCode == 0x10 || vkCode == 0xA0 || vkCode == 0xA1)
                 {
                     GHApp.ShiftDown = true;
-                    Debug.WriteLine("HookCallback: Syskey Shift Down");
+                    GHApp.MaybeWriteLowLevelGHLog("HookCallback: Syskey Shift Down");
                 }
                 else if (vkCode == 0x11 || vkCode == 0xA2 || vkCode == 0xA3)
                 {
                     GHApp.CtrlDown = true;
-                    Debug.WriteLine("HookCallback: Syskey Control Down");
+                    GHApp.MaybeWriteLowLevelGHLog("HookCallback: Syskey Control Down");
                 }
                 else if (vkCode == 0x12 || vkCode == 0xA4 || vkCode == 0xA5)
                 {
                     GHApp.AltDown = true;
-                    Debug.WriteLine("HookCallback: Syskey Alt Down");
+                    GHApp.MaybeWriteLowLevelGHLog("HookCallback: Syskey Alt Down");
                 }
                 else if (vkCode == 0x5B || vkCode == 0x5C)
                 {
                     GHApp.WindowsKeyDown = true;
-                    Debug.WriteLine("HookCallback: Sys Windows Key Down");
+                    GHApp.MaybeWriteLowLevelGHLog("HookCallback: Sys Windows Key Down");
                     if (!GHApp.WindowFocused || !GHApp.IsKeyboardHookEnabled)
                         return CallNextHookEx(_hookID, nCode, wParam, lParam);
                     if (GHApp.DisableWindowsKey)
@@ -776,19 +777,19 @@ public class KeyboardHook
                     return CallNextHookEx(_hookID, nCode, wParam, lParam);
                 else if (vkCode == 0x09)
                 {
-                    Debug.WriteLine("HookCallback: Tab Syskey Down");
+                    GHApp.MaybeWriteLowLevelGHLog("HookCallback: Tab Syskey Down");
                 }
                 else if (vkCode == 0x73)
                 {
-                    Debug.WriteLine("HookCallback: F4 Syskey Down");
+                    GHApp.MaybeWriteLowLevelGHLog("HookCallback: F4 Syskey Down");
                 }
                 else if (GHApp.CtrlDown)
                 {
-                    Debug.WriteLine("HookCallback: Syskey Down with Ctrl (AltGr)");
+                    GHApp.MaybeWriteLowLevelGHLog("HookCallback: Syskey Down with Ctrl (AltGr)");
                 }
                 else if (!GHApp.DisableWindowsKey && GHApp.WindowsKeyDown)
                 {
-                    Debug.WriteLine("HookCallback: SyskeyDown, but WindowsKey is down");
+                    GHApp.MaybeWriteLowLevelGHLog("HookCallback: SyskeyDown, but WindowsKey is down");
                 }
                 else
                     return 1;
