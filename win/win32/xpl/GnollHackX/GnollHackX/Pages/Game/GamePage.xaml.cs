@@ -590,7 +590,7 @@ namespace GnollHackX.Pages.Game
         public MeasurableStackLayout UsedButtonRowStack { get { return UseSimpleCmdLayout ? SimpleButtonRowStack : ButtonRowStack; } }
 
         private readonly object _petDataLock = new object();
-        private List<GHPetDataItem> _petData = new List<GHPetDataItem>(8);
+        private readonly List<GHPetDataItem> _petData = new List<GHPetDataItem>(8);
 
         private readonly object _styleLock = new object();
         private int _shownMessageRows = GHConstants.DefaultMessageRows;
@@ -883,19 +883,19 @@ namespace GnollHackX.Pages.Game
         private float _mapFontAscent;
         private float UsedMapFontAscent { get { lock (_mapFontAscentLock) { return _mapFontAscent; } } set { lock (_mapFontAscentLock) { _mapFontAscent = value; } } }
         public readonly object AnimationTimerLock = new object();
-        public GHAnimationTimerList AnimationTimers = new GHAnimationTimerList();
+        public readonly GHAnimationTimerList AnimationTimers = new GHAnimationTimerList();
         public SKImage[] TileMap { get { return GHApp._tileMap; } }
 
         public readonly object _floatingTextLock = new object();
-        public List<GHFloatingText> _floatingTexts = new List<GHFloatingText>();
+        public readonly List<GHFloatingText> _floatingTexts = new List<GHFloatingText>();
         public readonly object _screenTextLock = new object();
         public GHScreenText _screenText = null;
         public readonly object _conditionTextLock = new object();
-        public List<GHConditionText> _conditionTexts = new List<GHConditionText>();
+        public readonly List<GHConditionText> _conditionTexts = new List<GHConditionText>();
         public readonly object _screenFilterLock = new object();
-        public List<GHScreenFilter> _screenFilters = new List<GHScreenFilter>();
+        public readonly List<GHScreenFilter> _screenFilters = new List<GHScreenFilter>();
         public readonly object _guiEffectLock = new object();
-        public List<GHGUIEffect> _guiEffects = new List<GHGUIEffect>();
+        public readonly List<GHGUIEffect> _guiEffects = new List<GHGUIEffect>();
 
         private readonly object _enableWizardModeLock = new object();
         private bool _enableWizardMode = false;
@@ -910,7 +910,7 @@ namespace GnollHackX.Pages.Game
         public bool EnableModernMode { get { lock (_enableModernModeLock) { return _enableModernMode; } } set { lock (_enableModernModeLock) { _enableModernMode = value; } } }
 
         private readonly object _contextMenuDataLock = new object();
-        private List<ContextMenuButton> _contextMenuData = new List<ContextMenuButton>();
+        private readonly List<ContextMenuButton> _contextMenuData = new List<ContextMenuButton>();
         private class ContextMenuButton
         {
             public readonly string LblText;
@@ -7001,12 +7001,12 @@ namespace GnollHackX.Pages.Game
 #if GNH_MAP_PROFILING && DEBUG
         long _totalFrames = 0L;
 #endif
-        StringBuilder _lineBuilder = new StringBuilder(GHConstants.LineBuilderInitialCapacity);
-        string[] _attributeStrings = new string[6] { "Strength", "Dexterity", "Constitution", "Intelligence", "Wisdom", "Charisma" };
-        short[,] _draw_shadow = new short[GHConstants.MapCols, GHConstants.MapRows];
-        private GHAnimationTimerList _localAnimationTimers = new GHAnimationTimerList();
-        private ObjectDataItem[] _localWeaponStyleObjDataItem = new ObjectDataItem[3];
-        private GHStatusField[] _localStatusFields = new GHStatusField[(int)NhStatusFields.MAXBLSTATS];
+        private readonly StringBuilder _lineBuilder = new StringBuilder(GHConstants.LineBuilderInitialCapacity);
+        private readonly string[] _attributeStrings = new string[6] { "Strength", "Dexterity", "Constitution", "Intelligence", "Wisdom", "Charisma" };
+        private readonly short[,] _draw_shadow = new short[GHConstants.MapCols, GHConstants.MapRows];
+        private readonly GHAnimationTimerList _localAnimationTimers = new GHAnimationTimerList();
+        private readonly ObjectDataItem[] _localWeaponStyleObjDataItem = new ObjectDataItem[3];
+        private readonly GHStatusField[] _localStatusFields = new GHStatusField[(int)NhStatusFields.MAXBLSTATS];
         private int _local_ux = 0;
         private int _local_uy = 0;
         private ulong _local_u_condition_bits = 0;
@@ -7014,10 +7014,10 @@ namespace GnollHackX.Pages.Game
         private ulong[] _local_u_buff_bits = new ulong[GHConstants.NUM_BUFF_BIT_ULONGS];
 
         private GHScreenText _localScreenText = null;
-        private List<GHFloatingText> _localFloatingTexts = new List<GHFloatingText>();
-        private List<GHConditionText> _localConditionTexts = new List<GHConditionText>();
-        private List<GHScreenFilter> _localScreenFilters = new List<GHScreenFilter>();
-        private List<GHGUIEffect> _localGuiEffects = new List<GHGUIEffect>();
+        private readonly List<GHFloatingText> _localFloatingTexts = new List<GHFloatingText>();
+        private readonly List<GHConditionText> _localConditionTexts = new List<GHConditionText>();
+        private readonly List<GHScreenFilter> _localScreenFilters = new List<GHScreenFilter>();
+        private readonly List<GHGUIEffect> _localGuiEffects = new List<GHGUIEffect>();
 
         private GHMsgHistoryItem[] _localMsgHistory = null;
         private int _localClipX = 0;
@@ -7026,10 +7026,10 @@ namespace GnollHackX.Pages.Game
         private float _localMapOffsetY = 0;
         private float _localMapMiniOffsetX = 0;
         private float _localMapMiniOffsetY = 0;
-        private List<GHPetDataItem> _localPetData = new List<GHPetDataItem>(8);
-        private List<SKRect> _localPetRects = new List<SKRect>(8);
-        private List<ContextMenuButton> _localContextMenuData = new List<ContextMenuButton>(10);
-        private List<SKRect> _localContextMenuRects = new List<SKRect>(10);
+        private readonly List<GHPetDataItem> _localPetData = new List<GHPetDataItem>(8);
+        private readonly List<SKRect> _localPetRects = new List<SKRect>(8);
+        private readonly List<ContextMenuButton> _localContextMenuData = new List<ContextMenuButton>(10);
+        private readonly List<SKRect> _localContextMenuRects = new List<SKRect>(10);
         private bool _localIsPointerHovering = false;
         private SKPoint _localPointerHoverLocation = new SKPoint();
 #if WINDOWS

@@ -37,12 +37,12 @@ namespace GnollHackX
 
         }
 
-        public GHAnimationTimerList Clone()
-        {
-            GHAnimationTimerList clone = new GHAnimationTimerList();
-            CopyTo(clone);
-            return clone;
-        }
+        //public GHAnimationTimerList Clone()
+        //{
+        //    GHAnimationTimerList clone = new GHAnimationTimerList();
+        //    CopyTo(clone);
+        //    return clone;
+        //}
         public void CopyTo(GHAnimationTimerList clone)
         {
             clone.u_action_animation_counter_on = u_action_animation_counter_on;
