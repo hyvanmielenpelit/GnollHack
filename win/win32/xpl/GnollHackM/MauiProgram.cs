@@ -544,10 +544,18 @@ public class KeyboardHook
                 else
                 {
                     if (!GHApp.WindowFocused || !GHApp.IsKeyboardHookEnabled)
+                    {
+                        GHApp.MaybeWriteLowLevelGHLog("HookCallback: !GHApp.WindowFocused || !GHApp.IsKeyboardHookEnabled");
                         return CallNextHookEx(_hookID, nCode, wParam, lParam);
+                    }
 
                     if (!GHApp.DisableWindowsKey && GHApp.WindowsKeyDown)
+                    {
+                        GHApp.MaybeWriteLowLevelGHLog("HookCallback: !GHApp.DisableWindowsKey && GHApp.WindowsKeyDown");
                         return CallNextHookEx(_hookID, nCode, wParam, lParam);
+                    }
+
+                    GHApp.MaybeWriteLowLevelGHLog("HookCallback: Send Keypress: " + vkCode);
 
                     // Translate virtual key to actual character
                     switch (vkCode)
@@ -643,6 +651,7 @@ public class KeyboardHook
                             {
                                 int key = character[0];
                                 bool handled = GHApp.SendKeyPress(key, GHApp.CtrlDown, GHApp.AltDown);
+                                GHApp.MaybeWriteLowLevelGHLog("HookCallback: Send Keypress Default: '" + character + "', Handled: " + handled);
                                 if (handled)
                                     return 1;
                                 else
