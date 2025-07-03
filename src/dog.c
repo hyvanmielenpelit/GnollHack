@@ -1573,6 +1573,9 @@ dogfood(mon, obj)
 struct monst *mon;
 register struct obj *obj;
 {
+    if (!mon || !obj)
+        return TABU;
+
     struct permonst *mptr = mon->data, *fptr = 0;
     boolean carni = carnivorous(mptr), herbi = herbivorous(mptr),
             starving, mblind;
@@ -1592,10 +1595,10 @@ register struct obj *obj;
     switch (obj->oclass)
     {
     case FOOD_CLASS:
-        if (obj->otyp == CORPSE || obj->otyp == TIN || obj->otyp == EGG)
+        if ((obj->otyp == CORPSE || obj->otyp == TIN || obj->otyp == EGG) && obj->corpsenm >= 0)
             fptr = &mons[obj->corpsenm];
 
-        if (obj->otyp == CORPSE && is_rider(fptr))
+        if (obj->otyp == CORPSE && fptr && is_rider(fptr))
             return TABU;
 
         if (is_corpse_eater(mptr) && obj->otyp != CORPSE)
@@ -1629,9 +1632,9 @@ register struct obj *obj;
         {
             if (obj->otyp == CORPSE)
                 return (peek_at_iced_corpse_age(obj) + 50L <= monstermoves
-                        && !nonrotting_corpse_ptr(fptr))
+                        && fptr && !nonrotting_corpse_ptr(fptr))
                            ? DOGFOOD
-                           : (starving && !vegan(fptr))
+                           : (starving && fptr && !vegan(fptr))
                               ? ACCFOOD
                               : POISON;
 
@@ -1653,25 +1656,25 @@ register struct obj *obj;
             return carni ? CADAVER : MANFOOD;
         case CORPSE:
             if ((peek_at_iced_corpse_age(obj) + 50L <= monstermoves
-                 && !nonrotting_corpse(obj->corpsenm)
+                 && obj->corpsenm >= LOW_PM && !nonrotting_corpse(obj->corpsenm)
                  && mptr->mlet != S_FUNGUS)
-                || (has_acidic_corpse(fptr) && !(is_mon_immune_to_acid(mon) || mon_resists_acid_weakly(mon)))
-                || (has_poisonous_corpse(fptr) && !resists_poison(mon))
-                || (has_stunning_corpse(fptr) && !resists_stun(mon))
-                || (has_sickening_corpse(fptr) && !resists_sickness(mon))
-                || (has_mummy_rotted_corpse(fptr) && !resists_sickness(mon))
+                || (fptr && has_acidic_corpse(fptr) && !(is_mon_immune_to_acid(mon) || mon_resists_acid_weakly(mon)))
+                || (fptr && has_poisonous_corpse(fptr) && !resists_poison(mon))
+                || (fptr && has_stunning_corpse(fptr) && !resists_stun(mon))
+                || (fptr && has_sickening_corpse(fptr) && !resists_sickness(mon))
+                || (fptr && has_mummy_rotted_corpse(fptr) && !resists_sickness(mon))
                 )
                 return POISON;
             /* turning into slime is preferable to starvation */
             else if (fptr == &mons[PM_GREEN_SLIME] && !slimeproof(mon->data))
                 return starving ? ACCFOOD : POISON;
-            else if (incorporeal_food(fptr))
+            else if (fptr && incorporeal_food(fptr))
                 return MANFOOD;
-            else if (vegan(fptr))
+            else if (fptr && vegan(fptr))
                 return herbi ? CADAVER : MANFOOD;
             /* most humanoids will avoid cannibalism unless starving;
                arbitrary: elves won't eat other elves even then */
-            else if (humanoid(mptr) && same_race(mptr, fptr)
+            else if (fptr && humanoid(mptr) && same_race(mptr, fptr)
                      && (!is_undead(mptr) && fptr->mlet != S_KOBOLD
                          && fptr->mlet != S_ORC && fptr->mlet != S_OGRE))
                 return (starving && carni && !is_elf(mptr)) ? ACCFOOD : TABU;

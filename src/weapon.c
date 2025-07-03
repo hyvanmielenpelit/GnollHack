@@ -189,7 +189,7 @@ struct obj *obj;
     case P_BARE_HANDED_COMBAT:
     case P_MARTIAL_ARTS:
         /* not a weapon or weptool: use item class name;
-           override class name "food" for corpses, tins, and eggs,
+           override class name "fosod" for corpses, tins, and eggs,
            "large rock" for statues and boulders, and "tool" for towels */
         descr = (obj->otyp == CORPSE || obj->otyp == TIN || obj->otyp == EGG
                  || obj->otyp == STATUE || obj->otyp == BOULDER

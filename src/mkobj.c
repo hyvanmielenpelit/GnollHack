@@ -1708,7 +1708,7 @@ uint64_t mkflags;
                     for (tryct = 200; tryct > 0; --tryct) 
                     {
                         mndx = undead_to_corpse(rndmonnum());
-                        if (mons[mndx].cnutrit
+                        if (mndx >= LOW_PM && mons[mndx].cnutrit
                             && !(mvitals[mndx].mvflags & MV_NOCORPSE))
                         {
                             otmp->corpsenm = mndx;

@@ -3544,7 +3544,7 @@ boolean stoning; /* True: stop petrification, False: cure stun && confusion */
     boolean vis = canseemon(mon), tinned = obj->otyp == TIN,
             food = obj->otyp == CORPSE || tinned,
             acid = obj->otyp == POT_ACID
-                   || (food && has_acidic_corpse(&mons[obj->corpsenm])),
+                   || (food && obj->corpsenm >= LOW_PM && has_acidic_corpse(&mons[obj->corpsenm])),
             lizard = food && obj->corpsenm == PM_LIZARD;
     boolean dragonfruit = (obj->otyp == DRAGON_FRUIT);
     int nutrit = food || dragonfruit ? dog_nutrition(mon, obj) : 0; /* also sets meating */
@@ -3627,7 +3627,7 @@ boolean tinok;
         return FALSE;
     /* corpse, or tin that mon can open */
     return (boolean) (obj->corpsenm == PM_LIZARD
-                      || (has_acidic_corpse(&mons[obj->corpsenm])
+                      || (obj->corpsenm >= LOW_PM && has_acidic_corpse(&mons[obj->corpsenm])
                           && (obj->corpsenm != PM_GREEN_SLIME
                               || resists_slime(mon))));
 }
