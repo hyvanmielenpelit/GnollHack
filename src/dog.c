@@ -1899,6 +1899,7 @@ boolean thrown;
                 pline_ex(ATR_NONE, CLR_MSG_WARNING, "However, %d other head%s still remain %s.", mtmp->heads_left - headnum, plur(mtmp->heads_left - headnum), is_peaceful(mtmp) ? "untamed" : "hostile");
             place_object(obj, mtmp->mx, mtmp->my); /* put on floor */
             /* devour the food (might grow into larger, genocided monster) */
+            Sprintf(priority_debug_buf_2, "tamedog: %d", obj->otyp);
             useupf(obj, 1L);
         }
         else if (!thrown)

@@ -5643,8 +5643,11 @@ const char *verb;
          */
         if ((t = t_at(x, y)) != 0)
             deltrap(t);
-        if(obj)
+        if (obj)
+        {
+            Sprintf(priority_debug_buf_2, "flooreffects: %d", obj->otyp);
             useupf(obj, 1L);
+        }
         bury_objs(x, y);
         newsym(x, y);
         return TRUE;

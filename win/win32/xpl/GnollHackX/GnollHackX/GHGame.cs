@@ -3052,6 +3052,8 @@ namespace GnollHackX
                 case (int)gui_command_types.GUI_CMD_DEBUGLOG:
                     if(!PlayingReplay && !string.IsNullOrWhiteSpace(cmd_str))
                     {
+                        if (cmd_param == (int)debug_log_types.DEBUGLOG_DEBUG_ONLY && !GHApp.IsDebug)
+                            break;
                         string logged_str = cmd_str + (cmd_param2 != 0 ? " [" + cmd_param2 + "]" : "");
                         GHApp.MaybeWriteGHLog(logged_str);
                         if (cmd_param == (int)debug_log_types.DEBUGLOG_PRIORITY)

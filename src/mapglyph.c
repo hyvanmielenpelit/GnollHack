@@ -62,7 +62,7 @@ uint64_t *ospecial;
     int signed_glyph = layers.glyph;
     register int offset, idx;
     int color = NO_COLOR;
-    nhsym ch;
+    nhsym ch = 0;
     unsigned special = 0;
     /* condense multiple tests in macro version down to single */
     boolean has_rogue_ibm_graphics = HAS_ROGUE_IBM_GRAPHICS;

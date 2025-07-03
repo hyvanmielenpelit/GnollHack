@@ -347,21 +347,25 @@ boolean destroyit;
         {
             Strcpy(debug_buf_2, "breakchestlock");
             obj_extract_self(otmp);
-            if (!rn2(3) || otmp->oclass == POTION_CLASS) 
+            if ((!rn2(3) || otmp->oclass == POTION_CLASS || is_fragile(otmp)) && !is_obj_indestructible(otmp) && !obj_resists(otmp, 0, 100))
             {
                 chest_shatter_msg(otmp, x, y);
                 if (costly)
                     loss += stolen_value(otmp, u.ux, u.uy, peaceful_shk, TRUE);
                 if (otmp->quan == 1L) 
                 {
-                    Sprintf(priority_debug_buf_4, "breakchestlock: %d", otmp->otyp);
+                    Sprintf(priority_debug_buf_4, "breakchestlock1: %d", otmp->otyp);
+                    context.suppress_container_deletion_warning = 1;
                     obfree(otmp, (struct obj *) 0);
+                    context.suppress_container_deletion_warning = 0;
                     continue;
                 }
                 /* this works because we're sure to have at least 1 left;
                    otherwise it would fail since otmp is not in inventory */
-                Sprintf(priority_debug_buf_2, "breakchestlock: %d", otmp->otyp);
+                Sprintf(priority_debug_buf_2, "breakchestlock2: %d", otmp->otyp);
+                context.suppress_container_deletion_warning = 1;
                 useup(otmp);
+                context.suppress_container_deletion_warning = 0;
             }
             if (box->otyp == ICE_BOX && otmp->otyp == CORPSE) 
             {
@@ -375,8 +379,8 @@ boolean destroyit;
             loss += stolen_value(box, u.ux, u.uy, peaceful_shk, TRUE);
         if (loss)
             You("owe %ld %s for objects destroyed.", loss, currency(loss));
-        Sprintf(priority_debug_buf_2, "breakchestlock: %d", box->otyp);
-        Sprintf(priority_debug_buf_3, "breakchestlock: %d", box->otyp);
+        Sprintf(priority_debug_buf_2, "breakchestlock3: %d", box->otyp);
+        Sprintf(priority_debug_buf_3, "breakchestlock3: %d", box->otyp);
         context.suppress_container_deletion_warning = 1;
         delobj(box);
         context.suppress_container_deletion_warning = 0;
@@ -1670,7 +1674,7 @@ int x, y;
     if (otmp->oclass == POTION_CLASS) {
         char dcbuf[IBUFSZ] = "";
         Sprintf(dcbuf, "You %s %s shatter!", Blind ? "hear" : "see", an(bottlename()));
-        pline1(dcbuf);
+        pline_ex1(ATR_NONE, CLR_MSG_WARNING, dcbuf);
         if (!has_innate_breathless(youmonst.data) || haseyes(youmonst.data))
             potionbreathe(otmp, dcbuf);
         return;
@@ -1707,7 +1711,7 @@ int x, y;
         disposition = "is destroyed";
         break;
     }
-    pline("%s %s!", An(thing), disposition);
+    pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s %s!", An(thing), disposition);
 }
 
 /*lock.c*/

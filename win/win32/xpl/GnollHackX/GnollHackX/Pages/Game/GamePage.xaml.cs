@@ -3255,7 +3255,7 @@ namespace GnollHackX.Pages.Game
                                 _mainPage.EnqueuePost(new GHPost(3, true, req.RequestInt, req.RequestInt2, req.RequestString, null, false));
                                 break;
                             case GHRequestType.DebugLog:
-                                EnqueueTask(ref tasks, DisplayDebugLog(req.RequestString, req.RequestInt, req.RequestInt2));
+                                WriteDebugLog(req.RequestString, req.RequestInt, req.RequestInt2);
                                 break;
                             case GHRequestType.CloseAllDialogs:
                                 CloseAllDialogs();
@@ -3488,29 +3488,19 @@ namespace GnollHackX.Pages.Game
             }
         }
 
-        private async Task DisplayDebugLog(string log_str, int log_type, int log_param)
+        private void WriteDebugLog(string log_str, int log_type, int log_param)
         {
-            if (log_str != null)
-                Debug.WriteLine("DebugLog: " + log_str + ", Type: " + log_type + ", Param: " + log_param);
-            else
-                return;
-
-            if (GHApp.DebugLogMessages && log_str != "")
+            if (!string.IsNullOrWhiteSpace(log_str))
             {
-#if DEBUG
-                string titlestring = "Debug Log (D)";
-#else
-                string titlestring = "Debug Log (R)";
-#endif
                 switch (log_type)
                 {
                     default:
                     case (int)debug_log_types.DEBUGLOG_GENERAL: /* Both release and debug modes */
-                        await GHApp.DisplayMessageBox(this, titlestring, log_str, "OK");
+                        GHApp.MaybeWriteGHLog(log_str);
                         break;
                     case (int)debug_log_types.DEBUGLOG_DEBUG_ONLY: /* Debug mode only */
 #if DEBUG
-                        await GHApp.DisplayMessageBox(this, titlestring, log_str, "OK");
+                        GHApp.MaybeWriteGHLog(log_str);
 #endif
                         break;
                     case (int)debug_log_types.DEBUGLOG_FILE_DESCRIPTOR:

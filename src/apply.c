@@ -3287,6 +3287,7 @@ struct obj *obj;
         } else {
             if (costly_spot(corpse->ox, corpse->oy) && !corpse->no_charge)
                 verbalize_angry1(you_buy_it);
+            Sprintf(priority_debug_buf_2, "use_tinning_kit: %d", corpse->otyp);
             useupf(corpse, 1L);
         }
         (void) hold_another_object(can, "You make, but cannot pick up, %s.",

@@ -1907,7 +1907,7 @@ wiz_debug(VOID_ARGS)
 {
     if (wizard)
     {
-        int wiz_debug_cmd_idx = 0;
+        int wiz_debug_cmd_idx = 1;
         switch (wiz_debug_cmd_idx)
         {
         case 0:
@@ -1926,6 +1926,85 @@ wiz_debug(VOID_ARGS)
                 }
             }
             pline("%d obj%s found. u at (%d,%d)", cnt, plur(cnt), u.ux, u.uy);
+            break;
+        }
+        case 1:
+        {
+            context.suppress_container_deletion_warning = 1;
+            int i;
+            issue_debuglog(DEBUGLOG_DEBUG_ONLY, "Starting mimics");
+            for (i = 0; i < 5000; i++)
+            {
+                context.suppress_container_deletion_warning = 1;
+                struct monst* mon = makemon(&mons[PM_SMALL_MIMIC], u.ux, u.uy, MM_ADJACENTOK | MM_NOCOUNTBIRTH);
+                if (mon)
+                {
+                    const char* firstmatch = 0;
+                    coord cc;
+                    int desc_found = 0;
+                    char descbuf[BUFSZ * 5];
+                    *descbuf = 0;
+                    nhsym ch = 0;
+                    int color = 0, sym = 0;
+                    uint64_t special;
+                    cc.x = mon->mx;
+                    cc.y = mon->my;
+                    int subset = TER_MAP | TER_TRP | TER_OBJ | TER_MON;
+                    int default_glyph = base_cmap_to_glyph(level.flags.arboreal ? S_tree : S_unexplored);
+                    int glyph = reveal_terrain_getglyph(cc.x, cc.y, FALSE, u.uswallow,
+                        default_glyph, subset);
+
+                    struct layer_info layers = nul_layerinfo;
+                    layers.glyph = glyph;
+                    sym = mapglyph(layers, &ch, &color, &special, cc.x, cc.y);
+
+                    Sprintf(descbuf, "Mimic %d, m_ap_type=%d, mappearance=%d, has_mobj=%d, otyp=%d, mobj_corpsenm=%d, MCORPSENM=%d", i, mon->m_ap_type, mon->mappearance, has_mobj(mon), has_mobj(mon) ? MOBJ(mon)->otyp : 0, has_mobj(mon) ? MOBJ(mon)->corpsenm : -2, has_mcorpsenm(mon) ? MCORPSENM(mon) : -2);
+                    issue_debuglog(DEBUGLOG_DEBUG_ONLY, descbuf);
+                    *descbuf = 0;
+                    desc_found = do_screen_description(cc, TRUE, ch, descbuf, &firstmatch, (struct permonst**)0);
+                    context.suppress_container_deletion_warning = 1;
+                    mongone(mon);
+                }
+            }
+            issue_debuglog(DEBUGLOG_DEBUG_ONLY, "Starting items");
+            for (i = 0; i < 10000; i++)
+            {
+                context.suppress_container_deletion_warning = 1;
+                struct obj* otmp = mkobj_at(RANDOM_CLASS, u.ux + 1 + -2 * rn2(2), u.uy + 1 + -2 * rn2(2), TRUE);
+                if (otmp)
+                {
+                    coord cc;
+                    cc.x = otmp->ox;
+                    cc.y = otmp->oy;
+                    if (isok(cc.x, cc.y))
+                    {
+                        const char* firstmatch = 0;
+                        int desc_found = 0;
+                        char descbuf[BUFSZ * 5];
+                        *descbuf = 0;
+                        nhsym ch = 0;
+                        int color = 0, sym = 0;
+                        uint64_t special;
+                        int subset = TER_MAP | TER_TRP | TER_OBJ | TER_MON;
+                        int default_glyph = base_cmap_to_glyph(level.flags.arboreal ? S_tree : S_unexplored);
+                        int glyph = reveal_terrain_getglyph(cc.x, cc.y, FALSE, u.uswallow,
+                            default_glyph, subset);
+
+                        struct layer_info layers = nul_layerinfo;
+                        layers.glyph = glyph;
+                        sym = mapglyph(layers, &ch, &color, &special, cc.x, cc.y);
+
+                        Sprintf(descbuf, "Item %d, otyp=%d", i, otmp->otyp);
+                        issue_debuglog(DEBUGLOG_DEBUG_ONLY, descbuf);
+                        *descbuf = 0;
+                        desc_found = do_screen_description(cc, TRUE, ch, descbuf, &firstmatch, (struct permonst**)0);
+                        context.suppress_container_deletion_warning = 1;
+                        useupf(otmp, otmp->quan);
+                    }
+                }
+            }            
+            pline1("Debug test 1 done.");
+            context.suppress_container_deletion_warning = 0;
             break;
         }
         default:

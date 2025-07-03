@@ -4521,6 +4521,9 @@ int otyp;
                 MOBJ(mtmp)->o_id = context.ident++;
             if (otmp->oextra)
                 copy_oextra(MOBJ(mtmp), otmp);
+            MOBJ(mtmp)->ox = mtmp->mx;
+            MOBJ(mtmp)->oy = mtmp->my;
+            MOBJ(mtmp)->where = OBJ_FLOOR;
         }
         /* make sure container contents are free'ed */
         Sprintf(priority_debug_buf_4, "set_mimic_new_mobj: %d", otmp->otyp);
@@ -4558,6 +4561,9 @@ struct obj* otmp;
             copy_oextra(MOBJ(mtmp), otmp);
         if (MOBJ(mtmp)->otyp == GOLD_PIECE)
             set_random_gold_amount(MOBJ(mtmp));
+        MOBJ(mtmp)->ox = mtmp->mx;
+        MOBJ(mtmp)->oy = mtmp->my;
+        MOBJ(mtmp)->where = OBJ_FLOOR;
     }
 }
 
@@ -4688,6 +4694,9 @@ register struct monst *mtmp;
                         MOBJ(mtmp)->o_id = context.ident++;
                     if (otmp->oextra)
                         copy_oextra(MOBJ(mtmp), otmp);
+                    MOBJ(mtmp)->ox = mtmp->mx;
+                    MOBJ(mtmp)->oy = mtmp->my;
+                    MOBJ(mtmp)->where = OBJ_FLOOR;
                 }
                 /* make sure container contents are free'ed */
                 Sprintf(priority_debug_buf_4, "set_mimic_sym: %d", otmp->otyp);

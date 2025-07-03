@@ -1916,6 +1916,7 @@ uchar* obj_gone_ptr; /* 1 = merged, 2 = put in bag, 3 = gone */
             if (!(objects[SCR_SCARE_MONSTER].oc_name_known)
                 && !(objects[SCR_SCARE_MONSTER].oc_uname))
                 docall(obj, dcbuf);
+            Sprintf(priority_debug_buf_2, "pickup_object: %d", obj->otyp);
             useupf(obj, obj->quan);
             if (obj_gone_ptr) /* gone */
                 *obj_gone_ptr = 3;
