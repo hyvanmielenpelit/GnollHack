@@ -1933,7 +1933,7 @@ wiz_debug(VOID_ARGS)
             context.suppress_container_deletion_warning = 1;
             int i;
             issue_debuglog(DEBUGLOG_DEBUG_ONLY, "Starting mimics");
-            for (i = 0; i < 5000; i++)
+            for (i = 0; i < 2000; i++)
             {
                 context.suppress_container_deletion_warning = 1;
                 struct monst* mon = makemon(&mons[PM_SMALL_MIMIC], u.ux, u.uy, MM_ADJACENTOK | MM_NOCOUNTBIRTH);
@@ -1967,7 +1967,7 @@ wiz_debug(VOID_ARGS)
                 }
             }
             issue_debuglog(DEBUGLOG_DEBUG_ONLY, "Starting items");
-            for (i = 0; i < 10000; i++)
+            for (i = 0; i < 3000; i++)
             {
                 context.suppress_container_deletion_warning = 1;
                 struct obj* otmp = mkobj_at(RANDOM_CLASS, u.ux + 1 + -2 * rn2(2), u.uy + 1 + -2 * rn2(2), TRUE);

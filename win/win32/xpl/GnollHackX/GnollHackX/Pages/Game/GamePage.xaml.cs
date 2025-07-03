@@ -2408,15 +2408,15 @@ namespace GnollHackX.Pages.Game
                                 AnimationTimers.special_effect_animation_counter[i] += counter_increment;
                         }
                     }
-
-                    /* Only general counter is interlocked and can be accessed without a lock, achieving most of the benefits of having not to lock */
-                    /* Moved this inside the lock to make sure that everything in AnimationTimers object has been updated at the same time; however, general_animation_counter can be accessed without lock elsewhere */
-                    if (AnimationTimers.general_animation_counter > long.MaxValue - counter_increment)
-                        Interlocked.Exchange(ref AnimationTimers.general_animation_counter, 0L);
-                    else
-                        Interlocked.Add(ref AnimationTimers.general_animation_counter, counter_increment);
-                    //generalcountervalue = AnimationTimers.general_animation_counter;
                 }
+
+                /* Only general counter is interlocked and can be accessed without a lock, achieving most of the benefits of having not to lock */
+                /* Moved this outside of the lock to minimize the time spent in lock; InvalidateSurface is called after IncrementCounters, so AnimationTimers should always be fully updated when PaintSurface is called (and there will be no lock taken because of IncrementCounters) */
+                if (AnimationTimers.general_animation_counter > long.MaxValue - counter_increment)
+                    Interlocked.Exchange(ref AnimationTimers.general_animation_counter, 0L);
+                else
+                    Interlocked.Add(ref AnimationTimers.general_animation_counter, counter_increment);
+                //generalcountervalue = AnimationTimers.general_animation_counter;
             }
 
             if (_mainCounterValue == long.MaxValue) 
@@ -7187,10 +7187,11 @@ namespace GnollHackX.Pages.Game
 
             long generalcountervalue, maincountervalue;
             maincountervalue = _mainCounterValue;
+            /* Moved general_animation_counter outside of the lock to minimize the time spent in lock;  since InvalidateSurface is called after IncrementCounters and nothing else modifies general_animation_counter, generalcountervalue should be consistent of the copy result below */
+            generalcountervalue = AnimationTimers.general_animation_counter;
             lock (AnimationTimerLock)
             {
-                /* Note that animation timer is updated too frequently so that it does not make sense to use TryEnter; however, since InvalidateSurface is called after IncrementTimers, there should practically never be a conflict here */
-                generalcountervalue = AnimationTimers.general_animation_counter; /* This is inside the lock to make sure that it corresponds to what is in _localAnimationTimers, although this is not strictly necessary */
+                /* Note that animation timer is updated too frequently so that it does not make sense to use TryEnter; however, since InvalidateSurface is called after IncrementCounters, there should practically never be a conflict here due to IncrementCounters */
                 AnimationTimers.CopyTo(_localAnimationTimers);
             }
             //lock (_mainCounterLock)
