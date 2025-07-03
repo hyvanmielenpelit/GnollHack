@@ -250,17 +250,29 @@ namespace GnollHackX
 #endif
         }
 
-        private static readonly object _renderingLock = new object();
+        //private static readonly object _renderingLock = new object();
         private static long _renderingCounter = 0;
-        public static long RenderingCounter { get { lock (_renderingLock) { return _renderingCounter; } } } 
+        public static long RenderingCounter 
+        { 
+            get 
+            { 
+                //lock (_renderingLock) 
+                { 
+                    return _renderingCounter; 
+                } 
+            } 
+        } 
 
         private static void CompositionTarget_Rendering(object sender, object e)
         {
-            lock (_renderingLock)
+            //lock (_renderingLock)
             {
-                _renderingCounter++;
+                Interlocked.Increment(ref _renderingCounter);
                 if (_renderingCounter == long.MaxValue)
-                    _renderingCounter = 0;
+                    Interlocked.Exchange(ref _renderingCounter, 0L);
+                //_renderingCounter++;
+                //if (_renderingCounter == long.MaxValue)
+                //    _renderingCounter = 0;
             }
         }
 

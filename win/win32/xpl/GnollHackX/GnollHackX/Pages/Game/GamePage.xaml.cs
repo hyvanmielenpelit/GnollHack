@@ -882,7 +882,7 @@ namespace GnollHackX.Pages.Game
         private readonly object _mapFontAscentLock = new object();
         private float _mapFontAscent;
         private float UsedMapFontAscent { get { lock (_mapFontAscentLock) { return _mapFontAscent; } } set { lock (_mapFontAscentLock) { _mapFontAscent = value; } } }
-        public readonly object AnimationTimerLock = new object();
+        //public readonly object AnimationTimerLock = new object();
         public readonly GHAnimationTimerList AnimationTimers = new GHAnimationTimerList();
         public SKImage[] TileMap { get { return GHApp._tileMap; } }
 
@@ -2325,40 +2325,55 @@ namespace GnollHackX.Pages.Game
             int i;
             long counter_increment = GetAnimationCounterIncrement();
             long generalcountervalue, maincountervalue;
-            lock (AnimationTimerLock)
+            //lock (AnimationTimerLock)
             {
-                AnimationTimers.general_animation_counter += counter_increment;
-                if (AnimationTimers.general_animation_counter < 0)
-                    AnimationTimers.general_animation_counter = 0;
+                Interlocked.Add(ref AnimationTimers.general_animation_counter, counter_increment);
+                if (AnimationTimers.general_animation_counter == long.MaxValue)
+                    Interlocked.Exchange(ref AnimationTimers.general_animation_counter, 0L);
+                //AnimationTimers.general_animation_counter += counter_increment;
+                //if (AnimationTimers.general_animation_counter < 0)
+                //    AnimationTimers.general_animation_counter = 0;
 
                 if (AnimationTimers.u_action_animation_counter_on)
                 {
-                    AnimationTimers.u_action_animation_counter += counter_increment;
-                    if (AnimationTimers.u_action_animation_counter < 0)
-                        AnimationTimers.u_action_animation_counter = 0;
+                    Interlocked.Add(ref AnimationTimers.u_action_animation_counter, counter_increment);
+                    if (AnimationTimers.u_action_animation_counter == long.MaxValue)
+                        Interlocked.Exchange(ref AnimationTimers.u_action_animation_counter, 0L);
+                    //AnimationTimers.u_action_animation_counter += counter_increment;
+                    //if (AnimationTimers.u_action_animation_counter < 0)
+                    //    AnimationTimers.u_action_animation_counter = 0;
                 }
 
                 if (AnimationTimers.m_action_animation_counter_on)
                 {
-                    AnimationTimers.m_action_animation_counter += counter_increment;
-                    if (AnimationTimers.m_action_animation_counter < 0)
-                        AnimationTimers.m_action_animation_counter = 0;
+                    Interlocked.Add(ref AnimationTimers.m_action_animation_counter, counter_increment);
+                    if (AnimationTimers.m_action_animation_counter == long.MaxValue)
+                        Interlocked.Exchange(ref AnimationTimers.m_action_animation_counter, 0L);
+                    //AnimationTimers.m_action_animation_counter += counter_increment;
+                    //if (AnimationTimers.m_action_animation_counter < 0)
+                    //    AnimationTimers.m_action_animation_counter = 0;
                 }
 
                 if (AnimationTimers.explosion_animation_counter_on)
                 {
-                    AnimationTimers.explosion_animation_counter += counter_increment;
-                    if (AnimationTimers.explosion_animation_counter < 0)
-                        AnimationTimers.explosion_animation_counter = 0;
+                    Interlocked.Add(ref AnimationTimers.explosion_animation_counter, counter_increment);
+                    if (AnimationTimers.explosion_animation_counter == long.MaxValue)
+                        Interlocked.Exchange(ref AnimationTimers.explosion_animation_counter, 0L);
+                    //AnimationTimers.explosion_animation_counter += counter_increment;
+                    //if (AnimationTimers.explosion_animation_counter < 0)
+                    //    AnimationTimers.explosion_animation_counter = 0;
                 }
 
                 for (i = 0; i < GHConstants.MaxPlayedZapAnimations; i++)
                 {
                     if (AnimationTimers.zap_animation_counter_on[i])
                     {
-                        AnimationTimers.zap_animation_counter[i] += counter_increment;
-                        if (AnimationTimers.zap_animation_counter[i] < 0)
-                            AnimationTimers.zap_animation_counter[i] = 0;
+                        Interlocked.Add(ref AnimationTimers.zap_animation_counter[i], counter_increment);
+                        if (AnimationTimers.zap_animation_counter[i] == long.MaxValue)
+                            Interlocked.Exchange(ref AnimationTimers.zap_animation_counter[i], 0L);
+                        //AnimationTimers.zap_animation_counter[i] += counter_increment;
+                        //if (AnimationTimers.zap_animation_counter[i] < 0)
+                        //    AnimationTimers.zap_animation_counter[i] = 0;
                     }
                 }
 
@@ -2366,23 +2381,30 @@ namespace GnollHackX.Pages.Game
                 {
                     if (AnimationTimers.special_effect_animation_counter_on[i])
                     {
-                        AnimationTimers.special_effect_animation_counter[i] += counter_increment;
-                        if (AnimationTimers.special_effect_animation_counter[i] < 0)
-                            AnimationTimers.special_effect_animation_counter[i] = 0;
+                        Interlocked.Add(ref AnimationTimers.special_effect_animation_counter[i], counter_increment);
+                        if (AnimationTimers.special_effect_animation_counter[i] == long.MaxValue)
+                            Interlocked.Exchange(ref AnimationTimers.special_effect_animation_counter[i], 0L);
+                        //AnimationTimers.special_effect_animation_counter[i] += counter_increment;
+                        //if (AnimationTimers.special_effect_animation_counter[i] < 0)
+                        //    AnimationTimers.special_effect_animation_counter[i] = 0;
                     }
                 }
 
                 generalcountervalue = AnimationTimers.general_animation_counter;
             }
 
-            lock (_mainCounterLock)
-            {
-                _mainCounterValue++;
-                if (_mainCounterValue < 0)
-                    _mainCounterValue = 0;
+            Interlocked.Increment(ref _mainCounterValue);
+            if (_mainCounterValue == long.MaxValue)
+                Interlocked.Exchange(ref _mainCounterValue, 0L);
+            maincountervalue = _mainCounterValue;
+            //lock (_mainCounterLock)
+            //{
+            //    _mainCounterValue++;
+            //    if (_mainCounterValue < 0)
+            //        _mainCounterValue = 0;
 
-                maincountervalue = _mainCounterValue;
-            }
+            //    maincountervalue = _mainCounterValue;
+            //}
 
             lock (_mapOffsetLock)
             {
@@ -2755,7 +2777,7 @@ namespace GnollHackX.Pages.Game
                 //{
                 //    counter = AnimationTimers.general_animation_counter;
                 //}
-                lock (_mainCounterLock)
+                //lock (_mainCounterLock)
                 {
                     counter = _mainCounterValue;
                 }
@@ -2782,7 +2804,7 @@ namespace GnollHackX.Pages.Game
             //{
             //    countervalue = AnimationTimers.general_animation_counter;
             //}
-            lock (_mainCounterLock)
+            //lock (_mainCounterLock)
             {
                 countervalue = _mainCounterValue;
             }
@@ -2802,7 +2824,7 @@ namespace GnollHackX.Pages.Game
             //{
             //    counter = AnimationTimers.general_animation_counter;
             //}
-            lock (_mainCounterLock)
+            //lock (_mainCounterLock)
             {
                 counter = _mainCounterValue;
             }
@@ -2835,7 +2857,7 @@ namespace GnollHackX.Pages.Game
             //{
             //    counter = AnimationTimers.general_animation_counter;
             //}
-            lock (_mainCounterLock)
+            //lock (_mainCounterLock)
             {
                 counter = _mainCounterValue;
             }
@@ -2868,7 +2890,7 @@ namespace GnollHackX.Pages.Game
             //{
             //    counter = AnimationTimers.general_animation_counter;
             //}
-            lock (_mainCounterLock)
+            //lock (_mainCounterLock)
             {
                 counter = _mainCounterValue;
             }
@@ -7004,7 +7026,7 @@ namespace GnollHackX.Pages.Game
         private readonly StringBuilder _lineBuilder = new StringBuilder(GHConstants.LineBuilderInitialCapacity);
         private readonly string[] _attributeStrings = new string[6] { "Strength", "Dexterity", "Constitution", "Intelligence", "Wisdom", "Charisma" };
         private readonly short[,] _draw_shadow = new short[GHConstants.MapCols, GHConstants.MapRows];
-        private readonly GHAnimationTimerList _localAnimationTimers = new GHAnimationTimerList();
+        //private readonly GHAnimationTimerList _localAnimationTimers = new GHAnimationTimerList();
         private readonly ObjectDataItem[] _localWeaponStyleObjDataItem = new ObjectDataItem[3];
         private readonly GHStatusField[] _localStatusFields = new GHStatusField[(int)NhStatusFields.MAXBLSTATS];
         private int _local_ux = 0;
@@ -7147,15 +7169,17 @@ namespace GnollHackX.Pages.Game
             }
 
             long generalcountervalue, maincountervalue;
-            lock (AnimationTimerLock)
-            {
-                generalcountervalue = AnimationTimers.general_animation_counter;
-                AnimationTimers.CopyTo(_localAnimationTimers);
-            }
-            lock (_mainCounterLock)
-            {
-                maincountervalue = _mainCounterValue;
-            }
+            generalcountervalue = AnimationTimers.general_animation_counter;
+            maincountervalue = _mainCounterValue;
+            //lock (AnimationTimerLock)
+            //{
+            //    generalcountervalue = AnimationTimers.general_animation_counter;
+            //    AnimationTimers.CopyTo(_localAnimationTimers);
+            //}
+            //lock (_mainCounterLock)
+            //{
+            //    maincountervalue = _mainCounterValue;
+            //}
 
             try
             {
@@ -7756,7 +7780,7 @@ namespace GnollHackX.Pages.Game
 
                                                                         /* Determine animation tile here */
                                                                         int anim_frame_idx = 0, main_tile_idx = 0;
-                                                                        ntile = GetTileFromAnimation(_localAnimationTimers, ntile, glyph, source_x, source_y, layer_idx, generalcountervalue, is_monster_or_shadow_layer, ref anim_frame_idx, ref main_tile_idx, ref autodraw);
+                                                                        ntile = GetTileFromAnimation(/*_local*/AnimationTimers, ntile, glyph, source_x, source_y, layer_idx, generalcountervalue, is_monster_or_shadow_layer, ref anim_frame_idx, ref main_tile_idx, ref autodraw);
 
                                                                         /* Draw enlargement tiles */
                                                                         int enlargement = GHApp.Tile2Enlargement[ntile];
@@ -7889,7 +7913,7 @@ namespace GnollHackX.Pages.Game
 
                                                                     /* Determine animation tile here */
                                                                     int anim_frame_idx = 0, main_tile_idx = 0;
-                                                                    ntile = GetTileFromAnimation(_localAnimationTimers, ntile, glyph, mapx, mapy, layer_idx, generalcountervalue, is_monster_or_shadow_layer, ref anim_frame_idx, ref main_tile_idx, ref autodraw);
+                                                                    ntile = GetTileFromAnimation(/*_local*/AnimationTimers, ntile, glyph, mapx, mapy, layer_idx, generalcountervalue, is_monster_or_shadow_layer, ref anim_frame_idx, ref main_tile_idx, ref autodraw);
 
                                                                     /* Draw enlargement tiles */
                                                                     int enlargement = GHApp.Tile2Enlargement[ntile];
@@ -15393,7 +15417,7 @@ namespace GnollHackX.Pages.Game
             int clipX;
             int clipY;
 
-            lock (_mainCounterLock)
+            //lock (_mainCounterLock)
             {
                 curtimervalue = _mainCounterValue;
             }
@@ -17926,7 +17950,7 @@ namespace GnollHackX.Pages.Game
                 if (TextCanvas.GHWindow != null && TextCanvas.GHWindow.Ascension)
                 {
                     long counter;
-                    lock (AnimationTimerLock)
+                    //lock (AnimationTimerLock)
                     {
                         counter = AnimationTimers.general_animation_counter;
                     }
@@ -18377,9 +18401,18 @@ namespace GnollHackX.Pages.Game
         private SKRect _cmdBtnMatrixRect = new SKRect();
         public SKRect CmdBtnMatrixRect { get { SKRect val; lock (_cmdBtnMatrixRectLock) { val = _cmdBtnMatrixRect; } return val; } set { lock (_cmdBtnMatrixRectLock) { _cmdBtnMatrixRect = value; } } }
 
-        private readonly object _mainCounterLock = new object();
+        //private readonly object _mainCounterLock = new object();
         private long _mainCounterValue = 0;
-        public long MainCounterValue { get { lock (_mainCounterLock) { return _mainCounterValue; } } }
+        public long MainCounterValue 
+        { 
+            get 
+            { 
+                //lock (_mainCounterLock) 
+                { 
+                    return _mainCounterValue; 
+                } 
+            } 
+        }
 
         private readonly object _mainFPSCounterLock = new object();
         private long _mainFPSCounterValue = 0;

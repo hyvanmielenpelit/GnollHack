@@ -361,7 +361,7 @@ namespace GnollHackX
                 }
                 else
                 {
-                    lock (refPage.AnimationTimerLock)
+                    //lock (refPage.AnimationTimerLock)
                     {
                         counter_value = refPage.AnimationTimers.general_animation_counter;
                     }

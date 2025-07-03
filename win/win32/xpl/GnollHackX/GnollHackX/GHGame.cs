@@ -946,7 +946,7 @@ namespace GnollHackX
         {
             long generalCounter;
             long mainCounter;
-            lock (_gamePage.AnimationTimerLock)
+            //lock (_gamePage.AnimationTimerLock)
             {
                 generalCounter = _gamePage.AnimationTimers.general_animation_counter;
             }
@@ -1501,7 +1501,7 @@ namespace GnollHackX
 
             long start_counter_value = 0L;
             long current_counter_value = 0L;
-            lock (_gamePage.AnimationTimerLock)
+            //lock (_gamePage.AnimationTimerLock)
             {
                 start_counter_value = _gamePage.AnimationTimers.general_animation_counter;
             }
@@ -1512,7 +1512,7 @@ namespace GnollHackX
                     break;
 
                 Thread.Sleep(5);
-                lock (_gamePage.AnimationTimerLock)
+                //lock (_gamePage.AnimationTimerLock)
                 {
                     current_counter_value = _gamePage.AnimationTimers.general_animation_counter;
                 }
@@ -2367,7 +2367,7 @@ namespace GnollHackX
         public void ClientCallback_ToggleAnimationTimer(int timertype, int timerid, int state, int x, int y, int layer, ulong tflags)
         {
             RecordFunctionCall(RecordedFunctionID.ToggleAnimationTimer, timertype, timerid, state, x, y, layer, tflags);
-            lock (_gamePage.AnimationTimerLock)
+            //lock (_gamePage.AnimationTimerLock)
             {
                 bool ison = (state != 0);
                 switch ((animation_timer_types)timertype)
@@ -2375,37 +2375,37 @@ namespace GnollHackX
                     case animation_timer_types.ANIMATION_TIMER_GENERAL:
                         break;
                     case animation_timer_types.ANIMATION_TIMER_YOU:
-                        _gamePage.AnimationTimers.u_action_animation_counter = 0L;
-                        _gamePage.AnimationTimers.u_action_animation_counter_on = ison;
+                        Interlocked.Exchange(ref _gamePage.AnimationTimers.u_action_animation_counter, 0L);
+                        Interlocked.Exchange(ref _gamePage.AnimationTimers.u_action_animation_counter_on, ison);
                         break;
                     case animation_timer_types.ANIMATION_TIMER_MONSTER:
-                        _gamePage.AnimationTimers.m_action_animation_counter = 0L;
-                        _gamePage.AnimationTimers.m_action_animation_counter_on = ison;
-                        _gamePage.AnimationTimers.m_action_animation_x = (byte)x;
-                        _gamePage.AnimationTimers.m_action_animation_y = (byte)y;
+                        Interlocked.Exchange(ref _gamePage.AnimationTimers.m_action_animation_counter, 0L);
+                        Interlocked.Exchange(ref _gamePage.AnimationTimers.m_action_animation_counter_on, ison);
+                        Interlocked.Exchange(ref _gamePage.AnimationTimers.m_action_animation_x, (byte)x);
+                        Interlocked.Exchange(ref _gamePage.AnimationTimers.m_action_animation_y, (byte)y);
                         break;
                     case animation_timer_types.ANIMATION_TIMER_EXPLOSION:
-                        _gamePage.AnimationTimers.explosion_animation_counter = 0L;
-                        _gamePage.AnimationTimers.explosion_animation_counter_on = ison;
-                        _gamePage.AnimationTimers.explosion_animation_x = (byte)x;
-                        _gamePage.AnimationTimers.explosion_animation_y = (byte)y;
+                        Interlocked.Exchange(ref _gamePage.AnimationTimers.explosion_animation_counter, 0L);
+                        Interlocked.Exchange(ref _gamePage.AnimationTimers.explosion_animation_counter_on, ison);
+                        Interlocked.Exchange(ref _gamePage.AnimationTimers.explosion_animation_x, (byte)x);
+                        Interlocked.Exchange(ref _gamePage.AnimationTimers.explosion_animation_y, (byte)y);
                         break;
                     case animation_timer_types.ANIMATION_TIMER_ZAP:
                         if (timerid < 0 || timerid >= GHConstants.MaxPlayedZapAnimations)
                             break;
-                        _gamePage.AnimationTimers.zap_animation_counter[timerid] = 0L;
-                        _gamePage.AnimationTimers.zap_animation_counter_on[timerid] = ison;
-                        _gamePage.AnimationTimers.zap_animation_x[timerid] = (byte)x;
-                        _gamePage.AnimationTimers.zap_animation_y[timerid] = (byte)y;
+                        Interlocked.Exchange(ref _gamePage.AnimationTimers.zap_animation_counter[timerid], 0L);
+                        Interlocked.Exchange(ref _gamePage.AnimationTimers.zap_animation_counter_on[timerid], ison);
+                        Interlocked.Exchange(ref _gamePage.AnimationTimers.zap_animation_x[timerid], (byte)x);
+                        Interlocked.Exchange(ref _gamePage.AnimationTimers.zap_animation_y[timerid], (byte)y);
                         break;
                     case animation_timer_types.ANIMATION_TIMER_SPECIAL_EFFECT:
                         if (timerid < 0 || timerid >= GHConstants.MaxPlayedSpecialEffects)
                             break;
-                        _gamePage.AnimationTimers.special_effect_animation_counter[timerid] = 0L;
-                        _gamePage.AnimationTimers.special_effect_animation_counter_on[timerid] = ison;
-                        _gamePage.AnimationTimers.spef_action_animation_x[timerid] = (byte)x;
-                        _gamePage.AnimationTimers.spef_action_animation_y[timerid] = (byte)y;
-                        _gamePage.AnimationTimers.spef_action_animation_layer[timerid] = (layer_types)layer;
+                        Interlocked.Exchange(ref _gamePage.AnimationTimers.special_effect_animation_counter[timerid], 0L);
+                        Interlocked.Exchange(ref _gamePage.AnimationTimers.special_effect_animation_counter_on[timerid], ison);
+                        Interlocked.Exchange(ref _gamePage.AnimationTimers.spef_action_animation_x[timerid], (byte)x);
+                        Interlocked.Exchange(ref _gamePage.AnimationTimers.spef_action_animation_y[timerid], (byte)y);
+                        Interlocked.Exchange(ref _gamePage.AnimationTimers.spef_action_animation_layer[timerid], (layer_types)layer);
                         break;
                     default:
                         break;
