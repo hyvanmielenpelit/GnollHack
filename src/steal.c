@@ -514,7 +514,7 @@ gotobj:
     play_sfx_sound(SFX_STEAL_ITEM);
     pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s stole %s.", named ? "She" : Monnam(mtmp), doname(otmp));
     could_petrify =
-        (otmp->otyp == CORPSE && touch_petrifies(&mons[otmp->corpsenm]));
+        (otmp->otyp == CORPSE && otmp->corpsenm >= LOW_PM && touch_petrifies(&mons[otmp->corpsenm]));
     (void) mpickobj(mtmp, otmp); /* may free otmp */
 
     if (could_petrify && !(mtmp->worn_item_flags & W_ARMG))

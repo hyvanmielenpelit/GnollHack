@@ -1782,7 +1782,7 @@ movemon()
 }
 
 #define mstoning(obj)                                       \
-    (ofood(obj) && (touch_petrifies(&mons[(obj)->corpsenm]) \
+    (ofood(obj) && (obj)->corpsenm >= LOW_PM && (touch_petrifies(&mons[(obj)->corpsenm]) \
                     || (obj)->corpsenm == PM_MEDUSA))
 
 /*
@@ -2067,14 +2067,14 @@ struct monst *mtmp;
             continue;
 
         /* touch sensitive items */
-        if (otmp->otyp == CORPSE && is_rider(&mons[otmp->corpsenm]))
+        if (otmp->otyp == CORPSE && otmp->corpsenm >= LOW_PM && is_rider(&mons[otmp->corpsenm]))
         {
             /* Rider corpse isn't just inedible; can't engulf it either */
             (void) revive_corpse(otmp);
 
         /* untouchable (or inaccessible) items */
         } 
-        else if ((otmp->otyp == CORPSE
+        else if ((otmp->otyp == CORPSE && otmp->corpsenm >= LOW_PM
                     && touch_petrifies(&mons[otmp->corpsenm])
                     && !resists_ston(mtmp))
                    /* don't engulf boulders and statues or ball&chain */
@@ -2259,7 +2259,7 @@ register const char *str;
         {
             if (otmp->otyp == CORPSE && mtmp->data->mlet != S_NYMPH
                 /* let a handful of corpse types thru to can_carry() */
-                && !touch_petrifies(&mons[otmp->corpsenm])
+                && otmp->corpsenm >= LOW_PM && !touch_petrifies(&mons[otmp->corpsenm])
                 && otmp->corpsenm != PM_LIZARD
                 && !has_acidic_corpse(&mons[otmp->corpsenm]))
                 continue;
@@ -2385,10 +2385,10 @@ boolean steed_ok;
     if (notake(mdat))
         return 0; /* can't carry anything */
 
-    if (otyp == CORPSE && touch_petrifies(&mons[otmp->corpsenm])
+    if (otyp == CORPSE && otmp->corpsenm >= LOW_PM && touch_petrifies(&mons[otmp->corpsenm])
         && !(mtmp->worn_item_flags & W_ARMG) && !resists_ston(mtmp))
         return 0;
-    if (otyp == CORPSE && is_rider(&mons[otmp->corpsenm]))
+    if (otyp == CORPSE && otmp->corpsenm >= LOW_PM && is_rider(&mons[otmp->corpsenm]))
         return 0;
     if (obj_counts_as_silver(otmp) && mon_hates_silver(mtmp)
         && (otyp != BELL_OF_OPENING || !wants_bell(mdat)))
@@ -5022,7 +5022,7 @@ struct monst *mtmp;
         /* most monsters won't hide under cockatrice corpse */
         if (otmp->nexthere || otmp->otyp != CORPSE
             || (mtmp == &youmonst ? Stone_resistance : resists_ston(mtmp))
-            || !touch_petrifies(&mons[otmp->corpsenm]))
+            || (otmp->corpsenm >= LOW_PM && !touch_petrifies(&mons[otmp->corpsenm])))
             undetected = TRUE;
     }
 

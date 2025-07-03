@@ -314,7 +314,7 @@ struct obj *obj;
 boolean remotely;
 {
     if (uarmg || remotely || obj->otyp != CORPSE
-        || !touch_petrifies(&mons[obj->corpsenm]) || Stone_resistance)
+        || (obj->corpsenm >= LOW_PM && !touch_petrifies(&mons[obj->corpsenm])) || Stone_resistance)
         return FALSE;
 
     if (poly_when_stoned(youmonst.data) && polymon(PM_STONE_GOLEM)) {
@@ -3373,7 +3373,7 @@ boolean dobot;
 
     /* boxes, boulders, and big statues can't fit into any container */
     if (obj->otyp == ICE_BOX || obj->otyp == BOOKSHELF || Is_box(obj) || obj->otyp == BOULDER
-        || (obj->otyp == STATUE && bigmonst(&mons[obj->corpsenm]))) 
+        || (obj->otyp == STATUE && obj->corpsenm >= LOW_PM && bigmonst(&mons[obj->corpsenm])))
     {
         /*
          *  xname() uses a static result array.  Save obj's name

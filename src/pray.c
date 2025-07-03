@@ -2589,7 +2589,7 @@ dosacrifice()
 
     if (otmp->otyp == CORPSE) 
     {
-        register struct permonst *ptr = &mons[otmp->corpsenm];
+        register struct permonst *ptr = otmp->corpsenm >= LOW_PM ? &mons[otmp->corpsenm] : 0;
         struct monst *mtmp;
 
         /* KMH, conduct */
@@ -2612,7 +2612,7 @@ dosacrifice()
                 value = eaten_stat(value, otmp);
         }
 
-        if (your_race(ptr)) 
+        if (ptr && your_race(ptr))
         {
             if (is_demon(youmonst.data)) 
             {
@@ -2752,11 +2752,11 @@ dosacrifice()
             HAggravate_monster |= FROM_ACQUIRED;
             play_sfx_sound(SFX_SACRIFICE_PET);
         }
-        else if (is_undead(ptr)) { /* Not demons--no demon corpses */
+        else if (ptr && is_undead(ptr)) { /* Not demons--no demon corpses */
             if (u.ualign.type != A_CHAOTIC)
                 value += 1;
         }
-        else if (is_unicorn(ptr)) 
+        else if (ptr && is_unicorn(ptr))
         {
             int unicalign = sgn(ptr->maligntyp);
 

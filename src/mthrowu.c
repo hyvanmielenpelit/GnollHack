@@ -2165,11 +2165,11 @@ int whodidit;   /* 1==hero, 0=other, -1==just check whether it'll pass thru */
                     && obj_type != TIN_WHISTLE && obj_type != MAGIC_WHISTLE);
             break;
         case ROCK_CLASS: /* includes boulder */
-            if (obj_type != STATUE || mons[otmp->corpsenm].msize > MZ_TINY)
+            if (obj_type != STATUE || (otmp->corpsenm >= LOW_PM && mons[otmp->corpsenm].msize > MZ_TINY))
                 hits = TRUE;
             break;
         case FOOD_CLASS:
-            if (obj_type == CORPSE && mons[otmp->corpsenm].msize > MZ_TINY)
+            if (obj_type == CORPSE && otmp->corpsenm >= LOW_PM && mons[otmp->corpsenm].msize > MZ_TINY)
                 hits = TRUE;
             else
                 hits = (obj_type == MEAT_STICK

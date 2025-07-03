@@ -595,7 +595,7 @@ fixup_special()
             y = somey(croom);
             if (goodpos(x, y, (struct monst *) 0, 0)) {
                 otmp = mk_tt_object(STATUE, x, y);
-                while (otmp && (poly_when_stoned(&mons[otmp->corpsenm])
+                while (otmp && otmp->corpsenm >= LOW_PM && (poly_when_stoned(&mons[otmp->corpsenm])
                                 || has_innate(&mons[otmp->corpsenm],
                                                  MR_STONE))) {
                     /* set_corpsenm() handles weight too */
@@ -611,7 +611,7 @@ fixup_special()
                 mkcorpstat(STATUE, (struct monst *) 0, (struct permonst *) 0,
                            somex(croom), somey(croom), CORPSTAT_NONE);
         if (otmp) {
-            while (has_innate(&mons[otmp->corpsenm], MR_STONE)
+            while (otmp->corpsenm < LOW_PM || has_innate(&mons[otmp->corpsenm], MR_STONE)
                    || poly_when_stoned(&mons[otmp->corpsenm])) {
                 /* set_corpsenm() handles weight too */
                 set_corpsenm(otmp, rndmonnum());

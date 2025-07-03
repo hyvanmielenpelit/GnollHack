@@ -6875,7 +6875,7 @@ struct obj *otmp;
 boolean force_touch;
 {
     if ((Blind || force_touch) && !uarmg && !Stone_resistance
-        && (otmp->otyp == CORPSE && touch_petrifies(&mons[otmp->corpsenm])))
+        && (otmp->otyp == CORPSE && otmp->corpsenm >= LOW_PM && touch_petrifies(&mons[otmp->corpsenm])))
         return TRUE;
     return FALSE;
 }

@@ -811,7 +811,7 @@ boolean is_golf_swing;
         return 1;
     }
 
-    if (!uarmf && kickedobj->otyp == CORPSE
+    if (!uarmf && kickedobj->otyp == CORPSE && kickedobj->corpsenm >= LOW_PM
         && touch_petrifies(&mons[kickedobj->corpsenm]) && !Stone_resistance) 
     {
         if (is_golf_swing)

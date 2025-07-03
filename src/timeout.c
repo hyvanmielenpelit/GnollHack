@@ -1732,7 +1732,7 @@ slip_or_trip()
         } else {
             You_ex(ATR_NONE, CLR_MSG_ATTENTION,  "trip over %s.", what);
         }
-        if (!uarmf && otmp->otyp == CORPSE
+        if (!uarmf && otmp->otyp == CORPSE && otmp->corpsenm >= LOW_PM
             && touch_petrifies(&mons[otmp->corpsenm]) && !Stone_resistance) {
             Sprintf(killer.name, "tripping over %s corpse",
                     an(corpse_monster_name(otmp)));

@@ -436,7 +436,7 @@ struct attack *alt_attk_buf;
                && !(mptr->mattk[1].aatyp == AT_WEAP
                     && mptr->mattk[1].adtyp == AD_PHYS)
                && (is_cancelled(magr)
-                   || (weap && ((weap->otyp == CORPSE
+                   || (weap && ((weap->otyp == CORPSE && weap->corpsenm >= LOW_PM
                                  && touch_petrifies(&mons[weap->corpsenm]))
                                 || weap->oartifact == ART_STORMBRINGER || weap->oartifact == ART_MOURNBLADE
                                 || weap->oartifact == ART_VORPAL_BLADE)))) {
@@ -1957,7 +1957,7 @@ register struct obj* omonwep;
 
             if (mattk->aatyp == AT_WEAP && otmp)
             {
-                if (otmp->otyp == CORPSE && touch_petrifies(&mons[otmp->corpsenm]))
+                if (otmp->otyp == CORPSE && otmp->corpsenm >= LOW_PM && touch_petrifies(&mons[otmp->corpsenm]))
                 {
                     damage = 1;
                     pline("%s hits you with the %s corpse.", Monnam(mtmp), corpse_monster_name(otmp));

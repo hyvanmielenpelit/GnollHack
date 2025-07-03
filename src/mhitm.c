@@ -1398,7 +1398,7 @@ register struct obj* omonwep;
         {
             if (otmp) 
             {
-                if (otmp->otyp == CORPSE
+                if (otmp->otyp == CORPSE && otmp->corpsenm >= LOW_PM
                     && touch_petrifies(&mons[otmp->corpsenm]))
                     goto do_stone;
                 //damage += weapon_dmg_value(otmp, mdef,magr);

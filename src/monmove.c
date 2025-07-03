@@ -1573,7 +1573,7 @@ register int after;
                          || (likeobjs && (index(practical, otmp->oclass))
                              && (otmp->otyp != CORPSE
                                  || (ptr->mlet == S_NYMPH
-                                     && !is_rider(&mons[otmp->corpsenm]))))
+                                     && otmp->corpsenm >= LOW_PM && !is_rider(&mons[otmp->corpsenm]))))
                          || (likemagic && index(magical, otmp->oclass))
                          || (uses_items && searches_for_item(mtmp, otmp))
                          || (likerock && otmp->otyp == BOULDER)
@@ -1583,7 +1583,7 @@ register int after;
                          || (slurps_items(ptr)
                              && !index(indigestion, otmp->oclass)
                              && !(otmp->otyp == CORPSE
-                                  && touch_petrifies(&mons[otmp->corpsenm]))))
+                                  && otmp->corpsenm >= LOW_PM && touch_petrifies(&mons[otmp->corpsenm]))))
                         && touch_artifact(otmp, mtmp) 
                         && mon_wants_to_pick_up_obj(mtmp, otmp)
                         )
@@ -2350,7 +2350,7 @@ struct monst *mtmp;
             && !(typ >= DAGGER && typ <= CRYSKNIFE) && typ != SLING
             && !is_cloak(obj) && typ != FEDORA && !is_gloves(obj)
             && typ != LEATHER_JACKET && typ != CREDIT_CARD && !is_shirt(obj)
-            && !(typ == CORPSE && verysmall(&mons[obj->corpsenm]))
+            && !(typ == CORPSE && obj->corpsenm >= LOW_PM && verysmall(&mons[obj->corpsenm]))
             && typ != FORTUNE_COOKIE && typ != CANDY_BAR && typ != PANCAKE
             && typ != ELVEN_WAYBREAD && typ != LUMP_OF_ROYAL_JELLY
             && obj->oclass != AMULET_CLASS && obj->oclass != MISCELLANEOUS_CLASS && obj->oclass != RING_CLASS

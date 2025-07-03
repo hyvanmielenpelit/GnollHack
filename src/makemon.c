@@ -4707,6 +4707,7 @@ register struct monst *mtmp;
             } 
             else 
             {
+                appear = STRANGE_OBJECT;
                 otmp = mkobj((char) s_sym, FALSE, FALSE);
                 if (otmp)
                 {

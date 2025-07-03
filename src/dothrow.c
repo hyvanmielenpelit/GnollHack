@@ -93,7 +93,7 @@ boolean firing;
         return 0;
     }
     u_wipe_engr(2);
-    if (!uarmg && obj->otyp == CORPSE && touch_petrifies(&mons[obj->corpsenm])
+    if (!uarmg && obj->otyp == CORPSE && obj->corpsenm >= LOW_PM && touch_petrifies(&mons[obj->corpsenm])
         && !Stone_resistance) {
         You("throw %s with your bare %s.",
             corpse_xname(obj, (const char *) 0, CXN_PFX_THE),
@@ -1200,7 +1200,7 @@ boolean hitsroof;
     const char *action;
     boolean isinstakill = FALSE;
     boolean petrifier = ((obj->otyp == EGG || obj->otyp == CORPSE)
-                         && touch_petrifies(&mons[obj->corpsenm]));
+                          && obj->corpsenm >= LOW_PM && touch_petrifies(&mons[obj->corpsenm]));
     /* note: obj->quan == 1 */
 
     if (!has_ceiling(&u.uz))
@@ -2261,7 +2261,7 @@ uchar* hitres_ptr;
         if (hitres_ptr)
             *hitres_ptr = 1;
         wakeup(mon, TRUE);
-        if (obj->otyp == CORPSE && touch_petrifies(&mons[obj->corpsenm])) 
+        if (obj->otyp == CORPSE && obj->corpsenm >= LOW_PM && touch_petrifies(&mons[obj->corpsenm]))
         {
             if (is_animal(u.ustuck->data)) 
             {

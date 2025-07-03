@@ -5779,7 +5779,7 @@ retry:
     }
 
     if (halfeaten && otmp->oclass == FOOD_CLASS) {
-        if (otmp->otyp == CORPSE)
+        if (otmp->otyp == CORPSE && otmp->corpsenm >= LOW_PM)
             otmp->oeaten = mons[otmp->corpsenm].cnutrit;
         else
             otmp->oeaten = objects[otmp->otyp].oc_nutrition;

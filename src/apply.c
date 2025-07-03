@@ -521,7 +521,7 @@ int rx, ry, *resp;
         corpse = 0;               /* can't reach corpse on floor */
         /* you can't reach tiny statues (even though you can fight
            tiny monsters while levitating--consistency, what's that?) */
-        while (statue && mons[statue->corpsenm].msize == MZ_TINY)
+        while (statue && statue->corpsenm >= LOW_PM && mons[statue->corpsenm].msize == MZ_TINY)
             statue = nxtobj(statue, STATUE, TRUE);
     }
 
@@ -562,7 +562,7 @@ int rx, ry, *resp;
                 /* TRUE: override visibility check--it's not on the map */
                 gndr = pronoun_gender(mtmp, TRUE);
             } 
-            else 
+            else if (corpse->corpsenm >= LOW_PM)
             {
                 mptr = &mons[corpse->corpsenm];
                 if (is_female(mptr))
@@ -615,18 +615,18 @@ int rx, ry, *resp;
     { /* statue */
         const char *what, *how;
 
-        mptr = &mons[statue->corpsenm];
+        mptr = statue->corpsenm >= LOW_PM ? &mons[statue->corpsenm] : 0;
         if (Blind)
         { /* ignore statue->dknown; it'll always be set */
             Sprintf(buf, "%s %s",
                     (rx == u.ux && ry == u.uy) ? "This" : "That",
-                    humanoid(mptr) ? "person" : "creature");
+                    mptr && humanoid(mptr) ? "person" : "creature");
             what = buf;
         } 
         else 
         {
             what = corpse_monster_name(statue);
-            if (!is_mname_proper_name(mptr))
+            if (mptr && !is_mname_proper_name(mptr))
                 what = The(what);
         }
         how = "fine";
@@ -3163,7 +3163,7 @@ boolean
 tinnable(corpse)
 struct obj *corpse;
 {
-    if (corpse->oeaten)
+    if (corpse->oeaten || corpse->corpsenm < LOW_PM)
         return 0;
     if (!mons[corpse->corpsenm].cnutrit)
         return 0;
@@ -3207,7 +3207,7 @@ struct obj *obj;
         delay_output_milliseconds(2000);
     }
 
-    if (touch_petrifies(&mons[corpse->corpsenm]) && !Stone_resistance
+    if (corpse->corpsenm >= LOW_PM && touch_petrifies(&mons[corpse->corpsenm]) && !Stone_resistance
         && !uarmg) 
     {
         char kbuf[BUFSZ];
@@ -3224,7 +3224,7 @@ struct obj *obj;
         killer.hint_idx = HINT_KILLED_TOUCHED_COCKATRICE_CORPSE;
         instapetrify(kbuf);
     }
-    if (is_rider(&mons[corpse->corpsenm])) 
+    if (corpse->corpsenm >= LOW_PM && is_rider(&mons[corpse->corpsenm]))
     {
         if (revive_corpse(corpse))
         {
@@ -3237,7 +3237,7 @@ struct obj *obj;
         }
         return;
     }
-    if (has_monster_type_nontinnable_corpse(&mons[corpse->corpsenm])) 
+    if (corpse->corpsenm >= LOW_PM && has_monster_type_nontinnable_corpse(&mons[corpse->corpsenm]))
     {
         if (is_reviver(&mons[corpse->corpsenm]) && revives_upon_meddling(&mons[corpse->corpsenm]) && revive_corpse(corpse))
         {
@@ -3250,7 +3250,7 @@ struct obj *obj;
         }
         return;
     }
-    if (mons[corpse->corpsenm].cnutrit == 0) 
+    if (corpse->corpsenm >= LOW_PM && mons[corpse->corpsenm].cnutrit == 0)
     {
         play_sfx_sound(SFX_GENERAL_CANNOT);
         pline_ex(ATR_NONE, CLR_MSG_FAIL, "That's too insubstantial to tin.");
@@ -4763,7 +4763,7 @@ struct obj *obj;
                 {
                     /* right into your inventory */
                     You("snatch %s!", yname(otmp));
-                    if (otmp->otyp == CORPSE
+                    if (otmp->otyp == CORPSE && otmp->corpsenm >= LOW_PM
                         && touch_petrifies(&mons[otmp->corpsenm]) && !uarmg
                         && !Stone_resistance
                         && !(poly_when_stoned(youmonst.data)
@@ -4831,7 +4831,7 @@ struct obj *obj;
 #endif /* 0 */
                     /* right into your inventory */
                     You("snatch %s!", yname(otmp));
-                    if (otmp->otyp == CORPSE
+                    if (otmp->otyp == CORPSE && otmp->corpsenm >= LOW_PM
                         && touch_petrifies(&mons[otmp->corpsenm]) && !uarmg
                         && !Stone_resistance
                         && !(poly_when_stoned(youmonst.data)

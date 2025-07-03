@@ -221,11 +221,11 @@ struct obj *obj;
     if (obj->oclass == FOOD_CLASS) 
     {
         boolean is_veg = FALSE;
-        if (obj->otyp == CORPSE)
+        if (obj->otyp == CORPSE && obj->corpsenm >= LOW_PM)
         {
             mtmp->meating = 3 + (mons[obj->corpsenm].cwt >> 6);
             nutrit = mons[obj->corpsenm].cnutrit;
-            if (obj->corpsenm >= LOW_PM && (is_vegetarian_food(&mons[obj->corpsenm]) || is_vegan_food(&mons[obj->corpsenm])))
+            if (is_vegetarian_food(&mons[obj->corpsenm]) || is_vegan_food(&mons[obj->corpsenm]))
                 is_veg = TRUE;
         } 
         else 
@@ -627,7 +627,7 @@ boolean verbose;
         break;
     }
     case EDIBLEFX_EGG:
-        if (flesh_petrifies(&mons[otmp->corpsenm]))
+        if (otmp->corpsenm >= LOW_PM && flesh_petrifies(&mons[otmp->corpsenm]))
         {
             if (!has_petrification_resistance(mtmp))
             {

@@ -750,7 +750,7 @@ int *fail_reason;
     if (!mon) 
     {
         if (fail_reason)
-            *fail_reason = unique_corpstat(&mons[statue->corpsenm])
+            *fail_reason = statue->corpsenm >= LOW_PM && unique_corpstat(&mons[statue->corpsenm])
                                ? AS_MON_IS_UNIQUE
                                : AS_NO_MON;
         return (struct monst *) 0;
@@ -3699,7 +3699,7 @@ const char *arg;
         if (!uarmg && !Stone_resistance)
             uwepgone();
     }
-    if (uarms && uarms->otyp == CORPSE
+    if (uarms && uarms->otyp == CORPSE && uarms->corpsenm >= LOW_PM
         && touch_petrifies(&mons[uarms->corpsenm]) && !Stone_resistance) {
         pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s touch the %s corpse.", arg, corpse_monster_name(uarms));
         Sprintf(kbuf, "%s corpse", an(corpse_monster_name(uarms)));
@@ -3719,7 +3719,7 @@ boolean byplayer;
 {
     struct obj *mwep = MON_WEP(mon);
 
-    if (mwep && mwep->otyp == CORPSE && touch_petrifies(&mons[mwep->corpsenm])
+    if (mwep && mwep->otyp == CORPSE && mwep->corpsenm >= LOW_PM && touch_petrifies(&mons[mwep->corpsenm])
         && !resists_ston(mon)) {
         if (cansee(mon->mx, mon->my)) {
             pline("%s%s touches %s.", arg ? arg : "",

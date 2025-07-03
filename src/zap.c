@@ -4172,27 +4172,37 @@ struct obj *obj;
     switch (objects[obj->otyp].oc_class) {
     case ROCK_CLASS: /* boulders and statues */
     case TOOL_CLASS: /* figurines */
-        if (obj->otyp == BOULDER) {
+        if (obj->otyp == BOULDER)
+        {
             obj = poly_obj(obj, HUGE_CHUNK_OF_MEAT);
             smell = TRUE;
-        } else if (obj->otyp == STATUE || obj->otyp == FIGURINE) {
-            ptr = &mons[obj->corpsenm];
-            if (is_golem(ptr)) {
+        }
+        else if (obj->otyp == STATUE || obj->otyp == FIGURINE) 
+        {
+            ptr = obj->corpsenm >= LOW_PM ? &mons[obj->corpsenm] : 0;
+            if (ptr && is_golem(ptr))
+            {
                 golem_xform = (ptr != &mons[PM_FLESH_GOLEM]);
-            } else if (vegetarian(ptr)) {
+            }
+            else if (ptr && vegetarian(ptr))
+            {
                 /* Don't animate monsters that aren't flesh */
                 obj = poly_obj(obj, MEATBALL);
                 smell = TRUE;
                 break;
             }
-            if (obj->otyp == STATUE) {
+            if (obj->otyp == STATUE) 
+            {
                 /* animate_statue() forces all golems to become flesh golems */
                 mon = animate_statue(obj, oox, ooy, ANIMATE_SPELL, (int *) 0);
-            } else { /* (obj->otyp == FIGURINE) */
+            }
+            else 
+            { /* (obj->otyp == FIGURINE) */
                 if (golem_xform)
                     ptr = &mons[PM_FLESH_GOLEM];
-                mon = makemon(ptr, oox, ooy, MM_NO_MONSTER_INVENTORY);
-                if (mon) {
+                mon = ptr ? makemon(ptr, oox, ooy, MM_NO_MONSTER_INVENTORY) : 0;
+                if (mon) 
+                {
                     if (costly_spot(oox, ooy)
                         && (carried(obj) ? obj->unpaid : !obj->no_charge)) {
                         shkp = shop_keeper(*in_rooms(oox, ooy, SHOPBASE));
@@ -4212,26 +4222,34 @@ struct obj *obj;
                                   golem_xform ? "turns to flesh and " : "");
                 }
             }
-            if (mon) {
+            if (mon) 
+            {
                 ptr = mon->data;
                 /* this golem handling is redundant... */
                 if (is_golem(ptr) && ptr != &mons[PM_FLESH_GOLEM])
                     (void) newcham(mon, &mons[PM_FLESH_GOLEM], 0, TRUE, FALSE);
-            } else if ((ptr->geno & (G_NOCORPSE | G_UNIQ)) != 0) {
+            }
+            else if (ptr && (ptr->geno & (G_NOCORPSE | G_UNIQ)) != 0)
+            {
                 /* didn't revive but can't leave corpse either */
                 res = 0;
-            } else {
+            }
+            else 
+            {
                 /* unlikely to get here since genociding monsters also
                    sets the G_NOCORPSE flag; drop statue's contents */
                 Strcpy(debug_buf_2, "flesh_to_stone_obj");
-                while ((item = obj->cobj) != 0) {
+                while ((item = obj->cobj) != 0)
+                {
                     bypass_obj(item); /* make stone-to-flesh miss it */
                     obj_extract_self(item);
                     place_object(item, oox, ooy);
                 }
                 obj = poly_obj(obj, CORPSE);
             }
-        } else { /* miscellaneous tool or unexpected rock... */
+        } 
+        else 
+        { /* miscellaneous tool or unexpected rock... */
             res = 0;
         }
         break;

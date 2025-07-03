@@ -257,7 +257,7 @@ boolean the_pfx;
                               CXN_SINGULAR | (the_pfx ? CXN_PFX_THE : 0));
         /* not strictly needed since pname values are capitalized
            and the() is a no-op for them */
-        if (is_mname_proper_name(&mons[food->corpsenm]))
+        if (food->corpsenm >= LOW_PM && is_mname_proper_name(&mons[food->corpsenm]))
             the_pfx = FALSE;
     } else {
         /* the ordinary case */
@@ -394,7 +394,7 @@ struct monst* mtmp;
         return 0;
 
     boolean isyou = mtmp == &youmonst;
-    unsigned nut = (otmp->otyp == CORPSE) ? mons[otmp->corpsenm].cnutrit
+    unsigned nut = (otmp->otyp == CORPSE && otmp->corpsenm >= LOW_PM) ? mons[otmp->corpsenm].cnutrit
         : (otmp->otyp == STATUE) ? (unsigned)((otmp->owt * objects[ROCK].oc_nutrition) / (max(1, otmp->quan * objects[ROCK].oc_weight)))
                       : otmp->globby ? otmp->owt
                          : objects[otmp->otyp].oc_nutrition;
@@ -2349,7 +2349,7 @@ struct obj *otmp;
             retcode = 1;
         }
 
-        if (!mons[otmp->corpsenm].cnutrit) {
+        if (otmp->corpsenm < LOW_PM || !mons[otmp->corpsenm].cnutrit) {
             /* no nutrition: rots away, no message if you passed out */
             if (!retcode)
                 pline_The_ex(ATR_NONE, CLR_MSG_ATTENTION, "corpse rots away completely.");

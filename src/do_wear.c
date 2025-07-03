@@ -483,7 +483,7 @@ boolean voluntary; /* taking gloves off on purpose? */
     if (obj != uwep && obj != uarms)
         return;
 
-    if (touch_petrifies(&mons[obj->corpsenm]) && !Stone_resistance) {
+    if (obj->corpsenm >= LOW_PM && touch_petrifies(&mons[obj->corpsenm]) && !Stone_resistance) {
         You("now wield %s in your bare %s.",
             corpse_xname(obj, (const char *) 0, CXN_ARTICLE),
             makeplural(body_part(HAND)));

@@ -1174,28 +1174,28 @@ extern NEARDATA const struct mythic_power_definition mythic_suffix_powers[MAX_MY
 
 #define oresist_disintegration(o)                                       \
     ((get_obj_oc_flags(o) & O1_DISINTEGRATION_RESISTANT) != 0 || is_obj_indestructible(o) \
-     || ((o)->otyp == CORPSE && pm_resists_disint(&mons[(o)->corpsenm])) \
+     || ((o)->otyp == CORPSE && (o)->corpsenm >= LOW_PM && pm_resists_disint(&mons[(o)->corpsenm])) \
      || obj_resists(o, 2, 50) \
      || is_quest_artifact(o) )
 
 #define oresist_fire(o)                                       \
     ((get_obj_oc_flags(o) & O1_FIRE_RESISTANT) != 0 || is_obj_indestructible(o) \
      || has_obj_mythic_fire_resistance(o) \
-     || ((o)->otyp == CORPSE && pm_resists_fire(&mons[(o)->corpsenm])) \
+     || ((o)->otyp == CORPSE && (o)->corpsenm >= LOW_PM && pm_resists_fire(&mons[(o)->corpsenm])) \
      || obj_resists(o, 0, 0) \
      || is_quest_artifact(o) )
 
 #define oresist_cold(o)                                       \
     ((get_obj_oc_flags(o) & O1_COLD_RESISTANT) != 0 || is_obj_indestructible(o) \
      || has_obj_mythic_cold_resistance(o) \
-     || ((o)->otyp == CORPSE && pm_resists_cold(&mons[(o)->corpsenm])) \
+     || ((o)->otyp == CORPSE && (o)->corpsenm >= LOW_PM && pm_resists_cold(&mons[(o)->corpsenm])) \
      || obj_resists(o, 0, 0) \
      || is_quest_artifact(o) )
 
 #define oresist_elec(o)                                       \
     ((get_obj_oc_flags(o) & O1_LIGHTNING_RESISTANT) != 0 || is_obj_indestructible(o) \
      || has_obj_mythic_shock_resistance(o) \
-     || ((o)->otyp == CORPSE && pm_resists_elec(&mons[(o)->corpsenm])) \
+     || ((o)->otyp == CORPSE && (o)->corpsenm >= LOW_PM && pm_resists_elec(&mons[(o)->corpsenm])) \
      || obj_resists(o, 0, 0) \
      || is_quest_artifact(o) )
 
