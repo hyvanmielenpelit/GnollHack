@@ -2216,14 +2216,17 @@ namespace GnollHackX.Pages.Game
             //    _mapUpdateStopWatch.Stop();
         }
 
-        private double GetAnimationCounterFrameSpeed(MapRefreshRateStyle refreshRateStyle, int auxRefreshRate)
+        private double GetAnimationCounterFrameSpeed(MapRefreshRateStyle refreshRateStyle, bool isMainCanvas)
         {
             double framespeed = 1.0;
-            if (auxRefreshRate > 0)
+            if (!isMainCanvas) /* Auxiliary canvas runs at least at 60 FPS, otherwise the same as the main canvas */
             {
-                int mainFps = UIUtils.GetMainCanvasAnimationFrequency(refreshRateStyle);
-                if (mainFps > 0)
-                    framespeed *= (double)mainFps / (double)auxRefreshRate;
+                //int auxRefreshRate = UIUtils.GetAuxiliaryCanvasAnimationFrequency(refreshRateStyle);
+                //int mainFps = UIUtils.GetMainCanvasAnimationFrequency(refreshRateStyle);
+                //if (mainFps > 0)
+                //    framespeed *= (double)mainFps / (double)auxRefreshRate;
+                if (refreshRateStyle < MapRefreshRateStyle.MapFPS60)
+                    refreshRateStyle = MapRefreshRateStyle.MapFPS60;
             }
 
             switch (refreshRateStyle)
@@ -2299,11 +2302,11 @@ namespace GnollHackX.Pages.Game
         }
 
         private int _subCounter = 0;
-        public long GetAnimationCounterIncrement(MapRefreshRateStyle refreshRateStyle, int auxRefreshRate)
+        public long GetAnimationCounterIncrement(MapRefreshRateStyle refreshRateStyle, bool isMainCanvas)
         {
             long counter_increment = 1;
             int subCounterMax = 0;
-            double framespeed = GetAnimationCounterFrameSpeed(refreshRateStyle, auxRefreshRate);
+            double framespeed = GetAnimationCounterFrameSpeed(refreshRateStyle, isMainCanvas);
             if(PlayingReplay)
             {
                 double rpspeed = GHApp.ReplaySpeed;
@@ -2330,10 +2333,10 @@ namespace GnollHackX.Pages.Game
             return counter_increment;
         }
 
-        public void IncrementCounters(MapRefreshRateStyle refreshRateStyle, int auxRefreshRate)
+        public void IncrementCounters(MapRefreshRateStyle refreshRateStyle, bool isMainCanvas)
         {
             int i;
-            long counter_increment = GetAnimationCounterIncrement(refreshRateStyle, auxRefreshRate);
+            long counter_increment = GetAnimationCounterIncrement(refreshRateStyle, isMainCanvas);
             long maincountervalue;
             //long generalcountervalue;
 
@@ -7196,7 +7199,8 @@ namespace GnollHackX.Pages.Game
             maincountervalue = _mainCounterValue;
             lock (AnimationTimerLock)
             {
-                generalcountervalue = AnimationTimers.general_animation_counter; /* Needs to be inside the lock to make sure that it corresponds to what is in _localAnimationTimers */
+                /* Note that animation timer is updated too frequently so that it does not make sense to use TryEnter; however, since InvalidateSurface is called after IncrementTimers, there should practically never be a conflict here */
+                generalcountervalue = AnimationTimers.general_animation_counter; /* This is inside the lock to make sure that it corresponds to what is in _localAnimationTimers, although this is not strictly necessary */
                 AnimationTimers.CopyTo(_localAnimationTimers);
             }
             //lock (_mainCounterLock)

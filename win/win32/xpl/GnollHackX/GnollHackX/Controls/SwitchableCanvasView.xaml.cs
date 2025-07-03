@@ -605,7 +605,7 @@ namespace GnollHackX.Controls
                 {
                     case CanvasTypes.MainCanvas:
                         {
-                            _gamePage.IncrementCounters(refreshRateStyle, 0);
+                            _gamePage.IncrementCounters(refreshRateStyle, true);
                             _gamePage.UpdateMainCanvas(refreshRateStyle);
                             break;
                         }
@@ -616,15 +616,13 @@ namespace GnollHackX.Controls
                         }
                     case CanvasTypes.MenuCanvas:
                         {
-                            int auxRefreshRate = UIUtils.GetAuxiliaryCanvasAnimationFrequency(refreshRateStyle);
-                            _gamePage.IncrementCounters(refreshRateStyle, auxRefreshRate);
+                            _gamePage.IncrementCounters(refreshRateStyle, false);
                             _gamePage.UpdateMenuCanvas(refreshRateStyle);
                             break;
                         }
                     case CanvasTypes.TextCanvas:
                         {
-                            int auxRefreshRate = UIUtils.GetAuxiliaryCanvasAnimationFrequency(refreshRateStyle);
-                            _gamePage.IncrementCounters(refreshRateStyle, auxRefreshRate);
+                            _gamePage.IncrementCounters(refreshRateStyle, false);
                             _gamePage.UpdateTextCanvas(refreshRateStyle);
                             break;
                         }
