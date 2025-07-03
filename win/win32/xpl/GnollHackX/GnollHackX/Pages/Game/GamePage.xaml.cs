@@ -2326,78 +2326,90 @@ namespace GnollHackX.Pages.Game
             long counter_increment = GetAnimationCounterIncrement();
             long maincountervalue;
             //long generalcountervalue;
-            /* Only general counter is interlocked and can be accessed without a lock, achieving most of the benefits of having not to lock */
-            Interlocked.Add(ref AnimationTimers.general_animation_counter, counter_increment);
-            if (AnimationTimers.general_animation_counter == long.MaxValue)
-                Interlocked.Exchange(ref AnimationTimers.general_animation_counter, 0L);
-            //generalcountervalue = AnimationTimers.general_animation_counter;
 
-            lock (AnimationTimerLock)
+            if (counter_increment > 0)
             {
-                //AnimationTimers.general_animation_counter += counter_increment;
-                //if (AnimationTimers.general_animation_counter < 0)
-                //    AnimationTimers.general_animation_counter = 0;
-
-                if (AnimationTimers.u_action_animation_counter_on)
+                lock (AnimationTimerLock)
                 {
-                    //Interlocked.Add(ref AnimationTimers.u_action_animation_counter, counter_increment);
-                    //if (AnimationTimers.u_action_animation_counter == long.MaxValue)
-                    //    Interlocked.Exchange(ref AnimationTimers.u_action_animation_counter, 0L);
-                    AnimationTimers.u_action_animation_counter += counter_increment;
-                    if (AnimationTimers.u_action_animation_counter < 0)
-                        AnimationTimers.u_action_animation_counter = 0;
-                }
+                    //AnimationTimers.general_animation_counter += counter_increment;
+                    //if (AnimationTimers.general_animation_counter < 0)
+                    //    AnimationTimers.general_animation_counter = 0;
 
-                if (AnimationTimers.m_action_animation_counter_on)
-                {
-                    //Interlocked.Add(ref AnimationTimers.m_action_animation_counter, counter_increment);
-                    //if (AnimationTimers.m_action_animation_counter == long.MaxValue)
-                    //    Interlocked.Exchange(ref AnimationTimers.m_action_animation_counter, 0L);
-                    AnimationTimers.m_action_animation_counter += counter_increment;
-                    if (AnimationTimers.m_action_animation_counter < 0)
-                        AnimationTimers.m_action_animation_counter = 0;
-                }
-
-                if (AnimationTimers.explosion_animation_counter_on)
-                {
-                    //Interlocked.Add(ref AnimationTimers.explosion_animation_counter, counter_increment);
-                    //if (AnimationTimers.explosion_animation_counter == long.MaxValue)
-                    //    Interlocked.Exchange(ref AnimationTimers.explosion_animation_counter, 0L);
-                    AnimationTimers.explosion_animation_counter += counter_increment;
-                    if (AnimationTimers.explosion_animation_counter < 0)
-                        AnimationTimers.explosion_animation_counter = 0;
-                }
-
-                for (i = 0; i < GHConstants.MaxPlayedZapAnimations; i++)
-                {
-                    if (AnimationTimers.zap_animation_counter_on[i])
+                    if (AnimationTimers.u_action_animation_counter_on)
                     {
-                        //Interlocked.Add(ref AnimationTimers.zap_animation_counter[i], counter_increment);
-                        //if (AnimationTimers.zap_animation_counter[i] == long.MaxValue)
-                        //    Interlocked.Exchange(ref AnimationTimers.zap_animation_counter[i], 0L);
-                        AnimationTimers.zap_animation_counter[i] += counter_increment;
-                        if (AnimationTimers.zap_animation_counter[i] < 0)
-                            AnimationTimers.zap_animation_counter[i] = 0;
+                        //Interlocked.Add(ref AnimationTimers.u_action_animation_counter, counter_increment);
+                        //if (AnimationTimers.u_action_animation_counter < 0)
+                        //    Interlocked.Exchange(ref AnimationTimers.u_action_animation_counter, 0L);
+                        if (AnimationTimers.u_action_animation_counter > long.MaxValue - counter_increment)
+                            AnimationTimers.u_action_animation_counter = 0;
+                        else
+                            AnimationTimers.u_action_animation_counter += counter_increment;
                     }
-                }
 
-                for (i = 0; i < GHConstants.MaxPlayedSpecialEffects; i++)
-                {
-                    if (AnimationTimers.special_effect_animation_counter_on[i])
+                    if (AnimationTimers.m_action_animation_counter_on)
                     {
-                        //Interlocked.Add(ref AnimationTimers.special_effect_animation_counter[i], counter_increment);
-                        //if (AnimationTimers.special_effect_animation_counter[i] == long.MaxValue)
-                        //    Interlocked.Exchange(ref AnimationTimers.special_effect_animation_counter[i], 0L);
-                        AnimationTimers.special_effect_animation_counter[i] += counter_increment;
-                        if (AnimationTimers.special_effect_animation_counter[i] < 0)
-                            AnimationTimers.special_effect_animation_counter[i] = 0;
+                        //Interlocked.Add(ref AnimationTimers.m_action_animation_counter, counter_increment);
+                        //if (AnimationTimers.m_action_animation_counter < 0)
+                        //    Interlocked.Exchange(ref AnimationTimers.m_action_animation_counter, 0L);
+                        if (AnimationTimers.m_action_animation_counter > long.MaxValue - counter_increment)
+                            AnimationTimers.m_action_animation_counter = 0;
+                        else
+                            AnimationTimers.m_action_animation_counter += counter_increment;
                     }
+
+                    if (AnimationTimers.explosion_animation_counter_on)
+                    {
+                        //Interlocked.Add(ref AnimationTimers.explosion_animation_counter, counter_increment);
+                        //if (AnimationTimers.explosion_animation_counter < 0)
+                        //    Interlocked.Exchange(ref AnimationTimers.explosion_animation_counter, 0L);
+                        if (AnimationTimers.explosion_animation_counter > long.MaxValue - counter_increment)
+                            AnimationTimers.explosion_animation_counter = 0;
+                        else
+                            AnimationTimers.explosion_animation_counter += counter_increment;
+                    }
+
+                    for (i = 0; i < GHConstants.MaxPlayedZapAnimations; i++)
+                    {
+                        if (AnimationTimers.zap_animation_counter_on[i])
+                        {
+                            //Interlocked.Add(ref AnimationTimers.zap_animation_counter[i], counter_increment);
+                            //if (AnimationTimers.zap_animation_counter[i] < 0)
+                            //    Interlocked.Exchange(ref AnimationTimers.zap_animation_counter[i], 0L);
+                            if (AnimationTimers.zap_animation_counter[i] > long.MaxValue - counter_increment)
+                                AnimationTimers.zap_animation_counter[i] = 0;
+                            else
+                                AnimationTimers.zap_animation_counter[i] += counter_increment;
+                        }
+                    }
+
+                    for (i = 0; i < GHConstants.MaxPlayedSpecialEffects; i++)
+                    {
+                        if (AnimationTimers.special_effect_animation_counter_on[i])
+                        {
+                            //Interlocked.Add(ref AnimationTimers.special_effect_animation_counter[i], counter_increment);
+                            //if (AnimationTimers.special_effect_animation_counter[i] < 0)
+                            //    Interlocked.Exchange(ref AnimationTimers.special_effect_animation_counter[i], 0L);
+                            if (AnimationTimers.special_effect_animation_counter[i] > long.MaxValue - counter_increment)
+                                AnimationTimers.special_effect_animation_counter[i] = 0;
+                            else
+                                AnimationTimers.special_effect_animation_counter[i] += counter_increment;
+                        }
+                    }
+
+                    /* Only general counter is interlocked and can be accessed without a lock, achieving most of the benefits of having not to lock */
+                    /* Moved this inside the lock to make sure that everything in AnimationTimers object has been updated at the same time; however, general_animation_counter can be accessed without lock elsewhere */
+                    if (AnimationTimers.general_animation_counter > long.MaxValue - counter_increment)
+                        Interlocked.Exchange(ref AnimationTimers.general_animation_counter, 0L);
+                    else
+                        Interlocked.Add(ref AnimationTimers.general_animation_counter, counter_increment);
+                    //generalcountervalue = AnimationTimers.general_animation_counter;
                 }
             }
 
-            Interlocked.Increment(ref _mainCounterValue);
-            if (_mainCounterValue == long.MaxValue)
+            if (_mainCounterValue == long.MaxValue) 
                 Interlocked.Exchange(ref _mainCounterValue, 0L);
+            else
+                Interlocked.Increment(ref _mainCounterValue);
             maincountervalue = _mainCounterValue;
             //lock (_mainCounterLock)
             //{
@@ -7172,10 +7184,9 @@ namespace GnollHackX.Pages.Game
 
             long generalcountervalue, maincountervalue;
             maincountervalue = _mainCounterValue;
-            generalcountervalue = AnimationTimers.general_animation_counter; /* Incremented using Interlocked */
             lock (AnimationTimerLock)
             {
-                //generalcountervalue = AnimationTimers.general_animation_counter;
+                generalcountervalue = AnimationTimers.general_animation_counter; /* Needs to be inside the lock to make sure that it corresponds to what is in _localAnimationTimers */
                 AnimationTimers.CopyTo(_localAnimationTimers);
             }
             //lock (_mainCounterLock)
