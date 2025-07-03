@@ -245,5 +245,6 @@ struct mextra {
 #define has_mmonst(mon)  ((mon)->mextra && MMONST(mon))
 #define has_mobj(mon)  ((mon)->mextra && MOBJ(mon))
 #define has_mcorpsenm(mon) ((mon)->mextra && MCORPSENM(mon) != NON_PM)
+#define has_mextra_for_mcorpsenm(mon) ((mon)->mextra)
 
 #endif /* MEXTRA_H */

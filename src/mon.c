@@ -3117,7 +3117,7 @@ struct monst *mtmp2, *mtmp1;
                 copy_oextra(MOBJ(mtmp2), MOBJ(mtmp1));
         }
     }
-    if (has_mcorpsenm(mtmp1))
+    if (has_mextra_for_mcorpsenm(mtmp2) && has_mcorpsenm(mtmp1))
         MCORPSENM(mtmp2) = MCORPSENM(mtmp1);
 }
 

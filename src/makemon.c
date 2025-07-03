@@ -4594,11 +4594,14 @@ register struct monst *mtmp;
     else
         rt = 0; /* roomno < 0 case for GCC_WARN */
 
-    if (OBJ_AT(mx, my)) {
+    if (OBJ_AT(mx, my)) 
+    {
         ap_type = M_AP_OBJECT;
         appear = level.objects[mx][my]->otyp;
         set_mimic_existing_mobj(mtmp, level.objects[mx][my]);
-    } else if (IS_DOOR(typ) || IS_WALL(typ) || typ == SDOOR || typ == SCORR) {
+    } 
+    else if (IS_DOOR(typ) || IS_WALL(typ) || typ == SDOOR || typ == SCORR) 
+    {
         ap_type = M_AP_FURNITURE;
         /*
          *  If there is a wall to the left that connects to this
@@ -4617,25 +4620,38 @@ register struct monst *mtmp;
             appear = Is_really_rogue_level(&u.uz) ? S_hwall : S_hcdoor;
         else
             appear = Is_really_rogue_level(&u.uz) ? S_vwall : S_vcdoor;
-    } else if (level.flags.is_maze_lev && !In_sokoban(&u.uz) && rn2(2)) {
+    } 
+    else if (level.flags.is_maze_lev && !In_sokoban(&u.uz) && rn2(2)) 
+    {
         ap_type = M_AP_OBJECT;
         appear = STATUE;
-    } else if (roomno < 0 && !t_at(mx, my)) {
+    } 
+    else if (roomno < 0 && !t_at(mx, my)) 
+    {
         ap_type = M_AP_OBJECT;
         appear = BOULDER;
-    } else if (rt == ZOO || rt == VAULT) {
+    } 
+    else if (rt == ZOO || rt == VAULT) 
+    {
         ap_type = M_AP_OBJECT;
         appear = GOLD_PIECE;
         set_mimic_new_mobj(mtmp, appear);
-    } else if (rt == DELPHI) {
-        if (rn2(2)) {
+    }
+    else if (rt == DELPHI) 
+    {
+        if (rn2(2))
+        {
             ap_type = M_AP_OBJECT;
             appear = STATUE;
-        } else {
+        }
+        else
+        {
             ap_type = M_AP_FURNITURE;
             appear = S_fountain;
         }
-    } else if (rt == TEMPLE) {
+    } 
+    else if (rt == TEMPLE)
+    {
         ap_type = M_AP_FURNITURE;
         appear = S_altar;
         /*
@@ -4643,16 +4659,22 @@ register struct monst *mtmp;
          * since they shouldn't contain too many mimics anyway...
          */
     }
-    else if (rt == SMITHY) {
+    else if (rt == SMITHY) 
+    {
         ap_type = M_AP_FURNITURE;
         appear = S_anvil;
-    } else if (rt >= SHOPBASE) {
+    } 
+    else if (rt >= SHOPBASE) 
+    {
         s_sym = get_shop_item(rt - SHOPBASE);
-        if (s_sym < 0) {
+        if (s_sym < 0) 
+        {
             ap_type = M_AP_OBJECT;
             appear = -s_sym;
             set_mimic_new_mobj(mtmp, appear);
-        } else {
+        }
+        else
+        {
             if (s_sym == RANDOM_CLASS)
             {
                 roll = rn2((int)sizeof(syms) - 2) + 2;
@@ -4660,49 +4682,62 @@ register struct monst *mtmp;
             }
             goto assign_sym;
         }
-    } else {
+    }
+    else
+    {
         roll = rn2((int)sizeof(syms));
         s_sym = syms[roll];
  assign_sym:
-        if (s_sym == MAX_OBJECT_CLASSES || s_sym == MAX_OBJECT_CLASSES + 1) {
+        if (s_sym == MAX_OBJECT_CLASSES || s_sym == MAX_OBJECT_CLASSES + 1) 
+        {
             ap_type = M_AP_FURNITURE;
             appear = (s_sym == MAX_OBJECT_CLASSES) ? S_upstair : S_dnstair;
-        } else {
+        }
+        else 
+        {
             ap_type = M_AP_OBJECT;
-            if (s_sym == S_MIMIC_DEF) {
+            if (s_sym == S_MIMIC_DEF) 
+            {
                 appear = STRANGE_OBJECT;
-            } else if (s_sym == COIN_CLASS) {
+            }
+            else if (s_sym == COIN_CLASS) 
+            {
                 appear = GOLD_PIECE;
                 set_mimic_new_mobj(mtmp, appear);
-            } else {
+            } 
+            else 
+            {
                 otmp = mkobj((char) s_sym, FALSE, FALSE);
-                appear = otmp->otyp;
-                set_mimic_existing_mobj(mtmp, otmp);
-                if (has_mobj(mtmp))
-                    free_mobj(mtmp);
-                if(!has_mobj(mtmp))
-                    newmobj(mtmp);
-                if (has_mobj(mtmp))
+                if (otmp)
                 {
-                    *MOBJ(mtmp) = *otmp;
-                    MOBJ(mtmp)->oextra = 0;
-                    MOBJ(mtmp)->nobj = 0;
-                    MOBJ(mtmp)->nexthere = 0;
-                    MOBJ(mtmp)->cobj = 0;
-                    MOBJ(mtmp)->o_id = context.ident++;
-                    if (!MOBJ(mtmp)->o_id) /* ident overflowed */
-                        MOBJ(mtmp)->o_id = context.ident++;
-                    if (otmp->oextra)
-                        copy_oextra(MOBJ(mtmp), otmp);
-                    MOBJ(mtmp)->ox = mtmp->mx;
-                    MOBJ(mtmp)->oy = mtmp->my;
-                    MOBJ(mtmp)->where = OBJ_FLOOR;
+                    appear = otmp->otyp;
+                    set_mimic_existing_mobj(mtmp, otmp);
+                    //if (has_mobj(mtmp))
+                    //    free_mobj(mtmp);
+                    //if(!has_mobj(mtmp))
+                    //    newmobj(mtmp);
+                    //if (has_mobj(mtmp))
+                    //{
+                    //    *MOBJ(mtmp) = *otmp;
+                    //    MOBJ(mtmp)->oextra = 0;
+                    //    MOBJ(mtmp)->nobj = 0;
+                    //    MOBJ(mtmp)->nexthere = 0;
+                    //    MOBJ(mtmp)->cobj = 0;
+                    //    MOBJ(mtmp)->o_id = context.ident++;
+                    //    if (!MOBJ(mtmp)->o_id) /* ident overflowed */
+                    //        MOBJ(mtmp)->o_id = context.ident++;
+                    //    if (otmp->oextra)
+                    //        copy_oextra(MOBJ(mtmp), otmp);
+                    //    MOBJ(mtmp)->ox = mtmp->mx;
+                    //    MOBJ(mtmp)->oy = mtmp->my;
+                    //    MOBJ(mtmp)->where = OBJ_FLOOR;
+                    //}
+                    /* make sure container contents are free'ed */
+                    Sprintf(priority_debug_buf_4, "set_mimic_sym: %d", otmp->otyp);
+                    context.suppress_container_deletion_warning = 1;
+                    obfree(otmp, (struct obj*)0);
+                    context.suppress_container_deletion_warning = 0;
                 }
-                /* make sure container contents are free'ed */
-                Sprintf(priority_debug_buf_4, "set_mimic_sym: %d", otmp->otyp);
-                context.suppress_container_deletion_warning = 1;
-                obfree(otmp, (struct obj *) 0);
-                context.suppress_container_deletion_warning = 0;
             }
         }
     }
@@ -4728,7 +4763,7 @@ register struct monst *mtmp;
                 mndx = NON_PM; /* revert to generic egg or empty tin */
         }
         newmcorpsenm(mtmp);
-        if(has_mcorpsenm(mtmp))
+        if(has_mextra_for_mcorpsenm(mtmp))
             MCORPSENM(mtmp) = mndx;
     }
 
