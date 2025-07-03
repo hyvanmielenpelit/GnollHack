@@ -252,7 +252,7 @@ struct obj **obj_p;
         otmp->no_charge = (otmp->otyp == STRANGE_OBJECT && costly_spot(x, y));
     }
 
-    if (otmp && (otmp->otyp == CORPSE || otmp->otyp == STATUE || otmp->otyp == EGG || otmp->otyp == FIGURINE) && otmp->corpsenm <= NON_PM) /* Insurance */
+    if (otmp && (otmp->otyp == CORPSE || otmp->otyp == STATUE || otmp->otyp == FIGURINE) && otmp->corpsenm <= NON_PM) /* Insurance */
         otmp->corpsenm = LOW_PM;
 
     /* if located at adjacent spot, mark it as having been seen up close

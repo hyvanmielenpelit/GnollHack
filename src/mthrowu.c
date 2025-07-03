@@ -698,7 +698,7 @@ boolean verbose;    /* give message(s) even when you can't see what happened */
             }
         }
 
-        if (otmp->otyp == EGG && touch_petrifies(&mons[otmp->corpsenm])) 
+        if (otmp->otyp == EGG && otmp->corpsenm >= LOW_PM && touch_petrifies(&mons[otmp->corpsenm]))
         {
             if (check_magic_cancellation_success(mtmp, 0) || resists_ston(mtmp))
             {
@@ -899,7 +899,7 @@ struct obj *obj;         /* missile (or stack providing it) */
 
             switch (singleobj->otyp) {
             case EGG:
-                if (!touch_petrifies(&mons[singleobj->corpsenm])) {
+                if (singleobj->corpsenm < LOW_PM || !touch_petrifies(&mons[singleobj->corpsenm])) {
                     impossible("monster throwing egg type %d",
                                singleobj->corpsenm);
                     hitu = 0;

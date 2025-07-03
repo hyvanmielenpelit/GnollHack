@@ -2101,7 +2101,7 @@ struct monst *mtmp;
                       touch_petrifies() check catches eggs */
                    || ((otmp->otyp == CORPSE || otmp->otyp == EGG
                         || otmp->globby)
-                       && ((touch_petrifies(&mons[otmp->corpsenm])
+                       && ((otmp->corpsenm >= LOW_PM && touch_petrifies(&mons[otmp->corpsenm])
                             && !resists_ston(mtmp))
                            || (otmp->corpsenm == PM_GREEN_SLIME
                                && !resists_slime(mtmp))))) 

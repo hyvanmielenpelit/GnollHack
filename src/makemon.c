@@ -4754,7 +4754,7 @@ register struct monst *mtmp;
         else
         {
             mndx = rndmonnum();
-            int nocorpse_ndx = (mvitals[mndx].mvflags & MV_NOCORPSE) != 0;
+            int nocorpse_ndx = mndx >= LOW_PM && (mvitals[mndx].mvflags & MV_NOCORPSE) != 0;
 
             if (appear == CORPSE && nocorpse_ndx)
                 mndx = rn1(PM_WIZARD - PM_ARCHAEOLOGIST + 1, PM_ARCHAEOLOGIST);
@@ -4762,6 +4762,8 @@ register struct monst *mtmp;
                 || (appear == TIN && nocorpse_ndx))
                 mndx = NON_PM; /* revert to generic egg or empty tin */
         }
+        if ((appear == STATUE || appear == FIGURINE || appear == CORPSE) && mndx == NON_PM)
+            mndx = LOW_PM; /* Insurance */
         newmcorpsenm(mtmp);
         if(has_mextra_for_mcorpsenm(mtmp))
             MCORPSENM(mtmp) = mndx;

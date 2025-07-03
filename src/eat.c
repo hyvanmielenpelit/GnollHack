@@ -95,7 +95,7 @@ register struct obj *obj;
 
     /* Ghouls only eat non-veggy corpses or eggs (see dogfood()) */
     if (u.umonnum == PM_GHOUL)
-        return (boolean)((obj->otyp == CORPSE
+        return (boolean)((obj->otyp == CORPSE && obj->corpsenm >= LOW_PM
                           && !vegan(&mons[obj->corpsenm]))
                          || (obj->otyp == EGG));
 

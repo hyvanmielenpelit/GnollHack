@@ -3127,7 +3127,7 @@ struct obj *obj;
     case FOOD_CLASS:
         if (typ == CORPSE)
             return (boolean) (((mon->worn_item_flags & W_ARMG) != 0L
-                               && touch_petrifies(&mons[obj->corpsenm]))
+                               && obj->corpsenm >= LOW_PM && touch_petrifies(&mons[obj->corpsenm]))
                               || (!resists_ston(mon)
                                   && cures_stoning(mon, obj, FALSE)));
         if (typ == TIN)
@@ -3135,7 +3135,7 @@ struct obj *obj;
                               && (!resists_ston(mon)
                                   && cures_stoning(mon, obj, TRUE)));
         if (typ == EGG)
-            return (boolean) touch_petrifies(&mons[obj->corpsenm]);
+            return (boolean)(obj->corpsenm >= LOW_PM && touch_petrifies(&mons[obj->corpsenm]));
         break;
     default:
         break;
