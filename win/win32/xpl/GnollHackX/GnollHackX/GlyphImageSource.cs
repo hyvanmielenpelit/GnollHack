@@ -353,8 +353,9 @@ namespace GnollHackX
                 int autodraw = GHApp.Tile2Autodraw[ntile];
                 int anim_frame_idx = 0, main_tile_idx = 0;
                 sbyte mapAnimated = 0;
-                long counter_value = 0;
                 int tile_animation_idx = GHApp.GnollHackService.GetTileAnimationIndexFromGlyph(abs_glyph);
+                
+                long counter_value;
                 if (refPage == null)
                 {
                     counter_value = 0;

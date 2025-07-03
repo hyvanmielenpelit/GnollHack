@@ -80,10 +80,10 @@ namespace GnollHackX.Pages.MainScreen
 
             if (GHApp.DisplayRefreshRate >= 80.0f)
                 list.Add("80 fps");
-            if (GHApp.DisplayRefreshRate >= 90.0f)
-                list.Add("90 fps");
-            if (GHApp.DisplayRefreshRate >= 120.0f)
-                list.Add("120 fps");
+            //if (GHApp.DisplayRefreshRate >= 90.0f)
+            //    list.Add("90 fps");
+            //if (GHApp.DisplayRefreshRate >= 120.0f)
+            //    list.Add("120 fps");
             RefreshRatePicker.ItemsSource = list;
 
             PrimaryGPUCachePicker.ItemsSource = GHApp.GetGPUCacheSizeList(false);

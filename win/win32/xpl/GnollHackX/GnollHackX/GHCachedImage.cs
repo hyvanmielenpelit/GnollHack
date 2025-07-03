@@ -194,7 +194,7 @@ namespace GnollHackX
                     anim = tile < GHApp.Tile2Animation.Length ? GHApp.Tile2Animation[tile] : (short)0;
                 //}
 
-                long _refreshFrequency = (long)Math.Min(60, UIUtils.GetAuxiliaryCanvasAnimationFrequency());
+                long _refreshFrequency = (long)Math.Min(60, UIUtils.GetGeneralAnimationFrequency());
                 if(anim > 0 &&  !_TimerOn)
                 {
                     _StopAnimation = false;

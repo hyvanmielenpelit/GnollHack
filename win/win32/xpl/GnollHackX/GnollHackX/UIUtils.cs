@@ -1034,30 +1034,45 @@ namespace GnollHackX
                 return MapRefreshRateStyle.MapFPS30;
         }
 
-        public static uint GetAuxiliaryCanvasAnimationInterval()
+        public static uint GetAuxiliaryCanvasAnimationInterval(MapRefreshRateStyle mapRefreshRateStyle)
         {
-            if (GHApp.BatterySavingMode)
-                return 16;
+            uint mainInterval = GetMainCanvasAnimationInterval(mapRefreshRateStyle);
+            return Math.Min(16, mainInterval); /* SkiaSharp may not support much better values */
 
-            if (GHApp.DisplayRefreshRate >= 120.0f)
-                return 8;
-            else if (GHApp.DisplayRefreshRate >= 90.0f)
-                return 11;
-            else
-                return 16;
+            //if (GHApp.BatterySavingMode)
+            //    return 16;
+
+            //if (GHApp.DisplayRefreshRate >= 120.0f)
+            //    return 8;
+            //else if (GHApp.DisplayRefreshRate >= 90.0f)
+            //    return 11;
+            //else
+            //    return 16;
         }
 
-        public static int GetAuxiliaryCanvasAnimationFrequency()
+        public static int GetAuxiliaryCanvasAnimationFrequency(MapRefreshRateStyle mapRefreshRateStyle)
         {
-            if (GHApp.BatterySavingMode)
-                return 60;
+            int mainInterval = GetMainCanvasAnimationFrequency(mapRefreshRateStyle);
+            return Math.Max(60, mainInterval); /* SkiaSharp may not support much better values */
+            //if (GHApp.BatterySavingMode)
+            //    return 60;
 
-            if (GHApp.DisplayRefreshRate >= 120.0f)
-                return 120;
-            else if (GHApp.DisplayRefreshRate >= 90.0f)
-                return 90;
-            else
-                return 60;
+            //if (GHApp.DisplayRefreshRate >= 120.0f)
+            //    return 120;
+            //else if (GHApp.DisplayRefreshRate >= 90.0f)
+            //    return 90;
+            //else
+            //    return 60;
+        }
+
+        public static uint GetGeneralAnimationInterval()
+        {
+            return 16; /* SkiaSharp may not support much better values */
+        }
+
+        public static int GetGeneralAnimationFrequency()
+        {
+            return 60; /* SkiaSharp may not support much better values */
         }
 
         public static double GetWindowHideSecs()

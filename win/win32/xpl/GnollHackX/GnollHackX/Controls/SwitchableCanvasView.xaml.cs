@@ -598,35 +598,34 @@ namespace GnollHackX.Controls
 
                 _tickCounter++;
                 _tickCounter = _tickCounter % GHConstants.MaxRefreshRate;
-                int auxRefreshRate = UIUtils.GetAuxiliaryCanvasAnimationFrequency();
-                int mainfps = UIUtils.GetMainCanvasAnimationFrequency(_gamePage.MapRefreshRate);
-                int divisor = Math.Max(1, (int)Math.Round((double)auxRefreshRate / (double)mainfps, 0));
+                MapRefreshRateStyle refreshRateStyle = _gamePage.MapRefreshRate;
+                //int mainfps = UIUtils.GetMainCanvasAnimationFrequency(style);
+                //int divisor = Math.Max(1, (int)Math.Round((double)auxRefreshRate / (double)mainfps, 0));
                 switch (CanvasType)
                 {
                     case CanvasTypes.MainCanvas:
                         {
-                            _gamePage.UpdateMainCanvas();
+                            _gamePage.IncrementCounters(refreshRateStyle, 0);
+                            _gamePage.UpdateMainCanvas(refreshRateStyle);
                             break;
                         }
                     case CanvasTypes.CommandCanvas:
                         {
-                            _gamePage.UpdateCommandCanvas();
+                            _gamePage.UpdateCommandCanvas(refreshRateStyle);
                             break;
                         }
                     case CanvasTypes.MenuCanvas:
                         {
-                            if (_tickCounter % divisor == 0)
-                                _gamePage.IncrementCounters();
-
-                            _gamePage.UpdateMenuCanvas();
+                            int auxRefreshRate = UIUtils.GetAuxiliaryCanvasAnimationFrequency(refreshRateStyle);
+                            _gamePage.IncrementCounters(refreshRateStyle, auxRefreshRate);
+                            _gamePage.UpdateMenuCanvas(refreshRateStyle);
                             break;
                         }
                     case CanvasTypes.TextCanvas:
                         {
-                            if (_tickCounter % divisor == 0)
-                                _gamePage.IncrementCounters();
-
-                            _gamePage.UpdateTextCanvas();
+                            int auxRefreshRate = UIUtils.GetAuxiliaryCanvasAnimationFrequency(refreshRateStyle);
+                            _gamePage.IncrementCounters(refreshRateStyle, auxRefreshRate);
+                            _gamePage.UpdateTextCanvas(refreshRateStyle);
                             break;
                         }
                     default:

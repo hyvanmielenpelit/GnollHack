@@ -729,7 +729,7 @@ namespace GnollHackX
         private bool _textScrollSpeedRecordOn = false;
         private DateTime _textScrollSpeedStamp;
         List<TouchSpeedRecord> _textScrollSpeedRecords = new List<TouchSpeedRecord>();
-        private uint _auxAnimationLength = GHConstants.AuxiliaryCanvasAnimationTime / UIUtils.GetAuxiliaryCanvasAnimationInterval();
+        private uint _auxAnimationLength = GHConstants.AuxiliaryCanvasAnimationTime / UIUtils.GetGeneralAnimationInterval();
         private bool _textScrollSpeedOn = false;
         private bool TextScrollSpeedOn 
         { 
@@ -744,7 +744,7 @@ namespace GnollHackX
                 {
                     Animation commandAnimation = new Animation(v => GeneralAnimationCounter = (long)v, 1, _auxAnimationLength);
                     commandAnimation.Commit(this, "GeneralAnimationCounter", length: GHConstants.AuxiliaryCanvasAnimationTime,
-                        rate: UIUtils.GetAuxiliaryCanvasAnimationInterval(), repeat: () => true);
+                        rate: UIUtils.GetGeneralAnimationInterval(), repeat: () => true);
                 }
                 else
                 {
@@ -1037,7 +1037,7 @@ namespace GnollHackX
                 float canvasheight = CanvasSize.Height;
                 bottomScrollLimit = Math.Min(0, canvasheight - TextHeight);
                 int sgn = Math.Sign(_textScrollSpeed);
-                float delta = speed / UIUtils.GetAuxiliaryCanvasAnimationFrequency(); /* pixels */
+                float delta = speed / UIUtils.GetGeneralAnimationFrequency(); /* pixels */
                 _textScrollOffset += delta;
                 if (_textScrollOffset < 0 && _textScrollOffset - delta > 0)
                 {
@@ -1075,14 +1075,14 @@ namespace GnollHackX
                     if (_textScrollOffset > 0 ? _textScrollSpeed <= 0 : _textScrollSpeed >= 0)
                     {
                         float target_factor = Math.Abs(distance_from_edge) / distance_anchor_distance;
-                        _textScrollSpeed += (-1.0f * deceleration3) * (float)UIUtils.GetAuxiliaryCanvasAnimationInterval() / 1000;
+                        _textScrollSpeed += (-1.0f * deceleration3) * (float)UIUtils.GetGeneralAnimationInterval() / 1000;
                         if (target_factor < 1.0f)
                         {
                             _textScrollSpeed = _textScrollSpeed * target_factor + target_speed * (1.0f - target_factor);
                         }
                     }
                     else
-                        _textScrollSpeed += (-1.0f * (float)sgn * deceleration_per_second - deceleration3) * (float)UIUtils.GetAuxiliaryCanvasAnimationInterval() / 1000;
+                        _textScrollSpeed += (-1.0f * (float)sgn * deceleration_per_second - deceleration3) * (float)UIUtils.GetGeneralAnimationInterval() / 1000;
                 }
                 else
                 {
@@ -1094,7 +1094,7 @@ namespace GnollHackX
                             float deceleration1 = canvasheight * GHConstants.ScrollConstantDeceleration;
                             float deceleration2 = Math.Abs(_textScrollSpeed) * GHConstants.ScrollSpeedDeceleration;
                             float deceleration_per_second = deceleration1 + deceleration2;
-                            _textScrollSpeed += -1.0f * (float)sgn * ((deceleration_per_second * (float)UIUtils.GetAuxiliaryCanvasAnimationInterval()) / 1000);
+                            _textScrollSpeed += -1.0f * (float)sgn * ((deceleration_per_second * (float)UIUtils.GetGeneralAnimationInterval()) / 1000);
                             if (sgn == 0 || (sgn > 0 && _textScrollSpeed < 0) || (sgn < 0 && _textScrollSpeed > 0))
                                 _textScrollSpeed = 0;
                         }

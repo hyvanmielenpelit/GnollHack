@@ -1757,10 +1757,8 @@ namespace GnollHackX.Pages.Game
             _gnhthread.Start();
         }
 
-        public void UpdateMainCanvas()
+        public void UpdateMainCanvas(MapRefreshRateStyle refreshRateStyle)
         {
-            IncrementCounters();
-
             if (RefreshScreen)
             {
                 if (canvasView.ThreadSafeIsVisible)
@@ -1770,7 +1768,7 @@ namespace GnollHackX.Pages.Game
                         float timePassed = 0;
                         if (!_mapUpdateStopWatch.IsRunning)
                         {
-                            timePassed = 1.0f / UIUtils.GetMainCanvasAnimationFrequency(MapRefreshRate);
+                            timePassed = 1.0f / UIUtils.GetMainCanvasAnimationFrequency(refreshRateStyle);
                             _mapUpdateStopWatch.Restart();
                         }
                         else
@@ -1870,11 +1868,11 @@ namespace GnollHackX.Pages.Game
             }
         }
 
-        public void UpdateCommandCanvas()
+        public void UpdateCommandCanvas(MapRefreshRateStyle refreshRateStyle)
         {
             if (MoreCommandsGrid.ThreadSafeIsVisible)
             {
-                float timePassed = 1.0f / UIUtils.GetAuxiliaryCanvasAnimationFrequency();
+                float timePassed = 1.0f / UIUtils.GetAuxiliaryCanvasAnimationFrequency(refreshRateStyle);
                 //float timePassed = 0;
                 //if (!_mapUpdateStopWatch.IsRunning)
                 //{
@@ -1917,7 +1915,7 @@ namespace GnollHackX.Pages.Game
         }
 
         //private int _menuUpdateGCCounter = 0;
-        public void UpdateMenuCanvas()
+        public void UpdateMenuCanvas(MapRefreshRateStyle refreshRateStyle)
         {
             bool refresh;
             lock (_menuDrawOnlyLock)
@@ -1934,7 +1932,7 @@ namespace GnollHackX.Pages.Game
                     {
                         canvasheight = _savedMenuCanvasHeight;
                     }
-                    float timePassed = 1.0f / UIUtils.GetAuxiliaryCanvasAnimationFrequency();
+                    float timePassed = 1.0f / UIUtils.GetAuxiliaryCanvasAnimationFrequency(refreshRateStyle);
                     //float timePassed = 0;
                     //if (!_mapUpdateStopWatch.IsRunning)
                     //{
@@ -1994,14 +1992,14 @@ namespace GnollHackX.Pages.Game
                                 if (_menuScrollOffset > 0 ? _menuScrollSpeed <= 0 : _menuScrollSpeed >= 0)
                                 {
                                     float target_factor = Math.Abs(distance_from_edge) / distance_anchor_distance;
-                                    _menuScrollSpeed += (-1.0f * deceleration3) * (float)UIUtils.GetAuxiliaryCanvasAnimationInterval() / 1000;
+                                    _menuScrollSpeed += (-1.0f * deceleration3) * (float)UIUtils.GetAuxiliaryCanvasAnimationInterval(refreshRateStyle) / 1000;
                                     if (target_factor < 1.0f)
                                     {
                                         _menuScrollSpeed = _menuScrollSpeed * target_factor + target_speed * (1.0f - target_factor);
                                     }
                                 }
                                 else
-                                    _menuScrollSpeed += (-1.0f * (float)sgn * deceleration_per_second - deceleration3) * (float)UIUtils.GetAuxiliaryCanvasAnimationInterval() / 1000;
+                                    _menuScrollSpeed += (-1.0f * (float)sgn * deceleration_per_second - deceleration3) * (float)UIUtils.GetAuxiliaryCanvasAnimationInterval(refreshRateStyle) / 1000;
                             }
                             else
                             {
@@ -2013,7 +2011,7 @@ namespace GnollHackX.Pages.Game
                                         float deceleration1 = canvasheight * GHConstants.ScrollConstantDeceleration;
                                         float deceleration2 = Math.Abs(_menuScrollSpeed) * GHConstants.ScrollSpeedDeceleration;
                                         float deceleration_per_second = deceleration1 + deceleration2;
-                                        _menuScrollSpeed += -1.0f * (float)sgn * ((deceleration_per_second * (float)UIUtils.GetAuxiliaryCanvasAnimationInterval()) / 1000);
+                                        _menuScrollSpeed += -1.0f * (float)sgn * ((deceleration_per_second * (float)UIUtils.GetAuxiliaryCanvasAnimationInterval(refreshRateStyle)) / 1000);
                                         if (sgn == 0 || (sgn > 0 && _menuScrollSpeed < 0) || (sgn < 0 && _menuScrollSpeed > 0))
                                             _menuScrollSpeed = 0;
                                     }
@@ -2043,7 +2041,7 @@ namespace GnollHackX.Pages.Game
             }
         }
 
-        public void UpdateTextCanvas()
+        public void UpdateTextCanvas(MapRefreshRateStyle refreshRateStyle)
         {
             if (TextGrid.ThreadSafeIsVisible)
             {
@@ -2053,7 +2051,7 @@ namespace GnollHackX.Pages.Game
                 {
                     canvasheight = _savedTextCanvasHeight;
                 }
-                float timePassed = 1.0f / UIUtils.GetAuxiliaryCanvasAnimationFrequency();
+                float timePassed = 1.0f / UIUtils.GetAuxiliaryCanvasAnimationFrequency(refreshRateStyle);
                 //float timePassed = 0;
                 //if (!_mapUpdateStopWatch.IsRunning)
                 //{
@@ -2112,14 +2110,14 @@ namespace GnollHackX.Pages.Game
                             if (_textScrollOffset > 0 ? _textScrollSpeed <= 0 : _textScrollSpeed >= 0)
                             {
                                 float target_factor = Math.Abs(distance_from_edge) / distance_anchor_distance;
-                                _textScrollSpeed += (-1.0f * deceleration3) * (float)UIUtils.GetAuxiliaryCanvasAnimationInterval() / 1000;
+                                _textScrollSpeed += (-1.0f * deceleration3) * (float)UIUtils.GetAuxiliaryCanvasAnimationInterval(refreshRateStyle) / 1000;
                                 if (target_factor < 1.0f)
                                 {
                                     _textScrollSpeed = _textScrollSpeed * target_factor + target_speed * (1.0f - target_factor);
                                 }
                             }
                             else
-                                _textScrollSpeed += (-1.0f * (float)sgn * deceleration_per_second - deceleration3) * (float)UIUtils.GetAuxiliaryCanvasAnimationInterval() / 1000;
+                                _textScrollSpeed += (-1.0f * (float)sgn * deceleration_per_second - deceleration3) * (float)UIUtils.GetAuxiliaryCanvasAnimationInterval(refreshRateStyle) / 1000;
                         }
                         else
                         {
@@ -2131,7 +2129,7 @@ namespace GnollHackX.Pages.Game
                                     float deceleration1 = canvasheight * GHConstants.ScrollConstantDeceleration;
                                     float deceleration2 = Math.Abs(_textScrollSpeed) * GHConstants.ScrollSpeedDeceleration;
                                     float deceleration_per_second = deceleration1 + deceleration2;
-                                    _textScrollSpeed += -1.0f * (float)sgn * ((deceleration_per_second * (float)UIUtils.GetAuxiliaryCanvasAnimationInterval()) / 1000);
+                                    _textScrollSpeed += -1.0f * (float)sgn * ((deceleration_per_second * (float)UIUtils.GetAuxiliaryCanvasAnimationInterval(refreshRateStyle)) / 1000);
                                     if (sgn == 0 || (sgn > 0 && _textScrollSpeed < 0) || (sgn < 0 && _textScrollSpeed > 0))
                                         _textScrollSpeed = 0;
                                 }
@@ -2147,7 +2145,6 @@ namespace GnollHackX.Pages.Game
             }
         }
 
-        private uint _auxAnimationLength = GHConstants.AuxiliaryCanvasAnimationTime / UIUtils.GetAuxiliaryCanvasAnimationInterval();
         private void StartMainCanvasAnimation()
         {
             uint mainAnimationLength = GHConstants.MainCanvasAnimationTime / UIUtils.GetMainCanvasAnimationInterval(MapRefreshRate);
@@ -2167,9 +2164,11 @@ namespace GnollHackX.Pages.Game
 
         private void StartCommandCanvasAnimation()
         {
-            Animation commandAnimation = new Animation(v => CommandCanvas.GeneralAnimationCounter = (long)v, 1, _auxAnimationLength);
+            MapRefreshRateStyle refreshRateStyle = MapRefreshRate;
+            uint auxAnimationLength = GHConstants.AuxiliaryCanvasAnimationTime / UIUtils.GetAuxiliaryCanvasAnimationInterval(refreshRateStyle);
+            Animation commandAnimation = new Animation(v => CommandCanvas.GeneralAnimationCounter = (long)v, 1, auxAnimationLength);
             commandAnimation.Commit(CommandCanvas, "GeneralAnimationCounter", length: GHConstants.AuxiliaryCanvasAnimationTime,
-                rate: UIUtils.GetAuxiliaryCanvasAnimationInterval(), repeat: () => true /* MoreCommandsGrid.IsVisible */);
+                rate: UIUtils.GetAuxiliaryCanvasAnimationInterval(refreshRateStyle), repeat: () => true /* MoreCommandsGrid.IsVisible */);
             //_mapUpdateStopWatch.Restart();
         }
 
@@ -2183,9 +2182,11 @@ namespace GnollHackX.Pages.Game
 
         private void StartMenuCanvasAnimation()
         {
-            Animation commandAnimation = new Animation(v => MenuCanvas.GeneralAnimationCounter = (long)v, 1, _auxAnimationLength);
+            MapRefreshRateStyle refreshRateStyle = MapRefreshRate;
+            uint auxAnimationLength = GHConstants.AuxiliaryCanvasAnimationTime / UIUtils.GetAuxiliaryCanvasAnimationInterval(refreshRateStyle);
+            Animation commandAnimation = new Animation(v => MenuCanvas.GeneralAnimationCounter = (long)v, 1, auxAnimationLength);
             commandAnimation.Commit(MenuCanvas, "GeneralAnimationCounter", length: GHConstants.AuxiliaryCanvasAnimationTime, 
-                rate: UIUtils.GetAuxiliaryCanvasAnimationInterval(), repeat: () => true /* MenuGrid.IsVisible */);
+                rate: UIUtils.GetAuxiliaryCanvasAnimationInterval(refreshRateStyle), repeat: () => true /* MenuGrid.IsVisible */);
             //_mapUpdateStopWatch.Restart();
         }
 
@@ -2199,9 +2200,11 @@ namespace GnollHackX.Pages.Game
 
         private void StartTextCanvasAnimation()
         {
-            Animation commandAnimation = new Animation(v => TextCanvas.GeneralAnimationCounter = (long)v, 1, _auxAnimationLength);
+            MapRefreshRateStyle refreshRateStyle = MapRefreshRate;
+            uint auxAnimationLength = GHConstants.AuxiliaryCanvasAnimationTime / UIUtils.GetAuxiliaryCanvasAnimationInterval(refreshRateStyle);
+            Animation commandAnimation = new Animation(v => TextCanvas.GeneralAnimationCounter = (long)v, 1, auxAnimationLength);
             commandAnimation.Commit(TextCanvas, "GeneralAnimationCounter", length: GHConstants.AuxiliaryCanvasAnimationTime, 
-                rate: UIUtils.GetAuxiliaryCanvasAnimationInterval(), repeat: () => true /* TextGrid.IsVisible */);
+                rate: UIUtils.GetAuxiliaryCanvasAnimationInterval(refreshRateStyle), repeat: () => true /* TextGrid.IsVisible */);
             //_mapUpdateStopWatch.Restart();
         }
 
@@ -2213,32 +2216,39 @@ namespace GnollHackX.Pages.Game
             //    _mapUpdateStopWatch.Stop();
         }
 
-        private double GetAnimationCounterFrameSpeed(MapRefreshRateStyle refreshRateStyle)
+        private double GetAnimationCounterFrameSpeed(MapRefreshRateStyle refreshRateStyle, int auxRefreshRate)
         {
             double framespeed = 1.0;
+            if (auxRefreshRate > 0)
+            {
+                int mainFps = UIUtils.GetMainCanvasAnimationFrequency(refreshRateStyle);
+                if (mainFps > 0)
+                    framespeed *= (double)mainFps / (double)auxRefreshRate;
+            }
+
             switch (refreshRateStyle)
             {
                 case MapRefreshRateStyle.MapFPS20:
-                    framespeed = 2.0; /* Animations skip at every other frame at 20fps to get 40fps */
+                    framespeed *= 2.0; /* Animations skip at every other frame at 20fps to get 40fps */
                     break;
                 case MapRefreshRateStyle.MapFPS30:
                     break;
                 case MapRefreshRateStyle.MapFPS40:
                     break;
                 case MapRefreshRateStyle.MapFPS60:
-                    framespeed = 0.5;
+                    framespeed *= 0.5;
                     //subCounterMax = 1; /* Animations proceed at every other frame at 60fps to get 30fps */
                     break;
                 case MapRefreshRateStyle.MapFPS80:
-                    framespeed = 0.5;
+                    framespeed *= 0.5;
                     //subCounterMax = 1; /* Animations proceed at every other frame at 80fps to get 40fps */
                     break;
                 case MapRefreshRateStyle.MapFPS90:
-                    framespeed = 1.0 / 3.0;
+                    framespeed *= 1.0 / 3.0;
                     //subCounterMax = 2; /* Animations proceed at every third frame at 90fps to get 30fps */
                     break;
                 case MapRefreshRateStyle.MapFPS120:
-                    framespeed = 1.0 / 3.0;
+                    framespeed *= 1.0 / 3.0;
                     //subCounterMax = 2; /* Animations proceed at every third frame at 120fps to get 40fps */
                     break;
             }
@@ -2289,11 +2299,11 @@ namespace GnollHackX.Pages.Game
         }
 
         private int _subCounter = 0;
-        public long GetAnimationCounterIncrement()
+        public long GetAnimationCounterIncrement(MapRefreshRateStyle refreshRateStyle, int auxRefreshRate)
         {
             long counter_increment = 1;
             int subCounterMax = 0;
-            double framespeed = GetAnimationCounterFrameSpeed(MapRefreshRate);
+            double framespeed = GetAnimationCounterFrameSpeed(refreshRateStyle, auxRefreshRate);
             if(PlayingReplay)
             {
                 double rpspeed = GHApp.ReplaySpeed;
@@ -2320,10 +2330,10 @@ namespace GnollHackX.Pages.Game
             return counter_increment;
         }
 
-        public void IncrementCounters()
+        public void IncrementCounters(MapRefreshRateStyle refreshRateStyle, int auxRefreshRate)
         {
             int i;
-            long counter_increment = GetAnimationCounterIncrement();
+            long counter_increment = GetAnimationCounterIncrement(refreshRateStyle, auxRefreshRate);
             long maincountervalue;
             //long generalcountervalue;
 
