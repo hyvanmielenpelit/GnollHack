@@ -138,7 +138,7 @@ namespace GnollHackX
             InitBaseButtonBitmaps();
 
 #if GNH_MAUI && ANDROID
-            /* Switch off GPU ona menus once on Android on MAUI if it is already on, until Microsoft fixes SKGLView PaintSurface thread to be on the main thread */
+            /* Switch off GPU for menus one time on MAUI Android if it is currently on */
             if(IsAndroid && !Preferences.Get("GNH420Build57AndroidAuxGPUCheckCompleted", false))
             {
                 if (Preferences.ContainsKey("DisableAuxiliaryGLCanvas")) /* Revert to default, which is now on by default for Android */
