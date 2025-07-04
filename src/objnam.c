@@ -459,6 +459,13 @@ struct obj *obj;
     return xname_flags(obj, CXN_NORMAL);
 }
 
+char*
+xname_bare(obj)
+struct obj* obj;
+{
+    return xname_flags(obj, CXN_BARE);
+}
+
 char *
 xname_flags(obj, cxn_flags)
 register struct obj *obj;
@@ -492,6 +499,7 @@ unsigned cxn_flags; /* bitmask of CXN_xxx values */
     char anamebuf[OBUFSZ] = "";
     boolean makeThelower = FALSE;
     boolean hasnamed = FALSE;
+    boolean bare = (cxn_flags & CXN_BARE) != 0;
 
     buf = next_offset_init_obuf(); /* leave room for "17 -3 " */
 
@@ -784,7 +792,8 @@ unsigned cxn_flags; /* bitmask of CXN_xxx values */
                 Strcat(buf, dn_fullbuf);
         }
 
-        if (typ == FIGURINE && omndx != NON_PM) {
+        if (typ == FIGURINE && omndx != NON_PM && !bare)
+        {
             char anbuf[10]; /* [4] would be enough: 'a','n',' ','\0' */
 
             Sprintf(eos(buf), " of %s%s",
@@ -871,7 +880,7 @@ unsigned cxn_flags; /* bitmask of CXN_xxx values */
 
 
         //Strcpy(buf, actualn_fullbuf);
-        if (typ == TIN && known)
+        if (typ == TIN && known && !bare)
             tin_details(obj, omndx, buf);
         break;
     case COIN_CLASS:
@@ -914,7 +923,7 @@ unsigned cxn_flags; /* bitmask of CXN_xxx values */
         }
         break;
     case ROCK_CLASS:
-        if (typ == STATUE && omndx != NON_PM) 
+        if (typ == STATUE && omndx != NON_PM && !bare) 
         {
             char anbuf[10];
             char monbuf[BUFSZ * 2] = "";
@@ -1141,13 +1150,13 @@ struct obj *obj;
                         /* default is "on" for types which don't use it */
                         : !objects[otyp].oc_uses_known;
     bareobj.quan = 1L;         /* don't want plural */
-    bareobj.corpsenm = NON_PM; /* suppress statue and figurine details */
+    bareobj.corpsenm = obj->corpsenm; // NON_PM; /* suppress statue and figurine details */
     /* but suppressing fruit details leads to "bad fruit #0"
        [perhaps we should force "slime mold" rather than use xname?] */
     if (obj->otyp == SLIME_MOLD)
         bareobj.special_quality = obj->special_quality;
 
-    bufp = distant_name(&bareobj, xname); /* xname(&bareobj) */
+    bufp = distant_name(&bareobj, xname_bare); /* xname(&bareobj) */
     if (!strncmp(bufp, "uncursed ", 9))
         bufp += 9; /* Role_if(PM_PRIEST) */
 
