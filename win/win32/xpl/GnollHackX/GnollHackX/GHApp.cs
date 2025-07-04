@@ -141,8 +141,8 @@ namespace GnollHackX
             /* Switch off GPU ona menus once on Android on MAUI if it is already on, until Microsoft fixes SKGLView PaintSurface thread to be on the main thread */
             if(IsAndroid && !Preferences.Get("GNH420Build57AndroidAuxGPUCheckCompleted", false))
             {
-                if (!Preferences.Get("DisableAuxiliaryGLCanvas", IsDisableAuxGPUDefault))
-                    Preferences.Set("DisableAuxiliaryGLCanvas", true);
+                if (Preferences.ContainsKey("DisableAuxiliaryGLCanvas")) /* Revert to default, which is now on by default for Android */
+                    Preferences.Remove("DisableAuxiliaryGLCanvas");
                 Preferences.Set("GNH420Build57AndroidAuxGPUCheckCompleted", true);
             }
 #endif
