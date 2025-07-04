@@ -4521,6 +4521,9 @@ int otyp;
                 MOBJ(mtmp)->o_id = context.ident++;
             if (otmp->oextra)
                 copy_oextra(MOBJ(mtmp), otmp);
+            MOBJ(mtmp)->timed = 0;
+            MOBJ(mtmp)->lamplit = 0;
+            MOBJ(mtmp)->makingsound = 0;
             MOBJ(mtmp)->ox = mtmp->mx;
             MOBJ(mtmp)->oy = mtmp->my;
             MOBJ(mtmp)->where = OBJ_FLOOR;
@@ -4561,6 +4564,9 @@ struct obj* otmp;
             copy_oextra(MOBJ(mtmp), otmp);
         if (MOBJ(mtmp)->otyp == GOLD_PIECE)
             set_random_gold_amount(MOBJ(mtmp));
+        MOBJ(mtmp)->timed = 0;
+        MOBJ(mtmp)->lamplit = 0;
+        MOBJ(mtmp)->makingsound = 0;
         MOBJ(mtmp)->ox = mtmp->mx;
         MOBJ(mtmp)->oy = mtmp->my;
         MOBJ(mtmp)->where = OBJ_FLOOR;

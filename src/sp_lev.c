@@ -1987,6 +1987,12 @@ struct mkroom *croom;
                                 MOBJ(mtmp)->o_id = context.ident++;
                             if (otmp->oextra)
                                 copy_oextra(MOBJ(mtmp), otmp);
+                            MOBJ(mtmp)->timed = 0;
+                            MOBJ(mtmp)->lamplit = 0;
+                            MOBJ(mtmp)->makingsound = 0;
+                            MOBJ(mtmp)->ox = mtmp->mx;
+                            MOBJ(mtmp)->oy = mtmp->my;
+                            MOBJ(mtmp)->where = OBJ_FLOOR;
                         }
                         /* make sure container contents are free'ed */
                         Sprintf(priority_debug_buf_4, "create_monster: %d", otmp->otyp);

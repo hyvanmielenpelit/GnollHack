@@ -3115,6 +3115,11 @@ struct monst *mtmp2, *mtmp1;
                 MOBJ(mtmp2)->o_id = context.ident++;
             if (MOBJ(mtmp1)->oextra)
                 copy_oextra(MOBJ(mtmp2), MOBJ(mtmp1));
+            MOBJ(mtmp2)->timed = 0;
+            MOBJ(mtmp2)->lamplit = 0;
+            MOBJ(mtmp2)->makingsound = 0;
+            MOBJ(mtmp2)->ox = mtmp2->mx;
+            MOBJ(mtmp2)->oy = mtmp2->my;
         }
     }
     if (has_mextra_for_mcorpsenm(mtmp2) && has_mcorpsenm(mtmp1))
