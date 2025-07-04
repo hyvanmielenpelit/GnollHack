@@ -1216,6 +1216,8 @@ struct obj* memory_obj, *orig_obj;
         if (!dummy->o_id)
             dummy->o_id = context.ident++; /* ident overflowed */
         dummy->timed = 0;
+        dummy->lamplit = 0;
+        dummy->makingsound = 0;
         copy_oextra(dummy, otmp);
         if (has_omid(dummy))
             free_omid(dummy); /* only one association with m_id*/
