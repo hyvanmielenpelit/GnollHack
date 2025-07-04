@@ -1086,11 +1086,13 @@ namespace GnollHackX.Pages.Game
         {
             if (e.PropertyName == nameof(Width))
             {
-                ThreadSafeWidth = Width;
+                //ThreadSafeWidth = Width;
+                Interlocked.Exchange(ref _threadSafeWidth, Width);
             }
             else if (e.PropertyName == nameof(Height))
             {
-                ThreadSafeWidth = Height;
+                //ThreadSafeWidth = Height;
+                Interlocked.Exchange(ref _threadSafeHeight, Height);
             }
         }
 
@@ -20745,8 +20747,8 @@ namespace GnollHackX.Pages.Game
         private readonly object _propertyLock = new object();
         private double _threadSafeWidth = 0;
         private double _threadSafeHeight = 0;
-        public double ThreadSafeWidth { get { lock (_propertyLock) { return _threadSafeWidth; } } private set { lock (_propertyLock) { _threadSafeWidth = value; } } }
-        public double ThreadSafeHeight { get { lock (_propertyLock) { return _threadSafeHeight; } } private set { lock (_propertyLock) { _threadSafeHeight = value; } } }
+        public double ThreadSafeWidth { get { lock (_propertyLock) { return _threadSafeWidth; } } /* private set { lock (_propertyLock) { _threadSafeWidth = value; } } */ }
+        public double ThreadSafeHeight { get { lock (_propertyLock) { return _threadSafeHeight; } } /* private set { lock (_propertyLock) { _threadSafeHeight = value; } } */ }
 
 #if WINDOWS
         private void PageContent_CharacterReceived(Microsoft.UI.Xaml.UIElement sender, Microsoft.UI.Xaml.Input.CharacterReceivedRoutedEventArgs args)
