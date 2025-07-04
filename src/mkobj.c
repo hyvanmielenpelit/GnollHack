@@ -3031,7 +3031,7 @@ struct obj *body;
 #define ROT_AGE (250L)         /* age when corpses rot away */
 
     /* lizards and lichen don't rot */
-    if (body->corpsenm >= LOW_PM && !nonrotting_corpse(body->corpsenm))
+    if (body->corpsenm < LOW_PM || !nonrotting_corpse(body->corpsenm))
     { 
         action = ROT_CORPSE;             /* default action: rot away */
         rot_adjust = in_mklev ? 25 : 10; /* give some variation */

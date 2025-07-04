@@ -1572,8 +1572,8 @@ register int after;
                     if (((likegold && otmp->oclass == COIN_CLASS)
                          || (likeobjs && (index(practical, otmp->oclass))
                              && (otmp->otyp != CORPSE
-                                 || (ptr->mlet == S_NYMPH
-                                     && otmp->corpsenm >= LOW_PM && !is_rider(&mons[otmp->corpsenm]))))
+                                 || (ptr->mlet == S_NYMPH /* Nymph picks up corpses... */
+                                     && (otmp->corpsenm < LOW_PM || !is_rider(&mons[otmp->corpsenm]))))) /* ...but not rider corpses */
                          || (likemagic && index(magical, otmp->oclass))
                          || (uses_items && searches_for_item(mtmp, otmp))
                          || (likerock && otmp->otyp == BOULDER)
@@ -1582,8 +1582,7 @@ register int after;
                          || (conceals && !cansee(otmp->ox, otmp->oy))
                          || (slurps_items(ptr)
                              && !index(indigestion, otmp->oclass)
-                             && !(otmp->otyp == CORPSE
-                                  && otmp->corpsenm >= LOW_PM && touch_petrifies(&mons[otmp->corpsenm]))))
+                             && !(otmp->otyp == CORPSE && otmp->corpsenm >= LOW_PM && touch_petrifies(&mons[otmp->corpsenm]))))
                         && touch_artifact(otmp, mtmp) 
                         && mon_wants_to_pick_up_obj(mtmp, otmp)
                         )

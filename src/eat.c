@@ -2349,7 +2349,8 @@ struct obj *otmp;
             retcode = 1;
         }
 
-        if (otmp->corpsenm < LOW_PM || !mons[otmp->corpsenm].cnutrit) {
+        if (otmp->corpsenm >= LOW_PM ? !mons[otmp->corpsenm].cnutrit : !objects[otmp->otyp].oc_nutrition) 
+        {
             /* no nutrition: rots away, no message if you passed out */
             if (!retcode)
                 pline_The_ex(ATR_NONE, CLR_MSG_ATTENTION, "corpse rots away completely.");
