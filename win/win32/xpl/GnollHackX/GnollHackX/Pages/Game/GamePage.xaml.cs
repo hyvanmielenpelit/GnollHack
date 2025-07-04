@@ -2342,8 +2342,30 @@ namespace GnollHackX.Pages.Game
             long maincountervalue;
             //long generalcountervalue;
 
+            if (_mainCounterValue == long.MaxValue)
+                Interlocked.Exchange(ref _mainCounterValue, 0L);
+            else
+                Interlocked.Increment(ref _mainCounterValue);
+            maincountervalue = _mainCounterValue;
+            //lock (_mainCounterLock)
+            //{
+            //    _mainCounterValue++;
+            //    if (_mainCounterValue < 0)
+            //        _mainCounterValue = 0;
+
+            //    maincountervalue = _mainCounterValue;
+            //}
+
             if (counter_increment > 0)
             {
+                /* Only general counter is interlocked and can be accessed without a lock, achieving most of the benefits of having not to lock */
+                /* Moved this outside of the lock to minimize the time spent in lock; InvalidateSurface is called after IncrementCounters, so AnimationTimers should always be fully updated when PaintSurface is called (and there will be no lock taken because of IncrementCounters) */
+                if (AnimationTimers.general_animation_counter > long.MaxValue - counter_increment)
+                    Interlocked.Exchange(ref AnimationTimers.general_animation_counter, 0L);
+                else
+                    Interlocked.Add(ref AnimationTimers.general_animation_counter, counter_increment);
+                //generalcountervalue = AnimationTimers.general_animation_counter;
+
                 lock (AnimationTimerLock)
                 {
                     //AnimationTimers.general_animation_counter += counter_increment;
@@ -2411,29 +2433,7 @@ namespace GnollHackX.Pages.Game
                         }
                     }
                 }
-
-                /* Only general counter is interlocked and can be accessed without a lock, achieving most of the benefits of having not to lock */
-                /* Moved this outside of the lock to minimize the time spent in lock; InvalidateSurface is called after IncrementCounters, so AnimationTimers should always be fully updated when PaintSurface is called (and there will be no lock taken because of IncrementCounters) */
-                if (AnimationTimers.general_animation_counter > long.MaxValue - counter_increment)
-                    Interlocked.Exchange(ref AnimationTimers.general_animation_counter, 0L);
-                else
-                    Interlocked.Add(ref AnimationTimers.general_animation_counter, counter_increment);
-                //generalcountervalue = AnimationTimers.general_animation_counter;
             }
-
-            if (_mainCounterValue == long.MaxValue) 
-                Interlocked.Exchange(ref _mainCounterValue, 0L);
-            else
-                Interlocked.Increment(ref _mainCounterValue);
-            maincountervalue = _mainCounterValue;
-            //lock (_mainCounterLock)
-            //{
-            //    _mainCounterValue++;
-            //    if (_mainCounterValue < 0)
-            //        _mainCounterValue = 0;
-
-            //    maincountervalue = _mainCounterValue;
-            //}
 
             lock (_mapOffsetLock)
             {

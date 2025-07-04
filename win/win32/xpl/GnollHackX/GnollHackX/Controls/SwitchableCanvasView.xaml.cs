@@ -590,7 +590,7 @@ namespace GnollHackX.Controls
             set { SetValue(GeneralAnimationCounterProperty, value); }
         }
 
-        private long _tickCounter = 0L;
+        //private long _tickCounter = 0L;
 
         protected override void OnPropertyChanged(string propertyName = null)
         {
@@ -601,8 +601,8 @@ namespace GnollHackX.Controls
                 if (!IsVisible || (_parentGrid != null && !_parentGrid.IsVisible))
                     return;
 
-                _tickCounter++;
-                _tickCounter = _tickCounter % GHConstants.MaxRefreshRate;
+                //_tickCounter++;
+                //_tickCounter = _tickCounter % GHConstants.MaxRefreshRate;
                 MapRefreshRateStyle refreshRateStyle = _gamePage.MapRefreshRate;
                 //int mainfps = UIUtils.GetMainCanvasAnimationFrequency(style);
                 //int divisor = Math.Max(1, (int)Math.Round((double)auxRefreshRate / (double)mainfps, 0));
