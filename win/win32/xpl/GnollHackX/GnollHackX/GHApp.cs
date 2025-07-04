@@ -137,17 +137,13 @@ namespace GnollHackX
             InitBaseCachedBitmaps();
             InitBaseButtonBitmaps();
 
-#if false // GNH_MAUI && ANDROID
-            /* Switch off GPU once on Android on MAUI if it is already on, until Microsoft fixes SKGLView PaintSurface thread to be on the main thread */
-            if(IsAndroid && !IsGPUDefault && !Preferences.Get("AndroidGPUCheckCompleted", false))
+#if GNH_MAUI && ANDROID
+            /* Switch off GPU ona menus once on Android on MAUI if it is already on, until Microsoft fixes SKGLView PaintSurface thread to be on the main thread */
+            if(IsAndroid && !Preferences.Get("GNH420Build57AndroidAuxGPUCheckCompleted", false))
             {
-                if (Preferences.Get("UseMainGLCanvas", IsUseMainGPUDefault))
-                    Preferences.Set("UseMainGLCanvas", false);
-                if (Preferences.Get("UseAuxiliaryGLCanvas", IsUseAuxGPUDefault))
-                    Preferences.Set("UseAuxiliaryGLCanvas", false);
                 if (!Preferences.Get("DisableAuxiliaryGLCanvas", IsDisableAuxGPUDefault))
                     Preferences.Set("DisableAuxiliaryGLCanvas", true);
-                Preferences.Set("AndroidGPUCheckCompleted", true);
+                Preferences.Set("GNH420Build57AndroidAuxGPUCheckCompleted", true);
             }
 #endif
 
