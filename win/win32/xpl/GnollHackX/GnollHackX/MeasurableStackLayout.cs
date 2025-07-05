@@ -24,7 +24,7 @@ namespace GnollHackX
                 _threadSafeHeight = Height;
                 _threadSafeX = X;
                 _threadSafeY = Y;
-                _threadSafeIsVisible = IsVisible;
+                _threadSafeIsVisible = IsVisible ? 1 : 0;
                 _threadSafeMargin = Margin;
                 if (Parent == null || !(Parent is IThreadSafeView))
                     _threadSafeParent = null;
@@ -50,23 +50,19 @@ namespace GnollHackX
             }
             else if (e.PropertyName == nameof(Width))
             {
-                //ThreadSafeWidth = Width;
-                Interlocked.Exchange(ref _threadSafeWidth, Width);
+                ThreadSafeWidth = Width;
             }
             else if (e.PropertyName == nameof(Height))
             {
-                //ThreadSafeWidth = Height;
-                Interlocked.Exchange(ref _threadSafeHeight, Height);
+                ThreadSafeHeight = Height;
             }
             else if (e.PropertyName == nameof(X))
             {
-                //ThreadSafeX = X;
-                Interlocked.Exchange(ref _threadSafeX, X);
+                ThreadSafeX = X;
             }
             else if (e.PropertyName == nameof(Y))
             {
-                //ThreadSafeY = Y;
-                Interlocked.Exchange(ref _threadSafeY, Y);
+                ThreadSafeY = Y;
             }
             else if (e.PropertyName == nameof(Margin))
             {
@@ -86,15 +82,15 @@ namespace GnollHackX
         private double _threadSafeHeight = 0;
         private double _threadSafeX = 0;
         private double _threadSafeY = 0;
-        private bool _threadSafeIsVisible = true;
+        private int _threadSafeIsVisible = 1;
         private Thickness _threadSafeMargin = new Thickness();
         WeakReference<IThreadSafeView> _threadSafeParent = null;
 
-        public double ThreadSafeWidth { get {  /* lock (_propertyLock) */  { return _threadSafeWidth; } } /* private set { lock (_propertyLock) { _threadSafeWidth = value; } } */ }
-        public double ThreadSafeHeight { get {  /* lock (_propertyLock) */ { return _threadSafeHeight; } } /* private set { lock (_propertyLock) { _threadSafeHeight = value; } } */ }
-        public double ThreadSafeX { get { /* lock (_propertyLock) */ { return _threadSafeX; } } /* private set { lock (_propertyLock) { _threadSafeX = value; } } */ }
-        public double ThreadSafeY { get { /* lock (_propertyLock) */  { return _threadSafeY; } } /* private set { lock (_propertyLock) { _threadSafeY = value; } } */ }
-        public bool ThreadSafeIsVisible { get { lock (_propertyLock) { return _threadSafeIsVisible; } } private set { lock (_propertyLock) { _threadSafeIsVisible = value; } } }
+        public double ThreadSafeWidth { get {  /* lock (_propertyLock) */  { return _threadSafeWidth; } } private set { Interlocked.Exchange(ref _threadSafeWidth, value); } }
+        public double ThreadSafeHeight { get {  return Interlocked.CompareExchange(ref _threadSafeHeight , 0.0, 0.0); } private set { Interlocked.Exchange(ref _threadSafeHeight, value); } }
+        public double ThreadSafeX { get { return Interlocked.CompareExchange(ref _threadSafeX , 0.0, 0.0); } private set { Interlocked.Exchange(ref _threadSafeX, value); } }
+        public double ThreadSafeY { get { return Interlocked.CompareExchange(ref _threadSafeY , 0.0, 0.0); } private set { Interlocked.Exchange(ref _threadSafeY, value); } }
+        public bool ThreadSafeIsVisible { get { return Interlocked.CompareExchange(ref _threadSafeIsVisible, 0, 0) != 0; } private set { Interlocked.Exchange(ref _threadSafeIsVisible, value ? 1 : 0); } }
         public Thickness ThreadSafeMargin { get { lock (_propertyLock) { return _threadSafeMargin; } } private set { lock (_propertyLock) { _threadSafeMargin = value; } } }
         public WeakReference<IThreadSafeView> ThreadSafeParent { get { lock (_propertyLock) { return _threadSafeParent; } } private set { lock (_propertyLock) { _threadSafeParent = value; } } }
 

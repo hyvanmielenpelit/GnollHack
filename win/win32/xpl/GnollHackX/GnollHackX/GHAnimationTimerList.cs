@@ -43,7 +43,7 @@ namespace GnollHackX
         //    CopyTo(clone);
         //    return clone;
         //}
-        public void CopyTo(GHAnimationTimerList clone)
+        public void CopyTo(GHAnimationTimerList clone, bool copyGeneral)
         {
             clone.u_action_animation_counter_on = u_action_animation_counter_on;
             clone.m_action_animation_counter_on = m_action_animation_counter_on;
@@ -51,7 +51,9 @@ namespace GnollHackX
             zap_animation_counter_on.CopyTo(clone.zap_animation_counter_on, 0);
             special_effect_animation_counter_on.CopyTo(clone.special_effect_animation_counter_on, 0);
 
-            clone.general_animation_counter = general_animation_counter;
+            if (copyGeneral)
+                Interlocked.Exchange(ref clone.general_animation_counter, Interlocked.CompareExchange(ref general_animation_counter, 0L, 0L));
+            
             clone.u_action_animation_counter = u_action_animation_counter;
             clone.m_action_animation_counter = m_action_animation_counter;
             clone.explosion_animation_counter = explosion_animation_counter;

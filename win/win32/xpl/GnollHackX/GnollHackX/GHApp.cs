@@ -263,8 +263,8 @@ namespace GnollHackX
         {
             //lock (_renderingLock)
             {
-                Interlocked.Increment(ref _renderingCounter);
-                if (_renderingCounter == long.MaxValue)
+                long res = Interlocked.Increment(ref _renderingCounter);
+                if (res == long.MaxValue)
                     Interlocked.Exchange(ref _renderingCounter, 0L);
                 //_renderingCounter++;
                 //if (_renderingCounter == long.MaxValue)

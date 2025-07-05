@@ -1086,13 +1086,11 @@ namespace GnollHackX.Pages.Game
         {
             if (e.PropertyName == nameof(Width))
             {
-                //ThreadSafeWidth = Width;
-                Interlocked.Exchange(ref _threadSafeWidth, Width);
+                ThreadSafeWidth = Width;
             }
             else if (e.PropertyName == nameof(Height))
             {
-                //ThreadSafeWidth = Height;
-                Interlocked.Exchange(ref _threadSafeHeight, Height);
+                ThreadSafeHeight = Height;
             }
         }
 
@@ -1692,7 +1690,7 @@ namespace GnollHackX.Pages.Game
 #endif
                                 //lock (AnimationTimerLock)
                                 //{
-                                //    currentCounterValue = AnimationTimers.general_animation_counter;
+                                //    currentCounterValue = Interlocked.CompareExchange(ref AnimationTimers.general_animation_counter, 0L, 0L);;
                                 //}
                             }
                             lock (_fpslock)
@@ -2352,29 +2350,33 @@ namespace GnollHackX.Pages.Game
             long maincountervalue;
             //long generalcountervalue;
 
-            if (_mainCounterValue == long.MaxValue)
+            long res = Interlocked.Increment(ref _mainCounterValue);
+            if (res == long.MaxValue)
+            {
                 Interlocked.Exchange(ref _mainCounterValue, 0L);
-            else
-                Interlocked.Increment(ref _mainCounterValue);
-            maincountervalue = _mainCounterValue;
+                res = 0L;
+            }
+            maincountervalue = res;
             //lock (_mainCounterLock)
             //{
             //    _mainCounterValue++;
             //    if (_mainCounterValue < 0)
             //        _mainCounterValue = 0;
 
-            //    maincountervalue = _mainCounterValue;
+            //    maincountervalue = Interlocked.CompareExchange(ref _mainCounterValue, 0L, 0L);
             //}
 
             if (counter_increment > 0)
             {
                 /* Only general counter is interlocked and can be accessed without a lock, achieving most of the benefits of having not to lock */
                 /* Moved this outside of the lock to minimize the time spent in lock; InvalidateSurface is called after IncrementCounters, so AnimationTimers should always be fully updated when PaintSurface is called (and there will be no lock taken because of IncrementCounters) */
-                if (AnimationTimers.general_animation_counter > long.MaxValue - counter_increment)
+                res = Interlocked.Add(ref AnimationTimers.general_animation_counter, counter_increment);
+                if (res < 0) /* Overflowed */
+                {
                     Interlocked.Exchange(ref AnimationTimers.general_animation_counter, 0L);
-                else
-                    Interlocked.Add(ref AnimationTimers.general_animation_counter, counter_increment);
-                //generalcountervalue = AnimationTimers.general_animation_counter;
+                    res = 0;
+                }
+                //generalcountervalue = Interlocked.CompareExchange(ref AnimationTimers.general_animation_counter, 0L, 0L);;
 
                 lock (AnimationTimerLock)
                 {
@@ -2814,11 +2816,11 @@ namespace GnollHackX.Pages.Game
                 long counter = 0;
                 //lock (AnimationTimerLock)
                 //{
-                //    counter = AnimationTimers.general_animation_counter;
+                //    counter = Interlocked.CompareExchange(ref AnimationTimers.general_animation_counter, 0L, 0L);;
                 //}
                 //lock (_mainCounterLock)
                 {
-                    counter = _mainCounterValue;
+                    counter = Interlocked.CompareExchange(ref _mainCounterValue, 0L, 0L);
                 }
 
                 if (foundanother)
@@ -2841,11 +2843,11 @@ namespace GnollHackX.Pages.Game
             long countervalue;
             //lock (AnimationTimerLock)
             //{
-            //    countervalue = AnimationTimers.general_animation_counter;
+            //    countervalue = Interlocked.CompareExchange(ref AnimationTimers.general_animation_counter, 0L, 0L);;
             //}
             //lock (_mainCounterLock)
             {
-                countervalue = _mainCounterValue;
+                countervalue = Interlocked.CompareExchange(ref _mainCounterValue, 0L, 0L);
             }
             lock (_screenTextLock)
             {
@@ -2861,11 +2863,11 @@ namespace GnollHackX.Pages.Game
             long counter = 0;
             //lock (AnimationTimerLock)
             //{
-            //    counter = AnimationTimers.general_animation_counter;
+            //    counter = Interlocked.CompareExchange(ref AnimationTimers.general_animation_counter, 0L, 0L);;
             //}
             //lock (_mainCounterLock)
             {
-                counter = _mainCounterValue;
+                counter = Interlocked.CompareExchange(ref _mainCounterValue, 0L, 0L);
             }
 
             lock (_conditionTextLock)
@@ -2894,11 +2896,11 @@ namespace GnollHackX.Pages.Game
             long counter = 0;
             //lock (AnimationTimerLock)
             //{
-            //    counter = AnimationTimers.general_animation_counter;
+            //    counter = Interlocked.CompareExchange(ref AnimationTimers.general_animation_counter, 0L, 0L);;
             //}
             //lock (_mainCounterLock)
             {
-                counter = _mainCounterValue;
+                counter = Interlocked.CompareExchange(ref _mainCounterValue, 0L, 0L);
             }
 
             lock (_screenFilterLock)
@@ -2927,11 +2929,11 @@ namespace GnollHackX.Pages.Game
             long counter = 0;
             //lock (AnimationTimerLock)
             //{
-            //    counter = AnimationTimers.general_animation_counter;
+            //    counter = Interlocked.CompareExchange(ref AnimationTimers.general_animation_counter, 0L, 0L);;
             //}
             //lock (_mainCounterLock)
             {
-                counter = _mainCounterValue;
+                counter = Interlocked.CompareExchange(ref _mainCounterValue, 0L, 0L);
             }
 
             lock (_guiEffectLock)
@@ -7200,17 +7202,17 @@ namespace GnollHackX.Pages.Game
             }
 
             long generalcountervalue, maincountervalue;
-            maincountervalue = _mainCounterValue;
+            maincountervalue = Interlocked.CompareExchange(ref _mainCounterValue, 0L, 0L);
             /* Moved general_animation_counter outside of the lock to minimize the time spent in lock;  since InvalidateSurface is called after IncrementCounters and nothing else modifies general_animation_counter, generalcountervalue should be consistent of the copy result below */
-            generalcountervalue = AnimationTimers.general_animation_counter;
+            generalcountervalue = Interlocked.CompareExchange(ref AnimationTimers.general_animation_counter, 0L, 0L);;
             lock (AnimationTimerLock)
             {
                 /* Note that animation timer is updated too frequently so that it does not make sense to use TryEnter; however, since InvalidateSurface is called after IncrementCounters, there should practically never be a conflict here due to IncrementCounters */
-                AnimationTimers.CopyTo(_localAnimationTimers);
+                AnimationTimers.CopyTo(_localAnimationTimers, false);
             }
             //lock (_mainCounterLock)
             //{
-            //    maincountervalue = _mainCounterValue;
+            //    maincountervalue = Interlocked.CompareExchange(ref _mainCounterValue, 0L, 0L);
             //}
 
             try
@@ -15254,11 +15256,11 @@ namespace GnollHackX.Pages.Game
         //    long mainCounter;
         //    lock (AnimationTimerLock)
         //    {
-        //        generalCounter = AnimationTimers.general_animation_counter;
+        //        generalCounter = Interlocked.CompareExchange(ref AnimationTimers.general_animation_counter, 0L, 0L);;
         //    }
         //    lock (_mainCounterLock)
         //    {
-        //        mainCounter = _mainCounterValue;
+        //        mainCounter = Interlocked.CompareExchange(ref _mainCounterValue, 0L, 0L);
         //    }
         //    lock (_mapDataLock)
         //    {
@@ -15325,11 +15327,11 @@ namespace GnollHackX.Pages.Game
         //    long mainCounter;
         //    lock (AnimationTimerLock)
         //    {
-        //        generalCounter = AnimationTimers.general_animation_counter;
+        //        generalCounter = Interlocked.CompareExchange(ref AnimationTimers.general_animation_counter, 0L, 0L);;
         //    }
         //    lock (_mainCounterLock)
         //    {
-        //        mainCounter = _mainCounterValue;
+        //        mainCounter = Interlocked.CompareExchange(ref _mainCounterValue, 0L, 0L);
         //    }
         //    lock (_mapDataLock)
         //    {
@@ -15461,7 +15463,7 @@ namespace GnollHackX.Pages.Game
 
             //lock (_mainCounterLock)
             {
-                curtimervalue = _mainCounterValue;
+                curtimervalue = Interlocked.CompareExchange(ref _mainCounterValue, 0L, 0L);
             }
             lock (_tileSizeLock)
             {
@@ -18036,7 +18038,7 @@ namespace GnollHackX.Pages.Game
                     long counter;
                     //lock (AnimationTimerLock)
                     {
-                        counter = AnimationTimers.general_animation_counter;
+                        counter = Interlocked.CompareExchange(ref AnimationTimers.general_animation_counter, 0L, 0L);;
                     }
                     UIUtils.DrawRandomSparkles(canvas, textPaint.Paint, canvaswidth, canvasheight, scale, counter);
                 }
@@ -18494,8 +18496,8 @@ namespace GnollHackX.Pages.Game
             get 
             { 
                 //lock (_mainCounterLock) 
-                { 
-                    return _mainCounterValue; 
+                {
+                    return Interlocked.CompareExchange(ref _mainCounterValue, 0L, 0L); 
                 } 
             } 
         }
@@ -20814,8 +20816,8 @@ namespace GnollHackX.Pages.Game
         private readonly object _propertyLock = new object();
         private double _threadSafeWidth = 0;
         private double _threadSafeHeight = 0;
-        public double ThreadSafeWidth { get { lock (_propertyLock) { return _threadSafeWidth; } } /* private set { lock (_propertyLock) { _threadSafeWidth = value; } } */ }
-        public double ThreadSafeHeight { get { lock (_propertyLock) { return _threadSafeHeight; } } /* private set { lock (_propertyLock) { _threadSafeHeight = value; } } */ }
+        public double ThreadSafeWidth { get { lock (_propertyLock) { return _threadSafeWidth; } } private set { Interlocked.Exchange(ref _threadSafeWidth, value); } }
+        public double ThreadSafeHeight { get { lock (_propertyLock) { return _threadSafeHeight; } } private set { Interlocked.Exchange(ref _threadSafeHeight, value); } }
 
 #if WINDOWS
         private void PageContent_CharacterReceived(Microsoft.UI.Xaml.UIElement sender, Microsoft.UI.Xaml.Input.CharacterReceivedRoutedEventArgs args)

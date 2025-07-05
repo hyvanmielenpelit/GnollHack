@@ -77,7 +77,7 @@
   </ItemGroup>-->
 
 	<PropertyGroup Condition="$(TargetFramework.Contains('-windows'))">
-		<WindowsPackageType>None</WindowsPackageType>
+		<WindowsPackageType>MSIX</WindowsPackageType>
 		<WindowsAppSDKSelfContained>true</WindowsAppSDKSelfContained>
 		<SelfContained>true</SelfContained>
     <!--<WindowsSdkPackageVersion>10.0.19041.38</WindowsSdkPackageVersion>-->

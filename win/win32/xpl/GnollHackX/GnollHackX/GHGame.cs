@@ -948,7 +948,7 @@ namespace GnollHackX
             long mainCounter;
             //lock (_gamePage.AnimationTimerLock)
             {
-                generalCounter = _gamePage.AnimationTimers.general_animation_counter;
+                generalCounter = Interlocked.CompareExchange(ref _gamePage.AnimationTimers.general_animation_counter, 0L, 0L);;
             }
             mainCounter = _gamePage.MainCounterValue;
             lock (_mapDataBufferLock)
@@ -1503,7 +1503,7 @@ namespace GnollHackX
             long current_counter_value = 0L;
             //lock (_gamePage.AnimationTimerLock)
             {
-                start_counter_value = _gamePage.AnimationTimers.general_animation_counter;
+                start_counter_value = Interlocked.CompareExchange(ref _gamePage.AnimationTimers.general_animation_counter, 0L, 0L);;
             }
 
             do
@@ -1514,7 +1514,7 @@ namespace GnollHackX
                 Thread.Sleep(5);
                 //lock (_gamePage.AnimationTimerLock)
                 {
-                    current_counter_value = _gamePage.AnimationTimers.general_animation_counter;
+                    current_counter_value = Interlocked.CompareExchange(ref _gamePage.AnimationTimers.general_animation_counter, 0L, 0L);;
                 }
             } while (current_counter_value < start_counter_value + (long)intervals);
         }

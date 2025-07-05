@@ -364,7 +364,7 @@ namespace GnollHackX
                 {
                     //lock (refPage.AnimationTimerLock)
                     {
-                        counter_value = refPage.AnimationTimers.general_animation_counter;
+                        counter_value = Interlocked.CompareExchange(ref refPage.AnimationTimers.general_animation_counter, 0L, 0L);;
                     }
                 }
                 ntile = GHApp.GnollHackService.GetAnimatedTile(ntile, tile_animation_idx, (int)animation_play_types.ANIMATION_PLAY_TYPE_ALWAYS, counter_value, out anim_frame_idx, out main_tile_idx, out mapAnimated, ref autodraw);
