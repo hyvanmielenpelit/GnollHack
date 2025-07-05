@@ -1800,10 +1800,10 @@ namespace GnollHackX.Pages.Game
 
                         lock (_messageScrollLock)
                         {
-                            float speed = _messageScrollSpeed; /* pixels per second */
-                            float topScrollLimit = Math.Max(0, -_messageSmallestTop);
                             if (_messageScrollSpeedOn)
                             {
+                                float speed = _messageScrollSpeed; /* pixels per second */
+                                float topScrollLimit = Math.Max(0, -InterlockedMessageSmallestTop);
                                 int sgn = Math.Sign(_messageScrollSpeed);
                                 float delta = speed * timePassed; /* pixels */
                                 _messageScrollOffset += delta;
@@ -1868,6 +1868,7 @@ namespace GnollHackX.Pages.Game
                                         }
                                     }
                                 }
+                                InterlockedMessageScrollOffset = _messageScrollOffset;
                             }
                         }
                     }
@@ -1959,11 +1960,10 @@ namespace GnollHackX.Pages.Game
                     //bool doGC = false;
                     lock (_menuScrollLock)
                     {
-                        float speed = _menuScrollSpeed; /* pixels per second */
-                        float bottomScrollLimit = 0;
-                        bottomScrollLimit = Math.Min(0, canvasheight - TotalMenuHeight);
                         if (_menuScrollSpeedOn)
                         {
+                            float speed = _menuScrollSpeed; /* pixels per second */
+                            float bottomScrollLimit = Math.Min(0, canvasheight - TotalMenuHeight);
                             int sgn = Math.Sign(_menuScrollSpeed);
                             float delta = speed * timePassed;
                             _menuScrollOffset += delta;
@@ -2028,6 +2028,7 @@ namespace GnollHackX.Pages.Game
                                     }
                                 }
                             }
+                            InterlockedMenuScrollOffset = _menuScrollOffset;
                         }
                         //if (!_menuScrollSpeedOn && GHApp.IsAndroid)
                         //{
@@ -2036,7 +2037,6 @@ namespace GnollHackX.Pages.Game
                         //    else
                         //        _menuUpdateGCCounter++;
                         //}
-                        InterlockedMenuScrollOffset = _menuScrollOffset;
                     }
 
                     MainThread.BeginInvokeOnMainThread(() =>
@@ -2078,11 +2078,10 @@ namespace GnollHackX.Pages.Game
                 //}
                 lock (_textScrollLock)
                 {
-                    float speed = _textScrollSpeed; /* pixels per second */
-                    float bottomScrollLimit = 0;
-                    bottomScrollLimit = Math.Min(0, canvasheight - TotalTextHeight);
                     if (_textScrollSpeedOn)
                     {
+                        float speed = _textScrollSpeed; /* pixels per second */
+                        float bottomScrollLimit = bottomScrollLimit = Math.Min(0, canvasheight - TotalTextHeight);
                         int sgn = Math.Sign(_textScrollSpeed);
                         float delta = speed * timePassed; /* pixels */
                         _textScrollOffset += delta;
@@ -2147,6 +2146,7 @@ namespace GnollHackX.Pages.Game
                                 }
                             }
                         }
+                        InterlockedTextScrollOffset = _textScrollOffset;
                     }
                 }
 
@@ -3606,6 +3606,7 @@ namespace GnollHackX.Pages.Game
                 _textScrollSpeed = 0;
                 _textScrollSpeedOn = false;
                 _textScrollSpeedRecords.Clear();
+                InterlockedTextScrollOffset = _textScrollOffset;
             }
 
             TextCanvas.RevertBlackAndWhite = !GHApp.DarkMode;
@@ -9273,7 +9274,7 @@ namespace GnollHackX.Pages.Game
                                             ty = winRect.Top + ghWindow.Padding.Top - textPaint.FontMetrics.Ascent + window_row_idx * height;
                                             if (ForceAllMessages)
                                             {
-                                                ty += _messageScrollOffset;
+                                                ty += InterlockedMessageScrollOffset;
                                             }
                                             if (ty + textPaint.FontMetrics.Descent < 0)
                                             {
@@ -9387,15 +9388,16 @@ namespace GnollHackX.Pages.Game
                                                 j -= msgHistoryItem.WrappedTextRows.Count;
                                             }
                                             float topScrollLimit = Math.Max(0, -localSmallestTop);
-                                            lock (_messageScrollLock)
+                                            InterlockedMessageSmallestTop = localSmallestTop;
+                                            if (InterlockedMessageScrollOffset > topScrollLimit)
                                             {
-                                                _messageSmallestTop = localSmallestTop;
-                                                if (_messageScrollOffset > topScrollLimit)
+                                                lock (_messageScrollLock)
                                                 {
                                                     _messageScrollOffset = topScrollLimit;
                                                     _messageScrollSpeed = 0;
                                                     _messageScrollSpeedOn = false;
                                                     _messageScrollSpeedRecords.Clear();
+                                                    InterlockedMessageScrollOffset = _messageScrollOffset;
                                                 }
                                             }
                                         }
@@ -14031,6 +14033,7 @@ namespace GnollHackX.Pages.Game
             lock (_messageScrollLock)
             {
                 _messageScrollOffset = 0;
+                InterlockedMessageScrollOffset = _messageScrollOffset;
             }
             lock (_menuScrollLock)
             {
@@ -14044,6 +14047,7 @@ namespace GnollHackX.Pages.Game
             lock (_textScrollLock)
             {
                 _textScrollOffset = 0;
+                InterlockedTextScrollOffset = _textScrollOffset;
             }
 
             bool useTwoRows = UIUtils.UseTwoButtonRows(width, height, lInventoryButton.GridWidth, usingDesktopButtons, usingSimpleCmdLayout);
@@ -14259,9 +14263,13 @@ namespace GnollHackX.Pages.Game
         private object _savedSender = null;
         private SKTouchEventArgs _savedEventArgs = null;
 
+
+        private float _interlockedMessageScrollOffset = 0;
+        private float InterlockedMessageScrollOffset { get { return _interlockedMessageScrollOffset; } set { Interlocked.Exchange(ref _interlockedMessageScrollOffset, value); } }
+        public float _interlockedMessageSmallestTop = 0;
+        private float InterlockedMessageSmallestTop { get { return _interlockedMessageSmallestTop; } set { Interlocked.Exchange(ref _interlockedMessageSmallestTop, value); } }
         private readonly object _messageScrollLock = new object();
         public float _messageScrollOffset = 0;
-        public float _messageSmallestTop = 0;
         private float _messageScrollSpeed = 0; /* pixels per second */
         private bool _messageScrollSpeedRecordOn = false;
         private DateTime _messageScrollSpeedStamp;
@@ -14455,7 +14463,7 @@ namespace GnollHackX.Pages.Game
                                                     }
                                                     lock (_messageScrollLock)
                                                     {
-                                                        float topScrollLimit = Math.Max(0, -_messageSmallestTop);
+                                                        float topScrollLimit = Math.Max(0, -InterlockedMessageSmallestTop);
                                                         float stretchLimit = GHConstants.ScrollStretchLimit * canvasheight;
                                                         float stretchConstant = GHConstants.ScrollConstantStretch * canvasheight;
                                                         float adj_factor = 1.0f;
@@ -14518,6 +14526,7 @@ namespace GnollHackX.Pages.Game
                                                             _messageScrollSpeed = totaldistance / Math.Max(0.001f, totalsecs);
                                                             _messageScrollSpeedOn = false;
                                                         }
+                                                        InterlockedMessageScrollOffset = _messageScrollOffset;
                                                     }
                                                 }
                                             }
@@ -14640,7 +14649,7 @@ namespace GnollHackX.Pages.Game
                                         }
                                         lock (_messageScrollLock)
                                         {
-                                            float topScrollLimit = Math.Max(0, -_messageSmallestTop);
+                                            float topScrollLimit = Math.Max(0, -InterlockedMessageSmallestTop);
                                             long lastrecord_ms = 0;
                                             if (_messageScrollSpeedRecords.Count > 0)
                                             {
@@ -14773,7 +14782,7 @@ namespace GnollHackX.Pages.Game
                             }
                             lock (_messageScrollLock)
                             {
-                                float topScrollLimit = Math.Max(0, -_messageSmallestTop);
+                                float topScrollLimit = Math.Max(0, -InterlockedMessageSmallestTop);
                                 if (_messageScrollOffset > topScrollLimit || _messageScrollOffset < 0)
                                 {
                                     long lastrecord_ms = 0;
@@ -15014,9 +15023,9 @@ namespace GnollHackX.Pages.Game
                 if (canvasheight <= 0)
                     return;
 
-                lock (_menuScrollLock)
+                lock (_messageScrollLock)
                 {
-                    float topScrollLimit = Math.Max(0, -_messageSmallestTop);
+                    float topScrollLimit = Math.Max(0, -InterlockedMessageSmallestTop);
                     float scrollAmount = (canvasheight * delta) / (10 * 120);
                     _messageScrollOffset += scrollAmount;
 
@@ -15029,7 +15038,7 @@ namespace GnollHackX.Pages.Game
                     _messageScrollSpeed = 0;
                     _messageScrollSpeedRecordOn = false;
                     _messageScrollSpeedRecords.Clear();
-                    InterlockedMenuScrollOffset = _menuScrollOffset;
+                    InterlockedMessageScrollOffset = _messageScrollOffset;
                 }
             }
         }
@@ -17799,6 +17808,7 @@ namespace GnollHackX.Pages.Game
                     _textScrollOffset = 0;
                     _textScrollSpeed = 0;
                     _textScrollSpeedOn = false;
+                    InterlockedTextScrollOffset = _textScrollOffset;
                 }
                 StopTextCanvasAnimation();
                 RefreshScreen = true;
@@ -17928,11 +17938,29 @@ namespace GnollHackX.Pages.Game
             }
         }
 
-        private readonly object _totalTextHeightLock = new object();
+        //private readonly object _totalTextHeightLock = new object();
         private float _totalTextHeight = 0;
-        private float TotalTextHeight { get { lock (_totalTextHeightLock) { return _totalTextHeight; } } set { lock (_totalTextHeightLock) { _totalTextHeight = value; } } }
+        private float TotalTextHeight 
+        { 
+            get 
+            { 
+                //lock (_totalTextHeightLock) 
+                //{ 
+                    return _totalTextHeight; 
+                //} 
+            } 
+            set 
+            {
+                //lock (_totalTextHeightLock)
+                //{ 
+                //    _totalTextHeight = value; 
+                //} 
+                Interlocked.Exchange(ref _totalTextHeight, value);
+            } 
+        }
 
-
+        private float _interlockedTextScrollOffset = 0;
+        private float InterlockedTextScrollOffset { get { return _interlockedTextScrollOffset; } set { Interlocked.Exchange(ref _interlockedTextScrollOffset, value); } }
         private readonly object _textScrollLock = new object();
         private float _textScrollOffset = 0;
         private float _textScrollSpeed = 0; /* pixels per second */
@@ -18018,11 +18046,11 @@ namespace GnollHackX.Pages.Game
                 textPaint.Style = SKPaintStyle.Fill;
                 float minrowheight = textPaint.FontSpacing;
                 float leftinnerpadding = 5;
-                float curmenuoffset = 0;
-                lock (_textScrollLock)
-                {
-                    curmenuoffset = _textScrollOffset;
-                }
+                float curmenuoffset = InterlockedTextScrollOffset;
+                //lock (_textScrollLock)
+                //{
+                //    curmenuoffset = _textScrollOffset;
+                //}
                 y += curmenuoffset;
                 double canvasmaxwidth = TextCanvas.GHWindow != null ? TextCanvas.GHWindow.TextWindowMaximumWidth : GHConstants.DefaultTextWindowMaxWidth;
                 double menuwidth = Math.Max(1.0, Math.Min(canvasUIwidth, canvasmaxwidth) * customScale);
@@ -18257,6 +18285,7 @@ namespace GnollHackX.Pages.Game
                                                         _textScrollSpeed = totaldistance / Math.Max(0.001f, totalsecs);
                                                         _textScrollSpeedOn = false;
                                                     }
+                                                    InterlockedTextScrollOffset = _textScrollOffset;
                                                 }
                                                 TextTouchDictionary[e.Id].Location = e.Location;
                                                 _textTouchMoved = true;
@@ -18432,6 +18461,7 @@ namespace GnollHackX.Pages.Game
                     _textScrollSpeed = 0;
                     _textScrollSpeedRecordOn = false;
                     _textScrollSpeedRecords.Clear();
+                    InterlockedTextScrollOffset = _textScrollOffset;
                 }
             }
         }
@@ -19029,6 +19059,7 @@ namespace GnollHackX.Pages.Game
                 _messageScrollSpeed = 0;
                 _messageScrollSpeedOn = false;
                 _messageScrollSpeedRecords.Clear();
+                InterlockedMessageScrollOffset = _messageScrollOffset;
             }
             MainThread.BeginInvokeOnMainThread(() =>
             {

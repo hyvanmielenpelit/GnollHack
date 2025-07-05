@@ -245,6 +245,7 @@ namespace GnollHackX
                 _textScrollSpeedRecordOn = false;
                 _textScrollSpeedRecords.Clear();
                 _textScrollOffset = 0;
+                InterlockedTextScrollOffset = _textScrollSpeed;
             }
             if (InitiallyRolledDown)
                 CalculateInitialYPos = true;
@@ -589,17 +590,19 @@ namespace GnollHackX
                         CalculateInitialYPos = false;
                         float textHeight = textRows.Length * textPaint.FontSpacing;
                         float bottomScrollLimit = Math.Min(0, canvasheight - textHeight);
-                        lock (_textScrollLock)
-                        {
-                            usedTextOffset = _textScrollOffset = bottomScrollLimit;
-                        }
+                        usedTextOffset = InterlockedTextScrollOffset = bottomScrollLimit;
+                        //lock (_textScrollLock)
+                        //{
+                        //    usedTextOffset = _textScrollOffset = bottomScrollLimit;
+                        //}
                     }
                     else
                     {
-                        lock (_textScrollLock)
-                        {
-                            usedTextOffset = _textScrollOffset;
-                        }
+                        usedTextOffset = InterlockedTextScrollOffset;
+                        //lock (_textScrollLock)
+                        //{
+                        //    usedTextOffset = _textScrollOffset;
+                        //}
                     }
 
                     y += usedTextOffset;
@@ -723,6 +726,9 @@ namespace GnollHackX
         }
 
         private ConcurrentDictionary<long, TouchEntry> TouchDictionary = new ConcurrentDictionary<long, TouchEntry>();
+
+        private float _interlockedTextScrollOffset = 0;
+        private float InterlockedTextScrollOffset { get { return _interlockedTextScrollOffset; } set { Interlocked.Exchange(ref _interlockedTextScrollOffset, value); } }
         private readonly object _textScrollLock = new object();
         private float _textScrollOffset = 0;
         private float _textScrollSpeed = 0; /* pixels per second */
@@ -839,7 +845,7 @@ namespace GnollHackX
                                             /* Do not scroll within button press time threshold, unless large move */
                                             long millisecs_elapsed = (now.Ticks - entry.PressTime.Ticks) / TimeSpan.TicksPerMillisecond;
 
-                                            lock (_textScrollLock)
+                                            //lock (_textScrollLock)
                                             {
                                                 float stretchLimit = GHConstants.ScrollStretchLimit * canvasheight;
                                                 float stretchConstant = GHConstants.ScrollConstantStretch * canvasheight;
@@ -903,6 +909,7 @@ namespace GnollHackX
                                                     _textScrollSpeed = totaldistance / Math.Max(0.001f, totalsecs);
                                                     TextScrollSpeedOn = false;
                                                 }
+                                                InterlockedTextScrollOffset = _textScrollOffset;
                                             }
                                             TouchDictionary[e.Id].Location = e.Location;
                                             _touchMoved = true;
@@ -1100,6 +1107,7 @@ namespace GnollHackX
                         }
                     }
                 }
+                InterlockedTextScrollOffset = _textScrollOffset;
             }
         }
 
@@ -1150,6 +1158,7 @@ namespace GnollHackX
                         _textScrollSpeed = 0;
                         TextScrollSpeedOn = false;
                     }
+                    InterlockedTextScrollOffset = _textScrollOffset;
                 }
                 InvalidateSurface();
             }
