@@ -16135,7 +16135,7 @@ namespace GnollHackX.Pages.Game
                             break;
                     }
 
-                    lock (_refreshMenuRowCountLock)
+                    //lock (_refreshMenuRowCountLock)
                     {
                         int idx = -1;
                         foreach (GHMenuItem mi in referenceCanvasView.MenuItems)
