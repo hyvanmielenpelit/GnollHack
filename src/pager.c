@@ -184,7 +184,7 @@ struct obj **obj_p;
             otmp = MOBJ(mtmp);
             otmp->ox = x;
             otmp->oy = y;
-            otmp->where = OBJ_FLOOR;
+            //otmp->where = OBJ_FLOOR;
         }
         else
             otmp = 0;
@@ -241,7 +241,6 @@ struct obj **obj_p;
             otmp->speflags |= SPEFLAGS_FEMALE;
             if(glyph < 0)
                 otmp->speflags |= SPEFLAGS_FACING_RIGHT;
-
         }
 
         if (otmp->otyp == LEASH)

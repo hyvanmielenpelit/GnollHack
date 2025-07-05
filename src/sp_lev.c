@@ -1966,38 +1966,39 @@ struct mkroom *croom;
                 } 
                 else
                 {
-                    mtmp->m_ap_type = M_AP_OBJECT;
-                    mtmp->mappearance = i;
-                    struct obj* otmp = mksobj(i, TRUE, FALSE, 0);
-                    if (otmp)
-                    {
-                        if (has_mobj(mtmp))
-                            free_mobj(mtmp);
-                        if (!has_mobj(mtmp))
-                            newmobj(mtmp);
-                        if (has_mobj(mtmp))
-                        {
-                            *MOBJ(mtmp) = *otmp;
-                            MOBJ(mtmp)->oextra = 0;
-                            MOBJ(mtmp)->nobj = 0;
-                            MOBJ(mtmp)->nexthere = 0;
-                            MOBJ(mtmp)->cobj = 0;
-                            MOBJ(mtmp)->o_id = context.ident++;
-                            if (!MOBJ(mtmp)->o_id) /* ident overflowed */
-                                MOBJ(mtmp)->o_id = context.ident++;
-                            if (otmp->oextra)
-                                copy_oextra(MOBJ(mtmp), otmp);
-                            MOBJ(mtmp)->timed = 0;
-                            MOBJ(mtmp)->lamplit = 0;
-                            MOBJ(mtmp)->makingsound = 0;
-                            MOBJ(mtmp)->ox = mtmp->mx;
-                            MOBJ(mtmp)->oy = mtmp->my;
-                            MOBJ(mtmp)->where = OBJ_FLOOR;
-                        }
-                        /* make sure container contents are free'ed */
-                        Sprintf(priority_debug_buf_4, "create_monster: %d", otmp->otyp);
-                        obfree(otmp, (struct obj*)0);
-                    }
+                    set_mimic_new_mobj(mtmp, i);
+                    //mtmp->m_ap_type = M_AP_OBJECT;
+                    //mtmp->mappearance = i;
+                    //struct obj* otmp = mksobj(i, TRUE, FALSE, 0);
+                    //if (otmp)
+                    //{
+                    //    if (has_mobj(mtmp))
+                    //        free_mobj(mtmp);
+                    //    if (!has_mobj(mtmp))
+                    //        newmobj(mtmp);
+                    //    if (has_mobj(mtmp))
+                    //    {
+                    //        *MOBJ(mtmp) = *otmp;
+                    //        MOBJ(mtmp)->oextra = 0;
+                    //        MOBJ(mtmp)->nobj = 0;
+                    //        MOBJ(mtmp)->nexthere = 0;
+                    //        MOBJ(mtmp)->cobj = 0;
+                    //        MOBJ(mtmp)->o_id = context.ident++;
+                    //        if (!MOBJ(mtmp)->o_id) /* ident overflowed */
+                    //            MOBJ(mtmp)->o_id = context.ident++;
+                    //        if (otmp->oextra)
+                    //            copy_oextra(MOBJ(mtmp), otmp);
+                    //        MOBJ(mtmp)->timed = 0;
+                    //        MOBJ(mtmp)->lamplit = 0;
+                    //        MOBJ(mtmp)->makingsound = 0;
+                    //        MOBJ(mtmp)->ox = mtmp->mx;
+                    //        MOBJ(mtmp)->oy = mtmp->my;
+                    //        //MOBJ(mtmp)->where = OBJ_FLOOR;
+                    //    }
+                    //    /* make sure container contents are free'ed */
+                    //    Sprintf(priority_debug_buf_4, "create_monster: %d", otmp->otyp);
+                    //    obfree(otmp, (struct obj*)0);
+                    //}
 
                     /* try to avoid placing mimic boulder on a trap */
                     if (i == BOULDER && m->x < 0

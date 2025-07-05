@@ -1826,10 +1826,13 @@ register struct monst *mtmp;
         if (!rn2(2))
         {
             otmp = mksobj(rn2(4) ? TALLOW_CANDLE : WAX_CANDLE, TRUE, FALSE, FALSE);
-            otmp->quan = 1;
-            otmp->owt = weight(otmp);
-            if (!mpickobj(mtmp, otmp) && !otmp->lamplit && !levl[mtmp->mx][mtmp->my].lit)
-                begin_burn(otmp, FALSE);
+            if (otmp)
+            {
+                otmp->quan = 1;
+                otmp->owt = weight(otmp);
+                if (!mpickobj(mtmp, otmp) && !otmp->lamplit && !levl[mtmp->mx][mtmp->my].lit)
+                    begin_burn(otmp, FALSE);
+            }
         }
 
         if (!rn2(2))
@@ -2176,10 +2179,13 @@ register struct monst *mtmp;
         if (!rn2((In_mines(&u.uz) && in_mklev) ? 20 : 60)) 
         {
             otmp = mksobj(rn2(4) ? TALLOW_CANDLE : WAX_CANDLE, TRUE, FALSE, FALSE);
-            otmp->quan = 1;
-            otmp->owt = weight(otmp);
-            if (!mpickobj(mtmp, otmp) && !otmp->lamplit && !levl[mtmp->mx][mtmp->my].lit)
-                begin_burn(otmp, FALSE);
+            if (otmp)
+            {
+                otmp->quan = 1;
+                otmp->owt = weight(otmp);
+                if (!mpickobj(mtmp, otmp) && !otmp->lamplit && !levl[mtmp->mx][mtmp->my].lit)
+                    begin_burn(otmp, FALSE);
+            }
         }
         break;
     case S_OGRE:
@@ -4503,8 +4509,6 @@ int otyp;
     struct obj* otmp = mksobj(otyp, TRUE, FALSE, 0);
     if (otmp)
     {
-        if (otyp == GOLD_PIECE)
-            set_random_gold_amount(otmp);
         if (has_mobj(mtmp))
             free_mobj(mtmp);
         if (!has_mobj(mtmp))
@@ -4526,7 +4530,9 @@ int otyp;
             MOBJ(mtmp)->makingsound = 0;
             MOBJ(mtmp)->ox = mtmp->mx;
             MOBJ(mtmp)->oy = mtmp->my;
-            MOBJ(mtmp)->where = OBJ_FLOOR;
+            //MOBJ(mtmp)->where = OBJ_FLOOR;
+            if (MOBJ(mtmp)->otyp == GOLD_PIECE)
+                set_random_gold_amount(MOBJ(mtmp));
         }
         /* make sure container contents are free'ed */
         Sprintf(priority_debug_buf_4, "set_mimic_new_mobj: %d", otmp->otyp);
@@ -4562,14 +4568,14 @@ struct obj* otmp;
             MOBJ(mtmp)->o_id = context.ident++;
         if (otmp->oextra)
             copy_oextra(MOBJ(mtmp), otmp);
-        if (MOBJ(mtmp)->otyp == GOLD_PIECE)
-            set_random_gold_amount(MOBJ(mtmp));
         MOBJ(mtmp)->timed = 0;
         MOBJ(mtmp)->lamplit = 0;
         MOBJ(mtmp)->makingsound = 0;
         MOBJ(mtmp)->ox = mtmp->mx;
         MOBJ(mtmp)->oy = mtmp->my;
-        MOBJ(mtmp)->where = OBJ_FLOOR;
+        //MOBJ(mtmp)->where = OBJ_FLOOR;
+        if (MOBJ(mtmp)->otyp == GOLD_PIECE)
+            set_random_gold_amount(MOBJ(mtmp));
     }
 }
 
@@ -4986,6 +4992,7 @@ struct monst* mon_mmonst;
         mtmp2->nmon = (struct monst*)0;
         //mtmp2->data = (struct permonst *) 0; /* This sounds very dangerous to set to zero */
         mtmp2->minvent = (struct obj*)0;
+        mtmp2->mw = (struct obj*)0;
         if (mon_mmonst->mextra)
             copy_mextra(mtmp2, mon_mmonst);
     }
@@ -5008,6 +5015,9 @@ boolean copyof;
         if (copyof) {
             mnew = newmonst();
             *mnew = *mon_mmonst;
+            mnew->m_id = context.ident++;
+            if (!mnew->m_id) /* ident overflowed */
+                mnew->m_id = context.ident++;
             mnew->mextra = (struct mextra*)0;
             if (mon_mmonst->mextra)
                 copy_mextra(mnew, mon_mmonst);
@@ -5039,11 +5049,8 @@ struct obj* obj_mobj;
         obj2->oextra = (struct oextra*)0;
 
         /* invalidate pointers */
-        /* m_id is needed to know if this is a revived quest leader */
-        /* but m_id must be cleared when loading bones */
         obj2->nobj = (struct obj*)0;
         obj2->nexthere = (struct obj*)0;
-        //mtmp2->data = (struct permonst *) 0; /* This sounds very dangerous to set to zero */
         obj2->cobj = (struct obj*)0;
         if (obj_mobj->oextra)
             copy_oextra(obj2, obj_mobj);
@@ -5067,6 +5074,9 @@ boolean copyof;
         if (copyof) {
             onew = newobj();
             *onew = *obj_mobj;
+            onew->o_id = context.ident++;
+            if (!onew->o_id) /* ident overflowed */
+                onew->o_id = context.ident++;
             onew->oextra = (struct oextra*)0;
             if (obj_mobj->oextra)
                 copy_oextra(onew, obj_mobj);
