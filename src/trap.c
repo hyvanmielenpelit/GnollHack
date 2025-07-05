@@ -7525,7 +7525,7 @@ lava_effects()
                     remove_worn_item(obj, TRUE);
                 if (usurvive)
                 {
-                    if (obj->oclass == FOOD_CLASS || obj->oclass == REAGENT_CLASS) /* Glass */
+                    if (obj->oclass == FOOD_CLASS || obj->oclass == REAGENT_CLASS)
                         pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s burnt to ashes!", Yobjnam2(obj, "are"));
                     else if (is_fragile(obj)) /* Glass */
                         pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s!", Yobjnam2(obj, "melt"));

@@ -605,6 +605,8 @@ namespace GnollHackX
 
                         _mapDataMaster[x, y].Layers.glyph = GHApp.UnexploredGlyph;
                         _mapDataMaster[x, y].Layers.bkglyph = GHApp.NoGlyph;
+                        ClearAllObjectDataUnlocked(x, y);
+                        ClearEngravingDataUnlocked(x, y);
 
                         _mapDataCurrent[x, y] = _mapDataMaster[x, y];
                     }
