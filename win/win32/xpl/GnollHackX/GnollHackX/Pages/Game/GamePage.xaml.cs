@@ -1633,8 +1633,11 @@ namespace GnollHackX.Pages.Game
                             }
                             else
                             {
+#if false
+                                long mainFPSCounter;
                                 lock (_mainFPSCounterLock)
                                 {
+                                    mainFPSCounter = _mainFPSCounterValue;
                                     counterDiff = _mainFPSCounterValue - _previousMainFPSCounterValue;
                                     _previousMainFPSCounterValue = _mainFPSCounterValue;
                                 }
@@ -1643,7 +1646,7 @@ namespace GnollHackX.Pages.Game
                                     long renderingCounter = GHApp.RenderingCounter;
                                     long renderingCounterDiff = renderingCounter - _previousRenderingCounterValue;
                                     _previousRenderingCounterValue = renderingCounter;
-                                    if (((renderingCounterDiff == 0 &&  !_renderingCounterDiffZeroObserved) || (counterDiff == 0 && _mainFPSCounterValue > 0 && !_mainCounterDiffZeroObserved)) && UpdateTimerTickCount > 10 && IsGameOn && IsMainCanvasOn && !LoadingGrid.IsVisible && !MoreCommandsGrid.IsVisible && !MenuGrid.IsVisible && !TextGrid.IsVisible)
+                                    if (((renderingCounterDiff == 0 &&  !_renderingCounterDiffZeroObserved) || (counterDiff == 0 && mainFPSCounter > 0 && !_mainCounterDiffZeroObserved)) && UpdateTimerTickCount > 10 && IsGameOn && IsMainCanvasOn && !LoadingGrid.IsVisible && !MoreCommandsGrid.IsVisible && !MenuGrid.IsVisible && !TextGrid.IsVisible)
                                     {
                                         if (counterDiff == 0 && !_mainCounterDiffZeroObserved)
                                         {
@@ -1681,6 +1684,7 @@ namespace GnollHackX.Pages.Game
                                             PleaseWaitLabel.IsVisible = false;
                                     }
                                 }
+#endif
                                 //lock (AnimationTimerLock)
                                 //{
                                 //    currentCounterValue = AnimationTimers.general_animation_counter;
