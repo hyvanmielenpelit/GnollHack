@@ -693,9 +693,9 @@ namespace GnollHackX.Pages.Game
         public bool ShowRecording { get { lock (_showRecordingLock) { return _showRecording; } } set { lock (_showRecordingLock) { _showRecording = value; } } }
 
         private double _fps;
-        private long _previousMainFPSCounterValue = 0L;
+        //private long _previousMainFPSCounterValue = 0L;
+        //private long _previousRenderingCounterValue = 0L;
         private long _previousCommandFPSCounterValue = 0L;
-        private long _previousRenderingCounterValue = 0L;
 
         private readonly object _fpslock = new object();
         private Stopwatch _stopWatch = new Stopwatch();
@@ -1583,8 +1583,8 @@ namespace GnollHackX.Pages.Game
             }
         }
 
-        private bool _mainCounterDiffZeroObserved = false;
-        private bool _renderingCounterDiffZeroObserved = false;
+        //private bool _mainCounterDiffZeroObserved = false;
+        //private bool _renderingCounterDiffZeroObserved = false;
 
         private readonly object _updateTimerTickCountLock = new object();
         private long _updateTimerTickCount = 0L;
