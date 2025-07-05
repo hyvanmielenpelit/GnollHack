@@ -2036,6 +2036,7 @@ namespace GnollHackX.Pages.Game
                         //    else
                         //        _menuUpdateGCCounter++;
                         //}
+                        InterlockedMenuScrollOffset = _menuScrollOffset;
                     }
 
                     MainThread.BeginInvokeOnMainThread(() =>
@@ -4618,6 +4619,7 @@ namespace GnollHackX.Pages.Game
                     lock(_menuScrollLock)
                     {
                         _menuScrollOffset = _savedMenuScrollOffset[(int)MenuCanvas.MenuStyle];
+                        InterlockedMenuScrollOffset = _menuScrollOffset;
                     }
                 }
             }
@@ -14033,6 +14035,7 @@ namespace GnollHackX.Pages.Game
             lock (_menuScrollLock)
             {
                 _menuScrollOffset = 0;
+                InterlockedMenuScrollOffset = _menuScrollOffset;
             }
             lock (_menuPositionLock)
             {
@@ -15026,6 +15029,7 @@ namespace GnollHackX.Pages.Game
                     _messageScrollSpeed = 0;
                     _messageScrollSpeedRecordOn = false;
                     _messageScrollSpeedRecords.Clear();
+                    InterlockedMenuScrollOffset = _menuScrollOffset;
                 }
             }
         }
@@ -16015,9 +16019,26 @@ namespace GnollHackX.Pages.Game
 
         private int _firstDrawnMenuItemIdx = -1;
         private int _lastDrawnMenuItemIdx = -1;
-        private readonly object _totalMenuHeightLock = new object();
+        //private readonly object _totalMenuHeightLock = new object();
         private float _totalMenuHeight = 0;
-        private float TotalMenuHeight { get { lock (_totalMenuHeightLock) { return _totalMenuHeight; } } set { lock (_totalMenuHeightLock) { _totalMenuHeight = value; } } }
+        private float TotalMenuHeight 
+        { 
+            get 
+            { 
+                //lock (_totalMenuHeightLock) 
+                //{ 
+                    return _totalMenuHeight; 
+                //} 
+            } 
+            set 
+            { 
+                //lock (_totalMenuHeightLock) 
+                //{ 
+                //    _totalMenuHeight = value; 
+                //}
+                Interlocked.Exchange(ref _totalMenuHeight, value);
+            } 
+        }
 
         private bool _refreshMenuRowCounts = true;
         private readonly object _refreshMenuRowCountLock = new object();
@@ -16096,11 +16117,11 @@ namespace GnollHackX.Pages.Game
                 float picturewidth = 64.0f * textPaint.FontSpacing / 48.0f;
                 float picturepadding = 9 * scale * customScale;
                 float leftinnerpadding = 5;
-                float curmenuoffset = 0;
-                lock (_menuScrollLock)
-                {
-                    curmenuoffset = _menuScrollOffset;
-                }
+                float curmenuoffset = InterlockedMenuScrollOffset;
+                //lock (_menuScrollLock)
+                //{
+                //    curmenuoffset = _menuScrollOffset;
+                //}
                 y = curmenuoffset;
                 double menumarginx = MenuCanvas.MenuButtonStyle ? 30.0 : 15.0;
                 double menuwidth = Math.Max(1.0, Math.Min(MenuCanvas.ThreadSafeWidth - menumarginx * 2, UIUtils.MenuViewWidthRequest(referenceCanvasView.MenuStyle) * customScale));
@@ -16768,6 +16789,8 @@ namespace GnollHackX.Pages.Game
         }
 
 
+        private float _interlockedMenuScrollOffset = 0;
+        private float InterlockedMenuScrollOffset { get { return _interlockedMenuScrollOffset; } set { Interlocked.Exchange(ref _interlockedMenuScrollOffset, value); } }
         private readonly object _menuScrollLock = new object();
         private float _menuScrollOffset = 0;
         private float _menuScrollSpeed = 0; /* pixels per second */
@@ -16943,6 +16966,7 @@ namespace GnollHackX.Pages.Game
                                                 _menuScrollSpeed = totaldistance / Math.Max(0.001f, totalsecs);
                                                 _menuScrollSpeedOn = false;
                                             }
+                                            InterlockedMenuScrollOffset = _menuScrollOffset;
                                         }
                                         MenuTouchDictionary[e.Id].Location = e.Location;
                                         MenuTouchDictionary[e.Id].UpdateTime = DateTime.Now;
@@ -17409,6 +17433,7 @@ namespace GnollHackX.Pages.Game
                     _menuScrollSpeed = 0;
                     _menuScrollSpeedRecordOn = false;
                     _menuScrollSpeedRecords.Clear();
+                    InterlockedMenuScrollOffset = _menuScrollOffset;
                 }
             }
         }
@@ -17530,6 +17555,7 @@ namespace GnollHackX.Pages.Game
                 _menuScrollSpeed = 0;
                 _menuScrollSpeedOn = false;
                 _menuScrollSpeedRecords.Clear();
+                InterlockedMenuScrollOffset = _menuScrollOffset;
             }
 
             List<GHMenuItem> resultlist = new List<GHMenuItem>();
@@ -17622,6 +17648,7 @@ namespace GnollHackX.Pages.Game
                 _menuScrollSpeed = 0;
                 _menuScrollSpeedOn = false;
                 _menuScrollSpeedRecords.Clear();
+                InterlockedMenuScrollOffset = _menuScrollOffset;
             }
 
             GHGame curGame = CurrentGame;
