@@ -7491,7 +7491,7 @@ lava_effects()
         else
             You_ex(ATR_NONE, CLR_MSG_NEGATIVE, "fall into the %s!", hliquid("lava"));
 
-        usurvive = Lifesaved || discover || wizard;
+        usurvive = Lifesaved || discover || wizard || ModernMode || CasualMode;
 
         /* prevent remove_worn_item() -> Boots_off(WATER_WALKING_BOOTS) ->
            spoteffects() -> lava_effects() recursion which would
@@ -7524,7 +7524,14 @@ lava_effects()
                 if (obj->owornmask) 
                     remove_worn_item(obj, TRUE);
                 if (usurvive)
-                    pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s into flame!", Yobjnam2(obj, "burst"));
+                {
+                    if (obj->oclass == FOOD_CLASS || obj->oclass == REAGENT_CLASS) /* Glass */
+                        pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s burnt to ashes!", Yobjnam2(obj, "are"));
+                    else if (is_fragile(obj)) /* Glass */
+                        pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s!", Yobjnam2(obj, "melt"));
+                    else
+                        pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s into flame!", Yobjnam2(obj, "burst"));
+                }
                 Sprintf(priority_debug_buf_3, "lava_effects2: %d", obj->otyp);
                 Sprintf(priority_debug_buf_4, "lava_effects2: %d", obj->otyp);
                 useupall(obj);

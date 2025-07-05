@@ -3222,9 +3222,9 @@ int64_t timeout;
     } else if (in_invent) {
         if (flags.verbose) {
             char *cname = corpse_xname(obj, (const char *) 0, CXN_NO_PFX);
-
-            Your("%s%s %s away%c", obj == uwep || obj == uarms ? "wielded " : "", cname,
-                 otense(obj, "rot"), obj == uwep || obj == uarms ? '!' : '.');
+            boolean is_wielded = obj == uwep || obj == uarms;
+            Your_ex(ATR_NONE, is_wielded ? CLR_MSG_WARNING : CLR_MSG_ATTENTION, "%s%s %s away%c", is_wielded ? "wielded " : "", cname,
+                 otense(obj, "rot"), is_wielded ? '!' : '.');
         }
         if (obj == uwep) {
             uwepgone(); /* now bare handed */

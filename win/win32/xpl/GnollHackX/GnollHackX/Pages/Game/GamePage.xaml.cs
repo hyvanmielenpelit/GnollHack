@@ -693,7 +693,7 @@ namespace GnollHackX.Pages.Game
         public bool ShowRecording { get { lock (_showRecordingLock) { return _showRecording; } } set { lock (_showRecordingLock) { _showRecording = value; } } }
 
         private double _fps;
-        //private long _previousMainFPSCounterValue = 0L;
+        private long _previousMainFPSCounterValue = 0L;
         //private long _previousRenderingCounterValue = 0L;
         private long _previousCommandFPSCounterValue = 0L;
 
@@ -1633,6 +1633,11 @@ namespace GnollHackX.Pages.Game
                             }
                             else
                             {
+                                lock (_mainFPSCounterLock)
+                                {
+                                    counterDiff = _mainFPSCounterValue - _previousMainFPSCounterValue;
+                                    _previousMainFPSCounterValue = _mainFPSCounterValue;
+                                }
 #if false
                                 long mainFPSCounter;
                                 lock (_mainFPSCounterLock)
