@@ -137,7 +137,7 @@ namespace GnollHackX
             InitBaseCachedBitmaps();
             InitBaseButtonBitmaps();
 
-#if GNH_MAUI && ANDROID
+#if false //GNH_MAUI && ANDROID
             /* Switch off GPU for menus one time on MAUI Android if it is currently on */
             if(IsAndroid && !Preferences.Get("GNH420Build57AndroidAuxGPUCheckCompleted", false))
             {
@@ -1253,7 +1253,7 @@ namespace GnollHackX
         {
             get
             {
-                return IsWindows || IsAndroid; // (IsAndroid && TotalMemory < GHConstants.DisableAuxGPUbyDefaultThresholdInBytes);
+                return IsWindows || (IsAndroid && TotalMemory < GHConstants.DisableAuxGPUbyDefaultThresholdInBytes);
             }
         }
 
