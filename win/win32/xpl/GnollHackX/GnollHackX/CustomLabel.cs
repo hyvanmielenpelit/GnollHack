@@ -730,7 +730,7 @@ namespace GnollHackX
         private ConcurrentDictionary<long, TouchEntry> TouchDictionary = new ConcurrentDictionary<long, TouchEntry>();
 
         private float _interlockedTextScrollOffset = 0;
-        private float InterlockedTextScrollOffset { get { return _interlockedTextScrollOffset; } set { Interlocked.Exchange(ref _interlockedTextScrollOffset, value); } }
+        private float InterlockedTextScrollOffset { get { return Interlocked.CompareExchange(ref _interlockedTextScrollOffset, 0.0f, 0.0f); } set { Interlocked.Exchange(ref _interlockedTextScrollOffset, value); } }
         private readonly object _textScrollLock = new object();
         private float _textScrollOffset = 0;
         private float _textScrollSpeed = 0; /* pixels per second */

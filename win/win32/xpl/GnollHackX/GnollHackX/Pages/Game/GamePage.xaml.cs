@@ -14267,9 +14267,9 @@ namespace GnollHackX.Pages.Game
 
 
         private float _interlockedMessageScrollOffset = 0;
-        private float InterlockedMessageScrollOffset { get { return _interlockedMessageScrollOffset; } set { Interlocked.Exchange(ref _interlockedMessageScrollOffset, value); } }
+        private float InterlockedMessageScrollOffset { get { return Interlocked.CompareExchange(ref _interlockedMessageScrollOffset, 0.0f, 0.0f); } set { Interlocked.Exchange(ref _interlockedMessageScrollOffset, value); } }
         public float _interlockedMessageSmallestTop = 0;
-        private float InterlockedMessageSmallestTop { get { return _interlockedMessageSmallestTop; } set { Interlocked.Exchange(ref _interlockedMessageSmallestTop, value); } }
+        private float InterlockedMessageSmallestTop { get { return Interlocked.CompareExchange(ref _interlockedMessageSmallestTop, 0.0f, 0.0f); } set { Interlocked.Exchange(ref _interlockedMessageSmallestTop, value); } }
         private readonly object _messageScrollLock = new object();
         public float _messageScrollOffset = 0;
         private float _messageScrollSpeed = 0; /* pixels per second */
@@ -16035,12 +16035,13 @@ namespace GnollHackX.Pages.Game
         private float TotalMenuHeight 
         { 
             get 
-            { 
-                //lock (_totalMenuHeightLock) 
-                //{ 
-                    return _totalMenuHeight; 
-                //} 
-            } 
+            {
+                //lock (_totalMenuHeightLock)
+                //{
+                //    return _totalMenuHeight;
+                //}
+                return Interlocked.CompareExchange(ref _totalMenuHeight, 0.0f, 0.0f);
+            }
             set 
             { 
                 //lock (_totalMenuHeightLock) 
@@ -16801,7 +16802,7 @@ namespace GnollHackX.Pages.Game
 
 
         private float _interlockedMenuScrollOffset = 0;
-        private float InterlockedMenuScrollOffset { get { return _interlockedMenuScrollOffset; } set { Interlocked.Exchange(ref _interlockedMenuScrollOffset, value); } }
+        private float InterlockedMenuScrollOffset { get { return Interlocked.CompareExchange(ref _interlockedMenuScrollOffset, 0.0f, 0.0f); } set { Interlocked.Exchange(ref _interlockedMenuScrollOffset, value); } }
         private readonly object _menuScrollLock = new object();
         private float _menuScrollOffset = 0;
         private float _menuScrollSpeed = 0; /* pixels per second */
@@ -17945,11 +17946,12 @@ namespace GnollHackX.Pages.Game
         private float TotalTextHeight 
         { 
             get 
-            { 
-                //lock (_totalTextHeightLock) 
-                //{ 
-                    return _totalTextHeight; 
-                //} 
+            {
+                //lock (_totalTextHeightLock)
+                //{
+                //    return _totalTextHeight;
+                //}
+                return Interlocked.CompareExchange(ref _totalTextHeight, 0.0f, 0.0f);
             } 
             set 
             {
@@ -17962,7 +17964,7 @@ namespace GnollHackX.Pages.Game
         }
 
         private float _interlockedTextScrollOffset = 0;
-        private float InterlockedTextScrollOffset { get { return _interlockedTextScrollOffset; } set { Interlocked.Exchange(ref _interlockedTextScrollOffset, value); } }
+        private float InterlockedTextScrollOffset { get { return Interlocked.CompareExchange(ref _interlockedTextScrollOffset, 0.0f, 0.0f); } set { Interlocked.Exchange(ref _interlockedTextScrollOffset, value); } }
         private readonly object _textScrollLock = new object();
         private float _textScrollOffset = 0;
         private float _textScrollSpeed = 0; /* pixels per second */
@@ -20816,8 +20818,8 @@ namespace GnollHackX.Pages.Game
         private readonly object _propertyLock = new object();
         private double _threadSafeWidth = 0;
         private double _threadSafeHeight = 0;
-        public double ThreadSafeWidth { get { lock (_propertyLock) { return _threadSafeWidth; } } private set { Interlocked.Exchange(ref _threadSafeWidth, value); } }
-        public double ThreadSafeHeight { get { lock (_propertyLock) { return _threadSafeHeight; } } private set { Interlocked.Exchange(ref _threadSafeHeight, value); } }
+        public double ThreadSafeWidth { get { return Interlocked.CompareExchange(ref _threadSafeWidth, 0.0, 0.0); } private set { Interlocked.Exchange(ref _threadSafeWidth, value); } }
+        public double ThreadSafeHeight { get { return Interlocked.CompareExchange(ref _threadSafeHeight, 0.0, 0.0); } private set { Interlocked.Exchange(ref _threadSafeHeight, value); } }
 
 #if WINDOWS
         private void PageContent_CharacterReceived(Microsoft.UI.Xaml.UIElement sender, Microsoft.UI.Xaml.Input.CharacterReceivedRoutedEventArgs args)
