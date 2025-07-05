@@ -48,7 +48,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <MtouchArch>ARM64</MtouchArch>
-    <CodesignKey>Apple Development: Janne Gustafsson (3JF32923Y3)</CodesignKey>
+    <CodesignKey>Apple Distribution: Hyvan mielen pelit ry (CUG8RS847T)</CodesignKey>
     <MtouchDebug>true</MtouchDebug>
     <CodesignEntitlements>Entitlements.plist</CodesignEntitlements>
     <MtouchLink>None</MtouchLink>
@@ -57,7 +57,7 @@
     </MtouchSdkVersion>
     <MtouchNoSymbolStrip>true</MtouchNoSymbolStrip>
     <MtouchFastDev>false</MtouchFastDev>
-    <CodesignProvision>Apple Dev X July 2024 Profile</CodesignProvision>
+    <CodesignProvision>Apple Dev GnollHack Development July 2025</CodesignProvision>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|iPhone' ">
     <DebugType>none</DebugType>
@@ -72,7 +72,7 @@
     <MtouchLink>SdkOnly</MtouchLink>
     <MtouchNoSymbolStrip>false</MtouchNoSymbolStrip>
     <MtouchFastDev>false</MtouchFastDev>
-    <CodesignProvision>Apple Dev X July 2024 Distribution Profile</CodesignProvision>
+    <CodesignProvision>Apple Dev GnollHack Distribution July 2025</CodesignProvision>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(RunConfiguration)' == 'Default' ">
     <AppExtensionDebugBundleId />
