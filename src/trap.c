@@ -7469,27 +7469,27 @@ lava_effects()
          * make the player sink into the lava. Assumption: water walking only
          * comes from boots.
          */
-        if (uarmf && melts_in_lava(uarmf) && !uarmf->oerodeproof)
+        if (uarmf && melts_in_lava(uarmf) && !uarmf->oerodeproof && !oresist_fire(uarmf))
         {
             obj = uarmf;
             pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s into flame!", Yobjnam2(obj, "burst"));
             iflags.in_lava_effects++; /* (see above) */
             (void)Boots_off();
             Sprintf(priority_debug_buf_2, "lava_effects: %d", obj->otyp);
-            Strcpy(priority_debug_buf_3, "lava_effects");
-            Strcpy(priority_debug_buf_4, "lava_effects");
+            Sprintf(priority_debug_buf_3, "lava_effects: %d", obj->otyp);
+            Sprintf(priority_debug_buf_4, "lava_effects: %d", obj->otyp);
             useup(obj);
             iflags.in_lava_effects--;
         }
 
         if (Walks_on_water)
         {
-            pline_The("%s here burns you!", hliquid("lava"));
+            pline_The_ex(ATR_NONE, CLR_MSG_WARNING, "%s here burns you!", hliquid("lava"));
             losehp(damage, lava_killer, KILLED_BY); /* lava damage */
             goto burn_stuff; /* Clears off in_use */
         }
         else
-            You("fall into the %s!", hliquid("lava"));
+            You_ex(ATR_NONE, CLR_MSG_NEGATIVE, "fall into the %s!", hliquid("lava"));
 
         usurvive = Lifesaved || discover || wizard;
 
@@ -7516,18 +7516,17 @@ lava_effects()
             }
             else if (obj->oartifact == ART_RULING_RING_OF_YENDOR)
             {
-                read_the_ruling_ring(obj);
+                if (usurvive)
+                    read_the_ruling_ring(obj);
             }
             else if (obj->in_use)
             {
                 if (obj->owornmask) 
-                {
-                    if (usurvive)
-                        pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s into flame!", Yobjnam2(obj, "burst"));
                     remove_worn_item(obj, TRUE);
-                }
+                if (usurvive)
+                    pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s into flame!", Yobjnam2(obj, "burst"));
                 Sprintf(priority_debug_buf_3, "lava_effects2: %d", obj->otyp);
-                Strcpy(priority_debug_buf_4, "lava_effects2");
+                Sprintf(priority_debug_buf_4, "lava_effects2: %d", obj->otyp);
                 useupall(obj);
             }
         }
