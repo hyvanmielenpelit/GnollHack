@@ -1153,9 +1153,10 @@ register struct obj* otmp;
     if (!dummy->o_id)
         dummy->o_id = context.ident++; /* ident overflowed */
     dummy->timed = 0;
-    //dummy->lamplit = 0;  // lamplit can now be on for memory objects with ITEM_FLAGS_MEMORY_OBJECT, and this is without a light source
-    dummy->item_flags |= ITEM_FLAGS_MEMORY_OBJECT;
+    dummy->lamplit = 0;
     dummy->makingsound = 0;
+    if (otmp->lamplit)
+        dummy->item_flags |= ITEM_FLAGS_MEMORY_OBJECT_LAMPLIT;
     /* Insurance not to copy insane bits */
     dummy->in_use = 0;
     dummy->bypass = 0;
@@ -1217,9 +1218,10 @@ struct obj* memory_obj, *orig_obj;
         if (!dummy->o_id)
             dummy->o_id = context.ident++; /* ident overflowed */
         dummy->timed = 0;
-        //dummy->lamplit = 0; // lamplit can now be on for memory objects with ITEM_FLAGS_MEMORY_OBJECT, and this is without a light source
-        dummy->item_flags |= ITEM_FLAGS_MEMORY_OBJECT;
+        dummy->lamplit = 0;
         dummy->makingsound = 0;
+        if (otmp->lamplit)
+            dummy->item_flags |= ITEM_FLAGS_MEMORY_OBJECT_LAMPLIT;
         copy_oextra(dummy, otmp);
         if (has_omid(dummy))
             free_omid(dummy); /* only one association with m_id*/

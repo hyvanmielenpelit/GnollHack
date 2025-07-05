@@ -679,7 +679,7 @@ struct obj *obj;
 {
     /* so far, only burning objects shed light */
     /* objects in memory do not shed light */
-    return (obj->item_flags & ITEM_FLAGS_MEMORY_OBJECT) == 0  && obj_is_burning(obj);
+    return obj_is_burning(obj);
 }
 
 /* Return TRUE if sheds light AND will be snuffed by end_burn(). */

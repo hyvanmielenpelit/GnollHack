@@ -53,7 +53,7 @@ struct obj {
     int64_t owornmask;
     uint64_t item_flags;  /* general purpose object flags, like speflags; different item_flags will prevent merging */
 #define ITEM_FLAGS_GIVEN_BY_HERO               0x00000001UL
-#define ITEM_FLAGS_MEMORY_OBJECT               0x00000002UL /* Indicates that it does not have light sources associated with lamplit, among other things */
+#define ITEM_FLAGS_MEMORY_OBJECT_LAMPLIT       0x00000002UL /* Lamplit for graphics but it does not have an associated light source */
 
     uint64_t speflags;    /* anything else that might be going on with an item, not affected by cancellation */
 

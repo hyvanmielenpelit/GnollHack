@@ -471,7 +471,7 @@
 #define any_seen_mon_to_glyph(mon, rng) (canseemon(mon) || is_tame(mon) ? any_mon_to_glyph(mon, rng) : GLYPH_INVISIBLE)
 
 #define is_obj_activated(obj) \
-  ((obj)->lamplit || (obj)->invokeon || (obj)->detectioncount > 0)
+  ((obj)->lamplit || ((obj)->item_flags & ITEM_FLAGS_MEMORY_OBJECT_LAMPLIT) != 0 || (obj)->invokeon || (obj)->detectioncount > 0)
 
 /* This has the unfortunate side effect of needing a global variable    */
 /* to store a result. 'otg_temp' is defined and declared in decl.{ch}.  */
