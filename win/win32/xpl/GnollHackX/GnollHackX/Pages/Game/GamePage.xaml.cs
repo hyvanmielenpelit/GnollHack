@@ -1622,18 +1622,20 @@ namespace GnollHackX.Pages.Game
                             long counterDiff = 0;
                             if (MoreCommandsGrid.IsVisible)
                             {
-                                lock (_commandFPSCounterLock)
+                                //lock (_commandFPSCounterLock)
                                 {
-                                    counterDiff = _commandFPSCounterValue - _previousCommandFPSCounterValue;
-                                    _previousCommandFPSCounterValue = _commandFPSCounterValue;
+                                    long countervalue = CommandFPSCounterValue;
+                                    counterDiff = countervalue - _previousCommandFPSCounterValue;
+                                    _previousCommandFPSCounterValue = countervalue;
                                 }
                             }
                             else
                             {
-                                lock (_mainFPSCounterLock)
+                                //lock (_mainFPSCounterLock)
                                 {
-                                    counterDiff = _mainFPSCounterValue - _previousMainFPSCounterValue;
-                                    _previousMainFPSCounterValue = _mainFPSCounterValue;
+                                    long countervalue = MainFPSCounterValue;
+                                    counterDiff = countervalue - _previousMainFPSCounterValue;
+                                    _previousMainFPSCounterValue = countervalue;
                                 }
 #if false
                                 long mainFPSCounter;
@@ -4932,12 +4934,14 @@ namespace GnollHackX.Pages.Game
 
             PaintMainGamePage(sender, e, isCanvasOnMainThread);
 
-            lock (_mainFPSCounterLock)
-            {
-                _mainFPSCounterValue++;
-                if (_mainFPSCounterValue < 0)
-                    _mainFPSCounterValue = 0;
-            }
+            if (Interlocked.Increment(ref _mainFPSCounterValue) == long.MaxValue)
+                Interlocked.Exchange(ref _mainFPSCounterValue, 0L);
+            //lock (_mainFPSCounterLock)
+            //{
+            //    _mainFPSCounterValue++;
+            //    if (_mainFPSCounterValue < 0)
+            //        _mainFPSCounterValue = 0;
+            //}
 
             SKImageInfo info = e.Info;
             SKSurface surface = e.Surface;
@@ -18509,11 +18513,13 @@ namespace GnollHackX.Pages.Game
             } 
         }
 
-        private readonly object _mainFPSCounterLock = new object();
+        //private readonly object _mainFPSCounterLock = new object();
         private long _mainFPSCounterValue = 0;
+        private long MainFPSCounterValue { get { return Interlocked.CompareExchange(ref _mainFPSCounterValue, 0L, 0L); } set { Interlocked.Exchange(ref _mainFPSCounterValue, value); } }
 
-        private readonly object _commandFPSCounterLock = new object();
+        //private readonly object _commandFPSCounterLock = new object();
         private long _commandFPSCounterValue = 0;
+        private long CommandFPSCounterValue { get { return Interlocked.CompareExchange(ref _commandFPSCounterValue, 0L, 0L); } set { Interlocked.Exchange(ref _commandFPSCounterValue, value); } }
 
         public int CurrentMoreButtonPageMaxNumber { get { return UseSimpleCmdLayout ? GHConstants.MoreButtonPages - 1 : GHConstants.MoreButtonPages; } }
 
@@ -18727,12 +18733,14 @@ namespace GnollHackX.Pages.Game
                     textPaint.TextSize = GHConstants.StatusBarBaseFontSize * statusBarTextScale;
                 }
             }
-            lock (_commandFPSCounterLock)
-            {
-                _commandFPSCounterValue++;
-                if (_commandFPSCounterValue < 0)
-                    _commandFPSCounterValue = 0;
-            }
+            if (Interlocked.Increment(ref _commandFPSCounterValue) == long.MaxValue)
+                Interlocked.Exchange(ref _commandFPSCounterValue, 0L);
+            //lock (_commandFPSCounterLock)
+            //{
+            //    _commandFPSCounterValue++;
+            //    if (_commandFPSCounterValue < 0)
+            //        _commandFPSCounterValue = 0;
+            //}
             canvas.Flush();
         }
 
