@@ -7147,6 +7147,9 @@ namespace GnollHackX.Pages.Game
             bool hitPointBars = HitPointBars;
             bool playerMark = PlayerMark;
             bool monsterTargeting = MonsterTargeting;
+            bool forceAllMessages = ForceAllMessages;
+            bool forceAscii = ForceAscii;
+            GHGraphicsStyle graphicsStyle = GraphicsStyle;
 
             bool isLandscape = canvaswidth > canvasheight;
 
@@ -7535,7 +7538,7 @@ namespace GnollHackX.Pages.Game
                 {
                     float tmpwidth = textPaint.MeasureText("A"); //textPaint.FontMetrics.AverageCharacterWidth;
                     float tmpheight = textPaint.FontMetrics.Descent - textPaint.FontMetrics.Ascent;
-                    if (GraphicsStyle == GHGraphicsStyle.Tiles && !ForceAscii)
+                    if (graphicsStyle == GHGraphicsStyle.Tiles && !forceAscii)
                     {
                         tmpwidth = GHConstants.TileWidth * usedFontSize / GHConstants.MapFontDefaultSize;
                         tmpheight = GHConstants.TileHeight * usedFontSize / GHConstants.MapFontDefaultSize;
@@ -7553,7 +7556,7 @@ namespace GnollHackX.Pages.Game
                 float width = textPaint.MeasureText("A"); //textPaint.FontMetrics.AverageCharacterWidth;
                 float height = textPaint.FontMetrics.Descent - textPaint.FontMetrics.Ascent;
 
-                if (GraphicsStyle == GHGraphicsStyle.Tiles && !ForceAscii)
+                if (graphicsStyle == GHGraphicsStyle.Tiles && !forceAscii)
                 {
                     width = GHConstants.TileWidth * usedFontSize / GHConstants.MapFontDefaultSize * GHConstants.TileSizeAdjustmentModifier;
                     height = GHConstants.TileHeight * usedFontSize / GHConstants.MapFontDefaultSize * GHConstants.TileSizeAdjustmentModifier;
@@ -7614,13 +7617,13 @@ namespace GnollHackX.Pages.Game
                     }
                 }
 
-                if (!ForceAllMessages || HasAllMessagesTransparentBackground)
+                if (!forceAllMessages || HasAllMessagesTransparentBackground)
                 {
                     lock (GHApp.Glyph2TileLock)
                     {
                         //lock (_mapDataLock)
                         {
-                            if (GraphicsStyle == GHGraphicsStyle.ASCII || ForceAscii)
+                            if (graphicsStyle == GHGraphicsStyle.ASCII || forceAscii)
                             {
                                 for (int mapx = startX; mapx <= endX; mapx++)
                                 {
@@ -8287,7 +8290,7 @@ namespace GnollHackX.Pages.Game
                         }
 
                         /* Cursor */
-                        if ((GraphicsStyle == GHGraphicsStyle.ASCII || ForceAscii) && CursorStyle == TTYCursorStyle.BlinkingUnderline && CursorIsOn && _localMapCursorX >= 1 && _localMapCursorY >= 0)
+                        if ((graphicsStyle == GHGraphicsStyle.ASCII || forceAscii) && CursorStyle == TTYCursorStyle.BlinkingUnderline && CursorIsOn && _localMapCursorX >= 1 && _localMapCursorY >= 0)
                         {
                             int cx = _localMapCursorX, cy = _localMapCursorY;
                             str = "_";
@@ -8317,7 +8320,7 @@ namespace GnollHackX.Pages.Game
                     }
 
                     /* Floating Texts */
-                    if (GraphicsStyle != GHGraphicsStyle.ASCII && !ForceAscii)
+                    if (graphicsStyle != GHGraphicsStyle.ASCII && !forceAscii)
                     {
                         foreach (GHFloatingText ft in _localFloatingTexts)
                         {
@@ -9019,10 +9022,10 @@ namespace GnollHackX.Pages.Game
                 }
 
                 /* Darkening background */
-                if (ForceAllMessages || ShowNumberPad || ShownTip >= 0)
+                if (forceAllMessages || ShowNumberPad || ShownTip >= 0)
                 {
                     textPaint.Style = SKPaintStyle.Fill;
-                    textPaint.Color = ForceAllMessages && !HasAllMessagesTransparentBackground ? SKColors.Black : SKColors.Black.WithAlpha(128);
+                    textPaint.Color = forceAllMessages && !HasAllMessagesTransparentBackground ? SKColors.Black : SKColors.Black.WithAlpha(128);
 #if GNH_MAP_PROFILING && DEBUG
                     StartProfiling(GHProfilingStyle.Rect);
 #endif
@@ -9135,7 +9138,7 @@ namespace GnollHackX.Pages.Game
                                     _localCanvasButtonRect.Bottom = winRect.Top;
                             }
 
-                            if (ghWindow.WindowType != GHWinType.Message && !ForceAllMessages)
+                            if (ghWindow.WindowType != GHWinType.Message && !forceAllMessages)
                             {
                                 //lock (_localPutStrLock)
                                 {
@@ -9280,7 +9283,7 @@ namespace GnollHackX.Pages.Game
                                             }
                                             tx = winRect.Left + ghWindow.Padding.Left;
                                             ty = winRect.Top + ghWindow.Padding.Top - textPaint.FontMetrics.Ascent + window_row_idx * height;
-                                            if (ForceAllMessages)
+                                            if (forceAllMessages)
                                             {
                                                 ty += InterlockedMessageScrollOffset;
                                             }
@@ -9434,7 +9437,7 @@ namespace GnollHackX.Pages.Game
                     float orbleft = 5.0f;
                     float orbbordersize = (float)(stdRefButtonWidth * inverse_canvas_scale);
 
-                    if (statusfieldsok && !ForceAllMessages)
+                    if (statusfieldsok && !forceAllMessages)
                     {
                         float statusbarheight = 0;
                         if (!ClassicStatusBar)
@@ -15467,6 +15470,7 @@ namespace GnollHackX.Pages.Game
 
             /* Copy some values to local variables to avoid nested locks */
             bool forceAscii = ForceAscii;
+            GHGraphicsStyle graphicsStyle = GraphicsStyle;
             long curtimervalue = 0;
             float usedTileWidth;
             float usedTileHeight;
@@ -15496,7 +15500,7 @@ namespace GnollHackX.Pages.Game
             float newClipY;
             lock (_mapOffsetLock)
             {
-                if (immediate_pan || GraphicsStyle == GHGraphicsStyle.ASCII || forceAscii)
+                if (immediate_pan || graphicsStyle == GHGraphicsStyle.ASCII || forceAscii)
                 {
                     _targetClipOn = false;
                     newClipX = 0;
