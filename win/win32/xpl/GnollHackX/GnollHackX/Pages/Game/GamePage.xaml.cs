@@ -818,12 +818,9 @@ namespace GnollHackX.Pages.Game
 
         private readonly object _youRectLock = new object();
         private SKRect _youRect = new SKRect();
-        public SKRect YouRect { get { lock (_youRectLock) { return _youRect; } } set { lock (_youRectLock) { _youRect = value; } } }
-
-        private readonly object _youRectDrawnLock = new object();
-
         private bool _youRectDrawn = false;
-        public bool YouRectDrawn { get { lock (_youRectDrawnLock) { return _youRectDrawn; } } set { lock (_youRectDrawnLock) { _youRectDrawn = value; } } }
+        public SKRect YouRect { get { lock (_youRectLock) { return _youRect; } } set { lock (_youRectLock) { _youRect = value; } } }
+        public bool YouRectDrawn { get { lock (_youRectLock) { return _youRectDrawn; } } set { lock (_youRectLock) { _youRectDrawn = value; } } }
 
         private float _originMapOffsetWithNewClipX;
         private float _originMapOffsetWithNewClipY;
@@ -11690,8 +11687,11 @@ namespace GnollHackX.Pages.Game
                     SKRect urect = new SKRect(box_right - youmargin - yousize, box_top + youmargin, box_right - youmargin, box_top + youmargin + yousize);
                     SKRect utouchrect = new SKRect(urect.Left - youtouchmargin, urect.Top - youtouchmargin, urect.Right + youtouchmargin, urect.Bottom + youtouchmargin);
                     canvas.DrawImage(GHApp.YouBitmap, urect);
-                    YouRect = utouchrect;
-                    YouRectDrawn = true;
+                    lock (_youRectLock)
+                    {
+                        _youRect = utouchrect;
+                        _youRectDrawn = true;
+                    }
 
                     textPaint.Style = SKPaintStyle.Fill;
                     textPaint.Typeface = GHApp.UnderwoodTypeface;
@@ -12175,8 +12175,11 @@ namespace GnollHackX.Pages.Game
                         }
                     }                   
 
-                    if(!YouRectDrawn)
-                        YouRect = new SKRect();
+                    lock (_youRectLock)
+                    {
+                        if (!_youRectDrawn)
+                            _youRect = new SKRect();
+                    }
                 }
 #if WINDOWS
                 GameCursorType newCursor = GameCursorType.Normal;
