@@ -879,9 +879,10 @@ namespace GnollHackX.Pages.Game
         private float _mapWidth;
         private float _mapHeight;
 
-        private readonly object _mapFontAscentLock = new object();
-        private float _mapFontAscent;
-        private float UsedMapFontAscent { get { lock (_mapFontAscentLock) { return _mapFontAscent; } } set { lock (_mapFontAscentLock) { _mapFontAscent = value; } } }
+        //private readonly object _mapFontAscentLock = new object();
+        private float _mapFontAscent = 0.0f;
+        private float UsedMapFontAscent { get { return Interlocked.CompareExchange(ref _mapFontAscent, 0.0f, 0.0f); } set { Interlocked.Exchange(ref _mapFontAscent, value); } }
+        //private float UsedMapFontAscent { get { lock (_mapFontAscentLock) { return _mapFontAscent; } } set { lock (_mapFontAscentLock) { _mapFontAscent = value; } } }
         public readonly object AnimationTimerLock = new object();
         public readonly GHAnimationTimerList AnimationTimers = new GHAnimationTimerList();
         public SKImage[] TileMap { get { return GHApp._tileMap; } }
@@ -5027,16 +5028,16 @@ namespace GnollHackX.Pages.Game
         }
 #endif
 
-        private void PaintMapUIElements(SKCanvas canvas, GHSkiaFontPaint textPaint, SKPaint paint, SKPathEffect pathEffect, int mapx, int mapy, float width, float height, float offsetX, float offsetY, float usedOffsetX, float usedOffsetY, float base_move_offset_x, float base_move_offset_y, float targetscale, long generalcountervalue, float usedFontSize, int monster_height, bool loc_is_you, bool canspotself, bool usingGL, bool fixRects)
+        private void PaintMapUIElements(SKCanvas canvas, GHSkiaFontPaint textPaint, SKPaint paint, SKPathEffect pathEffect, int mapx, int mapy, float width, float height, float offsetX, float offsetY, float usedOffsetX, float usedOffsetY, float base_move_offset_x, float base_move_offset_y, float targetscale, long generalcountervalue, float usedFontSize, float mapFontAscent, int monster_height, bool loc_is_you, bool canspotself, bool usingGL, bool fixRects, bool mapGrid, bool hitPointBars, bool playerMark, bool monsterTargeting)
         {
             float scaled_y_height_change = 0;
-            float mapFontAscent = UsedMapFontAscent;
+            //float mapFontAscent = UsedMapFontAscent;
             float tx = 0, ty = 0;
             if (monster_height > 0)
                 scaled_y_height_change = (float)-monster_height * height / (float)GHConstants.TileHeight;
 
             /* Grid */
-            if (MapGrid)
+            if (mapGrid)
             {
                 tx = (offsetX + usedOffsetX + width * (float)mapx);
                 ty = (offsetY + usedOffsetY + mapFontAscent + height * (float)mapy);
@@ -5101,7 +5102,7 @@ namespace GnollHackX.Pages.Game
             tx = (offsetX + usedOffsetX + base_move_offset_x + width * (float)mapx);
             ty = (offsetY + usedOffsetY + base_move_offset_y + scaled_y_height_change + mapFontAscent + height * (float)mapy);
 
-            if (HitPointBars)
+            if (hitPointBars)
             {
                 /* Draw hit point bars */
                 if (((_mapData[mapx, mapy].Layers.monster_flags & (ulong)(LayerMonsterFlags.LMFLAGS_YOU | LayerMonsterFlags.LMFLAGS_CANSPOTMON)) != 0 || (_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_UXUY) != 0)
@@ -5161,7 +5162,7 @@ namespace GnollHackX.Pages.Game
 
             bool draw_character = false;
             /* Player mark */
-            if (PlayerMark && loc_is_you)
+            if (playerMark && loc_is_you)
             {
                 int cglyph = (int)game_ui_tile_types.U_TILE_MARK + GHApp.UITileOff;
                 int ctile = GHApp.Glyph2Tile[cglyph];
@@ -5187,7 +5188,7 @@ namespace GnollHackX.Pages.Game
             }
 
             /* Monster targeting mark */
-            if (MonsterTargeting && !loc_is_you && (_mapData[mapx, mapy].Layers.monster_flags & (ulong)(LayerMonsterFlags.LMFLAGS_CANSPOTMON)) != 0)
+            if (monsterTargeting && !loc_is_you && (_mapData[mapx, mapy].Layers.monster_flags & (ulong)(LayerMonsterFlags.LMFLAGS_CANSPOTMON)) != 0)
             {
                 int cglyph = (int)game_ui_tile_types.MAIN_TILE_MARK + GHApp.UITileOff;
                 int ctile = GHApp.Glyph2Tile[cglyph];
@@ -5402,7 +5403,6 @@ namespace GnollHackX.Pages.Game
                         }
                     }
                 }
-
             }
 
             /* Draw death and hit markers */
@@ -5439,7 +5439,7 @@ namespace GnollHackX.Pages.Game
         private void PaintMapTile(SKCanvas canvas, bool delayedDraw, GHSkiaFontPaint textPaint, SKPaint paint, int layer_idx, int mapx, int mapy, int draw_map_x, int draw_map_y, int dx, int dy, int ntile, float width, float height, 
             float offsetX, float offsetY, float usedOffsetX, float usedOffsetY, float base_move_offset_x, float base_move_offset_y, float object_move_offset_x, float object_move_offset_y,
             float scaled_y_height_change, float pit_border,
-            float targetscale, long generalcountervalue, float usedFontSize, int monster_height, 
+            float targetscale, long generalcountervalue, float usedFontSize, float mapFontAscent, int monster_height, 
             bool is_monster_like_layer, bool is_object_like_layer, bool obj_in_pit, int obj_height, bool is_missile_layer, int missile_height,
             bool loc_is_you, bool canspotself, bool tileflag_halfsize, bool tileflag_normalobjmissile, bool tileflag_fullsizeditem, bool tileflag_floortile, bool tileflag_height_is_clipping,
             bool hflip_glyph, bool vflip_glyph,
@@ -5470,7 +5470,7 @@ namespace GnollHackX.Pages.Game
             int source_y_added = 0;
             int source_height_deducted = 0;
             int source_height = tileflag_halfsize ? GHConstants.TileHeight / 2 : GHConstants.TileHeight;
-            float mapFontAscent = UsedMapFontAscent;
+            //float mapFontAscent = UsedMapFontAscent;
 
             float scale = 1.0f;
             if (tileflag_halfsize && !tileflag_normalobjmissile)
@@ -7142,6 +7142,11 @@ namespace GnollHackX.Pages.Game
             bool usingMipMap = UseMainMipMap;
             bool usingDesktopButtons = DesktopButtons;
             bool usingSimpleCmdLayout = UseSimpleCmdLayout;
+            bool mapGrid = MapGrid;
+            bool hitPointBars = HitPointBars;
+            bool playerMark = PlayerMark;
+            bool monsterTargeting = MonsterTargeting;
+
             bool isLandscape = canvaswidth > canvasheight;
 
             _drawCommandList.Clear();
@@ -7757,7 +7762,7 @@ namespace GnollHackX.Pages.Game
                                                             {
                                                                 if (layer_idx == (int)layer_types.MAX_LAYERS + 1)
                                                                 {
-                                                                    PaintMapUIElements(canvas, textPaint, paint, pathEffect, mapx, mapy, width, height, offsetX, offsetY, usedOffsetX, usedOffsetY, base_move_offset_x, base_move_offset_y, targetscale, generalcountervalue, usedFontSize, monster_height, loc_is_you, canspotself, usingGL, fixRects);
+                                                                    PaintMapUIElements(canvas, textPaint, paint, pathEffect, mapx, mapy, width, height, offsetX, offsetY, usedOffsetX, usedOffsetY, base_move_offset_x, base_move_offset_y, targetscale, generalcountervalue, usedFontSize, mapFontAscent, monster_height, loc_is_you, canspotself, usingGL, fixRects, mapGrid, hitPointBars, playerMark, monsterTargeting);
                                                                 }
                                                                 else
                                                                 {
@@ -7830,7 +7835,7 @@ namespace GnollHackX.Pages.Game
 
                                                                         PaintMapTile(canvas, false, textPaint, paint, layer_idx, source_x, source_y, draw_map_x, draw_map_y, dx, dy, ntile, width, height,
                                                                             offsetX, offsetY, usedOffsetX, usedOffsetY, base_move_offset_x, base_move_offset_y, object_move_offset_x, object_move_offset_y,
-                                                                            scaled_y_height_change, pit_border, targetscale, generalcountervalue, usedFontSize,
+                                                                            scaled_y_height_change, pit_border, targetscale, generalcountervalue, usedFontSize, mapFontAscent,
                                                                             monster_height, is_monster_like_layer, is_object_like_layer, obj_in_pit, obj_height, is_missile_layer, missile_height,
                                                                             loc_is_you, canspotself, tileflag_halfsize, tileflag_normalobjmissile, tileflag_fullsizeditem, tileflag_floortile, tileflag_height_is_clipping,
                                                                             hflip_glyph, vflip_glyph, otmp_round, autodraw, drawwallends, breatheanimations, generalcounterdiff, canvaswidth, canvasheight, enlargement, usingGL, usingMipMap, fixRects); //, ref minDrawX, ref maxDrawX, ref minDrawY, ref maxDrawY, ref enlMinDrawX, ref enlMaxDrawX, ref enlMinDrawY, ref enlMaxDrawY);
@@ -7889,7 +7894,7 @@ namespace GnollHackX.Pages.Game
                                                         {
                                                             if (layer_idx == (int)layer_types.MAX_LAYERS + 1)
                                                             {
-                                                                PaintMapUIElements(canvas, textPaint, paint, pathEffect, mapx, mapy, width, height, offsetX, offsetY, usedOffsetX, usedOffsetY, base_move_offset_x, base_move_offset_y, targetscale, generalcountervalue, usedFontSize, monster_height, loc_is_you, canspotself, usingGL, fixRects);
+                                                                PaintMapUIElements(canvas, textPaint, paint, pathEffect, mapx, mapy, width, height, offsetX, offsetY, usedOffsetX, usedOffsetY, base_move_offset_x, base_move_offset_y, targetscale, generalcountervalue, usedFontSize, mapFontAscent, monster_height, loc_is_you, canspotself, usingGL, fixRects, mapGrid, hitPointBars, playerMark, monsterTargeting);
                                                             }
                                                             else
                                                             {
@@ -7967,7 +7972,7 @@ namespace GnollHackX.Pages.Game
                                                                         {
                                                                             PaintMapTile(canvas, true, textPaint, paint, layer_idx, mapx, mapy, draw_map_x, draw_map_y, dx, dy, ntile, width, height,
                                                                                 offsetX, offsetY, usedOffsetX, usedOffsetY, base_move_offset_x, base_move_offset_y, object_move_offset_x, object_move_offset_y,
-                                                                                scaled_y_height_change, pit_border, targetscale, generalcountervalue, usedFontSize,
+                                                                                scaled_y_height_change, pit_border, targetscale, generalcountervalue, usedFontSize, mapFontAscent,
                                                                                 monster_height, is_monster_like_layer, is_object_like_layer, obj_in_pit, obj_height, is_missile_layer, missile_height,
                                                                                 loc_is_you, canspotself, tileflag_halfsize, tileflag_normalobjmissile, tileflag_fullsizeditem, tileflag_floortile, tileflag_height_is_clipping,
                                                                                 hflip_glyph, vflip_glyph, otmp_round, autodraw, drawwallends, breatheanimations, generalcounterdiff, canvaswidth, canvasheight, enlargement, usingGL, usingMipMap, fixRects); //, ref _enlBmpMinX, ref _enlBmpMaxX, ref _enlBmpMinY, ref _enlBmpMaxY, ref _enlBmpMinX, ref _enlBmpMaxX, ref _enlBmpMinY, ref _enlBmpMaxY);
@@ -7977,7 +7982,7 @@ namespace GnollHackX.Pages.Game
                                                                             //float minDrawX = 0, maxDrawX = 0, minDrawY = 0, maxDrawY = 0;
                                                                             PaintMapTile(canvas, false, textPaint, paint, layer_idx, mapx, mapy, draw_map_x, draw_map_y, dx, dy, ntile, width, height,
                                                                                 offsetX, offsetY, usedOffsetX, usedOffsetY, base_move_offset_x, base_move_offset_y, object_move_offset_x, object_move_offset_y,
-                                                                                scaled_y_height_change, pit_border, targetscale, generalcountervalue, usedFontSize,
+                                                                                scaled_y_height_change, pit_border, targetscale, generalcountervalue, usedFontSize, mapFontAscent,
                                                                                 monster_height, is_monster_like_layer, is_object_like_layer, obj_in_pit, obj_height, is_missile_layer, missile_height,
                                                                                 loc_is_you, canspotself, tileflag_halfsize, tileflag_normalobjmissile, tileflag_fullsizeditem, tileflag_floortile, tileflag_height_is_clipping,
                                                                                 hflip_glyph, vflip_glyph, otmp_round, autodraw, drawwallends, breatheanimations, generalcounterdiff, canvaswidth, canvasheight, enlargement, usingGL, usingMipMap, fixRects); //, ref minDrawX, ref maxDrawX, ref minDrawY, ref maxDrawY, ref _enlBmpMinX, ref _enlBmpMaxX, ref _enlBmpMinY, ref _enlBmpMaxY);
