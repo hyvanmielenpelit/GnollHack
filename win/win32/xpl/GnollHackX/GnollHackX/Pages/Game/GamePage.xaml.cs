@@ -124,8 +124,6 @@ namespace GnollHackX.Pages.Game
 
         private MapData[,] _mapData = new MapData[GHConstants.MapCols, GHConstants.MapRows];
         //private readonly object _mapDataLock = new object();
-        private int _mapCursorX;
-        private int _mapCursorY;
 
         //private readonly object _darkenedBitmapLock = new object();
         private Dictionary<SavedDarkenedBitmap, SKImage> _darkenedBitmaps = new Dictionary<SavedDarkenedBitmap, SKImage>();
@@ -5066,7 +5064,7 @@ namespace GnollHackX.Pages.Game
             /* Cursor */
             bool cannotseeself = (loc_is_you && !canspotself);
             if ((!loc_is_you || (loc_is_you && (cannotseeself || _show_cursor_on_u)))
-                && (mapx == _mapCursorX && mapy == _mapCursorY)
+                && (mapx == _localMapCursorX && mapy == _localMapCursorY)
                 )
             {
                 int cidx = (cannotseeself && _cursorType == game_cursor_types.CURSOR_STYLE_GENERIC_CURSOR ?
@@ -7098,6 +7096,8 @@ namespace GnollHackX.Pages.Game
         public float _localStatusOffsetY = 0;
         public float _localStatusLargestBottom = 0;
         public float _localStatusClipBottom = 0;
+        private int _localMapCursorX;
+        private int _localMapCursorY;
 
         private readonly object _savedCanvasLock = new object();
         private float _savedCanvasWidth = 0;
@@ -7327,8 +7327,8 @@ namespace GnollHackX.Pages.Game
                 _local_u_status_bits = status_bits;
                 _local_ux = u_x;
                 _local_uy = u_y;
-                _mapCursorX = mapCursorX;
-                _mapCursorY = mapCursorY;
+                _localMapCursorX = mapCursorX;
+                _localMapCursorY = mapCursorY;
                 _cursorType = cursorType;
                 _force_paint_at_cursor = force_paint_at_cursor;
                 _show_cursor_on_u = show_cursor_on_u;
@@ -7631,7 +7631,7 @@ namespace GnollHackX.Pages.Game
                                             textPaint.Color = _mapData[mapx, mapy].Color;
                                             tx = (offsetX + usedOffsetX + width * (float)mapx);
                                             ty = (offsetY + usedOffsetY + height * (float)mapy);
-                                            if (CursorStyle == TTYCursorStyle.GreenBlock && _mapCursorX == mapx && _mapCursorY == mapy)
+                                            if (CursorStyle == TTYCursorStyle.GreenBlock && _localMapCursorX == mapx && _localMapCursorY == mapy)
                                             {
                                                 textPaint.Style = SKPaintStyle.Fill;
                                                 textPaint.Color = _cursorDefaultGreen;
@@ -8286,9 +8286,9 @@ namespace GnollHackX.Pages.Game
                         }
 
                         /* Cursor */
-                        if ((GraphicsStyle == GHGraphicsStyle.ASCII || ForceAscii) && CursorStyle == TTYCursorStyle.BlinkingUnderline && CursorIsOn && _mapCursorX >= 1 && _mapCursorY >= 0)
+                        if ((GraphicsStyle == GHGraphicsStyle.ASCII || ForceAscii) && CursorStyle == TTYCursorStyle.BlinkingUnderline && CursorIsOn && _localMapCursorX >= 1 && _localMapCursorY >= 0)
                         {
-                            int cx = _mapCursorX, cy = _mapCursorY;
+                            int cx = _localMapCursorX, cy = _localMapCursorY;
                             str = "_";
                             textPaint.Color = SKColors.White;
                             tx = (offsetX + usedOffsetX + width * (float)cx);
@@ -15398,8 +15398,8 @@ namespace GnollHackX.Pages.Game
         //{
         //    lock (_mapDataLock)
         //    {
-        //        _mapCursorX = x;
-        //        _mapCursorY = y;
+        //        _localMapCursorX = x;
+        //        _localMapCursorY = y;
         //    }
         //}
         //public void UpdateCursor(int style, int force_paint, int show_on_u)
