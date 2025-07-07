@@ -167,25 +167,6 @@ int expltype;
     }
     int damui = objtype > 0 ? get_spell_damage(objtype, 0, origmonst, &youmonst) : max(0, d(dmg_n, dmg_d) + dmg_p);
     double damu = adjust_damage(damui, origmonst, &youmonst, adtyp, olet < MAX_OBJECT_CLASSES ? ADFLAGS_SPELL_DAMAGE : ADFLAGS_NONE);
-    if (olet == WAND_CLASS)
-    {
-        int skill_level_adj = 1 + max(0, P_SKILL_LEVEL(P_WAND) - 1);
-        damu /= skill_level_adj;
-        //switch (Role_switch)
-        //{
-        //case PM_PRIEST:
-        //case PM_MONK:
-        //case PM_WIZARD:
-        //    damu /= 5;
-        //    break;
-        //case PM_HEALER:
-        //case PM_KNIGHT:
-        //    damu /= 2;
-        //    break;
-        //default:
-        //    break;
-        //}
-    }
     any_shield = visible = FALSE;
     for (i = 0; i < 3; i++)
         for (j = 0; j < 3; j++) 
@@ -657,6 +638,26 @@ int expltype;
     /* Do your injury last */
     if (uhurt) 
     {
+        /* Lower your damage if you broke the wand */
+        if (origmonst == &youmonst && olet == WAND_CLASS)
+        {
+            double adj = get_wand_skill_explosion_damage_adjustment(P_SKILL_LEVEL(P_WAND));
+            damu *= adj;
+            //switch (Role_switch)
+            //{
+            //case PM_PRIEST:
+            //case PM_MONK:
+            //case PM_WIZARD:
+            //    damu /= 5;
+            //    break;
+            //case PM_HEALER:
+            //case PM_KNIGHT:
+            //    damu /= 2;
+            //    break;
+            //default:
+            //    break;
+            //}
+        }
         /* give message for any monster-induced explosion
            or player-induced one other than scroll of fire */
         if (flags.verbose && (type < 0 || olet != SCROLL_CLASS)) 
@@ -695,7 +696,7 @@ int expltype;
         item_destruction_hint((int)adtyp, FALSE);
 
         ugolemeffects((int) adtyp, damu);
-        if (uhurt == 2 && (damu || instadeath)) 
+        if (uhurt == 2 && (damu > 0 || instadeath)) 
         {
             /* if poly'd hero is grabbing another victim, hero takes
                double damage (note: don't rely on u.ustuck here because

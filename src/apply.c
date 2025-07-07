@@ -5537,47 +5537,31 @@ struct obj *obj;
         hit_only_one = 4; /* 2- 6 targets based on BUC status */
 
     short dmg_type = AD_MAGM;
-    (void) get_wand_explosion_damage(obj, &dmg_n, &dmg_d, &expltype, &dmg_type, FALSE);
-
-    switch (obj->otyp) {
-    case WAN_WISHING:
-    case WAN_IDENTIFY:
-    case WAN_NOTHING:
-    case WAN_LOCKING:
-    case WAN_PROBING:
-    case WAN_ENLIGHTENMENT:
-    case WAN_OPENING:
-    case WAN_UNDEAD_TURNING:
-    case WAN_SECRET_DOOR_DETECTION:
-    case WAN_TRAP_DETECTION:
-    case WAN_ORE_DETECTION:
-    case WAN_TOWN_PORTAL:
+    boolean did_explode = get_wand_explosion_damage(obj, &dmg_n, &dmg_d, &expltype, &dmg_type, FALSE);
+    if (!did_explode)
+    {
         pline(nothing_else_happens);
         goto discard_broken_wand;
-    case WAN_DEATH:
-    case WAN_DISINTEGRATION:
-    case WAN_LIGHTNING:
-        //dmg_n *= 4;
-        goto wanexpl;
-    case WAN_FIRE:
-        //expltype = EXPL_FIERY;
-        /*FALLTHRU*/
-    case WAN_COLD:
-        //if (expltype == EXPL_MAGICAL)
-        //    expltype = EXPL_FROSTY;
-        //dmg_n *= 2;
-        /*FALLTHRU*/
-    case WAN_MAGIC_MISSILE:
-    wanexpl:
-        explode(u.ux, u.uy, dmg_type /* objects[obj->otyp].oc_dir_subtype */, &youmonst, dmg_n, dmg_d, 0, obj->otyp, WAND_CLASS, expltype);
-        makeknown(obj->otyp); /* explode describes the effect */
-        goto discard_broken_wand;
+    }
+
+    switch (obj->otyp) {
     case WAN_STRIKING:
         /* we want this before the explosion instead of at the very end */
         pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "A wall of force smashes down around you!");
-        //dmg_n = 1 + obj->charges;
-        //dmg_d = 6; /* normally 2d12 */
-        goto wanexpl;
+        /* FALLTHRU */
+    case WAN_DEATH:
+    case WAN_DISINTEGRATION:
+    case WAN_PETRIFICATION:
+    case WAN_LIGHTNING:
+    case WAN_MAGIC_MISSILE:
+        if (dmg_n > 0 && dmg_d > 0)
+        {
+            explode(u.ux, u.uy, 
+                objects[obj->otyp].oc_dir == RAY && objects[obj->otyp].oc_dir_subtype <= RAY_WND_PETRIFICATION ? objects[obj->otyp].oc_dir_subtype : 0, 
+                &youmonst, dmg_n, dmg_d, 0, STRANGE_OBJECT /* obj->otyp */, WAND_CLASS, expltype);
+            makeknown(obj->otyp); /* explode describes the effect */
+        }
+        goto discard_broken_wand;
     case WAN_DISJUNCTION:
     case WAN_CANCELLATION:
     case WAN_POLYMORPH:

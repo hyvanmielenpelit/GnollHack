@@ -3820,23 +3820,48 @@ int k_format;
 void
 losehp(n, knam, k_format)
 double n;
+register const char* knam;
+int k_format;
+{
+    losehp_core(n, knam, k_format, FALSE);
+}
+
+void
+losehp_core(n, knam, k_format, verbose)
+double n;
 register const char *knam;
 int k_format;
+boolean verbose;
 {
     if (Invulnerable) //Note you must set damage to zero so it does not get displayed to the player
         return;
 
-    if (Upolyd) 
+    int damage_dealt;
+    if (Upolyd)
     {
+        int mh_before = u.mh;
         deduct_player_hp(n);
         if (u.mh < 1)
             rehumanize();
         else if (n > 0 && u.mh * 10 < u.mhmax && Unchanging)
             maybe_wail();
+        int mh_after = u.mh;
+        damage_dealt = mh_before - mh_after;
+        if (verbose && damage_dealt > 0)
+        {
+            You_multi_ex(ATR_NONE, NO_COLOR, no_multiattrs, multicolor_red1, "sustain %d damage!", damage_dealt);
+        }
         return;
     }
 
+    int uhp_before = u.uhp;
     deduct_player_hp(n);
+    int uhp_after = u.uhp;
+    damage_dealt = uhp_before - uhp_after;
+    if (verbose && damage_dealt > 0)
+    {
+        You_multi_ex(ATR_NONE, NO_COLOR, no_multiattrs, multicolor_red1, "sustain %d damage!", damage_dealt);
+    }
 
     if(n > 0)
         clear_run_and_travel();

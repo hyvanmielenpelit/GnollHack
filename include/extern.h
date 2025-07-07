@@ -1414,6 +1414,7 @@ E void FDECL(unmul_ex, (int, int, const char *));
 E void FDECL(you_die, (const char*, int));
 E void FDECL(kill_player, (const char*, int));
 E void FDECL(losehp, (double, const char *, int));
+E void FDECL(losehp_core, (double, const char*, int, BOOLEAN_P));
 E int NDECL(weight_cap);
 E int NDECL(inv_weight);
 E int NDECL(near_capacity);
@@ -4559,6 +4560,7 @@ E boolean FDECL(is_buzztype_breath_weapon, (int));
 E boolean FDECL(is_buzztype_eyestalk, (int));
 E void FDECL(wish_insurance_check, (int));
 E boolean FDECL(get_wand_explosion_damage, (struct obj*, int*, int*, int*, short*, BOOLEAN_P));
+E double FDECL(get_wand_skill_explosion_damage_adjustment, (int));
 E void NDECL(reset_zap);
 
 #endif /* !MAKEDEFS_C && !LEV_LEX_C */

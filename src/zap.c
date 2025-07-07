@@ -6274,46 +6274,16 @@ boolean is_backfire;
         return FALSE;
 
     if (objects[otmp->otyp].oc_charged == CHARGED_NOT_CHARGED)
+    {
+        *dmg_n_ptr = 0;
+        *dmg_d_ptr = 0;
         return FALSE;
+    }
 
-    boolean res = FALSE;
-    int max_charge = get_obj_max_charge(otmp);
-    int dmg_n_divisor;
-    int dmg_d_calc;
-    if (max_charge >= 80)
-    {
-        dmg_d_calc = 2;
-        dmg_n_divisor = 16;
-    }
-    else if (max_charge >= 40)
-    {
-        dmg_d_calc = 3;
-        dmg_n_divisor = 8;
-    }
-    else if (max_charge >= 20)
-    {
-
-        dmg_d_calc = 4;
-        dmg_n_divisor = 4;
-    }
-    else if (max_charge >= 10)
-    {
-        dmg_d_calc = 5;
-        dmg_n_divisor = 2;
-    }
-    else
-    {
-        dmg_d_calc = 6;
-        dmg_n_divisor = 1;
-    }
-    if (!is_backfire && dmg_n_divisor > 1) /* Breaking does double damage per charge compared accidental backfire */
-        dmg_n_divisor /= 2;
-
+    int adj_max_charge = max(1, get_obj_max_charge(otmp) + 1);
     int adj_charge = max(0, otmp->charges + 1);
-    int dmg_n_calc = 1 + adj_charge / dmg_n_divisor;
-    if (otmp->exceptionality > 0)
-        dmg_n_calc *= min(EXCEPTIONALITY_ELITE, otmp->exceptionality);
-
+    int dmg_n_calc = 1 + ((is_backfire ? 5 : 10) * (min(EXCEPTIONALITY_ELITE, otmp->exceptionality) + 1) * adj_charge) / adj_max_charge;
+    int dmg_d_calc = 3;
     int expltype_calc = EXPL_MAGICAL;
     short dmg_type_calc = AD_MAGM;
 
@@ -6326,57 +6296,54 @@ boolean is_backfire;
     case WAN_PROBING:
     case WAN_SECRET_DOOR_DETECTION:
     case WAN_ENLIGHTENMENT:
-        dmg_d_calc = 2;
-        res = TRUE;
+        if (!is_backfire)
+        {
+            *dmg_n_ptr = 0;
+            *dmg_d_ptr = 0;
+            return FALSE;
+        }
         break;
+    case WAN_DISJUNCTION:
     case WAN_WISHING:
-        dmg_d_calc += 6;
-        res = TRUE;
+        dmg_d_calc = 12;
         break;
     case WAN_IDENTIFY:
-        dmg_d_calc += 3;
-        res = TRUE;
+        dmg_d_calc = 8;
         break;
     case WAN_UNDEAD_TURNING:
     case WAN_TRAP_DETECTION:
-        res = TRUE;
         break;
     case WAN_DEATH:
     case WAN_DISINTEGRATION:
-        dmg_d_calc += 5;
-        res = TRUE;
+    case WAN_PETRIFICATION:
+        dmg_d_calc = 10;
         break;
     case WAN_LIGHTNING:
         expltype_calc = EXPL_MAGICAL;
         dmg_type_calc = AD_ELEC;
-        dmg_d_calc += 3;
-        res = TRUE;
+        dmg_d_calc = 7;
         break;
     case WAN_FIRE:
         expltype_calc = EXPL_FIERY;
         dmg_type_calc = AD_FIRE;
-        dmg_d_calc += 2;
-        res = TRUE;
+        dmg_d_calc = 6;
         break;
     case WAN_COLD:
         expltype_calc = EXPL_FROSTY;
         dmg_type_calc = AD_COLD;
-        dmg_d_calc += 4;
-        res = TRUE;
+        dmg_d_calc = 8;
         break;
     case WAN_MAGIC_MISSILE:
-        dmg_d_calc += 1;
-        res = TRUE;
+        dmg_d_calc = 5;
         break;
     case WAN_STRIKING:
-        res = TRUE;
+        dmg_d_calc = 4;
         break;
-    case WAN_DISJUNCTION:
     case WAN_CANCELLATION:
     case WAN_POLYMORPH:
     case WAN_TELEPORTATION:
     case WAN_RESURRECTION:
-        res = TRUE;
+        dmg_d_calc = 6;
         break;
     default:
         break;
@@ -6389,7 +6356,14 @@ boolean is_backfire;
     if (dmg_type_ptr)
         *dmg_type_ptr = dmg_type_calc;
 
-    return res;
+    return TRUE;
+}
+
+double
+get_wand_skill_explosion_damage_adjustment(skill_level)
+int skill_level;
+{
+    return 1.0 / (1.0 + 0.5 * max(0, skill_level - 1));
 }
 
 STATIC_OVL void
@@ -6401,12 +6375,20 @@ struct obj *otmp;
     otmp->in_use = TRUE; /* in case losehp() is fatal */
     play_sfx_sound(SFX_EXPLOSION_MAGICAL);
     pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s suddenly explodes!", The(xname(otmp)));
+    play_special_effect_at(SPECIAL_EFFECT_SMALL_FIERY_EXPLOSION, 0, u.ux, u.uy, FALSE);
+    special_effect_wait_until_action(0);
     int dmg_n = 1, dmg_d = 6;
     short dmg_type = AD_MAGM;
     if (get_wand_explosion_damage(otmp, &dmg_n, &dmg_d, (int*)0, &dmg_type, TRUE) && dmg_n > 0 && dmg_d > 0)
     {
         dmg = d(dmg_n, dmg_d);
-        losehp(adjust_damage(dmg, (struct monst*)0, &youmonst, dmg_type, ADFLAGS_NONE), "exploding wand", KILLED_BY_AN);
+        double damage = adjust_damage(dmg, (struct monst*)0, &youmonst, dmg_type, ADFLAGS_NONE);
+        double adj = get_wand_skill_explosion_damage_adjustment(P_SKILL_LEVEL(P_WAND));
+        damage *= adj;
+        if (damage > 0)
+            losehp_core(damage, "exploding wand", KILLED_BY_AN, TRUE);
+        else
+            pline_ex1(ATR_NONE, CLR_MSG_WARNING, "Luckily, the explosion does not harm you.");
     }
     else
     {
@@ -6414,6 +6396,7 @@ struct obj *otmp;
     }
     Sprintf(priority_debug_buf_2, "backfire: %d", otmp->otyp);
     useup(otmp);
+    special_effect_wait_until_end(0);
 }
 
 STATIC_VAR NEARDATA const char zap_syms[] = { WAND_CLASS, 0 };
