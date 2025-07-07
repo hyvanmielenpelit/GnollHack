@@ -6264,10 +6264,11 @@ register struct obj *obj;
 }
 
 boolean
-get_wand_explosion_damage(otmp, dmg_n_ptr, dmg_d_ptr, expltype_ptr, dmg_type_ptr)
+get_wand_explosion_damage(otmp, dmg_n_ptr, dmg_d_ptr, expltype_ptr, dmg_type_ptr, is_backfire)
 struct obj* otmp;
 int* dmg_n_ptr, * dmg_d_ptr, * expltype_ptr;
 short* dmg_type_ptr;
+boolean is_backfire;
 {
     if (!otmp || !dmg_n_ptr || !dmg_d_ptr)
         return FALSE;
@@ -6305,6 +6306,8 @@ short* dmg_type_ptr;
         dmg_d_calc = 6;
         dmg_n_divisor = 1;
     }
+    if (!is_backfire && dmg_n_divisor > 1) /* Breaking does double damage per charge compared accidental backfire */
+        dmg_n_divisor /= 2;
 
     int adj_charge = max(0, otmp->charges + 1);
     int dmg_n_calc = 1 + adj_charge / dmg_n_divisor;
@@ -6400,7 +6403,7 @@ struct obj *otmp;
     pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s suddenly explodes!", The(xname(otmp)));
     int dmg_n = 1, dmg_d = 6;
     short dmg_type = AD_MAGM;
-    if (get_wand_explosion_damage(otmp, &dmg_n, &dmg_d, (int*)0, &dmg_type) && dmg_n > 0 && dmg_d > 0)
+    if (get_wand_explosion_damage(otmp, &dmg_n, &dmg_d, (int*)0, &dmg_type, TRUE) && dmg_n > 0 && dmg_d > 0)
     {
         dmg = d(dmg_n, dmg_d);
         losehp(adjust_damage(dmg, (struct monst*)0, &youmonst, dmg_type, ADFLAGS_NONE), "exploding wand", KILLED_BY_AN);

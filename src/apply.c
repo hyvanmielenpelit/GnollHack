@@ -5537,7 +5537,7 @@ struct obj *obj;
         hit_only_one = 4; /* 2- 6 targets based on BUC status */
 
     short dmg_type = AD_MAGM;
-    (void) get_wand_explosion_damage(obj, &dmg_n, &dmg_d, &expltype, &dmg_type);
+    (void) get_wand_explosion_damage(obj, &dmg_n, &dmg_d, &expltype, &dmg_type, FALSE);
 
     switch (obj->otyp) {
     case WAN_WISHING:
@@ -5560,11 +5560,11 @@ struct obj *obj;
         //dmg_n *= 4;
         goto wanexpl;
     case WAN_FIRE:
-        expltype = EXPL_FIERY;
+        //expltype = EXPL_FIERY;
         /*FALLTHRU*/
     case WAN_COLD:
-        if (expltype == EXPL_MAGICAL)
-            expltype = EXPL_FROSTY;
+        //if (expltype == EXPL_MAGICAL)
+        //    expltype = EXPL_FROSTY;
         //dmg_n *= 2;
         /*FALLTHRU*/
     case WAN_MAGIC_MISSILE:
@@ -5596,7 +5596,7 @@ struct obj *obj;
        surrounding targets (or underlying objects) got affected yet.] */
     explode(obj->ox, obj->oy, 
         objects[obj->otyp].oc_dir == RAY && objects[obj->otyp].oc_dir_subtype <= RAY_WND_PETRIFICATION ? objects[obj->otyp].oc_dir_subtype : 0, 
-        &youmonst, dmg_n, dmg_d, 0, obj->otyp, WAND_CLASS,
+        &youmonst, dmg_n, dmg_d, 0, STRANGE_OBJECT /* obj->otyp */, WAND_CLASS,
             EXPL_MAGICAL);
 
     /* prepare for potential feedback from polymorph... */
