@@ -5536,6 +5536,9 @@ struct obj *obj;
     else if (objects[obj->otyp].oc_dir == IMMEDIATE_TWO_TO_SIX_TARGETS)
         hit_only_one = 4; /* 2- 6 targets based on BUC status */
 
+    short dmg_type = AD_MAGM;
+    (void) get_wand_explosion_damage(obj, &dmg_n, &dmg_d, &expltype, &dmg_type);
+
     switch (obj->otyp) {
     case WAN_WISHING:
     case WAN_IDENTIFY:
@@ -5554,7 +5557,7 @@ struct obj *obj;
     case WAN_DEATH:
     case WAN_DISINTEGRATION:
     case WAN_LIGHTNING:
-        dmg_n *= 4;
+        //dmg_n *= 4;
         goto wanexpl;
     case WAN_FIRE:
         expltype = EXPL_FIERY;
@@ -5562,18 +5565,18 @@ struct obj *obj;
     case WAN_COLD:
         if (expltype == EXPL_MAGICAL)
             expltype = EXPL_FROSTY;
-        dmg_n *= 2;
+        //dmg_n *= 2;
         /*FALLTHRU*/
     case WAN_MAGIC_MISSILE:
     wanexpl:
-        explode(u.ux, u.uy, objects[obj->otyp].oc_dir_subtype, &youmonst, dmg_n, dmg_d, 0, obj->otyp, WAND_CLASS, expltype);
+        explode(u.ux, u.uy, dmg_type /* objects[obj->otyp].oc_dir_subtype */, &youmonst, dmg_n, dmg_d, 0, obj->otyp, WAND_CLASS, expltype);
         makeknown(obj->otyp); /* explode describes the effect */
         goto discard_broken_wand;
     case WAN_STRIKING:
         /* we want this before the explosion instead of at the very end */
         pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "A wall of force smashes down around you!");
-        dmg_n = 1 + obj->charges;
-        dmg_d = 6; /* normally 2d12 */
+        //dmg_n = 1 + obj->charges;
+        //dmg_d = 6; /* normally 2d12 */
         goto wanexpl;
     case WAN_DISJUNCTION:
     case WAN_CANCELLATION:

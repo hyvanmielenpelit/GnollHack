@@ -6263,6 +6263,132 @@ register struct obj *obj;
     }
 }
 
+boolean
+get_wand_explosion_damage(otmp, dmg_n_ptr, dmg_d_ptr, expltype_ptr, dmg_type_ptr)
+struct obj* otmp;
+int* dmg_n_ptr, * dmg_d_ptr, * expltype_ptr;
+short* dmg_type_ptr;
+{
+    if (!otmp || !dmg_n_ptr || !dmg_d_ptr)
+        return FALSE;
+
+    if (objects[otmp->otyp].oc_charged == CHARGED_NOT_CHARGED)
+        return FALSE;
+
+    boolean res = FALSE;
+    int max_charge = get_obj_max_charge(otmp);
+    int dmg_n_divisor;
+    int dmg_d_calc;
+    if (max_charge >= 80)
+    {
+        dmg_d_calc = 2;
+        dmg_n_divisor = 16;
+    }
+    else if (max_charge >= 40)
+    {
+        dmg_d_calc = 3;
+        dmg_n_divisor = 8;
+    }
+    else if (max_charge >= 20)
+    {
+
+        dmg_d_calc = 4;
+        dmg_n_divisor = 4;
+    }
+    else if (max_charge >= 10)
+    {
+        dmg_d_calc = 5;
+        dmg_n_divisor = 2;
+    }
+    else
+    {
+        dmg_d_calc = 6;
+        dmg_n_divisor = 1;
+    }
+
+    int adj_charge = max(0, otmp->charges + 1);
+    int dmg_n_calc = 1 + adj_charge / dmg_n_divisor;
+    if (otmp->exceptionality > 0)
+        dmg_n_calc *= min(EXCEPTIONALITY_ELITE, otmp->exceptionality);
+
+    int expltype_calc = EXPL_MAGICAL;
+    short dmg_type_calc = AD_MAGM;
+
+    switch (otmp->otyp) {
+    case WAN_NOTHING:
+    case WAN_LOCKING:
+    case WAN_OPENING:
+    case WAN_ORE_DETECTION:
+    case WAN_TOWN_PORTAL:
+    case WAN_PROBING:
+    case WAN_SECRET_DOOR_DETECTION:
+    case WAN_ENLIGHTENMENT:
+        dmg_d_calc = 2;
+        res = TRUE;
+        break;
+    case WAN_WISHING:
+        dmg_d_calc += 6;
+        res = TRUE;
+        break;
+    case WAN_IDENTIFY:
+        dmg_d_calc += 3;
+        res = TRUE;
+        break;
+    case WAN_UNDEAD_TURNING:
+    case WAN_TRAP_DETECTION:
+        res = TRUE;
+        break;
+    case WAN_DEATH:
+    case WAN_DISINTEGRATION:
+        dmg_d_calc += 5;
+        res = TRUE;
+        break;
+    case WAN_LIGHTNING:
+        expltype_calc = EXPL_MAGICAL;
+        dmg_type_calc = AD_ELEC;
+        dmg_d_calc += 3;
+        res = TRUE;
+        break;
+    case WAN_FIRE:
+        expltype_calc = EXPL_FIERY;
+        dmg_type_calc = AD_FIRE;
+        dmg_d_calc += 2;
+        res = TRUE;
+        break;
+    case WAN_COLD:
+        expltype_calc = EXPL_FROSTY;
+        dmg_type_calc = AD_COLD;
+        dmg_d_calc += 4;
+        res = TRUE;
+        break;
+    case WAN_MAGIC_MISSILE:
+        dmg_d_calc += 1;
+        res = TRUE;
+        break;
+    case WAN_STRIKING:
+        res = TRUE;
+        break;
+    case WAN_DISJUNCTION:
+    case WAN_CANCELLATION:
+    case WAN_POLYMORPH:
+    case WAN_TELEPORTATION:
+    case WAN_RESURRECTION:
+        res = TRUE;
+        break;
+    default:
+        break;
+    }
+
+    *dmg_n_ptr = dmg_n_calc;
+    *dmg_d_ptr = dmg_d_calc;
+    if (expltype_ptr)
+        *expltype_ptr = expltype_calc;
+    if (dmg_type_ptr)
+        *dmg_type_ptr = dmg_type_calc;
+
+    return res;
+}
+
 STATIC_OVL void
 backfire(otmp)
 struct obj *otmp;
@@ -6272,8 +6398,17 @@ struct obj *otmp;
     otmp->in_use = TRUE; /* in case losehp() is fatal */
     play_sfx_sound(SFX_EXPLOSION_MAGICAL);
     pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s suddenly explodes!", The(xname(otmp)));
-    dmg = d(otmp->charges + 2, 6);
-    losehp(adjust_damage(dmg, (struct monst*)0, &youmonst, AD_MAGM, ADFLAGS_NONE), "exploding wand", KILLED_BY_AN);
+    int dmg_n = 1, dmg_d = 6;
+    short dmg_type = AD_MAGM;
+    if (get_wand_explosion_damage(otmp, &dmg_n, &dmg_d, (int*)0, &dmg_type) && dmg_n > 0 && dmg_d > 0)
+    {
+        dmg = d(dmg_n, dmg_d);
+        losehp(adjust_damage(dmg, (struct monst*)0, &youmonst, dmg_type, ADFLAGS_NONE), "exploding wand", KILLED_BY_AN);
+    }
+    else
+    {
+        pline_ex1(ATR_NONE, CLR_MSG_WARNING, "Luckily, the explosion does not harm you.");
+    }
     Sprintf(priority_debug_buf_2, "backfire: %d", otmp->otyp);
     useup(otmp);
 }

@@ -4558,6 +4558,7 @@ E int FDECL(get_maximum_applicable_spell_damage_level, (int, struct monst*));
 E boolean FDECL(is_buzztype_breath_weapon, (int));
 E boolean FDECL(is_buzztype_eyestalk, (int));
 E void FDECL(wish_insurance_check, (int));
+E boolean FDECL(get_wand_explosion_damage, (struct obj*, int*, int*, int*, short*));
 E void NDECL(reset_zap);
 
 #endif /* !MAKEDEFS_C && !LEV_LEX_C */
