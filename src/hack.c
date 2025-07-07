@@ -3841,16 +3841,16 @@ boolean verbose;
     {
         int mh_before = u.mh;
         deduct_player_hp(n);
-        if (u.mh < 1)
-            rehumanize();
-        else if (n > 0 && u.mh * 10 < u.mhmax && Unchanging)
-            maybe_wail();
         int mh_after = u.mh;
         damage_dealt = mh_before - mh_after;
         if (verbose && damage_dealt > 0)
         {
             You_multi_ex(ATR_NONE, NO_COLOR, no_multiattrs, multicolor_red1, "sustain %d damage!", damage_dealt);
         }
+        if (u.mh < 1)
+            rehumanize();
+        else if (n > 0 && u.mh * 10 < u.mhmax && Unchanging)
+            maybe_wail();
         return;
     }
 
