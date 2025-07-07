@@ -2950,6 +2950,7 @@ namespace GnollHackX
                     }
                     break;
                 case (int)gui_command_types.GUI_CMD_LIBRARY_MANUAL:
+                case (int)gui_command_types.GUI_CMD_ORACLE_MAJOR_CONSULTATION:
                     if (PlayingReplay)
                         break;
 
@@ -2975,7 +2976,7 @@ namespace GnollHackX
                                 GHApp.CheckCreateDirectory(datadir);
                             if(Directory.Exists(datadir))
                             {
-                                string filename = GHConstants.ManualFilePrefix + cmd_param2.ToString() + ".json";
+                                string filename = (cmd_id == (int)gui_command_types.GUI_CMD_LIBRARY_MANUAL ? GHConstants.ManualFilePrefix : GHConstants.OracleMajorConsultationFilePrefix) + cmd_param2.ToString() + ".json";
                                 string filepath = Path.Combine(datadir, filename);
                                 if (File.Exists(filepath))
                                 {

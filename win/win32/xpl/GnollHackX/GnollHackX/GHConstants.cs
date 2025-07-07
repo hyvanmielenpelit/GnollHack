@@ -1407,6 +1407,7 @@ namespace GnollHackX
         GUI_CMD_TOGGLE_GETPOS_ARROWS,
         GUI_CMD_DELETE_TRACKING_FILE,
         GUI_CMD_KEYBOARD_FOCUS,
+        GUI_CMD_ORACLE_MAJOR_CONSULTATION,
     }
 
     public enum game_status_types
@@ -1834,6 +1835,7 @@ namespace GnollHackX
         public const string GenericZipFileNameSuffix = ".zip";
         public const string SavedGameSharedZipFileNameSuffix = ".zip";
         public const string ManualFilePrefix = "manual_id_";
+        public const string OracleMajorConsultationFilePrefix = "major_consultation_id_";
         public const bool DefaultReadStreamingBankToMemory = false;
         public const ulong AndroidBanksToMemoryThreshold = 3500000000UL;
         public const bool DefaultCopyStreamingBankToDisk = false;

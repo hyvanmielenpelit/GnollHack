@@ -701,6 +701,7 @@ enum gui_command_types {
     GUI_CMD_TOGGLE_GETPOS_ARROWS,
     GUI_CMD_DELETE_TRACKING_FILE,
     GUI_CMD_KEYBOARD_FOCUS,
+    GUI_CMD_ORACLE_MAJOR_CONSULTATION,
 };
 
 enum game_status_types

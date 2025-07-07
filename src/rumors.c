@@ -571,6 +571,9 @@ int oraclesstyle; /* 0 = cookie, 1 = oracle, 2 = spell */
                 context.quest_flags |= QUEST_FLAGS_HEARD_OF_BOOK | QUEST_FLAGS_HEARD_OF_BELL | QUEST_FLAGS_HEARD_OF_MENORAH | QUEST_FLAGS_HEARD_OF_VIBRATING_SQUARE | QUEST_FLAGS_HEARD_OF_AMULET_IN_SANCTUM | QUEST_FLAGS_HEARD_OF_AMULET_IN_GEHENNOM;
             }
         }
+        char titlebuf[BUFSZ];
+        Sprintf(titlebuf, "Oracle Major Consultation #%llu", (unsigned long long)used_oracle_idx);
+        issue_gui_command(GUI_CMD_ORACLE_MAJOR_CONSULTATION, tmpwin, used_oracle_idx, titlebuf);
         display_nhwindow(tmpwin, TRUE);
         destroy_nhwindow(tmpwin);
 
