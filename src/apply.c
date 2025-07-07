@@ -6355,6 +6355,7 @@ int arrowtype, quan; //ObjID and quantity
     }
     else
     {
+        play_sfx_sound(SFX_GENERAL_THAT_DID_NOTHING);
         pline("%s is empty.", The(cxname(bag)));
     }
 

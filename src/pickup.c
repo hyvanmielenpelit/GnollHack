@@ -2370,8 +2370,11 @@ int cindex, ccount, applymode; /* index of this container (1..N), number of them
     }
     else if (cobj->otyp == POUCH_OF_ENDLESS_BOLTS || cobj->otyp == QUIVER_OF_INFINITE_ARROWS || cobj->otyp == BAG_OF_INFINITE_SLING_BULLETS) {
         You("carefully open %s...", the(xname(cobj)));
-        if(cobj->cooldownleft > 0)
+        if (cobj->cooldownleft > 0)
+        {
+            play_sfx_sound(SFX_GENERAL_THAT_DID_NOTHING);
             You("find nothing but void inside.");
+        }
         else
             (void)endlessarrows(cobj, (cobj->otyp == BAG_OF_INFINITE_SLING_BULLETS ? SLING_BULLET : cobj->otyp == POUCH_OF_ENDLESS_BOLTS ? CROSSBOW_BOLT : ARROW), rnd(10) + 10);
         abort_looting = TRUE;
@@ -4023,6 +4026,7 @@ int applymode; /* 0 = normal, 1 = take out items, 2 = put in items */
     }
     else if (obj->olocked)
     {
+        play_simple_container_sound(obj, CONTAINER_SOUND_TYPE_TRY_LOCKED);
         pline("%s locked.", Tobjnam(obj, "are"));
         if (held)
             You("must put it down to unlock.");
@@ -4210,6 +4214,7 @@ int applymode; /* 0 = normal, 1 = take out items, 2 = put in items */
     {
         if (!Has_contained_contents(current_container)) 
         {
+            play_sfx_sound(SFX_GENERAL_THAT_DID_NOTHING);
             pline1(emptymsg); /* <whatever> is empty. */
             if (!current_container->cknown)
                 used = 1;
@@ -4294,6 +4299,7 @@ int applymode; /* 0 = normal, 1 = take out items, 2 = put in items */
     {
         if (!Has_contained_contents(current_container)) 
         {
+            play_sfx_sound(SFX_GENERAL_THAT_DID_NOTHING);
             pline1(emptymsg); /* <whatever> is empty. */
             if (!current_container->cknown)
                 used = 1;
