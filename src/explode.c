@@ -169,20 +169,22 @@ int expltype;
     double damu = adjust_damage(damui, origmonst, &youmonst, adtyp, olet < MAX_OBJECT_CLASSES ? ADFLAGS_SPELL_DAMAGE : ADFLAGS_NONE);
     if (olet == WAND_CLASS)
     {
-        switch (Role_switch)
-        {
-        case PM_PRIEST:
-        case PM_MONK:
-        case PM_WIZARD:
-            damu /= 5;
-            break;
-        case PM_HEALER:
-        case PM_KNIGHT:
-            damu /= 2;
-            break;
-        default:
-            break;
-        }
+        int skill_level_adj = 1 + max(0, P_SKILL_LEVEL(P_WAND) - 1);
+        damu /= skill_level_adj;
+        //switch (Role_switch)
+        //{
+        //case PM_PRIEST:
+        //case PM_MONK:
+        //case PM_WIZARD:
+        //    damu /= 5;
+        //    break;
+        //case PM_HEALER:
+        //case PM_KNIGHT:
+        //    damu /= 2;
+        //    break;
+        //default:
+        //    break;
+        //}
     }
     any_shield = visible = FALSE;
     for (i = 0; i < 3; i++)
