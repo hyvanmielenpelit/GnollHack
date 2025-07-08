@@ -1251,10 +1251,29 @@ namespace GnollHackX.Pages.Game
                 LoadingProgressBar.Progress = 0.0;
                 canvasView.Focus();
 
+                canvasView._gamePage = this;
+                CommandCanvas._gamePage = this;
+                MenuCanvas._gamePage = this;
+                TextCanvas._gamePage = this;
+                TipView._gamePage = this;
+
+                canvasView._parentGrid = MainGrid;
+                CommandCanvas._parentGrid = MoreCommandsGrid;
+                MenuCanvas._parentGrid = MenuGrid;
+                TextCanvas._parentGrid = TextGrid;
+                TipView._parentGrid = null;
+
+                MenuGrid.IsVisible = true;
+                TextGrid.IsVisible = true;
+                MoreCommandsGrid.IsVisible = true;
+                MenuCanvas.InvalidateSurface();
+                TextCanvas.InvalidateSurface();
+                CommandCanvas.InvalidateSurface();
+
                 _gnollHackService = GHApp.GnollHackService;
                 LoadingDetailsLabel.Text = "Initializing GnollHack...";
                 await _gnollHackService.InitializeGnollHack();
- 
+
                 var tasks = new List<Task>();
 
                 LoadingDetailsLabel.Text = "Loading Music Bank...";
@@ -1450,6 +1469,10 @@ namespace GnollHackX.Pages.Game
                     DeviceDisplay.KeepScreenOn = true;
                 }
 
+                MenuGrid.IsVisible = false;
+                TextGrid.IsVisible = false;
+                MoreCommandsGrid.IsVisible = false;
+
                 Thread t;
                 if (PlayingReplay)
                     t = new Thread(new ThreadStart(GNHThreadProcForReplay));
@@ -1462,18 +1485,6 @@ namespace GnollHackX.Pages.Game
 
                 LoadingDetailsLabel.Text = "Finishing up...";
                 await LoadingProgressBar.ProgressTo(0.99, 40, Easing.Linear);
-
-                canvasView._gamePage = this;
-                CommandCanvas._gamePage = this;
-                MenuCanvas._gamePage = this;
-                TextCanvas._gamePage = this;
-                TipView._gamePage = this;
-
-                canvasView._parentGrid = MainGrid;
-                CommandCanvas._parentGrid = MoreCommandsGrid;
-                MenuCanvas._parentGrid = MenuGrid;
-                TextCanvas._parentGrid = TextGrid;
-                TipView._parentGrid = null;
 
                 IsGameOn = true;
                 IsMainCanvasOn = true;
@@ -16086,7 +16097,7 @@ namespace GnollHackX.Pages.Game
                 GHApp.MaybeWriteGHLog("MenuCanvas_PaintSurface not on main thread!");
             }
 
-            if (!MenuGrid.ThreadSafeIsVisible)
+            if (!MenuGrid.ThreadSafeIsVisible || LoadingGrid.ThreadSafeIsVisible)
                 return;
 
             SKSurface surface = e.Surface;
@@ -18009,7 +18020,7 @@ namespace GnollHackX.Pages.Game
                 GHApp.MaybeWriteGHLog("TextCanvas_PaintSurface not on main thread!");
             }
 
-            if (!TextGrid.ThreadSafeIsVisible)
+            if (!TextGrid.ThreadSafeIsVisible || LoadingGrid.ThreadSafeIsVisible)
                 return;
 
             SKImageInfo info = e.Info;
@@ -18545,7 +18556,7 @@ namespace GnollHackX.Pages.Game
                 GHApp.MaybeWriteGHLog("CommandCanvas_PaintSurface not on main thread!");
             }
 
-            if (!MoreCommandsGrid.ThreadSafeIsVisible)
+            if (!MoreCommandsGrid.ThreadSafeIsVisible || LoadingGrid.ThreadSafeIsVisible)
                 return;
 
             SKImageInfo info = e.Info;
