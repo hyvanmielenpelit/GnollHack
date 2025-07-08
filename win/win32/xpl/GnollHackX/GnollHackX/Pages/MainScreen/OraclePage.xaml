@@ -22,7 +22,7 @@
                 <Grid Grid.Row="2" WidthRequest  ="480" HorizontalOptions  ="Center" VerticalOptions="Fill">
                     <ScrollView HorizontalOptions="Fill" VerticalOptions="Fill">
                         <StackLayout x:Name="OracleLayout" Spacing="6" HorizontalOptions="Fill">
-                            <Label x:Name="EmptyLabel" IsVisible="False" Text="No received consultation" HorizontalOptions="Center" VerticalOptions="Start" HorizontalTextAlignment="Center" FontSize="18" TextColor="Black" FontFamily="Immortal"/>
+                            <Label x:Name="EmptyLabel" IsVisible="False" Text="No received consultations" HorizontalOptions="Center" VerticalOptions="Start" HorizontalTextAlignment="Center" FontSize="18" TextColor="Black" FontFamily="Immortal"/>
                         </StackLayout>
                     </ScrollView>
                 </Grid>

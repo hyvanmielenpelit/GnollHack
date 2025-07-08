@@ -203,6 +203,21 @@ namespace GnollHackX.Pages.Game
             MainLayout.IsEnabled = true;
         }
 
+        private async void btnDelphi_Clicked(object sender, EventArgs e)
+        {
+            await OpenOraclePage();
+        }
+
+        private async Task OpenOraclePage()
+        {
+            MainLayout.IsEnabled = false;
+            GHApp.PlayButtonClickedSound();
+            var oraclePage = new OraclePage();
+            oraclePage.ReadConsultations();
+            await GHApp.Navigation.PushModalAsync(oraclePage);
+            MainLayout.IsEnabled = true;
+        }
+
         private void ContentPage_Appearing(object sender, EventArgs e)
         {
             GHApp.BackButtonPressed += BackButtonPressed;
@@ -413,6 +428,11 @@ namespace GnollHackX.Pages.Game
                             case (int)'l':
                                 if (btnLibrary.IsEnabled && btnLibrary.IsVisible && MainLayout.IsEnabled)
                                     await OpenLibraryPage();
+                                handled = true;
+                                break;
+                            case (int)'d':
+                                if (btnDelphi.IsEnabled && btnDelphi.IsVisible && MainLayout.IsEnabled)
+                                    await OpenOraclePage();
                                 handled = true;
                                 break;
                             case (int)'w':
