@@ -238,7 +238,8 @@
 		<None Remove="..\GnollHackX\GnollHackX\Pages\MainScreen\VaultPage.xaml.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\Pages\MainScreen\TopScorePage.xaml.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\Pages\MainScreen\LibraryPage.xaml.cs" />
-		<None Remove="..\GnollHackX\GnollHackX\Pages\MainScreen\MusicPage.xaml.cs" />
+    <None Remove="..\GnollHackX\GnollHackX\Pages\MainScreen\OraclePage.xaml.cs" />
+    <None Remove="..\GnollHackX\GnollHackX\Pages\MainScreen\MusicPage.xaml.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\Pages\MainScreen\SnapshotPage.xaml.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\Pages\MainScreen\DisplayFilePage.xaml.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\Pages\MainScreen\ReplayPage.xaml.cs" />
@@ -260,6 +261,7 @@
 		<None Remove="Assets\UI\background-darkmarble.png" />
 		<None Remove="Assets\UI\battery-frame.png" />
 		<None Remove="Assets\UI\catalogue.png" />
+		<None Remove="Assets\UI\delphi.png" />
 		<None Remove="Assets\UI\fps.png" />
 		<None Remove="Assets\UI\frame-darkmode-horizontal.png" />
 		<None Remove="Assets\UI\frame-darkmode-topleft-small.png" />
@@ -281,6 +283,7 @@
 		<None Remove="Assets\UI\memory.png" />
 		<None Remove="Assets\UI\messages.png" />
 		<None Remove="Assets\UI\music.png" />
+		<None Remove="Assets\UI\oracle.png" />
 		<None Remove="Assets\UI\page-next.png" />
 		<None Remove="Assets\UI\page-previous.png" />
 		<None Remove="Assets\UI\picktobag.png" />
@@ -411,7 +414,8 @@
 		<Compile Include="..\GnollHackX\GnollHackX\Pages\MainScreen\VaultPage.xaml.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\Pages\MainScreen\TopScorePage.xaml.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\Pages\MainScreen\LibraryPage.xaml.cs" />
-		<Compile Include="..\GnollHackX\GnollHackX\Pages\MainScreen\MusicPage.xaml.cs" />
+    <Compile Include="..\GnollHackX\GnollHackX\Pages\MainScreen\OraclePage.xaml.cs" />
+    <Compile Include="..\GnollHackX\GnollHackX\Pages\MainScreen\MusicPage.xaml.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\Pages\MainScreen\SnapshotPage.xaml.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\Pages\MainScreen\DisplayFilePage.xaml.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\Pages\MainScreen\ReplayPage.xaml.cs" />
@@ -829,6 +833,7 @@
 		<EmbeddedResource Include="Assets\diablo_h.ttf" />
 		<EmbeddedResource Include="Assets\endr.ttf" />
 		<EmbeddedResource Include="Assets\FMOD-Logo-192-White.png" />
+		<EmbeddedResource Include="Assets\UI\delphi.png" />
 		<EmbeddedResource Include="Assets\UI\lootin.png" />
 		<EmbeddedResource Include="Assets\UI\lootout.png" />
 		<!--<MauiAsset Include="Assets\Fonts\Lato.otf" />-->
@@ -939,6 +944,7 @@
 		<EmbeddedResource Include="Assets\UI\no.png" />
 		<EmbeddedResource Include="Assets\UI\offer.png" />
 		<EmbeddedResource Include="Assets\UI\open.png" />
+		<EmbeddedResource Include="Assets\UI\oracle.png" />
 		<EmbeddedResource Include="Assets\UI\orb_border.png" />
 		<EmbeddedResource Include="Assets\UI\orb_fill.png" />
 		<EmbeddedResource Include="Assets\UI\orb_glass.png" />

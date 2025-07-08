@@ -102,6 +102,7 @@
     <None Remove="Assets\UI\commands.png" />
     <None Remove="Assets\UI\conduct.png" />
     <None Remove="Assets\UI\count.png" />
+    <None Remove="Assets\UI\delphi.png" />
     <None Remove="Assets\UI\dig.png" />
     <None Remove="Assets\UI\dip.png" />
     <None Remove="Assets\UI\discoveries.png" />
@@ -169,6 +170,7 @@
     <None Remove="Assets\UI\no.png" />
     <None Remove="Assets\UI\offer.png" />
     <None Remove="Assets\UI\open.png" />
+    <None Remove="Assets\UI\oracle.png" />
     <None Remove="Assets\UI\orb_border.png" />
     <None Remove="Assets\UI\orb_fill.png" />
     <None Remove="Assets\UI\orb_glass.png" />
@@ -331,6 +333,7 @@
     <EmbeddedResource Include="Assets\UI\background-darkmarble.png" />
     <EmbeddedResource Include="Assets\UI\battery-frame.png" />
     <EmbeddedResource Include="Assets\UI\catalogue.png" />
+    <EmbeddedResource Include="Assets\UI\delphi.png" />
     <EmbeddedResource Include="Assets\UI\fps.png" />
     <EmbeddedResource Include="Assets\UI\frame-darkmode-horizontal.png" />
     <EmbeddedResource Include="Assets\UI\frame-darkmode-topleft-small.png" />
@@ -363,6 +366,7 @@
     <EmbeddedResource Include="Assets\UI\droptypes.png" />
     <EmbeddedResource Include="Assets\UI\load.png" />
     <EmbeddedResource Include="Assets\UI\music.png" />
+    <EmbeddedResource Include="Assets\UI\oracle.png" />
     <EmbeddedResource Include="Assets\UI\page-next.png" />
     <EmbeddedResource Include="Assets\UI\page-previous.png" />
     <EmbeddedResource Include="Assets\UI\picktobag.png" />
@@ -625,6 +629,9 @@
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
     <EmbeddedResource Update="Pages\MainScreen\LibraryPage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Pages\MainScreen\OraclePage.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
     <EmbeddedResource Update="Pages\MainScreen\MusicPage.xaml">

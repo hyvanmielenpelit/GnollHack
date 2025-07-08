@@ -295,6 +295,8 @@ namespace GnollHackX.Unknown
         [DllImport(PlatformConstants.dll)]
         public static extern int LibGetNumCatalogues();
         [DllImport(PlatformConstants.dll)]
+        public static extern int LibGetMaxMajorConsultations(string filename);
+        [DllImport(PlatformConstants.dll)]
         public static extern int LibIsDebug();
         [DllImport(PlatformConstants.dll)]
         public static extern int LibValidateSaveFile(string filename, [MarshalAs(UnmanagedType.LPArray), Out] byte[] out_buffer);
@@ -1089,6 +1091,12 @@ namespace GnollHackX.Unknown
         public int GetMaxManuals()
         {
             return LibGetMaxManuals();
+        }
+
+        public int GetMaxMajorConsultations()
+        {
+            string filesdir = GetGnollHackPath();
+            return LibGetMaxMajorConsultations(filesdir);
         }
 
         public int GetFirstCatalogue()

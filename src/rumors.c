@@ -46,6 +46,7 @@
 STATIC_DCL void FDECL(init_rumors, (dlb *));
 STATIC_DCL void FDECL(init_oracles, (dlb *));
 STATIC_DCL void FDECL(couldnt_open_file, (const char *));
+STATIC_DCL int NDECL(num_oracles);
 STATIC_DCL int NDECL(count_remaining_major_consultations);
 
 /* rumor size variables are signed so that value -1 can be used as a flag */
@@ -431,6 +432,32 @@ dlb *fp;
 }
 
 STATIC_OVL int
+num_oracles(VOID_ARGS)
+{
+    int res = 0;
+    boolean is_dlb_init = dlb_is_initialized();
+    if (!is_dlb_init)
+        dlb_init();
+    dlb* fp = dlb_fopen(ORACLEFILE, "r");
+    if (fp)
+    {
+        char line[BUFSZ];
+        int cnt = 0;
+
+        /* this assumes we're only called once */
+        (void)dlb_fgets(line, sizeof line, fp); /* skip "don't edit" comment*/
+        (void)dlb_fgets(line, sizeof line, fp);
+        if (sscanf(line, "%5d\n", &cnt) == 1 && cnt > 0)
+            res = cnt;
+        (void)dlb_fclose(fp);
+    }
+    if (!is_dlb_init)
+        dlb_cleanup();
+    return res;
+}
+
+
+STATIC_OVL int
 count_remaining_major_consultations(VOID_ARGS)
 {
     int cnt = 0;
@@ -441,6 +468,15 @@ count_remaining_major_consultations(VOID_ARGS)
             cnt++;
     }
     return cnt;
+}
+
+int
+get_number_of_oracle_major_consultations(VOID_ARGS)
+{
+    if (!oracle_cnt)
+        return num_oracles();
+    else
+        return (int)oracle_cnt;
 }
 
 void

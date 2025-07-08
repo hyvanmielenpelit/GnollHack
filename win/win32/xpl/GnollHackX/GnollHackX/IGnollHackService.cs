@@ -70,6 +70,8 @@ namespace GnollHackX
         int GetMaxManuals();
         int GetFirstCatalogue();
         int GetNumCatalogues();
+        int GetMaxMajorConsultations();
+
         bool IsDebug();
 
         bool GetCharacterClickAction();

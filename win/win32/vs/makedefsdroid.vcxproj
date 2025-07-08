@@ -343,6 +343,15 @@
           Overwrite="true"
           Encoding="UTF-8"/>
     <PropertyGroup>
+      <InputFile>$(XamarinStartScreenDir)OraclePage.xaml</InputFile>
+      <OutputFile>$(MauiMainDir)OraclePage.xaml</OutputFile>
+    </PropertyGroup>
+    <WriteLinesToFile
+        File="$(OutputFile)"
+        Lines="$([System.IO.File]::ReadAllText($(InputFile)).Replace('GnollHackX.Controls','GnollHackM').Replace('GnollHackX.Pages.MainScreen','GnollHackM').Replace('GnollHackX','GnollHackM').Replace('WidthRequest  =','MaximumWidthRequest=').Replace('HorizontalOptions  =%22Center%22','HorizontalOptions=%22Fill%22').Replace('SkiaSharp.Views.Forms','SkiaSharp.Views.Maui.Controls').Replace('http://xamarin.com/schemas/2014/forms','http://schemas.microsoft.com/dotnet/2021/maui').Replace('UseVaryingBackgroundImages =%22False%22', 'UseVaryingBackgroundImages =%22True%22').Replace('%3CContentPage.Content%3E','').Replace('%3C/ContentPage.Content%3E',''))"
+        Overwrite="true"
+        Encoding="UTF-8"/>
+    <PropertyGroup>
       <InputFile>$(XamarinStartScreenDir)MusicPage.xaml</InputFile>
       <OutputFile>$(MauiMainDir)MusicPage.xaml</OutputFile>
     </PropertyGroup>

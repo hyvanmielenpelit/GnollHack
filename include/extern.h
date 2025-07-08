@@ -3244,6 +3244,7 @@ E int FDECL(doconsult, (struct monst *));
 E int FDECL(do_oracle_identify, (struct monst*));
 E int FDECL(do_oracle_enlightenment, (struct monst*));
 E void NDECL(rumor_check);
+E int NDECL(get_number_of_oracle_major_consultations);
 
 /* ### save.c ### */
 

@@ -79,6 +79,23 @@ namespace GnollHackX.Pages.MainScreen
             _buttons.Add(rib);
 
             rib = new LabeledImageButton();
+            rib.ImgSourcePath = "resource://" + GHApp.AppResourceName + ".Assets.UI.delphi.png";
+            rib.ImgHighFilterQuality = true;
+            rib.LblText = "Delphi";
+            rib.LblFontSize = 20;
+            rib.LblFontColor = GHApp.DarkMode ? GHColors.White : GHColors.Black;
+            rib.LblFontFamily = "Immortal";
+            rib.ImgWidth = 110;
+            rib.ImgHeight = 110;
+            rib.GridWidth = 200;
+            rib.GridHeight = 140;
+            rib.GridMargin = new Thickness(rib.ImgWidth / 10, 0);
+            rib.WidthRequest = 200 + rib.ImgWidth / 5;
+            rib.HeightRequest = 140;
+            rib.BtnClicked += btnOracle_Clicked;
+            _buttons.Add(rib);
+
+            rib = new LabeledImageButton();
             rib.ImgSourcePath = "resource://" + GHApp.AppResourceName + ".Assets.UI.chronicle.png";
             rib.ImgHighFilterQuality = true;
             rib.LblText = "Replays";
@@ -301,6 +318,21 @@ namespace GnollHackX.Pages.MainScreen
             var libPage = new LibraryPage();
             libPage.ReadLibrary();
             await GHApp.Navigation.PushModalAsync(libPage);
+            VaultLayout.IsEnabled = true;
+        }
+
+        private async void btnOracle_Clicked(object sender, EventArgs e)
+        {
+            await OpenOraclePage();
+        }
+
+        private async Task OpenOraclePage()
+        {
+            VaultLayout.IsEnabled = false;
+            GHApp.PlayButtonClickedSound();
+            var oraclePage = new OraclePage();
+            oraclePage.ReadConsultations();
+            await GHApp.Navigation.PushModalAsync(oraclePage);
             VaultLayout.IsEnabled = true;
         }
 

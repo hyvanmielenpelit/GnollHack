@@ -1099,7 +1099,17 @@ namespace GnollHackX
 
         public static void PopulateManuals(Dictionary<int, StoredManual> manuals)
         {
+            PopulateHints(manuals, GHConstants.ManualFilePrefix);
+        }
+
+        public static void PopulateHints(Dictionary<int, StoredManual> manuals, string hintPrefix)
+        {
+            if (manuals == null)
+                return;
             manuals.Clear();
+            if (string.IsNullOrEmpty(hintPrefix))
+                return;
+
             string datadir = Path.Combine(GHApp.GHPath, GHConstants.UserDataDirectory);
             if (Directory.Exists(datadir))
             {
@@ -1108,8 +1118,8 @@ namespace GnollHackX
                 {
                     bool fileexists = File.Exists(file);
                     FileInfo fileinfo = new FileInfo(file);
-                    if (fileinfo.Name.Length > GHConstants.ManualFilePrefix.Length &&
-                        fileinfo.Name.Substring(0, GHConstants.ManualFilePrefix.Length) == GHConstants.ManualFilePrefix &&
+                    if (fileinfo.Name.Length > hintPrefix.Length &&
+                        fileinfo.Name.Substring(0, hintPrefix.Length) == hintPrefix &&
                         fileexists)
                     {
                         StoredManual sm = null;
@@ -3926,6 +3936,8 @@ namespace GnollHackX
                     AppResourceName + ".Assets.UI.lastitem.png",
                     AppResourceName + ".Assets.UI.conduct.png",
                     AppResourceName + ".Assets.UI.manual.png",
+                    AppResourceName + ".Assets.UI.delphi.png",
+                    AppResourceName + ".Assets.UI.oracle.png",
                     AppResourceName + ".Assets.UI.chronicle.png",
                     AppResourceName + ".Assets.UI.music.png",
                     AppResourceName + ".Assets.UI.you.png",

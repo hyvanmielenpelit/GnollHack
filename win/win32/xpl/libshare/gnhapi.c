@@ -458,6 +458,19 @@ LibGetMaxManuals(VOID_ARGS)
 }
 
 DLLEXPORT int
+LibGetMaxMajorConsultations(gnhdir)
+const char* gnhdir;
+{
+    int res = chdir(gnhdir);
+    if (res != 0)
+    {
+        /* Failed to change to right directory */
+        return 0;
+    }
+    return get_number_of_oracle_major_consultations();
+}
+
+DLLEXPORT int
 LibGetFirstCatalogue()
 {
     return FIRST_CATALOGUE;

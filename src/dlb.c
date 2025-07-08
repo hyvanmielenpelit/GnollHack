@@ -443,7 +443,7 @@ STATIC_VAR const dlb_procs_t* dlb_procs;
 STATIC_VAR boolean dlb_initialized = FALSE;
 
 boolean
-dlb_init()
+dlb_init(VOID_ARGS)
 {
     if (!dlb_initialized) {
 #ifdef DLBLIB
@@ -461,12 +461,18 @@ dlb_init()
 }
 
 void
-dlb_cleanup()
+dlb_cleanup(VOID_ARGS)
 {
     if (dlb_initialized) {
         do_dlb_cleanup();
         dlb_initialized = FALSE;
     }
+}
+
+boolean
+dlb_is_initialized(VOID_ARGS)
+{
+    return dlb_initialized;
 }
 
 dlb*
