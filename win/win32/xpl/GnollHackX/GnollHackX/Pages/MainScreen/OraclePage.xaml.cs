@@ -97,7 +97,7 @@ namespace GnollHackX.Pages.MainScreen
                     RowImageButton rib = new RowImageButton();
                     rib.ImgSourcePath = "resource://" + GHApp.AppResourceName + ".Assets.UI.oracle.png";
                     rib.ImgHighFilterQuality = true;
-                    rib.LblText = sm.Name;
+                    rib.LblText = GetShortName(sm);
                     rib.LblTextColor = GHApp.DarkMode ? GHColors.White : GHColors.Black;
                     rib.LblFontSize = 17;
                     rib.ImgWidth = 80;
@@ -112,16 +112,46 @@ namespace GnollHackX.Pages.MainScreen
                     rib.HeightRequest = 80;
                     rib.GridMargin = new Thickness(rib.ImgWidth / 15, 0);
                     rib.BtnCommand = sm.Id;
-                    rib.BtnClicked += LibraryButton_Clicked;
+                    rib.BtnClicked += OracleButton_Clicked;
                     OracleLayout.Children.Add(rib);
                 }
             }
             else
                 EmptyLabel.IsVisible = true;
-
         }
 
-        private async void LibraryButton_Clicked(object sender, EventArgs e)
+        private string GetShortName(StoredManual sm)
+        {
+            if (sm == null || string.IsNullOrEmpty(sm.Name))
+                return "";
+
+            int nameLen = sm.Name.Length;
+            if (nameLen <= 51)
+                return sm.Name;
+
+            int newLineIdx = sm.Name.IndexOf(Environment.NewLine, 25);
+            if (newLineIdx >= 0 && newLineIdx <= 48)
+                return sm.Name.Substring(0, newLineIdx) + "...";
+
+            int periodIdx = sm.Name.IndexOf('.', 25);
+            if (periodIdx >= 0 && periodIdx <= 48)
+                return sm.Name.Substring(0, periodIdx) + "...";
+
+            int commaIdx = sm.Name.IndexOf(',', 25);
+            if (commaIdx >= 0 && commaIdx <= 48)
+                return sm.Name.Substring(0, commaIdx) + "...";
+
+            int spaceIdx = sm.Name.IndexOf(' ', 32);
+            if (spaceIdx >= 0 && spaceIdx <= 48)
+                return sm.Name.Substring(0, spaceIdx) + "...";
+
+            if (nameLen > 51)
+                return sm.Name.Substring(0, 48) + "...";
+            else
+                return sm.Name;
+        }
+
+        private async void OracleButton_Clicked(object sender, EventArgs e)
         {
             OracleLayout.IsEnabled = false;
             RowImageButton ghbutton = sender as RowImageButton;
@@ -131,8 +161,17 @@ namespace GnollHackX.Pages.MainScreen
                 if (_consultations.TryGetValue(ghbutton.BtnCommand, out sm))
                 {
                     string errormsg;
-                    var dispfilepage = new DisplayFilePage(null, sm.Name, 0, false, false, false);
-                    dispfilepage.OverridingText = sm.Text;
+                    var dispfilepage = new DisplayFilePage(null, GetShortName(sm), 0, false, false, false);
+                    int textLen = sm.Text.Length;
+                    int newLineLen = Environment.NewLine.Length;
+                    int firstNewLine = sm.Text.IndexOf(Environment.NewLine);
+                    int secondNewLine = firstNewLine >= 0 && firstNewLine + newLineLen < textLen ? sm.Text.IndexOf(Environment.NewLine, firstNewLine + newLineLen) : -1;
+                    string text;
+                    if (secondNewLine >= 0 && secondNewLine + newLineLen < textLen)
+                        text = sm.Text.Substring(0, secondNewLine + newLineLen) + sm.Text.Substring(secondNewLine + newLineLen).Replace(Environment.NewLine, " ");
+                    else
+                        text = sm.Text;
+                    dispfilepage.OverridingText = text;
                     dispfilepage.UseFixedFontSize = true;
                     dispfilepage.FontSize = 14;
                     if (dispfilepage.ReadFile(out errormsg))
