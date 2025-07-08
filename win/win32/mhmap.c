@@ -3049,7 +3049,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                 {
                                     int src_x = 0, src_y = 0;
                                     int dest_x = 0, dest_y = 0;
-                                    if (otmp_round ? otmp_round->lamplit : (data->map[i][j].missile_flags & MISSILE_FLAGS_LIT) != 0)
+                                    if (otmp_round ? (otmp_round->lamplit || (otmp_round->item_flags & ITEM_FLAGS_MEMORY_OBJECT_LAMPLIT) != 0) : (data->map[i][j].missile_flags & MISSILE_FLAGS_LIT) != 0)
                                     {
                                         src_x = src_lit_x;
                                         src_y = src_lit_y;
@@ -3125,7 +3125,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                 {
                                     int src_x = 0, src_y = 0;
                                     int dest_x = 0, dest_y = 0;
-                                    if (otmp_round ? otmp_round->lamplit : (data->map[i][j].missile_flags & MISSILE_FLAGS_LIT) != 0)
+                                    if (otmp_round ? (otmp_round->lamplit || (otmp_round->item_flags & ITEM_FLAGS_MEMORY_OBJECT_LAMPLIT) != 0) : (data->map[i][j].missile_flags & MISSILE_FLAGS_LIT) != 0)
                                     {
                                         src_x = src_lit_x;
                                         src_y = src_lit_y;
