@@ -4,6 +4,7 @@
 	<Target Name="Angle1" AfterTargets="ResolvePackageAssets">
 		<ItemGroup>
 			<NativeCopyLocalItems Remove="@(NativeCopyLocalItems)" Condition="'%(Filename)%(Extension)' == 'libEGL.dll'" />
+			<NativeCopyLocalItems Remove="@(NativeCopyLocalItems)" Condition="'%(Filename)%(Extension)' == 'libGLESv2.dll'" />
 		</ItemGroup>
 	</Target>
 
@@ -11,6 +12,7 @@
 	<Target Name="Angle2" AfterTargets="CopyFilesToOutputDirectory">
 		<ItemGroup>
 			<AngleSourceAssemblies Include="$(MSBuildProjectDirectory)\Platforms\Windows\libs\libEGL.dll" />
+			<AngleSourceAssemblies Include="$(MSBuildProjectDirectory)\Platforms\Windows\libs\libGLESv2.dll" />
 		</ItemGroup>
 
 		<Copy SourceFiles="@(AngleSourceAssemblies)"
@@ -21,10 +23,20 @@
 	<Target Name="Angle3" AfterTargets="_ComputeAppxPackagePayload">
 		<ItemGroup>
 			<AppxPackagePayload Remove="@(AppxPackagePayload)" Condition="'%(Filename)%(Extension)' == 'libEGL.dll'" />
+			<AppxPackagePayload Remove="@(AppxPackagePayload)" Condition="'%(Filename)%(Extension)' == 'libGLESv2.dll'" />
 			<AppxPackagePayload Include="$(MSBuildProjectDirectory)\Platforms\Windows\libs\libEGL.dll">
 				<DestinationSubPath>libEGL.dll</DestinationSubPath>
 				<TargetPath>libEGL.dll</TargetPath>
 				<RelativePath>libEGL.dll</RelativePath>
+				<OutputGroup>CopyLocalFilesToOutputGroup</OutputGroup>
+				<AssetType>native</AssetType>
+				<ProjectName>GnollHackM</ProjectName>
+				<CopyLocal>true</CopyLocal>
+			</AppxPackagePayload>
+			<AppxPackagePayload Include="$(MSBuildProjectDirectory)\Platforms\Windows\libs\libEGL.dll">
+				<DestinationSubPath>libGLESv2.dll</DestinationSubPath>
+				<TargetPath>libGLESv2.dll</TargetPath>
+				<RelativePath>libGLESv2.dll</RelativePath>
 				<OutputGroup>CopyLocalFilesToOutputGroup</OutputGroup>
 				<AssetType>native</AssetType>
 				<ProjectName>GnollHackM</ProjectName>
