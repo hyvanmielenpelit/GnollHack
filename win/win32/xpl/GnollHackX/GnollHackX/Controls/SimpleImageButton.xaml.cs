@@ -192,11 +192,13 @@ namespace GnollHackX.Controls
 
         private void SimpleImageButton_SizeChanged(object sender, EventArgs e)
         {
-            lock (_propertyLock)
-            {
-                _threadSafeWidth = Width;
-                _threadSafeHeight = Height;
-            }
+            //lock (_propertyLock)
+            //{
+            //    _threadSafeWidth = Width;
+            //    _threadSafeHeight = Height;
+            //}
+            ThreadSafeWidth = Width;
+            ThreadSafeHeight = Height;
         }
 
     }

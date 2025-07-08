@@ -34,11 +34,13 @@ namespace GnollHackX
 
         private void MeasurableGrid_SizeChanged(object sender, EventArgs e)
         {
-            lock (_propertyLock)
-            {
-                _threadSafeWidth = Width;
-                _threadSafeHeight = Height;
-            }
+            //lock (_propertyLock)
+            //{
+            //    _threadSafeWidth = Width;
+            //    _threadSafeHeight = Height;
+            //}
+            ThreadSafeWidth = Width;
+            ThreadSafeHeight = Height;
         }
 
         private void MeasurableGrid_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)

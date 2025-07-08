@@ -35,11 +35,13 @@ namespace GnollHackX
 
         private void MeasurableStackLayout_SizeChanged(object sender, EventArgs e)
         {
-            lock (_propertyLock)
-            {
-                _threadSafeWidth = Width;
-                _threadSafeHeight = Height;
-            }
+            //lock (_propertyLock)
+            //{
+            //    _threadSafeWidth = Width;
+            //    _threadSafeHeight = Height;
+            //}
+            ThreadSafeWidth = Width;
+            ThreadSafeHeight = Height;
         }
 
         private void MeasurableStackLayout_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)

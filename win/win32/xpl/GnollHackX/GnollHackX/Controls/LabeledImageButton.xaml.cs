@@ -165,11 +165,13 @@ namespace GnollHackX.Controls
 
         private void LabeledImageButton_SizeChanged(object sender, EventArgs e)
         {
-            lock (_propertyLock)
-            {
-                _threadSafeWidth = Width;
-                _threadSafeHeight = Height;
-            }
+            //lock (_propertyLock)
+            //{
+            //    _threadSafeWidth = Width;
+            //    _threadSafeHeight = Height;
+            //}
+            ThreadSafeWidth = Width;
+            ThreadSafeHeight = Height;
         }
 
         public void SetButtonFocus()
@@ -228,6 +230,11 @@ namespace GnollHackX.Controls
                 }
             };
 #endif
+        }
+
+        public void InvalidateSurface()
+        {
+            ViewImage.InvalidateSurface();
         }
 
         private void LabeledImageButton_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)

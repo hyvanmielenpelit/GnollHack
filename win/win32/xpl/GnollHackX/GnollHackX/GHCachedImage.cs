@@ -107,11 +107,13 @@ namespace GnollHackX
 
         private void GHCachedImage_SizeChanged(object sender, EventArgs e)
         {
-            lock (_propertyLock)
-            {
-                _threadSafeWidth = Width;
-                _threadSafeHeight = Height;
-            }
+            //lock (_propertyLock)
+            //{
+            //    _threadSafeWidth = Width;
+            //    _threadSafeHeight = Height;
+            //}
+            ThreadSafeWidth = Width;
+            ThreadSafeHeight = Height;
         }
 
         public bool CacheImage { get; set; } = true;

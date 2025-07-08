@@ -235,7 +235,6 @@ namespace GnollHackX.Pages.MainScreen
                 if (width > 0)
                 {
                     bool shouldUseFlex = width >= 460 && !GHApp.IsWindows;
-                    bool shouldUseHorizontalStacks = false; // width >= 460 && GHApp.IsWindows && _buttons.Count > 1;
                     bool widerWidth = height < 280 + 6 + 24 + 60 + lblHeader.Margin.Top + lblHeader.Margin.Bottom + CloseButton.Margin.Top + CloseButton.Margin.Bottom;
                     double usedWidth = widerWidth ? 2048 : 720;
 #if GNH_MAUI
@@ -244,7 +243,7 @@ namespace GnollHackX.Pages.MainScreen
                     ViewGrid.WidthRequest = usedWidth;
 #endif
 
-                    if (!_buttonsAdded || _usingFlex != shouldUseFlex || _usingHorizontalStacks != shouldUseHorizontalStacks)
+                    if (!_buttonsAdded || _usingFlex != shouldUseFlex)
                     {
                         if(_buttonsAdded)
                         {
@@ -259,28 +258,6 @@ namespace GnollHackX.Pages.MainScreen
                             foreach (LabeledImageButton button in _buttons)
                                 VaultFlexLayout.Children.Add(button);
                         }
-                        else if (shouldUseHorizontalStacks)
-                        {
-                            StackLayout s1 = new StackLayout();
-                            s1.Orientation = StackOrientation.Horizontal;
-                            s1.HorizontalOptions = LayoutOptions.Center;
-                            s1.Spacing = 6;
-                            VaultLayout.Children.Add(s1);
-                            StackLayout s2 = new StackLayout();
-                            s2.Orientation = StackOrientation.Horizontal;
-                            s2.HorizontalOptions = LayoutOptions.Center;
-                            s2.Spacing = 6;
-                            VaultLayout.Children.Add(s2);
-                            int i = 0;
-                            foreach (LabeledImageButton button in _buttons)
-                            {
-                                if (i <= (_buttons.Count + 1) / 2)
-                                    s1.Children.Add(button);
-                                else
-                                    s2.Children.Add(button);
-                                i++;
-                            }
-                        }
                         else
                         {
                             foreach (LabeledImageButton button in _buttons)
@@ -288,11 +265,10 @@ namespace GnollHackX.Pages.MainScreen
                         }
                         _buttonsAdded = true;
                         _usingFlex = shouldUseFlex;
-                        _usingHorizontalStacks = shouldUseHorizontalStacks;
                         VaultFlexLayout.IsVisible = shouldUseFlex;
                         VaultLayout.IsVisible = !shouldUseFlex;
                     }
-                    if(!_usingFlex)
+                    if (!_usingFlex)
                         VaultScrollView.VerticalScrollBarVisibility = ScrollBarVisibility.Default;
                 }
             }
