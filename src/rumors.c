@@ -448,7 +448,7 @@ num_oracles(VOID_ARGS)
         (void)dlb_fgets(line, sizeof line, fp); /* skip "don't edit" comment*/
         (void)dlb_fgets(line, sizeof line, fp);
         if (sscanf(line, "%5d\n", &cnt) == 1 && cnt > 0)
-            res = cnt;
+            res = cnt - 1; /* Do not count special at zero */
         (void)dlb_fclose(fp);
     }
     if (!is_dlb_init)
@@ -610,7 +610,8 @@ int oraclesstyle; /* 0 = cookie, 1 = oracle, 2 = spell */
                 context.quest_flags |= QUEST_FLAGS_HEARD_OF_BOOK | QUEST_FLAGS_HEARD_OF_BELL | QUEST_FLAGS_HEARD_OF_MENORAH | QUEST_FLAGS_HEARD_OF_VIBRATING_SQUARE | QUEST_FLAGS_HEARD_OF_AMULET_IN_SANCTUM | QUEST_FLAGS_HEARD_OF_AMULET_IN_GEHENNOM;
             }
         }
-        issue_gui_command(GUI_CMD_ORACLE_MAJOR_CONSULTATION, tmpwin, used_oracle_idx, titlebuf);
+        if (!special)
+            issue_gui_command(GUI_CMD_ORACLE_MAJOR_CONSULTATION, tmpwin, used_oracle_idx, titlebuf);
         display_nhwindow(tmpwin, TRUE);
         destroy_nhwindow(tmpwin);
 

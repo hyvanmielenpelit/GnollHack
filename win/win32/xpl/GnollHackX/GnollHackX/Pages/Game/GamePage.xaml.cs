@@ -1265,12 +1265,16 @@ namespace GnollHackX.Pages.Game
                 TextCanvas._parentGrid = TextGrid;
                 TipView._parentGrid = null;
 
-                MenuGrid.IsVisible = true;
-                TextGrid.IsVisible = true;
-                MoreCommandsGrid.IsVisible = true;
-                MenuCanvas.InvalidateSurface();
-                TextCanvas.InvalidateSurface();
-                CommandCanvas.InvalidateSurface();
+                bool initAuxCanvases = GHApp.IsAndroid && GHApp.UseGPU && !GHApp.DisableAuxGPU;
+                if (initAuxCanvases)
+                {
+                    MenuGrid.IsVisible = true;
+                    TextGrid.IsVisible = true;
+                    MoreCommandsGrid.IsVisible = true;
+                    MenuCanvas.InvalidateSurface();
+                    TextCanvas.InvalidateSurface();
+                    CommandCanvas.InvalidateSurface();
+                }
 
                 _gnollHackService = GHApp.GnollHackService;
                 LoadingDetailsLabel.Text = "Initializing GnollHack...";
@@ -1471,9 +1475,12 @@ namespace GnollHackX.Pages.Game
                     DeviceDisplay.KeepScreenOn = true;
                 }
 
-                MenuGrid.IsVisible = false;
-                TextGrid.IsVisible = false;
-                MoreCommandsGrid.IsVisible = false;
+                if (initAuxCanvases)
+                {
+                    MenuGrid.IsVisible = false;
+                    TextGrid.IsVisible = false;
+                    MoreCommandsGrid.IsVisible = false;
+                }
 
                 Thread t;
                 if (PlayingReplay)
