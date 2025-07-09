@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using GnollHackX;
 using Microsoft.Maui.Controls.PlatformConfiguration;
 using Microsoft.Maui.Controls.PlatformConfiguration.iOSSpecific;
+using Microsoft.Maui.Layouts;
 
 namespace GnollHackM
 #else
@@ -43,7 +44,8 @@ namespace GnollHackX.Pages.MainScreen
             {
                 lblHeader.TextColor = GHColors.White;
             }
-
+            Thickness gridMargin = new Thickness(110.0 / 10, 0);
+            Thickness margin = new Thickness(110.0 / 8, 0, 110.0 / 8, 110.0 / 8);
             LabeledImageButton rib = new LabeledImageButton();
             rib.ImgSourcePath = "resource://" + GHApp.AppResourceName + ".Assets.UI.conduct.png";
             rib.ImgHighFilterQuality = true;
@@ -55,9 +57,10 @@ namespace GnollHackX.Pages.MainScreen
             rib.ImgHeight = 110;
             rib.GridWidth = 200;
             rib.GridHeight = 140;
-            rib.GridMargin = new Thickness(rib.ImgWidth / 10, 0);
+            rib.GridMargin = gridMargin;
             rib.WidthRequest = 200 + rib.ImgWidth / 5;
             rib.HeightRequest = 140;
+            rib.Margin = margin;
             rib.BtnClicked += btnTopScores_Clicked;
             _buttons.Add(rib);
 
@@ -72,9 +75,10 @@ namespace GnollHackX.Pages.MainScreen
             rib.ImgHeight = 110;
             rib.GridWidth = 200;
             rib.GridHeight = 140;
-            rib.GridMargin = new Thickness(rib.ImgWidth / 10, 0);
+            rib.GridMargin = gridMargin;
             rib.WidthRequest = 200 + rib.ImgWidth / 5;
             rib.HeightRequest = 140;
+            rib.Margin = margin;
             rib.BtnClicked += btnLibrary_Clicked;
             _buttons.Add(rib);
 
@@ -89,9 +93,10 @@ namespace GnollHackX.Pages.MainScreen
             rib.ImgHeight = 110;
             rib.GridWidth = 200;
             rib.GridHeight = 140;
-            rib.GridMargin = new Thickness(rib.ImgWidth / 10, 0);
+            rib.GridMargin = gridMargin;
             rib.WidthRequest = 200 + rib.ImgWidth / 5;
             rib.HeightRequest = 140;
+            rib.Margin = margin;
             rib.BtnClicked += btnOracle_Clicked;
             _buttons.Add(rib);
 
@@ -106,9 +111,10 @@ namespace GnollHackX.Pages.MainScreen
             rib.ImgHeight = 110;
             rib.GridWidth = 200;
             rib.GridHeight = 140;
-            rib.GridMargin = new Thickness(rib.ImgWidth / 10, 0);
+            rib.GridMargin = gridMargin;
             rib.WidthRequest = 200 + rib.ImgWidth / 5;
             rib.HeightRequest = 140;
+            rib.Margin = margin;
             rib.BtnClicked += btnReplays_Clicked;
             _buttons.Add(rib);
 
@@ -123,9 +129,10 @@ namespace GnollHackX.Pages.MainScreen
             rib.ImgHeight = 110;
             rib.GridWidth = 200;
             rib.GridHeight = 140;
-            rib.GridMargin = new Thickness(rib.ImgWidth / 10, 0);
+            rib.GridMargin = gridMargin;
             rib.WidthRequest = 200 + rib.ImgWidth / 5;
             rib.HeightRequest = 140;
+            rib.Margin = margin;
             rib.BtnClicked += btnSoundTracks_Clicked;
             _buttons.Add(rib);
 
@@ -140,19 +147,15 @@ namespace GnollHackX.Pages.MainScreen
             rib.ImgHeight = 110;
             rib.GridWidth = 200;
             rib.GridHeight = 140;
-            rib.GridMargin = new Thickness(rib.ImgWidth / 10, 0);
+            rib.GridMargin = gridMargin;
             rib.WidthRequest = 200 + rib.ImgWidth / 5;
             rib.HeightRequest = 140;
+            rib.Margin = margin;
             rib.BtnClicked += btnSnapshots_Clicked;
             _buttons.Add(rib);
 
             VaultScrollView.HorizontalScrollBarVisibility =  ScrollBarVisibility.Never;
-            VaultScrollView.VerticalScrollBarVisibility = ScrollBarVisibility.Never;
-            foreach (LabeledImageButton button in _buttons)
-                VaultLayout.Children.Add(button);
-
-            _buttonsAdded = true;
-            _usingFlex = false;
+            VaultScrollView.VerticalScrollBarVisibility = ScrollBarVisibility.Default;
         }
 
         private async void Button_Clicked(object sender, EventArgs e)
@@ -210,6 +213,7 @@ namespace GnollHackX.Pages.MainScreen
         {
             GHApp.BackButtonPressed += BackButtonPressed;
             VaultLayout.IsEnabled = true;
+
         }
         private void ContentPage_Disappearing(object sender, EventArgs e)
         {
@@ -220,12 +224,14 @@ namespace GnollHackX.Pages.MainScreen
         private double _currentPageHeight = 0;
         private bool _buttonsAdded = false;
         private bool _usingFlex = false;
-        private bool _usingHorizontalStacks = false;
+
         protected override void OnSizeAllocated(double width, double height)
         {
             base.OnSizeAllocated(width, height);
             if (width != _currentPageWidth || height != _currentPageHeight)
             {
+                bool _currentLandscape = _currentPageWidth > _currentPageHeight;
+                bool isLandscape = width > height;
                 _currentPageWidth = width;
                 _currentPageHeight = height;
 
@@ -234,7 +240,7 @@ namespace GnollHackX.Pages.MainScreen
 
                 if (width > 0)
                 {
-                    bool shouldUseFlex = width >= 460 && !GHApp.IsWindows;
+                    bool shouldUseFlex = width >= 460 && height >= 600; // && !GHApp.IsWindows;
                     bool widerWidth = height < 280 + 6 + 24 + 60 + lblHeader.Margin.Top + lblHeader.Margin.Bottom + CloseButton.Margin.Top + CloseButton.Margin.Bottom;
                     double usedWidth = widerWidth ? 2048 : 720;
 #if GNH_MAUI
@@ -243,7 +249,7 @@ namespace GnollHackX.Pages.MainScreen
                     ViewGrid.WidthRequest = usedWidth;
 #endif
 
-                    if (!_buttonsAdded || _usingFlex != shouldUseFlex)
+                    if (!_buttonsAdded || _usingFlex != shouldUseFlex || isLandscape != _currentLandscape)
                     {
                         if(_buttonsAdded)
                         {
@@ -260,16 +266,19 @@ namespace GnollHackX.Pages.MainScreen
                         }
                         else
                         {
+                            VaultLayout.Orientation = isLandscape ? StackOrientation.Horizontal : StackOrientation.Vertical;
+                            VaultScrollView.HorizontalScrollBarVisibility = isLandscape ? ScrollBarVisibility.Default : ScrollBarVisibility.Never;
+                            VaultScrollView.VerticalScrollBarVisibility = isLandscape ? ScrollBarVisibility.Never : ScrollBarVisibility.Default;
+                            VaultScrollView.Orientation = isLandscape ? ScrollOrientation.Horizontal : ScrollOrientation.Vertical;
+                            VaultScrollView.VerticalOptions = isLandscape ? LayoutOptions.Center : LayoutOptions.Fill;
                             foreach (LabeledImageButton button in _buttons)
                                 VaultLayout.Children.Add(button);
                         }
                         _buttonsAdded = true;
                         _usingFlex = shouldUseFlex;
                         VaultFlexLayout.IsVisible = shouldUseFlex;
-                        VaultLayout.IsVisible = !shouldUseFlex;
+                        VaultScrollView.IsVisible = !shouldUseFlex;
                     }
-                    if (!_usingFlex)
-                        VaultScrollView.VerticalScrollBarVisibility = ScrollBarVisibility.Default;
                 }
             }
         }

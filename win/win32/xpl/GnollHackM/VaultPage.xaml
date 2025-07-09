@@ -17,9 +17,9 @@
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
                 <Label Grid.Row="0" x:Name="lblHeader" Text="Vault" HorizontalTextAlignment="Center" FontSize="23" FontAttributes="Bold" FontFamily="Diablo" TextColor="Black"
-                    HorizontalOptions="Center" VerticalOptions="Fill" Margin="0,10,0,30" />
+                    HorizontalOptions="Center" VerticalOptions="Start" Margin="0,10,0,30" />
                 <Grid Grid.Row="1" x:Name="ViewGrid" MaximumWidthRequest="720" HorizontalOptions="Fill" VerticalOptions="Fill">
-                    <ScrollView x:Name="VaultScrollView" HorizontalOptions="Fill" VerticalOptions="Fill" BackgroundColor="Transparent">
+                    <ScrollView x:Name="VaultScrollView" HorizontalOptions="Fill" VerticalOptions="Fill" BackgroundColor="Transparent" IsVisible="False">
                         <StackLayout x:Name="VaultLayout" Spacing="6" HorizontalOptions="Fill" Orientation="Vertical" />
                     </ScrollView>
                     <FlexLayout x:Name="VaultFlexLayout" Direction="Row" Wrap="Wrap" JustifyContent="Center" AlignContent="Center" IsVisible="False" HorizontalOptions="Fill" VerticalOptions="Fill"/>
