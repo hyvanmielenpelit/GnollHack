@@ -31,18 +31,23 @@ namespace GnollHackX.Controls
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class SwitchableCanvasView : ContentView, IThreadSafeView
     {
-        private object _glLock = new object();
-        private bool _useGL = false;
+        //private object _glLock = new object();
+        private int _useGL = 0;
         private SKGLView internalGLView = null;
 
         public bool UseGL 
-        {   get { lock (_glLock) { return _useGL; } }
+        {   get
+            {
+                //lock (_glLock) { return _useGL; }
+                return Interlocked.CompareExchange(ref _useGL, 0, 0) != 0;
+            }
             set
             {
-                lock(_glLock)
-                {
-                    _useGL = value;
-                }
+                Interlocked.Exchange(ref _useGL, value ? 1 : 0);
+                //lock(_glLock)
+                //{
+                //    _useGL = value;
+                //}
                 if(HasGL)
                 {
                     internalCanvasView.IsVisible = !value;
