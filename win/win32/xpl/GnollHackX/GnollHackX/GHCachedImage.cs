@@ -169,13 +169,13 @@ namespace GnollHackX
             _StopAnimation = true;
         }
 
-        private readonly object _stopAnimationLock = new object();
-        private bool _stopAnimation = false;
-        private bool _StopAnimation { get { lock (_stopAnimationLock) { return _stopAnimation; } } set { lock (_stopAnimationLock) { _stopAnimation = value; } } }
+        //private readonly object _stopAnimationLock = new object();
+        private int _stopAnimation = 0;
+        private bool _StopAnimation { get { return Interlocked.CompareExchange(ref _stopAnimation, 0, 0) != 0; } set { Interlocked.Exchange(ref _stopAnimation, value ? 1 : 0); } }
 
-        private readonly object _timerOnLock = new object();
-        private bool _timerOn = false;
-        private bool _TimerOn { get { lock (_timerOnLock) { return _timerOn; } } set { lock (_timerOnLock) { _timerOn = value; } } }
+        //private readonly object _timerOnLock = new object();
+        private int _timerOn = 0;
+        private bool _TimerOn { get { return Interlocked.CompareExchange(ref _timerOn, 0, 0) != 0; } set { Interlocked.Exchange(ref _timerOn, value ? 1 : 0); } }
 
         public void CheckStartAnimation()
         {

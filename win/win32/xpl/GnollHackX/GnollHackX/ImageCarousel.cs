@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using System.Text;
+using System.Threading;
+
 
 #if GNH_MAUI
 using GnollHackX;
@@ -76,14 +78,14 @@ namespace GnollHackX
         public const long _slideDurationInMilliseconds = 15000;
         public const long _transitionDurationInMilliseconds = 3000;
 
-        private readonly object _counterValueLock = new object();
+        //private readonly object _counterValueLock = new object();
         private long _counterValue;
-        public long CounterValue { get { lock (_counterValueLock) { return _counterValue; } } set { lock (_counterValueLock) { _counterValue = value; } } }
+        public long CounterValue { get { return Interlocked.CompareExchange(ref _counterValue, 0L, 0L); } set { Interlocked.Exchange(ref _counterValue, value); } }
 
-        private readonly object _timerIsOnLock = new object();
-        private bool _timerIsOn = false;
-        public bool CheckTimerOnAndSetTrue { get { lock (_timerIsOnLock) { bool oldValue = _timerIsOn; _timerIsOn = true; return oldValue; } } }
-        public bool TimerIsOn { get { lock (_timerIsOnLock) { return _timerIsOn; } } set { lock (_timerIsOnLock) { _timerIsOn = value; } } }
+        //private readonly object _timerIsOnLock = new object();
+        private int _timerIsOn = 0;
+        public bool CheckTimerOnAndSetTrue { get { return Interlocked.Exchange(ref _timerIsOn, 1) != 0; } } // lock (_timerIsOnLock) { bool oldValue = _timerIsOn; _timerIsOn = true; return oldValue; }
+        public bool TimerIsOn { get { return Interlocked.CompareExchange(ref _timerIsOn, 0, 0) != 0; } set { Interlocked.Exchange(ref _timerIsOn, value ? 1 : 0); } }
         public void Play()
         {
             if (!_inited)
@@ -112,14 +114,19 @@ namespace GnollHackX
         {
             MainThread.BeginInvokeOnMainThread(() =>
             {
-                long counter;
-                lock (_counterValueLock)
+                long counter = Interlocked.Increment(ref _counterValue);
+                if (counter == long.MaxValue)
                 {
-                    _counterValue++;
-                    if (_counterValue >= (long)int.MaxValue)
-                        _counterValue = 0;
-                    counter = _counterValue;
+                    Interlocked.Exchange(ref _counterValue, 0);
+                    counter = 0;
                 }
+                //lock (_counterValueLock)
+                //{
+                //    _counterValue++;
+                //    if (_counterValue >= (long)int.MaxValue)
+                //        _counterValue = 0;
+                //    counter = _counterValue;
+                //}
                 byte alpha = GetSecondBitmapAlpha(counter);
                 byte prevalpha = GetSecondBitmapAlpha(counter - 1);
                 if (alpha > 0 || prevalpha > 0)

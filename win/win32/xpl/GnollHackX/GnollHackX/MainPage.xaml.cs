@@ -211,18 +211,21 @@ namespace GnollHackX
             }
         }
 
-        private readonly object _pendingGeneralTimerTasksLock = new object();
+        //private readonly object _pendingGeneralTimerTasksLock = new object();
         private int _pendingGeneralTimerTasks = 0;
         private int PendingGeneralTimerTasks
         {
-            get
-            {
-                lock (_pendingGeneralTimerTasksLock) { return _pendingGeneralTimerTasks; }
-            }
-            set
-            {
-                lock (_pendingGeneralTimerTasksLock) { _pendingGeneralTimerTasks = value; }
-            }
+            get { return Interlocked.CompareExchange(ref _pendingGeneralTimerTasks, 0, 0); }
+            set { Interlocked.Exchange(ref _pendingGeneralTimerTasks, value); }
+            //get
+            //{
+            //    lock (_pendingGeneralTimerTasksLock) { return _pendingGeneralTimerTasks; }
+
+            //}
+            //set
+            //{
+            //    lock (_pendingGeneralTimerTasksLock) { _pendingGeneralTimerTasks = value; }
+            //}
         }
 
         private async Task GeneralTimerTasksAsync()
@@ -1226,9 +1229,9 @@ namespace GnollHackX
             }
         }
 
-        private readonly object _startUpLock = new object();
-        private bool _finishedLogoFadeIn = false;
-        private bool FinishedLogoFadeIn { get { lock (_startUpLock) { return _finishedLogoFadeIn; } } set { lock (_startUpLock) { _finishedLogoFadeIn = value; } } }
+        //private readonly object _startUpLock = new object();
+        private int _finishedLogoFadeIn = 0;
+        private bool FinishedLogoFadeIn { get { return Interlocked.CompareExchange(ref _finishedLogoFadeIn, 0, 0) != 0; } set { Interlocked.Exchange(ref _finishedLogoFadeIn, value ? 1 : 0); } }
 #if GNH_MAUI
         IDispatcherTimer _startUpTimer;
 #endif
@@ -1376,9 +1379,9 @@ namespace GnollHackX
             }
         }
 
-        private readonly object _closingAppLock = new object();
-        private bool _closingApp = false;
-        private bool CheckCloseAndSetTrue { get { lock (_closingAppLock) { bool oldvalue = _closingApp; _closingApp = true; return oldvalue; } } }
+        //private readonly object _closingAppLock = new object();
+        private int _closingApp = 0;
+        private bool CheckCloseAndSetTrue { get { return Interlocked.Exchange(ref _closingApp, 1) != 0; } }
 
         private async Task CloseApp()
         {
