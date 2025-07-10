@@ -2077,24 +2077,31 @@ namespace GnollHackX
             }
         }
 
-        private readonly object _gamePlayTimeLock = new object();
-        private long _gamePlayTime = 0;
-        public long GamePlayTime { get { lock (_gamePlayTimeLock) { return _gamePlayTime; } } set { lock (_gamePlayTimeLock) { _gamePlayTime = value; } } }
+        //private readonly object _gamePlayTimeLock = new object();
+        private long _gamePlayTime = 0L;
+        public long GamePlayTime { get { return Interlocked.CompareExchange(ref _gamePlayTime, 0, 0); } set { Interlocked.Exchange(ref _gamePlayTime, value); } }
 
-        private readonly object _sessionPlayTimeLock = new object();
+        //private readonly object _sessionPlayTimeLock = new object();
         private long _sessionPlayTime = 0L;
-        public long SessionPlayTime { get { lock (_sessionPlayTimeLock) { return _sessionPlayTime; } } set { lock (_sessionPlayTimeLock) { _sessionPlayTime = value; } } }
+        public long SessionPlayTime { get { return Interlocked.CompareExchange(ref _sessionPlayTime, 0, 0); } set { Interlocked.Exchange(ref _sessionPlayTime, value); } }
         public void AddSessionPlayTime(long addition)
         {
-            lock (_sessionPlayTimeLock)
-            {
-                _sessionPlayTime = _sessionPlayTime + addition;
-            }
+            if (addition < 0) /* Something's wrong */
+                return;
+
+            if (Interlocked.Add(ref _sessionPlayTime, addition) < 0)
+                Interlocked.Exchange(ref _sessionPlayTime, 0);
+            //lock (_sessionPlayTimeLock)
+            //{
+            //    _sessionPlayTime = _sessionPlayTime + addition;
+            //}
         }
 
         public void ClientCallback_ReportPlayTime(long timePassed, long currentPlayTime)
         {
             RecordFunctionCall(RecordedFunctionID.ReportPlayTime, timePassed, currentPlayTime);
+            if (PlayingReplay)
+                return;
 
             long playedalready = GHApp.RealPlayTime;
             long totaltime = playedalready + timePassed;

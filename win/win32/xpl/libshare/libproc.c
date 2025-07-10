@@ -670,6 +670,8 @@ void lib_issue_gui_command(int cmd_id, int cmd_param, int cmd_param2, const char
     }
     case GUI_CMD_REPORT_PLAY_TIME:
     {
+        if (!context.game_started)
+            break;
         int64_t timePassed = urealtime.finish_time - urealtime.start_timing;
         int64_t realtime = urealtime.realtime;
         lib_callbacks.callback_report_play_time(timePassed, realtime);

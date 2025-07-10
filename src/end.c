@@ -4182,9 +4182,8 @@ void
 tally_realtime(VOID_ARGS)
 {
     if (!context.game_started)
-    {
         return;
-    }
+
     urealtime.finish_time = getnow();
     urealtime.realtime += (urealtime.finish_time - urealtime.start_timing);
     issue_simple_gui_command(GUI_CMD_REPORT_PLAY_TIME);

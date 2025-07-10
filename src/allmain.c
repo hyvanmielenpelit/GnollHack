@@ -1502,9 +1502,9 @@ newgame(VOID_ARGS)
     }
 
     /* Game is starting now */
-    context.game_started = TRUE;
     urealtime.realtime = 0L;
     urealtime.start_timing = (int64_t)getnow();
+    context.game_started = TRUE;
 
 #ifdef INSURANCE
     save_currentstate();
