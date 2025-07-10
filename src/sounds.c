@@ -160,7 +160,7 @@ STATIC_DCL int FDECL(mon_in_room, (struct monst *, int));
 STATIC_DCL int FDECL(spell_service_query, (struct monst*, int, int, const char*, int64_t, const char*, int));
 STATIC_DCL int FDECL(general_service_query, (struct monst*, int (*)(struct monst*), const char*, int64_t, const char*, int));
 STATIC_DCL int FDECL(general_service_query_with_extra, (struct monst*, int (*)(struct monst*), const char*, int64_t, const char*, int, const char*, int));
-STATIC_DCL int FDECL(general_service_query_with_item_cost_adjustment_and_extra, (struct monst*, int (*)(struct monst*, struct obj*), const char*, const char*, int64_t, int64_t, int64_t, int64_t, const char*, int, const char*, int));
+STATIC_DCL int FDECL(general_service_query_with_item_cost_adjustment_and_extra, (struct monst*, int (*)(struct monst*, struct obj*), const char*, const char*, int64_t, int64_t, int64_t, int64_t, int64_t, const char*, int, const char*, int));
 STATIC_DCL int FDECL(item_enchant_service_query, (struct monst*, int, int64_t));
 STATIC_DCL int FDECL(recharge_item_func, (struct monst*, struct obj*));
 STATIC_DCL int FDECL(blessed_recharge_item_func, (struct monst*, struct obj*));
@@ -9731,7 +9731,7 @@ struct monst* mtmp;
 
     int64_t cost = max(1L, (int64_t)((1200 + 60 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
     //return spell_service_query(mtmp, SCR_CHARGING, 0, "recharge an item", cost, "recharging an item", NPC_LINE_WOULD_YOU_LIKE_TO_RECHARGE_AN_ITEM);
-    return general_service_query_with_item_cost_adjustment_and_extra(mtmp, recharge_item_func, "charge", "recharging", cost, objects[WAN_WISHING].oc_cost, 50L, 2L, "recharging an item", QUERY_STYLE_COMPONENTS, (char*)0, NPC_LINE_WHAT_WOULD_YOU_LIKE_TO_CHARGE);
+    return general_service_query_with_item_cost_adjustment_and_extra(mtmp, recharge_item_func, "charge", "recharging", cost, objects[WAN_WISHING].oc_cost, 50L, 3L, 2L, "recharging an item", QUERY_STYLE_COMPONENTS, (char*)0, NPC_LINE_WHAT_WOULD_YOU_LIKE_TO_CHARGE);
 }
 
 STATIC_OVL int
@@ -9743,7 +9743,7 @@ struct monst* mtmp;
 
     int64_t cost = max(1L, (int64_t)((4000 + 200 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
     //return spell_service_query(mtmp, SCR_CHARGING, 1, "fully recharge an item", cost, "fully recharging an item", NPC_LINE_WOULD_YOU_LIKE_TO_FULLY_RECHARGE_AN_ITEM);
-    return general_service_query_with_item_cost_adjustment_and_extra(mtmp, blessed_recharge_item_func, "charge", "fully recharging", cost, objects[WAN_WISHING].oc_cost, 50L, 2L, "recharging an item", QUERY_STYLE_COMPONENTS, (char*)0, NPC_LINE_WHAT_WOULD_YOU_LIKE_TO_CHARGE);
+    return general_service_query_with_item_cost_adjustment_and_extra(mtmp, blessed_recharge_item_func, "charge", "fully recharging", cost, objects[WAN_WISHING].oc_cost, 50L, 3L, 2L, "recharging an item", QUERY_STYLE_COMPONENTS, (char*)0, NPC_LINE_WHAT_WOULD_YOU_LIKE_TO_CHARGE);
 }
 
 STATIC_OVL int
@@ -11233,20 +11233,25 @@ int special_dialogue_sound_id;
 }
 
 STATIC_OVL int
-general_service_query_with_item_cost_adjustment_and_extra(mtmp, service_item_func, service_verb, service_verb_ing, service_base_cost, item_cost_at_base, minimum_cost, maximum_multiplier, no_mood_string, query_style, extra_string, special_dialogue_sound_id)
+general_service_query_with_item_cost_adjustment_and_extra(mtmp, service_item_func, service_verb, service_verb_ing, service_base_cost, item_cost_at_base, minimum_cost, maximum_multiplier, maximum_divisor, no_mood_string, query_style, extra_string, special_dialogue_sound_id)
 struct monst* mtmp;
 int (*service_item_func)(struct monst*, struct obj*);
 const char* service_verb, *service_verb_ing;
-int64_t service_base_cost, item_cost_at_base, minimum_cost, maximum_multiplier;
+int64_t service_base_cost, item_cost_at_base, minimum_cost, maximum_multiplier, maximum_divisor;
 const char* no_mood_string;
 int query_style;
 const char* extra_string;
 int special_dialogue_sound_id;
 {
-
     int64_t umoney = money_cnt(invent);
     int64_t u_pay;
     char qbuf[QBUFSZ];
+
+    if (maximum_multiplier <= 0L)
+        maximum_multiplier = 1L;
+
+    if (maximum_divisor <= 0L)
+        maximum_divisor = 1L;
 
     if (!m_general_talk_check(mtmp, no_mood_string) || !m_speak_check(mtmp))
         return 0;
@@ -11267,7 +11272,7 @@ int special_dialogue_sound_id;
     if (!otmp)
         return 0;
 
-    int64_t service_cost = !item_cost_at_base ? service_base_cost : min(service_base_cost * maximum_multiplier, max(minimum_cost, (service_base_cost * get_object_base_value(otmp)) / max(1L, item_cost_at_base)));
+    int64_t service_cost = !item_cost_at_base ? service_base_cost : min((service_base_cost * maximum_multiplier) / maximum_divisor, max(minimum_cost, (service_base_cost * get_object_base_value(otmp)) / max(1L, item_cost_at_base)));
     char ingbuf[BUFSZ] = "";
     Strcpy(ingbuf, service_verb_ing);
     *ingbuf = highc(*ingbuf);
