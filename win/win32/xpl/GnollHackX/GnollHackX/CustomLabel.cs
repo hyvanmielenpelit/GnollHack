@@ -205,7 +205,7 @@ namespace GnollHackX
 
 
 
-        private object _textRowLock = new object();
+        private readonly object _textRowLock = new object();
         private string[] _textRows = null;
         private string[] TextRows
         {
@@ -235,9 +235,9 @@ namespace GnollHackX
             InvalidateMeasure();
         }
 
-        private readonly object _initialYPosLock = new object();
-        private bool _calculateInitialYPos = false;
-        public bool CalculateInitialYPos { get { lock (_initialYPosLock) { return _calculateInitialYPos; } } set { lock (_initialYPosLock) { _calculateInitialYPos = value; } } }
+        //private readonly object _initialYPosLock = new object();
+        private int _calculateInitialYPos = 0;
+        public bool CalculateInitialYPos { get { return Interlocked.CompareExchange(ref _calculateInitialYPos, 0, 0) != 0; } set { Interlocked.Exchange(ref _calculateInitialYPos, value ? 1 : 0); } }
 
         private void UpdateRolledDown()
         {
@@ -552,11 +552,12 @@ namespace GnollHackX
             float scale2 = this.Width == 0 ? 1.0f : canvaswidth / (float)this.Width;
 
             canvas.Clear();
-
-            lock (_isFirstLock)
+            bool isFirst = IsFirst;
+            bool touchMoved = TouchMoved;
+            //lock (_isFirstLock)
             {
                 TextAreaSize textAreaSize;
-                if (!(IsScrollable && TouchMoved) || _isFirst)
+                if (!(IsScrollable && touchMoved) || isFirst)
                     TextAreaSize = CalculateTextAreaSize((float)Width * scale);
 
                 textAreaSize = TextAreaSize;
@@ -569,7 +570,7 @@ namespace GnollHackX
                     float x = 0, y = 0;
                     textPaint.Typeface = GetFontTypeface();
                     textPaint.TextSize = (float)FontSize * scale;
-                    if (!(IsScrollable && TouchMoved) || _isFirst)
+                    if (!(IsScrollable && touchMoved) || isFirst)
                         SplitRows();
                     string[] textRows = TextRows;
                     switch (VerticalTextAlignment)
@@ -702,7 +703,7 @@ namespace GnollHackX
                     }
                     TextHeight = y - usedTextOffset;
                 }
-                _isFirst = false;
+                IsFirst = false;
             }
         }
 
@@ -775,17 +776,17 @@ namespace GnollHackX
 
         private DateTime _textScrollSpeedReleaseStamp;
 
-        private object _textHeightLock = new object();
+        //private readonly object _textHeightLock = new object();
         private float _textHeight = 0;
-        private float TextHeight { get { lock(_textHeightLock) { return _textHeight; } } set { lock (_textHeightLock) { _textHeight = value; } } }
-        private readonly object _touchMovedLock = new object();
-        private bool _touchMoved = false;
-        private bool TouchMoved { get { lock (_touchMovedLock) { return _touchMoved; } } set { lock (_touchMovedLock) { _touchMoved = value; } } }
+        private float TextHeight { get { return Interlocked.CompareExchange(ref _textHeight, 0.0f, 0.0f); } set { Interlocked.Exchange(ref _textHeight, value); } }
+        //private readonly object _touchMovedLock = new object();
+        private int _touchMoved = 0;
+        private bool TouchMoved { get { return Interlocked.CompareExchange(ref _touchMoved, 0, 0) != 0; } set { Interlocked.Exchange(ref _touchMoved, value ? 1 : 0); } }
         private DateTime _savedTimeStamp;
 
-        private readonly object _isFirstLock = new object();
-        private bool _isFirst = false;
-        private bool IsFirst { get { lock (_isFirstLock) { return _isFirst; } } set { lock (_isFirstLock) { _isFirst = value; } } }
+        //private readonly object _isFirstLock = new object();
+        private int _isFirst = 0;
+        private bool IsFirst { get { return Interlocked.CompareExchange(ref _isFirst, 0, 0) != 0; } set { Interlocked.Exchange(ref _isFirst, value ? 1 : 0); } }
 
         private void Base_Touch(object sender, SKTouchEventArgs e)
         {
@@ -914,7 +915,7 @@ namespace GnollHackX
                                                 InterlockedTextScrollOffset = _textScrollOffset;
                                             }
                                             TouchDictionary[e.Id].Location = e.Location;
-                                            _touchMoved = true;
+                                            TouchMoved = true;
                                             _savedTimeStamp = DateTime.Now;
 
                                             if (_textScrollOffset != oldoffset)
@@ -942,7 +943,7 @@ namespace GnollHackX
                         if (res)
                         {
                             long elapsedms = (DateTime.Now.Ticks - entry.PressTime.Ticks) / TimeSpan.TicksPerMillisecond;
-                            if (elapsedms <= GHConstants.MoveOrPressTimeThreshold && !_touchMoved)
+                            if (elapsedms <= GHConstants.MoveOrPressTimeThreshold && !TouchMoved)
                             {
                                 //Touching does not do anything currently
                             }
