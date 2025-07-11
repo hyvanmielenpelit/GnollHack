@@ -1505,7 +1505,7 @@ namespace GnollHackX.Unknown
             get { return (_quieterMode ? _quietModeMultiplier : 1.0f) + (_quieterMode ? 1.0f : -1.0f) * (1.0f - _quietModeMultiplier) * (float)(_maxModeFadeCounter - _modeFadeCounter) / _maxModeFadeCounter; }
         }
 
-        private object _modeFadeLock = new object();
+        private readonly object _modeFadeLock = new object();
         private int _modeFadeCounter = _maxModeFadeCounter;
         private int ModeFadeCounter { get { lock (_modeFadeLock) { return _modeFadeCounter; } } set { lock (_modeFadeLock) { _modeFadeCounter = value; } } }
 

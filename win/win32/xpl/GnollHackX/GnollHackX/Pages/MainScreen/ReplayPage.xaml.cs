@@ -1394,7 +1394,7 @@ namespace GnollHackX.Pages.MainScreen
             UpdateRecordingsLabel();
         }
 
-        private object _uploadDownloadLock = new object();
+        private readonly object _uploadDownloadLock = new object();
         private bool _uploadDownloadCancelled = false;
         public bool UploadDownloadCancelled { get { lock (_uploadDownloadLock) { return _uploadDownloadCancelled; } } set { lock (_uploadDownloadLock) { _uploadDownloadCancelled = value; } } }
         private CancellationTokenSource _uploadDownloadCts = null;

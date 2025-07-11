@@ -27,7 +27,7 @@ namespace GnollHackX.Droid
         public AssetPackStateUpdateListenerWrapper AssetPackListener { get; private set; }
 
 
-        private static readonly object _activityLock = new object();
+        private readonly static object _activityLock = new object();
         private static bool _isHardKeyboardConnected = false;
         public static bool IsHardKeyboardConnected
         {

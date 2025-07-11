@@ -919,7 +919,7 @@ namespace GnollHackX
         private static bool _autoUploadReplays = false;
         public static bool AutoUploadReplays { get { bool t = TournamentMode; lock (_recordGameLock) { return _autoUploadReplays || t; } } set { lock (_recordGameLock) { _autoUploadReplays = value; } } }
 
-        private static object _networkAccessLock = new object();
+        private readonly static object _networkAccessLock = new object();
 #if GNH_MAUI
         private static Microsoft.Maui.Networking.NetworkAccess _networkAccessState = Microsoft.Maui.Networking.NetworkAccess.None;
         public static bool HasInternetAccess { get { lock (_networkAccessLock) { return _networkAccessState == Microsoft.Maui.Networking.NetworkAccess.Internet; } } }
@@ -1432,15 +1432,20 @@ namespace GnollHackX
             CurrentUserSecrets = JsonConvert.DeserializeObject<UserSecrets>(json);
         }
 
-        private static readonly object _aggregateSessionPlayTimeLock = new object();
+        //private static readonly object _aggregateSessionPlayTimeLock = new object();
         private static long _aggregateSessionPlayTime = 0L;
-        public static long AggregateSessionPlayTime { get { lock (_aggregateSessionPlayTimeLock) { return _aggregateSessionPlayTime; } } set { lock (_aggregateSessionPlayTimeLock) { _aggregateSessionPlayTime = value; } } }
+        public static long AggregateSessionPlayTime { get { return Interlocked.CompareExchange(ref _aggregateSessionPlayTime, 0, 0); } set { Interlocked.Exchange(ref _aggregateSessionPlayTime, value); } }
         public static void AddAggragateSessionPlayTime(long addition)
         {
-            lock (_aggregateSessionPlayTimeLock)
-            {
-                _aggregateSessionPlayTime = _aggregateSessionPlayTime + addition;
-            }
+            if (addition < 0) /* Something's wrong */
+                return;
+
+            if (Interlocked.Add(ref _aggregateSessionPlayTime, addition) < 0)
+                Interlocked.Exchange(ref _aggregateSessionPlayTime, 0);
+            //lock (_aggregateSessionPlayTimeLock)
+            //{
+            //    _aggregateSessionPlayTime = _aggregateSessionPlayTime + addition;
+            //}
         }
 
         private static readonly object _saveResumeLock = new object();
@@ -3396,7 +3401,7 @@ namespace GnollHackX
         public static readonly List<ScreenResolutionItem> ScreenResolutionItems = new List<ScreenResolutionItem>();
 
 #if DEBUG
-        public static object ProfilingStopwatchLock = new object();
+        public readonly static object ProfilingStopwatchLock = new object();
         private static Stopwatch _profilingStopwatch = new Stopwatch();
         public static Stopwatch ProfilingStopwatch { get { return _profilingStopwatch; } }
 #endif

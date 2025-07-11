@@ -537,7 +537,7 @@ namespace GnollHackX
             return tf;
         }
 
-        private object _textAreaSizeLock = new object();
+        private readonly object _textAreaSizeLock = new object();
         private TextAreaSize _textAreaSize;
         private TextAreaSize TextAreaSize { get { lock (_textAreaSizeLock) { return _textAreaSize; } } set { lock (_textAreaSizeLock) { _textAreaSize = value; } } }
 

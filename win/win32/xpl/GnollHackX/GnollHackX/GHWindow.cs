@@ -200,7 +200,7 @@ namespace GnollHackX
         public GHMenuInfo MenuInfo { get; set; }
 
         private List<GHMenuItem> _selectedMenuItems = null;
-        private object _selectedMenuItemsLock = new object();
+        private readonly object _selectedMenuItemsLock = new object();
         public List<GHMenuItem> SelectedMenuItems
         {
             get { lock (_selectedMenuItemsLock) { return _selectedMenuItems; } }

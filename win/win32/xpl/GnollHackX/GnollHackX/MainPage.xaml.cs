@@ -49,23 +49,23 @@ namespace GnollHackX
 {
     public partial class MainPage : ContentPage
     {
-        private object _gameStartedLock = new object();
-        private bool _gameStarted = false;
-        public bool GameStarted { get { lock (_gameStartedLock) { return _gameStarted; } } set { lock (_gameStartedLock) { _gameStarted = value; } } }
+        //private readonly object _gameStartedLock = new object();
+        private int _gameStarted = 0;
+        public bool GameStarted { get { return Interlocked.CompareExchange(ref _gameStarted, 0, 0) != 0; } set { Interlocked.Exchange(ref _gameStarted, value ? 1 : 0); } }
 
-        private object _generalTimerLock = new object();
-        private bool _generaTimerIsOn = false;
-        public bool GeneralTimerIsOn { get { lock (_generalTimerLock) { return _generaTimerIsOn; } } set { lock (_generalTimerLock) { _generaTimerIsOn = value; } } }
-        public bool CheckAndSetGeneralTimerIsOn { get { lock (_generalTimerLock) { bool oldval = _generaTimerIsOn; _generaTimerIsOn = true; return oldval; } } }
+        //private readonly object _generalTimerLock = new object();
+        private int _generaTimerIsOn = 0;
+        public bool GeneralTimerIsOn { get { return Interlocked.CompareExchange(ref _generaTimerIsOn, 0, 0) != 0; } set { Interlocked.Exchange(ref _generaTimerIsOn, value ? 1 : 0); } }
+        public bool CheckAndSetGeneralTimerIsOn { get { return Interlocked.Exchange(ref _generaTimerIsOn, 1) != 0; } } // { get { lock (_generalTimerLock) { bool oldval = _generaTimerIsOn; _generaTimerIsOn = true; return oldval; } } }
 
-        private object _generalTimerWorkOnTasksLock = new object();
-        private bool _generaTimerWorkOnTasks = false;
-        public bool GeneralTimerWorkOnTasks { get { lock (_generalTimerWorkOnTasksLock) { return _generaTimerWorkOnTasks; } } set { lock (_generalTimerWorkOnTasksLock) { _generaTimerWorkOnTasks = value; } } }
-        public bool CheckAndSetGeneralTimerWorkOnTasks { get { lock (_generalTimerWorkOnTasksLock) { bool oldval = _generaTimerWorkOnTasks; _generaTimerWorkOnTasks = true; return oldval; } } }
+        //private readonly object _generalTimerWorkOnTasksLock = new object();
+        private int _generaTimerWorkOnTasks = 0;
+        public bool GeneralTimerWorkOnTasks { get { return Interlocked.CompareExchange(ref _generaTimerWorkOnTasks, 0, 0) != 0; } set { Interlocked.Exchange(ref _generaTimerWorkOnTasks, value ? 1 : 0); } }
+        public bool CheckAndSetGeneralTimerWorkOnTasks { get { return Interlocked.Exchange(ref _generaTimerWorkOnTasks, 1) != 0; } }
 
-        private object _stopGeneralTimerLock = new object();
-        private bool _stopGeneraTimerIsOn = false;
-        public bool StopGeneralTimer { get { lock (_stopGeneralTimerLock) { return _stopGeneraTimerIsOn; } } set { lock (_stopGeneralTimerLock) { _stopGeneraTimerIsOn = value; } } }
+        //private readonly object _stopGeneralTimerLock = new object();
+        private int _stopGeneraTimerIsOn = 0;
+        public bool StopGeneralTimer { get { return Interlocked.CompareExchange(ref _stopGeneraTimerIsOn, 0, 0) != 0; } set { Interlocked.Exchange(ref _stopGeneraTimerIsOn, value ? 1 : 0); } }
 #if GNH_MAUI
         IDispatcherTimer _generalTimer;
 #endif
