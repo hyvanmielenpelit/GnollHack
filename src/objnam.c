@@ -5775,8 +5775,8 @@ retry:
 
     /* more wishing abuse: don't allow wishing for certain artifacts */
     /* and make them pay; charge them for the wish anyway! */
-    if ((is_quest_artifact(otmp)
-         || (otmp->oartifact && rn2(nartifact_exist()) > 1)) && !wiz_wishing)
+    int noartiexisting = nartifact_exist();
+    if ((is_quest_artifact(otmp) || (otmp->oartifact && noartiexisting > 2 && rn2(noartiexisting - 1) > 1)) && !wiz_wishing) /* noartiexisting - 1 now accounts for Gladstone at Mines' End in order to acheve similar probabilities as in NetHack */
     {
         artifact_exists(otmp, safe_oname(otmp), FALSE);
         Sprintf(priority_debug_buf_4, "readobjnam: %d", otmp->otyp);
