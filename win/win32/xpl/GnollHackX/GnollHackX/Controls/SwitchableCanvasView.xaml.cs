@@ -604,42 +604,9 @@ namespace GnollHackX.Controls
                 if (!IsVisible || (_parentGrid != null && !_parentGrid.IsVisible))
                     return;
 
-                //_tickCounter++;
-                //_tickCounter = _tickCounter % GHConstants.MaxRefreshRate;
-                MapRefreshRateStyle refreshRateStyle = _gamePage.MapRefreshRate;
-                //int mainfps = UIUtils.GetMainCanvasAnimationFrequency(style);
-                //int divisor = Math.Max(1, (int)Math.Round((double)auxRefreshRate / (double)mainfps, 0));
-                switch (CanvasType)
-                {
-                    case CanvasTypes.MainCanvas:
-                        {
-                            _gamePage.IncrementCounters(refreshRateStyle, true);
-                            _gamePage.UpdateMainCanvas(refreshRateStyle);
-                            break;
-                        }
-                    case CanvasTypes.CommandCanvas:
-                        {
-                            _gamePage.UpdateCommandCanvas(refreshRateStyle);
-                            break;
-                        }
-                    case CanvasTypes.MenuCanvas:
-                        {
-                            _gamePage.IncrementCounters(refreshRateStyle, false);
-                            _gamePage.UpdateMenuCanvas(refreshRateStyle);
-                            break;
-                        }
-                    case CanvasTypes.TextCanvas:
-                        {
-                            _gamePage.IncrementCounters(refreshRateStyle, false);
-                            _gamePage.UpdateTextCanvas(refreshRateStyle);
-                            break;
-                        }
-                    default:
-                        break;
-                }
+                _gamePage.RenderCanvas();
             }
         }
-
 
 #if GNH_MAUI
         protected override void OnHandlerChanged()

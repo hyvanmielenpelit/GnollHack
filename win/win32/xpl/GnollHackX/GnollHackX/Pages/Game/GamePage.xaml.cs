@@ -2223,19 +2223,19 @@ namespace GnollHackX.Pages.Game
 
         private void StartMainCanvasAnimation()
         {
-            uint mainAnimationLength = GHConstants.MainCanvasAnimationTime / UIUtils.GetMainCanvasAnimationInterval(MapRefreshRate);
-            Animation canvasAnimation = new Animation(v => canvasView.GeneralAnimationCounter = (long)v, 1, mainAnimationLength);
-            canvasAnimation.Commit(canvasView, "GeneralAnimationCounter", length: GHConstants.MainCanvasAnimationTime,
-                rate: UIUtils.GetMainCanvasAnimationInterval(MapRefreshRate), repeat: () => true /* MainGrid.IsVisible */);
-            _mapUpdateStopWatch.Restart();
+            //uint mainAnimationLength = GHConstants.MainCanvasAnimationTime / UIUtils.GetMainCanvasAnimationInterval(MapRefreshRate);
+            //Animation canvasAnimation = new Animation(v => canvasView.GeneralAnimationCounter = (long)v, 1, mainAnimationLength);
+            //canvasAnimation.Commit(canvasView, "GeneralAnimationCounter", length: GHConstants.MainCanvasAnimationTime,
+            //    rate: UIUtils.GetMainCanvasAnimationInterval(MapRefreshRate), repeat: () => true /* MainGrid.IsVisible */);
+            //_mapUpdateStopWatch.Restart();
         }
 
         private void StopMainCanvasAnimation()
         {
-            if (canvasView.AnimationIsRunning("GeneralAnimationCounter"))
-                canvasView.AbortAnimation("GeneralAnimationCounter");
-            if (_mapUpdateStopWatch.IsRunning)
-                _mapUpdateStopWatch.Stop();
+            //if (canvasView.AnimationIsRunning("GeneralAnimationCounter"))
+            //    canvasView.AbortAnimation("GeneralAnimationCounter");
+            //if (_mapUpdateStopWatch.IsRunning)
+            //    _mapUpdateStopWatch.Stop();
         }
 
         private void StartCommandCanvasAnimation()
@@ -5015,6 +5015,54 @@ namespace GnollHackX.Pages.Game
             /* Finally, flush */
             canvas.Flush();
             IsMainCanvasDrawing = false;
+        }
+
+        public void RenderCanvas()
+        {
+            //_tickCounter++;
+            //_tickCounter = _tickCounter % GHConstants.MaxRefreshRate;
+            MapRefreshRateStyle refreshRateStyle = MapRefreshRate;
+            //int mainfps = UIUtils.GetMainCanvasAnimationFrequency(style);
+            //int divisor = Math.Max(1, (int)Math.Round((double)auxRefreshRate / (double)mainfps, 0));
+            
+            CanvasTypes canvasType;
+            if (TextCanvas.ThreadSafeIsVisible)
+                canvasType = CanvasTypes.TextCanvas;
+            else if (MenuCanvas.ThreadSafeIsVisible)
+                canvasType = CanvasTypes.MenuCanvas;
+            else if (CommandCanvas.ThreadSafeIsVisible)
+                canvasType = CanvasTypes.CommandCanvas;
+            else
+                canvasType = CanvasTypes.MainCanvas;
+            
+            switch (canvasType)
+                {
+                    case CanvasTypes.MainCanvas:
+                        {
+                            IncrementCounters(refreshRateStyle, true);
+                            UpdateMainCanvas(refreshRateStyle);
+                            break;
+                        }
+                    case CanvasTypes.CommandCanvas:
+                        {
+                            UpdateCommandCanvas(refreshRateStyle);
+                            break;
+                        }
+                    case CanvasTypes.MenuCanvas:
+                        {
+                            IncrementCounters(refreshRateStyle, false);
+                            UpdateMenuCanvas(refreshRateStyle);
+                            break;
+                        }
+                    case CanvasTypes.TextCanvas:
+                        {
+                            IncrementCounters(refreshRateStyle, false);
+                            UpdateTextCanvas(refreshRateStyle);
+                            break;
+                        }
+                    default:
+                        break;
+                }
         }
 
         private float[] _gridIntervals = { 2.0f, 2.0f };

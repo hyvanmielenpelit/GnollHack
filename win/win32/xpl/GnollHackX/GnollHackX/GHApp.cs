@@ -270,6 +270,11 @@ namespace GnollHackX
                 //if (_renderingCounter == long.MaxValue)
                 //    _renderingCounter = 0;
             }
+            GamePage curGamePage = CurrentGamePage;
+            if (curGamePage != null)
+            {
+                curGamePage.RenderCanvas();
+            }
         }
 
         public static void BeforeExitApp()
