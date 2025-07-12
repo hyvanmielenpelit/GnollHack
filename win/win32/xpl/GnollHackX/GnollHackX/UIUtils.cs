@@ -985,50 +985,79 @@ namespace GnollHackX
 
         public static uint GetMainCanvasAnimationInterval(MapRefreshRateStyle mapRefreshRate)
         {
-            if (GHApp.DisplayRefreshRate >= 120.0f && mapRefreshRate >= MapRefreshRateStyle.MapFPS120)
+            return GetMainCanvasAnimationInterval(mapRefreshRate, GHApp.DisplayRefreshRate);
+        }
+
+        public static uint GetMainCanvasAnimationInterval(MapRefreshRateStyle mapRefreshRate, float screenRefreshRate)
+        {
+            if (screenRefreshRate >= 144.0f && mapRefreshRate >= MapRefreshRateStyle.MapFPS144)
+                return 7;
+            else if (screenRefreshRate >= 120.0f && mapRefreshRate >= MapRefreshRateStyle.MapFPS120)
                 return 8;
-            else if (GHApp.DisplayRefreshRate >= 90.0f && mapRefreshRate >= MapRefreshRateStyle.MapFPS90)
+            else if (screenRefreshRate >= 90.0f && mapRefreshRate >= MapRefreshRateStyle.MapFPS90)
                 return 11;
-            else if (GHApp.DisplayRefreshRate >= 80.0f && mapRefreshRate >= MapRefreshRateStyle.MapFPS80)
+            else if (screenRefreshRate >= 80.0f && mapRefreshRate >= MapRefreshRateStyle.MapFPS80)
                 return 13;
-            else if (GHApp.DisplayRefreshRate >= 60.0f && mapRefreshRate >= MapRefreshRateStyle.MapFPS60)
+            else if (screenRefreshRate >= 72.0f && mapRefreshRate >= MapRefreshRateStyle.MapFPS72)
+                return 14;
+            else if (screenRefreshRate >= 60.0f && mapRefreshRate >= MapRefreshRateStyle.MapFPS60)
                 return 16;
-            else if (GHApp.DisplayRefreshRate >= 40.0f && mapRefreshRate >= MapRefreshRateStyle.MapFPS40)
+            else if (screenRefreshRate >= 40.0f && mapRefreshRate >= MapRefreshRateStyle.MapFPS40)
                 return 25;
-            else if (GHApp.DisplayRefreshRate >= 30.0f && mapRefreshRate >= MapRefreshRateStyle.MapFPS30)
+            else if (screenRefreshRate >= 30.0f && mapRefreshRate >= MapRefreshRateStyle.MapFPS30)
                 return 33;
-            else if (GHApp.DisplayRefreshRate >= 20.0f && mapRefreshRate >= MapRefreshRateStyle.MapFPS20)
+            else if (screenRefreshRate >= 20.0f && mapRefreshRate >= MapRefreshRateStyle.MapFPS20)
                 return 50;
             else
                 return 100;
 
             //return GHConstants.MainCanvasAnimationInterval;
         }
+
         public static int GetMainCanvasAnimationFrequency(MapRefreshRateStyle mapRefreshRate)
         {
-            if (GHApp.DisplayRefreshRate >= 120.0f && mapRefreshRate >= MapRefreshRateStyle.MapFPS120)
+            return GetMainCanvasAnimationFrequency(mapRefreshRate, GHApp.DisplayRefreshRate);
+        }
+
+        public static int GetMainCanvasAnimationFrequency(MapRefreshRateStyle mapRefreshRate, float screenRefreshRate)
+        {
+            if (screenRefreshRate >= 144.0f && mapRefreshRate >= MapRefreshRateStyle.MapFPS144)
+                return 144;
+            else if (screenRefreshRate >= 120.0f && mapRefreshRate >= MapRefreshRateStyle.MapFPS120)
                 return 120;
-            else if (GHApp.DisplayRefreshRate >= 90.0f && mapRefreshRate >= MapRefreshRateStyle.MapFPS90)
+            else if (screenRefreshRate >= 90.0f && mapRefreshRate >= MapRefreshRateStyle.MapFPS90)
                 return 90;
-            else if (GHApp.DisplayRefreshRate >= 80.0f && mapRefreshRate >= MapRefreshRateStyle.MapFPS80)
+            else if (screenRefreshRate >= 80.0f && mapRefreshRate >= MapRefreshRateStyle.MapFPS80)
                 return 80;
-            else if (GHApp.DisplayRefreshRate >= 60.0f && mapRefreshRate >= MapRefreshRateStyle.MapFPS60)
+            else if (screenRefreshRate >= 72.0f && mapRefreshRate >= MapRefreshRateStyle.MapFPS72)
+                return 72;
+            else if (screenRefreshRate >= 60.0f && mapRefreshRate >= MapRefreshRateStyle.MapFPS60)
                 return 60;
-            else if (GHApp.DisplayRefreshRate >= 40.0f && mapRefreshRate >= MapRefreshRateStyle.MapFPS40)
+            else if (screenRefreshRate >= 40.0f && mapRefreshRate >= MapRefreshRateStyle.MapFPS40)
                 return 40;
-            else if (GHApp.DisplayRefreshRate >= 30.0f && mapRefreshRate >= MapRefreshRateStyle.MapFPS30)
+            else if (screenRefreshRate >= 30.0f && mapRefreshRate >= MapRefreshRateStyle.MapFPS30)
                 return 30;
-            else if (GHApp.DisplayRefreshRate >= 20.0f && mapRefreshRate >= MapRefreshRateStyle.MapFPS20)
+            else if (screenRefreshRate >= 20.0f && mapRefreshRate >= MapRefreshRateStyle.MapFPS20)
                 return 20;
             else
-                return 40;
+                return 10;
         }
 
         public static MapRefreshRateStyle GetDefaultMapFPS()
         {
-            if (GHApp.DisplayRefreshRate >= 60f)
+            float screenRefreshRate = GHApp.DisplayRefreshRate;
+            bool platformLoop = GHApp.UsePlatformRenderLoop;
+            return GetDefaultMapFPS(screenRefreshRate, platformLoop);
+        }
+        public static MapRefreshRateStyle GetDefaultMapFPS(float screenRefreshRate, bool platformLoop)
+        {
+            if (platformLoop && screenRefreshRate >= 80f && screenRefreshRate % 80 == 0)
+                return MapRefreshRateStyle.MapFPS80;
+            else if (platformLoop && screenRefreshRate >= 72f && screenRefreshRate % 72 == 0)
+                return MapRefreshRateStyle.MapFPS72;
+            else if (screenRefreshRate >= 60f)
                 return MapRefreshRateStyle.MapFPS60;
-            else if (GHApp.DisplayRefreshRate >= 40f)
+            else if (screenRefreshRate >= 40f)
                 return MapRefreshRateStyle.MapFPS40;
             else
                 return MapRefreshRateStyle.MapFPS30;
@@ -1655,7 +1684,11 @@ namespace GnollHackX
             dm.dmFields = 0x00080000 | 0x00100000 | 0x400000; // DM_PELSWIDTH | DM_PELSHEIGHT | DM_DISPLAYFREQUENCY
 
             int result = ChangeDisplaySettings(ref dm, CDS_UPDATEREGISTRY);
-            if (result != DISP_CHANGE_SUCCESSFUL)
+            if (result == DISP_CHANGE_SUCCESSFUL)
+            {
+                GHApp.CurrentScreenResolution = GetScreenResolution("Current", dm);
+            }
+            else
             {
                 GHApp.MaybeWriteGHLog("Failed to change resolution");
             }
@@ -1666,7 +1699,11 @@ namespace GnollHackX
             DEVMODE dm = originalMode;
             dm.dmFields = 0x00080000 | 0x00100000 | 0x400000; // DM_PELSWIDTH | DM_PELSHEIGHT | DM_DISPLAYFREQUENCY
             int result = ChangeDisplaySettings(ref dm, CDS_UPDATEREGISTRY);
-            if (result != DISP_CHANGE_SUCCESSFUL)
+            if (result == DISP_CHANGE_SUCCESSFUL)
+            {
+                GHApp.CurrentScreenResolution = GetScreenResolution("Current", dm);
+            }
+            else
             {
                 GHApp.MaybeWriteGHLog("Failed to revert screen resolution");
             }
