@@ -275,9 +275,11 @@ namespace GnollHackX
 
             int screenRefreshRate = (int)curRes.RefreshRate;
             MapRefreshRateStyle mapRefreshRateStyle = curGamePage.MapRefreshRate;
-            int mapRefreshRate = UIUtils.GetMainCanvasAnimationFrequency(mapRefreshRateStyle);
+            int mapRefreshRate = UIUtils.GetMainCanvasAnimationFrequency(mapRefreshRateStyle, (float)screenRefreshRate);
             if (!_renderingStopWatch.IsRunning)
+            {
                 _renderingStopWatch.Restart();
+            }
             else
             {
                 _renderingStopWatch.Stop();
@@ -292,7 +294,9 @@ namespace GnollHackX
             }
 
             if (screenRefreshRate <= mapRefreshRate)
+            {
                 curGamePage.RenderCanvas();
+            }
             else
             {
                 int divisor = screenRefreshRate / mapRefreshRate;

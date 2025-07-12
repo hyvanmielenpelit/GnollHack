@@ -78,13 +78,14 @@ namespace GnollHackX.Pages.MainScreen
                 "60 fps"
             };
 
-            if (GHApp.DisplayRefreshRate >= 72.0f)
+            float screenRefreshRate = GHApp.DisplayRefreshRate;
+            if (screenRefreshRate >= 72.0f)
                 list.Add("72 fps");
-            if (GHApp.DisplayRefreshRate >= 80.0f)
+            if (screenRefreshRate >= 80.0f)
                 list.Add("80 fps");
-            //if (GHApp.DisplayRefreshRate >= 90.0f)
+            //if (screenRefreshRate >= 90.0f)
             //    list.Add("90 fps");
-            //if (GHApp.DisplayRefreshRate >= 120.0f)
+            //if (screenRefreshRate >= 120.0f)
             //    list.Add("120 fps");
             RefreshRatePicker.ItemsSource = list;
 
