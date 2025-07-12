@@ -246,34 +246,58 @@ namespace GnollHackX
 #endif
         }
 
+
+        private static Stopwatch _renderingStopWatch = new Stopwatch();
         //private static readonly object _renderingLock = new object();
         private static long _renderingCounter = 0;
-        public static long RenderingCounter 
-        { 
-            get 
-            { 
-                //lock (_renderingLock) 
-                { 
-                    return _renderingCounter; 
-                } 
-            } 
-        } 
-
         private static void CompositionTarget_Rendering(object sender, object e)
         {
-            //lock (_renderingLock)
+            long counter = Interlocked.Increment(ref _renderingCounter);
+            if (counter == long.MaxValue)
             {
-                long res = Interlocked.Increment(ref _renderingCounter);
-                if (res == long.MaxValue)
-                    Interlocked.Exchange(ref _renderingCounter, 0L);
-                //_renderingCounter++;
-                //if (_renderingCounter == long.MaxValue)
-                //    _renderingCounter = 0;
+                Interlocked.Exchange(ref _renderingCounter, 0L);
+                counter = 0;
             }
+
+            //lock (_renderingLock)
+            //{
+            //    _renderingCounter++;
+            //    if (_renderingCounter == long.MaxValue)
+            //        _renderingCounter = 0;
+            //}
+
+            ScreenResolutionItem curRes = CurrentScreenResolution;
+            if (curRes == null)
+                return;
             GamePage curGamePage = CurrentGamePage;
-            if (curGamePage != null)
+            if (curGamePage == null)
+                return;
+
+            int screenRefreshRate = (int)curRes.RefreshRate;
+            MapRefreshRateStyle mapRefreshRateStyle = curGamePage.MapRefreshRate;
+            int mapRefreshRate = UIUtils.GetMainCanvasAnimationFrequency(mapRefreshRateStyle);
+            if (!_renderingStopWatch.IsRunning)
+                _renderingStopWatch.Restart();
+            else
             {
+                _renderingStopWatch.Stop();
+                long ticks = _renderingStopWatch.ElapsedTicks;
+                _renderingStopWatch.Restart();
+                long targetTicks = (1000 * 10000) / mapRefreshRate;
+                if (ticks > targetTicks)
+                {
+                    curGamePage.RenderCanvas();
+                    return;
+                }
+            }
+
+            if (screenRefreshRate <= mapRefreshRate)
                 curGamePage.RenderCanvas();
+            else
+            {
+                int divisor = screenRefreshRate / mapRefreshRate;
+                if (divisor == 1 || counter % divisor == 0)
+                    curGamePage.RenderCanvas();
             }
         }
 
@@ -291,6 +315,8 @@ namespace GnollHackX
         private static void InitializeScreenResolutions()
         {
 #if WINDOWS
+            CurrentScreenResolution = DisplaySettingsHelper.GetCurrentResolution();
+
             ScreenResolutionItems.Clear();
             ScreenResolutionItems.Add(new ScreenResolutionItem("Default", 0, 0, 0, 2));
 
@@ -333,6 +359,10 @@ namespace GnollHackX
             }
 #endif
         }
+
+        private static readonly object _currentScreenResolutionLock = new object();
+        private static ScreenResolutionItem _currentScreenResolution = null;
+        public static ScreenResolutionItem CurrentScreenResolution { get { lock (_currentScreenResolutionLock) { return _currentScreenResolution; } } set { lock (_currentScreenResolutionLock) { _currentScreenResolution = value; } } }
 
         public static void UpdateRecommendedScreenResolution(bool usingGPU)
         {

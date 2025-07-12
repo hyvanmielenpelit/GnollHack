@@ -604,7 +604,7 @@ namespace GnollHackX.Controls
                 if (!IsVisible || (_parentGrid != null && !_parentGrid.IsVisible))
                     return;
 
-                _gamePage.RenderCanvas();
+                _gamePage.RenderCanvasByCanvasType(CanvasType);
             }
         }
 

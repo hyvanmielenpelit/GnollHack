@@ -1655,7 +1655,11 @@ namespace GnollHackX
             dm.dmFields = 0x00080000 | 0x00100000 | 0x400000; // DM_PELSWIDTH | DM_PELSHEIGHT | DM_DISPLAYFREQUENCY
 
             int result = ChangeDisplaySettings(ref dm, CDS_UPDATEREGISTRY);
-            if (result != DISP_CHANGE_SUCCESSFUL)
+            if (result == DISP_CHANGE_SUCCESSFUL)
+            {
+                GHApp.CurrentScreenResolution = GetScreenResolution("Current", dm);
+            }
+            else
             {
                 GHApp.MaybeWriteGHLog("Failed to change resolution");
             }
@@ -1666,7 +1670,11 @@ namespace GnollHackX
             DEVMODE dm = originalMode;
             dm.dmFields = 0x00080000 | 0x00100000 | 0x400000; // DM_PELSWIDTH | DM_PELSHEIGHT | DM_DISPLAYFREQUENCY
             int result = ChangeDisplaySettings(ref dm, CDS_UPDATEREGISTRY);
-            if (result != DISP_CHANGE_SUCCESSFUL)
+            if (result == DISP_CHANGE_SUCCESSFUL)
+            {
+                GHApp.CurrentScreenResolution = GetScreenResolution("Current", dm);
+            }
+            else
             {
                 GHApp.MaybeWriteGHLog("Failed to revert screen resolution");
             }

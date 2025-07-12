@@ -2223,73 +2223,89 @@ namespace GnollHackX.Pages.Game
 
         private void StartMainCanvasAnimation()
         {
-            //uint mainAnimationLength = GHConstants.MainCanvasAnimationTime / UIUtils.GetMainCanvasAnimationInterval(MapRefreshRate);
-            //Animation canvasAnimation = new Animation(v => canvasView.GeneralAnimationCounter = (long)v, 1, mainAnimationLength);
-            //canvasAnimation.Commit(canvasView, "GeneralAnimationCounter", length: GHConstants.MainCanvasAnimationTime,
-            //    rate: UIUtils.GetMainCanvasAnimationInterval(MapRefreshRate), repeat: () => true /* MainGrid.IsVisible */);
-            //_mapUpdateStopWatch.Restart();
+#if !WINDOWS
+            uint mainAnimationLength = GHConstants.MainCanvasAnimationTime / UIUtils.GetMainCanvasAnimationInterval(MapRefreshRate);
+            Animation canvasAnimation = new Animation(v => canvasView.GeneralAnimationCounter = (long)v, 1, mainAnimationLength);
+            canvasAnimation.Commit(canvasView, "GeneralAnimationCounter", length: GHConstants.MainCanvasAnimationTime,
+                rate: UIUtils.GetMainCanvasAnimationInterval(MapRefreshRate), repeat: () => true /* MainGrid.IsVisible */);
+            _mapUpdateStopWatch.Restart();
+#endif
         }
 
         private void StopMainCanvasAnimation()
         {
-            //if (canvasView.AnimationIsRunning("GeneralAnimationCounter"))
-            //    canvasView.AbortAnimation("GeneralAnimationCounter");
-            //if (_mapUpdateStopWatch.IsRunning)
-            //    _mapUpdateStopWatch.Stop();
+#if !WINDOWS
+            if (canvasView.AnimationIsRunning("GeneralAnimationCounter"))
+                canvasView.AbortAnimation("GeneralAnimationCounter");
+            if (_mapUpdateStopWatch.IsRunning)
+                _mapUpdateStopWatch.Stop();
+#endif
         }
 
         private void StartCommandCanvasAnimation()
         {
+#if !WINDOWS
             MapRefreshRateStyle refreshRateStyle = MapRefreshRate;
             uint auxAnimationLength = GHConstants.AuxiliaryCanvasAnimationTime / UIUtils.GetAuxiliaryCanvasAnimationInterval(refreshRateStyle);
             Animation commandAnimation = new Animation(v => CommandCanvas.GeneralAnimationCounter = (long)v, 1, auxAnimationLength);
             commandAnimation.Commit(CommandCanvas, "GeneralAnimationCounter", length: GHConstants.AuxiliaryCanvasAnimationTime,
                 rate: UIUtils.GetAuxiliaryCanvasAnimationInterval(refreshRateStyle), repeat: () => true /* MoreCommandsGrid.IsVisible */);
             //_mapUpdateStopWatch.Restart();
+#endif
         }
 
         private void StopCommandCanvasAnimation()
         {
+#if !WINDOWS
             if (CommandCanvas.AnimationIsRunning("GeneralAnimationCounter"))
                 CommandCanvas.AbortAnimation("GeneralAnimationCounter");
             //if (_mapUpdateStopWatch.IsRunning)
             //    _mapUpdateStopWatch.Stop();
+#endif
         }
 
         private void StartMenuCanvasAnimation()
         {
+#if !WINDOWS
             MapRefreshRateStyle refreshRateStyle = MapRefreshRate;
             uint auxAnimationLength = GHConstants.AuxiliaryCanvasAnimationTime / UIUtils.GetAuxiliaryCanvasAnimationInterval(refreshRateStyle);
             Animation commandAnimation = new Animation(v => MenuCanvas.GeneralAnimationCounter = (long)v, 1, auxAnimationLength);
             commandAnimation.Commit(MenuCanvas, "GeneralAnimationCounter", length: GHConstants.AuxiliaryCanvasAnimationTime, 
                 rate: UIUtils.GetAuxiliaryCanvasAnimationInterval(refreshRateStyle), repeat: () => true /* MenuGrid.IsVisible */);
             //_mapUpdateStopWatch.Restart();
+#endif
         }
 
         private void StopMenuCanvasAnimation()
         {
+#if !WINDOWS
             if (MenuCanvas.AnimationIsRunning("GeneralAnimationCounter"))
                 MenuCanvas.AbortAnimation("GeneralAnimationCounter");
             //if(_mapUpdateStopWatch.IsRunning)
             //    _mapUpdateStopWatch.Stop();
+#endif
         }
 
         private void StartTextCanvasAnimation()
         {
+#if !WINDOWS
             MapRefreshRateStyle refreshRateStyle = MapRefreshRate;
             uint auxAnimationLength = GHConstants.AuxiliaryCanvasAnimationTime / UIUtils.GetAuxiliaryCanvasAnimationInterval(refreshRateStyle);
             Animation commandAnimation = new Animation(v => TextCanvas.GeneralAnimationCounter = (long)v, 1, auxAnimationLength);
             commandAnimation.Commit(TextCanvas, "GeneralAnimationCounter", length: GHConstants.AuxiliaryCanvasAnimationTime, 
                 rate: UIUtils.GetAuxiliaryCanvasAnimationInterval(refreshRateStyle), repeat: () => true /* TextGrid.IsVisible */);
             //_mapUpdateStopWatch.Restart();
+#endif
         }
 
         private void StopTextCanvasAnimation()
         {
+#if !WINDOWS
             if (TextCanvas.AnimationIsRunning("GeneralAnimationCounter"))
                 TextCanvas.AbortAnimation("GeneralAnimationCounter");
             //if (_mapUpdateStopWatch.IsRunning)
             //    _mapUpdateStopWatch.Stop();
+#endif
         }
 
         private double GetAnimationCounterFrameSpeed(MapRefreshRateStyle refreshRateStyle, bool isMainCanvas)
@@ -3559,7 +3575,7 @@ namespace GnollHackX.Pages.Game
             YnGrid.IsVisible = false;
             DoHideDirections();
 
-            if (!LoadingGrid.IsVisible && ( !IsMainCanvasOn || /* !MainGrid.IsVisible || */ !canvasView.AnimationIsRunning("GeneralAnimationCounter")))
+            if (!LoadingGrid.IsVisible && ( !IsMainCanvasOn || /* !MainGrid.IsVisible || */ (!canvasView.AnimationIsRunning("GeneralAnimationCounter") && !GHApp.IsWindows)))
             {
                 //MainGrid.IsVisible = true;
                 IsMainCanvasOn = true;
@@ -5019,12 +5035,6 @@ namespace GnollHackX.Pages.Game
 
         public void RenderCanvas()
         {
-            //_tickCounter++;
-            //_tickCounter = _tickCounter % GHConstants.MaxRefreshRate;
-            MapRefreshRateStyle refreshRateStyle = MapRefreshRate;
-            //int mainfps = UIUtils.GetMainCanvasAnimationFrequency(style);
-            //int divisor = Math.Max(1, (int)Math.Round((double)auxRefreshRate / (double)mainfps, 0));
-            
             CanvasTypes canvasType;
             if (TextCanvas.ThreadSafeIsVisible)
                 canvasType = CanvasTypes.TextCanvas;
@@ -5034,7 +5044,18 @@ namespace GnollHackX.Pages.Game
                 canvasType = CanvasTypes.CommandCanvas;
             else
                 canvasType = CanvasTypes.MainCanvas;
-            
+
+            RenderCanvasByCanvasType(canvasType);
+        }
+
+        public void RenderCanvasByCanvasType(CanvasTypes canvasType)
+        {
+            //_tickCounter++;
+            //_tickCounter = _tickCounter % GHConstants.MaxRefreshRate;
+            MapRefreshRateStyle refreshRateStyle = MapRefreshRate;
+            //int mainfps = UIUtils.GetMainCanvasAnimationFrequency(style);
+            //int divisor = Math.Max(1, (int)Math.Round((double)auxRefreshRate / (double)mainfps, 0));
+
             switch (canvasType)
                 {
                     case CanvasTypes.MainCanvas:
