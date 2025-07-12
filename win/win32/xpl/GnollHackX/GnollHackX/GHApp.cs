@@ -5,6 +5,7 @@ using GnollHackM;
 using GnollHackM.Platforms.Windows;
 using System.Management;
 using Windows.Graphics;
+using System.Reflection.Metadata;
 #endif
 #else
 using Xamarin.Essentials;
@@ -40,7 +41,6 @@ using Azure;
 using System.Text.RegularExpressions;
 using System.ComponentModel;
 using System.Runtime.InteropServices;
-using System.Reflection.Metadata;
 
 namespace GnollHackX
 {
