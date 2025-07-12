@@ -2221,91 +2221,93 @@ namespace GnollHackX.Pages.Game
             }
         }
 
-        private void StartMainCanvasAnimation()
+        public bool CustomAnimationLoopToggled = false;
+
+        public void StartMainCanvasAnimation(bool settingToggled = false)
         {
-#if !WINDOWS
+            if (!settingToggled && GHApp.UsePlatformAnimationLoop)
+                return;
             uint mainAnimationLength = GHConstants.MainCanvasAnimationTime / UIUtils.GetMainCanvasAnimationInterval(MapRefreshRate);
             Animation canvasAnimation = new Animation(v => canvasView.GeneralAnimationCounter = (long)v, 1, mainAnimationLength);
             canvasAnimation.Commit(canvasView, "GeneralAnimationCounter", length: GHConstants.MainCanvasAnimationTime,
                 rate: UIUtils.GetMainCanvasAnimationInterval(MapRefreshRate), repeat: () => true /* MainGrid.IsVisible */);
             _mapUpdateStopWatch.Restart();
-#endif
         }
 
-        private void StopMainCanvasAnimation()
+        public void StopMainCanvasAnimation(bool settingToggled = false)
         {
-#if !WINDOWS
+            if (!settingToggled && GHApp.UsePlatformAnimationLoop)
+                return;
             if (canvasView.AnimationIsRunning("GeneralAnimationCounter"))
                 canvasView.AbortAnimation("GeneralAnimationCounter");
             if (_mapUpdateStopWatch.IsRunning)
                 _mapUpdateStopWatch.Stop();
-#endif
         }
 
         private void StartCommandCanvasAnimation()
         {
-#if !WINDOWS
+            if (GHApp.UsePlatformAnimationLoop)
+                return;
             MapRefreshRateStyle refreshRateStyle = MapRefreshRate;
             uint auxAnimationLength = GHConstants.AuxiliaryCanvasAnimationTime / UIUtils.GetAuxiliaryCanvasAnimationInterval(refreshRateStyle);
             Animation commandAnimation = new Animation(v => CommandCanvas.GeneralAnimationCounter = (long)v, 1, auxAnimationLength);
             commandAnimation.Commit(CommandCanvas, "GeneralAnimationCounter", length: GHConstants.AuxiliaryCanvasAnimationTime,
                 rate: UIUtils.GetAuxiliaryCanvasAnimationInterval(refreshRateStyle), repeat: () => true /* MoreCommandsGrid.IsVisible */);
             //_mapUpdateStopWatch.Restart();
-#endif
         }
 
         private void StopCommandCanvasAnimation()
         {
-#if !WINDOWS
+            if (GHApp.UsePlatformAnimationLoop)
+                return;
             if (CommandCanvas.AnimationIsRunning("GeneralAnimationCounter"))
                 CommandCanvas.AbortAnimation("GeneralAnimationCounter");
             //if (_mapUpdateStopWatch.IsRunning)
             //    _mapUpdateStopWatch.Stop();
-#endif
         }
 
         private void StartMenuCanvasAnimation()
         {
-#if !WINDOWS
+            if (GHApp.UsePlatformAnimationLoop)
+                return;
             MapRefreshRateStyle refreshRateStyle = MapRefreshRate;
             uint auxAnimationLength = GHConstants.AuxiliaryCanvasAnimationTime / UIUtils.GetAuxiliaryCanvasAnimationInterval(refreshRateStyle);
             Animation commandAnimation = new Animation(v => MenuCanvas.GeneralAnimationCounter = (long)v, 1, auxAnimationLength);
             commandAnimation.Commit(MenuCanvas, "GeneralAnimationCounter", length: GHConstants.AuxiliaryCanvasAnimationTime, 
                 rate: UIUtils.GetAuxiliaryCanvasAnimationInterval(refreshRateStyle), repeat: () => true /* MenuGrid.IsVisible */);
             //_mapUpdateStopWatch.Restart();
-#endif
         }
 
         private void StopMenuCanvasAnimation()
         {
-#if !WINDOWS
+            if (GHApp.UsePlatformAnimationLoop)
+                return;
             if (MenuCanvas.AnimationIsRunning("GeneralAnimationCounter"))
                 MenuCanvas.AbortAnimation("GeneralAnimationCounter");
             //if(_mapUpdateStopWatch.IsRunning)
             //    _mapUpdateStopWatch.Stop();
-#endif
         }
 
         private void StartTextCanvasAnimation()
         {
-#if !WINDOWS
+            if (GHApp.UsePlatformAnimationLoop)
+                return;
             MapRefreshRateStyle refreshRateStyle = MapRefreshRate;
             uint auxAnimationLength = GHConstants.AuxiliaryCanvasAnimationTime / UIUtils.GetAuxiliaryCanvasAnimationInterval(refreshRateStyle);
             Animation commandAnimation = new Animation(v => TextCanvas.GeneralAnimationCounter = (long)v, 1, auxAnimationLength);
             commandAnimation.Commit(TextCanvas, "GeneralAnimationCounter", length: GHConstants.AuxiliaryCanvasAnimationTime, 
                 rate: UIUtils.GetAuxiliaryCanvasAnimationInterval(refreshRateStyle), repeat: () => true /* TextGrid.IsVisible */);
             //_mapUpdateStopWatch.Restart();
-#endif
         }
 
         private void StopTextCanvasAnimation()
         {
-#if !WINDOWS
+            if (GHApp.UsePlatformAnimationLoop)
+                return;
             if (TextCanvas.AnimationIsRunning("GeneralAnimationCounter"))
                 TextCanvas.AbortAnimation("GeneralAnimationCounter");
             //if (_mapUpdateStopWatch.IsRunning)
             //    _mapUpdateStopWatch.Stop();
-#endif
         }
 
         private double GetAnimationCounterFrameSpeed(MapRefreshRateStyle refreshRateStyle, bool isMainCanvas)
@@ -3123,6 +3125,15 @@ namespace GnollHackX.Pages.Game
             GHApp.BackButtonPressed += BackButtonPressed;
             RefreshScreen = true;
 
+            if (CustomAnimationLoopToggled)
+            {
+                CustomAnimationLoopToggled = false;
+                if (GHApp.UsePlatformAnimationLoop)
+                    StopMainCanvasAnimation(true);
+                else
+                    StartMainCanvasAnimation(true);
+            }
+
             if (!PlayingReplay)
             {
                 GameMenuButton.IsEnabled = true;
@@ -3579,7 +3590,7 @@ namespace GnollHackX.Pages.Game
             YnGrid.IsVisible = false;
             DoHideDirections();
 
-            if (!LoadingGrid.IsVisible && ( !IsMainCanvasOn || /* !MainGrid.IsVisible || */ (!canvasView.AnimationIsRunning("GeneralAnimationCounter") && !GHApp.IsWindows)))
+            if (!LoadingGrid.IsVisible && ( !IsMainCanvasOn || /* !MainGrid.IsVisible || */ (!canvasView.AnimationIsRunning("GeneralAnimationCounter") && !GHApp.UsePlatformAnimationLoop)))
             {
                 //MainGrid.IsVisible = true;
                 IsMainCanvasOn = true;
