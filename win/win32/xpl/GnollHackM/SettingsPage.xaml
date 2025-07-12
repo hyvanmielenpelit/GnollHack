@@ -1414,7 +1414,7 @@
                                     FontSize="15"
                                     VerticalOptions="Center" 
                                     HorizontalOptions="Start" />
-                                <Switch Grid.Column="1" x:Name="PlatformRenderLoopSwitch" HorizontalOptions="End" VerticalOptions="Center" />
+                                <Switch Grid.Column="1" x:Name="PlatformRenderLoopSwitch" Toggled="PlatformRenderLoopSwitch_Toggled" HorizontalOptions="End" VerticalOptions="Center" />
                             </Grid>
                             <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
                                 <Label Text="GL Only on Map"

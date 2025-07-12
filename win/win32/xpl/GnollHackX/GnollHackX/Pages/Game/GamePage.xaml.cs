@@ -1025,9 +1025,10 @@ namespace GnollHackX.Pages.Game
             //}
             SetLayerDrawOrder();
 
+            int mapRefreshValue = Preferences.Get("MapRefreshRate", -1);
+            MapRefreshRate = mapRefreshValue < 0 ? UIUtils.GetDefaultMapFPS() : (MapRefreshRateStyle)mapRefreshValue;
             CursorStyle = (TTYCursorStyle)Preferences.Get("CursorStyle", 1);
             GraphicsStyle = (GHGraphicsStyle)Preferences.Get("GraphicsStyle", 1);
-            MapRefreshRate = (MapRefreshRateStyle)Preferences.Get("MapRefreshRate", (int)UIUtils.GetDefaultMapFPS());
             ShowFPS = Preferences.Get("ShowFPS", false);
             ShowBattery = Preferences.Get("ShowBattery", false);
             ShowZoom = Preferences.Get("ShowZoom", false);
@@ -2349,6 +2350,10 @@ namespace GnollHackX.Pages.Game
                     framespeed *= 1.0 / 3.0;
                     //subCounterMax = 2; /* Animations proceed at every third frame at 120fps to get 40fps */
                     break;
+                case MapRefreshRateStyle.MapFPS144:
+                    framespeed *= 1.0 / 4.0;
+                    //subCounterMax = 3; /* Animations proceed at every fourth frame at 144fps to get 36fps */
+                    break;
             }
             return framespeed;
         }
@@ -2394,6 +2399,9 @@ namespace GnollHackX.Pages.Game
                     break;
                 case MapRefreshRateStyle.MapFPS120:
                     framespeed = 0.5;
+                    break;
+                case MapRefreshRateStyle.MapFPS144:
+                    framespeed = 5.0 / 12.0;
                     break;
             }
             return framespeed;

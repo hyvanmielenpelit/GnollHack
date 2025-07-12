@@ -70,19 +70,21 @@ namespace GnollHackX.Pages.MainScreen
             SetTournamentModeLabelColors(GHApp.TournamentMode);
             SetChildrenDarkModeTextColor(RootLayout, GHApp.DarkMode);
 
-            List<string> list = new List<string>
+            MapRefreshRateStyle defaultRefresh = UIUtils.GetDefaultMapFPS();
+            List<MapRefreshRateItem> list = new List<MapRefreshRateItem>
             {
-                "20 fps",
-                "30 fps",
-                "40 fps",
-                "60 fps"
+                new MapRefreshRateItem("Default (" + UIUtils.GetMainCanvasAnimationFrequency(defaultRefresh) + " FPS)", true, defaultRefresh),
+                new MapRefreshRateItem("20 FPS", false, MapRefreshRateStyle.MapFPS20),
+                new MapRefreshRateItem("30 FPS", false, MapRefreshRateStyle.MapFPS30),
+                new MapRefreshRateItem("40 FPS", false, MapRefreshRateStyle.MapFPS40),
+                new MapRefreshRateItem("60 FPS", false, MapRefreshRateStyle.MapFPS60),
             };
 
             float screenRefreshRate = GHApp.DisplayRefreshRate;
             if (screenRefreshRate >= 72.0f)
-                list.Add("72 fps");
+                list.Add(new MapRefreshRateItem("72 FPS", false, MapRefreshRateStyle.MapFPS72));
             if (screenRefreshRate >= 80.0f)
-                list.Add("80 fps");
+                list.Add(new MapRefreshRateItem("80 FPS", false, MapRefreshRateStyle.MapFPS80));
             //if (screenRefreshRate >= 90.0f)
             //    list.Add("90 fps");
             //if (screenRefreshRate >= 120.0f)
@@ -284,6 +286,29 @@ namespace GnollHackX.Pages.MainScreen
             CloudStorageTitleLabel.TextColor = usedDefColor;
         }
 
+        private void UpdateDefaultMapRefreshRate()
+        {
+            int selIdx = RefreshRatePicker.SelectedIndex;
+            var source = RefreshRatePicker.ItemsSource;
+            RefreshRatePicker.ItemsSource = null;
+            if (source != null && source.Count > 0)
+            {
+                var item = source[0] as MapRefreshRateItem;
+                if (item != null)
+                {
+#if WINDOWS
+                    float refreshRate = (float)DisplaySettingsHelper.GetCurrentResolution()?.RefreshRate;
+#else
+                    float refreshRate = GHApp.DisplayRefreshRate;
+#endif
+                    item.Value = UIUtils.GetDefaultMapFPS(refreshRate, PlatformRenderLoopGrid.IsVisible && PlatformRenderLoopSwitch.IsToggled);
+                    item.DisplayName = "Default (" + UIUtils.GetMainCanvasAnimationFrequency(item.Value) + " FPS)";
+                }
+            }
+            RefreshRatePicker.ItemsSource = source;
+            RefreshRatePicker.SelectedIndex = selIdx;
+        }
+
         private void ContentPage_Disappearing(object sender, EventArgs e)
         {
             GHApp.BackButtonPressed -= BackButtonPressed;
@@ -307,11 +332,11 @@ namespace GnollHackX.Pages.MainScreen
                 Preferences.Set("GraphicsStyle", GraphicsPicker.SelectedIndex);
             }
 
-            if (RefreshRatePicker.SelectedIndex > -1)
+            if (RefreshRatePicker.SelectedIndex > -1 && RefreshRatePicker.SelectedItem != null && RefreshRatePicker.SelectedItem is MapRefreshRateItem)
             {
                 if (_gamePage != null)
-                    _gamePage.MapRefreshRate = (MapRefreshRateStyle)RefreshRatePicker.SelectedIndex;
-                Preferences.Set("MapRefreshRate", RefreshRatePicker.SelectedIndex);
+                    _gamePage.MapRefreshRate = ((MapRefreshRateItem)RefreshRatePicker.SelectedItem).Value;
+                Preferences.Set("MapRefreshRate", (int)((MapRefreshRateItem)RefreshRatePicker.SelectedItem).Value);
             }
 
             if (ScreenScalePicker.SelectedIndex > -1 && ScreenScalePicker.SelectedItem != null && ScreenScalePicker.SelectedItem is ScreenScaleItem)
@@ -905,7 +930,7 @@ namespace GnollHackX.Pages.MainScreen
 
         private void SetInitialValues()
         {
-            int cursor = 0, graphics = 0, savestyle = 0, maprefresh = (int)UIUtils.GetDefaultMapFPS(), msgnum = 0, petrows = 0;
+            int cursor = 0, graphics = 0, savestyle = 0, maprefresh = -1, msgnum = 0, petrows = 0;
             bool mem = false, fps = false, zoom = false, battery = false, showrecording = true, autoupload = false, gpu = GHApp.IsGPUDefault, disableauxgpu = false, platformloop = false, mipmap = false, simplecmdlayout = GHConstants.DefaultSimpleCmdLayout, darkmode = false, windowedmode = false, bank = true, navbar = GHConstants.DefaultHideNavigation, statusbar = GHConstants.DefaultHideStatusBar;
             bool allowbones = true, allowpet = true, emptywishisnothing = true, doubleclick = GHApp.IsDesktop, getpositionarrows = false, recordgame = false, gzip = GHConstants.GZipIsDefaultReplayCompression, lighterdarkening = false, accuratedrawing = GHConstants.DefaultAlternativeLayerDrawing, html = GHConstants.DefaultHTMLDumpLogs, singledumplog = GHConstants.DefaultUseSingleDumpLog, streamingbanktomemory = false, streamingbanktodisk = false, wallends = GHConstants.DefaultDrawWallEnds;
             bool breatheanimations = GHConstants.DefaultBreatheAnimations; //, put2bag = GHConstants.DefaultShowPickNStashContextCommand, prevwep = GHConstants.DefaultShowPrevWepContextCommand;
@@ -1007,11 +1032,11 @@ namespace GnollHackX.Pages.MainScreen
             screenresolutionpriority = (uint)Preferences.Get("CustomScreenResolutionPriority", 1);
             save_file_tracking = GHApp.SaveFileTracking;
             disablewindowskey = Preferences.Get("DisableWindowsKey", false);
+            maprefresh = Preferences.Get("MapRefreshRate", -1);
             if (_gamePage == null)
             {
                 cursor = Preferences.Get("CursorStyle", 1);
                 graphics = Preferences.Get("GraphicsStyle", 1);
-                maprefresh = Preferences.Get("MapRefreshRate", (int)UIUtils.GetDefaultMapFPS());
                 mapgrid = Preferences.Get("MapGrid", false);
                 forcemaxmsg = false; /* Always starts as false */
                 ForceMaxMessageSwitch.IsEnabled = false;
@@ -1065,7 +1090,7 @@ namespace GnollHackX.Pages.MainScreen
             {
                 cursor = (int)_gamePage.CursorStyle;
                 graphics = (int)_gamePage.GraphicsStyle;
-                maprefresh = (int)_gamePage.MapRefreshRate;
+                //maprefresh = (int)_gamePage.MapRefreshRate;
                 mapgrid = _gamePage.MapGrid;
                 forcemaxmsg = _gamePage.ForceAllMessages;
                 ForceMaxMessageSwitch.IsEnabled = true;
@@ -1117,7 +1142,22 @@ namespace GnollHackX.Pages.MainScreen
 
             CursorPicker.SelectedIndex = cursor;
             GraphicsPicker.SelectedIndex = graphics;
-            RefreshRatePicker.SelectedIndex = Math.Min(RefreshRatePicker.Items.Count - 1, maprefresh);
+            //RefreshRatePicker.SelectedIndex = Math.Min(RefreshRatePicker.Items.Count - 1, maprefresh);
+            if (RefreshRatePicker.ItemsSource != null)
+            {
+                for (int i = 0; i < RefreshRatePicker.ItemsSource.Count; i++)
+                {
+                    object o = RefreshRatePicker.ItemsSource[i];
+                    if (o is MapRefreshRateItem)
+                    {
+                        if (maprefresh == -1 ? ((MapRefreshRateItem)o).IsDefault : (int)((MapRefreshRateItem)o).Value == maprefresh)
+                        {
+                            RefreshRatePicker.SelectedIndex = i;
+                            break;
+                        }
+                    }
+                }
+            }
 
             if (ScreenScalePicker.ItemsSource != null)
             {
@@ -2515,7 +2555,16 @@ namespace GnollHackX.Pages.MainScreen
                         GHApp.RevertScreenResolution();
                     else
                         GHApp.ChangeScreenResolution(item.Width, item.Height, item.RefreshRate);
+                    UpdateDefaultMapRefreshRate();
                 }
+            }
+        }
+
+        private void PlatformRenderLoopSwitch_Toggled(object sender, ToggledEventArgs e)
+        {
+            if (_isManualTogglingEnabled)
+            {
+                UpdateDefaultMapRefreshRate();
             }
         }
     }

@@ -8714,6 +8714,24 @@ namespace GnollHackX
         }
     }
 
+    public class MapRefreshRateItem
+    {
+        public string DisplayName = "";
+        public readonly bool IsDefault = false;
+        public MapRefreshRateStyle Value = MapRefreshRateStyle.MapFPS60;
+        public MapRefreshRateItem(string displayName, bool isDefault, MapRefreshRateStyle value)
+        {
+            DisplayName = displayName;
+            IsDefault = isDefault;
+            Value = value;
+        }
+
+        public override string ToString()
+        {
+            return DisplayName;
+        }
+    }
+
     public class ScreenScaleItem
     {
         public readonly string DisplayName = "";

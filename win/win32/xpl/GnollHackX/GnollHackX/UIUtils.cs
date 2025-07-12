@@ -990,7 +990,9 @@ namespace GnollHackX
 
         public static uint GetMainCanvasAnimationInterval(MapRefreshRateStyle mapRefreshRate, float screenRefreshRate)
         {
-            if (screenRefreshRate >= 120.0f && mapRefreshRate >= MapRefreshRateStyle.MapFPS120)
+            if (screenRefreshRate >= 144.0f && mapRefreshRate >= MapRefreshRateStyle.MapFPS144)
+                return 7;
+            else if (screenRefreshRate >= 120.0f && mapRefreshRate >= MapRefreshRateStyle.MapFPS120)
                 return 8;
             else if (screenRefreshRate >= 90.0f && mapRefreshRate >= MapRefreshRateStyle.MapFPS90)
                 return 11;
@@ -1019,7 +1021,9 @@ namespace GnollHackX
 
         public static int GetMainCanvasAnimationFrequency(MapRefreshRateStyle mapRefreshRate, float screenRefreshRate)
         {
-            if (screenRefreshRate >= 120.0f && mapRefreshRate >= MapRefreshRateStyle.MapFPS120)
+            if (screenRefreshRate >= 144.0f && mapRefreshRate >= MapRefreshRateStyle.MapFPS144)
+                return 144;
+            else if (screenRefreshRate >= 120.0f && mapRefreshRate >= MapRefreshRateStyle.MapFPS120)
                 return 120;
             else if (screenRefreshRate >= 90.0f && mapRefreshRate >= MapRefreshRateStyle.MapFPS90)
                 return 90;
@@ -1036,13 +1040,20 @@ namespace GnollHackX
             else if (screenRefreshRate >= 20.0f && mapRefreshRate >= MapRefreshRateStyle.MapFPS20)
                 return 20;
             else
-                return 40;
+                return 10;
         }
 
         public static MapRefreshRateStyle GetDefaultMapFPS()
         {
             float screenRefreshRate = GHApp.DisplayRefreshRate;
-            if (screenRefreshRate == 144f)
+            bool platformLoop = GHApp.UsePlatformRenderLoop;
+            return GetDefaultMapFPS(screenRefreshRate, platformLoop);
+        }
+        public static MapRefreshRateStyle GetDefaultMapFPS(float screenRefreshRate, bool platformLoop)
+        {
+            if (platformLoop && screenRefreshRate >= 80f && screenRefreshRate % 80 == 0)
+                return MapRefreshRateStyle.MapFPS80;
+            else if (platformLoop && screenRefreshRate >= 72f && screenRefreshRate % 72 == 0)
                 return MapRefreshRateStyle.MapFPS72;
             else if (screenRefreshRate >= 60f)
                 return MapRefreshRateStyle.MapFPS60;
