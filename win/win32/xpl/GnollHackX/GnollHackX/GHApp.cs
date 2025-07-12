@@ -112,9 +112,9 @@ namespace GnollHackX
         public static Microsoft.UI.Input.InputCursor WindowsCursor = null;
         public static Microsoft.UI.Input.InputCursor WindowsInfoCursor = null;
 
-        private static readonly object _windowFocusedLock = new object();
-        private static bool _windowFocused = false;
-        public static bool WindowFocused { get { lock (_windowFocusedLock) { return _windowFocused; } } set { lock (_windowFocusedLock) { _windowFocused = value; } } }
+        //private static readonly object _windowFocusedLock = new object();
+        private static int _windowFocused = 0;
+        public static bool WindowFocused { get { return Interlocked.CompareExchange(ref _windowFocused, 0, 0) != 0; } set { Interlocked.Exchange(ref _windowFocused, value ? 1 : 0); } }
 #endif
         private static Assembly _assembly = null;
 
@@ -969,11 +969,11 @@ namespace GnollHackX
         public static bool ScreenResolutionChanged { get; set; }
         public static bool RecommendedSettingsChecked { get; set; }
 
-        private static readonly object _recordGameLock = new object();
-        private static bool _recordGame = false;
-        public static bool RecordGame { get { bool t = TournamentMode; lock (_recordGameLock) { return _recordGame || t; } } set { lock (_recordGameLock) { _recordGame = value; } } }
-        private static bool _autoUploadReplays = false;
-        public static bool AutoUploadReplays { get { bool t = TournamentMode; lock (_recordGameLock) { return _autoUploadReplays || t; } } set { lock (_recordGameLock) { _autoUploadReplays = value; } } }
+        //private static readonly object _recordGameLock = new object();
+        private static int _recordGame = 0;
+        public static bool RecordGame { get { return Interlocked.CompareExchange(ref _recordGame, 0, 0) != 0 || TournamentMode; } set { Interlocked.Exchange(ref _recordGame, value ? 1 : 0); } }
+        private static int _autoUploadReplays = 0;
+        public static bool AutoUploadReplays { get { return Interlocked.CompareExchange(ref _autoUploadReplays, 0, 0) != 0 || TournamentMode; } set { Interlocked.Exchange(ref _autoUploadReplays, value ? 1 : 0); } }
 
         private readonly static object _networkAccessLock = new object();
 #if GNH_MAUI
@@ -1039,23 +1039,23 @@ namespace GnollHackX
             false;
 #endif
 
-        private static readonly object _useGPULock = new object();
-        private static bool _useMipMap = false;
-        private static bool _useGPU = false;
-        private static bool _useAuxGPU = false;
-        private static bool _disableAuxGPU = false;
-        public static bool UseMipMap { get { lock (_useGPULock) { return _useMipMap; } } set { lock (_useGPULock) { _useMipMap = value; } } }
-        public static bool UseGPU { get { lock (_useGPULock) { return _useGPU; } } set { lock (_useGPULock) { _useGPU = value; } } }
-        public static bool UseAuxGPU { get { lock (_useGPULock) { return _useAuxGPU; } } set { lock (_useGPULock) { _useAuxGPU = value; } } }
-        public static bool DisableAuxGPU { get { lock (_useGPULock) { return _disableAuxGPU; } } set { lock (_useGPULock) { _disableAuxGPU = value; } } }
+        //private static readonly object _useGPULock = new object();
+        private static int _useMipMap = 0;
+        private static int _useGPU = 0;
+        private static int _useAuxGPU = 0;
+        private static int _disableAuxGPU = 0;
+        public static bool UseMipMap { get { return Interlocked.CompareExchange(ref _useMipMap, 0, 0) != 0; } set { Interlocked.Exchange(ref _useMipMap, value ? 1 : 0); } }
+        public static bool UseGPU { get { return Interlocked.CompareExchange(ref _useGPU, 0, 0) != 0; } set { Interlocked.Exchange(ref _useGPU, value ? 1 : 0); } }
+        public static bool UseAuxGPU { get { return Interlocked.CompareExchange(ref _useAuxGPU, 0, 0) != 0; } set { Interlocked.Exchange(ref _useAuxGPU, value ? 1 : 0); } }
+        public static bool DisableAuxGPU { get { return Interlocked.CompareExchange(ref _disableAuxGPU, 0, 0) != 0; } set { Interlocked.Exchange(ref _disableAuxGPU, value ? 1 : 0); } }
 
-        private static readonly object _fixRectLock = new object();
-        private static bool _fixRects = false;
-        public static bool FixRects { get { lock (_fixRectLock) { return _fixRects; } } set { lock (_fixRectLock) { _fixRects = value; } } }
+        //private static readonly object _fixRectLock = new object();
+        private static int _fixRects = 0;
+        public static bool FixRects { get { return Interlocked.CompareExchange(ref _fixRects, 0, 0) != 0; } set { Interlocked.Exchange(ref _fixRects, value ? 1 : 0); } }
 
-        private static readonly object _drawWallEndsLock = new object();
-        private static bool _drawWallEnds = GHConstants.DefaultDrawWallEnds;
-        public static bool DrawWallEnds { get { lock (_drawWallEndsLock) { return _drawWallEnds; } } set { lock (_drawWallEndsLock) { _drawWallEnds = value; } } }
+        //private static readonly object _drawWallEndsLock = new object();
+        private static int _drawWallEnds = GHConstants.DefaultDrawWallEnds ? 1 : 0;
+        public static bool DrawWallEnds { get { return Interlocked.CompareExchange(ref _drawWallEnds, 0, 0) != 0; } set { Interlocked.Exchange(ref _drawWallEnds, value ? 1 : 0); } }
 
         public static bool BatterySavingMode { get; set; }
 
@@ -1504,16 +1504,16 @@ namespace GnollHackX
             //}
         }
 
-        private static readonly object _saveResumeLock = new object();
-        private static bool _savingGame = false;
-        private static bool _cancelSaveGame = false;
+        //private static readonly object _saveResumeLock = new object();
+        private static int _cancelSaveGame = 0;
+        private static int _savingGame = 0;
         private static int _appSwitchSaveStyle = 0;
-        private static bool _gameSaved = false;
+        private static int _gameSaved = 0;
 
-        public static bool CancelSaveGame { get { lock (_saveResumeLock) { return _cancelSaveGame; } } set { lock (_saveResumeLock) { _cancelSaveGame = value; } } }
-        public static bool SavingGame { get { lock (_saveResumeLock) { return _savingGame; } } set { lock (_saveResumeLock) { _savingGame = value; } } }
-        public static int AppSwitchSaveStyle { get { bool t = TournamentMode; lock (_saveResumeLock) { return t ? 0 : _appSwitchSaveStyle; } } set { lock (_saveResumeLock) { _appSwitchSaveStyle = value; } } }
-        public static bool GameSaved { get { lock (_saveResumeLock) { return _gameSaved; } } set { lock (_saveResumeLock) { _gameSaved = value; } } }
+        public static bool CancelSaveGame { get { return Interlocked.CompareExchange(ref _cancelSaveGame, 0, 0) != 0; } set { Interlocked.Exchange(ref _cancelSaveGame, value ? 1 : 0); } }
+        public static bool SavingGame { get { return Interlocked.CompareExchange(ref _savingGame, 0, 0) != 0; } set { Interlocked.Exchange(ref _savingGame, value ? 1 : 0); } }
+        public static int AppSwitchSaveStyle { get { return TournamentMode ? 0 : Interlocked.CompareExchange(ref _appSwitchSaveStyle, 0, 0); } set { Interlocked.Exchange(ref _appSwitchSaveStyle, value); } }
+        public static bool GameSaved { get { return Interlocked.CompareExchange(ref _gameSaved, 0, 0) != 0; } set { Interlocked.Exchange(ref _gameSaved, value ? 1 : 0); } }
 
 
         private static readonly object _gameSaveResultLock = new object();
@@ -1794,18 +1794,18 @@ namespace GnollHackX
             }
         }
 
-        private static readonly object _keyboardLock = new object();
-        private static bool _ctrlDown = false;
-        private static bool _altDown = false;
-        private static bool _shiftDown = false;
-        private static bool _windowsKeyDown = false;
-        private static bool _disableWindowsKey = false;
+        //private static readonly object _keyboardLock = new object();
+        private static int _ctrlDown = 0;
+        private static int _altDown = 0;
+        private static int _shiftDown = 0;
+        private static int _windowsKeyDown = 0;
+        private static int _disableWindowsKey = 0;
 
-        public static bool CtrlDown { get { lock (_keyboardLock) { return _ctrlDown; } } set { lock (_keyboardLock) { _ctrlDown = value; } } }
-        public static bool AltDown { get { lock (_keyboardLock) { return _altDown; } } set { lock (_keyboardLock) { _altDown = value; } } }
-        public static bool ShiftDown { get { lock (_keyboardLock) { return _shiftDown; } } set { lock (_keyboardLock) { _shiftDown = value; } } }
-        public static bool WindowsKeyDown { get { lock (_keyboardLock) { return _windowsKeyDown; } } set { lock (_keyboardLock) { _windowsKeyDown = value; } } }
-        public static bool DisableWindowsKey{ get { lock (_keyboardLock) { return _disableWindowsKey; } } set { lock (_keyboardLock) { _disableWindowsKey = value; } } }
+        public static bool CtrlDown { get { return Interlocked.CompareExchange(ref _ctrlDown, 0, 0) != 0; } set { Interlocked.Exchange(ref _ctrlDown, value ? 1 : 0); } }
+        public static bool AltDown { get { return Interlocked.CompareExchange(ref _altDown, 0, 0) != 0; } set { Interlocked.Exchange(ref _altDown, value ? 1 : 0); } }
+        public static bool ShiftDown { get { return Interlocked.CompareExchange(ref _shiftDown, 0, 0) != 0; } set { Interlocked.Exchange(ref _shiftDown, value ? 1 : 0); } }
+        public static bool WindowsKeyDown { get { return Interlocked.CompareExchange(ref _windowsKeyDown, 0, 0) != 0; } set { Interlocked.Exchange(ref _windowsKeyDown, value ? 1 : 0); } }
+        public static bool DisableWindowsKey{ get { return Interlocked.CompareExchange(ref _disableWindowsKey, 0, 0) != 0; } set { Interlocked.Exchange(ref _disableWindowsKey, value ? 1 : 0); } }
 
         public static bool DownloadOnDemandPackage
         {
@@ -1819,20 +1819,24 @@ namespace GnollHackX
             }
         }
 
-        private readonly static object _windowedModeLock = new object();
-        private static bool _windowedMode = false;
+        //private readonly static object _windowedModeLock = new object();
+        private static int _windowedMode = 0;
         public static bool WindowedMode
         {
-            get { lock (_windowedModeLock) { return _windowedMode; } }
-            set { lock (_windowedModeLock) { _windowedMode = value; } }
+            get { return Interlocked.CompareExchange(ref _windowedMode, 0, 0) != 0; }
+            set { Interlocked.Exchange(ref _windowedMode, value ? 1 : 0); }
+            //get { lock (_windowedModeLock) { return _windowedMode; } }
+            //set { lock (_windowedModeLock) { _windowedMode = value; } }
         }
 
-        private readonly static object _darkModeLock = new object();
-        private static bool _darkMode = false;
+        //private readonly static object _darkModeLock = new object();
+        private static int _darkMode = 0;
         public static bool DarkMode
         {
-            get { lock (_darkModeLock) { return _darkMode; } }
-            set { lock (_darkModeLock) { _darkMode = value; } UpdateTheme(value); }
+            get { return Interlocked.CompareExchange(ref _darkMode, 0, 0) != 0; }
+            set { Interlocked.Exchange(ref _darkMode, value ? 1 : 0); }
+            //get { lock (_darkModeLock) { return _darkMode; } }
+            //set { lock (_darkModeLock) { _darkMode = value; } UpdateTheme(value); }
         }
 
         private static void UpdateTheme(bool isDarkTheme)
@@ -2107,31 +2111,32 @@ namespace GnollHackX
         }
         public static bool DeveloperMode { get; set; }
 
-        private static readonly object _debugLock = new object();
-        private static bool _debugLogMessages = GHConstants.DefaultLogMessages;
-        private static bool _lowLevelLogging = false;
-        public static bool DebugLogMessages { get { lock (_debugLock) { return _debugLogMessages; } } set { lock (_debugLock) { _debugLogMessages = value; } } }
-        public static bool LowLevelLogging { get { lock (_debugLock) { return _lowLevelLogging; } } set { lock (_debugLock) { _lowLevelLogging = value; } } }
-        public static bool IsDebugLowLevelLoggingOn { get { lock (_debugLock) { return _debugLogMessages && _lowLevelLogging; } } }
+        //private static readonly object _debugLock = new object();
+        private static int _debugLogMessages = GHConstants.DefaultLogMessages ? 1 : 0;
+        private static int _lowLevelLogging = 0;
+        public static bool DebugLogMessages { get { return Interlocked.CompareExchange(ref _debugLogMessages, 0, 0) != 0; } set { Interlocked.Exchange(ref _debugLogMessages, value ? 1 : 0); } }
+        public static bool LowLevelLogging { get { return Interlocked.CompareExchange(ref _lowLevelLogging, 0, 0) != 0; } set { Interlocked.Exchange(ref _lowLevelLogging, value ? 1 : 0); } }
+        public static bool IsDebugLowLevelLoggingOn { get { return DebugLogMessages && LowLevelLogging; } }
 
-        private static bool _debugPostChannel = GHConstants.DefaultDebugPostChannel;
+        private static int _debugPostChannel = GHConstants.DefaultDebugPostChannel ? 1 : 0;
         public static bool DebugPostChannel /* This is the setting value on Settings Page */
-        { 
-            get 
-            {
-                lock (_debugLock) 
-                { 
-                    return _debugPostChannel; 
-                } 
-            } 
-            set 
-            { 
-                lock (_debugLock) 
-                { 
-                    _debugPostChannel = value; 
-                } 
-            } 
-        }
+        { get { return Interlocked.CompareExchange(ref _debugPostChannel, 0, 0) != 0; } set { Interlocked.Exchange(ref _debugPostChannel, value ? 1 : 0); } }
+        //{ 
+        //    get 
+        //    {
+        //        lock (_debugLock) 
+        //        { 
+        //            return _debugPostChannel; 
+        //        } 
+        //    } 
+        //    set 
+        //    { 
+        //        lock (_debugLock) 
+        //        { 
+        //            _debugPostChannel = value; 
+        //        } 
+        //    } 
+        //}
 
         public static bool UseDebugPostChannel  /* This should be used to check which channel to use */
         {
@@ -2147,9 +2152,9 @@ namespace GnollHackX
             }
         }
 
-        private static readonly object _tournamentLock = new object();
-        private static bool _tournamentMode = false;
-        public static bool TournamentMode { get { lock (_tournamentLock) { return _tournamentMode; } } set { lock (_tournamentLock) { _tournamentMode = value; } } }
+        //private static readonly object _tournamentLock = new object();
+        private static int _tournamentMode = 0;
+        public static bool TournamentMode { get { return Interlocked.CompareExchange(ref _tournamentMode, 0, 0) != 0; } set { Interlocked.Exchange(ref _tournamentMode, value ? 1 : 0); } }
 
         public static bool FullVersionMode { get; set; }
         public static bool ClassicMode { get; set; }
@@ -2307,35 +2312,44 @@ namespace GnollHackX
             }
         }
 
-        private static readonly object _displayDataLock = new object();
+        //private static readonly object _displayDataLock = new object();
         public static float DisplayDensity
         {
-            get { lock (_displayDataLock) { return _displayDensity; } }
-            set { lock (_displayDataLock) { _displayDensity = value <= 0.0f ? 1.0f : value; } }
+            get { return Interlocked.CompareExchange(ref _displayDensity, 0.0f, 0.0f); }
+            set { Interlocked.Exchange(ref _displayDensity, value <= 0.0f ? 1.0f : value); }
+            //get { lock (_displayDataLock) { return _displayDensity; } }
+            //set { lock (_displayDataLock) { _displayDensity = value <= 0.0f ? 1.0f : value; } }
         }
         public static float DisplayRefreshRate
         {
-            get { lock (_displayDataLock) { return _displayRefreshRate; } }
-            set { lock (_displayDataLock) { _displayRefreshRate = value <= 0.0f ? 1.0f : value; } }
+            get { return Interlocked.CompareExchange(ref _displayRefreshRate, 0.0f, 0.0f); }
+            set { Interlocked.Exchange(ref _displayRefreshRate, value <= 0.0f ? 1.0f : value); }
+            //get { lock (_displayDataLock) { return _displayRefreshRate; } }
+            //set { lock (_displayDataLock) { _displayRefreshRate = value <= 0.0f ? 1.0f : value; } }
         }
 
         private static float _customScreenScale = 1.0f;
         public static float CustomScreenScale
         {
-            get { lock (_displayDataLock) { return _customScreenScale; } }
-            set { lock (_displayDataLock) { _customScreenScale = value <= 0.0f ? 1.0f : value; } }
+            get { return Interlocked.CompareExchange(ref _customScreenScale, 0.0f, 0.0f); }
+            set { Interlocked.Exchange(ref _customScreenScale, value <= 0.0f ? 1.0f : value); }
+            //get { lock (_displayDataLock) { return _customScreenScale; } }
+            //set { lock (_displayDataLock) { _customScreenScale = value <= 0.0f ? 1.0f : value; } }
         }
 
         private static float _platformScreenScale = 1.0f;
         public static float PlatformScreenScale
         {
-            get { lock (_displayDataLock) { return _platformScreenScale; } }
-            set { lock (_displayDataLock) { _platformScreenScale = value <= 0.0f ? 1.0f : value; } }
+            get { return Interlocked.CompareExchange(ref _platformScreenScale, 0.0f, 0.0f); }
+            set { Interlocked.Exchange(ref _platformScreenScale, value <= 0.0f ? 1.0f : value); }
+            //get { lock (_displayDataLock) { return _platformScreenScale; } }
+            //set { lock (_displayDataLock) { _platformScreenScale = value <= 0.0f ? 1.0f : value; } }
         }
 
         public static float TotalScreenScale
         {
-            get { lock (_displayDataLock) { return _displayDensity * _platformScreenScale * _customScreenScale; } }
+            get { return DisplayDensity * PlatformScreenScale * CustomScreenScale; }
+            //get { lock (_displayDataLock) { return _displayDensity * _platformScreenScale * _customScreenScale; } }
         }
 
         public static GHPlatform PlatformId
@@ -4063,55 +4077,55 @@ namespace GnollHackX
         }
 
 
-        private static readonly object _postingGameStatusLock = new object();
-        private static bool _postingGameStatus;
-        public static bool PostingGameStatus { get { bool t = TournamentMode; lock (_postingGameStatusLock) { return _postingGameStatus || t; } } set { lock (_postingGameStatusLock) { _postingGameStatus = value; } } }
+        //private static readonly object _postingGameStatusLock = new object();
+        private static int _postingGameStatus = 0;
+        public static bool PostingGameStatus { get { return Interlocked.CompareExchange(ref _postingGameStatus, 0, 0) != 0 || TournamentMode; } set { Interlocked.Exchange(ref _postingGameStatus, value ? 1 : 0); } }
 
 #if SENTRY
         public static readonly bool HasSentry = true;
 #else
         public static readonly bool HasSentry = false;
-        private static readonly object _postingDiagnosticDataLock = new object();
-        private static bool _postingDiagnosticData;
-        public static bool PostingDiagnosticData { get { lock (_postingDiagnosticDataLock) { return _postingDiagnosticData; } } set { lock (_postingDiagnosticDataLock) { _postingDiagnosticData = value; } } }
+        //private static readonly object _postingDiagnosticDataLock = new object();
+        private static int  _postingDiagnosticData = 0;
+        public static bool PostingDiagnosticData { get { return Interlocked.CompareExchange(ref _postingDiagnosticData, 0, 0) != 0; } set { Interlocked.Exchange(ref _postingDiagnosticData, value ? 1 : 0); } }
 #endif
-        private static readonly object _postingXlogEntriesLock = new object();
-        private static bool _postingXlogEntries;
-        public static bool PostingXlogEntries { get { bool t = TournamentMode; lock (_postingXlogEntriesLock) { return _postingXlogEntries || t; } } set { lock (_postingXlogEntriesLock) { _postingXlogEntries = value; } } }
+        //private static readonly object _postingXlogEntriesLock = new object();
+        private static int _postingXlogEntries = 0;
+        public static bool PostingXlogEntries { get { return Interlocked.CompareExchange(ref _postingXlogEntries, 0, 0) != 0 || TournamentMode; } set { Interlocked.Exchange(ref _postingXlogEntries, value ? 1 : 0); } }
 
-        private static readonly object _postingReplaysLock = new object();
-        private static bool _postingReplays;
-        public static bool PostingReplays { get { bool t = TournamentMode; lock (_postingReplaysLock) { return _postingReplays || t; } } set { lock (_postingReplaysLock) { _postingReplays = value; } } }
+        //private static readonly object _postingReplaysLock = new object();
+        private static int _postingReplays = 0;
+        public static bool PostingReplays { get { return Interlocked.CompareExchange(ref _postingReplays, 0, 0) != 0 || TournamentMode; } set { Interlocked.Exchange(ref _postingReplays, value ? 1 : 0); } }
 
-        private static readonly object _postingBonesFilesLock = new object();
-        private static bool _postingBonesFiles;
-        public static bool PostingBonesFiles { get { bool t = TournamentMode; lock (_postingBonesFilesLock) { return _postingBonesFiles || t; } } set { lock (_postingBonesFilesLock) { _postingBonesFiles = value; } } }
+        //private static readonly object _postingBonesFilesLock = new object();
+        private static int _postingBonesFiles = 0;
+        public static bool PostingBonesFiles { get { return Interlocked.CompareExchange(ref _postingBonesFiles, 0, 0) != 0 || TournamentMode; } set { Interlocked.Exchange(ref _postingBonesFiles, value ? 1 : 0); } }
 
-        private static readonly object _bonesUserListIsBlackLock = new object();
-        private static bool _bonesUserListIsBlack;
-        public static bool BonesUserListIsBlack { get { lock (_bonesUserListIsBlackLock) { return _bonesUserListIsBlack; } } set { lock (_bonesUserListIsBlackLock) { _bonesUserListIsBlack = value; } } }
+        //private static readonly object _bonesUserListIsBlackLock = new object();
+        private static int _bonesUserListIsBlack = 0;
+        public static bool BonesUserListIsBlack { get { return Interlocked.CompareExchange(ref _bonesUserListIsBlack, 0, 0) != 0; } set { Interlocked.Exchange(ref _bonesUserListIsBlack, value ? 1 : 0); } }
 
-        private static readonly object _allowInGameLock = new object();
-        private static bool _allowBones;
-        private static bool _allowPet;
-        public static bool AllowBones { get { bool t = TournamentMode; lock (_allowInGameLock) { return _allowBones || t; } } set { lock (_allowInGameLock) { _allowBones = value; } } }
-        public static bool AllowPet { get { lock (_allowInGameLock) { return _allowPet; } } set { lock (_allowInGameLock) { _allowPet = value; } } }
+        //private static readonly object _allowInGameLock = new object();
+        private static int _allowBones = 0;
+        private static int _allowPet = 0;
+        public static bool AllowBones { get { return Interlocked.CompareExchange(ref _allowBones, 0, 0) != 0 || TournamentMode; } set { Interlocked.Exchange(ref _allowBones, value ? 1 : 0); } }
+        public static bool AllowPet { get { return Interlocked.CompareExchange(ref _allowPet, 0, 0) != 0; } set { Interlocked.Exchange(ref _allowPet, value ? 1 : 0); } }
 
-        private static readonly object _behaviorLock = new object();
-        private static bool _emptyWishIsNothing;
-        private static bool _characterClickAction;
-        private static bool _diceAsRanges;
-        private static bool _okOnDoubleClick;
-        private static bool _getPositionArrows;
+        //private static readonly object _behaviorLock = new object();
+        private static int _emptyWishIsNothing = 0;
+        private static int _okOnDoubleClick = 0;
+        private static int _getPositionArrows = 0;
+        private static int _characterClickAction = 0;
+        private static int _diceAsRanges = 0;
         private static int _rightMouseCommand;
         private static int _middleMouseCommand;
-        public static bool EmptyWishIsNothing { get { lock (_behaviorLock) { return _emptyWishIsNothing; } } set { lock (_behaviorLock) { _emptyWishIsNothing = value; } } }
-        public static bool OkOnDoubleClick { get { lock (_behaviorLock) { return _okOnDoubleClick; } } set { lock (_behaviorLock) { _okOnDoubleClick = value; } } }
-        public static bool GetPositionArrows { get { lock (_behaviorLock) { return _getPositionArrows; } } set { lock (_behaviorLock) { _getPositionArrows = value; } } }
-        public static bool MirroredCharacterClickAction { get { lock (_behaviorLock) { return _characterClickAction; } } set { lock (_behaviorLock) { _characterClickAction = value; } } }
-        public static bool MirroredDiceAsRanges { get { lock (_behaviorLock) { return _diceAsRanges; } } set { lock (_behaviorLock) { _diceAsRanges = value; } } }
-        public static int MirroredRightMouseCommand { get { lock (_behaviorLock) { return _rightMouseCommand; } } set { lock (_behaviorLock) { _rightMouseCommand = value; } } }
-        public static int MirroredMiddleMouseCommand { get { lock (_behaviorLock) { return _middleMouseCommand; } } set { lock (_behaviorLock) { _middleMouseCommand = value; } } }
+        public static bool EmptyWishIsNothing { get { return Interlocked.CompareExchange(ref _emptyWishIsNothing, 0, 0) != 0; } set { Interlocked.Exchange(ref _emptyWishIsNothing, value ? 1 : 0); } }
+        public static bool OkOnDoubleClick { get { return Interlocked.CompareExchange(ref _okOnDoubleClick, 0, 0) != 0; } set { Interlocked.Exchange(ref _okOnDoubleClick, value ? 1 : 0); } }
+        public static bool GetPositionArrows { get { return Interlocked.CompareExchange(ref _getPositionArrows, 0, 0) != 0; } set { Interlocked.Exchange(ref _getPositionArrows, value ? 1 : 0); } }
+        public static bool MirroredCharacterClickAction { get { return Interlocked.CompareExchange(ref _characterClickAction, 0, 0) != 0; } set { Interlocked.Exchange(ref _characterClickAction, value ? 1 : 0); } }
+        public static bool MirroredDiceAsRanges { get { return Interlocked.CompareExchange(ref _diceAsRanges, 0, 0) != 0; } set { Interlocked.Exchange(ref _diceAsRanges, value ? 1 : 0); } }
+        public static int MirroredRightMouseCommand { get { return Interlocked.CompareExchange(ref _rightMouseCommand, 0, 0); } set { Interlocked.Exchange(ref _rightMouseCommand, value); } }
+        public static int MirroredMiddleMouseCommand { get { return Interlocked.CompareExchange(ref _middleMouseCommand, 0, 0); } set { Interlocked.Exchange(ref _middleMouseCommand, value); } }
 
         public static string CustomGameStatusLink { get; set; }
         public static string CustomXlogAccountLink { get; set; }
@@ -4249,9 +4263,9 @@ namespace GnollHackX
             }
         }
 
-        private static readonly object _forcePostBonesLock = new object();
-        private static bool _forcePostBones = false;
-        public static bool ForcePostBones { get { lock (_forcePostBonesLock) { return _forcePostBones; } } set { lock (_forcePostBonesLock) { _forcePostBones = value; } } }
+        //private static readonly object _forcePostBonesLock = new object();
+        private static int _forcePostBones = 0;
+        public static bool ForcePostBones { get { return Interlocked.CompareExchange(ref _forcePostBones, 0, 0) != 0; } set { Interlocked.Exchange(ref _forcePostBones, value ? 1 : 0); } }
 
         private static readonly object _bonesAllowedUsersLock = new object();
         private static string _bonesAllowedUsers = "";
@@ -6424,10 +6438,10 @@ namespace GnollHackX
             }
         }
 
-        private static readonly object _gzipLock = new object();
-        private static bool _useGZipForReplays = GHConstants.GZipIsDefaultReplayCompression;
+        //private static readonly object _gzipLock = new object();
+        private static int _useGZipForReplays = GHConstants.GZipIsDefaultReplayCompression ? 1 : 0;
 
-        public static bool UseGZipForReplays { get { bool t = TournamentMode; lock (_gzipLock) { return t || _useGZipForReplays; } } set { lock (_gzipLock) { _useGZipForReplays = value; } } }
+        public static bool UseGZipForReplays { get { return Interlocked.CompareExchange(ref _useGZipForReplays, 0, 0) != 0 || TournamentMode; } set { Interlocked.Exchange(ref _useGZipForReplays, value ? 1 : 0); } }
 
         /* Called from GHGame thread! */
         public static PlayReplayResult PlayReplay(GHGame game, string replayFileName)
@@ -8610,9 +8624,9 @@ namespace GnollHackX
             return false;
         }
 
-        private static readonly object _keyboardHookLock = new object();
-        private static bool _isKeyboardHookEnabled = true;
-        public static bool IsKeyboardHookEnabled { get { lock (_keyboardHookLock) { return _isKeyboardHookEnabled; } } set { lock (_keyboardHookLock) { _isKeyboardHookEnabled = value; } } }
+        //private static readonly object _keyboardHookLock = new object();
+        private static int _isKeyboardHookEnabled = 1;
+        public static bool IsKeyboardHookEnabled { get { return Interlocked.CompareExchange(ref _isKeyboardHookEnabled, 0, 0) != 0; } set { Interlocked.Exchange(ref _isKeyboardHookEnabled, value ? 1 : 0); } }
 
         public static async Task DisplayMessageBox(Page page, string title, string message, string cancel)
         {
