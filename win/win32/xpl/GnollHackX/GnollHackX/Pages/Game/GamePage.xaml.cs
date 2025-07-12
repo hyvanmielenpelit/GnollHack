@@ -15957,16 +15957,20 @@ namespace GnollHackX.Pages.Game
 
         private void YnButton_Clicked(object sender, EventArgs e)
         {
-            LabeledImageButton ghb = (LabeledImageButton)sender;
-            YnButton_Pressed(sender, e, ghb.GHCommand);
+            LabeledImageButton ghb = sender as LabeledImageButton;
+            if (ghb != null)
+                YnButton_Pressed(sender, e, ghb.GHCommand);
         }
 
         private void YnButton_Pressed(object sender, EventArgs e, int resp)
         {
             /* This is slightly slower and flickers less with two consecutive yn questions than a direct call to HideYnResponses() */
             GHGame curGame = CurrentGame;
-            curGame.RequestQueue.Enqueue(new GHRequest(curGame, GHRequestType.HideYnResponses));
-            GenericButton_Clicked(sender, e, resp);
+            if (curGame != null)
+            {
+                curGame.RequestQueue.Enqueue(new GHRequest(curGame, GHRequestType.HideYnResponses));
+                GenericButton_Clicked(sender, e, resp);
+            }
         }
 
         private void ESCButton_Clicked(object sender, EventArgs e)
