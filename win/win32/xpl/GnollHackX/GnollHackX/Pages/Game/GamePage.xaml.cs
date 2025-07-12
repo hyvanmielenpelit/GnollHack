@@ -2331,6 +2331,7 @@ namespace GnollHackX.Pages.Game
                 case MapRefreshRateStyle.MapFPS40:
                     break;
                 case MapRefreshRateStyle.MapFPS60:
+                case MapRefreshRateStyle.MapFPS72:
                     framespeed *= 0.5;
                     //subCounterMax = 1; /* Animations proceed at every other frame at 60fps to get 30fps */
                     break;
@@ -2379,6 +2380,9 @@ namespace GnollHackX.Pages.Game
                     break;
                 case MapRefreshRateStyle.MapFPS60:
                     framespeed = 1;
+                    break;
+                case MapRefreshRateStyle.MapFPS72:
+                    framespeed = 5.0 / 6.0;
                     break;
                 case MapRefreshRateStyle.MapFPS80:
                     framespeed = 0.75;

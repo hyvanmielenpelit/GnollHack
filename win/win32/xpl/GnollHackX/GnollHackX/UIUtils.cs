@@ -991,6 +991,8 @@ namespace GnollHackX
                 return 11;
             else if (GHApp.DisplayRefreshRate >= 80.0f && mapRefreshRate >= MapRefreshRateStyle.MapFPS80)
                 return 13;
+            else if (GHApp.DisplayRefreshRate >= 72.0f && mapRefreshRate >= MapRefreshRateStyle.MapFPS72)
+                return 14;
             else if (GHApp.DisplayRefreshRate >= 60.0f && mapRefreshRate >= MapRefreshRateStyle.MapFPS60)
                 return 16;
             else if (GHApp.DisplayRefreshRate >= 40.0f && mapRefreshRate >= MapRefreshRateStyle.MapFPS40)
@@ -1012,6 +1014,8 @@ namespace GnollHackX
                 return 90;
             else if (GHApp.DisplayRefreshRate >= 80.0f && mapRefreshRate >= MapRefreshRateStyle.MapFPS80)
                 return 80;
+            else if (GHApp.DisplayRefreshRate >= 72.0f && mapRefreshRate >= MapRefreshRateStyle.MapFPS72)
+                return 72;
             else if (GHApp.DisplayRefreshRate >= 60.0f && mapRefreshRate >= MapRefreshRateStyle.MapFPS60)
                 return 60;
             else if (GHApp.DisplayRefreshRate >= 40.0f && mapRefreshRate >= MapRefreshRateStyle.MapFPS40)
@@ -1026,7 +1030,9 @@ namespace GnollHackX
 
         public static MapRefreshRateStyle GetDefaultMapFPS()
         {
-            if (GHApp.DisplayRefreshRate >= 60f)
+            if (GHApp.DisplayRefreshRate == 144f)
+                return MapRefreshRateStyle.MapFPS72;
+            else if (GHApp.DisplayRefreshRate >= 60f)
                 return MapRefreshRateStyle.MapFPS60;
             else if (GHApp.DisplayRefreshRate >= 40f)
                 return MapRefreshRateStyle.MapFPS40;

@@ -296,8 +296,17 @@ namespace GnollHackX
             else
             {
                 int divisor = screenRefreshRate / mapRefreshRate;
+                int mod = screenRefreshRate % mapRefreshRate;
                 if (divisor == 1 || counter % divisor == 0)
+                {
+                    if (mod > 0)
+                    {
+                        int num = screenRefreshRate / mod;
+                        if ((counter / divisor) % num == 0)
+                            return;
+                    }
                     curGamePage.RenderCanvas();
+                }
             }
         }
 
