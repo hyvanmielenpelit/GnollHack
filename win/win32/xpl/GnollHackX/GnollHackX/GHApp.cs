@@ -40,6 +40,7 @@ using Azure;
 using System.Text.RegularExpressions;
 using System.ComponentModel;
 using System.Runtime.InteropServices;
+using System.Reflection.Metadata;
 
 namespace GnollHackX
 {
@@ -103,7 +104,6 @@ namespace GnollHackX
     };
 
 
-
     public static class GHApp
     {
 #if WINDOWS
@@ -129,6 +129,7 @@ namespace GnollHackX
             InitializeBattery();
             ProcessCommandLineArguments();
             ProcessEnvironment();
+            SetProcessPriority();
 
             TotalMemory = PlatformService.GetDeviceMemoryInBytes();
             PlatformScreenScale = PlatformService.GetPlatformScreenScale();
@@ -247,6 +248,7 @@ namespace GnollHackX
             Microsoft.UI.Xaml.Media.CompositionTarget.Rendering += CompositionTarget_Rendering;
 #endif
         }
+
 
         private static int _usePlatformAnimationLoop = 0;
         public static bool UsePlatformRenderLoop { get { return IsWindows && Interlocked.CompareExchange(ref _usePlatformAnimationLoop, 0, 0) != 0; } set { Interlocked.Exchange(ref _usePlatformAnimationLoop, value ? 1 : 0); } }
@@ -8642,6 +8644,62 @@ namespace GnollHackX
             IsKeyboardHookEnabled = true;
             return res;
         }
+
+
+#if WINDOWS
+        [StructLayout(LayoutKind.Sequential)]
+        struct PROCESS_POWER_THROTTLING_STATE
+        {
+            public uint Version;
+            public uint ControlMask;
+            public uint StateMask;
+        };
+
+        [DllImport("kernel32.dll")]
+        static extern bool SetProcessInformation(
+            IntPtr hProcess,
+            PROCESS_INFORMATION_CLASS ProcessInformationClass,
+            ref PROCESS_POWER_THROTTLING_STATE ProcessInformation,
+            uint ProcessInformationSize);
+
+        enum PROCESS_INFORMATION_CLASS
+        {
+            ProcessPowerThrottling = 0x9
+        }
+#endif
+        private static void SetProcessPriority()
+        {
+#if WINDOWS
+            const int PROCESS_POWER_THROTTLING_CURRENT_VERSION = 1;
+            const uint PROCESS_POWER_THROTTLING_EXECUTION_SPEED = 0x1;
+
+            try
+            {
+                Process process = Process.GetCurrentProcess();
+                if (process != null)
+                {
+                    process.PriorityClass = ProcessPriorityClass.High;
+
+                    var state = new PROCESS_POWER_THROTTLING_STATE
+                    {
+                        Version = PROCESS_POWER_THROTTLING_CURRENT_VERSION,
+                        ControlMask = PROCESS_POWER_THROTTLING_EXECUTION_SPEED,
+                        StateMask = 0
+                    };
+
+                    SetProcessInformation(process.Handle,
+                        PROCESS_INFORMATION_CLASS.ProcessPowerThrottling,
+                        ref state,
+                        (uint)Marshal.SizeOf<PROCESS_POWER_THROTTLING_STATE>());
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+            }
+#endif
+        }
+
 
 #if GNH_MAUI
         /* Note: var page = await GHApp.Navigation.PopModalAsync(); GHApp.DisconnectIViewHandlers(page); is preferred to await GHApp.Navigation.PopModalAsync(); GHApp.DisconnectIViewHandlers(this); since this ensures that the program does not crash if the wrong page is accidentally popped  */
