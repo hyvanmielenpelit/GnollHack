@@ -2221,11 +2221,11 @@ namespace GnollHackX.Pages.Game
             }
         }
 
-        public bool CustomAnimationLoopToggled = false;
+        public bool PlatformRenderLoopToggled = false;
 
-        public void StartMainCanvasAnimation(bool settingToggled = false)
+        private void StartMainCanvasAnimation(bool settingToggled = false)
         {
-            if (!settingToggled && GHApp.UsePlatformAnimationLoop)
+            if (!settingToggled && GHApp.UsePlatformRenderLoop)
                 return;
             uint mainAnimationLength = GHConstants.MainCanvasAnimationTime / UIUtils.GetMainCanvasAnimationInterval(MapRefreshRate);
             Animation canvasAnimation = new Animation(v => canvasView.GeneralAnimationCounter = (long)v, 1, mainAnimationLength);
@@ -2234,9 +2234,9 @@ namespace GnollHackX.Pages.Game
             _mapUpdateStopWatch.Restart();
         }
 
-        public void StopMainCanvasAnimation(bool settingToggled = false)
+        private void StopMainCanvasAnimation(bool settingToggled = false)
         {
-            if (!settingToggled && GHApp.UsePlatformAnimationLoop)
+            if (!settingToggled && GHApp.UsePlatformRenderLoop)
                 return;
             if (canvasView.AnimationIsRunning("GeneralAnimationCounter"))
                 canvasView.AbortAnimation("GeneralAnimationCounter");
@@ -2246,7 +2246,7 @@ namespace GnollHackX.Pages.Game
 
         private void StartCommandCanvasAnimation()
         {
-            if (GHApp.UsePlatformAnimationLoop)
+            if (GHApp.UsePlatformRenderLoop)
                 return;
             MapRefreshRateStyle refreshRateStyle = MapRefreshRate;
             uint auxAnimationLength = GHConstants.AuxiliaryCanvasAnimationTime / UIUtils.GetAuxiliaryCanvasAnimationInterval(refreshRateStyle);
@@ -2258,7 +2258,7 @@ namespace GnollHackX.Pages.Game
 
         private void StopCommandCanvasAnimation()
         {
-            if (GHApp.UsePlatformAnimationLoop)
+            if (GHApp.UsePlatformRenderLoop)
                 return;
             if (CommandCanvas.AnimationIsRunning("GeneralAnimationCounter"))
                 CommandCanvas.AbortAnimation("GeneralAnimationCounter");
@@ -2268,7 +2268,7 @@ namespace GnollHackX.Pages.Game
 
         private void StartMenuCanvasAnimation()
         {
-            if (GHApp.UsePlatformAnimationLoop)
+            if (GHApp.UsePlatformRenderLoop)
                 return;
             MapRefreshRateStyle refreshRateStyle = MapRefreshRate;
             uint auxAnimationLength = GHConstants.AuxiliaryCanvasAnimationTime / UIUtils.GetAuxiliaryCanvasAnimationInterval(refreshRateStyle);
@@ -2280,7 +2280,7 @@ namespace GnollHackX.Pages.Game
 
         private void StopMenuCanvasAnimation()
         {
-            if (GHApp.UsePlatformAnimationLoop)
+            if (GHApp.UsePlatformRenderLoop)
                 return;
             if (MenuCanvas.AnimationIsRunning("GeneralAnimationCounter"))
                 MenuCanvas.AbortAnimation("GeneralAnimationCounter");
@@ -2290,7 +2290,7 @@ namespace GnollHackX.Pages.Game
 
         private void StartTextCanvasAnimation()
         {
-            if (GHApp.UsePlatformAnimationLoop)
+            if (GHApp.UsePlatformRenderLoop)
                 return;
             MapRefreshRateStyle refreshRateStyle = MapRefreshRate;
             uint auxAnimationLength = GHConstants.AuxiliaryCanvasAnimationTime / UIUtils.GetAuxiliaryCanvasAnimationInterval(refreshRateStyle);
@@ -2302,7 +2302,7 @@ namespace GnollHackX.Pages.Game
 
         private void StopTextCanvasAnimation()
         {
-            if (GHApp.UsePlatformAnimationLoop)
+            if (GHApp.UsePlatformRenderLoop)
                 return;
             if (TextCanvas.AnimationIsRunning("GeneralAnimationCounter"))
                 TextCanvas.AbortAnimation("GeneralAnimationCounter");
@@ -3125,10 +3125,10 @@ namespace GnollHackX.Pages.Game
             GHApp.BackButtonPressed += BackButtonPressed;
             RefreshScreen = true;
 
-            if (CustomAnimationLoopToggled)
+            if (PlatformRenderLoopToggled)
             {
-                CustomAnimationLoopToggled = false;
-                if (GHApp.UsePlatformAnimationLoop)
+                PlatformRenderLoopToggled = false;
+                if (GHApp.UsePlatformRenderLoop)
                     StopMainCanvasAnimation(true);
                 else
                     StartMainCanvasAnimation(true);
@@ -3590,7 +3590,7 @@ namespace GnollHackX.Pages.Game
             YnGrid.IsVisible = false;
             DoHideDirections();
 
-            if (!LoadingGrid.IsVisible && ( !IsMainCanvasOn || /* !MainGrid.IsVisible || */ (!canvasView.AnimationIsRunning("GeneralAnimationCounter") && !GHApp.UsePlatformAnimationLoop)))
+            if (!LoadingGrid.IsVisible && ( !IsMainCanvasOn || /* !MainGrid.IsVisible || */ (!canvasView.AnimationIsRunning("GeneralAnimationCounter") && !GHApp.UsePlatformRenderLoop)))
             {
                 //MainGrid.IsVisible = true;
                 IsMainCanvasOn = true;

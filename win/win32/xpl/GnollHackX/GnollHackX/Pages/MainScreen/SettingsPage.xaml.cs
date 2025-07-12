@@ -108,7 +108,7 @@ namespace GnollHackX.Pages.MainScreen
             if (!GHApp.IsWindows)
             {
                 ScreenResolutionGrid.IsVisible = false;
-                PlatformAnimationLoopGrid.IsVisible = false;
+                PlatformRenderLoopGrid.IsVisible = false;
             }
 
             SimpleCommandBarButton1Picker.ItemsSource = GHApp.SelectableShortcutButtons;
@@ -388,12 +388,12 @@ namespace GnollHackX.Pages.MainScreen
                 _gamePage.UseMainGLCanvas = GPUSwitch.IsToggled;
             Preferences.Set("UseMainGLCanvas", GPUSwitch.IsToggled);
 
-            if (PlatformAnimationLoopGrid.IsVisible && PlatformAnimationLoopSwitch.IsEnabled)
+            if (PlatformRenderLoopGrid.IsVisible && PlatformRenderLoopSwitch.IsEnabled)
             {
-                GHApp.UsePlatformAnimationLoop = PlatformAnimationLoopSwitch.IsToggled;
-                Preferences.Set("UsePlatformAnimationLoop", PlatformAnimationLoopSwitch.IsToggled);
+                GHApp.UsePlatformRenderLoop = PlatformRenderLoopSwitch.IsToggled;
+                Preferences.Set("UsePlatformRenderLoop", PlatformRenderLoopSwitch.IsToggled);
                 if (_gamePage != null)
-                    _gamePage.CustomAnimationLoopToggled = true;
+                    _gamePage.PlatformRenderLoopToggled = true;
             }
 
             GHApp.DisableAuxGPU = DisableAuxGPUSwitch.IsToggled;
@@ -999,7 +999,7 @@ namespace GnollHackX.Pages.MainScreen
             primarygpucache = Preferences.Get("PrimaryGPUCacheLimit", -2L);
             secondarygpucache = Preferences.Get("SecondaryGPUCacheLimit", -2L);
             disableauxgpu = Preferences.Get("DisableAuxiliaryGLCanvas", GHApp.IsDisableAuxGPUDefault);
-            platformloop = Preferences.Get("UsePlatformAnimationLoop", GHApp.IsWindows);
+            platformloop = Preferences.Get("UsePlatformRenderLoop", GHApp.IsWindows);
             screenscale = Preferences.Get("CustomScreenScale", 0.0f);
             screenresolutionwidth = (uint)Preferences.Get("CustomScreenResolutionWidth", 0);
             screenresolutionheight = (uint)Preferences.Get("CustomScreenResolutionHeight", 0);
@@ -1200,7 +1200,7 @@ namespace GnollHackX.Pages.MainScreen
             ShowRecordingSwitch.IsToggled = showrecording;
             AutoUploadReplaysSwitch.IsToggled = autoupload;
             DisableAuxGPUSwitch.IsToggled = disableauxgpu;
-            PlatformAnimationLoopSwitch.IsToggled = platformloop;
+            PlatformRenderLoopSwitch.IsToggled = platformloop;
             FixRectsSwitch.IsToggled = fixrects;
             MipMapSwitch.IsToggled = mipmap;
             if (!GHApp.IsMaui)
