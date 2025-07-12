@@ -296,9 +296,9 @@ namespace GnollHackX
             else
             {
                 int divisor = screenRefreshRate / mapRefreshRate;
-                int mod = screenRefreshRate % mapRefreshRate;
                 if (divisor == 1 || counter % divisor == 0)
                 {
+                    int mod = screenRefreshRate % mapRefreshRate;
                     if (mod > 0)
                     {
                         int num = screenRefreshRate / mod;
