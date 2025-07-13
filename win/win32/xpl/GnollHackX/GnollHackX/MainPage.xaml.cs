@@ -791,6 +791,8 @@ namespace GnollHackX
             {
                 GHApp.DebugWriteProfilingStopwatchTimeAndRestart("MainPage First Time");
                 _firsttime = false;
+                GHApp.InitializeConnectivity();
+
                 if (GHApp.IsAndroid && GHApp.PlatformService != null)
                 {
                     string animationSettingName = GHApp.OneUIAnimationSettingName;
@@ -951,7 +953,6 @@ namespace GnollHackX
             UpperButtonGrid.IsEnabled = true;
             LogoGrid.IsEnabled = true;
 
-            GHApp.InitializeConnectivity();
             await StartGeneralTimerAsync();
         }
 
