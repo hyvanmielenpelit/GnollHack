@@ -33,7 +33,7 @@
 				<ProjectName>GnollHackM</ProjectName>
 				<CopyLocal>true</CopyLocal>
 			</AppxPackagePayload>
-			<AppxPackagePayload Include="$(MSBuildProjectDirectory)\Platforms\Windows\libs\libEGL.dll">
+			<AppxPackagePayload Include="$(MSBuildProjectDirectory)\Platforms\Windows\libs\libGLESv2.dll">
 				<DestinationSubPath>libGLESv2.dll</DestinationSubPath>
 				<TargetPath>libGLESv2.dll</TargetPath>
 				<RelativePath>libGLESv2.dll</RelativePath>
