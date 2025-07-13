@@ -7970,16 +7970,19 @@ namespace GnollHackX
             await blobClient.DownloadToAsync(targetPath, cancellationToken);
         }
 
-        public static async Task OpenBrowser(ContentPage page, string title, Uri uri)
+        public static async Task OpenBrowser(ContentPage page, string title, Uri uri, bool forceExternalBrowser = false)
         {
             try
             {
-#if WINDOWS
-                var wikiPage = new WikiPage(title, uri.ToString());
-                await GHApp.Navigation.PushModalAsync(wikiPage);
-#else
-                await Browser.OpenAsync(uri, BrowserLaunchMode.SystemPreferred);
-#endif
+                if (IsWindows && !forceExternalBrowser) 
+                {
+                    var wikiPage = new WikiPage(title, uri.ToString());
+                    await Navigation.PushModalAsync(wikiPage);
+                }
+                else
+                {
+                    await Browser.OpenAsync(uri, BrowserLaunchMode.SystemPreferred);
+                }
             }
             catch (Exception ex)
             {
