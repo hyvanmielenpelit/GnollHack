@@ -44,7 +44,6 @@ using GnollHackX.Pages.MainScreen;
 using Xamarin.Essentials;
 using Xamarin.Forms.PlatformConfiguration;
 using Xamarin.Forms.PlatformConfiguration.iOSSpecific;
-using System.Text.Json;
 
 namespace GnollHackX
 #endif

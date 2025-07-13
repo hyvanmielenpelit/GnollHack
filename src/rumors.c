@@ -611,7 +611,7 @@ int oraclesstyle; /* 0 = cookie, 1 = oracle, 2 = spell */
             }
         }
         if (!special)
-            issue_gui_command(GUI_CMD_ORACLE_MAJOR_CONSULTATION, tmpwin, used_oracle_idx, titlebuf);
+            issue_gui_command(GUI_CMD_ORACLE_MAJOR_CONSULTATION, tmpwin, (int)used_oracle_idx, titlebuf);
         display_nhwindow(tmpwin, TRUE);
         destroy_nhwindow(tmpwin);
 
