@@ -1783,6 +1783,8 @@ namespace GnollHackX
         public const string GnollHackGeneralDowngradePage = "https://github.com/hyvanmielenpelit/GnollHack/wiki#download";
         public const string GnollHackAndroidDowngradePage = "https://github.com/hyvanmielenpelit/GnollHack/wiki/Android-Releases";
         public const string GnollHackiOSDowngradePage = "https://github.com/hyvanmielenpelit/GnollHack/wiki/iOS-Releases";
+        public const string GnollHackiGitHubApiPage = "https://api.github.com/repos/hyvanmielenpelit/GnollHack";
+        public const string GnollHackGitHubStarPage = "https://github.com/hyvanmielenpelit/GnollHack/wiki/Give-Us-a-Star-on-GitHub";
         public const string GHSettingsResourcePath = ".Assets.ghsettings.json";
         public const string GHSecretsResourcePath = ".Assets.ghsecrets.sjson";
         public const int MaxRefreshRate = 120;
@@ -1811,6 +1813,15 @@ namespace GnollHackX
         public const long StoreReviewRequestNumberOfGames = 4L;
         public const long StoreReviewRequestTotalPlayTime = 60L * 60L * 2L;
 #endif
+        public const bool EventAskForStarGazers = true;
+#if DEBUG
+        public const long StarGazerRequestNumberOfGames = 0L;
+        public const long StarGazerRequestTotalPlayTime = 0L;
+#else
+        public const long StarGazerRequestNumberOfGames = 6L;
+        public const long StarGazerRequestTotalPlayTime = 60L * 60L * 3L;
+#endif
+
         public const bool DefaultHTMLDumpLogs = true;
         public const bool DefaultUseSingleDumpLog = true;
         public const int DefaultRightMouseCommand = (int)NhGetPosMods.DefClickRole;

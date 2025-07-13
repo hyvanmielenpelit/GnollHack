@@ -185,6 +185,38 @@
                 </Grid.GestureRecognizers>
             </Grid>
 
+            <Grid x:Name="EventGrid" HorizontalOptions="Fill" VerticalOptions="Fill" 
+              BackgroundColor="#66000000" AbsoluteLayout.LayoutBounds="0,0,1,1"
+              AbsoluteLayout.LayoutFlags="All"  IsVisible="False">
+                <Grid WidthRequest  ="600" Margin="5" HorizontalOptions  ="Center" VerticalOptions="Center">
+                    <Frame x:Name="EventFrame"  BackgroundColor="#99000000" BorderColor="Black" CornerRadius="10" HorizontalOptions="Center" VerticalOptions="Center">
+                        <StackLayout x:Name="EventLayout" Padding="5" Spacing="6"
+                                     HorizontalOptions="Center" VerticalOptions="Center">
+                            <Label Text="" x:Name="EventTitleLabel" FontFamily="Immortal" FontSize="20" TextColor="White"
+                                       VerticalTextAlignment="Center" HorizontalOptions="Center"  />
+                            <Label Text="" x:Name="EventLabel" FontFamily="Underwood" FontSize="16" TextColor="White"
+                                       VerticalTextAlignment="Start" HorizontalOptions="Center" />
+                            <Grid x:Name="EventButtonGrid" ColumnSpacing="6" Margin="0,10,0,0" HorizontalOptions="Center" VerticalOptions="End">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <controls:CustomImageButton Grid.Column="0" x:Name="EventOkButton" Text="Yes" FontSize="19" WidthRequest="170" HeightRequest="55" FontFamily="Diablo" HorizontalOptions="End" BackgroundColor="Transparent" TextColor="White"
+                                        Clicked="EventOkButton_Clicked" />
+                                <controls:CustomImageButton Grid.Column="1" x:Name="EventCancelButton" Text="No" FontSize="19" WidthRequest="170" HeightRequest="55" FontFamily="Diablo" HorizontalOptions="Start" BackgroundColor="Transparent" TextColor="White"
+                                        Clicked="EventCancelButton_Clicked" />
+                            </Grid>
+                        </StackLayout>
+                    </Frame>
+                </Grid>
+                <Grid.GestureRecognizers>
+                    <TapGestureRecognizer />
+                </Grid.GestureRecognizers>
+            </Grid>
+
             <Grid x:Name="PendingTasksGrid" HorizontalOptions="Fill" VerticalOptions="Fill" 
               BackgroundColor="#66000000" AbsoluteLayout.LayoutBounds="0,0,1,1"
               AbsoluteLayout.LayoutFlags="All"  IsVisible="False">
@@ -198,7 +230,7 @@
                                        VerticalTextAlignment="Start" HorizontalOptions="Center"  />
                             <Label Text="Do you want to exit anyway?" x:Name="PendingTasksLabel2" FontFamily="Underwood" FontSize="16" TextColor="White"
                                        VerticalTextAlignment="Start" HorizontalOptions="Center"  />
-                            <Grid ColumnSpacing="6" Margin="0,10,0,0">
+                            <Grid ColumnSpacing="6" Margin="0,10,0,0" HorizontalOptions="Center">
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="Auto" />
                                 </Grid.RowDefinitions>

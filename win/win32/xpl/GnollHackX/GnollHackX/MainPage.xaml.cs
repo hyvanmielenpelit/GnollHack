@@ -18,6 +18,7 @@ using System.Net;
 using System.Net.Http.Headers;
 using System.Collections;
 using System.Collections.Concurrent;
+using System.Text.Json;
 
 
 #if GNH_MAUI
@@ -43,6 +44,7 @@ using GnollHackX.Pages.MainScreen;
 using Xamarin.Essentials;
 using Xamarin.Forms.PlatformConfiguration;
 using Xamarin.Forms.PlatformConfiguration.iOSSpecific;
+using System.Text.Json;
 
 namespace GnollHackX
 #endif
@@ -865,7 +867,59 @@ namespace GnollHackX
                     DisplayAlertGrid("Very Low Free Disk Space", string.Format("You are are running very low on free disk space ({0:0.00} GB). Please consider freeing disk space on your device.", (double)GHConstants.VeryLowFreeDiskSpaceThresholdInBytes / (1024 * 1024 * 1024)), "OK", GHColors.Orange);
                     previousInformationShown = true;
                 }
-                if (!previousInformationShown)
+                if (!previousInformationShown && GHConstants.EventAskForStarGazers && GHApp.HasInternetAccess)
+                {
+                    bool showStarGazers = false;
+                    int star_gazers = 0;
+                    try
+                    {
+                        bool StarGazersRequested = Preferences.Get("StarGazersRequested", false);
+                        long NumberOfGames = Preferences.Get("NumberOfGames", 0L);
+                        long TotalPlayTime = GHApp.RealPlayTime;
+
+                        if (!StarGazersRequested && ((NumberOfGames >= GHConstants.StarGazerRequestNumberOfGames && TotalPlayTime >= GHConstants.StarGazerRequestTotalPlayTime) || GHApp.DeveloperMode))
+                        {
+                            using (HttpClient client = new HttpClient { Timeout = TimeSpan.FromSeconds(10) })
+                            {
+                                client.DefaultRequestHeaders.Add("User-Agent", "GnollHack");
+                                HttpResponseMessage message = await client.GetAsync(new Uri(GHConstants.GnollHackiGitHubApiPage));
+                                if (message != null && message.IsSuccessStatusCode && message.Content != null)
+                                {
+                                    string content = await message.Content.ReadAsStringAsync();
+                                    if (!string.IsNullOrWhiteSpace(content))
+                                    {
+                                        using (JsonDocument doc = JsonDocument.Parse(content))
+                                        {
+                                            JsonElement root = doc.RootElement;
+                                            star_gazers = root.GetProperty("stargazers_count").GetInt32();
+                                            if (star_gazers > 0)
+                                            {
+                                                Preferences.Set("StarGazersRequested", true);
+                                                if (star_gazers < 500)
+                                                {
+                                                    showStarGazers = true;
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.WriteLine(ex);
+                    }
+                    if (showStarGazers)
+                    {
+                        DisplayEventGrid("Give Us a Star on GitHub", 
+                            "You can help our GitHub wiki to gain more search engine visibility by starring the GnollHack repository! When we reach 500 stars, search engines are allowed to index the wiki.\n\nWe have currently " + star_gazers + " stars.",
+                            "Give Star", "Later", 1);
+                    }
+                }
+
+                /* This last, since the store review may not show up */
+                if (!previousInformationShown && GHApp.HasInternetAccess)
                 {
                     try
                     {
@@ -875,6 +929,7 @@ namespace GnollHackX
 
                         if (!ReviewRequested && ((NumberOfGames >= GHConstants.StoreReviewRequestNumberOfGames && TotalPlayTime >= GHConstants.StoreReviewRequestTotalPlayTime) || GHApp.DeveloperMode))
                         {
+                            previousInformationShown = true;
                             Preferences.Set("StoreReviewRequested", true);
                             UpperButtonGrid.IsEnabled = true; /* Just in case of a hangup */
                             LogoGrid.IsEnabled = true; /* Just in case of a hangup */
@@ -1935,6 +1990,53 @@ namespace GnollHackX
                 Debug.WriteLine(ex);
             }
             return handled;
+        }
+
+        private async void EventOkButton_Clicked(object sender, EventArgs e)
+        {
+            GHApp.PlayButtonClickedSound();
+            EventButtonGrid.IsEnabled = false;
+            EventGrid.IsVisible = false;
+            switch (_eventStyle)
+            {
+                case 1:
+                    await GHApp.OpenBrowser(this, "Give Us a Star on GitHub", new Uri(GHConstants.GnollHackGitHubStarPage));
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        private void EventCancelButton_Clicked(object sender, EventArgs e)
+        {
+            GHApp.PlayButtonClickedSound();
+            EventButtonGrid.IsEnabled = false;
+            EventGrid.IsVisible = false;
+        }
+
+        private int _eventStyle = 0;
+
+        private void DisplayEventGrid(string title, string text, string ok, string cancel, int eventStyle)
+        {
+            EventTitleLabel.Text = title;
+            EventLabel.Text = text;
+            EventOkButton.Text = ok;
+            EventCancelButton.Text = cancel;
+            _eventStyle = eventStyle;
+            switch (eventStyle)
+            {
+                case 1:
+                    EventTitleLabel.TextColor = GHColors.TitleGoldColor;
+                    EventOkButton.TextColor = GHColors.Yellow;
+                    break;
+                default:
+                    EventTitleLabel.TextColor = GHColors.White;
+                    EventOkButton.TextColor = GHColors.White;
+                    break;
+            }
+
+            EventButtonGrid.IsEnabled = true;
+            EventGrid.IsVisible = true;
         }
     }
 }
