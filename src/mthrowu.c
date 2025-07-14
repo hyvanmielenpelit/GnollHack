@@ -882,7 +882,7 @@ struct obj *obj;         /* missile (or stack providing it) */
                     (void) hold_another_object(singleobj,
                                                "You catch, but drop, %s.",
                                                xname(singleobj),
-                                               "You catch:");
+                                               "You catch:", TRUE);
                 }
                 break;
             }

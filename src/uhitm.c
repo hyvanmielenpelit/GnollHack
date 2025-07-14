@@ -2794,7 +2794,7 @@ struct attack *mattk;
         }
         /* give the object to the character */
         otmp = hold_another_object(otmp, "You snatched but dropped %s.",
-                                   doname(otmp), "You steal: ");
+                                   doname(otmp), "You steal: ", TRUE);
         /* might have dropped otmp, and it might have broken or left level */
         if (!otmp || otmp->where != OBJ_INVENT)
             continue;

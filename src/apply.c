@@ -2709,7 +2709,7 @@ struct obj **optr;
         obj_extract_self(obj); /* free from inv */
         obj->nomerge = 1;
         obj = hold_another_object(obj, "You drop %s!", doname(obj),
-                                  (const char *) 0);
+                                  (const char *) 0, TRUE);
         if (obj)
             obj->nomerge = 0;
     }
@@ -3291,7 +3291,7 @@ struct obj *obj;
             useupf(corpse, 1L);
         }
         (void) hold_another_object(can, "You make, but cannot pick up, %s.",
-                                   doname(can), (const char *) 0);
+                                   doname(can), (const char *) 0, TRUE);
     } else
         impossible("Tinning failed.");
 }
@@ -4777,7 +4777,7 @@ struct obj *obj;
                         instapetrify(kbuf);
                     }
                     (void)hold_another_object(otmp, "You drop %s!",
-                        doname(otmp), (const char*)0);
+                        doname(otmp), (const char*)0, TRUE);
                 }
                 else
                 {
@@ -4845,7 +4845,7 @@ struct obj *obj;
                         instapetrify(kbuf);
                     }
                     (void) hold_another_object(otmp, "You drop %s!",
-                                               doname(otmp), (const char *) 0);
+                                               doname(otmp), (const char *) 0, TRUE);
                     break;
                 default:
                     /* to floor beneath mon */
@@ -6351,7 +6351,7 @@ int arrowtype, quan; //ObjID and quantity
         /* The(aobjnam()) is safe since otmp is unidentified -dlc */
         (void)hold_another_object(otmp, oops_msg,
             The(aobjnam(otmp, verb)),
-            (const char*)0);
+            (const char*)0, TRUE);
     }
     else
     {

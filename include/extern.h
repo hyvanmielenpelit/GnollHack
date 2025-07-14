@@ -1536,7 +1536,7 @@ E void FDECL(addinv_core2, (struct obj *));
 E void FDECL(update_all_character_properties, (struct obj*, BOOLEAN_P));
 E struct obj *FDECL(addinv, (struct obj *));
 E struct obj *FDECL(hold_another_object,
-                    (struct obj *, const char *, const char *, const char *));
+                    (struct obj *, const char *, const char *, const char *, BOOLEAN_P));
 E void FDECL(useupall, (struct obj *));
 E void FDECL(useup, (struct obj *));
 E void FDECL(consume_obj_charge, (struct obj *, BOOLEAN_P));

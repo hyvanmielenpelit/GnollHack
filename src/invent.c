@@ -1859,9 +1859,10 @@ struct obj *obj;
  * touch_artifact will print its own messages if they are warranted.
  */
 struct obj *
-hold_another_object(obj, drop_fmt, drop_arg, hold_msg)
+hold_another_object(obj, drop_fmt, drop_arg, hold_msg, doprinv)
 struct obj *obj;
 const char *drop_fmt, *drop_arg, *hold_msg;
+boolean doprinv;
 {
     char buf[BUFSZ];
 
@@ -1930,7 +1931,7 @@ const char *drop_fmt, *drop_arg, *hold_msg;
                 && (is_missile(obj) || ammo_and_launcher(obj, uwep)
                     || ammo_and_launcher(obj, uswapwep)))
                 setuqwep(obj);
-            if (hold_msg || drop_fmt)
+            if (doprinv) // (hold_msg || drop_fmt)
                 prinvc(hold_msg, obj, oquan);
         }
     }
@@ -4734,6 +4735,18 @@ boolean* return_to_inv_ptr;
             else
             {
                 otmpsplit = splitobj(otmp, pickcnt);
+                if (otmpsplit)
+                {
+                    Strcpy(debug_buf_2, "display_item_command_menu");
+                    obj_extract_self(otmpsplit); /* free from inv */
+                    otmpsplit->nomerge = 1;
+                    otmpsplit = hold_another_object(otmpsplit, "Oops!  %s out of your grasp!", The(aobjnam(otmpsplit, "slip")), (const char*)0, FALSE);
+                    if (otmpsplit)
+                        otmpsplit->nomerge = 0;
+                    else
+                        return 1;
+                }
+
                 getobj_autoselect_obj = otmpsplit;
             }
 

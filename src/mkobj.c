@@ -4447,7 +4447,7 @@ boolean tipping; /* caller emptying entire contents; affects shop handling */
                                            || levl[u.ux][u.uy].typ >= ICE)
                                           ? "Oops!  %s away from you!"
                                           : "Oops!  %s to the floor!",
-                                      The(aobjnam(obj, "slip")), (char *) 0);
+                                      The(aobjnam(obj, "slip")), (char *) 0, TRUE);
             nhUse(obj);
         } 
         else

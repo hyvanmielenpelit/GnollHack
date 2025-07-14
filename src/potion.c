@@ -4035,7 +4035,7 @@ dodip()
                as a consequence, mixing while Fumbling drops the mixture */
             freeinv(obj);
             (void)hold_another_object(obj, "You drop %s!", doname(obj),
-                (const char*)0);
+                (const char*)0, TRUE);
             return 1;
         }
     }
@@ -4209,7 +4209,7 @@ dodip()
         singlepotion = hold_another_object(singlepotion,
                                            "You juggle and drop %s!",
                                            doname(singlepotion),
-                                           (const char *) 0);
+                                           (const char *) 0, TRUE);
         nhUse(singlepotion);
         update_inventory();
         return 1;

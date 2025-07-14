@@ -419,7 +419,7 @@ struct mail_info *info;
             verbalize_ex(ATR_NONE, CLR_MSG_TALK_NORMAL, "Catch!");
         display_nhwindow(WIN_MESSAGE, FALSE);
         obj = hold_another_object(obj, "Oops!", (const char *) 0,
-                                  (const char *) 0);
+                                  (const char *) 0, TRUE);
         nhUse(obj);
     }
 

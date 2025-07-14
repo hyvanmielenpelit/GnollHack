@@ -5002,7 +5002,7 @@ register struct obj *obj;
         {
             play_sfx_sound(SFX_ITEM_APPEARS);
             (void)hold_another_object(otmp, "You drop %s!",
-                doname(otmp), "A delicious food ration forms before you!");
+                doname(otmp), "A delicious food ration forms before you!", TRUE);
         }
         break;
     }
@@ -5054,7 +5054,7 @@ register struct obj *obj;
             otmp->quan = fruitnum;
             otmp->owt = weight(otmp);
             (void)hold_another_object(otmp, "You drop %s!",
-                doname(otmp), fruitnum == 1 ? "A delicious fruit appears out of nowhere!" : "Delicious fruits appear out of nowhere!");
+                doname(otmp), fruitnum == 1 ? "A delicious fruit appears out of nowhere!" : "Delicious fruits appear out of nowhere!", TRUE);
         }
         break;
     }
@@ -5066,7 +5066,7 @@ register struct obj *obj;
         {
             play_sfx_sound(SFX_ITEM_APPEARS);
             (void)hold_another_object(otmp, "You drop %s!",
-                doname(otmp), "A potion appears out of thin air!");
+                doname(otmp), "A potion appears out of thin air!", TRUE);
         }
         break;
     }
@@ -12248,7 +12248,7 @@ retry:
         /* The(aobjnam()) is safe since otmp is unidentified -dlc */
         (void) hold_another_object(otmp, oops_msg,
                                    The(aobjnam(otmp, verb)),
-                                   (const char *) 0);
+                                   (const char *) 0, TRUE);
         u.uprayer_timeout += rn1(100, 50) / (Role_if(PM_PRIEST) ? 2 : 1); /* the gods take notice */
     }
     if(!is_wiz_wish)
@@ -12302,7 +12302,7 @@ int otyp;
                 : "Oops!  %s to the floor!");
 
         /* The(aobjnam()) is safe since otmp is unidentified -dlc */
-        otmp = hold_another_object(otmp, oops_msg, The(aobjnam(otmp, verb)), (const char*)0);
+        otmp = hold_another_object(otmp, oops_msg, The(aobjnam(otmp, verb)), (const char*)0, TRUE);
 
         if (otmp)
             otmp->nomerge = 0;

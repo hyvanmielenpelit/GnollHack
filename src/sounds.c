@@ -6792,7 +6792,7 @@ struct monst* mtmp;
                     obj_extract_self(item_to_buy);
                     hold_another_object(item_to_buy, "Oops!  %s out of your grasp!",
                         The(aobjnam(item_to_buy, "slip")),
-                        (const char*)0);
+                        (const char*)0, TRUE);
                     buy_count++;
                 }
             }
@@ -6991,7 +6991,7 @@ struct monst* mtmp;
 
                     hold_another_object(item_to_take, "Oops!  %s out of your grasp!",
                         The(aobjnam(item_to_take, "slip")),
-                        (const char*)0);
+                        (const char*)0, TRUE);
                     take_count++;
                 }
             }
@@ -12056,7 +12056,7 @@ boolean initialize;
         popup_talk_line_ex(mtmp, talkbuf, ATR_NONE, NO_COLOR, TRUE, FALSE);
         hold_another_object(craftedobj, "Oops!  %s out of your grasp!",
             The(aobjnam(craftedobj, "slip")),
-            (const char*)0);
+            (const char*)0, TRUE);
 
         stop_all_immediate_sounds();
         play_sfx_sound(SFX_BUY_FROM_NPC);

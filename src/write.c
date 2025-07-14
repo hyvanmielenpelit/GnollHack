@@ -473,7 +473,7 @@ found_novel_or_manual:
 
     new_obj = hold_another_object(new_obj, "Oops!  %s out of your grasp!",
                                   The(aobjnam(new_obj, "slip")),
-                                  (const char *) 0);
+                                  (const char *) 0, TRUE);
     nhUse(new_obj); /* try to avoid complaint about dead assignment */
     return 1;
 }

@@ -2524,7 +2524,7 @@ boolean* got_something_ptr;
                 Strcpy(debug_buf_2, "loot_decoration");
                 obj_extract_self(newobj);
                 newobj = hold_another_object(newobj, "Oops!  %s out of your grasp!",
-                    The(aobjnam(newobj, "slip")), (const char*)0);
+                    The(aobjnam(newobj, "slip")), (const char*)0, TRUE);
             }
         }
     }
@@ -2544,7 +2544,7 @@ boolean* got_something_ptr;
                 *got_something_ptr = TRUE;
                 play_simple_object_sound_at_location(newobj, u.ux, u.uy, OBJECT_SOUND_TYPE_PICK_UP);
                 newobj = hold_another_object(newobj, "Oops!  %s out of your grasp!",
-                    The(aobjnam(newobj, "slip")), (const char*)0);
+                    The(aobjnam(newobj, "slip")), (const char*)0, TRUE);
             }
         }
     }
@@ -3110,7 +3110,7 @@ boolean do_auto_in_bag;
 
             }
             otmp = hold_another_object(otmp, "You drop %s!", doname(otmp),
-                                       (const char *) 0);
+                                       (const char *) 0, TRUE);
             nhUse(otmp);
             timepassed = rnd(3);
             if (prev_loot)
