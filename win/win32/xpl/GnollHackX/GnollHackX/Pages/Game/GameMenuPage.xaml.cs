@@ -128,7 +128,7 @@ namespace GnollHackX.Pages.Game
             {
                 Debug.WriteLine(ex);
             }
-    }
+        }
 
         private async void btnBackToGame_Clicked(object sender, EventArgs e)
         {
@@ -501,6 +501,5 @@ namespace GnollHackX.Pages.Game
             }
             return handled;
         }
-
     }
 }

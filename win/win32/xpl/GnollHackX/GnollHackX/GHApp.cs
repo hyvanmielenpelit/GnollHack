@@ -250,6 +250,16 @@ namespace GnollHackX
         }
 
 
+        public static void SetWindowFocus()
+        {
+#if WINDOWS
+            if (Microsoft.Maui.Controls.Application.Current?.Windows?.Count > 0)
+            {
+                WindowFocused = WindowFocusHelper.IsAppWindowFocused(Microsoft.Maui.Controls.Application.Current?.Windows[0]);
+            }
+#endif
+        }
+
         private static int _usePlatformAnimationLoop = 0;
         public static bool UsePlatformRenderLoop { get { return IsPlatformRenderLoopAvailable && Interlocked.CompareExchange(ref _usePlatformAnimationLoop, 0, 0) != 0; } set { Interlocked.Exchange(ref _usePlatformAnimationLoop, value ? 1 : 0); } }
         public static bool IsPlatformRenderLoopAvailable { get { return IsWindows; } }

@@ -788,9 +788,10 @@ namespace GnollHackX
             UpdateLayout();
             if (_firsttime)
             {
-                GHApp.DebugWriteProfilingStopwatchTimeAndRestart("MainPage First Time");
                 _firsttime = false;
+                GHApp.DebugWriteProfilingStopwatchTimeAndRestart("MainPage First Time");
                 GHApp.InitializeConnectivity();
+                GHApp.SetWindowFocus();
 
                 if (GHApp.IsAndroid && GHApp.PlatformService != null)
                 {

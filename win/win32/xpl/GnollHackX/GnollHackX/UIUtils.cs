@@ -7,12 +7,12 @@ using System.Diagnostics;
 #if GNH_MAUI
 using GnollHackM;
 using System.Runtime.InteropServices;
-
+using Microsoft.Maui.Controls;
 
 #if WINDOWS
 using GnollHackM.Platforms.Windows;
+using WinRT.Interop;
 #endif
-using Microsoft.Maui.Controls;
 #else
 using Xamarin.Forms;
 using Xamarin.Forms.PlatformConfiguration.AndroidSpecific;
@@ -1751,6 +1751,24 @@ namespace GnollHackX
             return dm;
         }
 
+    }
+
+    public static class WindowFocusHelper
+    {
+        [DllImport("user32.dll")]
+        static extern IntPtr GetForegroundWindow();
+
+        public static bool IsAppWindowFocused(Microsoft.Maui.Controls.Window mauiWindow)
+        {
+            var nativeWindow = mauiWindow?.Handler?.PlatformView as Microsoft.UI.Xaml.Window;
+            if (nativeWindow == null)
+                return false;
+
+            var hwnd = WindowNative.GetWindowHandle(nativeWindow);
+            var foregroundHwnd = GetForegroundWindow();
+
+            return hwnd == foregroundHwnd;
+        }
     }
 #endif
 
