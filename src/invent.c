@@ -7004,19 +7004,15 @@ register struct obj *otmp, *obj;
     /* if they have true names, make sure they're the same */
     objnamelth = strlen(safe_oname(obj));
     otmpnamelth = strlen(safe_oname(otmp));
-    if ((objnamelth != otmpnamelth
-         && ((objnamelth && otmpnamelth) || obj->otyp == CORPSE))
-        || (objnamelth && otmpnamelth
-            && strncmp(ONAME(obj), ONAME(otmp), objnamelth)))
+    if (objnamelth != otmpnamelth
+         || (objnamelth && otmpnamelth && strncmp(ONAME(obj), ONAME(otmp), objnamelth)))
         return FALSE;
 
     /* if they have user-specified names, make sure they're the same */
     objnamelth = strlen(safe_uoname(obj));
     otmpnamelth = strlen(safe_uoname(otmp));
-    if ((objnamelth != otmpnamelth
-        && ((objnamelth && otmpnamelth) || obj->otyp == CORPSE))
-        || (objnamelth && otmpnamelth
-            && strncmp(UONAME(obj), UONAME(otmp), objnamelth)))
+    if (objnamelth != otmpnamelth
+        || (objnamelth && otmpnamelth && strncmp(UONAME(obj), UONAME(otmp), objnamelth)))
         return FALSE;
 
     /* for the moment, any additional information is incompatible */
