@@ -1869,6 +1869,19 @@ int after; /* this is extra fast monster movement */
         /* maybe we tamed him while being swallowed --jgm */
         return 0;
 
+
+    /* teleport if that lies in our nature */
+    if (has_teleportation(mtmp) && has_teleport_control(mtmp) && !is_cancelled(mtmp) && !tele_restrict(mtmp))
+    {
+        if (mtmp->mcomingtou && !m_canseeu(mtmp) && !couldsee(mtmp->mx, mtmp->my) && distu(mtmp->mx, mtmp->my) > 2)
+        {
+            mtmp->mcomingtou = 0;
+            mnexto2(mtmp, TRUE);
+            return 1;
+        }
+    }
+
+
     nix = omx; /* set before newdogpos */
     niy = omy;
     cursemsg[0] = FALSE; /* lint suppression */
