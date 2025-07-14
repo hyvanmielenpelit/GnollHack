@@ -59,7 +59,7 @@ namespace GnollHackX.Pages.Game
             }
 
             btnOptions.IsVisible = btnMessages.IsVisible = GHApp.DeveloperMode;
-            btnGC.IsVisible = GHApp.DeveloperMode && GHApp.DebugLogMessages;
+            btnGC.IsVisible = GHApp.DeveloperMode && GHApp.DebugLogMessages && GHApp.LowLevelLogging; /* Just do not show almost ever, since there is little space  */
             UpdateDarknessMode();
         }
 

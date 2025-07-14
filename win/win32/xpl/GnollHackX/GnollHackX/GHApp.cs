@@ -206,7 +206,7 @@ namespace GnollHackX
             CustomScreenScale = Preferences.Get("CustomScreenScale", 0.0f); /* Note that preferences have a default of zero but the property return 1.0f */
             SaveFileTracking = Preferences.Get("SaveFileTracking", IsSaveFileTrackingNeeded && !string.IsNullOrEmpty(XlogUserName) && !string.IsNullOrEmpty(XlogPassword));
 
-            UsePlatformRenderLoop = Preferences.Get("UsePlatformRenderLoop", IsWindows);
+            UsePlatformRenderLoop = Preferences.Get("UsePlatformRenderLoop", IsPlatformRenderLoopAvailable);
 
             SetAvailableGPUCacheLimits(TotalMemory);
             PrimaryGPUCacheLimit = Preferences.Get("PrimaryGPUCacheLimit", -2L);
@@ -251,8 +251,8 @@ namespace GnollHackX
 
 
         private static int _usePlatformAnimationLoop = 0;
-        public static bool UsePlatformRenderLoop { get { return IsWindows && Interlocked.CompareExchange(ref _usePlatformAnimationLoop, 0, 0) != 0; } set { Interlocked.Exchange(ref _usePlatformAnimationLoop, value ? 1 : 0); } }
-
+        public static bool UsePlatformRenderLoop { get { return IsPlatformRenderLoopAvailable && Interlocked.CompareExchange(ref _usePlatformAnimationLoop, 0, 0) != 0; } set { Interlocked.Exchange(ref _usePlatformAnimationLoop, value ? 1 : 0); } }
+        public static bool IsPlatformRenderLoopAvailable { get { return IsWindows; } }
 
         private static Stopwatch _renderingStopWatch = new Stopwatch();
         //private static readonly object _renderingLock = new object();
