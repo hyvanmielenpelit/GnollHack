@@ -1871,7 +1871,7 @@ int after; /* this is extra fast monster movement */
 
 
     /* teleport if that lies in our nature */
-    if (has_teleportation(mtmp) && has_teleport_control(mtmp) && !is_cancelled(mtmp) && !tele_restrict(mtmp))
+    if (has_teleportation(mtmp) && has_teleport_control(mtmp) && !is_cancelled(mtmp) && !level.flags.noteleport)
     {
         if (mtmp->mcomingtou && !m_canseeu(mtmp) && !couldsee(mtmp->mx, mtmp->my) && distu(mtmp->mx, mtmp->my) > 2)
         {
