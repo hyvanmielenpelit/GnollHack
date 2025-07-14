@@ -1422,7 +1422,7 @@ register int after;
     }
 
     /* teleport if that lies in our nature */
-    if (ptr == &mons[PM_TENGU] && !rn2(5) && !is_cancelled(mtmp)
+    if (has_teleportation(mtmp) && has_teleport_control(mtmp) && !rn2(5) && !is_cancelled(mtmp)
         && !tele_restrict(mtmp)) 
     {
         if (mtmp->mhp < 7 || is_peaceful(mtmp) || rn2(2))
