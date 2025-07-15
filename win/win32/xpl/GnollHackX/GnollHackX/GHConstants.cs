@@ -1817,7 +1817,7 @@ namespace GnollHackX
         public const long StoreReviewRequestNumberOfGames = 4L;
         public const long StoreReviewRequestTotalPlayTime = 60L * 60L * 2L;
 #endif
-        public const bool EventAskForStarGazers = true;
+        public const bool EventAskForStarGazers = false;
 #if DEBUG
         public const long StarGazerRequestNumberOfGames = 0L;
         public const long StarGazerRequestTotalPlayTime = 0L;
