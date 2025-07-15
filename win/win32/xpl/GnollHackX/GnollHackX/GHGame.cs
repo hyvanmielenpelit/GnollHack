@@ -274,6 +274,12 @@ namespace GnollHackX
                     case GHRequestType.SetDiceAsRanges:
                         GHApp.GnollHackService?.SetDiceAsRanges(response.ResponseBoolValue);
                         break;
+                    case GHRequestType.SetAutoDig:
+                        GHApp.GnollHackService?.SetAutoDig(response.ResponseBoolValue);
+                        break;
+                    case GHRequestType.SetIgnoreStopping:
+                        GHApp.GnollHackService?.SetIgnoreStopping(response.ResponseBoolValue);
+                        break;
                     case GHRequestType.SetRightMouseCommand:
                     case GHRequestType.SetMiddleMouseCommand:
                         GHApp.GnollHackService?.SetMouseCommand(response.ResponseIntValue, response.RequestType == GHRequestType.SetMiddleMouseCommand);
@@ -3053,6 +3059,34 @@ namespace GnollHackX
                     break;
                 case (int)gui_command_types.GUI_CMD_TOGGLE_DICE_AS_RANGES:
                     GHApp.MirroredDiceAsRanges = cmd_param != 0;
+                    break;
+                case (int)gui_command_types.GUI_CMD_TOGGLE_AUTODIG:
+                    GHApp.MirroredAutoDig = cmd_param != 0;
+                    try
+                    {
+                        MainThread.BeginInvokeOnMainThread(() =>
+                        {
+                            _gamePage.SetAutoDig(cmd_param != 0);
+                        });
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.WriteLine(ex.Message);
+                    }
+                    break;
+                case (int)gui_command_types.GUI_CMD_TOGGLE_IGNORE_STOPPING:
+                    GHApp.MirroredIgnoreStopping = cmd_param != 0;
+                    try
+                    {
+                        MainThread.BeginInvokeOnMainThread(() =>
+                        {
+                            _gamePage.SetIgnoreStopping(cmd_param != 0);
+                        });
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.WriteLine(ex.Message);
+                    }
                     break;
                 case (int)gui_command_types.GUI_CMD_TOGGLE_GETPOS_ARROWS:
                     GHApp.GetPositionArrows = cmd_param != 0;

@@ -476,7 +476,19 @@ namespace GnollHackX.Pages.MainScreen
             else
                 Preferences.Set("DiceAsRanges", DiceAsRangesSwitch.IsToggled);
 
-            if(RightMouseButtonGrid.IsVisible)
+            GHApp.MirroredAutoDig = AutoDigSwitch.IsToggled;
+            if (_gamePage != null) /* During game only doubles as the option; outside of game sets the default */
+                _gamePage.SetAutoDig(AutoDigSwitch.IsToggled);
+            else
+                Preferences.Set("AutoDig", AutoDigSwitch.IsToggled);
+
+            GHApp.MirroredIgnoreStopping = IgnoreStoppingSwitch.IsToggled;
+            if (_gamePage != null) /* During game only doubles as the option; outside of game sets the default */
+                _gamePage.SetIgnoreStopping(IgnoreStoppingSwitch.IsToggled);
+            else
+                Preferences.Set("IgnoreStopping", IgnoreStoppingSwitch.IsToggled);
+
+            if (RightMouseButtonGrid.IsVisible)
             {
                 if (RightMousePicker.SelectedIndex > -1 && RightMousePicker.SelectedItem != null && RightMousePicker.SelectedItem is MouseCommandItem)
                 {
@@ -761,12 +773,12 @@ namespace GnollHackX.Pages.MainScreen
             Preferences.Set("UseSimpleCmdLayout", SimpleCmdLayoutSwitch.IsToggled);
 
             if (_gamePage != null)
-                _gamePage.ShowAutoDigButton = ShowAutoDigSwitch.IsToggled;
-            Preferences.Set("ShowAutoDigButton", ShowAutoDigSwitch.IsToggled);
+                _gamePage.ShowAutoDigButton = ShowAutoDigButtonSwitch.IsToggled;
+            Preferences.Set("ShowAutoDigButton", ShowAutoDigButtonSwitch.IsToggled);
 
             if (_gamePage != null)
-                _gamePage.ShowIgnoreButton = ShowIgnoreSwitch.IsToggled;
-            Preferences.Set("ShowIgnoreButton", ShowIgnoreSwitch.IsToggled);
+                _gamePage.ShowIgnoreStoppingButton = ShowIgnoreStoppingButtonSwitch.IsToggled;
+            Preferences.Set("ShowIgnoreStoppingButton", ShowIgnoreStoppingButtonSwitch.IsToggled);
 
             GHApp.DarkMode = DarkModeSwitch.IsToggled;
             Preferences.Set("DarkMode", GHApp.DarkMode);
@@ -943,7 +955,7 @@ namespace GnollHackX.Pages.MainScreen
             bool allowbones = true, allowpet = true, emptywishisnothing = true, doubleclick = GHApp.IsDesktop, getpositionarrows = false, recordgame = false, gzip = GHConstants.GZipIsDefaultReplayCompression, lighterdarkening = false, accuratedrawing = GHConstants.DefaultAlternativeLayerDrawing, html = GHConstants.DefaultHTMLDumpLogs, singledumplog = GHConstants.DefaultUseSingleDumpLog, streamingbanktomemory = false, streamingbanktodisk = false, wallends = GHConstants.DefaultDrawWallEnds;
             bool breatheanimations = GHConstants.DefaultBreatheAnimations; //, put2bag = GHConstants.DefaultShowPickNStashContextCommand, prevwep = GHConstants.DefaultShowPrevWepContextCommand;
             bool devmode = GHConstants.DefaultDeveloperMode, logmessages = GHConstants.DefaultLogMessages, lowlevellogging = false, debugpostchannel = GHConstants.DefaultDebugPostChannel, tournament = false, hpbars = false, nhstatusbarclassic = GHConstants.IsDefaultStatusBarClassic, desktopstatusbar = false, rightaligned2ndrow = false, showscore = false, showxp = false, desktopbuttons = false, menufadeeffects = false, menuhighfilterquality = true, menuhighlightedkeys = false, pets = true, orbs = true, orbmaxhp = false, orbmaxmana = false, mapgrid = false, playermark = false, monstertargeting = false, walkarrows = true;
-            bool forcemaxmsg = false, showexstatus = false, noclipmode = GHConstants.DefaultMapNoClipMode, silentmode = false, characterclickaction = false, diceasranges = true;
+            bool forcemaxmsg = false, showexstatus = false, noclipmode = GHConstants.DefaultMapNoClipMode, silentmode = false, characterclickaction = false, diceasranges = true, autodig = false, ignorestopping = false;
             bool postgamestatus = GHConstants.DefaultPosting, postxlog = GHConstants.DefaultPosting, postreplays = GHConstants.DefaultPosting, postbones = GHConstants.DefaultPosting, boneslistisblack = false;
 #if !SENTRY
             bool postdiagnostics = GHConstants.DefaultPosting;
@@ -1079,7 +1091,7 @@ namespace GnollHackX.Pages.MainScreen
                 gpu = Preferences.Get("UseMainGLCanvas", GHApp.IsUseMainGPUDefault);
                 simplecmdlayout = Preferences.Get("UseSimpleCmdLayout", GHConstants.DefaultSimpleCmdLayout);
                 showautodig = Preferences.Get("ShowAutoDigButton", false);
-                showignore = Preferences.Get("ShowIgnoreButton", false);
+                showignore = Preferences.Get("ShowIgnoreStoppingButton", false);
                 msgnum = Preferences.Get("NumDisplayedMessages", GHConstants.DefaultMessageRows);
                 petrows = Preferences.Get("NumDisplayedPetRows", GHConstants.DefaultPetRows);
                 lighterdarkening = Preferences.Get("LighterDarkening", GHConstants.DefaultLighterDarkening);
@@ -1093,6 +1105,8 @@ namespace GnollHackX.Pages.MainScreen
                 getpositionarrows = Preferences.Get("GetPositionArrows", false);
                 characterclickaction = Preferences.Get("CharacterClickAction", GHConstants.DefaultCharacterClickAction); /* Default value */
                 diceasranges = Preferences.Get("DiceAsRanges", GHConstants.DefaultDiceAsRanges); /* Default value */
+                autodig = Preferences.Get("AutoDig", GHConstants.DefaultAutoDig); /* Default value */
+                ignorestopping = Preferences.Get("IgnoreStopping", GHConstants.DefaultIgnoreStopping); /* Default value */
                 rightmouse = Preferences.Get("RightMouseCommand", GHConstants.DefaultRightMouseCommand);
                 middlemouse = Preferences.Get("MiddleMouseCommand", GHConstants.DefaultMiddleMouseCommand);
             }
@@ -1134,7 +1148,7 @@ namespace GnollHackX.Pages.MainScreen
                 gpu = _gamePage.UseMainGLCanvas;
                 simplecmdlayout = _gamePage.UseSimpleCmdLayout;
                 showautodig = _gamePage.ShowAutoDigButton;
-                showignore = _gamePage.ShowIgnoreButton;
+                showignore = _gamePage.ShowIgnoreStoppingButton;
                 msgnum = _gamePage.NumDisplayedMessages;
                 petrows = _gamePage.NumDisplayedPetRows;
                 lighterdarkening = _gamePage.LighterDarkening;
@@ -1148,6 +1162,8 @@ namespace GnollHackX.Pages.MainScreen
                 getpositionarrows = GHApp.GetPositionArrows; /* Not mirrored, but there is an iflag */
                 characterclickaction = GHApp.MirroredCharacterClickAction; // _gamePage.GetCharacterClickAction(); /* Value of the option in the (saved) game */
                 diceasranges = GHApp.MirroredDiceAsRanges;
+                autodig = GHApp.MirroredAutoDig;
+                ignorestopping = GHApp.MirroredIgnoreStopping;
                 rightmouse = GHApp.MirroredRightMouseCommand; //_gamePage.GetRightMouseCommand();
                 middlemouse = GHApp.MirroredMiddleMouseCommand; //_gamePage.GetMiddleMouseCommand();
             }
@@ -1286,8 +1302,8 @@ namespace GnollHackX.Pages.MainScreen
                 MipMapLabel.TextColor = GHColors.Gray;
             }
             SimpleCmdLayoutSwitch.IsToggled = simplecmdlayout;
-            ShowAutoDigSwitch.IsToggled = showautodig;
-            ShowIgnoreSwitch.IsToggled = showignore;
+            ShowAutoDigButtonSwitch.IsToggled = showautodig;
+            ShowIgnoreStoppingButtonSwitch.IsToggled = showignore;
             DarkModeSwitch.IsToggled = darkmode;
             SilentModeSwitch.IsToggled = silentmode;
             WindowedModeSwitch.IsToggled = windowedmode;
@@ -1371,6 +1387,8 @@ namespace GnollHackX.Pages.MainScreen
             EmptyWishIsNothingSwitch.IsToggled = emptywishisnothing;
             CharacterClickActionSwitch.IsToggled = characterclickaction;
             DiceAsRangesSwitch.IsToggled = diceasranges;
+            AutoDigSwitch.IsToggled = autodig;
+            IgnoreStoppingSwitch.IsToggled = ignorestopping;
             DoubleClickSwitch.IsToggled = doubleclick;
             GetPositionArrowsSwitch.IsToggled = getpositionarrows;
 

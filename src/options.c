@@ -183,6 +183,7 @@ static struct Bool_Opt {
 #else
     { "ignintr", "ignore interrupt signals", (boolean *) 0, FALSE, SET_IN_FILE },
 #endif
+    { "ignore_stopping", "travelling is not interrupted by items and peaceful monsters", &flags.ignore_stopping, FALSE, SET_IN_GAME },
     { "implicit_uncursed", "omit \"uncursed\" from inventory", &iflags.implicit_uncursed, TRUE, SET_IN_GAME },
     { "inventory_obj_cmd", "display a command menu upon selecting an object in inventory", &flags.inventory_obj_cmd, TRUE, SET_IN_GAME},
     { "inventory_weights_last", "display object weights in parentheses after object name", &flags.inventory_weights_last, FALSE, SET_IN_GAME},
@@ -983,6 +984,12 @@ init_options()
 
     if (initial_flags.dice_as_ranges_set)
         iflags.show_dice_as_ranges = initial_flags.dice_as_ranges_value;
+
+    if (initial_flags.autodig_set)
+        flags.autodig = initial_flags.autodig_value;
+
+    if (initial_flags.ignore_stopping_set)
+        flags.ignore_stopping = initial_flags.ignore_stopping_value;
 
     if (initial_flags.getpos_arrows_set)
         iflags.getpos_arrows = initial_flags.getpos_arrows_value;
@@ -5393,6 +5400,14 @@ boolean tinitial, tfrom_file;
             else if (boolopt[i].addr == &iflags.show_dice_as_ranges)
             {
                 issue_boolean_gui_command(GUI_CMD_TOGGLE_DICE_AS_RANGES, iflags.show_dice_as_ranges);
+            }
+            else if (boolopt[i].addr == &flags.autodig)
+            {
+                issue_boolean_gui_command(GUI_CMD_TOGGLE_AUTODIG, flags.autodig);
+            }
+            else if (boolopt[i].addr == &flags.ignore_stopping)
+            {
+                issue_boolean_gui_command(GUI_CMD_TOGGLE_IGNORE_STOPPING, flags.ignore_stopping);
             }
             else if (boolopt[i].addr == &flags.classic_statue_symbol || boolopt[i].addr == &flags.classic_colors || boolopt[i].addr == &flags.show_decorations)
             {

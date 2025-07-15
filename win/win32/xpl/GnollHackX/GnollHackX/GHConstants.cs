@@ -254,6 +254,8 @@ namespace GnollHackX
         SaveFileTrackingSupported = 0x00004000UL, /* Save file tracking is supported (always on modern version) */
         SaveFileTrackingNeeded = 0x00008000UL, /* Save file tracking is needed (= is desktop) */
         SaveFileTrackingOn =    0x00010000UL, /* Save file tracking is switched on */
+        AutoDig =               0x00020000UL, /* Set autodig to true by default */
+        IgnoreStopping =        0x00040000UL, /* Set ignore_stopping to true by default */
 
         RightMouseButtonBit1 =  0x00400000UL, 
         RightMouseButtonBit2 =  0x00800000UL, 
@@ -1410,6 +1412,8 @@ namespace GnollHackX
         GUI_CMD_DELETE_TRACKING_FILE,
         GUI_CMD_KEYBOARD_FOCUS,
         GUI_CMD_ORACLE_MAJOR_CONSULTATION,
+        GUI_CMD_TOGGLE_AUTODIG,
+        GUI_CMD_TOGGLE_IGNORE_STOPPING,
     }
 
     public enum game_status_types
@@ -1937,6 +1941,8 @@ namespace GnollHackX
         public const double FadeFromBlackAtStartExtraDelaySecs = 0.15;
 #endif
         public const bool DefaultDiceAsRanges = true;
+        public const bool DefaultAutoDig = true;
+        public const bool DefaultIgnoreStopping = true;
         public const long MapDataLockTimeOutTicks = 100L;
         public const long EffectLockTimeOutTicks = 50L;
         public const long MessageLockTimeOutTicks = 50L;

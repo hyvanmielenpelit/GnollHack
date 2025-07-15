@@ -321,6 +321,10 @@ namespace GnollHackX.Unknown
         [DllImport(PlatformConstants.dll)]
         public static extern void LibSetDiceAsRanges(int new_value);
         [DllImport(PlatformConstants.dll)]
+        public static extern void LibSetAutoDig(int new_value);
+        [DllImport(PlatformConstants.dll)]
+        public static extern void LibSetIgnoreStopping(int new_value);
+        [DllImport(PlatformConstants.dll)]
         public static extern int LibGetMouseCommand(int is_middle);
         [DllImport(PlatformConstants.dll)]
         public static extern void LibSetMouseCommand(int new_value, int is_middle);
@@ -1178,6 +1182,14 @@ namespace GnollHackX.Unknown
         {
             LibSetDiceAsRanges(newValue ? 1 : 0);
         }
+        public void SetAutoDig(bool newValue)
+        {
+            LibSetAutoDig(newValue ? 1 : 0);
+        }
+        public void SetIgnoreStopping(bool newValue)
+        {
+            LibSetIgnoreStopping(newValue ? 1 : 0);
+        }
 
         public int GetMouseCommand(bool isMiddle)
         {
@@ -1210,6 +1222,8 @@ namespace GnollHackX.Unknown
             bool getposarrows = GHApp.GetPositionArrows;
             bool characterclickaction = GHApp.MirroredCharacterClickAction;
             bool diceasranges = GHApp.MirroredDiceAsRanges;
+            bool autodig = GHApp.MirroredAutoDig;
+            bool ignorestopping = GHApp.MirroredIgnoreStopping;
             ulong rightmouse = (ulong)GHApp.MirroredRightMouseCommand << GHConstants.RightMouseBitIndex;
             ulong middlemouse = (ulong)GHApp.MirroredMiddleMouseCommand << GHConstants.MiddleMouseBitIndex;
             ulong runflags = (ulong)(ghGame.WizardMode ? RunGnollHackFlags.WizardMode : 0) |
@@ -1226,6 +1240,8 @@ namespace GnollHackX.Unknown
                 (ulong)(getposarrows ? RunGnollHackFlags.GetPositionArrows : 0) | /* Set the iflag to right value */
                 (ulong)(characterclickaction ? RunGnollHackFlags.CharacterClickAction : 0) | /* Use the default; GHApp.CharacterClickAction may contain the option value from the last game */
                 (ulong)(diceasranges ? RunGnollHackFlags.DiceAsRanges : 0) | /* Use the default; GHApp.DiceAsRanges may contain the option value from the last game */
+                (ulong)(autodig ? RunGnollHackFlags.AutoDig : 0) | /* Use the default; GHApp.AutoDig may contain the option value from the last game */
+                (ulong)(ignorestopping ? RunGnollHackFlags.IgnoreStopping : 0) | /* Use the default; GHApp.IgnoreStopping may contain the option value from the last game */
                 rightmouse | middlemouse | (ulong)ghGame.StartFlags;
             ulong foundManuals = GHApp.FoundManuals;
             string lastusedplname = GHApp.TournamentMode && !ghGame.PlayingReplay ? GHApp.LastUsedTournamentPlayerName : GHApp.LastUsedPlayerName;

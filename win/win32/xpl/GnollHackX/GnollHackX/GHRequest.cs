@@ -98,6 +98,8 @@ namespace GnollHackX
         UpdateGHWindow,
         UpdateGHWindowVisibility,
         KeyboardFocus,
+        SetAutoDig,
+        SetIgnoreStopping,
     }
 
     public struct AddContextMenuData

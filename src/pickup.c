@@ -364,7 +364,7 @@ boolean picked_some;
 
     /* If there are objects here, take a look. */
     if (ct) {
-        if (context.run)
+        if (context.run && !flags.ignore_stopping)
             nomul(0);
         flush_screen(1);
         (void) look_here(ct, picked_some, FALSE);

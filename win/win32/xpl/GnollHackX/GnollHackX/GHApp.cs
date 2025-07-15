@@ -791,6 +791,8 @@ namespace GnollHackX
             MirroredRightMouseCommand = Preferences.Get("RightMouseCommand", GHConstants.DefaultRightMouseCommand);
             MirroredMiddleMouseCommand = Preferences.Get("MiddleMouseCommand", GHConstants.DefaultMiddleMouseCommand);
             MirroredDiceAsRanges = Preferences.Get("DiceAsRanges", GHConstants.DefaultDiceAsRanges);
+            MirroredAutoDig = Preferences.Get("AutoDig", GHConstants.DefaultAutoDig);
+            MirroredIgnoreStopping = Preferences.Get("IgnoreStopping", GHConstants.DefaultIgnoreStopping);
         }
 
         public static void MaybeFixRects(ref SKRect source, ref SKRect dest, float targetscale, bool usingGL, bool fixRects)
@@ -4129,6 +4131,9 @@ namespace GnollHackX
         private static int _getPositionArrows = 0;
         private static int _characterClickAction = 0;
         private static int _diceAsRanges = 0;
+        private static int _autoDig = 0;
+        private static int _ignoreStopping = 0;
+
         private static int _rightMouseCommand;
         private static int _middleMouseCommand;
         public static bool EmptyWishIsNothing { get { return Interlocked.CompareExchange(ref _emptyWishIsNothing, 0, 0) != 0; } set { Interlocked.Exchange(ref _emptyWishIsNothing, value ? 1 : 0); } }
@@ -4136,6 +4141,8 @@ namespace GnollHackX
         public static bool GetPositionArrows { get { return Interlocked.CompareExchange(ref _getPositionArrows, 0, 0) != 0; } set { Interlocked.Exchange(ref _getPositionArrows, value ? 1 : 0); } }
         public static bool MirroredCharacterClickAction { get { return Interlocked.CompareExchange(ref _characterClickAction, 0, 0) != 0; } set { Interlocked.Exchange(ref _characterClickAction, value ? 1 : 0); } }
         public static bool MirroredDiceAsRanges { get { return Interlocked.CompareExchange(ref _diceAsRanges, 0, 0) != 0; } set { Interlocked.Exchange(ref _diceAsRanges, value ? 1 : 0); } }
+        public static bool MirroredAutoDig { get { return Interlocked.CompareExchange(ref _autoDig, 0, 0) != 0; } set { Interlocked.Exchange(ref _autoDig, value ? 1 : 0); } }
+        public static bool MirroredIgnoreStopping { get { return Interlocked.CompareExchange(ref _ignoreStopping, 0, 0) != 0; } set { Interlocked.Exchange(ref _ignoreStopping, value ? 1 : 0); } }
         public static int MirroredRightMouseCommand { get { return Interlocked.CompareExchange(ref _rightMouseCommand, 0, 0); } set { Interlocked.Exchange(ref _rightMouseCommand, value); } }
         public static int MirroredMiddleMouseCommand { get { return Interlocked.CompareExchange(ref _middleMouseCommand, 0, 0); } set { Interlocked.Exchange(ref _middleMouseCommand, value); } }
 

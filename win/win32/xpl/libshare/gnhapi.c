@@ -649,6 +649,18 @@ LibSetDiceAsRanges(int new_value)
     iflags.show_dice_as_ranges = new_value != 0;
 }
 
+DLLEXPORT void
+LibSetAutoDig(int new_value)
+{
+    flags.autodig = new_value != 0;
+}
+
+DLLEXPORT void
+LibSetIgnoreStopping(int new_value)
+{
+    flags.ignore_stopping = new_value != 0;
+}
+
 DLLEXPORT int
 LibGetDiceAsRanges(VOID_ARGS)
 {
@@ -932,6 +944,10 @@ DLLEXPORT int RunGnollHack(
     initial_flags.getpos_arrows_value = (runflags & GHRUNFLAGS_GETPOS_ARROWS) != 0;
     initial_flags.dice_as_ranges_set = TRUE;
     initial_flags.dice_as_ranges_value = (runflags & GHRUNFLAGS_DICE_AS_RANGES) != 0;
+    initial_flags.autodig_set = TRUE;
+    initial_flags.autodig_value = (runflags & GHRUNFLAGS_AUTO_DIG) != 0;
+    initial_flags.ignore_stopping_set = TRUE;
+    initial_flags.ignore_stopping_value = (runflags & GHRUNFLAGS_IGNORE_STOPPING) != 0;
     initial_flags.save_file_tracking_supported_set = TRUE;
     initial_flags.save_file_tracking_supported_value = (runflags & GHRUNFLAGS_SAVE_FILE_TRACKING_SUPPORTED) != 0;
     initial_flags.save_file_tracking_needed_set = TRUE;

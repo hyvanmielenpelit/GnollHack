@@ -712,7 +712,7 @@ namespace GnollHackX.Pages.Game
         public bool ShowAutoDigButton { get { return Interlocked.CompareExchange(ref _showAutoDigButton, 0, 0) != 0; } set { Interlocked.Exchange(ref _showAutoDigButton, value ? 1 : 0); } }
 
         private int _showIgnoreButton;
-        public bool ShowIgnoreButton { get { return Interlocked.CompareExchange(ref _showIgnoreButton, 0, 0) != 0; } set { Interlocked.Exchange(ref _showIgnoreButton, value ? 1 : 0); } }
+        public bool ShowIgnoreStoppingButton { get { return Interlocked.CompareExchange(ref _showIgnoreButton, 0, 0) != 0; } set { Interlocked.Exchange(ref _showIgnoreButton, value ? 1 : 0); } }
 
         //private readonly object _showBatteryLock = new object();
         private int _showBattery;
@@ -1048,7 +1048,7 @@ namespace GnollHackX.Pages.Game
             UseAuxiliaryGLCanvas = Preferences.Get("UseAuxiliaryGLCanvas", GHApp.IsUseAuxGPUDefault);
             UseSimpleCmdLayout = Preferences.Get("UseSimpleCmdLayout", GHConstants.DefaultSimpleCmdLayout);
             ShowAutoDigButton = Preferences.Get("ShowAutoDigButton", false);
-            ShowIgnoreButton = Preferences.Get("ShowIgnoreButton", false);
+            ShowIgnoreStoppingButton = Preferences.Get("ShowIgnoreStoppingButton", false);
             ShowMemory = Preferences.Get("ShowMemory", false);
             MapGrid = Preferences.Get("MapGrid", false);
             HitPointBars = Preferences.Get("HitPointBars", false);
@@ -1268,6 +1268,17 @@ namespace GnollHackX.Pages.Game
             GHGame curGame = CurrentGame;
             curGame?.ResponseQueue.Enqueue(new GHResponse(curGame, GHRequestType.SetDiceAsRanges, newValue));
         }
+        public void SetAutoDig(bool newValue)
+        {
+            if (MapAutoDig != newValue)
+                ToggleAutoDigButton_BtnClicked(this, EventArgs.Empty);
+        }
+        public void SetIgnoreStopping(bool newValue)
+        {
+            if (MapIgnoreMode != newValue)
+                ToggleIgnoreModeButton_BtnClicked(this, EventArgs.Empty);
+        }
+
 
         public void SetRightMouseCommand(int newValue)
         {
@@ -14331,7 +14342,7 @@ namespace GnollHackX.Pages.Game
                 ToggleAutoDigButton.IsVisible = false;
             }
 
-            if (ShowIgnoreButton)
+            if (ShowIgnoreStoppingButton)
             {
                 isIgnoreVisible = true;
                 ToggleIgnoreModeButton.IsVisible = true;
@@ -14573,90 +14584,6 @@ namespace GnollHackX.Pages.Game
                     }
                 }
             }
-            //if (isLandscape)
-            //{
-            //    if (visibleButtons <= 6)
-            //    {
-            //        Grid.SetColumn(LookModeButton, 0);
-            //        Grid.SetRow(LookModeButton, 2);
-            //        /* One of the below is visible, so allocate it to the remaining place */
-            //        Grid.SetColumn(ToggleZoomAlternateButton, 0);
-            //        Grid.SetRow(ToggleZoomAlternateButton, 2);
-            //        Grid.SetColumn(ToggleTravelModeButton, 0);
-            //        Grid.SetRow(ToggleTravelModeButton, 2);
-            //        Grid.SetColumn(ToggleAutoDigButton, 0);
-            //        Grid.SetRow(ToggleAutoDigButton, 2);
-            //        Grid.SetColumn(ToggleIgnoreModeButton, 0);
-            //        Grid.SetRow(ToggleIgnoreModeButton, 2);
-            //    }
-            //    else
-            //    {
-            //        Grid.SetColumn(ToggleZoomMiniButton, 2);
-            //        Grid.SetRow(ToggleZoomMiniButton, 1);
-            //        if (isAltZoomVisible)
-            //        {
-            //            Grid.SetColumn(ToggleZoomAlternateButton, 1);
-            //            Grid.SetRow(ToggleZoomAlternateButton, 1);
-            //        }
-            //        Grid.SetColumn(LookModeButton, 2);
-            //        Grid.SetRow(LookModeButton, 2);
-            //        if (isTravelModeVisible)
-            //        {
-            //            Grid.SetColumn(ToggleTravelModeButton, 1);
-            //            Grid.SetRow(ToggleTravelModeButton, 2);
-            //        }
-            //        Grid.SetColumn(ToggleAutoDigButton, isAltZoomVisible ? 0 : 1);
-            //        Grid.SetRow(ToggleAutoDigButton, 1);
-            //        if (!isAltZoomVisible)
-            //        {
-            //            Grid.SetColumn(ToggleIgnoreModeButton, isAutoDigVisible ? 1 : 2);
-            //            Grid.SetRow(ToggleIgnoreModeButton, 1);
-            //        }
-            //        else
-            //        {
-            //            if (isTravelModeVisible)
-            //            {
-            //                Grid.SetColumn(ToggleIgnoreModeButton, 0);
-            //                Grid.SetRow(ToggleIgnoreModeButton, isAutoDigVisible ? 2 : 1);
-            //            }
-            //            else
-            //            {
-            //                Grid.SetColumn(ToggleIgnoreModeButton, 0);
-            //                Grid.SetRow(ToggleIgnoreModeButton, isAutoDigVisible ? 2 : 1);
-            //            }
-            //        }
-            //    }
-            //}
-            //else
-            //{
-            //    /* PORTRAIT */
-            //    if (visibleButtons <= 6)
-            //    {
-            //        Grid.SetColumn(ToggleZoomMiniButton, 2);
-            //        Grid.SetRow(ToggleZoomMiniButton, 2);
-            //        Grid.SetColumn(LookModeButton, 2);
-            //        Grid.SetRow(LookModeButton, 3);
-            //        Grid.SetColumn(ToggleAutoDigButton, 2);
-            //        Grid.SetRow(ToggleAutoDigButton, 4);
-            //        Grid.SetColumn(ToggleIgnoreModeButton, 2);
-            //        Grid.SetRow(ToggleIgnoreModeButton, 4);
-            //    }
-            //    else
-            //    {
-            //        Grid.SetColumn(ToggleZoomMiniButton, 2);
-            //        Grid.SetRow(ToggleZoomMiniButton, 1);
-            //        Grid.SetColumn(ToggleZoomAlternateButton, 2);
-            //        Grid.SetRow(ToggleZoomAlternateButton, 2);
-            //        Grid.SetColumn(LookModeButton, 2);
-            //        Grid.SetRow(LookModeButton, 3);
-            //        Grid.SetColumn(ToggleTravelModeButton, 2);
-            //        Grid.SetRow(ToggleTravelModeButton, 4);
-            //        Grid.SetColumn(ToggleAutoDigButton, 1);
-            //        Grid.SetRow(ToggleAutoDigButton, 1);
-            //        Grid.SetColumn(ToggleIgnoreModeButton, 1);
-            //        Grid.SetRow(ToggleIgnoreModeButton, ToggleAutoDigButton.IsVisible ? 2 : 1);
-            //    }
-            //}
         }
 
         //public float GetStatusBarSkiaHeight()
@@ -21390,8 +21317,9 @@ namespace GnollHackX.Pages.Game
         private void ToggleAutoDigButton_BtnClicked(object sender, EventArgs e)
         {
             GHApp.PlayMenuSelectSound();
-            MapAutoDig = !MapAutoDig;
-            if (MapAutoDig)
+            bool newMode = !MapAutoDig;
+            MapAutoDig = newMode;
+            if (newMode)
             {
                 ToggleAutoDigButton.ImgSourcePath = "resource://" + GHApp.AppResourceName + ".Assets.UI.stone-autodig-on.png";
             }
@@ -21399,13 +21327,16 @@ namespace GnollHackX.Pages.Game
             {
                 ToggleAutoDigButton.ImgSourcePath = "resource://" + GHApp.AppResourceName + ".Assets.UI.stone-autodig-off.png";
             }
+            GHGame curGame = CurrentGame;
+            curGame?.ResponseQueue.Enqueue(new GHResponse(curGame, GHRequestType.SetAutoDig, newMode));
         }
 
         private void ToggleIgnoreModeButton_BtnClicked(object sender, EventArgs e)
         {
             GHApp.PlayMenuSelectSound();
-            MapIgnoreMode = !MapIgnoreMode;
-            if (MapIgnoreMode)
+            bool newMode = !MapIgnoreMode;
+            MapIgnoreMode = newMode;
+            if (newMode)
             {
                 ToggleIgnoreModeButton.ImgSourcePath = "resource://" + GHApp.AppResourceName + ".Assets.UI.stone-ignore-on.png";
             }
@@ -21413,6 +21344,8 @@ namespace GnollHackX.Pages.Game
             {
                 ToggleIgnoreModeButton.ImgSourcePath = "resource://" + GHApp.AppResourceName + ".Assets.UI.stone-ignore-off.png";
             }
+            GHGame curGame = CurrentGame;
+            curGame?.ResponseQueue.Enqueue(new GHResponse(curGame, GHRequestType.SetIgnoreStopping, newMode));
         }
 
         private double _threadSafeWidth = 0;

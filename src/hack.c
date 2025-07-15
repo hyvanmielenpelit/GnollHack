@@ -2446,7 +2446,7 @@ domove_core()
 
 finish_move:
     reset_occupations();
-    if (context.run)
+    if (context.run && !flags.ignore_stopping)
     {
         if (context.run < 8)
             if (IS_DOOR(tmpr->typ) || IS_ROCK(tmpr->typ)
