@@ -607,8 +607,8 @@ namespace GnollHackX.Pages.Game
         private readonly object _weaponStyleObjDataItemLock = new object();
         private bool _drawWeaponStyleAsGlyphs = true;
 
-        public SimpleImageButton StandardMeasurementButton { get { return UseSimpleCmdLayout ? SimpleESCButton : ESCButton; } }
-        public MeasurableStackLayout StandardMeasurementCmdLayout { get { return UseSimpleCmdLayout ? SimpleUpperCmdLayout : UpperCmdLayout; } }
+        public SimpleImageButton StandardMeasurementButton { get { return ESCButton; } } // UseSimpleCmdLayout ? SimpleESCButton : ESCButton
+        public MeasurableGrid StandardMeasurementCmdLayout { get { return StoneButtonGrid; } } // UseSimpleCmdLayout ? SimpleUpperCmdLayout : UpperCmdLayout;
         public LabeledImageButton StandardReferenceButton { get { return UseSimpleCmdLayout ? lSimpleInventoryButton : lInventoryButton; } } // { get { return DesktopButtons ? lRowAbilitiesButton : lAbilitiesButton; } }
         public MeasurableStackLayout UsedButtonRowStack { get { return UseSimpleCmdLayout ? SimpleButtonRowStack : ButtonRowStack; } }
 
@@ -701,11 +701,18 @@ namespace GnollHackX.Pages.Game
                 //    _useSimpleCmdLayout = value;
                 //}
                 ButtonRowStack.IsVisible = !value;
-                UpperCmdLayout.IsVisible = !value;
                 SimpleButtonRowStack.IsVisible = value;
-                SimpleUpperCmdLayout.IsVisible = value;
+                //StoneButtonGrid.IsVisible = !value;
+                //UpperCmdLayout.IsVisible = !value;
+                //SimpleUpperCmdLayout.IsVisible = value;
             }
         }
+
+        private int _showAutoDigButton;
+        public bool ShowAutoDigButton { get { return Interlocked.CompareExchange(ref _showAutoDigButton, 0, 0) != 0; } set { Interlocked.Exchange(ref _showAutoDigButton, value ? 1 : 0); } }
+
+        private int _showIgnoreButton;
+        public bool ShowIgnoreButton { get { return Interlocked.CompareExchange(ref _showIgnoreButton, 0, 0) != 0; } set { Interlocked.Exchange(ref _showIgnoreButton, value ? 1 : 0); } }
 
         //private readonly object _showBatteryLock = new object();
         private int _showBattery;
@@ -888,8 +895,11 @@ namespace GnollHackX.Pages.Game
         //private readonly object _mapTravelModeLock = new object();
         private int _mapTravelMode = 0;
         public bool MapTravelMode { get { return Interlocked.CompareExchange(ref _mapTravelMode, 0, 0) != 0; } set { Interlocked.Exchange(ref _mapTravelMode, value ? 1 : 0); } }
-
         public bool MapWalkMode { get { return (!MapTravelMode && !MapLookMode); } }
+        private int _mapIgnoreMode = 0;
+        public bool MapIgnoreMode { get { return Interlocked.CompareExchange(ref _mapIgnoreMode, 0, 0) != 0; } set { Interlocked.Exchange(ref _mapIgnoreMode, value ? 1 : 0); } }
+        private int _mapAutoDig = 0;
+        public bool MapAutoDig { get { return Interlocked.CompareExchange(ref _mapAutoDig, 0, 0) != 0; } set { Interlocked.Exchange(ref _mapAutoDig, value ? 1 : 0); } }
 
         //private readonly object _mapMiniModeLock = new object();
         private int _mapMiniMode = 0;
@@ -1037,6 +1047,8 @@ namespace GnollHackX.Pages.Game
             UseMainGLCanvas = Preferences.Get("UseMainGLCanvas", GHApp.IsUseMainGPUDefault);
             UseAuxiliaryGLCanvas = Preferences.Get("UseAuxiliaryGLCanvas", GHApp.IsUseAuxGPUDefault);
             UseSimpleCmdLayout = Preferences.Get("UseSimpleCmdLayout", GHConstants.DefaultSimpleCmdLayout);
+            ShowAutoDigButton = Preferences.Get("ShowAutoDigButton", false);
+            ShowIgnoreButton = Preferences.Get("ShowIgnoreButton", false);
             ShowMemory = Preferences.Get("ShowMemory", false);
             MapGrid = Preferences.Get("MapGrid", false);
             HitPointBars = Preferences.Get("HitPointBars", false);
@@ -1487,6 +1499,8 @@ namespace GnollHackX.Pages.Game
                     ESCButton.IsEnabled = false;
                     LookModeButton.IsEnabled = false;
                     ToggleTravelModeButton.IsEnabled = false;
+                    ToggleAutoDigButton.IsEnabled = false;
+                    ToggleIgnoreModeButton.IsEnabled = false;
                     ButtonRowStack.IsEnabled = false;
 
                     GameMenuButton.Opacity = 0.5;
@@ -1494,14 +1508,14 @@ namespace GnollHackX.Pages.Game
                     LookModeButton.Opacity = 0.5;
                     ToggleTravelModeButton.Opacity = 0.5;
 
-                    SimpleGameMenuButton.IsEnabled = false;
-                    SimpleESCButton.IsEnabled = false;
-                    SimpleLookModeButton.IsEnabled = false;
-                    SimpleButtonRowStack.IsEnabled = false;
+                    //SimpleGameMenuButton.IsEnabled = false;
+                    //SimpleESCButton.IsEnabled = false;
+                    //SimpleLookModeButton.IsEnabled = false;
+                    //SimpleButtonRowStack.IsEnabled = false;
 
-                    SimpleGameMenuButton.Opacity = 0.5;
-                    SimpleESCButton.Opacity = 0.5;
-                    SimpleLookModeButton.Opacity = 0.5;
+                    //SimpleGameMenuButton.Opacity = 0.5;
+                    //SimpleESCButton.Opacity = 0.5;
+                    //SimpleLookModeButton.Opacity = 0.5;
 
                     MenuGrid.IsEnabled = false;
                     TextGrid.IsEnabled = false;
@@ -3145,7 +3159,7 @@ namespace GnollHackX.Pages.Game
             if (!PlayingReplay)
             {
                 GameMenuButton.IsEnabled = true;
-                SimpleGameMenuButton.IsEnabled = true;
+                //SimpleGameMenuButton.IsEnabled = true;
                 lMoreButton.IsEnabled = true;
             }
 
@@ -11177,7 +11191,7 @@ namespace GnollHackX.Pages.Game
                                         float pet_hp_size = textPaint.TextSize * pet_hp_target_height / textPaint.FontSpacing;
                                         float pet_target_width = pet_target_height;
 
-                                        SKRect menubuttonrect = GetThreadSafeViewScreenRect(UseSimpleCmdLayout ? SimpleGameMenuButton : GameMenuButton);
+                                        SKRect menubuttonrect = GetThreadSafeViewScreenRect(GameMenuButton); //UseSimpleCmdLayout ? SimpleGameMenuButton : GameMenuButton
                                         SKRect canvasrect = GetThreadSafeViewScreenRect(canvasView);
                                         SKRect adjustedrect = new SKRect(menubuttonrect.Left - canvasrect.Left, menubuttonrect.Top - canvasrect.Top, menubuttonrect.Right - canvasrect.Left, menubuttonrect.Bottom - canvasrect.Top);
                                         float menu_button_left = adjustedrect.Left;
@@ -14086,14 +14100,16 @@ namespace GnollHackX.Pages.Game
             ToggleAutoCenterModeButton.SetSideSize(width, height, usingDesktopButtons, usingSimpleCmdLayout, inverseCanvasScale, customScale);
             LookModeButton.SetSideSize(width, height, usingDesktopButtons, usingSimpleCmdLayout, inverseCanvasScale, customScale);
             ToggleTravelModeButton.SetSideSize(width, height, usingDesktopButtons, usingSimpleCmdLayout, inverseCanvasScale, customScale);
+            ToggleIgnoreModeButton.SetSideSize(width, height, usingDesktopButtons, usingSimpleCmdLayout, inverseCanvasScale, customScale);
+            ToggleAutoDigButton.SetSideSize(width, height, usingDesktopButtons, usingSimpleCmdLayout, inverseCanvasScale, customScale);
             ToggleZoomMiniButton.SetSideSize(width, height, usingDesktopButtons, usingSimpleCmdLayout, inverseCanvasScale, customScale);
             ToggleZoomAlternateButton.SetSideSize(width, height, usingDesktopButtons, usingSimpleCmdLayout, inverseCanvasScale, customScale);
 
-            SimpleGameMenuButton.SetSideSize(width, height, usingDesktopButtons, usingSimpleCmdLayout, inverseCanvasScale, customScale);
-            SimpleESCButton.SetSideSize(width, height, usingDesktopButtons, usingSimpleCmdLayout, inverseCanvasScale, customScale);
-            SimpleToggleAutoCenterModeButton.SetSideSize(width, height, usingDesktopButtons, usingSimpleCmdLayout, inverseCanvasScale, customScale);
-            SimpleLookModeButton.SetSideSize(width, height, usingDesktopButtons, usingSimpleCmdLayout, inverseCanvasScale, customScale);
-            SimpleToggleZoomMiniButton.SetSideSize(width, height, usingDesktopButtons, usingSimpleCmdLayout, inverseCanvasScale, customScale);
+            //SimpleGameMenuButton.SetSideSize(width, height, usingDesktopButtons, usingSimpleCmdLayout, inverseCanvasScale, customScale);
+            //SimpleESCButton.SetSideSize(width, height, usingDesktopButtons, usingSimpleCmdLayout, inverseCanvasScale, customScale);
+            //SimpleToggleAutoCenterModeButton.SetSideSize(width, height, usingDesktopButtons, usingSimpleCmdLayout, inverseCanvasScale, customScale);
+            //SimpleLookModeButton.SetSideSize(width, height, usingDesktopButtons, usingSimpleCmdLayout, inverseCanvasScale, customScale);
+            //SimpleToggleZoomMiniButton.SetSideSize(width, height, usingDesktopButtons, usingSimpleCmdLayout, inverseCanvasScale, customScale);
 
 #if GNH_MAUI
             YnWidthGrid.MaximumWidthRequest = 600 * customScale;
@@ -14187,8 +14203,9 @@ namespace GnollHackX.Pages.Game
             double statusbarheight = GetStatusBarHeightEx2(inverseCanvasScale, customScale, width, height); // GetStatusBarHeightEx(width, height, usingDesktopButtons, usingSimpleCmdLayout, inverseCanvasScale, customScale);
             lAbilitiesButton.HeightRequest = statusbarheight;
             lWornItemsButton.HeightRequest = statusbarheight;
-            UpperCmdLayout.Margin = new Thickness(0, statusbarheight, 0, 0);
-            SimpleUpperCmdLayout.Margin = new Thickness(0, statusbarheight, 0, 0);
+            StoneButtonGrid.Margin = new Thickness(0, statusbarheight, 0, 0);
+            //UpperCmdLayout.Margin = new Thickness(0, statusbarheight, 0, 0);
+            //SimpleUpperCmdLayout.Margin = new Thickness(0, statusbarheight, 0, 0);
 
             MenuHeaderLabel.Margin = UIUtils.GetHeaderMarginWithBorder(MenuBackground.BorderStyle, width, height);
             MenuCloseGrid.Margin = UIUtils.GetFooterMarginWithBorder(MenuBackground.BorderStyle, width, height);
@@ -14242,35 +14259,404 @@ namespace GnollHackX.Pages.Game
                 SimpleButtonRowStack.Orientation = StackOrientation.Vertical;
             }
 
-            if (width > height)
-            {
-                /* Landscape */
-                ModeLayout.Orientation = StackOrientation.Vertical;
-                ModeSubLayout1.Orientation = StackOrientation.Horizontal;
-                ModeSubLayout2.Orientation = StackOrientation.Horizontal;
-                GameMenuLayout.Orientation = StackOrientation.Horizontal;
+            OrderStoneButtons(width, height);
+            //if (width > height)
+            //{
+            //    /* Landscape */
+            //    ModeLayout.Orientation = StackOrientation.Vertical;
+            //    ModeSubLayout1.Orientation = StackOrientation.Horizontal;
+            //    ModeSubLayout2.Orientation = StackOrientation.Horizontal;
+            //    GameMenuLayout.Orientation = StackOrientation.Horizontal;
 
-                SimpleModeLayout.Orientation = StackOrientation.Vertical;
-                SimpleModeSubLayout1.Orientation = StackOrientation.Horizontal;
-                SimpleModeSubLayout2.Orientation = StackOrientation.Horizontal;
-                SimpleGameMenuLayout.Orientation = StackOrientation.Horizontal;
-            }
-            else
-            {
-                /* Portrait */
-                ModeLayout.Orientation = StackOrientation.Vertical;
-                ModeSubLayout1.Orientation = StackOrientation.Vertical;
-                ModeSubLayout2.Orientation = StackOrientation.Vertical;
-                GameMenuLayout.Orientation = StackOrientation.Horizontal;
+            //    SimpleModeLayout.Orientation = StackOrientation.Vertical;
+            //    SimpleModeSubLayout1.Orientation = StackOrientation.Horizontal;
+            //    SimpleModeSubLayout2.Orientation = StackOrientation.Horizontal;
+            //    SimpleGameMenuLayout.Orientation = StackOrientation.Horizontal;
+            //}
+            //else
+            //{
+            //    /* Portrait */
+            //    ModeLayout.Orientation = StackOrientation.Vertical;
+            //    ModeSubLayout1.Orientation = StackOrientation.Vertical;
+            //    ModeSubLayout2.Orientation = StackOrientation.Vertical;
+            //    GameMenuLayout.Orientation = StackOrientation.Horizontal;
 
-                SimpleModeLayout.Orientation = StackOrientation.Vertical;
-                SimpleModeSubLayout1.Orientation = StackOrientation.Vertical;
-                SimpleModeSubLayout2.Orientation = StackOrientation.Vertical;
-                SimpleGameMenuLayout.Orientation = StackOrientation.Horizontal;
-            }
+            //    SimpleModeLayout.Orientation = StackOrientation.Vertical;
+            //    SimpleModeSubLayout1.Orientation = StackOrientation.Vertical;
+            //    SimpleModeSubLayout2.Orientation = StackOrientation.Vertical;
+            //    SimpleGameMenuLayout.Orientation = StackOrientation.Horizontal;
+            //}
 
             RefreshMenuRowCounts = true;
             RefreshMsgHistoryRowCounts = true;
+        }
+
+        private void OrderStoneButtons(double width, double height)
+        {
+            if (width == 0 || height == 0)
+                return;
+            bool isLandscape = width > height;
+            int visibleButtons = 5;
+            GameMenuButton.IsVisible = true;
+            ESCButton.IsVisible = true;
+            ToggleAutoCenterModeButton.IsVisible = true;
+            ToggleZoomMiniButton.IsVisible = true;
+            LookModeButton.IsVisible = true;
+
+            bool isAltZoomVisible = false;
+            bool isTravelModeVisible = false;
+            if (!UseSimpleCmdLayout)
+            {
+                isAltZoomVisible = isTravelModeVisible = true;
+                ToggleZoomAlternateButton.IsVisible = true;
+                ToggleTravelModeButton.IsVisible = true;
+                visibleButtons += 2;
+            }
+            else
+            {
+                ToggleZoomAlternateButton.IsVisible = false;
+                ToggleTravelModeButton.IsVisible = false;
+            }
+
+            bool isAutoDigVisible = false;
+            bool isIgnoreVisible = false;
+            if (ShowAutoDigButton)
+            {
+                isAutoDigVisible = true;
+                ToggleAutoDigButton.IsVisible = true;
+                visibleButtons++;
+            }
+            else
+            {
+                ToggleAutoDigButton.IsVisible = false;
+            }
+
+            if (ShowIgnoreButton)
+            {
+                isIgnoreVisible = true;
+                ToggleIgnoreModeButton.IsVisible = true;
+                visibleButtons++;
+            }
+            else
+            {
+                ToggleIgnoreModeButton.IsVisible = false;
+            }
+
+
+            int noOfColumns = visibleButtons <= 6 ? 2 : 3;
+            int noOfRows = isLandscape ? 3 : Math.Min(5, visibleButtons - 1);
+
+            bool[,] populated = new bool[noOfColumns, noOfRows];
+
+            StoneButtonGrid.RowDefinitions.Clear();
+            StoneButtonGrid.ColumnDefinitions.Clear();
+            for (int i = 0; i < noOfRows; i++)
+            {
+                StoneButtonGrid.RowDefinitions.Add(new RowDefinition());
+            }
+            for (int i = 0; i < noOfColumns; i++)
+            {
+                StoneButtonGrid.ColumnDefinitions.Add(new ColumnDefinition());
+            }
+
+            List<SimpleImageButton> dynamicallyPlacedList = new List<SimpleImageButton>();
+            /* Game menu is always top left */
+            Grid.SetColumn(GameMenuButton, 0);
+            Grid.SetRow(GameMenuButton, 0);
+            populated[0, 0] = true;
+
+            /* ESC button is always right of game menu */
+            Grid.SetColumn(ESCButton, 1);
+            Grid.SetRow(ESCButton, 0);
+            populated[1, 0] = true;
+
+            /* Auto center button is always either right or below of ESC button */
+            int autoCenterX, autoCenterY;
+            if (noOfColumns > 2)
+            {
+                autoCenterX = 2;
+                autoCenterY = 0;
+            }
+            else
+            {
+                autoCenterX = 1;
+                autoCenterY = 1;
+            }
+            Grid.SetColumn(ToggleAutoCenterModeButton, autoCenterX);
+            Grid.SetRow(ToggleAutoCenterModeButton, autoCenterY);
+            populated[autoCenterX, autoCenterY] = true;
+
+            /* Minimap button is either below or left of the Auto center button */
+            int mapMiniX, mapMiniY;
+            if (autoCenterY == 0 || autoCenterY < noOfRows - 2) // Below
+            {
+                mapMiniX = autoCenterX;
+                mapMiniY = autoCenterY + 1;
+            }
+            else  // Left
+            {
+                mapMiniX = autoCenterX - 1;
+                mapMiniY = autoCenterY;
+            }
+            Grid.SetColumn(ToggleZoomMiniButton, mapMiniX);
+            Grid.SetRow(ToggleZoomMiniButton, mapMiniY);
+            populated[mapMiniX, mapMiniY] = true;
+
+            /* Alternate map zoom button is either below or left of the minimap button, unless there is no button above this location */
+            int lookX = -1, lookY = -1;
+            bool dynamicLookPlacement = false;
+            if (isAltZoomVisible)
+            {
+                int altZoomX, altZoomY;
+                if (mapMiniX == noOfColumns - 1 && mapMiniY < noOfRows - 2) // Below the minimap button, there's also space for look button below
+                {
+                    altZoomX = mapMiniX;
+                    altZoomY = mapMiniY + 1;
+                    lookX = mapMiniX;
+                    lookY = mapMiniY + 2;
+                }
+                else
+                {
+                    altZoomX = mapMiniX - 1;
+                    altZoomY = mapMiniY;
+                    if (altZoomX - 1 >= 0 && altZoomY - 1 >= 0 && !populated[altZoomX - 1, altZoomY - 1])  // Top-left of the minimap button
+                    {
+                        lookX = altZoomX - 1;
+                        lookY = altZoomY - 1;
+                    }
+                    else if (altZoomX - 1 >= 0)  // Left of the minimap button
+                    {
+                        lookX = altZoomX - 1;
+                        lookY = altZoomY;
+                    }
+                    else // Fail safe
+                    {
+                        dynamicallyPlacedList.Add(LookModeButton);
+                        dynamicLookPlacement = true;
+                    }
+                }
+                Grid.SetColumn(ToggleZoomAlternateButton, altZoomX);
+                Grid.SetRow(ToggleZoomAlternateButton, altZoomY);
+                populated[altZoomX, altZoomY] = true;
+                if (!dynamicLookPlacement)
+                {
+                    Grid.SetColumn(LookModeButton, lookX);
+                    Grid.SetRow(LookModeButton, lookY);
+                    populated[lookX, lookY] = true;
+                }
+            }
+            else
+            {
+                if (mapMiniY < noOfRows - 1) // Below the minimap button, there's also space for look button below
+                {
+                    if (mapMiniX == noOfColumns - 1)
+                    {
+                        lookX = mapMiniX;
+                        lookY = mapMiniY + 1;
+                    }
+                    else if (autoCenterY + 1 < noOfRows && !populated[autoCenterX, autoCenterY + 1])
+                    {
+                        lookX = autoCenterX;
+                        lookY = autoCenterY + 1;
+                    }
+                    else // Fail safe
+                    {
+                        dynamicallyPlacedList.Add(LookModeButton);
+                        dynamicLookPlacement = true;
+                    }
+                }
+                else if (mapMiniX - 1 >= 0)
+                {
+                    lookX = mapMiniX - 1;
+                    lookY = mapMiniY;
+                }
+                else // Fail safe
+                {
+                    dynamicallyPlacedList.Add(LookModeButton);
+                    dynamicLookPlacement = true;
+                }
+                if (!dynamicLookPlacement)
+                {
+                    Grid.SetColumn(LookModeButton, lookX);
+                    Grid.SetRow(LookModeButton, lookY);
+                    populated[lookX, lookY] = true;
+                }
+            }
+
+            int travelX = -1, travelY = -1;
+            bool dynamicTravelPlacement = false;
+            if (isTravelModeVisible)
+            {
+                if (!dynamicLookPlacement && lookX >= 0 && lookY >= 0)
+                {
+                    if (lookX == noOfColumns -1 && lookY < noOfRows - 1) // Below the look button
+                    {
+                        travelX = lookX;
+                        travelY = lookY + 1;
+                    }
+                    else if (lookX - 1 >= 0)
+                    {
+                        travelX = lookX - 1;
+                        travelY = lookY;
+                    }
+                    else
+                    {
+                        dynamicallyPlacedList.Add(ToggleTravelModeButton);
+                        dynamicTravelPlacement = true;
+                    }
+                    if (!dynamicTravelPlacement)
+                    {
+                        Grid.SetColumn(ToggleTravelModeButton, travelX);
+                        Grid.SetRow(ToggleTravelModeButton, travelY);
+                        populated[travelX, travelY] = true;
+                    }
+                }
+                else
+                {
+                    dynamicallyPlacedList.Add(ToggleTravelModeButton);
+                    dynamicTravelPlacement = true;
+                }
+            }
+            if (isIgnoreVisible)
+                dynamicallyPlacedList.Add(ToggleIgnoreModeButton);
+            if (isAutoDigVisible)
+                dynamicallyPlacedList.Add(ToggleAutoDigButton);
+
+            if (dynamicallyPlacedList.Count > 0)
+            {
+                int i = 0;
+                bool allPlaced = false;
+                if (isLandscape)
+                {
+                    for (int y = 1; y < noOfRows; y++)
+                    {
+                        for (int x = noOfColumns - 1; x >= 0; x--)
+                        {
+                            if (!populated[x, y])
+                            {
+                                Grid.SetColumn(dynamicallyPlacedList[i], x);
+                                Grid.SetRow(dynamicallyPlacedList[i], y);
+                                populated[x, y] = true;
+                                i++;
+                                if (i >= dynamicallyPlacedList.Count)
+                                {
+                                    allPlaced = true;
+                                    break;
+                                }
+                            }
+                        }
+                        if (allPlaced)
+                            break;
+                    }
+                }
+                else
+                {
+                    for (int x = noOfColumns - 1; x >= 0; x--)
+                    {
+                        for (int y = 0; y < noOfRows; y++)
+                        {
+                            if (!populated[x, y])
+                            {
+                                Grid.SetColumn(dynamicallyPlacedList[i], x);
+                                Grid.SetRow(dynamicallyPlacedList[i], y);
+                                populated[x, y] = true;
+                                i++;
+                                if (i >= dynamicallyPlacedList.Count)
+                                {
+                                    allPlaced = true;
+                                    break;
+                                }
+                            }
+                        }
+                        if (allPlaced)
+                            break;
+                    }
+                }
+            }
+            //if (isLandscape)
+            //{
+            //    if (visibleButtons <= 6)
+            //    {
+            //        Grid.SetColumn(LookModeButton, 0);
+            //        Grid.SetRow(LookModeButton, 2);
+            //        /* One of the below is visible, so allocate it to the remaining place */
+            //        Grid.SetColumn(ToggleZoomAlternateButton, 0);
+            //        Grid.SetRow(ToggleZoomAlternateButton, 2);
+            //        Grid.SetColumn(ToggleTravelModeButton, 0);
+            //        Grid.SetRow(ToggleTravelModeButton, 2);
+            //        Grid.SetColumn(ToggleAutoDigButton, 0);
+            //        Grid.SetRow(ToggleAutoDigButton, 2);
+            //        Grid.SetColumn(ToggleIgnoreModeButton, 0);
+            //        Grid.SetRow(ToggleIgnoreModeButton, 2);
+            //    }
+            //    else
+            //    {
+            //        Grid.SetColumn(ToggleZoomMiniButton, 2);
+            //        Grid.SetRow(ToggleZoomMiniButton, 1);
+            //        if (isAltZoomVisible)
+            //        {
+            //            Grid.SetColumn(ToggleZoomAlternateButton, 1);
+            //            Grid.SetRow(ToggleZoomAlternateButton, 1);
+            //        }
+            //        Grid.SetColumn(LookModeButton, 2);
+            //        Grid.SetRow(LookModeButton, 2);
+            //        if (isTravelModeVisible)
+            //        {
+            //            Grid.SetColumn(ToggleTravelModeButton, 1);
+            //            Grid.SetRow(ToggleTravelModeButton, 2);
+            //        }
+            //        Grid.SetColumn(ToggleAutoDigButton, isAltZoomVisible ? 0 : 1);
+            //        Grid.SetRow(ToggleAutoDigButton, 1);
+            //        if (!isAltZoomVisible)
+            //        {
+            //            Grid.SetColumn(ToggleIgnoreModeButton, isAutoDigVisible ? 1 : 2);
+            //            Grid.SetRow(ToggleIgnoreModeButton, 1);
+            //        }
+            //        else
+            //        {
+            //            if (isTravelModeVisible)
+            //            {
+            //                Grid.SetColumn(ToggleIgnoreModeButton, 0);
+            //                Grid.SetRow(ToggleIgnoreModeButton, isAutoDigVisible ? 2 : 1);
+            //            }
+            //            else
+            //            {
+            //                Grid.SetColumn(ToggleIgnoreModeButton, 0);
+            //                Grid.SetRow(ToggleIgnoreModeButton, isAutoDigVisible ? 2 : 1);
+            //            }
+            //        }
+            //    }
+            //}
+            //else
+            //{
+            //    /* PORTRAIT */
+            //    if (visibleButtons <= 6)
+            //    {
+            //        Grid.SetColumn(ToggleZoomMiniButton, 2);
+            //        Grid.SetRow(ToggleZoomMiniButton, 2);
+            //        Grid.SetColumn(LookModeButton, 2);
+            //        Grid.SetRow(LookModeButton, 3);
+            //        Grid.SetColumn(ToggleAutoDigButton, 2);
+            //        Grid.SetRow(ToggleAutoDigButton, 4);
+            //        Grid.SetColumn(ToggleIgnoreModeButton, 2);
+            //        Grid.SetRow(ToggleIgnoreModeButton, 4);
+            //    }
+            //    else
+            //    {
+            //        Grid.SetColumn(ToggleZoomMiniButton, 2);
+            //        Grid.SetRow(ToggleZoomMiniButton, 1);
+            //        Grid.SetColumn(ToggleZoomAlternateButton, 2);
+            //        Grid.SetRow(ToggleZoomAlternateButton, 2);
+            //        Grid.SetColumn(LookModeButton, 2);
+            //        Grid.SetRow(LookModeButton, 3);
+            //        Grid.SetColumn(ToggleTravelModeButton, 2);
+            //        Grid.SetRow(ToggleTravelModeButton, 4);
+            //        Grid.SetColumn(ToggleAutoDigButton, 1);
+            //        Grid.SetRow(ToggleAutoDigButton, 1);
+            //        Grid.SetColumn(ToggleIgnoreModeButton, 1);
+            //        Grid.SetRow(ToggleIgnoreModeButton, ToggleAutoDigButton.IsVisible ? 2 : 1);
+            //    }
+            //}
         }
 
         //public float GetStatusBarSkiaHeight()
@@ -14297,7 +14683,7 @@ namespace GnollHackX.Pages.Game
         //    float textScale = GetTextScaleEx(canvasViewWidth, canvasViewHeight, usingDesktopButtons, usingSimpleCmdLayout, inverseCanvasScale, customScale);
         //    return GetStatusBarSkiaHeightEx(textScale);
         //}
-        
+
         //public float GetStatusBarSkiaHeightEx2(float inverseCanvasScale, float customScale)
         //{
         //    float textScale = UIUtils.CalculateTextScale(inverseCanvasScale, customScale);
@@ -15992,12 +16378,12 @@ namespace GnollHackX.Pages.Game
             if (MapNoClipMode)
             {
                 ToggleAutoCenterModeButton.ImgSourcePath = "resource://" + GHApp.AppResourceName + ".Assets.UI.stone-autocenter-off.png";
-                SimpleToggleAutoCenterModeButton.ImgSourcePath = "resource://" + GHApp.AppResourceName + ".Assets.UI.stone-autocenter-off.png";
+                //SimpleToggleAutoCenterModeButton.ImgSourcePath = "resource://" + GHApp.AppResourceName + ".Assets.UI.stone-autocenter-off.png";
             }
             else
             {
                 ToggleAutoCenterModeButton.ImgSourcePath = "resource://" + GHApp.AppResourceName + ".Assets.UI.stone-autocenter-on.png";
-                SimpleToggleAutoCenterModeButton.ImgSourcePath = "resource://" + GHApp.AppResourceName + ".Assets.UI.stone-autocenter-on.png";
+                //SimpleToggleAutoCenterModeButton.ImgSourcePath = "resource://" + GHApp.AppResourceName + ".Assets.UI.stone-autocenter-on.png";
                 int ux, uy;
                 lock (_uLock)
                 {
@@ -16032,12 +16418,12 @@ namespace GnollHackX.Pages.Game
             if (MapLookMode)
             {
                 LookModeButton.ImgSourcePath = "resource://" + GHApp.AppResourceName + ".Assets.UI.stone-look-on.png";
-                SimpleLookModeButton.ImgSourcePath = "resource://" + GHApp.AppResourceName + ".Assets.UI.stone-look-on.png";
+                //SimpleLookModeButton.ImgSourcePath = "resource://" + GHApp.AppResourceName + ".Assets.UI.stone-look-on.png";
             }
             else
             {
                 LookModeButton.ImgSourcePath = "resource://" + GHApp.AppResourceName + ".Assets.UI.stone-look-off.png";
-                SimpleLookModeButton.ImgSourcePath = "resource://" + GHApp.AppResourceName + ".Assets.UI.stone-look-off.png";
+                //SimpleLookModeButton.ImgSourcePath = "resource://" + GHApp.AppResourceName + ".Assets.UI.stone-look-off.png";
             }
         }
 
@@ -16048,12 +16434,12 @@ namespace GnollHackX.Pages.Game
             if (ZoomMiniMode)
             {
                 ToggleZoomMiniButton.ImgSourcePath = "resource://" + GHApp.AppResourceName + ".Assets.UI.stone-minimap-on.png";
-                SimpleToggleZoomMiniButton.ImgSourcePath = "resource://" + GHApp.AppResourceName + ".Assets.UI.stone-minimap-on.png";
+                //SimpleToggleZoomMiniButton.ImgSourcePath = "resource://" + GHApp.AppResourceName + ".Assets.UI.stone-minimap-on.png";
             }
             else
             {
                 ToggleZoomMiniButton.ImgSourcePath = "resource://" + GHApp.AppResourceName + ".Assets.UI.stone-minimap-off.png";
-                SimpleToggleZoomMiniButton.ImgSourcePath = "resource://" + GHApp.AppResourceName + ".Assets.UI.stone-minimap-off.png";
+                //SimpleToggleZoomMiniButton.ImgSourcePath = "resource://" + GHApp.AppResourceName + ".Assets.UI.stone-minimap-off.png";
                 int ux, uy;
                 lock (_uLock)
                 {
@@ -16117,7 +16503,7 @@ namespace GnollHackX.Pages.Game
         private async Task OpenGameMenuAsync()
         {
             GameMenuButton.IsEnabled = false;
-            SimpleGameMenuButton.IsEnabled = false;
+            //SimpleGameMenuButton.IsEnabled = false;
             GHApp.PlayButtonClickedSound();
 
             StopMainCanvasAnimation();
@@ -16129,7 +16515,7 @@ namespace GnollHackX.Pages.Game
                 StartMainCanvasAnimation();
 
             GameMenuButton.IsEnabled = true;
-            SimpleGameMenuButton.IsEnabled = true;
+            //SimpleGameMenuButton.IsEnabled = true;
         }
 
         private void OpenGameMenu()
@@ -19253,10 +19639,11 @@ namespace GnollHackX.Pages.Game
                 if (MessageFilterFrame.IsVisible && MessageFilterEntry.IsVisible)
                 {
                     MessageFilterEntry.Unfocus();
-                    if (UpperCmdGrid.IsVisible)
-                        ESCButton.Focus();
-                    else
-                        SimpleESCButton.Focus();
+                    ESCButton.Focus();
+                    //if (UpperCmdGrid.IsVisible)
+                    //    ESCButton.Focus();
+                    //else
+                    //    SimpleESCButton.Focus();
                 }
             });
             bool prevForceAllMessages = ForceAllMessages;
@@ -19360,22 +19747,22 @@ namespace GnollHackX.Pages.Game
                         textPaint.DrawTextOnCanvas(canvas, str, tx, ty);
                         break;
                     case 1:
-                        PaintTipButton(canvas, textPaint, UseSimpleCmdLayout ? SimpleGameMenuButton : GameMenuButton, "This opens the main menu.", "Main Menu", 1.5f, centerfontsize, fontsize, false, -0.15f, 0, canvaswidth, canvasheight);
+                        PaintTipButton(canvas, textPaint, GameMenuButton, "This opens the main menu.", "Main Menu", 1.5f, centerfontsize, fontsize, false, -0.15f, 0, canvaswidth, canvasheight);
                         break;
                     case 2:
-                        PaintTipButton(canvas, textPaint, UseSimpleCmdLayout ? SimpleESCButton : ESCButton, "This cancels any command.", "Escape Button", 1.5f, centerfontsize, fontsize, false, -1.5f, 0, canvaswidth, canvasheight);
+                        PaintTipButton(canvas, textPaint, ESCButton, "This cancels any command.", "Escape Button", 1.5f, centerfontsize, fontsize, false, -1.5f, 0, canvaswidth, canvasheight);
                         break;
                     case 3:
-                        PaintTipButton(canvas, textPaint, UseSimpleCmdLayout ? SimpleToggleAutoCenterModeButton : ToggleAutoCenterModeButton, "This toggles auto-center on player.", "Map Auto-Center", 1.5f, centerfontsize, fontsize, false, -1.5f, 0, canvaswidth, canvasheight);
+                        PaintTipButton(canvas, textPaint, ToggleAutoCenterModeButton, "This toggles auto-center on player.", "Map Auto-Center", 1.5f, centerfontsize, fontsize, false, -1.5f, 0, canvaswidth, canvasheight);
                         break;
                     case 4:
-                        PaintTipButton(canvas, textPaint, UseSimpleCmdLayout ? SimpleToggleZoomMiniButton : ToggleZoomMiniButton, "This zoom shows the entire level.", "Minimap", 1.5f, centerfontsize, fontsize, false, landscape ? -0.15f : -0.5f, landscape ? 0 : 1.5f, canvaswidth, canvasheight);
+                        PaintTipButton(canvas, textPaint, ToggleZoomMiniButton, "This zoom shows the entire level.", "Minimap", 1.5f, centerfontsize, fontsize, false, landscape ? -0.15f : -0.5f, landscape ? 0 : 1.5f, canvaswidth, canvasheight);
                         break;
                     case 5:
                         PaintTipButton(canvas, textPaint, ToggleZoomAlternateButton, "This is the secondary zoom.", "Alternative Zoom", 1.5f, centerfontsize, fontsize, false, landscape ? -1.5f : -0.15f, 0, canvaswidth, canvasheight);
                         break;
                     case 6:
-                        PaintTipButton(canvas, textPaint, UseSimpleCmdLayout ? SimpleLookModeButton : LookModeButton, "This allows you to inspect the map.", "Look Mode", 1.5f, centerfontsize, fontsize, false, -0.15f, landscape ? -0.5f : 0, canvaswidth, canvasheight);
+                        PaintTipButton(canvas, textPaint, LookModeButton, "This allows you to inspect the map.", "Look Mode", 1.5f, centerfontsize, fontsize, false, -0.15f, landscape ? -0.5f : 0, canvaswidth, canvasheight);
                         break;
                     case 7:
                         PaintTipButton(canvas, textPaint, ToggleTravelModeButton, "Use this to set how you move around.", "Travel Mode", 1.5f, centerfontsize, fontsize, false, landscape ? -1.5f : -0.15f, landscape ? -0.5f : 0, canvaswidth, canvasheight);
@@ -20999,6 +21386,35 @@ namespace GnollHackX.Pages.Game
 
 
         private readonly object _propertyLock = new object();
+
+        private void ToggleAutoDigButton_BtnClicked(object sender, EventArgs e)
+        {
+            GHApp.PlayMenuSelectSound();
+            MapAutoDig = !MapAutoDig;
+            if (MapAutoDig)
+            {
+                ToggleAutoDigButton.ImgSourcePath = "resource://" + GHApp.AppResourceName + ".Assets.UI.stone-autodig-on.png";
+            }
+            else
+            {
+                ToggleAutoDigButton.ImgSourcePath = "resource://" + GHApp.AppResourceName + ".Assets.UI.stone-autodig-off.png";
+            }
+        }
+
+        private void ToggleIgnoreModeButton_BtnClicked(object sender, EventArgs e)
+        {
+            GHApp.PlayMenuSelectSound();
+            MapIgnoreMode = !MapIgnoreMode;
+            if (MapIgnoreMode)
+            {
+                ToggleIgnoreModeButton.ImgSourcePath = "resource://" + GHApp.AppResourceName + ".Assets.UI.stone-ignore-on.png";
+            }
+            else
+            {
+                ToggleIgnoreModeButton.ImgSourcePath = "resource://" + GHApp.AppResourceName + ".Assets.UI.stone-ignore-off.png";
+            }
+        }
+
         private double _threadSafeWidth = 0;
         private double _threadSafeHeight = 0;
         public double ThreadSafeWidth { get { return Interlocked.CompareExchange(ref _threadSafeWidth, 0.0, 0.0); } private set { Interlocked.Exchange(ref _threadSafeWidth, value); } }

@@ -306,6 +306,10 @@
 		<None Remove="Assets\UI\status-stats-str.png" />
 		<None Remove="Assets\UI\status-stats-wis.png" />
 		<None Remove="Assets\UI\status-xp-points.png" />
+		<None Remove="Assets\UI\stone-autodig-off.png" />
+		<None Remove="Assets\UI\stone-autodig-on.png" />
+		<None Remove="Assets\UI\stone-ignore-off.png" />
+		<None Remove="Assets\UI\stone-ignore-on.png" />
 		<None Remove="Assets\UI\symbol-damage.png" />
 		<None Remove="Assets\UI\wiki.png" />
 		<None Remove="Assets\UI\worn.png" />
@@ -1024,7 +1028,11 @@
 		<EmbeddedResource Include="Assets\UI\stone-altmap-on.png" />
 		<EmbeddedResource Include="Assets\UI\stone-autocenter-off.png" />
 		<EmbeddedResource Include="Assets\UI\stone-autocenter-on.png" />
+		<EmbeddedResource Include="Assets\UI\stone-autodig-off.png" />
+		<EmbeddedResource Include="Assets\UI\stone-autodig-on.png" />
 		<EmbeddedResource Include="Assets\UI\stone-cancel.png" />
+		<EmbeddedResource Include="Assets\UI\stone-ignore-off.png" />
+		<EmbeddedResource Include="Assets\UI\stone-ignore-on.png" />
 		<EmbeddedResource Include="Assets\UI\stone-look-off.png" />
 		<EmbeddedResource Include="Assets\UI\stone-look-on.png" />
 		<EmbeddedResource Include="Assets\UI\stone-menu.png" />
