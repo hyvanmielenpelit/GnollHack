@@ -9259,7 +9259,7 @@ check_mobbed_hint(VOID_ARGS)
                 continue;
 
             mtmp = m_at(x, y);
-            if (mtmp && !is_peaceful(mtmp) && !is_tame(mtmp) && canspotmon(mtmp))
+            if (mtmp && !DEADMONSTER(mtmp) && !is_peaceful(mtmp) && !is_tame(mtmp) && canspotmon(mtmp))
             {
                 cnt++;
             }
