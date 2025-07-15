@@ -546,22 +546,6 @@
                                     HorizontalOptions="Start" />
                                 <Switch Grid.Column="1" x:Name="DiceAsRangesSwitch" HorizontalOptions="End" VerticalOptions="Center" />
                             </Grid>
-                            <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
-                                <Label Text="Auto-Dig"
-                                    FontFamily="Underwood" TextColor="Black"
-                                    FontSize="15"
-                                    VerticalOptions="Center" 
-                                    HorizontalOptions="Start" />
-                                <Switch Grid.Column="1" x:Name="AutoDigSwitch" HorizontalOptions="End" VerticalOptions="Center" />
-                            </Grid>
-                            <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
-                                <Label Text="Ignore Stopping"
-                                    FontFamily="Underwood" TextColor="Black"
-                                    FontSize="15"
-                                    VerticalOptions="Center" 
-                                    HorizontalOptions="Start" />
-                                <Switch Grid.Column="1" x:Name="IgnoreStoppingSwitch" HorizontalOptions="End" VerticalOptions="Center" />
-                            </Grid>
 
                             <Label Text="Behavior" FontSize="21" FontAttributes="Bold" FontFamily="Immortal" TextColor="Black" Margin="0,16,0,2" />
                             <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
@@ -595,6 +579,22 @@
                                     VerticalOptions="Center" 
                                     HorizontalOptions="Start" />
                                 <Switch Grid.Column="1" x:Name="GetPositionArrowsSwitch" HorizontalOptions="End" VerticalOptions="Center" />
+                            </Grid>
+                            <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
+                                <Label Text="Auto-Dig"
+                                    FontFamily="Underwood" TextColor="Black"
+                                    FontSize="15"
+                                    VerticalOptions="Center" 
+                                    HorizontalOptions="Start" />
+                                <Switch Grid.Column="1" x:Name="AutoDigSwitch" HorizontalOptions="End" VerticalOptions="Center" />
+                            </Grid>
+                            <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
+                                <Label Text="Ignore Stopping"
+                                    FontFamily="Underwood" TextColor="Black"
+                                    FontSize="15"
+                                    VerticalOptions="Center" 
+                                    HorizontalOptions="Start" />
+                                <Switch Grid.Column="1" x:Name="IgnoreStoppingSwitch" HorizontalOptions="End" VerticalOptions="Center" />
                             </Grid>
                             <Grid x:Name="RightMouseButtonGrid" ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
                                 <Label Text="Right Mouse Button"
