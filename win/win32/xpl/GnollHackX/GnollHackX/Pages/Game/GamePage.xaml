@@ -50,8 +50,8 @@
                         <controls:SimpleImageButton x:Name="ToggleZoomAlternateButton" ImgSourcePath="resource://GnollHackX.Assets.UI.stone-altmap-off.png" BtnClicked="ToggleZoomAlternateButton_Clicked"/>
                         <controls:SimpleImageButton x:Name="LookModeButton" ImgSourcePath="resource://GnollHackX.Assets.UI.stone-look-off.png" BtnClicked="LookModeButton_Clicked"/>
                         <controls:SimpleImageButton x:Name="ToggleTravelModeButton" ImgSourcePath="resource://GnollHackX.Assets.UI.stone-travel-off.png" BtnClicked="ToggleTravelModeButton_Clicked"/>
-                        <controls:SimpleImageButton x:Name="ToggleAutoDigButton" ImgSourcePath="resource://GnollHackX.Assets.UI.stone-autodig-off.png" BtnClicked="ToggleAutoDigButton_BtnClicked" IsVisible="False" ImgHighFilterQuality="True" />
-                        <controls:SimpleImageButton x:Name="ToggleIgnoreModeButton" ImgSourcePath="resource://GnollHackX.Assets.UI.stone-ignore-off.png" BtnClicked="ToggleIgnoreModeButton_BtnClicked" IsVisible="False" ImgHighFilterQuality="True" />
+                        <controls:SimpleImageButton x:Name="ToggleAutoDigButton" ImgSourcePath="resource://GnollHackX.Assets.UI.stone-autodig-off.png" BtnClicked="ToggleAutoDigButton_BtnClicked" IsVisible="False" />
+                        <controls:SimpleImageButton x:Name="ToggleIgnoreModeButton" ImgSourcePath="resource://GnollHackX.Assets.UI.stone-ignore-off.png" BtnClicked="ToggleIgnoreModeButton_BtnClicked" IsVisible="False" />
                     </gnh:MeasurableGrid>
 
                     <!--<gnh:MeasurableStackLayout Grid.Row="0" x:Name="UpperCmdLayout" IsVisible="True" Orientation="Vertical" InputTransparent="true" CascadeInputTransparent="false" Spacing="6" HorizontalOptions="End">
