@@ -94,8 +94,8 @@ namespace GnollHackX.Pages.Game
             MainLayout.IsEnabled = false;
             GHApp.PlayButtonClickedSound();
             GHApp.CollectNursery();
-            var page = await GHApp.Navigation.PopModalAsync();
             _gamePage.GenericButton_Clicked(btnSave, EventArgs.Empty, GHUtils.Meta('s'));
+            var page = await GHApp.Navigation.PopModalAsync();
             GHApp.DisconnectIViewHandlers(page);
         }
 
@@ -109,8 +109,8 @@ namespace GnollHackX.Pages.Game
             MainLayout.IsEnabled = false;
             GHApp.PlayButtonClickedSound();
             GHApp.CollectNursery();
-            var page = await GHApp.Navigation.PopModalAsync();
             _gamePage.GenericButton_Clicked(btnQuit, EventArgs.Empty, _gamePage.GameEnded ? 'q' : GHUtils.Meta('q'));
+            var page = await GHApp.Navigation.PopModalAsync();
             GHApp.DisconnectIViewHandlers(page);
         }
 
@@ -154,8 +154,8 @@ namespace GnollHackX.Pages.Game
             GHApp.PlayButtonClickedSound();
             GHApp.DebugWriteRestart("ProfilingStopwatch.Restart: Options");
             GHApp.CollectNursery();
-            var page = await GHApp.Navigation.PopModalAsync();
             _gamePage.GenericButton_Clicked(btnOptions, EventArgs.Empty, 'O');
+            var page = await GHApp.Navigation.PopModalAsync();
             GHApp.DisconnectIViewHandlers(page);
         }
 
@@ -169,8 +169,8 @@ namespace GnollHackX.Pages.Game
             MainLayout.IsEnabled = false;
             GHApp.PlayButtonClickedSound();
             GHApp.CollectNursery();
-            var page = await GHApp.Navigation.PopModalAsync();
             _gamePage.GenericButton_Clicked(btnSnapshot, EventArgs.Empty, GHUtils.Meta(28));
+            var page = await GHApp.Navigation.PopModalAsync();
             GHApp.DisconnectIViewHandlers(page);
         }
 
