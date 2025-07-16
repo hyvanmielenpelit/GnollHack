@@ -2898,8 +2898,8 @@ int specialdmg; /* blessed and/or silver bonus against various things */
         if (is_shade(pd)) 
         {
             damage = 0;
-            if (!specialdmg)
-                impossible("bad shade attack function flow?");
+            //if (!specialdmg)
+            //    impossible("bad shade attack function flow?");
         }
         damage += adjust_damage(specialdmg, &youmonst, mdef, mattk->adtyp, ADFLAGS_NONE);
 
