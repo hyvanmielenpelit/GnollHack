@@ -14307,6 +14307,7 @@ namespace GnollHackX.Pages.Game
             if (width == 0 || height == 0)
                 return;
             bool isLandscape = width > height;
+            bool isWideLandscape = width > 2 * height;
             int visibleButtons = 5;
             GameMenuButton.IsVisible = true;
             ESCButton.IsVisible = true;
@@ -14354,8 +14355,8 @@ namespace GnollHackX.Pages.Game
             }
 
 
-            int noOfColumns = visibleButtons <= 6 ? 2 : 3;
-            int noOfRows = isLandscape ? 3 : Math.Min(5, visibleButtons - 1);
+            int noOfColumns = isWideLandscape ? (visibleButtons + 1) / 2 : visibleButtons <= 6 ? 2 : 3;
+            int noOfRows = isWideLandscape ? 2 : isLandscape ? 3 : Math.Min(5, visibleButtons - 1);
 
             bool[,] populated = new bool[noOfColumns, noOfRows];
 
@@ -14397,9 +14398,14 @@ namespace GnollHackX.Pages.Game
             Grid.SetRow(ToggleAutoCenterModeButton, autoCenterY);
             populated[autoCenterX, autoCenterY] = true;
 
-            /* Minimap button is either below or left of the Auto center button */
+            /* Minimap button is either right, below or left of the Auto center button */
             int mapMiniX, mapMiniY;
-            if (autoCenterY == 0 || autoCenterY < noOfRows - 2) // Below
+            if (autoCenterY == 0 || autoCenterX < noOfColumns - 1) // Right
+            {
+                mapMiniX = autoCenterX + 1;
+                mapMiniY = autoCenterY;
+            }
+            else if (autoCenterY == 0 || autoCenterY < noOfRows - 2) // Below
             {
                 mapMiniX = autoCenterX;
                 mapMiniY = autoCenterY + 1;
@@ -14413,13 +14419,28 @@ namespace GnollHackX.Pages.Game
             Grid.SetRow(ToggleZoomMiniButton, mapMiniY);
             populated[mapMiniX, mapMiniY] = true;
 
-            /* Alternate map zoom button is either below or left of the minimap button, unless there is no button above this location */
+            /* Alternate map zoom button is either right, below or left of the minimap button, unless there is no button above this location */
             int lookX = -1, lookY = -1;
             bool dynamicLookPlacement = false;
             if (isAltZoomVisible)
             {
                 int altZoomX, altZoomY;
-                if (mapMiniX == noOfColumns - 1 && mapMiniY < noOfRows - 2) // Below the minimap button, there's also space for look button below
+                if (mapMiniY == 0 && mapMiniX < noOfColumns - 1) // Right of the minimap button
+                {
+                    altZoomX = mapMiniX + 1;
+                    altZoomY = mapMiniY;
+                    if (mapMiniX < noOfColumns - 2)
+                    {
+                        lookX = mapMiniX + 2;
+                        lookY = mapMiniY;
+                    }
+                    else
+                    {
+                        lookX = mapMiniX + 1;
+                        lookY = mapMiniY + 1;
+                    }
+                }
+                else if (mapMiniX == noOfColumns - 1 && mapMiniY < noOfRows - 2) // Below the minimap button, there's also space for look button below
                 {
                     altZoomX = mapMiniX;
                     altZoomY = mapMiniY + 1;
@@ -14458,7 +14479,12 @@ namespace GnollHackX.Pages.Game
             }
             else
             {
-                if (mapMiniY < noOfRows - 1) // Below the minimap button, there's also space for look button below
+                if (mapMiniY == 0 && mapMiniX < noOfColumns - 1) // Right of the minimap button
+                {
+                    lookX = mapMiniX + 1;
+                    lookY = mapMiniY;
+                }
+                else if (mapMiniY < noOfRows - 1) // Below the minimap button
                 {
                     if (mapMiniX == noOfColumns - 1)
                     {
@@ -14500,7 +14526,12 @@ namespace GnollHackX.Pages.Game
             {
                 if (!dynamicLookPlacement && lookX >= 0 && lookY >= 0)
                 {
-                    if (lookX == noOfColumns -1 && lookY < noOfRows - 1) // Below the look button
+                    if (lookY == 0 && lookX < noOfColumns - 1) // Right of the look button
+                    {
+                        travelX = lookX + 1;
+                        travelY = lookY;
+                    }
+                    else if (lookX == noOfColumns -1 && lookY < noOfRows - 1) // Below the look button
                     {
                         travelX = lookX;
                         travelY = lookY + 1;

@@ -1341,13 +1341,14 @@ namespace GnollHackX
             if(inverseCanvasScale == 0.0f)
                 inverseCanvasScale = 1.0f;
             bool isLandscape = canvasViewWidth > canvasViewHeight;
+            bool isWideLandscape = canvasViewWidth > 2 * canvasViewHeight;
             int bigRowNoOfButtons = noOfLandscapeButtonsInRow > 0 ? noOfLandscapeButtonsInRow : LandscapeButtonsInRow(usingDesktopButtons, usingSimpleCmdLayout);
             bool tooWide = customScale * 40.0 * bigRowNoOfButtons + (bigRowNoOfButtons - 1) * 6 > canvasViewWidth;
             int minNoOfContextButtonRows = 2;
             int noOfCommandRows = usingSimpleCmdLayout ? 1 : isLandscape && !tooWide ? 1 : 2;
             //float statusBarRowSizeRelativeToButtonWidth = 2 * (GHConstants.StatusBarBaseFontSize / 50.0f * inverseCanvasScale);
             float minNoOfLabeledButtonRows = minNoOfContextButtonRows + noOfCommandRows;
-            int noOfVerticalSmallerButtons = usingSimpleCmdLayout ? (isLandscape ? 3 : 4) : (isLandscape ? 3 : 5);
+            int noOfVerticalSmallerButtons = usingSimpleCmdLayout ? (isWideLandscape ? 2 : isLandscape ? 3 : 4) : (isWideLandscape ? 2 : isLandscape ? 3 : 5);
             float labeledButtonFontSizeRelativeToButtonSize = GHConstants.ContextButtonBaseFontSize / 50f;
             double noOfButtonWidthsNeededForHeight = minNoOfLabeledButtonRows * (1.0f + labeledButtonFontSizeRelativeToButtonSize)
                 //+ statusBarRowSizeRelativeToButtonWidth
