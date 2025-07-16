@@ -183,7 +183,7 @@ static struct Bool_Opt {
 #else
     { "ignintr", "ignore interrupt signals", (boolean *) 0, FALSE, SET_IN_FILE },
 #endif
-    { "ignore_stopping", "travelling is not interrupted by items and peaceful monsters", &flags.ignore_stopping, FALSE, SET_IN_GAME },
+    { "ignore_stopping", "travelling is not interrupted by items, doors, or widening corridors", &flags.ignore_stopping, FALSE, SET_IN_GAME },
     { "implicit_uncursed", "omit \"uncursed\" from inventory", &iflags.implicit_uncursed, TRUE, SET_IN_GAME },
     { "inventory_obj_cmd", "display a command menu upon selecting an object in inventory", &flags.inventory_obj_cmd, TRUE, SET_IN_GAME},
     { "inventory_weights_last", "display object weights in parentheses after object name", &flags.inventory_weights_last, FALSE, SET_IN_GAME},

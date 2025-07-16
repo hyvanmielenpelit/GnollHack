@@ -3506,7 +3506,8 @@ lookaround()
             {
                 if (x != u.ux && y != u.uy)
                     continue;
-                if (context.run != 1) {
+                if (context.run != 1 && !flags.ignore_stopping) 
+                {
                     if (iflags.mention_walls)
                         You("stop in front of the door.");
                     goto stop;
@@ -3585,7 +3586,7 @@ lookaround()
             return;
         } /* end for loops */
 
-    if (corrct > 1 && context.run == 2) 
+    if (corrct > 1 && context.run == 2 && !flags.ignore_stopping)
     {
         if (iflags.mention_walls)
             pline_The("corridor widens here.");
