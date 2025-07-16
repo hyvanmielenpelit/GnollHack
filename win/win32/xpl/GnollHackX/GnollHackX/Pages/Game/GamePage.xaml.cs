@@ -14440,23 +14440,36 @@ namespace GnollHackX.Pages.Game
                         lookY = mapMiniY + 1;
                     }
                 }
-                else if (mapMiniX == noOfColumns - 1 && mapMiniY < noOfRows - 2) // Below the minimap button, there's also space for look button below
+                else if (mapMiniX == noOfColumns - 1 && (mapMiniY < noOfRows - 2 || mapMiniY == 0)) // Below the minimap button, there's also space for look button below
                 {
                     altZoomX = mapMiniX;
-                    altZoomY = mapMiniY + 1;
-                    lookX = mapMiniX;
-                    lookY = mapMiniY + 2;
+                    altZoomY = mapMiniY + 1;  /* Below miniMap */
+                    if (mapMiniY < noOfRows - 2) /* Below altZoom */
+                    {
+                        lookX = mapMiniX;
+                        lookY = mapMiniY + 2;
+                    }
+                    else if (altZoomX - 1 >= 0 && !populated[altZoomX - 1, altZoomY]) /* Left of altZoom if not populated */
+                    {
+                        lookX = altZoomX - 1;
+                        lookY = altZoomY;
+                    }
+                    else // Fail safe
+                    {
+                        dynamicallyPlacedList.Add(LookModeButton);
+                        dynamicLookPlacement = true;
+                    }
                 }
                 else
                 {
                     altZoomX = mapMiniX - 1;
                     altZoomY = mapMiniY;
-                    if (altZoomX - 1 >= 0 && altZoomY - 1 >= 0 && !populated[altZoomX - 1, altZoomY - 1])  // Top-left of the minimap button
+                    if (altZoomX - 1 >= 0 && altZoomY - 1 >= 0 && !populated[altZoomX - 1, altZoomY - 1])  // Top-left of the altZoom button
                     {
                         lookX = altZoomX - 1;
                         lookY = altZoomY - 1;
                     }
-                    else if (altZoomX - 1 >= 0)  // Left of the minimap button
+                    else if (altZoomX - 1 >= 0 && !populated[altZoomX - 1, altZoomY])  // Left of the altZoom button
                     {
                         lookX = altZoomX - 1;
                         lookY = altZoomY;
@@ -19726,24 +19739,30 @@ namespace GnollHackX.Pages.Game
                         PaintTipButton(canvas, textPaint, ToggleTravelModeButton, "Use this to set how you move around.", "Travel Mode", 1.5f, centerfontsize, fontsize, false, landscape ? -1.5f : -0.15f, landscape ? -0.5f : 0, canvaswidth, canvasheight);
                         break;
                     case 8:
-                        PaintTipButtonByRect(canvas, textPaint, statusBarCenterRect, "You can " + GHApp.GetClickTapWord(false, false) + " the status bar.", "Open status screen", 1.0f, centerfontsize, fontsize, false, -0.15f, 1.0f, canvaswidth, canvasheight, 1.0f, 1.0f);
+                        PaintTipButton(canvas, textPaint, ToggleAutoDigButton, "This toggles auto-dig on and off.", "Auto-Dig", 1.5f, centerfontsize, fontsize, false, landscape ? -1.5f : -0.15f, landscape ? -0.5f : 0, canvaswidth, canvasheight);
                         break;
                     case 9:
-                        PaintTipButton(canvas, textPaint, DesktopButtons ? lRowAbilitiesButton : lAbilitiesButton, DesktopButtons ? "Some commands are specially located." : "Some commands do not have buttons.", "Character and game status", 1.0f, centerfontsize, fontsize, true, 0.15f, DesktopButtons ? -1.0f : 1.0f, canvaswidth, canvasheight);
+                        PaintTipButton(canvas, textPaint, ToggleIgnoreModeButton, "This toggles whether you stop at items.", "Ignore Stopping", 1.5f, centerfontsize, fontsize, false, landscape ? -1.5f : -0.15f, landscape ? -0.5f : 0, canvaswidth, canvasheight);
                         break;
                     case 10:
-                        PaintTipButton(canvas, textPaint, DesktopButtons ? lRowWornItemsButton : lWornItemsButton, "", GHApp.GetClickTapWord(true, false) + " here to access worn items", 1.0f, centerfontsize, fontsize, false, landscape ? -2.0f : -0.5f, DesktopButtons ? -2.0f : 2.0f, canvaswidth, canvasheight);
+                        PaintTipButtonByRect(canvas, textPaint, statusBarCenterRect, "You can " + GHApp.GetClickTapWord(false, false) + " the status bar.", "Open status screen", 1.0f, centerfontsize, fontsize, false, -0.15f, 1.0f, canvaswidth, canvasheight, 1.0f, 1.0f);
                         break;
                     case 11:
-                        PaintTipButton(canvas, textPaint, ToggleMessageNumberButton, "", GHApp.GetClickTapWord(true, false) + " here to see more messages", 1.0f, centerfontsize, fontsize, true, 0.5f, -1.0f, canvaswidth, canvasheight);
+                        PaintTipButton(canvas, textPaint, DesktopButtons ? lRowAbilitiesButton : lAbilitiesButton, DesktopButtons ? "Some commands are specially located." : "Some commands do not have buttons.", "Character and game status", 1.0f, centerfontsize, fontsize, true, 0.15f, DesktopButtons ? -1.0f : 1.0f, canvaswidth, canvasheight);
                         break;
                     case 12:
-                        PaintTipButtonByRect(canvas, textPaint, HealthRect, GHApp.GetClickTapWord(true, true) + " shows your maximum health.", "Health Orb", 1.1f, centerfontsize, fontsize, true, 0.15f, 0.0f, canvaswidth, canvasheight, xscale, yscale);
+                        PaintTipButton(canvas, textPaint, DesktopButtons ? lRowWornItemsButton : lWornItemsButton, "", GHApp.GetClickTapWord(true, false) + " here to access worn items", 1.0f, centerfontsize, fontsize, false, landscape ? -2.0f : -0.5f, DesktopButtons ? -2.0f : 2.0f, canvaswidth, canvasheight);
                         break;
                     case 13:
-                        PaintTipButtonByRect(canvas, textPaint, ManaRect, GHApp.GetClickTapWord(true, true) + " reveals your maximum mana.", "Mana Orb", 1.1f, centerfontsize, fontsize, true, 0.15f, 0.0f, canvaswidth, canvasheight, xscale, yscale);
+                        PaintTipButton(canvas, textPaint, ToggleMessageNumberButton, "", GHApp.GetClickTapWord(true, false) + " here to see more messages", 1.0f, centerfontsize, fontsize, true, 0.5f, -1.0f, canvaswidth, canvasheight);
                         break;
                     case 14:
+                        PaintTipButtonByRect(canvas, textPaint, HealthRect, GHApp.GetClickTapWord(true, true) + " shows your maximum health.", "Health Orb", 1.1f, centerfontsize, fontsize, true, 0.15f, 0.0f, canvaswidth, canvasheight, xscale, yscale);
+                        break;
+                    case 15:
+                        PaintTipButtonByRect(canvas, textPaint, ManaRect, GHApp.GetClickTapWord(true, true) + " reveals your maximum mana.", "Mana Orb", 1.1f, centerfontsize, fontsize, true, 0.15f, 0.0f, canvaswidth, canvasheight, xscale, yscale);
+                        break;
+                    case 16:
                         textPaint.TextSize = 36;
                         textPaint.Typeface = GHApp.ARChristyTypeface;
                         str = "You are all set";
@@ -19809,14 +19828,18 @@ namespace GnollHackX.Pages.Game
                     break;
                 case SKTouchAction.Released:
                     ShownTip++;
-                    if (ShownTip == 12 && HealthRect.Width == 0)
-                        ShownTip++;
-                    if (ShownTip == 13 && ManaRect.Width == 0)
-                        ShownTip++;
                     if (UseSimpleCmdLayout && (ShownTip == 5 || ShownTip == 7))
                         ShownTip++;
+                    if (ShownTip == 8 && !ShowAutoDigButton)
+                        ShownTip++;
+                    if (ShownTip == 9 && !ShowIgnoreStoppingButton)
+                        ShownTip++;
+                    if (ShownTip == 14 && HealthRect.Width == 0)
+                        ShownTip++;
+                    if (ShownTip == 15 && ManaRect.Width == 0)
+                        ShownTip++;
                     TipView.InvalidateSurface();
-                    if (ShownTip >= 15 - (_blockingTipView ? 0 : 1))
+                    if (ShownTip >= 17 - (_blockingTipView ? 0 : 1))
                     {
                         TipView.IsVisible = false;
                         ShownTip = -1;
