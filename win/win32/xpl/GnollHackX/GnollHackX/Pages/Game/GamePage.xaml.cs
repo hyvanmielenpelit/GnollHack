@@ -14539,17 +14539,17 @@ namespace GnollHackX.Pages.Game
             {
                 if (!dynamicLookPlacement && lookX >= 0 && lookY >= 0)
                 {
-                    if (lookY == 0 && lookX < noOfColumns - 1) // Right of the look button
+                    if (lookY == 0 && lookX < noOfColumns - 1 && !populated[lookX + 1, lookY]) // Right of the look button
                     {
                         travelX = lookX + 1;
                         travelY = lookY;
                     }
-                    else if (lookX == noOfColumns -1 && lookY < noOfRows - 1) // Below the look button
+                    else if (lookX == noOfColumns -1 && lookY < noOfRows - 1 && !populated[lookX, lookY + 1]) // Below the look button
                     {
                         travelX = lookX;
                         travelY = lookY + 1;
                     }
-                    else if (lookX - 1 >= 0)
+                    else if (lookX - 1 >= 0 && !populated[lookX - 1, lookY])
                     {
                         travelX = lookX - 1;
                         travelY = lookY;
