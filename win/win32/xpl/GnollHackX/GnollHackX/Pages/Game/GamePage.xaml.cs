@@ -1271,12 +1271,12 @@ namespace GnollHackX.Pages.Game
         public void SetAutoDig(bool newValue)
         {
             if (MapAutoDig != newValue)
-                ToggleAutoDigButton_BtnClicked(this, EventArgs.Empty);
+                ToggleAutoDigButton_BtnClicked(this, EventArgs.Empty); //Need to inform the game, too
         }
         public void SetIgnoreStopping(bool newValue)
         {
             if (MapIgnoreMode != newValue)
-                ToggleIgnoreModeButton_BtnClicked(this, EventArgs.Empty);
+                ToggleIgnoreModeButton_BtnClicked(this, EventArgs.Empty); //Need to inform the game, too
         }
 
 
@@ -21318,34 +21318,64 @@ namespace GnollHackX.Pages.Game
         {
             GHApp.PlayMenuSelectSound();
             bool newMode = !MapAutoDig;
-            MapAutoDig = newMode;
-            if (newMode)
-            {
-                ToggleAutoDigButton.ImgSourcePath = "resource://" + GHApp.AppResourceName + ".Assets.UI.stone-autodig-on.png";
-            }
-            else
-            {
-                ToggleAutoDigButton.ImgSourcePath = "resource://" + GHApp.AppResourceName + ".Assets.UI.stone-autodig-off.png";
-            }
+            ToggleMapAutoDigOnMainThread(newMode);
             GHGame curGame = CurrentGame;
             curGame?.ResponseQueue.Enqueue(new GHResponse(curGame, GHRequestType.SetAutoDig, newMode));
+        }
+
+        public void ToggleMapAutoDigOnMainThread(bool newMode)
+        {
+            try
+            {
+                MainThread.BeginInvokeOnMainThread(() =>
+                {
+                    MapAutoDig = newMode;
+                    if (newMode)
+                    {
+                        ToggleAutoDigButton.ImgSourcePath = "resource://" + GHApp.AppResourceName + ".Assets.UI.stone-autodig-on.png";
+                    }
+                    else
+                    {
+                        ToggleAutoDigButton.ImgSourcePath = "resource://" + GHApp.AppResourceName + ".Assets.UI.stone-autodig-off.png";
+                    }
+                });
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+            }
         }
 
         private void ToggleIgnoreModeButton_BtnClicked(object sender, EventArgs e)
         {
             GHApp.PlayMenuSelectSound();
             bool newMode = !MapIgnoreMode;
-            MapIgnoreMode = newMode;
-            if (newMode)
-            {
-                ToggleIgnoreModeButton.ImgSourcePath = "resource://" + GHApp.AppResourceName + ".Assets.UI.stone-ignore-on.png";
-            }
-            else
-            {
-                ToggleIgnoreModeButton.ImgSourcePath = "resource://" + GHApp.AppResourceName + ".Assets.UI.stone-ignore-off.png";
-            }
+            ToggleMapIgnoreModeOnMainThread(newMode);
             GHGame curGame = CurrentGame;
             curGame?.ResponseQueue.Enqueue(new GHResponse(curGame, GHRequestType.SetIgnoreStopping, newMode));
+        }
+
+        public void ToggleMapIgnoreModeOnMainThread(bool newMode)
+        {
+            try
+            {
+                MainThread.BeginInvokeOnMainThread(() =>
+                {
+                    MapIgnoreMode = newMode;
+                    if (newMode)
+                    {
+                        ToggleIgnoreModeButton.ImgSourcePath = "resource://" + GHApp.AppResourceName + ".Assets.UI.stone-ignore-on.png";
+                    }
+                    else
+                    {
+                        ToggleIgnoreModeButton.ImgSourcePath = "resource://" + GHApp.AppResourceName + ".Assets.UI.stone-ignore-off.png";
+                    }
+                });
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+            }
         }
 
         private double _threadSafeWidth = 0;

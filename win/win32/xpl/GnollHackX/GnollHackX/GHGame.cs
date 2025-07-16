@@ -3062,31 +3062,11 @@ namespace GnollHackX
                     break;
                 case (int)gui_command_types.GUI_CMD_TOGGLE_AUTODIG:
                     GHApp.MirroredAutoDig = cmd_param != 0;
-                    try
-                    {
-                        MainThread.BeginInvokeOnMainThread(() =>
-                        {
-                            _gamePage.SetAutoDig(cmd_param != 0);
-                        });
-                    }
-                    catch (Exception ex)
-                    {
-                        Debug.WriteLine(ex.Message);
-                    }
+                    _gamePage.ToggleMapAutoDigOnMainThread(cmd_param != 0); //Do not set the game value of autodig; this is GUI notification that it has been changed
                     break;
                 case (int)gui_command_types.GUI_CMD_TOGGLE_IGNORE_STOPPING:
                     GHApp.MirroredIgnoreStopping = cmd_param != 0;
-                    try
-                    {
-                        MainThread.BeginInvokeOnMainThread(() =>
-                        {
-                            _gamePage.SetIgnoreStopping(cmd_param != 0);
-                        });
-                    }
-                    catch (Exception ex)
-                    {
-                        Debug.WriteLine(ex.Message);
-                    }
+                    _gamePage.ToggleMapIgnoreModeOnMainThread(cmd_param != 0); //Do not set the game value of autodig; this is GUI notification that it has been changed
                     break;
                 case (int)gui_command_types.GUI_CMD_TOGGLE_GETPOS_ARROWS:
                     GHApp.GetPositionArrows = cmd_param != 0;
