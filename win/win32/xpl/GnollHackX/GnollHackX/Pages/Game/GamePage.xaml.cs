@@ -14400,12 +14400,12 @@ namespace GnollHackX.Pages.Game
 
             /* Minimap button is either right, below or left of the Auto center button */
             int mapMiniX, mapMiniY;
-            if (autoCenterY == 0 || autoCenterX < noOfColumns - 1) // Right
+            if (autoCenterY == 0 && autoCenterX < noOfColumns - 1) // Right
             {
                 mapMiniX = autoCenterX + 1;
                 mapMiniY = autoCenterY;
             }
-            else if (autoCenterY == 0 || autoCenterY < noOfRows - 2) // Below
+            else if (autoCenterY == 0 || (autoCenterX == 0 && autoCenterY < noOfRows - 1) || autoCenterY < noOfRows - 2) // Below
             {
                 mapMiniX = autoCenterX;
                 mapMiniY = autoCenterY + 1;
