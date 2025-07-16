@@ -3484,7 +3484,7 @@ lookaround()
                     return;
                 }
 
-                if ((context.run != 1 && !is_tame(mtmp))
+                if ((context.run != 1 && !is_peaceful(mtmp))
                     || (x == u.ux + u.dx && y == u.uy + u.dy && !context.travel))
                 {
                     if (iflags.mention_walls)
