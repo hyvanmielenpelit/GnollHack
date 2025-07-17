@@ -7881,7 +7881,7 @@ register char *cmd;
     switch (spkey) {
     case NHKF_RUSH:
         if (movecmd(cmd[1])) {
-            context.run = 2;
+            context.run = RUNCONTEXT_RUSH;
             mark_spotted_monsters_in_run();
             domove_attempting |= DOMOVE_RUSH;
         } else
@@ -7893,7 +7893,7 @@ register char *cmd;
         /*FALLTHRU*/
     case NHKF_RUN:
         if (movecmd(lowc(cmd[1]))) {
-            context.run = 3;
+            context.run = RUNCONTEXT_RUN;
             mark_spotted_monsters_in_run();
             domove_attempting |= DOMOVE_RUSH;
         } else
@@ -7917,7 +7917,7 @@ register char *cmd;
         break;
     case NHKF_NOPICKUP:
         if (movecmd(cmd[1]) || u.dz) {
-            context.run = 0;
+            context.run = RUNCONTEXT_NONE;
             context.nopick = 1;
             if (!u.dz)
                 domove_attempting |= DOMOVE_WALK;
@@ -7928,7 +7928,7 @@ register char *cmd;
         break;
     case NHKF_RUN_NOPICKUP:
         if (movecmd(lowc(cmd[1]))) {
-            context.run = 1;
+            context.run = RUNCONTEXT_DEFAULT;
             context.nopick = 1;
             mark_spotted_monsters_in_run();
             domove_attempting |= DOMOVE_RUSH;
@@ -7978,7 +7978,7 @@ register char *cmd;
         if (flags.travelcmd) {
             context.travel = 1;
             context.travel1 = 1;
-            context.run = 8;
+            context.run = RUNCONTEXT_TRAVEL;
             context.nopick = (spkey == NHKF_TRAVEL ? 1 : 0);
             domove_attempting |= DOMOVE_RUSH;
             context.travel_mode = (spkey == NHKF_TRAVEL_WALK) ? TRAVEL_MODE_WALK : TRAVEL_MODE_NORMAL;
@@ -8003,20 +8003,20 @@ register char *cmd;
     default:
         if (movecmd(*cmd))
         { /* ordinary movement */
-            context.run = 0; /* only matters here if it was 8 */
+            context.run = RUNCONTEXT_NONE; /* only matters here if it was 8 */
             domove_attempting |= DOMOVE_WALK;
         } 
         else if (Cmd.gnh_layout ? ((!digit(*cmd) && movecmd(lowc(*cmd))) || (digit(unmeta(*cmd)) && movecmd(unmeta(*cmd)))) :
             movecmd(Cmd.num_pad ? unmeta(*cmd) : lowc(*cmd))) 
         {
-            context.run = 1;
+            context.run = RUNCONTEXT_DEFAULT;
             mark_spotted_monsters_in_run();
             domove_attempting |= DOMOVE_RUSH;
         } 
         else if (Cmd.gnh_layout ? (digit(unctrl(*cmd)) && movecmd(unctrl(*cmd))) :
             movecmd(unctrl(*cmd))) 
         {
-            context.run = 3;
+            context.run = RUNCONTEXT_RUN;
             mark_spotted_monsters_in_run();
             domove_attempting |= DOMOVE_RUSH;
         }

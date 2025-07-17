@@ -363,12 +363,15 @@ boolean picked_some;
     }
 
     /* If there are objects here, take a look. */
-    if (ct) {
-        if (context.run && !flags.ignore_stopping)
+    if (ct) 
+    {
+        if (context.run && !(context.run == RUNCONTEXT_TRAVEL && flags.ignore_stopping))
             nomul(0);
         flush_screen(1);
         (void) look_here(ct, picked_some, FALSE);
-    } else {
+    }
+    else
+    {
         read_engr_at(u.ux, u.uy);
     }
 }
@@ -653,8 +656,7 @@ boolean do_auto_in_bag;
         }
 
         /* if there's anything here, stop running */
-        if (OBJ_AT(u.ux, u.uy) && context.run && context.run != 8
-            && !context.nopick)
+        if (OBJ_AT(u.ux, u.uy) && context.run && context.run != RUNCONTEXT_TRAVEL && !context.nopick)
             nomul(0);
     }
 

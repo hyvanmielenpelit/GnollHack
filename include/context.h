@@ -298,6 +298,12 @@ struct context_info
 
 extern NEARDATA struct context_info context;
 
+#define RUNCONTEXT_NONE     0
+#define RUNCONTEXT_DEFAULT  1
+#define RUNCONTEXT_RUSH     2
+#define RUNCONTEXT_RUN      3
+#define RUNCONTEXT_TRAVEL   8
+
 #define QUEST_FLAGS_HEARD_OF_BELL                       0x00000001UL
 #define QUEST_FLAGS_HEARD_OF_BOOK                       0x00000002UL
 #define QUEST_FLAGS_HEARD_OF_MENORAH                    0x00000004UL

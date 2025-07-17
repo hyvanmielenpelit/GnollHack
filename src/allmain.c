@@ -1656,7 +1656,8 @@ interrupt_multi(msg, attr, color)
 const char *msg;
 int attr, color;
 {
-    if (multi > 0 && !context.travel && !context.run) {
+    if (multi > 0 && !context.travel && !context.run) 
+    {
         nomul(0);
         if (flags.verbose && msg)
             Norep_ex(attr, color, "%s", msg);

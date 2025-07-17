@@ -1178,7 +1178,7 @@ int mode;
     /* Pick travel path that does not require crossing a trap.
      * Avoid water and lava using the usual running rules.
      * (but not u.ux/u.uy because findtravelpath walks toward u.ux/u.uy) */
-    if (context.run == 8 && (mode != DO_MOVE)
+    if (context.run == RUNCONTEXT_TRAVEL && (mode != DO_MOVE)
         && (x != u.ux || y != u.uy)) 
     {
         struct trap *t = t_at(x, y);
@@ -1208,8 +1208,8 @@ int mode;
 
     if (sobj_at(BOULDER, x, y) && (Sokoban || !Passes_walls))
     {
-        if (!(Blind || Hallucination) && (context.run >= 2)
-            && mode != TEST_TRAV) {
+        if (!(Blind || Hallucination) && (context.run >= RUNCONTEXT_RUSH) && mode != TEST_TRAV) 
+        {
             if (mode == DO_MOVE && iflags.mention_walls)
                 pline("A boulder blocks your path.");
             return FALSE;
@@ -1266,10 +1266,13 @@ int mode;
     /* if travel to adjacent, reachable location, use normal movement rules */
     if ((mode == TRAVP_TRAVEL || mode == TRAVP_VALID) && context.travel1
         && distmin(u.ux, u.uy, u.tx, u.ty) == 1
-        && !(u.ux != u.tx && u.uy != u.ty && NODIAG(u.umonnum))) {
-        context.run = 0;
-        if (test_move(u.ux, u.uy, u.tx - u.ux, u.ty - u.uy, TEST_MOVE)) {
-            if (mode == TRAVP_TRAVEL) {
+        && !(u.ux != u.tx && u.uy != u.ty && NODIAG(u.umonnum))) 
+    {
+        context.run = RUNCONTEXT_NONE;
+        if (test_move(u.ux, u.uy, u.tx - u.ux, u.ty - u.uy, TEST_MOVE)) 
+        {
+            if (mode == TRAVP_TRAVEL) 
+            {
                 u.dx = u.tx - u.ux;
                 u.dy = u.ty - u.uy;
                 nomul(0);
@@ -1278,7 +1281,8 @@ int mode;
             return TRUE;
         }
     }
-    if (u.tx != u.ux || u.ty != u.uy) {
+    if (u.tx != u.ux || u.ty != u.uy) 
+    {
         xchar travel[COLNO][ROWNO];
         xchar travelstepx[2][COLNO * ROWNO];
         xchar travelstepy[2][COLNO * ROWNO];
@@ -1292,12 +1296,15 @@ int mode;
          * goal is the position the player knows of, or might figure out
          * (couldsee) that is closest to the target on a straight path.
          */
-        if (mode == TRAVP_GUESS || mode == TRAVP_VALID) {
+        if (mode == TRAVP_GUESS || mode == TRAVP_VALID) 
+        {
             tx = u.ux;
             ty = u.uy;
             ux = u.tx;
             uy = u.ty;
-        } else {
+        } 
+        else 
+        {
             tx = u.tx;
             ty = u.ty;
             ux = u.ux;
@@ -2048,7 +2055,8 @@ domove_core()
         }
 
         mtmp = m_at(x, y);
-        if (mtmp && !is_safepet(mtmp) && !is_displaceable_peaceful(mtmp)) {
+        if (mtmp && !is_safepet(mtmp) && !is_displaceable_peaceful(mtmp)) 
+        {
             /* Don't attack if you're running, and can see it */
             /* It's fine to displace pets, though */
             /* We should never get here if forcefight */
@@ -2056,7 +2064,8 @@ domove_core()
                                  && ((M_AP_TYPE(mtmp) != M_AP_FURNITURE
                                       && M_AP_TYPE(mtmp) != M_AP_OBJECT)
                                      || Protection_from_shape_changers))
-                                || sensemon(mtmp))) {
+                                || sensemon(mtmp))) 
+            {
                 nomul(0);
                 context.move = 0;
                 return;
@@ -2446,12 +2455,10 @@ domove_core()
 
 finish_move:
     reset_occupations();
-    if (context.run && !flags.ignore_stopping)
+    if (context.run && context.run < RUNCONTEXT_TRAVEL) // && !flags.ignore_stopping
     {
-        if (context.run < 8)
-            if (IS_DOOR(tmpr->typ) || IS_ROCK(tmpr->typ)
-                || IS_FURNITURE(tmpr->typ))
-                nomul(0);
+        if (IS_DOOR(tmpr->typ) || IS_ROCK(tmpr->typ) || IS_FURNITURE(tmpr->typ))
+            nomul(0);
     }
 
     if (hides_under(youmonst.data) || youmonst.data->mlet == S_EEL
@@ -2492,7 +2499,8 @@ finish_move:
 
     /* delay next move because of ball dragging */
     /* must come after we finished picking up, in spoteffects() */
-    if (cause_delay) {
+    if (cause_delay) 
+    {
         nomul(-2);
         multi_reason = "dragging an iron ball";
         nomovemsg = "";
@@ -2500,9 +2508,11 @@ finish_move:
         nomovemsg_color = NO_COLOR;
     }
 
-    if (context.run && (flags.runmode != RUN_TPORT || (context.travel && context.travel_mode > TRAVEL_MODE_NORMAL))) {
+    if (context.run && (flags.runmode != RUN_TPORT || (context.travel && context.travel_mode > TRAVEL_MODE_NORMAL))) 
+    {
         /* display every step or every 7th step depending upon mode */
-        if (flags.runmode != RUN_LEAP || (context.travel && context.travel_mode > TRAVEL_MODE_NORMAL) || !(moves % 7L)) {
+        if (flags.runmode != RUN_LEAP || (context.travel && context.travel_mode > TRAVEL_MODE_NORMAL) || !(moves % 7L)) 
+        {
             if (flags.time)
                 context.botl = 1;
             curs_on_u();
@@ -3462,7 +3472,7 @@ lookaround()
         return;
     }
 
-    if (Blind || context.run == 0)
+    if (Blind || context.run == RUNCONTEXT_NONE)
         return;
     for (x = u.ux - 1; x <= u.ux + 1; x++)
         for (y = u.uy - 1; y <= u.uy + 1; y++) {
@@ -3484,7 +3494,7 @@ lookaround()
                     return;
                 }
 
-                if ((context.run != 1 && !is_peaceful(mtmp))
+                if ((context.run != RUNCONTEXT_DEFAULT && !is_peaceful(mtmp))
                     || (x == u.ux + u.dx && y == u.uy + u.dy && !context.travel))
                 {
                     if (iflags.mention_walls)
@@ -3506,7 +3516,7 @@ lookaround()
             {
                 if (x != u.ux && y != u.uy)
                     continue;
-                if (context.run != 1 && !flags.ignore_stopping) 
+                if (context.run != RUNCONTEXT_DEFAULT && !(context.run == RUNCONTEXT_TRAVEL && flags.ignore_stopping))
                 {
                     if (iflags.mention_walls)
                         You("stop in front of the door.");
@@ -3519,14 +3529,15 @@ lookaround()
  bcorr:
                 if (!(levl[u.ux][u.uy].typ == ROOM || levl[u.ux][u.uy].typ == GRASS || levl[u.ux][u.uy].typ == GROUND))
                 {
-                    if (context.run == 1 || context.run == 3
-                        || context.run == 8) {
+                    if (context.run == RUNCONTEXT_DEFAULT || context.run == RUNCONTEXT_RUN || context.run == RUNCONTEXT_TRAVEL) 
+                    {
                         i = dist2(x, y, u.ux + u.dx, u.uy + u.dy);
                         if (i > 2)
                             continue;
                         if (corrct == 1 && dist2(x, y, x0, y0) != 1)
                             noturn = 1;
-                        if (i < i0) {
+                        if (i < i0) 
+                        {
                             i0 = i;
                             x0 = x;
                             y0 = y;
@@ -3539,7 +3550,7 @@ lookaround()
             } 
             else if ((trap = t_at(x, y)) && trap->tseen) 
             {
-                if (context.run == 1)
+                if (context.run == RUNCONTEXT_DEFAULT)
                     goto bcorr; /* if you must */
                 if (x == u.ux + u.dx && y == u.uy + u.dy)
                 {
@@ -3571,9 +3582,9 @@ lookaround()
                 }
                 continue;
             } else { /* e.g. objects or trap or stairs */
-                if (context.run == 1)
+                if (context.run == RUNCONTEXT_DEFAULT)
                     goto bcorr;
-                if (context.run == 8)
+                if (context.run == RUNCONTEXT_TRAVEL)
                     continue;
                 if (mtmp)
                     continue; /* d */
@@ -3586,13 +3597,13 @@ lookaround()
             return;
         } /* end for loops */
 
-    if (corrct > 1 && context.run == 2 && !flags.ignore_stopping)
+    if (corrct > 1 && context.run == RUNCONTEXT_RUSH) // && !flags.ignore_stopping
     {
         if (iflags.mention_walls)
             pline_The("corridor widens here.");
         goto stop;
     }
-    if ((context.run == 1 || context.run == 3 || context.run == 8) && !noturn
+    if ((context.run == RUNCONTEXT_DEFAULT || context.run == RUNCONTEXT_RUN || context.run == RUNCONTEXT_TRAVEL) && !noturn
         && !m0 && i0 && (corrct == 1 || (corrct == 2 && i0 == 1))) {
         /* make sure that we do not turn too far */
         if (i0 == 2) {

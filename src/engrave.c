@@ -408,7 +408,7 @@ int x, y;
             custompline_ex_prefix(ATR_NONE, CLR_MSG_ATTENTION, ybuf, ATR_NONE, CLR_MSG_ATTENTION, ": ", ATR_NONE, CLR_MSG_TEXT, 0U, "\"%s\".", et);
             ep->engr_flags |= ENGR_FLAGS_SEEN;
             //You_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s: \"%s\".", (Blind) ? "feel the words" : "read", et);
-            if (context.run > 1 && !flags.ignore_stopping)
+            if (context.run > RUNCONTEXT_DEFAULT && !(context.run == RUNCONTEXT_TRAVEL && flags.ignore_stopping))
                 nomul(0);
         }
     }
