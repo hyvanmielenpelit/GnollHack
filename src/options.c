@@ -91,7 +91,13 @@ static struct Bool_Opt {
     { "asksavedisk", "prompt for saving to a disk", (boolean *) 0, FALSE, SET_IN_FILE },
 #endif
     { "autodescribe", "describe terrain under cursor", &iflags.autodescribe, TRUE, SET_IN_GAME },
-    { "autodig", "dig if moving and wielding a digging tool", &flags.autodig, FALSE, SET_IN_GAME },
+    { "autodig", "dig if moving and wielding a digging tool", &flags.autodig, 
+#ifdef GNH_MOBILE
+    TRUE,
+#else
+    FALSE,
+#endif
+    SET_IN_GAME },
 #ifdef ANDROID
     {"autokick", "walking into a door attempts to kick it", &flags.autokick, TRUE, SET_IN_GAME},
 #endif

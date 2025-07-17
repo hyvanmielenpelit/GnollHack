@@ -12,7 +12,7 @@
 #
 # Use the IBM character set rather than just plain ascii characters
 # for tty window-port.
-OPTIONS=symset:IBMGraphics_2,roguesymset:RogueEpyx,statuslines:6,showmove,inventory_weights_last,autodig,!self_click_action,!skill_table_format,!spell_table_format
+OPTIONS=symset:IBMGraphics_2,roguesymset:RogueEpyx,statuslines:6,showmove,inventory_weights_last,!self_click_action,!skill_table_format,!spell_table_format
 OPTIONS=spellorder:1,long_charge_text
 #OPTIONS=altmeta
 #OPTIONS=tile_file:gnollhack_64x96_custom.png
