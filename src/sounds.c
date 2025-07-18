@@ -6666,10 +6666,7 @@ struct monst* mtmp;
     char moneybuf[BUFSZ];
     int64_t umoney = money_cnt(invent);
     Sprintf(moneybuf, "You have %lld %s.", (long long)umoney, currency(umoney));
-    char* txt = 0;
-#ifdef GNH_MOBILE
-    txt = moneybuf;
-#endif
+    char* txt = (windowprocs.wincap2 & WC2_MENU_IS_FULL_SCREEN) != 0 && (windowprocs.wincap2 & WC2_MENU_PROPER_SUBTITLE) != 0 ? moneybuf : 0;
     end_menu_ex(win, "What do you want to buy?", txt);
 
     if (sellable_item_count <= 0)
@@ -8716,10 +8713,7 @@ const char* title_text;
     char moneybuf[BUFSZ];
     int64_t umoney = money_cnt(invent);
     Sprintf(moneybuf, "You have %lld %s.", (long long)umoney, currency(umoney));
-    char* txt = 0;
-#ifdef GNH_MOBILE
-    txt = moneybuf;
-#endif
+    char* txt = (windowprocs.wincap2 & WC2_MENU_IS_FULL_SCREEN) != 0 && (windowprocs.wincap2 & WC2_MENU_PROPER_SUBTITLE) != 0 ? moneybuf : 0;
     end_menu_ex(win, title_text, txt);
 
     int i = -1;
@@ -11470,11 +11464,11 @@ int64_t service_cost;
     {
         char ebuf[BUFSZ] = "";
         char buf[BUFSZ] = "";
-#ifdef GNH_MOBILE
-        Sprintf(qbuf, "How many times to enchant %s? (%lld %s each)", yname(otmp), (long long)service_cost, currency(service_cost));
-#else
-        Strcpy(qbuf, "How many times to enchant?");
-#endif
+        if ((windowprocs.wincap2 & WC2_MENU_IS_FULL_SCREEN) != 0) /* Cannot see messages */
+            Sprintf(qbuf, "How many times to enchant %s? (%lld %s each)", yname(otmp), (long long)service_cost, currency(service_cost));
+        else
+            Strcpy(qbuf, "How many times to enchant?");
+
         Sprintf(ebuf, "[max %d] (1)", max_services);
         getlin_ex(GETLINE_NUMBERS_ONLY, ATR_NONE, NO_COLOR, qbuf, buf, (char*)0, ebuf, (char*)0);
         (void)mungspaces(buf);
@@ -11961,15 +11955,16 @@ boolean initialize;
     Sprintf(forge_string, "forge into %s", an(OBJ_NAME(objects[forge_dest_otyp])));
 
     char header_string[BUFSZ] = "";
-#ifdef GNH_MOBILE
-    if (forge_source_otyp > STRANGE_OBJECT && forge_source_quan > 0)
+    if ((windowprocs.wincap2 & WC2_MENU_PROPER_SUBTITLE) != 0)
     {
-        if (forge_source_quan == 1)
-            Sprintf(header_string, "You need %s", an(OBJ_NAME(objects[forge_source_otyp])));
-        else
-            Sprintf(header_string, "You need %lld %s", (long long)forge_source_quan, makeplural(OBJ_NAME(objects[forge_source_otyp])));
+        if (forge_source_otyp > STRANGE_OBJECT && forge_source_quan > 0)
+        {
+            if (forge_source_quan == 1)
+                Sprintf(header_string, "You need %s", an(OBJ_NAME(objects[forge_source_otyp])));
+            else
+                Sprintf(header_string, "You need %lld %s", (long long)forge_source_quan, makeplural(OBJ_NAME(objects[forge_source_otyp])));
+        }
     }
-#endif
 
     otyp_for_maybe_otyp = forge_source_otyp;
     struct obj* otmp = getobj_ex((const char*)forge_objects, forge_string, 0, header_string, maybe_otyp, 0, 0U);
@@ -12170,10 +12165,7 @@ int* spell_otyps;
     char moneybuf[BUFSZ];
     int64_t umoney = money_cnt(invent);
     Sprintf(moneybuf, "You have %lld %s.", (long long)umoney, currency(umoney));
-    char* subtxt = 0;
-#ifdef GNH_MOBILE
-    subtxt = moneybuf;
-#endif
+    char* subtxt = (windowprocs.wincap2 & WC2_MENU_IS_FULL_SCREEN) != 0 && (windowprocs.wincap2 & WC2_MENU_PROPER_SUBTITLE) != 0 ? moneybuf : 0;
     end_menu_ex(win, "Which spell do you want to learn?", subtxt);
 
     if (spell_count <= 0)

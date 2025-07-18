@@ -19,8 +19,8 @@ struct window_procs lib_procs = {
     WC2_HITPOINTBAR | WC2_FLUSH_STATUS | WC2_RESET_STATUS | WC2_HILITE_STATUS |
 #endif
     WC2_SELECTSAVED | WC2_STATUSLINES | WC2_HEREWINDOW | WC2_SCREEN_TEXT |
-    WC2_ANIMATIONS | WC2_SPECIAL_SYMBOLS | WC2_MENU_SUFFIXES |
-    WC2_FADING_ANIMATIONS | WC2_MENU_SHOWS_OK_CANCEL,
+    WC2_ANIMATIONS | WC2_LIBRARY | WC2_SPECIAL_SYMBOLS | WC2_MENU_SUFFIXES |
+    WC2_FADING_ANIMATIONS | WC2_MENU_SHOWS_OK_CANCEL | WC2_MENU_IS_FULL_SCREEN | WC2_MENU_PROPER_SUBTITLE,
     lib_init_nhwindows, lib_player_selection, lib_askname,
     lib_get_nh_event, lib_exit_nhwindows, lib_suspend_nhwindows,
     lib_resume_nhwindows, lib_create_nhwindow_ex, lib_clear_nhwindow,

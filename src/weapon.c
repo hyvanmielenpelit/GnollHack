@@ -3484,8 +3484,7 @@ enhance_weapon_skill()
         Strcpy(buf, (to_advance > 0) ? "Pick a skill to advance"
                                      : "Current skills");
 
-#ifdef GNH_MOBILE
-        if (!speedy)
+        if ((windowprocs.wincap2 & WC2_MENU_PROPER_SUBTITLE) != 0 && !speedy)
         {
             char subbuf[BUFSZ] = "";
             Sprintf(subbuf, "%d skill slot%s available", u.weapon_slots, plur(u.weapon_slots));
@@ -3495,9 +3494,6 @@ enhance_weapon_skill()
         {
             end_menu(win, buf);
         }
-#else
-            end_menu(win, buf);
-#endif
         n = select_menu(win, to_advance ? PICK_ONE : PICK_NONE, &selected);
         destroy_nhwindow(win);
         if (n > 0) 

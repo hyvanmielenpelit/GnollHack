@@ -2134,10 +2134,10 @@ struct save_game_data* saved;
         start_menu_ex(tmpwin, style == 0 ? GHMENU_STYLE_CHOOSE_SAVED_GAME : GHMENU_STYLE_DELETE_SAVED_GAME);
         any = zeroany; /* no selection */
 
-    #ifndef GNH_MOBILE
+#ifndef GNH_MOBILE
         add_menu(tmpwin, NO_GLYPH, &any, 0, 0, ATR_NONE, NO_COLOR,
             titlestr, MENU_UNSELECTED);
-    #endif
+#endif
 
 #if defined(TTY_GRAPHICS) || defined(CURSES_GRAPHICS)
         char prefix[8] = "    ";

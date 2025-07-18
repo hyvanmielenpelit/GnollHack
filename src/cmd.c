@@ -3427,25 +3427,31 @@ int final; /* ENL_GAMEINPROGRESS:0, ENL_GAMEOVERALIVE, ENL_GAMEOVERDEAD */
         game_enlightenment(mode, final);
     }
 
-    if (!en_via_menu) {
+    if (!en_via_menu) 
+    {
         display_nhwindow(en_win, TRUE);
-    } else {
+    }
+    else 
+    {
         menu_item *selected = 0;
-#ifdef GNH_MOBILE
-        Sprintf(buf, "%s the %s", tmpbuf,
-            (Ufemale && urole.name.f)
-            ? urole.name.f
-            : urole.name.m);
+        if ((windowprocs.wincap2 & WC2_MENU_PROPER_SUBTITLE) != 0)
+        {
+            Sprintf(buf, "%s the %s", tmpbuf,
+                (Ufemale && urole.name.f)
+                ? urole.name.f
+                : urole.name.m);
 
-        /* title */
-        //enlght_out(buf, ATR_TITLE); /* "Conan the Archaeologist" */
-    //    Sprintf(buf, "Attributes");
-    //    enlght_out(buf, ATR_SUBTITLE); /* "Attributes" */
+            /* title */
+            //enlght_out(buf, ATR_TITLE); /* "Conan the Archaeologist" */
+            //Sprintf(buf, "Attributes");
+            //enlght_out(buf, ATR_SUBTITLE); /* "Attributes" */
 
-        end_menu_ex(en_win, "Attributes", buf);
-#else
-        end_menu(en_win, (char *) 0);
-#endif
+            end_menu_ex(en_win, "Attributes", buf);
+        }
+        else
+        {
+            end_menu(en_win, (char*)0);
+        }
         if (select_menu(en_win, PICK_NONE, &selected) > 0)
             free((genericptr_t) selected);
         en_via_menu = FALSE;

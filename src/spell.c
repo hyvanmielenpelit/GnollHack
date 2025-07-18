@@ -1346,8 +1346,7 @@ int* spell_no;
             }
         }
 
-#ifdef GNH_MOBILE
-        if ((windowprocs.wincap2 & WC2_SPECIAL_SYMBOLS) != 0 && (splaction == SPELLMENU_PREPARE || splaction == SPELLMENU_CAST))
+        if ((windowprocs.wincap2 & WC2_MENU_PROPER_SUBTITLE) != 0 && (windowprocs.wincap2 & WC2_SPECIAL_SYMBOLS) != 0 && (splaction == SPELLMENU_PREPARE || splaction == SPELLMENU_CAST))
         {
             char subbuf[BUFSZ];
             if (splaction == SPELLMENU_CAST)
@@ -1365,9 +1364,6 @@ int* spell_no;
         {
             end_menu(tmpwin, prompt);
         }
-#else 
-        end_menu(tmpwin, prompt);
-#endif
 
         //Show menu
         n = select_menu(tmpwin, how, &selected);

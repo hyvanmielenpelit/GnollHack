@@ -321,11 +321,13 @@ extern
 #define WC2_SCREEN_TEXT             0x00080000UL /* 20 windowing system can show screen texts */
 #define WC2_ANIMATIONS              0x00100000UL /* 21 supports displaying some sort of animations with tiles; animation options are shown in options */
 #define WC2_VOLUME_CONTROLS         0x00200000UL /* 22 volume controls are shown in options */
-/* free bit */
+#define WC2_LIBRARY                 0x00400000UL /* 23 supports library for storing manuals across games */
 #define WC2_SPECIAL_SYMBOLS         0x00800000UL /* 24 handles special symbols in text of the type &symbol_name; */
 #define WC2_MENU_SUFFIXES           0x01000000UL /* 25 supports placing text in parentheses on a different line in menus */
 #define WC2_FADING_ANIMATIONS       0x02000000UL /* 26 supports fading animations */
 #define WC2_MENU_SHOWS_OK_CANCEL    0x04000000UL /* 27 menus always show OK and Cancel buttons (so you can then potentially omit e.g. a quit choice in the menu) */
+#define WC2_MENU_IS_FULL_SCREEN     0x08000000UL /* 28 menu page covers status bar and messages, so e.g. need to show available money otherwise in certain cases and messages cannot be seen for extra possible information */
+#define WC2_MENU_PROPER_SUBTITLE    0x10000000UL /* 29 menu page supports a proper subtitle that can show longer non-critical extra information */
 
 /* 5 free bits */
 
