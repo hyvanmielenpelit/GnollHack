@@ -382,7 +382,7 @@ boolean devour;
                     devour ? "devours" : "eats", distant_name(obj, doname));
 
                 if (catavenged)
-                    You_feel_ex(ATR_NONE, CLR_MSG_ATTENTION, "Schroedinger's cat has been avenged.");
+                    You_feel_ex(ATR_NONE, CLR_MSG_HINT, "Schroedinger's cat has been avenged.");
             }
         } 
         else if (seeobj)
