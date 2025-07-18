@@ -793,7 +793,7 @@ namespace GnollHackX
                 GHApp.InitializeConnectivity();
                 GHApp.SetWindowFocus();
 
-                if (GHApp.IsAndroid && GHApp.PlatformService != null)
+                if (GHApp.IsAndroid && !GHApp.UsePlatformRenderLoop && GHApp.PlatformService != null)
                 {
                     string animationSettingName = GHApp.OneUIAnimationSettingName;
                     bool removeanimationson = GHApp.PlatformService.IsRemoveAnimationsOn();

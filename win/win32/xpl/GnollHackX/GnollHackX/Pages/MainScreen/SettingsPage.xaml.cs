@@ -110,6 +110,9 @@ namespace GnollHackX.Pages.MainScreen
             if (!GHApp.IsWindows)
             {
                 ScreenResolutionGrid.IsVisible = false;
+            }
+            if (!GHApp.IsPlatformRenderLoopAvailable)
+            {
                 PlatformRenderLoopGrid.IsVisible = false;
             }
 
@@ -1044,7 +1047,7 @@ namespace GnollHackX.Pages.MainScreen
             primarygpucache = Preferences.Get("PrimaryGPUCacheLimit", -2L);
             secondarygpucache = Preferences.Get("SecondaryGPUCacheLimit", -2L);
             disableauxgpu = Preferences.Get("DisableAuxiliaryGLCanvas", GHApp.IsDisableAuxGPUDefault);
-            platformloop = Preferences.Get("UsePlatformRenderLoop", GHApp.IsPlatformRenderLoopAvailable);
+            platformloop = GHApp.IsPlatformRenderLoopAvailable && Preferences.Get("UsePlatformRenderLoop", GHApp.IsPlatformRenderLoopAvailable);
             screenscale = Preferences.Get("CustomScreenScale", 0.0f);
             screenresolutionwidth = (uint)Preferences.Get("CustomScreenResolutionWidth", 0);
             screenresolutionheight = (uint)Preferences.Get("CustomScreenResolutionHeight", 0);

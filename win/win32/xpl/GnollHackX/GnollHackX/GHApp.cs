@@ -6,6 +6,9 @@ using GnollHackM.Platforms.Windows;
 using System.Management;
 using Windows.Graphics;
 using System.Reflection.Metadata;
+#elif ANDROID
+using Android.Animation;
+using Android.Views;
 #endif
 #else
 using Xamarin.Essentials;
@@ -206,7 +209,7 @@ namespace GnollHackX
             CustomScreenScale = Preferences.Get("CustomScreenScale", 0.0f); /* Note that preferences have a default of zero but the property return 1.0f */
             SaveFileTracking = Preferences.Get("SaveFileTracking", IsSaveFileTrackingNeeded && !string.IsNullOrEmpty(XlogUserName) && !string.IsNullOrEmpty(XlogPassword));
 
-            UsePlatformRenderLoop = Preferences.Get("UsePlatformRenderLoop", IsPlatformRenderLoopAvailable);
+            UsePlatformRenderLoop = IsPlatformRenderLoopAvailable && Preferences.Get("UsePlatformRenderLoop", IsPlatformRenderLoopAvailable);
 
             SetAvailableGPUCacheLimits(TotalMemory);
             PrimaryGPUCacheLimit = Preferences.Get("PrimaryGPUCacheLimit", -2L);
@@ -244,11 +247,33 @@ namespace GnollHackX
             CustomScreenResolutionPriority = (uint)Preferences.Get("CustomScreenResolutionPriority", 1);
             SaveScreenResolution();
             ChangeToCustomScreenResolution();
-#if WINDOWS
-            Microsoft.UI.Xaml.Media.CompositionTarget.Rendering += CompositionTarget_Rendering;
-#endif
+            InitializePlatformRenderLoop();
         }
 
+#if ANDROID
+        //private static ValueAnimator _platformAnimator = null;
+        private static ChoreographerFrameTicker _platformTicker = null;
+#endif
+
+        private static void InitializePlatformRenderLoop()
+        {
+#if WINDOWS
+            Microsoft.UI.Xaml.Media.CompositionTarget.Rendering += CompositionTarget_Rendering;
+#elif ANDROID
+            //_platformAnimator = ValueAnimator.OfFloat(0f, 600000f);
+            //_platformAnimator.SetDuration(6000000); // milliseconds
+            //_platformAnimator.RepeatCount = ValueAnimator.Infinite;
+            //_platformAnimator.RepeatMode = ValueAnimatorRepeatMode.Restart;
+            //_platformAnimator.Update += CompositionTarget_Rendering;
+            //_platformAnimator.Start();
+
+            var _platformTicker = new ChoreographerFrameTicker();
+            _platformTicker.Start(frameTimeNanos =>
+            {
+                CompositionTarget_Rendering(null, EventArgs.Empty);
+            });
+#endif
+        }
 
         public static void SetWindowFocus()
         {
@@ -262,7 +287,7 @@ namespace GnollHackX
 
         private static int _usePlatformAnimationLoop = 0;
         public static bool UsePlatformRenderLoop { get { return IsPlatformRenderLoopAvailable && Interlocked.CompareExchange(ref _usePlatformAnimationLoop, 0, 0) != 0; } set { Interlocked.Exchange(ref _usePlatformAnimationLoop, value ? 1 : 0); } }
-        public static bool IsPlatformRenderLoopAvailable { get { return IsWindows; } }
+        public static bool IsPlatformRenderLoopAvailable { get { return IsWindows || (IsAndroid && IsMaui); } }
 
         private static Stopwatch _renderingStopWatch = new Stopwatch();
         //private static readonly object _renderingLock = new object();
@@ -286,14 +311,18 @@ namespace GnollHackX
             if (!UsePlatformRenderLoop)
                 return;
 
-            ScreenResolutionItem curRes = CurrentScreenResolution;
-            if (curRes == null)
-                return;
             GamePage curGamePage = CurrentGamePage;
             if (curGamePage == null)
                 return;
 
+#if WINDOWS
+            ScreenResolutionItem curRes = CurrentScreenResolution;
+            if (curRes == null)
+                return;
             int screenRefreshRate = (int)curRes.RefreshRate;
+#else
+            int screenRefreshRate = (int)DisplayRefreshRate;
+#endif
             MapRefreshRateStyle mapRefreshRateStyle = curGamePage.MapRefreshRate;
             int mapRefreshRate = UIUtils.GetMainCanvasAnimationFrequency(mapRefreshRateStyle, (float)screenRefreshRate);
             if (!_renderingStopWatch.IsRunning)
@@ -342,6 +371,18 @@ namespace GnollHackX
             RevertScreenResolution();
 #if WINDOWS
             Microsoft.UI.Xaml.Media.CompositionTarget.Rendering -= CompositionTarget_Rendering;
+#elif ANDROID
+            //if (_platformAnimator != null)
+            //{
+            //    _platformAnimator.Pause();
+            //    _platformAnimator.Update -= CompositionTarget_Rendering;
+            //    _platformAnimator = null;
+            //}
+            if (_platformTicker != null)
+            {
+                _platformTicker.Stop();
+                _platformTicker = null;
+            }
 #endif
         }
 
@@ -393,10 +434,11 @@ namespace GnollHackX
 #endif
         }
 
+#if WINDOWS
         private static readonly object _currentScreenResolutionLock = new object();
         private static ScreenResolutionItem _currentScreenResolution = null;
         public static ScreenResolutionItem CurrentScreenResolution { get { lock (_currentScreenResolutionLock) { return _currentScreenResolution; } } set { lock (_currentScreenResolutionLock) { _currentScreenResolution = value; } } }
-
+#endif
         public static void UpdateRecommendedScreenResolution(bool usingGPU)
         {
 #if WINDOWS
@@ -8947,6 +8989,41 @@ namespace GnollHackX
 
         [DllImport("user32", CharSet = CharSet.Unicode)]
         private static extern bool GetMonitorInfo(IntPtr hmonitor, ref MONITORINFOEX info);
+    }
+#endif
+
+#if ANDROID
+    public class ChoreographerFrameTicker : Java.Lang.Object, Choreographer.IFrameCallback
+    {
+        private Action<long> _onFrame = null;
+        private bool _running;
+
+        public void Start(Action<long> onFrame)
+        {
+            if (_running)
+                return;
+
+            _running = true;
+            _onFrame = onFrame;
+            Choreographer.Instance?.PostFrameCallback(this);
+        }
+
+        public void Stop()
+        {
+            _running = false;
+            Choreographer.Instance?.RemoveFrameCallback(this);
+        }
+
+        public void DoFrame(long frameTimeNanos)
+        {
+            if (!_running)
+                return;
+
+            _onFrame?.Invoke(frameTimeNanos);
+
+            // Queue next frame
+            Choreographer.Instance?.PostFrameCallback(this);
+        }
     }
 #endif
 }
