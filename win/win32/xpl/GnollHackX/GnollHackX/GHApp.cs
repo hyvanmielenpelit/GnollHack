@@ -9,6 +9,10 @@ using System.Reflection.Metadata;
 #elif ANDROID
 using Android.Animation;
 using Android.Views;
+#elif IOS
+using CoreAnimation;
+using Foundation;
+using System;
 #endif
 #else
 using Xamarin.Essentials;
@@ -253,6 +257,8 @@ namespace GnollHackX
 #if ANDROID
         //private static ValueAnimator _platformAnimator = null;
         private static ChoreographerFrameTicker _platformTicker = null;
+#elif IOS
+        private static DisplayLinkTicker _platformTicker = null;
 #endif
 
         private static void InitializePlatformRenderLoop()
@@ -272,6 +278,13 @@ namespace GnollHackX
             {
                 CompositionTarget_Rendering(null, EventArgs.Empty);
             });
+#elif IOS
+            _platformTicker = new DisplayLinkTicker();
+
+            _platformTicker.Start(deltaTime =>
+            {
+                CompositionTarget_Rendering(null, EventArgs.Empty);
+            });
 #endif
         }
 
@@ -287,7 +300,17 @@ namespace GnollHackX
 
         private static int _usePlatformAnimationLoop = 0;
         public static bool UsePlatformRenderLoop { get { return IsPlatformRenderLoopAvailable && Interlocked.CompareExchange(ref _usePlatformAnimationLoop, 0, 0) != 0; } set { Interlocked.Exchange(ref _usePlatformAnimationLoop, value ? 1 : 0); } }
-        public static bool IsPlatformRenderLoopAvailable { get { return IsWindows || (IsAndroid && IsMaui); } }
+        public static bool IsPlatformRenderLoopAvailable 
+        { 
+            get 
+            {
+#if GNH_MAUI && (WINDOWS || ANDROID || IOS)
+                return true;
+#else
+                return false;
+#endif
+            } 
+        }
 
         private static Stopwatch _renderingStopWatch = new Stopwatch();
         //private static readonly object _renderingLock = new object();
@@ -320,6 +343,10 @@ namespace GnollHackX
             if (curRes == null)
                 return;
             int screenRefreshRate = (int)curRes.RefreshRate;
+//#elif ANDROID
+//            int screenRefreshRate = (int)DisplayInfoAndroid.GetRefreshRateHz();
+//#elif IOS
+//            int screenRefreshRate = (int)(_platformTicker?.GetRefreshRateHz() ?? 60.0);
 #else
             int screenRefreshRate = (int)DisplayRefreshRate;
 #endif
@@ -332,9 +359,10 @@ namespace GnollHackX
             else
             {
                 _renderingStopWatch.Stop();
-                long ticks = _renderingStopWatch.ElapsedTicks;
+                long ticks = _renderingStopWatch.ElapsedMilliseconds;
                 _renderingStopWatch.Restart();
-                long targetTicks = (1000 * 10000) / mapRefreshRate;
+                long ticksPerSecond = Math.Max(1, Stopwatch.Frequency);
+                long targetTicks = ticksPerSecond / mapRefreshRate;
                 if (ticks > targetTicks)
                 {
                     curGamePage.RenderCanvas();
@@ -378,6 +406,12 @@ namespace GnollHackX
             //    _platformAnimator.Update -= CompositionTarget_Rendering;
             //    _platformAnimator = null;
             //}
+            if (_platformTicker != null)
+            {
+                _platformTicker.Stop();
+                _platformTicker = null;
+            }
+#elif IOS
             if (_platformTicker != null)
             {
                 _platformTicker.Stop();
@@ -628,7 +662,10 @@ namespace GnollHackX
 
         private static void DeviceDisplay_MainDisplayInfoChanged(object sender, DisplayInfoChangedEventArgs e)
         {
-            DisplayDensity = (float)e?.DisplayInfo.Density;
+            if (e == null)
+                return;
+            DisplayDensity = (float)e.DisplayInfo.Density;
+            DisplayRefreshRate = e.DisplayInfo.RefreshRate;
         }
 
         public static INavigation Navigation
@@ -9023,6 +9060,65 @@ namespace GnollHackX
 
             // Queue next frame
             Choreographer.Instance?.PostFrameCallback(this);
+        }
+    }
+
+    public static class DisplayInfoAndroid
+    {
+        public static float GetRefreshRateHz()
+        {
+            var activity = Platform.CurrentActivity ?? Android.App.Application.Context as Android.App.Activity;
+            var windowManager = activity?.WindowManager;
+
+#pragma warning disable CA1422 // Suppress platform API warning
+            var display = windowManager?.DefaultDisplay;
+#pragma warning restore CA1422
+
+            // If available, use display.Mode (API 23+)
+            return display?.RefreshRate ?? 60f; // Fallback to 60Hz
+        }
+    }
+#endif
+
+#if IOS
+    public class DisplayLinkTicker
+    {
+        private CADisplayLink _displayLink = null;
+        private Action<double> _onFrame = null;
+        private double _lastTimestamp;
+
+        public void Start(Action<double> onFrame)
+        {
+            _onFrame = onFrame;
+            _lastTimestamp = 0;
+
+            _displayLink = CADisplayLink.Create(() =>
+            {
+                if (_lastTimestamp == 0)
+                {
+                    _lastTimestamp = _displayLink.Timestamp;
+                }
+
+                var deltaTime = _displayLink.Timestamp - _lastTimestamp;
+                _lastTimestamp = _displayLink.Timestamp;
+
+                _onFrame?.Invoke(deltaTime); // delta in seconds
+            });
+
+            _displayLink?.AddToRunLoop(NSRunLoop.Main, NSRunLoopMode.Default);
+        }
+
+        public void Stop()
+        {
+            _displayLink?.Invalidate();
+            _displayLink?.Dispose();
+            _displayLink = null;
+        }
+
+        public double GetRefreshRateHz()
+        {
+            double duration = _displayLink.Duration;
+            return _displayLink == null || duration == 0.0 ? 60.0 : 1.0 / duration;
         }
     }
 #endif
