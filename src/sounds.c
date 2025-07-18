@@ -3356,7 +3356,7 @@ struct monst* mtmp;
                 Sprintf(available_chat_list[chatnum].name, "Ask to take off a piece of armor or accessory");
                 available_chat_list[chatnum].function_ptr = &do_chat_pet_dotakeoff;
                 //available_chat_list[chatnum].charnum = 'a' + chatnum;
-                available_chat_list[chatnum].stops_dialogue = TRUE;
+                available_chat_list[chatnum].stops_dialogue = FALSE;
                 available_chat_list[chatnum].category = CHAT_CATEGORY_INTERACTION;
 
                 //any = zeroany;
@@ -6263,6 +6263,8 @@ struct monst* mtmp;
     if (!otmp)
         otmp = which_armor(mtmp, W_ARMB);
     if (!otmp)
+        otmp = which_armor(mtmp, W_BLINDFOLD);
+    if (!otmp)
         otmp = which_armor(mtmp, W_AMUL);
     if (!otmp)
         otmp = which_armor(mtmp, W_MISC);
@@ -6275,9 +6277,11 @@ struct monst* mtmp;
     if (!otmp)
         otmp = which_armor(mtmp, W_MISC5);
     if (!otmp)
-    {
+        otmp = which_armor(mtmp, W_RINGL);
+    if (!otmp)
+        otmp = which_armor(mtmp, W_RINGR);
+    if (!otmp)
         otmp = which_armor(mtmp, W_SADDLE);
-    }
 
     if (!otmp)
         return 0;
@@ -6304,14 +6308,24 @@ struct monst* mtmp;
             if (mtmp == u.usteed && otmp->otyp == SADDLE)
                 dismount_steed(DISMOUNT_FELL);
 
-            if(otmp->owornmask & W_SADDLE)
-                You("remove %s from %s.", cxname(otmp), noittame_mon_nam(mtmp));
+            if (otmp->owornmask & W_SADDLE)
+            {
+                char buf[BUFSZ * 2];
+                Sprintf(buf, "remove %s from %s.", cxname(otmp), noittame_mon_nam(mtmp));
+                You_ex1_popup(buf, "Saddle Removed", ATR_NONE, NO_COLOR, NO_GLYPH, 0);
+                //You("remove %s from %s.", cxname(otmp), noittame_mon_nam(mtmp));
+            }
             else
-                pline("%s takes off %s.", noittame_Monnam(mtmp), cxname(otmp));
+            {
+                char buf[BUFSZ * 2];
+                Sprintf(buf, "%s takes off %s.", noittame_Monnam(mtmp), cxname(otmp));
+                pline_ex1_popup(ATR_NONE, NO_COLOR, buf, "Item No Longer Worn", TRUE);
+                //pline("%s takes off %s.", noittame_Monnam(mtmp), cxname(otmp));
+            }
         }
     }
 
-    return 1;
+    return 0;
 }
 
 STATIC_OVL int
@@ -6968,7 +6982,7 @@ struct monst* mtmp;
             struct obj* item_to_take = pick_list[i].item.a_obj;
             if (item_to_take)
             {
-                if ((objects[item_to_take->otyp].oc_flags & O1_CANNOT_BE_DROPPED_IF_CURSED) && item_to_take->cursed) 
+                if ((objects[item_to_take->otyp].oc_flags & O1_CANNOT_BE_DROPPED_IF_CURSED) && item_to_take->cursed)
                 {
                     play_sfx_sound(SFX_GENERAL_WELDED);
                     pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s not leave %s!", Tobjnam(item_to_take, "do"), noittame_mon_nam(mtmp));

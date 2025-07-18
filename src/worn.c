@@ -1741,6 +1741,24 @@ int64_t flag;
             return uarmf;
         case W_ARMU:
             return uarmu;
+        case W_AMUL:
+            return uamul;
+        case W_MISC:
+            return umisc;
+        case W_MISC2:
+            return umisc2;
+        case W_MISC3:
+            return umisc3;
+        case W_MISC4:
+            return umisc4;
+        case W_MISC5:
+            return umisc5;
+        case W_RINGL:
+            return uleft;
+        case W_RINGR:
+            return uright;
+        case W_BLINDFOLD:
+            return ublindf;
         case W_SADDLE: /* might be used to check if you are polymorphed into a horse wearing a saddle */
             return (struct obj*)0; //usaddle;
         default:
