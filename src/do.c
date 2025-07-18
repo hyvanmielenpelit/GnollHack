@@ -4581,7 +4581,7 @@ struct item_description_stats* stats_ptr; /* If non-null, only returns item stat
         putstr(datawin, ATR_HEADING, buf);
 
         size_t desclen = strlen(OBJ_ITEM_DESC(otyp));
-        char* descbuf = (char*)alloc(desclen + 10);
+        char* descbuf = (char*)alloc(desclen + BUFSZ);
         Strcpy(descbuf, OBJ_ITEM_DESC(otyp));
         convert_dice_to_ranges(descbuf);
         char* bp = descbuf;
