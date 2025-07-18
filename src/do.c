@@ -24,7 +24,6 @@ STATIC_DCL int NDECL(currentlevel_rewrite);
 STATIC_DCL void NDECL(final_level);
 STATIC_DCL void FDECL(print_corpse_properties, (winid, int));
 STATIC_DCL void FDECL(revive_handle_magic_chest, (xchar*, struct obj**, int*, struct monst**));
-STATIC_DCL void FDECL(convert_dice_to_ranges, (char*));
 /* STATIC_DCL boolean FDECL(badspot, (XCHAR_P,XCHAR_P)); */
 STATIC_PTR int FDECL(CFDECLSPEC item_wiki_cmp, (const genericptr, const genericptr));
 
@@ -4584,6 +4583,7 @@ struct item_description_stats* stats_ptr; /* If non-null, only returns item stat
         size_t desclen = strlen(OBJ_ITEM_DESC(otyp));
         char* descbuf = (char*)alloc(desclen + 10);
         Strcpy(descbuf, OBJ_ITEM_DESC(otyp));
+        convert_dice_to_ranges(descbuf);
         char* bp = descbuf;
         char* ebp;
         while (bp && *bp)

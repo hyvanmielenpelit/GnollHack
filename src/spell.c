@@ -1235,6 +1235,7 @@ int* spell_no;
                 if (OBJ_ITEM_DESC(spellid(splnum)))
                 {
                     Strcpy(descbuf, OBJ_ITEM_DESC(spellid(splnum)));
+                    convert_dice_to_ranges(descbuf);
                     char* p;
                     for (p = descbuf; *p; p++)
                     {
@@ -2480,6 +2481,7 @@ int spell, booktype;
         //putstr(datawin, 0, buf);
         char descbuf[8 * BUFSZ];
         Strcpy(descbuf, OBJ_ITEM_DESC(booktype));
+        convert_dice_to_ranges(descbuf);
         char* bp = descbuf;
         char* ebp;
         while (bp && *bp)
@@ -4022,6 +4024,7 @@ int *spell_no;
     winid tmpwin;
     int i, n, how, splnum;
     char buf[BUFSZ], descbuf[BUFSZ], fmt[BUFSZ];
+    char fulldesc[BUFSZ * 8];
     //char* colorbufs[MAXSPELL];
     //int colorbufcnt = 0;
     //const char *fmt;
@@ -4068,9 +4071,15 @@ int *spell_no;
             int desclen = 0;
             splnum = !flags.spellorder ? i : (int)spl_orderindx[i];
             if (OBJ_ITEM_DESC(spellid(splnum)))
-                desclen = (int)strlen(OBJ_ITEM_DESC(spellid(splnum)));
+            {
+                Strcpy(fulldesc, OBJ_ITEM_DESC(spellid(splnum)));
+                convert_dice_to_ranges(fulldesc);
+                desclen = (int)strlen(fulldesc);
+            }
             else
+            {
                 desclen = (int)strlen(nodesc);
+            }
             if (desclen > maxlen)
                 maxlen = desclen;
 
@@ -4095,7 +4104,8 @@ int *spell_no;
         for (i = 0; i < extraspaces; i++)
             Strcat(spacebuf, " ");
 
-        if (!iflags.menu_tab_sep) {
+        if (!iflags.menu_tab_sep) 
+        {
 #if defined (GNH_MOBILE)
             Sprintf(fmt, "%%-%ds  #  Description    %%s", namelength);
 #else
@@ -4111,7 +4121,8 @@ int *spell_no;
             MENU_UNSELECTED, menu_heading_info());
 
 
-        for (i = 0; i < MAXSPELL /*min(MAXSPELL, 52)*/ && spellid(i) != NO_SPELL; i++) {
+        for (i = 0; i < MAXSPELL /*min(MAXSPELL, 52)*/ && spellid(i) != NO_SPELL; i++) 
+        {
             splnum = !flags.spellorder ? i : (int)spl_orderindx[i];
             char shortenedname[BUFSZ] = "";
             char fullname[BUFSZ] = "";
@@ -4136,8 +4147,8 @@ int *spell_no;
             if(OBJ_ITEM_DESC(spellid(splnum)))
             {
                 char shorteneddesc[BUFSZ] = "";
-                char fulldesc[BUFSZ * 8];
                 Strcpy(fulldesc, OBJ_ITEM_DESC(spellid(splnum)));
+                convert_dice_to_ranges(fulldesc);
                 char* p;
                 for (p = fulldesc; *p; p++)
                 {
@@ -4528,6 +4539,7 @@ int splaction;
     {
         char fulldescbuf[BUFSZ * 8];
         Strcpy(fulldescbuf, OBJ_ITEM_DESC(spellid(splnum)));
+        convert_dice_to_ranges(fulldescbuf);
         char* p;
         for (p = fulldescbuf; *p; p++)
         {

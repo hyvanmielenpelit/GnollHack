@@ -715,6 +715,7 @@ E void NDECL(check_mobbed_hint);
 E void NDECL(check_closed_for_inventory_hint);
 E void FDECL(item_destruction_hint, (int, BOOLEAN_P));
 E void NDECL(heal_ailments_upon_revival);
+E void FDECL(convert_dice_to_ranges, (char*));
 #if !defined (GNH_MOBILE) && defined (DEBUG)
 E void NDECL(write_spells);
 E void NDECL(write_monsters);
