@@ -418,10 +418,18 @@ namespace GnollHackX.Pages.MainScreen
 
             if (PlatformRenderLoopGrid.IsVisible && PlatformRenderLoopSwitch.IsEnabled)
             {
+                bool usingBefore = GHApp.UsePlatformRenderLoop;
                 GHApp.UsePlatformRenderLoop = PlatformRenderLoopSwitch.IsToggled;
                 Preferences.Set("UsePlatformRenderLoop", PlatformRenderLoopSwitch.IsToggled);
                 if (_gamePage != null)
                     _gamePage.PlatformRenderLoopToggled = true;
+                if (GHApp.IsAndroid && PlatformRenderLoopSwitch.IsToggled != usingBefore)
+                {
+                    if (PlatformRenderLoopSwitch.IsToggled)
+                        GHApp.PlatformService.OverrideAnimatorDuration();
+                    else
+                        GHApp.PlatformService.RevertAnimatorDuration(false);
+                }
             }
 
             GHApp.DisableAuxGPU = DisableAuxGPUSwitch.IsToggled;
@@ -1047,7 +1055,7 @@ namespace GnollHackX.Pages.MainScreen
             primarygpucache = Preferences.Get("PrimaryGPUCacheLimit", -2L);
             secondarygpucache = Preferences.Get("SecondaryGPUCacheLimit", -2L);
             disableauxgpu = Preferences.Get("DisableAuxiliaryGLCanvas", GHApp.IsDisableAuxGPUDefault);
-            platformloop = GHApp.IsPlatformRenderLoopAvailable && Preferences.Get("UsePlatformRenderLoop", GHApp.IsPlatformRenderLoopAvailable);
+            platformloop = GHApp.IsPlatformRenderLoopAvailable && Preferences.Get("UsePlatformRenderLoop", GHConstants.IsPlatformRenderLoopDefault);
             screenscale = Preferences.Get("CustomScreenScale", 0.0f);
             screenresolutionwidth = (uint)Preferences.Get("CustomScreenResolutionWidth", 0);
             screenresolutionheight = (uint)Preferences.Get("CustomScreenResolutionHeight", 0);

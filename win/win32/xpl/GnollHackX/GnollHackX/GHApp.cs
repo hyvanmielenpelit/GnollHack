@@ -213,7 +213,10 @@ namespace GnollHackX
             CustomScreenScale = Preferences.Get("CustomScreenScale", 0.0f); /* Note that preferences have a default of zero but the property return 1.0f */
             SaveFileTracking = Preferences.Get("SaveFileTracking", IsSaveFileTrackingNeeded && !string.IsNullOrEmpty(XlogUserName) && !string.IsNullOrEmpty(XlogPassword));
 
-            UsePlatformRenderLoop = IsPlatformRenderLoopAvailable && Preferences.Get("UsePlatformRenderLoop", IsPlatformRenderLoopAvailable);
+            bool usePlatformLoop = IsPlatformRenderLoopAvailable && Preferences.Get("UsePlatformRenderLoop", GHConstants.IsPlatformRenderLoopDefault);
+            UsePlatformRenderLoop = usePlatformLoop;
+            if (!usePlatformLoop)
+                PlatformService?.OverrideAnimatorDuration();
 
             SetAvailableGPUCacheLimits(TotalMemory);
             PrimaryGPUCacheLimit = Preferences.Get("PrimaryGPUCacheLimit", -2L);
@@ -1688,9 +1691,6 @@ namespace GnollHackX
 
         public static void OnStart()
         {
-            if (PlatformService != null)
-                PlatformService.OverrideAnimatorDuration();
-
             CtrlDown = false;
             AltDown = false;
             ShiftDown = false;
@@ -1725,13 +1725,11 @@ namespace GnollHackX
 
         public static void OnSleep()
         {
-            if (PlatformService != null)
-                PlatformService.RevertAnimatorDuration(false);
+            if (!UsePlatformRenderLoop)
+                PlatformService?.RevertAnimatorDuration(false);
 
-            if (CurrentMainPage != null)
-                CurrentMainPage.Suspend();
-            if (CurrentGamePage != null)
-                CurrentGamePage.Suspend();
+            CurrentMainPage?.Suspend();
+            CurrentGamePage?.Suspend();
 
             SleepMuteMode = true;
 
@@ -1776,8 +1774,8 @@ namespace GnollHackX
 
         public static void OnResume()
         {
-            if (PlatformService != null)
-                PlatformService.OverrideAnimatorDuration();
+            if (!UsePlatformRenderLoop)
+                PlatformService?.OverrideAnimatorDuration();
 
             CtrlDown = false;
             AltDown = false;
