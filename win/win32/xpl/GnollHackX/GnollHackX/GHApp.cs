@@ -48,6 +48,7 @@ using Azure;
 using System.Text.RegularExpressions;
 using System.ComponentModel;
 using System.Runtime.InteropServices;
+using System.Diagnostics.Metrics;
 
 namespace GnollHackX
 {
@@ -327,18 +328,7 @@ namespace GnollHackX
                 counter = 0;
             }
 
-            //lock (_renderingLock)
-            //{
-            //    _renderingCounter++;
-            //    if (_renderingCounter == long.MaxValue)
-            //        _renderingCounter = 0;
-            //}
-
             if (!UsePlatformRenderLoop)
-                return;
-
-            GamePage curGamePage = CurrentGamePage;
-            if (curGamePage == null)
                 return;
 
 #if WINDOWS
@@ -353,6 +343,13 @@ namespace GnollHackX
 #else
             int screenRefreshRate = (int)DisplayRefreshRate;
 #endif
+
+            AnimateTopPageOfModalStack(counter, screenRefreshRate);
+
+            GamePage curGamePage = CurrentGamePage;
+            if (curGamePage == null)
+                return;
+
             MapRefreshRateStyle mapRefreshRateStyle = curGamePage.MapRefreshRate;
             CanvasTypes canvasType = curGamePage.GetActiveCanvas();
             int refreshRate;
@@ -409,6 +406,37 @@ namespace GnollHackX
                     curGamePage.RenderCanvasByCanvasType(canvasType);
                 }
             }
+        }
+
+        private static void AnimateTopPageOfModalStack(long counter, int screenRefreshRate)
+        {
+            MainThread.BeginInvokeOnMainThread(() =>
+            {
+                var topPage = PageFromTopOfModalNavigationStack();
+                if (topPage is IAnimatablePage animatablePage)
+                {
+                    int refreshRate = UIUtils.GetGeneralAnimationFrequency();
+                    if (screenRefreshRate <= refreshRate)
+                    {
+                        animatablePage.Animate();
+                    }
+                    else
+                    {
+                        int divisor = screenRefreshRate / refreshRate;
+                        if (divisor == 1 || counter % divisor == 0)
+                        {
+                            int mod = screenRefreshRate % refreshRate;
+                            if (mod > 0)
+                            {
+                                int num = screenRefreshRate / mod;
+                                if ((counter / divisor) % num == 0)
+                                    return;
+                            }
+                            animatablePage.Animate();
+                        }
+                    }
+                }
+            });
         }
 
         public static void StopRenderingStopwatch()

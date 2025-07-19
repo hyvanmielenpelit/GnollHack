@@ -203,8 +203,6 @@ namespace GnollHackX
             set { SetValue(GeneralAnimationCounterProperty, value); UpdateLabelScroll(); }
         }
 
-
-
         private readonly object _textRowLock = new object();
         private string[] _textRows = null;
         private string[] TextRows
@@ -739,26 +737,31 @@ namespace GnollHackX
         private DateTime _textScrollSpeedStamp;
         List<TouchSpeedRecord> _textScrollSpeedRecords = new List<TouchSpeedRecord>();
         private uint _auxAnimationLength = GHConstants.AuxiliaryCanvasAnimationTime / UIUtils.GetGeneralAnimationInterval();
-        private bool _textScrollSpeedOn = false;
-        private bool TextScrollSpeedOn 
+
+        public bool IsAnimationOn => TextScrollSpeedOn;
+        private int _textScrollSpeedOn = 0;
+        public bool TextScrollSpeedOn 
         { 
             get 
             { 
-                return _textScrollSpeedOn; 
+                return Interlocked.CompareExchange(ref _textScrollSpeedOn, 0, 0) != 0; 
             } 
-            set
+            private set
             {
-                _textScrollSpeedOn = value;
-                if(value)
+                Interlocked.Exchange(ref _textScrollSpeedOn, value ? 1 : 0);
+                if (!GHApp.UsePlatformRenderLoop)
                 {
-                    Animation commandAnimation = new Animation(v => GeneralAnimationCounter = (long)v, 1, _auxAnimationLength);
-                    commandAnimation.Commit(this, "GeneralAnimationCounter", length: GHConstants.AuxiliaryCanvasAnimationTime,
-                        rate: UIUtils.GetGeneralAnimationInterval(), repeat: () => true);
-                }
-                else
-                {
-                    if (this.AnimationIsRunning("GeneralAnimationCounter"))
-                        this.AbortAnimation("GeneralAnimationCounter");
+                    if (value)
+                    {
+                        Animation commandAnimation = new Animation(v => GeneralAnimationCounter = (long)v, 1, _auxAnimationLength);
+                        commandAnimation.Commit(this, "GeneralAnimationCounter", length: GHConstants.AuxiliaryCanvasAnimationTime,
+                            rate: UIUtils.GetGeneralAnimationInterval(), repeat: () => true);
+                    }
+                    else
+                    {
+                        if (this.AnimationIsRunning("GeneralAnimationCounter"))
+                            this.AbortAnimation("GeneralAnimationCounter");
+                    }
                 }
             }
         }
@@ -1036,6 +1039,8 @@ namespace GnollHackX
                     break;
             }
         }
+
+        public void Animate() => UpdateLabelScroll();
 
         private void UpdateLabelScroll()
         {

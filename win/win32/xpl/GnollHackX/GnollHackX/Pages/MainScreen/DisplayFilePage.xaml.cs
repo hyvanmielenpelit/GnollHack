@@ -23,7 +23,7 @@ namespace GnollHackX.Pages.MainScreen
 #endif
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class DisplayFilePage : ContentPage, ICloseablePage
+    public partial class DisplayFilePage : ContentPage, ICloseablePage, IAnimatablePage
     {
         private string _fileName;
         private int _fixedWidth;
@@ -105,6 +105,12 @@ namespace GnollHackX.Pages.MainScreen
             {
                 System.Diagnostics.Debug.WriteLine(ex);
             }
+        }
+
+        public void Animate()
+        {
+            if (TextLabel.IsVisible && TextLabel.IsAnimationOn)
+                TextLabel.Animate();
         }
 
         public bool ReadFile(out string errorMessage)

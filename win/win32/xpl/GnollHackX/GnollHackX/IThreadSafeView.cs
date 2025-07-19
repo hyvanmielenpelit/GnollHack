@@ -21,4 +21,9 @@ namespace GnollHackX
         Thickness ThreadSafeMargin { get; }
         WeakReference<IThreadSafeView> ThreadSafeParent { get; }
     }
+
+    public interface IAnimatablePage
+    {
+        void Animate();
+    }
 }
