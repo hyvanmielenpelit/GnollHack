@@ -362,11 +362,12 @@ namespace GnollHackX
             else
             {
                 _renderingStopWatch.Stop();
-                long ticks = _renderingStopWatch.ElapsedMilliseconds;
+                long ticks = _renderingStopWatch.ElapsedTicks;
                 _renderingStopWatch.Restart();
-                long ticksPerSecond = Math.Max(1, Stopwatch.Frequency);
-                long targetTicks = ticksPerSecond / mapRefreshRate;
-                if (ticks > targetTicks)
+                long ticksPerSecond = Stopwatch.Frequency;
+                long framesPerSecond = Math.Max(1, mapRefreshRate);
+                long ticksPerFrame = ticksPerSecond / framesPerSecond;
+                if (ticks > ticksPerFrame)
                 {
                     curGamePage.RenderCanvas();
                     return;

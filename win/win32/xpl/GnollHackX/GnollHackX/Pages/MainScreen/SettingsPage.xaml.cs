@@ -2608,6 +2608,16 @@ namespace GnollHackX.Pages.MainScreen
             if (_isManualTogglingEnabled)
             {
                 UpdateDefaultMapRefreshRate();
+                if (GHApp.IsAndroid && !e.Value && (GHApp.PlatformService?.IsRemoveAnimationsOn() ?? false))
+                {
+                    string animationSettingName = GHApp.OneUIAnimationSettingName;
+                    PopupTitleLabel.TextColor = UIUtils.NHColor2XColor((int)NhColor.NO_COLOR, 0, false, true);
+                    PopupTitleLabel.Text = "Invalid Animation Settings";
+                    PopupLabel.Text = "GnollHack has detected animation settings that are incompatible with Platform Render Loop being turned off."
+                            + (GHApp.IsSamsung ? " In the Android Settings app, please switch off \"" + animationSettingName + "\" under Accessibility > Visibility Enhancements." : " In the Android settings app, please adjust the value of \"Animator duration scale\" to 1x under Developer Options > Animator duration scale.");
+                    PopupOkButton.IsEnabled = true;
+                    PopupGrid.IsVisible = true;
+                }
             }
         }
     }
