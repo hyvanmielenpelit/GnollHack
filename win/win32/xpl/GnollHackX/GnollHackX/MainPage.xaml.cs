@@ -803,7 +803,7 @@ namespace GnollHackX
                             "GnollHack has detected invalid animation settings." 
                             + (GHApp.IsPlatformRenderLoopAvailable ? " You can either turn on Platform Render Loop in GnollHack settings or adjust your device animation settings." : "") 
                             + (GHApp.IsSamsung ? " In the Android Settings app, please switch off \"" + animationSettingName + "\" under Accessibility > Visibility Enhancements." : " In the Android settings app, please adjust the value of \"Animator duration scale\" to 1x under Developer Options > Animator duration scale."),
-                            "OK", GHColors.Orange, 2);
+                            "OK", GHColors.Orange, GHApp.IsPlatformRenderLoopAvailable ? 0 : 2);
                     }
                     else
                     {
@@ -816,13 +816,13 @@ namespace GnollHackX
                                     "GnollHack failed to automatically adjust Animator Duration Scale and it remains switched off." 
                                     + (GHApp.IsPlatformRenderLoopAvailable ? " You can either turn on Platform Render Loop in GnollHack settings or adjust your device animation settings." : "") 
                                     + (GHApp.IsAndroid ? " In the Android Settings app, please adjust the value to 1x under Developer Options > Animator duration scale. If your device has a setting named \"" + animationSettingName + "\" under Accessibility > Visibility Enhancements, this setting needs to be disabled, too." : ""),
-                                    "OK", GHColors.Orange, 3);
+                                    "OK", GHColors.Orange, GHApp.IsPlatformRenderLoopAvailable ? 0 : 3);
                             else
                                 DisplayAlertGrid("Invalid Animator Duration Scale",
                                     "GnollHack failed to automatically adjust Animator Duration Scale and it has become turned off." 
                                     + (GHApp.IsPlatformRenderLoopAvailable ? " You can either turn on Platform Render Loop in GnollHack settings or adjust your device animation settings." : "") 
                                     + (GHApp.IsAndroid ? " In the Android Settings app, please check that the value is 1x under Developer Options > Animator duration scale. If your device has a setting named \"" + animationSettingName + "\" under Accessibility > Visibility Enhancements, this setting needs to be disabled, too." : ""),
-                                    "OK", GHColors.Orange, 3);
+                                    "OK", GHColors.Orange, GHApp.IsPlatformRenderLoopAvailable ? 0 : 3);
                         }
                         else if (scalecurrent == -1.0f)
                         {
