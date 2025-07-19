@@ -19739,10 +19739,10 @@ namespace GnollHackX.Pages.Game
                         PaintTipButton(canvas, textPaint, ToggleTravelModeButton, "Use this to set how you move around.", "Travel Mode", 1.5f, centerfontsize, fontsize, false, landscape ? -1.5f : -0.15f, landscape ? -0.5f : 0, canvaswidth, canvasheight);
                         break;
                     case 8:
-                        PaintTipButton(canvas, textPaint, ToggleAutoDigButton, "This toggles auto-dig on and off.", "Auto-Dig", 1.5f, centerfontsize, fontsize, false, landscape ? -1.5f : -0.15f, landscape ? -0.5f : 0, canvaswidth, canvasheight);
+                        PaintTipButton(canvas, textPaint, ToggleIgnoreModeButton, "This toggles stopping at items.", "Ignore Stopping", 1.5f, centerfontsize, fontsize, false, landscape ? -1.5f : -0.15f, landscape ? -0.5f : 0, canvaswidth, canvasheight);
                         break;
                     case 9:
-                        PaintTipButton(canvas, textPaint, ToggleIgnoreModeButton, "This toggles stopping at items.", "Ignore Stopping", 1.5f, centerfontsize, fontsize, false, landscape ? -1.5f : -0.15f, landscape ? -0.5f : 0, canvaswidth, canvasheight);
+                        PaintTipButton(canvas, textPaint, ToggleAutoDigButton, "This toggles auto-dig on and off.", "Auto-Dig", 1.5f, centerfontsize, fontsize, false, landscape ? -1.5f : -0.15f, landscape ? -0.5f : 0, canvaswidth, canvasheight);
                         break;
                     case 10:
                         PaintTipButtonByRect(canvas, textPaint, statusBarCenterRect, "You can " + GHApp.GetClickTapWord(false, false) + " the status bar.", "Open status screen", 1.0f, centerfontsize, fontsize, false, -0.15f, 1.0f, canvaswidth, canvasheight, 1.0f, 1.0f);
@@ -19830,9 +19830,9 @@ namespace GnollHackX.Pages.Game
                     ShownTip++;
                     if (UseSimpleCmdLayout && (ShownTip == 5 || ShownTip == 7))
                         ShownTip++;
-                    if (ShownTip == 8 && !ShowAutoDigButton)
+                    if (ShownTip == 8 && !ShowIgnoreStoppingButton)
                         ShownTip++;
-                    if (ShownTip == 9 && !ShowIgnoreStoppingButton)
+                    if (ShownTip == 9 && !ShowAutoDigButton)
                         ShownTip++;
                     if (ShownTip == 14 && HealthRect.Width == 0)
                         ShownTip++;
