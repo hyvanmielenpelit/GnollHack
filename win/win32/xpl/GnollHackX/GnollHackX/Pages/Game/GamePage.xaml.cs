@@ -19742,7 +19742,7 @@ namespace GnollHackX.Pages.Game
                         PaintTipButton(canvas, textPaint, ToggleAutoDigButton, "This toggles auto-dig on and off.", "Auto-Dig", 1.5f, centerfontsize, fontsize, false, landscape ? -1.5f : -0.15f, landscape ? -0.5f : 0, canvaswidth, canvasheight);
                         break;
                     case 9:
-                        PaintTipButton(canvas, textPaint, ToggleIgnoreModeButton, "This toggles whether you stop at items.", "Ignore Stopping", 1.5f, centerfontsize, fontsize, false, landscape ? -1.5f : -0.15f, landscape ? -0.5f : 0, canvaswidth, canvasheight);
+                        PaintTipButton(canvas, textPaint, ToggleIgnoreModeButton, "This toggles stopping at items.", "Ignore Stopping", 1.5f, centerfontsize, fontsize, false, landscape ? -1.5f : -0.15f, landscape ? -0.5f : 0, canvaswidth, canvasheight);
                         break;
                     case 10:
                         PaintTipButtonByRect(canvas, textPaint, statusBarCenterRect, "You can " + GHApp.GetClickTapWord(false, false) + " the status bar.", "Open status screen", 1.0f, centerfontsize, fontsize, false, -0.15f, 1.0f, canvaswidth, canvasheight, 1.0f, 1.0f);
