@@ -1939,7 +1939,7 @@ wiz_debug(VOID_ARGS)
                 struct monst* mon = makemon(&mons[PM_SMALL_MIMIC], u.ux, u.uy, MM_ADJACENTOK | MM_NOCOUNTBIRTH);
                 if (mon)
                 {
-                    const char* firstmatch = 0;
+                    const char* firstmatch = "unknown";
                     coord cc;
                     char descbuf[BUFSZ * 5];
                     *descbuf = 0;
@@ -1977,7 +1977,7 @@ wiz_debug(VOID_ARGS)
                     cc.y = otmp->oy;
                     if (isok(cc.x, cc.y))
                     {
-                        const char* firstmatch = 0;
+                        const char* firstmatch = "unknown";
                         char descbuf[BUFSZ * 5];
                         *descbuf = 0;
                         nhsym ch = 0;

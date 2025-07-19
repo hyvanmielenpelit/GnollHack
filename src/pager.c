@@ -1513,7 +1513,7 @@ coord *click_cc;
     boolean quick = (mode == 1); /* use cursor; don't search for "more info" */
     boolean clicklook = (mode == 2); /* right mouse-click method */
     char out_str[BUFSZ * 5] = DUMMY;
-    const char *firstmatch = 0;
+    const char *firstmatch = "unknown";
     struct permonst *pm = 0, *supplemental_pm = 0;
     int i = '\0', ans = 0;
     nhsym sym = 0;              /* typed symbol or converted glyph */

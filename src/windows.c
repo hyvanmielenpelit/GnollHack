@@ -2972,7 +2972,7 @@ uint64_t special;
     if (!dumphtml_file)
         return;
 
-    const char* firstmatch = 0;
+    const char* firstmatch = "unknown";
     coord cc;
     int desc_found = 0;
     unsigned attr;
