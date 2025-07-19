@@ -68,6 +68,11 @@ namespace GnollHackX
             //SizeChanged += Base_SizeChanged;
         }
 
+        ~CustomLabel()
+        {
+            GHApp.UnregisterCustomLabelForAnimationRendering(this);
+        }
+
         public static readonly BindableProperty TextProperty = BindableProperty.Create(
             "Text", typeof(string), typeof(CustomLabel), "");
 
@@ -749,16 +754,30 @@ namespace GnollHackX
             set
             {
                 _textScrollSpeedOn = value;
-                if(value)
+                if (!GHApp.UsePlatformRenderLoop)
                 {
-                    Animation commandAnimation = new Animation(v => GeneralAnimationCounter = (long)v, 1, _auxAnimationLength);
-                    commandAnimation.Commit(this, "GeneralAnimationCounter", length: GHConstants.AuxiliaryCanvasAnimationTime,
-                        rate: UIUtils.GetGeneralAnimationInterval(), repeat: () => true);
+                    if (value)
+                    {
+                        Animation commandAnimation = new Animation(v => GeneralAnimationCounter = (long)v, 1, _auxAnimationLength);
+                        commandAnimation.Commit(this, "GeneralAnimationCounter", length: GHConstants.AuxiliaryCanvasAnimationTime,
+                            rate: UIUtils.GetGeneralAnimationInterval(), repeat: () => true);
+                    }
+                    else
+                    {
+                        if (this.AnimationIsRunning("GeneralAnimationCounter"))
+                            this.AbortAnimation("GeneralAnimationCounter");
+                    }
                 }
                 else
                 {
-                    if (this.AnimationIsRunning("GeneralAnimationCounter"))
-                        this.AbortAnimation("GeneralAnimationCounter");
+                    if (value)
+                    {
+                        GHApp.RegisterCustomLabelForAnimationRendering(this);
+                    }
+                    else
+                    {
+                        GHApp.UnregisterCustomLabelForAnimationRendering(this);
+                    }
                 }
             }
         }
@@ -1037,7 +1056,7 @@ namespace GnollHackX
             }
         }
 
-        private void UpdateLabelScroll()
+        public void UpdateLabelScroll()
         {
             InvalidateSurface();
             lock (_textScrollLock)

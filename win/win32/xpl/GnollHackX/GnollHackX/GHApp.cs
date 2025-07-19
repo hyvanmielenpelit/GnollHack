@@ -315,6 +315,7 @@ namespace GnollHackX
             } 
         }
 
+        private static readonly List<WeakReference<CustomLabel>> _removedCustomLabelsWhileRendering = new List<WeakReference<CustomLabel>>();
         private static readonly Stopwatch _renderingStopWatch = new Stopwatch();
         //private static readonly object _renderingLock = new object();
         private static long _renderingCounter = 0;
@@ -336,6 +337,35 @@ namespace GnollHackX
 
             if (!UsePlatformRenderLoop)
                 return;
+
+            /* Animate custom labels using platform render loop */
+            if (_registeredCustomLabelsForRendering.Count > 0)
+            {
+                _removedCustomLabelsWhileRendering.Clear();
+                foreach (var item in _registeredCustomLabelsForRendering)
+                {
+                    if (item.TryGetTarget(out CustomLabel customLabel))
+                    {
+                        customLabel.UpdateLabelScroll();
+                    }
+                    else
+                    {
+                        _removedCustomLabelsWhileRendering.Add(item); /* Label has been freed by GC, so can be removed now */
+                    }
+                }
+                foreach (var item in _removedCustomLabelsWhileRendering)
+                {
+                    try
+                    {
+                        _registeredCustomLabelsForRendering.Remove(item);
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.WriteLine(ex.Message);
+                    }
+                }
+            }
+
 
             GamePage curGamePage = CurrentGamePage;
             if (curGamePage == null)
@@ -415,6 +445,42 @@ namespace GnollHackX
         {
             if (_renderingStopWatch.IsRunning)
                 _renderingStopWatch.Stop();
+        }
+
+
+        private static readonly List<WeakReference<CustomLabel>> _registeredCustomLabelsForRendering = new List<WeakReference<CustomLabel>>();
+        public static void RegisterCustomLabelForAnimationRendering(CustomLabel label)
+        {
+            _registeredCustomLabelsForRendering.Add(new WeakReference<CustomLabel>(label));
+        }
+
+        private static readonly List<WeakReference<CustomLabel>> _removedCustomLabelsFromRendering = new List<WeakReference<CustomLabel>>();
+        public static void UnregisterCustomLabelForAnimationRendering(CustomLabel label)
+        {
+            _removedCustomLabelsFromRendering.Clear();
+            foreach (var item in _registeredCustomLabelsForRendering)
+            {
+                if (item.TryGetTarget(out CustomLabel value))
+                {
+                    if (value == label)
+                        _removedCustomLabelsFromRendering.Add(item);
+                }
+                else
+                {
+                    _removedCustomLabelsFromRendering.Add(item); /* Label has been freed by GC, so can be removed now */
+                }
+            }
+            foreach (var item in _removedCustomLabelsFromRendering)
+            {
+                try
+                {
+                    _registeredCustomLabelsForRendering.Remove(item);
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine(ex.Message);
+                }
+            }
         }
 
         public static void BeforeExitApp()
