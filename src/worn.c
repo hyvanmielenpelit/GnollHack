@@ -293,7 +293,6 @@ register struct obj *obj;
 boolean verbose;
 {
     register const struct worn *wp;
-//    register int p;
 
     if (!obj)
         return;
@@ -311,37 +310,17 @@ boolean verbose;
 
     for (wp = worn; wp->w_mask; wp++)
     {
-        if (obj == *(wp->w_obj)) {
+        if (obj == *(wp->w_obj)) 
+        {
             /* in case wearing or removal is in progress or removal
                is pending (via 'A' command for multiple items) */
             cancel_doff(obj, wp->w_mask);
-
             *(wp->w_obj) = 0;
-            /*
-            p = objects[obj->otyp].oc_oprop;
-            u.uprops[p].extrinsic = u.uprops[p].extrinsic & ~wp->w_mask;
-
-            p = objects[obj->otyp].oc_oprop2;
-            u.uprops[p].extrinsic = u.uprops[p].extrinsic & ~wp->w_mask;
-
-            p = objects[obj->otyp].oc_oprop3;
-            u.uprops[p].extrinsic = u.uprops[p].extrinsic & ~wp->w_mask;
-            */
-
             obj->owornmask &= ~wp->w_mask;
-
-            /*
-            if (obj->oartifact)
-                set_artifact_intrinsic(obj, 0, wp->w_mask);
-            if ((p = w_blocks(obj, wp->w_mask)) != 0)
-                u.uprops[p].blocked &= ~wp->w_mask;
-            */
         }
     }
 
     update_all_character_properties(obj, verbose);
-
-    //int curstr = ACURR(A_STR);
 
     if (obj)
     {

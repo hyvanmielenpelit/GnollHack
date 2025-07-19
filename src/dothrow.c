@@ -2549,7 +2549,25 @@ boolean from_invent;
     if (!fracture)
     {
         Sprintf(priority_debug_buf_3, "breakobj: %d", obj->otyp);
-        delobj(obj);
+        if (obj->where == OBJ_INVENT)
+        {
+            if (obj->owornmask)
+                remove_worn_item(obj, FALSE);
+            useupall(obj);
+        }
+        else if (obj->where == OBJ_MINVENT)
+        {
+            struct monst* mon = obj->ocarry;
+            if (obj->owornmask && mon && MON_WEP(mon) == obj)
+                setmnotwielded(mon, obj);
+            delobj(obj);
+            if (mon)
+                update_all_mon_statistics(mon, TRUE);
+        }
+        else
+        {
+            delobj(obj);
+        }
     }
 }
 
