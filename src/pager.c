@@ -290,9 +290,10 @@ int x, y, glyph;
 
     if (otmp)
     {
-        issue_debuglog(DEBUGLOG_DEBUG_ONLY, "look_at_object");
-        Strcpy(buf, (otmp->otyp != STRANGE_OBJECT)
-                     ? (iflags.in_dumplog ? aqcxname(otmp) : distant_name(otmp, otmp->dknown ? doname_with_price : doname_vague_quan))
+        Strcpy(buf, (otmp->otyp > STRANGE_OBJECT && otmp->otyp < NUM_OBJECTS)
+                     ? (iflags.in_dumplog ? (fakeobj ? aqcxname2(otmp) : aqcxname(otmp)) : 
+                         (fakeobj ? distant_name2(otmp, otmp->dknown ? doname_with_price : doname_vague_quan) : distant_name(otmp, otmp->dknown ? doname_with_price : doname_vague_quan))
+                       )
                      : obj_descr[STRANGE_OBJECT].oc_name);
 
         if (fakeobj) 

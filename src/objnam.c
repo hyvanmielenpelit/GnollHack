@@ -293,6 +293,19 @@ char *FDECL((*func), (OBJ_P));
     return str;
 }
 
+/* Just a copy of distant_name to differentiate in stack trace if obj is a fake object */
+char*
+distant_name2(obj, func)
+struct obj* obj;
+char* FDECL((*func), (OBJ_P));
+{
+    char* str;
+    ++distantname;
+    str = (*func)(obj);
+    --distantname;
+    return str;
+}
+
 /* convert player specified fruit name into corresponding fruit juice name
    ("slice of pizza" -> "pizza juice" rather than "slice of pizza juice") */
 char *
@@ -2439,6 +2452,16 @@ const char* name; /* Should be already in plural */
 
 char*
 aqcxname(obj)
+struct obj* obj;
+{
+    if (obj->otyp == CORPSE)
+        return obj->quan == 1 ? corpse_xname(obj, (const char*)0, CXN_ARTICLE) : prepend_quan(obj->quan, corpse_xname(obj, (const char*)0, CXN_NORMAL));
+    return obj->oartifact && obj->aknown ? the(xname(obj)) : obj->quan != 1 ? prepend_quan(obj->quan, xname(obj)) : an(xname(obj));
+}
+
+/* Just a copy of aqcxname to differentiate in stack trace if obj is a fake object */
+char*
+aqcxname2(obj)
 struct obj* obj;
 {
     if (obj->otyp == CORPSE)

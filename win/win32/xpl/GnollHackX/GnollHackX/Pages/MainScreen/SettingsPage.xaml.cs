@@ -423,12 +423,17 @@ namespace GnollHackX.Pages.MainScreen
                 Preferences.Set("UsePlatformRenderLoop", PlatformRenderLoopSwitch.IsToggled);
                 if (_gamePage != null)
                     _gamePage.PlatformRenderLoopToggled = true;
-                if (GHApp.IsAndroid && PlatformRenderLoopSwitch.IsToggled != usingBefore)
+                if (PlatformRenderLoopSwitch.IsToggled != usingBefore)
                 {
-                    if (PlatformRenderLoopSwitch.IsToggled)
-                        GHApp.PlatformService.OverrideAnimatorDuration();
-                    else
-                        GHApp.PlatformService.RevertAnimatorDuration(false);
+                    if (GHApp.IsAndroid)
+                    {
+                        if (PlatformRenderLoopSwitch.IsToggled)
+                            GHApp.PlatformService.RevertAnimatorDuration(false);
+                        else
+                            GHApp.PlatformService.OverrideAnimatorDuration();
+                    }
+                    if (!PlatformRenderLoopSwitch.IsToggled)
+                        GHApp.StopRenderingStopwatch();
                 }
             }
 

@@ -315,7 +315,7 @@ namespace GnollHackX
             } 
         }
 
-        private static Stopwatch _renderingStopWatch = new Stopwatch();
+        private static readonly Stopwatch _renderingStopWatch = new Stopwatch();
         //private static readonly object _renderingLock = new object();
         private static long _renderingCounter = 0;
         private static void CompositionTarget_Rendering(object sender, object e)
@@ -393,6 +393,12 @@ namespace GnollHackX
                     curGamePage.RenderCanvas();
                 }
             }
+        }
+
+        public static void StopRenderingStopwatch()
+        {
+            if (_renderingStopWatch.IsRunning)
+                _renderingStopWatch.Stop();
         }
 
         public static void BeforeExitApp()
