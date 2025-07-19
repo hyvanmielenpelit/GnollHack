@@ -354,7 +354,23 @@ namespace GnollHackX
             int screenRefreshRate = (int)DisplayRefreshRate;
 #endif
             MapRefreshRateStyle mapRefreshRateStyle = curGamePage.MapRefreshRate;
-            int mapRefreshRate = UIUtils.GetMainCanvasAnimationFrequency(mapRefreshRateStyle, (float)screenRefreshRate);
+            CanvasTypes canvasType = curGamePage.GetActiveCanvas();
+            int refreshRate;
+            switch (canvasType)
+            {
+                case CanvasTypes.MainCanvas:
+                    refreshRate = UIUtils.GetMainCanvasAnimationFrequency(mapRefreshRateStyle, (float)screenRefreshRate);
+                    break;
+                case CanvasTypes.MenuCanvas:
+                case CanvasTypes.CommandCanvas:
+                case CanvasTypes.TextCanvas:
+                    refreshRate = UIUtils.GetAuxiliaryCanvasAnimationFrequency(mapRefreshRateStyle, (float)screenRefreshRate);
+                    break;
+                default:
+                    refreshRate = 60;
+                    break;
+            }
+
             if (!_renderingStopWatch.IsRunning)
             {
                 _renderingStopWatch.Restart();
@@ -365,32 +381,32 @@ namespace GnollHackX
                 long ticks = _renderingStopWatch.ElapsedTicks;
                 _renderingStopWatch.Restart();
                 long ticksPerSecond = Stopwatch.Frequency;
-                long framesPerSecond = Math.Max(1, mapRefreshRate);
+                long framesPerSecond = refreshRate; /* Always greater than zero */
                 long ticksPerFrame = ticksPerSecond / framesPerSecond;
                 if (ticks > ticksPerFrame)
                 {
-                    curGamePage.RenderCanvas();
+                    curGamePage.RenderCanvasByCanvasType(canvasType);
                     return;
                 }
             }
 
-            if (screenRefreshRate <= mapRefreshRate)
+            if (screenRefreshRate <= refreshRate)
             {
-                curGamePage.RenderCanvas();
+                curGamePage.RenderCanvasByCanvasType(canvasType);
             }
             else
             {
-                int divisor = screenRefreshRate / mapRefreshRate;
+                int divisor = screenRefreshRate / refreshRate;
                 if (divisor == 1 || counter % divisor == 0)
                 {
-                    int mod = screenRefreshRate % mapRefreshRate;
+                    int mod = screenRefreshRate % refreshRate;
                     if (mod > 0)
                     {
                         int num = screenRefreshRate / mod;
                         if ((counter / divisor) % num == 0)
                             return;
                     }
-                    curGamePage.RenderCanvas();
+                    curGamePage.RenderCanvasByCanvasType(canvasType);
                 }
             }
         }

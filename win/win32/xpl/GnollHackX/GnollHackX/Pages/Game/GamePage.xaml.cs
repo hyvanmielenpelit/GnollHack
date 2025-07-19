@@ -638,7 +638,7 @@ namespace GnollHackX.Pages.Game
                 lock (_styleLock)
                 {
                     if (_mapRefreshRate == value)
-                    return;
+                        return;
 
                     _mapRefreshRate = value;
                 }
@@ -5081,7 +5081,7 @@ namespace GnollHackX.Pages.Game
             IsMainCanvasDrawing = false;
         }
 
-        public void RenderCanvas()
+        public CanvasTypes GetActiveCanvas()
         {
             CanvasTypes canvasType;
             if (TextCanvas.ThreadSafeIsVisible)
@@ -5093,45 +5093,45 @@ namespace GnollHackX.Pages.Game
             else
                 canvasType = CanvasTypes.MainCanvas;
 
-            RenderCanvasByCanvasType(canvasType);
+            return canvasType;
+        }
+
+        public void RenderCanvas()
+        {
+            RenderCanvasByCanvasType(GetActiveCanvas());
         }
 
         public void RenderCanvasByCanvasType(CanvasTypes canvasType)
         {
-            //_tickCounter++;
-            //_tickCounter = _tickCounter % GHConstants.MaxRefreshRate;
             MapRefreshRateStyle refreshRateStyle = MapRefreshRate;
-            //int mainfps = UIUtils.GetMainCanvasAnimationFrequency(style);
-            //int divisor = Math.Max(1, (int)Math.Round((double)auxRefreshRate / (double)mainfps, 0));
-
             switch (canvasType)
-                {
-                    case CanvasTypes.MainCanvas:
-                        {
-                            IncrementCounters(refreshRateStyle, true);
-                            UpdateMainCanvas(refreshRateStyle);
-                            break;
-                        }
-                    case CanvasTypes.CommandCanvas:
-                        {
-                            UpdateCommandCanvas(refreshRateStyle);
-                            break;
-                        }
-                    case CanvasTypes.MenuCanvas:
-                        {
-                            IncrementCounters(refreshRateStyle, false);
-                            UpdateMenuCanvas(refreshRateStyle);
-                            break;
-                        }
-                    case CanvasTypes.TextCanvas:
-                        {
-                            IncrementCounters(refreshRateStyle, false);
-                            UpdateTextCanvas(refreshRateStyle);
-                            break;
-                        }
-                    default:
+            {
+                case CanvasTypes.MainCanvas:
+                    {
+                        IncrementCounters(refreshRateStyle, true);
+                        UpdateMainCanvas(refreshRateStyle);
                         break;
-                }
+                    }
+                case CanvasTypes.CommandCanvas:
+                    {
+                        UpdateCommandCanvas(refreshRateStyle);
+                        break;
+                    }
+                case CanvasTypes.MenuCanvas:
+                    {
+                        IncrementCounters(refreshRateStyle, false);
+                        UpdateMenuCanvas(refreshRateStyle);
+                        break;
+                    }
+                case CanvasTypes.TextCanvas:
+                    {
+                        IncrementCounters(refreshRateStyle, false);
+                        UpdateTextCanvas(refreshRateStyle);
+                        break;
+                    }
+                default:
+                    break;
+            }
         }
 
         private float[] _gridIntervals = { 2.0f, 2.0f };

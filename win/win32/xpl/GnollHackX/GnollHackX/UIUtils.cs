@@ -1079,19 +1079,16 @@ namespace GnollHackX
             //    return 16;
         }
 
+        public static int GetAuxiliaryCanvasAnimationFrequency(MapRefreshRateStyle mapRefreshRateStyle, float screenRefreshRate)
+        {
+            int mainInterval = GetMainCanvasAnimationFrequency(mapRefreshRateStyle, screenRefreshRate);
+            return Math.Max(60, mainInterval);
+        }
+
         public static int GetAuxiliaryCanvasAnimationFrequency(MapRefreshRateStyle mapRefreshRateStyle)
         {
             int mainInterval = GetMainCanvasAnimationFrequency(mapRefreshRateStyle);
-            return Math.Max(60, mainInterval); /* SkiaSharp may not support much better values */
-            //if (GHApp.BatterySavingMode)
-            //    return 60;
-
-            //if (GHApp.DisplayRefreshRate >= 120.0f)
-            //    return 120;
-            //else if (GHApp.DisplayRefreshRate >= 90.0f)
-            //    return 90;
-            //else
-            //    return 60;
+            return Math.Max(60, mainInterval);
         }
 
         public static uint GetGeneralAnimationInterval()
