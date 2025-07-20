@@ -53,64 +53,6 @@ namespace GnollHackX
 {
     public delegate Task<bool> BackButtonHandler(object sender, EventArgs e);
 
-    public class LogPostResponseInfo
-    {
-        public long DatabaseRowId { get; set; }
-        public long TopScoreDisplayIndex { get; set; }
-        public long TopScoreIndex { get; set; }
-        public string TopScorePageUrl { get; set; }
-    }
-
-    public struct SendResult
-    {
-        public bool IsSuccess;
-        public bool IsException;
-        public bool HasHttpStatusCode;
-        public HttpStatusCode StatusCode;
-        public string Message;
-        public LogPostResponseInfo PostResponseInfo;
-    }
-
-    public class DiscoveredMusic
-    {
-        public int ghsound;
-
-        public DiscoveredMusic(int ghsound)
-        {
-            this.ghsound = ghsound;
-        }
-    }
-
-    public struct CacheUsageInfo
-    {
-        public int MaxResources;
-        public long MaxResourceBytes;
-
-        public CacheUsageInfo(int maxResources, long maxResourceBytes)
-        {
-            MaxResources = maxResources;
-            MaxResourceBytes = maxResourceBytes;
-        }
-    }
-
-    public class CacheSizeItem
-    {
-        public string Description;
-        public long Size;
-
-        public CacheSizeItem(string Description, long Size)
-        {
-            this.Description = Description;
-            this.Size = Size;
-        }
-
-        public override string ToString()
-        {
-            return Description != null ? Description : "";
-        }
-    };
-
-
     public static class GHApp
     {
 #if WINDOWS
@@ -8836,6 +8778,63 @@ namespace GnollHackX
         }
 #endif
     }
+
+    public class LogPostResponseInfo
+    {
+        public long DatabaseRowId { get; set; }
+        public long TopScoreDisplayIndex { get; set; }
+        public long TopScoreIndex { get; set; }
+        public string TopScorePageUrl { get; set; }
+    }
+
+    public struct SendResult
+    {
+        public bool IsSuccess;
+        public bool IsException;
+        public bool HasHttpStatusCode;
+        public HttpStatusCode StatusCode;
+        public string Message;
+        public LogPostResponseInfo PostResponseInfo;
+    }
+
+    public class DiscoveredMusic
+    {
+        public int ghsound;
+
+        public DiscoveredMusic(int ghsound)
+        {
+            this.ghsound = ghsound;
+        }
+    }
+
+    public struct CacheUsageInfo
+    {
+        public int MaxResources;
+        public long MaxResourceBytes;
+
+        public CacheUsageInfo(int maxResources, long maxResourceBytes)
+        {
+            MaxResources = maxResources;
+            MaxResourceBytes = maxResourceBytes;
+        }
+    }
+
+    public class CacheSizeItem
+    {
+        public string Description;
+        public long Size;
+
+        public CacheSizeItem(string Description, long Size)
+        {
+            this.Description = Description;
+            this.Size = Size;
+        }
+
+        public override string ToString()
+        {
+            return Description != null ? Description : "";
+        }
+    };
 
     public class DeviceGPU
     {
