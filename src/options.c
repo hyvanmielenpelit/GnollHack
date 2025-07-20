@@ -189,7 +189,13 @@ static struct Bool_Opt {
 #else
     { "ignintr", "ignore interrupt signals", (boolean *) 0, FALSE, SET_IN_FILE },
 #endif
-    { "ignore_stopping", "travelling is not interrupted by items, doors, or engravings", &flags.ignore_stopping, TRUE, SET_IN_GAME },
+    { "ignore_stopping", "travelling is not interrupted by items, doors, or engravings", &flags.ignore_stopping, 
+#ifdef GNH_MOBILE
+        FALSE, /* Travelling is used also for normal movement; this option is overrideable by the GUI settings */
+#else
+        TRUE,
+#endif
+        SET_IN_GAME },
     { "implicit_uncursed", "omit \"uncursed\" from inventory", &iflags.implicit_uncursed, TRUE, SET_IN_GAME },
     { "inventory_obj_cmd", "display a command menu upon selecting an object in inventory", &flags.inventory_obj_cmd, TRUE, SET_IN_GAME},
     { "inventory_weights_last", "display object weights in parentheses after object name", &flags.inventory_weights_last, FALSE, SET_IN_GAME},
