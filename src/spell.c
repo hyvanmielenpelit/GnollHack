@@ -4607,6 +4607,10 @@ int splaction;
         {
             mcolor = CLR_BLUE;
         }
+        else if (percent < 100)
+        {
+            mcolor = CLR_YELLOW;
+        }
     }
 
     any.a_int = inactive ? 0 : splnum + 1; /* must be non-zero */
@@ -4853,6 +4857,10 @@ boolean usehotkey;
         else if ((double)u.uen + (double)u.uen_fraction / 10000 < spellmanacost)
         {
             mcolor = CLR_BLUE;
+        }
+        else if (percent < 100)
+        {
+            mcolor = CLR_YELLOW;
         }
     }
 

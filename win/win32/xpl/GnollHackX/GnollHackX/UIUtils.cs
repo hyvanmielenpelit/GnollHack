@@ -40,7 +40,12 @@ namespace GnollHackX
         private static readonly SKColor GHCyan = new SKColor(133, 224, 224);
         private static readonly SKColor GHBrightCyan = new SKColor(165, 255, 255);
         private static readonly SKColor GHBrightCyanReverted = new SKColor(190, 255, 255);
-        private static readonly SKColor GHDarkYellow = new SKColor(192, 192, 0);
+        private static readonly SKColor GHBrightYellow = new SKColor(255, 255, 64);
+        private static readonly SKColor GHDarkYellow = new SKColor(224, 224, 0);
+        private static readonly SKColor GHVeryDarkYellow = new SKColor(100, 100, 0);
+        private static readonly SKColor GHVeryVeryDarkYellow = new SKColor(80, 80, 0);
+        private static readonly SKColor GHDarkOrange = new SKColor(128, 72, 0);
+        private static readonly SKColor GHVeryDarkOrange = new SKColor(100, 60, 0);
 
         public static readonly SKColorFilter HighlightColorFilter = SKColorFilter.CreateLighting(new SKColor(255, 255, 255), new SKColor(20, 20, 20));
         public static readonly SKColorFilter GrayedColorFilter = SKColorFilter.CreateColorMatrix(new float[]
@@ -133,9 +138,9 @@ namespace GnollHackX
                     break;
                 case NhColor.CLR_ORANGE:
                     if (isselected)
-                        res = SKColors.DarkOrange;
+                        res = revertblackwhite ? GHVeryDarkOrange : SKColors.DarkOrange;
                     else
-                        res = SKColors.Orange;
+                        res = revertblackwhite ? GHDarkOrange : SKColors.Orange;
                     break;
                 case NhColor.CLR_BRIGHT_GREEN:
                     if (isselected)
@@ -145,9 +150,9 @@ namespace GnollHackX
                     break;
                 case NhColor.CLR_YELLOW:
                     if (isselected)
-                        res = GHDarkYellow;
+                        res = revertblackwhite ? GHVeryVeryDarkYellow : GHDarkYellow;
                     else
-                        res = SKColors.Yellow;
+                        res = revertblackwhite ? GHVeryDarkYellow : SKColors.Yellow;
                     break;
                 case NhColor.CLR_BRIGHT_BLUE:
                     if (isselected)
