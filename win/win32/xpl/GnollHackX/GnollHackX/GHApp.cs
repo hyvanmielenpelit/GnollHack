@@ -218,7 +218,7 @@ namespace GnollHackX
             //_platformAnimator.Update += CompositionTarget_Rendering;
             //_platformAnimator.Start();
 
-            var _platformTicker = new ChoreographerFrameTicker();
+            _platformTicker = new ChoreographerFrameTicker();
             _platformTicker.Start(frameTimeNanos =>
             {
                 CompositionTarget_Rendering(null, EventArgs.Empty);
@@ -9137,8 +9137,8 @@ namespace GnollHackX
 
         public double GetRefreshRateHz()
         {
-            double duration = _displayLink.Duration;
-            return _displayLink == null || duration == 0.0 ? 60.0 : 1.0 / duration;
+            double duration = _displayLink?.Duration ?? 0.0;
+            return duration <= 0.0 ? 60.0 : 1.0 / duration;
         }
     }
 #endif

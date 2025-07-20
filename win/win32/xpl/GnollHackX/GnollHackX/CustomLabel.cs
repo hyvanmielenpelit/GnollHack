@@ -739,26 +739,89 @@ namespace GnollHackX
         private DateTime _textScrollSpeedStamp;
         List<TouchSpeedRecord> _textScrollSpeedRecords = new List<TouchSpeedRecord>();
         private uint _auxAnimationLength = GHConstants.AuxiliaryCanvasAnimationTime / UIUtils.GetGeneralAnimationInterval();
-        private bool _textScrollSpeedOn = false;
+
+        private int _reduceAnimationsSet = 0;
+        private int _reduceAnimationsOn = 0;
+        private bool ReduceAnimationsSet { get { return Interlocked.CompareExchange(ref _reduceAnimationsSet, 0, 0) != 0; } set { Interlocked.Exchange(ref _reduceAnimationsSet, value ? 1 : 0); } }
+        private bool ReduceAnimationsOn { get { return Interlocked.CompareExchange(ref _reduceAnimationsOn, 0, 0) != 0; } set { Interlocked.Exchange(ref _reduceAnimationsOn, value ? 1 : 0); } }
+#if GNH_MAUI
+        IDispatcherTimer _timer = null;
+#else
+        private int _stopTimer = 0;
+        private bool StopTimer { get { return Interlocked.CompareExchange(ref _stopTimer, 0, 0) != 0; } set { Interlocked.Exchange(ref _stopTimer, value ? 1 : 0); } }
+#endif
+        private int _textScrollSpeedOn = 0;
         private bool TextScrollSpeedOn 
         { 
             get 
             { 
-                return _textScrollSpeedOn; 
+                return Interlocked.CompareExchange(ref _textScrollSpeedOn, 0, 0) != 0; 
             } 
             set
             {
-                _textScrollSpeedOn = value;
+                Interlocked.Exchange(ref _textScrollSpeedOn, value ? 1 : 0);
                 if(value)
                 {
-                    Animation commandAnimation = new Animation(v => GeneralAnimationCounter = (long)v, 1, _auxAnimationLength);
-                    commandAnimation.Commit(this, "GeneralAnimationCounter", length: GHConstants.AuxiliaryCanvasAnimationTime,
-                        rate: UIUtils.GetGeneralAnimationInterval(), repeat: () => true);
+                    if (GHApp.IsAndroid && !ReduceAnimationsSet)
+                    {
+                        ReduceAnimationsSet = true;
+                        ReduceAnimationsOn = GHApp.PlatformService?.IsRemoveAnimationsOn() ?? false;
+                    }
+                    if (GHApp.UsePlatformRenderLoop && ReduceAnimationsOn)
+                    {
+#if GNH_MAUI
+                        if (_timer == null)
+                        {
+                            _timer = Microsoft.Maui.Controls.Application.Current.Dispatcher.CreateTimer();
+                            if (_timer != null)
+                            {
+                                _timer.Interval = TimeSpan.FromSeconds(1.0 / UIUtils.GetGeneralAnimationFrequency());
+                                _timer.IsRepeating = true;
+                                _timer.Tick += (s, e) => { UpdateLabelScroll(); };
+                                _timer.Start();
+                            }
+                        }
+                        else
+                        {
+                            _timer.Start();
+                        }
+#else
+                        StopTimer = false;
+                        Device.StartTimer(TimeSpan.FromSeconds(1.0 / UIUtils.GetGeneralAnimationFrequency()), () =>
+                        {
+                            UpdateLabelScroll();
+                            return !StopTimer;
+                        });
+#endif                    
+                    }
+                    else
+                    {
+                        Animation commandAnimation = new Animation(v => GeneralAnimationCounter = (long)v, 1, _auxAnimationLength);
+                        commandAnimation.Commit(this, "GeneralAnimationCounter", length: GHConstants.AuxiliaryCanvasAnimationTime,
+                            rate: UIUtils.GetGeneralAnimationInterval(), repeat: () => true);
+                    }
                 }
                 else
                 {
-                    if (this.AnimationIsRunning("GeneralAnimationCounter"))
-                        this.AbortAnimation("GeneralAnimationCounter");
+                    if (GHApp.IsAndroid && !ReduceAnimationsSet)
+                    {
+                        ReduceAnimationsSet = true;
+                        ReduceAnimationsOn = GHApp.PlatformService?.IsRemoveAnimationsOn() ?? false;
+                    }
+                    if (GHApp.UsePlatformRenderLoop && ReduceAnimationsOn)
+                    {
+#if GNH_MAUI
+                        if (_timer != null)
+                            _timer.Stop();
+#else
+                        StopTimer = true;
+#endif
+                    }
+                    else
+                    {
+                        if (this.AnimationIsRunning("GeneralAnimationCounter"))
+                            this.AbortAnimation("GeneralAnimationCounter");
+                    }
                 }
             }
         }
