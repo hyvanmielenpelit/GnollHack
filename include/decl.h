@@ -9,6 +9,7 @@
 #define DECL_H
 
 #include "config.h"
+#include "flag.h"
 #include "general.h"
 #include "layer.h"
 #include "monsym.h"
@@ -299,6 +300,11 @@ E NEARDATA const char getobj_enchant_armor_objects[];
 E NEARDATA const char getobj_enchant_accessory_objects[];
 
 E NEARDATA boolean is_gui_in_debug_mode;
+#ifdef DEBUG
+#define no_wizard_or_debug (TRUE)
+#else
+#define no_wizard_or_debug (!wizard || is_gui_in_debug_mode)
+#endif
 
 E int64_t done_money;
 E NEARDATA char plname[PL_NSIZ];

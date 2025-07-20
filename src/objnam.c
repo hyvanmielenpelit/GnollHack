@@ -456,12 +456,19 @@ char*
 str_upper_start(str)
 const char* str;
 {
-    char* buf = next_offset_init_obuf();
-    if(!str)
+    char* buf = 0;
+    if (!str)
+    {
+        buf = next_offset_init_obuf();
         Strcpy(buf, empty_string);
+    }
     else
-        Strcpy(buf, str);
-
+    {
+        char tempbuf[OBUFSZ]; /* Just in case str and buf happen to be randomly the same obuf */
+        Strcpy(tempbuf, str);
+        buf = next_offset_init_obuf();
+        Strcpy(buf, tempbuf);
+    }
     return upstart(buf);
 }
 
@@ -2389,16 +2396,19 @@ unsigned cxn_flags; /* bitmask of CXN_xxx values */
     } 
     else 
     {
+        char adjectivebuf[OBUFSZ] = ""; /* Just in case adjective and buf happen to be randomly the same obuf */
+        Strcpy(adjectivebuf, adjective);
+
         /* adjective positioning depends upon format of monster name */
         if (possessive) /* Medusa's cursed partly eaten corpse */
-            Sprintf(eos(nambuf), "%s %s", mname, adjective);
+            Sprintf(eos(nambuf), "%s %s", mname, adjectivebuf);
         else /* cursed partly eaten troll corpse */
-            Sprintf(eos(nambuf), "%s %s", adjective, mname);
+            Sprintf(eos(nambuf), "%s %s", adjectivebuf, mname);
         /* in case adjective has a trailing space, squeeze it out */
         mungspaces(nambuf);
         /* doname() might include a count in the adjective argument;
            if so, don't prepend an article */
-        if (digit(*adjective))
+        if (digit(*adjectivebuf))
             any_prefix = FALSE;
     }
 
@@ -2445,8 +2455,11 @@ prepend_quan(quan, name)
 int64_t quan;
 const char* name; /* Should be already in plural */
 {
+    char namebuf[OBUFSZ] = ""; /* Just in case name and buf happen to be randomly the same obuf */
+    if (name)
+        Strcpy(namebuf, name);
     char* buf = next_offset_init_obuf();
-    Sprintf(buf, "%lld %s", (long long)quan, name);
+    Sprintf(buf, "%lld %s", (long long)quan, namebuf);
     return buf;
 }
 
@@ -2713,14 +2726,17 @@ char *
 an(str)
 const char *str;
 {
-    char* buf = next_offset_init_obuf();
-
-    if (!str || !*str) {
+    if (!str || !*str) 
+    {
         impossible("Alphabet soup: 'an(%s)'.", str ? "\"\"" : "<null>");
-        return strcpy(buf, "an []");
+        char* tbuf = next_offset_init_obuf();
+        return strcpy(tbuf, "an []");
     }
-    (void) just_an(buf, str);
-    return strcat(buf, str);
+    char strbuf[OBUFSZ]; /* Just in case str and buf happen to be randomly the same obuf */
+    Strcpy(strbuf, str);
+    char* buf = next_offset_init_obuf();
+    (void) just_an(buf, strbuf);
+    return strcat(buf, strbuf);
 }
 
 char *
@@ -2737,13 +2753,16 @@ char*
 an_prefix(str)
 const char* str;
 {
-    char* buf = next_offset_init_obuf();
-
-    if (!str || !*str) {
+    if (!str || !*str) 
+    {
         impossible("Alphabet soup: 'an(%s)'.", str ? "\"\"" : "<null>");
-        return strcpy(buf, "an []");
+        char* tbuf = next_offset_init_obuf();
+        return strcpy(tbuf, "an []");
     }
-    return just_an(buf, str);
+    char strbuf[OBUFSZ]; /* Just in case str and buf happen to be randomly the same obuf */
+    Strcpy(strbuf, str);
+    char* buf = next_offset_init_obuf();
+    return just_an(buf, strbuf);
 }
 
 char*
@@ -2764,21 +2783,26 @@ char *
 the(str)
 const char *str;
 {
-    char* buf = next_offset_init_obuf();
-    boolean insert_the = FALSE;
-
-    if (!str || !*str) {
+    if (!str || !*str) 
+    {
         impossible("Alphabet soup: 'the(%s)'.", str ? "\"\"" : "<null>");
-        return strcpy(buf, "the []");
+        char* tbuf = next_offset_init_obuf();
+        return strcpy(tbuf, "the []");
     }
-    if (!strncmpi(str, "the ", 4)) {
-        buf[0] = lowc(*str);
-        Strcpy(&buf[1], str + 1);
+
+    boolean insert_the = FALSE;
+    char strbuf[OBUFSZ]; /* Just in case str and buf happen to be randomly the same obuf */
+    Strcpy(strbuf, str);
+    char* buf = next_offset_init_obuf();
+
+    if (!strncmpi(strbuf, "the ", 4)) {
+        buf[0] = lowc(*strbuf);
+        Strcpy(&buf[1], strbuf + 1);
         return buf;
-    } else if (*str < 'A' || *str > 'Z'
+    } else if (*strbuf < 'A' || *strbuf > 'Z'
                /* treat named fruit as not a proper name, even if player
                   has assigned a capitalized proper name as his/her fruit */
-               || fruit_from_name(str, TRUE, (int *) 0)) {
+               || fruit_from_name(strbuf, TRUE, (int *) 0)) {
         /* not a proper name, needs an article */
         insert_the = TRUE;
     } else {
@@ -2787,16 +2811,16 @@ const char *str;
         size_t l;
 
         /* some objects have capitalized adjectives in their names */
-        if (((tmp = rindex(str, ' ')) != 0 || (tmp = rindex(str, '-')) != 0)
+        if (((tmp = rindex(strbuf, ' ')) != 0 || (tmp = rindex(strbuf, '-')) != 0)
             && (tmp[1] < 'A' || tmp[1] > 'Z')) {
             insert_the = TRUE;
-        } else if (tmp && index(str, ' ') < tmp) { /* has spaces */
+        } else if (tmp && index(strbuf, ' ') < tmp) { /* has spaces */
             /* it needs an article if the name contains "of" */
-            tmp = strstri(str, " of ");
-            named = strstri(str, " named ");
-            called = strstri(str, " called ");
-            entitled = strstri(str, " entitled ");
-            labeled = strstri(str, " labeled ");
+            tmp = strstri(strbuf, " of ");
+            named = strstri(strbuf, " named ");
+            called = strstri(strbuf, " called ");
+            entitled = strstri(strbuf, " entitled ");
+            labeled = strstri(strbuf, " labeled ");
             if (!named && entitled)
                 named = entitled;
             if (!named && labeled)
@@ -2807,8 +2831,8 @@ const char *str;
             if (tmp && (!named || tmp < named)) /* found an "of" */
                 insert_the = TRUE;
             /* stupid special case: lacks "of" but needs "the" */
-            else if (!named && (l = strlen(str)) >= 31
-                     && !strcmp(&str[l - 31],
+            else if (!named && (l = strlen(strbuf)) >= 31
+                     && !strcmp(&strbuf[l - 31],
                                 "Platinum Yendorian Express Card"))
                 insert_the = TRUE;
         }
@@ -2817,7 +2841,7 @@ const char *str;
         Strcpy(buf, "the ");
     else
         buf[0] = '\0';
-    Strcat(buf, str);
+    Strcat(buf, strbuf);
 
     return buf;
 }
@@ -3091,8 +3115,11 @@ const char *verb;
     if (!is_plural(otmp))
         return vtense((char *) 0, verb);
 
+    char verbbuf[OBUFSZ] = ""; /* Just in case verb and buf happen to be randomly the same obuf */
+    if (verb)
+        Strcpy(verbbuf, verb);
     buf = next_offset_init_obuf();
-    Strcpy(buf, verb);
+    Strcpy(buf, verbbuf);
     return buf;
 }
 
@@ -3115,6 +3142,9 @@ vtense(subj, verb)
 register const char *subj;
 register const char *verb;
 {
+    char verbbuf[OBUFSZ] = ""; /* Just in case str and buf happen to be randomly the same obuf */
+    if (verb)
+        Strcpy(verbbuf, verb);
     char *buf = next_offset_init_obuf(), *bspot;
     size_t len, ltmp;
     const char *sp, *spot;
@@ -3170,18 +3200,18 @@ register const char *verb;
                     goto sing;
             }
 
-            return strcpy(buf, verb);
+            return strcpy(buf, verbbuf);
         }
         /*
          * 3rd person plural doesn't end in telltale 's';
          * 2nd person singular behaves as if plural.
          */
         if (!strcmpi(subj, "they") || !strcmpi(subj, "you"))
-            return strcpy(buf, verb);
+            return strcpy(buf, verbbuf);
     }
 
  sing:
-    Strcpy(buf, verb);
+    Strcpy(buf, verbbuf);
     len = (int) strlen(buf);
     bspot = buf + len - 1;
 
@@ -3384,20 +3414,24 @@ char *
 makeplural(oldstr)
 const char *oldstr;
 {
+    char oldbuf[OBUFSZ] = ""; /* Just in case oldstr and buf happen to be randomly the same obuf */
+    if (oldstr)
+        Strcpy(oldbuf, oldstr);
+    char* oldbufptr = oldbuf;
     register char *spot;
     char lo_c, *str = next_offset_init_obuf();
     const char *excess = (char *) 0;
     size_t len;
 
     if (oldstr)
-        while (*oldstr == ' ')
-            oldstr++;
-    if (!oldstr || !*oldstr) {
+        while (*oldbufptr == ' ')
+            oldbufptr++;
+    if (!oldstr || !*oldbufptr) {
         impossible("plural of null?");
         Strcpy(str, "s");
         return str;
     }
-    Strcpy(str, oldstr);
+    Strcpy(str, oldbufptr);
 
     /*
      * Skip changing "pair of" to "pairs of".  According to Webster, usual
@@ -3410,7 +3444,7 @@ const char *oldstr;
 
     /* look for "foo of bar" so that we can focus on "foo" */
     if ((spot = singplur_compound(str)) != 0) {
-        excess = oldstr + (int) (spot - str);
+        excess = oldbufptr + (int) (spot - str);
         *spot = '\0';
     } else
         spot = eos(str);
@@ -3549,24 +3583,28 @@ char *
 makesingular(oldstr)
 const char *oldstr;
 {
+    char oldbuf[OBUFSZ] = ""; /* Just in case oldstr and buf happen to be randomly the same obuf */
+    if (oldstr)
+        Strcpy(oldbuf, oldstr);
+    char* oldbufptr = oldbuf;
     register char *p, *bp;
     const char *excess = 0;
     char *str = next_offset_init_obuf();
 
     if (oldstr)
-        while (*oldstr == ' ')
-            oldstr++;
-    if (!oldstr || !*oldstr) {
+        while (*oldbufptr == ' ')
+            oldbufptr++;
+    if (!oldstr || !*oldbufptr) {
         impossible("singular of null?");
         str[0] = '\0';
         return str;
     }
 
-    bp = strcpy(str, oldstr);
+    bp = strcpy(str, oldbufptr);
 
     /* check for "foo of bar" so that we can focus on "foo" */
     if ((p = singplur_compound(bp)) != 0) {
-        excess = oldstr + (int) (p - bp);
+        excess = oldbufptr + (int) (p - bp);
         *p = '\0';
     } else
         p = eos(bp);
