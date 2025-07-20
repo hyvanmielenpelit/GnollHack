@@ -766,36 +766,42 @@ namespace GnollHackX
                         ReduceAnimationsOn = GHApp.PlatformService?.IsRemoveAnimationsOn() ?? false;
                     if (GHApp.UsePlatformRenderLoop && ReduceAnimationsOn)
                     {
-#if GNH_MAUI
-                        if (_timer == null)
+                        MainThread.BeginInvokeOnMainThread(() =>
                         {
-                            _timer = Microsoft.Maui.Controls.Application.Current.Dispatcher.CreateTimer();
-                            if (_timer != null)
+#if GNH_MAUI
+                            if (_timer == null)
                             {
-                                _timer.Interval = TimeSpan.FromSeconds(1.0 / UIUtils.GetGeneralAnimationFrequency());
-                                _timer.IsRepeating = true;
-                                _timer.Tick += (s, e) => { UpdateLabelScroll(); };
+                                _timer = Microsoft.Maui.Controls.Application.Current.Dispatcher.CreateTimer();
+                                if (_timer != null)
+                                {
+                                    _timer.Interval = TimeSpan.FromSeconds(1.0 / UIUtils.GetGeneralAnimationFrequency());
+                                    _timer.IsRepeating = true;
+                                    _timer.Tick += (s, e) => { MainThread.BeginInvokeOnMainThread(() => { UpdateLabelScroll(); }); };
+                                    _timer.Start();
+                                }
+                            }
+                            else
+                            {
                                 _timer.Start();
                             }
-                        }
-                        else
-                        {
-                            _timer.Start();
-                        }
 #else
-                        StopTimer = false;
-                        Device.StartTimer(TimeSpan.FromSeconds(1.0 / UIUtils.GetGeneralAnimationFrequency()), () =>
-                        {
-                            UpdateLabelScroll();
-                            return !StopTimer;
-                        });
+                            StopTimer = false;
+                            Device.StartTimer(TimeSpan.FromSeconds(1.0 / UIUtils.GetGeneralAnimationFrequency()), () =>
+                            {
+                                MainThread.BeginInvokeOnMainThread(() => { UpdateLabelScroll(); });
+                                return !StopTimer;
+                            });
 #endif                    
+                        });
                     }
                     else
                     {
-                        Animation commandAnimation = new Animation(v => GeneralAnimationCounter = (long)v, 1, _auxAnimationLength);
-                        commandAnimation.Commit(this, "GeneralAnimationCounter", length: GHConstants.AuxiliaryCanvasAnimationTime,
-                            rate: UIUtils.GetGeneralAnimationInterval(), repeat: () => true);
+                        MainThread.BeginInvokeOnMainThread(() =>
+                        {
+                            Animation commandAnimation = new Animation(v => GeneralAnimationCounter = (long)v, 1, _auxAnimationLength);
+                            commandAnimation.Commit(this, "GeneralAnimationCounter", length: GHConstants.AuxiliaryCanvasAnimationTime,
+                                rate: UIUtils.GetGeneralAnimationInterval(), repeat: () => true);
+                        });
                     }
                 }
                 else
@@ -804,17 +810,23 @@ namespace GnollHackX
                         ReduceAnimationsOn = GHApp.PlatformService?.IsRemoveAnimationsOn() ?? false;
                     if (GHApp.UsePlatformRenderLoop && ReduceAnimationsOn)
                     {
+                        MainThread.BeginInvokeOnMainThread(() =>
+                        {
 #if GNH_MAUI
-                        if (_timer != null)
-                            _timer.Stop();
+                            if (_timer != null)
+                                _timer.Stop();
 #else
-                        StopTimer = true;
+                            StopTimer = true;
 #endif
+                        });
                     }
                     else
                     {
-                        if (this.AnimationIsRunning("GeneralAnimationCounter"))
-                            this.AbortAnimation("GeneralAnimationCounter");
+                        MainThread.BeginInvokeOnMainThread(() =>
+                        {
+                            if (this.AnimationIsRunning("GeneralAnimationCounter"))
+                                this.AbortAnimation("GeneralAnimationCounter");
+                        });
                     }
                 }
             }
