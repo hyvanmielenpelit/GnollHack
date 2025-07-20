@@ -1942,7 +1942,7 @@ namespace GnollHackX
 #endif
         public const bool DefaultDiceAsRanges = true;
         public const bool DefaultAutoDig = true;
-        public const bool DefaultIgnoreStopping = true;
+        public const bool DefaultIgnoreStopping = false; /* Since travel is also used for normal movement in the modern version */
         public const long MapDataLockTimeOutTicks = 100L;
         public const long EffectLockTimeOutTicks = 50L;
         public const long MessageLockTimeOutTicks = 50L;
