@@ -8120,15 +8120,14 @@ namespace GnollHackX
             Page topPage = null;
             try
             {
-                var stack = Navigation?.ModalStack;
-                topPage = (stack?.Count ?? 0) <= 0 ? null : stack?.Last(); // [Navigation.ModalStack.Count - 1];
+                //var stack = Navigation?.ModalStack;
+                //topPage = (stack?.Count ?? 0) <= 0 ? null : stack[stack.Count - 1];
+                topPage = Navigation?.ModalStack?.LastOrDefault(); /* Same using Linq */
             }
             catch (Exception ex)
             {
                 Debug.WriteLine(ex);
             }
-            //if (topPage == null)
-            //    return null;
             return topPage;
         }
 
