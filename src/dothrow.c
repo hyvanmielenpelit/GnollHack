@@ -2412,6 +2412,12 @@ boolean from_invent; /* thrown or dropped by player; maybe on shop bill */
 
     if (!breaktest(obj))
         return 0;
+    if (obj->owornmask && obj->where == OBJ_INVENT && obj->cursed && is_obj_worn(obj) && !cursed_items_are_positive_mon(&youmonst) && !Curse_resistance)
+    {
+        play_sfx_sound(SFX_MALIGNANT_AURA_SURROUNDS);
+        pline_ex(ATR_NONE, CLR_MSG_WARNING, "A malignant force momentarily surrounds %s, preventing you from breaking %s.", yname(obj), is_plural(obj) ? "them" : "it");
+        return 0;
+    }
     breakmsg(obj, x, y, in_view);
     breakobj(obj, x, y, TRUE, from_invent);
     return 1;
