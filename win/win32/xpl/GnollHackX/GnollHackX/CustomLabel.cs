@@ -762,11 +762,8 @@ namespace GnollHackX
                 Interlocked.Exchange(ref _textScrollSpeedOn, value ? 1 : 0);
                 if(value)
                 {
-                    if (GHApp.IsAndroid && !ReduceAnimationsSet)
-                    {
-                        ReduceAnimationsSet = true;
+                    if (GHApp.IsAndroid && Interlocked.Exchange(ref _reduceAnimationsSet, 1) == 0)
                         ReduceAnimationsOn = GHApp.PlatformService?.IsRemoveAnimationsOn() ?? false;
-                    }
                     if (GHApp.UsePlatformRenderLoop && ReduceAnimationsOn)
                     {
 #if GNH_MAUI
@@ -803,11 +800,8 @@ namespace GnollHackX
                 }
                 else
                 {
-                    if (GHApp.IsAndroid && !ReduceAnimationsSet)
-                    {
-                        ReduceAnimationsSet = true;
+                    if (GHApp.IsAndroid && Interlocked.Exchange(ref _reduceAnimationsSet, 1) == 0)
                         ReduceAnimationsOn = GHApp.PlatformService?.IsRemoveAnimationsOn() ?? false;
-                    }
                     if (GHApp.UsePlatformRenderLoop && ReduceAnimationsOn)
                     {
 #if GNH_MAUI
