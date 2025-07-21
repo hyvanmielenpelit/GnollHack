@@ -14307,7 +14307,7 @@ namespace GnollHackX.Pages.Game
             if (width == 0 || height == 0)
                 return;
             bool isLandscape = width > height;
-            bool isWideLandscape = width > 2 * height;
+            bool isWideLandscape = width > GHConstants.WideLandscapeThreshold * height;
             int visibleButtons = 5;
             GameMenuButton.IsVisible = true;
             ESCButton.IsVisible = true;

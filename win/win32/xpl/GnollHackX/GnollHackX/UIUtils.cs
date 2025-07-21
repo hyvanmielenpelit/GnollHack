@@ -1343,7 +1343,7 @@ namespace GnollHackX
             if(inverseCanvasScale == 0.0f)
                 inverseCanvasScale = 1.0f;
             bool isLandscape = canvasViewWidth > canvasViewHeight;
-            bool isWideLandscape = canvasViewWidth > 2 * canvasViewHeight;
+            bool isWideLandscape = canvasViewWidth > GHConstants.WideLandscapeThreshold * canvasViewHeight;
             int bigRowNoOfButtons = noOfLandscapeButtonsInRow > 0 ? noOfLandscapeButtonsInRow : LandscapeButtonsInRow(usingDesktopButtons, usingSimpleCmdLayout);
             bool tooWide = customScale * 40.0 * bigRowNoOfButtons + (bigRowNoOfButtons - 1) * 6 > canvasViewWidth;
             int minNoOfContextButtonRows = 2;

@@ -1947,6 +1947,7 @@ namespace GnollHackX
         public const long EffectLockTimeOutTicks = 50L;
         public const long MessageLockTimeOutTicks = 50L;
         public const uint TargetDesktopScreenWidth = 1920;
+        public const double WideLandscapeThreshold = 1.8;
 #if GNH_MAUI && (WINDOWS || ANDROID || IOS)
         public const bool IsPlatformRenderLoopDefault = true;
 #else
