@@ -14403,154 +14403,279 @@ namespace GnollHackX.Pages.Game
             Grid.SetRow(ESCButton, 0);
             populated[1, 0] = true;
 
-            /* Auto center button is always either right or below of ESC button */
-            int autoCenterX, autoCenterY;
-            if (noOfColumns > 2)
-            {
-                autoCenterX = 2;
-                autoCenterY = 0;
-            }
-            else
-            {
-                autoCenterX = 1;
-                autoCenterY = 1;
-            }
-            Grid.SetColumn(ToggleAutoCenterModeButton, autoCenterX);
-            Grid.SetRow(ToggleAutoCenterModeButton, autoCenterY);
-            populated[autoCenterX, autoCenterY] = true;
-
-            /* Minimap button is either right, below or left of the Auto center button */
-            int mapMiniX, mapMiniY;
-            if (autoCenterY == 0 && autoCenterX < noOfColumns - 1) // Right
-            {
-                mapMiniX = autoCenterX + 1;
-                mapMiniY = autoCenterY;
-            }
-            else if (autoCenterY == 0 || (autoCenterX == 0 && autoCenterY < noOfRows - 1) || autoCenterY < noOfRows - 2) // Below
-            {
-                mapMiniX = autoCenterX;
-                mapMiniY = autoCenterY + 1;
-            }
-            else  // Left
-            {
-                mapMiniX = autoCenterX - 1;
-                mapMiniY = autoCenterY;
-            }
-            Grid.SetColumn(ToggleZoomMiniButton, mapMiniX);
-            Grid.SetRow(ToggleZoomMiniButton, mapMiniY);
-            populated[mapMiniX, mapMiniY] = true;
-
-            /* Alternate map zoom button is either right, below or left of the minimap button, unless there is no button above this location */
+            int autoCenterX = -1, autoCenterY = -1;
+            int mapMiniX = -1, mapMiniY = -1;
             int lookX = -1, lookY = -1;
             bool dynamicLookPlacement = false;
-            if (isAltZoomVisible)
+
+#if false // Code for placing autocenter button first
+            if (GHConstants.StoneButtonOrderPlaceAutoCenterFirst)
             {
-                int altZoomX, altZoomY;
-                if (mapMiniY == 0 && mapMiniX < noOfColumns - 1) // Right of the minimap button
+                /* Auto center button is always either right or below of ESC button */
+                if (noOfColumns > 2)
                 {
-                    altZoomX = mapMiniX + 1;
-                    altZoomY = mapMiniY;
-                    if (mapMiniX < noOfColumns - 2)
+                    autoCenterX = 2;
+                    autoCenterY = 0;
+                }
+                else
+                {
+                    autoCenterX = 1;
+                    autoCenterY = 1;
+                }
+                Grid.SetColumn(ToggleAutoCenterModeButton, autoCenterX);
+                Grid.SetRow(ToggleAutoCenterModeButton, autoCenterY);
+                populated[autoCenterX, autoCenterY] = true;
+
+                /* Minimap button is either right, below or left of the Auto center button */
+                if (autoCenterY == 0 && autoCenterX < noOfColumns - 1) // Right
+                {
+                    mapMiniX = autoCenterX + 1;
+                    mapMiniY = autoCenterY;
+                }
+                else if (autoCenterY == 0 || (autoCenterX == 0 && autoCenterY < noOfRows - 1) || autoCenterY < noOfRows - 2) // Below
+                {
+                    mapMiniX = autoCenterX;
+                    mapMiniY = autoCenterY + 1;
+                }
+                else  // Left
+                {
+                    mapMiniX = autoCenterX - 1;
+                    mapMiniY = autoCenterY;
+                }
+                Grid.SetColumn(ToggleZoomMiniButton, mapMiniX);
+                Grid.SetRow(ToggleZoomMiniButton, mapMiniY);
+                populated[mapMiniX, mapMiniY] = true;
+
+                /* Alternate map zoom button is either right, below or left of the minimap button, unless there is no button above this location */
+                if (isAltZoomVisible)
+                {
+                    int altZoomX, altZoomY;
+                    if (mapMiniY == 0 && mapMiniX < noOfColumns - 1) // Right of the minimap button
                     {
-                        lookX = mapMiniX + 2;
-                        lookY = mapMiniY;
+                        altZoomX = mapMiniX + 1;
+                        altZoomY = mapMiniY;
+                        if (mapMiniX < noOfColumns - 2)
+                        {
+                            lookX = mapMiniX + 2;
+                            lookY = mapMiniY;
+                        }
+                        else
+                        {
+                            lookX = mapMiniX + 1;
+                            lookY = mapMiniY + 1;
+                        }
+                    }
+                    else if (mapMiniX == noOfColumns - 1 && (mapMiniY < noOfRows - 2 || mapMiniY == 0)) // Below the minimap button, there's also space for look button below
+                    {
+                        altZoomX = mapMiniX;
+                        altZoomY = mapMiniY + 1;  /* Below miniMap */
+                        if (mapMiniY < noOfRows - 2) /* Below altZoom */
+                        {
+                            lookX = mapMiniX;
+                            lookY = mapMiniY + 2;
+                        }
+                        else if (altZoomX - 1 >= 0 && !populated[altZoomX - 1, altZoomY]) /* Left of altZoom if not populated */
+                        {
+                            lookX = altZoomX - 1;
+                            lookY = altZoomY;
+                        }
+                        else // Fail safe
+                        {
+                            dynamicallyPlacedList.Add(LookModeButton);
+                            dynamicLookPlacement = true;
+                        }
                     }
                     else
                     {
-                        lookX = mapMiniX + 1;
-                        lookY = mapMiniY + 1;
+                        altZoomX = mapMiniX - 1;
+                        altZoomY = mapMiniY;
+                        if (altZoomX - 1 >= 0 && altZoomY - 1 >= 0 && !populated[altZoomX - 1, altZoomY - 1])  // Top-left of the altZoom button
+                        {
+                            lookX = altZoomX - 1;
+                            lookY = altZoomY - 1;
+                        }
+                        else if (altZoomX - 1 >= 0 && !populated[altZoomX - 1, altZoomY])  // Left of the altZoom button
+                        {
+                            lookX = altZoomX - 1;
+                            lookY = altZoomY;
+                        }
+                        else // Fail safe
+                        {
+                            dynamicallyPlacedList.Add(LookModeButton);
+                            dynamicLookPlacement = true;
+                        }
                     }
-                }
-                else if (mapMiniX == noOfColumns - 1 && (mapMiniY < noOfRows - 2 || mapMiniY == 0)) // Below the minimap button, there's also space for look button below
-                {
-                    altZoomX = mapMiniX;
-                    altZoomY = mapMiniY + 1;  /* Below miniMap */
-                    if (mapMiniY < noOfRows - 2) /* Below altZoom */
+                    Grid.SetColumn(ToggleZoomAlternateButton, altZoomX);
+                    Grid.SetRow(ToggleZoomAlternateButton, altZoomY);
+                    populated[altZoomX, altZoomY] = true;
+                    if (!dynamicLookPlacement)
                     {
-                        lookX = mapMiniX;
-                        lookY = mapMiniY + 2;
-                    }
-                    else if (altZoomX - 1 >= 0 && !populated[altZoomX - 1, altZoomY]) /* Left of altZoom if not populated */
-                    {
-                        lookX = altZoomX - 1;
-                        lookY = altZoomY;
-                    }
-                    else // Fail safe
-                    {
-                        dynamicallyPlacedList.Add(LookModeButton);
-                        dynamicLookPlacement = true;
+                        Grid.SetColumn(LookModeButton, lookX);
+                        Grid.SetRow(LookModeButton, lookY);
+                        populated[lookX, lookY] = true;
                     }
                 }
                 else
                 {
-                    altZoomX = mapMiniX - 1;
-                    altZoomY = mapMiniY;
-                    if (altZoomX - 1 >= 0 && altZoomY - 1 >= 0 && !populated[altZoomX - 1, altZoomY - 1])  // Top-left of the altZoom button
+                    if (mapMiniY == 0 && mapMiniX < noOfColumns - 1) // Right of the minimap button
                     {
-                        lookX = altZoomX - 1;
-                        lookY = altZoomY - 1;
+                        lookX = mapMiniX + 1;
+                        lookY = mapMiniY;
                     }
-                    else if (altZoomX - 1 >= 0 && !populated[altZoomX - 1, altZoomY])  // Left of the altZoom button
+                    else if (mapMiniY < noOfRows - 1) // Below the minimap button
                     {
-                        lookX = altZoomX - 1;
-                        lookY = altZoomY;
+                        if (mapMiniX == noOfColumns - 1)
+                        {
+                            lookX = mapMiniX;
+                            lookY = mapMiniY + 1;
+                        }
+                        else if (autoCenterY + 1 < noOfRows && !populated[autoCenterX, autoCenterY + 1])
+                        {
+                            lookX = autoCenterX;
+                            lookY = autoCenterY + 1;
+                        }
+                        else // Fail safe
+                        {
+                            dynamicallyPlacedList.Add(LookModeButton);
+                            dynamicLookPlacement = true;
+                        }
+                    }
+                    else if (mapMiniX - 1 >= 0)
+                    {
+                        lookX = mapMiniX - 1;
+                        lookY = mapMiniY;
                     }
                     else // Fail safe
                     {
                         dynamicallyPlacedList.Add(LookModeButton);
                         dynamicLookPlacement = true;
                     }
-                }
-                Grid.SetColumn(ToggleZoomAlternateButton, altZoomX);
-                Grid.SetRow(ToggleZoomAlternateButton, altZoomY);
-                populated[altZoomX, altZoomY] = true;
-                if (!dynamicLookPlacement)
-                {
-                    Grid.SetColumn(LookModeButton, lookX);
-                    Grid.SetRow(LookModeButton, lookY);
-                    populated[lookX, lookY] = true;
+                    if (!dynamicLookPlacement)
+                    {
+                        Grid.SetColumn(LookModeButton, lookX);
+                        Grid.SetRow(LookModeButton, lookY);
+                        populated[lookX, lookY] = true;
+                    }
                 }
             }
             else
+#endif
             {
-                if (mapMiniY == 0 && mapMiniX < noOfColumns - 1) // Right of the minimap button
+                bool autoCenterPlaced = false;
+                /* Minimap is place all the way to the right, and topmost row if there are only two rows, otherwise second topmost row */
+                if (noOfColumns > 2)
                 {
-                    lookX = mapMiniX + 1;
-                    lookY = mapMiniY;
-                }
-                else if (mapMiniY < noOfRows - 1) // Below the minimap button
-                {
-                    if (mapMiniX == noOfColumns - 1)
+                    if (noOfRows > 2) /* We have space for alt zoom or look mode below */
                     {
-                        lookX = mapMiniX;
-                        lookY = mapMiniY + 1;
+                        mapMiniX = noOfColumns - 1;
+                        mapMiniY = 1;
+
+                        /* In this case, autocenter goes above minimap */
+                        autoCenterPlaced = true;
+                        autoCenterX = noOfColumns - 1;
+                        autoCenterY = 0;
+                        Grid.SetColumn(ToggleAutoCenterModeButton, autoCenterX);
+                        Grid.SetRow(ToggleAutoCenterModeButton, autoCenterY);
+                        populated[autoCenterX, autoCenterY] = true;
                     }
-                    else if (autoCenterY + 1 < noOfRows && !populated[autoCenterX, autoCenterY + 1])
+                    else
                     {
-                        lookX = autoCenterX;
-                        lookY = autoCenterY + 1;
-                    }
-                    else // Fail safe
-                    {
-                        dynamicallyPlacedList.Add(LookModeButton);
-                        dynamicLookPlacement = true;
+                        mapMiniX = noOfColumns - 1;
+                        mapMiniY = 0;
                     }
                 }
-                else if (mapMiniX - 1 >= 0)
+                else
                 {
-                    lookX = mapMiniX - 1;
-                    lookY = mapMiniY;
+                    if (noOfRows > 3) /* We have space for alt zoom or look mode below */
+                    {
+                        mapMiniX = 1;
+                        mapMiniY = 2;
+
+                        /* In this case, autocenter goes above minimap */
+                        autoCenterPlaced = true;
+                        autoCenterX = 1;
+                        autoCenterY = 1;
+                        Grid.SetColumn(ToggleAutoCenterModeButton, autoCenterX);
+                        Grid.SetRow(ToggleAutoCenterModeButton, autoCenterY);
+                        populated[autoCenterX, autoCenterY] = true;
+                    }
+                    else
+                    {
+                        mapMiniX = 1;
+                        mapMiniY = 1;
+                    }
                 }
-                else // Fail safe
+                Grid.SetColumn(ToggleZoomMiniButton, mapMiniX);
+                Grid.SetRow(ToggleZoomMiniButton, mapMiniY);
+                populated[mapMiniX, mapMiniY] = true;
+
+                bool lookPlaced = false;
+                if (mapMiniY == 0) /* Try to fill first the first row, as mapMiniX is as right as possible */
                 {
+                    if (!autoCenterPlaced && mapMiniX >= 1 && !populated[mapMiniX - 1, mapMiniY])
+                    {
+                        autoCenterPlaced = true;
+                        autoCenterX = mapMiniX - 1;
+                        autoCenterY = mapMiniY;
+                        Grid.SetColumn(ToggleAutoCenterModeButton, autoCenterX);
+                        Grid.SetRow(ToggleAutoCenterModeButton, autoCenterY);
+                        populated[autoCenterX, autoCenterY] = true;
+                    }
+                    //if (autoCenterPlaced && mapMiniX >= 2 && !populated[mapMiniX - 2, mapMiniY])
+                    //{
+                    //    lookPlaced = true;
+                    //    dynamicLookPlacement = true; /* Prevent travel mode being placed relative to LookModeButton */
+                    //    lookX = mapMiniX - 2;
+                    //    lookY = mapMiniY;
+                    //    Grid.SetColumn(LookModeButton, lookX);
+                    //    Grid.SetRow(LookModeButton, lookY);
+                    //    populated[lookX, lookY] = true;
+                    //}
+                }
+
+                /* Alternate map zoom button is either right, below or left of the minimap button, unless there is no button above this location */
+                int altZoomX = -1, altZoomY = -1;
+                bool dynamicAltZoomPlacement = false;
+                if (isAltZoomVisible)
+                {
+                    if (mapMiniY == 0 && mapMiniX < noOfColumns - 1) // Right of the minimap button
+                    {
+                        altZoomX = mapMiniX + 1;
+                        altZoomY = mapMiniY;
+                    }
+                    else if (mapMiniX == noOfColumns - 1 && (mapMiniY < noOfRows - 1 || mapMiniY == 0))  /* Below miniMap */
+                    {
+                        altZoomX = mapMiniX;
+                        altZoomY = mapMiniY + 1;
+                    }
+                    else if (mapMiniX >= 1 && !populated[mapMiniX - 1, mapMiniY])  /* Left of the miniMap */
+                    {
+                        altZoomX = mapMiniX - 1;
+                        altZoomY = mapMiniY;
+                    }
+                    else
+                    {
+                        dynamicAltZoomPlacement = true;
+                        dynamicallyPlacedList.Add(ToggleZoomAlternateButton);
+                    }
+                    if (!dynamicAltZoomPlacement && altZoomX >= 0 && altZoomY >= 0)
+                    {
+                        Grid.SetColumn(ToggleZoomAlternateButton, altZoomX);
+                        Grid.SetRow(ToggleZoomAlternateButton, altZoomY);
+                        populated[altZoomX, altZoomY] = true;
+                    }
+                }
+
+                if (!lookPlaced)
+                {
+                    /* Look is allocated dynamically */
                     dynamicallyPlacedList.Add(LookModeButton);
                     dynamicLookPlacement = true;
                 }
-                if (!dynamicLookPlacement)
+                if (!autoCenterPlaced)
                 {
-                    Grid.SetColumn(LookModeButton, lookX);
-                    Grid.SetRow(LookModeButton, lookY);
-                    populated[lookX, lookY] = true;
+                    /* AutoCenter is allocated dynamically */
+                    dynamicallyPlacedList.Add(ToggleAutoCenterModeButton);
                 }
             }
 
@@ -14602,9 +14727,10 @@ namespace GnollHackX.Pages.Game
             {
                 int i = 0;
                 bool allPlaced = false;
+#if false
                 if (isLandscape)
                 {
-                    for (int y = 1; y < noOfRows; y++)
+                    for (int y = 0; y < noOfRows; y++)
                     {
                         for (int x = noOfColumns - 1; x >= 0; x--)
                         {
@@ -14626,6 +14752,7 @@ namespace GnollHackX.Pages.Game
                     }
                 }
                 else
+#endif
                 {
                     for (int x = noOfColumns - 1; x >= 0; x--)
                     {
