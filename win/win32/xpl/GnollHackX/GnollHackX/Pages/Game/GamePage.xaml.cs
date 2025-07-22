@@ -2496,76 +2496,80 @@ namespace GnollHackX.Pages.Game
                 {
                     Interlocked.Exchange(ref AnimationTimers.general_animation_counter, 0L);
                     res = 0;
+                    lock (AnimationTimerLock)
+                    {
+                        AnimationTimers.CalculateCounterTimeStampsOnOverflowToZero();
+                    }
                 }
                 //generalcountervalue = Interlocked.CompareExchange(ref AnimationTimers.general_animation_counter, 0L, 0L);;
 
-                lock (AnimationTimerLock)
-                {
-                    //AnimationTimers.general_animation_counter += counter_increment;
-                    //if (AnimationTimers.general_animation_counter < 0)
-                    //    AnimationTimers.general_animation_counter = 0;
+                //lock (AnimationTimerLock)
+                //{
+                //    //AnimationTimers.general_animation_counter += counter_increment;
+                //    //if (AnimationTimers.general_animation_counter < 0)
+                //    //    AnimationTimers.general_animation_counter = 0;
 
-                    if (AnimationTimers.u_action_animation_counter_on)
-                    {
-                        //Interlocked.Add(ref AnimationTimers.u_action_animation_counter, counter_increment);
-                        //if (AnimationTimers.u_action_animation_counter < 0)
-                        //    Interlocked.Exchange(ref AnimationTimers.u_action_animation_counter, 0L);
-                        if (AnimationTimers.u_action_animation_counter > long.MaxValue - counter_increment)
-                            AnimationTimers.u_action_animation_counter = 0;
-                        else
-                            AnimationTimers.u_action_animation_counter += counter_increment;
-                    }
+                //    if (AnimationTimers.u_action_animation_counter_on)
+                //    {
+                //        //Interlocked.Add(ref AnimationTimers.u_action_animation_counter, counter_increment);
+                //        //if (AnimationTimers.u_action_animation_counter < 0)
+                //        //    Interlocked.Exchange(ref AnimationTimers.u_action_animation_counter, 0L);
+                //        if (AnimationTimers.u_action_animation_counter > long.MaxValue - counter_increment)
+                //            AnimationTimers.u_action_animation_counter = 0;
+                //        else
+                //            AnimationTimers.u_action_animation_counter += counter_increment;
+                //    }
 
-                    if (AnimationTimers.m_action_animation_counter_on)
-                    {
-                        //Interlocked.Add(ref AnimationTimers.m_action_animation_counter, counter_increment);
-                        //if (AnimationTimers.m_action_animation_counter < 0)
-                        //    Interlocked.Exchange(ref AnimationTimers.m_action_animation_counter, 0L);
-                        if (AnimationTimers.m_action_animation_counter > long.MaxValue - counter_increment)
-                            AnimationTimers.m_action_animation_counter = 0;
-                        else
-                            AnimationTimers.m_action_animation_counter += counter_increment;
-                    }
+                //    if (AnimationTimers.m_action_animation_counter_on)
+                //    {
+                //        //Interlocked.Add(ref AnimationTimers.m_action_animation_counter, counter_increment);
+                //        //if (AnimationTimers.m_action_animation_counter < 0)
+                //        //    Interlocked.Exchange(ref AnimationTimers.m_action_animation_counter, 0L);
+                //        if (AnimationTimers.m_action_animation_counter > long.MaxValue - counter_increment)
+                //            AnimationTimers.m_action_animation_counter = 0;
+                //        else
+                //            AnimationTimers.m_action_animation_counter += counter_increment;
+                //    }
 
-                    if (AnimationTimers.explosion_animation_counter_on)
-                    {
-                        //Interlocked.Add(ref AnimationTimers.explosion_animation_counter, counter_increment);
-                        //if (AnimationTimers.explosion_animation_counter < 0)
-                        //    Interlocked.Exchange(ref AnimationTimers.explosion_animation_counter, 0L);
-                        if (AnimationTimers.explosion_animation_counter > long.MaxValue - counter_increment)
-                            AnimationTimers.explosion_animation_counter = 0;
-                        else
-                            AnimationTimers.explosion_animation_counter += counter_increment;
-                    }
+                //    if (AnimationTimers.explosion_animation_counter_on)
+                //    {
+                //        //Interlocked.Add(ref AnimationTimers.explosion_animation_counter, counter_increment);
+                //        //if (AnimationTimers.explosion_animation_counter < 0)
+                //        //    Interlocked.Exchange(ref AnimationTimers.explosion_animation_counter, 0L);
+                //        if (AnimationTimers.explosion_animation_counter > long.MaxValue - counter_increment)
+                //            AnimationTimers.explosion_animation_counter = 0;
+                //        else
+                //            AnimationTimers.explosion_animation_counter += counter_increment;
+                //    }
 
-                    for (i = 0; i < GHConstants.MaxPlayedZapAnimations; i++)
-                    {
-                        if (AnimationTimers.zap_animation_counter_on[i])
-                        {
-                            //Interlocked.Add(ref AnimationTimers.zap_animation_counter[i], counter_increment);
-                            //if (AnimationTimers.zap_animation_counter[i] < 0)
-                            //    Interlocked.Exchange(ref AnimationTimers.zap_animation_counter[i], 0L);
-                            if (AnimationTimers.zap_animation_counter[i] > long.MaxValue - counter_increment)
-                                AnimationTimers.zap_animation_counter[i] = 0;
-                            else
-                                AnimationTimers.zap_animation_counter[i] += counter_increment;
-                        }
-                    }
+                //    for (i = 0; i < GHConstants.MaxPlayedZapAnimations; i++)
+                //    {
+                //        if (AnimationTimers.zap_animation_counter_on[i])
+                //        {
+                //            //Interlocked.Add(ref AnimationTimers.zap_animation_counter[i], counter_increment);
+                //            //if (AnimationTimers.zap_animation_counter[i] < 0)
+                //            //    Interlocked.Exchange(ref AnimationTimers.zap_animation_counter[i], 0L);
+                //            if (AnimationTimers.zap_animation_counter[i] > long.MaxValue - counter_increment)
+                //                AnimationTimers.zap_animation_counter[i] = 0;
+                //            else
+                //                AnimationTimers.zap_animation_counter[i] += counter_increment;
+                //        }
+                //    }
 
-                    for (i = 0; i < GHConstants.MaxPlayedSpecialEffects; i++)
-                    {
-                        if (AnimationTimers.special_effect_animation_counter_on[i])
-                        {
-                            //Interlocked.Add(ref AnimationTimers.special_effect_animation_counter[i], counter_increment);
-                            //if (AnimationTimers.special_effect_animation_counter[i] < 0)
-                            //    Interlocked.Exchange(ref AnimationTimers.special_effect_animation_counter[i], 0L);
-                            if (AnimationTimers.special_effect_animation_counter[i] > long.MaxValue - counter_increment)
-                                AnimationTimers.special_effect_animation_counter[i] = 0;
-                            else
-                                AnimationTimers.special_effect_animation_counter[i] += counter_increment;
-                        }
-                    }
-                }
+                //    for (i = 0; i < GHConstants.MaxPlayedSpecialEffects; i++)
+                //    {
+                //        if (AnimationTimers.special_effect_animation_counter_on[i])
+                //        {
+                //            //Interlocked.Add(ref AnimationTimers.special_effect_animation_counter[i], counter_increment);
+                //            //if (AnimationTimers.special_effect_animation_counter[i] < 0)
+                //            //    Interlocked.Exchange(ref AnimationTimers.special_effect_animation_counter[i], 0L);
+                //            if (AnimationTimers.special_effect_animation_counter[i] > long.MaxValue - counter_increment)
+                //                AnimationTimers.special_effect_animation_counter[i] = 0;
+                //            else
+                //                AnimationTimers.special_effect_animation_counter[i] += counter_increment;
+                //        }
+                //    }
+                //}
             }
 
             lock (_mapOffsetLock)
@@ -7399,11 +7403,28 @@ namespace GnollHackX.Pages.Game
             maincountervalue = Interlocked.CompareExchange(ref _mainCounterValue, 0L, 0L);
             /* Moved general_animation_counter outside of the lock to minimize the time spent in lock;  since InvalidateSurface is called after IncrementCounters and nothing else modifies general_animation_counter, generalcountervalue should be consistent of the copy result below */
             generalcountervalue = Interlocked.CompareExchange(ref AnimationTimers.general_animation_counter, 0L, 0L);;
-            lock (AnimationTimerLock)
+            //lock (AnimationTimerLock)
+            //{
+            //    /* Note that animation timer is updated too frequently so that it does not make sense to use TryEnter; however, since InvalidateSurface is called after IncrementCounters, there should practically never be a conflict here due to IncrementCounters */
+            //    AnimationTimers.CopyTo(_localAnimationTimers, false);
+            //}
+            try
             {
-                /* Note that animation timer is updated too frequently so that it does not make sense to use TryEnter; however, since InvalidateSurface is called after IncrementCounters, there should practically never be a conflict here due to IncrementCounters */
-                AnimationTimers.CopyTo(_localAnimationTimers, false);
+                Monitor.TryEnter(AnimationTimerLock, ref lockTaken);
+                if (lockTaken)
+                {
+                    AnimationTimers.CopyTo(_localAnimationTimers, false, false);
+                }
             }
+            finally
+            {
+                if (lockTaken)
+                    Monitor.Exit(AnimationTimerLock);
+            }
+            lockTaken = false;
+
+            _localAnimationTimers.CalculateCounterValues(generalcountervalue);
+
             //lock (_mainCounterLock)
             //{
             //    maincountervalue = Interlocked.CompareExchange(ref _mainCounterValue, 0L, 0L);
