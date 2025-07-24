@@ -1907,7 +1907,7 @@ wiz_debug(VOID_ARGS)
 {
     if (wizard)
     {
-        int wiz_debug_cmd_idx = 1;
+        int wiz_debug_cmd_idx = 2;
         switch (wiz_debug_cmd_idx)
         {
         case 0:
@@ -2003,6 +2003,25 @@ wiz_debug(VOID_ARGS)
             }            
             pline1("Debug test 1 done.");
             context.suppress_container_deletion_warning = 0;
+            break;
+        }
+        case 2:
+        {
+            pline1("Starting debug test 2.");
+            int i, otyp, glyph;
+            for (i = 1; i <= 200000; i++)
+            {
+                glyph = -100000 + i - 1;
+                otyp = glyph_to_otyp(glyph);
+                if (otyp < 0 || otyp >= NUM_OBJECTS)
+                {
+                    pline("Detected otyp %d using glyph %d!", otyp, glyph);
+                    break;
+                }
+                if (i % 100000 == 0)
+                    pline("Debug test 2 progressing at %d...", i);
+            }
+            pline1("Debug test 2 done.");
             break;
         }
         default:

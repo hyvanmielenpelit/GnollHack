@@ -235,7 +235,7 @@ unsigned material;
                                || ((mtmp = m_at(x, y)) != 0 && mtmp->minvent));
         } else {
             if (material
-                && objects[glyph_to_obj(glyph)].oc_material == material) {
+                && objects[glyph_to_otyp(glyph)].oc_material == material) {
                 /* object shown here is of interest because material matches */
                 for (otmp = level.objects[x][y]; otmp; otmp = otmp->nexthere)
                     if (o_material(otmp, MAT_GOLD))
@@ -249,7 +249,7 @@ unsigned material;
                 /* detection indicates removal of this object from the map */
                 return TRUE;
             }
-            if (oclass && objects[glyph_to_obj(glyph)].oc_class == oclass) {
+            if (oclass && objects[glyph_to_otyp(glyph)].oc_class == oclass) {
                 /* obj shown here is of interest because its class matches */
                 for (otmp = level.objects[x][y]; otmp; otmp = otmp->nexthere)
                     if (o_in(otmp, oclass))

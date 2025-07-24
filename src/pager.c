@@ -172,7 +172,7 @@ struct obj **obj_p;
     if (!isok(x, y))
         return FALSE;
 
-    int glyphotyp = glyph_to_obj(glyph);
+    int glyphotyp = glyph_to_otyp(glyph);
     otmp = any_obj_at(glyphotyp, x, y);
 
     /* there might be a mimic here posing as an object */

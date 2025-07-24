@@ -944,7 +944,7 @@
 #define glyph_to_warning(glyph) \
     (glyph_is_warning(glyph) ? ((abs(glyph)) - GLYPH_WARNING_OFF) : 0);
 
-#define glyph_to_obj(glyph) \
+#define glyph_to_otyp(glyph) \
     (glyph_is_body(glyph) || glyph_is_female_body(glyph)  \
          ? CORPSE                                \
          : glyph_is_statue(glyph) || glyph_is_female_statue(glyph) \
@@ -952,7 +952,7 @@
          : glyph_is_cmap_boulder(glyph) \
                ? BOULDER                          \
              : glyph_is_artifact(glyph)                \
-                   ? artifact_to_obj(glyph_to_artifact(glyph))   \
+                   ? artifact_to_otyp(glyph_to_artifact(glyph))   \
                    : glyph_is_normal_object(glyph)   \
                          ? ((abs(glyph)) - GLYPH_OBJ_OFF) \
                          : STRANGE_OBJECT)

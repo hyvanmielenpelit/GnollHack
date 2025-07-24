@@ -4188,7 +4188,7 @@ is_artifact_applicable_as_axe(struct obj* obj)
 }
 
 int
-artifact_to_obj(artifactid)
+artifact_to_otyp(artifactid)
 int artifactid;
 {
     if (artifactid <= 0 || artifactid > NUM_ARTIFACTS)

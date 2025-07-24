@@ -3142,7 +3142,7 @@ boolean remove;
         }
         else if (glyph_is_object(glyph))
         {
-            int obj_idx = glyph_to_obj(glyph);
+            int obj_idx = glyph_to_otyp(glyph);
             if (!remove)
                 gui_glyph = maybe_get_replaced_glyph(glyph, x, y, data_to_replacement_info(glyph, is_otyp_drawn_in_front(obj_idx, x, y) ? LAYER_COVER_OBJECT : LAYER_OBJECT, level.objects[x][y], (struct monst*)0, 0UL, 0UL, 0UL, MAT_NONE, 0));
 

@@ -197,7 +197,7 @@ E boolean FDECL(is_immune, (struct monst*, int));
 E int NDECL(create_portal);
 E const char* FDECL(get_artifact_invoke_name, (int));
 E boolean FDECL(is_artifact_applicable_as_axe, (struct obj*));
-E int FDECL(artifact_to_obj, (int));
+E int FDECL(artifact_to_otyp, (int));
 E void FDECL(artifact_taken_away, (int));
 E void NDECL(save_initial_artifact_values);
 

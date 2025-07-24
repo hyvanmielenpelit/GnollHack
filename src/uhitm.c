@@ -4704,7 +4704,7 @@ struct monst *mtmp;
         if (glyph_is_cmap_or_cmap_variation(glyph) && (generic_glyph_to_cmap(glyph) == S_hcdoor
                                      || generic_glyph_to_cmap(glyph) == S_vcdoor))
             fmt = "The door actually was %s!";
-        else if (glyph_is_object(glyph) && glyph_to_obj(glyph) == GOLD_PIECE)
+        else if (glyph_is_object(glyph) && glyph_to_otyp(glyph) == GOLD_PIECE)
             fmt = "That gold was %s!";
 
         /* cloned Wiz starts out mimicking some other monster and
