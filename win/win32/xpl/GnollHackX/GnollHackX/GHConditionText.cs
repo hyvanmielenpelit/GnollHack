@@ -10,7 +10,7 @@ using GnollHackX.Pages.Game;
 
 namespace GnollHackX
 {
-    public class GHConditionText
+    public sealed class GHConditionText
     {
         private DisplayConditionTextData _data;
         private long _created_at_count;

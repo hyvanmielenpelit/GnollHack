@@ -8,7 +8,7 @@ using GnollHackM;
 
 namespace GnollHackX
 {
-    public class GHAnimationTimerList
+    public sealed class GHAnimationTimerList
     {
         public long general_animation_counter; /* This is special and uses Interlocked */
 

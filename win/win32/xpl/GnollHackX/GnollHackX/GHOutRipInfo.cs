@@ -4,7 +4,7 @@ using System.Text;
 
 namespace GnollHackX
 {
-    public class GHOutRipInfo
+    public sealed class GHOutRipInfo
     {
         public string PlayerName { get; set; }
         public int Points { get; set; }

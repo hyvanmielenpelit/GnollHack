@@ -4,7 +4,7 @@ using System.Text;
 
 namespace GnollHackX
 {
-    public class GHResponse
+    public sealed class GHResponse
     {
         public GHRequestType RequestType { get; set; }
         public string ResponseStringValue { get; set; }

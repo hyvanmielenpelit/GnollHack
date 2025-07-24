@@ -33,7 +33,7 @@ namespace GnollHackX
         Worn
     }
 
-    public class GHPadding
+    public sealed class GHPadding
     {
         public GHPadding(float left, float top, float right, float bottom)
         {
@@ -48,7 +48,7 @@ namespace GnollHackX
         public float Bottom { get; set; }
     }
 
-    public class GHWindow
+    public sealed class GHWindow
     {
         private GHWinType _winType = 0;
         private ghwindow_styles _winStyle = 0;

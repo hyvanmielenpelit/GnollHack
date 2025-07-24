@@ -9,7 +9,7 @@ using GnollHackX.Pages.Game;
 #endif
 namespace GnollHackX
 {
-    public class GHFloatingText
+    public sealed class GHFloatingText
     {
         private DisplayFloatingTextData _data;
         private long _created_at_count;

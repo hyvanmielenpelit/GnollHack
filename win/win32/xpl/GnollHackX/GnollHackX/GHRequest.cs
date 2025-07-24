@@ -165,7 +165,7 @@ namespace GnollHackX
         public ulong fflags;
     }
 
-    public class GHRequest
+    public sealed class GHRequest
     {
         public GHGame RequestingGame { get; }
         public GHRequestType RequestType { get; set; }

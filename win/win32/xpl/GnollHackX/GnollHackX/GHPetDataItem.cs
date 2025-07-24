@@ -5,7 +5,7 @@ using GnollHackM;
 
 namespace GnollHackX
 {
-    public class GHPetDataItem
+    public sealed class GHPetDataItem
     {
         public readonly monst_info Data;
 

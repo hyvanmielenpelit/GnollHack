@@ -4,7 +4,7 @@ using System.Text;
 
 namespace GnollHackX
 {
-    public class GHCommandButtonItem
+    public sealed class GHCommandButtonItem
     {
         public string Text;
         public string ImageSourcePath;

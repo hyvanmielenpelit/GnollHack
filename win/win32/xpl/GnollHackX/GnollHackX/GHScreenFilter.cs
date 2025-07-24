@@ -10,7 +10,7 @@ using GnollHackX.Pages.Game;
 
 namespace GnollHackX
 {
-    public class GHScreenFilter
+    public sealed class GHScreenFilter
     {
         private DisplayScreenFilterData _data;
         private long _created_at_count;

@@ -8,7 +8,7 @@ using GnollHackM;
 
 namespace GnollHackX
 {
-    public class GHRecordedFunctionCall
+    public sealed class GHRecordedFunctionCall
     {
         RecordedFunctionID _recordedFunctionID;
         object[] _args;

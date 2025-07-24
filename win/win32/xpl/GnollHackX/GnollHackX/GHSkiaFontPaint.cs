@@ -11,7 +11,7 @@ namespace GnollHackM
 namespace GnollHackX
 #endif
 {
-    public class GHSkiaFontPaint : IDisposable
+    public sealed class GHSkiaFontPaint : IDisposable
     {
         SKPaint _paint = new SKPaint();
 #if GNH_MAUI

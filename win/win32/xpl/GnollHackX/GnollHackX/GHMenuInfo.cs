@@ -9,7 +9,7 @@ using Xamarin.Forms;
 
 namespace GnollHackX
 {
-    public class GHMenuInfo
+    public sealed class GHMenuInfo
     {
         public ghmenu_styles Style { get; set; }
         public List<GHMenuItem> MenuItems = new List<GHMenuItem>();

@@ -5,7 +5,7 @@ using GnollHackX;
 
 namespace GnollHackX
 {
-    public class GHMsgHistoryItem
+    public sealed class GHMsgHistoryItem
     {
         private string _text = "";
         public string Text { get { return _text; } set { if (value != null) { _text = value; _textSplit = _text.Split(' '); } } }

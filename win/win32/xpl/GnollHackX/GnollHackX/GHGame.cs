@@ -26,7 +26,7 @@ using SkiaSharp;
 
 namespace GnollHackX
 {
-    public class GHGame
+    public sealed class GHGame
     {
         public readonly RunGnollHackFlags StartFlags;
         public bool PlayingReplay { get { return (StartFlags & RunGnollHackFlags.PlayingReplay) != 0; } }

@@ -7,7 +7,7 @@ using GnollHackM;
 
 namespace GnollHackX
 {
-    public class ObjectDataItem
+    public sealed class ObjectDataItem
     {
         public readonly Obj ObjData;
         public readonly ObjClassData OtypData;

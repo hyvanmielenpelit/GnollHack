@@ -10,7 +10,7 @@ using SkiaSharp;
 
 namespace GnollHackX
 {
-    public class GHScreenText
+    public sealed class GHScreenText
     {
         private DisplayScreenTextData _data;
         public long _created_at_count;

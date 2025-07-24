@@ -11,7 +11,7 @@ using System.Text;
 
 namespace GnollHackX
 {
-    public class GHPutStrItem
+    public sealed class GHPutStrItem
     {
         private GamePage _gamePage;
         private GHWindow _window;

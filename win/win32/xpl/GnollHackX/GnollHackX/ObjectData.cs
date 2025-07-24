@@ -4,7 +4,7 @@ using System.Text;
 
 namespace GnollHackX
 {
-    public class ObjectData
+    public sealed class ObjectData
     {
         public List<ObjectDataItem> FloorObjectList = null;
         public List<ObjectDataItem> MemoryObjectList = null;

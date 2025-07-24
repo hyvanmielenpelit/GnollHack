@@ -4,7 +4,7 @@ using System.Text;
 
 namespace GnollHackX
 {
-    public class GHPutStrInstructions
+    public sealed class GHPutStrInstructions
     {
         public readonly int Attributes;
         public readonly int Color;

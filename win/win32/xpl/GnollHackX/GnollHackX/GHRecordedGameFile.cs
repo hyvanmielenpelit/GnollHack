@@ -20,7 +20,7 @@ namespace GnollHackX
         }
     }
 
-    public class GHRecordedGameFile
+    public sealed class GHRecordedGameFile
     {
         int _index;
         string _filePath;

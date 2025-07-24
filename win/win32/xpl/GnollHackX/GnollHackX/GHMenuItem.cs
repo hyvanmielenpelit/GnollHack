@@ -15,7 +15,7 @@ using System.Linq;
 
 namespace GnollHackX
 {
-    public class GHMenuItem : IEquatable<GHMenuItem>, INotifyPropertyChanged
+    public sealed class GHMenuItem : IEquatable<GHMenuItem>, INotifyPropertyChanged
     {
         GHMenuInfo _menuInfo;
         private GamePage _gamePage;

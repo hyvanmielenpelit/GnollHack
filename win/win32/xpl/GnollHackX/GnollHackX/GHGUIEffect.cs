@@ -11,7 +11,7 @@ using GnollHackX.Pages.Game;
 
 namespace GnollHackX
 {
-    public class GHGUIEffect
+    public sealed class GHGUIEffect
     {
         private DisplayGUIEffectData _data;
         private long _created_at_count;
