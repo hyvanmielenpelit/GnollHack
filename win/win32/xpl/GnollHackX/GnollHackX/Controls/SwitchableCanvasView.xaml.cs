@@ -483,14 +483,14 @@ namespace GnollHackX.Controls
 
         public GHWindow GHWindow { get; set; }
         public ghmenu_styles MenuStyle { get; set; }
-        public readonly object MenuItemLock = new object();
+        //public readonly object MenuItemLock = new object();
 
         private ObservableCollection<GHMenuItem> _GHMenuItems = null;
-        public ObservableCollection<GHMenuItem> MenuItems { get { return _GHMenuItems; } set { _GHMenuItems = value; } }
+        public ObservableCollection<GHMenuItem> MenuItems { get { return Interlocked.CompareExchange(ref _GHMenuItems, null, null); } set { Interlocked.Exchange(ref _GHMenuItems, value); } }
 
-        public readonly object TextItemLock = new object();
+        //public readonly object TextItemLock = new object();
         private List<GHPutStrItem> _GHPutStrItems = null;
-        public List<GHPutStrItem> PutStrItems { get { return _GHPutStrItems; } set { _GHPutStrItems = value; } }
+        public List<GHPutStrItem> PutStrItems { get { return Interlocked.CompareExchange(ref _GHPutStrItems, null, null); } set { Interlocked.Exchange(ref _GHPutStrItems, value); } } //{ get { return _GHPutStrItems; } set { _GHPutStrItems = value; } }
 
         public SelectionMode SelectionHow { get; set; }
         public int SelectionIndex { get; set; }

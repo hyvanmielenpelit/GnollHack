@@ -40,12 +40,12 @@ public class MainActivity : MauiAppCompatActivity
             return true;
     }
 
-    private static readonly object _activityLock = new object();
-    private static bool _isHardKeyboardConnected = false;
+    //private static readonly object _activityLock = new object();
+    private static int _isHardKeyboardConnected = 0;
     public static bool IsHardKeyboardConnected
     {
-        get { lock (_activityLock) { return _isHardKeyboardConnected; } }
-        set { lock (_activityLock) { _isHardKeyboardConnected = value; } }
+        get { return Interlocked.CompareExchange(ref _isHardKeyboardConnected, 0, 0) != 0; }
+        set { Interlocked.Exchange(ref _isHardKeyboardConnected, value ? 1 : 0); }
     }
 
     public override void OnConfigurationChanged(Configuration newConfig)

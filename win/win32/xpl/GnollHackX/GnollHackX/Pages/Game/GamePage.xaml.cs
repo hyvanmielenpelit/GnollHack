@@ -131,9 +131,15 @@ namespace GnollHackX.Pages.Game
         private bool _isFirstAppearance = true;
         private Thread _gnhthread;
 
-        private readonly object _currentGameLock = new object();
-        private GHGame _currentGame;
-        public GHGame CurrentGame { get { lock (_currentGameLock) { return _currentGame; } } set { lock (_currentGameLock) { _currentGame = value; } } }
+        //private readonly object _currentGameLock = new object();
+        private GHGame _currentGame = null;
+        public GHGame CurrentGame 
+        {
+            //get { lock (_currentGameLock) { return _currentGame; } } 
+            //set { lock (_currentGameLock) { _currentGame = value; } } 
+            get { return Interlocked.CompareExchange(ref _currentGame, null, null); }
+            set { Interlocked.Exchange(ref _currentGame, value); }
+        }
 
         private MapData[,] _mapData = new MapData[GHConstants.MapCols, GHConstants.MapRows];
         //private readonly object _mapDataLock = new object();
@@ -820,9 +826,15 @@ namespace GnollHackX.Pages.Game
         private int _showPets = 0;
         public bool ShowPets { get { return Interlocked.CompareExchange(ref _showPets, 0, 0) != 0; } set { Interlocked.Exchange(ref _showPets, value ? 1 : 0); } }
 
-        private readonly object _cursorIsOnLock = new object();
-        private bool _cursorIsOn;
-        public bool CursorIsOn { get { lock (_cursorIsOnLock) { return _cursorIsOn; } } set { lock (_cursorIsOnLock) { _cursorIsOn = value; } } }
+        //private readonly object _cursorIsOnLock = new object();
+        private int _cursorIsOn = 0;
+        public bool CursorIsOn 
+        { 
+            //get { lock (_cursorIsOnLock) { return _cursorIsOn; } } 
+            //set { lock (_cursorIsOnLock) { _cursorIsOn = value; } }
+            get { return Interlocked.CompareExchange(ref _cursorIsOn, 0, 0) != 0; }
+            set { Interlocked.Exchange(ref _cursorIsOn, value ? 1 : 0); }
+        }
 
         //private readonly object _showDirectionsLock = new object();
         private int _showDirections = 0;
@@ -1686,10 +1698,11 @@ namespace GnollHackX.Pages.Game
                 //    if (_updateTimerTickCount == long.MaxValue)
                 //        _updateTimerTickCount = 0L;
                 //}
-                lock (_cursorIsOnLock)
-                {
-                    _cursorIsOn = !_cursorIsOn;
-                }
+                //lock (_cursorIsOnLock)
+                //{
+                //    _cursorIsOn = !_cursorIsOn;
+                //}
+                CursorIsOn = !CursorIsOn;
                 //lock (_showMemoryLock)
                 {
                     if (ShowMemory)
@@ -3761,7 +3774,7 @@ namespace GnollHackX.Pages.Game
             TextWindowGlyphImage.ActiveGlyphImageSource = TextGlyphImage;
             TextWindowGlyphImage.IsVisible = IsTextGlyphVisible;
 
-            lock (TextCanvas.TextItemLock)
+            //lock (TextCanvas.TextItemLock)
             {
                 List<GHPutStrItem> items = null;
                 if (window.WindowStyle == ghwindow_styles.GHWINDOW_STYLE_PAGER_GENERAL || window.WindowStyle == ghwindow_styles.GHWINDOW_STYLE_PAGER_SPEAKER 
@@ -4737,10 +4750,11 @@ namespace GnollHackX.Pages.Game
             }
 
             //canvasView.MenuItems = newmis;
-            lock (MenuCanvas.MenuItemLock)
-            {
-                MenuCanvas.MenuItems = newmis;
-            }
+            MenuCanvas.MenuItems = newmis;
+            //lock (MenuCanvas.MenuItemLock)
+            //{
+            //    MenuCanvas.MenuItems = newmis;
+            //}
             RefreshMenuRowCounts = true;
             _unselectOnTap = false;
 
@@ -16793,11 +16807,14 @@ namespace GnollHackX.Pages.Game
             if (canvaswidth <= 16 || canvasheight <= 16)
                 return;
 
-            lock (MenuCanvas.MenuItemLock)
-            {
-                if (referenceCanvasView.MenuItems == null)
-                    return;
-            }
+            var menuItems = referenceCanvasView.MenuItems;
+            if (menuItems == null)
+                return;
+            //lock (MenuCanvas.MenuItemLock)
+            //{
+            //    if (referenceCanvasView.MenuItems == null)
+            //        return;
+            //}
 
             float scale = GHApp.DisplayDensity; // (float)Math.Sqrt((double)(canvaswidth * canvasheight / (float)(referenceCanvasView.Width * referenceCanvasView.Height)));
             float customScale = GHApp.CustomScreenScale;
@@ -16838,13 +16855,13 @@ namespace GnollHackX.Pages.Game
                 float glyphpadding = 0;
                 float glyphystart = scale * (float)Math.Max(0.0, MenuWindowGlyphImage.ThreadSafeY - MenuCanvas.ThreadSafeY);
                 float glyphyend = scale * (float)Math.Max(0.0, MenuWindowGlyphImage.ThreadSafeY + MenuWindowGlyphImage.ThreadSafeHeight - MenuCanvas.ThreadSafeY);
-                lock (MenuCanvas.MenuItemLock)
+                //lock (MenuCanvas.MenuItemLock)
                 {
                     bool has_pictures = false;
                     bool has_identifiers = false;
                     _firstDrawnMenuItemIdx = -1;
                     _lastDrawnMenuItemIdx = -1;
-                    foreach (GHMenuItem mi in referenceCanvasView.MenuItems)
+                    foreach (GHMenuItem mi in menuItems)
                     {
                         if (mi.Identifier != 0 || mi.SpecialMark != '\0')
                             has_identifiers = true;
@@ -16859,7 +16876,7 @@ namespace GnollHackX.Pages.Game
                     //lock (_refreshMenuRowCountLock)
                     {
                         int idx = -1;
-                        foreach (GHMenuItem mi in referenceCanvasView.MenuItems)
+                        foreach (GHMenuItem mi in menuItems)
                         {
                             idx++;
                             bool IsMiButton = mi.IsButton;
@@ -17847,14 +17864,15 @@ namespace GnollHackX.Pages.Game
             bool menuItemSelected = false;
             int menuItemMaxCount = 0;
             string menuItemMainText = "";
+            var menuItems = MenuCanvas.MenuItems;
 
-            lock (MenuCanvas.MenuItemLock)
+            //lock (MenuCanvas.MenuItemLock)
             {
                 for (int idx = _firstDrawnMenuItemIdx; idx >= 0 && idx <= _lastDrawnMenuItemIdx; idx++)
                 {
-                    if (idx >= MenuCanvas.MenuItems.Count)
+                    if (idx >= menuItems.Count)
                         return;
-                    if (e.Location.Y >= MenuCanvas.MenuItems[idx].DrawBounds.Top && e.Location.Y <= MenuCanvas.MenuItems[idx].DrawBounds.Bottom)
+                    if (e.Location.Y >= menuItems[idx].DrawBounds.Top && e.Location.Y <= menuItems[idx].DrawBounds.Bottom)
                     {
                         selectedidx = idx;
                         break;
@@ -17867,10 +17885,10 @@ namespace GnollHackX.Pages.Game
                 if (MenuCanvas.SelectionHow == SelectionMode.None)
                     return;
 
-                if (MenuCanvas.MenuItems[selectedidx].Identifier == 0)
+                if (menuItems[selectedidx].Identifier == 0)
                     return;
 
-                menuItemMaxCount = MenuCanvas.MenuItems[selectedidx].MaxCount;
+                menuItemMaxCount = menuItems[selectedidx].MaxCount;
                 if (menuItemMaxCount <= 1)
                 {
                     if (MenuCanvas.SpecialClickOnLongTap)
@@ -17879,9 +17897,9 @@ namespace GnollHackX.Pages.Game
                     return;
                 }
 
-                _countMenuItem = MenuCanvas.MenuItems[selectedidx];
-                menuItemSelected = MenuCanvas.MenuItems[selectedidx].Selected;
-                menuItemMainText = MenuCanvas.MenuItems[selectedidx].MainText;
+                _countMenuItem = menuItems[selectedidx];
+                menuItemSelected = menuItems[selectedidx].Selected;
+                menuItemMainText = menuItems[selectedidx].MainText;
             }
 
             /* No further action upon release */
@@ -17944,14 +17962,15 @@ namespace GnollHackX.Pages.Game
         {
             if (!MenuCanvas.AllowHighlight)
                 return;
-            lock (MenuCanvas.MenuItemLock)
+            //lock (MenuCanvas.MenuItemLock)
             {
-                if (MenuCanvas.MenuItems == null)
+                var menuItems = MenuCanvas.MenuItems;
+                if (menuItems == null)
                     return;
 
-                for (int idx = 0; idx < MenuCanvas.MenuItems.Count; idx++)
+                for (int idx = 0; idx < menuItems.Count; idx++)
                 {
-                    MenuCanvas.MenuItems[idx].Highlighted = false;
+                    menuItems[idx].Highlighted = false;
                 }
             }
         }
@@ -17960,19 +17979,20 @@ namespace GnollHackX.Pages.Game
         {
             if (!MenuCanvas.AllowHighlight)
                 return;
-            lock (MenuCanvas.MenuItemLock)
+            //lock (MenuCanvas.MenuItemLock)
             {
-                if (MenuCanvas.MenuItems == null)
+                var menuItems = MenuCanvas.MenuItems;
+                if (menuItems == null)
                     return;
 
                 for (int idx = _firstDrawnMenuItemIdx; idx >= 0 && idx <= _lastDrawnMenuItemIdx; idx++)
                 {
-                    if (idx >= MenuCanvas.MenuItems.Count)
+                    if (idx >= menuItems.Count)
                         break;
-                    MenuCanvas.MenuItems[idx].Highlighted = false;
-                    if (MenuCanvas.MenuItems[idx].DrawBounds.Contains(p))
+                    menuItems[idx].Highlighted = false;
+                    if (menuItems[idx].DrawBounds.Contains(p))
                     {
-                        GHMenuItem mi = MenuCanvas.MenuItems[idx];
+                        GHMenuItem mi = menuItems[idx];
                         if (mi.Identifier != 0 && (mi.IsAutoClickOk || MenuCanvas.ClickOKOnSelection))
                         {
                             if (MenuCanvas.SelectionHow == SelectionMode.Multiple)
@@ -17997,19 +18017,20 @@ namespace GnollHackX.Pages.Game
             bool okClicked = false;
             int clickIdx = -1;
             long identifier = 0;
-            lock (MenuCanvas.MenuItemLock)
+            //lock (MenuCanvas.MenuItemLock)
             {
-                if (MenuCanvas.MenuItems == null)
+                var menuItems = MenuCanvas.MenuItems;
+                if (menuItems == null)
                     return new MenuClickResult(okClicked, clickIdx, identifier);
 
                 for (int idx = _firstDrawnMenuItemIdx; idx >= 0 && idx <= _lastDrawnMenuItemIdx; idx++)
                 {
-                    if (idx >= MenuCanvas.MenuItems.Count)
+                    if (idx >= menuItems.Count)
                         break;
-                    if (MenuCanvas.MenuItems[idx].DrawBounds.Contains(e.Location))
+                    if (menuItems[idx].DrawBounds.Contains(e.Location))
                     {
                         clickIdx = idx;
-                        identifier = MenuCanvas.MenuItems[idx].Identifier;
+                        identifier = menuItems[idx].Identifier;
                         doclickok = ClickMenuItem(idx, isLongTap);
                         break;
                     }
@@ -18028,24 +18049,24 @@ namespace GnollHackX.Pages.Game
         private bool ClickMenuItem(int menuItemIdx, bool isLongTap)
         {
             bool doclickok = false;
-            lock (MenuCanvas.MenuItemLock)
+            //lock (MenuCanvas.MenuItemLock)
             {
-                if (menuItemIdx < 0 || menuItemIdx >= MenuCanvas.MenuItems.Count)
-                    return false;
-
-                GHMenuItem mi = MenuCanvas.MenuItems[menuItemIdx];
-
-                if (MenuCanvas.MenuItems == null)
+                var menuItems = MenuCanvas.MenuItems;
+                if (menuItems == null)
                 {
                     _menuCountNumber = -1;
                     return false;
                 }
 
+                if (menuItemIdx < 0 || menuItemIdx >= menuItems.Count)
+                    return false;
+
+                GHMenuItem mi = menuItems[menuItemIdx];
                 if (mi.Identifier == 0)
                 {
                     if (MenuCanvas.SelectionHow == SelectionMode.Multiple && (mi.Flags & (ulong)MenuFlags.MENU_FLAGS_IS_GROUP_HEADING) != 0)
                     {
-                        foreach (GHMenuItem o in MenuCanvas.MenuItems)
+                        foreach (GHMenuItem o in menuItems)
                         {
                             if (o.GroupAccelerator == mi.HeadingGroupAccelerator)
                             {
@@ -18080,8 +18101,8 @@ namespace GnollHackX.Pages.Game
                     }
                     else
                     {
-                        if (MenuCanvas.SelectionIndex >= 0 && MenuCanvas.SelectionIndex < MenuCanvas.MenuItems.Count && mi != MenuCanvas.MenuItems[MenuCanvas.SelectionIndex])
-                            MenuCanvas.MenuItems[MenuCanvas.SelectionIndex].Count = 0;
+                        if (MenuCanvas.SelectionIndex >= 0 && MenuCanvas.SelectionIndex < menuItems.Count && mi != menuItems[MenuCanvas.SelectionIndex])
+                            menuItems[MenuCanvas.SelectionIndex].Count = 0;
 
                         int oldselidx = MenuCanvas.SelectionIndex;
                         MenuCanvas.SelectionIndex = menuItemIdx;
@@ -18259,11 +18280,13 @@ namespace GnollHackX.Pages.Game
             }
 
             List<GHMenuItem> resultlist = new List<GHMenuItem>();
-            lock (MenuCanvas.MenuItemLock)
+            var menuItems = MenuCanvas.MenuItems;
+            //lock (MenuCanvas.MenuItemLock)
+            if (menuItems != null)
             {
                 if (MenuCanvas.SelectionHow == SelectionMode.Multiple)
                 {
-                    foreach (GHMenuItem mi in MenuCanvas.MenuItems)
+                    foreach (GHMenuItem mi in menuItems)
                     {
                         if (mi.Selected && mi.Count != 0)
                         {
@@ -18273,9 +18296,9 @@ namespace GnollHackX.Pages.Game
                 }
                 else if (MenuCanvas.SelectionHow == SelectionMode.Single)
                 {
-                    if (MenuCanvas.SelectionIndex > -1 && MenuCanvas.SelectionIndex < MenuCanvas.MenuItems.Count)
+                    if (MenuCanvas.SelectionIndex > -1 && MenuCanvas.SelectionIndex < menuItems.Count)
                     {
-                        GHMenuItem mi = MenuCanvas.MenuItems[MenuCanvas.SelectionIndex];
+                        GHMenuItem mi = menuItems[MenuCanvas.SelectionIndex];
                         if (mi.Count != 0)
                         {
                             resultlist.Add(mi);
@@ -18520,9 +18543,10 @@ namespace GnollHackX.Pages.Game
 
             if (MenuCanvas.SelectionHow == SelectionMode.Multiple)
             {
-                lock (MenuCanvas.MenuItemLock)
+                var menuItems = MenuCanvas.MenuItems;
+                //lock (MenuCanvas.MenuItemLock)
                 {
-                    foreach (GHMenuItem o in MenuCanvas.MenuItems)
+                    foreach (GHMenuItem o in menuItems)
                     {
                         if (o.Identifier != 0)
                         {
@@ -18573,7 +18597,7 @@ namespace GnollHackX.Pages.Game
                 {
                     if (CountPicker.SelectedIndex >= 0 && CountPicker.SelectedIndex < _countPickList.Count)
                     {
-                        lock (MenuCanvas.MenuItemLock)
+                        //lock (MenuCanvas.MenuItemLock)
                         {
                             _countMenuItem.Count = _countPickList[CountPicker.SelectedIndex].Number;
                             _countMenuItem.Selected = _countMenuItem.Count != 0;
@@ -18715,9 +18739,10 @@ namespace GnollHackX.Pages.Game
             if (canvaswidth <= 16 || canvasheight <= 16)
                 return;
 
-            lock (TextCanvas.MenuItemLock)
+            //lock (TextCanvas.MenuItemLock)
             {
-                if (TextCanvas.PutStrItems == null || TextCanvas.PutStrItems.Count == 0)
+                var textItems = TextCanvas.PutStrItems;
+                if (textItems == null || textItems.Count == 0)
                     return;
             }
 
@@ -18755,11 +18780,12 @@ namespace GnollHackX.Pages.Game
                 float glyphystart = scale * (float)Math.Max(0.0, TextWindowGlyphImage.ThreadSafeY - TextCanvas.ThreadSafeY);
                 float glyphyend = scale * (float)Math.Max(0.0, TextWindowGlyphImage.ThreadSafeY + TextWindowGlyphImage.ThreadSafeHeight - TextCanvas.ThreadSafeY);
 
-                lock (TextCanvas.TextItemLock)
+                //lock (TextCanvas.TextItemLock)
                 {
                     int j = 0;
                     y += topPadding;
-                    foreach (GHPutStrItem putstritem in TextCanvas.PutStrItems)
+                    var textItems = TextCanvas.PutStrItems;
+                    foreach (GHPutStrItem putstritem in textItems)
                     {
                         int pos = 0;
                         x = leftmenupadding + leftinnerpadding;
@@ -18842,7 +18868,7 @@ namespace GnollHackX.Pages.Game
             {
                 canvasheight = _savedTextCanvasHeight;
             }
-            lock (TextCanvas.TextItemLock)
+            //lock (TextCanvas.TextItemLock)
             {
                 //float canvasheight = TextCanvas.ThreadSafeCanvasSize.Height;
                 float bottomScrollLimit = Math.Min(0, canvasheight - TotalTextHeight);
@@ -21140,21 +21166,22 @@ namespace GnollHackX.Pages.Game
                 {
                     bool doclickok = false;
                     bool somethingFound = false;
-                    lock (MenuCanvas.MenuItemLock)
+                    //lock (MenuCanvas.MenuItemLock)
                     {
-                        if (MenuCanvas.MenuItems == null)
+                        var menuItems = MenuCanvas.MenuItems;
+                        if (menuItems == null)
                             return true;
 
-                        for (int idx = 0; idx < MenuCanvas.MenuItems.Count; idx++)
+                        for (int idx = 0; idx < menuItems.Count; idx++)
                         {
-                            if (MenuCanvas.MenuItems[idx].Accelerator == c)
+                            if (menuItems[idx].Accelerator == c)
                             {
                                 somethingFound = true;
                                 doclickok = ClickMenuItem(idx, false);
                                 break;
                             }
-                            else if (MenuCanvas.SelectionHow == SelectionMode.Multiple && (MenuCanvas.MenuItems[idx].Flags & (ulong)MenuFlags.MENU_FLAGS_IS_GROUP_HEADING) != 0 && MenuCanvas.MenuItems[idx].HeadingGroupAccelerator == c
-                                && (_menuCountNumber < 0 || MenuCanvas.MenuItems[idx].HeadingGroupAccelerator < '0' || MenuCanvas.MenuItems[idx].HeadingGroupAccelerator > '9'))
+                            else if (MenuCanvas.SelectionHow == SelectionMode.Multiple && (menuItems[idx].Flags & (ulong)MenuFlags.MENU_FLAGS_IS_GROUP_HEADING) != 0 && menuItems[idx].HeadingGroupAccelerator == c
+                                && (_menuCountNumber < 0 || menuItems[idx].HeadingGroupAccelerator < '0' || menuItems[idx].HeadingGroupAccelerator > '9'))
                             {
                                 somethingFound = true;
                                 doclickok = ClickMenuItem(idx, false);

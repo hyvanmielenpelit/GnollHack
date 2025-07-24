@@ -437,9 +437,15 @@ namespace GnollHackX
         }
 
 #if WINDOWS
-        private static readonly object _currentScreenResolutionLock = new object();
+        //private static readonly object _currentScreenResolutionLock = new object();
         private static ScreenResolutionItem _currentScreenResolution = null;
-        public static ScreenResolutionItem CurrentScreenResolution { get { lock (_currentScreenResolutionLock) { return _currentScreenResolution; } } set { lock (_currentScreenResolutionLock) { _currentScreenResolution = value; } } }
+        public static ScreenResolutionItem CurrentScreenResolution 
+        {
+            //get { lock (_currentScreenResolutionLock) { return _currentScreenResolution; } } 
+            //set { lock (_currentScreenResolutionLock) { _currentScreenResolution = value; } } 
+            get { return Interlocked.CompareExchange(ref _currentScreenResolution, null, null); }
+            set { Interlocked.Exchange(ref _currentScreenResolution, value); }
+        }
 #endif
         public static void UpdateRecommendedScreenResolution(bool usingGPU)
         {
@@ -1201,9 +1207,15 @@ namespace GnollHackX
         public static MainPage CurrentMainPage { get; set; }
         public static GamePage CurrentGamePage { get; set; }
 
-        private static readonly object _currentGHGameLock = new object();
+        //private static readonly object _currentGHGameLock = new object();
         private static GHGame _currentGHGame = null;
-        public static GHGame CurrentGHGame { get { lock (_currentGHGameLock) { return _currentGHGame; } } set { lock (_currentGHGameLock) { _currentGHGame = value; } } }
+        public static GHGame CurrentGHGame 
+        {
+            //get { lock (_currentGHGameLock) { return _currentGHGame; } } 
+            //set { lock (_currentGHGameLock) { _currentGHGame = value; } } 
+            get { return Interlocked.CompareExchange(ref _currentGHGame, null, null); }
+            set { Interlocked.Exchange(ref _currentGHGame, value); }
+        }
         public static int GameSaveStatus = 0;
         public static bool InformAboutGameTermination = false;
         public static bool InformAboutCrashReport = false;
@@ -4328,9 +4340,15 @@ namespace GnollHackX
         private static int _forcePostBones = 0;
         public static bool ForcePostBones { get { return Interlocked.CompareExchange(ref _forcePostBones, 0, 0) != 0; } set { Interlocked.Exchange(ref _forcePostBones, value ? 1 : 0); } }
 
-        private static readonly object _bonesAllowedUsersLock = new object();
+        //private static readonly object _bonesAllowedUsersLock = new object();
         private static string _bonesAllowedUsers = "";
-        public static string BonesAllowedUsers { get { lock (_bonesAllowedUsersLock) { return _bonesAllowedUsers; } } set { lock (_bonesAllowedUsersLock) { _bonesAllowedUsers = value; } } }
+        public static string BonesAllowedUsers 
+        { 
+            //get { lock (_bonesAllowedUsersLock) { return _bonesAllowedUsers; } } 
+            //set { lock (_bonesAllowedUsersLock) { _bonesAllowedUsers = value; } }
+            get { return Interlocked.CompareExchange(ref _bonesAllowedUsers, null, null); }
+            set { Interlocked.Exchange(ref _bonesAllowedUsers, value); }
+        }
 
         private static readonly object _saveFileTrackingLock = new object();
         private static bool _saveFileTracking = false;

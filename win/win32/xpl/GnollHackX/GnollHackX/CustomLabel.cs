@@ -205,11 +205,20 @@ namespace GnollHackX
 
 
 
-        private readonly object _textRowLock = new object();
+        //private readonly object _textRowLock = new object();
         private string[] _textRows = null;
         private string[] TextRows
         {
-            get { lock (_textRowLock) { return _textRows == null ? new string[1] {""} : _textRows; } }
+            //get { lock (_textRowLock) { return _textRows == null ? new string[1] {""} : _textRows; } }
+            get 
+            { 
+                var res = Interlocked.CompareExchange(ref _textRows, null, null);
+                return res == null ? new string[1] { "" } : res; 
+            }
+            set
+            {
+                Interlocked.Exchange(ref _textRows, value);
+            }
         }
 
         private void SplitRows()
@@ -219,12 +228,13 @@ namespace GnollHackX
                 float scale = GHApp.DisplayDensity;
                 textPaint.TextSize = (float)FontSize * scale;
                 textPaint.Typeface = GetFontTypeface();
-                lock (_textRowLock)
+                //lock (_textRowLock)
                 {
-                    if (Text != null)
-                        _textRows = SplitTextWithConstraint(Text.Replace("\r", ""), (float)Width * scale, textPaint);
+                    string text = Text;
+                    if (text != null)
+                        TextRows = SplitTextWithConstraint(text.Replace("\r", ""), (float)Width * scale, textPaint);
                     else
-                        _textRows = null;
+                        TextRows = null;
                 }
             }
         }

@@ -44,7 +44,6 @@ namespace GnollHackX
         private bool _ynConfirmationResult = false;
         private bool _characternameSet = false;
         private string _characterName = "";
-        private readonly object _characterNameLock = new object();
         private bool _useLongerMessageHistory = false;
         private bool _useHideMessageHistory = false;
         private int _saveFileTrackingFinished = -1;
@@ -89,8 +88,10 @@ namespace GnollHackX
         //public static ConcurrentDictionary<GHGame, ConcurrentQueue<GHResponse>> ResponseDictionary { get { return _concurrentResponseDictionary; } }
         public string CharacterName 
         {
-            get { lock (_characterNameLock) { return _characterName; } } 
-            set { lock (_characterNameLock) { _characterName = value; } }
+            //get { lock (_characterNameLock) { return _characterName; } } 
+            //set { lock (_characterNameLock) { _characterName = value; } }
+            get { return Interlocked.CompareExchange(ref _characterName, null, null); }
+            set { Interlocked.Exchange(ref _characterName, value); }
         }
         public bool WizardMode { get { return _gamePage != null ? _gamePage.EnableWizardMode : false; } }
         public bool CasualMode { get { return _gamePage != null ? _gamePage.EnableCasualMode : false; } }

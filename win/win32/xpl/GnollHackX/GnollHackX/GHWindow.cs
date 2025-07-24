@@ -200,11 +200,13 @@ namespace GnollHackX
         public GHMenuInfo MenuInfo { get; set; }
 
         private List<GHMenuItem> _selectedMenuItems = null;
-        private readonly object _selectedMenuItemsLock = new object();
+        //private readonly object _selectedMenuItemsLock = new object();
         public List<GHMenuItem> SelectedMenuItems
         {
-            get { lock (_selectedMenuItemsLock) { return _selectedMenuItems; } }
-            set { lock (_selectedMenuItemsLock) { _selectedMenuItems = value; } }
+            //get { lock (_selectedMenuItemsLock) { return _selectedMenuItems; } }
+            //set { lock (_selectedMenuItemsLock) { _selectedMenuItems = value; } }
+            get { return Interlocked.CompareExchange(ref _selectedMenuItems, null, null); }
+            set { Interlocked.Exchange(ref _selectedMenuItems, value); }
         }
 
         public bool WasCancelled { get; set; } = false;
