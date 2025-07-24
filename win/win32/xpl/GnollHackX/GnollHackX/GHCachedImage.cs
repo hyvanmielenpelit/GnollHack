@@ -130,12 +130,12 @@ namespace GnollHackX
             string sourcePath = newValue as string;
             if (img != null)
             {
-                lock (img._sourceBitmapLock)
+                //lock (img._sourceBitmapLock)
                 {
                     if (sourcePath != null && sourcePath != "")
-                        img._sourceBitmap = GHApp.GetCachedImageSourceBitmap(sourcePath, img.CacheImage);
+                        img.SourceBitmap = GHApp.GetCachedImageSourceBitmap(sourcePath, img.CacheImage);
                     else
-                        img._sourceBitmap = null;
+                        img.SourceBitmap = null;
                 }
                 img.InvalidateSurface();
             }
@@ -319,8 +319,9 @@ namespace GnollHackX
         }
 
 
-        private readonly object _sourceBitmapLock = new object();
+        //private readonly object _sourceBitmapLock = new object();
         private SKImage _sourceBitmap = null;
+        private SKImage SourceBitmap { get { return Interlocked.CompareExchange(ref _sourceBitmap, null, null); } set { Interlocked.Exchange(ref _sourceBitmap, value); } }
 
         private void CustomCanvasView_PaintSurface(object sender, SKPaintSurfaceEventArgs e)
         {
@@ -341,11 +342,11 @@ namespace GnollHackX
             }
             else
             {
-                SKImage targetBitmap = null;
-                lock (_sourceBitmapLock)
-                {
-                    targetBitmap = _sourceBitmap;
-                }
+                SKImage targetBitmap = SourceBitmap;
+                //lock (_sourceBitmapLock)
+                //{
+                //    targetBitmap = _sourceBitmap;
+                //}
                 if (targetBitmap == null)
                     return;
 

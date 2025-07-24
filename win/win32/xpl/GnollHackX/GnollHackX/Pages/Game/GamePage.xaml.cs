@@ -501,20 +501,23 @@ namespace GnollHackX.Pages.Game
         private int _showExtendedStatusBar = 0;
         public bool ShowExtendedStatusBar { get { return Interlocked.CompareExchange(ref _showExtendedStatusBar, 0, 0) != 0; } set { Interlocked.Exchange(ref _showExtendedStatusBar, value ? 1 : 0); } }
 
-        private readonly object _lighterDarkeningLock = new object();
-        private bool _lighterDarkening = false;
-        private bool _lighterDarkeningUpdated = false;
+        //private readonly object _lighterDarkeningLock = new object();
+        private int _lighterDarkening = 0;
+        private int _lighterDarkeningUpdated = 0;
         public bool LighterDarkening
         {
-            get { lock (_lighterDarkeningLock) { return _lighterDarkening; } }
+            //get { lock (_lighterDarkeningLock) { return _lighterDarkening; } }
+            get { return Interlocked.CompareExchange(ref _lighterDarkening, 0, 0) != 0; }
             set
             {
-                lock (_lighterDarkeningLock)
-                {
-                    if(_lighterDarkening != value)
-                        _lighterDarkeningUpdated = true;
-                    _lighterDarkening = value;
-                }
+                //lock (_lighterDarkeningLock)
+                //{
+                //    if(_lighterDarkening != value)
+                //        _lighterDarkeningUpdated = true;
+                //    _lighterDarkening = value;
+                //}
+                if (Interlocked.Exchange(ref _lighterDarkening, value ? 1 : 0) != (value ? 1 : 0)) // Original value was different
+                    Interlocked.Exchange(ref _lighterDarkeningUpdated, 1);
             }
         }
 
@@ -742,11 +745,13 @@ namespace GnollHackX.Pages.Game
         public bool ShowRecording { get { return Interlocked.CompareExchange(ref _showRecording, 0, 0) != 0; } set { Interlocked.Exchange(ref _showRecording, value ? 1 : 0); } }
 
         private double _fps;
+        private double FPS { get { return Interlocked.CompareExchange(ref _fps, 0.0, 0.0); } set { Interlocked.Exchange(ref _fps, value); } }
+
         private long _previousMainFPSCounterValue = 0L;
         //private long _previousRenderingCounterValue = 0L;
         private long _previousCommandFPSCounterValue = 0L;
 
-        private readonly object _fpslock = new object();
+        //private readonly object _fpslock = new object();
         private Stopwatch _stopWatch = new Stopwatch();
         private Stopwatch _mapUpdateStopWatch = new Stopwatch();
 
@@ -925,13 +930,14 @@ namespace GnollHackX.Pages.Game
         private float _mapFontSize = GHConstants.MapFontDefaultSize;
         private float _mapFontAlternateSize = GHConstants.MapFontDefaultSize * GHConstants.MapFontRelativeAlternateSize;
         private float _mapFontMiniRelativeSize = 1.0f;
-        private bool _mapFontShowPercentageDecimal = false;
-        private readonly object _mapFontSizeLock = new object();
-        public float DefaultMapFontSize { get { lock (_mapFontSizeLock) { return _defaultMapFontSize; } } set { lock (_mapFontSizeLock) { _defaultMapFontSize = value; } } }
-        public float MapFontSize { get { lock (_mapFontSizeLock) { return _mapFontSize; } } set { lock (_mapFontSizeLock) { _mapFontSize = value; } } }
-        public float MapFontAlternateSize { get { lock (_mapFontSizeLock) { return _mapFontAlternateSize; } } set { lock (_mapFontSizeLock) { _mapFontAlternateSize = value; } } }
-        public float MapFontMiniRelativeSize { get { lock (_mapFontSizeLock) { return _mapFontMiniRelativeSize; } } set { lock (_mapFontSizeLock) { _mapFontMiniRelativeSize = value; } } }
-        public bool MapFontShowPercentageDecimal { get { lock (_mapFontSizeLock) { return _mapFontShowPercentageDecimal; } } set { lock (_mapFontSizeLock) { _mapFontShowPercentageDecimal = value; } } }
+        private int _mapFontShowPercentageDecimal = 0;
+
+        //private readonly object _mapFontSizeLock = new object();
+        public float DefaultMapFontSize { get { return Interlocked.CompareExchange(ref _defaultMapFontSize, 0.0f, 0.0f); } set { Interlocked.Exchange(ref _defaultMapFontSize, value); } }
+        public float MapFontSize { get { return Interlocked.CompareExchange(ref _mapFontSize, 0.0f, 0.0f); } set { Interlocked.Exchange(ref _mapFontSize, value); } }
+        public float MapFontAlternateSize { get { return Interlocked.CompareExchange(ref _mapFontAlternateSize, 0.0f, 0.0f); } set { Interlocked.Exchange(ref _mapFontAlternateSize, value); } }
+        public float MapFontMiniRelativeSize { get { return Interlocked.CompareExchange(ref _mapFontMiniRelativeSize, 0.0f, 0.0f); } set { Interlocked.Exchange(ref _mapFontMiniRelativeSize, value); } }
+        public bool MapFontShowPercentageDecimal { get { return Interlocked.CompareExchange(ref _mapFontShowPercentageDecimal, 0, 0) != 0; } set { Interlocked.Exchange(ref _mapFontShowPercentageDecimal, value ? 1 : 0); } }
 
         private readonly object _tileSizeLock = new object();
         private float _usedTileWidth;
@@ -1798,14 +1804,15 @@ namespace GnollHackX.Pages.Game
                                 //    currentCounterValue = Interlocked.CompareExchange(ref AnimationTimers.general_animation_counter, 0L, 0L);;
                                 //}
                             }
-                            lock (_fpslock)
+                            //lock (_fpslock)
                             {
-                                _fps = ts.TotalMilliseconds == 0.0 ? 0.0 : counterDiff / (ts.TotalMilliseconds / 1000.0);
-                                if (_fps < 0.0f || _fps > 500.0f) /* Just in case if it is off somehow */
+                                double calcFps = ts.TotalMilliseconds == 0.0 ? 0.0 : counterDiff / (ts.TotalMilliseconds / 1000.0);
+                                if (calcFps < 0.0f || calcFps > 500.0f) /* Just in case if it is off somehow */
                                 {
-                                    _fps = 0.0;
+                                    calcFps = 0.0;
                                     counterDiff = 0;
                                 }
+                                FPS = calcFps;
                             }
                         }
                         _stopWatch.Restart();
@@ -2032,11 +2039,11 @@ namespace GnollHackX.Pages.Game
         //private int _menuUpdateGCCounter = 0;
         public void UpdateMenuCanvas(MapRefreshRateStyle refreshRateStyle)
         {
-            bool refresh;
-            lock (_menuDrawOnlyLock)
-            {
-                refresh = _menuRefresh;
-            }
+            bool refresh = MenuRefresh;
+            //lock (_menuDrawOnlyLock)
+            //{
+            //    refresh = _menuRefresh;
+            //}
             if (refresh)
             {
                 if (MenuGrid.ThreadSafeIsVisible)
@@ -2705,10 +2712,10 @@ namespace GnollHackX.Pages.Game
                 {
                     try
                     { 
-                        if (_delayedMenuShow)
+                        if (Interlocked.CompareExchange(ref _delayedMenuShow, 0, 1) == 1) // If was originally 1, set to 0
                         {
-                            _delayedMenuShow = false;
-                            await DoShowMenuCanvas(_delayedMenuShowDoTextHide);
+                            //_delayedMenuShow = false;
+                            await DoShowMenuCanvas(DelayedMenuShowDoTextHide);
                         }
                         await FadeFromBlackAtStart(GHConstants.FadeFromBlackDurationAtStart);
                         _delayedFadeFromBlackAtStartOn = false;
@@ -4441,11 +4448,15 @@ namespace GnollHackX.Pages.Game
             await _mainPage.StartGeneralTimerAsync(); /* Just to be doubly sure */
         }
 
-        private readonly object _menuDrawOnlyLock = new object();
-        private bool _menuDrawOnlyClear = true;
-        private bool _menuRefresh = false;
-        private bool _delayedMenuShow = false;
-        private bool _delayedMenuShowDoTextHide = false;
+        //private readonly object _menuDrawOnlyLock = new object();
+        private int _menuDrawOnlyClear = 1;
+        private int _menuRefresh = 0;
+        private int _delayedMenuShow = 0;
+        private int _delayedMenuShowDoTextHide = 0;
+        public bool MenuDrawOnlyClear { get { return Interlocked.CompareExchange(ref _menuDrawOnlyClear, 0, 0) != 0; } set { Interlocked.Exchange(ref _menuDrawOnlyClear, value ? 1 : 0); } }
+        public bool MenuRefresh { get { return Interlocked.CompareExchange(ref _menuRefresh, 0, 0) != 0; } set { Interlocked.Exchange(ref _menuRefresh, value ? 1 : 0); } }
+        public bool DelayedMenuShow { get { return Interlocked.CompareExchange(ref _delayedMenuShow, 0, 0) != 0; } set { Interlocked.Exchange(ref _delayedMenuShow, value ? 1 : 0); } }
+        public bool DelayedMenuShowDoTextHide { get { return Interlocked.CompareExchange(ref _delayedMenuShowDoTextHide, 0, 0) != 0; } set { Interlocked.Exchange(ref _delayedMenuShowDoTextHide, value ? 1 : 0); } }
 
         private async Task ShowMenuCanvas(GHMenuInfo menuinfo, GHWindow ghwindow)
         {
@@ -4482,11 +4493,13 @@ namespace GnollHackX.Pages.Game
             }
             RefreshScreen = false;
 
-            lock (_menuDrawOnlyLock)
-            {
-                _menuDrawOnlyClear = true;
-                _menuRefresh = false;
-            }
+            MenuDrawOnlyClear = true;
+            MenuRefresh = false;
+            //lock (_menuDrawOnlyLock)
+            //{
+            //    _menuDrawOnlyClear = true;
+            //    _menuRefresh = false;
+            //}
 
             GHApp.DebugWriteProfilingStopwatchTimeAndStart("ShowMenuCanvas Start");
             float customScale = GHApp.CustomScreenScale;
@@ -4758,11 +4771,13 @@ namespace GnollHackX.Pages.Game
             RefreshMenuRowCounts = true;
             _unselectOnTap = false;
 
-            lock (_menuDrawOnlyLock)
-            {
-                _menuDrawOnlyClear = false;
-                _menuRefresh = true;
-            }
+            MenuDrawOnlyClear = false;
+            MenuRefresh = true;
+            //lock (_menuDrawOnlyLock)
+            //{
+            //    _menuDrawOnlyClear = false;
+            //    _menuRefresh = true;
+            //}
 
             lock (_menuPositionLock)
             {
@@ -4786,10 +4801,10 @@ namespace GnollHackX.Pages.Game
                 MenuCanvas.EnableTouchEvents = false;
             }
 
-            _delayedMenuShow = _delayedFadeFromBlackAtStartOn;
-            _delayedMenuShowDoTextHide = dohidetext;
+            DelayedMenuShow = _delayedFadeFromBlackAtStartOn;
+            DelayedMenuShowDoTextHide = dohidetext;
 
-            if (!_delayedMenuShow)
+            if (!DelayedMenuShow)
                 await DoShowMenuCanvas(dohidetext);
 
             StopMainCanvasAnimation();
@@ -7296,7 +7311,7 @@ namespace GnollHackX.Pages.Game
         private SKRect _localCanvasButtonRect = new SKRect(0, 0, 0, 0);
         private int _localQuickWandGlyph, _localQuickWandExceptinality, _localQuickSpellGlyph, _localQuickSpellOtyp;
         private string _localQuickWandName, _localQuickSpellName;
-        private double _localFps = 0.0;
+        //private double _localFps = 0.0;
         private long _localMemUsage = 0L;
         public float _localStatusOffsetY = 0;
         public float _localStatusLargestBottom = 0;
@@ -7396,15 +7411,18 @@ namespace GnollHackX.Pages.Game
                 mainCounter2AnimationMultiplier = 1.0;
 
             bool clearDarkeningCaches = false;
-            lock(_lighterDarkeningLock)
-            {
-                if (_lighterDarkeningUpdated)
-                {
-                    clearDarkeningCaches = true;
-                    _lighterDarkeningUpdated = false;
-                }
-            }
-            if(clearDarkeningCaches)
+            if (Interlocked.Exchange(ref _lighterDarkeningUpdated, 0) == 1) // Original value was 1, so clearing caches
+                clearDarkeningCaches = true;
+
+            //lock (_lighterDarkeningLock)
+            //{
+            //    if (_lighterDarkeningUpdated)
+            //    {
+            //        clearDarkeningCaches = true;
+            //        _lighterDarkeningUpdated = false;
+            //    }
+            //}
+            if (clearDarkeningCaches)
             {
                 foreach (SKImage bmp in _darkenedBitmaps.Values)
                     bmp.Dispose();
@@ -11095,24 +11113,24 @@ namespace GnollHackX.Pages.Game
                                     desktopleft = curx;
 
                                     string drawtext;
-                                    lockTaken = false;
+                                    //lockTaken = false;
                                     //lock (_fpslock)
-                                    try
-                                    {
-                                        Monitor.TryEnter(_fpslock, ref lockTaken);
-                                        if (lockTaken)
-                                        {
-                                            _localFps = _fps;
-                                        }
-                                    }
-                                    finally
-                                    {
-                                        if (lockTaken)
-                                            Monitor.Exit(_fpslock);
-                                    }
-                                    lockTaken = false;
+                                    //try
+                                    //{
+                                    //    Monitor.TryEnter(_fpslock, ref lockTaken);
+                                    //    if (lockTaken)
+                                    //    {
+                                    //        _localFps = _fps;
+                                    //    }
+                                    //}
+                                    //finally
+                                    //{
+                                    //    if (lockTaken)
+                                    //        Monitor.Exit(_fpslock);
+                                    //}
+                                    //lockTaken = false;
 
-                                    drawtext = string.Format("{0:0.0}", _localFps);
+                                    drawtext = string.Format("{0:0.0}", FPS);
 
                                     const int topMargin = 4, bottomMargin = 16;
                                     textPaint.Color = SKColors.White;
@@ -16798,11 +16816,13 @@ namespace GnollHackX.Pages.Game
             lockTaken = false;
 
             canvas.Clear();
-            lock (_menuDrawOnlyLock)
-            {
-                if (_menuDrawOnlyClear)
-                    return;
-            }
+            if (MenuDrawOnlyClear)
+                return;
+            //lock (_menuDrawOnlyLock)
+            //{
+            //    if (_menuDrawOnlyClear)
+            //        return;
+            //}
 
             if (canvaswidth <= 16 || canvasheight <= 16)
                 return;
@@ -17527,11 +17547,13 @@ namespace GnollHackX.Pages.Game
         private DateTime _savedPreviousMenuReleaseTimeStamp;
         private void MenuCanvas_Touch(object sender, SKTouchEventArgs e)
         {
-            lock (_menuDrawOnlyLock)
-            {
-                if (_menuDrawOnlyClear)
-                    return;
-            }
+            if (MenuDrawOnlyClear)
+                return;
+            //lock (_menuDrawOnlyLock)
+            //{
+            //    if (_menuDrawOnlyClear)
+            //        return;
+            //}
             //float canvasheight = MenuCanvas.ThreadSafeCanvasSize.Height;
             float canvasheight;
             lock (_savedMenuCanvasLock)
@@ -18196,11 +18218,13 @@ namespace GnollHackX.Pages.Game
 
         private void MenuCanvas_MousePointer(object sender, SKTouchEventArgs e)
         {
-            lock (_menuDrawOnlyLock)
-            {
-                if (_menuDrawOnlyClear)
-                    return;
-            }
+            if (MenuDrawOnlyClear)
+                return;
+            //lock (_menuDrawOnlyLock)
+            //{
+            //    if (_menuDrawOnlyClear)
+            //        return;
+            //}
 
             lock(_menuHoverLock)
             {
@@ -18257,11 +18281,13 @@ namespace GnollHackX.Pages.Game
             GHApp.PlayButtonClickedSound();
             _menuCountNumber = -1;
 
-            lock (_menuDrawOnlyLock)
-            {
-                _menuRefresh = false;
-                _menuDrawOnlyClear = true;
-            }
+            MenuRefresh = false;
+            MenuDrawOnlyClear = true;
+            //lock (_menuDrawOnlyLock)
+            //{
+            //    _menuRefresh = false;
+            //    _menuDrawOnlyClear = true;
+            //}
 
             lock (_menuScrollLock)
             {
@@ -18352,11 +18378,13 @@ namespace GnollHackX.Pages.Game
             GHApp.PlayButtonClickedSound();
             _menuCountNumber = -1;
 
-            lock (_menuDrawOnlyLock)
-            {
-                _menuRefresh = false;
-                _menuDrawOnlyClear = true;
-            }
+            MenuRefresh = false;
+            MenuDrawOnlyClear = true;
+            //lock (_menuDrawOnlyLock)
+            //{
+            //    _menuRefresh = false;
+            //    _menuDrawOnlyClear = true;
+            //}
 
             lock (_menuScrollLock)
             {
@@ -19229,7 +19257,7 @@ namespace GnollHackX.Pages.Game
         public int CurrentMoreButtonPageMaxNumber { get { return UseSimpleCmdLayout ? GHConstants.MoreButtonPages - 1 : GHConstants.MoreButtonPages; } }
 
         private bool _commandCanvasThreadChecked = false;
-        private double _commandFps = 0.0;
+        //private double _commandFps = 0.0;
 
         private readonly object _savedCommandCanvasLock = new object();
         private float _savedCommandCanvasWidth = 0;
@@ -19406,24 +19434,24 @@ namespace GnollHackX.Pages.Game
                     canvas.DrawImage(GHApp._fpsBitmap, statusDest);
 
                     string drawtext;
-                    lockTaken = false;
-                    //lock (_fpslock)
-                    try
-                    {
-                        Monitor.TryEnter(_fpslock, ref lockTaken);
-                        if (lockTaken)
-                        {
-                            _commandFps = _fps;
-                        }
-                    }
-                    finally
-                    {
-                        if (lockTaken)
-                            Monitor.Exit(_fpslock);
-                    }
-                    lockTaken = false;
+                    //lockTaken = false;
+                    ////lock (_fpslock)
+                    //try
+                    //{
+                    //    Monitor.TryEnter(_fpslock, ref lockTaken);
+                    //    if (lockTaken)
+                    //    {
+                    //        _commandFps = _fps;
+                    //    }
+                    //}
+                    //finally
+                    //{
+                    //    if (lockTaken)
+                    //        Monitor.Exit(_fpslock);
+                    //}
+                    //lockTaken = false;
 
-                    drawtext = string.Format("{0:0.0}", _commandFps);
+                    drawtext = string.Format("{0:0.0}", FPS);
 
                     const int topMargin = 4, bottomMargin = 16;
                     textPaint.Color = SKColors.White;
