@@ -978,7 +978,7 @@
 #define can_wear_shield(ptr) (!nohands(ptr) && (is_mplayer(ptr) || is_armed(ptr))) /* Just having !nohands wasn't enough, as e.g. dragons have hands but do not wear shields */
 #define can_wear_blindfold(ptr) (haseyes(ptr) && has_head(ptr))
 #define can_wield_weapons(ptr) (!nohands(ptr) && (is_mplayer(ptr) || is_armed(ptr)))
-#define can_wear_objects(ptr) (!verysmall(ptr) && !is_whirly(ptr) && !(is_animal(ptr) && !able_to_wear_objects(ptr)))
+#define can_wear_objects(ptr) (!verysmall(ptr) && !is_whirly(ptr) && !unsolid(ptr) && !amorphous(ptr) && !(is_animal(ptr) && !able_to_wear_objects(ptr)))
 #define can_wear_objects_itself(ptr) (can_operate_objects(ptr) && can_wear_objects(ptr))
 #define can_wear_saddle(ptr) is_steed(ptr)
 
