@@ -4079,14 +4079,15 @@ namespace GnollHackX.Pages.Game
             TipView.IsVisible = true;
             TipView.InvalidateSurface();
         }
-        private readonly object _msgHistoryLock = new object();
+        //private readonly object _msgHistoryLock = new object();
         private GHMsgHistoryItem[] _msgHistory = null;
         private void PrintHistory(GHMsgHistoryItem[] msgHistory)
         {
-            lock(_msgHistoryLock)
-            {
-                _msgHistory = msgHistory;
-            }
+            //lock(_msgHistoryLock)
+            //{
+            //    _msgHistory = msgHistory;
+            //}
+            Interlocked.Exchange(ref _msgHistory, msgHistory);
             RefreshMsgHistoryRowCounts = true;
         }
 
@@ -7690,21 +7691,22 @@ namespace GnollHackX.Pages.Game
             }
             lockTaken = false;
 
-            //lock (_msgHistoryLock)
-            try
-            {
-                Monitor.TryEnter(_msgHistoryLock, ref lockTaken);
-                if (lockTaken)
-                {
-                    _localMsgHistory = _msgHistory;
-                }
-            }
-            finally
-            {
-                if (lockTaken)
-                    Monitor.Exit(_msgHistoryLock);
-            }
-            lockTaken = false;
+            _localMsgHistory = Interlocked.CompareExchange(ref _msgHistory, null, null);
+            ////lock (_msgHistoryLock)
+            //try
+            //{
+            //    Monitor.TryEnter(_msgHistoryLock, ref lockTaken);
+            //    if (lockTaken)
+            //    {
+            //        _localMsgHistory = _msgHistory;
+            //    }
+            //}
+            //finally
+            //{
+            //    if (lockTaken)
+            //        Monitor.Exit(_msgHistoryLock);
+            //}
+            //lockTaken = false;
 
             long moveIntervals = Math.Max(2, (long)Math.Ceiling((double)UIUtils.GetMainCanvasAnimationFrequency(mapRefreshRate) / 10.0));
             bool lighter_darkening = LighterDarkening;
@@ -20532,31 +20534,32 @@ namespace GnollHackX.Pages.Game
 
         void UpdateMessageFilter()
         {
-            GHMsgHistoryItem[] msgHistoryPtr;
-            lock (_msgHistoryLock)
-            {
-                msgHistoryPtr = _msgHistory;
+            GHMsgHistoryItem[] msgHistoryPtr = null;
+            msgHistoryPtr = Interlocked.CompareExchange(ref _msgHistory, null, null);
+            //lock (_msgHistoryLock)
+            //{
+            //    msgHistoryPtr = _msgHistory;
+            //}
 
-                if (msgHistoryPtr != null)
+            if (msgHistoryPtr != null)
+            {
+                int cnt = msgHistoryPtr.Length;
+                if (LongerMessageHistory)
                 {
-                    int cnt = msgHistoryPtr.Length;
-                    if (LongerMessageHistory)
+                    for (int i = 0; i < cnt; i++)
                     {
-                        for (int i = 0; i < cnt; i++)
-                        {
-                            GHMsgHistoryItem msg = msgHistoryPtr[i];
-                            if (msg != null)
-                                msg.Filter = MessageFilterEntry.Text;
-                        }
+                        GHMsgHistoryItem msg = msgHistoryPtr[i];
+                        if (msg != null)
+                            msg.Filter = MessageFilterEntry.Text;
                     }
-                    else
+                }
+                else
+                {
+                    for (int i = 0; i < cnt; i++)
                     {
-                        for (int i = 0; i < cnt; i++)
-                        {
-                            GHMsgHistoryItem msg = msgHistoryPtr[i];
-                            if (msg != null)
-                                msg.Filter = null;
-                        }
+                        GHMsgHistoryItem msg = msgHistoryPtr[i];
+                        if (msg != null)
+                            msg.Filter = null;
                     }
                 }
             }
