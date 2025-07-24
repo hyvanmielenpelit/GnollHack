@@ -2158,76 +2158,10 @@ struct permonst* ptr;
         }
         else
         {
-            if (wields_weapons)
-            {
-                type_count++;
-                Sprintf(buf, " %2d - Weapons", type_count);
-                putstr(datawin, ATR_INDENT_AT_DASH | ATR_ORDERED_LIST, buf);
-            }
-            if (wears_shield)
-            {
-                type_count++;
-                Sprintf(buf, " %2d - Shields", type_count);
-                putstr(datawin, ATR_INDENT_AT_DASH | ATR_ORDERED_LIST, buf);
-            }
-            if (wears_suit)
-            {
-                type_count++;
-                Sprintf(buf, " %2d - Suits of armor", type_count);
-                putstr(datawin, ATR_INDENT_AT_DASH | ATR_ORDERED_LIST, buf);
-            }
-            if (wears_robe)
-            {
-                type_count++;
-                Sprintf(buf, " %2d - Robes", type_count);
-                putstr(datawin, ATR_INDENT_AT_DASH | ATR_ORDERED_LIST, buf);
-            }
-            if (wears_cloak)
-            {
-                type_count++;
-                Sprintf(buf, " %2d - Cloaks", type_count);
-                putstr(datawin, ATR_INDENT_AT_DASH | ATR_ORDERED_LIST, buf);
-            }
-            if (wears_shirt)
-            {
-                type_count++;
-                Sprintf(buf, " %2d - Shirts", type_count);
-                putstr(datawin, ATR_INDENT_AT_DASH | ATR_ORDERED_LIST, buf);
-            }
-            if (wears_helmet)
-            {
-                type_count++;
-                Sprintf(buf, " %2d - %s", type_count, has_horns(ptr) ? "Flimsy helmets suitable with horns" : "Helmets");
-                putstr(datawin, ATR_INDENT_AT_DASH | ATR_ORDERED_LIST,  buf);
-            }
-            if (wears_gloves)
-            {
-                type_count++;
-                Sprintf(buf, " %2d - Gloves", type_count);
-                putstr(datawin, ATR_INDENT_AT_DASH | ATR_ORDERED_LIST, buf);
-            }
-            if (wears_bracers)
-            {
-                type_count++;
-                Sprintf(buf, " %2d - Bracers", type_count);
-                putstr(datawin, ATR_INDENT_AT_DASH | ATR_ORDERED_LIST, buf);
-            }
-            if (wears_boots)
-            {
-                type_count++;
-                Sprintf(buf, " %2d - Boots", type_count);
-                putstr(datawin, ATR_INDENT_AT_DASH | ATR_ORDERED_LIST, buf);
-            }
             if (wears_amulet)
             {
                 type_count++;
                 Sprintf(buf, " %2d - Amulets", type_count);
-                putstr(datawin, ATR_INDENT_AT_DASH | ATR_ORDERED_LIST, buf);
-            }
-            if (wears_rings)
-            {
-                type_count++;
-                Sprintf(buf, " %2d - Rings", type_count);
                 putstr(datawin, ATR_INDENT_AT_DASH | ATR_ORDERED_LIST, buf);
             }
             if (wears_blindfold)
@@ -2236,15 +2170,79 @@ struct permonst* ptr;
                 Sprintf(buf, " %2d - Blindfolds", type_count);
                 putstr(datawin, ATR_INDENT_AT_DASH | ATR_ORDERED_LIST, buf);
             }
+            if (wears_boots)
+            {
+                type_count++;
+                Sprintf(buf, " %2d - Boots", type_count);
+                putstr(datawin, ATR_INDENT_AT_DASH | ATR_ORDERED_LIST, buf);
+            }
+            if (wears_bracers)
+            {
+                type_count++;
+                Sprintf(buf, " %2d - Bracers", type_count);
+                putstr(datawin, ATR_INDENT_AT_DASH | ATR_ORDERED_LIST, buf);
+            }
+            if (wears_cloak)
+            {
+                type_count++;
+                Sprintf(buf, " %2d - Cloaks", type_count);
+                putstr(datawin, ATR_INDENT_AT_DASH | ATR_ORDERED_LIST, buf);
+            }
+            if (wears_gloves)
+            {
+                type_count++;
+                Sprintf(buf, " %2d - Gloves", type_count);
+                putstr(datawin, ATR_INDENT_AT_DASH | ATR_ORDERED_LIST, buf);
+            }
+            if (wears_helmet)
+            {
+                type_count++;
+                Sprintf(buf, " %2d - %s", type_count, has_horns(ptr) ? "Helmets, flimsy suitable with horns" : "Helmets");
+                putstr(datawin, ATR_INDENT_AT_DASH | ATR_ORDERED_LIST,  buf);
+            }
             type_count++;
-            Sprintf(buf, " %2d - Some miscellaneous magic items", type_count);
+            Sprintf(buf, " %2d - Miscellaneous items", type_count);
             putstr(datawin, ATR_INDENT_AT_DASH | ATR_ORDERED_LIST, buf);
-
-            /* Additional ones */
+            if (wears_rings)
+            {
+                type_count++;
+                Sprintf(buf, " %2d - Rings", type_count);
+                putstr(datawin, ATR_INDENT_AT_DASH | ATR_ORDERED_LIST, buf);
+            }
+            if (wears_robe)
+            {
+                type_count++;
+                Sprintf(buf, " %2d - Robes", type_count);
+                putstr(datawin, ATR_INDENT_AT_DASH | ATR_ORDERED_LIST, buf);
+            }
             if (can_wear_saddle(ptr))
             {
                 type_count++;
                 Sprintf(buf, " %2d - Saddles", type_count);
+                putstr(datawin, ATR_INDENT_AT_DASH | ATR_ORDERED_LIST, buf);
+            }
+            if (wears_shield)
+            {
+                type_count++;
+                Sprintf(buf, " %2d - Shields", type_count);
+                putstr(datawin, ATR_INDENT_AT_DASH | ATR_ORDERED_LIST, buf);
+            }
+            if (wears_shirt)
+            {
+                type_count++;
+                Sprintf(buf, " %2d - Shirts", type_count);
+                putstr(datawin, ATR_INDENT_AT_DASH | ATR_ORDERED_LIST, buf);
+            }
+            if (wears_suit)
+            {
+                type_count++;
+                Sprintf(buf, " %2d - Suits of armor", type_count);
+                putstr(datawin, ATR_INDENT_AT_DASH | ATR_ORDERED_LIST, buf);
+            }
+            if (wields_weapons)
+            {
+                type_count++;
+                Sprintf(buf, " %2d - Weapons", type_count);
                 putstr(datawin, ATR_INDENT_AT_DASH | ATR_ORDERED_LIST, buf);
             }
         }
