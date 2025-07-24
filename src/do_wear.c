@@ -2017,12 +2017,15 @@ int* result_style_ptr;
             }
             err++;
         }
-        else if (Upolyd && !mon_can_wear_boots(&youmonst))
+        else if (Upolyd && !mon_can_wear_boots_itself(&youmonst))
         {
             if (noisy)
             {
                 play_sfx_sound(SFX_GENERAL_CURRENT_FORM_DOES_NOT_ALLOW);
-                pline_ex(ATR_NONE, CLR_MSG_FAIL, "Your %s are not of the shape that allow you to wear %s.", makeplural(body_part(FOOT)), c_boots);
+                if (!mon_can_wear_boots(&youmonst)) /* Boots won't fit */
+                    pline_ex(ATR_NONE, CLR_MSG_FAIL, "Your %s are not fit for %s.", makeplural(body_part(FOOT)), c_boots);
+                else /* Cannot put on boots, e.g. because of no hands etc. */
+                    pline_ex(ATR_NONE, CLR_MSG_FAIL, "You are not in a form in which you are able to put on %s.", c_boots);
             }
             err++;
         }

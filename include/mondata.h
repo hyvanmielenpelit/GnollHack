@@ -965,7 +965,7 @@
     (is_immune_to_life_leech((mon)->data) || is_vampshifter(mon))
 
 /* Able to wear armor types */
-#define can_wear_helmet(ptr) (has_place_to_put_helmet_on(ptr) && (humanoid(ptr) || has_humanoid_head(ptr))) /* Horns are dealt separately; only non-animal shaped heads will do */
+#define can_wear_helmet(ptr) (has_place_to_put_helmet_on(ptr) && (humanoid(ptr) || has_humanoid_head(ptr))) /* Horns are dealt separately (they just pierce flimsy helmets); only non-animal shaped heads will do */
 #define can_wear_suit(ptr) (!cantweararm(ptr))
 #define can_wear_robe(ptr) (!cantweararm(ptr))
 #define can_wear_cloak(ptr) (!cantweararm(ptr) || (ptr)->msize == MZ_SMALL) /* Smaller than MZ_SMALL is covered by cantweararm */
@@ -975,15 +975,20 @@
 #define can_wear_boots(ptr) (!nofeet(ptr) && !slithy(ptr) && ((humanoid(ptr) && !has_nonhumanoid_feet(ptr)) || has_humanoid_feet(ptr)))
 #define can_wear_amulet(ptr) (has_neck(ptr))
 #define can_wear_rings(ptr) (!nohands(ptr))
-#define can_wear_shield(ptr) (!nohands(ptr) && is_armed(ptr)) /* Just having !nohands wasn't enough, as e.g. dragons have hands but do not wear shields */
+#define can_wear_shield(ptr) (!nohands(ptr) && (is_mplayer(ptr) || is_armed(ptr))) /* Just having !nohands wasn't enough, as e.g. dragons have hands but do not wear shields */
 #define can_wear_blindfold(ptr) (haseyes(ptr) && has_head(ptr))
-#define can_wield_weapons(ptr) (!nohands(ptr) && is_armed(ptr))
+#define can_wield_weapons(ptr) (!nohands(ptr) && (is_mplayer(ptr) || is_armed(ptr)))
 #define can_wear_objects(ptr) (!verysmall(ptr) && !is_whirly(ptr) && !(is_animal(ptr) && !able_to_wear_objects(ptr)))
 #define can_wear_objects_itself(ptr) (can_operate_objects(ptr) && can_wear_objects(ptr))
 #define can_wear_saddle(ptr) is_steed(ptr)
 
+#define mon_can_wear_helmet(m) (can_wear_objects((m)->data) && can_wear_helmet((m)->data))
 #define mon_can_wear_boots(m) (can_wear_objects((m)->data) && can_wear_boots((m)->data))
 #define mon_can_wear_boots_itself(m) (can_wear_objects_itself((m)->data) && can_wear_boots((m)->data))
+#define mon_can_wear_bracers(m) (can_wear_objects((m)->data) && can_wear_bracers((m)->data))
+#define mon_can_wear_gloves(m) (can_wear_objects((m)->data) && can_wear_gloves((m)->data))
+#define mon_can_wear_shield(m) (can_wear_objects((m)->data) && can_wear_shield((m)->data))
+#define mon_can_wield_weapons(m) (can_wear_objects((m)->data) && can_wield_weapons((m)->data))
 
 /* Other */
 #define is_mon_talkative(mon) (is_speaking((mon)->data) && (is_peaceful(mon) || is_chatty((mon)->data)))

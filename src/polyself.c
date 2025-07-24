@@ -1250,79 +1250,84 @@ break_armor()
         }
     }
 
-    //Helmet
-    if (has_horns(youmonst.data) || !has_place_to_put_helmet_on(youmonst.data) || is_whirly(youmonst.data))
+    /* Helmet */
+    if ((otmp = uarmh) != 0)
     {
-        if ((otmp = uarmh) != 0) 
+        boolean horned = has_horns(youmonst.data);
+        boolean flimsy = is_flimsy(otmp) && !donning(otmp);
+        if (!mon_can_wear_helmet(&youmonst) || (horned && !flimsy))
         {
-            if (is_flimsy(otmp) && !donning(otmp) && has_place_to_put_helmet_on(youmonst.data))
-            {
-                char hornbuf[BUFSZ];
+            if (donning(otmp))
+                cancel_don();
+            Your_ex(ATR_NONE, CLR_MSG_WARNING, "%s falls to the %s!", helm_simple_name(otmp),
+                surface(u.ux, u.uy));
+            (void)Helmet_off();
+            dropxf(otmp);
+        }
+        else if (horned && flimsy)
+        {
+            char hornbuf[BUFSZ];
 
-                /* Future possibilities: This could damage/destroy helmet */
-                Sprintf(hornbuf, "horn%s", plur(num_horns(youmonst.data)));
-                Your_ex(ATR_NONE, CLR_MSG_WARNING, "%s %s through %s.", hornbuf, vtense(hornbuf, "pierce"),
-                     yname(otmp));
-            }
-            else 
-            {
-                if (donning(otmp))
-                    cancel_don();
-                Your_ex(ATR_NONE, CLR_MSG_WARNING, "%s falls to the %s!", helm_simple_name(otmp),
-                     surface(u.ux, u.uy));
-                (void) Helmet_off();
-                dropxf(otmp);
-            }
+            /* Future possibilities: This could damage/destroy helmet */
+            Sprintf(hornbuf, "horn%s", plur(num_horns(youmonst.data)));
+            Your_ex(ATR_NONE, CLR_MSG_WARNING, "%s %s through %s.", hornbuf, vtense(hornbuf, "pierce"),
+                yname(otmp));
         }
     }
 
-    //Gloves and weapons
-    if (nohands(youmonst.data) || verysmall(youmonst.data) || is_whirly(youmonst.data))
+    /* Gloves and weapon */
+    boolean dropped_gloves = FALSE;
+    if (!mon_can_wear_gloves(&youmonst))
     {
-        if ((otmp = uarmg) != 0) 
+        if ((otmp = uarmg) != 0)
         {
             if (donning(otmp))
                 cancel_don();
             /* Drop weapon along with gloves */
             You_ex(ATR_NONE, CLR_MSG_WARNING, "drop your gloves%s!", uwep ? " and weapon" : "");
             drop_weapon(0);
-            (void) Gloves_off();
+            (void)Gloves_off();
             dropxf(otmp);
+            dropped_gloves = TRUE;
         }
+    }
+
+    /* Weapon if gloves didn't go off */
+    if (!dropped_gloves && !mon_can_wield_weapons(&youmonst) && uwep)
+    {
+        drop_weapon(0);
+    }
+
+    /* Shield */
+    boolean canwearshield = mon_can_wear_shield(&youmonst);
+    if (!canwearshield || dropped_gloves)
+    {
         if ((otmp = uarms) != 0)
         {
-            if(is_shield(otmp))
+            if (is_shield(otmp))
             {
-                You_ex(ATR_NONE, CLR_MSG_WARNING, "can no longer hold your shield!");
-                (void) Shield_off();
+                You_ex1(ATR_NONE, CLR_MSG_WARNING, canwearshield ? "drop your shield!" : "can no longer hold your shield!");
+                (void)Shield_off();
             }
             else
             {
-                You_ex(ATR_NONE, CLR_MSG_WARNING, "can no longer hold your %s!", cxname(otmp));
+                You_ex(ATR_NONE, CLR_MSG_WARNING, canwearshield ? "drop your %s!" : "can no longer hold your %s!", cxname(otmp));
                 remove_worn_item(otmp, FALSE);
             }
             dropxf(otmp);
         }
-        if ((otmp = uarmh) != 0) 
-        {
-            if (donning(otmp))
-                cancel_don();
-            Your_ex(ATR_NONE, CLR_MSG_WARNING, "%s falls to the %s!", helm_simple_name(otmp),
-                 surface(u.ux, u.uy));
-            (void) Helmet_off();
-            dropxf(otmp);
-        }
     }
 
-    //Boots
-    if (nofeet(youmonst.data) || verysmall(youmonst.data) || is_whirly(youmonst.data)
-        || slithy(youmonst.data) || !mon_can_wear_boots(&youmonst))
+    /* Boots */
+    if (!mon_can_wear_boots(&youmonst))
     {
         if ((otmp = uarmf) != 0)
         {
             if (donning(otmp))
                 cancel_don();
-            if (is_whirly(youmonst.data) || slithy(youmonst.data))
+
+            boolean too_small_or_no_feet = nofeet(youmonst.data) || is_whirly(youmonst.data) || slithy(youmonst.data) || verysmall(youmonst.data);
+            if (too_small_or_no_feet)
                 Your_ex(ATR_NONE, CLR_MSG_WARNING, "boots fall away!");
             else
                 Your_ex(ATR_NONE, CLR_MSG_WARNING, "boots %s off your feet!",
@@ -1332,13 +1337,13 @@ break_armor()
         }
     }
 
-    //Bracers
-    if (nohands(youmonst.data) || verysmall(youmonst.data) || is_whirly(youmonst.data))
+    /* Bracers */
+    if (!mon_can_wear_bracers(&youmonst))
     {
         if ((otmp = uarmb) != 0) {
             if (donning(otmp))
                 cancel_don();
-            if (is_whirly(youmonst.data))
+            if (nohands(youmonst.data) || verysmall(youmonst.data) || is_whirly(youmonst.data))
                 Your_ex(ATR_NONE, CLR_MSG_WARNING, "bracers fall away!");
             else
                 Your_ex(ATR_NONE, CLR_MSG_WARNING, "bracers %s off your %s!",
@@ -1349,100 +1354,126 @@ break_armor()
     }
 
     /* Miscellaneous magic items */
-    if ((otmp = umisc) != 0 || (otmp = umisc2) != 0 || (otmp = umisc3) != 0 || (otmp = umisc4) != 0 || (otmp = umisc5) != 0) {
-        schar subtyp = objects[otmp->otyp].oc_subtyp;
-        switch (subtyp)
+    int i;
+    for (i = 0; i < 5; i++)
+    {
+        switch (i)
         {
+        case 0:
+            otmp = umisc;
+            break;
+        case 1:
+            otmp = umisc2;
+            break;
+        case 2:
+            otmp = umisc3;
+            break;
+        case 3:
+            otmp = umisc4;
+            break;
+        case 4:
+            otmp = umisc5;
+            break;
         default:
-        case MISC_WINGS:
-        case MISC_MULTIPLE_PERMITTED:
-        case MISC_EXTRA_ARMS:
-        case MISC_BROOCH:
-            if (is_whirly(youmonst.data) || verysmall(youmonst.data))
-            {
-                pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s away!", Yobjnam2(otmp, "fall"));
-                (void)MiscellaneousItem_off(otmp);
-                dropxf(otmp);
-            }
+            otmp = 0;
             break;
-        case MISC_PANTS:
-        case MISC_SKIRT:
-            if (is_whirly(youmonst.data) || verysmall(youmonst.data) || nolimbs(youmonst.data) || slithy(youmonst.data))
+        }
+        if (otmp)
+        {
+            schar subtyp = objects[otmp->otyp].oc_subtyp;
+            switch (subtyp)
             {
-                pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s away!", Yobjnam2(otmp, "fall"));
-                (void)MiscellaneousItem_off(otmp);
-                dropxf(otmp);
-            }
-            break;
-        case MISC_WRIST_WATCH:
-        case MISC_BRACELET:
-        case MISC_BRACERS:
-            if (is_whirly(youmonst.data) || verysmall(youmonst.data) || nohands(youmonst.data))
-            {
-                if (is_whirly(youmonst.data) || nohands(youmonst.data))
+            default:
+            case MISC_WINGS:
+            case MISC_MULTIPLE_PERMITTED:
+            case MISC_EXTRA_ARMS:
+            case MISC_BROOCH:
+                if (is_whirly(youmonst.data) || verysmall(youmonst.data))
+                {
                     pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s away!", Yobjnam2(otmp, "fall"));
-                else
-                    pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s%s off your %s!",
-                        Yobjnam2(otmp, verysmall(youmonst.data) ? "slide" : "are"), verysmall(youmonst.data) ? "" : " pushed", subtyp == MISC_BRACERS ? makeplural(body_part(ARM)) : body_part(ARM));
-                (void)MiscellaneousItem_off(otmp);
-                dropxf(otmp);
-            }
-            break;
-        case MISC_BELT:
-            if (breakarm(youmonst.data))
-            {
-                if (otmp->oartifact || is_obj_indestructible(otmp))
+                    (void)MiscellaneousItem_off(otmp);
+                    dropxf(otmp);
+                }
+                break;
+            case MISC_PANTS:
+            case MISC_SKIRT:
+                if (is_whirly(youmonst.data) || verysmall(youmonst.data) || nofeet(youmonst.data) || slithy(youmonst.data))
+                {
+                    pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s away!", Yobjnam2(otmp, "fall"));
+                    (void)MiscellaneousItem_off(otmp);
+                    dropxf(otmp);
+                }
+                break;
+            case MISC_WRIST_WATCH:
+            case MISC_BRACELET:
+            case MISC_BRACERS:
+                if (is_whirly(youmonst.data) || verysmall(youmonst.data) || nohands(youmonst.data))
+                {
+                    if (is_whirly(youmonst.data) || nohands(youmonst.data))
+                        pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s away!", Yobjnam2(otmp, "fall"));
+                    else
+                        pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s%s off your %s!",
+                            Yobjnam2(otmp, verysmall(youmonst.data) ? "slide" : "are"), verysmall(youmonst.data) ? "" : " pushed", subtyp == MISC_BRACERS ? makeplural(body_part(ARM)) : body_part(ARM));
+                    (void)MiscellaneousItem_off(otmp);
+                    dropxf(otmp);
+                }
+                break;
+            case MISC_BELT:
+                if (breakarm(youmonst.data))
+                {
+                    if (otmp->oartifact || is_obj_indestructible(otmp))
+                    {
+                        pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s falls off!", Yname2(otmp));
+                        (void)MiscellaneousItem_off(otmp);
+                        dropxf(otmp);
+                    }
+                    else
+                    {
+                        play_simple_object_sound(otmp, OBJECT_SOUND_TYPE_BREAK);
+                        pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s!", Yobjnam2(otmp, "break"));
+                        exercise(A_STR, FALSE);
+                        (void)MiscellaneousItem_off(otmp);
+                        Sprintf(priority_debug_buf_2, "break_armor5: %d", otmp->otyp);
+                        useup(otmp);
+                    }
+                }
+                else if (sliparm(youmonst.data))
                 {
                     pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s falls off!", Yname2(otmp));
                     (void)MiscellaneousItem_off(otmp);
                     dropxf(otmp);
                 }
-                else
+                break;
+            case MISC_NOSERING:
+            case MISC_HEADBAND:
+            case MISC_EYEGLASSES:
+            case MISC_BLINDFOLD:
+            case MISC_MASK:
+                if (is_whirly(youmonst.data) || verysmall(youmonst.data) || !has_head(youmonst.data))
                 {
-                    play_simple_object_sound(otmp, OBJECT_SOUND_TYPE_BREAK);
-                    pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s!", Yobjnam2(otmp, "break"));
-                    exercise(A_STR, FALSE);
+                    if (is_whirly(youmonst.data) || !has_head(youmonst.data))
+                        pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s away!", Yobjnam2(otmp, "fall"));
+                    else
+                        pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s%s off your %s!",
+                            Yobjnam2(otmp, verysmall(youmonst.data) ? "slide" : "are"), verysmall(youmonst.data) ? "" : " pushed", body_part(subtyp == MISC_NOSERING ? NOSE : HEAD));
                     (void)MiscellaneousItem_off(otmp);
-                    Sprintf(priority_debug_buf_2, "break_armor5: %d", otmp->otyp);
-                    useup(otmp);
+                    dropxf(otmp);
                 }
+                break;
+            case MISC_SCARF:
+            case MISC_NECKTIE:
+                if (is_whirly(youmonst.data) || verysmall(youmonst.data) || !has_neck(youmonst.data))
+                {
+                    if (is_whirly(youmonst.data) || !has_neck(youmonst.data))
+                        pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s away!", Yobjnam2(otmp, "fall"));
+                    else
+                        pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s%s off your %s!",
+                            Yobjnam2(otmp, verysmall(youmonst.data) ? "slide" : "are"), verysmall(youmonst.data) ? "" : " pushed", body_part(NECK));
+                    (void)MiscellaneousItem_off(otmp);
+                    dropxf(otmp);
+                }
+                break;
             }
-            else if (sliparm(youmonst.data))
-            {
-                pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s falls off!", Yname2(otmp));
-                (void)MiscellaneousItem_off(otmp);
-                dropxf(otmp);
-            }
-            break;
-        case MISC_NOSERING:
-        case MISC_HEADBAND:
-        case MISC_EYEGLASSES:
-        case MISC_BLINDFOLD:
-        case MISC_MASK:
-            if (is_whirly(youmonst.data) || verysmall(youmonst.data) || !has_head(youmonst.data))
-            {
-                if (is_whirly(youmonst.data) || !has_head(youmonst.data))
-                    pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s away!", Yobjnam2(otmp, "fall"));
-                else
-                    pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s%s off your %s!",
-                        Yobjnam2(otmp, verysmall(youmonst.data) ? "slide" : "are"), verysmall(youmonst.data) ? "" : " pushed", body_part(subtyp == MISC_NOSERING ? NOSE : HEAD));
-                (void)MiscellaneousItem_off(otmp);
-                dropxf(otmp);
-            }
-            break;
-        case MISC_SCARF:
-        case MISC_NECKTIE:
-            if (is_whirly(youmonst.data) || verysmall(youmonst.data) || !has_neck(youmonst.data))
-            {
-                if (is_whirly(youmonst.data) || !has_neck(youmonst.data))
-                    pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s away!", Yobjnam2(otmp, "fall"));
-                else
-                    pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s%s off your %s!",
-                        Yobjnam2(otmp, verysmall(youmonst.data) ? "slide" : "are"), verysmall(youmonst.data) ? "" : " pushed", body_part(NECK));
-                (void)MiscellaneousItem_off(otmp);
-                dropxf(otmp);
-            }
-            break;
         }
     }
 }

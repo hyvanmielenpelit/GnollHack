@@ -4107,7 +4107,7 @@ struct monst* mon;
         }
         break;
     case 12:
-        if (!is_fast(mon) && !is_very_fast(mon) && !is_ultra_fast(mon) && !is_super_fast(mon) && !is_lightning_fast(mon) && mon_can_wear_boots(mon)) {
+        if (!is_fast(mon) && !is_very_fast(mon) && !is_ultra_fast(mon) && !is_super_fast(mon) && !is_lightning_fast(mon) && mon_can_wear_boots_itself(mon)) {
             otmp = mksobj(SPEED_BOOTS, FALSE, FALSE, MKOBJ_TYPE_WISHING);
             if (otmp)
             {
