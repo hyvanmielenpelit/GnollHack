@@ -2017,7 +2017,7 @@ int* result_style_ptr;
             }
             err++;
         }
-        else if (Upolyd && !feet_fit_boots(youmonst.data))
+        else if (Upolyd && !mon_can_wear_boots(&youmonst))
         {
             if (noisy)
             {

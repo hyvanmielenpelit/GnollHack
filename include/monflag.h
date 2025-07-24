@@ -159,6 +159,7 @@
 #define M1_NOTAKE          0x00000800UL   /* cannot pick up objects */
 #define M1_NOEYES          0x00001000UL   /* no eyes to gaze into or blind */
 #define M1_NOHANDS         0x00002000UL   /* no hands to handle things */
+#define M1_NOFEET          0x00004000UL   /* no feet */
 #define M1_NOLIMBS         0x00006000UL   /* TWO BITS: no arms/legs to kick/wear on */
 #define M1_NONECK          0x00008000UL   /* no head to behead */
 #define M1_MINDLESS        0x00010000UL   /* has no mind--golem, zombie, mold */
@@ -253,10 +254,10 @@
 #define M3_SPEAKING                                    0x00020000UL   /* can be spoken to using the chat command */
 #define M3_CHATTY                                      0x00040000UL   /* speaks even if hostile */
 #define M3_CHAT_CAN_JOIN_PARTY                         0x00080000UL   /* can join the player's party */
-#define M3_NONBOOT_FEET                                0x00100000UL   /* has feet not fitting boots like hooves; cannot wear boots */
-/* free bit */
-/* free bit */
-/* free bit */
+#define M3_HUMANOID_HEAD                               0x00100000UL   /* only humanoids and monsters with this flag can wear helmets */
+#define M3_HUMANOID_HANDS                              0x00200000UL   /* only humanoids and monsters with this flag can wear gloves */
+#define M3_HUMANOID_FEET                               0x00400000UL   /* only humanoids and monsters with this flag can wear boots */
+#define M3_NON_HUMANOID_FEET                           0x00800000UL   /* humanoids with this flag cannot wear boots */
 #define M3_REGENERATES_LOST_BODY_PARTS                 0x01000000UL   /* does not lose max hitpoint because of sharpness or bisection */
 #define M3_REVIVES_FROM_DEAD                           0x02000000UL   /* is resurrects itself after a while */
 
@@ -373,7 +374,6 @@
 #define M6_HUMAN_BREATHE_ANIMATION  0x01000000UL   /* GUI can add a human breathe (2 legs standing) animation */
 #define M6_ANIMAL_BREATHE_ANIMATION 0x02000000UL   /* GUI can add an animal breathe (4 legs standing) animation */
 #define M6_ABLE_TO_WEAR_OBJECTS     0x04000000UL   /* Override animal etc. flags preventing the use of items */
-#define M6_NONGLOVE_HANDS           0x08000000UL   /* Has hands but not of the kind that can fit into gloves */
 
 #define M7_NONE                     0x00000000UL
 #define M7_ARCHAEOLOGIST            0x00000001UL   /* monster can use archaeologist items */

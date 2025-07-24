@@ -1442,7 +1442,7 @@ boolean creation, commanded;
         wears_shield = m_dowear_type(mon, W_ARMS, creation, FALSE);
     if (can_wear_gloves(mon->data) && !(MON_WEP(mon) && mwelded(MON_WEP(mon), mon)))
         wears_gloves = m_dowear_type(mon, W_ARMG, creation, FALSE);
-    if (can_wear_boots(mon->data) && !slithy(mon->data) && mon->data->mlet != S_CENTAUR)
+    if (can_wear_boots(mon->data))
         wears_boots = m_dowear_type(mon, W_ARMF, creation, FALSE);
     if (can_wear_bracers(mon->data))
         wears_bracers = m_dowear_type(mon, W_ARMB, creation, FALSE);
@@ -1451,9 +1451,10 @@ boolean creation, commanded;
     if (can_wear_amulet(mon->data))
         wears_amulet = m_dowear_type(mon, W_AMUL, creation, FALSE);
     if (can_wear_rings(mon->data) && (cursed_items_are_positive_mon(mon) || (!(MON_WEP(mon) && mwelded(MON_WEP(mon), mon)) && !(old_gloves && old_gloves->cursed))))
+    {
         wears_ringr = m_dowear_type(mon, W_RINGR, creation, FALSE);
-    if (can_wear_rings(mon->data) && (cursed_items_are_positive_mon(mon) || (!(MON_WEP(mon) && mwelded(MON_WEP(mon), mon)) && !(old_gloves && old_gloves->cursed))))
         wears_ringl = m_dowear_type(mon, W_RINGL, creation, FALSE);
+    }
 
     /* Always check miscellaneous */
     wears_misc1 = m_dowear_type(mon, W_MISC, creation, FALSE);

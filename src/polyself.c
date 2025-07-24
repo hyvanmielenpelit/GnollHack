@@ -1315,8 +1315,8 @@ break_armor()
     }
 
     //Boots
-    if (nolimbs(youmonst.data) || verysmall(youmonst.data) || is_whirly(youmonst.data)
-        || slithy(youmonst.data) || !feet_fit_boots(youmonst.data))
+    if (nofeet(youmonst.data) || verysmall(youmonst.data) || is_whirly(youmonst.data)
+        || slithy(youmonst.data) || !mon_can_wear_boots(&youmonst))
     {
         if ((otmp = uarmf) != 0)
         {

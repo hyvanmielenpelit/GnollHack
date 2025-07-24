@@ -129,7 +129,10 @@ struct obj*
 m_has_wearable_armor_or_accessory(mon)
 struct monst* mon;
 {
-    for (struct obj* obj = mon->minvent; obj; obj = obj->nobj) 
+    if (!mon || !can_wear_objects(mon->data))
+        return (struct obj*)0;
+
+    for (struct obj* obj = mon->minvent; obj; obj = obj->nobj)
     {
         if (obj->oclass == ARMOR_CLASS || obj->oclass == AMULET_CLASS || obj->oclass == MISCELLANEOUS_CLASS || obj->oclass == RING_CLASS)
         {
