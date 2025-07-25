@@ -1357,12 +1357,10 @@ namespace GnollHackX
                 if (_message_history.Count > 0)
                     _message_history[_message_history.Count - 1].IsLast = false;
 
-                if (!_message_history.IsFull)
-                    _message_history.Add(newmsg);
-                else
+                if (!_message_history.TryAdd(newmsg))
                 {
                     _message_history = new GHMsgHistoryList(_message_history);
-                    _message_history.Add(newmsg);
+                    _message_history.TryAdd(newmsg);
                     if (!_useLongerMessageHistory)
                         isFullRefresh = true;
                 }
@@ -1381,12 +1379,10 @@ namespace GnollHackX
             if (_longer_message_history.Count > 0)
                 _longer_message_history[_longer_message_history.Count - 1].IsLast = false;
 
-            if (!_longer_message_history.IsFull)
-                _longer_message_history.Add(newmsg);
-            else
+            if (!_longer_message_history.TryAdd(newmsg))
             {
                 _longer_message_history = new GHMsgHistoryList(_longer_message_history);
-                _longer_message_history.Add(newmsg);
+                _longer_message_history.TryAdd(newmsg);
                 if (!_useLongerMessageHistory)
                     isFullRefresh = true;
             }

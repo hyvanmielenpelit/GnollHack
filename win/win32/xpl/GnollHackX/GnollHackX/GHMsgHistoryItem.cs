@@ -151,11 +151,6 @@ namespace GnollHackX
 
             return true;
         }
-        public void Add(GHMsgHistoryItem item)
-        {
-            if (!TryAdd(item))
-                new Exception("GHMsgHistoryList is full. Create a new list instead of Add.");
-        }
 
         public bool IsFull { get { return _start + _count >= _capacity + _excess - 1;  } }
         public GHMsgHistorySpan CurrentSpan
