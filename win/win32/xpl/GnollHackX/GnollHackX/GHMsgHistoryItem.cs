@@ -1,7 +1,8 @@
-﻿using System;
+﻿using GnollHackX;
+using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Text;
-using GnollHackX;
 
 namespace GnollHackX
 {
@@ -82,6 +83,122 @@ namespace GnollHackX
             Attribute = attr;
             NHColor = color;
             IsLast = false;
+        }
+    }
+
+    public class GHMsgHistoryList : IEnumerable<GHMsgHistoryItem>
+    {
+        private readonly GHMsgHistoryItem[] _items;
+        private readonly int _capacity;
+        private readonly int _excess;
+        private int _start;
+        private int _count;
+        public int Capacity { get { return _capacity; } }
+        public int Excess { get { return _excess; } }
+        public int Start { get { return _start; } }
+        public int Count { get { return _count; } }
+        public int Length { get { return _count; } }
+
+        public GHMsgHistoryList(int capacity, int excess)
+        {
+            _capacity = Math.Max(1, capacity);
+            _excess = Math.Max(0, Math.Min(_capacity, excess));
+            _items = new GHMsgHistoryItem[_capacity + _excess];
+            _start = 0;
+            _count = 0;
+        }
+
+        public GHMsgHistoryList(GHMsgHistoryList oldList)
+        {
+            _capacity = Math.Max(1, oldList.Capacity);
+            _excess = Math.Max(0, Math.Min(_capacity, oldList.Excess));
+            _items = new GHMsgHistoryItem[_capacity + _excess];
+            _start = 0;
+            _count = oldList.Count;
+            for (int i = 0; i < _count; i++)
+            {
+                _items[i] = oldList[i];
+            }
+        }
+
+        /* Copies # of last items from oldList equal to Math.Min(capacity, oldList.Count) */
+        public GHMsgHistoryList(GHMsgHistoryList oldList, int capacity, int excess)
+        {
+            _capacity = Math.Max(1, capacity);
+            _excess = Math.Max(0, Math.Min(_capacity, excess));
+            _items = new GHMsgHistoryItem[_capacity + _excess];
+            _start = 0;
+            _count = Math.Min(_capacity, oldList.Count);
+            int start = oldList.Count - _count;
+            for (int i = 0; i < _count; i++)
+            {
+                _items[i] = oldList[i + start];
+            }
+        }
+
+        public GHMsgHistoryItem this[int index] { get { return _items[_start + index]; } }
+
+        public bool TryAdd(GHMsgHistoryItem item)
+        {
+            if (IsFull)
+                return false;
+
+            _items[_start + _count] = item;
+            if (_count == _capacity)
+                _start++;
+            else
+                _count++;
+
+            return true;
+        }
+        public void Add(GHMsgHistoryItem item)
+        {
+            if (!TryAdd(item))
+                new Exception("GHMsgHistoryList is full. Create a new list instead of Add.");
+        }
+
+        public bool IsFull { get { return _start + _count >= _capacity + _excess - 1;  } }
+        public GHMsgHistorySpan CurrentSpan
+        {
+            get { return new GHMsgHistorySpan(_items, _start, _count); }
+        }
+        public IEnumerator<GHMsgHistoryItem> GetEnumerator()
+        {
+            for (int i = 0; i < _count; i++)
+                yield return _items[i];
+        }
+
+        IEnumerator IEnumerable.GetEnumerator() // Non-generic version
+        {
+            return GetEnumerator(); // Delegate to generic version
+        }
+    }
+
+    public sealed class GHMsgHistorySpan : IEnumerable<GHMsgHistoryItem>
+    {
+        private readonly GHMsgHistoryItem[] _items;
+        private readonly int _start;
+        private readonly int _count;
+        public int Count { get { return _count; } }
+        public int Length { get { return _count; } }
+
+        public GHMsgHistorySpan(GHMsgHistoryItem[] items, int start, int count) 
+        {
+            _items = items;
+            _start = start;
+            _count = count;
+        }
+        public GHMsgHistoryItem this[int index] { get { return _items[_start + index]; } }
+
+        public IEnumerator<GHMsgHistoryItem> GetEnumerator()
+        {
+            for (int i = 0; i < _count; i++)
+                yield return _items[i];
+        }
+
+        IEnumerator IEnumerable.GetEnumerator() // Non-generic version
+        {
+            return GetEnumerator(); // Delegate to generic version
         }
     }
 }

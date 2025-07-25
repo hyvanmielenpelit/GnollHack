@@ -334,7 +334,7 @@ namespace GnollHackX.Pages.Game
                     File.Delete(filepath);
 
                 var curgame = _gamePage.CurrentGame;
-                List<GHMsgHistoryItem> messages = curgame.GetMessages();
+                GHMsgHistorySpan messages = curgame.GetMessages();
                 using (StreamWriter sw = File.CreateText(filepath))
                 {
                     foreach (GHMsgHistoryItem msg in messages)

@@ -913,7 +913,7 @@ void lib_putmsghistory_ex(const char* msg, const char* attrs, const char* colors
     if (msg)
         write_text2buf_utf8(buf, sizeof(buf), msg);
 
-    lib_callbacks.callback_putmsghistory(buf, attrs, colors, (uchar)is_restoring);
+    lib_callbacks.callback_putmsghistory(msg ? buf : 0, attrs, colors, (uchar)is_restoring);
 }
 
 

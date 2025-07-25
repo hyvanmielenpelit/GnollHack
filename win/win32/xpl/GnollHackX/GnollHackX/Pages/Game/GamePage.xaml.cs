@@ -4100,8 +4100,8 @@ namespace GnollHackX.Pages.Game
             TipView.InvalidateSurface();
         }
         //private readonly object _msgHistoryLock = new object();
-        private GHMsgHistoryItem[] _msgHistory = null;
-        private void PrintHistory(GHMsgHistoryItem[] msgHistory)
+        private GHMsgHistorySpan _msgHistory = null;
+        private void PrintHistory(GHMsgHistorySpan msgHistory)
         {
             //lock(_msgHistoryLock)
             //{
@@ -7292,7 +7292,7 @@ namespace GnollHackX.Pages.Game
         private readonly List<GHScreenFilter> _localScreenFilters = new List<GHScreenFilter>();
         private readonly List<GHGUIEffect> _localGuiEffects = new List<GHGUIEffect>();
 
-        private GHMsgHistoryItem[] _localMsgHistory = null;
+        private GHMsgHistorySpan _localMsgHistory = null;
         private int _localClipX = 0;
         private int _localClipY = 0;
         private float _localMapOffsetX = 0;
@@ -20593,7 +20593,7 @@ namespace GnollHackX.Pages.Game
 
         void UpdateMessageFilter()
         {
-            GHMsgHistoryItem[] msgHistoryPtr = null;
+            GHMsgHistorySpan msgHistoryPtr = null;
             msgHistoryPtr = Interlocked.CompareExchange(ref _msgHistory, null, null);
             //lock (_msgHistoryLock)
             //{
