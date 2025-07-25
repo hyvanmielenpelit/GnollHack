@@ -1832,7 +1832,8 @@ weapon_here:
                 Strcat(prefix, "unrotten ");
         }
 
-        if (obj->otyp == CORPSE) {
+        if (obj->otyp == CORPSE) 
+        {
             /* (quan == 1) => want corpse_xname() to supply article,
                (quan != 1) => already have count or "some" as prefix;
                "corpse" is already in the buffer returned by xname() */
@@ -1843,7 +1844,9 @@ weapon_here:
             Sprintf(prefix, "%s ", cxstr);
             /* avoid having doname(corpse) consume an extra obuf */
             releaseobuf(cxstr);
-        } else if (obj->otyp == EGG) {
+        }
+        else if (obj->otyp == EGG) 
+        {
 #if 0 /* corpses don't tell if they're stale either */
             if (known && stale_egg(obj))
                 Strcat(prefix, "stale ");
@@ -2613,7 +2616,7 @@ size_t lenlimit;
         Strncpy(unamebuf, save_uname, sizeof unamebuf - 4);
         Strcpy(unamebuf + sizeof unamebuf - 4, "...");
         objects[obj->otyp].oc_uname = unamebuf;
-        releaseobuf(outbuf);
+        //releaseobuf(outbuf);
         outbuf = (*func)(obj);
         objects[obj->otyp].oc_uname = save_uname; /* restore called string */
         if (strlen(outbuf) <= lenlimit)
@@ -2626,7 +2629,7 @@ size_t lenlimit;
         Strncpy(onamebuf, save_oname, sizeof onamebuf - 4);
         Strcpy(onamebuf + sizeof onamebuf - 4, "...");
         ONAME(obj) = onamebuf;
-        releaseobuf(outbuf);
+        //releaseobuf(outbuf);
         outbuf = (*func)(obj);
         ONAME(obj) = save_oname; /* restore named string */
         if (strlen(outbuf) <= lenlimit)
@@ -2639,7 +2642,7 @@ size_t lenlimit;
         && strlen(save_oname) >= sizeof onamebuf) {
         objects[obj->otyp].oc_uname = unamebuf;
         ONAME(obj) = onamebuf;
-        releaseobuf(outbuf);
+        //releaseobuf(outbuf);
         outbuf = (*func)(obj);
         if (strlen(outbuf) <= lenlimit) {
             objects[obj->otyp].oc_uname = save_uname;
@@ -2653,12 +2656,12 @@ size_t lenlimit;
     save_obj = *obj;
     obj->bknown = obj->rknown = obj->greased = 0;
     obj->oeroded = obj->oeroded2 = 0;
-    releaseobuf(outbuf);
+    //releaseobuf(outbuf);
     outbuf = (*func)(obj);
     if (altfunc && strlen(outbuf) > lenlimit) {
         /* still long; use the alternate function (usually one of
            the jackets around minimal_xname()) */
-        releaseobuf(outbuf);
+        //releaseobuf(outbuf);
         outbuf = (*altfunc)(obj);
     }
     /* restore the object */
@@ -6112,7 +6115,7 @@ const char *lastR;
             Strcat(qbuf, bufp); /* formatted name fits */
         else
             Strcat(qbuf, lastR); /* use last resort */
-        releaseobuf(bufp);
+        //releaseobuf(bufp);
 
         if (qsuffix)
             Strcat(qbuf, qsuffix);
