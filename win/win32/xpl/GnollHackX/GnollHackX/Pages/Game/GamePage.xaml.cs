@@ -3729,21 +3729,21 @@ namespace GnollHackX.Pages.Game
 #if GNH_MAUI
             StopTextHideTimers();
 #endif
-            lock (_delayedTextHideLock)
+            //lock (_delayedTextHideLock)
             {
-                _delayedTextHideCancelled = true;
+                DelayedTextHideCancelled = true;
             }
 
             /* Cancel delayed touch hide */
             bool dohidemenu = false;
-            lock(_menuHideCancelledLock)
+            //lock(_menuHideCancelledLock)
             {
-                if (_menuHideOn)
+                if (MenuHideOn)
                 {
 #if GNH_MAUI
                     StopMenuHideTimers();
 #endif
-                    _menuHideCancelled = true;
+                    MenuHideCancelled = true;
                     dohidemenu = true;
                 }
             }
@@ -4464,11 +4464,11 @@ namespace GnollHackX.Pages.Game
 #if GNH_MAUI
             StopMenuHideTimers();
 #endif
-            lock (_menuHideCancelledLock)
+            //lock (_menuHideCancelledLock)
             {
-                if(_menuHideOn)
+                if(MenuHideOn)
                 {
-                    _menuHideCancelled = true;
+                    MenuHideCancelled = true;
                 }
             }
 
@@ -4483,11 +4483,11 @@ namespace GnollHackX.Pages.Game
 
             /* Cancel delayed text hide */
             bool dohidetext = false;
-            lock(_delayedTextHideLock)
+            //lock(_delayedTextHideLock)
             {
-                if(_delayedTextHideOn)
+                if(DelayedTextHideOn)
                 {
-                    _delayedTextHideCancelled = true;
+                    DelayedTextHideCancelled = true;
                     dohidetext = true;
                 }
             }
@@ -18246,9 +18246,12 @@ namespace GnollHackX.Pages.Game
 #pragma warning restore 414
 
 
-        private readonly object _menuHideCancelledLock = new object();
-        private bool _menuHideCancelled = false;
-        private bool _menuHideOn = false;
+        //private readonly object _menuHideCancelledLock = new object();
+        private int _menuHideCancelled = 0;
+        private int _menuHideOn = 0;
+        private bool MenuHideCancelled { get { return Interlocked.CompareExchange(ref _menuHideCancelled, 0, 0) != 0; } set { Interlocked.Exchange(ref _menuHideCancelled, value ? 1 : 0); } }
+        private bool MenuHideOn { get { return Interlocked.CompareExchange(ref _menuHideOn, 0, 0) != 0; } set { Interlocked.Exchange(ref _menuHideOn, value ? 1 : 0); } }
+
         private async void MenuOKButton_Clicked(object sender, EventArgs e)
         {
             await MenuOKButtonPressedAsync();
@@ -18441,10 +18444,10 @@ namespace GnollHackX.Pages.Game
 #if GNH_MAUI
             StopMenuHideTimers();
 #endif
-            lock(_menuHideCancelledLock)
+            //lock(_menuHideCancelledLock)
             {
-                _menuHideCancelled = false;
-                _menuHideOn = true;
+                MenuHideCancelled = false;
+                MenuHideOn = true;
             }
 
             if(GHApp.IsiOS)
@@ -18471,12 +18474,12 @@ namespace GnollHackX.Pages.Game
 
         private void DoTimedMenuHide()
         {
-            lock (_menuHideCancelledLock)
+            //lock (_menuHideCancelledLock)
             {
-                _menuHideOn = false;
-                if (_menuHideCancelled)
+                MenuHideOn = false;
+                if (Interlocked.CompareExchange(ref _menuHideCancelled, 0, 1) == 1)
                 {
-                    _menuHideCancelled = false;
+                    //_menuHideCancelled = false;
                     return;
                 }
             }
@@ -18493,18 +18496,20 @@ namespace GnollHackX.Pages.Game
             });
         }
 
-        private readonly object _delayedTextHideLock = new object();
-        private bool _delayedTextHideOn = false;
-        private bool _delayedTextHideCancelled = false;
+        //private readonly object _delayedTextHideLock = new object();
+        private int _delayedTextHideOn = 0;
+        private int _delayedTextHideCancelled = 0;
+        private bool DelayedTextHideOn { get { return Interlocked.CompareExchange(ref _delayedTextHideOn, 0, 0) != 0; } set { Interlocked.Exchange(ref _delayedTextHideOn, value ? 1 : 0); } }
+        private bool DelayedTextHideCancelled { get { return Interlocked.CompareExchange(ref _delayedTextHideCancelled, 0, 0) != 0; } set { Interlocked.Exchange(ref _delayedTextHideCancelled, value ? 1 : 0); } }
         private async Task DelayedTextHide()
         {
 #if GNH_MAUI
             StopTextHideTimers();
 #endif
-            lock (_delayedTextHideLock)
+            //lock (_delayedTextHideLock)
             {
-                _delayedTextHideOn = true;
-                _delayedTextHideCancelled = false;
+                DelayedTextHideOn = true;
+                DelayedTextHideCancelled = false;
             }
             if (GHApp.IsiOS)
             {
@@ -18529,12 +18534,12 @@ namespace GnollHackX.Pages.Game
 
         private void DoTimedTextHide()
         {
-            lock (_delayedTextHideLock)
+            //lock (_delayedTextHideLock)
             {
-                _delayedTextHideOn = false;
-                if (_delayedTextHideCancelled)
+                DelayedTextHideOn = false;
+                if (Interlocked.CompareExchange(ref _delayedTextHideCancelled, 0, 1) == 1)
                 {
-                    _delayedTextHideCancelled = false;
+                    //_delayedTextHideCancelled = false;
                     return;
                 }
             }

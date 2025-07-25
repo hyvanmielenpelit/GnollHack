@@ -1126,17 +1126,18 @@ namespace GnollHackX
 
         public static bool BatterySavingMode { get; set; }
 
-        private static readonly object _gPUBackendLock = new object();
         private static string _gPUBackend = null;
-        public static string GPUBackend { get { lock (_gPUBackendLock) { return _gPUBackend; } } set { lock (_gPUBackendLock) { _gPUBackend = value; } } }
+        public static string GPUBackend { get { return Interlocked.CompareExchange(ref _gPUBackend, null, null); } set { Interlocked.Exchange(ref _gPUBackend, value); } }
         private static long _defaultGPUCacheSize = -1; /* Null */
-        public static long DefaultGPUCacheSize { get { lock (_gPUBackendLock) { return _defaultGPUCacheSize; } } set { lock (_gPUBackendLock) { _defaultGPUCacheSize = value; } } }
+        public static long DefaultGPUCacheSize { get { return Interlocked.CompareExchange(ref _defaultGPUCacheSize, 0L, 0L); } set { Interlocked.Exchange(ref _defaultGPUCacheSize, value); } }
         private static long _primaryGPUCacheSize = -2; /* Recommended */
-        public static long PrimaryGPUCacheLimit { get { lock (_gPUBackendLock) { return _primaryGPUCacheSize; } } set { lock (_gPUBackendLock) { _primaryGPUCacheSize = value; } } }
+        public static long PrimaryGPUCacheLimit { get { return Interlocked.CompareExchange(ref _primaryGPUCacheSize, 0L, 0L); } set { Interlocked.Exchange(ref _primaryGPUCacheSize, value); } }
         private static long _secondaryGPUCacheSize = -2; /* Recommended */
-        public static long SecondaryGPUCacheLimit { get { lock (_gPUBackendLock) { return _secondaryGPUCacheSize; } } set { lock (_gPUBackendLock) { _secondaryGPUCacheSize = value; } } }
+        public static long SecondaryGPUCacheLimit { get { return Interlocked.CompareExchange(ref _secondaryGPUCacheSize, 0L, 0L); } set { Interlocked.Exchange(ref _secondaryGPUCacheSize, value); } }
         private static long _currentGPUCacheSize = -1; /* Null */
-        public static long CurrentGPUCacheSize { get { lock (_gPUBackendLock) { return _currentGPUCacheSize; } } set { lock (_gPUBackendLock) { _currentGPUCacheSize = value; } } }
+        public static long CurrentGPUCacheSize { get { return Interlocked.CompareExchange(ref _currentGPUCacheSize, 0L, 0L); } set { Interlocked.Exchange(ref _currentGPUCacheSize, value); } }
+
+        private static readonly object _gPUBackendLock = new object();
         private static CacheUsageInfo _currentGPUCacheUsage = new CacheUsageInfo(-1, -1); /* Null */
         public static CacheUsageInfo CurrentGPUCacheUsage { get { lock (_gPUBackendLock) { return _currentGPUCacheUsage; } } set { lock (_gPUBackendLock) { _currentGPUCacheUsage = value; } } }
 
@@ -3998,12 +3999,12 @@ namespace GnollHackX
             return bitmap;
         }
 
-        static readonly object _cachedBitmapsLock = new object();
+        //static readonly object _cachedBitmapsLock = new object();
         static readonly ConcurrentDictionary<string, SKImage> _cachedBitmaps = new ConcurrentDictionary<string, SKImage>();
 
         public static void InitBaseCachedBitmaps()
         {
-            lock (_cachedBitmapsLock)
+            //lock (_cachedBitmapsLock)
             {
                 try
                 {
@@ -4040,7 +4041,7 @@ namespace GnollHackX
 
         public static void InitAdditionalCachedBitmaps()
         {
-            lock (_cachedBitmapsLock)
+            //lock (_cachedBitmapsLock)
             {
                 try
                 {
@@ -4110,7 +4111,7 @@ namespace GnollHackX
             if (sourcePath == null || sourcePath == "")
                 return null;
 
-            lock (_cachedBitmapsLock)
+            //lock (_cachedBitmapsLock)
             {
                 try
                 {
@@ -4355,12 +4356,12 @@ namespace GnollHackX
         public static bool SaveFileTracking { get { bool t = TournamentMode; lock (_saveFileTrackingLock) { return _saveFileTracking || t; } } set { lock (_saveFileTrackingLock) { _saveFileTracking = value; } } }
         public static bool IsSaveFileTrackingNeeded { get { return IsDesktop || IsMobileRunningOnDesktop; } }
 
-        private static readonly object _xlogCreditialLock = new object();
+        //private static readonly object _xlogCreditialLock = new object();
         private static string _xlogUserName = "";
         private static string _xlogPassword = "";
 
-        public static string XlogUserName { get { lock (_xlogCreditialLock) { return _xlogUserName; } } set { lock (_xlogCreditialLock) { _xlogUserName = value; } } }
-        public static string XlogPassword { get { lock (_xlogCreditialLock) { return _xlogPassword; } } set { lock (_xlogCreditialLock) { _xlogPassword = value; } } }
+        public static string XlogUserName { get { return Interlocked.CompareExchange(ref _xlogUserName, null, null); } set { Interlocked.Exchange(ref _xlogUserName, value); } }
+        public static string XlogPassword { get { return Interlocked.CompareExchange(ref _xlogPassword, null, null); } set { Interlocked.Exchange(ref _xlogPassword, value); } }
         public static string XlogAntiForgeryToken 
         {
             get
@@ -4369,32 +4370,38 @@ namespace GnollHackX
             }
         }
 
-        private static bool _xlogReleaseAccount;
-        public static bool XlogReleaseAccount { get { lock (_xlogCreditialLock) { return _xlogReleaseAccount; } } set { lock (_xlogCreditialLock) { _xlogReleaseAccount = value; } } }
+        private static int _xlogReleaseAccount = 0;
+        public static bool XlogReleaseAccount { get { return Interlocked.CompareExchange(ref _xlogReleaseAccount, 0, 0) != 0; } set { Interlocked.Exchange(ref _xlogReleaseAccount, value ? 1 : 0); } }
 
         private static string _verifiedUserName;
+        public static string VerifiedUserName { get { return Interlocked.CompareExchange(ref _verifiedUserName, null, null); } set { Interlocked.Exchange(ref _verifiedUserName, value); } }
         private static string _verifiedPassword;
-        private static bool _xlogUserNameVerified;
-        public static bool XlogUserNameVerified { get { lock (_xlogCreditialLock) { return _xlogUserNameVerified; } } }
+        public static string VerifiedPassword { get { return Interlocked.CompareExchange(ref _verifiedPassword, null, null); } set { Interlocked.Exchange(ref _verifiedPassword, value); } }
+        private static int _xlogUserNameVerified = 0;
+        public static bool XlogUserNameVerified { get { return Interlocked.CompareExchange(ref _xlogUserNameVerified, 0, 0) != 0; } set { Interlocked.Exchange(ref _xlogUserNameVerified, value ? 1 : 0); } }
 
-        private static bool _xlogCredentialsIncorrect;
-        public static bool XlogCredentialsIncorrect { get { lock (_xlogCreditialLock) { return _xlogCredentialsIncorrect; } } set { lock (_xlogCreditialLock) { _xlogCredentialsIncorrect = value; } } }
+        private static int _xlogCredentialsIncorrect = 0;
+        public static bool XlogCredentialsIncorrect { get { return Interlocked.CompareExchange(ref _xlogCredentialsIncorrect, 0, 0) != 0; } set { Interlocked.Exchange(ref _xlogCredentialsIncorrect, value ? 1 : 0); } }
 
         public static void SetXlogUserNameVerified(bool isverified, string username, string password)
         {
-            lock(_xlogCreditialLock)
+            //lock(_xlogCreditialLock)
             {
-                _xlogUserNameVerified = isverified;
-                _verifiedUserName = username;
-                _verifiedPassword = password;
+                XlogUserNameVerified = isverified;
+                VerifiedUserName = username;
+                VerifiedPassword = password;
             }
         }
 
         public static bool AreCredentialsVerified(string username, string password)
         {
-            lock (_xlogCreditialLock)
+            //lock (_xlogCreditialLock)
             {
-                return _xlogUserNameVerified && _verifiedUserName != null && _verifiedPassword != null && username == _verifiedUserName && password == _verifiedPassword;
+                if (!XlogUserNameVerified)
+                    return false;
+                string verifiedUserName = VerifiedUserName;
+                string verifiedPassword = VerifiedPassword;
+                return verifiedUserName != null && verifiedPassword != null && username == verifiedUserName && password == verifiedPassword;
             }
         }
 
@@ -4434,12 +4441,11 @@ namespace GnollHackX
             string password = XlogPassword;
             if (!string.IsNullOrEmpty(username))
             {
-                if(_verifiedUserName != null && _verifiedPassword != null && username == _verifiedUserName && password == _verifiedPassword)
+                string verifiedUserName = VerifiedUserName;
+                string verifiedPassword = VerifiedPassword;
+                if (verifiedUserName != null && verifiedPassword != null && username == verifiedUserName && password == verifiedPassword)
                 {
-                    lock (_xlogCreditialLock)
-                    {
-                        _xlogUserNameVerified = true;
-                    }
+                    XlogUserNameVerified = true;
                 }
                 else
                 {
@@ -8128,16 +8134,16 @@ namespace GnollHackX
             return res;
         }
 
-        private static readonly object _preferencesLock = new object();
+        //private static readonly object _preferencesLock = new object();
         private static string _lastUsedPlayerName = "";
         private static string _lastUsedTournamentPlayerName = "";
-        private static bool _gUITipsShown = false;
+        private static int _gUITipsShown = 0;
         private static long _realPlayTime = 0L;
 
-        public static string LastUsedPlayerName { get { lock (_preferencesLock) { return _lastUsedPlayerName; } } set { lock (_preferencesLock) { _lastUsedPlayerName = value; } } }
-        public static string LastUsedTournamentPlayerName { get { lock (_preferencesLock) { return _lastUsedTournamentPlayerName; } } set { lock (_preferencesLock) { _lastUsedTournamentPlayerName = value; } } }
-        public static bool GUITipsShown { get { lock (_preferencesLock) { return _gUITipsShown; } } set { lock (_preferencesLock) { _gUITipsShown = value; } } }
-        public static long RealPlayTime { get { lock (_preferencesLock) { return _realPlayTime; } } set { lock (_preferencesLock) { _realPlayTime = value; } } }
+        public static string LastUsedPlayerName { get { return Interlocked.CompareExchange(ref _lastUsedPlayerName, null, null); } set { Interlocked.Exchange(ref _lastUsedPlayerName, value); } }
+        public static string LastUsedTournamentPlayerName { get { return Interlocked.CompareExchange(ref _lastUsedTournamentPlayerName, null, null); } set { Interlocked.Exchange(ref _lastUsedTournamentPlayerName, value); } }
+        public static bool GUITipsShown { get { return Interlocked.CompareExchange(ref _gUITipsShown, 0, 0) != 0; } set { Interlocked.Exchange(ref _gUITipsShown, value ? 1 : 0); } }
+        public static long RealPlayTime { get { return Interlocked.CompareExchange(ref _realPlayTime, 0L, 0L); } set { Interlocked.Exchange(ref _realPlayTime, value); } }
 
         public static void SaveLastUsedTournamentPlayerName(string used_player_name)
         {
