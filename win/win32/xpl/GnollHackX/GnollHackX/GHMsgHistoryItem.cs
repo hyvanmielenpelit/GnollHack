@@ -11,21 +11,13 @@ namespace GnollHackX
 {
     public sealed class GHMsgHistoryItem
     {
+        public static readonly string[] _emptyTextSplit = { "" };
+
         private readonly string _text = "";
         private readonly string[] _textSplit = null;
 
-        public string Text { get { return _text; } }
-
-        public string[] TextSplit 
-        { 
-            get
-            {
-                if (_textSplit == null)
-                    return new string[1] { "" };
-                else
-                    return _textSplit;
-            } 
-        }
+        public string Text => _text;
+        public string[] TextSplit => _textSplit ?? _emptyTextSplit;
 
         public readonly int Attribute = 0;
         public readonly int NHColor = (int)NhColor.NO_COLOR;
