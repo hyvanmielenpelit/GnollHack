@@ -43,17 +43,15 @@ namespace GnollHackX
                 }
                 else
                 {
-                    if (string.IsNullOrEmpty(Filter))
-                    {
-                        Interlocked.Exchange(ref _calculatedMatch, 1);
-                        Interlocked.Exchange(ref _isMatchCalculated, 1);
-                    }
+                    string filter = Filter;
+                    bool isCalcMatch;
+                    if (string.IsNullOrEmpty(filter))
+                        isCalcMatch = true;
                     else
-                    {
-                        Interlocked.Exchange(ref _calculatedMatch, Text.IndexOf(Filter, StringComparison.OrdinalIgnoreCase) >= 0 ? 1 : 0); // Text.Contains(Filter);
-                        Interlocked.Exchange(ref _isMatchCalculated, 1);
-                    }
-                    return Interlocked.CompareExchange(ref _calculatedMatch, 0, 0) != 0;
+                        isCalcMatch = Text.IndexOf(filter, StringComparison.OrdinalIgnoreCase) >= 0;
+                    Interlocked.Exchange(ref _calculatedMatch, isCalcMatch ? 1 : 0);
+                    Interlocked.Exchange(ref _isMatchCalculated, 1);
+                    return isCalcMatch;
                 }
             }
         }
