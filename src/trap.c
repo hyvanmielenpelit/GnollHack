@@ -6943,9 +6943,10 @@ boolean disarm;
             {
                 otmp2 = otmp->nexthere;
                 if (costly)
-                    loss += stolen_value(otmp, otmp->ox, otmp->oy,
-                                         is_peaceful(shkp) != 0, TRUE);
+                    loss += stolen_value(otmp, otmp->ox, otmp->oy, is_peaceful(shkp) != 0, TRUE);
+                context.suppress_container_deletion_warning = 1;
                 delobj(otmp);
+                context.suppress_container_deletion_warning = 0;
             }
             wake_nearby();
             losehp(adjust_damage(d(6, 6), (struct monst*)0, &youmonst, AD_PHYS, ADFLAGS_NONE), buf, KILLED_BY_AN);
