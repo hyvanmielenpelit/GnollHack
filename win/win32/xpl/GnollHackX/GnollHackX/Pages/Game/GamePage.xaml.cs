@@ -15028,27 +15028,39 @@ namespace GnollHackX.Pages.Game
         private SKRect _uiPrevWepRect;
         private SKRect _uiYouRect;
 
+        private SKRect _uiLocalStatusBarRect;
+        private SKRect _uiLocalHealthRect;
+        private SKRect _uiLocalManaRect;
+        private SKRect _uiLocalSkillRect;
+        private SKRect _uiLocalPrevWepRect;
+        private SKRect _uiLocalYouRect;
+
         private void canvasView_Touch_MainPage(object sender, SKTouchEventArgs e)
         {
             GHGame curGame = CurrentGame;
             if (curGame != null)
             {
-                SKRect statusBarRect;
-                SKRect healthRect;
-                SKRect manaRect;
-                SKRect skillRect;
-                SKRect prevWepRect;
-                SKRect youRect;
-
-                lock (_uiRectLock)
+                bool lockTaken = false;
+                //lock (_uiRectLock)
+                try
                 {
-                    statusBarRect = _uiStatusBarRect;
-                    healthRect = _uiHealthRect;
-                    manaRect = _uiManaRect;
-                    skillRect = _uiSkillRect;
-                    prevWepRect = _uiPrevWepRect;
-                    youRect = _uiYouRect;
+                    Monitor.TryEnter(_uiRectLock, ref lockTaken);
+                    if (lockTaken)
+                    {
+                        _uiLocalStatusBarRect = _uiStatusBarRect;
+                        _uiLocalHealthRect = _uiHealthRect;
+                        _uiLocalManaRect = _uiManaRect;
+                        _uiLocalSkillRect = _uiSkillRect;
+                        _uiLocalPrevWepRect = _uiPrevWepRect;
+                        _uiLocalYouRect = _uiYouRect;
+                    }
                 }
+                finally
+                {
+                    if (lockTaken)
+                        Monitor.Exit(_uiRectLock);
+                }
+                lockTaken = false;
 
                 switch (e?.ActionType)
                 {
@@ -15077,23 +15089,23 @@ namespace GnollHackX.Pages.Game
                         {
                             uint m_id = 0;
                             int cmd = 0;
-                            if (skillRect.Contains(e.Location))
+                            if (_uiLocalSkillRect.Contains(e.Location))
                             {
                                 _touchWithinSkillButton = true;
                             }
-                            else if (prevWepRect.Contains(e.Location))
+                            else if (_uiLocalPrevWepRect.Contains(e.Location))
                             {
                                 _touchWithinPrevWepButton = true;
                             }
-                            else if (healthRect.Contains(e.Location))
+                            else if (_uiLocalHealthRect.Contains(e.Location))
                             {
                                 _touchWithinHealthOrb = true;
                             }
-                            else if (manaRect.Contains(e.Location))
+                            else if (_uiLocalManaRect.Contains(e.Location))
                             {
                                 _touchWithinManaOrb = true;
                             }
-                            else if (statusBarRect.Contains(e.Location))
+                            else if (_uiLocalStatusBarRect.Contains(e.Location))
                             {
                                 _touchWithinStatusBar = true;
                             }
@@ -15125,7 +15137,7 @@ namespace GnollHackX.Pages.Game
                         }
                         else if (ShowExtendedStatusBar)
                         {
-                            if (youRect.Contains(e.Location))
+                            if (_uiLocalYouRect.Contains(e.Location))
                             {
                                 _touchWithinYouButton = true;
                             }
@@ -19879,6 +19891,9 @@ namespace GnollHackX.Pages.Game
         private int _shownTip = -1;
         public int ShownTip { get { return Interlocked.CompareExchange(ref _shownTip, 0, 0); } set { Interlocked.Exchange(ref _shownTip, value); } } // { get { int val; lock (_tipLock) { val = _shownTip; } return val; } set { lock (_tipLock) { _shownTip = value; } } }
         private bool _blockingTipView = true;
+        private SKRect _tipPaintLocalHealthRect;
+        private SKRect _tipPaintLocalManaRect;
+
         private void TipView_PaintSurface(object sender, SKPaintSurfaceEventArgs e)
         {
             SKImageInfo info = e.Info;
@@ -19900,13 +19915,22 @@ namespace GnollHackX.Pages.Game
                     maincanvasheight = _savedCanvasHeight;
                 }
 
-                SKRect healthRect;
-                SKRect manaRect;
-                lock (_uiRectLock)
+                bool lockTaken = false;
+                try
                 {
-                    healthRect = _uiHealthRect;
-                    manaRect = _uiManaRect;
+                    Monitor.TryEnter(_uiRectLock, ref lockTaken);
+                    if (lockTaken)
+                    {
+                        _tipPaintLocalHealthRect = _uiHealthRect;
+                        _tipPaintLocalManaRect = _uiManaRect;
+                    }
                 }
+                finally
+                {
+                    if (lockTaken)
+                        Monitor.Exit(_uiRectLock);
+                }
+                lockTaken = false;
 
                 float xscale = maincanvaswidth <= 0 || canvaswidth <= 0 ? 1.0f : canvaswidth / maincanvaswidth;
                 float yscale = maincanvasheight <= 0 || canvasheight <= 0 ? 1.0f : canvasheight / maincanvasheight;
@@ -20019,10 +20043,10 @@ namespace GnollHackX.Pages.Game
                         PaintTipButton(canvas, textPaint, ToggleMessageNumberButton, "", GHApp.GetClickTapWord(true, false) + " here to see more messages", 1.0f, centerfontsize, fontsize, true, 0.5f, -1.0f, canvaswidth, canvasheight);
                         break;
                     case 14:
-                        PaintTipButtonByRect(canvas, textPaint, healthRect, GHApp.GetClickTapWord(true, true) + " shows your maximum health.", "Health Orb", 1.1f, centerfontsize, fontsize, true, 0.15f, 0.0f, canvaswidth, canvasheight, xscale, yscale);
+                        PaintTipButtonByRect(canvas, textPaint, _tipPaintLocalHealthRect, GHApp.GetClickTapWord(true, true) + " shows your maximum health.", "Health Orb", 1.1f, centerfontsize, fontsize, true, 0.15f, 0.0f, canvaswidth, canvasheight, xscale, yscale);
                         break;
                     case 15:
-                        PaintTipButtonByRect(canvas, textPaint, manaRect, GHApp.GetClickTapWord(true, true) + " reveals your maximum mana.", "Mana Orb", 1.1f, centerfontsize, fontsize, true, 0.15f, 0.0f, canvaswidth, canvasheight, xscale, yscale);
+                        PaintTipButtonByRect(canvas, textPaint, _tipPaintLocalManaRect, GHApp.GetClickTapWord(true, true) + " reveals your maximum mana.", "Mana Orb", 1.1f, centerfontsize, fontsize, true, 0.15f, 0.0f, canvaswidth, canvasheight, xscale, yscale);
                         break;
                     case 16:
                         textPaint.TextSize = 36;
@@ -20075,15 +20099,27 @@ namespace GnollHackX.Pages.Game
             canvas.Flush();
         }
 
+        private SKRect _tipTouchLocalHealthRect;
+        private SKRect _tipTouchLocalManaRect;
+
         private void TipView_Touch(object sender, SKTouchEventArgs e)
         {
-            SKRect healthRect;
-            SKRect manaRect;
-            lock (_uiRectLock)
+            bool lockTaken = false;
+            try
             {
-                healthRect = _uiHealthRect;
-                manaRect = _uiManaRect;
+                Monitor.TryEnter(_uiRectLock, ref lockTaken);
+                if (lockTaken)
+                {
+                    _tipTouchLocalHealthRect = _uiHealthRect;
+                    _tipTouchLocalManaRect = _uiManaRect;
+                }
             }
+            finally
+            {
+                if (lockTaken)
+                    Monitor.Exit(_uiRectLock);
+            }
+            lockTaken = false;
 
             switch (e?.ActionType)
             {
@@ -20104,9 +20140,9 @@ namespace GnollHackX.Pages.Game
                         ShownTip++;
                     if (ShownTip == 9 && !ShowAutoDigButton)
                         ShownTip++;
-                    if (ShownTip == 14 && healthRect.Width == 0)
+                    if (ShownTip == 14 && _tipTouchLocalHealthRect.Width == 0)
                         ShownTip++;
-                    if (ShownTip == 15 && manaRect.Width == 0)
+                    if (ShownTip == 15 && _tipTouchLocalManaRect.Width == 0)
                         ShownTip++;
                     TipView.InvalidateSurface();
                     if (ShownTip >= 17 - (_blockingTipView ? 0 : 1))
