@@ -11,6 +11,7 @@ using System.IO;
 using Android.Content;
 using Xamarin.Google.Android.Play.Core.AssetPacks;
 using Xamarin.Google.Android.Play.Core.AssetPacks.Model;
+using System.Threading;
 
 namespace GnollHackX.Droid
 {
@@ -27,12 +28,12 @@ namespace GnollHackX.Droid
         public AssetPackStateUpdateListenerWrapper AssetPackListener { get; private set; }
 
 
-        private readonly static object _activityLock = new object();
-        private static bool _isHardKeyboardConnected = false;
+        //private readonly static object _activityLock = new object();
+        private static int _isHardKeyboardConnected = 0;
         public static bool IsHardKeyboardConnected
         {
-            get { lock (_activityLock) { return _isHardKeyboardConnected; } }
-            set { lock (_activityLock) { _isHardKeyboardConnected = value; } }
+            get { return Interlocked.CompareExchange(ref _isHardKeyboardConnected, 0, 0) != 0; }
+            set { Interlocked.Exchange(ref _isHardKeyboardConnected, value ? 1 : 0); }
         }
         protected override void OnCreate(Bundle savedInstanceState)
         {

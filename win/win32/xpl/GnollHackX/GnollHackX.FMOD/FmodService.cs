@@ -6,6 +6,7 @@ using FMOD;
 using FMOD.Studio;
 using System.Reflection;
 using System.IO;
+using System.Threading;
 using System.Threading.Tasks;
 
 #if GNH_MAUI
@@ -1502,12 +1503,12 @@ namespace GnollHackX.Unknown
         private const int _maxModeFadeCounter = 10;
         private float ModeVolume
         {
-            get { return (_quieterMode ? _quietModeMultiplier : 1.0f) + (_quieterMode ? 1.0f : -1.0f) * (1.0f - _quietModeMultiplier) * (float)(_maxModeFadeCounter - _modeFadeCounter) / _maxModeFadeCounter; }
+            get { return (_quieterMode ? _quietModeMultiplier : 1.0f) + (_quieterMode ? 1.0f : -1.0f) * (1.0f - _quietModeMultiplier) * (float)(_maxModeFadeCounter - ModeFadeCounter) / _maxModeFadeCounter; }
         }
 
-        private readonly object _modeFadeLock = new object();
+        //private readonly object _modeFadeLock = new object();
         private int _modeFadeCounter = _maxModeFadeCounter;
-        private int ModeFadeCounter { get { lock (_modeFadeLock) { return _modeFadeCounter; } } set { lock (_modeFadeLock) { _modeFadeCounter = value; } } }
+        private int ModeFadeCounter { get { return Interlocked.CompareExchange(ref _modeFadeCounter, 0, 0); } set { Interlocked.Exchange(ref _modeFadeCounter, value); } }
 
         public int SetQuieterMode(bool state)
         {
@@ -1519,15 +1520,15 @@ namespace GnollHackX.Unknown
             Task.Run(() => {
                 for (int i = 0; i < _maxModeFadeCounter; i++)
                 {
-                    lock (_modeFadeLock)
+                    //lock (_modeFadeLock)
                     {
-                        if (_modeFadeCounter >= _maxModeFadeCounter)
+                        if (ModeFadeCounter >= _maxModeFadeCounter)
                         {
-                            _modeFadeCounter = _maxModeFadeCounter;
+                            ModeFadeCounter = _maxModeFadeCounter;
                             break;
                         }
                     }
-                    ModeFadeCounter++;
+                    Interlocked.Increment(ref _modeFadeCounter);
                     AdjustMusicAndAmbientVolumes();
                     System.Threading.Thread.Sleep(25);
                 }
