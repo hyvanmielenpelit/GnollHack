@@ -858,36 +858,28 @@ namespace GnollHackX.Pages.Game
         /* Persistent temporary bitmap */
         SKBitmap _tempBitmap = new SKBitmap(GHConstants.TileWidth, GHConstants.TileHeight, SKImageInfo.PlatformColorType, SKAlphaType.Unpremul);
 
-        private readonly object _skillRectLock = new object();
-        private SKRect _skillRect = new SKRect();
-        public SKRect SkillRect { get { lock (_skillRectLock) { return _skillRect; } } set { lock (_skillRectLock) { _skillRect = value; } } }
-        private bool _skillRectDrawn = false;
+        //private readonly object _skillRectLock = new object();
+        //private SKRect _skillRect = new SKRect();
+        //public SKRect SkillRect { get { lock (_skillRectLock) { return _skillRect; } } set { lock (_skillRectLock) { _skillRect = value; } } }
 
-        private readonly object _prevWepRectLock = new object();
-        private SKRect _prevWepRect = new SKRect();
-        public SKRect PrevWepRect { get { lock (_prevWepRectLock) { return _prevWepRect; } } set { lock (_prevWepRectLock) { _prevWepRect = value; } } }
-        private bool _prevWepRectDrawn = false;
+        //private readonly object _prevWepRectLock = new object();
+        //private SKRect _prevWepRect = new SKRect();
+        //public SKRect PrevWepRect { get { lock (_prevWepRectLock) { return _prevWepRect; } } set { lock (_prevWepRectLock) { _prevWepRect = value; } } }
 
-        private readonly object _healthRectLock = new object();
-        private SKRect _healthRect = new SKRect();
-        public SKRect HealthRect { get { lock (_healthRectLock) { return _healthRect; } } set { lock (_healthRectLock) { _healthRect = value; } } }
-        private bool _healthRectDrawn = false;
+        //private readonly object _healthRectLock = new object();
+        //private SKRect _healthRect = new SKRect();
+        //public SKRect HealthRect { get { lock (_healthRectLock) { return _healthRect; } } set { lock (_healthRectLock) { _healthRect = value; } } }
 
-        private readonly object _manaRectLock = new object();
-        private SKRect _manaRect = new SKRect();
-        public SKRect ManaRect { get { lock (_manaRectLock) { return _manaRect; } } set { lock (_manaRectLock) { _manaRect = value; } } }
-        private bool _manaRectDrawn = false;
+        //private readonly object _manaRectLock = new object();
+        //private SKRect _manaRect = new SKRect();
+        //public SKRect ManaRect { get { lock (_manaRectLock) { return _manaRect; } } set { lock (_manaRectLock) { _manaRect = value; } } }
 
-        private readonly object _statusBarRectLock = new object();
-        private SKRect _statusBarRect = new SKRect();
-        public SKRect StatusBarRect { get { lock (_statusBarRectLock) { return _statusBarRect; } } set { lock (_statusBarRectLock) { _statusBarRect = value; } } }
-        private bool _statusBarRectDrawn = false;
-
-        private readonly object _youRectLock = new object();
-        private SKRect _youRect = new SKRect();
-        private bool _youRectDrawn = false;
-        public SKRect YouRect { get { lock (_youRectLock) { return _youRect; } } set { lock (_youRectLock) { _youRect = value; } } }
-        public bool YouRectDrawn { get { lock (_youRectLock) { return _youRectDrawn; } } set { lock (_youRectLock) { _youRectDrawn = value; } } }
+        //private readonly object _statusBarRectLock = new object();
+        //private SKRect _statusBarRect = new SKRect();
+        //public SKRect StatusBarRect { get { lock (_statusBarRectLock) { return _statusBarRect; } } set { lock (_statusBarRectLock) { _statusBarRect = value; } } }
+        //private readonly object _youRectLock = new object();
+        //private SKRect _youRect = new SKRect();
+        //public SKRect YouRect { get { lock (_youRectLock) { return _youRect; } } set { lock (_youRectLock) { _youRect = value; } } }
 
         private float _originMapOffsetWithNewClipX;
         private float _originMapOffsetWithNewClipY;
@@ -7355,6 +7347,19 @@ namespace GnollHackX.Pages.Game
             }
             lockTaken = false;
 
+            SKRect statusBarRect = new SKRect();
+            SKRect healthRect = new SKRect();
+            SKRect manaRect = new SKRect();
+            SKRect skillRect = new SKRect();
+            SKRect prevWepRect = new SKRect();
+            SKRect youRect = new SKRect();
+            //bool skillRectDrawn = false;
+            //bool prevWepRectDrawn = false;
+            //bool healthRectDrawn = false;
+            //bool manaRectDrawn = false;
+            //bool statusBarRectDrawn = false;
+            //bool youRectDrawn = false;
+
             bool drawwallends = DrawWallEnds;
             bool breatheanimations = BreatheAnimations;
             bool fixRects = GHApp.FixRects;
@@ -9669,11 +9674,11 @@ namespace GnollHackX.Pages.Game
                     bool statusfieldsok = false;
                     statusfieldsok = _localStatusFields != null;
 
-                    _statusBarRectDrawn = false;
-                    _healthRectDrawn = false;
-                    _manaRectDrawn = false;
-                    _skillRectDrawn = false;
-                    _prevWepRectDrawn = false;
+                    //_statusBarRectDrawn = false;
+                    //_healthRectDrawn = false;
+                    //_manaRectDrawn = false;
+                    //_skillRectDrawn = false;
+                    //_prevWepRectDrawn = false;
                     float orbleft = 5.0f;
                     float orbbordersize = (float)(stdRefButtonWidth * inverse_canvas_scale);
 
@@ -9698,8 +9703,8 @@ namespace GnollHackX.Pages.Game
                             float innerspacing = rowheight / 20;
                             statusbarheight = rowheight * 2 + vmargin * 2 + rowmargin;
                             SKRect darkenrect = new SKRect(0, 0, canvaswidth, statusbarheight);
-                            StatusBarRect = darkenrect;
-                            _statusBarRectDrawn = true;
+                            statusBarRect = darkenrect;
+                            //statusBarRectDrawn = true;
                             _localCanvasButtonRect.Top = darkenrect.Bottom + 1.25f * inverse_canvas_scale * (float)stdButtonWidth;
 #if GNH_MAP_PROFILING && DEBUG
                             StartProfiling(GHProfilingStyle.Rect);
@@ -11568,8 +11573,8 @@ namespace GnollHackX.Pages.Game
                                     orbfillpercentage = ((float)_localStatusFields[(int)NhStatusFields.BL_HP].Percent) / 100.0f;
                             }
                             SKRect orbBorderDest = new SKRect(tx, ty, tx + orbbordersize, ty + orbbordersize);
-                            HealthRect = orbBorderDest;
-                            _healthRectDrawn = true;
+                            healthRect = orbBorderDest;
+                            //healthRectDrawn = true;
                             DrawOrb(canvas, textPaint, orbBorderDest, SKColors.Red, valtext, maxtext, orbfillpercentage, ShowMaxHealthInOrb, false /* isPointerHovering && orbBorderDest.Contains(pointerHoverLocation) */);
 
                             orbfillpercentage = 0.0f;
@@ -11589,8 +11594,8 @@ namespace GnollHackX.Pages.Game
                                 }
                             }
                             orbBorderDest = new SKRect(tx, ty + orbbordersize + 5, tx + orbbordersize, ty + orbbordersize + 5 + orbbordersize);
-                            ManaRect = orbBorderDest;
-                            _manaRectDrawn = true;
+                            manaRect = orbBorderDest;
+                            //manaRectDrawn = true;
                             DrawOrb(canvas, textPaint, orbBorderDest, SKColors.Blue, valtext, maxtext, orbfillpercentage, ShowMaxManaInOrb, false /* isPointerHovering && orbBorderDest.Contains(pointerHoverLocation) */);
                             lastdrawnrecty = orbBorderDest.Bottom;
                         }
@@ -11598,8 +11603,8 @@ namespace GnollHackX.Pages.Game
                         if (skillbuttonok)
                         {
                             SKRect skillDest = new SKRect(tx, lastdrawnrecty + 15.0f, tx + orbbordersize, lastdrawnrecty + 15.0f + orbbordersize);
-                            SkillRect = skillDest;
-                            _skillRectDrawn = true;
+                            skillRect = skillDest;
+                            //skillRectDrawn = true;
                             textPaint.Color = SKColors.White;
                             textPaint.Typeface = GHApp.LatoRegular;
                             textPaint.TextSize = GHConstants.SkillButtonBaseFontSize * skillDest.Width / 50.0f;
@@ -11634,8 +11639,8 @@ namespace GnollHackX.Pages.Game
                         if (prevwepok)
                         {
                             SKRect prevWepDest = new SKRect(tx, lastdrawnrecty + 15.0f, tx + orbbordersize, lastdrawnrecty + 15.0f + orbbordersize);
-                            PrevWepRect = prevWepDest;
-                            _prevWepRectDrawn = true;
+                            prevWepRect = prevWepDest;
+                            //prevWepRectDrawn = true;
                             textPaint.Color = SKColors.White;
                             textPaint.Typeface = GHApp.LatoRegular;
                             textPaint.TextSize = GHConstants.SkillButtonBaseFontSize * prevWepDest.Width / 50.0f;
@@ -11726,16 +11731,16 @@ namespace GnollHackX.Pages.Game
                         }
                     }
                     
-                    if(!_statusBarRectDrawn)
-                        StatusBarRect = new SKRect();
-                    if (!_healthRectDrawn)
-                        HealthRect = new SKRect();
-                    if (!_manaRectDrawn)
-                        ManaRect = new SKRect();
-                    if (!_skillRectDrawn)
-                        SkillRect = new SKRect();
-                    if (!_prevWepRectDrawn)
-                        PrevWepRect = new SKRect();
+                    //if(!statusBarRectDrawn)
+                    //    statusBarRect = new SKRect();
+                    //if (!healthRectDrawn)
+                    //    healthRect = new SKRect();
+                    //if (!manaRectDrawn)
+                    //    manaRect = new SKRect();
+                    //if (!skillRectDrawn)
+                    //    skillRect = new SKRect();
+                    //if (!prevWepRectDrawn)
+                    //    prevWepRect = new SKRect();
 
                     /* Number Pad and Direction Arrows */
                     _localCanvasButtonRect.Right = canvaswidth * (float)(0.8);
@@ -11899,7 +11904,7 @@ namespace GnollHackX.Pages.Game
                     textPaint.Style = SKPaintStyle.Fill;
                 }
 
-                YouRectDrawn = false;
+                //youRectDrawn = false;
                 /* Status Screen */
                 if (ShowExtendedStatusBar)
                 {
@@ -11931,11 +11936,8 @@ namespace GnollHackX.Pages.Game
                     SKRect urect = new SKRect(box_right - youmargin - yousize, box_top + youmargin, box_right - youmargin, box_top + youmargin + yousize);
                     SKRect utouchrect = new SKRect(urect.Left - youtouchmargin, urect.Top - youtouchmargin, urect.Right + youtouchmargin, urect.Bottom + youtouchmargin);
                     canvas.DrawImage(GHApp.YouBitmap, urect);
-                    lock (_youRectLock)
-                    {
-                        _youRect = utouchrect;
-                        _youRectDrawn = true;
-                    }
+                    youRect = utouchrect;
+                    //youRectDrawn = true;
 
                     textPaint.Style = SKPaintStyle.Fill;
                     textPaint.Typeface = GHApp.UnderwoodTypeface;
@@ -12417,20 +12419,17 @@ namespace GnollHackX.Pages.Game
                                 }
                             }
                         }
-                    }                   
-
-                    lock (_youRectLock)
-                    {
-                        if (!_youRectDrawn)
-                            _youRect = new SKRect();
                     }
+
+                    //if (!youRectDrawn)
+                    //    youRect = new SKRect();
                 }
 #if WINDOWS
                 GameCursorType newCursor = GameCursorType.Normal;
                 bool doChangeCursor = false;
                 //lock (_canvasPointerLock)
                 {
-                    GameCursorType usedCursor = _localIsPointerHovering && (StatusBarRect.Contains(_localPointerHoverLocation) || YouRect.Contains(_localPointerHoverLocation) || HealthRect.Contains(_localPointerHoverLocation) || ManaRect.Contains(_localPointerHoverLocation)) ? GameCursorType.Info : GameCursorType.Normal;
+                    GameCursorType usedCursor = _localIsPointerHovering && (statusBarRect.Contains(_localPointerHoverLocation) || youRect.Contains(_localPointerHoverLocation) || healthRect.Contains(_localPointerHoverLocation) || manaRect.Contains(_localPointerHoverLocation)) ? GameCursorType.Info : GameCursorType.Normal;
                     if (usedCursor != _localCurrentCursorType)
                     {
                         doChangeCursor = true;
@@ -12512,6 +12511,27 @@ namespace GnollHackX.Pages.Game
             {
                 if (lockTaken)
                     Monitor.Exit(_statusOffsetLock);
+            }
+            lockTaken = false;
+
+            //lock (_uiRectLock)
+            try
+            {
+                Monitor.TryEnter(_uiRectLock, ref lockTaken);
+                if (lockTaken)
+                {
+                    _uiStatusBarRect = statusBarRect;
+                    _uiHealthRect = healthRect;
+                    _uiManaRect = manaRect;
+                    _uiSkillRect = skillRect;
+                    _uiPrevWepRect = prevWepRect;
+                    _uiYouRect = youRect;
+                }
+            }
+            finally
+            {
+                if (lockTaken)
+                    Monitor.Exit(_uiRectLock);
             }
             lockTaken = false;
 
@@ -15000,11 +15020,36 @@ namespace GnollHackX.Pages.Game
             canvasView_Touch_MainPage(sender, e);
         }
 
+        private readonly object _uiRectLock = new object();
+        private SKRect _uiStatusBarRect;
+        private SKRect _uiHealthRect;
+        private SKRect _uiManaRect;
+        private SKRect _uiSkillRect;
+        private SKRect _uiPrevWepRect;
+        private SKRect _uiYouRect;
+
         private void canvasView_Touch_MainPage(object sender, SKTouchEventArgs e)
         {
             GHGame curGame = CurrentGame;
             if (curGame != null)
             {
+                SKRect statusBarRect;
+                SKRect healthRect;
+                SKRect manaRect;
+                SKRect skillRect;
+                SKRect prevWepRect;
+                SKRect youRect;
+
+                lock (_uiRectLock)
+                {
+                    statusBarRect = _uiStatusBarRect;
+                    healthRect = _uiHealthRect;
+                    manaRect = _uiManaRect;
+                    skillRect = _uiSkillRect;
+                    prevWepRect = _uiPrevWepRect;
+                    youRect = _uiYouRect;
+                }
+
                 switch (e?.ActionType)
                 {
                     case SKTouchAction.Entered:
@@ -15032,23 +15077,23 @@ namespace GnollHackX.Pages.Game
                         {
                             uint m_id = 0;
                             int cmd = 0;
-                            if (SkillRect.Contains(e.Location))
+                            if (skillRect.Contains(e.Location))
                             {
                                 _touchWithinSkillButton = true;
                             }
-                            else if (PrevWepRect.Contains(e.Location))
+                            else if (prevWepRect.Contains(e.Location))
                             {
                                 _touchWithinPrevWepButton = true;
                             }
-                            else if (HealthRect.Contains(e.Location))
+                            else if (healthRect.Contains(e.Location))
                             {
                                 _touchWithinHealthOrb = true;
                             }
-                            else if (ManaRect.Contains(e.Location))
+                            else if (manaRect.Contains(e.Location))
                             {
                                 _touchWithinManaOrb = true;
                             }
-                            else if (StatusBarRect.Contains(e.Location))
+                            else if (statusBarRect.Contains(e.Location))
                             {
                                 _touchWithinStatusBar = true;
                             }
@@ -15080,7 +15125,7 @@ namespace GnollHackX.Pages.Game
                         }
                         else if (ShowExtendedStatusBar)
                         {
-                            if (YouRect.Contains(e.Location))
+                            if (youRect.Contains(e.Location))
                             {
                                 _touchWithinYouButton = true;
                             }
@@ -19855,6 +19900,14 @@ namespace GnollHackX.Pages.Game
                     maincanvasheight = _savedCanvasHeight;
                 }
 
+                SKRect healthRect;
+                SKRect manaRect;
+                lock (_uiRectLock)
+                {
+                    healthRect = _uiHealthRect;
+                    manaRect = _uiManaRect;
+                }
+
                 float xscale = maincanvaswidth <= 0 || canvaswidth <= 0 ? 1.0f : canvaswidth / maincanvaswidth;
                 float yscale = maincanvasheight <= 0 || canvasheight <= 0 ? 1.0f : canvasheight / maincanvasheight;
 
@@ -19966,10 +20019,10 @@ namespace GnollHackX.Pages.Game
                         PaintTipButton(canvas, textPaint, ToggleMessageNumberButton, "", GHApp.GetClickTapWord(true, false) + " here to see more messages", 1.0f, centerfontsize, fontsize, true, 0.5f, -1.0f, canvaswidth, canvasheight);
                         break;
                     case 14:
-                        PaintTipButtonByRect(canvas, textPaint, HealthRect, GHApp.GetClickTapWord(true, true) + " shows your maximum health.", "Health Orb", 1.1f, centerfontsize, fontsize, true, 0.15f, 0.0f, canvaswidth, canvasheight, xscale, yscale);
+                        PaintTipButtonByRect(canvas, textPaint, healthRect, GHApp.GetClickTapWord(true, true) + " shows your maximum health.", "Health Orb", 1.1f, centerfontsize, fontsize, true, 0.15f, 0.0f, canvaswidth, canvasheight, xscale, yscale);
                         break;
                     case 15:
-                        PaintTipButtonByRect(canvas, textPaint, ManaRect, GHApp.GetClickTapWord(true, true) + " reveals your maximum mana.", "Mana Orb", 1.1f, centerfontsize, fontsize, true, 0.15f, 0.0f, canvaswidth, canvasheight, xscale, yscale);
+                        PaintTipButtonByRect(canvas, textPaint, manaRect, GHApp.GetClickTapWord(true, true) + " reveals your maximum mana.", "Mana Orb", 1.1f, centerfontsize, fontsize, true, 0.15f, 0.0f, canvaswidth, canvasheight, xscale, yscale);
                         break;
                     case 16:
                         textPaint.TextSize = 36;
@@ -20024,6 +20077,14 @@ namespace GnollHackX.Pages.Game
 
         private void TipView_Touch(object sender, SKTouchEventArgs e)
         {
+            SKRect healthRect;
+            SKRect manaRect;
+            lock (_uiRectLock)
+            {
+                healthRect = _uiHealthRect;
+                manaRect = _uiManaRect;
+            }
+
             switch (e?.ActionType)
             {
                 case SKTouchAction.Entered:
@@ -20043,9 +20104,9 @@ namespace GnollHackX.Pages.Game
                         ShownTip++;
                     if (ShownTip == 9 && !ShowAutoDigButton)
                         ShownTip++;
-                    if (ShownTip == 14 && HealthRect.Width == 0)
+                    if (ShownTip == 14 && healthRect.Width == 0)
                         ShownTip++;
-                    if (ShownTip == 15 && ManaRect.Width == 0)
+                    if (ShownTip == 15 && manaRect.Width == 0)
                         ShownTip++;
                     TipView.InvalidateSurface();
                     if (ShownTip >= 17 - (_blockingTipView ? 0 : 1))
