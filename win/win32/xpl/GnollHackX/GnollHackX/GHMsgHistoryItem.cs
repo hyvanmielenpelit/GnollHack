@@ -1,19 +1,21 @@
-﻿using GnollHackX;
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
 using System.Text;
 
 namespace GnollHackX
 {
     public sealed class GHMsgHistoryItem
     {
-        private string _text = "";
-        public string Text { get { return _text; } set { if (value != null) { _text = value; _textSplit = _text.Split(' '); } } }
+        private readonly string _text = "";
+        private readonly string[] _textSplit = null;
 
-        private string[] _textSplit = null;
+        public string Text { get { return _text; } }
+
         public string[] TextSplit 
-        { get
+        { 
+            get
             {
                 if (_textSplit == null)
                     return new string[1] { "" };
@@ -21,72 +23,74 @@ namespace GnollHackX
                     return _textSplit;
             } 
         }
-        public List<string> WrappedTextRows = new List<string>();
-        public int Attribute { get; set; }
-        public int NHColor { get; set; }
 
-        public byte[] Attributes { get; set; } = null;
-        public byte[] Colors { get; set; } = null;
+        public readonly int Attribute = 0;
+        public readonly int NHColor = (int)NhColor.NO_COLOR;
 
-        public bool IsLast { get; set; }
+        public readonly byte[] Attributes = null;
+        public readonly byte[] Colors = null;
 
+        /* This is accessed only by the PaintSurface thread */
+        public readonly List<string> WrappedTextRows = new List<string>();
+
+        /* There are protected by Interlocked */
         private string _filter = null;
-        public string Filter { get { return _filter; } set { _filter = value; _isMatchCalculated = false; } }
-        private bool _isMatchCalculated = false;
-        private bool _calculatedMatch = false;
+        public string Filter { get { return Interlocked.CompareExchange(ref _filter, null, null); } set { Interlocked.Exchange(ref _filter, value); Interlocked.Exchange(ref _isMatchCalculated, 0); } }
+        private int _isMatchCalculated = 0;
+        private int _calculatedMatch = 0;
         public bool MatchFilter
         {
             get
             {
-                if (_isMatchCalculated)
+                if (Interlocked.CompareExchange(ref _isMatchCalculated, 0, 0) != 0)
                 {
-                    return _calculatedMatch; 
+                    return Interlocked.CompareExchange(ref _calculatedMatch, 0, 0) != 0; 
                 }
                 else
                 {
-                    if (Filter == null || Filter == "")
+                    if (string.IsNullOrEmpty(Filter))
                     {
-                        _calculatedMatch = true;
-                        _isMatchCalculated = true;
+                        Interlocked.Exchange(ref _calculatedMatch, 1);
+                        Interlocked.Exchange(ref _isMatchCalculated, 1);
                     }
                     else
                     {
-                        _calculatedMatch = Text.IndexOf(Filter, StringComparison.OrdinalIgnoreCase) >= 0; // Text.Contains(Filter);
-                        _isMatchCalculated = true;
+                        Interlocked.Exchange(ref _calculatedMatch, Text.IndexOf(Filter, StringComparison.OrdinalIgnoreCase) >= 0 ? 1 : 0); // Text.Contains(Filter);
+                        Interlocked.Exchange(ref _isMatchCalculated, 1);
                     }
-                    return _calculatedMatch;
+                    return Interlocked.CompareExchange(ref _calculatedMatch, 0, 0) != 0;
                 }
             }
         }
 
         public GHMsgHistoryItem()
         {
-            IsLast = false;
+
         }
         public GHMsgHistoryItem(string text)
         {
-            Text = text;
-            IsLast = false;
+            _text = text;
+            _textSplit = _text.Split(' ');
         }
         public GHMsgHistoryItem(string text, int attr, int color)
         {
-            Text = text;
+            _text = text;
+            _textSplit = _text.Split(' ');
             Attribute = attr;
             NHColor = color;
-            IsLast = false;
         }
         public GHMsgHistoryItem(string text, byte[] attrs, byte[] colors, int attr, int color)
         {
-            Text = text;
+            _text = text;
+            _textSplit = _text.Split(' ');
             Attributes = attrs;
             Colors = colors;
             Attribute = attr;
             NHColor = color;
-            IsLast = false;
         }
     }
 
-    public class GHMsgHistoryList : IEnumerable<GHMsgHistoryItem>
+    public sealed class GHMsgHistoryList : IEnumerable<GHMsgHistoryItem>
     {
         private readonly GHMsgHistoryItem[] _items;
         private readonly int _capacity;

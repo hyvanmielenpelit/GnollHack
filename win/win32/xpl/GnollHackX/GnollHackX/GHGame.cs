@@ -1346,23 +1346,23 @@ namespace GnollHackX
         //    }
         //}
 
-        public void AddNewMessage(GHMsgHistoryItem newmsg, bool updateMessageHistory, bool isFullRefresh, bool updateOnlyLongerHistory)
+        public void AddNewMessage(GHMsgHistoryItem newmsg, bool isRestoring) //, bool updateMessageHistory, bool isFullRefresh, bool updateOnlyLongerHistory)
         {
             if (newmsg == null)
                 return;
 
-            if (!updateOnlyLongerHistory)
+            if (!isRestoring)
             {
                 /* Normal history */
-                if (_message_history.Count > 0)
-                    _message_history[_message_history.Count - 1].IsLast = false;
+                //if (_message_history.Count > 0)
+                //    _message_history[_message_history.Count - 1].IsLast = false;
 
                 if (!_message_history.TryAdd(newmsg))
                 {
                     _message_history = new GHMsgHistoryList(_message_history);
                     _message_history.TryAdd(newmsg);
-                    if (!_useLongerMessageHistory)
-                        isFullRefresh = true;
+                    //if (!_useLongerMessageHistory)
+                    //    isFullRefresh = true;
                 }
                 //if (_message_history.Count > GHConstants.MaxMessageHistoryLength)
                 //{
@@ -1371,20 +1371,20 @@ namespace GnollHackX
                 //        isFullRefresh = true;
                 //}
 
-                if (_message_history.Count > 0)
-                    _message_history[_message_history.Count - 1].IsLast = true;
+                //if (_message_history.Count > 0)
+                //    _message_history[_message_history.Count - 1].IsLast = true;
             }
 
             /* Longer history */
-            if (_longer_message_history.Count > 0)
-                _longer_message_history[_longer_message_history.Count - 1].IsLast = false;
+            //if (_longer_message_history.Count > 0)
+            //    _longer_message_history[_longer_message_history.Count - 1].IsLast = false;
 
             if (!_longer_message_history.TryAdd(newmsg))
             {
                 _longer_message_history = new GHMsgHistoryList(_longer_message_history);
                 _longer_message_history.TryAdd(newmsg);
-                if (!_useLongerMessageHistory)
-                    isFullRefresh = true;
+                //if (!_useLongerMessageHistory)
+                //    isFullRefresh = true;
             }
 
             //if (_longer_message_history.Count > GHConstants.MaxLongerMessageHistoryLength)
@@ -1394,10 +1394,10 @@ namespace GnollHackX
             //        isFullRefresh = true;
             //}
 
-            if (_longer_message_history.Count > 0)
-                _longer_message_history[_longer_message_history.Count - 1].IsLast = true;
+            //if (_longer_message_history.Count > 0)
+            //    _longer_message_history[_longer_message_history.Count - 1].IsLast = true;
 
-            if(updateMessageHistory)
+            if(!isRestoring)
             {
                 UpdateMessageHistory();
                 //if (isFullRefresh)
@@ -1428,13 +1428,13 @@ namespace GnollHackX
         public void RawPrintEx(string str, int attr, int color, bool is_restoring)
         {
             GHMsgHistoryItem newmsg = new GHMsgHistoryItem(str, attr, color);
-            AddNewMessage(newmsg, true, false, is_restoring);
+            AddNewMessage(newmsg, is_restoring);
         }
 
         public void RawPrintEx2(string str, byte[] attrs, byte[] colors, int attr, int color, bool is_restoring)
         {
             GHMsgHistoryItem newmsg = new GHMsgHistoryItem(str, attrs, colors, attr, color);
-            AddNewMessage(newmsg, true, false, is_restoring);
+            AddNewMessage(newmsg, is_restoring);
 
             //if (_message_history.Count > 0)
             //    _message_history[_message_history.Count - 1].IsLast = false;
