@@ -3,6 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
 using System.Text;
+#if GNH_MAUI
+using GnollHackM;
+#endif
 
 namespace GnollHackX
 {
