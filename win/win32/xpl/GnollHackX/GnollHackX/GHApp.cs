@@ -1042,7 +1042,7 @@ namespace GnollHackX
         private static int _autoUploadReplays = 0;
         public static bool AutoUploadReplays { get { return Interlocked.CompareExchange(ref _autoUploadReplays, 0, 0) != 0 || TournamentMode; } set { Interlocked.Exchange(ref _autoUploadReplays, value ? 1 : 0); } }
 
-        private readonly static object _networkAccessLock = new object();
+        private static readonly object _networkAccessLock = new object();
 #if GNH_MAUI
         private static Microsoft.Maui.Networking.NetworkAccess _networkAccessState = Microsoft.Maui.Networking.NetworkAccess.None;
         public static bool HasInternetAccess { get { lock (_networkAccessLock) { return _networkAccessState == Microsoft.Maui.Networking.NetworkAccess.Internet; } } }
@@ -1926,7 +1926,7 @@ namespace GnollHackX
         }
 
         public static bool IsMuted { get { lock (_muteLock) { return _gameMuteMode || _silentMode || _sleepMuteMode || _unfocusedMuteMode; } } }
-        private readonly static object _muteLock = new object();
+        private static readonly object _muteLock = new object();
 
         private static bool _gameMuteMode = false;
         public static bool GameMuteMode /* Muteness due to game state */
