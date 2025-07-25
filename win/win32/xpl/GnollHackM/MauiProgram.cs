@@ -792,6 +792,18 @@ public class KeyboardHook
                 {
                     switch (vkCode)
                     {
+                        case 0x25:
+                            spkey = GHSpecialKey.Left;
+                            break;
+                        case 0x26:
+                            spkey = GHSpecialKey.Up;
+                            break;
+                        case 0x27:
+                            spkey = GHSpecialKey.Right;
+                            break;
+                        case 0x28:
+                            spkey = GHSpecialKey.Down;
+                            break;
                         case 0xBB:
                             spkey = GHSpecialKey.Plus;
                             break;

@@ -21636,13 +21636,13 @@ namespace GnollHackX.Pages.Game
                     if (key == GHSpecialKey.Escape)
                         resp = GHConstants.CancelChar;
                     else if (key == GHSpecialKey.Left)
-                        resp = -4;
+                        resp = isCtrl == isMeta ? -4 : isCtrl ? -7 : -1;
                     else if (key == GHSpecialKey.Right)
-                        resp = -6;
+                        resp = isCtrl == isMeta ? -6 : isCtrl ? -9 : -3;
                     else if (key == GHSpecialKey.Up)
-                        resp = -8;
+                        resp = isCtrl == isMeta ? -8 : isCtrl ? -7 : -9;
                     else if (key == GHSpecialKey.Down)
-                        resp = -2;
+                        resp = isCtrl == isMeta ? -2 : isCtrl ? -1 : -3;
                     else if (key == GHSpecialKey.UpLeft)
                         resp = -7;
                     else if (key == GHSpecialKey.UpRight)
