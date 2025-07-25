@@ -948,6 +948,8 @@ DLLEXPORT int RunGnollHack(
     initial_flags.autodig_value = (runflags & GHRUNFLAGS_AUTO_DIG) != 0;
     initial_flags.ignore_stopping_set = TRUE;
     initial_flags.ignore_stopping_value = (runflags & GHRUNFLAGS_IGNORE_STOPPING) != 0;
+    initial_flags.vi_keys_set = TRUE;
+    initial_flags.vi_keys_value = (runflags & GHRUNFLAGS_VI_KEYS) != 0;
     initial_flags.save_file_tracking_supported_set = TRUE;
     initial_flags.save_file_tracking_supported_value = (runflags & GHRUNFLAGS_SAVE_FILE_TRACKING_SUPPORTED) != 0;
     initial_flags.save_file_tracking_needed_set = TRUE;

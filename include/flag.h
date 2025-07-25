@@ -793,6 +793,8 @@ struct startup_flags {
     boolean autodig_value;
     boolean ignore_stopping_set;
     boolean ignore_stopping_value;
+    boolean vi_keys_set;
+    boolean vi_keys_value;
     boolean getpos_arrows_set;
     boolean getpos_arrows_value;
     boolean save_file_tracking_supported_set;

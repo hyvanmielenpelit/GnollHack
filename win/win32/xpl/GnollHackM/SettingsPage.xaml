@@ -1485,6 +1485,14 @@
                                 <Switch Grid.Column="1" x:Name="DisableWindowsKeySwitch" HorizontalOptions="End" VerticalOptions="Center" />
                             </Grid>
                             <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
+                                <Label Text="Default Vi-Keys"
+                                    FontFamily="Underwood" TextColor="Black"
+                                    FontSize="15"
+                                    VerticalOptions="Center" 
+                                    HorizontalOptions="Start" />
+                                <Switch Grid.Column="1" x:Name="DefaultVIKeysSwitch" HorizontalOptions="End" VerticalOptions="Center" />
+                            </Grid>
+                            <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
                                 <Label 
                                         x:Name="SaveStyleLabel"
                                         Text="On Switching Apps"

@@ -1003,6 +1003,22 @@ init_options()
     if (initial_flags.ignore_stopping_set)
         flags.ignore_stopping = initial_flags.ignore_stopping_value;
 
+    if (initial_flags.vi_keys_set)
+    {
+        if (initial_flags.vi_keys_value)
+        {
+            iflags.num_pad = FALSE;
+            iflags.num_pad_mode = 0;
+        }
+        else
+        {
+            iflags.num_pad = TRUE;
+            iflags.num_pad_mode = 1;
+        }
+        reset_commands(FALSE);
+        number_pad(iflags.num_pad ? 1 : 0);
+    }
+
     if (initial_flags.getpos_arrows_set)
         iflags.getpos_arrows = initial_flags.getpos_arrows_value;
 

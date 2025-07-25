@@ -169,6 +169,7 @@ namespace GnollHackX
             DisableAuxGPU = Preferences.Get("DisableAuxiliaryGLCanvas", IsDisableAuxGPUDefault);
             FixRects = Preferences.Get("FixRects", IsFixRectsDefault);
             DisableWindowsKey = Preferences.Get("DisableWindowsKey", false);
+            DefaultVIKeys = Preferences.Get("DefaultVIKeys", false);
 
             ulong FreeDiskSpaceInBytes = PlatformService.GetDeviceFreeDiskSpaceInBytes();
             if (FreeDiskSpaceInBytes < GHConstants.LowFreeDiskSpaceThresholdInBytes)
@@ -1869,12 +1870,14 @@ namespace GnollHackX
         private static int _shiftDown = 0;
         private static int _windowsKeyDown = 0;
         private static int _disableWindowsKey = 0;
+        private static int _defaultVIKeys = 0;
 
         public static bool CtrlDown { get { return Interlocked.CompareExchange(ref _ctrlDown, 0, 0) != 0; } set { Interlocked.Exchange(ref _ctrlDown, value ? 1 : 0); } }
         public static bool AltDown { get { return Interlocked.CompareExchange(ref _altDown, 0, 0) != 0; } set { Interlocked.Exchange(ref _altDown, value ? 1 : 0); } }
         public static bool ShiftDown { get { return Interlocked.CompareExchange(ref _shiftDown, 0, 0) != 0; } set { Interlocked.Exchange(ref _shiftDown, value ? 1 : 0); } }
         public static bool WindowsKeyDown { get { return Interlocked.CompareExchange(ref _windowsKeyDown, 0, 0) != 0; } set { Interlocked.Exchange(ref _windowsKeyDown, value ? 1 : 0); } }
         public static bool DisableWindowsKey{ get { return Interlocked.CompareExchange(ref _disableWindowsKey, 0, 0) != 0; } set { Interlocked.Exchange(ref _disableWindowsKey, value ? 1 : 0); } }
+        public static bool DefaultVIKeys { get { return Interlocked.CompareExchange(ref _defaultVIKeys, 0, 0) != 0; } set { Interlocked.Exchange(ref _defaultVIKeys, value ? 1 : 0); } }
 
         public static bool DownloadOnDemandPackage
         {

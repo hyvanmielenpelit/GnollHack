@@ -705,6 +705,9 @@ namespace GnollHackX.Pages.MainScreen
                 Preferences.Set("DisableWindowsKey", DisableWindowsKeySwitch.IsToggled);
             }
 
+            GHApp.DefaultVIKeys = DefaultVIKeysSwitch.IsToggled;
+            Preferences.Set("DefaultVIKeys", DefaultVIKeysSwitch.IsToggled);
+
 
 #if GNH_MAUI
             Microsoft.Maui.Controls.Picker[] simplePickers = new Microsoft.Maui.Controls.Picker[6] 
@@ -976,7 +979,7 @@ namespace GnollHackX.Pages.MainScreen
 #if !SENTRY
             bool postdiagnostics = GHConstants.DefaultPosting;
 #endif
-            bool longermsghistory = false, hidemsghistory = false, xlog_release_account = false, forcepostbones = false, fixrects = false, save_file_tracking = false, disablewindowskey = false;
+            bool longermsghistory = false, hidemsghistory = false, xlog_release_account = false, forcepostbones = false, fixrects = false, save_file_tracking = false, disablewindowskey = false, defaultvikeys = false;
             long primarygpucache = -2, secondarygpucache = -2;
             int rightmouse = GHConstants.DefaultRightMouseCommand, middlemouse = GHConstants.DefaultMiddleMouseCommand;
             float screenscale = 0.0f;
@@ -1068,6 +1071,7 @@ namespace GnollHackX.Pages.MainScreen
             screenresolutionpriority = (uint)Preferences.Get("CustomScreenResolutionPriority", 1);
             save_file_tracking = GHApp.SaveFileTracking;
             disablewindowskey = Preferences.Get("DisableWindowsKey", false);
+            defaultvikeys = Preferences.Get("DefaultVIKeys", false);
             maprefresh = Preferences.Get("MapRefreshRate", -1);
             if (_gamePage == null)
             {
@@ -1608,6 +1612,7 @@ namespace GnollHackX.Pages.MainScreen
             HideMessageHistorySwitch.IsToggled = hidemsghistory;
             DisableWindowsKeySwitch.IsToggled = disablewindowskey;
             DisableWindowsKeyGrid.IsVisible = GHApp.IsWindows;
+            DefaultVIKeysSwitch.IsToggled = defaultvikeys;
             _doChangeVolume = !GHApp.IsMuted;
         }
 

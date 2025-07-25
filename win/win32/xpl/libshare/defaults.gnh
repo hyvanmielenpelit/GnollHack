@@ -90,7 +90,8 @@ MENUCOLOR="repowering" = magenta
 #
 # number_pad option can have an optional value of 0 (off), 1 (on), 
 # or 2(on,legacy-mode) which causes 5='g', alt-5='G', alt-0='I'
-OPTIONS=time,number_pad:2,lit_corridor,mouse_support:1
+OPTIONS=time,lit_corridor,mouse_support:1
+#OPTIONS=number_pad:2
 
 # Make commands that ask for an inventory item pop up a menu
 OPTIONS=force_invmenu

@@ -256,6 +256,7 @@ namespace GnollHackX
         SaveFileTrackingOn =    0x00010000UL, /* Save file tracking is switched on */
         AutoDig =               0x00020000UL, /* Set autodig to true by default */
         IgnoreStopping =        0x00040000UL, /* Set ignore_stopping to true by default */
+        DefaultVIKeys =         0x00080000UL, /* VI Keys are default instead of number pad movement */
 
         RightMouseButtonBit1 =  0x00400000UL, 
         RightMouseButtonBit2 =  0x00800000UL, 

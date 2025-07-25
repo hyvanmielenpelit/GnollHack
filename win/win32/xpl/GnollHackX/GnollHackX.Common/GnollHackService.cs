@@ -1224,6 +1224,7 @@ namespace GnollHackX.Unknown
             bool diceasranges = GHApp.MirroredDiceAsRanges;
             bool autodig = GHApp.MirroredAutoDig;
             bool ignorestopping = GHApp.MirroredIgnoreStopping;
+            bool defaultvikeys = GHApp.DefaultVIKeys;
             ulong rightmouse = (ulong)GHApp.MirroredRightMouseCommand << GHConstants.RightMouseBitIndex;
             ulong middlemouse = (ulong)GHApp.MirroredMiddleMouseCommand << GHConstants.MiddleMouseBitIndex;
             ulong runflags = (ulong)(ghGame.WizardMode ? RunGnollHackFlags.WizardMode : 0) |
@@ -1242,6 +1243,7 @@ namespace GnollHackX.Unknown
                 (ulong)(diceasranges ? RunGnollHackFlags.DiceAsRanges : 0) | /* Use the default; GHApp.DiceAsRanges may contain the option value from the last game */
                 (ulong)(autodig ? RunGnollHackFlags.AutoDig : 0) | /* Use the default; GHApp.AutoDig may contain the option value from the last game */
                 (ulong)(ignorestopping ? RunGnollHackFlags.IgnoreStopping : 0) | /* Use the default; GHApp.IgnoreStopping may contain the option value from the last game */
+                (ulong)(defaultvikeys ? RunGnollHackFlags.DefaultVIKeys : 0) | /* Use the default */
                 rightmouse | middlemouse | (ulong)ghGame.StartFlags;
             ulong foundManuals = GHApp.FoundManuals;
             string lastusedplname = GHApp.TournamentMode && !ghGame.PlayingReplay ? GHApp.LastUsedTournamentPlayerName : GHApp.LastUsedPlayerName;
