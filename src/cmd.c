@@ -6904,17 +6904,15 @@ char c;
 {
     // C(c) (0x40 & (c) ? 0x1f & (c) : (0x80 | (0x1f & (c))))
     if (c > 0 && c <= 32) /* 1-26 are letters, map them back to small letters */
-    {
         return c + 96;
-    }
-    else if ((c & 0x80) != 0 && (c & 0x60) == 0) /*  32-63 have been mapped to either -128 - -97 (char is signed char) or 128-159 (char is unsigned char) */
-    {
-        if (CHAR_MIN < 0)
-            c += 256;
-        return c - 96;
-    }
-    else
-        return c;
+
+    int i = (int)c;
+    if (i <= -97) /*  char is signed char: 32-63 have been mapped to -128 - -97 */
+        return (char)(c + 160);
+    else if (i > 127 && i < 160) /* char is unsigned char: 32-63 have been mapped to 128-159  */
+        return (char)(i - 96);
+
+    return c;
 }
 
 char
