@@ -6907,12 +6907,10 @@ char c;
     {
         return c + 96;
     }
-    else if (c <= -97) /*  char is signed char: 32-63 have been mapped to -128 - -97 */
+    else if ((c & 0x80) != 0 && (c & 0x60) == 0) /*  32-63 have been mapped to either -128 - -97 (char is signed char) or 128-159 (char is unsigned char) */
     {
-        return c + 160;
-    }
-    else if (c > 127 && c < 160) /* char is unsigned char: 32-63 have been mapped to 128-159  */
-    {
+        if (CHAR_MIN < 0)
+            c += 256;
         return c - 96;
     }
     else
