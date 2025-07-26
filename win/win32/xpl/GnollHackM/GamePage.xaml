@@ -124,7 +124,7 @@
                                 <controls:LabeledImageButton Grid.Column="2" x:Name="lWaitButton" LblText="Wait" BtnLetter="." ImgSourcePath="resource://GnollHackM.Assets.UI.wait.png" BtnClicked="GHButton_Clicked" />
                                 <controls:LabeledImageButton Grid.Column="3" x:Name="lDropManyButton" LblText="Drop Items" BtnLetter="%" ImgSourcePath="resource://GnollHackM.Assets.UI.dropmany.png" BtnClicked="GHButton_Clicked" />
                                 <controls:LabeledImageButton Grid.Column="4" x:Name="lChatButton" LblText="Chat" BtnLetter="C" ImgSourcePath="resource://GnollHackM.Assets.UI.chat.png" BtnClicked="GHButton_Clicked" />
-                                <controls:LabeledImageButton Grid.Column="5" x:Name="lKickButton" LblText="Kick" BtnLetter="k" ImgSourcePath="resource://GnollHackM.Assets.UI.kick.png" BtnClicked="GHButton_Clicked" />
+                                <controls:LabeledImageButton Grid.Column="5" x:Name="lKickButton" LblText="Kick" BtnLetter="d" BtnCtrl="True" ImgSourcePath="resource://GnollHackM.Assets.UI.kick.png" BtnClicked="GHButton_Clicked" />
                                 <controls:LabeledImageButton Grid.Column="6" x:Name="lRepeatButton" LblText="Repeat" BtnLetter="A" BtnCtrl="True" ImgSourcePath="resource://GnollHackM.Assets.UI.repeat.png" BtnClicked="GHButton_Clicked" />
                             </Grid>
                             <Grid x:Name="LowerCmdGrid" ColumnSpacing="6" HeightRequest="60" HorizontalOptions="Start">
@@ -166,7 +166,7 @@
                                 <controls:LabeledImageButton Grid.Column="0" x:Name="lSimpleInventoryButton" LblText="Inventory" BtnLetter="i" ImgSourcePath="resource://GnollHackM.Assets.UI.inventory.png" BtnClicked="GHButton_Clicked" />
                                 <controls:LabeledImageButton Grid.Column="1" x:Name="lSimpleSearchButton" LblText="Search" BtnLetter="s" ImgSourcePath="resource://GnollHackM.Assets.UI.search.png" BtnClicked="GHButton_Clicked" />
                                 <controls:LabeledImageButton Grid.Column="2" x:Name="lSimpleSwapWeaponButton" LblText="Swap" BtnLetter="x" ImgSourcePath="resource://GnollHackM.Assets.UI.swap.png" BtnClicked="GHButton_Clicked" />
-                                <controls:LabeledImageButton Grid.Column="3" x:Name="lSimpleKickButton" LblText="Kick" BtnLetter="k" ImgSourcePath="resource://GnollHackM.Assets.UI.kick.png" BtnClicked="GHButton_Clicked" />
+                                <controls:LabeledImageButton Grid.Column="3" x:Name="lSimpleKickButton" LblText="Kick" BtnLetter="d" BtnCtrl="True" ImgSourcePath="resource://GnollHackM.Assets.UI.kick.png" BtnClicked="GHButton_Clicked" />
                                 <controls:LabeledImageButton Grid.Column="4" x:Name="lSimpleCastButton" LblText="Cast" BtnLetter="Z" ImgSourcePath="resource://GnollHackM.Assets.UI.cast.png" BtnClicked="GHButton_Clicked" />
                                 <controls:LabeledImageButton Grid.Column="5" x:Name="lSimpleRepeatButton" LblText="Repeat" BtnLetter="A" BtnCtrl="True" ImgSourcePath="resource://GnollHackM.Assets.UI.repeat.png" BtnClicked="GHButton_Clicked" />
                                 <controls:LabeledImageButton Grid.Column="6" x:Name="lSimpleMoreButton" LblText="More" ImgSourcePath="resource://GnollHackM.Assets.UI.more.png" BtnClicked="MoreButton_Clicked" />

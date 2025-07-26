@@ -66,7 +66,7 @@ dodrop(VOID_ARGS)
     return result;
 }
 
-/* the M('y') command - Character statistics */
+/* the '}' command - Character statistics */
 int
 docharacterstatistics(VOID_ARGS)
 {

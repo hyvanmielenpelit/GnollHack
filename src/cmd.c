@@ -26,6 +26,10 @@
 #define C(c) (0x40 & (c) ? 0x1f & (c) : (0x80 | (0x1f & (c))))
 #endif
 
+#define unctrl(c) ((((c) & 0xE0) == 0) ? (0x60 | (c)) : (((c) & 0x80) != 0 && ((c) & 0x40) == 0) ? (0x20 | (0x7f & (c))) : (c))
+#define unmeta(c) (0x7f & (c))
+
+
 #ifdef ALTMETA
 STATIC_VAR boolean alt_esc = FALSE;
 #endif
@@ -6314,7 +6318,7 @@ struct ext_func_tab extcmdlist[] = {
 #endif
     { C('b'), "break", "break something", dobreak, AUTOCOMPLETE | INCMDMENU | SINGLE_OBJ_CMD_GENERAL, ATR_NONE, NO_COLOR, 0, 0, "break" },
 #if defined (USE_TILES) && !defined(GNH_MOBILE)
-    { M('y'), "bufftimers", "toggle tile buff timers on/off", dotogglebufftimers, IFBURIED | AUTOCOMPLETE },
+    { M('Y'), "bufftimers", "toggle tile buff timers on/off", dotogglebufftimers, IFBURIED | AUTOCOMPLETE },
 #endif
     { C('c'), "call", "call (name) something", docallcmd, IFBURIED | AUTOCOMPLETE, ATR_NONE, NO_COLOR, 0, getobj_callable, "call" },
     { 'Z', "cast", "cast a spell", docast, AUTOCOMPLETE | IFBURIED | INSPELLMENU },
@@ -6678,6 +6682,7 @@ commands_init(VOID_ARGS)
     (void) bind_key(M('n'), "name");
     (void) bind_key(M('N'), "name");
     (void) bind_key('u',    "untrap"); /* if number_pad is on */
+    (void) bind_key(M('y'), "yell"); /* if number_pad is on */
 
 //#ifdef USE_TILES
 //    (void) bind_key(C('0'), "zoommini");
@@ -6696,6 +6701,19 @@ commands_init(VOID_ARGS)
     (void) bind_key(M('4'), "targeting");
     (void) bind_key(M('*'), "targeting");
 #endif
+    /* M('A') is annotate */
+    (void)bind_key(M('B'), "break"); /* backup for C('b') */
+    (void)bind_key(M('C'), "lootin"); /* backup for 'Y' */
+    (void)bind_key(M('D'), "lootout"); /* backup for 'y' */
+    (void)bind_key(M('E'), "itemsin"); /* backup for 'B' */
+    (void)bind_key(M('F'), "itemsout"); /* backup for 'b' */
+    (void)bind_key(M('I'), "light"); /* backup for C('l') */
+    /* M('M') is monster ability */
+    /* M('N') is name */
+    /* M('O') is overview */
+    /* M('P') is previous weapon */
+    /* M('R') is ride nearby */
+    /* M('Y') is toggle buff timers */
 
     update_bindings_list();
 }
@@ -6879,6 +6897,40 @@ int NDECL((*fn));
             return (char) i;
     return '\0';
 }
+
+char
+cmd_unctrl(c)
+char c;
+{
+    // C(c) (0x40 & (c) ? 0x1f & (c) : (0x80 | (0x1f & (c))))
+    if (c > 0 && c <= 32) /* 1-26 are letters, map them back to small letters */
+    {
+        return c + 96;
+    }
+    else if (c <= -97) /*  char is signed char: 32-63 have been mapped to -128 - -97 */
+    {
+        return c + 160;
+    }
+    else if (c > 127 && c < 160) /* char is unsigned char: 32-63 have been mapped to 128-159  */
+    {
+        return c - 96;
+    }
+    else
+        return c;
+}
+
+char
+nondir_cmd_from_func(fn)
+int NDECL((*fn));
+{
+    int i;
+
+    for (i = 0; i < 256; ++i)
+        if (Cmd.commands[i] && Cmd.commands[i]->ef_funct == fn && !index(Cmd.dirchars, lowc(cmd_unctrl((char)i))))
+            return (char)i;
+    return '\0';
+}
+
 
 /*
  * wizard mode sanity_check code
@@ -7349,9 +7401,6 @@ wiz_migrate_mons()
     return 0;
 }
 #endif
-
-#define unctrl(c) ((((c) & 0xE0) == 0) ? (0x60 | (c)) : (((c) & 0x80) != 0 && ((c) & 0x40) == 0) ? (0x20 | (0x7f & (c))) : (c))
-#define unmeta(c) (0x7f & (c))
 
 struct {
     int nhkf;
@@ -10339,21 +10388,21 @@ enum create_context_menu_types menu_type;
         struct trap* t = t_at(u.ux, u.uy);
         if (IS_ALTAR(levtyp))
         {
-            add_context_menu(M('o'), cmd_from_func(dosacrifice), CONTEXT_MENU_STYLE_GENERAL, back_to_glyph(u.ux, u.uy), "Offer", 0, 0, NO_COLOR);
-            add_context_menu(M('p'), cmd_from_func(dopray), CONTEXT_MENU_STYLE_GENERAL, back_to_glyph(u.ux, u.uy), "Pray", 0, 0, NO_COLOR);
+            add_context_menu(M('o'), nondir_cmd_from_func(dosacrifice), CONTEXT_MENU_STYLE_GENERAL, back_to_glyph(u.ux, u.uy), "Offer", 0, 0, NO_COLOR);
+            add_context_menu(M('p'), nondir_cmd_from_func(dopray), CONTEXT_MENU_STYLE_GENERAL, back_to_glyph(u.ux, u.uy), "Pray", 0, 0, NO_COLOR);
         }
         else if (IS_FOUNTAIN(levtyp) || IS_SINK(levtyp))
         {
-            add_context_menu('q', cmd_from_func(dodrink), CONTEXT_MENU_STYLE_GENERAL, back_to_glyph(u.ux, u.uy), "Drink", 0, 0, NO_COLOR);
-            add_context_menu(M('d'), cmd_from_func(dodip), CONTEXT_MENU_STYLE_GENERAL, back_to_glyph(u.ux, u.uy), "Dip", 0, 0, NO_COLOR);
+            add_context_menu('q', nondir_cmd_from_func(dodrink), CONTEXT_MENU_STYLE_GENERAL, back_to_glyph(u.ux, u.uy), "Drink", 0, 0, NO_COLOR);
+            add_context_menu(M('d'), nondir_cmd_from_func(dodip), CONTEXT_MENU_STYLE_GENERAL, back_to_glyph(u.ux, u.uy), "Dip", 0, 0, NO_COLOR);
         }
         else if (IS_POOL(levtyp))
         {
-            add_context_menu(M('d'), cmd_from_func(dodip), CONTEXT_MENU_STYLE_GENERAL, back_to_glyph(u.ux, u.uy), "Dip", 0, 0, NO_COLOR);
+            add_context_menu(M('d'), nondir_cmd_from_func(dodip), CONTEXT_MENU_STYLE_GENERAL, back_to_glyph(u.ux, u.uy), "Dip", 0, 0, NO_COLOR);
         }
         else if (IS_THRONE(levtyp))
         {
-            add_context_menu(C('s'), cmd_from_func(dosit), CONTEXT_MENU_STYLE_GENERAL, back_to_glyph(u.ux, u.uy), "Sit", "on Throne", 0, NO_COLOR);
+            add_context_menu(C('s'), nondir_cmd_from_func(dosit), CONTEXT_MENU_STYLE_GENERAL, back_to_glyph(u.ux, u.uy), "Sit", "on Throne", 0, NO_COLOR);
         }
         else if ((u.ux == xupstair && u.uy == yupstair)
             || (u.ux == sstairs.sx && u.uy == sstairs.sy && sstairs.up)
@@ -10394,7 +10443,7 @@ enum create_context_menu_types menu_type;
         }
         else if (t && t->tseen && is_lever(t->ttyp))
         {
-            add_context_menu('a', cmd_from_func(doapply), CONTEXT_MENU_STYLE_GENERAL, back_to_glyph(u.ux, u.uy), "Apply", "the Lever", 0, NO_COLOR);
+            add_context_menu('a', nondir_cmd_from_func(doapply), CONTEXT_MENU_STYLE_GENERAL, back_to_glyph(u.ux, u.uy), "Apply", "the Lever", 0, NO_COLOR);
         }
 
         struct monst* shkp = can_pay_to_shkp();
@@ -10403,7 +10452,7 @@ enum create_context_menu_types menu_type;
             struct eshk* eshkp = ESHK(shkp);
             if (eshkp->robbed || eshkp->debit || eshkp->billct)
             {
-                add_context_menu('p', cmd_from_func(dopay), CONTEXT_MENU_STYLE_GENERAL, any_mon_to_glyph(shkp, rn2_on_display_rng), "Pay", 0, 0, NO_COLOR);
+                add_context_menu('p', nondir_cmd_from_func(dopay), CONTEXT_MENU_STYLE_GENERAL, any_mon_to_glyph(shkp, rn2_on_display_rng), "Pay", 0, 0, NO_COLOR);
             }
         }
 
@@ -10451,22 +10500,22 @@ enum create_context_menu_types menu_type;
 
         if (addchatmenu && chatmtmp)
         {
-            add_context_menu('C', cmd_from_func(dotalknearby), CONTEXT_MENU_STYLE_GENERAL, any_mon_to_glyph(chatmtmp, rn2_on_display_rng), "Chat", Monnam(chatmtmp), 0, NO_COLOR);
+            add_context_menu('C', nondir_cmd_from_func(dotalknearby), CONTEXT_MENU_STYLE_GENERAL, any_mon_to_glyph(chatmtmp, rn2_on_display_rng), "Chat", Monnam(chatmtmp), 0, NO_COLOR);
         }
         if (addridemenu && steedmtmp)
         {
-            add_context_menu(M('R'), cmd_from_func(doridenearby), CONTEXT_MENU_STYLE_GENERAL, any_mon_to_glyph(steedmtmp, rn2_on_display_rng), "Mount", Monnam(steedmtmp), 0, NO_COLOR);
+            add_context_menu(M('R'), nondir_cmd_from_func(doridenearby), CONTEXT_MENU_STYLE_GENERAL, any_mon_to_glyph(steedmtmp, rn2_on_display_rng), "Mount", Monnam(steedmtmp), 0, NO_COLOR);
         }
         //if (addkickmenu)
         //{
         //    if(kickotmp)
-        //        add_context_menu(C('d'), cmd_from_func(dokicknearby), CONTEXT_MENU_STYLE_GENERAL, obj_to_glyph(kickotmp, rn2_on_display_rng), "Kick", The(cxname(kickotmp)), 0, NO_COLOR);
+        //        add_context_menu(C('d'), nondir_cmd_from_func(dokicknearby), CONTEXT_MENU_STYLE_GENERAL, obj_to_glyph(kickotmp, rn2_on_display_rng), "Kick", The(cxname(kickotmp)), 0, NO_COLOR);
         //}
 
         if (u.usteed)
         {
-            add_context_menu(M('R'), cmd_from_func(doride), CONTEXT_MENU_STYLE_GENERAL, any_mon_to_glyph(u.usteed, rn2_on_display_rng), "Dismount", Monnam(u.usteed), 0, NO_COLOR);
-            add_context_menu('C', cmd_from_func(dotalksteed), CONTEXT_MENU_STYLE_GENERAL, any_mon_to_glyph(u.usteed, rn2_on_display_rng), "Steed", Monnam(u.usteed), 0, NO_COLOR);
+            add_context_menu(M('R'), nondir_cmd_from_func(doride), CONTEXT_MENU_STYLE_GENERAL, any_mon_to_glyph(u.usteed, rn2_on_display_rng), "Dismount", Monnam(u.usteed), 0, NO_COLOR);
+            add_context_menu('C', nondir_cmd_from_func(dotalksteed), CONTEXT_MENU_STYLE_GENERAL, any_mon_to_glyph(u.usteed, rn2_on_display_rng), "Steed", Monnam(u.usteed), 0, NO_COLOR);
         }
 
         struct obj* otmp_here;
@@ -10480,9 +10529,9 @@ enum create_context_menu_types menu_type;
 
         if (showpickup)
         {
-            add_context_menu(',', cmd_from_func(dopickup), CONTEXT_MENU_STYLE_GENERAL, otmp->gui_glyph, "Pick Up", cxname(otmp), 0, NO_COLOR);
+            add_context_menu(',', nondir_cmd_from_func(dopickup), CONTEXT_MENU_STYLE_GENERAL, otmp->gui_glyph, "Pick Up", cxname(otmp), 0, NO_COLOR);
             if(count_bags_for_stashing(invent, otmp, FALSE, TRUE) > 0)
-                add_context_menu(';', cmd_from_func(doput2bag), CONTEXT_MENU_STYLE_GENERAL, otmp->gui_glyph, "Pick & Stash", cxname(otmp), 0, NO_COLOR);
+                add_context_menu(';', nondir_cmd_from_func(doput2bag), CONTEXT_MENU_STYLE_GENERAL, otmp->gui_glyph, "Pick & Stash", cxname(otmp), 0, NO_COLOR);
             boolean eat_added = FALSE;
             boolean loot_added = FALSE;
             boolean loot_out_added = FALSE;
@@ -10491,7 +10540,7 @@ enum create_context_menu_types menu_type;
             {
                 if (!eat_added && is_edible(otmp_here))
                 {
-                    add_context_menu('e', cmd_from_func(doeat), CONTEXT_MENU_STYLE_GENERAL, otmp_here->gui_glyph, "Eat", cxname(otmp_here), 0, NO_COLOR);
+                    add_context_menu('e', nondir_cmd_from_func(doeat), CONTEXT_MENU_STYLE_GENERAL, otmp_here->gui_glyph, "Eat", cxname(otmp_here), 0, NO_COLOR);
                     eat_added = TRUE;
                 }
 
@@ -10499,7 +10548,7 @@ enum create_context_menu_types menu_type;
                 {
                     if (!loot_added)
                     {
-                        add_context_menu('l', cmd_from_func(doloot), CONTEXT_MENU_STYLE_GENERAL, otmp_here->gui_glyph, "Loot", cxname(otmp_here), 0, NO_COLOR);
+                        add_context_menu('l', nondir_cmd_from_func(doloot), CONTEXT_MENU_STYLE_GENERAL, otmp_here->gui_glyph, "Loot", cxname(otmp_here), 0, NO_COLOR);
                         loot_added = TRUE;
                     }
 
@@ -10512,14 +10561,14 @@ enum create_context_menu_types menu_type;
 
                         if (!isknownempty)
                         {
-                            add_context_menu('b', cmd_from_func(dolootout), CONTEXT_MENU_STYLE_GENERAL, otmp_here->gui_glyph, "Take out", cxname(otmp_here), 0, NO_COLOR);
+                            add_context_menu('b', nondir_cmd_from_func(dolootout), CONTEXT_MENU_STYLE_GENERAL, otmp_here->gui_glyph, "Take out", cxname(otmp_here), 0, NO_COLOR);
                             loot_out_added = TRUE;
                         }
                     }
 
                     if (!loot_in_added && invent && !is_known_improper)
                     {
-                        add_context_menu('B', cmd_from_func(dolootin), CONTEXT_MENU_STYLE_GENERAL, otmp_here->gui_glyph, "Put in", cxname(otmp_here), 0, NO_COLOR);
+                        add_context_menu('B', nondir_cmd_from_func(dolootin), CONTEXT_MENU_STYLE_GENERAL, otmp_here->gui_glyph, "Put in", cxname(otmp_here), 0, NO_COLOR);
                         loot_in_added = TRUE;
                     }
                 }
@@ -10532,14 +10581,14 @@ enum create_context_menu_types menu_type;
 
         if (Blind || displ_style == 2)
         {
-            add_context_menu(':', cmd_from_func(dolook), CONTEXT_MENU_STYLE_GENERAL, NO_GLYPH, "Look Here", "", 0, NO_COLOR);
+            add_context_menu(':', nondir_cmd_from_func(dolook), CONTEXT_MENU_STYLE_GENERAL, NO_GLYPH, "Look Here", "", 0, NO_COLOR);
         }
 
         if (context.last_picked_obj_oid > 0 && context.last_picked_obj_show_duration_left > 0)
         {
             struct obj* lpobj;
             if ((lpobj = o_on(context.last_picked_obj_oid, invent)) != 0)
-                add_context_menu(M('<'), cmd_from_func(dolastpickeditem), CONTEXT_MENU_STYLE_GENERAL, lpobj ? lpobj->gui_glyph : 0, "Last Item", lpobj ? cxname(lpobj) : "", 0, NO_COLOR);
+                add_context_menu(M('<'), nondir_cmd_from_func(dolastpickeditem), CONTEXT_MENU_STYLE_GENERAL, lpobj ? lpobj->gui_glyph : 0, "Last Item", lpobj ? cxname(lpobj) : "", 0, NO_COLOR);
         }
         break;
     }
