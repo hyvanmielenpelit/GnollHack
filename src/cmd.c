@@ -6903,7 +6903,7 @@ cmd_unctrl(c)
 char c;
 {
     // C(c) (0x40 & (c) ? 0x1f & (c) : (0x80 | (0x1f & (c))))
-    if (c > 0 && c <= 32) /* 1-26 are letters, map them back to small letters */
+    if (c > 0 && c < 32) /* 1-26 are letters, map them back to small letters */
         return c + 96;
 
     int i = (int)c;
