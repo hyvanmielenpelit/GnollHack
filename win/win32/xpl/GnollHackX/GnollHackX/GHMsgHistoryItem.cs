@@ -63,19 +63,19 @@ namespace GnollHackX
         public GHMsgHistoryItem(string text)
         {
             _text = text;
-            _textSplit = _text.Split(' ');
+            _textSplit = _text?.Split(' ') ?? null;
         }
         public GHMsgHistoryItem(string text, int attr, int color)
         {
             _text = text;
-            _textSplit = _text.Split(' ');
+            _textSplit = _text?.Split(' ') ?? null;
             Attribute = attr;
             NHColor = color;
         }
         public GHMsgHistoryItem(string text, byte[] attrs, byte[] colors, int attr, int color)
         {
             _text = text;
-            _textSplit = _text.Split(' ');
+            _textSplit = _text?.Split(' ') ?? null;
             Attributes = attrs;
             Colors = colors;
             Attribute = attr;
