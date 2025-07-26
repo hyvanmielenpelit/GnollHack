@@ -9464,8 +9464,8 @@ int x, y, mod;
                 {
                     if (has_fitting_key || !door->click_kick_ok)
                     {
-                        //if (!door->click_kick_ok)
-                        //    context.click_kick_query = 1;
+                        if (!door->click_kick_ok)
+                            context.click_kick_query = 1;
 
                         cmd[0] = cmd_from_func(doopen);
                     }

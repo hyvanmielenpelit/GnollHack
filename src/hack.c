@@ -1081,16 +1081,12 @@ int mode;
                         /* Below works great using keyboard, but it is more difficult to do the same for mouse click side */
                         //else if (open_res == 3 || open_res == -1)
                         //{
-                        //    int dx = x - u.ux;
-                        //    int dy = y - u.uy;
                         //    u.dx = dx, u.dy = dy, u.dz = 0;
                         //    (void)dokick_indir(TRUE);
                         //}
                     }
                     else if ((tmpr->doormask & D_LOCKED) != 0 && tmpr->click_kick_ok && !context.run && !Confusion && !Stunned && !Fumbling)
                     {
-                        int dx = x - u.ux;
-                        int dy = y - u.uy;
                         u.dx = dx, u.dy = dy, u.dz = 0;
                         (void)dokick_indir(TRUE);
                     }

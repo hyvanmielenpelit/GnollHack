@@ -1111,13 +1111,12 @@ int x, y;
                 }
             }
 
-            if(!unlocked) /* && context.click_kick_query Click */
+            if(!unlocked && (!(x == 0 && y == 0) || context.click_kick_query)) /* Either click or indirect via movement */
             {
                 if (!door->click_kick_ok)
                 {
                     char ans = 'n';
                     char qbuf[BUFSZ * 2];
-                    //context.click_kick_query = 0;
 
                     Sprintf(qbuf, "Do you want to start kicking this door?");
                     ans = yn_query(qbuf);
@@ -1130,7 +1129,7 @@ int x, y;
                 else
                     res = res ? 3 : -1;
             }
-
+            context.click_kick_query = 0;
         }
         return res;
     }
