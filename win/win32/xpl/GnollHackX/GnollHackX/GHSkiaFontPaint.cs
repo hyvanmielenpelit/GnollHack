@@ -197,10 +197,12 @@ namespace GnollHackX
         {
             if (text == ReadOnlySpan<char>.Empty)
                 return;
-            SKTextBlob textBlob = SKTextBlob.Create(text, _font);
-            if (textBlob == null)
-                return;
-            canvas.DrawText(textBlob, x, y, _paint);
+            using (SKTextBlob textBlob = SKTextBlob.Create(text, _font))
+            {
+                if (textBlob == null)
+                    return;
+                canvas.DrawText(textBlob, x, y, _paint);
+            }
         }
 
         public void DrawTextOnCanvas(SKCanvas canvas, ReadOnlySpan<char> text, SKPoint p)
