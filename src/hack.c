@@ -1066,11 +1066,10 @@ int mode;
                     if (amorphous(youmonst.data))
                         You_ex(ATR_NONE, CLR_MSG_ATTENTION, "try to ooze under the door, but can't squeeze your possessions through.");
 
-                    if (flags.autoopen && !context.run && !Confusion
-                        && !Stunned && !Fumbling)
+                    if (flags.autoopen && !context.run && ((tmpr->doormask & D_LOCKED) == 0 || (flags.autounlock && carrying_fitting_unlocking_tool_for_door(tmpr)) || !tmpr->click_kick_ok) && !Confusion && !Stunned && !Fumbling)
                     {
                         int open_res = doopen_indir(x, y);
-                        if (!open_res)
+                        if (open_res <= 0)
                             context.door_opened = context.move = 0;
                         else if (open_res == 1)
                             context.door_opened = context.move = 1;
@@ -1079,7 +1078,21 @@ int mode;
                             context.door_opened = 1; /* Make sure nomul is not called, since the player started picking the lock */
                             context.move = 0; /* But movement stops */
                         }
-
+                        /* Below works great using keyboard, but it is more difficult to do the same for mouse click side */
+                        //else if (open_res == 3 || open_res == -1)
+                        //{
+                        //    int dx = x - u.ux;
+                        //    int dy = y - u.uy;
+                        //    u.dx = dx, u.dy = dy, u.dz = 0;
+                        //    (void)dokick_indir(TRUE);
+                        //}
+                    }
+                    else if ((tmpr->doormask & D_LOCKED) != 0 && tmpr->click_kick_ok && !context.run && !Confusion && !Stunned && !Fumbling)
+                    {
+                        int dx = x - u.ux;
+                        int dy = y - u.uy;
+                        u.dx = dx, u.dy = dy, u.dz = 0;
+                        (void)dokick_indir(TRUE);
                     }
                     else if (x == ux || y == uy) 
                     {

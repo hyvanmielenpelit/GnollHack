@@ -908,9 +908,9 @@ E void NDECL(reset_dogmove);
 E boolean FDECL(ghitm, (struct monst *, struct obj *, uchar *));
 E void FDECL(container_impact_dmg, (struct obj *, XCHAR_P, XCHAR_P));
 E int NDECL(dokick);
+E int FDECL(dokick_indir, (BOOLEAN_P));
 #ifdef ANDROID
 E void NDECL(autokick);
-E int FDECL(dokick_indir, (BOOLEAN_P));
 #endif
 E boolean FDECL(ship_object, (struct obj *, XCHAR_P, XCHAR_P, BOOLEAN_P));
 E void FDECL(obj_delivery, (BOOLEAN_P));

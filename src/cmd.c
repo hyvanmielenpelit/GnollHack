@@ -8376,7 +8376,8 @@ retry:
         || dirsym == Cmd.spkeys[NHKF_GETDIR_SELF2])
     {
         u.dx = u.dy = u.dz = 0;
-    } else if (!(is_mov = movecmd(dirsym)) && !u.dz) 
+    } 
+    else if (!(is_mov = movecmd(dirsym)) && !u.dz) 
     {
         boolean did_help = FALSE, help_requested;
 
@@ -9463,8 +9464,8 @@ int x, y, mod;
                 {
                     if (has_fitting_key || !door->click_kick_ok)
                     {
-                        if (!door->click_kick_ok)
-                            context.click_kick_query = 1;
+                        //if (!door->click_kick_ok)
+                        //    context.click_kick_query = 1;
 
                         cmd[0] = cmd_from_func(doopen);
                     }

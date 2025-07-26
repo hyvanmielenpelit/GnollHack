@@ -1159,9 +1159,11 @@ autokick()
     if (yn_query("Kick it open?") == 'y')
         dokick_indir(TRUE);
 }
+#endif
 
 int
-dokick() {
+dokick() 
+{
     return dokick_indir(FALSE);
 }
 
@@ -1169,10 +1171,6 @@ int
 dokick_indir(has_dir)
 boolean has_dir;
 {
-#else
-int
-dokick() {
-#endif
     int x, y;
     int avrg_attrib;
     int dmg = 0, glyph, oldglyph = -1;
@@ -1269,12 +1267,7 @@ dokick() {
         return 0;
     }
 
-    if (
-#ifdef ANDROID
-        !has_dir &&
-#endif
-        !getdir((char *) 0)
-        )
+    if (!has_dir && !getdir((char *) 0))
         return 0;
     if (!u.dx && !u.dy)
         return 0;

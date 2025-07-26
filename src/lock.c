@@ -967,11 +967,11 @@ int x, y;
 int
 doopen()
 {
-    return !!doopen_indir(0, 0);
+    return doopen_indir(0, 0) > 0;
 }
 
 /* try to open a door in direction u.dx/u.dy */
-/* 0 = open fails, 1 = open succeeded, 2 = started picking the lock */
+/* 0 = open fails, 1 = open succeeded, 2 = started picking the lock, 3 = start kicking and take turn, -1 = start kicking and do not take turn */
 int
 doopen_indir(x, y)
 int x, y;
@@ -1111,19 +1111,24 @@ int x, y;
                 }
             }
 
-            if(!unlocked && context.click_kick_query) /* Click */
+            if(!unlocked) /* && context.click_kick_query Click */
             {
-                char ans = 'n';
-                char qbuf[BUFSZ * 2];
-                context.click_kick_query = 0;
-
-                Sprintf(qbuf, "Do you want to start kicking this door?");
-                ans = yn_query(qbuf);
-
-                if (ans == 'y')
+                if (!door->click_kick_ok)
                 {
-                    door->click_kick_ok = 1;
+                    char ans = 'n';
+                    char qbuf[BUFSZ * 2];
+                    //context.click_kick_query = 0;
+
+                    Sprintf(qbuf, "Do you want to start kicking this door?");
+                    ans = yn_query(qbuf);
+
+                    if (ans == 'y')
+                    {
+                        door->click_kick_ok = 1;
+                    }
                 }
+                else
+                    res = res ? 3 : -1;
             }
 
         }
