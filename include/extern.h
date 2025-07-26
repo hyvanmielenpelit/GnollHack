@@ -328,7 +328,7 @@ E int NDECL(domonability);
 E int NDECL(doability);
 E int NDECL(dospellmainmenu);
 E int NDECL(docommandmenu);
-E char FDECL(cmd_unctrl, (char));
+E char FDECL(cmd_unctrl, (CHAR_P));
 E char FDECL(nondir_cmd_from_func, (int NDECL((*))));
 E char FDECL(cmd_from_func, (int NDECL((*))));
 E uchar FDECL(cmd_from_txt, (const char*));
