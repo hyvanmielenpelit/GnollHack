@@ -13,10 +13,10 @@ namespace GnollHackX
     {
         public static readonly string[] _emptyTextSplit = { "" };
 
-        private readonly string _text = "";
+        private readonly string _text = null;
         private readonly string[] _textSplit = null;
 
-        public string Text => _text;
+        public string Text => _text ?? "";
         public string[] TextSplit => _textSplit ?? _emptyTextSplit;
 
         public readonly int Attribute = 0;
