@@ -443,5 +443,7 @@ ASALocalRun/
 # MFractors (Xamarin productivity tool) working folder 
 .mfractor/
 
+# Other
+*.gcdump
 !win/win32/xpl/GnollHackX/GnollHackX.Android/libs/*
 !*.json
