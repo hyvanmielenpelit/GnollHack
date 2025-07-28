@@ -325,7 +325,7 @@ namespace GnollHackX
                 char c = text[i];
                 if(c == separator || c == '\n')
                 {
-                    word = text.AsSpan().Slice(wordstartidx, i - wordstartidx);
+                    word = text.AsSpan(wordstartidx, i - wordstartidx);
                     width = CalculateTextPartWidth(word, textPaint);
                     if (width + (c == '\n' ? 0 : ending_width) + totalWidth > widthConstraint && _currentRowBuilder.Length > 0)
                     {
@@ -348,7 +348,12 @@ namespace GnollHackX
                     }
 
                     //currentrowstr += word;
+#if GNH_MAUI
                     _currentRowBuilder.Append(word);
+#else
+                    for (int charIdx = 0; charIdx < word.Length; charIdx++)
+                        _currentRowBuilder.Append(word[charIdx]);
+#endif
                     totalWidth += width;
                     if(displayseparator && c == separator)
                     {
@@ -371,7 +376,7 @@ namespace GnollHackX
                     if (i == text.Length - 1)
                     {
                         //string row;
-                        word = text.AsSpan().Slice(wordstartidx, i - wordstartidx + 1);
+                        word = text.AsSpan(wordstartidx, i - wordstartidx + 1);
                         width = CalculateTextPartWidth(word, textPaint);
                         if (width + totalWidth > widthConstraint && _currentRowBuilder.Length > 0)
                         {
@@ -399,7 +404,12 @@ namespace GnollHackX
                         //_rowBuilder.Append(_currentRowBuilder);
                         //_rowBuilder.Append(word);
                         //result.Add(_rowBuilder.ToString());
+#if GNH_MAUI
                         _currentRowBuilder.Append(word);
+#else
+                        for(int charIdx = 0; charIdx < word.Length; charIdx++)
+                            _currentRowBuilder.Append(word[charIdx]);
+#endif
                         result.Add(_currentRowBuilder.ToString());
                         totalWidth = 0;
                         //currentrowstr = "";
@@ -673,7 +683,7 @@ namespace GnollHackX
                             do
                             {
                                 idx = textRow.IndexOf(' ', startIdx);
-                                ReadOnlySpan<char> textPart = idx < 0 ? textRow.AsSpan().Slice(startIdx) : textRow.AsSpan().Slice(startIdx, idx + 1 - startIdx);
+                                ReadOnlySpan<char> textPart = idx < 0 ? textRow.AsSpan(startIdx) : textRow.AsSpan(startIdx, idx + 1 - startIdx);
 
                                 startIdx = idx < 0 || idx == len - 1 ? -1 : idx + 1;
 
@@ -826,7 +836,7 @@ namespace GnollHackX
                                 MainThread.BeginInvokeOnMainThread(() => { UpdateLabelScroll(); });
                                 return !StopTimer;
                             });
-#endif                    
+#endif
                         });
                     }
                     else

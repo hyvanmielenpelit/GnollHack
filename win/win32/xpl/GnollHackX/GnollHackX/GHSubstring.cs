@@ -39,6 +39,30 @@ namespace GnollHackX
             _internalString = str.Substring(start, length);
 #endif
         }
+        public GHSubstring(ReadOnlySpan<char> str)
+        {
+#if USE_SPAN_FOR_SUBSTRING
+            _internalSpan = str;
+#else
+            _internalString = str.ToString();
+#endif
+        }
+        public GHSubstring(ReadOnlySpan<char> str, int start)
+        {
+#if USE_SPAN_FOR_SUBSTRING
+            _internalSpan = str.Slice(start);
+#else
+            _internalString = str.Slice(start).ToString();
+#endif
+        }
+        public GHSubstring(ReadOnlySpan<char> str, int start, int length)
+        {
+#if USE_SPAN_FOR_SUBSTRING
+            _internalSpan = str.Slice(start, length);
+#else
+            _internalString = str.Slice(start, length).ToString();
+#endif
+        }
 
         public void SetValue(string str)
         {
@@ -62,6 +86,30 @@ namespace GnollHackX
             _internalSpan = str.AsSpan(start, length);
 #else
             _internalString = str.Substring(start, length);
+#endif
+        }
+        public void SetValue(ReadOnlySpan<char> str)
+        {
+#if USE_SPAN_FOR_SUBSTRING
+            _internalSpan = str;
+#else
+            _internalString = str.ToString();
+#endif
+        }
+        public void SetValue(ReadOnlySpan<char> str, int start)
+        {
+#if USE_SPAN_FOR_SUBSTRING
+            _internalSpan = str.Slice(start);
+#else
+            _internalString = str.Slice(start).ToString();
+#endif
+        }
+        public void SetValue(ReadOnlySpan<char> str, int start, int length)
+        {
+#if USE_SPAN_FOR_SUBSTRING
+            _internalSpan = str.Slice(start, length);
+#else
+            _internalString = str.Slice(start, length).ToString();
 #endif
         }
 
