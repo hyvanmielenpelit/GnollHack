@@ -4005,96 +4005,184 @@ namespace GnollHackX
         public static SKImage GetSpecialSymbol(ReadOnlySpan<char> span, out SKRect source_rect)
         {
             source_rect = new SKRect();
-            if (span == null || span.IsEmpty || span[0] != '&')
+            if (span.IsEmpty || span[0] != '&')
                 return null;
 
             SKImage bitmap = null;
             ReadOnlySpan<char> trimmedSpan = span.Trim();
-            if (trimmedSpan.SequenceEqual("&success;".AsSpan()))
+            if (trimmedSpan.SequenceEqual("&success;"
+#if !GNH_MAUI
+                .AsSpan()
+#endif
+                ))
             {
                 bitmap = _successBitmap;
             }
-            else if (trimmedSpan.SequenceEqual("&mana;".AsSpan()))
+            else if (trimmedSpan.SequenceEqual("&mana;"
+#if !GNH_MAUI
+                .AsSpan()
+#endif
+                ))
             {
                 bitmap = _manaBitmap;
             }
-            else if (trimmedSpan.SequenceEqual("&cool;".AsSpan()))
+            else if (trimmedSpan.SequenceEqual("&cool;"
+#if !GNH_MAUI
+                .AsSpan()
+#endif
+                ))
             {
                 bitmap = _cooldownBitmap;
             }
-            else if (trimmedSpan.SequenceEqual("&casts;".AsSpan()))
+            else if (trimmedSpan.SequenceEqual("&casts;"
+#if !GNH_MAUI
+                .AsSpan()
+#endif
+                ))
             {
                 bitmap = _castsBitmap;
             }
-            else if (trimmedSpan.SequenceEqual("&adds;".AsSpan()))
+            else if (trimmedSpan.SequenceEqual("&adds;"
+#if !GNH_MAUI
+                .AsSpan()
+#endif
+                ))
             {
                 bitmap = _addsBitmap;
             }
-            else if (trimmedSpan.SequenceEqual("&food;".AsSpan()))
+            else if (trimmedSpan.SequenceEqual("&food;"
+#if !GNH_MAUI
+                .AsSpan()
+#endif
+                ))
             {
                 bitmap = _foodBitmap;
             }
-            else if (trimmedSpan.SequenceEqual("&gold;".AsSpan()))
+            else if (trimmedSpan.SequenceEqual("&gold;"
+#if !GNH_MAUI
+                .AsSpan()
+#endif
+                ))
             {
                 bitmap = _goldBitmap;
             }
-            else if (trimmedSpan.SequenceEqual("&spabj;".AsSpan()))
+            else if (trimmedSpan.SequenceEqual("&spabj;"
+#if !GNH_MAUI
+                .AsSpan()
+#endif
+                ))
             {
                 bitmap = _spellAbjurationBitmap;
             }
-            else if (trimmedSpan.SequenceEqual("&sparc;".AsSpan()))
+            else if (trimmedSpan.SequenceEqual("&sparc;"
+#if !GNH_MAUI
+                .AsSpan()
+#endif
+                ))
             {
                 bitmap = _spellArcaneBitmap;
             }
-            else if (trimmedSpan.SequenceEqual("&spcel;".AsSpan()))
+            else if (trimmedSpan.SequenceEqual("&spcel;"
+#if !GNH_MAUI
+                .AsSpan()
+#endif
+                ))
             {
                 bitmap = _spellCelestialBitmap;
             }
-            else if (trimmedSpan.SequenceEqual("&spcle;".AsSpan()))
+            else if (trimmedSpan.SequenceEqual("&spcle;"
+#if !GNH_MAUI
+                .AsSpan()
+#endif
+                ))
             {
                 bitmap = _spellClericalBitmap;
             }
-            else if (trimmedSpan.SequenceEqual("&spcon;".AsSpan()))
+            else if (trimmedSpan.SequenceEqual("&spcon;"
+#if !GNH_MAUI
+                .AsSpan()
+#endif
+                ))
             {
                 bitmap = _spellConjurationBitmap;
             }
-            else if (trimmedSpan.SequenceEqual("&spdiv;".AsSpan()))
+            else if (trimmedSpan.SequenceEqual("&spdiv;"
+#if !GNH_MAUI
+                .AsSpan()
+#endif
+                ))
             {
                 bitmap = _spellDivinationBitmap;
             }
-            else if (trimmedSpan.SequenceEqual("&spenc;".AsSpan()))
+            else if (trimmedSpan.SequenceEqual("&spenc;"
+#if !GNH_MAUI
+                .AsSpan()
+#endif
+                ))
             {
                 bitmap = _spellEnchantmentBitmap;
             }
-            else if (trimmedSpan.SequenceEqual("&sphea;".AsSpan()))
+            else if (trimmedSpan.SequenceEqual("&sphea;"
+#if !GNH_MAUI
+                .AsSpan()
+#endif
+                ))
             {
                 bitmap = _spellHealingBitmap;
             }
-            else if (trimmedSpan.SequenceEqual("&spmov;".AsSpan()))
+            else if (trimmedSpan.SequenceEqual("&spmov;"
+#if !GNH_MAUI
+                .AsSpan()
+#endif
+                ))
             {
                 bitmap = _spellMovementBitmap;
             }
-            else if (trimmedSpan.SequenceEqual("&spnat;".AsSpan()))
+            else if (trimmedSpan.SequenceEqual("&spnat;"
+#if !GNH_MAUI
+                .AsSpan()
+#endif
+                ))
             {
                 bitmap = _spellNatureBitmap;
             }
-            else if (trimmedSpan.SequenceEqual("&spnec;".AsSpan()))
+            else if (trimmedSpan.SequenceEqual("&spnec;"
+#if !GNH_MAUI
+                .AsSpan()
+#endif
+                ))
             {
                 bitmap = _spellNecromancyBitmap;
             }
-            else if (trimmedSpan.SequenceEqual("&sptra;".AsSpan()))
+            else if (trimmedSpan.SequenceEqual("&sptra;"
+#if !GNH_MAUI
+                .AsSpan()
+#endif
+                ))
             {
                 bitmap = _spellTransmutationBitmap;
             }
-            else if (trimmedSpan.SequenceEqual("&damage;".AsSpan()))
+            else if (trimmedSpan.SequenceEqual("&damage;"
+#if !GNH_MAUI
+                .AsSpan()
+#endif
+                ))
             {
                 bitmap = _damageBitmap;
             }
-            else if (trimmedSpan.SequenceEqual("&AC;".AsSpan()))
+            else if (trimmedSpan.SequenceEqual("&AC;"
+#if !GNH_MAUI
+                .AsSpan()
+#endif
+                ))
             {
                 bitmap = _statusACBitmap;
             }
-            else if (trimmedSpan.SequenceEqual("&MC;".AsSpan()))
+            else if (trimmedSpan.SequenceEqual("&MC;"
+#if !GNH_MAUI
+                .AsSpan()
+#endif
+                ))
             {
                 bitmap = _statusMCBitmap;
             }

@@ -17344,9 +17344,17 @@ namespace GnollHackX.Pages.Game
         public SKImage GetGameSpecialSymbol(ReadOnlySpan<char> str, out SKRect source_rect)
         {
             source_rect = new SKRect();
-            if (str == null || !str.StartsWith("&".AsSpan()))
+            if (str.IsEmpty || !str.StartsWith("&"
+#if !GNH_MAUI
+                .AsSpan()
+#endif
+                ))
                 return null;
-            else if (str.StartsWith("&status-".AsSpan()) && str.Length > 8)
+            else if (str.StartsWith("&status-"
+#if !GNH_MAUI
+                    .AsSpan()
+#endif
+                    ) && str.Length > 8)
             {
                 int status_mark = 0;
                 GHSubstring substr = new GHSubstring(str, 8).Substring(0, str.Length - 8 - 1);
@@ -17372,7 +17380,11 @@ namespace GnollHackX.Pages.Game
                 }
                 return null;
             }
-            else if (str.StartsWith("&cond-".AsSpan()) && str.Length > 6)
+            else if (str.StartsWith("&cond-"
+#if !GNH_MAUI
+                    .AsSpan()
+#endif
+                    ) && str.Length > 6)
             {
                 int condition_mark = 0;
                 GHSubstring substr = new GHSubstring(str, 6).Substring(0, str.Length - 6 - 1);
@@ -17398,7 +17410,11 @@ namespace GnollHackX.Pages.Game
                 }
                 return null;
             }
-            else if (str.StartsWith("&buff-".AsSpan()) && str.Length > 6)
+            else if (str.StartsWith("&buff-"
+#if !GNH_MAUI
+                    .AsSpan()
+#endif
+                    ) && str.Length > 6)
             {
                 int propidx = 0;
                 GHSubstring substr = new GHSubstring(str, 6).Substring(0, str.Length - 6 - 1);
@@ -17584,7 +17600,7 @@ namespace GnollHackX.Pages.Game
 
         private int SpanIndexOf(ReadOnlySpan<char> textSpan, char c, int startIndex)
         {
-            for (int i = startIndex; i < textSpan.Length; i++)
+            for (int i = startIndex, len = textSpan.Length; i < len; i++)
                 if (textSpan[i] == c)
                     return i;
 
@@ -17617,13 +17633,13 @@ namespace GnollHackX.Pages.Game
             SKFilterQuality oldFilterQuality = textPaint.Paint.FilterQuality;
 #endif
             float spacelength = textPaint.MeasureText(" ");
-            int idx = 0;
+            //int idx = 0;
             //int rowidx = 0;
             SKColor orig_color = textPaint.Color;
             GHSubstring printedsubline = new GHSubstring("");
-            for (int ss_idx = 0, ss_cnt = textsplit.Length; ss_idx < ss_cnt; ss_idx++)
+            for (int idx = 0, cnt = textsplit.Length; idx < cnt; idx++)
             {
-                string split_str = textsplit[ss_idx];
+                string split_str = textsplit[idx];
                 byte[] attrs = attrs_list != null && idx < attrs_list.Count ? attrs_list[idx] : null;
                 byte[] colors = colors_list != null && idx < colors_list.Count ? colors_list[idx] : null;
 
@@ -17758,7 +17774,7 @@ namespace GnollHackX.Pages.Game
 //                }
 
 //                x = endposition;
-                idx++;
+                //idx++;
             }
         }
 
