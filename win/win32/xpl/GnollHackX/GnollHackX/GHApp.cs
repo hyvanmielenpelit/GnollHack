@@ -4002,6 +4002,111 @@ namespace GnollHackX
             return bitmap;
         }
 
+        public static SKImage GetSpecialSymbol(ReadOnlySpan<char> span, out SKRect source_rect)
+        {
+            source_rect = new SKRect();
+            if (span == null || span.IsEmpty || span[0] != '&')
+                return null;
+
+            SKImage bitmap = null;
+            ReadOnlySpan<char> trimmedSpan = span.Trim();
+            if (trimmedSpan.SequenceEqual("&success;".AsSpan()))
+            {
+                bitmap = _successBitmap;
+            }
+            else if (trimmedSpan.SequenceEqual("&mana;".AsSpan()))
+            {
+                bitmap = _manaBitmap;
+            }
+            else if (trimmedSpan.SequenceEqual("&cool;".AsSpan()))
+            {
+                bitmap = _cooldownBitmap;
+            }
+            else if (trimmedSpan.SequenceEqual("&casts;".AsSpan()))
+            {
+                bitmap = _castsBitmap;
+            }
+            else if (trimmedSpan.SequenceEqual("&adds;".AsSpan()))
+            {
+                bitmap = _addsBitmap;
+            }
+            else if (trimmedSpan.SequenceEqual("&food;".AsSpan()))
+            {
+                bitmap = _foodBitmap;
+            }
+            else if (trimmedSpan.SequenceEqual("&gold;".AsSpan()))
+            {
+                bitmap = _goldBitmap;
+            }
+            else if (trimmedSpan.SequenceEqual("&spabj;".AsSpan()))
+            {
+                bitmap = _spellAbjurationBitmap;
+            }
+            else if (trimmedSpan.SequenceEqual("&sparc;".AsSpan()))
+            {
+                bitmap = _spellArcaneBitmap;
+            }
+            else if (trimmedSpan.SequenceEqual("&spcel;".AsSpan()))
+            {
+                bitmap = _spellCelestialBitmap;
+            }
+            else if (trimmedSpan.SequenceEqual("&spcle;".AsSpan()))
+            {
+                bitmap = _spellClericalBitmap;
+            }
+            else if (trimmedSpan.SequenceEqual("&spcon;".AsSpan()))
+            {
+                bitmap = _spellConjurationBitmap;
+            }
+            else if (trimmedSpan.SequenceEqual("&spdiv;".AsSpan()))
+            {
+                bitmap = _spellDivinationBitmap;
+            }
+            else if (trimmedSpan.SequenceEqual("&spenc;".AsSpan()))
+            {
+                bitmap = _spellEnchantmentBitmap;
+            }
+            else if (trimmedSpan.SequenceEqual("&sphea;".AsSpan()))
+            {
+                bitmap = _spellHealingBitmap;
+            }
+            else if (trimmedSpan.SequenceEqual("&spmov;".AsSpan()))
+            {
+                bitmap = _spellMovementBitmap;
+            }
+            else if (trimmedSpan.SequenceEqual("&spnat;".AsSpan()))
+            {
+                bitmap = _spellNatureBitmap;
+            }
+            else if (trimmedSpan.SequenceEqual("&spnec;".AsSpan()))
+            {
+                bitmap = _spellNecromancyBitmap;
+            }
+            else if (trimmedSpan.SequenceEqual("&sptra;".AsSpan()))
+            {
+                bitmap = _spellTransmutationBitmap;
+            }
+            else if (trimmedSpan.SequenceEqual("&damage;".AsSpan()))
+            {
+                bitmap = _damageBitmap;
+            }
+            else if (trimmedSpan.SequenceEqual("&AC;".AsSpan()))
+            {
+                bitmap = _statusACBitmap;
+            }
+            else if (trimmedSpan.SequenceEqual("&MC;".AsSpan()))
+            {
+                bitmap = _statusMCBitmap;
+            }
+
+            if (bitmap != null)
+            {
+                source_rect.Right = bitmap.Width;
+                source_rect.Bottom = bitmap.Height;
+            }
+            return bitmap;
+        }
+
         //static readonly object _cachedBitmapsLock = new object();
         static readonly ConcurrentDictionary<string, SKImage> _cachedBitmaps = new ConcurrentDictionary<string, SKImage>();
 

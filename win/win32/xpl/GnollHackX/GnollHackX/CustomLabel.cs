@@ -206,14 +206,14 @@ namespace GnollHackX
 
 
         //private readonly object _textRowLock = new object();
-        private string[] _textRows = null;
-        private string[] TextRows
+        private List<string> _textRows = null;
+        private List<string> TextRows
         {
             //get { lock (_textRowLock) { return _textRows == null ? new string[1] {""} : _textRows; } }
             get 
             { 
                 var res = Interlocked.CompareExchange(ref _textRows, null, null);
-                return res == null ? new string[1] { "" } : res; 
+                return res == null ? new List<string> { "" } : res; 
             }
             set
             {
@@ -275,9 +275,9 @@ namespace GnollHackX
             }
         }
 
-        float CalculateTextPartWidth(string textPart, GHSkiaFontPaint textPaint)
+        float CalculateTextPartWidth(ReadOnlySpan<char> textPart, GHSkiaFontPaint textPaint)
         {
-            if(textPart == null || textPart == "")
+            if(textPart.IsEmpty)
                 return 0;
 
             SKImage symbolbitmap;
@@ -296,7 +296,9 @@ namespace GnollHackX
             }
         }
 
-        public string[] SplitTextWithConstraint(string text, float widthConstraint, GHSkiaFontPaint textPaint)
+        private StringBuilder _currentRowBuilder = new StringBuilder(24);
+        //private StringBuilder _rowBuilder = new StringBuilder(24);
+        public List<string> SplitTextWithConstraint(string text, float widthConstraint, GHSkiaFontPaint textPaint)
         {
             if (text == null)
                 return null;
@@ -309,10 +311,11 @@ namespace GnollHackX
             string separatorstr = separator.ToString();
             float separatorwidth = textPaint.MeasureText(separatorstr);
             float width = 0;
-            string word;
+            ReadOnlySpan<char> word;
             string ending = displayseparator && separator != ' ' ? separator.ToString() : "";
             float ending_width = ending != "" ? textPaint.MeasureText(ending) : 0;
-            string currentrowstr = "";
+            //string currentrowstr = "";
+            _currentRowBuilder.Clear();
 
             for (int i = 0; i < text.Length; i++)
             {
@@ -322,40 +325,44 @@ namespace GnollHackX
                 char c = text[i];
                 if(c == separator || c == '\n')
                 {
-                    word = text.Substring(wordstartidx, i - wordstartidx);
+                    word = text.AsSpan().Slice(wordstartidx, i - wordstartidx);
                     width = CalculateTextPartWidth(word, textPaint);
-                    if (width + (c == '\n' ? 0 : ending_width) + totalWidth > widthConstraint && currentrowstr != "")
+                    if (width + (c == '\n' ? 0 : ending_width) + totalWidth > widthConstraint && _currentRowBuilder.Length > 0)
                     {
-                        string row = currentrowstr;
-                        result.Add(row);
+                        //string row = currentrowstr;
+                        result.Add(_currentRowBuilder.ToString());
                         totalWidth = 0;
-                        currentrowstr = "";
+                        _currentRowBuilder.Clear();
+                        //currentrowstr = "";
                     }
 
                     //Clear out separators and spaces from the start of the row with automatic word wrap
-                    if (currentrowstr == "")
+                    if (_currentRowBuilder.Length == 0)
                     {
                         int startIdx = 0;
                         while (startIdx < word.Length && (word[startIdx] == ' ' || word[startIdx] == separator))
                             startIdx++;
 
-                        word = word.Substring(startIdx);
+                        word = word.Slice(startIdx);
                         width = CalculateTextPartWidth(word, textPaint);
                     }
 
-                    currentrowstr += word;
+                    //currentrowstr += word;
+                    _currentRowBuilder.Append(word);
                     totalWidth += width;
                     if(displayseparator && c == separator)
                     {
-                        currentrowstr += separator.ToString();
+                        //currentrowstr += separator.ToString();
+                        _currentRowBuilder.Append(separator);
                         totalWidth += separatorwidth;
                     }
                     if (c == '\n' || i == text.Length - 1)
                     {
-                        string row = currentrowstr;
-                        result.Add(row);
+                        //string row = currentrowstr;
+                        result.Add(_currentRowBuilder.ToString());
                         totalWidth = 0;
-                        currentrowstr = "";
+                        //currentrowstr = "";
+                        _currentRowBuilder.Clear();
                     }
                     wordstartidx = i + 1;
                 }
@@ -363,34 +370,44 @@ namespace GnollHackX
                 {
                     if (i == text.Length - 1)
                     {
-                        string row;
-                        word = text.Substring(wordstartidx, i - wordstartidx + 1);
+                        //string row;
+                        word = text.AsSpan().Slice(wordstartidx, i - wordstartidx + 1);
                         width = CalculateTextPartWidth(word, textPaint);
-                        if (width + totalWidth > widthConstraint && currentrowstr != "")
+                        if (width + totalWidth > widthConstraint && _currentRowBuilder.Length > 0)
                         {
-                            row = currentrowstr;
-                            result.Add(row);
+                            //_rowBuilder.Clear();
+                            //_rowBuilder.Append(_currentRowBuilder);
+                            //row = currentrowstr;
+                            //result.Add(_rowBuilder.ToString());
+                            result.Add(_currentRowBuilder.ToString());
                             totalWidth = 0;
-                            currentrowstr = "";
+                            //currentrowstr = "";
+                            _currentRowBuilder.Clear();
                         }
                         //Clear out separators and spaces from the start of the row with automatic word wrap
-                        if (currentrowstr == "")
+                        if (_currentRowBuilder.Length == 0)
                         {
                             int startIdx = 0;
                             while (startIdx < word.Length && (word[startIdx] == ' ' || word[startIdx] == separator))
                                 startIdx++;
 
-                            word = word.Substring(startIdx);
+                            word = word.Slice(startIdx);
                             //width = CalculateTextPartWidth(word, textPaint);
                         }
-                        row = currentrowstr + word;
-                        result.Add(row);
+                        //row = currentrowstr + word;
+                        //_rowBuilder.Clear();
+                        //_rowBuilder.Append(_currentRowBuilder);
+                        //_rowBuilder.Append(word);
+                        //result.Add(_rowBuilder.ToString());
+                        _currentRowBuilder.Append(word);
+                        result.Add(_currentRowBuilder.ToString());
                         totalWidth = 0;
-                        currentrowstr = "";
+                        //currentrowstr = "";
+                        _currentRowBuilder.Clear();
                     }
                 }
             }
-            return result.ToArray();
+            return result;
         }
 
         private TextAreaSize CalculateTextAreaSize(float widthConstraint)
@@ -411,8 +428,8 @@ namespace GnollHackX
                     textPaint.Style = SKPaintStyle.Stroke;
                     textPaint.StrokeWidth = (float)OutlineWidth * scale;
                 }
-                string[] textRows = SplitTextWithConstraint(Text, widthConstraint, textPaint);
-                for (int i = 0, n = textRows.Length; i < n; i++)
+                List<string> textRows = SplitTextWithConstraint(Text, widthConstraint, textPaint);
+                for (int i = 0, n = textRows.Count; i < n; i++)
                 {
                     string textRow = textRows[i];
                     totalheight += textPaint.FontSpacing;
@@ -582,7 +599,7 @@ namespace GnollHackX
                     textPaint.TextSize = (float)FontSize * scale;
                     if (!(IsScrollable && touchMoved) || isFirst)
                         SplitRows();
-                    string[] textRows = TextRows;
+                    List<string> textRows = TextRows;
                     switch (VerticalTextAlignment)
                     {
                         case TextAlignment.Start:
@@ -590,10 +607,10 @@ namespace GnollHackX
                             break;
                         default:
                         case TextAlignment.Center:
-                            y = (canvasheight - textPaint.FontSpacing * textRows.Length) / 2;
+                            y = (canvasheight - textPaint.FontSpacing * textRows.Count) / 2;
                             break;
                         case TextAlignment.End:
-                            y = canvasheight - textPaint.FontSpacing * textRows.Length;
+                            y = canvasheight - textPaint.FontSpacing * textRows.Count;
                             break;
                     }
 
@@ -601,7 +618,7 @@ namespace GnollHackX
                     if (CalculateInitialYPos)
                     {
                         CalculateInitialYPos = false;
-                        float textHeight = textRows.Length * textPaint.FontSpacing;
+                        float textHeight = textRows.Count * textPaint.FontSpacing;
                         float bottomScrollLimit = Math.Min(0, canvasheight - textHeight);
                         usedTextOffset = InterlockedTextScrollOffset = bottomScrollLimit;
                         //lock (_textScrollLock)
@@ -622,7 +639,7 @@ namespace GnollHackX
 
                     float generalpadding = (textPaint.FontSpacing - (textPaint.FontMetrics.Descent - textPaint.FontMetrics.Ascent)) / 2;
                     //textPaint.TextAlign = SKTextAlign.Left;
-                    for (int i = 0; i < textRows.Length; i++)
+                    for (int i = 0; i < textRows.Count; i++)
                     {
                         string textRow = textRows[i];
                         y += generalpadding;
@@ -634,7 +651,7 @@ namespace GnollHackX
                         }
                         else
                         {
-                            string[] textParts = textRow.Split(' ');
+                            //string[] textParts = textRow.Split(' ');
                             float textWidth = textAreaSize.GetRowWidth(i);
                             switch (HorizontalTextAlignment)
                             {
@@ -651,9 +668,15 @@ namespace GnollHackX
                             }
 
                             int cnt = 0;
-                            for (int j = 0, m = textParts.Length; j < m; j++)
+                            //for (int j = 0, m = textParts.Length; j < m; j++)
+                            int idx, startIdx = 0, len = textRow.Length;
+                            do
                             {
-                                string textPart = textParts[j];
+                                idx = textRow.IndexOf(' ', startIdx);
+                                ReadOnlySpan<char> textPart = idx < 0 ? textRow.AsSpan().Slice(startIdx) : textRow.AsSpan().Slice(startIdx, idx + 1 - startIdx);
+
+                                startIdx = idx < 0 || idx == len - 1 ? -1 : idx + 1;
+
                                 SKImage symbolbitmap;
                                 SKRect source_rect = new SKRect();
                                 if (UseSpecialSymbols && (symbolbitmap = GHApp.GetSpecialSymbol(textPart, out source_rect)) != null)
@@ -679,7 +702,8 @@ namespace GnollHackX
                                 }
                                 else
                                 {
-                                    string printedString = cnt == textParts.Length - 1 ? textPart : textPart + " ";
+                                    //string printedString = cnt == textParts.Length - 1 ? textPart : textPart + " ";
+                                    //ReadOnlySpan<char> printedString = textPart;
                                     if (OutlineWidth > 0)
                                     {
                                         textPaint.Style = SKPaintStyle.Stroke;
@@ -691,7 +715,8 @@ namespace GnollHackX
 #endif
                                         textPaint.Color = outlinecolor;
                                         //canvas.DrawText(printedString, x, y, textPaint);
-                                        textPaint.DrawTextOnCanvas(canvas, printedString, x, y, SKTextAlign.Left);
+                                        //textPaint.DrawTextOnCanvas(canvas, printedString, x, y, SKTextAlign.Left);
+                                        textPaint.DrawTextOnCanvas(canvas, textPart, x, y, SKTextAlign.Left);
                                     }
 
                                     textPaint.Style = SKPaintStyle.Fill;
@@ -702,11 +727,11 @@ namespace GnollHackX
 #endif
                                     textPaint.Color = fillcolor;
                                     //canvas.DrawText(printedString, x, y, textPaint);
-                                    textPaint.DrawTextOnCanvas(canvas, printedString, x, y, SKTextAlign.Left);
-                                    x += textPaint.MeasureText(printedString);
+                                    textPaint.DrawTextOnCanvas(canvas, textPart, x, y, SKTextAlign.Left);
+                                    x += textPaint.MeasureText(textPart);
                                 }
                                 cnt++;
-                            }
+                            } while (startIdx >= 0);
                         }
                         y += textPaint.FontMetrics.Descent;
                         y += generalpadding;
