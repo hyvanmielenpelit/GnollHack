@@ -19045,9 +19045,15 @@ namespace GnollHackX.Pages.Game
                 float rightmenupadding = leftmenupadding;
                 float topPadding = 0;
                 bool wrapglyph = TextCanvas.GHWindow != null ? TextCanvas.GHWindow.WrapGlyph : false;
+                bool glyphVisible = TextWindowGlyphImage.ThreadSafeIsVisible;
+                double glyphX = TextWindowGlyphImage.ThreadSafeX;
+                double glyphY = TextWindowGlyphImage.ThreadSafeY;
+                double glyphWidth = TextWindowGlyphImage.ThreadSafeWidth;
+                double glyphHeight = TextWindowGlyphImage.ThreadSafeHeight;
                 float glyphpadding = 0;
-                float glyphystart = scale * (float)Math.Max(0.0, TextWindowGlyphImage.ThreadSafeY - TextCanvas.ThreadSafeY);
-                float glyphyend = scale * (float)Math.Max(0.0, TextWindowGlyphImage.ThreadSafeY + TextWindowGlyphImage.ThreadSafeHeight - TextCanvas.ThreadSafeY);
+                float glyphystart = scale * (float)Math.Max(0.0, glyphY - TextCanvas.ThreadSafeY);
+                float glyphyend = scale * (float)Math.Max(0.0, glyphY + glyphHeight - TextCanvas.ThreadSafeY);
+                float glyphvisiblepadding = scale * (float)Math.Max(0.0, TextCanvas.ThreadSafeX + TextCanvas.ThreadSafeWidth - glyphX);
 
                 //lock (TextCanvas.TextItemLock)
                 {
@@ -19095,8 +19101,8 @@ namespace GnollHackX.Pages.Game
                             indent_start_x += textPaint.MeasureText(indentstr);
                         }
 
-                        if (TextWindowGlyphImage.ThreadSafeIsVisible && (wrapglyph || (putstritem.InstructionList.Count > 0 && (putstritem.InstructionList[0].Attributes & (int)MenuItemAttributes.Title) != 0)))
-                            glyphpadding = scale * (float)Math.Max(0.0, TextCanvas.ThreadSafeX + TextCanvas.ThreadSafeWidth - TextWindowGlyphImage.ThreadSafeX);
+                        if (glyphVisible && (wrapglyph || (putstritem.InstructionList.Count > 0 && (putstritem.InstructionList[0].Attributes & (int)MenuItemAttributes.Title) != 0)))
+                            glyphpadding = glyphvisiblepadding;
                         else
                             glyphpadding = 0;
 
