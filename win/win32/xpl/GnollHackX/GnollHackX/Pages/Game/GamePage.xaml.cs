@@ -19072,7 +19072,7 @@ namespace GnollHackX.Pages.Game
                 bool glyphVisible = TextWindowGlyphImage.ThreadSafeIsVisible;
                 double glyphX = TextWindowGlyphImage.ThreadSafeX;
                 double glyphY = TextWindowGlyphImage.ThreadSafeY;
-                double glyphWidth = TextWindowGlyphImage.ThreadSafeWidth;
+                //double glyphWidth = TextWindowGlyphImage.ThreadSafeWidth;
                 double glyphHeight = TextWindowGlyphImage.ThreadSafeHeight;
                 float glyphpadding = 0;
                 float glyphystart = scale * (float)Math.Max(0.0, glyphY - TextCanvas.ThreadSafeY);
