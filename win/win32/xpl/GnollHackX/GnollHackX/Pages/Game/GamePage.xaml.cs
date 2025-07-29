@@ -7267,7 +7267,7 @@ namespace GnollHackX.Pages.Game
         long _totalFrames = 0L;
 #endif
         private readonly StringBuilder _lineBuilder = new StringBuilder(GHConstants.LineBuilderInitialCapacity);
-        private readonly string[] _attributeStrings = new string[6] { "Strength", "Dexterity", "Constitution", "Intelligence", "Wisdom", "Charisma" };
+        private readonly string[] _attributeStrings = new string[6] { "Strength:", "Dexterity:", "Constitution:", "Intelligence:", "Wisdom:", "Charisma:" };
         private readonly short[,] _draw_shadow = new short[GHConstants.MapCols, GHConstants.MapRows];
         private readonly GHAnimationTimerList _localAnimationTimers = new GHAnimationTimerList();
         private readonly ObjectDataItem[] _localWeaponStyleObjDataItem = new ObjectDataItem[3];
@@ -11908,7 +11908,7 @@ namespace GnollHackX.Pages.Game
                 /* Status Screen */
                 if (ShowExtendedStatusBar)
                 {
-                    DrawExtendedStatusBar(canvas, textPaint, canvaswidth, canvasheight, inverse_canvas_scale, statusBarSkiaHeight, canvasViewWidth, canvasViewHeight, stdButtonWidth, stdButtonHeight, usedButtonRowStackHeight, ref youRect, usingGL, fixRects);
+                    DrawExtendedStatusBar(canvas, textPaint, canvaswidth, canvasheight, inverse_canvas_scale, statusBarSkiaHeight, canvasViewWidth, canvasViewHeight, stdButtonWidth, stdButtonHeight, usedButtonRowStackHeight, usingGL, fixRects, ref youRect);
                 }
 #if WINDOWS
                 GameCursorType newCursor = GameCursorType.Normal;
@@ -12028,11 +12028,9 @@ namespace GnollHackX.Pages.Game
         }
 
         private void DrawExtendedStatusBar(SKCanvas canvas, GHSkiaFontPaint textPaint, float canvaswidth, float canvasheight, float inverse_canvas_scale, float statusBarSkiaHeight,
-            double canvasViewWidth, double canvasViewHeight, double stdButtonWidth, double stdButtonHeight, double usedButtonRowStackHeight, ref SKRect youRect, bool usingGL, bool fixRects)
+            double canvasViewWidth, double canvasViewHeight, double stdButtonWidth, double stdButtonHeight, double usedButtonRowStackHeight, bool usingGL, bool fixRects,
+            ref SKRect youRect)
         {
-            textPaint.Style = SKPaintStyle.Fill;
-            textPaint.Color = SKColors.Black.WithAlpha(200);
-            textPaint.Color = SKColors.White;
             ButtonGridStats btnGridSize = CalculateStoneButtonGridSize(canvasViewWidth, canvasViewHeight);
 
             float box_left = canvaswidth < canvasheight ? (btnGridSize.Buttons > 7 ? 2.25f : 1.25f) * inverse_canvas_scale * (float)stdButtonWidth :
@@ -12074,6 +12072,15 @@ namespace GnollHackX.Pages.Game
             youRect = utouchrect;
             //youRectDrawn = true;
 
+            /* Background first */
+            textPaint.Style = SKPaintStyle.Fill;
+            textPaint.Color = SKColors.Black.WithAlpha(200);
+            canvas.DrawRect(0, 0, canvaswidth, canvasheight, textPaint.Paint);
+            textPaint.Color = SKColors.Black;
+            canvas.DrawImage(GHApp.ScrollBitmap, bkgrect);
+            canvas.DrawImage(GHApp.YouBitmap, urect);
+
+            /* Then the status contents */
             textPaint.Style = SKPaintStyle.Fill;
             textPaint.Typeface = GHApp.UnderwoodTypeface;
             textPaint.Color = SKColors.Black;
@@ -12100,6 +12107,7 @@ namespace GnollHackX.Pages.Game
             string valtext, valtext2;
             float base_ty = ty;
             float box_bottom_draw_threshold = box_bottom - bkgrect.Height / 8.5f;
+            float box_top_draw_threshold = box_top + bkgrect.Height / 8.5f;
             float icon_height = textPaint.FontSpacing * 0.85f;
             float icon_max_width = icon_height * 2f;
             float icon_base_left = bkgrect.Left - icon_max_width; //bkgrect.Right - bkgrect.Width * 1f / 12.6f - icon_max_width
@@ -12110,40 +12118,32 @@ namespace GnollHackX.Pages.Game
             SKRect icon_rect;
             int valcolor = (int)NhColor.CLR_WHITE;
 
-            /* Let's do these first */
-            using (new SKAutoCanvasRestore(canvas, true))
+            valtext = "";
+            if (_localStatusFields[(int)NhStatusFields.BL_TITLE].IsEnabled && _localStatusFields[(int)NhStatusFields.BL_TITLE].Text != null)
             {
-                canvas.DrawRect(0, 0, canvaswidth, canvasheight, textPaint.Paint);
-                canvas.DrawImage(GHApp.ScrollBitmap, bkgrect);
-                canvas.DrawImage(GHApp.YouBitmap, urect);
-
-                valtext = "";
-                if (_localStatusFields[(int)NhStatusFields.BL_TITLE].IsEnabled && _localStatusFields[(int)NhStatusFields.BL_TITLE].Text != null)
-                {
-                    valtext = _localStatusFields[(int)NhStatusFields.BL_TITLE].Text.Trim();
-                }
-                if (valtext != "")
-                {
-                    textPaint.Typeface = GHApp.ImmortalTypeface;
-                    textPaint.TextSize = basefontsize * 1.1f;
-                    tx = (bkgrect.Left + bkgrect.Right) / 2;
-                    //textPaint.TextAlign = SKTextAlign.Center;
-                    textPaint.DrawTextOnCanvas(canvas, valtext, tx, ty, SKTextAlign.Center);
-                    //textPaint.TextAlign = SKTextAlign.Left;
-                    textPaint.Typeface = GHApp.UnderwoodTypeface;
-                    textPaint.TextSize = basefontsize;
-                    ty += textPaint.FontSpacing;
-                    ty += textPaint.FontSpacing * 0.5f;
-                }
+                valtext = _localStatusFields[(int)NhStatusFields.BL_TITLE].Text.Trim();
+            }
+            if (valtext != "")
+            {
+                textPaint.Typeface = GHApp.ImmortalTypeface;
+                textPaint.TextSize = basefontsize * 1.1f;
+                tx = (bkgrect.Left + bkgrect.Right) / 2;
+                //textPaint.TextAlign = SKTextAlign.Center;
+                textPaint.DrawTextOnCanvas(canvas, valtext, tx, ty, SKTextAlign.Center);
+                //textPaint.TextAlign = SKTextAlign.Left;
+                textPaint.Typeface = GHApp.UnderwoodTypeface;
+                textPaint.TextSize = basefontsize;
+                ty += textPaint.FontSpacing;
+                box_top_draw_threshold = ty;
+                ty += textPaint.FontSpacing * 0.5f;
             }
 
-            /* Draw the rest clipped; we use two SKAutoCanvasRestores just in case due to a bug with ClipRect on iOS, which clipped also the previous drawings */
             using (new SKAutoCanvasRestore(canvas, true))
             {
                 tx = bkgrect.Left + bkgrect.Width / 12.6f;
 
                 SKRect cliprect = new SKRect(0, ty + textPaint.FontMetrics.Ascent, canvaswidth, bkgrect.Bottom - bkgrect.Height / 8.5f);
-                canvas.ClipRect(cliprect);
+                //canvas.ClipRect(cliprect); // Note this ClipRect sometimes malfunctions on iOS with SKGLView
 
                 //lock (_statusOffsetLock)
                 {
@@ -12160,19 +12160,22 @@ namespace GnollHackX.Pages.Game
                         valtext = _localStatusFields[(int)NhStatusFields.BL_STR + i].Text;
                         valcolor = _localStatusFields[(int)NhStatusFields.BL_STR + i].Color;
                     }
-                    if (valtext != "" && ty < box_bottom_draw_threshold)
+                    if (valtext != "")
                     {
-                        string printtext = _attributeStrings[i] + ":";
-                        textPaint.DrawTextOnCanvas(canvas, printtext, tx, ty);
-                        textPaint.Color = UIUtils.NHColor2SKColorCore(valcolor, 0, true, false);
-                        textPaint.DrawTextOnCanvas(canvas, valtext, tx + indentation, ty);
-                        textPaint.Color = SKColors.Black;
-                        SKImage statIcon = GetStatIcon(i);
-                        icon_width = icon_height * (float)statIcon.Width / (float)statIcon.Height;
-                        icon_tx = icon_base_left + (icon_max_width - icon_width) / 2f;
-                        icon_ty = ty + textPaint.FontMetrics.Ascent - textPaint.FontMetrics.Descent / 2 + (textPaint.FontSpacing - icon_height) / 2;
-                        icon_rect = new SKRect(icon_tx, icon_ty, icon_tx + icon_width, icon_ty + icon_height);
-                        canvas.DrawImage(statIcon, icon_rect);
+                        if (ty < box_bottom_draw_threshold && ty > box_top_draw_threshold)
+                        {
+                            string printtext = _attributeStrings[i];
+                            textPaint.DrawTextOnCanvas(canvas, printtext, tx, ty);
+                            textPaint.Color = UIUtils.NHColor2SKColorCore(valcolor, 0, true, false);
+                            textPaint.DrawTextOnCanvas(canvas, valtext, tx + indentation, ty);
+                            textPaint.Color = SKColors.Black;
+                            SKImage statIcon = GetStatIcon(i);
+                            icon_width = icon_height * (float)statIcon.Width / (float)statIcon.Height;
+                            icon_tx = icon_base_left + (icon_max_width - icon_width) / 2f;
+                            icon_ty = ty + textPaint.FontMetrics.Ascent - textPaint.FontMetrics.Descent / 2 + (textPaint.FontSpacing - icon_height) / 2;
+                            icon_rect = new SKRect(icon_tx, icon_ty, icon_tx + icon_width, icon_ty + icon_height);
+                            canvas.DrawImage(statIcon, icon_rect);
+                        }
                         ty += textPaint.FontSpacing;
                     }
                 }
@@ -12183,15 +12186,18 @@ namespace GnollHackX.Pages.Game
                 {
                     valtext = _localStatusFields[(int)NhStatusFields.BL_XP].Text;
                 }
-                if (valtext != "" && ty < box_bottom_draw_threshold)
+                if (valtext != "")
                 {
-                    textPaint.DrawTextOnCanvas(canvas, "Level:", tx, ty);
-                    textPaint.DrawTextOnCanvas(canvas, valtext, tx + indentation, ty);
-                    icon_width = icon_height * (float)GHApp._statusXPLevelBitmap.Width / (float)GHApp._statusXPLevelBitmap.Height;
-                    icon_tx = icon_base_left + (icon_max_width - icon_width) / 2f;
-                    icon_ty = ty + textPaint.FontMetrics.Ascent - textPaint.FontMetrics.Descent / 2 + (textPaint.FontSpacing - icon_height) / 2;
-                    icon_rect = new SKRect(icon_tx, icon_ty, icon_tx + icon_width, icon_ty + icon_height);
-                    canvas.DrawImage(GHApp._statusXPLevelBitmap, icon_rect);
+                    if (ty < box_bottom_draw_threshold && ty > box_top_draw_threshold)
+                    {
+                        textPaint.DrawTextOnCanvas(canvas, "Level:", tx, ty);
+                        textPaint.DrawTextOnCanvas(canvas, valtext, tx + indentation, ty);
+                        icon_width = icon_height * (float)GHApp._statusXPLevelBitmap.Width / (float)GHApp._statusXPLevelBitmap.Height;
+                        icon_tx = icon_base_left + (icon_max_width - icon_width) / 2f;
+                        icon_ty = ty + textPaint.FontMetrics.Ascent - textPaint.FontMetrics.Descent / 2 + (textPaint.FontSpacing - icon_height) / 2;
+                        icon_rect = new SKRect(icon_tx, icon_ty, icon_tx + icon_width, icon_ty + icon_height);
+                        canvas.DrawImage(GHApp._statusXPLevelBitmap, icon_rect);
+                    }
                     ty += textPaint.FontSpacing;
                 }
 
@@ -12200,14 +12206,17 @@ namespace GnollHackX.Pages.Game
                 {
                     valtext = _localStatusFields[(int)NhStatusFields.BL_EXP].Text;
                 }
-                if (valtext != "" && ty < box_bottom_draw_threshold)
+                if (valtext != "")
                 {
-                    textPaint.DrawTextOnCanvas(canvas, "Experience:", tx, ty);
-                    textPaint.DrawTextOnCanvas(canvas, valtext, tx + indentation, ty);
-                    icon_tx = icon_base_left + (icon_max_width - icon_width) / 2f;
-                    icon_ty = ty + textPaint.FontMetrics.Ascent - textPaint.FontMetrics.Descent / 2 + (textPaint.FontSpacing - icon_height) / 2;
-                    icon_rect = new SKRect(icon_tx, icon_ty, icon_tx + icon_width, icon_ty + icon_height);
-                    canvas.DrawImage(GHApp._statusXPPointsBitmap, icon_rect);
+                    if (ty < box_bottom_draw_threshold && ty > box_top_draw_threshold)
+                    {
+                        textPaint.DrawTextOnCanvas(canvas, "Experience:", tx, ty);
+                        textPaint.DrawTextOnCanvas(canvas, valtext, tx + indentation, ty);
+                        icon_tx = icon_base_left + (icon_max_width - icon_width) / 2f;
+                        icon_ty = ty + textPaint.FontMetrics.Ascent - textPaint.FontMetrics.Descent / 2 + (textPaint.FontSpacing - icon_height) / 2;
+                        icon_rect = new SKRect(icon_tx, icon_ty, icon_tx + icon_width, icon_ty + icon_height);
+                        canvas.DrawImage(GHApp._statusXPPointsBitmap, icon_rect);
+                    }
                     ty += textPaint.FontSpacing;
                 }
 
@@ -12216,15 +12225,18 @@ namespace GnollHackX.Pages.Game
                 {
                     valtext = _localStatusFields[(int)NhStatusFields.BL_HD].Text;
                 }
-                if (valtext != "" && ty < box_bottom_draw_threshold)
+                if (valtext != "")
                 {
-                    textPaint.DrawTextOnCanvas(canvas, "Hit dice:", tx, ty);
-                    textPaint.DrawTextOnCanvas(canvas, valtext, tx + indentation, ty);
-                    icon_width = icon_height * (float)GHApp._statusHDBitmap.Width / (float)GHApp._statusHDBitmap.Height;
-                    icon_tx = icon_base_left + (icon_max_width - icon_width) / 2f;
-                    icon_ty = ty + textPaint.FontMetrics.Ascent - textPaint.FontMetrics.Descent / 2 + (textPaint.FontSpacing - icon_height) / 2;
-                    icon_rect = new SKRect(icon_tx, icon_ty, icon_tx + icon_width, icon_ty + icon_height);
-                    canvas.DrawImage(GHApp._statusHDBitmap, icon_rect);
+                    if (ty < box_bottom_draw_threshold && ty > box_top_draw_threshold)
+                    {
+                        textPaint.DrawTextOnCanvas(canvas, "Hit dice:", tx, ty);
+                        textPaint.DrawTextOnCanvas(canvas, valtext, tx + indentation, ty);
+                        icon_width = icon_height * (float)GHApp._statusHDBitmap.Width / (float)GHApp._statusHDBitmap.Height;
+                        icon_tx = icon_base_left + (icon_max_width - icon_width) / 2f;
+                        icon_ty = ty + textPaint.FontMetrics.Ascent - textPaint.FontMetrics.Descent / 2 + (textPaint.FontSpacing - icon_height) / 2;
+                        icon_rect = new SKRect(icon_tx, icon_ty, icon_tx + icon_width, icon_ty + icon_height);
+                        canvas.DrawImage(GHApp._statusHDBitmap, icon_rect);
+                    }
                     ty += textPaint.FontSpacing;
                 }
 
@@ -12233,14 +12245,17 @@ namespace GnollHackX.Pages.Game
                 {
                     valtext = _localStatusFields[(int)NhStatusFields.BL_ALIGN].Text;
                 }
-                if (valtext != "" && ty < box_bottom_draw_threshold)
+                if (valtext != "")
                 {
-                    textPaint.DrawTextOnCanvas(canvas, "Alignment:", tx, ty);
-                    textPaint.DrawTextOnCanvas(canvas, valtext, tx + indentation, ty);
-                    icon_tx = icon_base_left + (icon_max_width - icon_width) / 2f;
-                    icon_ty = ty + textPaint.FontMetrics.Ascent - textPaint.FontMetrics.Descent / 2 + (textPaint.FontSpacing - icon_height) / 2;
-                    icon_rect = new SKRect(icon_tx, icon_ty, icon_tx + icon_width, icon_ty + icon_height);
-                    canvas.DrawImage(GetAlignmentIcon(valtext), icon_rect);
+                    if (ty < box_bottom_draw_threshold && ty > box_top_draw_threshold)
+                    {
+                        textPaint.DrawTextOnCanvas(canvas, "Alignment:", tx, ty);
+                        textPaint.DrawTextOnCanvas(canvas, valtext, tx + indentation, ty);
+                        icon_tx = icon_base_left + (icon_max_width - icon_width) / 2f;
+                        icon_ty = ty + textPaint.FontMetrics.Ascent - textPaint.FontMetrics.Descent / 2 + (textPaint.FontSpacing - icon_height) / 2;
+                        icon_rect = new SKRect(icon_tx, icon_ty, icon_tx + icon_width, icon_ty + icon_height);
+                        canvas.DrawImage(GetAlignmentIcon(valtext), icon_rect);
+                    }
                     ty += textPaint.FontSpacing;
                 }
 
@@ -12249,14 +12264,17 @@ namespace GnollHackX.Pages.Game
                 {
                     valtext = _localStatusFields[(int)NhStatusFields.BL_SCORE].Text;
                 }
-                if (valtext != "" && ty < box_bottom_draw_threshold)
+                if (valtext != "")
                 {
-                    textPaint.DrawTextOnCanvas(canvas, "Score:", tx, ty);
-                    textPaint.DrawTextOnCanvas(canvas, valtext, tx + indentation, ty);
-                    icon_tx = icon_base_left + (icon_max_width - icon_width) / 2f;
-                    icon_ty = ty + textPaint.FontMetrics.Ascent - textPaint.FontMetrics.Descent / 2 + (textPaint.FontSpacing - icon_height) / 2;
-                    icon_rect = new SKRect(icon_tx, icon_ty, icon_tx + icon_width, icon_ty + icon_height);
-                    canvas.DrawImage(GHApp._statusScoreBitmap, icon_rect);
+                    if (ty < box_bottom_draw_threshold && ty > box_top_draw_threshold)
+                    {
+                        textPaint.DrawTextOnCanvas(canvas, "Score:", tx, ty);
+                        textPaint.DrawTextOnCanvas(canvas, valtext, tx + indentation, ty);
+                        icon_tx = icon_base_left + (icon_max_width - icon_width) / 2f;
+                        icon_ty = ty + textPaint.FontMetrics.Ascent - textPaint.FontMetrics.Descent / 2 + (textPaint.FontSpacing - icon_height) / 2;
+                        icon_rect = new SKRect(icon_tx, icon_ty, icon_tx + icon_width, icon_ty + icon_height);
+                        canvas.DrawImage(GHApp._statusScoreBitmap, icon_rect);
+                    }
                     ty += textPaint.FontSpacing;
                 }
 
@@ -12273,13 +12291,16 @@ namespace GnollHackX.Pages.Game
                     {
                         _localStatusLargestBottom = ty + textPaint.FontMetrics.Descent;
                     }
-                    textPaint.DrawTextOnCanvas(canvas, "Armor class:", tx, ty);
-                    textPaint.DrawTextOnCanvas(canvas, valtext, tx + indentation, ty);
-                    icon_width = icon_height * (float)GHApp._statusACBitmap.Width / (float)GHApp._statusACBitmap.Height;
-                    icon_tx = icon_base_left + (icon_max_width - icon_width) / 2f;
-                    icon_ty = ty + textPaint.FontMetrics.Ascent - textPaint.FontMetrics.Descent / 2 + (textPaint.FontSpacing - icon_height) / 2;
-                    icon_rect = new SKRect(icon_tx, icon_ty, icon_tx + icon_width, icon_ty + icon_height);
-                    canvas.DrawImage(GHApp._statusACBitmap, icon_rect);
+                    if (ty < box_bottom_draw_threshold && ty > box_top_draw_threshold)
+                    {
+                        textPaint.DrawTextOnCanvas(canvas, "Armor class:", tx, ty);
+                        textPaint.DrawTextOnCanvas(canvas, valtext, tx + indentation, ty);
+                        icon_width = icon_height * (float)GHApp._statusACBitmap.Width / (float)GHApp._statusACBitmap.Height;
+                        icon_tx = icon_base_left + (icon_max_width - icon_width) / 2f;
+                        icon_ty = ty + textPaint.FontMetrics.Ascent - textPaint.FontMetrics.Descent / 2 + (textPaint.FontSpacing - icon_height) / 2;
+                        icon_rect = new SKRect(icon_tx, icon_ty, icon_tx + icon_width, icon_ty + icon_height);
+                        canvas.DrawImage(GHApp._statusACBitmap, icon_rect);
+                    }
                     ty += textPaint.FontSpacing;
                 }
 
@@ -12299,14 +12320,17 @@ namespace GnollHackX.Pages.Game
                     {
                         _localStatusLargestBottom = ty + textPaint.FontMetrics.Descent;
                     }
-                    textPaint.DrawTextOnCanvas(canvas, "Magic cancellation:", tx, ty);
-                    string printtext = valtext2 != "" ? valtext + "/" + valtext2 + "%" : valtext;
-                    textPaint.DrawTextOnCanvas(canvas, printtext, tx + indentation, ty);
-                    icon_width = icon_height * (float)GHApp._statusMCBitmap.Width / (float)GHApp._statusMCBitmap.Height;
-                    icon_tx = icon_base_left + (icon_max_width - icon_width) / 2f;
-                    icon_ty = ty + textPaint.FontMetrics.Ascent - textPaint.FontMetrics.Descent / 2 + (textPaint.FontSpacing - icon_height) / 2;
-                    icon_rect = new SKRect(icon_tx, icon_ty, icon_tx + icon_width, icon_ty + icon_height);
-                    canvas.DrawImage(GHApp._statusMCBitmap, icon_rect);
+                    if (ty < box_bottom_draw_threshold && ty > box_top_draw_threshold)
+                    {
+                        textPaint.DrawTextOnCanvas(canvas, "Magic cancellation:", tx, ty);
+                        string printtext = valtext2 != "" ? valtext + "/" + valtext2 + "%" : valtext;
+                        textPaint.DrawTextOnCanvas(canvas, printtext, tx + indentation, ty);
+                        icon_width = icon_height * (float)GHApp._statusMCBitmap.Width / (float)GHApp._statusMCBitmap.Height;
+                        icon_tx = icon_base_left + (icon_max_width - icon_width) / 2f;
+                        icon_ty = ty + textPaint.FontMetrics.Ascent - textPaint.FontMetrics.Descent / 2 + (textPaint.FontSpacing - icon_height) / 2;
+                        icon_rect = new SKRect(icon_tx, icon_ty, icon_tx + icon_width, icon_ty + icon_height);
+                        canvas.DrawImage(GHApp._statusMCBitmap, icon_rect);
+                    }
                     ty += textPaint.FontSpacing;
                 }
 
@@ -12321,13 +12345,16 @@ namespace GnollHackX.Pages.Game
                     {
                         _localStatusLargestBottom = ty + textPaint.FontMetrics.Descent;
                     }
-                    textPaint.DrawTextOnCanvas(canvas, "Move:", tx, ty);
-                    textPaint.DrawTextOnCanvas(canvas, valtext, tx + indentation, ty);
-                    icon_width = icon_height * (float)GHApp._statusMoveBitmap.Width / (float)GHApp._statusMoveBitmap.Height;
-                    icon_tx = icon_base_left + (icon_max_width - icon_width) / 2f;
-                    icon_ty = ty + textPaint.FontMetrics.Ascent - textPaint.FontMetrics.Descent / 2 + (textPaint.FontSpacing - icon_height) / 2;
-                    icon_rect = new SKRect(icon_tx, icon_ty, icon_tx + icon_width, icon_ty + icon_height);
-                    canvas.DrawImage(GHApp._statusMoveBitmap, icon_rect);
+                    if (ty < box_bottom_draw_threshold && ty > box_top_draw_threshold)
+                    {
+                        textPaint.DrawTextOnCanvas(canvas, "Move:", tx, ty);
+                        textPaint.DrawTextOnCanvas(canvas, valtext, tx + indentation, ty);
+                        icon_width = icon_height * (float)GHApp._statusMoveBitmap.Width / (float)GHApp._statusMoveBitmap.Height;
+                        icon_tx = icon_base_left + (icon_max_width - icon_width) / 2f;
+                        icon_ty = ty + textPaint.FontMetrics.Ascent - textPaint.FontMetrics.Descent / 2 + (textPaint.FontSpacing - icon_height) / 2;
+                        icon_rect = new SKRect(icon_tx, icon_ty, icon_tx + icon_width, icon_ty + icon_height);
+                        canvas.DrawImage(GHApp._statusMoveBitmap, icon_rect);
+                    }
                     ty += textPaint.FontSpacing;
                 }
 
@@ -12352,18 +12379,21 @@ namespace GnollHackX.Pages.Game
                     {
                         _localStatusLargestBottom = ty + textPaint.FontMetrics.Descent;
                     }
-                    textPaint.DrawTextOnCanvas(canvas, "Weapon style:", tx, ty);
-                    string printtext = valtext;
-                    if (valtext2 != "")
-                        printtext += "/" + valtext2;
-                    if (valtext3 != "")
-                        printtext += "/" + valtext3;
-                    textPaint.DrawTextOnCanvas(canvas, printtext, tx + indentation, ty);
-                    icon_width = icon_height * (float)GHApp._statusWeaponStyleBitmap.Width / (float)GHApp._statusWeaponStyleBitmap.Height;
-                    icon_tx = icon_base_left + (icon_max_width - icon_width) / 2f;
-                    icon_ty = ty + textPaint.FontMetrics.Ascent - textPaint.FontMetrics.Descent / 2 + (textPaint.FontSpacing - icon_height) / 2;
-                    icon_rect = new SKRect(icon_tx, icon_ty, icon_tx + icon_width, icon_ty + icon_height);
-                    canvas.DrawImage(GHApp._statusWeaponStyleBitmap, icon_rect);
+                    if (ty < box_bottom_draw_threshold && ty > box_top_draw_threshold)
+                    {
+                        textPaint.DrawTextOnCanvas(canvas, "Weapon style:", tx, ty);
+                        string printtext = valtext;
+                        if (valtext2 != "")
+                            printtext += "/" + valtext2;
+                        if (valtext3 != "")
+                            printtext += "/" + valtext3;
+                        textPaint.DrawTextOnCanvas(canvas, printtext, tx + indentation, ty);
+                        icon_width = icon_height * (float)GHApp._statusWeaponStyleBitmap.Width / (float)GHApp._statusWeaponStyleBitmap.Height;
+                        icon_tx = icon_base_left + (icon_max_width - icon_width) / 2f;
+                        icon_ty = ty + textPaint.FontMetrics.Ascent - textPaint.FontMetrics.Descent / 2 + (textPaint.FontSpacing - icon_height) / 2;
+                        icon_rect = new SKRect(icon_tx, icon_ty, icon_tx + icon_width, icon_ty + icon_height);
+                        canvas.DrawImage(GHApp._statusWeaponStyleBitmap, icon_rect);
+                    }
                     ty += textPaint.FontSpacing;
                 }
 
@@ -12380,14 +12410,17 @@ namespace GnollHackX.Pages.Game
                     {
                         _localStatusLargestBottom = ty + textPaint.FontMetrics.Descent;
                     }
-                    GHSubstring printtext = valtext.Length > 11 && valtext[0] == '\\' ? new GHSubstring(valtext, 11) : new GHSubstring(valtext);
-                    textPaint.DrawTextOnCanvas(canvas, "Gold:", tx, ty);
-                    textPaint.DrawTextOnCanvas(canvas, printtext.Value, tx + indentation, ty);
-                    icon_width = icon_height * (float)GHApp._statusGoldBitmap.Width / (float)GHApp._statusGoldBitmap.Height;
-                    icon_tx = icon_base_left + (icon_max_width - icon_width) / 2f;
-                    icon_ty = ty + textPaint.FontMetrics.Ascent - textPaint.FontMetrics.Descent / 2 + (textPaint.FontSpacing - icon_height) / 2;
-                    icon_rect = new SKRect(icon_tx, icon_ty, icon_tx + icon_width, icon_ty + icon_height);
-                    canvas.DrawImage(GHApp._statusGoldBitmap, icon_rect);
+                    if (ty < box_bottom_draw_threshold && ty > box_top_draw_threshold)
+                    {
+                        GHSubstring printtext = valtext.Length > 11 && valtext[0] == '\\' ? new GHSubstring(valtext, 11) : new GHSubstring(valtext);
+                        textPaint.DrawTextOnCanvas(canvas, "Gold:", tx, ty);
+                        textPaint.DrawTextOnCanvas(canvas, printtext.Value, tx + indentation, ty);
+                        icon_width = icon_height * (float)GHApp._statusGoldBitmap.Width / (float)GHApp._statusGoldBitmap.Height;
+                        icon_tx = icon_base_left + (icon_max_width - icon_width) / 2f;
+                        icon_ty = ty + textPaint.FontMetrics.Ascent - textPaint.FontMetrics.Descent / 2 + (textPaint.FontSpacing - icon_height) / 2;
+                        icon_rect = new SKRect(icon_tx, icon_ty, icon_tx + icon_width, icon_ty + icon_height);
+                        canvas.DrawImage(GHApp._statusGoldBitmap, icon_rect);
+                    }
                     ty += textPaint.FontSpacing;
                 }
 
@@ -12402,13 +12435,16 @@ namespace GnollHackX.Pages.Game
                     {
                         _localStatusLargestBottom = ty + textPaint.FontMetrics.Descent;
                     }
-                    textPaint.DrawTextOnCanvas(canvas, "Turns:", tx, ty);
-                    textPaint.DrawTextOnCanvas(canvas, valtext, tx + indentation, ty);
-                    icon_width = icon_height * (float)GHApp._statusTurnsBitmap.Width / (float)GHApp._statusTurnsBitmap.Height;
-                    icon_tx = icon_base_left + (icon_max_width - icon_width) / 2f;
-                    icon_ty = ty + textPaint.FontMetrics.Ascent - textPaint.FontMetrics.Descent / 2 + (textPaint.FontSpacing - icon_height) / 2;
-                    icon_rect = new SKRect(icon_tx, icon_ty, icon_tx + icon_width, icon_ty + icon_height);
-                    canvas.DrawImage(GHApp._statusTurnsBitmap, icon_rect);
+                    if (ty < box_bottom_draw_threshold && ty > box_top_draw_threshold)
+                    {
+                        textPaint.DrawTextOnCanvas(canvas, "Turns:", tx, ty);
+                        textPaint.DrawTextOnCanvas(canvas, valtext, tx + indentation, ty);
+                        icon_width = icon_height * (float)GHApp._statusTurnsBitmap.Width / (float)GHApp._statusTurnsBitmap.Height;
+                        icon_tx = icon_base_left + (icon_max_width - icon_width) / 2f;
+                        icon_ty = ty + textPaint.FontMetrics.Ascent - textPaint.FontMetrics.Descent / 2 + (textPaint.FontSpacing - icon_height) / 2;
+                        icon_rect = new SKRect(icon_tx, icon_ty, icon_tx + icon_width, icon_ty + icon_height);
+                        canvas.DrawImage(GHApp._statusTurnsBitmap, icon_rect);
+                    }
                     ty += textPaint.FontSpacing;
                 }
 
@@ -12454,9 +12490,12 @@ namespace GnollHackX.Pages.Game
                             target_rt.Top = ty + textPaint.FontMetrics.Ascent - textPaint.FontMetrics.Descent / 2 + (textPaint.FontSpacing - marksize) / 2;
                             target_rt.Bottom = target_rt.Top + marksize;
 
-                            GHApp.MaybeFixRects(ref source_rt, ref target_rt, 1.0f, usingGL, fixRects);
-                            canvas.DrawImage(TileMap[sheet_idx], source_rt, target_rt);
-                            textPaint.DrawTextOnCanvas(canvas, statusname, tx + marksize + markpadding, ty);
+                            if (ty < box_bottom_draw_threshold && ty > box_top_draw_threshold)
+                            {
+                                GHApp.MaybeFixRects(ref source_rt, ref target_rt, 1.0f, usingGL, fixRects);
+                                canvas.DrawImage(TileMap[sheet_idx], source_rt, target_rt);
+                                textPaint.DrawTextOnCanvas(canvas, statusname, tx + marksize + markpadding, ty);
+                            }
                             //lock (_statusOffsetLock)
                             {
                                 _localStatusLargestBottom = ty + textPaint.FontMetrics.Descent;
@@ -12497,9 +12536,12 @@ namespace GnollHackX.Pages.Game
                             target_rt.Top = ty + textPaint.FontMetrics.Ascent - textPaint.FontMetrics.Descent / 2 + (textPaint.FontSpacing - marksize) / 2;
                             target_rt.Bottom = target_rt.Top + marksize;
 
-                            GHApp.MaybeFixRects(ref source_rt, ref target_rt, 1.0f, usingGL, fixRects);
-                            canvas.DrawImage(TileMap[sheet_idx], source_rt, target_rt);
-                            textPaint.DrawTextOnCanvas(canvas, conditionname, tx + marksize + markpadding, ty);
+                            if (ty < box_bottom_draw_threshold && ty > box_top_draw_threshold)
+                            {
+                                GHApp.MaybeFixRects(ref source_rt, ref target_rt, 1.0f, usingGL, fixRects);
+                                canvas.DrawImage(TileMap[sheet_idx], source_rt, target_rt);
+                                textPaint.DrawTextOnCanvas(canvas, conditionname, tx + marksize + markpadding, ty);
+                            }
                             //lock (_statusOffsetLock)
                             {
                                 _localStatusLargestBottom = ty + textPaint.FontMetrics.Descent;
@@ -12552,10 +12594,13 @@ namespace GnollHackX.Pages.Game
                                 target_rt.Top = ty + textPaint.FontMetrics.Ascent - textPaint.FontMetrics.Descent / 2 + (textPaint.FontSpacing - marksize) / 2;
                                 target_rt.Bottom = target_rt.Top + marksize;
 
-                                GHApp.MaybeFixRects(ref source_rt, ref target_rt, 1.0f, usingGL, fixRects);
-                                canvas.DrawImage(TileMap[sheet_idx], source_rt, target_rt);
-                                if (propname != null)
-                                    textPaint.DrawTextOnCanvas(canvas, propname, tx + marksize + markpadding, ty);
+                                if (ty < box_bottom_draw_threshold && ty > box_top_draw_threshold)
+                                {
+                                    GHApp.MaybeFixRects(ref source_rt, ref target_rt, 1.0f, usingGL, fixRects);
+                                    canvas.DrawImage(TileMap[sheet_idx], source_rt, target_rt);
+                                    if (propname != null)
+                                        textPaint.DrawTextOnCanvas(canvas, propname, tx + marksize + markpadding, ty);
+                                }
                                 //lock (_statusOffsetLock)
                                 {
                                     _localStatusLargestBottom = ty + textPaint.FontMetrics.Descent;
@@ -12566,7 +12611,6 @@ namespace GnollHackX.Pages.Game
                     }
                 }
             }
-            
         }
 
         bool DarkenedPos(int mapx, int mapy)
