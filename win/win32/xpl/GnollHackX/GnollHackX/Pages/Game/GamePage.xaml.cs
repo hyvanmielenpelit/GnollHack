@@ -11915,10 +11915,25 @@ namespace GnollHackX.Pages.Game
                     ButtonGridStats btnGridSize = CalculateStoneButtonGridSize(canvasViewWidth, canvasViewHeight);
 
                     float box_left = canvaswidth < canvasheight ? (btnGridSize.Buttons > 7 ? 2.25f : 1.25f) * inverse_canvas_scale * (float)stdButtonWidth :
-                        (btnGridSize.Columns + 0.25f) * inverse_canvas_scale * (float)stdButtonWidth;
+                        (btnGridSize.Columns * 1.125f) * inverse_canvas_scale * (float)stdButtonWidth;
                     float box_right = canvaswidth - box_left;
+                    if (canvaswidth < canvasheight && box_right - box_left < GHConstants.StatusScreenWidthThresholdMultiplierPortrait * canvaswidth)
+                    {
+                        //if (btnGridSize.Buttons > 7)
+                            box_left = Math.Max((0.75f) * inverse_canvas_scale * (float)stdButtonWidth, box_right - GHConstants.StatusScreenWidthThresholdMultiplierPortrait * canvaswidth);
+                    }
+                    else if (box_right - box_left < GHConstants.StatusScreenWidthThresholdMultiplierLandscape * canvaswidth)
+                    {
+                        //if (btnGridSize.Columns > 3)
+                        //    box_left = (3.375f) * inverse_canvas_scale * (float)stdButtonWidth;
+                        //if (btnGridSize.Columns > 2 && box_right - box_left < GHConstants.StatusScreenWidthThresholdMultiplierLandscape * canvaswidth)
+                        //    box_left = (2.25f) * inverse_canvas_scale * (float)stdButtonWidth;
+                        //if (box_right - box_left < GHConstants.StatusScreenWidthThresholdMultiplierLandscape * canvaswidth)
+                        //    box_left = (1.50f) * inverse_canvas_scale * (float)stdButtonWidth;
+                        box_left = Math.Max((1.50f) * inverse_canvas_scale * (float)stdButtonWidth, box_right - GHConstants.StatusScreenWidthThresholdMultiplierLandscape * canvaswidth);
+                    }
                     if (box_right < box_left)
-                        box_right = box_left;
+                        box_left = box_right;
                     float box_top = canvaswidth < canvasheight ? statusBarSkiaHeight + 1.25f * inverse_canvas_scale * (float)stdButtonHeight :
                         statusBarSkiaHeight + 0.25f * inverse_canvas_scale * (float)stdButtonHeight;
                     float box_bottom = canvasheight - 1.25f * inverse_canvas_scale * (float)usedButtonRowStackHeight;

@@ -1669,6 +1669,8 @@ namespace GnollHackX
         public const float StatusBarRowMargin = 5.0f;
         public const float StatusBarShieldFontSize = StatusBarBaseFontSize * 32f / 42f;
         public const float StatusBarDifFontSize = StatusBarBaseFontSize * 24f / 42f;
+        public const float StatusScreenWidthThresholdMultiplierPortrait = 0.675f;
+        public const float StatusScreenWidthThresholdMultiplierLandscape = 0.55f;
         public const float SkillButtonBaseFontSize = 9.5f;
         public const float ContextButtonBottomStartMargin = 30.0f;
         public const double ContextButtonSpacing = 10.0;
