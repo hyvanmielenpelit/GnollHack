@@ -17159,11 +17159,16 @@ namespace GnollHackX.Pages.Game
                                 float start_x = x;
                                 float indent_start_x = start_x;
                                 string trimmed_maintext = mi.TrimmedMainText;
-                                string indentstr = GHUtils.GetIndentationString(trimmed_maintext, mi.NHAttribute);
-                                if (indentstr != "")
-                                {
-                                    indent_start_x += textPaint.MeasureText(indentstr);
-                                }
+                                //string indentstr = GHUtils.GetIndentationString(trimmed_maintext, mi.NHAttribute);
+                                //if (indentstr != "")
+                                //{
+                                //    indent_start_x += textPaint.MeasureText(indentstr);
+                                //}
+                                ReadOnlySpan<char> indentSpan;
+                                GHUtils.GetIndentationSpan(trimmed_maintext, mi.NHAttribute, out indentSpan);
+                                if (!indentSpan.IsEmpty)
+                                    indent_start_x += textPaint.MeasureText(indentSpan);
+
                                 string altFontFamily;
                                 if(UIUtils.MaybeSmallFontFamily(mainFontFamily, textPaint.TextSize, out altFontFamily))
                                     textPaint.Typeface = GHApp.GetTypefaceByName(altFontFamily);
@@ -17336,10 +17341,10 @@ namespace GnollHackX.Pages.Game
 
 
 
-        public SKImage GetGameSpecialSymbol(string str, out SKRect source_rect)
-        {
-            return GetGameSpecialSymbol(str != null ? str.AsSpan() : ReadOnlySpan<char>.Empty, out source_rect);
-        }
+        //public SKImage GetGameSpecialSymbol(string str, out SKRect source_rect)
+        //{
+        //    return GetGameSpecialSymbolFromSpan(str != null ? str.AsSpan() : ReadOnlySpan<char>.Empty, out source_rect);
+        //}
 
         public SKImage GetGameSpecialSymbol(ReadOnlySpan<char> str, out SKRect source_rect)
         {
@@ -17452,7 +17457,7 @@ namespace GnollHackX.Pages.Game
             }
         }
 
-        private void DrawTextSpan(SKCanvas canvas, ReadOnlySpan<char> textSpan, ReadOnlySpan<byte> attrs, ReadOnlySpan<byte> colors, List<float> rowwidths, ref float x, ref float y, ref bool isfirstprintonrow, float indent_start_x, float canvaswidth, float canvasheight, float rightmenupadding, GHSkiaFontPaint textPaint, bool usespecialsymbols, bool usetextoutline, bool revertblackandwhite, bool centertext, float totalrowwidth, float curmenuoffset, float glyphystart, float glyphyend, float glyphpadding, bool addSpace)
+        private void DrawTextSpan(SKCanvas canvas, ReadOnlySpan<char> textSpan, ReadOnlySpan<byte> attrs, ReadOnlySpan<byte> colors, List<float> rowwidths, ref float x, ref float y, ref bool isfirstprintonrow, float indent_start_x, float canvaswidth, float canvasheight, float rightmenupadding, GHSkiaFontPaint textPaint, bool usespecialsymbols, bool usetextoutline, bool revertblackandwhite, bool centertext, float totalrowwidth, float curmenuoffset, float glyphystart, float glyphyend, float glyphpadding, bool addSpace, float spaceLength)
         {
             if (textSpan.IsEmpty)
                 return;
@@ -17461,7 +17466,6 @@ namespace GnollHackX.Pages.Game
             SKColor oldColor = textPaint.Paint.Color;
             SKFilterQuality oldFilterQuality = textPaint.Paint.FilterQuality;
 #endif
-            float spacelength = textPaint.MeasureText(" ");
             int rowidx = 0;
             SKColor orig_color = textPaint.Color;
             GHSubstring printedsubline = new GHSubstring("");
@@ -17592,7 +17596,7 @@ namespace GnollHackX.Pages.Game
                 }
 
                 if (addSpace)
-                    endposition += spacelength;
+                    endposition += spaceLength;
             }
 
             x = endposition;
@@ -17617,7 +17621,7 @@ namespace GnollHackX.Pages.Game
                     attrs != null ? (idx < 0 ? attrs.AsSpan(startIdx) : attrs.AsSpan(startIdx, idx + 1 - startIdx)) : ReadOnlySpan<byte>.Empty, 
                     colors != null ? (idx < 0 ? colors.AsSpan(startIdx) : colors.AsSpan(startIdx, idx + 1 - startIdx)) : ReadOnlySpan<byte>.Empty, 
                     rowwidths, ref x, ref y, ref isfirstprintonrow, indent_start_x, canvaswidth, canvasheight, rightmenupadding, textPaint, usespecialsymbols, 
-                    usetextoutline, revertblackandwhite, centertext, totalrowwidth, curmenuoffset, glyphystart, glyphyend, glyphpadding, false);
+                    usetextoutline, revertblackandwhite, centertext, totalrowwidth, curmenuoffset, glyphystart, glyphyend, glyphpadding, false, 0.0f);
                 startIdx = idx < 0 || idx == len - 1 ? -1 : idx + 1;
             } 
             while (startIdx >= 0);
@@ -17628,22 +17632,26 @@ namespace GnollHackX.Pages.Game
             if (textsplit == null)
                 return;
 
-#if !GNH_MAUI
-            SKColor oldColor = textPaint.Paint.Color;
-            SKFilterQuality oldFilterQuality = textPaint.Paint.FilterQuality;
-#endif
+//#if !GNH_MAUI
+//            SKColor oldColor = textPaint.Paint.Color;
+//            SKFilterQuality oldFilterQuality = textPaint.Paint.FilterQuality;
+//#endif
             float spacelength = textPaint.MeasureText(" ");
             //int idx = 0;
             //int rowidx = 0;
-            SKColor orig_color = textPaint.Color;
-            GHSubstring printedsubline = new GHSubstring("");
+            //SKColor orig_color = textPaint.Color;
+            //GHSubstring printedsubline = new GHSubstring("");
             for (int idx = 0, cnt = textsplit.Length; idx < cnt; idx++)
             {
                 string split_str = textsplit[idx];
                 byte[] attrs = attrs_list != null && idx < attrs_list.Count ? attrs_list[idx] : null;
                 byte[] colors = colors_list != null && idx < colors_list.Count ? colors_list[idx] : null;
 
-                DrawTextSpan(canvas, split_str.AsSpan(), attrs, colors, rowwidths, ref x, ref y, ref isfirstprintonrow, indent_start_x, canvaswidth, canvasheight, rightmenupadding, textPaint, usespecialsymbols, usetextoutline, revertblackandwhite, centertext, totalrowwidth, curmenuoffset, glyphystart, glyphyend, glyphpadding, idx < textsplit.Length - 1);
+                DrawTextSpan(canvas, split_str
+#if !GNH_MAUI
+                    .AsSpan()
+#endif
+                    , attrs, colors, rowwidths, ref x, ref y, ref isfirstprintonrow, indent_start_x, canvaswidth, canvasheight, rightmenupadding, textPaint, usespecialsymbols, usetextoutline, revertblackandwhite, centertext, totalrowwidth, curmenuoffset, glyphystart, glyphyend, glyphpadding, idx < textsplit.Length - 1, spacelength);
 
 //                bool nowrap = false;
 //                if (string.IsNullOrWhiteSpace(split_str))
@@ -19111,11 +19119,15 @@ namespace GnollHackX.Pages.Game
                         bool firstprintonrow = true;
                         float start_x = x;
                         float indent_start_x = start_x;
-                        string indentstr = putstritem.GetIndentationString();
-                        if(indentstr != "")
-                        {
-                            indent_start_x += textPaint.MeasureText(indentstr);
-                        }
+                        //string indentstr = putstritem.GetIndentationString();
+                        //if(indentstr != "")
+                        //{
+                        //    indent_start_x += textPaint.MeasureText(indentstr);
+                        //}
+                        ReadOnlySpan<char> indentSpan;
+                        putstritem.GetIndentationSpan(out indentSpan);
+                        if (!indentSpan.IsEmpty)
+                            indent_start_x += textPaint.MeasureText(indentSpan);
 
                         if (glyphVisible && (wrapglyph || (putstritem.InstructionList.Count > 0 && (putstritem.InstructionList[0].Attributes & (int)MenuItemAttributes.Title) != 0)))
                             glyphpadding = glyphvisiblepadding;
