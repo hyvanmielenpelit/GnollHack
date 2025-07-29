@@ -245,15 +245,17 @@ namespace GnollHackX
 
         public int StartingSpaces
         {
-            get {
-                if (Text == null || Text == "") 
+            get 
+            {
+                string txt = Text;
+                if (string.IsNullOrEmpty(txt)) 
                     return 0; 
                 else 
                 {
                     int cnt = 0;
-                    for (int i = 0; i < Text.Length; i++)
+                    for (int i = 0, len = txt.Length; i < len; i++)
                     {
-                        if (Text[i] == ' ')
+                        if (txt[i] == ' ')
                             cnt++;
                         else
                             break;
