@@ -215,17 +215,17 @@ namespace GnollHackX
             }
         }
 
-        public string GetIndentationString()
-        {
-            if (string.IsNullOrEmpty(Text))
-                return "";
+        //public string GetIndentationString()
+        //{
+        //    if (string.IsNullOrEmpty(Text))
+        //        return "";
 
-            if (_instructionList != null && _instructionList.Count > 0)
-            {
-                return GHUtils.GetIndentationString(Text, _instructionList[0].Attributes);
-            }
-            return "";
-        }
+        //    if (_instructionList != null && _instructionList.Count > 0)
+        //    {
+        //        return GHUtils.GetIndentationString(Text, _instructionList[0].Attributes);
+        //    }
+        //    return "";
+        //}
 
         public void GetIndentationSpan(out ReadOnlySpan<char> outSpan)
         {

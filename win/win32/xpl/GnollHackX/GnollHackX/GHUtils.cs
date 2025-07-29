@@ -32,68 +32,68 @@ namespace GnollHackX
             return true;
         }
 
-        public static string GetIndentationString(string usedtext, int usedattributes)
-        {
-            if (string.IsNullOrEmpty(usedtext))
-                return "";
+        //public static string GetIndentationString(string usedtext, int usedattributes)
+        //{
+        //    if (string.IsNullOrEmpty(usedtext))
+        //        return "";
 
-            string str = usedtext;
+        //    string str = usedtext;
 
-            int indentation_bits = (usedattributes & (int)MenuItemAttributes.IndentMask);
-            if (indentation_bits != 0)
-            {
-                string cstr = " ", cstr2 = "";
-                switch(indentation_bits)
-                {
-                    case (int)MenuItemAttributes.IndentBracketOrDoubleSpace:
-                        cstr = "]";
-                        cstr2 = "  ";
-                        break;
-                    case (int)MenuItemAttributes.IndentDoubleSpace:
-                        cstr = "  ";
-                        break;
-                    case (int)MenuItemAttributes.IndentPeriod:
-                        cstr = ".";
-                        break;
-                    case (int)MenuItemAttributes.IndentDash:
-                        cstr = "-";
-                        break;
-                    case (int)MenuItemAttributes.IndentColon:
-                        cstr = ":";
-                        break;
-                    case (int)MenuItemAttributes.IndentAstr:
-                        cstr = "*";
-                        break;
-                    case (int)MenuItemAttributes.IndentSpace:
-                        cstr = " ";
-                        break;
-                    case (int)MenuItemAttributes.IndentBracket:
-                        cstr = "]";
-                        break;
-                    default:
-                        break;
-                }
+        //    int indentation_bits = (usedattributes & (int)MenuItemAttributes.IndentMask);
+        //    if (indentation_bits != 0)
+        //    {
+        //        string cstr = " ", cstr2 = "";
+        //        switch(indentation_bits)
+        //        {
+        //            case (int)MenuItemAttributes.IndentBracketOrDoubleSpace:
+        //                cstr = "]";
+        //                cstr2 = "  ";
+        //                break;
+        //            case (int)MenuItemAttributes.IndentDoubleSpace:
+        //                cstr = "  ";
+        //                break;
+        //            case (int)MenuItemAttributes.IndentPeriod:
+        //                cstr = ".";
+        //                break;
+        //            case (int)MenuItemAttributes.IndentDash:
+        //                cstr = "-";
+        //                break;
+        //            case (int)MenuItemAttributes.IndentColon:
+        //                cstr = ":";
+        //                break;
+        //            case (int)MenuItemAttributes.IndentAstr:
+        //                cstr = "*";
+        //                break;
+        //            case (int)MenuItemAttributes.IndentSpace:
+        //                cstr = " ";
+        //                break;
+        //            case (int)MenuItemAttributes.IndentBracket:
+        //                cstr = "]";
+        //                break;
+        //            default:
+        //                break;
+        //        }
 
-                int idx = str.IndexOf(cstr);
-                if (idx < 0 && cstr2 != "")
-                    idx = str.IndexOf(cstr2);
-                if (idx >= 0)
-                {
-                    int spacepos = idx + cstr.Length;
-                    if (spacepos < str.Length)
-                    {
-                        string searchstr = str.Substring(spacepos);
-                        int numberOfSpaces = searchstr.TakeWhile(c => c == ' ').Count();
-                        if (spacepos + numberOfSpaces < str.Length)
-                            return str.Substring(0, spacepos + numberOfSpaces);
+        //        int idx = str.IndexOf(cstr);
+        //        if (idx < 0 && cstr2 != "")
+        //            idx = str.IndexOf(cstr2);
+        //        if (idx >= 0)
+        //        {
+        //            int spacepos = idx + cstr.Length;
+        //            if (spacepos < str.Length)
+        //            {
+        //                string searchstr = str.Substring(spacepos);
+        //                int numberOfSpaces = searchstr.TakeWhile(c => c == ' ').Count();
+        //                if (spacepos + numberOfSpaces < str.Length)
+        //                    return str.Substring(0, spacepos + numberOfSpaces);
 
-                    }
-                    return str;
-                }
-            }
+        //            }
+        //            return str;
+        //        }
+        //    }
 
-            return "";
-        }
+        //    return "";
+        //}
 
         public static void GetIndentationSpan(string str, int usedattributes, out ReadOnlySpan<char> outSpan)
         {
