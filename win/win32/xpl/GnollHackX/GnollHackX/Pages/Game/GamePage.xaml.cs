@@ -11908,537 +11908,7 @@ namespace GnollHackX.Pages.Game
                 /* Status Screen */
                 if (ShowExtendedStatusBar)
                 {
-                    textPaint.Style = SKPaintStyle.Fill;
-                    textPaint.Color = SKColors.Black.WithAlpha(200);
-                    canvas.DrawRect(0, 0, canvaswidth, canvasheight, textPaint.Paint);
-                    textPaint.Color = SKColors.White;
-                    ButtonGridStats btnGridSize = CalculateStoneButtonGridSize(canvasViewWidth, canvasViewHeight);
-
-                    float box_left = canvaswidth < canvasheight ? (btnGridSize.Buttons > 7 ? 2.25f : 1.25f) * inverse_canvas_scale * (float)stdButtonWidth :
-                        (btnGridSize.Columns * 1.125f) * inverse_canvas_scale * (float)stdButtonWidth;
-                    float box_right = canvaswidth - box_left;
-                    if (canvaswidth < canvasheight && box_right - box_left < GHConstants.StatusScreenWidthThresholdMultiplierPortrait * canvaswidth)
-                    {
-                        //if (btnGridSize.Buttons > 7)
-                            box_left = Math.Max((0.75f) * inverse_canvas_scale * (float)stdButtonWidth, box_right - GHConstants.StatusScreenWidthThresholdMultiplierPortrait * canvaswidth);
-                    }
-                    else if (box_right - box_left < GHConstants.StatusScreenWidthThresholdMultiplierLandscape * canvaswidth)
-                    {
-                        //if (btnGridSize.Columns > 3)
-                        //    box_left = (3.375f) * inverse_canvas_scale * (float)stdButtonWidth;
-                        //if (btnGridSize.Columns > 2 && box_right - box_left < GHConstants.StatusScreenWidthThresholdMultiplierLandscape * canvaswidth)
-                        //    box_left = (2.25f) * inverse_canvas_scale * (float)stdButtonWidth;
-                        //if (box_right - box_left < GHConstants.StatusScreenWidthThresholdMultiplierLandscape * canvaswidth)
-                        //    box_left = (1.50f) * inverse_canvas_scale * (float)stdButtonWidth;
-                        box_left = Math.Max((1.50f) * inverse_canvas_scale * (float)stdButtonWidth, box_right - GHConstants.StatusScreenWidthThresholdMultiplierLandscape * canvaswidth);
-                    }
-                    if (box_right < box_left)
-                        box_left = box_right;
-                    float box_top = canvaswidth < canvasheight ? statusBarSkiaHeight + 1.25f * inverse_canvas_scale * (float)stdButtonHeight :
-                        statusBarSkiaHeight + 0.25f * inverse_canvas_scale * (float)stdButtonHeight;
-                    float box_bottom = canvasheight - 1.25f * inverse_canvas_scale * (float)usedButtonRowStackHeight;
-                    if (box_bottom < box_top)
-                        box_bottom = box_top;
-
-                    /* Window Background */
-                    textPaint.Color = SKColors.Black;
-                    SKRect bkgrect = new SKRect(box_left, box_top, box_right, box_bottom);
-                    canvas.DrawImage(GHApp.ScrollBitmap, bkgrect);
-
-                    float youmargin = Math.Min((box_right - box_left), (box_bottom - box_top)) / 14;
-                    float yousize = Math.Min((box_right - box_left), (box_bottom - box_top)) / 8;
-                    float youtouchsize = Math.Min((box_right - box_left), (box_bottom - box_top)) / 6;
-                    float youtouchmargin = Math.Max(0, (youtouchsize - yousize) / 2);
-                    SKRect urect = new SKRect(box_right - youmargin - yousize, box_top + youmargin, box_right - youmargin, box_top + youmargin + yousize);
-                    SKRect utouchrect = new SKRect(urect.Left - youtouchmargin, urect.Top - youtouchmargin, urect.Right + youtouchmargin, urect.Bottom + youtouchmargin);
-                    canvas.DrawImage(GHApp.YouBitmap, urect);
-                    youRect = utouchrect;
-                    //youRectDrawn = true;
-
-                    textPaint.Style = SKPaintStyle.Fill;
-                    textPaint.Typeface = GHApp.UnderwoodTypeface;
-                    textPaint.Color = SKColors.Black;
-                    textPaint.TextSize = 36;
-
-                    float twidth = textPaint.MeasureText("Strength");
-                    float theight = textPaint.FontSpacing;
-                    float tscale_one_column = Math.Max(0.1f, Math.Min((bkgrect.Width * (1 - 2f / 12.6f) / 4) / twidth, (bkgrect.Height * (1 - 2f / 8.5f) / 21) / theight));
-                    float tscale_two_columns = Math.Max(0.1f, Math.Min((bkgrect.Width * (1 - 2f / 12.6f) / 4) / twidth, (bkgrect.Height * (1 - 2f / 8.5f) / 18) / theight));
-                    //float strwidth_one_column = twidth * tscale_one_column;
-                    float strwidth_two_columns = twidth * tscale_two_columns;
-                    //float indentation_one_column = strwidth_one_column * 20f / 8f;
-                    float indentation_two_columns = strwidth_two_columns * 20f / 8f;
-                    bool use_two_columns = bkgrect.Width - bkgrect.Width * 2f / 12.6f >= indentation_two_columns * 2.5f;
-
-                    float tscale = use_two_columns ? tscale_two_columns : tscale_one_column;
-                    float basefontsize = textPaint.TextSize * tscale;
-                    textPaint.TextSize = basefontsize;
-                    float strwidth = twidth * tscale;
-                    float indentation = strwidth * 20f / 8f;
-
-                    string valtext, valtext2;
-                    ty = bkgrect.Top + bkgrect.Height / 8.5f - textPaint.FontMetrics.Ascent;
-                    float base_ty = ty;
-                    float box_bottom_draw_threshold = box_bottom - bkgrect.Height / 8.5f;
-                    float icon_height = textPaint.FontSpacing * 0.85f;
-                    float icon_max_width = icon_height * 2f;
-                    float icon_base_left = bkgrect.Left - icon_max_width; //bkgrect.Right - bkgrect.Width * 1f / 12.6f - icon_max_width
-                    float icon_tx = icon_base_left;
-                    float icon_ty;
-                    icon_ty = ty + textPaint.FontMetrics.Ascent + (textPaint.FontSpacing - icon_height) / 2;
-                    float icon_width = icon_height;
-                    SKRect icon_rect = new SKRect(tx, ty, tx + icon_width, ty + icon_height);
-                    int valcolor = (int)NhColor.CLR_WHITE;
-
-                    valtext = "";
-                    if (_localStatusFields[(int)NhStatusFields.BL_TITLE].IsEnabled && _localStatusFields[(int)NhStatusFields.BL_TITLE].Text != null)
-                    {
-                        valtext = _localStatusFields[(int)NhStatusFields.BL_TITLE].Text.Trim();
-                    }
-                    if (valtext != "")
-                    {
-                        textPaint.Typeface = GHApp.ImmortalTypeface;
-                        textPaint.TextSize = basefontsize * 1.1f;
-                        tx = (bkgrect.Left + bkgrect.Right) / 2;
-                        //textPaint.TextAlign = SKTextAlign.Center;
-                        textPaint.DrawTextOnCanvas(canvas, valtext, tx, ty, SKTextAlign.Center);
-                        //textPaint.TextAlign = SKTextAlign.Left;
-                        textPaint.Typeface = GHApp.UnderwoodTypeface;
-                        textPaint.TextSize = basefontsize;
-                        tx = bkgrect.Left + bkgrect.Width / 12.6f;
-                        ty += textPaint.FontSpacing;
-                        ty += textPaint.FontSpacing * 0.5f;
-                    }
-
-                    using (new SKAutoCanvasRestore(canvas, true))
-                    {
-                        SKRect cliprect = new SKRect(0, ty + textPaint.FontMetrics.Ascent, canvaswidth, bkgrect.Bottom - bkgrect.Height / 8.5f);
-                        canvas.ClipRect(cliprect);
-
-                        //lock (_statusOffsetLock)
-                        {
-                            ty += _localStatusOffsetY;
-                            _localStatusClipBottom = cliprect.Bottom;
-                        }
-                        base_ty = ty;
-
-                        for (int i = 0; i < 6; i++)
-                        {
-                            valtext = "";
-                            if (_localStatusFields[(int)NhStatusFields.BL_STR + i].IsEnabled && _localStatusFields[(int)NhStatusFields.BL_STR + i].Text != null)
-                            {
-                                valtext = _localStatusFields[(int)NhStatusFields.BL_STR + i].Text;
-                                valcolor = _localStatusFields[(int)NhStatusFields.BL_STR + i].Color;
-                            }
-                            if (valtext != "" && ty < box_bottom_draw_threshold)
-                            {
-                                string printtext = _attributeStrings[i] + ":";
-                                textPaint.DrawTextOnCanvas(canvas, printtext, tx, ty);
-                                textPaint.Color = UIUtils.NHColor2SKColorCore(valcolor, 0, true, false);
-                                textPaint.DrawTextOnCanvas(canvas, valtext, tx + indentation, ty);
-                                textPaint.Color = SKColors.Black;
-                                SKImage statIcon = GetStatIcon(i);
-                                icon_width = icon_height * (float)statIcon.Width / (float)statIcon.Height;
-                                icon_tx = icon_base_left + (icon_max_width - icon_width) / 2f;
-                                icon_ty = ty + textPaint.FontMetrics.Ascent - textPaint.FontMetrics.Descent / 2 + (textPaint.FontSpacing - icon_height) / 2;
-                                icon_rect = new SKRect(icon_tx, icon_ty, icon_tx + icon_width, icon_ty + icon_height);
-                                canvas.DrawImage(statIcon, icon_rect);
-                                ty += textPaint.FontSpacing;
-                            }
-                        }
-                        ty += textPaint.FontSpacing * 0.5f;
-
-                        valtext = "";
-                        if (_localStatusFields[(int)NhStatusFields.BL_XP].IsEnabled && _localStatusFields[(int)NhStatusFields.BL_XP].Text != null)
-                        {
-                            valtext = _localStatusFields[(int)NhStatusFields.BL_XP].Text;
-                        }
-                        if (valtext != "" && ty < box_bottom_draw_threshold)
-                        {
-                            textPaint.DrawTextOnCanvas(canvas, "Level:", tx, ty);
-                            textPaint.DrawTextOnCanvas(canvas, valtext, tx + indentation, ty);
-                            icon_width = icon_height * (float)GHApp._statusXPLevelBitmap.Width / (float)GHApp._statusXPLevelBitmap.Height;
-                            icon_tx = icon_base_left + (icon_max_width - icon_width) / 2f;
-                            icon_ty = ty + textPaint.FontMetrics.Ascent - textPaint.FontMetrics.Descent / 2 + (textPaint.FontSpacing - icon_height) / 2;
-                            icon_rect = new SKRect(icon_tx, icon_ty, icon_tx + icon_width, icon_ty + icon_height);
-                            canvas.DrawImage(GHApp._statusXPLevelBitmap, icon_rect);
-                            ty += textPaint.FontSpacing;
-                        }
-
-                        valtext = "";
-                        if (_localStatusFields[(int)NhStatusFields.BL_EXP].IsEnabled && _localStatusFields[(int)NhStatusFields.BL_EXP].Text != null)
-                        {
-                            valtext = _localStatusFields[(int)NhStatusFields.BL_EXP].Text;
-                        }
-                        if (valtext != "" && ty < box_bottom_draw_threshold)
-                        {
-                            textPaint.DrawTextOnCanvas(canvas, "Experience:", tx, ty);
-                            textPaint.DrawTextOnCanvas(canvas, valtext, tx + indentation, ty);
-                            icon_tx = icon_base_left + (icon_max_width - icon_width) / 2f;
-                            icon_ty = ty + textPaint.FontMetrics.Ascent - textPaint.FontMetrics.Descent / 2 + (textPaint.FontSpacing - icon_height) / 2;
-                            icon_rect = new SKRect(icon_tx, icon_ty, icon_tx + icon_width, icon_ty + icon_height);
-                            canvas.DrawImage(GHApp._statusXPPointsBitmap, icon_rect);
-                            ty += textPaint.FontSpacing;
-                        }
-
-                        valtext = "";
-                        if (_localStatusFields[(int)NhStatusFields.BL_HD].IsEnabled && _localStatusFields[(int)NhStatusFields.BL_HD].Text != null)
-                        {
-                            valtext = _localStatusFields[(int)NhStatusFields.BL_HD].Text;
-                        }
-                        if (valtext != "" && ty < box_bottom_draw_threshold)
-                        {
-                            textPaint.DrawTextOnCanvas(canvas, "Hit dice:", tx, ty);
-                            textPaint.DrawTextOnCanvas(canvas, valtext, tx + indentation, ty);
-                            icon_width = icon_height * (float)GHApp._statusHDBitmap.Width / (float)GHApp._statusHDBitmap.Height;
-                            icon_tx = icon_base_left + (icon_max_width - icon_width) / 2f;
-                            icon_ty = ty + textPaint.FontMetrics.Ascent - textPaint.FontMetrics.Descent / 2 + (textPaint.FontSpacing - icon_height) / 2;
-                            icon_rect = new SKRect(icon_tx, icon_ty, icon_tx + icon_width, icon_ty + icon_height);
-                            canvas.DrawImage(GHApp._statusHDBitmap, icon_rect);
-                            ty += textPaint.FontSpacing;
-                        }
-
-                        valtext = "";
-                        if (_localStatusFields[(int)NhStatusFields.BL_ALIGN].IsEnabled && _localStatusFields[(int)NhStatusFields.BL_ALIGN].Text != null)
-                        {
-                            valtext = _localStatusFields[(int)NhStatusFields.BL_ALIGN].Text;
-                        }
-                        if (valtext != "" && ty < box_bottom_draw_threshold)
-                        {
-                            textPaint.DrawTextOnCanvas(canvas, "Alignment:", tx, ty);
-                            textPaint.DrawTextOnCanvas(canvas, valtext, tx + indentation, ty);
-                            icon_tx = icon_base_left + (icon_max_width - icon_width) / 2f;
-                            icon_ty = ty + textPaint.FontMetrics.Ascent - textPaint.FontMetrics.Descent / 2 + (textPaint.FontSpacing - icon_height) / 2;
-                            icon_rect = new SKRect(icon_tx, icon_ty, icon_tx + icon_width, icon_ty + icon_height);
-                            canvas.DrawImage(GetAlignmentIcon(valtext), icon_rect);
-                            ty += textPaint.FontSpacing;
-                        }
-
-                        valtext = "";
-                        if (_localStatusFields[(int)NhStatusFields.BL_SCORE].IsEnabled && _localStatusFields[(int)NhStatusFields.BL_SCORE].Text != null)
-                        {
-                            valtext = _localStatusFields[(int)NhStatusFields.BL_SCORE].Text;
-                        }
-                        if (valtext != "" && ty < box_bottom_draw_threshold)
-                        {
-                            textPaint.DrawTextOnCanvas(canvas, "Score:", tx, ty);
-                            textPaint.DrawTextOnCanvas(canvas, valtext, tx + indentation, ty);
-                            icon_tx = icon_base_left + (icon_max_width - icon_width) / 2f;
-                            icon_ty = ty + textPaint.FontMetrics.Ascent - textPaint.FontMetrics.Descent / 2 + (textPaint.FontSpacing - icon_height) / 2;
-                            icon_rect = new SKRect(icon_tx, icon_ty, icon_tx + icon_width, icon_ty + icon_height);
-                            canvas.DrawImage(GHApp._statusScoreBitmap, icon_rect);
-                            ty += textPaint.FontSpacing;
-                        }
-
-                        ty += textPaint.FontSpacing * 0.5f;
-
-                        valtext = "";
-                        if (_localStatusFields[(int)NhStatusFields.BL_AC].IsEnabled && _localStatusFields[(int)NhStatusFields.BL_AC].Text != null)
-                        {
-                            valtext = _localStatusFields[(int)NhStatusFields.BL_AC].Text;
-                        }
-                        if (valtext != "")
-                        {
-                            //lock (_statusOffsetLock)
-                            {
-                                _localStatusLargestBottom = ty + textPaint.FontMetrics.Descent;
-                            }
-                            textPaint.DrawTextOnCanvas(canvas, "Armor class:", tx, ty);
-                            textPaint.DrawTextOnCanvas(canvas, valtext, tx + indentation, ty);
-                            icon_width = icon_height * (float)GHApp._statusACBitmap.Width / (float)GHApp._statusACBitmap.Height;
-                            icon_tx = icon_base_left + (icon_max_width - icon_width) / 2f;
-                            icon_ty = ty + textPaint.FontMetrics.Ascent - textPaint.FontMetrics.Descent / 2 + (textPaint.FontSpacing - icon_height) / 2;
-                            icon_rect = new SKRect(icon_tx, icon_ty, icon_tx + icon_width, icon_ty + icon_height);
-                            canvas.DrawImage(GHApp._statusACBitmap, icon_rect);
-                            ty += textPaint.FontSpacing;
-                        }
-
-                        valtext = "";
-                        valtext2 = "";
-                        if (_localStatusFields[(int)NhStatusFields.BL_MC_LVL].IsEnabled && _localStatusFields[(int)NhStatusFields.BL_MC_LVL].Text != null)
-                        {
-                            valtext = _localStatusFields[(int)NhStatusFields.BL_MC_LVL].Text;
-                        }
-                        if (_localStatusFields[(int)NhStatusFields.BL_MC_PCT].IsEnabled && _localStatusFields[(int)NhStatusFields.BL_MC_PCT].Text != null)
-                        {
-                            valtext2 = _localStatusFields[(int)NhStatusFields.BL_MC_PCT].Text;
-                        }
-                        if (valtext != "")
-                        {
-                            //lock (_statusOffsetLock)
-                            {
-                                _localStatusLargestBottom = ty + textPaint.FontMetrics.Descent;
-                            }
-                            textPaint.DrawTextOnCanvas(canvas, "Magic cancellation:", tx, ty);
-                            string printtext = valtext2 != "" ? valtext + "/" + valtext2 + "%" : valtext;
-                            textPaint.DrawTextOnCanvas(canvas, printtext, tx + indentation, ty);
-                            icon_width = icon_height * (float)GHApp._statusMCBitmap.Width / (float)GHApp._statusMCBitmap.Height;
-                            icon_tx = icon_base_left + (icon_max_width - icon_width) / 2f;
-                            icon_ty = ty + textPaint.FontMetrics.Ascent - textPaint.FontMetrics.Descent / 2 + (textPaint.FontSpacing - icon_height) / 2;
-                            icon_rect = new SKRect(icon_tx, icon_ty, icon_tx + icon_width, icon_ty + icon_height);
-                            canvas.DrawImage(GHApp._statusMCBitmap, icon_rect);
-                            ty += textPaint.FontSpacing;
-                        }
-
-                        valtext = "";
-                        if (_localStatusFields[(int)NhStatusFields.BL_MOVE].IsEnabled && _localStatusFields[(int)NhStatusFields.BL_MOVE].Text != null)
-                        {
-                            valtext = _localStatusFields[(int)NhStatusFields.BL_MOVE].Text;
-                        }
-                        if (valtext != "")
-                        {
-                            //lock (_statusOffsetLock)
-                            {
-                                _localStatusLargestBottom = ty + textPaint.FontMetrics.Descent;
-                            }
-                            textPaint.DrawTextOnCanvas(canvas, "Move:", tx, ty);
-                            textPaint.DrawTextOnCanvas(canvas, valtext, tx + indentation, ty);
-                            icon_width = icon_height * (float)GHApp._statusMoveBitmap.Width / (float)GHApp._statusMoveBitmap.Height;
-                            icon_tx = icon_base_left + (icon_max_width - icon_width) / 2f;
-                            icon_ty = ty + textPaint.FontMetrics.Ascent - textPaint.FontMetrics.Descent / 2 + (textPaint.FontSpacing - icon_height) / 2;
-                            icon_rect = new SKRect(icon_tx, icon_ty, icon_tx + icon_width, icon_ty + icon_height);
-                            canvas.DrawImage(GHApp._statusMoveBitmap, icon_rect);
-                            ty += textPaint.FontSpacing;
-                        }
-
-                        valtext = "";
-                        valtext2 = "";
-                        string valtext3 = "";
-                        if (_localStatusFields[(int)NhStatusFields.BL_UWEP].IsEnabled && _localStatusFields[(int)NhStatusFields.BL_UWEP].Text != null)
-                        {
-                            valtext = _localStatusFields[(int)NhStatusFields.BL_UWEP].Text;
-                        }
-                        if (_localStatusFields[(int)NhStatusFields.BL_UWEP2].IsEnabled && _localStatusFields[(int)NhStatusFields.BL_UWEP2].Text != null)
-                        {
-                            valtext2 = _localStatusFields[(int)NhStatusFields.BL_UWEP2].Text;
-                        }
-                        if (_localStatusFields[(int)NhStatusFields.BL_UQUIVER].IsEnabled && _localStatusFields[(int)NhStatusFields.BL_UQUIVER].Text != null)
-                        {
-                            valtext3 = _localStatusFields[(int)NhStatusFields.BL_UQUIVER].Text;
-                        }
-                        if (valtext != "" || valtext2 != "" || valtext3 != "")
-                        {
-                            //lock (_statusOffsetLock)
-                            {
-                                _localStatusLargestBottom = ty + textPaint.FontMetrics.Descent;
-                            }
-                            textPaint.DrawTextOnCanvas(canvas, "Weapon style:", tx, ty);
-                            string printtext = valtext;
-                            if(valtext2 != "")
-                                printtext += "/" + valtext2;
-                            if (valtext3 != "")
-                                printtext += "/" + valtext3;
-                            textPaint.DrawTextOnCanvas(canvas, printtext, tx + indentation, ty);
-                            icon_width = icon_height * (float)GHApp._statusWeaponStyleBitmap.Width / (float)GHApp._statusWeaponStyleBitmap.Height;
-                            icon_tx = icon_base_left + (icon_max_width - icon_width) / 2f;
-                            icon_ty = ty + textPaint.FontMetrics.Ascent - textPaint.FontMetrics.Descent / 2 + (textPaint.FontSpacing - icon_height) / 2;
-                            icon_rect = new SKRect(icon_tx, icon_ty, icon_tx + icon_width, icon_ty + icon_height);
-                            canvas.DrawImage(GHApp._statusWeaponStyleBitmap, icon_rect);
-                            ty += textPaint.FontSpacing;
-                        }
-
-                        ty += textPaint.FontSpacing * 0.5f;
-
-                        valtext = "";
-                        if (_localStatusFields[(int)NhStatusFields.BL_GOLD].IsEnabled && _localStatusFields[(int)NhStatusFields.BL_GOLD].Text != null)
-                        {
-                            valtext = _localStatusFields[(int)NhStatusFields.BL_GOLD].Text;
-                        }
-                        if (valtext != "")
-                        {
-                            //lock (_statusOffsetLock)
-                            {
-                                _localStatusLargestBottom = ty + textPaint.FontMetrics.Descent;
-                            }
-                            GHSubstring printtext = valtext.Length > 11 && valtext[0] == '\\' ? new GHSubstring(valtext, 11) : new GHSubstring(valtext);
-                            textPaint.DrawTextOnCanvas(canvas, "Gold:", tx, ty);
-                            textPaint.DrawTextOnCanvas(canvas, printtext.Value, tx + indentation, ty);
-                            icon_width = icon_height * (float)GHApp._statusGoldBitmap.Width / (float)GHApp._statusGoldBitmap.Height;
-                            icon_tx = icon_base_left + (icon_max_width - icon_width) / 2f;
-                            icon_ty = ty + textPaint.FontMetrics.Ascent - textPaint.FontMetrics.Descent / 2 + (textPaint.FontSpacing - icon_height) / 2;
-                            icon_rect = new SKRect(icon_tx, icon_ty, icon_tx + icon_width, icon_ty + icon_height);
-                            canvas.DrawImage(GHApp._statusGoldBitmap, icon_rect);
-                            ty += textPaint.FontSpacing;
-                        }
-
-                        valtext = "";
-                        if (_localStatusFields[(int)NhStatusFields.BL_TIME].IsEnabled && _localStatusFields[(int)NhStatusFields.BL_TIME].Text != null)
-                        {
-                            valtext = _localStatusFields[(int)NhStatusFields.BL_TIME].Text;
-                        }
-                        if (valtext != "")
-                        {
-                            //lock (_statusOffsetLock)
-                            {
-                                _localStatusLargestBottom = ty + textPaint.FontMetrics.Descent;
-                            }
-                            textPaint.DrawTextOnCanvas(canvas, "Turns:", tx, ty);
-                            textPaint.DrawTextOnCanvas(canvas, valtext, tx + indentation, ty);
-                            icon_width = icon_height * (float)GHApp._statusTurnsBitmap.Width / (float)GHApp._statusTurnsBitmap.Height;
-                            icon_tx = icon_base_left + (icon_max_width - icon_width) / 2f;
-                            icon_ty = ty + textPaint.FontMetrics.Ascent - textPaint.FontMetrics.Descent / 2 + (textPaint.FontSpacing - icon_height) / 2;
-                            icon_rect = new SKRect(icon_tx, icon_ty, icon_tx + icon_width, icon_ty + icon_height);
-                            canvas.DrawImage(GHApp._statusTurnsBitmap, icon_rect);
-                            ty += textPaint.FontSpacing;
-                        }
-
-                        ty += textPaint.FontSpacing * 0.5f;
-
-                        /* Condition, status and buff marks */
-                        if (use_two_columns)
-                        {
-                            tx += indentation * 1.75f;
-                            ty = base_ty;
-                        }
-
-                        float marksize = textPaint.FontSpacing * 0.85f;
-                        float markpadding = marksize / 4;
-                        if (_local_u_status_bits != 0)
-                        {
-                            int tiles_per_row = GHConstants.TileWidth / GHConstants.StatusMarkWidth;
-                            foreach (int status_mark in _statusmarkorder)
-                            {
-                                ulong statusbit = 1UL << status_mark;
-                                if ((_local_u_status_bits & statusbit) != 0)
-                                {
-                                    string statusname = _status_names[status_mark];
-                                    int mglyph = (int)game_ui_tile_types.STATUS_MARKS + status_mark / GHConstants.MAX_UI_TILE_16_x_16_COMPONENTS + GHApp.UITileOff;
-                                    int mtile = GHApp.Glyph2Tile[mglyph];
-                                    int sheet_idx = GHApp.TileSheetIdx(mtile);
-                                    int tile_x = GHApp.TileSheetX(mtile);
-                                    int tile_y = GHApp.TileSheetY(mtile);
-                                    int within_tile_x = (status_mark % GHConstants.MAX_UI_TILE_16_x_16_COMPONENTS) % tiles_per_row;
-                                    int within_tile_y = (status_mark % GHConstants.MAX_UI_TILE_16_x_16_COMPONENTS) / tiles_per_row;
-                                    int c_x = tile_x + within_tile_x * GHConstants.StatusMarkWidth;
-                                    int c_y = tile_y + within_tile_y * GHConstants.StatusMarkHeight;
-
-                                    SKRect source_rt = new SKRect();
-                                    source_rt.Left = c_x;
-                                    source_rt.Right = c_x + GHConstants.StatusMarkWidth;
-                                    source_rt.Top = c_y;
-                                    source_rt.Bottom = c_y + GHConstants.StatusMarkHeight;
-
-                                    SKRect target_rt = new SKRect();
-                                    target_rt.Left = tx;
-                                    target_rt.Right = target_rt.Left + marksize;
-                                    target_rt.Top = ty + textPaint.FontMetrics.Ascent - textPaint.FontMetrics.Descent / 2 + (textPaint.FontSpacing - marksize) / 2;
-                                    target_rt.Bottom = target_rt.Top + marksize;
-
-                                    GHApp.MaybeFixRects(ref source_rt, ref target_rt, 1.0f, usingGL, fixRects);
-                                    canvas.DrawImage(TileMap[sheet_idx], source_rt, target_rt);
-                                    textPaint.DrawTextOnCanvas(canvas, statusname, tx + marksize + markpadding, ty);
-                                    //lock (_statusOffsetLock)
-                                    {
-                                        _localStatusLargestBottom = ty + textPaint.FontMetrics.Descent;
-                                    }
-                                    ty += textPaint.FontSpacing;
-                                }
-                            }
-                        }
-
-                        if (_local_u_condition_bits != 0)
-                        {
-                            int tiles_per_row = GHConstants.TileWidth / GHConstants.StatusMarkWidth;
-                            for (int condition_mark = 0; condition_mark < (int)bl_conditions.NUM_BL_CONDITIONS; condition_mark++)
-                            {
-                                ulong conditionbit = 1UL << condition_mark;
-                                if ((_local_u_condition_bits & conditionbit) != 0)
-                                {
-                                    string conditionname = _condition_names[condition_mark];
-                                    int mglyph = (int)game_ui_tile_types.CONDITION_MARKS + condition_mark / GHConstants.MAX_UI_TILE_16_x_16_COMPONENTS + GHApp.UITileOff;
-                                    int mtile = GHApp.Glyph2Tile[mglyph];
-                                    int sheet_idx = GHApp.TileSheetIdx(mtile);
-                                    int tile_x = GHApp.TileSheetX(mtile);
-                                    int tile_y = GHApp.TileSheetY(mtile);
-                                    int within_tile_x = (condition_mark % GHConstants.MAX_UI_TILE_16_x_16_COMPONENTS) % tiles_per_row;
-                                    int within_tile_y = (condition_mark % GHConstants.MAX_UI_TILE_16_x_16_COMPONENTS) / tiles_per_row;
-                                    int c_x = tile_x + within_tile_x * GHConstants.StatusMarkWidth;
-                                    int c_y = tile_y + within_tile_y * GHConstants.StatusMarkHeight;
-
-                                    SKRect source_rt = new SKRect();
-                                    source_rt.Left = c_x;
-                                    source_rt.Right = c_x + GHConstants.StatusMarkWidth;
-                                    source_rt.Top = c_y;
-                                    source_rt.Bottom = c_y + GHConstants.StatusMarkHeight;
-
-                                    SKRect target_rt = new SKRect();
-                                    target_rt.Left = tx;
-                                    target_rt.Right = target_rt.Left + marksize;
-                                    target_rt.Top = ty + textPaint.FontMetrics.Ascent - textPaint.FontMetrics.Descent / 2 + (textPaint.FontSpacing - marksize) / 2;
-                                    target_rt.Bottom = target_rt.Top + marksize;
-
-                                    GHApp.MaybeFixRects(ref source_rt, ref target_rt, 1.0f, usingGL, fixRects);
-                                    canvas.DrawImage(TileMap[sheet_idx], source_rt, target_rt);
-                                    textPaint.DrawTextOnCanvas(canvas, conditionname, tx + marksize + markpadding, ty);
-                                    //lock (_statusOffsetLock)
-                                    {
-                                        _localStatusLargestBottom = ty + textPaint.FontMetrics.Descent;
-                                    }
-                                    ty += textPaint.FontSpacing;
-                                }
-                            }
-                        }
-
-                        ulong buff_bits;
-                        for (int buff_ulong = 0; buff_ulong < GHConstants.NUM_BUFF_BIT_ULONGS; buff_ulong++)
-                        {
-                            buff_bits = _local_u_buff_bits[buff_ulong];
-                            int tiles_per_row = GHConstants.TileWidth / GHConstants.StatusMarkWidth;
-                            if (buff_bits != 0)
-                            {
-                                for (int buff_idx = 0; buff_idx < 32; buff_idx++)
-                                {
-                                    ulong buffbit = 1UL << buff_idx;
-                                    if ((buff_bits & buffbit) != 0)
-                                    {
-                                        int propidx = buff_ulong * 32 + buff_idx;
-                                        if (propidx > GHConstants.LAST_PROP)
-                                            break;
-                                        string propname = GHApp.GnollHackService.GetPropertyName(propidx);
-                                        if (propname != null && propname.Length > 0)
-                                            propname = propname[0].ToString().ToUpper() + (propname.Length == 1 ? "" : propname.Substring(1));
-
-                                        int mglyph = (propidx - 1) / GHConstants.BUFFS_PER_TILE + GHApp.BuffTileOff;
-                                        int mtile = GHApp.Glyph2Tile[mglyph];
-                                        int sheet_idx = GHApp.TileSheetIdx(mtile);
-                                        int tile_x = GHApp.TileSheetX(mtile);
-                                        int tile_y = GHApp.TileSheetY(mtile);
-
-                                        int buff_mark = (propidx - 1) % GHConstants.BUFFS_PER_TILE;
-                                        int within_tile_x = buff_mark % tiles_per_row;
-                                        int within_tile_y = buff_mark / tiles_per_row;
-                                        int c_x = tile_x + within_tile_x * GHConstants.StatusMarkWidth;
-                                        int c_y = tile_y + within_tile_y * GHConstants.StatusMarkHeight;
-
-                                        SKRect source_rt = new SKRect();
-                                        source_rt.Left = c_x;
-                                        source_rt.Right = c_x + GHConstants.StatusMarkWidth;
-                                        source_rt.Top = c_y;
-                                        source_rt.Bottom = c_y + GHConstants.StatusMarkHeight;
-
-                                        SKRect target_rt = new SKRect();
-                                        target_rt.Left = tx;
-                                        target_rt.Right = target_rt.Left + marksize;
-                                        target_rt.Top = ty + textPaint.FontMetrics.Ascent - textPaint.FontMetrics.Descent / 2 + (textPaint.FontSpacing - marksize) / 2;
-                                        target_rt.Bottom = target_rt.Top + marksize;
-
-                                        GHApp.MaybeFixRects(ref source_rt, ref target_rt, 1.0f, usingGL, fixRects);
-                                        canvas.DrawImage(TileMap[sheet_idx], source_rt, target_rt);
-                                        if (propname != null)
-                                            textPaint.DrawTextOnCanvas(canvas, propname, tx + marksize + markpadding, ty);
-                                        //lock (_statusOffsetLock)
-                                        {
-                                            _localStatusLargestBottom = ty + textPaint.FontMetrics.Descent;
-                                        }
-                                        ty += textPaint.FontSpacing;
-                                    }
-                                }
-                            }
-                        }
-                    }
-
-                    //if (!youRectDrawn)
-                    //    youRect = new SKRect();
+                    DrawExtendedStatusBar(canvas, textPaint, canvaswidth, canvasheight, inverse_canvas_scale, statusBarSkiaHeight, canvasViewWidth, canvasViewHeight, stdButtonWidth, stdButtonHeight, usedButtonRowStackHeight, ref youRect, usingGL, fixRects);
                 }
 #if WINDOWS
                 GameCursorType newCursor = GameCursorType.Normal;
@@ -12555,6 +12025,548 @@ namespace GnollHackX.Pages.Game
             if ((_totalFrames % 120) == 0)
                 Debug.WriteLine("Frames: " + _totalFrames + ", bmp: " + _profilingStopwatchBmp.ElapsedTicks / _totalFrames + ", text: " + _profilingStopwatchText.ElapsedTicks / _totalFrames + ", rect: " + _profilingStopwatchRect.ElapsedTicks / _totalFrames);
 #endif
+        }
+
+        private void DrawExtendedStatusBar(SKCanvas canvas, GHSkiaFontPaint textPaint, float canvaswidth, float canvasheight, float inverse_canvas_scale, float statusBarSkiaHeight,
+            double canvasViewWidth, double canvasViewHeight, double stdButtonWidth, double stdButtonHeight, double usedButtonRowStackHeight, ref SKRect youRect, bool usingGL, bool fixRects)
+        {
+            textPaint.Style = SKPaintStyle.Fill;
+            textPaint.Color = SKColors.Black.WithAlpha(200);
+            textPaint.Color = SKColors.White;
+            ButtonGridStats btnGridSize = CalculateStoneButtonGridSize(canvasViewWidth, canvasViewHeight);
+
+            float box_left = canvaswidth < canvasheight ? (btnGridSize.Buttons > 7 ? 2.25f : 1.25f) * inverse_canvas_scale * (float)stdButtonWidth :
+                (btnGridSize.Columns * 1.125f) * inverse_canvas_scale * (float)stdButtonWidth;
+            float box_right = canvaswidth - box_left;
+            if (canvaswidth < canvasheight && box_right - box_left < GHConstants.StatusScreenWidthThresholdMultiplierPortrait * canvaswidth)
+            {
+                //if (btnGridSize.Buttons > 7)
+                box_left = Math.Max((0.75f) * inverse_canvas_scale * (float)stdButtonWidth, box_right - GHConstants.StatusScreenWidthThresholdMultiplierPortrait * canvaswidth);
+            }
+            else if (box_right - box_left < GHConstants.StatusScreenWidthThresholdMultiplierLandscape * canvaswidth)
+            {
+                //if (btnGridSize.Columns > 3)
+                //    box_left = (3.375f) * inverse_canvas_scale * (float)stdButtonWidth;
+                //if (btnGridSize.Columns > 2 && box_right - box_left < GHConstants.StatusScreenWidthThresholdMultiplierLandscape * canvaswidth)
+                //    box_left = (2.25f) * inverse_canvas_scale * (float)stdButtonWidth;
+                //if (box_right - box_left < GHConstants.StatusScreenWidthThresholdMultiplierLandscape * canvaswidth)
+                //    box_left = (1.50f) * inverse_canvas_scale * (float)stdButtonWidth;
+                box_left = Math.Max((1.50f) * inverse_canvas_scale * (float)stdButtonWidth, box_right - GHConstants.StatusScreenWidthThresholdMultiplierLandscape * canvaswidth);
+            }
+            if (box_right < box_left)
+                box_left = box_right;
+            float box_top = canvaswidth < canvasheight ? statusBarSkiaHeight + 1.25f * inverse_canvas_scale * (float)stdButtonHeight :
+                statusBarSkiaHeight + 0.25f * inverse_canvas_scale * (float)stdButtonHeight;
+            float box_bottom = canvasheight - 1.25f * inverse_canvas_scale * (float)usedButtonRowStackHeight;
+            if (box_bottom < box_top)
+                box_bottom = box_top;
+
+            /* Window Background */
+            textPaint.Color = SKColors.Black;
+            SKRect bkgrect = new SKRect(box_left, box_top, box_right, box_bottom);
+            float youmargin = Math.Min((box_right - box_left), (box_bottom - box_top)) / 14;
+            float yousize = Math.Min((box_right - box_left), (box_bottom - box_top)) / 8;
+            float youtouchsize = Math.Min((box_right - box_left), (box_bottom - box_top)) / 6;
+            float youtouchmargin = Math.Max(0, (youtouchsize - yousize) / 2);
+            SKRect urect = new SKRect(box_right - youmargin - yousize, box_top + youmargin, box_right - youmargin, box_top + youmargin + yousize);
+            SKRect utouchrect = new SKRect(urect.Left - youtouchmargin, urect.Top - youtouchmargin, urect.Right + youtouchmargin, urect.Bottom + youtouchmargin);
+
+            youRect = utouchrect;
+            //youRectDrawn = true;
+
+            textPaint.Style = SKPaintStyle.Fill;
+            textPaint.Typeface = GHApp.UnderwoodTypeface;
+            textPaint.Color = SKColors.Black;
+            textPaint.TextSize = 36;
+
+            float twidth = textPaint.MeasureText("Strength");
+            float theight = textPaint.FontSpacing;
+            float tscale_one_column = Math.Max(0.1f, Math.Min((bkgrect.Width * (1 - 2f / 12.6f) / 4) / twidth, (bkgrect.Height * (1 - 2f / 8.5f) / 21) / theight));
+            float tscale_two_columns = Math.Max(0.1f, Math.Min((bkgrect.Width * (1 - 2f / 12.6f) / 4) / twidth, (bkgrect.Height * (1 - 2f / 8.5f) / 18) / theight));
+            //float strwidth_one_column = twidth * tscale_one_column;
+            float strwidth_two_columns = twidth * tscale_two_columns;
+            //float indentation_one_column = strwidth_one_column * 20f / 8f;
+            float indentation_two_columns = strwidth_two_columns * 20f / 8f;
+            bool use_two_columns = bkgrect.Width - bkgrect.Width * 2f / 12.6f >= indentation_two_columns * 2.5f;
+
+            float tscale = use_two_columns ? tscale_two_columns : tscale_one_column;
+            float basefontsize = textPaint.TextSize * tscale;
+            textPaint.TextSize = basefontsize;
+            float strwidth = twidth * tscale;
+            float indentation = strwidth * 20f / 8f;
+
+            float tx;
+            float ty = bkgrect.Top + bkgrect.Height / 8.5f - textPaint.FontMetrics.Ascent;
+            string valtext, valtext2;
+            float base_ty = ty;
+            float box_bottom_draw_threshold = box_bottom - bkgrect.Height / 8.5f;
+            float icon_height = textPaint.FontSpacing * 0.85f;
+            float icon_max_width = icon_height * 2f;
+            float icon_base_left = bkgrect.Left - icon_max_width; //bkgrect.Right - bkgrect.Width * 1f / 12.6f - icon_max_width
+            float icon_tx = icon_base_left;
+            float icon_ty;
+            icon_ty = ty + textPaint.FontMetrics.Ascent + (textPaint.FontSpacing - icon_height) / 2;
+            float icon_width = icon_height;
+            SKRect icon_rect;
+            int valcolor = (int)NhColor.CLR_WHITE;
+
+            /* Let's do these first */
+            using (new SKAutoCanvasRestore(canvas, true))
+            {
+                canvas.DrawRect(0, 0, canvaswidth, canvasheight, textPaint.Paint);
+                canvas.DrawImage(GHApp.ScrollBitmap, bkgrect);
+                canvas.DrawImage(GHApp.YouBitmap, urect);
+
+                valtext = "";
+                if (_localStatusFields[(int)NhStatusFields.BL_TITLE].IsEnabled && _localStatusFields[(int)NhStatusFields.BL_TITLE].Text != null)
+                {
+                    valtext = _localStatusFields[(int)NhStatusFields.BL_TITLE].Text.Trim();
+                }
+                if (valtext != "")
+                {
+                    textPaint.Typeface = GHApp.ImmortalTypeface;
+                    textPaint.TextSize = basefontsize * 1.1f;
+                    tx = (bkgrect.Left + bkgrect.Right) / 2;
+                    //textPaint.TextAlign = SKTextAlign.Center;
+                    textPaint.DrawTextOnCanvas(canvas, valtext, tx, ty, SKTextAlign.Center);
+                    //textPaint.TextAlign = SKTextAlign.Left;
+                    textPaint.Typeface = GHApp.UnderwoodTypeface;
+                    textPaint.TextSize = basefontsize;
+                    ty += textPaint.FontSpacing;
+                    ty += textPaint.FontSpacing * 0.5f;
+                }
+            }
+
+            /* Draw the rest clipped; we use two SKAutoCanvasRestores just in case due to a bug with ClipRect on iOS, which clipped also the previous drawings */
+            using (new SKAutoCanvasRestore(canvas, true))
+            {
+                tx = bkgrect.Left + bkgrect.Width / 12.6f;
+
+                SKRect cliprect = new SKRect(0, ty + textPaint.FontMetrics.Ascent, canvaswidth, bkgrect.Bottom - bkgrect.Height / 8.5f);
+                canvas.ClipRect(cliprect);
+
+                //lock (_statusOffsetLock)
+                {
+                    ty += _localStatusOffsetY;
+                    _localStatusClipBottom = cliprect.Bottom;
+                }
+                base_ty = ty;
+
+                for (int i = 0; i < 6; i++)
+                {
+                    valtext = "";
+                    if (_localStatusFields[(int)NhStatusFields.BL_STR + i].IsEnabled && _localStatusFields[(int)NhStatusFields.BL_STR + i].Text != null)
+                    {
+                        valtext = _localStatusFields[(int)NhStatusFields.BL_STR + i].Text;
+                        valcolor = _localStatusFields[(int)NhStatusFields.BL_STR + i].Color;
+                    }
+                    if (valtext != "" && ty < box_bottom_draw_threshold)
+                    {
+                        string printtext = _attributeStrings[i] + ":";
+                        textPaint.DrawTextOnCanvas(canvas, printtext, tx, ty);
+                        textPaint.Color = UIUtils.NHColor2SKColorCore(valcolor, 0, true, false);
+                        textPaint.DrawTextOnCanvas(canvas, valtext, tx + indentation, ty);
+                        textPaint.Color = SKColors.Black;
+                        SKImage statIcon = GetStatIcon(i);
+                        icon_width = icon_height * (float)statIcon.Width / (float)statIcon.Height;
+                        icon_tx = icon_base_left + (icon_max_width - icon_width) / 2f;
+                        icon_ty = ty + textPaint.FontMetrics.Ascent - textPaint.FontMetrics.Descent / 2 + (textPaint.FontSpacing - icon_height) / 2;
+                        icon_rect = new SKRect(icon_tx, icon_ty, icon_tx + icon_width, icon_ty + icon_height);
+                        canvas.DrawImage(statIcon, icon_rect);
+                        ty += textPaint.FontSpacing;
+                    }
+                }
+                ty += textPaint.FontSpacing * 0.5f;
+
+                valtext = "";
+                if (_localStatusFields[(int)NhStatusFields.BL_XP].IsEnabled && _localStatusFields[(int)NhStatusFields.BL_XP].Text != null)
+                {
+                    valtext = _localStatusFields[(int)NhStatusFields.BL_XP].Text;
+                }
+                if (valtext != "" && ty < box_bottom_draw_threshold)
+                {
+                    textPaint.DrawTextOnCanvas(canvas, "Level:", tx, ty);
+                    textPaint.DrawTextOnCanvas(canvas, valtext, tx + indentation, ty);
+                    icon_width = icon_height * (float)GHApp._statusXPLevelBitmap.Width / (float)GHApp._statusXPLevelBitmap.Height;
+                    icon_tx = icon_base_left + (icon_max_width - icon_width) / 2f;
+                    icon_ty = ty + textPaint.FontMetrics.Ascent - textPaint.FontMetrics.Descent / 2 + (textPaint.FontSpacing - icon_height) / 2;
+                    icon_rect = new SKRect(icon_tx, icon_ty, icon_tx + icon_width, icon_ty + icon_height);
+                    canvas.DrawImage(GHApp._statusXPLevelBitmap, icon_rect);
+                    ty += textPaint.FontSpacing;
+                }
+
+                valtext = "";
+                if (_localStatusFields[(int)NhStatusFields.BL_EXP].IsEnabled && _localStatusFields[(int)NhStatusFields.BL_EXP].Text != null)
+                {
+                    valtext = _localStatusFields[(int)NhStatusFields.BL_EXP].Text;
+                }
+                if (valtext != "" && ty < box_bottom_draw_threshold)
+                {
+                    textPaint.DrawTextOnCanvas(canvas, "Experience:", tx, ty);
+                    textPaint.DrawTextOnCanvas(canvas, valtext, tx + indentation, ty);
+                    icon_tx = icon_base_left + (icon_max_width - icon_width) / 2f;
+                    icon_ty = ty + textPaint.FontMetrics.Ascent - textPaint.FontMetrics.Descent / 2 + (textPaint.FontSpacing - icon_height) / 2;
+                    icon_rect = new SKRect(icon_tx, icon_ty, icon_tx + icon_width, icon_ty + icon_height);
+                    canvas.DrawImage(GHApp._statusXPPointsBitmap, icon_rect);
+                    ty += textPaint.FontSpacing;
+                }
+
+                valtext = "";
+                if (_localStatusFields[(int)NhStatusFields.BL_HD].IsEnabled && _localStatusFields[(int)NhStatusFields.BL_HD].Text != null)
+                {
+                    valtext = _localStatusFields[(int)NhStatusFields.BL_HD].Text;
+                }
+                if (valtext != "" && ty < box_bottom_draw_threshold)
+                {
+                    textPaint.DrawTextOnCanvas(canvas, "Hit dice:", tx, ty);
+                    textPaint.DrawTextOnCanvas(canvas, valtext, tx + indentation, ty);
+                    icon_width = icon_height * (float)GHApp._statusHDBitmap.Width / (float)GHApp._statusHDBitmap.Height;
+                    icon_tx = icon_base_left + (icon_max_width - icon_width) / 2f;
+                    icon_ty = ty + textPaint.FontMetrics.Ascent - textPaint.FontMetrics.Descent / 2 + (textPaint.FontSpacing - icon_height) / 2;
+                    icon_rect = new SKRect(icon_tx, icon_ty, icon_tx + icon_width, icon_ty + icon_height);
+                    canvas.DrawImage(GHApp._statusHDBitmap, icon_rect);
+                    ty += textPaint.FontSpacing;
+                }
+
+                valtext = "";
+                if (_localStatusFields[(int)NhStatusFields.BL_ALIGN].IsEnabled && _localStatusFields[(int)NhStatusFields.BL_ALIGN].Text != null)
+                {
+                    valtext = _localStatusFields[(int)NhStatusFields.BL_ALIGN].Text;
+                }
+                if (valtext != "" && ty < box_bottom_draw_threshold)
+                {
+                    textPaint.DrawTextOnCanvas(canvas, "Alignment:", tx, ty);
+                    textPaint.DrawTextOnCanvas(canvas, valtext, tx + indentation, ty);
+                    icon_tx = icon_base_left + (icon_max_width - icon_width) / 2f;
+                    icon_ty = ty + textPaint.FontMetrics.Ascent - textPaint.FontMetrics.Descent / 2 + (textPaint.FontSpacing - icon_height) / 2;
+                    icon_rect = new SKRect(icon_tx, icon_ty, icon_tx + icon_width, icon_ty + icon_height);
+                    canvas.DrawImage(GetAlignmentIcon(valtext), icon_rect);
+                    ty += textPaint.FontSpacing;
+                }
+
+                valtext = "";
+                if (_localStatusFields[(int)NhStatusFields.BL_SCORE].IsEnabled && _localStatusFields[(int)NhStatusFields.BL_SCORE].Text != null)
+                {
+                    valtext = _localStatusFields[(int)NhStatusFields.BL_SCORE].Text;
+                }
+                if (valtext != "" && ty < box_bottom_draw_threshold)
+                {
+                    textPaint.DrawTextOnCanvas(canvas, "Score:", tx, ty);
+                    textPaint.DrawTextOnCanvas(canvas, valtext, tx + indentation, ty);
+                    icon_tx = icon_base_left + (icon_max_width - icon_width) / 2f;
+                    icon_ty = ty + textPaint.FontMetrics.Ascent - textPaint.FontMetrics.Descent / 2 + (textPaint.FontSpacing - icon_height) / 2;
+                    icon_rect = new SKRect(icon_tx, icon_ty, icon_tx + icon_width, icon_ty + icon_height);
+                    canvas.DrawImage(GHApp._statusScoreBitmap, icon_rect);
+                    ty += textPaint.FontSpacing;
+                }
+
+                ty += textPaint.FontSpacing * 0.5f;
+
+                valtext = "";
+                if (_localStatusFields[(int)NhStatusFields.BL_AC].IsEnabled && _localStatusFields[(int)NhStatusFields.BL_AC].Text != null)
+                {
+                    valtext = _localStatusFields[(int)NhStatusFields.BL_AC].Text;
+                }
+                if (valtext != "")
+                {
+                    //lock (_statusOffsetLock)
+                    {
+                        _localStatusLargestBottom = ty + textPaint.FontMetrics.Descent;
+                    }
+                    textPaint.DrawTextOnCanvas(canvas, "Armor class:", tx, ty);
+                    textPaint.DrawTextOnCanvas(canvas, valtext, tx + indentation, ty);
+                    icon_width = icon_height * (float)GHApp._statusACBitmap.Width / (float)GHApp._statusACBitmap.Height;
+                    icon_tx = icon_base_left + (icon_max_width - icon_width) / 2f;
+                    icon_ty = ty + textPaint.FontMetrics.Ascent - textPaint.FontMetrics.Descent / 2 + (textPaint.FontSpacing - icon_height) / 2;
+                    icon_rect = new SKRect(icon_tx, icon_ty, icon_tx + icon_width, icon_ty + icon_height);
+                    canvas.DrawImage(GHApp._statusACBitmap, icon_rect);
+                    ty += textPaint.FontSpacing;
+                }
+
+                valtext = "";
+                valtext2 = "";
+                if (_localStatusFields[(int)NhStatusFields.BL_MC_LVL].IsEnabled && _localStatusFields[(int)NhStatusFields.BL_MC_LVL].Text != null)
+                {
+                    valtext = _localStatusFields[(int)NhStatusFields.BL_MC_LVL].Text;
+                }
+                if (_localStatusFields[(int)NhStatusFields.BL_MC_PCT].IsEnabled && _localStatusFields[(int)NhStatusFields.BL_MC_PCT].Text != null)
+                {
+                    valtext2 = _localStatusFields[(int)NhStatusFields.BL_MC_PCT].Text;
+                }
+                if (valtext != "")
+                {
+                    //lock (_statusOffsetLock)
+                    {
+                        _localStatusLargestBottom = ty + textPaint.FontMetrics.Descent;
+                    }
+                    textPaint.DrawTextOnCanvas(canvas, "Magic cancellation:", tx, ty);
+                    string printtext = valtext2 != "" ? valtext + "/" + valtext2 + "%" : valtext;
+                    textPaint.DrawTextOnCanvas(canvas, printtext, tx + indentation, ty);
+                    icon_width = icon_height * (float)GHApp._statusMCBitmap.Width / (float)GHApp._statusMCBitmap.Height;
+                    icon_tx = icon_base_left + (icon_max_width - icon_width) / 2f;
+                    icon_ty = ty + textPaint.FontMetrics.Ascent - textPaint.FontMetrics.Descent / 2 + (textPaint.FontSpacing - icon_height) / 2;
+                    icon_rect = new SKRect(icon_tx, icon_ty, icon_tx + icon_width, icon_ty + icon_height);
+                    canvas.DrawImage(GHApp._statusMCBitmap, icon_rect);
+                    ty += textPaint.FontSpacing;
+                }
+
+                valtext = "";
+                if (_localStatusFields[(int)NhStatusFields.BL_MOVE].IsEnabled && _localStatusFields[(int)NhStatusFields.BL_MOVE].Text != null)
+                {
+                    valtext = _localStatusFields[(int)NhStatusFields.BL_MOVE].Text;
+                }
+                if (valtext != "")
+                {
+                    //lock (_statusOffsetLock)
+                    {
+                        _localStatusLargestBottom = ty + textPaint.FontMetrics.Descent;
+                    }
+                    textPaint.DrawTextOnCanvas(canvas, "Move:", tx, ty);
+                    textPaint.DrawTextOnCanvas(canvas, valtext, tx + indentation, ty);
+                    icon_width = icon_height * (float)GHApp._statusMoveBitmap.Width / (float)GHApp._statusMoveBitmap.Height;
+                    icon_tx = icon_base_left + (icon_max_width - icon_width) / 2f;
+                    icon_ty = ty + textPaint.FontMetrics.Ascent - textPaint.FontMetrics.Descent / 2 + (textPaint.FontSpacing - icon_height) / 2;
+                    icon_rect = new SKRect(icon_tx, icon_ty, icon_tx + icon_width, icon_ty + icon_height);
+                    canvas.DrawImage(GHApp._statusMoveBitmap, icon_rect);
+                    ty += textPaint.FontSpacing;
+                }
+
+                valtext = "";
+                valtext2 = "";
+                string valtext3 = "";
+                if (_localStatusFields[(int)NhStatusFields.BL_UWEP].IsEnabled && _localStatusFields[(int)NhStatusFields.BL_UWEP].Text != null)
+                {
+                    valtext = _localStatusFields[(int)NhStatusFields.BL_UWEP].Text;
+                }
+                if (_localStatusFields[(int)NhStatusFields.BL_UWEP2].IsEnabled && _localStatusFields[(int)NhStatusFields.BL_UWEP2].Text != null)
+                {
+                    valtext2 = _localStatusFields[(int)NhStatusFields.BL_UWEP2].Text;
+                }
+                if (_localStatusFields[(int)NhStatusFields.BL_UQUIVER].IsEnabled && _localStatusFields[(int)NhStatusFields.BL_UQUIVER].Text != null)
+                {
+                    valtext3 = _localStatusFields[(int)NhStatusFields.BL_UQUIVER].Text;
+                }
+                if (valtext != "" || valtext2 != "" || valtext3 != "")
+                {
+                    //lock (_statusOffsetLock)
+                    {
+                        _localStatusLargestBottom = ty + textPaint.FontMetrics.Descent;
+                    }
+                    textPaint.DrawTextOnCanvas(canvas, "Weapon style:", tx, ty);
+                    string printtext = valtext;
+                    if (valtext2 != "")
+                        printtext += "/" + valtext2;
+                    if (valtext3 != "")
+                        printtext += "/" + valtext3;
+                    textPaint.DrawTextOnCanvas(canvas, printtext, tx + indentation, ty);
+                    icon_width = icon_height * (float)GHApp._statusWeaponStyleBitmap.Width / (float)GHApp._statusWeaponStyleBitmap.Height;
+                    icon_tx = icon_base_left + (icon_max_width - icon_width) / 2f;
+                    icon_ty = ty + textPaint.FontMetrics.Ascent - textPaint.FontMetrics.Descent / 2 + (textPaint.FontSpacing - icon_height) / 2;
+                    icon_rect = new SKRect(icon_tx, icon_ty, icon_tx + icon_width, icon_ty + icon_height);
+                    canvas.DrawImage(GHApp._statusWeaponStyleBitmap, icon_rect);
+                    ty += textPaint.FontSpacing;
+                }
+
+                ty += textPaint.FontSpacing * 0.5f;
+
+                valtext = "";
+                if (_localStatusFields[(int)NhStatusFields.BL_GOLD].IsEnabled && _localStatusFields[(int)NhStatusFields.BL_GOLD].Text != null)
+                {
+                    valtext = _localStatusFields[(int)NhStatusFields.BL_GOLD].Text;
+                }
+                if (valtext != "")
+                {
+                    //lock (_statusOffsetLock)
+                    {
+                        _localStatusLargestBottom = ty + textPaint.FontMetrics.Descent;
+                    }
+                    GHSubstring printtext = valtext.Length > 11 && valtext[0] == '\\' ? new GHSubstring(valtext, 11) : new GHSubstring(valtext);
+                    textPaint.DrawTextOnCanvas(canvas, "Gold:", tx, ty);
+                    textPaint.DrawTextOnCanvas(canvas, printtext.Value, tx + indentation, ty);
+                    icon_width = icon_height * (float)GHApp._statusGoldBitmap.Width / (float)GHApp._statusGoldBitmap.Height;
+                    icon_tx = icon_base_left + (icon_max_width - icon_width) / 2f;
+                    icon_ty = ty + textPaint.FontMetrics.Ascent - textPaint.FontMetrics.Descent / 2 + (textPaint.FontSpacing - icon_height) / 2;
+                    icon_rect = new SKRect(icon_tx, icon_ty, icon_tx + icon_width, icon_ty + icon_height);
+                    canvas.DrawImage(GHApp._statusGoldBitmap, icon_rect);
+                    ty += textPaint.FontSpacing;
+                }
+
+                valtext = "";
+                if (_localStatusFields[(int)NhStatusFields.BL_TIME].IsEnabled && _localStatusFields[(int)NhStatusFields.BL_TIME].Text != null)
+                {
+                    valtext = _localStatusFields[(int)NhStatusFields.BL_TIME].Text;
+                }
+                if (valtext != "")
+                {
+                    //lock (_statusOffsetLock)
+                    {
+                        _localStatusLargestBottom = ty + textPaint.FontMetrics.Descent;
+                    }
+                    textPaint.DrawTextOnCanvas(canvas, "Turns:", tx, ty);
+                    textPaint.DrawTextOnCanvas(canvas, valtext, tx + indentation, ty);
+                    icon_width = icon_height * (float)GHApp._statusTurnsBitmap.Width / (float)GHApp._statusTurnsBitmap.Height;
+                    icon_tx = icon_base_left + (icon_max_width - icon_width) / 2f;
+                    icon_ty = ty + textPaint.FontMetrics.Ascent - textPaint.FontMetrics.Descent / 2 + (textPaint.FontSpacing - icon_height) / 2;
+                    icon_rect = new SKRect(icon_tx, icon_ty, icon_tx + icon_width, icon_ty + icon_height);
+                    canvas.DrawImage(GHApp._statusTurnsBitmap, icon_rect);
+                    ty += textPaint.FontSpacing;
+                }
+
+                ty += textPaint.FontSpacing * 0.5f;
+
+                /* Condition, status and buff marks */
+                if (use_two_columns)
+                {
+                    tx += indentation * 1.75f;
+                    ty = base_ty;
+                }
+
+                float marksize = textPaint.FontSpacing * 0.85f;
+                float markpadding = marksize / 4;
+                if (_local_u_status_bits != 0)
+                {
+                    int tiles_per_row = GHConstants.TileWidth / GHConstants.StatusMarkWidth;
+                    foreach (int status_mark in _statusmarkorder)
+                    {
+                        ulong statusbit = 1UL << status_mark;
+                        if ((_local_u_status_bits & statusbit) != 0)
+                        {
+                            string statusname = _status_names[status_mark];
+                            int mglyph = (int)game_ui_tile_types.STATUS_MARKS + status_mark / GHConstants.MAX_UI_TILE_16_x_16_COMPONENTS + GHApp.UITileOff;
+                            int mtile = GHApp.Glyph2Tile[mglyph];
+                            int sheet_idx = GHApp.TileSheetIdx(mtile);
+                            int tile_x = GHApp.TileSheetX(mtile);
+                            int tile_y = GHApp.TileSheetY(mtile);
+                            int within_tile_x = (status_mark % GHConstants.MAX_UI_TILE_16_x_16_COMPONENTS) % tiles_per_row;
+                            int within_tile_y = (status_mark % GHConstants.MAX_UI_TILE_16_x_16_COMPONENTS) / tiles_per_row;
+                            int c_x = tile_x + within_tile_x * GHConstants.StatusMarkWidth;
+                            int c_y = tile_y + within_tile_y * GHConstants.StatusMarkHeight;
+
+                            SKRect source_rt = new SKRect();
+                            source_rt.Left = c_x;
+                            source_rt.Right = c_x + GHConstants.StatusMarkWidth;
+                            source_rt.Top = c_y;
+                            source_rt.Bottom = c_y + GHConstants.StatusMarkHeight;
+
+                            SKRect target_rt = new SKRect();
+                            target_rt.Left = tx;
+                            target_rt.Right = target_rt.Left + marksize;
+                            target_rt.Top = ty + textPaint.FontMetrics.Ascent - textPaint.FontMetrics.Descent / 2 + (textPaint.FontSpacing - marksize) / 2;
+                            target_rt.Bottom = target_rt.Top + marksize;
+
+                            GHApp.MaybeFixRects(ref source_rt, ref target_rt, 1.0f, usingGL, fixRects);
+                            canvas.DrawImage(TileMap[sheet_idx], source_rt, target_rt);
+                            textPaint.DrawTextOnCanvas(canvas, statusname, tx + marksize + markpadding, ty);
+                            //lock (_statusOffsetLock)
+                            {
+                                _localStatusLargestBottom = ty + textPaint.FontMetrics.Descent;
+                            }
+                            ty += textPaint.FontSpacing;
+                        }
+                    }
+                }
+
+                if (_local_u_condition_bits != 0)
+                {
+                    int tiles_per_row = GHConstants.TileWidth / GHConstants.StatusMarkWidth;
+                    for (int condition_mark = 0; condition_mark < (int)bl_conditions.NUM_BL_CONDITIONS; condition_mark++)
+                    {
+                        ulong conditionbit = 1UL << condition_mark;
+                        if ((_local_u_condition_bits & conditionbit) != 0)
+                        {
+                            string conditionname = _condition_names[condition_mark];
+                            int mglyph = (int)game_ui_tile_types.CONDITION_MARKS + condition_mark / GHConstants.MAX_UI_TILE_16_x_16_COMPONENTS + GHApp.UITileOff;
+                            int mtile = GHApp.Glyph2Tile[mglyph];
+                            int sheet_idx = GHApp.TileSheetIdx(mtile);
+                            int tile_x = GHApp.TileSheetX(mtile);
+                            int tile_y = GHApp.TileSheetY(mtile);
+                            int within_tile_x = (condition_mark % GHConstants.MAX_UI_TILE_16_x_16_COMPONENTS) % tiles_per_row;
+                            int within_tile_y = (condition_mark % GHConstants.MAX_UI_TILE_16_x_16_COMPONENTS) / tiles_per_row;
+                            int c_x = tile_x + within_tile_x * GHConstants.StatusMarkWidth;
+                            int c_y = tile_y + within_tile_y * GHConstants.StatusMarkHeight;
+
+                            SKRect source_rt = new SKRect();
+                            source_rt.Left = c_x;
+                            source_rt.Right = c_x + GHConstants.StatusMarkWidth;
+                            source_rt.Top = c_y;
+                            source_rt.Bottom = c_y + GHConstants.StatusMarkHeight;
+
+                            SKRect target_rt = new SKRect();
+                            target_rt.Left = tx;
+                            target_rt.Right = target_rt.Left + marksize;
+                            target_rt.Top = ty + textPaint.FontMetrics.Ascent - textPaint.FontMetrics.Descent / 2 + (textPaint.FontSpacing - marksize) / 2;
+                            target_rt.Bottom = target_rt.Top + marksize;
+
+                            GHApp.MaybeFixRects(ref source_rt, ref target_rt, 1.0f, usingGL, fixRects);
+                            canvas.DrawImage(TileMap[sheet_idx], source_rt, target_rt);
+                            textPaint.DrawTextOnCanvas(canvas, conditionname, tx + marksize + markpadding, ty);
+                            //lock (_statusOffsetLock)
+                            {
+                                _localStatusLargestBottom = ty + textPaint.FontMetrics.Descent;
+                            }
+                            ty += textPaint.FontSpacing;
+                        }
+                    }
+                }
+
+                ulong buff_bits;
+                for (int buff_ulong = 0; buff_ulong < GHConstants.NUM_BUFF_BIT_ULONGS; buff_ulong++)
+                {
+                    buff_bits = _local_u_buff_bits[buff_ulong];
+                    int tiles_per_row = GHConstants.TileWidth / GHConstants.StatusMarkWidth;
+                    if (buff_bits != 0)
+                    {
+                        for (int buff_idx = 0; buff_idx < 32; buff_idx++)
+                        {
+                            ulong buffbit = 1UL << buff_idx;
+                            if ((buff_bits & buffbit) != 0)
+                            {
+                                int propidx = buff_ulong * 32 + buff_idx;
+                                if (propidx > GHConstants.LAST_PROP)
+                                    break;
+                                string propname = GHApp.GnollHackService.GetPropertyName(propidx);
+                                if (propname != null && propname.Length > 0)
+                                    propname = propname[0].ToString().ToUpper() + (propname.Length == 1 ? "" : propname.Substring(1));
+
+                                int mglyph = (propidx - 1) / GHConstants.BUFFS_PER_TILE + GHApp.BuffTileOff;
+                                int mtile = GHApp.Glyph2Tile[mglyph];
+                                int sheet_idx = GHApp.TileSheetIdx(mtile);
+                                int tile_x = GHApp.TileSheetX(mtile);
+                                int tile_y = GHApp.TileSheetY(mtile);
+
+                                int buff_mark = (propidx - 1) % GHConstants.BUFFS_PER_TILE;
+                                int within_tile_x = buff_mark % tiles_per_row;
+                                int within_tile_y = buff_mark / tiles_per_row;
+                                int c_x = tile_x + within_tile_x * GHConstants.StatusMarkWidth;
+                                int c_y = tile_y + within_tile_y * GHConstants.StatusMarkHeight;
+
+                                SKRect source_rt = new SKRect();
+                                source_rt.Left = c_x;
+                                source_rt.Right = c_x + GHConstants.StatusMarkWidth;
+                                source_rt.Top = c_y;
+                                source_rt.Bottom = c_y + GHConstants.StatusMarkHeight;
+
+                                SKRect target_rt = new SKRect();
+                                target_rt.Left = tx;
+                                target_rt.Right = target_rt.Left + marksize;
+                                target_rt.Top = ty + textPaint.FontMetrics.Ascent - textPaint.FontMetrics.Descent / 2 + (textPaint.FontSpacing - marksize) / 2;
+                                target_rt.Bottom = target_rt.Top + marksize;
+
+                                GHApp.MaybeFixRects(ref source_rt, ref target_rt, 1.0f, usingGL, fixRects);
+                                canvas.DrawImage(TileMap[sheet_idx], source_rt, target_rt);
+                                if (propname != null)
+                                    textPaint.DrawTextOnCanvas(canvas, propname, tx + marksize + markpadding, ty);
+                                //lock (_statusOffsetLock)
+                                {
+                                    _localStatusLargestBottom = ty + textPaint.FontMetrics.Descent;
+                                }
+                                ty += textPaint.FontSpacing;
+                            }
+                        }
+                    }
+                }
+            }
+            
         }
 
         bool DarkenedPos(int mapx, int mapy)
