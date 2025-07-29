@@ -17159,11 +17159,16 @@ namespace GnollHackX.Pages.Game
                                 float start_x = x;
                                 float indent_start_x = start_x;
                                 string trimmed_maintext = mi.TrimmedMainText;
-                                string indentstr = GHUtils.GetIndentationString(trimmed_maintext, mi.NHAttribute);
-                                if (indentstr != "")
-                                {
-                                    indent_start_x += textPaint.MeasureText(indentstr);
-                                }
+                                //string indentstr = GHUtils.GetIndentationString(trimmed_maintext, mi.NHAttribute);
+                                //if (indentstr != "")
+                                //{
+                                //    indent_start_x += textPaint.MeasureText(indentstr);
+                                //}
+                                ReadOnlySpan<char> indentSpan;
+                                GHUtils.GetIndentationSpan(trimmed_maintext, mi.NHAttribute, out indentSpan);
+                                if (!indentSpan.IsEmpty)
+                                    indent_start_x += textPaint.MeasureText(indentSpan);
+
                                 string altFontFamily;
                                 if(UIUtils.MaybeSmallFontFamily(mainFontFamily, textPaint.TextSize, out altFontFamily))
                                     textPaint.Typeface = GHApp.GetTypefaceByName(altFontFamily);
@@ -17334,12 +17339,27 @@ namespace GnollHackX.Pages.Game
             return rows;
         }
 
-        public SKImage GetGameSpecialSymbol(string str, out SKRect source_rect)
+
+
+        //public SKImage GetGameSpecialSymbol(string str, out SKRect source_rect)
+        //{
+        //    return GetGameSpecialSymbolFromSpan(str != null ? str.AsSpan() : ReadOnlySpan<char>.Empty, out source_rect);
+        //}
+
+        public SKImage GetGameSpecialSymbol(ReadOnlySpan<char> str, out SKRect source_rect)
         {
             source_rect = new SKRect();
-            if (str == null || !str.StartsWith("&"))
+            if (str.IsEmpty || !str.StartsWith("&"
+#if !GNH_MAUI
+                .AsSpan()
+#endif
+                ))
                 return null;
-            else if (str.StartsWith("&status-") && str.Length > 8)
+            else if (str.StartsWith("&status-"
+#if !GNH_MAUI
+                    .AsSpan()
+#endif
+                    ) && str.Length > 8)
             {
                 int status_mark = 0;
                 GHSubstring substr = new GHSubstring(str, 8).Substring(0, str.Length - 8 - 1);
@@ -17365,7 +17385,11 @@ namespace GnollHackX.Pages.Game
                 }
                 return null;
             }
-            else if (str.StartsWith("&cond-") && str.Length > 6)
+            else if (str.StartsWith("&cond-"
+#if !GNH_MAUI
+                    .AsSpan()
+#endif
+                    ) && str.Length > 6)
             {
                 int condition_mark = 0;
                 GHSubstring substr = new GHSubstring(str, 6).Substring(0, str.Length - 6 - 1);
@@ -17391,7 +17415,11 @@ namespace GnollHackX.Pages.Game
                 }
                 return null;
             }
-            else if (str.StartsWith("&buff-") && str.Length > 6)
+            else if (str.StartsWith("&buff-"
+#if !GNH_MAUI
+                    .AsSpan()
+#endif
+                    ) && str.Length > 6)
             {
                 int propidx = 0;
                 GHSubstring substr = new GHSubstring(str, 6).Substring(0, str.Length - 6 - 1);
@@ -17429,159 +17457,334 @@ namespace GnollHackX.Pages.Game
             }
         }
 
-        private void DrawTextSplit(SKCanvas canvas, string[] textsplit, List<byte[]> attrs_list, List<byte[]> colors_list, List<float> rowwidths, ref float x, ref float y, ref bool isfirstprintonrow, float indent_start_x, float canvaswidth, float canvasheight, float rightmenupadding, GHSkiaFontPaint textPaint, bool usespecialsymbols, bool usetextoutline, bool revertblackandwhite, bool centertext, float totalrowwidth, float curmenuoffset, float glyphystart, float glyphyend, float glyphpadding)
+        private void DrawTextSpan(SKCanvas canvas, ReadOnlySpan<char> textSpan, ReadOnlySpan<byte> attrs, ReadOnlySpan<byte> colors, List<float> rowwidths, ref float x, ref float y, ref bool isfirstprintonrow, float indent_start_x, float canvaswidth, float canvasheight, float rightmenupadding, GHSkiaFontPaint textPaint, bool usespecialsymbols, bool usetextoutline, bool revertblackandwhite, bool centertext, float totalrowwidth, float curmenuoffset, float glyphystart, float glyphyend, float glyphpadding, bool addSpace, float spaceLength)
         {
-            if (textsplit == null)
+            if (textSpan.IsEmpty)
                 return;
 
 #if !GNH_MAUI
             SKColor oldColor = textPaint.Paint.Color;
             SKFilterQuality oldFilterQuality = textPaint.Paint.FilterQuality;
 #endif
-            float spacelength = textPaint.MeasureText(" ");
-            int idx = 0;
             int rowidx = 0;
             SKColor orig_color = textPaint.Color;
             GHSubstring printedsubline = new GHSubstring("");
-            for (int ss_idx = 0, ss_cnt = textsplit.Length; ss_idx < ss_cnt; ss_idx++)
+
+            bool nowrap = false;
+            if (textSpan.Length == 0 || textSpan[0] == ' ')
+                nowrap = true;
+
+            float centering_padding = 0.0f;
+            if (centertext && rowwidths != null && rowidx < rowwidths.Count)
             {
-                string split_str = textsplit[ss_idx];
-                byte[] attrs = attrs_list != null && idx < attrs_list.Count ? attrs_list[idx] : null;
-                byte[] colors = colors_list != null && idx < colors_list.Count ? colors_list[idx] : null;
+                centering_padding = (totalrowwidth - rowwidths[rowidx]) / 2;
+            }
 
-                bool nowrap = false;
-                if (string.IsNullOrWhiteSpace(split_str))
-                    nowrap = true;
+            if (isfirstprintonrow)
+                x += centering_padding;
 
-                float centering_padding = 0.0f;
-                if(centertext && rowwidths != null && rowidx < rowwidths.Count)
+            float endposition = x;
+            float usedglyphpadding = 0.0f;
+            if (y - curmenuoffset + textPaint.FontMetrics.Ascent <= glyphyend
+                && y - curmenuoffset + textPaint.FontMetrics.Descent >= glyphystart)
+                usedglyphpadding = glyphpadding;
+
+            SKImage symbolbitmap = null;
+            SKRect source_rect = new SKRect();
+            if (usespecialsymbols && (symbolbitmap = GetGameSpecialSymbol(textSpan, out source_rect)) != null)
+            {
+                textPaint.Color = orig_color;
+                float bmpheight = textPaint.FontMetrics.Descent / 2 - textPaint.FontMetrics.Ascent;
+                float bmpwidth = bmpheight * (float)symbolbitmap.Width / (float)Math.Max(1, symbolbitmap.Height);
+                float bmpmargin = bmpheight / 8;
+                endposition = x + bmpwidth + bmpmargin;
+                bool pastend = x + bmpwidth > canvaswidth - usedglyphpadding - rightmenupadding;
+                if (pastend && !isfirstprintonrow && !nowrap)
                 {
-                    centering_padding = (totalrowwidth - rowwidths[rowidx]) / 2;
-                }
-
-                if(isfirstprintonrow)
-                    x += centering_padding;
-
-                float endposition = x;
-                float usedglyphpadding = 0.0f;
-                if (y - curmenuoffset + textPaint.FontMetrics.Ascent <= glyphyend
-                    && y - curmenuoffset + textPaint.FontMetrics.Descent >= glyphystart)
-                    usedglyphpadding = glyphpadding;
-
-                SKImage symbolbitmap = null;
-                SKRect source_rect = new SKRect();
-                if(usespecialsymbols && (symbolbitmap = GetGameSpecialSymbol(split_str, out source_rect)) != null)
-                {
-                    textPaint.Color = orig_color;
-                    float bmpheight = textPaint.FontMetrics.Descent / 2 - textPaint.FontMetrics.Ascent;
-                    float bmpwidth = bmpheight * (float)symbolbitmap.Width / (float)Math.Max(1, symbolbitmap.Height);
-                    float bmpmargin = bmpheight / 8;
+                    x = indent_start_x;
+                    y += textPaint.FontSpacing;
+                    isfirstprintonrow = true;
                     endposition = x + bmpwidth + bmpmargin;
-                    bool pastend = x + bmpwidth > canvaswidth - usedglyphpadding - rightmenupadding;
-                    if (pastend && !isfirstprintonrow && !nowrap)
-                    {
-                        x = indent_start_x;
-                        y += textPaint.FontSpacing;
-                        isfirstprintonrow = true;
-                        endposition = x + bmpwidth + bmpmargin;
-                    }
-                    if (!(y + textPaint.FontSpacing + textPaint.FontMetrics.Ascent <= 0 || y + textPaint.FontMetrics.Ascent >= canvasheight))
-                    {
-                        float bmpx = x;
-                        float bmpy = y + textPaint.FontMetrics.Ascent;
-                        SKRect bmptargetrect = new SKRect(bmpx, bmpy, bmpx + bmpwidth, bmpy + bmpheight);
+                }
+                if (!(y + textPaint.FontSpacing + textPaint.FontMetrics.Ascent <= 0 || y + textPaint.FontMetrics.Ascent >= canvasheight))
+                {
+                    float bmpx = x;
+                    float bmpy = y + textPaint.FontMetrics.Ascent;
+                    SKRect bmptargetrect = new SKRect(bmpx, bmpy, bmpx + bmpwidth, bmpy + bmpheight);
 #if !GNH_MAUI
-                        textPaint.Paint.Color = SKColors.White;
-                        textPaint.Paint.FilterQuality = SKFilterQuality.High;
+                    textPaint.Paint.Color = SKColors.White;
+                    textPaint.Paint.FilterQuality = SKFilterQuality.High;
 #endif
-                        canvas.DrawImage(symbolbitmap, source_rect, bmptargetrect,
+                    canvas.DrawImage(symbolbitmap, source_rect, bmptargetrect,
 #if GNH_MAUI
                             new SKSamplingOptions(SKFilterMode.Linear));
 #else
-                            textPaint.Paint);
-                        textPaint.Paint.FilterQuality = oldFilterQuality;
-                        textPaint.Paint.Color = oldColor;
+                        textPaint.Paint);
+                    textPaint.Paint.FilterQuality = oldFilterQuality;
+                    textPaint.Paint.Color = oldColor;
 #endif
-                    }
-                    isfirstprintonrow = false;
                 }
-                else
-                {
-                    int char_idx = 0;
-                    bool do_once_empty_string =  split_str.Length == 0;
-                    while (char_idx < split_str.Length || do_once_empty_string)
-                    {
-                        do_once_empty_string = false;
-                        int charidx_len = 0;
-                        int new_nhcolor = colors != null && colors.Length > 0 && char_idx < colors.Length ? colors[char_idx] : (int)NhColor.NO_COLOR;
-                        int new_nhattr = attrs != null && attrs.Length > 0 && char_idx < attrs.Length ? attrs[char_idx] : 0;
-                        int char_idx2 = char_idx;
-                        int new_nhcolor2 = new_nhcolor;
-                        int new_nhattr2 = new_nhattr;
-
-                        while (char_idx2 < split_str.Length && new_nhcolor == new_nhcolor2 && new_nhattr == new_nhattr2)
-                        {
-                            char_idx2++;
-                            new_nhcolor2 = colors != null && colors.Length > 0 && char_idx2 < colors.Length ? colors[char_idx2] : (int)NhColor.NO_COLOR;
-                            new_nhattr2 = attrs != null && attrs.Length > 0 && char_idx2 < attrs.Length ? attrs[char_idx2] : 0;
-                            charidx_len = char_idx2 - char_idx;
-                        }
-
-                        SKColor new_skcolor = UIUtils.NHColor2SKColorCore(new_nhcolor, new_nhattr, revertblackandwhite, false);
-                        printedsubline.SetValue(split_str, char_idx, charidx_len);
-                        if (new_nhcolor != (int)NhColor.NO_COLOR)
-                            textPaint.Color = new_skcolor;
-
-                        float printlength = textPaint.MeasureText(printedsubline.Value);
-                        endposition = x + printlength;
-                        bool pastend = x + printlength > canvaswidth - usedglyphpadding - rightmenupadding;
-                        if (pastend && !isfirstprintonrow && !nowrap)
-                        {
-                            rowidx++;
-                            isfirstprintonrow = true;
-
-                            x = indent_start_x;
-
-                            if (centertext && rowwidths != null && rowidx < rowwidths.Count)
-                                centering_padding = (totalrowwidth - rowwidths[rowidx]) / 2;
-                            x += centering_padding;
-
-                            y += textPaint.FontSpacing;
-                            endposition = x + printlength;
-                        }
-
-                        if (!(y + textPaint.FontSpacing + textPaint.FontMetrics.Ascent <= 0 || y + textPaint.FontMetrics.Ascent >= canvasheight))
-                        {
-                            if (usetextoutline)
-                            {
-                                SKColor oldcolor = textPaint.Color;
-                                textPaint.Color = revertblackandwhite ? SKColors.White : SKColors.Black;
-                                textPaint.StrokeWidth = textPaint.TextSize / 10;
-                                textPaint.Style = SKPaintStyle.Stroke;
-                                textPaint.DrawTextOnCanvas(canvas, printedsubline.Value, x, y);
-                                textPaint.Color = oldcolor;
-                                textPaint.Style = SKPaintStyle.Fill;
-                                textPaint.StrokeWidth = 0;
-                            }
-                            textPaint.DrawTextOnCanvas(canvas, printedsubline.Value, x, y);
-                        }
-
-                        if (new_nhcolor != (int)NhColor.NO_COLOR)
-                            textPaint.Color = orig_color;
-
-                        isfirstprintonrow = false;
-                        char_idx += charidx_len;
-                        x += printlength;
-                    }
-                    if (idx < textsplit.Length - 1)
-                        endposition += spacelength;
-                }
-
-                x = endposition;
-                idx++;
+                isfirstprintonrow = false;
             }
+            else
+            {
+                int char_idx = 0;
+                bool do_once_empty_string = textSpan.Length == 0;
+                while (char_idx < textSpan.Length || do_once_empty_string)
+                {
+                    do_once_empty_string = false;
+                    int charidx_len = 0;
+                    int new_nhcolor = !colors.IsEmpty && colors.Length > 0 && char_idx < colors.Length ? colors[char_idx] : (int)NhColor.NO_COLOR;
+                    int new_nhattr = !attrs.IsEmpty && attrs.Length > 0 && char_idx < attrs.Length ? attrs[char_idx] : 0;
+                    int char_idx2 = char_idx;
+                    int new_nhcolor2 = new_nhcolor;
+                    int new_nhattr2 = new_nhattr;
+
+                    while (char_idx2 < textSpan.Length && new_nhcolor == new_nhcolor2 && new_nhattr == new_nhattr2)
+                    {
+                        char_idx2++;
+                        new_nhcolor2 = !colors.IsEmpty && colors.Length > 0 && char_idx2 < colors.Length ? colors[char_idx2] : (int)NhColor.NO_COLOR;
+                        new_nhattr2 = !attrs.IsEmpty && attrs.Length > 0 && char_idx2 < attrs.Length ? attrs[char_idx2] : 0;
+                        charidx_len = char_idx2 - char_idx;
+                    }
+
+                    SKColor new_skcolor = UIUtils.NHColor2SKColorCore(new_nhcolor, new_nhattr, revertblackandwhite, false);
+                    printedsubline.SetValue(textSpan, char_idx, charidx_len);
+                    if (new_nhcolor != (int)NhColor.NO_COLOR)
+                        textPaint.Color = new_skcolor;
+
+                    float printlength = textPaint.MeasureText(printedsubline.Value);
+                    endposition = x + printlength;
+                    bool pastend = x + printlength > canvaswidth - usedglyphpadding - rightmenupadding;
+                    if (pastend && !isfirstprintonrow && !nowrap)
+                    {
+                        rowidx++;
+                        isfirstprintonrow = true;
+
+                        x = indent_start_x;
+
+                        if (centertext && rowwidths != null && rowidx < rowwidths.Count)
+                            centering_padding = (totalrowwidth - rowwidths[rowidx]) / 2;
+                        x += centering_padding;
+
+                        y += textPaint.FontSpacing;
+                        endposition = x + printlength;
+                    }
+
+                    if (!(y + textPaint.FontSpacing + textPaint.FontMetrics.Ascent <= 0 || y + textPaint.FontMetrics.Ascent >= canvasheight))
+                    {
+                        if (usetextoutline)
+                        {
+                            SKColor oldcolor = textPaint.Color;
+                            textPaint.Color = revertblackandwhite ? SKColors.White : SKColors.Black;
+                            textPaint.StrokeWidth = textPaint.TextSize / 10;
+                            textPaint.Style = SKPaintStyle.Stroke;
+                            textPaint.DrawTextOnCanvas(canvas, printedsubline.Value, x, y);
+                            textPaint.Color = oldcolor;
+                            textPaint.Style = SKPaintStyle.Fill;
+                            textPaint.StrokeWidth = 0;
+                        }
+                        textPaint.DrawTextOnCanvas(canvas, printedsubline.Value, x, y);
+                    }
+
+                    if (new_nhcolor != (int)NhColor.NO_COLOR)
+                        textPaint.Color = orig_color;
+
+                    isfirstprintonrow = false;
+                    char_idx += charidx_len;
+                    x += printlength;
+                }
+
+                if (addSpace)
+                    endposition += spaceLength;
+            }
+
+            x = endposition;
         }
 
+        private int SpanIndexOf(ReadOnlySpan<char> textSpan, char c, int startIndex)
+        {
+            for (int i = startIndex, len = textSpan.Length; i < len; i++)
+                if (textSpan[i] == c)
+                    return i;
+
+            return -1;
+        }
+
+        private void DrawSplittableText(SKCanvas canvas, ReadOnlySpan<char> textSpan, byte[] attrs, byte[] colors, List<float> rowwidths, ref float x, ref float y, ref bool isfirstprintonrow, float indent_start_x, float canvaswidth, float canvasheight, float rightmenupadding, GHSkiaFontPaint textPaint, bool usespecialsymbols, bool usetextoutline, bool revertblackandwhite, bool centertext, float totalrowwidth, float curmenuoffset, float glyphystart, float glyphyend, float glyphpadding)
+        {
+            int idx, startIdx = 0, len = textSpan.Length;
+            do
+            {
+                idx = SpanIndexOf(textSpan, ' ', startIdx);
+                DrawTextSpan(canvas, idx < 0 ? textSpan.Slice(startIdx) : textSpan.Slice(startIdx, idx + 1 - startIdx), 
+                    attrs != null ? (idx < 0 ? attrs.AsSpan(startIdx) : attrs.AsSpan(startIdx, idx + 1 - startIdx)) : ReadOnlySpan<byte>.Empty, 
+                    colors != null ? (idx < 0 ? colors.AsSpan(startIdx) : colors.AsSpan(startIdx, idx + 1 - startIdx)) : ReadOnlySpan<byte>.Empty, 
+                    rowwidths, ref x, ref y, ref isfirstprintonrow, indent_start_x, canvaswidth, canvasheight, rightmenupadding, textPaint, usespecialsymbols, 
+                    usetextoutline, revertblackandwhite, centertext, totalrowwidth, curmenuoffset, glyphystart, glyphyend, glyphpadding, false, 0.0f);
+                startIdx = idx < 0 || idx == len - 1 ? -1 : idx + 1;
+            } 
+            while (startIdx >= 0);
+        }
+
+        private void DrawTextSplit(SKCanvas canvas, string[] textsplit, List<byte[]> attrs_list, List<byte[]> colors_list, List<float> rowwidths, ref float x, ref float y, ref bool isfirstprintonrow, float indent_start_x, float canvaswidth, float canvasheight, float rightmenupadding, GHSkiaFontPaint textPaint, bool usespecialsymbols, bool usetextoutline, bool revertblackandwhite, bool centertext, float totalrowwidth, float curmenuoffset, float glyphystart, float glyphyend, float glyphpadding)
+        {
+            if (textsplit == null)
+                return;
+
+//#if !GNH_MAUI
+//            SKColor oldColor = textPaint.Paint.Color;
+//            SKFilterQuality oldFilterQuality = textPaint.Paint.FilterQuality;
+//#endif
+            float spacelength = textPaint.MeasureText(" ");
+            //int idx = 0;
+            //int rowidx = 0;
+            //SKColor orig_color = textPaint.Color;
+            //GHSubstring printedsubline = new GHSubstring("");
+            for (int idx = 0, cnt = textsplit.Length; idx < cnt; idx++)
+            {
+                string split_str = textsplit[idx];
+                byte[] attrs = attrs_list != null && idx < attrs_list.Count ? attrs_list[idx] : null;
+                byte[] colors = colors_list != null && idx < colors_list.Count ? colors_list[idx] : null;
+
+                DrawTextSpan(canvas, split_str
+#if !GNH_MAUI
+                    .AsSpan()
+#endif
+                    , attrs, colors, rowwidths, ref x, ref y, ref isfirstprintonrow, indent_start_x, canvaswidth, canvasheight, rightmenupadding, textPaint, usespecialsymbols, usetextoutline, revertblackandwhite, centertext, totalrowwidth, curmenuoffset, glyphystart, glyphyend, glyphpadding, idx < textsplit.Length - 1, spacelength);
+
+//                bool nowrap = false;
+//                if (string.IsNullOrWhiteSpace(split_str))
+//                    nowrap = true;
+
+//                float centering_padding = 0.0f;
+//                if(centertext && rowwidths != null && rowidx < rowwidths.Count)
+//                {
+//                    centering_padding = (totalrowwidth - rowwidths[rowidx]) / 2;
+//                }
+
+//                if(isfirstprintonrow)
+//                    x += centering_padding;
+
+//                float endposition = x;
+//                float usedglyphpadding = 0.0f;
+//                if (y - curmenuoffset + textPaint.FontMetrics.Ascent <= glyphyend
+//                    && y - curmenuoffset + textPaint.FontMetrics.Descent >= glyphystart)
+//                    usedglyphpadding = glyphpadding;
+
+//                SKImage symbolbitmap = null;
+//                SKRect source_rect = new SKRect();
+//                if(usespecialsymbols && (symbolbitmap = GetGameSpecialSymbol(split_str, out source_rect)) != null)
+//                {
+//                    textPaint.Color = orig_color;
+//                    float bmpheight = textPaint.FontMetrics.Descent / 2 - textPaint.FontMetrics.Ascent;
+//                    float bmpwidth = bmpheight * (float)symbolbitmap.Width / (float)Math.Max(1, symbolbitmap.Height);
+//                    float bmpmargin = bmpheight / 8;
+//                    endposition = x + bmpwidth + bmpmargin;
+//                    bool pastend = x + bmpwidth > canvaswidth - usedglyphpadding - rightmenupadding;
+//                    if (pastend && !isfirstprintonrow && !nowrap)
+//                    {
+//                        x = indent_start_x;
+//                        y += textPaint.FontSpacing;
+//                        isfirstprintonrow = true;
+//                        endposition = x + bmpwidth + bmpmargin;
+//                    }
+//                    if (!(y + textPaint.FontSpacing + textPaint.FontMetrics.Ascent <= 0 || y + textPaint.FontMetrics.Ascent >= canvasheight))
+//                    {
+//                        float bmpx = x;
+//                        float bmpy = y + textPaint.FontMetrics.Ascent;
+//                        SKRect bmptargetrect = new SKRect(bmpx, bmpy, bmpx + bmpwidth, bmpy + bmpheight);
+//#if !GNH_MAUI
+//                        textPaint.Paint.Color = SKColors.White;
+//                        textPaint.Paint.FilterQuality = SKFilterQuality.High;
+//#endif
+//                        canvas.DrawImage(symbolbitmap, source_rect, bmptargetrect,
+//#if GNH_MAUI
+//                            new SKSamplingOptions(SKFilterMode.Linear));
+//#else
+//                            textPaint.Paint);
+//                        textPaint.Paint.FilterQuality = oldFilterQuality;
+//                        textPaint.Paint.Color = oldColor;
+//#endif
+//                    }
+//                    isfirstprintonrow = false;
+//                }
+//                else
+//                {
+//                    int char_idx = 0;
+//                    bool do_once_empty_string =  split_str.Length == 0;
+//                    while (char_idx < split_str.Length || do_once_empty_string)
+//                    {
+//                        do_once_empty_string = false;
+//                        int charidx_len = 0;
+//                        int new_nhcolor = colors != null && colors.Length > 0 && char_idx < colors.Length ? colors[char_idx] : (int)NhColor.NO_COLOR;
+//                        int new_nhattr = attrs != null && attrs.Length > 0 && char_idx < attrs.Length ? attrs[char_idx] : 0;
+//                        int char_idx2 = char_idx;
+//                        int new_nhcolor2 = new_nhcolor;
+//                        int new_nhattr2 = new_nhattr;
+
+//                        while (char_idx2 < split_str.Length && new_nhcolor == new_nhcolor2 && new_nhattr == new_nhattr2)
+//                        {
+//                            char_idx2++;
+//                            new_nhcolor2 = colors != null && colors.Length > 0 && char_idx2 < colors.Length ? colors[char_idx2] : (int)NhColor.NO_COLOR;
+//                            new_nhattr2 = attrs != null && attrs.Length > 0 && char_idx2 < attrs.Length ? attrs[char_idx2] : 0;
+//                            charidx_len = char_idx2 - char_idx;
+//                        }
+
+//                        SKColor new_skcolor = UIUtils.NHColor2SKColorCore(new_nhcolor, new_nhattr, revertblackandwhite, false);
+//                        printedsubline.SetValue(split_str, char_idx, charidx_len);
+//                        if (new_nhcolor != (int)NhColor.NO_COLOR)
+//                            textPaint.Color = new_skcolor;
+
+//                        float printlength = textPaint.MeasureText(printedsubline.Value);
+//                        endposition = x + printlength;
+//                        bool pastend = x + printlength > canvaswidth - usedglyphpadding - rightmenupadding;
+//                        if (pastend && !isfirstprintonrow && !nowrap)
+//                        {
+//                            rowidx++;
+//                            isfirstprintonrow = true;
+
+//                            x = indent_start_x;
+
+//                            if (centertext && rowwidths != null && rowidx < rowwidths.Count)
+//                                centering_padding = (totalrowwidth - rowwidths[rowidx]) / 2;
+//                            x += centering_padding;
+
+//                            y += textPaint.FontSpacing;
+//                            endposition = x + printlength;
+//                        }
+
+//                        if (!(y + textPaint.FontSpacing + textPaint.FontMetrics.Ascent <= 0 || y + textPaint.FontMetrics.Ascent >= canvasheight))
+//                        {
+//                            if (usetextoutline)
+//                            {
+//                                SKColor oldcolor = textPaint.Color;
+//                                textPaint.Color = revertblackandwhite ? SKColors.White : SKColors.Black;
+//                                textPaint.StrokeWidth = textPaint.TextSize / 10;
+//                                textPaint.Style = SKPaintStyle.Stroke;
+//                                textPaint.DrawTextOnCanvas(canvas, printedsubline.Value, x, y);
+//                                textPaint.Color = oldcolor;
+//                                textPaint.Style = SKPaintStyle.Fill;
+//                                textPaint.StrokeWidth = 0;
+//                            }
+//                            textPaint.DrawTextOnCanvas(canvas, printedsubline.Value, x, y);
+//                        }
+
+//                        if (new_nhcolor != (int)NhColor.NO_COLOR)
+//                            textPaint.Color = orig_color;
+
+//                        isfirstprintonrow = false;
+//                        char_idx += charidx_len;
+//                        x += printlength;
+//                    }
+//                    if (idx < textsplit.Length - 1)
+//                        endposition += spacelength;
+//                }
+
+//                x = endposition;
+                //idx++;
+            }
+        }
 
         private float _interlockedMenuScrollOffset = 0;
         private float InterlockedMenuScrollOffset { get { return Interlocked.CompareExchange(ref _interlockedMenuScrollOffset, 0.0f, 0.0f); } set { Interlocked.Exchange(ref _interlockedMenuScrollOffset, value); } }
@@ -18804,7 +19007,7 @@ namespace GnollHackX.Pages.Game
             float canvaswidth = e.Info.Width; // TextCanvas.CanvasSize.Width;
             float canvasheight = e.Info.Height; // TextCanvas.CanvasSize.Height;
             float x = 0, y = 0;
-            string str;
+            ReadOnlySpan<char> str;
             float canvasUIwidth = (float)TextCanvas.ThreadSafeWidth;
             float scale = canvaswidth / Math.Max(1.0f, canvasUIwidth);
             float customScale = GHApp.CustomScreenScale;
@@ -18866,9 +19069,15 @@ namespace GnollHackX.Pages.Game
                 float rightmenupadding = leftmenupadding;
                 float topPadding = 0;
                 bool wrapglyph = TextCanvas.GHWindow != null ? TextCanvas.GHWindow.WrapGlyph : false;
+                bool glyphVisible = TextWindowGlyphImage.ThreadSafeIsVisible;
+                double glyphX = TextWindowGlyphImage.ThreadSafeX;
+                double glyphY = TextWindowGlyphImage.ThreadSafeY;
+                //double glyphWidth = TextWindowGlyphImage.ThreadSafeWidth;
+                double glyphHeight = TextWindowGlyphImage.ThreadSafeHeight;
                 float glyphpadding = 0;
-                float glyphystart = scale * (float)Math.Max(0.0, TextWindowGlyphImage.ThreadSafeY - TextCanvas.ThreadSafeY);
-                float glyphyend = scale * (float)Math.Max(0.0, TextWindowGlyphImage.ThreadSafeY + TextWindowGlyphImage.ThreadSafeHeight - TextCanvas.ThreadSafeY);
+                float glyphystart = scale * (float)Math.Max(0.0, glyphY - TextCanvas.ThreadSafeY);
+                float glyphyend = scale * (float)Math.Max(0.0, glyphY + glyphHeight - TextCanvas.ThreadSafeY);
+                float glyphvisiblepadding = scale * (float)Math.Max(0.0, TextCanvas.ThreadSafeX + TextCanvas.ThreadSafeWidth - glyphX);
 
                 //lock (TextCanvas.TextItemLock)
                 {
@@ -18910,27 +19119,31 @@ namespace GnollHackX.Pages.Game
                         bool firstprintonrow = true;
                         float start_x = x;
                         float indent_start_x = start_x;
-                        string indentstr = putstritem.GetIndentationString();
-                        if(indentstr != "")
-                        {
-                            indent_start_x += textPaint.MeasureText(indentstr);
-                        }
+                        //string indentstr = putstritem.GetIndentationString();
+                        //if(indentstr != "")
+                        //{
+                        //    indent_start_x += textPaint.MeasureText(indentstr);
+                        //}
+                        ReadOnlySpan<char> indentSpan;
+                        putstritem.GetIndentationSpan(out indentSpan);
+                        if (!indentSpan.IsEmpty)
+                            indent_start_x += textPaint.MeasureText(indentSpan);
 
-                        if (TextWindowGlyphImage.ThreadSafeIsVisible && (wrapglyph || (putstritem.InstructionList.Count > 0 && (putstritem.InstructionList[0].Attributes & (int)MenuItemAttributes.Title) != 0)))
-                            glyphpadding = scale * (float)Math.Max(0.0, TextCanvas.ThreadSafeX + TextCanvas.ThreadSafeWidth - TextWindowGlyphImage.ThreadSafeX);
+                        if (glyphVisible && (wrapglyph || (putstritem.InstructionList.Count > 0 && (putstritem.InstructionList[0].Attributes & (int)MenuItemAttributes.Title) != 0)))
+                            glyphpadding = glyphvisiblepadding;
                         else
                             glyphpadding = 0;
 
                         foreach (GHPutStrInstructions instr in putstritem.InstructionList)
                         {
                             if (putstritem.Text == null)
-                                str = "";
+                                str = ReadOnlySpan<char>.Empty;
                             else if (pos + instr.PrintLength <= putstritem.Text.Length)
-                                str = putstritem.Text.Substring(pos, instr.PrintLength);
+                                str = putstritem.Text.AsSpan(pos, instr.PrintLength);
                             else if (putstritem.Text.Length - pos > 0)
-                                str = putstritem.Text.Substring(pos, putstritem.Text.Length - pos);
+                                str = putstritem.Text.AsSpan(pos, putstritem.Text.Length - pos);
                             else
-                                str = "";
+                                str = ReadOnlySpan<char>.Empty;
 
                             pos += str.Length;
 
@@ -18939,8 +19152,8 @@ namespace GnollHackX.Pages.Game
                                 instr.Attributes,
                                 TextCanvas.RevertBlackAndWhite, false);
 
-                            string[] split = str.Split(' ');
-                            DrawTextSplit(canvas, split, null, null, null, ref x, ref y, ref firstprintonrow, indent_start_x, canvaswidth, canvasheight, rightmenupadding, textPaint, TextCanvas.GHWindow.UseSpecialSymbols, TextCanvas.UseTextOutline, TextCanvas.RevertBlackAndWhite, false, 0, curmenuoffset, glyphystart, glyphyend, glyphpadding);
+                            //string[] split = str.Split(' ');
+                            DrawSplittableText(canvas, str, null, null, null, ref x, ref y, ref firstprintonrow, indent_start_x, canvaswidth, canvasheight, rightmenupadding, textPaint, TextCanvas.GHWindow.UseSpecialSymbols, TextCanvas.UseTextOutline, TextCanvas.RevertBlackAndWhite, false, 0, curmenuoffset, glyphystart, glyphyend, glyphpadding);
                         }
                         j++;
                         y += textPaint.FontMetrics.Descent + fontspacingpadding;

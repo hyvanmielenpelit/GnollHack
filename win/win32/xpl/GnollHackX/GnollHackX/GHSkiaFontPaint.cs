@@ -178,6 +178,40 @@ namespace GnollHackX
             DrawTextOnCanvas(canvas, text, p.X, p.Y, textAlign);
         }
 
+        public void DrawTextOnCanvas(SKCanvas canvas, ReadOnlySpan<char> text, float x, float y, SKTextAlign textAlign)
+        {
+#if GNH_MAUI
+            using (SKTextBlob textBlob = SKTextBlob.Create(text, _font))
+            {
+                if (textBlob == null)
+                    return;
+
+                if (textAlign != SKTextAlign.Left)
+                {
+                    var width = _font.MeasureText(text);
+                    if (textAlign == SKTextAlign.Center)
+                        width *= 0.5f;
+                    x -= width;
+                }
+
+                canvas.DrawText(textBlob, x, y, _paint);
+            }
+#else
+            SKTextAlign oldAlign = _paint.TextAlign;
+            _paint.TextAlign = textAlign;
+            using (SKTextBlob sKTextBlob = SKTextBlob.Create(text, _paint.ToFont()))
+            {
+                canvas.DrawText(sKTextBlob, x, y, _paint);
+            }
+            _paint.TextAlign = oldAlign;
+#endif
+        }
+
+        public void DrawTextOnCanvas(SKCanvas canvas, ReadOnlySpan<char> text, SKPoint p, SKTextAlign textAlign)
+        {
+            DrawTextOnCanvas(canvas, text, p.X, p.Y, textAlign);
+        }
+
         public void DrawTextOnCanvas(SKCanvas canvas, string text, float x, float y)
         {
 #if GNH_MAUI

@@ -4002,6 +4002,199 @@ namespace GnollHackX
             return bitmap;
         }
 
+        public static SKImage GetSpecialSymbol(ReadOnlySpan<char> span, out SKRect source_rect)
+        {
+            source_rect = new SKRect();
+            if (span.IsEmpty || span[0] != '&')
+                return null;
+
+            SKImage bitmap = null;
+            ReadOnlySpan<char> trimmedSpan = span.Trim();
+            if (trimmedSpan.SequenceEqual("&success;"
+#if !GNH_MAUI
+                .AsSpan()
+#endif
+                ))
+            {
+                bitmap = _successBitmap;
+            }
+            else if (trimmedSpan.SequenceEqual("&mana;"
+#if !GNH_MAUI
+                .AsSpan()
+#endif
+                ))
+            {
+                bitmap = _manaBitmap;
+            }
+            else if (trimmedSpan.SequenceEqual("&cool;"
+#if !GNH_MAUI
+                .AsSpan()
+#endif
+                ))
+            {
+                bitmap = _cooldownBitmap;
+            }
+            else if (trimmedSpan.SequenceEqual("&casts;"
+#if !GNH_MAUI
+                .AsSpan()
+#endif
+                ))
+            {
+                bitmap = _castsBitmap;
+            }
+            else if (trimmedSpan.SequenceEqual("&adds;"
+#if !GNH_MAUI
+                .AsSpan()
+#endif
+                ))
+            {
+                bitmap = _addsBitmap;
+            }
+            else if (trimmedSpan.SequenceEqual("&food;"
+#if !GNH_MAUI
+                .AsSpan()
+#endif
+                ))
+            {
+                bitmap = _foodBitmap;
+            }
+            else if (trimmedSpan.SequenceEqual("&gold;"
+#if !GNH_MAUI
+                .AsSpan()
+#endif
+                ))
+            {
+                bitmap = _goldBitmap;
+            }
+            else if (trimmedSpan.SequenceEqual("&spabj;"
+#if !GNH_MAUI
+                .AsSpan()
+#endif
+                ))
+            {
+                bitmap = _spellAbjurationBitmap;
+            }
+            else if (trimmedSpan.SequenceEqual("&sparc;"
+#if !GNH_MAUI
+                .AsSpan()
+#endif
+                ))
+            {
+                bitmap = _spellArcaneBitmap;
+            }
+            else if (trimmedSpan.SequenceEqual("&spcel;"
+#if !GNH_MAUI
+                .AsSpan()
+#endif
+                ))
+            {
+                bitmap = _spellCelestialBitmap;
+            }
+            else if (trimmedSpan.SequenceEqual("&spcle;"
+#if !GNH_MAUI
+                .AsSpan()
+#endif
+                ))
+            {
+                bitmap = _spellClericalBitmap;
+            }
+            else if (trimmedSpan.SequenceEqual("&spcon;"
+#if !GNH_MAUI
+                .AsSpan()
+#endif
+                ))
+            {
+                bitmap = _spellConjurationBitmap;
+            }
+            else if (trimmedSpan.SequenceEqual("&spdiv;"
+#if !GNH_MAUI
+                .AsSpan()
+#endif
+                ))
+            {
+                bitmap = _spellDivinationBitmap;
+            }
+            else if (trimmedSpan.SequenceEqual("&spenc;"
+#if !GNH_MAUI
+                .AsSpan()
+#endif
+                ))
+            {
+                bitmap = _spellEnchantmentBitmap;
+            }
+            else if (trimmedSpan.SequenceEqual("&sphea;"
+#if !GNH_MAUI
+                .AsSpan()
+#endif
+                ))
+            {
+                bitmap = _spellHealingBitmap;
+            }
+            else if (trimmedSpan.SequenceEqual("&spmov;"
+#if !GNH_MAUI
+                .AsSpan()
+#endif
+                ))
+            {
+                bitmap = _spellMovementBitmap;
+            }
+            else if (trimmedSpan.SequenceEqual("&spnat;"
+#if !GNH_MAUI
+                .AsSpan()
+#endif
+                ))
+            {
+                bitmap = _spellNatureBitmap;
+            }
+            else if (trimmedSpan.SequenceEqual("&spnec;"
+#if !GNH_MAUI
+                .AsSpan()
+#endif
+                ))
+            {
+                bitmap = _spellNecromancyBitmap;
+            }
+            else if (trimmedSpan.SequenceEqual("&sptra;"
+#if !GNH_MAUI
+                .AsSpan()
+#endif
+                ))
+            {
+                bitmap = _spellTransmutationBitmap;
+            }
+            else if (trimmedSpan.SequenceEqual("&damage;"
+#if !GNH_MAUI
+                .AsSpan()
+#endif
+                ))
+            {
+                bitmap = _damageBitmap;
+            }
+            else if (trimmedSpan.SequenceEqual("&AC;"
+#if !GNH_MAUI
+                .AsSpan()
+#endif
+                ))
+            {
+                bitmap = _statusACBitmap;
+            }
+            else if (trimmedSpan.SequenceEqual("&MC;"
+#if !GNH_MAUI
+                .AsSpan()
+#endif
+                ))
+            {
+                bitmap = _statusMCBitmap;
+            }
+
+            if (bitmap != null)
+            {
+                source_rect.Right = bitmap.Width;
+                source_rect.Bottom = bitmap.Height;
+            }
+            return bitmap;
+        }
+
         //static readonly object _cachedBitmapsLock = new object();
         static readonly ConcurrentDictionary<string, SKImage> _cachedBitmaps = new ConcurrentDictionary<string, SKImage>();
 

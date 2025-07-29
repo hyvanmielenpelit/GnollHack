@@ -34,7 +34,7 @@ namespace GnollHackX
 
         public static string GetIndentationString(string usedtext, int usedattributes)
         {
-            if (usedtext == null || usedtext == "")
+            if (string.IsNullOrEmpty(usedtext))
                 return "";
 
             string str = usedtext;
@@ -93,6 +93,76 @@ namespace GnollHackX
             }
 
             return "";
+        }
+
+        public static void GetIndentationSpan(string str, int usedattributes, out ReadOnlySpan<char> outSpan)
+        {
+            if (string.IsNullOrEmpty(str))
+            {
+                outSpan = ReadOnlySpan<char>.Empty;
+                return;
+            }
+
+            int indentation_bits = (usedattributes & (int)MenuItemAttributes.IndentMask);
+            if (indentation_bits != 0)
+            {
+                string cstr = " ", cstr2 = "";
+                switch (indentation_bits)
+                {
+                    case (int)MenuItemAttributes.IndentBracketOrDoubleSpace:
+                        cstr = "]";
+                        cstr2 = "  ";
+                        break;
+                    case (int)MenuItemAttributes.IndentDoubleSpace:
+                        cstr = "  ";
+                        break;
+                    case (int)MenuItemAttributes.IndentPeriod:
+                        cstr = ".";
+                        break;
+                    case (int)MenuItemAttributes.IndentDash:
+                        cstr = "-";
+                        break;
+                    case (int)MenuItemAttributes.IndentColon:
+                        cstr = ":";
+                        break;
+                    case (int)MenuItemAttributes.IndentAstr:
+                        cstr = "*";
+                        break;
+                    case (int)MenuItemAttributes.IndentSpace:
+                        cstr = " ";
+                        break;
+                    case (int)MenuItemAttributes.IndentBracket:
+                        cstr = "]";
+                        break;
+                    default:
+                        break;
+                }
+
+                int idx = str.IndexOf(cstr);
+                if (idx < 0 && cstr2 != "")
+                    idx = str.IndexOf(cstr2);
+                if (idx >= 0)
+                {
+                    int spacepos = idx + cstr.Length;
+                    if (spacepos < str.Length)
+                    {
+                        ReadOnlySpan<char> searchSpan = str.AsSpan(spacepos);
+                        int cnt = 0, len = searchSpan.Length;
+                        while (cnt < len && searchSpan[cnt] == ' ')
+                            cnt++;
+                        if (spacepos + cnt < str.Length)
+                        {
+                            outSpan = str.AsSpan(0, spacepos + cnt);
+                            return;
+                        }
+                    }
+                    outSpan = str.AsSpan();
+                    return;
+                }
+            }
+
+            outSpan = ReadOnlySpan<char>.Empty;
+            return;
         }
 
         public static List<string> GetAllStringsFromZeroTerminatedArray(IntPtr ptr)

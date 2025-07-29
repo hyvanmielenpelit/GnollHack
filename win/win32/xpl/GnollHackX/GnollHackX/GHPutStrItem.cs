@@ -217,7 +217,7 @@ namespace GnollHackX
 
         public string GetIndentationString()
         {
-            if (Text == null || Text == "")
+            if (string.IsNullOrEmpty(Text))
                 return "";
 
             if (_instructionList != null && _instructionList.Count > 0)
@@ -225,6 +225,22 @@ namespace GnollHackX
                 return GHUtils.GetIndentationString(Text, _instructionList[0].Attributes);
             }
             return "";
+        }
+
+        public void GetIndentationSpan(out ReadOnlySpan<char> outSpan)
+        {
+            if (string.IsNullOrEmpty(Text))
+            {
+                outSpan = ReadOnlySpan<char>.Empty;
+                return;
+            }
+
+            if (_instructionList != null && _instructionList.Count > 0)
+            {
+                GHUtils.GetIndentationSpan(Text, _instructionList[0].Attributes, out outSpan);
+                return;
+            }
+            outSpan = ReadOnlySpan<char>.Empty;
         }
 
         public int StartingSpaces
