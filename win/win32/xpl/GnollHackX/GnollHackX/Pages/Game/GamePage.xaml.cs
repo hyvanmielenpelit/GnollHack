@@ -11912,9 +11912,10 @@ namespace GnollHackX.Pages.Game
                     textPaint.Color = SKColors.Black.WithAlpha(200);
                     canvas.DrawRect(0, 0, canvaswidth, canvasheight, textPaint.Paint);
                     textPaint.Color = SKColors.White;
+                    GridSize btnGridSize = CalculateStoneButtonGridSize(canvaswidth, canvasheight);
 
-                    float box_left = canvaswidth < canvasheight ? 1.25f * inverse_canvas_scale * (float)stdButtonWidth :
-                        3.25f * inverse_canvas_scale * (float)stdButtonWidth;
+                    float box_left = canvaswidth < canvasheight ? (btnGridSize.Buttons > 7 ? 2.25f : 1.25f) * inverse_canvas_scale * (float)stdButtonWidth :
+                        (btnGridSize.Columns + 0.25f) * inverse_canvas_scale * (float)stdButtonWidth;
                     float box_right = canvaswidth - box_left;
                     if (box_right < box_left)
                         box_right = box_left;
@@ -14375,6 +14376,36 @@ namespace GnollHackX.Pages.Game
 
             RefreshMenuRowCounts = true;
             RefreshMsgHistoryRowCounts = true;
+        }
+
+        public struct GridSize
+        {
+            public int Columns;
+            public int Rows;
+            public int Buttons;
+
+            public GridSize(int columns, int rows, int buttons)
+            {
+                Columns = columns;
+                Rows = rows;
+                Buttons = buttons;
+            }
+        }
+
+        private GridSize CalculateStoneButtonGridSize(float canvaswidth, float canvasheight)
+        {
+            bool isLandscape = canvaswidth > canvasheight;
+            bool isWideLandscape = canvaswidth > GHConstants.WideLandscapeThreshold * canvasheight;
+            int visibleButtons = 5;
+            if (!UseSimpleCmdLayout)
+                visibleButtons += 2;
+            if (ShowAutoDigButton)
+                visibleButtons++;
+            if (ShowIgnoreStoppingButton)
+                visibleButtons++;
+            int noOfColumns = isWideLandscape ? (visibleButtons + 1) / 2 : visibleButtons <= 6 ? 2 : 3;
+            int noOfRows = isWideLandscape ? 2 : isLandscape ? 3 : Math.Min(5, visibleButtons - 1);
+            return new GridSize(noOfColumns, noOfRows, visibleButtons);
         }
 
         private void OrderStoneButtons(double width, double height)
