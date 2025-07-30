@@ -717,6 +717,10 @@ namespace GnollHackX.Pages.Game
             }
         }
 
+        private int _showAltZoomButton;
+        public bool ShowAltZoomButton { get { return Interlocked.CompareExchange(ref _showAltZoomButton, 0, 0) != 0; } set { Interlocked.Exchange(ref _showAltZoomButton, value ? 1 : 0); } }
+        private int _showTravelModeButton;
+        public bool ShowTravelModeButton { get { return Interlocked.CompareExchange(ref _showTravelModeButton, 0, 0) != 0; } set { Interlocked.Exchange(ref _showTravelModeButton, value ? 1 : 0); } }
         private int _showAutoDigButton;
         public bool ShowAutoDigButton { get { return Interlocked.CompareExchange(ref _showAutoDigButton, 0, 0) != 0; } set { Interlocked.Exchange(ref _showAutoDigButton, value ? 1 : 0); } }
 
@@ -1056,7 +1060,10 @@ namespace GnollHackX.Pages.Game
             UseMainMipMap = Preferences.Get("UseMainMipMap", GHApp.IsUseMainMipMapDefault);
             UseMainGLCanvas = Preferences.Get("UseMainGLCanvas", GHApp.IsUseMainGPUDefault);
             UseAuxiliaryGLCanvas = Preferences.Get("UseAuxiliaryGLCanvas", GHApp.IsUseAuxGPUDefault);
-            UseSimpleCmdLayout = Preferences.Get("UseSimpleCmdLayout", GHConstants.DefaultSimpleCmdLayout);
+            bool simpleCmdLayout = Preferences.Get("UseSimpleCmdLayout", GHConstants.DefaultSimpleCmdLayout);
+            UseSimpleCmdLayout = simpleCmdLayout;
+            ShowAltZoomButton = Preferences.Get("ShowAltZoomButton", !simpleCmdLayout);
+            ShowTravelModeButton = Preferences.Get("ShowTravelModeButton", !simpleCmdLayout);
             ShowAutoDigButton = Preferences.Get("ShowAutoDigButton", false);
             ShowIgnoreStoppingButton = Preferences.Get("ShowIgnoreStoppingButton", false);
             ShowMemory = Preferences.Get("ShowMemory", false);
@@ -14476,8 +14483,10 @@ namespace GnollHackX.Pages.Game
             bool isLandscape = width > height;
             bool isWideLandscape = width > GHConstants.WideLandscapeThreshold * height;
             int visibleButtons = 5;
-            if (!UseSimpleCmdLayout)
-                visibleButtons += 2;
+            if (ShowAltZoomButton)
+                visibleButtons++;
+            if (ShowTravelModeButton)
+                visibleButtons++;
             if (ShowAutoDigButton)
                 visibleButtons++;
             if (ShowIgnoreStoppingButton)
@@ -14502,18 +14511,38 @@ namespace GnollHackX.Pages.Game
 
             bool isAltZoomVisible = false;
             bool isTravelModeVisible = false;
-            if (!UseSimpleCmdLayout)
+            if (ShowAltZoomButton)
             {
-                isAltZoomVisible = isTravelModeVisible = true;
+                isAltZoomVisible = true;
                 ToggleZoomAlternateButton.IsVisible = true;
-                ToggleTravelModeButton.IsVisible = true;
-                visibleButtons += 2;
+                visibleButtons++;
             }
             else
             {
                 ToggleZoomAlternateButton.IsVisible = false;
+            }
+            if (ShowTravelModeButton)
+            {
+                isTravelModeVisible = true;
+                ToggleTravelModeButton.IsVisible = true;
+                visibleButtons++;
+            }
+            else
+            {
                 ToggleTravelModeButton.IsVisible = false;
             }
+            //if (!UseSimpleCmdLayout)
+            //{
+            //    isAltZoomVisible = isTravelModeVisible = true;
+            //    ToggleZoomAlternateButton.IsVisible = true;
+            //    ToggleTravelModeButton.IsVisible = true;
+            //    visibleButtons += 2;
+            //}
+            //else
+            //{
+            //    ToggleZoomAlternateButton.IsVisible = false;
+            //    ToggleTravelModeButton.IsVisible = false;
+            //}
 
             bool isAutoDigVisible = false;
             bool isIgnoreVisible = false;
@@ -20457,7 +20486,9 @@ namespace GnollHackX.Pages.Game
                     break;
                 case SKTouchAction.Released:
                     ShownTip++;
-                    if (UseSimpleCmdLayout && (ShownTip == 5 || ShownTip == 7))
+                    if (ShownTip == 5 && !ShowAltZoomButton)
+                        ShownTip++;
+                    if (ShownTip == 7 && !ShowTravelModeButton)
                         ShownTip++;
                     if (ShownTip == 8 && !ShowIgnoreStoppingButton)
                         ShownTip++;
