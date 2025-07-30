@@ -5091,7 +5091,7 @@ int spell;
 
         /* Next we have to update the spell sorting order */
         int i = 0;
-        while (i < MAXSPELL && spl_orderindx[i] != spell)
+        while (i < MAXSPELL)
         {
             if (spl_orderindx[i] == spell)
             {
