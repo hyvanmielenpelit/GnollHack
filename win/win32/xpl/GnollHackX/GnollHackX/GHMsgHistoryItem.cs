@@ -185,7 +185,7 @@ namespace GnollHackX
         public IEnumerator<GHMsgHistoryItem> GetEnumerator()
         {
             for (int i = 0; i < _count; i++)
-                yield return _items[i];
+                yield return _items[_start + i];
         }
 
         IEnumerator IEnumerable.GetEnumerator() // Non-generic version
