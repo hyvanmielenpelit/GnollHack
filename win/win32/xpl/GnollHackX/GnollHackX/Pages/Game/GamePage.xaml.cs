@@ -15307,7 +15307,7 @@ namespace GnollHackX.Pages.Game
                                                         }
                                                     }
                                                     else
-                                                    _statusOffsetY += diffY;
+                                                        _statusOffsetY += diffY;
 
                                                     if (_statusOffsetY > 0)
                                                     {
