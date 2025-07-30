@@ -12149,8 +12149,10 @@ namespace GnollHackX.Pages.Game
                 {
                     ty += _localStatusOffsetY;
                     _localStatusClipBottom = cliprect.Bottom;
+                    _localStatusLargestBottom = 0;
                 }
                 base_ty = ty;
+                box_bottom_draw_threshold = _localStatusClipBottom;
 
                 for (int i = 0; i < 6; i++)
                 {
@@ -12162,7 +12164,8 @@ namespace GnollHackX.Pages.Game
                     }
                     if (valtext != "")
                     {
-                        if (ty < box_bottom_draw_threshold && ty > box_top_draw_threshold)
+                        _localStatusLargestBottom = Math.Max(_localStatusLargestBottom, ty + textPaint.FontMetrics.Descent);
+                        if (ty <= box_bottom_draw_threshold && ty >= box_top_draw_threshold)
                         {
                             string printtext = _attributeStrings[i];
                             textPaint.DrawTextOnCanvas(canvas, printtext, tx, ty);
@@ -12188,7 +12191,8 @@ namespace GnollHackX.Pages.Game
                 }
                 if (valtext != "")
                 {
-                    if (ty < box_bottom_draw_threshold && ty > box_top_draw_threshold)
+                    _localStatusLargestBottom = Math.Max(_localStatusLargestBottom, ty + textPaint.FontMetrics.Descent);
+                    if (ty <= box_bottom_draw_threshold && ty >= box_top_draw_threshold)
                     {
                         textPaint.DrawTextOnCanvas(canvas, "Level:", tx, ty);
                         textPaint.DrawTextOnCanvas(canvas, valtext, tx + indentation, ty);
@@ -12208,7 +12212,8 @@ namespace GnollHackX.Pages.Game
                 }
                 if (valtext != "")
                 {
-                    if (ty < box_bottom_draw_threshold && ty > box_top_draw_threshold)
+                    _localStatusLargestBottom = Math.Max(_localStatusLargestBottom, ty + textPaint.FontMetrics.Descent);
+                    if (ty <= box_bottom_draw_threshold && ty >= box_top_draw_threshold)
                     {
                         textPaint.DrawTextOnCanvas(canvas, "Experience:", tx, ty);
                         textPaint.DrawTextOnCanvas(canvas, valtext, tx + indentation, ty);
@@ -12227,7 +12232,8 @@ namespace GnollHackX.Pages.Game
                 }
                 if (valtext != "")
                 {
-                    if (ty < box_bottom_draw_threshold && ty > box_top_draw_threshold)
+                    _localStatusLargestBottom = Math.Max(_localStatusLargestBottom, ty + textPaint.FontMetrics.Descent);
+                    if (ty <= box_bottom_draw_threshold && ty >= box_top_draw_threshold)
                     {
                         textPaint.DrawTextOnCanvas(canvas, "Hit dice:", tx, ty);
                         textPaint.DrawTextOnCanvas(canvas, valtext, tx + indentation, ty);
@@ -12247,7 +12253,8 @@ namespace GnollHackX.Pages.Game
                 }
                 if (valtext != "")
                 {
-                    if (ty < box_bottom_draw_threshold && ty > box_top_draw_threshold)
+                    _localStatusLargestBottom = Math.Max(_localStatusLargestBottom, ty + textPaint.FontMetrics.Descent);
+                    if (ty <= box_bottom_draw_threshold && ty >= box_top_draw_threshold)
                     {
                         textPaint.DrawTextOnCanvas(canvas, "Alignment:", tx, ty);
                         textPaint.DrawTextOnCanvas(canvas, valtext, tx + indentation, ty);
@@ -12266,7 +12273,8 @@ namespace GnollHackX.Pages.Game
                 }
                 if (valtext != "")
                 {
-                    if (ty < box_bottom_draw_threshold && ty > box_top_draw_threshold)
+                    _localStatusLargestBottom = Math.Max(_localStatusLargestBottom, ty + textPaint.FontMetrics.Descent);
+                    if (ty <= box_bottom_draw_threshold && ty >= box_top_draw_threshold)
                     {
                         textPaint.DrawTextOnCanvas(canvas, "Score:", tx, ty);
                         textPaint.DrawTextOnCanvas(canvas, valtext, tx + indentation, ty);
@@ -12289,9 +12297,9 @@ namespace GnollHackX.Pages.Game
                 {
                     //lock (_statusOffsetLock)
                     {
-                        _localStatusLargestBottom = ty + textPaint.FontMetrics.Descent;
+                        _localStatusLargestBottom = Math.Max(_localStatusLargestBottom, ty + textPaint.FontMetrics.Descent);
                     }
-                    if (ty < box_bottom_draw_threshold && ty > box_top_draw_threshold)
+                    if (ty <= box_bottom_draw_threshold && ty >= box_top_draw_threshold)
                     {
                         textPaint.DrawTextOnCanvas(canvas, "Armor class:", tx, ty);
                         textPaint.DrawTextOnCanvas(canvas, valtext, tx + indentation, ty);
@@ -12318,9 +12326,9 @@ namespace GnollHackX.Pages.Game
                 {
                     //lock (_statusOffsetLock)
                     {
-                        _localStatusLargestBottom = ty + textPaint.FontMetrics.Descent;
+                        _localStatusLargestBottom = Math.Max(_localStatusLargestBottom, ty + textPaint.FontMetrics.Descent);
                     }
-                    if (ty < box_bottom_draw_threshold && ty > box_top_draw_threshold)
+                    if (ty <= box_bottom_draw_threshold && ty >= box_top_draw_threshold)
                     {
                         textPaint.DrawTextOnCanvas(canvas, "Magic cancellation:", tx, ty);
                         string printtext = valtext2 != "" ? valtext + "/" + valtext2 + "%" : valtext;
@@ -12343,9 +12351,9 @@ namespace GnollHackX.Pages.Game
                 {
                     //lock (_statusOffsetLock)
                     {
-                        _localStatusLargestBottom = ty + textPaint.FontMetrics.Descent;
+                        _localStatusLargestBottom = Math.Max(_localStatusLargestBottom, ty + textPaint.FontMetrics.Descent);
                     }
-                    if (ty < box_bottom_draw_threshold && ty > box_top_draw_threshold)
+                    if (ty <= box_bottom_draw_threshold && ty >= box_top_draw_threshold)
                     {
                         textPaint.DrawTextOnCanvas(canvas, "Move:", tx, ty);
                         textPaint.DrawTextOnCanvas(canvas, valtext, tx + indentation, ty);
@@ -12377,9 +12385,9 @@ namespace GnollHackX.Pages.Game
                 {
                     //lock (_statusOffsetLock)
                     {
-                        _localStatusLargestBottom = ty + textPaint.FontMetrics.Descent;
+                        _localStatusLargestBottom = Math.Max(_localStatusLargestBottom, ty + textPaint.FontMetrics.Descent);
                     }
-                    if (ty < box_bottom_draw_threshold && ty > box_top_draw_threshold)
+                    if (ty <= box_bottom_draw_threshold && ty >= box_top_draw_threshold)
                     {
                         textPaint.DrawTextOnCanvas(canvas, "Weapon style:", tx, ty);
                         string printtext = valtext;
@@ -12408,9 +12416,9 @@ namespace GnollHackX.Pages.Game
                 {
                     //lock (_statusOffsetLock)
                     {
-                        _localStatusLargestBottom = ty + textPaint.FontMetrics.Descent;
+                        _localStatusLargestBottom = Math.Max(_localStatusLargestBottom, ty + textPaint.FontMetrics.Descent);
                     }
-                    if (ty < box_bottom_draw_threshold && ty > box_top_draw_threshold)
+                    if (ty <= box_bottom_draw_threshold && ty >= box_top_draw_threshold)
                     {
                         GHSubstring printtext = valtext.Length > 11 && valtext[0] == '\\' ? new GHSubstring(valtext, 11) : new GHSubstring(valtext);
                         textPaint.DrawTextOnCanvas(canvas, "Gold:", tx, ty);
@@ -12433,9 +12441,9 @@ namespace GnollHackX.Pages.Game
                 {
                     //lock (_statusOffsetLock)
                     {
-                        _localStatusLargestBottom = ty + textPaint.FontMetrics.Descent;
+                        _localStatusLargestBottom = Math.Max(_localStatusLargestBottom, ty + textPaint.FontMetrics.Descent);
                     }
-                    if (ty < box_bottom_draw_threshold && ty > box_top_draw_threshold)
+                    if (ty <= box_bottom_draw_threshold && ty >= box_top_draw_threshold)
                     {
                         textPaint.DrawTextOnCanvas(canvas, "Turns:", tx, ty);
                         textPaint.DrawTextOnCanvas(canvas, valtext, tx + indentation, ty);
@@ -12490,7 +12498,7 @@ namespace GnollHackX.Pages.Game
                             target_rt.Top = ty + textPaint.FontMetrics.Ascent - textPaint.FontMetrics.Descent / 2 + (textPaint.FontSpacing - marksize) / 2;
                             target_rt.Bottom = target_rt.Top + marksize;
 
-                            if (ty < box_bottom_draw_threshold && ty > box_top_draw_threshold)
+                            if (ty <= box_bottom_draw_threshold && ty >= box_top_draw_threshold)
                             {
                                 GHApp.MaybeFixRects(ref source_rt, ref target_rt, 1.0f, usingGL, fixRects);
                                 canvas.DrawImage(TileMap[sheet_idx], source_rt, target_rt);
@@ -12498,7 +12506,7 @@ namespace GnollHackX.Pages.Game
                             }
                             //lock (_statusOffsetLock)
                             {
-                                _localStatusLargestBottom = ty + textPaint.FontMetrics.Descent;
+                                _localStatusLargestBottom = Math.Max(_localStatusLargestBottom, ty + textPaint.FontMetrics.Descent);
                             }
                             ty += textPaint.FontSpacing;
                         }
@@ -12536,7 +12544,7 @@ namespace GnollHackX.Pages.Game
                             target_rt.Top = ty + textPaint.FontMetrics.Ascent - textPaint.FontMetrics.Descent / 2 + (textPaint.FontSpacing - marksize) / 2;
                             target_rt.Bottom = target_rt.Top + marksize;
 
-                            if (ty < box_bottom_draw_threshold && ty > box_top_draw_threshold)
+                            if (ty <= box_bottom_draw_threshold && ty >= box_top_draw_threshold)
                             {
                                 GHApp.MaybeFixRects(ref source_rt, ref target_rt, 1.0f, usingGL, fixRects);
                                 canvas.DrawImage(TileMap[sheet_idx], source_rt, target_rt);
@@ -12544,7 +12552,7 @@ namespace GnollHackX.Pages.Game
                             }
                             //lock (_statusOffsetLock)
                             {
-                                _localStatusLargestBottom = ty + textPaint.FontMetrics.Descent;
+                                _localStatusLargestBottom = Math.Max(_localStatusLargestBottom, ty + textPaint.FontMetrics.Descent);
                             }
                             ty += textPaint.FontSpacing;
                         }
@@ -12594,7 +12602,7 @@ namespace GnollHackX.Pages.Game
                                 target_rt.Top = ty + textPaint.FontMetrics.Ascent - textPaint.FontMetrics.Descent / 2 + (textPaint.FontSpacing - marksize) / 2;
                                 target_rt.Bottom = target_rt.Top + marksize;
 
-                                if (ty < box_bottom_draw_threshold && ty > box_top_draw_threshold)
+                                if (ty <= box_bottom_draw_threshold && ty >= box_top_draw_threshold)
                                 {
                                     GHApp.MaybeFixRects(ref source_rt, ref target_rt, 1.0f, usingGL, fixRects);
                                     canvas.DrawImage(TileMap[sheet_idx], source_rt, target_rt);
@@ -12603,7 +12611,7 @@ namespace GnollHackX.Pages.Game
                                 }
                                 //lock (_statusOffsetLock)
                                 {
-                                    _localStatusLargestBottom = ty + textPaint.FontMetrics.Descent;
+                                    _localStatusLargestBottom = Math.Max(_localStatusLargestBottom, ty + textPaint.FontMetrics.Descent);
                                 }
                                 ty += textPaint.FontSpacing;
                             }
@@ -15299,7 +15307,7 @@ namespace GnollHackX.Pages.Game
                                                         }
                                                     }
                                                     else
-                                                        _statusOffsetY += diffY;
+                                                    _statusOffsetY += diffY;
 
                                                     if (_statusOffsetY > 0)
                                                     {
