@@ -5063,7 +5063,7 @@ int
 forgetspell(spell)
 int spell;
 {
-    if (spell < 0 || spell >= MAXSPELL || spellid(spell) == STRANGE_OBJECT)
+    if (spell < 0 || spell >= MAXSPELL || spellid(spell) == NO_SPELL)
         return 0;
 
     char qbuf[BUFSZ] = "";
@@ -5074,6 +5074,8 @@ int spell;
     if (yn_query_ex(ATR_NONE, CLR_MSG_WARNING, (char*)0, qbuf) == 'y')
     {
         struct spell empty_spell = { 0 };
+
+        /* Remove spell first from spl_book */
         int n;
         for (n = spell + 1; n <= MAXSPELL; n++)
         {
@@ -5086,14 +5088,42 @@ int spell;
                     break;
             }
         }
-        if (context.quick_cast_spell_no == spell)
+
+        /* Next we have to update the spell sorting order */
+        int i = 0;
+        while (i < MAXSPELL && spl_orderindx[i] != spell)
+        {
+            if (spl_orderindx[i] == spell)
+            {
+                /* Remove the spell from order index by moving */
+                for (n = i + 1; n < MAXSPELL; n++)
+                {
+                    spl_orderindx[n - 1] = spl_orderindx[n];
+                }
+                spl_orderindx[MAXSPELL - 1] = NO_SPELL;
+            }
+            else
+            {
+                i++;
+            }
+        }
+
+        /* Spells after the spell's index have moved earlier in the list */
+        for (n = 0; n < MAXSPELL; n++)
+        {
+            if (spl_orderindx[n] > spell)
+                spl_orderindx[n]--;
+        }
+
+        /* Handle quick cast spells */
+        if (context.quick_cast_spell_no == spell) /* Make empty */
         {
             context.quick_cast_spell_set = FALSE;
             issue_gui_command(GUI_CMD_TOGGLE_QUICK_CAST_SPELL, NO_GLYPH, 0, "");
         }
-        else if (context.quick_cast_spell_no > spell)
+        else if (context.quick_cast_spell_no > spell) /* Has moved earlier in the list */
             context.quick_cast_spell_no--;
-        sortspells();
+
         char buf[BUFSZ] = "";
         int multicolors[1] = { CLR_MSG_HINT };
         pline_multi_ex(ATR_NONE, NO_COLOR, no_multiattrs, multicolors, buf, "You removed \'%s\' from your memory permanently.", spellnamebuf);

@@ -95,10 +95,10 @@
 
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)'=='Release|net9.0-ios'">
 		<ProvisioningType>manual</ProvisioningType>
-		<!--<CodesignKey>Apple Distribution: Hyvan mielen pelit ry (CUG8RS847T)</CodesignKey>
-		<CodesignProvision>Apple Dev GnollHack Distribution July 2025</CodesignProvision>-->
-		<CodesignKey>Apple Development: Janne Gustafsson (3JF32923Y3)</CodesignKey>
-		<CodesignProvision>Apple Dev GnollHack Development July 2025</CodesignProvision>
+		<CodesignKey>Apple Distribution: Hyvan mielen pelit ry (CUG8RS847T)</CodesignKey>
+		<CodesignProvision>Apple Dev GnollHack Distribution July 2025</CodesignProvision>
+		<!--<CodesignKey>Apple Development: Janne Gustafsson (3JF32923Y3)</CodesignKey>
+		<CodesignProvision>Apple Dev GnollHack Development July 2025</CodesignProvision>-->
 		<!--<MtouchUseLlvm>false</MtouchUseLlvm>-->
 		<MtouchLink>SdkOnly</MtouchLink>
 	</PropertyGroup>
