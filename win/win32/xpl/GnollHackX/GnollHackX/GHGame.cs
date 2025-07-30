@@ -2903,11 +2903,11 @@ namespace GnollHackX
                     if (cmd_str != null)
                         status_str = cmd_str;
 #if SENTRY
-                    string data_title = cmd_param == (int)diagnostic_data_types.DIAGNOSTIC_DATA_IMPOSSIBLE ? "Diagnostic - Impossible" :
-                        cmd_param == (int)diagnostic_data_types.DIAGNOSTIC_DATA_PANIC ? "Diagnostic - Panic" :
-                        cmd_param == (int)diagnostic_data_types.DIAGNOSTIC_DATA_CRITICAL ? "Diagnostic - Critical" :
-                        "Diagnostic - General";
-                    SentrySdk.CaptureMessage(data_title + ": " + status_str);
+                    string data_title = cmd_param == (int)diagnostic_data_types.DIAGNOSTIC_DATA_IMPOSSIBLE ? "I - " :
+                        cmd_param == (int)diagnostic_data_types.DIAGNOSTIC_DATA_PANIC ? "P - " :
+                        cmd_param == (int)diagnostic_data_types.DIAGNOSTIC_DATA_CRITICAL ? "C - " :
+                        "D - ";
+                    SentrySdk.CaptureMessage(data_title + status_str);
 #else
                     if (GHApp.PostingDiagnosticData)
                     {
@@ -3067,7 +3067,7 @@ namespace GnollHackX
                         if (cmd_param == (int)debug_log_types.DEBUGLOG_PRIORITY)
                         {
 #if SENTRY
-                            SentrySdk.CaptureMessage("Priority Debug Log: " + logged_str);
+                            SentrySdk.CaptureMessage("Log: " + logged_str);
 #endif
                         }
                     }
