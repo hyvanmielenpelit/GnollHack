@@ -335,7 +335,7 @@ boolean foundyou;
         return (0);
     }
 
-    if (!is_peaceful(mtmp) && canspotmon(mtmp))
+    if (!is_peaceful(mtmp) && (!nodirspell || canspotmon(mtmp)))
         nomul(0);
 
     /*Spellnum + 1 is used as spell level 1...ml; chance of fail is 50% for ml and 0% for ml /2,
