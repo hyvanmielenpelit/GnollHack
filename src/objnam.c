@@ -2486,6 +2486,79 @@ struct obj* obj;
 }
 
 char*
+aqcxname3(obj)
+struct obj* obj;
+{
+    if (obj->otyp == CORPSE)
+        return obj->quan == 1 ? corpse_xname(obj, (const char*)0, CXN_ARTICLE) : prepend_quan(obj->quan, corpse_xname(obj, (const char*)0, CXN_NORMAL));
+    return obj->oartifact && obj->aknown ? the(xname(obj)) : obj->quan != 1 ? prepend_quan(obj->quan, xname(obj)) : an(xname(obj));
+}
+
+char*
+aqcxname4(obj)
+struct obj* obj;
+{
+    if (obj->otyp == CORPSE)
+        return obj->quan == 1 ? corpse_xname(obj, (const char*)0, CXN_ARTICLE) : prepend_quan(obj->quan, corpse_xname(obj, (const char*)0, CXN_NORMAL));
+    return obj->oartifact && obj->aknown ? the(xname(obj)) : obj->quan != 1 ? prepend_quan(obj->quan, xname(obj)) : an(xname(obj));
+}
+
+char*
+aqcxname5(obj)
+struct obj* obj;
+{
+    if (obj->otyp == CORPSE)
+        return obj->quan == 1 ? corpse_xname(obj, (const char*)0, CXN_ARTICLE) : prepend_quan(obj->quan, corpse_xname(obj, (const char*)0, CXN_NORMAL));
+    return obj->oartifact && obj->aknown ? the(xname(obj)) : obj->quan != 1 ? prepend_quan(obj->quan, xname(obj)) : an(xname(obj));
+}
+
+char*
+aqcxname6(obj)
+struct obj* obj;
+{
+    if (obj->otyp == CORPSE)
+        return obj->quan == 1 ? corpse_xname(obj, (const char*)0, CXN_ARTICLE) : prepend_quan(obj->quan, corpse_xname(obj, (const char*)0, CXN_NORMAL));
+    return obj->oartifact && obj->aknown ? the(xname(obj)) : obj->quan != 1 ? prepend_quan(obj->quan, xname(obj)) : an(xname(obj));
+}
+
+char*
+aqcxname7(obj)
+struct obj* obj;
+{
+    if (obj->otyp == CORPSE)
+        return obj->quan == 1 ? corpse_xname(obj, (const char*)0, CXN_ARTICLE) : prepend_quan(obj->quan, corpse_xname(obj, (const char*)0, CXN_NORMAL));
+    return obj->oartifact && obj->aknown ? the(xname(obj)) : obj->quan != 1 ? prepend_quan(obj->quan, xname(obj)) : an(xname(obj));
+}
+
+char*
+aqcxname8(obj)
+struct obj* obj;
+{
+    if (obj->otyp == CORPSE)
+        return obj->quan == 1 ? corpse_xname(obj, (const char*)0, CXN_ARTICLE) : prepend_quan(obj->quan, corpse_xname(obj, (const char*)0, CXN_NORMAL));
+    return obj->oartifact && obj->aknown ? the(xname(obj)) : obj->quan != 1 ? prepend_quan(obj->quan, xname(obj)) : an(xname(obj));
+}
+
+char*
+aqcxname9(obj)
+struct obj* obj;
+{
+    if (obj->otyp == CORPSE)
+        return obj->quan == 1 ? corpse_xname(obj, (const char*)0, CXN_ARTICLE) : prepend_quan(obj->quan, corpse_xname(obj, (const char*)0, CXN_NORMAL));
+    return obj->oartifact && obj->aknown ? the(xname(obj)) : obj->quan != 1 ? prepend_quan(obj->quan, xname(obj)) : an(xname(obj));
+}
+
+char*
+aqcxname10(obj)
+struct obj* obj;
+{
+    if (obj->otyp == CORPSE)
+        return obj->quan == 1 ? corpse_xname(obj, (const char*)0, CXN_ARTICLE) : prepend_quan(obj->quan, corpse_xname(obj, (const char*)0, CXN_NORMAL));
+    return obj->oartifact && obj->aknown ? the(xname(obj)) : obj->quan != 1 ? prepend_quan(obj->quan, xname(obj)) : an(xname(obj));
+}
+
+
+char*
 thecxname(obj)
 struct obj* obj;
 {

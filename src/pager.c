@@ -173,6 +173,9 @@ struct obj **obj_p;
         return FALSE;
 
     int glyphotyp = glyph_to_otyp(glyph);
+    if (glyphotyp < STRANGE_OBJECT || glyphotyp >= NUM_OBJECTS)
+        return FALSE;
+
     otmp = any_obj_at(glyphotyp, x, y);
 
     /* there might be a mimic here posing as an object */
@@ -207,37 +210,37 @@ struct obj **obj_p;
         else if (otmp->otyp == EGG)
             otmp->corpsenm = LOW_PM; /* make sure it is not NON_PM */
         
-        if (mtmp && has_mcorpsenm(mtmp)) /* mimic as corpse/statue */
+        if (mtmp && has_mcorpsenm(mtmp) && is_obj_mappear(mtmp, (unsigned)otmp->otyp)) /* mimic as corpse/statue */
             otmp->corpsenm = MCORPSENM(mtmp);
-        else if (mtmp && has_mobj(mtmp)) /* mimic as corpse/statue via MOBJ */
+        else if (mtmp && has_mobj(mtmp) && MOBJ(mtmp)->otyp == otmp->otyp) /* mimic as corpse/statue via MOBJ; goes here only if otmp->otyp != glyphotyp but still is_obj_mappear(mtmp, (unsigned) glyphotyp) == TRUE above, which indicates that things are not right */
         {
             otmp->quan = MOBJ(mtmp)->quan;
             otmp->corpsenm = MOBJ(mtmp)->corpsenm;
         }
         else if (otmp->otyp == CORPSE && glyph_is_body(glyph))
         {
-            otmp->corpsenm = max(0, abs(glyph) - GLYPH_BODY_OFF) + LOW_PM;
+            otmp->corpsenm = min(NUM_MONSTERS - 1, max(0, abs(glyph) - GLYPH_BODY_OFF) + LOW_PM);
             otmp->speflags |= SPEFLAGS_MALE;
             if (glyph < 0)
                 otmp->speflags |= SPEFLAGS_FACING_RIGHT;
         }
         else if (otmp->otyp == CORPSE && glyph_is_female_body(glyph))
         {
-            otmp->corpsenm = max(0, abs(glyph) - GLYPH_FEMALE_BODY_OFF) + LOW_PM;
+            otmp->corpsenm = min(NUM_MONSTERS - 1, max(0, abs(glyph) - GLYPH_FEMALE_BODY_OFF) + LOW_PM);
             otmp->speflags |= SPEFLAGS_FEMALE;
             if (glyph < 0)
                 otmp->speflags |= SPEFLAGS_FACING_RIGHT;
         }
         else if (otmp->otyp == STATUE && glyph_is_statue(glyph))
         {
-            otmp->corpsenm = max(0, abs(glyph) - GLYPH_STATUE_OFF) + LOW_PM;;
+            otmp->corpsenm = min(NUM_MONSTERS - 1, max(0, abs(glyph) - GLYPH_STATUE_OFF) + LOW_PM);
             otmp->speflags |= SPEFLAGS_MALE;
             if (glyph < 0)
                 otmp->speflags |= SPEFLAGS_FACING_RIGHT;
         }
         else if (otmp->otyp == STATUE && glyph_is_female_statue(glyph))
         {
-            otmp->corpsenm = max(0, abs(glyph) - GLYPH_FEMALE_STATUE_OFF) + LOW_PM;;
+            otmp->corpsenm = min(NUM_MONSTERS - 1, max(0, abs(glyph) - GLYPH_FEMALE_STATUE_OFF) + LOW_PM);
             otmp->speflags |= SPEFLAGS_FEMALE;
             if(glyph < 0)
                 otmp->speflags |= SPEFLAGS_FACING_RIGHT;
@@ -251,7 +254,7 @@ struct obj **obj_p;
         otmp->no_charge = (otmp->otyp == STRANGE_OBJECT && costly_spot(x, y));
     }
 
-    if (otmp && (otmp->otyp == CORPSE || otmp->otyp == STATUE || otmp->otyp == FIGURINE) && otmp->corpsenm <= NON_PM) /* Insurance */
+    if (otmp && (otmp->otyp == CORPSE || otmp->otyp == STATUE || otmp->otyp == FIGURINE) && (otmp->corpsenm <= NON_PM || otmp->corpsenm >= NUM_MONSTERS)) /* Insurance */
         otmp->corpsenm = LOW_PM;
 
     /* if located at adjacent spot, mark it as having been seen up close
@@ -291,8 +294,11 @@ int x, y, glyph;
     if (otmp)
     {
         Strcpy(buf, (otmp->otyp > STRANGE_OBJECT && otmp->otyp < NUM_OBJECTS)
-                     ? (iflags.in_dumplog ? (fakeobj ? aqcxname2(otmp) : aqcxname(otmp)) : 
-                         (fakeobj ? distant_name2(otmp, otmp->dknown ? doname_with_price : doname_vague_quan) : distant_name(otmp, otmp->dknown ? doname_with_price : doname_vague_quan))
+                     ? (iflags.in_dumplog ? /* Note: should be just aqcxname, but this is a place of a weird bug that needs to be narrowed down */
+                         (fakeobj ? (otmp->otyp == CORPSE || otmp->otyp == STATUE || otmp->otyp == EGG || otmp->otyp == TIN ? (otmp->otyp == CORPSE ? (otmp->corpsenm >= LOW_PM && otmp->corpsenm < NUM_MONSTERS ? aqcxname5(otmp) : aqcxname9(otmp)) : otmp->otyp == STATUE ? (otmp->corpsenm >= LOW_PM && otmp->corpsenm < NUM_MONSTERS ? aqcxname4(otmp) : aqcxname10(otmp)) : aqcxname3(otmp)) /* Most likely culprits */
+                                   : otmp->otyp <= NUM_OBJECTS / 4 ? aqcxname6(otmp) : otmp->otyp <= NUM_OBJECTS / 2 ? aqcxname7(otmp) : otmp->otyp <= (3 * NUM_OBJECTS) / 4 ? aqcxname8(otmp) : aqcxname2(otmp))  /* A bit of narrowing */
+                        : aqcxname(otmp)) 
+                     : (fakeobj ? distant_name2(otmp, otmp->dknown ? doname_with_price : doname_vague_quan) : distant_name(otmp, otmp->dknown ? doname_with_price : doname_vague_quan))
                        )
                      : obj_descr[STRANGE_OBJECT].oc_name);
 

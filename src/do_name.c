@@ -1938,7 +1938,7 @@ namefloorobj()
     } else {
         docall(obj, (char*)0);
     }
-    if (fakeobj) {
+    if (fakeobj && obj) {
         obj->where = OBJ_FREE; /* object_from_map() sets it to OBJ_FLOOR */
         dealloc_obj(obj);
     }
