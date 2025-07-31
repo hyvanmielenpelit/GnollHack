@@ -1319,12 +1319,12 @@ namespace GnollHackX
             return false;
         }
 
-        public static double CalculateButtonSideWidth(double canvasViewWidth, double canvasViewHeight, bool usingDesktopButtons, bool usingSimpleCmdLayout, float inverseCanvasScale, float customScale, int noOfLandscapeButtonsInRow, int noOfPortraitButtonsInRow, bool isSmaller)
+        public static double CalculateButtonSideWidth(double canvasViewWidth, double canvasViewHeight, bool usingDesktopButtons, bool usingSimpleCmdLayout, int stoneButtonRows, float inverseCanvasScale, float customScale, int noOfLandscapeButtonsInRow, int noOfPortraitButtonsInRow, bool isSmaller)
         {
             double tmpSideWidth = UIUtils.CalculatePreliminaryButtonSideWidth(canvasViewWidth, canvasViewHeight, usingDesktopButtons, usingSimpleCmdLayout, inverseCanvasScale, customScale, noOfLandscapeButtonsInRow, noOfPortraitButtonsInRow, isSmaller);
             if (noOfLandscapeButtonsInRow > 0 && noOfPortraitButtonsInRow > 0) /* Yes/no buttons are not limited by height */
                 return tmpSideWidth;
-            double tmpSideHeight = UIUtils.CalculatePreliminaryButtonSideHeight(canvasViewWidth, canvasViewHeight, usingDesktopButtons, usingSimpleCmdLayout, inverseCanvasScale, customScale, noOfLandscapeButtonsInRow, noOfPortraitButtonsInRow, isSmaller);
+            double tmpSideHeight = UIUtils.CalculatePreliminaryButtonSideHeight(canvasViewWidth, canvasViewHeight, usingDesktopButtons, usingSimpleCmdLayout, stoneButtonRows, inverseCanvasScale, customScale, noOfLandscapeButtonsInRow, noOfPortraitButtonsInRow, isSmaller);
             return Math.Min(tmpSideWidth, tmpSideHeight);
         }
 
@@ -1338,25 +1338,25 @@ namespace GnollHackX
             return tmpsidewidth;
         }
 
-        public static double CalculatePreliminaryButtonSideHeight(double canvasViewWidth, double canvasViewHeight, bool usingDesktopButtons, bool usingSimpleCmdLayout, float inverseCanvasScale, float customScale, int noOfLandscapeButtonsInRow, int noOfPortraitButtonsInRow, bool isSmaller)
+        public static double CalculatePreliminaryButtonSideHeight(double canvasViewWidth, double canvasViewHeight, bool usingDesktopButtons, bool usingSimpleCmdLayout, int stoneButtonRows, float inverseCanvasScale, float customScale, int noOfLandscapeButtonsInRow, int noOfPortraitButtonsInRow, bool isSmaller)
         {
             if(inverseCanvasScale == 0.0f)
                 inverseCanvasScale = 1.0f;
             bool isLandscape = canvasViewWidth > canvasViewHeight;
-            bool isWideLandscape = canvasViewWidth > GHConstants.WideLandscapeThreshold * canvasViewHeight;
+            //bool isWideLandscape = canvasViewWidth > GHConstants.WideLandscapeThreshold * canvasViewHeight;
             int bigRowNoOfButtons = noOfLandscapeButtonsInRow > 0 ? noOfLandscapeButtonsInRow : LandscapeButtonsInRow(usingDesktopButtons, usingSimpleCmdLayout);
             bool tooWide = customScale * 40.0 * bigRowNoOfButtons + (bigRowNoOfButtons - 1) * 6 > canvasViewWidth;
             int minNoOfContextButtonRows = 2;
             int noOfCommandRows = usingSimpleCmdLayout ? 1 : isLandscape && !tooWide ? 1 : 2;
             //float statusBarRowSizeRelativeToButtonWidth = 2 * (GHConstants.StatusBarBaseFontSize / 50.0f * inverseCanvasScale);
             float minNoOfLabeledButtonRows = minNoOfContextButtonRows + noOfCommandRows;
-            int noOfVerticalSmallerButtons = usingSimpleCmdLayout ? (isWideLandscape ? 2 : isLandscape ? 3 : 4) : (isWideLandscape ? 2 : isLandscape ? 3 : 5);
+            int noOfVerticalSmallerButtons = stoneButtonRows; // usingSimpleCmdLayout ? (isWideLandscape ? 2 : isLandscape ? 3 : 4) : (isWideLandscape ? 2 : isLandscape ? 3 : 5);
             float labeledButtonFontSizeRelativeToButtonSize = GHConstants.ContextButtonBaseFontSize / 50f;
             double noOfButtonWidthsNeededForHeight = minNoOfLabeledButtonRows * (1.0f + labeledButtonFontSizeRelativeToButtonSize)
                 //+ statusBarRowSizeRelativeToButtonWidth
                 + noOfVerticalSmallerButtons * 75f / 80f;
             double statusBarSize = CalculateStatusBarSkiaHeight(inverseCanvasScale, customScale, canvasViewWidth, canvasViewHeight) / inverseCanvasScale;
-            double verticalMargins =
+            double verticalMargins = 6 + /* Extra 6 just in case */
                 /* Upper UI buttons */  (noOfVerticalSmallerButtons - 1) * 6 + 2 * 6 /* Bottom and top margins just in case */
                 /* Bottom UI buttons */ + (noOfCommandRows - 1) * 6 + 2 * 6 /* Bottom and top margins just in case */
                 /* Context button margins */ + (minNoOfContextButtonRows - 1) * GHConstants.ContextButtonSpacing
