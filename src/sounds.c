@@ -11340,17 +11340,17 @@ int64_t service_cost;
     case 0:
         selectable_item_categories = getobj_enchant_weapon_objects;
         no_mood_string = "enchanting a weapon";
-        special_dialogue_sound_id = mtmp->issmith ? SMITH_LINE_WOULD_YOU_LIKE_TO_ENCHANT_A_WEAPON : 0;
+        special_dialogue_sound_id = mtmp->issmith ? (int)SMITH_LINE_WOULD_YOU_LIKE_TO_ENCHANT_A_WEAPON : 0;
         break;
     case 1:
         selectable_item_categories = getobj_enchant_armor_objects;
         no_mood_string = "enchanting an armor";
-        special_dialogue_sound_id = mtmp->issmith ? SMITH_LINE_WOULD_YOU_LIKE_TO_ENCHANT_AN_ARMOR : 0;
+        special_dialogue_sound_id = mtmp->issmith ? (int)SMITH_LINE_WOULD_YOU_LIKE_TO_ENCHANT_AN_ARMOR : 0;
         break;
     case 2:
         selectable_item_categories = getobj_enchant_accessory_objects;
         no_mood_string = "enchanting an accessory";
-        special_dialogue_sound_id = mtmp->issmith ? 0 : mtmp->isnpc ? NPC_LINE_WOULD_YOU_LIKE_TO_ENCHANT_AN_ACCESSORY : 0;
+        special_dialogue_sound_id = mtmp->issmith ? 0 : mtmp->isnpc ? (int)NPC_LINE_WOULD_YOU_LIKE_TO_ENCHANT_AN_ACCESSORY : 0;
         break;
     default:
         selectable_item_categories = getobj_allobj;
@@ -11986,7 +11986,7 @@ boolean initialize;
     if (!otmp)
         return 0;
 
-    play_monster_special_dialogue_line(mtmp, mtmp->issmith ? SMITH_LINE_LETS_HAVE_A_LOOK : NPC_LINE_LETS_HAVE_A_LOOK);
+    play_monster_special_dialogue_line(mtmp, mtmp->issmith ? (int)SMITH_LINE_LETS_HAVE_A_LOOK : (int)NPC_LINE_LETS_HAVE_A_LOOK);
     if (iflags.using_gui_sounds)
         Sprintf(talkbuf, "%s says: \"Let's have a look.\"", noittame_Monnam(mtmp));
     else
@@ -11997,7 +11997,7 @@ boolean initialize;
     if (otmp && !maybe_otyp(otmp))
     {
         //play_sfx_sound(SFX_ENCHANT_ITEM_GENERAL_FAIL);
-        play_monster_special_dialogue_line(mtmp, mtmp->issmith ? SMITH_LINE_SORRY_THIS_IS_NOT_AN_ITEM_THAT_I_CAN_FORGE_INTO_THE_REQUESTED_ITEM : NPC_LINE_SORRY_THIS_IS_NOT_A_COMPONENT_THAT_I_CAN_FORGE_INTO_THE_REQUESTED_ITEM);
+        play_monster_special_dialogue_line(mtmp, mtmp->issmith ? (int)SMITH_LINE_SORRY_THIS_IS_NOT_AN_ITEM_THAT_I_CAN_FORGE_INTO_THE_REQUESTED_ITEM : (int)NPC_LINE_SORRY_THIS_IS_NOT_A_COMPONENT_THAT_I_CAN_FORGE_INTO_THE_REQUESTED_ITEM);
         Sprintf(talkbuf, "Sorry, this is not an item that I can forge into %s.", an(OBJ_NAME(objects[forge_dest_otyp])));
         popup_talk_line_ex(mtmp, talkbuf, ATR_NONE, NO_COLOR, TRUE, FALSE);
         return 0;
@@ -12014,7 +12014,7 @@ boolean initialize;
         pseudo.quan = quan_needed;
         if (iflags.using_gui_sounds)
         {
-            play_monster_special_dialogue_line(mtmp, mtmp->issmith ? SMITH_LINE_SORRY_YOU_NEED_MORE_COMPONENTS_TO_FORGE_THE_REQUESTED_ITEM : NPC_LINE_SORRY_YOU_NEED_MORE_COMPONENTS_TO_FORGE_THE_REQUESTED_ITEM);
+            play_monster_special_dialogue_line(mtmp, mtmp->issmith ? (int)SMITH_LINE_SORRY_YOU_NEED_MORE_COMPONENTS_TO_FORGE_THE_REQUESTED_ITEM : (int)NPC_LINE_SORRY_YOU_NEED_MORE_COMPONENTS_TO_FORGE_THE_REQUESTED_ITEM);
             Sprintf(talkbuf, "\"Sorry, you need more components to forge the requested item.\" (You need %lld %s for %s.) ", (long long)quan_needed, cxname(&pseudo), an(OBJ_NAME(objects[forge_dest_otyp])));
             popup_talk_line_ex(mtmp, talkbuf, ATR_NONE, NO_COLOR, TRUE, FALSE);
         }
@@ -12069,7 +12069,7 @@ boolean initialize;
 
         stop_all_immediate_sounds();
         play_sfx_sound(SFX_BUY_FROM_NPC);
-        play_monster_special_dialogue_line(mtmp, mtmp->issmith ? SMITH_LINE_THANK_YOU_FOR_USING_MY_SERVICES : NPC_LINE_THANK_YOU_FOR_USING_MY_SERVICES);
+        play_monster_special_dialogue_line(mtmp, mtmp->issmith ? (int)SMITH_LINE_THANK_YOU_FOR_USING_MY_SERVICES : (int)NPC_LINE_THANK_YOU_FOR_USING_MY_SERVICES);
         Strcpy(talkbuf, "Thank you for using my services.");
         popup_talk_line_ex(mtmp, talkbuf, ATR_NONE, NO_COLOR, TRUE, FALSE);
     }

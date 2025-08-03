@@ -1471,7 +1471,7 @@ uchar *prefix_ptr, *suffix_ptr;
         int ok_cnt[2] = { 0, 0 };
         for (int j = 0; j <= 1; j++)
         {
-            uchar max_mythic = (j == 0 ? MAX_MYTHIC_PREFIXES : MAX_MYTHIC_SUFFIXES);
+            uchar max_mythic = (j == 0 ? (uchar)MAX_MYTHIC_PREFIXES : (uchar)MAX_MYTHIC_SUFFIXES);
             for (uchar i = 1; i < max_mythic; i++)
             {
                 if (!is_mythic_affix_ok(j, i, obj, is_wish))
@@ -1512,7 +1512,7 @@ uchar *prefix_ptr, *suffix_ptr;
     {
         const struct mythic_definition* mythic_definitions = (j == 0 ? mythic_prefix_qualities : mythic_suffix_qualities);
         uchar* eligible = (j == 0 ? eligible_prefix : eligible_suffix);
-        uchar max_mythic = (j == 0 ? MAX_MYTHIC_PREFIXES : MAX_MYTHIC_SUFFIXES);
+        uchar max_mythic = (j == 0 ? (uchar)MAX_MYTHIC_PREFIXES : (uchar)MAX_MYTHIC_SUFFIXES);
         uchar* affix_ptr = (j == 0 ? prefix_ptr : suffix_ptr);
 
         int cnt = 0;
@@ -1634,7 +1634,7 @@ struct monst* mattacker UNUSED;
 
         const struct mythic_power_definition* mythic_powers = (j == 0 ? mythic_prefix_powers : mythic_suffix_powers);
         const struct mythic_definition* mythic_definitions = (j == 0 ? mythic_prefix_qualities : mythic_suffix_qualities);
-        uchar max_mythic_powers = (j == 0 ? MAX_MYTHIC_PREFIX_POWERS : MAX_MYTHIC_SUFFIX_POWERS);
+        uchar max_mythic_powers = (j == 0 ? (uchar)MAX_MYTHIC_PREFIX_POWERS : (uchar)MAX_MYTHIC_SUFFIX_POWERS);
 
         for (uchar i = 0; i < max_mythic_powers; i++)
         {

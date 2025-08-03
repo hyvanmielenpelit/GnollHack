@@ -1179,7 +1179,7 @@ boolean silently;
 
                     const struct mythic_power_definition* mythic_powers = (isprefix ? mythic_prefix_powers : mythic_suffix_powers);
                     const struct mythic_definition* mythic_definitions = (isprefix ? mythic_prefix_qualities : mythic_suffix_qualities);
-                    uchar max_mythic_powers = (isprefix ? MAX_MYTHIC_PREFIX_POWERS : MAX_MYTHIC_SUFFIX_POWERS);
+                    uchar max_mythic_powers = (isprefix ? (uchar)MAX_MYTHIC_PREFIX_POWERS : (uchar)MAX_MYTHIC_SUFFIX_POWERS);
 
                     for (uchar k = 0; k < max_mythic_powers; k++)
                     {
