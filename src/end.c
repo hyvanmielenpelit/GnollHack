@@ -1769,6 +1769,7 @@ int how;
             survive = TRUE;
             boolean teleinstead = FALSE;
             incr_itimeout(&HInvulnerable, 2);
+            HConflict &= ~TIMEOUT;
             refresh_u_tile_gui_info(TRUE);
             if (!In_endgame(&u.uz))
             {
