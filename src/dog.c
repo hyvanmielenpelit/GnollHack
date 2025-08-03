@@ -1578,12 +1578,19 @@ register struct obj *obj;
 
     struct permonst *mptr = mon->data, *fptr = 0;
     boolean carni = carnivorous(mptr), herbi = herbivorous(mptr),
-            starving, mblind;
+            mblind;
+    boolean eschewed = (obj->cursed && mon_eschews_cursed(mon)) || (obj->blessed && mon_eschews_blessed(mon));
+    /* a starving pet will eat almost anything */
+    boolean starving = (mon->mtame && has_edog(mon) && !mon->isminion
+        && EDOG(mon)->mhpmax_penalty);
 
-    if (is_quest_artifact(obj) || obj_resists(obj, 0, 95))
-        return obj->cursed ? TABU : APPORT;
+    if (eschewed && (!starving || obj->oartifact) && !slurps_items(mptr))
+        return TABU;
 
     if (is_non_eater(mptr))
+        return TABU;
+
+    if (is_obj_indestructible(obj) || is_quest_artifact(obj))
         return TABU;
 
     if (is_obj_no_pickup(obj))
@@ -1592,13 +1599,22 @@ register struct obj *obj;
     if (m_unpaid_item_no_pickup(mon, obj))
         return TABU;
 
+    if (mon_hates_silver(mon) && obj_counts_as_silver(obj))
+        return TABU;
+
+    if (obj->otyp == AMULET_OF_STRANGULATION || obj->otyp == RIN_SLOW_DIGESTION)
+        return TABU;
+
+    if (!slurps_items(mptr) && obj_resists(obj, 0, 95))
+        return TABU;
+
     switch (obj->oclass)
     {
     case FOOD_CLASS:
         if ((obj->otyp == CORPSE || obj->otyp == TIN || obj->otyp == EGG) && obj->corpsenm >= 0)
             fptr = &mons[obj->corpsenm];
 
-        if (obj->otyp == CORPSE && fptr && is_rider(fptr))
+        if (obj->otyp == CORPSE && fptr && is_rider_or_tarrasque(fptr))
             return TABU;
 
         if (is_corpse_eater(mptr) && obj->otyp != CORPSE)
@@ -1617,10 +1633,6 @@ register struct obj *obj;
 
         if (!carni && !herbi)
             return obj->cursed ? UNDEF : APPORT;
-
-        /* a starving pet will eat almost anything */
-        starving = (mon->mtame && has_edog(mon) && !mon->isminion
-                    && EDOG(mon)->mhpmax_penalty);
 
         /* even carnivores will eat carrots if they're temporarily blind */
         mblind = (is_blinded(mon) && haseyes(mon->data));
@@ -1704,34 +1716,20 @@ register struct obj *obj;
             return (obj->otyp > SLIME_MOLD) ? (carni ? ACCFOOD : MANFOOD)
                                             : (herbi ? ACCFOOD : MANFOOD);
         }
+    case ROCK_CLASS:
+        return UNDEF;
+    case ART_CLASS:
     case REAGENT_CLASS:
-    {
-        /*FALLTHRU*/
-    }
     default:
-        if (obj->otyp == AMULET_OF_STRANGULATION
-            || obj->otyp == RIN_SLOW_DIGESTION)
-            return TABU;
-        if (mon_hates_silver(mon) && obj_counts_as_silver(obj))
-            return TABU;
         if (slurps_items(mptr) && is_slurpable(obj))
             return ACCFOOD;
-        if (metallivorous(mptr) && is_metallic(obj)
-            && (is_rustprone(obj) || !rust_causing_and_ironvorous(mptr)))
-        {
-            /* Non-rustproofed ferrous based metals are preferred. */
-            return (is_rustprone(obj) && !obj->oerodeproof) ? DOGFOOD
-                                                            : ACCFOOD;
-        }
         if (lithovore(mptr) && is_obj_stony(obj))
-            return (obj->speflags & SPEFLAGS_NO_PICKUP) || (In_sokoban(&u.uz) && obj->otyp == BOULDER) ? TABU : obj->cursed ? ACCFOOD : DOGFOOD;
-        if (!obj->cursed
-            && obj->oclass != BALL_CLASS
-            && obj->oclass != CHAIN_CLASS)
+            return (In_sokoban(&u.uz) && obj->otyp == BOULDER) ? TABU : eschewed ? ACCFOOD : DOGFOOD;
+        /* Non-rustproofed ferrous based metals are preferred. */
+        if (metallivorous(mptr) && is_metallic(obj)  && (is_rustprone(obj) || !rust_causing_and_ironvorous(mptr)))
+            return (is_rustprone(obj) && !obj->oerodeproof) ? DOGFOOD : ACCFOOD;
+        if (!obj->cursed && obj->oclass != BALL_CLASS && obj->oclass != CHAIN_CLASS)
             return APPORT;
-        /*FALLTHRU*/
-    case ROCK_CLASS:
-    case ART_CLASS:
         return UNDEF;
     }
 }

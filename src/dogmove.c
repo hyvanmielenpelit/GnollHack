@@ -439,7 +439,7 @@ boolean devour;
         if (is_obj_rotting_corpse(obj))
             dog_corpse_after_effect(mtmp, obj, (uchar)is_female_corpse_or_statue(obj));
         else
-            dog_food_after_effect(mtmp, obj, canseemon(mtmp));
+            dog_food_after_effect(mtmp, obj, canspotmon(mtmp));
 
         if (obj->unpaid)
         {
@@ -541,7 +541,7 @@ boolean verbose;
         /* Nothing currently */
         break;
     case EDIBLEFX_CURE_BLINDNESS:
-        mcureblindness(mtmp, canseemon(mtmp));
+        mcureblindness(mtmp, verbose);
         break;
     case EDIBLEFX_READ_FORTUNE:
         /* Nothing currently */
@@ -570,38 +570,36 @@ boolean verbose;
         break;
     }
     case EDIBLEFX_GAIN_STRENGTH:
-        m_gainstr(mtmp, otmp, 1, TRUE);
+        m_gainstr(mtmp, otmp, 1, verbose);
         break;
     case EDIBLEFX_GAIN_DEXTERITY:
-        (void)m_adjattrib(mtmp, A_DEX, (otmp && otmp->cursed) ? -1 : (otmp && otmp->blessed) ? rnd(2) : 1, TRUE);
+        (void)m_adjattrib(mtmp, A_DEX, (otmp && otmp->cursed) ? -1 : (otmp && otmp->blessed) ? rnd(2) : 1, verbose);
         break;
     case EDIBLEFX_GAIN_CONSTITUTION:
-        (void)m_adjattrib(mtmp, A_CON, (otmp && otmp->cursed) ? -1 : (otmp && otmp->blessed) ? rnd(2) : 1, TRUE);
+        (void)m_adjattrib(mtmp, A_CON, (otmp && otmp->cursed) ? -1 : (otmp && otmp->blessed) ? rnd(2) : 1, verbose);
         break;
     case EDIBLEFX_GAIN_INTELLIGENCE:
-        (void)m_adjattrib(mtmp, A_INT, (otmp && otmp->cursed) ? -1 : (otmp && otmp->blessed) ? rnd(2) : 1, TRUE);
+        (void)m_adjattrib(mtmp, A_INT, (otmp && otmp->cursed) ? -1 : (otmp && otmp->blessed) ? rnd(2) : 1, verbose);
         break;
     case EDIBLEFX_GAIN_WISDOM:
-        (void)m_adjattrib(mtmp, A_WIS, (otmp && otmp->cursed) ? -1 : (otmp && otmp->blessed) ? rnd(2) : 1, TRUE);
+        (void)m_adjattrib(mtmp, A_WIS, (otmp && otmp->cursed) ? -1 : (otmp && otmp->blessed) ? rnd(2) : 1, verbose);
         break;
     case EDIBLEFX_GAIN_CHARISMA:
-        (void)m_adjattrib(mtmp, A_CHA, (otmp && otmp->cursed) ? -1 : (otmp && otmp->blessed) ? rnd(2) : 1, TRUE);
+        (void)m_adjattrib(mtmp, A_CHA, (otmp && otmp->cursed) ? -1 : (otmp && otmp->blessed) ? rnd(2) : 1, verbose);
         break;
     case EDIBLEFX_RESTORE_ABILITY:
     {
         if (otmp->cursed)
         {
             if(verbose)
-                pline("Ulch!  That made %s feel mediocre!", mon_nam(mtmp));
+                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "Ulch!  That made %s feel mediocre!", mon_nam(mtmp));
             break;
         }
         else
         {
             int i, ii, lim;
-            pline("Wow!  This made %s feel %s!", mon_nam(mtmp),
-                (otmp->blessed)
-                ? (unfixable_trouble_count(FALSE) ? "better" : "great")
-                : "good");
+            if (verbose)
+                pline_ex(ATR_NONE, CLR_MSG_POSITIVE, "Wow!  That made %s feel %s!", mon_nam(mtmp), otmp->blessed ? "great" : "good");
             i = rn2(A_MAX); /* start at a random point */
             for (ii = 0; ii < A_MAX; ii++) 
             {
@@ -643,7 +641,7 @@ boolean verbose;
         break;
     case EDIBLEFX_CURE_SICKNESS:
         if(!otmp->cursed)
-            mcuresickness(mtmp, TRUE);
+            mcuresickness(mtmp, verbose);
         break;
     case EDIBLEFX_APPLE:
         /* Nothing */
@@ -653,9 +651,9 @@ boolean verbose;
         {
             if (has_stoned(mtmp))
             {
-                (void)set_mon_property_b(mtmp, STONED, 0, canseemon(mtmp));
-                if(canseemon(mtmp))
-                    pline("%s looks limber!", Monnam(mtmp));
+                (void)set_mon_property_b(mtmp, STONED, 0, verbose);
+                if(verbose)
+                    pline_ex(ATR_NONE, CLR_MSG_POSITIVE, "%s looks limber!", Monnam(mtmp));
             }
 
             increase_mon_property(mtmp, STONE_RESISTANCE, 13);

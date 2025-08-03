@@ -5780,7 +5780,7 @@ struct monst* mtmp;
                         {
                             place_object(otmp, mtmp->mx, mtmp->my);
                             pline("%s eats %s, but does not seem to appreciate it much.", noittame_Monnam(mtmp), the(cxname(otmp)));
-                            dog_food_after_effect(mtmp, otmp, canseemon(mtmp));
+                            dog_food_after_effect(mtmp, otmp, canspotmon(mtmp));
                             if (otmp->unpaid)
                             {
                                 /* edible item owned by shop has been thrown or kicked
