@@ -1584,7 +1584,7 @@ register struct obj *obj;
     boolean starving = (mon->mtame && has_edog(mon) && !mon->isminion
         && EDOG(mon)->mhpmax_penalty);
 
-    if (eschewed && (!starving || obj->oartifact) && !slurps_items(mptr))
+    if (eschewed && (!starving || obj->oartifact))
         return TABU;
 
     if (is_non_eater(mptr))
@@ -1602,10 +1602,7 @@ register struct obj *obj;
     if (mon_hates_silver(mon) && obj_counts_as_silver(obj))
         return TABU;
 
-    if (obj->otyp == AMULET_OF_STRANGULATION || obj->otyp == RIN_SLOW_DIGESTION)
-        return TABU;
-
-    if (!slurps_items(mptr) && obj_resists(obj, 0, 95))
+    if (obj_resists(obj, 0, 95))
         return TABU;
 
     switch (obj->oclass)
@@ -1721,6 +1718,8 @@ register struct obj *obj;
     case ART_CLASS:
     case REAGENT_CLASS:
     default:
+        if (obj->otyp == AMULET_OF_STRANGULATION || obj->otyp == RIN_SLOW_DIGESTION)
+            return TABU;
         if (slurps_items(mptr) && is_slurpable(obj))
             return ACCFOOD;
         if (lithovore(mptr) && is_obj_stony(obj))
