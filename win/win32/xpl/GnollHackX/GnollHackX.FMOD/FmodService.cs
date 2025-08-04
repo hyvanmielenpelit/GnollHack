@@ -169,28 +169,41 @@ namespace GnollHackX.Unknown
             if (res != RESULT.OK)
                 return;
 
+            _coresystem.getSoftwareFormat(out int systemSampleRate, out _, out _);
+            _coresystem.getDSPBufferSize(out uint systemDSPBufferLength, out _);
+            SetAudioSessionSettings(systemSampleRate, systemDSPBufferLength);
             res = _system.initialize(GHConstants.MaxChannels, FMOD.Studio.INITFLAGS.NORMAL, FMOD.INITFLAGS.NORMAL, IntPtr.Zero);
             if (res != RESULT.OK)
                 return;
 
+            _initialized = true;
+            GHApp.MaybeWriteGHLog("FMOD initialized successfully.");
+        }
+
+        private void SetAudioSessionSettings(double rate, double blockSize)
+        {
 #if __IOS__ || (GNH_MAUI && IOS)
             AVAudioSession si = AVAudioSession.SharedInstance();
-            if(si != null)
+            if (si != null)
             {
+                GHApp.MaybeWriteGHLog("SetAudioSessionSettings: rate is " + rate + ", blockSize is " + blockSize);
                 try
                 {
+                    NSError audioSessionError;
+                    double bufferDuration = blockSize / rate;
+                    si.SetPreferredIOBufferDuration(bufferDuration, out audioSessionError);
+                    si.SetPreferredSampleRate(rate, out audioSessionError);
                     si.SetCategory(AVAudioSessionCategory.Ambient);
                     si.SetActive(true);
                 }
-                catch (Exception ex) 
+                catch (Exception ex)
                 {
                     GHApp.MaybeWriteGHLog("Exception occurred with AVAudioSession: " + ex.Message);
                 }
             }
 #endif
-            _initialized = true;
-            GHApp.MaybeWriteGHLog("FMOD initialized successfully.");
         }
+
 
         private bool FMODup()
         {
