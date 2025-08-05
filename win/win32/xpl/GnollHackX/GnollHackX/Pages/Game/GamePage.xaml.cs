@@ -5886,9 +5886,10 @@ namespace GnollHackX.Pages.Game
                 }
             }
 
-            if (pointerIsHoveringOnTile && (is_monster_like_layer || is_object_like_layer))
+            if (pointerIsHoveringOnTile && (is_monster_like_layer || is_object_like_layer || layer_idx == (int)layer_types.LAYER_TRAP
+                 || layer_idx == (int)layer_types.LAYER_COVER_TRAP))
             {
-                paint.ColorFilter = UIUtils.HighlightColorFilter;
+                paint.ColorFilter = UIUtils.MapHighlightColorFilter;
             }
 
             float dscalex = 1.0f;
@@ -7391,6 +7392,11 @@ namespace GnollHackX.Pages.Game
             bool monsterTargeting = MonsterTargeting;
             bool forceAllMessages = ForceAllMessages;
             bool forceAscii = ForceAscii;
+            bool zoomMiniMode = ZoomMiniMode;
+            bool showDirections = ShowDirections;
+            bool showNumberPad = ShowNumberPad;
+            bool mapWalkMode = MapWalkMode;
+            bool walkArrows = WalkArrows;
             GHGraphicsStyle graphicsStyle = GraphicsStyle;
 
             bool isLandscape = canvaswidth > canvasheight;
@@ -7797,7 +7803,7 @@ namespace GnollHackX.Pages.Game
                 float usedFontSize = ZoomAlternateMode ? MapFontAlternateSize : MapFontSize;
                 textPaint.Typeface = GHApp.DejaVuSansMonoTypeface;
                 textPaint.TextSize = usedFontSize;
-                if (ZoomMiniMode)
+                if (zoomMiniMode)
                 {
                     float tmpwidth = textPaint.MeasureText("A"); //textPaint.FontMetrics.AverageCharacterWidth;
                     float tmpheight = textPaint.FontMetrics.Descent - textPaint.FontMetrics.Ascent;
@@ -7868,7 +7874,7 @@ namespace GnollHackX.Pages.Game
                 {
                     hasMapHoverLocation = GetMapTileHoverLocation(_localPointerHoverLocation.X, _localPointerHoverLocation.Y, out mapHoverX, out mapHoverY, width, height,
                         mapwidth, mapheight, _localMapOffsetX, _localMapOffsetY, _localMapMiniOffsetX, _localMapMiniOffsetY, _localClipX, _localClipY, canvaswidth, canvasheight,
-                        mapFontAscent, ShowDirections, ShowNumberPad, ZoomMiniMode, MapWalkMode, WalkArrows);
+                        mapFontAscent, showDirections, showNumberPad, zoomMiniMode, mapWalkMode, walkArrows);
                 }
 
                 float tx = 0, ty = 0;
@@ -9307,7 +9313,7 @@ namespace GnollHackX.Pages.Game
                 }
 
                 /* Darkening background */
-                if (forceAllMessages || ShowNumberPad || ShownTip >= 0)
+                if (forceAllMessages || showNumberPad || ShownTip >= 0)
                 {
                     textPaint.Style = SKPaintStyle.Fill;
                     textPaint.Color = forceAllMessages && !HasAllMessagesTransparentBackground ? SKColors.Black : SKColors.Black.WithAlpha(128);
@@ -11787,12 +11793,12 @@ namespace GnollHackX.Pages.Game
                     _localCanvasButtonRect.Left = canvaswidth * (float)(0.2);
                 }
 
-                if (ShowDirections || (MapWalkMode && WalkArrows))
+                if (showDirections || (mapWalkMode && walkArrows))
                 {
                     SKRect targetrect;
-                    float buttonsize = ShowDirections ? GHConstants.ArrowButtonSize : GHConstants.MoveArrowButtonSize;
+                    float buttonsize = showDirections ? GHConstants.ArrowButtonSize : GHConstants.MoveArrowButtonSize;
                     SKColor oldcolor = textPaint.Color;
-                    textPaint.Color = ShowDirections ? textPaint.Color.WithAlpha(170) : textPaint.Color.WithAlpha(85);
+                    textPaint.Color = showDirections ? textPaint.Color.WithAlpha(170) : textPaint.Color.WithAlpha(85);
 
                     for (int i = 0; i < 9; i++)
                     {
@@ -11847,7 +11853,7 @@ namespace GnollHackX.Pages.Game
                     }
                     textPaint.Color = oldcolor;
                 }
-                else if (ShowNumberPad)
+                else if (showNumberPad)
                 {
                     for (int j = 0; j <= 2; j++)
                     {
