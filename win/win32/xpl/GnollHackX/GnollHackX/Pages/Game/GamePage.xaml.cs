@@ -8036,6 +8036,7 @@ namespace GnollHackX.Pages.Game
                                                             long generalcounterdiff = (long)((double)(maincountervalue - glyphgeneralprintmaincountervalue) * mainCounter2AnimationMultiplier);
                                                             short missile_height = _mapData[source_x, source_y].Layers.missile_height;
                                                             bool obj_in_pit = (_mapData[source_x, source_y].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_O_IN_PIT) != 0;
+                                                            bool isPointerHoveringOnTile = hasMapHoverLocation && source_x == mapHoverX && source_y == mapHoverY;
 
                                                             float base_move_offset_x = 0, base_move_offset_y = 0;
                                                             //GetBaseMoveOffsets(source_x, source_y, monster_origin_x, monster_origin_y, width, height, maincounterdiff, moveIntervals, ref base_move_offset_x, ref base_move_offset_y);
@@ -8121,7 +8122,7 @@ namespace GnollHackX.Pages.Game
                                                                             monster_height, is_monster_like_layer, is_object_like_layer, obj_in_pit, obj_height, is_missile_layer, missile_height,
                                                                             loc_is_you, canspotself, tileflag_halfsize, tileflag_normalobjmissile, tileflag_fullsizeditem, tileflag_floortile, tileflag_height_is_clipping,
                                                                             hflip_glyph, vflip_glyph, otmp_round, autodraw, drawwallends, breatheanimations, generalcounterdiff, canvaswidth, canvasheight, enlargement, usingGL, usingMipMap, fixRects,
-                                                                            hasMapHoverLocation && mapx == mapHoverX && mapy == mapHoverY); //, ref minDrawX, ref maxDrawX, ref minDrawY, ref maxDrawY, ref enlMinDrawX, ref enlMaxDrawX, ref enlMinDrawY, ref enlMaxDrawY);
+                                                                            isPointerHoveringOnTile); //, ref minDrawX, ref maxDrawX, ref minDrawY, ref maxDrawY, ref enlMinDrawX, ref enlMaxDrawX, ref enlMinDrawY, ref enlMaxDrawY);
                                                                     }
                                                                 }
                                                             }
@@ -8169,7 +8170,7 @@ namespace GnollHackX.Pages.Game
                                                         long generalcounterdiff = (long)((maincountervalue - glyphgeneralprintmaincountervalue) * mainCounter2AnimationMultiplier);
                                                         short missile_height = _mapData[mapx, mapy].Layers.missile_height;
                                                         bool obj_in_pit = (_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_O_IN_PIT) != 0;
-                                                        bool isPointHoveringOnTile = hasMapHoverLocation && mapx == mapHoverX && mapy == mapHoverY;
+                                                        bool isPointerHoveringOnTile = hasMapHoverLocation && mapx == mapHoverX && mapy == mapHoverY;
 
                                                         float base_move_offset_x = 0, base_move_offset_y = 0;
                                                         GetBaseMoveOffsets(mapx, mapy, monster_origin_x, monster_origin_y, width, height, maincounterdiff, moveIntervals, ref base_move_offset_x, ref base_move_offset_y);
@@ -8260,7 +8261,7 @@ namespace GnollHackX.Pages.Game
                                                                                 monster_height, is_monster_like_layer, is_object_like_layer, obj_in_pit, obj_height, is_missile_layer, missile_height,
                                                                                 loc_is_you, canspotself, tileflag_halfsize, tileflag_normalobjmissile, tileflag_fullsizeditem, tileflag_floortile, tileflag_height_is_clipping,
                                                                                 hflip_glyph, vflip_glyph, otmp_round, autodraw, drawwallends, breatheanimations, generalcounterdiff, canvaswidth, canvasheight, enlargement, usingGL, usingMipMap, fixRects,
-                                                                                isPointHoveringOnTile); //, ref _enlBmpMinX, ref _enlBmpMaxX, ref _enlBmpMinY, ref _enlBmpMaxY, ref _enlBmpMinX, ref _enlBmpMaxX, ref _enlBmpMinY, ref _enlBmpMaxY);
+                                                                                isPointerHoveringOnTile); //, ref _enlBmpMinX, ref _enlBmpMaxX, ref _enlBmpMinY, ref _enlBmpMaxY, ref _enlBmpMinX, ref _enlBmpMaxX, ref _enlBmpMinY, ref _enlBmpMaxY);
                                                                         }
                                                                         else
                                                                         {
@@ -8271,7 +8272,7 @@ namespace GnollHackX.Pages.Game
                                                                                 monster_height, is_monster_like_layer, is_object_like_layer, obj_in_pit, obj_height, is_missile_layer, missile_height,
                                                                                 loc_is_you, canspotself, tileflag_halfsize, tileflag_normalobjmissile, tileflag_fullsizeditem, tileflag_floortile, tileflag_height_is_clipping,
                                                                                 hflip_glyph, vflip_glyph, otmp_round, autodraw, drawwallends, breatheanimations, generalcounterdiff, canvaswidth, canvasheight, enlargement, usingGL, usingMipMap, fixRects,
-                                                                                isPointHoveringOnTile); //, ref minDrawX, ref maxDrawX, ref minDrawY, ref maxDrawY, ref _enlBmpMinX, ref _enlBmpMaxX, ref _enlBmpMinY, ref _enlBmpMaxY);
+                                                                                isPointerHoveringOnTile); //, ref minDrawX, ref maxDrawX, ref minDrawY, ref maxDrawY, ref _enlBmpMinX, ref _enlBmpMaxX, ref _enlBmpMinY, ref _enlBmpMaxY);
                                                                         }
                                                                     }
                                                                 }
