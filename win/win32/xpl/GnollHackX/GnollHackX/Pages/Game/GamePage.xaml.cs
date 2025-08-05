@@ -5661,7 +5661,8 @@ namespace GnollHackX.Pages.Game
             bool is_monster_like_layer, bool is_object_like_layer, bool obj_in_pit, int obj_height, bool is_missile_layer, int missile_height,
             bool loc_is_you, bool canspotself, bool tileflag_halfsize, bool tileflag_normalobjmissile, bool tileflag_fullsizeditem, bool tileflag_floortile, bool tileflag_height_is_clipping,
             bool hflip_glyph, bool vflip_glyph,
-            ObjectDataItem otmp_round, int autodraw, bool drawwallends, bool breatheanimations, long generalcounterdiff, float canvaswidth, float canvasheight, int enlargement, bool usingGL, bool usingMipMap, bool fixRects, bool pointerIsHoveringOnTile) //, ref float minDrawX, ref float maxDrawX, ref float minDrawY, ref float maxDrawY,
+            ObjectDataItem otmp_round, int autodraw, bool drawwallends, bool breatheanimations, long generalcounterdiff, float canvaswidth, float canvasheight, int enlargement, bool usingGL, bool usingMipMap, bool fixRects, 
+            bool pointerIsHoveringOnTile, bool mapLookMode) //, ref float minDrawX, ref float maxDrawX, ref float minDrawY, ref float maxDrawY,
             //ref float enlMinDrawX, ref float enlMaxDrawX, ref float enlMinDrawY, ref float enlMaxDrawY)
         {
             if (!GHUtils.isok(draw_map_x, draw_map_y))
@@ -5886,10 +5887,12 @@ namespace GnollHackX.Pages.Game
                 }
             }
 
-            if (pointerIsHoveringOnTile && (is_monster_like_layer || is_object_like_layer || layer_idx == (int)layer_types.LAYER_TRAP
-                 || layer_idx == (int)layer_types.LAYER_COVER_TRAP))
+            if (pointerIsHoveringOnTile)
             {
-                paint.ColorFilter = UIUtils.MapHighlightColorFilter;
+                if (mapLookMode && layer_idx > (int)layer_types.LAYER_FLOOR && layer_idx < (int)layer_types.LAYER_ZAP)
+                    paint.ColorFilter = UIUtils.LookHighlightColorFilter;
+                else if (is_monster_like_layer || is_object_like_layer || layer_idx == (int)layer_types.LAYER_TRAP || layer_idx == (int)layer_types.LAYER_COVER_TRAP)
+                    paint.ColorFilter = UIUtils.MapHighlightColorFilter;
             }
 
             float dscalex = 1.0f;
@@ -7392,6 +7395,7 @@ namespace GnollHackX.Pages.Game
             bool monsterTargeting = MonsterTargeting;
             bool forceAllMessages = ForceAllMessages;
             bool forceAscii = ForceAscii;
+            bool mapLookMode = MapLookMode;
             bool zoomMiniMode = ZoomMiniMode;
             bool showDirections = ShowDirections;
             bool showNumberPad = ShowNumberPad;
@@ -8122,7 +8126,7 @@ namespace GnollHackX.Pages.Game
                                                                             monster_height, is_monster_like_layer, is_object_like_layer, obj_in_pit, obj_height, is_missile_layer, missile_height,
                                                                             loc_is_you, canspotself, tileflag_halfsize, tileflag_normalobjmissile, tileflag_fullsizeditem, tileflag_floortile, tileflag_height_is_clipping,
                                                                             hflip_glyph, vflip_glyph, otmp_round, autodraw, drawwallends, breatheanimations, generalcounterdiff, canvaswidth, canvasheight, enlargement, usingGL, usingMipMap, fixRects,
-                                                                            isPointerHoveringOnTile); //, ref minDrawX, ref maxDrawX, ref minDrawY, ref maxDrawY, ref enlMinDrawX, ref enlMaxDrawX, ref enlMinDrawY, ref enlMaxDrawY);
+                                                                            isPointerHoveringOnTile, mapLookMode); //, ref minDrawX, ref maxDrawX, ref minDrawY, ref maxDrawY, ref enlMinDrawX, ref enlMaxDrawX, ref enlMinDrawY, ref enlMaxDrawY);
                                                                     }
                                                                 }
                                                             }
@@ -8261,7 +8265,7 @@ namespace GnollHackX.Pages.Game
                                                                                 monster_height, is_monster_like_layer, is_object_like_layer, obj_in_pit, obj_height, is_missile_layer, missile_height,
                                                                                 loc_is_you, canspotself, tileflag_halfsize, tileflag_normalobjmissile, tileflag_fullsizeditem, tileflag_floortile, tileflag_height_is_clipping,
                                                                                 hflip_glyph, vflip_glyph, otmp_round, autodraw, drawwallends, breatheanimations, generalcounterdiff, canvaswidth, canvasheight, enlargement, usingGL, usingMipMap, fixRects,
-                                                                                isPointerHoveringOnTile); //, ref _enlBmpMinX, ref _enlBmpMaxX, ref _enlBmpMinY, ref _enlBmpMaxY, ref _enlBmpMinX, ref _enlBmpMaxX, ref _enlBmpMinY, ref _enlBmpMaxY);
+                                                                                isPointerHoveringOnTile, mapLookMode); //, ref _enlBmpMinX, ref _enlBmpMaxX, ref _enlBmpMinY, ref _enlBmpMaxY, ref _enlBmpMinX, ref _enlBmpMaxX, ref _enlBmpMinY, ref _enlBmpMaxY);
                                                                         }
                                                                         else
                                                                         {
@@ -8272,7 +8276,7 @@ namespace GnollHackX.Pages.Game
                                                                                 monster_height, is_monster_like_layer, is_object_like_layer, obj_in_pit, obj_height, is_missile_layer, missile_height,
                                                                                 loc_is_you, canspotself, tileflag_halfsize, tileflag_normalobjmissile, tileflag_fullsizeditem, tileflag_floortile, tileflag_height_is_clipping,
                                                                                 hflip_glyph, vflip_glyph, otmp_round, autodraw, drawwallends, breatheanimations, generalcounterdiff, canvaswidth, canvasheight, enlargement, usingGL, usingMipMap, fixRects,
-                                                                                isPointerHoveringOnTile); //, ref minDrawX, ref maxDrawX, ref minDrawY, ref maxDrawY, ref _enlBmpMinX, ref _enlBmpMaxX, ref _enlBmpMinY, ref _enlBmpMaxY);
+                                                                                isPointerHoveringOnTile, mapLookMode); //, ref minDrawX, ref maxDrawX, ref minDrawY, ref maxDrawY, ref _enlBmpMinX, ref _enlBmpMaxX, ref _enlBmpMinY, ref _enlBmpMaxY);
                                                                         }
                                                                     }
                                                                 }
@@ -9291,7 +9295,7 @@ namespace GnollHackX.Pages.Game
                     }
 
                     /* Look mode rectangle */
-                    if (MapLookMode)
+                    if (mapLookMode)
                     {
                         SKColor oldcolor = textPaint.Color;
                         SKMaskFilter oldfilter = textPaint.MaskFilter;
