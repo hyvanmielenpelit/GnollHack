@@ -150,10 +150,22 @@ namespace GnollHackX
         }
 
         public bool IsFull { get { return _start + _count >= _capacity + _excess - 1;  } }
+
         public GHMsgHistorySpan CurrentSpan
         {
             get { return new GHMsgHistorySpan(_items, _start, _count); }
         }
+
+        public GHMsgHistorySpan GetSpanFromEnd(int countFromEnd)
+        {
+            if (countFromEnd <= 0)
+                return null;
+            else if (countFromEnd >= _count)
+                return CurrentSpan;
+            else
+                return new GHMsgHistorySpan(_items, _start + _count - countFromEnd, countFromEnd);
+        }
+
         public IEnumerator<GHMsgHistoryItem> GetEnumerator()
         {
             for (int i = 0; i < _count; i++)
