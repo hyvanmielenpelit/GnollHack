@@ -512,17 +512,46 @@ enum autodraw_types* autodraw_ptr;
 }
 
 
-char gnhapi_putstr_buffer[BUFSZ * 4];
+char gnhapi_putstr_buffer[BUFSZ * 4] = "";
 
 DLLEXPORT void gnhapi_raw_print(const char* text)
 {
-    char buf[UTF8BUFSZ] = "";
     if (text)
     {
-        write_text2buf_utf8(buf, UTF8BUFSZ, text);
-        if (*gnhapi_putstr_buffer)
-            Strcat(gnhapi_putstr_buffer, "\n");
-        Strcpy(eos(gnhapi_putstr_buffer), buf);
+        size_t len = strlen(text);
+        size_t buflen = strlen(gnhapi_putstr_buffer);
+        size_t lflen = *gnhapi_putstr_buffer ? 1 : 0;
+
+        if (buflen + len + lflen + 1 > sizeof(gnhapi_putstr_buffer))
+        {
+            int bufleft = (int)sizeof(gnhapi_putstr_buffer) - 1 - (int)buflen;
+            if (bufleft > 0)
+            {
+                if (*gnhapi_putstr_buffer)
+                {
+                    Strcat(gnhapi_putstr_buffer, "\n");
+                    bufleft--;
+                }
+                if (bufleft > 0)
+                {
+                    if ((int)len > bufleft)
+                    {
+                        Strncpy(gnhapi_putstr_buffer + buflen, text, bufleft);
+                        gnhapi_putstr_buffer[sizeof(gnhapi_putstr_buffer) - 1] = 0;
+                    }
+                    else
+                    {
+                        Strcpy(gnhapi_putstr_buffer + buflen, text);
+                    }
+                }
+            }
+        }
+        else
+        {
+            if (*gnhapi_putstr_buffer)
+                Strcat(gnhapi_putstr_buffer, "\n");
+            Strcpy(gnhapi_putstr_buffer + buflen, text);
+        }
     }
 }
 
