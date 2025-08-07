@@ -144,14 +144,14 @@ namespace GnollHackX.Pages.MainScreen
                 else if (ghst.GHSoundList.Count > 0)
                     ghsound = ghst.GHSoundList[0];
 
-                GHApp.FmodService.StopAllUISounds();
+                GHApp.FmodService?.StopAllUISounds();
                 if (ghsound >= 0)
                 {
-                    string eventPath = GHApp.GnollHackService.GetEventPathForGHSound(ghsound);
-                    float volume = GHApp.GnollHackService.GetVolumeForGHSound(ghsound);
+                    string eventPath = GHApp.GnollHackService?.GetEventPathForGHSound(ghsound) ?? null;
+                    float volume = GHApp.GnollHackService?.GetVolumeForGHSound(ghsound) ?? 0.0f;
                     if (!string.IsNullOrWhiteSpace(eventPath) && volume > 0)
                     {
-                        GHApp.FmodService.PlayUIMusic(ghsound, eventPath, 0, Math.Min(1.0f, volume * GHConstants.IntroMusicVolume / GHConstants.BackgroundMusicVolume), 1.0f);
+                        GHApp.FmodService?.PlayUIMusic(ghsound, eventPath, 0, Math.Min(1.0f, volume * GHConstants.IntroMusicVolume / GHConstants.BackgroundMusicVolume), 1.0f);
                     }
                 }
             }
