@@ -174,6 +174,7 @@ namespace GnollHackX
             }
 
             GHApp.SaveDiscoveredMusic();
+            GHApp.FmodService?.PollTasks();  
 
             GHResponse response;
             while (ResponseQueue.TryDequeue(out response))
@@ -1133,7 +1134,10 @@ namespace GnollHackX
             if (PlayingReplay)
             {
                 if (!GHApp.IsReplaySearching)
+                {
                     Thread.Sleep((int)(GHConstants.ReplayStandardDelay / GHApp.ReplaySpeed));
+                    GHApp.FmodService?.PollTasks();
+                }
                 return 0;
             }
             if (_fastForwardGameOver)
@@ -1180,7 +1184,10 @@ namespace GnollHackX
             if (PlayingReplay)
             {
                 if (!GHApp.IsReplaySearching)
+                {
                     Thread.Sleep((int)(GHConstants.ReplayStandardDelay / GHApp.ReplaySpeed));
+                    GHApp.FmodService?.PollTasks();
+                }
                 return 0;
             }
             if (_fastForwardGameOver)
@@ -1513,7 +1520,12 @@ namespace GnollHackX
             if (ClientCallback_UIHasInput() > 0)
                 return;
             if (!PlayingReplay || !GHApp.IsReplaySearching)
-                Thread.Sleep(GHConstants.DelayOutputDurationInMilliseconds);
+            {
+                Thread.Sleep(GHConstants.DelayOutputDurationInMilliseconds / 2);
+                GHApp.FmodService?.PollTasks();
+                Thread.Sleep(GHConstants.DelayOutputDurationInMilliseconds / 2);
+                GHApp.FmodService?.PollTasks();
+            }
         }
 
         public void ClientCallback_DelayOutputMilliseconds(int milliseconds)
@@ -1522,7 +1534,10 @@ namespace GnollHackX
             if (ClientCallback_UIHasInput() > 0)
                 return;
             if (!PlayingReplay || !GHApp.IsReplaySearching)
+            {
                 Thread.Sleep(milliseconds);
+                GHApp.FmodService?.PollTasks();
+            }
         }
         public void ClientCallback_DelayOutputIntervals(int intervals)
         {
@@ -1548,6 +1563,7 @@ namespace GnollHackX
                     current_counter_value = Interlocked.CompareExchange(ref _gamePage.AnimationTimers.general_animation_counter, 0L, 0L);;
                 }
             } while (current_counter_value < start_counter_value + (long)intervals);
+            GHApp.FmodService?.PollTasks();
         }
 
         public void ClientCallback_PreferenceUpdate(string str)
@@ -2526,6 +2542,7 @@ namespace GnollHackX
                             break;
                     }
                     Thread.Sleep(GHConstants.PollingInterval);
+                    GHApp.FmodService?.PollTasks();
                     cnt++;
                 } while (cnt < 2000);
             }
@@ -2804,10 +2821,10 @@ namespace GnollHackX
                     GHApp.GameMuteMode = false;
                     break;
                 case (int)gui_command_types.GUI_CMD_ACTIVATE_QUIETER_MODE:
-                    GHApp.FmodService.SetQuieterMode(true);
+                    GHApp.FmodService?.SetQuieterMode(true);
                     break;
                 case (int)gui_command_types.GUI_CMD_DEACTIVATE_QUIETER_MODE:
-                    GHApp.FmodService.SetQuieterMode(false);
+                    GHApp.FmodService?.SetQuieterMode(false);
                     break;
                 case (int)gui_command_types.GUI_CMD_LOAD_VIDEOS:
                     break;
@@ -3193,7 +3210,10 @@ namespace GnollHackX
             {
                 /* Only like this for replay, as normal hiding code is a bit more robust */
                 if (!_fastForwardGameOver && !GHApp.StopReplay && !GHApp.IsReplaySearching) /* No pause, since outrip page hides the controls */
+                {
                     Thread.Sleep((int)(GHConstants.ReplayOutripDelay / GHApp.ReplaySpeed));
+                    GHApp.FmodService?.PollTasks();
+                }
 
                 //lock (_ghWindowsLock)
                 {
@@ -3957,12 +3977,16 @@ namespace GnollHackX
             if(!GHApp.StopReplay)
             {
                 Thread.Sleep((int)(baseDelay / GHApp.ReplaySpeed));
+                GHApp.FmodService?.PollTasks();
                 do
                 {
                     if (GHApp.StopReplay)
                         break;
                     else if (GHApp.PauseReplay && !GHApp.IsReplaySearching)
+                    {
                         Thread.Sleep(GHConstants.PollingInterval);
+                        GHApp.FmodService?.PollTasks();
+                    }
                 }
                 while (GHApp.PauseReplay && !GHApp.IsReplaySearching);
             }

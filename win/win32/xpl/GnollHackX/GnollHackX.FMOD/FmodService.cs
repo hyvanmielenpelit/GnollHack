@@ -8,6 +8,7 @@ using System.Reflection;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Collections.Concurrent;
 
 #if GNH_MAUI
 using GnollHackX;
@@ -810,11 +811,12 @@ namespace GnollHackX.Unknown
                             ghsi.instance.release();
                         }
                     }
-                    for (int i = immediateInstances.Count - 1; i >= 0; i--)
-                    {
-                        if (immediateInstances[i].stopped)
-                            immediateInstances.RemoveAt(i);
-                    }
+                    /* Callback removes the sound instance */
+                    //for (int i = immediateInstances.Count - 1; i >= 0; i--)
+                    //{
+                    //    if (immediateInstances[i].stopped)
+                    //        immediateInstances.RemoveAt(i);
+                    //}
                     //immediateInstances.Clear();
                 }
 
@@ -832,11 +834,12 @@ namespace GnollHackX.Unknown
                             ghsi.instance.release();
                         }
                     }
-                    for (int i = longImmediateInstances.Count - 1; i >= 0; i--)
-                    {
-                        if (longImmediateInstances[i].stopped)
-                            longImmediateInstances.RemoveAt(i);
-                    }
+                    /* Callback removes the sound instance */
+                    //for (int i = longImmediateInstances.Count - 1; i >= 0; i--)
+                    //{
+                    //    if (longImmediateInstances[i].stopped)
+                    //        longImmediateInstances.RemoveAt(i);
+                    //}
                     //longImmediateInstances.Clear();
                 }
 
@@ -1534,6 +1537,7 @@ namespace GnollHackX.Unknown
         private RESULT SetMusicAndAmbientVolumesWithoutUpdate()
         {
             RESULT result;
+            float modeVolume = ModeVolume;
             result = AdjustVolumeType(musicInstances, _musicVolume);
             result = AdjustVolumeType(levelAmbientInstances, _ambientVolume);
             result = AdjustVolumeType(environmentAmbientInstances, _ambientVolume);
@@ -1569,32 +1573,96 @@ namespace GnollHackX.Unknown
         private int _modeFadeCounter = _maxModeFadeCounter;
         private int ModeFadeCounter { get { return Interlocked.CompareExchange(ref _modeFadeCounter, 0, 0); } set { Interlocked.Exchange(ref _modeFadeCounter, value); } }
 
+        private int _quieterModeRequestNumber = 0;
+
         public int SetQuieterMode(bool state)
         {
-            if (_quieterMode == state)
+            bool prevState = _quieterModeRequestNumber > 0;
+            _quieterModeRequestNumber = _quieterModeRequestNumber + (state ? 1 : -1);
+            bool newState = _quieterModeRequestNumber > 0;
+
+            //if (_quieterMode == state)
+            if (prevState == newState)
                 return (int)RESULT.OK;
 
-            _quieterMode = state;
+            _quieterMode = newState; // state;
             ModeFadeCounter = 0;
-            Task.Run(() => 
-            {
-                for (int i = 0; i < _maxModeFadeCounter; i++)
-                {
-                    //lock (_modeFadeLock)
-                    {
-                        if (ModeFadeCounter >= _maxModeFadeCounter)
-                        {
-                            ModeFadeCounter = _maxModeFadeCounter;
-                            break;
-                        }
-                    }
-                    Interlocked.Increment(ref _modeFadeCounter);
-                    AdjustMusicAndAmbientVolumes();
-                    System.Threading.Thread.Sleep(25);
-                }
-            });
+            _tasks.Enqueue(new GHSoundTask(GHSoundTaskType.IncreaseModeFadeCounter));
+
+            //ModeFadeCounter = _maxModeFadeCounter;
+            //AdjustMusicAndAmbientVolumes();
+            //ModeFadeCounter = 0;
+            //Task.Run(() => 
+            //{
+            //    for (int i = 0; i < _maxModeFadeCounter; i++)
+            //    {
+            //        //lock (_modeFadeLock)
+            //        {
+            //            if (ModeFadeCounter >= _maxModeFadeCounter)
+            //            {
+            //                ModeFadeCounter = _maxModeFadeCounter;
+            //                break;
+            //            }
+            //        }
+            //        Interlocked.Increment(ref _modeFadeCounter);
+            //        AdjustMusicAndAmbientVolumes();
+            //        System.Threading.Thread.Sleep(25);
+            //    }
+            //});
 
             return (int)RESULT.OK; // AdjustMusicAndAmbientVolumes();
+        }
+
+        enum GHSoundTaskType
+        {
+            IncreaseModeFadeCounter,
+        }
+
+        private class GHSoundTask
+        {
+            public GHSoundTaskType TaskType;
+            public GHSoundTask(GHSoundTaskType taskType)
+            {
+                TaskType = taskType;
+            }
+        }
+        private ConcurrentQueue<GHSoundTask> _tasks = new ConcurrentQueue<GHSoundTask>();
+        public void PollTasks()
+        {
+            if (!FMODup())
+                return;
+
+            List<GHSoundTask> addedTasks = new List<GHSoundTask>();
+            while (_tasks.TryDequeue(out GHSoundTask ghst))
+            {
+                switch(ghst.TaskType)
+                {
+                    case GHSoundTaskType.IncreaseModeFadeCounter:
+                        {
+                            int modeFadeCounter = ModeFadeCounter;
+                            if (modeFadeCounter < _maxModeFadeCounter)
+                            {
+                                modeFadeCounter = Interlocked.Increment(ref _modeFadeCounter);
+                                AdjustMusicAndAmbientVolumes();
+                                if (modeFadeCounter < _maxModeFadeCounter)
+                                {
+                                    addedTasks.Add(new GHSoundTask(GHSoundTaskType.IncreaseModeFadeCounter));
+                                }
+                            }
+                        }
+                        break;
+                    default:
+                        break;
+                }
+            }
+
+            if (addedTasks.Count > 0)
+            {
+                foreach (GHSoundTask ghst in addedTasks)
+                {
+                    _tasks.Enqueue(ghst);
+                }
+            }
         }
 
         public uint GetVersionCode()
