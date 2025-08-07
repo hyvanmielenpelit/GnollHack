@@ -64,7 +64,7 @@ namespace GnollHackX
         public ParticleType Type;
         public SKImage Image;
         public BlendMode BlendMode;
-        public bool IsAlive => Life > 0;
+        public bool IsRotating;
         public float LifeRatio => Life / MaxLife;
 
         public Particle()
@@ -83,9 +83,10 @@ namespace GnollHackX
             RotationSpeed = 0.0f;
             Type = ParticleType.Circle;
             BlendMode = BlendMode.Normal;
+            IsRotating = false;
         }
 
-        public bool IsActive { get; set; }
+        public bool IsActive = false;
 
         public void Activate()
         {
@@ -101,12 +102,15 @@ namespace GnollHackX
 
         public void Update(float deltaTime)
         {
-            if (!IsActive || !IsAlive) return;
+            if (!IsActive) 
+                return;
 
             Velocity += Acceleration * deltaTime;
             Position += Velocity * deltaTime;
             Life -= deltaTime;
             Rotation += RotationSpeed * deltaTime;
+            if (Life <= 0)
+                IsActive = false; // Deactivate when life is over
 
             // Interpolate size and color based on life
             float t = 1.0f - LifeRatio;
@@ -151,6 +155,7 @@ namespace GnollHackX
         public float SizeVariance = 3.0f;
         public SKColor StartColor = SKColors.White;
         public SKColor EndColor = SKColors.Transparent;
+        public bool IsRotating = false; // Whether the particle should rotate
         public float RotationSpeed = 0.0f;
         public float RotationSpeedVariance = 0.0f;
         public ParticleType Type = ParticleType.Circle;
@@ -176,14 +181,23 @@ namespace GnollHackX
             TimeSinceLastEmission = 0.0f;
         }
 
+        public bool _isDead = false;
+
         public bool IsAlive
         {
             get
             {
+                if (_isDead)
+                    return false;
+
                 if (Config.Duration > 0.0f)
                 {
                     float emissionEndTime = Config.StartTime + Config.Duration;
-                    if (TotalTime > emissionEndTime) return false;
+                    if (TotalTime > emissionEndTime)
+                    {
+                        _isDead = true;
+                        return false;
+                    }
                 }
                 return true;
             }
@@ -267,7 +281,7 @@ namespace GnollHackX
             for (int i = particles.Count - 1; i >= 0; i--)
             {
                 particles[i].Update(deltaTime);
-                if (!particles[i].IsAlive)
+                if (!particles[i].IsActive)
                 {
                     particles.RemoveAt(i);
                 }
@@ -339,8 +353,12 @@ namespace GnollHackX
             particle.EndColor = config.EndColor;
 
             // Rotation
-            particle.Rotation = RandomRange(0, 360);
-            particle.RotationSpeed = config.RotationSpeed + RandomRange(-config.RotationSpeedVariance, config.RotationSpeedVariance);
+            if (config.IsRotating)
+            {
+                particle.IsRotating = true;
+                particle.Rotation = RandomRange(0, 360);
+                particle.RotationSpeed = config.RotationSpeed + RandomRange(-config.RotationSpeedVariance, config.RotationSpeedVariance);
+            }
 
             // Type and settings
             particle.Type = config.Type;
@@ -365,11 +383,13 @@ namespace GnollHackX
 
         private void RenderParticle(SKCanvas canvas, Particle particle)
         {
-            if (!particle.IsAlive) return;
+            if (!particle.IsActive)
+                return;
 
             canvas.Save();
             canvas.Translate(particle.Position.X, particle.Position.Y);
-            canvas.RotateDegrees(particle.Rotation);
+            if (particle.IsRotating)
+                canvas.RotateDegrees(particle.Rotation);
 
             _renderPaint.Color = particle.GetCurrentColor();
             //_renderPaint.IsAntialias = true;
@@ -397,10 +417,10 @@ namespace GnollHackX
                     RenderCircle(canvas, _renderPaint, particle.Size);
                     break;
                 case ParticleType.Star:
-                    RenderStar(canvas, _renderPaint, particle.Size);
+                    RenderStar(canvas, _renderPaint, particle.Size, 5);
                     break;
                 case ParticleType.FourPointedStar:
-                    RenderFourPointedStar(canvas, _renderPaint, particle.Size);
+                    RenderStar(canvas, _renderPaint, particle.Size, 4);
                     break;
                 case ParticleType.Image:
                     if (particle.Image != null)
@@ -411,15 +431,30 @@ namespace GnollHackX
             canvas.Restore();
         }
 
-        SKMaskFilter _savedMaskFilter = null;
+        private Dictionary<float, SKMaskFilter> _blurCache = new();
+        const int BlurCacheMaxSize = 100;
+
+        public SKMaskFilter GetBlurForSize(float size)
+        {
+            float blurRadius = size * 0.1f;
+
+            // Optional: Round the blurRadius to avoid over-caching (e.g., to 1 decimal place)
+            float roundedBlur = (float)Math.Round(blurRadius, 1);
+
+            if (!_blurCache.TryGetValue(roundedBlur, out var filter))
+            {
+                if (_blurCache.Count >= BlurCacheMaxSize)
+                    _blurCache.Clear();
+                filter = SKMaskFilter.CreateBlur(SKBlurStyle.Normal, roundedBlur);
+                _blurCache[roundedBlur] = filter;
+            }
+
+            return filter;
+        }
         private void RenderCircle(SKCanvas canvas, SKPaint paint, float size)
         {
             // Add glow effect for magic particles
-            if (_savedMaskFilter == null)
-            {
-                _savedMaskFilter = SKMaskFilter.CreateBlur(SKBlurStyle.Normal, size * 0.1f);
-            }
-            paint.MaskFilter = _savedMaskFilter;
+            paint.MaskFilter = GetBlurForSize(size * 0.1f);
             canvas.DrawCircle(0, 0, size, paint);
 
             // Inner bright core
@@ -429,16 +464,12 @@ namespace GnollHackX
             canvas.DrawCircle(0, 0, size * 0.6f, paint);
         }
 
-        private void RenderStar(SKCanvas canvas, SKPaint paint, float size)
+        private void RenderStar(SKCanvas canvas, SKPaint paint, float size, int points)
         {
-            var path = CreateStarPath(size);
+            var path = GetStarPath(size, points);
 
             // Outer glow
-            if (_savedMaskFilter == null)
-            {
-                _savedMaskFilter = SKMaskFilter.CreateBlur(SKBlurStyle.Normal, size * 0.1f);
-            }
-            paint.MaskFilter = _savedMaskFilter;
+            paint.MaskFilter = GetBlurForSize(size * 0.1f);
             canvas.DrawPath(path, paint);
 
             // Inner star
@@ -446,32 +477,13 @@ namespace GnollHackX
             paint.MaskFilter = null;
             canvas.DrawPath(path, paint);
 
-            path.Dispose();
-        }
-
-        SKMaskFilter _savedMaskFilter2 = null;
-        private void RenderFourPointedStar(SKCanvas canvas, SKPaint paint, float size)
-        {
-            var path = CreateFourPointedStarPath(size);
-
-            // Outer glow
-            if (_savedMaskFilter2 == null)
-            {
-                _savedMaskFilter2 = SKMaskFilter.CreateBlur(SKBlurStyle.Normal, size * 0.15f);
-            }
-            paint.MaskFilter = _savedMaskFilter2;
-            canvas.DrawPath(path, paint);
-
-            // Inner bright core
-            //paint.MaskFilter?.Dispose();
-            paint.MaskFilter = null;
-            canvas.DrawPath(path, paint);
-
-            path.Dispose();
+            //path.Dispose();
         }
 
         private void RenderImage(SKCanvas canvas, SKPaint paint, SKImage image, float size)
         {
+            if (image.Width <= 0 || image.Height <= 0)
+                return;
             float scale = size / Math.Max(image.Width, image.Height);
             float width = image.Width * scale;
             float height = image.Height * scale;
@@ -480,10 +492,9 @@ namespace GnollHackX
             canvas.DrawImage(image, rect, paint);
         }
 
-        private SKPath CreateStarPath(float radius)
+        private SKPath CreateStarPath(float radius, int points)
         {
             var path = new SKPath();
-            int points = 5;
             float innerRadius = radius * 0.4f;
 
             for (int i = 0; i < points * 2; i++)
@@ -503,29 +514,41 @@ namespace GnollHackX
             return path;
         }
 
-        private SKPath CreateFourPointedStarPath(float radius)
+        private readonly struct StarKey : IEquatable<StarKey>
         {
-            var path = new SKPath();
-            float innerRadius = radius * 0.3f;
+            public readonly float Radius;
+            public readonly int Points;
 
-            // Create 4-pointed star (diamond-like with points)
-            for (int i = 0; i < 8; i++)
+            public StarKey(float radius, int points)
             {
-                float angle = (float)(i * Math.PI / 4); // 8 points total (4 outer, 4 inner)
-                float currentRadius = (i % 2 == 0) ? radius : innerRadius;
-                float x = (float)(Math.Cos(angle) * currentRadius);
-                float y = (float)(Math.Sin(angle) * currentRadius);
-
-                if (i == 0)
-                    path.MoveTo(x, y);
-                else
-                    path.LineTo(x, y);
+                Radius = radius;
+                Points = points;
             }
 
-            path.Close();
-            return path;
+            public bool Equals(StarKey other) => Radius == other.Radius && Points == other.Points;
+            public override bool Equals(object obj) => obj is StarKey other && Equals(other);
+            public override int GetHashCode() => HashCode.Combine(Radius, Points);
         }
-        
+
+        private readonly Dictionary<StarKey, SKPath> _pathCache = new();
+        const int pathCacheMaxSize = 200; // Limit cache size
+
+        public SKPath GetStarPath(float radius, int points)
+        {
+            // Round radius to reduce cache size (e.g., to 0.1f)
+            float roundedRadius = (float)Math.Round(radius, 1);
+            var key = new StarKey(roundedRadius, points);
+
+            if (_pathCache.TryGetValue(key, out var cachedPath))
+                return cachedPath;
+
+            if (_pathCache.Count >= pathCacheMaxSize)
+                _pathCache.Clear(); // Clear cache if it exceeds max size
+            var newPath = CreateStarPath(roundedRadius, points);
+            _pathCache[key] = newPath;
+            return newPath;
+        }
+
         private float RandomRange(float min, float max)
         {
             return (float)(random.NextDouble() * (max - min) + min);
@@ -587,6 +610,7 @@ namespace GnollHackX
                 SizeVariance = 3.0f,
                 StartColor = new SKColor(255, 215, 0, 255), // Gold
                 EndColor = new SKColor(255, 255, 255, 0), // White, transparent
+                IsRotating = true,
                 RotationSpeed = 180.0f, // Rotate
                 RotationSpeedVariance = 90.0f,
                 Type = ParticleType.Star,
@@ -644,6 +668,7 @@ namespace GnollHackX
                 SizeVariance = 2.0f,
                 StartColor = new SKColor(0, 255, 255, 255), // Bright cyan
                 EndColor = new SKColor(255, 255, 255, 0), // White, transparent
+                IsRotating = true,
                 RotationSpeed = 360.0f, // Fast rotation
                 RotationSpeedVariance = 180.0f,
                 Type = ParticleType.FourPointedStar,
@@ -690,18 +715,12 @@ namespace GnollHackX
             _particleSystem = new ParticleSystem();
 
             // Initialize effect configurations
-            EmitterConfig magicConfig = ParticleEffects.CreateMagicEffect(new Vector2(200, 400));
-            EmitterConfig powerUpConfig = ParticleEffects.CreatePowerUpEffect(new Vector2(400, 400));
-            EmitterConfig fireConfig = ParticleEffects.CreateFireEffect(new Vector2(600, 400));
-            EmitterConfig fastPowerUpConfig = ParticleEffects.CreateFastPowerUpEffect(new Vector2(800, 400), 5f);
-            EmitterConfig fastPowerUpConfig2 = ParticleEffects.CreateFastPowerUpEffect(new Vector2(800, 400), 20f);
-            EmitterConfig explosionConfig = ParticleEffects.CreateExplosionEffect(new Vector2(1000, 400), 10f);
-            _particleSystem.AddEmitter(new Emitter(magicConfig, 0));
-            _particleSystem.AddEmitter(new Emitter(powerUpConfig, 0));
-            _particleSystem.AddEmitter(new Emitter(fireConfig, 0));
-            _particleSystem.AddEmitter(new Emitter(fastPowerUpConfig, 0));
-            _particleSystem.AddEmitter(new Emitter(fastPowerUpConfig2, 0));
-            _particleSystem.AddEmitter(new Emitter(explosionConfig, 0));
+            _particleSystem.AddEmitter(new Emitter(ParticleEffects.CreateMagicEffect(new Vector2(200, 400)), 0));
+            _particleSystem.AddEmitter(new Emitter(ParticleEffects.CreatePowerUpEffect(new Vector2(400, 400)), 0));
+            _particleSystem.AddEmitter(new Emitter(ParticleEffects.CreateFireEffect(new Vector2(600, 400)), 0));
+            _particleSystem.AddEmitter(new Emitter(ParticleEffects.CreateFastPowerUpEffect(new Vector2(800, 400), 5f), 0));
+            _particleSystem.AddEmitter(new Emitter(ParticleEffects.CreateFastPowerUpEffect(new Vector2(800, 400), 20f), 0));
+            _particleSystem.AddEmitter(new Emitter(ParticleEffects.CreateExplosionEffect(new Vector2(1000, 400), 10f), 0));
             _lastUpdateTime = DateTime.Now;
         }
 
