@@ -5889,7 +5889,7 @@ namespace GnollHackX.Pages.Game
 
             if (pointerIsHoveringOnTile)
             {
-                if (mapLookMode && layer_idx > (int)layer_types.LAYER_FLOOR && layer_idx < (int)layer_types.LAYER_ZAP)
+                if (mapLookMode && layer_idx > (int)layer_types.LAYER_CARPET && layer_idx < (int)layer_types.LAYER_ZAP)
                     paint.ColorFilter = UIUtils.LookHighlightColorFilter;
                 else if (is_monster_like_layer || is_object_like_layer || layer_idx == (int)layer_types.LAYER_TRAP || layer_idx == (int)layer_types.LAYER_COVER_TRAP)
                     paint.ColorFilter = UIUtils.MapHighlightColorFilter;
