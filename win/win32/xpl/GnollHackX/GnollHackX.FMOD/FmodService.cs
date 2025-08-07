@@ -382,7 +382,7 @@ namespace GnollHackX.Unknown
             }
         }
 
-        public readonly object _eventInstanceLock = new object();
+        //public readonly object _eventInstanceLock = new object();
         /* Modified from the game thread */
         public List<GHSoundInstance> musicInstances = new List<GHSoundInstance>();
         public List<GHSoundInstance> immediateInstances = new List<GHSoundInstance>();
@@ -407,7 +407,7 @@ namespace GnollHackX.Unknown
                 environmentAmbientInstances, occupationAmbientInstances, effectAmbientInstances, ambientList
             };
 
-            lock (_eventInstanceLock)
+            //lock (_eventInstanceLock)
             {
                 foreach (List<GHSoundInstance> list in listoflists)
                 {
@@ -462,7 +462,7 @@ namespace GnollHackX.Unknown
 
             if (type == EVENT_CALLBACK_TYPE.STOPPED || type == EVENT_CALLBACK_TYPE.START_FAILED)
             {
-                lock (service._eventInstanceLock)
+                //lock (service._eventInstanceLock)
                 {
                     for (int i = 0; i < GHConstants.MaxNormalImmediateSoundInstances; i++)
                     {
@@ -502,7 +502,7 @@ namespace GnollHackX.Unknown
 
             if (type == EVENT_CALLBACK_TYPE.STOPPED || type == EVENT_CALLBACK_TYPE.START_FAILED)
             {
-                lock (service._eventInstanceLock)
+                //lock (service._eventInstanceLock)
                 {
                     for (int i = 0; i < GHConstants.MaxNormalImmediateSoundInstances; i++)
                     {
@@ -634,7 +634,7 @@ namespace GnollHackX.Unknown
             RESULT res;
             EventInstance eventInstance;
             bool queue_sound = false;
-            lock (_eventInstanceLock)
+            //lock (_eventInstanceLock)
             {
                 /* Decline to play if no play play_flag is set and the sound is playing */
                 if ((play_flags & (uint)sound_play_flags.PLAY_FLAGS_NO_PLAY_IF_ALREADY_PLAYING_OR_QUEUED) != 0)
@@ -794,7 +794,7 @@ namespace GnollHackX.Unknown
                 flags = (ulong)StopSoundFlags.All;
 
             bool only_mid = (flags & (ulong)StopSoundFlags.OnlyDialogueMid) != 0;
-            lock (_eventInstanceLock)
+            //lock (_eventInstanceLock)
             {
                 if ((flags & (ulong)StopSoundFlags.ImmediateNormal) != 0)
                 {
@@ -937,7 +937,7 @@ namespace GnollHackX.Unknown
 
             RESULT res;
             EventInstance eventInstance;
-            lock (_eventInstanceLock)
+            //lock (_eventInstanceLock)
             {
                 if (musicInstances.Count > 0 && musicInstances[0].ghsound == ghsound && musicInstances[0].stopped == false)
                     return (int)RESULT.OK;
@@ -990,7 +990,7 @@ namespace GnollHackX.Unknown
 
             RESULT res;
             EventInstance eventInstance;
-            lock (_eventInstanceLock)
+            //lock (_eventInstanceLock)
             {
                 if (ghsound <= 0)
                 {
@@ -1072,7 +1072,7 @@ namespace GnollHackX.Unknown
 
             RESULT res;
             EventInstance eventInstance;
-            lock (_eventInstanceLock)
+            //lock (_eventInstanceLock)
             {
                 if (ghsound <= 0)
                 {
@@ -1154,7 +1154,7 @@ namespace GnollHackX.Unknown
 
             RESULT res;
             EventInstance eventInstance;
-            lock (_eventInstanceLock)
+            //lock (_eventInstanceLock)
             {
                 if (ghsound <= 0)
                 {
@@ -1236,7 +1236,7 @@ namespace GnollHackX.Unknown
 
             RESULT res;
             EventInstance eventInstance;
-            lock (_eventInstanceLock)
+            //lock (_eventInstanceLock)
             {
                 if (ghsound <= 0)
                 {
@@ -1318,7 +1318,7 @@ namespace GnollHackX.Unknown
                 return 1;
 
             /* Check if the ambient is the same as before */
-            lock (_eventInstanceLock)
+            //lock (_eventInstanceLock)
             {
                 if (effectAmbientInstances.Count > 0 && effectAmbientInstances[0].stopped == false)
                 {
@@ -1367,7 +1367,7 @@ namespace GnollHackX.Unknown
             RESULT res = RESULT.OK;
             EventInstance eventInstance;
             GHSoundInstance ghinstance;
-            lock (_eventInstanceLock)
+            //lock (_eventInstanceLock)
             {
                 EventDescription eventDescription;
                 res = _system.getEvent(eventPath, out eventDescription);
@@ -1411,7 +1411,7 @@ namespace GnollHackX.Unknown
             bool found = false;
             GHSoundInstance ghinstance = null;
             int listidx = -1;
-            lock (_eventInstanceLock)
+            //lock (_eventInstanceLock)
             {
                 for (int i = 0; i < ambientList.Count; i++)
                 {
@@ -1451,7 +1451,7 @@ namespace GnollHackX.Unknown
             RESULT res;
             GHSoundInstance ghinstance = null;
             float event_volume;
-            lock (_eventInstanceLock)
+            //lock (_eventInstanceLock)
             {
                 for (int i = 0; i < ambientList.Count; i++)
                 {
@@ -1494,7 +1494,7 @@ namespace GnollHackX.Unknown
             _uiVolume = new_general_ui_volume;
 
             RESULT result;
-            lock (_eventInstanceLock)
+            //lock (_eventInstanceLock)
             {
                 result = SetMusicAndAmbientVolumesWithoutUpdate();
                 result = AdjustImmediateVolumeType(immediateInstances);
@@ -1546,7 +1546,7 @@ namespace GnollHackX.Unknown
         private int AdjustMusicAndAmbientVolumes()
         {
             RESULT result;
-            lock (_eventInstanceLock)
+            //lock (_eventInstanceLock)
             {
                 result = SetMusicAndAmbientVolumesWithoutUpdate();
             }
