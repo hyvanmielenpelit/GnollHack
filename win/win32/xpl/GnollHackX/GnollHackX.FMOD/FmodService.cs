@@ -1553,7 +1553,7 @@ namespace GnollHackX.Unknown
             RESULT result;
             //lock (_eventInstanceLock)
             {
-                result = SetGameMusicAndAmbientVolumesWithoutUpdate(new_general_music_volume, new_general_ambient_volume, new_general_volume);
+                result = SetGameMusicAndAmbientVolumesWithoutUpdate(new_general_volume, new_general_music_volume, new_general_ambient_volume);
                 result = AdjustImmediateVolumeType(immediateInstances, new_general_volume);
                 result = AdjustImmediateVolumeType(longImmediateInstances, new_general_volume);
             }
