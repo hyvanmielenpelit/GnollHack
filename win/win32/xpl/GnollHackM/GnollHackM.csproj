@@ -215,7 +215,8 @@
     <None Remove="..\GnollHackX\GnollHackX\NoTabStopButton.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\ObjectData.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\ObjectDataItem.cs" />
-		<None Remove="..\GnollHackX\GnollHackX\PointableButton.cs" />
+    <None Remove="..\GnollHackX\GnollHackX\ParticleSystem.cs" />
+    <None Remove="..\GnollHackX\GnollHackX\PointableButton.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\Secrets.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\SecretsDirectory.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\SecretsFile.cs" />
@@ -395,7 +396,8 @@
     <Compile Include="..\GnollHackX\GnollHackX\NoTabStopButton.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\ObjectData.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\ObjectDataItem.cs" />
-		<Compile Include="..\GnollHackX\GnollHackX\PointableButton.cs" />
+    <Compile Include="..\GnollHackX\GnollHackX\ParticleSystem.cs" />
+    <Compile Include="..\GnollHackX\GnollHackX\PointableButton.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\Secrets.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\SecretsDirectory.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\SecretsFile.cs" />

@@ -11961,6 +11961,10 @@ namespace GnollHackX.Pages.Game
                 {
                     DrawExtendedStatusBar(canvas, textPaint, canvaswidth, canvasheight, inverse_canvas_scale, statusBarSkiaHeight, canvasViewWidth, canvasViewHeight, stdButtonWidth, stdButtonHeight, usedButtonRowStackHeight, usingGL, fixRects, ref youRect);
                 }
+
+                /* Particles */
+                _particleSystem.Update();
+                _particleSystem.Render(canvas);
 #if WINDOWS
                 GameCursorType newCursor = GameCursorType.Normal;
                 bool doChangeCursor = false;
@@ -12078,6 +12082,7 @@ namespace GnollHackX.Pages.Game
 #endif
         }
 
+        ParticleSystemDemo _particleSystem = new ParticleSystemDemo();
         private void DrawExtendedStatusBar(SKCanvas canvas, GHSkiaFontPaint textPaint, float canvaswidth, float canvasheight, float inverse_canvas_scale, float statusBarSkiaHeight,
             double canvasViewWidth, double canvasViewHeight, double stdButtonWidth, double stdButtonHeight, double usedButtonRowStackHeight, bool usingGL, bool fixRects,
             ref SKRect youRect)
