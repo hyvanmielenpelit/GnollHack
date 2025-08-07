@@ -1569,6 +1569,7 @@ namespace GnollHackX.Pages.Game
                     MoreCommandsGrid.IsVisible = false;
                 }
 
+                GHApp.FmodService?.StopAllUISounds();
                 Thread t;
                 if (PlayingReplay)
                     t = new Thread(new ThreadStart(GNHThreadProcForReplay));
@@ -4421,7 +4422,6 @@ namespace GnollHackX.Pages.Game
             }
             _mainPage.UpdateLayout();
             _mainPage.ActivateLocalGameButton();
-            GHApp.FmodService.StopAllSounds((uint)StopSoundFlags.All, 0);
             GHApp.FmodService.UnloadBanks(sound_bank_loading_type.Music);
             _mainPage.PlayMainScreenVideoAndMusic(); /* Just to be doubly sure */
             if (GHApp.GameMuteMode)

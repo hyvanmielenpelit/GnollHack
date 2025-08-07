@@ -6,17 +6,20 @@ namespace GnollHackX
 {
     public sealed class GHResponse
     {
-        public GHRequestType RequestType { get; set; }
-        public string ResponseStringValue { get; set; }
-        public int ResponseIntValue { get; set; }
-        public uint ResponseUIntValue { get; set; }
-        public bool ResponseBoolValue { get; set; }
-        public List<GHMenuItem> SelectedMenuItems { get; set; }
+        public readonly GHRequestType RequestType;
+        public readonly string ResponseStringValue;
+        public readonly int ResponseIntValue;
+        public readonly uint ResponseUIntValue;
+        public readonly bool ResponseBoolValue;
+        public readonly List<GHMenuItem> SelectedMenuItems;
         public GHGame RequestingGame { get; }
         public GHWindow RequestingGHWindow { get; }
-        public int X { get; set; }
-        public int Y { get; set; }
-        public int Mod { get; set; }
+        public readonly int X;
+        public readonly int Y;
+        public readonly int Mod;
+
+        public readonly float GeneralVolume, MusicVolume, AmbientVolume, DialogueVolume, EffectsVolume, GameUIVolume;
+
         public GHResponse()
         {
 
@@ -67,6 +70,18 @@ namespace GnollHackX
             X = x;
             Y = y;
             Mod = mod;
+        }
+
+        public GHResponse(GHGame ghGame, GHRequestType requesttype, float generalVolume, float musicVolume, float ambientVolume, float dialogueVolume, float effectsVolume, float gameUIVolume)
+        {
+            RequestingGame = ghGame;
+            RequestType = requesttype;
+            GeneralVolume = generalVolume;
+            MusicVolume = musicVolume;
+            AmbientVolume = ambientVolume;
+            DialogueVolume = dialogueVolume;
+            EffectsVolume = effectsVolume;
+            GameUIVolume = gameUIVolume;
         }
     }
 }

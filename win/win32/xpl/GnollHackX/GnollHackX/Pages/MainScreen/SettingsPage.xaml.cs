@@ -819,15 +819,36 @@ namespace GnollHackX.Pages.MainScreen
                 Preferences.Set("WindowedMode", WindowedModeSwitch.IsToggled);
             }
 
-            Preferences.Set("GeneralVolume", (float)GeneralVolumeSlider.Value);
-            Preferences.Set("MusicVolume", (float)MusicVolumeSlider.Value);
-            Preferences.Set("AmbientVolume", (float)AmbientVolumeSlider.Value);
-            Preferences.Set("DialogueVolume", (float)DialogueVolumeSlider.Value);
-            Preferences.Set("EffectsVolume", (float)EffectsVolumeSlider.Value);
-            Preferences.Set("UIVolume", (float)UIVolumeSlider.Value);
+            float generalVolume = (float)GeneralVolumeSlider.Value;
+            float musicVolume = (float)MusicVolumeSlider.Value;
+            float ambientVolume = (float)AmbientVolumeSlider.Value;
+            float dialogueVolume = (float)DialogueVolumeSlider.Value;
+            float effectsVolume = (float)EffectsVolumeSlider.Value;
+            float uiVolume = (float)UIVolumeSlider.Value;
 
-            if (!GHApp.IsMuted)
-                GHApp.FmodService.AdjustVolumes((float)GeneralVolumeSlider.Value, (float)MusicVolumeSlider.Value, (float)AmbientVolumeSlider.Value, (float)DialogueVolumeSlider.Value, (float)EffectsVolumeSlider.Value, (float)UIVolumeSlider.Value);
+            Preferences.Set("GeneralVolume", generalVolume);
+            Preferences.Set("MusicVolume", musicVolume);
+            Preferences.Set("AmbientVolume", ambientVolume);
+            Preferences.Set("DialogueVolume", dialogueVolume);
+            Preferences.Set("EffectsVolume", effectsVolume);
+            Preferences.Set("UIVolume", uiVolume);
+
+            ////if (!GHApp.IsMuted)
+            //    GHApp.FmodService?.AdjustVolumes((float)GeneralVolumeSlider.Value, (float)MusicVolumeSlider.Value, (float)AmbientVolumeSlider.Value, (float)DialogueVolumeSlider.Value, (float)EffectsVolumeSlider.Value, (float)UIVolumeSlider.Value);
+
+            /* Adjust first UI volumes */
+            GHApp.FmodService?.AdjustUIVolumes(generalVolume, musicVolume, uiVolume);
+            GHGame curGame = GHApp.CurrentGHGame;
+            if (curGame != null)
+            {
+                /* Game is ongoing, so ask GHGame to handle this */
+                curGame.ResponseQueue.Enqueue(new GHResponse(curGame, GHRequestType.SetVolume, generalVolume, musicVolume, ambientVolume, dialogueVolume, effectsVolume, uiVolume));
+            }
+            else
+            {
+                /* Adjust directly, since there's no game thread */
+                GHApp.FmodService?.AdjustGameVolumes(generalVolume, musicVolume, ambientVolume, dialogueVolume, effectsVolume, uiVolume);
+            }
 
             int res = GHConstants.DefaultMessageRows, tryres = 0;
             string str = MessageLengthPicker.SelectedItem == null ? res.ToString() : MessageLengthPicker.SelectedItem.ToString();
@@ -928,7 +949,7 @@ namespace GnollHackX.Pages.MainScreen
                     }
                     if (_gamePage == null)
                     {
-                        GHApp.FmodService.PlayMusic(GHConstants.IntroGHSound, GHConstants.IntroEventPath, GHConstants.IntroBankId, GHConstants.IntroMusicVolume, 1.0f);
+                        GHApp.FmodService.PlayUIMusic(GHConstants.IntroGHSound, GHConstants.IntroEventPath, GHConstants.IntroBankId, GHConstants.IntroMusicVolume, 1.0f);
                     }
                 }
                 catch (Exception ex)
@@ -1627,7 +1648,7 @@ namespace GnollHackX.Pages.MainScreen
             DisableWindowsKeySwitch.IsToggled = disablewindowskey;
             DisableWindowsKeyGrid.IsVisible = GHApp.IsWindows;
             DefaultVIKeysSwitch.IsToggled = defaultvikeys;
-            _doChangeVolume = !GHApp.IsMuted;
+            _doChangeVolume = true; // !GHApp.IsMuted;
         }
 
         private void ClassicStatusBarSwitch_Toggled(object sender, ToggledEventArgs e)
@@ -1701,7 +1722,7 @@ namespace GnollHackX.Pages.MainScreen
         private void SilentModeSwitch_Toggled(object sender, ToggledEventArgs e)
         {
             GHApp.SilentMode = SilentModeSwitch.IsToggled;
-            _doChangeVolume = !GHApp.IsMuted;
+            //_doChangeVolume = !GHApp.IsMuted;
         }
 
         private void StreamingBankToMemorySwitch_Toggled(object sender, ToggledEventArgs e)
@@ -2082,8 +2103,31 @@ namespace GnollHackX.Pages.MainScreen
 
         private void VolumeSlider_ValueChanged(object sender, ValueChangedEventArgs e)
         {
+            float generalVolume = (float)GeneralVolumeSlider.Value;
+            float musicVolume = (float)MusicVolumeSlider.Value;
+            float ambientVolume = (float)AmbientVolumeSlider.Value;
+            float dialogueVolume = (float)DialogueVolumeSlider.Value;
+            float effectsVolume = (float)EffectsVolumeSlider.Value;
+            float uiVolume = (float)UIVolumeSlider.Value;
+
+            //if (_doChangeVolume)
+            //    GHApp.FmodService?.AdjustVolumes((float)GeneralVolumeSlider.Value, (float)MusicVolumeSlider.Value, (float)AmbientVolumeSlider.Value, (float)DialogueVolumeSlider.Value, (float)EffectsVolumeSlider.Value, (float)UIVolumeSlider.Value);
             if (_doChangeVolume)
-                GHApp.FmodService.AdjustVolumes((float)GeneralVolumeSlider.Value, (float)MusicVolumeSlider.Value, (float)AmbientVolumeSlider.Value, (float)DialogueVolumeSlider.Value, (float)EffectsVolumeSlider.Value, (float)UIVolumeSlider.Value);
+            {
+                /* Adjust first UI volumes */
+                GHApp.FmodService?.AdjustUIVolumes(generalVolume, musicVolume, uiVolume);
+                GHGame curGame = GHApp.CurrentGHGame;
+                if (curGame != null)
+                {
+                    /* Game is ongoing, so ask GHGame to handle this */
+                    curGame.ResponseQueue.Enqueue(new GHResponse(curGame, GHRequestType.SetVolume, generalVolume, musicVolume, ambientVolume, dialogueVolume, effectsVolume, uiVolume));
+                }
+                else
+                {
+                    /* Adjust directly, since there's no game thread */
+                    GHApp.FmodService?.AdjustGameVolumes(generalVolume, musicVolume, ambientVolume, dialogueVolume, effectsVolume, uiVolume);
+                }
+            }
         }
 
         private double _currentPageWidth = 0;

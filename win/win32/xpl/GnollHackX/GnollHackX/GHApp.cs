@@ -2053,48 +2053,53 @@ namespace GnollHackX
             if (newGameMuted || newSilentMode || newSleepMuteMode || newUnfocusedMuteMode)
             {
                 if (!oldGameMuted && !oldSilentMode && !oldSleepMuteMode && !oldUnfocusedMuteMode)
-                    MuteSounds();
+                    ToggleMute(true);
             }
             else
             {
                 if (oldGameMuted || oldSilentMode || oldSleepMuteMode || oldUnfocusedMuteMode)
-                    UnmuteSounds();
+                    ToggleMute(false);
             }
         }
 
-        private static void MuteSounds()
+        private static void ToggleMute(bool mute)
         {
-            try
-            {
-                if (FmodService != null)
-                    FmodService.AdjustVolumes(0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f);
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine(ex.Message);
-            }
+            FmodService?.ToggleMuteSounds(mute);
         }
 
-        private static void UnmuteSounds()
-        {
-            if (FmodService != null)
-            {
-                try
-                {
-                    float generalVolume = Preferences.Get("GeneralVolume", GHConstants.DefaultGeneralVolume);
-                    float musicVolume = Preferences.Get("MusicVolume", GHConstants.DefaultMusicVolume);
-                    float ambientVolume = Preferences.Get("AmbientVolume", GHConstants.DefaultAmbientVolume);
-                    float dialogueVolume = Preferences.Get("DialogueVolume", GHConstants.DefaultDialogueVolume);
-                    float effectsVolume = Preferences.Get("EffectsVolume", GHConstants.DefaultEffectsVolume);
-                    float UIVolume = Preferences.Get("UIVolume", GHConstants.DefaultUIVolume);
-                    FmodService.AdjustVolumes(generalVolume, musicVolume, ambientVolume, dialogueVolume, effectsVolume, UIVolume);
-                }
-                catch (Exception ex)
-                {
-                    Debug.WriteLine(ex.Message);
-                }
-            }
-        }
+        //private static void MuteSounds()
+        //{
+        //    try
+        //    {
+        //        FmodService?.ToggleMuteSounds(true);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        Debug.WriteLine(ex.Message);
+        //    }
+        //}
+
+        //private static void UnmuteSounds()
+        //{
+        //    FmodService?.ToggleMuteSounds(false);
+        //    //if (FmodService != null)
+        //    //{
+        //    //    try
+        //    //    {
+        //    //        float generalVolume = Preferences.Get("GeneralVolume", GHConstants.DefaultGeneralVolume);
+        //    //        float musicVolume = Preferences.Get("MusicVolume", GHConstants.DefaultMusicVolume);
+        //    //        float ambientVolume = Preferences.Get("AmbientVolume", GHConstants.DefaultAmbientVolume);
+        //    //        float dialogueVolume = Preferences.Get("DialogueVolume", GHConstants.DefaultDialogueVolume);
+        //    //        float effectsVolume = Preferences.Get("EffectsVolume", GHConstants.DefaultEffectsVolume);
+        //    //        float UIVolume = Preferences.Get("UIVolume", GHConstants.DefaultUIVolume);
+        //    //        FmodService.AdjustVolumes(generalVolume, musicVolume, ambientVolume, dialogueVolume, effectsVolume, UIVolume);
+        //    //    }
+        //    //    catch (Exception ex)
+        //    //    {
+        //    //        Debug.WriteLine(ex.Message);
+        //    //    }
+        //    //}
+        //}
 
         public static void GetDependencyServices()
         {
@@ -2252,7 +2257,9 @@ namespace GnollHackX
         public static string RuntimeVersionString { get; set; }
 
         public static string GHPath { get; private set; } = ".";
-        public static bool LoadBanks { get; set; }
+
+        private static int _loadBanks = 1;
+        public static bool LoadBanks { get { return Interlocked.CompareExchange(ref _loadBanks, 0, 0) != 0; } set { Interlocked.Exchange(ref _loadBanks, value ? 1 : 0); } }
 
         public static event BackButtonHandler BackButtonPressed;
 

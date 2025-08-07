@@ -100,6 +100,8 @@ namespace GnollHackX
         KeyboardFocus,
         SetAutoDig,
         SetIgnoreStopping,
+        StopAllGameSounds,
+        SetVolume,
     }
 
     public struct AddContextMenuData

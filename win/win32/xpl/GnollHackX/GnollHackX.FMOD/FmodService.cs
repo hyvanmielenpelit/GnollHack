@@ -117,10 +117,24 @@ namespace GnollHackX.Unknown
 
         private float _generalVolume = 1.0f;
         private float _musicVolume = 1.0f;
-        private float _ambientVolume = 1.0f;
-        private float _dialogueVolume = 1.0f;
-        private float _effectsVolume = 1.0f;
-        private float _uiVolume = 1.0f;
+        private float GeneralVolume /* Called from both UI and game thread */
+        {
+            get { return Interlocked.CompareExchange(ref _generalVolume, 0.0f, 0.0f); }
+            set { Interlocked.Exchange(ref _generalVolume, value); }
+        }
+        private float MusicVolume /* Called from both UI and game thread */
+        {
+            get { return Interlocked.CompareExchange(ref _musicVolume, 0.0f, 0.0f); }
+            set { Interlocked.Exchange(ref _musicVolume, value); }
+        }
+
+        private float _ambientVolume = 1.0f; /* Called from game thread */
+        private float _dialogueVolume = 1.0f; /* Called from game thread */
+        private float _effectsVolume = 1.0f; /* Called from game thread */
+
+        private float _uiVolume = 1.0f; /* Called from UI thread */
+        private float _gameUiVolume = 1.0f; /* Called from game thread */
+
         private bool _quieterMode = false;
         private const float _quietModeMultiplier = 0.35f;
 
@@ -395,6 +409,7 @@ namespace GnollHackX.Unknown
         public List<GHSoundInstance> ambientList = new List<GHSoundInstance>();
 
         /* Modified from the UI thread */
+        public List<GHSoundInstance> uiMusicInstances = new List<GHSoundInstance>();
         public List<GHSoundInstance> uiInstances = new List<GHSoundInstance>();
 
 
@@ -586,7 +601,7 @@ namespace GnollHackX.Unknown
             res = eventInstance.setCallback(GNHUIEventCallback, EVENT_CALLBACK_TYPE.STOPPED | EVENT_CALLBACK_TYPE.START_FAILED);
             if (res != RESULT.OK)
                 return (int)res;
-            res = eventInstance.setVolume(Math.Max(0.0f, Math.Min(1.0f, eventVolume * soundVolume * _generalVolume * _uiVolume)));
+            res = eventInstance.setVolume(Math.Max(0.0f, Math.Min(1.0f, eventVolume * soundVolume * GeneralVolume * _uiVolume)));
             if (res != RESULT.OK)
                 return (int)res;
 
@@ -668,7 +683,7 @@ namespace GnollHackX.Unknown
                 ghinstance.queued = false;
                 ghinstance.stopped = false;
 
-                float relevant_volume = sound_type == (int)immediate_sound_types.IMMEDIATE_SOUND_UI ? _uiVolume : sound_type == (int)immediate_sound_types.IMMEDIATE_SOUND_DIALOGUE ? _dialogueVolume : _effectsVolume;
+                float relevant_volume = sound_type == (int)immediate_sound_types.IMMEDIATE_SOUND_UI ? _gameUiVolume : sound_type == (int)immediate_sound_types.IMMEDIATE_SOUND_DIALOGUE ? _dialogueVolume : _effectsVolume;
 
                 if (play_group == (int)sound_play_groups.SOUND_PLAY_GROUP_LONG)
                 {
@@ -724,7 +739,7 @@ namespace GnollHackX.Unknown
 
                 ghinstance.queued = queue_sound;
 
-                res = eventInstance.setVolume(Math.Max(0.0f, Math.Min(1.0f, eventVolume * soundVolume * _generalVolume * relevant_volume)));
+                res = eventInstance.setVolume(Math.Max(0.0f, Math.Min(1.0f, eventVolume * soundVolume * GeneralVolume * relevant_volume)));
                 for (int i = 0; i < arraysize; i++)
                 {
                     if (i < parameterNames.Length && i < parameterValues.Length)
@@ -785,7 +800,35 @@ namespace GnollHackX.Unknown
             return (int)res;
         }
 
-        public int StopAllSounds(ulong flags, uint dialogue_mid)
+        public void StopAllUISounds()
+        {
+            if (!FMODup())
+                return;
+
+            foreach (GHSoundInstance ghsi in uiInstances)
+            {
+                if (ghsi.stopped == false)
+                {
+                    ghsi.stopped = true;
+                    ghsi.instance.stop(FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
+                }
+                ghsi.instance.release();
+            }
+            uiInstances.Clear();
+
+            foreach (GHSoundInstance ghsi in uiMusicInstances)
+            {
+                if (ghsi.stopped == false)
+                {
+                    ghsi.stopped = true;
+                    ghsi.instance.stop(FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
+                }
+                ghsi.instance.release();
+            }
+            uiMusicInstances.Clear();
+        }
+
+        public int StopAllGameSounds(ulong flags, uint dialogue_mid)
         {
             if (!FMODup())
                 return 1;
@@ -932,8 +975,17 @@ namespace GnollHackX.Unknown
             return (int)res;
         }
 
+        public int PlayUIMusic(int ghsound, string eventPath, int bankid, float eventVolume, float soundVolume)
+        {
+            return PlayMusicCore(uiMusicInstances, ghsound, eventPath, bankid, eventVolume, soundVolume);
+        }
 
         public int PlayMusic(int ghsound, string eventPath, int bankid, float eventVolume, float soundVolume)
+        {
+            return PlayMusicCore(musicInstances, ghsound, eventPath, bankid, eventVolume, soundVolume);
+        }
+
+        public int PlayMusicCore(List<GHSoundInstance> musicList, int ghsound, string eventPath, int bankid, float eventVolume, float soundVolume)
         {
             if (!FMODup())
                 return 1;
@@ -942,15 +994,15 @@ namespace GnollHackX.Unknown
             EventInstance eventInstance;
             //lock (_eventInstanceLock)
             {
-                if (musicInstances.Count > 0 && musicInstances[0].ghsound == ghsound && musicInstances[0].stopped == false)
+                if (musicList.Count > 0 && musicList[0].ghsound == ghsound && musicList[0].stopped == false)
                     return (int)RESULT.OK;
 
-                if (musicInstances.Count > 0)
+                if (musicList.Count > 0)
                 {
-                    if (musicInstances[0].stopped == false)
+                    if (musicList[0].stopped == false)
                     {
-                        musicInstances[0].stopped = true;
-                        musicInstances[0].instance.stop(FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
+                        musicList[0].stopped = true;
+                        musicList[0].instance.stop(FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
                     }
                 }
 
@@ -966,18 +1018,18 @@ namespace GnollHackX.Unknown
                 ghinstance.sound_type = 0;
                 ghinstance.dialogue_mid = 0;
 
-                musicInstances.Insert(0, ghinstance);
-                res = eventInstance.setVolume(Math.Max(0.0f, Math.Min(1.0f, eventVolume * soundVolume * _generalVolume * _musicVolume * ModeVolume)));
+                musicList.Insert(0, ghinstance);
+                res = eventInstance.setVolume(Math.Max(0.0f, Math.Min(1.0f, eventVolume * soundVolume * GeneralVolume * MusicVolume * ModeVolume)));
 
-                if (musicInstances.Count >= 2)
+                if (musicList.Count >= 2)
                 {
-                    GHSoundInstance ghsi = musicInstances[musicInstances.Count - 1];
+                    GHSoundInstance ghsi = musicList[musicList.Count - 1];
                     if (ghsi.stopped == false)
                     {
                         ghsi.stopped = true;
                         ghsi.instance.stop(FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
                     }
-                    musicInstances.RemoveAt(musicInstances.Count - 1);
+                    musicList.RemoveAt(musicList.Count - 1);
                 }
             }
             res = eventInstance.start();
@@ -1018,7 +1070,7 @@ namespace GnollHackX.Unknown
                     /* Check if the volume is different */
                     if (levelAmbientInstances[0].normalSoundVolume != soundVolume)
                     {
-                        res = levelAmbientInstances[0].instance.setVolume(Math.Max(0.0f, Math.Min(1.0f, eventVolume * soundVolume * _generalVolume * _ambientVolume * ModeVolume)));
+                        res = levelAmbientInstances[0].instance.setVolume(Math.Max(0.0f, Math.Min(1.0f, eventVolume * soundVolume * GeneralVolume * _ambientVolume * ModeVolume)));
                         levelAmbientInstances[0].normalSoundVolume = soundVolume;
                         res = _system.update();
                         return (int)res;
@@ -1049,7 +1101,7 @@ namespace GnollHackX.Unknown
                 ghinstance.dialogue_mid = 0;
 
                 levelAmbientInstances.Insert(0, ghinstance);
-                res = eventInstance.setVolume(Math.Max(0.0f, Math.Min(1.0f, eventVolume * soundVolume * _generalVolume * _ambientVolume * ModeVolume)));
+                res = eventInstance.setVolume(Math.Max(0.0f, Math.Min(1.0f, eventVolume * soundVolume * _ambientVolume * GeneralVolume * ModeVolume)));
 
                 if (levelAmbientInstances.Count >= 2)
                 {
@@ -1100,7 +1152,7 @@ namespace GnollHackX.Unknown
                     /* Check if the volume is different */
                     if (environmentAmbientInstances[0].normalSoundVolume != soundVolume)
                     {
-                        res = environmentAmbientInstances[0].instance.setVolume(Math.Max(0.0f, Math.Min(1.0f, eventVolume * soundVolume * _generalVolume * _ambientVolume * ModeVolume)));
+                        res = environmentAmbientInstances[0].instance.setVolume(Math.Max(0.0f, Math.Min(1.0f, eventVolume * soundVolume * _ambientVolume * GeneralVolume * ModeVolume)));
                         environmentAmbientInstances[0].normalSoundVolume = soundVolume;
                         res = _system.update();
                         return (int)res;
@@ -1131,7 +1183,7 @@ namespace GnollHackX.Unknown
                 ghinstance.dialogue_mid = 0;
 
                 environmentAmbientInstances.Insert(0, ghinstance);
-                res = eventInstance.setVolume(Math.Max(0.0f, Math.Min(1.0f, eventVolume * soundVolume * _generalVolume * _ambientVolume * ModeVolume)));
+                res = eventInstance.setVolume(Math.Max(0.0f, Math.Min(1.0f, eventVolume * soundVolume * _ambientVolume * GeneralVolume * ModeVolume)));
 
                 if (environmentAmbientInstances.Count >= 2)
                 {
@@ -1182,7 +1234,7 @@ namespace GnollHackX.Unknown
                     /* Check if the volume is different */
                     if (occupationAmbientInstances[0].normalSoundVolume != soundVolume)
                     {
-                        res = occupationAmbientInstances[0].instance.setVolume(Math.Max(0.0f, Math.Min(1.0f, eventVolume * soundVolume * _generalVolume * _ambientVolume * ModeVolume)));
+                        res = occupationAmbientInstances[0].instance.setVolume(Math.Max(0.0f, Math.Min(1.0f, eventVolume * soundVolume * _ambientVolume * GeneralVolume * ModeVolume)));
                         occupationAmbientInstances[0].normalSoundVolume = soundVolume;
                         res = _system.update();
                         return (int)res;
@@ -1213,7 +1265,7 @@ namespace GnollHackX.Unknown
                 ghinstance.dialogue_mid = 0;
 
                 occupationAmbientInstances.Insert(0, ghinstance);
-                res = eventInstance.setVolume(Math.Max(0.0f, Math.Min(1.0f, eventVolume * soundVolume * _generalVolume * _ambientVolume * ModeVolume)));
+                res = eventInstance.setVolume(Math.Max(0.0f, Math.Min(1.0f, eventVolume * soundVolume * _ambientVolume * GeneralVolume * ModeVolume)));
 
                 if (occupationAmbientInstances.Count >= 2)
                 {
@@ -1264,7 +1316,7 @@ namespace GnollHackX.Unknown
                     /* Check if the volume is different */
                     if (effectAmbientInstances[0].normalSoundVolume != soundVolume)
                     {
-                        res = effectAmbientInstances[0].instance.setVolume(Math.Max(0.0f, Math.Min(1.0f, eventVolume * soundVolume * _generalVolume * _ambientVolume * ModeVolume)));
+                        res = effectAmbientInstances[0].instance.setVolume(Math.Max(0.0f, Math.Min(1.0f, eventVolume * soundVolume * _ambientVolume * GeneralVolume * ModeVolume)));
                         effectAmbientInstances[0].normalSoundVolume = soundVolume;
                         res = _system.update();
                         return (int)res;
@@ -1295,7 +1347,7 @@ namespace GnollHackX.Unknown
                 ghinstance.dialogue_mid = 0;
 
                 effectAmbientInstances.Insert(0, ghinstance);
-                res = eventInstance.setVolume(Math.Max(0.0f, Math.Min(1.0f, eventVolume * soundVolume * _generalVolume * _ambientVolume * ModeVolume)));
+                res = eventInstance.setVolume(Math.Max(0.0f, Math.Min(1.0f, eventVolume * soundVolume * _ambientVolume * GeneralVolume * ModeVolume)));
 
                 if (effectAmbientInstances.Count >= 2)
                 {
@@ -1330,7 +1382,7 @@ namespace GnollHackX.Unknown
                     if (effectAmbientInstances[0].normalSoundVolume != soundVolume)
                     {
                         float eventVolume = effectAmbientInstances[0].normalEventVolume;
-                        res = effectAmbientInstances[0].instance.setVolume(Math.Max(0.0f, Math.Min(1.0f, eventVolume * soundVolume * _generalVolume * _ambientVolume * ModeVolume)));
+                        res = effectAmbientInstances[0].instance.setVolume(Math.Max(0.0f, Math.Min(1.0f, eventVolume * soundVolume * _ambientVolume * GeneralVolume * ModeVolume)));
                         effectAmbientInstances[0].normalSoundVolume = soundVolume;
                         res = _system.update();
                         return (int)res;
@@ -1377,7 +1429,7 @@ namespace GnollHackX.Unknown
                 res = eventDescription.createInstance(out eventInstance);
 
                 /* Set volume */
-                res = eventInstance.setVolume(Math.Max(0.0f, Math.Min(1.0f, eventVolume * soundVolume * _generalVolume * _ambientVolume * ModeVolume)));
+                res = eventInstance.setVolume(Math.Max(0.0f, Math.Min(1.0f, eventVolume * soundVolume * _ambientVolume * GeneralVolume * ModeVolume)));
                 //ambientInstance->setVolume(fmod_volume* event_volume * general_ambient_volume* general_volume);
 
                 /* Create new GHSoundInstance */
@@ -1472,7 +1524,7 @@ namespace GnollHackX.Unknown
 
             float old_volume;
             res = ghinstance.instance.getVolume(out old_volume);
-            res = ghinstance.instance.setVolume(event_volume * soundVolume * _generalVolume * _ambientVolume * ModeVolume);
+            res = ghinstance.instance.setVolume(event_volume * soundVolume  * _ambientVolume * GeneralVolume * ModeVolume);
 
             if (old_volume == 0.0f && soundVolume > 0.0f)
                 res = ghinstance.instance.start();
@@ -1484,66 +1536,99 @@ namespace GnollHackX.Unknown
             return 0;
         }
 
-        public int AdjustVolumes(float new_general_volume, float new_general_music_volume, float new_general_ambient_volume, float new_general_dialogue_volume, float new_general_sfx_volume, float new_general_ui_volume)
+        public int AdjustGameVolumes(float new_general_volume, float new_general_music_volume, float new_general_ambient_volume, float new_general_dialogue_volume, float new_general_sfx_volume, float new_general_game_ui_volume)
         {
             if (!FMODup())
                 return 1;
 
-            _generalVolume = new_general_volume;
-            _musicVolume = new_general_music_volume;
+            /* No need to set again, since AdjustUIVolumes has been called before, setting GeneralVolume and MusicVolume */
+            //GeneralVolume = new_general_volume;
+            //MusicVolume = new_general_music_volume;
+
             _ambientVolume = new_general_ambient_volume;
             _dialogueVolume = new_general_dialogue_volume;
             _effectsVolume = new_general_sfx_volume;
-            _uiVolume = new_general_ui_volume;
+            _gameUiVolume = new_general_game_ui_volume;
 
             RESULT result;
             //lock (_eventInstanceLock)
             {
-                result = SetMusicAndAmbientVolumesWithoutUpdate();
-                result = AdjustImmediateVolumeType(immediateInstances);
-                result = AdjustImmediateVolumeType(longImmediateInstances);
+                result = SetGameMusicAndAmbientVolumesWithoutUpdate(new_general_music_volume, new_general_ambient_volume, new_general_volume);
+                result = AdjustImmediateVolumeType(immediateInstances, new_general_volume);
+                result = AdjustImmediateVolumeType(longImmediateInstances, new_general_volume);
             }
             result = _system.update();
             return (int)result;
         }
 
-        private RESULT AdjustVolumeType(List<GHSoundInstance> soundList, float typeVolume)
+        public int AdjustUIVolumes(float new_general_volume, float new_general_music_volume, float new_general_ui_volume)
+        {
+            if (!FMODup())
+                return 1;
+
+            GeneralVolume = new_general_volume;
+            MusicVolume = new_general_music_volume;
+
+            _uiVolume = new_general_ui_volume;
+
+            RESULT result;
+            result = AdjustVolumeType(uiMusicInstances, new_general_music_volume, ModeVolume, new_general_volume);
+            foreach (GHSoundInstance si in uiInstances)
+            {
+                if (!si.stopped)
+                {
+                    result = si.instance.setVolume(Math.Min(1.0f, si.normalSoundVolume * si.normalEventVolume * _uiVolume * new_general_volume));
+                }
+            }
+            result = _system.update();
+            return (int)result;
+        }
+
+        public void ToggleMuteSounds(bool mute)
+        {
+            if (!FMODup())
+                return;
+            _coresystem.getMasterChannelGroup(out var _masterChannelGroup);
+            _masterChannelGroup.setMute(mute);
+        }
+
+        private RESULT AdjustVolumeType(List<GHSoundInstance> soundList, float typeVolume, float modeVolume, float generalVolume)
         {
             RESULT result = RESULT.OK;
             foreach (GHSoundInstance si in soundList)
             {
                 if (!si.stopped)
                 {
-                    result = si.instance.setVolume(Math.Min(1.0f, si.normalSoundVolume * si.normalEventVolume * typeVolume * _generalVolume * ModeVolume));
+                    result = si.instance.setVolume(Math.Min(1.0f, si.normalSoundVolume * si.normalEventVolume * typeVolume * generalVolume * modeVolume));
                 }
             }
             return result;
         }
 
-        private RESULT AdjustImmediateVolumeType(List<GHSoundInstance> soundList)
+        private RESULT AdjustImmediateVolumeType(List<GHSoundInstance> soundList, float generalVolume)
         {
             RESULT result = RESULT.OK;
             foreach (GHSoundInstance si in soundList)
             {
                 if (!si.stopped)
                 {
-                    float relevant_volume = si.sound_type == immediate_sound_types.IMMEDIATE_SOUND_UI ? _uiVolume : si.sound_type == immediate_sound_types.IMMEDIATE_SOUND_DIALOGUE ? _dialogueVolume : _effectsVolume;
-                    result = si.instance.setVolume(Math.Min(1.0f, si.normalSoundVolume * si.normalEventVolume * relevant_volume * _generalVolume));
+                    float relevant_volume = si.sound_type == immediate_sound_types.IMMEDIATE_SOUND_UI ? _gameUiVolume : si.sound_type == immediate_sound_types.IMMEDIATE_SOUND_DIALOGUE ? _dialogueVolume : _effectsVolume;
+                    result = si.instance.setVolume(Math.Min(1.0f, si.normalSoundVolume * si.normalEventVolume * relevant_volume * generalVolume));
                 }
             }
             return result;
         }
 
-        private RESULT SetMusicAndAmbientVolumesWithoutUpdate()
+        private RESULT SetGameMusicAndAmbientVolumesWithoutUpdate(float generalVolume, float musicVolume, float ambientVolume)
         {
             RESULT result;
             float modeVolume = ModeVolume;
-            result = AdjustVolumeType(musicInstances, _musicVolume);
-            result = AdjustVolumeType(levelAmbientInstances, _ambientVolume);
-            result = AdjustVolumeType(environmentAmbientInstances, _ambientVolume);
-            result = AdjustVolumeType(occupationAmbientInstances, _ambientVolume);
-            result = AdjustVolumeType(effectAmbientInstances, _ambientVolume);
-            result = AdjustVolumeType(ambientList, _ambientVolume);
+            result = AdjustVolumeType(musicInstances, musicVolume, modeVolume, generalVolume);
+            result = AdjustVolumeType(levelAmbientInstances, ambientVolume, modeVolume, generalVolume);
+            result = AdjustVolumeType(environmentAmbientInstances, ambientVolume, modeVolume, generalVolume);
+            result = AdjustVolumeType(occupationAmbientInstances, ambientVolume, modeVolume, generalVolume);
+            result = AdjustVolumeType(effectAmbientInstances, ambientVolume, modeVolume, generalVolume);
+            result = AdjustVolumeType(ambientList, ambientVolume, modeVolume, generalVolume);
             return result;
         }
 
@@ -1552,7 +1637,7 @@ namespace GnollHackX.Unknown
             RESULT result;
             //lock (_eventInstanceLock)
             {
-                result = SetMusicAndAmbientVolumesWithoutUpdate();
+                result = SetGameMusicAndAmbientVolumesWithoutUpdate(GeneralVolume, MusicVolume, _ambientVolume);
             }
             result = _system.update();
             return (int)result;

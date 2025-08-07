@@ -1210,18 +1210,30 @@ namespace GnollHackX
                 GHApp.FmodService.LoadBanks(sound_bank_loading_type.Preliminary);
             }
 
-            float generalVolume, musicVolume, ambientVolume, dialogueVolume, effectsVolume, UIVolume;
+            float generalVolume, musicVolume, ambientVolume, dialogueVolume, effectsVolume, uiVolume;
             generalVolume = Preferences.Get("GeneralVolume", GHConstants.DefaultGeneralVolume);
             musicVolume = Preferences.Get("MusicVolume", GHConstants.DefaultMusicVolume);
             ambientVolume = Preferences.Get("AmbientVolume", GHConstants.DefaultAmbientVolume);
             dialogueVolume = Preferences.Get("DialogueVolume", GHConstants.DefaultDialogueVolume);
             effectsVolume = Preferences.Get("EffectsVolume", GHConstants.DefaultEffectsVolume);
-            UIVolume = Preferences.Get("UIVolume", GHConstants.DefaultUIVolume);
+            uiVolume = Preferences.Get("UIVolume", GHConstants.DefaultUIVolume);
             try
             {
-                GHApp.FmodService.AdjustVolumes(generalVolume, musicVolume, ambientVolume, dialogueVolume, effectsVolume, UIVolume);
+                /* Adjust first UI volumes */
+                GHApp.FmodService?.AdjustUIVolumes(generalVolume, musicVolume, uiVolume);
+                GHGame curGame = GHApp.CurrentGHGame;
+                if (curGame != null)
+                {
+                    /* Game is ongoing, so ask GHGame to handle this */
+                    curGame.ResponseQueue.Enqueue(new GHResponse(curGame, GHRequestType.SetVolume, generalVolume, musicVolume, ambientVolume, dialogueVolume, effectsVolume, uiVolume));
+                }
+                else
+                {
+                    /* Adjust directly, since there's no game thread */
+                    GHApp.FmodService?.AdjustGameVolumes(generalVolume, musicVolume, ambientVolume, dialogueVolume, effectsVolume, uiVolume);
+                }
                 if (GHApp.LoadBanks)
-                    GHApp.FmodService.PlayMusic(GHConstants.IntroGHSound, GHConstants.IntroEventPath, GHConstants.IntroBankId, GHConstants.IntroMusicVolume, 1.0f);
+                    GHApp.FmodService?.PlayUIMusic(GHConstants.IntroGHSound, GHConstants.IntroEventPath, GHConstants.IntroBankId, GHConstants.IntroMusicVolume, 1.0f);
 
                 /* Check silent mode; this also mutes everything if need be */
                 GHApp.SilentMode = Preferences.Get("SilentMode", false);
@@ -1285,7 +1297,7 @@ namespace GnollHackX
 
             try
             {
-                GHApp.FmodService.PlayMusic(GHConstants.IntroGHSound, GHConstants.IntroEventPath, GHConstants.IntroBankId, GHConstants.IntroMusicVolume, 1.0f);
+                GHApp.FmodService?.PlayUIMusic(GHConstants.IntroGHSound, GHConstants.IntroEventPath, GHConstants.IntroBankId, GHConstants.IntroMusicVolume, 1.0f);
                 _mainScreenMusicStarted = true;
             }
             catch (Exception ex)
@@ -1458,7 +1470,7 @@ namespace GnollHackX
             Task t2 = Task.Delay(1000); /* Give 1 second to close at maximum */
             await Task.WhenAny(t1, t2);
             carouselView.Stop();
-            GHApp.FmodService.StopAllSounds((uint)StopSoundFlags.All, 0U);
+            GHApp.FmodService.StopAllGameSounds((uint)StopSoundFlags.All, 0U);
             await Task.Delay(200);
             GHApp.BeforeExitApp();
             GHApp.PlatformService.CloseApplication();

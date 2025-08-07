@@ -198,7 +198,10 @@ public static class MauiProgram
                             else
                             {
                                 GHApp.SaveWindowPosition();
-                                GHApp.FmodService?.StopAllSounds((uint)StopSoundFlags.All, 0U);
+                                //GHApp.FmodService?.StopAllGameSounds((uint)StopSoundFlags.All, 0U);
+                                GHGame curGame = GHApp.CurrentGHGame;
+                                curGame?.ResponseQueue.Enqueue(new GHResponse(curGame, GHRequestType.StopAllGameSounds));
+                                GHApp.FmodService?.StopAllUISounds();
                             }
                         };
 

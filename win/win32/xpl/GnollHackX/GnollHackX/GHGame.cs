@@ -144,7 +144,7 @@ namespace GnollHackX
                 _fastForwardGameOver = true;
         }
 
-        private void pollResponseQueue()
+        private void PollResponseQueue()
         {
             /* Makes sure that whatever is happening, the game gets saved and then restored upon sleep / restore */
             if(_saveRequested)
@@ -289,6 +289,13 @@ namespace GnollHackX
                     case GHRequestType.SaveFileTrackingLoad:
                     case GHRequestType.SaveFileTrackingSave:
                         _saveFileTrackingFinished = response.ResponseIntValue;
+                        break;
+                    case GHRequestType.StopAllGameSounds:
+                        GHApp.FmodService?.StopAllGameSounds((uint)StopSoundFlags.All, 0U);
+                        break;
+                    case GHRequestType.SetVolume:
+                        GHApp.FmodService?.AdjustGameVolumes(response.GeneralVolume, response.MusicVolume, response.AmbientVolume, 
+                            response.DialogueVolume, response.EffectsVolume, response.GameUIVolume);
                         break;
                     default:
                         break;
@@ -1082,7 +1089,7 @@ namespace GnollHackX
             while (!_characternameSet)
             {
                 Thread.Sleep(GHConstants.PollingInterval);
-                pollResponseQueue();
+                PollResponseQueue();
             }
 
             if (out_string_ptr != IntPtr.Zero && CharacterName != "")
@@ -1119,7 +1126,7 @@ namespace GnollHackX
                     break;
                 default:
                 case 0:
-                    GHApp.FmodService.StopAllSounds((uint)StopSoundFlags.All, 0);
+                    GHApp.FmodService.StopAllGameSounds((uint)StopSoundFlags.All, 0);
                     GHApp.SaveDiscoveredMusic();
                     RequestQueue.Enqueue(new GHRequest(this, GHRequestType.ReturnToMainMenu));
                     break;
@@ -1150,7 +1157,7 @@ namespace GnollHackX
             while (_inputBufferLocation < 0)
             {
                 Thread.Sleep(GHConstants.PollingInterval);
-                pollResponseQueue();
+                PollResponseQueue();
                 if (_fastForwardGameOver)
                 {
                     RecordFunctionCall(RecordedFunctionID.GetChar, 0);
@@ -1209,7 +1216,7 @@ namespace GnollHackX
                     return 0;
                 }
                 Thread.Sleep(GHConstants.PollingInterval);
-                pollResponseQueue();
+                PollResponseQueue();
                 if (_fastForwardGameOver)
                 {
                     RecordFunctionCall(RecordedFunctionID.PosKey, x, y, mod, 0);
@@ -2041,7 +2048,7 @@ namespace GnollHackX
                         break;
 
                     Thread.Sleep(GHConstants.PollingInterval);
-                    pollResponseQueue();
+                    PollResponseQueue();
                 }
             }
 
@@ -2373,7 +2380,7 @@ namespace GnollHackX
                 while (_getLineString == null)
                 {
                     Thread.Sleep(GHConstants.PollingInterval);
-                    pollResponseQueue();
+                    PollResponseQueue();
                 }
 
                 RecordFunctionCall(RecordedFunctionID.GetLine, style, attr, color, query, placeholder, linesuffix, introline, _getLineString);
@@ -2523,7 +2530,7 @@ namespace GnollHackX
                 while (!_screenTextSet)
                 {
                     Thread.Sleep(GHConstants.PollingInterval);
-                    pollResponseQueue();
+                    PollResponseQueue();
                 }
 
                 int cnt = 0;
@@ -2728,7 +2735,7 @@ namespace GnollHackX
         {
             if (GHApp.FmodService != null)
             {
-                int res = GHApp.FmodService.StopAllSounds(flags, dialogue_mid);
+                int res = GHApp.FmodService.StopAllGameSounds(flags, dialogue_mid);
                 RecordFunctionCall(RecordedFunctionID.StopAllSounds, flags, dialogue_mid, res);
                 return res;
             }
@@ -2908,8 +2915,8 @@ namespace GnollHackX
                     while (!_restoreRequested)
                     {
                         Thread.Sleep(GHConstants.PollingInterval);
-                        _saveRequested = false; //Should be the case. but just in case there is some sort of a mixup going on so that we do not save and restore again in pollResponseQueue
-                        pollResponseQueue();
+                        _saveRequested = false; //Should be the case. but just in case there is some sort of a mixup going on so that we do not save and restore again in PollResponseQueue
+                        PollResponseQueue();
                     }
                     _restoreRequested = false;
                     break;
@@ -3266,7 +3273,7 @@ namespace GnollHackX
                         while (!_guiTipsFinished)
                         {
                             Thread.Sleep(GHConstants.PollingInterval);
-                            pollResponseQueue();
+                            PollResponseQueue();
                         }
                         break;
                     }
@@ -3282,7 +3289,7 @@ namespace GnollHackX
                         while (!_crashReportFinished)
                         {
                             Thread.Sleep(GHConstants.PollingInterval);
-                            pollResponseQueue();
+                            PollResponseQueue();
                         }
                         break;
                     }
@@ -3300,7 +3307,7 @@ namespace GnollHackX
                         while (!_panicFinished)
                         {
                             Thread.Sleep(GHConstants.PollingInterval);
-                            pollResponseQueue();
+                            PollResponseQueue();
                         }
                         break;
                     }
@@ -3320,7 +3327,7 @@ namespace GnollHackX
                         while (!_messageFinished)
                         {
                             Thread.Sleep(GHConstants.PollingInterval);
-                            pollResponseQueue();
+                            PollResponseQueue();
                         }
                         break;
                     }
@@ -3342,7 +3349,7 @@ namespace GnollHackX
                         while (!_ynConfirmationFinished)
                         {
                             Thread.Sleep(GHConstants.PollingInterval);
-                            pollResponseQueue();
+                            PollResponseQueue();
                             if (_fastForwardGameOver)
                                 return def;
                         }
@@ -3381,7 +3388,7 @@ namespace GnollHackX
                                         while (_saveFileTrackingFinished < 0)
                                         {
                                             Thread.Sleep(GHConstants.PollingInterval);
-                                            pollResponseQueue();
+                                            PollResponseQueue();
                                         }
                                         return _saveFileTrackingFinished;
                                     }
