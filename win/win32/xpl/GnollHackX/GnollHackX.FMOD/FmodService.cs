@@ -412,15 +412,36 @@ namespace GnollHackX.Unknown
         public List<GHSoundInstance> uiMusicInstances = new List<GHSoundInstance>();
         public List<GHSoundInstance> uiInstances = new List<GHSoundInstance>();
 
-
-        /* Called from the UI thread */
-        public const int nooflists = 9;
-        public void ReleaseAllSoundInstances()
+        public void ReleaseAllGameSoundInstances()
         {
-            List<GHSoundInstance>[] listoflists = new List<GHSoundInstance>[nooflists]
+            List<GHSoundInstance>[] listoflists =
             {
-                musicInstances, immediateInstances, longImmediateInstances, uiInstances, levelAmbientInstances,
+                musicInstances, immediateInstances, longImmediateInstances, levelAmbientInstances,
                 environmentAmbientInstances, occupationAmbientInstances, effectAmbientInstances, ambientList
+            };
+
+            //lock (_eventInstanceLock)
+            {
+                foreach (List<GHSoundInstance> list in listoflists)
+                {
+                    foreach (GHSoundInstance instance in list)
+                    {
+                        if (!instance.stopped)
+                            instance.instance.stop(STOP_MODE.IMMEDIATE);
+                        instance.instance.release();
+                    }
+                    list.Clear();
+                }
+            }
+            RESULT res = _system.update();
+        }
+
+        [UIThreadOnly]
+        public void ReleaseAllUISoundInstances()
+        {
+            List<GHSoundInstance>[] listoflists =
+            {
+                uiMusicInstances, uiInstances
             };
 
             //lock (_eventInstanceLock)
@@ -584,6 +605,7 @@ namespace GnollHackX.Unknown
         }
 
         /* Called from UI thread, no need for locking */
+        [UIThreadOnly]
         public int PlayUISound(int ghsound, string eventPath, int bankid, float eventVolume, float soundVolume)
         {
             if (!FMODup())
@@ -642,6 +664,7 @@ namespace GnollHackX.Unknown
         }
 
         /* Called from game thread */
+        [GameThreadOnly]
         public int PlayImmediateSound(int ghsound, string eventPath, int bankid, float eventVolume, float soundVolume, string[] parameterNames, float[] parameterValues, int arraysize, int sound_type, int play_group, uint dialogue_mid, uint play_flags)
         {
             if (!FMODup())
@@ -828,6 +851,7 @@ namespace GnollHackX.Unknown
             uiMusicInstances.Clear();
         }
 
+        [GameThreadOnly]
         public int StopAllGameSounds(ulong flags, uint dialogue_mid)
         {
             if (!FMODup())
@@ -978,11 +1002,13 @@ namespace GnollHackX.Unknown
             return (int)res;
         }
 
+        [UIThreadOnly]
         public int PlayUIMusic(int ghsound, string eventPath, int bankid, float eventVolume, float soundVolume)
         {
             return PlayMusicCore(uiMusicInstances, ghsound, eventPath, bankid, eventVolume, soundVolume);
         }
 
+        [GameThreadOnly]
         public int PlayMusic(int ghsound, string eventPath, int bankid, float eventVolume, float soundVolume)
         {
             return PlayMusicCore(musicInstances, ghsound, eventPath, bankid, eventVolume, soundVolume);

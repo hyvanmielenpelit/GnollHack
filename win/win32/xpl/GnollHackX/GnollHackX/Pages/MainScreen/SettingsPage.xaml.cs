@@ -904,11 +904,13 @@ namespace GnollHackX.Pages.MainScreen
             if (_mainPage != null)
                 _mainPage.PlayCarouselView();
 
-            if (unloadbanks)
+            if (unloadbanks && GHApp.FmodService != null)
             {
                 try
                 {
-                    GHApp.FmodService.ReleaseAllSoundInstances();
+                    GHApp.FmodService.ReleaseAllUISoundInstances();
+                    GHApp.FmodService.ReleaseAllGameSoundInstances(); /* Needs to be done immediately, so hopefully no conflict with the game thread */
+                    GHApp.FmodService.ResetGameState();
                     GHApp.FmodService.UnloadBanks(sound_bank_loading_type.Master);
                     GHApp.FmodService.UnloadBanks(sound_bank_loading_type.Preliminary);
                     if(_gamePage != null)
