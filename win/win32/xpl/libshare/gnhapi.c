@@ -536,12 +536,13 @@ DLLEXPORT void gnhapi_raw_print(const char* text)
                 {
                     if ((int)len > bufleft)
                     {
-                        Strncpy(gnhapi_putstr_buffer + buflen, text, bufleft);
+                        Strncpy(gnhapi_putstr_buffer + buflen + lflen, text, bufleft);
                         gnhapi_putstr_buffer[sizeof(gnhapi_putstr_buffer) - 1] = 0;
                     }
                     else
                     {
-                        Strcpy(gnhapi_putstr_buffer + buflen, text);
+                        /* This really should be Strcat but knowing the lengths, this is faster */
+                        Strcpy(gnhapi_putstr_buffer + buflen + lflen, text);
                     }
                 }
             }
@@ -550,7 +551,8 @@ DLLEXPORT void gnhapi_raw_print(const char* text)
         {
             if (*gnhapi_putstr_buffer)
                 Strcat(gnhapi_putstr_buffer, "\n");
-            Strcpy(gnhapi_putstr_buffer + buflen, text);
+            /* This really should be Strcat but knowing the lengths, this is faster */
+            Strcpy(gnhapi_putstr_buffer + buflen + lflen, text);
         }
     }
 }

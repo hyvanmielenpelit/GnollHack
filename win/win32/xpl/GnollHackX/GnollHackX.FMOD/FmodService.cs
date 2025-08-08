@@ -1672,7 +1672,7 @@ namespace GnollHackX.Unknown
 
             _quieterMode = newState; // state;
             ModeFadeCounter = 0;
-            _tasks.Enqueue(new GHSoundTask(GHSoundTaskType.IncreaseModeFadeCounter));
+            _soundTasks.Enqueue(new GHSoundTask(GHSoundTaskType.IncreaseModeFadeCounter));
 
             //ModeFadeCounter = _maxModeFadeCounter;
             //AdjustMusicAndAmbientVolumes();
@@ -1711,14 +1711,16 @@ namespace GnollHackX.Unknown
                 TaskType = taskType;
             }
         }
-        private ConcurrentQueue<GHSoundTask> _tasks = new ConcurrentQueue<GHSoundTask>();
+
+        private ConcurrentQueue<GHSoundTask> _soundTasks = new ConcurrentQueue<GHSoundTask>();
+        private ConcurrentQueue<GHSoundTask> _addedSoundTasks = new ConcurrentQueue<GHSoundTask>();
         public void PollTasks()
         {
             if (!FMODup())
                 return;
 
-            List<GHSoundTask> addedTasks = new List<GHSoundTask>();
-            while (_tasks.TryDequeue(out GHSoundTask ghst))
+            _addedSoundTasks.Clear();
+            while (_soundTasks.TryDequeue(out GHSoundTask ghst))
             {
                 switch(ghst.TaskType)
                 {
@@ -1731,7 +1733,7 @@ namespace GnollHackX.Unknown
                                 AdjustMusicAndAmbientVolumes();
                                 if (modeFadeCounter < _maxModeFadeCounter)
                                 {
-                                    addedTasks.Add(new GHSoundTask(GHSoundTaskType.IncreaseModeFadeCounter));
+                                    _addedSoundTasks.Enqueue(new GHSoundTask(GHSoundTaskType.IncreaseModeFadeCounter));
                                 }
                             }
                         }
@@ -1741,11 +1743,11 @@ namespace GnollHackX.Unknown
                 }
             }
 
-            if (addedTasks.Count > 0)
+            if (_addedSoundTasks.Count > 0)
             {
-                foreach (GHSoundTask ghst in addedTasks)
+                while (_addedSoundTasks.TryDequeue(out GHSoundTask ghst))
                 {
-                    _tasks.Enqueue(ghst);
+                    _soundTasks.Enqueue(ghst);
                 }
             }
         }
