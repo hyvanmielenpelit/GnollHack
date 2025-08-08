@@ -850,17 +850,19 @@ namespace GnollHackX.Unknown
                             {
                                 ghsi.stopped = true;
                                 ghsi.instance.stop(FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
+                                if (ghsi.sound_type == immediate_sound_types.IMMEDIATE_SOUND_DIALOGUE)
+                                    SetQuieterMode(false);
                             }
                             ghsi.instance.release();
                         }
                     }
-                    /* Callback removes the sound instance */
-                    //for (int i = immediateInstances.Count - 1; i >= 0; i--)
-                    //{
-                    //    if (immediateInstances[i].stopped)
-                    //        immediateInstances.RemoveAt(i);
-                    //}
-                    //immediateInstances.Clear();
+
+                    for (int i = immediateInstances.Count - 1; i >= 0; i--)
+                    {
+                        if (immediateInstances[i].stopped)
+                            immediateInstances.RemoveAt(i);
+                    }
+                    immediateInstances.Clear();
                 }
 
                 if ((flags & (ulong)StopSoundFlags.ImmediateLong) != 0)
@@ -873,17 +875,18 @@ namespace GnollHackX.Unknown
                             {
                                 ghsi.stopped = true;
                                 ghsi.instance.stop(FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
+                                if (ghsi.sound_type == immediate_sound_types.IMMEDIATE_SOUND_DIALOGUE)
+                                    SetQuieterMode(false);
                             }
                             ghsi.instance.release();
                         }
                     }
-                    /* Callback removes the sound instance */
-                    //for (int i = longImmediateInstances.Count - 1; i >= 0; i--)
-                    //{
-                    //    if (longImmediateInstances[i].stopped)
-                    //        longImmediateInstances.RemoveAt(i);
-                    //}
-                    //longImmediateInstances.Clear();
+                    for (int i = longImmediateInstances.Count - 1; i >= 0; i--)
+                    {
+                        if (longImmediateInstances[i].stopped)
+                            longImmediateInstances.RemoveAt(i);
+                    }
+                    longImmediateInstances.Clear();
                 }
 
                 if ((flags & (ulong)StopSoundFlags.Music) != 0)
@@ -1660,10 +1663,19 @@ namespace GnollHackX.Unknown
 
         private int _quieterModeRequestNumber = 0;
 
+        public void ResetGameState()
+        {
+            _quieterModeRequestNumber = 0;
+            ModeFadeCounter = 0;
+            _soundTasks.Clear();
+        }
+
         public int SetQuieterMode(bool state)
         {
             bool prevState = _quieterModeRequestNumber > 0;
             _quieterModeRequestNumber = _quieterModeRequestNumber + (state ? 1 : -1);
+            if (_quieterModeRequestNumber < 0)
+                _quieterModeRequestNumber = 0;
             bool newState = _quieterModeRequestNumber > 0;
 
             //if (_quieterMode == state)

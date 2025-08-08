@@ -38,6 +38,7 @@ namespace GnollHackX
         int AdjustUIVolumes(float new_general_volume, float new_general_music_volume, float new_general_ui_volume);
         void ToggleMuteSounds(bool mute);
         int SetQuieterMode(bool state);
+        void ResetGameState();
         void PollTasks();
         uint GetVersionCode();
         string GetVersionString();

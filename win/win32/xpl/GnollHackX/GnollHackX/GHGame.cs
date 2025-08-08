@@ -1126,7 +1126,8 @@ namespace GnollHackX
                     break;
                 default:
                 case 0:
-                    GHApp.FmodService.StopAllGameSounds((uint)StopSoundFlags.All, 0);
+                    GHApp.FmodService?.StopAllGameSounds((uint)StopSoundFlags.All, 0);
+                    GHApp.FmodService?.ResetGameState();
                     GHApp.SaveDiscoveredMusic();
                     RequestQueue.Enqueue(new GHRequest(this, GHRequestType.ReturnToMainMenu));
                     break;
