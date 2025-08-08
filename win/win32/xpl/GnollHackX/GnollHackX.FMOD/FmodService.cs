@@ -1666,7 +1666,7 @@ namespace GnollHackX.Unknown
         public void ResetGameState()
         {
             _quieterModeRequestNumber = 0;
-            ModeFadeCounter = 0;
+            ModeFadeCounter = _maxModeFadeCounter;
             _soundTasks.Clear();
         }
 
