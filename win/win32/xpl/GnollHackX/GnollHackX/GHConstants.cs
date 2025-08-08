@@ -11,10 +11,16 @@ namespace GnollHackX
 #endif
 {
     [AttributeUsage(AttributeTargets.Method)]
+    public sealed class ThreadSafeAttribute : Attribute { }
+
+    [AttributeUsage(AttributeTargets.Method)]
     public sealed class UIThreadOnlyAttribute : Attribute { }
 
     [AttributeUsage(AttributeTargets.Method)]
     public sealed class GameThreadOnlyAttribute : Attribute { }
+
+    [AttributeUsage(AttributeTargets.Method)]
+    public sealed class GameThreadIfExistsElseUIThreadAttribute : Attribute { }
 
     [AttributeUsage(AttributeTargets.Method)]
     public sealed class RenderThreadOnlyAttribute : Attribute { }
