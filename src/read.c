@@ -178,7 +178,7 @@ char *buf;
 }
 
 int
-doread()
+doread(VOID_ARGS)
 {
     register struct obj *scroll;
     boolean confused, nodisappear;
@@ -467,9 +467,7 @@ doread()
 
         /* a few scroll feedback messages describe something happening
            to the scroll itself, so avoid "it disappears" for those */
-        nodisappear = (scroll->otyp == SCR_FIRE || scroll->otyp == SCR_IDENTIFY
-                       || (scroll->otyp == SCR_REMOVE_CURSE
-                           && scroll->cursed));
+        nodisappear = (scroll->otyp == SCR_FIRE || scroll->otyp == SCR_IDENTIFY || (scroll->otyp == SCR_REMOVE_CURSE && scroll->cursed));
 
         if (!silently)
             play_simple_object_sound(scroll, OBJECT_SOUND_TYPE_READ); // play_sfx_sound(SFX_READ);
@@ -1895,13 +1893,13 @@ struct monst* targetmonst;
         known = TRUE;
         if (sobj->special_quality == SPEQUAL_MAIL_FROM_MAGIC_MARKER)
             /* "stamped scroll" created via magic marker--without a stamp */
-            pline("This scroll is marked \"postage due\".");
+            pline_ex(ATR_NONE, CLR_MSG_HINT, "This scroll is marked \"postage due\".");
         else if (sobj->special_quality)
             /* scroll of mail obtained from bones file or from wishing;
              * note to the puzzled: the game Larn actually sends you junk
              * mail if you win!
              */
-            pline(
+            pline_ex(ATR_NONE, CLR_MSG_HINT,
                 "This seems to be junk mail addressed to the finder of the Eye of Larn.");
         else
         {
@@ -1911,6 +1909,8 @@ struct monst* targetmonst;
             pline("This scroll is mail, but it is totally scrambled.");
 #endif
         }
+        if (effect_happened_ptr)
+            *effect_happened_ptr = TRUE;
         break;
     case SPE_PROTECT_ARMOR:
     case SCR_PROTECT_ARMOR:

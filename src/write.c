@@ -463,7 +463,7 @@ found_novel_or_manual:
 
     if (new_obj->otyp == SCR_MAIL)
         /* 0: delivered in-game via external event (or randomly for fake mail);
-           1: from bones or wishing; 2: written with marker */
+           1: from bones; 2: written with marker; 3: from wishing; 4: from polymorph */
         new_obj->special_quality = SPEQUAL_MAIL_FROM_MAGIC_MARKER;
     /* unlike alchemy, for example, a successful result yields the
        specifically chosen item so hero recognizes it even if blind;

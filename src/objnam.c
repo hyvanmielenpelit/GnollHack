@@ -1345,8 +1345,8 @@ char** attrs_ptr, ** colors_ptr;
             comparison_stats = (doname_flags & DONAME_COMPARISON) != 0 && iflags.show_comparison_stats && !iflags.in_dumplog && !program_state.gameover;
     boolean known, dknown, cknown, bknown, lknown, tknown;
     int omndx = obj->corpsenm, isenchanted = 0;
-    char prefix[PREFIXBUFSZ];
-    char tmpbuf[PREFIXBUFSZ + 1]; /* for when we have to add something at
+    char prefix[PREFIXBUFSZ] = "";
+    char tmpbuf[PREFIXBUFSZ + 1] = ""; /* for when we have to add something at
                                 the start of prefix instead of the
                                 end (Strcat is used on the end) */
     char *bp = xname(obj);
@@ -2550,6 +2550,55 @@ struct obj* obj;
 
 char*
 aqcxname10(obj)
+struct obj* obj;
+{
+    if (obj->otyp == CORPSE)
+        return obj->quan == 1 ? corpse_xname(obj, (const char*)0, CXN_ARTICLE) : prepend_quan(obj->quan, corpse_xname(obj, (const char*)0, CXN_NORMAL));
+    return obj->oartifact && obj->aknown ? the(xname(obj)) : obj->quan != 1 ? prepend_quan(obj->quan, xname(obj)) : an(xname(obj));
+}
+
+char*
+aqcxname8a(obj)
+struct obj* obj;
+{
+    if (obj->otyp == CORPSE)
+        return obj->quan == 1 ? corpse_xname(obj, (const char*)0, CXN_ARTICLE) : prepend_quan(obj->quan, corpse_xname(obj, (const char*)0, CXN_NORMAL));
+    return obj->oartifact && obj->aknown ? the(xname(obj)) : obj->quan != 1 ? prepend_quan(obj->quan, xname(obj)) : an(xname(obj));
+}
+char*
+aqcxname8b(obj)
+struct obj* obj;
+{
+    if (obj->otyp == CORPSE)
+        return obj->quan == 1 ? corpse_xname(obj, (const char*)0, CXN_ARTICLE) : prepend_quan(obj->quan, corpse_xname(obj, (const char*)0, CXN_NORMAL));
+    return obj->oartifact && obj->aknown ? the(xname(obj)) : obj->quan != 1 ? prepend_quan(obj->quan, xname(obj)) : an(xname(obj));
+}
+char*
+aqcxname8c(obj)
+struct obj* obj;
+{
+    if (obj->otyp == CORPSE)
+        return obj->quan == 1 ? corpse_xname(obj, (const char*)0, CXN_ARTICLE) : prepend_quan(obj->quan, corpse_xname(obj, (const char*)0, CXN_NORMAL));
+    return obj->oartifact && obj->aknown ? the(xname(obj)) : obj->quan != 1 ? prepend_quan(obj->quan, xname(obj)) : an(xname(obj));
+}
+char*
+aqcxname8d(obj)
+struct obj* obj;
+{
+    if (obj->otyp == CORPSE)
+        return obj->quan == 1 ? corpse_xname(obj, (const char*)0, CXN_ARTICLE) : prepend_quan(obj->quan, corpse_xname(obj, (const char*)0, CXN_NORMAL));
+    return obj->oartifact && obj->aknown ? the(xname(obj)) : obj->quan != 1 ? prepend_quan(obj->quan, xname(obj)) : an(xname(obj));
+}
+char*
+aqcxname8e(obj)
+struct obj* obj;
+{
+    if (obj->otyp == CORPSE)
+        return obj->quan == 1 ? corpse_xname(obj, (const char*)0, CXN_ARTICLE) : prepend_quan(obj->quan, corpse_xname(obj, (const char*)0, CXN_NORMAL));
+    return obj->oartifact && obj->aknown ? the(xname(obj)) : obj->quan != 1 ? prepend_quan(obj->quan, xname(obj)) : an(xname(obj));
+}
+char*
+aqcxname8f(obj)
 struct obj* obj;
 {
     if (obj->otyp == CORPSE)
@@ -5600,8 +5649,8 @@ retry:
         break;
     case SCR_MAIL:
         /* 0: delivered in-game via external event (or randomly for fake mail);
-           1: from bones or wishing; 2: written with marker */
-        otmp->special_quality = SPEQUAL_MAIL_FROM_BONES_OR_WISHING;
+           1: from bones; 2: written with marker; 3: from wishing; 4: from polymorph */
+        otmp->special_quality = SPEQUAL_MAIL_FROM_WISHING;
         break;
     default:
         break;

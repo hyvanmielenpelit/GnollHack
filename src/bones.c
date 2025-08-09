@@ -208,15 +208,13 @@ boolean restore;
             if (otmp->otyp == SLIME_MOLD)
             {
                 goodfruit(otmp->special_quality);
-#ifdef MAIL
             }
             else if (otmp->otyp == SCR_MAIL)
             {
                 /* 0: delivered in-game via external event;
-                   1: from bones or wishing; 2: written with marker */
+                   1: from bones; 2: written with marker; 3: from wishing; 4: from polymorph */
                 if (otmp->special_quality == 0)
-                    otmp->special_quality = SPEQUAL_MAIL_FROM_BONES_OR_WISHING;
-#endif
+                    otmp->special_quality = SPEQUAL_MAIL_FROM_BONES;
             } 
             else if (otmp->otyp == EGG) 
             {

@@ -3839,7 +3839,7 @@ int id;
     if (obj->otyp == SCR_MAIL) 
     {
         otmp->otyp = SCR_MAIL;
-        otmp->special_quality = SPEQUAL_MAIL_FROM_BONES_OR_WISHING;
+        otmp->special_quality = SPEQUAL_MAIL_FROM_POLYMORPH;
     }
 
     /* avoid abusing eggs laid by you */
