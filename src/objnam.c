@@ -510,7 +510,7 @@ unsigned cxn_flags; /* bitmask of CXN_xxx values */
     int nn = artifact_description_exists ? 0 : ocl->oc_name_known;
     int omndx = obj->corpsenm;
     /* Note: this is applied for artifacts only when their own description does not exist */
-    const char *actualn = OBJ_NAME(*ocl) ? OBJ_NAME(*ocl) : obj->oclass > ILLOBJ_CLASS && obj->oclass < MAX_OBJECT_CLASSES ? def_oc_syms[obj->oclass].explain : "nameless object"; /* Can happen if typ is erroneously one of the extra scroll names */
+    const char *actualn = OBJ_NAME(*ocl) ? OBJ_NAME(*ocl) : obj->oclass > ILLOBJ_CLASS && obj->oclass < MAX_OBJECT_CLASSES ? def_oc_syms[(int)obj->oclass].explain : "nameless object"; /* Can happen if typ is erroneously one of the extra scroll names */
     /* Note: use artifact description for artifacts instead */
     const char *dn = artifact_description_exists ? artilist[obj->oartifact].desc : OBJ_DESCR(*ocl);
     const char *un = ocl->oc_uname;
