@@ -293,7 +293,7 @@ int x, y, glyph;
 
     if (otmp)
     {
-        Strcpy(buf, (otmp->otyp > STRANGE_OBJECT && otmp->otyp < NUM_OBJECTS)
+        Strcpy(buf, (otmp->otyp > STRANGE_OBJECT && otmp->otyp < NUM_OBJECTS && OBJ_NAME(objects[otmp->otyp]))
                      ? (iflags.in_dumplog ? /* Note: should be just aqcxname, but this is a place of a weird bug that needs to be narrowed down */
                          (fakeobj ? (otmp->otyp == CORPSE || otmp->otyp == STATUE || otmp->otyp == EGG || otmp->otyp == TIN ? (otmp->otyp == CORPSE ? (otmp->corpsenm >= LOW_PM && otmp->corpsenm < NUM_MONSTERS ? aqcxname5(otmp) : aqcxname9(otmp)) : otmp->otyp == STATUE ? (otmp->corpsenm >= LOW_PM && otmp->corpsenm < NUM_MONSTERS ? aqcxname4(otmp) : aqcxname10(otmp)) : aqcxname3(otmp)) /* Most likely culprits */
                                    : otmp->otyp <= NUM_OBJECTS / 4 ? aqcxname6(otmp) : otmp->otyp <= NUM_OBJECTS / 2 ? aqcxname7(otmp) : otmp->otyp <= (3 * NUM_OBJECTS) / 4 ? (
