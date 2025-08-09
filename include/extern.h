@@ -2549,6 +2549,7 @@ E char* FDECL(aqcxname8c, (struct obj*));
 E char* FDECL(aqcxname8d, (struct obj*));
 E char* FDECL(aqcxname8e, (struct obj*));
 E char* FDECL(aqcxname8f, (struct obj*));
+E char* FDECL(aqcxname8g, (struct obj*));
 E char* FDECL(thecxname, (struct obj*));
 E char* FDECL(prepend_quan, (int64_t, const char*));
 E char *FDECL(cxname_singular, (struct obj *));

@@ -3487,27 +3487,27 @@ SCROLL("stinking cloud",         "VELOX NEB", "Creates a stinking cloud at a spe
      * after stinking cloud or the number of extra descriptions changes,
      * tilemap.c must be modified to match.
      */
-SCROLL(None,      "FOOBIE BLETCH", None, 1,   0, 100, 0, 0, 0, 0, 0, 0, 0, S1_NONE, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
-SCROLL(None,              "TEMOV", None, 1,   0, 100, 0, 0, 0, 0, 0, 0, 0, S1_NONE, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
-SCROLL(None,         "GARVEN DEH", None, 1,   0, 100, 0, 0, 0, 0, 0, 0, 0, S1_NONE, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
-SCROLL(None,            "READ ME", None, 1,   0, 100, 0, 0, 0, 0, 0, 0, 0, S1_NONE, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
-SCROLL(None,      "ETAOIN SHRDLU", None, 1,   0, 100, 0, 0, 0, 0, 0, 0, 0, S1_NONE, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
-SCROLL(None,        "LOREM IPSUM", None, 1,   0, 100, 0, 0, 0, 0, 0, 0, 0, S1_NONE, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
-SCROLL(None,              "FNORD", None, 1,   0, 100, 0, 0, 0, 0, 0, 0, 0, S1_NONE, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL), /* Illuminati */
-SCROLL(None,            "KO BATE", None, 1,   0, 100, 0, 0, 0, 0, 0, 0, 0, S1_NONE, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL), /* Kurd Lasswitz */
-SCROLL(None,      "ABRA KA DABRA", None, 1,   0, 100, 0, 0, 0, 0, 0, 0, 0, S1_NONE, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL), /* traditional incantation */
-SCROLL(None,       "ASHPD SODALG", None, 1,   0, 100, 0, 0, 0, 0, 0, 0, 0, S1_NONE, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL), /* Portal */
-SCROLL(None,            "ZLORFIK", None, 1,   0, 100, 0, 0, 0, 0, 0, 0, 0, S1_NONE, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL), /* Zak McKracken */
-SCROLL(None,      "GNIK SISI VLE", None, 1,   0, 100, 0, 0, 0, 0, 0, 0, 0, S1_NONE, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL), /* Zak McKracken */
-SCROLL(None,    "HAPAX LEGOMENON", None, 1,   0, 100, 0, 0, 0, 0, 0, 0, 0, S1_NONE, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
-SCROLL(None,  "EIRIS SAZUN IDISI", None, 1,   0, 100, 0, 0, 0, 0, 0, 0, 0, S1_NONE, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL), /* Merseburg Incantations */
-SCROLL(None,    "PHOL ENDE WODAN", None, 1,   0, 100, 0, 0, 0, 0, 0, 0, 0, S1_NONE, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL), /* Merseburg Incantations */
-SCROLL(None,              "GHOTI", None, 1,   0, 100, 0, 0, 0, 0, 0, 0, 0, S1_NONE, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL), /* pronounced as 'fish',
+SCROLL(None,      "FOOBIE BLETCH", None, 1,   0, 100, 0, 0, 0, 0, 0, 0, 0, S1_NONE, O1_NONE, O2_NONE, O3_NO_GENERATION | O3_NO_WISH, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
+SCROLL(None,              "TEMOV", None, 1,   0, 100, 0, 0, 0, 0, 0, 0, 0, S1_NONE, O1_NONE, O2_NONE, O3_NO_GENERATION | O3_NO_WISH, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
+SCROLL(None,         "GARVEN DEH", None, 1,   0, 100, 0, 0, 0, 0, 0, 0, 0, S1_NONE, O1_NONE, O2_NONE, O3_NO_GENERATION | O3_NO_WISH, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
+SCROLL(None,            "READ ME", None, 1,   0, 100, 0, 0, 0, 0, 0, 0, 0, S1_NONE, O1_NONE, O2_NONE, O3_NO_GENERATION | O3_NO_WISH, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
+SCROLL(None,      "ETAOIN SHRDLU", None, 1,   0, 100, 0, 0, 0, 0, 0, 0, 0, S1_NONE, O1_NONE, O2_NONE, O3_NO_GENERATION | O3_NO_WISH, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
+SCROLL(None,        "LOREM IPSUM", None, 1,   0, 100, 0, 0, 0, 0, 0, 0, 0, S1_NONE, O1_NONE, O2_NONE, O3_NO_GENERATION | O3_NO_WISH, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
+SCROLL(None,              "FNORD", None, 1,   0, 100, 0, 0, 0, 0, 0, 0, 0, S1_NONE, O1_NONE, O2_NONE, O3_NO_GENERATION | O3_NO_WISH, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL), /* Illuminati */
+SCROLL(None,            "KO BATE", None, 1,   0, 100, 0, 0, 0, 0, 0, 0, 0, S1_NONE, O1_NONE, O2_NONE, O3_NO_GENERATION | O3_NO_WISH, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL), /* Kurd Lasswitz */
+SCROLL(None,      "ABRA KA DABRA", None, 1,   0, 100, 0, 0, 0, 0, 0, 0, 0, S1_NONE, O1_NONE, O2_NONE, O3_NO_GENERATION | O3_NO_WISH, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL), /* traditional incantation */
+SCROLL(None,       "ASHPD SODALG", None, 1,   0, 100, 0, 0, 0, 0, 0, 0, 0, S1_NONE, O1_NONE, O2_NONE, O3_NO_GENERATION | O3_NO_WISH, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL), /* Portal */
+SCROLL(None,            "ZLORFIK", None, 1,   0, 100, 0, 0, 0, 0, 0, 0, 0, S1_NONE, O1_NONE, O2_NONE, O3_NO_GENERATION | O3_NO_WISH, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL), /* Zak McKracken */
+SCROLL(None,      "GNIK SISI VLE", None, 1,   0, 100, 0, 0, 0, 0, 0, 0, 0, S1_NONE, O1_NONE, O2_NONE, O3_NO_GENERATION | O3_NO_WISH, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL), /* Zak McKracken */
+SCROLL(None,    "HAPAX LEGOMENON", None, 1,   0, 100, 0, 0, 0, 0, 0, 0, 0, S1_NONE, O1_NONE, O2_NONE, O3_NO_GENERATION | O3_NO_WISH, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
+SCROLL(None,  "EIRIS SAZUN IDISI", None, 1,   0, 100, 0, 0, 0, 0, 0, 0, 0, S1_NONE, O1_NONE, O2_NONE, O3_NO_GENERATION | O3_NO_WISH, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL), /* Merseburg Incantations */
+SCROLL(None,    "PHOL ENDE WODAN", None, 1,   0, 100, 0, 0, 0, 0, 0, 0, 0, S1_NONE, O1_NONE, O2_NONE, O3_NO_GENERATION | O3_NO_WISH, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL), /* Merseburg Incantations */
+SCROLL(None,              "GHOTI", None, 1,   0, 100, 0, 0, 0, 0, 0, 0, 0, S1_NONE, O1_NONE, O2_NONE, O3_NO_GENERATION | O3_NO_WISH, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL), /* pronounced as 'fish',
                                                         George Bernard Shaw */
-SCROLL(None, "MAPIRO MAHAMA DIROMAT",None, 1, 0, 100, 0, 0, 0, 0, 0, 0, 0, S1_NONE, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL), /* Wizardry */
-SCROLL(None,  "VAS CORP BET MANI", None, 1,   0, 100, 0, 0, 0, 0, 0, 0, 0, S1_NONE, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL), /* Ultima */
-SCROLL(None,            "XOR OTA", None, 1,   0, 100, 0, 0, 0, 0, 0, 0, 0, S1_NONE, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL), /* Aarne Haapakoski */
-SCROLL(None, "STRC PRST SKRZ KRK", None, 1,   0, 100, 0, 0, 0, 0, 0, 0, 0, S1_NONE, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL), /* Czech and Slovak
+SCROLL(None, "MAPIRO MAHAMA DIROMAT",None, 1, 0, 100, 0, 0, 0, 0, 0, 0, 0, S1_NONE, O1_NONE, O2_NONE, O3_NO_GENERATION | O3_NO_WISH, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL), /* Wizardry */
+SCROLL(None,  "VAS CORP BET MANI", None, 1,   0, 100, 0, 0, 0, 0, 0, 0, 0, S1_NONE, O1_NONE, O2_NONE, O3_NO_GENERATION | O3_NO_WISH, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL), /* Ultima */
+SCROLL(None,            "XOR OTA", None, 1,   0, 100, 0, 0, 0, 0, 0, 0, 0, S1_NONE, O1_NONE, O2_NONE, O3_NO_GENERATION | O3_NO_WISH, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL), /* Aarne Haapakoski */
+SCROLL(None, "STRC PRST SKRZ KRK", None, 1,   0, 100, 0, 0, 0, 0, 0, 0, 0, S1_NONE, O1_NONE, O2_NONE, O3_NO_GENERATION | O3_NO_WISH, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL), /* Czech and Slovak
                                                         tongue-twister */
     /* These must come last because they have special fixed descriptions.
      */
