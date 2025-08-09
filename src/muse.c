@@ -3599,7 +3599,7 @@ boolean stoning; /* True: stop petrification, False: cure stun && confusion */
         if (vis && !is_bat(mon->data) && mon->data != &mons[PM_STALKER])
             pline("%s seems steadier now.", Monnam(mon));
     }
-    if (mon->mtame && !mon->isminion && nutrit > 0 & has_edog(mon))
+    if (mon->mtame && !mon->isminion && nutrit > 0 && has_edog(mon))
     {
         struct edog *edog = EDOG(mon);
 
