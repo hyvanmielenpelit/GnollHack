@@ -1964,7 +1964,7 @@ boolean was_dead;
     schar was_tame = mtmp->mtame;
 
     finish_meating(mtmp);
-    edog = !mtmp->isminion ? EDOG(mtmp) : 0;
+    edog = !mtmp->isminion && has_edog(mtmp) ? EDOG(mtmp) : 0;
 
     /* if monster was starving when it died, undo that now */
     if (edog && edog->mhpmax_penalty) 

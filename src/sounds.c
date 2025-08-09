@@ -5427,7 +5427,7 @@ struct monst* mtmp;
         return 0;
 
     struct edog* edog = (struct edog*)0;
-    boolean has_edog = !mtmp->isminion;
+    boolean should_have_edog = !mtmp->isminion;
 
     int omx = mtmp->mx;
     int omy = mtmp->my;
@@ -5436,7 +5436,7 @@ struct monst* mtmp;
     if(has_edog(mtmp))
         edog = EDOG(mtmp);
 
-    if(has_edog && edog && droppables(mtmp))
+    if(should_have_edog && edog && droppables(mtmp))
     {
         mtmp->mcarrying= 0;
         mtmp->mwantstodrop = 1;
@@ -5465,7 +5465,7 @@ struct monst* mtmp;
         return 0;
 
     struct edog* edog = (struct edog*)0;
-    boolean has_edog = !mtmp->isminion;
+    boolean should_have_edog = !mtmp->isminion;
     char pbuf[BUFSZ] = "";
 
     int omx = mtmp->mx;
@@ -5474,7 +5474,7 @@ struct monst* mtmp;
     if (has_edog(mtmp))
         edog = EDOG(mtmp);
 
-    if (has_edog && edog)
+    if (should_have_edog && edog)
     {
         int itemspicked = 0;
         int shkpreaction = FALSE;

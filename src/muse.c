@@ -3584,20 +3584,23 @@ boolean stoning; /* True: stop petrification, False: cure stun && confusion */
             return;
         }
     }
-    if (stoning && vis) {
+    if (stoning && vis) 
+    {
         if (Hallucination)
             pline("What a pity - %s just ruined a future piece of art!",
                   mon_nam(mon));
         else
             pline("%s seems limber!", Monnam(mon));
     }
-    if (lizard && (is_confused(mon) || is_stunned(mon))) {
+    if (lizard && (is_confused(mon) || is_stunned(mon))) 
+    {
         mon->mprops[CONFUSION]  = 0;
         mon->mprops[STUNNED] = 0;
         if (vis && !is_bat(mon->data) && mon->data != &mons[PM_STALKER])
             pline("%s seems steadier now.", Monnam(mon));
     }
-    if (mon->mtame && !mon->isminion && nutrit > 0) {
+    if (mon->mtame && !mon->isminion && nutrit > 0 & has_edog(mon))
+    {
         struct edog *edog = EDOG(mon);
 
         if (edog->hungrytime < monstermoves)

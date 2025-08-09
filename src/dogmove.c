@@ -292,7 +292,7 @@ register struct obj *obj; /* if unpaid, then thrown or kicked by hero */
 int x, y; /* dog's starting location, might be different from current */
 boolean devour;
 {
-    if (!mtmp || !obj)
+    if (!mtmp || !has_edog(mtmp) || !obj)
         return 0;
 
     register struct edog* edog = EDOG(mtmp);
@@ -1265,11 +1265,11 @@ register struct monst *mtmp;
 register struct edog *edog;
 int udist;
 {
+    if (!mtmp || !edog || !mon_can_move(mtmp) || !mtmp->mwantstomove)
+        return 0;
+
     register int omx, omy, carryamt = 0;
     struct obj *obj, *otmp;
-
-    if (!mon_can_move(mtmp) || !mtmp->mwantstomove)
-        return 0;
 
     omx = mtmp->mx;
     omy = mtmp->my;
@@ -1382,6 +1382,7 @@ register struct monst *mtmp;
 struct edog *edog;
 int after, udist, whappr;
 {
+    /* Note: edog can here be zero */
     register int omx, omy;
     boolean in_masters_sight, using_yell_position = FALSE, dog_has_minvent;
     register struct obj *obj;
@@ -1902,7 +1903,7 @@ int after; /* this is extra fast monster movement */
     cursedobj[0] = 0;
     info[0] = 0;         /* ditto */
 
-    if (has_edog(mtmp))
+    if (edog)
     {
         if (edog->chastised > 0)
         {
@@ -1919,7 +1920,7 @@ int after; /* this is extra fast monster movement */
     else
         whappr = 0;
 
-    appr = dog_goal(mtmp, has_edog(mtmp) ? edog : (struct edog*)0, after, udist, whappr);
+    appr = dog_goal(mtmp, edog, after, udist, whappr);
     if (appr == -2)
         return 0;
 
@@ -2149,8 +2150,8 @@ int after; /* this is extra fast monster movement */
                     cursedobj[i] = obj;
                 }
                 else if ((foodtyp = dogfood(mtmp, obj)) < MANFOOD && !onnopickup(nx, ny, mtmp) && !is_obj_no_pickup(obj) && !m_unpaid_item_no_pickup_at_location(mtmp, obj, nx, ny)
-                    && dog_wants_to_eat(mtmp) && has_edog(mtmp) &&
-                    (!EDOG(mtmp)->chastised || (EDOG(mtmp)->chastised && !is_unpaid_shop_item(obj, obj->ox, obj->oy)))
+                    && dog_wants_to_eat(mtmp) && edog &&
+                    (!edog->chastised || (edog->chastised && !is_unpaid_shop_item(obj, obj->ox, obj->oy)))
                          && (foodtyp < ACCFOOD || edog->hungrytime <= monstermoves))
                 {
                     /* Note: our dog likes the food so much that he
@@ -2220,7 +2221,7 @@ int after; /* this is extra fast monster movement */
         int hungry = 0;
 
         /* How hungry is the pet? */
-        if (!mtmp->isminion)
+        if (!mtmp->isminion && has_edog(mtmp))
         {
             struct edog *dog = EDOG(mtmp);
 

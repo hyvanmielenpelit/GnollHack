@@ -1224,7 +1224,8 @@ struct attack *mattk;
 
             /* If this is a pet, it'll get hungry. Minions and
              * spell beings won't hunger */
-            if (mtmp->mtame && !mtmp->isminion) {
+            if (mtmp->mtame && !mtmp->isminion && has_edog(mtmp)) 
+            {
                 struct edog *dog = EDOG(mtmp);
 
                 /* Hunger effects will catch up next move */
@@ -1285,7 +1286,7 @@ struct attack  *mattk;
 
                 /* If this is a pet, it'll get hungry. Minions and
                  * spell beings won't hunger */
-                if (mtmp->mtame && !mtmp->isminion) 
+                if (mtmp->mtame && !mtmp->isminion && has_edog(mtmp)) 
                 {
                     struct edog *dog = EDOG(mtmp);
 
@@ -1409,7 +1410,7 @@ struct attack* mattk;
 
                 /* If this is a pet, it'll get hungry. Minions and
                  * spell beings won't hunger */
-                if (mtmp->mtame && !mtmp->isminion)
+                if (mtmp->mtame && !mtmp->isminion && has_edog(mtmp))
                 {
                     struct edog* dog = EDOG(mtmp);
 
