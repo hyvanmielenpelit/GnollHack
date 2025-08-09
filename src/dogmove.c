@@ -1424,7 +1424,7 @@ int after, udist, whappr;
             using_yell_position = TRUE;
         }
     }
-    else
+    else /* edog != 0 */
     {
 #define DDIST(x, y) (dist2(x, y, omx, omy))
 #define SQSRCHRADIUS 5
@@ -1499,8 +1499,8 @@ int after, udist, whappr;
     }
 
     /* follow player if appropriate */
-    if (gtyp == UNDEF || (gtyp != DOGFOOD && gtyp != APPORT
-                          && monstermoves < edog->hungrytime)) {
+    if (gtyp == UNDEF || (edog && gtyp != DOGFOOD && gtyp != APPORT && monstermoves < edog->hungrytime)) 
+    {
         gx = u.ux;
         gy = u.uy;
         if (after && udist <= 4 && gx == u.ux && gy == u.uy)
@@ -1508,8 +1508,7 @@ int after, udist, whappr;
         appr = (udist >= 9) ? 1 : is_fleeing(mtmp) ? -1 : 0;
         if (udist > 1) 
         {
-            if (!IS_ROOM(levl[u.ux][u.uy].typ) || !rn2(4) || whappr
-                || (dog_has_minvent && rn2(edog->apport)))
+            if (!IS_ROOM(levl[u.ux][u.uy].typ) || !rn2(4) || whappr || (dog_has_minvent && edog && rn2(edog->apport)))
             {
                 appr = 1;
 
@@ -1525,49 +1524,63 @@ int after, udist, whappr;
         /* if you have dog food it'll follow you more closely */
         if (appr == 0)
             for (obj = invent; obj; obj = obj->nobj)
-                if (dogfood(mtmp, obj) == DOGFOOD) {
+                if (dogfood(mtmp, obj) == DOGFOOD) 
+                {
                     appr = 1;
                     break;
                 }
-    } else
+    } 
+    else
         appr = 1; /* gtyp != UNDEF */
+
     if (is_confused(mtmp))
         appr = 0;
 
 #define FARAWAY (COLNO + 2) /* position outside screen */
 
-    if (gx == u.ux && gy == u.uy && !in_masters_sight && !using_yell_position) {
+    if (gx == u.ux && gy == u.uy && !in_masters_sight && !using_yell_position) 
+    {
         register coord *cp;
 
         cp = gettrack(omx, omy);
-        if (cp) {
+        if (cp) 
+        {
             gx = cp->x;
             gy = cp->y;
             if (edog)
                 edog->ogoal.x = 0;
-        } else {
+        }
+        else 
+        {
             /* assume master hasn't moved far, and reuse previous goal */
-            if (edog && edog->ogoal.x
-                && (edog->ogoal.x != omx || edog->ogoal.y != omy)) {
+            if (edog && edog->ogoal.x && (edog->ogoal.x != omx || edog->ogoal.y != omy)) 
+            {
                 gx = edog->ogoal.x;
                 gy = edog->ogoal.y;
                 edog->ogoal.x = 0;
-            } else {
+            }
+            else 
+            {
                 int fardist = FARAWAY * FARAWAY;
                 gx = gy = FARAWAY; /* random */
                 do_clear_area(omx, omy, 9, wantdoor, (genericptr_t) &fardist);
 
                 /* here gx == FARAWAY e.g. when dog is in a vault */
-                if (gx == FARAWAY || (gx == omx && gy == omy)) {
+                if (gx == FARAWAY || (gx == omx && gy == omy))
+                {
                     gx = u.ux;
                     gy = u.uy;
-                } else if (edog) {
+                }
+                else if (edog) 
+                {
                     edog->ogoal.x = gx;
                     edog->ogoal.y = gy;
                 }
             }
         }
-    } else if (edog) {
+    }
+    else if (edog) 
+    {
         edog->ogoal.x = 0;
     }
     return appr;

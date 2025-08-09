@@ -1581,8 +1581,7 @@ register struct obj *obj;
             mblind;
     boolean eschewed = (obj->cursed && mon_eschews_cursed(mon)) || (obj->blessed && mon_eschews_blessed(mon));
     /* a starving pet will eat almost anything */
-    boolean starving = (mon->mtame && has_edog(mon) && !mon->isminion
-        && EDOG(mon)->mhpmax_penalty);
+    boolean starving = (mon->mtame && has_edog(mon) && !mon->isminion && EDOG(mon)->mhpmax_penalty);
 
     if (eschewed && (!starving || obj->oartifact))
         return TABU;
