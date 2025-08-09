@@ -1451,7 +1451,7 @@ add_school_specific_spellbooks(VOID_ARGS)
             int i;
             for (i = 0; i < cnt; i++)
             {
-                struct obj* obj = mkobj_with_flags(SPBOOK_CLASS, FALSE, FALSE, (struct monst*)0, MAT_NONE, 0L, 0L, MKOBJ_FLAGS_NORMAL_SPELLBOOK);
+                struct obj* obj = mkobj_with_flags(SPBOOK_CLASS, TRUE, FALSE, FALSE, (struct monst*)0, MAT_NONE, 0L, 0L, MKOBJ_FLAGS_NORMAL_SPELLBOOK);
                 int otyp = obj->otyp;
 
                 while (otyp == SPE_BLANK_PAPER
@@ -1480,7 +1480,7 @@ add_school_specific_spellbooks(VOID_ARGS)
                         ))
                 {
                     dealloc_obj(obj);
-                    obj = mkobj_with_flags(SPBOOK_CLASS, FALSE, FALSE, (struct monst*)0, MAT_NONE, 0L, 0L, MKOBJ_FLAGS_NORMAL_SPELLBOOK);
+                    obj = mkobj_with_flags(SPBOOK_CLASS, TRUE, FALSE, FALSE, (struct monst*)0, MAT_NONE, 0L, 0L, MKOBJ_FLAGS_NORMAL_SPELLBOOK);
                     otyp = obj->otyp;
                 }
 

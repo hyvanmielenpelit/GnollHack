@@ -216,9 +216,10 @@ struct obj *otmp;
 }
 
 struct obj *
-mkobj_at_with_flags(let, x, y, artif, material, param1, param2, mkflags)
+mkobj_at_with_flags(let, x, y, init, artif, material, param1, param2, mkflags)
 char let;
 int x, y;
+boolean init;
 boolean artif;
 uchar material;
 int64_t param1, param2;
@@ -229,7 +230,7 @@ uint64_t mkflags;
 
     struct obj *otmp;
 
-    otmp = mkobj_with_flags(let, artif, FALSE, (struct monst*)0, material, param1, param2, mkflags);
+    otmp = mkobj_with_flags(let, init, artif, FALSE, (struct monst*)0, material, param1, param2, mkflags);
     if (otmp)
     {
         place_object(otmp, x, y);
@@ -248,7 +249,7 @@ char let;
 int x, y;
 boolean artif;
 {
-    return mkobj_at_with_flags(let, x, y, artif, MAT_NONE, 0L, 0L, 0UL);
+    return mkobj_at_with_flags(let, x, y, TRUE, artif, MAT_NONE, 0L, 0L, 0UL);
 }
 
 struct obj *
@@ -320,12 +321,13 @@ char oclass;
 boolean artif;
 int mkobj_type;
 {
-    return mkobj_with_flags(oclass, artif, mkobj_type, (struct monst*)0, MAT_NONE, 0L, 0L, 0UL);
+    return mkobj_with_flags(oclass, TRUE, artif, mkobj_type, (struct monst*)0, MAT_NONE, 0L, 0L, 0UL);
 }
 
 struct obj *
-mkobj_with_flags(oclass, artif, mkobj_type, mowner, material, param1, param2, mkflags)
+mkobj_with_flags(oclass, init, artif, mkobj_type, mowner, material, param1, param2, mkflags)
 char oclass;
+boolean init;
 boolean artif;
 int mkobj_type;
 struct monst* mowner;
@@ -358,7 +360,7 @@ uint64_t mkflags;
         else
             break;
     }
-    return mksobj_with_flags(i, TRUE, artif, mkobj_type, mowner, material, param1, param2, mkflags);
+    return mksobj_with_flags(i, init, artif, mkobj_type, mowner, material, param1, param2, mkflags);
 }
 
 int

@@ -662,7 +662,7 @@ boolean deserted;
         else if (atype < 0)
             (void) mksobj_at(-atype, sx, sy, TRUE, TRUE);
         else
-            (void) mkobj_at_with_flags(atype, sx, sy, TRUE, MAT_NONE, 0L, 0L, MKOBJ_FLAGS_SHOP_ITEM);
+            (void) mkobj_at_with_flags(atype, sx, sy, TRUE, TRUE, MAT_NONE, 0L, 0L, MKOBJ_FLAGS_SHOP_ITEM);
     }
 }
 

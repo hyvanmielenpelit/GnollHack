@@ -202,7 +202,7 @@ struct obj **obj_p;
         if (!OBJ_NAME(objects[glyphotyp])) /* Hallucinated object, one of the extra name scrolls */
         {
             if (objects[glyphotyp].oc_class > ILLOBJ_CLASS && objects[glyphotyp].oc_class < MAX_OBJECT_CLASSES)
-                otmp = mkobj(objects[glyphotyp].oc_class, FALSE, 0);
+                otmp = mkobj_with_flags(objects[glyphotyp].oc_class, FALSE, FALSE, 0, (struct monst*)0, MAT_NONE, 0L, 0L, 0UL);
             else /* Something strange is going on */
                 return FALSE;
         }
