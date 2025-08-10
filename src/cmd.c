@@ -4678,8 +4678,15 @@ int final;
         you_are("telepathic", from_what(TELEPAT));
     if (Blind_telepat)
         you_are("telepathic when blind", from_what(BLIND_TELEPATHY));
+    if (Extended_XRay_vision)
+        you_have("Extended X-ray vision", from_what(EXTENDED_XRAY_VISION));
     if (XRay_vision)
-        you_have("X-ray vision", from_what(XRAY_VISION));
+    {
+        if (Extended_XRay_vision)
+            you_have("latently X-ray vision", from_what(XRAY_VISION));
+        else
+            you_have("X-ray vision", from_what(XRAY_VISION));
+    }
     if (Warning)
         you_are("warned", from_what(WARNING));
     if (Warn_of_mon && context.warntype.obj) {

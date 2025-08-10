@@ -1107,6 +1107,7 @@ boolean verbose;
     boolean was_telepathic = Telepat;
     boolean was_blind_telepathic = Blind_telepat;
     boolean had_xray_vision = XRay_vision;
+    boolean had_exray_vision = Extended_XRay_vision;
     boolean had_magical_breathing = Magical_breathing;
     boolean had_warning = Warning;
     boolean had_warning_of_mon = Warning;
@@ -1405,13 +1406,23 @@ boolean verbose;
     }
 
     /* X-ray vision */
-    if ((XRay_vision && !had_xray_vision)
-        || (!XRay_vision && had_xray_vision)
+    if (!Extended_XRay_vision && ((XRay_vision && !had_xray_vision)
+        || (!XRay_vision && had_xray_vision))
         )
     {
         vision_full_recalc = 1;
         see_monsters();
         if (XRay_vision)
+            check_bosses = TRUE;
+    }
+
+    if ((Extended_XRay_vision && !had_exray_vision)
+        || (!Extended_XRay_vision && had_exray_vision)
+        )
+    {
+        vision_full_recalc = 1;
+        see_monsters();
+        if (Extended_XRay_vision)
             check_bosses = TRUE;
     }
 

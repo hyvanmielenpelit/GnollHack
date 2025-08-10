@@ -4080,10 +4080,26 @@ boolean was_flying;
         see_monsters();
         break;
     case XRAY_VISION:
-        if (!XRay_vision)
+        if (!Extended_XRay_vision && !XRay_vision)
         {
             play_sfx_sound(SFX_PROTECTION_END_WARNING);
             You_ex(ATR_NONE, CLR_MSG_ATTENTION, "can no longer see through walls.");
+        }
+        see_monsters();
+        break;
+    case EXTENDED_XRAY_VISION:
+        if (!Extended_XRay_vision)
+        {
+            if (XRay_vision)
+            {
+                play_sfx_sound(SFX_PROTECTION_END_WARNING);
+                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "The range of your X-ray vision becomes shorter.");
+            }
+            else
+            {
+                play_sfx_sound(SFX_PROTECTION_END_WARNING);
+                You_ex(ATR_NONE, CLR_MSG_ATTENTION, "can no longer see through walls.");
+            }
         }
         see_monsters();
         break;

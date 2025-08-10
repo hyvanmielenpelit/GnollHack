@@ -320,6 +320,10 @@
 #define EXRay_vision u.uprops[XRAY_VISION].extrinsic
 #define XRay_vision (HXRay_vision || EXRay_vision)
 
+#define HExtended_XRay_vision u.uprops[EXTENDED_XRAY_VISION].intrinsic
+#define EExtended_XRay_vision u.uprops[EXTENDED_XRAY_VISION].extrinsic
+#define Extended_XRay_vision (HExtended_XRay_vision || EExtended_XRay_vision)
+
 #define HWarning u.uprops[WARNING].intrinsic
 #define EWarning u.uprops[WARNING].extrinsic
 #define Warning (HWarning || EWarning)

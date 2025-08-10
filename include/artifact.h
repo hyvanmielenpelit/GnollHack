@@ -112,7 +112,7 @@
 #define SPFX_HPHDAM                0x00002000UL  /* 1/2 physical damage (on player) in combat */
 #define SPFX_TCTRL                 0x00004000UL  /* Teleportation Control */
 #define SPFX_LUCK                  0x00008000UL  /* Increase Luck (like Luckstone) */
-#define SPFX_XRAY                  0x00010000UL  /* Gives X-RAY vision to player */
+#define SPFX_EXRAY                 0x00010000UL  /* Gives extended X-RAY vision to player */
 #define SPFX_REFLECT               0x00020000UL  /* Reflection */
 #define SPFX_PROTECT               0x00040000UL  /* Protection */
 #define SPFX_AGGRAVATE_MONSTER     0x00080000UL  /* Aggravates monsters */
