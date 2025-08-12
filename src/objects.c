@@ -4873,7 +4873,8 @@ SPELL("control undead",   "tombstone-patterned", None, None, "Takes the control 
     O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE),
 
 
-/* books with fixed descriptions
+/* Books with fixed descriptions
+ * Note: Blank paper must be the first here, since it indicates which is the first non-spell spellbook
  */
 SPELL("blank paper", "plain", None, None, None, P_NONE, 18, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
     S1_NONE, S2_NONE, ALL_TARGETS, AD_NONE, HI_PAPER, OBJECT_SOUNDSET_SPELLBOOK,
@@ -4906,7 +4907,7 @@ OBJECT(OBJ("Book of the Dead", "papyrus", None, None, None, 0, OD_NONE, 0, 0, 0)
        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, S1_NONE, S2_NONE, 0,
        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 7, 0,
        20, HI_PAPER, OBJECT_SOUNDSET_SPELLBOOK, 0, 0, 0, 0, PERMITTED_ALL, ALL_TARGETS, 
-       O1_INDESTRUCTIBLE | O1_NON_SPELL_SPELLBOOK, O2_NONE, O3_READABLE, O4_NONE, O5_FULL_NAME | O5_OK_FOR_ILLITERATE | O5_NOT_CANCELLABLE, O6_NONE),
+       O1_INDESTRUCTIBLE | O1_NON_SPELL_SPELLBOOK, O2_NONE, O3_READABLE | O3_NO_WISH | O3_NO_GENERATION, O4_NONE, O5_FULL_NAME | O5_OK_FOR_ILLITERATE | O5_NOT_CANCELLABLE, O6_NONE),
 #undef SPELL
 
 /* wands ... */

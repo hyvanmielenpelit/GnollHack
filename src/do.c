@@ -4471,10 +4471,10 @@ struct item_description_stats* stats_ptr; /* If non-null, only returns item stat
     else if (!obj)
     {
         int spellcnt = 0;
-        short* spellbook_indices = (short*)alloc(MAXSPELL * sizeof(short));
+        short* spellbook_indices = (short*)alloc((SPE_BLANK_PAPER - FIRST_SPELL) * sizeof(short));
         memset(spellbook_indices, 0, MAXSPELL * sizeof(short));
 
-        for (i = FIRST_SPELL; i < FIRST_SPELL + MAXSPELL; i++)
+        for (i = FIRST_SPELL; i < SPE_BLANK_PAPER; i++)
         {
             if (is_otyp_component_for_spellbook(i, otyp, (uint64_t*)0, (int*)0) > 0)
             {

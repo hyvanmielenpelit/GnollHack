@@ -382,7 +382,8 @@ uint64_t rndflags;
     if (oclass == SPBOOK_CLASS && !(rndflags & MKOBJ_FLAGS_NORMAL_SPELLBOOK))
         return random_spellbook_objectid(mowner, rndflags);
 
-    for (int tryct = 0; tryct < 50; tryct++)
+    int tryct;
+    for (tryct = 0; tryct < 50; tryct++)
     {
         int prob = rnd(1000);
         i = bases[(int)oclass];
@@ -435,6 +436,57 @@ uint64_t rndflags;
             }
         }
     }
+    if (tryct >= 50)
+    {
+        switch ((int)oclass)
+        {
+        case SPBOOK_CLASS:
+            i = SPE_LIGHT;
+            break;
+        case WAND_CLASS:
+            i = WAN_LIGHT;
+            break;
+        case SCROLL_CLASS:
+            i = SCR_LIGHT;
+            break;
+        case POTION_CLASS:
+            i = POT_ENLIGHTENMENT;
+            break;
+        case WEAPON_CLASS:
+            i = LONG_SWORD;
+            break;
+        case ARMOR_CLASS:
+            i = CHAIN_MAIL;
+            break;
+        case RING_CLASS:
+            i = RIN_ADORNMENT;
+            break;
+        case AMULET_CLASS:
+            i = AMULET_VERSUS_POISON;
+            break;
+        case TOOL_CLASS:
+            i = TALLOW_CANDLE;
+            break;
+        case FOOD_CLASS:
+            i = FOOD_RATION;
+            break;
+        case GEM_CLASS:
+            i = WORTHLESS_PIECE_OF_WHITE_GLASS;
+            break;
+        case MISCELLANEOUS_CLASS:
+            i = LEATHER_BELT;
+            break;
+        case ART_CLASS:
+            i = BANNER;
+            break;
+        case ROCK_CLASS:
+            i = BOULDER;
+            break;
+        default:
+            i = bases[(int)oclass];
+            break;
+        }
+    }
 
     return i;
 }
@@ -462,7 +514,7 @@ uint64_t rndflags;
         knownspellschools = 0xFFFFFFFFUL;
 
     boolean flex_first_school = rn2(2);
-    uchar acceptable[MAXSPELL] = { 0 };
+    uchar acceptable[SPE_BLANK_PAPER - FIRST_SPELL] = { 0 };
     int round;
     int cnt = 0;
     for (round = 0; round < 5; round++)
@@ -471,7 +523,7 @@ uint64_t rndflags;
         memset(&acceptable, 0, siz);
         cnt = 0;
         int i;
-        for (i = FIRST_SPELL; i < FIRST_SPELL + MAXSPELL; i++)
+        for (i = FIRST_SPELL; i < SPE_BLANK_PAPER; i++)
         {
             boolean mon_knows_spell_school = is_known_spell_school(knownspellschools, objects[i].oc_skill);
             if ((objects[i].oc_spell_level >= min_spell_level || round >= 3)
@@ -503,7 +555,7 @@ uint64_t rndflags;
         goto random_spellbook_here;
     else if (cnt == 1)
     {
-        for (id = 0; id < MAXSPELL; id++)
+        for (id = 0; id < SPE_BLANK_PAPER - FIRST_SPELL; id++)
         {
             if (acceptable[id])
             {
@@ -519,7 +571,7 @@ uint64_t rndflags;
     {
         int nofound = -1;
         int noselected = rn2(cnt);
-        for (id = 0; id < MAXSPELL; id++)
+        for (id = 0; id < SPE_BLANK_PAPER - FIRST_SPELL; id++)
         {
             if (acceptable[id])
             {
@@ -536,7 +588,7 @@ uint64_t rndflags;
     }
 
     int totalprob = 0;
-    for (id = 0; id < MAXSPELL; id++)
+    for (id = 0; id < SPE_BLANK_PAPER - FIRST_SPELL; id++)
     {
         if (acceptable[id])
             totalprob += (int)objects[FIRST_SPELL + id].oc_prob * (int)acceptable[id];
@@ -546,7 +598,7 @@ uint64_t rndflags;
         goto random_spellbook_here;
 
     int roll = rn2(totalprob);
-    for (id = 0; id < MAXSPELL; id++)
+    for (id = 0; id < SPE_BLANK_PAPER - FIRST_SPELL; id++)
     {
         if (acceptable[id])
         {

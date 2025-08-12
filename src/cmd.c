@@ -1911,7 +1911,7 @@ wiz_debug(VOID_ARGS)
 {
     if (wizard)
     {
-        int wiz_debug_cmd_idx = 2;
+        int wiz_debug_cmd_idx = 3;
         switch (wiz_debug_cmd_idx)
         {
         case 0:
@@ -2026,6 +2026,22 @@ wiz_debug(VOID_ARGS)
                     pline("Debug test 2 progressing at %d...", i);
             }
             pline1("Debug test 2 done.");
+            break;
+        }
+        case 3:
+        {
+            pline1("Adding all spells...");
+            int i;
+            for (i = 0; i < SPE_BLANK_PAPER - FIRST_SPELL; i++)
+            {
+                if (!already_learnt_spell_type(FIRST_SPELL + i))
+                {
+                    struct obj pseudo = { 0 };
+                    pseudo.otyp = FIRST_SPELL + i;
+                    initialspell(&pseudo);
+                }
+            }
+            pline1("Done.");
             break;
         }
         default:
