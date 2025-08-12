@@ -435,6 +435,7 @@ uint64_t rndflags;
                     continue;
             }
         }
+        break;
     }
     if (tryct >= 50)
     {
