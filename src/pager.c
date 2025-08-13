@@ -304,14 +304,7 @@ int x, y, glyph;
     if (otmp)
     {
         const char* used_obj_name = (otmp->otyp > STRANGE_OBJECT && otmp->otyp < NUM_OBJECTS && OBJ_NAME(objects[otmp->otyp]))
-            ? (iflags.in_dumplog ? /* Note: should be just aqcxname, but this is a place of a weird bug that needs to be narrowed down */
-                (fakeobj ? (otmp->otyp == CORPSE || otmp->otyp == STATUE || otmp->otyp == EGG || otmp->otyp == TIN ? (otmp->otyp == CORPSE ? (otmp->corpsenm >= LOW_PM && otmp->corpsenm < NUM_MONSTERS ? aqcxname5(otmp) : aqcxname9(otmp)) : otmp->otyp == STATUE ? (otmp->corpsenm >= LOW_PM && otmp->corpsenm < NUM_MONSTERS ? aqcxname4(otmp) : aqcxname10(otmp)) : aqcxname3(otmp)) /* Most likely culprits */
-                    : otmp->otyp <= NUM_OBJECTS / 4 ? aqcxname6(otmp) : otmp->otyp <= NUM_OBJECTS / 2 ? aqcxname7(otmp) : otmp->otyp <= (3 * NUM_OBJECTS) / 4 ? (
-                        otmp->otyp < POT_GAIN_ABILITY ? aqcxname8a(otmp) : otmp->otyp <= POT_URINE ? aqcxname8b(otmp) : otmp->otyp <= SCR_STINKING_CLOUD ? aqcxname8c(otmp) : otmp->otyp < SCR_MAIL ? aqcxname8d(otmp) : otmp->otyp == SCR_MAIL ? aqcxname8e(otmp) : otmp->otyp <= SCR_BLANK_PAPER ? aqcxname8f(otmp) : aqcxname8g(otmp) /* Up to 720 = SPE_SUMMON_PURPLE_WORM */
-                        ) : aqcxname2(otmp))  /* A bit of narrowing */
-                    : aqcxname(otmp))
-                : (fakeobj ? distant_name2(otmp, otmp->dknown ? doname_with_price : doname_vague_quan) : distant_name(otmp, otmp->dknown ? doname_with_price : doname_vague_quan))
-                )
+            ? (iflags.in_dumplog ? aqcxname(otmp) : distant_name(otmp, otmp->dknown ? doname_with_price : doname_vague_quan))
             : obj_descr[STRANGE_OBJECT].oc_name;
 
         Strcpy(buf, used_obj_name ? used_obj_name : "indescribable object");
