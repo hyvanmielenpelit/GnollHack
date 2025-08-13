@@ -1339,7 +1339,7 @@ clear_memoryobjs()
     struct obj* obj; // , * contained_obj;
     Strcpy(debug_buf_2, "clear_memoryobjs");
     Strcpy(priority_debug_buf_4, "clear_memoryobjs");
-    context.suppress_container_deletion_warning = 1;
+    //context.suppress_container_deletion_warning = 1;
     while ((obj = memoryobjs) != 0) {
         obj_extract_self(obj);
         //while ((contained_obj = obj->cobj) != 0) {
@@ -1348,7 +1348,7 @@ clear_memoryobjs()
         //}
         obfree(obj, (struct obj*)0);
     }
-    context.suppress_container_deletion_warning = 0;
+    //context.suppress_container_deletion_warning = 0;
     memoryobjs = 0;
     lastmemoryobj = 0;
 }
@@ -1368,7 +1368,7 @@ int x, y;
 
         Strcpy(debug_buf_2, "clear_hero_object_memory_at");
         Strcpy(priority_debug_buf_4, "clear_hero_object_memory_at");
-        context.suppress_container_deletion_warning = 1;
+        //context.suppress_container_deletion_warning = 1;
 
         /* Clear actual memory objects */
         struct obj* obj; // , * contained_obj;
@@ -1381,7 +1381,7 @@ int x, y;
             //}
             obfree(obj, (struct obj*)0);
         }
-        context.suppress_container_deletion_warning = 0;
+        //context.suppress_container_deletion_warning = 0;
     }
 }
 
@@ -4111,7 +4111,7 @@ struct monst *mtmp;
     struct obj *otmp, *mwep = MON_WEP(mtmp);
     boolean keeping_mon = (!DEADMONSTER(mtmp));
     Strcpy(debug_buf_2, "discard_minvent");
-    context.suppress_container_deletion_warning = 1;
+    //context.suppress_container_deletion_warning = 1;
     while ((otmp = mtmp->minvent) != 0) {
         /* this has now become very similar to m_useupall()... */
         obj_extract_self(otmp);
@@ -4136,7 +4136,7 @@ struct monst *mtmp;
         Sprintf(priority_debug_buf_4, "discard_minvent: %d", otmp->otyp);
         obfree(otmp, (struct obj *) 0); /* dealloc_obj() isn't sufficient */
     }
-    context.suppress_container_deletion_warning = 0;
+    //context.suppress_container_deletion_warning = 0;
 }
 
 /*

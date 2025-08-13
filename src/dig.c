@@ -3198,9 +3198,9 @@ int64_t timeout UNUSED;
     Strcpy(debug_buf_2, "rot_organic");
     obj_extract_self(obj);
     Sprintf(priority_debug_buf_4, "rot_organic: %d", obj->otyp);
-    context.suppress_container_deletion_warning = 1;
+    //context.suppress_container_deletion_warning = 1;
     obfree(obj, (struct obj *) 0);
-    context.suppress_container_deletion_warning = 0;
+    //context.suppress_container_deletion_warning = 0;
 }
 
 /*

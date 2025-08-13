@@ -355,17 +355,17 @@ boolean destroyit;
                 if (otmp->quan == 1L) 
                 {
                     Sprintf(priority_debug_buf_4, "breakchestlock1: %d", otmp->otyp);
-                    context.suppress_container_deletion_warning = 1;
+                    //context.suppress_container_deletion_warning = 1;
                     obfree(otmp, (struct obj *) 0);
-                    context.suppress_container_deletion_warning = 0;
+                    //context.suppress_container_deletion_warning = 0;
                     continue;
                 }
                 /* this works because we're sure to have at least 1 left;
                    otherwise it would fail since otmp is not in inventory */
                 Sprintf(priority_debug_buf_2, "breakchestlock2: %d", otmp->otyp);
-                context.suppress_container_deletion_warning = 1;
+                //context.suppress_container_deletion_warning = 1;
                 useup(otmp);
-                context.suppress_container_deletion_warning = 0;
+                //context.suppress_container_deletion_warning = 0;
             }
             if (box->otyp == ICE_BOX && otmp->otyp == CORPSE) 
             {
@@ -381,9 +381,9 @@ boolean destroyit;
             You("owe %ld %s for objects destroyed.", loss, currency(loss));
         Sprintf(priority_debug_buf_2, "breakchestlock3: %d", box->otyp);
         Sprintf(priority_debug_buf_3, "breakchestlock3: %d", box->otyp);
-        context.suppress_container_deletion_warning = 1;
+        //context.suppress_container_deletion_warning = 1;
         delobj(box);
-        context.suppress_container_deletion_warning = 0;
+        //context.suppress_container_deletion_warning = 0;
     }
 }
 

@@ -4536,9 +4536,9 @@ int otyp;
         }
         /* make sure container contents are free'ed */
         Sprintf(priority_debug_buf_4, "set_mimic_new_mobj: %d", otmp->otyp);
-        context.suppress_container_deletion_warning = 1;
+        //context.suppress_container_deletion_warning = 1;
         obfree(otmp, (struct obj*)0);
-        context.suppress_container_deletion_warning = 0;
+        //context.suppress_container_deletion_warning = 0;
     }
 }
 
@@ -4747,9 +4747,9 @@ register struct monst *mtmp;
                     //}
                     /* make sure container contents are free'ed */
                     Sprintf(priority_debug_buf_4, "set_mimic_sym: %d", otmp->otyp);
-                    context.suppress_container_deletion_warning = 1;
+                    //context.suppress_container_deletion_warning = 1;
                     obfree(otmp, (struct obj*)0);
-                    context.suppress_container_deletion_warning = 0;
+                    //context.suppress_container_deletion_warning = 0;
                 }
             }
         }

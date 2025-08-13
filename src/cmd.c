@@ -1934,12 +1934,12 @@ wiz_debug(VOID_ARGS)
         }
         case 1:
         {
-            context.suppress_container_deletion_warning = 1;
+            //context.suppress_container_deletion_warning = 1;
             int i;
             issue_debuglog(DEBUGLOG_DEBUG_ONLY, "Starting mimics");
             for (i = 0; i < 2000; i++)
             {
-                context.suppress_container_deletion_warning = 1;
+                //context.suppress_container_deletion_warning = 1;
                 struct monst* mon = makemon(&mons[PM_SMALL_MIMIC], u.ux, u.uy, MM_ADJACENTOK | MM_NOCOUNTBIRTH);
                 if (mon)
                 {
@@ -1965,14 +1965,14 @@ wiz_debug(VOID_ARGS)
                     issue_debuglog(DEBUGLOG_DEBUG_ONLY, descbuf);
                     *descbuf = 0;
                     (void) do_screen_description(cc, TRUE, ch, descbuf, &firstmatch, (struct permonst**)0);
-                    context.suppress_container_deletion_warning = 1;
+                    //context.suppress_container_deletion_warning = 1;
                     mongone(mon);
                 }
             }
             issue_debuglog(DEBUGLOG_DEBUG_ONLY, "Starting items");
             for (i = 0; i < 3000; i++)
             {
-                context.suppress_container_deletion_warning = 1;
+                //context.suppress_container_deletion_warning = 1;
                 struct obj* otmp = mkobj_at(RANDOM_CLASS, u.ux + 1 + -2 * rn2(2), u.uy + 1 + -2 * rn2(2), TRUE);
                 if (otmp)
                 {
@@ -2000,13 +2000,13 @@ wiz_debug(VOID_ARGS)
                         issue_debuglog(DEBUGLOG_DEBUG_ONLY, descbuf);
                         *descbuf = 0;
                         (void) do_screen_description(cc, TRUE, ch, descbuf, &firstmatch, (struct permonst**)0);
-                        context.suppress_container_deletion_warning = 1;
+                        //context.suppress_container_deletion_warning = 1;
                         useupf(otmp, otmp->quan);
                     }
                 }
             }            
             pline1("Debug test 1 done.");
-            context.suppress_container_deletion_warning = 0;
+            //context.suppress_container_deletion_warning = 0;
             break;
         }
         case 2:
