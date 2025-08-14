@@ -1992,7 +1992,7 @@ boolean* obj_destroyed;
         //Exercise also riding in addtion to thrusting weapon already exercised
         use_skill(P_RIDING, 1);
     }
-    else if (unarmed && damage > 1 && !thrown && !obj && !Upolyd) 
+    else if (unarmed && damage > 1 && !thrown && (!obj || obj == uarmg) && !Upolyd) 
     {
         /* VERY small chance of stunning opponent if unarmed. */
         if (rnd(100) < 2 * adjusted_skill_level(P_MARTIAL_ARTS) && !bigmonst(mdat)
