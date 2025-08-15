@@ -3291,7 +3291,7 @@ namespace GnollHackX.Pages.Game
                                 IsGameOn = false;
                                 MainGrid.IsEnabled = false;
                                 //ClearMap();
-                                ShutDownCanvasViews();
+                                StopCanvasAnimations();
                                 CurrentGame = null;
                                 GHApp.CurrentGHGame = null;
                                 _mainPage.GameStarted = false;
@@ -4442,6 +4442,7 @@ namespace GnollHackX.Pages.Game
             //    popagain = !(page is GamePage || page == null);
             //    GHApp.DisconnectIViewHandlers(page);
             //} while (popagain);
+            ShutDownCanvasViews();
             await _mainPage.StartGeneralTimerAsync(); /* Just to be doubly sure */
         }
 
@@ -22196,12 +22197,16 @@ namespace GnollHackX.Pages.Game
             }
         }
 
-        public void ShutDownCanvasViews()
+        public void StopCanvasAnimations()
         {
             StopMainCanvasAnimation();
             StopCommandCanvasAnimation();
             StopMenuCanvasAnimation();
             StopTextCanvasAnimation();
+        }
+
+        public void ShutDownCanvasViews()
+        {
             canvasView.ShutDown();
             MenuCanvas.ShutDown();
             TextCanvas.ShutDown();
