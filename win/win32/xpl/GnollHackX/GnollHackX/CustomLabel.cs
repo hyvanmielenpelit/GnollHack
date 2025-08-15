@@ -249,7 +249,7 @@ namespace GnollHackX
         private int _calculateInitialYPos = 0;
         public bool CalculateInitialYPos { get { return Interlocked.CompareExchange(ref _calculateInitialYPos, 0, 0) != 0; } set { Interlocked.Exchange(ref _calculateInitialYPos, value ? 1 : 0); } }
 
-        private void UpdateRolledDown()
+        private void UpdateRolledDown(bool invalidateSurface = true)
         {
             lock (_textScrollLock)
             {
@@ -257,11 +257,12 @@ namespace GnollHackX
                 _textScrollSpeedRecordOn = false;
                 _textScrollSpeedRecords.Clear();
                 _textScrollOffset = 0;
-                InterlockedTextScrollOffset = _textScrollSpeed;
+                InterlockedTextScrollOffset = _textScrollOffset;
             }
             if (InitiallyRolledDown)
                 CalculateInitialYPos = true;
-            InvalidateSurface();
+            if (invalidateSurface)
+                InvalidateSurface();
         }
 
         private void UpdateScrollable(bool newval, bool updaterows)
@@ -574,6 +575,10 @@ namespace GnollHackX
             return tf;
         }
 
+        private float _interlockedCanvasHeight = 0;
+        private float InterlockedCanvasHeight { get { return Interlocked.CompareExchange(ref _interlockedCanvasHeight, 0.0f, 0.0f); } set { Interlocked.Exchange(ref _interlockedCanvasHeight, value); } }
+
+
         private readonly object _textAreaSizeLock = new object();
         private TextAreaSize _textAreaSize;
         private TextAreaSize TextAreaSize { get { lock (_textAreaSizeLock) { return _textAreaSize; } } set { lock (_textAreaSizeLock) { _textAreaSize = value; } } }
@@ -588,13 +593,16 @@ namespace GnollHackX
             float scale = GHApp.DisplayDensity;
             float scale2 = this.Width == 0 ? 1.0f : canvaswidth / (float)this.Width;
 
+            if (Interlocked.Exchange(ref _interlockedCanvasHeight, canvasheight) != canvasheight)
+                UpdateRolledDown(false);
+
             canvas.Clear();
             bool isFirst = IsFirst;
-            bool touchMoved = TouchMoved;
+            //bool touchMoved = TouchMoved;
             //lock (_isFirstLock)
             {
                 TextAreaSize textAreaSize;
-                if (!(IsScrollable && touchMoved) || isFirst)
+                if (isFirst)
                     TextAreaSize = CalculateTextAreaSize((float)Width * scale);
 
                 textAreaSize = TextAreaSize;
@@ -607,9 +615,13 @@ namespace GnollHackX
                     float x = 0, y = 0;
                     textPaint.Typeface = GetFontTypeface();
                     textPaint.TextSize = (float)FontSize * scale;
-                    if (!(IsScrollable && touchMoved) || isFirst)
+                    if (isFirst)
                         SplitRows();
+                    
                     List<string> textRows = TextRows;
+                    float fontSpacing = textPaint.FontSpacing;
+                    int noOfRows = textRows.Count;
+
                     switch (VerticalTextAlignment)
                     {
                         case TextAlignment.Start:
@@ -617,24 +629,25 @@ namespace GnollHackX
                             break;
                         default:
                         case TextAlignment.Center:
-                            y = (canvasheight - textPaint.FontSpacing * textRows.Count) / 2;
+                            y = (canvasheight - fontSpacing * noOfRows) / 2;
                             break;
                         case TextAlignment.End:
-                            y = canvasheight - textPaint.FontSpacing * textRows.Count;
+                            y = canvasheight - fontSpacing * noOfRows;
                             break;
                     }
 
                     float usedTextOffset = 0;
-                    if (CalculateInitialYPos)
+                    if (Interlocked.CompareExchange(ref _calculateInitialYPos, 0, 1) == 1) /* Changes the value to 0 if it is originally 1 */
                     {
-                        CalculateInitialYPos = false;
-                        float textHeight = textRows.Count * textPaint.FontSpacing;
+                        //CalculateInitialYPos = false;
+                        float textHeight = noOfRows * fontSpacing;
                         float bottomScrollLimit = Math.Min(0, canvasheight - textHeight);
-                        usedTextOffset = InterlockedTextScrollOffset = bottomScrollLimit;
-                        //lock (_textScrollLock)
-                        //{
-                        //    usedTextOffset = _textScrollOffset = bottomScrollLimit;
-                        //}
+                        InterlockedTextScrollOffset = bottomScrollLimit;
+                        usedTextOffset = bottomScrollLimit;
+                        lock (_textScrollLock)
+                        {
+                            _textScrollOffset = bottomScrollLimit;
+                        }
                     }
                     else
                     {
@@ -647,17 +660,24 @@ namespace GnollHackX
 
                     y += usedTextOffset;
 
-                    float generalpadding = (textPaint.FontSpacing - (textPaint.FontMetrics.Descent - textPaint.FontMetrics.Ascent)) / 2;
+                    float generalpadding = (fontSpacing - (textPaint.FontMetrics.Descent - textPaint.FontMetrics.Ascent)) / 2;
+                    int linesOutOfSightAboove = y < 0 && fontSpacing > 0 ? (int)(-y / fontSpacing) : 0;
+                    y += linesOutOfSightAboove * fontSpacing;
+
                     //textPaint.TextAlign = SKTextAlign.Left;
-                    for (int i = 0; i < textRows.Count; i++)
+                    for (int i = linesOutOfSightAboove; i < noOfRows; i++)
                     {
                         string textRow = textRows[i];
                         y += generalpadding;
                         y += -textPaint.FontMetrics.Ascent;
 
-                        if (y + textPaint.FontMetrics.Ascent >= canvasheight || y + textPaint.FontMetrics.Descent < 0)
+                        if (y + textPaint.FontMetrics.Descent < 0)
                         {
-                            // Nothing, just calculate the height
+                            /* Nothing, just calculate the height; should not happen if linesOutOfSightAboove is calculated correctly */
+                        }
+                        else if (y + textPaint.FontMetrics.Ascent >= canvasheight)
+                        {
+                            break; /* No more to draw; and text total height is here just noOfRows * fontSpacing, since all rows are the same height */
                         }
                         else
                         {
@@ -746,7 +766,7 @@ namespace GnollHackX
                         y += textPaint.FontMetrics.Descent;
                         y += generalpadding;
                     }
-                    TextHeight = y - usedTextOffset;
+                    TextHeight = noOfRows * fontSpacing; // y - usedTextOffset;
                 }
                 IsFirst = false;
             }
@@ -905,7 +925,7 @@ namespace GnollHackX
         private void Base_Touch(object sender, SKTouchEventArgs e)
         {
             float textHeight = TextHeight;
-            float canvasheight = CanvasSize.Height;
+            float canvasheight = InterlockedCanvasHeight;
             float bottomScrollLimit = Math.Min(0, canvasheight - textHeight);
             switch (e?.ActionType)
             {
@@ -1158,7 +1178,7 @@ namespace GnollHackX
             {
                 float speed = _textScrollSpeed; /* pixels per second */
                 float bottomScrollLimit = 0;
-                float canvasheight = CanvasSize.Height;
+                float canvasheight = InterlockedCanvasHeight;
                 bottomScrollLimit = Math.Min(0, canvasheight - TextHeight);
                 int sgn = Math.Sign(_textScrollSpeed);
                 float delta = speed / UIUtils.GetGeneralAnimationFrequency(); /* pixels */
@@ -1260,7 +1280,7 @@ namespace GnollHackX
             {
                 lock (_textScrollLock)
                 {
-                    float canvasheight = CanvasSize.Height;
+                    float canvasheight = InterlockedCanvasHeight;
                     float bottomScrollLimit =  Math.Min(0, canvasheight - TextHeight);
                     _textScrollOffset += (canvasheight * e.MouseWheelDelta) / (10 * 120);
                     if (_textScrollOffset > 0)
