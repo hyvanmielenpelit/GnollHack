@@ -283,6 +283,8 @@ namespace GnollHackX
             GamePage curGamePage = CurrentGamePage;
             if (curGamePage == null)
                 return;
+            if (CurrentGHGame == null)
+                return;
 
 #if WINDOWS
             ScreenResolutionItem curRes = CurrentScreenResolution;

@@ -129,6 +129,35 @@ namespace GnollHackX.Controls
             PropertyChanged += SwitchableCanvasView_PropertyChanged;
         }
 
+        private int _shutDown = 0;
+        public bool IsShutDown { get { return Interlocked.CompareExchange(ref _shutDown, 0, 0) != 0; } }
+        public void ShutDown()
+        {
+            if (Interlocked.CompareExchange(ref _shutDown, 1, 0) == 0) // Change the value to 1 if it is 0
+            {
+                // Handle the GRContext on the main thread
+                MainThread.BeginInvokeOnMainThread(() => 
+                {
+                    SizeChanged -= SwitchableCanvasView_SizeChanged;
+                    PropertyChanged -= SwitchableCanvasView_PropertyChanged;
+                    internalCanvasView.PaintSurface -= internalCanvasView_PaintSurface;
+                    internalCanvasView.Touch -= internalCanvasView_Touch;
+                    if (internalGLView != null)
+                    {
+                        internalGLView.PaintSurface -= internalGLView_PaintSurface;
+                        internalGLView.Touch -= internalGLView_Touch;
+                        //var context = internalGLView?.GRContext;
+                        //if (context != null)
+                        //{
+                        //    try { context.Flush(); } catch { }
+                        //    try { context.Submit(true); } catch { }
+                        //    try { context.AbandonContext(); } catch { }
+                        //}
+                    }
+                });
+            }
+        }
+
         private void SwitchableCanvasView_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(IsVisible))
@@ -307,6 +336,9 @@ namespace GnollHackX.Controls
             if (UseGL && HasGL)
                 return; /* Insurance in the case both canvases mistakenly are updated */
 
+            if (IsShutDown)
+                return;
+
             if(_firstCanvasDraw)
             {
                 _firstCanvasDraw = false;
@@ -326,6 +358,8 @@ namespace GnollHackX.Controls
                 _canvasTouchThreadChecked = true;
                 GHApp.MaybeWriteGHLog("internalCanvasView_Touch not on main thread!");
             }
+            if (IsShutDown)
+                return;
             MainThread.BeginInvokeOnMainThread(() =>
             {
                 Touch?.Invoke(sender, e);
@@ -339,7 +373,10 @@ namespace GnollHackX.Controls
             if (!UseGL || !HasGL)
                 return; /* Insurance in the case both canvases mistakenly are updated */
 
-            if(_firstDraw)
+            if (IsShutDown)
+                return;
+
+            if (_firstDraw)
             {
                 _firstDraw = false;
                 if (CanvasType == CanvasTypes.MainCanvas)
@@ -472,6 +509,8 @@ namespace GnollHackX.Controls
                 _glTouchThreadChecked = true;
                 GHApp.MaybeWriteGHLog("internalGLView_Touch not on main thread!");
             }
+            if (IsShutDown)
+                return;
             MainThread.BeginInvokeOnMainThread(() =>
             {
                 Touch?.Invoke(sender, e);

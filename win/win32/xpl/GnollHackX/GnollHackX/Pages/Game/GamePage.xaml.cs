@@ -3291,10 +3291,7 @@ namespace GnollHackX.Pages.Game
                                 IsGameOn = false;
                                 MainGrid.IsEnabled = false;
                                 //ClearMap();
-                                StopMainCanvasAnimation();
-                                StopCommandCanvasAnimation();
-                                StopMenuCanvasAnimation();
-                                StopTextCanvasAnimation();
+                                ShutDownCanvasViews();
                                 CurrentGame = null;
                                 GHApp.CurrentGHGame = null;
                                 _mainPage.GameStarted = false;
@@ -22197,6 +22194,18 @@ namespace GnollHackX.Pages.Game
             {
                 Debug.WriteLine(ex.Message);
             }
+        }
+
+        public void ShutDownCanvasViews()
+        {
+            StopMainCanvasAnimation();
+            StopCommandCanvasAnimation();
+            StopMenuCanvasAnimation();
+            StopTextCanvasAnimation();
+            canvasView.ShutDown();
+            MenuCanvas.ShutDown();
+            TextCanvas.ShutDown();
+            CommandCanvas.ShutDown();
         }
 
         private double _threadSafeWidth = 0;
