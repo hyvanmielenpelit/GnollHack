@@ -4741,6 +4741,8 @@ boolean* return_to_inv_ptr;
         if (extcmdlist[selected_action].ef_funct && pickcnt != 0)
         {
             struct obj* otmpsplit = 0;
+            boolean autoobjgone = FALSE;
+            trackedobj_gone = FALSE;
             if (pickcnt <= -1 || pickcnt >= otmp->quan)
                 getobj_autoselect_obj = otmp;
             else
@@ -4769,12 +4771,16 @@ boolean* return_to_inv_ptr;
                 savech(invlet);
             }
 
+            trackedobj = getobj_autoselect_obj;
             res = (extcmdlist[selected_action].ef_funct)();
             getobj_autoselect_obj = (struct obj*)0;
+            trackedobj = (struct obj*)0;
+            autoobjgone = trackedobj_gone;
+            trackedobj_gone = FALSE;
             repeatmenu = (boolean)((extcmdlist[selected_action].flags & ALLOW_RETURN_TO_CMD_MENU) != 0) && !res;
             returntoinv = (boolean)((extcmdlist[selected_action].flags & ALLOW_RETURN_TO_INVENTORY) != 0) && !res;
 
-            if (!res) /* otmp may have been deallocated, e.g., scrolls */
+            if (!autoobjgone) /* otmp may have been deallocated, e.g., scrolls */
             {
                 Sprintf(priority_debug_buf_3, "display_item_command_menu: %d", otmp->otyp);
                 if ((repeatmenu || returntoinv) && otmpsplit && otmpsplit != otmp)

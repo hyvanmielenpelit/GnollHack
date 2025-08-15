@@ -424,6 +424,8 @@ E NEARDATA struct obj *billobjs;
 E NEARDATA struct obj *memoryobjs;
 E NEARDATA struct obj *lastmemoryobj;
 E NEARDATA struct obj *current_wand, *thrownobj, *kickedobj;
+E NEARDATA struct obj* trackedobj;
+E NEARDATA boolean trackedobj_gone;
 
 E NEARDATA const struct obj zeroobj; /* for init; also, &zeroobj is used
                                       * as special value */

@@ -205,6 +205,9 @@ NEARDATA struct obj
     *current_wand = 0,  /* wand currently zapped/applied */
     *thrownobj = 0,     /* object in flight due to throwing */
     *kickedobj = 0;     /* object in flight due to kicking */
+    
+NEARDATA struct obj* trackedobj = (struct obj*)0;
+NEARDATA boolean trackedobj_gone = FALSE;
 
 NEARDATA const struct zap_type_definition zap_type_definitions[MAX_ZAP_TYPES] = {
     {"magic", HI_ZAP, MAGIC_MISSILE_RAY_ANIMATION},

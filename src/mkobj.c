@@ -4430,6 +4430,11 @@ struct obj *obj;
         thrownobj = 0;
     if (obj == kickedobj)
         kickedobj = 0;
+    if (obj == trackedobj)
+    {
+        trackedobj = 0;
+        trackedobj_gone = TRUE;
+    }
 
     if (obj->oextra)
         dealloc_oextra(obj);

@@ -351,6 +351,9 @@ reset_item_global_variables(VOID_ARGS)
     current_wand = 0;  /* wand currently zapped/applied */
     thrownobj = 0;     /* object in flight due to throwing */
     kickedobj = 0;     /* object in flight due to kicking */
+    trackedobj = 0;
+    trackedobj_gone = FALSE;
+    getobj_autoselect_obj = (struct obj*)0;
 }
 
 /*sys.c*/
