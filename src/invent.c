@@ -4780,11 +4780,13 @@ boolean* return_to_inv_ptr;
             repeatmenu = (boolean)((extcmdlist[selected_action].flags & ALLOW_RETURN_TO_CMD_MENU) != 0) && !res;
             returntoinv = (boolean)((extcmdlist[selected_action].flags & ALLOW_RETURN_TO_INVENTORY) != 0) && !res;
 
-            if (!autoobjgone) /* otmp may have been deallocated, e.g., scrolls */
+            if (!autoobjgone) /* otmp or otmpsplit may have been deallocated, e.g., scrolls */
             {
-                Sprintf(priority_debug_buf_3, "display_item_command_menu: %d", otmp->otyp);
-                if ((repeatmenu || returntoinv) && otmpsplit && otmpsplit != otmp)
+                if ((repeatmenu || returntoinv) && otmpsplit && otmpsplit != otmp && otmpsplit->where == OBJ_INVENT && otmp->where == OBJ_INVENT)
+                {
+                    Sprintf(priority_debug_buf_3, "display_item_command_menu: %d, %d", otmp->otyp, otmpsplit->otyp);
                     (void)merged(&otmp, &otmpsplit); /* Merge the split object back to the original */
+                }
             }
 
             if (return_to_inv_ptr)
