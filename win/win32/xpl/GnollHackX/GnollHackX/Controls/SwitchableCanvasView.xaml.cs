@@ -142,17 +142,12 @@ namespace GnollHackX.Controls
                     PropertyChanged -= SwitchableCanvasView_PropertyChanged;
                     internalCanvasView.PaintSurface -= internalCanvasView_PaintSurface;
                     internalCanvasView.Touch -= internalCanvasView_Touch;
+                    internalCanvasView.DisconnectHandlers();
                     if (internalGLView != null)
                     {
                         internalGLView.PaintSurface -= internalGLView_PaintSurface;
                         internalGLView.Touch -= internalGLView_Touch;
-                        //var context = internalGLView?.GRContext;
-                        //if (context != null)
-                        //{
-                        //    try { context.Flush(); } catch { }
-                        //    try { context.Submit(true); } catch { }
-                        //    try { context.AbandonContext(); } catch { }
-                        //}
+                        internalGLView.DisconnectHandlers();
                     }
                 });
             }
