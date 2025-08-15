@@ -11,8 +11,9 @@ namespace GnollHackX
     public interface IFmodService
     {
         void InitializeFmod();
-        void ReleaseAllGameSoundInstances();
-        void ReleaseAllUISoundInstances();
+        void ShutdownFmod();
+        void ReleaseAllGameSoundInstances(bool doUpdate = true);
+        void ReleaseAllUISoundInstances(bool doUpdate = true);
         void ClearLoadableSoundBanks();
         Task AddLoadableSoundBank(string fullFilePath, int subType, bool isResource, bool readToMemory);
         void LoadBanks(sound_bank_loading_type loadingType);

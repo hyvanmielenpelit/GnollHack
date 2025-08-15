@@ -1470,10 +1470,10 @@ namespace GnollHackX
             Task t2 = Task.Delay(1000); /* Give 1 second to close at maximum */
             await Task.WhenAny(t1, t2);
             carouselView.Stop();
-            GHApp.FmodService.StopAllGameSounds((uint)StopSoundFlags.All, 0U);
+            GHApp.FmodService?.StopAllGameSounds((uint)StopSoundFlags.All, 0U);
             await Task.Delay(200);
             GHApp.BeforeExitApp();
-            GHApp.PlatformService.CloseApplication();
+            GHApp.PlatformService?.CloseApplication();
 
 #if !GNH_MAUI
             await Task.Delay(100);

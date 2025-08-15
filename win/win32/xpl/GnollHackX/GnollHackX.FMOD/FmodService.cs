@@ -195,6 +195,38 @@ namespace GnollHackX.Unknown
             GHApp.MaybeWriteGHLog("FMOD initialized successfully.");
         }
 
+        public void ShutdownFmod()
+        {
+            if (!_initialized)
+                return;
+            
+            RESULT res;
+
+            // 1. Stop all events
+            _system.flushCommands(); // Make sure any queued commands finish
+            _system.update(); // Apply any changes
+
+            ReleaseAllUISoundInstances(); // Normally called from UI thread
+
+            // 2. Unload all banks
+            for (int i = _banks.Count - 1; i >= 0; i--)
+            {
+                res = _banks[i].Bank.unload();
+                _banks[i].Bank.clearHandle();
+                _banks.RemoveAt(i);
+            }
+
+            // 3. Release the Studio system
+            _system.release();
+
+            // 4. Close & release the core system
+            _coresystem.close();
+            _coresystem.release();
+
+            _initialized = false;
+            GHApp.MaybeWriteGHLog("FMOD shut down successfully.");
+        }
+
         private void SetAudioSessionSettings(double rate, double blockSize)
         {
 #if __IOS__ || (GNH_MAUI && IOS)
@@ -413,7 +445,7 @@ namespace GnollHackX.Unknown
         public List<GHSoundInstance> uiMusicInstances = new List<GHSoundInstance>();
         public List<GHSoundInstance> uiInstances = new List<GHSoundInstance>();
 
-        public void ReleaseAllGameSoundInstances()
+        public void ReleaseAllGameSoundInstances(bool doUpdate = true)
         {
             List<GHSoundInstance>[] listoflists =
             {
@@ -434,11 +466,14 @@ namespace GnollHackX.Unknown
                     list.Clear();
                 }
             }
-            RESULT res = _system.update();
+            if (doUpdate)
+            {
+                _ = _system.update();
+            }
         }
 
         [UIThreadOnly]
-        public void ReleaseAllUISoundInstances()
+        public void ReleaseAllUISoundInstances(bool doUpdate = true)
         {
             List<GHSoundInstance>[] listoflists =
             {
@@ -458,7 +493,10 @@ namespace GnollHackX.Unknown
                     list.Clear();
                 }
             }
-            RESULT res = _system.update();
+            if (doUpdate)
+            {
+                _ = _system.update();
+            }
         }
 
         /* Returns to UI thread */

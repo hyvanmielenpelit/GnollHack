@@ -362,6 +362,7 @@ namespace GnollHackX
 
         public static void BeforeExitApp()
         {
+            FmodService?.ShutdownFmod();
             Connectivity.ConnectivityChanged -= Connectivity_ConnectivityChanged;
             Battery.BatteryInfoChanged -= Battery_BatteryInfoChanged;
             DeviceDisplay.MainDisplayInfoChanged -= DeviceDisplay_MainDisplayInfoChanged;
