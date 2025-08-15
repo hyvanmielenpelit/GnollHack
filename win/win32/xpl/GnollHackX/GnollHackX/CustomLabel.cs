@@ -74,7 +74,7 @@ namespace GnollHackX
         public string Text
         {
             get { return (string)GetValue(TextProperty); }
-            set { SetValue(TextProperty, value); SplitRows(); UpdateLabel(); UpdateRolledDown(); }
+            set { SetValue(TextProperty, value); SplitRows(); UpdateLabel(); UpdateRolledDown(); IsFirst = true; }
         }
 
         public static readonly BindableProperty FontFamilyProperty = BindableProperty.Create(
@@ -575,9 +575,9 @@ namespace GnollHackX
             return tf;
         }
 
-        private float _interlockedCanvasHeight = 0;
+        private float _savedCanvasWidth = 0.0f;
+        private float _interlockedCanvasHeight = 0.0f;
         private float InterlockedCanvasHeight { get { return Interlocked.CompareExchange(ref _interlockedCanvasHeight, 0.0f, 0.0f); } set { Interlocked.Exchange(ref _interlockedCanvasHeight, value); } }
-
 
         private readonly object _textAreaSizeLock = new object();
         private TextAreaSize _textAreaSize;
@@ -594,7 +594,15 @@ namespace GnollHackX
             float scale2 = this.Width == 0 ? 1.0f : canvaswidth / (float)this.Width;
 
             if (Interlocked.Exchange(ref _interlockedCanvasHeight, canvasheight) != canvasheight)
+            {
+                IsFirst = true;
                 UpdateRolledDown(false);
+            }
+            else if (_savedCanvasWidth != canvaswidth)
+            {
+                IsFirst = true;
+                _savedCanvasWidth = canvaswidth;
+            }
 
             canvas.Clear();
             bool isFirst = IsFirst;
@@ -919,7 +927,7 @@ namespace GnollHackX
         private DateTime _savedTimeStamp;
 
         //private readonly object _isFirstLock = new object();
-        private int _isFirst = 0;
+        private int _isFirst = 1;
         private bool IsFirst { get { return Interlocked.CompareExchange(ref _isFirst, 0, 0) != 0; } set { Interlocked.Exchange(ref _isFirst, value ? 1 : 0); } }
 
         private void Base_Touch(object sender, SKTouchEventArgs e)
