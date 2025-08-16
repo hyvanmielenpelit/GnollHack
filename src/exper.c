@@ -37,29 +37,25 @@ int lev;
     }
 
     if (total_level_exp >= 2000000)
-        total_level_exp = (total_level_exp / 100000) * 100000;
+        total_level_exp = (total_level_exp / 20000) * 20000;
     else if (total_level_exp >= 1000000)
-        total_level_exp = (total_level_exp / 50000) * 50000;
-    else if (total_level_exp >= 500000)
-        total_level_exp = (total_level_exp / 25000) * 25000;
-    else if (total_level_exp >= 200000)
         total_level_exp = (total_level_exp / 10000) * 10000;
-    else if (total_level_exp >= 100000)
+    else if (total_level_exp >= 500000)
         total_level_exp = (total_level_exp / 5000) * 5000;
+    else if (total_level_exp >= 200000)
+        total_level_exp = (total_level_exp / 2000) * 2000;
+    else if (total_level_exp >= 100000)
+        total_level_exp = (total_level_exp / 1000) * 1000;
     else if (total_level_exp >= 50000)
-        total_level_exp = (total_level_exp / 2500) * 2500;
+        total_level_exp = (total_level_exp / 500) * 500;
     else if (total_level_exp >= 20000)
-        total_level_exp = (total_level_exp / 1000) * 1000; 
+        total_level_exp = (total_level_exp / 200) * 200;
     else if (total_level_exp >= 10000)
-        total_level_exp = (total_level_exp / 500) * 500; 
+        total_level_exp = (total_level_exp / 100) * 100;
     else if (total_level_exp >= 5000)
-        total_level_exp = (total_level_exp / 250) * 250;
-    else if (total_level_exp >= 2000)
-        total_level_exp = (total_level_exp / 100) * 100; 
-    else if (total_level_exp >= 1000)
         total_level_exp = (total_level_exp / 50) * 50;
-    else if (total_level_exp >= 500)
-        total_level_exp = (total_level_exp / 25) * 25;
+    else if (total_level_exp >= 2000)
+        total_level_exp = (total_level_exp / 20) * 20;
     else if (total_level_exp >= 200)
         total_level_exp = (total_level_exp / 10) * 10;
 
