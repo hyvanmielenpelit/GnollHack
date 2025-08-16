@@ -10,7 +10,7 @@
     <ContentPage.Content>
         <Grid x:Name="RootGrid" HorizontalOptions="Fill" VerticalOptions="Fill" BackgroundColor="Black">
             <Grid x:Name="MainGrid" HorizontalOptions="Fill" VerticalOptions="Fill" IsVisible="false" >
-                <controls:SwitchableCanvasView x:Name="canvasView"
+                <controls:SwitchableCanvasView x:Name="MainCanvasView"
                                                   UseGL="False"
                                                   CanvasType="MainCanvas"
                                                   EnableTouchEvents="True"

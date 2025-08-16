@@ -675,8 +675,8 @@ namespace GnollHackX.Pages.Game
 
         public bool UseMainGLCanvas
         {
-            get { return canvasView.UseGL; }
-            set { canvasView.UseGL = value; }
+            get { return MainCanvasView.UseGL; }
+            set { MainCanvasView.UseGL = value; }
         }
 
         public bool UseAuxiliaryGLCanvas
@@ -992,9 +992,9 @@ namespace GnollHackX.Pages.Game
 
         public void SetPrimaryCanvasResourceCacheLimit(long cacheLimit)
         {
-            Debug.WriteLine("Primary: ResourceCacheSize was " + canvasView.ResourceCacheLimit);
-            canvasView.ResourceCacheLimit = cacheLimit;
-            Debug.WriteLine("Primary: ResourceCacheSize is " + canvasView.ResourceCacheLimit);
+            Debug.WriteLine("Primary: ResourceCacheSize was " + MainCanvasView.ResourceCacheLimit);
+            MainCanvasView.ResourceCacheLimit = cacheLimit;
+            Debug.WriteLine("Primary: ResourceCacheSize is " + MainCanvasView.ResourceCacheLimit);
         }
 
         public void SetSecondaryCanvasResourceCacheLimit(long cacheLimit)
@@ -1008,7 +1008,7 @@ namespace GnollHackX.Pages.Game
 
         public CacheUsageInfo GetPrimaryCanvasResourceCacheUsage()
         {
-            return canvasView.ResourceCacheUsage;
+            return MainCanvasView.ResourceCacheUsage;
         }
 
         protected override bool OnBackButtonPressed()
@@ -1336,15 +1336,15 @@ namespace GnollHackX.Pages.Game
                 _mainPage.GameStarted = true;
                 LoadingDetailsLabel.Text = "Starting loading...";
                 LoadingProgressBar.Progress = 0.0;
-                canvasView.Focus();
+                MainCanvasView.Focus();
 
-                canvasView._gamePage = this;
+                MainCanvasView._gamePage = this;
                 CommandCanvas._gamePage = this;
                 MenuCanvas._gamePage = this;
                 TextCanvas._gamePage = this;
                 TipView._gamePage = this;
 
-                canvasView._parentGrid = MainGrid;
+                MainCanvasView._parentGrid = MainGrid;
                 CommandCanvas._parentGrid = MoreCommandsGrid;
                 MenuCanvas._parentGrid = MenuGrid;
                 TextCanvas._parentGrid = TextGrid;
@@ -1586,7 +1586,7 @@ namespace GnollHackX.Pages.Game
                 IsGameOn = true;
                 IsMainCanvasOn = true;
                 MainGrid.IsVisible = true;
-                canvasView.InvalidateSurface();
+                MainCanvasView.InvalidateSurface();
 
                 /* Polling timer */
 #if GNH_MAUI
@@ -1644,7 +1644,7 @@ namespace GnollHackX.Pages.Game
                         List<Task> tasks = null;
                         try
                         {
-                            tasks = pollRequestQueue();
+                            tasks = PollRequestQueue();
                         }
                         catch (Exception ex)
                         {
@@ -1776,9 +1776,9 @@ namespace GnollHackX.Pages.Game
                                         {
                                             PleaseWaitLabel.IsVisible = true;
                                             StopMainCanvasAnimation();
-                                            canvasView.IsVisible = false;
+                                            MainCanvasView.IsVisible = false;
                                             RefreshScreen = true;
-                                            canvasView.IsVisible = true;
+                                            MainCanvasView.IsVisible = true;
                                             StartMainCanvasAnimation();
                                         }
                                     }
@@ -1882,7 +1882,7 @@ namespace GnollHackX.Pages.Game
         {
             if (RefreshScreen)
             {
-                if (canvasView.ThreadSafeIsVisible)
+                if (MainCanvasView.ThreadSafeIsVisible)
                 {
                     if (ForceAllMessages)
                     {
@@ -1899,7 +1899,7 @@ namespace GnollHackX.Pages.Game
                             _mapUpdateStopWatch.Restart();
                         }
 
-                        //float canvasheight = canvasView.ThreadSafeCanvasSize.Height;
+                        //float canvasheight = MainCanvasView.ThreadSafeCanvasSize.Height;
                         float canvasheight;
                         lock (_savedCanvasLock)
                         {
@@ -1984,7 +1984,7 @@ namespace GnollHackX.Pages.Game
                     }
                     MainThread.BeginInvokeOnMainThread(() =>
                     {
-                        canvasView.InvalidateSurface();
+                        MainCanvasView.InvalidateSurface();
                     });
                 }
             }
@@ -2274,8 +2274,8 @@ namespace GnollHackX.Pages.Game
             if (!settingToggled && GHApp.UsePlatformRenderLoop)
                 return;
             uint mainAnimationLength = GHConstants.MainCanvasAnimationTime / UIUtils.GetMainCanvasAnimationInterval(MapRefreshRate);
-            Animation canvasAnimation = new Animation(v => canvasView.GeneralAnimationCounter = (long)v, 1, mainAnimationLength);
-            canvasAnimation.Commit(canvasView, "GeneralAnimationCounter", length: GHConstants.MainCanvasAnimationTime,
+            Animation canvasAnimation = new Animation(v => MainCanvasView.GeneralAnimationCounter = (long)v, 1, mainAnimationLength);
+            canvasAnimation.Commit(MainCanvasView, "GeneralAnimationCounter", length: GHConstants.MainCanvasAnimationTime,
                 rate: UIUtils.GetMainCanvasAnimationInterval(MapRefreshRate), repeat: () => true /* MainGrid.IsVisible */);
             _mapUpdateStopWatch.Restart();
         }
@@ -2284,8 +2284,8 @@ namespace GnollHackX.Pages.Game
         {
             if (!settingToggled && GHApp.UsePlatformRenderLoop)
                 return;
-            if (canvasView.AnimationIsRunning("GeneralAnimationCounter"))
-                canvasView.AbortAnimation("GeneralAnimationCounter");
+            if (MainCanvasView.AnimationIsRunning("GeneralAnimationCounter"))
+                MainCanvasView.AbortAnimation("GeneralAnimationCounter");
             if (_mapUpdateStopWatch.IsRunning)
                 _mapUpdateStopWatch.Stop();
         }
@@ -3235,7 +3235,7 @@ namespace GnollHackX.Pages.Game
             tasks.Add(task);
         }
 
-        private List<Task> pollRequestQueue()
+        private List<Task> PollRequestQueue()
         {
             List<Task> tasks = null;
             GHGame curGame = CurrentGame;
@@ -3644,7 +3644,7 @@ namespace GnollHackX.Pages.Game
             YnGrid.IsVisible = false;
             DoHideDirections();
 
-            if (!LoadingGrid.IsVisible && ( !IsMainCanvasOn || /* !MainGrid.IsVisible || */ (!canvasView.AnimationIsRunning("GeneralAnimationCounter") && !GHApp.UsePlatformRenderLoop)))
+            if (!LoadingGrid.IsVisible && ( !IsMainCanvasOn || /* !MainGrid.IsVisible || */ (!MainCanvasView.AnimationIsRunning("GeneralAnimationCounter") && !GHApp.UsePlatformRenderLoop)))
             {
                 //MainGrid.IsVisible = true;
                 IsMainCanvasOn = true;
@@ -4760,7 +4760,7 @@ namespace GnollHackX.Pages.Game
                 }
             }
 
-            //canvasView.MenuItems = newmis;
+            //MainCanvasView.MenuItems = newmis;
             MenuCanvas.MenuItems = newmis;
             //lock (MenuCanvas.MenuItemLock)
             //{
@@ -5175,7 +5175,7 @@ namespace GnollHackX.Pages.Game
         //public float GetTextScale()
         //{
         //    //return (float)((StandardReferenceButton.Width <= 0 ? StandardReferenceButton.WidthRequest : StandardReferenceButton.Width) / 50.0f) * GetInverseCanvasScale();
-        //    return GetTextScaleEx(canvasView.Width, canvasView.Height, DesktopButtons, UseSimpleCmdLayout);
+        //    return GetTextScaleEx(MainCanvasView.Width, MainCanvasView.Height, DesktopButtons, UseSimpleCmdLayout);
         //}
 
         //public float GetTextScaleEx(double canvasViewWidth, double canvasViewHeight, bool usingDesktopButtons, bool usingSimpleCmdLayout)
@@ -7343,8 +7343,8 @@ namespace GnollHackX.Pages.Game
             SKImageInfo info = e.Info;
             SKSurface surface = e.Surface;
             SKCanvas canvas = surface.Canvas;
-            float canvaswidth = e.Info.Width; // canvasView.CanvasSize.Width;
-            float canvasheight = e.Info.Height; // canvasView.CanvasSize.Height;
+            float canvaswidth = e.Info.Width; // MainCanvasView.CanvasSize.Width;
+            float canvasheight = e.Info.Height; // MainCanvasView.CanvasSize.Height;
 
             canvas.Clear(SKColors.Black);
             if (canvaswidth <= 16 || canvasheight <= 16)
@@ -7418,8 +7418,8 @@ namespace GnollHackX.Pages.Game
             double stdButtonWidth = StandardMeasurementButton.ThreadSafeWidth;
             double stdButtonHeight = StandardMeasurementButton.ThreadSafeHeight;
             double stdButtonY = StandardMeasurementButton.ThreadSafeY;
-            double canvasViewWidth = canvasView.ThreadSafeWidth;
-            double canvasViewHeight = canvasView.ThreadSafeHeight;
+            double canvasViewWidth = MainCanvasView.ThreadSafeWidth;
+            double canvasViewHeight = MainCanvasView.ThreadSafeHeight;
             Thickness stdCmdLayoutMargin = StandardMeasurementCmdLayout.ThreadSafeMargin;
             double stdCmdLayoutHeight = StandardMeasurementCmdLayout.ThreadSafeHeight;
             double usedButtonRowStackHeight = UsedButtonRowStack.ThreadSafeHeight;
@@ -7429,7 +7429,7 @@ namespace GnollHackX.Pages.Game
 
             float inverse_canvas_scale = GHApp.DisplayDensity;
             float customScale = GHApp.CustomScreenScale;
-            float textscale = UIUtils.CalculateTextScale(inverse_canvas_scale, customScale);// GetTextScaleEx(canvasView.Width, canvasView.Height, usingDesktopButtons, usingSimpleCmdLayout, inverse_canvas_scale, customScale);
+            float textscale = UIUtils.CalculateTextScale(inverse_canvas_scale, customScale);// GetTextScaleEx(MainCanvasView.Width, MainCanvasView.Height, usingDesktopButtons, usingSimpleCmdLayout, inverse_canvas_scale, customScale);
             float statusBarTextMultiplier = UIUtils.CalculateStatusBarFontSizeMultiplier(canvasViewWidth, canvasViewHeight);
             float statusBarTextScale = textscale * statusBarTextMultiplier;
             float statusBarSkiaHeight = UIUtils.CalculateStatusBarSkiaHeight(statusBarTextScale); // GetStatusBarSkiaHeightEx(textscale);
@@ -9713,7 +9713,7 @@ namespace GnollHackX.Pages.Game
                     }
                     
 
-                    float abilitybuttonbottom = (float)(stdCmdLayoutMargin.Top / canvasViewHeight) * canvasheight; ; // (float)((lAbilitiesButton.Y + lAbilitiesButton.Height) / canvasView.Height) * canvasheight;
+                    float abilitybuttonbottom = (float)(stdCmdLayoutMargin.Top / canvasViewHeight) * canvasheight; ; // (float)((lAbilitiesButton.Y + lAbilitiesButton.Height) / MainCanvasView.Height) * canvasheight;
                     float escbuttonbottom = (float)((stdButtonY + stdButtonHeight) / canvasViewHeight) * canvasheight;
                     if (_localCanvasButtonRect.Top < escbuttonbottom)
                         _localCanvasButtonRect.Top = escbuttonbottom;
@@ -11312,7 +11312,7 @@ namespace GnollHackX.Pages.Game
                                         float pet_target_width = pet_target_height;
 
                                         SKRect menubuttonrect = GetThreadSafeViewScreenRect(GameMenuButton); //UseSimpleCmdLayout ? SimpleGameMenuButton : GameMenuButton
-                                        SKRect canvasrect = GetThreadSafeViewScreenRect(canvasView);
+                                        SKRect canvasrect = GetThreadSafeViewScreenRect(MainCanvasView);
                                         SKRect adjustedrect = new SKRect(menubuttonrect.Left - canvasrect.Left, menubuttonrect.Top - canvasrect.Top, menubuttonrect.Right - canvasrect.Left, menubuttonrect.Bottom - canvasrect.Top);
                                         float menu_button_left = adjustedrect.Left;
                                         /* Below is a bit more efficient, but needs to be updated if UI is changed */
@@ -15068,9 +15068,9 @@ namespace GnollHackX.Pages.Game
         //public double GetCanvasScale()
         //{
         //    return 1.0 / GHApp.DisplayDensity;
-        //    //if (canvasView.CanvasSize.Width <= 0 || canvasView.CanvasSize.Height <= 0)
+        //    //if (MainCanvasView.CanvasSize.Width <= 0 || MainCanvasView.CanvasSize.Height <= 0)
         //    //    return 1.0;
-        //    //return Math.Sqrt(canvasView.Width / (double)canvasView.CanvasSize.Width * canvasView.Height / (double)canvasView.CanvasSize.Height);
+        //    //return Math.Sqrt(MainCanvasView.Width / (double)MainCanvasView.CanvasSize.Width * MainCanvasView.Height / (double)MainCanvasView.CanvasSize.Height);
         //}
 
         //public float GetInverseCanvasScale()
@@ -16734,7 +16734,7 @@ namespace GnollHackX.Pages.Game
             FadeFrame.Opacity = 1.0;
             FadeFrame.IsVisible = true;
 #else
-            canvasView.Opacity = 0.0;
+            MainCanvasView.Opacity = 0.0;
 #endif
         }
 
@@ -16746,8 +16746,8 @@ namespace GnollHackX.Pages.Game
             FadeFrame.IsVisible = true;
             await FadeFrame.FadeTo(1.0, milliseconds);
 #else
-            canvasView.Opacity = 1.0;
-            await canvasView.FadeTo(0.0, milliseconds);
+            MainCanvasView.Opacity = 1.0;
+            await MainCanvasView.FadeTo(0.0, milliseconds);
 #endif
         }
 
@@ -16759,8 +16759,8 @@ namespace GnollHackX.Pages.Game
             await FadeFrame.FadeTo(0.0, milliseconds);
             FadeFrame.IsVisible = false;
 #else
-            canvasView.Opacity = 0.0;
-            await canvasView.FadeTo(1.0, milliseconds);
+            MainCanvasView.Opacity = 0.0;
+            await MainCanvasView.FadeTo(1.0, milliseconds);
 #endif
         }
 
@@ -16963,7 +16963,7 @@ namespace GnollHackX.Pages.Game
 
             await ShowGameMenu();
 
-            if (!canvasView.AnimationIsRunning("GeneralAnimationCounter"))
+            if (!MainCanvasView.AnimationIsRunning("GeneralAnimationCounter"))
                 StartMainCanvasAnimation();
 
             GameMenuButton.IsEnabled = true;
@@ -19939,7 +19939,7 @@ namespace GnollHackX.Pages.Game
                 if (ShowFPS)
                 {
                     float textscale = UIUtils.CalculateTextScale();
-                    float landscapeMultiplier = UIUtils.CalculateStatusBarFontSizeMultiplier(canvasView.ThreadSafeWidth, canvasView.ThreadSafeHeight);
+                    float landscapeMultiplier = UIUtils.CalculateStatusBarFontSizeMultiplier(MainCanvasView.ThreadSafeWidth, MainCanvasView.ThreadSafeHeight);
                     float statusBarTextScale = landscapeMultiplier * textscale;
                     textPaint.TextSize = GHConstants.StatusBarBaseFontSize * statusBarTextScale;
                     float target_scale = textPaint.FontSpacing / GHApp._statusWizardBitmap.Height; // All are 64px high
@@ -20359,8 +20359,8 @@ namespace GnollHackX.Pages.Game
 
             using (GHSkiaFontPaint textPaint = new GHSkiaFontPaint())
             {
-                float canvaswidth = e.Info.Width; // canvasView.CanvasSize.Width;
-                float canvasheight = e.Info.Height; // canvasView.CanvasSize.Height;
+                float canvaswidth = e.Info.Width; // MainCanvasView.CanvasSize.Width;
+                float canvasheight = e.Info.Height; // MainCanvasView.CanvasSize.Height;
                 bool landscape = (canvaswidth > canvasheight);
                 float maincanvaswidth = 0;
                 float maincanvasheight = 0;
@@ -20410,7 +20410,7 @@ namespace GnollHackX.Pages.Game
                 float target_scale_canvas = 1.0f;
                 float mult_canvas = 1.0f;
                 float prev_bottom = 0;
-                float sbheight = yscale * UIUtils.CalculateStatusBarSkiaHeight(canvasView.ThreadSafeWidth, canvasView.ThreadSafeHeight); // GetStatusBarSkiaHeightEx(canvasView.Width, canvasView.Height, DesktopButtons, UseSimpleCmdLayout);
+                float sbheight = yscale * UIUtils.CalculateStatusBarSkiaHeight(MainCanvasView.ThreadSafeWidth, MainCanvasView.ThreadSafeHeight); // GetStatusBarSkiaHeightEx(MainCanvasView.Width, MainCanvasView.Height, DesktopButtons, UseSimpleCmdLayout);
                 SKRect statusBarCenterRect = new SKRect(canvaswidth / 2 - sbheight / 2, 0, canvaswidth / 2 + sbheight / 2, sbheight);
 
                 switch (ShownTip)
@@ -20642,8 +20642,8 @@ namespace GnollHackX.Pages.Game
         public SKRect GetViewScreenRect(Xamarin.Forms.VisualElement view)
 #endif
         {
-            //float canvaswidth = canvasView.CanvasSize.Width;
-            //float canvasheight = canvasView.CanvasSize.Height;
+            //float canvaswidth = MainCanvasView.CanvasSize.Width;
+            //float canvasheight = MainCanvasView.CanvasSize.Height;
             float scale = GHApp.DisplayDensity;
 
             double screenCoordinateX = view.X;
@@ -20676,10 +20676,10 @@ namespace GnollHackX.Pages.Game
 #endif
                 }
             }
-            float relX = (float)(screenCoordinateX * scale); // / canvasView.Width) * canvaswidth;
-            float relY = (float)(screenCoordinateY * scale); // / canvasView.Height) * canvasheight;
-            float relWidth = (float)(StandardMeasurementButton.ThreadSafeWidth * scale); // / canvasView.Width) * canvaswidth;
-            float relHeight = (float)(StandardMeasurementButton.ThreadSafeHeight * scale); // / canvasView.Height) * canvasheight;
+            float relX = (float)(screenCoordinateX * scale); // / MainCanvasView.Width) * canvaswidth;
+            float relY = (float)(screenCoordinateY * scale); // / MainCanvasView.Height) * canvasheight;
+            float relWidth = (float)(StandardMeasurementButton.ThreadSafeWidth * scale); // / MainCanvasView.Width) * canvaswidth;
+            float relHeight = (float)(StandardMeasurementButton.ThreadSafeHeight * scale); // / MainCanvasView.Height) * canvasheight;
 
             SKRect res = new SKRect(relX, relY, relX + relWidth, relY + relHeight);
             return res;
@@ -20687,8 +20687,8 @@ namespace GnollHackX.Pages.Game
 
         public SKRect GetThreadSafeViewScreenRect(IThreadSafeView view)
         {
-            //float canvaswidth = canvasView.CanvasSize.Width;
-            //float canvasheight = canvasView.CanvasSize.Height;
+            //float canvaswidth = MainCanvasView.CanvasSize.Width;
+            //float canvasheight = MainCanvasView.CanvasSize.Height;
             float scale = GHApp.DisplayDensity;
 
             double screenCoordinateX = view.ThreadSafeX;
@@ -20717,10 +20717,10 @@ namespace GnollHackX.Pages.Game
                 }
             }
 
-            float relX = (float)(screenCoordinateX * scale); // / canvasView.Width) * canvaswidth;
-            float relY = (float)(screenCoordinateY * scale); // / canvasView.Height) * canvasheight;
-            float relWidth = (float)(StandardMeasurementButton.ThreadSafeWidth * scale); // / canvasView.Width) * canvaswidth;
-            float relHeight = (float)(StandardMeasurementButton.ThreadSafeHeight * scale); // / canvasView.Height) * canvasheight;
+            float relX = (float)(screenCoordinateX * scale); // / MainCanvasView.Width) * canvaswidth;
+            float relY = (float)(screenCoordinateY * scale); // / MainCanvasView.Height) * canvasheight;
+            float relWidth = (float)(StandardMeasurementButton.ThreadSafeWidth * scale); // / MainCanvasView.Width) * canvaswidth;
+            float relHeight = (float)(StandardMeasurementButton.ThreadSafeHeight * scale); // / MainCanvasView.Height) * canvasheight;
 
             SKRect res = new SKRect(relX, relY, relX + relWidth, relY + relHeight);
             return res;
@@ -21141,7 +21141,7 @@ namespace GnollHackX.Pages.Game
             }
             else if (MoreCommandsGrid.IsVisible && !CommandCanvas.AnimationIsRunning("GeneralAnimationCounter"))
                 StartCommandCanvasAnimation();
-            else if (!LoadingGrid.IsVisible && IsMainCanvasOn /* && MainGrid.IsVisible */ && !canvasView.AnimationIsRunning("GeneralAnimationCounter"))
+            else if (!LoadingGrid.IsVisible && IsMainCanvasOn /* && MainGrid.IsVisible */ && !MainCanvasView.AnimationIsRunning("GeneralAnimationCounter"))
                 StartMainCanvasAnimation();
         }
 
@@ -22207,7 +22207,7 @@ namespace GnollHackX.Pages.Game
 
         public void ShutDownCanvasViews()
         {
-            canvasView.ShutDown();
+            MainCanvasView.ShutDown();
             MenuCanvas.ShutDown();
             TextCanvas.ShutDown();
             CommandCanvas.ShutDown();
@@ -22514,8 +22514,8 @@ namespace GnollHackX.Pages.Game
             //    {
             //        if (ZoomMiniMode)
             //        {
-            //            float canvaswidth = canvasView.CanvasSize.Width;
-            //            float canvasheight = canvasView.CanvasSize.Height;
+            //            float canvaswidth = MainCanvasView.CanvasSize.Width;
+            //            float canvasheight = MainCanvasView.CanvasSize.Height;
             //            SKPoint point = new SKPoint(canvaswidth / 2, canvasheight / 2);
             //            float ratio = key == Windows.System.VirtualKey.Add ? (1 + (GHApp.AltDown ? 0.001f : 0.01f)) : 1 / (1 + (GHApp.AltDown ? 0.001f : 0.01f));
             //            AdjustZoomByRatio(ratio, point, point, point);
@@ -22529,8 +22529,8 @@ namespace GnollHackX.Pages.Game
             //            else
             //                newfontsize = MapFontSize + multiplier * (GHApp.AltDown ? 0.001f : 0.01f) * DefaultMapFontSize;
 
-            //            float canvaswidth = canvasView.CanvasSize.Width;
-            //            float canvasheight = canvasView.CanvasSize.Height;
+            //            float canvaswidth = MainCanvasView.CanvasSize.Width;
+            //            float canvasheight = MainCanvasView.CanvasSize.Height;
             //            SKPoint point = new SKPoint(canvaswidth / 2, canvasheight / 2);
             //            SetZoomFontSize(newfontsize, point, point, point);
             //        }
