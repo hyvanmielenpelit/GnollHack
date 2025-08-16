@@ -4425,6 +4425,7 @@ namespace GnollHackX.Pages.Game
                 GHApp.GameMuteMode = false;
             GHApp.CurrentGamePage = null;
             //GHApp.ReportLockDataResults();
+            ShutDownCanvasViews();
             bool fastForward = FastForwardRequested;
             if (fastForward && GHApp.IsAndroid) /* FragmentManager cannot deal with closing pages when going to sleep; needs to be done with a delay after returning */
             {
@@ -4434,15 +4435,6 @@ namespace GnollHackX.Pages.Game
             {
                 await GHApp.PopAllModalPagesAsync(!fastForward);
             }
-            //bool popagain = false;
-            //bool animated = !FastForwardRequested;
-            //do
-            //{
-            //    var page = await GHApp.Navigation.PopModalAsync(animated);
-            //    popagain = !(page is GamePage || page == null);
-            //    GHApp.DisconnectIViewHandlers(page);
-            //} while (popagain);
-            ShutDownCanvasViews();
             await _mainPage.StartGeneralTimerAsync(); /* Just to be doubly sure */
         }
 
