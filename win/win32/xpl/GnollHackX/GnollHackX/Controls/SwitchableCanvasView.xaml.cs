@@ -146,13 +146,6 @@ namespace GnollHackX.Controls
                     {
                         internalGLView.PaintSurface -= internalGLView_PaintSurface;
                         internalGLView.Touch -= internalGLView_Touch;
-
-                        // These need to be called before disconnect handlers to make sure that GL threads are disposed and do not cause an abort
-                        // On Windows, Dispose caused a crash, so Flush > ResetContext > AbandonContext pattern is used instead
-                        internalGLView?.GRContext?.Flush();
-                        internalGLView?.GRContext?.ResetContext();
-                        internalGLView?.GRContext?.AbandonContext();
-                        //internalGLView?.GRContext?.Dispose();
                     }
                 });
             }

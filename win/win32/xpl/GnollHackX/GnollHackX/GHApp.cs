@@ -390,7 +390,7 @@ namespace GnollHackX
                 _platformTicker = null;
             }
 #endif
-            CollectGarbage();
+            //CollectGarbage();
         }
 
         private static void InitializeScreenResolutions()
