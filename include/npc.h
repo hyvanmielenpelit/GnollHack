@@ -67,7 +67,7 @@ extern struct npc_subtype_definition npc_subtype_definitions[MAX_NPC_SUBTYPES];
 #define NPC_SERVICE_BRANCH_PORTAL                           0x00000200UL
 #define NPC_SERVICE_FORGE_SLING_BULLETS                     0x00000400UL
 #define NPC_SERVICE_FORGE_CUBIC_GATE                        0x00000800UL
-/* free spell bit */
+#define NPC_SERVICE_IDENTIFY_ITEMS                          0x00001000UL
 /* free spell bit */
 /* free spell bit */
 #define NPC_SERVICE_TEACH_SPECIAL_SPELLS                    0x00008000UL

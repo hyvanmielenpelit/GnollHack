@@ -137,6 +137,7 @@ STATIC_DCL int FDECL(do_chat_quantum_observe_speed, (struct monst*));
 STATIC_DCL int FDECL(do_chat_npc_special_hints, (struct monst*));
 STATIC_DCL int FDECL(do_chat_npc_sing_song, (struct monst*));
 STATIC_DCL int FDECL(do_chat_npc_reconciliation, (struct monst*));
+STATIC_DCL int FDECL(do_chat_npc_identify_items, (struct monst*));
 STATIC_DCL int FDECL(do_chat_npc_identify_gems_and_stones, (struct monst*));
 STATIC_DCL int FDECL(do_chat_npc_identify_accessories_and_charged_items, (struct monst*));
 STATIC_DCL int FDECL(do_chat_npc_identify_gems_stones_and_charged_items, (struct monst*));
@@ -4196,9 +4197,7 @@ struct monst* mtmp;
 
                 if (npc_subtype_definitions[ENPC(mtmp)->npc_typ].service_flags & NPC_SERVICE_IDENTIFY_GEMS_AND_STONES)
                 {
-                    char sbuf[BUFSZ];
-                    Sprintf(sbuf, "Identify gems and stones");
-                    Strcpy(available_chat_list[chatnum].name, sbuf);
+                    Strcpy(available_chat_list[chatnum].name, "Identify gems and stones");
                     available_chat_list[chatnum].function_ptr = &do_chat_npc_identify_gems_and_stones;
                     //available_chat_list[chatnum].charnum = 'a' + chatnum;
                     available_chat_list[chatnum].stops_dialogue = FALSE;
@@ -4328,11 +4327,18 @@ struct monst* mtmp;
                     chatnum++;
                 }
 
+                if (npc_subtype_definitions[ENPC(mtmp)->npc_typ].service_flags & NPC_SERVICE_IDENTIFY_ITEMS)
+                {
+                    Strcpy(available_chat_list[chatnum].name, "Identify items");
+                    available_chat_list[chatnum].function_ptr = &do_chat_npc_identify_items;
+                    available_chat_list[chatnum].stops_dialogue = FALSE;
+                    available_chat_list[chatnum].category = CHAT_CATEGORY_SERVICE;
+                    chatnum++;
+                }
+
                 if (npc_subtype_definitions[ENPC(mtmp)->npc_typ].service_flags & NPC_SERVICE_IDENTIFY_ACCESSORIES_AND_CHARGED_ITEMS)
                 {
-                    char sbuf[BUFSZ];
-                    Sprintf(sbuf, "Identify accessories and charged items");
-                    Strcpy(available_chat_list[chatnum].name, sbuf);
+                    Strcpy(available_chat_list[chatnum].name, "Identify accessories and charged items");
                     available_chat_list[chatnum].function_ptr = &do_chat_npc_identify_accessories_and_charged_items;
                     //available_chat_list[chatnum].charnum = 'a' + chatnum;
                     available_chat_list[chatnum].stops_dialogue = FALSE;
@@ -10007,6 +10013,15 @@ struct monst* mtmp;
     }
 
     return 1;
+}
+
+STATIC_OVL int
+do_chat_npc_identify_items(mtmp)
+struct monst* mtmp;
+{
+    return do_chat_npc_general_identify(mtmp, "item", 0,
+        max(1L, (int64_t)((double)(150 + 10 * u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA)))),
+        NPC_LINE_NONE, NPC_LINE_NONE);
 }
 
 STATIC_OVL int
