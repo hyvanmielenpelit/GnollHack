@@ -2199,7 +2199,7 @@ namespace GnollHackX
                     CheckUpdateCurrentMapBufferUnlocked();
                     if (_objectDataMaster[x, y] != null && _objectDataCurrent[x, y] != null)
                     {
-                        bool is_memoryobj = (where == (int)obj_where_types.OBJ_HEROMEMORY);
+                        bool is_memoryobj = (where == (int)obj_where_types.OBJ_MEMORY);
                         bool is_drawn_in_front = (oflags & (ulong)objdata_flags.OBJDATA_FLAGS_DRAWN_IN_FRONT) != 0UL;
                         List<ObjectDataItem> masterobjectList = is_memoryobj ? (is_drawn_in_front ? _objectDataMaster[x, y].CoverMemoryObjectList : _objectDataMaster[x, y].MemoryObjectList) : (is_drawn_in_front ? _objectDataMaster[x, y].CoverFloorObjectList : _objectDataMaster[x, y].FloorObjectList);
                         List<ObjectDataItem> currentobjectList = is_memoryobj ? (is_drawn_in_front ? _objectDataCurrent[x, y].CoverMemoryObjectList : _objectDataCurrent[x, y].MemoryObjectList) : (is_drawn_in_front ? _objectDataCurrent[x, y].CoverFloorObjectList : _objectDataCurrent[x, y].FloorObjectList);

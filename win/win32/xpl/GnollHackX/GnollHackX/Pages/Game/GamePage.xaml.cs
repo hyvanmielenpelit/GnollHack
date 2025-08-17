@@ -16592,7 +16592,7 @@ namespace GnollHackX.Pages.Game
         //        {
         //            if (_objectData[x, y] != null)
         //            {
-        //                bool is_memoryobj = (where == (int)obj_where_types.OBJ_HEROMEMORY);
+        //                bool is_memoryobj = (where == (int)obj_where_types.OBJ_MEMORY);
         //                bool is_drawn_in_front = (oflags & (ulong)objdata_flags.OBJDATA_FLAGS_DRAWN_IN_FRONT) != 0UL;
         //                List<ObjectDataItem> objectList = is_memoryobj ? (is_drawn_in_front ? _objectData[x, y].CoverMemoryObjectList : _objectData[x, y].MemoryObjectList) : (is_drawn_in_front ? _objectData[x, y].CoverFloorObjectList : _objectData[x, y].FloorObjectList);
         //                ObjectDataItem newItem;

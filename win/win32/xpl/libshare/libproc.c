@@ -546,7 +546,7 @@ void lib_print_glyph(winid wid, XCHAR_P x, XCHAR_P y, struct layer_info layers)
             /* A possible mimic has been added to memory objects */
             otmp = level.locations[x][y].hero_memory_layers.memory_objchn;
             use_nexthere = TRUE;
-            basewhere = OBJ_HEROMEMORY;
+            basewhere = OBJ_MEMORY;
             break;
         }
 

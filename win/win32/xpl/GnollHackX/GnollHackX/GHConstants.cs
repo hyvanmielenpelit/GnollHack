@@ -1210,7 +1210,7 @@ namespace GnollHackX
         OBJ_MIGRATING = 5, /* object sent off to another level */
         OBJ_BURIED = 6,    /* object buried */
         OBJ_ONBILL = 7,    /* object on shk bill */
-        OBJ_HEROMEMORY = 8,/* object remembered by hero */
+        OBJ_MEMORY = 8,    /* object remembered by hero */
         OBJ_MAGIC = 9,     /* object in a magic chest */
         NOBJ_STATES = 10
     }

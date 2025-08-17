@@ -982,7 +982,7 @@ struct obj *obj;
     case OBJ_FREE:
     case OBJ_FLOOR:
     case OBJ_ONBILL:
-    case OBJ_HEROMEMORY:
+    case OBJ_MEMORY:
     case OBJ_MIGRATING:
     case OBJ_BURIED:
     default:
@@ -1094,7 +1094,7 @@ struct obj *otmp;
         extract_nobj(obj, &fobj);
         extract_nexthere(obj, &level.objects[obj->ox][obj->oy]);
         break;
-    case OBJ_HEROMEMORY:
+    case OBJ_MEMORY:
         otmp->nobj = obj->nobj;
         otmp->nexthere = obj->nexthere;
         otmp->ox = obj->ox;
@@ -1330,7 +1330,7 @@ struct obj* obj;
     }
     //obj->nobj = memoryobjs;
     //memoryobjs = obj;
-    obj->where = OBJ_HEROMEMORY;
+    obj->where = OBJ_MEMORY;
 }
 
 void
@@ -3915,7 +3915,7 @@ int x, y;
     otmp->ox = x;
     otmp->oy = y;
 
-    otmp->where = OBJ_HEROMEMORY;
+    otmp->where = OBJ_MEMORY;
 
     /* add to memory chain */
     if (!memoryobjs)
@@ -3937,7 +3937,7 @@ register struct obj* otmp;
     xchar x = otmp->ox;
     xchar y = otmp->oy;
 
-    if (otmp->where != OBJ_HEROMEMORY)
+    if (otmp->where != OBJ_MEMORY)
     {
         panic("remove_memory_object: obj not in hero memory: otyp=%d, where=%d", otmp->otyp, otmp->where);
         return;
@@ -4153,7 +4153,7 @@ struct monst *mtmp;
  *      OBJ_MIGRATING   migrating chain
  *      OBJ_BURIED      level.buriedobjs chain
  *      OBJ_ONBILL      on billobjs chain
- *      OBJ_HEROMEMORY  on memoryobjs chain
+ *      OBJ_MEMORY      on memoryobjs chain
  */
 void
 obj_extract_self(obj)
@@ -4188,7 +4188,7 @@ struct obj *obj;
     case OBJ_ONBILL:
         extract_nobj(obj, &billobjs);
         break;
-    case OBJ_HEROMEMORY:
+    case OBJ_MEMORY:
         remove_memory_object(obj);
         break;
     case OBJ_MAGIC:
@@ -4582,7 +4582,7 @@ obj_sanity_check(VOID_ARGS)
     objlist_sanity(migrating_objs, OBJ_MIGRATING, "migrating sanity");
     objlist_sanity(level.buriedobjlist, OBJ_BURIED, "buried sanity");
     objlist_sanity(billobjs, OBJ_ONBILL, "bill sanity");
-    objlist_sanity(memoryobjs, OBJ_HEROMEMORY, "memoryobjs sanity");
+    objlist_sanity(memoryobjs, OBJ_MEMORY, "memoryobjs sanity");
 
     mon_obj_sanity(fmon, "minvent sanity");
     mon_obj_sanity(migrating_mons, "migrating minvent sanity");

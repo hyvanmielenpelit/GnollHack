@@ -137,7 +137,7 @@ struct obj {
 #define OBJ_MIGRATING 5 /* object sent off to another level */
 #define OBJ_BURIED 6    /* object buried */
 #define OBJ_ONBILL 7    /* object on shk bill */
-#define OBJ_HEROMEMORY 8  /* object remembered by hero */
+#define OBJ_MEMORY 8    /* object remembered by hero */
 #define OBJ_MAGIC 9     /* object is in a magic chest */
 #define NOBJ_STATES 10
     xchar timed; /* # of fuses (timers) attached to this obj */
