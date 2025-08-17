@@ -26,11 +26,11 @@ union vptrs {
  **    (see the note at the bottom of this file before adding oextra fields)
  */
 struct oextra {
-    char *oname;          /* ptr to name of object */
-    char* uoname;         /* ptr to name of object */
+    char *oname;          /* ptr to the true name of object */
+    char *uoname;         /* ptr to a user-specified name of object */
     struct monst *omonst; /* ptr to attached monst struct */
-    unsigned *omid;       /* ptr to m_id */
-    int64_t *olong;       /* ptr to misc int64_t (temporary gold object) */
+    unsigned *omid;       /* ptr to m_id -- JG: note that the pointer uses more bits than the pointed variable itself, so probably it would make sense to change this to a straight variable rather than keeping it as a pointer */
+    int64_t *olong;       /* ptr to misc int64_t (temporary gold object) -- JG: unused at the moment; might make sense to change this into a larger extra struct pointer if such is needed */
     char *omailcmd;       /* response_cmd for mail deliver */
 };
 
