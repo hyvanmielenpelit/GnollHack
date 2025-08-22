@@ -198,7 +198,13 @@ static struct Bool_Opt {
         SET_IN_GAME },
     { "implicit_uncursed", "omit \"uncursed\" from inventory", &iflags.implicit_uncursed, TRUE, SET_IN_GAME },
     { "inventory_obj_cmd", "display a command menu upon selecting an object in inventory", &flags.inventory_obj_cmd, TRUE, SET_IN_GAME},
-    { "inventory_weights_last", "display object weights in parentheses after object name", &flags.inventory_weights_last, FALSE, SET_IN_GAME},
+    { "inventory_weights_last", "display object weights in parentheses after object name", &flags.inventory_weights_last, 
+#if GNH_MOBILE
+        TRUE,
+#else
+        FALSE, 
+#endif
+        SET_IN_GAME},
     { "knapsack_prompt", "prompt for an action when inventory is full", &flags.knapsack_prompt, TRUE, SET_IN_GAME},
     { "large_font", "obsolete: use large font", &iflags.obsolete, FALSE, SET_IN_FILE}, /* OBSOLETE */
     { "legacy", "show introductory message", &flags.legacy, TRUE, DISP_IN_GAME },
@@ -296,11 +302,23 @@ static struct Bool_Opt {
     { "show_weapon_style", "show used weapon type in status line", &flags.show_weapon_style, TRUE, SET_IN_GAME },
     { "show_weight_summary", "show total weight at the end of inventory", &flags.show_weight_summary, TRUE, SET_IN_GAME },
     { "silent", "don't use terminal bell", &flags.silent, TRUE, SET_IN_GAME },
-    { "skill_table_format", "show skills in a table format rather than a list",  &iflags.skill_table_format, TRUE, SET_IN_GAME},
+    { "skill_table_format", "show skills in a table format rather than a list",  &iflags.skill_table_format, 
+#ifdef GNH_MOBILE
+    FALSE,
+#else
+    TRUE, 
+#endif
+    SET_IN_GAME},
     { "softkeyboard", "soft keyboard", &iflags.wc2_softkeyboard, FALSE, SET_IN_FILE}, /*WC2*/
     { "sortpack", "group inventory items by type", &flags.sortpack, TRUE, SET_IN_GAME },
     { "sparkle", "display sparkly effect when resisting magic", &flags.sparkle, TRUE, SET_IN_GAME },
-    { "spell_table_format", "show spells in a table format rather than a list", &iflags.spell_table_format, TRUE, SET_IN_GAME },
+    { "spell_table_format", "show spells in a table format rather than a list", &iflags.spell_table_format, 
+#ifdef GNH_MOBILE
+    FALSE,
+#else
+    TRUE,
+#endif
+        SET_IN_GAME },
     { "splash_screen", "show splash screen", &iflags.wc_splash_screen, TRUE, DISP_IN_GAME}, /*WC*/
     { "standout", "use standout for --more--", &flags.standout, FALSE, SET_IN_GAME },
     { "stash_on_autopickup", "stash items into a container on autopickup (but no thrown if pick_thrown is on)", &flags.stash_on_autopickup, FALSE, SET_IN_GAME },
