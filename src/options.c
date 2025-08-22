@@ -167,7 +167,7 @@ static struct Bool_Opt {
 #else
     { "flush", "use flush on Amiga", (boolean *) 0, FALSE, SET_IN_FILE },
 #endif
-#ifdef ANDROID
+#if defined(ANDROID) || defined(GNH_MOBILE)
     { "force_invmenu", "commands asking for inventory item show a menu", &iflags.force_invmenu, TRUE, SET_IN_GAME },
 #else
     { "force_invmenu", "commands asking for inventory item show a menu", &iflags.force_invmenu, FALSE, SET_IN_GAME },
