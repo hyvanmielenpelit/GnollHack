@@ -1947,16 +1947,15 @@ namespace GnollHackX
         public const double NonHoveringColorMultiplier = 0.88;
 #endif
 #if WINDOWS
-        public const bool DefaultCharacterClickAction = true;
         public const bool DefaultSimpleCmdLayout = false;
         public const int FadeFromBlackDurationAtStart = 700;
         public const double FadeFromBlackAtStartExtraDelaySecs = 0.25;
 #else
-        public const bool DefaultCharacterClickAction = false;
         public const bool DefaultSimpleCmdLayout = true;
         public const int FadeFromBlackDurationAtStart = 700;
         public const double FadeFromBlackAtStartExtraDelaySecs = 0.15;
 #endif
+        public const bool DefaultCharacterClickAction = false;
         public const bool DefaultDiceAsRanges = true;
         public const bool DefaultAutoDig = true;
         public const bool DefaultIgnoreStopping = false; /* Since travel is also used for normal movement in the modern version */
