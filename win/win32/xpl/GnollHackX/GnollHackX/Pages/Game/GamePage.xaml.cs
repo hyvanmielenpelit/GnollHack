@@ -127,7 +127,6 @@ namespace GnollHackX.Pages.Game
         public List<string> ExtendedCommands { get; set; }
 
         private IGnollHackService _gnollHackService;
-        public IGnollHackService GnollHackService { get { return _gnollHackService; } }
         private bool _isFirstAppearance = true;
         private Thread _gnhthread;
 
@@ -5108,11 +5107,11 @@ namespace GnollHackX.Pages.Game
         public CanvasTypes GetActiveCanvas()
         {
             CanvasTypes canvasType;
-            if (TextCanvas.ThreadSafeIsVisible)
+            if (TextGrid.ThreadSafeIsVisible)
                 canvasType = CanvasTypes.TextCanvas;
-            else if (MenuCanvas.ThreadSafeIsVisible)
+            else if (MenuGrid.ThreadSafeIsVisible)
                 canvasType = CanvasTypes.MenuCanvas;
-            else if (CommandCanvas.ThreadSafeIsVisible)
+            else if (MoreCommandsGrid.ThreadSafeIsVisible)
                 canvasType = CanvasTypes.CommandCanvas;
             else
                 canvasType = CanvasTypes.MainCanvas;

@@ -220,7 +220,7 @@ namespace GnollHackX
                         break;
                     case GHRequestType.SetPetMID:
                         if (_gamePage != null)
-                            _gamePage.GnollHackService?.SetPetMID(response.ResponseUIntValue);
+                            GHApp.GnollHackService?.SetPetMID(response.ResponseUIntValue);
                         break;
                     case GHRequestType.ShowGUITips:
                         _guiTipsFinished = true;
@@ -334,7 +334,7 @@ namespace GnollHackX
                 IntPtr reoff_ptr;
                 int reoff_size;
                 //_gamePage.GnollHackService.GetGlyphArrays(out gl2ti_ptr, out gl2ti_size, out gltifl_ptr, out gltifl_size);
-                _gamePage.GnollHackService.GetTileArrays(out ti2an_ptr, out ti2an_size, out ti2en_ptr, out ti2en_size, out ti2ad_ptr, out ti2ad_size,
+                GHApp.GnollHackService.GetTileArrays(out ti2an_ptr, out ti2an_size, out ti2en_ptr, out ti2en_size, out ti2ad_ptr, out ti2ad_size,
                     out anoff_ptr, out anoff_size, out enoff_ptr, out enoff_size, out reoff_ptr, out reoff_size);
                 lock (GHApp.Glyph2TileLock)
                 {
@@ -378,7 +378,7 @@ namespace GnollHackX
                         GHApp.ReplacementOffsets = new int[reoff_size];
                         Marshal.Copy(reoff_ptr, GHApp.ReplacementOffsets, 0, reoff_size);
                     }
-                    _gamePage.GnollHackService.GetOffs(out animoff, out enloff, out reoff, out general_tile_off, out hit_tile_off, out ui_tile_off, out spell_tile_off, out skill_tile_off, out command_tile_off, out buff_tile_off,
+                    GHApp.GnollHackService.GetOffs(out animoff, out enloff, out reoff, out general_tile_off, out hit_tile_off, out ui_tile_off, out spell_tile_off, out skill_tile_off, out command_tile_off, out buff_tile_off,
                         out cursor_off);
                     GHApp.AnimationOff = animoff;
                     GHApp.EnlargementOff = enloff;
@@ -393,7 +393,7 @@ namespace GnollHackX
                     GHApp.CursorOff = cursor_off;
                 }
 
-                int total_tiles_used = _gamePage.GnollHackService.GetTotalTiles();
+                int total_tiles_used = GHApp.GnollHackService?.GetTotalTiles() ?? 0;
                 int total_sheets_used = Math.Min(GHConstants.MaxTileSheets, (total_tiles_used - 1) / GHConstants.NumberOfTilesPerSheet + 1);
 
                 lock (GHApp.Glyph2TileLock)
@@ -2762,7 +2762,7 @@ namespace GnollHackX
                         IntPtr gltifl_ptr;
                         int gltifl_size;
 
-                        _gamePage.GnollHackService.GetGlyphArrays(out gl2ti_ptr, out gl2ti_size, out gltifl_ptr, out gltifl_size);
+                        GHApp.GnollHackService.GetGlyphArrays(out gl2ti_ptr, out gl2ti_size, out gltifl_ptr, out gltifl_size);
                         lock (GHApp.Glyph2TileLock)
                         {
                             if (gl2ti_ptr != IntPtr.Zero && gl2ti_size > 0)
@@ -2838,24 +2838,24 @@ namespace GnollHackX
                     break;
                 case (int)gui_command_types.GUI_CMD_ENABLE_WIZARD_MODE:
                     _gamePage.EnableWizardMode = true;
-                    _gamePage.ExtendedCommands = _gamePage.GnollHackService.GetExtendedCommands();
+                    _gamePage.ExtendedCommands = GHApp.GnollHackService.GetExtendedCommands();
                     break;
                 case (int)gui_command_types.GUI_CMD_DISABLE_WIZARD_MODE:
                     if(_gamePage.EnableWizardMode)
                     {
                         _gamePage.EnableWizardMode = false;
-                        _gamePage.ExtendedCommands = _gamePage.GnollHackService.GetExtendedCommands();
+                        _gamePage.ExtendedCommands = GHApp.GnollHackService.GetExtendedCommands();
                     }
                     break;
                 case (int)gui_command_types.GUI_CMD_ENABLE_CASUAL_MODE:
                     _gamePage.EnableCasualMode = true;
-                    _gamePage.ExtendedCommands = _gamePage.GnollHackService.GetExtendedCommands();
+                    _gamePage.ExtendedCommands = GHApp.GnollHackService.GetExtendedCommands();
                     break;
                 case (int)gui_command_types.GUI_CMD_DISABLE_CASUAL_MODE:
                     if (_gamePage.EnableCasualMode)
                     {
                         _gamePage.EnableCasualMode = false;
-                        _gamePage.ExtendedCommands = _gamePage.GnollHackService.GetExtendedCommands();
+                        _gamePage.ExtendedCommands = GHApp.GnollHackService.GetExtendedCommands();
                     }
                     break;
                 case (int)gui_command_types.GUI_CMD_ENABLE_TOURNAMENT_MODE:
