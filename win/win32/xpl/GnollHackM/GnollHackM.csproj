@@ -28,7 +28,7 @@
 		<ApplicationDisplayVersion>2.68</ApplicationDisplayVersion>
 		<ApplicationVersion>294</ApplicationVersion>
 
-		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">14.0</SupportedOSPlatformVersion>
+    <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">14.0</SupportedOSPlatformVersion>
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst'">13.1</SupportedOSPlatformVersion>
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">26.0</SupportedOSPlatformVersion>
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</SupportedOSPlatformVersion>
@@ -67,10 +67,11 @@
 	</PropertyGroup>
 
 	<PropertyGroup Condition="$(TargetFramework.Contains('-ios'))">
-		<MtouchInterpreter>-all</MtouchInterpreter>
-		<RuntimeIdentifier>ios-arm64</RuntimeIdentifier>
-		<DefineConstants>$(DefineConstants);UNITY_IPHONE</DefineConstants>
-	</PropertyGroup>
+    <MtouchInterpreter>-all</MtouchInterpreter>
+    <RuntimeIdentifier>ios-arm64</RuntimeIdentifier>
+    <DefineConstants>$(DefineConstants);UNITY_IPHONE</DefineConstants>
+    <ProvisioningType>manual</ProvisioningType>
+  </PropertyGroup>
 
 	<!--<ItemGroup Condition=" '$(IncludeWindowsSDKRefFrameworkReferences)' == 'True'">
     <FrameworkReference Include="Microsoft.Windows.SDK.NET.Ref" IsImplicitlyDefined="true" Pack="false" PrivateAssets="All" />
@@ -87,23 +88,21 @@
 
 	<!-- CONFIGURATION + FRAMEWORK SPECIFIC PROPERTIES -->
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)'=='Debug|net9.0-ios'">
-		<ProvisioningType>manual</ProvisioningType>
 		<CodesignKey>Apple Development: Janne Gustafsson (3JF32923Y3)</CodesignKey>
 		<CodesignProvision>Apple Dev GnollHack Development July 2025</CodesignProvision>
 		<MtouchLink>None</MtouchLink>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)'=='Release|net9.0-ios'">
-		<ProvisioningType>manual</ProvisioningType>
-		<CodesignKey>Apple Distribution: Hyvan mielen pelit ry (CUG8RS847T)</CodesignKey>
-		<CodesignProvision>Apple Dev GnollHack Distribution July 2025</CodesignProvision>
-		<!--<CodesignKey>Apple Development: Janne Gustafsson (3JF32923Y3)</CodesignKey>
-		<CodesignProvision>Apple Dev GnollHack Development July 2025</CodesignProvision>-->
-		<!--<MtouchUseLlvm>false</MtouchUseLlvm>-->
+    <CodesignKey Condition="'$(ArchiveOnBuild)' == 'True'">Apple Distribution: Hyvan mielen pelit ry (CUG8RS847T)</CodesignKey>
+		<CodesignProvision Condition="'$(ArchiveOnBuild)' == 'True'">Apple Dev GnollHack Distribution July 2025</CodesignProvision>
+    <CodesignKey Condition="'$(ArchiveOnBuild)' != 'True'">Apple Development: Janne Gustafsson (3JF32923Y3)</CodesignKey>
+    <CodesignProvision Condition="'$(ArchiveOnBuild)' != 'True'">Apple Dev GnollHack Development July 2025</CodesignProvision>
+    <!--<MtouchUseLlvm>false</MtouchUseLlvm>-->
 		<MtouchLink>SdkOnly</MtouchLink>
-	</PropertyGroup>
+  </PropertyGroup>
 
-	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)'=='Debug|net9.0-android'">
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)'=='Debug|net9.0-android'">
 		<EmbedAssembliesIntoApk>true</EmbedAssembliesIntoApk>
 		<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
 		<PublishTrimmed>False</PublishTrimmed>
