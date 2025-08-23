@@ -3106,6 +3106,7 @@ E void FDECL(print_character_description, (char*, SHORT_P, SHORT_P, SHORT_P, BOO
 E void FDECL(print_location_description, (char*, const char*, const char*, int, SCHAR_P, const char*));
 E void FDECL(print_mode_duration_description, (char*, SCHAR_P, int64_t, BOOLEAN_P, BOOLEAN_P, BOOLEAN_P, BOOLEAN_P, BOOLEAN_P, BOOLEAN_P, const char*));
 E void FDECL(print_timestamp_description, (char*, const char*, time_t, const char*));
+E void NDECL(reset_restore);
 
 /* ### rip.c ### */
 

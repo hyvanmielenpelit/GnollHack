@@ -4129,6 +4129,7 @@ reset_remaining_static_variables(VOID_ARGS)
     reset_polyself();
     reset_potion();
     reset_read();
+    reset_restore();
     reset_throw();
     reset_traps();
     reset_save();

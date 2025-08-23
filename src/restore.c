@@ -30,7 +30,7 @@ STATIC_DCL void FDECL(restlevchn, (int));
 STATIC_DCL void FDECL(restdamage, (int, BOOLEAN_P));
 STATIC_DCL void FDECL(restobj, (int, struct obj *));
 STATIC_DCL struct obj *FDECL(restobjchn, (int, BOOLEAN_P, BOOLEAN_P));
-STATIC_OVL void FDECL(restmon, (int, struct monst *));
+STATIC_DCL void FDECL(restmon, (int, struct monst *));
 STATIC_DCL struct monst *FDECL(restmonchn, (int, BOOLEAN_P));
 STATIC_DCL struct fruit *FDECL(loadfruitchn, (int));
 STATIC_DCL void FDECL(freefruitchn, (struct fruit *));
@@ -38,7 +38,7 @@ STATIC_DCL void FDECL(ghostfruit, (struct obj *));
 STATIC_DCL boolean FDECL(restgamestate, (int, unsigned int *, unsigned int *));
 STATIC_DCL void FDECL(restlevelstate, (unsigned int, unsigned int));
 STATIC_DCL int FDECL(restlevelfile, (int, XCHAR_P));
-STATIC_OVL void FDECL(restore_msghistory, (int));
+STATIC_DCL void FDECL(restore_msghistory, (int));
 STATIC_DCL void FDECL(reset_oattached_mids, (BOOLEAN_P));
 STATIC_DCL void FDECL(rest_levl, (int, BOOLEAN_P));
 STATIC_DCL void FDECL(restore_gamelog, (int));
@@ -2595,6 +2595,22 @@ register size_t len;
             return;
         }
     }
+}
+
+void
+reset_restore(VOID_ARGS)
+{
+    clear_id_mapping();
+    freefruitchn(oldfruit), oldfruit = 0;
+    omoves = 0;
+
+#ifdef ZEROCOMP
+    *inbuf = 0;
+    inbufp = 0;
+    inbufsz = 0;
+    inrunlength = -1;
+    mreadfd = 0;
+#endif
 }
 
 /*restore.c*/
