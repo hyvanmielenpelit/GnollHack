@@ -1097,8 +1097,8 @@
 	<ItemGroup>
 		<PackageReference Include="Azure.Identity" Version="1.14.2" />
 		<PackageReference Include="Azure.Storage.Blobs" Version="12.25.0" />
-		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="9.0.7" />
-		<PackageReference Include="System.Text.Json" Version="9.0.7" />
+		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="9.0.8" />
+		<PackageReference Include="System.Text.Json" Version="9.0.8" />
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
 
 		<PackageReference Include="SkiaSharp" Version="3.116.1" />
