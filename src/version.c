@@ -366,7 +366,7 @@ int fd;
     bufoff(fd);
     /* bwrite() before bufon() uses plain write() */
     bwrite(fd, (genericptr_t) &version_data, sizeof version_data);
-    Sprintf(priority_debug_buf_4, "store_savefileinfo (fd=%d)", fd);
+    Sprintf(priority_debug_buf_4, "store_version (fd=%d)", fd);
     bufon(fd);
     return;
 }
