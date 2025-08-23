@@ -957,6 +957,7 @@ xchar ltmp;
         nh_terminate(EXIT_SUCCESS);
     }
 #endif /* MFLOPPY */
+    Sprintf(priority_debug_buf_4, "restlevelfile (fd=%d)", nfd);
     bufon(nfd);
     savelev(nfd, ltmp, WRITE_SAVE | FREE_SAVE);
     bclose(nfd);

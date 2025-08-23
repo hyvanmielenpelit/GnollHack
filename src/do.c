@@ -7092,6 +7092,7 @@ save_currentstate()
         fd = currentlevel_rewrite();
         if (fd < 0)
             return;
+        Sprintf(priority_debug_buf_4, "save_currentstate (fd=%d)", fd);
         bufon(fd);
         savelev(fd, ledger_no(&u.uz), WRITE_SAVE);
         bclose(fd);
@@ -7314,6 +7315,7 @@ xchar portal; /* 1 = Magic portal, 2 = Modron portal down (find portal up), 3 = 
     if (!cant_go_back) 
     {
         update_mlstmv(); /* current monsters are becoming inactive */
+        Sprintf(priority_debug_buf_4, "goto_level (fd=%d)", fd);
         bufon(fd);       /* use buffered output */
     }
 

@@ -865,7 +865,7 @@ int fd;
 #ifdef UNIX
     if (bw_fd != fd) {
         if (bw_fd >= 0)
-            panic("double buffering unexpected");
+            panic("double buffering unexpected: bw_fd=%d, fd=%d", bw_fd, fd);
         bw_fd = fd;
         if ((bw_FILE = fdopen(fd, "w")) == 0)
             panic("buffering of file %d failed", fd);
@@ -1480,6 +1480,7 @@ int fd;
     /* bwrite() before bufon() uses plain write() */
     bwrite(fd, (genericptr_t) &plsiztmp, sizeof(plsiztmp));
     bwrite(fd, (genericptr_t) plname, plsiztmp);
+    Sprintf(priority_debug_buf_4, "store_plname_in_file (fd=%d)", fd);
     bufon(fd);
     return;
 }
@@ -1527,6 +1528,7 @@ int64_t time_stamp;
     bufoff(fd);
     /* bwrite() before bufon() uses plain write() */
     bwrite(fd, (genericptr_t)&gamestats, sizeof gamestats);
+    Sprintf(priority_debug_buf_4, "store_save_game_stats_in_file (fd=%d)", fd);
     bufon(fd);
     return;
 }
@@ -1583,6 +1585,7 @@ int fd;
     bufoff(fd);
     /* bwrite() before bufon() uses plain write() */
     bwrite(fd, (genericptr_t) &sfsaveinfo, sizeof sfsaveinfo);
+    Sprintf(priority_debug_buf_4, "store_savefileinfo (fd=%d)", fd);
     bufon(fd);
     return;
 }
