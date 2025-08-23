@@ -1050,6 +1050,7 @@ register int fd;
 #ifdef INSURANCE
     savestateinlock();
 #endif
+    Sprintf(priority_debug_buf_3, "dorestore0A (fd=%d, ltmp=%d)", fd, (int)ledger_no(&u.uz));
     rtmp = restlevelfile(fd, ledger_no(&u.uz));
     if (rtmp < 2)
         return rtmp; /* dorestore called recursively */
@@ -1105,6 +1106,7 @@ register int fd;
         }
         mark_synch();
 #endif
+        Sprintf(priority_debug_buf_3, "dorestore0B (fd=%d, ltmp=%d)", fd, (int)ltmp);
         rtmp = restlevelfile(fd, ltmp);
         if (rtmp < 2)
             return rtmp; /* dorestore called recursively */
