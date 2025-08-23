@@ -34,8 +34,8 @@ STATIC_DCL void FDECL(savemon, (int, struct monst *));
 STATIC_DCL void FDECL(savemonchn, (int, struct monst *, int));
 STATIC_DCL void FDECL(savetrapchn, (int, struct trap *, int));
 STATIC_DCL void FDECL(savegamestate, (int, int, int64_t));
-STATIC_OVL void FDECL(save_msghistory, (int, int));
-STATIC_OVL void FDECL(save_gamelog, (int, int));
+STATIC_DCL void FDECL(save_msghistory, (int, int));
+STATIC_DCL void FDECL(save_gamelog, (int, int));
 #ifdef MFLOPPY
 STATIC_DCL void FDECL(savelev0, (int, XCHAR_P, int));
 STATIC_DCL boolean NDECL(swapout_oldest);
@@ -552,12 +552,13 @@ char *whynot;
     return FALSE;
 }
 
+STATIC_VAR boolean havestate = TRUE;
+
 #ifdef INSURANCE
 void
 savestateinlock()
 {
     int fd, hpid;
-    static boolean havestate = TRUE;
     char whynot[BUFSZ];
 
     /* When checkpointing is on, the full state needs to be written
@@ -1759,6 +1760,37 @@ freedynamicdata(VOID_ARGS)
 
     free_dynamic_data_C();
     return;
+}
+
+void
+reset_save(VOID_ARGS)
+{
+    havestate = TRUE;
+
+    bw_fd = -1;
+    bw_FILE = 0;
+    buffering = FALSE;
+
+    ustuck_id = 0;
+    usteed_id = 0;
+
+#ifdef MFLOPPY
+    bytes_counted = 0;
+    count_only = 0;
+#endif
+
+#ifdef MICRO
+    dotcnt = 0;
+    dotrow = 0; /* also used in restore */
+#endif
+
+#ifdef ZEROCOMP
+    *outbuf = 0;
+    outbufp = 0;
+    outrunlength = -1;
+    bwritefd = 0;
+    compressing = FALSE;
+#endif
 }
 
 #ifdef MFLOPPY

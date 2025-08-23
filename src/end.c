@@ -4131,6 +4131,7 @@ reset_remaining_static_variables(VOID_ARGS)
     reset_read();
     reset_throw();
     reset_traps();
+    reset_save();
     reset_shk();
     reset_spells();
     reset_splev();
