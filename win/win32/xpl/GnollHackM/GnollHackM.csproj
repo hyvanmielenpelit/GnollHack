@@ -1116,19 +1116,19 @@
 		<!--<PackageReference Include="Microsoft.Maui.Controls" Version="$(MauiVersion)" />
 		<PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="$(MauiVersion)" />-->
 
-		<PackageReference Include="Microsoft.Maui.Controls" Version="9.0.50" Condition="'$(TargetFramework)'!='net9.0-windows10.0.19041.0'" />
-		<PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="9.0.50" Condition="'$(TargetFramework)'!='net9.0-windows10.0.19041.0'" />
+		<!--<PackageReference Include="Microsoft.Maui.Controls" Version="9.0.100" Condition="'$(TargetFramework)'!='net9.0-windows10.0.19041.0'" />
+		<PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="9.0.100" Condition="'$(TargetFramework)'!='net9.0-windows10.0.19041.0'" />
 
-		<PackageReference Include="Microsoft.Maui.Controls" Version="9.0.50" Condition="'$(TargetFramework)'=='net9.0-windows10.0.19041.0'" />
-		<PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="9.0.50" Condition="'$(TargetFramework)'=='net9.0-windows10.0.19041.0'" />
+		<PackageReference Include="Microsoft.Maui.Controls" Version="9.0.100" Condition="'$(TargetFramework)'=='net9.0-windows10.0.19041.0'" />
+		<PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="9.0.100" Condition="'$(TargetFramework)'=='net9.0-windows10.0.19041.0'" />-->
 
-		<!--<PackageReference Include="Microsoft.Maui.Controls" Version="9.0.50" />
-    <PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="9.0.50" />-->
+		<PackageReference Include="Microsoft.Maui.Controls" Version="9.0.100" />
+    <PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="9.0.100" />
 
     <!--<PackageReference Include="Microsoft.WindowsAppSDK" Version="[1.6.241114003]" Condition="'$(TargetFramework)'!='net9.0-windows10.0.19041.0' or '$(WindowsPackageType)'!='MSIX'" />-->
 
 		<!-- Platform-specific packages -->
-		<PackageReference Include="System.Management" Version="9.0.7" Condition="'$(TargetFramework)'=='net9.0-windows10.0.19041.0'" />
+		<PackageReference Include="System.Management" Version="9.0.8" Condition="'$(TargetFramework)'=='net9.0-windows10.0.19041.0'" />
 		<PackageReference Include="Xamarin.Google.Android.Play.Core" Version="1.10.3.18" Condition="'$(TargetFramework)'=='net9.0-android'" />
 
 	</ItemGroup>
