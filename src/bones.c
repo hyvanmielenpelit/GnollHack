@@ -763,15 +763,26 @@ getbones(VOID_ARGS)
     if (fd < 0)
         return 0;
 
-    if (validate(fd, bones) != 0) {
+    if (validate(fd, bones) != 0) 
+    {
         if (!wizard)
-            pline("Discarding unuseable bones; no need to panic...");
+        {
+#ifdef GNH_MOBILE
+            issue_debuglog(0, "Discarding unuseable bones; no need to panic...");
+#else
+            pline1("Discarding unuseable bones; no need to panic...");
+#endif
+        }
         ok = FALSE;
         (void)nhclose(fd);
-    } else {
+    } 
+    else 
+    {
         ok = TRUE;
-        if (wizard) {
-            if (yn_query("Get bones?") == 'n') {
+        if (wizard) 
+        {
+            if (yn_query("Get bones?") == 'n') 
+            {
                 (void) nhclose(fd);
                 compress_bonesfile();
                 return 0;
@@ -791,18 +802,22 @@ getbones(VOID_ARGS)
                (we don't try to make this conditional upon the value of
                VERSION_COMPATIBILITY because then we'd need patchlevel.h) */
             && (strlen(bonesid) <= 2
-                || strcmp(bonesid + 2, oldbonesid) != 0)) {
+                || strcmp(bonesid + 2, oldbonesid) != 0)) 
+        {
             char errbuf[BUFSZ];
 
             Sprintf(errbuf, "This is bones level '%s', not '%s'!", oldbonesid,
                     bonesid);
-            if (wizard) {
+            if (wizard) 
+            {
                 pline1(errbuf);
                 ok = FALSE; /* won't die of trickery */
             }
             (void)nhclose(fd);
             trickery(errbuf);
-        } else {
+        }
+        else 
+        {
             register struct monst *mtmp;
 
             getlev(fd, 0, 0, TRUE);
@@ -814,18 +829,22 @@ getbones(VOID_ARGS)
              * subject to genocide, their mhpmax will be
              * set to the magic DEFUNCT_MONSTER cookie value.
              */
-            for (mtmp = fmon; mtmp; mtmp = mtmp->nmon) {
+            for (mtmp = fmon; mtmp; mtmp = mtmp->nmon) 
+            {
                 if (has_mname(mtmp))
                     sanitize_name(MNAME(mtmp));
                 if (has_umname(mtmp))
                     sanitize_name(UMNAME(mtmp));
-                if (mtmp->mbasehpmax == DEFUNCT_MONSTER) {
-                    if (wizard) {
+                if (mtmp->mbasehpmax == DEFUNCT_MONSTER) 
+                {
+                    if (wizard) 
+                    {
                         debugpline1("Removing defunct monster %s from bones.",
                                     mon_monster_name(mtmp));
                     }
                     mongone(mtmp);
-                } else
+                } 
+                else
                     /* to correctly reset named artifacts on the level */
                     resetobjs(mtmp->minvent, TRUE);
             }
@@ -837,13 +856,16 @@ getbones(VOID_ARGS)
     sanitize_engravings();
     u.uroleplay.numbones++;
 
-    if (wizard) {
-        if (yn_query("Unlink bones?") == 'n') {
+    if (wizard) 
+    {
+        if (yn_query("Unlink bones?") == 'n') 
+        {
             compress_bonesfile();
             return ok;
         }
     }
-    if (!delete_bonesfile(&u.uz)) {
+    if (!delete_bonesfile(&u.uz)) 
+    {
         /* When N games try to simultaneously restore the same
          * bones file, N-1 of them will fail to delete it
          * (the first N-1 under AmigaDOS, the last N-1 under UNIX).
