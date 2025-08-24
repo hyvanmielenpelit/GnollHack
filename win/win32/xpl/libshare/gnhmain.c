@@ -135,7 +135,7 @@ char** argv;
     }
     notify_gui_pregame();
     moveloop(resuming);
-    gnollhack_exit(EXIT_SUCCESS);
+    nh_terminate(EXIT_SUCCESS);
     return (0);
 }
 
