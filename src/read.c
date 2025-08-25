@@ -2148,14 +2148,29 @@ struct monst* targetmonst;
             update_inventory();
             break;
         }
-        if (uarmc && uarmc->otyp == CLOAK_OF_INTEGRITY)
+        if (Armor_destruction_resistance)
         {
-            Sprintf(effbuf, "%s the destructive energies of the scroll.", Yobjnam2(uarmc, "absorb"));
-            pline_ex1_popup(ATR_NONE, CLR_MSG_POSITIVE, effbuf, "Cloak of Integrity", is_serviced_spell);
-            makeknown(uarmc->otyp);
-            known = TRUE;
-            otmp = uarmc;
-            goto enchantarmor;
+            struct obj* protitem = what_gives(ARMOR_DESTRUCTION_RESISTANCE, FALSE);
+            if (protitem)
+            {
+                Sprintf(effbuf, "%s the destructive energies of the scroll.", Yobjnam2(protitem, "absorb"));
+                pline_ex1_popup(ATR_NONE, CLR_MSG_SUCCESS, effbuf, "Destructive Energies Absorbed", is_serviced_spell);
+                makeknown(protitem->otyp);
+                known = TRUE;
+                if (is_armor(protitem) && is_obj_enchantable(protitem))
+                {
+                    otmp = protitem;
+                    goto enchantarmor;
+                }
+                else
+                    break;
+            }
+            else
+            {
+                Strcpy(effbuf, "A mysterious force absorbs the destructive energies of the scroll.");
+                pline_ex1_popup(ATR_NONE, CLR_MSG_SUCCESS, effbuf, "Armor Destruction Prevented", is_serviced_spell);
+                break;
+            }
         }
         else
         {

@@ -304,6 +304,10 @@ reset_global_variables(VOID_ARGS)
     (void)get_colorless_multicolor_buffer();
     reset_item_global_variables();
 
+    /* Reset these here once more in the case nh_terminate wasn't called properly when exiting the game previously */
+    reset_save();
+    reset_restore();
+
     /* This needs to be setup already here early due to tiledata processing */
     int i;
     for (i = 0; i < NUM_OBJECTS; i++)

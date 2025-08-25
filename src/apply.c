@@ -4075,11 +4075,19 @@ struct obj* obj;
                     break;
                 }
 
-                if (uarmc && uarmc->otyp == CLOAK_OF_INTEGRITY)
+                if (Armor_destruction_resistance)
                 {
+                    struct obj* protitem = what_gives(ARMOR_DESTRUCTION_RESISTANCE, FALSE);
                     wandknown = TRUE;
-                    pline_ex(ATR_NONE, CLR_MSG_POSITIVE, "%s the destructive energies of %s.", Yobjnam2(uarmc, "absorb"), the(xname(obj)));
-                    makeknown(uarmc->otyp);
+                    if (protitem)
+                    {
+                        pline_ex(ATR_NONE, CLR_MSG_SUCCESS, "%s the destructive energies of %s.", Yobjnam2(protitem, "absorb"), the(xname(obj)));
+                        makeknown(protitem->otyp);
+                    }
+                    else
+                    {
+                        pline_ex(ATR_NONE, CLR_MSG_SUCCESS, "A mysterious force absorbs the destructive energies of %s!", the(xname(obj)));
+                    }
                     break;
                 }
 

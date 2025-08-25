@@ -170,6 +170,10 @@
 #define EInvulnerable u.uprops[INVULNERABLE].extrinsic
 #define Invulnerable (HInvulnerable || EInvulnerable)
 
+#define HArmor_destruction_resistance u.uprops[ARMOR_DESTRUCTION_RESISTANCE].intrinsic
+#define EArmor_destruction_resistance u.uprops[ARMOR_DESTRUCTION_RESISTANCE].extrinsic
+#define Armor_destruction_resistance (HArmor_destruction_resistance || EArmor_destruction_resistance)
+
 
 /*** Troubles ***/
 /* Pseudo-property */

@@ -4668,6 +4668,8 @@ int final;
         enl_msg(You_, "resist", "resisted", " hallucinations", from_what(HALLUC_RES));
     if (Wounding_resistance)
         enl_msg(You_, "resist", "resisted", " wounding", from_what(WOUNDING_RESISTANCE));
+    if (Armor_destruction_resistance)
+        you_are("shielded from armor destruction", from_what(ARMOR_DESTRUCTION_RESISTANCE));
     if (u.uedibility || maybe_polyd(is_gnoll(youmonst.data), Race_if(PM_GNOLL)))
         you_can("recognize detrimental food", "");
 

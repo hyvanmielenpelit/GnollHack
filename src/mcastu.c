@@ -641,17 +641,27 @@ int spellnum;
         damage = 0;
         break;
     case MGC_DESTRY_ARMR:
-        if (Antimagic_or_resistance) {
+        if (Antimagic_or_resistance) 
+        {
             play_sfx_sound(SFX_GENERAL_RESISTS);
             u_shieldeff();
             pline_ex(ATR_NONE, CLR_MSG_SPELL, "A field of force surrounds you!");
         }
-        else if (uarmc && uarmc->otyp == CLOAK_OF_INTEGRITY) {
+        else if (Armor_destruction_resistance) 
+        {
             play_sfx_sound(SFX_GENERAL_RESISTS);
             u_shieldeff();
-            pline_ex(ATR_NONE, CLR_MSG_SUCCESS, "Your cloak neutralizes the destructive energies of the spell!");
-            makeknown(uarmc->otyp);
-        } else if (!destroy_arm(some_armor(&youmonst))) {
+            struct obj* protitem = what_gives(ARMOR_DESTRUCTION_RESISTANCE, FALSE);
+            if (protitem)
+            {
+                pline_ex(ATR_NONE, CLR_MSG_SUCCESS, "%s the destructive energies of the spell!", Yobjnam2(protitem, "neutralize"));
+                makeknown(protitem->otyp);
+            }
+            else
+                pline_ex1(ATR_NONE, CLR_MSG_SUCCESS, "A mysterious force neutralizes the destructive energies of the spell!");
+        }
+        else if (!destroy_arm(some_armor(&youmonst))) 
+        {
             play_sfx_sound(SFX_HANDS_ITCH);
             Your_ex(ATR_NONE, CLR_MSG_ATTENTION, "skin itches.");
         }
