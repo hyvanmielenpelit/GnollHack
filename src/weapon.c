@@ -2713,7 +2713,7 @@ int skill_id;
             {
                 int successbonus = spell_skill_base_success_bonus(lvl);
                 double levelsuccessbonus = spell_skill_ulevel_success_bonus_per_level(lvl);
-                int costdiscount = (int)((spell_skill_mana_cost_multiplier(lvl) - 1.0) * 100.0);
+                int costdiscount = (int)(spell_skill_mana_cost_multiplier(lvl) * 100) - 100;
                 int savingthrowmodifier = get_spell_skill_level_saving_throw_adjustment(lvl);
                 Sprintf(succbuf, "%s%d%%", successbonus >= 0 ? "+" : "", successbonus);
                 Sprintf(lvlsuccbuf, "%s%.2f%%", levelsuccessbonus >= 0 ? "+" : "", levelsuccessbonus);
@@ -3430,7 +3430,7 @@ enhance_weapon_skill()
                     else if (i >= P_FIRST_SPELL && i <= P_LAST_SPELL)
                     {
                         int successbonus = spell_skill_base_success_bonus(P_SKILL_LEVEL(i));
-                        int costdiscount = (int)((spell_skill_mana_cost_multiplier(P_SKILL_LEVEL(i)) - 1.0) * 100.0);
+                        int costdiscount = (int)(spell_skill_mana_cost_multiplier(P_SKILL_LEVEL(i)) * 100) - 100;
                         char sbuf[BUFSZ] = "";
                         char cbuf[BUFSZ] = "";
                         Sprintf(sbuf, "%s%d%%", successbonus >= 0 ? "+" : "", successbonus);
@@ -3440,7 +3440,7 @@ enhance_weapon_skill()
                         {
                             int nextlevel = min(P_MAX_SKILL_LEVEL(i), P_SKILL_LEVEL(i) + 1);
                             int successbonus2 = spell_skill_base_success_bonus(nextlevel);
-                            int costdiscount2 = (int)((spell_skill_mana_cost_multiplier(nextlevel) - 1.0) * 100.0);
+                            int costdiscount2 = (int)(spell_skill_mana_cost_multiplier(nextlevel) * 100) - 100;
                             char sbuf2[BUFSZ] = "";
                             char cbuf2[BUFSZ] = "";
                             Sprintf(sbuf2, "%s%d%%", successbonus2 >= 0 ? "+" : "", successbonus2);
