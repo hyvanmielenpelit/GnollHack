@@ -687,7 +687,7 @@ select_rwraith()
     for (i = 1; i <= 3; i++)
     {
         /* Difficulty level is one level higher than normal */
-        get_generated_monster_minmax_levels(i, &minlevel, &maxlevel, 1);
+        get_generated_monster_minmax_levels(i, &minlevel, &maxlevel, 1, MONRNDTYPE_HOSTILE);
 
         wraithlordok = maxlevel >= mons[PM_WRAITHLORD].difficulty && !(mvitals[PM_WRAITHLORD].mvflags & MV_GONE);
         kingwraithok = maxlevel >= mons[PM_KING_WRAITH].difficulty && !(mvitals[PM_KING_WRAITH].mvflags & MV_GONE);

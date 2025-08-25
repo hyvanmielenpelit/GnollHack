@@ -552,8 +552,9 @@ clonewiz()
 
 /* also used by newcham() */
 int
-pick_nasty(summoner_level)
+pick_nasty(summoner_level, rnd_type)
 int summoner_level;
+int rnd_type;
 {
     int res = NON_PM;
     int roguetrycnt = 0;
@@ -567,7 +568,7 @@ int summoner_level;
 
         if(res == NON_PM)
         {
-            struct permonst* pm = rndmonst();
+            struct permonst* pm = rndmonst_core(0, rnd_type);
             if(pm)
                 res = monsndx(pm);
         }
@@ -649,7 +650,7 @@ struct monst *summoner;
         {
             do
             {
-                makeindex = pick_nasty((summoner && summoner != &youmonst) ? summoner->data->difficulty : u.ulevel);
+                makeindex = pick_nasty((summoner && summoner != &youmonst) ? summoner->data->difficulty : u.ulevel, get_rnd_type_for_mon(summoner));
                 m_cls = mons[makeindex].mlet;
             } while (summoner
                         && ((attacktype(&mons[makeindex], AT_MAGC)

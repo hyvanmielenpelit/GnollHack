@@ -650,7 +650,7 @@ int psflags;
         do
         {
             /* randomly pick an "ordinary" monster */
-            pm = rndmonst();
+            pm = rndmonst_core(0, MONRNDTYPE_TAME);
             if (pm)
                 mntmp = monsndx(pm);
             else if (tryct < 100)

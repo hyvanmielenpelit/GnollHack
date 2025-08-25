@@ -2806,7 +2806,7 @@ aligntyp alignment;
 
         do
         {
-            if (!(ptr = rndmonst_limited(level_limit))) 
+            if (!(ptr = rndmonst_core(level_limit, MONRNDTYPE_NORMAL)))
             {
                 debugpline0("Warning: no monster.");
                 return (struct monst *) 0; /* no more monsters! */
@@ -3465,13 +3465,22 @@ STATIC_VAR NEARDATA struct {
 struct permonst*
 rndmonst()
 {
-    return rndmonst_limited(0);
+    return rndmonst_core(0, MONRNDTYPE_NORMAL);
 }
 
 /* select a random monster type */
 struct permonst*
-rndmonst_limited(level_limit)
+rndmonst_for_polymon(mon)
+struct monst* mon;
+{
+    return rndmonst_core(0, get_rnd_type_for_mon(mon));
+}
+
+/* select a random monster type */
+struct permonst*
+rndmonst_core(level_limit, rnd_type)
 int level_limit;
+int rnd_type; /* 0 = normal; 1 = pet or self polymorph (positive luck increases the chance of a higher level outcome); 2 = hostile polymorph (negative luck increases the chance of a higher level outcome) */
 {
     register struct permonst *ptr;
     register int mndx, ct;
@@ -3523,7 +3532,7 @@ int level_limit;
             } /* else `mndx' now ready for use below */
             /* determine the level of the weakest monster to make. */
             /* determine the level of the strongest monster to make. */
-            get_generated_monster_minmax_levels(i, &minmlev, &maxmlev, 0);
+            get_generated_monster_minmax_levels(i, &minmlev, &maxmlev, 0, rnd_type);
 
             if (level_limit > 0)
             {
@@ -3592,11 +3601,12 @@ int level_limit;
 
 
 void
-get_generated_monster_minmax_levels(attempt, minlvl, maxlvl, difficulty_level_adjustment)
+get_generated_monster_minmax_levels(attempt, minlvl, maxlvl, difficulty_level_adjustment, rnd_type)
 int attempt;
 int* minlvl;
 int* maxlvl;
 int difficulty_level_adjustment;
+int rnd_type; /* 0 = normal, 1 = self or tame polymorph, 2 = hostile polymorph */
 {
     /* Initial adjustment */
     double max_multiplier = 0.50;
@@ -3674,6 +3684,11 @@ int difficulty_level_adjustment;
         minmlev = 0;
         maxmlev = (int)max(1.0, (zlevel_formax + (double)u.ulevel) * 1.414 * max_multiplier + 0.5);
     }
+
+    if (rnd_type == MONRNDTYPE_TAME && Luck > 0)
+        maxmlev = (int)((double)maxmlev * (1.0 + 0.1 * Luck));
+    else if (rnd_type == MONRNDTYPE_HOSTILE && Luck < 0)
+        maxmlev = (int)((double)maxmlev * (1.0 + 0.1 * -Luck));
 
     *minlvl = minmlev;
     *maxlvl = maxmlev;
@@ -3795,7 +3810,7 @@ uint64_t mflags;
 
     for(int i = 1; i <= 3; i++)
     {
-        get_generated_monster_minmax_levels(i, &minmlev, &maxmlev, difficulty_adj);
+        get_generated_monster_minmax_levels(i, &minmlev, &maxmlev, difficulty_adj, MONRNDTYPE_NORMAL);
     
         /*  Assumption #1:  monsters of a given class are contiguous in the
          *                  mons[] array.  Player monsters and quest denizens

@@ -521,7 +521,7 @@ make_bones:
     unleash_all();
     /* in case these characters are not in their home bases */
     int minmlev = 0, maxmlev = 0;
-    get_generated_monster_minmax_levels(0, &minmlev, &maxmlev, 0);
+    get_generated_monster_minmax_levels(0, &minmlev, &maxmlev, 0, MONRNDTYPE_NORMAL);
     for (mtmp = fmon; mtmp; mtmp = mtmp->nmon) {
         if (DEADMONSTER(mtmp))
             continue;

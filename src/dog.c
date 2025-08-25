@@ -138,7 +138,7 @@ boolean quietly;
         }
         else 
         {
-            pm = rndmonst();
+            pm = rndmonst_core(0, MONRNDTYPE_TAME);
             if (!pm)
             {
                 if (!quietly)

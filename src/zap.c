@@ -5440,7 +5440,7 @@ register struct obj *obj;
 
         for (int n = d(1, 2); n > 0; n--)
         {
-            monstid = pick_nasty(u.ulevel);
+            monstid = pick_nasty(u.ulevel, MONRNDTYPE_TAME);
             mtmp = summoncreature(obj->otyp, monstid, "", MM_SUMMON_NASTY_ANIMATION, 
                 SUMMONCREATURE_FLAGS_CAPITALIZE | SUMMONCREATURE_FLAGS_MARK_AS_SUMMONED | SUMMONCREATURE_FLAGS_DISREGARDS_STRENGTH | SUMMONCREATURE_FLAGS_BLOODLUST);
             if (mtmp)

@@ -404,6 +404,13 @@ extern short tile2enlargement[MAX_TILES];
 
 #define GOODPOS_IGNOREYOU               0x80000000UL
 
+#define MONRNDTYPE_NORMAL  0
+#define MONRNDTYPE_TAME    1
+#define MONRNDTYPE_HOSTILE 2
+
+#define get_rnd_type_for_mon(m) (!m ? MONRNDTYPE_NORMAL : m == &youmonst || is_tame(m) ? MONRNDTYPE_TAME : !is_peaceful(m) ? MONRNDTYPE_HOSTILE : MONRNDTYPE_NORMAL)
+
+
 /* flags for make_corpse() and mkcorpstat() */
 #define CORPSTAT_NONE 0x00
 #define CORPSTAT_INIT 0x01   /* pass init flag to mkcorpstat */

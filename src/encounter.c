@@ -1267,7 +1267,7 @@ int x, y;
     {
         totalselectedprob = 0;
 
-        get_generated_monster_minmax_levels(i, &minmlev, &maxmlev, 0);
+        get_generated_monster_minmax_levels(i, &minmlev, &maxmlev, 0, MONRNDTYPE_NORMAL);
 
         int j;
         for (j = 0; j < MAX_ENCOUNTERS && encounter_list[j].probability > 0; j++)
@@ -1342,7 +1342,7 @@ int selected_encounter, x, y, max_attk_monsters;
 {
     /* Check minimum level for encounter monsters */
     int minlevel, maxlevel;
-    get_generated_monster_minmax_levels(2, &minlevel, &maxlevel, 1);
+    get_generated_monster_minmax_levels(2, &minlevel, &maxlevel, 1, MONRNDTYPE_NORMAL);
 
     /* Calculate experience first */
     int64_t encounter_experience = 1 + encounter_list[selected_encounter].difficulty_point_estimate[max_attk_monsters] * encounter_list[selected_encounter].difficulty_point_estimate[max_attk_monsters];

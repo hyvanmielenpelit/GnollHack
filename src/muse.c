@@ -2588,7 +2588,7 @@ struct monst *mon;
         else if (is_dragon_mail(m_armr))
             return Dragon_mail_to_pm(m_armr);
     }
-    return rndmonst();
+    return rndmonst_for_polymon(mon);
 }
 
 int
