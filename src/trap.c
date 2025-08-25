@@ -4745,7 +4745,7 @@ boolean force;
                     acid_ctx.unk_boom++;
             }
             setnotworn(obj);
-            Sprintf(priority_debug_buf_3, "water_damage: %d", obj->otyp);
+            Sprintf(priority_debug_buf_3, "water_damage: %d, %u", obj->otyp, obj->o_id);
             delobj(obj);
             if (update)
                 update_inventory();

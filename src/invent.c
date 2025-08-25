@@ -2140,11 +2140,11 @@ uint64_t newsym_flags;
         return;
     }
     update_map = (obj->where == OBJ_FLOOR);
-    Strcpy(debug_buf_2, "delobj_with_flags");
+    Sprintf(debug_buf_2, "delobj_with_flags: %d, %u", obj->otyp, obj->o_id);
     obj_extract_self(obj);
     if (update_map)
         newsym_with_flags(obj->ox, obj->oy, newsym_flags);
-    Sprintf(priority_debug_buf_4, "delobj_with_flags: %d", obj->otyp);
+    Sprintf(priority_debug_buf_4, "delobj_with_flags: %d, %u", obj->otyp, obj->o_id);
     obfree(obj, (struct obj *) 0); /* frees contents also */
 }
 

@@ -4159,7 +4159,7 @@ void
 obj_extract_self(obj)
 struct obj *obj;
 {
-    Sprintf(debug_buf_3, "obj_extract_self: otyp=%d, where=%d", obj->otyp, obj->where);
+    Sprintf(debug_buf_3, "obj_extract_self: otyp=%d, where=%d, oid=%u", obj->otyp, obj->where, obj->o_id);
     *debug_buf_4 = 0;
     switch (obj->where) {
     case OBJ_FREE:
@@ -4195,7 +4195,7 @@ struct obj *obj;
         extract_nobj(obj, &magic_objs);
         break;
     default:
-        panic("obj_extract_self: otyp=%d, where=%d", obj->otyp, obj->where);
+        panic("obj_extract_self: otyp=%d, where=%d, oid=%u", obj->otyp, obj->where, obj->o_id);
         break;
     }
 }
@@ -4219,7 +4219,7 @@ struct obj *obj, **head_ptr;
     }
     if (!curr)
     {
-        panic("extract_nobj: object lost, otyp=%d, where=%d, buf1=%s, buf2=%s, buf3=%s, buf4=%s", !obj ? -1 : obj->otyp, !obj ? -1 : obj->where, debug_buf_1, debug_buf_2, debug_buf_3, debug_buf_4);
+        panic("extract_nobj: object lost, otyp=%d, where=%d, oid=%u, buf1=%s, buf2=%s, buf3=%s, buf4=%s", !obj ? -1 : obj->otyp, !obj ? -1 : obj->where, !obj ? 0 : obj->o_id, debug_buf_1, debug_buf_2, debug_buf_3, debug_buf_4);
         return;
     }
     obj->where = OBJ_FREE;
