@@ -650,7 +650,7 @@ struct monst *summoner;
         {
             do
             {
-                makeindex = pick_nasty((summoner && summoner != &youmonst) ? summoner->data->difficulty : u.ulevel, get_rnd_type_for_mon(summoner));
+                makeindex = pick_nasty((summoner && summoner != &youmonst) ? summoner->data->difficulty : u.ulevel, mon_rndtype(summoner));
                 m_cls = mons[makeindex].mlet;
             } while (summoner
                         && ((attacktype(&mons[makeindex], AT_MAGC)

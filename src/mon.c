@@ -5317,7 +5317,7 @@ struct monst *mon;
     switch (mon->cham) {
     case PM_SANDESTIN:
         if (rn2(7))
-            mndx = pick_nasty(mon->data->difficulty, get_rnd_type_for_mon(mon));
+            mndx = pick_nasty(mon->data->difficulty, mon_rndtype(mon));
         break;
     case PM_DOPPELGANGER:
         /*
@@ -5459,7 +5459,7 @@ struct monst *mon;
     boolean try_highest_level_first = FALSE;
     boolean allow_diff_below_mons = FALSE;
     int minmlev = 0, maxmlev = 0;
-    get_generated_monster_minmax_levels(3, &minmlev, &maxmlev, 0, get_rnd_type_for_mon(mon));
+    get_generated_monster_minmax_levels(3, &minmlev, &maxmlev, 0, mon_rndtype(mon));
 
 #define mon_poly_ok(idx, maxlvl) (mndx == NON_PM && idx >= LOW_PM && polyok(&mons[idx]) && !(mvitals[idx].mvflags & MV_GONE) && mons[idx].difficulty <= maxlvl && mons[idx].difficulty > mon->data->difficulty)
     /* Polymorph control */
@@ -5694,7 +5694,7 @@ struct monst *mon;
 
             if (mndx == NON_PM)
             {
-                testidx = pick_nasty(mon->data->difficulty, get_rnd_type_for_mon(mon));
+                testidx = pick_nasty(mon->data->difficulty, mon_rndtype(mon));
                 if (mon_poly_ok(testidx, maxmlev))
                     mndx = testidx;
             }

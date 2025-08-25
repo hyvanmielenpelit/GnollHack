@@ -3473,7 +3473,7 @@ struct permonst*
 rndmonst_for_polymon(mon)
 struct monst* mon;
 {
-    return rndmonst_core(0, get_rnd_type_for_mon(mon));
+    return rndmonst_core(0, mon_rndtype(mon));
 }
 
 /* select a random monster type */

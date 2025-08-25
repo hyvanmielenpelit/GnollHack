@@ -408,7 +408,7 @@ extern short tile2enlargement[MAX_TILES];
 #define MONRNDTYPE_TAME    1
 #define MONRNDTYPE_HOSTILE 2
 
-#define get_rnd_type_for_mon(m) (!m ? MONRNDTYPE_NORMAL : m == &youmonst || is_tame(m) ? MONRNDTYPE_TAME : !is_peaceful(m) ? MONRNDTYPE_HOSTILE : MONRNDTYPE_NORMAL)
+#define mon_rndtype(m) (!(m) ? MONRNDTYPE_NORMAL : (m) == &youmonst || is_tame(m) ? MONRNDTYPE_TAME : !is_peaceful(m) ? MONRNDTYPE_HOSTILE : MONRNDTYPE_NORMAL)
 
 
 /* flags for make_corpse() and mkcorpstat() */
