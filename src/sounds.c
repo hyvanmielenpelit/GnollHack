@@ -7704,7 +7704,7 @@ struct monst* mtmp;
         play_monster_special_dialogue_line(mtmp, abs(Luck) >= 10 ? PRIEST_SPECIAL_DIALOGUE_EXTREMELY_LUCKY_NUMBER : abs(Luck) >= 5 ? PRIEST_SPECIAL_DIALOGUE_VERY_LUCKY_NUMBER : PRIEST_SPECIAL_DIALOGUE_LUCKY_NUMBER);
 
         Sprintf(talkbuf, "For your fortune, I see a number%s. That is good, for it is %s lucky number.%s",
-            buf1, abs(Luck) >= 10 ? "an extremely" : abs(Luck) >= 5 ? "a very" : "an", buf2);
+            buf1, abs(Luck) >= 10 ? "an extremely" : abs(Luck) >= 5 ? "a very" : "a", buf2);
         popup_talk_line(mtmp, talkbuf);
     }
     else
