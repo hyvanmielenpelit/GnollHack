@@ -234,6 +234,29 @@ namespace GnollHackX
 #endif
         }
 
+        public static void LogMemory(string tag = "")
+        {
+            if (LowLevelLogging)
+            {
+                try
+                {
+                    var process = Process.GetCurrentProcess();
+                    var managed = GC.GetTotalMemory(false);
+                    if (process != null)
+                    {
+                        MaybeWriteLowLevelGHLog(tag);
+                        MaybeWriteLowLevelGHLog($"Work: {process.WorkingSet64 / (1024 * 1024)} MB, " +
+                                          $"Private: {process.PrivateMemorySize64 / (1024 * 1024)} MB, " +
+                                          $"Managed: {managed / (1024 * 1024)} MB");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine(ex.Message);
+                }
+            }
+        }
+
         public static void SetWindowFocus()
         {
 #if WINDOWS
