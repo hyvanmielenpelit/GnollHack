@@ -2240,17 +2240,22 @@ register struct monst *mtmp;
     notseen = m_cannotsenseu(mtmp);
 
     /* add cases as required.  eg. Displacement ... */
-    if (notseen || Underwater) {
+    if (notseen || Underwater) 
+    {
         /* Xorns can smell quantities of valuable metal
             like that in solid gold coins, treat as seen */
         if ((mtmp->data == &mons[PM_XORN]) && umoney && !Underwater)
             disp = 0;
         else
             disp = 1;
-    } else if (Displaced) {
+    } 
+    else if (Displaced) 
+    {
         disp = couldsee(mx, my) ? 2 : 1;
-    } else
+    } 
+    else
         disp = 0;
+
     if (!disp)
         goto found_you;
 
@@ -2258,22 +2263,27 @@ register struct monst *mtmp;
        are too powerful */
     gotu = notseen ? !rn2(3) : Displaced ? !rn2(4) : FALSE;
 
-    if (!gotu) {
+    if (!gotu) 
+    {
         register int try_cnt = 0;
 
-        do {
+        do 
+        {
             if (++try_cnt > 200)
                 goto found_you; /* punt */
             mx = u.ux - disp + rn2(2 * disp + 1);
             my = u.uy - disp + rn2(2 * disp + 1);
-        } while (!isok(mx, my)
+        }
+        while (!isok(mx, my)
                  || (disp != 2 && mx == mtmp->mx && my == mtmp->my)
                  || ((mx != u.ux || my != u.uy) && !passes_walls(mtmp->data)
                      && !(accessible(mx, my)
                           || (closed_door(mx, my)
                               && (can_ooze(mtmp) || can_fog(mtmp)))))
                  || !couldsee(mx, my));
-    } else {
+    }
+    else 
+    {
  found_you:
         mx = u.ux;
         my = u.uy;
