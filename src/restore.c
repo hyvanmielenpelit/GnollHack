@@ -182,7 +182,7 @@ boolean quietly;
             {
                 otmp->in_use = 0; /* Likely memory corruption; prevent destruction of any critical items */
                 char dbuf[BUFSZ * 2];
-                Sprintf(dbuf, "Mysterious force prevents finishing off %s...", xname(otmp));
+                Sprintf(dbuf, "A mysterious force prevents finishing off %s...", the(xname(otmp)));
                 if (!quietly)
                     impossible("%s", dbuf);
                 issue_debuglog_priority(0, dbuf);
