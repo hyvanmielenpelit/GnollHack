@@ -62,21 +62,7 @@ namespace GnollHackX.Pages.MainScreen
                 manufacturer = manufacturer.Substring(0, 1).ToUpper() + manufacturer.Substring(1);
 
             ulong TotalMemInBytes = GHApp.PlatformService.GetDeviceMemoryInBytes();
-            var process = Process.GetCurrentProcess();
-            long UsedMemInBytes = -1;
-            try
-            {
-                UsedMemInBytes = process?.WorkingSet64 ?? -1;
-            } 
-            catch { }
-            if (UsedMemInBytes == -1)
-            {
-                try
-                {
-                    UsedMemInBytes = process?.PrivateMemorySize64 ?? -1;
-                }
-                catch { }
-            }
+            long UsedMemInBytes = GHApp.GetUsedMemoryInBytes();
             long UsedMemInMB = UsedMemInBytes == -1 ? -1 : UsedMemInBytes / (1024 * 1024);
             ulong TotalMemInMB = (TotalMemInBytes / 1024) / 1024;
             ulong FreeDiskSpaceInBytes = GHApp.PlatformService.GetDeviceFreeDiskSpaceInBytes();
