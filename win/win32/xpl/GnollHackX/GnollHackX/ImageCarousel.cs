@@ -74,6 +74,22 @@ namespace GnollHackX
             _inited = true; 
         }
 
+        public void ShutDown()
+        {
+            if (_inited)
+            {
+                for (int i = 0; i < _caruselBitmaps.Length; i++)
+                {
+                    if (_caruselBitmaps[i].Bitmap != null)
+                    {
+                        _caruselBitmaps[i].Bitmap.Dispose();
+                        _caruselBitmaps[i].Bitmap = null;
+                    }
+                }
+                _inited = false;
+            }
+        }
+
         public readonly long _refreshFrequency = (long)UIUtils.GetGeneralAnimationFrequency();
         public const long _slideDurationInMilliseconds = 15000;
         public const long _transitionDurationInMilliseconds = 3000;

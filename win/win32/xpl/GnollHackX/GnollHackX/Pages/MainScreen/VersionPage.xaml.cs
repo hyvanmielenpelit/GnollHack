@@ -62,6 +62,9 @@ namespace GnollHackX.Pages.MainScreen
                 manufacturer = manufacturer.Substring(0, 1).ToUpper() + manufacturer.Substring(1);
 
             ulong TotalMemInBytes = GHApp.PlatformService.GetDeviceMemoryInBytes();
+            var process = Process.GetCurrentProcess();
+            long UsedMemInBytes = process?.WorkingSet64 ?? -1;
+            long UsedMemInMB = UsedMemInBytes == -1 ? -1 : UsedMemInBytes / (1024 * 1024);
             ulong TotalMemInMB = (TotalMemInBytes / 1024) / 1024;
             ulong FreeDiskSpaceInBytes = GHApp.PlatformService.GetDeviceFreeDiskSpaceInBytes();
             ulong FreeDiskSpaceInGB = ((FreeDiskSpaceInBytes / 1024) / 1024) / 1024;
@@ -272,7 +275,7 @@ namespace GnollHackX.Pages.MainScreen
             RuntimeVersionLabel.Text = GHApp.RuntimeVersionString;
             PlatformLabel.Text = DeviceInfo.Platform + " " + DeviceInfo.VersionString;
             DeviceLabel.Text = manufacturer + " " + DeviceInfo.Model;
-            TotalMemoryLabel.Text = TotalMemInMB + " MB";
+            TotalMemoryLabel.Text = (UsedMemInMB >= 0 ? (UsedMemInMB+ " MB / ") : "") +  TotalMemInMB + " MB";
             DiskSpaceLabel.Text = FreeDiskSpaceInGB + " GB" + " / " + TotalDiskSpaceInGB + " GB";
             TotalPlayTimeLabel.Text = TotalPlayHours + " h " + TotalPlayMinutes + " min " + TotalPlaySeconds + " s";
             CurrentPlayTimeLabel.Text = CurrentPlayHours + " h " + CurrentPlayMinutes + " min " + CurrentPlaySeconds + " s";

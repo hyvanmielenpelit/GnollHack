@@ -1695,8 +1695,27 @@ namespace GnollHackX.Pages.Game
         {
             MainThread.BeginInvokeOnMainThread(() =>
             {
-                if (Interlocked.Increment(ref _updateTimerTickCount) == long.MaxValue)
+                long incrementedValue = Interlocked.Increment(ref _updateTimerTickCount);
+                if (incrementedValue == long.MaxValue)
                     Interlocked.Exchange(ref _updateTimerTickCount, 0);
+
+                if (incrementedValue % 10 == 0 && GHApp.LowLevelLogging)
+                {
+                    try
+                    {
+                        var process = Process.GetCurrentProcess();
+                        var managed = GC.GetTotalMemory(false);
+                        if (process != null)
+                            GHApp.MaybeWriteLowLevelGHLog($"Work: {process.WorkingSet64 / (1024 * 1024)} MB, " +
+                                              $"Private: {process.PrivateMemorySize64 / (1024 * 1024)} MB, " +
+                                              $"Managed: {managed / (1024 * 1024)} MB");
+                    }
+                    catch(Exception ex)
+                    {
+                        Debug.WriteLine(ex.Message);
+                    }
+                }
+
                 //lock (_updateTimerTickCountLock)
                 //{
                 //    _updateTimerTickCount++;
