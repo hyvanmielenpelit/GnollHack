@@ -1096,8 +1096,8 @@
 	<ItemGroup>
 		<PackageReference Include="Azure.Identity" Version="1.15.0" />
 		<PackageReference Include="Azure.Storage.Blobs" Version="12.25.0" />
-		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="9.0.8" />
-		<PackageReference Include="System.Text.Json" Version="9.0.8" />
+		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="9.0.7" />
+		<PackageReference Include="System.Text.Json" Version="9.0.7" />
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
 
 		<PackageReference Include="SkiaSharp" Version="3.116.1" />
@@ -1127,7 +1127,7 @@
     <!--<PackageReference Include="Microsoft.WindowsAppSDK" Version="[1.6.241114003]" Condition="'$(TargetFramework)'!='net9.0-windows10.0.19041.0' or '$(WindowsPackageType)'!='MSIX'" />-->
 
 		<!-- Platform-specific packages -->
-		<PackageReference Include="System.Management" Version="9.0.8" Condition="'$(TargetFramework)'=='net9.0-windows10.0.19041.0'" />
+		<PackageReference Include="System.Management" Version="9.0.7" Condition="'$(TargetFramework)'=='net9.0-windows10.0.19041.0'" />
 		<PackageReference Include="Xamarin.Google.Android.Play.Core" Version="1.10.3.19" Condition="'$(TargetFramework)'=='net9.0-android'" />
 
 	</ItemGroup>
