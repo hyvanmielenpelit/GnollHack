@@ -3361,7 +3361,7 @@ E boolean FDECL(block_entry, (XCHAR_P, XCHAR_P));
 E char *FDECL(shk_your, (char *, struct obj *));
 E char *FDECL(Shk_Your, (char *, struct obj *));
 E int64_t FDECL(get_cost, (struct obj*, struct monst*));
-E int FDECL(shk_chastise_pet, (struct monst* mtmp, struct obj*, BOOLEAN_P));
+E int FDECL(shk_chastise_pet, (struct monst* mtmp, struct obj*, BOOLEAN_P, BOOLEAN_P));
 E int64_t FDECL(set_cost, (struct obj*, struct monst*));
 E boolean FDECL(is_obj_on_shk_bill, (struct obj*, struct monst*));
 E void FDECL(add_one_tobill, (struct obj*, BOOLEAN_P, struct monst*));

@@ -5492,8 +5492,7 @@ struct monst* mtmp;
             if (carryamt > 0 && !obj->cursed && !mtmp->issummoned && !mtmp->ispartymember && !m_unpaid_item_no_pickup(mtmp, obj)
                 && could_reach_item(mtmp, obj->ox, obj->oy))
             {
-                shkpreaction = shk_chastise_pet(mtmp, obj, FALSE);
-
+                shkpreaction = shk_chastise_pet(mtmp, obj, FALSE, TRUE);
                 if (!shkpreaction)
                 {
                     struct obj* otmp = obj;
@@ -5581,7 +5580,7 @@ struct monst* mtmp;
 
             /* Give here */
             int carryamt = can_carry_core(mtmp, otmp, TRUE);
-
+            struct monst* shkp;
             if(otmp)
             {
                 if (otmp->owornmask & (W_ARMOR | W_ACCESSORY))
@@ -5595,13 +5594,44 @@ struct monst* mtmp;
                     play_sfx_sound(SFX_GENERAL_CANNOT);
                     Sprintf(pbuf, "%s cannot carry %s.", noittame_Monnam(mtmp), yname(otmp));
                     pline_ex1_popup(ATR_NONE, CLR_MSG_FAIL, pbuf, "Cannot Carry Item", TRUE);
+                    otmp->bypass = 0;
+                    unsplitobj(otmp);
+                }
+                else if ((otmp->cursed && mon_eschews_cursed(mtmp)) || (otmp->blessed && mon_eschews_blessed(mtmp)))
+                {
+                    play_sfx_sound(SFX_GENERAL_CANNOT);
+                    Sprintf(pbuf, "%s refuses to take %s, eschewing %s.", noittame_Monnam(mtmp), yname(otmp), otmp->quan != 1 ? "them" : "it");
+                    pline_ex1_popup(ATR_NONE, CLR_MSG_FAIL, pbuf, "Item Eschewed", TRUE);
+                    unsplitobj(otmp);
+                }
+                else if (otmp->unpaid && has_edog(mtmp) && EDOG(mtmp)->chastised)
+                {
+                    play_sfx_sound(SFX_GENERAL_CANNOT);
+                    Sprintf(pbuf, "%s, %s refuses to take %s.", canseemon(mtmp) ? "Visibly frightened" : "Frightened", noittame_mon_nam(mtmp), yname(otmp));
+                    pline_ex1_popup(ATR_NONE, CLR_MSG_FAIL, pbuf, "Too Fearful To Take", TRUE);
+                    unsplitobj(otmp);
+                }
+                else if (*u.ushops && otmp->unpaid && !costly_spot(mtmp->mx, mtmp->my) && (shkp = shop_keeper(inside_shop(u.ux, u.uy))) != 0)
+                {
+                    play_voice_shopkeeper_simple_line(shkp, otmp->quan > 1 ? SHOPKEEPER_LINE_STAY_AWAY_FROM_THOSE : SHOPKEEPER_LINE_STAY_AWAY_FROM_THAT);
+                    pline("%s shouts:", Monnam(shkp));
+                    verbalize_ex(ATR_NONE, CLR_MSG_TALK_ANGRY, "Stay away from %s!", otmp->quan > 1 ? "those" : "that");
+                    if (iflags.using_gui_sounds)
+                        delay_output_milliseconds(1200);
+                    play_monster_unhappy_sound(mtmp, MONSTER_UNHAPPY_SOUND_WHIMPER);
+                    Sprintf(pbuf, "Frightened, %s backs away from you, refusing to take %s.", noittame_mon_nam(mtmp), yname(otmp));
+                    pline_ex1_popup(ATR_NONE, CLR_MSG_FAIL, pbuf, "Too Frightened To Take", TRUE);
+                    unsplitobj(otmp);
+                    break;
                 }
                 else
                 {
+                    /* Item is now going to the pet if possible */
                     if (release_item_from_hero_inventory(otmp))
                     {
-                        n_given++;
-                        
+                        otmp->bypass = 0;
+
+                        /* Success */
                         if (flags.verbose)
                         {
                             play_simple_object_sound_at_location(otmp, u.ux, u.uy, OBJECT_SOUND_TYPE_GIVE);
@@ -5612,39 +5642,43 @@ struct monst* mtmp;
                         boolean abort_pickup = FALSE;
                         if (*u.ushops && otmp->unpaid)
                         {
-                            check_shop_obj(otmp, mtmp->mx, mtmp->my, FALSE, FALSE);
+                            /* If inside shop, the shopkeeper may chastise the pet */
                             if (costly_spot(mtmp->mx, mtmp->my))
                             {
-                                struct monst* shkp = shop_keeper(inside_shop(mtmp->mx, mtmp->my));
-                                if (shkp)
+                                boolean chastise_res = shk_chastise_pet(mtmp, otmp, FALSE, TRUE);
+                                n_given++;
+                                if (otmp->oclass != COIN_CLASS)
+                                    otmp->item_flags |= ITEM_FLAGS_GIVEN_BY_HERO;
+                                if (chastise_res)
+                                    otmp->nomerge = 1;
+                                if (mpickobj(mtmp, otmp))
+                                    otmp = 0;
+                                if (chastise_res && otmp)
                                 {
-                                    otmp->bypass = 0;
-                                    play_voice_shopkeeper_simple_line(shkp, SHOPKEEPER_LINE_DROP_THAT_NOW);
-                                    pline("%s shouts:", Monnam(shkp));
-                                    verbalize_ex(ATR_NONE, CLR_MSG_TALK_NORMAL, "Drop that, now!");
-                                    if (iflags.using_gui_sounds)
-                                        delay_output_milliseconds(1200);
-                                    play_monster_unhappy_sound(mtmp, MONSTER_UNHAPPY_SOUND_WHIMPER);
-                                    if (iflags.using_gui_sounds)
-                                        delay_output_milliseconds(200);
-                                    play_object_floor_sound(otmp, OBJECT_SOUND_TYPE_DROP, FALSE);
-                                    pline("%s drops %s.", Monnam(mtmp), the(cxname(otmp)));
-                                    place_object(otmp, mtmp->mx, mtmp->my);
+                                    otmp->nomerge = 0;
+                                    /* If so, drop the object and abort the rest of the pickup */
+                                    obj_extract_self(otmp);
+                                    mdrop_obj(mtmp, otmp, FALSE, TRUE);
                                     abort_pickup = TRUE;
                                 }
                             }
+                            else
+                            {
+                                /* Perhaps stolen */
+                                check_shop_obj(otmp, mtmp->mx, mtmp->my, FALSE, FALSE);
+                            }
                         }
-                        if (abort_pickup)
-                            break;
                         else
                         {
+                            n_given++;
                             if (otmp->oclass != COIN_CLASS)
                                 otmp->item_flags |= ITEM_FLAGS_GIVEN_BY_HERO;
-                            if(mpickobj(mtmp, otmp))
+                            if (mpickobj(mtmp, otmp))
                                 otmp = 0;
-                            else
-                                otmp->bypass = 0;
                         }
+
+                        if (abort_pickup)
+                            break;
                     }
                 }
             }

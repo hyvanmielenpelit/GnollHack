@@ -5542,10 +5542,10 @@ boolean altusage; /* used as a verbalized exclamation:  \"Cad! ...\" */
 
 /* returns 2 if chastised, 1 if shkp is present and 0 otherwise */
 int
-shk_chastise_pet(mtmp, obj, eating)
+shk_chastise_pet(mtmp, obj, eating, ugivingitems)
 struct monst* mtmp;
 struct obj* obj;
-boolean eating;
+boolean eating, ugivingitems;
 {
     if (!mtmp || !has_edog(mtmp) || !obj)
         return 0;
@@ -5561,6 +5561,9 @@ boolean eating;
         char shopkeeper_name[BUFSZ] = "";
         if (shkp)
         {
+            if (m_cannotsense_m(shkp, mtmp) && (ugivingitems ? m_cannotsenseu(shkp) && costly_spot(mtmp->mx, mtmp->my) : TRUE)) /* Pet does not get chastised if the shopkeeper can't detect it; if you are giving items, the shopkeeper must not see you, and the pet needs to be on a costly spot (not outside of store etc.) */
+                return 0;
+
             Strcpy(shopkeeper_name, shkname(shkp));
             if (!edog->chastised)
             {
@@ -5586,7 +5589,14 @@ boolean eating;
                         if (iflags.using_gui_sounds)
                             delay_output_milliseconds(1200);
                         play_monster_unhappy_sound(mtmp, MONSTER_UNHAPPY_SOUND_WHIMPER);
-                        pline("%s backs away from %s.", Monnam(mtmp), the(cxname(obj)));
+                        if (ugivingitems)
+                        {
+                            char pbuf[BUFSZ];
+                            Sprintf(pbuf, "%s backs away from %s.", Monnam(mtmp), the(cxname(obj)));
+                            pline_ex1_popup(ATR_NONE, CLR_MSG_FAIL, pbuf, "Too Fearful To Eat", TRUE);
+                        }
+                        else
+                            pline("%s backs away from %s.", Monnam(mtmp), the(cxname(obj)));
                     }
                     else
                     {
@@ -5598,7 +5608,14 @@ boolean eating;
                         if (iflags.using_gui_sounds)
                             delay_output_milliseconds(200);
                         play_object_floor_sound(obj, OBJECT_SOUND_TYPE_DROP, FALSE);
-                        pline("%s drops %s.", Monnam(mtmp), the(cxname(obj)));
+                        if (ugivingitems)
+                        {
+                            char pbuf[BUFSZ];
+                            Sprintf(pbuf, "%s drops %s.", Monnam(mtmp), the(cxname(obj)));
+                            pline_ex1_popup(ATR_NONE, CLR_MSG_FAIL, pbuf, "Too Fearful To Keep", TRUE);
+                        }
+                        else
+                            pline("%s drops %s.", Monnam(mtmp), the(cxname(obj)));
                     }
                     chastised = TRUE;
                 }

@@ -1305,7 +1305,7 @@ int udist;
                  /* starving pet is more aggressive about eating */
                  || (edog->mhpmax_penalty && edible == ACCFOOD))
                 && could_reach_item(mtmp, obj->ox, obj->oy) && !onnopickup(obj->ox, obj->oy, mtmp) && !is_obj_no_pickup(obj) && !m_unpaid_item_no_pickup(mtmp, obj)
-                && dog_wants_to_eat(mtmp) && !shk_chastise_pet(mtmp, obj, TRUE)
+                && dog_wants_to_eat(mtmp) && !shk_chastise_pet(mtmp, obj, TRUE, FALSE)
                 )
                 return dog_eat(mtmp, obj, omx, omy, FALSE);
 
@@ -1318,9 +1318,7 @@ int udist;
                 {
                     if (rn2(udist) || !rn2(edog->apport)) 
                     {
-                        int shkpreaction = FALSE;
-                        shkpreaction = shk_chastise_pet(mtmp, obj, FALSE);
-
+                        int shkpreaction = shk_chastise_pet(mtmp, obj, FALSE, FALSE);
                         if(!shkpreaction)
                         {
                             otmp = obj;
@@ -2336,7 +2334,7 @@ newdogpos:
              * move before moving it, but it can't eat until after being
              * moved.  Thus the do_eat flag.
              */
-            if (do_eat && !onnopickup(obj->ox, obj->oy, mtmp) && !is_obj_no_pickup(obj) && !m_unpaid_item_no_pickup(mtmp, obj) && dog_wants_to_eat(mtmp) && !shk_chastise_pet(mtmp, obj, TRUE))
+            if (do_eat && !onnopickup(obj->ox, obj->oy, mtmp) && !is_obj_no_pickup(obj) && !m_unpaid_item_no_pickup(mtmp, obj) && dog_wants_to_eat(mtmp) && !shk_chastise_pet(mtmp, obj, TRUE, FALSE))
             {
                 if (dog_eat(mtmp, obj, omx, omy, FALSE) == 2)
                     return 2;
