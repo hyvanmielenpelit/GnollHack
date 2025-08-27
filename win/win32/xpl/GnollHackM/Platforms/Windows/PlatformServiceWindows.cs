@@ -139,7 +139,7 @@ namespace GnollHackM
                     GHApp.WindowsApp = null;
                 }
                 Application.Current?.Quit();
-                Environment.Exit(0);
+                //Environment.Exit(0);
             });
         }
 
