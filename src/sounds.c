@@ -5597,13 +5597,14 @@ struct monst* mtmp;
                     otmp->bypass = 0;
                     unsplitobj(otmp);
                 }
-                else if ((otmp->cursed && mon_eschews_cursed(mtmp)) || (otmp->blessed && mon_eschews_blessed(mtmp)))
-                {
-                    play_sfx_sound(SFX_GENERAL_CANNOT);
-                    Sprintf(pbuf, "%s refuses to take %s, eschewing %s.", noittame_Monnam(mtmp), yname(otmp), otmp->quan != 1 ? "them" : "it");
-                    pline_ex1_popup(ATR_NONE, CLR_MSG_FAIL, pbuf, "Item Eschewed", TRUE);
-                    unsplitobj(otmp);
-                }
+                /* Removed because could enable too easy BUC identification */
+                //else if ((otmp->cursed && mon_eschews_cursed(mtmp)) || (otmp->blessed && mon_eschews_blessed(mtmp)))
+                //{
+                //    play_sfx_sound(SFX_GENERAL_CANNOT);
+                //    Sprintf(pbuf, "%s refuses to take %s, eschewing %s.", noittame_Monnam(mtmp), yname(otmp), otmp->quan != 1 ? "them" : "it");
+                //    pline_ex1_popup(ATR_NONE, CLR_MSG_FAIL, pbuf, "Item Eschewed", TRUE);
+                //    unsplitobj(otmp);
+                //}
                 else if (otmp->unpaid && has_edog(mtmp) && EDOG(mtmp)->chastised)
                 {
                     play_sfx_sound(SFX_GENERAL_CANNOT);
@@ -5642,10 +5643,15 @@ struct monst* mtmp;
                         boolean abort_pickup = FALSE;
                         if (*u.ushops && otmp->unpaid)
                         {
+                            boolean costly = costly_spot(mtmp->mx, mtmp->my);
+                            boolean chastise_res = costly ? shk_chastise_pet(mtmp, otmp, FALSE, TRUE) : FALSE;
+
+                            /* Perhaps stolen */
+                            check_shop_obj(otmp, mtmp->mx, mtmp->my, FALSE, FALSE);
+                            
                             /* If inside shop, the shopkeeper may chastise the pet */
-                            if (costly_spot(mtmp->mx, mtmp->my))
+                            if (costly)
                             {
-                                boolean chastise_res = shk_chastise_pet(mtmp, otmp, FALSE, TRUE);
                                 n_given++;
                                 if (otmp->oclass != COIN_CLASS)
                                     otmp->item_flags |= ITEM_FLAGS_GIVEN_BY_HERO;
@@ -5662,10 +5668,13 @@ struct monst* mtmp;
                                     abort_pickup = TRUE;
                                 }
                             }
-                            else
+                            else /* Should be prevented by above checks */
                             {
-                                /* Perhaps stolen */
-                                check_shop_obj(otmp, mtmp->mx, mtmp->my, FALSE, FALSE);
+                                n_given++;
+                                if (otmp->oclass != COIN_CLASS)
+                                    otmp->item_flags |= ITEM_FLAGS_GIVEN_BY_HERO;
+                                if (mpickobj(mtmp, otmp))
+                                    otmp = 0;
                             }
                         }
                         else
