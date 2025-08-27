@@ -129,15 +129,18 @@ namespace GnollHackM
 
         public void CloseApplication()
         {
-            RevertAnimatorDuration(true);
-            GHApp.SaveWindowPosition();
-            if (GHApp.WindowsApp != null)
+            MainThread.BeginInvokeOnMainThread(() =>
             {
-                GHApp.WindowsApp?.Exit();
-                GHApp.WindowsApp = null;
-            }
-            Application.Current?.Quit();
-            Environment.Exit(0);
+                RevertAnimatorDuration(true);
+                GHApp.SaveWindowPosition();
+                if (GHApp.WindowsApp != null)
+                {
+                    GHApp.WindowsApp?.Exit();
+                    GHApp.WindowsApp = null;
+                }
+                Application.Current?.Quit();
+                Environment.Exit(0);
+            });
         }
 
         public Task<Stream> GetPlatformAssetsStreamAsync(string directory, string fileName)

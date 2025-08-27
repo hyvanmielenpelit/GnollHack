@@ -106,12 +106,15 @@ namespace GnollHackX.iOS
 
         public void CloseApplication()
         {
-            RevertAnimatorDuration(true);
+            MainThread.BeginInvokeOnMainThread(() =>
+            {
+                RevertAnimatorDuration(true);
 #if GNH_MAUI
-            Environment.Exit(0);
+                Environment.Exit(0);
 #else
-            /* Do nothing; fall back to Xamarin.Forms termination after this call */
+                /* Do nothing; fall back to Xamarin.Forms termination after this call */
 #endif
+            });
         }
 
         public Task<Stream> GetPlatformAssetsStreamAsync(string directory, string fileName)

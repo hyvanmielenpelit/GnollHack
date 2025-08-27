@@ -137,15 +137,18 @@ namespace GnollHackX.Droid
 
         public void CloseApplication()
         {
-            RevertAnimatorDuration(true);
+            MainThread.BeginInvokeOnMainThread(() =>
+            {
+                RevertAnimatorDuration(true);
 #if GNH_MAUI
-            Platform.CurrentActivity.FinishAffinity();
-            Platform.CurrentActivity.Finish();
-            Microsoft.Maui.Controls.Application.Current.Quit();
+                //Platform.CurrentActivity.FinishAffinity();
+                //Platform.CurrentActivity.Finish();
+                Microsoft.Maui.Controls.Application.Current.Quit();
 #else
-            MainActivity.CurrentMainActivity.FinishAffinity();
-            MainActivity.CurrentMainActivity.Finish();
+                MainActivity.CurrentMainActivity.FinishAffinity();
+                MainActivity.CurrentMainActivity.Finish();
 #endif
+            });
         }
 
         public Task<Stream> GetPlatformAssetsStreamAsync(string directory, string fileName)
