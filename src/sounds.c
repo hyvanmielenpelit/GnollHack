@@ -5594,7 +5594,6 @@ struct monst* mtmp;
                     play_sfx_sound(SFX_GENERAL_CANNOT);
                     Sprintf(pbuf, "%s cannot carry %s.", noittame_Monnam(mtmp), yname(otmp));
                     pline_ex1_popup(ATR_NONE, CLR_MSG_FAIL, pbuf, "Cannot Carry Item", TRUE);
-                    otmp->bypass = 0;
                     unsplitobj(otmp);
                 }
                 /* Removed because could enable too easy BUC identification */
