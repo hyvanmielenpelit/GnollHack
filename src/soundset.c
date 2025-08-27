@@ -17626,7 +17626,7 @@ unsigned int play_flags;
     immediateinfo.dialogue_mid = mon->m_id;
     immediateinfo.play_flags = play_flags;
 
-    if (soundid > GHSOUND_NONE && immediateinfo.volume > GENERAL_SOUND_CUTOFF_VOLUME)
+    if (soundid > GHSOUND_NONE && immediateinfo.volume > MONSTER_SOUND_CUTOFF_VOLUME)
         play_immediate_ghsound(immediateinfo);
 
 }
@@ -17698,7 +17698,7 @@ enum object_sound_types sound_type;
     immediateinfo.sound_type = IMMEDIATE_SOUND_SFX;
     immediateinfo.play_group = SOUND_PLAY_GROUP_NORMAL;
 
-    if (soundid > GHSOUND_NONE && immediateinfo.volume > GENERAL_SOUND_CUTOFF_VOLUME)
+    if (soundid > GHSOUND_NONE && immediateinfo.volume > MONSTER_SOUND_CUTOFF_VOLUME)
         play_immediate_ghsound(immediateinfo);
 
 }
@@ -17763,7 +17763,7 @@ enum object_sound_types sound_type;
     immediateinfo.sound_type = IMMEDIATE_SOUND_SFX;
     immediateinfo.play_group = SOUND_PLAY_GROUP_NORMAL;
 
-    if (soundid > GHSOUND_NONE && immediateinfo.volume > GENERAL_SOUND_CUTOFF_VOLUME)
+    if (soundid > GHSOUND_NONE && immediateinfo.volume > MONSTER_SOUND_CUTOFF_VOLUME)
         play_immediate_ghsound(immediateinfo);
 }
 
