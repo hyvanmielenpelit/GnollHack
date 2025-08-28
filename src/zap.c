@@ -12548,23 +12548,23 @@ mon_to_zombie(montype)
 int montype;
 {
     int zombietype = NON_PM;
-    if (montype == PM_HUMAN || mons[montype].mflags2 & M2_HUMAN)
+    if (montype == PM_HUMAN || (mons[montype].mflags2 & M2_HUMAN) != 0)
         zombietype = PM_HUMAN_ZOMBIE;
-    else if (montype == PM_DWARF || mons[montype].mflags2 & M2_DWARF)
+    else if (montype == PM_DWARF || (mons[montype].mflags2 & M2_DWARF) != 0)
         zombietype = PM_DWARF_ZOMBIE;
-    else if (montype == PM_ELF || mons[montype].mflags2 & M2_ELF)
+    else if (montype == PM_ELF || (mons[montype].mflags2 & M2_ELF) != 0)
         zombietype = PM_ELF_ZOMBIE;
-    else if (montype == PM_GNOLL || mons[montype].mflags2 & M2_GNOLL)
+    else if (montype == PM_GNOLL || (mons[montype].mflags2 & M2_GNOLL) != 0)
         zombietype = PM_GNOLL_ZOMBIE;
-    else if (montype == PM_GNOME || mons[montype].mflags2 & M2_GNOME)
+    else if (montype == PM_GNOME || (mons[montype].mflags2 & M2_GNOME) != 0)
         zombietype = PM_GNOME_ZOMBIE;
-    else if (montype == PM_ORC || mons[montype].mflags2 & M2_ORC)
+    else if (montype == PM_ORC || (mons[montype].mflags2 & M2_ORC) != 0)
         zombietype = PM_ORC_ZOMBIE;
     else if (montype == PM_KOBOLD || mons[montype].mlet == S_KOBOLD)
         zombietype = PM_KOBOLD_ZOMBIE;
     else if (montype == PM_ETTIN)
         zombietype = PM_ETTIN_ZOMBIE;
-    else if (montype == PM_GIANT || mons[montype].mflags2 & M2_GIANT)
+    else if (montype == PM_GIANT || (mons[montype].mflags2 & M2_GIANT) != 0)
         zombietype = PM_GIANT_ZOMBIE;
 
     return zombietype;
@@ -12575,23 +12575,23 @@ mon_to_mummy(montype)
 int montype;
 {
     int zombietype = NON_PM;
-    if (montype == PM_HUMAN || mons[montype].mflags2 & M2_HUMAN)
+    if (montype == PM_HUMAN || (mons[montype].mflags2 & M2_HUMAN) != 0)
         zombietype = PM_HUMAN_MUMMY;
-    else if (montype == PM_DWARF || mons[montype].mflags2 & M2_DWARF)
+    else if (montype == PM_DWARF || (mons[montype].mflags2 & M2_DWARF) != 0)
         zombietype = PM_DWARF_MUMMY;
-    else if (montype == PM_ELF || mons[montype].mflags2 & M2_ELF)
+    else if (montype == PM_ELF || (mons[montype].mflags2 & M2_ELF) != 0)
         zombietype = PM_ELF_MUMMY;
-    else if (montype == PM_GNOLL || mons[montype].mflags2 & M2_GNOLL)
+    else if (montype == PM_GNOLL || (mons[montype].mflags2 & M2_GNOLL) != 0)
         zombietype = PM_GNOLL_MUMMY;
-    else if (montype == PM_GNOME || mons[montype].mflags2 & M2_GNOME)
+    else if (montype == PM_GNOME || (mons[montype].mflags2 & M2_GNOME) != 0)
         zombietype = PM_GNOME_MUMMY;
-    else if (montype == PM_ORC || mons[montype].mflags2 & M2_ORC)
+    else if (montype == PM_ORC || (mons[montype].mflags2 & M2_ORC) != 0)
         zombietype = PM_ORC_MUMMY;
     else if (montype == PM_KOBOLD || mons[montype].mlet == S_KOBOLD)
         zombietype = PM_KOBOLD_MUMMY;
     else if (montype == PM_ETTIN)
         zombietype = PM_ETTIN_MUMMY;
-    else if (montype == PM_GIANT || mons[montype].mflags2 & M2_GIANT)
+    else if (montype == PM_GIANT || (mons[montype].mflags2 & M2_GIANT) != 0)
         zombietype = PM_GIANT_MUMMY;
 
     return zombietype;
