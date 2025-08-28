@@ -4439,6 +4439,8 @@ namespace GnollHackX.Pages.Game
             {
                 await GHApp.PopAllModalPagesAsync(!fastForward);
             }
+            if (GHApp.DoAppExitOnReturn)
+                _mainPage.ForceCloseApp();
             await _mainPage.StartGeneralTimerAsync(); /* Just to be doubly sure */
         }
 

@@ -200,6 +200,10 @@ namespace GnollHackX
             InitializePlatformRenderLoop();
         }
 
+        private static int _doAppExitOnReturn = 0;
+        public static bool DoAppExitOnReturn { get { return Interlocked.CompareExchange(ref _doAppExitOnReturn, 0, 0) != 0; } set { Interlocked.Exchange(ref _doAppExitOnReturn, value ? 1 : 0); } }
+
+
 #if ANDROID
         //private static ValueAnimator _platformAnimator = null;
         private static ChoreographerFrameTicker _platformTicker = null;

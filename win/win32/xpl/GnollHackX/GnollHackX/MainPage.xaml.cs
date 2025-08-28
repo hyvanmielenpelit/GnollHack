@@ -1437,6 +1437,15 @@ namespace GnollHackX
             }
         }
 
+        public void ForceCloseApp()
+        {
+            _popupStyle = popup_style.ForceCloseApp;
+            PopupTitleLabel.TextColor = GHColors.Red;
+            PopupTitleLabel.Text = "GnollHack Needs to Close";
+            PopupLabel.Text = "A panic occurred during loading a saved game, and the app state may have become unstable. Restarting GnollHack is required.";
+            PopupGrid.IsVisible = true;
+        }
+
         private async Task CheckPendingTasksAndExit()
         {
             PendingGeneralTimerTasks = CalculatePendingGeneralTimerTasks();
@@ -1649,7 +1658,8 @@ namespace GnollHackX
         private enum popup_style
         {
             GeneralDialog = 0,
-            DisableAutoUpdate
+            DisableAutoUpdate,
+            ForceCloseApp,
         }
 
         private string _popupViewUrl = string.Empty;
@@ -1676,6 +1686,10 @@ namespace GnollHackX
                     await Task.Delay(50);
                 }
 
+                await CheckPendingTasksAndExit();
+            }
+            else if (_popupStyle == popup_style.ForceCloseApp)
+            {
                 await CheckPendingTasksAndExit();
             }
             PopupOkButton.IsEnabled = true;

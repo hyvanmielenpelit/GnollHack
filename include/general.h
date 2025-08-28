@@ -704,6 +704,7 @@ enum gui_command_types {
     GUI_CMD_ORACLE_MAJOR_CONSULTATION,
     GUI_CMD_TOGGLE_AUTODIG,
     GUI_CMD_TOGGLE_IGNORE_STOPPING,
+    GUI_CMD_EXIT_APP_ON_MAIN_SCREEN,
 };
 
 enum game_status_types

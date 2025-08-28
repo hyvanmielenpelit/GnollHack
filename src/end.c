@@ -1906,7 +1906,7 @@ int how;
         break;
     case PANICKED:
         endtext = "Panic!";
-        endinfotext = "The cause has been recorded in the paniclog.";
+        endinfotext = restoring ? "A panic has occurred during restoring a saved game, and the game cannot be loaded. The cause has been recorded in the paniclog." : "The cause has been recorded in the paniclog.";
         screentextstyle = SCREEN_TEXT_SPECIAL_END;
         clr = CLR_RED;
         break;
@@ -2135,7 +2135,7 @@ int how;
             endinfotext ? " " : "", 
             endinfotext ? endinfotext : "", 
             has_existing_save_file ? " " : "", 
-            has_existing_save_file ? "You can load the game from the point at which you last saved the game." : "");
+            has_existing_save_file && !(how == PANICKED && restoring) ? "You can load the game from the point at which you last saved the game." : "");
         display_popup_text(ebuf, "Game Over", POPUP_TEXT_MESSAGE, ATR_NONE, clr, NO_GLYPH, POPUP_FLAGS_NONE);
     }
 
@@ -2785,7 +2785,10 @@ int status;
     //    dlb_cleanup();
     //}
 
-    reset_game();
+    if (program_state.panicking && restoring)
+        issue_simple_gui_command(GUI_CMD_EXIT_APP_ON_MAIN_SCREEN);
+    else
+        reset_game();
 
     /*
      *  This is liable to draw a warning if compiled with gcc, but it's

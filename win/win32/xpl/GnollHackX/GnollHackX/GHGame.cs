@@ -3194,6 +3194,9 @@ namespace GnollHackX
                     if(!PlayingReplay)
                         RequestQueue.Enqueue(new GHRequest(this, GHRequestType.KeyboardFocus));
                     break;
+                case (int)gui_command_types.GUI_CMD_EXIT_APP_ON_MAIN_SCREEN:
+                    GHApp.DoAppExitOnReturn = true;
+                    break;
                 default:
                     break;
             }
