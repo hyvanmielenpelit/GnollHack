@@ -866,10 +866,16 @@ int fd;
 #ifdef UNIX
     if (bw_fd != fd) {
         if (bw_fd >= 0)
+        {
+            program_state.panic_handling = 1;
             panic("double buffering unexpected: bw_fd=%d, fd=%d", bw_fd, fd);
+        }
         bw_fd = fd;
         if ((bw_FILE = fdopen(fd, "w")) == 0)
+        {
+            program_state.panic_handling = 1;
             panic("buffering of file %d failed", fd);
+        }
     }
 #endif
     buffering = TRUE;

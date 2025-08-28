@@ -2785,7 +2785,7 @@ int status;
     //    dlb_cleanup();
     //}
 
-    if (program_state.panicking && restoring)
+    if (program_state.panicking && restoring && !program_state.panic_handling)
         issue_simple_gui_command(GUI_CMD_EXIT_APP_ON_MAIN_SCREEN);
     else
         reset_game();
