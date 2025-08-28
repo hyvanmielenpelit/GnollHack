@@ -1440,6 +1440,7 @@ namespace GnollHackX
         public void ForceCloseApp()
         {
             _popupStyle = popup_style.ForceCloseApp;
+            PopupCheckBoxLayout.IsVisible = false;
             PopupTitleLabel.TextColor = GHColors.Red;
             PopupTitleLabel.Text = "GnollHack Needs to Close";
             PopupLabel.Text = "A panic occurred during loading a saved game, and the app state may have become unstable. Restarting GnollHack is required.";
