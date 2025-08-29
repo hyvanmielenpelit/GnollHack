@@ -1472,6 +1472,7 @@ namespace GnollHackX
         DEBUGLOG_PRIORITY,
         DEBUGLOG_DEBUG_ONLY,
         DEBUGLOG_FILE_DESCRIPTOR,
+        DEBUGLOG_PANIC,
     }
 
     public enum popup_text_types

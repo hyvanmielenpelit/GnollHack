@@ -23,6 +23,9 @@ using static System.Net.Mime.MediaTypeNames;
 using System.Collections;
 using System.Security.Cryptography;
 using SkiaSharp;
+#if SENTRY
+using Sentry.Protocol;
+#endif
 
 namespace GnollHackX
 {
@@ -2928,11 +2931,37 @@ namespace GnollHackX
                     if (cmd_str != null)
                         status_str = cmd_str;
 #if SENTRY
-                    string data_title = cmd_param == (int)diagnostic_data_types.DIAGNOSTIC_DATA_IMPOSSIBLE ? "I - " :
-                        cmd_param == (int)diagnostic_data_types.DIAGNOSTIC_DATA_PANIC ? "P - " :
-                        cmd_param == (int)diagnostic_data_types.DIAGNOSTIC_DATA_CRITICAL ? "C - " :
-                        "D - ";
-                    SentrySdk.CaptureMessage(data_title + status_str);
+                    switch(cmd_param)
+                    {
+                        case (int)diagnostic_data_types.DIAGNOSTIC_DATA_CRITICAL:
+                        default:
+                            string data_title = cmd_param == (int)diagnostic_data_types.DIAGNOSTIC_DATA_CRITICAL ? "C - " : "D - ";
+                            SentrySdk.CaptureMessage(data_title + status_str);
+                            break;
+                        case (int)diagnostic_data_types.DIAGNOSTIC_DATA_IMPOSSIBLE:
+                        case (int)diagnostic_data_types.DIAGNOSTIC_DATA_PANIC:
+                            string[] strs = status_str.Split('|');
+                            if (strs == null || strs.Length == 0)
+                                break;
+                            var sentryEvent = new SentryEvent();
+                            sentryEvent.SentryExceptions = new[]
+                            {
+                                new SentryException
+                                {
+                                    Type = cmd_param == (int)diagnostic_data_types.DIAGNOSTIC_DATA_IMPOSSIBLE ? "Impossible" : "Panic",
+                                    Value = strs[0],
+                                    Mechanism = new Mechanism
+                                    {
+                                        Type = "generic",
+                                        Description = "IssueGuiCommand: GUI_CMD_POST_DIAGNOSTIC_DATA"
+                                    }
+                                }
+                            };
+                            if (strs.Length > 1)
+                                sentryEvent.SetExtra("Debug Buffers", strs[1]);
+                            SentrySdk.CaptureEvent(sentryEvent);
+                            break;
+                    }
 #else
                     if (GHApp.PostingDiagnosticData)
                     {
@@ -3093,6 +3122,31 @@ namespace GnollHackX
                         {
 #if SENTRY
                             SentrySdk.CaptureMessage("Log: " + logged_str);
+#endif
+                        }
+                        else if (cmd_param == (int)debug_log_types.DEBUGLOG_PANIC)
+                        {
+#if SENTRY
+                            string[] strs = logged_str.Split('|');
+                            if (strs == null || strs.Length == 0)
+                                break;
+                            var sentryEvent = new SentryEvent();
+                            sentryEvent.SentryExceptions = new[]
+                            {
+                                new SentryException
+                                {
+                                    Type = "Panic",
+                                    Value = strs[0],
+                                    Mechanism = new Mechanism
+                                    {
+                                        Type = "generic",
+                                        Description = "IssueGuiCommand: DEBUGLOG_PANIC"
+                                    }
+                                }
+                            };
+                            if (strs.Length > 1)
+                                sentryEvent.SetExtra("Debug Buffers", strs[1]);
+                            SentrySdk.CaptureEvent(sentryEvent);
 #endif
                         }
                     }
@@ -3299,12 +3353,29 @@ namespace GnollHackX
                     }
                 case (int)special_view_types.SPECIAL_VIEW_PANIC:
                     {
-                        if(!PlayingReplay)
-                        {
-#if SENTRY
-                            SentrySdk.CaptureMessage("Panic: " + text);
-#endif
-                        }
+                        /* Already logged by IssueGuiCommand: Panic */
+
+//                        if(!PlayingReplay)
+//                        {
+//#if SENTRY
+//                            //SentrySdk.CaptureMessage("Panic: " + text);
+//                            var sentryEvent = new SentryEvent();
+//                            sentryEvent.SentryExceptions = new[]
+//                            {
+//                                new SentryException
+//                                {
+//                                    Type = "Panic",
+//                                    Value = text,
+//                                    Mechanism = new Mechanism
+//                                    {
+//                                        Type = "generic",
+//                                        Description = "OpenSpecialView: SPECIAL_VIEW_PANIC"
+//                                    }
+//                                }
+//                            };
+//                            SentrySdk.CaptureEvent(sentryEvent);
+//#endif
+//                        }
 
                         _panicFinished = false;
                         RequestQueue.Enqueue(new GHRequest(this, GHRequestType.Panic, text));

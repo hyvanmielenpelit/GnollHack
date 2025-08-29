@@ -786,8 +786,8 @@ VA_DECL(const char *, str)
         if (issue_gui_command)
         {
             char dbufs[BUFSZ * 18];
-            Sprintf(dbufs, "panic: %s, P1:%s, P2:%s, P3:%s, P4:%s, B1:%s, B2:%s, B3:%s, B4:%s", buf, priority_debug_buf_1, priority_debug_buf_2, priority_debug_buf_3, priority_debug_buf_4, debug_buf_1, debug_buf_2, debug_buf_3, debug_buf_4);
-            issue_debuglog_priority(0, dbufs);
+            Sprintf(dbufs, "%s|P1:%s, P2:%s, P3:%s, P4:%s, B1:%s, B2:%s, B3:%s, B4:%s", buf, priority_debug_buf_1, priority_debug_buf_2, priority_debug_buf_3, priority_debug_buf_4, debug_buf_1, debug_buf_2, debug_buf_3, debug_buf_4);
+            issue_debuglog_panic(0, dbufs);
         }
 
         if (open_special_view)
