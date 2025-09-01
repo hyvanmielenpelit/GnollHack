@@ -2148,9 +2148,9 @@ struct monst* targetmonst;
             update_inventory();
             break;
         }
-        if (Armor_destruction_resistance)
+        if (Protection_from_armor_destruction)
         {
-            struct obj* protitem = what_gives(ARMOR_DESTRUCTION_RESISTANCE, FALSE);
+            struct obj* protitem = what_gives(PROTECTION_FROM_ARMOR_DESTRUCTION, FALSE);
             if (protitem)
             {
                 Sprintf(effbuf, "%s the destructive energies of the scroll.", Yobjnam2(protitem, "absorb"));

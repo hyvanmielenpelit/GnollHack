@@ -647,11 +647,11 @@ int spellnum;
             u_shieldeff();
             pline_ex(ATR_NONE, CLR_MSG_SPELL, "A field of force surrounds you!");
         }
-        else if (Armor_destruction_resistance) 
+        else if (Protection_from_armor_destruction) 
         {
             play_sfx_sound(SFX_GENERAL_RESISTS);
             u_shieldeff();
-            struct obj* protitem = what_gives(ARMOR_DESTRUCTION_RESISTANCE, FALSE);
+            struct obj* protitem = what_gives(PROTECTION_FROM_ARMOR_DESTRUCTION, FALSE);
             if (protitem)
             {
                 pline_ex(ATR_NONE, CLR_MSG_SUCCESS, "%s the destructive energies of the spell!", Yobjnam2(protitem, "neutralize"));

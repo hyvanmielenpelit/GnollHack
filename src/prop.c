@@ -188,7 +188,7 @@ const struct propname propertynames[] = {
     { MARTIAL_PROWESS, "imbued with martial prowess", "martial prowess" },
     { POLYMORPH_RESISTANCE, "resistant to polymorph", "polymorph resistance" },
     { EXTENDED_XRAY_VISION, "having extended X-ray vision", "extended X-ray vision" },
-    { ARMOR_DESTRUCTION_RESISTANCE, "shielded from armor destruction", "armor destruction resistance" },
+    { PROTECTION_FROM_ARMOR_DESTRUCTION, "protected from armor destruction", "protection from armor destruction" },
     {  0, 0, 0 },
 };
 
@@ -366,7 +366,7 @@ NEARDATA struct prop_info property_definitions[MAX_PROPS] =
     { "martial-prowess",              0, 0, 0,  0, 0,  PCLR_WHITE, PCLR_NONE, PROPFLAGS_NONE },  /* MARTIAL_PROWESS = 169 */
     { "polymorph-resistance",         0, 0, 0,  0, 0,  PCLR_WHITE, PCLR_NONE, PROPFLAGS_NONE },  /* POLYMORPH_RESISTANCE = 170 */
     { "extended-xray-vision",         0, 0, 0,  0, 0,  PCLR_WHITE, PCLR_NONE, PROPFLAGS_NONE },  /* EXTENDED_XRAY_VISION */
-    { "armor-destruction-resistance", 0, 0, 0,  0, 0,  PCLR_WHITE, PCLR_NONE, PROPFLAGS_NONE },  /* ARMOR_DESTRUCTION_RESISTANCE */
+    { "protection-from-armor-destruction", 0, 0, 0,  0, 0,  PCLR_WHITE, PCLR_NONE, PROPFLAGS_NONE },  /* PROTECTION_FROM_ARMOR_DESTRUCTION */
     { "reserved-prop-4",              0, 0, 0,  0, 0,  PCLR_WHITE, PCLR_NONE, PROPFLAGS_NONE },  /* RESERVED_PROP_X */
     { "reserved-prop-5",              0, 0, 0,  0, 0,  PCLR_WHITE, PCLR_NONE, PROPFLAGS_NONE },  /* RESERVED_PROP_X */
     { "reserved-prop-6",              0, 0, 0,  0, 0,  PCLR_WHITE, PCLR_NONE, PROPFLAGS_NONE },  /* RESERVED_PROP_X */

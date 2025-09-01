@@ -170,9 +170,9 @@
 #define EInvulnerable u.uprops[INVULNERABLE].extrinsic
 #define Invulnerable (HInvulnerable || EInvulnerable)
 
-#define HArmor_destruction_resistance u.uprops[ARMOR_DESTRUCTION_RESISTANCE].intrinsic
-#define EArmor_destruction_resistance u.uprops[ARMOR_DESTRUCTION_RESISTANCE].extrinsic
-#define Armor_destruction_resistance (HArmor_destruction_resistance || EArmor_destruction_resistance)
+#define HProtection_from_armor_destruction u.uprops[PROTECTION_FROM_ARMOR_DESTRUCTION].intrinsic
+#define EProtection_from_armor_destruction u.uprops[PROTECTION_FROM_ARMOR_DESTRUCTION].extrinsic
+#define Protection_from_armor_destruction (HProtection_from_armor_destruction || EProtection_from_armor_destruction)
 
 
 /*** Troubles ***/

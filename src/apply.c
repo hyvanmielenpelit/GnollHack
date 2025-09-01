@@ -4075,9 +4075,9 @@ struct obj* obj;
                     break;
                 }
 
-                if (Armor_destruction_resistance)
+                if (Protection_from_armor_destruction)
                 {
-                    struct obj* protitem = what_gives(ARMOR_DESTRUCTION_RESISTANCE, FALSE);
+                    struct obj* protitem = what_gives(PROTECTION_FROM_ARMOR_DESTRUCTION, FALSE);
                     wandknown = TRUE;
                     if (protitem)
                     {
