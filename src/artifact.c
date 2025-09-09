@@ -3891,6 +3891,10 @@ boolean loseit;    /* whether to drop it if hero can longer touch it */
     
     struct obj *obj = *objp;
 
+    /* allow hero in silver-hating form to try to perform invocation ritual */
+    if (obj->otyp == BELL_OF_OPENING && invocation_pos(u.ux, u.uy) && !On_stairs(u.ux, u.uy)) 
+        return 1;
+
     if (touch_artifact(obj, &youmonst)) {
         char buf[BUFSZ];
         double damage = 0;
