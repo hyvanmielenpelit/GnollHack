@@ -4514,11 +4514,11 @@ struct obj* obj;
         case MANUAL_WEAPONS_101:
             putstr(datawin, ATR_INDENT_AT_PERIOD, "1. You can ready an alternate weapon by swapping weapons and then readying the alternate weapon.");
             putstr(datawin, ATR_INDENT_AT_PERIOD, "2. Switching between weapons by swapping two readied sets of weapons does not cost you a turn.");
-            putstr(datawin, ATR_INDENT_AT_PERIOD, "3. You can also fight with two weapons at once, but this comes a penalty to hit and damage, which depends on your skill level.");
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "3. You can also fight with two weapons at once, but this comes with a penalty to hit and damage, which depends on your skill level.");
             putstr(datawin, ATR_INDENT_AT_PERIOD, "4. You gain weapon skill points by hitting with the weapon successfully.");
-            putstr(datawin, ATR_INDENT_AT_PERIOD, "5. You gain dual wielding skill points when you it hit successfully with your off-hand weapon.");
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "5. You gain dual wielding skill points when you hit successfully with your off-hand weapon.");
             putstr(datawin, ATR_INDENT_AT_PERIOD, "6. Ranged weapons incur a -30 to hit penalty when thrown or fired in melee combat.");
-            putstr(datawin, ATR_INDENT_AT_PERIOD, "7. Weapons may be enchanted to be flaming, freezing, and electrified, which all cost extra damage. The enchantment may dissipate upon hit.");
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "7. Weapons may be enchanted to be flaming, freezing, and electrified, which all cause extra damage. The enchantment may dissipate upon hit.");
             putstr(datawin, ATR_INDENT_AT_PERIOD, "8. Glass and bone weapons can be enchanted to be death-magical, which slays the target instantly upon hit. The enchantment is consequently dispelled.");
             putstr(datawin, ATR_INDENT_AT_PERIOD, "9. Weapons may have exceptional, elite, and celestial/primordial/infernal qualities.");
             putstr(datawin, ATR_INDENT_AT_PERIOD, "10. Exceptional weapons do double base damage, elite weapons triple base damage, and celestial/primordial/infernal weapons quadruple base damage.");
@@ -4532,7 +4532,7 @@ struct obj* obj;
             putstr(datawin, ATR_INDENT_AT_PERIOD, "5. This way you do not need to put its contents - and a possible loadstone - into your inventory.");
             putstr(datawin, ATR_INDENT_AT_PERIOD, "6. Beware of the cursed jinxstone. It will cause mishaps to happen and once you have picked it up, you cannot drop it.");
             putstr(datawin, ATR_INDENT_AT_PERIOD, "7. Jinxstones are best identified by letting your pet stand upon it. If the pet does not step upon the stone, it is cursed.");
-            putstr(datawin, ATR_INDENT_AT_PERIOD, "8. A luckstone, one of the gray stones, increase your luck if kept in the open inventory.");
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "8. A luckstone, one of the gray stones, increases your luck if kept in the open inventory.");
             putstr(datawin, ATR_INDENT_AT_PERIOD, "9. Luck will disappear over time, but a blessed luckstone will prevent this.");
             break;
         case MANUAL_BASICS_OF_KICKING:
