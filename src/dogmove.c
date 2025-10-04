@@ -651,6 +651,8 @@ boolean verbose;
         {
             if (has_stoned(mtmp))
             {
+                if (verbose)
+                    play_sfx_sound_at_location(SFX_CURE_AILMENT, mtmp->mx, mtmp->my);
                 (void)set_mon_property_b(mtmp, STONED, 0, verbose);
                 if(verbose)
                     pline_ex(ATR_NONE, CLR_MSG_POSITIVE, "%s looks limber!", Monnam(mtmp));
@@ -659,6 +661,19 @@ boolean verbose;
             increase_mon_property(mtmp, STONE_RESISTANCE, 13);
             newsym(mtmp->mx, mtmp->my);
         }
+    case EDIBLEFX_CURE_TELEPORTITIS:
+        if (!otmp->cursed)
+        {
+            if (has_property(mtmp, TELEPORT))
+            {
+                if (verbose)
+                    play_sfx_sound_at_location(SFX_CURE_AILMENT, mtmp->mx, mtmp->my);
+                (void)set_mon_property_b(mtmp, TELEPORT, -3, verbose);
+                if (verbose && !has_property(mtmp, TELEPORT))
+                    pline_ex(ATR_NONE, CLR_MSG_POSITIVE, "%s looks more composed!", Monnam(mtmp));
+                newsym(mtmp->mx, mtmp->my);
+            }
+        }    
     }
     return;
 }

@@ -3189,6 +3189,23 @@ struct obj *otmp;
         else
             pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "Ulch! That %s had a nasty slimy texture.", cxname(otmp));
 
+    case EDIBLEFX_CURE_TELEPORTITIS:
+        if (!otmp->cursed)
+        {
+            if (HTeleportation)
+            {
+                play_sfx_sound(SFX_CURE_AILMENT);
+                HTeleportation = 0;
+                You_feel_ex(ATR_NONE, CLR_MSG_SUCCESS, "more composed than before.");
+            }
+            else
+                You_feel_ex(ATR_NONE, CLR_MSG_ATTENTION, "a bit more composed than before.");
+
+            refresh_u_tile_gui_info(TRUE);
+        }
+        else
+            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "Ulch! That %s had a nasty rubbery texture.", cxname(otmp));
+
         break;
     }
     return;
