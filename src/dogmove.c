@@ -661,6 +661,7 @@ boolean verbose;
             increase_mon_property(mtmp, STONE_RESISTANCE, 13);
             newsym(mtmp->mx, mtmp->my);
         }
+        break;
     case EDIBLEFX_CURE_TELEPORTITIS:
         if (!otmp->cursed)
         {
@@ -674,6 +675,7 @@ boolean verbose;
                 newsym(mtmp->mx, mtmp->my);
             }
         }    
+        break;
     }
     return;
 }

@@ -3188,7 +3188,7 @@ struct obj *otmp;
         }
         else
             pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "Ulch! That %s had a nasty slimy texture.", cxname(otmp));
-
+        break;
     case EDIBLEFX_CURE_TELEPORTITIS:
         if (!otmp->cursed)
         {
@@ -3205,7 +3205,6 @@ struct obj *otmp;
         }
         else
             pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "Ulch! That %s had a nasty rubbery texture.", cxname(otmp));
-
         break;
     }
     return;
