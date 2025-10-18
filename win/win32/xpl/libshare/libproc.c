@@ -737,7 +737,7 @@ char lib_yn_function_ex(int style, int attr, int color, int glyph, const char* t
     if (introline)
         write_text2buf_utf8(ibuf, UTF8IBUFSZ, introline);
     char defs[2] = { 0,0 };
-    defs[0] = def;
+    defs[0] = (char)def;
     int res = lib_callbacks.callback_yn_function_ex(style, attr, color, glyph, title ? tbuf : 0, question ? buf : 0, choices, defs, resp_desc, introline ? ibuf : 0, ynflags);
     return convert_gnhch(res);
 }

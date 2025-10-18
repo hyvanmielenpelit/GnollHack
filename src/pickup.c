@@ -2585,7 +2585,7 @@ int applymode;
     boolean underfoot = TRUE;
     const char *dont_find_anything = "don't find anything";
     struct monst *mtmp;
-    char qbuf[BUFSZ];
+    char qbuf[QBUFSZ];
     int prev_inquiry = 0;
     boolean prev_loot = FALSE;
     int num_conts = 0;
@@ -4983,7 +4983,7 @@ dotip()
     struct obj *cobj, *nobj;
     coord cc;
     int boxes;
-    char c, buf[BUFSZ], qbuf[BUFSZ];
+    char c, buf[BUFSZ], qbuf[QBUFSZ];
     const char *spillage = 0;
 
     /*
