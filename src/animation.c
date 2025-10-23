@@ -1033,6 +1033,8 @@ int roleidx, raceidx, genderidx, alignmentidx, levelidx;
             return GNOLL_BARBARIAN_FEMALE_ATTACK_ANIMATION;
         if (roleidx == ROLE_VALKYRIE && raceidx == RACE_HUMAN && genderidx == GENDER_FEMALE)
             return HUMAN_VALKYRIE_FEMALE_ATTACK_ANIMATION;
+        if (roleidx == ROLE_VALKYRIE && raceidx == RACE_HUMAN && genderidx == GENDER_MALE)
+            return HUMAN_VALKYRIE_MALE_ATTACK_ANIMATION;
         if (roleidx == ROLE_VALKYRIE && raceidx == RACE_DWARF && genderidx == GENDER_FEMALE)
             return DWARF_VALKYRIE_FEMALE_ATTACK_ANIMATION;
         if (roleidx == ROLE_HEALER && raceidx == RACE_GNOLL && genderidx == GENDER_MALE)
@@ -1349,6 +1351,8 @@ int roleidx, raceidx, genderidx, alignmentidx, levelidx;
             return GNOLL_BARBARIAN_FEMALE_KICK_ANIMATION;
         if (roleidx == ROLE_VALKYRIE && raceidx == RACE_HUMAN && genderidx == GENDER_FEMALE)
             return HUMAN_VALKYRIE_FEMALE_KICK_ANIMATION;
+        if (roleidx == ROLE_VALKYRIE && raceidx == RACE_HUMAN && genderidx == GENDER_MALE)
+            return HUMAN_VALKYRIE_MALE_KICK_ANIMATION;
         if (roleidx == ROLE_VALKYRIE && raceidx == RACE_DWARF && genderidx == GENDER_FEMALE)
             return DWARF_VALKYRIE_FEMALE_KICK_ANIMATION;
         if (roleidx == ROLE_HEALER && raceidx == RACE_GNOLL && genderidx == GENDER_MALE)
