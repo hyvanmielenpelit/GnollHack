@@ -1329,7 +1329,8 @@ char** attrs_ptr, ** colors_ptr;
             weightlast = (doname_flags & DONAME_WITH_WEIGHT_LAST) != 0,
             loadstonecorrectly = (doname_flags & DONAME_LOADSTONE_CORRECTLY) != 0,
             lit_in_front = (doname_flags & DONAME_LIT_IN_FRONT) != 0,
-            comparison_stats = (doname_flags & DONAME_COMPARISON) != 0 && iflags.show_comparison_stats && !iflags.in_dumplog && !program_state.gameover;
+            comparison_stats = (doname_flags & DONAME_COMPARISON) != 0 && iflags.show_comparison_stats && !iflags.in_dumplog && !program_state.gameover,
+            do_library = (doname_flags & DONAME_NO_LIBRARY) == 0 && !iflags.in_dumplog;
     boolean known, dknown, cknown, bknown, lknown, tknown;
     int omndx = obj->corpsenm, isenchanted = 0;
     char prefix[PREFIXBUFSZ] = "";
@@ -1860,7 +1861,7 @@ weapon_here:
             goto weapon_here;
         break;
     case SPBOOK_CLASS:
-        if ((windowprocs.wincap2 & WC2_LIBRARY) != 0 && obj->otyp == SPE_MANUAL && iflags.found_manuals > 0 && obj->manualidx >= 0)
+        if (do_library && (windowprocs.wincap2 & WC2_LIBRARY) != 0 && obj->otyp == SPE_MANUAL && iflags.found_manuals > 0 && obj->manualidx >= 0)
         {
             uint64_t bit = (uint64_t)1 << obj->manualidx;
             if(iflags.found_manuals & bit)
