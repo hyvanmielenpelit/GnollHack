@@ -118,6 +118,7 @@ char lock[PL_NSIZ + 27 + GNH_EXTRA_BSIZ]; /* long enough for username+-+name+.99
 #define ALT_BACKUP_EXTENSION "bak"   /* extension for backup save files (alternative) */
 #define TEMP_BACKUP_EXTENSION "tmp"  /* extension for temp backup save files */
 #define SAVE_FILE_TRACKING_EXTENSION "ghsft"  /* extension for save file tracking files */
+#define RUNNING_EXTENSION ".0"  /* running */
 
 #ifdef WIN32
 #include <io.h>
@@ -313,6 +314,69 @@ int bufsz;
     return callerbuf;
 }
 
+int is_running_savefile_name(savefilename)
+const char* savefilename;
+{
+    if (!savefilename || !*savefilename)
+        return FALSE;
+
+    size_t dlen = strlen(savefilename);
+    char ebuf[BUFSZ] = "";
+    print_special_savefile_extension(ebuf, RUNNING_EXTENSION);
+    size_t elen = strlen(ebuf);
+    if (dlen <= elen)
+        return FALSE;
+
+    size_t i;
+    for (i = 0; i < elen; i++)
+        if (savefilename[dlen - 1 - i] != ebuf[elen - 1 - i])
+            return FALSE;
+
+    return TRUE;
+}
+
+int is_temp_savefile_name(savefilename)
+const char* savefilename;
+{
+    if (!savefilename || !*savefilename)
+        return FALSE;
+
+    size_t dlen = strlen(savefilename);
+    char ebuf[BUFSZ] = "";
+    print_special_savefile_extension(ebuf, TEMP_BACKUP_EXTENSION);
+    size_t elen = strlen(ebuf);
+    if (dlen <= elen)
+        return FALSE;
+
+    size_t i;
+    for (i = 0; i < elen; i++)
+        if (savefilename[dlen - 1 - i] != ebuf[elen - 1 - i])
+            return FALSE;
+
+    return TRUE;
+}
+
+int is_error_savefile_name(savefilename)
+const char* savefilename;
+{
+    if (!savefilename || !*savefilename)
+        return FALSE;
+
+    size_t dlen = strlen(savefilename);
+    char ebuf[BUFSZ] = "";
+    print_error_savefile_extension(ebuf);
+    size_t elen = strlen(ebuf);
+    if (dlen <= elen)
+        return FALSE;
+
+    size_t i;
+    for (i = 0; i < elen; i++)
+        if (savefilename[dlen - 1 - i] != ebuf[elen - 1 - i])
+            return FALSE;
+
+    return TRUE;
+}
+
 int is_imported_error_savefile_name(savefilename)
 const char* savefilename;
 {
@@ -322,6 +386,27 @@ const char* savefilename;
     size_t dlen = strlen(savefilename);
     char ebuf[BUFSZ] = "";
     print_error_savefile_extension(ebuf);
+    print_imported_savefile_extension(ebuf);
+    size_t elen = strlen(ebuf);
+    if (dlen <= elen)
+        return FALSE;
+
+    size_t i;
+    for (i = 0; i < elen; i++)
+        if (savefilename[dlen - 1 - i] != ebuf[elen - 1 - i])
+            return FALSE;
+
+    return TRUE;
+}
+
+int is_imported_savefile_name(savefilename)
+const char* savefilename;
+{
+    if (!savefilename || !*savefilename)
+        return FALSE;
+
+    size_t dlen = strlen(savefilename);
+    char ebuf[BUFSZ] = "";
     print_imported_savefile_extension(ebuf);
     size_t elen = strlen(ebuf);
     if (dlen <= elen)
@@ -2277,48 +2362,6 @@ struct save_game_stats* stats_ptr;
 }
 
 #if defined(UNIX) && (defined(ANDROID) || defined(GNH_MOBILE))
-int is_error_savefile_name(savefilename)
-const char* savefilename;
-{
-    if (!savefilename || !*savefilename)
-        return FALSE;
-
-    size_t dlen = strlen(savefilename);
-    char ebuf[BUFSZ] = "";
-    print_error_savefile_extension(ebuf);
-    size_t elen = strlen(ebuf);
-    if (dlen <= elen)
-        return FALSE;
-
-    size_t i;
-    for (i = 0; i < elen; i++)
-        if (savefilename[dlen - 1 - i] != ebuf[elen - 1 - i])
-            return FALSE;
-
-    return TRUE;
-}
-
-int is_imported_savefile_name(savefilename)
-const char* savefilename;
-{
-    if (!savefilename || !*savefilename)
-        return FALSE;
-
-    size_t dlen = strlen(savefilename);
-    char ebuf[BUFSZ] = "";
-    print_imported_savefile_extension(ebuf);
-    size_t elen = strlen(ebuf);
-    if (dlen <= elen)
-        return FALSE;
-
-    size_t i;
-    for (i = 0; i < elen; i++)
-        if (savefilename[dlen - 1 - i] != ebuf[elen - 1 - i])
-            return FALSE;
-
-    return TRUE;
-}
-
 int filter_running(entry)
 const struct dirent* entry;
 {
@@ -2372,8 +2415,8 @@ get_saved_games()
         char  foundfileprefix[32] = "";
 
         const char *fq_save;
-        char fq_save_ebuf[SAVESIZE + BUFSZ] = "";
-        char fq_save_ibuf[SAVESIZE + BUFSZ] = "";
+        //char fq_save_ebuf[SAVESIZE + BUFSZ] = "";
+        //char fq_save_ibuf[SAVESIZE + BUFSZ] = "";
         char fq_lock_rbuf[SAVESIZE + BUFSZ] = "";
         char saved_plname[PL_NSIZ] = "";
 
@@ -2391,16 +2434,16 @@ get_saved_games()
         Strcat(SAVEF, COMPRESS_EXTENSION);
 #endif
         fq_save = fqname(SAVEF, SAVEPREFIX, 0);
-        Strcpy(fq_save_ebuf, fq_save);
-        Strcpy(fq_save_ibuf, fq_save);
-#ifndef MICRO
-        print_error_savefile_extension(fq_save_ebuf);
-        print_imported_savefile_extension(fq_save_ibuf);
-#endif
+        //Strcpy(fq_save_ebuf, fq_save);
+        //Strcpy(fq_save_ibuf, fq_save);
+//#ifndef MICRO
+//        print_error_savefile_extension(fq_save_ebuf);
+//        print_imported_savefile_extension(fq_save_ibuf);
+//#endif
 
         int n = 0;
-        int n2 = 0;
-        int n3 = 0;
+        //int n2 = 0;
+        //int n3 = 0;
         int n4 = 0;
         foundfile = foundfile_buffer();
         if (findfirst(fq_save)) {
@@ -2409,41 +2452,49 @@ get_saved_games()
             } while (findnext());
         }
 #ifndef MICRO
-        if (findfirst(fq_save_ebuf)) {
-            do {
-                ++n2;
-            } while (findnext());
-        }
-        if (!TournamentMode)
-        {
-            if (findfirst(fq_save_ibuf)) {
-                do {
-                    ++n3;
-                } while (findnext());
-            }
-        }
+//        if (findfirst(fq_save_ebuf)) {
+//            do {
+//                ++n2;
+//            } while (findnext());
+//        }
+//        if (!TournamentMode)
+//        {
+//            if (findfirst(fq_save_ibuf)) {
+//                do {
+//                    ++n3;
+//                } while (findnext());
+//            }
+//        }
         if (findfirst(fq_lock_rbuf)) {
             do {
                 ++n4;
             } while (findnext());
         }
 #endif
-        if (n > 0 || n2 > 0 || n3 > 0 || n4 > 0) 
+        if (n > 0 || n4 > 0) // || n2 > 0 || n3 > 0) 
         {
-            result = (struct save_game_data*) alloc(((size_t)n + (size_t)n2 + (size_t)n3 + (size_t)n4 + 1) * sizeof(struct save_game_data)); /* at most */
-            (void) memset((genericptr_t) result, 0, ((size_t)n + (size_t)n2 + (size_t)n3 + (size_t)n4 + 1) * sizeof(struct save_game_data));
+            result = (struct save_game_data*) alloc(((size_t)n + /* (size_t)n2 + (size_t)n3 + */ (size_t)n4 + 1) * sizeof(struct save_game_data)); /* at most */
+            (void) memset((genericptr_t) result, 0, ((size_t)n + /* (size_t)n2 + (size_t)n3 + */ (size_t)n4 + 1) * sizeof(struct save_game_data));
             if (n > 0)
             {
                 if (findfirst(fq_save)) {
                     j = n = 0;
                     do {
                         Sprintf(usedfoundfile, "%s%s", foundfileprefix, foundfile);
+                        if (is_running_savefile_name(usedfoundfile))
+                            continue;
+                        if (is_temp_savefile_name(usedfoundfile))
+                            continue;
                         if (is_backup_savefile_name(usedfoundfile))
                             continue;
                         if (is_imported_backup_savefile_name(usedfoundfile))
                             continue;
                         if (is_save_file_tracking_file_name(usedfoundfile))
                             continue;
+
+                        boolean is_imported = is_imported_savefile_name(usedfoundfile) != 0;
+                        boolean is_error = is_error_savefile_name(usedfoundfile) != 0;
+                        boolean isimportederror = is_imported_error_savefile_name(usedfoundfile);
                         char* r;
                         r = plname_from_file(usedfoundfile, &gamestats);
                         if (r)
@@ -2452,7 +2503,7 @@ get_saved_games()
                                 continue;
                             if (!TournamentMode && (gamestats.save_flags & SAVEFLAGS_TOURNAMENT_MODE) != 0)
                                 continue;
-                            result[j++] = newsavegamedata(r, usedfoundfile, gamestats, FALSE, FALSE, FALSE);
+                            result[j++] = newsavegamedata(r, usedfoundfile, gamestats, FALSE, is_imported ? isimportederror : is_error, is_imported);
                         }
                         else
                             continue;
@@ -2460,53 +2511,53 @@ get_saved_games()
                     } while (findnext());
                 }
             }
-            if (n2 > 0)
-            {
-                if (findfirst(fq_save_ebuf)) {
-                    n2 = 0;
-                    do {
-                        Sprintf(usedfoundfile, "%s%s", foundfileprefix, foundfile);
-                        if (is_imported_backup_savefile_name(usedfoundfile))
-                            continue;
-                        char* r;
-                        r = plname_from_file(usedfoundfile, &gamestats);
-                        if (r)
-                        {
-                            if (TournamentMode && !(gamestats.save_flags & SAVEFLAGS_TOURNAMENT_MODE))
-                                continue;
-                            if (!TournamentMode && (gamestats.save_flags & SAVEFLAGS_TOURNAMENT_MODE) != 0)
-                                continue;
-                            result[j++] = newsavegamedata(r, usedfoundfile, gamestats, FALSE, TRUE, FALSE);
-                        }
-                        else
-                            continue;
-                        ++n2;
-                    } while (findnext());
-                }
-            }
-            if (n3 > 0)
-            {
-                if (findfirst(fq_save_ibuf)) {
-                    n3 = 0;
-                    do {
-                        char* r;
-                        Sprintf(usedfoundfile, "%s%s", foundfileprefix, foundfile);
-                        r = plname_from_file(usedfoundfile, &gamestats);
-                        if (r)
-                        {
-                            if (TournamentMode && !(gamestats.save_flags & SAVEFLAGS_TOURNAMENT_MODE))
-                                continue;
-                            if (!TournamentMode && (gamestats.save_flags & SAVEFLAGS_TOURNAMENT_MODE) != 0)
-                                continue;
-                            boolean isimportederror = is_imported_error_savefile_name(usedfoundfile);
-                            result[j++] = newsavegamedata(r, usedfoundfile, gamestats, FALSE, isimportederror, TRUE);
-                        }
-                        else
-                            continue;
-                        ++n3;
-                    } while (findnext());
-                }
-            }
+            //if (n2 > 0)
+            //{
+            //    if (findfirst(fq_save_ebuf)) {
+            //        n2 = 0;
+            //        do {
+            //            Sprintf(usedfoundfile, "%s%s", foundfileprefix, foundfile);
+            //            if (is_imported_backup_savefile_name(usedfoundfile))
+            //                continue;
+            //            char* r;
+            //            r = plname_from_file(usedfoundfile, &gamestats);
+            //            if (r)
+            //            {
+            //                if (TournamentMode && !(gamestats.save_flags & SAVEFLAGS_TOURNAMENT_MODE))
+            //                    continue;
+            //                if (!TournamentMode && (gamestats.save_flags & SAVEFLAGS_TOURNAMENT_MODE) != 0)
+            //                    continue;
+            //                result[j++] = newsavegamedata(r, usedfoundfile, gamestats, FALSE, TRUE, FALSE);
+            //            }
+            //            else
+            //                continue;
+            //            ++n2;
+            //        } while (findnext());
+            //    }
+            //}
+            //if (n3 > 0)
+            //{
+            //    if (findfirst(fq_save_ibuf)) {
+            //        n3 = 0;
+            //        do {
+            //            char* r;
+            //            Sprintf(usedfoundfile, "%s%s", foundfileprefix, foundfile);
+            //            r = plname_from_file(usedfoundfile, &gamestats);
+            //            if (r)
+            //            {
+            //                if (TournamentMode && !(gamestats.save_flags & SAVEFLAGS_TOURNAMENT_MODE))
+            //                    continue;
+            //                if (!TournamentMode && (gamestats.save_flags & SAVEFLAGS_TOURNAMENT_MODE) != 0)
+            //                    continue;
+            //                boolean isimportederror = is_imported_error_savefile_name(usedfoundfile);
+            //                result[j++] = newsavegamedata(r, usedfoundfile, gamestats, FALSE, isimportederror, TRUE);
+            //            }
+            //            else
+            //                continue;
+            //            ++n3;
+            //        } while (findnext());
+            //    }
+            //}
             if (n4 > 0)
             {
                 if (findfirst(fq_lock_rbuf)) {
