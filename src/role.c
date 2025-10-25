@@ -2853,7 +2853,7 @@ int roleidx, raceidx, genderidx, alignmentidx, levelidx;
             return TRUE;
         if (roleidx == ROLE_BARBARIAN && raceidx == RACE_HUMAN && genderidx == GENDER_MALE)
             return TRUE;
-        if (roleidx == ROLE_VALKYRIE && raceidx == RACE_HUMAN && genderidx == GENDER_FEMALE)
+        if (roleidx == ROLE_VALKYRIE && raceidx == RACE_HUMAN)
             return TRUE;
         if (roleidx == ROLE_VALKYRIE && raceidx == RACE_DWARF && genderidx == GENDER_FEMALE)
             return TRUE;
@@ -2915,7 +2915,7 @@ int roleidx, raceidx, genderidx, alignmentidx, levelidx;
             return TRUE;
         if (roleidx == ROLE_BARBARIAN && raceidx == RACE_HUMAN && genderidx == GENDER_MALE)
             return TRUE;
-        if (roleidx == ROLE_VALKYRIE && raceidx == RACE_HUMAN && genderidx == GENDER_FEMALE)
+        if (roleidx == ROLE_VALKYRIE && raceidx == RACE_HUMAN)
             return TRUE;
         if (roleidx == ROLE_VALKYRIE && raceidx == RACE_DWARF && genderidx == GENDER_FEMALE)
             return TRUE;
