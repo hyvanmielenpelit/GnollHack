@@ -6930,6 +6930,12 @@ boolean disarm;
             if (costly)
                 loss += stolen_value(obj, ox, oy, is_peaceful(shkp) != 0,
                                      TRUE);
+            struct obj* curr;
+            while ((curr = obj->cobj) != 0) {
+                obj_extract_self(curr);
+                dropy(curr);
+                (void)scatter(curr->ox, curr->oy, 3, VIS_EFFECTS | MAY_HIT | MAY_DESTROY | MAY_FRACTURE, curr);
+            }
             delete_contents(obj);
             /* unpunish() in advance if either ball or chain (or both)
                is going to be destroyed */

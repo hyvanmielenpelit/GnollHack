@@ -839,14 +839,18 @@ struct obj *obj; /* only scatter this obj        */
         impossible("scattered object <%d,%d> not at scatter site <%d,%d>",
                    obj->ox, obj->oy, sx, sy);
 
-    while ((otmp = (individual_object ? obj : level.objects[sx][sy])) != 0) {
-        if (otmp->quan > 1L) {
+    while ((otmp = (individual_object ? obj : level.objects[sx][sy])) != 0) 
+    {
+        if (otmp->quan > 1L) 
+        {
             qtmp = otmp->quan - 1L;
             if (qtmp > LARGEST_INT)
                 qtmp = LARGEST_INT;
             qtmp = (int64_t) rnd((int) qtmp);
             otmp = splitobj(otmp, qtmp);
-        } else {
+        }
+        else 
+        {
             obj = (struct obj *) 0; /* all used */
         }
         Strcpy(debug_buf_2, "scatter1");
@@ -856,21 +860,26 @@ struct obj *obj; /* only scatter this obj        */
         /* 9 in 10 chance of fracturing boulders or statues */
         if ((scflags & MAY_FRACTURE) != 0
             && (otmp->otyp == BOULDER || otmp->otyp == STATUE)
-            && rn2(10)) {
-            if (otmp->otyp == BOULDER) {
+            && rn2(10)) 
+        {
+            if (otmp->otyp == BOULDER)
+            {
                 if (cansee(sx, sy))
                     pline("%s apart.", Tobjnam(otmp, "break"));
                 else
                     You_hear("stone breaking.");
                 fracture_rock(otmp, TRUE);
                 place_object(otmp, sx, sy);
-                if ((otmp = sobj_at(BOULDER, sx, sy)) != 0) {
+                if ((otmp = sobj_at(BOULDER, sx, sy)) != 0) 
+                {
                     /* another boulder here, restack it to the top */
                     Strcpy(debug_buf_2, "scatter2");
                     obj_extract_self(otmp);
                     place_object(otmp, sx, sy);
                 }
-            } else {
+            }
+            else
+            {
                 struct trap *trap;
 
                 if ((trap = t_at(sx, sy)) && trap->ttyp == STATUE_TRAP)
@@ -886,14 +895,16 @@ struct obj *obj; /* only scatter this obj        */
             used_up = TRUE;
 
             /* 1 in 10 chance of destruction of obj; glass, egg destruction */
-        } else if ((scflags & MAY_DESTROY) != 0
+        } 
+        else if ((scflags & MAY_DESTROY) != 0 && !is_obj_indestructible(otmp)
                    && (!rn2(10) || (is_fragile(otmp) || otmp->otyp == EGG))) 
         {
             if (breaks(otmp, (xchar) sx, (xchar) sy))
                 used_up = TRUE;
         }
 
-        if (!used_up) {
+        if (!used_up) 
+        {
             stmp = (struct scatter_chain *) alloc(sizeof *stmp);
             stmp->next = (struct scatter_chain *) 0;
             stmp->obj = otmp;
@@ -917,31 +928,44 @@ struct obj *obj; /* only scatter this obj        */
         }
     }
 
-    while (farthest-- > 0) {
-        for (stmp = schain; stmp; stmp = stmp->next) {
-            if ((stmp->range-- > 0) && (!stmp->stopped)) {
+    while (farthest-- > 0) 
+    {
+        for (stmp = schain; stmp; stmp = stmp->next)
+        {
+            if ((stmp->range-- > 0) && (!stmp->stopped)) 
+            {
                 bhitpos.x = stmp->ox + stmp->dx;
                 bhitpos.y = stmp->oy + stmp->dy;
                 typ = levl[bhitpos.x][bhitpos.y].typ;
-                if (!isok(bhitpos.x, bhitpos.y)) {
+                if (!isok(bhitpos.x, bhitpos.y)) 
+                {
                     bhitpos.x -= stmp->dx;
                     bhitpos.y -= stmp->dy;
                     stmp->stopped = TRUE;
-                } else if (!ZAP_POS(typ)
-                           || closed_door(bhitpos.x, bhitpos.y)) {
+                } 
+                else if (!ZAP_POS(typ)
+                           || closed_door(bhitpos.x, bhitpos.y)) 
+                {
                     bhitpos.x -= stmp->dx;
                     bhitpos.y -= stmp->dy;
                     stmp->stopped = TRUE;
-                } else if ((mtmp = m_at(bhitpos.x, bhitpos.y)) != 0) {
-                    if (scflags & MAY_HITMON) {
+                } 
+                else if ((mtmp = m_at(bhitpos.x, bhitpos.y)) != 0) 
+                {
+                    if (scflags & MAY_HITMON) 
+                    {
                         stmp->range--;
-                        if (ohitmon(mtmp, stmp->obj, 1, FALSE)) {
+                        if (ohitmon(mtmp, stmp->obj, 1, FALSE)) 
+                        {
                             stmp->obj = (struct obj *) 0;
                             stmp->stopped = TRUE;
                         }
                     }
-                } else if (bhitpos.x == u.ux && bhitpos.y == u.uy) {
-                    if (scflags & MAY_HITYOU) {
+                } 
+                else if (bhitpos.x == u.ux && bhitpos.y == u.uy) 
+                {
+                    if (scflags & MAY_HITYOU) 
+                    {
                         int hitvalu, hitu;
 
                         if (multi)
@@ -953,13 +977,17 @@ struct obj *obj; /* only scatter this obj        */
                                      &stmp->obj, (char *) 0, (struct monst*)0, "exploded");
                         if (!stmp->obj)
                             stmp->stopped = TRUE;
-                        if (hitu) {
+                        if (hitu) 
+                        {
                             stmp->range -= 3;
                             stop_occupation();
                         }
                     }
-                } else {
-                    if (scflags & VIS_EFFECTS) {
+                } 
+                else 
+                {
+                    if (scflags & VIS_EFFECTS) 
+                    {
                         /* tmp_at(bhitpos.x, bhitpos.y); */
                         /* adjusted_delay_output(); */
                     }
@@ -969,7 +997,8 @@ struct obj *obj; /* only scatter this obj        */
             }
         }
     }
-    for (stmp = schain; stmp; stmp = stmp2) {
+    for (stmp = schain; stmp; stmp = stmp2) 
+    {
         int x, y;
 
         stmp2 = stmp->next;

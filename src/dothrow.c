@@ -2585,7 +2585,7 @@ boolean
 breaktest(obj)
 struct obj *obj;
 {
-    if (obj_resists(obj, 1, 99))
+    if (!obj || is_obj_indestructible(obj) || obj_resists(obj, 1, 99))
         return 0;
     if (is_fragile(obj) && !obj->oartifact) /* Removed glass gems from not breaking; why not? */
         return 1;
