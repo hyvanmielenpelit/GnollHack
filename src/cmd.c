@@ -5545,8 +5545,10 @@ int cmdflag;
                 (efp->bound_key & ctrlmask) == 0 ? efp->bound_key | ctrlmask : (efp->bound_key & altmask) == altmask ? efp->bound_key & ~altmask : efp->bound_key);
         else
             Strcpy(shortcutbuf, "");
+        Sprintf(buf, "%s  %s%s", cmdbuf, descbuf, shortcutbuf);
+#else
+        Sprintf(buf, "%s", descbuf);
 #endif
-        Sprintf(buf, "%s  %s", cmdbuf, descbuf);
 
         add_menu(menuwin, NO_GLYPH, &any, cmdchar, 0, ATR_INDENT_AT_DOUBLE_SPACE, NO_COLOR,
             buf, MENU_UNSELECTED);
