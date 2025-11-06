@@ -2862,7 +2862,7 @@ struct monst *mtmp;
         if (otmp->cursed)
         {
             if (oseen)
-                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "That seems to make %s feel mediocre!", mon_nam(mtmp));
+                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "That seemed to make %s feel mediocre!", mon_nam(mtmp));
             break;
         }
         else 
