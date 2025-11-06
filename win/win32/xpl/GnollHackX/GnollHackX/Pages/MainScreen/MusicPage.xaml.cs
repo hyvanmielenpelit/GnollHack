@@ -125,7 +125,12 @@ namespace GnollHackX.Pages.MainScreen
                 discoCount++;
             }
 
-            lblSubtitle.Text = "Found " + discoCount + " of " + GHSoundTrack.GnollHackSoundTracks.Count + " sound tracks";
+            int soundTrackCount = 0;
+            foreach (var track in GHSoundTrack.GnollHackSoundTracks)
+                if (track?.GameAppearanceList?.Count > 0)
+                    soundTrackCount++;
+
+            lblSubtitle.Text = "Found " + discoCount + " of " + soundTrackCount + " sound tracks";
             if (discoCount == 0)
                 EmptyLabel.IsVisible = true;
         }

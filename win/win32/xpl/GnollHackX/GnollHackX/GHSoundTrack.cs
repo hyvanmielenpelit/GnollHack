@@ -244,7 +244,7 @@ namespace GnollHackX
                 GHSoundList = new List<int>()
                 { 172 },
                 GameAppearanceList = new List<string>()
-                { "Smith" },
+                { },
             },
             new GHSoundTrack()
             {
