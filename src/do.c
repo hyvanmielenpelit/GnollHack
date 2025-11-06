@@ -5252,7 +5252,7 @@ struct permonst* ptr;
 
     if (mon && !is_neuter(ptr))
     {
-        Sprintf(buf, "Gender:                 %s", mon->female ? "Female" : "Male");
+        Sprintf(buf, "Gender:                 %s", (is_you ? flags.female : mon->female) ? "Female" : "Male");
         putstr(datawin, ATR_INDENT_AT_COLON, buf);
     }
 
