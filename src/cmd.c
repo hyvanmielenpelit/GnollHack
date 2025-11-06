@@ -862,22 +862,24 @@ doability(VOID_ARGS)
 
             abilitynum++;
 
-#ifndef GNH_MOBILE
-            /* Monster abilities */
-            Strcpy(available_ability_list[abilitynum].name, "Monster abilities");
-            available_ability_list[abilitynum].function_ptr = &domonsterability;
-            available_ability_list[abilitynum].target_mtmp = 0;
-
-            any = zeroany;
-            any.a_int = abilitynum + 1;
-
+//#ifndef GNH_MOBILE
             int monabilitynum = print_monster_abilities(WIN_ERR, 0); /* Count monster abilities */
-            add_extended_menu(win, MONSTER_COMMAND_TILE + GLYPH_COMMAND_TILE_OFF, &any,
-                0, 0, ATR_NONE, NO_COLOR,
-                available_ability_list[abilitynum].name, MENU_UNSELECTED, monabilitynum > 0 ? active_menu_info() : zeroextendedmenuinfo);
+            if (monabilitynum > 0)
+            {
+                /* Monster abilities */
+                Strcpy(available_ability_list[abilitynum].name, "Monster abilities");
+                available_ability_list[abilitynum].function_ptr = &domonsterability;
+                available_ability_list[abilitynum].target_mtmp = 0;
 
-            abilitynum++;
-#endif
+                any = zeroany;
+                any.a_int = abilitynum + 1;
+
+                add_active_menu(win, MONSTER_COMMAND_TILE + GLYPH_COMMAND_TILE_OFF, &any,
+                    0, 0, ATR_NONE, NO_COLOR, available_ability_list[abilitynum].name, MENU_UNSELECTED);
+
+                abilitynum++;
+            }
+//#endif
         }
 
 #ifndef GNH_MOBILE
