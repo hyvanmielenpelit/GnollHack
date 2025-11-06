@@ -6888,6 +6888,13 @@ NEARDATA const struct enlargement_definition enlargements[MAX_ENLARGEMENTS] =
         { 0, 0, 0, 0, 0 },
         { 0, 0, 0, 0, 0 }
       },
+      { "treant-corpse-enlargement", 0, 0,
+        2,
+        3, 1, 0,
+        { -1, -1, -1, 0, 1 },
+        { 0, 0, 0, 0, 0 },
+        { 0, 0, 0, 0, 0 }
+      },
       { "elder-treant-enlargement", 0, 0,
         5,
         3, 2, 0,
@@ -6899,6 +6906,13 @@ NEARDATA const struct enlargement_definition enlargements[MAX_ENLARGEMENTS] =
         5,
         3, 2, 0,
         { 0, 1, 2, 3, 4 },
+        { 0, 0, 0, 0, 0 },
+        { 0, 0, 0, 0, 0 }
+      },
+      { "elder-treant-corpse-enlargement", 0, 0,
+        2,
+        3, 1, 0,
+        { -1, -1, -1, 0, 1 },
         { 0, 0, 0, 0, 0 },
         { 0, 0, 0, 0, 0 }
       },
