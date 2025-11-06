@@ -1296,7 +1296,7 @@ namespace GnollHackX.Pages.MainScreen
             ShowXPSwitch.IsToggled = showxp;
             RightAligned2ndRowSwitch.IsToggled = rightaligned2ndrow;
             DesktopButtonsSwitch.IsToggled = desktopbuttons;
-            if (GHApp.IsiOS)
+            if (GHApp.IsiOS || GHApp.IsWindows)
             {
                 MenuFadeEffectsGrid.IsVisible = false;
                 MenuFadeEffectsSwitch.IsEnabled = false;

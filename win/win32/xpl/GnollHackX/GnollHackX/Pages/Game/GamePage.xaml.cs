@@ -1073,7 +1073,7 @@ namespace GnollHackX.Pages.Game
             ShowScore = Preferences.Get("ShowScore", GHApp.IsDesktop);
             ShowXP = Preferences.Get("ShowXP", GHApp.IsDesktop);
             RightAligned2ndRow = Preferences.Get("RightAligned2ndRow", false);
-            MenuFadeEffects = Preferences.Get("MenuFadeEffects", GHConstants.AreMenuFadeEffectsDefault);
+            MenuFadeEffects = !GHApp.IsWindows && Preferences.Get("MenuFadeEffects", GHConstants.AreMenuFadeEffectsDefault);
             MenuHighFilterQuality = Preferences.Get("MenuHighFilterQuality", GHApp.IsMenuHighFilterQualityDefault);
             MenuHighlightedKeys = Preferences.Get("MenuHighlightedKeys", GHApp.IsMenuHighlightedKeysDefault);
             ShowOrbs = Preferences.Get("ShowOrbs", true);
