@@ -1879,7 +1879,7 @@ register struct obj* omonwep;
                 damage = (double)mdef->mhp + 1;
             else
                 mdef->m_lev--;
-
+            update_all_mon_statistics(mdef, TRUE);
             /* Automatic kill if drained past level 0 */
         }
         break;

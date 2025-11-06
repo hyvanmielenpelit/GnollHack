@@ -2154,6 +2154,7 @@ struct monst *mtmp;
 #define MUSE_POT_SHOCK_IMMUNITY 31
 #define MUSE_POT_MAGIC_RESISTANCE 32
 #define MUSE_WAN_WISHING 33
+#define MUSE_POT_RESTORE_ABILITY 34
 
 boolean
 set_misc_potion(mtmp, obj)
@@ -2257,6 +2258,9 @@ struct obj* obj;
         break;
     case POT_MAGIC_RESISTANCE:
         m.has_misc = MUSE_POT_MAGIC_RESISTANCE;
+        break;
+    case POT_RESTORE_ABILITY:
+        m.has_misc = MUSE_POT_RESTORE_ABILITY;
         break;
     default:
         break;
@@ -2562,6 +2566,12 @@ struct monst *mtmp;
             //m.misc = obj;
             //m.has_misc = MUSE_POT_MAGIC_RESISTANCE;
         }
+        nomore(MUSE_POT_RESTORE_ABILITY);
+        if (obj->otyp == MUSE_POT_RESTORE_ABILITY)
+        {
+            //m.misc = obj;
+            //m.has_misc = MUSE_POT_RESTORE_ABILITY;
+        }
         nomore(MUSE_POT_SEE_INVISIBLE);
         if (obj->otyp == POT_SEE_INVISIBLE && !is_peaceful(mtmp) && Invis && !has_see_invisible(mtmp) 
             && isok(mtmp->mux, mtmp->muy) && m_cansee(mtmp, mtmp->mux, mtmp->muy)) 
@@ -2598,7 +2608,7 @@ struct monst *mtmp;
     if (!mtmp)
         return 0;
 
-    int i;
+    int i, ii, lim;
     struct obj *otmp = m.misc;
     boolean vis, vismon, oseen;
     char nambuf[BUFSZ];
@@ -2843,6 +2853,76 @@ struct monst *mtmp;
         mtmp->mclericultimate_used = 0;
         m_useup(mtmp, otmp);
         return 2;
+    case MUSE_POT_RESTORE_ABILITY:
+    {
+        if (!otmp)
+            return 2;
+        mquaffmsg(mtmp, otmp);
+
+        if (otmp->cursed)
+        {
+            if (oseen)
+                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "That seems to make %s feel mediocre!", mon_nam(mtmp));
+            break;
+        }
+        else 
+        {
+            /* unlike unicorn horn, overrides Fixed_abil */
+            if (oseen)
+            {
+                play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, 0, mtmp->mx, mtmp->my, FALSE);
+                play_sfx_sound(SFX_RESTORE_ABILITY);
+                special_effect_wait_until_action(0);
+                pline_ex(ATR_NONE, CLR_MSG_POSITIVE, "That seemed to make %s feel %s!", mon_nam(mtmp), otmp->blessed ? "great" : "good");
+            }
+            i = rn2(A_MAX); /* start at a random point */
+            for (ii = 0; ii < A_MAX; ii++) 
+            {
+                lim = M_AMAX(mtmp, i);
+                /* this used to adjust 'lim' for A_STR when u.uhs was
+                   WEAK or worse, but that's handled via ATEMP(A_STR) now */
+                if (M_ABASE(mtmp, i) < lim) 
+                {
+                    M_ABASE(mtmp, i) = lim;
+                    /* only first found if not blessed */
+                    if (!otmp->blessed || isdiluted)
+                        break;
+                }
+                if (++i >= A_MAX)
+                    i = 0;
+            }
+
+            if (mtmp->m_lev < mtmp->data->mlevel) 
+            {
+                do
+                {
+                    mtmp->m_lev++;
+                } while (mtmp->m_lev < mtmp->data->mlevel && otmp->blessed);
+            }
+            if (mtmp->mbasehpdrain < 0) 
+            {
+                if (otmp->blessed)
+                    mtmp->mbasehpdrain = 0;
+                else
+                    mtmp->mbasehpdrain += min(4, -mtmp->mbasehpdrain);
+            }
+            if (mtmp->mbaseendrain < 0) 
+            {
+                if (otmp->blessed)
+                    mtmp->mbaseendrain = 0;
+                else
+                    mtmp->mbaseendrain += min(4, -mtmp->mbaseendrain);
+            }
+            update_all_mon_statistics(mtmp, TRUE);
+            if (oseen)
+            {
+                special_effect_wait_until_end(0);
+            }
+        }
+
+        m_useup(mtmp, otmp);
+        return 2;
+    }
     case MUSE_WAN_POLYMORPH:
         if (!otmp)
             return 2;
