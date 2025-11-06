@@ -716,6 +716,15 @@ int how;
 #define NOTIFY_GNOLLHACK_BUGS
 #endif
 
+void
+set_panic_handling(handling, require_restoring)
+int handling;
+boolean require_restoring;
+{
+    if (!require_restoring || restoring)
+        program_state.panic_handling = handling;
+}
+
 /*VARARGS1*/
 void panic
 VA_DECL(const char *, str)
@@ -2787,27 +2796,18 @@ int status;
 
     if (program_state.panicking && restoring)
     {
-        char res = 0;
-        switch (program_state.panic_handling)
+        if (sysopt.make_backup_savefiles && (program_state.panic_handling & 2) != 0 && check_backup_exists())
         {
-        case 3:
-        case 2:
-            res = special_yn_query("Replace Save File with Backup", "Your save file appears corrupted. Do you want to replace it with its backup?");
+            char res = special_yn_query("Replace Save File with Backup", "Your save file appears corrupted. Do you want to replace it with its backup?");
             if (res == 'y')
             {
                 (void)restore_backup_savefile(TRUE);
             }
-            if ((program_state.panic_handling & 1) == 0)
-                break;
-            /* FALLTHRU */
-        case 1:
-            reset_game();
-            break;
-        case 0:
-        default:
-            issue_simple_gui_command(GUI_CMD_EXIT_APP_ON_MAIN_SCREEN);
-            break;
         }
+        if (program_state.panic_handling & 1)
+            reset_game();
+        else
+            issue_simple_gui_command(GUI_CMD_EXIT_APP_ON_MAIN_SCREEN);
     }
     else
         reset_game();

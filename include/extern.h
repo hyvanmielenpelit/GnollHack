@@ -1104,6 +1104,7 @@ E void FDECL(done_intr, (int));
 E void FDECL(get_killer_name_and_format, (struct monst*, char*, int*));
 E void FDECL(done_in_by, (struct monst *, int));
 #endif /* !MAKEDEFS_C && !LEV_LEX_C */
+E void FDECL(set_panic_handling, (int, BOOLEAN_P));
 E void VDECL(panic, (const char *, ...)) PRINTF_F(1, 2) NORETURN;
 #if !defined(MAKEDEFS_C) && !defined(LEV_LEX_C)
 E void FDECL(done, (int));
@@ -1282,6 +1283,7 @@ E void FDECL(free_saved_games, (struct save_game_data *));
 E boolean NDECL(check_saved_game_exists);
 E int FDECL(make_tmp_backup_savefile_from_uncompressed_savefile, (const char*));
 E int NDECL(move_tmp_backup_savefile_to_actual_backup_savefile);
+E boolean NDECL(check_backup_exists);
 E int FDECL(restore_backup_savefile, (BOOLEAN_P));
 E int NDECL(delete_backup_savefile);
 E int NDECL(delete_tmp_backup_savefile);

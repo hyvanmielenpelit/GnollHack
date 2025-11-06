@@ -25,6 +25,9 @@ static boolean tried_heaplog = FALSE;
 #endif
 
 long *FDECL(alloc, (size_t));
+#ifdef GNOLLHACK_MAIN_PROGRAM
+extern void FDECL(set_panic_handling, (int, BOOLEAN_P));
+#endif
 extern void VDECL(panic, (const char *, ...)) PRINTF_F(1, 2);
 
 long *
@@ -49,6 +52,9 @@ register size_t lth;
 #ifndef MONITOR_HEAP
     if (!ptr)
     {
+#ifdef GNOLLHACK_MAIN_PROGRAM
+        set_panic_handling(2, TRUE);
+#endif
         panic("Memory allocation failure; cannot get %zu bytes", lth);
         return (long*)0;
     }
