@@ -10230,10 +10230,7 @@ int64_t id_cost;
                 ESHK(mtmp)->credit -= charged_id_cost;
                 if (ESHK(mtmp)->credit < 0)
                 {
-                    charged_id_cost = charged_id_cost + ESHK(mtmp)->credit;
                     ESHK(mtmp)->credit = 0L;
-                    if (charged_id_cost <= 0)
-                        skipmoney = TRUE;
                 }
                 else
                 {
@@ -10243,8 +10240,8 @@ int64_t id_cost;
                 deducted_credit_amount = oldshkcredit - shkcredit;
             }
 
-            if(!skipmoney)
-                money2mon(mtmp, charged_id_cost);
+            if(!skipmoney && charged_id_cost - deducted_credit_amount > 0)
+                money2mon(mtmp, charged_id_cost - deducted_credit_amount);
             uinvgold = money_cnt(invent);
             umoney = uinvgold + shkcredit;
             bot();
