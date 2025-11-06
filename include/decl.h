@@ -203,7 +203,7 @@ E NEARDATA struct sinfo {
     boolean animation_hangup;  /* animation may be hanging up the game; skip drawing animations */
     int something_worth_saving; /* in case of panic */
     int panicking;              /* `panic' is in progress */
-    int panic_handling;         /* special info how to handle the panic; 1 = safe to do a full game reset on failed restore */
+    int panic_handling;         /* special info how to handle the panic; 1 = safe to do a full game reset on failed restore; 2 = ask replacing save file with backup; 3 = both 1 and 2 */
     int exiting;                /* an exit handler is executing */
     int exit_status;            /* status for exit */
     int freeing_dynamic_data;   /* freeing dynamic data */

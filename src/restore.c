@@ -1626,7 +1626,7 @@ register int fd;
             break;
         if (msgsize > (BUFSZ - 1))
         {
-            program_state.panic_handling = 1; /* Safe to do a full game reset */
+            program_state.panic_handling = 3; /* Safe to do a full game reset */
             panic("restore_msghistory: msg too big (%d)", msgsize);
             return;
         }
@@ -2592,7 +2592,7 @@ register size_t len;
                 (void) ask_delete_invalid_savefile("corrupted", TRUE);
                 error("Error restoring old game.");
             }
-            program_state.panic_handling = 1;
+            program_state.panic_handling = 3;
             panic("Error reading level file: buf1=%s, buf2=%s, buf3=%s, buf4=%s", debug_buf_1, debug_buf_2, debug_buf_3, debug_buf_4);
             return;
         }
