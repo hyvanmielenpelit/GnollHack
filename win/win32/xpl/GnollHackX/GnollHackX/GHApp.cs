@@ -1757,6 +1757,8 @@ namespace GnollHackX
 
             SleepMuteMode = true;
 
+            /* On MAUI on Android and iOS, moved saving game to SaveGameOnSleepAsync which is called in earlier events using a background task that should live long enough */
+#if !GNH_MAUI || (!ANDROID && !IOS) 
             if (IsAutoSaveUponSwitchingAppsOn)
             {
                 CancelSaveGame = false;
@@ -1781,8 +1783,52 @@ namespace GnollHackX
                     }
                 }
             }
+#endif
             CollectGarbage();
         }
+
+        public static async Task SaveGameOnSleepAsync()
+        {
+            if (IsAutoSaveUponSwitchingAppsOn)
+            {
+                CancelSaveGame = false;
+                GHGame game = CurrentGHGame;
+                if (game != null && !game.PlayingReplay && game.ActiveGamePage.IsGameOn)
+                {
+                    //Detect background app killing OS, mark that exit has been through going to sleep, and save the game
+                    try
+                    {
+                        Preferences.Set("WentToSleepWithGameOn", true);
+                        Preferences.Set("GameSaveResult", 0);
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.WriteLine(ex);
+                    }
+                    if (BatteryChargeLevel > 3) /* Save only if there is enough battery left to prevent save file corruption when the phone powers off */
+                    {
+                        if (game.ActiveGamePage.GameEnded && OperatingSystemKillsAppsOnBackground)
+                            game.ActiveGamePage.FastForwardRequested = true;
+                        await game.SaveGameAndWaitForFinishedConfirmation();
+                    }
+                }
+            }
+        }
+
+#if IOS
+        private static IntPtr _backgroundTaskId = UIKit.UIApplication.BackgroundTaskInvalid;
+        public static IntPtr BackgroundTaskId { get { return Interlocked.CompareExchange(ref _backgroundTaskId, 0, 0); } set { Interlocked.Exchange(ref _backgroundTaskId, value); } }
+        public static void EndBackgroundTask()
+        {
+            IntPtr localTaskId = BackgroundTaskId;
+            if (localTaskId != UIKit.UIApplication.BackgroundTaskInvalid)
+            {
+                UIKit.UIApplication.SharedApplication.EndBackgroundTask(localTaskId);
+                BackgroundTaskId = UIKit.UIApplication.BackgroundTaskInvalid;
+            }
+        }
+#endif
+
 
         public static bool PopAllModalRequested = false; /* Always used from MainThread */
         public static async Task PopAllModalPagesAsync(bool animated)

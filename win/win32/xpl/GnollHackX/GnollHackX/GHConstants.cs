@@ -1813,6 +1813,7 @@ namespace GnollHackX
         public const int MaxRefreshRate = 120;
         public const int PollingFrequency = 60;
         public const int PollingInterval = 15;
+        public const int SavePollingTimeoutCount = 2000;
         public const double DefaultTextWindowMaxWidth = 600.0;
         public const double WindowHideIntervals = 5.0;
         public const uint MainCanvasAnimationTime = 2500000;

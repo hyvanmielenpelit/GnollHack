@@ -23,6 +23,7 @@ using static System.Net.Mime.MediaTypeNames;
 using System.Collections;
 using System.Security.Cryptography;
 using SkiaSharp;
+using System.Threading.Tasks;
 #if SENTRY
 using Sentry.Protocol;
 #endif
@@ -162,6 +163,7 @@ namespace GnollHackX
                 }
                 GHApp.GameSaved = false;
                 GHApp.SavingGame = false;
+                SaveDoneConfirmed = true;
             }
             else if (_checkPointRequested)
             {
@@ -453,6 +455,26 @@ namespace GnollHackX
         public void SaveCheckPoint()
         {
             ResponseQueue.Enqueue(new GHResponse(this, GHRequestType.SaveInsuranceCheckPoint));
+        }
+
+        private static int _saveDoneConfirmed = 0;
+        public static bool SaveDoneConfirmed { get { return Interlocked.CompareExchange(ref _saveDoneConfirmed, 0, 0) != 0; } set { Interlocked.Exchange(ref _saveDoneConfirmed, value ? 1 : 0); } }
+
+        /* This is called from the UI thread */
+        public async Task SaveGameAndWaitForFinishedConfirmation()
+        {
+            if (PlayingReplay)
+                return;
+
+            SaveDoneConfirmed = false;
+            ResponseQueue.Enqueue(new GHResponse(this, GHRequestType.SaveGameAndWaitForResume));
+            /* This keeps background task and the app alive */
+            for (int i = 0; i < GHConstants.SavePollingTimeoutCount; i++)
+            {
+                await Task.Delay(GHConstants.PollingInterval);
+                if (SaveDoneConfirmed)
+                    return;
+            }
         }
 
 
@@ -2909,6 +2931,7 @@ namespace GnollHackX
                 case (int)gui_command_types.GUI_CMD_WAIT_FOR_RESUME:
                     if (PlayingReplay)
                         break;
+                    SaveDoneConfirmed = true;
                     GHApp.GameSaved = true;
                     GHApp.GameSaveResult = cmd_param;
                     GHApp.SavingGame = false;

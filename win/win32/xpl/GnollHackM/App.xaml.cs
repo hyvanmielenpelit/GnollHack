@@ -132,4 +132,6 @@ public partial class App : Application
         GHApp.RevertScreenResolution();
         base.CleanUp();
     }
+
+
 }

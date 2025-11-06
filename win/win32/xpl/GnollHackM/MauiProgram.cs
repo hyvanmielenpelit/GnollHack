@@ -13,11 +13,16 @@ using Microsoft.Maui.Platform;
 using Android.OS;
 using Android.Views;
 using Android.Content;
+using static Android.Provider.CalendarContract;
+using Microsoft.Maui.Controls.PlatformConfiguration;
+using AndroidX.Core.App;
+using Android.Content.PM;
 
 #endif
 
 #if IOS
 using GnollHackM.Platforms.iOS;
+using UIKit;
 #endif
 
 #if WINDOWS
@@ -332,7 +337,7 @@ public static class MauiProgram
                 {
                     androidLifecycleBuilder.OnCreate((activity, savedInstance) =>
                     {
-                        if (activity is ComponentActivity componentActivity)
+                        if (activity is AndroidX.Activity.ComponentActivity componentActivity)
                         {
                             componentActivity.GetFragmentManager()?.RegisterFragmentLifecycleCallbacks(new MyFragmentLifecycleCallbacks((fragmentManager, fragment) =>
                             {
@@ -375,8 +380,41 @@ public static class MauiProgram
                             }), false);
                         }
                     });
+                    //androidLifecycleBuilder.OnPause((activity) =>
+                    //{
+                    //    _ = Task.Run(async () => await GHApp.SaveGameOnSleepAsync());
+                    //});
+                    androidLifecycleBuilder.OnStop((activity) =>
+                    {
+                        var intent = new Intent(Android.App.Application.Context, typeof(SaveGameService));
+                        Android.App.Application.Context.StartService(intent);
+                    });
                 });
-            #endif
+#endif
+#if IOS
+            lifecycleBuilder.AddiOS(ios =>
+            {
+                ios.OnResignActivation((app) =>
+                {
+                    GHApp.BackgroundTaskId = UIApplication.SharedApplication.BeginBackgroundTask("SaveGameTask", () =>
+                    {
+                        GHApp.EndBackgroundTask();
+                    });
+
+                    Task.Run(async () =>
+                    {
+                        try
+                        {
+                            await GHApp.SaveGameOnSleepAsync();
+                        }
+                        finally
+                        {
+                            GHApp.EndBackgroundTask();
+                        }
+                    });
+                });
+            });
+#endif
             })
             .ConfigureFonts(fonts =>
             {
@@ -879,3 +917,63 @@ public class KeyboardHook
 }
 #endif
 
+#if ANDROID
+[Service(ForegroundServiceType = ForegroundService.TypeDataSync)]
+public class SaveGameService : Service
+{
+    public override IBinder OnBind(Intent intent)
+    {
+        return null;
+    }
+
+    const string CHANNEL_ID = "save_game_channel";
+
+    public override void OnCreate()
+    {
+        base.OnCreate();
+
+        if (Build.VERSION.SdkInt >= BuildVersionCodes.O)
+        {
+            var channel = new NotificationChannel(
+                CHANNEL_ID,
+                "Game Save Progress",
+                NotificationImportance.Low)
+            {
+                Description = "Used while saving your game data."
+            };
+
+            var manager = (NotificationManager)GetSystemService(NotificationService);
+            manager.CreateNotificationChannel(channel);
+        }
+    }
+
+    public override StartCommandResult OnStartCommand(Intent intent, StartCommandFlags flags, int startId)
+    {
+        // Create a foreground service notification (required on Android 8+)
+        var notification = new Notification.Builder(this, CHANNEL_ID)
+            .SetContentTitle("Saving Game")
+            .SetContentText("Please wait while your progress is saved.")
+            .SetSmallIcon(Android.Resource.Drawable.IcMenuSave)
+            .SetOngoing(true)
+            .Build();
+
+        StartForeground(1, notification);
+
+        // Do your save operation
+        Task.Run(async () =>
+        {
+            try
+            {
+                await GHApp.SaveGameOnSleepAsync();
+            }
+            finally
+            {
+                StopForeground(StopForegroundFlags.Remove);
+                StopSelf();
+            }
+        });
+
+        return StartCommandResult.NotSticky;
+    }
+}
+#endif
