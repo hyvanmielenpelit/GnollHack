@@ -1632,30 +1632,30 @@ uint64_t mkflags;
 
     int leveldiff = level_difficulty();
     /* Change type before init if need be*/
-    if (mkobj_type == MKOBJ_TYPE_NORMAL && (In_mines(&u.uz) || leveldiff < 10))
+    if (mkobj_type == MKOBJ_TYPE_NORMAL && (In_mines(&u.uz) || leveldiff < 10) && !Reflecting && Luck > -5)
     {
-        if (otyp == FROST_HORN || otyp == FIRE_HORN)
+        if ((otyp == FROST_HORN && !Cold_immunity && !Improved_cold_resistance) || (otyp == FIRE_HORN && !Fire_immunity && !Improved_fire_resistance))
         {
             otmp->otyp = !rn2(3) ? HORN_OF_CHAOS : !rn2(2) ? BRASS_HORN : TOOLED_HORN;
             otmp->material = objects[otmp->otyp].oc_material;
         }
-        else if (otmp->otyp == WAN_COLD || otmp->otyp == WAN_FIRE || otmp->otyp == WAN_LIGHTNING)
+        else if ((otmp->otyp == WAN_COLD && !Cold_immunity && !Improved_cold_resistance) || (otmp->otyp == WAN_FIRE && !Fire_immunity && !Improved_fire_resistance) || (otmp->otyp == WAN_LIGHTNING && !Shock_immunity && !Improved_shock_resistance))
         {
             otmp->otyp = !rn2(3) ? WAN_STRIKING : !rn2(2) ? WAN_DIGGING : WAN_SPEED_MONSTER;
             otmp->material = objects[otmp->otyp].oc_material;
         }
     }
     
-    if (mkobj_type == MKOBJ_TYPE_NORMAL && !Inhell) /* No instadeath wands on floor ever, except in Gehennom */
+    if (mkobj_type == MKOBJ_TYPE_NORMAL && !Inhell && !Reflecting && Luck > -5) /* No instadeath wands on floor ever, except in Gehennom, with bad luck, or with reflection and appropriate resistances */
     {
-        if (otmp->otyp == WAN_DEATH || otmp->otyp == WAN_DISINTEGRATION || otmp->otyp == WAN_PETRIFICATION)
+        if ((otmp->otyp == WAN_DEATH && !Death_resistance) || (otmp->otyp == WAN_DISINTEGRATION && !Disint_resistance) || (otmp->otyp == WAN_PETRIFICATION && !Stone_resistance))
         {
             otmp->otyp = !rn2(2) ? WAN_LIGHTNING : WAN_FIRE;
             otmp->material = objects[otmp->otyp].oc_material;
         }
     }
 
-    if ((mkobj_type == MKOBJ_TYPE_INITIAL && !discover) || ((mkobj_type == MKOBJ_TYPE_NORMAL || mkobj_type == MKOBJ_TYPE_CONTAINER) && (depth(&u.uz) == 1 || depth(&u.uz) == 2 || leveldiff < 5)))
+    if ((mkobj_type == MKOBJ_TYPE_INITIAL && !discover) || ((mkobj_type == MKOBJ_TYPE_NORMAL || mkobj_type == MKOBJ_TYPE_CONTAINER) && (depth(&u.uz) == 1 || depth(&u.uz) == 2 || leveldiff < 5) && Luck < 5))
     {
         if (otmp->otyp == WAN_WISHING)
         {
