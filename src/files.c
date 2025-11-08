@@ -1748,20 +1748,6 @@ move_tmp_backup_savefile_to_actual_backup_savefile(VOID_ARGS)
     return -1;
 }
 
-boolean
-check_backup_exists(VOID_ARGS)
-{
-    char bakbuf[FQN_MAX_FILENAME + BUFSZ];
-    const char* fq_save = fqname(SAVEF, SAVEPREFIX, 0);
-    Strcpy(bakbuf, fq_save);
-    print_special_savefile_extension(bakbuf, BACKUP_EXTENSION);
-    nh_uncompress(bakbuf);
-    if (access(bakbuf, F_OK) != 0)
-        return FALSE;
-    nh_compress(bakbuf);
-    return TRUE;
-}
-
 int
 restore_backup_savefile(dodelete_existing)
 boolean dodelete_existing;

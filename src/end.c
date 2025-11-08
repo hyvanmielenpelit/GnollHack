@@ -2796,7 +2796,7 @@ int status;
 
     if (program_state.panicking && restoring)
     {
-        if (sysopt.make_backup_savefiles && (program_state.panic_handling & 2) != 0 && check_backup_exists())
+        if (sysopt.make_backup_savefiles && (program_state.panic_handling & 2) != 0 && check_has_backup_savefile())
         {
             char res = special_yn_query("Replace Save File with Backup", "Your save file appears corrupted. Do you want to replace it with its backup?");
             if (res == 'y')
