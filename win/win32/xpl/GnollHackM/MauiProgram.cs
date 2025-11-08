@@ -332,7 +332,7 @@ public static class MauiProgram
 #endif
             .ConfigureLifecycleEvents(static lifecycleBuilder =>
             {
-            #if ANDROID
+#if ANDROID
                 lifecycleBuilder.AddAndroid(androidLifecycleBuilder =>
                 {
                     androidLifecycleBuilder.OnCreate((activity, savedInstance) =>
@@ -384,10 +384,25 @@ public static class MauiProgram
                     //{
                     //    _ = Task.Run(async () => await GHApp.SaveGameOnSleepAsync());
                     //});
-                    androidLifecycleBuilder.OnStop((activity) =>
+                    //androidLifecycleBuilder.OnStop((activity) =>
+                    //{
+                    //    var intent = new Intent(Android.App.Application.Context, typeof(SaveGameService));
+                    //    Android.App.Application.Context.StartService(intent);
+                    //});
+                    androidLifecycleBuilder.OnPause((activity) =>
                     {
-                        var intent = new Intent(Android.App.Application.Context, typeof(SaveGameService));
-                        Android.App.Application.Context.StartService(intent);
+                        try
+                        {
+                            if (activity.IsFinishing || !activity.HasWindowFocus)
+                            {
+                                var intent = new Intent(Android.App.Application.Context, typeof(SaveGameService));
+                                AndroidX.Core.Content.ContextCompat.StartForegroundService(Android.App.Application.Context, intent);
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            GHApp.MaybeWriteGHLog(ex.Message);
+                        }
                     });
                 });
 #endif
@@ -934,44 +949,71 @@ public class SaveGameService : Service
 
         if (Build.VERSION.SdkInt >= BuildVersionCodes.O)
         {
-            var channel = new NotificationChannel(
-                CHANNEL_ID,
-                "Game Save Progress",
-                NotificationImportance.Low)
+            try
             {
-                Description = "Used while saving your game data."
-            };
+                var channel = new NotificationChannel(
+                    CHANNEL_ID,
+                    "Game Save Progress",
+                    NotificationImportance.Low)
+                {
+                    Description = "Used while saving your game data."
+                };
 
-            var manager = (NotificationManager)GetSystemService(NotificationService);
-            manager.CreateNotificationChannel(channel);
+                var manager = (NotificationManager)GetSystemService(NotificationService);
+                manager.CreateNotificationChannel(channel);
+            }
+            catch (Exception ex)
+            {
+                GHApp.MaybeWriteGHLog(ex.Message);
+            }
         }
     }
 
+
+    private static int _isSaving = 0;
+    public static bool IsSaving { get { return Interlocked.CompareExchange(ref _isSaving, 0, 0) != 0; } set { Interlocked.Exchange(ref _isSaving, value ? 1 : 0); } }
+
     public override StartCommandResult OnStartCommand(Intent intent, StartCommandFlags flags, int startId)
     {
-        // Create a foreground service notification (required on Android 8+)
-        var notification = new Notification.Builder(this, CHANNEL_ID)
-            .SetContentTitle("Saving Game")
-            .SetContentText("Please wait while your progress is saved.")
-            .SetSmallIcon(Android.Resource.Drawable.IcMenuSave)
-            .SetOngoing(true)
-            .Build();
-
-        StartForeground(1, notification);
-
-        // Do your save operation
-        Task.Run(async () =>
+        try
         {
-            try
+            if (IsSaving)
             {
-                await GHApp.SaveGameOnSleepAsync();
-            }
-            finally
-            {
-                StopForeground(StopForegroundFlags.Remove);
                 StopSelf();
+                return StartCommandResult.NotSticky;
             }
-        });
+
+            IsSaving = true;
+
+            // Create a foreground service notification (required on Android 8+)
+            var notification = new Notification.Builder(this, CHANNEL_ID)
+                .SetContentTitle("Saving Game")
+                .SetContentText("Please wait while your progress is saved.")
+                .SetSmallIcon(Android.Resource.Drawable.IcMenuSave)
+                .SetOngoing(true)
+                .Build();
+
+            StartForeground(1, notification);
+
+            // Do your save operation
+            Task.Run(async () =>
+            {
+                try
+                {
+                    await GHApp.SaveGameOnSleepAsync();
+                }
+                finally
+                {
+                    IsSaving = false;
+                    StopForeground(StopForegroundFlags.Remove);
+                    StopSelf();
+                }
+            });
+        }
+        catch (Exception ex)
+        {
+            GHApp.MaybeWriteGHLog(ex.Message);
+        }
 
         return StartCommandResult.NotSticky;
     }
