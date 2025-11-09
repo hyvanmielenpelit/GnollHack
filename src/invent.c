@@ -1735,6 +1735,8 @@ struct obj *obj;
     obj->speflags &= ~(SPEFLAGS_GRABBED_FROM_YOU | SPEFLAGS_CAUGHT_IN_LEAVES | SPEFLAGS_PREVIOUSLY_WIELDED | SPEFLAGS_NO_PREVIOUS_WEAPON); /* You got it back / Not in leaves / Not previously held if was not in inventory */
     obj_clear_found(obj); /* Not relevant in inventory */
     obj->speflags |= SPEFLAGS_HAS_BEEN_PICKED_UP_BY_HERO; /* Has been owned by the hero */
+    obj->item_flags &= ~ITEM_FLAGS_FIRED_BY_MONSTER;
+    obj->firing_m_id = 0;
 
     addinv_core1(obj);
 

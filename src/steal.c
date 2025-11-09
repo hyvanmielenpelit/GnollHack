@@ -545,6 +545,8 @@ register struct obj *otmp;
         kickedobj = 0;
 
     obj_clear_found(otmp);
+    otmp->item_flags &= ~ITEM_FLAGS_FIRED_BY_MONSTER;
+    otmp->firing_m_id = 0;
 
     /* don't want hidden light source inside the monster; assumes that
        engulfers won't have external inventories; whirly monsters cause

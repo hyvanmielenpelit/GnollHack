@@ -1269,6 +1269,9 @@ m_move(mtmp, after)
 register struct monst *mtmp;
 register int after;
 {
+    if (!mtmp)
+        return 3;
+
     register int appr;
     xchar gx, gy, nix, niy, chcnt;
     int chi; /* could be schar except for stupid Sun-2 compiler */

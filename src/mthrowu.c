@@ -820,6 +820,8 @@ struct obj *obj;         /* missile (or stack providing it) */
     }
 
     singleobj->owornmask = 0; /* threw one of multiple weapons in hand? */
+    singleobj->item_flags |= ITEM_FLAGS_FIRED_BY_MONSTER;
+    singleobj->firing_m_id = mon->m_id;
 
     if ((singleobj->cursed || singleobj->greased) && (dx || dy) && !rn2(7)) {
         if (canseemon(mon) && flags.verbose) {

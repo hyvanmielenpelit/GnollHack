@@ -118,7 +118,7 @@ struct monst *mon;
             break;
         }
 
-        if (!obj->owornmask && obj != wep)
+        if (!obj->owornmask && obj != wep && !ammo_and_launcher(obj, wep))
             return obj;
     }
 
@@ -1295,7 +1295,9 @@ int udist;
      * Note: if apport == 1 then our behaviour is independent of udist.
      * Use udist+1 so steed won't cause divide by zero.
      */
-    if (droppables(mtmp)) 
+    boolean did_drop = FALSE;
+    boolean has_droppables = droppables(mtmp);
+    if (has_droppables)
     {
         if ((!rn2(udist + 1) || !rn2(edog->apport)) && mtmp->mwantstodrop && !mtmp->ispartymember && !mtmp->isminion && !is_packmule(mtmp->data))
             if (rn2(10) < edog->apport) 
@@ -1305,9 +1307,11 @@ int udist;
                     edog->apport--;
                 edog->dropdist = udist; /* hpscdi!jon */
                 edog->droptime = monstermoves;
+                did_drop = TRUE;
             }
     } 
-    else 
+
+    if (!has_droppables || ((mtmp->ispartymember || mtmp->isminion) && !did_drop))
     {
         if ((obj = level.objects[omx][omy]) != 0
             && !index(nofetch, obj->oclass)
@@ -1327,13 +1331,19 @@ int udist;
                 return dog_eat(mtmp, obj, omx, omy, FALSE);
 
             carryamt = can_carry(mtmp, obj);
-            if (carryamt > 0 && !obj->cursed && !is_obj_unique(obj) && !is_quest_artifact(obj) && !m_unpaid_item_no_pickup(mtmp, obj)
-                && !mtmp->issummoned && !mtmp->ispartymember && !mtmp->isminion && !is_packmule(mtmp->data)
+            boolean fired_ammunition = (obj->item_flags & ITEM_FLAGS_FIRED_BY_MONSTER) != 0 && obj->firing_m_id == mtmp->m_id;
+            if (carryamt > 0
+                && (!obj->cursed || !mon_eschews_cursed(mtmp) || cursed_items_are_positive_mon(mtmp))
+                && (!obj->blessed || !mon_eschews_blessed(mtmp)) 
+                && (!mon_eschews_silver(mtmp) || !obj_counts_as_silver(obj))
+                && (!mon_eschews_light(mtmp) || !obj_sheds_light(obj))
+                && !is_obj_unique(obj) && !is_quest_artifact(obj) && !m_unpaid_item_no_pickup(mtmp, obj)
+                && ((!mtmp->issummoned && !mtmp->ispartymember && !mtmp->isminion && !is_packmule(mtmp->data)) || fired_ammunition)
                 && could_reach_item(mtmp, obj->ox, obj->oy) && !onnopickup(obj->ox, obj->oy, mtmp) && !is_obj_no_pickup(obj))
             {
-                if (rn2(20) < edog->apport + 3)
+                if (rn2(20) < edog->apport + 3 || fired_ammunition)
                 {
-                    if (rn2(udist) || !rn2(edog->apport)) 
+                    if (rn2(max(1, udist)) || !rn2(max(1, edog->apport)) || fired_ammunition)
                     {
                         int shkpreaction = shk_chastise_pet(mtmp, obj, FALSE, FALSE);
                         if(!shkpreaction)

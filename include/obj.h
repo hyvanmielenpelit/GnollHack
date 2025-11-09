@@ -54,6 +54,7 @@ struct obj {
     uint64_t item_flags;  /* general purpose object flags, like speflags; different item_flags will prevent merging */
 #define ITEM_FLAGS_GIVEN_BY_HERO               0x00000001UL
 #define ITEM_FLAGS_MEMORY_OBJECT_LAMPLIT       0x00000002UL /* Lamplit for graphics but it does not have an associated light source */
+#define ITEM_FLAGS_FIRED_BY_MONSTER            0x00000004UL
 
     uint64_t speflags;    /* anything else that might be going on with an item, not affected by cancellation */
 
@@ -196,7 +197,7 @@ struct obj {
     Bitfield(mknown, 1);      /* mythic quality is known */
     Bitfield(rotknown, 1);    /* rotting status is known */
 
-    unsigned reserved;        /* reserved for, e.g., more bitfields */
+    unsigned firing_m_id;     /* m_id for monster that fired this object (for picking up back) */
 
     unsigned o_id_memory;     /* This is a memory object of this o_id */
     unsigned m_id_memory;     /* This is a memory object of this mimic m_id */
