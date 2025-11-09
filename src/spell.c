@@ -5101,6 +5101,7 @@ int spell;
                     spl_orderindx[n - 1] = spl_orderindx[n];
                 }
                 spl_orderindx[MAXSPELL - 1] = NO_SPELL;
+                break;
             }
             else
             {
@@ -5124,9 +5125,8 @@ int spell;
         else if (context.quick_cast_spell_no > spell) /* Has moved earlier in the list */
             context.quick_cast_spell_no--;
 
-        char buf[BUFSZ] = "";
         int multicolors[1] = { CLR_MSG_HINT };
-        pline_multi_ex(ATR_NONE, NO_COLOR, no_multiattrs, multicolors, buf, "You removed \'%s\' from your memory permanently.", spellnamebuf);
+        pline_multi_ex(ATR_NONE, NO_COLOR, no_multiattrs, multicolors, "You removed \'%s\' from your memory permanently.", spellnamebuf);
     }
 
     return 0;
