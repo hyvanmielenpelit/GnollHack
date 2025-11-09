@@ -172,6 +172,9 @@
                                 <controls:LabeledImageButton Grid.Column="6" x:Name="lSimpleMoreButton" LblText="More" ImgSourcePath="resource://GnollHackX.Assets.UI.more.png" BtnClicked="MoreButton_Clicked" />
                             </Grid>
                         </gnh:MeasurableStackLayout>
+                        <Grid.GestureRecognizers>
+                            <TapGestureRecognizer />
+                        </Grid.GestureRecognizers>
                     </gnh:MeasurableGrid>
                 </gnh:MeasurableGrid>
             </Grid>
