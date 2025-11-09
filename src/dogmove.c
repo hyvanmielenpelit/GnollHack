@@ -1296,7 +1296,7 @@ int udist;
      * Use udist+1 so steed won't cause divide by zero.
      */
     boolean did_drop = FALSE;
-    boolean has_droppables = droppables(mtmp);
+    boolean has_droppables = droppables(mtmp) != 0;
     if (has_droppables)
     {
         if ((!rn2(udist + 1) || !rn2(edog->apport)) && mtmp->mwantstodrop && !mtmp->ispartymember && !mtmp->isminion && !is_packmule(mtmp->data))
