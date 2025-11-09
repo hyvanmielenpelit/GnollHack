@@ -623,16 +623,19 @@ namespace GnollHackX.Pages.Game
         private readonly object _petDataLock = new object();
         private readonly List<GHPetDataItem> _petData = new List<GHPetDataItem>(8);
 
-        private readonly object _styleLock = new object();
         private int _shownMessageRows = GHConstants.DefaultMessageRows;
         private int _shownPetRows = GHConstants.DefaultPetRows;
+        private int _gridOpacity = 0;
+        private readonly object _styleLock = new object();
         private TTYCursorStyle _cursorStyle;
         private GHGraphicsStyle _graphicsStyle;
         private MapRefreshRateStyle _mapRefreshRate = MapRefreshRateStyle.MapFPS60;
 
-        public int NumDisplayedMessages { get { lock (_styleLock) { return _shownMessageRows; } } set { lock (_styleLock) { _shownMessageRows = value; } } }
+        public int NumDisplayedMessages { get { return Interlocked.CompareExchange(ref _shownMessageRows, 0, 0); } set { Interlocked.Exchange(ref _shownMessageRows, value); } }
         public int ActualDisplayedMessages { get { return ForceAllMessages ? (LongerMessageHistory ? GHConstants.MaxLongerMessageHistoryLength : GHConstants.AllMessageRows) : NumDisplayedMessages; } }
-        public int NumDisplayedPetRows { get { lock (_styleLock) { return _shownPetRows; } } set { lock (_styleLock) { _shownPetRows = value; } } }
+        public int NumDisplayedPetRows { get { return Interlocked.CompareExchange(ref _shownPetRows, 0, 0); } set { Interlocked.Exchange(ref _shownPetRows, value); } }
+        public int GridOpacity { get { return Interlocked.CompareExchange(ref _gridOpacity, 0, 0); } set { Interlocked.Exchange(ref _gridOpacity, value); } }
+
         public TTYCursorStyle CursorStyle { get { lock (_styleLock) { return _cursorStyle; } } set { lock (_styleLock) { _cursorStyle = value; } } }
         public GHGraphicsStyle GraphicsStyle { get { lock (_styleLock) { return _graphicsStyle; } } set { lock (_styleLock) { _graphicsStyle = value; } } }
         public MapRefreshRateStyle MapRefreshRate
@@ -1067,6 +1070,7 @@ namespace GnollHackX.Pages.Game
             ShowIgnoreStoppingButton = Preferences.Get("ShowIgnoreStoppingButton", false);
             ShowMemory = Preferences.Get("ShowMemory", false);
             MapGrid = Preferences.Get("MapGrid", false);
+            GridOpacity = Preferences.Get("GridOpacity", 0);
             HitPointBars = Preferences.Get("HitPointBars", false);
             ClassicStatusBar = Preferences.Get("ClassicStatusBar", GHConstants.IsDefaultStatusBarClassic);
             DesktopStatusBar = Preferences.Get("DesktopStatusBar", GHApp.IsDesktop);
@@ -5242,7 +5246,7 @@ namespace GnollHackX.Pages.Game
         }
 #endif
 
-        private void PaintMapUIElements(SKCanvas canvas, GHSkiaFontPaint textPaint, SKPaint paint, SKPathEffect pathEffect, int mapx, int mapy, float width, float height, float offsetX, float offsetY, float usedOffsetX, float usedOffsetY, float base_move_offset_x, float base_move_offset_y, float targetscale, long generalcountervalue, float usedFontSize, float mapFontAscent, int monster_height, bool loc_is_you, bool canspotself, bool usingGL, bool fixRects, bool mapGrid, bool hitPointBars, bool playerMark, bool monsterTargeting)
+        private void PaintMapUIElements(SKCanvas canvas, GHSkiaFontPaint textPaint, SKPaint paint, SKPathEffect pathEffect, int mapx, int mapy, float width, float height, float offsetX, float offsetY, float usedOffsetX, float usedOffsetY, float base_move_offset_x, float base_move_offset_y, float targetscale, long generalcountervalue, float usedFontSize, float mapFontAscent, int monster_height, bool loc_is_you, bool canspotself, bool usingGL, bool fixRects, bool mapGrid, int gridOpacity, bool hitPointBars, bool playerMark, bool monsterTargeting)
         {
             float scaled_y_height_change = 0;
             //float mapFontAscent = UsedMapFontAscent;
@@ -5258,7 +5262,7 @@ namespace GnollHackX.Pages.Game
 
                 textPaint.Style = SKPaintStyle.Stroke;
                 textPaint.StrokeWidth = 2.0f;
-                textPaint.Color = SKColors.Black;
+                textPaint.Color = _gridColorArray[gridOpacity];
                 textPaint.PathEffect = pathEffect;
                 SKPoint p0 = new SKPoint(tx, ty);
                 SKPoint p1 = new SKPoint(tx, ty + height);
@@ -7333,6 +7337,31 @@ namespace GnollHackX.Pages.Game
         private float _savedCanvasWidth = 0;
         private float _savedCanvasHeight = 0;
 
+        private readonly SKColor[] _gridColorArray = new SKColor[21]
+        {
+            SKColors.Black,
+            SKColors.Black.WithAlpha((255 * 5) / 100),
+            SKColors.Black.WithAlpha((255 * 10) / 100),
+            SKColors.Black.WithAlpha((255 * 15) / 100),
+            SKColors.Black.WithAlpha((255 * 20) / 100),
+            SKColors.Black.WithAlpha((255 * 25) / 100),
+            SKColors.Black.WithAlpha((255 * 30) / 100),
+            SKColors.Black.WithAlpha((255 * 35) / 100),
+            SKColors.Black.WithAlpha((255 * 40) / 100),
+            SKColors.Black.WithAlpha((255 * 45) / 100),
+            SKColors.Black.WithAlpha((255 * 50) / 100),
+            SKColors.Black.WithAlpha((255 * 55) / 100),
+            SKColors.Black.WithAlpha((255 * 60) / 100),
+            SKColors.Black.WithAlpha((255 * 65) / 100),
+            SKColors.Black.WithAlpha((255 * 70) / 100),
+            SKColors.Black.WithAlpha((255 * 75) / 100),
+            SKColors.Black.WithAlpha((255 * 80) / 100),
+            SKColors.Black.WithAlpha((255 * 85) / 100),
+            SKColors.Black.WithAlpha((255 * 90) / 100),
+            SKColors.Black.WithAlpha((255 * 95) / 100),
+            SKColors.Black,
+        };
+
         private void PaintMainGamePage(object sender, SKPaintSurfaceEventArgs e, bool isCanvasOnMainThread)
         {
             if (!IsMainCanvasOn || GHApp.IsReplaySearching)
@@ -7398,6 +7427,9 @@ namespace GnollHackX.Pages.Game
             bool mapWalkMode = MapWalkMode;
             bool walkArrows = WalkArrows;
             GHGraphicsStyle graphicsStyle = GraphicsStyle;
+            int gridOpacity = GridOpacity;
+            if (gridOpacity < 0 || gridOpacity > 20)
+                gridOpacity = 0;
 
             bool isLandscape = canvaswidth > canvasheight;
 
@@ -8045,7 +8077,7 @@ namespace GnollHackX.Pages.Game
                                                             {
                                                                 if (layer_idx == (int)layer_types.MAX_LAYERS + 1)
                                                                 {
-                                                                    PaintMapUIElements(canvas, textPaint, paint, pathEffect, mapx, mapy, width, height, offsetX, offsetY, usedOffsetX, usedOffsetY, base_move_offset_x, base_move_offset_y, targetscale, generalcountervalue, usedFontSize, mapFontAscent, monster_height, loc_is_you, canspotself, usingGL, fixRects, mapGrid, hitPointBars, playerMark, monsterTargeting);
+                                                                    PaintMapUIElements(canvas, textPaint, paint, pathEffect, mapx, mapy, width, height, offsetX, offsetY, usedOffsetX, usedOffsetY, base_move_offset_x, base_move_offset_y, targetscale, generalcountervalue, usedFontSize, mapFontAscent, monster_height, loc_is_you, canspotself, usingGL, fixRects, mapGrid, gridOpacity, hitPointBars, playerMark, monsterTargeting);
                                                                 }
                                                                 else
                                                                 {
@@ -8179,7 +8211,7 @@ namespace GnollHackX.Pages.Game
                                                         {
                                                             if (layer_idx == (int)layer_types.MAX_LAYERS + 1)
                                                             {
-                                                                PaintMapUIElements(canvas, textPaint, paint, pathEffect, mapx, mapy, width, height, offsetX, offsetY, usedOffsetX, usedOffsetY, base_move_offset_x, base_move_offset_y, targetscale, generalcountervalue, usedFontSize, mapFontAscent, monster_height, loc_is_you, canspotself, usingGL, fixRects, mapGrid, hitPointBars, playerMark, monsterTargeting);
+                                                                PaintMapUIElements(canvas, textPaint, paint, pathEffect, mapx, mapy, width, height, offsetX, offsetY, usedOffsetX, usedOffsetY, base_move_offset_x, base_move_offset_y, targetscale, generalcountervalue, usedFontSize, mapFontAscent, monster_height, loc_is_you, canspotself, usingGL, fixRects, mapGrid, gridOpacity, hitPointBars, playerMark, monsterTargeting);
                                                             }
                                                             else
                                                             {

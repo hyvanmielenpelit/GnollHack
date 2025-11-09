@@ -354,6 +354,50 @@
                                             HorizontalOptions="Start" />
                                 <Switch Grid.Column="1" x:Name="GridSwitch" HorizontalOptions="End" VerticalOptions="Center" />
                             </Grid>
+                            <Grid x:Name="GridOpacityGrid" ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
+                                <Label Text="Grid Opacity"
+                                            FontFamily="Underwood" TextColor="Black"
+                                            FontSize="15"
+                                            VerticalOptions="Center" 
+                                            HorizontalOptions="Start" />
+                                <Picker Grid.Column="1" x:Name="GridOpacityPicker"
+                                            Title="Select opacity"
+                                            FontFamily="Underwood" 
+                                            FontSize="16"
+                                            TextColor="Black"
+                                            TitleColor="Black"
+                                            HorizontalTextAlignment="End"
+                                            BackgroundColor="Transparent"
+                                            WidthRequest="175"
+                                            VerticalOptions="Center"
+                                            HorizontalOptions="End" >
+                                    <Picker.ItemsSource>
+                                        <x:Array Type="{x:Type x:String}">
+                                            <x:String>Default (100%)</x:String>
+                                            <x:String>5%</x:String>
+                                            <x:String>10%</x:String>
+                                            <x:String>15%</x:String>
+                                            <x:String>20%</x:String>
+                                            <x:String>25%</x:String>
+                                            <x:String>30%</x:String>
+                                            <x:String>35%</x:String>
+                                            <x:String>40%</x:String>
+                                            <x:String>45%</x:String>
+                                            <x:String>50%</x:String>
+                                            <x:String>55%</x:String>
+                                            <x:String>60%</x:String>
+                                            <x:String>65%</x:String>
+                                            <x:String>70%</x:String>
+                                            <x:String>75%</x:String>
+                                            <x:String>80%</x:String>
+                                            <x:String>85%</x:String>
+                                            <x:String>90%</x:String>
+                                            <x:String>95%</x:String>
+                                            <x:String>100%</x:String>
+                                        </x:Array>
+                                    </Picker.ItemsSource>
+                                </Picker>
+                            </Grid>
                             <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
                                 <Label Text="Hit Point Bars"
                                             FontFamily="Underwood" TextColor="Black"

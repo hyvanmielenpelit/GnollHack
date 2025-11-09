@@ -335,6 +335,13 @@ namespace GnollHackX.Pages.MainScreen
                 Preferences.Set("GraphicsStyle", GraphicsPicker.SelectedIndex);
             }
 
+            if (GridOpacityPicker.SelectedIndex > -1 && GridOpacityPicker.SelectedItem != null)
+            {
+                if (_gamePage != null)
+                    _gamePage.GridOpacity = GridOpacityPicker.SelectedIndex;
+                Preferences.Set("GridOpacity", GridOpacityPicker.SelectedIndex);
+            }
+
             if (RefreshRatePicker.SelectedIndex > -1 && RefreshRatePicker.SelectedItem != null && RefreshRatePicker.SelectedItem is MapRefreshRateItem)
             {
                 if (_gamePage != null)
@@ -1000,7 +1007,7 @@ namespace GnollHackX.Pages.MainScreen
 
         private void SetInitialValues()
         {
-            int cursor = 0, graphics = 0, savestyle = 0, maprefresh = -1, msgnum = 0, petrows = 0;
+            int cursor = 0, graphics = 0, gridopacity = 0, savestyle = 0, maprefresh = -1, msgnum = 0, petrows = 0;
             bool mem = false, fps = false, zoom = false, battery = false, showrecording = true, autoupload = false, gpu = GHApp.IsGPUDefault, disableauxgpu = false, platformloop = false, mipmap = false, simplecmdlayout = GHConstants.DefaultSimpleCmdLayout, showaltzoom = !GHConstants.DefaultSimpleCmdLayout, showtravelmode = !GHConstants.DefaultSimpleCmdLayout, showautodig = false, showignore = false, darkmode = false, windowedmode = false, bank = true, navbar = GHConstants.DefaultHideNavigation, statusbar = GHConstants.DefaultHideStatusBar;
             bool allowbones = true, allowpet = true, emptywishisnothing = true, doubleclick = GHApp.IsDesktop, getpositionarrows = false, recordgame = false, gzip = GHConstants.GZipIsDefaultReplayCompression, lighterdarkening = false, accuratedrawing = GHConstants.DefaultAlternativeLayerDrawing, html = GHConstants.DefaultHTMLDumpLogs, singledumplog = GHConstants.DefaultUseSingleDumpLog, streamingbanktomemory = false, streamingbanktodisk = false, wallends = GHConstants.DefaultDrawWallEnds;
             bool breatheanimations = GHConstants.DefaultBreatheAnimations; //, put2bag = GHConstants.DefaultShowPickNStashContextCommand, prevwep = GHConstants.DefaultShowPrevWepContextCommand;
@@ -1109,6 +1116,7 @@ namespace GnollHackX.Pages.MainScreen
                 cursor = Preferences.Get("CursorStyle", 1);
                 graphics = Preferences.Get("GraphicsStyle", 1);
                 mapgrid = Preferences.Get("MapGrid", false);
+                gridopacity = Preferences.Get("GridOpacity", 0);
                 forcemaxmsg = false; /* Always starts as false */
                 ForceMaxMessageSwitch.IsEnabled = false;
                 ForceMaxMessageLabel.TextColor = GHColors.Gray;
@@ -1167,6 +1175,7 @@ namespace GnollHackX.Pages.MainScreen
             {
                 cursor = (int)_gamePage.CursorStyle;
                 graphics = (int)_gamePage.GraphicsStyle;
+                gridopacity = (int)_gamePage.GridOpacity;
                 //maprefresh = (int)_gamePage.MapRefreshRate;
                 mapgrid = _gamePage.MapGrid;
                 forcemaxmsg = _gamePage.ForceAllMessages;
@@ -1225,6 +1234,7 @@ namespace GnollHackX.Pages.MainScreen
 
             CursorPicker.SelectedIndex = cursor;
             GraphicsPicker.SelectedIndex = graphics;
+            GridOpacityPicker.SelectedIndex = gridopacity;
             //RefreshRatePicker.SelectedIndex = Math.Min(RefreshRatePicker.Items.Count - 1, maprefresh);
             if (RefreshRatePicker.ItemsSource != null)
             {
