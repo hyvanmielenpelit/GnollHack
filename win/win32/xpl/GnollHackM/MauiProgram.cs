@@ -977,14 +977,6 @@ public class SaveGameService : Service
     {
         try
         {
-            if (IsSaving)
-            {
-                StopSelf();
-                return StartCommandResult.NotSticky;
-            }
-
-            IsSaving = true;
-
             // Create a foreground service notification (required on Android 8+)
             var notification = new Notification.Builder(this, CHANNEL_ID)
                 .SetContentTitle("Saving Game")
@@ -994,6 +986,15 @@ public class SaveGameService : Service
                 .Build();
 
             StartForeground(1, notification);
+
+            if (IsSaving)
+            {
+                StopForeground(StopForegroundFlags.Remove);
+                StopSelf();
+                return StartCommandResult.NotSticky;
+            }
+
+            IsSaving = true;
 
             // Do your save operation
             Task.Run(async () =>
