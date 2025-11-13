@@ -2550,7 +2550,8 @@ int64_t timeout;
         /* Do nothing */
     }
 
-    if (on_floor) {
+    if (on_floor) 
+    {
         x = obj->ox;
         y = obj->oy;
         if(cansee(x,y))
@@ -2560,21 +2561,23 @@ int64_t timeout;
             Strcpy(whosebuf, "The ");
         }
     }
-    else if (in_invent) {
+    else if (in_invent) 
+    {
         if (obj->owornmask)
             remove_worn_item(obj, TRUE);
 
         Strcpy(whosebuf, "Your ");
         canseeunsummon = TRUE;
     }
-    else if (obj->where == OBJ_MINVENT && obj->owornmask) {
+    else if (obj->where == OBJ_MINVENT && obj->owornmask) 
+    {
         if (obj == MON_WEP(obj->ocarry))
         {
             setmnotwielded(obj->ocarry, obj);
         }
         else
         {
-            
+            obj->owornmask = 0L;
         }
         if (obj->ocarry && canseemon(obj->ocarry))
         {
@@ -2584,14 +2587,16 @@ int64_t timeout;
             iswielded = FALSE; //Do not show this for monsters
         }
     }
-    else if (obj->where == OBJ_MIGRATING) {
+    else if (obj->where == OBJ_MIGRATING) 
+    {
         /* clear destination flag so that obfree()'s check for
            freeing a worn object doesn't get a false hit */
         obj->owornmask = 0L;
         canseeunsummon = FALSE;
     }
 
-    if (flags.verbose && canseeunsummon) {
+    if (flags.verbose && canseeunsummon) 
+    {
         char* bbname = xname(obj);
         boolean animon = FALSE;
         if (isok(x, y))
@@ -2611,13 +2616,24 @@ int64_t timeout;
         }
     }
 
+    /* Update statistics */
+    if (in_invent)
+    {
+        update_all_character_properties(canseeunsummon ? obj : (struct obj*)0, canseeunsummon);
+    }
+    else if (obj->where == OBJ_MINVENT && obj->ocarry)
+    {
+        update_all_mon_statistics(obj->ocarry, canseeunsummon);
+    }
 
-    //Destroy item
-    if (carried(obj)) {
+    /* Destroy item */
+    if (carried(obj)) 
+    {
         Sprintf(priority_debug_buf_3, "burn_object4: %d", obj->otyp);
         useupall(obj);
     }
-    else {
+    else 
+    {
         /* clear migrating obj's destination code
            so obfree won't think this item is worn */
         Strcpy(debug_buf_2, "unsummon_item");
@@ -2627,13 +2643,14 @@ int64_t timeout;
     }
     obj = (struct obj*) 0;
 
-    //Additional floor considerations
-    if (on_floor) {
+    /* Additional floor considerations */
+    if (on_floor) 
+    {
         struct monst* mtmp = m_at(x, y);
 
         /* a hiding monster may be exposed */
-        if (mtmp && !OBJ_AT(x, y) && mtmp->mundetected
-            && hides_under(mtmp->data)) {
+        if (mtmp && !OBJ_AT(x, y) && mtmp->mundetected && hides_under(mtmp->data)) 
+        {
             mtmp->mundetected = 0;
         }
         else if (x == u.ux && y == u.uy && u.uundetected && hides_under(youmonst.data))
