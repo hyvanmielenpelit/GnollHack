@@ -250,6 +250,11 @@ namespace GnollHackX.Pages.Game
             GHApp.BackButtonPressed -= BackButtonPressed;
         }
 
+        //protected override bool OnBackButtonPressed()
+        //{
+        //    return true;
+        //}
+
         private void btnGC_Clicked(object sender, EventArgs e)
         {
             MainLayout.IsEnabled = false;

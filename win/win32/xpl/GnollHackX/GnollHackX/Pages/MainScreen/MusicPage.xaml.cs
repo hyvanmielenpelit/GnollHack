@@ -165,15 +165,16 @@ namespace GnollHackX.Pages.MainScreen
 
         private async void Button_Clicked(object sender, EventArgs e)
         {
-            await ClosePageAsync();
+            await ClosePageAsync(true);
         }
 
-        private async Task ClosePageAsync()
+        private async Task ClosePageAsync(bool playClickedSound)
         {
             CloseButton.IsEnabled = false;
             _backPressed = true;
             GHApp.FmodService.StopAllUISounds();
-            GHApp.PlayButtonClickedSound();
+            if (playClickedSound)
+                GHApp.PlayButtonClickedSound();
             var page = await GHApp.Navigation.PopModalAsync();
             GHApp.FmodService.PlayUIMusic(GHConstants.IntroGHSound, GHConstants.IntroEventPath, GHConstants.IntroBankId, GHConstants.IntroMusicVolume, 1.0f);
             GHApp.FmodService.UnloadBanks(sound_bank_loading_type.Music);
@@ -189,7 +190,7 @@ namespace GnollHackX.Pages.MainScreen
                     try
                     {
                         if (CloseButton.IsEnabled)
-                            await ClosePageAsync();
+                            await ClosePageAsync(true);
                     }
                     catch (Exception ex)
                     {
@@ -227,13 +228,7 @@ namespace GnollHackX.Pages.MainScreen
         {
             if (!_backPressed)
             {
-                _backPressed = true;
-                CloseButton.IsEnabled = false;
-                GHApp.FmodService.StopAllUISounds();
-                var page = await GHApp.Navigation.PopModalAsync();
-                GHApp.FmodService.PlayUIMusic(GHConstants.IntroGHSound, GHConstants.IntroEventPath, GHConstants.IntroBankId, GHConstants.IntroMusicVolume, 1.0f);
-                GHApp.FmodService.UnloadBanks(sound_bank_loading_type.Music);
-                GHApp.DisconnectIViewHandlers(page);
+                await ClosePageAsync(false);
             }
             return false;
         }
@@ -246,6 +241,11 @@ namespace GnollHackX.Pages.MainScreen
         {
             GHApp.BackButtonPressed -= BackButtonPressed;
         }
+        //protected override bool OnBackButtonPressed()
+        //{
+        //    return true;
+        //}
+
 
         private void TapGestureRecognizer_Tapped(object sender, EventArgs e)
         {

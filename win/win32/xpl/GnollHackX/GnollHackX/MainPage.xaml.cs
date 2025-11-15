@@ -783,8 +783,16 @@ namespace GnollHackX
             UpdateMobileVersionLabel();
         }
 
+        private async Task<bool> BackButtonPressed(object sender, EventArgs e)
+        {
+            if (ExitButton.IsEnabled && ExitButton.IsVisible && StartButtonLayout.IsVisible)
+                await ExitApp();
+            return false;
+        }
+
         private async void ContentPage_Appearing(object sender, EventArgs e)
         {
+            GHApp.BackButtonPressed += BackButtonPressed;
             UpdateLayout();
             if (_firsttime)
             {
@@ -1395,9 +1403,9 @@ namespace GnollHackX
         private async Task ExitApp()
         {
             UpperButtonGrid.IsEnabled = false;
-            GHApp.PlayButtonClickedSound();
             ExitButton.IsEnabled = false;
             ExitButton.TextColor = GHColors.Red;
+            GHApp.PlayButtonClickedSound();
 
             bool hideautoupdatealert = Preferences.Get("HideAutoUpdateAlert", false);
             bool isfromgoogleplay = true;
@@ -1586,7 +1594,13 @@ namespace GnollHackX
 
         private void ContentPage_Disappearing(object sender, EventArgs e)
         {
+            GHApp.BackButtonPressed -= BackButtonPressed;
             carouselView.Stop();
+        }
+
+        protected override bool OnBackButtonPressed()
+        {
+            return true;
         }
 
         private double _currentPageWidth = 0;

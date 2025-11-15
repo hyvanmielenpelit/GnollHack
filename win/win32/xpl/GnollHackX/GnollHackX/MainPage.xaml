@@ -6,7 +6,8 @@
              x:Class="GnollHackX.MainPage"
              NavigationPage.HasNavigationBar="false"
              BackgroundColor="Black"
-             Appearing="ContentPage_Appearing" Disappearing ="ContentPage_Disappearing" >
+             Appearing="ContentPage_Appearing"
+             Disappearing ="ContentPage_Disappearing" >
 
     <Grid x:Name="RootGrid" HorizontalOptions="Fill" VerticalOptions="Fill">
         <AbsoluteLayout  HorizontalOptions="Fill" VerticalOptions="Fill" BackgroundColor="Black">

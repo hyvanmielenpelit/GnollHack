@@ -3,7 +3,9 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" 
              xmlns:gnollhackclient="clr-namespace:GnollHackM" xmlns:controls="clr-namespace:GnollHackM"
              BackgroundColor="Black"
-             x:Class="GnollHackM.EditorPage">
+             x:Class="GnollHackM.EditorPage"
+             Appearing="ContentPage_Appearing"
+             Disappearing="ContentPage_Disappearing">
     
         <Grid x:Name="RootGrid">
             <gnollhackclient:BackgroundView x:Name="bkgView" BackgroundStyle="Automatic" BackgroundBitmap="AutoMenuBackground" BorderStyle="Simple" HorizontalOptions="Fill" VerticalOptions="Fill"/>

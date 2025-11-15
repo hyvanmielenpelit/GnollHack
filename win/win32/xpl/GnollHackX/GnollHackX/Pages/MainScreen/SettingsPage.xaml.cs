@@ -312,11 +312,6 @@ namespace GnollHackX.Pages.MainScreen
             RefreshRatePicker.SelectedIndex = selIdx;
         }
 
-        private void ContentPage_Disappearing(object sender, EventArgs e)
-        {
-            GHApp.BackButtonPressed -= BackButtonPressed;
-        }
-
         private async Task SetSettingValues()
         {
             _doChangeVolume = false;
@@ -998,11 +993,6 @@ namespace GnollHackX.Pages.MainScreen
 
             if(_gamePage != null)
                 _gamePage.UpdateButtonAndUISizes();
-        }
-
-        private void ContentPage_Appearing(object sender, EventArgs e)
-        {
-            GHApp.BackButtonPressed += BackButtonPressed;
         }
 
         private void SetInitialValues()
@@ -1839,14 +1829,15 @@ namespace GnollHackX.Pages.MainScreen
 
         private async void CloseButton_Clicked(object sender, EventArgs e)
         {
-            await ClosePageAsync();
+            await ClosePageAsync(true);
         }
 
-        private async Task ClosePageAsync()
+        private async Task ClosePageAsync(bool playClickedSound)
         {
             CloseButton.IsEnabled = false;
             _backPressed = true;
-            GHApp.PlayButtonClickedSound();
+            if (playClickedSound)
+                GHApp.PlayButtonClickedSound();
             SetTournamentModeLabelColors(TournamentSwitch.IsToggled);
             //PostXlogUserNameLabel.TextColor = GHApp.DarkMode ? GHColors.White : GHColors.Black;
             BonesAllowedUsersLabel.TextColor = GHApp.DarkMode ? GHColors.White : GHColors.Black;
@@ -1858,6 +1849,7 @@ namespace GnollHackX.Pages.MainScreen
                     await MainScrollView.ScrollToAsync(PostXlogUserNameGrid.X, PostXlogUserNameGrid.Y, true);
                     PostXlogUserNameEntry.Focus();
                     CloseButton.IsEnabled = true;
+                    _backPressed = false;
                     return;
                 }
             }
@@ -1869,6 +1861,7 @@ namespace GnollHackX.Pages.MainScreen
                     await MainScrollView.ScrollToAsync(BonesAllowedUsersGrid.X, BonesAllowedUsersGrid.Y, true);
                     BonesAllowedUsersEntry.Focus();
                     CloseButton.IsEnabled = true;
+                    _backPressed = false;
                     return;
                 }
             }
@@ -1901,6 +1894,7 @@ namespace GnollHackX.Pages.MainScreen
                         PopupOkButton.IsEnabled = true;
                         PopupGrid.IsVisible = true;
                         CloseButton.IsEnabled = true;
+                        _backPressed = false;
                         await MainScrollView.ScrollToAsync(0, PostXlogUserNameGrid.Y, true);
                         return;
                     }
@@ -1948,7 +1942,7 @@ namespace GnollHackX.Pages.MainScreen
                             else
                             {
                                 if (CloseButton.IsEnabled)
-                                    await ClosePageAsync();
+                                    await ClosePageAsync(true);
                             }
                         }
                     }
@@ -2104,15 +2098,18 @@ namespace GnollHackX.Pages.MainScreen
         {
             if (!_backPressed)
             {
-                _backPressed = true;
-                CloseButton.IsEnabled = false;
-                await MaybeShowPleaseWait();
-                await SetSettingValues();
-                GHApp.CurrentMainPage?.InvalidateCarousel();
-                var page = await GHApp.Navigation.PopModalAsync();
-                GHApp.DisconnectIViewHandlers(page);
+                await ClosePageAsync(false);
             }
             return false;
+        }
+
+        private void ContentPage_Appearing(object sender, EventArgs e)
+        {
+            GHApp.BackButtonPressed += BackButtonPressed;
+        }
+        private void ContentPage_Disappearing(object sender, EventArgs e)
+        {
+            GHApp.BackButtonPressed -= BackButtonPressed;
         }
 
         private void VolumeSlider_ValueChanged(object sender, ValueChangedEventArgs e)
@@ -2607,10 +2604,10 @@ namespace GnollHackX.Pages.MainScreen
             }
         }
 
-        protected override bool OnBackButtonPressed()
-        {
-            return true;
-        }
+        //protected override bool OnBackButtonPressed()
+        //{
+        //    return true;
+        //}
 
         private void PostDiagnosticDataLabel_TapGestureRecognizer_Tapped(object sender, EventArgs e)
         {

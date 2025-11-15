@@ -823,17 +823,37 @@ namespace GnollHackX.Pages.MainScreen
 
         private async void CloseButton_Clicked(object sender, EventArgs e)
         {
-            await ClosePageAsync();
+            await ClosePageAsync(true);
         }
 
-        private async Task ClosePageAsync()
+        private async Task ClosePageAsync(bool playClickedSound)
         {
             CloseButton.IsEnabled = false;
-            GHApp.PlayButtonClickedSound();
+            _backPressed = true;
+            if (playClickedSound)
+                GHApp.PlayButtonClickedSound();
             var page = await GHApp.Navigation.PopModalAsync();
             GHApp.DisconnectIViewHandlers(page);
         }
 
+        private bool _backPressed = false;
+        private async Task<bool> BackButtonPressed(object sender, EventArgs e)
+        {
+            if (!_backPressed)
+            {
+                await ClosePageAsync(false);
+            }
+            return false;
+        }
+
+        private void ContentPage_Appearing(object sender, EventArgs e)
+        {
+            GHApp.BackButtonPressed += BackButtonPressed;
+        }
+        private void ContentPage_Disappearing(object sender, EventArgs e)
+        {
+            GHApp.BackButtonPressed -= BackButtonPressed;
+        }
         private double _currentPageWidth = 0;
         private double _currentPageHeight = 0;
         protected override void OnSizeAllocated(double width, double height)
@@ -1922,7 +1942,7 @@ namespace GnollHackX.Pages.MainScreen
                         else
                         {
                             if (CloseButton.IsEnabled)
-                                await ClosePageAsync();
+                                await ClosePageAsync(true);
                         }
                     }
                     catch (Exception ex)

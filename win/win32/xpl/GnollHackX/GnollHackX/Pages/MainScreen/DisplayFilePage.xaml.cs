@@ -72,14 +72,15 @@ namespace GnollHackX.Pages.MainScreen
 
         private async void CloseButton_Clicked(object sender, EventArgs e)
         {
-            await ClosePageAsync();
+            await ClosePageAsync(true);
         }
 
-        private async Task ClosePageAsync()
+        private async Task ClosePageAsync(bool playClickSound)
         {
             CloseButton.IsEnabled = false;
             _backPressed = true;
-            GHApp.PlayButtonClickedSound();
+            if (playClickSound)
+                GHApp.PlayButtonClickedSound();
             var page = await GHApp.Navigation.PopModalAsync();
             GHApp.DisconnectIViewHandlers(page);
         }
@@ -93,7 +94,7 @@ namespace GnollHackX.Pages.MainScreen
                     try
                     {
                         if (CloseButton.IsEnabled)
-                            await ClosePageAsync();
+                            await ClosePageAsync(true);
                     }
                     catch (Exception ex)
                     {
@@ -113,10 +114,7 @@ namespace GnollHackX.Pages.MainScreen
         {
             if (!_backPressed)
             {
-                _backPressed = true;
-                CloseButton.IsEnabled = false;
-                var page = await GHApp.Navigation.PopModalAsync();
-                GHApp.DisconnectIViewHandlers(page);
+                await ClosePageAsync(false);
             }
             return false;
         }
@@ -125,6 +123,11 @@ namespace GnollHackX.Pages.MainScreen
         {
             GHApp.BackButtonPressed -= BackButtonPressed;
         }
+        //protected override bool OnBackButtonPressed()
+        //{
+        //    return true;
+        //}
+
 
         public bool ReadFile(out string errorMessage)
         {

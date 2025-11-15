@@ -64,6 +64,9 @@ namespace GnollHackX.Pages.MainScreen
         private async void OKButton_Clicked(object sender, EventArgs e)
         {
             OKButton.IsEnabled = false;
+            CancelButton.IsEnabled = false;
+            ResetButton.IsEnabled = false;
+            _backPressed = true;
             GHApp.PlayButtonClickedSound();
             if (_textChanged)
             {
@@ -96,6 +99,9 @@ namespace GnollHackX.Pages.MainScreen
                 else
                 {
                     OKButton.IsEnabled = true;
+                    CancelButton.IsEnabled = true;
+                    ResetButton.IsEnabled = true;
+                    _backPressed = false;
                 }
             }
             else
@@ -109,7 +115,7 @@ namespace GnollHackX.Pages.MainScreen
 
         private async void CancelButton_Clicked(object sender, EventArgs e)
         {
-            await CloseCore();
+            await ClosePageAsync(true);
         }
 
         public void ClosePage()
@@ -121,7 +127,7 @@ namespace GnollHackX.Pages.MainScreen
                     try
                     {
                         if (CancelButton.IsEnabled)
-                            await CloseCore();
+                            await ClosePageAsync(true);
                     }
                     catch (Exception ex)
                     {
@@ -136,10 +142,14 @@ namespace GnollHackX.Pages.MainScreen
             }
         }
 
-        private async Task CloseCore()
+        private async Task ClosePageAsync(bool playClickedSound)
         {
+            OKButton.IsEnabled = false;
             CancelButton.IsEnabled = false;
-            GHApp.PlayButtonClickedSound();
+            ResetButton.IsEnabled = false;
+            _backPressed = true;
+            if (playClickedSound)
+                GHApp.PlayButtonClickedSound();
             if (_textChanged)
             {
                 bool answer = await GHApp.DisplayMessageBox(this, "Close without Saving?", "Are you sure to close without saving changes?", "Yes", "No");
@@ -152,7 +162,10 @@ namespace GnollHackX.Pages.MainScreen
                 }
                 else
                 {
+                    OKButton.IsEnabled = true;
                     CancelButton.IsEnabled = true;
+                    ResetButton.IsEnabled = true;
+                    _backPressed = false;
                 }
             }
             else
@@ -163,10 +176,36 @@ namespace GnollHackX.Pages.MainScreen
                 GHApp.DisconnectIViewHandlers(page);
             }
         }
+        private bool _backPressed = false;
+        private async Task<bool> BackButtonPressed(object sender, EventArgs e)
+        {
+            if (!_backPressed)
+            {
+                await ClosePageAsync(false);
+            }
+            return false;
+        }
+
+        private void ContentPage_Appearing(object sender, EventArgs e)
+        {
+            GHApp.BackButtonPressed += BackButtonPressed;
+        }
+        private void ContentPage_Disappearing(object sender, EventArgs e)
+        {
+            GHApp.BackButtonPressed -= BackButtonPressed;
+        }
+        //protected override bool OnBackButtonPressed()
+        //{
+        //    return true;
+        //}
+
 
         private async void ResetButton_Clicked(object sender, EventArgs e)
         {
+            OKButton.IsEnabled = false;
+            CancelButton.IsEnabled = false;
             ResetButton.IsEnabled = false;
+            _backPressed = true;
             GHApp.PlayButtonClickedSound();
             bool answer = await GHApp.DisplayMessageBox(this, "Reset Options File?", "Are you sure to reset the options file?", "Yes", "No");
             if(answer)
@@ -179,7 +218,10 @@ namespace GnollHackX.Pages.MainScreen
             }
             else
             {
+                OKButton.IsEnabled = true;
+                CancelButton.IsEnabled = true;
                 ResetButton.IsEnabled = true;
+                _backPressed = false;
             }
         }
 
