@@ -197,6 +197,7 @@ namespace GnollHackX.Pages.MainScreen
         private async Task ClosePageAsync()
         {
             AboutGrid.IsEnabled = false;
+            _backPressed = true;
             GHApp.PlayButtonClickedSound();
             GHApp.CurrentMainPage?.InvalidateCarousel();
             var page = await GHApp.Navigation.PopModalAsync();

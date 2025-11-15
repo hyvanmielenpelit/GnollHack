@@ -4,7 +4,9 @@
              xmlns:gnh="clr-namespace:GnollHackX" 
              xmlns:controls="clr-namespace:GnollHackX.Controls"
              BackgroundColor="Black"
-             x:Class="GnollHackX.Pages.Game.WikiPage">
+             x:Class="GnollHackX.Pages.Game.WikiPage"
+             Appearing="ContentPage_Appearing"
+             Disappearing="ContentPage_Disappearing">
     <ContentPage.Content>
         <Grid x:Name="RootGrid" BackgroundColor="Black" HorizontalOptions="Fill" VerticalOptions="Fill">
             <Grid.RowDefinitions>

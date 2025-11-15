@@ -137,6 +137,7 @@ namespace GnollHackX.Pages.Game
         private async Task BackToGame()
         {
             MainLayout.IsEnabled = false;
+            _backPressed = true;
             GHApp.PlayButtonClickedSound();
             GHApp.CollectNursery();
             var page = await GHApp.Navigation.PopModalAsync();
@@ -218,11 +219,6 @@ namespace GnollHackX.Pages.Game
             MainLayout.IsEnabled = true;
         }
 
-        private void ContentPage_Appearing(object sender, EventArgs e)
-        {
-            GHApp.BackButtonPressed += BackButtonPressed;
-        }
-
         public void UpdateLayout()
         {
             MainLayout.IsEnabled = true;
@@ -242,6 +238,11 @@ namespace GnollHackX.Pages.Game
                 GHApp.DisconnectIViewHandlers(page);
             }
             return false;
+        }
+
+        private void ContentPage_Appearing(object sender, EventArgs e)
+        {
+            GHApp.BackButtonPressed += BackButtonPressed;
         }
 
         private void ContentPage_Disappearing(object sender, EventArgs e)

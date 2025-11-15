@@ -6,6 +6,7 @@
              x:Class="GnollHackX.Pages.Game.OutRipPage"
              x:DataType="gamepages:OutRipPage"
              BackgroundColor="Black"
+             Appearing="ContentPage_Appearing"
              Disappearing="ContentPage_Disappearing">
     <ContentPage.Content>
         <AbsoluteLayout x:Name="RootGrid" HorizontalOptions="Fill" VerticalOptions="Fill" BackgroundColor="Black" >

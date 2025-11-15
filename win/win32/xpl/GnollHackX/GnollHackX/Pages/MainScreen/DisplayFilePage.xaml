@@ -5,7 +5,8 @@
              xmlns:controls="clr-namespace:GnollHackX.Controls"
              BackgroundColor="Black"
              x:Class="GnollHackX.Pages.MainScreen.DisplayFilePage"
-             Appearing="ContentPage_Appearing">
+             Appearing="ContentPage_Appearing"
+             Disappearing="ContentPage_Disappearing">
     <ContentPage.Content>
         <Grid x:Name="RootGrid">
             <gnh:BackgroundView x:Name="bkgView" BackgroundStyle="Automatic" BackgroundBitmap="AutoMenuBackground" BorderStyle="Simple" HorizontalOptions="Fill" VerticalOptions="Fill"/>

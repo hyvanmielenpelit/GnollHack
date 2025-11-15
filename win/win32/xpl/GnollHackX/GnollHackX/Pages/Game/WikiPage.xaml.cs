@@ -126,6 +126,7 @@ namespace GnollHackX.Pages.Game
         private async Task ClosePageAsync()
         {
             CloseButton.IsEnabled = false;
+            _backPressed = true;
             GHApp.PlayButtonClickedSound();
             var page = await GHApp.Navigation.PopModalAsync();
             GHApp.DisconnectIViewHandlers(page);
@@ -178,5 +179,28 @@ namespace GnollHackX.Pages.Game
                 UpdateNavigationButtons();
             }
         }
+
+        private bool _backPressed = false;
+        private async Task<bool> BackButtonPressed(object sender, EventArgs e)
+        {
+            if (!_backPressed)
+            {
+                _backPressed = true;
+                CloseButton.IsEnabled = false;
+                var page = await GHApp.Navigation.PopModalAsync();
+                GHApp.DisconnectIViewHandlers(page);
+            }
+            return false;
+        }
+
+        private void ContentPage_Appearing(object sender, EventArgs e)
+        {
+            GHApp.BackButtonPressed += BackButtonPressed;
+        }
+        private void ContentPage_Disappearing(object sender, EventArgs e)
+        {
+            GHApp.BackButtonPressed -= BackButtonPressed;
+        }
+
     }
 }

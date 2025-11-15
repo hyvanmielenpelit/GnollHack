@@ -171,6 +171,7 @@ namespace GnollHackX.Pages.MainScreen
         private async Task ClosePageAsync()
         {
             CloseButton.IsEnabled = false;
+            _backPressed = true;
             GHApp.FmodService.StopAllUISounds();
             GHApp.PlayButtonClickedSound();
             var page = await GHApp.Navigation.PopModalAsync();
@@ -227,6 +228,7 @@ namespace GnollHackX.Pages.MainScreen
             if (!_backPressed)
             {
                 _backPressed = true;
+                CloseButton.IsEnabled = false;
                 GHApp.FmodService.StopAllUISounds();
                 var page = await GHApp.Navigation.PopModalAsync();
                 GHApp.FmodService.PlayUIMusic(GHConstants.IntroGHSound, GHConstants.IntroEventPath, GHConstants.IntroBankId, GHConstants.IntroMusicVolume, 1.0f);

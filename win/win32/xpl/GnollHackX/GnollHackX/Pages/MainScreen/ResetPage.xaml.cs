@@ -221,7 +221,7 @@ namespace GnollHackX.Pages.MainScreen
 
         private async void Button_Clicked(object sender, EventArgs e)
         {
-            await CloseCore();
+            await ClosePageAsync();
         }
 
         public void ClosePage()
@@ -233,7 +233,7 @@ namespace GnollHackX.Pages.MainScreen
                     try
                     {
                         if (ResetGrid.IsEnabled)
-                            await CloseCore();
+                            await ClosePageAsync();
                     }
                     catch (Exception ex)
                     {
@@ -248,9 +248,10 @@ namespace GnollHackX.Pages.MainScreen
             }
         }
 
-        private async Task CloseCore()
+        private async Task ClosePageAsync()
         {
             ResetGrid.IsEnabled = false;
+            _backPressed = true;
             GHApp.PlayButtonClickedSound();
             GHApp.CurrentMainPage?.InvalidateCarousel();
             var page = await GHApp.Navigation.PopModalAsync();

@@ -391,6 +391,7 @@ namespace GnollHackX.Pages.MainScreen
         private async Task ClosePageAsync()
         {
             ImportExportGrid.IsEnabled = false;
+            _backPressed = true;
             GHApp.PlayButtonClickedSound();
             var page = await GHApp.Navigation.PopModalAsync();
             GHApp.DisconnectIViewHandlers(page);

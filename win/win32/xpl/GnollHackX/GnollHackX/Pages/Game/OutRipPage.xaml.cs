@@ -116,8 +116,25 @@ namespace GnollHackX.Pages.Game
             }
         }
 
+        private bool _backPressed = false;
+        private async Task<bool> BackButtonPressed(object sender, EventArgs e)
+        {
+            if (!_backPressed)
+            {
+                _backPressed = true;
+            }
+            await Task.FromResult(0);
+            return false;
+        }
+
+        private void ContentPage_Appearing(object sender, EventArgs e)
+        {
+            GHApp.BackButtonPressed += BackButtonPressed;
+        }
+
         private void ContentPage_Disappearing(object sender, EventArgs e)
         {
+            GHApp.BackButtonPressed -= BackButtonPressed;
             if (!_playingReplay && !_tapHide)
                 _gamePage.GenericButton_Clicked(sender, e, GHConstants.CancelChar);
         }
