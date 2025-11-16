@@ -1083,11 +1083,11 @@ register struct monst *mtmp;
     /*  Now, attack the player if possible - one attack set per monst
      */
 
-    if (!is_peaceful(mtmp) || is_crazed(mtmp) || (Conflict && !check_ability_resistance_success(mtmp, A_WIS, 0)))
+    boolean foundyou = (mtmp->mux == u.ux && mtmp->muy == u.uy);
+    boolean found_or_wildmiss_ok = (foundyou || m_cannotsenseu(mtmp) || Displaced || Underwater);
+    if (found_or_wildmiss_ok && (!is_peaceful(mtmp) || is_crazed(mtmp) || (Conflict && !check_ability_resistance_success(mtmp, A_WIS, 0))))
     {
-        boolean foundyou = (mtmp->mux == u.ux && mtmp->muy == u.uy);
-        boolean found_or_wildmiss_ok = (foundyou || m_cannotsenseu(mtmp) || Displaced || Underwater);
-        if (inrange && found_or_wildmiss_ok && !noattacks(mdat) && (Upolyd ? u.mh : u.uhp) > 0 && !scared && tmp != 3)
+        if (inrange && !noattacks(mdat) && (Upolyd ? u.mh : u.uhp) > 0 && !scared && tmp != 3)
         {
             Sprintf(debug_buf_4, "mattacku mon, mx:%d, my:%d, mux:%d, muy:%d, ux:%d, uy:%d, peaceful:%d, tame:%d, blinded:%d, crazed:%d, confused:%d, conflict:%d, displaced:%d",
                 (int)mtmp->mx, (int)mtmp->my, (int)mtmp->mux, (int)mtmp->muy, (int)u.ux, (int)u.uy,
