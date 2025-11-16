@@ -1085,10 +1085,17 @@ register struct monst *mtmp;
 
     if (!is_peaceful(mtmp) || is_crazed(mtmp) || (Conflict && !check_ability_resistance_success(mtmp, A_WIS, 0)))
     {
-        if (inrange && !noattacks(mdat)
-            && (Upolyd ? u.mh : u.uhp) > 0 && !scared && tmp != 3)
+        boolean foundyou = (mtmp->mux == u.ux && mtmp->muy == u.uy);
+        boolean found_or_wildmiss_ok = (foundyou || m_cannotsenseu(mtmp) || Displaced || Underwater);
+        if (inrange && found_or_wildmiss_ok && !noattacks(mdat) && (Upolyd ? u.mh : u.uhp) > 0 && !scared && tmp != 3)
+        {
+            Sprintf(debug_buf_4, "mattacku mon, mx:%d, my:%d, mux:%d, muy:%d, ux:%d, uy:%d, peaceful:%d, tame:%d, blinded:%d, crazed:%d, confused:%d, conflict:%d, displaced:%d",
+                (int)mtmp->mx, (int)mtmp->my, (int)mtmp->mux, (int)mtmp->muy, (int)u.ux, (int)u.uy,
+                is_peaceful(mtmp) != 0, is_tame(mtmp) != 0, is_blinded(mtmp) != 0, is_crazed(mtmp) != 0, is_confused(mtmp) != 0,
+                Conflict != 0, Displaced != 0);
             if (mattacku(mtmp))
                 return 1; /* monster died (e.g. exploded) */
+        }
 
         if (mtmp->wormno)
             wormhitu(mtmp);
