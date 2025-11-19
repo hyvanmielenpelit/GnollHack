@@ -356,7 +356,8 @@ namespace GnollHackX
                 int tile_animation_idx = GHApp.GnollHackService.GetTileAnimationIndexFromGlyph(abs_glyph);
                 
                 long counter_value;
-                if (refPage == null)
+                GHGame ghGame = GHApp.CurrentGHGame;
+                if (ghGame == null)
                 {
                     counter_value = 0;
                 }
@@ -364,7 +365,7 @@ namespace GnollHackX
                 {
                     //lock (refPage.AnimationTimerLock)
                     {
-                        counter_value = Interlocked.CompareExchange(ref refPage.AnimationTimers.general_animation_counter, 0L, 0L);;
+                        counter_value = Interlocked.CompareExchange(ref ghGame.AnimationTimers.general_animation_counter, 0L, 0L);;
                     }
                 }
                 ntile = GHApp.GnollHackService.GetAnimatedTile(ntile, tile_animation_idx, (int)animation_play_types.ANIMATION_PLAY_TYPE_ALWAYS, counter_value, out anim_frame_idx, out main_tile_idx, out mapAnimated, ref autodraw);

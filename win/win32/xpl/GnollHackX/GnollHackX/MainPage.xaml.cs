@@ -834,6 +834,7 @@ namespace GnollHackX
                         curGame.SetActiveGamePage(gamePage);
                         await GHApp.Navigation.PushModalAsync(gamePage, false);
                         gamePage.StartExistingGame();
+                        curGame.ReactivateGame();
                     }
                     else
                     {
