@@ -80,15 +80,16 @@ namespace GnollHackX.Pages.MainScreen
             long CurrentPlayMinutes = (CurrentPlayTime % 3600) / 60;
             long CurrentPlaySeconds = CurrentPlayTime - CurrentPlayHours * 3600 - CurrentPlayMinutes * 60;
 
-            if (_gamePage != null && _gamePage.CurrentGame != null)
+            var curGame = GHApp.CurrentGHGame;
+            if (curGame != null)
             {
-                long GameDurationTime = _gamePage.CurrentGame.GamePlayTime;
+                long GameDurationTime = curGame.GamePlayTime;
                 long GameDurationHours = GameDurationTime / 3600;
                 long GameDurationMinutes = (GameDurationTime % 3600) / 60;
                 long GameDurationSeconds = GameDurationTime - GameDurationHours * 3600 - GameDurationMinutes * 60;
                 GameDurationLabel.Text = GameDurationHours + " h " + GameDurationMinutes + " min " + GameDurationSeconds + " s";
 
-                long SessionPlayTime = _gamePage.CurrentGame.SessionPlayTime;
+                long SessionPlayTime = curGame.SessionPlayTime;
                 long SessionPlayHours = SessionPlayTime / 3600;
                 long SessionPlayMinutes = (SessionPlayTime % 3600) / 60;
                 long SessionPlaySeconds = SessionPlayTime - SessionPlayHours * 3600 - SessionPlayMinutes * 60;

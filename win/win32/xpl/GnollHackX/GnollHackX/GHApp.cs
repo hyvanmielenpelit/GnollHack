@@ -200,6 +200,19 @@ namespace GnollHackX
             InitializePlatformRenderLoop();
         }
 
+        private static int _mainPageStarts = 0;
+        public static int MainPageStarts { get { return Interlocked.CompareExchange(ref _mainPageStarts, 0, 0); } set { Interlocked.Exchange(ref _mainPageStarts, value); } }
+        public static void IncrementMainPageStarts()
+        {
+            Interlocked.Increment(ref _mainPageStarts);
+        }
+
+        private static int _gameStarted = 0;
+        public static bool GameStarted { get { return Interlocked.CompareExchange(ref _gameStarted, 0, 0) != 0; } set { Interlocked.Exchange(ref _gameStarted, value ? 1 : 0); } }
+        
+        private static int _mainScreenMusicStarted = 0;
+        public static bool MainScreenMusicStarted { get { return Interlocked.CompareExchange(ref _mainScreenMusicStarted, 0, 0) != 0; } set { Interlocked.Exchange(ref _mainScreenMusicStarted, value ? 1 : 0); } }
+
         private static int _doAppExitOnReturn = 0;
         public static bool DoAppExitOnReturn { get { return Interlocked.CompareExchange(ref _doAppExitOnReturn, 0, 0) != 0; } set { Interlocked.Exchange(ref _doAppExitOnReturn, value ? 1 : 0); } }
 
@@ -1251,18 +1264,34 @@ namespace GnollHackX
 #else
         public const string AppResourceName = "GnollHackX";
 #endif
-        public static MainPage CurrentMainPage { get; set; }
-        public static GamePage CurrentGamePage { get; set; }
+        private static MainPage _currentMainPage = null;
+        public static MainPage CurrentMainPage
+        {
+            get { return Interlocked.CompareExchange(ref _currentMainPage, null, null); }
+            set { Interlocked.Exchange(ref _currentMainPage, value); }
+        }
+
+        private static GamePage _currentGamePage = null;
+        public static GamePage CurrentGamePage
+        {
+            get { return Interlocked.CompareExchange(ref _currentGamePage, null, null); }
+            set { Interlocked.Exchange(ref _currentGamePage, value); }
+        }
 
         //private static readonly object _currentGHGameLock = new object();
         private static GHGame _currentGHGame = null;
         public static GHGame CurrentGHGame 
         {
-            //get { lock (_currentGHGameLock) { return _currentGHGame; } } 
-            //set { lock (_currentGHGameLock) { _currentGHGame = value; } } 
             get { return Interlocked.CompareExchange(ref _currentGHGame, null, null); }
             set { Interlocked.Exchange(ref _currentGHGame, value); }
         }
+        private static Thread _gnhthread = null;
+        public static Thread GnhThread
+        {
+            get { return Interlocked.CompareExchange(ref _gnhthread, null, null); }
+            set { Interlocked.Exchange(ref _gnhthread, value); }
+        }
+
         public static int GameSaveStatus = 0;
         public static bool InformAboutGameTermination = false;
         public static bool InformAboutCrashReport = false;

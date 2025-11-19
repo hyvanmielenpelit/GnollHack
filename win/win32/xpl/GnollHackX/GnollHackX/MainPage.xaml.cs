@@ -50,10 +50,6 @@ namespace GnollHackX
 {
     public partial class MainPage : ContentPage
     {
-        //private readonly object _gameStartedLock = new object();
-        private int _gameStarted = 0;
-        public bool GameStarted { get { return Interlocked.CompareExchange(ref _gameStarted, 0, 0) != 0; } set { Interlocked.Exchange(ref _gameStarted, value ? 1 : 0); } }
-
         //private readonly object _generalTimerLock = new object();
         private int _generaTimerIsOn = 0;
         public bool GeneralTimerIsOn { get { return Interlocked.CompareExchange(ref _generaTimerIsOn, 0, 0) != 0; } set { Interlocked.Exchange(ref _generaTimerIsOn, value ? 1 : 0); } }
@@ -74,6 +70,7 @@ namespace GnollHackX
         public MainPage()
         {
             InitializeComponent();
+            GHApp.IncrementMainPageStarts();
             GHApp.CurrentMainPage = this;
             On<iOS>().SetUseSafeArea(true);
             UIUtils.SetPageThemeOnHandler(this, GHApp.DarkMode);
@@ -168,7 +165,7 @@ namespace GnollHackX
 
         private bool DoGeneralTimerTick()
         {
-            if (GameStarted || StopGeneralTimer)
+            if (GHApp.GameStarted || StopGeneralTimer)
             {
                 GeneralTimerIsOn = false;
                 StopGeneralTimer = false;
@@ -260,7 +257,7 @@ namespace GnollHackX
                         && (GHApp.XlogUserNameVerified || missingorincorrectcredentials || (!GHApp.PostingXlogEntries && !dopostbones && !dopostreplays))
                         && (!has_files || !GHApp.PostingGameStatus)
                         && (!has_files2 || !GHApp.PostingXlogEntries || missingorincorrectcredentials)
-                        && (!has_files3 || !dopostbones || GameStarted || missingorincorrectcredentials)
+                        && (!has_files3 || !dopostbones || GHApp.GameStarted || missingorincorrectcredentials)
                         && (!has_files4 || !dopostreplays || incorrectcredentials)
                         )
                     {
@@ -297,7 +294,7 @@ namespace GnollHackX
                             UpdateGeneralTimerTasksLabel(false);
                         }
 
-                        if (hasinternet && has_files3 && dopostbones && !GameStarted && !missingorincorrectcredentials) // Do not fetch bones files while the game is on
+                        if (hasinternet && has_files3 && dopostbones && !GHApp.GameStarted && !missingorincorrectcredentials) // Do not fetch bones files while the game is on
                         {
                             await ProcessSavedPosts(2, directory3, GHConstants.BonesPostFileNamePrefix);
                             PendingGeneralTimerTasks = CalculatePendingGeneralTimerTasks();
@@ -343,7 +340,7 @@ namespace GnollHackX
             //int tasks2 = hasinternet && !GHApp.XlogUserNameVerified && (GHApp.PostingXlogEntries || dopostbones || dopostreplays) && !missingorincorrectcredentials ? 1 : 0;
             int tasks3 = hasinternet && has_files && GHApp.PostingGameStatus ? Directory.GetFiles(directory).Length : 0;
             int tasks4 = hasinternet && has_files2 && GHApp.PostingXlogEntries && !missingorincorrectcredentials ? Directory.GetFiles(directory2).Length : 0;
-            int tasks5 = hasinternet && has_files3 && dopostbones && !GameStarted && !missingorincorrectcredentials ? Directory.GetFiles(directory3).Length : 0;
+            int tasks5 = hasinternet && has_files3 && dopostbones && !GHApp.GameStarted && !missingorincorrectcredentials ? Directory.GetFiles(directory3).Length : 0;
             int tasks6 = hasinternet && has_files4 && dopostreplays && !incorrectcredentials ? Directory.GetFiles(directory4).Length : 0;
 
             return tasks1 + /* tasks2 + */ tasks3 + tasks4 + tasks5 + tasks6;
@@ -744,7 +741,6 @@ namespace GnollHackX
                 Preferences.Set("NumberOfGames", numberofgames + 1L);
 
                 var gamePage = new GamePage(this);
-                GHApp.CurrentGamePage = gamePage;
                 gamePage.EnableWizardMode = wizardModeSwitch.IsToggled;
                 gamePage.EnableCasualMode = casualModeSwitch.IsToggled;
                 gamePage.EnableModernMode = !classicModeSwitch.IsToggled;
@@ -762,7 +758,6 @@ namespace GnollHackX
         }
 
         private bool _firsttime = true;
-        private bool _mainScreenMusicStarted = false;
 
         public void UpdateLayout()
         {
@@ -794,7 +789,59 @@ namespace GnollHackX
         {
             GHApp.BackButtonPressed += BackButtonPressed;
             UpdateLayout();
-            if (_firsttime)
+            if (GHApp.MainPageStarts > 1)
+            {
+                _firsttime = false;
+                GHApp.CurrentGamePage = null;
+                GHApp.SetWindowFocus();
+                StartLogoImage.Opacity = 1.0;
+                FmodLogoImage.Opacity = 1.0;
+                FinishedLogoFadeIn = true;
+
+                StartLogoImage.Opacity = 0.0; /* To make sure */
+                FmodLogoImage.Opacity = 0.0; /* To make sure */
+
+                carouselView.IsVisible = true;
+                carouselView.InvalidateSurface();
+                carouselView.Opacity = 1.0; /* To make sure */
+                UpperButtonGrid.IsVisible = true;
+                UpperButtonGrid.Opacity = 1.0;  /* To make sure */
+                StartButtonLayout.IsVisible = true;
+                StartButtonLayout.Opacity = 1.0;  /* To make sure */
+                LogoGrid.IsVisible = true;
+                LogoGrid.Opacity = 1.0;  /* To make sure */
+
+                StartLogoImage.IsVisible = false;
+                FmodLogoImage.IsVisible = false;
+
+                if (!GHApp.GameStarted)
+                {
+                    if ((!GHApp.MainScreenMusicStarted))
+                        PlayMainScreenVideoAndMusic();
+                }
+                else
+                {
+                    StartLocalGameButton.TextColor = GHColors.Gray;
+                    StartLocalGameButton.IsEnabled = false;
+                    var curGame = GHApp.CurrentGHGame;
+                    if (curGame != null)
+                    {
+                        carouselView.Stop();
+                        var gamePage = new GamePage(this);
+                        gamePage.EnableWizardMode = curGame.WizardMode;
+                        gamePage.EnableCasualMode = curGame.CasualMode;
+                        gamePage.EnableModernMode = curGame.ModernMode;
+                        curGame.SetActiveGamePage(gamePage);
+                        await GHApp.Navigation.PushModalAsync(gamePage, false);
+                        gamePage.StartExistingGame();
+                    }
+                    else
+                    {
+                        carouselView.Play();
+                    }
+                }
+            }
+            else if (_firsttime)
             {
                 _firsttime = false;
                 GHApp.DebugWriteProfilingStopwatchTimeAndRestart("MainPage First Time");
@@ -961,9 +1008,9 @@ namespace GnollHackX
                     }
                 }
             }
-            else if (!GameStarted)
+            else if (!GHApp.GameStarted)
             {
-                if ((!_mainScreenMusicStarted))
+                if ((!GHApp.MainScreenMusicStarted))
                     PlayMainScreenVideoAndMusic();
             }
 
@@ -1306,7 +1353,7 @@ namespace GnollHackX
             try
             {
                 GHApp.FmodService?.PlayUIMusic(GHConstants.IntroGHSound, GHConstants.IntroEventPath, GHConstants.IntroBankId, GHConstants.IntroMusicVolume, 1.0f);
-                _mainScreenMusicStarted = true;
+                GHApp.MainScreenMusicStarted = true;
             }
             catch (Exception ex)
             {

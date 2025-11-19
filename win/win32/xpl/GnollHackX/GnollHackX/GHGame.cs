@@ -53,8 +53,12 @@ namespace GnollHackX
         private int _saveFileTrackingFinished = -1;
         private bool _abortShowMenuPage = false;
 
-        private readonly GamePage _gamePage;
-        public GamePage ActiveGamePage { get { return _gamePage; } }
+        private GamePage _gamePage;
+        public GamePage ActiveGamePage
+        {
+            get { return Interlocked.CompareExchange(ref _gamePage, null, null); }
+            set { Interlocked.Exchange(ref _gamePage, value); }
+        }
 
         private bool _touchLocSet = false;
         private int _touchLocX;
@@ -97,9 +101,9 @@ namespace GnollHackX
             get { return Interlocked.CompareExchange(ref _characterName, null, null); }
             set { Interlocked.Exchange(ref _characterName, value); }
         }
-        public bool WizardMode { get { return _gamePage != null ? _gamePage.EnableWizardMode : false; } }
-        public bool CasualMode { get { return _gamePage != null ? _gamePage.EnableCasualMode : false; } }
-        public bool ModernMode { get { return _gamePage != null ? _gamePage.EnableModernMode : false; } }
+        public bool WizardMode { get { return ActiveGamePage?.EnableWizardMode ?? false; } }
+        public bool CasualMode { get { return ActiveGamePage?.EnableCasualMode ?? false; } }
+        public bool ModernMode { get { return ActiveGamePage?.EnableModernMode ?? false; } }
 
         public GHGame(GamePage gamePage, RunGnollHackFlags startFlags)
         {
@@ -127,9 +131,14 @@ namespace GnollHackX
             _mapDataCurrent = _mapDataBuffer1;
             _objectDataCurrent = _objectDataBuffer1;
 
-            _gamePage = gamePage;
-            if(_gamePage != null)
-                _useLongerMessageHistory = _gamePage.LongerMessageHistory;
+            SetActiveGamePage(gamePage);
+            if(gamePage != null)
+                _useLongerMessageHistory = gamePage.LongerMessageHistory;
+        }
+
+        public void SetActiveGamePage(GamePage gamePage)
+        {
+            ActiveGamePage = gamePage;
         }
 
         ~GHGame()
@@ -224,7 +233,7 @@ namespace GnollHackX
                         _screenTextSet = true;
                         break;
                     case GHRequestType.SetPetMID:
-                        if (_gamePage != null)
+                        if (ActiveGamePage != null)
                             GHApp.GnollHackService?.SetPetMID(response.ResponseUIntValue);
                         break;
                     case GHRequestType.ShowGUITips:
@@ -405,9 +414,10 @@ namespace GnollHackX
                 {
                     GHApp.UsedTileSheets = total_sheets_used;
                     GHApp.TotalTiles = total_tiles_used;
+                    GamePage gamePage = ActiveGamePage;
                     for (int i = 0; i < total_sheets_used; i++)
                     {
-                        GHApp.TilesPerRow[i] = _gamePage.TileMap[i].Width / GHConstants.TileWidth;
+                        GHApp.TilesPerRow[i] = gamePage.TileMap[i].Width / GHConstants.TileWidth;
                     }
                 }
             }
@@ -503,7 +513,7 @@ namespace GnollHackX
                 (dataflags & 16) != 0,
                 (dataflags & 32) != 0,
                 (dataflags & 1) == 0 ? null : new ObjectDataItem(objdata, otypdata, (dataflags & 4) != 0), 
-                _gamePage, handle);
+                handle);
 
             _ghWindows[handle] = ghwin;
             UIUtils.SetCreateGHWindow(ghwin);
@@ -988,11 +998,12 @@ namespace GnollHackX
         {
             long generalCounter;
             long mainCounter;
+            GamePage gamePage = ActiveGamePage;
             //lock (_gamePage.AnimationTimerLock)
             {
-                generalCounter = Interlocked.CompareExchange(ref _gamePage.AnimationTimers.general_animation_counter, 0L, 0L);;
+                generalCounter = Interlocked.CompareExchange(ref gamePage.AnimationTimers.general_animation_counter, 0L, 0L);;
             }
-            mainCounter = _gamePage.MainCounterValue;
+            mainCounter = gamePage.MainCounterValue;
             lock (_mapDataBufferLock)
             {
                 CheckUpdateCurrentMapBufferUnlocked();
@@ -1346,14 +1357,15 @@ namespace GnollHackX
         public void ClientCallback_Cliparound(int x, int y, byte force)
         {
             RecordFunctionCall(RecordedFunctionID.ClipAround, x, y, force);
+            GamePage gamePage = ActiveGamePage;
 
-            if (force == 0 && (_gamePage.MapNoClipMode || _gamePage.MapLookMode || _gamePage.ZoomMiniMode)) //|| (!_gamePage.ZoomAlternateMode && _gamePage.MapNoClipMode) || (_gamePage.ZoomAlternateMode && _gamePage.MapAlternateNoClipMode) 
+            if (force == 0 && (gamePage.MapNoClipMode || gamePage.MapLookMode || gamePage.ZoomMiniMode)) //|| (!_gamePage.ZoomAlternateMode && _gamePage.MapNoClipMode) || (_gamePage.ZoomAlternateMode && _gamePage.MapAlternateNoClipMode) 
                 return; /* No clip mode ignores cliparound commands */
 
             //This may be slightly slower to register, but likely more often in UI thread, so should cause fewer lock conflicts
             //RequestQueue.Enqueue(new GHRequest(this, GHRequestType.ClipAround, x, y, force == 1));
 
-            _gamePage.SetTargetClip(x, y, force == 1);
+            gamePage.SetTargetClip(x, y, force == 1);
         }
 
         public void ClientCallback_RawPrint(string str)
@@ -1580,9 +1592,10 @@ namespace GnollHackX
 
             long start_counter_value = 0L;
             long current_counter_value = 0L;
+            GamePage gamePage = ActiveGamePage;
             //lock (_gamePage.AnimationTimerLock)
             {
-                start_counter_value = Interlocked.CompareExchange(ref _gamePage.AnimationTimers.general_animation_counter, 0L, 0L);;
+                start_counter_value = Interlocked.CompareExchange(ref gamePage.AnimationTimers.general_animation_counter, 0L, 0L);;
             }
 
             do
@@ -1593,7 +1606,7 @@ namespace GnollHackX
                 Thread.Sleep(5);
                 //lock (_gamePage.AnimationTimerLock)
                 {
-                    current_counter_value = Interlocked.CompareExchange(ref _gamePage.AnimationTimers.general_animation_counter, 0L, 0L);;
+                    current_counter_value = Interlocked.CompareExchange(ref gamePage.AnimationTimers.general_animation_counter, 0L, 0L);;
                 }
             } while (current_counter_value < start_counter_value + (long)intervals);
             GHApp.FmodService?.PollTasks();
@@ -1616,12 +1629,12 @@ namespace GnollHackX
 
             if (reassessment != 0)
                 return;
-
-            lock(_gamePage.StatusFieldLock)
+            GamePage gamePage = ActiveGamePage;
+            lock(gamePage.StatusFieldLock)
             {
                 for (int i = 0; i < (int)NhStatusFields.MAXBLSTATS; i++)
                 {
-                    _gamePage.StatusFields[i] = new GHStatusField();
+                    gamePage.StatusFields[i] = new GHStatusField();
                 }
             }
         }
@@ -1636,11 +1649,12 @@ namespace GnollHackX
             RecordFunctionCall(RecordedFunctionID.StatusEnable, fieldidx, nm, fmt, enable);
             if (fieldidx >= 0 && fieldidx < (int)NhStatusFields.MAXBLSTATS)
             {
-                lock (_gamePage.StatusFieldLock)
+                GamePage gamePage = ActiveGamePage;
+                lock (gamePage.StatusFieldLock)
                 {
-                    _gamePage.StatusFields[fieldidx].Name = nm;
-                    _gamePage.StatusFields[fieldidx].Format = fmt;
-                    _gamePage.StatusFields[fieldidx].IsEnabled = enable != 0;
+                    gamePage.StatusFields[fieldidx].Name = nm;
+                    gamePage.StatusFields[fieldidx].Format = fmt;
+                    gamePage.StatusFields[fieldidx].IsEnabled = enable != 0;
                 }
             }
         }
@@ -1665,15 +1679,16 @@ namespace GnollHackX
             long oldbits = 0L;
             if (fieldidx >= 0 && fieldidx < (int)NhStatusFields.MAXBLSTATS)
             {
-                lock (_gamePage.StatusFieldLock)
+                GamePage gamePage = ActiveGamePage;
+                lock (gamePage.StatusFieldLock)
                 {
-                    oldbits = _gamePage.StatusFields[fieldidx].Bits;
+                    oldbits = gamePage.StatusFields[fieldidx].Bits;
 
-                    _gamePage.StatusFields[fieldidx].Text = text;
-                    _gamePage.StatusFields[fieldidx].Bits = condbits;
-                    _gamePage.StatusFields[fieldidx].Change = cng;
-                    _gamePage.StatusFields[fieldidx].Percent = percent;
-                    _gamePage.StatusFields[fieldidx].Color = color;
+                    gamePage.StatusFields[fieldidx].Text = text;
+                    gamePage.StatusFields[fieldidx].Bits = condbits;
+                    gamePage.StatusFields[fieldidx].Change = cng;
+                    gamePage.StatusFields[fieldidx].Percent = percent;
+                    gamePage.StatusFields[fieldidx].Color = color;
                 }
             }
 
@@ -1939,7 +1954,7 @@ namespace GnollHackX
             {
                 if (_ghWindows[winid] != null && _ghWindows[winid].MenuInfo != null)
                 {
-                    GHMenuItem mi = new GHMenuItem(_ghWindows[winid].MenuInfo, GHApp.NoGlyph, _gamePage);
+                    GHMenuItem mi = new GHMenuItem(_ghWindows[winid].MenuInfo, GHApp.NoGlyph, ActiveGamePage);
                     mi.Identifier = identifier;
                     if (accel == 0 && identifier != 0)
                         mi.Accelerator = _ghWindows[winid].MenuInfo.AutoAccelerator;
@@ -2215,7 +2230,7 @@ namespace GnollHackX
 
             if (is_equipped)
             {
-                _gamePage.AddEquippedObjectData(x, y, otmp, cmdtype, where, otypdata, oflags);
+                ActiveGamePage.AddEquippedObjectData(x, y, otmp, cmdtype, where, otypdata, oflags);
             }
             else
             {
@@ -2456,8 +2471,9 @@ namespace GnollHackX
         {
             RecordFunctionCall(RecordedFunctionID.ToggleAnimationTimer, timertype, timerid, state, x, y, layer, tflags);
             bool ison = (state != 0);
-            long general_counter_value = Interlocked.CompareExchange(ref _gamePage.AnimationTimers.general_animation_counter, 0L, 0L);
-            lock (_gamePage.AnimationTimerLock)
+            GamePage gamePage = ActiveGamePage;
+            long general_counter_value = Interlocked.CompareExchange(ref gamePage.AnimationTimers.general_animation_counter, 0L, 0L);
+            lock (gamePage.AnimationTimerLock)
             {
                 switch ((animation_timer_types)timertype)
                 {
@@ -2465,41 +2481,41 @@ namespace GnollHackX
                         break;
                     case animation_timer_types.ANIMATION_TIMER_YOU:
                         //_gamePage.AnimationTimers.u_action_animation_counter = 0L;
-                        _gamePage.AnimationTimers.u_action_animation_counter_timestamp = general_counter_value;
-                        _gamePage.AnimationTimers.u_action_animation_counter_on = ison;
+                        gamePage.AnimationTimers.u_action_animation_counter_timestamp = general_counter_value;
+                        gamePage.AnimationTimers.u_action_animation_counter_on = ison;
                         break;
                     case animation_timer_types.ANIMATION_TIMER_MONSTER:
                         //_gamePage.AnimationTimers.m_action_animation_counter = 0L;
-                        _gamePage.AnimationTimers.m_action_animation_counter_timestamp = general_counter_value;
-                        _gamePage.AnimationTimers.m_action_animation_counter_on = ison;
-                        _gamePage.AnimationTimers.m_action_animation_x = (byte)x;
-                        _gamePage.AnimationTimers.m_action_animation_y = (byte)y;
+                        gamePage.AnimationTimers.m_action_animation_counter_timestamp = general_counter_value;
+                        gamePage.AnimationTimers.m_action_animation_counter_on = ison;
+                        gamePage.AnimationTimers.m_action_animation_x = (byte)x;
+                        gamePage.AnimationTimers.m_action_animation_y = (byte)y;
                         break;
                     case animation_timer_types.ANIMATION_TIMER_EXPLOSION:
                         //_gamePage.AnimationTimers.explosion_animation_counter = 0L;
-                        _gamePage.AnimationTimers.explosion_animation_counter_timestamp = general_counter_value;
-                        _gamePage.AnimationTimers.explosion_animation_counter_on = ison;
-                        _gamePage.AnimationTimers.explosion_animation_x = (byte)x;
-                        _gamePage.AnimationTimers.explosion_animation_y = (byte)y;
+                        gamePage.AnimationTimers.explosion_animation_counter_timestamp = general_counter_value;
+                        gamePage.AnimationTimers.explosion_animation_counter_on = ison;
+                        gamePage.AnimationTimers.explosion_animation_x = (byte)x;
+                        gamePage.AnimationTimers.explosion_animation_y = (byte)y;
                         break;
                     case animation_timer_types.ANIMATION_TIMER_ZAP:
                         if (timerid < 0 || timerid >= GHConstants.MaxPlayedZapAnimations)
                             break;
                         //_gamePage.AnimationTimers.zap_animation_counter[timerid] = 0L;
-                        _gamePage.AnimationTimers.zap_animation_counter_timestamp[timerid] = general_counter_value;
-                        _gamePage.AnimationTimers.zap_animation_counter_on[timerid] = ison;
-                        _gamePage.AnimationTimers.zap_animation_x[timerid] = (byte)x;
-                        _gamePage.AnimationTimers.zap_animation_y[timerid] = (byte)y;
+                        gamePage.AnimationTimers.zap_animation_counter_timestamp[timerid] = general_counter_value;
+                        gamePage.AnimationTimers.zap_animation_counter_on[timerid] = ison;
+                        gamePage.AnimationTimers.zap_animation_x[timerid] = (byte)x;
+                        gamePage.AnimationTimers.zap_animation_y[timerid] = (byte)y;
                         break;
                     case animation_timer_types.ANIMATION_TIMER_SPECIAL_EFFECT:
                         if (timerid < 0 || timerid >= GHConstants.MaxPlayedSpecialEffects)
                             break;
                         //_gamePage.AnimationTimers.special_effect_animation_counter[timerid] = 0L;
-                        _gamePage.AnimationTimers.special_effect_animation_counter_timestamp[timerid] = general_counter_value;
-                        _gamePage.AnimationTimers.special_effect_animation_counter_on[timerid] = ison;
-                        _gamePage.AnimationTimers.spef_action_animation_x[timerid] = (byte)x;
-                        _gamePage.AnimationTimers.spef_action_animation_y[timerid] = (byte)y;
-                        _gamePage.AnimationTimers.spef_action_animation_layer[timerid] = (layer_types)layer;
+                        gamePage.AnimationTimers.special_effect_animation_counter_timestamp[timerid] = general_counter_value;
+                        gamePage.AnimationTimers.special_effect_animation_counter_on[timerid] = ison;
+                        gamePage.AnimationTimers.spef_action_animation_x[timerid] = (byte)x;
+                        gamePage.AnimationTimers.spef_action_animation_y[timerid] = (byte)y;
+                        gamePage.AnimationTimers.spef_action_animation_layer[timerid] = (layer_types)layer;
                         break;
                     default:
                         break;
@@ -2561,14 +2577,15 @@ namespace GnollHackX
 
                 int cnt = 0;
                 long countervalue;
+                GamePage gamePage = ActiveGamePage;
                 do
                 {
-                    countervalue = _gamePage.MainCounterValue;
-                    lock (_gamePage._screenTextLock)
+                    countervalue = gamePage.MainCounterValue;
+                    lock (gamePage._screenTextLock)
                     {
-                        if (_gamePage._screenText != null)
+                        if (gamePage._screenText != null)
                         {
-                            if (_gamePage._screenText.IsFinished(countervalue))
+                            if (gamePage._screenText.IsFinished(countervalue))
                                 break;
                         }
                         else
@@ -2842,10 +2859,10 @@ namespace GnollHackX
                     RequestQueue.Enqueue(new GHRequest(this, GHRequestType.FadeFromBlack, GHConstants.FadeFromBlackDuration));
                     break;
                 case (int)gui_command_types.GUI_CMD_FORCE_ASCII:
-                    _gamePage.ForceAscii = true;
+                    ActiveGamePage.ForceAscii = true;
                     break;
                 case (int)gui_command_types.GUI_CMD_UNFORCE_ASCII:
-                    _gamePage.ForceAscii = false;
+                    ActiveGamePage.ForceAscii = false;
                     break;
                 case (int)gui_command_types.GUI_CMD_MUTE_SOUNDS:
                     GHApp.GameMuteMode = true;
@@ -2862,25 +2879,25 @@ namespace GnollHackX
                 case (int)gui_command_types.GUI_CMD_LOAD_VIDEOS:
                     break;
                 case (int)gui_command_types.GUI_CMD_ENABLE_WIZARD_MODE:
-                    _gamePage.EnableWizardMode = true;
-                    _gamePage.ExtendedCommands = GHApp.GnollHackService.GetExtendedCommands();
+                    ActiveGamePage.EnableWizardMode = true;
+                    ActiveGamePage.ExtendedCommands = GHApp.GnollHackService.GetExtendedCommands();
                     break;
                 case (int)gui_command_types.GUI_CMD_DISABLE_WIZARD_MODE:
-                    if(_gamePage.EnableWizardMode)
+                    if(ActiveGamePage.EnableWizardMode)
                     {
-                        _gamePage.EnableWizardMode = false;
-                        _gamePage.ExtendedCommands = GHApp.GnollHackService.GetExtendedCommands();
+                        ActiveGamePage.EnableWizardMode = false;
+                        ActiveGamePage.ExtendedCommands = GHApp.GnollHackService.GetExtendedCommands();
                     }
                     break;
                 case (int)gui_command_types.GUI_CMD_ENABLE_CASUAL_MODE:
-                    _gamePage.EnableCasualMode = true;
-                    _gamePage.ExtendedCommands = GHApp.GnollHackService.GetExtendedCommands();
+                    ActiveGamePage.EnableCasualMode = true;
+                    ActiveGamePage.ExtendedCommands = GHApp.GnollHackService.GetExtendedCommands();
                     break;
                 case (int)gui_command_types.GUI_CMD_DISABLE_CASUAL_MODE:
-                    if (_gamePage.EnableCasualMode)
+                    if (ActiveGamePage.EnableCasualMode)
                     {
-                        _gamePage.EnableCasualMode = false;
-                        _gamePage.ExtendedCommands = GHApp.GnollHackService.GetExtendedCommands();
+                        ActiveGamePage.EnableCasualMode = false;
+                        ActiveGamePage.ExtendedCommands = GHApp.GnollHackService.GetExtendedCommands();
                     }
                     break;
                 case (int)gui_command_types.GUI_CMD_ENABLE_TOURNAMENT_MODE:
@@ -2905,13 +2922,13 @@ namespace GnollHackX
                     RequestQueue.Enqueue(new GHRequest(this, GHRequestType.RestoreTravelModeOnLevel));
                     break;
                 case (int)gui_command_types.GUI_CMD_CLEAR_CONDITION_TEXTS:
-                    _gamePage.ClearConditionTexts();
+                    ActiveGamePage.ClearConditionTexts();
                     break;
                 case (int)gui_command_types.GUI_CMD_CLEAR_FLOATING_TEXTS:
-                    _gamePage.ClearFloatingTexts();
+                    ActiveGamePage.ClearFloatingTexts();
                     break;
                 case (int)gui_command_types.GUI_CMD_CLEAR_GUI_EFFECTS:
-                    _gamePage.ClearGuiEffects();
+                    ActiveGamePage.ClearGuiEffects();
                     break;
                 case (int)gui_command_types.GUI_CMD_CLEAR_MESSAGE_HISTORY:
                     //_message_history.Clear();
@@ -3196,11 +3213,11 @@ namespace GnollHackX
                     break;
                 case (int)gui_command_types.GUI_CMD_TOGGLE_AUTODIG:
                     GHApp.MirroredAutoDig = cmd_param != 0;
-                    _gamePage.ToggleMapAutoDigOnMainThread(cmd_param != 0); //Do not set the game value of autodig; this is GUI notification that it has been changed
+                    ActiveGamePage.ToggleMapAutoDigOnMainThread(cmd_param != 0); //Do not set the game value of autodig; this is GUI notification that it has been changed
                     break;
                 case (int)gui_command_types.GUI_CMD_TOGGLE_IGNORE_STOPPING:
                     GHApp.MirroredIgnoreStopping = cmd_param != 0;
-                    _gamePage.ToggleMapIgnoreModeOnMainThread(cmd_param != 0); //Do not set the game value of autodig; this is GUI notification that it has been changed
+                    ActiveGamePage.ToggleMapIgnoreModeOnMainThread(cmd_param != 0); //Do not set the game value of autodig; this is GUI notification that it has been changed
                     break;
                 case (int)gui_command_types.GUI_CMD_TOGGLE_GETPOS_ARROWS:
                     GHApp.GetPositionArrows = cmd_param != 0;
@@ -3236,10 +3253,10 @@ namespace GnollHackX
                         GHApp.MirroredRightMouseCommand = cmd_param;
                     break;
                 case (int)gui_command_types.GUI_CMD_TOGGLE_QUICK_ZAP_WAND:
-                    _gamePage.SetQuickZapWand(cmd_param, cmd_param2, cmd_str);
+                    ActiveGamePage.SetQuickZapWand(cmd_param, cmd_param2, cmd_str);
                     break;
                 case (int)gui_command_types.GUI_CMD_TOGGLE_QUICK_CAST_SPELL:
-                    _gamePage.SetQuickCastSpell(cmd_param, cmd_param2, cmd_str);
+                    ActiveGamePage.SetQuickCastSpell(cmd_param, cmd_param2, cmd_str);
                     break;
                 case (int)gui_command_types.GUI_CMD_ZOOM_NORMAL:
                     if (!PlayingReplay)

@@ -126,19 +126,15 @@ namespace GnollHackX.Pages.Game
 
         public List<string> ExtendedCommands { get; set; }
 
-        private IGnollHackService _gnollHackService;
+        private readonly IGnollHackService _gnollHackService;
         private bool _isFirstAppearance = true;
-        private Thread _gnhthread;
 
-        //private readonly object _currentGameLock = new object();
-        private GHGame _currentGame = null;
-        public GHGame CurrentGame 
-        {
-            //get { lock (_currentGameLock) { return _currentGame; } } 
-            //set { lock (_currentGameLock) { _currentGame = value; } } 
-            get { return Interlocked.CompareExchange(ref _currentGame, null, null); }
-            set { Interlocked.Exchange(ref _currentGame, value); }
-        }
+        //private GHGame _currentGame = null;
+        //public GHGame CurrentGame 
+        //{
+        //    get { return Interlocked.CompareExchange(ref _currentGame, null, null); }
+        //    set { Interlocked.Exchange(ref _currentGame, value); }
+        //}
 
         private MapData[,] _mapData = new MapData[GHConstants.MapCols, GHConstants.MapRows];
         //private readonly object _mapDataLock = new object();
@@ -556,7 +552,7 @@ namespace GnollHackX.Pages.Game
                 else
                     RefreshMsgHistoryRowCounts = true;
 
-                GHGame curGame = CurrentGame;
+                GHGame curGame = GHApp.CurrentGHGame;
                 curGame?.ResponseQueue.Enqueue(new GHResponse(curGame, GHRequestType.UseLongerMessageHistory, value));
             }
         }
@@ -579,7 +575,7 @@ namespace GnollHackX.Pages.Game
                 //}
                 RefreshMsgHistoryRowCounts = true;
 
-                GHGame curGame = CurrentGame;
+                GHGame curGame = GHApp.CurrentGHGame;
                 curGame?.ResponseQueue.Enqueue(new GHResponse(curGame, GHRequestType.UseHideMessageHistory, value));
             }
         }
@@ -1021,6 +1017,7 @@ namespace GnollHackX.Pages.Game
         public GamePage(MainPage mainPage)
         {
             InitializeComponent();
+            GHApp.CurrentGamePage = this;
             On<iOS>().SetUseSafeArea(true);
             UIUtils.AdjustRootLayout(RootGrid);
             UIUtils.SetPageThemeOnHandler(this, GHApp.DarkMode);
@@ -1030,6 +1027,7 @@ namespace GnollHackX.Pages.Game
             PropertyChanged += GamePage_PropertyChanged;
 
             _mainPage = mainPage;
+            _gnollHackService = GHApp.GnollHackService;
 
             for (int i = 0; i < GHConstants.NUM_BUFF_BIT_ULONGS; i++)
                 _local_u_buff_bits[i] = 0;
@@ -1274,18 +1272,18 @@ namespace GnollHackX.Pages.Game
 
         public void SetCharacterClickAction(bool newValue)
         {
-            GHGame curGame = CurrentGame;
+            GHGame curGame = GHApp.CurrentGHGame;
             curGame?.ResponseQueue.Enqueue(new GHResponse(curGame, GHRequestType.SetCharacterClickAction, newValue));
         }
 
         public void SetGetPositionArrows(bool newValue)
         {
-            GHGame curGame = CurrentGame;
+            GHGame curGame = GHApp.CurrentGHGame;
             curGame?.ResponseQueue.Enqueue(new GHResponse(curGame, GHRequestType.SetGetPositionArrows, newValue));
         }
         public void SetDiceAsRanges(bool newValue)
         {
-            GHGame curGame = CurrentGame;
+            GHGame curGame = GHApp.CurrentGHGame;
             curGame?.ResponseQueue.Enqueue(new GHResponse(curGame, GHRequestType.SetDiceAsRanges, newValue));
         }
         public void SetAutoDig(bool newValue)
@@ -1302,14 +1300,22 @@ namespace GnollHackX.Pages.Game
 
         public void SetRightMouseCommand(int newValue)
         {
-            GHGame curGame = CurrentGame;
+            GHGame curGame = GHApp.CurrentGHGame;
             curGame?.ResponseQueue.Enqueue(new GHResponse(curGame, GHRequestType.SetRightMouseCommand, newValue));
         }
 
         public void SetMiddleMouseCommand(int newValue)
         {
-            GHGame curGame = CurrentGame;
+            GHGame curGame = GHApp.CurrentGHGame;
             curGame?.ResponseQueue.Enqueue(new GHResponse(curGame, GHRequestType.SetMiddleMouseCommand, newValue));
+        }
+
+        public void StartExistingGame()
+        {
+            //CurrentGame = GHApp.CurrentGHGame;
+            StartGameInitialTasks();
+            StartGameFinalTasks();
+            HideLoadingScreen();
         }
 
         public async Task StartNewGame()
@@ -1336,22 +1342,10 @@ namespace GnollHackX.Pages.Game
             try
             {
                 ReplayFileName = replayFileName;
-                _mainPage.GameStarted = true;
                 LoadingDetailsLabel.Text = "Starting loading...";
                 LoadingProgressBar.Progress = 0.0;
-                MainCanvasView.Focus();
 
-                MainCanvasView._gamePage = this;
-                CommandCanvas._gamePage = this;
-                MenuCanvas._gamePage = this;
-                TextCanvas._gamePage = this;
-                TipView._gamePage = this;
-
-                MainCanvasView._parentGrid = MainGrid;
-                CommandCanvas._parentGrid = MoreCommandsGrid;
-                MenuCanvas._parentGrid = MenuGrid;
-                TextCanvas._parentGrid = TextGrid;
-                TipView._parentGrid = null;
+                StartGameInitialTasks();
 
                 bool initAuxCanvases = GHApp.IsAndroid && GHApp.UseGPU && !GHApp.DisableAuxGPU;
                 if (initAuxCanvases)
@@ -1364,7 +1358,6 @@ namespace GnollHackX.Pages.Game
                     CommandCanvas.InvalidateSurface();
                 }
 
-                _gnollHackService = GHApp.GnollHackService;
                 LoadingDetailsLabel.Text = "Initializing GnollHack...";
                 await _gnollHackService.InitializeGnollHack();
 
@@ -1578,47 +1571,13 @@ namespace GnollHackX.Pages.Game
                     t = new Thread(new ThreadStart(GNHThreadProcForReplay));
                 else
                     t = new Thread(new ThreadStart(GNHThreadProc));
-                _gnhthread = t;
-                _gnhthread.Start();
-
-                _stopWatch.Start();
+                GHApp.GnhThread = t;
+                t.Start();
 
                 LoadingDetailsLabel.Text = "Finishing up...";
                 await LoadingProgressBar.ProgressTo(0.99, 40, Easing.Linear);
 
-                IsGameOn = true;
-                IsMainCanvasOn = true;
-                MainGrid.IsVisible = true;
-                MainCanvasView.InvalidateSurface();
-
-                /* Polling timer */
-#if GNH_MAUI
-                _pollingTimer = Microsoft.Maui.Controls.Application.Current.Dispatcher.CreateTimer();
-                _pollingTimer.Interval = TimeSpan.FromSeconds(1.0 / GHConstants.PollingFrequency);
-                _pollingTimer.IsRepeating = true;
-                _pollingTimer.Tick += (s, e) => { DoPolling(); if (!IsGameOn) _pollingTimer?.Stop(); };
-                _pollingTimer.Start();
-#else
-                Device.StartTimer(TimeSpan.FromSeconds(1.0 / GHConstants.PollingFrequency), () =>
-                {
-                    DoPolling();
-                    return IsGameOn;
-                });
-#endif
-                /* Cursor and FPS update timer */
-#if GNH_MAUI
-                _updateTimer = Microsoft.Maui.Controls.Application.Current.Dispatcher.CreateTimer();
-                _updateTimer.Interval = TimeSpan.FromSeconds(0.5);
-                _updateTimer.IsRepeating = true;
-                _updateTimer.Tick += (s, e) => { DoUpdateTimer(); if (!IsGameOn) _updateTimer?.Stop(); };
-                _updateTimer.Start();
-#else
-                Device.StartTimer(TimeSpan.FromSeconds(0.5), () =>
-                {
-                    DoUpdateTimer();
-                    return IsGameOn;
-                });
-#endif
+                StartGameFinalTasks();
 
                 await LoadingProgressBar.ProgressTo(1.0, 20, Easing.Linear);
                 LoadingDetailsLabel.Text = "Done loading.";
@@ -1633,6 +1592,64 @@ namespace GnollHackX.Pages.Game
 #endif
                 await GHApp.DisplayMessageBox(this, "Error", "Error occurred when setting up the game: " + ex.Message, "OK");
             }
+        }
+
+        private void StartGameInitialTasks()
+        {
+            GHApp.GameStarted = true;
+            MainCanvasView.Focus();
+
+            MainCanvasView._gamePage = this;
+            CommandCanvas._gamePage = this;
+            MenuCanvas._gamePage = this;
+            TextCanvas._gamePage = this;
+            TipView._gamePage = this;
+
+            MainCanvasView._parentGrid = MainGrid;
+            CommandCanvas._parentGrid = MoreCommandsGrid;
+            MenuCanvas._parentGrid = MenuGrid;
+            TextCanvas._parentGrid = TextGrid;
+            TipView._parentGrid = null;
+        }
+
+        private void StartGameFinalTasks()
+        {
+            _stopWatch.Start();
+
+            IsGameOn = true;
+            IsMainCanvasOn = true;
+            MainGrid.IsVisible = true;
+            MainCanvasView.InvalidateSurface();
+
+            /* Polling timer */
+#if GNH_MAUI
+                _pollingTimer = Microsoft.Maui.Controls.Application.Current.Dispatcher.CreateTimer();
+                _pollingTimer.Interval = TimeSpan.FromSeconds(1.0 / GHConstants.PollingFrequency);
+                _pollingTimer.IsRepeating = true;
+                _pollingTimer.Tick += (s, e) => { DoPolling(); if (!IsGameOn) _pollingTimer?.Stop(); };
+                _pollingTimer.Start();
+#else
+            Device.StartTimer(TimeSpan.FromSeconds(1.0 / GHConstants.PollingFrequency), () =>
+            {
+                DoPolling();
+                return IsGameOn;
+            });
+#endif
+            /* Cursor and FPS update timer */
+#if GNH_MAUI
+                _updateTimer = Microsoft.Maui.Controls.Application.Current.Dispatcher.CreateTimer();
+                _updateTimer.Interval = TimeSpan.FromSeconds(0.5);
+                _updateTimer.IsRepeating = true;
+                _updateTimer.Tick += (s, e) => { DoUpdateTimer(); if (!IsGameOn) _updateTimer?.Stop(); };
+                _updateTimer.Start();
+#else
+            Device.StartTimer(TimeSpan.FromSeconds(0.5), () =>
+            {
+                DoUpdateTimer();
+                return IsGameOn;
+            });
+#endif
+
         }
 
         //private bool StartingPositionsSet { get; set; }
@@ -1846,44 +1863,46 @@ namespace GnollHackX.Pages.Game
 
         public async Task RestartGame()
         {
-            if (_gnhthread != null)
+            Thread gnhThread = GHApp.GnhThread;
+            if (gnhThread != null)
             {
                 /* Game thread may have outstanding things to do, but wait for up to 1 second to let them finish */
-                for (int i = 0; i < 20 && _gnhthread.IsAlive; i++)
+                for (int i = 0; i < 20 && gnhThread.IsAlive; i++)
                 {
                     await Task.Delay(50);
                 }
             }
-            CurrentGame = null;
+            //CurrentGame = null;
             GHApp.CurrentGHGame = null;
-            _gnhthread = null;
+            GHApp.GnhThread = null;
 
             /* Collect garbage at this point */
             GHApp.CollectGarbage();
             await Task.Delay(50);
 
             Thread t = new Thread(new ThreadStart(GNHThreadProcForRestart));
-            _gnhthread = t;
-            _gnhthread.Start();
+            GHApp.GnhThread = t;
+            t.Start();
         }
 
         public async Task RestartReplay()
         {
             /* Replay thread should have finished by now since it does not have any outstanding things to do, but wait for 50 millisecs just in case if this is not the case */
-            if (_gnhthread != null && _gnhthread.IsAlive)
+            
+            if (GHApp.GnhThread?.IsAlive ?? false)
                 await Task.Delay(50);
 
-            CurrentGame = null;
+            //CurrentGame = null;
             GHApp.CurrentGHGame = null;
-            _gnhthread = null;
+            GHApp.GnhThread = null;
 
             /* Collect garbage at this point */
             GHApp.CollectGarbage();
             await Task.Delay(50);
 
             Thread t = new Thread(new ThreadStart(GNHThreadProcForReplay));
-            _gnhthread = t;
-            _gnhthread.Start();
+            GHApp.GnhThread = t;
+            t.Start();
         }
 
         public void UpdateMainCanvas(MapRefreshRateStyle refreshRateStyle)
@@ -3007,7 +3026,7 @@ namespace GnollHackX.Pages.Game
                 _screenText = new GHScreenText(data, countervalue, this);
             }
 
-            GHGame curGame = CurrentGame;
+            GHGame curGame = GHApp.CurrentGHGame;
             curGame?.ResponseQueue.Enqueue(new GHResponse(curGame, GHRequestType.DisplayScreenText));
         }
 
@@ -3215,7 +3234,7 @@ namespace GnollHackX.Pages.Game
         protected void GNHThreadProc()
         {
             GHGame curGame = new GHGame(this, RunGnollHackFlags.None);
-            CurrentGame = curGame;
+            //CurrentGame = curGame;
             GHApp.CurrentGHGame = curGame;
             _gnollHackService.StartGnollHack(curGame);
         }
@@ -3223,7 +3242,7 @@ namespace GnollHackX.Pages.Game
         protected void GNHThreadProcForRestart()
         {
             GHGame curGame = new GHGame(this, RunGnollHackFlags.ForceLastPlayerName);
-            CurrentGame = curGame;
+            //CurrentGame = curGame;
             GHApp.CurrentGHGame = curGame;
             _gnollHackService.StartGnollHack(curGame);
         }
@@ -3231,7 +3250,7 @@ namespace GnollHackX.Pages.Game
         protected void GNHThreadProcForReplay()
         {
             GHGame curGame = new GHGame(this, RunGnollHackFlags.PlayingReplay);
-            CurrentGame = curGame;
+            //CurrentGame = curGame;
             GHApp.CurrentGHGame = curGame;
             GHApp.PlayReplay(curGame, ReplayFileName);
         }
@@ -3246,7 +3265,7 @@ namespace GnollHackX.Pages.Game
         private List<Task> PollRequestQueue()
         {
             List<Task> tasks = null;
-            GHGame curGame = CurrentGame;
+            GHGame curGame = GHApp.CurrentGHGame;
             if (curGame != null)
             {
                 GHRequest req;
@@ -3300,9 +3319,9 @@ namespace GnollHackX.Pages.Game
                                 MainGrid.IsEnabled = false;
                                 //ClearMap();
                                 StopCanvasAnimations();
-                                CurrentGame = null;
+                                //CurrentGame = null;
                                 GHApp.CurrentGHGame = null;
-                                _mainPage.GameStarted = false;
+                                GHApp.GameStarted = false;
                                 if (PlayingReplay)
                                     DeviceDisplay.KeepScreenOn = false;
                                 EnqueueTask(ref tasks, ReturnToMainMenu());
@@ -3580,7 +3599,7 @@ namespace GnollHackX.Pages.Game
                 await GHApp.DisplayMessageBox(this, "No Internet for Save File Tracking", "You have no internet access. Please switch the internet on before proceeding.", "OK");
             }
 
-            GHGame curGame = CurrentGame;
+            GHGame curGame = GHApp.CurrentGHGame;
             if (string.IsNullOrEmpty(fileName))
             {
                 await GHApp.DisplayMessageBox(this, "No File Name for Save File Tracking", "The file name for save file tracking is null or empty. Aborting tracking after saving.", "OK");
@@ -3599,7 +3618,7 @@ namespace GnollHackX.Pages.Game
                 await GHApp.DisplayMessageBox(this, "No Internet for Save File Tracking", "You have no internet access. Please switch the internet on before proceeding.", "OK");
             }
 
-            GHGame curGame = CurrentGame;
+            GHGame curGame = GHApp.CurrentGHGame;
             if (string.IsNullOrEmpty(fileName))
             {
                 await GHApp.DisplayMessageBox(this, "No File Name for Save File Tracking", "The file name for save file tracking is null or empty. Aborting tracking after loading.", "OK");
@@ -4365,7 +4384,7 @@ namespace GnollHackX.Pages.Game
                     break;
             }
 
-            GHGame curGame = CurrentGame;
+            GHGame curGame = GHApp.CurrentGHGame;
             curGame?.ResponseQueue.Enqueue(new GHResponse(curGame, GHRequestType.GetLine, res));
             HideGetLine();
         }
@@ -4378,7 +4397,7 @@ namespace GnollHackX.Pages.Game
             GHApp.PlayButtonClickedSound();
 
             string res = "?";
-            GHGame curGame = CurrentGame;
+            GHGame curGame = GHApp.CurrentGHGame;
             curGame?.ResponseQueue.Enqueue(new GHResponse(curGame, GHRequestType.GetLine, res));
             HideGetLine();
         }
@@ -4390,7 +4409,7 @@ namespace GnollHackX.Pages.Game
             GetLineQuestionMarkButton.IsEnabled = false;
             GHApp.PlayButtonClickedSound();
             
-            GHGame curGame = CurrentGame;
+            GHGame curGame = GHApp.CurrentGHGame;
             curGame?.ResponseQueue.Enqueue(new GHResponse(curGame, GHRequestType.GetLine, '\x1B'.ToString()));
 
             HideGetLine();
@@ -4431,7 +4450,7 @@ namespace GnollHackX.Pages.Game
             _mainPage.PlayMainScreenVideoAndMusic(); /* Just to be doubly sure */
             if (GHApp.GameMuteMode)
                 GHApp.GameMuteMode = false;
-            GHApp.CurrentGamePage = null;
+            //GHApp.CurrentGamePage = null;
             //GHApp.ReportLockDataResults();
             ShutDownCanvasViews();
             bool fastForward = FastForwardRequested;
@@ -4955,7 +4974,7 @@ namespace GnollHackX.Pages.Game
             }
             else if (MenuGrid.IsVisible)
             {
-                GHGame curGame = CurrentGame;
+                GHGame curGame = GHApp.CurrentGHGame;
                 GHWindow origWindow;
                 if (MenuCanvas.GHWindow.ClonedFrom == null)
                     curGame?.ResponseQueue.Enqueue(new GHResponse(curGame, GHRequestType.ShowMenuPage, MenuCanvas.GHWindow, new List<GHMenuItem>(), true));
@@ -7610,7 +7629,7 @@ namespace GnollHackX.Pages.Game
             int u_y;
             ulong status_bits;
             ulong condition_bits;
-            GHGame curGame = CurrentGame;
+            GHGame curGame = GHApp.CurrentGHGame;
             if (curGame == null)
                 return;
 
@@ -15250,7 +15269,7 @@ namespace GnollHackX.Pages.Game
 
         private void canvasView_Touch_MainPage(object sender, SKTouchEventArgs e)
         {
-            GHGame curGame = CurrentGame;
+            GHGame curGame = GHApp.CurrentGHGame;
             if (curGame != null)
             {
                 bool lockTaken = false;
@@ -16061,7 +16080,7 @@ namespace GnollHackX.Pages.Game
 
         public void IssueNHCommandViaTouch(object sender, SKTouchEventArgs e)
         {
-            GHGame curGame = CurrentGame;
+            GHGame curGame = GHApp.CurrentGHGame;
             int x = 0, y = 0, mod = 0;
             float canvaswidth;
             float canvasheight;
@@ -16799,7 +16818,7 @@ namespace GnollHackX.Pages.Game
             if (!((resp >= '0' && resp <= '9') || (resp <= -1 && resp >= -19)))
                 ShowNumberPad = false;
 
-            GHGame curGame = CurrentGame;
+            GHGame curGame = GHApp.CurrentGHGame;
             curGame?.ResponseQueue.Enqueue(new GHResponse(curGame, GHRequestType.GetChar, resp));
         }
 
@@ -16833,7 +16852,7 @@ namespace GnollHackX.Pages.Game
         private void YnButton_Pressed(object sender, EventArgs e, int resp)
         {
             /* This is slightly slower and flickers less with two consecutive yn questions than a direct call to HideYnResponses() */
-            GHGame curGame = CurrentGame;
+            GHGame curGame = GHApp.CurrentGHGame;
             if (curGame != null)
             {
                 curGame.RequestQueue.Enqueue(new GHRequest(curGame, GHRequestType.HideYnResponses));
@@ -18868,7 +18887,7 @@ namespace GnollHackX.Pages.Game
                 }
             }
 
-            GHGame curGame = CurrentGame;
+            GHGame curGame = GHApp.CurrentGHGame;
             GHWindow origWindow;
             if (MenuCanvas.GHWindow.ClonedFrom == null)
                 curGame?.ResponseQueue.Enqueue(new GHResponse(curGame, GHRequestType.ShowMenuPage, MenuCanvas.GHWindow, resultlist, false));
@@ -18937,7 +18956,7 @@ namespace GnollHackX.Pages.Game
                 InterlockedMenuScrollOffset = _menuScrollOffset;
             }
 
-            GHGame curGame = CurrentGame;
+            GHGame curGame = GHApp.CurrentGHGame;
             GHWindow origWindow;
             if (MenuCanvas.GHWindow.ClonedFrom == null)
                 curGame?.ResponseQueue.Enqueue(new GHResponse(curGame, GHRequestType.ShowMenuPage, MenuCanvas.GHWindow, new List<GHMenuItem>(1), true));
@@ -20646,7 +20665,7 @@ namespace GnollHackX.Pages.Game
                         }
                         if (_blockingTipView)
                         {
-                            GHGame curGame = CurrentGame;
+                            GHGame curGame = GHApp.CurrentGHGame;
                             curGame?.ResponseQueue.Enqueue(new GHResponse(curGame, GHRequestType.ShowGUITips));
                         }
                     }
@@ -20963,7 +20982,7 @@ namespace GnollHackX.Pages.Game
                 await GHApp.DisplayMessageBox(this, "Panic (Replay: Press OK)", (text != null ? text : "GnollHack has panicked. See the Panic Log."), "OK");
             }
 
-            GHGame curGame = CurrentGame;
+            GHGame curGame = GHApp.CurrentGHGame;
             curGame?.ResponseQueue.Enqueue(new GHResponse(curGame, GHRequestType.Panic));
         }
 
@@ -20971,7 +20990,7 @@ namespace GnollHackX.Pages.Game
         {
             await GHApp.DisplayMessageBox(this, "Message", text != null ? text : "No message.", "OK");
 
-            GHGame curGame = CurrentGame;
+            GHGame curGame = GHApp.CurrentGHGame;
             curGame?.ResponseQueue.Enqueue(new GHResponse(curGame, GHRequestType.Message));
         }
 
@@ -20980,7 +20999,7 @@ namespace GnollHackX.Pages.Game
             bool res = await GHApp.DisplayMessageBox(this, title != null ? title : "Confirmation", text != null ? text : "Confirm?",
                 accept != null ? accept : "Yes", cancel != null ? cancel : "No");
 
-            GHGame curGame = CurrentGame;
+            GHGame curGame = GHApp.CurrentGHGame;
             curGame?.ResponseQueue.Enqueue(new GHResponse(curGame, GHRequestType.YnConfirmation, res));
         }
 
@@ -21019,7 +21038,7 @@ namespace GnollHackX.Pages.Game
                 }
             }
 
-            GHGame curGame = CurrentGame;
+            GHGame curGame = GHApp.CurrentGHGame;
             curGame?.ResponseQueue.Enqueue(new GHResponse(curGame, GHRequestType.CrashReport));
         }
 
@@ -21117,7 +21136,7 @@ namespace GnollHackX.Pages.Game
 
         //public void StopWaitAndResumeSavedGame()
         //{
-        //    GHGame curGame = CurrentGame;
+        //    GHGame curGame = GHApp.CurrentGHGame;
         //    curGame?.ResponseQueue.Enqueue(new GHResponse(curGame, GHRequestType.StopWaitAndRestoreSavedGame));
         //}
 
@@ -21129,19 +21148,19 @@ namespace GnollHackX.Pages.Game
 
         //public void SaveGameAndWaitForResume()
         //{
-        //    GHGame curGame = CurrentGame;
+        //    GHGame curGame = GHApp.CurrentGHGame;
         //    curGame?.ResponseQueue.Enqueue(new GHResponse(curGame, GHRequestType.SaveGameAndWaitForResume));
         //}
 
         //public void SaveCheckPoint()
         //{
-        //    GHGame curGame = CurrentGame;
+        //    GHGame curGame = GHApp.CurrentGHGame;
         //    curGame?.ResponseQueue.Enqueue(new GHResponse(curGame, GHRequestType.SaveInsuranceCheckPoint));
         //}
 
         public void SendRequestForTallyRealTime()
         {
-            GHGame curGame = CurrentGame;
+            GHGame curGame = GHApp.CurrentGHGame;
             curGame?.ResponseQueue.Enqueue(new GHResponse(curGame, GHRequestType.TallyRealTime));
         }
 
@@ -21216,7 +21235,7 @@ namespace GnollHackX.Pages.Game
 
         public void RequestEndReplayFile()
         {
-            GHGame curGame = CurrentGame;
+            GHGame curGame = GHApp.CurrentGHGame;
             curGame?.ResponseQueue.Enqueue(new GHResponse(curGame, GHRequestType.EndReplayFile));
         }
 
@@ -22168,7 +22187,7 @@ namespace GnollHackX.Pages.Game
             GHApp.PlayMenuSelectSound();
             bool newMode = !MapAutoDig;
             ToggleMapAutoDigOnMainThread(newMode);
-            GHGame curGame = CurrentGame;
+            GHGame curGame = GHApp.CurrentGHGame;
             curGame?.ResponseQueue.Enqueue(new GHResponse(curGame, GHRequestType.SetAutoDig, newMode));
         }
 
@@ -22200,7 +22219,7 @@ namespace GnollHackX.Pages.Game
             GHApp.PlayMenuSelectSound();
             bool newMode = !MapIgnoreMode;
             ToggleMapIgnoreModeOnMainThread(newMode);
-            GHGame curGame = CurrentGame;
+            GHGame curGame = GHApp.CurrentGHGame;
             curGame?.ResponseQueue.Enqueue(new GHResponse(curGame, GHRequestType.SetIgnoreStopping, newMode));
         }
 
