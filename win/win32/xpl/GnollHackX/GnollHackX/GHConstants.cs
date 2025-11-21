@@ -1972,6 +1972,7 @@ namespace GnollHackX
 #else
         public const bool IsPlatformRenderLoopDefault = false;
 #endif
+        public const bool AllowRestartNewGameUponActivityDestruction = false;
     }
 
     [StructLayout(LayoutKind.Sequential)]

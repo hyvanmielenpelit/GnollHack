@@ -21,6 +21,7 @@ using System.Collections.Concurrent;
 using System.Text.Json;
 
 
+
 #if GNH_MAUI
 using GnollHackX;
 using Microsoft.Maui.Controls.PlatformConfiguration;
@@ -69,11 +70,17 @@ namespace GnollHackX
 
         public MainPage()
         {
+            GHApp.MaybeWriteGHLog("MainPage constructor.");
             InitializeComponent();
             GHApp.IncrementMainPageStarts();
             GHApp.CurrentMainPage = this;
             On<iOS>().SetUseSafeArea(true);
             UIUtils.SetPageThemeOnHandler(this, GHApp.DarkMode);
+            if (GHApp.MainPageStarts > 1)
+            {
+                WaitLabel.Text = "Please Wait...";
+                WaitLayout.IsVisible = true;
+            }
 #if WINDOWS
             classicModeGrid.HeightRequest = 40;
             casualModeGrid.HeightRequest = 40;
@@ -737,15 +744,23 @@ namespace GnollHackX
                 StartLocalGameButton.TextColor = GHColors.Gray;
                 carouselView.Stop();
 
-                long numberofgames = Preferences.Get("NumberOfGames", 0L);
-                Preferences.Set("NumberOfGames", numberofgames + 1L);
+                //GHGame curGame = GHApp.CurrentGHGame;
+                //if (curGame != null)
+                //{
+                //    await DoShowGamePageForExistingGameAsync(curGame);
+                //}
+                //else
+                {
+                    long numberofgames = Preferences.Get("NumberOfGames", 0L);
+                    Preferences.Set("NumberOfGames", numberofgames + 1L);
 
-                var gamePage = new GamePage(this);
-                gamePage.EnableWizardMode = wizardModeSwitch.IsToggled;
-                gamePage.EnableCasualMode = casualModeSwitch.IsToggled;
-                gamePage.EnableModernMode = !classicModeSwitch.IsToggled;
-                await GHApp.Navigation.PushModalAsync(gamePage);
-                await gamePage.StartNewGame();
+                    var gamePage = new GamePage(this);
+                    gamePage.EnableWizardMode = wizardModeSwitch.IsToggled;
+                    gamePage.EnableCasualMode = casualModeSwitch.IsToggled;
+                    gamePage.EnableModernMode = !classicModeSwitch.IsToggled;
+                    await GHApp.Navigation.PushModalAsync(gamePage);
+                    await gamePage.StartNewGame();
+                }
             }
             catch (Exception ex)
             {
@@ -785,19 +800,70 @@ namespace GnollHackX
             return false;
         }
 
+        private async Task DoShowGamePageForExistingGameAsync()
+        {
+            GHGame curGame = GHApp.CurrentGHGame;
+            if (curGame != null) 
+            {
+                carouselView.Stop();
+                var gamePage = new GamePage(this);
+                gamePage.EnableWizardMode = curGame.WizardMode;
+                gamePage.EnableCasualMode = curGame.CasualMode;
+                gamePage.EnableModernMode = curGame.ModernMode;
+                curGame.SetActiveGamePage(gamePage);
+                await GHApp.Navigation.PushModalAsync(gamePage, false);
+                bool gameLoaded = false;
+                if (GHApp.IsAutoSaveUponSwitchingAppsOn)
+                {
+                    GHApp.CancelSaveGame = true;
+                    GHGame game = GHApp.CurrentGHGame;
+                    if (game != null && !game.PlayingReplay && game.ActiveGamePage.IsGameOn)
+                    {
+                        //Detect background app killing OS, check if last exit is through going to sleep & game has been saved, and load previously saved game
+                        bool wenttosleep = false;
+                        try
+                        {
+                            wenttosleep = Preferences.Get("WentToSleepWithGameOn", false);
+                            Preferences.Set("WentToSleepWithGameOn", false);
+                            Preferences.Set("GameSaveResult", 0);
+                        }
+                        catch (Exception ex)
+                        {
+                            Debug.WriteLine(ex);
+                        }
+                        if (wenttosleep && (GHApp.GameSaved || GHApp.SavingGame))
+                        {
+                            gameLoaded = true;
+                            game.StopWaitAndResumeSavedGame();
+                        }
+                    }
+                }
+
+                if (!gameLoaded)
+                {
+                    gamePage.StartExistingGame();
+                    curGame.ReactivateGame();
+                }
+                await Task.Delay(500);
+            }
+            WaitLayout.IsVisible = false;
+        }
+
+        private bool AllowStartExistingGame {  get { return GHConstants.AllowRestartNewGameUponActivityDestruction; } }
+
         private async void ContentPage_Appearing(object sender, EventArgs e)
         {
             GHApp.BackButtonPressed += BackButtonPressed;
             UpdateLayout();
-            if (_firsttime && GHApp.MainPageStarts > 1)
+            if (_firsttime && GHApp.MainPageStarts > 1) // Restart
             {
                 _firsttime = false;
                 GHApp.CurrentGamePage = null;
                 GHApp.SetWindowFocus();
-                StartLogoImage.Opacity = 1.0;
-                FmodLogoImage.Opacity = 1.0;
+                GnollHackLabel.Text = "GnollHack";
+                //StartLogoImage.Opacity = 1.0;
+                //FmodLogoImage.Opacity = 1.0;
                 FinishedLogoFadeIn = true;
-
                 StartLogoImage.Opacity = 0.0; /* To make sure */
                 FmodLogoImage.Opacity = 0.0; /* To make sure */
 
@@ -819,27 +885,56 @@ namespace GnollHackX
                 {
                     if ((!GHApp.MainScreenMusicStarted))
                         PlayMainScreenVideoAndMusic();
+                    WaitLayout.IsVisible = false;
                 }
                 else
                 {
-                    StartLocalGameButton.TextColor = GHColors.Gray;
-                    StartLocalGameButton.IsEnabled = false;
-                    var curGame = GHApp.CurrentGHGame;
+                    GHGame curGame = GHApp.CurrentGHGame;
                     if (curGame != null)
                     {
-                        carouselView.Stop();
-                        var gamePage = new GamePage(this);
-                        gamePage.EnableWizardMode = curGame.WizardMode;
-                        gamePage.EnableCasualMode = curGame.CasualMode;
-                        gamePage.EnableModernMode = curGame.ModernMode;
-                        curGame.SetActiveGamePage(gamePage);
-                        await GHApp.Navigation.PushModalAsync(gamePage, false);
-                        gamePage.StartExistingGame();
-                        curGame.ReactivateGame();
+                        StartLocalGameButton.TextColor = GHColors.Gray;
+                        StartLocalGameButton.IsEnabled = false;
+                        WaitLayout.IsVisible = false;
+
+                        if (AllowStartExistingGame)
+                        {
+                            DisplayAlertGrid("Android Activity Restart",
+                                "Android destroyed GnollHack's activity when backgrounded. Please press OK to return to your game.",
+                                    "OK", GHColors.Orange, 5);
+                            return;
+                        }
+                        else
+                        {
+                            carouselView.Play();
+
+                            ///* Game has been successfully loaded, so need to save first */
+                            //if (GHApp.IsAutoSaveUponSwitchingAppsOn)
+                            //{
+                            //    curGame.SaveGameAndWaitForResume();
+                            //    await Task.Delay(2000);
+                            //}
+                            Preferences.Set("WentToSleepWithGameOn", false);
+                            Preferences.Set("GameSaveResult", 0);
+
+                            if (GHApp.IsAndroid)
+                            {
+                                DisplayAlertGrid("Android Activity Restart",
+                                    "Android destroyed GnollHack's activity when backgrounded, which may lead to unstable performance. Please press OK to exit the app and then restart GnollHack.",
+                                        "OK", GHColors.Orange, 4);
+                            }
+                            else
+                            {
+                                DisplayAlertGrid("Unexpected App Restart",
+                                    "GnollHack experienced unexpected app window restart, which may lead to unstable performance. Please press OK to exit the app and then restart GnollHack.",
+                                        "OK", GHColors.Orange, 4);
+                            }
+                            return;
+                        }
                     }
                     else
                     {
                         carouselView.Play();
+                        WaitLayout.IsVisible = false;
                     }
                 }
             }
@@ -1892,7 +1987,15 @@ namespace GnollHackX
                 || (_alertGridCloseAppStyle == 2 && (!FinishedLogoFadeIn || (GHApp.PlatformService?.IsRemoveAnimationsOn() ?? true)))
                 || (_alertGridCloseAppStyle == 3 && (!FinishedLogoFadeIn || ((GHApp.PlatformService?.GetCurrentAnimatorDurationScale() ?? -1.0f) <= 0.0f)))
                 || _alertGridCloseAppStyle == 4)
+            {
+                WaitLabel.Text = "Exiting...";
+                WaitLayout.IsVisible = true;
                 await CloseApp();
+            }
+            else if (_alertGridCloseAppStyle == 5)
+            {
+                await DoShowGamePageForExistingGameAsync();
+            }
             AlertOkButton.IsEnabled = true;
             DisplayNewAlert(); //Show next alert if there are more in the queue
         }

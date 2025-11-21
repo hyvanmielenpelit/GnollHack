@@ -1744,36 +1744,7 @@ namespace GnollHackX
 
         public static void OnStart()
         {
-            CtrlDown = false;
-            AltDown = false;
-            ShiftDown = false;
-            SleepMuteMode = false;
-
-            //DoKeyboardFocus();
-
-            if (IsAutoSaveUponSwitchingAppsOn)
-            {
-                CancelSaveGame = true;
-                GHGame game = CurrentGHGame;
-                if (game != null && !game.PlayingReplay && game.ActiveGamePage.IsGameOn)
-                {
-                    //Detect background app killing OS, check if last exit is through going to sleep, and notify player that the app probably had been terminated by OS but game has been saved
-                    bool wenttosleep = false;
-                    try
-                    {
-                        wenttosleep = Preferences.Get("WentToSleepWithGameOn", false);
-                        Preferences.Set("WentToSleepWithGameOn", false);
-                    }
-                    catch (Exception ex)
-                    {
-                        Debug.WriteLine(ex);
-                    }
-                    if (wenttosleep && (GameSaved || SavingGame))
-                    {
-                        game.StopWaitAndResumeSavedGame();
-                    }
-                }
-            }
+            HandleResume(true);
         }
 
         public static void OnSleep()
@@ -1873,6 +1844,11 @@ namespace GnollHackX
 
         public static void OnResume()
         {
+            HandleResume(false);
+        }
+
+        private static void HandleResume(bool isRestart)
+        {
             if (!UsePlatformRenderLoop)
                 PlatformService?.OverrideAnimatorDuration();
 
@@ -1958,7 +1934,7 @@ namespace GnollHackX
             }
 #endif
 
-            if (IsAutoSaveUponSwitchingAppsOn)
+            if (IsAutoSaveUponSwitchingAppsOn && !isRestart)
             {
                 CancelSaveGame = true;
                 GHGame game = CurrentGHGame;
