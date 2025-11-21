@@ -144,13 +144,20 @@ namespace GnollHackX
         public void ReactivateGame()
         {
             GamePage gamePage = ActiveGamePage;
+            if (gamePage == null)
+                return;
+
             int x, y;
             lock (_mapDataBufferLock)
             {
                 x = _ux;
                 y = _uy;
             }
-            gamePage?.SetTargetClip(x, y, true, MainCounterValue);
+            gamePage.SetTargetClip(x, y, true, MainCounterValue);
+            for (int winHandle = 0; winHandle <= _lastWindowHandle && winHandle < GHConstants.MaxGHWindows; winHandle++)
+            {
+                gamePage.UpdateGHWindow(winHandle, _ghWindows[winHandle]);
+            }
         }
 
         ~GHGame()

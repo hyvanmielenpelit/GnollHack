@@ -1312,6 +1312,8 @@ namespace GnollHackX.Pages.Game
         {
             //CurrentGame = GHApp.CurrentGHGame;
             StartGameInitialTasks();
+            //bool initAux = MaybeInitAuxCanvases();
+            //MaybeFinalizeInitAuxCanvases(initAux);
             StartGameFinalTasks();
             HideLoadingScreen();
         }
@@ -1344,17 +1346,7 @@ namespace GnollHackX.Pages.Game
                 LoadingProgressBar.Progress = 0.0;
 
                 StartGameInitialTasks();
-
-                bool initAuxCanvases = GHApp.IsAndroid && GHApp.UseGPU && !GHApp.DisableAuxGPU;
-                if (initAuxCanvases)
-                {
-                    MenuGrid.IsVisible = true;
-                    TextGrid.IsVisible = true;
-                    MoreCommandsGrid.IsVisible = true;
-                    MenuCanvas.InvalidateSurface();
-                    TextCanvas.InvalidateSurface();
-                    CommandCanvas.InvalidateSurface();
-                }
+                bool initAuxCanvases = MaybeInitAuxCanvases();
 
                 LoadingDetailsLabel.Text = "Initializing GnollHack...";
                 await _gnollHackService.InitializeGnollHack();
@@ -1556,12 +1548,7 @@ namespace GnollHackX.Pages.Game
                     DeviceDisplay.KeepScreenOn = true;
                 }
 
-                if (initAuxCanvases)
-                {
-                    MenuGrid.IsVisible = false;
-                    TextGrid.IsVisible = false;
-                    MoreCommandsGrid.IsVisible = false;
-                }
+                MaybeFinalizeInitAuxCanvases(initAuxCanvases);
 
                 GHApp.FmodService?.StopAllUISounds();
                 Thread t;
@@ -1608,6 +1595,31 @@ namespace GnollHackX.Pages.Game
             MenuCanvas._parentGrid = MenuGrid;
             TextCanvas._parentGrid = TextGrid;
             TipView._parentGrid = null;
+        }
+
+        private bool MaybeInitAuxCanvases()
+        {
+            bool initAuxCanvases = GHApp.IsAndroid && GHApp.UseGPU && !GHApp.DisableAuxGPU;
+            if (initAuxCanvases)
+            {
+                MenuGrid.IsVisible = true;
+                TextGrid.IsVisible = true;
+                MoreCommandsGrid.IsVisible = true;
+                MenuCanvas.InvalidateSurface();
+                TextCanvas.InvalidateSurface();
+                CommandCanvas.InvalidateSurface();
+            }
+            return initAuxCanvases;
+        }
+
+        private void MaybeFinalizeInitAuxCanvases(bool initAuxCanvases)
+        {
+            if (initAuxCanvases)
+            {
+                MenuGrid.IsVisible = false;
+                TextGrid.IsVisible = false;
+                MoreCommandsGrid.IsVisible = false;
+            }
         }
 
         private void StartGameFinalTasks()
@@ -3455,7 +3467,7 @@ namespace GnollHackX.Pages.Game
         private int _localMapWindowId = 0;
         private int _localMessageWindowId = 0;
         private int _localStatusWindowId = 0;
-        private void UpdateGHWindow(int winid, GHWindow ghWindow)
+        public void UpdateGHWindow(int winid, GHWindow ghWindow)
         {
             if (ghWindow == null)
                 return;
