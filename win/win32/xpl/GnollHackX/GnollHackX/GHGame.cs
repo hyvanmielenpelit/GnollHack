@@ -156,7 +156,8 @@ namespace GnollHackX
             gamePage.SetTargetClip(x, y, true, MainCounterValue);
             for (int winHandle = 0; winHandle <= _lastWindowHandle && winHandle < GHConstants.MaxGHWindows; winHandle++)
             {
-                gamePage.UpdateGHWindow(winHandle, _ghWindows[winHandle]);
+                if(_ghWindows[winHandle] != null)
+                    gamePage.UpdateGHWindow(winHandle, _ghWindows[winHandle].Clone());
             }
         }
 
@@ -1371,6 +1372,8 @@ namespace GnollHackX
         {
             RecordFunctionCall(RecordedFunctionID.ClipAround, x, y, force);
             GamePage gamePage = ActiveGamePage;
+            if (gamePage == null)
+                return;
 
             if (force == 0 && (gamePage.MapNoClipMode || gamePage.MapLookMode || gamePage.ZoomMiniMode)) //|| (!_gamePage.ZoomAlternateMode && _gamePage.MapNoClipMode) || (_gamePage.ZoomAlternateMode && _gamePage.MapAlternateNoClipMode) 
                 return; /* No clip mode ignores cliparound commands */

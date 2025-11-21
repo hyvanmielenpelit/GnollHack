@@ -789,7 +789,7 @@ namespace GnollHackX
         {
             GHApp.BackButtonPressed += BackButtonPressed;
             UpdateLayout();
-            if (GHApp.MainPageStarts > 1)
+            if (_firsttime && GHApp.MainPageStarts > 1)
             {
                 _firsttime = false;
                 GHApp.CurrentGamePage = null;
@@ -801,6 +801,7 @@ namespace GnollHackX
                 StartLogoImage.Opacity = 0.0; /* To make sure */
                 FmodLogoImage.Opacity = 0.0; /* To make sure */
 
+                carouselView.Init();
                 carouselView.IsVisible = true;
                 carouselView.InvalidateSurface();
                 carouselView.Opacity = 1.0; /* To make sure */
