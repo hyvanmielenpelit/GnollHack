@@ -607,17 +607,12 @@ namespace GnollHackX.Pages.Game
         private ObjectDataItem _uChain = null;
         private ObjectDataItem _uBall = null;
 
-        private ObjectDataItem[] _weaponStyleObjDataItem = new ObjectDataItem[3];
-        private readonly object _weaponStyleObjDataItemLock = new object();
         private bool _drawWeaponStyleAsGlyphs = true;
 
         public SimpleImageButton StandardMeasurementButton { get { return ESCButton; } } // UseSimpleCmdLayout ? SimpleESCButton : ESCButton
         public MeasurableGrid StandardMeasurementCmdLayout { get { return StoneButtonGrid; } } // UseSimpleCmdLayout ? SimpleUpperCmdLayout : UpperCmdLayout;
         public LabeledImageButton StandardReferenceButton { get { return UseSimpleCmdLayout ? lSimpleInventoryButton : lInventoryButton; } } // { get { return DesktopButtons ? lRowAbilitiesButton : lAbilitiesButton; } }
         public MeasurableStackLayout UsedButtonRowStack { get { return UseSimpleCmdLayout ? SimpleButtonRowStack : ButtonRowStack; } }
-
-        private readonly object _petDataLock = new object();
-        private readonly List<GHPetDataItem> _petData = new List<GHPetDataItem>(8);
 
         private int _shownMessageRows = GHConstants.DefaultMessageRows;
         private int _shownPetRows = GHConstants.DefaultPetRows;
@@ -851,9 +846,6 @@ namespace GnollHackX.Pages.Game
         private int _showNumberPad = 0;
         private bool ShowNumberPad { get { return Interlocked.CompareExchange(ref _showNumberPad, 0, 0) != 0; } set { Interlocked.Exchange(ref _showNumberPad, value ? 1 : 0); } }
 
-        public readonly object StatusFieldLock = new object();
-        public readonly GHStatusField[] StatusFields = new GHStatusField[(int)NhStatusFields.MAXBLSTATS];
-
         private MainPage _mainPage;
 
 
@@ -967,24 +959,6 @@ namespace GnollHackX.Pages.Game
         //private readonly object _enableModernModeLock = new object();
         private int _enableModernMode = 0;
         public bool EnableModernMode { get { return Interlocked.CompareExchange(ref _enableModernMode, 0, 0) != 0; } set { Interlocked.Exchange(ref _enableModernMode, value ? 1 : 0); } }
-
-        private readonly object _contextMenuDataLock = new object();
-        private readonly List<ContextMenuButton> _contextMenuData = new List<ContextMenuButton>();
-        private class ContextMenuButton
-        {
-            public readonly string LblText;
-            public readonly string ImgSourcePath;
-            public readonly SKImage Bitmap;
-            public readonly int BtnCommand;
-            //public SKRect Rect;
-            public ContextMenuButton(string lblText, string imgSourcePath, SKImage bitmap, int btnCommand)
-            {
-                LblText = lblText;
-                ImgSourcePath = imgSourcePath;
-                Bitmap = bitmap;
-                BtnCommand = btnCommand;
-            }
-        }
 
         public void SetPrimaryCanvasResourceCacheLimit(long cacheLimit)
         {
@@ -2671,212 +2645,6 @@ namespace GnollHackX.Pages.Game
             }
         }
 
-
-        public void ClearContextMenu()
-        {
-            //ContextLayout.Children.Clear();
-            //ContextLayout.IsVisible = false;
-            lock (_contextMenuDataLock)
-            {
-                _contextMenuData.Clear();
-            }
-        }
-        public void AddContextMenu(AddContextMenuData data)
-        {
-            int cmddefchar = data.cmd_def_char;
-            int cmdcurchar = data.cmd_cur_char;
-            if (cmddefchar < 0)
-                cmddefchar += 256; /* On this operating system, chars are signed chars; fix to positive values */
-            if (cmdcurchar < 0)
-                cmdcurchar += 256; /* On this operating system, chars are signed chars; fix to positive values */
-            string icon_string = "";
-            int LastPickedCmd = GHUtils.Meta('<');
-            int OfferCmd = GHUtils.Meta('o');
-            int PrayCmd = GHUtils.Meta('p');
-            int DipCmd = GHUtils.Meta('d');
-            int DigCmd = GHUtils.Ctrl('g');
-            int SitCmd = GHUtils.Ctrl('s');
-            int RideCmd = GHUtils.Meta('R');
-            //int PrevWepCmd = GHUtils.Meta(16);
-            //int PickNStashCmd = ';';
-            //if (cmddefchar == PickNStashCmd && !ShowPut2BagContextCommand)
-            //    return; /* Do not add */
-            //if (cmddefchar == PrevWepCmd && !ShowPrevWepContextCommand)
-            //    return; /* Do not add */
-
-            switch ((char)cmddefchar)
-            {
-                case 'a':
-                    switch (data.style)
-                    {
-                        case (int)context_menu_styles.CONTEXT_MENU_STYLE_CLOSE_DISPLAY: /* Next interesting / monster */
-                        case (int)context_menu_styles.CONTEXT_MENU_STYLE_GETDIR: /* Next interesting / monster */
-                        case (int)context_menu_styles.CONTEXT_MENU_STYLE_GETPOS: /* Next interesting / monster */
-                            icon_string = GHApp.AppResourceName + ".Assets.UI.next.png";
-                            break;
-                        case (int)context_menu_styles.CONTEXT_MENU_STYLE_GENERAL: /* Apply */
-                        default:
-                            icon_string = GHApp.AppResourceName + ".Assets.UI.apply.png";
-                            break;
-                    }
-                    break;
-                case 'm':
-                    switch (data.style)
-                    {
-                        case (int)context_menu_styles.CONTEXT_MENU_STYLE_GETPOS: /* Next interesting / monster */
-                            icon_string = GHApp.AppResourceName + ".Assets.UI.next.png";
-                            break;
-                        default:
-                            icon_string = GHApp.AppResourceName + ".Assets.UI.next.png";
-                            break;
-                    }
-                    break;
-                case 'A':
-                case 'M':
-                    switch (data.style)
-                    {
-                        case (int)context_menu_styles.CONTEXT_MENU_STYLE_GETPOS: /* Previous interesting / monster */
-                            icon_string = GHApp.AppResourceName + ".Assets.UI.previous.png";
-                            break;
-                        default:
-                            icon_string = GHApp.AppResourceName + ".Assets.UI.previous.png";
-                            break;
-                    }
-                    break;
-                case 'e':
-                    icon_string = GHApp.AppResourceName + ".Assets.UI.eat.png";
-                    break;
-                case 'l':
-                    icon_string = GHApp.AppResourceName + ".Assets.UI.loot.png";
-                    break;
-                case 'b':
-                    icon_string = GHApp.AppResourceName + ".Assets.UI.lootout.png";
-                    break;
-                case 'B':
-                    icon_string = GHApp.AppResourceName + ".Assets.UI.lootin.png";
-                    break;
-                case 'p':
-                    icon_string = GHApp.AppResourceName + ".Assets.UI.pay.png";
-                    break;
-                case ',':
-                    icon_string = GHApp.AppResourceName + ".Assets.UI.pickup.png";
-                    break;
-                case '<':
-                    switch (data.style)
-                    {
-                        case (int)context_menu_styles.CONTEXT_MENU_STYLE_GETDIR: /* Upwards */
-                            icon_string = GHApp.AppResourceName + ".Assets.UI.target-upwards.png";
-                            break;
-                        case (int)context_menu_styles.CONTEXT_MENU_STYLE_GETPOS:
-                            icon_string = GHApp.AppResourceName + ".Assets.UI.stairs-up.png";
-                            break;
-                        default:
-                        case (int)context_menu_styles.CONTEXT_MENU_STYLE_GENERAL:
-                            if (data.target_text != null && data.target_text == "Pit")
-                                icon_string = GHApp.AppResourceName + ".Assets.UI.arrow_up.png";
-                            else
-                                icon_string = GHApp.AppResourceName + ".Assets.UI.stairs-up.png";
-                            break;
-                    }
-                    break;
-                case '>':
-                    switch (data.style)
-                    {
-                        case (int)context_menu_styles.CONTEXT_MENU_STYLE_GETDIR: /* Downwards */
-                            icon_string = GHApp.AppResourceName + ".Assets.UI.target-downwards.png";
-                            break;
-                        case (int)context_menu_styles.CONTEXT_MENU_STYLE_GETPOS:
-                            icon_string = GHApp.AppResourceName + ".Assets.UI.stairs-down.png";
-                            break;
-                        default:
-                        case (int)context_menu_styles.CONTEXT_MENU_STYLE_GENERAL:
-                            if(data.target_text != null && data.target_text == "Pit")
-                                icon_string = GHApp.AppResourceName + ".Assets.UI.arrow_down.png";
-                            else
-                                icon_string = GHApp.AppResourceName + ".Assets.UI.stairs-down.png";
-                            break;
-                    }
-                    break;
-                case ':':
-                    icon_string = GHApp.AppResourceName + ".Assets.UI.lookhere.png";
-                    break;
-                case 'q':
-                    icon_string = GHApp.AppResourceName + ".Assets.UI.quaff.png";
-                    break;
-                case 'r':
-                    icon_string = GHApp.AppResourceName + ".Assets.UI.read.png";
-                    break;
-                case '.':
-                    switch(data.style)
-                    {
-                        case (int)context_menu_styles.CONTEXT_MENU_STYLE_GETPOS: /* Pick position in getpos */
-                            icon_string = GHApp.AppResourceName + ".Assets.UI.select.png";
-                            break;
-                        case (int)context_menu_styles.CONTEXT_MENU_STYLE_GETDIR: /* Self in getdir */
-                            icon_string = GHApp.AppResourceName + ".Assets.UI.target-self.png";
-                            break;
-                        default:
-                        case (int)context_menu_styles.CONTEXT_MENU_STYLE_GENERAL:
-                            icon_string = GHApp.AppResourceName + ".Assets.UI.wait.png";
-                            break;
-                    }
-                    break;
-                case (char)GHConstants.CancelChar:
-                    switch (data.style)
-                    {
-                        case (int)context_menu_styles.CONTEXT_MENU_STYLE_CLOSE_DISPLAY:
-                            icon_string = GHApp.AppResourceName + ".Assets.UI.exit-to-map.png";
-                            break;
-                        default:
-                            icon_string = GHApp.AppResourceName + ".Assets.UI.no.png";
-                            break;
-                    }
-                    break;
-                case 'C':
-                    if(data.cmd_text == "Steed")
-                        icon_string = GHApp.AppResourceName + ".Assets.UI.chatsteed.png";
-                    else
-                        icon_string = GHApp.AppResourceName + ".Assets.UI.chat.png";
-                    break;
-                case ';':
-                    icon_string = GHApp.AppResourceName + ".Assets.UI.picktobag.png";
-                    break;
-                default:
-                    if (cmddefchar == LastPickedCmd)
-                        icon_string = GHApp.AppResourceName + ".Assets.UI.lastitem.png";
-                    else if (cmddefchar == OfferCmd)
-                        icon_string = GHApp.AppResourceName + ".Assets.UI.offer.png";
-                    else if (cmddefchar == PrayCmd)
-                        icon_string = GHApp.AppResourceName + ".Assets.UI.pray.png";
-                    else if (cmddefchar == DipCmd)
-                        icon_string = GHApp.AppResourceName + ".Assets.UI.dip.png";
-                    else if (cmddefchar == DigCmd)
-                        icon_string = GHApp.AppResourceName + ".Assets.UI.dig.png";
-                    else if (cmddefchar == SitCmd)
-                        icon_string = GHApp.AppResourceName + ".Assets.UI.sit.png";
-                    else if (cmddefchar == RideCmd)
-                        icon_string = GHApp.AppResourceName + ".Assets.UI.ride.png";
-                    //else if (cmddefchar == PickNStashCmd)
-                    //    icon_string = GHApp.AppResourceName + ".Assets.UI.picktobag.png";
-                    //else if (cmddefchar == PrevWepCmd)
-                    //    icon_string = GHApp.AppResourceName + ".Assets.UI.wield.png";
-                    else
-                        icon_string = GHApp.AppResourceName + ".Assets.UI.missing_icon.png";
-                    break;
-            }
-
-            string sourcePath = "resource://" + icon_string;
-            ContextMenuButton cmb = new ContextMenuButton(data.cmd_text, sourcePath, GHApp.GetCachedImageSourceBitmap(sourcePath, true), cmdcurchar);
-            //cmb.ImgSourcePath = "resource://" + icon_string;
-            //cmb.Bitmap = GHApp.GetCachedImageSourceBitmap(cmb.ImgSourcePath, true);
-            //cmb.LblText = data.cmd_text;
-            //cmb.BtnCommand = cmdcurchar;
-            lock (_contextMenuDataLock)
-            {
-                _contextMenuData.Add(cmb);
-            }
-        }
-
         public void DisplayFloatingText(DisplayFloatingTextData data)
         {
             lock (_floatingTextLock)
@@ -3284,10 +3052,10 @@ namespace GnollHackX.Pages.Game
                                 HideLoadingScreen();
                                 break;
                             case GHRequestType.ClearContextMenu:
-                                ClearContextMenu();
+                                //ClearContextMenu();
                                 break;
                             case GHRequestType.AddContextMenu:
-                                AddContextMenu(req.ContextMenuData);
+                                //AddContextMenu(req.ContextMenuData);
                                 break;
                             case GHRequestType.DisplayFloatingText:
                                 DisplayFloatingText(req.FloatingTextData);
@@ -3436,10 +3204,10 @@ namespace GnollHackX.Pages.Game
                                 EnqueueTask(ref tasks, DoSaveFileTrackingLoad(req.RequestLong, req.RequestString, req.RequestLong2, req.RequestString2));
                                 break;
                             case GHRequestType.ClearPetData:
-                                ClearPetData();
+                                //ClearPetData();
                                 break;
                             case GHRequestType.AddPetData:
-                                AddPetData(req.MonstInfoData);
+                                //AddPetData(req.MonstInfoData);
                                 break;
                             case GHRequestType.UpdateGHWindow:
                                 UpdateGHWindow(req.RequestInt, req.RequestingGHWindow);
@@ -7527,32 +7295,32 @@ namespace GnollHackX.Pages.Game
             //lock (_weaponStyleObjDataItemLock)
             try
             {
-                Monitor.TryEnter(_weaponStyleObjDataItemLock, ref lockTaken);
+                Monitor.TryEnter(curGame._weaponStyleObjDataItemLock, ref lockTaken);
                 if (lockTaken)
                 {
-                    _weaponStyleObjDataItem.CopyTo(_localWeaponStyleObjDataItem, 0);
+                    curGame._weaponStyleObjDataItem.CopyTo(_localWeaponStyleObjDataItem, 0);
                 }
             }
             finally
             {
                 if (lockTaken)
-                    Monitor.Exit(_weaponStyleObjDataItemLock);
+                    Monitor.Exit(curGame._weaponStyleObjDataItemLock);
             }
             lockTaken = false;
 
             //lock (StatusFieldLock)
             try
             {
-                Monitor.TryEnter(StatusFieldLock, ref lockTaken);
+                Monitor.TryEnter(curGame.StatusFieldLock, ref lockTaken);
                 if (lockTaken)
                 {
-                    StatusFields.CopyTo(_localStatusFields, 0);
+                    curGame.StatusFields.CopyTo(_localStatusFields, 0);
                 }
             }
             finally
             {
                 if (lockTaken)
-                    Monitor.Exit(StatusFieldLock);
+                    Monitor.Exit(curGame.StatusFieldLock);
             }
             lockTaken = false;
 
@@ -7692,13 +7460,13 @@ namespace GnollHackX.Pages.Game
             //lock (_petDataLock)
             try
             {
-                Monitor.TryEnter(_petDataLock, ref lockTaken);
+                Monitor.TryEnter(curGame._petDataLock, ref lockTaken);
                 if (lockTaken)
                 {
                     _localPetData.Clear();
-                    _localPetData.AddRange(_petData);
+                    _localPetData.AddRange(curGame._petData);
                     _localPetRects.Clear();
-                    int petCnt = _petData.Count;
+                    int petCnt = curGame._petData.Count;
                     for (int i = 0; i < petCnt; i++)
                         _localPetRects.Add(SKRect.Empty);
                 }
@@ -7706,20 +7474,20 @@ namespace GnollHackX.Pages.Game
             finally
             {
                 if (lockTaken)
-                    Monitor.Exit(_petDataLock);
+                    Monitor.Exit(curGame._petDataLock);
             }
             lockTaken = false;
 
             //lock (_contextMenuDataLock)
             try
             {
-                Monitor.TryEnter(_contextMenuDataLock, ref lockTaken);
+                Monitor.TryEnter(curGame._contextMenuDataLock, ref lockTaken);
                 if (lockTaken)
                 {
                     _localContextMenuData.Clear();
-                    _localContextMenuData.AddRange(_contextMenuData);
+                    _localContextMenuData.AddRange(curGame._contextMenuData);
                     _localContextMenuRects.Clear();
-                    int cbCnt = _contextMenuData.Count;
+                    int cbCnt = curGame._contextMenuData.Count;
                     for (int i = 0; i < cbCnt; i++)
                         _localContextMenuRects.Add(SKRect.Empty);
                 }
@@ -7727,7 +7495,7 @@ namespace GnollHackX.Pages.Game
             finally
             {
                 if (lockTaken)
-                    Monitor.Exit(_contextMenuDataLock);
+                    Monitor.Exit(curGame._contextMenuDataLock);
             }
             lockTaken = false;
 
@@ -10533,21 +10301,21 @@ namespace GnollHackX.Pages.Game
                                 //lock (_quickLock)
                                 try
                                 {
-                                    Monitor.TryEnter(_quickLock, ref lockTaken);
+                                    Monitor.TryEnter(curGame._quickLock, ref lockTaken);
                                     if (lockTaken)
                                     {
-                                        _localQuickWandExceptinality = _quickWandExceptionality;
-                                        _localQuickWandGlyph = _quickWandGlyph;
-                                        _localQuickWandName = _quickWandName;
-                                        _localQuickSpellOtyp = _quickSpellOtyp;
-                                        _localQuickSpellGlyph = _quickSpellGlyph;
-                                        _localQuickSpellName = _quickSpellName;
+                                        _localQuickWandExceptinality = curGame._quickWandExceptionality;
+                                        _localQuickWandGlyph = curGame._quickWandGlyph;
+                                        _localQuickWandName = curGame._quickWandName;
+                                        _localQuickSpellOtyp = curGame._quickSpellOtyp;
+                                        _localQuickSpellGlyph = curGame._quickSpellGlyph;
+                                        _localQuickSpellName = curGame._quickSpellName;
                                     }
                                 }
                                 finally
                                 {
                                     if (lockTaken)
-                                        Monitor.Exit(_quickLock);
+                                        Monitor.Exit(curGame._quickLock);
                                 }
                                 lockTaken = false;
 
@@ -16513,49 +16281,6 @@ namespace GnollHackX.Pages.Game
         //    }
         //}
 
-        public void AddEquippedObjectData(int x, int y, Obj otmp, int cmdtype, int where, ObjClassData otypdata, ulong oflags)
-        {
-            bool is_uwep = (oflags & (ulong)objdata_flags.OBJDATA_FLAGS_UWEP) != 0UL;
-            bool is_uwep2 = (oflags & (ulong)objdata_flags.OBJDATA_FLAGS_UWEP2) != 0UL;
-            bool is_uquiver = (oflags & (ulong)objdata_flags.OBJDATA_FLAGS_UQUIVER) != 0UL;
-            bool hallucinated = (oflags & (ulong)objdata_flags.OBJDATA_FLAGS_HALLUCINATION) != 0UL;
-            bool foundthisturn = (oflags & (ulong)objdata_flags.OBJDATA_FLAGS_FOUND_THIS_TURN) != 0UL;
-
-            bool outofammo1 = (oflags & (ulong)objdata_flags.OBJDATA_FLAGS_OUT_OF_AMMO1) != 0UL;
-            bool wrongammo1 = (oflags & (ulong)objdata_flags.OBJDATA_FLAGS_WRONG_AMMO_TYPE1) != 0UL;
-            bool notbeingused1 = (oflags & (ulong)objdata_flags.OBJDATA_FLAGS_NOT_BEING_USED1) != 0UL;
-            bool notweapon1 = (oflags & (ulong)objdata_flags.OBJDATA_FLAGS_NOT_WEAPON1) != 0UL;
-            bool outofammo2 = (oflags & (ulong)objdata_flags.OBJDATA_FLAGS_OUT_OF_AMMO2) != 0UL;
-            bool wrongammo2 = (oflags & (ulong)objdata_flags.OBJDATA_FLAGS_WRONG_AMMO_TYPE2) != 0UL;
-            bool notbeingused2 = (oflags & (ulong)objdata_flags.OBJDATA_FLAGS_NOT_BEING_USED2) != 0UL;
-            bool notweapon2 = (oflags & (ulong)objdata_flags.OBJDATA_FLAGS_NOT_WEAPON2) != 0UL;
-            bool outofammo = is_uwep ? outofammo1 : is_uwep2 ? outofammo2 : false;
-            bool wrongammo = is_uwep ? wrongammo1 : is_uwep2 ? wrongammo2 : false;
-            bool notbeingused = is_uwep ? notbeingused1 : is_uwep2 ? notbeingused2 : false;
-            bool notweapon = is_uwep ? notweapon1 : is_uwep2 ? notweapon2 : false;
-            bool isammo = (oflags & (ulong)objdata_flags.OBJDATA_FLAGS_IS_AMMO) != 0UL;
-            bool isthrowingweapon = (oflags & (ulong)objdata_flags.OBJDATA_FLAGS_THROWING_WEAPON) != 0UL;
-            bool prevwepfound = (oflags & (ulong)objdata_flags.OBJDATA_FLAGS_PREV_WEP_FOUND) != 0UL;
-            bool prevunwield = (oflags & (ulong)objdata_flags.OBJDATA_FLAGS_PREV_UNWIELD) != 0UL;
-
-            int idx = is_uwep ? 0 : is_uwep2 ? 1 : 2;
-            lock (_weaponStyleObjDataItemLock)
-            {
-                switch (cmdtype)
-                {
-                    case 1: /* Clear */
-                        _weaponStyleObjDataItem[idx] = null;
-                        break;
-                    case 2: /* Add item */
-                        _weaponStyleObjDataItem[idx] = new ObjectDataItem(otmp, otypdata, hallucinated, outofammo, wrongammo, notbeingused, notweapon, foundthisturn, isammo, isthrowingweapon, prevwepfound, prevunwield);
-                        break;
-                    case 3: /* Add container item to previous item */
-                        _weaponStyleObjDataItem[idx] = _weaponStyleObjDataItem[idx].CloneWithAddedContainedObj(new ObjectDataItem(otmp, otypdata, hallucinated));
-                        break;
-                }
-            }
-        }
-
         //public void AddObjectData(int x, int y, Obj otmp, int cmdtype, int where, ObjClassData otypdata, ulong oflags)
         //{
         //    bool is_uwep = (oflags & (ulong)objdata_flags.OBJDATA_FLAGS_UWEP) != 0UL;
@@ -16651,22 +16376,6 @@ namespace GnollHackX.Pages.Game
         //            _mapData[x, y].Engraving = new EngravingInfo(engraving_text, etype, eflags, gflags);
         //    }
         //}
-
-        public void ClearPetData()
-        {
-            lock(_petDataLock)
-            {
-                _petData.Clear();
-            }
-        }
-
-        public void AddPetData(monst_info monster_data)
-        {
-            lock (_petDataLock)
-            {
-                _petData.Add(new GHPetDataItem(monster_data));
-            }
-        }
 
         public void ClearConditionTexts()
         {
@@ -21559,34 +21268,6 @@ namespace GnollHackX.Pages.Game
                 MorePreviousButton.IsVisible = false;
             if(resetNextButton || !MoreNextGrid.IsVisible)
                 MoreNextButton.IsVisible = false;
-        }
-
-        private readonly object _quickLock = new object();
-        private int _quickWandGlyph = 0;
-        private int _quickWandExceptionality = 0;
-        private string _quickWandName = "";
-        private int _quickSpellGlyph = 0;
-        private int _quickSpellOtyp = 0;
-        private string _quickSpellName = "";
-
-        public void SetQuickZapWand(int glyph, int exceptionality, string name)
-        {
-            lock(_quickLock)
-            {
-                _quickWandGlyph = glyph;
-                _quickWandExceptionality = exceptionality;
-                _quickWandName = name;
-            }
-        }
-
-        public void SetQuickCastSpell(int glyph, int otyp, string name)
-        {
-            lock (_quickLock)
-            {
-                _quickSpellGlyph = glyph;
-                _quickSpellOtyp = otyp;
-                _quickSpellName = name;
-            }
         }
 
         public void SetZoomNormal()
