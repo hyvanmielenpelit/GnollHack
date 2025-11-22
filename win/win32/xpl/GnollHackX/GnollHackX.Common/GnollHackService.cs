@@ -334,6 +334,9 @@ namespace GnollHackX.Unknown
         [DllImport(PlatformConstants.dll)]
         public static extern float LibGetVolumeForGHSound(int ghsound);
 
+        [DllImport(PlatformConstants.dll)]
+        public static extern void LibSetExitHack(int newValue);
+
 
         private void LoadNativeLibrary(string libName)
         {
@@ -1211,6 +1214,11 @@ namespace GnollHackX.Unknown
         public float GetVolumeForGHSound(int ghsound)
         {
             return LibGetVolumeForGHSound(ghsound);
+        }
+
+        public void SetExitHack(int newValue)
+        {
+            LibSetExitHack(newValue);
         }
 
         public int StartGnollHack(GHGame ghGame)

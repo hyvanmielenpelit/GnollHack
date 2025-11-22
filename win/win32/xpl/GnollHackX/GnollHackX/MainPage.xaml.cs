@@ -72,12 +72,13 @@ namespace GnollHackX
         {
             GHApp.MaybeWriteGHLog("MainPage constructor.");
             InitializeComponent();
-            GHApp.IncrementMainPageStarts();
             GHApp.CurrentMainPage = this;
+            GHApp.CurrentGamePage = null; //Might be non-null and stale after a restart
             On<iOS>().SetUseSafeArea(true);
             UIUtils.SetPageThemeOnHandler(this, GHApp.DarkMode);
-            if (GHApp.MainPageStarts > 1)
+            if (GHApp.CurrentGHGame != null)
             {
+                GHApp.CurrentGHGame.SetActiveGamePage(null);
                 WaitLabel.Text = "Please Wait...";
                 WaitLayout.IsVisible = true;
             }
@@ -811,36 +812,27 @@ namespace GnollHackX
                 gamePage.EnableCasualMode = curGame.CasualMode;
                 gamePage.EnableModernMode = curGame.ModernMode;
                 curGame.SetActiveGamePage(gamePage);
-                await GHApp.Navigation.PushModalAsync(gamePage, false);
-                bool gameLoaded = false;
-                if (GHApp.IsAutoSaveUponSwitchingAppsOn)
+                GHGame game = GHApp.CurrentGHGame;
+                bool wenttosleep = false;
+                try
+                {
+                    wenttosleep = Preferences.Get("WentToSleepWithGameOn", false);
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine(ex);
+                }
+                if (GHApp.IsAutoSaveUponSwitchingAppsOn
+                    && game != null && !game.PlayingReplay
+                    && wenttosleep && (GHApp.GameSaved || GHApp.SavingGame))
                 {
                     GHApp.CancelSaveGame = true;
-                    GHGame game = GHApp.CurrentGHGame;
-                    if (game != null && !game.PlayingReplay && game.ActiveGamePage.IsGameOn)
-                    {
-                        //Detect background app killing OS, check if last exit is through going to sleep & game has been saved, and load previously saved game
-                        bool wenttosleep = false;
-                        try
-                        {
-                            wenttosleep = Preferences.Get("WentToSleepWithGameOn", false);
-                            Preferences.Set("WentToSleepWithGameOn", false);
-                            Preferences.Set("GameSaveResult", 0);
-                        }
-                        catch (Exception ex)
-                        {
-                            Debug.WriteLine(ex);
-                        }
-                        if (wenttosleep && (GHApp.GameSaved || GHApp.SavingGame))
-                        {
-                            gameLoaded = true;
-                            game.StopWaitAndResumeSavedGame();
-                        }
-                    }
+                    game.FullRestart = true;
+                    game.StopWaitAndResumeSavedGame(); //Calls gamePage.RestartGameAfterPageDestruction, which handles Navigation.PushModalAsync when the time is right
                 }
-
-                if (!gameLoaded)
+                else
                 {
+                    await GHApp.Navigation.PushModalAsync(gamePage, false);
                     gamePage.StartExistingGame();
                     curGame.ReactivateGame();
                 }
@@ -849,16 +841,16 @@ namespace GnollHackX
             WaitLayout.IsVisible = false;
         }
 
-        private bool AllowStartExistingGame {  get { return GHConstants.AllowRestartNewGameUponActivityDestruction; } }
+        private bool AllowStartExistingGame {  get { return GHConstants.AllowRestartGameUponActivityDestruction && GHApp.GameStarted; } }
 
         private async void ContentPage_Appearing(object sender, EventArgs e)
         {
             GHApp.BackButtonPressed += BackButtonPressed;
             UpdateLayout();
-            if (_firsttime && GHApp.MainPageStarts > 1) // Restart
+            GHGame curGame = GHApp.CurrentGHGame;
+            if (_firsttime && curGame != null) // Restart
             {
                 _firsttime = false;
-                GHApp.CurrentGamePage = null;
                 GHApp.SetWindowFocus();
                 GnollHackLabel.Text = "GnollHack";
                 //StartLogoImage.Opacity = 1.0;
@@ -881,62 +873,44 @@ namespace GnollHackX
                 StartLogoImage.IsVisible = false;
                 FmodLogoImage.IsVisible = false;
 
-                if (!GHApp.GameStarted)
+                StartLocalGameButton.TextColor = GHColors.Gray;
+                StartLocalGameButton.IsEnabled = false;
+                WaitLayout.IsVisible = false;
+
+                if (AllowStartExistingGame)
                 {
-                    if ((!GHApp.MainScreenMusicStarted))
-                        PlayMainScreenVideoAndMusic();
-                    WaitLayout.IsVisible = false;
+                    DisplayAlertGrid(GHApp.IsAndroid ? "Android Activity Restart" : "Game Screen Restart",
+                        "Android destroyed GnollHack's " + (GHApp.IsAndroid ? "activity" : "game screen") +" when backgrounded. Please press OK to return to your game.",
+                            "OK", GHColors.Orange, 5);
                 }
                 else
                 {
-                    GHGame curGame = GHApp.CurrentGHGame;
-                    if (curGame != null)
+                    carouselView.Play();
+
+                    ///* Game has been successfully loaded, so need to save first */
+                    //if (GHApp.IsAutoSaveUponSwitchingAppsOn)
+                    //{
+                    //    curGame.SaveGameAndWaitForResume();
+                    //    await Task.Delay(2000);
+                    //}
+                    Preferences.Set("WentToSleepWithGameOn", false);
+                    Preferences.Set("GameSaveResult", 0);
+
+                    if (GHApp.IsAndroid)
                     {
-                        StartLocalGameButton.TextColor = GHColors.Gray;
-                        StartLocalGameButton.IsEnabled = false;
-                        WaitLayout.IsVisible = false;
-
-                        if (AllowStartExistingGame)
-                        {
-                            DisplayAlertGrid("Android Activity Restart",
-                                "Android destroyed GnollHack's activity when backgrounded. Please press OK to return to your game.",
-                                    "OK", GHColors.Orange, 5);
-                            return;
-                        }
-                        else
-                        {
-                            carouselView.Play();
-
-                            ///* Game has been successfully loaded, so need to save first */
-                            //if (GHApp.IsAutoSaveUponSwitchingAppsOn)
-                            //{
-                            //    curGame.SaveGameAndWaitForResume();
-                            //    await Task.Delay(2000);
-                            //}
-                            Preferences.Set("WentToSleepWithGameOn", false);
-                            Preferences.Set("GameSaveResult", 0);
-
-                            if (GHApp.IsAndroid)
-                            {
-                                DisplayAlertGrid("Android Activity Restart",
-                                    "Android destroyed GnollHack's activity when backgrounded, which may lead to unstable performance. Please press OK to exit the app and then restart GnollHack.",
-                                        "OK", GHColors.Orange, 4);
-                            }
-                            else
-                            {
-                                DisplayAlertGrid("Unexpected App Restart",
-                                    "GnollHack experienced unexpected app window restart, which may lead to unstable performance. Please press OK to exit the app and then restart GnollHack.",
-                                        "OK", GHColors.Orange, 4);
-                            }
-                            return;
-                        }
+                        DisplayAlertGrid("Android Activity Restart",
+                            "Android destroyed GnollHack's activity when backgrounded, which may lead to unstable performance. Please press OK to exit the app and then restart GnollHack.",
+                                "OK", GHColors.Orange, 4);
                     }
                     else
                     {
-                        carouselView.Play();
-                        WaitLayout.IsVisible = false;
+                        DisplayAlertGrid("Unexpected App Restart",
+                            "GnollHack experienced unexpected app window restart, which may lead to unstable performance. Please press OK to exit the app and then restart GnollHack.",
+                                "OK", GHColors.Orange, 4);
                     }
                 }
+
+                return;
             }
             else if (_firsttime)
             {

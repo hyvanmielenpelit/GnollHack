@@ -86,5 +86,7 @@ namespace GnollHackX
 
         string GetEventPathForGHSound(int ghsound);
         float GetVolumeForGHSound(int ghsound);
+
+        void SetExitHack(int newValue);
     }
 }

@@ -200,12 +200,12 @@ namespace GnollHackX
             InitializePlatformRenderLoop();
         }
 
-        private static int _mainPageStarts = 0;
-        public static int MainPageStarts { get { return Interlocked.CompareExchange(ref _mainPageStarts, 0, 0); } set { Interlocked.Exchange(ref _mainPageStarts, value); } }
-        public static void IncrementMainPageStarts()
-        {
-            Interlocked.Increment(ref _mainPageStarts);
-        }
+        //private static int _mainPageStarts = 0;
+        //public static int MainPageStarts { get { return Interlocked.CompareExchange(ref _mainPageStarts, 0, 0); } set { Interlocked.Exchange(ref _mainPageStarts, value); } }
+        //public static void IncrementMainPageStarts()
+        //{
+        //    Interlocked.Increment(ref _mainPageStarts);
+        //}
 
         private static int _gameStarted = 0;
         public static bool GameStarted { get { return Interlocked.CompareExchange(ref _gameStarted, 0, 0) != 0; } set { Interlocked.Exchange(ref _gameStarted, value ? 1 : 0); } }
@@ -1763,7 +1763,7 @@ namespace GnollHackX
             {
                 CancelSaveGame = false;
                 GHGame game = CurrentGHGame;
-                if (game != null && !game.PlayingReplay && game.ActiveGamePage.IsGameOn)
+                if (game != null && !game.PlayingReplay && (game.ActiveGamePage?.IsGameOn ?? false))
                 {
                     //Detect background app killing OS, mark that exit has been through going to sleep, and save the game
                     try
@@ -1777,8 +1777,9 @@ namespace GnollHackX
                     }
                     if (BatteryChargeLevel > 3) /* Save only if there is enough battery left to prevent save file corruption when the phone powers off */
                     {
-                        if (game.ActiveGamePage.GameEnded && OperatingSystemKillsAppsOnBackground)
-                            game.ActiveGamePage.FastForwardRequested = true;
+                        GamePage gamePage = game.ActiveGamePage;
+                        if (gamePage != null && gamePage.GameEnded && OperatingSystemKillsAppsOnBackground)
+                            gamePage.FastForwardRequested = true;
                         game.SaveGameAndWaitForResume();
                     }
                 }
@@ -1793,7 +1794,7 @@ namespace GnollHackX
             {
                 CancelSaveGame = false;
                 GHGame game = CurrentGHGame;
-                if (game != null && !game.PlayingReplay && game.ActiveGamePage.IsGameOn)
+                if (game != null && !game.PlayingReplay && (game.ActiveGamePage?.IsGameOn ?? false))
                 {
                     //Detect background app killing OS, mark that exit has been through going to sleep, and save the game
                     try
@@ -1807,7 +1808,8 @@ namespace GnollHackX
                     }
                     if (BatteryChargeLevel > 3) /* Save only if there is enough battery left to prevent save file corruption when the phone powers off */
                     {
-                        if (game.ActiveGamePage.GameEnded && OperatingSystemKillsAppsOnBackground)
+                        GamePage gamePage = game.ActiveGamePage;
+                        if (gamePage != null && gamePage.GameEnded && OperatingSystemKillsAppsOnBackground)
                             game.ActiveGamePage.FastForwardRequested = true;
                         await game.SaveGameAndWaitForFinishedConfirmation();
                     }
@@ -1938,7 +1940,7 @@ namespace GnollHackX
             {
                 CancelSaveGame = true;
                 GHGame game = CurrentGHGame;
-                if (game != null && !game.PlayingReplay && game.ActiveGamePage.IsGameOn)
+                if (game != null && !game.PlayingReplay && (game.ActiveGamePage?.IsGameOn ?? false))
                 {
                     //Detect background app killing OS, check if last exit is through going to sleep & game has been saved, and load previously saved game
                     bool wenttosleep = false;
@@ -6955,11 +6957,12 @@ namespace GnollHackX
                                     ulong versionFlags = br.ReadUInt64();
                                     ulong flags2 = br.ReadUInt64();
 
-                                    if (game.ActiveGamePage != null)
+                                    GamePage gamePage = game.ActiveGamePage;
+                                    if (gamePage != null)
                                     {
-                                        game.ActiveGamePage.EnableWizardMode = wizmode;
-                                        game.ActiveGamePage.EnableModernMode = modernmode;
-                                        game.ActiveGamePage.EnableCasualMode = casualmode;
+                                        gamePage.EnableWizardMode = wizmode;
+                                        gamePage.EnableModernMode = modernmode;
+                                        gamePage.EnableCasualMode = casualmode;
                                     }
 
                                     byte cmd_byte = 0;

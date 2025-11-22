@@ -1163,6 +1163,9 @@ namespace GnollHackX
             RecordFunctionCall(RecordedFunctionID.GetEvent);
         }
 
+        private int _fullRestart = 0;
+        public bool FullRestart { get { return Interlocked.CompareExchange(ref _fullRestart, 0, 0) != 0; } set { Interlocked.Exchange(ref _fullRestart, value ? 1 : 0); } }
+
         public void ClientCallback_ExitHack(int status)
         {
             Debug.WriteLine("ClientCallback_ExitHack");
@@ -1172,7 +1175,14 @@ namespace GnollHackX
             switch (status)
             {
                 case 1: /* Restart in the same game page (after saving) */
-                    RequestQueue.Enqueue(new GHRequest(this, GHRequestType.RestartGame));
+                    if (FullRestart)
+                    {
+                        FullRestart = false;
+                        RequestQueue.Enqueue(new GHRequest(this, GHRequestType.RestartGameUponPageDestruction));
+                    }
+                    else
+                        RequestQueue.Enqueue(new GHRequest(this, GHRequestType.RestartGame));
+                    ActiveGamePage?.DoPolling(); /* A new game page will not have polling timer on */
                     break;
                 default:
                 case 0:
@@ -3000,6 +3010,8 @@ namespace GnollHackX
                 int cnt = 0;
                 long countervalue;
                 GamePage gamePage = ActiveGamePage;
+                if (gamePage == null)
+                    return;
                 do
                 {
                     countervalue = MainCounterValue;
@@ -3281,10 +3293,18 @@ namespace GnollHackX
                     RequestQueue.Enqueue(new GHRequest(this, GHRequestType.FadeFromBlack, GHConstants.FadeFromBlackDuration));
                     break;
                 case (int)gui_command_types.GUI_CMD_FORCE_ASCII:
-                    ActiveGamePage.ForceAscii = true;
+                    {
+                        GamePage gamePage = ActiveGamePage;
+                        if (gamePage != null)
+                            gamePage.ForceAscii = true;
+                    }
                     break;
                 case (int)gui_command_types.GUI_CMD_UNFORCE_ASCII:
-                    ActiveGamePage.ForceAscii = false;
+                    {
+                        GamePage gamePage = ActiveGamePage;
+                        if (gamePage != null)
+                            gamePage.ForceAscii = false;
+                    }
                     break;
                 case (int)gui_command_types.GUI_CMD_MUTE_SOUNDS:
                     GHApp.GameMuteMode = true;
@@ -3301,25 +3321,43 @@ namespace GnollHackX
                 case (int)gui_command_types.GUI_CMD_LOAD_VIDEOS:
                     break;
                 case (int)gui_command_types.GUI_CMD_ENABLE_WIZARD_MODE:
-                    ActiveGamePage.EnableWizardMode = true;
-                    ActiveGamePage.ExtendedCommands = GHApp.GnollHackService.GetExtendedCommands();
+                    {
+                        GamePage gamePage = ActiveGamePage;
+                        if (gamePage != null)
+                        {
+                            gamePage.EnableWizardMode = true;
+                            gamePage.ExtendedCommands = GHApp.GnollHackService.GetExtendedCommands();
+                        }
+                    }
                     break;
                 case (int)gui_command_types.GUI_CMD_DISABLE_WIZARD_MODE:
-                    if(ActiveGamePage.EnableWizardMode)
                     {
-                        ActiveGamePage.EnableWizardMode = false;
-                        ActiveGamePage.ExtendedCommands = GHApp.GnollHackService.GetExtendedCommands();
+                        GamePage gamePage = ActiveGamePage;
+                        if (gamePage != null && gamePage.EnableWizardMode)
+                        {
+                            gamePage.EnableWizardMode = false;
+                            gamePage.ExtendedCommands = GHApp.GnollHackService.GetExtendedCommands();
+                        }
                     }
                     break;
                 case (int)gui_command_types.GUI_CMD_ENABLE_CASUAL_MODE:
-                    ActiveGamePage.EnableCasualMode = true;
-                    ActiveGamePage.ExtendedCommands = GHApp.GnollHackService.GetExtendedCommands();
+                    {
+                        GamePage gamePage = ActiveGamePage;
+                        if (gamePage != null)
+                        {
+                            gamePage.EnableCasualMode = true;
+                            gamePage.ExtendedCommands = GHApp.GnollHackService.GetExtendedCommands();
+                        }
+                    }
                     break;
                 case (int)gui_command_types.GUI_CMD_DISABLE_CASUAL_MODE:
-                    if (ActiveGamePage.EnableCasualMode)
                     {
-                        ActiveGamePage.EnableCasualMode = false;
-                        ActiveGamePage.ExtendedCommands = GHApp.GnollHackService.GetExtendedCommands();
+                        GamePage gamePage = ActiveGamePage;
+                        if (gamePage != null && gamePage.EnableCasualMode)
+                        {
+                            gamePage.EnableCasualMode = false;
+                            gamePage.ExtendedCommands = GHApp.GnollHackService.GetExtendedCommands();
+                        }
                     }
                     break;
                 case (int)gui_command_types.GUI_CMD_ENABLE_TOURNAMENT_MODE:
@@ -3345,13 +3383,13 @@ namespace GnollHackX
                     RequestQueue.Enqueue(new GHRequest(this, GHRequestType.RestoreTravelModeOnLevel));
                     break;
                 case (int)gui_command_types.GUI_CMD_CLEAR_CONDITION_TEXTS:
-                    ActiveGamePage.ClearConditionTexts();
+                    ActiveGamePage?.ClearConditionTexts();
                     break;
                 case (int)gui_command_types.GUI_CMD_CLEAR_FLOATING_TEXTS:
-                    ActiveGamePage.ClearFloatingTexts();
+                    ActiveGamePage?.ClearFloatingTexts();
                     break;
                 case (int)gui_command_types.GUI_CMD_CLEAR_GUI_EFFECTS:
-                    ActiveGamePage.ClearGuiEffects();
+                    ActiveGamePage?.ClearGuiEffects();
                     break;
                 case (int)gui_command_types.GUI_CMD_CLEAR_MESSAGE_HISTORY:
                     //_message_history.Clear();
@@ -3636,11 +3674,11 @@ namespace GnollHackX
                     break;
                 case (int)gui_command_types.GUI_CMD_TOGGLE_AUTODIG:
                     GHApp.MirroredAutoDig = cmd_param != 0;
-                    ActiveGamePage.ToggleMapAutoDigOnMainThread(cmd_param != 0); //Do not set the game value of autodig; this is GUI notification that it has been changed
+                    ActiveGamePage?.ToggleMapAutoDigOnMainThread(cmd_param != 0); //Do not set the game value of autodig; this is GUI notification that it has been changed
                     break;
                 case (int)gui_command_types.GUI_CMD_TOGGLE_IGNORE_STOPPING:
                     GHApp.MirroredIgnoreStopping = cmd_param != 0;
-                    ActiveGamePage.ToggleMapIgnoreModeOnMainThread(cmd_param != 0); //Do not set the game value of autodig; this is GUI notification that it has been changed
+                    ActiveGamePage?.ToggleMapIgnoreModeOnMainThread(cmd_param != 0); //Do not set the game value of autodig; this is GUI notification that it has been changed
                     break;
                 case (int)gui_command_types.GUI_CMD_TOGGLE_GETPOS_ARROWS:
                     GHApp.GetPositionArrows = cmd_param != 0;

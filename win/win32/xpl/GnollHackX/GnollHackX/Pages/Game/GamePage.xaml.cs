@@ -1637,7 +1637,7 @@ namespace GnollHackX.Pages.Game
         }
 
         //private bool StartingPositionsSet { get; set; }
-        private void DoPolling()
+        public void DoPolling()
         {
             try
             {
@@ -1843,6 +1843,15 @@ namespace GnollHackX.Pages.Game
                     UpdateReplayHeaderLabel();
                 }
             });
+        }
+
+        public async Task RestartGameAfterPageDestruction()
+        {
+            GHApp.FmodService?.StopAllGameSounds((uint)StopSoundFlags.All, 0);
+            GHApp.FmodService?.ResetGameState();
+            GHApp.GnollHackService?.SetExitHack(2);
+            await GHApp.Navigation.PushModalAsync(this);
+            await StartNewGame();
         }
 
         public async Task RestartGame()
@@ -3023,6 +3032,9 @@ namespace GnollHackX.Pages.Game
                                 break;
                             case GHRequestType.RestartGame:
                                 EnqueueTask(ref tasks, RestartGame());
+                                break;
+                            case GHRequestType.RestartGameUponPageDestruction:
+                                EnqueueTask(ref tasks, RestartGameAfterPageDestruction());
                                 break;
                             case GHRequestType.RestartReplay:
                                 EnqueueTask(ref tasks, RestartReplay());
