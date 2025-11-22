@@ -200,6 +200,19 @@ namespace GnollHackX
             InitializePlatformRenderLoop();
         }
 
+        //private static int _mainPageStarts = 0;
+        //public static int MainPageStarts { get { return Interlocked.CompareExchange(ref _mainPageStarts, 0, 0); } set { Interlocked.Exchange(ref _mainPageStarts, value); } }
+        //public static void IncrementMainPageStarts()
+        //{
+        //    Interlocked.Increment(ref _mainPageStarts);
+        //}
+
+        private static int _gameStarted = 0;
+        public static bool GameStarted { get { return Interlocked.CompareExchange(ref _gameStarted, 0, 0) != 0; } set { Interlocked.Exchange(ref _gameStarted, value ? 1 : 0); } }
+        
+        private static int _mainScreenMusicStarted = 0;
+        public static bool MainScreenMusicStarted { get { return Interlocked.CompareExchange(ref _mainScreenMusicStarted, 0, 0) != 0; } set { Interlocked.Exchange(ref _mainScreenMusicStarted, value ? 1 : 0); } }
+
         private static int _doAppExitOnReturn = 0;
         public static bool DoAppExitOnReturn { get { return Interlocked.CompareExchange(ref _doAppExitOnReturn, 0, 0) != 0; } set { Interlocked.Exchange(ref _doAppExitOnReturn, value ? 1 : 0); } }
 
@@ -1251,18 +1264,34 @@ namespace GnollHackX
 #else
         public const string AppResourceName = "GnollHackX";
 #endif
-        public static MainPage CurrentMainPage { get; set; }
-        public static GamePage CurrentGamePage { get; set; }
+        private static MainPage _currentMainPage = null;
+        public static MainPage CurrentMainPage
+        {
+            get { return Interlocked.CompareExchange(ref _currentMainPage, null, null); }
+            set { Interlocked.Exchange(ref _currentMainPage, value); }
+        }
+
+        private static GamePage _currentGamePage = null;
+        public static GamePage CurrentGamePage
+        {
+            get { return Interlocked.CompareExchange(ref _currentGamePage, null, null); }
+            set { Interlocked.Exchange(ref _currentGamePage, value); }
+        }
 
         //private static readonly object _currentGHGameLock = new object();
         private static GHGame _currentGHGame = null;
         public static GHGame CurrentGHGame 
         {
-            //get { lock (_currentGHGameLock) { return _currentGHGame; } } 
-            //set { lock (_currentGHGameLock) { _currentGHGame = value; } } 
             get { return Interlocked.CompareExchange(ref _currentGHGame, null, null); }
             set { Interlocked.Exchange(ref _currentGHGame, value); }
         }
+        private static Thread _gnhthread = null;
+        public static Thread GnhThread
+        {
+            get { return Interlocked.CompareExchange(ref _gnhthread, null, null); }
+            set { Interlocked.Exchange(ref _gnhthread, value); }
+        }
+
         public static int GameSaveStatus = 0;
         public static bool InformAboutGameTermination = false;
         public static bool InformAboutCrashReport = false;
@@ -1715,36 +1744,7 @@ namespace GnollHackX
 
         public static void OnStart()
         {
-            CtrlDown = false;
-            AltDown = false;
-            ShiftDown = false;
-            SleepMuteMode = false;
-
-            //DoKeyboardFocus();
-
-            if (IsAutoSaveUponSwitchingAppsOn)
-            {
-                CancelSaveGame = true;
-                GHGame game = CurrentGHGame;
-                if (game != null && !game.PlayingReplay && game.ActiveGamePage.IsGameOn)
-                {
-                    //Detect background app killing OS, check if last exit is through going to sleep, and notify player that the app probably had been terminated by OS but game has been saved
-                    bool wenttosleep = false;
-                    try
-                    {
-                        wenttosleep = Preferences.Get("WentToSleepWithGameOn", false);
-                        Preferences.Set("WentToSleepWithGameOn", false);
-                    }
-                    catch (Exception ex)
-                    {
-                        Debug.WriteLine(ex);
-                    }
-                    if (wenttosleep && (GameSaved || SavingGame))
-                    {
-                        game.StopWaitAndResumeSavedGame();
-                    }
-                }
-            }
+            HandleResume(true);
         }
 
         public static void OnSleep()
@@ -1763,7 +1763,7 @@ namespace GnollHackX
             {
                 CancelSaveGame = false;
                 GHGame game = CurrentGHGame;
-                if (game != null && !game.PlayingReplay && game.ActiveGamePage.IsGameOn)
+                if (game != null && !game.PlayingReplay && (game.ActiveGamePage?.IsGameOn ?? false))
                 {
                     //Detect background app killing OS, mark that exit has been through going to sleep, and save the game
                     try
@@ -1777,8 +1777,9 @@ namespace GnollHackX
                     }
                     if (BatteryChargeLevel > 3) /* Save only if there is enough battery left to prevent save file corruption when the phone powers off */
                     {
-                        if (game.ActiveGamePage.GameEnded && OperatingSystemKillsAppsOnBackground)
-                            game.ActiveGamePage.FastForwardRequested = true;
+                        GamePage gamePage = game.ActiveGamePage;
+                        if (gamePage != null && gamePage.GameEnded && OperatingSystemKillsAppsOnBackground)
+                            gamePage.FastForwardRequested = true;
                         game.SaveGameAndWaitForResume();
                     }
                 }
@@ -1793,7 +1794,7 @@ namespace GnollHackX
             {
                 CancelSaveGame = false;
                 GHGame game = CurrentGHGame;
-                if (game != null && !game.PlayingReplay && game.ActiveGamePage.IsGameOn)
+                if (game != null && !game.PlayingReplay && (game.ActiveGamePage?.IsGameOn ?? false))
                 {
                     //Detect background app killing OS, mark that exit has been through going to sleep, and save the game
                     try
@@ -1807,7 +1808,8 @@ namespace GnollHackX
                     }
                     if (BatteryChargeLevel > 3) /* Save only if there is enough battery left to prevent save file corruption when the phone powers off */
                     {
-                        if (game.ActiveGamePage.GameEnded && OperatingSystemKillsAppsOnBackground)
+                        GamePage gamePage = game.ActiveGamePage;
+                        if (gamePage != null && gamePage.GameEnded && OperatingSystemKillsAppsOnBackground)
                             game.ActiveGamePage.FastForwardRequested = true;
                         await game.SaveGameAndWaitForFinishedConfirmation();
                     }
@@ -1840,9 +1842,15 @@ namespace GnollHackX
                 popagain = !(page is GamePage || page == null);
                 DisconnectIViewHandlers(page);
             } while (popagain);
+            CurrentGamePage = null;
         }
 
         public static void OnResume()
+        {
+            HandleResume(false);
+        }
+
+        private static void HandleResume(bool isRestart)
         {
             if (!UsePlatformRenderLoop)
                 PlatformService?.OverrideAnimatorDuration();
@@ -1909,10 +1917,8 @@ namespace GnollHackX
             }
             TryVerifyXlogUserName();
 
-            if (CurrentMainPage != null)
-                CurrentMainPage.Resume();
-            if (CurrentGamePage != null)
-                CurrentGamePage.Resume();
+            CurrentMainPage?.Resume();
+            CurrentGamePage?.Resume();
 
             SleepMuteMode = false;
 
@@ -1929,11 +1935,11 @@ namespace GnollHackX
             }
 #endif
 
-            if (IsAutoSaveUponSwitchingAppsOn)
+            if (IsAutoSaveUponSwitchingAppsOn && !isRestart)
             {
                 CancelSaveGame = true;
                 GHGame game = CurrentGHGame;
-                if (game != null && !game.PlayingReplay && game.ActiveGamePage.IsGameOn)
+                if (game != null && !game.PlayingReplay && (game.ActiveGamePage?.IsGameOn ?? false))
                 {
                     //Detect background app killing OS, check if last exit is through going to sleep & game has been saved, and load previously saved game
                     bool wenttosleep = false;
@@ -6950,11 +6956,12 @@ namespace GnollHackX
                                     ulong versionFlags = br.ReadUInt64();
                                     ulong flags2 = br.ReadUInt64();
 
-                                    if (game.ActiveGamePage != null)
+                                    GamePage gamePage = game.ActiveGamePage;
+                                    if (gamePage != null)
                                     {
-                                        game.ActiveGamePage.EnableWizardMode = wizmode;
-                                        game.ActiveGamePage.EnableModernMode = modernmode;
-                                        game.ActiveGamePage.EnableCasualMode = casualmode;
+                                        gamePage.EnableWizardMode = wizmode;
+                                        gamePage.EnableModernMode = modernmode;
+                                        gamePage.EnableCasualMode = casualmode;
                                     }
 
                                     byte cmd_byte = 0;

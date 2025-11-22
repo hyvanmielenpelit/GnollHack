@@ -339,7 +339,7 @@ namespace GnollHackX.Pages.Game
                 if (File.Exists(filepath))
                     File.Delete(filepath);
 
-                var curgame = _gamePage.CurrentGame;
+                var curgame = GHApp.CurrentGHGame;
                 GHMsgHistorySpan messages = curgame.GetMessages();
                 using (StreamWriter sw = File.CreateText(filepath))
                 {

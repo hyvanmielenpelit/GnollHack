@@ -734,6 +734,12 @@ LibGetVolumeForGHSound(int ghsound)
     return ghsound2event[ghsound].volume;
 }
 
+DLLEXPORT void
+LibSetExitHack(int newValue)
+{
+    exit_hack_code = newValue;
+}
+
 
 DLLEXPORT int GnollHackStart(cmdlineargs)
 char* cmdlineargs;

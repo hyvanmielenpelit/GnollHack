@@ -393,8 +393,10 @@ public static class MauiProgram
                     {
                         try
                         {
+                            GHApp.MaybeWriteGHLog("androidLifecycleBuilder: Paused 1");
                             if (activity.IsFinishing || !activity.HasWindowFocus)
                             {
+                                GHApp.MaybeWriteGHLog("androidLifecycleBuilder: Paused 2");
                                 var intent = new Intent(Android.App.Application.Context, typeof(SaveGameService));
                                 AndroidX.Core.Content.ContextCompat.StartForegroundService(Android.App.Application.Context, intent);
                             }
@@ -977,6 +979,8 @@ public class SaveGameService : Service
     {
         try
         {
+            GHApp.MaybeWriteGHLog("SaveGameService: OnStartCommand!");
+
             // Create a foreground service notification (required on Android 8+)
             var notification = new Notification.Builder(this, CHANNEL_ID)
                 .SetContentTitle("Saving Game")
@@ -1001,6 +1005,7 @@ public class SaveGameService : Service
             {
                 try
                 {
+                    GHApp.MaybeWriteGHLog("SaveGameService: SavingGame!");
                     await GHApp.SaveGameOnSleepAsync();
                 }
                 finally

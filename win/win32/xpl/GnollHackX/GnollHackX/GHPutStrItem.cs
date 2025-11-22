@@ -13,13 +13,11 @@ namespace GnollHackX
 {
     public sealed class GHPutStrItem
     {
-        private GamePage _gamePage;
         private GHWindow _window;
         private string _text;
 
         public int PaddingAmount { get; set; }
 
-        public GamePage ReferenceGamePage { get { return _gamePage; } }
         public GHWindow Window { get { return _window; } }
 
         public string Text { 
@@ -41,13 +39,12 @@ namespace GnollHackX
         public List<int> AttributeList { get { return _attributeList; } }
         public List<int> ColorList { get { return _colorList; } }
 
-        public GHPutStrItem(GamePage gamePage, GHWindow window, string str)
+        public GHPutStrItem(GHWindow window, string str)
         {
             _instructionList = new List<GHPutStrInstructions>();
             _attributeList = new List<int>();
             _colorList = new List<int>();
             _text = str;
-            _gamePage = gamePage;
             _window = window;
         }
 
@@ -96,7 +93,7 @@ namespace GnollHackX
 
         public GHPutStrItem Clone(GHWindow clonedWindow)
         {
-            GHPutStrItem clone = new GHPutStrItem(_gamePage, clonedWindow, _text);
+            GHPutStrItem clone = new GHPutStrItem(clonedWindow, _text);
             clone.AttributeList.AddRange(_attributeList);
             clone.ColorList.AddRange(_colorList);
             clone.InstructionList.AddRange(_instructionList);
@@ -128,7 +125,8 @@ namespace GnollHackX
                 if (_window.WindowStyle == ghwindow_styles.GHWINDOW_STYLE_PAGER_GENERAL || _window.WindowStyle == ghwindow_styles.GHWINDOW_STYLE_PAGER_KEEP_LINE_BREAKS
                     || _window.WindowStyle == ghwindow_styles.GHWINDOW_STYLE_PAGER_SPEAKER)
                 {
-                    double basesize = Math.Min(22, Math.Min(15.5 * _gamePage.CurrentPageWidth / 300, Math.Max(15.5, 15.5 * _gamePage.CurrentPageWidth * _gamePage.CurrentPageHeight / (600 * 360))));
+                    GamePage gamePage = GHApp.CurrentGamePage;
+                    double basesize = gamePage == null ? 22 : Math.Min(22, Math.Min(15.5 * gamePage.CurrentPageWidth / 300, Math.Max(15.5, 15.5 * gamePage.CurrentPageWidth * gamePage.CurrentPageHeight / (600 * 360))));
                     if (_instructionList != null && _instructionList.Count > 0)
                     {
                         if ((_instructionList[0].Attributes & (((int)MenuItemAttributes.Sub) | (int)MenuItemAttributes.Title)) == (((int)MenuItemAttributes.Sub) | (int)MenuItemAttributes.Title))

@@ -642,12 +642,12 @@ namespace GnollHackX
                     case ghmenu_styles.GHMENU_STYLE_SPELLS:
                     case ghmenu_styles.GHMENU_STYLE_VIEW_SPELL:
                     case ghmenu_styles.GHMENU_STYLE_SKILLS:
-                        res = Math.Min(18, Math.Max(11.75, 11.9 * _gamePage.CurrentPageWidth / 600));
+                        res = _gamePage == null ? 18 : Math.Min(18, Math.Max(11.75, 11.9 * _gamePage.CurrentPageWidth / 600));
                         break;
                     case ghmenu_styles.GHMENU_STYLE_DUNGEON_OVERVIEW:
                         break;
                     case ghmenu_styles.GHMENU_STYLE_OPTIONS:
-                        res = Math.Min(18, Math.Max(11.75, 14 * _gamePage.CurrentPageWidth / 600));
+                        res = _gamePage == null ? 18 : Math.Min(18, Math.Max(11.75, 14 * _gamePage.CurrentPageWidth / 600));
                         break;
                     case ghmenu_styles.GHMENU_STYLE_HELP:
                         break;

@@ -805,7 +805,7 @@ namespace GnollHackX
                     bool isnewpsi = false;
                     if (newpsi == null)
                     {
-                        newpsi = new GHPutStrItem(psi.ReferenceGamePage, psi.Window, "");
+                        newpsi = new GHPutStrItem(psi.Window, "");
                         isnewpsi = true;
                     }
 

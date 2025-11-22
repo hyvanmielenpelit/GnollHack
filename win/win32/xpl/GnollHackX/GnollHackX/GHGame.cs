@@ -53,8 +53,11 @@ namespace GnollHackX
         private int _saveFileTrackingFinished = -1;
         private bool _abortShowMenuPage = false;
 
-        private readonly GamePage _gamePage;
-        public GamePage ActiveGamePage { get { return _gamePage; } }
+        public GamePage ActiveGamePage => GHApp.CurrentGamePage;
+        //{
+        //    get { return Interlocked.CompareExchange(ref _gamePage, null, null); }
+        //    set { Interlocked.Exchange(ref _gamePage, value); }
+        //}
 
         private bool _touchLocSet = false;
         private int _touchLocX;
@@ -97,11 +100,11 @@ namespace GnollHackX
             get { return Interlocked.CompareExchange(ref _characterName, null, null); }
             set { Interlocked.Exchange(ref _characterName, value); }
         }
-        public bool WizardMode { get { return _gamePage != null ? _gamePage.EnableWizardMode : false; } }
-        public bool CasualMode { get { return _gamePage != null ? _gamePage.EnableCasualMode : false; } }
-        public bool ModernMode { get { return _gamePage != null ? _gamePage.EnableModernMode : false; } }
+        public bool WizardMode { get { return ActiveGamePage?.EnableWizardMode ?? false; } }
+        public bool CasualMode { get { return ActiveGamePage?.EnableCasualMode ?? false; } }
+        public bool ModernMode { get { return ActiveGamePage?.EnableModernMode ?? false; } }
 
-        public GHGame(GamePage gamePage, RunGnollHackFlags startFlags)
+        public GHGame(RunGnollHackFlags startFlags)
         {
             //GHGame.RequestDictionary.TryAdd(this, new ConcurrentQueue<GHRequest>());
             //GHGame.ResponseDictionary.TryAdd(this, new ConcurrentQueue<GHResponse>());
@@ -127,9 +130,29 @@ namespace GnollHackX
             _mapDataCurrent = _mapDataBuffer1;
             _objectDataCurrent = _objectDataBuffer1;
 
-            _gamePage = gamePage;
-            if(_gamePage != null)
-                _useLongerMessageHistory = _gamePage.LongerMessageHistory;
+            GamePage gamePage = GHApp.CurrentGamePage;
+            if(gamePage != null)
+                _useLongerMessageHistory = gamePage.LongerMessageHistory;
+        }
+
+        public void ReactivateGame()
+        {
+            GamePage gamePage = ActiveGamePage;
+            if (gamePage == null)
+                return;
+
+            int x, y;
+            lock (_mapDataBufferLock)
+            {
+                x = _ux;
+                y = _uy;
+            }
+            gamePage.SetTargetClip(x, y, true, MainCounterValue);
+            for (int winHandle = 0; winHandle <= _lastWindowHandle && winHandle < GHConstants.MaxGHWindows; winHandle++)
+            {
+                if(_ghWindows[winHandle] != null)
+                    gamePage.UpdateGHWindow(winHandle, _ghWindows[winHandle].Clone());
+            }
         }
 
         ~GHGame()
@@ -224,8 +247,7 @@ namespace GnollHackX
                         _screenTextSet = true;
                         break;
                     case GHRequestType.SetPetMID:
-                        if (_gamePage != null)
-                            GHApp.GnollHackService?.SetPetMID(response.ResponseUIntValue);
+                        GHApp.GnollHackService?.SetPetMID(response.ResponseUIntValue);
                         break;
                     case GHRequestType.ShowGUITips:
                         _guiTipsFinished = true;
@@ -407,7 +429,7 @@ namespace GnollHackX
                     GHApp.TotalTiles = total_tiles_used;
                     for (int i = 0; i < total_sheets_used; i++)
                     {
-                        GHApp.TilesPerRow[i] = _gamePage.TileMap[i].Width / GHConstants.TileWidth;
+                        GHApp.TilesPerRow[i] = GHApp._tileMap[i].Width / GHConstants.TileWidth;
                     }
                 }
             }
@@ -503,7 +525,7 @@ namespace GnollHackX
                 (dataflags & 16) != 0,
                 (dataflags & 32) != 0,
                 (dataflags & 1) == 0 ? null : new ObjectDataItem(objdata, otypdata, (dataflags & 4) != 0), 
-                _gamePage, handle);
+                handle);
 
             _ghWindows[handle] = ghwin;
             UIUtils.SetCreateGHWindow(ghwin);
@@ -988,11 +1010,8 @@ namespace GnollHackX
         {
             long generalCounter;
             long mainCounter;
-            //lock (_gamePage.AnimationTimerLock)
-            {
-                generalCounter = Interlocked.CompareExchange(ref _gamePage.AnimationTimers.general_animation_counter, 0L, 0L);;
-            }
-            mainCounter = _gamePage.MainCounterValue;
+            generalCounter = Interlocked.CompareExchange(ref AnimationTimers.general_animation_counter, 0L, 0L);
+            mainCounter = MainCounterValue;
             lock (_mapDataBufferLock)
             {
                 CheckUpdateCurrentMapBufferUnlocked();
@@ -1138,6 +1157,9 @@ namespace GnollHackX
             RecordFunctionCall(RecordedFunctionID.GetEvent);
         }
 
+        private int _fullRestart = 0;
+        public bool FullRestart { get { return Interlocked.CompareExchange(ref _fullRestart, 0, 0) != 0; } set { Interlocked.Exchange(ref _fullRestart, value ? 1 : 0); } }
+
         public void ClientCallback_ExitHack(int status)
         {
             Debug.WriteLine("ClientCallback_ExitHack");
@@ -1147,7 +1169,14 @@ namespace GnollHackX
             switch (status)
             {
                 case 1: /* Restart in the same game page (after saving) */
-                    RequestQueue.Enqueue(new GHRequest(this, GHRequestType.RestartGame));
+                    if (FullRestart)
+                    {
+                        FullRestart = false;
+                        RequestQueue.Enqueue(new GHRequest(this, GHRequestType.RestartGameUponPageDestruction));
+                    }
+                    else
+                        RequestQueue.Enqueue(new GHRequest(this, GHRequestType.RestartGame));
+                    ActiveGamePage?.DoPolling(); /* A new game page will not have polling timer on */
                     break;
                 default:
                 case 0:
@@ -1346,14 +1375,17 @@ namespace GnollHackX
         public void ClientCallback_Cliparound(int x, int y, byte force)
         {
             RecordFunctionCall(RecordedFunctionID.ClipAround, x, y, force);
+            GamePage gamePage = ActiveGamePage;
+            if (gamePage == null)
+                return;
 
-            if (force == 0 && (_gamePage.MapNoClipMode || _gamePage.MapLookMode || _gamePage.ZoomMiniMode)) //|| (!_gamePage.ZoomAlternateMode && _gamePage.MapNoClipMode) || (_gamePage.ZoomAlternateMode && _gamePage.MapAlternateNoClipMode) 
+            if (force == 0 && (gamePage.MapNoClipMode || gamePage.MapLookMode || gamePage.ZoomMiniMode)) //|| (!_gamePage.ZoomAlternateMode && _gamePage.MapNoClipMode) || (_gamePage.ZoomAlternateMode && _gamePage.MapAlternateNoClipMode) 
                 return; /* No clip mode ignores cliparound commands */
 
             //This may be slightly slower to register, but likely more often in UI thread, so should cause fewer lock conflicts
             //RequestQueue.Enqueue(new GHRequest(this, GHRequestType.ClipAround, x, y, force == 1));
 
-            _gamePage.SetTargetClip(x, y, force == 1);
+            gamePage.SetTargetClip(x, y, force == 1, MainCounterValue);
         }
 
         public void ClientCallback_RawPrint(string str)
@@ -1582,7 +1614,7 @@ namespace GnollHackX
             long current_counter_value = 0L;
             //lock (_gamePage.AnimationTimerLock)
             {
-                start_counter_value = Interlocked.CompareExchange(ref _gamePage.AnimationTimers.general_animation_counter, 0L, 0L);;
+                start_counter_value = Interlocked.CompareExchange(ref AnimationTimers.general_animation_counter, 0L, 0L);;
             }
 
             do
@@ -1593,7 +1625,7 @@ namespace GnollHackX
                 Thread.Sleep(5);
                 //lock (_gamePage.AnimationTimerLock)
                 {
-                    current_counter_value = Interlocked.CompareExchange(ref _gamePage.AnimationTimers.general_animation_counter, 0L, 0L);;
+                    current_counter_value = Interlocked.CompareExchange(ref AnimationTimers.general_animation_counter, 0L, 0L);;
                 }
             } while (current_counter_value < start_counter_value + (long)intervals);
             GHApp.FmodService?.PollTasks();
@@ -1610,18 +1642,20 @@ namespace GnollHackX
             }
         }
 
+        public readonly object StatusFieldLock = new object();
+        public readonly GHStatusField[] StatusFields = new GHStatusField[(int)NhStatusFields.MAXBLSTATS];
+
         public void ClientCallback_StatusInit(int reassessment)
         {
             RecordFunctionCall(RecordedFunctionID.StatusInit, reassessment);
 
             if (reassessment != 0)
                 return;
-
-            lock(_gamePage.StatusFieldLock)
+            lock(StatusFieldLock)
             {
                 for (int i = 0; i < (int)NhStatusFields.MAXBLSTATS; i++)
                 {
-                    _gamePage.StatusFields[i] = new GHStatusField();
+                    StatusFields[i] = new GHStatusField();
                 }
             }
         }
@@ -1636,11 +1670,11 @@ namespace GnollHackX
             RecordFunctionCall(RecordedFunctionID.StatusEnable, fieldidx, nm, fmt, enable);
             if (fieldidx >= 0 && fieldidx < (int)NhStatusFields.MAXBLSTATS)
             {
-                lock (_gamePage.StatusFieldLock)
+                lock (StatusFieldLock)
                 {
-                    _gamePage.StatusFields[fieldidx].Name = nm;
-                    _gamePage.StatusFields[fieldidx].Format = fmt;
-                    _gamePage.StatusFields[fieldidx].IsEnabled = enable != 0;
+                    StatusFields[fieldidx].Name = nm;
+                    StatusFields[fieldidx].Format = fmt;
+                    StatusFields[fieldidx].IsEnabled = enable != 0;
                 }
             }
         }
@@ -1665,15 +1699,15 @@ namespace GnollHackX
             long oldbits = 0L;
             if (fieldidx >= 0 && fieldidx < (int)NhStatusFields.MAXBLSTATS)
             {
-                lock (_gamePage.StatusFieldLock)
+                lock (StatusFieldLock)
                 {
-                    oldbits = _gamePage.StatusFields[fieldidx].Bits;
+                    oldbits = StatusFields[fieldidx].Bits;
 
-                    _gamePage.StatusFields[fieldidx].Text = text;
-                    _gamePage.StatusFields[fieldidx].Bits = condbits;
-                    _gamePage.StatusFields[fieldidx].Change = cng;
-                    _gamePage.StatusFields[fieldidx].Percent = percent;
-                    _gamePage.StatusFields[fieldidx].Color = color;
+                    StatusFields[fieldidx].Text = text;
+                    StatusFields[fieldidx].Bits = condbits;
+                    StatusFields[fieldidx].Change = cng;
+                    StatusFields[fieldidx].Percent = percent;
+                    StatusFields[fieldidx].Color = color;
                 }
             }
 
@@ -1939,7 +1973,7 @@ namespace GnollHackX
             {
                 if (_ghWindows[winid] != null && _ghWindows[winid].MenuInfo != null)
                 {
-                    GHMenuItem mi = new GHMenuItem(_ghWindows[winid].MenuInfo, GHApp.NoGlyph, _gamePage);
+                    GHMenuItem mi = new GHMenuItem(_ghWindows[winid].MenuInfo, GHApp.NoGlyph, ActiveGamePage);
                     mi.Identifier = identifier;
                     if (accel == 0 && identifier != 0)
                         mi.Accelerator = _ghWindows[winid].MenuInfo.AutoAccelerator;
@@ -2215,7 +2249,7 @@ namespace GnollHackX
 
             if (is_equipped)
             {
-                _gamePage.AddEquippedObjectData(x, y, otmp, cmdtype, where, otypdata, oflags);
+                AddEquippedObjectData(x, y, otmp, cmdtype, where, otypdata, oflags);
             }
             else
             {
@@ -2328,6 +2362,52 @@ namespace GnollHackX
             }
         }
 
+        public ObjectDataItem[] _weaponStyleObjDataItem = new ObjectDataItem[3];
+        public readonly object _weaponStyleObjDataItemLock = new object();
+
+        public void AddEquippedObjectData(int x, int y, Obj otmp, int cmdtype, int where, ObjClassData otypdata, ulong oflags)
+        {
+            bool is_uwep = (oflags & (ulong)objdata_flags.OBJDATA_FLAGS_UWEP) != 0UL;
+            bool is_uwep2 = (oflags & (ulong)objdata_flags.OBJDATA_FLAGS_UWEP2) != 0UL;
+            bool is_uquiver = (oflags & (ulong)objdata_flags.OBJDATA_FLAGS_UQUIVER) != 0UL;
+            bool hallucinated = (oflags & (ulong)objdata_flags.OBJDATA_FLAGS_HALLUCINATION) != 0UL;
+            bool foundthisturn = (oflags & (ulong)objdata_flags.OBJDATA_FLAGS_FOUND_THIS_TURN) != 0UL;
+
+            bool outofammo1 = (oflags & (ulong)objdata_flags.OBJDATA_FLAGS_OUT_OF_AMMO1) != 0UL;
+            bool wrongammo1 = (oflags & (ulong)objdata_flags.OBJDATA_FLAGS_WRONG_AMMO_TYPE1) != 0UL;
+            bool notbeingused1 = (oflags & (ulong)objdata_flags.OBJDATA_FLAGS_NOT_BEING_USED1) != 0UL;
+            bool notweapon1 = (oflags & (ulong)objdata_flags.OBJDATA_FLAGS_NOT_WEAPON1) != 0UL;
+            bool outofammo2 = (oflags & (ulong)objdata_flags.OBJDATA_FLAGS_OUT_OF_AMMO2) != 0UL;
+            bool wrongammo2 = (oflags & (ulong)objdata_flags.OBJDATA_FLAGS_WRONG_AMMO_TYPE2) != 0UL;
+            bool notbeingused2 = (oflags & (ulong)objdata_flags.OBJDATA_FLAGS_NOT_BEING_USED2) != 0UL;
+            bool notweapon2 = (oflags & (ulong)objdata_flags.OBJDATA_FLAGS_NOT_WEAPON2) != 0UL;
+            bool outofammo = is_uwep ? outofammo1 : is_uwep2 ? outofammo2 : false;
+            bool wrongammo = is_uwep ? wrongammo1 : is_uwep2 ? wrongammo2 : false;
+            bool notbeingused = is_uwep ? notbeingused1 : is_uwep2 ? notbeingused2 : false;
+            bool notweapon = is_uwep ? notweapon1 : is_uwep2 ? notweapon2 : false;
+            bool isammo = (oflags & (ulong)objdata_flags.OBJDATA_FLAGS_IS_AMMO) != 0UL;
+            bool isthrowingweapon = (oflags & (ulong)objdata_flags.OBJDATA_FLAGS_THROWING_WEAPON) != 0UL;
+            bool prevwepfound = (oflags & (ulong)objdata_flags.OBJDATA_FLAGS_PREV_WEP_FOUND) != 0UL;
+            bool prevunwield = (oflags & (ulong)objdata_flags.OBJDATA_FLAGS_PREV_UNWIELD) != 0UL;
+
+            int idx = is_uwep ? 0 : is_uwep2 ? 1 : 2;
+            lock (_weaponStyleObjDataItemLock)
+            {
+                switch (cmdtype)
+                {
+                    case 1: /* Clear */
+                        _weaponStyleObjDataItem[idx] = null;
+                        break;
+                    case 2: /* Add item */
+                        _weaponStyleObjDataItem[idx] = new ObjectDataItem(otmp, otypdata, hallucinated, outofammo, wrongammo, notbeingused, notweapon, foundthisturn, isammo, isthrowingweapon, prevwepfound, prevunwield);
+                        break;
+                    case 3: /* Add container item to previous item */
+                        _weaponStyleObjDataItem[idx] = _weaponStyleObjDataItem[idx].CloneWithAddedContainedObj(new ObjectDataItem(otmp, otypdata, hallucinated));
+                        break;
+                }
+            }
+        }
+
         //private List<SavedSendMonsterDataCall> _savedSendMonsterDataCalls = new List<SavedSendMonsterDataCall>();
         public void ClientCallback_SendMonsterData(int cmdtype, int x, int y, IntPtr monster_data_ptr, ulong oflags)
         {
@@ -2339,10 +2419,33 @@ namespace GnollHackX
                 case 0: /* Add Pet */
                     //_gamePage.AddPetData(monster_data);
                     //This may cause fewer lock conflicts since AddPetData is likely to be in the UI thread, but is a bit slower
-                    RequestQueue.Enqueue(new GHRequest(this, GHRequestType.AddPetData, monster_data));
+                    AddPetData(monster_data);
+                    //RequestQueue.Enqueue(new GHRequest(this, GHRequestType.AddPetData, monster_data));
                     break;
             }
         }
+
+        public readonly object _petDataLock = new object();
+        public readonly List<GHPetDataItem> _petData = new List<GHPetDataItem>(8);
+
+
+        public void ClearPetData()
+        {
+            lock (_petDataLock)
+            {
+                _petData.Clear();
+            }
+        }
+
+        public void AddPetData(monst_info monster_data)
+        {
+            lock (_petDataLock)
+            {
+                _petData.Add(new GHPetDataItem(monster_data));
+            }
+        }
+
+
 
         //private List<SavedSendEngravingDataCall> _savedSendEngravingDataCalls = new List<SavedSendEngravingDataCall>();
         public void ClientCallback_SendEngravingData(int cmdtype, int x, int y, string engraving_text, int etype, ulong eflags, ulong gflags)
@@ -2369,6 +2472,216 @@ namespace GnollHackX
                 }
             }
         }
+
+
+        public readonly object _contextMenuDataLock = new object();
+        public readonly List<ContextMenuButton> _contextMenuData = new List<ContextMenuButton>();
+
+        public void ClearContextMenu()
+        {
+            //ContextLayout.Children.Clear();
+            //ContextLayout.IsVisible = false;
+            lock (_contextMenuDataLock)
+            {
+                _contextMenuData.Clear();
+            }
+        }
+        public void AddContextMenu(AddContextMenuData data)
+        {
+            int cmddefchar = data.cmd_def_char;
+            int cmdcurchar = data.cmd_cur_char;
+            if (cmddefchar < 0)
+                cmddefchar += 256; /* On this operating system, chars are signed chars; fix to positive values */
+            if (cmdcurchar < 0)
+                cmdcurchar += 256; /* On this operating system, chars are signed chars; fix to positive values */
+            string icon_string = "";
+            int LastPickedCmd = GHUtils.Meta('<');
+            int OfferCmd = GHUtils.Meta('o');
+            int PrayCmd = GHUtils.Meta('p');
+            int DipCmd = GHUtils.Meta('d');
+            int DigCmd = GHUtils.Ctrl('g');
+            int SitCmd = GHUtils.Ctrl('s');
+            int RideCmd = GHUtils.Meta('R');
+            //int PrevWepCmd = GHUtils.Meta(16);
+            //int PickNStashCmd = ';';
+            //if (cmddefchar == PickNStashCmd && !ShowPut2BagContextCommand)
+            //    return; /* Do not add */
+            //if (cmddefchar == PrevWepCmd && !ShowPrevWepContextCommand)
+            //    return; /* Do not add */
+
+            switch ((char)cmddefchar)
+            {
+                case 'a':
+                    switch (data.style)
+                    {
+                        case (int)context_menu_styles.CONTEXT_MENU_STYLE_CLOSE_DISPLAY: /* Next interesting / monster */
+                        case (int)context_menu_styles.CONTEXT_MENU_STYLE_GETDIR: /* Next interesting / monster */
+                        case (int)context_menu_styles.CONTEXT_MENU_STYLE_GETPOS: /* Next interesting / monster */
+                            icon_string = GHApp.AppResourceName + ".Assets.UI.next.png";
+                            break;
+                        case (int)context_menu_styles.CONTEXT_MENU_STYLE_GENERAL: /* Apply */
+                        default:
+                            icon_string = GHApp.AppResourceName + ".Assets.UI.apply.png";
+                            break;
+                    }
+                    break;
+                case 'm':
+                    switch (data.style)
+                    {
+                        case (int)context_menu_styles.CONTEXT_MENU_STYLE_GETPOS: /* Next interesting / monster */
+                            icon_string = GHApp.AppResourceName + ".Assets.UI.next.png";
+                            break;
+                        default:
+                            icon_string = GHApp.AppResourceName + ".Assets.UI.next.png";
+                            break;
+                    }
+                    break;
+                case 'A':
+                case 'M':
+                    switch (data.style)
+                    {
+                        case (int)context_menu_styles.CONTEXT_MENU_STYLE_GETPOS: /* Previous interesting / monster */
+                            icon_string = GHApp.AppResourceName + ".Assets.UI.previous.png";
+                            break;
+                        default:
+                            icon_string = GHApp.AppResourceName + ".Assets.UI.previous.png";
+                            break;
+                    }
+                    break;
+                case 'e':
+                    icon_string = GHApp.AppResourceName + ".Assets.UI.eat.png";
+                    break;
+                case 'l':
+                    icon_string = GHApp.AppResourceName + ".Assets.UI.loot.png";
+                    break;
+                case 'b':
+                    icon_string = GHApp.AppResourceName + ".Assets.UI.lootout.png";
+                    break;
+                case 'B':
+                    icon_string = GHApp.AppResourceName + ".Assets.UI.lootin.png";
+                    break;
+                case 'p':
+                    icon_string = GHApp.AppResourceName + ".Assets.UI.pay.png";
+                    break;
+                case ',':
+                    icon_string = GHApp.AppResourceName + ".Assets.UI.pickup.png";
+                    break;
+                case '<':
+                    switch (data.style)
+                    {
+                        case (int)context_menu_styles.CONTEXT_MENU_STYLE_GETDIR: /* Upwards */
+                            icon_string = GHApp.AppResourceName + ".Assets.UI.target-upwards.png";
+                            break;
+                        case (int)context_menu_styles.CONTEXT_MENU_STYLE_GETPOS:
+                            icon_string = GHApp.AppResourceName + ".Assets.UI.stairs-up.png";
+                            break;
+                        default:
+                        case (int)context_menu_styles.CONTEXT_MENU_STYLE_GENERAL:
+                            if (data.target_text != null && data.target_text == "Pit")
+                                icon_string = GHApp.AppResourceName + ".Assets.UI.arrow_up.png";
+                            else
+                                icon_string = GHApp.AppResourceName + ".Assets.UI.stairs-up.png";
+                            break;
+                    }
+                    break;
+                case '>':
+                    switch (data.style)
+                    {
+                        case (int)context_menu_styles.CONTEXT_MENU_STYLE_GETDIR: /* Downwards */
+                            icon_string = GHApp.AppResourceName + ".Assets.UI.target-downwards.png";
+                            break;
+                        case (int)context_menu_styles.CONTEXT_MENU_STYLE_GETPOS:
+                            icon_string = GHApp.AppResourceName + ".Assets.UI.stairs-down.png";
+                            break;
+                        default:
+                        case (int)context_menu_styles.CONTEXT_MENU_STYLE_GENERAL:
+                            if (data.target_text != null && data.target_text == "Pit")
+                                icon_string = GHApp.AppResourceName + ".Assets.UI.arrow_down.png";
+                            else
+                                icon_string = GHApp.AppResourceName + ".Assets.UI.stairs-down.png";
+                            break;
+                    }
+                    break;
+                case ':':
+                    icon_string = GHApp.AppResourceName + ".Assets.UI.lookhere.png";
+                    break;
+                case 'q':
+                    icon_string = GHApp.AppResourceName + ".Assets.UI.quaff.png";
+                    break;
+                case 'r':
+                    icon_string = GHApp.AppResourceName + ".Assets.UI.read.png";
+                    break;
+                case '.':
+                    switch (data.style)
+                    {
+                        case (int)context_menu_styles.CONTEXT_MENU_STYLE_GETPOS: /* Pick position in getpos */
+                            icon_string = GHApp.AppResourceName + ".Assets.UI.select.png";
+                            break;
+                        case (int)context_menu_styles.CONTEXT_MENU_STYLE_GETDIR: /* Self in getdir */
+                            icon_string = GHApp.AppResourceName + ".Assets.UI.target-self.png";
+                            break;
+                        default:
+                        case (int)context_menu_styles.CONTEXT_MENU_STYLE_GENERAL:
+                            icon_string = GHApp.AppResourceName + ".Assets.UI.wait.png";
+                            break;
+                    }
+                    break;
+                case (char)GHConstants.CancelChar:
+                    switch (data.style)
+                    {
+                        case (int)context_menu_styles.CONTEXT_MENU_STYLE_CLOSE_DISPLAY:
+                            icon_string = GHApp.AppResourceName + ".Assets.UI.exit-to-map.png";
+                            break;
+                        default:
+                            icon_string = GHApp.AppResourceName + ".Assets.UI.no.png";
+                            break;
+                    }
+                    break;
+                case 'C':
+                    if (data.cmd_text == "Steed")
+                        icon_string = GHApp.AppResourceName + ".Assets.UI.chatsteed.png";
+                    else
+                        icon_string = GHApp.AppResourceName + ".Assets.UI.chat.png";
+                    break;
+                case ';':
+                    icon_string = GHApp.AppResourceName + ".Assets.UI.picktobag.png";
+                    break;
+                default:
+                    if (cmddefchar == LastPickedCmd)
+                        icon_string = GHApp.AppResourceName + ".Assets.UI.lastitem.png";
+                    else if (cmddefchar == OfferCmd)
+                        icon_string = GHApp.AppResourceName + ".Assets.UI.offer.png";
+                    else if (cmddefchar == PrayCmd)
+                        icon_string = GHApp.AppResourceName + ".Assets.UI.pray.png";
+                    else if (cmddefchar == DipCmd)
+                        icon_string = GHApp.AppResourceName + ".Assets.UI.dip.png";
+                    else if (cmddefchar == DigCmd)
+                        icon_string = GHApp.AppResourceName + ".Assets.UI.dig.png";
+                    else if (cmddefchar == SitCmd)
+                        icon_string = GHApp.AppResourceName + ".Assets.UI.sit.png";
+                    else if (cmddefchar == RideCmd)
+                        icon_string = GHApp.AppResourceName + ".Assets.UI.ride.png";
+                    //else if (cmddefchar == PickNStashCmd)
+                    //    icon_string = GHApp.AppResourceName + ".Assets.UI.picktobag.png";
+                    //else if (cmddefchar == PrevWepCmd)
+                    //    icon_string = GHApp.AppResourceName + ".Assets.UI.wield.png";
+                    else
+                        icon_string = GHApp.AppResourceName + ".Assets.UI.missing_icon.png";
+                    break;
+            }
+
+            string sourcePath = "resource://" + icon_string;
+            ContextMenuButton cmb = new ContextMenuButton(data.cmd_text, sourcePath, GHApp.GetCachedImageSourceBitmap(sourcePath, true), cmdcurchar);
+            //cmb.ImgSourcePath = "resource://" + icon_string;
+            //cmb.Bitmap = GHApp.GetCachedImageSourceBitmap(cmb.ImgSourcePath, true);
+            //cmb.LblText = data.cmd_text;
+            //cmb.BtnCommand = cmdcurchar;
+            lock (_contextMenuDataLock)
+            {
+                _contextMenuData.Add(cmb);
+            }
+        }
+
 
 
         public int Replay_GetLine(int style, int attr, int color, string query, string placeholder, string linesuffix, string introline, IntPtr out_string_ptr, string enteredLine)
@@ -2428,7 +2741,8 @@ namespace GnollHackX
         public void ClientCallback_ClearContextMenu()
         {
             RecordFunctionCall(RecordedFunctionID.ClearContextMenu);
-            RequestQueue.Enqueue(new GHRequest(this, GHRequestType.ClearContextMenu));
+            ClearContextMenu();
+            //RequestQueue.Enqueue(new GHRequest(this, GHRequestType.ClearContextMenu));
         }
 
         public void ClientCallback_AddContextMenu(int cmd_def_char, int cmd_cur_char, int style, int glyph, string cmd_text, string target_text, int attr, int color)
@@ -2444,7 +2758,8 @@ namespace GnollHackX
             data.target_text = target_text;
             data.attr = attr;
             data.color = color;
-            RequestQueue.Enqueue(new GHRequest(this, GHRequestType.AddContextMenu, data));
+            //RequestQueue.Enqueue(new GHRequest(this, GHRequestType.AddContextMenu, data));
+            AddContextMenu(data);
         }
 
         public void ClientCallback_UpdateStatusButton(int cmd, int btn, int val, ulong bflags)
@@ -2452,54 +2767,181 @@ namespace GnollHackX
             RecordFunctionCall(RecordedFunctionID.UpdateStatusButton, cmd, btn, val, bflags);
         }
 
+        public void IncrementCounters(long counter_increment)
+        {
+            long res = Interlocked.Increment(ref _mainCounterValue);
+            if (res == long.MaxValue)
+            {
+                Interlocked.Exchange(ref _mainCounterValue, 0L);
+                res = 0L;
+            }
+            //lock (_mainCounterLock)
+            //{
+            //    _mainCounterValue++;
+            //    if (_mainCounterValue < 0)
+            //        _mainCounterValue = 0;
+
+            //    maincountervalue = Interlocked.CompareExchange(ref _mainCounterValue, 0L, 0L);
+            //}
+
+            if (counter_increment > 0)
+            {
+                /* Only general counter is interlocked and can be accessed without a lock, achieving most of the benefits of having not to lock */
+                /* Moved this outside of the lock to minimize the time spent in lock; InvalidateSurface is called after IncrementCounters, so AnimationTimers should always be fully updated when PaintSurface is called (and there will be no lock taken because of IncrementCounters) */
+                res = Interlocked.Add(ref AnimationTimers.general_animation_counter, counter_increment);
+                if (res < 0) /* Overflowed */
+                {
+                    Interlocked.Exchange(ref AnimationTimers.general_animation_counter, 0L);
+                    res = 0;
+                    lock (AnimationTimerLock)
+                    {
+                        AnimationTimers.CalculateCounterTimeStampsOnOverflowToZero();
+                    }
+                }
+                //generalcountervalue = Interlocked.CompareExchange(ref AnimationTimers.general_animation_counter, 0L, 0L);;
+
+                //lock (AnimationTimerLock)
+                //{
+                //    //AnimationTimers.general_animation_counter += counter_increment;
+                //    //if (AnimationTimers.general_animation_counter < 0)
+                //    //    AnimationTimers.general_animation_counter = 0;
+
+                //    if (AnimationTimers.u_action_animation_counter_on)
+                //    {
+                //        //Interlocked.Add(ref AnimationTimers.u_action_animation_counter, counter_increment);
+                //        //if (AnimationTimers.u_action_animation_counter < 0)
+                //        //    Interlocked.Exchange(ref AnimationTimers.u_action_animation_counter, 0L);
+                //        if (AnimationTimers.u_action_animation_counter > long.MaxValue - counter_increment)
+                //            AnimationTimers.u_action_animation_counter = 0;
+                //        else
+                //            AnimationTimers.u_action_animation_counter += counter_increment;
+                //    }
+
+                //    if (AnimationTimers.m_action_animation_counter_on)
+                //    {
+                //        //Interlocked.Add(ref AnimationTimers.m_action_animation_counter, counter_increment);
+                //        //if (AnimationTimers.m_action_animation_counter < 0)
+                //        //    Interlocked.Exchange(ref AnimationTimers.m_action_animation_counter, 0L);
+                //        if (AnimationTimers.m_action_animation_counter > long.MaxValue - counter_increment)
+                //            AnimationTimers.m_action_animation_counter = 0;
+                //        else
+                //            AnimationTimers.m_action_animation_counter += counter_increment;
+                //    }
+
+                //    if (AnimationTimers.explosion_animation_counter_on)
+                //    {
+                //        //Interlocked.Add(ref AnimationTimers.explosion_animation_counter, counter_increment);
+                //        //if (AnimationTimers.explosion_animation_counter < 0)
+                //        //    Interlocked.Exchange(ref AnimationTimers.explosion_animation_counter, 0L);
+                //        if (AnimationTimers.explosion_animation_counter > long.MaxValue - counter_increment)
+                //            AnimationTimers.explosion_animation_counter = 0;
+                //        else
+                //            AnimationTimers.explosion_animation_counter += counter_increment;
+                //    }
+
+                //    for (i = 0; i < GHConstants.MaxPlayedZapAnimations; i++)
+                //    {
+                //        if (AnimationTimers.zap_animation_counter_on[i])
+                //        {
+                //            //Interlocked.Add(ref AnimationTimers.zap_animation_counter[i], counter_increment);
+                //            //if (AnimationTimers.zap_animation_counter[i] < 0)
+                //            //    Interlocked.Exchange(ref AnimationTimers.zap_animation_counter[i], 0L);
+                //            if (AnimationTimers.zap_animation_counter[i] > long.MaxValue - counter_increment)
+                //                AnimationTimers.zap_animation_counter[i] = 0;
+                //            else
+                //                AnimationTimers.zap_animation_counter[i] += counter_increment;
+                //        }
+                //    }
+
+                //    for (i = 0; i < GHConstants.MaxPlayedSpecialEffects; i++)
+                //    {
+                //        if (AnimationTimers.special_effect_animation_counter_on[i])
+                //        {
+                //            //Interlocked.Add(ref AnimationTimers.special_effect_animation_counter[i], counter_increment);
+                //            //if (AnimationTimers.special_effect_animation_counter[i] < 0)
+                //            //    Interlocked.Exchange(ref AnimationTimers.special_effect_animation_counter[i], 0L);
+                //            if (AnimationTimers.special_effect_animation_counter[i] > long.MaxValue - counter_increment)
+                //                AnimationTimers.special_effect_animation_counter[i] = 0;
+                //            else
+                //                AnimationTimers.special_effect_animation_counter[i] += counter_increment;
+                //        }
+                //    }
+                //}
+            }
+        }
+
+
+        //private readonly object _mainCounterLock = new object();
+        private long _mainCounterValue = 0;
+        public long MainCounterValue
+        {
+            get
+            {
+                //lock (_mainCounterLock) 
+                {
+                    return Interlocked.CompareExchange(ref _mainCounterValue, 0L, 0L);
+                }
+            }
+        }
+
+        public readonly object AnimationTimerLock = new object();
+        public readonly GHAnimationTimerList AnimationTimers = new GHAnimationTimerList();
+        public long GeneralAnimationCounter
+        {
+            get
+            {
+                return Interlocked.CompareExchange(ref AnimationTimers.general_animation_counter, 0L, 0L);
+            }
+        }
+
         public void ClientCallback_ToggleAnimationTimer(int timertype, int timerid, int state, int x, int y, int layer, ulong tflags)
         {
             RecordFunctionCall(RecordedFunctionID.ToggleAnimationTimer, timertype, timerid, state, x, y, layer, tflags);
             bool ison = (state != 0);
-            long general_counter_value = Interlocked.CompareExchange(ref _gamePage.AnimationTimers.general_animation_counter, 0L, 0L);
-            lock (_gamePage.AnimationTimerLock)
+            long general_counter_value = Interlocked.CompareExchange(ref AnimationTimers.general_animation_counter, 0L, 0L);
+            lock (AnimationTimerLock)
             {
                 switch ((animation_timer_types)timertype)
                 {
                     case animation_timer_types.ANIMATION_TIMER_GENERAL:
                         break;
                     case animation_timer_types.ANIMATION_TIMER_YOU:
-                        //_gamePage.AnimationTimers.u_action_animation_counter = 0L;
-                        _gamePage.AnimationTimers.u_action_animation_counter_timestamp = general_counter_value;
-                        _gamePage.AnimationTimers.u_action_animation_counter_on = ison;
+                        //_AnimationTimers.u_action_animation_counter = 0L;
+                        AnimationTimers.u_action_animation_counter_timestamp = general_counter_value;
+                        AnimationTimers.u_action_animation_counter_on = ison;
                         break;
                     case animation_timer_types.ANIMATION_TIMER_MONSTER:
-                        //_gamePage.AnimationTimers.m_action_animation_counter = 0L;
-                        _gamePage.AnimationTimers.m_action_animation_counter_timestamp = general_counter_value;
-                        _gamePage.AnimationTimers.m_action_animation_counter_on = ison;
-                        _gamePage.AnimationTimers.m_action_animation_x = (byte)x;
-                        _gamePage.AnimationTimers.m_action_animation_y = (byte)y;
+                        //_AnimationTimers.m_action_animation_counter = 0L;
+                        AnimationTimers.m_action_animation_counter_timestamp = general_counter_value;
+                        AnimationTimers.m_action_animation_counter_on = ison;
+                        AnimationTimers.m_action_animation_x = (byte)x;
+                        AnimationTimers.m_action_animation_y = (byte)y;
                         break;
                     case animation_timer_types.ANIMATION_TIMER_EXPLOSION:
-                        //_gamePage.AnimationTimers.explosion_animation_counter = 0L;
-                        _gamePage.AnimationTimers.explosion_animation_counter_timestamp = general_counter_value;
-                        _gamePage.AnimationTimers.explosion_animation_counter_on = ison;
-                        _gamePage.AnimationTimers.explosion_animation_x = (byte)x;
-                        _gamePage.AnimationTimers.explosion_animation_y = (byte)y;
+                        //_AnimationTimers.explosion_animation_counter = 0L;
+                        AnimationTimers.explosion_animation_counter_timestamp = general_counter_value;
+                        AnimationTimers.explosion_animation_counter_on = ison;
+                        AnimationTimers.explosion_animation_x = (byte)x;
+                        AnimationTimers.explosion_animation_y = (byte)y;
                         break;
                     case animation_timer_types.ANIMATION_TIMER_ZAP:
                         if (timerid < 0 || timerid >= GHConstants.MaxPlayedZapAnimations)
                             break;
-                        //_gamePage.AnimationTimers.zap_animation_counter[timerid] = 0L;
-                        _gamePage.AnimationTimers.zap_animation_counter_timestamp[timerid] = general_counter_value;
-                        _gamePage.AnimationTimers.zap_animation_counter_on[timerid] = ison;
-                        _gamePage.AnimationTimers.zap_animation_x[timerid] = (byte)x;
-                        _gamePage.AnimationTimers.zap_animation_y[timerid] = (byte)y;
+                        //_AnimationTimers.zap_animation_counter[timerid] = 0L;
+                        AnimationTimers.zap_animation_counter_timestamp[timerid] = general_counter_value;
+                        AnimationTimers.zap_animation_counter_on[timerid] = ison;
+                        AnimationTimers.zap_animation_x[timerid] = (byte)x;
+                        AnimationTimers.zap_animation_y[timerid] = (byte)y;
                         break;
                     case animation_timer_types.ANIMATION_TIMER_SPECIAL_EFFECT:
                         if (timerid < 0 || timerid >= GHConstants.MaxPlayedSpecialEffects)
                             break;
-                        //_gamePage.AnimationTimers.special_effect_animation_counter[timerid] = 0L;
-                        _gamePage.AnimationTimers.special_effect_animation_counter_timestamp[timerid] = general_counter_value;
-                        _gamePage.AnimationTimers.special_effect_animation_counter_on[timerid] = ison;
-                        _gamePage.AnimationTimers.spef_action_animation_x[timerid] = (byte)x;
-                        _gamePage.AnimationTimers.spef_action_animation_y[timerid] = (byte)y;
-                        _gamePage.AnimationTimers.spef_action_animation_layer[timerid] = (layer_types)layer;
+                        //_AnimationTimers.special_effect_animation_counter[timerid] = 0L;
+                        AnimationTimers.special_effect_animation_counter_timestamp[timerid] = general_counter_value;
+                        AnimationTimers.special_effect_animation_counter_on[timerid] = ison;
+                        AnimationTimers.spef_action_animation_x[timerid] = (byte)x;
+                        AnimationTimers.spef_action_animation_y[timerid] = (byte)y;
+                        AnimationTimers.spef_action_animation_layer[timerid] = (layer_types)layer;
                         break;
                     default:
                         break;
@@ -2561,14 +3003,17 @@ namespace GnollHackX
 
                 int cnt = 0;
                 long countervalue;
+                GamePage gamePage = ActiveGamePage;
+                if (gamePage == null)
+                    return;
                 do
                 {
-                    countervalue = _gamePage.MainCounterValue;
-                    lock (_gamePage._screenTextLock)
+                    countervalue = MainCounterValue;
+                    lock (gamePage._screenTextLock)
                     {
-                        if (_gamePage._screenText != null)
+                        if (gamePage._screenText != null)
                         {
-                            if (_gamePage._screenText.IsFinished(countervalue))
+                            if (gamePage._screenText.IsFinished(countervalue))
                                 break;
                         }
                         else
@@ -2842,10 +3287,18 @@ namespace GnollHackX
                     RequestQueue.Enqueue(new GHRequest(this, GHRequestType.FadeFromBlack, GHConstants.FadeFromBlackDuration));
                     break;
                 case (int)gui_command_types.GUI_CMD_FORCE_ASCII:
-                    _gamePage.ForceAscii = true;
+                    {
+                        GamePage gamePage = ActiveGamePage;
+                        if (gamePage != null)
+                            gamePage.ForceAscii = true;
+                    }
                     break;
                 case (int)gui_command_types.GUI_CMD_UNFORCE_ASCII:
-                    _gamePage.ForceAscii = false;
+                    {
+                        GamePage gamePage = ActiveGamePage;
+                        if (gamePage != null)
+                            gamePage.ForceAscii = false;
+                    }
                     break;
                 case (int)gui_command_types.GUI_CMD_MUTE_SOUNDS:
                     GHApp.GameMuteMode = true;
@@ -2862,25 +3315,43 @@ namespace GnollHackX
                 case (int)gui_command_types.GUI_CMD_LOAD_VIDEOS:
                     break;
                 case (int)gui_command_types.GUI_CMD_ENABLE_WIZARD_MODE:
-                    _gamePage.EnableWizardMode = true;
-                    _gamePage.ExtendedCommands = GHApp.GnollHackService.GetExtendedCommands();
+                    {
+                        GamePage gamePage = ActiveGamePage;
+                        if (gamePage != null)
+                        {
+                            gamePage.EnableWizardMode = true;
+                            gamePage.ExtendedCommands = GHApp.GnollHackService.GetExtendedCommands();
+                        }
+                    }
                     break;
                 case (int)gui_command_types.GUI_CMD_DISABLE_WIZARD_MODE:
-                    if(_gamePage.EnableWizardMode)
                     {
-                        _gamePage.EnableWizardMode = false;
-                        _gamePage.ExtendedCommands = GHApp.GnollHackService.GetExtendedCommands();
+                        GamePage gamePage = ActiveGamePage;
+                        if (gamePage != null && gamePage.EnableWizardMode)
+                        {
+                            gamePage.EnableWizardMode = false;
+                            gamePage.ExtendedCommands = GHApp.GnollHackService.GetExtendedCommands();
+                        }
                     }
                     break;
                 case (int)gui_command_types.GUI_CMD_ENABLE_CASUAL_MODE:
-                    _gamePage.EnableCasualMode = true;
-                    _gamePage.ExtendedCommands = GHApp.GnollHackService.GetExtendedCommands();
+                    {
+                        GamePage gamePage = ActiveGamePage;
+                        if (gamePage != null)
+                        {
+                            gamePage.EnableCasualMode = true;
+                            gamePage.ExtendedCommands = GHApp.GnollHackService.GetExtendedCommands();
+                        }
+                    }
                     break;
                 case (int)gui_command_types.GUI_CMD_DISABLE_CASUAL_MODE:
-                    if (_gamePage.EnableCasualMode)
                     {
-                        _gamePage.EnableCasualMode = false;
-                        _gamePage.ExtendedCommands = GHApp.GnollHackService.GetExtendedCommands();
+                        GamePage gamePage = ActiveGamePage;
+                        if (gamePage != null && gamePage.EnableCasualMode)
+                        {
+                            gamePage.EnableCasualMode = false;
+                            gamePage.ExtendedCommands = GHApp.GnollHackService.GetExtendedCommands();
+                        }
                     }
                     break;
                 case (int)gui_command_types.GUI_CMD_ENABLE_TOURNAMENT_MODE:
@@ -2890,7 +3361,8 @@ namespace GnollHackX
                     GHApp.TournamentMode = false;
                     break;
                 case (int)gui_command_types.GUI_CMD_CLEAR_PET_DATA:
-                    RequestQueue.Enqueue(new GHRequest(this, GHRequestType.ClearPetData));
+                    ClearPetData();
+                    //RequestQueue.Enqueue(new GHRequest(this, GHRequestType.ClearPetData));
                     break;
                 case (int)gui_command_types.GUI_CMD_SAVE_AND_DISABLE_TRAVEL_MODE:
                     RequestQueue.Enqueue(new GHRequest(this, GHRequestType.SaveAndDisableTravelMode));
@@ -2905,13 +3377,13 @@ namespace GnollHackX
                     RequestQueue.Enqueue(new GHRequest(this, GHRequestType.RestoreTravelModeOnLevel));
                     break;
                 case (int)gui_command_types.GUI_CMD_CLEAR_CONDITION_TEXTS:
-                    _gamePage.ClearConditionTexts();
+                    ActiveGamePage?.ClearConditionTexts();
                     break;
                 case (int)gui_command_types.GUI_CMD_CLEAR_FLOATING_TEXTS:
-                    _gamePage.ClearFloatingTexts();
+                    ActiveGamePage?.ClearFloatingTexts();
                     break;
                 case (int)gui_command_types.GUI_CMD_CLEAR_GUI_EFFECTS:
-                    _gamePage.ClearGuiEffects();
+                    ActiveGamePage?.ClearGuiEffects();
                     break;
                 case (int)gui_command_types.GUI_CMD_CLEAR_MESSAGE_HISTORY:
                     //_message_history.Clear();
@@ -3196,11 +3668,11 @@ namespace GnollHackX
                     break;
                 case (int)gui_command_types.GUI_CMD_TOGGLE_AUTODIG:
                     GHApp.MirroredAutoDig = cmd_param != 0;
-                    _gamePage.ToggleMapAutoDigOnMainThread(cmd_param != 0); //Do not set the game value of autodig; this is GUI notification that it has been changed
+                    ActiveGamePage?.ToggleMapAutoDigOnMainThread(cmd_param != 0); //Do not set the game value of autodig; this is GUI notification that it has been changed
                     break;
                 case (int)gui_command_types.GUI_CMD_TOGGLE_IGNORE_STOPPING:
                     GHApp.MirroredIgnoreStopping = cmd_param != 0;
-                    _gamePage.ToggleMapIgnoreModeOnMainThread(cmd_param != 0); //Do not set the game value of autodig; this is GUI notification that it has been changed
+                    ActiveGamePage?.ToggleMapIgnoreModeOnMainThread(cmd_param != 0); //Do not set the game value of autodig; this is GUI notification that it has been changed
                     break;
                 case (int)gui_command_types.GUI_CMD_TOGGLE_GETPOS_ARROWS:
                     GHApp.GetPositionArrows = cmd_param != 0;
@@ -3236,10 +3708,10 @@ namespace GnollHackX
                         GHApp.MirroredRightMouseCommand = cmd_param;
                     break;
                 case (int)gui_command_types.GUI_CMD_TOGGLE_QUICK_ZAP_WAND:
-                    _gamePage.SetQuickZapWand(cmd_param, cmd_param2, cmd_str);
+                    SetQuickZapWand(cmd_param, cmd_param2, cmd_str);
                     break;
                 case (int)gui_command_types.GUI_CMD_TOGGLE_QUICK_CAST_SPELL:
-                    _gamePage.SetQuickCastSpell(cmd_param, cmd_param2, cmd_str);
+                    SetQuickCastSpell(cmd_param, cmd_param2, cmd_str);
                     break;
                 case (int)gui_command_types.GUI_CMD_ZOOM_NORMAL:
                     if (!PlayingReplay)
@@ -3516,6 +3988,33 @@ namespace GnollHackX
                     break;
             }
             return 0;
+        }
+
+        public readonly object _quickLock = new object();
+        public int _quickWandGlyph = 0;
+        public int _quickWandExceptionality = 0;
+        public string _quickWandName = "";
+        public int _quickSpellGlyph = 0;
+        public int _quickSpellOtyp = 0;
+        public string _quickSpellName = "";
+        public void SetQuickZapWand(int glyph, int exceptionality, string name)
+        {
+            lock (_quickLock)
+            {
+                _quickWandGlyph = glyph;
+                _quickWandExceptionality = exceptionality;
+                _quickWandName = name;
+            }
+        }
+
+        public void SetQuickCastSpell(int glyph, int otyp, string name)
+        {
+            lock (_quickLock)
+            {
+                _quickSpellGlyph = glyph;
+                _quickSpellOtyp = otyp;
+                _quickSpellName = name;
+            }
         }
 
 
@@ -4183,6 +4682,22 @@ namespace GnollHackX
             this.etype = etype;
             this.eflags = eflags;
             this.gflags = gflags;
+        }
+    }
+
+    public class ContextMenuButton
+    {
+        public readonly string LblText;
+        public readonly string ImgSourcePath;
+        public readonly SKImage Bitmap;
+        public readonly int BtnCommand;
+        //public SKRect Rect;
+        public ContextMenuButton(string lblText, string imgSourcePath, SKImage bitmap, int btnCommand)
+        {
+            LblText = lblText;
+            ImgSourcePath = imgSourcePath;
+            Bitmap = bitmap;
+            BtnCommand = btnCommand;
         }
     }
 }

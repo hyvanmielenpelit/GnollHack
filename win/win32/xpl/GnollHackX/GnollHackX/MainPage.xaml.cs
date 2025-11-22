@@ -21,6 +21,7 @@ using System.Collections.Concurrent;
 using System.Text.Json;
 
 
+
 #if GNH_MAUI
 using GnollHackX;
 using Microsoft.Maui.Controls.PlatformConfiguration;
@@ -50,10 +51,6 @@ namespace GnollHackX
 {
     public partial class MainPage : ContentPage
     {
-        //private readonly object _gameStartedLock = new object();
-        private int _gameStarted = 0;
-        public bool GameStarted { get { return Interlocked.CompareExchange(ref _gameStarted, 0, 0) != 0; } set { Interlocked.Exchange(ref _gameStarted, value ? 1 : 0); } }
-
         //private readonly object _generalTimerLock = new object();
         private int _generaTimerIsOn = 0;
         public bool GeneralTimerIsOn { get { return Interlocked.CompareExchange(ref _generaTimerIsOn, 0, 0) != 0; } set { Interlocked.Exchange(ref _generaTimerIsOn, value ? 1 : 0); } }
@@ -73,10 +70,17 @@ namespace GnollHackX
 
         public MainPage()
         {
+            GHApp.MaybeWriteGHLog("MainPage constructor.");
             InitializeComponent();
             GHApp.CurrentMainPage = this;
+            GHApp.CurrentGamePage = null; //Might be non-null and stale after a restart
             On<iOS>().SetUseSafeArea(true);
             UIUtils.SetPageThemeOnHandler(this, GHApp.DarkMode);
+            if (GHApp.CurrentGHGame != null)
+            {
+                WaitLabel.Text = "Please Wait...";
+                WaitLayout.IsVisible = true;
+            }
 #if WINDOWS
             classicModeGrid.HeightRequest = 40;
             casualModeGrid.HeightRequest = 40;
@@ -168,7 +172,7 @@ namespace GnollHackX
 
         private bool DoGeneralTimerTick()
         {
-            if (GameStarted || StopGeneralTimer)
+            if (GHApp.GameStarted || StopGeneralTimer)
             {
                 GeneralTimerIsOn = false;
                 StopGeneralTimer = false;
@@ -260,7 +264,7 @@ namespace GnollHackX
                         && (GHApp.XlogUserNameVerified || missingorincorrectcredentials || (!GHApp.PostingXlogEntries && !dopostbones && !dopostreplays))
                         && (!has_files || !GHApp.PostingGameStatus)
                         && (!has_files2 || !GHApp.PostingXlogEntries || missingorincorrectcredentials)
-                        && (!has_files3 || !dopostbones || GameStarted || missingorincorrectcredentials)
+                        && (!has_files3 || !dopostbones || GHApp.GameStarted || missingorincorrectcredentials)
                         && (!has_files4 || !dopostreplays || incorrectcredentials)
                         )
                     {
@@ -297,7 +301,7 @@ namespace GnollHackX
                             UpdateGeneralTimerTasksLabel(false);
                         }
 
-                        if (hasinternet && has_files3 && dopostbones && !GameStarted && !missingorincorrectcredentials) // Do not fetch bones files while the game is on
+                        if (hasinternet && has_files3 && dopostbones && !GHApp.GameStarted && !missingorincorrectcredentials) // Do not fetch bones files while the game is on
                         {
                             await ProcessSavedPosts(2, directory3, GHConstants.BonesPostFileNamePrefix);
                             PendingGeneralTimerTasks = CalculatePendingGeneralTimerTasks();
@@ -343,7 +347,7 @@ namespace GnollHackX
             //int tasks2 = hasinternet && !GHApp.XlogUserNameVerified && (GHApp.PostingXlogEntries || dopostbones || dopostreplays) && !missingorincorrectcredentials ? 1 : 0;
             int tasks3 = hasinternet && has_files && GHApp.PostingGameStatus ? Directory.GetFiles(directory).Length : 0;
             int tasks4 = hasinternet && has_files2 && GHApp.PostingXlogEntries && !missingorincorrectcredentials ? Directory.GetFiles(directory2).Length : 0;
-            int tasks5 = hasinternet && has_files3 && dopostbones && !GameStarted && !missingorincorrectcredentials ? Directory.GetFiles(directory3).Length : 0;
+            int tasks5 = hasinternet && has_files3 && dopostbones && !GHApp.GameStarted && !missingorincorrectcredentials ? Directory.GetFiles(directory3).Length : 0;
             int tasks6 = hasinternet && has_files4 && dopostreplays && !incorrectcredentials ? Directory.GetFiles(directory4).Length : 0;
 
             return tasks1 + /* tasks2 + */ tasks3 + tasks4 + tasks5 + tasks6;
@@ -740,16 +744,23 @@ namespace GnollHackX
                 StartLocalGameButton.TextColor = GHColors.Gray;
                 carouselView.Stop();
 
-                long numberofgames = Preferences.Get("NumberOfGames", 0L);
-                Preferences.Set("NumberOfGames", numberofgames + 1L);
+                //GHGame curGame = GHApp.CurrentGHGame;
+                //if (curGame != null)
+                //{
+                //    await DoShowGamePageForExistingGameAsync(curGame);
+                //}
+                //else
+                {
+                    long numberofgames = Preferences.Get("NumberOfGames", 0L);
+                    Preferences.Set("NumberOfGames", numberofgames + 1L);
 
-                var gamePage = new GamePage(this);
-                GHApp.CurrentGamePage = gamePage;
-                gamePage.EnableWizardMode = wizardModeSwitch.IsToggled;
-                gamePage.EnableCasualMode = casualModeSwitch.IsToggled;
-                gamePage.EnableModernMode = !classicModeSwitch.IsToggled;
-                await GHApp.Navigation.PushModalAsync(gamePage);
-                await gamePage.StartNewGame();
+                    var gamePage = new GamePage(this);
+                    gamePage.EnableWizardMode = wizardModeSwitch.IsToggled;
+                    gamePage.EnableCasualMode = casualModeSwitch.IsToggled;
+                    gamePage.EnableModernMode = !classicModeSwitch.IsToggled;
+                    await GHApp.Navigation.PushModalAsync(gamePage);
+                    await gamePage.StartNewGame();
+                }
             }
             catch (Exception ex)
             {
@@ -762,7 +773,6 @@ namespace GnollHackX
         }
 
         private bool _firsttime = true;
-        private bool _mainScreenMusicStarted = false;
 
         public void UpdateLayout()
         {
@@ -790,11 +800,117 @@ namespace GnollHackX
             return false;
         }
 
+        private async Task DoShowGamePageForExistingGameAsync()
+        {
+            GHGame curGame = GHApp.CurrentGHGame;
+            if (curGame != null) 
+            {
+                carouselView.Stop();
+                var gamePage = new GamePage(this);
+                gamePage.EnableWizardMode = curGame.WizardMode;
+                gamePage.EnableCasualMode = curGame.CasualMode;
+                gamePage.EnableModernMode = curGame.ModernMode;
+                GHGame game = GHApp.CurrentGHGame;
+                bool wenttosleep = false;
+                try
+                {
+                    wenttosleep = Preferences.Get("WentToSleepWithGameOn", false);
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine(ex);
+                }
+                if (GHApp.IsAutoSaveUponSwitchingAppsOn
+                    && game != null && !game.PlayingReplay
+                    && wenttosleep && (GHApp.GameSaved || GHApp.SavingGame))
+                {
+                    GHApp.CancelSaveGame = true;
+                    game.FullRestart = true;
+                    game.StopWaitAndResumeSavedGame(); //Calls gamePage.RestartGameAfterPageDestruction, which handles Navigation.PushModalAsync when the time is right
+                }
+                else
+                {
+                    await GHApp.Navigation.PushModalAsync(gamePage, false);
+                    gamePage.StartExistingGame();
+                    curGame.ReactivateGame();
+                }
+                await Task.Delay(500);
+            }
+            WaitLayout.IsVisible = false;
+        }
+
+        private bool AllowStartExistingGame {  get { return GHConstants.AllowRestartGameUponActivityDestruction && GHApp.GameStarted; } }
+
         private async void ContentPage_Appearing(object sender, EventArgs e)
         {
             GHApp.BackButtonPressed += BackButtonPressed;
             UpdateLayout();
-            if (_firsttime)
+            GHGame curGame = GHApp.CurrentGHGame;
+            if (_firsttime && curGame != null) // Restart
+            {
+                _firsttime = false;
+                GHApp.SetWindowFocus();
+                GnollHackLabel.Text = "GnollHack";
+                //StartLogoImage.Opacity = 1.0;
+                //FmodLogoImage.Opacity = 1.0;
+                FinishedLogoFadeIn = true;
+                StartLogoImage.Opacity = 0.0; /* To make sure */
+                FmodLogoImage.Opacity = 0.0; /* To make sure */
+
+                carouselView.Init();
+                carouselView.IsVisible = true;
+                carouselView.InvalidateSurface();
+                carouselView.Opacity = 1.0; /* To make sure */
+                UpperButtonGrid.IsVisible = true;
+                UpperButtonGrid.Opacity = 1.0;  /* To make sure */
+                StartButtonLayout.IsVisible = true;
+                StartButtonLayout.Opacity = 1.0;  /* To make sure */
+                LogoGrid.IsVisible = true;
+                LogoGrid.Opacity = 1.0;  /* To make sure */
+
+                StartLogoImage.IsVisible = false;
+                FmodLogoImage.IsVisible = false;
+
+                StartLocalGameButton.TextColor = GHColors.Gray;
+                StartLocalGameButton.IsEnabled = false;
+                WaitLayout.IsVisible = false;
+
+                if (AllowStartExistingGame)
+                {
+                    DisplayAlertGrid(GHApp.IsAndroid ? "Android Activity Restart" : "Game Screen Restart",
+                        "Android destroyed GnollHack's " + (GHApp.IsAndroid ? "activity" : "game screen") +" when backgrounded. Please press OK to return to your game.",
+                            "OK", GHColors.Orange, 5);
+                }
+                else
+                {
+                    carouselView.Play();
+
+                    ///* Game has been successfully loaded, so need to save first */
+                    //if (GHApp.IsAutoSaveUponSwitchingAppsOn)
+                    //{
+                    //    curGame.SaveGameAndWaitForResume();
+                    //    await Task.Delay(2000);
+                    //}
+                    Preferences.Set("WentToSleepWithGameOn", false);
+                    Preferences.Set("GameSaveResult", 0);
+
+                    if (GHApp.IsAndroid)
+                    {
+                        DisplayAlertGrid("Android Activity Restart",
+                            "Android destroyed GnollHack's activity when backgrounded, which may lead to unstable performance. Please press OK to exit the app and then restart GnollHack.",
+                                "OK", GHColors.Orange, 4);
+                    }
+                    else
+                    {
+                        DisplayAlertGrid("Unexpected App Restart",
+                            "GnollHack experienced unexpected app window restart, which may lead to unstable performance. Please press OK to exit the app and then restart GnollHack.",
+                                "OK", GHColors.Orange, 4);
+                    }
+                }
+
+                return;
+            }
+            else if (_firsttime)
             {
                 _firsttime = false;
                 GHApp.DebugWriteProfilingStopwatchTimeAndRestart("MainPage First Time");
@@ -961,9 +1077,9 @@ namespace GnollHackX
                     }
                 }
             }
-            else if (!GameStarted)
+            else if (!GHApp.GameStarted)
             {
-                if ((!_mainScreenMusicStarted))
+                if ((!GHApp.MainScreenMusicStarted))
                     PlayMainScreenVideoAndMusic();
             }
 
@@ -1306,7 +1422,7 @@ namespace GnollHackX
             try
             {
                 GHApp.FmodService?.PlayUIMusic(GHConstants.IntroGHSound, GHConstants.IntroEventPath, GHConstants.IntroBankId, GHConstants.IntroMusicVolume, 1.0f);
-                _mainScreenMusicStarted = true;
+                GHApp.MainScreenMusicStarted = true;
             }
             catch (Exception ex)
             {
@@ -1843,7 +1959,15 @@ namespace GnollHackX
                 || (_alertGridCloseAppStyle == 2 && (!FinishedLogoFadeIn || (GHApp.PlatformService?.IsRemoveAnimationsOn() ?? true)))
                 || (_alertGridCloseAppStyle == 3 && (!FinishedLogoFadeIn || ((GHApp.PlatformService?.GetCurrentAnimatorDurationScale() ?? -1.0f) <= 0.0f)))
                 || _alertGridCloseAppStyle == 4)
+            {
+                WaitLabel.Text = "Exiting...";
+                WaitLayout.IsVisible = true;
                 await CloseApp();
+            }
+            else if (_alertGridCloseAppStyle == 5)
+            {
+                await DoShowGamePageForExistingGameAsync();
+            }
             AlertOkButton.IsEnabled = true;
             DisplayNewAlert(); //Show next alert if there are more in the queue
         }

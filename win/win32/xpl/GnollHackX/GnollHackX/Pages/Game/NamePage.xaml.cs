@@ -45,7 +45,7 @@ namespace GnollHackX.Pages.Game
             Appearing += ContentPage_Loaded;
 #endif
             ValidationExpression = new Regex(@"^[A-Za-z0-9_]{1,31}$");
-            _currentGame = gamePage.CurrentGame;
+            _currentGame = GHApp.CurrentGHGame;
             _gamePage = gamePage;
             _replayEnteredName = replayEnteredPlayerName;
 

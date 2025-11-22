@@ -252,5 +252,12 @@
                 </Grid.GestureRecognizers>
             </Grid>
         </AbsoluteLayout>
+        <AbsoluteLayout x:Name="WaitLayout" IsVisible="False" HorizontalOptions="Fill" VerticalOptions="Fill" BackgroundColor="#AA000000">
+            <Label x:Name="WaitLabel" Text="Please Wait..." FontFamily="Immortal" FontSize="30" TextColor="White"
+                                       VerticalTextAlignment="Center" HorizontalOptions="Center" AbsoluteLayout.LayoutBounds="0.5, 0.5, 1, 1" AbsoluteLayout.LayoutFlags="All" />
+            <AbsoluteLayout.GestureRecognizers>
+                <TapGestureRecognizer />
+            </AbsoluteLayout.GestureRecognizers>
+        </AbsoluteLayout>
     </Grid>
 </ContentPage>
