@@ -1842,6 +1842,7 @@ namespace GnollHackX
                 popagain = !(page is GamePage || page == null);
                 DisconnectIViewHandlers(page);
             } while (popagain);
+            CurrentGamePage = null;
         }
 
         public static void OnResume()
@@ -1916,10 +1917,8 @@ namespace GnollHackX
             }
             TryVerifyXlogUserName();
 
-            if (CurrentMainPage != null)
-                CurrentMainPage.Resume();
-            if (CurrentGamePage != null)
-                CurrentGamePage.Resume();
+            CurrentMainPage?.Resume();
+            CurrentGamePage?.Resume();
 
             SleepMuteMode = false;
 

@@ -989,7 +989,6 @@ namespace GnollHackX.Pages.Game
         public GamePage(MainPage mainPage)
         {
             InitializeComponent();
-            GHApp.CurrentGamePage = this;
             On<iOS>().SetUseSafeArea(true);
             UIUtils.AdjustRootLayout(RootGrid);
             UIUtils.SetPageThemeOnHandler(this, GHApp.DarkMode);
@@ -1123,6 +1122,8 @@ namespace GnollHackX.Pages.Game
                 TextCanvas.InvalidateSurface();
             };
 #endif
+
+            GHApp.CurrentGamePage = this;
         }
 
         private void GamePage_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -2937,7 +2938,7 @@ namespace GnollHackX.Pages.Game
 
         protected void GNHThreadProc()
         {
-            GHGame curGame = new GHGame(this, RunGnollHackFlags.None);
+            GHGame curGame = new GHGame(RunGnollHackFlags.None);
             //CurrentGame = curGame;
             GHApp.CurrentGHGame = curGame;
             _gnollHackService.StartGnollHack(curGame);
@@ -2945,7 +2946,7 @@ namespace GnollHackX.Pages.Game
 
         protected void GNHThreadProcForRestart()
         {
-            GHGame curGame = new GHGame(this, RunGnollHackFlags.ForceLastPlayerName);
+            GHGame curGame = new GHGame(RunGnollHackFlags.ForceLastPlayerName);
             //CurrentGame = curGame;
             GHApp.CurrentGHGame = curGame;
             _gnollHackService.StartGnollHack(curGame);
@@ -2953,7 +2954,7 @@ namespace GnollHackX.Pages.Game
 
         protected void GNHThreadProcForReplay()
         {
-            GHGame curGame = new GHGame(this, RunGnollHackFlags.PlayingReplay);
+            GHGame curGame = new GHGame(RunGnollHackFlags.PlayingReplay);
             //CurrentGame = curGame;
             GHApp.CurrentGHGame = curGame;
             GHApp.PlayReplay(curGame, ReplayFileName);

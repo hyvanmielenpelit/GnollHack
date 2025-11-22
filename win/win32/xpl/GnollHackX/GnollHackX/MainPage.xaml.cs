@@ -78,7 +78,6 @@ namespace GnollHackX
             UIUtils.SetPageThemeOnHandler(this, GHApp.DarkMode);
             if (GHApp.CurrentGHGame != null)
             {
-                GHApp.CurrentGHGame.SetActiveGamePage(null);
                 WaitLabel.Text = "Please Wait...";
                 WaitLayout.IsVisible = true;
             }
@@ -811,7 +810,6 @@ namespace GnollHackX
                 gamePage.EnableWizardMode = curGame.WizardMode;
                 gamePage.EnableCasualMode = curGame.CasualMode;
                 gamePage.EnableModernMode = curGame.ModernMode;
-                curGame.SetActiveGamePage(gamePage);
                 GHGame game = GHApp.CurrentGHGame;
                 bool wenttosleep = false;
                 try

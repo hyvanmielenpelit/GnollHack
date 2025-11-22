@@ -53,12 +53,11 @@ namespace GnollHackX
         private int _saveFileTrackingFinished = -1;
         private bool _abortShowMenuPage = false;
 
-        private GamePage _gamePage;
-        public GamePage ActiveGamePage
-        {
-            get { return Interlocked.CompareExchange(ref _gamePage, null, null); }
-            set { Interlocked.Exchange(ref _gamePage, value); }
-        }
+        public GamePage ActiveGamePage => GHApp.CurrentGamePage;
+        //{
+        //    get { return Interlocked.CompareExchange(ref _gamePage, null, null); }
+        //    set { Interlocked.Exchange(ref _gamePage, value); }
+        //}
 
         private bool _touchLocSet = false;
         private int _touchLocX;
@@ -105,7 +104,7 @@ namespace GnollHackX
         public bool CasualMode { get { return ActiveGamePage?.EnableCasualMode ?? false; } }
         public bool ModernMode { get { return ActiveGamePage?.EnableModernMode ?? false; } }
 
-        public GHGame(GamePage gamePage, RunGnollHackFlags startFlags)
+        public GHGame(RunGnollHackFlags startFlags)
         {
             //GHGame.RequestDictionary.TryAdd(this, new ConcurrentQueue<GHRequest>());
             //GHGame.ResponseDictionary.TryAdd(this, new ConcurrentQueue<GHResponse>());
@@ -131,14 +130,9 @@ namespace GnollHackX
             _mapDataCurrent = _mapDataBuffer1;
             _objectDataCurrent = _objectDataBuffer1;
 
-            SetActiveGamePage(gamePage);
+            GamePage gamePage = GHApp.CurrentGamePage;
             if(gamePage != null)
                 _useLongerMessageHistory = gamePage.LongerMessageHistory;
-        }
-
-        public void SetActiveGamePage(GamePage gamePage)
-        {
-            ActiveGamePage = gamePage;
         }
 
         public void ReactivateGame()
