@@ -456,12 +456,12 @@ struct monst *mtmp;
     /* since unicorn horns don't get used up, the monster would look
      * silly trying to use the same cursed horn round after round
      */
-    if (is_confused(mtmp) || is_stunned(mtmp) || is_blinded(mtmp))
+    if (is_confused(mtmp) || is_stunned(mtmp) || is_blinded(mtmp) || is_hallucinating(mtmp) || is_sick(mtmp) || is_food_poisoned(mtmp) || is_mummy_rotted(mtmp) || has_vomiting(mtmp))
     {
         if (!is_unicorn(mtmp->data) && can_operate_objects(mtmp->data)) 
         {
             for (obj = mtmp->minvent; obj; obj = obj->nobj)
-                if (obj->otyp == UNICORN_HORN && !obj->cursed)
+                if (obj->otyp == UNICORN_HORN && !obj->cursed && obj->charges > 0)
                     break;
         }
         if (obj || is_unicorn(mtmp->data)) 
@@ -874,23 +874,58 @@ struct monst *mtmp;
 
     switch (m.has_defense) {
     case MUSE_UNICORN_HORN:
-        play_simple_object_sound(otmp, OBJECT_SOUND_TYPE_APPLY);
+    {
+        int maxcures = 1;
+        int cures = 0;
+        if (otmp)
+        {
+            play_simple_object_sound(otmp, OBJECT_SOUND_TYPE_APPLY);
+            if (otmp->blessed)
+                maxcures++;
+            if (otmp->charges > 0)
+                otmp->charges--;
+        }
         if (vismon) {
             if (otmp)
                 pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s uses a unicorn horn!", Monnam(mtmp));
             else
                 pline_The_ex(ATR_NONE, CLR_MSG_ATTENTION, "tip of %s's horn glows!", mon_nam(mtmp));
         }
-        if (is_blinded(mtmp)) {
+        if (cures < maxcures && is_sick(mtmp)) {
+            (void)set_mon_property_b(mtmp, SICK, 0, vismon);
+            cures++;
+        }
+        if (cures < maxcures && is_food_poisoned(mtmp)) {
+            (void)set_mon_property_b(mtmp, FOOD_POISONED, 0, vismon);
+            cures++;
+        }
+        if (cures < maxcures && is_mummy_rotted(mtmp)) {
+            (void)set_mon_property_b(mtmp, MUMMY_ROT, -3, vismon);
+            cures++;
+        }
+        if (cures < maxcures && has_vomiting(mtmp)) {
+            (void)set_mon_property_b(mtmp, VOMITING, 0, vismon);
+            cures++;
+        }
+        if (cures < maxcures && is_hallucinating(mtmp)) {
+            (void)set_mon_property_b(mtmp, HALLUC, 0, vismon);
+            cures++;
+        }
+        if (cures < maxcures && is_blinded(mtmp)) {
             mcureblindness(mtmp, vismon);
-        } else if (is_confused(mtmp) || is_stunned(mtmp)) {
+            cures++;
+        }
+        if (cures < maxcures && (is_confused(mtmp) || is_stunned(mtmp))) {
             mtmp->mprops[CONFUSION] = 0;
             mtmp->mprops[STUNNED] = 0;
             if (vismon)
                 pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s seems steadier now.", Monnam(mtmp));
-        } else
+            cures++;
+        }
+        if (!cures)
             impossible("No need for unicorn horn?");
         return 2;
+    }
     case MUSE_BUGLE:
         if (!otmp)
             return 2;

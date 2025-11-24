@@ -875,7 +875,7 @@ struct monst* oracl;
     else if (!umoney)
     {
         play_sfx_sound(SFX_NOT_ENOUGH_MONEY);
-        You_ex1_popup("have no money.", "No Money", ATR_NONE, CLR_MSG_ATTENTION, NO_GLYPH, POPUP_FLAGS_NONE);
+        You_ex1_popup("have no money.", "No Money", ATR_NONE, CLR_MSG_FAIL, NO_GLYPH, POPUP_FLAGS_NONE);
         return 0;
     }
 

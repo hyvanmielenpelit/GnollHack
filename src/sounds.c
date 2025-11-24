@@ -112,6 +112,7 @@ STATIC_DCL int FDECL(do_chat_priest_cure_sickness, (struct monst*));
 STATIC_DCL int FDECL(do_chat_priest_chat, (struct monst*));
 STATIC_DCL int FDECL(do_chat_priest_divination, (struct monst*));
 STATIC_DCL int FDECL(do_chat_priest_teach_spells, (struct monst*));
+STATIC_DCL int FDECL(do_chat_oracle_teach_spells, (struct monst*));
 STATIC_DCL int FDECL(do_chat_shk_payitems, (struct monst*));
 STATIC_DCL int FDECL(do_chat_shk_pricequote, (struct monst*));
 STATIC_DCL int FDECL(do_chat_shk_chat, (struct monst*));
@@ -3578,6 +3579,12 @@ struct monst* mtmp;
             //    available_chat_list[chatnum].name, MENU_UNSELECTED);
 
             chatnum++;
+
+            Strcpy(available_chat_list[chatnum].name, "Teach spells");
+            available_chat_list[chatnum].function_ptr = &do_chat_oracle_teach_spells;
+            available_chat_list[chatnum].category = CHAT_CATEGORY_SERVICE;
+            chatnum++;
+
         }
 
         /* Priest */
@@ -3659,7 +3666,6 @@ struct monst* mtmp;
 
             Strcpy(available_chat_list[chatnum].name, "Teach spells");
             available_chat_list[chatnum].function_ptr = &do_chat_priest_teach_spells;
-            //available_chat_list[chatnum].charnum = 'a' + chatnum;
             available_chat_list[chatnum].category = CHAT_CATEGORY_SERVICE;
 
             //any = zeroany;
@@ -9909,6 +9915,23 @@ struct monst* mtmp;
         spell_otyps[teach_num] = EPRI(mtmp)->special_teach_spells[i];
         teach_num++;
     }
+
+    return spell_teaching(mtmp, spell_otyps);
+}
+
+STATIC_OVL int
+do_chat_oracle_teach_spells(mtmp)
+struct monst* mtmp;
+{
+    if (!mtmp || mtmp->mnum != PM_ORACLE)
+        return 0;
+
+    int spell_otyps[16 + 1] = { 0 };
+    spell_otyps[0] = SPE_PROBE;
+    spell_otyps[1] = SPE_CLAIRVOYANCE;
+    spell_otyps[2] = mtmp->m_id % 3 == 0 ? SPE_TELEPATHY : SPE_WARNING;
+    if (mtmp->m_id % 17 == 0)
+        spell_otyps[3] = SPE_X_RAY_VISION;
 
     return spell_teaching(mtmp, spell_otyps);
 }
