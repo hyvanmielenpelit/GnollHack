@@ -1963,11 +1963,18 @@ namespace GnollHackX
 
         public static void CheckCloseGnhThread()
         {
-            GHGame game = CurrentGHGame;
-            Thread t = GnhThread;
-            if (game != null && t != null && t.IsAlive)
+            try
             {
-                game.StopWaitAndExitThread();
+                GHGame game = CurrentGHGame;
+                Thread t = GnhThread;
+                if (game != null && t != null && t.IsAlive)
+                {
+                    game.StopWaitAndExitThread();
+                }
+            }
+            catch (Exception ex)
+            {
+                MaybeWriteGHLog(ex.Message);
             }
         }
 
