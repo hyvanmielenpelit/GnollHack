@@ -1285,11 +1285,11 @@ namespace GnollHackX
             get { return Interlocked.CompareExchange(ref _currentGHGame, null, null); }
             set { Interlocked.Exchange(ref _currentGHGame, value); }
         }
-        private static Thread _gnhthread = null;
+        private static Thread _gnhThread = null;
         public static Thread GnhThread
         {
-            get { return Interlocked.CompareExchange(ref _gnhthread, null, null); }
-            set { Interlocked.Exchange(ref _gnhthread, value); }
+            get { return Interlocked.CompareExchange(ref _gnhThread, null, null); }
+            set { Interlocked.Exchange(ref _gnhThread, value); }
         }
 
         public static int GameSaveStatus = 0;
@@ -1958,6 +1958,16 @@ namespace GnollHackX
                         game.StopWaitAndResumeSavedGame();
                     }
                 }
+            }
+        }
+
+        public static void CheckCloseGnhThread()
+        {
+            GHGame game = CurrentGHGame;
+            Thread t = GnhThread;
+            if (game != null && t != null && t.IsAlive)
+            {
+                game.StopWaitAndExitThread();
             }
         }
 

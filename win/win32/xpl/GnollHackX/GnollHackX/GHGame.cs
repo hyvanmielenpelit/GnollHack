@@ -274,6 +274,9 @@ namespace GnollHackX
                     case GHRequestType.StopWaitAndRestoreSavedGame:
                         RequestRestoreSavedGame();
                         break;
+                    case GHRequestType.StopWaitAndExitThread:
+                        RequestExitThread();
+                        break;
                     case GHRequestType.TallyRealTime:
                         RequestTallyRealTime();
                         break;
@@ -499,6 +502,10 @@ namespace GnollHackX
             }
         }
 
+        public void StopWaitAndExitThread()
+        {
+            ResponseQueue.Enqueue(new GHResponse(this, GHRequestType.StopWaitAndExitThread));
+        }
 
         public int ClientCallback_CreateGHWindow(int wintype, int style, int glyph, byte dataflags, IntPtr objdata_ptr, IntPtr otypdata_ptr)
         {
@@ -4166,6 +4173,14 @@ namespace GnollHackX
             if (PlayingReplay)
                 return;
             _restoreRequested = true;
+        }
+
+        private void RequestExitThread()
+        {
+            if (PlayingReplay)
+                return;
+            // The fact that this function is only called from GnhThread should ensure the thread is alive
+            GHApp.GnollHackService?.ExitGnhThread();
         }
 
         private void RequestCheckPoint()

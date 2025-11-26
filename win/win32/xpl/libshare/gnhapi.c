@@ -740,6 +740,12 @@ LibSetExitHack(int newValue)
     exit_hack_code = newValue;
 }
 
+DLLEXPORT void
+LibExitGnhThread()
+{
+    exit_hack_code = -1; // ExitHack does nothing
+    gnollhack_exit(EXIT_SUCCESS);
+}
 
 DLLEXPORT int GnollHackStart(cmdlineargs)
 char* cmdlineargs;

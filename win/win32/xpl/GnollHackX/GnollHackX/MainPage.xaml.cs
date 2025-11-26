@@ -1600,6 +1600,7 @@ namespace GnollHackX
                 return;
 
             StopGeneralTimer = true; /* Stop timer */
+            GHApp.CheckCloseGnhThread(); /* Close GnhThread is a game is ongoing */
             Task t1 = GeneralTimerTasksAsync(); /* Make sure outstanding queues are processed before closing application */
             Task t2 = Task.Delay(1000); /* Give 1 second to close at maximum */
             await Task.WhenAny(t1, t2);
