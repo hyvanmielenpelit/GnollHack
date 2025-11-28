@@ -68,35 +68,35 @@ public partial class App : Application
 
     private static void Window_Created(object sender, EventArgs e)
     {
-        GHApp.MaybeWriteGHLog("MAUI Window has been created.");
+        GHApp.MaybeWriteGHLog("MAUI Window has been created.", true, "Window Information");
         GHApp.OnStart();
     }
 
     private static void Window_Resumed(object sender, EventArgs e)
     {
-        GHApp.MaybeWriteGHLog("MAUI Window has been resumed.");
+        GHApp.MaybeWriteGHLog("MAUI Window has been resumed.", true, "Window Information");
         GHApp.OnResume();
     }
 
     private static void Window_Stopped(object sender, EventArgs e)
     {
-        GHApp.MaybeWriteGHLog("MAUI Window has been stopped / entered background.");
+        GHApp.MaybeWriteGHLog("MAUI Window has been stopped / entered background.", true, "Window Information");
         GHApp.OnSleep();
     }
 
     private static void WindowActivated(object sender, EventArgs e)
     {
-        GHApp.MaybeWriteGHLog("MAUI Window has been activated / focused.");
+        GHApp.MaybeWriteGHLog("MAUI Window has been activated / focused.", true, "Window Information");
         GHApp.OnFocus();
     }
     private static void WindowDeactivated(object sender, EventArgs e)
     {
-        GHApp.MaybeWriteGHLog("MAUI Window has been deactivated / unfocused.");
+        GHApp.MaybeWriteGHLog("MAUI Window has been deactivated / unfocused.", true, "Window Information");
         GHApp.OnUnfocus();
     }
     private static void WindowDestroying(object sender, EventArgs e)
     {
-        GHApp.MaybeWriteGHLog("MAUI Window's native window is being destroyed.");
+        GHApp.MaybeWriteGHLog("MAUI Window's native window is being destroyed.", true, "Window Information");
         //Window window = sender as Window;
         //if (window != null)
         //{

@@ -1978,6 +1978,14 @@ namespace GnollHackX
             }
         }
 
+        public static void AddSentryBreadcrumb(string message, string category)
+        {
+#if SENTRY
+            if (!string.IsNullOrWhiteSpace(message))
+                SentrySdk.AddBreadcrumb(message, category);
+#endif
+        }
+
         //private static readonly object _keyboardLock = new object();
         private static int _ctrlDown = 0;
         private static int _altDown = 0;
@@ -6546,10 +6554,13 @@ namespace GnollHackX
             return info_str;
         }
 
-        public static void MaybeWriteGHLog(string loggedtext)
+        public static void MaybeWriteGHLog(string loggedtext, bool addBreadcrumb = false, string category = null)
         {
             if (string.IsNullOrWhiteSpace(loggedtext))
                 return;
+
+            if (addBreadcrumb)
+                AddSentryBreadcrumb(loggedtext, category);
 
             if (DebugLogMessages)
                 WriteGHLog(loggedtext);

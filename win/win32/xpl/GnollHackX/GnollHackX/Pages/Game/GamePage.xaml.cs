@@ -1543,6 +1543,7 @@ namespace GnollHackX.Pages.Game
                 LoadingDetailsLabel.Text = "Done loading.";
                 SetupKeyListening();
                 GHApp.DebugCheckCurrentFileDescriptor("StartGameFinished");
+                GHApp.MaybeWriteGHLog("StartGame finished successfully.", true, "Start Information");
             }
             catch (Exception ex)
             {
