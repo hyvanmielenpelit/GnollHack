@@ -200,12 +200,12 @@ namespace GnollHackX
             InitializePlatformRenderLoop();
         }
 
-        //private static int _mainPageStarts = 0;
-        //public static int MainPageStarts { get { return Interlocked.CompareExchange(ref _mainPageStarts, 0, 0); } set { Interlocked.Exchange(ref _mainPageStarts, value); } }
-        //public static void IncrementMainPageStarts()
-        //{
-        //    Interlocked.Increment(ref _mainPageStarts);
-        //}
+        private static int _mainPageConstructorRunNumber = 0;
+        public static int MainPageConstructorRunNumber { get { return Interlocked.CompareExchange(ref _mainPageConstructorRunNumber, 0, 0); } set { Interlocked.Exchange(ref _mainPageConstructorRunNumber, value); } }
+        public static void IncrementMainConstructorRunNumber()
+        {
+            Interlocked.Increment(ref _mainPageConstructorRunNumber);
+        }
 
         private static int _gameStarted = 0;
         public static bool GameStarted { get { return Interlocked.CompareExchange(ref _gameStarted, 0, 0) != 0; } set { Interlocked.Exchange(ref _gameStarted, value ? 1 : 0); } }
