@@ -496,12 +496,9 @@ namespace GnollHackX
         }
 
 #if WINDOWS
-        //private static readonly object _currentScreenResolutionLock = new object();
         private static ScreenResolutionItem _currentScreenResolution = null;
         public static ScreenResolutionItem CurrentScreenResolution 
         {
-            //get { lock (_currentScreenResolutionLock) { return _currentScreenResolution; } } 
-            //set { lock (_currentScreenResolutionLock) { _currentScreenResolution = value; } } 
             get { return Interlocked.CompareExchange(ref _currentScreenResolution, null, null); }
             set { Interlocked.Exchange(ref _currentScreenResolution, value); }
         }
@@ -1278,7 +1275,6 @@ namespace GnollHackX
             set { Interlocked.Exchange(ref _currentGamePage, value); }
         }
 
-        //private static readonly object _currentGHGameLock = new object();
         private static GHGame _currentGHGame = null;
         public static GHGame CurrentGHGame 
         {

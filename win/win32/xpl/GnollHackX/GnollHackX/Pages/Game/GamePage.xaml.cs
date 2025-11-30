@@ -77,7 +77,6 @@ namespace GnollHackX.Pages.Game
 
         private SKColor _cursorDefaultGreen = new SKColor(0, 255, 0);
 
-        //private object _isGameOnLock = new object();
         private int _isGameOn = 0;
         private int _gameEnded = 0;
         private int _fastForwardRequested = 0;
@@ -85,28 +84,18 @@ namespace GnollHackX.Pages.Game
         public bool GameEnded { get { return Interlocked.CompareExchange(ref _gameEnded, 0, 0) != 0; } set { Interlocked.Exchange(ref _gameEnded, value ? 1 : 0); } }
         public bool FastForwardRequested { get { return Interlocked.CompareExchange(ref _fastForwardRequested, 0, 0) != 0; } set { Interlocked.Exchange(ref _fastForwardRequested, value ? 1 : 0); } }
 
-        //private object _isMainCanvasOnLock = new object();
         private int _isMainCanvasOn = 0;
         private int _isMainCanvasDrawing = 0;
         public bool IsMainCanvasOn 
         { 
             get
             {
-                //lock (_isMainCanvasOnLock) { return _isMainCanvasOn; } 
                 return Interlocked.CompareExchange(ref _isMainCanvasOn, 0, 0) != 0;
             } 
             set 
             {
                 Interlocked.Exchange(ref _isMainCanvasOn, value ? 1 : 0);
                 Interlocked.Exchange(ref _updateTimerTickCount, 0L);
-                //lock (_isMainCanvasOnLock) 
-                //{ 
-                //    _isMainCanvasOn = value; 
-                //} 
-                //lock (_updateTimerTickCountLock)
-                //{ 
-                //    _updateTimerTickCount = 0L; 
-                //} 
             } 
         }
         public bool IsMainCanvasDrawing { get { return Interlocked.CompareExchange(ref _isMainCanvasDrawing, 0, 0) != 0; } set { Interlocked.Exchange(ref _isMainCanvasDrawing, value ? 1 : 0); } }
@@ -114,14 +103,12 @@ namespace GnollHackX.Pages.Game
         { 
             get 
             { 
-                //lock (_isMainCanvasOnLock) { bool val = _isMainCanvasDrawing; _isMainCanvasDrawing = true; return val; }
                 return Interlocked.Exchange(ref _isMainCanvasDrawing, 1) != 0;
             }
         }
 
         private readonly string _fontSizeString = "FontS";
         private int _refreshMsgHistoryRowCounts = 1;
-        //private readonly object _refreshMsgHistoryRowCountLock = new object();
         private bool RefreshMsgHistoryRowCounts { get { return Interlocked.CompareExchange(ref _refreshMsgHistoryRowCounts, 0, 0) != 0; } set { Interlocked.Exchange(ref _refreshMsgHistoryRowCounts, value ? 1 : 0); } }
 
         public List<string> ExtendedCommands { get; set; }
@@ -129,27 +116,13 @@ namespace GnollHackX.Pages.Game
         private readonly IGnollHackService _gnollHackService;
         private bool _isFirstAppearance = true;
 
-        //private GHGame _currentGame = null;
-        //public GHGame CurrentGame 
-        //{
-        //    get { return Interlocked.CompareExchange(ref _currentGame, null, null); }
-        //    set { Interlocked.Exchange(ref _currentGame, value); }
-        //}
-
         private MapData[,] _mapData = new MapData[GHConstants.MapCols, GHConstants.MapRows];
-        //private readonly object _mapDataLock = new object();
-
-        //private readonly object _darkenedBitmapLock = new object();
         private Dictionary<SavedDarkenedBitmap, SKImage> _darkenedBitmaps = new Dictionary<SavedDarkenedBitmap, SKImage>();
-        //private readonly object _darkenedAutoDrawBitmapLock = new object();
         private Dictionary<SavedDarkenedAutodrawBitmap, SKImage> _darkenedAutodrawBitmaps = new Dictionary<SavedDarkenedAutodrawBitmap, SKImage>();
 
         private readonly object _uLock = new object();
         private int _ux = 0;
         private int _uy = 0;
-        //private ulong _u_condition_bits = 0;
-        //private ulong _u_status_bits = 0;
-        //private ulong[] _u_buff_bits = new ulong[GHConstants.NUM_BUFF_BIT_ULONGS];
         private int[] _statusmarkorder = { (int)game_ui_status_mark_types.STATUS_MARK_TOWNGUARD_PEACEFUL, (int)game_ui_status_mark_types.STATUS_MARK_TOWNGUARD_HOSTILE, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21 };
         public string[] _condition_names = new string[(int)bl_conditions.NUM_BL_CONDITIONS] {
             "Petrifying",
@@ -449,33 +422,22 @@ namespace GnollHackX.Pages.Game
             new SKPoint(1.0000f, 0.9800f),
         };
 
-        //private readonly object _isSizeAllocatedProcessedLock = new object();
         private int _isSizeAllocatedProcessed = 0;
         public bool IsSizeAllocatedProcessed { get { return Interlocked.CompareExchange(ref _isSizeAllocatedProcessed, 0, 0) != 0; } set { Interlocked.Exchange(ref _isSizeAllocatedProcessed, value ? 1 : 0); } }
 
-        //private readonly object _forceAsciiLock = new object();
         private int _forceAscii = 0;
         public bool ForceAscii { get { return Interlocked.CompareExchange(ref _forceAscii, 0, 0) != 0; } set { Interlocked.Exchange(ref _forceAscii, value ? 1 : 0); } }
 
-        //private readonly object _forceAllMessagesLock = new object();
         private int _forceAllMessages = 0;
         public bool ForceAllMessages
         {
             get 
             {
                 return Interlocked.CompareExchange(ref _forceAllMessages, 0, 0) != 0;
-                //lock (_forceAllMessagesLock) 
-                //{ 
-                //    return _forceAllMessages; 
-                //} 
             }
             set
             {
                 Interlocked.Exchange(ref _forceAllMessages, value ? 1 : 0);
-                //lock (_forceAllMessagesLock)
-                //{
-                //    _forceAllMessages = value;
-                //}
                 MessageFilterFrame.IsVisible = LongerMessageHistory && value;
                 if (!MessageFilterFrame.IsVisible)
                     MessageFilterEntry.Unfocus();
@@ -492,54 +454,37 @@ namespace GnollHackX.Pages.Game
 
         public bool HasAllMessagesTransparentBackground { get; set; } = true;
 
-        //private readonly object _showExtendedStatusBarLock = new object();
         private int _showExtendedStatusBar = 0;
         public bool ShowExtendedStatusBar { get { return Interlocked.CompareExchange(ref _showExtendedStatusBar, 0, 0) != 0; } set { Interlocked.Exchange(ref _showExtendedStatusBar, value ? 1 : 0); } }
 
-        //private readonly object _lighterDarkeningLock = new object();
         private int _lighterDarkening = 0;
         private int _lighterDarkeningUpdated = 0;
         public bool LighterDarkening
         {
-            //get { lock (_lighterDarkeningLock) { return _lighterDarkening; } }
             get { return Interlocked.CompareExchange(ref _lighterDarkening, 0, 0) != 0; }
             set
             {
-                //lock (_lighterDarkeningLock)
-                //{
-                //    if(_lighterDarkening != value)
-                //        _lighterDarkeningUpdated = true;
-                //    _lighterDarkening = value;
-                //}
                 if (Interlocked.Exchange(ref _lighterDarkening, value ? 1 : 0) != (value ? 1 : 0)) // Original value was different
                     Interlocked.Exchange(ref _lighterDarkeningUpdated, 1);
             }
         }
 
-        //private readonly object _drawWallEndsLock = new object();
         private int _drawWallEnds = 0;
         public bool DrawWallEnds { get { return Interlocked.CompareExchange(ref _drawWallEnds, 0, 0) != 0; } set { Interlocked.Exchange(ref _drawWallEnds, value ? 1 : 0); } }
 
-        //private readonly object _breatheAnimationLock = new object();
         private int _breatheAnimations = 0;
         public bool BreatheAnimations { get { return Interlocked.CompareExchange(ref _breatheAnimations, 0, 0) != 0; } set { Interlocked.Exchange(ref _breatheAnimations, value ? 1 : 0); } }
 
-        //private readonly object _longerMessageHistoryLock = new object();
         int _longerMessageHistory = 0;
         public bool LongerMessageHistory
         {
             get
             {
-                //lock (_longerMessageHistoryLock) { return _longerMessageHistory; };
                 return Interlocked.CompareExchange(ref _longerMessageHistory, 0, 0) != 0;
             }
             set
             {
                 Interlocked.Exchange(ref _longerMessageHistory, value ? 1 : 0);
-                //lock (_longerMessageHistoryLock)
-                //{
-                //    _longerMessageHistory = value;
-                //}
                 MessageFilterFrame.IsVisible = value && ForceAllMessages;
                 if (!MessageFilterFrame.IsVisible)
                     MessageFilterEntry.Unfocus();
@@ -558,21 +503,15 @@ namespace GnollHackX.Pages.Game
         }
 
         int _hideMessageHistory = 0;
-        //private readonly object _hideMessageHistoryLock = new object();
         public bool HideMessageHistory
         {
             get
             {
-                //lock (_hideMessageHistoryLock) { return _hideMessageHistory; };
                 return Interlocked.CompareExchange(ref _hideMessageHistory, 0, 0) != 0;
             }
             set
             {
                 Interlocked.Exchange(ref _hideMessageHistory, value ? 1 : 0);
-                //lock (_hideMessageHistoryLock)
-                //{
-                //    _hideMessageHistory = value;
-                //}
                 RefreshMsgHistoryRowCounts = true;
 
                 GHGame curGame = GHApp.CurrentGHGame;
@@ -580,30 +519,17 @@ namespace GnollHackX.Pages.Game
             }
         }
 
-        //private readonly object _accurateLayerDrawingLock = new object();
         private int _alternativeLayerDrawing = 0;
         public bool AlternativeLayerDrawing { get { return Interlocked.CompareExchange(ref _alternativeLayerDrawing, 0, 0) != 0; } set { Interlocked.Exchange(ref _alternativeLayerDrawing, value ? 1 : 0); } }
 
-        //private readonly object _refreshScreenLock = new object();
         private int _refreshScreen = 1;
         public bool RefreshScreen { get { return Interlocked.CompareExchange(ref _refreshScreen, 0, 0) != 0; } set { Interlocked.Exchange(ref _refreshScreen, value ? 1 : 0); } }
-        //{
-        //    get 
-        //    {
-        //        lock (_refreshScreenLock) { return _refreshScreen; } 
-        //    }
-        //    set
-        //    {
-        //        lock (_refreshScreenLock) { _refreshScreen = value; } 
-        //    }
-        //}
 
         private game_cursor_types _cursorType;
         private bool _force_paint_at_cursor;
         private bool _show_cursor_on_u;
 
         private ObjectData[,] _objectData = new ObjectData[GHConstants.MapCols, GHConstants.MapRows];
-        //private readonly object _objectDataLock = new object();
         private ObjectDataItem _uChain = null;
         private ObjectDataItem _uBall = null;
 
@@ -650,18 +576,15 @@ namespace GnollHackX.Pages.Game
             }
         }
 
-        //private readonly object _mipMapLock = new object();
         private int _useMainMipMap = 0;
         public bool UseMainMipMap
         {
             get 
             {
-                //lock (_mipMapLock) { return _useMainMipMap; } 
                 return Interlocked.CompareExchange(ref _useMainMipMap, 0, 0) != 0;
             }
             set 
             { 
-                //lock (_mipMapLock) { _useMainMipMap = value; }
                 Interlocked.Exchange(ref _useMainMipMap, value ? 1 : 0);
             }
         }
@@ -686,27 +609,18 @@ namespace GnollHackX.Pages.Game
             }
         }
 
-        //private readonly object _useSimpleCmdLock = new object();
         private int _useSimpleCmdLayout = GHConstants.DefaultSimpleCmdLayout ? 1 : 0;
         public bool UseSimpleCmdLayout
         {
             get 
             {
-                //lock (_useSimpleCmdLock) { return _useSimpleCmdLayout; }
                 return Interlocked.CompareExchange(ref _useSimpleCmdLayout, 0, 0) != 0;
             }
             set
             {
                 Interlocked.Exchange(ref _useSimpleCmdLayout, value ? 1 : 0);
-                //lock (_useSimpleCmdLock)
-                //{
-                //    _useSimpleCmdLayout = value;
-                //}
                 ButtonRowStack.IsVisible = !value;
                 SimpleButtonRowStack.IsVisible = value;
-                //StoneButtonGrid.IsVisible = !value;
-                //UpperCmdLayout.IsVisible = !value;
-                //SimpleUpperCmdLayout.IsVisible = value;
             }
         }
 
@@ -720,24 +634,19 @@ namespace GnollHackX.Pages.Game
         private int _showIgnoreButton;
         public bool ShowIgnoreStoppingButton { get { return Interlocked.CompareExchange(ref _showIgnoreButton, 0, 0) != 0; } set { Interlocked.Exchange(ref _showIgnoreButton, value ? 1 : 0); } }
 
-        //private readonly object _showBatteryLock = new object();
         private int _showBattery;
         public bool ShowBattery { get { return Interlocked.CompareExchange(ref _showBattery, 0, 0) != 0; } set { Interlocked.Exchange(ref _showBattery, value ? 1 : 0); } }
 
-        //private readonly object _showFPSLock = new object();
         private int _showFPS;
         public bool ShowFPS { get { return Interlocked.CompareExchange(ref _showFPS, 0, 0) != 0; } set { Interlocked.Exchange(ref _showFPS, value ? 1 : 0); } }
 
-        //private readonly object _showMemoryLock = new object();
         private int _showMemory;
         private long _memUsage = 0;
         public bool ShowMemory { get { return Interlocked.CompareExchange(ref _showMemory, 0, 0) != 0; } set { Interlocked.Exchange(ref _showMemory, value ? 1 : 0); } }
 
-        //private readonly object _showZoomLock = new object();
         private int _showZoom;
         public bool ShowZoom { get { return Interlocked.CompareExchange(ref _showZoom, 0, 0) != 0; } set { Interlocked.Exchange(ref _showZoom, value ? 1 : 0); } }
 
-        //private readonly object _showRecordingLock = new object();
         private int _showRecording = 1;
         public bool ShowRecording { get { return Interlocked.CompareExchange(ref _showRecording, 0, 0) != 0; } set { Interlocked.Exchange(ref _showRecording, value ? 1 : 0); } }
 
@@ -745,22 +654,17 @@ namespace GnollHackX.Pages.Game
         private double FPS { get { return Interlocked.CompareExchange(ref _fps, 0.0, 0.0); } set { Interlocked.Exchange(ref _fps, value); } }
 
         private long _previousMainFPSCounterValue = 0L;
-        //private long _previousRenderingCounterValue = 0L;
         private long _previousCommandFPSCounterValue = 0L;
 
-        //private readonly object _fpslock = new object();
         private Stopwatch _stopWatch = new Stopwatch();
         private Stopwatch _mapUpdateStopWatch = new Stopwatch();
 
-        //private readonly object _mapGridLock = new object();
         private int _mapGrid = 0;
         public bool MapGrid { get { return Interlocked.CompareExchange(ref _mapGrid, 0, 0) != 0; } set { Interlocked.Exchange(ref _mapGrid, value ? 1 : 0); } }
 
-        //private readonly object _hitPointBarLock = new object();
         private int _hitPointBars = 0;
         public bool HitPointBars { get { return Interlocked.CompareExchange(ref _hitPointBars, 0, 0) != 0; } set { Interlocked.Exchange(ref _hitPointBars, value ? 1 : 0); } }
 
-        //private readonly object _orbLock = new object();
         private int _showOrbs = 1;
         public bool ShowOrbs { get { return Interlocked.CompareExchange(ref _showOrbs, 0, 0) != 0; } set { Interlocked.Exchange(ref _showOrbs, value ? 1 : 0); } }
         private int _showMaxHealthInOrb = 0;
@@ -768,23 +672,18 @@ namespace GnollHackX.Pages.Game
         private int _showMaxManaInOrb = 0;
         public bool ShowMaxManaInOrb { get { return Interlocked.CompareExchange(ref _showMaxManaInOrb, 0, 0) != 0; } set { Interlocked.Exchange(ref _showMaxManaInOrb, value ? 1 : 0); } }
 
-        //private readonly object _playerMarkLock = new object();
         private int _playerMark = 0;
         public bool PlayerMark { get { return Interlocked.CompareExchange(ref _playerMark, 0, 0) != 0; } set { Interlocked.Exchange(ref _playerMark, value ? 1 : 0); } }
 
-        //private readonly object _monsterTargetingLock = new object();
         private int _monsterTargeting = 0;
         public bool MonsterTargeting { get { return Interlocked.CompareExchange(ref _monsterTargeting, 0, 0) != 0; } set { Interlocked.Exchange(ref _monsterTargeting, value ? 1 : 0); } }
 
-        //private readonly object _walkArrowLock = new object();
         private int _walkArrows = 0;
         public bool WalkArrows { get { return Interlocked.CompareExchange(ref _walkArrows, 0, 0) != 0; } set { Interlocked.Exchange(ref _walkArrows, value ? 1 : 0); } }
 
-        //private readonly object _classicStatusBarLock = new object();
         private int _classicStatusBar = 0;
         public bool ClassicStatusBar { get { return Interlocked.CompareExchange(ref _classicStatusBar, 0, 0) != 0; } set { Interlocked.Exchange(ref _classicStatusBar, value ? 1 : 0); } }
 
-        //private readonly object _desktopLock = new object();
         private int _desktopStatusBar = 0;
         private int _desktopButtons = 0;
         private int _showScore = 0;
@@ -798,18 +697,12 @@ namespace GnollHackX.Pages.Game
         {
             get 
             {
-                //lock (_desktopLock) { return _desktopButtons; } 
                 return Interlocked.CompareExchange(ref _desktopButtons, 0, 0) != 0;
             }
             set
             {
                 int usedValue = value ? 1 : 0;
                 bool changed = Interlocked.Exchange(ref _desktopButtons, usedValue) != usedValue;
-                //lock (_desktopLock)
-                //{
-                //    changed = _desktopButtons != value;
-                //    _desktopButtons = value;
-                //}
                 if (changed)
                 {
                     UpdateAbilityButtonVisibility(value);
@@ -824,25 +717,19 @@ namespace GnollHackX.Pages.Game
         public bool ShowXP { get { return Interlocked.CompareExchange(ref _showXP, 0, 0) != 0; } set { Interlocked.Exchange(ref _showXP, value ? 1 : 0); } }
         public bool RightAligned2ndRow { get { return Interlocked.CompareExchange(ref _rightAligned2ndRow, 0, 0) != 0; } set { Interlocked.Exchange(ref _rightAligned2ndRow, value ? 1 : 0); } }
 
-        //private readonly object _showPetsLock = new object();
         private int _showPets = 0;
         public bool ShowPets { get { return Interlocked.CompareExchange(ref _showPets, 0, 0) != 0; } set { Interlocked.Exchange(ref _showPets, value ? 1 : 0); } }
 
-        //private readonly object _cursorIsOnLock = new object();
         private int _cursorIsOn = 0;
         public bool CursorIsOn 
         { 
-            //get { lock (_cursorIsOnLock) { return _cursorIsOn; } } 
-            //set { lock (_cursorIsOnLock) { _cursorIsOn = value; } }
             get { return Interlocked.CompareExchange(ref _cursorIsOn, 0, 0) != 0; }
             set { Interlocked.Exchange(ref _cursorIsOn, value ? 1 : 0); }
         }
 
-        //private readonly object _showDirectionsLock = new object();
         private int _showDirections = 0;
         private bool ShowDirections { get { return Interlocked.CompareExchange(ref _showDirections, 0, 0) != 0; } set { Interlocked.Exchange(ref _showDirections, value ? 1 : 0); } }
 
-        //private readonly object _showNumberPadLock = new object();
         private int _showNumberPad = 0;
         private bool ShowNumberPad { get { return Interlocked.CompareExchange(ref _showNumberPad, 0, 0) != 0; } set { Interlocked.Exchange(ref _showNumberPad, value ? 1 : 0); } }
 
@@ -885,17 +772,14 @@ namespace GnollHackX.Pages.Game
         private int _clipY;
         private readonly object _clipLock = new object();
 
-        //private readonly object _mapNoClipModeLock = new object();
         private int _mapNoClipMode = 0;
         public bool MapNoClipMode { get { return Interlocked.CompareExchange(ref _mapNoClipMode, 0, 0) != 0; } set { Interlocked.Exchange(ref _mapNoClipMode, value ? 1 : 0); } }
 
-        //private readonly object _mapLookModeLock = new object();
         private int _mapLookMode = 0;
         public bool MapLookMode { get { return Interlocked.CompareExchange(ref _mapLookMode, 0, 0) != 0; } set { Interlocked.Exchange(ref _mapLookMode, value ? 1 : 0); } }
 
         private bool _savedMapTravelMode = false;
         private bool _savedMapTravelModeOnLevel = false;
-        //private readonly object _mapTravelModeLock = new object();
         private int _mapTravelMode = 0;
         public bool MapTravelMode { get { return Interlocked.CompareExchange(ref _mapTravelMode, 0, 0) != 0; } set { Interlocked.Exchange(ref _mapTravelMode, value ? 1 : 0); } }
         public bool MapWalkMode { get { return (!MapTravelMode && !MapLookMode); } }
@@ -904,11 +788,9 @@ namespace GnollHackX.Pages.Game
         private int _mapAutoDig = 0;
         public bool MapAutoDig { get { return Interlocked.CompareExchange(ref _mapAutoDig, 0, 0) != 0; } set { Interlocked.Exchange(ref _mapAutoDig, value ? 1 : 0); } }
 
-        //private readonly object _mapMiniModeLock = new object();
         private int _mapMiniMode = 0;
         public bool ZoomMiniMode { get { return Interlocked.CompareExchange(ref _mapMiniMode, 0, 0) != 0; } set { Interlocked.Exchange(ref _mapMiniMode, value ? 1 : 0); } }
 
-        //private readonly object _mapAlternateModeLock = new object();
         private int _mapAlternateMode = 0;
         public bool ZoomAlternateMode { get { return Interlocked.CompareExchange(ref _mapAlternateMode, 0, 0) != 0; } set { Interlocked.Exchange(ref _mapAlternateMode, value ? 1 : 0); } }
 
@@ -918,7 +800,6 @@ namespace GnollHackX.Pages.Game
         private float _mapFontMiniRelativeSize = 1.0f;
         private int _mapFontShowPercentageDecimal = 0;
 
-        //private readonly object _mapFontSizeLock = new object();
         public float DefaultMapFontSize { get { return Interlocked.CompareExchange(ref _defaultMapFontSize, 0.0f, 0.0f); } set { Interlocked.Exchange(ref _defaultMapFontSize, value); } }
         public float MapFontSize { get { return Interlocked.CompareExchange(ref _mapFontSize, 0.0f, 0.0f); } set { Interlocked.Exchange(ref _mapFontSize, value); } }
         public float MapFontAlternateSize { get { return Interlocked.CompareExchange(ref _mapFontAlternateSize, 0.0f, 0.0f); } set { Interlocked.Exchange(ref _mapFontAlternateSize, value); } }
@@ -931,10 +812,8 @@ namespace GnollHackX.Pages.Game
         private float _mapWidth;
         private float _mapHeight;
 
-        //private readonly object _mapFontAscentLock = new object();
         private float _mapFontAscent = 0.0f;
         private float UsedMapFontAscent { get { return Interlocked.CompareExchange(ref _mapFontAscent, 0.0f, 0.0f); } set { Interlocked.Exchange(ref _mapFontAscent, value); } }
-        //private float UsedMapFontAscent { get { lock (_mapFontAscentLock) { return _mapFontAscent; } } set { lock (_mapFontAscentLock) { _mapFontAscent = value; } } }
         public SKImage[] TileMap { get { return GHApp._tileMap; } }
 
         public readonly object _floatingTextLock = new object();
@@ -948,15 +827,12 @@ namespace GnollHackX.Pages.Game
         public readonly object _guiEffectLock = new object();
         public readonly List<GHGUIEffect> _guiEffects = new List<GHGUIEffect>();
 
-        //private readonly object _enableWizardModeLock = new object();
         private int _enableWizardMode = 0;
         public bool EnableWizardMode { get { return Interlocked.CompareExchange(ref _enableWizardMode, 0, 0) != 0; } set { Interlocked.Exchange(ref _enableWizardMode, value ? 1 : 0); } }
 
-        //private readonly object _enableCasualModeLock = new object();
         private int _enableCasualMode = 0;
         public bool EnableCasualMode { get { return Interlocked.CompareExchange(ref _enableCasualMode, 0, 0) != 0; } set { Interlocked.Exchange(ref _enableCasualMode, value ? 1 : 0); } }
 
-        //private readonly object _enableModernModeLock = new object();
         private int _enableModernMode = 0;
         public bool EnableModernMode { get { return Interlocked.CompareExchange(ref _enableModernMode, 0, 0) != 0; } set { Interlocked.Exchange(ref _enableModernMode, value ? 1 : 0); } }
 
@@ -1063,10 +939,6 @@ namespace GnollHackX.Pages.Game
             BreatheAnimations = Preferences.Get("BreatheAnimations", GHConstants.DefaultBreatheAnimations);
             AlternativeLayerDrawing = Preferences.Get("AlternativeLayerDrawing", GHConstants.DefaultAlternativeLayerDrawing);
             Interlocked.Exchange(ref _longerMessageHistory, GHApp.SavedLongerMessageHistory ? 1 : 0); /* Cannot send response command yet, hence using private variable */
-            //lock (_longerMessageHistoryLock)
-            //{
-            //    _longerMessageHistory = GHApp.SavedLongerMessageHistory; /* Cannot send response command yet, hence using private variable */
-            //}
 
             float deffontsize = GetDefaultMapFontSize();
             DefaultMapFontSize = deffontsize;
@@ -1140,11 +1012,6 @@ namespace GnollHackX.Pages.Game
 
         private void GamePage_SizeChanged(object sender, EventArgs e)
         {
-            //lock (_propertyLock)
-            //{
-            //    _threadSafeWidth = Width;
-            //    _threadSafeHeight = Height;
-            //}
             ThreadSafeWidth = Width;
             ThreadSafeHeight = Height;
         }

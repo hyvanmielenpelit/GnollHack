@@ -34,8 +34,6 @@ namespace GnollHackX
     {
         public readonly RunGnollHackFlags StartFlags;
         public bool PlayingReplay { get { return (StartFlags & RunGnollHackFlags.PlayingReplay) != 0; } }
-        //private static ConcurrentDictionary<GHGame, ConcurrentQueue<GHRequest>> _concurrentRequestDictionary = new ConcurrentDictionary<GHGame, ConcurrentQueue<GHRequest>>();
-        //private static ConcurrentDictionary<GHGame, ConcurrentQueue<GHResponse>> _concurrentResponseDictionary = new ConcurrentDictionary<GHGame, ConcurrentQueue<GHResponse>>();
         private int[] _inputBuffer = new int[GHConstants.InputBufferLength];
         private int _inputBufferLocation = -1;
         private string _getLineString = null;
@@ -67,36 +65,17 @@ namespace GnollHackX
         private int _lastWindowHandle = 0;
         private GHWindow[] _ghWindows = new GHWindow[GHConstants.MaxGHWindows];
 
-        //private readonly object _windowIdLock = new object();
         private int _mapWindowId;
         private int _messageWindowId;
         private int _statusWindowId;
-        //public int MapWindowId  { get { lock (_windowIdLock) { return _mapWindowId; } } set { lock (_windowIdLock) { _mapWindowId = value; } } }
-        //public int MessageWindowId { get { lock (_windowIdLock) { return _messageWindowId; } } set { lock (_windowIdLock) { _messageWindowId = value; } } }
-        //public int StatusWindowId { get { lock (_windowIdLock) { return _statusWindowId; } } set { lock (_windowIdLock) { _statusWindowId = value; } } }
 
-        //public void GetWindowIds(out int mapWindowId, out int messageWindowId, out int statusWindowId)
-        //{
-        //    lock (_windowIdLock)
-        //    {
-        //        mapWindowId = _mapWindowId;
-        //        messageWindowId = _messageWindowId;
-        //        statusWindowId = _statusWindowId;
-        //    }
-        //}
-        //private GHMsgHistoryList _message_history = new GHMsgHistoryList(GHConstants.MaxMessageHistoryLength, GHConstants.MaxMessageHistoryLength);
         private GHMsgHistoryList _longer_message_history = new GHMsgHistoryList(GHConstants.MaxLongerMessageHistoryLength, GHConstants.MaxLongerMessageHistoryLength / 2);
-        //private GHMsgHistoryList _empty_message_history = new GHMsgHistoryList(1, 1);
 
         public readonly ConcurrentQueue<GHRequest> RequestQueue = new ConcurrentQueue<GHRequest>();
         public readonly ConcurrentQueue<GHResponse> ResponseQueue = new ConcurrentQueue<GHResponse>();
 
-        //public static ConcurrentDictionary<GHGame, ConcurrentQueue<GHRequest>> RequestDictionary { get { return _concurrentRequestDictionary; } }
-        //public static ConcurrentDictionary<GHGame, ConcurrentQueue<GHResponse>> ResponseDictionary { get { return _concurrentResponseDictionary; } }
         public string CharacterName 
         {
-            //get { lock (_characterNameLock) { return _characterName; } } 
-            //set { lock (_characterNameLock) { _characterName = value; } }
             get { return Interlocked.CompareExchange(ref _characterName, null, null); }
             set { Interlocked.Exchange(ref _characterName, value); }
         }
@@ -106,8 +85,6 @@ namespace GnollHackX
 
         public GHGame(RunGnollHackFlags startFlags)
         {
-            //GHGame.RequestDictionary.TryAdd(this, new ConcurrentQueue<GHRequest>());
-            //GHGame.ResponseDictionary.TryAdd(this, new ConcurrentQueue<GHResponse>());
             StartFlags = startFlags;
 
             lock (_mapDataBufferLock)
@@ -157,10 +134,7 @@ namespace GnollHackX
 
         ~GHGame()
         {
-            //ConcurrentQueue<GHRequest> requestqueue;
-            //ConcurrentQueue<GHResponse> responsequeue;
-            //GHGame.RequestDictionary.TryRemove(this, out requestqueue);
-            //GHGame.ResponseDictionary.TryRemove(this, out responsequeue);
+
         }
 
         private bool _gameHasEnded = false;
@@ -275,7 +249,7 @@ namespace GnollHackX
                         RequestRestoreSavedGame();
                         break;
                     case GHRequestType.StopWaitAndExitThread:
-                        RequestExitThread();
+                        ForceExitThread();
                         break;
                     case GHRequestType.TallyRealTime:
                         RequestTallyRealTime();
@@ -347,10 +321,6 @@ namespace GnollHackX
             {
                 /* In replay, the arrays are not initialized by the game, so should not fetch them, but read them from the replay file. */
                 /* Initialize now glyph2tile and other relevant arrays */
-                //IntPtr gl2ti_ptr;
-                //int gl2ti_size;
-                //IntPtr gltifl_ptr;
-                //int gltifl_size;
                 IntPtr ti2an_ptr;
                 int ti2an_size;
                 IntPtr ti2en_ptr;
@@ -363,21 +333,10 @@ namespace GnollHackX
                 int enoff_size;
                 IntPtr reoff_ptr;
                 int reoff_size;
-                //_gamePage.GnollHackService.GetGlyphArrays(out gl2ti_ptr, out gl2ti_size, out gltifl_ptr, out gltifl_size);
                 GHApp.GnollHackService.GetTileArrays(out ti2an_ptr, out ti2an_size, out ti2en_ptr, out ti2en_size, out ti2ad_ptr, out ti2ad_size,
                     out anoff_ptr, out anoff_size, out enoff_ptr, out enoff_size, out reoff_ptr, out reoff_size);
                 lock (GHApp.Glyph2TileLock)
                 {
-                    //if (gl2ti_ptr != IntPtr.Zero && gl2ti_size > 0)
-                    //{
-                    //    GHApp.Glyph2Tile = new int[gl2ti_size];
-                    //    Marshal.Copy(gl2ti_ptr, GHApp.Glyph2Tile, 0, gl2ti_size);
-                    //}
-                    //if (gltifl_ptr != IntPtr.Zero && gltifl_size > 0)
-                    //{
-                    //    GHApp.GlyphTileFlags = new byte[gltifl_size];
-                    //    Marshal.Copy(gltifl_ptr, GHApp.GlyphTileFlags, 0, gltifl_size);
-                    //}
                     if (ti2an_ptr != IntPtr.Zero && ti2an_size > 0)
                     {
                         GHApp.Tile2Animation = new short[ti2an_size];
@@ -450,8 +409,6 @@ namespace GnollHackX
             int[] tilesperrow = null;
             lock (GHApp.Glyph2TileLock)
             {
-                //gl2ti = GHApp.Glyph2Tile;
-                //gltifl = GHApp.GlyphTileFlags;
                 ti2an = GHApp.Tile2Animation;
                 ti2en = GHApp.Tile2Enlargement;
                 ti2ad = GHApp.Tile2Autodraw;
@@ -544,12 +501,6 @@ namespace GnollHackX
                 _statusWindowId = handle;
 
             RequestQueue.Enqueue(new GHRequest(this, GHRequestType.UpdateGHWindow, handle, ghwin.Clone()));
-            //ConcurrentQueue<GHRequest> queue;
-            //if (GHGame.RequestDictionary.TryGetValue(this, out queue))
-            //{
-            //    RequestQueue.Enqueue(new GHRequest(this, GHRequestType.UpdateGHWindow, handle, ghwin.Clone()));
-            //}
-
             return handle;
         }
 
@@ -587,15 +538,6 @@ namespace GnollHackX
             {
                 RequestQueue.Enqueue(new GHRequest(this, GHRequestType.HideMenuPage, ghwin.WindowID));
             }
-            //ConcurrentQueue<GHRequest> queue;
-            //if (GHGame.RequestDictionary.TryGetValue(this, out queue))
-            //{
-            //    RequestQueue.Enqueue(new GHRequest(this, GHRequestType.DestroyWindowView, ghwin.WindowID));
-            //    if (ghwin.WindowType == GHWinType.Menu && ghwin.MenuInfo != null && ghwin.MenuInfo.MenuCloseUponDestroy)
-            //    {
-            //        RequestQueue.Enqueue(new GHRequest(this, GHRequestType.HideMenuPage, ghwin.WindowID));
-            //    }
-            //}
         }
 
         public void ClientCallback_ClearGHWindow(int winHandle)
@@ -604,12 +546,7 @@ namespace GnollHackX
 
             if (winHandle < 0)
                 return;
-            //lock (_ghWindowsLock)
-            //{
-            //    if (_ghWindows[winHandle] != null)
-            //        _ghWindows[winHandle].Clear();
-            //}
-            ClearGHWindow(_ghWindows[winHandle]); //.Clear();
+            ClearGHWindow(_ghWindows[winHandle]);
         }
 
         private void ClearGHWindow(GHWindow win)
@@ -620,7 +557,6 @@ namespace GnollHackX
             switch (win.WindowType)
             {
                 case GHWinType.Map:
-                    //_gamePage.ClearMap();
                     ClearMap();
                     break;
             }
@@ -631,11 +567,6 @@ namespace GnollHackX
             win.CursY = 0;
 
             RequestQueue.Enqueue(new GHRequest(this, GHRequestType.UpdateGHWindow, win.WindowID, win.Clone()));
-            //ConcurrentQueue<GHRequest> queue;
-            //if (GHGame.RequestDictionary.TryGetValue(this, out queue))
-            //{
-            //    RequestQueue.Enqueue(new GHRequest(this, GHRequestType.UpdateGHWindow, win.WindowID, win.Clone()));
-            //}
         }
 
         public void ClearMap()
@@ -758,18 +689,12 @@ namespace GnollHackX
                 {
                     if(!PlayingReplay || !GHApp.IsReplaySearching)
                     {
-                        //_ghWindows[winHandle].Display(blocking != 0);
                         DisplayGHWindow(_ghWindows[winHandle]);
                     }
                     else
                     {
                         _ghWindows[winHandle].Visible = true;
                         RequestQueue.Enqueue(new GHRequest(this, GHRequestType.UpdateGHWindowVisibility, winHandle, true));
-                        //ConcurrentQueue<GHRequest> queue;
-                        //if (GHGame.RequestDictionary.TryGetValue(this, out queue))
-                        //{
-                        //    RequestQueue.Enqueue(new GHRequest(this, GHRequestType.UpdateGHWindowVisibility, winHandle, true));
-                        //}
                     }
                     ismenu = (_ghWindows[winHandle].WindowType == GHWinType.Menu);
                     istext = (_ghWindows[winHandle].WindowType == GHWinType.Text);
@@ -784,11 +709,6 @@ namespace GnollHackX
                     if(!_fastForwardGameOver)
                         WaitAndCheckPauseReplay(GHConstants.ReplayDisplayWindowDelay);
                     RequestQueue.Enqueue(new GHRequest(this, GHRequestType.HideTextWindow));
-                    //ConcurrentQueue<GHRequest> queue;
-                    //if (GHGame.RequestDictionary.TryGetValue(this, out queue))
-                    //{
-                    //    RequestQueue.Enqueue(new GHRequest(this, GHRequestType.HideTextWindow));
-                    //}
                 }
                 else
                 {
@@ -808,15 +728,6 @@ namespace GnollHackX
             {
                 RequestQueue.Enqueue(new GHRequest(this, GHRequestType.DisplayWindowView, win.WindowID));
             }
-            //ConcurrentQueue<GHRequest> queue;
-            //if (RequestDictionary.TryGetValue(this, out queue))
-            //{
-            //    RequestQueue.Enqueue(new GHRequest(this, GHRequestType.UpdateGHWindowVisibility, win.WindowID, true));
-            //    if (win.WindowType == GHWinType.Menu || win.WindowType == GHWinType.Text)
-            //    {
-            //        RequestQueue.Enqueue(new GHRequest(this, GHRequestType.DisplayWindowView, win.WindowID));
-            //    }
-            //}
         }
 
         public void ClientCallback_ExitWindows(string str)
@@ -894,10 +805,6 @@ namespace GnollHackX
                 return;
 
             GHWindow gHWindow = _ghWindows[winHandle];
-            ////lock (_ghWindowsLock)
-            //{
-            //    gHWindow = _ghWindows[winHandle];
-            //}
             if (gHWindow != null)
             {
                 gHWindow.CursX = x;
@@ -909,34 +816,21 @@ namespace GnollHackX
                         _mapCursorX = x;
                         _mapCursorY = y;
                     }
-                    //_gamePage.SetMapCursor(x, y);
                 }
             }
         }
 
-        //private List<SavedPrintGlyphCall> _savedPrintGlyphCalls = new List<SavedPrintGlyphCall>();
         public void ClientCallback_PrintGlyph(int winHandle, int x, int y, int glyph, int bkglyph, int symbol, int ocolor, uint special, IntPtr layers_ptr)
         {
             LayerInfo layers = layers_ptr == IntPtr.Zero ? new LayerInfo() : (LayerInfo)Marshal.PtrToStructure(layers_ptr, typeof(LayerInfo));
             RecordFunctionCall(RecordedFunctionID.PrintGlyph, winHandle, x, y, glyph, bkglyph, symbol, ocolor, special, layers);
 
-            //GHWindow gHWindow = null;
-            //lock (_ghWindowsLock)
-            //{
-            //    gHWindow = _ghWindows[winHandle];
-            //}
-            //_savedPrintGlyphCalls.Add(new SavedPrintGlyphCall(gHWindow, x, y, glyph, bkglyph, symbol, ocolor, special, ref layers));
-
-            //if (gHWindow != null)
-            //    gHWindow.PrintGlyph(x, y, glyph, bkglyph, symbol, ocolor, special, ref layers);
-            //_gamePage.SetMapSymbol(x, y, glyph, bkglyph, symbol, ocolor, special, ref layers);
             SetMapSymbol(x, y, glyph, bkglyph, symbol, ocolor, special, ref layers);
         }
 
         public bool GetMapDataBuffer(out MapData[,] mapBuffer, out ObjectData[,] objectBuffer, out ObjectDataItem uBall, out ObjectDataItem uChain, out int ux, out int uy, out ulong u_condition_bits, out ulong u_status_bits, ref ulong[] u_buff_bits,
             out int cursx, out int cursy, out game_cursor_types cursorType, out bool force_paint_at_cursor, out bool show_cursor_on_u)
         {
-            //long timeStamp = Stopwatch.GetTimestamp();
             bool lockTaken = false;
             //lock(_mapDataBufferLock)
             try
@@ -944,8 +838,6 @@ namespace GnollHackX
                 Monitor.TryEnter(_mapDataBufferLock, ref lockTaken); //TimeSpan.FromTicks(GHConstants.MapDataLockTimeOutTicks), 
                 if (lockTaken)
                 {
-                    //TimeSpan ts = Stopwatch.GetElapsedTime(timeStamp);
-                    //GHApp.AddLockBlockData(ts);
                     if (_mapDataCurrentUpdated)
                     {
                         mapBuffer = _mapDataCurrent;
@@ -1119,15 +1011,6 @@ namespace GnollHackX
             WaitAndCheckPauseReplay(GHConstants.ReplayAskNameDelay2);
             RequestQueue.Enqueue(new GHRequest(this, GHRequestType.HideAskNamePage));
             return 0;
-            //ConcurrentQueue<GHRequest> queue;
-            //if (GHGame.RequestDictionary.TryGetValue(this, out queue))
-            //{
-            //    RequestQueue.Enqueue(new GHRequest(this, GHRequestType.AskName, modeName, modeDescription, enteredPlayerName));
-            //    WaitAndCheckPauseReplay(GHConstants.ReplayAskNameDelay2);
-            //    RequestQueue.Enqueue(new GHRequest(this, GHRequestType.HideAskNamePage));
-            //    return 0;
-            //}
-            //return 1;
         }
 
         public int ClientCallback_AskName(string modeName, string modeDescription, IntPtr out_string_ptr)
@@ -1409,84 +1292,26 @@ namespace GnollHackX
 
         public void UpdateMessageHistory()
         {
-            //GHMsgHistoryList relevantlist = _useHideMessageHistory ? _empty_message_history : _useLongerMessageHistory ? _longer_message_history : _message_history;
             if (_useHideMessageHistory || _longer_message_history.Count == 0)
                 RequestQueue.Enqueue(new GHRequest(this, GHRequestType.PrintHistory)); /* Clear history */
             else
                 RequestQueue.Enqueue(new GHRequest(this, GHRequestType.PrintHistory, _useLongerMessageHistory ? _longer_message_history.CurrentSpan : _longer_message_history.GetSpanFromEnd(GHConstants.MaxMessageHistoryLength)));
         }
 
-        //public void UpdateMessageHistoryItem(GHMsgHistoryItem msgHistoryItem)
-        //{
-        //    ConcurrentQueue<GHRequest> queue;
-        //    if (GHGame.RequestDictionary.TryGetValue(this, out queue))
-        //    {
-        //        RequestQueue.Enqueue(new GHRequest(this, GHRequestType.PrintHistoryItem, msgHistoryItem));
-        //    }
-        //}
-
         public void AddNewMessage(GHMsgHistoryItem newmsg, bool isRestoring) //, bool updateMessageHistory, bool isFullRefresh, bool updateOnlyLongerHistory)
         {
             if (newmsg == null)
                 return;
 
-            //if (!isRestoring)
-            //{
-            //    /* Normal history */
-            //    //if (_message_history.Count > 0)
-            //    //    _message_history[_message_history.Count - 1].IsLast = false;
-
-            //    if (!_message_history.TryAdd(newmsg))
-            //    {
-            //        _message_history = new GHMsgHistoryList(_message_history);
-            //        _message_history.TryAdd(newmsg);
-            //        //if (!_useLongerMessageHistory)
-            //        //    isFullRefresh = true;
-            //    }
-            //    //if (_message_history.Count > GHConstants.MaxMessageHistoryLength)
-            //    //{
-            //    //    _message_history.RemoveRange(0, GHConstants.MaxMessageHistoryLength / 8);
-            //    //    if (!_useLongerMessageHistory)
-            //    //        isFullRefresh = true;
-            //    //}
-
-            //    //if (_message_history.Count > 0)
-            //    //    _message_history[_message_history.Count - 1].IsLast = true;
-            //}
-
-            /* Longer history */
-            //if (_longer_message_history.Count > 0)
-            //    _longer_message_history[_longer_message_history.Count - 1].IsLast = false;
-
             if (!_longer_message_history.TryAdd(newmsg))
             {
                 _longer_message_history = new GHMsgHistoryList(_longer_message_history);
                 _longer_message_history.TryAdd(newmsg);
-                //if (!_useLongerMessageHistory)
-                //    isFullRefresh = true;
             }
-
-            //if (_longer_message_history.Count > GHConstants.MaxLongerMessageHistoryLength)
-            //{
-            //    _longer_message_history.RemoveRange(0, GHConstants.MaxLongerMessageHistoryLength / 4);
-            //    if(_useLongerMessageHistory)
-            //        isFullRefresh = true;
-            //}
-
-            //if (_longer_message_history.Count > 0)
-            //    _longer_message_history[_longer_message_history.Count - 1].IsLast = true;
 
             if(!isRestoring)
             {
                 UpdateMessageHistory();
-                //if (isFullRefresh)
-                //{
-                //    UpdateMessageHistory();
-                //}
-                //else
-                //{
-                //    UpdateMessageHistoryItem(newmsg);
-                //}
                 SwitchOffLongerAndHideMessageHistory(); /* Just to make sure that it does not remain on the slow down the game */
             }
         }
@@ -1514,22 +1339,6 @@ namespace GnollHackX
         {
             GHMsgHistoryItem newmsg = new GHMsgHistoryItem(str, attrs, colors, attr, color);
             AddNewMessage(newmsg, is_restoring);
-
-            //if (_message_history.Count > 0)
-            //    _message_history[_message_history.Count - 1].IsLast = false;
-            //_message_history.Add(new GHMsgHistoryItem(str, attrs, colors, attr, color));
-            //if (_message_history.Count > GHConstants.MaxMessageHistoryLength)
-            //    _message_history.RemoveAt(0);
-
-            //List<GHMsgHistoryItem> sendlist = new List<GHMsgHistoryItem>();
-            //sendlist.AddRange(_message_history);
-            //if (sendlist.Count > 0)
-            //    sendlist[sendlist.Count - 1].IsLast = true;
-            //ConcurrentQueue<GHRequest> queue;
-            //if (GHGame.RequestDictionary.TryGetValue(this, out queue))
-            //{
-            //    RequestQueue.Enqueue(new GHRequest(this, GHRequestType.PrintHistory, _message_history.ToArray()));
-            //}
         }
 
         public void ClientCallback_PutStrEx(int win_id, string str, int attributes, int color, int append)
@@ -1644,7 +1453,6 @@ namespace GnollHackX
 
             if (str == "statuslines")
             {
-                //_ghWindows[StatusWindowId].Clear();
                 ClearGHWindow(_ghWindows[_statusWindowId]);
             }
         }
@@ -1926,13 +1734,10 @@ namespace GnollHackX
                     Marshal.Copy(colors_ptr, colors, 0, str_length + 1);
                 }
 
-                //RecordFunctionCallImmediately(RecordedFunctionID.PutMsgHistory, msg, attributes, colors, is_restoring); // Not needed in replays
                 RawPrintEx2(msg, attributes, colors, (int)MenuItemAttributes.None, (int)NhColor.NO_COLOR, is_restoring != 0);
             }
             else if (is_restoring != 0)
             {
-                //RecordFunctionCallImmediately(RecordedFunctionID.PutMsgHistory, msg, null, null, is_restoring); // Not needed in replays
-                //_message_history = new GHMsgHistoryList(_longer_message_history, GHConstants.MaxMessageHistoryLength, GHConstants.MaxMessageHistoryLength);
                 UpdateMessageHistory();
             }
         }
@@ -2071,33 +1876,8 @@ namespace GnollHackX
             GHApp.DebugWriteProfilingStopwatchTimeAndStart("SelectMenu");
             Debug.WriteLine("ClientCallback_SelectMenu");
 
-            //ConcurrentQueue<GHRequest> queue;
             bool enqueued = DoShowMenu(winid, how);
             _abortShowMenuPage = false;
-
-            //lock (_ghWindowsLock)
-            //{
-            //    if (_ghWindows[winid] != null && _ghWindows[winid].MenuInfo != null)
-            //    {
-            //        SelectionMode smode = (SelectionMode)how;
-            //        _ghWindows[winid].MenuInfo.SelectionHow = smode;
-
-            //        /* Clear menu response */
-            //        _ghWindows[winid].SelectedMenuItems = null;
-            //        _ghWindows[winid].WasCancelled = false;
-
-            //        if (GHGame.RequestDictionary.TryGetValue(this, out queue))
-            //        {
-            //            RequestQueue.Enqueue(new GHRequest(this, GHRequestType.ShowMenuPage, _ghWindows[winid], _ghWindows[winid].MenuInfo));
-            //            enqueued = true;
-            //        }
-            //    }
-            //}
-
-            //lock (_gamePage.RefreshScreenLock)
-            //{
-            //    _gamePage.RefreshScreen = false;
-            //}
 
             if (enqueued)
             {
@@ -2118,11 +1898,6 @@ namespace GnollHackX
                     PollResponseQueue();
                 }
             }
-
-            //lock (_gamePage.RefreshScreenLock)
-            //{
-            //    _gamePage.RefreshScreen = true;
-            //}
 
             /* Handle result */
             int cnt = 0;
@@ -2161,10 +1936,6 @@ namespace GnollHackX
             _outGoingIntPtr = arrayptr;
             listsize = cnt * 2;
 
-            //lock (_gamePage.RefreshScreenLock)
-            //{
-            //    _gamePage.RefreshScreen = true;
-            //}
             _abortShowMenuPage = false;
             RecordFunctionCall(RecordedFunctionID.SelectMenu, winid, how, picklist, listsize, cnt);
             return cnt;
@@ -2197,11 +1968,9 @@ namespace GnollHackX
             }
         }
 
-        //private readonly object _gamePlayTimeLock = new object();
         private long _gamePlayTime = 0L;
         public long GamePlayTime { get { return Interlocked.CompareExchange(ref _gamePlayTime, 0, 0); } set { Interlocked.Exchange(ref _gamePlayTime, value); } }
 
-        //private readonly object _sessionPlayTimeLock = new object();
         private long _sessionPlayTime = 0L;
         public long SessionPlayTime { get { return Interlocked.CompareExchange(ref _sessionPlayTime, 0, 0); } set { Interlocked.Exchange(ref _sessionPlayTime, value); } }
         public void AddSessionPlayTime(long addition)
@@ -2211,10 +1980,6 @@ namespace GnollHackX
 
             if (Interlocked.Add(ref _sessionPlayTime, addition) < 0)
                 Interlocked.Exchange(ref _sessionPlayTime, 0);
-            //lock (_sessionPlayTimeLock)
-            //{
-            //    _sessionPlayTime = _sessionPlayTime + addition;
-            //}
         }
 
         public void ClientCallback_ReportPlayTime(long timePassed, long currentPlayTime)
@@ -2231,15 +1996,12 @@ namespace GnollHackX
             GHApp.AddAggragateSessionPlayTime(timePassed);
         }
 
-        //private List<SavedSendObjectDataCall> _savedSendObjectDataCalls = new List<SavedSendObjectDataCall>();
         public void ClientCallback_SendObjectData(int x, int y, IntPtr otmp_ptr, int cmdtype, int where, IntPtr otypdata_ptr, ulong oflags)
         {
             Obj otmp = otmp_ptr == IntPtr.Zero ? new Obj() : (Obj)Marshal.PtrToStructure(otmp_ptr, typeof(Obj));
             ObjClassData otypdata = otypdata_ptr == IntPtr.Zero ? new ObjClassData() : (ObjClassData)Marshal.PtrToStructure(otypdata_ptr, typeof(ObjClassData));
 
             RecordFunctionCall(RecordedFunctionID.SendObjectData, x, y, otmp, cmdtype, where, otypdata, oflags);
-            //_savedSendObjectDataCalls.Add(new SavedSendObjectDataCall(x, y, ref otmp, cmdtype, where, ref otypdata, oflags));
-            //_gamePage.AddObjectData(x, y, otmp, cmdtype, where, otypdata, oflags);
             AddObjectData(x, y, otmp, cmdtype, where, otypdata, oflags);
         }
 
@@ -2452,9 +2214,6 @@ namespace GnollHackX
             }
         }
 
-
-
-        //private List<SavedSendEngravingDataCall> _savedSendEngravingDataCalls = new List<SavedSendEngravingDataCall>();
         public void ClientCallback_SendEngravingData(int cmdtype, int x, int y, string engraving_text, int etype, ulong eflags, ulong gflags)
         {
             RecordFunctionCall(RecordedFunctionID.SendEngravingData, cmdtype, x, y, engraving_text, etype, eflags, gflags);
@@ -2688,8 +2447,6 @@ namespace GnollHackX
                 _contextMenuData.Add(cmb);
             }
         }
-
-
 
         public int Replay_GetLine(int style, int attr, int color, string query, string placeholder, string linesuffix, string introline, IntPtr out_string_ptr, string enteredLine)
         {
@@ -3393,9 +3150,6 @@ namespace GnollHackX
                     ActiveGamePage?.ClearGuiEffects();
                     break;
                 case (int)gui_command_types.GUI_CMD_CLEAR_MESSAGE_HISTORY:
-                    //_message_history.Clear();
-                    //_longer_message_history.Clear();
-                    //_message_history = new GHMsgHistoryList(_message_history.Capacity, _message_history.Excess);
                     _longer_message_history = new GHMsgHistoryList(_longer_message_history.Capacity, _longer_message_history.Excess);
                     RequestQueue.Enqueue(new GHRequest(this, GHRequestType.PrintHistory));
                     break;
@@ -4175,11 +3929,11 @@ namespace GnollHackX
             _restoreRequested = true;
         }
 
-        private void RequestExitThread()
+        private void ForceExitThread()
         {
             if (PlayingReplay)
                 return;
-            // The fact that this function is only called from GnhThread should ensure the thread is alive
+            /* The fact that this function is only called from GnhThread should ensure the thread is alive */
             GHApp.GnollHackService?.ExitGnhThread();
         }
 

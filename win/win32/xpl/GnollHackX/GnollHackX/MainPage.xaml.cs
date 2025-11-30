@@ -73,7 +73,7 @@ namespace GnollHackX
             GHApp.MaybeWriteGHLog("MainPage constructor.");
             InitializeComponent();
             GHApp.CurrentMainPage = this;
-            GHApp.CurrentGamePage = null; //Might be non-null and stale after a restart
+            GHApp.CurrentGamePage = null; /* Might be non-null and stale after a restart */
             GHApp.IncrementMainConstructorRunNumber();
             On<iOS>().SetUseSafeArea(true);
             UIUtils.SetPageThemeOnHandler(this, GHApp.DarkMode);
@@ -217,21 +217,11 @@ namespace GnollHackX
             }
         }
 
-        //private readonly object _pendingGeneralTimerTasksLock = new object();
         private int _pendingGeneralTimerTasks = 0;
         private int PendingGeneralTimerTasks
         {
             get { return Interlocked.CompareExchange(ref _pendingGeneralTimerTasks, 0, 0); }
             set { Interlocked.Exchange(ref _pendingGeneralTimerTasks, value); }
-            //get
-            //{
-            //    lock (_pendingGeneralTimerTasksLock) { return _pendingGeneralTimerTasks; }
-
-            //}
-            //set
-            //{
-            //    lock (_pendingGeneralTimerTasksLock) { _pendingGeneralTimerTasks = value; }
-            //}
         }
 
         private async Task GeneralTimerTasksAsync()
@@ -275,7 +265,7 @@ namespace GnollHackX
                     {
                         if (_postingQueue.Count > 0)
                         {
-                            ProcessPostingQueue(); //Saves now posts first to disk in the case app is switched off very quickly before sending is finished
+                            ProcessPostingQueue(); /* Saves now posts first to disk in the case app is switched off very quickly before sending is finished */
                             has_files = Directory.Exists(directory) && Directory.GetFiles(directory)?.Length > 0;
                             has_files2 = Directory.Exists(directory2) && Directory.GetFiles(directory2)?.Length > 0;
                             has_files3 = Directory.Exists(directory3) && Directory.GetFiles(directory3)?.Length > 0;
@@ -852,11 +842,11 @@ namespace GnollHackX
                 _firsttime = false;
                 GHApp.SetWindowFocus();
                 GnollHackLabel.Text = "GnollHack";
-                //StartLogoImage.Opacity = 1.0;
-                //FmodLogoImage.Opacity = 1.0;
                 FinishedLogoFadeIn = true;
                 StartLogoImage.Opacity = 0.0; /* To make sure */
+                StartLogoImage.IsVisible = false;
                 FmodLogoImage.Opacity = 0.0; /* To make sure */
+                FmodLogoImage.IsVisible = false;
 
                 carouselView.Init();
                 carouselView.IsVisible = true;
@@ -868,9 +858,6 @@ namespace GnollHackX
                 StartButtonLayout.Opacity = 1.0;  /* To make sure */
                 LogoGrid.IsVisible = true;
                 LogoGrid.Opacity = 1.0;  /* To make sure */
-
-                StartLogoImage.IsVisible = false;
-                FmodLogoImage.IsVisible = false;
 
                 if (curGame != null)
                 {
@@ -906,7 +893,7 @@ namespace GnollHackX
                         else
                         {
                             DisplayAlertGrid("Unexpected App Restart",
-                                "GnollHack experienced unexpected app window restart, which may lead to unstable performance. Please press OK to exit the app and then restart GnollHack.",
+                                "GnollHack experienced an unexpected app window restart, which may lead to unstable performance. Please press OK to exit the app and then restart GnollHack.",
                                     "OK", GHColors.Orange, 4);
                         }
                     }
