@@ -1966,6 +1966,7 @@ namespace GnollHackX
                 else
                     GHApp.SaveLastUsedPlayerName(used_player_name);
             }
+            GHApp.AddSentryBreadcrumb("Used player name reported: " + used_player_name, "GnollHack Information");
         }
 
         private long _gamePlayTime = 0L;
@@ -3470,6 +3471,7 @@ namespace GnollHackX
                     break;
                 case (int)gui_command_types.GUI_CMD_TOGGLE_QUICK_ZAP_WAND:
                     SetQuickZapWand(cmd_param, cmd_param2, cmd_str);
+                    GHApp.AddSentryBreadcrumb("Notify GUI finished with quick zap wand.", "GnollHack Information");
                     break;
                 case (int)gui_command_types.GUI_CMD_TOGGLE_QUICK_CAST_SPELL:
                     SetQuickCastSpell(cmd_param, cmd_param2, cmd_str);
