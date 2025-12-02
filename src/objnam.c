@@ -5444,13 +5444,12 @@ retry:
         charges = 0;
     else if (!chargesfound)
         charges = otmp->charges;
-    else if (wiz_wishing)
+    
+    if (wiz_wishing)
     {
         ; /* no alteration to charges */
     }
-    else if (oclass == WAND_CLASS
-        || objects[typ].oc_charged
-        )
+    else if (oclass == WAND_CLASS || objects[typ].oc_charged)
     {
         int maxcharges = get_obj_max_charge(otmp);
         if (charges > maxcharges)
