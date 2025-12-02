@@ -9117,7 +9117,14 @@ namespace GnollHackX
         public static void DisconnectIViewHandlers(IView view)
         {
 #if !WINDOWS
-            view?.DisconnectHandlers();
+            try
+            {
+                view?.DisconnectHandlers();
+            }
+            catch (Exception ex)
+            {
+                MaybeWriteGHLog(ex.Message);
+            }
 #endif
         }
 #else
