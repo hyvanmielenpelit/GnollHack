@@ -73,7 +73,13 @@ namespace GnollHackX
             GHApp.MaybeWriteGHLog("MainPage constructor.");
             InitializeComponent();
             GHApp.CurrentMainPage = this;
-            GHApp.CurrentGamePage = null; /* Might be non-null and stale after a restart */
+            GamePage gamePage = GHApp.CurrentGamePage;
+            if (gamePage != null) /* Might be non-null and stale after a restart */
+            {
+                /* Need to disconnect handlers, because otherwise, for example, GLThread of SKGLView may still be alive */
+                GHApp.DisconnectIViewHandlers(gamePage);
+                GHApp.CurrentGamePage = null;
+            }
             GHApp.IncrementMainConstructorRunNumber();
             On<iOS>().SetUseSafeArea(true);
             UIUtils.SetPageThemeOnHandler(this, GHApp.DarkMode);
