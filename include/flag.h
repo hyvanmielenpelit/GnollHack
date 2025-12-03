@@ -255,8 +255,9 @@ struct flag {
     uchar reserved_uchar5;
     uchar reserved_uchar6;
 
+    uint64_t version_number_at_start;
+
     /* Emergency reserved variables to make non-save-game-breaking changes */
-    uint64_t reserved_ulong1;
     uint64_t reserved_ulong2;
     int reserved_int1;
     int reserved_int2;

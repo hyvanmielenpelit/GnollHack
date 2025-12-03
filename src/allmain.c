@@ -1427,6 +1427,8 @@ newgame(VOID_ARGS)
     gameDiskPrompt();
 #endif
 
+    flags.version_number_at_start = get_version_number();
+
     context.botlx = TRUE;
     context.ident = 1;
     context.stethoscope_move = -1L;

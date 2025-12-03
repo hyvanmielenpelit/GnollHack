@@ -477,7 +477,12 @@ int how;
     Sprintf(buffer, "version=%d.%d.%d", tt->ver_major, tt->ver_minor,
         tt->patchlevel);
     Sprintf(eos(buffer), "%cedit=%d", XLOG_SEP, EDITLEVEL);
-//#if defined(GNH_ANDROID) || defined(ANDROID)
+    Sprintf(eos(buffer), "%cversionstart=%d.%d.%d", XLOG_SEP, 
+        (int)((flags.version_number_at_start >> 24) & (uint64_t)0x000000FFUL), 
+        (int)((flags.version_number_at_start >> 16) & (uint64_t)0x000000FFUL),
+        (int)((flags.version_number_at_start >> 8) & (uint64_t)0x000000FFUL));
+    Sprintf(eos(buffer), "%ceditstart=%d", XLOG_SEP, (int)(flags.version_number_at_start & (uint64_t)0x000000FFUL));
+    //#if defined(GNH_ANDROID) || defined(ANDROID)
 //    Sprintf(eos(buffer), "%cplatform=%s", XLOG_SEP, "android");
 //#elif defined(GNH_IOS)
 //    Sprintf(eos(buffer), "%cplatform=%s", XLOG_SEP, "ios");
