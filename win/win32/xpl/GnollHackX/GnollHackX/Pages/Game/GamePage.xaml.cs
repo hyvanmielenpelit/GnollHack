@@ -4000,6 +4000,7 @@ namespace GnollHackX.Pages.Game
 
         private async Task ReturnToMainMenu()
         {
+            GHApp.AddSentryBreadcrumb("ReturnToMainMenu", "GnollHack Information");
             try
             {
                 /* These need to be returned to their non-game default values */

@@ -418,6 +418,7 @@ namespace GnollHackX
 
         public static void BeforeExitApp()
         {
+            AddSentryBreadcrumb("BeforeExitApp", "GnollHack Information");
             FmodService?.ShutdownFmod();
             Connectivity.ConnectivityChanged -= Connectivity_ConnectivityChanged;
             Battery.BatteryInfoChanged -= Battery_BatteryInfoChanged;

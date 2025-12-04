@@ -70,7 +70,7 @@ namespace GnollHackX
 
         public MainPage()
         {
-            GHApp.MaybeWriteGHLog("MainPage constructor.");
+            GHApp.MaybeWriteGHLog("MainPage constructor.", true, "GnollHack Information");
             InitializeComponent();
             GHApp.CurrentMainPage = this;
             GamePage gamePage = GHApp.CurrentGamePage;
@@ -1515,11 +1515,13 @@ namespace GnollHackX
 
         private async void ExitAppButton_Clicked(object sender, EventArgs e)
         {
+            GHApp.AddSentryBreadcrumb("Exit button clicked.", "GnollHack Information");
             await ExitApp();
         }
 
         private async Task ExitApp()
         {
+            GHApp.AddSentryBreadcrumb("ExitApp", "GnollHack Information");
             UpperButtonGrid.IsEnabled = false;
             ExitButton.IsEnabled = false;
             ExitButton.TextColor = GHColors.Red;
@@ -1575,6 +1577,7 @@ namespace GnollHackX
 
         private async Task CheckPendingTasksAndExit()
         {
+            GHApp.AddSentryBreadcrumb("CheckPendingTasksAndExit", "GnollHack Information");
             PendingGeneralTimerTasks = CalculatePendingGeneralTimerTasks();
             if (PendingGeneralTimerTasks > 0)
             {
@@ -1601,6 +1604,7 @@ namespace GnollHackX
             if (CheckCloseAndSetTrue)
                 return;
 
+            GHApp.AddSentryBreadcrumb("CloseApp", "GnollHack Information");
             StopGeneralTimer = true; /* Stop timer */
             GHApp.CheckCloseGnhThread(); /* Close GnhThread if a game is still ongoing for some reason */
             Task t1 = GeneralTimerTasksAsync(); /* Make sure outstanding queues are processed before closing application */
@@ -1611,6 +1615,7 @@ namespace GnollHackX
             await Task.Delay(200);
             GHApp.BeforeExitApp();
             GHApp.PlatformService?.CloseApplication();
+            GHApp.AddSentryBreadcrumb("Post CloseApplication", "GnollHack Information");
 
 #if !GNH_MAUI
             await Task.Delay(100);

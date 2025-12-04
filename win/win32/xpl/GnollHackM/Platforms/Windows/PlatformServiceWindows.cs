@@ -131,6 +131,7 @@ namespace GnollHackM
         {
             MainThread.BeginInvokeOnMainThread(() =>
             {
+                GHApp.AddSentryBreadcrumb("CloseApplication", "GnollHack Information");
                 RevertAnimatorDuration(true);
                 GHApp.SaveWindowPosition();
                 if (GHApp.WindowsApp != null)

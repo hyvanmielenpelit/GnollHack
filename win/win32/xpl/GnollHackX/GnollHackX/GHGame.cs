@@ -3086,6 +3086,7 @@ namespace GnollHackX
                         {
                             gamePage.EnableWizardMode = true;
                             gamePage.ExtendedCommands = GHApp.GnollHackService.GetExtendedCommands();
+                            GHApp.AddSentryBreadcrumb("Wizard Mode Enabled", "GnollHack Information");
                         }
                     }
                     break;
@@ -3096,6 +3097,7 @@ namespace GnollHackX
                         {
                             gamePage.EnableWizardMode = false;
                             gamePage.ExtendedCommands = GHApp.GnollHackService.GetExtendedCommands();
+                            GHApp.AddSentryBreadcrumb("Wizard Mode Disabled", "GnollHack Information");
                         }
                     }
                     break;
@@ -3106,6 +3108,7 @@ namespace GnollHackX
                         {
                             gamePage.EnableCasualMode = true;
                             gamePage.ExtendedCommands = GHApp.GnollHackService.GetExtendedCommands();
+                            GHApp.AddSentryBreadcrumb("Casual Mode Enabled", "GnollHack Information");
                         }
                     }
                     break;
@@ -3116,14 +3119,17 @@ namespace GnollHackX
                         {
                             gamePage.EnableCasualMode = false;
                             gamePage.ExtendedCommands = GHApp.GnollHackService.GetExtendedCommands();
+                            GHApp.AddSentryBreadcrumb("Casual Mode Disabled", "GnollHack Information");
                         }
                     }
                     break;
                 case (int)gui_command_types.GUI_CMD_ENABLE_TOURNAMENT_MODE:
                     GHApp.TournamentMode = true;
+                    GHApp.AddSentryBreadcrumb("Tournament Mode Enabled", "GnollHack Information");
                     break;
                 case (int)gui_command_types.GUI_CMD_DISABLE_TOURNAMENT_MODE:
                     GHApp.TournamentMode = false;
+                    GHApp.AddSentryBreadcrumb("Tournament Mode Disabled", "GnollHack Information");
                     break;
                 case (int)gui_command_types.GUI_CMD_CLEAR_PET_DATA:
                     ClearPetData();
@@ -3508,6 +3514,9 @@ namespace GnollHackX
                     break;
                 case (int)gui_command_types.GUI_CMD_EXIT_APP_ON_MAIN_SCREEN:
                     GHApp.DoAppExitOnReturn = true;
+                    break;
+                case (int)gui_command_types.GUI_CMD_BREADCRUMB:
+                    GHApp.AddSentryBreadcrumb(cmd_str, "GnollHack Library");
                     break;
                 default:
                     break;

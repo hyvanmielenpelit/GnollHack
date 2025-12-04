@@ -1430,6 +1430,7 @@ namespace GnollHackX
         GUI_CMD_TOGGLE_AUTODIG,
         GUI_CMD_TOGGLE_IGNORE_STOPPING,
         GUI_CMD_EXIT_APP_ON_MAIN_SCREEN,
+        GUI_CMD_BREADCRUMB,
     }
 
     public enum game_status_types
