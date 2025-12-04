@@ -931,7 +931,7 @@ int x, y;
     int i = 0;
     struct wseg* curr, *prev;
 
-    if (mtmp->wormno) 
+    if (mtmp->wormno > 0 && mtmp->wormno < MAX_NUM_WORMS)
     {
         for (curr = wtails[mtmp->wormno], prev = 0; curr; prev = curr, curr = curr->nseg)
         {
@@ -1021,7 +1021,7 @@ int x, y;
     int i = 0;
     struct wseg* curr, * prev;
 
-    if (mtmp->wormno)
+    if (mtmp->wormno > 0 && mtmp->wormno < MAX_NUM_WORMS)
     {
         for (curr = wtails[mtmp->wormno], prev = 0; curr; prev = curr, curr = curr->nseg)
         {
@@ -1084,10 +1084,12 @@ is_wseg_head(mtmp, x, y)
 struct monst* mtmp;
 int x, y;
 {
-    if (!mtmp || mtmp->wormno <= 0)
+    if (!mtmp || mtmp->wormno <= 0 || mtmp->wormno >= MAX_NUM_WORMS)
         return FALSE;
 
     struct wseg* whead = wheads[mtmp->wormno];
+    if (!whead)
+        return FALSE;
 
     if (whead->wx == x && whead->wy == y)
         return TRUE;
@@ -1100,10 +1102,12 @@ is_wseg_tailend(mtmp, x, y)
 struct monst* mtmp;
 int x, y;
 {
-    if (!mtmp || mtmp->wormno <= 0)
+    if (!mtmp || mtmp->wormno <= 0 || mtmp->wormno >= MAX_NUM_WORMS)
         return FALSE;
 
     struct wseg* wtail = wtails[mtmp->wormno];
+    if (!wtail)
+        return FALSE;
 
     if (wtail->wx == x && wtail->wy == y)
         return TRUE;
