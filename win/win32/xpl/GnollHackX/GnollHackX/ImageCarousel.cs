@@ -78,6 +78,7 @@ namespace GnollHackX
         {
             if (_inited)
             {
+                Stop();
                 for (int i = 0; i < _caruselBitmaps.Length; i++)
                 {
                     if (_caruselBitmaps[i].Bitmap != null)

@@ -4024,12 +4024,12 @@ namespace GnollHackX.Pages.Game
             _mainPage.UpdateLayout();
             _mainPage.ActivateLocalGameButton();
             GHApp.FmodService.UnloadBanks(sound_bank_loading_type.Music);
-            _mainPage.PlayMainScreenVideoAndMusic(); /* Just to be doubly sure */
             if (GHApp.GameMuteMode)
                 GHApp.GameMuteMode = false;
             //GHApp.CurrentGamePage = null;
             //GHApp.ReportLockDataResults();
             ShutDownCanvasViews();
+            _mainPage.PlayMainScreenVideoAndMusic(); /* Just to be doubly sure */
             bool fastForward = FastForwardRequested;
             if (fastForward && GHApp.IsAndroid) /* FragmentManager cannot deal with closing pages when going to sleep; needs to be done with a delay after returning */
             {
