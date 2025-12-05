@@ -70,7 +70,7 @@ namespace GnollHackX
 
         public MainPage()
         {
-            GHApp.MaybeWriteGHLog("MainPage constructor.", true, "GnollHack Information");
+            GHApp.MaybeWriteGHLog("MainPage constructor.", true, GHConstants.SentryGnollHackGeneralCategoryName);
             InitializeComponent();
             GHApp.CurrentMainPage = this;
             GamePage gamePage = GHApp.CurrentGamePage;
@@ -1515,13 +1515,13 @@ namespace GnollHackX
 
         private async void ExitAppButton_Clicked(object sender, EventArgs e)
         {
-            GHApp.AddSentryBreadcrumb("Exit button clicked.", "GnollHack Information");
+            GHApp.AddSentryBreadcrumb("Exit button clicked.", GHConstants.SentryGnollHackGeneralCategoryName);
             await ExitApp();
         }
 
         private async Task ExitApp()
         {
-            GHApp.AddSentryBreadcrumb("ExitApp", "GnollHack Information");
+            GHApp.AddSentryBreadcrumb("ExitApp", GHConstants.SentryGnollHackGeneralCategoryName);
             UpperButtonGrid.IsEnabled = false;
             ExitButton.IsEnabled = false;
             ExitButton.TextColor = GHColors.Red;
@@ -1577,7 +1577,7 @@ namespace GnollHackX
 
         private async Task CheckPendingTasksAndExit()
         {
-            GHApp.AddSentryBreadcrumb("CheckPendingTasksAndExit", "GnollHack Information");
+            GHApp.AddSentryBreadcrumb("CheckPendingTasksAndExit", GHConstants.SentryGnollHackGeneralCategoryName);
             PendingGeneralTimerTasks = CalculatePendingGeneralTimerTasks();
             if (PendingGeneralTimerTasks > 0)
             {
@@ -1604,7 +1604,7 @@ namespace GnollHackX
             if (CheckCloseAndSetTrue)
                 return;
 
-            GHApp.AddSentryBreadcrumb("CloseApp", "GnollHack Information");
+            GHApp.AddSentryBreadcrumb("CloseApp", GHConstants.SentryGnollHackGeneralCategoryName);
             StopGeneralTimer = true; /* Stop timer */
             GHApp.CheckCloseGnhThread(); /* Close GnhThread if a game is still ongoing for some reason */
             Task t1 = GeneralTimerTasksAsync(); /* Make sure outstanding queues are processed before closing application */
@@ -1612,10 +1612,12 @@ namespace GnollHackX
             await Task.WhenAny(t1, t2);
             carouselView.Stop();
             GHApp.FmodService?.StopAllGameSounds((uint)StopSoundFlags.All, 0U);
-            await Task.Delay(200);
+            await Task.Delay(100);
+            GHApp.FmodService?.StopAllUISounds();
+            await Task.Delay(100);
             GHApp.BeforeExitApp();
             GHApp.PlatformService?.CloseApplication();
-            GHApp.AddSentryBreadcrumb("Post CloseApplication", "GnollHack Information");
+            GHApp.AddSentryBreadcrumb("Post CloseApplication", GHConstants.SentryGnollHackGeneralCategoryName);
 
 #if !GNH_MAUI
             await Task.Delay(100);

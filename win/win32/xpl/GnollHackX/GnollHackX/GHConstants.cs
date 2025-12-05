@@ -1974,6 +1974,8 @@ namespace GnollHackX
         public const bool IsPlatformRenderLoopDefault = false;
 #endif
         public const bool AllowRestartGameUponActivityDestruction = false;
+        public const string SentryGnollHackGeneralCategoryName = "GnollHack Information";
+        public const string SentryGnollHackLibraryCategoryName = "GnollHack Library";
     }
 
     [StructLayout(LayoutKind.Sequential)]

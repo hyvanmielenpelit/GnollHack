@@ -108,7 +108,7 @@ namespace GnollHackX.iOS
         {
             MainThread.BeginInvokeOnMainThread(() =>
             {
-                GHApp.AddSentryBreadcrumb("CloseApplication", "GnollHack Information");
+                GHApp.AddSentryBreadcrumb("CloseApplication", GHConstants.SentryGnollHackGeneralCategoryName);
                 RevertAnimatorDuration(true);
 #if GNH_MAUI
                 Environment.Exit(0);

@@ -1966,7 +1966,7 @@ namespace GnollHackX
                 else
                     GHApp.SaveLastUsedPlayerName(used_player_name);
             }
-            GHApp.AddSentryBreadcrumb("Used player name reported: " + used_player_name, "GnollHack Information");
+            GHApp.AddSentryBreadcrumb("Used player name reported: " + used_player_name, GHConstants.SentryGnollHackGeneralCategoryName);
         }
 
         private long _gamePlayTime = 0L;
@@ -3086,7 +3086,7 @@ namespace GnollHackX
                         {
                             gamePage.EnableWizardMode = true;
                             gamePage.ExtendedCommands = GHApp.GnollHackService.GetExtendedCommands();
-                            GHApp.AddSentryBreadcrumb("Wizard Mode Enabled", "GnollHack Information");
+                            GHApp.AddSentryBreadcrumb("Wizard Mode Enabled", GHConstants.SentryGnollHackGeneralCategoryName);
                         }
                     }
                     break;
@@ -3097,7 +3097,7 @@ namespace GnollHackX
                         {
                             gamePage.EnableWizardMode = false;
                             gamePage.ExtendedCommands = GHApp.GnollHackService.GetExtendedCommands();
-                            GHApp.AddSentryBreadcrumb("Wizard Mode Disabled", "GnollHack Information");
+                            GHApp.AddSentryBreadcrumb("Wizard Mode Disabled", GHConstants.SentryGnollHackGeneralCategoryName);
                         }
                     }
                     break;
@@ -3108,7 +3108,7 @@ namespace GnollHackX
                         {
                             gamePage.EnableCasualMode = true;
                             gamePage.ExtendedCommands = GHApp.GnollHackService.GetExtendedCommands();
-                            GHApp.AddSentryBreadcrumb("Casual Mode Enabled", "GnollHack Information");
+                            GHApp.AddSentryBreadcrumb("Casual Mode Enabled", GHConstants.SentryGnollHackGeneralCategoryName);
                         }
                     }
                     break;
@@ -3119,17 +3119,17 @@ namespace GnollHackX
                         {
                             gamePage.EnableCasualMode = false;
                             gamePage.ExtendedCommands = GHApp.GnollHackService.GetExtendedCommands();
-                            GHApp.AddSentryBreadcrumb("Casual Mode Disabled", "GnollHack Information");
+                            GHApp.AddSentryBreadcrumb("Casual Mode Disabled", GHConstants.SentryGnollHackGeneralCategoryName);
                         }
                     }
                     break;
                 case (int)gui_command_types.GUI_CMD_ENABLE_TOURNAMENT_MODE:
                     GHApp.TournamentMode = true;
-                    GHApp.AddSentryBreadcrumb("Tournament Mode Enabled", "GnollHack Information");
+                    GHApp.AddSentryBreadcrumb("Tournament Mode Enabled", GHConstants.SentryGnollHackGeneralCategoryName);
                     break;
                 case (int)gui_command_types.GUI_CMD_DISABLE_TOURNAMENT_MODE:
                     GHApp.TournamentMode = false;
-                    GHApp.AddSentryBreadcrumb("Tournament Mode Disabled", "GnollHack Information");
+                    GHApp.AddSentryBreadcrumb("Tournament Mode Disabled", GHConstants.SentryGnollHackGeneralCategoryName);
                     break;
                 case (int)gui_command_types.GUI_CMD_CLEAR_PET_DATA:
                     ClearPetData();
@@ -3477,7 +3477,7 @@ namespace GnollHackX
                     break;
                 case (int)gui_command_types.GUI_CMD_TOGGLE_QUICK_ZAP_WAND:
                     SetQuickZapWand(cmd_param, cmd_param2, cmd_str);
-                    GHApp.AddSentryBreadcrumb("Notify GUI finished with quick zap wand.", "GnollHack Information");
+                    GHApp.AddSentryBreadcrumb("Notify GUI finished with quick zap wand.", GHConstants.SentryGnollHackGeneralCategoryName);
                     break;
                 case (int)gui_command_types.GUI_CMD_TOGGLE_QUICK_CAST_SPELL:
                     SetQuickCastSpell(cmd_param, cmd_param2, cmd_str);
@@ -3516,7 +3516,7 @@ namespace GnollHackX
                     GHApp.DoAppExitOnReturn = true;
                     break;
                 case (int)gui_command_types.GUI_CMD_BREADCRUMB:
-                    GHApp.AddSentryBreadcrumb(cmd_str, "GnollHack Library");
+                    GHApp.AddSentryBreadcrumb(cmd_str, GHConstants.SentryGnollHackLibraryCategoryName);
                     break;
                 default:
                     break;

@@ -139,7 +139,7 @@ namespace GnollHackX.Droid
         {
             MainThread.BeginInvokeOnMainThread(() =>
             {
-                GHApp.AddSentryBreadcrumb("CloseApplication", "GnollHack Information");
+                GHApp.AddSentryBreadcrumb("CloseApplication", GHConstants.SentryGnollHackGeneralCategoryName);
                 RevertAnimatorDuration(true);
 #if GNH_MAUI
                 //Platform.CurrentActivity.FinishAffinity();
