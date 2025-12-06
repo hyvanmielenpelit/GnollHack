@@ -146,6 +146,7 @@ namespace GnollHackX.Controls
                     {
                         internalGLView.PaintSurface -= internalGLView_PaintSurface;
                         internalGLView.Touch -= internalGLView_Touch;
+                        internalGLView.Handler?.DisconnectHandler();
                     }
                 });
             }
@@ -283,6 +284,9 @@ namespace GnollHackX.Controls
 
         public void InvalidateSurface()
         {
+            if (IsShutDown)
+                return;
+
             if (UseGL && HasGL)
             {
 #if false

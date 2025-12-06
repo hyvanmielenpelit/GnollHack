@@ -78,7 +78,7 @@ namespace GnollHackX
             {
                 gamePage.StopCanvasAnimations();
                 gamePage.ShutDownCanvasViews();
-                //GHApp.DisconnectIViewHandlers(gamePage);
+                GHApp.DisconnectIViewHandlers(gamePage);
                 GHApp.CurrentGamePage = null;
             }
             GHApp.IncrementMainConstructorRunNumber();
