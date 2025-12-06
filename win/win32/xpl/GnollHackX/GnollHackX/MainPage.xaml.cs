@@ -78,8 +78,7 @@ namespace GnollHackX
             {
                 gamePage.StopCanvasAnimations();
                 gamePage.ShutDownCanvasViews();
-                /* Need to disconnect handlers, because otherwise, for example, GLThread of SKGLView may still be alive */
-                GHApp.DisconnectIViewHandlers(gamePage);
+                //GHApp.DisconnectIViewHandlers(gamePage);
                 GHApp.CurrentGamePage = null;
             }
             GHApp.IncrementMainConstructorRunNumber();
