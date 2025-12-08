@@ -3907,7 +3907,7 @@ NEARDATA const struct animation_definition animations[MAX_ANIMATIONS] =
       ELDER_FIRE_ELEMENTAL_ATTACK_ENLARGEMENT,
       { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
     },
-    { "yeegnahu-attack-animation", ANIMATION_TYPE_NORMAL, 10, 10,
+    { "yeenaghu-attack-animation", ANIMATION_TYPE_NORMAL, 10, 10,
       1,
       1,
       ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, ANIMATION_MAIN_TILE_IGNORE,
@@ -3917,7 +3917,7 @@ NEARDATA const struct animation_definition animations[MAX_ANIMATIONS] =
       YEENAGHU_ATTACK_ENLARGEMENT,
       { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
     },
-    { "yeegnahu-cast-indir-animation", ANIMATION_TYPE_NORMAL, 12, 12,
+    { "yeenaghu-cast-indir-animation", ANIMATION_TYPE_NORMAL, 12, 12,
       1,
       1,
       ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, ANIMATION_MAIN_TILE_IGNORE,
@@ -10912,7 +10912,7 @@ NEARDATA const struct enlargement_definition enlargements[MAX_ENLARGEMENTS] =
         { 0, 0, 0, 0, 0 },
         { 0, 0, 0, 0, 0 }
       },
-      { "yeegnahu-attack-enlargement",
+      { "yeenaghu-attack-enlargement",
         10, 10,
         5,
         3, 2, 0,
@@ -10920,7 +10920,7 @@ NEARDATA const struct enlargement_definition enlargements[MAX_ENLARGEMENTS] =
         { 0, 0, 0, 0, 0 },
         { 0, 0, 0, 0, 0 }
       },
-      { "yeegnahu-cast-indir-enlargement",
+      { "yeenaghu-cast-indir-enlargement",
         12, 12,
         5,
         3, 2, 0,
