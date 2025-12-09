@@ -16573,8 +16573,10 @@ namespace GnollHackX.Pages.Game
         private void GHButton_Clicked(object sender, EventArgs e)
         {
             GHApp.DebugWriteRestart("GHButton_Clicked");
-            LabeledImageButton ghbutton = (LabeledImageButton)sender;
-            switch ((int)ghbutton.GHCommand)
+            LabeledImageButton lib = sender as LabeledImageButton;
+            if (lib == null)
+                return;
+            switch ((int)lib.GHCommand)
             {
                 case -102:
                     GenericButton_Clicked(sender, e, 'n');
@@ -16597,7 +16599,7 @@ namespace GnollHackX.Pages.Game
                     DoShowNumberPad();
                     break;
                 default:
-                    GenericButton_Clicked(sender, e, (int)ghbutton.GHCommand);
+                    GenericButton_Clicked(sender, e, (int)lib.GHCommand);
                     break;
             }
         }

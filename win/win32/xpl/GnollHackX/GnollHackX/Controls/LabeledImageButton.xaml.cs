@@ -294,6 +294,7 @@ namespace GnollHackX.Controls
 
         private void ViewButton_Clicked(object sender, EventArgs e)
         {
+            GHApp.AddSentryBreadcrumb(LblText + ": " + GHCommand, "LabeledImageButton Clicked");
             BtnClicked?.Invoke(this, e);
         }
     }
