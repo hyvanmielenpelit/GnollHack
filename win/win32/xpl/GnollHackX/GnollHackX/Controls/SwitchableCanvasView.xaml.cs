@@ -146,7 +146,9 @@ namespace GnollHackX.Controls
                     {
                         internalGLView.PaintSurface -= internalGLView_PaintSurface;
                         internalGLView.Touch -= internalGLView_Touch;
+#if GNH_MAUI
                         internalGLView.Handler?.DisconnectHandler();
+#endif
                     }
                 });
             }
