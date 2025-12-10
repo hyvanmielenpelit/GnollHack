@@ -943,32 +943,9 @@ public class SaveGameService : Service
         return null;
     }
 
-    const string CHANNEL_ID = "save_game_channel";
-
     public override void OnCreate()
     {
         base.OnCreate();
-
-        if (Build.VERSION.SdkInt >= BuildVersionCodes.O)
-        {
-            try
-            {
-                var channel = new NotificationChannel(
-                    CHANNEL_ID,
-                    "Game Save Progress",
-                    NotificationImportance.Low)
-                {
-                    Description = "Used while saving your game data."
-                };
-
-                var manager = (NotificationManager)GetSystemService(NotificationService);
-                manager.CreateNotificationChannel(channel);
-            }
-            catch (Exception ex)
-            {
-                GHApp.MaybeWriteGHLog(ex.Message);
-            }
-        }
     }
 
 
@@ -979,10 +956,8 @@ public class SaveGameService : Service
     {
         try
         {
-            GHApp.MaybeWriteGHLog("SaveGameService: OnStartCommand!");
-
             // Create a foreground service notification (required on Android 8+)
-            var notification = new Notification.Builder(this, CHANNEL_ID)
+            var notification = new Notification.Builder(this, GHConstants.SAVE_GAME_NOTIFICATION_CHANNEL_ID)
                 .SetContentTitle("Saving Game")
                 .SetContentText("Please wait while your progress is saved.")
                 .SetSmallIcon(Android.Resource.Drawable.IcMenuSave)
@@ -990,6 +965,9 @@ public class SaveGameService : Service
                 .Build();
 
             StartForeground(1, notification);
+
+            // Should come after StartForeground if takes time
+            GHApp.MaybeWriteGHLog("SaveGameService: OnStartCommand!");
 
             if (IsSaving)
             {

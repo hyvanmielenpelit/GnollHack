@@ -2,12 +2,9 @@
 using Android.Content.PM;
 using Android.Content.Res;
 using Android.OS;
-using Android.Views;
 using Android.Runtime;
+using Android.Views;
 using GnollHackX;
-//using Xamarin.Google.Android.Play.Core.AssetPacks;
-//using Xamarin.Google.Android.Play.Core.AssetPacks.Model;
-
 
 namespace GnollHackM;
 
@@ -17,6 +14,7 @@ public class MainActivity : MauiAppCompatActivity
     public static Activity CurrentMainActivity = null;
     public static bool DefaultShowNavigationBar = false;
     public static AssetManager StaticAssets;
+
     protected override void OnCreate(Bundle savedInstanceState)
     {
         base.OnCreate(savedInstanceState);
@@ -29,6 +27,32 @@ public class MainActivity : MauiAppCompatActivity
             ShowOsNavigationBar();
         else
             HideOsNavigationBar();
+
+        CreateSaveGameNotificationChannel();
+    }
+
+    private void CreateSaveGameNotificationChannel()
+    {
+        if (Build.VERSION.SdkInt >= BuildVersionCodes.O)
+        {
+            try
+            {
+                var channel = new NotificationChannel(
+                    GHConstants.SAVE_GAME_NOTIFICATION_CHANNEL_ID,
+                    "Game Save Progress",
+                    NotificationImportance.Default)
+                {
+                    Description = "Used while saving your game data."
+                };
+
+                var manager = (NotificationManager)GetSystemService(NotificationService);
+                manager.CreateNotificationChannel(channel);
+            }
+            catch (Exception ex)
+            {
+                GHApp.MaybeWriteGHLog(ex.Message);
+            }
+        }
     }
 
     public override bool OnKeyDown([GeneratedEnum] Keycode keyCode, KeyEvent e)

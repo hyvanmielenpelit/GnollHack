@@ -1976,6 +1976,7 @@ namespace GnollHackX
         public const bool AllowRestartGameUponActivityDestruction = false;
         public const string SentryGnollHackGeneralCategoryName = "GnollHack Information";
         public const string SentryGnollHackLibraryCategoryName = "GnollHack Library";
+        public const string SAVE_GAME_NOTIFICATION_CHANNEL_ID = "save_game_channel";
     }
 
     [StructLayout(LayoutKind.Sequential)]
