@@ -237,7 +237,7 @@ namespace GnollHackX.Controls
 
         private void CustomButton_Clicked(object sender, EventArgs e)
         {
-            GHApp.AddSentryBreadcrumb(Text, "CustomImageButton Clicked");
+            GHApp.AddSentryBreadcrumb("CustomImageButton: " + Text, GHConstants.SentryGnollHackButtonClickCategoryName);
             Clicked?.Invoke(this, e);
         }
 

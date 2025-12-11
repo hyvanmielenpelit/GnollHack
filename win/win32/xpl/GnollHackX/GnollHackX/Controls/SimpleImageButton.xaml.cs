@@ -170,7 +170,7 @@ namespace GnollHackX.Controls
 
         private void ViewButton_Clicked(object sender, EventArgs e)
         {
-            GHApp.AddSentryBreadcrumb(ImgSourcePath, "SimpleImageButton Clicked");
+            GHApp.AddSentryBreadcrumb("SimpleImageButton: " + ImgSourcePath, GHConstants.SentryGnollHackButtonClickCategoryName);
             BtnClicked?.Invoke(this, e);
         }
 
