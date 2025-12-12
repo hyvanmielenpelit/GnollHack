@@ -21,7 +21,7 @@ STATIC_DCL int FDECL(gulpmu, (struct monst *, struct attack *));
 STATIC_DCL int FDECL(explmu, (struct monst *, struct attack *, BOOLEAN_P));
 STATIC_DCL void FDECL(missmu, (struct monst *, BOOLEAN_P, struct attack *));
 STATIC_DCL void FDECL(mswings, (struct monst *, struct obj *, int));
-STATIC_DCL void FDECL(wildmiss, (struct monst *, struct attack *));
+STATIC_DCL void FDECL(wildmiss, (struct monst *, struct attack *, BOOLEAN_P));
 STATIC_DCL void FDECL(hitmsg, (struct monst *, struct attack *, int, BOOLEAN_P));
 STATIC_DCL boolean FDECL(u_slip_free_core, (struct monst*, struct attack*, BOOLEAN_P));
 
@@ -232,9 +232,10 @@ u_slow_down()
 
 /* monster attacked your displaced image */
 STATIC_OVL void
-wildmiss(mtmp, mattk)
+wildmiss(mtmp, mattk, range_differs)
 struct monst *mtmp;
 struct attack *mattk;
+boolean range_differs;
 {
     int compat;
     const char *Monst_name; /* Monnam(mtmp) */
@@ -251,7 +252,7 @@ struct attack *mattk;
               ? could_seduce(mtmp, &youmonst, mattk) : 0);
     Monst_name = Monnam(mtmp);
 
-    if (m_cannotsenseu(mtmp)) 
+    if (m_cannotsenseu(mtmp) || range_differs)
     {
         const char *swings = (mattk->aatyp == AT_BITE) ? "snaps"
                              : (mattk->aatyp == AT_KICK) ? "kicks"
@@ -790,7 +791,7 @@ register struct monst *mtmp;
                 }
                 else
                 {
-                    wildmiss(mtmp, mattk);
+                    wildmiss(mtmp, mattk, range2 != ranged);
                     /* skip any remaining non-spell attacks */
                     skipnonmagc = TRUE;
                 }
@@ -1024,7 +1025,7 @@ register struct monst *mtmp;
                 } 
                 else
                 {
-                    wildmiss(mtmp, mattk);
+                    wildmiss(mtmp, mattk, range2 != ranged);
                     /* skip any remaining non-spell attacks */
                     skipnonmagc = TRUE;
                 }
