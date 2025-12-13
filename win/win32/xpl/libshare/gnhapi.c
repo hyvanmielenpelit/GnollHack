@@ -743,7 +743,7 @@ LibSetExitHack(int newValue)
 DLLEXPORT void
 LibExitGnhThread()
 {
-    exit_hack_code = -1; // ExitHack does nothing
+    exit_hack_code = 2; // ExitHack does nothing
     gnollhack_exit(EXIT_SUCCESS);
 }
 

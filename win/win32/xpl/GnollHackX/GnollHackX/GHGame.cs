@@ -1058,6 +1058,8 @@ namespace GnollHackX
 
             switch (status)
             {
+                case 2: /* Do nothing */
+                    break;
                 case 1: /* Restart in the same game page (after saving) */
                     if (FullRestart)
                     {
