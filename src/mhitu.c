@@ -252,7 +252,7 @@ boolean range_differs;
               ? could_seduce(mtmp, &youmonst, mattk) : 0);
     Monst_name = Monnam(mtmp);
 
-    if (m_cannotsenseu(mtmp) || range_differs)
+    if (m_cannotsenseu(mtmp) || (range_differs && !Displaced && !Underwater))
     {
         const char *swings = (mattk->aatyp == AT_BITE) ? "snaps"
                              : (mattk->aatyp == AT_KICK) ? "kicks"
