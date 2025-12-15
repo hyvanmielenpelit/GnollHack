@@ -1431,6 +1431,8 @@ namespace GnollHackX
         GUI_CMD_TOGGLE_IGNORE_STOPPING,
         GUI_CMD_EXIT_APP_ON_MAIN_SCREEN,
         GUI_CMD_BREADCRUMB,
+        GUI_CMD_BREADCRUMB2,
+        GUI_CMD_BREADCRUMB3,
     }
 
     public enum game_status_types
@@ -1976,6 +1978,7 @@ namespace GnollHackX
         public const bool AllowRestartGameUponActivityDestruction = false;
         public const string SentryGnollHackGeneralCategoryName = "GnollHack Information";
         public const string SentryGnollHackLibraryCategoryName = "GnollHack Library";
+        public const string SentryGnollHackCallbackCategoryName = "GnollHack Callback";
         public const string SentryGnollHackButtonClickCategoryName = "Button Clicked";
         public const string SAVE_GAME_NOTIFICATION_CHANNEL_ID = "save_game_channel";
     }

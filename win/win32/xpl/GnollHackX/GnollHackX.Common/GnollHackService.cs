@@ -1229,6 +1229,7 @@ namespace GnollHackX.Unknown
 
         public int StartGnollHack(GHGame ghGame)
         {
+            GHApp.AddSentryBreadcrumb("StartGnollHack", GHConstants.SentryGnollHackGeneralCategoryName);
             GHApp.SetMirroredOptionsToDefaults();
             string filesdir = GetGnollHackPath();
             bool allowbones = GHApp.AllowBones;

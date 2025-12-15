@@ -2759,6 +2759,7 @@ int status;
 const char* mesg;
 boolean fullterminate;
 {
+    issue_breadcrumb3("nh_bail", status, (int)fullterminate);
     clearlocks();
     exit_nhwindows(mesg);
     if (fullterminate)
@@ -2780,6 +2781,7 @@ void
 nh_terminate(status)
 int status;
 {
+    issue_breadcrumb2("nh_terminate", status);
     program_state.in_moveloop = 0; /* won't be returning to normal play */
     program_state.freeing_dynamic_data = 1;
     stop_animations();
@@ -4180,6 +4182,7 @@ reset_remaining_dynamic_data(VOID_ARGS)
 void
 reset_game(VOID_ARGS)
 {
+    issue_breadcrumb("reset_game");
     dmonsfree();
     *plname = 0;
     *recovery_plname = 0;

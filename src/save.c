@@ -166,6 +166,7 @@ boolean quietly;
     Strcpy(debug_buf_3, "dosave0");
     Strcpy(debug_buf_4, "dosave0");
     Strcpy(saved_dgnlvl_name_buf, "");
+    issue_breadcrumb("Start dosave0");
 
 #ifdef WHEREIS_FILE
     delete_whereis();
@@ -366,6 +367,7 @@ boolean quietly;
 
     post_to_forum_printf(LL_GAME_SAVE, "saved %s game %s", uhis(), saved_dgnlvl_name_buf);
     Strcpy(saved_dgnlvl_name_buf, "");
+    issue_breadcrumb("Finish dosave0");
     return 1;
 }
 

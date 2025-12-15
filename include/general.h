@@ -707,6 +707,8 @@ enum gui_command_types {
     GUI_CMD_TOGGLE_IGNORE_STOPPING,
     GUI_CMD_EXIT_APP_ON_MAIN_SCREEN,
     GUI_CMD_BREADCRUMB,
+    GUI_CMD_BREADCRUMB2,
+    GUI_CMD_BREADCRUMB3,
 };
 
 enum game_status_types

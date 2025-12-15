@@ -1052,9 +1052,9 @@ namespace GnollHackX
 
         public void ClientCallback_ExitHack(int status)
         {
-            Debug.WriteLine("ClientCallback_ExitHack");
             RecordFunctionCall(RecordedFunctionID.ExitHack, status);
             RecordFunctionCallImmediately(RecordedFunctionID.EndOfFile);
+            GHApp.MaybeWriteGHLog("ExitHack: " + status, true, GHConstants.SentryGnollHackCallbackCategoryName);
 
             switch (status)
             {
@@ -3519,6 +3519,12 @@ namespace GnollHackX
                     break;
                 case (int)gui_command_types.GUI_CMD_BREADCRUMB:
                     GHApp.AddSentryBreadcrumb(cmd_str, GHConstants.SentryGnollHackLibraryCategoryName);
+                    break;
+                case (int)gui_command_types.GUI_CMD_BREADCRUMB2:
+                    GHApp.AddSentryBreadcrumb(cmd_str + ": " + cmd_param, GHConstants.SentryGnollHackLibraryCategoryName);
+                    break;
+                case (int)gui_command_types.GUI_CMD_BREADCRUMB3:
+                    GHApp.AddSentryBreadcrumb(cmd_str + ": " + cmd_param + ", " + cmd_param2, GHConstants.SentryGnollHackLibraryCategoryName);
                     break;
                 default:
                     break;

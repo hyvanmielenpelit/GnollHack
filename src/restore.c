@@ -1013,6 +1013,7 @@ register int fd;
     Strcpy(debug_buf_2, "dorestore0");
     Strcpy(debug_buf_3, "dorestore0");
     Strcpy(debug_buf_4, "dorestore0");
+    issue_breadcrumb("Start dorestore0");
 
     restoring = TRUE;
     boolean readok = get_plname_from_file(fd, plname, sizeof(plname));
@@ -1201,6 +1202,7 @@ register int fd;
         (void)delete_tmp_backup_savefile();
 
     post_restore_to_forum(restored_realtime);
+    issue_breadcrumb("Finish dorestore0");
     return 1;
 }
 

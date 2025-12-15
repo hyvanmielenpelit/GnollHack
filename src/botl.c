@@ -1918,6 +1918,8 @@ boolean *valsetlist;
     update_all = FALSE;
 }
 
+STATIC_VAR boolean initalready = FALSE;
+
 void
 status_initialize(reassessment)
 boolean reassessment; /* TRUE: just recheck fields w/o other initialization */
@@ -1926,6 +1928,7 @@ boolean reassessment; /* TRUE: just recheck fields w/o other initialization */
     boolean fldenabl;
     int i;
     const char *fieldfmt, *fieldname;
+    issue_breadcrumb3("status_initialize", (int)reassessment, (int)blinit + ((int)initalready) * 2);
 
     if (!reassessment) {
         if (blinit)
@@ -1963,11 +1966,10 @@ boolean reassessment; /* TRUE: just recheck fields w/o other initialization */
     update_all = TRUE;
 }
 
-STATIC_VAR boolean initalready = FALSE;
-
 void
 status_finish(VOID_ARGS)
 {
+    issue_breadcrumb3("status_finish", (int)blinit, (int)initalready);
     if (blinit) /* Changed to blinit instead of VIA_WINDOWPORT() because exit_nhwindows may set VIA_WINDOWPORT() to false --JG */
     {
         int i;
