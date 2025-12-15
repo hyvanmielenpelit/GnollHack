@@ -1505,6 +1505,18 @@ namespace GnollHackX.Pages.Game
 
         }
 
+        public void StopTimers()
+        {
+#if GNH_MAUI
+            if (_updateTimer?.IsRunning ?? false)
+               _updateTimer?.Stop();
+            if (_pollingTimer?.IsRunning ?? false)
+                _pollingTimer?.Stop();
+            StopMenuHideTimers();
+            StopTextHideTimers();
+#endif
+        }
+
         //private bool StartingPositionsSet { get; set; }
         public void DoPolling()
         {
@@ -2892,6 +2904,7 @@ namespace GnollHackX.Pages.Game
                                 MainGrid.IsEnabled = false;
                                 //ClearMap();
                                 StopCanvasAnimations();
+                                StopTimers();
                                 //CurrentGame = null;
                                 GHApp.CurrentGHGame = null;
                                 GHApp.GameStarted = false;
@@ -18494,7 +18507,8 @@ namespace GnollHackX.Pages.Game
         private readonly List<IDispatcherTimer> _menuHideTimers = new List<IDispatcherTimer>();
         private void StopMenuHideTimers()
         {
-            foreach (IDispatcherTimer t in _menuHideTimers)
+            List <IDispatcherTimer> tempList = new List<IDispatcherTimer>(_menuHideTimers);
+            foreach (IDispatcherTimer t in tempList)
             {
                 t.Stop();
             }
@@ -18503,7 +18517,8 @@ namespace GnollHackX.Pages.Game
         private readonly List<IDispatcherTimer> _textHideTimers = new List<IDispatcherTimer>();
         private void StopTextHideTimers()
         {
-            foreach (IDispatcherTimer t in _textHideTimers)
+            List<IDispatcherTimer> tempList = new List<IDispatcherTimer>(_textHideTimers);
+            foreach (IDispatcherTimer t in tempList)
             {
                 t.Stop();
             }

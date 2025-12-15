@@ -77,6 +77,7 @@ namespace GnollHackX
             if (gamePage != null) /* Might be non-null and stale after a restart */
             {
                 gamePage.StopCanvasAnimations();
+                gamePage.StopTimers();
                 gamePage.ShutDownCanvasViews();
                 GHApp.DisconnectIViewHandlers(gamePage);
                 GHApp.CurrentGamePage = null;
@@ -1608,7 +1609,7 @@ namespace GnollHackX
                 return;
 
             GHApp.AddSentryBreadcrumb("CloseApp", GHConstants.SentryGnollHackGeneralCategoryName);
-            StopGeneralTimer = true; /* Stop timer */
+            DoStopGeneralTimer();
             GHApp.CheckCloseGnhThread(); /* Close GnhThread if a game is still ongoing for some reason */
             Task t1 = GeneralTimerTasksAsync(); /* Make sure outstanding queues are processed before closing application */
             Task t2 = Task.Delay(1000); /* Give 1 second to close at maximum */
@@ -1642,6 +1643,17 @@ namespace GnollHackX
             {
                 Debug.WriteLine(ex.Message);
             }
+#endif
+        }
+
+        private void DoStopGeneralTimer()
+        {
+#if GNH_MAUI
+            _generalTimer?.Stop();
+            StopGeneralTimer = false;
+            GeneralTimerIsOn = false;
+#else
+            StopGeneralTimer = true; /* Stop timer */
 #endif
         }
 
