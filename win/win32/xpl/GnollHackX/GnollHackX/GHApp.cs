@@ -1777,6 +1777,7 @@ namespace GnollHackX
                         GamePage gamePage = game.ActiveGamePage;
                         if (gamePage != null && gamePage.GameEnded && OperatingSystemKillsAppsOnBackground)
                             gamePage.FastForwardRequested = true;
+                        MaybeWriteGHLog("OnSleep: SaveGameAndWaitForResume", true, GHConstants.SentryGnollHackGeneralCategoryName);
                         game.SaveGameAndWaitForResume();
                     }
                 }
@@ -1952,6 +1953,7 @@ namespace GnollHackX
                     }
                     if (wenttosleep && (GameSaved || SavingGame))
                     {
+                        MaybeWriteGHLog("HandleResume: StopWaitAndResumeSavedGame", true, GHConstants.SentryGnollHackGeneralCategoryName);
                         game.StopWaitAndResumeSavedGame();
                     }
                 }

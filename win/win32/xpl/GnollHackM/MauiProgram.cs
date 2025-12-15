@@ -393,10 +393,10 @@ public static class MauiProgram
                     {
                         try
                         {
-                            GHApp.MaybeWriteGHLog("androidLifecycleBuilder: Paused 1");
+                            GHApp.MaybeWriteGHLog("androidLifecycleBuilder: Paused 1", true, GHConstants.SentryGnollHackGeneralCategoryName);
                             if (activity.IsFinishing || !activity.HasWindowFocus)
                             {
-                                GHApp.MaybeWriteGHLog("androidLifecycleBuilder: Paused 2");
+                                GHApp.MaybeWriteGHLog("androidLifecycleBuilder: Paused 2", true, GHConstants.SentryGnollHackGeneralCategoryName);
                                 var intent = new Intent(Android.App.Application.Context, typeof(SaveGameService));
                                 AndroidX.Core.Content.ContextCompat.StartForegroundService(Android.App.Application.Context, intent);
                             }
@@ -413,8 +413,10 @@ public static class MauiProgram
             {
                 ios.OnResignActivation((app) =>
                 {
+                    GHApp.MaybeWriteGHLog("OnResignActivation: Start", true, GHConstants.SentryGnollHackGeneralCategoryName);
                     GHApp.BackgroundTaskId = UIApplication.SharedApplication.BeginBackgroundTask("SaveGameTask", () =>
                     {
+                        GHApp.MaybeWriteGHLog("OnResignActivation: Task timeout", true, GHConstants.SentryGnollHackGeneralCategoryName);
                         GHApp.EndBackgroundTask();
                     });
 
@@ -422,10 +424,12 @@ public static class MauiProgram
                     {
                         try
                         {
+                            GHApp.MaybeWriteGHLog("OnResignActivation: Saving game", true, GHConstants.SentryGnollHackGeneralCategoryName);
                             await GHApp.SaveGameOnSleepAsync();
                         }
                         finally
                         {
+                            GHApp.MaybeWriteGHLog("OnResignActivation: Save finished", true, GHConstants.SentryGnollHackGeneralCategoryName);
                             GHApp.EndBackgroundTask();
                         }
                     });
@@ -967,12 +971,13 @@ public class SaveGameService : Service
             StartForeground(1, notification);
 
             // Should come after StartForeground if takes time
-            GHApp.MaybeWriteGHLog("SaveGameService: OnStartCommand!");
+            GHApp.MaybeWriteGHLog("SaveGameService: OnStartCommand", true, GHConstants.SentryGnollHackGeneralCategoryName);
 
             if (IsSaving)
             {
                 StopForeground(StopForegroundFlags.Remove);
                 StopSelf();
+                GHApp.MaybeWriteGHLog("SaveGameService: Was saving already", true, GHConstants.SentryGnollHackGeneralCategoryName);
                 return StartCommandResult.NotSticky;
             }
 
@@ -983,7 +988,7 @@ public class SaveGameService : Service
             {
                 try
                 {
-                    GHApp.MaybeWriteGHLog("SaveGameService: SavingGame!");
+                    GHApp.MaybeWriteGHLog("SaveGameService: Saving game", true, GHConstants.SentryGnollHackGeneralCategoryName);
                     await GHApp.SaveGameOnSleepAsync();
                 }
                 finally
@@ -991,6 +996,7 @@ public class SaveGameService : Service
                     IsSaving = false;
                     StopForeground(StopForegroundFlags.Remove);
                     StopSelf();
+                    GHApp.MaybeWriteGHLog("SaveGameService: Saving finished", true, GHConstants.SentryGnollHackGeneralCategoryName);
                 }
             });
         }
