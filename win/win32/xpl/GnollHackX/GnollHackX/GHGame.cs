@@ -2469,6 +2469,8 @@ namespace GnollHackX
         private int GetLine(int style, int attr, int color, string query, string placeholder, string linesuffix, string introline, IntPtr out_string_ptr, string enteredLine)
         {
             Debug.WriteLine("ClientCallback_GetLine");
+            GHApp.AddSentryBreadcrumb("GetLine: " + (query != null ? query : "no query"), GHConstants.SentryGnollHackCallbackCategoryName);
+
             if (query == null)
                 query = "";
 
@@ -2501,10 +2503,12 @@ namespace GnollHackX
                 {
                     Marshal.Copy(utf8text, 0, out_string_ptr, utf8text.Length);
                     Marshal.WriteByte(out_string_ptr, utf8text.Length, 0);
+                    GHApp.AddSentryBreadcrumb("GetLine: Result is 1: " + (_getLineString != null ? _getLineString : "no _getLineString"), GHConstants.SentryGnollHackCallbackCategoryName);
                     return 1;
                 }
                 else
                 {
+                    GHApp.AddSentryBreadcrumb("GetLine: Result is 0: out_string_ptr is IntPtr.Zero", GHConstants.SentryGnollHackCallbackCategoryName);
                     return 0;
                 }
             }
