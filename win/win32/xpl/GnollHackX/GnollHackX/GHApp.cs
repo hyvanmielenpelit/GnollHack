@@ -416,14 +416,8 @@ namespace GnollHackX
                 _renderingStopWatch.Stop();
         }
 
-        public static void BeforeExitApp()
+        public static void StopPlatformRenderLoop()
         {
-            AddSentryBreadcrumb("BeforeExitApp", GHConstants.SentryGnollHackGeneralCategoryName);
-            FmodService?.ShutdownFmod();
-            Connectivity.ConnectivityChanged -= Connectivity_ConnectivityChanged;
-            Battery.BatteryInfoChanged -= Battery_BatteryInfoChanged;
-            DeviceDisplay.MainDisplayInfoChanged -= DeviceDisplay_MainDisplayInfoChanged;
-            RevertScreenResolution();
 #if WINDOWS
             Microsoft.UI.Xaml.Media.CompositionTarget.Rendering -= CompositionTarget_Rendering;
 #elif ANDROID
@@ -445,6 +439,15 @@ namespace GnollHackX
                 _platformTicker = null;
             }
 #endif
+        }
+
+        public static void BeforeExitApp()
+        {
+            AddSentryBreadcrumb("BeforeExitApp", GHConstants.SentryGnollHackGeneralCategoryName);
+            Connectivity.ConnectivityChanged -= Connectivity_ConnectivityChanged;
+            Battery.BatteryInfoChanged -= Battery_BatteryInfoChanged;
+            DeviceDisplay.MainDisplayInfoChanged -= DeviceDisplay_MainDisplayInfoChanged;
+            RevertScreenResolution();
             //CollectGarbage();
         }
 
