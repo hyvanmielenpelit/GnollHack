@@ -1980,11 +1980,17 @@ namespace GnollHackX
             }
         }
 
+        private static readonly object _breadcrumbLock = new object();
         public static void AddSentryBreadcrumb(string message, string category)
         {
 #if SENTRY
             if (!string.IsNullOrWhiteSpace(message))
-                SentrySdk.AddBreadcrumb(message, category);
+            {
+                lock (_breadcrumbLock)
+                {
+                    SentrySdk.AddBreadcrumb(message, category);
+                }
+            }
 #endif
         }
 

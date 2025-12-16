@@ -699,6 +699,7 @@ namespace GnollHackX
                     ismenu = (_ghWindows[winHandle].WindowType == GHWinType.Menu);
                     istext = (_ghWindows[winHandle].WindowType == GHWinType.Text);
                     ismap = (_ghWindows[winHandle].WindowType == GHWinType.Map);
+                    GHApp.AddSentryBreadcrumb("DisplayGHWindow: Displaying " + _ghWindows[winHandle].WindowType.ToString() + " Window", GHConstants.SentryGnollHackCallbackCategoryName);
                 }
             }
 
@@ -1200,6 +1201,7 @@ namespace GnollHackX
 
             if (string.IsNullOrEmpty(responses))
             {
+                GHApp.AddSentryBreadcrumb("YnFunction: ShowDirections", GHConstants.SentryGnollHackCallbackCategoryName);
                 if ((ynflags & 1UL) != 0)
                     RequestQueue.Enqueue(new GHRequest(this, GHRequestType.ShowDirections)); //TODO: Show keyboard
                 else
@@ -1214,6 +1216,7 @@ namespace GnollHackX
             }
             else
             {
+                GHApp.AddSentryBreadcrumb("YnFunction: " + (title != null ? title : "no title") + ", " + (question != null ? question : "no question") + ", " + (responses != null ? responses : "no responses") + ", " + (descriptions != null ? descriptions : "no descriptions"), GHConstants.SentryGnollHackCallbackCategoryName);
                 RequestQueue.Enqueue(new GHRequest(this, GHRequestType.ShowYnResponses, style, attr, color, glyph, title, question, responses, descriptions, introline, ynflags));
 
                 if (PlayingReplay)
@@ -1249,6 +1252,7 @@ namespace GnollHackX
 
                         if (responses.Contains(res))
                         {
+                            GHApp.AddSentryBreadcrumb("YnFunction: Result is " + val, GHConstants.SentryGnollHackCallbackCategoryName);
                             RecordFunctionCall(RecordedFunctionID.YnFunction, style, attr, color, glyph, title, question, responses, def, descriptions, introline, ynflags, val);
                             return val;
                         }
@@ -1831,6 +1835,7 @@ namespace GnollHackX
         {
             GHApp.DebugWriteProfilingStopwatchTimeAndStart("EndMenu");
             RecordFunctionCall(RecordedFunctionID.EndMenu, winid, prompt, subtitle);
+            GHApp.AddSentryBreadcrumb("EndMenu: " + (prompt != null ? prompt : "no prompt") + ", " + (subtitle != null ? subtitle : "no subtitle"), GHConstants.SentryGnollHackCallbackCategoryName);
 
             //lock (_ghWindowsLock)
             {
