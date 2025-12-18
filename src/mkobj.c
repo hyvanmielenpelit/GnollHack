@@ -3836,6 +3836,19 @@ register struct obj *otmp;
     return (boolean)material_definitions[otmp->material].rottable;// <= MAT_WOOD && objects[otyp].oc_material != MAT_LIQUID);
 }
 
+boolean
+is_polymorphable(otmp)
+struct obj* otmp;
+{
+    if (get_obj_oc_flags(otmp) & O1_POLYMORPH_RESISTANT)
+        return FALSE;
+
+    if ((otmp->otyp == CORPSE || otmp->otyp == EGG || otmp->otyp == TIN) && otmp->corpsenm >= LOW_PM && otmp->corpsenm < NUM_MONSTERS && (mons[otmp->corpsenm].mresists2 & MR2_POLYMORPH_RESISTANCE) != 0)
+        return FALSE;
+
+    return TRUE;
+}
+
 /*
  * These routines maintain the single-linked lists headed in level.objects[][]
  * and threaded through the nexthere fields in the object-instance structure.
