@@ -4116,8 +4116,7 @@ struct obj* obj;
                 useupall(otmp);
                 break;
             case WAN_POLYMORPH:
-                if (otmp->otyp == WAN_POLYMORPH || otmp->otyp == SPE_POLYMORPH
-                    || otmp->otyp == POT_POLYMORPH || obj_resists(otmp, 5, 95)) 
+                if (!is_polymorphable(otmp) || obj_resists(otmp, 5, 95)) 
                 {
                     if (!Blind)
                     {

@@ -4386,8 +4386,7 @@ struct monst* origmonst;
         case WAN_POLYMORPH:
         case SPE_POLYMORPH:
             res = 1;
-            if (obj->otyp == WAN_POLYMORPH || obj->otyp == SPE_POLYMORPH
-                || obj->otyp == POT_POLYMORPH || obj_resists(obj, 5, 95)) 
+            if (!is_polymorphable(obj) || obj_resists(obj, 5, 95))
             {
                 res = 0;
                 break;

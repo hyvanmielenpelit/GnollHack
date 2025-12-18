@@ -2048,6 +2048,7 @@ E void FDECL(uncurse, (struct obj *));
 E void FDECL(blessorcurse, (struct obj *, int));
 E boolean FDECL(is_flammable, (struct obj *));
 E boolean FDECL(is_rottable, (struct obj *));
+E boolean FDECL(is_polymorphable, (struct obj*));
 E void FDECL(place_object, (struct obj *, int, int));
 E void FDECL(remove_object, (struct obj *));
 E void FDECL(place_memory_object, (struct obj*, int, int));

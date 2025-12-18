@@ -3600,7 +3600,7 @@ SPELL("polymorph", "silver-plated", None, None, "Polymorphs monsters and items i
     P_TRANSMUTATION_SPELL, 4,  6, 0, 
     6, 50, A_MAX_INT_WIS, 8, 0, 100, 0, 1, IMMEDIATE_ONE_TO_SEVEN_TARGETS, IMMEDIATE_NONE, 0, 0, 0, 0, 0, 0, 0, 
     S1_NONE, S2_NONE, ALL_TARGETS, AD_NONE, HI_SILVER, OBJECT_SOUNDSET_SPELLBOOK, 
-    O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE),
+    O1_POLYMORPH_RESISTANT, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE),
 SPELL("lower water", "obnoxious", None, None, "Evaporates water",
     P_TRANSMUTATION_SPELL, 4,  3, 0, 
     5, 40, A_MAX_INT_WIS, 10, 0, 100, 0, 1, RAY, RAY_EVAPORATION, 0, 6, 6, 0, 0, 0, 0, 
