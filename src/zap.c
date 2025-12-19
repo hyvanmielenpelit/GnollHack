@@ -1246,7 +1246,7 @@ struct monst* origmonst;
             } else if (canspotmon(mtmp)) {
                 pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s falls off.", buf);
             }
-            Strcpy(debug_buf_2, "bhitm");
+            debugprint("bhitm");
             obj_extract_self(obj);
             mdrop_obj(mtmp, obj, FALSE, TRUE);
             if (gainwandskill)
@@ -3023,7 +3023,7 @@ boolean replaceundead;
             /* transfer the ghost's inventory along with it */
             while ((otmp = ghost->minvent) != 0) 
             {
-                Strcpy(debug_buf_2, "revive1");
+                debugprint("revive1");
                 obj_extract_self(otmp);
                 add_to_minv(mtmp, otmp);
             }
@@ -3075,7 +3075,7 @@ boolean replaceundead;
     /* finally, get rid of the corpse--it's gone now */
     switch (corpse->where) {
     case OBJ_INVENT:
-        Sprintf(priority_debug_buf_2, "revive: %d", corpse->otyp);
+        debugprint("revive: %d", corpse->otyp);
         useup(corpse);
         break;
     case OBJ_FLOOR:
@@ -3084,7 +3084,7 @@ boolean replaceundead;
         /* not useupf(), which charges */
         if (corpse->quan > 1L)
             corpse = splitobj(corpse, 1L);
-        Sprintf(priority_debug_buf_3, "revive: %d", corpse->otyp);
+        debugprint("revive: %d", corpse->otyp);
         delobj(corpse);
         newsym(x, y);
         break;
@@ -3092,14 +3092,14 @@ boolean replaceundead;
         m_useup(corpse->ocarry, corpse);
         break;
     case OBJ_CONTAINED:
-        Strcpy(debug_buf_2, "revive2");
+        debugprint("revive2");
         obj_extract_self(corpse);
-        Sprintf(priority_debug_buf_4, "revive: %d", corpse->otyp);
+        debugprint("revive: %d", corpse->otyp);
         obfree(corpse, (struct obj *) 0);
         break;
     case OBJ_MAGIC:
         obj_extract_self(corpse);
-        Sprintf(priority_debug_buf_4, "revive2: %d", corpse->otyp);
+        debugprint("revive2: %d", corpse->otyp);
         obfree(corpse, (struct obj*)0);
         break;
     default:
@@ -3595,7 +3595,7 @@ int mat, minwt;
                 minwt -= (int) otmp->quan;
             else
                 minwt = 0;
-            Sprintf(priority_debug_buf_3, "polyuse: %d", otmp->otyp);
+            debugprint("polyuse: %d", otmp->otyp);
             delobj(otmp);
         }
     }
@@ -3764,7 +3764,7 @@ struct obj *obj;
     }
 
     /* zap the object */
-    Sprintf(priority_debug_buf_3, "do_osshock: %d", obj->otyp);
+    debugprint("do_osshock: %d", obj->otyp);
     delobj(obj);
 }
 
@@ -3802,7 +3802,7 @@ int id;
 
         /* Try up to 3 times to make the magic-or-not status of
            the new item be the same as it was for the old one. */
-        Strcpy(priority_debug_buf_3, "poly_obj");
+        debugprint("poly_obj");
         otmp = (struct obj *) 0;
         do 
         {
@@ -4142,7 +4142,7 @@ int id;
                 Norep_ex(ATR_NONE, CLR_MSG_WARNING, "%s is furious!", Monnam(shkp));
         }
     }
-    Sprintf(priority_debug_buf_3, "poly_obj2: %d", obj->otyp);
+    debugprint("poly_obj2: %d", obj->otyp);
     delobj(obj);
     return otmp;
 }
@@ -4209,8 +4209,8 @@ struct obj *obj;
                     }
                     if (obj->timed)
                         obj_stop_timers(obj);
-                    Sprintf(priority_debug_buf_2, "stone_to_flesh_obj: %d", obj->otyp);
-                    Sprintf(priority_debug_buf_3, "stone_to_flesh_obj: %d", obj->otyp);
+                    debugprint("stone_to_flesh_obj: %d", obj->otyp);
+                    debugprint("stone_to_flesh_obj: %d", obj->otyp);
                     if (carried(obj))
                         useup(obj);
                     else
@@ -4236,7 +4236,7 @@ struct obj *obj;
             {
                 /* unlikely to get here since genociding monsters also
                    sets the G_NOCORPSE flag; drop statue's contents */
-                Strcpy(debug_buf_2, "flesh_to_stone_obj");
+                debugprint("flesh_to_stone_obj");
                 while ((item = obj->cobj) != 0)
                 {
                     bypass_obj(item); /* make stone-to-flesh miss it */
@@ -6391,7 +6391,7 @@ struct obj *otmp;
     {
         pline_ex1(ATR_NONE, CLR_MSG_WARNING, "Luckily, the explosion does not harm you.");
     }
-    Sprintf(priority_debug_buf_2, "backfire: %d", otmp->otyp);
+    debugprint("backfire: %d", otmp->otyp);
     useup(otmp);
     special_effect_wait_until_end(0);
 }
@@ -6581,7 +6581,7 @@ struct obj* obj;
     {
         play_sfx_sound(SFX_ITEM_CRUMBLES_TO_DUST);
         pline("%s to dust.", Tobjnam(obj, "turn"));
-        Sprintf(priority_debug_buf_2, "backfire: %d", obj->otyp);
+        debugprint("backfire: %d", obj->otyp);
         useup(obj);
     }
     update_inventory(); /* maybe used a charge */
@@ -9822,8 +9822,8 @@ boolean u_caused;
                     obj->quan = scrquan;
                 }
                 /* useupf(), which charges, only if hero caused damage */
-                Sprintf(priority_debug_buf_2, "burn_floor_objects: %d", obj->otyp);
-                Sprintf(priority_debug_buf_3, "burn_floor_objects: %d", obj->otyp);
+                debugprint("burn_floor_objects: %d", obj->otyp);
+                debugprint("burn_floor_objects: %d", obj->otyp);
                 if (u_caused)
                     useupf_with_flags(obj, delquan, NEWSYM_FLAGS_KEEP_OLD_EFFECT_MISSILE_ZAP_GLYPHS);
                 else if (delquan < scrquan)
@@ -9997,9 +9997,9 @@ const char *fltxt;
                 if (mon == u.usteed && otmp->otyp == SADDLE)
                     dismount_steed(DISMOUNT_FELL);
             }
-            Strcpy(debug_buf_2, "disintegrate_mon");
+            debugprint("disintegrate_mon");
             obj_extract_self(otmp);
-            Sprintf(priority_debug_buf_4, "disintegrate_mon: %d", otmp->otyp);
+            debugprint("disintegrate_mon: %d", otmp->otyp);
             obfree(otmp, (struct obj *) 0);
         }
     }
@@ -10697,7 +10697,7 @@ const char *msg;
 
         do 
         {
-            Strcpy(debug_buf_2, "melt_ice");
+            debugprint("melt_ice");
             obj_extract_self(otmp); /* boulder isn't being pushed */
             if (!boulder_hits_pool(otmp, x, y, FALSE))
                 impossible("melt_ice: no pool?");
@@ -11294,7 +11294,7 @@ boolean verbose;
 
     if (obj->where == OBJ_FLOOR) 
     {
-        Strcpy(debug_buf_2, "fracture_rock");
+        debugprint("fracture_rock");
         obj_extract_self(obj); /* move rocks back on top */
         obj_set_found(obj);
         place_object(obj, obj->ox, obj->oy);
@@ -11319,7 +11319,7 @@ register struct obj* obj;
         && activate_statue_trap(trap, obj->ox, obj->oy, TRUE))
         return FALSE;
     /* drop any objects contained inside the statue */
-    Strcpy(debug_buf_2, "pre_break_statue");
+    debugprint("pre_break_statue");
     while ((item = obj->cobj) != 0) {
         obj_extract_self(item);
         obj_set_found(item);
@@ -11531,9 +11531,7 @@ boolean forcedestroy;
         if (obj == current_wand)
             current_wand = 0; /* destroyed */
 
-        Sprintf(priority_debug_buf_2, "destroy_one_item: %d", obj->otyp);
-        Strcpy(priority_debug_buf_3, "destroy_one_item");
-        Strcpy(priority_debug_buf_4, "destroy_one_item");
+        debugprint("destroy_one_item: %d", obj->otyp);
         for (i = 0; i < cnt; i++)
             useup(obj);
 

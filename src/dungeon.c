@@ -230,7 +230,7 @@ int fd;
     int count, i;
     mapseen *curr_ms, *last_ms;
 
-    Strcpy(debug_buf_4, "restore_dungeon");
+    debugprint("restore_dungeon");
     mread(fd, (genericptr_t) &n_dgns, sizeof(n_dgns));
     mread(fd, (genericptr_t) dungeons, sizeof(dungeon) * (size_t) n_dgns);
     mread(fd, (genericptr_t) &dungeon_topology, sizeof dungeon_topology);
@@ -2374,7 +2374,7 @@ int fd;
 
     load = (mapseen *) alloc(sizeof *load);
 
-    Strcpy(debug_buf_4, "load_mapseen");
+    debugprint("load_mapseen");
     mread(fd, (genericptr_t) &branchnum, sizeof branchnum);
     for (brindx = 0, curr = branches; curr; curr = curr->next, ++brindx)
         if (brindx == branchnum)

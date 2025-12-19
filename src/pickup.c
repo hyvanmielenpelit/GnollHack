@@ -1918,7 +1918,7 @@ uchar* obj_gone_ptr; /* 1 = merged, 2 = put in bag, 3 = gone */
             if (!(objects[SCR_SCARE_MONSTER].oc_name_known)
                 && !(objects[SCR_SCARE_MONSTER].oc_uname))
                 docall(obj, dcbuf);
-            Sprintf(priority_debug_buf_2, "pickup_object: %d", obj->otyp);
+            debugprint("pickup_object: %d", obj->otyp);
             useupf(obj, obj->quan);
             if (obj_gone_ptr) /* gone */
                 *obj_gone_ptr = 3;
@@ -2135,7 +2135,7 @@ struct obj *otmp;
         delay_output_milliseconds(ITEM_PICKUP_DROP_DELAY);
     }
 
-    Strcpy(debug_buf_2, "pick_obj");
+    debugprint("pick_obj");
     obj_extract_self(otmp);
     newsym(ox, oy);
 
@@ -2486,7 +2486,7 @@ boolean* got_something_ptr;
         {
             if (levl[x][y].lamplit)
             {
-                Strcpy(debug_buf_4, "loot_decoration");
+                debugprint("loot_decoration");
                 itemlit = TRUE;
                 del_light_source(LS_LOCATION, xy_to_any(x, y));
                 levl[x][y].lamplit = 0;
@@ -2523,7 +2523,7 @@ boolean* got_something_ptr;
                     }
                 }
                 play_simple_object_sound(newobj, OBJECT_SOUND_TYPE_PICK_UP);
-                Strcpy(debug_buf_2, "loot_decoration");
+                debugprint("loot_decoration");
                 obj_extract_self(newobj);
                 newobj = hold_another_object(newobj, "Oops!  %s out of your grasp!",
                     The(aobjnam(newobj, "slip")), (const char*)0, TRUE);
@@ -3099,7 +3099,7 @@ boolean do_auto_in_bag;
             }
 
             play_simple_object_sound(otmp, OBJECT_SOUND_TYPE_APPLY);
-            Strcpy(debug_buf_2, "loot_mon");
+            debugprint("loot_mon");
             obj_extract_self(otmp);
 
             if ((unwornmask = otmp->owornmask) != 0L)
@@ -3188,7 +3188,7 @@ int held;
             otmp = curr->nobj;
             if (!rn2(13)) 
             {
-                Strcpy(debug_buf_2, "boh_loss");
+                debugprint("boh_loss");
                 obj_extract_self(curr);
                 loss += mbag_item_gone(held, curr);
             }
@@ -3453,7 +3453,7 @@ boolean dobot;
         boolean destroyobj = !(is_obj_indestructible(obj) || obj->oartifact);
         if (destroyobj)
         {
-            Sprintf(priority_debug_buf_4, "in_container_core1: %d, %d", current_container->otyp, obj->otyp);
+            debugprint("in_container_core1: %d, %d", current_container->otyp, obj->otyp);
             obfree(obj, (struct obj*)0);
             obj = 0;
         }
@@ -3475,7 +3475,7 @@ boolean dobot;
 
         explode(u.ux, u.uy, RAY_MAGIC_MISSILE, (struct monst*)0, 2, 6, 0, saved_otyp, saved_oclass, EXPL_MAGICAL);
         /*delete_contents(current_container);*/
-        Strcpy(debug_buf_2, "in_container_core");
+        debugprint("in_container_core");
         register struct obj* curr;
         while ((curr = current_container->cobj) != 0) {
             obj_extract_self(curr);
@@ -3490,9 +3490,9 @@ boolean dobot;
             (void)scatter(obj->ox, obj->oy, 3, VIS_EFFECTS | MAY_HIT | MAY_DESTROY | MAY_FRACTURE, obj);
         }
 
-        Sprintf(priority_debug_buf_2, "in_container_core2: %d, %d", current_container->otyp, saved_otyp);
-        Sprintf(priority_debug_buf_3, "in_container_core2: %d, %d", current_container->otyp, saved_otyp);
-        Sprintf(priority_debug_buf_4, "in_container_core2: %d, %d", current_container->otyp, saved_otyp);
+        debugprint("in_container_core2: %d, %d", current_container->otyp, saved_otyp);
+        debugprint("in_container_core2: %d, %d", current_container->otyp, saved_otyp);
+        debugprint("in_container_core2: %d, %d", current_container->otyp, saved_otyp);
         //context.suppress_container_deletion_warning = 1;
         if (!floor_container)
             useup(current_container);
@@ -3770,7 +3770,7 @@ uchar* obj_gone_ptr;
         obj = splitobj(obj, count);
 
     /* Remove the object from the list. */
-    Strcpy(debug_buf_2, "out_container_core");
+    debugprint("out_container_core");
     obj_extract_self(obj);
     current_container->owt = weight(current_container);
 
@@ -3851,7 +3851,7 @@ struct obj *item;
             loss = stolen_value(item, u.ux, u.uy, is_peaceful(shkp),
                                 TRUE);
     }
-    Sprintf(priority_debug_buf_4, "mbag_item_gone: %d", item->otyp);
+    debugprint("mbag_item_gone: %d", item->otyp);
     obfree(item, (struct obj *) 0);
     return loss;
 }
@@ -3901,9 +3901,9 @@ boolean makecat, givemsg;
             livecat->u_know_mname = TRUE; /* It is famous! */
             if (deadcat)
             {
-                Strcpy(debug_buf_2, "observe_quantum_cat");
+                debugprint("observe_quantum_cat");
                 obj_extract_self(deadcat);
-                Sprintf(priority_debug_buf_4, "observe_quantum_cat: %d", deadcat->otyp);
+                debugprint("observe_quantum_cat: %d", deadcat->otyp);
                 obfree(deadcat, (struct obj *) 0), deadcat = 0;
             }
             box->owt = weight(box);
@@ -4784,7 +4784,7 @@ int applymode;
                     else if (otmp && otmp != pick_list[i].item.a_obj) 
                     {
                         /* split occurred, merge again */
-                        Sprintf(priority_debug_buf_3, "menu_loot: %d", otmp->otyp);
+                        debugprint("menu_loot: %d", otmp->otyp);
                         (void) merged(&pick_list[i].item.a_obj, &otmp);
                     }
                     break;
@@ -5241,7 +5241,7 @@ struct obj *box; /* or bag */
         pline("%s out%c",
               contained_object_chain(box)->nobj ? "Objects spill" : "An object spills",
               terse ? ':' : '.');
-        Strcpy(debug_buf_2, "tip_container");
+        debugprint("tip_container");
         for (otmp = contained_object_chain(box); otmp; otmp = nobj) {
             nobj = otmp->nobj;
             obj_extract_self(otmp);

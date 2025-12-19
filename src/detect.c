@@ -1268,7 +1268,7 @@ struct obj **optr;
             play_special_effect_at(SPECIAL_EFFECT_SMALL_FIERY_EXPLOSION, 0, u.ux, u.uy, FALSE);
             special_effect_wait_until_action(0);
             pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s!", Tobjnam(obj, "explode"));
-            Sprintf(priority_debug_buf_2, "use_crystal_ball: %d", obj->otyp);
+            debugprint("use_crystal_ball: %d", obj->otyp);
             useup(obj);
             *optr = obj = 0; /* it's gone */
             /* physical damage cause by the shards and force */

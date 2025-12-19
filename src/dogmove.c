@@ -426,7 +426,7 @@ boolean devour;
     else if (obj == uball) 
     {
         unpunish();
-        Sprintf(priority_debug_buf_3, "dog_eat: %d", obj->otyp);
+        debugprint("dog_eat: %d", obj->otyp);
         delobj(obj); /* we assume this can't be unpaid */
     } 
     else if (obj == uchain) 
@@ -453,7 +453,7 @@ boolean devour;
         if (obj->otyp == STATUE)
             pre_break_statue(obj);
 
-        Sprintf(priority_debug_buf_3, "dog_eat2: %d", obj->otyp);
+        debugprint("dog_eat2: %d", obj->otyp);
         delobj(obj);
     }
 
@@ -1360,7 +1360,7 @@ int udist;
                                     pline("%s picks up %s.", Monnam(mtmp), distant_name(otmp, doname));
                             }
 
-                            Strcpy(debug_buf_2, "dog_invent");
+                            debugprint("dog_invent");
                             obj_extract_self(otmp);
                             newsym(omx, omy);
                             (void) mpickobj(mtmp, otmp);
@@ -1994,7 +1994,7 @@ int after; /* this is extra fast monster movement */
         allowflags |= ALLOW_DIG;
 
     cnt = mfndpos(mtmp, poss, info, allowflags);
-    Sprintf(debug_buf_3, "dog_move 0, mnum:%d, mx:%d, my:%d, mux:%d, muy:%d, ux:%d, uy:%d, peaceful:%d, tame:%d, blinded:%d, crazed:%d, confused:%d, conflict:%d, displaced:%d, invisible:%d",
+    debugprint("dog_move 0, mnum:%d, mx:%d, my:%d, mux:%d, muy:%d, ux:%d, uy:%d, peaceful:%d, tame:%d, blinded:%d, crazed:%d, confused:%d, conflict:%d, displaced:%d, invisible:%d",
         (int)mtmp->mnum, (int)mtmp->mx, (int)mtmp->my, (int)mtmp->mux, (int)mtmp->muy, (int)u.ux, (int)u.uy,
         is_peaceful(mtmp) != 0, is_tame(mtmp) != 0, is_blinded(mtmp) != 0, is_crazed(mtmp) != 0, is_confused(mtmp) != 0,
         Conflict != 0, Displaced != 0, Invis != 0);
@@ -2270,7 +2270,7 @@ int after; /* this is extra fast monster movement */
 
             if (mtarg == &youmonst)
             {
-                Sprintf(debug_buf_4, "mattacku dog1, mnum:%d, mx:%d, my:%d, mux:%d, muy:%d, ux:%d, uy:%d, peaceful:%d, tame:%d, blinded:%d, crazed:%d, confused:%d, conflict:%d, displaced:%d, invisible:%d",
+                debugprint("mattacku dog1, mnum:%d, mx:%d, my:%d, mux:%d, muy:%d, ux:%d, uy:%d, peaceful:%d, tame:%d, blinded:%d, crazed:%d, confused:%d, conflict:%d, displaced:%d, invisible:%d",
                     (int)mtmp->mnum, (int)mtmp->mx, (int)mtmp->my, (int)mtmp->mux, (int)mtmp->muy, (int)u.ux, (int)u.uy,
                     is_peaceful(mtmp) != 0, is_tame(mtmp) != 0, is_blinded(mtmp) != 0, is_crazed(mtmp) != 0, is_confused(mtmp) != 0,
                     Conflict != 0, Displaced != 0, Invis != 0);
@@ -2330,7 +2330,7 @@ newdogpos:
                     pline("%s breaks loose of %s leash!", Monnam(mtmp), mhis(mtmp));
                     m_unleash(mtmp, FALSE);
                 }
-                Sprintf(debug_buf_4, "mattacku dog2, mnum:%d, mx:%d, my:%d, mux:%d, muy:%d, ux:%d, uy:%d, peaceful:%d, tame:%d, blinded:%d, crazed:%d, confused:%d, conflict:%d, displaced:%d, invisible:%d", 
+                debugprint("mattacku dog2, mnum:%d, mx:%d, my:%d, mux:%d, muy:%d, ux:%d, uy:%d, peaceful:%d, tame:%d, blinded:%d, crazed:%d, confused:%d, conflict:%d, displaced:%d, invisible:%d",
                     (int)mtmp->mnum, (int)mtmp->mx, (int)mtmp->my, (int)mtmp->mux, (int)mtmp->muy, (int)u.ux, (int)u.uy,
                     is_peaceful(mtmp) != 0, is_tame(mtmp) != 0, is_blinded(mtmp) != 0, is_crazed(mtmp) != 0, is_confused(mtmp) != 0, 
                     Conflict != 0, Displaced != 0, Invisib != 0);

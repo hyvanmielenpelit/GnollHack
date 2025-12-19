@@ -237,7 +237,7 @@ int x, y;
     }
     else
     {
-        Sprintf(priority_debug_buf_4, "drop_throw: %d", obj->otyp);
+        debugprint("drop_throw: %d", obj->otyp);
         obfree(obj, (struct obj*)0);
     }
     return retvalu;
@@ -752,7 +752,7 @@ boolean verbose;    /* give message(s) even when you can't see what happened */
 
         if (!objgone && range == -1)
         { /* special case */
-            Strcpy(debug_buf_2, "ohitmon");
+            debugprint("ohitmon");
             obj_extract_self(otmp);    /* free it for motion again */
             return 0;
         }
@@ -809,13 +809,13 @@ struct obj *obj;         /* missile (or stack providing it) */
         /* location, not its existence */
         if (MON_WEP(mon) == obj)
             setmnotwielded(mon, obj);
-        Strcpy(debug_buf_2, "m_throw1");
+        debugprint("m_throw1");
         obj_extract_self(obj);
         singleobj = obj;
         obj = (struct obj *) 0;
     } else {
         singleobj = splitobj(obj, 1L);
-        Strcpy(debug_buf_2, "m_throw2");
+        debugprint("m_throw2");
         obj_extract_self(singleobj);
     }
 
@@ -1600,7 +1600,7 @@ m_useupall(mon, obj)
 struct monst *mon;
 struct obj *obj;
 {
-    Strcpy(debug_buf_2, "m_useupall");
+    debugprint("m_useupall");
     obj_extract_self(obj);
     if (obj->owornmask) {
         if (obj == MON_WEP(mon))
@@ -1611,7 +1611,7 @@ struct obj *obj;
         if (mon == u.usteed && obj->otyp == SADDLE)
             dismount_steed(DISMOUNT_FELL);
     }
-    Sprintf(priority_debug_buf_4, "m_useupall: %d", obj->otyp);
+    debugprint("m_useupall: %d", obj->otyp);
     obfree(obj, (struct obj *) 0);
 }
 
@@ -1787,9 +1787,9 @@ struct attack *mattk;
             }
             else
             {
-                Strcpy(debug_buf_2, "spitmu");
+                debugprint("spitmu");
                 obj_extract_self(otmp);
-                Sprintf(priority_debug_buf_4, "spitmu: %d", otmp->otyp);
+                debugprint("spitmu: %d", otmp->otyp);
                 obfree(otmp, (struct obj*)0);
             }
         }

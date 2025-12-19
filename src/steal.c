@@ -111,7 +111,7 @@ register struct monst *mtmp;
     ygold = findgold(invent);
 
     if (fgold && (!ygold || fgold->quan > ygold->quan || !rn2(5))) {
-        Strcpy(debug_buf_2, "stealgold");
+        debugprint("stealgold");
         obj_extract_self(fgold);
         add_to_minv(mtmp, fgold);
         newsym(u.ux, u.uy);
@@ -802,7 +802,7 @@ struct monst *mon;
         if (is_obj_unremovable_from_the_game(obj) || is_quest_artifact(obj))
         {
             obj->item_flags &= ~ITEM_FLAGS_GIVEN_BY_HERO;
-            Strcpy(debug_buf_2, "mdrop_special_objs");
+            debugprint("mdrop_special_objs");
             obj_extract_self(obj);
             if (mon->mx) 
             {
@@ -841,15 +841,15 @@ boolean is_mon_dead;
         if (canspotmon(mtmp))
             pline("%s gold %s.", s_suffix(Monnam(mtmp)),
                   canseemon(mtmp) ? "vanishes" : "seems to vanish");
-        Strcpy(debug_buf_2, "release_monster_objects1");
+        debugprint("release_monster_objects1");
         obj_extract_self(otmp);
-        Sprintf(priority_debug_buf_4, "release_monster_objects: %d", otmp->otyp);
+        debugprint("release_monster_objects: %d", otmp->otyp);
         obfree(otmp, (struct obj *) 0);
     } /* isgd && has gold */
 
     while ((otmp = (is_pet ? droppables(mtmp) : mtmp->minvent)) != 0) 
     {
-        Strcpy(debug_buf_2, "release_monster_objects2");
+        debugprint("release_monster_objects2");
         obj_extract_self(otmp);
         if (((otmp->speflags & SPEFLAGS_CLONED_ITEM) || ((mtmp->issummoned || mtmp->ispartymember) && (!is_mon_dead || otmp->oclass == COIN_CLASS)))
             /* When leaving without dying, summoned and joined monsters take their possessions with them, except central artifacts 
@@ -905,7 +905,7 @@ boolean is_mon_dead;
             {
                 artifact_taken_away(otmp->oartifact); //It can now be generated again some time later
             }
-            Sprintf(priority_debug_buf_4, "release_monster_objects2: %d", otmp->otyp);
+            debugprint("release_monster_objects2: %d", otmp->otyp);
             obfree(otmp, (struct obj*) 0); //Delete the item
         }
         else
@@ -925,7 +925,7 @@ struct monst* mtmp;
     struct obj* otmp;
     int omx = mtmp->mx, omy = mtmp->my;
 
-    Strcpy(debug_buf_2, "mdrop_droppable_objs");
+    debugprint("mdrop_droppable_objs");
     while ((otmp = droppables(mtmp)) != 0)
     {
         obj_extract_self(otmp);

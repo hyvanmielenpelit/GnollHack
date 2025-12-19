@@ -5496,9 +5496,9 @@ boolean pushing;
         }
 
         /* boulder is now gone */
-        Sprintf(priority_debug_buf_2, "boulder_hits_pool: %d", otmp->otyp);
-        Sprintf(priority_debug_buf_3, "boulder_hits_pool: %d", otmp->otyp);
-        Sprintf(priority_debug_buf_4, "boulder_hits_pool: %d", otmp->otyp);
+        debugprint("boulder_hits_pool: %d", otmp->otyp);
+        debugprint("boulder_hits_pool: %d", otmp->otyp);
+        debugprint("boulder_hits_pool: %d", otmp->otyp);
         if (pushing)
             delobj(otmp);
         else
@@ -5648,7 +5648,7 @@ const char *verb;
             deltrap(t);
         if (obj)
         {
-            Sprintf(priority_debug_buf_2, "flooreffects: %d", obj->otyp);
+            debugprint("flooreffects: %d", obj->otyp);
             useupf(obj, 1L);
         }
         bury_objs(x, y);
@@ -5935,7 +5935,7 @@ register struct obj *obj;
                           otense(otmp, "vanish"));
                     ideed = TRUE;
                 }
-                Sprintf(priority_debug_buf_3, "dosinkring: %d", otmp->otyp);
+                debugprint("dosinkring: %d", otmp->otyp);
                 delobj(otmp);
             }
         }
@@ -6037,9 +6037,7 @@ register struct obj *obj;
     }
     else
     {
-        Sprintf(priority_debug_buf_2, "dosinkring: %d", obj->otyp);
-        Strcpy(priority_debug_buf_3, "dosinkring");
-        Strcpy(priority_debug_buf_4, "dosinkring");
+        debugprint("dosinkring: %d", obj->otyp);
         useup(obj);
     }
 }
@@ -6296,7 +6294,7 @@ boolean with_impact;
                                    FALSE, could_slime);
                     if (!was_obj_freed)
                     {
-                        Sprintf(priority_debug_buf_3, "dropz1: %d", obj->otyp);
+                        debugprint("dropz1: %d", obj->otyp);
                         delobj(obj); /* corpse is digested */
                     }
                 }
@@ -6308,7 +6306,7 @@ boolean with_impact;
                     /* Don't leave a cockatrice corpse in a statue */
                     if (!u.uswallow && !was_obj_freed)
                     {
-                        Sprintf(priority_debug_buf_3, "dropz2: %d", obj->otyp);
+                        debugprint("dropz2: %d", obj->otyp);
                         delobj(obj);
                     }
                 } 
@@ -6317,7 +6315,7 @@ boolean with_impact;
                     (void) grow_up(u.ustuck, (struct monst *) 0);
                     if (!was_obj_freed)
                     {
-                        Sprintf(priority_debug_buf_3, "dropz3: %d", obj->otyp);
+                        debugprint("dropz3: %d", obj->otyp);
                         delobj(obj); /* corpse is digested */
                     }
                 } 
@@ -6326,7 +6324,7 @@ boolean with_impact;
                     u.ustuck->mhp = u.ustuck->mhpmax;
                     if (!was_obj_freed)
                     {
-                        Sprintf(priority_debug_buf_3, "dropz4: %d", obj->otyp);
+                        debugprint("dropz4: %d", obj->otyp);
                         delobj(obj); /* corpse is digested */
                     }
                 }
@@ -7095,7 +7093,7 @@ save_currentstate()
         fd = currentlevel_rewrite();
         if (fd < 0)
             return;
-        Sprintf(priority_debug_buf_4, "save_currentstate (fd=%d)", fd);
+        debugprint("save_currentstate (fd=%d)", fd);
         bufon(fd);
         savelev(fd, ledger_no(&u.uz), WRITE_SAVE);
         bclose(fd);
@@ -7318,7 +7316,7 @@ xchar portal; /* 1 = Magic portal, 2 = Modron portal down (find portal up), 3 = 
     if (!cant_go_back) 
     {
         update_mlstmv(); /* current monsters are becoming inactive */
-        Sprintf(priority_debug_buf_4, "goto_level (fd=%d)", fd);
+        debugprint("goto_level (fd=%d)", fd);
         bufon(fd);       /* use buffered output */
     }
 
@@ -7396,10 +7394,7 @@ xchar portal; /* 1 = Magic portal, 2 = Modron portal down (find portal up), 3 = 
     }
     else 
     {
-        Strcpy(debug_buf_1, "goto_level");
-        Strcpy(debug_buf_2, "goto_level");
-        Strcpy(debug_buf_3, "goto_level");
-        Strcpy(debug_buf_4, "goto_level");
+        debugprint("goto_level");
         /* returning to previously visited level; reload it */
         fd = open_levelfile(new_ledger, whynot);
         if (tricked_fileremoved(fd, whynot))
@@ -8661,7 +8656,7 @@ void
 delete_location(x, y)
 xchar x, y;
 {
-    Strcpy(debug_buf_4, "delete_location");
+    debugprint("delete_location");
 
     if (levl[x][y].typ == FOUNTAIN)
         level.flags.nfountains--;
@@ -8705,7 +8700,7 @@ void
 delete_decoration(x, y)
 xchar x, y;
 {
-    Strcpy(debug_buf_4, "delete_decoration");
+    debugprint("delete_decoration");
 
     if (levl[x][y].decoration_typ)
     {
@@ -8904,7 +8899,7 @@ transform_location_type(x, y, type, subtype)
 xchar x, y;
 int type, subtype;
 {
-    Strcpy(debug_buf_4, "transform_location_type");
+    debugprint("transform_location_type");
 
     /* First, only limited delete */
     if (levl[x][y].typ == FOUNTAIN)

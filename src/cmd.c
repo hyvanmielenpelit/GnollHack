@@ -2063,7 +2063,7 @@ wiz_deleteitem(VOID_ARGS)
         if (!obj)
             return 0;
         char* objname = upstart(thecxname(obj));
-        Sprintf(priority_debug_buf_3, "wiz_deleteitem: %d", obj->otyp);
+        debugprint("wiz_deleteitem: %d", obj->otyp);
         useupall(obj);
         pline("%s has been deleted.", objname);
     }
@@ -10202,7 +10202,7 @@ dolight(VOID_ARGS)
             char ans = yn_query(qbuf);
             if (ans == 'y')
             {
-                Strcpy(debug_buf_4, "dolight1");
+                debugprint("dolight1");
                 levl[u.ux][u.uy].lamplit = FALSE;
                 del_light_source(LS_LOCATION, xy_to_any(u.ux, u.uy));
                 newsym(u.ux, u.uy);
@@ -10297,7 +10297,7 @@ dolight(VOID_ARGS)
         }
         else
         {
-            Strcpy(debug_buf_4, "dolight2");
+            debugprint("dolight2");
             levl[cc.x][cc.y].lamplit = FALSE;
             del_light_source(LS_LOCATION, xy_to_any(cc.x, cc.y));
             newsym(cc.x, cc.y);

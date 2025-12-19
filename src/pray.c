@@ -405,7 +405,7 @@ int trouble;
         {
             play_sfx_sound(SFX_ITEM_VANISHES);
             Your_ex(ATR_NONE, CLR_MSG_POSITIVE, "amulet vanishes!");
-            Sprintf(priority_debug_buf_2, "fix_worst_trouble: %d", uamul->otyp);
+            debugprint("fix_worst_trouble: %d", uamul->otyp);
             useup(uamul);
         }
         if(Breathless)
@@ -2537,9 +2537,7 @@ register struct obj *otmp;
         Your_ex(ATR_NONE, CLR_MSG_MYSTICAL, "sacrifice is consumed in a %s!",
             u.ualign.type == A_LAWFUL ? "flash of light" : "burst of flame");
     }
-    Sprintf(priority_debug_buf_2, "consume_offering: %d", otmp->otyp);
-    Strcpy(priority_debug_buf_3, "consume_offering");
-    Strcpy(priority_debug_buf_4, "consume_offering");
+    debugprint("consume_offering: %d", otmp->otyp);
     if (carried(otmp))
         useup(otmp);
     else
@@ -2731,9 +2729,7 @@ dosacrifice()
 
             change_luck(luck_change, TRUE);
 
-            Sprintf(priority_debug_buf_2, "dosacrifice: %d", otmp->otyp);
-            Strcpy(priority_debug_buf_3, "dosacrifice");
-            Strcpy(priority_debug_buf_4, "dosacrifice");
+            debugprint("dosacrifice: %d", otmp->otyp);
             if (carried(otmp))
                 useup(otmp);
             else
@@ -2830,9 +2826,7 @@ dosacrifice()
             if (uamul == otmp)
                 Amulet_off();
             u.uevent.ascended = 1;
-            Sprintf(priority_debug_buf_2, "dosacrifice2: %d", otmp->otyp);
-            Strcpy(priority_debug_buf_3, "dosacrifice2");
-            Strcpy(priority_debug_buf_4, "dosacrifice2");
+            debugprint("dosacrifice2: %d", otmp->otyp);
             if (carried(otmp))
                 useup(otmp); /* well, it's gone now */
             else

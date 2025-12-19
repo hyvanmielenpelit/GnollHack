@@ -5509,7 +5509,7 @@ struct monst* mtmp;
                         pline("%s picks up %s.", noittame_Monnam(mtmp),
                             distant_name(otmp, doname));
 
-                    Strcpy(debug_buf_2, "do_chat_pet_pickitems");
+                    debugprint("do_chat_pet_pickitems");
                     obj_extract_self(otmp);
                     newsym(omx, omy);
                     (void)mpickobj(mtmp, otmp);
@@ -5844,7 +5844,7 @@ struct monst* mtmp;
                                     currency(oprice));
                                 /* delobj->obfree will handle actual shop billing update */
                             }
-                            Sprintf(priority_debug_buf_3, "do_chat_feed: %d", otmp->otyp);
+                            debugprint("do_chat_feed: %d", otmp->otyp);
                             delobj(otmp);
                         }
                     }
@@ -6035,7 +6035,7 @@ struct monst* mtmp;
                 const char* obj_glows = Yobjnam2(obj, "glow");
                 if (H2Opotion_dip(otmp, obj, TRUE, obj_glows))
                 {
-                    Sprintf(priority_debug_buf_2, "do_chat_uncurse_items: %d", otmp->otyp);
+                    debugprint("do_chat_uncurse_items: %d", otmp->otyp);
                     useup(otmp);
                     return 1;
                 }
@@ -6054,7 +6054,7 @@ struct monst* mtmp;
             if (otmp->otyp == SCR_REMOVE_CURSE)
             {
                 (void)remove_curse(otmp, mtmp, !!mtmp->mprops[CONFUSION]);
-                Sprintf(priority_debug_buf_2, "do_chat_uncurse_items2: %d", otmp->otyp);
+                debugprint("do_chat_uncurse_items2: %d", otmp->otyp);
                 useup(otmp);
                 otmp = 0;
             }
@@ -6853,7 +6853,7 @@ struct monst* mtmp;
                     if (quan < item_to_buy->quan)
                         item_to_buy = splitobj(item_to_buy, quan);
                     
-                    Strcpy(debug_buf_2, "do_chat_buy_items");
+                    debugprint("do_chat_buy_items");
                     obj_extract_self(item_to_buy);
                     hold_another_object(item_to_buy, "Oops!  %s out of your grasp!",
                         The(aobjnam(item_to_buy, "slip")),
@@ -7046,7 +7046,7 @@ struct monst* mtmp;
                     if (item_to_take->quan > 1 && pick_list[i].count > 0 && pick_list[i].count < item_to_take->quan)
                         item_to_take = splitobj(item_to_take, pick_list[i].count);
 
-                    Strcpy(debug_buf_2, "do_chat_pet_take_items");
+                    debugprint("do_chat_pet_take_items");
                     obj_extract_self(item_to_take);
                     item_to_take->item_flags &= ~ITEM_FLAGS_GIVEN_BY_HERO;
 
@@ -10459,7 +10459,7 @@ boolean auto_yes;
 merge_obj_back:
     if (obj->where == OBJ_INVENT)
     {
-        Sprintf(priority_debug_buf_3, "sell_to_npc: %d", obj->otyp);
+        debugprint("sell_to_npc: %d", obj->otyp);
         for (otmp = invent; otmp; otmp = otmp->nobj)
             if (merged(&otmp, &obj)) 
             {
@@ -11225,7 +11225,7 @@ int special_dialogue_sound_id;
         money2mon(mtmp, u_pay);
         bot();
     }
-    Sprintf(priority_debug_buf_4, "spell_service_query: %d", pseudo->otyp);
+    debugprint("spell_service_query: %d", pseudo->otyp);
     obfree(pseudo, (struct obj*)0);
     /* gnostic handled in seffects */
 
@@ -12119,7 +12119,7 @@ boolean initialize;
     }
     else
     {
-        Sprintf(priority_debug_buf_3, "forge_special_func: %d", otmp->otyp);
+        debugprint("forge_special_func: %d", otmp->otyp);
         useupall(otmp);
         otmp = 0;
     }

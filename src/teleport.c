@@ -705,7 +705,7 @@ struct monst* mtmp;
             if (otmp && !(ttmp->tflags & TRAPFLAGS_ACTIVATED))
             {
                 pline("%s%s has vanished!", otmp->quan > 1 ? "One of " : "", otmp->quan > 1 ? yname(otmp) : Yname2(otmp));
-                Sprintf(priority_debug_buf_2, "modronportaltele: %d", otmp->otyp);
+                debugprint("modronportaltele: %d", otmp->otyp);
                 if (mtmp == u.usteed)
                     m_useup(mtmp, otmp);
                 else
@@ -768,7 +768,7 @@ struct monst* mtmp;
                 if (otmp && !(ttmp->tflags & TRAPFLAGS_ACTIVATED))
                 {
                     pline("%s%s has vanished!", otmp->quan > 1 ? "One of " : "", otmp->quan > 1 ? yname(otmp) : Yname2(otmp));
-                    Sprintf(priority_debug_buf_2, "modronportaltele2: %d", otmp->otyp);
+                    debugprint("modronportaltele2: %d", otmp->otyp);
                     if(mtmp == u.usteed)
                         m_useup(mtmp, otmp);
                     else
@@ -2006,7 +2006,7 @@ register struct obj *obj;
     obj->speflags &= ~SPEFLAGS_CAUGHT_IN_LEAVES;
     obj_clear_found(obj);
 
-    Strcpy(debug_buf_2, "rloco");
+    debugprint("rloco");
     obj_extract_self(obj);
     otx = obj->ox;
     oty = obj->oy;

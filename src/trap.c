@@ -338,7 +338,7 @@ int ef_flags;
             costly_alteration(otmp, cost_type);
 
         setnotworn(otmp);
-        Sprintf(priority_debug_buf_3, "erode_obj: %d", otmp->otyp);
+        debugprint("erode_obj: %d", otmp->otyp);
         delobj(otmp);
         return ER_DESTROYED;
     } 
@@ -873,7 +873,7 @@ int *fail_reason;
     }
 
     /* transfer any statue contents to monster's inventory */
-    Strcpy(debug_buf_2, "animate_statue");
+    debugprint("animate_statue");
     while ((item = statue->cobj) != 0) {
         obj_extract_self(item);
         (void) mpickobj(mon, item);
@@ -884,7 +884,7 @@ int *fail_reason;
     if (statue->owornmask)
         remove_worn_item(statue, TRUE);
     /* statue no longer exists */
-    Sprintf(priority_debug_buf_3, "animate_statue: %d", statue->otyp);
+    debugprint("animate_statue: %d", statue->otyp);
     delobj(statue);
 
     /* avoid hiding under nothing */
@@ -947,7 +947,7 @@ struct obj *objchn, *saddle;
                 /* move saddle */
                 xchar x, y;
                 if (get_obj_location(objchn, &x, &y, 0)) {
-                    Strcpy(debug_buf_2, "keep_saddle_with_steedcorpse");
+                    debugprint("keep_saddle_with_steedcorpse");
                     obj_extract_self(saddle);
                     place_object(saddle, x, y);
                     stackobj(saddle);
@@ -1150,7 +1150,7 @@ unsigned short trflags;
         {
             if (otmp)
             {
-                Sprintf(priority_debug_buf_4, "dotrap: %d", otmp->otyp);
+                debugprint("dotrap: %d", otmp->otyp);
                 obfree(otmp, (struct obj*)0);
             }
         } 
@@ -1194,7 +1194,7 @@ unsigned short trflags;
                              /* if damage triggered life-saving,
                                 poison is limited to attrib loss */
                              0, TRUE, 2);
-                Sprintf(priority_debug_buf_4, "dotrap2: %d", otmp->otyp);
+                debugprint("dotrap2: %d", otmp->otyp);
                 obfree(otmp, (struct obj *) 0);
             }
         } 
@@ -2262,7 +2262,7 @@ int style;
     }
 
     if (otmp->quan == 1L) {
-        Strcpy(debug_buf_2, "launch_obj1");
+        debugprint("launch_obj1");
         obj_extract_self(otmp);
         singleobj = otmp;
         otmp = (struct obj *) 0;
@@ -2270,7 +2270,7 @@ int style;
         singleobj = splitobj(otmp, 1L);
         if (singleobj)
         {
-            Strcpy(debug_buf_2, "launch_obj2");
+            debugprint("launch_obj2");
             obj_extract_self(singleobj);
         }
     }
@@ -2496,7 +2496,7 @@ int style;
 
                 You_hear("a loud crash%s!",
                          cansee(bhitpos.x, bhitpos.y) ? bmsg : "");
-                Strcpy(debug_buf_2, "launch_obj3");
+                debugprint("launch_obj3");
                 obj_extract_self(otmp2);
                 /* pass off the otrapped flag to the next boulder */
                 otmp2->otrapped = singleobj->otrapped;
@@ -3815,7 +3815,7 @@ int x, y;
 {
     struct obj *otmp;
     struct trap *t;
-    Strcpy(debug_buf_2, "fill_pit");
+    debugprint("fill_pit");
 
     if ((t = t_at(x, y)) && is_pit(t->ttyp)
         && (otmp = sobj_at(BOULDER, x, y))) {
@@ -4354,7 +4354,7 @@ xchar x, y;
     if (catch_lit(obj))
         return FALSE;
 
-    Sprintf(priority_debug_buf_2, "fire_damage: %d", obj->otyp);
+    debugprint("fire_damage: %d", obj->otyp);
     if (Is_container(obj) && !oresist_fire(obj))
     {
         switch (obj->otyp) 
@@ -4388,14 +4388,14 @@ xchar x, y;
             for (otmp = obj->cobj; otmp; otmp = ncobj) 
             {
                 ncobj = otmp->nobj;
-                Strcpy(debug_buf_2, "fire_damage");
+                debugprint("fire_damage");
                 obj_extract_self(otmp);
                 if (!flooreffects(otmp, x, y, ""))
                     place_object(otmp, x, y);
             }
         }
         setnotworn(obj);
-        Sprintf(priority_debug_buf_3, "fire_damage: %d", obj->otyp);
+        debugprint("fire_damage: %d", obj->otyp);
         delobj(obj);
         return TRUE;
     } 
@@ -4427,7 +4427,7 @@ xchar x, y;
             pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s %s.", Yname2(obj),
                   destroy_strings[dindx][(obj->quan > 1L)]);
         setnotworn(obj);
-        Sprintf(priority_debug_buf_3, "fire_damage2: %d", obj->otyp);
+        debugprint("fire_damage2: %d", obj->otyp);
         delobj(obj);
         return TRUE;
     } 
@@ -4442,7 +4442,7 @@ xchar x, y;
             pline("%s %s.", Yname2(obj),
                   destroy_strings[dindx][(obj->quan > 1L)]);
         setnotworn(obj);
-        Sprintf(priority_debug_buf_3, "fire_damage3: %d", obj->otyp);
+        debugprint("fire_damage3: %d", obj->otyp);
         delobj(obj);
         return TRUE;
     }
@@ -4516,12 +4516,12 @@ xchar x, y;
         }
         if (carried(obj)) { /* shouldn't happen */
             remove_worn_item(obj, TRUE);
-            Sprintf(priority_debug_buf_3, "lava_damage: %d", obj->otyp);
+            debugprint("lava_damage: %d", obj->otyp);
             useupall(obj);
         }
         else
         {
-            Sprintf(priority_debug_buf_3, "lava_damage2: %d", obj->otyp);
+            debugprint("lava_damage2: %d", obj->otyp);
             delobj(obj);
         }
         return TRUE;
@@ -4745,7 +4745,7 @@ boolean force;
                     acid_ctx.unk_boom++;
             }
             setnotworn(obj);
-            Sprintf(priority_debug_buf_3, "water_damage: %d, %u", obj->otyp, obj->o_id);
+            debugprint("water_damage: %d, %u", obj->otyp, obj->o_id);
             delobj(obj);
             if (update)
                 update_inventory();
@@ -6944,7 +6944,7 @@ boolean disarm;
                                  && uball->ox == u.ux && uball->oy == u.uy)))
                 unpunish();
 
-            Strcpy(priority_debug_buf_3, "chest_trap");
+            debugprint("chest_trap");
             for (otmp = level.objects[u.ux][u.uy]; otmp; otmp = otmp2)
             {
                 otmp2 = otmp->nexthere;
@@ -7421,7 +7421,7 @@ boolean nocorpse;
     }
     else if (obj)
     {
-        Sprintf(priority_debug_buf_4, "thitm: %d", obj->otyp);
+        debugprint("thitm: %d", obj->otyp);
         obfree(obj, (struct obj*)0);
     }
 
@@ -7482,9 +7482,9 @@ lava_effects()
             pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s into flame!", Yobjnam2(obj, "burst"));
             iflags.in_lava_effects++; /* (see above) */
             (void)Boots_off();
-            Sprintf(priority_debug_buf_2, "lava_effects: %d", obj->otyp);
-            Sprintf(priority_debug_buf_3, "lava_effects: %d", obj->otyp);
-            Sprintf(priority_debug_buf_4, "lava_effects: %d", obj->otyp);
+            debugprint("lava_effects: %d", obj->otyp);
+            debugprint("lava_effects: %d", obj->otyp);
+            debugprint("lava_effects: %d", obj->otyp);
             useup(obj);
             iflags.in_lava_effects--;
         }
@@ -7539,8 +7539,8 @@ lava_effects()
                     else
                         pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s into flame!", Yobjnam2(obj, "burst"));
                 }
-                Sprintf(priority_debug_buf_3, "lava_effects2: %d", obj->otyp);
-                Sprintf(priority_debug_buf_4, "lava_effects2: %d", obj->otyp);
+                debugprint("lava_effects2: %d", obj->otyp);
+                debugprint("lava_effects2: %d", obj->otyp);
                 useupall(obj);
             }
         }

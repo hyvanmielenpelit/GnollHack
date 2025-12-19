@@ -62,7 +62,7 @@ struct obj *ochain;
 boolean restore;
 {
     struct obj *otmp, *nobj;
-    Strcpy(debug_buf_3, "resetobjs");
+    debugprint("resetobjs");
 
     for (otmp = ochain; otmp; otmp = nobj)
     {
@@ -72,9 +72,7 @@ boolean restore;
         
         if (otmp->in_use) 
         {
-            Sprintf(debug_buf_2, "resetobjs: %d", otmp->otyp);
-            Sprintf(debug_buf_3, "resetobjs: %d", otmp->otyp);
-            Sprintf(debug_buf_4, "resetobjs: %d", otmp->otyp);
+            debugprint("resetobjs: %d", otmp->otyp);
             obj_extract_self(otmp);
             dealloc_obj(otmp);
             continue;
@@ -346,8 +344,8 @@ int x, y;
     u.twoweap = 0; /* ensure curse() won't cause swapwep to drop twice */
     while ((otmp = invent) != 0) 
     {
-        Strcpy(debug_buf_2, "drop_upon_death");
-        Strcpy(debug_buf_3, "drop_upon_death");
+        debugprint("drop_upon_death");
+        debugprint("drop_upon_death");
         obj_extract_self(otmp);
         /* when turning into green slime, all gear remains held;
            other types "arise from the dead" do aren't holding
@@ -788,10 +786,7 @@ getbones(VOID_ARGS)
                 return 0;
             }
         }
-        Strcpy(debug_buf_1, "getbones");
-        Strcpy(debug_buf_2, "getbones");
-        Strcpy(debug_buf_3, "getbones");
-        Strcpy(debug_buf_4, "getbones");
+        debugprint("getbones");
         mread(fd, (genericptr_t) &c, sizeof c); /* length incl. '\0' */
         mread(fd, (genericptr_t) oldbonesid, (size_t) c); /* DD.nnn */
         if (strcmp(bonesid, oldbonesid) != 0

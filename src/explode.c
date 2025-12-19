@@ -853,7 +853,7 @@ struct obj *obj; /* only scatter this obj        */
         {
             obj = (struct obj *) 0; /* all used */
         }
-        Strcpy(debug_buf_2, "scatter1");
+        debugprint("scatter1");
         obj_extract_self(otmp);
         used_up = FALSE;
 
@@ -873,7 +873,7 @@ struct obj *obj; /* only scatter this obj        */
                 if ((otmp = sobj_at(BOULDER, sx, sy)) != 0) 
                 {
                     /* another boulder here, restack it to the top */
-                    Strcpy(debug_buf_2, "scatter2");
+                    debugprint("scatter2");
                     obj_extract_self(otmp);
                     place_object(otmp, sx, sy);
                 }
@@ -1053,7 +1053,7 @@ int x, y;
 
     if (!obj->lamplit)
         impossible("exploding unlit oil");
-    Strcpy(debug_buf_3, "explode_oil");
+    debugprint("explode_oil");
     end_burn(obj, TRUE);
     splatter_burning_oil(x, y, diluted_oil);
 }

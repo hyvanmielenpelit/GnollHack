@@ -2153,7 +2153,7 @@ uchar* hitres_ptr;
                 {
                     if (*u.ushops || obj->unpaid)
                         check_shop_obj(obj, bhitpos.x, bhitpos.y, TRUE, FALSE);
-                    Sprintf(priority_debug_buf_4, "thitmonst: %d", obj->otyp);
+                    debugprint("thitmonst: %d", obj->otyp);
                     obfree(obj, (struct obj *) 0);
                     return 1;
                 }
@@ -2271,7 +2271,7 @@ uchar* hitres_ptr;
                 /* Don't leave a cockatrice corpse available in a statue */
                 if (!u.uswallow) 
                 {
-                    Sprintf(priority_debug_buf_3, "thitmonst: %d", obj->otyp);
+                    debugprint("thitmonst: %d", obj->otyp);
                     delobj(obj);
                     return 1;
                 }
@@ -2554,7 +2554,7 @@ boolean from_invent;
     }
     if (!fracture)
     {
-        Sprintf(priority_debug_buf_3, "breakobj: %d", obj->otyp);
+        debugprint("breakobj: %d", obj->otyp);
         if (obj->where == OBJ_INVENT)
         {
             if (obj->owornmask)

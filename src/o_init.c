@@ -996,7 +996,7 @@ register int fd;
 {
     register int i;
     size_t len;
-    Strcpy(debug_buf_4, "restnames");
+    debugprint("restnames");
 
     mread(fd, (genericptr_t) bases, sizeof bases);
     mread(fd, (genericptr_t) disco, sizeof disco);

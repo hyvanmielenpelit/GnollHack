@@ -766,7 +766,7 @@ struct obj **potmp, **pobj;
             otmp = *potmp = uoname(otmp, UONAME(obj));
         if (!has_oname(otmp) && has_oname(obj))
             otmp = *potmp = oname(otmp, ONAME(obj));
-        Strcpy(debug_buf_2, "merged");
+        debugprint("merged");
         obj_extract_self(obj);
 
         /* really should merge the timeouts */
@@ -823,7 +823,7 @@ struct obj **potmp, **pobj;
             return 1;
         }
 
-        Sprintf(priority_debug_buf_4, "merged: %d", obj->otyp);
+        debugprint("merged: %d", obj->otyp);
         obfree(obj, otmp); /* free(obj), bill->otmp */
         return 1;
     }
@@ -1743,7 +1743,7 @@ struct obj *obj;
     /* merge with quiver in preference to any other inventory slot
        in case quiver and wielded weapon are both eligible; adding
        extra to quivered stack is more useful than to wielded one */
-    Sprintf(priority_debug_buf_3, "addinv: %d", obj->otyp);
+    debugprint("addinv: %d", obj->otyp);
     if (uquiver && merged(&uquiver, &obj)) {
         obj = uquiver;
         if (!obj)
@@ -1892,7 +1892,7 @@ boolean doprinv;
         newsym(u.ux, u.uy);
 
         if (!touch_artifact(obj, &youmonst)) {
-            Strcpy(debug_buf_2, "hold_another_object1");
+            debugprint("hold_another_object1");
             obj_extract_self(obj); /* remove it from the floor */
             dropy(obj);            /* now put it back again :-) */
             return obj;
@@ -1900,12 +1900,12 @@ boolean doprinv;
             /* loose your grip if you revert your form */
             if (drop_fmt)
                 pline(drop_fmt, drop_arg);
-            Strcpy(debug_buf_2, "hold_another_object2");
+            debugprint("hold_another_object2");
             obj_extract_self(obj);
             dropy(obj);
             return obj;
         }
-        Strcpy(debug_buf_2, "hold_another_object3");
+        debugprint("hold_another_object3");
         obj_extract_self(obj);
 #if 0
         if (crysknife) {
@@ -1972,7 +1972,7 @@ struct obj *obj;
 {
     setnotworn(obj);
     freeinv(obj);
-    Sprintf(priority_debug_buf_4, "useupall: %d", obj->otyp);
+    debugprint("useupall: %d", obj->otyp);
     obfree(obj, (struct obj *) 0); /* deletes contents also */
 }
 
@@ -1988,7 +1988,7 @@ register struct obj *obj;
         obj->owt = weight(obj);
         update_inventory();
     } else {
-        Sprintf(priority_debug_buf_3, "useup: %d", obj->otyp);
+        debugprint("useup: %d", obj->otyp);
         useupall(obj);
     }
 }
@@ -2089,7 +2089,7 @@ register struct obj *obj;
         context.last_picked_obj_oid = 0;
         context.last_picked_obj_show_duration_left = 0;
     }
-    Sprintf(debug_buf_4, "freeinv: otyp=%d", obj->otyp);
+    debugprint("freeinv: otyp=%d", obj->otyp);
     extract_nobj(obj, &invent);
     freeinv_core(obj);
     update_inventory();
@@ -2100,8 +2100,7 @@ delallobj(x, y)
 int x, y;
 {
     struct obj *otmp, *otmp2;
-    Strcpy(priority_debug_buf_2, "delallobj");
-    Strcpy(priority_debug_buf_3, "delallobj");
+    debugprint("delallobj");
 
     for (otmp = level.objects[x][y]; otmp; otmp = otmp2) {
         if (otmp == uball)
@@ -2142,11 +2141,10 @@ uint64_t newsym_flags;
         return;
     }
     update_map = (obj->where == OBJ_FLOOR);
-    Sprintf(debug_buf_2, "delobj_with_flags: %d, %u", obj->otyp, obj->o_id);
+    debugprint("delobj_with_flags: %d, %u", obj->otyp, obj->o_id);
     obj_extract_self(obj);
     if (update_map)
         newsym_with_flags(obj->ox, obj->oy, newsym_flags);
-    Sprintf(priority_debug_buf_4, "delobj_with_flags: %d, %u", obj->otyp, obj->o_id);
     obfree(obj, (struct obj *) 0); /* frees contents also */
 }
 
@@ -3952,7 +3950,7 @@ int FDECL((*fn), (OBJ_P)), FDECL((*ckfn), (OBJ_P));
                     otmp = 0; /* and return */
                 } else if (otmp && otmp != otmpo) {
                     /* split occurred, merge again */
-                    Sprintf(priority_debug_buf_3, "askchain: %d", otmp->otyp);
+                    debugprint("askchain: %d", otmp->otyp);
                     (void) merged(&otmpo, &otmp);
                 }
                 goto ret;
@@ -4752,7 +4750,7 @@ boolean* return_to_inv_ptr;
                 otmpsplit = splitobj(otmp, pickcnt);
                 if (otmpsplit)
                 {
-                    Strcpy(debug_buf_2, "display_item_command_menu");
+                    debugprint("display_item_command_menu");
                     obj_extract_self(otmpsplit); /* free from inv */
                     otmpsplit->nomerge = 1;
                     otmpsplit = hold_another_object(otmpsplit, "Oops!  %s out of your grasp!", The(aobjnam(otmpsplit, "slip")), (const char*)0, FALSE);
@@ -4786,7 +4784,7 @@ boolean* return_to_inv_ptr;
             {
                 if ((repeatmenu || returntoinv) && otmpsplit && otmpsplit != otmp && otmpsplit->where == OBJ_INVENT && otmp->where == OBJ_INVENT)
                 {
-                    Sprintf(priority_debug_buf_3, "display_item_command_menu: %d, %d", otmp->otyp, otmpsplit->otyp);
+                    debugprint("display_item_command_menu: %d, %d", otmp->otyp, otmpsplit->otyp);
                     (void)merged(&otmp, &otmpsplit); /* Merge the split object back to the original */
                 }
             }
@@ -6950,7 +6948,7 @@ struct obj *obj;
     if (!obj || !isok(obj->ox, obj->oy))
         return;
 
-    Sprintf(priority_debug_buf_3, "stackobj: %d", obj->otyp);
+    debugprint("stackobj: %d", obj->otyp);
     for (otmp = level.objects[obj->ox][obj->oy]; otmp; otmp = otmp->nexthere)
         if (otmp != obj && merged(&obj, &otmp))
             break;
@@ -7318,7 +7316,7 @@ uint64_t newsym_flags;
         else
             (void) stolen_value(otmp, otmp->ox, otmp->oy, FALSE, FALSE);
     }
-    Sprintf(priority_debug_buf_3, "useupf_with_flags: %d", otmp->otyp);
+    debugprint("useupf_with_flags: %d", otmp->otyp);
     delobj_with_flags(otmp, newsym_flags);
     if (at_u && u.uundetected && hides_under(youmonst.data))
         (void) hideunder(&youmonst);
@@ -7500,9 +7498,7 @@ doorganize() /* inventory organizer by Del Lamb */
     char *objname, *uobjname, *otmpname, *uotmpname;
     const char *adj_type;
     boolean ever_mind = FALSE, collect;
-    Strcpy(debug_buf_2, "doorganize");
-    *debug_buf_3 = 0;
-    *debug_buf_4 = 0;
+    debugprint("doorganize");
 
     if (!invent) {
         You1("aren't carrying anything to adjust.");
@@ -7601,7 +7597,7 @@ doorganize() /* inventory organizer by Del Lamb */
                but splitting to same slot is not */
             || (splitting && let == obj->invlet)) {
  noadjust:
-            Sprintf(priority_debug_buf_3, "doorganize: %d", obj->otyp);
+            debugprint("doorganize: %d", obj->otyp);
             if (splitting)
                 (void) merged(&splitting, &obj);
             if (!ever_mind)
@@ -7646,7 +7642,7 @@ doorganize() /* inventory organizer by Del Lamb */
                with compatible named ones; we only want that if it is
                the 'from' stack (obj) with a name and candidate (otmp)
                without one, not unnamed 'from' with named candidate. */
-            Sprintf(priority_debug_buf_3, "doorganize2: %d", otmp->otyp);
+            debugprint("doorganize2: %d", otmp->otyp);
             otmpname = has_oname(otmp) ? ONAME(otmp) : (char *) 0;
             uotmpname = has_uoname(otmp) ? UONAME(otmp) : (char*)0;
             if ((!otmpname || (objname && !strcmp(objname, otmpname)))
@@ -7679,13 +7675,13 @@ doorganize() /* inventory organizer by Del Lamb */
                         free((genericptr_t) objname), objname = 0;
                 }
 
-                Sprintf(priority_debug_buf_3, "doorganize3: %d", obj->otyp);
+                debugprint("doorganize3: %d", obj->otyp);
                 if (merged(&otmp, &obj)) {
                     adj_type = "Splitting and merging:";
                     obj = otmp;
                     extract_nobj(obj, &invent);
                 } else if (inv_cnt(FALSE) >= 52) {
-                    Sprintf(priority_debug_buf_3, "doorganize4: %d", obj->otyp);
+                    debugprint("doorganize4: %d", obj->otyp);
                     (void) merged(&splitting, &obj); /* undo split */
                     /* "inventory cannot accommodate any more items" */
                     Your("pack is too full.");

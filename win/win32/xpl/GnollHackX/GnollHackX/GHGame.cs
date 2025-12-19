@@ -699,7 +699,8 @@ namespace GnollHackX
                     ismenu = (_ghWindows[winHandle].WindowType == GHWinType.Menu);
                     istext = (_ghWindows[winHandle].WindowType == GHWinType.Text);
                     ismap = (_ghWindows[winHandle].WindowType == GHWinType.Map);
-                    GHApp.AddSentryBreadcrumb("DisplayGHWindow: Displaying " + _ghWindows[winHandle].WindowType.ToString() + " Window", GHConstants.SentryGnollHackCallbackCategoryName);
+                    if (ismenu || istext)
+                        GHApp.AddSentryBreadcrumb("DisplayGHWindow: Displaying " + _ghWindows[winHandle].WindowType.ToString() + " Window", GHConstants.SentryGnollHackCallbackCategoryName);
                 }
             }
 
@@ -3398,7 +3399,7 @@ namespace GnollHackX
                             SentrySdk.CaptureMessage("Log: " + logged_str);
 #endif
                         }
-                        else if (cmd_param == (int)debug_log_types.DEBUGLOG_PANIC)
+                        else if (cmd_param == (int)debug_log_types.DEBUGLOG_PANIC || cmd_param == (int)debug_log_types.DEBUGLOG_IMPOSSIBLE)
                         {
 #if SENTRY
                             string[] strs = logged_str.Split('|');
@@ -3409,12 +3410,12 @@ namespace GnollHackX
                             {
                                 new SentryException
                                 {
-                                    Type = "Panic",
+                                    Type = cmd_param == (int)debug_log_types.DEBUGLOG_IMPOSSIBLE ? "Impossible" : "Panic",
                                     Value = strs[0],
                                     Mechanism = new Mechanism
                                     {
                                         Type = "generic",
-                                        Description = "IssueGuiCommand: DEBUGLOG_PANIC"
+                                        Description = "IssueGuiCommand: " + (cmd_param == (int)debug_log_types.DEBUGLOG_IMPOSSIBLE ? "DEBUGLOG_IMPOSSIBLE" : "DEBUGLOG_PANIC")
                                     }
                                 }
                             };

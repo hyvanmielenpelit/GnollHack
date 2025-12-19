@@ -313,7 +313,7 @@ found_novel_or_manual:
     if (pen->charges < basecost / 2) {
         play_sfx_sound(SFX_GENERAL_OUT_OF_CHARGES);
         Your_ex(ATR_NONE, CLR_MSG_FAIL, "marker is too dry to write that!");
-        Sprintf(priority_debug_buf_4, "dowrite: %d", new_obj->otyp);
+        debugprint("dowrite: %d", new_obj->otyp);
         obfree(new_obj, (struct obj *) 0);
         return 1;
     }
@@ -341,11 +341,11 @@ found_novel_or_manual:
         else
         {
             pline_The_ex(ATR_NONE, CLR_MSG_FAIL, "scroll is now useless and disappears!");
-            Sprintf(priority_debug_buf_2, "dowrite: %d", paper->otyp);
+            debugprint("dowrite: %d", paper->otyp);
             useup(paper);
         }
         update_inventory(); /* pen charges */
-        Sprintf(priority_debug_buf_4, "dowrite2: %d", new_obj->otyp);
+        debugprint("dowrite2: %d", new_obj->otyp);
         obfree(new_obj, (struct obj *) 0);
         return 1;
     }
@@ -368,7 +368,7 @@ found_novel_or_manual:
         {
             impossible("Writing a novel or manual without bookname or bookidx?");
         }
-        Sprintf(priority_debug_buf_4, "dowrite3: %d", new_obj->otyp);
+        debugprint("dowrite3: %d", new_obj->otyp);
         obfree(new_obj, (struct obj*)0);
         return 1;
     }
@@ -422,10 +422,10 @@ found_novel_or_manual:
             } else
                 Sprintf(namebuf, "%s was here!", plname);
             You_multi_ex(ATR_NONE, CLR_MSG_FAIL, no_multiattrs, multicolor_text1, "write \"%s\" and the scroll disappears.", namebuf);
-            Sprintf(priority_debug_buf_2, "dowrite2: %d", paper->otyp);
+            debugprint("dowrite2: %d", paper->otyp);
             useup(paper);
         }
-        Sprintf(priority_debug_buf_4, "dowrite5: %d", new_obj->otyp);
+        debugprint("dowrite5: %d", new_obj->otyp);
         obfree(new_obj, (struct obj *) 0);
         return 1;
     }
@@ -439,15 +439,15 @@ found_novel_or_manual:
            hard to write an unknown scroll while blind */
         play_sfx_sound(SFX_GENERAL_TRIED_ACTION_BUT_IT_FAILED);
         You_ex(ATR_NONE, CLR_MSG_FAIL, "fail to write the scroll correctly and it disappears.");
-        Sprintf(priority_debug_buf_2, "dowrite3: %d", paper->otyp);
+        debugprint("dowrite3: %d", paper->otyp);
         useup(paper);
-        Sprintf(priority_debug_buf_4, "dowrite6: %d", new_obj->otyp);
+        debugprint("dowrite6: %d", new_obj->otyp);
         obfree(new_obj, (struct obj *) 0);
         return 1;
     }
 
     /* useup old scroll / spellbook */
-    Sprintf(priority_debug_buf_2, "dowrite4: %d", paper->otyp);
+    debugprint("dowrite4: %d", paper->otyp);
     useup(paper);
 
     /* success */

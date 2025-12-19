@@ -2815,10 +2815,12 @@ E void VDECL(verbalize_ex, (int, int, const char*, ...)) PRINTF_F(3, 4);
 E void VDECL(verbalize, (const char *, ...)) PRINTF_F(1, 2);
 E void VDECL(raw_printf, (const char *, ...)) PRINTF_F(1, 2);
 E void VDECL(impossible, (const char *, ...)) PRINTF_F(1, 2);
+E void VDECL(debugprint, (const char*, ...)) PRINTF_F(1, 2);
 E void VDECL(config_error_add, (const char *, ...)) PRINTF_F(1, 2);
 E void NDECL(reset_pline);
 E int* NDECL(get_colorless_multicolor_buffer);
 E void FDECL(pline1_multi_ex, (const char*, const char*, const char*, int, int));
+E char* FDECL(allocate_buffer_with_debug_buffers, (const char*));
 
 /* ### polyself.c ### */
 

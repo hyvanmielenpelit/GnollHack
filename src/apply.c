@@ -1819,7 +1819,7 @@ struct obj **optr;
             You_ex(ATR_NONE, CLR_MSG_WARNING, "summon %s!", a_monnam(mtmp));
             if (!obj_resists(obj, 93, 100)) {
                 pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s shattered!", Tobjnam(obj, "have"));
-                Sprintf(priority_debug_buf_2, "use_bell: %d", obj->otyp);
+                debugprint("use_bell: %d", obj->otyp);
                 useup(obj);
                 *optr = 0;
             } else
@@ -1951,7 +1951,7 @@ register struct obj *obj;
     {
         play_simple_object_sound(obj, OBJECT_SOUND_TYPE_APPLY2);
         You("snuff the %s.", s);
-        Strcpy(debug_buf_3, "use_candelabrum");
+        debugprint("use_candelabrum");
         end_burn(obj, TRUE);
         return;
     }
@@ -2277,13 +2277,13 @@ struct obj **optr;
     if (otmp->lamplit)
         obj_merge_light_sources(otmp, otmp);
 
-    Strcpy(debug_buf_3, "use_candle");
+    debugprint("use_candle");
     /* candles are no longer a separate light source */
     if (obj->lamplit)
         end_burn(obj, TRUE);
 
     /* candles are now gone */
-    Sprintf(priority_debug_buf_3, "sell_to_npc: %d", obj->otyp);
+    debugprint("sell_to_npc: %d", obj->otyp);
     useupall(obj);
     /* candelabrum's weight is changing */
     otmp->owt = weight(otmp);
@@ -2311,7 +2311,7 @@ struct obj *otmp;
             pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s%scandle%s flame%s extinguished.", Shk_Your(buf, otmp),
                   (candle ? "" : "candelabrum's "), (many ? "s'" : "'s"),
                   (many ? "s are" : " is"));
-        Strcpy(debug_buf_3, "snuff_candle");
+        debugprint("snuff_candle");
         end_burn(otmp, TRUE);
         return TRUE;
     }
@@ -2393,7 +2393,7 @@ struct obj* otmp;
         if (otmp->where == OBJ_MINVENT ? cansee(x, y) : !Blind)
             pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%storch%s flame%s extinguished.", Shk_Your(buf, otmp),
                 (many ? "es'" : "'s"), (many ? "s are" : " is"));
-        Strcpy(debug_buf_3, "snuff_torch");
+        debugprint("snuff_torch");
         end_burn(otmp, TRUE);
         return TRUE;
     }
@@ -2416,7 +2416,7 @@ struct obj *obj;
             (void) get_obj_location(obj, &x, &y, 0);
             if (obj->where == OBJ_MINVENT ? cansee(x, y) : !Blind)
                 pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s %s out!", Yname2(obj), otense(obj, "go"));
-            Strcpy(debug_buf_3, "snuff_lit");
+            debugprint("snuff_lit");
             end_burn(obj, TRUE);
             return TRUE;
         }
@@ -2504,7 +2504,7 @@ struct obj *obj;
         {
             You_ex(ATR_NONE, CLR_MSG_ATTENTION, "snuff out %s.", yname(obj));
         }
-        Strcpy(debug_buf_3, "use_lamp");
+        debugprint("use_lamp");
         end_burn(obj, TRUE);
         return;
     }
@@ -2659,7 +2659,7 @@ struct obj **optr;
     {        
         play_simple_object_sound(obj, OBJECT_SOUND_TYPE_APPLY2);
         You_ex(ATR_NONE, CLR_MSG_ATTENTION, "snuff the lit potion.");
-        Strcpy(debug_buf_3, "light_cocktail");
+        debugprint("light_cocktail");
         end_burn(obj, TRUE);
         /*
          * Free & add to re-merge potion.  This will average the
@@ -2705,7 +2705,7 @@ struct obj **optr;
     begin_burn(obj, FALSE); /* after shop billing */
     if (split1off && carried(obj)) 
     {
-        Strcpy(debug_buf_2, "light_cocktail");
+        debugprint("light_cocktail");
         obj_extract_self(obj); /* free from inv */
         obj->nomerge = 1;
         obj = hold_another_object(obj, "You drop %s!", doname(obj),
@@ -3282,12 +3282,12 @@ struct obj *obj;
                     verbalize_angry1(you_buy_it);
                 }
             }
-            Sprintf(priority_debug_buf_2, "use_tinning_kit: %d", corpse->otyp);
+            debugprint("use_tinning_kit: %d", corpse->otyp);
             useup(corpse);
         } else {
             if (costly_spot(corpse->ox, corpse->oy) && !corpse->no_charge)
                 verbalize_angry1(you_buy_it);
-            Sprintf(priority_debug_buf_2, "use_tinning_kit: %d", corpse->otyp);
+            debugprint("use_tinning_kit: %d", corpse->otyp);
             useupf(corpse, 1L);
         }
         (void) hold_another_object(can, "You make, but cannot pick up, %s.",
@@ -4112,7 +4112,7 @@ struct obj* obj;
                 pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s disintegrated!", Yobjnam2(otmp, "are"));
                 wandknown = TRUE;
                 //Destroy item;
-                Sprintf(priority_debug_buf_3, "use_wand_on_object: %d", otmp->otyp);
+                debugprint("use_wand_on_object: %d", otmp->otyp);
                 useupall(otmp);
                 break;
             case WAN_POLYMORPH:
@@ -4150,7 +4150,7 @@ struct obj* obj;
                 {
                     pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s!", Yobjnam2(otmp, "evaporate"));
                     wandknown = TRUE;
-                    Sprintf(priority_debug_buf_3, "use_wand_on_object2: %d", otmp->otyp);
+                    debugprint("use_wand_on_object2: %d", otmp->otyp);
                     useupall(otmp);
                 }
                 else
@@ -4302,7 +4302,7 @@ struct obj *tstone;
         else
             pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "A sharp crack shatters %s%s.",
                   (obj->quan > 1L) ? "one of " : "", the(xname(obj)));
-        Sprintf(priority_debug_buf_2, "use_stone: %d", obj->otyp);
+        debugprint("use_stone: %d", obj->otyp);
         useup(obj);
         return;
     }
@@ -4560,7 +4560,7 @@ set_trap(VOID_ARGS)
         /* this shouldn't happen */
         Your_ex(ATR_NONE, CLR_MSG_FAIL, "trap setting attempt fails.");
     }
-    Sprintf(priority_debug_buf_2, "set_trap: %d", otmp->otyp);
+    debugprint("set_trap: %d", otmp->otyp);
     useup(otmp);
     reset_trapset();
     return 0;
@@ -4761,7 +4761,7 @@ struct obj *obj;
                 gotit = FALSE; /* can't pull it free */
             }
             if (gotit) {
-                Strcpy(debug_buf_2, "use_whip");
+                debugprint("use_whip");
                 obj_extract_self(otmp);
                 possibly_unwield(mtmp, FALSE);
                 setmnotwielded(mtmp, otmp);
@@ -5282,10 +5282,10 @@ struct obj *obj;
     setnotworn(obj);
     /* useup() is appropriate, but we want costly_alteration()'s message */
     costly_alteration(obj, COST_SPLAT);
-    Strcpy(debug_buf_2, "use_cream_pie");
+    debugprint("use_cream_pie");
     obj_extract_self(obj);
-    Sprintf(priority_debug_buf_2, "use_cream_pie: %d", obj->otyp);
-    Sprintf(priority_debug_buf_3, "use_cream_pie: %d", obj->otyp);
+    debugprint("use_cream_pie: %d", obj->otyp);
+    debugprint("use_cream_pie: %d", obj->otyp);
     delobj(obj);
     return 0;
 }
@@ -5700,8 +5700,7 @@ discard_broken_wand:
     current_wand = 0;
     if (obj)
     {
-        Sprintf(priority_debug_buf_2, "do_break_wand: %d", obj->otyp);
-        Sprintf(priority_debug_buf_3, "do_break_wand: %d", obj->otyp);
+        debugprint("do_break_wand: %d", obj->otyp);
         delobj(obj);
     }
     nomul(0);

@@ -215,7 +215,7 @@ picklock(VOID_ARGS)
             else
                 pline("%s.", Yobjnam2(xlock.key, "vanish"));
 
-            Sprintf(priority_debug_buf_2, "picklock: %d", xlock.key->otyp);
+            debugprint("picklock: %d", xlock.key->otyp);
             useup(xlock.key);
             xlock.key = 0;
         }
@@ -258,7 +258,7 @@ picklock(VOID_ARGS)
             else
                 pline("%s.", Yobjnam2(xlock.key, "vanish"));
 
-            Sprintf(priority_debug_buf_2, "picklock2: %d", xlock.key->otyp);
+            debugprint("picklock2: %d", xlock.key->otyp);
             useup(xlock.key);
             xlock.key = 0;
         }
@@ -345,7 +345,7 @@ boolean destroyit;
         /* Put the contents on ground at the hero's feet. */
         while ((otmp = box->cobj) != 0) 
         {
-            Strcpy(debug_buf_2, "breakchestlock");
+            debugprint("breakchestlock");
             obj_extract_self(otmp);
             if ((!rn2(3) || otmp->oclass == POTION_CLASS || is_fragile(otmp)) && !is_obj_indestructible(otmp) && !obj_resists(otmp, 0, 100))
             {
@@ -354,7 +354,7 @@ boolean destroyit;
                     loss += stolen_value(otmp, u.ux, u.uy, peaceful_shk, TRUE);
                 if (otmp->quan == 1L) 
                 {
-                    Sprintf(priority_debug_buf_4, "breakchestlock1: %d", otmp->otyp);
+                    debugprint("breakchestlock1: %d", otmp->otyp);
                     //context.suppress_container_deletion_warning = 1;
                     obfree(otmp, (struct obj *) 0);
                     //context.suppress_container_deletion_warning = 0;
@@ -362,7 +362,7 @@ boolean destroyit;
                 }
                 /* this works because we're sure to have at least 1 left;
                    otherwise it would fail since otmp is not in inventory */
-                Sprintf(priority_debug_buf_2, "breakchestlock2: %d", otmp->otyp);
+                debugprint("breakchestlock2: %d", otmp->otyp);
                 //context.suppress_container_deletion_warning = 1;
                 useup(otmp);
                 //context.suppress_container_deletion_warning = 0;
@@ -379,8 +379,8 @@ boolean destroyit;
             loss += stolen_value(box, u.ux, u.uy, peaceful_shk, TRUE);
         if (loss)
             You("owe %ld %s for objects destroyed.", loss, currency(loss));
-        Sprintf(priority_debug_buf_2, "breakchestlock3: %d", box->otyp);
-        Sprintf(priority_debug_buf_3, "breakchestlock3: %d", box->otyp);
+        debugprint("breakchestlock3: %d", box->otyp);
+        debugprint("breakchestlock3: %d", box->otyp);
         //context.suppress_container_deletion_warning = 1;
         delobj(box);
         //context.suppress_container_deletion_warning = 0;
@@ -422,7 +422,7 @@ forcelock(VOID_ARGS)
              */
             play_simple_object_sound(uwep, OBJECT_SOUND_TYPE_BREAK);
             pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%sour %s broke!", (uwep->quan > 1L) ? "One of y" : "Y", xname(uwep));
-            Sprintf(priority_debug_buf_2, "forcelock: %d", uwep->otyp);
+            debugprint("forcelock: %d", uwep->otyp);
             useup(uwep);
             You_ex(ATR_NONE, CLR_MSG_ATTENTION, "give up your attempt to force the lock.");
             exercise(A_DEX, TRUE);

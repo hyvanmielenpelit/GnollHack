@@ -246,7 +246,7 @@ moverock()
                 case LANDMINE:
                     if (rn2(10))
                     {
-                        Strcpy(debug_buf_2, "moverock1");
+                        debugprint("moverock1");
                         obj_extract_self(otmp);
                         place_object(otmp, rx, ry);
                         newsym(sx, sy);
@@ -287,7 +287,7 @@ moverock()
                 case SPIKED_PIT:
                 case PIT:
                     play_sfx_sound_at_location(SFX_BOULDER_FILLS_PIT, rx, ry);
-                    Strcpy(debug_buf_2, "moverock2");
+                    debugprint("moverock2");
                     obj_extract_self(otmp);
                     /* vision kludge to get messages right;
                        the pit will temporarily be seen even
@@ -317,7 +317,7 @@ moverock()
                               trap_type_definitions[ttmp->ttyp].name,
                               surface(rx, ry));
                     deltrap(ttmp);
-                    Sprintf(priority_debug_buf_3, "moverock: %d", otmp->otyp);
+                    debugprint("moverock: %d", otmp->otyp);
                     delobj(otmp);
                     bury_objs(rx, ry);
                     levl[rx][ry].wall_info &= ~W_NONDIGGABLE;
@@ -348,7 +348,7 @@ moverock()
                     {
                         (void) rloco(otmp);
                     } else {
-                        Strcpy(debug_buf_2, "moverock3");
+                        debugprint("moverock3");
                         obj_extract_self(otmp);
                         add_to_migration(otmp);
                         get_level(&dest, newlev);
@@ -607,7 +607,7 @@ xchar x, y;
     if (boulder)
     {
         play_occupation_immediate_sound(oss, OCCUPATION_EATING, OCCUPATION_SOUND_TYPE_START);
-        Sprintf(priority_debug_buf_3, "still_chewing: %d", boulder->otyp);
+        debugprint("still_chewing: %d", boulder->otyp);
         delobj(boulder);         /* boulder goes bye-bye */
         You("eat the boulder."); /* yum */
 

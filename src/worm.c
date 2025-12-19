@@ -564,7 +564,7 @@ int fd;
 {
     int i, j, count;
     struct wseg *curr, *temp;
-    Strcpy(debug_buf_4, "rest_worm");
+    debugprint("rest_worm");
 
     for (i = 1; i < MAX_NUM_WORMS; i++) {
         mread(fd, (genericptr_t) &count, sizeof(int));

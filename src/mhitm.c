@@ -590,7 +590,7 @@ register struct monst *magr, *mdef;
                                 )
                             )
                         {
-                            Sprintf(priority_debug_buf_4, "mattackm: %d", omonwep->otyp);
+                            debugprint("mattackm: %d", omonwep->otyp);
                             if (omonwep->where == OBJ_MINVENT)
                                 m_useup(magr, omonwep);
                             else if (omonwep->where == OBJ_FREE)
@@ -1847,7 +1847,7 @@ register struct obj* omonwep;
 
             if (!gold)
                 break;
-            Strcpy(debug_buf_2, "mdamagem1");
+            debugprint("mdamagem1");
             obj_extract_self(gold);
             add_to_minv(magr, gold);
         }
@@ -1906,7 +1906,7 @@ register struct obj* omonwep;
             if (u.usteed == mdef && otmp == which_armor(mdef, W_SADDLE))
                 /* "You can no longer ride <steed>." */
                 dismount_steed(DISMOUNT_POLY);
-            Strcpy(debug_buf_2, "mdamagem2");
+            debugprint("mdamagem2");
             obj_extract_self(otmp);
             if (otmp->owornmask) {
                 mdef->worn_item_flags &= ~otmp->owornmask;

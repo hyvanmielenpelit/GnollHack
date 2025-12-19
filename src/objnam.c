@@ -5388,7 +5388,7 @@ retry:
     {
         place_object(otmp, u.ux, u.uy); /* make it viable light source */
         begin_burn(otmp, FALSE);
-        Strcpy(debug_buf_2, "readobjnam");
+        debugprint("readobjnam");
         obj_extract_self(otmp); /* now release it for caller's use */
     }
 
@@ -5816,7 +5816,7 @@ retry:
     if ((is_quest_artifact(otmp) || (otmp->oartifact && noartiexisting > 2 && rn2(noartiexisting - 1) > 1)) && !wiz_wishing) /* noartiexisting - 1 now accounts for Gladstone at Mines' End in order to achieve similar probabilities as in NetHack */
     {
         artifact_exists(otmp, safe_oname(otmp), FALSE);
-        Sprintf(priority_debug_buf_4, "readobjnam: %d", otmp->otyp);
+        debugprint("readobjnam: %d", otmp->otyp);
         obfree(otmp, (struct obj *) 0);
         otmp = (struct obj *) &zeroobj;
         pline("For a moment, you feel %s in your %s, but it disappears!",

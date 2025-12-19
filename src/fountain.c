@@ -1158,7 +1158,7 @@ register struct obj *obj;
                             money -= coin_loss * denomination;
                             if (!otmp->quan)
                             {
-                                Sprintf(priority_debug_buf_3, "dipfountain: %d", otmp->otyp);
+                                debugprint("dipfountain: %d", otmp->otyp);
                                 delobj(otmp);
                             }
                         }
@@ -1349,7 +1349,7 @@ drinksink()
         do {
             otmp = mkobj(POTION_CLASS, FALSE, FALSE);
             if (otmp && otmp->otyp == POT_WATER) {
-                Sprintf(priority_debug_buf_4, "drinksink: %d", otmp->otyp);
+                debugprint("drinksink: %d", otmp->otyp);
                 obfree(otmp, (struct obj *) 0);
                 otmp = (struct obj *) 0;
             }
@@ -1361,7 +1361,7 @@ drinksink()
         otmp->quan++;       /* Avoid panic upon useup() */
         otmp->speflags |= SPEFLAGS_FROM_SINK; /* kludge for docall() */
         (void) dopotion(otmp);
-        Sprintf(priority_debug_buf_4, "drinksink2: %d", otmp->otyp);
+        debugprint("drinksink2: %d", otmp->otyp);
         obfree(otmp, (struct obj *) 0);
         break;
     case 5:

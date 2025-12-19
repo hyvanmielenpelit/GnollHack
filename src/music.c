@@ -369,7 +369,7 @@ int force;
                                                            : "");
                         if (mtmp)
                             mtmp->mtrapped = 0;
-                        Strcpy(debug_buf_2, "do_earthquake");
+                        debugprint("do_earthquake");
                         obj_extract_self(otmp);
                         (void) flooreffects(otmp, x, y, "");
                         break;

@@ -1088,7 +1088,7 @@ boolean is_disintegrated;
         full_location_transform(x, y, lava ? LAVAPOOL : MOAT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, lev1->floortyp, lev1->floorsubtyp, lev1->floorvartyp, FALSE, FALSE, 0, 0, FALSE);
         if ((otmp2 = sobj_at(BOULDER, x, y)) != 0)
         {
-            Strcpy(debug_buf_2, "destroy_drawbridge");
+            debugprint("destroy_drawbridge");
             obj_extract_self(otmp2);
             (void) flooreffects(otmp2, x, y, "fall");
         }

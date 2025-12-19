@@ -161,11 +161,8 @@ boolean quietly;
     xchar ltmp;
     d_level uz_save;
     char whynot[BUFSZ];
-    Strcpy(debug_buf_1, "dosave0");
-    Strcpy(debug_buf_2, "dosave0");
-    Strcpy(debug_buf_3, "dosave0");
-    Strcpy(debug_buf_4, "dosave0");
     Strcpy(saved_dgnlvl_name_buf, "");
+    debugprint("dosave0");
     issue_breadcrumb("Start dosave0");
 
 #ifdef WHEREIS_FILE
@@ -1489,7 +1486,7 @@ int fd;
     /* bwrite() before bufon() uses plain write() */
     bwrite(fd, (genericptr_t) &plsiztmp, sizeof(plsiztmp));
     bwrite(fd, (genericptr_t) plname, plsiztmp);
-    Sprintf(priority_debug_buf_4, "store_plname_in_file (fd=%d)", fd);
+    debugprint("store_plname_in_file (fd=%d)", fd);
     bufon(fd);
     return;
 }
@@ -1537,7 +1534,7 @@ int64_t time_stamp;
     bufoff(fd);
     /* bwrite() before bufon() uses plain write() */
     bwrite(fd, (genericptr_t)&gamestats, sizeof gamestats);
-    Sprintf(priority_debug_buf_4, "store_save_game_stats_in_file (fd=%d)", fd);
+    debugprint("store_save_game_stats_in_file (fd=%d)", fd);
     bufon(fd);
     return;
 }
@@ -1594,7 +1591,7 @@ int fd;
     bufoff(fd);
     /* bwrite() before bufon() uses plain write() */
     bwrite(fd, (genericptr_t) &sfsaveinfo, sizeof sfsaveinfo);
-    Sprintf(priority_debug_buf_4, "store_savefileinfo (fd=%d)", fd);
+    debugprint("store_savefileinfo (fd=%d)", fd);
     bufon(fd);
     return;
 }

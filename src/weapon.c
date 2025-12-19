@@ -1292,7 +1292,7 @@ boolean polyspot;
     if (!attacktype(mon->data, AT_WEAP)) {
         setmnotwielded(mon, mw_tmp);
         mon->weapon_strategy = NO_WEAPON_WANTED;
-        Strcpy(debug_buf_2, "possibly_unwield");
+        debugprint("possibly_unwield");
         obj_extract_self(obj);
         if (cansee(mon->mx, mon->my)) {
             pline("%s drops %s.", Monnam(mon), distant_name(obj, doname));
@@ -4411,7 +4411,7 @@ register struct obj *obj;
         return;
 
     if ((artifact_light(obj) || has_obj_mythic_magical_light(obj) || obj_shines_magical_light(obj)) && obj->lamplit) {
-        Strcpy(debug_buf_3, "setmnotwielded");
+        debugprint("setmnotwielded");
         end_burn(obj, FALSE);
         if (canseemon(mon))
             pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s in %s %s %s shining.", The(xname(obj)),

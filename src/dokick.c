@@ -720,12 +720,12 @@ xchar x, y; /* coordinates where object was before the impact, not after */
                     stolen_value(otmp, x, y, is_peaceful(shkp), TRUE);
             }
             if (otmp->quan > 1L) {
-                Sprintf(priority_debug_buf_2, "container_impact_dmg: %d", otmp->otyp);
+                debugprint("container_impact_dmg: %d", otmp->otyp);
                 useup(otmp);
             } else {
-                Strcpy(debug_buf_2, "container_impact_dmg");
+                debugprint("container_impact_dmg");
                 obj_extract_self(otmp);
-                Sprintf(priority_debug_buf_4, "container_impact_dmg: %d", otmp->otyp);
+                debugprint("container_impact_dmg: %d", otmp->otyp);
                 obfree(otmp, (struct obj *) 0);
             }
             /* contents of this container are no longer known */
@@ -913,7 +913,7 @@ boolean is_golf_swing;
             pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s %s loose.", The(distant_name(kickedobj, xname)),
                   otense(kickedobj, "come"));
         kickedobj->speflags &= ~SPEFLAGS_CAUGHT_IN_LEAVES;
-        Strcpy(debug_buf_2, "really_kick_object");
+        debugprint("really_kick_object");
         obj_extract_self(kickedobj);
         newsym(x, y);
         if (costly && (!costly_spot(u.ux, u.uy)
@@ -1043,7 +1043,7 @@ boolean is_golf_swing;
 
     if (costly && !isgold)
         addtobill(kickedobj, FALSE, FALSE, TRUE);
-    Strcpy(debug_buf_2, "really_kick_object2");
+    debugprint("really_kick_object2");
     obj_extract_self(kickedobj);
     (void) snuff_candle(kickedobj);
     newsym(x, y);
@@ -2079,7 +2079,7 @@ boolean dropall;
         if ((isrock && obj->otyp == BOULDER)
             || (!dropall && rn2(obj->otyp == BOULDER ? 30 : 3)))
             continue;
-        Strcpy(debug_buf_2, "impact_drop");
+        debugprint("impact_drop");
         obj_extract_self(obj);
 
         if (costly) {
@@ -2260,9 +2260,9 @@ boolean shop_floor_obj;
             if (otmp->otyp == EGG && (otmp->speflags & SPEFLAGS_YOURS) && otmp->corpsenm >= LOW_PM)
                 change_luck(-1* (int)min(otmp->quan, 5L), TRUE);
         }
-        Strcpy(debug_buf_2, "ship_object");
+        debugprint("ship_object");
         obj_extract_self(otmp);
-        Sprintf(priority_debug_buf_4, "ship_object: %d", otmp->otyp);
+        debugprint("ship_object: %d", otmp->otyp);
         obfree(otmp, (struct obj *) 0);
         return TRUE;
     }
@@ -2316,7 +2316,7 @@ boolean near_hero;
         if (!near_hero ^ (where == MIGR_WITH_HERO))
             continue;
 
-        Strcpy(debug_buf_2, "obj_delivery");
+        debugprint("obj_delivery");
         obj_extract_self(otmp);
         otmp->owornmask = 0L;
 
@@ -2346,7 +2346,7 @@ boolean near_hero;
                         continue;
                 } else if (breaktest(otmp)) {
                     /* assume it broke before player arrived, no messages */
-                    Sprintf(priority_debug_buf_3, "obj_delivery: %d", otmp->otyp);
+                    debugprint("obj_delivery: %d", otmp->otyp);
                     delobj(otmp);
                     continue;
                 }
@@ -2362,7 +2362,7 @@ boolean near_hero;
             otmp->ox = otmp->oy = 0;
             if (rloco(otmp) && !nobreak && breaktest(otmp)) {
                 /* assume it broke before player arrived, no messages */
-                Sprintf(priority_debug_buf_3, "obj_delivery2: %d", otmp->otyp);
+                debugprint("obj_delivery2: %d", otmp->otyp);
                 delobj(otmp);
             }
         }
@@ -2394,7 +2394,7 @@ uint64_t deliverflags;
             continue;
 
         if ((mtmp->data->mflags2 & otmp->corpsenm) != 0) {
-            Strcpy(debug_buf_2, "deliver_obj_to_mon");
+            debugprint("deliver_obj_to_mon");
             obj_extract_self(otmp);
             otmp->owornmask = 0L;
             otmp->ox = otmp->oy = 0;

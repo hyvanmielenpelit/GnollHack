@@ -794,9 +794,12 @@ VA_DECL(const char *, str)
 #ifdef GNOLLHACK_MAIN_PROGRAM
         if (issue_gui_command)
         {
-            char dbufs[BUFSZ * 18];
-            Sprintf(dbufs, "%s|P1:%s, P2:%s, P3:%s, P4:%s, B1:%s, B2:%s, B3:%s, B4:%s", buf, priority_debug_buf_1, priority_debug_buf_2, priority_debug_buf_3, priority_debug_buf_4, debug_buf_1, debug_buf_2, debug_buf_3, debug_buf_4);
-            issue_debuglog_panic(0, dbufs);
+            char* dbufs = allocate_buffer_with_debug_buffers(buf);
+            if (dbufs)
+            {
+                issue_debuglog_panic(0, dbufs);
+                free(dbufs);
+            }
         }
 
         if (open_special_view)
@@ -1661,7 +1664,7 @@ int how;
                 bless(potion);
                 (void) peffects(potion); /* always -1 for restore ability */
                 /* not useup(); we haven't put this potion into inventory */
-                Sprintf(priority_debug_buf_4, "done: %d", potion->otyp);
+                debugprint("done: %d", potion->otyp);
                 obfree(potion, (struct obj *) 0);
             }
             killer.name[0] = '\0';
@@ -1727,7 +1730,7 @@ int how;
                 pline_The_ex(ATR_NONE, CLR_MSG_ATTENTION, "medallion crumbles to dust!");
                 if (uamul)
                 {
-                    Sprintf(priority_debug_buf_2, "done: %d", uamul->otyp);
+                    debugprint("done: %d", uamul->otyp);
                     useup(uamul);
                 }
             }
@@ -1744,7 +1747,7 @@ int how;
                     pline_The_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s crumbles to dust!", cxname(lifesaver));
                     if (lifesaver)
                     {
-                        Sprintf(priority_debug_buf_2, "done2: %d", lifesaver->otyp);
+                        debugprint("done2: %d", lifesaver->otyp);
                         useup(lifesaver);
                     }
                 }
@@ -1966,12 +1969,12 @@ int how;
        big trouble (`obj_is_local' panic) for savebones() -> savelev() */
     if (thrownobj && thrownobj->where == OBJ_FREE)
     {
-        Sprintf(priority_debug_buf_4, "really_done: %d", thrownobj->otyp);
+        debugprint("really_done: %d", thrownobj->otyp);
         obfree(thrownobj, (struct obj*)0);
     }
     if (kickedobj && kickedobj->where == OBJ_FREE)
     {
-        Sprintf(priority_debug_buf_4, "really_done2: %d", kickedobj->otyp);
+        debugprint("really_done2: %d", kickedobj->otyp);
         obfree(kickedobj, (struct obj*)0);
     }
 
@@ -3586,7 +3589,7 @@ restore_killers(fd)
 int fd;
 {
     struct kinfo *kptr;
-    Strcpy(debug_buf_4, "restore_killers");
+    debugprint("restore_killers");
 
     for (kptr = &killer; kptr != (struct kinfo *) 0; kptr = kptr->next) {
         mread(fd, (genericptr_t) kptr, sizeof (struct kinfo));

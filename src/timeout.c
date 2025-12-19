@@ -541,7 +541,7 @@ struct kinfo *kptr;
      * [formerly implicit] change of form; polymon() takes care of that.
      * Temporarily ungenocide if necessary.
      */
-    Strcpy(debug_buf_4, "slimed_to_death");
+    debugprint("slimed_to_death");
     if (emitted_light_range(youmonst.data))
         del_light_source(LS_MONSTER, monst_to_any(&youmonst));
     if (mon_ambient_sound(youmonst.data))
@@ -873,7 +873,7 @@ nh_timeout()
                 if (uamul && uamul->otyp == AMULET_OF_STRANGULATION) {
                     play_sfx_sound(SFX_ITEM_VANISHES);
                     Your_ex(ATR_NONE, CLR_MSG_ATTENTION, "amulet vanishes!");
-                    Sprintf(priority_debug_buf_2, "nh_timeout: %d", uamul->otyp);
+                    debugprint("nh_timeout: %d", uamul->otyp);
                     useup(uamul);
                 }
                 break;
@@ -1603,13 +1603,13 @@ int64_t timeout;
             /* Instead of ordinary egg timeout use a short one */
             attach_egg_hatch_timeout(egg, (int64_t) rnd(12));
         } else if (carried(egg)) {
-            Sprintf(priority_debug_buf_2, "hatch_egg: %d", egg->otyp);
+            debugprint("hatch_egg: %d", egg->otyp);
             useup(egg);
         } else {
             /* free egg here because we use it above */
-            Strcpy(debug_buf_2, "hatch_egg");
+            debugprint("hatch_egg");
             obj_extract_self(egg);
-            Sprintf(priority_debug_buf_4, "hatch_egg: %d", egg->otyp);
+            debugprint("hatch_egg: %d", egg->otyp);
             obfree(egg, (struct obj *) 0);
         }
         if (redraw)
@@ -1911,7 +1911,7 @@ int64_t timeout;
 
         if (how_long >= obj->age) {
             obj->age = 0;
-            Strcpy(debug_buf_3, "burn_object1");
+            debugprint("burn_object1");
             end_burn(obj, FALSE);
 
             if (is_candelabrum) {
@@ -1921,9 +1921,9 @@ int64_t timeout;
                 /* get rid of candles and burning oil potions;
                    we know this object isn't carried by hero,
                    nor is it migrating */
-                Strcpy(debug_buf_2, "burn_object1");
+                debugprint("burn_object1");
                 obj_extract_self(obj);
-                Sprintf(priority_debug_buf_4, "burn_object: %d", obj->otyp);
+                debugprint("burn_object: %d", obj->otyp);
                 obfree(obj, (struct obj *) 0);
                 obj = (struct obj *) 0;
             }
@@ -1965,19 +1965,19 @@ int64_t timeout;
                 break;
             }
         }
-        Strcpy(debug_buf_3, "burn_object2");
+        debugprint("burn_object2");
         end_burn(obj, FALSE); /* turn off light source */
         if (carried(obj)) {
-            Sprintf(priority_debug_buf_3, "burn_object: %d", obj->otyp);
+            debugprint("burn_object: %d", obj->otyp);
             useupall(obj);
         } else {
             /* clear migrating obj's destination code before obfree
                to avoid false complaint of deleting worn item */
             if (obj->where == OBJ_MIGRATING)
                 obj->owornmask = 0L;
-            Strcpy(debug_buf_2, "burn_object2");
+            debugprint("burn_object2");
             obj_extract_self(obj);
-            Sprintf(priority_debug_buf_4, "burn_object2: %d", obj->otyp);
+            debugprint("burn_object2: %d", obj->otyp);
             obfree(obj, (struct obj *) 0);
         }
         obj = (struct obj *) 0;
@@ -2040,7 +2040,7 @@ int64_t timeout;
                     break;
                 }
             }
-            Strcpy(debug_buf_3, "burn_object3");
+            debugprint("burn_object3");
             end_burn(obj, FALSE);
             break;
 
@@ -2128,12 +2128,12 @@ int64_t timeout;
                         : "Its flame dies."));
                 
             }
-            Strcpy(debug_buf_3, "burn_object4");
+            debugprint("burn_object4");
             end_burn(obj, FALSE);
 
             if (carried(obj)) 
             {
-                Sprintf(priority_debug_buf_3, "burn_object2: %d", obj->otyp);
+                debugprint("burn_object2: %d", obj->otyp);
                 useupall(obj);
             }
             else
@@ -2142,9 +2142,9 @@ int64_t timeout;
                     so obfree won't think this item is worn */
                 if (obj->where == OBJ_MIGRATING)
                     obj->owornmask = 0L;
-                Strcpy(debug_buf_2, "burn_object3");
+                debugprint("burn_object3");
                 obj_extract_self(obj);
-                Sprintf(priority_debug_buf_4, "burn_object3: %d", obj->otyp);
+                debugprint("burn_object3: %d", obj->otyp);
                 obfree(obj, (struct obj*)0);
             }
             obj = (struct obj*)0;
@@ -2256,7 +2256,7 @@ int64_t timeout;
                                                    : "Its flame dies."));
                 }
             }
-            Strcpy(debug_buf_3, "burn_object5");
+            debugprint("burn_object5");
             end_burn(obj, FALSE);
 
             if (is_candelabrum) {
@@ -2264,16 +2264,16 @@ int64_t timeout;
                 obj->owt = weight(obj);
             } else {
                 if (carried(obj)) {
-                    Sprintf(priority_debug_buf_3, "burn_object3: %d", obj->otyp);
+                    debugprint("burn_object3: %d", obj->otyp);
                     useupall(obj);
                 } else {
                     /* clear migrating obj's destination code
                        so obfree won't think this item is worn */
                     if (obj->where == OBJ_MIGRATING)
                         obj->owornmask = 0L;
-                    Strcpy(debug_buf_2, "burn_object4");
+                    debugprint("burn_object4");
                     obj_extract_self(obj);
-                    Sprintf(priority_debug_buf_4, "burn_object4: %d", obj->otyp);
+                    debugprint("burn_object4: %d", obj->otyp);
                     obfree(obj, (struct obj *) 0);
                 }
                 obj = (struct obj *) 0;
@@ -2490,7 +2490,7 @@ boolean timer_attached;
         timer_attached = FALSE;
 
     if (!timer_attached) {
-        Strcpy(debug_buf_4, "end_burn");
+        debugprint("end_burn");
         /* [DS] Cleanup explicitly, since timer cleanup won't happen */
         del_light_source(LS_OBJECT, obj_to_any(obj));
         obj->lamplit = 0;
@@ -2514,7 +2514,7 @@ int64_t expire_time;
         return;
     }
 
-    Strcpy(debug_buf_4, "cleanup_burn");
+    debugprint("cleanup_burn");
     del_light_source(LS_OBJECT, obj_to_any(obj));
     obj->lamplit = 0;
 
@@ -2629,16 +2629,16 @@ int64_t timeout;
     /* Destroy item */
     if (carried(obj)) 
     {
-        Sprintf(priority_debug_buf_3, "burn_object4: %d", obj->otyp);
+        debugprint("burn_object4: %d", obj->otyp);
         useupall(obj);
     }
     else 
     {
         /* clear migrating obj's destination code
            so obfree won't think this item is worn */
-        Strcpy(debug_buf_2, "unsummon_item");
+        debugprint("unsummon_item");
         obj_extract_self(obj);
-        Sprintf(priority_debug_buf_4, "unsummon_item: %d", obj->otyp);
+        debugprint("unsummon_item: %d", obj->otyp);
         obfree(obj, (struct obj*) 0);
     }
     obj = (struct obj*) 0;
@@ -3072,9 +3072,7 @@ run_timers()
         if (curr->kind == TIMER_OBJECT)
         {
             (curr->arg.a_obj)->timed--;
-            Sprintf(priority_debug_buf_2, "run_timers: %d, %d", (curr->arg.a_obj)->otyp, (curr->arg.a_obj)->corpsenm);
-            Strcpy(priority_debug_buf_3, "run_timers");
-            Strcpy(priority_debug_buf_4, "run_timers");
+            debugprint("run_timers: %d, %d", (curr->arg.a_obj)->otyp, (curr->arg.a_obj)->corpsenm);
         }
         else if (curr->kind == TIMER_MONSTER)
         {
@@ -3650,7 +3648,7 @@ int64_t adjust;     /* how much to adjust timeout */
 {
     int count;
     timer_element *curr;
-    Strcpy(debug_buf_4, "restore_timers");
+    debugprint("restore_timers");
 
     if (range == RANGE_GLOBAL)
         mread(fd, (genericptr_t) &timer_id, sizeof timer_id);

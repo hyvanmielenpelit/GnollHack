@@ -690,15 +690,10 @@ E const char* const hofe_titles[3];
 
 E uint64_t file_end_marker;
 
-E char debug_buf_1[BUFSZ * 2];
-E char debug_buf_2[BUFSZ * 2];
-E char debug_buf_3[BUFSZ * 2];
-E char debug_buf_4[BUFSZ * 2];
-
-E char priority_debug_buf_1[BUFSZ * 2];
-E char priority_debug_buf_2[BUFSZ * 2];
-E char priority_debug_buf_3[BUFSZ * 2];
-E char priority_debug_buf_4[BUFSZ * 2];
+#define NUM_DEBUGBUFS 10
+#define DEBUGBUFSIZ (BUFSZ * 2)
+E char debug_bufs[NUM_DEBUGBUFS][DEBUGBUFSIZ];
+E int debug_buf_idx;
 
 #undef E
 

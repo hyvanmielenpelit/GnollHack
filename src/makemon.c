@@ -817,7 +817,7 @@ register struct monst *mtmp;
                     else
                     {
                         /* free object */
-                        Sprintf(priority_debug_buf_4, "m_initweap: %d", otmp->otyp);
+                        debugprint("m_initweap: %d", otmp->otyp);
                         obfree(otmp, (struct obj*) 0);
                     }
                 }
@@ -1607,7 +1607,7 @@ register struct monst *mtmp;
                     else
                     {
                         /* free object */
-                        Sprintf(priority_debug_buf_4, "m_initweap2: %d", otmp->otyp);
+                        debugprint("m_initweap2: %d", otmp->otyp);
                         obfree(otmp, (struct obj*) 0);
                     }
                 }
@@ -4550,7 +4550,7 @@ int otyp;
                 set_random_gold_amount(MOBJ(mtmp));
         }
         /* make sure container contents are free'ed */
-        Sprintf(priority_debug_buf_4, "set_mimic_new_mobj: %d", otmp->otyp);
+        debugprint("set_mimic_new_mobj: %d", otmp->otyp);
         //context.suppress_container_deletion_warning = 1;
         obfree(otmp, (struct obj*)0);
         //context.suppress_container_deletion_warning = 0;
@@ -4761,7 +4761,7 @@ register struct monst *mtmp;
                     //    MOBJ(mtmp)->where = OBJ_FLOOR;
                     //}
                     /* make sure container contents are free'ed */
-                    Sprintf(priority_debug_buf_4, "set_mimic_sym: %d", otmp->otyp);
+                    debugprint("set_mimic_sym: %d", otmp->otyp);
                     //context.suppress_container_deletion_warning = 1;
                     obfree(otmp, (struct obj*)0);
                     //context.suppress_container_deletion_warning = 0;

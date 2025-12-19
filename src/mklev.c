@@ -2844,9 +2844,9 @@ int dist;
             fracture_rock(otmp, FALSE);
             make_rocks = FALSE; /* don't bother with more rocks */
         } else {
-            Strcpy(debug_buf_2, "mkinvpos");
+            debugprint("mkinvpos");
             obj_extract_self(otmp);
-            Sprintf(priority_debug_buf_4, "mkinvpos: %d", otmp->otyp);
+            debugprint("mkinvpos: %d", otmp->otyp);
             obfree(otmp, (struct obj *) 0);
         }
     }

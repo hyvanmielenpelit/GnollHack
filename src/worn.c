@@ -1772,7 +1772,7 @@ struct obj *obj;
 
     }
 
-    Strcpy(debug_buf_2, "m_lose_armor");
+    debugprint("m_lose_armor");
     obj_extract_self(obj);
     place_object(obj, mon->mx, mon->my);
     /* call stackobj() if we ever drop anything that can merge */

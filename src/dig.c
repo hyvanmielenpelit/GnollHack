@@ -462,7 +462,7 @@ dig(VOID_ARGS)
             if ((bobj = sobj_at(BOULDER, dpx, dpy)) != 0) 
             {
                 /* another boulder here, restack it to the top */
-                Strcpy(debug_buf_2, "dig");
+                debugprint("dig");
                 obj_extract_self(bobj);
                 place_object(bobj, dpx, dpy);
             }
@@ -1016,8 +1016,8 @@ coord *cc;
             pline("KADOOM!  The boulder falls in!");
             (void) delfloortrap(ttmp);
         }
-        Sprintf(priority_debug_buf_2, "dighole: %d", boulder_here->otyp);
-        Sprintf(priority_debug_buf_3, "dighole: %d", boulder_here->otyp);
+        debugprint("dighole: %d", boulder_here->otyp);
+        debugprint("dighole: %d", boulder_here->otyp);
         delobj(boulder_here);
         return TRUE;
 
@@ -2678,8 +2678,8 @@ struct obj* origobj;
                 if(see_it)
                     pline("%s!", Tobjnam(otmp, "evaporate"));
 
-                Sprintf(priority_debug_buf_2, "zap_evaporation: %d", otmp->otyp);
-                Sprintf(priority_debug_buf_3, "zap_evaporation: %d", otmp->otyp);
+                debugprint("zap_evaporation: %d", otmp->otyp);
+                debugprint("zap_evaporation: %d", otmp->otyp);
                 delobj(otmp);
             }
         }
@@ -2952,7 +2952,7 @@ buried_ball_to_punishment()
     cc.y = u.uy;
     ball = buried_ball(&cc);
     if (ball) {
-        Strcpy(debug_buf_2, "buried_ball_to_punishment");
+        debugprint("buried_ball_to_punishment");
         obj_extract_self(ball);
 #if 0
         /* rusting buried metallic objects is not implemented yet */
@@ -2976,7 +2976,7 @@ buried_ball_to_freedom()
     cc.y = u.uy;
     ball = buried_ball(&cc);
     if (ball) {
-        Strcpy(debug_buf_2, "buried_ball_to_freedom");
+        debugprint("buried_ball_to_freedom");
         obj_extract_self(ball);
 #if 0
         /* rusting buried metallic objects is not implemented yet */
@@ -3018,11 +3018,11 @@ boolean *dealloced;
     if (otmp->otyp == LEASH && otmp->leashmon != 0)
         o_unleash(otmp);
 
-    Strcpy(debug_buf_3, "bury_an_obj");
+    debugprint("bury_an_obj");
     if (otmp->lamplit && otmp->otyp != POT_OIL)
         end_burn(otmp, TRUE);
 
-    Strcpy(debug_buf_2, "bury_an_obj");
+    debugprint("bury_an_obj");
     obj_extract_self(otmp);
 
     if (is_obj_unburiable(otmp)) //(otmp == uchain || obj_resists(otmp, 0, 0))
@@ -3048,7 +3048,7 @@ boolean *dealloced;
         /* merges into burying material */
         if (dealloced)
             *dealloced = TRUE;
-        Sprintf(priority_debug_buf_4, "bury_an_obj: %d", otmp->otyp);
+        debugprint("bury_an_obj: %d", otmp->otyp);
         obfree(otmp, (struct obj *) 0);
         return otmp2;
     }
@@ -3060,10 +3060,7 @@ boolean *dealloced;
         ; /* should cancel timer if under_ice */
     } else if ((under_ice ? otmp->oclass == POTION_CLASS : is_rottable(otmp))
                && !obj_resists(otmp, 5, 95)) {
-        Sprintf(priority_debug_buf_1, "bury_an_obj (timed): %d, %d", otmp->otyp, otmp->corpsenm);
-        Strcpy(priority_debug_buf_2, "bury_an_obj");
-        Strcpy(priority_debug_buf_3, "bury_an_obj");
-        Strcpy(priority_debug_buf_4, "bury_an_obj");
+        debugprint("bury_an_obj (timed): %d, %d", otmp->otyp, otmp->corpsenm);
         (void) start_timer((under_ice ? 0L : 250L) + (int64_t) rnd(250),
                            TIMER_OBJECT, ROT_ORGANIC, obj_to_any(otmp));
 #if 0
@@ -3147,7 +3144,7 @@ boolean verbose, buriedsearchableonly;
             }
             else
             {
-                Strcpy(debug_buf_2, "unearth_objs");
+                debugprint("unearth_objs");
                 obj_extract_self(otmp);
                 if (otmp->timed)
                     (void) stop_timer(ROT_ORGANIC, obj_to_any(otmp));
@@ -3195,9 +3192,9 @@ int64_t timeout UNUSED;
         if (obj->cobj == cobj_to_bury)
             break; /* Something's wrong, avoid infine loop */
     }
-    Strcpy(debug_buf_2, "rot_organic");
+    debugprint("rot_organic");
     obj_extract_self(obj);
-    Sprintf(priority_debug_buf_4, "rot_organic: %d", obj->otyp);
+    debugprint("rot_organic: %d", obj->otyp);
     //context.suppress_container_deletion_warning = 1;
     obfree(obj, (struct obj *) 0);
     //context.suppress_container_deletion_warning = 0;
@@ -3256,7 +3253,7 @@ int64_t timeout;
            freeing a worn object doesn't get a false hit */
         obj->owornmask = 0L;
     }
-    Sprintf(priority_debug_buf_3, "rot_corpse: %d, %d", obj->otyp, obj->corpsenm);
+    debugprint("rot_corpse: %d, %d", obj->otyp, obj->corpsenm);
     rot_organic(arg, timeout);
     if (on_floor) {
         struct monst *mtmp = m_at(x, y);

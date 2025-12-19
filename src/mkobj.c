@@ -1035,7 +1035,7 @@ struct obj *obj;
     /* if we have both parent and child, try to merge them;
        if successful, return the combined stack, otherwise return null */
     if(oparent && ochild)
-        Sprintf(priority_debug_buf_3, "unsplitobj: %d", ochild->otyp);
+        debugprint("unsplitobj: %d", ochild->otyp);
     return (oparent && ochild && merged(&oparent, &ochild)) ? oparent : 0;
 }
 
@@ -1060,8 +1060,7 @@ replace_object(obj, otmp)
 struct obj *obj;
 struct obj *otmp;
 {
-    Sprintf(debug_buf_3, "replace_object: otyp=%d, where=%d", obj->otyp, obj->where);
-    *debug_buf_4 = 0;
+    debugprint("replace_object: otyp=%d, where=%d", obj->otyp, obj->where);
     otmp->where = obj->where;
     switch (obj->where) {
     case OBJ_FREE:
@@ -1337,8 +1336,7 @@ void
 clear_memoryobjs()
 {
     struct obj* obj; // , * contained_obj;
-    Strcpy(debug_buf_2, "clear_memoryobjs");
-    Strcpy(priority_debug_buf_4, "clear_memoryobjs");
+    debugprint("clear_memoryobjs");
     //context.suppress_container_deletion_warning = 1;
     while ((obj = memoryobjs) != 0) {
         obj_extract_self(obj);
@@ -1366,8 +1364,7 @@ int x, y;
         level.locations[x][y].hero_memory_layers.layer_gui_glyphs[LAYER_COVER_OBJECT] = NO_GLYPH;
         level.locations[x][y].hero_memory_layers.o_id = 0;
 
-        Strcpy(debug_buf_2, "clear_hero_object_memory_at");
-        Strcpy(priority_debug_buf_4, "clear_hero_object_memory_at");
+        debugprint("clear_hero_object_memory_at");
         //context.suppress_container_deletion_warning = 1;
 
         /* Clear actual memory objects */
@@ -3945,7 +3942,7 @@ void
 remove_memory_object(otmp)
 register struct obj* otmp;
 {
-    Sprintf(debug_buf_4, "remove_memory_object: otyp=%d, where=%d", otmp->otyp, otmp->where);
+    debugprint("remove_memory_object: otyp=%d, where=%d", otmp->otyp, otmp->where);
 
     xchar x = otmp->ox;
     xchar y = otmp->oy;
@@ -4097,7 +4094,7 @@ void
 remove_object(otmp)
 register struct obj *otmp;
 {
-    Sprintf(debug_buf_4, "remove_object, otyp=%d", otmp->otyp);
+    debugprint("remove_object, otyp=%d", otmp->otyp);
 
     xchar x = otmp->ox;
     xchar y = otmp->oy;
@@ -4123,7 +4120,7 @@ struct monst *mtmp;
 {
     struct obj *otmp, *mwep = MON_WEP(mtmp);
     boolean keeping_mon = (!DEADMONSTER(mtmp));
-    Strcpy(debug_buf_2, "discard_minvent");
+    debugprint("discard_minvent");
     //context.suppress_container_deletion_warning = 1;
     while ((otmp = mtmp->minvent) != 0) {
         /* this has now become very similar to m_useupall()... */
@@ -4146,7 +4143,7 @@ struct monst *mtmp;
         if (otmp->oartifact)
             artifact_taken_away(otmp->oartifact);
 
-        Sprintf(priority_debug_buf_4, "discard_minvent: %d", otmp->otyp);
+        debugprint("discard_minvent: %d", otmp->otyp);
         obfree(otmp, (struct obj *) 0); /* dealloc_obj() isn't sufficient */
     }
     //context.suppress_container_deletion_warning = 0;
@@ -4172,8 +4169,7 @@ void
 obj_extract_self(obj)
 struct obj *obj;
 {
-    Sprintf(debug_buf_3, "obj_extract_self: otyp=%d, where=%d, oid=%u", obj->otyp, obj->where, obj->o_id);
-    *debug_buf_4 = 0;
+    debugprint("obj_extract_self: otyp=%d, where=%d, oid=%u", obj->otyp, obj->where, obj->o_id);
     switch (obj->where) {
     case OBJ_FREE:
         break;
@@ -4232,7 +4228,7 @@ struct obj *obj, **head_ptr;
     }
     if (!curr)
     {
-        panic("extract_nobj: object lost, otyp=%d, where=%d, oid=%u, buf1=%s, buf2=%s, buf3=%s, buf4=%s", !obj ? -1 : obj->otyp, !obj ? -1 : obj->where, !obj ? 0 : obj->o_id, debug_buf_1, debug_buf_2, debug_buf_3, debug_buf_4);
+        panic("extract_nobj: object lost, otyp=%d, where=%d, oid=%u", !obj ? -1 : obj->otyp, !obj ? -1 : obj->where, !obj ? 0 : obj->o_id);
         return;
     }
     obj->where = OBJ_FREE;
@@ -4287,7 +4283,7 @@ struct obj *obj;
         return 0;
     }
     /* merge if possible */
-    Sprintf(priority_debug_buf_3, "add_to_minv: %d", obj->otyp);
+    debugprint("add_to_minv: %d", obj->otyp);
     for (otmp = mon->minvent; otmp; otmp = otmp->nobj)
         if (merged(&otmp, &obj))
             return 1; /* obj merged and then free'd */
@@ -4318,7 +4314,7 @@ struct obj *container, *obj;
         obj_no_longer_held(obj);
 
     /* merge if possible */
-    Sprintf(priority_debug_buf_3, "add_to_container: %d", obj->otyp);
+    debugprint("add_to_container: %d", obj->otyp);
     for (otmp = container->cobj; otmp; otmp = otmp->nobj)
         if (merged(&otmp, &obj))
             return otmp;
@@ -4364,7 +4360,7 @@ struct obj* obj;
         maybe_reset_pick(obj);
 
     /* merge if possible */
-    Sprintf(priority_debug_buf_3, "add_to_magic_chest: %d", obj->otyp);
+    debugprint("add_to_magic_chest: %d", obj->otyp);
     struct obj* otmp;
     for (otmp = magic_objs; otmp; otmp = otmp->nobj)
         if (merged(&otmp, &obj))
@@ -4432,7 +4428,7 @@ struct obj *obj;
      * list must track all objects that can have a light source
      * attached to it (and also requires lamplit to be set).
      */
-    Sprintf(debug_buf_4, "dealloc_obj: %d", obj->otyp);
+    debugprint("dealloc_obj: %d", obj->otyp);
     if (obj_sheds_light(obj))
         del_light_source(LS_OBJECT, obj_to_any(obj));
 
@@ -5166,10 +5162,10 @@ struct obj **obj1, **obj2;
             if (otmp1->oeaten)
                 otmp1->oeaten += o2wt;
             otmp1->quan = 1L;
-            Strcpy(debug_buf_2, "obj_absorb");
+            debugprint("obj_absorb");
             obj_extract_self(otmp2);
             newsym(otmp2->ox, otmp2->oy); /* in case of floor */
-            Sprintf(priority_debug_buf_4, "obj_absorb: %d", otmp2->otyp);
+            debugprint("obj_absorb: %d", otmp2->otyp);
             obfree(otmp2, (struct obj*)0);
             //dealloc_obj(otmp2);
             *obj2 = (struct obj *) 0;

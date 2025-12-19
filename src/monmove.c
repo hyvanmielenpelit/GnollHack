@@ -1087,7 +1087,7 @@ register struct monst *mtmp;
     {
         if (inrange && !noattacks(mdat) && (Upolyd ? u.mh : u.uhp) > 0 && !scared && tmp != 3)
         {
-            Sprintf(debug_buf_4, "mattacku mon, mnum:%d, mx:%d, my:%d, mux:%d, muy:%d, ux:%d, uy:%d, peaceful:%d, tame:%d, blinded:%d, crazed:%d, confused:%d, conflict:%d, displaced:%d, invisible:%d",
+            debugprint("mattacku mon, mnum:%d, mx:%d, my:%d, mux:%d, muy:%d, ux:%d, uy:%d, peaceful:%d, tame:%d, blinded:%d, crazed:%d, confused:%d, conflict:%d, displaced:%d, invisible:%d",
                 (int)mtmp->mnum, (int)mtmp->mx, (int)mtmp->my, (int)mtmp->mux, (int)mtmp->muy, (int)u.ux, (int)u.uy,
                 is_peaceful(mtmp) != 0, is_tame(mtmp) != 0, is_blinded(mtmp) != 0, is_crazed(mtmp) != 0, is_confused(mtmp) != 0,
                 Conflict != 0, Displaced != 0, Invisib != 0);

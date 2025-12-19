@@ -1232,7 +1232,7 @@ boolean* obj_destroyed;
                         else if (obj == uarms)
                             uwep2gone(); /* set unweapon */
                     }
-                    Sprintf(priority_debug_buf_2, "hmon_hitmon: %d", obj->otyp);
+                    debugprint("hmon_hitmon: %d", obj->otyp);
                     useup(obj);
                     if (!more_than_1)
                         obj = (struct obj*) 0;
@@ -1418,7 +1418,7 @@ boolean* obj_destroyed;
                         play_simple_object_sound(obj, OBJECT_SOUND_TYPE_BREAK);
                         You_ex(ATR_NONE, CLR_MSG_WARNING, "break %s.  That's bad luck!", ysimple_name(obj));
                         change_luck(-2, TRUE);
-                        Sprintf(priority_debug_buf_2, "hmon_hitmon2: %d", obj->otyp);
+                        debugprint("hmon_hitmon2: %d", obj->otyp);
                         useup(obj);
                         obj = (struct obj*) 0;
                         unarmed = FALSE; /* avoid obj==0 confusion */
@@ -1439,7 +1439,7 @@ boolean* obj_destroyed;
                     You_ex(ATR_NONE, CLR_MSG_WARNING, "succeed in destroying %s.  Congratulations!",
                         ysimple_name(obj));
                     release_camera_demon(obj, u.ux, u.uy);
-                    Sprintf(priority_debug_buf_2, "hmon_hitmon3: %d", obj->otyp);
+                    debugprint("hmon_hitmon3: %d", obj->otyp);
                     useup(obj);
                     return TRUE;
                 case CORPSE: /* fixed by polder@cs.vu.nl */
@@ -1486,12 +1486,12 @@ boolean* obj_destroyed;
     do { \
             if (thrown)                      \
             { \
-                    Sprintf(priority_debug_buf_4, "useup_eggs: %d", (o)->otyp); \
+                    debugprint("useup_eggs: %d", (o)->otyp); \
                     obfree(o, (struct obj*)0); \
             } \
             else                             \
             {\
-                Sprintf(priority_debug_buf_3, "useup_eggs: %d", (o)->otyp); \
+                debugprint("useup_eggs: %d", (o)->otyp); \
                 useupall(o);                 \
             }\
             o = (struct obj*) 0;            \
@@ -1633,12 +1633,12 @@ boolean* obj_destroyed;
                     }
                     if (thrown)
                     {
-                        Sprintf(priority_debug_buf_4, "hmon_hitmon: %d", obj->otyp);
+                        debugprint("hmon_hitmon: %d", obj->otyp);
                         obfree(obj, (struct obj*)0);
                     }
                     else
                     {
-                        Sprintf(priority_debug_buf_2, "hmon_hitmon4: %d", obj->otyp);
+                        debugprint("hmon_hitmon4: %d", obj->otyp);
                         useup(obj);
                     }
                     hittxt = TRUE;
@@ -1660,8 +1660,8 @@ boolean* obj_destroyed;
                         extratmp = weapon_extra_dmg_value(obj, mon, &youmonst, basedmg);
                         damage += adjust_damage(extratmp, &youmonst, mon, objects[obj->otyp].oc_extra_damagetype, ADFLAGS_NONE);
                     }
-                    Sprintf(priority_debug_buf_4, "hmon_hitmon2: %d", obj->otyp);
-                    Sprintf(priority_debug_buf_2, "hmon_hitmon5: %d", obj->otyp);
+                    debugprint("hmon_hitmon2: %d", obj->otyp);
+                    debugprint("hmon_hitmon5: %d", obj->otyp);
                     if (thrown)
                         obfree(obj, (struct obj*) 0);
                     else
@@ -1975,7 +1975,7 @@ boolean* obj_destroyed;
             if (obj == uarms)
                 uwep2gone(); /* set unweapon */
             /* minor side-effect: broken lance won't split puddings */
-            Sprintf(priority_debug_buf_2, "hmon_hitmon6: %d", obj->otyp);
+            debugprint("hmon_hitmon6: %d", obj->otyp);
             useup(obj);
             obj = 0;
         }
@@ -2496,7 +2496,7 @@ boolean* obj_destroyed;
 
         if (obj->where == OBJ_INVENT)
         {
-            Sprintf(priority_debug_buf_2, "hmon_hitmon7: %d", obj->otyp);
+            debugprint("hmon_hitmon7: %d", obj->otyp);
             if (obj->quan > 1)
                 useup(obj);
             else
@@ -2505,7 +2505,7 @@ boolean* obj_destroyed;
                     uwepgone(); /* set unweapon */
                 else if (obj == uarms)
                     uwep2gone(); /* set unweapon */
-                Sprintf(priority_debug_buf_3, "hmon_hitmon: %d", obj->otyp);
+                debugprint("hmon_hitmon: %d", obj->otyp);
                 useupall(obj);
                 obj = 0;
             }
@@ -2515,14 +2515,14 @@ boolean* obj_destroyed;
             /* in case MON_AT+enexto for invisible mon */
             int x = obj->ox, y = obj->oy;
             /* not useupf(), which charges */
-            Sprintf(priority_debug_buf_3, "hmon_hitmon-delobj1: %d", obj->otyp);
+            debugprint("hmon_hitmon-delobj1: %d", obj->otyp);
             delobj(obj);
             newsym(x, y);
             obj = (struct obj*)0;
         }
         else if (obj->where == OBJ_FREE)
         {
-            Sprintf(priority_debug_buf_4, "hmon_hitmon3: %d", obj->otyp);
+            debugprint("hmon_hitmon3: %d", obj->otyp);
             obfree(obj, (struct obj*)0);
             obj = (struct obj*)0;
         }
@@ -2773,7 +2773,7 @@ struct attack *mattk;
         if (!Upolyd)
             break; /* no longer have ability to steal */
         /* take the object away from the monster */
-        Strcpy(debug_buf_2, "steal_it");
+        debugprint("steal_it");
         obj_extract_self(otmp);
         if ((unwornmask = otmp->owornmask) != 0L) {
             mdef->worn_item_flags &= ~unwornmask;
@@ -3051,7 +3051,7 @@ int specialdmg; /* blessed and/or silver bonus against various things */
            real gold only, no lesser coins */
         mongold = findgold(mdef->minvent);
         if (mongold) {
-            Strcpy(debug_buf_2, "damageum");
+            debugprint("damageum");
             obj_extract_self(mongold);
             if (merge_choice(invent, mongold) || inv_cnt(FALSE) < 52) {
                 addinv(mongold);

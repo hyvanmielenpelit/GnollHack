@@ -1996,7 +1996,7 @@ struct mkroom *croom;
                     //        //MOBJ(mtmp)->where = OBJ_FLOOR;
                     //    }
                     //    /* make sure container contents are free'ed */
-                    //    Sprintf(priority_debug_buf_4, "create_monster: %d", otmp->otyp);
+                    //    debugprint("create_monster: %d", otmp->otyp);
                     //    obfree(otmp, (struct obj*)0);
                     //}
 
@@ -2073,7 +2073,7 @@ struct mkroom *croom;
 
                     if (emitted_light_range(olddata) != emitted_light_range(mtmp->data))
                     {
-                        Strcpy(debug_buf_4, "create_monster");
+                        debugprint("create_monster");
                         /* used to give light, now doesn't, or vice versa,
                            or light's range has changed */
                         if (emitted_light_range(olddata))
@@ -2660,9 +2660,9 @@ struct mkroom *croom;
             }
             else 
             {
-                Strcpy(debug_buf_2, "create_object1");
+                debugprint("create_object1");
                 obj_extract_self(otmp);
-                Sprintf(priority_debug_buf_4, "create_object: %d", otmp->otyp);
+                debugprint("create_object: %d", otmp->otyp);
                 obfree(otmp, NULL);
                 return;
             }
@@ -2718,7 +2718,7 @@ struct mkroom *croom;
             {
                 obj = was->minvent;
                 obj->owornmask = 0;
-                Strcpy(debug_buf_2, "create_object2");
+                debugprint("create_object2");
                 obj_extract_self(obj);
                 (void) add_to_container(otmp, obj);
             }

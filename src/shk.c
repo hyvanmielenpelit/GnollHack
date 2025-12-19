@@ -142,7 +142,7 @@ int64_t amount;
 
     if (mongold->quan > amount)
         mongold = splitobj(mongold, amount);
-    Strcpy(debug_buf_2, "money2u");
+    debugprint("money2u");
     obj_extract_self(mongold);
 
     if (!merge_choice(invent, mongold) && inv_cnt(FALSE) >= 52) {
@@ -303,7 +303,7 @@ register struct monst *shkp;
     for (mtmp = migrating_mons; mtmp; mtmp = mtmp->nmon)
         clear_unpaid(shkp, mtmp->minvent);
 
-    Strcpy(debug_buf_2, "setpaid");
+    debugprint("setpaid");
     while ((obj = billobjs) != 0) {
         obj_extract_self(obj);
         dealloc_obj(obj);
@@ -968,9 +968,7 @@ register struct obj *obj;
 {
     register struct obj *curr;
 
-    Sprintf(debug_buf_2, "delete_contents: container otyp=%d", obj->otyp);
-    Sprintf(debug_buf_3, "delete_contents: container otyp=%d", obj->otyp);
-    Sprintf(debug_buf_4, "delete_contents: container otyp=%d", obj->otyp);
+    debugprint("delete_contents: container otyp=%d", obj->otyp);
     while ((curr = obj->cobj) != 0) {
         obj_extract_self(curr);
         obfree(curr, (struct obj *) 0);
@@ -999,14 +997,6 @@ register struct obj *obj, *merge;
     if (Is_container(obj))
         maybe_reset_pick(obj);
     
-    //if (!context.suppress_container_deletion_warning && Is_proper_container(obj))
-    //{
-    //    char debugbuf[BUFSZ * 17];
-    //    Sprintf(debugbuf, "obfree on container: otyp:%d, has_cobjs:%d, in_use:%d, P1:%s, P2:%s, P3:%s, P4:%s, B1:%s, B2:%s, B3:%s, B4:%s", obj->otyp, had_contents, (int)obj->in_use, 
-    //        priority_debug_buf_1, priority_debug_buf_2, priority_debug_buf_3, priority_debug_buf_4, debug_buf_1, debug_buf_2, debug_buf_3, debug_buf_4);
-    //    issue_gui_command(GUI_CMD_DEBUGLOG, DEBUGLOG_PRIORITY, 0, debugbuf);
-    //}
-
     shkp = 0;
     if (obj->unpaid) {
         /* look for a shopkeeper who owns this object */
@@ -1072,7 +1062,7 @@ register struct obj *obj, *merge;
            can't call remove_worn_item() to get <X>_off() side-effects */
         setnotworn(obj);
     }
-    Sprintf(debug_buf_4, "obfree: %d", obj->otyp);
+    debugprint("obfree: %d", obj->otyp);
     dealloc_obj(obj);
 }
 
@@ -1832,7 +1822,7 @@ boolean itemize;
             bp->useup = 0;
             buy = PAY_SOME;
         } else { /* completely used-up, so get rid of it */
-            Sprintf(debug_buf_2, "dopayobj: %d", obj->otyp);
+            debugprint("dopayobj: %d", obj->otyp);
             obj_extract_self(obj);
             /* assert( obj == *obj_p ); */
             dealloc_obj(obj);
@@ -4167,9 +4157,8 @@ boolean catchup; /* restoring a level */
         while ((otmp = level.objects[x][y]) != 0)
             /* Don't mess w/ boulders -- just merge into wall */
             if (otmp->otyp == BOULDER || otmp->otyp == ROCK) {
-                Strcpy(debug_buf_2, "repair_damage");
+                debugprint("repair_damage");
                 obj_extract_self(otmp);
-                Strcpy(priority_debug_buf_4, "repair_damage");
                 obfree(otmp, (struct obj *) 0);
             } else {
                 int trylimit = 50;
