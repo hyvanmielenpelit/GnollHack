@@ -1661,7 +1661,6 @@ boolean* obj_destroyed;
                         damage += adjust_damage(extratmp, &youmonst, mon, objects[obj->otyp].oc_extra_damagetype, ADFLAGS_NONE);
                     }
                     debugprint("hmon_hitmon2: %d", obj->otyp);
-                    debugprint("hmon_hitmon5: %d", obj->otyp);
                     if (thrown)
                         obfree(obj, (struct obj*) 0);
                     else

@@ -841,15 +841,14 @@ boolean is_mon_dead;
         if (canspotmon(mtmp))
             pline("%s gold %s.", s_suffix(Monnam(mtmp)),
                   canseemon(mtmp) ? "vanishes" : "seems to vanish");
-        debugprint("release_monster_objects1");
+        debugprint("release_monster_objects1: %d", otmp->otyp);
         obj_extract_self(otmp);
-        debugprint("release_monster_objects: %d", otmp->otyp);
         obfree(otmp, (struct obj *) 0);
     } /* isgd && has gold */
 
     while ((otmp = (is_pet ? droppables(mtmp) : mtmp->minvent)) != 0) 
     {
-        debugprint("release_monster_objects2");
+        debugprint("release_monster_objects2: %d", otmp->otyp);
         obj_extract_self(otmp);
         if (((otmp->speflags & SPEFLAGS_CLONED_ITEM) || ((mtmp->issummoned || mtmp->ispartymember) && (!is_mon_dead || otmp->oclass == COIN_CLASS)))
             /* When leaving without dying, summoned and joined monsters take their possessions with them, except central artifacts 
@@ -905,7 +904,7 @@ boolean is_mon_dead;
             {
                 artifact_taken_away(otmp->oartifact); //It can now be generated again some time later
             }
-            debugprint("release_monster_objects2: %d", otmp->otyp);
+            debugprint("release_monster_objects3: %d", otmp->otyp);
             obfree(otmp, (struct obj*) 0); //Delete the item
         }
         else

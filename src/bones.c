@@ -72,7 +72,6 @@ boolean restore;
         
         if (otmp->in_use) 
         {
-            debugprint("resetobjs: %d", otmp->otyp);
             obj_extract_self(otmp);
             dealloc_obj(otmp);
             continue;
@@ -344,7 +343,6 @@ int x, y;
     u.twoweap = 0; /* ensure curse() won't cause swapwep to drop twice */
     while ((otmp = invent) != 0) 
     {
-        debugprint("drop_upon_death");
         debugprint("drop_upon_death");
         obj_extract_self(otmp);
         /* when turning into green slime, all gear remains held;

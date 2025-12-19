@@ -968,7 +968,6 @@ register struct obj *obj;
 {
     register struct obj *curr;
 
-    debugprint("delete_contents: container otyp=%d", obj->otyp);
     while ((curr = obj->cobj) != 0) {
         obj_extract_self(curr);
         obfree(curr, (struct obj *) 0);
@@ -1062,7 +1061,6 @@ register struct obj *obj, *merge;
            can't call remove_worn_item() to get <X>_off() side-effects */
         setnotworn(obj);
     }
-    debugprint("obfree: %d", obj->otyp);
     dealloc_obj(obj);
 }
 

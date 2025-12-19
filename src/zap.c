@@ -3092,14 +3092,13 @@ boolean replaceundead;
         m_useup(corpse->ocarry, corpse);
         break;
     case OBJ_CONTAINED:
-        debugprint("revive2");
+        debugprint("revive2: %d", corpse->otyp);
         obj_extract_self(corpse);
-        debugprint("revive: %d", corpse->otyp);
         obfree(corpse, (struct obj *) 0);
         break;
     case OBJ_MAGIC:
+        debugprint("revive3: %d", corpse->otyp);
         obj_extract_self(corpse);
-        debugprint("revive2: %d", corpse->otyp);
         obfree(corpse, (struct obj*)0);
         break;
     default:
@@ -9997,9 +9996,8 @@ const char *fltxt;
                 if (mon == u.usteed && otmp->otyp == SADDLE)
                     dismount_steed(DISMOUNT_FELL);
             }
-            debugprint("disintegrate_mon");
-            obj_extract_self(otmp);
             debugprint("disintegrate_mon: %d", otmp->otyp);
+            obj_extract_self(otmp);
             obfree(otmp, (struct obj *) 0);
         }
     }

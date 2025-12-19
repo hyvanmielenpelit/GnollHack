@@ -723,9 +723,8 @@ xchar x, y; /* coordinates where object was before the impact, not after */
                 debugprint("container_impact_dmg: %d", otmp->otyp);
                 useup(otmp);
             } else {
-                debugprint("container_impact_dmg");
+                debugprint("container_impact_dmg 2: %d", otmp->otyp);
                 obj_extract_self(otmp);
-                debugprint("container_impact_dmg: %d", otmp->otyp);
                 obfree(otmp, (struct obj *) 0);
             }
             /* contents of this container are no longer known */
@@ -2260,9 +2259,8 @@ boolean shop_floor_obj;
             if (otmp->otyp == EGG && (otmp->speflags & SPEFLAGS_YOURS) && otmp->corpsenm >= LOW_PM)
                 change_luck(-1* (int)min(otmp->quan, 5L), TRUE);
         }
-        debugprint("ship_object");
-        obj_extract_self(otmp);
         debugprint("ship_object: %d", otmp->otyp);
+        obj_extract_self(otmp);
         obfree(otmp, (struct obj *) 0);
         return TRUE;
     }

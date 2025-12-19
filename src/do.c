@@ -5497,8 +5497,6 @@ boolean pushing;
 
         /* boulder is now gone */
         debugprint("boulder_hits_pool: %d", otmp->otyp);
-        debugprint("boulder_hits_pool: %d", otmp->otyp);
-        debugprint("boulder_hits_pool: %d", otmp->otyp);
         if (pushing)
             delobj(otmp);
         else
@@ -8700,10 +8698,9 @@ void
 delete_decoration(x, y)
 xchar x, y;
 {
-    debugprint("delete_decoration");
-
     if (levl[x][y].decoration_typ)
     {
+        debugprint("delete_decoration");
         if (levl[x][y].lamplit)
         {
             if (!in_mklev)

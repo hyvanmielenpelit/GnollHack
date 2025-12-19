@@ -1994,10 +1994,6 @@ int after; /* this is extra fast monster movement */
         allowflags |= ALLOW_DIG;
 
     cnt = mfndpos(mtmp, poss, info, allowflags);
-    debugprint("dog_move 0, mnum:%d, mx:%d, my:%d, mux:%d, muy:%d, ux:%d, uy:%d, peaceful:%d, tame:%d, blinded:%d, crazed:%d, confused:%d, conflict:%d, displaced:%d, invisible:%d",
-        (int)mtmp->mnum, (int)mtmp->mx, (int)mtmp->my, (int)mtmp->mux, (int)mtmp->muy, (int)u.ux, (int)u.uy,
-        is_peaceful(mtmp) != 0, is_tame(mtmp) != 0, is_blinded(mtmp) != 0, is_crazed(mtmp) != 0, is_confused(mtmp) != 0,
-        Conflict != 0, Displaced != 0, Invis != 0);
 
     boolean pathres = FALSE;
     xchar tx = 0, ty = 0;

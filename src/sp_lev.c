@@ -2660,9 +2660,8 @@ struct mkroom *croom;
             }
             else 
             {
-                debugprint("create_object1");
-                obj_extract_self(otmp);
                 debugprint("create_object: %d", otmp->otyp);
+                obj_extract_self(otmp);
                 obfree(otmp, NULL);
                 return;
             }

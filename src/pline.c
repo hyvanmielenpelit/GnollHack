@@ -1227,16 +1227,21 @@ VA_DECL(const char *, s)
 void debugprint
 VA_DECL(const char*, s)
 {
-    if (debug_buf_idx < NUM_DEBUGBUFS - 1)
+    if (debug_buf_idx < TOTALNUM_DEBUGBUFS - 1)
     {
         debug_buf_idx++;
     }
     else
     {
         int i;
+        int jump_size = TOTALNUM_DEBUGBUFS - NUM_DEBUGBUFS;
         for (i = 0; i < NUM_DEBUGBUFS - 1; i++)
         {
-            Strcpy(debug_bufs[i], debug_bufs[i + 1]);
+            Strcpy(debug_bufs[i], debug_bufs[i + jump_size + 1]);
+        }
+        for (i = NUM_DEBUGBUFS; i < TOTALNUM_DEBUGBUFS; i++)
+        {
+            *debug_bufs[i] = 0;
         }
         debug_buf_idx = NUM_DEBUGBUFS - 1;
     }

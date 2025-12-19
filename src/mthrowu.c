@@ -1787,9 +1787,8 @@ struct attack *mattk;
             }
             else
             {
-                debugprint("spitmu");
-                obj_extract_self(otmp);
                 debugprint("spitmu: %d", otmp->otyp);
+                obj_extract_self(otmp);
                 obfree(otmp, (struct obj*)0);
             }
         }

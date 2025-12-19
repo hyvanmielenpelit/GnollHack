@@ -1364,7 +1364,6 @@ int x, y;
         level.locations[x][y].hero_memory_layers.layer_gui_glyphs[LAYER_COVER_OBJECT] = NO_GLYPH;
         level.locations[x][y].hero_memory_layers.o_id = 0;
 
-        debugprint("clear_hero_object_memory_at");
         //context.suppress_container_deletion_warning = 1;
 
         /* Clear actual memory objects */
@@ -3942,8 +3941,6 @@ void
 remove_memory_object(otmp)
 register struct obj* otmp;
 {
-    debugprint("remove_memory_object: otyp=%d, where=%d", otmp->otyp, otmp->where);
-
     xchar x = otmp->ox;
     xchar y = otmp->oy;
 
@@ -4169,7 +4166,6 @@ void
 obj_extract_self(obj)
 struct obj *obj;
 {
-    debugprint("obj_extract_self: otyp=%d, where=%d, oid=%u", obj->otyp, obj->where, obj->o_id);
     switch (obj->where) {
     case OBJ_FREE:
         break;
@@ -4428,7 +4424,7 @@ struct obj *obj;
      * list must track all objects that can have a light source
      * attached to it (and also requires lamplit to be set).
      */
-    debugprint("dealloc_obj: %d", obj->otyp);
+
     if (obj_sheds_light(obj))
         del_light_source(LS_OBJECT, obj_to_any(obj));
 
@@ -5162,10 +5158,9 @@ struct obj **obj1, **obj2;
             if (otmp1->oeaten)
                 otmp1->oeaten += o2wt;
             otmp1->quan = 1L;
-            debugprint("obj_absorb");
+            debugprint("obj_absorb: %d", otmp2->otyp);
             obj_extract_self(otmp2);
             newsym(otmp2->ox, otmp2->oy); /* in case of floor */
-            debugprint("obj_absorb: %d", otmp2->otyp);
             obfree(otmp2, (struct obj*)0);
             //dealloc_obj(otmp2);
             *obj2 = (struct obj *) 0;

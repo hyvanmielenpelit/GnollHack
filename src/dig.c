@@ -3022,7 +3022,6 @@ boolean *dealloced;
     if (otmp->lamplit && otmp->otyp != POT_OIL)
         end_burn(otmp, TRUE);
 
-    debugprint("bury_an_obj");
     obj_extract_self(otmp);
 
     if (is_obj_unburiable(otmp)) //(otmp == uchain || obj_resists(otmp, 0, 0))
@@ -3192,9 +3191,8 @@ int64_t timeout UNUSED;
         if (obj->cobj == cobj_to_bury)
             break; /* Something's wrong, avoid infine loop */
     }
-    debugprint("rot_organic");
-    obj_extract_self(obj);
     debugprint("rot_organic: %d", obj->otyp);
+    obj_extract_self(obj);
     //context.suppress_container_deletion_warning = 1;
     obfree(obj, (struct obj *) 0);
     //context.suppress_container_deletion_warning = 0;

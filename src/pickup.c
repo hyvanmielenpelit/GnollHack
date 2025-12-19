@@ -3901,9 +3901,8 @@ boolean makecat, givemsg;
             livecat->u_know_mname = TRUE; /* It is famous! */
             if (deadcat)
             {
-                debugprint("observe_quantum_cat");
-                obj_extract_self(deadcat);
                 debugprint("observe_quantum_cat: %d", deadcat->otyp);
+                obj_extract_self(deadcat);
                 obfree(deadcat, (struct obj *) 0), deadcat = 0;
             }
             box->owt = weight(box);

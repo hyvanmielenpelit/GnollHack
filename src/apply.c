@@ -5282,10 +5282,8 @@ struct obj *obj;
     setnotworn(obj);
     /* useup() is appropriate, but we want costly_alteration()'s message */
     costly_alteration(obj, COST_SPLAT);
-    debugprint("use_cream_pie");
+    debugprint("use_cream_pie: %d", obj->otyp);
     obj_extract_self(obj);
-    debugprint("use_cream_pie: %d", obj->otyp);
-    debugprint("use_cream_pie: %d", obj->otyp);
     delobj(obj);
     return 0;
 }

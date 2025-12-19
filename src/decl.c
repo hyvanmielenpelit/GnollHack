@@ -588,7 +588,7 @@ NEARDATA const char* const hofe_titles[3] = { "the Hand of Elbereth",
                                             "the Envoy of Balance",
                                             "the Glory of Arioch" };
 
-NEARDATA char debug_bufs[NUM_DEBUGBUFS][DEBUGBUFSIZ] = { 0 };
+NEARDATA char debug_bufs[TOTALNUM_DEBUGBUFS][DEBUGBUFSIZ] = { 0 };
 NEARDATA int debug_buf_idx = -1;
 
 /* dummy routine used to force linkage */
