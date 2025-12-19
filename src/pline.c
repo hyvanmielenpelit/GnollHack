@@ -1273,7 +1273,7 @@ const char* message;
         *long_buffer = 0;
 
     int i, j = 0;
-    for (i = NUM_DEBUGBUFS - 1; i >= 0; i--)
+    for (i = TOTALNUM_DEBUGBUFS - 1; i >= 0; i--)
     {
         if (!*debug_bufs[i])
             continue;
@@ -1286,6 +1286,8 @@ const char* message;
             else
                 break;
         }
+        if (j == NUM_DEBUGBUFS)
+            break;
     }
 
     return long_buffer;
