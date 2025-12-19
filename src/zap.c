@@ -7563,7 +7563,9 @@ ubreatheu(mattk)
 struct attack *mattk;
 {
     uchar adtyp = mattk->adtyp;
-    int typ = get_ray_adtyp(adtyp);
+    int typ = get_ray_adtyp_choose(adtyp, "breath weapon");
+    if (typ == -1)
+        return;
 
     int dtyp = 20 + typ - 1;      /* breath by hero */
     const char *fltxt = flash_types[dtyp]; /* blast of <something> */

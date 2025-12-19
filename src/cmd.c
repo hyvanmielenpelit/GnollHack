@@ -861,8 +861,10 @@ doability(VOID_ARGS)
                 available_ability_list[abilitynum].name, MENU_UNSELECTED);
 
             abilitynum++;
+        }
 
-//#ifndef GNH_MOBILE
+        if (Upolyd || u.usteed)
+        {
             int monabilitynum = print_monster_abilities(WIN_ERR, 0); /* Count monster abilities */
             if (monabilitynum > 0)
             {
@@ -879,7 +881,6 @@ doability(VOID_ARGS)
 
                 abilitynum++;
             }
-//#endif
         }
 
 #ifndef GNH_MOBILE
@@ -1471,9 +1472,7 @@ int abilitynum;
 
 
     /* Your steed's abilities */
-    if (u.usteed &&
-        can_breathe(u.usteed->data)
-        )
+    if (u.usteed && can_breathe(u.usteed->data))
     {
         any = zeroany;
         glyph = abs(any_mon_to_glyph(u.usteed, rn2_on_display_rng));

@@ -1602,22 +1602,26 @@ dobreathe(VOID_ARGS)
     u.uen -= BREATH_WEAPON_MANA_COST;
     context.botl = 1;
 
-    if (!getdir((char *) 0))
+    mattk = attacktype_fordmg(youmonst.data, AT_BREA, AD_ANY);
+    if (!mattk)
+    {
+        impossible("bad breath attack?"); /* mouthwash needed... */
+        return 1;
+    }
+    
+    uchar adtyp = mattk->adtyp;
+    int typ = get_ray_adtyp_choose(adtyp, "breath weapon");
+    if (typ == -1)
         return 0;
 
-    mattk = attacktype_fordmg(youmonst.data, AT_BREA, AD_ANY);
+    if (!getdir((char*)0))
+        return 0;
 
-    if (!mattk)
-        impossible("bad breath attack?"); /* mouthwash needed... */
-    else if (!u.dx && !u.dy && !u.dz)
+    if (!u.dx && !u.dy && !u.dz)
         ubreatheu(mattk);
     else
     {
         update_u_facing(TRUE);
-
-        uchar adtyp = mattk->adtyp;
-        int typ = get_ray_adtyp(adtyp);
-
         buzz((20 + typ - 1), (struct obj*)0, &youmonst, (int)mattk->damn, (int)mattk->damd, (int)mattk->damp, u.ux, u.uy,
             u.dx, u.dy);
 
@@ -1625,14 +1629,15 @@ dobreathe(VOID_ARGS)
     return 1;
 }
 
+int rbgd_effect_choices[2] = { AD_FIRE, AD_DRST };
+int rbpd_effect_choices[2] = { AD_COLD, AD_DISN };
+int ray1_effect_choices[3] = { AD_DISN, AD_ELEC, AD_COLD }; /* Elemental */
+int ray2_effect_choices[3] = { AD_DRAY, AD_STON, AD_SLEE }; /* Magic */
+
 int
 get_ray_adtyp(adtyp)
 uchar adtyp;
 {
-    int rbgd_effect_choices[2] = { AD_FIRE, AD_DRST };
-    int rbpd_effect_choices[2] = { AD_COLD, AD_DISN };
-    int ray1_effect_choices[3] = { AD_DISN, AD_ELEC, AD_COLD }; /* Elemental */
-    int ray2_effect_choices[3] = { AD_DRAY, AD_STON, AD_SLEE }; /* Magic */
     int typ = (adtyp == AD_RBRE) ? rnd(AD_ACID) :
         (adtyp == AD_REY1) ? ray1_effect_choices[rn2(3)] :
         (adtyp == AD_REY2) ? ray2_effect_choices[rn2(3)] :
@@ -1643,35 +1648,115 @@ uchar adtyp;
     return typ;
 }
 
-int
-dosteedbreathemon(mon)
-struct monst* mon UNUSED;
+STATIC_OVL int 
+choose_random_breath_weapon(intarr_ptr, arrsize, attk_name)
+int* intarr_ptr;
+int arrsize;
+const char* attk_name;
 {
-    return dosteedbreathe();
+    int typ = -1;
+    char buf[BUFSZ];
+    winid menuwin;
+    menu_item* selected = (menu_item*)0;
+    int n = 0, i;
+    anything any;
+    any = zeroany; /* set all bits to zero */
+
+    menuwin = create_nhwindow(NHW_MENU);
+    start_menu_ex(menuwin, GHMENU_STYLE_MONSTER_ABILITY);
+
+    if (!intarr_ptr) /* Random breath weapon */
+    {
+        for (i = 1; i <= AD_ACID; i++)
+        {
+            any.a_int = i;
+            Sprintf(buf, "%s", get_damage_type_text((short)i));
+            *buf = highc(*buf);
+            add_menu(menuwin, NO_GLYPH, &any, 0, 0, ATR_NONE, NO_COLOR, buf, MENU_UNSELECTED);
+        }
+    }
+    else
+    {
+        for (i = 0; i < arrsize; i++)
+        {
+            any.a_int = intarr_ptr[i];
+            Sprintf(buf, "%s", get_damage_type_text((short)intarr_ptr[i]));
+            *buf = highc(*buf);
+            add_menu(menuwin, NO_GLYPH, &any, 0, 0, ATR_NONE, NO_COLOR, buf, MENU_UNSELECTED);
+        }
+    }
+
+    Sprintf(buf, "Choose the type of %s", attk_name ? attk_name : "attack");
+    end_menu(menuwin, buf);
+    n = select_menu(menuwin, PICK_ONE, &selected);
+    if (n > 0)
+    {
+        typ = selected->item.a_int;
+        free((genericptr_t)selected);
+    }
+
+    destroy_nhwindow(menuwin);
+
+    return typ;
+}
+
+int
+get_ray_adtyp_choose(adtyp, attk_name)
+uchar adtyp;
+const char* attk_name;
+{
+    int typ = (adtyp == AD_RBRE) ? choose_random_breath_weapon(NULL, 0, attk_name) :
+        (adtyp == AD_REY1) ? choose_random_breath_weapon(ray1_effect_choices, SIZE(ray1_effect_choices), attk_name) :
+        (adtyp == AD_REY2) ? choose_random_breath_weapon(ray2_effect_choices, SIZE(ray2_effect_choices), attk_name) :
+        (adtyp == AD_RBGD) ? choose_random_breath_weapon(rbgd_effect_choices, SIZE(rbgd_effect_choices), attk_name) :
+        (adtyp == AD_RBPD) ? choose_random_breath_weapon(rbpd_effect_choices, SIZE(rbpd_effect_choices), attk_name) :
+        adtyp;
+
+    return typ;
 }
 
 int
 dosteedbreathe(VOID_ARGS)
 {
+    return dosteedbreathemon(u.usteed);
+}
+
+int
+dosteedbreathemon(mon)
+struct monst* mon;
+{
     struct attack* mattk;
 
-    if (!u.usteed || !can_breathe(u.usteed->data))
+    if (!mon || !can_breathe(mon->data))
     {
         play_sfx_sound(SFX_GENERAL_CANNOT);
         You_ex(ATR_NONE, CLR_MSG_FAIL, "have no steed that use a breath weapon!");
         return 0;
     }
 
-    if (u.usteed->mspec_used > 0)
+    if (mon->mspec_used > 0)
     {
         play_sfx_sound(SFX_NOT_READY_YET);
-        pline_ex(ATR_NONE, CLR_MSG_FAIL, "%s breath weapon is not ready yet.", s_suffix(Monnam(u.usteed)));
+        pline_ex(ATR_NONE, CLR_MSG_FAIL, "%s breath weapon is not ready yet.", s_suffix(Monnam(mon)));
         return 0;
     }
 
+    mattk = attacktype_fordmg(mon->data, AT_BREA, AD_ANY);
+    if (!mattk)
+    {
+        impossible("bad breath attack?"); /* mouthwash needed... */
+        return 1;
+    }
+
+    /* First breath weapon type */
+    int typ = get_ray_adtyp_choose(mattk->adtyp, "breath weapon");
+    if (typ == -1)
+        return 0;
+
+    /* Then the direction */
     if (!getdir((char*)0))
         return 0;
-    
+
     if (!u.dx && !u.dy && !u.dz)
     {
         play_sfx_sound(SFX_GENERAL_CANNOT);
@@ -1679,23 +1764,15 @@ dosteedbreathe(VOID_ARGS)
         return 0;
     }
 
-    mattk = attacktype_fordmg(u.usteed->data, AT_BREA, AD_ANY);
-    if (!mattk)
-        impossible("bad breath attack?"); /* mouthwash needed... */
+    update_u_facing(FALSE);
+    update_m_facing(mon, u.dx, TRUE);
+    buzz((int)(-(20 + typ - 1)), (struct obj*)0, mon, (int)mattk->damn, (int)mattk->damd, (int)mattk->damp, u.ux, u.uy, u.dx, u.dy);
+
+    if (typ == AD_SLEE)
+        mon->mspec_used += (MONSTER_BREATH_WEAPON_SLEEP_COOLDOWN_CONSTANT + d(MONSTER_BREATH_WEAPON_SLEEP_COOLDOWN_DICE, MONSTER_BREATH_WEAPON_SLEEP_COOLDOWN_DIESIZE));
     else
-    {
-        update_u_facing(FALSE);
-        update_m_facing(u.usteed, u.dx, TRUE);
+        mon->mspec_used = (MONSTER_BREATH_WEAPON_NORMAL_COOLDOWN_CONSTANT + d(MONSTER_BREATH_WEAPON_NORMAL_COOLDOWN_DICE, MONSTER_BREATH_WEAPON_NORMAL_COOLDOWN_DIESIZE));
 
-        int typ = get_ray_adtyp(mattk->adtyp);
-
-        buzz((int)(-(20 + typ - 1)), (struct obj*)0, u.usteed, (int)mattk->damn, (int)mattk->damd, (int)mattk->damp, u.ux, u.uy, u.dx, u.dy);
-
-        if (typ == AD_SLEE)
-            u.usteed->mspec_used += (MONSTER_BREATH_WEAPON_SLEEP_COOLDOWN_CONSTANT + d(MONSTER_BREATH_WEAPON_SLEEP_COOLDOWN_DICE, MONSTER_BREATH_WEAPON_SLEEP_COOLDOWN_DIESIZE));
-        else
-            u.usteed->mspec_used = (MONSTER_BREATH_WEAPON_NORMAL_COOLDOWN_CONSTANT + d(MONSTER_BREATH_WEAPON_NORMAL_COOLDOWN_DICE, MONSTER_BREATH_WEAPON_NORMAL_COOLDOWN_DIESIZE));
-    }
     return 1;
 }
 
@@ -2203,10 +2280,13 @@ doeyestalk(VOID_ARGS)
             You_ex(ATR_NONE, CLR_MSG_FAIL, "lack the energy to use your eyestalks%s!", attacksperformed > 0 ? " any further" : "");
             return (attacksperformed > 0 ? 1 : 0);
         }
+
+        int typ = get_ray_adtyp_choose(mattk->adtyp, "eyestalk");
+        if (typ == -1)
+            continue;
+
         u.uen -= EYE_STALK_MANA_COST;
         context.botl = 1;
-
-        int typ = get_ray_adtyp(mattk->adtyp); 
 
         if ((typ >= AD_MAGM) && (typ <= AD_STON))
         {

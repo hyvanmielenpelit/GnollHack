@@ -3200,7 +3200,7 @@ struct monst* mtmp;
                     {
                         char cooldownbuf[BUFSZ];
                         struct attack* mattk = attacktype_fordmg(mtmp->data, AT_BREA, AD_ANY);
-                        int typ = get_ray_adtyp(mattk->adtyp);
+                        int typ = mattk->adtyp; //  get_ray_adtyp(mattk->adtyp);
                         if (typ == AD_SLEE)
                             printdice(cooldownbuf, MONSTER_BREATH_WEAPON_SLEEP_COOLDOWN_DICE, MONSTER_BREATH_WEAPON_SLEEP_COOLDOWN_DIESIZE, MONSTER_BREATH_WEAPON_SLEEP_COOLDOWN_CONSTANT);
                         else
