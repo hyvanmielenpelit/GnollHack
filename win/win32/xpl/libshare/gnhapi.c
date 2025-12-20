@@ -428,7 +428,7 @@ int save_style;
             issue_parametered_gui_command(GUI_CMD_WAIT_FOR_RESUME, saveres);
             if (saveres)
             {
-                exit_hack_code = 1; /* reload upon exit */
+                exit_hack_code = EXITHACK_RESTART_EXISTING; /* reload upon exit */
                 u.uhp = -1; /* universal game's over indicator */
                 /* make sure they see the Saving message */
                 display_nhwindow(WIN_MESSAGE, TRUE);
@@ -743,7 +743,7 @@ LibSetExitHack(int newValue)
 DLLEXPORT void
 LibExitGnhThread()
 {
-    exit_hack_code = 3; // ExitHack does nothing; just exiting thread
+    exit_hack_code = EXITHACK_EXITTHREAD; // ExitHack does nothing; just exiting thread
     gnollhack_exit(EXIT_SUCCESS);
 }
 

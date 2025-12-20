@@ -1659,6 +1659,15 @@ namespace GnollHackX
         NUM_NHKF
     }
 
+    public enum exit_hack_types
+    {
+        EXITHACK_NORMAL = 0,
+        EXITHACK_RESTART_EXISTING,
+        EXITHACK_RECOVER_NEW,
+        EXITHACK_EXITTHREAD,
+    }
+
+
     public static class GHConstants
     {
         public const int MinimumFileDescriptorLimit = 16384;

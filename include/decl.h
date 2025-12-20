@@ -218,6 +218,10 @@ E NEARDATA struct sinfo {
 } program_state;
 
 E int exit_hack_code;
+#define EXITHACK_NORMAL             0 /* Normal start without existing GamePage; ExitHack should prepare return to main menu */
+#define EXITHACK_RESTART_EXISTING   1 /* Restart game to an existing GamePage; ExitHack should prepare the game to be loaded after saving */
+#define EXITHACK_RECOVER_NEW        2 /* Recover game to a new GamePage without saying welcome back; the original GamePage has been destroyed by OS and should be regenerated; ExitHack has not been called and should not do anything */
+#define EXITHACK_EXITTHREAD         3 /* Exiting thread; ExitHack should not do anything */
 
 E boolean restoring;
 E boolean saving;

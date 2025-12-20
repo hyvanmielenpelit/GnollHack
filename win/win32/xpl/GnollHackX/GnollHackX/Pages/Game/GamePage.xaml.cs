@@ -1730,7 +1730,7 @@ namespace GnollHackX.Pages.Game
         {
             GHApp.FmodService?.StopAllGameSounds((uint)StopSoundFlags.All, 0);
             GHApp.FmodService?.ResetGameState();
-            GHApp.GnollHackService?.SetExitHack(2);
+            GHApp.GnollHackService?.SetExitHack((int)exit_hack_types.EXITHACK_RECOVER_NEW);
             await GHApp.Navigation.PushModalAsync(this);
             await StartNewGame();
         }

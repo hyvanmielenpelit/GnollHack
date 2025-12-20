@@ -44,7 +44,7 @@ char** argv;
 {
     FILE* fp;
     uchar resuming = FALSE; /* assume new game */
-    int exit_hack_code_at_start = exit_hack_code; /* 0 normal start, if 1, then the game is restarting after saving, 2 if restarting after the game window got destroyed by the OS, 3 if exiting thread (should not happen); sys_early_init will set to zero */
+    int exit_hack_code_at_start = exit_hack_code; /* 0 normal start, if 1, then the game is restarting after saving (earlier GamePage exists), 2 if restarting after the game window got destroyed by the OS (earlier GamePage does not exist), 3 if exiting thread (should not happen); sys_early_init will set to zero */
 
     sys_early_init();
     lib_init_platform();
@@ -66,9 +66,9 @@ char** argv;
 
     /* Now initialize windows */
     choose_windows(DEFAULT_WINDOW_SYS);
-    maybe_issue_simple_gui_command(exit_hack_code_at_start != 1, GUI_CMD_LOAD_GLYPHS);
+    maybe_issue_simple_gui_command(exit_hack_code_at_start != EXITHACK_RESTART_EXISTING, GUI_CMD_LOAD_GLYPHS);
     init_nhwindows(&argc, argv);
-    maybe_issue_simple_gui_command(!exit_hack_code_at_start, GUI_CMD_SET_TO_BLACK);
+    maybe_issue_simple_gui_command(exit_hack_code_at_start != EXITHACK_RESTART_EXISTING, GUI_CMD_SET_TO_BLACK);
     process_options_file();
 
     /*
@@ -119,7 +119,7 @@ char** argv;
     if (!load_saved_game(exit_hack_code_at_start))
     {
         resuming = FALSE;
-        maybe_issue_simple_gui_command(exit_hack_code_at_start, GUI_CMD_SET_TO_BLACK);
+        maybe_issue_simple_gui_command(exit_hack_code_at_start == EXITHACK_RESTART_EXISTING, GUI_CMD_SET_TO_BLACK);
         player_selection();
 
         /* CHOOSE DIFFICULTY */
@@ -131,7 +131,7 @@ char** argv;
     }
     else
     {
-        resuming = exit_hack_code_at_start > 0 ? 2 : TRUE;
+        resuming = exit_hack_code_at_start > EXITHACK_NORMAL ? 2 : TRUE;
     }
     notify_gui_pregame();
     moveloop(resuming);

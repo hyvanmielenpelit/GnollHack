@@ -134,7 +134,7 @@ dosave()
         {
             if (contplay)
             {
-                exit_hack_code = 1;
+                exit_hack_code = EXITHACK_RESTART_EXISTING;
                 //    display_popup_text("Game was saved successfully.", "Game Saved", POPUP_TEXT_GENERAL, ATR_NONE, NO_COLOR, NO_GLYPH, 0UL);
             }
             u.uhp = -1; /* universal game's over indicator */

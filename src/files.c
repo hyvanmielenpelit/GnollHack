@@ -2066,8 +2066,8 @@ create_gamestate_levelfile(VOID_ARGS)
 }
 
 int
-load_saved_game(load_type)
-int load_type; // 0 = at start normally, 1 = load after saving, corresponds to exit_hack_code at start
+load_saved_game(load_code)
+int load_code; // corresponds to exit_hack_code at start
 {
     reseting = TRUE;
     boolean is_backup = FALSE;
@@ -2080,7 +2080,7 @@ int load_type; // 0 = at start normally, 1 = load after saving, corresponds to e
         boolean remember_wiz_mode = wizard;
         const char* fq_save = fqname(SAVEF, SAVEPREFIX, 1);
 
-        if (load_type == 0)
+        if (load_code == EXITHACK_NORMAL)
         {
 #ifdef NEWS
             if (iflags.news)
@@ -2102,7 +2102,7 @@ int load_type; // 0 = at start normally, 1 = load after saving, corresponds to e
                 fd = open_and_validate_saved_game(FALSE, (boolean*)0);
                 if (fd >= 0)
                 {
-                    if (load_type == 0)
+                    if (load_code == EXITHACK_NORMAL)
                     {
                         pline("Restoring back-up save file...");
                         mark_synch(); /* flush output */
@@ -2125,20 +2125,24 @@ int load_type; // 0 = at start normally, 1 = load after saving, corresponds to e
         encounter_init();
         delete_excess_levelfiles();
 
-        switch (load_type)
+        maybe_issue_simple_gui_command(load_code != EXITHACK_RESTART_EXISTING, GUI_CMD_FADE_FROM_BLACK_SLOWLY_NONBLOCKING);
+
+        switch (load_code)
         {
-        case 0:
+        case EXITHACK_NORMAL:
             /* Welcome */
-            issue_simple_gui_command(GUI_CMD_FADE_FROM_BLACK_SLOWLY_NONBLOCKING);
             welcome(FALSE);
             check_special_room(FALSE);
             mode_message();
             break;
-        case 1:
+        case EXITHACK_RECOVER_NEW:
+        case EXITHACK_RESTART_EXISTING:
             flush_screen(1);
             update_game_music();
             play_level_ambient_sounds();
             play_environment_ambient_sounds();
+            break;
+        default:
             break;
         }
 
@@ -2148,7 +2152,7 @@ int load_type; // 0 = at start normally, 1 = load after saving, corresponds to e
             //Note that you can be in both Casual and wizard mode
             if (CasualMode)
             {
-                if(load_type == 0)
+                if(load_code == EXITHACK_NORMAL)
                     pline("Keeping the save file.");
 
                 savefilekept = TRUE;
@@ -2156,7 +2160,7 @@ int load_type; // 0 = at start normally, 1 = load after saving, corresponds to e
             }
             else
             {
-                if (load_type == 0 && yn_query("Do you want to keep the save file?") == 'n')
+                if (load_code == EXITHACK_NORMAL && yn_query("Do you want to keep the save file?") == 'n')
                 {
                     (void)delete_savefile();
                 }

@@ -29,7 +29,7 @@ NEARDATA int nroom = 0;
 NEARDATA int nsubroom = 0;
 NEARDATA int occtime = 0;
 
-int exit_hack_code = 0;
+int exit_hack_code = EXITHACK_NORMAL;
 
 /* maze limits must be even; masking off lowest bit guarantees that */
 int x_maze_max = (COLNO - 1) & ~1, y_maze_max = (ROWNO - 1) & ~1;
