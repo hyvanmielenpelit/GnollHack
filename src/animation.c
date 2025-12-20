@@ -2576,11 +2576,11 @@ enum autodraw_types* autodraw_ptr;
         if (play_type == ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY
             && (interval_counter / (int64_t)animations[animation_idx].intervals_between_frames) >= (int64_t)numframes)
         {
-            if (animations[animation_idx].main_tile_use_style == ANIMATION_MAIN_TILE_IGNORE)
-            {
-                current_animation_frame = (int)animations[animation_idx].number_of_frames - 1; /* Set to last frame of the animation */
-            }
-            else
+            //if (animations[animation_idx].main_tile_use_style == ANIMATION_MAIN_TILE_IGNORE)
+            //{
+            //    current_animation_frame = (int)animations[animation_idx].number_of_frames - 1; /* Set to last frame of the animation */
+            //}
+            //else
             {
                 return ntile;  /* Return the original tile in other cases */
             }
