@@ -339,6 +339,8 @@ namespace GnollHackX.Unknown
 
         [DllImport(PlatformConstants.dll)]
         public static extern void LibExitGnhThread();
+        [DllImport(PlatformConstants.dll)]
+        public static extern void LibTerminateGnollHack();
 
         private void LoadNativeLibrary(string libName)
         {
@@ -1225,6 +1227,10 @@ namespace GnollHackX.Unknown
         public void ExitGnhThread()
         {
             LibExitGnhThread();
+        }
+        public void TerminateGnollHack()
+        {
+            LibTerminateGnollHack();
         }
 
         public int StartGnollHack(GHGame ghGame)

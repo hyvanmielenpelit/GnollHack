@@ -805,13 +805,34 @@ namespace GnollHackX
             GHGame curGame = GHApp.CurrentGHGame;
             if (curGame != null) 
             {
-                //carouselView.Stop();
-                carouselView.ShutDown();
-                var gamePage = new GamePage(this);
-                gamePage.EnableWizardMode = curGame.WizardMode;
-                gamePage.EnableCasualMode = curGame.CasualMode;
-                gamePage.EnableModernMode = curGame.ModernMode;
-                GHGame game = GHApp.CurrentGHGame;
+                if (WasGameSaved)
+                {
+                    carouselView.ShutDown();
+                    var gamePage = new GamePage(this);
+                    gamePage.EnableWizardMode = curGame.WizardMode;
+                    gamePage.EnableCasualMode = curGame.CasualMode;
+                    gamePage.EnableModernMode = curGame.ModernMode;
+                    GHApp.CancelSaveGame = true;
+                    curGame.StopWaitAndTerminateGnollHack();
+                }
+                else
+                {
+                    //await GHApp.Navigation.PushModalAsync(gamePage, false);
+                    //gamePage.StartExistingGame();
+                    //curGame.ReactivateGame();
+                    WaitLabel.Text = "Exiting...";
+                    WaitLayout.IsVisible = true;
+                    await CloseApp();
+                }
+            }
+            WaitLayout.IsVisible = false;
+        }
+
+        private bool WasGameSaved
+        {
+            get
+            {
+                GHGame curGame = GHApp.CurrentGHGame;
                 bool wenttosleep = false;
                 try
                 {
@@ -821,26 +842,19 @@ namespace GnollHackX
                 {
                     Debug.WriteLine(ex);
                 }
-                if (GHApp.IsAutoSaveUponSwitchingAppsOn
-                    && game != null && !game.PlayingReplay
-                    && wenttosleep && (GHApp.GameSaved || GHApp.SavingGame))
-                {
-                    GHApp.CancelSaveGame = true;
-                    game.FullRestart = true;
-                    game.StopWaitAndResumeSavedGame(); //Calls gamePage.RestartGameAfterPageDestruction, which handles Navigation.PushModalAsync when the time is right
-                }
-                else
-                {
-                    await GHApp.Navigation.PushModalAsync(gamePage, false);
-                    gamePage.StartExistingGame();
-                    curGame.ReactivateGame();
-                }
-                await Task.Delay(500);
+                bool wasSaved = GHApp.IsAutoSaveUponSwitchingAppsOn
+                    && curGame != null && !curGame.PlayingReplay
+                    && wenttosleep && (GHApp.GameSaved || GHApp.SavingGame);
+                return wasSaved;
             }
-            WaitLayout.IsVisible = false;
         }
-
-        private bool AllowStartExistingGame {  get { return GHConstants.AllowRestartGameUponActivityDestruction && GHApp.GameStarted; } }
+        private bool AllowStartExistingGame 
+        {  
+            get 
+            {
+                return GHConstants.AllowRestartGameUponActivityDestruction && WasGameSaved && GHApp.GameStarted; 
+            } 
+        }
 
         private async void ContentPage_Appearing(object sender, EventArgs e)
         {
@@ -872,7 +886,7 @@ namespace GnollHackX
                 if (curGame != null)
                 {
                     StartLocalGameButton.TextColor = GHColors.Gray;
-                    StartLocalGameButton.IsEnabled = false;
+                    StartLocalGrid.IsEnabled = false;
                     WaitLayout.IsVisible = false;
 
                     if (AllowStartExistingGame)

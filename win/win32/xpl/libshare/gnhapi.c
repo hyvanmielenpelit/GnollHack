@@ -747,6 +747,15 @@ LibExitGnhThread()
     gnollhack_exit(EXIT_SUCCESS);
 }
 
+DLLEXPORT void
+LibTerminateGnollHack()
+{
+    exit_hack_code = EXITHACK_RECOVER_NEW; // Start the game
+    restoring = FALSE; /* just in case */
+    nh_terminate(EXIT_SUCCESS);
+}
+
+
 DLLEXPORT int GnollHackStart(cmdlineargs)
 char* cmdlineargs;
 {

@@ -1165,6 +1165,11 @@ namespace GnollHackX.Pages.Game
             await StartGame(null, -1);
         }
 
+        public async Task StartResetGame()
+        {
+            await StartGame(null, -1, true);
+        }
+
         public async Task StartReplay(string replayFileName, int fromTurn)
         {
             await StartGame(replayFileName, fromTurn);
@@ -1179,7 +1184,7 @@ namespace GnollHackX.Pages.Game
         private IDispatcherTimer _pollingTimer = null;
         private IDispatcherTimer _updateTimer = null;
 #endif
-        public async Task StartGame(string replayFileName, int fromTurn)
+        public async Task StartGame(string replayFileName, int fromTurn, bool useRestart = false)
         {
             try
             {
@@ -1396,6 +1401,8 @@ namespace GnollHackX.Pages.Game
                 Thread t;
                 if (PlayingReplay)
                     t = new Thread(new ThreadStart(GNHThreadProcForReplay));
+                else if (useRestart)
+                    t = new Thread(new ThreadStart(GNHThreadProcForRestart));
                 else
                     t = new Thread(new ThreadStart(GNHThreadProc));
                 GHApp.GnhThread = t;
@@ -1730,9 +1737,10 @@ namespace GnollHackX.Pages.Game
         {
             GHApp.FmodService?.StopAllGameSounds((uint)StopSoundFlags.All, 0);
             GHApp.FmodService?.ResetGameState();
-            GHApp.GnollHackService?.SetExitHack((int)exit_hack_types.EXITHACK_RECOVER_NEW);
+            //GHApp.GnollHackService?.SetExitHack((int)exit_hack_types.EXITHACK_RECOVER_NEW);
+            GHApp.CurrentGHGame = null;
             await GHApp.Navigation.PushModalAsync(this);
-            await StartNewGame();
+            await StartResetGame();
         }
 
         public async Task RestartGame()
@@ -2915,11 +2923,11 @@ namespace GnollHackX.Pages.Game
                             case GHRequestType.RestartGame:
                                 EnqueueTask(ref tasks, RestartGame());
                                 break;
-                            case GHRequestType.RestartGameUponPageDestruction:
-                                EnqueueTask(ref tasks, RestartGameAfterPageDestruction());
-                                break;
                             case GHRequestType.RestartReplay:
                                 EnqueueTask(ref tasks, RestartReplay());
+                                break;
+                            case GHRequestType.RestartGameAfterPageDestruction:
+                                EnqueueTask(ref tasks, RestartGameAfterPageDestruction());
                                 break;
                             case GHRequestType.ShowMenuPage:
                                 EnqueueTask(ref tasks, ShowMenuCanvas(req.RequestMenuInfo != null ? req.RequestMenuInfo : new GHMenuInfo(ghmenu_styles.GHMENU_STYLE_GENERAL), req.RequestingGHWindow));
@@ -20660,31 +20668,6 @@ namespace GnollHackX.Pages.Game
             targetButton.BtnMeta = sourceButton.Meta;
             targetButton.ImgSourcePath = sourceButton.ImageSourcePath;
         }
-
-        //public void StopWaitAndResumeSavedGame()
-        //{
-        //    GHGame curGame = GHApp.CurrentGHGame;
-        //    curGame?.ResponseQueue.Enqueue(new GHResponse(curGame, GHRequestType.StopWaitAndRestoreSavedGame));
-        //}
-
-        //public bool IgnoreSave()
-        //{
-        //    /* Saving and reloading would lead to loss of the wish, so do not save; the game attempts to do insurance before expending charge from the wand of wishing and other similar situations instead */
-        //    return GetLineGrid.IsVisible && _getLineStyle == (int)getline_types.GETLINE_WISHING;
-        //}
-
-        //public void SaveGameAndWaitForResume()
-        //{
-        //    GHGame curGame = GHApp.CurrentGHGame;
-        //    curGame?.ResponseQueue.Enqueue(new GHResponse(curGame, GHRequestType.SaveGameAndWaitForResume));
-        //}
-
-        //public void SaveCheckPoint()
-        //{
-        //    GHGame curGame = GHApp.CurrentGHGame;
-        //    curGame?.ResponseQueue.Enqueue(new GHResponse(curGame, GHRequestType.SaveInsuranceCheckPoint));
-        //}
-
         public void SendRequestForTallyRealTime()
         {
             GHGame curGame = GHApp.CurrentGHGame;

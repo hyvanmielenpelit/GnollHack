@@ -89,5 +89,6 @@ namespace GnollHackX
 
         void SetExitHack(int newValue);
         void ExitGnhThread();
+        void TerminateGnollHack();
     }
 }

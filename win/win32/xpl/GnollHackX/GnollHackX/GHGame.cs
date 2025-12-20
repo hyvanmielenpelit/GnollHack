@@ -251,6 +251,9 @@ namespace GnollHackX
                     case GHRequestType.StopWaitAndExitThread:
                         ForceExitThread();
                         break;
+                    case GHRequestType.StopWaitAndTerminateGnollHack:
+                        ForceTerminateGnollHack();
+                        break;
                     case GHRequestType.TallyRealTime:
                         RequestTallyRealTime();
                         break;
@@ -462,6 +465,10 @@ namespace GnollHackX
         public void StopWaitAndExitThread()
         {
             ResponseQueue.Enqueue(new GHResponse(this, GHRequestType.StopWaitAndExitThread));
+        }
+        public void StopWaitAndTerminateGnollHack()
+        {
+            ResponseQueue.Enqueue(new GHResponse(this, GHRequestType.StopWaitAndTerminateGnollHack));
         }
 
         public int ClientCallback_CreateGHWindow(int wintype, int style, int glyph, byte dataflags, IntPtr objdata_ptr, IntPtr otypdata_ptr)
@@ -1049,9 +1056,6 @@ namespace GnollHackX
             RecordFunctionCall(RecordedFunctionID.GetEvent);
         }
 
-        private int _fullRestart = 0;
-        public bool FullRestart { get { return Interlocked.CompareExchange(ref _fullRestart, 0, 0) != 0; } set { Interlocked.Exchange(ref _fullRestart, value ? 1 : 0); } }
-
         public void ClientCallback_ExitHack(int status)
         {
             RecordFunctionCall(RecordedFunctionID.ExitHack, status);
@@ -1062,16 +1066,12 @@ namespace GnollHackX
             {
                 case (int)exit_hack_types.EXITHACK_EXITTHREAD: /* Just forcing the exit of the GnollHack thread before exiting the app; do nothing */
                     break;
-                case (int)exit_hack_types.EXITHACK_RECOVER_NEW: /* OS destroyed the activity on Android, or an equivalent situation occurred (this status should not be possible here, only at start); do nothing */
+                case (int)exit_hack_types.EXITHACK_RECOVER_NEW: /* OS destroyed the activity on Android, or an equivalent situation occurred */
+                    RequestQueue.Enqueue(new GHRequest(this, GHRequestType.RestartGameAfterPageDestruction));
+                    ActiveGamePage?.DoPolling(); /* A new game page will not have polling timer on */
                     break;
                 case (int)exit_hack_types.EXITHACK_RESTART_EXISTING: /* Restart in the same game page (after saving) */
-                    if (FullRestart)
-                    {
-                        FullRestart = false;
-                        RequestQueue.Enqueue(new GHRequest(this, GHRequestType.RestartGameUponPageDestruction));
-                    }
-                    else
-                        RequestQueue.Enqueue(new GHRequest(this, GHRequestType.RestartGame));
+                    RequestQueue.Enqueue(new GHRequest(this, GHRequestType.RestartGame));
                     ActiveGamePage?.DoPolling(); /* A new game page will not have polling timer on */
                     break;
                 default:
@@ -3966,6 +3966,14 @@ namespace GnollHackX
                 return;
             /* The fact that this function is only called from GnhThread should ensure the thread is alive */
             GHApp.GnollHackService?.ExitGnhThread();
+        }
+
+        private void ForceTerminateGnollHack()
+        {
+            if (PlayingReplay)
+                return;
+            /* The fact that this function is only called from GnhThread should ensure the thread is alive */
+            GHApp.GnollHackService?.TerminateGnollHack();
         }
 
         private void RequestCheckPoint()
