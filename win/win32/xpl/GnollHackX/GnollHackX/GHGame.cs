@@ -1060,7 +1060,9 @@ namespace GnollHackX
 
             switch (status)
             {
-                case 2: /* Do nothing */
+                case 3: /* Just forcing the exit of the GnollHack thread before exiting the app; do nothing */
+                    break;
+                case 2: /* OS destroyed the activity on Android, or an equivalent situation occurred (this status should not be possible here, only at start); do nothing */
                     break;
                 case 1: /* Restart in the same game page (after saving) */
                     if (FullRestart)
@@ -1073,7 +1075,7 @@ namespace GnollHackX
                     ActiveGamePage?.DoPolling(); /* A new game page will not have polling timer on */
                     break;
                 default:
-                case 0:
+                case 0: /* Normal case; return to main menu */
                     GHApp.FmodService?.StopAllGameSounds((uint)StopSoundFlags.All, 0);
                     GHApp.FmodService?.ResetGameState();
                     GHApp.SaveDiscoveredMusic();

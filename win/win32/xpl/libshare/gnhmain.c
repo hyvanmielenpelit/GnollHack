@@ -44,7 +44,7 @@ char** argv;
 {
     FILE* fp;
     uchar resuming = FALSE; /* assume new game */
-    int exit_hack_code_at_start = exit_hack_code; /* if 1, then the game is restarting after saving, 2 if restarting after the game window got destroyed by the OS; sys_early_init will set to zero */
+    int exit_hack_code_at_start = exit_hack_code; /* 0 normal start, if 1, then the game is restarting after saving, 2 if restarting after the game window got destroyed by the OS, 3 if exiting thread (should not happen); sys_early_init will set to zero */
 
     sys_early_init();
     lib_init_platform();
