@@ -178,6 +178,19 @@
                                        VerticalTextAlignment="Start" HorizontalOptions="Center" />
                             <controls:CustomImageButton x:Name="AlertOkButton" Text="OK" FontSize="19" WidthRequest="170" HeightRequest="55" Margin="0,10,0,0" FontFamily="Diablo" HorizontalOptions="Center" BackgroundColor="Transparent" TextColor="White"
                                         Clicked="AlertOkButton_Clicked" />
+                            <Grid x:Name="AlertButtonGrid" IsVisible="False" ColumnSpacing="6" HorizontalOptions="Center" >
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <controls:CustomImageButton Grid.Column="0" x:Name="AlertOkButton2" Text="OK" FontSize="19" WidthRequest="170" HeightRequest="55" FontFamily="Diablo" HorizontalOptions="End" BackgroundColor="Transparent" TextColor="White"
+                                        Clicked="AlertOkButton_Clicked" />
+                                <controls:CustomImageButton Grid.Column="1" x:Name="AlertExitButton" Text="Exit" FontSize="19" WidthRequest="170" HeightRequest="55" FontFamily="Diablo" HorizontalOptions="Start" BackgroundColor="Transparent" TextColor="White"
+                                        Clicked="AlertExitButton_Clicked" />
+                            </Grid>
                         </StackLayout>
                     </Border>
                 </Grid>

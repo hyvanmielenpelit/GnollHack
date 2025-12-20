@@ -747,7 +747,7 @@ namespace GnollHackX
                 //GHGame curGame = GHApp.CurrentGHGame;
                 //if (curGame != null)
                 //{
-                //    await DoShowGamePageForExistingGameAsync(curGame);
+                //    await TerminateAndRestartGame(curGame);
                 //}
                 //else
                 {
@@ -800,13 +800,13 @@ namespace GnollHackX
             return false;
         }
 
-        private async Task DoShowGamePageForExistingGameAsync()
+        private void TerminateAndRestartGame()
         {
             GHGame curGame = GHApp.CurrentGHGame;
             if (curGame != null) 
             {
-                if (WasGameSaved)
-                {
+                //if (WasGameSaved)
+                //{
                     carouselView.ShutDown();
                     var gamePage = new GamePage(this);
                     gamePage.EnableWizardMode = curGame.WizardMode;
@@ -814,16 +814,14 @@ namespace GnollHackX
                     gamePage.EnableModernMode = curGame.ModernMode;
                     GHApp.CancelSaveGame = true;
                     curGame.StopWaitAndTerminateGnollHack();
-                }
-                else
-                {
+                //}
+                //else
+                //{
                     //await GHApp.Navigation.PushModalAsync(gamePage, false);
                     //gamePage.StartExistingGame();
                     //curGame.ReactivateGame();
-                    WaitLabel.Text = "Exiting...";
-                    WaitLayout.IsVisible = true;
-                    await CloseApp();
-                }
+                    //ShowWaitAndCloseApp();
+                //}
             }
             WaitLayout.IsVisible = false;
         }
@@ -888,37 +886,31 @@ namespace GnollHackX
                     StartLocalGameButton.TextColor = GHColors.Gray;
                     StartLocalGrid.IsEnabled = false;
                     WaitLayout.IsVisible = false;
+                    carouselView.Play();
 
                     if (AllowStartExistingGame)
                     {
+                        Preferences.Set("WentToSleepWithGameOn", false);
+                        Preferences.Set("GameSaveResult", 0);
                         DisplayAlertGrid(GHApp.IsAndroid ? "Android Activity Restart" : "Game Screen Restart",
                             "Android destroyed GnollHack's " + (GHApp.IsAndroid ? "activity" : "game screen") + " when backgrounded. Please press OK to return to your game.",
-                                "OK", GHColors.Orange, 5);
+                                "OK", GHColors.Orange, AppCloseStyle.ReturnToGame, true);
                     }
                     else
                     {
-                        carouselView.Play();
-
-                        ///* Game has been successfully loaded, so need to save first */
-                        //if (GHApp.IsAutoSaveUponSwitchingAppsOn)
-                        //{
-                        //    curGame.SaveGameAndWaitForResume();
-                        //    await Task.Delay(2000);
-                        //}
                         Preferences.Set("WentToSleepWithGameOn", false);
                         Preferences.Set("GameSaveResult", 0);
-
                         if (GHApp.IsAndroid)
                         {
                             DisplayAlertGrid("Android Activity Restart",
                                 "Android destroyed GnollHack's activity when backgrounded, which may lead to unstable performance. Please press OK to exit the app and then restart GnollHack.",
-                                    "OK", GHColors.Orange, 4);
+                                    "OK", GHColors.Orange, AppCloseStyle.ExitApp);
                         }
                         else
                         {
                             DisplayAlertGrid("Unexpected App Restart",
                                 "GnollHack experienced an unexpected app window restart, which may lead to unstable performance. Please press OK to exit the app and then restart GnollHack.",
-                                    "OK", GHColors.Orange, 4);
+                                    "OK", GHColors.Orange, AppCloseStyle.ExitApp);
                         }
                     }
 
@@ -947,7 +939,7 @@ namespace GnollHackX
                             "GnollHack has detected invalid animation settings." 
                             + (GHApp.IsPlatformRenderLoopAvailable ? " You can either turn on Platform Render Loop in GnollHack settings or adjust your device animation settings." : "") 
                             + (GHApp.IsSamsung ? " In the Android Settings app, please switch off \"" + animationSettingName + "\" under Accessibility > Visibility Enhancements." : " In the Android settings app, please adjust the value of \"Animator duration scale\" to 1x under Developer Options > Animator duration scale."),
-                            "OK", GHColors.Orange, GHApp.IsPlatformRenderLoopAvailable ? 0 : 2);
+                            "OK", GHColors.Orange, GHApp.IsPlatformRenderLoopAvailable ? AppCloseStyle.Normal : AppCloseStyle.ExitAppOnHangupAndRemoveAnimations);
                     }
                     else
                     {
@@ -960,13 +952,13 @@ namespace GnollHackX
                                     "GnollHack failed to automatically adjust Animator Duration Scale and it remains switched off." 
                                     + (GHApp.IsPlatformRenderLoopAvailable ? " You can either turn on Platform Render Loop in GnollHack settings or adjust your device animation settings." : "") 
                                     + (GHApp.IsAndroid ? " In the Android Settings app, please adjust the value to 1x under Developer Options > Animator duration scale. If your device has a setting named \"" + animationSettingName + "\" under Accessibility > Visibility Enhancements, this setting needs to be disabled, too." : ""),
-                                    "OK", GHColors.Orange, GHApp.IsPlatformRenderLoopAvailable ? 0 : 3);
+                                    "OK", GHColors.Orange, GHApp.IsPlatformRenderLoopAvailable ? AppCloseStyle.Normal : AppCloseStyle.ExitAppOnHangupAndAnimatorDuration);
                             else
                                 DisplayAlertGrid("Invalid Animator Duration Scale",
                                     "GnollHack failed to automatically adjust Animator Duration Scale and it has become turned off." 
                                     + (GHApp.IsPlatformRenderLoopAvailable ? " You can either turn on Platform Render Loop in GnollHack settings or adjust your device animation settings." : "") 
                                     + (GHApp.IsAndroid ? " In the Android Settings app, please check that the value is 1x under Developer Options > Animator duration scale. If your device has a setting named \"" + animationSettingName + "\" under Accessibility > Visibility Enhancements, this setting needs to be disabled, too." : ""),
-                                    "OK", GHColors.Orange, GHApp.IsPlatformRenderLoopAvailable ? 0 : 3);
+                                    "OK", GHColors.Orange, GHApp.IsPlatformRenderLoopAvailable ? AppCloseStyle.Normal : AppCloseStyle.ExitAppOnHangupAndAnimatorDuration);
                         }
                         else if (scalecurrent == -1.0f)
                         {
@@ -1498,7 +1490,7 @@ namespace GnollHackX
                     + (GHApp.IsAndroid && GHApp.IsSamsung ? " In Android Settings, please switch off Accessibility > Visual Enhancements > " 
                     + GHApp.OneUIAnimationSettingName + "." 
                 : " Please check your device animation settings."), 
-                "OK", GHColors.Orange, 1);
+                "OK", GHColors.Orange, AppCloseStyle.ExitAppOnHangup);
         }
 
         private async Task StartFadeIn()
@@ -1995,23 +1987,55 @@ namespace GnollHackX
         private async void AlertOkButton_Clicked(object sender, EventArgs e)
         {
             AlertOkButton.IsEnabled = false;
+            AlertOkButton2.IsEnabled = false;
+            AlertExitButton.IsEnabled = false;
             GHApp.PlayButtonClickedSound();
             AlertGrid.IsVisible = false;
-            if ((_alertGridCloseAppStyle == 1 && !FinishedLogoFadeIn)
-                || (_alertGridCloseAppStyle == 2 && (!FinishedLogoFadeIn || (GHApp.PlatformService?.IsRemoveAnimationsOn() ?? true)))
-                || (_alertGridCloseAppStyle == 3 && (!FinishedLogoFadeIn || ((GHApp.PlatformService?.GetCurrentAnimatorDurationScale() ?? -1.0f) <= 0.0f)))
-                || _alertGridCloseAppStyle == 4)
+            switch (_alertGridCloseAppStyle)
             {
-                WaitLabel.Text = "Exiting...";
-                WaitLayout.IsVisible = true;
-                await CloseApp();
-            }
-            else if (_alertGridCloseAppStyle == 5)
-            {
-                await DoShowGamePageForExistingGameAsync();
+                default:
+                case AppCloseStyle.Normal:
+                    /* Nothing special */
+                    break;
+                case AppCloseStyle.ExitAppOnHangup:
+                    if (!FinishedLogoFadeIn)
+                        await ShowWaitAndCloseApp();
+                    break;
+                case AppCloseStyle.ExitAppOnHangupAndRemoveAnimations:
+                    if (!FinishedLogoFadeIn || (GHApp.PlatformService?.IsRemoveAnimationsOn() ?? true))
+                        await ShowWaitAndCloseApp();
+                    break;
+                case AppCloseStyle.ExitAppOnHangupAndAnimatorDuration:
+                    if (!FinishedLogoFadeIn || ((GHApp.PlatformService?.GetCurrentAnimatorDurationScale() ?? -1.0f) <= 0.0f))
+                        await ShowWaitAndCloseApp();
+                    break;
+                case AppCloseStyle.ExitApp:
+                    await ShowWaitAndCloseApp();
+                    break;
+                case AppCloseStyle.ReturnToGame:
+                    TerminateAndRestartGame();
+                    break;
             }
             AlertOkButton.IsEnabled = true;
+            AlertOkButton2.IsEnabled = true;
+            AlertExitButton.IsEnabled = true;
             DisplayNewAlert(); //Show next alert if there are more in the queue
+        }
+
+        private async void AlertExitButton_Clicked(object sender, EventArgs e)
+        {
+            AlertOkButton.IsEnabled = false;
+            AlertOkButton2.IsEnabled = false;
+            AlertExitButton.IsEnabled = false;
+            GHApp.PlayButtonClickedSound();
+            await ShowWaitAndCloseApp();
+        }
+
+        private async Task ShowWaitAndCloseApp()
+        {
+            WaitLabel.Text = "Exiting...";
+            WaitLayout.IsVisible = true;
+            await CloseApp();
         }
 
         private class DisplayAlertGridItem
@@ -2020,29 +2044,40 @@ namespace GnollHackX
             {
 
             }
-            public DisplayAlertGridItem(string title, string message, string buttonText, Color titleColor, int closeAppStyle = 0)
+            public DisplayAlertGridItem(string title, string message, string buttonText, Color titleColor, AppCloseStyle closeAppStyle = AppCloseStyle.Normal, bool showExitButton = false)
             {
                 Title = title;
                 Message = message;
                 ButtonText = buttonText;
                 TitleColor = titleColor;
                 CloseAppStyle = closeAppStyle;
+                ShowExitButton = showExitButton;
             }
             public string Title;
             public string Message;
             public string ButtonText;
             public Color TitleColor;
-            public int CloseAppStyle;
+            public AppCloseStyle CloseAppStyle;
+            public bool ShowExitButton;
         }
 
         private readonly Queue<DisplayAlertGridItem> _alertQueue = new Queue<DisplayAlertGridItem>();
-        private int _alertGridCloseAppStyle = 0;
+        private enum AppCloseStyle
+        {
+            Normal = 0,
+            ExitAppOnHangup = 1,
+            ExitAppOnHangupAndRemoveAnimations = 2,
+            ExitAppOnHangupAndAnimatorDuration = 3,
+            ExitApp = 4,
+            ReturnToGame = 5,
+        }
+        private AppCloseStyle _alertGridCloseAppStyle = AppCloseStyle.Normal;
 
-        private void DisplayAlertGrid(string title, string message, string buttonText, Color titleColor, int closeAppStyle = 0)
+        private void DisplayAlertGrid(string title, string message, string buttonText, Color titleColor, AppCloseStyle closeAppStyle = AppCloseStyle.Normal, bool showExitButton = false)
         {
             MainThread.BeginInvokeOnMainThread(() =>
             {
-                _alertQueue.Enqueue(new DisplayAlertGridItem(title, message, buttonText, titleColor, closeAppStyle));
+                _alertQueue.Enqueue(new DisplayAlertGridItem(title, message, buttonText, titleColor, closeAppStyle, showExitButton));
                 if (!AlertGrid.IsVisible)
                     DisplayNewAlert();
             });
@@ -2062,6 +2097,12 @@ namespace GnollHackX
                         AlertTitleLabel.TextColor = alert.TitleColor;
                         AlertLabel.Text = alert.Message;
                         AlertOkButton.Text = alert.ButtonText;
+                        AlertOkButton2.Text = alert.ButtonText;
+                        AlertOkButton.IsVisible = !alert.ShowExitButton;
+                        AlertButtonGrid.IsVisible = alert.ShowExitButton;
+                        AlertOkButton.IsEnabled = true;
+                        AlertOkButton2.IsEnabled = true;
+                        AlertExitButton.IsEnabled = true;
                         AlertGrid.IsVisible = true;
                     }
                 }
