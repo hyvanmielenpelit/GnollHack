@@ -430,8 +430,6 @@ int save_style;
             {
                 exit_hack_code = EXITHACK_RESTART_EXISTING; /* reload upon exit */
                 u.uhp = -1; /* universal game's over indicator */
-                /* make sure they see the Saving message */
-                display_nhwindow(WIN_MESSAGE, TRUE);
                 exit_nhwindows((char*)0);
                 nh_terminate(EXIT_SUCCESS);
             }
@@ -750,8 +748,10 @@ LibExitGnhThread()
 DLLEXPORT void
 LibTerminateGnollHack()
 {
-    exit_hack_code = EXITHACK_RECOVER_NEW; // Start the game
     restoring = FALSE; /* just in case */
+    exit_hack_code = EXITHACK_RECOVER_NEW; // Start the game in new game page
+    u.uhp = -1; /* universal game's over indicator */
+    exit_nhwindows((char*)0);
     nh_terminate(EXIT_SUCCESS);
 }
 
