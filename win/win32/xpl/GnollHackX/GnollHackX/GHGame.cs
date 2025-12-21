@@ -248,11 +248,11 @@ namespace GnollHackX
                     case GHRequestType.StopWaitAndRestoreSavedGame:
                         RequestRestoreSavedGame();
                         break;
-                    case GHRequestType.StopWaitAndExitThread:
+                    case GHRequestType.ForceExitThread:
                         ForceExitThread();
                         break;
-                    case GHRequestType.StopWaitAndTerminateGnollHack:
-                        ForceTerminateGnollHack();
+                    case GHRequestType.TerminateGnollHackAndRestartGameInNewGamePage:
+                        ForceTerminateGnollHack(exit_hack_types.EXITHACK_RECOVER_NEW);
                         break;
                     case GHRequestType.TallyRealTime:
                         RequestTallyRealTime();
@@ -462,13 +462,13 @@ namespace GnollHackX
             }
         }
 
-        public void StopWaitAndExitThread()
+        public void RequestForceExitThread()
         {
-            ResponseQueue.Enqueue(new GHResponse(this, GHRequestType.StopWaitAndExitThread));
+            ResponseQueue.Enqueue(new GHResponse(this, GHRequestType.ForceExitThread));
         }
-        public void StopWaitAndTerminateGnollHack()
+        public void TerminateGnollHackAndRestartGameInNewGamePage()
         {
-            ResponseQueue.Enqueue(new GHResponse(this, GHRequestType.StopWaitAndTerminateGnollHack));
+            ResponseQueue.Enqueue(new GHResponse(this, GHRequestType.TerminateGnollHackAndRestartGameInNewGamePage));
         }
 
         public int ClientCallback_CreateGHWindow(int wintype, int style, int glyph, byte dataflags, IntPtr objdata_ptr, IntPtr otypdata_ptr)
@@ -3965,15 +3965,15 @@ namespace GnollHackX
             if (PlayingReplay)
                 return;
             /* The fact that this function is only called from GnhThread should ensure the thread is alive */
-            GHApp.GnollHackService?.ExitGnhThread();
+            GHApp.GnollHackService?.ExitGnhThread(exit_hack_types.EXITHACK_EXITTHREAD);
         }
 
-        private void ForceTerminateGnollHack()
+        private void ForceTerminateGnollHack(exit_hack_types used_exit_hack_code)
         {
             if (PlayingReplay)
                 return;
             /* The fact that this function is only called from GnhThread should ensure the thread is alive */
-            GHApp.GnollHackService?.TerminateGnollHack();
+            GHApp.GnollHackService?.TerminateGnollHack(used_exit_hack_code);
         }
 
         private void RequestCheckPoint()

@@ -739,17 +739,17 @@ LibSetExitHack(int newValue)
 }
 
 DLLEXPORT void
-LibExitGnhThread()
+LibExitGnhThread(int used_exit_hack_code)
 {
-    exit_hack_code = EXITHACK_EXITTHREAD; // ExitHack does nothing; just exiting thread
+    exit_hack_code = used_exit_hack_code;
     gnollhack_exit(EXIT_SUCCESS);
 }
 
 DLLEXPORT void
-LibTerminateGnollHack()
+LibTerminateGnollHack(int used_exit_hack_code)
 {
     restoring = FALSE; /* just in case */
-    exit_hack_code = EXITHACK_RECOVER_NEW; // Start the game in new game page
+    exit_hack_code = used_exit_hack_code;
     u.uhp = -1; /* universal game's over indicator */
     exit_nhwindows((char*)0);
     nh_terminate(EXIT_SUCCESS);

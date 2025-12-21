@@ -1971,7 +1971,7 @@ namespace GnollHackX
                 Thread t = GnhThread;
                 if (game != null && t != null && t.IsAlive)
                 {
-                    game.StopWaitAndExitThread();
+                    game.RequestForceExitThread();
                 }
             }
             catch (Exception ex)

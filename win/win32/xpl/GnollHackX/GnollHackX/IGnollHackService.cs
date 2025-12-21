@@ -88,7 +88,7 @@ namespace GnollHackX
         float GetVolumeForGHSound(int ghsound);
 
         void SetExitHack(int newValue);
-        void ExitGnhThread();
-        void TerminateGnollHack();
+        void ExitGnhThread(exit_hack_types used_exit_hack_code);
+        void TerminateGnollHack(exit_hack_types used_exit_hack_code);
     }
 }

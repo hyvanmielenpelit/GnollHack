@@ -813,7 +813,7 @@ namespace GnollHackX
                     gamePage.EnableCasualMode = curGame.CasualMode;
                     gamePage.EnableModernMode = curGame.ModernMode;
                     GHApp.CancelSaveGame = true;
-                    curGame.StopWaitAndTerminateGnollHack();
+                    curGame.TerminateGnollHackAndRestartGameInNewGamePage();
                 //}
                 //else
                 //{
