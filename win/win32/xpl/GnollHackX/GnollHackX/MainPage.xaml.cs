@@ -1617,6 +1617,7 @@ namespace GnollHackX
             GHApp.AddSentryBreadcrumb("CloseApp", GHConstants.SentryGnollHackGeneralCategoryName);
             DoStopGeneralTimer();
             GHApp.StopPlatformRenderLoop();
+            GHApp.ShutDownMemoryWarnings();
             GHApp.CheckCloseGnhThread(); /* Close GnhThread if a game is still ongoing for some reason */
             Task t1 = GeneralTimerTasksAsync(); /* Make sure outstanding queues are processed before closing application */
             Task t2 = Task.Delay(1000); /* Give 1 second to close at maximum */

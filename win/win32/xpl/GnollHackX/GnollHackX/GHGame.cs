@@ -3052,6 +3052,8 @@ namespace GnollHackX
                     switch (cmd_param)
                     {
                         case 0:
+                            GHApp.IsCriticalClearCachesAndMemoryOk = true;
+                            GHApp.IsCompleteClearCachesAndMemoryOk = true;
                             GHApp.CollectGarbage(); /* Collect all, may take a lot of time */
                             break;
                         case 1:

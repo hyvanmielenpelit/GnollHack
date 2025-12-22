@@ -6,9 +6,11 @@ using GnollHackM.Platforms.Windows;
 using System.Management;
 using Windows.Graphics;
 using System.Reflection.Metadata;
+using Windows.System;
 #elif ANDROID
 using Android.Animation;
 using Android.Views;
+using Android.Content;
 #elif IOS
 using CoreAnimation;
 using Foundation;
@@ -198,6 +200,48 @@ namespace GnollHackX
             SaveScreenResolution();
             ChangeToCustomScreenResolution();
             InitializePlatformRenderLoop();
+            InitializeMemoryWarnings();
+        }
+
+
+        private static int _isCriticalClearCachesAndMemoryOk = 1;
+        public static bool IsCriticalClearCachesAndMemoryOk { get { return Interlocked.CompareExchange(ref _isCriticalClearCachesAndMemoryOk, 0, 0) != 0; } set { Interlocked.Exchange(ref _isCriticalClearCachesAndMemoryOk, value ? 1 : 0); } }
+        private static int _isCompleteClearCachesAndMemoryOk = 1;
+        public static bool IsCompleteClearCachesAndMemoryOk { get { return Interlocked.CompareExchange(ref _isCompleteClearCachesAndMemoryOk, 0, 0) != 0; } set { Interlocked.Exchange(ref _isCompleteClearCachesAndMemoryOk, value ? 1 : 0); } }
+
+        private static void GHApp_MemoryWarning(MemoryPressureLevel level)
+        {
+            switch (level)
+            {
+                case MemoryPressureLevel.Low:
+                case MemoryPressureLevel.Medium:
+                    break;
+                case MemoryPressureLevel.Critical:
+                    if (Interlocked.Exchange(ref _isCriticalClearCachesAndMemoryOk, 0) == 1)
+                    {
+                        AddSentryBreadcrumb("MemoryWarning at " + level.ToString(), GHConstants.SentryGnollHackGeneralCategoryName);
+                        CurrentGamePage?.RequestClearCaches((int)level);
+                    }
+                    break;
+                case MemoryPressureLevel.Background:
+                    if (Interlocked.Exchange(ref _isCompleteClearCachesAndMemoryOk, 0) == 1)
+                    {
+                        if (!SavingGame) /* Due to backgrounding must be done first */
+                            CollectGarbage();
+                        AddSentryBreadcrumb("MemoryWarning at " + level.ToString(), GHConstants.SentryGnollHackGeneralCategoryName);
+                        CurrentGamePage?.RequestClearCaches((int)level);
+                    }
+                    break;
+                case MemoryPressureLevel.Complete:
+                    if (Interlocked.Exchange(ref _isCompleteClearCachesAndMemoryOk, 0) == 1)
+                    {
+                        if (!SavingGame)
+                            CollectGarbage(); /* Do this already here too, as we may not be able to wait until after clearing caches */
+                        AddSentryBreadcrumb("MemoryWarning at " + level.ToString(), GHConstants.SentryGnollHackGeneralCategoryName);
+                        CurrentGamePage?.RequestClearCaches((int)level);
+                    }
+                    break;
+            }
         }
 
         private static int _mainPageConstructorRunNumber = 0;
@@ -1855,6 +1899,9 @@ namespace GnollHackX
         {
             if (!UsePlatformRenderLoop)
                 PlatformService?.OverrideAnimatorDuration();
+
+            IsCriticalClearCachesAndMemoryOk = true;
+            IsCompleteClearCachesAndMemoryOk = true;
 
             CtrlDown = false;
             AltDown = false;
@@ -9145,6 +9192,139 @@ namespace GnollHackX
             // Nothing
         }
 #endif
+
+        public static event Action<MemoryPressureLevel> MemoryWarning;
+
+#if ANDROID
+        class TrimCallbacks : Java.Lang.Object, IComponentCallbacks2
+        {
+            public void OnConfigurationChanged(Android.Content.Res.Configuration newConfig)
+            {
+            }
+
+            public void OnLowMemory()
+            {
+                MemoryWarning?.Invoke(MemoryPressureLevel.Complete);
+            }
+
+            public void OnTrimMemory(TrimMemory level)
+            {
+                var mapped = level switch
+                {
+                    >= TrimMemory.Complete => MemoryPressureLevel.Complete,
+                    >= TrimMemory.Background => MemoryPressureLevel.Background,
+                    >= TrimMemory.RunningCritical => MemoryPressureLevel.Critical,
+                    >= TrimMemory.RunningLow => MemoryPressureLevel.Medium,
+                    >= TrimMemory.RunningModerate => MemoryPressureLevel.Low,
+                    _ => MemoryPressureLevel.Low
+                };
+
+                MemoryWarning?.Invoke(mapped);
+            }
+        }
+
+        static TrimCallbacks _memoryWarningCallbacks = null;
+#elif IOS
+        static NSObject _memoryObserver = null;
+#endif
+
+        static void InitializeMemoryWarnings()
+        {
+            try
+            {
+#if ANDROID
+                var app = Android.App.Application.Context as Android.App.Application;
+                _memoryWarningCallbacks = new TrimCallbacks();
+                app?.RegisterComponentCallbacks(_memoryWarningCallbacks);
+#elif IOS
+                _memoryObserver = NSNotificationCenter.DefaultCenter.AddObserver(
+                    UIKit.UIApplication.DidReceiveMemoryWarningNotification,
+                    _ => MemoryWarning?.Invoke(MemoryPressureLevel.Complete));
+#elif WINDOWS
+                MemoryManager.AppMemoryUsageIncreased += OnMemoryUsageIncreased;
+#endif
+
+                MemoryWarning += GHApp_MemoryWarning;
+            }
+            catch (Exception ex)
+            {
+                MaybeWriteGHLog(ex.Message);
+            }
+        }
+
+        public static void ShutDownMemoryWarnings()
+        {
+            try
+            {
+#if ANDROID
+                if (_memoryWarningCallbacks != null)
+                {
+                    var app = Android.App.Application.Context as Android.App.Application;
+                    app?.UnregisterComponentCallbacks(_memoryWarningCallbacks);
+                    _memoryWarningCallbacks = null;
+                }
+#elif IOS
+                if (_memoryObserver != null)
+                {
+                    NSNotificationCenter.DefaultCenter.RemoveObserver(_memoryObserver);
+                    _memoryObserver.Dispose();
+                    _memoryObserver = null;
+                }
+#elif WINDOWS
+                MemoryManager.AppMemoryUsageIncreased -= OnMemoryUsageIncreased;
+#endif
+
+                MemoryWarning -= GHApp_MemoryWarning;
+            }
+            catch (Exception ex)
+            {
+                MaybeWriteGHLog(ex.Message);
+            }
+        }
+
+#if WINDOWS
+        static void OnMemoryUsageIncreased(object sender, object e)
+        {
+            var level = MemoryManager.AppMemoryUsageLevel switch
+            {
+                AppMemoryUsageLevel.Low => MemoryPressureLevel.Low,
+                AppMemoryUsageLevel.Medium => MemoryPressureLevel.Medium,
+                AppMemoryUsageLevel.High => MemoryPressureLevel.Critical,
+                AppMemoryUsageLevel.OverLimit => MemoryPressureLevel.Complete,
+                _ => MemoryPressureLevel.Low
+            };
+
+            MemoryWarning?.Invoke(level);
+        }
+#endif
+    }
+
+    public enum MemoryPressureLevel
+    {
+        /// <summary>
+        /// Mild pressure – free caches if convenient.
+        /// </summary>
+        Low,
+
+        /// <summary>
+        /// Significant pressure – release non-essential resources.
+        /// </summary>
+        Medium,
+
+        /// <summary>
+        /// Critical – release everything possible immediately
+        /// </summary>
+        Critical,
+
+        /// <summary>
+        /// Background
+        /// </summary>
+        Background,
+
+        /// <summary>
+        /// Imminent termination likely.
+        /// </summary>
+        Complete
     }
 
     public class LogPostResponseInfo

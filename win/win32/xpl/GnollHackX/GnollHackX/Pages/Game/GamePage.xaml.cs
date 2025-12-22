@@ -469,6 +469,18 @@ namespace GnollHackX.Pages.Game
             }
         }
 
+        private int _forceClearCaches = 0;
+        public int ForceClearCaches
+        {
+            get { return Interlocked.CompareExchange(ref _forceClearCaches, 0, 0); }
+            set { Interlocked.Exchange(ref _forceClearCaches, value); }
+        }
+
+        public void RequestClearCaches(int gcLevel)
+        {
+            ForceClearCaches = gcLevel;
+        }
+
         private int _drawWallEnds = 0;
         public bool DrawWallEnds { get { return Interlocked.CompareExchange(ref _drawWallEnds, 0, 0) != 0; } set { Interlocked.Exchange(ref _drawWallEnds, value ? 1 : 0); } }
 
@@ -7088,19 +7100,11 @@ namespace GnollHackX.Pages.Game
             if (mainCounter2AnimationMultiplier <= 0.0)
                 mainCounter2AnimationMultiplier = 1.0;
 
-            bool clearDarkeningCaches = false;
-            if (Interlocked.Exchange(ref _lighterDarkeningUpdated, 0) == 1) // Original value was 1, so clearing caches
-                clearDarkeningCaches = true;
+            int clearCacheLevel = Interlocked.Exchange(ref _forceClearCaches, 0);
+            bool clearCaches = clearCacheLevel > 0;
+            bool clearDarkeningCaches = Interlocked.Exchange(ref _lighterDarkeningUpdated, 0) == 1;
 
-            //lock (_lighterDarkeningLock)
-            //{
-            //    if (_lighterDarkeningUpdated)
-            //    {
-            //        clearDarkeningCaches = true;
-            //        _lighterDarkeningUpdated = false;
-            //    }
-            //}
-            if (clearDarkeningCaches)
+            if (clearDarkeningCaches || clearCaches)
             {
                 foreach (SKImage bmp in _darkenedBitmaps.Values)
                     bmp.Dispose();
@@ -7108,6 +7112,38 @@ namespace GnollHackX.Pages.Game
                 foreach (SKImage bmp in _darkenedAutodrawBitmaps.Values)
                     bmp.Dispose();
                 _darkenedAutodrawBitmaps.Clear();
+            }
+
+            if (clearCaches)
+            {
+                foreach (SKImage bmp in _savedRects.Values)
+                    bmp.Dispose();
+                _savedRects.Clear();
+                foreach (SKBitmap bmp in _savedAutoDrawBitmaps.Values)
+                    bmp.Dispose();
+                _savedAutoDrawBitmaps.Clear();
+
+                /* Move the GC to main thread just in case */
+                switch (clearCacheLevel)
+                {
+                    default:
+                        break;
+                    case (int)MemoryPressureLevel.Critical:
+                    case (int)MemoryPressureLevel.Background:
+                        MainThread.BeginInvokeOnMainThread(() => 
+                        {
+                            if (!GHApp.SavingGame)
+                                GC.Collect(); 
+                        });
+                        break;
+                    case (int)MemoryPressureLevel.Complete:
+                        MainThread.BeginInvokeOnMainThread(() => 
+                        { 
+                            if (!GHApp.SavingGame) 
+                                GHApp.CollectGarbage(); 
+                        });
+                        break;
+                }
             }
 
             GHGame curGame = GHApp.CurrentGHGame;
