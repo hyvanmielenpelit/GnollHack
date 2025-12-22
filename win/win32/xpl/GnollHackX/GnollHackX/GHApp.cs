@@ -219,8 +219,8 @@ namespace GnollHackX
                 case MemoryPressureLevel.Critical:
                     if (Interlocked.Exchange(ref _isCriticalClearCachesAndMemoryOk, 0) == 1)
                     {
-                        AddSentryBreadcrumb("MemoryWarning at " + level.ToString(), GHConstants.SentryGnollHackGeneralCategoryName);
                         CurrentGamePage?.RequestClearCaches((int)level);
+                        AddSentryBreadcrumb("MemoryWarning at " + level.ToString(), GHConstants.SentryGnollHackGeneralCategoryName);
                     }
                     break;
                 case MemoryPressureLevel.Background:
@@ -228,8 +228,8 @@ namespace GnollHackX
                     {
                         if (!SavingGame) /* Due to backgrounding must be done first */
                             CollectGarbage();
-                        AddSentryBreadcrumb("MemoryWarning at " + level.ToString(), GHConstants.SentryGnollHackGeneralCategoryName);
                         CurrentGamePage?.RequestClearCaches((int)level);
+                        AddSentryBreadcrumb("MemoryWarning at " + level.ToString(), GHConstants.SentryGnollHackGeneralCategoryName);
                     }
                     break;
                 case MemoryPressureLevel.Complete:
@@ -237,8 +237,8 @@ namespace GnollHackX
                     {
                         if (!SavingGame)
                             CollectGarbage(); /* Do this already here too, as we may not be able to wait until after clearing caches */
-                        AddSentryBreadcrumb("MemoryWarning at " + level.ToString(), GHConstants.SentryGnollHackGeneralCategoryName);
                         CurrentGamePage?.RequestClearCaches((int)level);
+                        AddSentryBreadcrumb("MemoryWarning at " + level.ToString(), GHConstants.SentryGnollHackGeneralCategoryName);
                     }
                     break;
             }
@@ -9241,14 +9241,16 @@ namespace GnollHackX
                     UIKit.UIApplication.DidReceiveMemoryWarningNotification,
                     _ => MemoryWarning?.Invoke(MemoryPressureLevel.Complete));
 #elif WINDOWS
-                MemoryManager.AppMemoryUsageIncreased += OnMemoryUsageIncreased;
+                //Does not seem to be supported
+                //MemoryManager.AppMemoryUsageIncreased += OnMemoryUsageIncreased;
 #endif
 
                 MemoryWarning += GHApp_MemoryWarning;
+                MaybeWriteGHLog("InitializeMemoryWarnings successful");
             }
             catch (Exception ex)
             {
-                MaybeWriteGHLog(ex.Message);
+                MaybeWriteGHLog("InitializeMemoryWarnings failed: " + ex.Message);
             }
         }
 
@@ -9271,19 +9273,21 @@ namespace GnollHackX
                     _memoryObserver = null;
                 }
 #elif WINDOWS
-                MemoryManager.AppMemoryUsageIncreased -= OnMemoryUsageIncreased;
+                //Does not seem to be supported
+                //MemoryManager.AppMemoryUsageLimitChanging -= OnMemoryUsageIncreased;
 #endif
 
                 MemoryWarning -= GHApp_MemoryWarning;
+                MaybeWriteGHLog("ShutDownMemoryWarnings successful");
             }
             catch (Exception ex)
             {
-                MaybeWriteGHLog(ex.Message);
+                MaybeWriteGHLog("ShutDownMemoryWarnings failed: " + ex.Message);
             }
         }
 
 #if WINDOWS
-        static void OnMemoryUsageIncreased(object sender, object e)
+        private static void OnMemoryUsageIncreased(object sender, object e)
         {
             var level = MemoryManager.AppMemoryUsageLevel switch
             {
