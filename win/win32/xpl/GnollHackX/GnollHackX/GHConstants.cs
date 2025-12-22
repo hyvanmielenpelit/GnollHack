@@ -831,7 +831,7 @@ namespace GnollHackX
     public enum game_ui_status_mark_types
     {
         STATUS_MARK_PET = 0,
-        STATUS_MARK_PEACEFU,
+        STATUS_MARK_PEACEFUL,
         STATUS_MARK_DETECTED,
         STATUS_MARK_BOUNTY,
         STATUS_MARK_SATIATED,
