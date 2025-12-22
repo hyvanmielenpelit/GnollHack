@@ -9490,9 +9490,9 @@ int x, y, mod;
                 }
                 if (door->doormask & D_LOCKED)
                 {
-                    if (has_fitting_key || !door->click_kick_ok)
+                    if (has_fitting_key || !door->click_kick_ok || u.usteed)
                     {
-                        if (!door->click_kick_ok)
+                        if (!door->click_kick_ok && !u.usteed)
                             context.click_kick_query = 1;
 
                         cmd[0] = cmd_from_func(doopen);

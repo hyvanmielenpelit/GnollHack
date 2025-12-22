@@ -1111,7 +1111,7 @@ int x, y;
                 }
             }
 
-            if(!unlocked && (!(x == 0 && y == 0) || context.click_kick_query)) /* Either click or indirect via movement */
+            if(!unlocked && !u.usteed && (!(x == 0 && y == 0) || context.click_kick_query)) /* Either click or indirect via movement */
             {
                 if (!door->click_kick_ok)
                 {

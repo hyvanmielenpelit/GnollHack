@@ -1085,7 +1085,7 @@ int mode;
                         //    (void)dokick_indir(TRUE);
                         //}
                     }
-                    else if ((tmpr->doormask & D_LOCKED) != 0 && tmpr->click_kick_ok && !context.run && !Confusion && !Stunned && !Fumbling)
+                    else if ((tmpr->doormask & D_LOCKED) != 0 && tmpr->click_kick_ok && !context.run && !u.usteed && !Confusion && !Stunned && !Fumbling)
                     {
                         u.dx = dx, u.dy = dy, u.dz = 0;
                         (void)dokick_indir(TRUE);
