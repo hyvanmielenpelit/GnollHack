@@ -181,11 +181,15 @@ public static class MauiProgram
                         {
                             if (GHApp.WindowsApp != null)
                             {
+                                GHApp.AddSentryBreadcrumb("Closed: WindowsApp.Exit, Windowed Mode: " + GHApp.WindowedMode, GHConstants.SentryGnollHackGeneralCategoryName);
                                 GHApp.WindowsApp.Exit();
                                 GHApp.WindowsApp = null;
                             }
                             else
+                            {
+                                GHApp.AddSentryBreadcrumb("Closed: Environment.Exit, Windowed Mode: " + GHApp.WindowedMode, GHConstants.SentryGnollHackGeneralCategoryName);
                                 Environment.Exit(0);
+                            }
                         };
                         var handle = WinRT.Interop.WindowNative.GetWindowHandle(window);
                         var id = Microsoft.UI.Win32Interop.GetWindowIdFromWindow(handle);
@@ -197,11 +201,13 @@ public static class MauiProgram
                         {
                             if(GHApp.CurrentGamePage != null)
                             {
+                                GHApp.AddSentryBreadcrumb("AppWindow.Closing: Executing GenericButton_Clicked, Windowed Mode: " + GHApp.WindowedMode, GHConstants.SentryGnollHackGeneralCategoryName);
                                 e.Cancel = true;
                                 GHApp.CurrentGamePage?.GenericButton_Clicked(s, EventArgs.Empty, GHUtils.Meta('s'));
                             }
                             else
                             {
+                                GHApp.AddSentryBreadcrumb("AppWindow.Closing: Closing window, Windowed Mode: " + GHApp.WindowedMode, GHConstants.SentryGnollHackGeneralCategoryName);
                                 GHApp.SaveWindowPosition();
                                 //GHApp.FmodService?.StopAllGameSounds((uint)StopSoundFlags.All, 0U);
                                 GHGame curGame = GHApp.CurrentGHGame;
@@ -273,6 +279,7 @@ public static class MauiProgram
 
                             appWindow.Destroying += (sender, args) =>
                             {
+                                GHApp.AddSentryBreadcrumb("AppWindow.Destroying: Windowed Mode: " + GHApp.WindowedMode, GHConstants.SentryGnollHackGeneralCategoryName);
                                 KeyboardHook.Stop();
                                 if (sender != null && GHApp.WindowedMode)
                                 {
@@ -284,6 +291,7 @@ public static class MauiProgram
                                         {
                                             isMaximized = true;
                                         }
+                                        GHApp.AddSentryBreadcrumb("AppWindow.Destroying: OverlappedPresenterState: " + presenter.State.ToString(), GHConstants.SentryGnollHackGeneralCategoryName);
                                     }
                                     try
                                     {
@@ -317,14 +325,14 @@ public static class MauiProgram
                             // Focused
                             GHApp.WindowFocused = true;
                             GHApp.UnfocusedMuteMode = false;
-                            GHApp.MaybeWriteLowLevelGHLog("Window is focused.");
+                            GHApp.MaybeWriteLowLevelGHLog("OnActivated: Window is focused. WindowActivationState: " + args.WindowActivationState.ToString() + ", Windowed Mode: " + GHApp.WindowedMode, true, GHConstants.SentryGnollHackGeneralCategoryName);
                         }
                         else
                         {
                             // Not focused
                             GHApp.WindowFocused = false;
                             GHApp.UnfocusedMuteMode = true;
-                            GHApp.MaybeWriteLowLevelGHLog("Window is not focused.");
+                            GHApp.MaybeWriteLowLevelGHLog("OnActivated: Window is not focused. WindowActivationState: " + args.WindowActivationState.ToString() + ", Windowed Mode: " + GHApp.WindowedMode, true, GHConstants.SentryGnollHackGeneralCategoryName);
                         }
                     });
                 });

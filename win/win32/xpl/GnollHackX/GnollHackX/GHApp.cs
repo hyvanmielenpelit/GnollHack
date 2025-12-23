@@ -6622,10 +6622,13 @@ namespace GnollHackX
             else
                 Debug.WriteLine(loggedtext);
         }
-        public static void MaybeWriteLowLevelGHLog(string loggedtext)
+        public static void MaybeWriteLowLevelGHLog(string loggedtext, bool addBreadcrumb = false, string category = null)
         {
             if (string.IsNullOrWhiteSpace(loggedtext))
                 return;
+
+            if (addBreadcrumb)
+                AddSentryBreadcrumb(loggedtext, category);
 
             if (IsDebugLowLevelLoggingOn)
                 WriteGHLog(loggedtext);
