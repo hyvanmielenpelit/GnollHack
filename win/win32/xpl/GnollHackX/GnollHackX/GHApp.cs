@@ -203,6 +203,10 @@ namespace GnollHackX
             InitializeMemoryWarnings();
         }
 
+        private static int _closingApp = 0;
+        public static bool CheckCloseAndSetTrue { get { return Interlocked.Exchange(ref _closingApp, 1) != 0; } }
+        public static bool IsAppClosing { get { return Interlocked.CompareExchange(ref _closingApp, 0, 0) != 0; } }
+
 
         private static int _isCriticalClearCachesAndMemoryOk = 1;
         public static bool IsCriticalClearCachesAndMemoryOk { get { return Interlocked.CompareExchange(ref _isCriticalClearCachesAndMemoryOk, 0, 0) != 0; } set { Interlocked.Exchange(ref _isCriticalClearCachesAndMemoryOk, value ? 1 : 0); } }
@@ -217,14 +221,14 @@ namespace GnollHackX
                 case MemoryPressureLevel.Medium:
                     break;
                 case MemoryPressureLevel.Critical:
-                    if (Interlocked.Exchange(ref _isCriticalClearCachesAndMemoryOk, 0) == 1)
+                    if (!IsAppClosing && Interlocked.Exchange(ref _isCriticalClearCachesAndMemoryOk, 0) == 1)
                     {
                         CurrentGamePage?.RequestClearCaches((int)level);
                         AddSentryBreadcrumb("MemoryWarning at " + level.ToString(), GHConstants.SentryGnollHackGeneralCategoryName);
                     }
                     break;
                 case MemoryPressureLevel.Background:
-                    if (Interlocked.Exchange(ref _isCompleteClearCachesAndMemoryOk, 0) == 1)
+                    if (!IsAppClosing && Interlocked.Exchange(ref _isCompleteClearCachesAndMemoryOk, 0) == 1)
                     {
                         if (!SavingGame) /* Due to backgrounding must be done first */
                             CollectGarbage();
@@ -233,7 +237,7 @@ namespace GnollHackX
                     }
                     break;
                 case MemoryPressureLevel.Complete:
-                    if (Interlocked.Exchange(ref _isCompleteClearCachesAndMemoryOk, 0) == 1)
+                    if (!IsAppClosing && Interlocked.Exchange(ref _isCompleteClearCachesAndMemoryOk, 0) == 1)
                     {
                         if (!SavingGame)
                             CollectGarbage(); /* Do this already here too, as we may not be able to wait until after clearing caches */

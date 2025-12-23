@@ -1606,12 +1606,9 @@ namespace GnollHackX
         }
 
         //private readonly object _closingAppLock = new object();
-        private int _closingApp = 0;
-        private bool CheckCloseAndSetTrue { get { return Interlocked.Exchange(ref _closingApp, 1) != 0; } }
-
         private async Task CloseApp()
         {
-            if (CheckCloseAndSetTrue)
+            if (GHApp.CheckCloseAndSetTrue)
                 return;
 
             GHApp.AddSentryBreadcrumb("CloseApp", GHConstants.SentryGnollHackGeneralCategoryName);
