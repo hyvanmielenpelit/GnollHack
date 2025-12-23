@@ -209,7 +209,7 @@ namespace GnollHackX
         private static int _isCompleteClearCachesAndMemoryOk = 1;
         public static bool IsCompleteClearCachesAndMemoryOk { get { return Interlocked.CompareExchange(ref _isCompleteClearCachesAndMemoryOk, 0, 0) != 0; } set { Interlocked.Exchange(ref _isCompleteClearCachesAndMemoryOk, value ? 1 : 0); } }
 
-        private static void GHApp_MemoryWarning(MemoryPressureLevel level)
+        private static void HandleMemoryWarning(MemoryPressureLevel level)
         {
             switch (level)
             {
@@ -9205,7 +9205,7 @@ namespace GnollHackX
 
             public void OnLowMemory()
             {
-                GHApp_MemoryWarning(MemoryPressureLevel.Complete);
+                HandleMemoryWarning(MemoryPressureLevel.Complete);
             }
 
             public void OnTrimMemory(TrimMemory level)
@@ -9220,7 +9220,7 @@ namespace GnollHackX
                     _ => MemoryPressureLevel.Low
                 };
 
-                GHApp_MemoryWarning(mapped);
+                HandleMemoryWarning(mapped);
             }
         }
 
@@ -9240,7 +9240,7 @@ namespace GnollHackX
 #elif IOS
                 _memoryObserver = NSNotificationCenter.DefaultCenter.AddObserver(
                     UIKit.UIApplication.DidReceiveMemoryWarningNotification,
-                    _ => GHApp_MemoryWarning(MemoryPressureLevel.Complete));
+                    _ => HandleMemoryWarning(MemoryPressureLevel.Complete));
 #elif WINDOWS
                 //Does not seem to be supported
                 //MemoryManager.AppMemoryUsageIncreased += OnMemoryUsageIncreased;
@@ -9297,7 +9297,7 @@ namespace GnollHackX
                 _ => MemoryPressureLevel.Low
             };
 
-            GHApp_MemoryWarning(level);
+            HandleMemoryWarning(level);
         }
 #endif
     }
