@@ -9196,8 +9196,6 @@ namespace GnollHackX
         }
 #endif
 
-        public static event Action<MemoryPressureLevel> MemoryWarning;
-
 #if ANDROID
         class TrimCallbacks : Java.Lang.Object, IComponentCallbacks2
         {
@@ -9207,7 +9205,7 @@ namespace GnollHackX
 
             public void OnLowMemory()
             {
-                MemoryWarning?.Invoke(MemoryPressureLevel.Complete);
+                GHApp_MemoryWarning(MemoryPressureLevel.Complete);
             }
 
             public void OnTrimMemory(TrimMemory level)
@@ -9222,7 +9220,7 @@ namespace GnollHackX
                     _ => MemoryPressureLevel.Low
                 };
 
-                MemoryWarning?.Invoke(mapped);
+                GHApp_MemoryWarning(mapped);
             }
         }
 
@@ -9242,13 +9240,12 @@ namespace GnollHackX
 #elif IOS
                 _memoryObserver = NSNotificationCenter.DefaultCenter.AddObserver(
                     UIKit.UIApplication.DidReceiveMemoryWarningNotification,
-                    _ => MemoryWarning?.Invoke(MemoryPressureLevel.Complete));
+                    _ => GHApp_MemoryWarning(MemoryPressureLevel.Complete));
 #elif WINDOWS
                 //Does not seem to be supported
                 //MemoryManager.AppMemoryUsageIncreased += OnMemoryUsageIncreased;
 #endif
 
-                MemoryWarning += GHApp_MemoryWarning;
                 MaybeWriteGHLog("InitializeMemoryWarnings successful");
             }
             catch (Exception ex)
@@ -9280,7 +9277,6 @@ namespace GnollHackX
                 //MemoryManager.AppMemoryUsageLimitChanging -= OnMemoryUsageIncreased;
 #endif
 
-                MemoryWarning -= GHApp_MemoryWarning;
                 MaybeWriteGHLog("ShutDownMemoryWarnings successful");
             }
             catch (Exception ex)
@@ -9301,7 +9297,7 @@ namespace GnollHackX
                 _ => MemoryPressureLevel.Low
             };
 
-            MemoryWarning?.Invoke(level);
+            GHApp_MemoryWarning(level);
         }
 #endif
     }
