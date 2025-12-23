@@ -230,7 +230,8 @@ struct obj *obj;
             nutrit = mons[obj->corpsenm].cnutrit;
             if (is_vegetarian_food(&mons[obj->corpsenm]) || is_vegan_food(&mons[obj->corpsenm]))
                 is_veg = TRUE;
-        } 
+            refresh_m_tile_gui_info(mtmp, FALSE);
+        }
         else 
         {
             mtmp->meating = objects[obj->otyp].oc_delay;
@@ -239,6 +240,7 @@ struct obj *obj;
                 is_veg = TRUE;
             else if(obj->material == MAT_VEGGY)
                 is_veg = TRUE;
+            refresh_m_tile_gui_info(mtmp, FALSE);
         }
 
         nutrit *= nutr_size_mult;
@@ -250,6 +252,7 @@ struct obj *obj;
         {
             mtmp->meating = eaten_stat(mtmp->meating, obj);
             nutrit = eaten_stat(nutrit, obj);
+            refresh_m_tile_gui_info(mtmp, FALSE);
         }
     } 
     else if (obj->oclass == COIN_CLASS) 
@@ -259,6 +262,7 @@ struct obj *obj;
             mtmp->meating = 1;
         nutrit = (int) (obj->quan / 2);
         nutrit *= nutr_size_mult;
+        refresh_m_tile_gui_info(mtmp, FALSE);
     }
     else if (obj->oclass == POTION_CLASS)
     {
@@ -268,6 +272,7 @@ struct obj *obj;
             max(1, objects[obj->otyp].oc_potion_nutrition_diesize)) 
             + objects[obj->otyp].oc_potion_nutrition_plus + bcsign(obj) * (int)objects[obj->otyp].oc_potion_nutrition_buc_multiplier;
         nutrit = nutrition * nutr_size_mult;
+        refresh_m_tile_gui_info(mtmp, FALSE);
     }
     else
     {
@@ -278,6 +283,7 @@ struct obj *obj;
          */
         mtmp->meating = obj->owt / 20 + 1;
         nutrit = nutr_size_mult * (int)obj_nutrition(obj, mtmp); // objects[obj->otyp].oc_nutrition;
+        refresh_m_tile_gui_info(mtmp, FALSE);
     }
     if (nutrit < 0)
         nutrit = 0;
@@ -321,6 +327,7 @@ boolean devour;
             mtmp->meating /= 2;
         if (nutrit > 1)
             nutrit = (nutrit * 3) / 4;
+        refresh_m_tile_gui_info(mtmp, FALSE);
     }
     edog->hungrytime += nutrit;
     mtmp->mprops[CONFUSION] &= ~M_INTRINSIC_ACQUIRED;
@@ -2546,6 +2553,8 @@ struct monst *mtmp;
             free_mobj(mtmp);
         newsym(mtmp->mx, mtmp->my);
     }
+    else
+        refresh_m_tile_gui_info(mtmp, FALSE);
 }
 
 STATIC_OVL void

@@ -2721,7 +2721,8 @@ register struct monst *mtmp;
                 deltrap(trap);
                 mtmp->meating = 5;
                 mtmp->mtrapped = 0;
-            } 
+                refresh_m_tile_gui_info(mtmp, FALSE);
+            }
             else if (trap->ttyp == SPIKED_PIT)
             {
                 if (canseemon(mtmp))
@@ -2731,6 +2732,7 @@ register struct monst *mtmp;
                 trap->tflags = 0;
                 trap->activation_count = 0;
                 mtmp->meating = 5;
+                refresh_m_tile_gui_info(mtmp, FALSE);
             }
         }
     } 

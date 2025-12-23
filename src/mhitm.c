@@ -2265,6 +2265,7 @@ register struct obj* omonwep;
                 if (nutrit > 1)
                     nutrit /= 2;
                 EDOG(magr)->hungrytime += nutrit;
+                refresh_m_tile_gui_info(magr, FALSE);
             }
 
             /* various checks similar to dog_eat and meatobj.

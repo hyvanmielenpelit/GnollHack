@@ -123,7 +123,7 @@ namespace GnollHackX.Pages.Game
         private readonly object _uLock = new object();
         private int _ux = 0;
         private int _uy = 0;
-        private int[] _statusmarkorder = { (int)game_ui_status_mark_types.STATUS_MARK_TOWNGUARD_PEACEFUL, (int)game_ui_status_mark_types.STATUS_MARK_TOWNGUARD_HOSTILE, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21 };
+        private int[] _statusmarkorder = { (int)game_ui_status_mark_types.STATUS_MARK_TOWNGUARD_PEACEFUL, (int)game_ui_status_mark_types.STATUS_MARK_TOWNGUARD_HOSTILE, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, (int)game_ui_status_mark_types.STATUS_MARK_EATING };
         public string[] _condition_names = new string[(int)bl_conditions.NUM_BL_CONDITIONS] {
             "Petrifying",
             "Slimed",
@@ -176,6 +176,7 @@ namespace GnollHackX.Pages.Game
             "Carrying object",
             "Peaceful townguard",
             "Hostile townguard",
+            "Eating",
         };
 
         private SKPoint[] _hoverAnimation = new SKPoint[]

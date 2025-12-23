@@ -442,9 +442,10 @@ const char* status_names[MAX_STATUS_MARKS] = {
     "Carrying object",
     "Peaceful townguard",
     "Hostile townguard",
+    "Eating",
 };
 
-enum game_ui_status_mark_types statusmarkorder[MAX_STATUS_MARKS] = { STATUS_MARK_TOWNGUARD_PEACEFUL, STATUS_MARK_TOWNGUARD_HOSTILE, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21 };
+enum game_ui_status_mark_types statusmarkorder[MAX_STATUS_MARKS] = { STATUS_MARK_TOWNGUARD_PEACEFUL, STATUS_MARK_TOWNGUARD_HOSTILE, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, STATUS_MARK_EATING };
 
 void
 props_init()
