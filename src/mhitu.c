@@ -519,7 +519,10 @@ register struct monst *mtmp;
             /* Let your steed retaliate */
             bhitpos.x = mtmp->mx;
             bhitpos.y = mtmp->my;
-            return !!(mattackm(u.usteed, mtmp) & MM_DEF_DIED);
+            if (check_mon_wants_to_attack_target(u.usteed, mtmp))
+                return !!(mattackm(u.usteed, mtmp) & MM_DEF_DIED);
+            else
+                return 0;
         }
     }
 

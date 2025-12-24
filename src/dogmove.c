@@ -1752,7 +1752,6 @@ struct monst *mtmp, *mtarg;
             score -= 5000L;
             return score;
         }
-        int i;
         /* Is the monster peaceful or tame? */
         if ((is_peaceful(mtarg) && !mon_has_bloodlust(mtmp) /*mtmp->ispacifist*/) || is_tame(mtarg) || mtarg == &youmonst)
         {
@@ -1763,17 +1762,7 @@ struct monst *mtmp, *mtarg;
         /* Is monster adjacent? */
         if (distmin(mtmp->mx, mtmp->my, mtarg->mx, mtarg->my) <= 1) 
         {
-            score += 3000;
-            score -= !check_mon_wants_to_attack_target(mtmp, mtarg) ? 5000L : 0L;
-            score -= 1 * mtarg->mhp; /* Prefer monsters with low hit points */
-            score -= 5 * mtarg->m_lev; /* Prefer monsters with low level */
-            if (!is_peaceful(mtarg))
-                score += 10;
-            if (!mon_has_bloodlust(mtmp) && mtarg->data->mattk[0].aatyp == AT_PASV)
-                score -= 6000;
-            score += rnd(5);
-            if (is_conf_etc && !rn2(3))
-                score -= 1000;
+            score -= 3000L;
             return score;
         }
         /* Is master/pet behind monster? Check up to 15 squares beyond pet. */
@@ -2098,6 +2087,7 @@ int after; /* this is extra fast monster movement */
                         && (has_see_invisible(mtmp) || !is_invisible(mtmp2)))
                     || (slurps_items(mtmp2->data) && rn2(10))
                     || (is_tame(mtmp2) && !Conflict && !is_crazed(mtmp2))
+                    || !check_mon_wants_to_attack_target(mtmp, mtmp2)
                     || (max_passive_dmg(mtmp2, mtmp) >= mtmp->mhp)
                     || (is_peaceful(mtmp2) && (mtmp2->data->msound == MS_GUARDIAN
                          || mtmp2->data->msound == MS_LEADER || (!mon_has_bloodlust(mtmp)
@@ -2121,6 +2111,7 @@ int after; /* this is extra fast monster movement */
 
             if ((mstatus & MM_HIT) && !(mstatus & MM_DEF_DIED) && rn2(4)
                 && mtmp2->mlstmv != monstermoves
+                && check_mon_wants_to_attack_target(mtmp2, mtmp)
                 && !onscary(mtmp->mx, mtmp->my, mtmp2)
                 /* monnear check needed: long worms hit on tail */
                 && monnear(mtmp2, mtmp->mx, mtmp->my)) 
@@ -2313,7 +2304,10 @@ int after; /* this is extra fast monster movement */
                  * nothing will happen.
                  */
                 if ((mstatus & MM_HIT) && !(mstatus & MM_DEF_DIED)
-                    && rn2(4) && mtarg != &youmonst)
+                    && rn2(4)
+                    && mtarg != &youmonst
+                    && check_mon_wants_to_attack_target(mtarg, mtmp)
+                    )
                 {
 
                     /* Can monster see? If it can, it can retaliate

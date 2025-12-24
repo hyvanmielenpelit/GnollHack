@@ -194,6 +194,7 @@ boolean attack_only_hostiles;
                  * to allow monsters that resist conflict to respond.
                  */
                 if ((result & MM_HIT) && !(result & MM_DEF_DIED) && rn2(4)
+                    && check_mon_wants_to_attack_target(mon, mtmp)
                     && mon->movement >= NORMAL_SPEED) 
                 {
                     mon->movement -= NORMAL_SPEED;
