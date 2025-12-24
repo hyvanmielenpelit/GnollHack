@@ -66,6 +66,94 @@ struct monst *mtmp;
     return FALSE;
 }
 
+boolean
+check_mon_wants_to_attack_target(mtmp, mtarg)
+struct monst* mtmp, * mtarg;
+{
+    if (!mtmp || !mtarg)
+        return FALSE;
+
+    boolean targetweak = mtmp->mhp >= (5 * mtmp->mhpmax) / 10 && (mon_has_bloodlust(mtmp) || mon_disregards_enemy_strength(mtmp) || mtarg->m_lev < mtmp->m_lev / 2 || mtarg->mhp < mtarg->mhpmax / 10);
+    if (targetweak)
+        return TRUE;
+
+    int i;
+    boolean haspassive = FALSE;
+    boolean resistspassive = FALSE;
+    for (i = 0; i < NATTK && mtarg->data->mattk[i].aatyp != AT_NONE; i++)
+    {
+        if (mtarg->data->mattk[i].aatyp == AT_PASV)
+        {
+            haspassive = TRUE;
+            switch (mtarg->data->mattk[i].adtyp)
+            {
+            case AD_FIRE:
+                if (is_mon_immune_to_fire(mtmp))
+                    resistspassive = TRUE;
+                else if (mon_resists_fire_weakly(mtmp) && mtmp->mhp >= (8 * mtmp->mhpmax) / 10)
+                    resistspassive = TRUE;
+                else if (mon_resists_fire_strongly(mtmp) && mtmp->mhp >= (6 * mtmp->mhpmax) / 10)
+                    resistspassive = TRUE;
+                break;
+            case AD_COLD:
+                if (is_mon_immune_to_cold(mtmp))
+                    resistspassive = TRUE;
+                else if (mon_resists_cold_weakly(mtmp) && mtmp->mhp >= (8 * mtmp->mhpmax) / 10)
+                    resistspassive = TRUE;
+                else if (mon_resists_cold_strongly(mtmp) && mtmp->mhp >= (6 * mtmp->mhpmax) / 10)
+                    resistspassive = TRUE;
+                break;
+            case AD_ELEC:
+                if (is_mon_immune_to_elec(mtmp))
+                    resistspassive = TRUE;
+                else if (mon_resists_elec_weakly(mtmp) && mtmp->mhp >= (8 * mtmp->mhpmax) / 10)
+                    resistspassive = TRUE;
+                else if (mon_resists_elec_strongly(mtmp) && mtmp->mhp >= (6 * mtmp->mhpmax) / 10)
+                    resistspassive = TRUE;
+                break;
+            case AD_ACID:
+                if (is_mon_immune_to_acid(mtmp))
+                    resistspassive = TRUE;
+                else if (mon_resists_acid_weakly(mtmp) && mtmp->mhp >= (8 * mtmp->mhpmax) / 10)
+                    resistspassive = TRUE;
+                else if (mon_resists_acid_strongly(mtmp) && mtmp->mhp >= (6 * mtmp->mhpmax) / 10)
+                    resistspassive = TRUE;
+                break;
+            case AD_MAGM:
+                if (is_mon_immune_to_magic_missile(mtmp))
+                    resistspassive = TRUE;
+                else if (mon_resists_magic_missile_weakly(mtmp) && mtmp->mhp >= (8 * mtmp->mhpmax) / 10)
+                    resistspassive = TRUE;
+                else if (mon_resists_magic_missile_strongly(mtmp) && mtmp->mhp >= (6 * mtmp->mhpmax) / 10)
+                    resistspassive = TRUE;
+                break;
+            case AD_STON:
+                if (resists_ston(mtmp))
+                    resistspassive = TRUE;
+                break;
+            case AD_SLIM:
+                if (resists_slime(mtmp))
+                    resistspassive = TRUE;
+                break;
+            case AD_PLYS:
+                if (resists_paralysis(mtmp))
+                    resistspassive = TRUE;
+                break;
+            case AD_STUN:
+                if (resists_stun(mtmp))
+                    resistspassive = TRUE;
+                break;
+            case AD_RUST:
+                break;
+            default:
+                break;
+            }
+            break;
+        }
+    }
+    return !haspassive || resistspassive;
+}
+
 /* check whether a monster is carrying a locking/unlocking tool */
 boolean
 monhaskey(mon, for_unlocking)
@@ -1792,6 +1880,7 @@ register int after;
                     return 2;
 
                 if ((mstatus & MM_HIT) && !(mstatus & MM_DEF_DIED) && rn2(4)
+                    && check_mon_wants_to_attack_target(mtmp2, mtmp)
                     && mtmp2->movement >= NORMAL_SPEED) 
                 {
                     mtmp2->movement -= NORMAL_SPEED;

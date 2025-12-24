@@ -1715,6 +1715,7 @@ score_targ(mtmp, mtarg)
 struct monst *mtmp, *mtarg;
 {
     int64_t score = 0L;
+    boolean is_conf_etc = is_confused(mtmp) || is_hallucinating(mtmp) || is_stunned(mtmp);
 
     /* If the monster is confused, normal scoring is disrupted -
      * anything may happen
@@ -1722,7 +1723,8 @@ struct monst *mtmp, *mtarg;
 
     /* Give 1 in 3 chance of safe breathing even if pet is confused or
      * if you're on the quest start level */
-    if (!is_confused(mtmp) || !rn2(3) || Is_qstart(&u.uz)) {
+    if (!is_conf_etc || !rn2(3) || Is_qstart(&u.uz))
+    {
         int mtmp_lev;
         aligntyp align1 = A_NONE, align2 = A_NONE; /* For priests, minions */
         boolean faith1 = TRUE,  faith2 = TRUE;
@@ -1745,23 +1747,38 @@ struct monst *mtmp, *mtarg;
             || mtarg->data->msound == MS_GUARDIAN)
             return -5000L;
         /* D: Fixed angelic beings using gaze attacks on coaligned priests */
-        if (faith1 && faith2 && align1 == align2 && is_peaceful(mtarg)) {
+        if (faith1 && faith2 && align1 == align2 && is_peaceful(mtarg)) 
+        {
             score -= 5000L;
             return score;
         }
-        /* Is monster adjacent? */
-        if (distmin(mtmp->mx, mtmp->my, mtarg->mx, mtarg->my) <= 1) {
-            score -= 3000L;
-            return score;
-        }
+        int i;
         /* Is the monster peaceful or tame? */
-        if ((is_peaceful(mtarg) && !mon_has_bloodlust(mtmp) /*mtmp->ispacifist*/) || is_tame(mtarg) || mtarg == &youmonst) {
+        if ((is_peaceful(mtarg) && !mon_has_bloodlust(mtmp) /*mtmp->ispacifist*/) || is_tame(mtarg) || mtarg == &youmonst)
+        {
             /* Pets will never be targeted */
             score -= 3000L;
             return score;
         }
+        /* Is monster adjacent? */
+        if (distmin(mtmp->mx, mtmp->my, mtarg->mx, mtarg->my) <= 1) 
+        {
+            score += 3000;
+            score -= !check_mon_wants_to_attack_target(mtmp, mtarg) ? 5000L : 0L;
+            score -= 1 * mtarg->mhp; /* Prefer monsters with low hit points */
+            score -= 5 * mtarg->m_lev; /* Prefer monsters with low level */
+            if (!is_peaceful(mtarg))
+                score += 10;
+            if (!mon_has_bloodlust(mtmp) && mtarg->data->mattk[0].aatyp == AT_PASV)
+                score -= 6000;
+            score += rnd(5);
+            if (is_conf_etc && !rn2(3))
+                score -= 1000;
+            return score;
+        }
         /* Is master/pet behind monster? Check up to 15 squares beyond pet. */
-        if (find_friends(mtmp, mtarg, 15)) {
+        if (find_friends(mtmp, mtarg, 15)) 
+        {
             score -= 3000L;
             return score;
         }
@@ -1807,7 +1824,7 @@ struct monst *mtmp, *mtarg;
        similar targets are abundant. */
     score += rnd(5);
     /* Pet may decide not to use ranged attack when confused */
-    if (is_confused(mtmp) && !rn2(3))
+    if (is_conf_etc && !rn2(3))
         score -= 1000;
     return score;
 }

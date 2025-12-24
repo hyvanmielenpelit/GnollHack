@@ -2258,6 +2258,7 @@ boolean FDECL(befriend_with_obj, (struct permonst*, struct obj*));
 
 /* ### monmove.c ### */
 
+E boolean FDECL(check_mon_wants_to_attack_target, (struct monst*, struct monst*));
 E boolean FDECL(itsstuck, (struct monst *));
 E boolean FDECL(mb_trapped, (struct monst *));
 E boolean FDECL(monhaskey, (struct monst *, BOOLEAN_P));
