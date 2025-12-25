@@ -402,7 +402,11 @@ public static class MauiProgram
                         try
                         {
                             GHApp.MaybeWriteGHLog("androidLifecycleBuilder: Paused 1", true, GHConstants.SentryGnollHackGeneralCategoryName);
-                            if (activity.IsFinishing || !activity.HasWindowFocus)
+                            if (SaveGameService.IsSaving)
+                            {
+                                GHApp.MaybeWriteGHLog("androidLifecycleBuilder: Was saving already", true, GHConstants.SentryGnollHackGeneralCategoryName);
+                            }
+                            else if (activity.IsFinishing || !activity.HasWindowFocus)
                             {
                                 GHApp.MaybeWriteGHLog("androidLifecycleBuilder: Paused 2", true, GHConstants.SentryGnollHackGeneralCategoryName);
                                 var intent = new Intent(Android.App.Application.Context, typeof(SaveGameService));
@@ -981,7 +985,7 @@ public class SaveGameService : Service
             // Should come after StartForeground if takes time
             GHApp.MaybeWriteGHLog("SaveGameService: OnStartCommand", true, GHConstants.SentryGnollHackGeneralCategoryName);
 
-            if (IsSaving)
+            if (Interlocked.CompareExchange(ref _isSaving, 1, 0) == 1) /* Sets IsSaving to true if it was false; if it was already true, stops this foreground service; effectively should never go here, since if IsSaving is true, a new foreground service should not be started */
             {
                 StopForeground(StopForegroundFlags.Remove);
                 StopSelf();
@@ -989,7 +993,7 @@ public class SaveGameService : Service
                 return StartCommandResult.NotSticky;
             }
 
-            IsSaving = true;
+            //IsSaving = true;
 
             // Do your save operation
             Task.Run(async () =>
@@ -998,6 +1002,10 @@ public class SaveGameService : Service
                 {
                     GHApp.MaybeWriteGHLog("SaveGameService: Saving game", true, GHConstants.SentryGnollHackGeneralCategoryName);
                     await GHApp.SaveGameOnSleepAsync();
+                }
+                catch (Exception ex)
+                {
+                    GHApp.MaybeWriteGHLog("SaveGameService: Exception: " + ex.Message, true, GHConstants.SentryGnollHackGeneralCategoryName);
                 }
                 finally
                 {
