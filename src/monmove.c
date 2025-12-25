@@ -73,11 +73,12 @@ struct monst* mtmp, * mtarg;
     if (!mtmp || !mtarg)
         return FALSE;
 
-    boolean targetweak = mtmp->mhp >= (5 * mtmp->mhpmax) / 10 && (mon_has_bloodlust(mtmp) || mon_disregards_enemy_strength(mtmp) || mtarg->m_lev < mtmp->m_lev / 2 || mtarg->mhp < mtarg->mhpmax / 10);
-    if (targetweak)
-        return TRUE;
-
     int i;
+    int max_dmg = max_passive_dmg(mtarg, mtmp);
+    boolean has_enough_hp = mon_disregards_own_health(mtmp) || max_dmg < mtmp->mhp;
+    boolean self_strong_enough = ((mtmp->mhp >= (8 * mtmp->mhpmax) / 10 && max_dmg < mtmp->mhp / 2) || max_dmg < mtmp->mhp / 3 || mon_disregards_own_health(mtmp));
+    boolean target_weak = (mon_has_bloodlust(mtmp) || mon_disregards_enemy_strength(mtmp) || mtarg->m_lev < mtmp->m_lev / 2 || mtarg->mhp < mtarg->mhpmax / 10 || max_dmg < mtmp->mhp / 3);
+    boolean is_insta_kill = FALSE;
     boolean haspassive = FALSE;
     boolean resistspassive = FALSE;
     for (i = 0; i < NATTK && mtarg->data->mattk[i].aatyp != AT_NONE; i++)
@@ -128,10 +129,12 @@ struct monst* mtmp, * mtarg;
                     resistspassive = TRUE;
                 break;
             case AD_STON:
+                is_insta_kill = TRUE;
                 if (resists_ston(mtmp))
                     resistspassive = TRUE;
                 break;
             case AD_SLIM:
+                is_insta_kill = TRUE;
                 if (resists_slime(mtmp))
                     resistspassive = TRUE;
                 break;
@@ -151,7 +154,7 @@ struct monst* mtmp, * mtarg;
             break;
         }
     }
-    return !haspassive || resistspassive;
+    return !haspassive || resistspassive || (self_strong_enough && target_weak && has_enough_hp && !is_insta_kill);
 }
 
 /* check whether a monster is carrying a locking/unlocking tool */

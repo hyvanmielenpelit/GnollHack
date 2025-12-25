@@ -860,7 +860,8 @@ register struct monst *mdef, *magr;
 
     /* each attack by magr can result in passive damage */
     for (i = 0; i < NATTK; i++)
-        switch (magr->data->mattk[i].aatyp) {
+        switch (magr->data->mattk[i].aatyp)
+        {
         case AT_CLAW:
         case AT_BITE:
         case AT_TUSK:
@@ -883,15 +884,55 @@ register struct monst *mdef, *magr;
 
     for (i = 0; i < NATTK; i++)
         if (mdef->data->mattk[i].aatyp == AT_PASV
-            || mdef->data->mattk[i].aatyp == AT_BOOM) {
+            || mdef->data->mattk[i].aatyp == AT_BOOM) 
+        {
             adtyp = mdef->data->mattk[i].adtyp;
             if ((adtyp == AD_ACID && !is_mon_immune_to_acid(magr))
                 || (adtyp == AD_COLD && !is_mon_immune_to_cold(magr))
                 || (adtyp == AD_FIRE && !is_mon_immune_to_fire(magr))
                 || (adtyp == AD_ELEC && !is_mon_immune_to_elec(magr))
-                || adtyp == AD_PHYS) {
+                || (adtyp == AD_MAGM && !is_mon_immune_to_magic_missile(magr))
+                || adtyp == AD_PHYS)
+            {
                 dmg = max(0, (mdef->data->mattk[i].damn > 0 ? mdef->data->mattk[i].damn : (int)mdef->data->mlevel / 2 + 2) * (mdef->data->mattk[i].damd > 0 ? mdef->data->mattk[i].damd : 6) + mdef->data->mattk[i].damp);
-            } else
+                if (adtyp == AD_ACID)
+                {
+                    if (mon_resists_acid_strongly(magr))
+                        dmg = dmg / 4;
+                    else if (mon_resists_acid_weakly(magr))
+                        dmg = dmg / 2;
+                }
+                else if (adtyp == AD_COLD)
+                {
+                    if (mon_resists_cold_strongly(magr))
+                        dmg = dmg / 4;
+                    else if (mon_resists_cold_weakly(magr))
+                        dmg = dmg / 2;
+                }
+                else if (adtyp == AD_FIRE)
+                {
+                    if (mon_resists_fire_strongly(magr))
+                        dmg = dmg / 4;
+                    else if (mon_resists_fire_weakly(magr))
+                        dmg = dmg / 2;
+                }
+                else if (adtyp == AD_ELEC)
+                {
+                    if (mon_resists_elec_strongly(magr))
+                        dmg = dmg / 4;
+                    else if (mon_resists_elec_weakly(magr))
+                        dmg = dmg / 2;
+                }
+                else if (adtyp == AD_MAGM)
+                {
+                    if (mon_resists_magic_missile_strongly(magr))
+                        dmg = dmg / 4;
+                    else if (mon_resists_magic_missile_weakly(magr))
+                        dmg = dmg / 2;
+                }
+                dmg = max(0, dmg);
+            }
+            else
                 dmg = 0;
 
             return dmg * multi2;

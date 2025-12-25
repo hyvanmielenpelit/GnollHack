@@ -1237,9 +1237,7 @@ d_level* lev;
 
     branch* curr;
     for (curr = branches; curr; curr = curr->next) {
-        if (curr->end1.dnum != main_dungeon_dnum && lev->dnum == curr->end1.dnum)
-            return curr;
-        if (curr->end2.dnum != main_dungeon_dnum && lev->dnum == curr->end2.dnum)
+        if (lev->dnum == curr->end1.dnum || lev->dnum == curr->end2.dnum)
             return curr;
     }
     return (branch*)0;
