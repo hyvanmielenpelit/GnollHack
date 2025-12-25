@@ -88,6 +88,7 @@ enum opcode_defs {
     SPO_THRONE,
     SPO_MODRON_PORTAL,
     SPO_MODRON_LEVEL_TELEPORTER,
+    SPO_MAGIC_PORTAL,
     SPO_SINK,
     SPO_POOL,
     SPO_TRAP,
@@ -255,6 +256,7 @@ enum sp_lever_var_flags {
     SP_L_V_FLOOR_SUBTYPE,
     SP_L_V_EFFECT_FLAG,
     SP_L_V_COORD,
+    SP_L_V_PORTAL_TYPE,
 
     SP_L_V_END
 };
@@ -547,6 +549,15 @@ typedef struct {
     int tele_direction;
     boolean end_type;
 } modron_portal;
+
+typedef struct {
+    packed_coord coord;
+    uchar typ;
+    boolean activated;
+    int portal_type;
+    boolean seen;
+} magic_portal;
+
 
 typedef struct {
     xchar x1, y1, x2, y2;

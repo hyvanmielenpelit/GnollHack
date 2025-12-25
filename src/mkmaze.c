@@ -381,7 +381,7 @@ d_level *lev;
         u_on_newpos(x, y);
         break;
     case LR_PORTAL:
-        mkportal(x, y, lev->dnum, lev->dlevel);
+        mkportal(x, y, lev->dnum, lev->dlevel, 0, 0, FALSE);
         break;
     case LR_DOWNSTAIR:
     case LR_UPSTAIR:
@@ -1479,8 +1479,11 @@ bound_digging()
 }
 
 void
-mkportal(x, y, todnum, todlevel)
+mkportal(x, y, todnum, todlevel, subtyp, portal_flags, seen)
 xchar x, y, todnum, todlevel;
+uchar subtyp;
+uint64_t portal_flags;
+boolean seen;
 {
     /* a portal "trap" must be matched by a
        portal in the destination dungeon/dlevel */
@@ -1494,7 +1497,10 @@ xchar x, y, todnum, todlevel;
                 dungeons[todnum].dname, todlevel);
     ttmp->dst.dnum = todnum;
     ttmp->dst.dlevel = todlevel;
-    return;
+    ttmp->tsubtyp = subtyp;
+    ttmp->tflags = portal_flags;
+    ttmp->activation_count = 0;
+    ttmp->tseen = seen;
 }
 
 void

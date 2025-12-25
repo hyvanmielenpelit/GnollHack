@@ -2037,7 +2037,7 @@ xchar x, y; /* location */
 
     if (br->type == BR_PORTAL) 
     {
-        mkportal(x, y, dest->dnum, dest->dlevel);
+        mkportal(x, y, dest->dnum, dest->dlevel, 0, 0, FALSE);
     }
     else if (make_stairs) 
     {

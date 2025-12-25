@@ -978,6 +978,7 @@ E void NDECL(init_dungeons);
 E s_level *FDECL(find_level, (const char *));
 E s_level *FDECL(Is_special, (d_level *));
 E branch *FDECL(Is_branchlev, (d_level *));
+E branch* FDECL(get_current_branch, (d_level*));
 E boolean FDECL(builds_up, (d_level *));
 E xchar FDECL(ledger_no, (d_level *));
 E xchar NDECL(maxledgerno);
@@ -1961,7 +1962,7 @@ E void FDECL(walkfrom, (int, int, SCHAR_P));
 E void FDECL(makemaz, (const char *));
 E void FDECL(mazexy, (coord *));
 E void NDECL(bound_digging);
-E void FDECL(mkportal, (XCHAR_P, XCHAR_P, XCHAR_P, XCHAR_P));
+E void FDECL(mkportal, (XCHAR_P, XCHAR_P, XCHAR_P, XCHAR_P, UCHAR_P, uint64_t, BOOLEAN_P));
 E boolean FDECL(bad_location, (XCHAR_P, XCHAR_P, XCHAR_P, XCHAR_P,
                                XCHAR_P, XCHAR_P));
 E void FDECL(place_lregion, (XCHAR_P, XCHAR_P, XCHAR_P, XCHAR_P, XCHAR_P,

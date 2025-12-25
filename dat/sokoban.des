@@ -455,11 +455,11 @@ MAP
 |.......|---------------.|
 -------.------         |.|
  |...........|         |.|
- |...........|   ------|.|
---------.-----   |.....|.|
-|............|   |.....|.|
-|............|   |.....|.|
------.--------   ---+--|.|
+ |...........| --------|.|
+--------.----- |.|.....|.|
+|............| |.+.....|.|
+|............| |.|.....|.|
+-----.-------- -----+--|.|
  |..........|  --|.....|.|
  |..........|  |.+.....|.|
  |.........|-  |-|.....|.|
@@ -477,6 +477,8 @@ REGION:(00,00,25,17),lit,"ordinary"
 NON_DIGGABLE:(00,00,25,17)
 NON_PASSWALL:(00,00,25,17)
 TELEPORT_REGION:(01,01,07,02),(13,01,25,17)
+# MAGIC_PORTAL:(16,07),portal_sstairs_up,unseen,active
+LEVER:(16,08),lever_effect_create_portal,portal_type:portal_sstairs_up,target:(16,06),switchable
 
 # Boulders
 OBJECT:('`',"boulder"),(03,05)
@@ -535,6 +537,7 @@ DOOR:locked,(23,13)
 DOOR:closed,(17,11)
 DOOR:closed,(17,13)
 DOOR:closed,(17,15)
+DOOR:locked,(17,07)
 REGION:(18,10,22,16),lit,"zoo",filled,irregular
 IF [50%] {
   OBJECT:('(',"bag of holding"),$place[0]
@@ -558,11 +561,11 @@ MAP
   |......................|
   |..-------------------.|
 ----.|    -----        |.|
-|..|.--  --...|  ------|.|
-|.....|--|....|  |.....|.|
-|.....|..|....|  |.....|.|
---....|......--  |.....|.|
- |.......|...|   ---+--|.|
+|..|.--  --...|--------|.|
+|.....|--|....||.|.....|.|
+|.....|..|....||.+.....|.|
+--....|......--|.|.....|.|
+ |.......|...| -----+--|.|
  |....|..|...| --|.....|.|
  |....|--|...| |.+.....|.|
  |.......|..-- |-|.....|.|
@@ -580,6 +583,8 @@ REGION:(00,00,25,16),lit,"ordinary"
 NON_DIGGABLE:(00,00,25,16)
 NON_PASSWALL:(00,00,25,16)
 TELEPORT_REGION:(06,14,07,15),(14,01,25,16)
+#MAGIC_PORTAL:(16,06),portal_sstairs_up,unseen,active
+LEVER:(16,07),lever_effect_create_portal,portal_type:portal_sstairs_up,target:(16,05),switchable
 
 # Boulders
 OBJECT:('`',"boulder"),(04,04)
@@ -641,6 +646,7 @@ DOOR:locked,(23,12)
 DOOR:closed,(17,10)
 DOOR:closed,(17,12)
 DOOR:closed,(17,14)
+DOOR:locked,(17,06)
 REGION:(18,09,22,15),lit,"zoo",filled,irregular
 IF [50%] {
   OBJECT:('(',"bag of holding"),$place[0]

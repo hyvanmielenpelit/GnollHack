@@ -1433,16 +1433,24 @@ register struct trap *ttmp;
         return;
     }
 
-    int portal_flags = (ttmp->ttyp == MODRON_PORTAL ? 
+    int portal_tele_type = (ttmp->ttyp == MODRON_PORTAL ? 
         ((ttmp->tflags & TRAPFLAGS_LEVEL_TELEPORT_NO_OTHER_END) != 0 ? 4 : 
-            (ttmp->tflags & TRAPFLAGS_LEVEL_TELEPORT_UP) != 0 ? 3 : 
-            (ttmp->tflags & TRAPFLAGS_LEVEL_TELEPORT_DOWN) != 0 ? 2 : 4) : 1);
+        (ttmp->tflags & TRAPFLAGS_LEVEL_TELEPORT_UP) != 0 ? 3 : 
+        (ttmp->tflags & TRAPFLAGS_LEVEL_TELEPORT_DOWN) != 0 ? 2 : 4) :
+        /* Not a modron portal */
+        (ttmp->tflags & TRAPFLAGS_LEVEL_TELEPORT_SSTAIRS_DOWN) != 0 ? MAGIC_PORTAL_TARGET_SSTAIRS_DOWN :
+        (ttmp->tflags & TRAPFLAGS_LEVEL_TELEPORT_SSTAIRS_UP) != 0 ? MAGIC_PORTAL_TARGET_SSTAIRS_UP :
+        (ttmp->tflags & TRAPFLAGS_LEVEL_TELEPORT_STAIRS_DOWN) != 0 ? MAGIC_PORTAL_TARGET_STAIRS_DOWN :
+        (ttmp->tflags & TRAPFLAGS_LEVEL_TELEPORT_STAIRS_UP) != 0 ? MAGIC_PORTAL_TARGET_STAIRS_UP :
+        (ttmp->tflags & TRAPFLAGS_LEVEL_TELEPORT_LADDER_DOWN) != 0 ? MAGIC_PORTAL_TARGET_LADDER_DOWN :
+        (ttmp->tflags & TRAPFLAGS_LEVEL_TELEPORT_LADDER_UP) != 0 ? MAGIC_PORTAL_TARGET_LADDER_UP :
+        1);
 
     target_level = ttmp->dst;
 
     level_teleport_effect_out(u.ux, u.uy);
 
-    schedule_goto(&target_level, FALSE, FALSE, TRUE, FALSE, portal_flags,
+    schedule_goto(&target_level, FALSE, FALSE, TRUE, FALSE, portal_tele_type,
                   "You feel dizzy for a moment, but the sensation passes.",
                   (char *) 0);
 }

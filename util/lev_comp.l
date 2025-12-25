@@ -186,6 +186,7 @@ FOUNTAIN	ST_RET(FOUNTAIN_ID);
 FLOOR	    ST_RET(FLOOR_ID);
 DECORATION  ST_RET(DECORATION_ID);
 THRONE	    ST_RET(THRONE_ID);
+MAGIC_PORTAL	ST_RET(MAGIC_PORTAL_ID);
 MODRON_PORTAL	ST_RET(MODRON_PORTAL_ID);
 SINK		ST_RET(SINK_ID);
 POOL		ST_RET(POOL_ID);
@@ -262,6 +263,7 @@ mythic_suffix	ST_RET(MYTHIC_SUFFIX_ID);
 enchantment	ST_RET(ENCHANTMENT_ID);
 charges	    ST_RET(CHARGES_ID);
 special_quality	ST_RET(SPECIAL_QUALITY_ID);
+portal_type	ST_RET(MAGIC_PORTAL_TARGET_TYPE_ID);
 manual_type	ST_RET(MANUAL_TYPE_ID);
 speflags	ST_RET(SPEFLAGS_ID);
 age	        ST_RET(AGE_ID);
@@ -359,6 +361,18 @@ up		    { savetoken(yytext); yylval.i=1; return UP_OR_DOWN; }
 down		{ savetoken(yytext); yylval.i=0; return UP_OR_DOWN; }
 active		{ savetoken(yytext); yylval.i=1; return ACTIVE_OR_INACTIVE; }
 inactive	{ savetoken(yytext); yylval.i=0; return ACTIVE_OR_INACTIVE; }
+seen		{ savetoken(yytext); yylval.i=1; return SEEN_OR_UNSEEN; }
+unseen	{ savetoken(yytext); yylval.i=0; return SEEN_OR_UNSEEN; }
+portal_noend	{ savetoken(yytext); yylval.i=MAGIC_PORTAL_TARGET_NOEND; return MAGIC_PORTAL_TARGET_TYPE; }
+portal_down	{ savetoken(yytext); yylval.i=MAGIC_PORTAL_TARGET_DOWN; return MAGIC_PORTAL_TARGET_TYPE; }
+portal_up	{ savetoken(yytext); yylval.i=MAGIC_PORTAL_TARGET_UP; return MAGIC_PORTAL_TARGET_TYPE; }
+portal_reserved	{ savetoken(yytext); yylval.i=MAGIC_PORTAL_TARGET_RESERVED; return MAGIC_PORTAL_TARGET_TYPE; }
+portal_sstairs_down	{ savetoken(yytext); yylval.i=MAGIC_PORTAL_TARGET_SSTAIRS_DOWN; return MAGIC_PORTAL_TARGET_TYPE; }
+portal_sstairs_up	{ savetoken(yytext); yylval.i=MAGIC_PORTAL_TARGET_SSTAIRS_UP; return MAGIC_PORTAL_TARGET_TYPE; }
+portal_stairs_down	{ savetoken(yytext); yylval.i=MAGIC_PORTAL_TARGET_STAIRS_DOWN; return MAGIC_PORTAL_TARGET_TYPE; }
+portal_stairs_up	{ savetoken(yytext); yylval.i=MAGIC_PORTAL_TARGET_STAIRS_UP; return MAGIC_PORTAL_TARGET_TYPE; }
+portal_ladder_down	{ savetoken(yytext); yylval.i=MAGIC_PORTAL_TARGET_LADDER_DOWN; return MAGIC_PORTAL_TARGET_TYPE; }
+portal_ladder_up	{ savetoken(yytext); yylval.i=MAGIC_PORTAL_TARGET_LADDER_UP; return MAGIC_PORTAL_TARGET_TYPE; }
 baseportal	{ savetoken(yytext); yylval.i=MODRON_PORTAL_SUBTYPE_BASE; return MODRON_PORTAL_TYPE; }
 spherical	{ savetoken(yytext); yylval.i=MODRON_PORTAL_SUBTYPE_SPHERICAL; return MODRON_PORTAL_TYPE; }
 cylindrical	{ savetoken(yytext); yylval.i=MODRON_PORTAL_SUBTYPE_CYLINDRICAL; return MODRON_PORTAL_TYPE; }
@@ -526,6 +540,7 @@ lever_effect_create_uncreate_location { savetoken(yytext); yylval.i=LEVER_EFFECT
 lever_effect_create_trap { savetoken(yytext); yylval.i=LEVER_EFFECT_CREATE_TRAP; return LEVER_EFFECT_TYPE; }
 lever_effect_create_object { savetoken(yytext); yylval.i=LEVER_EFFECT_CREATE_OBJECT; return LEVER_EFFECT_TYPE; }
 lever_effect_create_monster { savetoken(yytext); yylval.i=LEVER_EFFECT_CREATE_MONSTER; return LEVER_EFFECT_TYPE; }
+lever_effect_create_portal { savetoken(yytext); yylval.i=LEVER_EFFECT_CREATE_PORTAL; return LEVER_EFFECT_TYPE; }
 door_wooden { savetoken(yytext); yylval.i=DOOR_SUBTYPE_WOODEN; return DOOR_SUBTYPE; }
 door_wooden_windowed { savetoken(yytext); yylval.i=DOOR_SUBTYPE_WOODEN_WINDOWED; return DOOR_SUBTYPE; }
 door_iron { savetoken(yytext); yylval.i=DOOR_SUBTYPE_IRON; return DOOR_SUBTYPE; }

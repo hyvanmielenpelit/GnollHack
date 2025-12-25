@@ -7159,7 +7159,7 @@ goto_level(newlevel, at_location, falling, inside_tower, portal)
 d_level *newlevel;
 uchar at_location; /* 1 = at stairs, 2 = at altar */
 boolean falling, inside_tower;
-xchar portal; /* 1 = Magic portal, 2 = Modron portal down (find portal up), 3 = Modron portal up (find portal down), 4 = Modron portal (random destination) */
+xchar portal; /* 1 = Magic portal, 2 = Modron portal down (find portal up), 3 = Modron portal up (find portal down), 4 = Modron portal (random destination), 5 = Magic portal to special stairs down, 6 = Magic portal to special stairs up */
 {
     int fd, l_idx;
     xchar new_ledger;
@@ -7435,6 +7435,29 @@ xchar portal; /* 1 = Magic portal, 2 = Modron portal down (find portal up), 3 = 
             u_on_newpos(ttrap->tx, ttrap->ty);
         }
     } 
+    else if ((portal == MAGIC_PORTAL_TARGET_SSTAIRS_DOWN || portal == MAGIC_PORTAL_TARGET_SSTAIRS_UP) && !In_endgame(&u.uz))
+    {
+        /* find the special stairs on the level */
+        u_on_sstairs(portal == MAGIC_PORTAL_TARGET_SSTAIRS_DOWN);
+    }
+    else if ((portal == MAGIC_PORTAL_TARGET_STAIRS_DOWN) && !In_endgame(&u.uz))
+    {
+        /* find the stairs on the level */
+        u_on_dnstairs();
+    }
+    else if ((portal == MAGIC_PORTAL_TARGET_STAIRS_UP) && !In_endgame(&u.uz))
+    {
+        /* find the stairs on the level */
+        u_on_upstairs();
+    }
+    else if ((portal == MAGIC_PORTAL_TARGET_LADDER_DOWN) && !In_endgame(&u.uz))
+    {
+        u_on_newpos(xdnladder, ydnladder);
+    }
+    else if ((portal == MAGIC_PORTAL_TARGET_LADDER_UP) && !In_endgame(&u.uz))
+    {
+        u_on_newpos(xupladder, yupladder);
+    }
     else if ((portal == 2 || portal == 3) && !In_endgame(&u.uz))
     {
         /* find the portal on the new level */
@@ -8029,16 +8052,19 @@ const char *pre_msg, *post_msg;
 
     if (falling)
         typmask |= UTOFLAGS_FALLING;
-    if (portal_flag == 1)
-        typmask |= UTOFLAGS_PORTAL_1;
-    else if (portal_flag == 2)
-        typmask |= UTOFLAGS_PORTAL_2;
-    else if (portal_flag == 3)
-        typmask |= UTOFLAGS_PORTAL_3;
-    else if (portal_flag == 4)
-        typmask |= UTOFLAGS_PORTAL_4;
 
-    if (portal_flag < 0)
+    //if (portal_flag == 1)
+    //    typmask |= UTOFLAGS_PORTAL_1;
+    //else if (portal_flag == 2)
+    //    typmask |= UTOFLAGS_PORTAL_2;
+    //else if (portal_flag == 3)
+    //    typmask |= UTOFLAGS_PORTAL_3;
+    //else if (portal_flag == 4)
+    //    typmask |= UTOFLAGS_PORTAL_4;
+
+    if (portal_flag > 0 && portal_flag < 16)
+        typmask |= (short)(portal_flag << UTO_PORTAL_BIT_OFFSET);
+    else if (portal_flag < 0)
     {
         typmask |= UTOFLAGS_PORTAL_1; /* The same otherwise as 1 */
         typmask |= UTOFLAGS_REMOVE_PORTAL; /* flag for portal removal */
@@ -8072,7 +8098,7 @@ deferred_goto()
         assign_level(&dest, &u.utolev);
         if (dfr_pre_msg)
             pline1(dfr_pre_msg);
-        xchar portal_flag = (typmask & UTOFLAGS_PORTAL_1) ? 1 : (typmask & UTOFLAGS_PORTAL_2) ? 2 : (typmask & UTOFLAGS_PORTAL_3) ? 3 : (typmask & UTOFLAGS_PORTAL_4) ? 4 : 0;
+        xchar portal_flag = (xchar)((typmask & UTOFLAGS_PORTAL_MASK) >> UTO_PORTAL_BIT_OFFSET); //  (typmask & UTOFLAGS_PORTAL_1) ? 1 : (typmask & UTOFLAGS_PORTAL_2) ? 2 : (typmask & UTOFLAGS_PORTAL_3) ? 3 : (typmask & UTOFLAGS_PORTAL_4) ? 4 : 0;
         uchar at_location = (!!(typmask & UTOFLAGS_AT_STAIRS)) | (2 * (!!(typmask & UTOFLAGS_AT_ALTAR)));
         boolean falling = !!(typmask & UTOFLAGS_FALLING);
         boolean inside_tower = !!(typmask & UTOFLAGS_INSIDE_TOWER);

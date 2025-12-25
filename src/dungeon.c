@@ -1228,6 +1228,23 @@ d_level *lev;
     return (branch *) 0;
 }
 
+branch*
+get_current_branch(lev)
+d_level* lev;
+{
+    if (!lev || lev->dnum == main_dungeon_dnum)
+        return (branch*)0;
+
+    branch* curr;
+    for (curr = branches; curr; curr = curr->next) {
+        if (curr->end1.dnum != main_dungeon_dnum && lev->dnum == curr->end1.dnum)
+            return curr;
+        if (curr->end2.dnum != main_dungeon_dnum && lev->dnum == curr->end2.dnum)
+            return curr;
+    }
+    return (branch*)0;
+}
+
 /* returns True iff the branch 'lev' is in a branch which builds up */
 boolean
 builds_up(lev)

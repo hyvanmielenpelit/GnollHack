@@ -21,6 +21,7 @@ enum lever_effect_types {
     LEVER_EFFECT_CREATE_TRAP,
     LEVER_EFFECT_CREATE_OBJECT,
     LEVER_EFFECT_CREATE_MONSTER,
+    LEVER_EFFECT_CREATE_PORTAL,
     MAX_LEVER_EFFECT_TYPES
 };
 
@@ -74,6 +75,28 @@ struct trap {
 #define TRAPFLAGS_LEVEL_TELEPORT_DOWN           0x00000080UL  /* Level teleports down instead of defining a destination */
 #define TRAPFLAGS_LEVEL_TELEPORT_UP             0x00000100UL  /* Level teleports up instead of defining a destination */
 #define TRAPFLAGS_LEVEL_TELEPORT_NO_OTHER_END   0x00000200UL  /* Level teleport location at destination is random instead of a portal at the other end */
+#define TRAPFLAGS_LEVEL_TELEPORT_SSTAIRS_DOWN   0x00000400UL  /* Teleport to special stairs down on the target level */
+#define TRAPFLAGS_LEVEL_TELEPORT_SSTAIRS_UP     0x00000800UL  /* Teleport to special stairs up on the target level */
+#define TRAPFLAGS_LEVEL_TELEPORT_STAIRS_DOWN    0x00001000UL  /* Teleport to stairs down on the target level */
+#define TRAPFLAGS_LEVEL_TELEPORT_STAIRS_UP      0x00002000UL  /* Teleport to stairs up on the target level */
+#define TRAPFLAGS_LEVEL_TELEPORT_LADDER_DOWN    0x00004000UL  /* Teleport to ladder down on the target level */
+#define TRAPFLAGS_LEVEL_TELEPORT_LADDER_UP      0x00008000UL  /* Teleport to ladder up on the target level */
+
+enum magic_portal_target_types {
+    MAGIC_PORTAL_TARGET_NONE = 0,
+    MAGIC_PORTAL_TARGET_NOEND,
+    MAGIC_PORTAL_TARGET_DOWN,
+    MAGIC_PORTAL_TARGET_UP,
+    MAGIC_PORTAL_TARGET_RESERVED,
+    MAGIC_PORTAL_TARGET_SSTAIRS_DOWN,
+    MAGIC_PORTAL_TARGET_SSTAIRS_UP,
+    MAGIC_PORTAL_TARGET_STAIRS_DOWN,
+    MAGIC_PORTAL_TARGET_STAIRS_UP,
+    MAGIC_PORTAL_TARGET_LADDER_DOWN,
+    MAGIC_PORTAL_TARGET_LADDER_UP,
+    MAX_MAGIC_PORTAL_TARGET_TYPES
+};
+
 
 extern struct trap *ftrap;
 #define newtrap() (struct trap *) alloc(sizeof(struct trap))

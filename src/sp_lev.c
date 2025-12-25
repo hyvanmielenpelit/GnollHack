@@ -117,6 +117,7 @@ STATIC_DCL void FDECL(spo_object, (struct sp_coder *));
 STATIC_DCL void FDECL(spo_lever, (struct sp_coder*));
 STATIC_DCL void FDECL(spo_modron_portal, (struct sp_coder*));
 STATIC_DCL void FDECL(spo_modron_level_teleporter, (struct sp_coder*));
+STATIC_DCL void FDECL(spo_magic_portal, (struct sp_coder*));
 STATIC_DCL void FDECL(spo_level_flags, (struct sp_coder *));
 STATIC_DCL void FDECL(spo_initlevel, (struct sp_coder *));
 STATIC_DCL void FDECL(spo_tileset, (struct sp_coder*));
@@ -3128,6 +3129,75 @@ struct mkroom* croom;
     mkmodronportal(a->typ, &tm, &portal_tm, pflags);
 }
 
+/*
+ * Create an modron portal in a room.
+ */
+STATIC_OVL void
+create_magic_portal(a, croom)
+magic_portal* a;
+struct mkroom* croom;
+{
+    schar x = -1, y = -1;
+    uint64_t pflags = a->activated ? TRAPFLAGS_ACTIVATED : TRAPFLAGS_NONE;
+    if (a->portal_type > 0)
+    {
+        switch (a->portal_type)
+        {
+        case MAGIC_PORTAL_TARGET_NOEND:
+            pflags |= TRAPFLAGS_LEVEL_TELEPORT_NO_OTHER_END;
+            break;
+        case MAGIC_PORTAL_TARGET_DOWN:
+            pflags |= TRAPFLAGS_LEVEL_TELEPORT_DOWN;
+            break;
+        case MAGIC_PORTAL_TARGET_UP:
+            pflags |= TRAPFLAGS_LEVEL_TELEPORT_UP;
+            break;
+        case MAGIC_PORTAL_TARGET_SSTAIRS_DOWN:
+            pflags |= TRAPFLAGS_LEVEL_TELEPORT_SSTAIRS_DOWN;
+            break;
+        case MAGIC_PORTAL_TARGET_SSTAIRS_UP:
+            pflags |= TRAPFLAGS_LEVEL_TELEPORT_SSTAIRS_UP;
+            break;
+        case MAGIC_PORTAL_TARGET_STAIRS_DOWN:
+            pflags |= TRAPFLAGS_LEVEL_TELEPORT_STAIRS_DOWN;
+            break;
+        case MAGIC_PORTAL_TARGET_STAIRS_UP:
+            pflags |= TRAPFLAGS_LEVEL_TELEPORT_STAIRS_UP;
+            break;
+        case MAGIC_PORTAL_TARGET_LADDER_DOWN:
+            pflags |= TRAPFLAGS_LEVEL_TELEPORT_LADDER_DOWN;
+            break;
+        case MAGIC_PORTAL_TARGET_LADDER_UP:
+            pflags |= TRAPFLAGS_LEVEL_TELEPORT_LADDER_UP;
+            break;
+        default:
+            break;
+        }
+    }
+
+    if (croom)
+        get_free_room_loc(&x, &y, croom, a->coord);
+    else
+    {
+        int trycnt = 0;
+        do
+        {
+            get_location_coord(&x, &y, DRY_NO_ICE, croom, a->coord);
+        } while ((levl[x][y].typ == STAIRS || levl[x][y].typ == LADDER)
+            && ++trycnt <= 100);
+
+        if (trycnt > 100)
+            return;
+    }
+
+    branch* br = get_current_branch(&u.uz);
+    if (br)
+    {
+        d_level dest = br->end1.dnum == u.uz.dnum ? br->end2 : br->end1;
+        mkportal(x, y, dest.dnum, dest.dlevel, 0, pflags, a->seen);
+    }
+}
+
 void
 replace_terrain(terr, croom)
 replaceterrain *terr;
@@ -4616,6 +4686,11 @@ struct sp_coder* coder;
         case SP_L_V_EFFECT_FLAG:
             if (OV_typ(parm) == SPOVAR_INT)
                 tmplever.effect_flags = (uint64_t)OV_i(parm);
+            break;
+
+        case SP_L_V_PORTAL_TYPE:
+            if (OV_typ(parm) == SPOVAR_INT)
+                tmplever.effect_parameter1 = (uint64_t)OV_i(parm);
             break;
 
         case SP_L_V_COORD:
@@ -6723,6 +6798,32 @@ struct sp_coder* coder;
     opvar_free(acoord);
 }
 
+void spo_magic_portal(coder)
+struct sp_coder* coder;
+{
+    static const char nhFunc[] = "spo_magic_portal";
+    struct opvar* acoord, * activated, * portal_typ, * seen;
+    magic_portal tmpportal;
+
+    if (!OV_pop_i(activated) || !OV_pop_i(seen) || !OV_pop_i(portal_typ) || !OV_pop_c(acoord))
+        return;
+
+    int portal_type_int = (int)OV_i(portal_typ);
+    tmpportal.coord = OV_i(acoord);
+    tmpportal.typ = 0;
+    tmpportal.activated = (boolean)OV_i(activated);
+    tmpportal.portal_type = portal_type_int;
+    tmpportal.seen = (boolean)OV_i(seen);
+
+    create_magic_portal(&tmpportal, coder->croom);
+
+    opvar_free(activated);
+    opvar_free(portal_typ);
+    opvar_free(seen);
+    opvar_free(acoord);
+}
+
+
 void
 spo_terrain(coder)
 struct sp_coder *coder;
@@ -8201,6 +8302,9 @@ sp_lev *lvl;
             break;
         case SPO_MODRON_LEVEL_TELEPORTER:
             spo_modron_level_teleporter(coder);
+            break;
+        case SPO_MAGIC_PORTAL:
+            spo_magic_portal(coder);
             break;
         case SPO_TRAP:
             spo_trap(coder);

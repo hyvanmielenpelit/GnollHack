@@ -6970,6 +6970,56 @@ struct trap* lever;
         }
         break;
     }
+    case LEVER_EFFECT_CREATE_PORTAL:
+    {
+        if (isok(target_x, target_y))
+        {
+            uint64_t pflags = TRAPFLAGS_ACTIVATED;
+            switch (lever->effect_param1)
+            {
+            case MAGIC_PORTAL_TARGET_NOEND:
+                pflags |= TRAPFLAGS_LEVEL_TELEPORT_NO_OTHER_END;
+                break;
+            case MAGIC_PORTAL_TARGET_DOWN:
+                pflags |= TRAPFLAGS_LEVEL_TELEPORT_DOWN;
+                break;
+            case MAGIC_PORTAL_TARGET_UP:
+                pflags |= TRAPFLAGS_LEVEL_TELEPORT_UP;
+                break;
+            case MAGIC_PORTAL_TARGET_SSTAIRS_DOWN:
+                pflags |= TRAPFLAGS_LEVEL_TELEPORT_SSTAIRS_DOWN;
+                break;
+            case MAGIC_PORTAL_TARGET_SSTAIRS_UP:
+                pflags |= TRAPFLAGS_LEVEL_TELEPORT_SSTAIRS_UP;
+                break;
+            case MAGIC_PORTAL_TARGET_STAIRS_DOWN:
+                pflags |= TRAPFLAGS_LEVEL_TELEPORT_STAIRS_DOWN;
+                break;
+            case MAGIC_PORTAL_TARGET_STAIRS_UP:
+                pflags |= TRAPFLAGS_LEVEL_TELEPORT_STAIRS_UP;
+                break;
+            case MAGIC_PORTAL_TARGET_LADDER_DOWN:
+                pflags |= TRAPFLAGS_LEVEL_TELEPORT_LADDER_DOWN;
+                break;
+            case MAGIC_PORTAL_TARGET_LADDER_UP:
+                pflags |= TRAPFLAGS_LEVEL_TELEPORT_LADDER_UP;
+                break;
+            default:
+                break;
+            }
+            branch* br = get_current_branch(&u.uz);
+            if (br)
+            {
+                d_level dest = br->end1.dnum == u.uz.dnum ? br->end2 : br->end1;
+                mkportal(target_x, target_y, dest.dnum, dest.dlevel, 0, pflags, TRUE);
+                newsym(target_x, target_y);
+                flush_screen(0);
+                if (cansee(target_x, target_y))
+                    pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "A magic portal suddenly appears!");
+            }
+        }
+        break;
+    }
     default:
         break;
     }
