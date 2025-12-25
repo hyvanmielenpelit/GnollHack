@@ -226,7 +226,7 @@ OBJECT: ('9', "ginseng root"), (42,15)
 OBJECT: '9', (44,15)
 OBJECT: '9', (48,15)
 OBJECT: ('(', "chest"), (50,15)
-OBJECT: ('(', "chest"), (54,15)
+OBJECT: ('(', "magic chest"), (54,15)
 
 # Random traps
 TRAP:"dart",(20,09)

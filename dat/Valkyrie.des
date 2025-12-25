@@ -64,7 +64,10 @@ DOOR:locked,(43,10)
 # Norn
 MONSTER:('@',"Norn"),(35,10)
 # The treasure of the Norn
-OBJECT:('(',"chest"),(36,10)
+OBJECT:('(',"chest"),(27,08)
+# Magic chest
+OBJECT:('(',"magic chest"),(27,12)
+# Carpets
 CARPET:(28,09,41,11),carpet_yellow
 # valkyrie guards for the audience chamber
 MONSTER:('@',"warrior"),(27,08)

@@ -59,6 +59,9 @@ DOOR:closed,(50,06)
 MONSTER:('@',"Lord Sato"),(20,04)
 # The treasure of Lord Sato
 OBJECT:('(',"chest"),(20,04)
+# Magic chest
+OBJECT:('(',"magic chest"),(48,03)
+# Carpets
 CARPET:(32,03,45,05),carpet_crimson
 CARPET:(43,12,59,16),carpet_yellow
 CARPET:(18,03,26,07),carpet_purple

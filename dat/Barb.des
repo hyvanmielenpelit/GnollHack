@@ -112,7 +112,7 @@ MONSTER:('O',"ogre"),(42,10),hostile
 $place = { (04,14),(15,14),(23,15),(28,11),(31,06) }
 SHUFFLE: $place
 OBJECT:('(', "chest"), $place[0]
-OBJECT:('(', "chest"), $place[1]
+OBJECT:('(', "magic chest"), $place[1]
 OBJECT:')', $place[2]
 
 #

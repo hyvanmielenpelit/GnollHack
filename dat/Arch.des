@@ -109,7 +109,8 @@ OBJECT:('(',"bookshelf"),(26,08)
 OBJECT:('(',"bookshelf"),(31,08)
 OBJECT:('(',"bookshelf"),(36,08)
 OBJECT:('(',"large box"),(40,08)
-OBJECT:('(',"large box"),(40,12)
+# Magic chest
+OBJECT:('(',"magic chest"),(40,12)
 
 CARPET:(24,08,38,12),carpet_purple
 

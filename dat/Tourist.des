@@ -122,6 +122,8 @@ MONSTER:('@',"Twoflower"),(64,03) {
 OBJECT:('(',"chest"),(64,03)
 # Twoflower's Luggage
 MONSTER:('m',"giant luggage"),(65,03)
+# Magic chest
+OBJECT:('(',"magic chest"),(27,02)
 
 # guides for the audience chamber
 MONSTER:('@',"guide"),(29,03)

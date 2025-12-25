@@ -66,6 +66,9 @@ DOOR:locked,(20,10)
 MONSTER:('@',"Neferet the Green"),(23,05)
 # The treasure of the quest leader
 OBJECT:('(',"chest"),(24,05)
+# Magic chest
+OBJECT:('(',"magic chest"),(14,06)
+# Carpets
 CARPET:(19,005,27,09),carpet_crimson
 # apprentice guards for the audience chamber
 MONSTER:('@',"apprentice"),(30,07)
