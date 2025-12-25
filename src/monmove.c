@@ -76,8 +76,9 @@ struct monst* mtmp, * mtarg;
     int i;
     int max_dmg = max_passive_dmg(mtarg, mtmp);
     boolean has_enough_hp = mon_disregards_own_health(mtmp) || max_dmg < mtmp->mhp;
-    boolean self_strong_enough = ((mtmp->mhp >= (8 * mtmp->mhpmax) / 10 && max_dmg < mtmp->mhp / 2) || max_dmg < mtmp->mhp / 3 || mon_disregards_own_health(mtmp));
-    boolean target_weak = (mon_has_bloodlust(mtmp) || mon_disregards_enemy_strength(mtmp) || mtarg->m_lev < mtmp->m_lev / 2 || mtarg->mhp < mtarg->mhpmax / 10 || max_dmg < mtmp->mhp / 3);
+    boolean dmg_not_too_high = mon_disregards_own_health(mtmp) || max_dmg < mtmp->mhp / 3;
+    boolean self_strong_enough = ((mtmp->mhp >= (8 * mtmp->mhpmax) / 10 && max_dmg < mtmp->mhp / 2) || dmg_not_too_high);
+    boolean target_weak = (mon_has_bloodlust(mtmp) || mon_disregards_enemy_strength(mtmp) || mtarg->m_lev < mtmp->m_lev / 2 || mtarg->mhp < mtarg->mhpmax / 10 || dmg_not_too_high);
     boolean is_insta_kill = FALSE;
     boolean haspassive = FALSE;
     boolean resistspassive = FALSE;
@@ -91,41 +92,41 @@ struct monst* mtmp, * mtarg;
             case AD_FIRE:
                 if (is_mon_immune_to_fire(mtmp))
                     resistspassive = TRUE;
-                else if (mon_resists_fire_weakly(mtmp) && mtmp->mhp >= (8 * mtmp->mhpmax) / 10)
+                else if (mon_resists_fire_weakly(mtmp) && dmg_not_too_high)
                     resistspassive = TRUE;
-                else if (mon_resists_fire_strongly(mtmp) && mtmp->mhp >= (6 * mtmp->mhpmax) / 10)
+                else if (mon_resists_fire_strongly(mtmp) && dmg_not_too_high)
                     resistspassive = TRUE;
                 break;
             case AD_COLD:
                 if (is_mon_immune_to_cold(mtmp))
                     resistspassive = TRUE;
-                else if (mon_resists_cold_weakly(mtmp) && mtmp->mhp >= (8 * mtmp->mhpmax) / 10)
+                else if (mon_resists_cold_weakly(mtmp) && dmg_not_too_high)
                     resistspassive = TRUE;
-                else if (mon_resists_cold_strongly(mtmp) && mtmp->mhp >= (6 * mtmp->mhpmax) / 10)
+                else if (mon_resists_cold_strongly(mtmp) && dmg_not_too_high)
                     resistspassive = TRUE;
                 break;
             case AD_ELEC:
                 if (is_mon_immune_to_elec(mtmp))
                     resistspassive = TRUE;
-                else if (mon_resists_elec_weakly(mtmp) && mtmp->mhp >= (8 * mtmp->mhpmax) / 10)
+                else if (mon_resists_elec_weakly(mtmp) && dmg_not_too_high)
                     resistspassive = TRUE;
-                else if (mon_resists_elec_strongly(mtmp) && mtmp->mhp >= (6 * mtmp->mhpmax) / 10)
+                else if (mon_resists_elec_strongly(mtmp) && dmg_not_too_high)
                     resistspassive = TRUE;
                 break;
             case AD_ACID:
                 if (is_mon_immune_to_acid(mtmp))
                     resistspassive = TRUE;
-                else if (mon_resists_acid_weakly(mtmp) && mtmp->mhp >= (8 * mtmp->mhpmax) / 10)
+                else if (mon_resists_acid_weakly(mtmp) && dmg_not_too_high)
                     resistspassive = TRUE;
-                else if (mon_resists_acid_strongly(mtmp) && mtmp->mhp >= (6 * mtmp->mhpmax) / 10)
+                else if (mon_resists_acid_strongly(mtmp) && dmg_not_too_high)
                     resistspassive = TRUE;
                 break;
             case AD_MAGM:
                 if (is_mon_immune_to_magic_missile(mtmp))
                     resistspassive = TRUE;
-                else if (mon_resists_magic_missile_weakly(mtmp) && mtmp->mhp >= (8 * mtmp->mhpmax) / 10)
+                else if (mon_resists_magic_missile_weakly(mtmp) && dmg_not_too_high)
                     resistspassive = TRUE;
-                else if (mon_resists_magic_missile_strongly(mtmp) && mtmp->mhp >= (6 * mtmp->mhpmax) / 10)
+                else if (mon_resists_magic_missile_strongly(mtmp) && dmg_not_too_high)
                     resistspassive = TRUE;
                 break;
             case AD_STON:
