@@ -1225,10 +1225,15 @@ int64_t nmv; /* number of moves */
         mtmp->mprops[STUNNED] = 0;
 
     /* might finish eating or be able to use special ability again */
-    if (mtmp->meating > 0 && imv > mtmp->meating)
-        finish_meating(mtmp);
-    else
-        mtmp->meating -= imv;
+    if (mtmp->meating > 0)
+    {
+        if (imv > mtmp->meating)
+            finish_meating(mtmp);
+        else
+            mtmp->meating -= imv;
+    }
+    else /* Zero or negative */
+        mtmp->meating = 0;
 
     /* reduce spec_used */
     /* recover lost energy */
