@@ -2920,9 +2920,10 @@ aligntyp alignment;
     mtmp->gui_glyph = NO_GLYPH;
 
     /* set up stats*/
-    for (int i = 0; i < A_MAX; i++)
+    int i, curscore;
+    for (i = 0; i < A_MAX; i++)
     {
-        int curscore = 0;
+        curscore = 0;
         switch (i)
         {
         case A_STR:

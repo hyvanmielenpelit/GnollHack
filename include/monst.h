@@ -104,104 +104,104 @@ struct monst {
     xchar yell_x, yell_y;   /* location where the pet heard you yelling from */
     uchar action;           /* the monster is currently in the midst of one of its attacks or actions */
 
-    unsigned mappearance; /* for undetected mimics and the wiz */
-    uchar m_ap_type;      /* what mappearance is describing, m_ap_types */
+    unsigned mappearance;   /* for undetected mimics and the wiz */
+    uchar m_ap_type;        /* what mappearance is describing, m_ap_types */
 
-    schar mtame;                /* level of tameness, implies peaceful */
+    schar mtame;            /* level of tameness, implies peaceful */
 
-    unsigned short mprops[MAX_PROPS]; /* simplified props structure for monsters, taking 1/6 u.uprops memory space but doing about the same thing anyway --JG */
+    unsigned short mprops[MAX_PROPS];       /* simplified props structure for monsters, taking 1/6 u.uprops memory space but doing about the same thing anyway --JG */
 
-#define M_TIMEOUT                0x3fff    /* timeout mask for temporary property */
-#define M_INTRINSIC_ACQUIRED     0x4000    /* permanent intrisic acquired e.g. by eating monster corpses */
-#define M_EXTRINSIC              0x8000    /* extrinsic from items or environment, updated frequently by clearing and checking a new value */
+#define M_TIMEOUT                0x3fff     /* timeout mask for temporary property */
+#define M_INTRINSIC_ACQUIRED     0x4000     /* permanent intrisic acquired e.g. by eating monster corpses */
+#define M_EXTRINSIC              0x8000     /* extrinsic from items or environment, updated frequently by clearing and checking a new value */
 
-    unsigned short mspec_used;             /* monster's general special ability and spell attack timeout */
-    unsigned short mmagespell_used;        /* monster's mage-style normal ability or low-powered spell timeout */
-    unsigned short mmageintermediate_used; /* monster's mage-style intermediate ability or medium-powered mage spell timeout */
-    unsigned short mmageultimate_used;     /* monster's mage-style ultimate ability or high-powered mage spell timeout */
-    unsigned short mclericspell_used;      /* monster's cleric-style normal ability or low-powered spell timeout */
-    unsigned short mclericintermediate_used; /* monster's cleric-style intermediate ability or medium-powered spell timeout */
-    unsigned short mclericultimate_used;   /* monster's cleric-style ultimate ability or high-powered mage spell timeout */
-    unsigned short mdemonsummon_used;      /* demon summon timeout */
-    unsigned short mspecialsummon_used;    /* special (nondemon) summon timeout */
-    unsigned short mspecialsummon2_used;   /* another special (nondemon) summon timeout */
+    unsigned short mspec_used;              /* monster's general special ability and spell attack timeout */
+    unsigned short mmagespell_used;         /* monster's mage-style normal ability or low-powered spell timeout */
+    unsigned short mmageintermediate_used;  /* monster's mage-style intermediate ability or medium-powered mage spell timeout */
+    unsigned short mmageultimate_used;      /* monster's mage-style ultimate ability or high-powered mage spell timeout */
+    unsigned short mclericspell_used;       /* monster's cleric-style normal ability or low-powered spell timeout */
+    unsigned short mclericintermediate_used;/* monster's cleric-style intermediate ability or medium-powered spell timeout */
+    unsigned short mclericultimate_used;    /* monster's cleric-style ultimate ability or high-powered mage spell timeout */
+    unsigned short mdemonsummon_used;       /* demon summon timeout */
+    unsigned short mspecialsummon_used;     /* special (nondemon) summon timeout */
+    unsigned short mspecialsummon2_used;    /* another special (nondemon) summon timeout */
 
     short mcomingtou;
     short notalktimer;
     short notraveltimer;
     short reserved_short1;  
     short reserved_short2;
-    short rumorsleft;       /* how many rumors the monster still knows, -1 means that the monster has already told the player that it does not know any more rumors */
-    short mflee_timer;      /* timeout for mflee */
+    short rumorsleft;           /* how many rumors the monster still knows, -1 means that the monster has already told the player that it does not know any more rumors */
+    short mflee_timer;          /* timeout for mflee */
     short mfrozen;
-    short mstaying;         /* commanded to stay in place, similar to frozen, but commanded */
+    short mstaying;             /* commanded to stay in place, similar to frozen, but commanded */
     short mcarrying;
 
     /* unsigned int to align the following bitfields reliably across platforms */
-    unsigned mrevived;         /* Number of times revived */
+    unsigned mrevived;          /* Number of times revived */
 
     /* Bitfield flags -- Keep all bitfields in a row */
-    Bitfield(mflee, 1);     /* fleeing */
-    Bitfield(msleeping, 1); /* asleep until woken */
-    Bitfield(mcanmove, 1);  /* paralysis, similar to mblinded */
+    Bitfield(mflee, 1);         /* fleeing */
+    Bitfield(msleeping, 1);     /* asleep until woken */
+    Bitfield(mcanmove, 1);      /* paralysis, similar to mblinded */
     Bitfield(mwantstomove, 1);  /* mon wants to move, not staying in place */
     Bitfield(mwantstodrop, 1);
 
-    Bitfield(female, 1);         /* is female */
-    Bitfield(mburied, 1);        /* has been buried */
-    Bitfield(mundetected, 1);    /* not seen in present hiding place;
-                                  * implies one of M1_CONCEAL or M1_HIDE,
-                                  * but not mimic (that is, snake, spider,
-                                  * trapper, piercer, eel)
-                                  */
-    Bitfield(mcloned, 1);   /* has been cloned from another */
-    Bitfield(mavenge, 1);   /* did something to deserve retaliation */
-    Bitfield(mpeaceful, 1); /* does not attack unprovoked */
-    Bitfield(mtrapped, 1);  /* trapped in a pit, web or bear trap */
-    Bitfield(mleashed, 1);  /* monster is on a leash */
-    Bitfield(isshk, 1);     /* is shopkeeper */
-    Bitfield(isminion, 1);  /* is a minion */
-    Bitfield(isgd, 1);      /* is guard */
-    Bitfield(ispriest, 1);  /* is an aligned priest or high priest */
-    Bitfield(issmith, 1);   /* is a smith */
-    Bitfield(isnpc, 1);     /* is a non-player character */
-    Bitfield(issummoned, 1);                       /* is a summoned monster */
-    Bitfield(disregards_enemy_strength, 1);        /* the monster attacks too strong enemies */
-    Bitfield(disregards_own_health, 1);            /* the monster attacks even when its health is low */
-    Bitfield(hasbloodlust, 1);                     /* attacks also peaceful */
-    Bitfield(ispacifist, 1);                       /* does not attack peaceful, NOW DEACTIVATED, APPLIES TO ALL */
-    Bitfield(isfaithful, 1);                       /* being separate from the owner does not reduce tameness */
-    Bitfield(isprotector, 1);                      /* attacks hostiles if itself is being peaceful */
-    Bitfield(ispartymember, 1);                    /* a peaceful monster that has joined your party (e.g., does not give you the money or items back from its inventory) */
-    Bitfield(leaves_no_corpse, 1);                 /* this particular monster does not leave a corpse */
-    Bitfield(delayed_killer_by_you, 1);            /* is petrification or other delayed killer initiated by you */
-    Bitfield(u_know_mname, 1);                     /* you know the monster's name */
-    Bitfield(told_rumor, 1);                       /* the monster had told the player at least one rumor */
-    Bitfield(facing_right, 1);                     /* the monster is facing right */
-    Bitfield(iswiz, 1);                             /* is the Wizard of Yendor */
-    Bitfield(wormno, 5);                            /* at most 31 worms on any level */
-#define MAX_NUM_WORMS 32                            /* should be 2^(wormno bitfield size) */
-    Bitfield(heads_tamed, 2); /* How many Cerberos's heads have been tamed; anything else for other monsters */
-    Bitfield(boss_fight_started, 1); /* boss fight has already been announced */
-    Bitfield(special_talk_flag1, 1); /* general purpose flag NPC talk */
-    Bitfield(special_talk_flag2, 1); /* general purpose flag NPC talk */
-    Bitfield(special_talk_flag3, 1); /* general purpose flag NPC talk */
-    Bitfield(special_talk_flag4, 1); /* general purpose flag NPC talk */
-    Bitfield(special_talk_flag5, 1); /* general purpose flag NPC talk */
-    Bitfield(special_talk_flag6, 1); /* general purpose flag NPC talk */
-    Bitfield(special_talk_flag7, 1); /* general purpose flag NPC talk */
-    Bitfield(special_talk_flag8, 1); /* general purpose flag NPC talk */
+    Bitfield(female, 1);        /* is female */
+    Bitfield(mburied, 1);       /* has been buried */
+    Bitfield(mundetected, 1);   /* not seen in present hiding place;
+                                 * implies one of M1_CONCEAL or M1_HIDE,
+                                 * but not mimic (that is, snake, spider,
+                                 * trapper, piercer, eel)
+                                 */
+    Bitfield(mcloned, 1);       /* has been cloned from another */
+    Bitfield(mavenge, 1);       /* did something to deserve retaliation */
+    Bitfield(mpeaceful, 1);     /* does not attack unprovoked */
+    Bitfield(mtrapped, 1);      /* trapped in a pit, web or bear trap */
+    Bitfield(mleashed, 1);      /* monster is on a leash */
+    Bitfield(isshk, 1);         /* is shopkeeper */
+    Bitfield(isminion, 1);      /* is a minion */
+    Bitfield(isgd, 1);          /* is guard */
+    Bitfield(ispriest, 1);      /* is an aligned priest or high priest */
+    Bitfield(issmith, 1);       /* is a smith */
+    Bitfield(isnpc, 1);         /* is a non-player character */
+    Bitfield(issummoned, 1);                    /* is a summoned monster */
+    Bitfield(disregards_enemy_strength, 1);     /* the monster attacks too strong enemies */
+    Bitfield(disregards_own_health, 1);         /* the monster attacks even when its health is low */
+    Bitfield(hasbloodlust, 1);                  /* attacks also peaceful */
+    Bitfield(ispacifist, 1);                    /* does not attack peaceful, NOW DEACTIVATED, APPLIES TO ALL */
+    Bitfield(isfaithful, 1);                    /* being separate from the owner does not reduce tameness */
+    Bitfield(isprotector, 1);                   /* attacks hostiles if itself is being peaceful */
+    Bitfield(ispartymember, 1);                 /* a peaceful monster that has joined your party (e.g., does not give you the money or items back from its inventory) */
+    Bitfield(leaves_no_corpse, 1);              /* this particular monster does not leave a corpse */
+    Bitfield(delayed_killer_by_you, 1);         /* is petrification or other delayed killer initiated by you */
+    Bitfield(u_know_mname, 1);                  /* you know the monster's name */
+    Bitfield(told_rumor, 1);                    /* the monster had told the player at least one rumor */
+    Bitfield(facing_right, 1);                  /* the monster is facing right */
+    Bitfield(iswiz, 1);                         /* is the Wizard of Yendor */
+    Bitfield(wormno, 5);                        /* at most 31 worms on any level */
+#define MAX_NUM_WORMS 32                        /* should be 2^(wormno bitfield size) */
+    Bitfield(heads_tamed, 2);                   /* How many Cerberos's heads have been tamed; anything else for other monsters */
+    Bitfield(boss_fight_started, 1);            /* boss fight has already been announced */
+    Bitfield(special_talk_flag1, 1);            /* general purpose flag NPC talk */
+    Bitfield(special_talk_flag2, 1);            /* general purpose flag NPC talk */
+    Bitfield(special_talk_flag3, 1);            /* general purpose flag NPC talk */
+    Bitfield(special_talk_flag4, 1);            /* general purpose flag NPC talk */
+    Bitfield(special_talk_flag5, 1);            /* general purpose flag NPC talk */
+    Bitfield(special_talk_flag6, 1);            /* general purpose flag NPC talk */
+    Bitfield(special_talk_flag7, 1);            /* general purpose flag NPC talk */
+    Bitfield(special_talk_flag8, 1);            /* general purpose flag NPC talk */
 
     unsigned reserved;               /* reserved for, e.g., more bitfields */
-    int reserved_index;                  /* Special general purpose index */
-    int meating;           /* monster is eating timeout */
+    int reserved_index;              /* Special general purpose index */
+    int meating;                     /* monster is eating timeout */
 
-    uchar talkstate_item_trading;                 /* 1 = has said introduction, 2 = has said non-repeatable secondary question, 3 = has said first repeatable confirmatory question,  4 = has said second repeatable confirmatory question */
-    uchar talkstate_special;                      /* Special index, e.g., for Aleax */
-    xchar timed;           /* # of fuses (timers) attached to this monst */
-    xchar weapon_strategy; /* flag for whether to try switching weapons */
+    uchar talkstate_item_trading;    /* 1 = has said introduction, 2 = has said non-repeatable secondary question, 3 = has said first repeatable confirmatory question,  4 = has said second repeatable confirmatory question */
+    uchar talkstate_special;         /* Special index, e.g., for Aleax */
+    xchar timed;                     /* # of fuses (timers) attached to this monst */
+    xchar weapon_strategy;           /* flag for whether to try switching weapons */
 
-    uint64_t mon_flags; /* General easy-to-add flags for monsters for things not covered by the above bitfields */
+    uint64_t mon_flags;              /* General easy-to-add flags for monsters for things not covered by the above bitfields */
 #define MON_FLAGS_NONE                          0x00000000UL
 #define MON_FLAGS_RWRAITH                       0x00000001UL
 #define MON_FLAGS_CHAINED                       0x00000002UL
@@ -238,19 +238,19 @@ struct monst {
 #define STRAT_GOALX(s) ((xchar) ((s & STRAT_XMASK) >> 16))
 #define STRAT_GOALY(s) ((xchar) ((s & STRAT_YMASK) >> 8))
 
-    int64_t mtrapseen;        /* bitmap of traps we've been trapped in */
-    int64_t mlstmv;           /* for catching up with lost time */
+    int64_t mtrapseen;          /* bitmap of traps we've been trapped in */
+    int64_t mlstmv;             /* for catching up with lost time */
     int64_t mspare1;
-    int64_t worn_item_flags;  /* mon's wornmask */
-    int64_t summonduration;   /* duration for summoned units */
+    int64_t worn_item_flags;    /* mon's wornmask */
+    int64_t summonduration;     /* duration for summoned units */
     int64_t extra_encounter_xp; /* extra experience yielded by this monster due to encounter difficulty */
 
     int glyph;
     int gui_glyph;
 
-    struct obj* minvent;   /* mon's inventory */
-    struct obj* mw;        /* mon's weapon */
-    struct mextra *mextra; /* point to mextra struct */
+    struct obj* minvent;        /* mon's inventory */
+    struct obj* mw;             /* mon's weapon */
+    struct mextra *mextra;      /* point to mextra struct */
 };
 
 #define newmonst() (struct monst *) alloc(sizeof (struct monst))
