@@ -1345,9 +1345,9 @@ struct monst* mon;
         conditions |= BL_MASK_BLIND;
     if (is_deaf(mon))
         conditions |= BL_MASK_DEAF;
-    if (is_confused(mon))
+    if (is_stunned(mon))
         conditions |= BL_MASK_STUN;
-    if (mon->mprops[CONFUSION])
+    if (is_confused(mon))
         conditions |= BL_MASK_CONF;
     if (is_hallucinating(mon))
         conditions |= BL_MASK_HALLU;

@@ -20,7 +20,7 @@ const struct propname propertynames[] = {
     { SLIMED, "becoming slime", "transformation into slime" },
     { STRANGLED, "being strangled", "strangulation" },
     { SICK, "fatally sick", "fatal sickness" },
-    { STUNNED, "stunned", "stunning" },
+    { STUNNED, "stunned", "stun" },
     { CONFUSION, "confused", "confusion" },
     { HALLUC, "hallucinating", "hallucination" },
     { BLINDED, "blinded", "blindness" },
