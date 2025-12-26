@@ -109,13 +109,13 @@ namespace GnollHackX.Controls
             {
                 RootGrid.Children.Add(internalGLView);
             }
+            ThreadSafeWidth = Width;
+            ThreadSafeHeight = Height;
+            ThreadSafeX = X;
+            ThreadSafeY = Y;
+            ThreadSafeIsVisible = IsVisible;
             lock (_propertyLock)
             {
-                _threadSafeWidth = Width;
-                _threadSafeHeight = Height;
-                _threadSafeX = X;
-                _threadSafeY = Y;
-                _threadSafeIsVisible = IsVisible ? 1 : 0;
                 _threadSafeMargin = Margin;
                 if (Parent == null || !(Parent is IThreadSafeView))
                     _threadSafeParent = null;
@@ -217,16 +217,15 @@ namespace GnollHackX.Controls
         //    }
         //}
 
-        private readonly object _propertyLock = new object();
         private double _threadSafeWidth = 0;
         private double _threadSafeHeight = 0;
         private double _threadSafeX = 0;
         private double _threadSafeY = 0;
         private int _threadSafeIsVisible = 1;
+
+        private readonly object _propertyLock = new object();
         private Thickness _threadSafeMargin = new Thickness();
         WeakReference<IThreadSafeView> _threadSafeParent = null;
-        //private SKSize _threadSafeInternalCanvasSize = new SKSize(0, 0);
-        //private SKSize _threadSafeInternalGLCanvasSize = new SKSize(0, 0);
 
         public double ThreadSafeWidth { get { return Interlocked.CompareExchange(ref _threadSafeWidth, 0.0, 0.0); } private set { Interlocked.Exchange(ref _threadSafeWidth, value); } }
         public double ThreadSafeHeight { get { return Interlocked.CompareExchange(ref _threadSafeHeight, 0.0, 0.0); } private set { Interlocked.Exchange(ref _threadSafeHeight, value); } }
@@ -249,11 +248,6 @@ namespace GnollHackX.Controls
 
         private void SwitchableCanvasView_SizeChanged(object sender, EventArgs e)
         {
-            //lock (_propertyLock)
-            //{
-            //    _threadSafeWidth = Width;
-            //    _threadSafeHeight = Height;
-            //}
             ThreadSafeWidth = Width;
             ThreadSafeHeight = Height;
         }

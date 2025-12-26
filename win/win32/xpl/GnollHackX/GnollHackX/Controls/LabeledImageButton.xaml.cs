@@ -146,12 +146,13 @@ namespace GnollHackX.Controls
             //    ViewImage.Source = ImageSource.FromResource(ImgSourcePath);
         }
 
-        private readonly object _propertyLock = new object();
         private double _threadSafeWidth = 0;
         private double _threadSafeHeight = 0;
         private double _threadSafeX = 0;
         private double _threadSafeY = 0;
         private int _threadSafeIsVisible = 1;
+
+        private readonly object _propertyLock = new object();
         private Thickness _threadSafeMargin = new Thickness();
         WeakReference<IThreadSafeView> _threadSafeParent = null;
 
@@ -165,11 +166,6 @@ namespace GnollHackX.Controls
 
         private void LabeledImageButton_SizeChanged(object sender, EventArgs e)
         {
-            //lock (_propertyLock)
-            //{
-            //    _threadSafeWidth = Width;
-            //    _threadSafeHeight = Height;
-            //}
             ThreadSafeWidth = Width;
             ThreadSafeHeight = Height;
         }
@@ -184,13 +180,13 @@ namespace GnollHackX.Controls
             InitializeComponent();
             SizeChanged += LabeledImageButton_SizeChanged;
             PropertyChanged += LabeledImageButton_PropertyChanged;
+            ThreadSafeWidth = Width;
+            ThreadSafeHeight = Height;
+            ThreadSafeX = X;
+            ThreadSafeY = Y;
+            ThreadSafeIsVisible = IsVisible;
             lock (_propertyLock)
             {
-                _threadSafeWidth = Width;
-                _threadSafeHeight = Height;
-                _threadSafeX = X;
-                _threadSafeY = Y;
-                _threadSafeIsVisible = IsVisible ? 1 : 0;
                 _threadSafeMargin = Margin;
                 if (Parent == null || !(Parent is IThreadSafeView))
                     _threadSafeParent = null;
