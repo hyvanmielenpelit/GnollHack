@@ -113,6 +113,41 @@ register struct obj *obj;
     return (boolean)is_obj_normally_edible(obj);
 }
 
+const char*
+is_nonedible_corpse_material(ptr, obj)
+struct permonst* ptr;
+struct obj* obj;
+{
+    if (!ptr || !obj || obj->otyp != CORPSE)
+        return (const char*)0;
+
+    if (slurps_items(ptr) && is_slurpable(obj))
+        return (const char*)0;
+
+    if (is_metallic(obj))
+    {
+        if (metallivorous(ptr))
+            return (const char*)0;
+        else if (rust_causing_and_ironvorous(ptr) && is_rustprone(obj))
+        {
+            //if (obj->oerodeproof)
+            //    return obj->rknown ? "rustproof" : "not tasty metal";
+            //else
+            return (const char*)0;
+        }
+        else
+            return "metallic";
+    }
+
+    if (is_obj_stony(obj))
+        return !lithovore(ptr) ? "stony" : (const char*)0;
+
+    if (!is_organic(obj))
+        return "inorganic";
+
+    return (const char*)0;
+}
+
 void
 display_nutrition_floating_text(x, y, nutr)
 int x, y, nutr;
@@ -3502,13 +3537,20 @@ doeat()
      * mails, players who polymorph back to human in the middle of their
      * metallic meal, etc....
      */
+    const char* corpse_reason;
     if (!is_edible(otmp))
     {
         play_sfx_sound(SFX_GENERAL_CANNOT);
         You_ex(ATR_NONE, CLR_MSG_FAIL, "cannot eat that!");
         return 0;
     }
-    else if ((otmp->owornmask & (W_ARMOR | W_BLINDFOLD | W_AMUL | W_SADDLE)) != 0) 
+    else if ((corpse_reason = is_nonedible_corpse_material(youmonst.data, otmp)) != 0)
+    {
+        play_sfx_sound(SFX_GENERAL_CANNOT);
+        You_ex(ATR_NONE, CLR_MSG_FAIL, "cannot eat such a corpse; it is %s!", corpse_reason);
+        return 0;
+    }
+    else if ((otmp->owornmask & (W_ARMOR | W_BLINDFOLD | W_AMUL | W_SADDLE)) != 0)
     {
         /* let them eat rings */
         play_sfx_sound(SFX_GENERAL_CANNOT);

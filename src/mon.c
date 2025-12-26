@@ -1851,6 +1851,8 @@ register struct monst *mtmp;
                         You_hear_ex(ATR_NONE, CLR_MSG_ATTENTION, "a screeching sound.");
                 }
                 mtmp->meating = otmp->owt / 2 + 1;
+                if (mtmp->meating < 1)
+                    mtmp->meating = 1;
                 refresh_m_tile_gui_info(mtmp, FALSE);
                 /* Heal up to the object's weight in hp */
                 if (mtmp->mhp < mtmp->mhpmax)
@@ -1969,6 +1971,8 @@ register struct monst* mtmp;
                     You_hear_ex(ATR_NONE, CLR_MSG_ATTENTION, "a crunching sound.");
             }
             mtmp->meating = otmp->owt / 2 + 1;
+            if (mtmp->meating < 1)
+                mtmp->meating = 1;
             refresh_m_tile_gui_info(mtmp, FALSE);
             /* Heal up to the object's weight in hp */
             if (mtmp->mhp < mtmp->mhpmax)

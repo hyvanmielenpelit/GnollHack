@@ -1384,7 +1384,7 @@ boolean loc_is_you, ispeaceful, ispet, isdetected;
         switch (status_mark)
         {
         case STATUS_MARK_EATING:
-            if (!loc_is_you && ispet && mtmp->meating && !Hallucination)
+            if (!loc_is_you && mtmp->meating > 0 && !Hallucination)
                 display_this_status_mark = TRUE;
             break;
         case STATUS_MARK_TOWNGUARD_PEACEFUL:

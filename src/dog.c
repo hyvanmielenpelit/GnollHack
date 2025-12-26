@@ -1610,6 +1610,9 @@ register struct obj *obj;
         if ((obj->otyp == CORPSE || obj->otyp == TIN || obj->otyp == EGG) && obj->corpsenm >= 0)
             fptr = &mons[obj->corpsenm];
 
+        if (is_nonedible_corpse_material(mon->data, obj) != 0)
+            return TABU;
+
         if (obj->otyp == CORPSE && fptr && is_rider_or_tarrasque(fptr))
             return TABU;
 

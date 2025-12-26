@@ -227,6 +227,8 @@ struct obj *obj;
         if (obj->otyp == CORPSE && obj->corpsenm >= LOW_PM)
         {
             mtmp->meating = 3 + (mons[obj->corpsenm].cwt >> 6);
+            if (mtmp->meating < 3)
+                mtmp->meating = 3;
             nutrit = mons[obj->corpsenm].cnutrit;
             if (is_vegetarian_food(&mons[obj->corpsenm]) || is_vegan_food(&mons[obj->corpsenm]))
                 is_veg = TRUE;
@@ -282,6 +284,8 @@ struct obj *obj;
          * eat.c.  (This also applies to pets eating gold.)
          */
         mtmp->meating = obj->owt / 20 + 1;
+        if (mtmp->meating < 1)
+            mtmp->meating = 1;
         nutrit = nutr_size_mult * (int)obj_nutrition(obj, mtmp); // objects[obj->otyp].oc_nutrition;
         refresh_m_tile_gui_info(mtmp, FALSE);
     }

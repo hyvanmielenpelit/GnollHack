@@ -1810,7 +1810,7 @@ boolean showheads;
     }
 
     /* pets eating mimic corpses mimic while eating, so this comes first */
-    if (mtmp->meating)
+    if (mtmp->meating > 0)
         Strcat(info, ", eating");
     /* a stethoscope exposes mimic before getting here so this
        won't be relevant for it, but wand of probing doesn't */

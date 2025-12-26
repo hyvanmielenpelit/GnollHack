@@ -625,7 +625,7 @@ boolean digest_meal;
 
     if (digest_meal)
     {
-        if (mon->meating)
+        if (mon->meating > 0)
         {
             mon->meating--;
             if (mon->meating <= 0)
@@ -1401,13 +1401,14 @@ register int after;
     }
     ptr = mtmp->data; /* mintrap() can change mtmp->data -dlc */
 
-    if (mtmp->meating)
+    if (mtmp->meating > 0)
     {
         mtmp->meating--;
         if (mtmp->meating <= 0)
             finish_meating(mtmp);
         return 3; /* still eating */
     }
+
     if (hides_under(ptr) && OBJ_AT(mtmp->mx, mtmp->my) && rn2(10))
         return 0; /* do not leave hiding place */
 

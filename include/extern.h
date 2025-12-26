@@ -1052,6 +1052,7 @@ E int NDECL(unfaint);
 #endif
 E void NDECL(eatmupdate);
 E boolean FDECL(is_edible, (struct obj *));
+E const char* FDECL(is_nonedible_corpse_material, (struct permonst*, struct obj*));
 E void NDECL(init_uhunger);
 E int NDECL(Hear_again);
 E void NDECL(reset_eat);
