@@ -142,6 +142,28 @@ struct obj* obj;
     if (is_obj_stony(obj))
         return !lithovore(ptr) ? "stony" : (const char*)0;
 
+    if (obj->material >= MAT_GLASS && obj->material <= MAT_GEMSTONE)
+        return !lithovore(ptr) ? "not made of edible material" : (const char*)0;
+
+    if (is_obj_void(obj)) /* Wraith corpses are ok */
+        return (const char*)0;
+
+    if (is_obj_gas(obj) || is_obj_energy(obj)) /* Other non-physical materials are ok */
+        return (const char*)0;
+
+    if (is_obj_liquid(obj) || obj->material == MAT_ICE) /* Liquid and ice are ok */
+        return (const char*)0;
+
+    /* Special cases */
+    if (obj->material == MAT_MODRONITE) /* Only special eaters and modrons can eat modronite */
+        return is_modron(ptr) || lithovore(ptr) || metallivorous(ptr) ? (const char*)0 : "too alien";
+
+    if (obj->material == MAT_PLASTIC)
+        return lithovore(ptr) ? (const char*)0 : "made of plastic";
+
+    if (obj->material == MAT_FORCEFIELD)
+        return "made of force field";
+
     if (!is_organic(obj))
         return "inorganic";
 

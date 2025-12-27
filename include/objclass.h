@@ -474,6 +474,10 @@ struct objclass {
 #define is_material_flimsy(otmp)  (material_definitions[(otmp)->material].flimsy != 0) 
 #define is_fragile(otmp)  (material_definitions[(otmp)->material].fragile != 0) 
 #define is_obj_stony(otmp)  (material_definitions[(otmp)->material].mineral != 0) 
+#define is_obj_gas(otmp)  (material_definitions[(otmp)->material].phase == PHASE_GAS) 
+#define is_obj_liquid(otmp)  (material_definitions[(otmp)->material].phase == PHASE_LIQUID) 
+#define is_obj_energy(otmp)  (material_definitions[(otmp)->material].phase == PHASE_ENERGY) 
+#define is_obj_void(otmp)  (material_definitions[(otmp)->material].phase == PHASE_VOID) 
 
 /* primary damage: fire/rust/--- */
 /* is_flammable(otmp), is_rottable(otmp) in mkobj.c */
