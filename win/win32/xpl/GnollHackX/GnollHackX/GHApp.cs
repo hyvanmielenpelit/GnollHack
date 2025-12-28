@@ -1805,8 +1805,17 @@ namespace GnollHackX
 
             SleepMuteMode = true;
 
-            /* On MAUI on Android and iOS, moved saving game to SaveGameOnSleepAsync which is called in earlier events using a background task that should live long enough */
 #if !GNH_MAUI || (!ANDROID && !IOS) 
+            SaveGameOnSleep();
+#else
+            /* Android and iOS are handled in MauiProgram */
+            /* On MAUI on Android and iOS, moved saving game to SaveGameOnSleepAsync which is called in earlier events using a background task that should live long enough */
+#endif
+            CollectGarbage();
+        }
+
+        public static void SaveGameOnSleep()
+        {
             if (IsAutoSaveUponSwitchingAppsOn)
             {
                 CancelSaveGame = false;
@@ -1833,8 +1842,6 @@ namespace GnollHackX
                     }
                 }
             }
-#endif
-            CollectGarbage();
         }
 
         public static async Task SaveGameOnSleepAsync()
@@ -1987,7 +1994,17 @@ namespace GnollHackX
             }
 #endif
 
-            if (IsAutoSaveUponSwitchingAppsOn && !isRestart)
+#if !GNH_MAUI || !IOS
+            if (!isRestart)
+                CheckResumeSavedGame();
+#else
+            /* iOS is handled in MauiProgram */
+#endif
+        }
+
+        public static void CheckResumeSavedGame()
+        {
+            if (IsAutoSaveUponSwitchingAppsOn)
             {
                 CancelSaveGame = true;
                 GHGame game = CurrentGHGame;
@@ -1995,7 +2012,7 @@ namespace GnollHackX
                 {
                     //Detect background app killing OS, check if last exit is through going to sleep & game has been saved, and load previously saved game
                     bool wenttosleep = false;
-                    try 
+                    try
                     {
                         wenttosleep = Preferences.Get("WentToSleepWithGameOn", false);
                         Preferences.Set("WentToSleepWithGameOn", false);
@@ -2011,6 +2028,27 @@ namespace GnollHackX
                         game.StopWaitAndResumeSavedGame();
                     }
                 }
+            }
+        }
+
+        public static bool WasGameSaved
+        {
+            get
+            {
+                GHGame curGame = GHApp.CurrentGHGame;
+                bool wenttosleep = false;
+                try
+                {
+                    wenttosleep = Preferences.Get("WentToSleepWithGameOn", false);
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine(ex);
+                }
+                bool wasSaved = IsAutoSaveUponSwitchingAppsOn
+                    && curGame != null && !curGame.PlayingReplay
+                    && wenttosleep && (GameSaved || SavingGame);
+                return wasSaved;
             }
         }
 

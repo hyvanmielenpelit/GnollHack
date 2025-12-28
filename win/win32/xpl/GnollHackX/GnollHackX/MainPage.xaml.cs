@@ -826,31 +826,11 @@ namespace GnollHackX
             WaitLayout.IsVisible = false;
         }
 
-        private bool WasGameSaved
-        {
-            get
-            {
-                GHGame curGame = GHApp.CurrentGHGame;
-                bool wenttosleep = false;
-                try
-                {
-                    wenttosleep = Preferences.Get("WentToSleepWithGameOn", false);
-                }
-                catch (Exception ex)
-                {
-                    Debug.WriteLine(ex);
-                }
-                bool wasSaved = GHApp.IsAutoSaveUponSwitchingAppsOn
-                    && curGame != null && !curGame.PlayingReplay
-                    && wenttosleep && (GHApp.GameSaved || GHApp.SavingGame);
-                return wasSaved;
-            }
-        }
         private bool AllowStartExistingGame 
         {  
             get 
             {
-                return GHConstants.AllowRestartGameUponActivityDestruction && WasGameSaved && GHApp.GameStarted; 
+                return GHConstants.AllowRestartGameUponActivityDestruction && GHApp.WasGameSaved && GHApp.GameStarted; 
             } 
         }
 

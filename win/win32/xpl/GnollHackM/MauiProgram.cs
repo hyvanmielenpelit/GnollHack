@@ -446,6 +446,11 @@ public static class MauiProgram
                         }
                     });
                 });
+                ios.OnActivated((app) =>
+                {
+                    GHApp.MaybeWriteGHLog("OnActivated: Start", true, GHConstants.SentryGnollHackGeneralCategoryName);
+                    GHApp.CheckResumeSavedGame();
+                });
             });
 #endif
             })
