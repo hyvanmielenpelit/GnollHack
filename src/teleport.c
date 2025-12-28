@@ -1933,8 +1933,33 @@ int in_sight;
                     else
                         migrate_typ = MIGR_RANDOM;
                 }
+                else if (trap->tflags & TRAPFLAGS_LEVEL_TELEPORT_SSTAIRS_DOWN)
+                {
+                    migrate_typ = MIGR_SSTAIRS;
+                }
+                else if (trap->tflags & TRAPFLAGS_LEVEL_TELEPORT_SSTAIRS_UP)
+                {
+                    migrate_typ = MIGR_SSTAIRS;
+                }
+                else if (trap->tflags & TRAPFLAGS_LEVEL_TELEPORT_STAIRS_DOWN)
+                {
+                    migrate_typ = MIGR_STAIRS_DOWN;
+                }
+                else if (trap->tflags & TRAPFLAGS_LEVEL_TELEPORT_STAIRS_UP)
+                {
+                    migrate_typ = MIGR_STAIRS_UP;
+                }
+                else if (trap->tflags & TRAPFLAGS_LEVEL_TELEPORT_LADDER_DOWN)
+                {
+                    migrate_typ = MIGR_LADDER_DOWN;
+                }
+                else if (trap->tflags & TRAPFLAGS_LEVEL_TELEPORT_LADDER_UP)
+                {
+                    migrate_typ = MIGR_LADDER_UP;
+                }
                 else
                     migrate_typ = MIGR_PORTAL;
+
                 assign_level(&tolevel, &trap->dst);
             }
             if(cansee(mtmp->mx, mtmp->my))
