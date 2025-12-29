@@ -712,6 +712,7 @@ namespace GnollHackX
                         PopupLabel.Text = "You must be connected to internet to start a Tournament game. Please make sure you have an internet connection.";
                         PopupGrid.IsVisible = true;
                         StartLocalGrid.IsEnabled = true;
+                        GHApp.AddSentryBreadcrumb("Popup: " + PopupTitleLabel.Text, GHConstants.SentryGnollHackGeneralCategoryName);
                         return;
                     }
 
@@ -735,6 +736,7 @@ namespace GnollHackX
                             PopupLabel.Text = "User name and password for Server Posting have not been verified. Please set and verify these in Settings in the Server Posting section.";
                             PopupGrid.IsVisible = true;
                             StartLocalGrid.IsEnabled = true;
+                            GHApp.AddSentryBreadcrumb("Popup: " + PopupTitleLabel.Text, GHConstants.SentryGnollHackGeneralCategoryName);
                             return;
                         }
                     }
@@ -1563,6 +1565,7 @@ namespace GnollHackX
             PopupTitleLabel.Text = "GnollHack Needs to Close";
             PopupLabel.Text = "A panic occurred during loading a saved game, and the app state may have become unstable. Restarting GnollHack is required.";
             PopupGrid.IsVisible = true;
+            GHApp.AddSentryBreadcrumb("Popup: " + PopupTitleLabel.Text, GHConstants.SentryGnollHackGeneralCategoryName);
         }
 
         private async Task CheckPendingTasksAndExit()
@@ -1575,6 +1578,7 @@ namespace GnollHackX
                 UpdateGeneralTimerTasksLabel(true);
                 PendingTasksGrid.IsEnabled = true;
                 PendingTasksGrid.IsVisible = true;
+                GHApp.AddSentryBreadcrumb("Pending General Timer Tasks", GHConstants.SentryGnollHackGeneralCategoryName);
             }
             else
             {
@@ -2090,6 +2094,7 @@ namespace GnollHackX
                         AlertOkButton2.IsEnabled = true;
                         AlertExitButton.IsEnabled = true;
                         AlertGrid.IsVisible = true;
+                        GHApp.AddSentryBreadcrumb("DisplayAlert: " + alert.Message, GHConstants.SentryGnollHackGeneralCategoryName);
                     }
                 }
                 catch (Exception ex)
