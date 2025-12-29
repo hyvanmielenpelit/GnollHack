@@ -1591,24 +1591,32 @@ namespace GnollHackX
             if (GHApp.CheckCloseAndSetTrue)
                 return;
 
-            GHApp.AddSentryBreadcrumb("CloseApp", GHConstants.SentryGnollHackGeneralCategoryName);
-            DoStopGeneralTimer();
-            GHApp.StopPlatformRenderLoop();
-            GHApp.ShutDownMemoryWarnings();
-            GHApp.CheckCloseGnhThread(); /* Close GnhThread if a game is still ongoing for some reason */
-            Task t1 = GeneralTimerTasksAsync(); /* Make sure outstanding queues are processed before closing application */
-            Task t2 = Task.Delay(1000); /* Give 1 second to close at maximum */
-            await Task.WhenAny(t1, t2);
-            carouselView.Stop();
-            GHApp.FmodService?.StopAllGameSounds((uint)StopSoundFlags.All, 0U);
-            await Task.Delay(100);
-            GHApp.FmodService?.StopAllUISounds();
-            await Task.Delay(100);
-            GHApp.FmodService?.ShutdownFmod();
-            await Task.Delay(100);
-            GHApp.BeforeExitApp();
-            GHApp.PlatformService?.CloseApplication();
-            GHApp.AddSentryBreadcrumb("Post CloseApplication", GHConstants.SentryGnollHackGeneralCategoryName);
+            try
+            {
+                GHApp.AddSentryBreadcrumb("CloseApp", GHConstants.SentryGnollHackGeneralCategoryName);
+                DoStopGeneralTimer();
+                GHApp.StopPlatformRenderLoop();
+                GHApp.ShutDownMemoryWarnings();
+                GHApp.CheckCloseGnhThread(); /* Close GnhThread if a game is still ongoing for some reason */
+                Task t1 = GeneralTimerTasksAsync(); /* Make sure outstanding queues are processed before closing application */
+                Task t2 = Task.Delay(1000); /* Give 1 second to close at maximum */
+                await Task.WhenAny(t1, t2);
+                carouselView.Stop();
+                GHApp.FmodService?.StopAllGameSounds((uint)StopSoundFlags.All, 0U);
+                await Task.Delay(100);
+                GHApp.FmodService?.StopAllUISounds();
+                await Task.Delay(100);
+                GHApp.FmodService?.ShutdownFmod();
+                await Task.Delay(100);
+                GHApp.BeforeExitApp();
+                GHApp.PlatformService?.CloseApplication();
+                GHApp.AddSentryBreadcrumb("Post CloseApplication", GHConstants.SentryGnollHackGeneralCategoryName);
+            }
+            catch (Exception ex)
+            {
+                GHApp.MaybeWriteGHLog(ex.Message, true, GHConstants.SentryGnollHackGeneralCategoryName);
+                Environment.Exit(0);
+            }
 
 #if !GNH_MAUI
             await Task.Delay(100);
