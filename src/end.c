@@ -732,8 +732,13 @@ VA_DECL(const char *, str)
     VA_START(str);
     VA_INIT(str, char *);
 
+    issue_breadcrumb("Panic: Start");
     if (program_state.panicking++)
+    {
+        issue_breadcrumb("Panic: panicking++");
+        issue_simple_gui_command(GUI_CMD_EXIT_APP_ON_MAIN_SCREEN);
         NH_abort(); /* avoid loops - this should never happen*/
+    }
 
     if (iflags.window_inited) {
         raw_print("\r\nOops...");
@@ -776,7 +781,9 @@ VA_DECL(const char *, str)
      * or say it's NOT possible to rebuild. */
     if (program_state.something_worth_saving && !iflags.debug_fuzzer) {
         set_error_savefile();
+        issue_breadcrumb("Panic: Saving Error savefile");
         int saveres = dosave0(TRUE);
+        issue_breadcrumb2("Panic: Saved Error savefile", saveres);
         if (saveres) {
             /* os/win port specific recover instructions */
             if (sysopt.recover)
@@ -1862,6 +1869,7 @@ int how;
     boolean has_existing_save_file = (wizard || discover || CasualMode) && check_existing_save_file();
     boolean disclose_and_dumplog_ok = !(how < ASCENDED && CasualMode && has_existing_save_file);
     //int64_t tmp;
+    issue_breadcrumb2("really_done", how);
 
     /*
      *  The game is now over...

@@ -89,6 +89,7 @@ dosave()
         return 0;
     clear_nhwindow(WIN_MESSAGE);
     boolean confirm_save = TRUE;
+    issue_breadcrumb("dosave");
 
 #ifdef CONTINUE_PLAYING_AFTER_SAVING
     if (CasualMode) 
@@ -129,7 +130,9 @@ dosave()
 #if defined(UNIX) || defined(VMS) || defined(__EMX__)
         program_state.done_hup = 0;
 #endif
+        issue_breadcrumb("dosave: Saving");
         int saveres = dosave0(FALSE);
+        issue_breadcrumb2("dosave: Saved", saveres);
         if (saveres)
         {
             if (contplay)

@@ -9760,7 +9760,9 @@ end_of_input(VOID_ARGS)
 #endif
         if (program_state.something_worth_saving)
         {
-            (void)dosave0(TRUE);
+            issue_breadcrumb("end_of_input: Saving");
+            int saveres = dosave0(TRUE);
+            issue_breadcrumb2("end_of_input: Saved", saveres);
         }
     if (iflags.window_inited)
         exit_nhwindows((char *) 0);

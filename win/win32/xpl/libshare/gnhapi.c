@@ -400,6 +400,7 @@ int save_style;
         && !program_state.exiting && !program_state.freeing_dynamic_data
         && !saving && !restoring && !reseting && !check_pointing && !ignore_onsleep_autosave)
     {
+        issue_breadcrumb2("LibSaveAndRestoreSavedGame", save_style);
         switch (save_style)
         {
         case 2: /* Checkpoint only and no wait */
@@ -425,6 +426,7 @@ int save_style;
             save_currentstate(); /* In the case save fails */
 #endif
             int saveres = dosave0(TRUE);
+            issue_breadcrumb2("LibSaveAndRestoreSavedGame: Saved", saveres);
             issue_parametered_gui_command(GUI_CMD_WAIT_FOR_RESUME, saveres);
             if (saveres)
             {
@@ -742,6 +744,7 @@ DLLEXPORT void
 LibExitGnhThread(int used_exit_hack_code)
 {
     exit_hack_code = used_exit_hack_code;
+    issue_breadcrumb2("LibExitGnhThread", used_exit_hack_code);
     gnollhack_exit(EXIT_SUCCESS);
 }
 
