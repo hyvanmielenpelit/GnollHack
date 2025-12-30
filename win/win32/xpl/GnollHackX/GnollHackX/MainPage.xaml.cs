@@ -1562,8 +1562,8 @@ namespace GnollHackX
             _popupStyle = popup_style.ForceCloseApp;
             PopupCheckBoxLayout.IsVisible = false;
             PopupTitleLabel.TextColor = GHColors.Red;
-            PopupTitleLabel.Text = "GnollHack Needs to Close";
-            PopupLabel.Text = "A panic occurred during loading a saved game, and the app state may have become unstable. Restarting GnollHack is required.";
+            PopupTitleLabel.Text = "Restart Required";
+            PopupLabel.Text = "A panic may have caused the app state to become unstable. Please exit and restart GnollHack.";
             PopupGrid.IsVisible = true;
             GHApp.AddSentryBreadcrumb("Popup: " + PopupTitleLabel.Text, GHConstants.SentryGnollHackGeneralCategoryName);
         }
