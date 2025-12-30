@@ -16,12 +16,30 @@ namespace GnollHackX
     {
         public static int Ctrl(int c)
         {
-            return (0x1f & (c));
+            return (0x40 & c) != 0 ? (0x1f & c) : (0x80 | (0x1f & c));
         }
+        public static bool IsCtrl(int c)
+        {
+            return (c & ~0x1f) == 0;
+        }
+        public static int Unctrl(int c)
+        {
+            return !IsCtrl(c) ? c : (c & 0x80) != 0 ? ((c & ~0x80) | 0x20) : (c | 0x60);
+        }
+
         public static int Meta(int c)
         {
-            return (0x80 | (c));
+            return (0x80 | c);
         }
+        public static bool IsMeta(int c)
+        {
+            return (c & 0x80) != 0 && (c & ~0x1f) != 0;
+        }
+        public static int Unmeta(int c)
+        {
+            return !IsMeta(c) ? c : (c & ~0x80);
+        }
+
         public static bool isok(int x, int y)
         {
             if (x < 1 || x >= GHConstants.MapCols)

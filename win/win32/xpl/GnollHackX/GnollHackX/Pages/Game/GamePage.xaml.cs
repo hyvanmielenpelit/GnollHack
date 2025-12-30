@@ -19442,13 +19442,15 @@ namespace GnollHackX.Pages.Game
 
             SKColor nonFilteredColor = SKColors.White.WithAlpha(32);
             CmdBtnMatrixRect = new SKRect();
-            string filter = MoreCommandsFilterEntry.Text;
+            string filter = ThreadSafeMoreCommandsFilterEntryText;
             bool useFilter;
 
             if (string.IsNullOrWhiteSpace(filter))
                 useFilter = false;
             else
                 useFilter = true;
+
+            bool useKeyboardShortcuts = GHApp.ShowKeyboardShortcuts;
 
             using (GHSkiaFontPaint textPaint = new GHSkiaFontPaint())
             {
@@ -19549,6 +19551,19 @@ namespace GnollHackX.Pages.Game
                                         }
                                         canvas.DrawImage(GHApp._moreBtnBitmaps[page, i, j], targetrect, paint);
                                         textPaint.DrawTextOnCanvas(canvas, GHApp._moreBtnMatrix[page, i, j].Text, text_x, text_y, SKTextAlign.Center);
+                                        if (useKeyboardShortcuts && GHApp._moreBtnMatrix[page, i, j].Command > 0 && !string.IsNullOrEmpty(GHApp._moreBtnMatrix[page, i, j].CommandChar))
+                                        {
+                                            float kbsc_text_x = text_x = (targetrect.Left + targetrect.Right) / 2;
+                                            float kbsc_text_y = targetrect.Bottom - textPaint.FontMetrics.Ascent + textPaint.FontSpacing;
+                                            string c = GHApp._moreBtnMatrix[page, i, j].CommandChar;
+                                            string str = (GHApp._moreBtnMatrix[page, i, j].IsMeta ? "Alt+" : "") + (GHApp._moreBtnMatrix[page, i, j].IsCtrl ? "Ctrl+" : "") + c;
+                                            textPaint.Color = SKColors.Gray;
+                                            float tsize = textPaint.TextSize;
+                                            textPaint.TextSize = tsize * 0.9f;
+                                            textPaint.DrawTextOnCanvas(canvas, str, kbsc_text_x, kbsc_text_y, SKTextAlign.Center);
+                                            textPaint.TextSize = tsize;
+                                            textPaint.Color = SKColors.White;
+                                        }
                                     }
                                     pos_j++;
                                 }
@@ -21693,9 +21708,11 @@ namespace GnollHackX.Pages.Game
             return handled;
         }
 
+        private string _threadSafeMoreCommandsFilterEntryText = null;
+        public string ThreadSafeMoreCommandsFilterEntryText { get { return Interlocked.CompareExchange(ref _threadSafeMoreCommandsFilterEntryText, null, null); } private set { Interlocked.Exchange(ref _threadSafeMoreCommandsFilterEntryText, value); } }
         private void MoreCommandsFilterEntry_TextChanged(object sender, TextChangedEventArgs e)
         {
-
+            ThreadSafeMoreCommandsFilterEntryText = e.NewTextValue;
         }
 
 

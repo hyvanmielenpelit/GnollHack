@@ -710,6 +710,9 @@ namespace GnollHackX.Pages.MainScreen
             GHApp.DefaultVIKeys = DefaultVIKeysSwitch.IsToggled;
             Preferences.Set("DefaultVIKeys", DefaultVIKeysSwitch.IsToggled);
 
+            GHApp.ShowKeyboardShortcuts = ShowKeyboardShortcutsSwitch.IsToggled;
+            Preferences.Set("ShowKeyboardShortcuts", ShowKeyboardShortcutsSwitch.IsToggled);
+
 
 #if GNH_MAUI
             Microsoft.Maui.Controls.Picker[] simplePickers = new Microsoft.Maui.Controls.Picker[6] 
@@ -1003,7 +1006,7 @@ namespace GnollHackX.Pages.MainScreen
             bool breatheanimations = GHConstants.DefaultBreatheAnimations; //, put2bag = GHConstants.DefaultShowPickNStashContextCommand, prevwep = GHConstants.DefaultShowPrevWepContextCommand;
             bool devmode = GHConstants.DefaultDeveloperMode, logmessages = GHConstants.DefaultLogMessages, lowlevellogging = false, debugpostchannel = GHConstants.DefaultDebugPostChannel, tournament = false, hpbars = false, nhstatusbarclassic = GHConstants.IsDefaultStatusBarClassic, desktopstatusbar = false, rightaligned2ndrow = false, showscore = false, showxp = false, desktopbuttons = false, menufadeeffects = false, menuhighfilterquality = true, menuhighlightedkeys = false, pets = true, orbs = true, orbmaxhp = false, orbmaxmana = false, mapgrid = false, playermark = false, monstertargeting = false, walkarrows = true;
             bool forcemaxmsg = false, showexstatus = false, noclipmode = GHConstants.DefaultMapNoClipMode, silentmode = false, characterclickaction = false, diceasranges = true, autodig = false, ignorestopping = false;
-            bool postgamestatus = GHConstants.DefaultPosting, postxlog = GHConstants.DefaultPosting, postreplays = GHConstants.DefaultPosting, postbones = GHConstants.DefaultPosting, boneslistisblack = false;
+            bool postgamestatus = GHConstants.DefaultPosting, postxlog = GHConstants.DefaultPosting, postreplays = GHConstants.DefaultPosting, postbones = GHConstants.DefaultPosting, boneslistisblack = false, showkeyboardshortcuts = false;
 #if !SENTRY
             bool postdiagnostics = GHConstants.DefaultPosting;
 #endif
@@ -1100,6 +1103,7 @@ namespace GnollHackX.Pages.MainScreen
             save_file_tracking = GHApp.SaveFileTracking;
             disablewindowskey = Preferences.Get("DisableWindowsKey", false);
             defaultvikeys = Preferences.Get("DefaultVIKeys", false);
+            showkeyboardshortcuts = Preferences.Get("ShowKeyboardShortcuts", GHApp.IsDesktop);
             maprefresh = Preferences.Get("MapRefreshRate", -1);
             if (_gamePage == null)
             {
@@ -1650,6 +1654,7 @@ namespace GnollHackX.Pages.MainScreen
             DisableWindowsKeySwitch.IsToggled = disablewindowskey;
             DisableWindowsKeyGrid.IsVisible = GHApp.IsWindows;
             DefaultVIKeysSwitch.IsToggled = defaultvikeys;
+            ShowKeyboardShortcutsSwitch.IsToggled = showkeyboardshortcuts;
             _doChangeVolume = true; // !GHApp.IsMuted;
         }
 
