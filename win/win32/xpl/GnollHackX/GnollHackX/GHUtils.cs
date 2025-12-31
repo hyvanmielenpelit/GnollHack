@@ -22,9 +22,13 @@ namespace GnollHackX
         {
             return (c & ~0x1f) == 0 && !IsMeta(c);
         }
-        public static int Unctrl(int c)
+        public static int UnCtrl(int c)
         {
             return !IsCtrl(c) ? c : (c | 0x60); // (c & 0x80) != 0 ? ((c & ~0x80) | 0x20) : (c | 0x60);
+        }
+        public static int UnMetaCtrl(int c)
+        {
+            return UnMeta(UnCtrl(c));
         }
 
         public static int Meta(int c)
@@ -35,7 +39,7 @@ namespace GnollHackX
         {
             return (c & 0x80) != 0; // && (c & ~0x1f) != 0
         }
-        public static int Unmeta(int c)
+        public static int UnMeta(int c)
         {
             return !IsMeta(c) ? c : (c & ~0x80);
         }
@@ -68,7 +72,9 @@ namespace GnollHackX
 
         public static string ConstructShortcutText(int command)
         {
-            int btnAsciiCode = Unctrl(GHUtils.Unmeta(command));
+            if (command < 0)
+                return null;
+            int btnAsciiCode = UnMetaCtrl(command);
             if (!(btnAsciiCode >= 32 && btnAsciiCode <= 123))
                 return "";
             return ConstructShortcutText((char)btnAsciiCode, IsCtrl(command), IsMeta(command));

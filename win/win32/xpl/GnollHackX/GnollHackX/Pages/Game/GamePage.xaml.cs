@@ -19587,15 +19587,13 @@ namespace GnollHackX.Pages.Game
                                         }
                                         canvas.DrawImage(usedBitmap, targetrect, paint);
                                         textPaint.DrawTextOnCanvas(canvas, usedButtonItem.Text, text_x, text_y, SKTextAlign.Center);
-                                        if (useKeyboardShortcuts && usedButtonItem.Command > 0 && !string.IsNullOrEmpty(usedButtonItem.CommandChar))
+                                        if (useKeyboardShortcuts && usedButtonItem.Command > 0 && !string.IsNullOrEmpty(usedButtonItem.ShortcutText))
                                         {
                                             float kbsc_text_x = text_x = (targetrect.Left + targetrect.Right) / 2;
                                             float kbsc_text_y = targetrect.Bottom + textPaint.FontSpacing - textPaint.FontMetrics.Ascent * GHConstants.KeyboardShortcutRelativeFontSize;
-                                            string c = usedButtonItem.CommandChar;
-                                            string str = GHUtils.ConstructShortcutText(c, usedButtonItem.IsCtrl, usedButtonItem.IsMeta);
                                             textPaint.Color = SKColors.Gray;
                                             textPaint.TextSize = textSize * GHConstants.KeyboardShortcutRelativeFontSize;
-                                            textPaint.DrawTextOnCanvas(canvas, str, kbsc_text_x, kbsc_text_y, SKTextAlign.Center);
+                                            textPaint.DrawTextOnCanvas(canvas, usedButtonItem.ShortcutText, kbsc_text_x, kbsc_text_y, SKTextAlign.Center);
                                             textPaint.TextSize = textSize;
                                             textPaint.Color = SKColors.White;
                                         }

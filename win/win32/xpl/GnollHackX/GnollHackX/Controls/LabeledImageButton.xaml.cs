@@ -171,7 +171,7 @@ namespace GnollHackX.Controls
             LblFontSize = LargerFont ? fontsize_larger : fontsize;
             ShortcutFontSize = (LargerFont ? fontsize_larger : fontsize) * GHConstants.KeyboardShortcutRelativeFontSize;
             IsShortcutVisible = showShortcuts;
-            ShortcutText = GHUtils.ConstructShortcutText(BtnLetter, BtnCtrl, BtnMeta);
+            ShortcutText = BtnCommand > 0 ? GHUtils.ConstructShortcutText(BtnCommand) : GHUtils.ConstructShortcutText(BtnLetter, BtnCtrl, BtnMeta);
             GridWidth = gridsidewidth;
             GridHeight = LargerFont ? gridsideheight_larger : gridsideheight;
             ImgWidth = imgsidewidth;
