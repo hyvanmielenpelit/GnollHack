@@ -20214,7 +20214,7 @@ namespace GnollHackX.Pages.Game
                             1.0f, centerfontsize, fontsize, true, 0.15f, DesktopButtons ? -1.0f : 1.0f, canvaswidth, canvasheight);
                         break;
                     case 12:
-                        PaintTipButton(canvas, textPaint, DesktopButtons ? lRowWornItemsButton : lWornItemsButton, GHApp.GetClickTapWord(true, false) + " here to access worn items", "Worn Equipment" +
+                        PaintTipButton(canvas, textPaint, DesktopButtons ? lRowWornItemsButton : lWornItemsButton, GHApp.GetClickTapWord(true, false) + " here to access worn items.", "Worn Equipment" +
                             (GHApp.ShowKeyboardShortcuts ? " (" + GHUtils.ConstructShortcutText(DesktopButtons ? lRowWornItemsButton : lWornItemsButton) + ")" : ""),
                             1.0f, centerfontsize, fontsize, false, landscape ? -2.0f : -0.5f, DesktopButtons ? -2.0f : 2.0f, canvaswidth, canvasheight);
                         break;

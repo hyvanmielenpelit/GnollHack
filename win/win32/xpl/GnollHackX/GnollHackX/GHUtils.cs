@@ -8,6 +8,8 @@ using System.Text;
 using System.Text.RegularExpressions;
 #if GNH_MAUI
 using GnollHackM;
+#else
+using GnollHackX.Controls;
 #endif
 
 namespace GnollHackX
