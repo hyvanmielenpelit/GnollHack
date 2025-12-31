@@ -3503,6 +3503,17 @@ namespace GnollHackX
                         return 1;
                     return a.CommandButtonItem.Text.CompareTo(b.CommandButtonItem.Text); 
                 });
+                /* Remove duplicates */
+                for (int i = _moreBtnList.Count - 1; i >= 1; i--)
+                {
+                    var btn1 = _moreBtnList[i].CommandButtonItem;
+                    var btn2 = _moreBtnList[i - 1].CommandButtonItem;
+                    if (btn1 != null && btn2 != null && btn1.Command != 0 && btn1.Command == btn2.Command)
+                    {
+                        _moreBtnList.RemoveAt(i);
+                        buttonCount--;
+                    }
+                }
                 if (lastExtendedBtn != null && lastExtendedBitmap != null)
                 {
                     buttonCount++;
