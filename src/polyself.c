@@ -1609,7 +1609,7 @@ dobreathe(VOID_ARGS)
     }
     
     uchar adtyp = mattk->adtyp;
-    int typ = get_ray_adtyp_choose(adtyp, "breath weapon");
+    int typ = get_ray_adtyp_choose(adtyp, "breath weapon", &youmonst);
     if (typ == -1)
         return 0;
 
@@ -1648,10 +1648,11 @@ uchar adtyp;
 }
 
 STATIC_OVL int 
-choose_random_breath_weapon(intarr_ptr, arrsize, attk_name)
+choose_random_breath_weapon(intarr_ptr, arrsize, attk_name, mon)
 int* intarr_ptr;
 int arrsize;
 const char* attk_name;
+struct monst* mon;
 {
     int typ = -1;
     char buf[BUFSZ];
@@ -1660,8 +1661,11 @@ const char* attk_name;
     int n = 0, i;
     anything any;
     any = zeroany; /* set all bits to zero */
-
-    menuwin = create_nhwindow(NHW_MENU);
+    int glyph = !mon ? NO_GLYPH : abs(mon == &youmonst ? u_to_glyph() : any_mon_to_glyph(mon, rn2_on_display_rng));
+    int gui_glyph= !mon ? NO_GLYPH : mon == &youmonst ?
+        maybe_get_replaced_glyph(glyph, u.ux, u.uy, data_to_replacement_info(glyph, LAYER_MONSTER, (struct obj*)0, &youmonst, 0UL, 0UL, 0UL, MAT_NONE, 0)) : 
+        maybe_get_replaced_glyph(glyph, mon->mx, mon->my, data_to_replacement_info(glyph, LAYER_MONSTER, (struct obj*)0, mon, 0UL, 0UL, 0UL, MAT_NONE, 0));
+    menuwin = create_nhwindow_ex(NHW_MENU, 0, gui_glyph, zerocreatewindowinfo);
     start_menu_ex(menuwin, GHMENU_STYLE_MONSTER_ABILITY);
 
     if (!intarr_ptr) /* Random breath weapon */
@@ -1700,15 +1704,16 @@ const char* attk_name;
 }
 
 int
-get_ray_adtyp_choose(adtyp, attk_name)
+get_ray_adtyp_choose(adtyp, attk_name, mon)
 uchar adtyp;
 const char* attk_name;
+struct monst* mon;
 {
-    int typ = (adtyp == AD_RBRE) ? choose_random_breath_weapon(NULL, 0, attk_name) :
-        (adtyp == AD_REY1) ? choose_random_breath_weapon(ray1_effect_choices, SIZE(ray1_effect_choices), attk_name) :
-        (adtyp == AD_REY2) ? choose_random_breath_weapon(ray2_effect_choices, SIZE(ray2_effect_choices), attk_name) :
-        (adtyp == AD_RBGD) ? choose_random_breath_weapon(rbgd_effect_choices, SIZE(rbgd_effect_choices), attk_name) :
-        (adtyp == AD_RBPD) ? choose_random_breath_weapon(rbpd_effect_choices, SIZE(rbpd_effect_choices), attk_name) :
+    int typ = (adtyp == AD_RBRE) ? choose_random_breath_weapon(NULL, 0, attk_name, mon) :
+        (adtyp == AD_REY1) ? choose_random_breath_weapon(ray1_effect_choices, SIZE(ray1_effect_choices), attk_name, mon) :
+        (adtyp == AD_REY2) ? choose_random_breath_weapon(ray2_effect_choices, SIZE(ray2_effect_choices), attk_name, mon) :
+        (adtyp == AD_RBGD) ? choose_random_breath_weapon(rbgd_effect_choices, SIZE(rbgd_effect_choices), attk_name, mon) :
+        (adtyp == AD_RBPD) ? choose_random_breath_weapon(rbpd_effect_choices, SIZE(rbpd_effect_choices), attk_name, mon) :
         adtyp;
 
     return typ;
@@ -1748,7 +1753,7 @@ struct monst* mon;
     }
 
     /* First breath weapon type */
-    int typ = get_ray_adtyp_choose(mattk->adtyp, "breath weapon");
+    int typ = get_ray_adtyp_choose(mattk->adtyp, "breath weapon", mon);
     if (typ == -1)
         return 0;
 
@@ -2280,7 +2285,7 @@ doeyestalk(VOID_ARGS)
             return (attacksperformed > 0 ? 1 : 0);
         }
 
-        int typ = get_ray_adtyp_choose(mattk->adtyp, "eyestalk");
+        int typ = get_ray_adtyp_choose(mattk->adtyp, "eyestalk", &youmonst);
         if (typ == -1)
             continue;
 

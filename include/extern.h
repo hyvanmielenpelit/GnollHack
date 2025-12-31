@@ -2860,7 +2860,7 @@ E void FDECL(ugolemeffects, (int, double));
 E boolean NDECL(ugenocided);
 E const char *NDECL(udeadinside);
 E int FDECL(get_ray_adtyp, (UCHAR_P));
-E int FDECL(get_ray_adtyp_choose, (UCHAR_P, const char*));
+E int FDECL(get_ray_adtyp_choose, (UCHAR_P, const char*, struct monst*));
 E void NDECL(reset_polyself);
 
 /* ### potion.c ### */

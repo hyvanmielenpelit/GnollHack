@@ -7562,7 +7562,7 @@ ubreatheu(mattk)
 struct attack *mattk;
 {
     uchar adtyp = mattk->adtyp;
-    int typ = get_ray_adtyp_choose(adtyp, "breath weapon");
+    int typ = get_ray_adtyp_choose(adtyp, "breath weapon", &youmonst);
     if (typ == -1)
         return;
 
