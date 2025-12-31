@@ -19509,13 +19509,14 @@ namespace GnollHackX.Pages.Game
                     float btnAreaHeight = btnMatrixAreaHeight / usedButtonsPerColumn;
 
                     float btnImgRawWidth = Math.Min(256, Math.Min(btnAreaWidth * 0.925f, 128 * scale));
+                    float textSize = 12.0f * 3.0f * btnImgRawWidth / 256.0f;
 
                     textPaint.Color = SKColors.White;
                     textPaint.Typeface = GHApp.LatoRegular;
-                    textPaint.TextSize = 12.0f * 3.0f * btnImgRawWidth / 256.0f;
+                    textPaint.TextSize = textSize;
                     //textPaint.TextAlign = SKTextAlign.Center;
 
-                    float btnImgRawHeight = Math.Min(256, Math.Min(btnAreaHeight * 0.925f - textPaint.FontSpacing, 128 * scale));
+                    float btnImgRawHeight = Math.Min(256, Math.Min(btnAreaHeight * 0.925f - textPaint.FontSpacing * (useKeyboardShortcuts ? 1.9f : 1f), 128 * scale));
 
                     float btnImgWidth = Math.Min(btnImgRawWidth, btnImgRawHeight);
                     float btnImgHeight = btnImgWidth;
@@ -19536,7 +19537,7 @@ namespace GnollHackX.Pages.Game
                                         int x = isLandscape ? pos_j : i;
                                         int y = isLandscape ? i : pos_j;
                                         targetrect.Left = btnOffsetX + x * btnAreaWidth + Math.Max(0, (btnAreaWidth - btnImgWidth) / 2);
-                                        targetrect.Top = btnMatrixStart + y * btnAreaHeight + Math.Max(0, (btnAreaHeight - btnImgHeight - textPaint.FontSpacing) / 2);
+                                        targetrect.Top = btnMatrixStart + y * btnAreaHeight + Math.Max(0, (btnAreaHeight - btnImgHeight - textPaint.FontSpacing * (useKeyboardShortcuts ? 1.9f : 1f)) / 2);
                                         targetrect.Right = targetrect.Left + btnImgWidth;
                                         targetrect.Bottom = targetrect.Top + btnImgHeight;
                                         float text_x = (targetrect.Left + targetrect.Right) / 2;
@@ -19554,14 +19555,13 @@ namespace GnollHackX.Pages.Game
                                         if (useKeyboardShortcuts && GHApp._moreBtnMatrix[page, i, j].Command > 0 && !string.IsNullOrEmpty(GHApp._moreBtnMatrix[page, i, j].CommandChar))
                                         {
                                             float kbsc_text_x = text_x = (targetrect.Left + targetrect.Right) / 2;
-                                            float kbsc_text_y = targetrect.Bottom - textPaint.FontMetrics.Ascent + textPaint.FontSpacing;
+                                            float kbsc_text_y = targetrect.Bottom + textPaint.FontSpacing - textPaint.FontMetrics.Ascent * 0.9f;
                                             string c = GHApp._moreBtnMatrix[page, i, j].CommandChar;
                                             string str = (GHApp._moreBtnMatrix[page, i, j].IsMeta ? "Alt+" : "") + (GHApp._moreBtnMatrix[page, i, j].IsCtrl ? "Ctrl+" : "") + c;
                                             textPaint.Color = SKColors.Gray;
-                                            float tsize = textPaint.TextSize;
-                                            textPaint.TextSize = tsize * 0.9f;
+                                            textPaint.TextSize = textSize * 0.9f;
                                             textPaint.DrawTextOnCanvas(canvas, str, kbsc_text_x, kbsc_text_y, SKTextAlign.Center);
-                                            textPaint.TextSize = tsize;
+                                            textPaint.TextSize = textSize;
                                             textPaint.Color = SKColors.White;
                                         }
                                     }
