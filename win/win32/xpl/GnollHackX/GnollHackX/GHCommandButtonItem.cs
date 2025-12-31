@@ -7,15 +7,11 @@ namespace GnollHackX
 {
     public sealed class GHCommandButtonItem
     {
-        public string Text;
-        public string ImageSourcePath;
-        public int Command;
-        public string ShortcutText;
+        public readonly string Text;
+        public readonly string ImageSourcePath;
+        public readonly int Command;
+        public readonly string ShortcutText;
 
-        public GHCommandButtonItem()
-        {
-
-        }
         public GHCommandButtonItem(string text, string imgsrcpath, int command)
         {
             Text = text;
@@ -28,8 +24,8 @@ namespace GnollHackX
     public struct GHCommandButtonRect
     {
         public SKRect Rect;
-        public GHCommandButtonItem CommandButtonItem;
-        public SKImage Bitmap;
+        public readonly GHCommandButtonItem CommandButtonItem;
+        public readonly SKImage Bitmap;
         public GHCommandButtonRect(GHCommandButtonItem commandButtonItem, SKImage bitmap)
         {
             Rect = new SKRect();

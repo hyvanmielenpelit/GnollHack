@@ -3290,9 +3290,10 @@ namespace GnollHackX
                                         if (_moreBtnMatrix[p, i, j] != null && _moreBtnMatrix[p, i, j].Command == buttonsOnBar[bidx].GetCommand())
                                         {
                                             foundloc = true;
-                                            _moreBtnMatrix[p, i, j].Text = button.Label;
-                                            _moreBtnMatrix[p, i, j].ImageSourcePath = button.ImageSourcePath;
-                                            _moreBtnMatrix[p, i, j].Command = button.GetCommand();
+                                            _moreBtnMatrix[p, i, j] = new GHCommandButtonItem(button.Label, button.ImageSourcePath, button.GetCommand());
+                                            //_moreBtnMatrix[p, i, j].Text = button.Label;
+                                            //_moreBtnMatrix[p, i, j].ImageSourcePath = button.ImageSourcePath;
+                                            //_moreBtnMatrix[p, i, j].Command = button.GetCommand();
                                             break;
                                         }
                                     }
@@ -3432,9 +3433,10 @@ namespace GnollHackX
                                         if (_moreBtnMatrix[p, i, j] != null && _moreBtnMatrix[p, i, j].Command == buttonsOnBar[bidx].GetCommand())
                                         {
                                             foundloc = true;
-                                            _moreBtnMatrix[p, i, j].Text = button.Label;
-                                            _moreBtnMatrix[p, i, j].ImageSourcePath = button.ImageSourcePath;
-                                            _moreBtnMatrix[p, i, j].Command = button.GetCommand();
+                                            _moreBtnMatrix[p, i, j] = new GHCommandButtonItem(button.Label, button.ImageSourcePath, button.GetCommand());
+                                            //_moreBtnMatrix[p, i, j].Text = button.Label;
+                                            //_moreBtnMatrix[p, i, j].ImageSourcePath = button.ImageSourcePath;
+                                            //_moreBtnMatrix[p, i, j].Command = button.GetCommand();
                                             break;
                                         }
                                     }
