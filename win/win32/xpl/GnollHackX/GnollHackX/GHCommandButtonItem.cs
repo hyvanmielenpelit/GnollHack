@@ -26,17 +26,20 @@ namespace GnollHackX
         public SKRect Rect;
         public readonly GHCommandButtonItem CommandButtonItem;
         public readonly SKImage Bitmap;
-        public GHCommandButtonRect(GHCommandButtonItem commandButtonItem, SKImage bitmap)
+        public readonly bool IsWizardModeCommand;
+        public GHCommandButtonRect(GHCommandButtonItem commandButtonItem, SKImage bitmap, bool isWizardModeComand)
         {
             Rect = new SKRect();
             CommandButtonItem = commandButtonItem;
             Bitmap = bitmap;
+            IsWizardModeCommand = isWizardModeComand;
         }
-        public GHCommandButtonRect(SKRect rect, GHCommandButtonItem commandButtonItem, SKImage bitmap)
+        public GHCommandButtonRect(SKRect rect, GHCommandButtonItem commandButtonItem, SKImage bitmap, bool isWizardModeComand)
         {
             Rect = rect;
             CommandButtonItem = commandButtonItem;
             Bitmap = bitmap;
+            IsWizardModeCommand = isWizardModeComand;
         }
     }
 }

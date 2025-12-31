@@ -3110,6 +3110,8 @@ namespace GnollHackX
         public static readonly string[] _moreButtonPageTitle = new string[GHConstants.MoreButtonPages] { "Wizard Mode Commands", "Common Commands", "Additional Commands", "Context and More Commands" };
         private static int _moreBtnCount = 0;
         public static int MoreButtonCount { get { return Interlocked.CompareExchange(ref _moreBtnCount, 0, 0); } set { Interlocked.Exchange(ref _moreBtnCount, value); } }
+        private static int _wizBtnCount = 0;
+        public static int WizButtonCount { get { return Interlocked.CompareExchange(ref _wizBtnCount, 0, 0); } set { Interlocked.Exchange(ref _wizBtnCount, value); } }
         public static List<GHCommandButtonRect> _moreBtnList = new List<GHCommandButtonRect>(GHConstants.DefaultMoreButtonListSize);
 
         public static int TileSheetIdx(int ntile)
@@ -3455,6 +3457,7 @@ namespace GnollHackX
                 }
 
                 int buttonCount = 0;
+                int wizModeCount = 0;
                 _moreBtnList.Clear();
                 GHCommandButtonItem lastReturnBtn = null;
                 SKImage lastReturnBitmap = null;
@@ -3484,7 +3487,9 @@ namespace GnollHackX
                                     else
                                     {
                                         buttonCount++;
-                                        _moreBtnList.Add(new GHCommandButtonRect(_moreBtnMatrix[k, i, j], _moreBtnBitmaps[k, i, j]));
+                                        if (k == 0)
+                                            wizModeCount++;
+                                        _moreBtnList.Add(new GHCommandButtonRect(_moreBtnMatrix[k, i, j], _moreBtnBitmaps[k, i, j], k == 0));
                                     }
                                 }
                                 catch (Exception ex)
@@ -3510,21 +3515,25 @@ namespace GnollHackX
                     var btn2 = _moreBtnList[i - 1].CommandButtonItem;
                     if (btn1 != null && btn2 != null && btn1.Command != 0 && btn1.Command == btn2.Command)
                     {
+                        bool isWizBtn = _moreBtnList[i].IsWizardModeCommand;
                         _moreBtnList.RemoveAt(i);
                         buttonCount--;
+                        if (isWizBtn)
+                            wizModeCount--;
                     }
                 }
                 if (lastExtendedBtn != null && lastExtendedBitmap != null)
                 {
                     buttonCount++;
-                    _moreBtnList.Add((new GHCommandButtonRect(lastExtendedBtn, lastExtendedBitmap)));
+                    _moreBtnList.Add((new GHCommandButtonRect(lastExtendedBtn, lastExtendedBitmap, false)));
                 }
                 if (lastReturnBtn != null && lastReturnBitmap != null)
                 {
                     buttonCount++;
-                    _moreBtnList.Add((new GHCommandButtonRect(lastReturnBtn, lastReturnBitmap)));
+                    _moreBtnList.Add((new GHCommandButtonRect(lastReturnBtn, lastReturnBitmap, false)));
                 }
                 MoreButtonCount = buttonCount;
+                WizButtonCount = wizModeCount;
             }
         }
 

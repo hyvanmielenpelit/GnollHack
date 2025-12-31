@@ -19440,7 +19440,9 @@ namespace GnollHackX.Pages.Game
             if (canvaswidth <= 16 || canvasheight <= 16)
                 return;
 
-            int buttonNumber = GHApp.MoreButtonCount;
+            int allNumber = GHApp.MoreButtonCount;
+            int wizNumber = GHApp.WizButtonCount;
+            int buttonNumber = EnableWizardMode ? allNumber : allNumber - wizNumber;
             SKColor nonFilteredColor = SKColors.White.WithAlpha(32);
             CmdBtnMatrixRect = new SKRect();
             string filter = ThreadSafeMoreCommandsFilterEntryText;
@@ -19451,6 +19453,7 @@ namespace GnollHackX.Pages.Game
             else
                 useFilter = true;
 
+            bool wizModeOn = EnableWizardMode;
             bool useKeyboardShortcuts = GHApp.ShowKeyboardShortcuts;
             bool useSingleCommandPage = GHApp.UseSingleMoreCommandsPage;
             float aspectRatio = canvaswidth / canvasheight;
@@ -19545,17 +19548,24 @@ namespace GnollHackX.Pages.Game
                                 {
                                     GHCommandButtonItem usedButtonItem = null;
                                     SKImage usedBitmap = null;
+                                    bool usedWiz = false;
                                     if (useSingleCommandPage)
                                     {
-                                        listIdx++;
-                                        if (listIdx >= GHApp._moreBtnList.Count)
+                                        do
                                         {
-                                            stopLoop = true;
+                                            listIdx++;
+                                            if (listIdx >= GHApp._moreBtnList.Count)
+                                            {
+                                                stopLoop = true;
+                                                break;
+                                            }
+                                            GHCommandButtonRect usedButtonRect = GHApp._moreBtnList[listIdx];
+                                            usedButtonItem = usedButtonRect.CommandButtonItem;
+                                            usedBitmap = usedButtonRect.Bitmap;
+                                            usedWiz = usedButtonRect.IsWizardModeCommand;
+                                        } while (usedWiz && !wizModeOn);
+                                        if (stopLoop)
                                             break;
-                                        }
-                                        GHCommandButtonRect usedButtonRect = GHApp._moreBtnList[listIdx];
-                                        usedButtonItem = usedButtonRect.CommandButtonItem;
-                                        usedBitmap = usedButtonRect.Bitmap;
                                         if (usedButtonItem.Command == -101 && listIdx == GHApp._moreBtnList.Count - 1)
                                         {
                                              /* Move to bottom right corner */
@@ -19573,7 +19583,9 @@ namespace GnollHackX.Pages.Game
                                     {
                                         usedButtonItem = GHApp._moreBtnMatrix[page, i, j];
                                         usedBitmap = GHApp._moreBtnBitmaps[page, i, j];
+                                        usedWiz = page == 0;
                                     }
+
                                     if (usedButtonItem != null && usedBitmap != null)
                                     {
                                         bool notInFilter = useFilter && !usedButtonItem.Text.StartsWith(filter, StringComparison.InvariantCultureIgnoreCase);
@@ -19608,7 +19620,7 @@ namespace GnollHackX.Pages.Game
                                         }
                                         if (useSingleCommandPage)
                                         {
-                                            GHApp._moreBtnList[listIdx] = new GHCommandButtonRect(new SKRect(targetrect.Left, targetrect.Top, targetrect.Right, targetrect.Bottom + textPaint.FontMetrics.Descent), usedButtonItem, usedBitmap);
+                                            GHApp._moreBtnList[listIdx] = new GHCommandButtonRect(new SKRect(targetrect.Left, targetrect.Top, targetrect.Right, targetrect.Bottom + textPaint.FontMetrics.Descent), usedButtonItem, usedBitmap, usedWiz);
                                         }
                                     }
                                     pos_j++;
