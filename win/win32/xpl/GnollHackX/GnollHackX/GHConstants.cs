@@ -1999,6 +1999,8 @@ namespace GnollHackX
         public const int DefaultMoreButtonListSize = MoreButtonPages * MoreButtonsPerRow * MoreButtonsPerColumn + 1;
         public const float KeyboardShortcutRelativeFontSize = 0.9f;
         public const float TextRowMultiplierWithKeyboardShortcuts = 1.0f + KeyboardShortcutRelativeFontSize;
+        public const GHSpecialKey GameMenuKeyboardShortcut = GHSpecialKey.F10;
+        public const GHSpecialKey CancelKeyboardShortcut = GHSpecialKey.Escape;
     }
 
     [StructLayout(LayoutKind.Sequential)]

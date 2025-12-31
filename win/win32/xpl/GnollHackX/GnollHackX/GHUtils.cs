@@ -20,7 +20,7 @@ namespace GnollHackX
         }
         public static bool IsCtrl(int c)
         {
-            return (c & ~0x1f) == 0 && !IsMeta(c);
+            return c > 0 && (c & ~0x1f) == 0 && !IsMeta(c);
         }
         public static int UnCtrl(int c)
         {
@@ -73,7 +73,21 @@ namespace GnollHackX
         public static string ConstructShortcutText(int command)
         {
             if (command < 0)
-                return null;
+                return "";
+            int btnAsciiCode = UnMetaCtrl(command);
+            if (!(btnAsciiCode >= 32 && btnAsciiCode <= 123))
+                return "";
+            return ConstructShortcutText((char)btnAsciiCode, IsCtrl(command), IsMeta(command));
+        }
+        public static string ConstructShortcutText(LabeledImageButton btn)
+        {
+            if (btn == null)
+                return "";
+            int command = btn.BtnCommand;
+            if (command < 0)
+                return "";
+            if (command == 0)
+                return ConstructShortcutText(btn.BtnLetter, btn.BtnCtrl, btn.BtnMeta);
             int btnAsciiCode = UnMetaCtrl(command);
             if (!(btnAsciiCode >= 32 && btnAsciiCode <= 123))
                 return "";

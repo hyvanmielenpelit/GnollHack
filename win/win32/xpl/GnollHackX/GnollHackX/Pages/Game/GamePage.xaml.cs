@@ -20129,6 +20129,9 @@ namespace GnollHackX.Pages.Game
                 float prev_bottom = 0;
                 float sbheight = yscale * UIUtils.CalculateStatusBarSkiaHeight(MainCanvasView.ThreadSafeWidth, MainCanvasView.ThreadSafeHeight); // GetStatusBarSkiaHeightEx(MainCanvasView.Width, MainCanvasView.Height, DesktopButtons, UseSimpleCmdLayout);
                 SKRect statusBarCenterRect = new SKRect(canvaswidth / 2 - sbheight / 2, 0, canvaswidth / 2 + sbheight / 2, sbheight);
+                string decsep = CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator;
+                if (string.IsNullOrWhiteSpace(decsep))
+                    decsep = ".";
 
                 switch (ShownTip)
                 {
@@ -20176,16 +20179,16 @@ namespace GnollHackX.Pages.Game
                         textPaint.DrawTextOnCanvas(canvas, str, tx, ty);
                         break;
                     case 1:
-                        PaintTipButton(canvas, textPaint, GameMenuButton, "This opens the main menu.", "Main Menu", 1.5f, centerfontsize, fontsize, false, -0.15f, 0, canvaswidth, canvasheight);
+                        PaintTipButton(canvas, textPaint, GameMenuButton, "This opens the main menu.", "Main Menu" + (GHApp.ShowKeyboardShortcuts ? " (" + GHConstants.GameMenuKeyboardShortcut.ToString() + ")" : ""), 1.5f, centerfontsize, fontsize, false, -0.15f, 0, canvaswidth, canvasheight);
                         break;
                     case 2:
-                        PaintTipButton(canvas, textPaint, ESCButton, "This cancels any command.", "Escape Button", 1.5f, centerfontsize, fontsize, false, -1.5f, 0, canvaswidth, canvasheight);
+                        PaintTipButton(canvas, textPaint, ESCButton, "This cancels any command.", "Escape Button" + (GHApp.ShowKeyboardShortcuts ? " (ESC)" : ""), 1.5f, centerfontsize, fontsize, false, -1.5f, 0, canvaswidth, canvasheight);
                         break;
                     case 3:
                         PaintTipButton(canvas, textPaint, ToggleAutoCenterModeButton, "This toggles auto-center on player.", "Map Auto-Center", 1.5f, centerfontsize, fontsize, false, -1.5f, 0, canvaswidth, canvasheight);
                         break;
                     case 4:
-                        PaintTipButton(canvas, textPaint, ToggleZoomMiniButton, "This zoom shows the entire level.", "Minimap", 1.5f, centerfontsize, fontsize, false, landscape ? -0.15f : -0.5f, landscape ? 0 : 1.5f, canvaswidth, canvasheight);
+                        PaintTipButton(canvas, textPaint, ToggleZoomMiniButton, GHApp.ShowKeyboardShortcuts ? "Toggle via decimal and 0 on number pad." : "This zoom shows the entire level.", "Minimap" +(GHApp.ShowKeyboardShortcuts ? " (NumPad " + decsep + ")" : ""), 1.5f, centerfontsize, fontsize, false, landscape ? -0.15f : -0.5f, landscape ? 0 : 1.5f, canvaswidth, canvasheight);
                         break;
                     case 5:
                         PaintTipButton(canvas, textPaint, ToggleZoomAlternateButton, "This is the secondary zoom.", "Alternative Zoom", 1.5f, centerfontsize, fontsize, false, landscape ? -1.5f : -0.15f, 0, canvaswidth, canvasheight);
@@ -20206,10 +20209,14 @@ namespace GnollHackX.Pages.Game
                         PaintTipButtonByRect(canvas, textPaint, statusBarCenterRect, "You can " + GHApp.GetClickTapWord(false, false) + " the status bar.", "Open status screen", 1.0f, centerfontsize, fontsize, false, -0.15f, 1.0f, canvaswidth, canvasheight, 1.0f, 1.0f);
                         break;
                     case 11:
-                        PaintTipButton(canvas, textPaint, DesktopButtons ? lRowAbilitiesButton : lAbilitiesButton, DesktopButtons ? "Some commands are specially located." : "Some commands do not have buttons.", "Character and game status", 1.0f, centerfontsize, fontsize, true, 0.15f, DesktopButtons ? -1.0f : 1.0f, canvaswidth, canvasheight);
+                        PaintTipButton(canvas, textPaint, DesktopButtons ? lRowAbilitiesButton : lAbilitiesButton, DesktopButtons ? "Some commands are specially located." : "Some commands do not have buttons.", "Character status" + 
+                            (GHApp.ShowKeyboardShortcuts ? " (" + GHUtils.ConstructShortcutText(DesktopButtons ? lRowAbilitiesButton : lAbilitiesButton) + ")" : ""), 
+                            1.0f, centerfontsize, fontsize, true, 0.15f, DesktopButtons ? -1.0f : 1.0f, canvaswidth, canvasheight);
                         break;
                     case 12:
-                        PaintTipButton(canvas, textPaint, DesktopButtons ? lRowWornItemsButton : lWornItemsButton, "", GHApp.GetClickTapWord(true, false) + " here to access worn items", 1.0f, centerfontsize, fontsize, false, landscape ? -2.0f : -0.5f, DesktopButtons ? -2.0f : 2.0f, canvaswidth, canvasheight);
+                        PaintTipButton(canvas, textPaint, DesktopButtons ? lRowWornItemsButton : lWornItemsButton, GHApp.GetClickTapWord(true, false) + " here to access worn items", "Worn Equipment" +
+                            (GHApp.ShowKeyboardShortcuts ? " (" + GHUtils.ConstructShortcutText(DesktopButtons ? lRowWornItemsButton : lWornItemsButton) + ")" : ""),
+                            1.0f, centerfontsize, fontsize, false, landscape ? -2.0f : -0.5f, DesktopButtons ? -2.0f : 2.0f, canvaswidth, canvasheight);
                         break;
                     case 13:
                         PaintTipButton(canvas, textPaint, ToggleMessageNumberButton, "", GHApp.GetClickTapWord(true, false) + " here to see more messages", 1.0f, centerfontsize, fontsize, true, 0.5f, -1.0f, canvaswidth, canvasheight);
@@ -21714,7 +21721,7 @@ namespace GnollHackX.Pages.Game
                 {
                     CommandCanvas_Pressed(null, null);
                 }
-                else if (key == GHSpecialKey.F10)
+                else if (key == GHConstants.GameMenuKeyboardShortcut)
                 {
                     OpenGameMenu();
                     handled = true;
