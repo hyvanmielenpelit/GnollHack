@@ -20,6 +20,8 @@ using System.Net.Http.Headers;
 using System.Collections;
 using System.Data;
 using System.Xml.Linq;
+using Microsoft.Maui.Controls.Shapes;
+
 
 #if GNH_MAUI
 using GnollHackX;
@@ -19372,7 +19374,6 @@ namespace GnollHackX.Pages.Game
         public float MoreCmdOffsetY { get { return Interlocked.CompareExchange(ref _moreCmdOffsetY, 0.0f, 0.0f); } set { Interlocked.Exchange(ref _moreCmdOffsetY, value); } }
         private readonly float _moreCmdOffsetAutoSpeed = 5.0f; /* Screen widths per second */
 
-        public readonly object CommandButtonLock = new object();
         private ConcurrentDictionary<long, TouchEntry> CommandTouchDictionary = new ConcurrentDictionary<long, TouchEntry>();
         private object _savedCommandSender = null;
         private SKTouchEventArgs _savedCommandEventArgs = null;
@@ -19400,6 +19401,7 @@ namespace GnollHackX.Pages.Game
         private readonly object _savedCommandCanvasLock = new object();
         private float _savedCommandCanvasWidth = 0;
         private float _savedCommandCanvasHeight = 0;
+
         private void CommandCanvas_PaintSurface(object sender, SKPaintSurfaceEventArgs e)
         {
             bool isCommandOnMainThread = MainThread.IsMainThread;
@@ -19440,6 +19442,7 @@ namespace GnollHackX.Pages.Game
             if (canvaswidth <= 16 || canvasheight <= 16)
                 return;
 
+            int buttonNumber = GHApp.MoreButtonCount;
             SKColor nonFilteredColor = SKColors.White.WithAlpha(32);
             CmdBtnMatrixRect = new SKRect();
             string filter = ThreadSafeMoreCommandsFilterEntryText;
@@ -19451,35 +19454,43 @@ namespace GnollHackX.Pages.Game
                 useFilter = true;
 
             bool useKeyboardShortcuts = GHApp.ShowKeyboardShortcuts;
+            bool useSingleCommandPage = GHApp.UseSingleMoreCommandsPage;
+            float aspectRatio = canvaswidth / canvasheight;
+            int buttonRows = useSingleCommandPage ? Math.Max(GHConstants.MoreButtonsPerColumn, (int)Math.Ceiling(Math.Sqrt((float)buttonNumber * (isLandscape ? aspectRatio : 1f / aspectRatio)))) : GHConstants.MoreButtonsPerColumn;
+            int buttonColumns = useSingleCommandPage ? Math.Max(GHConstants.MoreButtonsPerRow, (buttonNumber - 1) / buttonRows + 1) : GHConstants.MoreButtonsPerRow;
 
             using (GHSkiaFontPaint textPaint = new GHSkiaFontPaint())
             {
-                float cmdOffsetX = MoreCmdOffsetX;
-                int curpage = MoreCmdPage;
-                int pagemin = cmdOffsetX > 0 ? Math.Max(EnableWizardMode ? 0 : 1, curpage - 1) : curpage;
-                int pagemax = cmdOffsetX < 0 ? Math.Min(CurrentMoreButtonPageMaxNumber - 1, curpage + 1) : curpage;
+                float cmdOffsetX = useSingleCommandPage ? 0 : MoreCmdOffsetX;
+                int curpage = useSingleCommandPage ? 0 : MoreCmdPage;
+                int pagemin = useSingleCommandPage ? 0 : cmdOffsetX > 0 ? Math.Max(EnableWizardMode ? 0 : 1, curpage - 1) : curpage;
+                int pagemax = useSingleCommandPage ? 0 : cmdOffsetX < 0 ? Math.Min(CurrentMoreButtonPageMaxNumber - 1, curpage + 1) : curpage;
 
                 float smalldotheight = Math.Min(canvaswidth, canvasheight) / 120 * scale;
                 float largedotheight = smalldotheight * 2;
                 float dotmargin = smalldotheight;
 
                 textPaint.Style = SKPaintStyle.Fill;
-                for (int i = (EnableWizardMode ? 0 : 1); i < CurrentMoreButtonPageMaxNumber; i++)
+                if (!useSingleCommandPage)
                 {
-                    int numdots = CurrentMoreButtonPageMaxNumber - (EnableWizardMode ? 0 : 1);
-                    int dotidx = (EnableWizardMode ? i : i - 1);
-                    float dotspacing = dotmargin + largedotheight;
-                    float dotoffsetx = ((float)dotidx - ((float)(numdots - 1) / 2)) * dotspacing;
-                    SKPoint dotpoint = new SKPoint(canvaswidth / 2 + dotoffsetx, canvasheight - dotmargin - largedotheight / 2);
-                    float dotradius = (i == curpage ? largedotheight : smalldotheight) / 2;
-                    textPaint.Color = i == curpage ? SKColors.LightGreen : SKColors.White;
+                    for (int i = (EnableWizardMode ? 0 : 1); i < CurrentMoreButtonPageMaxNumber; i++)
+                    {
+                        int numdots = CurrentMoreButtonPageMaxNumber - (EnableWizardMode ? 0 : 1);
+                        int dotidx = (EnableWizardMode ? i : i - 1);
+                        float dotspacing = dotmargin + largedotheight;
+                        float dotoffsetx = ((float)dotidx - ((float)(numdots - 1) / 2)) * dotspacing;
+                        SKPoint dotpoint = new SKPoint(canvaswidth / 2 + dotoffsetx, canvasheight - dotmargin - largedotheight / 2);
+                        float dotradius = (i == curpage ? largedotheight : smalldotheight) / 2;
+                        textPaint.Color = i == curpage ? SKColors.LightGreen : SKColors.White;
 
-                    canvas.DrawCircle(dotpoint, dotradius, textPaint.Paint);
+                        canvas.DrawCircle(dotpoint, dotradius, textPaint.Paint);
+                    }
                 }
                 textPaint.Color = SKColors.White;
 
                 float btnMatrixEnd = canvasheight - dotmargin * 2 - largedotheight;
                 float titlesize = Math.Min(48f * scale, 19f * 3.0f * Math.Min(canvaswidth, canvasheight) / 1080f);
+                bool stopLoop = false;
 
                 for (int page = pagemin; page <= pagemax; page++)
                 {
@@ -19490,7 +19501,7 @@ namespace GnollHackX.Pages.Game
                     textPaint.TextSize = titlesize;
                     //textPaint.TextAlign = SKTextAlign.Center;
 
-                    string titlestr = GHApp._moreButtonPageTitle[page];
+                    string titlestr = useSingleCommandPage ? GHConstants.SingleCommandPageTitle : GHApp._moreButtonPageTitle[page];
                     float titletopmargin = 5f * scale;
                     float titley = titletopmargin + textPaint.FontSpacing - textPaint.FontMetrics.Descent;
                     textPaint.DrawTextOnCanvas(canvas, titlestr, new SKPoint(canvaswidth / 2 + btnOffsetX, titley), SKTextAlign.Center);
@@ -19503,8 +19514,8 @@ namespace GnollHackX.Pages.Game
                     if(page == curpage)
                         CmdBtnMatrixRect = new SKRect(0, btnMatrixStart, btnMatrixAreaWidth, btnMatrixEnd);
 
-                    int usedButtonsPerRow = isLandscape ? GHConstants.MoreButtonsPerColumn : GHConstants.MoreButtonsPerRow;
-                    int usedButtonsPerColumn = isLandscape ? GHConstants.MoreButtonsPerRow : GHConstants.MoreButtonsPerColumn;
+                    int usedButtonsPerRow = isLandscape ? buttonRows : buttonColumns;
+                    int usedButtonsPerColumn = isLandscape ? buttonColumns : buttonRows;
                     float btnAreaWidth = btnMatrixAreaWidth / usedButtonsPerRow;
                     float btnAreaHeight = btnMatrixAreaHeight / usedButtonsPerColumn;
 
@@ -19525,14 +19536,40 @@ namespace GnollHackX.Pages.Game
                     {
                         using(SKPaint paint = new SKPaint())
                         {
-                            for (int i = 0; i < GHConstants.MoreButtonsPerRow; i++)
+                            int listIdx = -1;
+                            for (int i = 0; i < buttonColumns; i++)
                             {
                                 int pos_j = 0;
-                                for (int j = 0; j < GHConstants.MoreButtonsPerColumn; j++)
+                                for (int j = 0; j < buttonRows; j++)
                                 {
-                                    if (GHApp._moreBtnMatrix[page, i, j] != null && GHApp._moreBtnBitmaps[page, i, j] != null)
+                                    GHCommandButtonItem usedButtonItem = null;
+                                    SKImage usedBitmap = null;
+                                    if (useSingleCommandPage)
                                     {
-                                        bool notInFilter = useFilter && !GHApp._moreBtnMatrix[page, i, j].Text.StartsWith(filter, StringComparison.InvariantCultureIgnoreCase);
+                                        listIdx++;
+                                        if (listIdx >= GHApp._moreBtnList.Count)
+                                        {
+                                            stopLoop = true;
+                                            break;
+                                        }
+                                        GHCommandButtonRect usedButtonRect = GHApp._moreBtnList[listIdx];
+                                        usedButtonItem = usedButtonRect.CommandButtonItem;
+                                        usedBitmap = usedButtonRect.Bitmap;
+                                        if (usedButtonItem.Command == -101 && listIdx == GHApp._moreBtnList.Count - 1)
+                                        {
+                                             /* Move to bottom right corner */
+                                            i = buttonColumns - 1;
+                                            j = pos_j = buttonRows - 1;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        usedButtonItem = GHApp._moreBtnMatrix[page, i, j];
+                                        usedBitmap = GHApp._moreBtnBitmaps[page, i, j];
+                                    }
+                                    if (usedButtonItem != null && usedBitmap != null)
+                                    {
+                                        bool notInFilter = useFilter && !usedButtonItem.Text.StartsWith(filter, StringComparison.InvariantCultureIgnoreCase);
                                         SKRect targetrect = new SKRect();
                                         int x = isLandscape ? pos_j : i;
                                         int y = isLandscape ? i : pos_j;
@@ -19550,26 +19587,34 @@ namespace GnollHackX.Pages.Game
                                         {
                                             textPaint.Color = paint.Color = notInFilter ? nonFilteredColor : SKColors.White;
                                         }
-                                        canvas.DrawImage(GHApp._moreBtnBitmaps[page, i, j], targetrect, paint);
-                                        textPaint.DrawTextOnCanvas(canvas, GHApp._moreBtnMatrix[page, i, j].Text, text_x, text_y, SKTextAlign.Center);
-                                        if (useKeyboardShortcuts && GHApp._moreBtnMatrix[page, i, j].Command > 0 && !string.IsNullOrEmpty(GHApp._moreBtnMatrix[page, i, j].CommandChar))
+                                        canvas.DrawImage(usedBitmap, targetrect, paint);
+                                        textPaint.DrawTextOnCanvas(canvas, usedButtonItem.Text, text_x, text_y, SKTextAlign.Center);
+                                        if (useKeyboardShortcuts && usedButtonItem.Command > 0 && !string.IsNullOrEmpty(usedButtonItem.CommandChar))
                                         {
                                             float kbsc_text_x = text_x = (targetrect.Left + targetrect.Right) / 2;
                                             float kbsc_text_y = targetrect.Bottom + textPaint.FontSpacing - textPaint.FontMetrics.Ascent * 0.9f;
-                                            string c = GHApp._moreBtnMatrix[page, i, j].CommandChar;
-                                            string str = (GHApp._moreBtnMatrix[page, i, j].IsMeta ? "Alt+" : "") + (GHApp._moreBtnMatrix[page, i, j].IsCtrl ? "Ctrl+" : "") + c;
+                                            string c = usedButtonItem.CommandChar;
+                                            string str = (usedButtonItem.IsMeta ? "Alt+" : "") + (usedButtonItem.IsCtrl ? "Ctrl+" : "") + c;
                                             textPaint.Color = SKColors.Gray;
                                             textPaint.TextSize = textSize * 0.9f;
                                             textPaint.DrawTextOnCanvas(canvas, str, kbsc_text_x, kbsc_text_y, SKTextAlign.Center);
                                             textPaint.TextSize = textSize;
                                             textPaint.Color = SKColors.White;
                                         }
+                                        if (useSingleCommandPage)
+                                        {
+                                            GHApp._moreBtnList[listIdx] = new GHCommandButtonRect(new SKRect(targetrect.Left, targetrect.Top, targetrect.Right, targetrect.Bottom + textPaint.FontMetrics.Descent), usedButtonItem, usedBitmap);
+                                        }
                                     }
                                     pos_j++;
                                 }
+                                if (stopLoop)
+                                    break;
                             }
                         }
                     }
+                    if (stopLoop)
+                        break;
                 }
 
                 if (ShowFPS)
@@ -19627,8 +19672,32 @@ namespace GnollHackX.Pages.Game
             //    if (_commandFPSCounterValue < 0)
             //        _commandFPSCounterValue = 0;
             //}
+
+            lockTaken = false;
+            if (useSingleCommandPage)
+            {
+                try
+                {
+                    Monitor.TryEnter(_cmdRectLock, ref lockTaken);
+                    if (lockTaken)
+                    {
+                        _localMoreBtnList.Clear();
+                        _localMoreBtnList.AddRange(GHApp._moreBtnList);
+                    }
+                }
+                finally
+                {
+                    if (lockTaken)
+                        Monitor.Exit(_cmdRectLock);
+                }
+                lockTaken = false;
+            }
+
             canvas.Flush();
         }
+
+        private readonly object _cmdRectLock = new object();
+        public List<GHCommandButtonRect> _localMoreBtnList = new List<GHCommandButtonRect>(GHConstants.DefaultMoreButtonListSize);
 
         private void CommandCanvas_Touch(object sender, SKTouchEventArgs e)
         {
@@ -19651,7 +19720,7 @@ namespace GnollHackX.Pages.Game
             float scale = canvaswidth / Math.Max(1f, (float)CommandCanvas.ThreadSafeWidth);
             bool isLandscape = canvaswidth > canvasheight;
 
-            lock (CommandButtonLock)
+            lock (_cmdRectLock)
             {
                 switch (e?.ActionType)
                 {
@@ -19748,73 +19817,89 @@ namespace GnollHackX.Pages.Game
                                 {
                                     /* Normal click */
                                     /* Select command here*/
-                                    int used_btnHeight = GHConstants.MoreButtonsPerColumn;
-                                    int usedButtonsPerRow = isLandscape ? used_btnHeight : GHConstants.MoreButtonsPerRow;
-                                    int usedButtonsPerColumn = isLandscape ? GHConstants.MoreButtonsPerRow : used_btnHeight;
-                                    float btnAreaWidth = btnMatrixWidth / usedButtonsPerRow;
-                                    float btnAreaHeight = btnMatrixHeight / usedButtonsPerColumn;
-                                    int btnX = (int)((e.Location.X - MoreCmdOffsetX) / btnAreaWidth);
-                                    int btnY = (int)((e.Location.Y - btnMatrixStart) / btnAreaHeight);
-
-                                    if (e.Location.Y >= btnMatrixStart && e.Location.Y <= btnMatrixEnd
-                                        && e.Location.X - MoreCmdOffsetX >= 0 && e.Location.X - MoreCmdOffsetX <= canvaswidth
-                                        && btnX >= 0 && btnX < usedButtonsPerRow && btnY >= 0 && btnY < usedButtonsPerColumn)
+                                    GHCommandButtonItem cbi = null;
+                                    int cbi_cmd = 0;
+                                    if (GHApp.UseSingleMoreCommandsPage)
                                     {
-                                        int i, j;
-                                        if (isLandscape)
+                                        for(int i= 0; i < _localMoreBtnList.Count; i++)
                                         {
-                                            i = btnY;
-                                            j = btnX;
+                                            GHCommandButtonRect rect = _localMoreBtnList[i];
+                                            if (rect.CommandButtonItem != null && rect.Rect.Contains(e.Location))
+                                            {
+                                                cbi = rect.CommandButtonItem;
+                                                cbi_cmd = cbi.Command;
+                                                break;
+                                            }
                                         }
-                                        else
-                                        {
-                                            i = btnX;
-                                            j = btnY;
-                                        }
+                                    }
+                                    else
+                                    {
+                                        int used_btnHeight = GHConstants.MoreButtonsPerColumn;
+                                        int usedButtonsPerRow = isLandscape ? used_btnHeight : GHConstants.MoreButtonsPerRow;
+                                        int usedButtonsPerColumn = isLandscape ? GHConstants.MoreButtonsPerRow : used_btnHeight;
+                                        float btnAreaWidth = btnMatrixWidth / usedButtonsPerRow;
+                                        float btnAreaHeight = btnMatrixHeight / usedButtonsPerColumn;
+                                        int btnX = (int)((e.Location.X - MoreCmdOffsetX) / btnAreaWidth);
+                                        int btnY = (int)((e.Location.Y - btnMatrixStart) / btnAreaHeight);
 
-                                        GHCommandButtonItem cbi = null;
-                                        int cbi_cmd = 0;
-                                        int page = MoreCmdPage;
-                                        cbi = GHApp._moreBtnMatrix[page, i, j];
-                                        if (cbi != null)
-                                            cbi_cmd = cbi.Command;
-                                        if (cbi != null)
+                                        if (e.Location.Y >= btnMatrixStart && e.Location.Y <= btnMatrixEnd
+                                            && e.Location.X - MoreCmdOffsetX >= 0 && e.Location.X - MoreCmdOffsetX <= canvaswidth
+                                            && btnX >= 0 && btnX < usedButtonsPerRow && btnY >= 0 && btnY < usedButtonsPerColumn)
                                         {
-                                            if (cbi_cmd >= 0)
-                                                GenericButton_Clicked(CommandCanvas, e, cbi_cmd);
+                                            int i, j;
+                                            if (isLandscape)
+                                            {
+                                                i = btnY;
+                                                j = btnX;
+                                            }
                                             else
                                             {
-                                                switch (cbi_cmd)
-                                                {
-                                                    case -102:
-                                                        GenericButton_Clicked(sender, e, 'n');
-                                                        GenericButton_Clicked(sender, e, -12);
-                                                        GenericButton_Clicked(sender, e, -10);
-                                                        GenericButton_Clicked(sender, e, 's');
-                                                        break;
-                                                    case -103:
-                                                        GenericButton_Clicked(sender, e, 'n');
-                                                        GenericButton_Clicked(sender, e, -12);
-                                                        GenericButton_Clicked(sender, e, -10);
-                                                        GenericButton_Clicked(sender, e, -10);
-                                                        GenericButton_Clicked(sender, e, '.');
-                                                        break;
-                                                    case -104:
-                                                        OpenGameMenu();
-                                                        break;
-                                                    case -105:
-                                                        GenericButton_Clicked(sender, e, 'n');
-                                                        DoShowNumberPad();
-                                                        break;
-                                                    default:
-                                                        break;
-                                                }
+                                                i = btnX;
+                                                j = btnY;
                                             }
 
-                                            /* Hide the canvas */
-                                            CommandCanvas_Pressed(sender, e);
+                                            int page = MoreCmdPage;
+                                            cbi = GHApp._moreBtnMatrix[page, i, j];
+                                            if (cbi != null)
+                                                cbi_cmd = cbi.Command;
+                                        }
+                                    }
+
+                                    if (cbi != null)
+                                    {
+                                        if (cbi_cmd >= 0)
+                                            GenericButton_Clicked(CommandCanvas, e, cbi_cmd);
+                                        else
+                                        {
+                                            switch (cbi_cmd)
+                                            {
+                                                case -102:
+                                                    GenericButton_Clicked(sender, e, 'n');
+                                                    GenericButton_Clicked(sender, e, -12);
+                                                    GenericButton_Clicked(sender, e, -10);
+                                                    GenericButton_Clicked(sender, e, 's');
+                                                    break;
+                                                case -103:
+                                                    GenericButton_Clicked(sender, e, 'n');
+                                                    GenericButton_Clicked(sender, e, -12);
+                                                    GenericButton_Clicked(sender, e, -10);
+                                                    GenericButton_Clicked(sender, e, -10);
+                                                    GenericButton_Clicked(sender, e, '.');
+                                                    break;
+                                                case -104:
+                                                    OpenGameMenu();
+                                                    break;
+                                                case -105:
+                                                    GenericButton_Clicked(sender, e, 'n');
+                                                    DoShowNumberPad();
+                                                    break;
+                                                default:
+                                                    break;
+                                            }
                                         }
 
+                                        /* Hide the canvas */
+                                        CommandCanvas_Pressed(sender, e);
                                     }
                                 }
                                 else if (elapsedms <= GHConstants.SwipeTimeThreshold && Math.Abs(origdiffX) > swipelengththreshold)
@@ -21189,8 +21274,9 @@ namespace GnollHackX.Pages.Game
             if(GHApp.IsDesktop) /* Assuming mouse pointer usage */
             {
                 int cmdPage = MoreCmdPage;
-                MorePreviousGrid.IsVisible = cmdPage > (EnableWizardMode ? 0 : 1);
-                MoreNextGrid.IsVisible = cmdPage < CurrentMoreButtonPageMaxNumber - 1;
+                bool singlePage = GHApp.UseSingleMoreCommandsPage;
+                MorePreviousGrid.IsVisible = !singlePage && cmdPage > (EnableWizardMode ? 0 : 1);
+                MoreNextGrid.IsVisible = !singlePage && cmdPage < CurrentMoreButtonPageMaxNumber - 1;
             }
             else
             {

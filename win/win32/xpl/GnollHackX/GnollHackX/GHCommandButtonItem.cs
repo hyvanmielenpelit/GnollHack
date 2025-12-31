@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using SkiaSharp;
 
 namespace GnollHackX
 {
@@ -30,4 +31,27 @@ namespace GnollHackX
             IsMeta = GHUtils.IsMeta(command);
         }
     }
+
+    public struct GHCommandButtonRect
+    {
+        public SKRect Rect;
+        public GHCommandButtonItem CommandButtonItem;
+        public SKImage Bitmap;
+        public GHCommandButtonRect()
+        {
+
+        }
+        public GHCommandButtonRect(GHCommandButtonItem commandButtonItem, SKImage bitmap)
+        {
+            CommandButtonItem = commandButtonItem;
+            Bitmap = bitmap;
+        }
+        public GHCommandButtonRect(SKRect rect, GHCommandButtonItem commandButtonItem, SKImage bitmap)
+        {
+            Rect = rect;
+            CommandButtonItem = commandButtonItem;
+            Bitmap = bitmap;
+        }
+    }
 }
+

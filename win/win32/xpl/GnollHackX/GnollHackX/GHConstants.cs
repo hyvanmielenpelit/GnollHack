@@ -1992,6 +1992,8 @@ namespace GnollHackX
         public const string SentryGnollHackCallbackCategoryName = "GnollHack Callback";
         public const string SentryGnollHackButtonClickCategoryName = "Button Clicked";
         public const string SAVE_GAME_NOTIFICATION_CHANNEL_ID = "save_game_channel";
+        public const string SingleCommandPageTitle = "Commands";
+        public const int DefaultMoreButtonListSize = MoreButtonPages * MoreButtonsPerRow * MoreButtonsPerColumn + 1;
     }
 
     [StructLayout(LayoutKind.Sequential)]

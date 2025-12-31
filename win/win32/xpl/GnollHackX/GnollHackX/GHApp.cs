@@ -173,6 +173,7 @@ namespace GnollHackX
             DisableWindowsKey = Preferences.Get("DisableWindowsKey", false);
             DefaultVIKeys = Preferences.Get("DefaultVIKeys", false);
             ShowKeyboardShortcuts = Preferences.Get("ShowKeyboardShortcuts", IsDesktop);
+            UseSingleMoreCommandsPage = Preferences.Get("UseSingleMoreCommandsPage", IsDesktop);
 
             ulong FreeDiskSpaceInBytes = PlatformService.GetDeviceFreeDiskSpaceInBytes();
             if (FreeDiskSpaceInBytes < GHConstants.LowFreeDiskSpaceThresholdInBytes)
@@ -2092,6 +2093,7 @@ namespace GnollHackX
         private static int _disableWindowsKey = 0;
         private static int _defaultVIKeys = 0;
         private static int _showKeyboardShortcuts = 0;
+        private static int _useSingleMoreCommandsPage = 0;
 
         public static bool CtrlDown { get { return Interlocked.CompareExchange(ref _ctrlDown, 0, 0) != 0; } set { Interlocked.Exchange(ref _ctrlDown, value ? 1 : 0); } }
         public static bool AltDown { get { return Interlocked.CompareExchange(ref _altDown, 0, 0) != 0; } set { Interlocked.Exchange(ref _altDown, value ? 1 : 0); } }
@@ -2100,6 +2102,7 @@ namespace GnollHackX
         public static bool DisableWindowsKey{ get { return Interlocked.CompareExchange(ref _disableWindowsKey, 0, 0) != 0; } set { Interlocked.Exchange(ref _disableWindowsKey, value ? 1 : 0); } }
         public static bool DefaultVIKeys { get { return Interlocked.CompareExchange(ref _defaultVIKeys, 0, 0) != 0; } set { Interlocked.Exchange(ref _defaultVIKeys, value ? 1 : 0); } }
         public static bool ShowKeyboardShortcuts { get { return Interlocked.CompareExchange(ref _showKeyboardShortcuts, 0, 0) != 0; } set { Interlocked.Exchange(ref _showKeyboardShortcuts, value ? 1 : 0); } }
+        public static bool UseSingleMoreCommandsPage { get { return Interlocked.CompareExchange(ref _useSingleMoreCommandsPage, 0, 0) != 0; } set { Interlocked.Exchange(ref _useSingleMoreCommandsPage, value ? 1 : 0); } }
 
         public static bool DownloadOnDemandPackage
         {
@@ -3105,6 +3108,9 @@ namespace GnollHackX
         public static GHCommandButtonItem[,,] _moreBtnMatrix = new GHCommandButtonItem[GHConstants.MoreButtonPages, GHConstants.MoreButtonsPerRow, GHConstants.MoreButtonsPerColumn];
         public static SKImage[,,] _moreBtnBitmaps = new SKImage[GHConstants.MoreButtonPages, GHConstants.MoreButtonsPerRow, GHConstants.MoreButtonsPerColumn];
         public static readonly string[] _moreButtonPageTitle = new string[GHConstants.MoreButtonPages] { "Wizard Mode Commands", "Common Commands", "Additional Commands", "Context and More Commands" };
+        private static int _moreBtnCount = 0;
+        public static int MoreButtonCount { get { return Interlocked.CompareExchange(ref _moreBtnCount, 0, 0); } set { Interlocked.Exchange(ref _moreBtnCount, value); } }
+        public static List<GHCommandButtonRect> _moreBtnList = new List<GHCommandButtonRect>(GHConstants.DefaultMoreButtonListSize);
 
         public static int TileSheetIdx(int ntile)
         {
@@ -3446,6 +3452,10 @@ namespace GnollHackX
                     }
                 }
 
+                int buttonCount = 0;
+                _moreBtnList.Clear();
+                GHCommandButtonItem lastReturnBtn = null;
+                SKImage lastReturnBitmap = null;
                 for (int k = 0; k < GHConstants.MoreButtonPages; k++)
                 {
                     for (int i = 0; i < GHConstants.MoreButtonsPerRow; i++)
@@ -3457,6 +3467,16 @@ namespace GnollHackX
                                 try
                                 {
                                     _moreBtnBitmaps[k, i, j] = GetCachedImageSourceBitmap("resource://" + _moreBtnMatrix[k, i, j].ImageSourcePath, true);
+                                    if (_moreBtnMatrix[k, i, j].Command == -101)
+                                    {
+                                        lastReturnBtn = _moreBtnMatrix[k, i, j];
+                                        lastReturnBitmap = _moreBtnBitmaps[k, i, j];
+                                    }
+                                    else
+                                    {
+                                        buttonCount++;
+                                        _moreBtnList.Add(new GHCommandButtonRect(_moreBtnMatrix[k, i, j], _moreBtnBitmaps[k, i, j]));
+                                    }
                                 }
                                 catch (Exception ex)
                                 {
@@ -3466,6 +3486,17 @@ namespace GnollHackX
                         }
                     }
                 }
+                _moreBtnList.Sort((a, b) => 
+                {
+                    if (a.CommandButtonItem == null || a.CommandButtonItem.Text == null)
+                        return -1;
+                    if (b.CommandButtonItem == null ||b.CommandButtonItem.Text == null)
+                        return 1;
+                    return a.CommandButtonItem.Text.CompareTo(b.CommandButtonItem.Text); 
+                });
+                if (lastReturnBtn != null && lastReturnBitmap != null)
+                    _moreBtnList.Add((new GHCommandButtonRect(lastReturnBtn, lastReturnBitmap)));
+                MoreButtonCount = buttonCount;
             }
         }
 
