@@ -19454,7 +19454,10 @@ namespace GnollHackX.Pages.Game
             bool useKeyboardShortcuts = GHApp.ShowKeyboardShortcuts;
             bool useSingleCommandPage = GHApp.UseSingleMoreCommandsPage;
             float aspectRatio = canvaswidth / canvasheight;
-            int buttonRows = useSingleCommandPage ? Math.Max(GHConstants.MoreButtonsPerColumn, (int)Math.Ceiling(Math.Sqrt((float)buttonNumber * (isLandscape ? aspectRatio : 1f / aspectRatio)))) : GHConstants.MoreButtonsPerColumn;
+            int buttonRows = useSingleCommandPage ? Math.Max(GHConstants.MoreButtonsPerColumn, (int)Math.Ceiling(Math.Sqrt((float)(buttonNumber) * (isLandscape ? aspectRatio : 1f / aspectRatio)))) : GHConstants.MoreButtonsPerColumn;
+            int buttonsOnLastRow = buttonNumber % buttonRows;
+            if (useSingleCommandPage && (buttonsOnLastRow == 1 || buttonsOnLastRow == 2) && (buttonNumber % (buttonRows + 1)) > 2)
+                buttonRows++;
             int buttonColumns = useSingleCommandPage ? Math.Max(GHConstants.MoreButtonsPerRow, (buttonNumber - 1) / buttonRows + 1) : GHConstants.MoreButtonsPerRow;
 
             using (GHSkiaFontPaint textPaint = new GHSkiaFontPaint())
@@ -19558,6 +19561,12 @@ namespace GnollHackX.Pages.Game
                                              /* Move to bottom right corner */
                                             i = buttonColumns - 1;
                                             j = pos_j = buttonRows - 1;
+                                        }
+                                        else if (usedButtonItem.Command == (int)'#' && listIdx == GHApp._moreBtnList.Count - 2)
+                                        {
+                                            /* Move to left side of the bottom right corner */
+                                            i = buttonColumns - 1;
+                                            j = pos_j = buttonRows - 2;
                                         }
                                     }
                                     else

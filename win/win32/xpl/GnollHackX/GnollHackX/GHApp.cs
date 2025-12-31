@@ -3458,6 +3458,8 @@ namespace GnollHackX
                 _moreBtnList.Clear();
                 GHCommandButtonItem lastReturnBtn = null;
                 SKImage lastReturnBitmap = null;
+                GHCommandButtonItem lastExtendedBtn = null;
+                SKImage lastExtendedBitmap = null;
                 for (int k = 0; k < GHConstants.MoreButtonPages; k++)
                 {
                     for (int i = 0; i < GHConstants.MoreButtonsPerRow; i++)
@@ -3473,6 +3475,11 @@ namespace GnollHackX
                                     {
                                         lastReturnBtn = _moreBtnMatrix[k, i, j];
                                         lastReturnBitmap = _moreBtnBitmaps[k, i, j];
+                                    }
+                                    else if (_moreBtnMatrix[k, i, j].Command == (int)'#')
+                                    {
+                                        lastExtendedBtn = _moreBtnMatrix[k, i, j];
+                                        lastExtendedBitmap = _moreBtnBitmaps[k, i, j];
                                     }
                                     else
                                     {
@@ -3496,8 +3503,16 @@ namespace GnollHackX
                         return 1;
                     return a.CommandButtonItem.Text.CompareTo(b.CommandButtonItem.Text); 
                 });
+                if (lastExtendedBtn != null && lastExtendedBitmap != null)
+                {
+                    buttonCount++;
+                    _moreBtnList.Add((new GHCommandButtonRect(lastExtendedBtn, lastExtendedBitmap)));
+                }
                 if (lastReturnBtn != null && lastReturnBitmap != null)
+                {
+                    buttonCount++;
                     _moreBtnList.Add((new GHCommandButtonRect(lastReturnBtn, lastReturnBitmap)));
+                }
                 MoreButtonCount = buttonCount;
             }
         }
