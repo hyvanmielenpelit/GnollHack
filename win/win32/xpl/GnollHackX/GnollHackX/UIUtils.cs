@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Text;
 using SkiaSharp;
 using System.Diagnostics;
+using System.Globalization;
+
 
 #if GNH_MAUI
 using GnollHackM;
@@ -1321,12 +1323,12 @@ namespace GnollHackX
             return false;
         }
 
-        public static double CalculateButtonSideWidth(double canvasViewWidth, double canvasViewHeight, bool usingDesktopButtons, bool usingSimpleCmdLayout, int stoneButtonRows, float inverseCanvasScale, float customScale, int noOfLandscapeButtonsInRow, int noOfPortraitButtonsInRow, bool isSmaller)
+        public static double CalculateButtonSideWidth(double canvasViewWidth, double canvasViewHeight, bool usingDesktopButtons, bool usingSimpleCmdLayout, int stoneButtonRows, float inverseCanvasScale, float customScale, int noOfLandscapeButtonsInRow, int noOfPortraitButtonsInRow, bool isSmaller, bool showKeyboardShortcuts)
         {
             double tmpSideWidth = UIUtils.CalculatePreliminaryButtonSideWidth(canvasViewWidth, canvasViewHeight, usingDesktopButtons, usingSimpleCmdLayout, inverseCanvasScale, customScale, noOfLandscapeButtonsInRow, noOfPortraitButtonsInRow, isSmaller);
             if (noOfLandscapeButtonsInRow > 0 && noOfPortraitButtonsInRow > 0) /* Yes/no buttons are not limited by height */
                 return tmpSideWidth;
-            double tmpSideHeight = UIUtils.CalculatePreliminaryButtonSideHeight(canvasViewWidth, canvasViewHeight, usingDesktopButtons, usingSimpleCmdLayout, stoneButtonRows, inverseCanvasScale, customScale, noOfLandscapeButtonsInRow, noOfPortraitButtonsInRow, isSmaller);
+            double tmpSideHeight = UIUtils.CalculatePreliminaryButtonSideHeight(canvasViewWidth, canvasViewHeight, usingDesktopButtons, usingSimpleCmdLayout, stoneButtonRows, inverseCanvasScale, customScale, noOfLandscapeButtonsInRow, noOfPortraitButtonsInRow, isSmaller, showKeyboardShortcuts);
             return Math.Min(tmpSideWidth, tmpSideHeight);
         }
 
@@ -1340,7 +1342,7 @@ namespace GnollHackX
             return tmpsidewidth;
         }
 
-        public static double CalculatePreliminaryButtonSideHeight(double canvasViewWidth, double canvasViewHeight, bool usingDesktopButtons, bool usingSimpleCmdLayout, int stoneButtonRows, float inverseCanvasScale, float customScale, int noOfLandscapeButtonsInRow, int noOfPortraitButtonsInRow, bool isSmaller)
+        public static double CalculatePreliminaryButtonSideHeight(double canvasViewWidth, double canvasViewHeight, bool usingDesktopButtons, bool usingSimpleCmdLayout, int stoneButtonRows, float inverseCanvasScale, float customScale, int noOfLandscapeButtonsInRow, int noOfPortraitButtonsInRow, bool isSmaller, bool showKeyboardShortcuts)
         {
             if(inverseCanvasScale == 0.0f)
                 inverseCanvasScale = 1.0f;
@@ -1354,7 +1356,7 @@ namespace GnollHackX
             float minNoOfLabeledButtonRows = minNoOfContextButtonRows + noOfCommandRows;
             int noOfVerticalSmallerButtons = stoneButtonRows; // usingSimpleCmdLayout ? (isWideLandscape ? 2 : isLandscape ? 3 : 4) : (isWideLandscape ? 2 : isLandscape ? 3 : 5);
             float labeledButtonFontSizeRelativeToButtonSize = GHConstants.ContextButtonBaseFontSize / 50f;
-            double noOfButtonWidthsNeededForHeight = minNoOfLabeledButtonRows * (1.0f + labeledButtonFontSizeRelativeToButtonSize)
+            double noOfButtonWidthsNeededForHeight = minNoOfLabeledButtonRows * (1.0f + labeledButtonFontSizeRelativeToButtonSize * (showKeyboardShortcuts ? GHConstants.TextRowMultiplierWithKeyboardShortcuts : 1.0f))
                 //+ statusBarRowSizeRelativeToButtonWidth
                 + noOfVerticalSmallerButtons * 75f / 80f;
             double statusBarSize = CalculateStatusBarSkiaHeight(inverseCanvasScale, customScale, canvasViewWidth, canvasViewHeight) / inverseCanvasScale;

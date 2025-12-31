@@ -20,7 +20,6 @@ using System.Net.Http.Headers;
 using System.Collections;
 using System.Data;
 using System.Xml.Linq;
-using Microsoft.Maui.Controls.Shapes;
 
 
 #if GNH_MAUI
@@ -3642,9 +3641,10 @@ namespace GnollHackX.Pages.Game
             float customScale = GHApp.CustomScreenScale;
             bool usingDesktopButtons = DesktopButtons;
             bool usingSimpleCmdLayout = UseSimpleCmdLayout;
+            bool showShortcuts = GHApp.ShowKeyboardShortcuts;
             int stoneButtonRows = StoneButtonGrid.RowDefinitions?.Count ?? 0;
             for (int i = 0; i < 5; i++)
-                btnList[i].SetSideSize(_currentPageWidth, _currentPageHeight, usingDesktopButtons, usingSimpleCmdLayout, stoneButtonRows, inverseCanvasScale, customScale);
+                btnList[i].SetSideSize(_currentPageWidth, _currentPageHeight, usingDesktopButtons, usingSimpleCmdLayout, false, stoneButtonRows, inverseCanvasScale, customScale);
 
             YnButtonStack.HeightRequest = btnList[0].GridHeight;
             switch(style)
@@ -7042,6 +7042,7 @@ namespace GnollHackX.Pages.Game
             bool drawwallends = DrawWallEnds;
             bool breatheanimations = BreatheAnimations;
             bool fixRects = GHApp.FixRects;
+            bool showKeyboardShortcuts = GHApp.ShowKeyboardShortcuts;
             bool usingGL = UseMainGLCanvas;
             bool usingMipMap = UseMainMipMap;
             bool usingDesktopButtons = DesktopButtons;
@@ -11413,6 +11414,7 @@ namespace GnollHackX.Pages.Game
                     {
                         float startBottom = canvasheight - (float)usedButtonRowStackHeight * inverse_canvas_scale - GHConstants.ContextButtonBottomStartMargin;
                         float textSize = GHConstants.ContextButtonBaseFontSize * orbbordersize / 50.0f;
+                        float textRowsSize = textSize * (showKeyboardShortcuts ? GHConstants.TextRowMultiplierWithKeyboardShortcuts : 1.0f);
                         float internalPadding = (float)GHConstants.ContextButtonSpacing * inverse_canvas_scale;
                         float startTop = startBottom + internalPadding;
                         float horizontalPadding = 2f * inverse_canvas_scale;
@@ -11424,10 +11426,10 @@ namespace GnollHackX.Pages.Game
                         {
                             cbIdx++;
                             SKRect usedRect = new SKRect();
-                            startTop -= (orbbordersize + internalPadding + textSize);
+                            startTop -= (orbbordersize + internalPadding + textRowsSize);
                             if (startTop < topLimit && !isFirstCmb)
                             {
-                                startTop = startBottom - orbbordersize - textSize;
+                                startTop = startBottom - orbbordersize - textRowsSize;
                                 startLeft -= (internalPadding + orbbordersize);
                             }
                             else
@@ -11435,15 +11437,11 @@ namespace GnollHackX.Pages.Game
                                 isFirstCmb = false;
                             }
                             if(cbIdx < _localContextMenuRects.Count)
-                                _localContextMenuRects[cbIdx] = usedRect = new SKRect(startLeft, startTop, startLeft + orbbordersize, startTop + orbbordersize + textSize);
+                                _localContextMenuRects[cbIdx] = usedRect = new SKRect(startLeft, startTop, startLeft + orbbordersize, startTop + orbbordersize + textRowsSize);
                             SKRect imgDest = new SKRect(startLeft, startTop, startLeft + orbbordersize, startTop + orbbordersize);
                             textPaint.Color = SKColors.White;
                             textPaint.Typeface = GHApp.LatoRegular;
                             textPaint.TextSize = textSize;
-                            //textPaint.TextAlign = SKTextAlign.Center;
-#if GNH_MAP_PROFILING && DEBUG
-                            StartProfiling(GHProfilingStyle.Bitmap);
-#endif
                             using (SKPaint btnPaint = new SKPaint())
                             {
                                 if (_localIsPointerHovering && usedRect.Contains(_localPointerHoverLocation))
@@ -11452,18 +11450,17 @@ namespace GnollHackX.Pages.Game
                                 }
                                 canvas.DrawImage(cmb.Bitmap, imgDest, btnPaint);
                             }
-#if GNH_MAP_PROFILING && DEBUG
-                            StopProfiling(GHProfilingStyle.Bitmap);
-#endif
                             float text_x = (imgDest.Left + imgDest.Right) / 2;
                             float text_y = imgDest.Bottom - textPaint.FontMetrics.Ascent;
-#if GNH_MAP_PROFILING && DEBUG
-                            StartProfiling(GHProfilingStyle.Text);
-#endif
                             textPaint.DrawTextOnCanvas(canvas, cmb.LblText, text_x, text_y, SKTextAlign.Center);
-#if GNH_MAP_PROFILING && DEBUG
-                            StopProfiling(GHProfilingStyle.Text);
-#endif
+                            if (showKeyboardShortcuts && !string.IsNullOrEmpty(cmb.ShortcutText))
+                            {
+                                textPaint.Color = SKColors.Gray;
+                                textPaint.TextSize = textSize * GHConstants.KeyboardShortcutRelativeFontSize;
+                                textPaint.DrawTextOnCanvas(canvas, cmb.ShortcutText, text_x, text_y + textPaint.FontSpacing, SKTextAlign.Center);
+                                textPaint.TextSize = textSize;
+                                textPaint.Color = SKColors.White;
+                            }
                         }
                     }
                     
@@ -13994,6 +13991,7 @@ namespace GnollHackX.Pages.Game
 
             bool usingDesktopButtons = DesktopButtons;
             bool usingSimpleCmdLayout = UseSimpleCmdLayout;
+            bool showShortcuts = GHApp.ShowKeyboardShortcuts;
             float inverseCanvasScale = GHApp.DisplayDensity;
             float customScale = GHApp.CustomScreenScale;
             ButtonGridStats buttonStats = OrderStoneButtons(width, height);
@@ -14031,11 +14029,11 @@ namespace GnollHackX.Pages.Game
             YnQuestionLabel.FontSize = 19 * customScale;
             YnImage.WidthRequest = 32 * customScale;
             YnImage.HeightRequest = 48 * customScale;
-            ZeroButton.SetSideSize(width, height, usingDesktopButtons, usingSimpleCmdLayout, buttonStats.Rows, inverseCanvasScale, customScale);
-            FirstButton.SetSideSize(width, height, usingDesktopButtons, usingSimpleCmdLayout, buttonStats.Rows, inverseCanvasScale, customScale);
-            SecondButton.SetSideSize(width, height, usingDesktopButtons, usingSimpleCmdLayout, buttonStats.Rows, inverseCanvasScale, customScale);
-            ThirdButton.SetSideSize(width, height, usingDesktopButtons, usingSimpleCmdLayout, buttonStats.Rows, inverseCanvasScale, customScale);
-            FourthButton.SetSideSize(width, height, usingDesktopButtons, usingSimpleCmdLayout, buttonStats.Rows, inverseCanvasScale, customScale);
+            ZeroButton.SetSideSize(width, height, usingDesktopButtons, usingSimpleCmdLayout, false, buttonStats.Rows, inverseCanvasScale, customScale);
+            FirstButton.SetSideSize(width, height, usingDesktopButtons, usingSimpleCmdLayout, false, buttonStats.Rows, inverseCanvasScale, customScale);
+            SecondButton.SetSideSize(width, height, usingDesktopButtons, usingSimpleCmdLayout, false, buttonStats.Rows, inverseCanvasScale, customScale);
+            ThirdButton.SetSideSize(width, height, usingDesktopButtons, usingSimpleCmdLayout, false, buttonStats.Rows, inverseCanvasScale, customScale);
+            FourthButton.SetSideSize(width, height, usingDesktopButtons, usingSimpleCmdLayout, false, buttonStats.Rows, inverseCanvasScale, customScale);
 
             PopupTitleLabel.FontSize = 20 * customScale;
             PopupLabel.FontSize = 16 * customScale;
@@ -14078,17 +14076,17 @@ namespace GnollHackX.Pages.Game
             foreach (View v in UpperCmdGrid.Children)
             {
                 LabeledImageButton lib = (LabeledImageButton)v;
-                lib.SetSideSize(width, height, usingDesktopButtons, usingSimpleCmdLayout, buttonStats.Rows, inverseCanvasScale, customScale);
+                lib.SetSideSize(width, height, usingDesktopButtons, usingSimpleCmdLayout, showShortcuts, buttonStats.Rows, inverseCanvasScale, customScale);
             }
             foreach (View v in LowerCmdGrid.Children)
             {
                 LabeledImageButton lib = (LabeledImageButton)v;
-                lib.SetSideSize(width, height, usingDesktopButtons, usingSimpleCmdLayout, buttonStats.Rows, inverseCanvasScale, customScale);
+                lib.SetSideSize(width, height, usingDesktopButtons, usingSimpleCmdLayout, showShortcuts, buttonStats.Rows, inverseCanvasScale, customScale);
             }
             foreach (View v in SimpleCmdGrid.Children)
             {
                 LabeledImageButton lib = (LabeledImageButton)v;
-                lib.SetSideSize(width, height, usingDesktopButtons, usingSimpleCmdLayout, buttonStats.Rows, inverseCanvasScale, customScale);
+                lib.SetSideSize(width, height, usingDesktopButtons, usingSimpleCmdLayout, showShortcuts, buttonStats.Rows, inverseCanvasScale, customScale);
             }
 
             LabeledImageButton firstchild = (LabeledImageButton)UpperCmdGrid.Children[0];
@@ -14098,10 +14096,10 @@ namespace GnollHackX.Pages.Game
             LabeledImageButton simplefirstchild = (LabeledImageButton)SimpleCmdGrid.Children[0];
             SimpleCmdGrid.HeightRequest = simplefirstchild.GridHeight;
 
-            lAbilitiesButton.SetSideSize(width, height, usingDesktopButtons, usingSimpleCmdLayout, buttonStats.Rows, inverseCanvasScale, customScale);
-            lWornItemsButton.SetSideSize(width, height, usingDesktopButtons, usingSimpleCmdLayout, buttonStats.Rows, inverseCanvasScale, customScale);
-            lRowAbilitiesButton.SetSideSize(width, height, usingDesktopButtons, usingSimpleCmdLayout, buttonStats.Rows, inverseCanvasScale, customScale);
-            lRowWornItemsButton.SetSideSize(width, height, usingDesktopButtons, usingSimpleCmdLayout, buttonStats.Rows, inverseCanvasScale, customScale);
+            lAbilitiesButton.SetSideSize(width, height, usingDesktopButtons, usingSimpleCmdLayout, false, buttonStats.Rows, inverseCanvasScale, customScale);
+            lWornItemsButton.SetSideSize(width, height, usingDesktopButtons, usingSimpleCmdLayout, false, buttonStats.Rows, inverseCanvasScale, customScale);
+            lRowAbilitiesButton.SetSideSize(width, height, usingDesktopButtons, usingSimpleCmdLayout, showShortcuts, buttonStats.Rows, inverseCanvasScale, customScale);
+            lRowWornItemsButton.SetSideSize(width, height, usingDesktopButtons, usingSimpleCmdLayout, showShortcuts, buttonStats.Rows, inverseCanvasScale, customScale);
             //double statusbarheight = GetStatusBarHeight(); /* Requires lInventoryButton size having set to determine scaling */
             double statusbarheight = GetStatusBarHeightEx2(inverseCanvasScale, customScale, width, height); // GetStatusBarHeightEx(width, height, usingDesktopButtons, usingSimpleCmdLayout, inverseCanvasScale, customScale);
             lAbilitiesButton.HeightRequest = statusbarheight;
@@ -19527,7 +19525,7 @@ namespace GnollHackX.Pages.Game
                     textPaint.TextSize = textSize;
                     //textPaint.TextAlign = SKTextAlign.Center;
 
-                    float btnImgRawHeight = Math.Min(256, Math.Min(btnAreaHeight * 0.925f - textPaint.FontSpacing * (useKeyboardShortcuts ? 1.9f : 1f), 128 * scale));
+                    float btnImgRawHeight = Math.Min(256, Math.Min(btnAreaHeight * 0.925f - textPaint.FontSpacing * (useKeyboardShortcuts ? GHConstants.TextRowMultiplierWithKeyboardShortcuts : 1f), 128 * scale));
 
                     float btnImgWidth = Math.Min(btnImgRawWidth, btnImgRawHeight);
                     float btnImgHeight = btnImgWidth;
@@ -19574,7 +19572,7 @@ namespace GnollHackX.Pages.Game
                                         int x = isLandscape ? pos_j : i;
                                         int y = isLandscape ? i : pos_j;
                                         targetrect.Left = btnOffsetX + x * btnAreaWidth + Math.Max(0, (btnAreaWidth - btnImgWidth) / 2);
-                                        targetrect.Top = btnMatrixStart + y * btnAreaHeight + Math.Max(0, (btnAreaHeight - btnImgHeight - textPaint.FontSpacing * (useKeyboardShortcuts ? 1.9f : 1f)) / 2);
+                                        targetrect.Top = btnMatrixStart + y * btnAreaHeight + Math.Max(0, (btnAreaHeight - btnImgHeight - textPaint.FontSpacing * (useKeyboardShortcuts ? GHConstants.TextRowMultiplierWithKeyboardShortcuts : 1f)) / 2);
                                         targetrect.Right = targetrect.Left + btnImgWidth;
                                         targetrect.Bottom = targetrect.Top + btnImgHeight;
                                         float text_x = (targetrect.Left + targetrect.Right) / 2;
@@ -19592,11 +19590,11 @@ namespace GnollHackX.Pages.Game
                                         if (useKeyboardShortcuts && usedButtonItem.Command > 0 && !string.IsNullOrEmpty(usedButtonItem.CommandChar))
                                         {
                                             float kbsc_text_x = text_x = (targetrect.Left + targetrect.Right) / 2;
-                                            float kbsc_text_y = targetrect.Bottom + textPaint.FontSpacing - textPaint.FontMetrics.Ascent * 0.9f;
+                                            float kbsc_text_y = targetrect.Bottom + textPaint.FontSpacing - textPaint.FontMetrics.Ascent * GHConstants.KeyboardShortcutRelativeFontSize;
                                             string c = usedButtonItem.CommandChar;
-                                            string str = (usedButtonItem.IsMeta ? "Alt+" : "") + (usedButtonItem.IsCtrl ? "Ctrl+" : "") + c;
+                                            string str = GHUtils.ConstructShortcutText(c, usedButtonItem.IsCtrl, usedButtonItem.IsMeta);
                                             textPaint.Color = SKColors.Gray;
-                                            textPaint.TextSize = textSize * 0.9f;
+                                            textPaint.TextSize = textSize * GHConstants.KeyboardShortcutRelativeFontSize;
                                             textPaint.DrawTextOnCanvas(canvas, str, kbsc_text_x, kbsc_text_y, SKTextAlign.Center);
                                             textPaint.TextSize = textSize;
                                             textPaint.Color = SKColors.White;

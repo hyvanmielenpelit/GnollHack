@@ -34,7 +34,12 @@ namespace GnollHackX.Controls
         public static readonly BindableProperty BtnMetaProperty = BindableProperty.Create(nameof(BtnMeta), typeof(bool), typeof(LabeledImageButton), false);
         public static readonly BindableProperty BtnCtrlProperty = BindableProperty.Create(nameof(BtnCtrl), typeof(bool), typeof(LabeledImageButton), false);
         public static readonly BindableProperty BtnCommandProperty = BindableProperty.Create(nameof(BtnCommand), typeof(int), typeof(LabeledImageButton), 0);
-        
+        public static readonly BindableProperty ShortcutTextProperty = BindableProperty.Create(nameof(ShortcutText), typeof(string), typeof(LabeledImageButton), string.Empty);
+        public static readonly BindableProperty ShortcutFontSizeProperty = BindableProperty.Create(nameof(ShortcutFontSize), typeof(double), typeof(LabeledImageButton), 9.0);
+        public static readonly BindableProperty ShortcutFontFamilyProperty = BindableProperty.Create(nameof(ShortcutFontFamily), typeof(string), typeof(LabeledImageButton), "LatoRegular");
+        public static readonly BindableProperty ShortcutFontColorProperty = BindableProperty.Create(nameof(ShortcutFontColor), typeof(Color), typeof(LabeledImageButton), GHColors.Gray);
+        public static readonly BindableProperty IsShortcutVisibleProperty = BindableProperty.Create(nameof(IsShortcutVisible), typeof(bool), typeof(LabeledImageButton), false);
+
         public event EventHandler<EventArgs> BtnClicked;
         public char BtnLetter
         {
@@ -76,6 +81,32 @@ namespace GnollHackX.Controls
         {
             get => (Color)GetValue(LabeledImageButton.LblFontColorProperty);
             set => SetValue(LabeledImageButton.LblFontColorProperty, value);
+        }
+
+        public string ShortcutText
+        {
+            get => (string)GetValue(LabeledImageButton.ShortcutTextProperty);
+            set => SetValue(LabeledImageButton.ShortcutTextProperty, value);
+        }
+        public double ShortcutFontSize
+        {
+            get => (double)GetValue(LabeledImageButton.ShortcutFontSizeProperty);
+            set => SetValue(LabeledImageButton.ShortcutFontSizeProperty, value);
+        }
+        public string ShortcutFontFamily
+        {
+            get => (string)GetValue(LabeledImageButton.ShortcutFontFamilyProperty);
+            set => SetValue(LabeledImageButton.ShortcutFontFamilyProperty, value);
+        }
+        public Color ShortcutFontColor
+        {
+            get => (Color)GetValue(LabeledImageButton.ShortcutFontColorProperty);
+            set => SetValue(LabeledImageButton.ShortcutFontColorProperty, value);
+        }
+        public bool IsShortcutVisible
+        {
+            get => (bool)GetValue(LabeledImageButton.IsShortcutVisibleProperty);
+            set => SetValue(LabeledImageButton.IsShortcutVisibleProperty, value);
         }
 
         public string ImgSourcePath
@@ -127,17 +158,20 @@ namespace GnollHackX.Controls
         public int LandscapeButtonsInRow { get; set; } = 0;
         public int PortraitButtonsInRow { get; set; } = 0;
 
-        public void SetSideSize(double canvasViewWidth, double canvasViewHeight, bool usingDesktopButtons, bool usingSimpleCmdLayout, int stoneButtonRows, float inverseCanvasScale, float customScale)
+        public void SetSideSize(double canvasViewWidth, double canvasViewHeight, bool usingDesktopButtons, bool usingSimpleCmdLayout, bool showShortcuts, int stoneButtonRows, float inverseCanvasScale, float customScale)
         {
-            double imgsidewidth = UIUtils.CalculateButtonSideWidth(canvasViewWidth, canvasViewHeight, usingDesktopButtons, usingSimpleCmdLayout, stoneButtonRows, inverseCanvasScale, customScale, LandscapeButtonsInRow, PortraitButtonsInRow, false);
+            double imgsidewidth = UIUtils.CalculateButtonSideWidth(canvasViewWidth, canvasViewHeight, usingDesktopButtons, usingSimpleCmdLayout, stoneButtonRows, inverseCanvasScale, customScale, LandscapeButtonsInRow, PortraitButtonsInRow, false, showShortcuts);
             double imgsideheight = imgsidewidth;
             double fontsize = 8.5 * imgsidewidth / 50.0;
             double fontsize_larger = 9.0 * imgsidewidth / 50.0;
             double gridsidewidth = imgsidewidth;
-            double gridsideheight = imgsideheight + fontsize + 2;
-            double gridsideheight_larger = imgsideheight + fontsize_larger + 2;
+            double gridsideheight = imgsideheight + fontsize * (double)(showShortcuts ? GHConstants.TextRowMultiplierWithKeyboardShortcuts : 1.0f) + 2;
+            double gridsideheight_larger = imgsideheight + fontsize_larger * (double)(showShortcuts ? GHConstants.TextRowMultiplierWithKeyboardShortcuts : 1.0f) + 2;
 
             LblFontSize = LargerFont ? fontsize_larger : fontsize;
+            ShortcutFontSize = (LargerFont ? fontsize_larger : fontsize) * GHConstants.KeyboardShortcutRelativeFontSize;
+            IsShortcutVisible = showShortcuts;
+            ShortcutText = GHUtils.ConstructShortcutText(BtnLetter, BtnCtrl, BtnMeta);
             GridWidth = gridsidewidth;
             GridHeight = LargerFont ? gridsideheight_larger : gridsideheight;
             ImgWidth = imgsidewidth;
@@ -294,5 +328,4 @@ namespace GnollHackX.Controls
             BtnClicked?.Invoke(this, e);
         }
     }
-
 }

@@ -4501,6 +4501,8 @@ namespace GnollHackX
         public readonly string ImgSourcePath;
         public readonly SKImage Bitmap;
         public readonly int BtnCommand;
+        public readonly string ShortcutText;
+        
         //public SKRect Rect;
         public ContextMenuButton(string lblText, string imgSourcePath, SKImage bitmap, int btnCommand)
         {
@@ -4508,6 +4510,7 @@ namespace GnollHackX
             ImgSourcePath = imgSourcePath;
             Bitmap = bitmap;
             BtnCommand = btnCommand;
+            ShortcutText = GHUtils.ConstructShortcutText(btnCommand);
         }
     }
 }

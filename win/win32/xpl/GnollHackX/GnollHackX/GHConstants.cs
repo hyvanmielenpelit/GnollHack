@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -7,6 +8,8 @@ using System.Text;
 #if GNH_MAUI
 namespace GnollHackM
 #else
+using Xamarin.Forms;
+
 namespace GnollHackX
 #endif
 {
@@ -1994,6 +1997,8 @@ namespace GnollHackX
         public const string SAVE_GAME_NOTIFICATION_CHANNEL_ID = "save_game_channel";
         public const string SingleCommandPageTitle = "Commands";
         public const int DefaultMoreButtonListSize = MoreButtonPages * MoreButtonsPerRow * MoreButtonsPerColumn + 1;
+        public const float KeyboardShortcutRelativeFontSize = 0.9f;
+        public const float TextRowMultiplierWithKeyboardShortcuts = 1.0f + KeyboardShortcutRelativeFontSize;
     }
 
     [StructLayout(LayoutKind.Sequential)]
@@ -2287,4 +2292,14 @@ namespace GnollHackX
         A,
         Z = A + 25,
     }
+
+    public class InverseBooleanConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+            => value is bool b ? !b : value;
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+            => value is bool b ? !b : value;
+    }
+
 }

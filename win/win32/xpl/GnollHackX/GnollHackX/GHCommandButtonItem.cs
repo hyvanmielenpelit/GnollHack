@@ -37,12 +37,9 @@ namespace GnollHackX
         public SKRect Rect;
         public GHCommandButtonItem CommandButtonItem;
         public SKImage Bitmap;
-        public GHCommandButtonRect()
-        {
-
-        }
         public GHCommandButtonRect(GHCommandButtonItem commandButtonItem, SKImage bitmap)
         {
+            Rect = new SKRect();
             CommandButtonItem = commandButtonItem;
             Bitmap = bitmap;
         }
