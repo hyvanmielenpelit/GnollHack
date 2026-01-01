@@ -50,7 +50,7 @@ namespace GnollHackX
         public static string ConstructShortcutText(char btnLetter, bool btnCtrl, bool btnMeta)
         {
             if (btnLetter == (char)0)
-                return "";
+                return GHApp.IsiOS ? " " : "";
             _stringBuilder.Clear();
             if (btnMeta)
                 _stringBuilder.Append("Alt+");
@@ -62,7 +62,7 @@ namespace GnollHackX
         public static string ConstructShortcutText(string btnLetterString, bool btnCtrl, bool btnMeta)
         {
             if (string.IsNullOrEmpty(btnLetterString))
-                return "";
+                return GHApp.IsiOS ? " " : "";
             _stringBuilder.Clear();
             if (btnMeta)
                 _stringBuilder.Append("Alt+");
@@ -75,24 +75,24 @@ namespace GnollHackX
         public static string ConstructShortcutText(int command)
         {
             if (command < 0)
-                return "";
+                return GHApp.IsiOS ? " " : "";
             int btnAsciiCode = UnMetaCtrl(command);
             if (!(btnAsciiCode >= 32 && btnAsciiCode <= 123))
-                return "";
+                return GHApp.IsiOS ? " " : "";
             return ConstructShortcutText((char)btnAsciiCode, IsCtrl(command), IsMeta(command));
         }
         public static string ConstructShortcutText(LabeledImageButton btn)
         {
             if (btn == null)
-                return "";
+                return GHApp.IsiOS ? " " : "";
             int command = btn.BtnCommand;
             if (command < 0)
-                return "";
+                return GHApp.IsiOS ? " " : "";
             if (command == 0)
                 return ConstructShortcutText(btn.BtnLetter, btn.BtnCtrl, btn.BtnMeta);
             int btnAsciiCode = UnMetaCtrl(command);
             if (!(btnAsciiCode >= 32 && btnAsciiCode <= 123))
-                return "";
+                return GHApp.IsiOS ? " " : "";
             return ConstructShortcutText((char)btnAsciiCode, IsCtrl(command), IsMeta(command));
         }
 
