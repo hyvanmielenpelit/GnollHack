@@ -2517,7 +2517,7 @@ namespace GnollHackX.Pages.MainScreen
         {
             PopupTitleLabel.TextColor = GHColors.Orange;
             PopupTitleLabel.Text = "Tournament Mode";
-            PopupLabel.Text = "Use Tournament Mode only when playing in a tournament. Tournament Mode will force on Post Game Progress, Post Top Scores, Allow Ghost Levels, Share Bones Files, " + 
+            PopupLabel.Text = "Use Tournament Mode only when playing in a tournament." + Environment.NewLine + Environment.NewLine + "Tournament Mode will force on Post Game Progress, Post Top Scores, Allow Ghost Levels, Share Bones Files, " + 
                 (SaveFileTrackingGrid.IsVisible ? "Save File Tracking, " : "") + 
                 "Record Game, and Auto-Upload to Cloud settings. The mode will also disable all special game play modes, custom links, and custom webhooks." + 
                 (GHApp.XlogUserNameVerified ? "" : Environment.NewLine + Environment.NewLine + 
