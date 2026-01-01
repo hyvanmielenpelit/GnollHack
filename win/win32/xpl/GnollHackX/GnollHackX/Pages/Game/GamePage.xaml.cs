@@ -17138,7 +17138,7 @@ namespace GnollHackX.Pages.Game
                                 /* Count circle */
                                 if (mi.Count > 0 && !(mi.DrawBounds.Bottom <= 0 || mi.DrawBounds.Top >= canvasheight))
                                 {
-                                    float circleradius = mi.DrawBounds.Height * 0.90f / 2;
+                                    float circleradius = minrowheight * 0.90f / 2; // mi.DrawBounds.Height * 0.90f
                                     float circlex = mi.DrawBounds.Right - circleradius - 5;
                                     float circley = (mi.DrawBounds.Top + mi.DrawBounds.Bottom) / 2;
                                     textPaint.Color = SKColors.Red;
