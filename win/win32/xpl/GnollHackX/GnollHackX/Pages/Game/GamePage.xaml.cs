@@ -31,6 +31,8 @@ using SkiaSharp.Views.Maui;
 using SkiaSharp.Views.Maui.Controls;
 using Microsoft.Maui.Controls;
 using System.Security.AccessControl;
+using Microsoft.Diagnostics.Tracing.AutomatedAnalysis;
+
 
 
 
@@ -4125,6 +4127,7 @@ namespace GnollHackX.Pages.Game
             }
             RefreshScreen = false;
 
+            MenuEquipmentSideShown = false;
             MenuDrawOnlyClear = true;
             MenuRefresh = false;
             //lock (_menuDrawOnlyLock)
@@ -16709,6 +16712,47 @@ namespace GnollHackX.Pages.Game
         private float _savedMenuCanvasWidth = 0;
         private float _savedMenuCanvasHeight = 0;
 
+        private struct EquipmentSlot
+        {
+            public readonly string Name;
+            public readonly obj_worn_flags WornFlag;
+            public readonly string BitmapName;
+
+            public EquipmentSlot(string name, obj_worn_flags wornFlag, string bitmapName)
+            {
+                Name = name;
+                WornFlag = wornFlag;
+                BitmapName = bitmapName;
+            }
+        }
+        EquipmentSlot[] _equipmentSlots = new EquipmentSlot[] 
+        {
+            new EquipmentSlot("Weapon in right hand", obj_worn_flags.W_WEP, ".Assets.UI.fight.png"),
+            new EquipmentSlot("Weapon in left hand", obj_worn_flags.W_WEP2, ".Assets.UI.fight.png"),
+            new EquipmentSlot("Swap weapon in right hand", obj_worn_flags.W_SWAPWEP, ".Assets.UI.fight.png"),
+            new EquipmentSlot("Swap weapon for left hand", obj_worn_flags.W_SWAPWEP2, ".Assets.UI.fight.png"),
+            new EquipmentSlot("Quiver", obj_worn_flags.W_QUIVER, ".Assets.UI.fight.png"),
+            new EquipmentSlot("Amulet", obj_worn_flags.W_AMUL, ".Assets.UI.fight.png"),
+            new EquipmentSlot("Suit of armor", obj_worn_flags.W_ARM, ".Assets.UI.fight.png"),
+            new EquipmentSlot("Cloak", obj_worn_flags.W_ARMC, ".Assets.UI.fight.png"),
+            new EquipmentSlot("Robe", obj_worn_flags.W_ARMO, ".Assets.UI.fight.png"),
+            new EquipmentSlot("Shirt", obj_worn_flags.W_ARMU, ".Assets.UI.fight.png"),
+            new EquipmentSlot("Helmet", obj_worn_flags.W_ARMH, ".Assets.UI.fight.png"),
+            new EquipmentSlot("Shield", obj_worn_flags.W_ARMS, ".Assets.UI.fight.png"),
+            new EquipmentSlot("Gloves", obj_worn_flags.W_ARMG, ".Assets.UI.fight.png"),
+            new EquipmentSlot("Boots", obj_worn_flags.W_ARMF, ".Assets.UI.fight.png"),
+            new EquipmentSlot("Bracers", obj_worn_flags.W_ARMB, ".Assets.UI.fight.png"),
+            new EquipmentSlot("Left ring", obj_worn_flags.W_RINGL, ".Assets.UI.fight.png"),
+            new EquipmentSlot("Right ring", obj_worn_flags.W_RINGR, ".Assets.UI.fight.png"),
+            new EquipmentSlot("Blindfold", obj_worn_flags.W_BLINDFOLD, ".Assets.UI.fight.png"),
+            new EquipmentSlot("Miscellaneous magic item 1", obj_worn_flags.W_MISC, ".Assets.UI.fight.png"),
+            new EquipmentSlot("Miscellaneous magic item 2", obj_worn_flags.W_MISC2, ".Assets.UI.fight.png"),
+            new EquipmentSlot("Miscellaneous magic item 3", obj_worn_flags.W_MISC3, ".Assets.UI.fight.png"),
+            new EquipmentSlot("Miscellaneous magic item 4", obj_worn_flags.W_MISC4, ".Assets.UI.fight.png"),
+            new EquipmentSlot("Miscellaneous magic item 5", obj_worn_flags.W_MISC5, ".Assets.UI.fight.png"),
+        };
+        List<GHMenuItem> _wornMenuItems = new List<GHMenuItem>(32);
+
         private void MenuCanvas_PaintSurface(object sender, SKPaintSurfaceEventArgs e)
         {
             bool isMenuOnMainThread = MainThread.IsMainThread;
@@ -16783,409 +16827,492 @@ namespace GnollHackX.Pages.Game
                 float picturewidth = 64.0f * textPaint.FontSpacing / 48.0f;
                 float picturepadding = 9 * scale * customScale;
                 float leftinnerpadding = 5;
-                float curmenuoffset = InterlockedMenuScrollOffset;
-                //lock (_menuScrollLock)
-                //{
-                //    curmenuoffset = _menuScrollOffset;
-                //}
-                y = curmenuoffset;
                 double menumarginx = MenuCanvas.MenuButtonStyle ? 30.0 : 15.0;
                 double menuwidth = Math.Max(1.0, Math.Min(MenuCanvas.ThreadSafeWidth - menumarginx * 2, UIUtils.MenuViewWidthRequest(referenceCanvasView.MenuStyle) * customScale));
                 float menuwidthoncanvas = (float)(menuwidth * scale);
                 float scaledmenumarginx = (float)menumarginx * scale;
                 float leftmenupadding = Math.Max(0, (canvaswidth - menuwidthoncanvas) / 2);
                 float rightmenupadding = leftmenupadding;
-                float accel_fixed_width = 10;
-                bool first = true;
-                float bottomPadding = 0;
-                float topPadding = 0;
-                float maintext_x_start = 0;
-                float fontspacingpadding = 0;
-                bool wrapglyph = MenuCanvas.GHWindow != null ? MenuCanvas.GHWindow.WrapGlyph : false;
-                float glyphpadding = 0;
-                float glyphystart = scale * (float)Math.Max(0.0, MenuWindowGlyphImage.ThreadSafeY - MenuCanvas.ThreadSafeY);
-                float glyphyend = scale * (float)Math.Max(0.0, MenuWindowGlyphImage.ThreadSafeY + MenuWindowGlyphImage.ThreadSafeHeight - MenuCanvas.ThreadSafeY);
-                //lock (MenuCanvas.MenuItemLock)
+
+                if (MenuEquipmentSideShown)
                 {
-                    bool has_pictures = false;
-                    bool has_identifiers = false;
-                    _firstDrawnMenuItemIdx = -1;
-                    _lastDrawnMenuItemIdx = -1;
-                    foreach (GHMenuItem mi in menuItems)
+                    float minrowheight = textPaint.FontSpacing;
+                    x = y = 0;
+                    _wornMenuItems.Clear();
+                    long allWornBits = 0;
+
+                    for (int i = 0; i < MenuCanvas.MenuItems?.Count; i++)
                     {
-                        if (mi.Identifier != 0 || mi.SpecialMark != '\0')
-                            has_identifiers = true;
-
-                        if (mi.IsGlyphVisible)
-                            has_pictures = true;
-
-                        if (has_identifiers && has_pictures)
-                            break;
+                        var menuItem = MenuCanvas.MenuItems[i];
+                        if (menuItem != null)
+                        {
+                            long wornBits = menuItem.ObjWornBits;
+                            if (wornBits != 0L)
+                            {
+                                allWornBits |= wornBits;
+                                _wornMenuItems.Add(menuItem);
+                            }
+                        }
                     }
 
-                    //lock (_refreshMenuRowCountLock)
+                    textPaint.TextSize = 16 * scale * customScale;
+                    x += leftmenupadding;
+                    float start_x = x;
+                    foreach (var slot in _equipmentSlots)
                     {
-                        int idx = -1;
-                        float firstMinRowHeight = -1;
+                        SKRect targetRect = new SKRect(x, y, x + picturewidth, y + minrowheight);
+                        SKColor oldcolor = textPaint.Paint.Color;
+                        textPaint.Color = SKColors.Gray.WithAlpha(128);
+                        textPaint.Style = SKPaintStyle.Fill;
+                        canvas.DrawRect(targetRect, textPaint.Paint);
+                        textPaint.Paint.Color = oldcolor;
+
+                        if ((allWornBits & (long)slot.WornFlag) != 0)
+                        {
+                            GHMenuItem foundItem = null;
+                            for (int i = 0; i < _wornMenuItems.Count; i++)
+                            {
+                                var menuItem = _wornMenuItems[i];
+                                if (menuItem != null)
+                                {
+                                    long wornBits = menuItem.ObjWornBits;
+                                    if (wornBits == (long)slot.WornFlag)
+                                    {
+                                        foundItem = menuItem;
+                                        break;
+                                    }
+                                }
+                            }
+                            if (foundItem != null)
+                            {
+                                /* Icon */
+                                float glyph_start_y = y;
+                                if (!(glyph_start_y + minrowheight <= 0 || glyph_start_y >= canvasheight))
+                                {
+                                    using (new SKAutoCanvasRestore(canvas, true))
+                                    {
+                                        foundItem.GlyphImageSource.AutoSize = true;
+                                        foundItem.GlyphImageSource.DoAutoSize();
+                                        if (foundItem.GlyphImageSource.Height > 0)
+                                        {
+                                            float glyphxcenterpadding = (picturewidth - minrowheight * foundItem.GlyphImageSource.Width / foundItem.GlyphImageSource.Height) / 2;
+                                            canvas.Translate(x + glyphxcenterpadding, glyph_start_y);
+                                            canvas.Scale(minrowheight / foundItem.GlyphImageSource.Height);
+                                            foundItem.GlyphImageSource.DrawOnCanvas(canvas, usingGL, false, isHighFilterQuality, fixRects);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        else
+                        {
+                            /* Empty slot */
+                        }
+
+                        x += picturewidth + 5;
+                        y += (minrowheight - (textPaint.FontMetrics.Descent - textPaint.FontMetrics.Ascent)) / 2;
+                        textPaint.DrawTextOnCanvas(canvas, slot.Name, x, y - textPaint.FontMetrics.Ascent);
+
+                        x = start_x;
+                        y += textPaint.FontMetrics.Descent - textPaint.FontMetrics.Ascent + (minrowheight - (textPaint.FontMetrics.Descent - textPaint.FontMetrics.Ascent)) / 2 + 10;
+                    }
+                }
+                else
+                {
+                    float curmenuoffset = InterlockedMenuScrollOffset;
+                    y = curmenuoffset;
+                    float accel_fixed_width = 10;
+                    bool first = true;
+                    float bottomPadding = 0;
+                    float topPadding = 0;
+                    float maintext_x_start = 0;
+                    float fontspacingpadding = 0;
+                    bool wrapglyph = MenuCanvas.GHWindow != null ? MenuCanvas.GHWindow.WrapGlyph : false;
+                    float glyphpadding = 0;
+                    float glyphystart = scale * (float)Math.Max(0.0, MenuWindowGlyphImage.ThreadSafeY - MenuCanvas.ThreadSafeY);
+                    float glyphyend = scale * (float)Math.Max(0.0, MenuWindowGlyphImage.ThreadSafeY + MenuWindowGlyphImage.ThreadSafeHeight - MenuCanvas.ThreadSafeY);
+                    //lock (MenuCanvas.MenuItemLock)
+                    {
+                        bool has_pictures = false;
+                        bool has_identifiers = false;
+                        _firstDrawnMenuItemIdx = -1;
+                        _lastDrawnMenuItemIdx = -1;
                         foreach (GHMenuItem mi in menuItems)
                         {
-                            idx++;
-                            bool IsMiButton = mi.IsButton;
-                            float extra_vertical_padding = IsMiButton ? 12f : 0f;
+                            if (mi.Identifier != 0 || mi.SpecialMark != '\0')
+                                has_identifiers = true;
 
-                            /* Padding */
-                            bottomPadding = (mi.BottomPadding + extra_vertical_padding) * scale * customScale;
-                            topPadding = (mi.TopPadding + extra_vertical_padding) * scale * customScale;
+                            if (mi.IsGlyphVisible)
+                                has_pictures = true;
 
-                            /* Text Size and Minimum Row Height */
-                            if ((mi.NHAttribute & (int)MenuItemAttributes.HalfSize) != 0)
-                                textPaint.TextSize = (mi.MinimumTouchableTextSize / 2) * scale * customScale;
-                            else
-                                textPaint.TextSize = mi.MinimumTouchableTextSize * scale * customScale;
-                            float minrowheight = mi.MinimumRowHeight(textPaint.FontSpacing, bottomPadding, topPadding, canvaswidth, canvasheight);
-                            float paddingAdjustment = 0;
-                            if (firstMinRowHeight == -1)
-                                firstMinRowHeight = minrowheight;
-                            if (isInventory && firstMinRowHeight > 0 && leftmenupadding > firstMinRowHeight / 2 + scaledmenumarginx)
-                                paddingAdjustment = -firstMinRowHeight / 2;
-                            x = leftmenupadding + paddingAdjustment;
-                            mi.DrawBounds.Left = x;
-                            float mainfontsize = (float)mi.FontSize * scale * customScale;
-                            float relsuffixsize = (float)mi.RelativeSuffixFontSize;
-                            float suffixfontsize = relsuffixsize * mainfontsize;
-                            string mainFontFamily = mi.FontFamily;
-                            SKTypeface mainFont = GHApp.GetTypefaceByName(mainFontFamily);
-                            textPaint.Typeface = mainFont;
-                            textPaint.TextSize = mainfontsize;
-                            //textPaint.TextAlign = SKTextAlign.Left;
+                            if (has_identifiers && has_pictures)
+                                break;
+                        }
 
-                            if (MenuWindowGlyphImage.ThreadSafeIsVisible && wrapglyph)
-                                glyphpadding = scale * (float)Math.Max(0.0, MenuCanvas.ThreadSafeX + MenuCanvas.ThreadSafeWidth - MenuWindowGlyphImage.ThreadSafeX);
-                            else
-                                glyphpadding = 0;
-
-                            mi.DrawBounds.Top = y;
-                            //if (mi.DrawBounds.Top >= canvasheight)
-                            //    break;
-
-                            if (first)
+                        //lock (_refreshMenuRowCountLock)
+                        {
+                            int idx = -1;
+                            float firstMinRowHeight = -1;
+                            foreach (GHMenuItem mi in menuItems)
                             {
-                                accel_fixed_width = textPaint.MeasureText("A"); // textPaint.FontMetrics.AverageCharacterWidth; // + 3 * textPaint.MeasureText(" ");
-                                _firstDrawnMenuItemIdx = idx;
-                                maintext_x_start = leftmenupadding + paddingAdjustment + leftinnerpadding + (has_identifiers && !MenuCanvas.HideMenuLetters ? accel_fixed_width : 0) + (has_pictures ? picturepadding + picturewidth + picturepadding : !MenuCanvas.HideMenuLetters ? accel_fixed_width : 0 /*textPaint.FontMetrics.AverageCharacterWidth*/);
-                                first = false;
-                            }
+                                idx++;
+                                bool IsMiButton = mi.IsButton;
+                                float extra_vertical_padding = IsMiButton ? 12f : 0f;
 
-                            int maintextrows = 1;
-                            int suffixtextrows = 0;
-                            int suffix2textrows = 0;
+                                /* Padding */
+                                bottomPadding = (mi.BottomPadding + extra_vertical_padding) * scale * customScale;
+                                topPadding = (mi.TopPadding + extra_vertical_padding) * scale * customScale;
 
-                            string[] maintextsplit = mi.MainTextSplit;
-                            string[] suffixtextsplit = mi.SuffixTextSplit;
-                            string[] suffix2textsplit = mi.Suffix2TextSplit;
-                            List<byte[]> mainattrssplit = mi.MainSplitAttrs;
-                            List<byte[]> suffixattrssplit = mi.SuffixSplitAttrs;
-                            List<byte[]> suffix2attrssplit = mi.Suffix2SplitAttrs;
-                            List<byte[]> maincolorssplit = mi.MainSplitColors;
-                            List<byte[]> suffixcolorssplit = mi.SuffixSplitColors;
-                            List<byte[]> suffix2colorssplit = mi.Suffix2SplitColors;
+                                /* Text Size and Minimum Row Height */
+                                if ((mi.NHAttribute & (int)MenuItemAttributes.HalfSize) != 0)
+                                    textPaint.TextSize = (mi.MinimumTouchableTextSize / 2) * scale * customScale;
+                                else
+                                    textPaint.TextSize = mi.MinimumTouchableTextSize * scale * customScale;
+                                float minrowheight = mi.MinimumRowHeight(textPaint.FontSpacing, bottomPadding, topPadding, canvaswidth, canvasheight);
+                                float paddingAdjustment = 0;
+                                if (firstMinRowHeight == -1)
+                                    firstMinRowHeight = minrowheight;
+                                if (isInventory && firstMinRowHeight > 0 && leftmenupadding > firstMinRowHeight / 2 + scaledmenumarginx)
+                                    paddingAdjustment = -firstMinRowHeight / 2;
+                                x = leftmenupadding + paddingAdjustment;
+                                mi.DrawBounds.Left = x;
+                                float mainfontsize = (float)mi.FontSize * scale * customScale;
+                                float relsuffixsize = (float)mi.RelativeSuffixFontSize;
+                                float suffixfontsize = relsuffixsize * mainfontsize;
+                                string mainFontFamily = mi.FontFamily;
+                                SKTypeface mainFont = GHApp.GetTypefaceByName(mainFontFamily);
+                                textPaint.Typeface = mainFont;
+                                textPaint.TextSize = mainfontsize;
+                                //textPaint.TextAlign = SKTextAlign.Left;
 
-                            List<float> mainrowwidths = null, suffixrowwidths = null, suffix2rowwidths = null;
+                                if (MenuWindowGlyphImage.ThreadSafeIsVisible && wrapglyph)
+                                    glyphpadding = scale * (float)Math.Max(0.0, MenuCanvas.ThreadSafeX + MenuCanvas.ThreadSafeWidth - MenuWindowGlyphImage.ThreadSafeX);
+                                else
+                                    glyphpadding = 0;
 
-                            if (RefreshMenuRowCounts || !mi.TextRowCountsSet)
-                            {
-                                maintextrows = CountTextSplitRows(maintextsplit, maintext_x_start, canvaswidth, rightmenupadding, paddingAdjustment, textPaint, mi.UseSpecialSymbols, out mainrowwidths);
-                                mi.MainTextRows = maintextrows;
-                                mi.MainTextRowWidths = mainrowwidths;
+                                mi.DrawBounds.Top = y;
+                                //if (mi.DrawBounds.Top >= canvasheight)
+                                //    break;
 
-                                textPaint.TextSize = suffixfontsize;
-                                suffixtextrows = CountTextSplitRows(suffixtextsplit, maintext_x_start, canvaswidth, rightmenupadding, paddingAdjustment, textPaint, mi.UseSpecialSymbols, out suffixrowwidths);
-                                mi.SuffixTextRows = suffixtextrows;
-                                mi.SuffixTextRowWidths = suffixrowwidths;
-
-                                suffix2textrows = CountTextSplitRows(suffix2textsplit, maintext_x_start, canvaswidth, rightmenupadding, paddingAdjustment, textPaint, mi.UseSpecialSymbols, out suffix2rowwidths);
-                                mi.Suffix2TextRows = suffix2textrows;
-                                mi.Suffix2TextRowWidths = suffix2rowwidths;
-
-                                mi.TextRowCountsSet = true;
-                            }
-                            else
-                            {
-                                maintextrows = mi.MainTextRows;
-                                suffixtextrows = mi.SuffixTextRows;
-                                suffix2textrows = mi.Suffix2TextRows;
-                                mainrowwidths = mi.MainTextRowWidths;
-                                suffixrowwidths = mi.SuffixTextRowWidths;
-                                suffix2rowwidths = mi.Suffix2TextRowWidths;
-                            }
-                            textPaint.TextSize = mainfontsize;
-
-                            fontspacingpadding = (textPaint.FontSpacing - (textPaint.FontMetrics.Descent - textPaint.FontMetrics.Ascent)) / 2;
-                            float generallinepadding = Math.Max(0.0f, (minrowheight - (textPaint.FontSpacing) * ((float)maintextrows + suffixtextrows * (mi.IsSuffixTextVisible ? relsuffixsize : 0.0f) + (mi.IsSuffix2TextVisible ? relsuffixsize : 0.0f))) / 2);
-
-                            bool isselected = referenceCanvasView.SelectionHow == SelectionMode.Multiple ? mi.Selected :
-                                referenceCanvasView.SelectionHow == SelectionMode.Single ? idx == referenceCanvasView.SelectionIndex : false;
-
-                            float totalRowHeight = topPadding + bottomPadding + ((float)maintextrows + suffixtextrows * (mi.IsSuffixTextVisible ? relsuffixsize : 0.0f) + (mi.IsSuffix2TextVisible ? relsuffixsize : 0.0f)) * (textPaint.FontSpacing) + 2 * generallinepadding;
-                            float totalRowWidth = canvaswidth - leftmenupadding - rightmenupadding;
-                            float totalRowExtraSpacing = IsMiButton ? 12.0f * scale * customScale : 0f;
-
-                            if (y + totalRowHeight <= 0 || y >= canvasheight)
-                            {
-                                /* Just add the total row height */
-                                y += totalRowHeight;
-                                mi.DrawBounds.Right = mi.DrawBounds.Left + totalRowWidth;
-                                mi.DrawBounds.Bottom = mi.DrawBounds.Top + totalRowHeight;
-                                y += totalRowExtraSpacing;
-                            }
-                            else
-                            {
-                                /* Selection rectangle */
-                                bool isSelectable = referenceCanvasView.SelectionHow != SelectionMode.None && mi.Identifier != 0;
-                                bool iconsFitRight = x + totalRowWidth + minrowheight < canvaswidth - scaledmenumarginx;
-                                SKRect selectionrect = new SKRect(x, y, x + totalRowWidth + (isInventory && iconsFitRight ? minrowheight : 0), y + totalRowHeight);
-#if WINDOWS
-                                bool isHover = false;
-                                lock (_menuHoverLock)
+                                if (first)
                                 {
-                                    isHover = _menuIsHovering && selectionrect.Contains(_menuHoverPoint);
+                                    accel_fixed_width = textPaint.MeasureText("A"); // textPaint.FontMetrics.AverageCharacterWidth; // + 3 * textPaint.MeasureText(" ");
+                                    _firstDrawnMenuItemIdx = idx;
+                                    maintext_x_start = leftmenupadding + paddingAdjustment + leftinnerpadding + (has_identifiers && !MenuCanvas.HideMenuLetters ? accel_fixed_width : 0) + (has_pictures ? picturepadding + picturewidth + picturepadding : !MenuCanvas.HideMenuLetters ? accel_fixed_width : 0 /*textPaint.FontMetrics.AverageCharacterWidth*/);
+                                    first = false;
                                 }
-#else
-                                bool isHover = IsMiButton; /* On mobile, all buttons are normal / hover color automatically */
-#endif
-                                if (IsMiButton)
+
+                                int maintextrows = 1;
+                                int suffixtextrows = 0;
+                                int suffix2textrows = 0;
+
+                                string[] maintextsplit = mi.MainTextSplit;
+                                string[] suffixtextsplit = mi.SuffixTextSplit;
+                                string[] suffix2textsplit = mi.Suffix2TextSplit;
+                                List<byte[]> mainattrssplit = mi.MainSplitAttrs;
+                                List<byte[]> suffixattrssplit = mi.SuffixSplitAttrs;
+                                List<byte[]> suffix2attrssplit = mi.Suffix2SplitAttrs;
+                                List<byte[]> maincolorssplit = mi.MainSplitColors;
+                                List<byte[]> suffixcolorssplit = mi.SuffixSplitColors;
+                                List<byte[]> suffix2colorssplit = mi.Suffix2SplitColors;
+
+                                List<float> mainrowwidths = null, suffixrowwidths = null, suffix2rowwidths = null;
+
+                                if (RefreshMenuRowCounts || !mi.TextRowCountsSet)
                                 {
-                                    canvas.DrawImage(isselected || mi.Highlighted ? GHApp.ButtonSelectedBitmap : isHover ? GHApp.ButtonNormalBitmap : GHApp.ButtonDisabledBitmap, selectionrect);
+                                    maintextrows = CountTextSplitRows(maintextsplit, maintext_x_start, canvaswidth, rightmenupadding, paddingAdjustment, textPaint, mi.UseSpecialSymbols, out mainrowwidths);
+                                    mi.MainTextRows = maintextrows;
+                                    mi.MainTextRowWidths = mainrowwidths;
+
+                                    textPaint.TextSize = suffixfontsize;
+                                    suffixtextrows = CountTextSplitRows(suffixtextsplit, maintext_x_start, canvaswidth, rightmenupadding, paddingAdjustment, textPaint, mi.UseSpecialSymbols, out suffixrowwidths);
+                                    mi.SuffixTextRows = suffixtextrows;
+                                    mi.SuffixTextRowWidths = suffixrowwidths;
+
+                                    suffix2textrows = CountTextSplitRows(suffix2textsplit, maintext_x_start, canvaswidth, rightmenupadding, paddingAdjustment, textPaint, mi.UseSpecialSymbols, out suffix2rowwidths);
+                                    mi.Suffix2TextRows = suffix2textrows;
+                                    mi.Suffix2TextRowWidths = suffix2rowwidths;
+
+                                    mi.TextRowCountsSet = true;
                                 }
                                 else
                                 {
-                                    if (isselected)
-                                    {
-                                        textPaint.Color = isHover ? _menuHighlightHoverOverSelectedColor : _menuHighlightSelectedColor;
-                                        textPaint.Style = SKPaintStyle.Fill;
-                                        canvas.DrawRect(selectionrect, textPaint.Paint);
-                                    }
-                                    else if (mi.Highlighted)
-                                    {
-                                        textPaint.Color = isHover ? _menuHighlightHoverOverAutoClickedColor : _menuHighlightAutoClickedColor;
-                                        textPaint.Style = SKPaintStyle.Fill;
-                                        canvas.DrawRect(selectionrect, textPaint.Paint);
-                                    }
-                                    else if (isHover && isSelectable)
-                                    {
-                                        textPaint.Color = mi.IsAutoClickOk || MenuCanvas.ClickOKOnSelection ? _menuHighlightHoverOverAutoClickableColor : _menuHighlightHoverOverSelectableColor;
-                                        textPaint.Style = SKPaintStyle.Fill;
-                                        canvas.DrawRect(selectionrect, textPaint.Paint);
-                                    }
-                                    //else if (mi.IsObjWorn)
-                                    //{
-                                    //    textPaint.Color = _menuHighlightWornColor;
-                                    //    textPaint.Style = SKPaintStyle.Fill;
-                                    //    canvas.DrawRect(selectionrect, textPaint.Paint);
-                                    //}
+                                    maintextrows = mi.MainTextRows;
+                                    suffixtextrows = mi.SuffixTextRows;
+                                    suffix2textrows = mi.Suffix2TextRows;
+                                    mainrowwidths = mi.MainTextRowWidths;
+                                    suffixrowwidths = mi.SuffixTextRowWidths;
+                                    suffix2rowwidths = mi.Suffix2TextRowWidths;
                                 }
+                                textPaint.TextSize = mainfontsize;
 
-                                float singlelinepadding = Math.Max(0.0f, ((float)(maintextrows - 1) * (textPaint.FontSpacing)) / 2);
-                                y += topPadding;
-                                y += generallinepadding;
-                                y += fontspacingpadding;
-                                y -= textPaint.FontMetrics.Ascent;
-                                x += leftinnerpadding;
+                                fontspacingpadding = (textPaint.FontSpacing - (textPaint.FontMetrics.Descent - textPaint.FontMetrics.Ascent)) / 2;
+                                float generallinepadding = Math.Max(0.0f, (minrowheight - (textPaint.FontSpacing) * ((float)maintextrows + suffixtextrows * (mi.IsSuffixTextVisible ? relsuffixsize : 0.0f) + (mi.IsSuffix2TextVisible ? relsuffixsize : 0.0f))) / 2);
 
-                                if (has_identifiers && !MenuCanvas.HideMenuLetters)
+                                bool isselected = referenceCanvasView.SelectionHow == SelectionMode.Multiple ? mi.Selected :
+                                    referenceCanvasView.SelectionHow == SelectionMode.Single ? idx == referenceCanvasView.SelectionIndex : false;
+
+                                float totalRowHeight = topPadding + bottomPadding + ((float)maintextrows + suffixtextrows * (mi.IsSuffixTextVisible ? relsuffixsize : 0.0f) + (mi.IsSuffix2TextVisible ? relsuffixsize : 0.0f)) * (textPaint.FontSpacing) + 2 * generallinepadding;
+                                float totalRowWidth = canvaswidth - leftmenupadding - rightmenupadding;
+                                float totalRowExtraSpacing = IsMiButton ? 12.0f * scale * customScale : 0f;
+
+                                if (y + totalRowHeight <= 0 || y >= canvasheight)
                                 {
-                                    if (mi.Identifier == 0 && mi.SpecialMark != '\0')
-                                        str = mi.FormattedSpecialMark;
+                                    /* Just add the total row height */
+                                    y += totalRowHeight;
+                                    mi.DrawBounds.Right = mi.DrawBounds.Left + totalRowWidth;
+                                    mi.DrawBounds.Bottom = mi.DrawBounds.Top + totalRowHeight;
+                                    y += totalRowExtraSpacing;
+                                }
+                                else
+                                {
+                                    /* Selection rectangle */
+                                    bool isSelectable = referenceCanvasView.SelectionHow != SelectionMode.None && mi.Identifier != 0;
+                                    bool iconsFitRight = x + totalRowWidth + minrowheight < canvaswidth - scaledmenumarginx;
+                                    SKRect selectionrect = new SKRect(x, y, x + totalRowWidth + (isInventory && iconsFitRight ? minrowheight : 0), y + totalRowHeight);
+#if WINDOWS
+                                    bool isHover = false;
+                                    lock (_menuHoverLock)
+                                    {
+                                        isHover = _menuIsHovering && selectionrect.Contains(_menuHoverPoint);
+                                    }
+#else
+                                bool isHover = IsMiButton; /* On mobile, all buttons are normal / hover color automatically */
+#endif
+                                    if (IsMiButton)
+                                    {
+                                        canvas.DrawImage(isselected || mi.Highlighted ? GHApp.ButtonSelectedBitmap : isHover ? GHApp.ButtonNormalBitmap : GHApp.ButtonDisabledBitmap, selectionrect);
+                                    }
                                     else
-                                        str = mi.FormattedAccelerator;
-                                    textPaint.Color = isHighlightedKeys ? (revertBW ? _keyIdentifierTextColorReverted : _keyIdentifierTextColor) : SKColors.Gray;
-                                    float identifier_y =
-                                        mi.IsSuffixTextVisible || mi.IsSuffix2TextVisible ? (selectionrect.Top + selectionrect.Bottom) / 2 - (textPaint.FontMetrics.Descent - textPaint.FontMetrics.Ascent) / 2 - textPaint.FontMetrics.Ascent
-                                        : y + singlelinepadding;
-                                    if (!(y + singlelinepadding + textPaint.FontSpacing + textPaint.FontMetrics.Ascent <= 0 || y + singlelinepadding + textPaint.FontMetrics.Ascent >= canvasheight))
-                                        textPaint.DrawTextOnCanvas(canvas, str, x, identifier_y);
-                                    x += accel_fixed_width;
-                                }
-
-                                if (has_pictures)
-                                {
-                                    x += picturepadding;
-
-                                    /* Icon */
-                                    float glyph_start_y = mi.DrawBounds.Top + Math.Max(0, (totalRowHeight - minrowheight) / 2);
-                                    if (mi.IsGlyphVisible && !(glyph_start_y + minrowheight <= 0 || glyph_start_y >= canvasheight))
                                     {
-                                        using (new SKAutoCanvasRestore(canvas, true))
+                                        if (isselected)
                                         {
-                                            mi.GlyphImageSource.AutoSize = true;
-                                            mi.GlyphImageSource.DoAutoSize();
-                                            if (mi.GlyphImageSource.Height > 0)
+                                            textPaint.Color = isHover ? _menuHighlightHoverOverSelectedColor : _menuHighlightSelectedColor;
+                                            textPaint.Style = SKPaintStyle.Fill;
+                                            canvas.DrawRect(selectionrect, textPaint.Paint);
+                                        }
+                                        else if (mi.Highlighted)
+                                        {
+                                            textPaint.Color = isHover ? _menuHighlightHoverOverAutoClickedColor : _menuHighlightAutoClickedColor;
+                                            textPaint.Style = SKPaintStyle.Fill;
+                                            canvas.DrawRect(selectionrect, textPaint.Paint);
+                                        }
+                                        else if (isHover && isSelectable)
+                                        {
+                                            textPaint.Color = mi.IsAutoClickOk || MenuCanvas.ClickOKOnSelection ? _menuHighlightHoverOverAutoClickableColor : _menuHighlightHoverOverSelectableColor;
+                                            textPaint.Style = SKPaintStyle.Fill;
+                                            canvas.DrawRect(selectionrect, textPaint.Paint);
+                                        }
+                                        //else if (mi.IsObjWorn)
+                                        //{
+                                        //    textPaint.Color = _menuHighlightWornColor;
+                                        //    textPaint.Style = SKPaintStyle.Fill;
+                                        //    canvas.DrawRect(selectionrect, textPaint.Paint);
+                                        //}
+                                    }
+
+                                    float singlelinepadding = Math.Max(0.0f, ((float)(maintextrows - 1) * (textPaint.FontSpacing)) / 2);
+                                    y += topPadding;
+                                    y += generallinepadding;
+                                    y += fontspacingpadding;
+                                    y -= textPaint.FontMetrics.Ascent;
+                                    x += leftinnerpadding;
+
+                                    if (has_identifiers && !MenuCanvas.HideMenuLetters)
+                                    {
+                                        if (mi.Identifier == 0 && mi.SpecialMark != '\0')
+                                            str = mi.FormattedSpecialMark;
+                                        else
+                                            str = mi.FormattedAccelerator;
+                                        textPaint.Color = isHighlightedKeys ? (revertBW ? _keyIdentifierTextColorReverted : _keyIdentifierTextColor) : SKColors.Gray;
+                                        float identifier_y =
+                                            mi.IsSuffixTextVisible || mi.IsSuffix2TextVisible ? (selectionrect.Top + selectionrect.Bottom) / 2 - (textPaint.FontMetrics.Descent - textPaint.FontMetrics.Ascent) / 2 - textPaint.FontMetrics.Ascent
+                                            : y + singlelinepadding;
+                                        if (!(y + singlelinepadding + textPaint.FontSpacing + textPaint.FontMetrics.Ascent <= 0 || y + singlelinepadding + textPaint.FontMetrics.Ascent >= canvasheight))
+                                            textPaint.DrawTextOnCanvas(canvas, str, x, identifier_y);
+                                        x += accel_fixed_width;
+                                    }
+
+                                    if (has_pictures)
+                                    {
+                                        x += picturepadding;
+
+                                        /* Icon */
+                                        float glyph_start_y = mi.DrawBounds.Top + Math.Max(0, (totalRowHeight - minrowheight) / 2);
+                                        if (mi.IsGlyphVisible && !(glyph_start_y + minrowheight <= 0 || glyph_start_y >= canvasheight))
+                                        {
+                                            using (new SKAutoCanvasRestore(canvas, true))
                                             {
-                                                float glyphxcenterpadding = (picturewidth - minrowheight * mi.GlyphImageSource.Width / mi.GlyphImageSource.Height) / 2;
-                                                canvas.Translate(x + glyphxcenterpadding, glyph_start_y);
-                                                canvas.Scale(minrowheight / mi.GlyphImageSource.Height);
-                                                mi.GlyphImageSource.DrawOnCanvas(canvas, usingGL, false, isHighFilterQuality, fixRects);
+                                                mi.GlyphImageSource.AutoSize = true;
+                                                mi.GlyphImageSource.DoAutoSize();
+                                                if (mi.GlyphImageSource.Height > 0)
+                                                {
+                                                    float glyphxcenterpadding = (picturewidth - minrowheight * mi.GlyphImageSource.Width / mi.GlyphImageSource.Height) / 2;
+                                                    canvas.Translate(x + glyphxcenterpadding, glyph_start_y);
+                                                    canvas.Scale(minrowheight / mi.GlyphImageSource.Height);
+                                                    mi.GlyphImageSource.DrawOnCanvas(canvas, usingGL, false, isHighFilterQuality, fixRects);
+                                                }
                                             }
                                         }
+                                        x += picturewidth + picturepadding;
                                     }
-                                    x += picturewidth + picturepadding;
-                                }
-                                else if (!MenuCanvas.HideMenuLetters)
-                                {
-                                    x += accel_fixed_width; // textPaint.FontMetrics.AverageCharacterWidth;
-                                }
-
-                                /* Worn icon */
-                                bool hasWornIcon = mi.IsObjWorn;
-                                if (hasWornIcon && !(mi.DrawBounds.Bottom <= 0 || mi.DrawBounds.Top >= canvasheight))
-                                {
-                                    long wornBits = mi.ObjWornBits;
-                                    string bmpName =
-                                            (wornBits & (long)obj_worn_flags.W_WEP2) != 0 && !mi.IsObjArmor ? ".Assets.UI.fight.png" :
-                                            (wornBits & (long)obj_worn_flags.W_WIELDED_WEAPON) != 0 ? ".Assets.UI.wield.png" :
-                                            (wornBits & (long)obj_worn_flags.W_ARMF) != 0 ? ".Assets.UI.travel.png" :
-                                            (wornBits & (long)obj_worn_flags.W_ARMH) != 0 ? ".Assets.UI.cast.png" :
-                                            (wornBits & (long)obj_worn_flags.W_ARMOR) != 0 ? ".Assets.UI.wear.png" :
-                                            (wornBits & (long)obj_worn_flags.W_RINGL) != 0 ? ".Assets.UI.leftring.png" :
-                                            (wornBits & (long)obj_worn_flags.W_RINGR) != 0 ? ".Assets.UI.rightring.png" :
-                                            (wornBits & (long)obj_worn_flags.W_AMUL) != 0 ? ".Assets.UI.puton.png" :
-                                            (wornBits & (long)obj_worn_flags.W_ACCESSORY) != 0 ? ".Assets.UI.puton.png" :
-                                            (wornBits & (long)obj_worn_flags.W_QUIVER) != 0 ? ".Assets.UI.quiver.png" :
-                                            (wornBits & (long)obj_worn_flags.W_SWAP_WEAPON) != 0 ? ".Assets.UI.swap.png" :
-                                        ".Assets.UI.vitruvian-gnoll.png";
-                                    if (bmpName != "")
+                                    else if (!MenuCanvas.HideMenuLetters)
                                     {
-                                        SKRect wornRect = new SKRect(selectionrect.Right - minrowheight, selectionrect.Top + (selectionrect.Height - minrowheight) / 2, selectionrect.Right, selectionrect.Bottom - (selectionrect.Height - minrowheight) / 2);
-                                        SKImage bitmap = GHApp.GetCachedImageSourceBitmap(GHApp.AppResourceName + bmpName, true);
-                                        if (bitmap != null)
-                                            canvas.DrawImage(bitmap, wornRect);
+                                        x += accel_fixed_width; // textPaint.FontMetrics.AverageCharacterWidth;
                                     }
-                                }
 
-                                /* Main text */
-                                SKColor maincolor = UIUtils.NHColor2SKColorCore(mi.NHColor, mi.NHAttribute, revertBW && !IsMiButton, IsMiButton && isselected);
-                                textPaint.Color = !IsMiButton || isHover ? maincolor : UIUtils.NonHoveringSKColorAdjustment(maincolor);
+                                    /* Worn icon */
+                                    bool hasWornIcon = mi.IsObjWorn;
+                                    if (hasWornIcon && !(mi.DrawBounds.Bottom <= 0 || mi.DrawBounds.Top >= canvasheight))
+                                    {
+                                        long wornBits = mi.ObjWornBits;
+                                        string bmpName =
+                                                (wornBits & (long)obj_worn_flags.W_WEP2) != 0 && !mi.IsObjArmor ? ".Assets.UI.fight.png" :
+                                                (wornBits & (long)obj_worn_flags.W_WIELDED_WEAPON) != 0 ? ".Assets.UI.wield.png" :
+                                                (wornBits & (long)obj_worn_flags.W_ARMF) != 0 ? ".Assets.UI.travel.png" :
+                                                (wornBits & (long)obj_worn_flags.W_ARMH) != 0 ? ".Assets.UI.cast.png" :
+                                                (wornBits & (long)obj_worn_flags.W_ARMOR) != 0 ? ".Assets.UI.wear.png" :
+                                                (wornBits & (long)obj_worn_flags.W_RINGL) != 0 ? ".Assets.UI.leftring.png" :
+                                                (wornBits & (long)obj_worn_flags.W_RINGR) != 0 ? ".Assets.UI.rightring.png" :
+                                                (wornBits & (long)obj_worn_flags.W_AMUL) != 0 ? ".Assets.UI.puton.png" :
+                                                (wornBits & (long)obj_worn_flags.W_ACCESSORY) != 0 ? ".Assets.UI.puton.png" :
+                                                (wornBits & (long)obj_worn_flags.W_QUIVER) != 0 ? ".Assets.UI.quiver.png" :
+                                                (wornBits & (long)obj_worn_flags.W_SWAP_WEAPON) != 0 ? ".Assets.UI.swap.png" :
+                                            ".Assets.UI.vitruvian-gnoll.png";
+                                        if (bmpName != "")
+                                        {
+                                            SKRect wornRect = new SKRect(selectionrect.Right - minrowheight, selectionrect.Top + (selectionrect.Height - minrowheight) / 2, selectionrect.Right, selectionrect.Bottom - (selectionrect.Height - minrowheight) / 2);
+                                            SKImage bitmap = GHApp.GetCachedImageSourceBitmap(GHApp.AppResourceName + bmpName, true);
+                                            if (bitmap != null)
+                                                canvas.DrawImage(bitmap, wornRect);
+                                        }
+                                    }
 
-                                //int split_idx_on_row = -1;
-                                bool firstprintonrow = true;
-                                float start_x = x;
-                                float indent_start_x = start_x;
-                                string trimmed_maintext = mi.TrimmedMainText;
-                                //string indentstr = GHUtils.GetIndentationString(trimmed_maintext, mi.NHAttribute);
-                                //if (indentstr != "")
-                                //{
-                                //    indent_start_x += textPaint.MeasureText(indentstr);
-                                //}
-                                ReadOnlySpan<char> indentSpan;
-                                GHUtils.GetIndentationSpan(trimmed_maintext, mi.NHAttribute, out indentSpan);
-                                if (!indentSpan.IsEmpty)
-                                    indent_start_x += textPaint.MeasureText(indentSpan);
+                                    /* Main text */
+                                    SKColor maincolor = UIUtils.NHColor2SKColorCore(mi.NHColor, mi.NHAttribute, revertBW && !IsMiButton, IsMiButton && isselected);
+                                    textPaint.Color = !IsMiButton || isHover ? maincolor : UIUtils.NonHoveringSKColorAdjustment(maincolor);
 
-                                string altFontFamily;
-                                if(UIUtils.MaybeSmallFontFamily(mainFontFamily, textPaint.TextSize, out altFontFamily))
-                                    textPaint.Typeface = GHApp.GetTypefaceByName(altFontFamily);
-                                DrawTextSplit(canvas, maintextsplit, mainattrssplit, maincolorssplit, mainrowwidths, ref x, ref y, ref firstprintonrow, indent_start_x, canvaswidth, canvasheight, rightmenupadding, paddingAdjustment, textPaint, mi.UseSpecialSymbols, MenuCanvas.UseTextOutline || IsMiButton, revertBW && !IsMiButton, IsMiButton, totalRowWidth, curmenuoffset, glyphystart, glyphyend, glyphpadding);
-                                textPaint.Typeface = mainFont;
-                                /* Rewind and next line */
-                                x = start_x;
-                                y += textPaint.FontMetrics.Descent + fontspacingpadding;
-                                firstprintonrow = true;
+                                    //int split_idx_on_row = -1;
+                                    bool firstprintonrow = true;
+                                    float start_x = x;
+                                    float indent_start_x = start_x;
+                                    string trimmed_maintext = mi.TrimmedMainText;
+                                    //string indentstr = GHUtils.GetIndentationString(trimmed_maintext, mi.NHAttribute);
+                                    //if (indentstr != "")
+                                    //{
+                                    //    indent_start_x += textPaint.MeasureText(indentstr);
+                                    //}
+                                    ReadOnlySpan<char> indentSpan;
+                                    GHUtils.GetIndentationSpan(trimmed_maintext, mi.NHAttribute, out indentSpan);
+                                    if (!indentSpan.IsEmpty)
+                                        indent_start_x += textPaint.MeasureText(indentSpan);
 
-                                /* Suffix text */
-                                if (mi.IsSuffixTextVisible)
-                                {
-                                    SKColor suffixcolor = mi.UseColorForSuffixes ? maincolor : revertBW && !IsMiButton ? _suffixTextColorReverted : _suffixTextColor;
-                                    textPaint.Color = !IsMiButton || isHover ? suffixcolor : UIUtils.NonHoveringSKColorAdjustment(suffixcolor);
-                                    textPaint.TextSize = suffixfontsize;
-                                    y += fontspacingpadding;
-                                    y -= textPaint.FontMetrics.Ascent;
+                                    string altFontFamily;
                                     if (UIUtils.MaybeSmallFontFamily(mainFontFamily, textPaint.TextSize, out altFontFamily))
                                         textPaint.Typeface = GHApp.GetTypefaceByName(altFontFamily);
-                                    DrawTextSplit(canvas, suffixtextsplit, suffixattrssplit, suffixcolorssplit, suffixrowwidths, ref x, ref y, ref firstprintonrow, start_x, canvaswidth, canvasheight, rightmenupadding, paddingAdjustment, textPaint, mi.UseSpecialSymbols, MenuCanvas.UseTextOutline || IsMiButton, revertBW && !IsMiButton, IsMiButton, totalRowWidth, curmenuoffset, glyphystart, glyphyend, glyphpadding);
+                                    DrawTextSplit(canvas, maintextsplit, mainattrssplit, maincolorssplit, mainrowwidths, ref x, ref y, ref firstprintonrow, indent_start_x, canvaswidth, canvasheight, rightmenupadding, paddingAdjustment, textPaint, mi.UseSpecialSymbols, MenuCanvas.UseTextOutline || IsMiButton, revertBW && !IsMiButton, IsMiButton, totalRowWidth, curmenuoffset, glyphystart, glyphyend, glyphpadding);
                                     textPaint.Typeface = mainFont;
                                     /* Rewind and next line */
                                     x = start_x;
                                     y += textPaint.FontMetrics.Descent + fontspacingpadding;
                                     firstprintonrow = true;
+
+                                    /* Suffix text */
+                                    if (mi.IsSuffixTextVisible)
+                                    {
+                                        SKColor suffixcolor = mi.UseColorForSuffixes ? maincolor : revertBW && !IsMiButton ? _suffixTextColorReverted : _suffixTextColor;
+                                        textPaint.Color = !IsMiButton || isHover ? suffixcolor : UIUtils.NonHoveringSKColorAdjustment(suffixcolor);
+                                        textPaint.TextSize = suffixfontsize;
+                                        y += fontspacingpadding;
+                                        y -= textPaint.FontMetrics.Ascent;
+                                        if (UIUtils.MaybeSmallFontFamily(mainFontFamily, textPaint.TextSize, out altFontFamily))
+                                            textPaint.Typeface = GHApp.GetTypefaceByName(altFontFamily);
+                                        DrawTextSplit(canvas, suffixtextsplit, suffixattrssplit, suffixcolorssplit, suffixrowwidths, ref x, ref y, ref firstprintonrow, start_x, canvaswidth, canvasheight, rightmenupadding, paddingAdjustment, textPaint, mi.UseSpecialSymbols, MenuCanvas.UseTextOutline || IsMiButton, revertBW && !IsMiButton, IsMiButton, totalRowWidth, curmenuoffset, glyphystart, glyphyend, glyphpadding);
+                                        textPaint.Typeface = mainFont;
+                                        /* Rewind and next line */
+                                        x = start_x;
+                                        y += textPaint.FontMetrics.Descent + fontspacingpadding;
+                                        firstprintonrow = true;
+                                    }
+
+                                    /* Suffix 2 text */
+                                    if (mi.IsSuffix2TextVisible)
+                                    {
+                                        SKColor suffix2color = mi.UseColorForSuffixes ? maincolor : revertBW && !IsMiButton ? _suffixTextColorReverted : _suffixTextColor;
+                                        textPaint.Color = !IsMiButton || isHover ? suffix2color : UIUtils.NonHoveringSKColorAdjustment(suffix2color);
+                                        textPaint.TextSize = suffixfontsize;
+                                        fontspacingpadding = (textPaint.FontSpacing - (textPaint.FontMetrics.Descent - textPaint.FontMetrics.Ascent)) / 2;
+                                        y += fontspacingpadding;
+                                        y -= textPaint.FontMetrics.Ascent;
+                                        if (UIUtils.MaybeSmallFontFamily(mainFontFamily, textPaint.TextSize, out altFontFamily))
+                                            textPaint.Typeface = GHApp.GetTypefaceByName(altFontFamily);
+                                        DrawTextSplit(canvas, suffix2textsplit, suffix2attrssplit, suffix2colorssplit, suffix2rowwidths, ref x, ref y, ref firstprintonrow, start_x, canvaswidth, canvasheight, rightmenupadding, paddingAdjustment, textPaint, mi.UseSpecialSymbols, MenuCanvas.UseTextOutline || IsMiButton, revertBW && !IsMiButton, IsMiButton, totalRowWidth, curmenuoffset, glyphystart, glyphyend, glyphpadding);
+                                        textPaint.Typeface = mainFont;
+                                        /* Rewind and next line */
+                                        x = start_x;
+                                        y += textPaint.FontMetrics.Descent + fontspacingpadding;
+                                        firstprintonrow = true;
+                                    }
+
+                                    y += generallinepadding;
+
+                                    y += bottomPadding;
+                                    mi.DrawBounds.Bottom = y;
+                                    mi.DrawBounds.Right = canvaswidth - (rightmenupadding + paddingAdjustment); //This should cover the worn icon, too
+                                    _lastDrawnMenuItemIdx = idx;
+
+                                    /* Count circle */
+                                    if (mi.Count > 0 && !(mi.DrawBounds.Bottom <= 0 || mi.DrawBounds.Top >= canvasheight))
+                                    {
+                                        float circleradius = minrowheight * 0.90f / 2; // mi.DrawBounds.Height * 0.90f
+                                        float circlex = mi.DrawBounds.Right - circleradius - 5;
+                                        float circley = (mi.DrawBounds.Top + mi.DrawBounds.Bottom) / 2;
+                                        textPaint.Color = SKColors.Red;
+                                        canvas.DrawCircle(circlex, circley, circleradius, textPaint.Paint);
+                                        //textPaint.TextAlign = SKTextAlign.Center;
+                                        textPaint.Color = SKColors.White;
+                                        str = mi.Count.ToString();
+                                        float maxsize = 1.0f * 2.0f * circleradius / (float)Math.Sqrt(2);
+                                        textPaint.TextSize = (float)mi.FontSize * scale * customScale;
+                                        textPaint.MeasureText(str, ref textBounds);
+                                        float scalex = textBounds.Width / maxsize;
+                                        float scaley = textBounds.Height / maxsize;
+                                        float totscale = Math.Max(scalex, scaley);
+                                        textPaint.TextSize = textPaint.TextSize / Math.Max(1.0f, totscale);
+                                        textPaint.DrawTextOnCanvas(canvas, str, circlex, circley - (textPaint.FontMetrics.Descent - textPaint.FontMetrics.Ascent) / 2 - textPaint.FontMetrics.Ascent, SKTextAlign.Center);
+                                    }
+                                    /* Num items circle */
+                                    else if (mi.UseNumItems && !(mi.DrawBounds.Bottom <= 0 || mi.DrawBounds.Top >= canvasheight))
+                                    {
+                                        float circleradius = mi.DrawBounds.Height * 0.90f / 2;
+                                        float circlex = mi.DrawBounds.Right - circleradius - 5;
+                                        float circley = (mi.DrawBounds.Top + mi.DrawBounds.Bottom) / 2;
+                                        textPaint.Color = revertBW ? _numItemsBackgroundColor : _numItemsBackgroundColorDarkMode;
+                                        textPaint.Style = SKPaintStyle.Fill;
+                                        canvas.DrawCircle(circlex, circley, circleradius, textPaint.Paint);
+                                        textPaint.Style = SKPaintStyle.Fill;
+                                        //textPaint.TextAlign = SKTextAlign.Center;
+                                        textPaint.Color = revertBW ? SKColors.Black : SKColors.White;
+                                        str = mi.NumItems.ToString();
+                                        float maxsize = 1.0f * 2.0f * circleradius / (float)Math.Sqrt(2);
+                                        textPaint.TextSize = (float)mi.FontSize * scale * customScale;
+                                        textPaint.MeasureText(str, ref textBounds);
+                                        float scalex = textBounds.Width / maxsize;
+                                        float scaley = textBounds.Height / maxsize;
+                                        float totscale = Math.Max(scalex, scaley);
+                                        textPaint.TextSize = textPaint.TextSize / Math.Max(1.0f, totscale);
+                                        textPaint.DrawTextOnCanvas(canvas, str, circlex, circley - (textPaint.FontMetrics.Descent - textPaint.FontMetrics.Ascent) / 2 - textPaint.FontMetrics.Ascent, SKTextAlign.Center);
+                                    }
+
+                                    /* Space between buttons / rows */
+                                    y += totalRowExtraSpacing;
                                 }
-
-                                /* Suffix 2 text */
-                                if (mi.IsSuffix2TextVisible)
-                                {
-                                    SKColor suffix2color = mi.UseColorForSuffixes ? maincolor : revertBW && !IsMiButton ? _suffixTextColorReverted : _suffixTextColor;
-                                    textPaint.Color = !IsMiButton || isHover ? suffix2color : UIUtils.NonHoveringSKColorAdjustment(suffix2color);
-                                    textPaint.TextSize = suffixfontsize;
-                                    fontspacingpadding = (textPaint.FontSpacing - (textPaint.FontMetrics.Descent - textPaint.FontMetrics.Ascent)) / 2;
-                                    y += fontspacingpadding;
-                                    y -= textPaint.FontMetrics.Ascent;
-                                    if (UIUtils.MaybeSmallFontFamily(mainFontFamily, textPaint.TextSize, out altFontFamily))
-                                        textPaint.Typeface = GHApp.GetTypefaceByName(altFontFamily);
-                                    DrawTextSplit(canvas, suffix2textsplit, suffix2attrssplit, suffix2colorssplit, suffix2rowwidths, ref x, ref y, ref firstprintonrow, start_x, canvaswidth, canvasheight, rightmenupadding, paddingAdjustment, textPaint, mi.UseSpecialSymbols, MenuCanvas.UseTextOutline || IsMiButton, revertBW && !IsMiButton, IsMiButton, totalRowWidth, curmenuoffset, glyphystart, glyphyend, glyphpadding);
-                                    textPaint.Typeface = mainFont;
-                                    /* Rewind and next line */
-                                    x = start_x;
-                                    y += textPaint.FontMetrics.Descent + fontspacingpadding;
-                                    firstprintonrow = true;
-                                }
-
-                                y += generallinepadding;
-
-                                y += bottomPadding;
-                                mi.DrawBounds.Bottom = y;
-                                mi.DrawBounds.Right = canvaswidth - (rightmenupadding + paddingAdjustment); //This should cover the worn icon, too
-                                _lastDrawnMenuItemIdx = idx;
-
-                                /* Count circle */
-                                if (mi.Count > 0 && !(mi.DrawBounds.Bottom <= 0 || mi.DrawBounds.Top >= canvasheight))
-                                {
-                                    float circleradius = minrowheight * 0.90f / 2; // mi.DrawBounds.Height * 0.90f
-                                    float circlex = mi.DrawBounds.Right - circleradius - 5;
-                                    float circley = (mi.DrawBounds.Top + mi.DrawBounds.Bottom) / 2;
-                                    textPaint.Color = SKColors.Red;
-                                    canvas.DrawCircle(circlex, circley, circleradius, textPaint.Paint);
-                                    //textPaint.TextAlign = SKTextAlign.Center;
-                                    textPaint.Color = SKColors.White;
-                                    str = mi.Count.ToString();
-                                    float maxsize = 1.0f * 2.0f * circleradius / (float)Math.Sqrt(2);
-                                    textPaint.TextSize = (float)mi.FontSize * scale * customScale;
-                                    textPaint.MeasureText(str, ref textBounds);
-                                    float scalex = textBounds.Width / maxsize;
-                                    float scaley = textBounds.Height / maxsize;
-                                    float totscale = Math.Max(scalex, scaley);
-                                    textPaint.TextSize = textPaint.TextSize / Math.Max(1.0f, totscale);
-                                    textPaint.DrawTextOnCanvas(canvas, str, circlex, circley - (textPaint.FontMetrics.Descent - textPaint.FontMetrics.Ascent) / 2 - textPaint.FontMetrics.Ascent, SKTextAlign.Center);
-                                }
-                                /* Num items circle */
-                                else if (mi.UseNumItems && !(mi.DrawBounds.Bottom <= 0 || mi.DrawBounds.Top >= canvasheight))
-                                {
-                                    float circleradius = mi.DrawBounds.Height * 0.90f / 2;
-                                    float circlex = mi.DrawBounds.Right - circleradius - 5;
-                                    float circley = (mi.DrawBounds.Top + mi.DrawBounds.Bottom) / 2;
-                                    textPaint.Color = revertBW ? _numItemsBackgroundColor : _numItemsBackgroundColorDarkMode;
-                                    textPaint.Style = SKPaintStyle.Fill;
-                                    canvas.DrawCircle(circlex, circley, circleradius, textPaint.Paint);
-                                    textPaint.Style = SKPaintStyle.Fill;
-                                    //textPaint.TextAlign = SKTextAlign.Center;
-                                    textPaint.Color = revertBW ? SKColors.Black : SKColors.White;
-                                    str = mi.NumItems.ToString();
-                                    float maxsize = 1.0f * 2.0f * circleradius / (float)Math.Sqrt(2);
-                                    textPaint.TextSize = (float)mi.FontSize * scale * customScale;
-                                    textPaint.MeasureText(str, ref textBounds);
-                                    float scalex = textBounds.Width / maxsize;
-                                    float scaley = textBounds.Height / maxsize;
-                                    float totscale = Math.Max(scalex, scaley);
-                                    textPaint.TextSize = textPaint.TextSize / Math.Max(1.0f, totscale);
-                                    textPaint.DrawTextOnCanvas(canvas, str, circlex, circley - (textPaint.FontMetrics.Descent - textPaint.FontMetrics.Ascent) / 2 - textPaint.FontMetrics.Ascent, SKTextAlign.Center);
-                                }
-
-                                /* Space between buttons / rows */
-                                y += totalRowExtraSpacing;
                             }
+                            if (IsLandscape ? canvaswidth > canvasheight : canvaswidth <= canvasheight)
+                                RefreshMenuRowCounts = false;
                         }
-                        if(IsLandscape ? canvaswidth > canvasheight : canvaswidth <= canvasheight)
-                            RefreshMenuRowCounts = false;
+                        TotalMenuHeight = y - curmenuoffset;
                     }
-                    TotalMenuHeight = y - curmenuoffset;
                 }
             }
             canvas.Flush();
@@ -17720,6 +17847,8 @@ namespace GnollHackX.Pages.Game
         private void MenuCanvas_Touch(object sender, SKTouchEventArgs e)
         {
             if (MenuDrawOnlyClear)
+                return;
+            if (MenuEquipmentSideShown)
                 return;
             //lock (_menuDrawOnlyLock)
             //{
@@ -18737,12 +18866,30 @@ namespace GnollHackX.Pages.Game
             });
         }
 
+        private int _menuEquipmentSideShown = 0;
+        public bool MenuEquipmentSideShown { get { return Interlocked.CompareExchange(ref _menuEquipmentSideShown, 0, 0) != 0; } set { Interlocked.Exchange(ref _menuEquipmentSideShown, value ? 1 : 0); } }
+        private async Task FlipMenuCanvas()
+        {
+            // First half: rotate to edge
+            await MenuCanvas.RotateYTo(90, 250, Easing.Linear);
+
+            // Swap content
+            MenuEquipmentSideShown = !MenuEquipmentSideShown;
+            MenuCanvas.InvalidateSurface();
+
+            // Reset rotation so it continues naturally
+            MenuCanvas.RotationY = -90;
+
+            // Second half: rotate to full face
+            await MenuCanvas.RotateYTo(0, 250, Easing.Linear);
+        }
+
         private bool _unselectOnTap = false;
 
 #if GNH_MAUI
-        private void MenuTapGestureRecognizer_Tapped(object sender, TappedEventArgs e)
+        private async void MenuTapGestureRecognizer_Tapped(object sender, TappedEventArgs e)
 #else
-        private void MenuTapGestureRecognizer_Tapped(object sender, EventArgs e)
+        private async void MenuTapGestureRecognizer_Tapped(object sender, EventArgs e)
 #endif
         {
             if (PlayingReplay)
@@ -18772,6 +18919,10 @@ namespace GnollHackX.Pages.Game
                     _unselectOnTap = !_unselectOnTap;
                 }
                 MenuCanvas.InvalidateSurface();
+            }
+            else if (MenuCanvas.MenuStyle >= ghmenu_styles.GHMENU_STYLE_INVENTORY && MenuCanvas.MenuStyle <= ghmenu_styles.GHMENU_STYLE_OTHERS_INVENTORY)
+            {
+                await FlipMenuCanvas();
             }
         }
 
