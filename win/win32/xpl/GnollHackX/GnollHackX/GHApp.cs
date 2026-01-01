@@ -3463,6 +3463,10 @@ namespace GnollHackX
                 SKImage lastReturnBitmap = null;
                 GHCommandButtonItem lastExtendedBtn = null;
                 SKImage lastExtendedBitmap = null;
+                GHCommandButtonItem lastSearchBtn = null;
+                SKImage lastSearchBitmap = null;
+                GHCommandButtonItem lastRestBtn = null;
+                SKImage lastRestBitmap = null;
                 for (int k = 0; k < GHConstants.MoreButtonPages; k++)
                 {
                     for (int i = 0; i < GHConstants.MoreButtonsPerRow; i++)
@@ -3483,6 +3487,16 @@ namespace GnollHackX
                                     {
                                         lastExtendedBtn = _moreBtnMatrix[k, i, j];
                                         lastExtendedBitmap = _moreBtnBitmaps[k, i, j];
+                                    }
+                                    else if (_moreBtnMatrix[k, i, j].Command == -102)
+                                    {
+                                        lastSearchBtn = _moreBtnMatrix[k, i, j];
+                                        lastSearchBitmap = _moreBtnBitmaps[k, i, j];
+                                    }
+                                    else if (_moreBtnMatrix[k, i, j].Command == -103)
+                                    {
+                                        lastRestBtn = _moreBtnMatrix[k, i, j];
+                                        lastRestBitmap = _moreBtnBitmaps[k, i, j];
                                     }
                                     else
                                     {
@@ -3521,6 +3535,16 @@ namespace GnollHackX
                         if (isWizBtn)
                             wizModeCount--;
                     }
+                }
+                if (lastRestBtn != null && lastRestBitmap != null)
+                {
+                    buttonCount++;
+                    _moreBtnList.Add((new GHCommandButtonRect(lastRestBtn, lastRestBitmap, false)));
+                }
+                if (lastSearchBtn != null && lastSearchBitmap != null)
+                {
+                    buttonCount++;
+                    _moreBtnList.Add((new GHCommandButtonRect(lastSearchBtn, lastSearchBitmap, false)));
                 }
                 if (lastExtendedBtn != null && lastExtendedBitmap != null)
                 {

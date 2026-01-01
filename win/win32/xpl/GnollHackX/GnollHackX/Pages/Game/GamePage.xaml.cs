@@ -19572,11 +19572,23 @@ namespace GnollHackX.Pages.Game
                                             i = buttonColumns - 1;
                                             j = pos_j = buttonRows - 1;
                                         }
-                                        else if (usedButtonItem.Command == (int)'#' && listIdx == GHApp._moreBtnList.Count - 2)
+                                        else if (usedButtonItem.Command == (int)'#' && listIdx == GHApp._moreBtnList.Count - 2 && buttonRows - 2 >= 0)
                                         {
                                             /* Move to left side of the bottom right corner */
                                             i = buttonColumns - 1;
                                             j = pos_j = buttonRows - 2;
+                                        }
+                                        else if (usedButtonItem.Command == -102 && listIdx == GHApp._moreBtnList.Count - 3 && buttonRows - 3 >= 0)
+                                        {
+                                            /* Move to left side of the bottom right corner */
+                                            i = buttonColumns - 1;
+                                            j = pos_j = buttonRows - 3;
+                                        }
+                                        else if (usedButtonItem.Command == -103 && listIdx == GHApp._moreBtnList.Count - 4 && buttonRows - 4 >= 0)
+                                        {
+                                            /* Move to left side of the bottom right corner */
+                                            i = buttonColumns - 1;
+                                            j = pos_j = buttonRows - 4;
                                         }
                                     }
                                     else
