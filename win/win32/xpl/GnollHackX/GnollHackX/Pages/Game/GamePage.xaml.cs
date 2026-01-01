@@ -19494,51 +19494,51 @@ namespace GnollHackX.Pages.Game
 
                 float btnMatrixEnd = canvasheight - dotmargin * 2 - largedotheight;
                 float titlesize = Math.Min(48f * scale, 19f * 3.0f * Math.Min(canvaswidth, canvasheight) / 1080f);
-                bool stopLoop = false;
 
-                for (int page = pagemin; page <= pagemax; page++)
+                lock (GHApp._moreBtnLock)
                 {
-                    float btnOffsetX = cmdOffsetX + canvaswidth * (page - curpage);
-
-                    textPaint.Color = SKColors.White;
-                    textPaint.Typeface = GHApp.ImmortalTypeface;
-                    textPaint.TextSize = titlesize;
-                    //textPaint.TextAlign = SKTextAlign.Center;
-
-                    string titlestr = useSingleCommandPage ? GHConstants.SingleCommandPageTitle : GHApp._moreButtonPageTitle[page];
-                    float titletopmargin = 5f * scale;
-                    float titley = titletopmargin + textPaint.FontSpacing - textPaint.FontMetrics.Descent;
-                    textPaint.DrawTextOnCanvas(canvas, titlestr, new SKPoint(canvaswidth / 2 + btnOffsetX, titley), SKTextAlign.Center);
-
-                    float btnMatrixStart = titletopmargin * 2 + textPaint.FontSpacing;
-
-                    float btnMatrixAreaWidth = canvaswidth;
-                    float btnMatrixAreaHeight = btnMatrixEnd - btnMatrixStart;
-
-                    if(page == curpage)
-                        CmdBtnMatrixRect = new SKRect(0, btnMatrixStart, btnMatrixAreaWidth, btnMatrixEnd);
-
-                    int usedButtonsPerRow = isLandscape ? buttonRows : buttonColumns;
-                    int usedButtonsPerColumn = isLandscape ? buttonColumns : buttonRows;
-                    float btnAreaWidth = btnMatrixAreaWidth / usedButtonsPerRow;
-                    float btnAreaHeight = btnMatrixAreaHeight / usedButtonsPerColumn;
-
-                    float btnImgRawWidth = Math.Min(256, Math.Min(btnAreaWidth * 0.925f, 128 * scale));
-                    float textSize = 12.0f * 3.0f * btnImgRawWidth / 256.0f;
-
-                    textPaint.Color = SKColors.White;
-                    textPaint.Typeface = GHApp.LatoRegular;
-                    textPaint.TextSize = textSize;
-                    //textPaint.TextAlign = SKTextAlign.Center;
-
-                    float btnImgRawHeight = Math.Min(256, Math.Min(btnAreaHeight * 0.925f - textPaint.FontSpacing * (useKeyboardShortcuts ? GHConstants.TextRowMultiplierWithKeyboardShortcuts : 1f), 128 * scale));
-
-                    float btnImgWidth = Math.Min(btnImgRawWidth, btnImgRawHeight);
-                    float btnImgHeight = btnImgWidth;
-
-                    lock (GHApp._moreBtnLock)
+                    bool stopLoop = false;
+                    for (int page = pagemin; page <= pagemax; page++)
                     {
-                        using(SKPaint paint = new SKPaint())
+                        float btnOffsetX = cmdOffsetX + canvaswidth * (page - curpage);
+
+                        textPaint.Color = SKColors.White;
+                        textPaint.Typeface = GHApp.ImmortalTypeface;
+                        textPaint.TextSize = titlesize;
+                        //textPaint.TextAlign = SKTextAlign.Center;
+
+                        string titlestr = useSingleCommandPage ? GHConstants.SingleCommandPageTitle : GHApp._moreButtonPageTitle[page];
+                        float titletopmargin = 5f * scale;
+                        float titley = titletopmargin + textPaint.FontSpacing - textPaint.FontMetrics.Descent;
+                        textPaint.DrawTextOnCanvas(canvas, titlestr, new SKPoint(canvaswidth / 2 + btnOffsetX, titley), SKTextAlign.Center);
+
+                        float btnMatrixStart = titletopmargin * 2 + textPaint.FontSpacing;
+
+                        float btnMatrixAreaWidth = canvaswidth;
+                        float btnMatrixAreaHeight = btnMatrixEnd - btnMatrixStart;
+
+                        if (page == curpage)
+                            CmdBtnMatrixRect = new SKRect(0, btnMatrixStart, btnMatrixAreaWidth, btnMatrixEnd);
+
+                        int usedButtonsPerRow = isLandscape ? buttonRows : buttonColumns;
+                        int usedButtonsPerColumn = isLandscape ? buttonColumns : buttonRows;
+                        float btnAreaWidth = btnMatrixAreaWidth / usedButtonsPerRow;
+                        float btnAreaHeight = btnMatrixAreaHeight / usedButtonsPerColumn;
+
+                        float btnImgRawWidth = Math.Min(256, Math.Min(btnAreaWidth * 0.925f, 128 * scale));
+                        float textSize = 12.0f * 3.0f * btnImgRawWidth / 256.0f;
+
+                        textPaint.Color = SKColors.White;
+                        textPaint.Typeface = GHApp.LatoRegular;
+                        textPaint.TextSize = textSize;
+                        //textPaint.TextAlign = SKTextAlign.Center;
+
+                        float btnImgRawHeight = Math.Min(256, Math.Min(btnAreaHeight * 0.925f - textPaint.FontSpacing * (useKeyboardShortcuts ? GHConstants.TextRowMultiplierWithKeyboardShortcuts : 1f), 128 * scale));
+
+                        float btnImgWidth = Math.Min(btnImgRawWidth, btnImgRawHeight);
+                        float btnImgHeight = btnImgWidth;
+
+                        using (SKPaint paint = new SKPaint())
                         {
                             int listIdx = -1;
                             for (int i = 0; i < buttonColumns; i++)
@@ -19568,7 +19568,7 @@ namespace GnollHackX.Pages.Game
                                             break;
                                         if (usedButtonItem.Command == -101 && listIdx == GHApp._moreBtnList.Count - 1)
                                         {
-                                             /* Move to bottom right corner */
+                                            /* Move to bottom right corner */
                                             i = buttonColumns - 1;
                                             j = pos_j = buttonRows - 1;
                                         }
@@ -19602,7 +19602,7 @@ namespace GnollHackX.Pages.Game
                                             paint.ColorFilter = UIUtils.HighlightColorFilter;
                                         else
                                             paint.ColorFilter = null;
-                                        if(useFilter)
+                                        if (useFilter)
                                         {
                                             textPaint.Color = paint.Color = notInFilter ? nonFilteredColor : SKColors.White;
                                         }
@@ -19629,9 +19629,29 @@ namespace GnollHackX.Pages.Game
                                     break;
                             }
                         }
+                        if (stopLoop)
+                            break;
                     }
-                    if (stopLoop)
-                        break;
+
+                    lockTaken = false;
+                    if (useSingleCommandPage)
+                    {
+                        try
+                        {
+                            Monitor.TryEnter(_cmdRectLock, ref lockTaken);
+                            if (lockTaken)
+                            {
+                                _localMoreBtnList.Clear();
+                                _localMoreBtnList.AddRange(GHApp._moreBtnList);
+                            }
+                        }
+                        finally
+                        {
+                            if (lockTaken)
+                                Monitor.Exit(_cmdRectLock);
+                        }
+                        lockTaken = false;
+                    }
                 }
 
                 if (ShowFPS)
@@ -19689,26 +19709,6 @@ namespace GnollHackX.Pages.Game
             //    if (_commandFPSCounterValue < 0)
             //        _commandFPSCounterValue = 0;
             //}
-
-            lockTaken = false;
-            if (useSingleCommandPage)
-            {
-                try
-                {
-                    Monitor.TryEnter(_cmdRectLock, ref lockTaken);
-                    if (lockTaken)
-                    {
-                        _localMoreBtnList.Clear();
-                        _localMoreBtnList.AddRange(GHApp._moreBtnList);
-                    }
-                }
-                finally
-                {
-                    if (lockTaken)
-                        Monitor.Exit(_cmdRectLock);
-                }
-                lockTaken = false;
-            }
 
             canvas.Flush();
         }
