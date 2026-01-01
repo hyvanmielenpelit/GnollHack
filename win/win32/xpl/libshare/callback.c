@@ -28,6 +28,7 @@ get_objclassdata(struct obj* otmp)
     otypdata.rustprone = (uchar)is_rustprone(otmp);
     otypdata.poisonable = (uchar)is_poisonable(otmp);
 
+    otypdata.oc_subtyp = objects[otmp->otyp].oc_subtyp;
 
     if (otmp == uchain || otmp == uball)
     {

@@ -41,6 +41,10 @@ namespace GnollHackX
                 }
             }
         }
+
+        public bool IsObjWorn { get { return ObjData?.IsWorn ?? false; } }
+        public long ObjWornBits { get { return ObjData?.WornBits ?? 0L; } }
+        public bool IsObjArmor { get { return ObjData?.IsArmor ?? false; } }
         public bool IsLabelVisible { get { return (Count > 0 && MaxCount > 0); } }
         public string LabelString { get { return (MaxCount <= 0 ? "N/A" : Count == -1 ? "All" : Count.ToString()); } }
         public int ConvertedCount { get { return (Count + 1); } set { Count = value - 1; } }
@@ -901,6 +905,16 @@ namespace GnollHackX
                 }
             }
             return res;
+        }
+
+        public bool IsWorn
+        {
+            get 
+            {
+                if (ObjData == null) 
+                    return false;
+                return ObjData.IsWorn;
+            }
         }
     }
 }

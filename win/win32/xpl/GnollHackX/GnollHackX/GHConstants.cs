@@ -1173,7 +1173,7 @@ namespace GnollHackX
         public sbyte obj_loc_x;
         public sbyte obj_loc_y;
 
-        public byte reserved_1;
+        public sbyte oc_subtyp;
         public byte reserved_2;
     }
 
@@ -1217,6 +1217,63 @@ namespace GnollHackX
         OBJ_MEMORY = 8,    /* object remembered by hero */
         OBJ_MAGIC = 9,     /* object in a magic chest */
         NOBJ_STATES = 10
+    }
+
+    [Flags]
+    public enum obj_worn_flags : ulong
+    {
+        W_ARM  = 0x00000001UL,  /* Body armor */
+        W_ARMC = 0x00000002UL,  /* Cloak */
+        W_ARMH = 0x00000004UL,  /* Helmet/hat */
+        W_ARMS = 0x00000008UL,  /* Shield */
+        W_ARMG = 0x00000010UL,  /* Gloves/gauntlets */
+        W_ARMF = 0x00000020UL,  /* Footwear */
+        W_ARMU = 0x00000040UL,  /* Undershirt */
+        W_ARMO = 0x00000080UL,  /* Robe or overcoat */
+        W_ARMB = 0x00000100UL,  /* Bracers */
+
+        W_ARMOR = (W_ARM | W_ARMC | W_ARMH | W_ARMS | W_ARMG | W_ARMF | W_ARMU | W_ARMO | W_ARMB),
+
+
+        /* Weapons */
+        W_WEP         = 0x00000200UL,        /* Wielded weapon in the primary hand */
+        W_WEP2        = W_ARMS,              /* Wielded weapon in the secondary hand (uses the same hand as W_ARMS) */
+        W_AUTOSTASH   = 0x00000400UL,        /* Autostash for putting items in automatically; NOT USED currently */
+        W_QUIVER      = 0x00000800UL,        /* Quiver for (f)iring ammo */
+        W_SWAPWEP     = 0x00001000UL,        /* Alternate weapon in the primary hand */
+        W_SWAPWEP2    = 0x00002000UL,        /* Alternate weapon/shield in the secondary hand */
+
+        W_ENVIRONMENT = 0x00004000UL,        /* Caused by environment, e.g., suffocation due to no air */
+        W_STUCK       = 0x00008000UL,        /* A monster in u.ustuck had grabbed you and is e.g. constricting you */
+
+        W_WIELDED_WEAPON = (W_WEP | W_WEP2),
+        W_SWAP_WEAPON = (W_SWAPWEP | W_SWAPWEP2),
+        W_WEAPON = (W_WIELDED_WEAPON | W_SWAP_WEAPON | W_QUIVER),
+
+        /* Amulets, rings, tools, and other items */
+        W_AMUL  = 0x00010000UL,      /* Amulet */
+        W_RINGL = 0x00020000UL,      /* Left ring */
+        W_RINGR = 0x00040000UL,      /* Right ring */
+        W_RING = (W_RINGL | W_RINGR),
+        W_BLINDFOLD = 0x00080000UL,  /* Eyewear */
+
+        /* historical note: originally in slash'em, 'worn' saddle stayed in
+           hero's inventory; in GnollHack, it's kept in the steed's inventory */
+        W_SADDLE = 0x00100000UL,     /* KMH -- For riding monsters */
+        W_BALL   = 0x00200000UL,     /* Punishment ball */
+        W_CHAIN  = 0x00400000UL,     /* Punishment chain */
+
+        /* new accessories*/
+        W_MISC  = 0x00800000UL,      /* Special miscellaneous item, such as a belt, a brooch, bracelet, nose ring */
+        W_MISC2 = 0x01000000UL,      /* Special miscellaneous item, such as a belt, a brooch, bracelet, nose ring */
+        W_MISC3 = 0x02000000UL,      /* Special miscellaneous item, such as a belt, a brooch, bracelet, nose ring */
+        W_MISC4 = 0x04000000UL,      /* Special miscellaneous item, such as a belt, a brooch, bracelet, nose ring */
+        W_MISC5 = 0x08000000UL,      /* Special miscellaneous item, such as a belt, a brooch, bracelet, nose ring */
+
+        W_MISCITEMS = (W_MISC  | W_MISC2 | W_MISC3 | W_MISC4 | W_MISC5),
+        W_ACCESSORY = (W_RING | W_AMUL | W_MISCITEMS | W_BLINDFOLD),
+        W_WORN_NOT_WIELDED = ((W_ARMOR & ~W_ARMS) | W_ACCESSORY),
+        W_WORN_AND_WIELDED = (W_WORN_NOT_WIELDED | W_WIELDED_WEAPON),
     }
 
     [StructLayout(LayoutKind.Sequential)]
