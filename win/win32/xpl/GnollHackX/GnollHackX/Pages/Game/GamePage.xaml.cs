@@ -31,7 +31,6 @@ using SkiaSharp.Views.Maui;
 using SkiaSharp.Views.Maui.Controls;
 using Microsoft.Maui.Controls;
 using System.Security.AccessControl;
-using Microsoft.Diagnostics.Tracing.AutomatedAnalysis;
 
 
 
@@ -16727,29 +16726,29 @@ namespace GnollHackX.Pages.Game
         }
         EquipmentSlot[] _equipmentSlots = new EquipmentSlot[] 
         {
-            new EquipmentSlot("Weapon in right hand", obj_worn_flags.W_WEP, ".Assets.UI.fight.png"),
+            new EquipmentSlot("Weapon in right hand", obj_worn_flags.W_WEP, ".Assets.UI.wield.png"),
             new EquipmentSlot("Weapon in left hand", obj_worn_flags.W_WEP2, ".Assets.UI.fight.png"),
-            new EquipmentSlot("Swap weapon in right hand", obj_worn_flags.W_SWAPWEP, ".Assets.UI.fight.png"),
-            new EquipmentSlot("Swap weapon for left hand", obj_worn_flags.W_SWAPWEP2, ".Assets.UI.fight.png"),
-            new EquipmentSlot("Quiver", obj_worn_flags.W_QUIVER, ".Assets.UI.fight.png"),
-            new EquipmentSlot("Amulet", obj_worn_flags.W_AMUL, ".Assets.UI.fight.png"),
-            new EquipmentSlot("Suit of armor", obj_worn_flags.W_ARM, ".Assets.UI.fight.png"),
-            new EquipmentSlot("Cloak", obj_worn_flags.W_ARMC, ".Assets.UI.fight.png"),
-            new EquipmentSlot("Robe", obj_worn_flags.W_ARMO, ".Assets.UI.fight.png"),
-            new EquipmentSlot("Shirt", obj_worn_flags.W_ARMU, ".Assets.UI.fight.png"),
-            new EquipmentSlot("Helmet", obj_worn_flags.W_ARMH, ".Assets.UI.fight.png"),
-            new EquipmentSlot("Shield", obj_worn_flags.W_ARMS, ".Assets.UI.fight.png"),
-            new EquipmentSlot("Gloves", obj_worn_flags.W_ARMG, ".Assets.UI.fight.png"),
-            new EquipmentSlot("Boots", obj_worn_flags.W_ARMF, ".Assets.UI.fight.png"),
-            new EquipmentSlot("Bracers", obj_worn_flags.W_ARMB, ".Assets.UI.fight.png"),
-            new EquipmentSlot("Left ring", obj_worn_flags.W_RINGL, ".Assets.UI.fight.png"),
-            new EquipmentSlot("Right ring", obj_worn_flags.W_RINGR, ".Assets.UI.fight.png"),
-            new EquipmentSlot("Blindfold", obj_worn_flags.W_BLINDFOLD, ".Assets.UI.fight.png"),
-            new EquipmentSlot("Miscellaneous magic item 1", obj_worn_flags.W_MISC, ".Assets.UI.fight.png"),
-            new EquipmentSlot("Miscellaneous magic item 2", obj_worn_flags.W_MISC2, ".Assets.UI.fight.png"),
-            new EquipmentSlot("Miscellaneous magic item 3", obj_worn_flags.W_MISC3, ".Assets.UI.fight.png"),
-            new EquipmentSlot("Miscellaneous magic item 4", obj_worn_flags.W_MISC4, ".Assets.UI.fight.png"),
-            new EquipmentSlot("Miscellaneous magic item 5", obj_worn_flags.W_MISC5, ".Assets.UI.fight.png"),
+            new EquipmentSlot("Swap weapon in right hand", obj_worn_flags.W_SWAPWEP, ".Assets.UI.swap.png"),
+            new EquipmentSlot("Swap weapon for left hand", obj_worn_flags.W_SWAPWEP2, ".Assets.UI.swap.png"),
+            new EquipmentSlot("Quiver", obj_worn_flags.W_QUIVER, ".Assets.UI.quiver.png"),
+            new EquipmentSlot("Amulet", obj_worn_flags.W_AMUL, ".Assets.UI.puton.png"),
+            new EquipmentSlot("Suit of armor", obj_worn_flags.W_ARM, ".Assets.UI.wear.png"),
+            new EquipmentSlot("Cloak", obj_worn_flags.W_ARMC, ".Assets.UI.wear.png"),
+            new EquipmentSlot("Robe", obj_worn_flags.W_ARMO, ".Assets.UI.wear.png"),
+            new EquipmentSlot("Shirt", obj_worn_flags.W_ARMU, ".Assets.UI.wear.png"),
+            new EquipmentSlot("Helmet", obj_worn_flags.W_ARMH, ".Assets.UI.wear.png"),
+            new EquipmentSlot("Shield", obj_worn_flags.W_ARMS, ".Assets.UI.wear.png"),
+            new EquipmentSlot("Gloves", obj_worn_flags.W_ARMG, ".Assets.UI.wear.png"),
+            new EquipmentSlot("Boots", obj_worn_flags.W_ARMF, ".Assets.UI.travel.png"),
+            new EquipmentSlot("Bracers", obj_worn_flags.W_ARMB, ".Assets.UI.puton.png"),
+            new EquipmentSlot("Left ring", obj_worn_flags.W_RINGL, ".Assets.UI.leftring.png"),
+            new EquipmentSlot("Right ring", obj_worn_flags.W_RINGR, ".Assets.UI.rightring.png"),
+            new EquipmentSlot("Blindfold", obj_worn_flags.W_BLINDFOLD, ".Assets.UI.puton.png"),
+            new EquipmentSlot("Miscellaneous magic item 1", obj_worn_flags.W_MISC, ".Assets.UI.puton.png"),
+            new EquipmentSlot("Miscellaneous magic item 2", obj_worn_flags.W_MISC2, ".Assets.UI.puton.png"),
+            new EquipmentSlot("Miscellaneous magic item 3", obj_worn_flags.W_MISC3, ".Assets.UI.puton.png"),
+            new EquipmentSlot("Miscellaneous magic item 4", obj_worn_flags.W_MISC4, ".Assets.UI.puton.png"),
+            new EquipmentSlot("Miscellaneous magic item 5", obj_worn_flags.W_MISC5, ".Assets.UI.puton.png"),
         };
         List<GHMenuItem> _wornMenuItems = new List<GHMenuItem>(32);
 
@@ -16856,13 +16855,20 @@ namespace GnollHackX.Pages.Game
                     }
 
                     textPaint.TextSize = 16 * scale * customScale;
+                    float extrawidth = picturewidth / 4;
                     x += leftmenupadding;
+                    y += extrawidth;
                     float start_x = x;
                     foreach (var slot in _equipmentSlots)
                     {
+                        SKRect picRect = new SKRect(x - extrawidth, y - extrawidth, x + picturewidth + extrawidth, y + picturewidth + extrawidth);
+                        SKImage bitmap = GHApp.GetCachedImageSourceBitmap(GHApp.AppResourceName + slot.BitmapName, true);
+                        if (bitmap != null)
+                            canvas.DrawImage(bitmap, picRect);
+
                         SKRect targetRect = new SKRect(x, y, x + picturewidth, y + minrowheight);
                         SKColor oldcolor = textPaint.Paint.Color;
-                        textPaint.Color = SKColors.Gray.WithAlpha(128);
+                        textPaint.Color = SKColors.Gray.WithAlpha(255);
                         textPaint.Style = SKPaintStyle.Fill;
                         canvas.DrawRect(targetRect, textPaint.Paint);
                         textPaint.Paint.Color = oldcolor;
@@ -16915,6 +16921,8 @@ namespace GnollHackX.Pages.Game
 
                         x = start_x;
                         y += textPaint.FontMetrics.Descent - textPaint.FontMetrics.Ascent + (minrowheight - (textPaint.FontMetrics.Descent - textPaint.FontMetrics.Ascent)) / 2 + 10;
+                        y += extrawidth * 2;
+                        y += picturewidth - minrowheight;
                     }
                 }
                 else
