@@ -87,7 +87,7 @@
     <SelfContained Condition="'$(WindowsPackageType)'=='None'">true</SelfContained>-->
 	</PropertyGroup>
   
-	<!-- CONFIGURATION + FRAMEWORK SPECIFIC PROPERTIES -->
+  <!-- CONFIGURATION + FRAMEWORK SPECIFIC PROPERTIES -->
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)'=='Debug|net9.0-ios'">
 		<CodesignKey>Apple Development: Janne Gustafsson (3JF32923Y3)</CodesignKey>
 		<CodesignProvision>Apple Dev GnollHack Development July 2025</CodesignProvision>
