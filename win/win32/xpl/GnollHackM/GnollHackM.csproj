@@ -78,14 +78,15 @@
   </ItemGroup>-->
 
 	<PropertyGroup Condition="$(TargetFramework.Contains('-windows'))">
-		<WindowsPackageType>None</WindowsPackageType>
-		<WindowsAppSDKSelfContained>true</WindowsAppSDKSelfContained>
+    <WindowsPackageType Condition="'$(GNHWindowsPackageType)' == 'MSIX'">MSIX</WindowsPackageType>
+    <WindowsPackageType Condition="'$(GNHWindowsPackageType)' != 'MSIX'">None</WindowsPackageType>
+    <WindowsAppSDKSelfContained>true</WindowsAppSDKSelfContained>
 		<SelfContained>true</SelfContained>
     <!--<WindowsSdkPackageVersion>10.0.19041.38</WindowsSdkPackageVersion>-->
     <!--<WindowsAppSDKSelfContained Condition="'$(WindowsPackageType)'=='None'">true</WindowsAppSDKSelfContained>
     <SelfContained Condition="'$(WindowsPackageType)'=='None'">true</SelfContained>-->
 	</PropertyGroup>
-
+  
 	<!-- CONFIGURATION + FRAMEWORK SPECIFIC PROPERTIES -->
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)'=='Debug|net9.0-ios'">
 		<CodesignKey>Apple Development: Janne Gustafsson (3JF32923Y3)</CodesignKey>
@@ -1173,5 +1174,4 @@
 	<PropertyGroup Condition="$(TargetFramework.Contains('-ios'))">
 		<DefineConstants Condition="'$(MtouchUseLlvm)'=='True'">$(DefineConstants);LLVM</DefineConstants>
 	</PropertyGroup>
-
 </Project>
