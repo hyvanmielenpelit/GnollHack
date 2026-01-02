@@ -16854,21 +16854,22 @@ namespace GnollHackX.Pages.Game
                         }
                     }
 
-                    textPaint.TextSize = 16 * scale * customScale;
-                    float extrawidth = picturewidth / 4;
+                    textPaint.TextSize = 15 * scale * customScale;
                     x += leftmenupadding;
-                    y += extrawidth;
                     float start_x = x;
                     foreach (var slot in _equipmentSlots)
                     {
-                        SKRect picRect = new SKRect(x - extrawidth, y - extrawidth, x + picturewidth + extrawidth, y + picturewidth + extrawidth);
+                        SKRect picRect = new SKRect(x, y, x + picturewidth, y + picturewidth);
                         SKImage bitmap = GHApp.GetCachedImageSourceBitmap(GHApp.AppResourceName + slot.BitmapName, true);
                         if (bitmap != null)
                             canvas.DrawImage(bitmap, picRect);
 
+                        x += picturewidth + picturewidth / 5;
+                        y += (picturewidth - minrowheight) / 2;
+
                         SKRect targetRect = new SKRect(x, y, x + picturewidth, y + minrowheight);
                         SKColor oldcolor = textPaint.Paint.Color;
-                        textPaint.Color = SKColors.Gray.WithAlpha(255);
+                        textPaint.Color = SKColors.Gray.WithAlpha(64);
                         textPaint.Style = SKPaintStyle.Fill;
                         canvas.DrawRect(targetRect, textPaint.Paint);
                         textPaint.Paint.Color = oldcolor;
@@ -16915,14 +16916,15 @@ namespace GnollHackX.Pages.Game
                             /* Empty slot */
                         }
 
-                        x += picturewidth + 5;
-                        y += (minrowheight - (textPaint.FontMetrics.Descent - textPaint.FontMetrics.Ascent)) / 2;
+                        float textpadding = (minrowheight - (textPaint.FontMetrics.Descent - textPaint.FontMetrics.Ascent)) / 2;
+                        x += picturewidth + picturewidth / 5;
+                        y += textpadding;
                         textPaint.DrawTextOnCanvas(canvas, slot.Name, x, y - textPaint.FontMetrics.Ascent);
 
                         x = start_x;
-                        y += textPaint.FontMetrics.Descent - textPaint.FontMetrics.Ascent + (minrowheight - (textPaint.FontMetrics.Descent - textPaint.FontMetrics.Ascent)) / 2 + 10;
-                        y += extrawidth * 2;
-                        y += picturewidth - minrowheight;
+                        y += textPaint.FontMetrics.Descent - textPaint.FontMetrics.Ascent + textpadding;
+                        y += (picturewidth - minrowheight) / 2;
+                        y += minrowheight / 10;
                     }
                 }
                 else
@@ -18463,6 +18465,8 @@ namespace GnollHackX.Pages.Game
 
         private void ScrollMenu(int delta)
         {
+            if (MenuEquipmentSideShown)
+                return;
             if (delta != 0)
             {
                 //float canvasheight = MenuCanvas.ThreadSafeCanvasSize.Height;
