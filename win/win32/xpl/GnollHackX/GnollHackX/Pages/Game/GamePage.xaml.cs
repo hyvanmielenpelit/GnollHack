@@ -16682,8 +16682,8 @@ namespace GnollHackX.Pages.Game
         private readonly SKColor _menuHighlightWornColor = new SKColor(0xFF, 0xCC, 0x88, 0x20);
 
         private readonly SKColor _inventorySlotBackgroundDarkColor = new SKColor(0x55, 0x55, 0x55, 0x33);
-        private readonly SKColor _menuHighlightSelectedDarkColor = new SKColor(0x77, 0x77, 0x77, 0x44);
-        private readonly SKColor _menuHighlightHoverOverSelectedDarkColor = new SKColor(0xBB, 0xBB, 0xBB, 0x77);
+        private readonly SKColor _menuHighlightSelectedDarkColor = new SKColor(0x77, 0x77, 0xAA, 0x44);
+        private readonly SKColor _menuHighlightHoverOverSelectedDarkColor = new SKColor(0xBB, 0xBB, 0xEE, 0x77);
 
         private int _firstDrawnMenuItemIdx = -1;
         private int _lastDrawnMenuItemIdx = -1;
@@ -16750,15 +16750,15 @@ namespace GnollHackX.Pages.Game
             new EquipmentSlot("Helmet", "", (int)InventorySlotPictureIndices.Helmet, obj_worn_flags.W_ARMH, ".Assets.UI.wear.png"),
             new EquipmentSlot("Gloves", "", (int)InventorySlotPictureIndices.Gloves, obj_worn_flags.W_ARMG, ".Assets.UI.wear.png"),
             new EquipmentSlot("Boots", "", (int)InventorySlotPictureIndices.Boots, obj_worn_flags.W_ARMF, ".Assets.UI.travel.png"),
-            new EquipmentSlot("Bracers", "", (int)InventorySlotPictureIndices.Gloves, obj_worn_flags.W_ARMB, ".Assets.UI.puton.png"),
+            new EquipmentSlot("Bracers", "", (int)InventorySlotPictureIndices.Bracers, obj_worn_flags.W_ARMB, ".Assets.UI.puton.png"),
             new EquipmentSlot("Left ring", "", (int)InventorySlotPictureIndices.RingLeft, obj_worn_flags.W_RINGL, ".Assets.UI.leftring.png"),
             new EquipmentSlot("Right ring", "", (int)InventorySlotPictureIndices.RingRight, obj_worn_flags.W_RINGR, ".Assets.UI.rightring.png"),
             new EquipmentSlot("Blindfold", "", (int)InventorySlotPictureIndices.Amulet, obj_worn_flags.W_BLINDFOLD, ".Assets.UI.puton.png"),
-            new EquipmentSlot("Miscellaneous", "1", (int)InventorySlotPictureIndices.Amulet, obj_worn_flags.W_MISC, ".Assets.UI.puton.png"),
-            new EquipmentSlot("Miscellaneous", "2", (int)InventorySlotPictureIndices.Amulet, obj_worn_flags.W_MISC2, ".Assets.UI.puton.png"),
-            new EquipmentSlot("Miscellaneous", "3", (int)InventorySlotPictureIndices.Amulet, obj_worn_flags.W_MISC3, ".Assets.UI.puton.png"),
-            new EquipmentSlot("Miscellaneous", "4", (int)InventorySlotPictureIndices.Amulet, obj_worn_flags.W_MISC4, ".Assets.UI.puton.png"),
-            new EquipmentSlot("Miscellaneous", "5", (int)InventorySlotPictureIndices.Amulet, obj_worn_flags.W_MISC5, ".Assets.UI.puton.png"),
+            new EquipmentSlot("Miscellaneous", "1", (int)InventorySlotPictureIndices.Miscellaneous1, obj_worn_flags.W_MISC, ".Assets.UI.puton.png"),
+            new EquipmentSlot("Miscellaneous", "2", (int)InventorySlotPictureIndices.Miscellaneous2, obj_worn_flags.W_MISC2, ".Assets.UI.puton.png"),
+            new EquipmentSlot("Miscellaneous", "3", (int)InventorySlotPictureIndices.Miscellaneous3, obj_worn_flags.W_MISC3, ".Assets.UI.puton.png"),
+            new EquipmentSlot("Miscellaneous", "4", (int)InventorySlotPictureIndices.Miscellaneous4, obj_worn_flags.W_MISC4, ".Assets.UI.puton.png"),
+            new EquipmentSlot("Miscellaneous", "5", (int)InventorySlotPictureIndices.Miscellaneous5, obj_worn_flags.W_MISC5, ".Assets.UI.puton.png"),
         };
         List<GHMenuItem> _wornMenuItems = new List<GHMenuItem>(32);
 
@@ -16965,8 +16965,10 @@ namespace GnollHackX.Pages.Game
 #endif
                         if (isHover)
                             textPaint.Paint.ColorFilter = UIUtils.HighlightColorFilter;
+                        else if (isHighlighted)
+                            textPaint.Paint.ColorFilter = UIUtils.MapHighlightColorFilter;
                         canvas.DrawImage(slotBitmap, picRect, textPaint.Paint);
-                        if (isHover)
+                        if (isHover || isHighlighted)
                             textPaint.Paint.ColorFilter = null;
 
                         //x += picturewidth + picturewidth / 5;

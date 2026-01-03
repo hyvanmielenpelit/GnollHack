@@ -2924,6 +2924,7 @@ namespace GnollHackX
             InventoryIconBitmaps[(int)InventorySlotPictureIndices.General] = LoadEmbeddedUIBitmap("inventory-icon-weapon-right.png");
             InventoryIconBitmaps[(int)InventorySlotPictureIndices.WeaponRight] = LoadEmbeddedUIBitmap("inventory-icon-weapon-right.png");
             InventoryIconBitmaps[(int)InventorySlotPictureIndices.WeaponLeft] = LoadEmbeddedUIBitmap("inventory-icon-weapon-left.png");
+            InventoryIconBitmaps[(int)InventorySlotPictureIndices.Shield] = LoadEmbeddedUIBitmap("inventory-icon-shield.png");
             InventoryIconBitmaps[(int)InventorySlotPictureIndices.SwapWeaponRight] = LoadEmbeddedUIBitmap("inventory-icon-swapweapon-right.png");
             InventoryIconBitmaps[(int)InventorySlotPictureIndices.SwapWeaponLeft] = LoadEmbeddedUIBitmap("inventory-icon-swapweapon-left.png");
             InventoryIconBitmaps[(int)InventorySlotPictureIndices.Quiver] = LoadEmbeddedUIBitmap("inventory-icon-quiver.png");
@@ -2934,9 +2935,16 @@ namespace GnollHackX
             InventoryIconBitmaps[(int)InventorySlotPictureIndices.Helmet] = LoadEmbeddedUIBitmap("inventory-icon-helmet.png");
             InventoryIconBitmaps[(int)InventorySlotPictureIndices.Gloves] = LoadEmbeddedUIBitmap("inventory-icon-gloves.png");
             InventoryIconBitmaps[(int)InventorySlotPictureIndices.Boots] = LoadEmbeddedUIBitmap("inventory-icon-boots.png");
+            InventoryIconBitmaps[(int)InventorySlotPictureIndices.Bracers] = LoadEmbeddedUIBitmap("inventory-icon-bracers.png");
+            InventoryIconBitmaps[(int)InventorySlotPictureIndices.Blindfold] = LoadEmbeddedUIBitmap("inventory-icon-blindfold.png");
             InventoryIconBitmaps[(int)InventorySlotPictureIndices.Amulet] = LoadEmbeddedUIBitmap("inventory-icon-amulet.png");
             InventoryIconBitmaps[(int)InventorySlotPictureIndices.RingLeft] = LoadEmbeddedUIBitmap("inventory-icon-leftring.png");
             InventoryIconBitmaps[(int)InventorySlotPictureIndices.RingRight] = LoadEmbeddedUIBitmap("inventory-icon-rightring.png");
+            InventoryIconBitmaps[(int)InventorySlotPictureIndices.Miscellaneous1] = LoadEmbeddedUIBitmap("inventory-icon-miscellaneous.png");
+            InventoryIconBitmaps[(int)InventorySlotPictureIndices.Miscellaneous2] = InventoryIconBitmaps[(int)InventorySlotPictureIndices.Miscellaneous1];
+            InventoryIconBitmaps[(int)InventorySlotPictureIndices.Miscellaneous3] = InventoryIconBitmaps[(int)InventorySlotPictureIndices.Miscellaneous1];
+            InventoryIconBitmaps[(int)InventorySlotPictureIndices.Miscellaneous4] = InventoryIconBitmaps[(int)InventorySlotPictureIndices.Miscellaneous1];
+            InventoryIconBitmaps[(int)InventorySlotPictureIndices.Miscellaneous5] = InventoryIconBitmaps[(int)InventorySlotPictureIndices.Miscellaneous1];
 
             SimpleFrameTopLeftCornerBitmap = LoadEmbeddedUIBitmap("frame-topleft.png");
             SimpleFrameSmallTopLeftCornerBitmap = LoadEmbeddedUIBitmap("frame-topleft-small.png");
