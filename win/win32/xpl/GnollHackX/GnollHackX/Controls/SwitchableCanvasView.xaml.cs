@@ -127,6 +127,21 @@ namespace GnollHackX.Controls
             }
             SizeChanged += SwitchableCanvasView_SizeChanged;
             PropertyChanged += SwitchableCanvasView_PropertyChanged;
+            HandlerChanged += SwitchableCanvasView_HandlerChanged;
+        }
+
+        private void SwitchableCanvasView_HandlerChanged(object sender, EventArgs e)
+        {
+            if (Handler != null)
+            {
+#if ANDROID
+                if (Handler?.PlatformView is Android.Views.View nativeView)
+                {
+                    var density = nativeView.Context.Resources.DisplayMetrics.Density;
+                    nativeView.SetCameraDistance(8000f * density);
+                }
+#endif
+            }
         }
 
         private int _shutDown = 0;
@@ -140,6 +155,7 @@ namespace GnollHackX.Controls
                 {
                     SizeChanged -= SwitchableCanvasView_SizeChanged;
                     PropertyChanged -= SwitchableCanvasView_PropertyChanged;
+                    HandlerChanged -= SwitchableCanvasView_HandlerChanged;
                     internalCanvasView.PaintSurface -= internalCanvasView_PaintSurface;
                     internalCanvasView.Touch -= internalCanvasView_Touch;
                     if (internalGLView != null)

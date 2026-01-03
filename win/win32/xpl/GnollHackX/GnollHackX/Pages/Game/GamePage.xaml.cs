@@ -4139,18 +4139,23 @@ namespace GnollHackX.Pages.Game
             //    _menuRefresh = false;
             //}
 
-            GHGame curGame = GHApp.CurrentGHGame;
-            if (curGame != null)
+            if (menuinfo.Style == ghmenu_styles.GHMENU_STYLE_INVENTORY || menuinfo.Style == ghmenu_styles.GHMENU_STYLE_PERMANENT_INVENTORY)
             {
-                lock (curGame.StatusFieldLock)
+                GHGame curGame = GHApp.CurrentGHGame;
+                if (curGame != null)
                 {
-                    MenuIsTwoWeap = curGame.StatusFields[(int)NhStatusFields.BL_2WEP].IsEnabled && !string.IsNullOrWhiteSpace(curGame.StatusFields[(int)NhStatusFields.BL_2WEP].Text);
+                    lock (curGame.StatusFieldLock)
+                    {
+                        MenuIsTwoWeap = curGame.StatusFields[(int)NhStatusFields.BL_2WEP].IsEnabled && !string.IsNullOrWhiteSpace(curGame.StatusFields[(int)NhStatusFields.BL_2WEP].Text);
+                    }
                 }
+                else
+                    MenuIsTwoWeap = false;
             }
             else
                 MenuIsTwoWeap = false;
 
-                    GHApp.DebugWriteProfilingStopwatchTimeAndStart("ShowMenuCanvas Start");
+            GHApp.DebugWriteProfilingStopwatchTimeAndStart("ShowMenuCanvas Start");
             float customScale = GHApp.CustomScreenScale;
             MenuTouchDictionary.Clear();
             lock(_menuScrollLock)
