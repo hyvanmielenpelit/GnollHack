@@ -2792,6 +2792,7 @@ namespace GnollHackX
         public static SKImage LoadingScreenBackgroundBitmap { get; set; }
         public static SKImage InventorySlotLightBitmap { get; set; }
         public static SKImage InventorySlotDarkBitmap { get; set; }
+        public static SKImage[] InventoryIconBitmaps { get; set; }
         public static SKImage ButtonNormalBitmap { get; set; }
         public static SKImage ButtonSelectedBitmap { get; set; }
         public static SKImage ButtonDisabledBitmap { get; set; }
@@ -2918,6 +2919,24 @@ namespace GnollHackX
 
             InventorySlotLightBitmap = LoadEmbeddedUIBitmap("inventory-slot-light.png");
             InventorySlotDarkBitmap = LoadEmbeddedUIBitmap("inventory-slot-dark.png");
+
+            InventoryIconBitmaps = new SKImage[(int)InventorySlotPictureIndices.NumPictureIndices];
+            InventoryIconBitmaps[(int)InventorySlotPictureIndices.General] = LoadEmbeddedUIBitmap("inventory-icon-weapon-right.png");
+            InventoryIconBitmaps[(int)InventorySlotPictureIndices.WeaponRight] = LoadEmbeddedUIBitmap("inventory-icon-weapon-right.png");
+            InventoryIconBitmaps[(int)InventorySlotPictureIndices.WeaponLeft] = LoadEmbeddedUIBitmap("inventory-icon-weapon-left.png");
+            InventoryIconBitmaps[(int)InventorySlotPictureIndices.SwapWeaponRight] = LoadEmbeddedUIBitmap("inventory-icon-swapweapon-right.png");
+            InventoryIconBitmaps[(int)InventorySlotPictureIndices.SwapWeaponLeft] = LoadEmbeddedUIBitmap("inventory-icon-swapweapon-left.png");
+            InventoryIconBitmaps[(int)InventorySlotPictureIndices.Quiver] = LoadEmbeddedUIBitmap("inventory-icon-quiver.png");
+            InventoryIconBitmaps[(int)InventorySlotPictureIndices.Suit] = LoadEmbeddedUIBitmap("inventory-icon-suit.png");
+            InventoryIconBitmaps[(int)InventorySlotPictureIndices.Cloak] = LoadEmbeddedUIBitmap("inventory-icon-cloak.png");
+            InventoryIconBitmaps[(int)InventorySlotPictureIndices.Robe] = LoadEmbeddedUIBitmap("inventory-icon-robe.png");
+            InventoryIconBitmaps[(int)InventorySlotPictureIndices.Shirt] = LoadEmbeddedUIBitmap("inventory-icon-shirt.png");
+            InventoryIconBitmaps[(int)InventorySlotPictureIndices.Helmet] = LoadEmbeddedUIBitmap("inventory-icon-helmet.png");
+            InventoryIconBitmaps[(int)InventorySlotPictureIndices.Gloves] = LoadEmbeddedUIBitmap("inventory-icon-gloves.png");
+            InventoryIconBitmaps[(int)InventorySlotPictureIndices.Boots] = LoadEmbeddedUIBitmap("inventory-icon-boots.png");
+            InventoryIconBitmaps[(int)InventorySlotPictureIndices.Amulet] = LoadEmbeddedUIBitmap("inventory-icon-amulet.png");
+            InventoryIconBitmaps[(int)InventorySlotPictureIndices.RingLeft] = LoadEmbeddedUIBitmap("inventory-icon-leftring.png");
+            InventoryIconBitmaps[(int)InventorySlotPictureIndices.RingRight] = LoadEmbeddedUIBitmap("inventory-icon-rightring.png");
 
             SimpleFrameTopLeftCornerBitmap = LoadEmbeddedUIBitmap("frame-topleft.png");
             SimpleFrameSmallTopLeftCornerBitmap = LoadEmbeddedUIBitmap("frame-topleft-small.png");

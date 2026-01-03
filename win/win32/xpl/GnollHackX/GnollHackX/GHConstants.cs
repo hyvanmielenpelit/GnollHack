@@ -1276,6 +1276,36 @@ namespace GnollHackX
         W_WORN_AND_WIELDED = (W_WORN_NOT_WIELDED | W_WIELDED_WEAPON),
     }
 
+    public enum InventorySlotPictureIndices : int
+    {
+        General = 0,
+        WeaponRight,
+        WeaponLeft,
+        Shield,
+        SwapWeaponRight,
+        SwapWeaponLeft,
+        Quiver,
+        Reserved,
+        Suit,
+        Cloak,
+        Robe,
+        Shirt,
+        Helmet,
+        Gloves,
+        Bracers,
+        Boots,
+        Amulet,
+        RingRight,
+        RingLeft,
+        Blindfold,
+        Miscellaneous1,
+        Miscellaneous2,
+        Miscellaneous3,
+        Miscellaneous4,
+        Miscellaneous5,
+        NumPictureIndices
+    }
+
     [StructLayout(LayoutKind.Sequential)]
     public struct monst_info
     {

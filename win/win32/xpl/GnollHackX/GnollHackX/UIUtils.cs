@@ -59,6 +59,10 @@ namespace GnollHackX
                                 0.21f, 0.72f, 0.07f, 0, 0,
                                 0,     0,     0,     1, 0
                             });
+        public static readonly SKColorFilter InventoryLightWornColorFilter = SKColorFilter.CreateBlendMode(SKColors.SaddleBrown.WithAlpha(160), SKBlendMode.SrcIn);
+        public static readonly SKColorFilter InventoryLightUnwornColorFilter = SKColorFilter.CreateBlendMode(SKColors.SaddleBrown.WithAlpha(96), SKBlendMode.SrcIn);
+        public static readonly SKColorFilter InventoryDarkWornColorFilter = SKColorFilter.CreateBlendMode(SKColors.Gray.WithAlpha(160), SKBlendMode.SrcIn);
+        public static readonly SKColorFilter InventoryDarkUnwornColorFilter = SKColorFilter.CreateBlendMode(SKColors.Gray.WithAlpha(96), SKBlendMode.SrcIn);
 
         public static SKColor NHColor2SKColor(int nhclr, int attr)
         {

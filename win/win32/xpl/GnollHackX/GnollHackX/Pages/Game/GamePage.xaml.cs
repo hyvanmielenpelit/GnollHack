@@ -31,6 +31,8 @@ using SkiaSharp.Views.Maui;
 using SkiaSharp.Views.Maui.Controls;
 using Microsoft.Maui.Controls;
 using System.Security.AccessControl;
+using Microsoft.Maui.Graphics;
+
 
 
 
@@ -16670,6 +16672,7 @@ namespace GnollHackX.Pages.Game
         private readonly SKColor _keyIdentifierTextColor = new SKColor(192, 192, 192);
         private readonly SKColor _keyIdentifierTextColorReverted = new SKColor(64, 64, 64);
 
+        private readonly SKColor _inventorySlotBackgroundColor = new SKColor(0xFF, 0x88, 0x00, 0x11);
         private readonly SKColor _menuHighlightSelectedColor = new SKColor(0xFF, 0x88, 0x00, 0x88);
         private readonly SKColor _menuHighlightAutoClickedColor = new SKColor(0xFF, 0xBB, 0x00, 0x99);
         private readonly SKColor _menuHighlightHoverOverSelectableColor = new SKColor(0xFF, 0x88, 0x00, 0x44);
@@ -16677,6 +16680,10 @@ namespace GnollHackX.Pages.Game
         private readonly SKColor _menuHighlightHoverOverSelectedColor = new SKColor(0xFF, 0x88, 0x00, 0xAA);
         private readonly SKColor _menuHighlightHoverOverAutoClickedColor = new SKColor(0xFF, 0xBB, 0x00, 0xAA);
         private readonly SKColor _menuHighlightWornColor = new SKColor(0xFF, 0xCC, 0x88, 0x20);
+
+        private readonly SKColor _inventorySlotBackgroundDarkColor = new SKColor(0x55, 0x55, 0x55, 0x33);
+        private readonly SKColor _menuHighlightSelectedDarkColor = new SKColor(0x77, 0x77, 0x77, 0x44);
+        private readonly SKColor _menuHighlightHoverOverSelectedDarkColor = new SKColor(0xBB, 0xBB, 0xBB, 0x77);
 
         private int _firstDrawnMenuItemIdx = -1;
         private int _lastDrawnMenuItemIdx = -1;
@@ -16715,47 +16722,68 @@ namespace GnollHackX.Pages.Game
         {
             public readonly string NameUp;
             public readonly string NameBottom;
-            public readonly float X; /* Multiples of screen / row widths */
-            public readonly float Y; /* Multiples of rows */
+            public readonly int PictureIndex;
             public readonly obj_worn_flags WornFlag;
             public readonly string BitmapName;
 
-            public EquipmentSlot(string nameUp, string nameBottom, float x, float y, obj_worn_flags wornFlag, string bitmapName)
+            public EquipmentSlot(string nameUp, string nameBottom, int pictureIndex, obj_worn_flags wornFlag, string bitmapName)
             {
                 NameUp = nameUp;
                 NameBottom = nameBottom;
-                X = x;
-                Y = y;
+                PictureIndex = pictureIndex;
                 WornFlag = wornFlag;
                 BitmapName = bitmapName;
             }
         }
         EquipmentSlot[] _equipmentSlots = new EquipmentSlot[] 
         {
-            new EquipmentSlot("Weapon", "Right", 0.0f, 1.0f, obj_worn_flags.W_WEP, ".Assets.UI.wield.png"),
-            new EquipmentSlot("Shield", "Left", 1.0f, 1.0f, obj_worn_flags.W_WEP2, ".Assets.UI.fight.png"),
-            new EquipmentSlot("Swap", "Right", 0.0f, 2.0f, obj_worn_flags.W_SWAPWEP, ".Assets.UI.swap.png"),
-            new EquipmentSlot("Swap", "Left", 1.0f, 2.0f, obj_worn_flags.W_SWAPWEP2, ".Assets.UI.swap.png"),
-            new EquipmentSlot("Quiver", "", 0.0f, 0.0f, obj_worn_flags.W_QUIVER, ".Assets.UI.quiver.png"),
-            new EquipmentSlot("Amulet", "", 0.25f, 0.0f, obj_worn_flags.W_AMUL, ".Assets.UI.puton.png"),
-            new EquipmentSlot("Suit", "", 0.5f, 4.0f, obj_worn_flags.W_ARM, ".Assets.UI.wear.png"),
-            new EquipmentSlot("Cloak", "", 0.5f, 1.0f, obj_worn_flags.W_ARMC, ".Assets.UI.wear.png"),
-            new EquipmentSlot("Robe", "", 0.5f, 2.0f, obj_worn_flags.W_ARMO, ".Assets.UI.wear.png"),
-            new EquipmentSlot("Shirt", "", 0.5f, 5.0f, obj_worn_flags.W_ARMU, ".Assets.UI.wear.png"),
-            new EquipmentSlot("Helmet", "", 0.5f, 0.0f, obj_worn_flags.W_ARMH, ".Assets.UI.wear.png"),
-            new EquipmentSlot("Gloves", "", 0.0f, 0.0f, obj_worn_flags.W_ARMG, ".Assets.UI.wear.png"),
-            new EquipmentSlot("Boots", "", 0.0f, 0.0f, obj_worn_flags.W_ARMF, ".Assets.UI.travel.png"),
-            new EquipmentSlot("Bracers", "", 0.0f, 0.0f, obj_worn_flags.W_ARMB, ".Assets.UI.puton.png"),
-            new EquipmentSlot("Left ring", "", 0.0f, 0.0f, obj_worn_flags.W_RINGL, ".Assets.UI.leftring.png"),
-            new EquipmentSlot("Right ring", "", 0.0f, 0.0f, obj_worn_flags.W_RINGR, ".Assets.UI.rightring.png"),
-            new EquipmentSlot("Blindfold", "", 0.0f, 0.0f, obj_worn_flags.W_BLINDFOLD, ".Assets.UI.puton.png"),
-            new EquipmentSlot("Miscellaneous", "1", 0.0f, 0.0f, obj_worn_flags.W_MISC, ".Assets.UI.puton.png"),
-            new EquipmentSlot("Miscellaneous", "2", 0.0f, 0.0f, obj_worn_flags.W_MISC2, ".Assets.UI.puton.png"),
-            new EquipmentSlot("Miscellaneous", "3", 0.0f, 0.0f, obj_worn_flags.W_MISC3, ".Assets.UI.puton.png"),
-            new EquipmentSlot("Miscellaneous", "4", 0.0f, 0.0f, obj_worn_flags.W_MISC4, ".Assets.UI.puton.png"),
-            new EquipmentSlot("Miscellaneous", "5", 0.0f, 0.0f, obj_worn_flags.W_MISC5, ".Assets.UI.puton.png"),
+            new EquipmentSlot("Right Hand", "Right", (int)InventorySlotPictureIndices.WeaponRight, obj_worn_flags.W_WEP, ".Assets.UI.wield.png"),
+            new EquipmentSlot("Left Hand", "Left", (int)InventorySlotPictureIndices.WeaponLeft, obj_worn_flags.W_WEP2, ".Assets.UI.fight.png"),
+            new EquipmentSlot("Right Swap", "Right", (int)InventorySlotPictureIndices.SwapWeaponRight, obj_worn_flags.W_SWAPWEP, ".Assets.UI.swap.png"),
+            new EquipmentSlot("Left Swap", "Left", (int)InventorySlotPictureIndices.SwapWeaponLeft, obj_worn_flags.W_SWAPWEP2, ".Assets.UI.swap.png"),
+            new EquipmentSlot("Quiver", "", (int)InventorySlotPictureIndices.Quiver, obj_worn_flags.W_QUIVER, ".Assets.UI.quiver.png"),
+            new EquipmentSlot("Amulet", "",(int)InventorySlotPictureIndices.Amulet, obj_worn_flags.W_AMUL, ".Assets.UI.puton.png"),
+            new EquipmentSlot("Suit", "", (int)InventorySlotPictureIndices.Suit, obj_worn_flags.W_ARM, ".Assets.UI.wear.png"),
+            new EquipmentSlot("Cloak", "", (int)InventorySlotPictureIndices.Cloak, obj_worn_flags.W_ARMC, ".Assets.UI.wear.png"),
+            new EquipmentSlot("Robe", "", (int)InventorySlotPictureIndices.Robe, obj_worn_flags.W_ARMO, ".Assets.UI.wear.png"),
+            new EquipmentSlot("Shirt", "", (int)InventorySlotPictureIndices.Shirt, obj_worn_flags.W_ARMU, ".Assets.UI.wear.png"),
+            new EquipmentSlot("Helmet", "", (int)InventorySlotPictureIndices.Helmet, obj_worn_flags.W_ARMH, ".Assets.UI.wear.png"),
+            new EquipmentSlot("Gloves", "", (int)InventorySlotPictureIndices.Gloves, obj_worn_flags.W_ARMG, ".Assets.UI.wear.png"),
+            new EquipmentSlot("Boots", "", (int)InventorySlotPictureIndices.Boots, obj_worn_flags.W_ARMF, ".Assets.UI.travel.png"),
+            new EquipmentSlot("Bracers", "", (int)InventorySlotPictureIndices.Gloves, obj_worn_flags.W_ARMB, ".Assets.UI.puton.png"),
+            new EquipmentSlot("Left ring", "", (int)InventorySlotPictureIndices.RingLeft, obj_worn_flags.W_RINGL, ".Assets.UI.leftring.png"),
+            new EquipmentSlot("Right ring", "", (int)InventorySlotPictureIndices.RingRight, obj_worn_flags.W_RINGR, ".Assets.UI.rightring.png"),
+            new EquipmentSlot("Blindfold", "", (int)InventorySlotPictureIndices.Amulet, obj_worn_flags.W_BLINDFOLD, ".Assets.UI.puton.png"),
+            new EquipmentSlot("Miscellaneous", "1", (int)InventorySlotPictureIndices.Amulet, obj_worn_flags.W_MISC, ".Assets.UI.puton.png"),
+            new EquipmentSlot("Miscellaneous", "2", (int)InventorySlotPictureIndices.Amulet, obj_worn_flags.W_MISC2, ".Assets.UI.puton.png"),
+            new EquipmentSlot("Miscellaneous", "3", (int)InventorySlotPictureIndices.Amulet, obj_worn_flags.W_MISC3, ".Assets.UI.puton.png"),
+            new EquipmentSlot("Miscellaneous", "4", (int)InventorySlotPictureIndices.Amulet, obj_worn_flags.W_MISC4, ".Assets.UI.puton.png"),
+            new EquipmentSlot("Miscellaneous", "5", (int)InventorySlotPictureIndices.Amulet, obj_worn_flags.W_MISC5, ".Assets.UI.puton.png"),
         };
         List<GHMenuItem> _wornMenuItems = new List<GHMenuItem>(32);
+
+        public string GetInventorySlotName(long wornBits)
+        {
+            if (wornBits == 0)
+                return "";
+            foreach(var slot in _equipmentSlots)
+            {
+                if (wornBits == (long)slot.WornFlag)
+                    return slot.NameUp;
+            }
+            return "";
+        }
+        public int GetInventorySlotPictureIndex(long wornBits)
+        {
+            if (wornBits == 0)
+                return -1;
+            foreach (var slot in _equipmentSlots)
+            {
+                if (wornBits == (long)slot.WornFlag)
+                    return slot.PictureIndex;
+            }
+            return -1;
+        }
 
         private void MenuCanvas_PaintSurface(object sender, SKPaintSurfaceEventArgs e)
         {
@@ -16837,6 +16865,7 @@ namespace GnollHackX.Pages.Game
                 float scaledmenumarginx = (float)menumarginx * scale;
                 float leftmenupadding = Math.Max(0, (canvaswidth - menuwidthoncanvas) / 2);
                 float rightmenupadding = leftmenupadding;
+                bool isDarkMode = GHApp.DarkMode;
 
                 if (MenuEquipmentSideShown)
                 {
@@ -16875,11 +16904,33 @@ namespace GnollHackX.Pages.Game
                     textPaint.TextSize = 10 * scale * customScale;
                     x += leftmenupadding + innerleftpadding;
                     float start_x = x;
-                    bool isDarkMode = GHApp.DarkMode;
                     SKImage slotBitmap = isDarkMode ? GHApp.InventorySlotDarkBitmap : GHApp.InventorySlotLightBitmap;
                     textPaint.Color = isDarkMode ? SKColors.Gray : SKColors.SaddleBrown;
+
                     foreach (var slot in _equipmentSlots)
                     {
+                        GHMenuItem foundItem = null;
+                        int selectionIndex = MenuCanvas.SelectionIndex;
+                        int foundItemIndex = -1;
+                        if ((allWornBits & (long)slot.WornFlag) != 0)
+                        {
+                            for (int i = 0; i < _wornMenuItems.Count; i++)
+                            {
+                                var menuItem = _wornMenuItems[i];
+                                if (menuItem != null)
+                                {
+                                    long wornBits = menuItem.ObjWornBits;
+                                    if (wornBits == (long)slot.WornFlag)
+                                    {
+                                        foundItem = menuItem;
+                                        foundItemIndex = MenuCanvas.MenuItems?.IndexOf(foundItem) ?? -1;
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+
+                        bool isHover = false;
                         float textpadding = - textPaint.FontMetrics.Ascent;
                         //float textpadding = (minrowheight - (textPaint.FontMetrics.Descent - textPaint.FontMetrics.Ascent)) / 2;
                         x += framewidth / 2;
@@ -16892,56 +16943,67 @@ namespace GnollHackX.Pages.Game
 
                         x = start_x;
                         y += textPaint.FontMetrics.Descent;
+                        float highLightPadding = (framewidth * 4) / 177;
                         SKRect picRect = new SKRect(x, y, x + framewidth, y + framewidth);
-                        //SKImage bitmap = GHApp.GetCachedImageSourceBitmap(GHApp.AppResourceName + slot.BitmapName, true);
-                        //if (bitmap != null)
-                        //    canvas.DrawImage(bitmap, picRect);
-                        canvas.DrawImage(slotBitmap, picRect);
+                        SKRect highlightRect = new SKRect(x + highLightPadding, y + highLightPadding, x + framewidth - highLightPadding, y + framewidth - highLightPadding);
+
+                        bool isHighlighted = foundItem != null && (selectionIndex >= 0 && foundItemIndex >= 0 && selectionIndex == foundItemIndex || foundItem.Selected);
+                        //if (foundItem != null && (selectionIndex >= 0 && foundItemIndex >= 0 && selectionIndex == foundItemIndex || foundItem.Selected))
+                        {
+                            SKColor oldColor = textPaint.Color;
+                            textPaint.Color = isHighlighted ? (isDarkMode ? (isHover ? _menuHighlightHoverOverSelectedDarkColor : _menuHighlightSelectedDarkColor) : (isHover ? _menuHighlightHoverOverSelectedColor : _menuHighlightSelectedColor)) : (isDarkMode ? _inventorySlotBackgroundDarkColor : _inventorySlotBackgroundColor);
+                            textPaint.Style = SKPaintStyle.Fill;
+                            canvas.DrawRect(highlightRect, textPaint.Paint);
+                            textPaint.Color = oldColor;
+                        }
+
+#if WINDOWS
+                        lock (_menuHoverLock)
+                        {
+                            isHover = _menuIsHovering && picRect.Contains(_menuHoverPoint);
+                        }
+#endif
+                        if (isHover)
+                            textPaint.Paint.ColorFilter = UIUtils.HighlightColorFilter;
+                        canvas.DrawImage(slotBitmap, picRect, textPaint.Paint);
+                        if (isHover)
+                            textPaint.Paint.ColorFilter = null;
 
                         //x += picturewidth + picturewidth / 5;
                         x += framepadding;
-                        y += framepadding + pictureverticalpadding;
+                        y += framepadding;
 
-                        if ((allWornBits & (long)slot.WornFlag) != 0)
+                        if (foundItem != null)
                         {
-                            GHMenuItem foundItem = null;
-                            for (int i = 0; i < _wornMenuItems.Count; i++)
+                            y += pictureverticalpadding;
+                            /* Icon */
+                            float glyph_start_y = y;
+                            if (!(glyph_start_y + minrowheight <= 0 || glyph_start_y >= canvasheight))
                             {
-                                var menuItem = _wornMenuItems[i];
-                                if (menuItem != null)
+                                using (new SKAutoCanvasRestore(canvas, true))
                                 {
-                                    long wornBits = menuItem.ObjWornBits;
-                                    if (wornBits == (long)slot.WornFlag)
+                                    foundItem.GlyphImageSource.AutoSize = true;
+                                    foundItem.GlyphImageSource.DoAutoSize();
+                                    if (foundItem.GlyphImageSource.Height > 0)
                                     {
-                                        foundItem = menuItem;
-                                        break;
-                                    }
-                                }
-                            }
-                            if (foundItem != null)
-                            {
-                                /* Icon */
-                                float glyph_start_y = y;
-                                if (!(glyph_start_y + minrowheight <= 0 || glyph_start_y >= canvasheight))
-                                {
-                                    using (new SKAutoCanvasRestore(canvas, true))
-                                    {
-                                        foundItem.GlyphImageSource.AutoSize = true;
-                                        foundItem.GlyphImageSource.DoAutoSize();
-                                        if (foundItem.GlyphImageSource.Height > 0)
-                                        {
-                                            float glyphxcenterpadding = (picturewidth - minrowheight * foundItem.GlyphImageSource.Width / foundItem.GlyphImageSource.Height) / 2;
-                                            canvas.Translate(x + glyphxcenterpadding, glyph_start_y);
-                                            canvas.Scale(minrowheight / foundItem.GlyphImageSource.Height);
-                                            foundItem.GlyphImageSource.DrawOnCanvas(canvas, usingGL, false, isHighFilterQuality, fixRects);
-                                        }
+                                        float glyphxcenterpadding = (picturewidth - minrowheight * foundItem.GlyphImageSource.Width / foundItem.GlyphImageSource.Height) / 2;
+                                        canvas.Translate(x + glyphxcenterpadding, glyph_start_y);
+                                        canvas.Scale(minrowheight / foundItem.GlyphImageSource.Height);
+                                        foundItem.GlyphImageSource.DrawOnCanvas(canvas, usingGL, isHover, isHighFilterQuality, fixRects);
                                     }
                                 }
                             }
                         }
                         else
                         {
-                            /* Empty slot */
+                            int slotPicIndex = slot.PictureIndex;
+                            SKRect wornRect = new SKRect(x, y, x + picturewidth, y + picturewidth);
+                            SKImage bitmap = GHApp.InventoryIconBitmaps[slotPicIndex];
+                            textPaint.Paint.ColorFilter = isDarkMode ? UIUtils.InventoryDarkUnwornColorFilter : UIUtils.InventoryLightUnwornColorFilter;
+                            if (bitmap != null)
+                                canvas.DrawImage(bitmap, wornRect, textPaint.Paint);
+                            textPaint.Paint.ColorFilter = null;
+                            y += pictureverticalpadding;
                         }
 
                         x = start_x;
@@ -17019,6 +17081,7 @@ namespace GnollHackX.Pages.Game
                                 float mainfontsize = (float)mi.FontSize * scale * customScale;
                                 float relsuffixsize = (float)mi.RelativeSuffixFontSize;
                                 float suffixfontsize = relsuffixsize * mainfontsize;
+                                //float invslotfontsize = minrowheight / 6 * scale * customScale;
                                 string mainFontFamily = mi.FontFamily;
                                 SKTypeface mainFont = GHApp.GetTypefaceByName(mainFontFamily);
                                 textPaint.Typeface = mainFont;
@@ -17117,7 +17180,7 @@ namespace GnollHackX.Pages.Game
                                         isHover = _menuIsHovering && selectionrect.Contains(_menuHoverPoint);
                                     }
 #else
-                                bool isHover = IsMiButton; /* On mobile, all buttons are normal / hover color automatically */
+                                    bool isHover = IsMiButton; /* On mobile, all buttons are normal / hover color automatically */
 #endif
                                     if (IsMiButton)
                                     {
@@ -17205,27 +17268,49 @@ namespace GnollHackX.Pages.Game
                                     bool hasWornIcon = mi.IsObjWorn;
                                     if (hasWornIcon && !(mi.DrawBounds.Bottom <= 0 || mi.DrawBounds.Top >= canvasheight))
                                     {
+                                        //long wornBits = mi.ObjWornBits;
+                                        //string bmpName =
+                                        //        (wornBits & (long)obj_worn_flags.W_WEP2) != 0 && !mi.IsObjArmor ? ".Assets.UI.fight.png" :
+                                        //        (wornBits & (long)obj_worn_flags.W_WIELDED_WEAPON) != 0 ? ".Assets.UI.wield.png" :
+                                        //        (wornBits & (long)obj_worn_flags.W_ARMF) != 0 ? ".Assets.UI.travel.png" :
+                                        //        (wornBits & (long)obj_worn_flags.W_ARMH) != 0 ? ".Assets.UI.cast.png" :
+                                        //        (wornBits & (long)obj_worn_flags.W_ARMOR) != 0 ? ".Assets.UI.wear.png" :
+                                        //        (wornBits & (long)obj_worn_flags.W_RINGL) != 0 ? ".Assets.UI.leftring.png" :
+                                        //        (wornBits & (long)obj_worn_flags.W_RINGR) != 0 ? ".Assets.UI.rightring.png" :
+                                        //        (wornBits & (long)obj_worn_flags.W_AMUL) != 0 ? ".Assets.UI.puton.png" :
+                                        //        (wornBits & (long)obj_worn_flags.W_ACCESSORY) != 0 ? ".Assets.UI.puton.png" :
+                                        //        (wornBits & (long)obj_worn_flags.W_QUIVER) != 0 ? ".Assets.UI.quiver.png" :
+                                        //        (wornBits & (long)obj_worn_flags.W_SWAP_WEAPON) != 0 ? ".Assets.UI.swap.png" :
+                                        //    ".Assets.UI.vitruvian-gnoll.png";
+                                        //if (bmpName != "")
+                                        //{
+                                        //    SKRect wornRect = new SKRect(selectionrect.Right - minrowheight, selectionrect.Top + (selectionrect.Height - minrowheight) / 2, selectionrect.Right, selectionrect.Bottom - (selectionrect.Height - minrowheight) / 2);
+                                        //    SKImage bitmap = GHApp.GetCachedImageSourceBitmap(GHApp.AppResourceName + bmpName, true);
+                                        //    if (bitmap != null)
+                                        //        canvas.DrawImage(bitmap, wornRect);
+                                        //}
+
                                         long wornBits = mi.ObjWornBits;
-                                        string bmpName =
-                                                (wornBits & (long)obj_worn_flags.W_WEP2) != 0 && !mi.IsObjArmor ? ".Assets.UI.fight.png" :
-                                                (wornBits & (long)obj_worn_flags.W_WIELDED_WEAPON) != 0 ? ".Assets.UI.wield.png" :
-                                                (wornBits & (long)obj_worn_flags.W_ARMF) != 0 ? ".Assets.UI.travel.png" :
-                                                (wornBits & (long)obj_worn_flags.W_ARMH) != 0 ? ".Assets.UI.cast.png" :
-                                                (wornBits & (long)obj_worn_flags.W_ARMOR) != 0 ? ".Assets.UI.wear.png" :
-                                                (wornBits & (long)obj_worn_flags.W_RINGL) != 0 ? ".Assets.UI.leftring.png" :
-                                                (wornBits & (long)obj_worn_flags.W_RINGR) != 0 ? ".Assets.UI.rightring.png" :
-                                                (wornBits & (long)obj_worn_flags.W_AMUL) != 0 ? ".Assets.UI.puton.png" :
-                                                (wornBits & (long)obj_worn_flags.W_ACCESSORY) != 0 ? ".Assets.UI.puton.png" :
-                                                (wornBits & (long)obj_worn_flags.W_QUIVER) != 0 ? ".Assets.UI.quiver.png" :
-                                                (wornBits & (long)obj_worn_flags.W_SWAP_WEAPON) != 0 ? ".Assets.UI.swap.png" :
-                                            ".Assets.UI.vitruvian-gnoll.png";
-                                        if (bmpName != "")
+                                        int slotPicIndex = GetInventorySlotPictureIndex(wornBits);
+                                        if (slotPicIndex >= 0)
                                         {
                                             SKRect wornRect = new SKRect(selectionrect.Right - minrowheight, selectionrect.Top + (selectionrect.Height - minrowheight) / 2, selectionrect.Right, selectionrect.Bottom - (selectionrect.Height - minrowheight) / 2);
-                                            SKImage bitmap = GHApp.GetCachedImageSourceBitmap(GHApp.AppResourceName + bmpName, true);
-                                            if (bitmap != null)
-                                                canvas.DrawImage(bitmap, wornRect);
+                                            SKImage bitmap = GHApp.InventoryIconBitmaps[slotPicIndex];
+                                            textPaint.Paint.ColorFilter = isDarkMode ? UIUtils.InventoryDarkWornColorFilter : UIUtils.InventoryLightWornColorFilter;
+                                            canvas.DrawImage(bitmap, wornRect, textPaint.Paint);
+                                            textPaint.Paint.ColorFilter = null;
                                         }
+                                        //SKColor oldColor = textPaint.Color;
+                                        //string slotName = GetInventorySlotName(wornBits);
+                                        //textPaint.Color = isDarkMode ? SKColors.Gray : SKColors.SaddleBrown;
+                                        //textPaint.TextSize = invslotfontsize;
+                                        //if (!string.IsNullOrEmpty(slotName))
+                                        //    textPaint.DrawTextOnCanvas(canvas, slotName, (wornRect.Left + wornRect.Right) / 2, (wornRect.Top + wornRect.Bottom) / 2 - (textPaint.FontMetrics.Descent - textPaint.FontMetrics.Ascent) / 2 - textPaint.FontMetrics.Ascent, SKTextAlign.Center);
+                                        //textPaint.Color = oldColor;
+                                        //textPaint.Typeface = mainFont;
+                                        //textPaint.TextSize = mainfontsize;
+
+
                                     }
 
                                     /* Main text */
