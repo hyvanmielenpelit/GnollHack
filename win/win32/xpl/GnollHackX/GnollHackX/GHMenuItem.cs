@@ -12,15 +12,41 @@ using Xamarin.Forms.Internals;
 using SkiaSharp;
 using System.IO;
 using System.Linq;
+using Microsoft.Maui.Graphics;
 
 namespace GnollHackX
 {
     public sealed class GHMenuItem : IEquatable<GHMenuItem>, INotifyPropertyChanged
     {
-        GHMenuInfo _menuInfo;
-        private GamePage _gamePage;
-        private int _noGlyph;
-        public Int64 Identifier { get; set; }
+        public GHMenuItem(GHMenuInfo info, int noGlyph, GamePage gamePage, Int64 identifier, char accelerator, char groupAccelerator, char specialMark,
+            int attr, int color, byte[] attrs, byte[] colors)
+        {
+            _menuInfo = info;
+            _noGlyph = noGlyph;
+            _gamePage = gamePage;
+            _glyphImageSource.ReferenceGamePage = gamePage;
+            _glyphImageSource.UseUpperSide = false;
+            _glyphImageSource.Width = GHConstants.TileWidth;
+            _glyphImageSource.Height = GHConstants.TileHeight / 2;
+            Identifier = identifier;    
+            EntryTextColor = GHColors.White;
+            _accelerator = accelerator;
+            _formattedAccelerator = _accelerator == '\0' ? "" : _accelerator.ToString();
+            GroupAccelerator = groupAccelerator;
+            _specialMark = specialMark;
+            _formattedSpecialMark = _specialMark == '\0' ? "" : _specialMark.ToString();
+
+            NHAttribute = attr;
+            NHColor = color;
+            NHAttributes = attrs;
+            NHColors = colors;
+
+        }
+
+        private readonly GHMenuInfo _menuInfo;
+        private readonly GamePage _gamePage;
+        private readonly int _noGlyph;
+        public readonly Int64 Identifier;
         private int _count;
         public int Count
         {
@@ -55,53 +81,33 @@ namespace GnollHackX
         public int MaxCount { get; set; }
         public bool UseNumItems { get; set; }
         public int NumItems { get; set; }
-        private char _accelerator;
+        private readonly char _accelerator;
         public char Accelerator 
         {
             get { return _accelerator; }
-            set 
-            {
-                _accelerator = value;
-                _formattedAccelerator = _accelerator == '\0' ? "" : _accelerator.ToString();
-            }
         }
-        public char GroupAccelerator { get; set; }
+        public readonly char GroupAccelerator;
 
-        private char _specialMark;
+        private readonly char _specialMark;
         public char SpecialMark 
         { 
             get { return _specialMark; } 
-            set 
-            {
-                _specialMark = value;
-                _formattedSpecialMark = _specialMark == '\0' ? "" : _specialMark.ToString();
-            }
         }
 
-        private string _formattedAccelerator = "";
+        private readonly string _formattedAccelerator = "";
         public string FormattedAccelerator
         {
             get
             {
                 return _formattedAccelerator;
-                //string res = Accelerator.ToString();
-                //if (res == "" || res == "\0")
-                //    return "";
-                //else
-                //    return "   " + res;
             }
         }
-        private string _formattedSpecialMark = "";
+        private readonly string _formattedSpecialMark = "";
         public string FormattedSpecialMark
         {
             get
             {
                 return _formattedSpecialMark;
-                //string res = SpecialMark.ToString();
-                //if (res == "" || res == "\0")
-                //    return "";
-                //else
-                //    return "   " + res;
             }
         }
         private string _text;
@@ -340,11 +346,11 @@ namespace GnollHackX
         public bool IsGlyphVisible { get { return (Glyph != _noGlyph); } }
 
 
-        public int NHAttribute { get; set; }
-        public int NHColor { get; set; }
+        public readonly int NHAttribute;
+        public readonly int NHColor;
 
-        public byte[] NHAttributes { get; set; } = null;
-        public byte[] NHColors { get; set; } = null;
+        public readonly byte[] NHAttributes = null;
+        public readonly byte[] NHColors = null;
 
 
         private int _glyph;
@@ -733,18 +739,6 @@ namespace GnollHackX
                 return (this.Text.Equals(other.Text));
         }
 
-        public GHMenuItem(GHMenuInfo info, int noGlyph, GamePage gamePage)
-        {
-            _menuInfo = info;
-            _noGlyph = noGlyph;
-            _gamePage = gamePage;
-            _glyphImageSource.ReferenceGamePage = gamePage;
-            _glyphImageSource.UseUpperSide = false;
-            _glyphImageSource.Width = GHConstants.TileWidth;
-            _glyphImageSource.Height = GHConstants.TileHeight / 2;
-            EntryTextColor = GHColors.White;
-        }
-
         public event PropertyChangedEventHandler PropertyChanged;
 
         private GlyphImageSource _glyphImageSource = new GlyphImageSource();
@@ -769,16 +763,16 @@ namespace GnollHackX
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyname));
         }
 
-        public SKRect DrawBounds = new SKRect();
-        public SKRect EquipmentDrawBounds = new SKRect();
+        //public SKRect DrawBounds = new SKRect();
+        //public SKRect EquipmentDrawBounds = new SKRect();
 
-        public bool IsVisibleOnCanvas(float canvaswidth, float canvasheight)
-        {
-            if (DrawBounds.Bottom <= 0 || DrawBounds.Top >= canvasheight)
-                return false;
+        //public bool IsVisibleOnCanvas(float canvaswidth, float canvasheight)
+        //{
+        //    if (DrawBounds.Bottom <= 0 || DrawBounds.Top >= canvasheight)
+        //        return false;
 
-            return true;
-        }
+        //    return true;
+        //}
 
         public bool Selected { get; set; }
         public bool Highlighted { get; set; }

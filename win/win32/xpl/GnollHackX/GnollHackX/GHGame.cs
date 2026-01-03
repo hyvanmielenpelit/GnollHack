@@ -1794,19 +1794,9 @@ namespace GnollHackX
             {
                 if (_ghWindows[winid] != null && _ghWindows[winid].MenuInfo != null)
                 {
-                    GHMenuItem mi = new GHMenuItem(_ghWindows[winid].MenuInfo, GHApp.NoGlyph, ActiveGamePage);
-                    mi.Identifier = identifier;
-                    if (accel == 0 && identifier != 0)
-                        mi.Accelerator = _ghWindows[winid].MenuInfo.AutoAccelerator;
-                    else
-                        mi.Accelerator = accel;
-                    mi.GroupAccelerator = groupaccel;
-                    mi.SpecialMark = special_mark;
-
-                    mi.NHAttribute = attr;
-                    mi.NHColor = color;
-                    mi.NHAttributes = attrs;
-                    mi.NHColors = colors;
+                    GHMenuItem mi = new GHMenuItem(_ghWindows[winid].MenuInfo, GHApp.NoGlyph, ActiveGamePage, identifier,
+                        accel == 0 && identifier != 0 ? _ghWindows[winid].MenuInfo.AutoAccelerator : accel, groupaccel, special_mark,
+                        attr, color, attrs, colors);
 
                     mi.Glyph = glyph;
                     mi.UseUpperSide = (menuflags & (ulong)MenuFlags.MENU_FLAGS_ACTIVE) != 0;
