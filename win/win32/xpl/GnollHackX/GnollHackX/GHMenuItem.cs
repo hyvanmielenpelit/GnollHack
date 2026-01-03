@@ -770,6 +770,7 @@ namespace GnollHackX
         }
 
         public SKRect DrawBounds = new SKRect();
+        public SKRect EquipmentDrawBounds = new SKRect();
 
         public bool IsVisibleOnCanvas(float canvaswidth, float canvasheight)
         {

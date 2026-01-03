@@ -3254,6 +3254,7 @@ namespace GnollHackX.Pages.Game
         private readonly object _menuPositionLock = new object();
         private bool[] _menuPositionSavingOn = new bool[(int)ghmenu_styles.MAX_GHMENU_STYLES];
         private float[] _savedMenuScrollOffset = new float[(int)ghmenu_styles.MAX_GHMENU_STYLES];
+        private bool[] _savedEquipmentSideOn = new bool[(int)ghmenu_styles.MAX_GHMENU_STYLES];
 
         private void ToggleMenuPositionSaving(int menuStyle, int toggleValue)
         {
@@ -3261,6 +3262,7 @@ namespace GnollHackX.Pages.Game
             {
                 _menuPositionSavingOn[menuStyle] = toggleValue != 0;
                 _savedMenuScrollOffset[menuStyle] = 0.0f;
+                _savedEquipmentSideOn[menuStyle] = false;
             }
         }
 
@@ -4422,6 +4424,7 @@ namespace GnollHackX.Pages.Game
                     lock(_menuScrollLock)
                     {
                         _menuScrollOffset = _savedMenuScrollOffset[(int)MenuCanvas.MenuStyle];
+                        MenuEquipmentSideShown = _savedEquipmentSideOn[(int)MenuCanvas.MenuStyle];
                         InterlockedMenuScrollOffset = _menuScrollOffset;
                     }
                 }
@@ -16761,6 +16764,9 @@ namespace GnollHackX.Pages.Game
             new EquipmentSlot("Miscellaneous", "5", (int)InventorySlotPictureIndices.Miscellaneous5, obj_worn_flags.W_MISC5, ".Assets.UI.puton.png"),
         };
         List<GHMenuItem> _wornMenuItems = new List<GHMenuItem>(32);
+        SKRect SelectedEquipmentDrawBounds = new SKRect();
+        int _selectedEquipmentIndex = -1;
+        int SelectedEquipmentIndex { get { return Interlocked.CompareExchange(ref _selectedEquipmentIndex, 0, 0); } set { Interlocked.Exchange(ref _selectedEquipmentIndex, value); } }
 
         public string GetInventorySlotName(long wornBits)
         {
@@ -16783,6 +16789,21 @@ namespace GnollHackX.Pages.Game
                     return slot.PictureIndex;
             }
             return -1;
+        }
+
+        private void ClearNormalDrawBounds()
+        {
+            if (MenuCanvas.MenuItems == null)
+                return;
+            for (int i = 0; i < MenuCanvas.MenuItems.Count; i++)
+                MenuCanvas.MenuItems[i].DrawBounds = new SKRect();
+        }
+        private void ClearEquipmentDrawBounds()
+        {
+            if (MenuCanvas.MenuItems == null)
+                return;
+            for (int i = 0; i < MenuCanvas.MenuItems.Count; i++)
+                MenuCanvas.MenuItems[i].EquipmentDrawBounds = new SKRect();
         }
 
         private void MenuCanvas_PaintSurface(object sender, SKPaintSurfaceEventArgs e)
@@ -16848,7 +16869,7 @@ namespace GnollHackX.Pages.Game
             bool fixRects = GHApp.FixRects;
             bool revertBW = MenuCanvas.RevertBlackAndWhite;
             bool isInventory = MenuCanvas.MenuStyle >= ghmenu_styles.GHMENU_STYLE_INVENTORY && MenuCanvas.MenuStyle <= ghmenu_styles.GHMENU_STYLE_OTHERS_INVENTORY;
-            float x, y;
+            float x = 0, y = 0;
             string str;
             SKRect textBounds = new SKRect();
 
@@ -16866,8 +16887,11 @@ namespace GnollHackX.Pages.Game
                 float leftmenupadding = Math.Max(0, (canvaswidth - menuwidthoncanvas) / 2);
                 float rightmenupadding = leftmenupadding;
                 bool isDarkMode = GHApp.DarkMode;
+                bool isEquipmentSideShown = MenuEquipmentSideShown;
+                GHMenuItem selectedEquipmentItem = null;
+                float innerleftpadding = 0;
 
-                if (MenuEquipmentSideShown)
+                if (isEquipmentSideShown)
                 {
                     bool isLandscape = canvaswidth > canvasheight;
                     int numRows = isLandscape ? 4 : 6;
@@ -16880,9 +16904,8 @@ namespace GnollHackX.Pages.Game
                     float framexmargin = framewidth / 5;
                     float frameymargin = framewidth / 10;
                     float totalgridwith = numColumns * framewidth + (numColumns - 1) * framexmargin;
-                    float innerleftpadding = Math.Max(0, (menuwidthoncanvas - totalgridwith) / 2);
+                    innerleftpadding = Math.Max(0, (menuwidthoncanvas - totalgridwith) / 2);
 
-                    x = y = 0;
                     _wornMenuItems.Clear();
                     long allWornBits = 0;
 
@@ -16906,6 +16929,7 @@ namespace GnollHackX.Pages.Game
                     float start_x = x;
                     SKImage slotBitmap = isDarkMode ? GHApp.InventorySlotDarkBitmap : GHApp.InventorySlotLightBitmap;
                     textPaint.Color = isDarkMode ? SKColors.Gray : SKColors.SaddleBrown;
+                    float gridHeight = 0;
 
                     foreach (var slot in _equipmentSlots)
                     {
@@ -16947,15 +16971,18 @@ namespace GnollHackX.Pages.Game
                         SKRect picRect = new SKRect(x, y, x + framewidth, y + framewidth);
                         SKRect highlightRect = new SKRect(x + highLightPadding, y + highLightPadding, x + framewidth - highLightPadding, y + framewidth - highLightPadding);
 
-                        bool isHighlighted = foundItem != null && (selectionIndex >= 0 && foundItemIndex >= 0 && selectionIndex == foundItemIndex || foundItem.Selected);
-                        //if (foundItem != null && (selectionIndex >= 0 && foundItemIndex >= 0 && selectionIndex == foundItemIndex || foundItem.Selected))
+                        bool selMatches = selectionIndex >= 0 && foundItemIndex >= 0 && selectionIndex == foundItemIndex;
+                        bool isHighlighted = foundItem != null && (selMatches || foundItem.Selected);
+                        if (foundItem != null && selMatches)
                         {
-                            SKColor oldColor = textPaint.Color;
-                            textPaint.Color = isHighlighted ? (isDarkMode ? (isHover ? _menuHighlightHoverOverSelectedDarkColor : _menuHighlightSelectedDarkColor) : (isHover ? _menuHighlightHoverOverSelectedColor : _menuHighlightSelectedColor)) : (isDarkMode ? _inventorySlotBackgroundDarkColor : _inventorySlotBackgroundColor);
-                            textPaint.Style = SKPaintStyle.Fill;
-                            canvas.DrawRect(highlightRect, textPaint.Paint);
-                            textPaint.Color = oldColor;
+                            selectedEquipmentItem = foundItem;
+                            SelectedEquipmentIndex = foundItemIndex;
                         }
+                        SKColor oldColor = textPaint.Color;
+                        textPaint.Color = isHighlighted ? (isDarkMode ? (isHover ? _menuHighlightHoverOverSelectedDarkColor : _menuHighlightSelectedDarkColor) : (isHover ? _menuHighlightHoverOverSelectedColor : _menuHighlightSelectedColor)) : (isDarkMode ? _inventorySlotBackgroundDarkColor : _inventorySlotBackgroundColor);
+                        textPaint.Style = SKPaintStyle.Fill;
+                        canvas.DrawRect(highlightRect, textPaint.Paint);
+                        textPaint.Color = oldColor;
 
 #if WINDOWS
                         lock (_menuHoverLock)
@@ -16970,6 +16997,8 @@ namespace GnollHackX.Pages.Game
                         canvas.DrawImage(slotBitmap, picRect, textPaint.Paint);
                         if (isHover || isHighlighted)
                             textPaint.Paint.ColorFilter = null;
+                        if (foundItem != null)
+                            foundItem.EquipmentDrawBounds = picRect;
 
                         //x += picturewidth + picturewidth / 5;
                         x += framepadding;
@@ -17015,26 +17044,33 @@ namespace GnollHackX.Pages.Game
                         count++;
                         if ((count % numRows) == 0)
                         {
+                            if (y > gridHeight)
+                                gridHeight = y;
                             x += framewidth + framexmargin;
                             start_x = x;
                             y = 0;
                         }
                     }
+
+                    x = leftmenupadding + innerleftpadding;
+                    y = gridHeight;
                 }
-                else
+
+                if (!isEquipmentSideShown || selectedEquipmentItem != null)
                 {
                     float curmenuoffset = InterlockedMenuScrollOffset;
-                    y = curmenuoffset;
+                    if (!isEquipmentSideShown)
+                        y = curmenuoffset;
                     float accel_fixed_width = 10;
                     bool first = true;
                     float bottomPadding = 0;
                     float topPadding = 0;
                     float maintext_x_start = 0;
                     float fontspacingpadding = 0;
-                    bool wrapglyph = MenuCanvas.GHWindow != null ? MenuCanvas.GHWindow.WrapGlyph : false;
+                    bool wrapglyph = MenuCanvas.GHWindow != null && isEquipmentSideShown ? MenuCanvas.GHWindow.WrapGlyph : false;
                     float glyphpadding = 0;
-                    float glyphystart = scale * (float)Math.Max(0.0, MenuWindowGlyphImage.ThreadSafeY - MenuCanvas.ThreadSafeY);
-                    float glyphyend = scale * (float)Math.Max(0.0, MenuWindowGlyphImage.ThreadSafeY + MenuWindowGlyphImage.ThreadSafeHeight - MenuCanvas.ThreadSafeY);
+                    float glyphystart = isEquipmentSideShown ? 0 : scale * (float)Math.Max(0.0, MenuWindowGlyphImage.ThreadSafeY - MenuCanvas.ThreadSafeY);
+                    float glyphyend = isEquipmentSideShown ? 0 : scale * (float)Math.Max(0.0, MenuWindowGlyphImage.ThreadSafeY + MenuWindowGlyphImage.ThreadSafeHeight - MenuCanvas.ThreadSafeY);
                     //lock (MenuCanvas.MenuItemLock)
                     {
                         bool has_pictures = false;
@@ -17059,6 +17095,9 @@ namespace GnollHackX.Pages.Game
                             float firstMinRowHeight = -1;
                             foreach (GHMenuItem mi in menuItems)
                             {
+                                if (isEquipmentSideShown && selectedEquipmentItem != mi)
+                                    continue;
+
                                 idx++;
                                 bool IsMiButton = mi.IsButton;
                                 float extra_vertical_padding = IsMiButton ? 12f : 0f;
@@ -17073,12 +17112,14 @@ namespace GnollHackX.Pages.Game
                                 else
                                     textPaint.TextSize = mi.MinimumTouchableTextSize * scale * customScale;
                                 float minrowheight = mi.MinimumRowHeight(textPaint.FontSpacing, bottomPadding, topPadding, canvaswidth, canvasheight);
-                                float paddingAdjustment = 0;
+                                float paddingAdjustment = isEquipmentSideShown ? innerleftpadding : 0;
                                 if (firstMinRowHeight == -1)
                                     firstMinRowHeight = minrowheight;
                                 if (isInventory && firstMinRowHeight > 0 && leftmenupadding > firstMinRowHeight / 2 + scaledmenumarginx)
-                                    paddingAdjustment = -firstMinRowHeight / 2;
-                                x = leftmenupadding + paddingAdjustment;
+                                    paddingAdjustment += -firstMinRowHeight / 2;
+                                if (!isEquipmentSideShown)
+                                    x = leftmenupadding + paddingAdjustment;
+
                                 mi.DrawBounds.Left = x;
                                 float mainfontsize = (float)mi.FontSize * scale * customScale;
                                 float relsuffixsize = (float)mi.RelativeSuffixFontSize;
@@ -17188,7 +17229,7 @@ namespace GnollHackX.Pages.Game
                                     {
                                         canvas.DrawImage(isselected || mi.Highlighted ? GHApp.ButtonSelectedBitmap : isHover ? GHApp.ButtonNormalBitmap : GHApp.ButtonDisabledBitmap, selectionrect);
                                     }
-                                    else
+                                    else if (!isEquipmentSideShown)
                                     {
                                         if (isselected)
                                         {
@@ -17208,12 +17249,12 @@ namespace GnollHackX.Pages.Game
                                             textPaint.Style = SKPaintStyle.Fill;
                                             canvas.DrawRect(selectionrect, textPaint.Paint);
                                         }
-                                        //else if (mi.IsObjWorn)
-                                        //{
-                                        //    textPaint.Color = _menuHighlightWornColor;
-                                        //    textPaint.Style = SKPaintStyle.Fill;
-                                        //    canvas.DrawRect(selectionrect, textPaint.Paint);
-                                        //}
+                                    }
+                                    else if (isHover)
+                                    {
+                                        textPaint.Color = _menuHighlightHoverOverAutoClickableColor; //(isDarkMode ? (isHover ? _menuHighlightHoverOverSelectedDarkColor : _menuHighlightSelectedDarkColor) : (isHover ? _menuHighlightHoverOverSelectedColor : _menuHighlightSelectedColor));
+                                        textPaint.Style = SKPaintStyle.Fill;
+                                        canvas.DrawRect(selectionrect, textPaint.Paint);
                                     }
 
                                     float singlelinepadding = Math.Max(0.0f, ((float)(maintextrows - 1) * (textPaint.FontSpacing)) / 2);
@@ -17270,49 +17311,17 @@ namespace GnollHackX.Pages.Game
                                     bool hasWornIcon = mi.IsObjWorn;
                                     if (hasWornIcon && !(mi.DrawBounds.Bottom <= 0 || mi.DrawBounds.Top >= canvasheight))
                                     {
-                                        //long wornBits = mi.ObjWornBits;
-                                        //string bmpName =
-                                        //        (wornBits & (long)obj_worn_flags.W_WEP2) != 0 && !mi.IsObjArmor ? ".Assets.UI.fight.png" :
-                                        //        (wornBits & (long)obj_worn_flags.W_WIELDED_WEAPON) != 0 ? ".Assets.UI.wield.png" :
-                                        //        (wornBits & (long)obj_worn_flags.W_ARMF) != 0 ? ".Assets.UI.travel.png" :
-                                        //        (wornBits & (long)obj_worn_flags.W_ARMH) != 0 ? ".Assets.UI.cast.png" :
-                                        //        (wornBits & (long)obj_worn_flags.W_ARMOR) != 0 ? ".Assets.UI.wear.png" :
-                                        //        (wornBits & (long)obj_worn_flags.W_RINGL) != 0 ? ".Assets.UI.leftring.png" :
-                                        //        (wornBits & (long)obj_worn_flags.W_RINGR) != 0 ? ".Assets.UI.rightring.png" :
-                                        //        (wornBits & (long)obj_worn_flags.W_AMUL) != 0 ? ".Assets.UI.puton.png" :
-                                        //        (wornBits & (long)obj_worn_flags.W_ACCESSORY) != 0 ? ".Assets.UI.puton.png" :
-                                        //        (wornBits & (long)obj_worn_flags.W_QUIVER) != 0 ? ".Assets.UI.quiver.png" :
-                                        //        (wornBits & (long)obj_worn_flags.W_SWAP_WEAPON) != 0 ? ".Assets.UI.swap.png" :
-                                        //    ".Assets.UI.vitruvian-gnoll.png";
-                                        //if (bmpName != "")
-                                        //{
-                                        //    SKRect wornRect = new SKRect(selectionrect.Right - minrowheight, selectionrect.Top + (selectionrect.Height - minrowheight) / 2, selectionrect.Right, selectionrect.Bottom - (selectionrect.Height - minrowheight) / 2);
-                                        //    SKImage bitmap = GHApp.GetCachedImageSourceBitmap(GHApp.AppResourceName + bmpName, true);
-                                        //    if (bitmap != null)
-                                        //        canvas.DrawImage(bitmap, wornRect);
-                                        //}
-
                                         long wornBits = mi.ObjWornBits;
                                         int slotPicIndex = GetInventorySlotPictureIndex(wornBits);
                                         if (slotPicIndex >= 0)
                                         {
-                                            SKRect wornRect = new SKRect(selectionrect.Right - minrowheight, selectionrect.Top + (selectionrect.Height - minrowheight) / 2, selectionrect.Right, selectionrect.Bottom - (selectionrect.Height - minrowheight) / 2);
+                                            float wornmargin = minrowheight * 0.025f + minrowheight / 10;
+                                            SKRect wornRect = new SKRect(selectionrect.Right - minrowheight - wornmargin, selectionrect.Top + (selectionrect.Height - minrowheight) / 2, selectionrect.Right - wornmargin, selectionrect.Bottom - (selectionrect.Height - minrowheight) / 2);
                                             SKImage bitmap = GHApp.InventoryIconBitmaps[slotPicIndex];
                                             textPaint.Paint.ColorFilter = isDarkMode ? UIUtils.InventoryDarkWornColorFilter : UIUtils.InventoryLightWornColorFilter;
                                             canvas.DrawImage(bitmap, wornRect, textPaint.Paint);
                                             textPaint.Paint.ColorFilter = null;
                                         }
-                                        //SKColor oldColor = textPaint.Color;
-                                        //string slotName = GetInventorySlotName(wornBits);
-                                        //textPaint.Color = isDarkMode ? SKColors.Gray : SKColors.SaddleBrown;
-                                        //textPaint.TextSize = invslotfontsize;
-                                        //if (!string.IsNullOrEmpty(slotName))
-                                        //    textPaint.DrawTextOnCanvas(canvas, slotName, (wornRect.Left + wornRect.Right) / 2, (wornRect.Top + wornRect.Bottom) / 2 - (textPaint.FontMetrics.Descent - textPaint.FontMetrics.Ascent) / 2 - textPaint.FontMetrics.Ascent, SKTextAlign.Center);
-                                        //textPaint.Color = oldColor;
-                                        //textPaint.Typeface = mainFont;
-                                        //textPaint.TextSize = mainfontsize;
-
-
                                     }
 
                                     /* Main text */
@@ -17387,12 +17396,16 @@ namespace GnollHackX.Pages.Game
                                     mi.DrawBounds.Bottom = y;
                                     mi.DrawBounds.Right = canvaswidth - (rightmenupadding + paddingAdjustment); //This should cover the worn icon, too
                                     _lastDrawnMenuItemIdx = idx;
+                                    if (isEquipmentSideShown)
+                                    {
+                                        SelectedEquipmentDrawBounds = mi.DrawBounds;
+                                    }
 
                                     /* Count circle */
                                     if (mi.Count > 0 && !(mi.DrawBounds.Bottom <= 0 || mi.DrawBounds.Top >= canvasheight))
                                     {
                                         float circleradius = minrowheight * 0.90f / 2; // mi.DrawBounds.Height * 0.90f
-                                        float circlex = mi.DrawBounds.Right - circleradius - 5;
+                                        float circlex = mi.DrawBounds.Right - circleradius - minrowheight / 10;
                                         float circley = (mi.DrawBounds.Top + mi.DrawBounds.Bottom) / 2;
                                         textPaint.Color = SKColors.Red;
                                         canvas.DrawCircle(circlex, circley, circleradius, textPaint.Paint);
@@ -17976,7 +17989,10 @@ namespace GnollHackX.Pages.Game
             if (MenuDrawOnlyClear)
                 return;
             if (MenuEquipmentSideShown)
+            {
+                HandleEquipmentTouch(sender, e);
                 return;
+            }
             //lock (_menuDrawOnlyLock)
             //{
             //    if (_menuDrawOnlyClear)
@@ -18292,6 +18308,158 @@ namespace GnollHackX.Pages.Game
             }
         }
 
+        private void HandleEquipmentTouch(object sender, SKTouchEventArgs e)
+        {
+            switch (e?.ActionType)
+            {
+                case SKTouchAction.Entered:
+                    break;
+                case SKTouchAction.Pressed:
+                    _savedMenuSender = null;
+                    _savedMenuEventArgs = null;
+                    _savedMenuTimeStamp = DateTime.Now;
+
+                    if (MenuTouchDictionary.ContainsKey(e.Id))
+                        MenuTouchDictionary[e.Id] = new TouchEntry(e.Location, DateTime.Now);
+                    else
+                        MenuTouchDictionary.TryAdd(e.Id, new TouchEntry(e.Location, DateTime.Now));
+
+                    if (MenuTouchDictionary.Count > 1)
+                    {
+                        _menuTouchMoved = true;
+                        _menuPreviousReleaseClick = false;
+                        _menuPreviousReleaseClickIndex = -1;
+                        _savedPreviousMenuReleaseTimeStamp = new DateTime();
+                    }
+                    else
+                    {
+                        _savedMenuSender = sender;
+                        _savedMenuEventArgs = e;
+                    }
+
+                    e.Handled = true;
+                    break;
+                case SKTouchAction.Moved:
+                    {
+                        TouchEntry entry;
+                        bool res = MenuTouchDictionary.TryGetValue(e.Id, out entry);
+                        if (res)
+                        {
+                            SKPoint anchor = entry.Location;
+
+                            float diffX = e.Location.X - anchor.X;
+                            float diffY = e.Location.Y - anchor.Y;
+                            float dist = (float)Math.Sqrt((Math.Pow(diffX, 2) + Math.Pow(diffY, 2)));
+
+                            if (MenuTouchDictionary.Count == 1)
+                            {
+                                /* Just one finger => Scroll the menu */
+                                if (diffX != 0 || diffY != 0)
+                                {
+                                    DateTime now = DateTime.Now;
+                                    /* Do not scroll within button press time threshold, unless large move */
+                                    long millisecs_elapsed = (now.Ticks - entry.PressTime.Ticks) / TimeSpan.TicksPerMillisecond;
+                                    if (dist > GHConstants.MoveDistanceThreshold || millisecs_elapsed > GHConstants.MoveOrPressTimeThreshold)
+                                    {
+                                        MenuTouchDictionary[e.Id].Location = e.Location;
+                                        MenuTouchDictionary[e.Id].UpdateTime = DateTime.Now;
+                                        if (dist > GHConstants.MoveDistanceThreshold)
+                                        {  /* Cancel any press, if long move */
+                                            _menuTouchMoved = true;
+                                            _savedMenuTimeStamp = DateTime.Now;
+                                            _menuPreviousReleaseClick = false;
+                                            _menuPreviousReleaseClickIndex = -1;
+                                            _savedPreviousMenuReleaseTimeStamp = new DateTime();
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        e.Handled = true;
+                    }
+                    break;
+                case SKTouchAction.Released:
+                    {
+                        _savedMenuSender = null;
+                        _savedMenuEventArgs = null;
+                        _savedMenuTimeStamp = DateTime.Now;
+
+                        TouchEntry entry;
+                        bool res = MenuTouchDictionary.TryGetValue(e.Id, out entry);
+                        if (res)
+                        {
+                            long nowTicks = _savedMenuTimeStamp.Ticks;
+                            long elapsedms = (nowTicks - entry.PressTime.Ticks) / TimeSpan.TicksPerMillisecond;
+                            if (elapsedms <= GHConstants.MoveOrPressTimeThreshold && !_menuTouchMoved && MenuCanvas.SelectionHow != SelectionMode.None)
+                            {
+                                //if (e.MouseButton == SKMouseButton.Right)
+                                //{
+                                //    if (MenuCanvas.AllowLongTap)
+                                //        MenuCanvas_LongTap(sender, e);
+                                //}
+                                //else
+                                {
+                                    MenuClickResult clickRes = MenuCanvas_EquipmentClickRelease(sender, e, false);
+                                    if (GHApp.OkOnDoubleClick && MenuCanvas.SelectionHow == SelectionMode.Single && e.MouseButton == SKMouseButton.Left)
+                                    {
+                                        long timeSincePreviousReleaseInMs = (nowTicks - _savedPreviousMenuReleaseTimeStamp.Ticks) / TimeSpan.TicksPerMillisecond;
+                                        if (!clickRes.OkClicked && MenuOKButton.IsEnabled && _menuPreviousReleaseClick &&
+                                            clickRes.MenuItemClickIndex >= 0 && clickRes.MenuItemClickIndex == _menuPreviousReleaseClickIndex &&
+                                            clickRes.ItemIdentifier != 0 &&
+                                            timeSincePreviousReleaseInMs <= GHConstants.DoubleClickTimeThreshold)
+                                        {
+                                            MenuCanvas.InvalidateSurface();
+                                            PressMenuOKButton();
+                                            _menuPreviousReleaseClick = false;
+                                            _menuPreviousReleaseClickIndex = -1;
+                                            _savedPreviousMenuReleaseTimeStamp = new DateTime();
+                                        }
+                                        else
+                                        {
+                                            _menuPreviousReleaseClick = true;
+                                            _menuPreviousReleaseClickIndex = clickRes.MenuItemClickIndex;
+                                            _savedPreviousMenuReleaseTimeStamp = _savedMenuTimeStamp;
+                                        }
+                                    }
+                                }
+                            }
+                            if (MenuTouchDictionary.ContainsKey(e.Id))
+                            {
+                                TouchEntry removedEntry;
+                                MenuTouchDictionary.TryRemove(e.Id, out removedEntry);
+                            }
+                            else
+                                MenuTouchDictionary.Clear(); /* Something's wrong; reset the touch dictionary */
+
+                            if (MenuTouchDictionary.Count == 0)
+                            {
+                                _menuTouchMoved = false;
+                            }
+                        }
+                        e.Handled = true;
+                    }
+                    break;
+                case SKTouchAction.Cancelled:
+                    if (MenuTouchDictionary.ContainsKey(e.Id))
+                    {
+                        TouchEntry removedEntry;
+                        MenuTouchDictionary.TryRemove(e.Id, out removedEntry);
+                    }
+                    else
+                        MenuTouchDictionary.Clear(); /* Something's wrong; reset the touch dictionary */
+
+                    e.Handled = true;
+                    break;
+                case SKTouchAction.Exited:
+                    break;
+                case SKTouchAction.WheelChanged:
+                    break;
+                default:
+                    break;
+            }
+
+        }
+
         private void DoLongMenuTap()
         {
             if (_savedMenuSender == null || _savedMenuEventArgs == null)
@@ -18495,6 +18663,50 @@ namespace GnollHackX.Pages.Game
             }
             return new MenuClickResult(okClicked, clickIdx, identifier);
         }
+
+        private MenuClickResult MenuCanvas_EquipmentClickRelease(object sender, SKTouchEventArgs e, bool isLongTap)
+        {
+            bool doclickok = false;
+            bool okClicked = false;
+            int clickIdx = -1;
+            long identifier = 0;
+            //lock (MenuCanvas.MenuItemLock)
+            {
+                var menuItems = MenuCanvas.MenuItems;
+                if (menuItems == null)
+                    return new MenuClickResult(okClicked, clickIdx, identifier);
+                int sidx = SelectedEquipmentIndex;
+                if (SelectedEquipmentDrawBounds.Contains(e.Location) && sidx >= 0)
+                {
+                    clickIdx = sidx;
+                    identifier = menuItems[sidx].Identifier;
+                    doclickok = ClickMenuItem(sidx, isLongTap);
+                    doclickok = true;
+                }
+                else
+                {
+                    for (int idx = 0; idx < menuItems.Count; idx++)
+                    {
+                        if (menuItems[idx].EquipmentDrawBounds.Contains(e.Location))
+                        {
+                            clickIdx = idx;
+                            identifier = menuItems[idx].Identifier;
+                            doclickok = ClickMenuItem(idx, isLongTap);
+                            break;
+                        }
+                    }
+                }
+            }
+
+            okClicked = doclickok && MenuOKButton.IsEnabled;
+            if (okClicked)
+            {
+                MenuCanvas.InvalidateSurface();
+                PressMenuOKButton();
+            }
+            return new MenuClickResult(okClicked, clickIdx, identifier);
+        }
+
 
         private bool ClickMenuItem(int menuItemIdx, bool isLongTap)
         {
@@ -18729,6 +18941,7 @@ namespace GnollHackX.Pages.Game
                     if (_menuPositionSavingOn[(int)MenuCanvas.MenuStyle])
                     {
                         _savedMenuScrollOffset[(int)MenuCanvas.MenuStyle] = _menuScrollOffset;
+                        _savedEquipmentSideOn[(int)MenuCanvas.MenuStyle] = MenuEquipmentSideShown;
                     }
                 }
                 _menuScrollOffset = 0;
@@ -18826,6 +19039,7 @@ namespace GnollHackX.Pages.Game
                     if (_menuPositionSavingOn[(int)MenuCanvas.MenuStyle])
                     {
                         _savedMenuScrollOffset[(int)MenuCanvas.MenuStyle] = _menuScrollOffset;
+                        _savedEquipmentSideOn[(int)MenuCanvas.MenuStyle] = MenuEquipmentSideShown;
                     }
                 }
                 _menuScrollOffset = 0;
@@ -19003,7 +19217,12 @@ namespace GnollHackX.Pages.Game
             await MenuCanvas.RotateYTo(90, 250, Easing.Linear);
 
             // Swap content
-            MenuEquipmentSideShown = !MenuEquipmentSideShown;
+            bool isEquipmentSide = MenuEquipmentSideShown;
+            if (!isEquipmentSide)
+                ClearEquipmentDrawBounds();
+            else
+                ClearNormalDrawBounds();
+            MenuEquipmentSideShown = !isEquipmentSide;
             MenuCanvas.InvalidateSurface();
 
             // Reset rotation so it continues naturally
