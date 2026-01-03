@@ -2790,6 +2790,8 @@ namespace GnollHackX
         public static SKImage OldPaperBackgroundBitmap { get; set; }
         public static SKImage DarkMarbleBackgroundBitmap { get; set; }
         public static SKImage LoadingScreenBackgroundBitmap { get; set; }
+        public static SKImage InventorySlotLightBitmap { get; set; }
+        public static SKImage InventorySlotDarkBitmap { get; set; }
         public static SKImage ButtonNormalBitmap { get; set; }
         public static SKImage ButtonSelectedBitmap { get; set; }
         public static SKImage ButtonDisabledBitmap { get; set; }
@@ -2913,6 +2915,9 @@ namespace GnollHackX
             OldPaperBackgroundBitmap = LoadEmbeddedUIBitmap("background-oldpaper.png");
             DarkMarbleBackgroundBitmap = LoadEmbeddedUIBitmap("background-darkmarble.png");
             LoadingScreenBackgroundBitmap = LoadEmbeddedUIBitmap("background-loading-screen.png");
+
+            InventorySlotLightBitmap = LoadEmbeddedUIBitmap("inventory-slot-light.png");
+            InventorySlotDarkBitmap = LoadEmbeddedUIBitmap("inventory-slot-dark.png");
 
             SimpleFrameTopLeftCornerBitmap = LoadEmbeddedUIBitmap("frame-topleft.png");
             SimpleFrameSmallTopLeftCornerBitmap = LoadEmbeddedUIBitmap("frame-topleft-small.png");

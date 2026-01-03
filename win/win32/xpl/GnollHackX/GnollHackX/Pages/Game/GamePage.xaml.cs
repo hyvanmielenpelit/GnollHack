@@ -16713,42 +16713,47 @@ namespace GnollHackX.Pages.Game
 
         private struct EquipmentSlot
         {
-            public readonly string Name;
+            public readonly string NameUp;
+            public readonly string NameBottom;
+            public readonly float X; /* Multiples of screen / row widths */
+            public readonly float Y; /* Multiples of rows */
             public readonly obj_worn_flags WornFlag;
             public readonly string BitmapName;
 
-            public EquipmentSlot(string name, obj_worn_flags wornFlag, string bitmapName)
+            public EquipmentSlot(string nameUp, string nameBottom, float x, float y, obj_worn_flags wornFlag, string bitmapName)
             {
-                Name = name;
+                NameUp = nameUp;
+                NameBottom = nameBottom;
+                X = x;
+                Y = y;
                 WornFlag = wornFlag;
                 BitmapName = bitmapName;
             }
         }
         EquipmentSlot[] _equipmentSlots = new EquipmentSlot[] 
         {
-            new EquipmentSlot("Weapon in right hand", obj_worn_flags.W_WEP, ".Assets.UI.wield.png"),
-            new EquipmentSlot("Weapon in left hand", obj_worn_flags.W_WEP2, ".Assets.UI.fight.png"),
-            new EquipmentSlot("Swap weapon in right hand", obj_worn_flags.W_SWAPWEP, ".Assets.UI.swap.png"),
-            new EquipmentSlot("Swap weapon for left hand", obj_worn_flags.W_SWAPWEP2, ".Assets.UI.swap.png"),
-            new EquipmentSlot("Quiver", obj_worn_flags.W_QUIVER, ".Assets.UI.quiver.png"),
-            new EquipmentSlot("Amulet", obj_worn_flags.W_AMUL, ".Assets.UI.puton.png"),
-            new EquipmentSlot("Suit of armor", obj_worn_flags.W_ARM, ".Assets.UI.wear.png"),
-            new EquipmentSlot("Cloak", obj_worn_flags.W_ARMC, ".Assets.UI.wear.png"),
-            new EquipmentSlot("Robe", obj_worn_flags.W_ARMO, ".Assets.UI.wear.png"),
-            new EquipmentSlot("Shirt", obj_worn_flags.W_ARMU, ".Assets.UI.wear.png"),
-            new EquipmentSlot("Helmet", obj_worn_flags.W_ARMH, ".Assets.UI.wear.png"),
-            new EquipmentSlot("Shield", obj_worn_flags.W_ARMS, ".Assets.UI.wear.png"),
-            new EquipmentSlot("Gloves", obj_worn_flags.W_ARMG, ".Assets.UI.wear.png"),
-            new EquipmentSlot("Boots", obj_worn_flags.W_ARMF, ".Assets.UI.travel.png"),
-            new EquipmentSlot("Bracers", obj_worn_flags.W_ARMB, ".Assets.UI.puton.png"),
-            new EquipmentSlot("Left ring", obj_worn_flags.W_RINGL, ".Assets.UI.leftring.png"),
-            new EquipmentSlot("Right ring", obj_worn_flags.W_RINGR, ".Assets.UI.rightring.png"),
-            new EquipmentSlot("Blindfold", obj_worn_flags.W_BLINDFOLD, ".Assets.UI.puton.png"),
-            new EquipmentSlot("Miscellaneous magic item 1", obj_worn_flags.W_MISC, ".Assets.UI.puton.png"),
-            new EquipmentSlot("Miscellaneous magic item 2", obj_worn_flags.W_MISC2, ".Assets.UI.puton.png"),
-            new EquipmentSlot("Miscellaneous magic item 3", obj_worn_flags.W_MISC3, ".Assets.UI.puton.png"),
-            new EquipmentSlot("Miscellaneous magic item 4", obj_worn_flags.W_MISC4, ".Assets.UI.puton.png"),
-            new EquipmentSlot("Miscellaneous magic item 5", obj_worn_flags.W_MISC5, ".Assets.UI.puton.png"),
+            new EquipmentSlot("Weapon", "Right", 0.0f, 1.0f, obj_worn_flags.W_WEP, ".Assets.UI.wield.png"),
+            new EquipmentSlot("Shield", "Left", 1.0f, 1.0f, obj_worn_flags.W_WEP2, ".Assets.UI.fight.png"),
+            new EquipmentSlot("Swap", "Right", 0.0f, 2.0f, obj_worn_flags.W_SWAPWEP, ".Assets.UI.swap.png"),
+            new EquipmentSlot("Swap", "Left", 1.0f, 2.0f, obj_worn_flags.W_SWAPWEP2, ".Assets.UI.swap.png"),
+            new EquipmentSlot("Quiver", "", 0.0f, 0.0f, obj_worn_flags.W_QUIVER, ".Assets.UI.quiver.png"),
+            new EquipmentSlot("Amulet", "", 0.25f, 0.0f, obj_worn_flags.W_AMUL, ".Assets.UI.puton.png"),
+            new EquipmentSlot("Suit", "", 0.5f, 4.0f, obj_worn_flags.W_ARM, ".Assets.UI.wear.png"),
+            new EquipmentSlot("Cloak", "", 0.5f, 1.0f, obj_worn_flags.W_ARMC, ".Assets.UI.wear.png"),
+            new EquipmentSlot("Robe", "", 0.5f, 2.0f, obj_worn_flags.W_ARMO, ".Assets.UI.wear.png"),
+            new EquipmentSlot("Shirt", "", 0.5f, 5.0f, obj_worn_flags.W_ARMU, ".Assets.UI.wear.png"),
+            new EquipmentSlot("Helmet", "", 0.5f, 0.0f, obj_worn_flags.W_ARMH, ".Assets.UI.wear.png"),
+            new EquipmentSlot("Gloves", "", 0.0f, 0.0f, obj_worn_flags.W_ARMG, ".Assets.UI.wear.png"),
+            new EquipmentSlot("Boots", "", 0.0f, 0.0f, obj_worn_flags.W_ARMF, ".Assets.UI.travel.png"),
+            new EquipmentSlot("Bracers", "", 0.0f, 0.0f, obj_worn_flags.W_ARMB, ".Assets.UI.puton.png"),
+            new EquipmentSlot("Left ring", "", 0.0f, 0.0f, obj_worn_flags.W_RINGL, ".Assets.UI.leftring.png"),
+            new EquipmentSlot("Right ring", "", 0.0f, 0.0f, obj_worn_flags.W_RINGR, ".Assets.UI.rightring.png"),
+            new EquipmentSlot("Blindfold", "", 0.0f, 0.0f, obj_worn_flags.W_BLINDFOLD, ".Assets.UI.puton.png"),
+            new EquipmentSlot("Miscellaneous", "1", 0.0f, 0.0f, obj_worn_flags.W_MISC, ".Assets.UI.puton.png"),
+            new EquipmentSlot("Miscellaneous", "2", 0.0f, 0.0f, obj_worn_flags.W_MISC2, ".Assets.UI.puton.png"),
+            new EquipmentSlot("Miscellaneous", "3", 0.0f, 0.0f, obj_worn_flags.W_MISC3, ".Assets.UI.puton.png"),
+            new EquipmentSlot("Miscellaneous", "4", 0.0f, 0.0f, obj_worn_flags.W_MISC4, ".Assets.UI.puton.png"),
+            new EquipmentSlot("Miscellaneous", "5", 0.0f, 0.0f, obj_worn_flags.W_MISC5, ".Assets.UI.puton.png"),
         };
         List<GHMenuItem> _wornMenuItems = new List<GHMenuItem>(32);
 
@@ -16835,7 +16840,19 @@ namespace GnollHackX.Pages.Game
 
                 if (MenuEquipmentSideShown)
                 {
+                    bool isLandscape = canvaswidth > canvasheight;
+                    int numRows = isLandscape ? 4 : 6;
+                    int numColumns = (_equipmentSlots.Length - 1) / numRows + 1;
+                    float framewidth = picturewidth + picturewidth / 2;
+                    float framepadding = (framewidth - picturewidth) / 2;
+                    float frameborderpadding = (framewidth * 19) / 177;
                     float minrowheight = textPaint.FontSpacing;
+                    float pictureverticalpadding = (picturewidth - minrowheight) / 2;
+                    float framexmargin = framewidth / 5;
+                    float frameymargin = framewidth / 10;
+                    float totalgridwith = numColumns * framewidth + (numColumns - 1) * framexmargin;
+                    float innerleftpadding = Math.Max(0, (menuwidthoncanvas - totalgridwith) / 2);
+
                     x = y = 0;
                     _wornMenuItems.Clear();
                     long allWornBits = 0;
@@ -16854,25 +16871,36 @@ namespace GnollHackX.Pages.Game
                         }
                     }
 
-                    textPaint.TextSize = 15 * scale * customScale;
-                    x += leftmenupadding;
+                    int count = 0;
+                    textPaint.TextSize = 10 * scale * customScale;
+                    x += leftmenupadding + innerleftpadding;
                     float start_x = x;
+                    bool isDarkMode = GHApp.DarkMode;
+                    SKImage slotBitmap = isDarkMode ? GHApp.InventorySlotDarkBitmap : GHApp.InventorySlotLightBitmap;
+                    textPaint.Color = isDarkMode ? SKColors.Gray : SKColors.SaddleBrown;
                     foreach (var slot in _equipmentSlots)
                     {
-                        SKRect picRect = new SKRect(x, y, x + picturewidth, y + picturewidth);
-                        SKImage bitmap = GHApp.GetCachedImageSourceBitmap(GHApp.AppResourceName + slot.BitmapName, true);
-                        if (bitmap != null)
-                            canvas.DrawImage(bitmap, picRect);
+                        float textpadding = - textPaint.FontMetrics.Ascent;
+                        //float textpadding = (minrowheight - (textPaint.FontMetrics.Descent - textPaint.FontMetrics.Ascent)) / 2;
+                        x += framewidth / 2;
+                        y += textpadding;
+                        if (!string.IsNullOrEmpty(slot.NameUp))
+                            textPaint.DrawTextOnCanvas(canvas, slot.NameUp, x, y, SKTextAlign.Center);
+                        //y += -textpadding + framepadding + pictureverticalpadding + minrowheight + pictureverticalpadding + framepadding - frameborderpadding - textPaint.FontMetrics.Descent;
+                        //if (!string.IsNullOrEmpty(slot.NameBottom))
+                        //    textPaint.DrawTextOnCanvas(canvas, slot.NameBottom, x, y, SKTextAlign.Center);
 
-                        x += picturewidth + picturewidth / 5;
-                        y += (picturewidth - minrowheight) / 2;
+                        x = start_x;
+                        y += textPaint.FontMetrics.Descent;
+                        SKRect picRect = new SKRect(x, y, x + framewidth, y + framewidth);
+                        //SKImage bitmap = GHApp.GetCachedImageSourceBitmap(GHApp.AppResourceName + slot.BitmapName, true);
+                        //if (bitmap != null)
+                        //    canvas.DrawImage(bitmap, picRect);
+                        canvas.DrawImage(slotBitmap, picRect);
 
-                        SKRect targetRect = new SKRect(x, y, x + picturewidth, y + minrowheight);
-                        SKColor oldcolor = textPaint.Paint.Color;
-                        textPaint.Color = SKColors.Gray.WithAlpha(64);
-                        textPaint.Style = SKPaintStyle.Fill;
-                        canvas.DrawRect(targetRect, textPaint.Paint);
-                        textPaint.Paint.Color = oldcolor;
+                        //x += picturewidth + picturewidth / 5;
+                        x += framepadding;
+                        y += framepadding + pictureverticalpadding;
 
                         if ((allWornBits & (long)slot.WornFlag) != 0)
                         {
@@ -16916,15 +16944,17 @@ namespace GnollHackX.Pages.Game
                             /* Empty slot */
                         }
 
-                        float textpadding = (minrowheight - (textPaint.FontMetrics.Descent - textPaint.FontMetrics.Ascent)) / 2;
-                        x += picturewidth + picturewidth / 5;
-                        y += textpadding;
-                        textPaint.DrawTextOnCanvas(canvas, slot.Name, x, y - textPaint.FontMetrics.Ascent);
-
                         x = start_x;
-                        y += textPaint.FontMetrics.Descent - textPaint.FontMetrics.Ascent + textpadding;
-                        y += (picturewidth - minrowheight) / 2;
-                        y += minrowheight / 10;
+                        y += minrowheight + pictureverticalpadding + framepadding;
+                        //y += textPaint.FontMetrics.Descent + frameborderpadding;
+                        y += frameymargin;
+                        count++;
+                        if ((count % numRows) == 0)
+                        {
+                            x += framewidth + framexmargin;
+                            start_x = x;
+                            y = 0;
+                        }
                     }
                 }
                 else
