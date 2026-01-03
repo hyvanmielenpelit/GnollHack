@@ -1203,6 +1203,19 @@ namespace GnollHackX
 
         MAX_OBJECT_CLASSES = 21
     }
+    public enum obj_armor_types : sbyte
+    {
+        ARM_SUIT = 0,
+        ARM_SHIELD = 1,        /* needed for special wear function */
+        ARM_HELM = 2,
+        ARM_GLOVES = 3,
+        ARM_BOOTS = 4,
+        ARM_CLOAK = 5,
+        ARM_SHIRT = 6,
+        ARM_ROBE = 7,
+        ARM_BRACERS = 8,
+        MAX_ARMOR_TYPES
+    }
 
     public enum obj_where_types
     {

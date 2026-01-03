@@ -12,7 +12,6 @@ using Xamarin.Forms.Internals;
 using SkiaSharp;
 using System.IO;
 using System.Linq;
-using Microsoft.Maui.Graphics;
 
 namespace GnollHackX
 {
@@ -71,6 +70,7 @@ namespace GnollHackX
         public bool IsObjWorn { get { return ObjData?.IsWorn ?? false; } }
         public long ObjWornBits { get { return ObjData?.WornBits ?? 0L; } }
         public bool IsObjArmor { get { return ObjData?.IsArmor ?? false; } }
+        public bool IsObjShield{ get { return ObjData?.IsShield ?? false; } }
         public bool IsLabelVisible { get { return (Count > 0 && MaxCount > 0); } }
         public string LabelString { get { return (MaxCount <= 0 ? "N/A" : Count == -1 ? "All" : Count.ToString()); } }
         public int ConvertedCount { get { return (Count + 1); } set { Count = value - 1; } }

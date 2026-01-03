@@ -7426,7 +7426,7 @@ xchar portal; /* 1 = Magic portal, 2 = Modron portal down (find portal up), 3 = 
 
         if (!ttrap)
         {
-            impossible("goto_level: no corresponding portal!");
+            impossible("goto_level: no corresponding portal, portal type is 1!");
             u_on_rndspot((up ? 1 : 0) | (was_in_W_tower ? 2 : 0));
         }
         else
@@ -7471,7 +7471,8 @@ xchar portal; /* 1 = Magic portal, 2 = Modron portal down (find portal up), 3 = 
 
         if (!ttrap)
         {
-            panic("goto_level: no corresponding portal!");
+            impossible("goto_level: no corresponding portal, portal type=%d!", (int)portal);
+            u_on_rndspot((up ? 1 : 0) | (was_in_W_tower ? 2 : 0));
             return;
         }
         /* Activate the other end */
