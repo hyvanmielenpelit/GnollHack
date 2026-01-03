@@ -17112,10 +17112,10 @@ namespace GnollHackX.Pages.Game
                                 else
                                     textPaint.TextSize = mi.MinimumTouchableTextSize * scale * customScale;
                                 float minrowheight = mi.MinimumRowHeight(textPaint.FontSpacing, bottomPadding, topPadding, canvaswidth, canvasheight);
-                                float paddingAdjustment = isEquipmentSideShown ? innerleftpadding : 0;
+                                float paddingAdjustment = 0;
                                 if (firstMinRowHeight == -1)
                                     firstMinRowHeight = minrowheight;
-                                if (isInventory && firstMinRowHeight > 0 && leftmenupadding > firstMinRowHeight / 2 + scaledmenumarginx)
+                                if (isInventory && !isEquipmentSideShown && firstMinRowHeight > 0 && leftmenupadding > firstMinRowHeight / 2 + scaledmenumarginx)
                                     paddingAdjustment += -firstMinRowHeight / 2;
                                 if (!isEquipmentSideShown)
                                     x = leftmenupadding + paddingAdjustment;
@@ -17199,7 +17199,7 @@ namespace GnollHackX.Pages.Game
                                     referenceCanvasView.SelectionHow == SelectionMode.Single ? idx == referenceCanvasView.SelectionIndex : false;
 
                                 float totalRowHeight = topPadding + bottomPadding + ((float)maintextrows + suffixtextrows * (mi.IsSuffixTextVisible ? relsuffixsize : 0.0f) + (mi.IsSuffix2TextVisible ? relsuffixsize : 0.0f)) * (textPaint.FontSpacing) + 2 * generallinepadding;
-                                float totalRowWidth = canvaswidth - leftmenupadding - rightmenupadding;
+                                float totalRowWidth = canvaswidth - leftmenupadding - rightmenupadding - (isEquipmentSideShown ? innerleftpadding * 2 : 0);
                                 float totalRowExtraSpacing = IsMiButton ? 12.0f * scale * customScale : 0f;
 
                                 if (y + totalRowHeight <= 0 || y >= canvasheight)
