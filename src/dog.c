@@ -1629,7 +1629,7 @@ register struct obj *obj;
             return POISON;
 
         if ((obj->otyp == CORPSE || obj->otyp == EGG) &&
-            (polyfodder(obj) || obj->corpsenm == PM_GREEN_SLIME || (obj->corpsenm >= LOW_PM && is_mimic(&mons[obj->corpsenm]))))
+            (polyfodder(obj)  || obj->corpsenm == PM_GREEN_SLIME || (obj->corpsenm >= LOW_PM && is_mimic(&mons[obj->corpsenm]))))
             return POISON;
 
         if (objects[obj->otyp].oc_edible_subtype > EDIBLETYPE_NORMAL)

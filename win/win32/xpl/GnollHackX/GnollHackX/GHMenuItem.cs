@@ -12,6 +12,7 @@ using Xamarin.Forms.Internals;
 using SkiaSharp;
 using System.IO;
 using System.Linq;
+using System.Threading;
 
 namespace GnollHackX
 {

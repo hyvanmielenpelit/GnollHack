@@ -127,9 +127,12 @@ namespace GnollHackX.Controls
             }
             SizeChanged += SwitchableCanvasView_SizeChanged;
             PropertyChanged += SwitchableCanvasView_PropertyChanged;
+#if GNH_MAUI
             HandlerChanged += SwitchableCanvasView_HandlerChanged;
+#endif
         }
 
+#if GNH_MAUI
         private void SwitchableCanvasView_HandlerChanged(object sender, EventArgs e)
         {
             if (Handler != null)
@@ -143,6 +146,7 @@ namespace GnollHackX.Controls
 #endif
             }
         }
+#endif
 
         private int _shutDown = 0;
         public bool IsShutDown { get { return Interlocked.CompareExchange(ref _shutDown, 0, 0) != 0; } }
@@ -155,7 +159,9 @@ namespace GnollHackX.Controls
                 {
                     SizeChanged -= SwitchableCanvasView_SizeChanged;
                     PropertyChanged -= SwitchableCanvasView_PropertyChanged;
+#if GNH_MAUI
                     HandlerChanged -= SwitchableCanvasView_HandlerChanged;
+#endif
                     internalCanvasView.PaintSurface -= internalCanvasView_PaintSurface;
                     internalCanvasView.Touch -= internalCanvasView_Touch;
                     if (internalGLView != null)
