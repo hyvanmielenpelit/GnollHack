@@ -19499,25 +19499,21 @@ namespace GnollHackX.Pages.Game
                 _menuScrollSpeedRecords.Clear();
             }
 
-            // First half: rotate to edge
-            await MenuCanvas.RotateYTo(90, 250, Easing.Linear);
+            bool doAnim = GHApp.EquipmentFlipAnimation;
+            if (doAnim)
+                await MenuCanvas.RotateYTo(90, 250, Easing.Linear);
 
-            // Swap content
             bool isEquipmentSide = MenuEquipmentSideShown;
             int maxItems = MenuCanvas.MenuItems?.Count ?? 0;
             ClearDrawBounds(maxItems);
-            //if (!isEquipmentSide)
-            //    ClearEquipmentDrawBounds();
-            //else
-            //    ClearNormalDrawBounds();
             MenuEquipmentSideShown = !isEquipmentSide;
             MenuCanvas.InvalidateSurface();
 
-            // Reset rotation so it continues naturally
-            MenuCanvas.RotationY = -90;
-
-            // Second half: rotate to full face
-            await MenuCanvas.RotateYTo(0, 250, Easing.Linear);
+            if (doAnim)
+            {
+                MenuCanvas.RotationY = -90;
+                await MenuCanvas.RotateYTo(0, 250, Easing.Linear);
+            }
         }
 
         private bool _unselectOnTap = false;

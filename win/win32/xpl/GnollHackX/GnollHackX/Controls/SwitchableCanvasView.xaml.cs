@@ -554,8 +554,11 @@ namespace GnollHackX.Controls
         private int _specialClickOnLongTap;
         private int _allowHighlight;
 
+#if GNH_MAUI
         public CanvasTypes CanvasType { get; init; }
-
+#else
+        public CanvasTypes CanvasType { get; set; }
+#endif
         public GHWindow GHWindow { get { return Interlocked.CompareExchange(ref _gHWindow, null, null); } set { Interlocked.Exchange(ref _gHWindow, value); } }
         public ghmenu_styles MenuStyle { get { return (ghmenu_styles)Interlocked.CompareExchange(ref _menuStyle, 0, 0); } set { Interlocked.Exchange(ref _menuStyle, (int)value); } }
         public ObservableCollection<GHMenuItem> MenuItems { get { return Interlocked.CompareExchange(ref _menuItems, null, null); } set { Interlocked.Exchange(ref _menuItems, value); } }
