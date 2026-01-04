@@ -538,7 +538,6 @@ namespace GnollHackX.Controls
         public Grid _parentGrid;
 
         private GHWindow _gHWindow;
-        private int _canvasType;
         private int _menuStyle;
         private ObservableCollection<GHMenuItem> _menuItems = null;
         private List<GHPutStrItem> _putStrItems = null;
@@ -555,8 +554,9 @@ namespace GnollHackX.Controls
         private int _specialClickOnLongTap;
         private int _allowHighlight;
 
+        public CanvasTypes CanvasType { get; init; }
+
         public GHWindow GHWindow { get { return Interlocked.CompareExchange(ref _gHWindow, null, null); } set { Interlocked.Exchange(ref _gHWindow, value); } }
-        public CanvasTypes CanvasType { get { return (CanvasTypes)Interlocked.CompareExchange(ref _canvasType, 0, 0); } set { Interlocked.Exchange(ref _canvasType, (int)value); } }
         public ghmenu_styles MenuStyle { get { return (ghmenu_styles)Interlocked.CompareExchange(ref _menuStyle, 0, 0); } set { Interlocked.Exchange(ref _menuStyle, (int)value); } }
         public ObservableCollection<GHMenuItem> MenuItems { get { return Interlocked.CompareExchange(ref _menuItems, null, null); } set { Interlocked.Exchange(ref _menuItems, value); } }
         public List<GHPutStrItem> PutStrItems { get { return Interlocked.CompareExchange(ref _putStrItems, null, null); } set { Interlocked.Exchange(ref _putStrItems, value); } } //{ get { return _GHPutStrItems; } set { _GHPutStrItems = value; } }
