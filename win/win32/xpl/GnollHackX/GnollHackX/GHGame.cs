@@ -1794,41 +1794,49 @@ namespace GnollHackX
             {
                 if (_ghWindows[winid] != null && _ghWindows[winid].MenuInfo != null)
                 {
-                    GHMenuItem mi = new GHMenuItem(_ghWindows[winid].MenuInfo, GHApp.NoGlyph, ActiveGamePage);
-                    mi.Identifier = identifier;
-                    if (accel == 0 && identifier != 0)
-                        mi.Accelerator = _ghWindows[winid].MenuInfo.AutoAccelerator;
-                    else
-                        mi.Accelerator = accel;
-                    mi.GroupAccelerator = groupaccel;
-                    mi.SpecialMark = special_mark;
+                    bool useNumItems = (menuflags & (ulong)MenuFlags.MENU_FLAGS_USE_NUM_ITEMS) != 0;
+                    GHMenuItem mi = new GHMenuItem(_ghWindows[winid].MenuInfo, GHApp.NoGlyph, ActiveGamePage, identifier,
+                        accel == 0 && identifier != 0 ? _ghWindows[winid].MenuInfo.AutoAccelerator : accel, groupaccel, special_mark,
+                        attr, color, attrs, colors, glyph,
+                        (menuflags & (ulong)MenuFlags.MENU_FLAGS_ACTIVE) != 0,
+                        (menuflags & (ulong)MenuFlags.MENU_FLAGS_USE_COLOR_FOR_SUFFIXES) != 0,
+                        (menuflags & (ulong)MenuFlags.MENU_FLAGS_USE_SPECIAL_SYMBOLS) != 0,
+                        (dataflags & (byte)MenuDataFlags.MENU_DATAFLAGS_HAS_OBJECT_DATA) != 0 ? new ObjectDataItem(otmpdata, otypdata, (dataflags & (byte)MenuDataFlags.MENU_DATAFLAGS_HALLUCINATED) != 0) : null,
+                        text, 
+                        (presel != 0) ? -1 : 0,
+                        useNumItems,
+                        useNumItems ? maxcount : 0,
+                         (menuflags & (ulong)MenuFlags.MENU_FLAGS_BUTTON_STYLE) != 0,
+                         (menuflags & (ulong)MenuFlags.MENU_FLAGS_AUTO_CLICK_OK) != 0,
+                         (presel != 0),
+                         maxcount,
+                         oid,
+                         mid,
+                         headingaccel,
+                         menuflags
+                        );
 
-                    mi.NHAttribute = attr;
-                    mi.NHColor = color;
-                    mi.NHAttributes = attrs;
-                    mi.NHColors = colors;
-
-                    mi.Glyph = glyph;
-                    mi.UseUpperSide = (menuflags & (ulong)MenuFlags.MENU_FLAGS_ACTIVE) != 0;
-                    mi.UseColorForSuffixes = (menuflags & (ulong)MenuFlags.MENU_FLAGS_USE_COLOR_FOR_SUFFIXES) != 0;
-                    mi.UseSpecialSymbols = (menuflags & (ulong)MenuFlags.MENU_FLAGS_USE_SPECIAL_SYMBOLS) != 0;
-                    if ((dataflags & (byte)MenuDataFlags.MENU_DATAFLAGS_HAS_OBJECT_DATA) != 0)
-                    {
-                        ObjectDataItem odi = new ObjectDataItem(otmpdata, otypdata, (dataflags & (byte)MenuDataFlags.MENU_DATAFLAGS_HALLUCINATED) != 0);
-                        mi.ObjData = odi;
-                    }
-                    mi.Text = text;
-                    mi.Count = (presel != 0) ? -1 : 0;
-                    mi.UseNumItems = (menuflags & (ulong)MenuFlags.MENU_FLAGS_USE_NUM_ITEMS) != 0;
-                    mi.NumItems = mi.UseNumItems ? maxcount : 0;
-                    mi.IsButtonStyle = (menuflags & (ulong)MenuFlags.MENU_FLAGS_BUTTON_STYLE) != 0;
-                    mi.IsAutoClickOk = (menuflags & (ulong)MenuFlags.MENU_FLAGS_AUTO_CLICK_OK) != 0;
-                    mi.Selected = (presel != 0);
-                    mi.MaxCount = maxcount;
-                    mi.Oid = oid;
-                    mi.Mid = mid;
-                    mi.HeadingGroupAccelerator = headingaccel;
-                    mi.Flags = menuflags;
+                    //mi.Glyph = glyph;
+                    //mi.UseUpperSide = (menuflags & (ulong)MenuFlags.MENU_FLAGS_ACTIVE) != 0;
+                    //mi.UseColorForSuffixes = (menuflags & (ulong)MenuFlags.MENU_FLAGS_USE_COLOR_FOR_SUFFIXES) != 0;
+                    //mi.UseSpecialSymbols = (menuflags & (ulong)MenuFlags.MENU_FLAGS_USE_SPECIAL_SYMBOLS) != 0;
+                    //if ((dataflags & (byte)MenuDataFlags.MENU_DATAFLAGS_HAS_OBJECT_DATA) != 0)
+                    //{
+                    //    ObjectDataItem odi = new ObjectDataItem(otmpdata, otypdata, (dataflags & (byte)MenuDataFlags.MENU_DATAFLAGS_HALLUCINATED) != 0);
+                    //    mi.ObjData = odi;
+                    //}
+                    //mi.Text = text;
+                    //mi.Count = (presel != 0) ? -1 : 0;
+                    //mi.UseNumItems = (menuflags & (ulong)MenuFlags.MENU_FLAGS_USE_NUM_ITEMS) != 0;
+                    //mi.NumItems = mi.UseNumItems ? maxcount : 0;
+                    //mi.IsButtonStyle = (menuflags & (ulong)MenuFlags.MENU_FLAGS_BUTTON_STYLE) != 0;
+                    //mi.IsAutoClickOk = (menuflags & (ulong)MenuFlags.MENU_FLAGS_AUTO_CLICK_OK) != 0;
+                    //mi.Selected = (presel != 0);
+                    //mi.MaxCount = maxcount;
+                    //mi.Oid = oid;
+                    //mi.Mid = mid;
+                    //mi.HeadingGroupAccelerator = headingaccel;
+                    //mi.Flags = menuflags;
                     _ghWindows[winid].MenuInfo.MenuItems.Add(mi);
                 }
             }

@@ -197,6 +197,8 @@
                             </gnh:CustomLabel.GestureRecognizers>
                         </gnh:CustomLabel>
                     </StackLayout>
+                    <gnh:NoTabStopButton x:Name="MenuFlipButton" Text="" BackgroundColor="Transparent" IsVisible="False" 
+                                         HorizontalOptions="Start" VerticalOptions="Start" Clicked="MenuFlipButton_Clicked" />
                     <Grid Grid.Row="1" HorizontalOptions="Fill" VerticalOptions="Fill">
                         <gnh:GHCachedImage x:Name="MenuWindowGlyphImage" HorizontalOptions="End" VerticalOptions="Start" Margin="15,15" WidthRequest="75" HeightRequest="75" Aspect="AspectFit" />
                         <controls:SwitchableCanvasView x:Name="MenuCanvas" UseGL="False" CanvasType="MenuCanvas" RevertBlackAndWhite="True" HorizontalOptions="Fill" VerticalOptions="Fill" PaintSurface="MenuCanvas_PaintSurface" Touch="MenuCanvas_Touch" MouseWheel="MenuCanvas_MouseWheel" MousePointer="MenuCanvas_MousePointer" EnableTouchEvents="True" />

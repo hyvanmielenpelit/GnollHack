@@ -174,6 +174,7 @@ namespace GnollHackX
             DefaultVIKeys = Preferences.Get("DefaultVIKeys", false);
             ShowKeyboardShortcuts = Preferences.Get("ShowKeyboardShortcuts", IsDesktop);
             UseSingleMoreCommandsPage = Preferences.Get("UseSingleMoreCommandsPage", IsDesktop);
+            EquipmentFlipAnimation = Preferences.Get("EquipmentFlipAnimation", true);
 
             ulong FreeDiskSpaceInBytes = PlatformService.GetDeviceFreeDiskSpaceInBytes();
             if (FreeDiskSpaceInBytes < GHConstants.LowFreeDiskSpaceThresholdInBytes)
@@ -2094,7 +2095,8 @@ namespace GnollHackX
         private static int _defaultVIKeys = 0;
         private static int _showKeyboardShortcuts = 0;
         private static int _useSingleMoreCommandsPage = 0;
-
+        private static int _equipmentFlipAnimation = 0;
+        
         public static bool CtrlDown { get { return Interlocked.CompareExchange(ref _ctrlDown, 0, 0) != 0; } set { Interlocked.Exchange(ref _ctrlDown, value ? 1 : 0); } }
         public static bool AltDown { get { return Interlocked.CompareExchange(ref _altDown, 0, 0) != 0; } set { Interlocked.Exchange(ref _altDown, value ? 1 : 0); } }
         public static bool ShiftDown { get { return Interlocked.CompareExchange(ref _shiftDown, 0, 0) != 0; } set { Interlocked.Exchange(ref _shiftDown, value ? 1 : 0); } }
@@ -2103,6 +2105,7 @@ namespace GnollHackX
         public static bool DefaultVIKeys { get { return Interlocked.CompareExchange(ref _defaultVIKeys, 0, 0) != 0; } set { Interlocked.Exchange(ref _defaultVIKeys, value ? 1 : 0); } }
         public static bool ShowKeyboardShortcuts { get { return Interlocked.CompareExchange(ref _showKeyboardShortcuts, 0, 0) != 0; } set { Interlocked.Exchange(ref _showKeyboardShortcuts, value ? 1 : 0); } }
         public static bool UseSingleMoreCommandsPage { get { return Interlocked.CompareExchange(ref _useSingleMoreCommandsPage, 0, 0) != 0; } set { Interlocked.Exchange(ref _useSingleMoreCommandsPage, value ? 1 : 0); } }
+        public static bool EquipmentFlipAnimation { get { return Interlocked.CompareExchange(ref _equipmentFlipAnimation, 0, 0) != 0; } set { Interlocked.Exchange(ref _equipmentFlipAnimation, value ? 1 : 0); } }
 
         public static bool DownloadOnDemandPackage
         {
@@ -2723,16 +2726,16 @@ namespace GnollHackX
             return verstr;
         }
 
-        public static SKTypeface DiabloTypeface { get; set; }
-        public static SKTypeface ImmortalTypeface { get; set; }
-        public static SKTypeface EndorTypeface { get; set; }
-        public static SKTypeface XizorTypeface { get; set; }
-        public static SKTypeface UnderwoodTypeface { get; set; }
-        public static SKTypeface DejaVuSansMonoTypeface { get; set; }
-        public static SKTypeface DejaVuSansMonoBoldTypeface { get; set; }
-        public static SKTypeface LatoRegular { get; set; }
-        public static SKTypeface LatoBold { get; set; }
-        public static SKTypeface ARChristyTypeface { get; set; }
+        public static SKTypeface DiabloTypeface;
+        public static SKTypeface ImmortalTypeface;
+        public static SKTypeface EndorTypeface;
+        public static SKTypeface XizorTypeface;
+        public static SKTypeface UnderwoodTypeface;
+        public static SKTypeface DejaVuSansMonoTypeface;
+        public static SKTypeface DejaVuSansMonoBoldTypeface;
+        public static SKTypeface LatoRegular;
+        public static SKTypeface LatoBold;
+        public static SKTypeface ARChristyTypeface;
 
         private static Dictionary<string, SKTypeface> TypefaceDictionary = new Dictionary<string, SKTypeface>();
         public static SKTypeface GetTypefaceByName(string fontname)
@@ -2786,36 +2789,43 @@ namespace GnollHackX
             LatoBold = LoadEmbeddedAssetTypeface("LatoBold", "Lato-Bold.ttf");
         }
 
-        public static SKImage MenuBackgroundBitmap { get; set; }
-        public static SKImage OldPaperBackgroundBitmap { get; set; }
-        public static SKImage DarkMarbleBackgroundBitmap { get; set; }
-        public static SKImage LoadingScreenBackgroundBitmap { get; set; }
-        public static SKImage ButtonNormalBitmap { get; set; }
-        public static SKImage ButtonSelectedBitmap { get; set; }
-        public static SKImage ButtonDisabledBitmap { get; set; }
+        public static SKImage MenuBackgroundBitmap;
+        public static SKImage OldPaperBackgroundBitmap;
+        public static SKImage DarkMarbleBackgroundBitmap;
+        public static SKImage LoadingScreenBackgroundBitmap;
+        public static SKImage InventorySlotLightBitmap;
+        public static SKImage InventorySlotDarkBitmap;
+        public static SKImage[] InventoryIconBitmaps;
+        public static SKImage ButtonNormalBitmap;
+        public static SKImage ButtonSelectedBitmap;
+        public static SKImage ButtonDisabledBitmap;
 
-        public static SKImage SimpleFrameTopLeftCornerBitmap { get; set; }
-        public static SKImage SimpleFrameSmallTopLeftCornerBitmap { get; set; }
-        public static SKImage SimpleFrameTopHorizontalBitmap { get; set; }
-        public static SKImage SimpleFrameLeftVerticalBitmap { get; set; }
+        public static SKImage SimpleFrameTopLeftCornerBitmap;
+        public static SKImage SimpleFrameSmallTopLeftCornerBitmap;
+        public static SKImage SimpleFrameTopHorizontalBitmap;
+        public static SKImage SimpleFrameLeftVerticalBitmap;
+        public static SKImage SimpleFrameTransformBitmap;
 
-        public static SKImage SimpleFrame2TopLeftCornerBitmap { get; set; }
-        public static SKImage SimpleFrame2SmallTopLeftCornerBitmap { get; set; }
-        public static SKImage SimpleFrame2TopHorizontalBitmap { get; set; }
-        public static SKImage SimpleFrame2LeftVerticalBitmap { get; set; }
+        public static SKImage SimpleFrame2TopLeftCornerBitmap;
+        public static SKImage SimpleFrame2SmallTopLeftCornerBitmap;
+        public static SKImage SimpleFrame2TopHorizontalBitmap;
+        public static SKImage SimpleFrame2LeftVerticalBitmap;
+        public static SKImage SimpleFrame2TransformBitmap;
 
-        public static SKImage DarkModeSimpleFrameTopLeftCornerBitmap { get; set; }
-        public static SKImage DarkModeSimpleFrameSmallTopLeftCornerBitmap { get; set; }
-        public static SKImage DarkModeSimpleFrameTopHorizontalBitmap { get; set; }
-        public static SKImage DarkModeSimpleFrameLeftVerticalBitmap { get; set; }
+        public static SKImage DarkModeSimpleFrameTopLeftCornerBitmap;
+        public static SKImage DarkModeSimpleFrameSmallTopLeftCornerBitmap;
+        public static SKImage DarkModeSimpleFrameTopHorizontalBitmap;
+        public static SKImage DarkModeSimpleFrameLeftVerticalBitmap;
+        public static SKImage DarkModeSimpleFrameTransformBitmap;
 
-        public static SKImage DarkModeSimpleFrame2TopLeftCornerBitmap { get; set; }
-        public static SKImage DarkModeSimpleFrame2SmallTopLeftCornerBitmap { get; set; }
-        public static SKImage DarkModeSimpleFrame2TopHorizontalBitmap { get; set; }
-        public static SKImage DarkModeSimpleFrame2LeftVerticalBitmap { get; set; }
+        public static SKImage DarkModeSimpleFrame2TopLeftCornerBitmap;
+        public static SKImage DarkModeSimpleFrame2SmallTopLeftCornerBitmap;
+        public static SKImage DarkModeSimpleFrame2TopHorizontalBitmap;
+        public static SKImage DarkModeSimpleFrame2LeftVerticalBitmap;
+        public static SKImage DarkModeSimpleFrame2TransformBitmap;
 
-        public static SKImage ScrollBitmap { get; set; }
-        public static SKImage YouBitmap { get; set; }
+        public static SKImage ScrollBitmap;
+        public static SKImage YouBitmap;
 
         private static SKImage LoadEmbeddedResourceBitmap(string resourcePath)
         {
@@ -2914,25 +2924,58 @@ namespace GnollHackX
             DarkMarbleBackgroundBitmap = LoadEmbeddedUIBitmap("background-darkmarble.png");
             LoadingScreenBackgroundBitmap = LoadEmbeddedUIBitmap("background-loading-screen.png");
 
+            InventorySlotLightBitmap = LoadEmbeddedUIBitmap("inventory-slot-light.png");
+            InventorySlotDarkBitmap = LoadEmbeddedUIBitmap("inventory-slot-dark.png");
+
+            InventoryIconBitmaps = new SKImage[(int)InventorySlotPictureIndices.NumPictureIndices];
+            InventoryIconBitmaps[(int)InventorySlotPictureIndices.General] = LoadEmbeddedUIBitmap("inventory-icon-weapon-right.png");
+            InventoryIconBitmaps[(int)InventorySlotPictureIndices.WeaponRight] = LoadEmbeddedUIBitmap("inventory-icon-weapon-right.png");
+            InventoryIconBitmaps[(int)InventorySlotPictureIndices.WeaponLeft] = LoadEmbeddedUIBitmap("inventory-icon-weapon-left.png");
+            InventoryIconBitmaps[(int)InventorySlotPictureIndices.Shield] = LoadEmbeddedUIBitmap("inventory-icon-shield.png");
+            InventoryIconBitmaps[(int)InventorySlotPictureIndices.SwapWeaponRight] = LoadEmbeddedUIBitmap("inventory-icon-swapweapon-right.png");
+            InventoryIconBitmaps[(int)InventorySlotPictureIndices.SwapWeaponLeft] = LoadEmbeddedUIBitmap("inventory-icon-swapweapon-left.png");
+            InventoryIconBitmaps[(int)InventorySlotPictureIndices.Quiver] = LoadEmbeddedUIBitmap("inventory-icon-quiver.png");
+            InventoryIconBitmaps[(int)InventorySlotPictureIndices.Suit] = LoadEmbeddedUIBitmap("inventory-icon-suit.png");
+            InventoryIconBitmaps[(int)InventorySlotPictureIndices.Cloak] = LoadEmbeddedUIBitmap("inventory-icon-cloak.png");
+            InventoryIconBitmaps[(int)InventorySlotPictureIndices.Robe] = LoadEmbeddedUIBitmap("inventory-icon-robe.png");
+            InventoryIconBitmaps[(int)InventorySlotPictureIndices.Shirt] = LoadEmbeddedUIBitmap("inventory-icon-shirt.png");
+            InventoryIconBitmaps[(int)InventorySlotPictureIndices.Helmet] = LoadEmbeddedUIBitmap("inventory-icon-helmet.png");
+            InventoryIconBitmaps[(int)InventorySlotPictureIndices.Gloves] = LoadEmbeddedUIBitmap("inventory-icon-gloves.png");
+            InventoryIconBitmaps[(int)InventorySlotPictureIndices.Boots] = LoadEmbeddedUIBitmap("inventory-icon-boots.png");
+            InventoryIconBitmaps[(int)InventorySlotPictureIndices.Bracers] = LoadEmbeddedUIBitmap("inventory-icon-bracers.png");
+            InventoryIconBitmaps[(int)InventorySlotPictureIndices.Blindfold] = LoadEmbeddedUIBitmap("inventory-icon-blindfold.png");
+            InventoryIconBitmaps[(int)InventorySlotPictureIndices.Amulet] = LoadEmbeddedUIBitmap("inventory-icon-amulet.png");
+            InventoryIconBitmaps[(int)InventorySlotPictureIndices.RingLeft] = LoadEmbeddedUIBitmap("inventory-icon-leftring.png");
+            InventoryIconBitmaps[(int)InventorySlotPictureIndices.RingRight] = LoadEmbeddedUIBitmap("inventory-icon-rightring.png");
+            InventoryIconBitmaps[(int)InventorySlotPictureIndices.Miscellaneous1] = LoadEmbeddedUIBitmap("inventory-icon-miscellaneous.png");
+            InventoryIconBitmaps[(int)InventorySlotPictureIndices.Miscellaneous2] = InventoryIconBitmaps[(int)InventorySlotPictureIndices.Miscellaneous1];
+            InventoryIconBitmaps[(int)InventorySlotPictureIndices.Miscellaneous3] = InventoryIconBitmaps[(int)InventorySlotPictureIndices.Miscellaneous1];
+            InventoryIconBitmaps[(int)InventorySlotPictureIndices.Miscellaneous4] = InventoryIconBitmaps[(int)InventorySlotPictureIndices.Miscellaneous1];
+            InventoryIconBitmaps[(int)InventorySlotPictureIndices.Miscellaneous5] = InventoryIconBitmaps[(int)InventorySlotPictureIndices.Miscellaneous1];
+
             SimpleFrameTopLeftCornerBitmap = LoadEmbeddedUIBitmap("frame-topleft.png");
             SimpleFrameSmallTopLeftCornerBitmap = LoadEmbeddedUIBitmap("frame-topleft-small.png");
             SimpleFrameTopHorizontalBitmap = LoadEmbeddedUIBitmap("frame-horizontal.png");
             SimpleFrameLeftVerticalBitmap = LoadEmbeddedUIBitmap("frame-vertical.png");
+            SimpleFrameTransformBitmap = LoadEmbeddedUIBitmap("frame-transform.png");
 
             SimpleFrame2TopLeftCornerBitmap = LoadEmbeddedUIBitmap("frame2-topleft.png");
             SimpleFrame2SmallTopLeftCornerBitmap = LoadEmbeddedUIBitmap("frame2-topleft-small.png");
             SimpleFrame2TopHorizontalBitmap = LoadEmbeddedUIBitmap("frame2-horizontal.png");
             SimpleFrame2LeftVerticalBitmap = LoadEmbeddedUIBitmap("frame2-vertical.png");
+            SimpleFrame2TransformBitmap = LoadEmbeddedUIBitmap("frame2-transform.png");
 
             DarkModeSimpleFrameTopLeftCornerBitmap = LoadEmbeddedUIBitmap("frame-darkmode-topleft.png");
             DarkModeSimpleFrameSmallTopLeftCornerBitmap = LoadEmbeddedUIBitmap("frame-darkmode-topleft-small.png");
             DarkModeSimpleFrameTopHorizontalBitmap = LoadEmbeddedUIBitmap("frame-darkmode-horizontal.png");
             DarkModeSimpleFrameLeftVerticalBitmap = LoadEmbeddedUIBitmap("frame-darkmode-vertical.png");
+            DarkModeSimpleFrameTransformBitmap = LoadEmbeddedUIBitmap("frame-darkmode-transform.png");
 
             DarkModeSimpleFrame2TopLeftCornerBitmap = LoadEmbeddedUIBitmap("frame2-darkmode-topleft.png");
             DarkModeSimpleFrame2SmallTopLeftCornerBitmap = LoadEmbeddedUIBitmap("frame2-darkmode-topleft-small.png");
             DarkModeSimpleFrame2TopHorizontalBitmap = LoadEmbeddedUIBitmap("frame2-darkmode-horizontal.png");
             DarkModeSimpleFrame2LeftVerticalBitmap = LoadEmbeddedUIBitmap("frame2-darkmode-vertical.png");
+            DarkModeSimpleFrame2TransformBitmap = LoadEmbeddedUIBitmap("frame2-darkmode-transform.png");
 
             ScrollBitmap = LoadEmbeddedUIBitmap("scroll.png");
             YouBitmap = LoadEmbeddedUIBitmap("you.png");
@@ -3052,31 +3095,31 @@ namespace GnollHackX
 
         public static bool StartGameDataSet = false;
         public static readonly object Glyph2TileLock = new object();
-        public static int[] Glyph2Tile { get; set; }
-        public static byte[] GlyphTileFlags { get; set; }
-        public static short[] Tile2Animation { get; set; }
-        public static short[] Tile2Enlargement { get; set; }
-        public static short[] Tile2Autodraw { get; set; }
-        public static int[] AnimationOffsets { get; set; }
-        public static int[] EnlargementOffsets { get; set; }
-        public static int[] ReplacementOffsets { get; set; }
-        public static int Glyph2TileSize { get; set; }
+        public static int[] Glyph2Tile;
+        public static byte[] GlyphTileFlags;
+        public static short[] Tile2Animation;
+        public static short[] Tile2Enlargement;
+        public static short[] Tile2Autodraw;
+        public static int[] AnimationOffsets;
+        public static int[] EnlargementOffsets;
+        public static int[] ReplacementOffsets;
+        public static int Glyph2TileSize;
         public static SKImage[] _tileMap = new SKImage[GHConstants.MaxTileSheets];
-        public static int UsedTileSheets { get; set; }
-        public static int TotalTiles { get; set; }
-        public static int UnexploredGlyph { get; set; }
-        public static int NoGlyph { get; set; }
-        public static int AnimationOff { get; set; }
-        public static int EnlargementOff { get; set; }
-        public static int ReplacementOff { get; set; }
-        public static int GeneralTileOff { get; set; }
-        public static int HitTileOff { get; set; }
-        public static int UITileOff { get; set; }
-        public static int SpellTileOff { get; set; }
-        public static int SkillTileOff { get; set; }
-        public static int CommandTileOff { get; set; }
-        public static int BuffTileOff { get; set; }
-        public static int CursorOff { get; set; }
+        public static int UsedTileSheets;
+        public static int TotalTiles;
+        public static int UnexploredGlyph;
+        public static int NoGlyph;
+        public static int AnimationOff;
+        public static int EnlargementOff;
+        public static int ReplacementOff;
+        public static int GeneralTileOff;
+        public static int HitTileOff;
+        public static int UITileOff;
+        public static int SpellTileOff;
+        public static int SkillTileOff;
+        public static int CommandTileOff;
+        public static int BuffTileOff;
+        public static int CursorOff;
 
         public static int NumberOfGlyphs
         {

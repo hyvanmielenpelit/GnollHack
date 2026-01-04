@@ -44,7 +44,7 @@ struct objclassdata
     schar obj_loc_x;
     schar obj_loc_y;
 
-    uchar reserved_1;
+    schar oc_subtyp;
     uchar reserved_2;
 };
 

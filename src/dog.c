@@ -1034,7 +1034,7 @@ boolean with_you;
         }
         else
         {
-            impossible("mon_arrive: no corresponding portal?");
+            impossible("mon_arrive: modron up, nno corresponding portal?");
         }
         break;
     case MIGR_MODRON_PORTAL_DOWN:
@@ -1048,7 +1048,7 @@ boolean with_you;
         }
         else
         {
-            impossible("mon_arrive: no corresponding portal?");
+            impossible("mon_arrive: modron down, no corresponding portal?");
         }
         break;
     case MIGR_PORTAL:
@@ -1074,7 +1074,7 @@ boolean with_you;
         }
         else 
         {
-            impossible("mon_arrive: no corresponding portal?");
+            impossible("mon_arrive: portal, nno corresponding portal?");
         } /*FALLTHRU*/
     default:
     case MIGR_RANDOM:
@@ -1629,15 +1629,7 @@ register struct obj *obj;
             return POISON;
 
         if ((obj->otyp == CORPSE || obj->otyp == EGG) &&
-            ((polyfodder(obj) && !resists_polymorph(mon)) || (obj->corpsenm == PM_GREEN_SLIME && !resists_slime(mon)) || 
-                (obj->corpsenm >= LOW_PM &&
-                    ((is_mimic(&mons[obj->corpsenm]) && !resists_mimicking(mon)) ||
-                    (has_hallucinating_corpse(&mons[obj->corpsenm]) && !has_hallucination_resistance(mon)) || 
-                    (has_poisonous_corpse(&mons[obj->corpsenm]) && !resists_poison(mon)) ||
-                    (has_sickening_corpse(&mons[obj->corpsenm]) && !resists_sickness(mon)) ||
-                    (has_mummy_rotted_corpse(&mons[obj->corpsenm]) && !resists_sickness(mon)) ||
-                    (has_stunning_corpse(&mons[obj->corpsenm]) && !resists_stun(mon))
-                    ))))
+            (polyfodder(obj)  || obj->corpsenm == PM_GREEN_SLIME || (obj->corpsenm >= LOW_PM && is_mimic(&mons[obj->corpsenm]))))
             return POISON;
 
         if (objects[obj->otyp].oc_edible_subtype > EDIBLETYPE_NORMAL)
