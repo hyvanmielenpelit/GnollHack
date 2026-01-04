@@ -15,157 +15,174 @@ using System.Linq;
 
 namespace GnollHackX
 {
-    public sealed class GHMenuItem : IEquatable<GHMenuItem>, INotifyPropertyChanged
+    public sealed class GHMenuItem : IEquatable<GHMenuItem> //, INotifyPropertyChanged
     {
         public GHMenuItem(GHMenuInfo info, int noGlyph, GamePage gamePage, Int64 identifier, char accelerator, char groupAccelerator, char specialMark,
-            int attr, int color, byte[] attrs, byte[] colors)
+            int attr, int color, byte[] attrs, byte[] colors, int glyph, bool useUpperSide, bool useColorForSuffixes, bool useSpecialSymbols,
+            ObjectDataItem objData, string text, int count, bool useNumItems, int numItems, bool isButtonStyle, bool isAutoClickOk, bool selected,
+            int maxCount, ulong oid, ulong mid, char headingGroupAccelerator, ulong flags)
         {
             _menuInfo = info;
             _noGlyph = noGlyph;
             _gamePage = gamePage;
-            _glyphImageSource.ReferenceGamePage = gamePage;
-            _glyphImageSource.UseUpperSide = false;
-            _glyphImageSource.Width = GHConstants.TileWidth;
-            _glyphImageSource.Height = GHConstants.TileHeight / 2;
+            GlyphImageSource.ReferenceGamePage = gamePage;
+            GlyphImageSource.UseUpperSide = useUpperSide;
+            GlyphImageSource.Width = GHConstants.TileWidth;
+            GlyphImageSource.Height = GHConstants.TileHeight / 2;
             Identifier = identifier;    
-            EntryTextColor = GHColors.White;
-            _accelerator = accelerator;
-            _formattedAccelerator = _accelerator == '\0' ? "" : _accelerator.ToString();
+            Accelerator = accelerator;
+            FormattedAccelerator = accelerator == '\0' ? "" : accelerator.ToString();
             GroupAccelerator = groupAccelerator;
-            _specialMark = specialMark;
-            _formattedSpecialMark = _specialMark == '\0' ? "" : _specialMark.ToString();
+            SpecialMark = specialMark;
+            FormattedSpecialMark = specialMark == '\0' ? "" : specialMark.ToString();
 
             NHAttribute = attr;
             NHColor = color;
             NHAttributes = attrs;
             NHColors = colors;
+            Glyph = glyph;
+            GlyphImageSource.Glyph = glyph;
 
+            //UseUpperSide = useUpperSide;
+            UseColorForSuffixes = useColorForSuffixes;
+            UseSpecialSymbols = useSpecialSymbols;
+            ObjData = objData;
+            GlyphImageSource.ObjData = objData;
+            Text = text;
+            Count = count;
+            UseNumItems = useNumItems;
+            NumItems = numItems;
+            IsButtonStyle = isButtonStyle;
+            IsAutoClickOk = isAutoClickOk;
+            Selected = selected;
+            MaxCount = maxCount;
+            Oid = oid;
+            Mid = mid;
+            HeadingGroupAccelerator = headingGroupAccelerator;
+            Flags = flags;
+
+            /* Process text */
+            int first_parenthesis_open = -1;
+            bool altdivisors = ((int)NHAttribute & (int)MenuItemAttributes.AltDivisors) != 0;
+            if (SuffixParseStyle == 0 || (SuffixParseStyle == 2 && ((int)NHAttribute & (int)MenuItemAttributes.Bold) == 0))
+                first_parenthesis_open = -1;
+            else
+                first_parenthesis_open = text.IndexOf(altdivisors ? '|' : '(');
+
+            if (first_parenthesis_open <= 0) /* Ignore cases where the entire row is in parentheses */
+                _mainText = text;
+            else if (first_parenthesis_open > 1)
+                _mainText = text.Substring(0, first_parenthesis_open);
+            else
+                _mainText = "";
+
+            _trimmedMainText = _mainText.Trim();
+            MainTextSplit = _trimmedMainText.Split(' ');
+
+            if (first_parenthesis_open > 0 && !(_menuInfo.Style == ghmenu_styles.GHMENU_STYLE_ITEM_COMMAND || _menuInfo.Style == ghmenu_styles.GHMENU_STYLE_GENERAL_COMMAND))  /* Ignore cases where the entire row is in parentheses */
+            {
+                _suffixText = ParseSuffixText(text, false, altdivisors);
+                _suffix2Text = ParseSuffixText(text, true, altdivisors);
+            }
+            else
+            {
+                _suffixText = "";
+                _suffix2Text = "";
+            }
+            _trimmedSuffixText = _suffixText.Trim();
+            SuffixTextSplit = _trimmedSuffixText.Split(' ');
+            _trimmedSuffix2Text = _suffix2Text.Trim();
+            Suffix2TextSplit = _trimmedSuffix2Text.Split(' ');
+
+            ProcessSplitAttrsColors();
         }
 
+        /* Private readonly */
         private readonly GHMenuInfo _menuInfo;
         private readonly GamePage _gamePage;
         private readonly int _noGlyph;
-        public readonly Int64 Identifier;
-        private int _count;
-        public int Count
-        {
-            get
-            {
-                return _count;
-            }
-            set
-            {
-                _count = value;
-                if (PropertyChanged != null)
-                {
-                    PropertyChanged(this, new PropertyChangedEventArgs("Count"));
-                    PropertyChanged(this, new PropertyChangedEventArgs("ConvertedCount"));
-                    PropertyChanged(this, new PropertyChangedEventArgs("IsLabelVisible"));
-                    PropertyChanged(this, new PropertyChangedEventArgs("IsSwipeVisible"));
-                    PropertyChanged(this, new PropertyChangedEventArgs("LabelString"));
-                }
-            }
-        }
 
+        /* Public readonly */
+        public readonly Int64 Identifier;
+        public readonly int MaxCount = 0;
+        public readonly bool UseNumItems = false;
+        public readonly int NumItems = 0;
+        public readonly char Accelerator;
+        public readonly char GroupAccelerator;
+        public readonly char SpecialMark;
+        public readonly string FormattedAccelerator = "";
+        public readonly string FormattedSpecialMark = "";
+        public readonly string Text = "";
+        public readonly bool IsButtonStyle;
+        public readonly bool IsAutoClickOk;
+        public readonly int NHAttribute;
+        public readonly int NHColor;
+        public readonly byte[] NHAttributes = null;
+        public readonly byte[] NHColors = null;
+        public readonly int Glyph;
+        public readonly bool UseSpecialSymbols = false;
+        public readonly bool UseColorForSuffixes = false;
+        public readonly ObjectDataItem ObjData = null;
+        public readonly char HeadingGroupAccelerator;
+        public readonly ulong Flags;
+        public readonly UInt64 Oid;
+        public readonly UInt64 Mid;
+        public readonly GlyphImageSource GlyphImageSource = new GlyphImageSource();
+
+
+        /* Interlocked properties */
+        private int _selected = 0;
+        private int _highlighted = 0;
+        private int _count = 0;
+        private int _headingUnselectGroup = 0;
+        private int _textRowCountsSet = 0;
+        private int _mainTextRows = 1;
+        private int _suffixTextRows = 0;
+        private int _suffix2TextRows = 0;
+
+        public bool Selected { get { return Interlocked.CompareExchange(ref _selected, 0, 0) != 0; } set { Interlocked.Exchange(ref _selected, value ? 1 : 0); } }
+        public bool Highlighted { get { return Interlocked.CompareExchange(ref _highlighted, 0, 0) != 0; } set { Interlocked.Exchange(ref _highlighted, value ? 1 : 0); } }
+        public int Count { get { return Interlocked.CompareExchange(ref _count, 0, 0); } set { Interlocked.Exchange(ref _count, value); } }
+        public bool HeadingUnselectGroup { get { return Interlocked.CompareExchange(ref _headingUnselectGroup, 0, 0) != 0; } set { Interlocked.Exchange(ref _headingUnselectGroup, value ? 1 : 0); } }
+        public bool TextRowCountsSet { get { return Interlocked.CompareExchange(ref _textRowCountsSet, 0, 0) != 0; } set { Interlocked.Exchange(ref _textRowCountsSet, value ? 1 : 0); } }
+        public int MainTextRows { get { return Interlocked.CompareExchange(ref _mainTextRows, 0, 0); } set { Interlocked.Exchange(ref _mainTextRows, value); } }
+        public int SuffixTextRows { get { return Interlocked.CompareExchange(ref _suffixTextRows, 0, 0); } set { Interlocked.Exchange(ref _suffixTextRows, value); } }
+        public int Suffix2TextRows { get { return Interlocked.CompareExchange(ref _suffix2TextRows, 0, 0); } set { Interlocked.Exchange(ref _suffix2TextRows, value); } }
+
+
+        /* Get only properties */
+        public bool IsGlyphVisible { get { return (Glyph != _noGlyph); } }
+        public bool UseUpperSide { get { return GlyphImageSource.UseUpperSide; } }
         public bool IsObjWorn { get { return ObjData?.IsWorn ?? false; } }
         public long ObjWornBits { get { return ObjData?.WornBits ?? 0L; } }
         public bool IsObjArmor { get { return ObjData?.IsArmor ?? false; } }
-        public bool IsObjShield{ get { return ObjData?.IsShield ?? false; } }
-        public bool IsLabelVisible { get { return (Count > 0 && MaxCount > 0); } }
-        public string LabelString { get { return (MaxCount <= 0 ? "N/A" : Count == -1 ? "All" : Count.ToString()); } }
-        public int ConvertedCount { get { return (Count + 1); } set { Count = value - 1; } }
-        public bool IsSwipeVisible { get { return (Count != 0 && MaxCount > 1); } }
+        public bool IsObjShield { get { return ObjData?.IsShield ?? false; } }
         public float MinimumTouchableTextSize { get { return GHConstants.MenuDefaultRowHeight; } }
-        public string EntryString { get; set; }
-        public Color EntryTextColor { get; set; }
-        public int MaxCount { get; set; }
-        public bool UseNumItems { get; set; }
-        public int NumItems { get; set; }
-        private readonly char _accelerator;
-        public char Accelerator 
-        {
-            get { return _accelerator; }
-        }
-        public readonly char GroupAccelerator;
+        public bool HasMultiColors { get { return NHAttributes != null && NHColors != null && Text != null; } }
 
-        private readonly char _specialMark;
-        public char SpecialMark 
-        { 
-            get { return _specialMark; } 
-        }
 
-        private readonly string _formattedAccelerator = "";
-        public string FormattedAccelerator
-        {
-            get
-            {
-                return _formattedAccelerator;
-            }
-        }
-        private readonly string _formattedSpecialMark = "";
-        public string FormattedSpecialMark
-        {
-            get
-            {
-                return _formattedSpecialMark;
-            }
-        }
-        private string _text;
-        private string _mainText;
-        private string _suffixText;
-        private string _suffix2Text;
-        private string _trimmedMainText;
-        private string _trimmedSuffixText;
-        private string _trimmedSuffix2Text;
-        private List<byte[]> _mainSplitAttrs = new List<byte[]>(1);
-        private List<byte[]> _mainSplitColors = new List<byte[]>(1);
-        private List<byte[]> _suffixSplitAttrs = new List<byte[]>(1);
-        private List<byte[]> _suffixSplitColors = new List<byte[]>(1);
-        private List<byte[]> _suffix2SplitAttrs = new List<byte[]>(1);
-        private List<byte[]> _suffix2SplitColors = new List<byte[]>(1);
+        /* Readonly text splits */
+        private readonly string _mainText;
+        private readonly string _suffixText;
+        private readonly string _suffix2Text;
+        private readonly string _trimmedMainText;
+        private readonly string _trimmedSuffixText;
+        private readonly string _trimmedSuffix2Text;
+        private readonly List<byte[]> _mainSplitAttrs = new List<byte[]>(1);
+        private readonly List<byte[]> _mainSplitColors = new List<byte[]>(1);
+        private readonly List<byte[]> _suffixSplitAttrs = new List<byte[]>(1);
+        private readonly List<byte[]> _suffixSplitColors = new List<byte[]>(1);
+        private readonly List<byte[]> _suffix2SplitAttrs = new List<byte[]>(1);
+        private readonly List<byte[]> _suffix2SplitColors = new List<byte[]>(1);
 
-        public string Text
-        {
-            get { return _text; }
-            set
-            {
-                _text = value;
-                int first_parenthesis_open = -1;
-                bool altdivisors = ((int)NHAttribute & (int)MenuItemAttributes.AltDivisors) != 0;
-                if (SuffixParseStyle == 0 || (SuffixParseStyle == 2 && ((int)NHAttribute & (int)MenuItemAttributes.Bold) == 0))
-                    first_parenthesis_open = -1;
-                else
-                    first_parenthesis_open = value.IndexOf(altdivisors ? '|' : '(');
-
-                if (first_parenthesis_open <= 0) /* Ignore cases where the entire row is in parentheses */
-                    _mainText = value;
-                else if (first_parenthesis_open > 1)
-                    _mainText = value.Substring(0, first_parenthesis_open);
-                else
-                    _mainText = "";
-
-                _trimmedMainText = _mainText.Trim();
-                _mainTextSplit = _trimmedMainText.Split(' ');
-
-                if (first_parenthesis_open > 0 && !(_menuInfo.Style == ghmenu_styles.GHMENU_STYLE_ITEM_COMMAND || _menuInfo.Style == ghmenu_styles.GHMENU_STYLE_GENERAL_COMMAND))  /* Ignore cases where the entire row is in parentheses */
-                {
-                    _suffixText = ParseSuffixText(value, false, altdivisors);
-                    _suffix2Text = ParseSuffixText(value, true, altdivisors);
-                }
-                else
-                {
-                    _suffixText = "";
-                    _suffix2Text = "";
-                }
-                _trimmedSuffixText = _suffixText.Trim();
-                _suffixTextSplit = _trimmedSuffixText.Split(' ');
-                _trimmedSuffix2Text = _suffix2Text.Trim();
-                _suffix2TextSplit = _trimmedSuffix2Text.Split(' ');
-
-                ProcessSplitAttrsColors();
-            }
-        }
-
+        public string MainText { get { return _mainText; } }
+        public string TrimmedMainText { get { return _trimmedMainText; } }
+        public string SuffixText { get { return _suffixText; } }
+        public string TrimmedSuffixText { get { return _trimmedSuffixText; } }
+        public bool IsSuffixTextVisible { get { return (SuffixText != null && SuffixText != ""); } }
+        public string Suffix2Text { get { return _suffix2Text; } }
+        public string TrimmedSuffix2Text { get { return _trimmedSuffix2Text; } }
+        public bool IsSuffix2TextVisible { get { return (Suffix2Text != null && Suffix2Text != ""); } }
         public List<byte[]> MainSplitAttrs { get { return HasMultiColors ? _mainSplitAttrs : null; } }
         public List<byte[]> MainSplitColors { get { return HasMultiColors ? _mainSplitColors : null; } }
         public List<byte[]> SuffixSplitAttrs { get { return HasMultiColors ? _suffixSplitAttrs : null; } }
@@ -173,18 +190,73 @@ namespace GnollHackX
         public List<byte[]> Suffix2SplitAttrs { get { return HasMultiColors ? _suffix2SplitAttrs : null; } }
         public List<byte[]> Suffix2SplitColors { get { return HasMultiColors ? _suffix2SplitColors : null; } }
 
-        public bool HasMultiColors
+
+        /* Interlocked text splits and row widths */
+        private List<float> _mainTextRowWidths = new List<float>() { 0.0f };
+        private List<float> _suffixTextRowWidths = new List<float>();
+        private List<float> _suffix2TextRowWidths = new List<float>();
+        public List<float> MainTextRowWidths { get { return Interlocked.CompareExchange(ref _mainTextRowWidths, null, null); } set { Interlocked.Exchange(ref _mainTextRowWidths, value); } }
+        public List<float> SuffixTextRowWidths { get { return Interlocked.CompareExchange(ref _suffixTextRowWidths, null, null); } set { Interlocked.Exchange(ref _suffixTextRowWidths, value); } }
+        public List<float> Suffix2TextRowWidths { get { return Interlocked.CompareExchange(ref _suffix2TextRowWidths, null, null); } set { Interlocked.Exchange(ref _suffix2TextRowWidths, value); } }
+
+        private string[] _mainTextSplit;
+        public string[] MainTextSplit
         {
-            get { return NHAttributes != null && NHColors != null && _text != null; }
+            get
+            {
+                var textSplit = Interlocked.CompareExchange(ref _mainTextSplit, null, null);
+                if (textSplit == null)
+                    return new string[1] { "" };
+                else
+                    return textSplit;
+            }
+            set
+            {
+                Interlocked.Exchange(ref _mainTextSplit, value);
+            }
+        }
+        private string[] _suffixTextSplit;
+        public string[] SuffixTextSplit
+        {
+            get
+            {
+                var textSplit = Interlocked.CompareExchange(ref _suffixTextSplit, null, null);
+                if (textSplit == null)
+                    return new string[1] { "" };
+                else
+                    return textSplit;
+            }
+            set
+            {
+                Interlocked.Exchange(ref _suffixTextSplit, value);
+            }
+        }
+        private string[] _suffix2TextSplit;
+        public string[] Suffix2TextSplit
+        {
+            get
+            {
+                var textSplit = Interlocked.CompareExchange(ref _suffix2TextSplit, null, null);
+                if (textSplit == null)
+                    return new string[1] { "" };
+                else
+                    return textSplit;
+            }
+            set
+            {
+                Interlocked.Exchange(ref _suffix2TextSplit, value);
+            }
         }
 
+
+        /* METHODS */
         public void ProcessSplitAttrsColors()
         {
             if (!HasMultiColors)
                 return;
 
             int idx = -1;
-            List<string[]> textSplits = new List<string[]>() { _mainTextSplit, _suffixTextSplit, _suffix2TextSplit };
+            List<string[]> textSplits = new List<string[]>() { MainTextSplit, SuffixTextSplit, Suffix2TextSplit };
             List<List<byte[]>> attrSplits = new List<List<byte[]>>() { _mainSplitAttrs, _suffixSplitAttrs, _suffix2SplitAttrs };
             List<List<byte[]>> colorSplits = new List<List<byte[]>>() { _mainSplitColors, _suffixSplitColors, _suffix2SplitColors };
             for (int splitIdx = 0; splitIdx < 3; splitIdx++)
@@ -207,12 +279,12 @@ namespace GnollHackX
                             splitAttrs[j] = 0;
                             splitColors[j] = (int)NhColor.NO_COLOR;
                         }
-                        if (idx + 1 < _text.Length)
+                        if (idx + 1 < Text.Length)
                         {
-                            int startIdx = idx = _text.IndexOf(splitText, idx + 1);
+                            int startIdx = idx = Text.IndexOf(splitText, idx + 1);
                             if (idx >= 0)
                             {
-                                for (; idx - startIdx < splitText.Length && idx < _text.Length; idx++)
+                                for (; idx - startIdx < splitText.Length && idx < Text.Length; idx++)
                                 {
                                     splitAttrs[idx - startIdx] = NHAttributes[idx];
                                     splitColors[idx - startIdx] = NHColors[idx];
@@ -298,15 +370,7 @@ namespace GnollHackX
                 return res;
             }
         }
-        public string MainText { get { return _mainText; } }
-        public string TrimmedMainText { get { return _trimmedMainText; } }
 
-        public string SuffixText { get { return _suffixText; } }
-        public string TrimmedSuffixText { get { return _trimmedSuffixText; } }
-        public bool IsSuffixTextVisible { get { return (SuffixText != null && SuffixText != ""); } }
-        public string Suffix2Text { get { return _suffix2Text; } }
-        public string TrimmedSuffix2Text { get { return _trimmedSuffix2Text; } }
-        public bool IsSuffix2TextVisible { get { return (Suffix2Text != null && Suffix2Text != ""); } }
         private string ParseSuffixText(string text, bool issuffix2, bool altdivisors)
         {
             string str = text;
@@ -341,74 +405,6 @@ namespace GnollHackX
             }
 
             return res;
-        }
-        public TextAlignment MainTextVerticalTextAlign { get { return IsSuffixTextVisible ? TextAlignment.End : TextAlignment.Center; } }
-        public bool IsGlyphVisible { get { return (Glyph != _noGlyph); } }
-
-
-        public readonly int NHAttribute;
-        public readonly int NHColor;
-
-        public readonly byte[] NHAttributes = null;
-        public readonly byte[] NHColors = null;
-
-
-        private int _glyph;
-        public int Glyph { get { return _glyph; } set { _glyph = value; _glyphImageSource.Glyph = value; } }
-        public bool UseUpperSide { get { return _glyphImageSource.UseUpperSide; } set { _glyphImageSource.UseUpperSide = value; } }
-        public bool UseSpecialSymbols { get; set; }
-        public bool UseColorForSuffixes { get; set; }
-        private ObjectDataItem _objData = null;
-        public ObjectDataItem ObjData { get { return _objData; } set { _objData = value; _glyphImageSource.ObjData = value; } }
-        public bool Is_Heading { get; set; }
-        public char HeadingGroupAccelerator { get; set; }
-        public bool HeadingUnselectGroup { get; set; }
-        public ulong Flags { get; set; }
-        public UInt64 Oid { get; set; }
-        public UInt64 Mid { get; set; }
-
-        public bool TextRowCountsSet { get; set; } = false;
-        public int MainTextRows { get; set; } = 1;
-        public int SuffixTextRows { get; set; } = 0;
-        public int Suffix2TextRows { get; set; } = 0;
-
-        public List<float> MainTextRowWidths { get; set; } = new List<float>() { 0.0f };
-        public List<float> SuffixTextRowWidths { get; set; } = new List<float>();
-        public List<float> Suffix2TextRowWidths { get; set; } = new List<float>();
-
-
-        private string[] _mainTextSplit;
-        public string[] MainTextSplit 
-        {
-            get
-            {
-                if (_mainTextSplit == null)
-                    return new string[1] {""};
-                else
-                    return _mainTextSplit;
-            }
-        }
-        private string[] _suffixTextSplit;
-        public string[] SuffixTextSplit
-        {
-            get
-            {
-                if (_suffixTextSplit == null)
-                        return new string[1] { "" };
-                else
-                    return _suffixTextSplit;
-            }
-        }
-        private string[] _suffix2TextSplit;
-        public string[] Suffix2TextSplit
-        {
-            get
-            {
-                if (_suffix2TextSplit == null)
-                    return new string[1] { "" };
-                else
-                    return _suffix2TextSplit;
-            }
         }
 
         public string FontFamily {
@@ -565,7 +561,7 @@ namespace GnollHackX
             }
         }
 
-        private double _fontSize = 0;
+        //private double _fontSize = 0;
         public double FontSize
         {
             get
@@ -670,16 +666,16 @@ namespace GnollHackX
                     res /= 2;
                 }
 
-                if(res != _fontSize)
-                {
-                    _fontSize = res;
-                    OnPropertyChanged("FontSize");
-                }
-                return _fontSize; 
+                //if(res != Interlocked.CompareExchange(ref _fontSize, 0.0, 0.0))
+                //{
+                //    Interlocked.Exchange(ref _fontSize, res);
+                //    //_fontSize = res;
+                //}
+                return res; 
             }
         }
 
-        private double _relativeSuffixFontSize = 0;
+        //private double _relativeSuffixFontSize = 0;
         public double RelativeSuffixFontSize
         {
             get
@@ -700,12 +696,13 @@ namespace GnollHackX
                     default:
                         break;
                 }
-                if (res != _relativeSuffixFontSize)
-                {
-                    _relativeSuffixFontSize = res;
-                    OnPropertyChanged("RelativeSuffixFontSize");
-                }
-                return _relativeSuffixFontSize;
+                //if (res != Interlocked.CompareExchange(ref _relativeSuffixFontSize, 0.0, 0.0))
+                //{
+                //    Interlocked.Exchange(ref _fontSize, res);
+                //    //_relativeSuffixFontSize = res;
+                //    //OnPropertyChanged("RelativeSuffixFontSize");
+                //}
+                return res;
             }
         }
 
@@ -739,29 +736,12 @@ namespace GnollHackX
                 return (this.Text.Equals(other.Text));
         }
 
-        public event PropertyChangedEventHandler PropertyChanged;
+        //public event PropertyChangedEventHandler PropertyChanged;
 
-        private GlyphImageSource _glyphImageSource = new GlyphImageSource();
-
-        public GlyphImageSource GlyphImageSource
-        {
-            get
-            {
-                return _glyphImageSource;
-            }
-        }
-
-        public ImageSource GlyphImage
-        {
-            get {
-                return _glyphImageSource;
-            }
-        }
-
-        private void OnPropertyChanged(string propertyname)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyname));
-        }
+        //private void OnPropertyChanged(string propertyname)
+        //{
+        //    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyname));
+        //}
 
         //public SKRect DrawBounds = new SKRect();
         //public SKRect EquipmentDrawBounds = new SKRect();
@@ -773,11 +753,6 @@ namespace GnollHackX
 
         //    return true;
         //}
-
-        public bool Selected { get; set; }
-        public bool Highlighted { get; set; }
-        public bool IsButtonStyle { get; set; }
-        public bool IsAutoClickOk { get; set; }
 
         public bool IsButton
         {
@@ -900,16 +875,6 @@ namespace GnollHackX
                 }
             }
             return res;
-        }
-
-        public bool IsWorn
-        {
-            get 
-            {
-                if (ObjData == null) 
-                    return false;
-                return ObjData.IsWorn;
-            }
         }
     }
 }
