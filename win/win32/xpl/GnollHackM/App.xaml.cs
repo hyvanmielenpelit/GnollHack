@@ -50,6 +50,18 @@ public partial class App : Application
             };
         });
 #endif
+#if ANDROID || WINDOWS
+        // If UIDesignRequiresCompatibility Info.plist item gets deprecated, you can change the name of the global Switch style to PlatformSwitchStyle, and add it only for right platforms here
+        if (Application.Current.Resources.TryGetValue("PlatformSwitchStyle", out var styleObj) && styleObj is Style baseStyle)
+        {
+            var switchStyle = new Style(typeof(Switch));
+            foreach (var setter in baseStyle.Setters)
+            {
+                switchStyle.Setters.Add(setter);
+            }
+            Application.Current.Resources.Add(switchStyle);
+        }
+#endif
         GHApp.Initialize();
         //MainPage = new AppShell();
     }

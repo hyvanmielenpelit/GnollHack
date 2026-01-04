@@ -38,5 +38,7 @@
 	<true/>
 	<key>UIRequiresFullScreen</key>
 	<true/>
+	<key>UIDesignRequiresCompatibility</key>
+	<true/>
 </dict>
 </plist>
