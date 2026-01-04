@@ -827,10 +827,16 @@
     (pm_resists_wounding((mon)->data) || has_wounding_resistance(mon))
 #define resists_bisection(mon) \
     (pm_resists_bisection((mon)->data) || has_bisection_resistance(mon))
-#define resists_slime(mon) \
+#define resists_slime_only(mon) \
     (slimeproof((mon)->data) || has_slime_resistance(mon))
-#define resists_polymorph(mon) \
+#define resists_slime(mon) \
+    (resists_slime_only(mon) || has_property(mon, UNCHANGING))
+#define resists_polymorph_only(mon) \
     (pm_resists_polymorph((mon)->data) || has_property(mon, POLYMORPH_RESISTANCE))
+#define resists_polymorph(mon) \
+    (resists_polymorph_only(mon) || has_property(mon, UNCHANGING))
+#define resists_mimicking(mon) \
+    (resists_polymorph(mon) || has_property(mon, PROT_FROM_SHAPE_CHANGERS))
 
 /* other similar definitions */
 #define is_reflecting(mon) \

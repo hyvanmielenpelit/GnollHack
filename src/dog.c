@@ -1629,7 +1629,15 @@ register struct obj *obj;
             return POISON;
 
         if ((obj->otyp == CORPSE || obj->otyp == EGG) &&
-            (polyfodder(obj) || obj->corpsenm == PM_GREEN_SLIME || (obj->corpsenm >= LOW_PM && is_mimic(&mons[obj->corpsenm]))))
+            ((polyfodder(obj) && !resists_polymorph(mon)) || (obj->corpsenm == PM_GREEN_SLIME && !resists_slime(mon)) || 
+                (obj->corpsenm >= LOW_PM &&
+                    ((is_mimic(&mons[obj->corpsenm]) && !resists_mimicking(mon)) ||
+                    (has_hallucinating_corpse(&mons[obj->corpsenm]) && !has_hallucination_resistance(mon)) || 
+                    (has_poisonous_corpse(&mons[obj->corpsenm]) && !resists_poison(mon)) ||
+                    (has_sickening_corpse(&mons[obj->corpsenm]) && !resists_sickness(mon)) ||
+                    (has_mummy_rotted_corpse(&mons[obj->corpsenm]) && !resists_sickness(mon)) ||
+                    (has_stunning_corpse(&mons[obj->corpsenm]) && !resists_stun(mon))
+                    ))))
             return POISON;
 
         if (objects[obj->otyp].oc_edible_subtype > EDIBLETYPE_NORMAL)
