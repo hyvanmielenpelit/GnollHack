@@ -623,7 +623,7 @@ namespace GnollHackX
     }
 
     /* GHMenu styles */
-    public enum ghmenu_styles
+    public enum ghmenu_styles : int
     {
         GHMENU_STYLE_GENERAL = 0,
         GHMENU_STYLE_INVENTORY,
@@ -2110,7 +2110,7 @@ namespace GnollHackX
         public int Count;
     }
 
-    public enum CanvasTypes
+    public enum CanvasTypes : int
     {
         General = 0,
         MainCanvas,

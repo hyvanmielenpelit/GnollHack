@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using System.Diagnostics;
 using GnollHackX;
 
+
 #if GNH_MAUI
 using SkiaSharp.Views.Maui;
 using SkiaSharp.Views.Maui.Controls;
@@ -33,7 +34,7 @@ namespace GnollHackX.Controls
     {
         //private object _glLock = new object();
         private int _useGL = 0;
-        private SKGLView internalGLView = null;
+        private readonly SKGLView _internalGLView = null;
 
         public bool UseGL 
         {   get
@@ -51,33 +52,33 @@ namespace GnollHackX.Controls
                 if(HasGL)
                 {
                     internalCanvasView.IsVisible = !value;
-                    internalGLView.IsVisible = value;
+                    _internalGLView.IsVisible = value;
                 }
                 else
                     internalCanvasView.IsVisible = true;
             }
         }
 
-        public bool HasGL {  get { return internalGLView != null; } }
+        public bool HasGL {  get { return _internalGLView != null; } }
 
         public SwitchableCanvasView()
         {
             bool gpuAvailable = GHApp.IsGPUAvailable;
             if (gpuAvailable)
             {
-                internalGLView = new SKGLView()
+                _internalGLView = new SKGLView()
                 {
                     IsVisible = false,
                     HorizontalOptions = LayoutOptions.Fill,
                     VerticalOptions = LayoutOptions.Fill,
                 };
-                internalGLView.PaintSurface += internalGLView_PaintSurface;
-                internalGLView.Touch += internalGLView_Touch;
-                //internalGLView.PropertyChanged += internalGLView_PropertyChanged;
+                _internalGLView.PaintSurface += internalGLView_PaintSurface;
+                _internalGLView.Touch += internalGLView_Touch;
+                //_internalGLView.PropertyChanged += internalGLView_PropertyChanged;
 #if WINDOWS
-                internalGLView.HandlerChanged += (s, e) =>
+                _internalGLView.HandlerChanged += (s, e) =>
                 {
-                    SkiaSharp.Views.Windows.SKSwapChainPanel glView = internalGLView?.Handler?.PlatformView as SkiaSharp.Views.Windows.SKSwapChainPanel;
+                    SkiaSharp.Views.Windows.SKSwapChainPanel glView = _internalGLView?.Handler?.PlatformView as SkiaSharp.Views.Windows.SKSwapChainPanel;
                     if (glView != null)
                     {
                         glView.PointerWheelChanged += View_PointerWheelChanged;
@@ -87,11 +88,11 @@ namespace GnollHackX.Controls
                         glView.PointerCanceled += View_PointerCanceled;
                     }
                 };
-                internalGLView.HandlerChanging += (s, e) =>
+                _internalGLView.HandlerChanging += (s, e) =>
                 {
                     if(e.OldHandler != null && e.NewHandler == null)
                     {
-                        SkiaSharp.Views.Windows.SKSwapChainPanel glView = internalGLView?.Handler?.PlatformView as SkiaSharp.Views.Windows.SKSwapChainPanel;
+                        SkiaSharp.Views.Windows.SKSwapChainPanel glView = _internalGLView?.Handler?.PlatformView as SkiaSharp.Views.Windows.SKSwapChainPanel;
                         if (glView != null)
                         {
                             glView.PointerWheelChanged -= View_PointerWheelChanged;
@@ -107,7 +108,7 @@ namespace GnollHackX.Controls
             InitializeComponent();
             if(gpuAvailable)
             {
-                RootGrid.Children.Add(internalGLView);
+                RootGrid.Children.Add(_internalGLView);
             }
             ThreadSafeWidth = Width;
             ThreadSafeHeight = Height;
@@ -123,7 +124,7 @@ namespace GnollHackX.Controls
                     _threadSafeParent = new WeakReference<IThreadSafeView>((IThreadSafeView)Parent);
                 //_threadSafeInternalCanvasSize = internalCanvasView.CanvasSize;
                 //if (HasGL)
-                //    _threadSafeInternalGLCanvasSize = internalGLView.CanvasSize;
+                //    _threadSafeInternalGLCanvasSize = _internalGLView.CanvasSize;
             }
             SizeChanged += SwitchableCanvasView_SizeChanged;
             PropertyChanged += SwitchableCanvasView_PropertyChanged;
@@ -164,12 +165,12 @@ namespace GnollHackX.Controls
 #endif
                     internalCanvasView.PaintSurface -= internalCanvasView_PaintSurface;
                     internalCanvasView.Touch -= internalCanvasView_Touch;
-                    if (internalGLView != null)
+                    if (_internalGLView != null)
                     {
-                        internalGLView.PaintSurface -= internalGLView_PaintSurface;
-                        internalGLView.Touch -= internalGLView_Touch;
+                        _internalGLView.PaintSurface -= internalGLView_PaintSurface;
+                        _internalGLView.Touch -= internalGLView_Touch;
 #if GNH_MAUI
-                        internalGLView.Handler?.DisconnectHandler();
+                        _internalGLView.Handler?.DisconnectHandler();
 #endif
                     }
                 });
@@ -229,11 +230,11 @@ namespace GnollHackX.Controls
         //{
         //    if (HasGL)
         //    {
-        //        if (e.PropertyName == nameof(internalGLView.CanvasSize))
+        //        if (e.PropertyName == nameof(_internalGLView.CanvasSize))
         //        {
         //            lock (_propertyLock)
         //            {
-        //                _threadSafeInternalGLCanvasSize = internalGLView.CanvasSize;
+        //                _threadSafeInternalGLCanvasSize = _internalGLView.CanvasSize;
         //            }
         //        }
         //    }
@@ -274,7 +275,7 @@ namespace GnollHackX.Controls
             ThreadSafeHeight = Height;
         }
 
-        public SKSize CanvasSize { get { return UseGL && HasGL ? internalGLView.CanvasSize : internalCanvasView.CanvasSize; } }
+        public SKSize CanvasSize { get { return UseGL && HasGL ? _internalGLView.CanvasSize : internalCanvasView.CanvasSize; } }
         public bool IgnorePixelScaling
         {
             get { return UseGL && HasGL ? false : internalCanvasView.IgnorePixelScaling; }
@@ -285,11 +286,11 @@ namespace GnollHackX.Controls
         }
         public bool EnableTouchEvents 
         { 
-            get { return UseGL && HasGL ? internalGLView.EnableTouchEvents : internalCanvasView.EnableTouchEvents; } 
+            get { return UseGL && HasGL ? _internalGLView.EnableTouchEvents : internalCanvasView.EnableTouchEvents; } 
             set 
             {
                 if (HasGL)
-                    internalGLView.EnableTouchEvents = value;
+                    _internalGLView.EnableTouchEvents = value;
                 internalCanvasView.EnableTouchEvents = value;
             }
         }
@@ -315,7 +316,7 @@ namespace GnollHackX.Controls
 #endif
                         try
                         {
-                            internalGLView.InvalidateSurface();
+                            _internalGLView.InvalidateSurface();
                         }
                         catch (Exception ex) 
                         {
@@ -420,11 +421,11 @@ namespace GnollHackX.Controls
                     try
                     {
                         if (limit > 0)
-                            internalGLView.GRContext.SetResourceCacheLimit(limit);
+                            _internalGLView.GRContext.SetResourceCacheLimit(limit);
                         else if (limit == -2 && GHApp.RecommendedPrimaryGPUCacheSize > 0)
-                            internalGLView.GRContext.SetResourceCacheLimit(GHApp.RecommendedPrimaryGPUCacheSize);
+                            _internalGLView.GRContext.SetResourceCacheLimit(GHApp.RecommendedPrimaryGPUCacheSize);
                         else if (limit == -3 && defaultSize > 0)
-                            internalGLView.GRContext.SetResourceCacheLimit(defaultSize);
+                            _internalGLView.GRContext.SetResourceCacheLimit(defaultSize);
                     }
                     catch (Exception ex)
                     {
@@ -443,11 +444,11 @@ namespace GnollHackX.Controls
                     try
                     {
                         if (limit > 0)
-                            internalGLView.GRContext.SetResourceCacheLimit(limit);
+                            _internalGLView.GRContext.SetResourceCacheLimit(limit);
                         else if (limit == -2 && GHApp.RecommendedSecondaryGPUCacheSize > 0)
-                            internalGLView.GRContext.SetResourceCacheLimit(GHApp.RecommendedSecondaryGPUCacheSize);
+                            _internalGLView.GRContext.SetResourceCacheLimit(GHApp.RecommendedSecondaryGPUCacheSize);
                         else if (limit == -3 && defaultSize > 0)
-                            internalGLView.GRContext.SetResourceCacheLimit(defaultSize);
+                            _internalGLView.GRContext.SetResourceCacheLimit(defaultSize);
                         Debug.WriteLine("ResourceCacheSize is now " + ResourceCacheLimit);
                     }
                     catch (Exception ex)
@@ -458,37 +459,38 @@ namespace GnollHackX.Controls
             }
 
             /* Note: this case most likely will never happen, but is here still as a backup */
-            if (_delayedResourceCacheLimit != -1 && internalGLView?.GRContext != null)
+            long delayedResourceCacheLimit = DelayedResourceCacheLimit;
+            if (delayedResourceCacheLimit != -1 && _internalGLView?.GRContext != null)
             {
                 Debug.WriteLine("CanvasType is " + CanvasType.ToString());
                 Debug.WriteLine("ResourceCacheSize is " + ResourceCacheLimit);
                 try
                 {
-                    if (_delayedResourceCacheLimit > 0)
+                    if (delayedResourceCacheLimit > 0)
                     {
-                        Debug.WriteLine("_delayedResourceCacheLimit is " + _delayedResourceCacheLimit);
-                        internalGLView.GRContext.SetResourceCacheLimit(_delayedResourceCacheLimit);
+                        Debug.WriteLine("_delayedResourceCacheLimit is " + delayedResourceCacheLimit);
+                        _internalGLView.GRContext.SetResourceCacheLimit(delayedResourceCacheLimit);
                         Debug.WriteLine("ResourceCacheSize is now " + ResourceCacheLimit);
                     }
-                    else if (_delayedResourceCacheLimit == -2) /* Recommended */
+                    else if (delayedResourceCacheLimit == -2) /* Recommended */
                     {
                         long defaultSize = CanvasType == CanvasTypes.MainCanvas ? GHApp.RecommendedPrimaryGPUCacheSize : GHApp.RecommendedSecondaryGPUCacheSize;
-                        Debug.WriteLine("_delayedResourceCacheLimit is " + _delayedResourceCacheLimit);
+                        Debug.WriteLine("_delayedResourceCacheLimit is " + delayedResourceCacheLimit);
                         Debug.WriteLine("RecommendedGPUCacheSize is " + defaultSize);
                         if (defaultSize > 0)
                         {
-                            internalGLView.GRContext.SetResourceCacheLimit(defaultSize);
+                            _internalGLView.GRContext.SetResourceCacheLimit(defaultSize);
                         }
                         Debug.WriteLine("ResourceCacheSize is now " + ResourceCacheLimit);
                     }
-                    else if (_delayedResourceCacheLimit == -3) /* Skia Default */
+                    else if (delayedResourceCacheLimit == -3) /* Skia Default */
                     {
                         long defaultSize = GHApp.DefaultGPUCacheSize;
-                        Debug.WriteLine("_delayedResourceCacheLimit is " + _delayedResourceCacheLimit);
+                        Debug.WriteLine("_delayedResourceCacheLimit is " + delayedResourceCacheLimit);
                         Debug.WriteLine("DefaultGPUCacheSize is " + defaultSize);
                         if (defaultSize > 0)
                         {
-                            internalGLView.GRContext.SetResourceCacheLimit(defaultSize);
+                            _internalGLView.GRContext.SetResourceCacheLimit(defaultSize);
                         }
                         Debug.WriteLine("ResourceCacheSize is now " + ResourceCacheLimit);
                     }
@@ -497,7 +499,7 @@ namespace GnollHackX.Controls
                 {
                     Debug.WriteLine(ex.Message);
                 }
-                _delayedResourceCacheLimit = -1;
+                DelayedResourceCacheLimit = -1;
                 if (CanvasType == CanvasTypes.MainCanvas)
                     GHApp.CurrentGPUCacheSize = ResourceCacheLimit;
             }
@@ -535,38 +537,50 @@ namespace GnollHackX.Controls
         public GamePage _gamePage;
         public Grid _parentGrid;
 
-        public GHWindow GHWindow { get; set; }
-        public ghmenu_styles MenuStyle { get; set; }
-        //public readonly object MenuItemLock = new object();
-
-        private ObservableCollection<GHMenuItem> _GHMenuItems = null;
-        public ObservableCollection<GHMenuItem> MenuItems { get { return Interlocked.CompareExchange(ref _GHMenuItems, null, null); } set { Interlocked.Exchange(ref _GHMenuItems, value); } }
-
-        //public readonly object TextItemLock = new object();
-        private List<GHPutStrItem> _GHPutStrItems = null;
-        public List<GHPutStrItem> PutStrItems { get { return Interlocked.CompareExchange(ref _GHPutStrItems, null, null); } set { Interlocked.Exchange(ref _GHPutStrItems, value); } } //{ get { return _GHPutStrItems; } set { _GHPutStrItems = value; } }
-
-        public SelectionMode SelectionHow { get; set; }
-        public int SelectionIndex { get; set; }
-
-        public bool RevertBlackAndWhite { get; set; }
-        public bool UseTextOutline { get; set; }
-        public bool HideMenuLetters { get; set; }
-        public bool MenuButtonStyle { get; set; }
-        public bool ClickOKOnSelection { get; set; }
-        public bool MenuGlyphAtBottom { get; set; }
-        public bool AllowLongTap { get; set; } = true;
-        public bool SpecialClickOnLongTap { get; set; }
-        public bool AllowHighlight { get; set; }
-
+        private GHWindow _gHWindow;
+        private int _canvasType;
+        private int _menuStyle;
+        private ObservableCollection<GHMenuItem> _menuItems = null;
+        private List<GHPutStrItem> _putStrItems = null;
+        private int _selectionHow;
+        private int _selectionIndex = -1;
         private long _delayedResourceCacheLimit = -1L;
+        private int _revertBlackAndWhite;
+        private int _useTextOutline;
+        private int _hideMenuLetters;
+        private int _menuButtonStyle;
+        private int _clickOKOnSelection;
+        private int _menuGlyphAtBottom;
+        private int _allowLongTap = 1;
+        private int _specialClickOnLongTap;
+        private int _allowHighlight;
+
+        public GHWindow GHWindow { get { return Interlocked.CompareExchange(ref _gHWindow, null, null); } set { Interlocked.Exchange(ref _gHWindow, value); } }
+        public CanvasTypes CanvasType { get { return (CanvasTypes)Interlocked.CompareExchange(ref _canvasType, 0, 0); } set { Interlocked.Exchange(ref _canvasType, (int)value); } }
+        public ghmenu_styles MenuStyle { get { return (ghmenu_styles)Interlocked.CompareExchange(ref _menuStyle, 0, 0); } set { Interlocked.Exchange(ref _menuStyle, (int)value); } }
+        public ObservableCollection<GHMenuItem> MenuItems { get { return Interlocked.CompareExchange(ref _menuItems, null, null); } set { Interlocked.Exchange(ref _menuItems, value); } }
+        public List<GHPutStrItem> PutStrItems { get { return Interlocked.CompareExchange(ref _putStrItems, null, null); } set { Interlocked.Exchange(ref _putStrItems, value); } } //{ get { return _GHPutStrItems; } set { _GHPutStrItems = value; } }
+
+        public SelectionMode SelectionHow { get { return (SelectionMode)Interlocked.CompareExchange(ref _selectionHow, 0, 0); } set { Interlocked.Exchange(ref _selectionHow, (int)value); } }
+        public int SelectionIndex { get { return Interlocked.CompareExchange(ref _selectionIndex, 0, 0); } set { Interlocked.Exchange(ref _selectionIndex, value); } }
+        public long DelayedResourceCacheLimit { get { return Interlocked.CompareExchange(ref _delayedResourceCacheLimit, 0, 0); } set { Interlocked.Exchange(ref _delayedResourceCacheLimit, value); } }
+        public bool RevertBlackAndWhite { get { return Interlocked.CompareExchange(ref _revertBlackAndWhite, 0, 0) != 0; } set { Interlocked.Exchange(ref _revertBlackAndWhite, value ? 1 : 0); } }
+        public bool UseTextOutline { get { return Interlocked.CompareExchange(ref _useTextOutline, 0, 0) != 0; } set { Interlocked.Exchange(ref _useTextOutline, value ? 1 : 0); } }
+        public bool HideMenuLetters { get { return Interlocked.CompareExchange(ref _hideMenuLetters, 0, 0) != 0; } set { Interlocked.Exchange(ref _hideMenuLetters, value ? 1 : 0); } }
+        public bool MenuButtonStyle { get { return Interlocked.CompareExchange(ref _menuButtonStyle, 0, 0) != 0; } set { Interlocked.Exchange(ref _menuButtonStyle, value ? 1 : 0); } }
+        public bool ClickOKOnSelection { get { return Interlocked.CompareExchange(ref _clickOKOnSelection, 0, 0) != 0; } set { Interlocked.Exchange(ref _clickOKOnSelection, value ? 1 : 0); } }
+        public bool MenuGlyphAtBottom { get { return Interlocked.CompareExchange(ref _menuGlyphAtBottom, 0, 0) != 0; } set { Interlocked.Exchange(ref _menuGlyphAtBottom, value ? 1 : 0); } }
+        public bool AllowLongTap { get { return Interlocked.CompareExchange(ref _allowLongTap, 0, 0) != 0; } set { Interlocked.Exchange(ref _allowLongTap, value ? 1 : 0); } }
+        public bool SpecialClickOnLongTap { get { return Interlocked.CompareExchange(ref _specialClickOnLongTap, 0, 0) != 0; } set { Interlocked.Exchange(ref _specialClickOnLongTap, value ? 1 : 0); } }
+        public bool AllowHighlight { get { return Interlocked.CompareExchange(ref _allowHighlight, 0, 0) != 0; } set { Interlocked.Exchange(ref _allowHighlight, value ? 1 : 0); } }
+
         public long ResourceCacheLimit
         {
             get 
             {
                 try
                 {
-                    return internalGLView?.GRContext != null ? internalGLView.GRContext.GetResourceCacheLimit() : -1;
+                    return _internalGLView?.GRContext != null ? _internalGLView.GRContext.GetResourceCacheLimit() : -1;
                 }
                 catch (Exception ex)
                 {
@@ -576,7 +590,7 @@ namespace GnollHackX.Controls
             }
             set
             {
-                if(internalGLView?.GRContext != null)
+                if(_internalGLView?.GRContext != null)
                 {
                     try
                     {
@@ -586,19 +600,19 @@ namespace GnollHackX.Controls
                                 {
                                     long defaultSize = GHApp.DefaultGPUCacheSize;
                                     if (defaultSize > 0)
-                                        internalGLView.GRContext.SetResourceCacheLimit(defaultSize);
+                                        _internalGLView.GRContext.SetResourceCacheLimit(defaultSize);
                                     break;
                                 }
                             case -2:
                                 {
                                     long defaultSize = CanvasType == CanvasTypes.MainCanvas ? GHApp.RecommendedPrimaryGPUCacheSize : GHApp.RecommendedSecondaryGPUCacheSize;
                                     if (defaultSize > 0)
-                                        internalGLView.GRContext.SetResourceCacheLimit(defaultSize);
+                                        _internalGLView.GRContext.SetResourceCacheLimit(defaultSize);
                                     break;
                                 }
                             default:
                                 if (value > 0)
-                                    internalGLView.GRContext.SetResourceCacheLimit(value);
+                                    _internalGLView.GRContext.SetResourceCacheLimit(value);
                                 break;
                         }
                     }
@@ -609,7 +623,7 @@ namespace GnollHackX.Controls
                 }
                 else
                 {
-                    _delayedResourceCacheLimit = value;
+                    DelayedResourceCacheLimit = value;
                 }
             }
         }
@@ -619,11 +633,11 @@ namespace GnollHackX.Controls
             get
             {
                 CacheUsageInfo res = new CacheUsageInfo(-1, -1);
-                if (internalGLView?.GRContext != null)
+                if (_internalGLView?.GRContext != null)
                 {
                     try
                     {
-                        internalGLView.GRContext.GetResourceCacheUsage(out res.MaxResources, out res.MaxResourceBytes);
+                        _internalGLView.GRContext.GetResourceCacheUsage(out res.MaxResources, out res.MaxResourceBytes);
                     }
                     catch (Exception ex)
                     {
@@ -633,9 +647,6 @@ namespace GnollHackX.Controls
                 return res;
             }
         }
-
-        public CanvasTypes CanvasType { get; set; }
-
 
         public BindableProperty GeneralAnimationCounterProperty =
             BindableProperty.Create(nameof(GeneralAnimationCounter), typeof(long), typeof(SwitchableCanvasView), 0L);

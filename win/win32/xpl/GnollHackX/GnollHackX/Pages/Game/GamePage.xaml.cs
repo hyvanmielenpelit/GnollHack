@@ -4210,7 +4210,7 @@ namespace GnollHackX.Pages.Game
             MenuCanvas.MenuStyle = menuinfo.Style;
             MenuCanvas.SelectionHow = menuinfo.SelectionHow;
             MenuCanvas.SelectionIndex = -1;
-            if (MenuCanvas.SelectionHow == SelectionMode.Single)
+            if (menuinfo.SelectionHow == SelectionMode.Single)
             {
                 bool selectedFound = false;
                 int idx = -1;
@@ -16877,7 +16877,6 @@ namespace GnollHackX.Pages.Game
 
             SKSurface surface = e.Surface;
             SKCanvas canvas = surface.Canvas;
-            SwitchableCanvasView referenceCanvasView = MenuCanvas;
             float canvaswidth = e.Info.Width; // referenceCanvasView.CanvasSize.Width;
             float canvasheight = e.Info.Height; // referenceCanvasView.CanvasSize.Height;
             bool lockTaken = false;
@@ -16909,7 +16908,7 @@ namespace GnollHackX.Pages.Game
             if (canvaswidth <= 16 || canvasheight <= 16)
                 return;
 
-            var menuItems = referenceCanvasView.MenuItems;
+            var menuItems = MenuCanvas.MenuItems;
             if (menuItems == null)
                 return;
 
@@ -16922,6 +16921,9 @@ namespace GnollHackX.Pages.Game
             //        return;
             //}
 
+            ghmenu_styles menuStyle = MenuCanvas.MenuStyle;
+            int selectionIndex = MenuCanvas.SelectionIndex;
+            SelectionMode selectionHow = MenuCanvas.SelectionHow;
             float scale = GHApp.DisplayDensity; // (float)Math.Sqrt((double)(canvaswidth * canvasheight / (float)(referenceCanvasView.Width * referenceCanvasView.Height)));
             float customScale = GHApp.CustomScreenScale;
             bool isHighFilterQuality = MenuHighFilterQuality;
@@ -16929,7 +16931,7 @@ namespace GnollHackX.Pages.Game
             bool usingGL = MenuCanvas.UseGL;
             bool fixRects = GHApp.FixRects;
             bool revertBW = MenuCanvas.RevertBlackAndWhite;
-            bool isInventory = MenuCanvas.MenuStyle >= ghmenu_styles.GHMENU_STYLE_INVENTORY && MenuCanvas.MenuStyle <= ghmenu_styles.GHMENU_STYLE_OTHERS_INVENTORY;
+            bool isInventory = menuStyle >= ghmenu_styles.GHMENU_STYLE_INVENTORY && menuStyle <= ghmenu_styles.GHMENU_STYLE_OTHERS_INVENTORY;
             float x = 0, y = 0;
             string str;
             SKRect textBounds = new SKRect();
@@ -16942,7 +16944,7 @@ namespace GnollHackX.Pages.Game
                 float picturepadding = 9 * scale * customScale;
                 float leftinnerpadding = 5;
                 double menumarginx = MenuCanvas.MenuButtonStyle ? 30.0 : 15.0;
-                double menuwidth = Math.Max(1.0, Math.Min(MenuCanvas.ThreadSafeWidth - menumarginx * 2, UIUtils.MenuViewWidthRequest(referenceCanvasView.MenuStyle) * customScale));
+                double menuwidth = Math.Max(1.0, Math.Min(MenuCanvas.ThreadSafeWidth - menumarginx * 2, UIUtils.MenuViewWidthRequest(menuStyle) * customScale));
                 float menuwidthoncanvas = (float)(menuwidth * scale);
                 float scaledmenumarginx = (float)menumarginx * scale;
                 float leftmenupadding = Math.Max(0, (canvaswidth - menuwidthoncanvas) / 2);
@@ -16995,7 +16997,6 @@ namespace GnollHackX.Pages.Game
                     foreach (var slot in _equipmentSlots)
                     {
                         GHMenuItem foundItem = null;
-                        int selectionIndex = MenuCanvas.SelectionIndex;
                         int foundItemIndex = -1;
                         if ((allWornBits & (long)slot.WornFlag) != 0)
                         {
@@ -17265,8 +17266,8 @@ namespace GnollHackX.Pages.Game
                                 fontspacingpadding = (textPaint.FontSpacing - (textPaint.FontMetrics.Descent - textPaint.FontMetrics.Ascent)) / 2;
                                 float generallinepadding = Math.Max(0.0f, (minrowheight - (textPaint.FontSpacing) * ((float)maintextrows + suffixtextrows * (mi.IsSuffixTextVisible ? relsuffixsize : 0.0f) + (mi.IsSuffix2TextVisible ? relsuffixsize : 0.0f))) / 2);
 
-                                bool isselected = referenceCanvasView.SelectionHow == SelectionMode.Multiple ? mi.Selected :
-                                    referenceCanvasView.SelectionHow == SelectionMode.Single ? idx == referenceCanvasView.SelectionIndex : false;
+                                bool isselected = selectionHow == SelectionMode.Multiple ? mi.Selected :
+                                    selectionHow == SelectionMode.Single ? idx == selectionIndex : false;
 
                                 float totalRowHeight = topPadding + bottomPadding + ((float)maintextrows + suffixtextrows * (mi.IsSuffixTextVisible ? relsuffixsize : 0.0f) + (mi.IsSuffix2TextVisible ? relsuffixsize : 0.0f)) * (textPaint.FontSpacing) + 2 * generallinepadding;
                                 float totalRowWidth = canvaswidth - leftmenupadding - rightmenupadding - (isEquipmentSideShown ? innerleftpadding * 2 : 0);
@@ -17288,7 +17289,7 @@ namespace GnollHackX.Pages.Game
                                 else
                                 {
                                     /* Selection rectangle */
-                                    bool isSelectable = referenceCanvasView.SelectionHow != SelectionMode.None && mi.Identifier != 0;
+                                    bool isSelectable = selectionHow != SelectionMode.None && mi.Identifier != 0;
                                     bool iconsFitRight = x + totalRowWidth + minrowheight < canvaswidth - scaledmenumarginx;
                                     SKRect selectionrect = new SKRect(x, y, x + totalRowWidth + (isInventory && iconsFitRight ? minrowheight : 0), y + totalRowHeight);
 #if WINDOWS
@@ -18264,7 +18265,8 @@ namespace GnollHackX.Pages.Game
                         { 
                             long nowTicks = _savedMenuTimeStamp.Ticks;
                             long elapsedms = (nowTicks - entry.PressTime.Ticks) / TimeSpan.TicksPerMillisecond;
-                            if (elapsedms <= GHConstants.MoveOrPressTimeThreshold && !_menuTouchMoved && MenuCanvas.SelectionHow != SelectionMode.None)
+                            SelectionMode selectionHow = MenuCanvas.SelectionHow;
+                            if (elapsedms <= GHConstants.MoveOrPressTimeThreshold && !_menuTouchMoved && selectionHow != SelectionMode.None)
                             {
                                 if (e.MouseButton == SKMouseButton.Right)
                                 {
@@ -18274,7 +18276,7 @@ namespace GnollHackX.Pages.Game
                                 else
                                 {
                                     MenuClickResult clickRes = MenuCanvas_NormalClickRelease(sender, e, false);
-                                    if (GHApp.OkOnDoubleClick && MenuCanvas.SelectionHow == SelectionMode.Single && e.MouseButton == SKMouseButton.Left)
+                                    if (GHApp.OkOnDoubleClick && selectionHow == SelectionMode.Single && e.MouseButton == SKMouseButton.Left)
                                     {
                                         long timeSincePreviousReleaseInMs = (nowTicks - _savedPreviousMenuReleaseTimeStamp.Ticks) / TimeSpan.TicksPerMillisecond;
                                         if (!clickRes.OkClicked && MenuOKButton.IsEnabled && _menuPreviousReleaseClick &&
@@ -18472,7 +18474,8 @@ namespace GnollHackX.Pages.Game
                         {
                             long nowTicks = _savedMenuTimeStamp.Ticks;
                             long elapsedms = (nowTicks - entry.PressTime.Ticks) / TimeSpan.TicksPerMillisecond;
-                            if (elapsedms <= GHConstants.MoveOrPressTimeThreshold && !_menuTouchMoved && MenuCanvas.SelectionHow != SelectionMode.None)
+                            SelectionMode selectionHow = MenuCanvas.SelectionHow;
+                            if (elapsedms <= GHConstants.MoveOrPressTimeThreshold && !_menuTouchMoved && selectionHow != SelectionMode.None)
                             {
                                 //if (e.MouseButton == SKMouseButton.Right)
                                 //{
@@ -18482,7 +18485,7 @@ namespace GnollHackX.Pages.Game
                                 //else
                                 {
                                     MenuClickResult clickRes = MenuCanvas_EquipmentClickRelease(sender, e, false);
-                                    if (GHApp.OkOnDoubleClick && MenuCanvas.SelectionHow == SelectionMode.Single && e.MouseButton == SKMouseButton.Left)
+                                    if (GHApp.OkOnDoubleClick && selectionHow == SelectionMode.Single && e.MouseButton == SKMouseButton.Left)
                                     {
                                         long timeSincePreviousReleaseInMs = (nowTicks - _savedPreviousMenuReleaseTimeStamp.Ticks) / TimeSpan.TicksPerMillisecond;
                                         if (!clickRes.OkClicked && MenuOKButton.IsEnabled && _menuPreviousReleaseClick &&
@@ -18566,6 +18569,7 @@ namespace GnollHackX.Pages.Game
             string menuItemMainText = "";
             var menuItems = MenuCanvas.MenuItems;
             var localDrawBounds = MenuDrawBoundBuffers[Volatile.Read(ref _readBufferIndex)];
+            SelectionMode selectionHow = MenuCanvas.SelectionHow;
 
             //lock (MenuCanvas.MenuItemLock)
             {
@@ -18584,7 +18588,7 @@ namespace GnollHackX.Pages.Game
                 if (selectedidx < 0)
                     return;
 
-                if (MenuCanvas.SelectionHow == SelectionMode.None)
+                if (selectionHow == SelectionMode.None)
                     return;
 
                 if (menuItems[selectedidx].Identifier == 0)
@@ -18610,8 +18614,8 @@ namespace GnollHackX.Pages.Game
             _menuPreviousReleaseClickIndex = -1;
             _savedPreviousMenuReleaseTimeStamp = new DateTime();
 
-            if ((MenuCanvas.SelectionHow == SelectionMode.Multiple && !menuItemSelected)
-                || (MenuCanvas.SelectionHow == SelectionMode.Single && selectedidx != MenuCanvas.SelectionIndex))
+            if ((selectionHow == SelectionMode.Multiple && !menuItemSelected)
+                || (selectionHow == SelectionMode.Single && selectedidx != MenuCanvas.SelectionIndex))
                 MenuCanvas_NormalClickRelease(sender, e, false); /* Normal click selection first */
 
             if (_countMenuItem.MaxCount > 100)
@@ -18688,6 +18692,8 @@ namespace GnollHackX.Pages.Game
                     return;
 
                 var localDrawBounds = MenuDrawBoundBuffers[Volatile.Read(ref _readBufferIndex)];
+                SelectionMode selectionHow = MenuCanvas.SelectionHow;
+                bool clickOKOnSelection = MenuCanvas.ClickOKOnSelection;
                 for (int idx = _firstDrawnMenuItemIdx; idx >= 0 && idx <= _lastDrawnMenuItemIdx; idx++)
                 {
                     if (idx >= menuItems.Count)
@@ -18696,14 +18702,14 @@ namespace GnollHackX.Pages.Game
                     if (localDrawBounds[idx].DrawBounds.Contains(p))
                     {
                         GHMenuItem mi = menuItems[idx];
-                        if (mi.Identifier != 0 && (mi.IsAutoClickOk || MenuCanvas.ClickOKOnSelection))
+                        if (mi.Identifier != 0 && (mi.IsAutoClickOk || clickOKOnSelection))
                         {
-                            if (MenuCanvas.SelectionHow == SelectionMode.Multiple)
+                            if (selectionHow == SelectionMode.Multiple)
                             {
                                 if(!mi.Selected)
                                     mi.Highlighted = true;
                             }
-                            else if (MenuCanvas.SelectionHow == SelectionMode.Single)
+                            else if (selectionHow == SelectionMode.Single)
                             {
                                 mi.Highlighted = true;
                             }
@@ -18851,10 +18857,11 @@ namespace GnollHackX.Pages.Game
                     }
                     else
                     {
-                        if (MenuCanvas.SelectionIndex >= 0 && MenuCanvas.SelectionIndex < menuItems.Count && mi != menuItems[MenuCanvas.SelectionIndex])
-                            menuItems[MenuCanvas.SelectionIndex].Count = 0;
+                        int selectionIndex = MenuCanvas.SelectionIndex;
+                        if (selectionIndex >= 0 && selectionIndex < menuItems.Count && mi != menuItems[selectionIndex])
+                            menuItems[selectionIndex].Count = 0;
 
-                        int oldselidx = MenuCanvas.SelectionIndex;
+                        int oldselidx = selectionIndex;
                         MenuCanvas.SelectionIndex = menuItemIdx;
                         if (mi.Count == 0)
                             mi.Count = _menuCountNumber > 0 && _menuCountNumber < mi.MaxCount ? _menuCountNumber : isLongTap ? -2 : -1;
@@ -19056,9 +19063,10 @@ namespace GnollHackX.Pages.Game
                 }
                 else if (MenuCanvas.SelectionHow == SelectionMode.Single)
                 {
-                    if (MenuCanvas.SelectionIndex > -1 && MenuCanvas.SelectionIndex < menuItems.Count)
+                    int selectionIndex = MenuCanvas.SelectionIndex;
+                    if (selectionIndex > -1 && selectionIndex < menuItems.Count)
                     {
-                        GHMenuItem mi = menuItems[MenuCanvas.SelectionIndex];
+                        GHMenuItem mi = menuItems[selectionIndex];
                         if (mi.Count != 0)
                         {
                             resultlist.Add(mi);
