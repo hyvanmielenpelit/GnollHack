@@ -2726,16 +2726,16 @@ namespace GnollHackX
             return verstr;
         }
 
-        public static SKTypeface DiabloTypeface { get; set; }
-        public static SKTypeface ImmortalTypeface { get; set; }
-        public static SKTypeface EndorTypeface { get; set; }
-        public static SKTypeface XizorTypeface { get; set; }
-        public static SKTypeface UnderwoodTypeface { get; set; }
-        public static SKTypeface DejaVuSansMonoTypeface { get; set; }
-        public static SKTypeface DejaVuSansMonoBoldTypeface { get; set; }
-        public static SKTypeface LatoRegular { get; set; }
-        public static SKTypeface LatoBold { get; set; }
-        public static SKTypeface ARChristyTypeface { get; set; }
+        public static SKTypeface DiabloTypeface;
+        public static SKTypeface ImmortalTypeface;
+        public static SKTypeface EndorTypeface;
+        public static SKTypeface XizorTypeface;
+        public static SKTypeface UnderwoodTypeface;
+        public static SKTypeface DejaVuSansMonoTypeface;
+        public static SKTypeface DejaVuSansMonoBoldTypeface;
+        public static SKTypeface LatoRegular;
+        public static SKTypeface LatoBold;
+        public static SKTypeface ARChristyTypeface;
 
         private static Dictionary<string, SKTypeface> TypefaceDictionary = new Dictionary<string, SKTypeface>();
         public static SKTypeface GetTypefaceByName(string fontname)
@@ -2789,39 +2789,43 @@ namespace GnollHackX
             LatoBold = LoadEmbeddedAssetTypeface("LatoBold", "Lato-Bold.ttf");
         }
 
-        public static SKImage MenuBackgroundBitmap { get; set; }
-        public static SKImage OldPaperBackgroundBitmap { get; set; }
-        public static SKImage DarkMarbleBackgroundBitmap { get; set; }
-        public static SKImage LoadingScreenBackgroundBitmap { get; set; }
-        public static SKImage InventorySlotLightBitmap { get; set; }
-        public static SKImage InventorySlotDarkBitmap { get; set; }
-        public static SKImage[] InventoryIconBitmaps { get; set; }
-        public static SKImage ButtonNormalBitmap { get; set; }
-        public static SKImage ButtonSelectedBitmap { get; set; }
-        public static SKImage ButtonDisabledBitmap { get; set; }
+        public static SKImage MenuBackgroundBitmap;
+        public static SKImage OldPaperBackgroundBitmap;
+        public static SKImage DarkMarbleBackgroundBitmap;
+        public static SKImage LoadingScreenBackgroundBitmap;
+        public static SKImage InventorySlotLightBitmap;
+        public static SKImage InventorySlotDarkBitmap;
+        public static SKImage[] InventoryIconBitmaps;
+        public static SKImage ButtonNormalBitmap;
+        public static SKImage ButtonSelectedBitmap;
+        public static SKImage ButtonDisabledBitmap;
 
-        public static SKImage SimpleFrameTopLeftCornerBitmap { get; set; }
-        public static SKImage SimpleFrameSmallTopLeftCornerBitmap { get; set; }
-        public static SKImage SimpleFrameTopHorizontalBitmap { get; set; }
-        public static SKImage SimpleFrameLeftVerticalBitmap { get; set; }
+        public static SKImage SimpleFrameTopLeftCornerBitmap;
+        public static SKImage SimpleFrameSmallTopLeftCornerBitmap;
+        public static SKImage SimpleFrameTopHorizontalBitmap;
+        public static SKImage SimpleFrameLeftVerticalBitmap;
+        public static SKImage SimpleFrameTransformBitmap;
 
-        public static SKImage SimpleFrame2TopLeftCornerBitmap { get; set; }
-        public static SKImage SimpleFrame2SmallTopLeftCornerBitmap { get; set; }
-        public static SKImage SimpleFrame2TopHorizontalBitmap { get; set; }
-        public static SKImage SimpleFrame2LeftVerticalBitmap { get; set; }
+        public static SKImage SimpleFrame2TopLeftCornerBitmap;
+        public static SKImage SimpleFrame2SmallTopLeftCornerBitmap;
+        public static SKImage SimpleFrame2TopHorizontalBitmap;
+        public static SKImage SimpleFrame2LeftVerticalBitmap;
+        public static SKImage SimpleFrame2TransformBitmap;
 
-        public static SKImage DarkModeSimpleFrameTopLeftCornerBitmap { get; set; }
-        public static SKImage DarkModeSimpleFrameSmallTopLeftCornerBitmap { get; set; }
-        public static SKImage DarkModeSimpleFrameTopHorizontalBitmap { get; set; }
-        public static SKImage DarkModeSimpleFrameLeftVerticalBitmap { get; set; }
+        public static SKImage DarkModeSimpleFrameTopLeftCornerBitmap;
+        public static SKImage DarkModeSimpleFrameSmallTopLeftCornerBitmap;
+        public static SKImage DarkModeSimpleFrameTopHorizontalBitmap;
+        public static SKImage DarkModeSimpleFrameLeftVerticalBitmap;
+        public static SKImage DarkModeSimpleFrameTransformBitmap;
 
-        public static SKImage DarkModeSimpleFrame2TopLeftCornerBitmap { get; set; }
-        public static SKImage DarkModeSimpleFrame2SmallTopLeftCornerBitmap { get; set; }
-        public static SKImage DarkModeSimpleFrame2TopHorizontalBitmap { get; set; }
-        public static SKImage DarkModeSimpleFrame2LeftVerticalBitmap { get; set; }
+        public static SKImage DarkModeSimpleFrame2TopLeftCornerBitmap;
+        public static SKImage DarkModeSimpleFrame2SmallTopLeftCornerBitmap;
+        public static SKImage DarkModeSimpleFrame2TopHorizontalBitmap;
+        public static SKImage DarkModeSimpleFrame2LeftVerticalBitmap;
+        public static SKImage DarkModeSimpleFrame2TransformBitmap;
 
-        public static SKImage ScrollBitmap { get; set; }
-        public static SKImage YouBitmap { get; set; }
+        public static SKImage ScrollBitmap;
+        public static SKImage YouBitmap;
 
         private static SKImage LoadEmbeddedResourceBitmap(string resourcePath)
         {
@@ -2953,21 +2957,25 @@ namespace GnollHackX
             SimpleFrameSmallTopLeftCornerBitmap = LoadEmbeddedUIBitmap("frame-topleft-small.png");
             SimpleFrameTopHorizontalBitmap = LoadEmbeddedUIBitmap("frame-horizontal.png");
             SimpleFrameLeftVerticalBitmap = LoadEmbeddedUIBitmap("frame-vertical.png");
+            SimpleFrameTransformBitmap = LoadEmbeddedUIBitmap("frame-transform.png");
 
             SimpleFrame2TopLeftCornerBitmap = LoadEmbeddedUIBitmap("frame2-topleft.png");
             SimpleFrame2SmallTopLeftCornerBitmap = LoadEmbeddedUIBitmap("frame2-topleft-small.png");
             SimpleFrame2TopHorizontalBitmap = LoadEmbeddedUIBitmap("frame2-horizontal.png");
             SimpleFrame2LeftVerticalBitmap = LoadEmbeddedUIBitmap("frame2-vertical.png");
+            SimpleFrame2TransformBitmap = LoadEmbeddedUIBitmap("frame2-transform.png");
 
             DarkModeSimpleFrameTopLeftCornerBitmap = LoadEmbeddedUIBitmap("frame-darkmode-topleft.png");
             DarkModeSimpleFrameSmallTopLeftCornerBitmap = LoadEmbeddedUIBitmap("frame-darkmode-topleft-small.png");
             DarkModeSimpleFrameTopHorizontalBitmap = LoadEmbeddedUIBitmap("frame-darkmode-horizontal.png");
             DarkModeSimpleFrameLeftVerticalBitmap = LoadEmbeddedUIBitmap("frame-darkmode-vertical.png");
+            DarkModeSimpleFrameTransformBitmap = LoadEmbeddedUIBitmap("frame-darkmode-transform.png");
 
             DarkModeSimpleFrame2TopLeftCornerBitmap = LoadEmbeddedUIBitmap("frame2-darkmode-topleft.png");
             DarkModeSimpleFrame2SmallTopLeftCornerBitmap = LoadEmbeddedUIBitmap("frame2-darkmode-topleft-small.png");
             DarkModeSimpleFrame2TopHorizontalBitmap = LoadEmbeddedUIBitmap("frame2-darkmode-horizontal.png");
             DarkModeSimpleFrame2LeftVerticalBitmap = LoadEmbeddedUIBitmap("frame2-darkmode-vertical.png");
+            DarkModeSimpleFrame2TransformBitmap = LoadEmbeddedUIBitmap("frame2-darkmode-transform.png");
 
             ScrollBitmap = LoadEmbeddedUIBitmap("scroll.png");
             YouBitmap = LoadEmbeddedUIBitmap("you.png");
@@ -3087,31 +3095,31 @@ namespace GnollHackX
 
         public static bool StartGameDataSet = false;
         public static readonly object Glyph2TileLock = new object();
-        public static int[] Glyph2Tile { get; set; }
-        public static byte[] GlyphTileFlags { get; set; }
-        public static short[] Tile2Animation { get; set; }
-        public static short[] Tile2Enlargement { get; set; }
-        public static short[] Tile2Autodraw { get; set; }
-        public static int[] AnimationOffsets { get; set; }
-        public static int[] EnlargementOffsets { get; set; }
-        public static int[] ReplacementOffsets { get; set; }
-        public static int Glyph2TileSize { get; set; }
+        public static int[] Glyph2Tile;
+        public static byte[] GlyphTileFlags;
+        public static short[] Tile2Animation;
+        public static short[] Tile2Enlargement;
+        public static short[] Tile2Autodraw;
+        public static int[] AnimationOffsets;
+        public static int[] EnlargementOffsets;
+        public static int[] ReplacementOffsets;
+        public static int Glyph2TileSize;
         public static SKImage[] _tileMap = new SKImage[GHConstants.MaxTileSheets];
-        public static int UsedTileSheets { get; set; }
-        public static int TotalTiles { get; set; }
-        public static int UnexploredGlyph { get; set; }
-        public static int NoGlyph { get; set; }
-        public static int AnimationOff { get; set; }
-        public static int EnlargementOff { get; set; }
-        public static int ReplacementOff { get; set; }
-        public static int GeneralTileOff { get; set; }
-        public static int HitTileOff { get; set; }
-        public static int UITileOff { get; set; }
-        public static int SpellTileOff { get; set; }
-        public static int SkillTileOff { get; set; }
-        public static int CommandTileOff { get; set; }
-        public static int BuffTileOff { get; set; }
-        public static int CursorOff { get; set; }
+        public static int UsedTileSheets;
+        public static int TotalTiles;
+        public static int UnexploredGlyph;
+        public static int NoGlyph;
+        public static int AnimationOff;
+        public static int EnlargementOff;
+        public static int ReplacementOff;
+        public static int GeneralTileOff;
+        public static int HitTileOff;
+        public static int UITileOff;
+        public static int SpellTileOff;
+        public static int SkillTileOff;
+        public static int CommandTileOff;
+        public static int BuffTileOff;
+        public static int CursorOff;
 
         public static int NumberOfGlyphs
         {

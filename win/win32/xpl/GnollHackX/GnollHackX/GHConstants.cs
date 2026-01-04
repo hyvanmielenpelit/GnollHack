@@ -2127,6 +2127,10 @@ namespace GnollHackX
         Small,
         SimpleAlternative,
         SmallAlternative,
+        SimpleTransformTopLeft,
+        SimpleAlternativeTransformTopLeft,
+        SimpleTransformTopRight,
+        SimpleAlternativeTransformTopRight,
         Custom
     }
 

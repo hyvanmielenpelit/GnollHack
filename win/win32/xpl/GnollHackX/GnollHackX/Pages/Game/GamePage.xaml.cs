@@ -33,10 +33,11 @@ using Microsoft.Maui.Controls;
 using System.Security.AccessControl;
 using Microsoft.Maui.Graphics;
 
-
-
-
-
+//#if IOS || MACCATALYST
+//using CoreAnimation;
+//using CoreGraphics;
+//using UIKit;
+//#endif
 #if WINDOWS
 using Windows.UI.Core;
 using Windows.System;
@@ -4169,7 +4170,9 @@ namespace GnollHackX.Pages.Game
                     MenuIsTwoWeap = false;
             }
             else
+            {
                 MenuIsTwoWeap = false;
+            }
 
             GHApp.DebugWriteProfilingStopwatchTimeAndStart("ShowMenuCanvas Start");
             float customScale = GHApp.CustomScreenScale;
@@ -4248,7 +4251,9 @@ namespace GnollHackX.Pages.Game
                 MenuOKButton.IsEnabled = true;
             }
 
-            switch(menuinfo.Style)
+            MenuFlipButton.IsEnabled = false;
+            MenuFlipButton.IsVisible = false;
+            switch (menuinfo.Style)
             {
                 case ghmenu_styles.GHMENU_STYLE_START_GAME_MENU:
                     MenuBackground.BackgroundStyle = BackgroundStyles.FitToScreen;
@@ -4371,6 +4376,27 @@ namespace GnollHackX.Pages.Game
                     MenuCanvas.AllowLongTap = true;
                     MenuCanvas.SpecialClickOnLongTap = true;
                     MenuCanvas.AllowHighlight = false;
+                    break;
+                case ghmenu_styles.GHMENU_STYLE_INVENTORY:
+                case ghmenu_styles.GHMENU_STYLE_PERMANENT_INVENTORY:
+                    MenuBackground.BackgroundStyle = BackgroundStyles.Automatic;
+                    MenuBackground.BackgroundBitmap = BackgroundBitmaps.AutoMenuBackground;
+                    MenuBackground.BorderStyle = BorderStyles.SimpleTransformTopLeft;
+                    MenuCanvas.RevertBlackAndWhite = !GHApp.DarkMode;
+                    MenuCanvas.UseTextOutline = false;
+                    MenuCanvas.HideMenuLetters = false;
+                    MenuCanvas.MenuButtonStyle = false;
+                    MenuCanvas.ClickOKOnSelection = false;
+                    MenuCanvas.MenuGlyphAtBottom = false;
+                    MenuCanvas.AllowLongTap = true;
+                    MenuCanvas.SpecialClickOnLongTap = false;
+                    MenuCanvas.AllowHighlight = false;
+                    MenuFlipButton.HorizontalOptions = LayoutOptions.Start;
+                    double buttonSize = UIUtils.GetBorderCornerSize(MenuBackground.BorderStyle, CurrentPageWidth, CurrentPageHeight);
+                    MenuFlipButton.WidthRequest = buttonSize;
+                    MenuFlipButton.HeightRequest = buttonSize;
+                    MenuFlipButton.IsEnabled = true;
+                    MenuFlipButton.IsVisible = true;
                     break;
                 default:
                     MenuBackground.BackgroundStyle = BackgroundStyles.Automatic;
@@ -14169,6 +14195,9 @@ namespace GnollHackX.Pages.Game
             glyphthick.Top = MenuWindowGlyphImage.Margin.Top;
             glyphthick.Bottom = MenuWindowGlyphImage.Margin.Bottom;
             MenuWindowGlyphImage.Margin = glyphthick;
+            double buttonSize = UIUtils.GetBorderCornerSize(MenuBackground.BorderStyle, width, height);
+            MenuFlipButton.WidthRequest = buttonSize;
+            MenuFlipButton.HeightRequest = buttonSize;
 
             lock (_statusOffsetLock)
             {
@@ -19501,7 +19530,12 @@ namespace GnollHackX.Pages.Game
 
             bool doAnim = GHApp.EquipmentFlipAnimation;
             if (doAnim)
-                await MenuCanvas.RotateYTo(90, 250, Easing.Linear);
+            {
+                //if (GHApp.IsiOS)
+                //    FlipiOS(false);
+                //else
+                    await MenuCanvas.RotateYTo(90, 250, Easing.Linear);
+            }
 
             bool isEquipmentSide = MenuEquipmentSideShown;
             int maxItems = MenuCanvas.MenuItems?.Count ?? 0;
@@ -19511,10 +19545,48 @@ namespace GnollHackX.Pages.Game
 
             if (doAnim)
             {
-                MenuCanvas.RotationY = -90;
-                await MenuCanvas.RotateYTo(0, 250, Easing.Linear);
+                //if (GHApp.IsiOS)
+                //    FlipiOS(true);
+                //else
+                {
+                    MenuCanvas.RotationY = -90;
+                    await MenuCanvas.RotateYTo(0, 250, Easing.Linear);
+                }
             }
         }
+
+//        void FlipiOS(bool showBack)
+//        {
+//#if IOS || MACCATALYST
+//            if (MenuCanvas.Handler?.PlatformView is not UIView view)
+//                return;
+
+//            // Ensure anchor is centered
+//            view.Layer.AnchorPoint = new CGPoint(0.5, 0.5);
+
+//            var angle = showBack ? Math.PI : 0;
+//            var transform = CATransform3D.MakeRotation(
+//                (nfloat)angle,
+//                0,
+//                1,
+//                0
+//            );
+
+//            // Apply perspective AFTER creation
+//            transform.M34 = -1.0f / 800f; // adjust depth here
+
+//            UIView.Animate(
+//                duration: 0.5,
+//                delay: 0,
+//                options: UIViewAnimationOptions.CurveEaseInOut,
+//                animation: () =>
+//                {
+//                    view.Layer.Transform = transform;
+//                },
+//                completion: null
+//            );
+//#endif
+//        }
 
         private bool _unselectOnTap = false;
 
@@ -19552,10 +19624,17 @@ namespace GnollHackX.Pages.Game
                 }
                 MenuCanvas.InvalidateSurface();
             }
-            else if (MenuCanvas.MenuStyle >= ghmenu_styles.GHMENU_STYLE_INVENTORY && MenuCanvas.MenuStyle <= ghmenu_styles.GHMENU_STYLE_OTHERS_INVENTORY)
-            {
-                await FlipMenuCanvas();
-            }
+            //else if (MenuCanvas.MenuStyle >= ghmenu_styles.GHMENU_STYLE_INVENTORY && MenuCanvas.MenuStyle <= ghmenu_styles.GHMENU_STYLE_OTHERS_INVENTORY)
+            //{
+            //    await FlipMenuCanvas();
+            //}
+        }
+
+        private async void MenuFlipButton_Clicked(object sender, EventArgs e)
+        {
+            MenuFlipButton.IsEnabled = false;
+            await FlipMenuCanvas();
+            MenuFlipButton.IsEnabled = true;
         }
 
         private void MenuCountOkButton_Clicked(object sender, EventArgs e)
