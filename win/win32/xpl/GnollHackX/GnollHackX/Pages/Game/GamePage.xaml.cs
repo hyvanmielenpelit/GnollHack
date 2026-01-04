@@ -4392,9 +4392,9 @@ namespace GnollHackX.Pages.Game
                     MenuCanvas.SpecialClickOnLongTap = false;
                     MenuCanvas.AllowHighlight = false;
                     MenuFlipButton.HorizontalOptions = LayoutOptions.Start;
-                    double buttonSize = UIUtils.GetBorderCornerSize(MenuBackground.BorderStyle, CurrentPageWidth, CurrentPageHeight);
+                    double buttonSize = UIUtils.GetBorderCornerWidth(MenuBackground.BorderStyle, CurrentPageWidth, CurrentPageHeight);
                     MenuFlipButton.WidthRequest = buttonSize;
-                    MenuFlipButton.HeightRequest = buttonSize;
+                    //MenuFlipButton.HeightRequest = buttonSize;
                     MenuFlipButton.IsEnabled = true;
                     MenuFlipButton.IsVisible = true;
                     break;
@@ -14195,9 +14195,9 @@ namespace GnollHackX.Pages.Game
             glyphthick.Top = MenuWindowGlyphImage.Margin.Top;
             glyphthick.Bottom = MenuWindowGlyphImage.Margin.Bottom;
             MenuWindowGlyphImage.Margin = glyphthick;
-            double buttonSize = UIUtils.GetBorderCornerSize(MenuBackground.BorderStyle, width, height);
+            double buttonSize = UIUtils.GetBorderCornerWidth(MenuBackground.BorderStyle, width, height);
             MenuFlipButton.WidthRequest = buttonSize;
-            MenuFlipButton.HeightRequest = buttonSize;
+            //MenuFlipButton.HeightRequest = buttonSize;
 
             lock (_statusOffsetLock)
             {
@@ -19591,9 +19591,9 @@ namespace GnollHackX.Pages.Game
         private bool _unselectOnTap = false;
 
 #if GNH_MAUI
-        private async void MenuTapGestureRecognizer_Tapped(object sender, TappedEventArgs e)
+        private void MenuTapGestureRecognizer_Tapped(object sender, TappedEventArgs e)
 #else
-        private async void MenuTapGestureRecognizer_Tapped(object sender, EventArgs e)
+        private void MenuTapGestureRecognizer_Tapped(object sender, EventArgs e)
 #endif
         {
             if (PlayingReplay)
