@@ -1998,29 +1998,40 @@ namespace GnollHackX.Pages.Game
                     {
                         if (_menuScrollSpeedOn)
                         {
+                            bool isEquipment = MenuEquipmentSideShown;
                             float speed = _menuScrollSpeed; /* pixels per second */
-                            float bottomScrollLimit = Math.Min(0, canvasheight - TotalMenuHeight);
+                            float bottomScrollLimit = Math.Min(0, canvasheight - (isEquipment ? TotalEquipmentMenuHeight : TotalMenuHeight));
                             int sgn = Math.Sign(_menuScrollSpeed);
                             float delta = speed * timePassed;
-                            _menuScrollOffset += delta;
-                            if (_menuScrollOffset < 0 && _menuScrollOffset - delta > 0)
+                            if (isEquipment)
+                                _menuEquipmentScrollOffset += delta;
+                            else
+                                _menuScrollOffset += delta;
+                            float scrollOffset = isEquipment ? _menuEquipmentScrollOffset : _menuScrollOffset;
+                            if (scrollOffset < 0 && scrollOffset - delta > 0)
                             {
-                                _menuScrollOffset = 0;
+                                if (isEquipment)
+                                    _menuEquipmentScrollOffset = 0;
+                                else
+                                    _menuScrollOffset = 0;
                                 _menuScrollSpeed = 0;
                                 _menuScrollSpeedOn = false;
                             }
-                            else if (_menuScrollOffset > bottomScrollLimit && _menuScrollOffset - delta < bottomScrollLimit)
+                            else if (scrollOffset > bottomScrollLimit && scrollOffset - delta < bottomScrollLimit)
                             {
-                                _menuScrollOffset = bottomScrollLimit;
+                                if (isEquipment)
+                                    _menuEquipmentScrollOffset = bottomScrollLimit;
+                                else
+                                    _menuScrollOffset = bottomScrollLimit;
                                 _menuScrollSpeed = 0;
                                 _menuScrollSpeedOn = false;
                             }
-                            else if (_menuScrollOffset > 0 || _menuScrollOffset < bottomScrollLimit)
+                            else if (scrollOffset > 0 || scrollOffset < bottomScrollLimit)
                             {
                                 float deceleration1 = canvasheight * GHConstants.ScrollConstantDeceleration * GHConstants.ScrollConstantDecelerationOverEdgeMultiplier;
                                 float deceleration2 = Math.Abs(_menuScrollSpeed) * GHConstants.ScrollSpeedDeceleration * GHConstants.ScrollSpeedDecelerationOverEdgeMultiplier;
                                 float deceleration_per_second = deceleration1 + deceleration2;
-                                float distance_from_edge = _menuScrollOffset > 0 ? _menuScrollOffset : _menuScrollOffset - bottomScrollLimit;
+                                float distance_from_edge = scrollOffset > 0 ? scrollOffset : scrollOffset - bottomScrollLimit;
                                 float deceleration3 = (distance_from_edge + (float)Math.Sign(distance_from_edge) * GHConstants.ScrollDistanceEdgeConstant * canvasheight) * GHConstants.ScrollOverEdgeDeceleration;
                                 float distance_anchor_distance = canvasheight * GHConstants.ScrollDistanceAnchorFactor;
                                 float close_anchor_distance = canvasheight * GHConstants.ScrollCloseAnchorFactor;
@@ -2036,7 +2047,7 @@ namespace GnollHackX.Pages.Game
                                     + target_speed_at_edge
                                     )
                                     * canvasheight;
-                                if (_menuScrollOffset > 0 ? _menuScrollSpeed <= 0 : _menuScrollSpeed >= 0)
+                                if (scrollOffset > 0 ? _menuScrollSpeed <= 0 : _menuScrollSpeed >= 0)
                                 {
                                     float target_factor = Math.Abs(distance_from_edge) / distance_anchor_distance;
                                     _menuScrollSpeed += (-1.0f * deceleration3) * (float)UIUtils.GetAuxiliaryCanvasAnimationInterval(refreshRateStyle) / 1000;
@@ -2064,7 +2075,10 @@ namespace GnollHackX.Pages.Game
                                     }
                                 }
                             }
-                            InterlockedMenuScrollOffset = _menuScrollOffset;
+                            if (isEquipment)
+                                InterlockedEquipmentMenuScrollOffset = _menuEquipmentScrollOffset;
+                            else
+                                InterlockedMenuScrollOffset = _menuScrollOffset;
                         }
                         //if (!_menuScrollSpeedOn && GHApp.IsAndroid)
                         //{
@@ -3254,6 +3268,7 @@ namespace GnollHackX.Pages.Game
         private readonly object _menuPositionLock = new object();
         private bool[] _menuPositionSavingOn = new bool[(int)ghmenu_styles.MAX_GHMENU_STYLES];
         private float[] _savedMenuScrollOffset = new float[(int)ghmenu_styles.MAX_GHMENU_STYLES];
+        private float[] _savedMenuEquipmentScrollOffset = new float[(int)ghmenu_styles.MAX_GHMENU_STYLES];
         private bool[] _savedEquipmentSideOn = new bool[(int)ghmenu_styles.MAX_GHMENU_STYLES];
 
         private void ToggleMenuPositionSaving(int menuStyle, int toggleValue)
@@ -3262,6 +3277,7 @@ namespace GnollHackX.Pages.Game
             {
                 _menuPositionSavingOn[menuStyle] = toggleValue != 0;
                 _savedMenuScrollOffset[menuStyle] = 0.0f;
+                _savedMenuEquipmentScrollOffset[menuStyle] = 0.0f;
                 _savedEquipmentSideOn[menuStyle] = false;
             }
         }
@@ -4447,8 +4463,10 @@ namespace GnollHackX.Pages.Game
                     lock(_menuScrollLock)
                     {
                         _menuScrollOffset = _savedMenuScrollOffset[(int)MenuCanvas.MenuStyle];
+                        _menuEquipmentScrollOffset = 0; // _savedMenuEquipmentScrollOffset[(int)MenuCanvas.MenuStyle];
                         MenuEquipmentSideShown = _savedEquipmentSideOn[(int)MenuCanvas.MenuStyle];
                         InterlockedMenuScrollOffset = _menuScrollOffset;
+                        InterlockedEquipmentMenuScrollOffset = _menuEquipmentScrollOffset;
                     }
                 }
             }
@@ -14165,10 +14183,13 @@ namespace GnollHackX.Pages.Game
             {
                 _menuScrollOffset = 0;
                 InterlockedMenuScrollOffset = _menuScrollOffset;
+                _menuEquipmentScrollOffset = 0;
+                InterlockedMenuScrollOffset = _menuEquipmentScrollOffset;
             }
             lock (_menuPositionLock)
             {
                 Array.Clear(_savedMenuScrollOffset, 0, _savedMenuScrollOffset.Length);
+                Array.Clear(_savedMenuEquipmentScrollOffset, 0, _savedMenuEquipmentScrollOffset.Length);
             }
             lock (_textScrollLock)
             {
@@ -16715,24 +16736,28 @@ namespace GnollHackX.Pages.Game
         private int _lastDrawnMenuItemIdx = -1;
         //private readonly object _totalMenuHeightLock = new object();
         private float _totalMenuHeight = 0;
+        private float _totalEquipmentMenuHeight = 0;
         private float TotalMenuHeight 
         { 
             get 
             {
-                //lock (_totalMenuHeightLock)
-                //{
-                //    return _totalMenuHeight;
-                //}
                 return Interlocked.CompareExchange(ref _totalMenuHeight, 0.0f, 0.0f);
             }
             set 
             { 
-                //lock (_totalMenuHeightLock) 
-                //{ 
-                //    _totalMenuHeight = value; 
-                //}
                 Interlocked.Exchange(ref _totalMenuHeight, value);
             } 
+        }
+        private float TotalEquipmentMenuHeight
+        {
+            get
+            {
+                return Interlocked.CompareExchange(ref _totalEquipmentMenuHeight, 0.0f, 0.0f);
+            }
+            set
+            {
+                Interlocked.Exchange(ref _totalEquipmentMenuHeight, value);
+            }
         }
 
         private int _refreshMenuRowCounts = 1;
@@ -16953,9 +16978,11 @@ namespace GnollHackX.Pages.Game
                 bool isEquipmentSideShown = MenuEquipmentSideShown;
                 GHMenuItem selectedEquipmentItem = null;
                 float innerleftpadding = 0;
+                float curmenuoffset = isEquipmentSideShown ? InterlockedEquipmentMenuScrollOffset : InterlockedMenuScrollOffset;
 
                 if (isEquipmentSideShown)
                 {
+                    y = curmenuoffset;
                     bool isLandscape = canvaswidth > canvasheight;
                     int numRows = isLandscape ? 4 : 6;
                     int numColumns = (_equipmentSlots.Length - 1) / numRows + 1;
@@ -16993,6 +17020,7 @@ namespace GnollHackX.Pages.Game
                     SKImage slotBitmap = isDarkMode ? GHApp.InventorySlotDarkBitmap : GHApp.InventorySlotLightBitmap;
                     textPaint.Color = isDarkMode ? SKColors.Gray : SKColors.SaddleBrown;
                     float gridHeight = 0;
+                    bool gridHeightFirst = true;
 
                     foreach (var slot in _equipmentSlots)
                     {
@@ -17109,21 +17137,24 @@ namespace GnollHackX.Pages.Game
                         count++;
                         if ((count % numRows) == 0)
                         {
-                            if (y > gridHeight)
+                            if (y > gridHeight || gridHeightFirst)
+                            {
                                 gridHeight = y;
+                                gridHeightFirst = false;
+                            }
                             x += framewidth + framexmargin;
                             start_x = x;
-                            y = 0;
+                            y = curmenuoffset;
                         }
                     }
 
                     x = leftmenupadding + innerleftpadding;
                     y = gridHeight;
+                    TotalEquipmentMenuHeight = y - curmenuoffset;
                 }
 
                 if (!isEquipmentSideShown || selectedEquipmentItem != null)
                 {
-                    float curmenuoffset = InterlockedMenuScrollOffset;
                     if (!isEquipmentSideShown)
                         y = curmenuoffset;
                     float accel_fixed_width = 10;
@@ -17534,6 +17565,8 @@ namespace GnollHackX.Pages.Game
                                 RefreshMenuRowCounts = false;
                         }
                         TotalMenuHeight = y - curmenuoffset;
+                        if (isEquipmentSideShown)
+                            TotalEquipmentMenuHeight = y - curmenuoffset;
                     }
                 }
             }
@@ -18392,8 +18425,20 @@ namespace GnollHackX.Pages.Game
             }
         }
 
+
+        private float _interlockedEquipmentMenuScrollOffset = 0;
+        private float InterlockedEquipmentMenuScrollOffset { get { return Interlocked.CompareExchange(ref _interlockedEquipmentMenuScrollOffset, 0.0f, 0.0f); } set { Interlocked.Exchange(ref _interlockedEquipmentMenuScrollOffset, value); } }
+        private float _menuEquipmentScrollOffset = 0;
+
+
         private void HandleEquipmentTouch(object sender, SKTouchEventArgs e)
         {
+            float canvasheight;
+            lock (_savedMenuCanvasLock)
+            {
+                canvasheight = _savedMenuCanvasHeight;
+            }
+            float bottomScrollLimit = Math.Min(0, canvasheight - TotalEquipmentMenuHeight);
             switch (e?.ActionType)
             {
                 case SKTouchAction.Entered:
@@ -18445,6 +18490,72 @@ namespace GnollHackX.Pages.Game
                                     long millisecs_elapsed = (now.Ticks - entry.PressTime.Ticks) / TimeSpan.TicksPerMillisecond;
                                     if (dist > GHConstants.MoveDistanceThreshold || millisecs_elapsed > GHConstants.MoveOrPressTimeThreshold)
                                     {
+                                        lock (_menuScrollLock)
+                                        {
+                                            float stretchLimit = GHConstants.ScrollStretchLimit * canvasheight;
+                                            float stretchConstant = GHConstants.ScrollConstantStretch * canvasheight;
+                                            float adj_factor = 1.0f;
+                                            if (_menuEquipmentScrollOffset > 0)
+                                                adj_factor = _menuEquipmentScrollOffset >= stretchLimit ? 0 : (1 - ((_menuEquipmentScrollOffset + stretchConstant) / (stretchLimit + stretchConstant)));
+                                            else if (_menuEquipmentScrollOffset < bottomScrollLimit)
+                                                adj_factor = _menuEquipmentScrollOffset < bottomScrollLimit - stretchLimit ? 0 : (1 - ((bottomScrollLimit - (_menuEquipmentScrollOffset - stretchConstant)) / (stretchLimit + stretchConstant)));
+
+                                            float adj_diffY = diffY * adj_factor;
+                                            _menuEquipmentScrollOffset += adj_diffY;
+
+                                            if (_menuEquipmentScrollOffset > stretchLimit)
+                                                _menuEquipmentScrollOffset = stretchLimit;
+                                            else if (_menuEquipmentScrollOffset < bottomScrollLimit - stretchLimit)
+                                                _menuEquipmentScrollOffset = bottomScrollLimit - stretchLimit;
+                                            else
+                                            {
+                                                /* Calculate duration since last touch move */
+                                                float duration = 0;
+                                                if (!_menuScrollSpeedRecordOn)
+                                                {
+                                                    duration = (float)millisecs_elapsed / 1000f;
+                                                    _menuScrollSpeedRecordOn = true;
+                                                }
+                                                else
+                                                {
+                                                    duration = ((float)(now.Ticks - _menuScrollSpeedStamp.Ticks) / TimeSpan.TicksPerMillisecond) / 1000f;
+                                                }
+                                                _menuScrollSpeedStamp = now;
+
+                                                /* Discard speed records to the opposite direction */
+                                                if (_menuScrollSpeedRecords.Count > 0)
+                                                {
+                                                    int prevsgn = Math.Sign(_menuScrollSpeedRecords[0].Distance);
+                                                    if (diffY != 0 && prevsgn != 0 && Math.Sign(diffY) != prevsgn)
+                                                        _menuScrollSpeedRecords.Clear();
+                                                }
+
+                                                /* Add a new speed record */
+                                                _menuScrollSpeedRecords.Insert(0, new TouchSpeedRecord(diffY, duration, now));
+
+                                                /* Discard too old records */
+                                                while (_menuScrollSpeedRecords.Count > 0)
+                                                {
+                                                    long lastrecord_ms = (now.Ticks - _menuScrollSpeedRecords[_menuScrollSpeedRecords.Count - 1].TimeStamp.Ticks) / TimeSpan.TicksPerMillisecond;
+                                                    if (lastrecord_ms > GHConstants.ScrollRecordThreshold)
+                                                        _menuScrollSpeedRecords.RemoveAt(_menuScrollSpeedRecords.Count - 1);
+                                                    else
+                                                        break;
+                                                }
+
+                                                /* Sum up the distances and durations of current records to get an average */
+                                                float totaldistance = 0;
+                                                float totalsecs = 0;
+                                                foreach (TouchSpeedRecord r in _menuScrollSpeedRecords)
+                                                {
+                                                    totaldistance += r.Distance;
+                                                    totalsecs += r.Duration;
+                                                }
+                                                _menuScrollSpeed = totaldistance / Math.Max(0.001f, totalsecs);
+                                                _menuScrollSpeedOn = false;
+                                            }
+                                            InterlockedEquipmentMenuScrollOffset = _menuEquipmentScrollOffset;
+                                        }
                                         MenuTouchDictionary[e.Id].Location = e.Location;
                                         MenuTouchDictionary[e.Id].UpdateTime = DateTime.Now;
                                         if (dist > GHConstants.MoveDistanceThreshold)
@@ -18519,6 +18630,41 @@ namespace GnollHackX.Pages.Game
                             if (MenuTouchDictionary.Count == 0)
                             {
                                 _menuTouchMoved = false;
+                                lock (_menuScrollLock)
+                                {
+                                    long lastrecord_ms = 0;
+                                    if (_menuScrollSpeedRecords.Count > 0)
+                                    {
+                                        lastrecord_ms = (DateTime.Now.Ticks - _menuScrollSpeedRecords[_menuScrollSpeedRecords.Count - 1].TimeStamp.Ticks) / TimeSpan.TicksPerMillisecond;
+                                    }
+
+                                    if (_menuEquipmentScrollOffset > 0 || _menuEquipmentScrollOffset < bottomScrollLimit)
+                                    {
+                                        if (lastrecord_ms > GHConstants.ScrollRecordThreshold
+                                            || Math.Abs(_menuScrollSpeed) < GHConstants.ScrollSpeedThreshold * canvasheight)
+                                            _menuScrollSpeed = 0;
+
+                                        _menuScrollSpeedOn = true;
+                                        _menuScrollSpeedReleaseStamp = DateTime.Now;
+                                    }
+                                    else if (lastrecord_ms > GHConstants.ScrollRecordThreshold)
+                                    {
+                                        _menuScrollSpeedOn = false;
+                                        _menuScrollSpeed = 0;
+                                    }
+                                    else if (Math.Abs(_menuScrollSpeed) >= GHConstants.ScrollSpeedThreshold * canvasheight)
+                                    {
+                                        _menuScrollSpeedOn = true;
+                                        _menuScrollSpeedReleaseStamp = DateTime.Now;
+                                    }
+                                    else
+                                    {
+                                        _menuScrollSpeedOn = false;
+                                        _menuScrollSpeed = 0;
+                                    }
+                                    _menuScrollSpeedRecordOn = false;
+                                    _menuScrollSpeedRecords.Clear();
+                                }
                             }
                         }
                         e.Handled = true;
@@ -18533,6 +18679,24 @@ namespace GnollHackX.Pages.Game
                     else
                         MenuTouchDictionary.Clear(); /* Something's wrong; reset the touch dictionary */
 
+                    lock (_menuScrollLock)
+                    {
+                        if (_menuEquipmentScrollOffset > 0 || _menuEquipmentScrollOffset < bottomScrollLimit)
+                        {
+                            long lastrecord_ms = 0;
+                            if (_menuScrollSpeedRecords.Count > 0)
+                            {
+                                lastrecord_ms = (DateTime.Now.Ticks - _menuScrollSpeedRecords[_menuScrollSpeedRecords.Count - 1].TimeStamp.Ticks) / TimeSpan.TicksPerMillisecond;
+                            }
+
+                            if (lastrecord_ms > GHConstants.ScrollRecordThreshold
+                                || Math.Abs(_menuScrollSpeed) < GHConstants.ScrollSpeedThreshold * canvasheight)
+                                _menuScrollSpeed = 0;
+
+                            _menuScrollSpeedOn = true;
+                            _menuScrollSpeedReleaseStamp = DateTime.Now;
+                        }
+                    }
                     e.Handled = true;
                     break;
                 case SKTouchAction.Exited:
@@ -18889,8 +19053,6 @@ namespace GnollHackX.Pages.Game
 
         private void ScrollMenu(int delta)
         {
-            if (MenuEquipmentSideShown)
-                return;
             if (delta != 0)
             {
                 //float canvasheight = MenuCanvas.ThreadSafeCanvasSize.Height;
@@ -18899,21 +19061,34 @@ namespace GnollHackX.Pages.Game
                 {
                     canvasheight = _savedMenuCanvasHeight;
                 }
-                float bottomScrollLimit = Math.Min(0, canvasheight - TotalMenuHeight);
+                bool isEquipment = MenuEquipmentSideShown;
+                float bottomScrollLimit = Math.Min(0, canvasheight - (isEquipment ? TotalEquipmentMenuHeight : TotalMenuHeight));
                 float scrollAmount = (canvasheight * delta) / (10 * 120);
                 lock (_menuScrollLock)
                 {
-                    _menuScrollOffset += scrollAmount;
-                    if (_menuScrollOffset < bottomScrollLimit)
-                        _menuScrollOffset = bottomScrollLimit;
-                    if (_menuScrollOffset > 0)
-                        _menuScrollOffset = 0;
+                    if (isEquipment)
+                    {
+                        _menuEquipmentScrollOffset += scrollAmount;
+                        if (_menuEquipmentScrollOffset < bottomScrollLimit)
+                            _menuEquipmentScrollOffset = bottomScrollLimit;
+                        if (_menuEquipmentScrollOffset > 0)
+                            _menuEquipmentScrollOffset = 0;
+                        InterlockedEquipmentMenuScrollOffset = _menuEquipmentScrollOffset;
+                    }
+                    else
+                    {
+                        _menuScrollOffset += scrollAmount;
+                        if (_menuScrollOffset < bottomScrollLimit)
+                            _menuScrollOffset = bottomScrollLimit;
+                        if (_menuScrollOffset > 0)
+                            _menuScrollOffset = 0;
+                        InterlockedMenuScrollOffset = _menuScrollOffset;
+                    }
 
                     _menuScrollSpeedOn = false;
                     _menuScrollSpeed = 0;
                     _menuScrollSpeedRecordOn = false;
                     _menuScrollSpeedRecords.Clear();
-                    InterlockedMenuScrollOffset = _menuScrollOffset;
                 }
             }
         }
@@ -18941,10 +19116,11 @@ namespace GnollHackX.Pages.Game
             {
                 canvasheight = _savedMenuCanvasHeight;
             }
-            float bottomScrollLimit = Math.Min(0, canvasheight - TotalMenuHeight);
+            bool isEquipment = MenuEquipmentSideShown;
+            float bottomScrollLimit = Math.Min(0, canvasheight - (isEquipment ? TotalEquipmentMenuHeight : TotalMenuHeight));
             lock (_menuScrollLock)
             {
-                return Math.Abs(_menuScrollOffset - bottomScrollLimit) < canvasheight * 0.005f; //_menuScrollOffset == bottomScrollLimit;
+                return Math.Abs((isEquipment ? _menuEquipmentScrollOffset : _menuScrollOffset) - bottomScrollLimit) < canvasheight * 0.005f; //_menuScrollOffset == bottomScrollLimit;
             }
         }
 
@@ -19036,14 +19212,17 @@ namespace GnollHackX.Pages.Game
                     if (_menuPositionSavingOn[(int)MenuCanvas.MenuStyle])
                     {
                         _savedMenuScrollOffset[(int)MenuCanvas.MenuStyle] = _menuScrollOffset;
+                        _savedMenuEquipmentScrollOffset[(int)MenuCanvas.MenuStyle] = _menuEquipmentScrollOffset;
                         _savedEquipmentSideOn[(int)MenuCanvas.MenuStyle] = MenuEquipmentSideShown;
                     }
                 }
                 _menuScrollOffset = 0;
+                _menuEquipmentScrollOffset = 0;
                 _menuScrollSpeed = 0;
                 _menuScrollSpeedOn = false;
                 _menuScrollSpeedRecords.Clear();
                 InterlockedMenuScrollOffset = _menuScrollOffset;
+                InterlockedEquipmentMenuScrollOffset = _menuEquipmentScrollOffset;
             }
 
             List<GHMenuItem> resultlist = new List<GHMenuItem>();
@@ -19135,14 +19314,17 @@ namespace GnollHackX.Pages.Game
                     if (_menuPositionSavingOn[(int)MenuCanvas.MenuStyle])
                     {
                         _savedMenuScrollOffset[(int)MenuCanvas.MenuStyle] = _menuScrollOffset;
+                        _savedMenuEquipmentScrollOffset[(int)MenuCanvas.MenuStyle] = _menuEquipmentScrollOffset;
                         _savedEquipmentSideOn[(int)MenuCanvas.MenuStyle] = MenuEquipmentSideShown;
                     }
                 }
                 _menuScrollOffset = 0;
+                _menuEquipmentScrollOffset = 0;
                 _menuScrollSpeed = 0;
                 _menuScrollSpeedOn = false;
                 _menuScrollSpeedRecords.Clear();
                 InterlockedMenuScrollOffset = _menuScrollOffset;
+                InterlockedEquipmentMenuScrollOffset = _menuEquipmentScrollOffset;
             }
 
             GHGame curGame = GHApp.CurrentGHGame;
@@ -19309,6 +19491,14 @@ namespace GnollHackX.Pages.Game
         public bool MenuEquipmentSideShown { get { return Interlocked.CompareExchange(ref _menuEquipmentSideShown, 0, 0) != 0; } set { Interlocked.Exchange(ref _menuEquipmentSideShown, value ? 1 : 0); } }
         private async Task FlipMenuCanvas()
         {
+            lock (_menuScrollLock)
+            {
+                _menuScrollSpeed = 0;
+                _menuScrollSpeedOn = false;
+                _menuScrollSpeedRecordOn = false;
+                _menuScrollSpeedRecords.Clear();
+            }
+
             // First half: rotate to edge
             await MenuCanvas.RotateYTo(90, 250, Easing.Linear);
 
