@@ -4465,11 +4465,8 @@ namespace GnollHackX.Pages.Game
             //    MenuCanvas.MenuItems = newmis;
             //}
             int maxItems = newmis.Count;
-            MenuDrawBoundBuffers = new[]
-            {
-                new DrawBoundInfo[maxItems + 1],
-                new DrawBoundInfo[maxItems + 1]
-            };
+            MenuDrawBounds = new DrawBoundInfo[maxItems + 1];
+            MenuUIDrawBounds = new DrawBoundInfo[maxItems + 1];
 
             RefreshMenuRowCounts = true;
             _unselectOnTap = false;
@@ -16853,10 +16850,11 @@ namespace GnollHackX.Pages.Game
             public SKRect DrawBounds;
             public SKRect EquipmentDrawBounds;
         }
-        private DrawBoundInfo[][] _menuDrawBoundBuffers = null;
-        private DrawBoundInfo[][] MenuDrawBoundBuffers { get { return Interlocked.CompareExchange(ref _menuDrawBoundBuffers, null, null); } set { Interlocked.Exchange(ref _menuDrawBoundBuffers, value); } }
-        private int _readBufferIndex = 0;
-        private int _writeBufferIndex => 1 - _readBufferIndex;
+        private DrawBoundInfo[] _menuDrawBounds= null;
+        private DrawBoundInfo[] _menuUIDrawBounds = null;
+        private readonly object _menuUIDrawBoundsLock = new object();
+        private DrawBoundInfo[] MenuDrawBounds { get { return Interlocked.CompareExchange(ref _menuDrawBounds, null, null); } set { Interlocked.Exchange(ref _menuDrawBounds, value); } }
+        private DrawBoundInfo[] MenuUIDrawBounds { get { return Interlocked.CompareExchange(ref _menuUIDrawBounds, null, null); } set { Interlocked.Exchange(ref _menuUIDrawBounds, value); } }
 
         private int _menuIsTwoWeap = 0;
         private bool MenuIsTwoWeap { get { return Interlocked.CompareExchange(ref _menuIsTwoWeap, 0, 0) != 0; } set { Interlocked.Exchange(ref _menuIsTwoWeap, value ? 1 : 0); } }
@@ -16895,11 +16893,8 @@ namespace GnollHackX.Pages.Game
         {
             if (maxItems > 0)
             {
-                MenuDrawBoundBuffers = new[]
-                {
-                new DrawBoundInfo[maxItems + 1],
-                new DrawBoundInfo[maxItems + 1]
-            };
+                MenuDrawBounds = new DrawBoundInfo[maxItems + 1];
+                MenuUIDrawBounds = new DrawBoundInfo[maxItems + 1];
             }
         }
         //private void ClearNormalDrawBounds()
@@ -16966,8 +16961,8 @@ namespace GnollHackX.Pages.Game
             if (menuItems == null)
                 return;
 
-            var localMenuDrawBoundBuffers = MenuDrawBoundBuffers;
-            if (localMenuDrawBoundBuffers == null)
+            var localMenuDrawBounds = MenuDrawBounds;
+            if (localMenuDrawBounds == null)
                 return;
             //lock (MenuCanvas.MenuItemLock)
             //{
@@ -17119,7 +17114,7 @@ namespace GnollHackX.Pages.Game
                         if (foundItem != null && foundItemIndex >= 0)
                         {
                             //foundItem.EquipmentDrawBounds = picRect;
-                            (localMenuDrawBoundBuffers[_writeBufferIndex])[foundItemIndex].EquipmentDrawBounds = picRect;
+                            localMenuDrawBounds[foundItemIndex].EquipmentDrawBounds = picRect;
                         }
 
                         //x += picturewidth + picturewidth / 5;
@@ -17246,7 +17241,7 @@ namespace GnollHackX.Pages.Game
                                     x = leftmenupadding + paddingAdjustment;
 
                                 //mi.DrawBounds.Left = x;
-                                (localMenuDrawBoundBuffers[_writeBufferIndex])[idx].DrawBounds.Left = x;
+                                localMenuDrawBounds[idx].DrawBounds.Left = x;
 
                                 float mainfontsize = (float)mi.FontSize * scale * customScale;
                                 float relsuffixsize = (float)mi.RelativeSuffixFontSize;
@@ -17267,7 +17262,7 @@ namespace GnollHackX.Pages.Game
                                 float drawbbottom = 0;
                                 float drawbright = 0;
                                 //mi.DrawBounds.Top = drawbtop;
-                                (localMenuDrawBoundBuffers[_writeBufferIndex])[idx].DrawBounds.Top = drawbtop;
+                                localMenuDrawBounds[idx].DrawBounds.Top = drawbtop;
                                 //if (mi.DrawBounds.Top >= canvasheight)
                                 //    break;
 
@@ -17333,8 +17328,8 @@ namespace GnollHackX.Pages.Game
                                 float totalRowWidth = canvaswidth - leftmenupadding - rightmenupadding - (isEquipmentSideShown ? innerleftpadding * 2 : 0);
                                 float totalRowExtraSpacing = IsMiButton ? 12.0f * scale * customScale : 0f;
 
-                                drawbright = (localMenuDrawBoundBuffers[_writeBufferIndex])[idx].DrawBounds.Left + totalRowWidth;
-                                drawbbottom = (localMenuDrawBoundBuffers[_writeBufferIndex])[idx].DrawBounds.Top + totalRowHeight;
+                                drawbright = localMenuDrawBounds[idx].DrawBounds.Left + totalRowWidth;
+                                drawbbottom = localMenuDrawBounds[idx].DrawBounds.Top + totalRowHeight;
 
                                 if (y + totalRowHeight <= 0 || y >= canvasheight)
                                 {
@@ -17342,8 +17337,8 @@ namespace GnollHackX.Pages.Game
                                     y += totalRowHeight;
                                     //mi.DrawBounds.Right = mi.DrawBounds.Left + totalRowWidth;
                                     //mi.DrawBounds.Bottom = mi.DrawBounds.Top + totalRowHeight;
-                                    (localMenuDrawBoundBuffers[_writeBufferIndex])[idx].DrawBounds.Right = drawbright;
-                                    (localMenuDrawBoundBuffers[_writeBufferIndex])[idx].DrawBounds.Bottom = drawbbottom;
+                                    localMenuDrawBounds[idx].DrawBounds.Right = drawbright;
+                                    localMenuDrawBounds[idx].DrawBounds.Bottom = drawbbottom;
                                     y += totalRowExtraSpacing;
                                 }
                                 else
@@ -17534,13 +17529,13 @@ namespace GnollHackX.Pages.Game
                                     drawbbottom = y;
                                     //mi.DrawBounds.Bottom = y;
                                     //mi.DrawBounds.Right = canvaswidth - (rightmenupadding + paddingAdjustment); //This should cover the worn icon, too
-                                    (localMenuDrawBoundBuffers[_writeBufferIndex])[idx].DrawBounds.Right = drawbright; //This should cover the worn icon, too
-                                    (localMenuDrawBoundBuffers[_writeBufferIndex])[idx].DrawBounds.Bottom = drawbbottom;
+                                    localMenuDrawBounds[idx].DrawBounds.Right = drawbright; //This should cover the worn icon, too
+                                    localMenuDrawBounds[idx].DrawBounds.Bottom = drawbbottom;
                                     _lastDrawnMenuItemIdx = idx;
                                     if (isEquipmentSideShown)
                                     {
                                         //SelectedEquipmentDrawBounds = mi.DrawBounds;
-                                        (localMenuDrawBoundBuffers[_writeBufferIndex])[localMenuDrawBoundBuffers[_writeBufferIndex].Length - 1].DrawBounds = (localMenuDrawBoundBuffers[_writeBufferIndex])[idx].DrawBounds;
+                                        localMenuDrawBounds[localMenuDrawBounds.Length - 1].DrawBounds = localMenuDrawBounds[idx].DrawBounds;
                                     }
 
                                     /* Count circle */
@@ -17600,7 +17595,26 @@ namespace GnollHackX.Pages.Game
                 }
             }
             canvas.Flush();
-            Volatile.Write(ref _readBufferIndex, _writeBufferIndex);
+
+            lockTaken = false;
+            try
+            {
+                Monitor.TryEnter(_menuUIDrawBoundsLock, ref lockTaken);
+                if (lockTaken)
+                {
+                    var localUIDrawBounds = MenuUIDrawBounds;
+                    if (localUIDrawBounds != null && localUIDrawBounds.Length == localMenuDrawBounds.Length)
+                    {
+                        localMenuDrawBounds.CopyTo(localUIDrawBounds, 0);
+                    }
+                }
+            }
+            finally
+            {
+                if (lockTaken)
+                    Monitor.Exit(_menuUIDrawBoundsLock);
+            }
+            lockTaken = false;
         }
         private readonly SKColor _numItemsBackgroundColor = new SKColor(228, 203, 158);
         private readonly SKColor _numItemsBackgroundColorDarkMode = new SKColor(2, 2, 2);
@@ -18761,11 +18775,13 @@ namespace GnollHackX.Pages.Game
             int menuItemMaxCount = 0;
             string menuItemMainText = "";
             var menuItems = MenuCanvas.MenuItems;
-            var localDrawBounds = MenuDrawBoundBuffers[Volatile.Read(ref _readBufferIndex)];
             SelectionMode selectionHow = MenuCanvas.SelectionHow;
-
-            //lock (MenuCanvas.MenuItemLock)
+            lock (_menuUIDrawBoundsLock)
             {
+                var localDrawBounds = MenuUIDrawBounds;
+                if (localDrawBounds == null)
+                    return;
+
                 for (int idx = _firstDrawnMenuItemIdx; idx >= 0 && idx <= _lastDrawnMenuItemIdx; idx++)
                 {
                     if (idx >= menuItems.Count)
@@ -18878,13 +18894,15 @@ namespace GnollHackX.Pages.Game
         {
             if (!MenuCanvas.AllowHighlight)
                 return;
-            //lock (MenuCanvas.MenuItemLock)
-            {
-                var menuItems = MenuCanvas.MenuItems;
-                if (menuItems == null)
-                    return;
+            var menuItems = MenuCanvas.MenuItems;
+            if (menuItems == null)
+                return;
 
-                var localDrawBounds = MenuDrawBoundBuffers[Volatile.Read(ref _readBufferIndex)];
+            lock (_menuUIDrawBoundsLock)
+            {
+                var localDrawBounds = MenuUIDrawBounds;
+                if (localDrawBounds == null)
+                    return;
                 SelectionMode selectionHow = MenuCanvas.SelectionHow;
                 bool clickOKOnSelection = MenuCanvas.ClickOKOnSelection;
                 for (int idx = _firstDrawnMenuItemIdx; idx >= 0 && idx <= _lastDrawnMenuItemIdx; idx++)
@@ -18919,13 +18937,15 @@ namespace GnollHackX.Pages.Game
             bool okClicked = false;
             int clickIdx = -1;
             long identifier = 0;
-            //lock (MenuCanvas.MenuItemLock)
-            {
-                var menuItems = MenuCanvas.MenuItems;
-                if (menuItems == null)
-                    return new MenuClickResult(okClicked, clickIdx, identifier);
+            var menuItems = MenuCanvas.MenuItems;
+            if (menuItems == null)
+                return new MenuClickResult(okClicked, clickIdx, identifier);
 
-                var localDrawBounds = MenuDrawBoundBuffers[Volatile.Read(ref _readBufferIndex)];
+            lock (_menuUIDrawBoundsLock)
+            {
+                var localDrawBounds = MenuUIDrawBounds;
+                if (localDrawBounds == null)
+                    return new MenuClickResult(okClicked, clickIdx, identifier);
                 for (int idx = _firstDrawnMenuItemIdx; idx >= 0 && idx <= _lastDrawnMenuItemIdx; idx++)
                 {
                     if (idx >= menuItems.Count)
@@ -18955,14 +18975,16 @@ namespace GnollHackX.Pages.Game
             bool okClicked = false;
             int clickIdx = -1;
             long identifier = 0;
-            //lock (MenuCanvas.MenuItemLock)
+            var menuItems = MenuCanvas.MenuItems;
+            if (menuItems == null)
+                return new MenuClickResult(okClicked, clickIdx, identifier);
+            lock (_menuUIDrawBoundsLock)
             {
-                var menuItems = MenuCanvas.MenuItems;
-                if (menuItems == null)
+                var localDrawBounds = MenuUIDrawBounds;
+                if (localDrawBounds == null)
                     return new MenuClickResult(okClicked, clickIdx, identifier);
                 int sidx = SelectedEquipmentIndex;
-                var drawBounds = MenuDrawBoundBuffers[Volatile.Read(ref _readBufferIndex)];
-                if (drawBounds[drawBounds.Length - 1].DrawBounds.Contains(e.Location) && sidx >= 0)
+                if (localDrawBounds[localDrawBounds.Length - 1].DrawBounds.Contains(e.Location) && sidx >= 0)
                 {
                     clickIdx = sidx;
                     identifier = menuItems[sidx].Identifier;
@@ -18971,7 +18993,6 @@ namespace GnollHackX.Pages.Game
                 }
                 else
                 {
-                    var localDrawBounds = MenuDrawBoundBuffers[Volatile.Read(ref _readBufferIndex)];
                     for (int idx = 0; idx < menuItems.Count; idx++)
                     {
                         if (localDrawBounds[idx].EquipmentDrawBounds.Contains(e.Location))
