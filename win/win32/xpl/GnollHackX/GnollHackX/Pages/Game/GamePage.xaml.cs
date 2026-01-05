@@ -17002,6 +17002,7 @@ namespace GnollHackX.Pages.Game
                 float rightmenupadding = leftmenupadding;
                 bool isDarkMode = GHApp.DarkMode;
                 bool isEquipmentSideShown = MenuEquipmentSideShown;
+                bool areEquipmentIconsShown = GHApp.ShowEquipmentIcons;
                 GHMenuItem selectedEquipmentItem = null;
                 float innerleftpadding = 0;
                 float curmenuoffset = isEquipmentSideShown ? InterlockedEquipmentMenuScrollOffset : InterlockedMenuScrollOffset;
@@ -17442,7 +17443,7 @@ namespace GnollHackX.Pages.Game
 
                                     /* Worn icon */
                                     bool hasWornIcon = mi.IsObjWorn;
-                                    if (hasWornIcon && !(drawbbottom <= 0 || drawbtop >= canvasheight))
+                                    if (hasWornIcon && areEquipmentIconsShown && !(drawbbottom <= 0 || drawbtop >= canvasheight))
                                     {
                                         long wornBits = mi.ObjWornBits;
                                         bool isShield = mi.IsObjShield;

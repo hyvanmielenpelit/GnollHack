@@ -175,6 +175,7 @@ namespace GnollHackX
             ShowKeyboardShortcuts = Preferences.Get("ShowKeyboardShortcuts", IsDesktop);
             UseSingleMoreCommandsPage = Preferences.Get("UseSingleMoreCommandsPage", IsDesktop);
             EquipmentFlipAnimation = Preferences.Get("EquipmentFlipAnimation", true);
+            ShowEquipmentIcons = Preferences.Get("ShowEquipmentIcons", true);
 
             ulong FreeDiskSpaceInBytes = PlatformService.GetDeviceFreeDiskSpaceInBytes();
             if (FreeDiskSpaceInBytes < GHConstants.LowFreeDiskSpaceThresholdInBytes)
@@ -2096,7 +2097,8 @@ namespace GnollHackX
         private static int _showKeyboardShortcuts = 0;
         private static int _useSingleMoreCommandsPage = 0;
         private static int _equipmentFlipAnimation = 0;
-        
+        private static int _showEquipmentIcons = 0;
+
         public static bool CtrlDown { get { return Interlocked.CompareExchange(ref _ctrlDown, 0, 0) != 0; } set { Interlocked.Exchange(ref _ctrlDown, value ? 1 : 0); } }
         public static bool AltDown { get { return Interlocked.CompareExchange(ref _altDown, 0, 0) != 0; } set { Interlocked.Exchange(ref _altDown, value ? 1 : 0); } }
         public static bool ShiftDown { get { return Interlocked.CompareExchange(ref _shiftDown, 0, 0) != 0; } set { Interlocked.Exchange(ref _shiftDown, value ? 1 : 0); } }
@@ -2106,6 +2108,7 @@ namespace GnollHackX
         public static bool ShowKeyboardShortcuts { get { return Interlocked.CompareExchange(ref _showKeyboardShortcuts, 0, 0) != 0; } set { Interlocked.Exchange(ref _showKeyboardShortcuts, value ? 1 : 0); } }
         public static bool UseSingleMoreCommandsPage { get { return Interlocked.CompareExchange(ref _useSingleMoreCommandsPage, 0, 0) != 0; } set { Interlocked.Exchange(ref _useSingleMoreCommandsPage, value ? 1 : 0); } }
         public static bool EquipmentFlipAnimation { get { return Interlocked.CompareExchange(ref _equipmentFlipAnimation, 0, 0) != 0; } set { Interlocked.Exchange(ref _equipmentFlipAnimation, value ? 1 : 0); } }
+        public static bool ShowEquipmentIcons { get { return Interlocked.CompareExchange(ref _showEquipmentIcons, 0, 0) != 0; } set { Interlocked.Exchange(ref _showEquipmentIcons, value ? 1 : 0); } }
 
         public static bool DownloadOnDemandPackage
         {
