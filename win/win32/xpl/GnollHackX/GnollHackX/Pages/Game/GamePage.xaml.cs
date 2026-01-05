@@ -16755,8 +16755,8 @@ namespace GnollHackX.Pages.Game
         private readonly SKColor _menuHighlightWornColor = new SKColor(0xFF, 0xCC, 0x88, 0x20);
 
         private readonly SKColor _inventorySlotBackgroundDarkColor = new SKColor(0x66, 0x66, 0x66, 0x44);
-        private readonly SKColor _menuHighlightSelectedDarkColor = new SKColor(0x88, 0x88, 0xAA, 0x55);
-        private readonly SKColor _menuHighlightHoverOverSelectedDarkColor = new SKColor(0xBB, 0xBB, 0xEE, 0x77);
+        private readonly SKColor _menuHighlightSelectedDarkColor = new SKColor(0x88, 0x88, 0xAA, 0x77);
+        private readonly SKColor _menuHighlightHoverOverSelectedDarkColor = new SKColor(0xBB, 0xBB, 0xEE, 0x88);
 
         private int _firstDrawnMenuItemIdx = -1;
         private int _lastDrawnMenuItemIdx = -1;
