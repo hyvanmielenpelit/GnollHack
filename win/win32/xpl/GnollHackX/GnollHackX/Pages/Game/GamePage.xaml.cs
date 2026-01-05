@@ -16754,8 +16754,8 @@ namespace GnollHackX.Pages.Game
         private readonly SKColor _menuHighlightHoverOverAutoClickedColor = new SKColor(0xFF, 0xBB, 0x00, 0xAA);
         private readonly SKColor _menuHighlightWornColor = new SKColor(0xFF, 0xCC, 0x88, 0x20);
 
-        private readonly SKColor _inventorySlotBackgroundDarkColor = new SKColor(0x55, 0x55, 0x55, 0x33);
-        private readonly SKColor _menuHighlightSelectedDarkColor = new SKColor(0x77, 0x77, 0xAA, 0x44);
+        private readonly SKColor _inventorySlotBackgroundDarkColor = new SKColor(0x66, 0x66, 0x66, 0x44);
+        private readonly SKColor _menuHighlightSelectedDarkColor = new SKColor(0x88, 0x88, 0xAA, 0x55);
         private readonly SKColor _menuHighlightHoverOverSelectedDarkColor = new SKColor(0xBB, 0xBB, 0xEE, 0x77);
 
         private int _firstDrawnMenuItemIdx = -1;
@@ -16816,6 +16816,8 @@ namespace GnollHackX.Pages.Game
                 BitmapName = bitmapName;
             }
         }
+
+        SKColor _darkEquipmentSlotTitleColor = new SKColor(192, 192, 192);
         EquipmentSlot[] _equipmentSlots = new EquipmentSlot[] 
         {
             new EquipmentSlot("Right Hand", "Right", (int)InventorySlotPictureIndices.WeaponRight, 0, 0, obj_worn_flags.W_WEP, ".Assets.UI.wield.png"),
@@ -17042,7 +17044,7 @@ namespace GnollHackX.Pages.Game
                     x += leftmenupadding + innerleftpadding;
                     float start_x = x;
                     SKImage slotBitmap = isDarkMode ? GHApp.InventorySlotDarkBitmap : GHApp.InventorySlotLightBitmap;
-                    textPaint.Color = isDarkMode ? SKColors.Gray : SKColors.SaddleBrown;
+                    textPaint.Color = isDarkMode ? _darkEquipmentSlotTitleColor : SKColors.SaddleBrown;
                     float gridHeight = 0;
                     bool gridHeightFirst = true;
 
