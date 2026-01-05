@@ -16930,6 +16930,8 @@ namespace GnollHackX.Pages.Game
             SKCanvas canvas = surface.Canvas;
             float canvaswidth = e.Info.Width; // referenceCanvasView.CanvasSize.Width;
             float canvasheight = e.Info.Height; // referenceCanvasView.CanvasSize.Height;
+            bool isLandscape = canvaswidth > canvasheight;
+
             bool lockTaken = false;
             try
             {
@@ -17010,7 +17012,6 @@ namespace GnollHackX.Pages.Game
                 if (isEquipmentSideShown)
                 {
                     y = curmenuoffset;
-                    bool isLandscape = canvaswidth > canvasheight;
                     int numRows = isLandscape ? 4 : 6;
                     int numColumns = (_equipmentSlots.Length - 1) / numRows + 1;
                     float framewidth = picturewidth + picturewidth / 2;
@@ -17240,7 +17241,7 @@ namespace GnollHackX.Pages.Game
                                     firstMinRowHeight = minrowheight;
                                 if (isInventory && !isEquipmentSideShown && firstMinRowHeight > 0 && leftmenupadding > firstMinRowHeight / 2 + scaledmenumarginx)
                                     paddingAdjustment += -firstMinRowHeight / 2;
-                                if (!isEquipmentSideShown)
+                                if (!isEquipmentSideShown || !isLandscape)
                                     x = leftmenupadding + paddingAdjustment;
 
                                 //mi.DrawBounds.Left = x;
@@ -17328,7 +17329,7 @@ namespace GnollHackX.Pages.Game
                                     selectionHow == SelectionMode.Single ? idx == selectionIndex : false;
 
                                 float totalRowHeight = topPadding + bottomPadding + ((float)maintextrows + suffixtextrows * (mi.IsSuffixTextVisible ? relsuffixsize : 0.0f) + (mi.IsSuffix2TextVisible ? relsuffixsize : 0.0f)) * (textPaint.FontSpacing) + 2 * generallinepadding;
-                                float totalRowWidth = canvaswidth - leftmenupadding - rightmenupadding - (isEquipmentSideShown ? innerleftpadding * 2 : 0);
+                                float totalRowWidth = canvaswidth - leftmenupadding - rightmenupadding - (isEquipmentSideShown && isLandscape ? innerleftpadding * 2 : 0);
                                 float totalRowExtraSpacing = IsMiButton ? 12.0f * scale * customScale : 0f;
 
                                 drawbright = localMenuDrawBounds[idx].DrawBounds.Left + totalRowWidth;
