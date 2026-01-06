@@ -1520,7 +1520,7 @@ namespace GnollHackX
         {
             get
             {
-                return IsWindows || IsAndroid; // (IsAndroid && TotalMemory < GHConstants.DisableAuxGPUbyDefaultThresholdInBytes);
+                return IsWindows || (IsAndroid && TotalMemory < GHConstants.DisableAuxGPUbyDefaultThresholdInBytes);
             }
         }
 
