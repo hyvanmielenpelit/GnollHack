@@ -465,12 +465,13 @@ char* buf;
 
     int len = (int)strlen(buf);
     char* p;
-    boolean found = FALSE;
+    boolean found = FALSE, useplus = FALSE;
     for (p = buf; (int)(p - buf) < len - 3; p++)
     {
-        if (*p == ' ' && *(p + 1) >= '0' && *(p + 1) <= '9' && *(p + 2) <= 'd' && *(p + 3) >= '0' && *(p + 3) <= '9')
+        if ((*p == ' ' || *p == '+') && *(p + 1) >= '0' && *(p + 1) <= '9' && *(p + 2) <= 'd' && *(p + 3) >= '0' && *(p + 3) <= '9')
         {
             found = TRUE;
+            useplus = *p == '+';
             break;
         }
     }
@@ -489,9 +490,9 @@ char* buf;
                 int plus = 0;
                 int res = 0;
                 if (qp && qp < qs && *(qp + 1) >= '0' && *(qp + 1) <= '9')
-                    res = sscanf(p, " %dd%d+%d", &dice, &diesize, &plus);
+                    res = sscanf(p, useplus ? "+%dd%d+%d" : " %dd%d+%d", &dice, &diesize, &plus);
                 else
-                    res = sscanf(p, " %dd%d", &dice, &diesize);
+                    res = sscanf(p, useplus ? "+%dd%d" : " %dd%d", &dice, &diesize);
 
                 if (res >= 2)
                 {
@@ -501,9 +502,9 @@ char* buf;
                     int minvalue = dice + plus;
                     int maxvalue = dice * diesize + plus;
                     if (minvalue == maxvalue)
-                        Sprintf(tptr, " %d", minvalue);
+                        Sprintf(tptr, useplus ? "+%d" : " %d", minvalue);
                     else
-                        Sprintf(tptr, " %d-%d", minvalue, maxvalue);
+                        Sprintf(tptr, useplus ? "+%d-%d" : " %d-%d", minvalue, maxvalue);
                     Strcat(tptr, qs);
                     Strcpy(buf, tmpstr);
                     free(tmpstr);
@@ -1866,17 +1867,18 @@ struct item_description_stats* stats_ptr; /* If non-null, only returns item stat
             wep_avg_dmg += dmg_bonus;
             wep_multipliable_avg_dmg += dmg_bonus;
         }
-        else if (obj)
-        {
-            /* Otherwise get full melee strength damage bonus */
-            double str_bonus = strength_damage_bonus_core(ACURR(A_STR), TRUE);
-            Sprintf(buf, "Strength damage bonus:  %s%.1f on average",
-                str_bonus >= 0 ? "+" : "", str_bonus);
-            putstr(datawin, ATR_INDENT_AT_COLON, buf);
+        /* Ammos should not get any strength bonus */
+        //else if (obj)
+        //{
+        //    /* Otherwise get full melee strength damage bonus */
+        //    double str_bonus = strength_damage_bonus_core(ACURR(A_STR), TRUE);
+        //    Sprintf(buf, "Strength damage bonus:  %s%.1f on average",
+        //        str_bonus >= 0 ? "+" : "", str_bonus);
+        //    putstr(datawin, ATR_INDENT_AT_COLON, buf);
 
-            wep_avg_dmg += str_bonus;
-            wep_multipliable_avg_dmg += str_bonus;
-        }
+        //    wep_avg_dmg += str_bonus;
+        //    wep_multipliable_avg_dmg += str_bonus;
+        //}
 
         if (objects[otyp].oc_hitbonus != 0)
         {
@@ -2751,6 +2753,7 @@ struct item_description_stats* stats_ptr; /* If non-null, only returns item stat
         if (obj->opoisoned)
         {
             Sprintf(buf, "Poisoned status:        Poisoned (+2d6 poison damage)");
+            convert_dice_to_ranges(buf);
             wep_avg_dmg += 7.0;
             putstr(datawin, ATR_INDENT_AT_COLON, buf);
         }
@@ -2768,6 +2771,7 @@ struct item_description_stats* stats_ptr; /* If non-null, only returns item stat
                 obj->elemental_enchantment == LIGHTNING_ENCHANTMENT ? 21.0 :
                 obj->elemental_enchantment == DEATH_ENCHANTMENT ? 0.0 : 0.0;
 
+            convert_dice_to_ranges(buf);
             putstr(datawin, ATR_INDENT_AT_COLON, buf);
         }
     }
