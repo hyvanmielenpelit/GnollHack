@@ -19553,9 +19553,11 @@ namespace GnollHackX.Pages.Game
                 _menuScrollSpeedRecords.Clear();
             }
 
+            bool oldMenuRefresh = MenuRefresh;
             bool doAnim = GHApp.EquipmentFlipAnimation;
             if (doAnim)
             {
+                MenuRefresh = false;
                 //if (GHApp.IsiOS)
                 //    FlipiOS(false);
                 //else
@@ -19577,6 +19579,7 @@ namespace GnollHackX.Pages.Game
                     MenuCanvas.RotationY = -90;
                     await MenuCanvas.RotateYTo(0, 250, Easing.Linear);
                 }
+                MenuRefresh = oldMenuRefresh;
             }
         }
 

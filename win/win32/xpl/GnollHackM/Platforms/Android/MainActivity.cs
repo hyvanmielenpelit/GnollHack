@@ -22,8 +22,8 @@ public class MainActivity : MauiAppCompatActivity
         Platform.Init(this, savedInstanceState);
         IsHardKeyboardConnected = Resources?.Configuration?.HardKeyboardHidden == HardKeyboardHidden.No ? true : false;
         GHApp.InitializeGC();
-        Window.AddFlags(WindowManagerFlags.Fullscreen);
-        if (DefaultShowNavigationBar)
+        Window?.AddFlags(WindowManagerFlags.Fullscreen);
+        if (DefaultShowNavigationBar) 
             ShowOsNavigationBar();
         else
             HideOsNavigationBar();
@@ -90,7 +90,7 @@ public class MainActivity : MauiAppCompatActivity
     public static void HideOsNavigationBar()
     {
         Activity activity = CurrentMainActivity;
-        if (activity == null)
+        if (activity == null || activity.Window == null)
             return;
         if (Build.VERSION.SdkInt >= BuildVersionCodes.R)
         {
@@ -104,17 +104,20 @@ public class MainActivity : MauiAppCompatActivity
         else
         {
 #pragma warning disable CS0618 // Type or member is obsolete
-            SystemUiFlags systemUiVisibility = (SystemUiFlags)activity.Window.DecorView.SystemUiVisibility;
-            systemUiVisibility |= SystemUiFlags.HideNavigation;
-            systemUiVisibility |= SystemUiFlags.Immersive;
-            activity.Window.DecorView.SystemUiVisibility = (StatusBarVisibility)systemUiVisibility;
+            if (activity.Window.DecorView != null)
+            {
+                SystemUiFlags systemUiVisibility = (SystemUiFlags)activity.Window.DecorView.SystemUiVisibility;
+                systemUiVisibility |= SystemUiFlags.HideNavigation;
+                systemUiVisibility |= SystemUiFlags.Immersive;
+                activity.Window.DecorView.SystemUiVisibility = (StatusBarVisibility)systemUiVisibility;
+            }
 #pragma warning restore CS0618 // Type or member is obsolete
         }
     }
     public static void ShowOsNavigationBar()
     {
         Activity activity = CurrentMainActivity;
-        if (activity == null)
+        if (activity == null || activity.Window == null)
             return;
         if (Build.VERSION.SdkInt >= BuildVersionCodes.R)
         {
@@ -126,10 +129,13 @@ public class MainActivity : MauiAppCompatActivity
         else
         {
 #pragma warning disable CS0618 // Type or member is obsolete
-            SystemUiFlags systemUiVisibility = (SystemUiFlags)activity.Window.DecorView.SystemUiVisibility;
-            systemUiVisibility &= ~SystemUiFlags.HideNavigation;
-            systemUiVisibility &= ~SystemUiFlags.Immersive;
-            activity.Window.DecorView.SystemUiVisibility = (StatusBarVisibility)systemUiVisibility;
+            if (activity.Window.DecorView != null)
+            {
+                SystemUiFlags systemUiVisibility = (SystemUiFlags)activity.Window.DecorView.SystemUiVisibility;
+                systemUiVisibility &= ~SystemUiFlags.HideNavigation;
+                systemUiVisibility &= ~SystemUiFlags.Immersive;
+                activity.Window.DecorView.SystemUiVisibility = (StatusBarVisibility)systemUiVisibility;
+            }
 #pragma warning restore CS0618 // Type or member is obsolete
         }
     }
