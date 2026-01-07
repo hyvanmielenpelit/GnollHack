@@ -16820,10 +16820,10 @@ namespace GnollHackX.Pages.Game
         SKColor _darkEquipmentSlotTitleColor = new SKColor(192, 192, 192);
         EquipmentSlot[] _equipmentSlots = new EquipmentSlot[] 
         {
-            new EquipmentSlot("Right Hand", "Right", (int)InventorySlotPictureIndices.WeaponRight, 0, 0, obj_worn_flags.W_WEP, ".Assets.UI.wield.png"),
-            new EquipmentSlot("Left Hand", "Left", (int)InventorySlotPictureIndices.WeaponLeft, (int)InventorySlotPictureIndices.Shield, 1, obj_worn_flags.W_WEP2, ".Assets.UI.fight.png"),
-            new EquipmentSlot("Right Swap", "Right", (int)InventorySlotPictureIndices.SwapWeaponRight, 0, 0, obj_worn_flags.W_SWAPWEP, ".Assets.UI.swap.png"),
-            new EquipmentSlot("Left Swap", "Left", (int)InventorySlotPictureIndices.SwapWeaponLeft, 0, 0, obj_worn_flags.W_SWAPWEP2, ".Assets.UI.swap.png"),
+            new EquipmentSlot("Right Hand", "", (int)InventorySlotPictureIndices.WeaponRight, 0, 0, obj_worn_flags.W_WEP, ".Assets.UI.wield.png"),
+            new EquipmentSlot("Left Hand", "", (int)InventorySlotPictureIndices.WeaponLeft, (int)InventorySlotPictureIndices.Shield, 1, obj_worn_flags.W_WEP2, ".Assets.UI.fight.png"),
+            new EquipmentSlot("Right Swap", "", (int)InventorySlotPictureIndices.SwapWeaponRight, 0, 0, obj_worn_flags.W_SWAPWEP, ".Assets.UI.swap.png"),
+            new EquipmentSlot("Left Swap", "", (int)InventorySlotPictureIndices.SwapWeaponLeft, 0, 0, obj_worn_flags.W_SWAPWEP2, ".Assets.UI.swap.png"),
             new EquipmentSlot("Quiver", "", (int)InventorySlotPictureIndices.Quiver, 0, 0, obj_worn_flags.W_QUIVER, ".Assets.UI.quiver.png"),
             new EquipmentSlot("Amulet", "",(int)InventorySlotPictureIndices.Amulet, 0, 0, obj_worn_flags.W_AMUL, ".Assets.UI.puton.png"),
             new EquipmentSlot("Suit", "", (int)InventorySlotPictureIndices.Suit, 0, 0, obj_worn_flags.W_ARM, ".Assets.UI.wear.png"),
@@ -17049,6 +17049,7 @@ namespace GnollHackX.Pages.Game
                     textPaint.Color = isDarkMode ? _darkEquipmentSlotTitleColor : SKColors.SaddleBrown;
                     float gridHeight = 0;
                     bool gridHeightFirst = true;
+                    bool isBimanual = false;
 
                     foreach (var slot in _equipmentSlots)
                     {
@@ -17066,6 +17067,8 @@ namespace GnollHackX.Pages.Game
                                     {
                                         foundItem = menuItem;
                                         foundItemIndex = MenuCanvas.MenuItems?.IndexOf(foundItem) ?? -1;
+                                        if (slot.WornFlag == obj_worn_flags.W_WEP && foundItem.IsBimanual)
+                                            isBimanual = true;
                                         break;
                                     }
                                 }
@@ -17091,6 +17094,7 @@ namespace GnollHackX.Pages.Game
 
                         bool selMatches = selectionIndex >= 0 && foundItemIndex >= 0 && selectionIndex == foundItemIndex;
                         bool isHighlighted = foundItem != null && (selMatches || foundItem.Selected);
+                        bool isNotActive = slot.WornFlag == obj_worn_flags.W_WEP2 && isBimanual;
                         if (foundItem != null && selMatches)
                         {
                             selectedEquipmentItem = foundItem;
@@ -17099,7 +17103,8 @@ namespace GnollHackX.Pages.Game
                         SKColor oldColor = textPaint.Color;
                         textPaint.Color = isHighlighted ? (isDarkMode ? (isHover ? _menuHighlightHoverOverSelectedDarkColor : _menuHighlightSelectedDarkColor) : (isHover ? _menuHighlightHoverOverSelectedColor : _menuHighlightSelectedColor)) : (isDarkMode ? _inventorySlotBackgroundDarkColor : _inventorySlotBackgroundColor);
                         textPaint.Style = SKPaintStyle.Fill;
-                        canvas.DrawRect(highlightRect, textPaint.Paint);
+                        if (!isNotActive)
+                            canvas.DrawRect(highlightRect, textPaint.Paint);
                         textPaint.Color = oldColor;
 
 #if WINDOWS
@@ -17108,13 +17113,15 @@ namespace GnollHackX.Pages.Game
                             isHover = _menuIsHovering && picRect.Contains(_menuHoverPoint);
                         }
 #endif
-                        if (isHover)
+                        if (isNotActive)
+                            textPaint.Color = UIUtils.GHSemiTransparentBlack;
+                        else if (isHover)
                             textPaint.Paint.ColorFilter = UIUtils.HighlightColorFilter;
                         else if (isHighlighted)
                             textPaint.Paint.ColorFilter = UIUtils.MapHighlightColorFilter;
                         canvas.DrawImage(slotBitmap, picRect, textPaint.Paint);
-                        if (isHover || isHighlighted)
-                            textPaint.Paint.ColorFilter = null;
+                        textPaint.Paint.ColorFilter = null;
+                        textPaint.Color = oldColor;
                         if (foundItem != null && foundItemIndex >= 0)
                         {
                             //foundItem.EquipmentDrawBounds = picRect;
@@ -17151,7 +17158,7 @@ namespace GnollHackX.Pages.Game
                             int slotPicIndex = slot.AltPictureStyle == 0 ? slot.PictureIndex : slot.AltPictureStyle == 1 && !MenuIsTwoWeap ? slot.AltPictureIndex : slot.PictureIndex;
                             SKRect wornRect = new SKRect(x, y, x + picturewidth, y + picturewidth);
                             SKImage bitmap = GHApp.InventoryIconBitmaps[slotPicIndex];
-                            textPaint.Paint.ColorFilter = isDarkMode ? UIUtils.InventoryDarkUnwornColorFilter : UIUtils.InventoryLightUnwornColorFilter;
+                            textPaint.Paint.ColorFilter = isNotActive ? (isDarkMode ? UIUtils.InventoryDarkInactiveColorFilter : UIUtils.InventoryLightInactiveColorFilter) : (isDarkMode ? UIUtils.InventoryDarkUnwornColorFilter : UIUtils.InventoryLightUnwornColorFilter);
                             if (bitmap != null)
                                 canvas.DrawImage(bitmap, wornRect, textPaint.Paint);
                             textPaint.Paint.ColorFilter = null;

@@ -45,7 +45,7 @@ struct objclassdata
     schar obj_loc_y;
 
     schar oc_subtyp;
-    uchar reserved_2;
+    uchar bimanual;
 };
 
  /* General callback types */

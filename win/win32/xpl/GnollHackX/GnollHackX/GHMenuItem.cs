@@ -158,6 +158,7 @@ namespace GnollHackX
         public long ObjWornBits { get { return ObjData?.WornBits ?? 0L; } }
         public bool IsObjArmor { get { return ObjData?.IsArmor ?? false; } }
         public bool IsObjShield { get { return ObjData?.IsShield ?? false; } }
+        public bool IsBimanual { get { return ObjData?.IsBimanual ?? false; } }
         public float MinimumTouchableTextSize { get { return GHConstants.MenuDefaultRowHeight; } }
         public bool HasMultiColors { get { return NHAttributes != null && NHColors != null && Text != null; } }
 

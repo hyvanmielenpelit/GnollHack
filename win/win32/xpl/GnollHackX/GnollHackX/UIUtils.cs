@@ -49,6 +49,8 @@ namespace GnollHackX
         private static readonly SKColor GHDarkOrange = new SKColor(136, 96, 0);
         private static readonly SKColor GHVeryDarkOrange = new SKColor(116, 76, 0);
 
+        public static readonly SKColor GHSemiTransparentBlack = new SKColor(0 , 0, 0, 128);
+
         public static readonly SKColorFilter MapHighlightColorFilter = SKColorFilter.CreateLighting(new SKColor(255, 255, 255), new SKColor(10, 10, 10));
         public static readonly SKColorFilter LookHighlightColorFilter = SKColorFilter.CreateLighting(new SKColor(255, 245, 255), new SKColor(10, 0, 10));
         public static readonly SKColorFilter HighlightColorFilter = SKColorFilter.CreateLighting(new SKColor(255, 255, 255), new SKColor(20, 20, 20));
@@ -61,8 +63,10 @@ namespace GnollHackX
                             });
         public static readonly SKColorFilter InventoryLightWornColorFilter = SKColorFilter.CreateBlendMode(SKColors.SaddleBrown.WithAlpha(160), SKBlendMode.SrcIn);
         public static readonly SKColorFilter InventoryLightUnwornColorFilter = SKColorFilter.CreateBlendMode(SKColors.SaddleBrown.WithAlpha(96), SKBlendMode.SrcIn);
+        public static readonly SKColorFilter InventoryLightInactiveColorFilter = SKColorFilter.CreateBlendMode(SKColors.SaddleBrown.WithAlpha(48), SKBlendMode.SrcIn);
         public static readonly SKColorFilter InventoryDarkWornColorFilter = SKColorFilter.CreateBlendMode(SKColors.Gray.WithAlpha(160), SKBlendMode.SrcIn);
         public static readonly SKColorFilter InventoryDarkUnwornColorFilter = SKColorFilter.CreateBlendMode(SKColors.Gray.WithAlpha(96), SKBlendMode.SrcIn);
+        public static readonly SKColorFilter InventoryDarkInactiveColorFilter = SKColorFilter.CreateBlendMode(SKColors.Gray.WithAlpha(48), SKBlendMode.SrcIn);
 
         public static SKColor NHColor2SKColor(int nhclr, int attr)
         {

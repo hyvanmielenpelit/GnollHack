@@ -136,6 +136,13 @@ namespace GnollHackX
                 return ObjData.oclass == (sbyte)obj_class_types.ARMOR_CLASS && OtypData.oc_subtyp == (sbyte)obj_armor_types.ARM_SHIELD;
             }
         }
+        public bool IsBimanual
+        {
+            get
+            {
+                return OtypData.bimanual != 0;
+            }
+        }
 
         public readonly bool Hallucinated;
         public readonly bool OutOfAmmo;

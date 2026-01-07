@@ -1174,7 +1174,7 @@ namespace GnollHackX
         public sbyte obj_loc_y;
 
         public sbyte oc_subtyp;
-        public byte reserved_2;
+        public byte bimanual;
     }
 
     public enum obj_class_types

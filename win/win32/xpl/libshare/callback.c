@@ -29,6 +29,7 @@ get_objclassdata(struct obj* otmp)
     otypdata.poisonable = (uchar)is_poisonable(otmp);
 
     otypdata.oc_subtyp = objects[otmp->otyp].oc_subtyp;
+    otypdata.bimanual = bimanual(otmp);
 
     if (otmp == uchain || otmp == uball)
     {
