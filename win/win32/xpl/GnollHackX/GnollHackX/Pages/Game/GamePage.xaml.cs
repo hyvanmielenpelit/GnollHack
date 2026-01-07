@@ -19668,6 +19668,7 @@ namespace GnollHackX.Pages.Game
         private void MenuCountOkButton_Clicked(object sender, EventArgs e)
         {
             MenuCountOkButton.IsEnabled = false;
+            MenuCountCancelButton.IsEnabled = false;
             if (_countMenuItem != null)
             {
                 if (MenuCountEntry.IsVisible)
@@ -19687,6 +19688,7 @@ namespace GnollHackX.Pages.Game
                         MenuCountEntry.TextColor = GHColors.Red;
                         MenuCountEntry.Focus();
                         MenuCountOkButton.IsEnabled = true;
+                        MenuCountCancelButton.IsEnabled = true;
                         return;
                     }
                 }
@@ -19702,16 +19704,23 @@ namespace GnollHackX.Pages.Game
                     }
                 }
             }
+            if (MenuCountEntry.IsVisible)
+                MenuCountEntry.Unfocus();
+            if (CountPicker.IsVisible)
+                CountPicker.Unfocus();
             MenuCountGrid.IsVisible = false;
-            MenuCountEntry.Unfocus();
             MenuCountEntry.IsEnabled = false;
         }
 
         private void MenuCountCancelButton_Clicked(object sender, EventArgs e)
         {
+            MenuCountOkButton.IsEnabled = false;
             MenuCountCancelButton.IsEnabled = false;
+            if (MenuCountEntry.IsVisible)
+                MenuCountEntry.Unfocus();
+            if (CountPicker.IsVisible)
+                CountPicker.Unfocus();
             MenuCountGrid.IsVisible = false;
-            MenuCountEntry.Unfocus();
             MenuCountEntry.IsEnabled = false;
         }
 
