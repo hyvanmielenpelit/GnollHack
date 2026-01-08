@@ -16838,11 +16838,11 @@ namespace GnollHackX.Pages.Game
             new EquipmentSlot("Left Ring", "", (int)InventorySlotPictureIndices.RingLeft, 0, 0, obj_worn_flags.W_RINGL, ".Assets.UI.leftring.png"),
             new EquipmentSlot("Right Ring", "", (int)InventorySlotPictureIndices.RingRight, 0, 0, obj_worn_flags.W_RINGR, ".Assets.UI.rightring.png"),
             new EquipmentSlot("Blindfold", "", (int)InventorySlotPictureIndices.Blindfold, 0, 0, obj_worn_flags.W_BLINDFOLD, ".Assets.UI.puton.png"),
-            new EquipmentSlot("Miscellaneous", "1", (int)InventorySlotPictureIndices.Miscellaneous1, 0, 0, obj_worn_flags.W_MISC, ".Assets.UI.puton.png"),
-            new EquipmentSlot("Miscellaneous", "2", (int)InventorySlotPictureIndices.Miscellaneous2, 0, 0, obj_worn_flags.W_MISC2, ".Assets.UI.puton.png"),
-            new EquipmentSlot("Miscellaneous", "3", (int)InventorySlotPictureIndices.Miscellaneous3, 0, 0, obj_worn_flags.W_MISC3, ".Assets.UI.puton.png"),
-            new EquipmentSlot("Miscellaneous", "4", (int)InventorySlotPictureIndices.Miscellaneous4, 0, 0, obj_worn_flags.W_MISC4, ".Assets.UI.puton.png"),
-            new EquipmentSlot("Miscellaneous", "5", (int)InventorySlotPictureIndices.Miscellaneous5, 0, 0, obj_worn_flags.W_MISC5, ".Assets.UI.puton.png"),
+            new EquipmentSlot("Misc", "1", (int)InventorySlotPictureIndices.Miscellaneous1, 0, 0, obj_worn_flags.W_MISC, ".Assets.UI.puton.png"),
+            new EquipmentSlot("Misc", "2", (int)InventorySlotPictureIndices.Miscellaneous2, 0, 0, obj_worn_flags.W_MISC2, ".Assets.UI.puton.png"),
+            new EquipmentSlot("Misc", "3", (int)InventorySlotPictureIndices.Miscellaneous3, 0, 0, obj_worn_flags.W_MISC3, ".Assets.UI.puton.png"),
+            new EquipmentSlot("Misc", "4", (int)InventorySlotPictureIndices.Miscellaneous4, 0, 0, obj_worn_flags.W_MISC4, ".Assets.UI.puton.png"),
+            new EquipmentSlot("Misc", "5", (int)InventorySlotPictureIndices.Miscellaneous5, 0, 0, obj_worn_flags.W_MISC5, ".Assets.UI.puton.png"),
         };
         List<GHMenuItem> _wornMenuItems = new List<GHMenuItem>(32);
         //SKRect SelectedEquipmentDrawBounds = new SKRect();
