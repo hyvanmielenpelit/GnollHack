@@ -927,7 +927,7 @@ enum cat_breeds {
 #define ZAP_TEMPLATE_HEIGHT 4
 #define NUM_ZAP_BASE_TILES 18
 
-#define UTO_PORTAL_BIT_OFFSET       3
+#define UTO_PORTAL_BIT_OFFSET       2
 #define UTOFLAGS_AT_STAIRS          0x0001
 #define UTOFLAGS_FALLING            0x0002
 #define UTOFLAGS_PORTAL_1           0x0004
