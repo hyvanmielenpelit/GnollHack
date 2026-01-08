@@ -17051,6 +17051,7 @@ namespace GnollHackX.Pages.Game
                     float gridHeight = 0;
                     bool gridHeightFirst = true;
                     bool isBimanual = false;
+                    bool isSwapBimanual = false;
 
                     foreach (var slot in _equipmentSlots)
                     {
@@ -17070,6 +17071,8 @@ namespace GnollHackX.Pages.Game
                                         foundItemIndex = MenuCanvas.MenuItems?.IndexOf(foundItem) ?? -1;
                                         if (slot.WornFlag == obj_worn_flags.W_WEP && foundItem.IsBimanual)
                                             isBimanual = true;
+                                        else if (slot.WornFlag == obj_worn_flags.W_SWAPWEP && foundItem.IsBimanual)
+                                            isSwapBimanual = true;
                                         break;
                                     }
                                 }
@@ -17095,7 +17098,7 @@ namespace GnollHackX.Pages.Game
 
                         bool selMatches = selectionIndex >= 0 && foundItemIndex >= 0 && selectionIndex == foundItemIndex;
                         bool isHighlighted = foundItem != null && (selMatches || foundItem.Selected);
-                        bool isNotActive = slot.WornFlag == obj_worn_flags.W_WEP2 && isBimanual;
+                        bool isNotActive = (slot.WornFlag == obj_worn_flags.W_WEP2 && isBimanual) || (slot.WornFlag == obj_worn_flags.W_SWAPWEP2 && isSwapBimanual);
                         if (foundItem != null && selMatches)
                         {
                             selectedEquipmentItem = foundItem;
@@ -17151,6 +17154,12 @@ namespace GnollHackX.Pages.Game
                                         canvas.Scale(minrowheight / foundItem.GlyphImageSource.Height);
                                         foundItem.GlyphImageSource.DrawOnCanvas(canvas, usingGL, isHover, isHighFilterQuality, fixRects);
                                     }
+                                }
+                                if (foundItem.MaxCount > 1)
+                                {
+                                    textPaint.Color = isDarkMode ? _darkEquipmentSlotTitleColor : SKColors.SaddleBrown;
+                                    textPaint.DrawTextOnCanvas(canvas, foundItem.MaxCount.ToString(), x + picturewidth, y + minrowheight + pictureverticalpadding - textPaint.FontMetrics.Descent, SKTextAlign.Right);
+                                    textPaint.Color = oldColor;
                                 }
                             }
                         }
