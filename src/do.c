@@ -7179,6 +7179,8 @@ xchar portal; /* 1 = Magic portal, 2 = Modron portal down (find portal up), 3 = 
     boolean play_arrival_teleport_effect = !!(u.utotype & UTOFLAGS_TELEPORT_EFFECT);
     d_level fromlevel = u.uz;
 
+    debugprint("goto_level: dnum=%d, dlevel=%d, portal=%d", (int)newlevel->dnum, (int)newlevel->dlevel, (int)portal);
+
     if(at_location & 2)
         context.reviving = TRUE;
 
@@ -8048,6 +8050,7 @@ int64_t portal_flag;
 const char *pre_msg, *post_msg;
 {
     short typmask = UTOFLAGS_DEFERRED_GOTO; /* non-zero triggers `deferred_goto' */
+    debugprint("schedule_goto: dnum=%d, dlevel=%d, portal_flag=%lld", tolev ? tolev->dnum : -1, tolev ? tolev->dlevel : -1, (long long)portal_flag);
 
     /* destination flags (`goto_level' args) */
     if (at_location == 1)
@@ -8099,6 +8102,7 @@ deferred_goto()
     {
         d_level dest;
         short typmask = u.utotype; /* save it; goto_level zeroes u.utotype */
+        debugprint("deferred_goto: dnum=%d, dlevel=%d, typmask=%d", (int)u.utolev.dnum, (int)u.utolev.dlevel, typmask);
 
         assign_level(&dest, &u.utolev);
         if (dfr_pre_msg)

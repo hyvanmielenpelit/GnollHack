@@ -196,6 +196,7 @@ boolean seal;
     d_level *dest;
     struct trap *t;
     int64_t portal_flag;
+    debugprint("expulsion: seal=%d", (int)seal);
 
     br = dungeon_branch("The Quest");
     dest = (br->end1.dnum == u.uz.dnum) ? &br->end2 : &br->end1;
