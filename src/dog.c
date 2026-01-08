@@ -1034,7 +1034,7 @@ boolean with_you;
         }
         else
         {
-            impossible("mon_arrive: modron up, nno corresponding portal?");
+            impossible("mon_arrive: modron up, no corresponding portal? from: %d/d%, to: %d/%d.", u.uz0.dnum, u.uz0.dlevel, u.uz.dnum, u.uz.dlevel);
         }
         break;
     case MIGR_MODRON_PORTAL_DOWN:
@@ -1048,7 +1048,7 @@ boolean with_you;
         }
         else
         {
-            impossible("mon_arrive: modron down, no corresponding portal?");
+            impossible("mon_arrive: modron down, no corresponding portal? from: %d/d%, to: %d/%d.", u.uz0.dnum, u.uz0.dlevel, u.uz.dnum, u.uz.dlevel);
         }
         break;
     case MIGR_PORTAL:
@@ -1074,7 +1074,7 @@ boolean with_you;
         }
         else 
         {
-            impossible("mon_arrive: portal, nno corresponding portal?");
+            impossible("mon_arrive: portal, no corresponding portal? from: %d/d%, to: %d/%d.", u.uz0.dnum, u.uz0.dlevel, u.uz.dnum, u.uz.dlevel);
         } /*FALLTHRU*/
     default:
     case MIGR_RANDOM:
