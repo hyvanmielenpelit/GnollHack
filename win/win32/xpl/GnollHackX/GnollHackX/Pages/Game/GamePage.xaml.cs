@@ -3906,7 +3906,8 @@ namespace GnollHackX.Pages.Game
                         GetLineEntryText.Placeholder = PlaceHolderText;
                     else
                         GetLineEntryText.Placeholder = "Type the text here";
-                    _getLineRegex = new Regex(@"^[A-Za-z0-9_ åäöÅÄÖ\$\*\&\.\,\<\>\=\?\!\#\(\:\;\)\+\-]{0,128}$");
+                    //_getLineRegex = new Regex(@"^[A-Za-z0-9_ åäöÅÄÖ\$\*\&\.\,\<\>\=\?\!\#\(\:\;\)\+\-]{0,128}$");
+                    _getLineRegex = new Regex(@"^[A-Za-z0-9_ \$\*\&\.\,\<\>\=\?\!\#\(\:\;\)\+\-]{0,128}$");
                     break;
             }
 
