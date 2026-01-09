@@ -1262,6 +1262,8 @@ const char* message;
         return 0;
 
     char* p = long_buffer;
+    *p = 0;
+
     int chars_written;
     if (message)
     {
