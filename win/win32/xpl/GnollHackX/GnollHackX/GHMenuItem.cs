@@ -161,6 +161,8 @@ namespace GnollHackX
         public bool IsBimanual { get { return ObjData?.IsBimanual ?? false; } }
         public float MinimumTouchableTextSize { get { return GHConstants.MenuDefaultRowHeight; } }
         public bool HasMultiColors { get { return NHAttributes != null && NHColors != null && Text != null; } }
+        public sbyte ObjArmorType { get { return ObjData?.ArmorType ?? -1; } }
+        public sbyte ObjClassType { get { return ObjData?.ClassType ?? -1; } }
 
 
         /* Readonly text splits */
@@ -877,6 +879,25 @@ namespace GnollHackX
                 }
             }
             return res;
+        }
+
+        public bool EquipmentSlotMatch(EquipmentSlot activeSlot)
+        {
+            if (activeSlot == null)
+                return false;
+
+            if ((activeSlot.WornFlag & obj_worn_flags.W_ARMOR) != 0)
+            {
+                if (activeSlot.ArmorType >= 0 && activeSlot.ArmorType < obj_armor_types.MAX_ARMOR_TYPES)
+                    return ObjArmorType == (sbyte)activeSlot.ArmorType;
+                else
+                    return ObjClassType == (sbyte)activeSlot.ObjClassType;
+            }
+            else if (activeSlot.ObjClassType > obj_class_types.ILLOBJ_CLASS)
+            {
+                return ObjClassType == (sbyte)activeSlot.ObjClassType;
+            }
+            return false;
         }
     }
 }

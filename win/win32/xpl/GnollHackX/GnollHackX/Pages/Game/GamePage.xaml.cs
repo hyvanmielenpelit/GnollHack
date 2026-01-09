@@ -16796,56 +16796,41 @@ namespace GnollHackX.Pages.Game
         private float _savedMenuCanvasWidth = 0;
         private float _savedMenuCanvasHeight = 0;
 
-        private struct EquipmentSlot
-        {
-            public readonly string NameUp;
-            public readonly string NameBottom;
-            public readonly int PictureIndex;
-            public readonly int AltPictureIndex;
-            public readonly int AltPictureStyle;
-            public readonly obj_worn_flags WornFlag;
-            public readonly string BitmapName;
-
-            public EquipmentSlot(string nameUp, string nameBottom, int pictureIndex, int altPictureIndex, int altPictureStyle, obj_worn_flags wornFlag, string bitmapName)
-            {
-                NameUp = nameUp;
-                NameBottom = nameBottom;
-                PictureIndex = pictureIndex;
-                AltPictureIndex = altPictureIndex;
-                AltPictureStyle = altPictureStyle;
-                WornFlag = wornFlag;
-                BitmapName = bitmapName;
-            }
-        }
 
         SKColor _darkEquipmentSlotTitleColor = new SKColor(192, 192, 192);
         EquipmentSlot[] _equipmentSlots = new EquipmentSlot[] 
         {
-            new EquipmentSlot("Right Hand", "", (int)InventorySlotPictureIndices.WeaponRight, 0, 0, obj_worn_flags.W_WEP, ".Assets.UI.wield.png"),
-            new EquipmentSlot("Left Hand", "", (int)InventorySlotPictureIndices.WeaponLeft, (int)InventorySlotPictureIndices.Shield, 1, obj_worn_flags.W_WEP2, ".Assets.UI.fight.png"),
-            new EquipmentSlot("Right Swap", "", (int)InventorySlotPictureIndices.SwapWeaponRight, 0, 0, obj_worn_flags.W_SWAPWEP, ".Assets.UI.swap.png"),
-            new EquipmentSlot("Left Swap", "", (int)InventorySlotPictureIndices.SwapWeaponLeft, 0, 0, obj_worn_flags.W_SWAPWEP2, ".Assets.UI.swap.png"),
-            new EquipmentSlot("Quiver", "", (int)InventorySlotPictureIndices.Quiver, 0, 0, obj_worn_flags.W_QUIVER, ".Assets.UI.quiver.png"),
-            new EquipmentSlot("Amulet", "",(int)InventorySlotPictureIndices.Amulet, 0, 0, obj_worn_flags.W_AMUL, ".Assets.UI.puton.png"),
-            new EquipmentSlot("Suit", "", (int)InventorySlotPictureIndices.Suit, 0, 0, obj_worn_flags.W_ARM, ".Assets.UI.wear.png"),
-            new EquipmentSlot("Cloak", "", (int)InventorySlotPictureIndices.Cloak, 0, 0, obj_worn_flags.W_ARMC, ".Assets.UI.wear.png"),
-            new EquipmentSlot("Robe", "", (int)InventorySlotPictureIndices.Robe, 0, 0, obj_worn_flags.W_ARMO, ".Assets.UI.wear.png"),
-            new EquipmentSlot("Shirt", "", (int)InventorySlotPictureIndices.Shirt, 0, 0, obj_worn_flags.W_ARMU, ".Assets.UI.wear.png"),
-            new EquipmentSlot("Helmet", "", (int)InventorySlotPictureIndices.Helmet, 0, 0, obj_worn_flags.W_ARMH, ".Assets.UI.wear.png"),
-            new EquipmentSlot("Gloves", "", (int)InventorySlotPictureIndices.Gloves, 0, 0, obj_worn_flags.W_ARMG, ".Assets.UI.wear.png"),
-            new EquipmentSlot("Boots", "", (int)InventorySlotPictureIndices.Boots, 0, 0, obj_worn_flags.W_ARMF, ".Assets.UI.travel.png"),
-            new EquipmentSlot("Bracers", "", (int)InventorySlotPictureIndices.Bracers, 0, 0, obj_worn_flags.W_ARMB, ".Assets.UI.puton.png"),
-            new EquipmentSlot("Left Ring", "", (int)InventorySlotPictureIndices.RingLeft, 0, 0, obj_worn_flags.W_RINGL, ".Assets.UI.leftring.png"),
-            new EquipmentSlot("Right Ring", "", (int)InventorySlotPictureIndices.RingRight, 0, 0, obj_worn_flags.W_RINGR, ".Assets.UI.rightring.png"),
-            new EquipmentSlot("Blindfold", "", (int)InventorySlotPictureIndices.Blindfold, 0, 0, obj_worn_flags.W_BLINDFOLD, ".Assets.UI.puton.png"),
-            new EquipmentSlot("Misc", "1", (int)InventorySlotPictureIndices.Miscellaneous1, 0, 0, obj_worn_flags.W_MISC, ".Assets.UI.puton.png"),
-            new EquipmentSlot("Misc", "2", (int)InventorySlotPictureIndices.Miscellaneous2, 0, 0, obj_worn_flags.W_MISC2, ".Assets.UI.puton.png"),
-            new EquipmentSlot("Misc", "3", (int)InventorySlotPictureIndices.Miscellaneous3, 0, 0, obj_worn_flags.W_MISC3, ".Assets.UI.puton.png"),
-            new EquipmentSlot("Misc", "4", (int)InventorySlotPictureIndices.Miscellaneous4, 0, 0, obj_worn_flags.W_MISC4, ".Assets.UI.puton.png"),
-            new EquipmentSlot("Misc", "5", (int)InventorySlotPictureIndices.Miscellaneous5, 0, 0, obj_worn_flags.W_MISC5, ".Assets.UI.puton.png"),
+            new EquipmentSlot("Right Hand", (int)InventorySlotPictureIndices.WeaponRight, 0, 0, obj_worn_flags.W_WEP, obj_class_types.WEAPON_CLASS, obj_armor_types.MAX_ARMOR_TYPES),
+            new EquipmentSlot("Left Hand", (int)InventorySlotPictureIndices.WeaponLeft, (int)InventorySlotPictureIndices.Shield, 1, obj_worn_flags.W_WEP2, obj_class_types.ARMOR_CLASS, obj_armor_types.ARM_SHIELD),
+            new EquipmentSlot("Right Swap", (int)InventorySlotPictureIndices.SwapWeaponRight, 0, 0, obj_worn_flags.W_SWAPWEP, obj_class_types.ILLOBJ_CLASS, obj_armor_types.MAX_ARMOR_TYPES),
+            new EquipmentSlot("Left Swap", (int)InventorySlotPictureIndices.SwapWeaponLeft, 0, 0, obj_worn_flags.W_SWAPWEP2, obj_class_types.ILLOBJ_CLASS, obj_armor_types.MAX_ARMOR_TYPES),
+            new EquipmentSlot("Quiver", (int)InventorySlotPictureIndices.Quiver, 0, 0, obj_worn_flags.W_QUIVER, obj_class_types.WEAPON_CLASS, obj_armor_types.MAX_ARMOR_TYPES),
+            new EquipmentSlot("Amulet",(int)InventorySlotPictureIndices.Amulet, 0, 0, obj_worn_flags.W_AMUL, obj_class_types.AMULET_CLASS, obj_armor_types.MAX_ARMOR_TYPES),
+            new EquipmentSlot("Suit", (int)InventorySlotPictureIndices.Suit, 0, 0, obj_worn_flags.W_ARM, obj_class_types.ARMOR_CLASS, obj_armor_types.ARM_SUIT),
+            new EquipmentSlot("Cloak", (int)InventorySlotPictureIndices.Cloak, 0, 0, obj_worn_flags.W_ARMC, obj_class_types.ARMOR_CLASS, obj_armor_types.ARM_CLOAK),
+            new EquipmentSlot("Robe", (int)InventorySlotPictureIndices.Robe, 0, 0, obj_worn_flags.W_ARMO, obj_class_types.ARMOR_CLASS, obj_armor_types.ARM_ROBE),
+            new EquipmentSlot("Shirt", (int)InventorySlotPictureIndices.Shirt, 0, 0, obj_worn_flags.W_ARMU, obj_class_types.ARMOR_CLASS, obj_armor_types.ARM_SHIRT),
+            new EquipmentSlot("Helmet", (int)InventorySlotPictureIndices.Helmet, 0, 0, obj_worn_flags.W_ARMH, obj_class_types.ARMOR_CLASS, obj_armor_types.ARM_HELM),
+            new EquipmentSlot("Gloves", (int)InventorySlotPictureIndices.Gloves, 0, 0, obj_worn_flags.W_ARMG, obj_class_types.ARMOR_CLASS, obj_armor_types.ARM_GLOVES),
+            new EquipmentSlot("Boots", (int)InventorySlotPictureIndices.Boots, 0, 0, obj_worn_flags.W_ARMF, obj_class_types.ARMOR_CLASS, obj_armor_types.ARM_BOOTS),
+            new EquipmentSlot("Bracers", (int)InventorySlotPictureIndices.Bracers, 0, 0, obj_worn_flags.W_ARMB, obj_class_types.ARMOR_CLASS, obj_armor_types.ARM_BRACERS),
+            new EquipmentSlot("Left Ring", (int)InventorySlotPictureIndices.RingLeft, 0, 0, obj_worn_flags.W_RINGL, obj_class_types.RING_CLASS, obj_armor_types.MAX_ARMOR_TYPES),
+            new EquipmentSlot("Right Ring", (int)InventorySlotPictureIndices.RingRight, 0, 0, obj_worn_flags.W_RINGR, obj_class_types.RING_CLASS, obj_armor_types.MAX_ARMOR_TYPES),
+            new EquipmentSlot("Blindfold", (int)InventorySlotPictureIndices.Blindfold, 0, 0, obj_worn_flags.W_BLINDFOLD, obj_class_types.TOOL_CLASS, obj_armor_types.MAX_ARMOR_TYPES),
+            new EquipmentSlot("Misc", (int)InventorySlotPictureIndices.Miscellaneous1, 0, 0, obj_worn_flags.W_MISC, obj_class_types.MISCELLANEOUS_CLASS, obj_armor_types.MAX_ARMOR_TYPES),
+            new EquipmentSlot("Misc", (int)InventorySlotPictureIndices.Miscellaneous2, 0, 0, obj_worn_flags.W_MISC2, obj_class_types.MISCELLANEOUS_CLASS, obj_armor_types.MAX_ARMOR_TYPES),
+            new EquipmentSlot("Misc", (int)InventorySlotPictureIndices.Miscellaneous3, 0, 0, obj_worn_flags.W_MISC3, obj_class_types.MISCELLANEOUS_CLASS, obj_armor_types.MAX_ARMOR_TYPES),
+            new EquipmentSlot("Misc", (int)InventorySlotPictureIndices.Miscellaneous4, 0, 0, obj_worn_flags.W_MISC4, obj_class_types.MISCELLANEOUS_CLASS, obj_armor_types.MAX_ARMOR_TYPES),
+            new EquipmentSlot("Misc", (int)InventorySlotPictureIndices.Miscellaneous5, 0, 0, obj_worn_flags.W_MISC5, obj_class_types.MISCELLANEOUS_CLASS, obj_armor_types.MAX_ARMOR_TYPES),
         };
+        EquipmentSlot _equipmentSlotActive = null;
+        EquipmentSlot EquipmentSlotActive { get { return Interlocked.CompareExchange(ref _equipmentSlotActive, null, null); } set { Interlocked.Exchange(ref _equipmentSlotActive, value); } }
+        SKRect[] _equipmentDrawBounds = new SKRect[32];
+        SKRect[] _equipmentPaintDrawBounds = new SKRect[32];
+        SKRect[] _equipmentTouchDrawBounds = new SKRect[32];
+        private readonly object _equipmentRectLock = new object();
+
         List<GHMenuItem> _wornMenuItems = new List<GHMenuItem>(32);
-        //SKRect SelectedEquipmentDrawBounds = new SKRect();
         int _selectedEquipmentIndex = -1;
         int SelectedEquipmentIndex { get { return Interlocked.CompareExchange(ref _selectedEquipmentIndex, 0, 0); } set { Interlocked.Exchange(ref _selectedEquipmentIndex, value); } }
         struct DrawBoundInfo
@@ -16869,7 +16854,7 @@ namespace GnollHackX.Pages.Game
             foreach(var slot in _equipmentSlots)
             {
                 if (wornBits == (long)slot.WornFlag)
-                    return slot.NameUp;
+                    return slot.SlotName;
             }
             return "";
         }
@@ -17009,6 +16994,7 @@ namespace GnollHackX.Pages.Game
                 GHMenuItem selectedEquipmentItem = null;
                 float innerleftpadding = 0;
                 float curmenuoffset = isEquipmentSideShown ? InterlockedEquipmentMenuScrollOffset : InterlockedMenuScrollOffset;
+                EquipmentSlot equipmentSlotActive = EquipmentSlotActive;
 
                 if (isEquipmentSideShown)
                 {
@@ -17052,9 +17038,11 @@ namespace GnollHackX.Pages.Game
                     bool gridHeightFirst = true;
                     bool isBimanual = false;
                     bool isSwapBimanual = false;
+                    int equipIdx = -1;
 
                     foreach (var slot in _equipmentSlots)
                     {
+                        equipIdx++;
                         GHMenuItem foundItem = null;
                         int foundItemIndex = -1;
                         if ((allWornBits & (long)slot.WornFlag) != 0)
@@ -17084,8 +17072,8 @@ namespace GnollHackX.Pages.Game
                         //float textpadding = (minrowheight - (textPaint.FontMetrics.Descent - textPaint.FontMetrics.Ascent)) / 2;
                         x += framewidth / 2;
                         y += textpadding;
-                        if (!string.IsNullOrEmpty(slot.NameUp))
-                            textPaint.DrawTextOnCanvas(canvas, slot.NameUp, x, y, SKTextAlign.Center);
+                        if (!string.IsNullOrEmpty(slot.SlotName))
+                            textPaint.DrawTextOnCanvas(canvas, slot.SlotName, x, y, SKTextAlign.Center);
                         //y += -textpadding + framepadding + pictureverticalpadding + minrowheight + pictureverticalpadding + framepadding - frameborderpadding - textPaint.FontMetrics.Descent;
                         //if (!string.IsNullOrEmpty(slot.NameBottom))
                         //    textPaint.DrawTextOnCanvas(canvas, slot.NameBottom, x, y, SKTextAlign.Center);
@@ -17095,9 +17083,9 @@ namespace GnollHackX.Pages.Game
                         float highLightPadding = (framewidth * 4) / 177;
                         SKRect picRect = new SKRect(x, y, x + framewidth, y + framewidth);
                         SKRect highlightRect = new SKRect(x + highLightPadding, y + highLightPadding, x + framewidth - highLightPadding, y + framewidth - highLightPadding);
-
+                        _equipmentPaintDrawBounds[equipIdx] = picRect;
                         bool selMatches = selectionIndex >= 0 && foundItemIndex >= 0 && selectionIndex == foundItemIndex;
-                        bool isHighlighted = foundItem != null && (selMatches || foundItem.Selected);
+                        bool isHighlighted = (foundItem != null && (selMatches || foundItem.Selected)) || (equipmentSlotActive != null && slot.WornFlag == equipmentSlotActive.WornFlag);
                         bool isNotActive = (slot.WornFlag == obj_worn_flags.W_WEP2 && isBimanual) || (slot.WornFlag == obj_worn_flags.W_SWAPWEP2 && isSwapBimanual);
                         if (foundItem != null && selMatches)
                         {
@@ -17196,9 +17184,25 @@ namespace GnollHackX.Pages.Game
                     x = leftmenupadding + innerleftpadding;
                     y = gridHeight;
                     TotalEquipmentMenuHeight = y - curmenuoffset;
+
+                    lockTaken = false;
+                    try
+                    {
+                        Monitor.TryEnter(_equipmentRectLock, ref lockTaken);
+                        if (lockTaken)
+                        {
+                            _equipmentPaintDrawBounds.CopyTo(_equipmentDrawBounds, 0);
+                        }
+                    }
+                    finally
+                    {
+                        if (lockTaken)
+                            Monitor.Exit(_equipmentRectLock);
+                    }
+                    lockTaken = false;
                 }
 
-                if (!isEquipmentSideShown || selectedEquipmentItem != null)
+                if (!isEquipmentSideShown || selectedEquipmentItem != null || equipmentSlotActive != null)
                 {
                     if (!isEquipmentSideShown)
                         y = curmenuoffset;
@@ -17237,7 +17241,7 @@ namespace GnollHackX.Pages.Game
                             foreach (GHMenuItem mi in menuItems)
                             {
                                 idx++;
-                                if (isEquipmentSideShown && selectedEquipmentItem != mi)
+                                if (isEquipmentSideShown && (equipmentSlotActive != null ? mi.EquipmentSlotMatch(equipmentSlotActive) : selectedEquipmentItem != mi))
                                     continue;
 
                                 bool IsMiButton = mi.IsButton;
@@ -18502,6 +18506,23 @@ namespace GnollHackX.Pages.Game
             {
                 canvasheight = _savedMenuCanvasHeight;
             }
+
+            bool lockTaken = false;
+            try
+            {
+                Monitor.TryEnter(_equipmentRectLock, ref lockTaken);
+                if (lockTaken)
+                {
+                    _equipmentDrawBounds.CopyTo(_equipmentTouchDrawBounds, 0);
+                }
+            }
+            finally
+            {
+                if (lockTaken)
+                    Monitor.Exit(_equipmentRectLock);
+            }
+            lockTaken = false;
+
             float bottomScrollLimit = Math.Min(0, canvasheight - TotalEquipmentMenuHeight);
             switch (e?.ActionType)
             {
@@ -18996,6 +19017,14 @@ namespace GnollHackX.Pages.Game
             bool okClicked = false;
             int clickIdx = -1;
             long identifier = 0;
+            for (int idx = 0; idx < _equipmentSlots.Length; idx++)
+            {
+                if (_equipmentTouchDrawBounds[idx].Contains(e.Location))
+                {
+                    EquipmentSlotActive = _equipmentSlots[idx];
+                    break;
+                }
+            }
             var menuItems = MenuCanvas.MenuItems;
             if (menuItems == null)
                 return new MenuClickResult(okClicked, clickIdx, identifier);
@@ -19569,6 +19598,8 @@ namespace GnollHackX.Pages.Game
                 _menuScrollSpeedRecordOn = false;
                 _menuScrollSpeedRecords.Clear();
             }
+
+            EquipmentSlotActive = null;
 
             bool oldMenuRefresh = MenuRefresh;
             bool doAnim = GHApp.EquipmentFlipAnimation;

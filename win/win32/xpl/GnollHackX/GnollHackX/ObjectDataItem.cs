@@ -129,6 +129,21 @@ namespace GnollHackX
                 return ObjData.oclass == (sbyte)obj_class_types.ARMOR_CLASS;
             }
         }
+        public sbyte ArmorType
+        {
+            get
+            {
+                return ObjData.oclass == (sbyte)obj_class_types.ARMOR_CLASS ? OtypData.oc_subtyp : (sbyte)-1;
+            }
+        }
+        public sbyte ClassType
+        {
+            get
+            {
+                return ObjData.oclass;
+            }
+        }
+
         public bool IsShield
         {
             get

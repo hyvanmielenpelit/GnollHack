@@ -1319,6 +1319,29 @@ namespace GnollHackX
         NumPictureIndices
     }
 
+    public class EquipmentSlot
+    {
+        public readonly string SlotName;
+        public readonly int PictureIndex;
+        public readonly int AltPictureIndex;
+        public readonly int AltPictureStyle;
+        public readonly obj_worn_flags WornFlag;
+        public readonly obj_class_types ObjClassType;
+        public readonly obj_armor_types ArmorType;
+
+        public EquipmentSlot(string slotName, int pictureIndex, int altPictureIndex, int altPictureStyle, obj_worn_flags wornFlag, obj_class_types objClassType, obj_armor_types armorType)
+        {
+            SlotName = slotName;
+            PictureIndex = pictureIndex;
+            AltPictureIndex = altPictureIndex;
+            AltPictureStyle = altPictureStyle;
+            WornFlag = wornFlag;
+            ObjClassType = objClassType;
+            ArmorType = armorType;
+        }
+    }
+
+
     [StructLayout(LayoutKind.Sequential)]
     public struct monst_info
     {
