@@ -709,16 +709,16 @@ namespace GnollHackX.Unknown
             }
         }
 
-        public async Task InitializeSecrets(Secrets secrets)
+        public async Task InitializeFilesInSettings(Secrets settings)
         {
-            if (secrets == null)
+            if (settings == null)
                 return;
 
             string filesdir = GetGnollHackPath();
 #if __ANDROID__
             AssetManager assets = MainActivity.StaticAssets;
 #endif
-            foreach (SecretsDirectory sdir in secrets.directories)
+            foreach (SecretsDirectory sdir in settings.directories)
             {
                 string fulldirepath = Path.Combine(filesdir, sdir.name);
                 if (!Directory.Exists(fulldirepath))
@@ -731,7 +731,7 @@ namespace GnollHackX.Unknown
                 }
             }
             //int packfilemaxsize = 512 * 1024 * 1024;
-            foreach (SecretsFile sfile in secrets.files)
+            foreach (SecretsFile sfile in settings.files)
             {
                 string assetfile = sfile.name;
                 string sfiledir = sfile.source_directory;

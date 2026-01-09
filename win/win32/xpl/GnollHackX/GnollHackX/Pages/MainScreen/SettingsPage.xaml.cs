@@ -942,7 +942,7 @@ namespace GnollHackX.Pages.MainScreen
             {
                 try
                 {
-                    await GHApp.GnollHackService.InitializeSecrets(GHApp.CurrentSecrets);
+                    await GHApp.GnollHackService.InitializeFilesInSettings(GHApp.CurrentSettings);
                 }
                 catch (Exception ex)
                 {

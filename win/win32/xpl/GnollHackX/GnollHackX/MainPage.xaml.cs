@@ -1106,24 +1106,16 @@ namespace GnollHackX
             TryInitializeFMOD();
         }
 
-        public void TryReadSecrets()
+        public void TryReadSettings()
         {
             try
             {
-                GHApp.ReadSecrets();
-                Array.Sort<SecretsFile>(GHApp.CurrentSecrets.files, new SecretsFileSizeComparer());
+                GHApp.ReadSettings();
+                Array.Sort<SecretsFile>(GHApp.CurrentSettings.files, new SecretsFileSizeComparer());
             }
             catch (Exception ex)
             {
                 DisplayAlertGrid("Reading Secrets File Failed", "GnollHack failed to read secrets file: " + ex.Message, "OK", GHColors.Red);
-            }
-            try
-            {
-                GHApp.ReadUserSecrets();
-            }
-            catch (Exception ex)
-            {
-                DisplayAlertGrid("Reading User Secrets File Failed", "GnollHack failed to read user secrets file: " + ex.Message, "OK", GHColors.Red);
             }
         }
 
@@ -1142,7 +1134,7 @@ namespace GnollHackX
         {
             try
             {
-                await GHApp.GnollHackService.InitializeSecrets(GHApp.CurrentSecrets);
+                await GHApp.GnollHackService.InitializeFilesInSettings(GHApp.CurrentSettings);
             }
             catch (Exception ex)
             {
@@ -1178,7 +1170,7 @@ namespace GnollHackX
         {
             GHApp.InitFileDescriptors();
 
-            TryReadSecrets();
+            TryReadSettings();
             await InitializeServices();
 
             GHApp.InitAdditionalTypefaces();

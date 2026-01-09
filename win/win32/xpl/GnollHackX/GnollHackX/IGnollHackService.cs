@@ -11,7 +11,7 @@ namespace GnollHackX
     public interface IGnollHackService
     {
         Task InitializeGnollHack();
-        Task InitializeSecrets(Secrets secrets);
+        Task InitializeFilesInSettings(Secrets settings);
         Task ResetDefaultsFile();
 
         void LoadLibrary();

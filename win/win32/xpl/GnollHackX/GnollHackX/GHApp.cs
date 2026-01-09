@@ -1629,15 +1629,15 @@ namespace GnollHackX
             }
         }
 
-        private static Secrets _currentSecrets = null;
-        public static Secrets CurrentSecrets
+        private static Secrets _currentSettings = null;
+        public static Secrets CurrentSettings
         {
             get
-            { return _currentSecrets; }
+            { return _currentSettings; }
             set
-            { _currentSecrets = value; }
+            { _currentSettings = value; }
         }
-        public static void ReadSecrets()
+        public static void ReadSettings()
         {
             Assembly assembly = typeof(App).GetTypeInfo().Assembly;
             string json = "";
@@ -1656,7 +1656,7 @@ namespace GnollHackX
                 }
             }
 
-            CurrentSecrets = JsonConvert.DeserializeObject<Secrets>(json);
+            CurrentSettings = JsonConvert.DeserializeObject<Secrets>(json);
         }
 
         private static UserSecrets _currentUserSecrets = null;
@@ -1687,6 +1687,18 @@ namespace GnollHackX
             }
 
             CurrentUserSecrets = JsonConvert.DeserializeObject<UserSecrets>(json);
+        }
+
+        public static void TryReadSecrets()
+        {
+            try
+            {
+                ReadUserSecrets();
+            }
+            catch (Exception ex)
+            {
+                MaybeWriteGHLog("GnollHack failed to read user secrets file: " + ex.Message);
+            }
         }
 
         //private static readonly object _aggregateSessionPlayTimeLock = new object();
@@ -2356,7 +2368,7 @@ namespace GnollHackX
             bool resetfiles = Preferences.Get("ResetExternalFiles", true);
             if (resetfiles)
             {
-                foreach (SecretsFile sf in CurrentSecrets.files)
+                foreach (SecretsFile sf in CurrentSettings.files)
                 {
                     if (resetfiles)
                     {
@@ -5079,7 +5091,7 @@ namespace GnollHackX
             if (secrets == null) return 0;
             if (sd == null) return 0;
             int cnt = 0;
-            foreach (SecretsFile sf in CurrentSecrets.files)
+            foreach (SecretsFile sf in CurrentSettings.files)
             {
                 if (sf.target_directory == sd.name && IsSecretsFileSavedToDisk(sf)) cnt++;
             }
@@ -5095,7 +5107,7 @@ namespace GnollHackX
 
         public static async Task AddLoadableSoundBanks()
         {
-            foreach (SecretsFile sf in CurrentSecrets.files)
+            foreach (SecretsFile sf in CurrentSettings.files)
             {
                 if (sf.type == "sound_bank")
                 {
@@ -5137,7 +5149,7 @@ namespace GnollHackX
         {
             string ghdir = GHPath;
 
-            foreach (SecretsFile sf in CurrentSecrets.files)
+            foreach (SecretsFile sf in CurrentSettings.files)
             {
                 if (!IsSecretsFileSavedToDisk(sf))
                 {
@@ -5154,12 +5166,12 @@ namespace GnollHackX
                     }
                 }
             }
-            foreach (SecretsDirectory sd in CurrentSecrets.directories)
+            foreach (SecretsDirectory sd in CurrentSettings.directories)
             {
                 if (string.IsNullOrWhiteSpace(sd.name))
                     continue;
 
-                if (CountSecretsFilesSavedToDirectory(CurrentSecrets, sd) > 0)
+                if (CountSecretsFilesSavedToDirectory(CurrentSettings, sd) > 0)
                     continue;
 
                 string sdir = Path.Combine(ghdir, sd.name);

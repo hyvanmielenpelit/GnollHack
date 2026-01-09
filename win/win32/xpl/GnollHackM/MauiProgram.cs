@@ -50,7 +50,9 @@ public static class MauiProgram
 {
     public static MauiApp CreateMauiApp()
 	{
-		var builder = MauiApp.CreateBuilder();
+        GHApp.TryReadSecrets();
+
+        var builder = MauiApp.CreateBuilder();
 		builder
 			.UseMauiApp<App>()
             .UseSkiaSharp()
@@ -68,7 +70,7 @@ public static class MauiProgram
 #if SENTRY && !WINDOWS
             .UseSentry(options => {
                   // The DSN is the only required setting.
-                  options.Dsn = "https://c45d9f5d2540eae9538cb9aa78eb25cd@o4507617242906624.ingest.de.sentry.io/4507617248608336";
+                  options.Dsn = GHApp.CurrentUserSecrets?.DefaultSentryDNS ?? "";
 
                   // Use debug mode if you want to see what the SDK is doing.
                   // Debug messages are written to stdout with Console.Writeline,
@@ -94,7 +96,7 @@ public static class MauiProgram
             .UseSentry(options =>
             {
                 // The DSN is the only required setting.
-                options.Dsn = "https://c45d9f5d2540eae9538cb9aa78eb25cd@o4507617242906624.ingest.de.sentry.io/4507617248608336";
+                options.Dsn = GHApp.CurrentUserSecrets?.DefaultSentryDNS ?? "";
 
                 // Use debug mode if you want to see what the SDK is doing.
                 // Debug messages are written to stdout with Console.Writeline,

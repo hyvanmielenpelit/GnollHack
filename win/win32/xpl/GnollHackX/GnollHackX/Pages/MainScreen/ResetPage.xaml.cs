@@ -151,7 +151,7 @@ namespace GnollHackX.Pages.MainScreen
 
                 Dictionary<string, string> saveverdict = new Dictionary<string, string>();
                 Dictionary<string, DateTime> savetimedict = new Dictionary<string, DateTime>();
-                foreach (SecretsFile sf in GHApp.CurrentSecrets.files)
+                foreach (SecretsFile sf in GHApp.CurrentSettings.files)
                 {
                     bool has_vbv = Preferences.ContainsKey("Verify_" + sf.id + "_Version");
                     string vbv = Preferences.Get("Verify_" + sf.id + "_Version", "");
