@@ -259,7 +259,7 @@ struct context_info
     boolean quick_cast_spell_set;
     boolean reserved_boolA; // suppress_container_deletion_warning;
     boolean save_checkpoint;
-    boolean reserved_boolC;
+    boolean is_click_looking; // if so, do not clip
     boolean reserved_boolD;
     boolean reserved_boolE;
     boolean reserved_boolF;

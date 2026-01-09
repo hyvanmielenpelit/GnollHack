@@ -7916,6 +7916,7 @@ register char *cmd;
 #endif
     }
 
+    context.is_click_looking = FALSE;
     iflags.menu_requested = FALSE;
 #ifdef SAFERHANGUP
     if (program_state.done_hup)
@@ -8047,6 +8048,7 @@ register char *cmd;
         return;
     case NHKF_CLICKLOOK:
         context.move = FALSE;
+        context.is_click_looking = TRUE;
         do_look(2, &clicklook_cc);
         return;
     case NHKF_CLICKFIRE:

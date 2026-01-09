@@ -508,7 +508,10 @@ uchar resuming; /* 0 = new game, 1 = loaded a saved game, 2 = continued playing 
 
 #ifdef CLIPPING
         /* just before rhack */
-        cliparound(u.ux, u.uy, FALSE);
+        if (!context.is_click_looking)
+            cliparound(u.ux, u.uy, FALSE);
+        else
+            context.is_click_looking = FALSE;
 #endif
 
         u.umoved = FALSE;
