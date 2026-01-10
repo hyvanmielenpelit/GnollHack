@@ -17160,12 +17160,12 @@ namespace GnollHackX.Pages.Game
 
                         if (isNotActive && foundItem == null)
                         {
-                            if (isBimanual && foundBimanualItem != null)
+                            if (isNotActiveBimanual && foundBimanualItem != null)
                             {
                                 foundItem = foundBimanualItem;
                                 extraOpacity = 0.5f;
                             }
-                            else if (isSwapBimanual && foundBimanualSwapItem != null)
+                            else if (isNotActiveSwapBimanual && foundBimanualSwapItem != null)
                             {
                                 foundItem = foundBimanualSwapItem;
                                 extraOpacity = 0.5f;
