@@ -1812,6 +1812,7 @@ boolean mon_notices;
             if (mon_notices && mon->data->mmove && !rn2(10)) {
                 mon->mcanmove = 1;
                 mon->mfrozen = 0;
+                refresh_m_tile_gui_info(mon, TRUE);
             }
         }
     }

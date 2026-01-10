@@ -3656,6 +3656,7 @@ doturn()
                 mtmp->mflee = 0;
                 mtmp->mfrozen = 0;
                 mtmp->mcanmove = 1;
+                refresh_m_tile_gui_info(mtmp, TRUE);
             } else if (!check_magic_resistance_and_inflict_damage(mtmp, (struct obj*)0, (struct monst*)0, u.ulevel, 0, 0, TELL)) {
                 xlev = 6;
                 switch (mtmp->data->mlet) {

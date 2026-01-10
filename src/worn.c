@@ -1513,8 +1513,11 @@ boolean creation, commanded;
 
     mon->mfrozen = totaldelay;
     if (mon->mfrozen)
+    {
         mon->mcanmove = 0;
-
+        if (!creation)
+            refresh_m_tile_gui_info(mon, TRUE);
+    }
 }
 
 /* 0 if nothing happened, TRUE if new was worn (and old consequently removed, if any) */

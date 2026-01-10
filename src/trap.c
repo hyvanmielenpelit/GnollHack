@@ -6068,6 +6068,7 @@ struct trap *ttmp;
         /* After such manhandling, perhaps the effect wears off */
         mtmp->mcanmove = 1;
         mtmp->mfrozen = 0;
+        refresh_m_tile_gui_info(mtmp, TRUE);
         pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s stirs.", Monnam(mtmp));
     }
 

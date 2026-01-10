@@ -885,6 +885,7 @@ struct monst *steed;
         if (!rn2(frozen)) {
             steed->mfrozen = 0;
             steed->mcanmove = 1;
+            refresh_m_tile_gui_info(steed, TRUE);
         } else {
             /* didn't awake, but remaining duration is halved */
             steed->mfrozen = frozen;

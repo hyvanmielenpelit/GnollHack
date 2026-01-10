@@ -2048,6 +2048,7 @@ domove_core()
                         /* it's free to move on next turn */
                         u.ustuck->mfrozen = 1;
                         u.ustuck->msleeping = 0;
+                        refresh_m_tile_gui_info(u.ustuck, TRUE);
                     }
                 /*FALLTHRU*/
                 default:

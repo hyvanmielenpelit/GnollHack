@@ -4575,6 +4575,10 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
 
                                 switch (status_mark)
                                 {
+                                case STATUS_MARK_FROZEN:
+                                    if (!loc_is_you && mtmp->mfrozen > 0 && !Hallucination)
+                                        display_this_status_mark = TRUE;
+                                    break;
                                 case STATUS_MARK_EATING:
                                     if (!loc_is_you && mtmp->meating > 0 && !Hallucination)
                                         display_this_status_mark = TRUE;

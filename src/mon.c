@@ -1520,6 +1520,7 @@ update_monster_timeouts()
                     case LAUGHING:
                         mtmp->mfrozen += 1;
                         mtmp->mcanmove = 0;
+                        refresh_m_tile_gui_info(mtmp, TRUE);
                         if (canseemon(mtmp))
                         {
                             char laughbuf[BUFSZ] = "";
@@ -1540,6 +1541,7 @@ update_monster_timeouts()
                     case FUMBLING:
                         mtmp->mfrozen += 2;
                         mtmp->mcanmove = 0;
+                        refresh_m_tile_gui_info(mtmp, TRUE);
                         if (canseemon(mtmp))
                         {
                             if (nolimbs(mtmp->data) || slithy(mtmp->data))
@@ -1572,9 +1574,9 @@ update_monster_timeouts()
 
 
         /* reduce basic stat timers */
-
+        boolean need_update = FALSE;
         if (mtmp->mfrozen && !--mtmp->mfrozen)
-            mtmp->mcanmove = 1;
+            mtmp->mcanmove = 1, need_update = TRUE;
         if (mtmp->mstaying && !--mtmp->mstaying)
             mtmp->mwantstomove = 1;
         if (mtmp->mcarrying && !--mtmp->mcarrying)
@@ -1612,6 +1614,8 @@ update_monster_timeouts()
 
         if (iflags.wc2_statuslines > 3 && is_tame(mtmp))
             context.botl = 1; /* Updates only if necessary */
+        if (need_update)
+            refresh_m_tile_gui_info(mtmp, TRUE);
     }
 }
 

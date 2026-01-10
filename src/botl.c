@@ -1383,6 +1383,10 @@ boolean loc_is_you, ispeaceful, ispet, isdetected;
         boolean display_this_status_mark = FALSE;
         switch (status_mark)
         {
+        case STATUS_MARK_FROZEN:
+            if (!loc_is_you && mtmp->mfrozen > 0 && !Hallucination)
+                display_this_status_mark = TRUE;
+            break;
         case STATUS_MARK_EATING:
             if (!loc_is_you && mtmp->meating > 0 && !Hallucination)
                 display_this_status_mark = TRUE;
