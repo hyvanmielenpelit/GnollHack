@@ -1461,62 +1461,65 @@ boolean creation, commanded;
 
     update_all_mon_statistics(mon, creation);
 
-    struct obj* new_shirt = which_armor(mon, W_ARMU);
-    struct obj* new_suit = which_armor(mon, W_ARM);
-    struct obj* new_robe = which_armor(mon, W_ARMO);
-    struct obj* new_cloak = which_armor(mon, W_ARMC);
-    struct obj* new_gloves = which_armor(mon, W_ARMG);
-    struct obj* new_helmet = which_armor(mon, W_ARMH);
-    struct obj* new_bracers = which_armor(mon, W_ARMB);
-    struct obj* new_boots = which_armor(mon, W_ARMF);
-    struct obj* new_shield = which_armor(mon, W_ARMS);
-    struct obj* new_amulet = which_armor(mon, W_AMUL);
-    struct obj* new_ringr = which_armor(mon, W_RINGR);
-    struct obj* new_ringl = which_armor(mon, W_RINGL);
-    struct obj* new_misc1 = which_armor(mon, W_MISC);
-
-    int new_shirt_delay = new_shirt ? objects[new_shirt->otyp].oc_delay : 0;
-    int new_suit_delay = new_suit ? objects[new_suit->otyp].oc_delay : 0;
-    int new_robe_delay = new_robe ? objects[new_robe->otyp].oc_delay : 0;
-    int new_cloak_delay = new_cloak ? objects[new_cloak->otyp].oc_delay : 0;
-    int new_gloves_delay = new_gloves ? objects[new_gloves->otyp].oc_delay : 0;
-    int new_helmet_delay = new_helmet ? objects[new_helmet->otyp].oc_delay : 0;
-    int new_bracers_delay = new_bracers ? objects[new_bracers->otyp].oc_delay : 0;
-    int new_boots_delay = new_boots ? objects[new_boots->otyp].oc_delay : 0;
-    int new_shield_delay = new_shield ? objects[new_shield->otyp].oc_delay : 0;
-    int new_amulet_delay = new_amulet ? objects[new_amulet->otyp].oc_delay : 0;
-    int new_ringr_delay = new_ringr ? objects[new_ringr->otyp].oc_delay : 0;
-    int new_ringl_delay = new_ringl ? objects[new_ringl->otyp].oc_delay : 0;
-    int new_misc1_delay = new_misc1 ? objects[new_misc1->otyp].oc_delay : 0;
-
-    boolean takes_off_old_suit = wears_shirt || wears_suit;
-    boolean takes_off_old_robe = wears_shirt || wears_suit || wears_robe;
-    boolean takes_off_old_cloak = wears_shirt || wears_suit || wears_robe || wears_cloak;
-
-    int totaldelay = 0;
-    totaldelay += takes_off_old_cloak ? old_cloak_delay : 0;
-    totaldelay += takes_off_old_robe ? old_robe_delay : 0;
-    totaldelay += takes_off_old_suit ? old_suit_delay : 0;
-    totaldelay += wears_shirt ? old_shirt_delay + new_shirt_delay : 0;
-    totaldelay += wears_suit ? new_suit_delay : 0;
-    totaldelay += wears_robe ? new_robe_delay : 0;
-    totaldelay += wears_cloak ? new_cloak_delay : 0;
-    totaldelay += wears_gloves ? old_gloves_delay + new_gloves_delay : 0;
-    totaldelay += wears_helmet ? old_helmet_delay + new_helmet_delay : 0;
-    totaldelay += wears_bracers ? old_bracers_delay + new_bracers_delay : 0;
-    totaldelay += wears_boots ? old_boots_delay + new_boots_delay : 0;
-    totaldelay += wears_shield ? old_shield_delay + new_shield_delay : 0;
-    totaldelay += wears_amulet ? old_amulet_delay + new_amulet_delay : 0;
-    totaldelay += wears_ringl ? old_ringl_delay + new_ringl_delay : 0;
-    totaldelay += wears_ringr ? old_ringr_delay + new_ringr_delay : 0;
-    totaldelay += wears_misc1 ? old_misc1_delay + new_misc1_delay : 0;
-
-    mon->mfrozen = totaldelay;
-    if (mon->mfrozen)
+    /* Allocate delay only if not creation */
+    if (!creation)
     {
-        mon->mcanmove = 0;
-        if (!creation)
+        struct obj* new_shirt = which_armor(mon, W_ARMU);
+        struct obj* new_suit = which_armor(mon, W_ARM);
+        struct obj* new_robe = which_armor(mon, W_ARMO);
+        struct obj* new_cloak = which_armor(mon, W_ARMC);
+        struct obj* new_gloves = which_armor(mon, W_ARMG);
+        struct obj* new_helmet = which_armor(mon, W_ARMH);
+        struct obj* new_bracers = which_armor(mon, W_ARMB);
+        struct obj* new_boots = which_armor(mon, W_ARMF);
+        struct obj* new_shield = which_armor(mon, W_ARMS);
+        struct obj* new_amulet = which_armor(mon, W_AMUL);
+        struct obj* new_ringr = which_armor(mon, W_RINGR);
+        struct obj* new_ringl = which_armor(mon, W_RINGL);
+        struct obj* new_misc1 = which_armor(mon, W_MISC);
+
+        int new_shirt_delay = new_shirt ? objects[new_shirt->otyp].oc_delay : 0;
+        int new_suit_delay = new_suit ? objects[new_suit->otyp].oc_delay : 0;
+        int new_robe_delay = new_robe ? objects[new_robe->otyp].oc_delay : 0;
+        int new_cloak_delay = new_cloak ? objects[new_cloak->otyp].oc_delay : 0;
+        int new_gloves_delay = new_gloves ? objects[new_gloves->otyp].oc_delay : 0;
+        int new_helmet_delay = new_helmet ? objects[new_helmet->otyp].oc_delay : 0;
+        int new_bracers_delay = new_bracers ? objects[new_bracers->otyp].oc_delay : 0;
+        int new_boots_delay = new_boots ? objects[new_boots->otyp].oc_delay : 0;
+        int new_shield_delay = new_shield ? objects[new_shield->otyp].oc_delay : 0;
+        int new_amulet_delay = new_amulet ? objects[new_amulet->otyp].oc_delay : 0;
+        int new_ringr_delay = new_ringr ? objects[new_ringr->otyp].oc_delay : 0;
+        int new_ringl_delay = new_ringl ? objects[new_ringl->otyp].oc_delay : 0;
+        int new_misc1_delay = new_misc1 ? objects[new_misc1->otyp].oc_delay : 0;
+
+        boolean takes_off_old_suit = wears_shirt || wears_suit;
+        boolean takes_off_old_robe = wears_shirt || wears_suit || wears_robe;
+        boolean takes_off_old_cloak = wears_shirt || wears_suit || wears_robe || wears_cloak;
+
+        int totaldelay = 0;
+        totaldelay += takes_off_old_cloak ? old_cloak_delay : 0;
+        totaldelay += takes_off_old_robe ? old_robe_delay : 0;
+        totaldelay += takes_off_old_suit ? old_suit_delay : 0;
+        totaldelay += wears_shirt ? old_shirt_delay + new_shirt_delay : 0;
+        totaldelay += wears_suit ? new_suit_delay : 0;
+        totaldelay += wears_robe ? new_robe_delay : 0;
+        totaldelay += wears_cloak ? new_cloak_delay : 0;
+        totaldelay += wears_gloves ? old_gloves_delay + new_gloves_delay : 0;
+        totaldelay += wears_helmet ? old_helmet_delay + new_helmet_delay : 0;
+        totaldelay += wears_bracers ? old_bracers_delay + new_bracers_delay : 0;
+        totaldelay += wears_boots ? old_boots_delay + new_boots_delay : 0;
+        totaldelay += wears_shield ? old_shield_delay + new_shield_delay : 0;
+        totaldelay += wears_amulet ? old_amulet_delay + new_amulet_delay : 0;
+        totaldelay += wears_ringl ? old_ringl_delay + new_ringl_delay : 0;
+        totaldelay += wears_ringr ? old_ringr_delay + new_ringr_delay : 0;
+        totaldelay += wears_misc1 ? old_misc1_delay + new_misc1_delay : 0;
+
+        mon->mfrozen = totaldelay;
+        if (mon->mfrozen)
+        {
+            mon->mcanmove = 0;
             refresh_m_tile_gui_info(mon, TRUE);
+        }
     }
 }
 
