@@ -4639,7 +4639,7 @@ boolean* return_to_inv_ptr;
                     setapplyclasses(class_list);
                 else if (!strcmp(extcmdlist[i].getobj_word, "put items in"))
                     setapplyclasses(class_list);
-                else  if (!strcmp(extcmdlist[i].getobj_word, "ready"))
+                else if (!strcmp(extcmdlist[i].getobj_word, "ready"))
                 {
                     Strcpy(class_list, (uslinging()
                         || (uswapwep

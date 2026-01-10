@@ -154,13 +154,19 @@ namespace GnollHackX
         /* Get only properties */
         public bool IsGlyphVisible { get { return (Glyph != _noGlyph); } }
         public bool UseUpperSide { get { return GlyphImageSource.UseUpperSide; } }
+        public bool HasObjData { get { return ObjData != null; } }
         public bool IsObjWorn { get { return ObjData?.IsWorn ?? false; } }
         public long ObjWornBits { get { return ObjData?.WornBits ?? 0L; } }
         public bool IsObjArmor { get { return ObjData?.IsArmor ?? false; } }
         public bool IsObjShield { get { return ObjData?.IsShield ?? false; } }
-        public bool IsBimanual { get { return ObjData?.IsBimanual ?? false; } }
+        public bool IsObjWieldedWeapon { get { return ObjData?.IsWieldedWeapon ?? false; } }
+        public bool IsObjQuiverable { get { return ObjData?.IsQuiverable ?? false; } }
+        public bool IsObjBlindfold { get { return ObjData?.IsBlindfold ?? false; } }
+        public bool IsObjBimanual { get { return ObjData?.IsBimanual ?? false; } }
         public float MinimumTouchableTextSize { get { return GHConstants.MenuDefaultRowHeight; } }
         public bool HasMultiColors { get { return NHAttributes != null && NHColors != null && Text != null; } }
+        public sbyte ObjArmorType { get { return ObjData?.ArmorType ?? -1; } }
+        public sbyte ObjClassType { get { return ObjData?.ClassType ?? -1; } }
 
 
         /* Readonly text splits */
@@ -877,6 +883,55 @@ namespace GnollHackX
                 }
             }
             return res;
+        }
+
+        public bool EquipmentSlotMatch(EquipmentSlot activeSlot, bool twoWeapOn)
+        {
+            if (activeSlot == null)
+                return false;
+
+            if (!HasObjData)
+                return false;
+
+            /* Show this slot's item */
+            if (((long)activeSlot.WornFlag & ObjWornBits) != 0)
+                return true;
+
+            /* Do not show any other worn items (relevant for miscellaneous and weapons) */
+            if (ObjWornBits != 0)
+                return false;
+
+            if ((activeSlot.WornFlag & obj_worn_flags.W_ARMOR) != 0)
+            {
+                if ((activeSlot.WornFlag & obj_worn_flags.W_WEP2) != 0)
+                {
+                    if (twoWeapOn)
+                        return IsObjWieldedWeapon || ObjArmorType == (sbyte)activeSlot.ArmorType;
+                    else
+                        return ObjArmorType == (sbyte)activeSlot.ArmorType;
+                }
+                else if (activeSlot.ArmorType >= 0 && activeSlot.ArmorType < obj_armor_types.MAX_ARMOR_TYPES)
+                    return ObjArmorType == (sbyte)activeSlot.ArmorType;
+                else
+                    return ObjClassType == (sbyte)activeSlot.ObjClassType;
+            }
+            else if ((activeSlot.WornFlag & obj_worn_flags.W_WIELDED_WEAPON) != 0)
+            {
+                return IsObjWieldedWeapon;
+            }
+            else if ((activeSlot.WornFlag & obj_worn_flags.W_QUIVER) != 0)
+            {
+                return IsObjQuiverable;
+            }
+            else if ((activeSlot.WornFlag & obj_worn_flags.W_BLINDFOLD) != 0)
+            {
+                return IsObjBlindfold;
+            }
+            else if (activeSlot.ObjClassType > obj_class_types.ILLOBJ_CLASS)
+            {
+                return ObjClassType == (sbyte)activeSlot.ObjClassType;
+            }
+            return false;
         }
     }
 }

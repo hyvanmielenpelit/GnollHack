@@ -1174,7 +1174,15 @@ namespace GnollHackX
         public sbyte obj_loc_y;
 
         public sbyte oc_subtyp;
-        public byte bimanual;
+        public byte ocdata_flags;
+    }
+
+    public enum ocdata_flag_types : byte
+    {
+        OCDATA_BIMANUAL = 0x01,
+        OCDATA_WIELDED_WEAPON = 0x02,
+        OCDATA_QUIVERABLE = 0x04,
+        OCDATA_BLINDFOLD = 0x08,
     }
 
     public enum obj_class_types
@@ -1318,6 +1326,29 @@ namespace GnollHackX
         Miscellaneous5,
         NumPictureIndices
     }
+
+    public class EquipmentSlot
+    {
+        public readonly string SlotName;
+        public readonly int PictureIndex;
+        public readonly int AltPictureIndex;
+        public readonly int AltPictureStyle;
+        public readonly obj_worn_flags WornFlag;
+        public readonly obj_class_types ObjClassType;
+        public readonly obj_armor_types ArmorType;
+
+        public EquipmentSlot(string slotName, int pictureIndex, int altPictureIndex, int altPictureStyle, obj_worn_flags wornFlag, obj_class_types objClassType, obj_armor_types armorType)
+        {
+            SlotName = slotName;
+            PictureIndex = pictureIndex;
+            AltPictureIndex = altPictureIndex;
+            AltPictureStyle = altPictureStyle;
+            WornFlag = wornFlag;
+            ObjClassType = objClassType;
+            ArmorType = armorType;
+        }
+    }
+
 
     [StructLayout(LayoutKind.Sequential)]
     public struct monst_info
