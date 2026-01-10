@@ -105,6 +105,7 @@ namespace GnollHackX
         RestartGameAfterPageDestruction,
         ForceExitThread,
         TerminateGnollHackAndRestartGameInNewGamePage,
+        ToggleZoomMini,
     }
 
     public struct AddContextMenuData

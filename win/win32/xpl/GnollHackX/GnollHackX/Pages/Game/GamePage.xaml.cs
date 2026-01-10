@@ -3132,6 +3132,9 @@ namespace GnollHackX.Pages.Game
                                 break;
                             case GHRequestType.RestoreZoom:
                                 break;
+                            case GHRequestType.ToggleZoomMini:
+                                ToggleZoomMiniButton_Clicked(this, EventArgs.Empty);
+                                break;
                             case GHRequestType.SaveFileTrackingSave:
                                 EnqueueTask(ref tasks, DoSaveFileTrackingSave(req.RequestLong, req.RequestString, req.RequestLong2, req.RequestString2));
                                 break;

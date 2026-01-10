@@ -137,6 +137,7 @@ namespace GnollHackX
 
         }
 
+        private bool _savedZoomMiniMode = false;
         private bool _gameHasEnded = false;
         private bool _fastForwardGameOver = false;
         private void GameOverHandling()
@@ -3529,8 +3530,14 @@ namespace GnollHackX
                 case (int)gui_command_types.GUI_CMD_ZOOM_TO_SCALE:
                     break;
                 case (int)gui_command_types.GUI_CMD_SAVE_ZOOM:
+                    _savedZoomMiniMode = ActiveGamePage?.ZoomMiniMode ?? false;
                     break;
                 case (int)gui_command_types.GUI_CMD_RESTORE_ZOOM:
+                    {
+                        GamePage gamePage = ActiveGamePage;
+                        if (gamePage != null && gamePage.ZoomMiniMode != _savedZoomMiniMode)
+                            RequestQueue.Enqueue(new GHRequest(this, GHRequestType.ToggleZoomMini));
+                    }
                     break;
                 case (int)gui_command_types.GUI_CMD_KEYBOARD_FOCUS:
                     if(!PlayingReplay)
