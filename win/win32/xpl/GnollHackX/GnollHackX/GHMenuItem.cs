@@ -154,6 +154,7 @@ namespace GnollHackX
         /* Get only properties */
         public bool IsGlyphVisible { get { return (Glyph != _noGlyph); } }
         public bool UseUpperSide { get { return GlyphImageSource.UseUpperSide; } }
+        public bool HasObjData { get { return ObjData != null; } }
         public bool IsObjWorn { get { return ObjData?.IsWorn ?? false; } }
         public long ObjWornBits { get { return ObjData?.WornBits ?? 0L; } }
         public bool IsObjArmor { get { return ObjData?.IsArmor ?? false; } }
@@ -888,9 +889,17 @@ namespace GnollHackX
         {
             if (activeSlot == null)
                 return false;
-            
+
+            if (!HasObjData)
+                return false;
+
+            /* Show this slot's item */
             if (((long)activeSlot.WornFlag & ObjWornBits) != 0)
                 return true;
+
+            /* Do not show any other worn items (relevant for miscellaneous and weapons) */
+            if (ObjWornBits != 0)
+                return false;
 
             if ((activeSlot.WornFlag & obj_worn_flags.W_ARMOR) != 0)
             {

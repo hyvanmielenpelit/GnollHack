@@ -403,6 +403,7 @@ enum elemental_enchantments {
     : !is_wieldable_weapon(o) && !is_wet_towel(o))
 
 #define uslinging() (uwep && objects[uwep->otyp].oc_skill == P_SLING)
+
 /* 'is_quest_artifact()' only applies to the current role's artifact */
 #define any_quest_artifact(o) ((o)->oartifact >= ART_ORB_OF_DETECTION)
 
@@ -664,6 +665,9 @@ enum elemental_enchantments {
     (is_otyp_rock((obj)->otyp))
 #define is_ore(obj)                                 \
     (is_otyp_ore((obj)->otyp))
+
+#define ammo_for_sling(o) (uslinging() && (is_rock(o) || ((o)->otyp == FLINT && objects[(o)->otyp].oc_name_known) \
+    || ((o)->oclass == GEM_CLASS && ((o)->material == MAT_GLASS || (o)->material == MAT_CRYSTAL) && objects[(o)->otyp].oc_name_known)))
 
 /* other */
 #define is_otyp_key(otyp)                                 \
