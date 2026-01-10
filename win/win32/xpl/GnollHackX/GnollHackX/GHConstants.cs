@@ -1174,7 +1174,15 @@ namespace GnollHackX
         public sbyte obj_loc_y;
 
         public sbyte oc_subtyp;
-        public byte bimanual;
+        public byte ocdata_flags;
+    }
+
+    public enum ocdata_flag_types : byte
+    {
+        OCDATA_BIMANUAL = 0x01,
+        OCDATA_WIELDED_WEAPON = 0x02,
+        OCDATA_QUIVERABLE = 0x04,
+        OCDATA_BLINDFOLD = 0x08,
     }
 
     public enum obj_class_types

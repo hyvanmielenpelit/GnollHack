@@ -158,7 +158,10 @@ namespace GnollHackX
         public long ObjWornBits { get { return ObjData?.WornBits ?? 0L; } }
         public bool IsObjArmor { get { return ObjData?.IsArmor ?? false; } }
         public bool IsObjShield { get { return ObjData?.IsShield ?? false; } }
-        public bool IsBimanual { get { return ObjData?.IsBimanual ?? false; } }
+        public bool IsObjWieldedWeapon { get { return ObjData?.IsWieldedWeapon ?? false; } }
+        public bool IsObjQuiverable { get { return ObjData?.IsQuiverable ?? false; } }
+        public bool IsObjBlindfold { get { return ObjData?.IsBlindfold ?? false; } }
+        public bool IsObjBimanual { get { return ObjData?.IsBimanual ?? false; } }
         public float MinimumTouchableTextSize { get { return GHConstants.MenuDefaultRowHeight; } }
         public bool HasMultiColors { get { return NHAttributes != null && NHColors != null && Text != null; } }
         public sbyte ObjArmorType { get { return ObjData?.ArmorType ?? -1; } }
@@ -881,17 +884,39 @@ namespace GnollHackX
             return res;
         }
 
-        public bool EquipmentSlotMatch(EquipmentSlot activeSlot)
+        public bool EquipmentSlotMatch(EquipmentSlot activeSlot, bool twoWeapOn)
         {
             if (activeSlot == null)
                 return false;
+            
+            if (((long)activeSlot.WornFlag & ObjWornBits) != 0)
+                return true;
 
             if ((activeSlot.WornFlag & obj_worn_flags.W_ARMOR) != 0)
             {
-                if (activeSlot.ArmorType >= 0 && activeSlot.ArmorType < obj_armor_types.MAX_ARMOR_TYPES)
+                if ((activeSlot.WornFlag & obj_worn_flags.W_WEP2) != 0)
+                {
+                    if (twoWeapOn)
+                        return IsObjWieldedWeapon || ObjArmorType == (sbyte)activeSlot.ArmorType;
+                    else
+                        return ObjArmorType == (sbyte)activeSlot.ArmorType;
+                }
+                else if (activeSlot.ArmorType >= 0 && activeSlot.ArmorType < obj_armor_types.MAX_ARMOR_TYPES)
                     return ObjArmorType == (sbyte)activeSlot.ArmorType;
                 else
                     return ObjClassType == (sbyte)activeSlot.ObjClassType;
+            }
+            else if ((activeSlot.WornFlag & obj_worn_flags.W_WIELDED_WEAPON) != 0)
+            {
+                return IsObjWieldedWeapon;
+            }
+            else if ((activeSlot.WornFlag & obj_worn_flags.W_QUIVER) != 0)
+            {
+                return IsObjQuiverable;
+            }
+            else if ((activeSlot.WornFlag & obj_worn_flags.W_BLINDFOLD) != 0)
+            {
+                return IsObjBlindfold;
             }
             else if (activeSlot.ObjClassType > obj_class_types.ILLOBJ_CLASS)
             {

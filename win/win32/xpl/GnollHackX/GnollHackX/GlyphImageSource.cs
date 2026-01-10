@@ -337,7 +337,7 @@ namespace GnollHackX
             }
         }
 
-        public void DrawOnCanvas(SKCanvas canvas, bool usingGL, bool isHighlighted, bool highFilterQuality, bool fixRects)
+        public void DrawOnCanvas(SKCanvas canvas, bool usingGL, bool isHighlighted, bool highFilterQuality, bool fixRects, float extraOpacity = 1.0f)
         {
             int signed_glyph = Glyph;
             int abs_glyph = Math.Abs(signed_glyph);
@@ -390,7 +390,7 @@ namespace GnollHackX
                     if (ObjData != null && ObjData.OtypData.semitransparent != 0)
                         opaqueness = 0.5f;
 
-                    paint.Color = paint.Color.WithAlpha((byte)(0xFF * Math.Min(1.0f, Math.Max(0.0f, opaqueness * Opacity))));
+                    paint.Color = paint.Color.WithAlpha((byte)(0xFF * Math.Min(1.0f, Math.Max(0.0f, opaqueness * extraOpacity * Opacity))));
 
                     if (enlargement_idx == 0)
                     {

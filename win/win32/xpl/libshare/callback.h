@@ -45,8 +45,14 @@ struct objclassdata
     schar obj_loc_y;
 
     schar oc_subtyp;
-    uchar bimanual;
+    uchar ocdata_flags;
 };
+
+#define OCDATA_BIMANUAL         0x01
+#define OCDATA_WIELDED_WEAPON   0x02
+#define OCDATA_QUIVERABLE       0x04
+#define OCDATA_BLINDFOLD        0x08
+
 
  /* General callback types */
 typedef void(__callconv* VoidVoidCallback)();
