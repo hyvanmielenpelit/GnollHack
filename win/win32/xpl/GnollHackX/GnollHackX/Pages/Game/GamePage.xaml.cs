@@ -4149,6 +4149,7 @@ namespace GnollHackX.Pages.Game
             }
             RefreshScreen = false;
 
+            EquipmentDrawFirstTime = true;
             MenuEquipmentSideShown = false;
             MenuDrawOnlyClear = true;
             MenuRefresh = false;
@@ -16830,8 +16831,13 @@ namespace GnollHackX.Pages.Game
         SKRect[] _equipmentPaintDrawBounds = new SKRect[32];
         SKRect[] _equipmentTouchDrawBounds = new SKRect[32];
         private readonly object _equipmentRectLock = new object();
+        private long _allWornBits = 0;
+
+        private int _equipmentDrawFirstTime = 1;
+        bool EquipmentDrawFirstTime { get { return Interlocked.CompareExchange(ref _equipmentDrawFirstTime, 0, 0) != 0; } set { Interlocked.Exchange(ref _equipmentDrawFirstTime, value ? 1 : 0); } }
 
         List<GHMenuItem> _wornMenuItems = new List<GHMenuItem>(32);
+        int[] _equipmentMatchingItems = new int[32];
         //int _selectedEquipmentIndex = -1;
         //int SelectedEquipmentIndex { get { return Interlocked.CompareExchange(ref _selectedEquipmentIndex, 0, 0); } set { Interlocked.Exchange(ref _selectedEquipmentIndex, value); } }
         struct DrawBoundInfo
@@ -16997,6 +17003,7 @@ namespace GnollHackX.Pages.Game
                 float curmenuoffset = isEquipmentSideShown ? InterlockedEquipmentMenuScrollOffset : InterlockedMenuScrollOffset;
                 EquipmentSlot equipmentSlotActive = EquipmentSlotActive;
                 bool menuIsTwoWeap = MenuIsTwoWeap;
+                bool equipmentDrawFirstTime = EquipmentDrawFirstTime;
 
                 if (isEquipmentSideShown)
                 {
@@ -17013,25 +17020,33 @@ namespace GnollHackX.Pages.Game
                     float totalgridwith = numColumns * framewidth + (numColumns - 1) * framexmargin;
                     innerleftpadding = Math.Max(0, (menuwidthoncanvas - totalgridwith) / 2);
 
-                    _wornMenuItems.Clear();
-                    long allWornBits = 0;
-
-                    for (int i = 0; i < MenuCanvas.MenuItems?.Count; i++)
+                    if (equipmentDrawFirstTime)
                     {
-                        var menuItem = MenuCanvas.MenuItems[i];
-                        if (menuItem != null)
+                        _wornMenuItems.Clear();
+                        _allWornBits = 0;
+                        for (int j = 0; j < _equipmentSlots.Length; j++)
+                            _equipmentMatchingItems[j] = 0;
+                        for (int i = 0; i < MenuCanvas.MenuItems?.Count; i++)
                         {
-                            long wornBits = menuItem.ObjWornBits;
-                            if (wornBits != 0L)
+                            var menuItem = MenuCanvas.MenuItems[i];
+                            if (menuItem != null)
                             {
-                                allWornBits |= wornBits;
-                                _wornMenuItems.Add(menuItem);
+                                long wornBits = menuItem.ObjWornBits;
+                                if (wornBits != 0L)
+                                {
+                                    _allWornBits |= wornBits;
+                                    _wornMenuItems.Add(menuItem);
+                                }
+                                for (int j = 0; j < _equipmentSlots.Length; j++)
+                                    if (menuItem.EquipmentSlotMatch(_equipmentSlots[j], menuIsTwoWeap))
+                                        _equipmentMatchingItems[j]++;
                             }
                         }
+                        EquipmentDrawFirstTime = false;
                     }
-
                     int count = 0;
-                    textPaint.TextSize = 10 * scale * customScale;
+                    float baseTextSize = 10 * scale * customScale;
+                    textPaint.TextSize = baseTextSize;
                     x += leftmenupadding + innerleftpadding;
                     float start_x = x;
                     SKImage slotBitmap = isDarkMode ? GHApp.InventorySlotDarkBitmap : GHApp.InventorySlotLightBitmap;
@@ -17049,7 +17064,7 @@ namespace GnollHackX.Pages.Game
                         equipIdx++;
                         GHMenuItem foundItem = null;
                         int foundItemIndex = -1;
-                        if ((allWornBits & (long)slot.WornFlag) != 0)
+                        if ((_allWornBits & (long)slot.WornFlag) != 0)
                         {
                             for (int i = 0; i < _wornMenuItems.Count; i++)
                             {
@@ -17138,6 +17153,8 @@ namespace GnollHackX.Pages.Game
                         x += framepadding;
                         y += framepadding;
 
+                        bool origItemFound = foundItem != null;
+
                         if (isNotActive && foundItem == null)
                         {
                             if (isBimanual && foundBimanualItem != null)
@@ -17173,9 +17190,15 @@ namespace GnollHackX.Pages.Game
                                 }
                                 if (foundItem.MaxCount > 1)
                                 {
+                                    textPaint.TextSize = baseTextSize * 1.1f;
                                     textPaint.Color = isDarkMode ? _darkEquipmentSlotTitleColor : SKColors.SaddleBrown;
-                                    textPaint.DrawTextOnCanvas(canvas, foundItem.MaxCount.ToString(), x + picturewidth, y + minrowheight + pictureverticalpadding - textPaint.FontMetrics.Descent, SKTextAlign.Right);
+                                    textPaint.DrawTextOnCanvas(canvas, foundItem.MaxCount.ToString(), 
+                                        //x + picturewidth, y + minrowheight + pictureverticalpadding - textPaint.FontMetrics.Descent,
+                                        //x + picturewidth, y - pictureverticalpadding + framepadding / 8 - textPaint.FontMetrics.Ascent,
+                                        x, y - pictureverticalpadding - textPaint.FontMetrics.Ascent,
+                                        SKTextAlign.Left);
                                     textPaint.Color = oldColor;
+                                    textPaint.TextSize = baseTextSize;
                                 }
                             }
                         }
@@ -17188,7 +17211,21 @@ namespace GnollHackX.Pages.Game
                             if (bitmap != null)
                                 canvas.DrawImage(bitmap, wornRect, textPaint.Paint);
                             textPaint.Paint.ColorFilter = null;
+
                             y += pictureverticalpadding;
+                        }
+
+                        int numOtherItems = _equipmentMatchingItems[equipIdx] - (origItemFound ? 1 : 0);
+                        if (numOtherItems > 0)
+                        {
+                            textPaint.TextSize = baseTextSize * 1.1f;
+                            textPaint.Color = isDarkMode ? _darkEquipmentSlotTitleColor : SKColors.SaddleBrown;
+                            textPaint.DrawTextOnCanvas(canvas, numOtherItems.ToString(),
+                                //x + picturewidth / 2, y + picturewidth / 2 - (textPaint.FontMetrics.Descent - textPaint.FontMetrics.Ascent) / 2 - textPaint.FontMetrics.Ascent,
+                                x + picturewidth - framepadding / 8, y - pictureverticalpadding + picturewidth - framepadding / 8,
+                                SKTextAlign.Right);
+                            textPaint.Color = oldColor;
+                            textPaint.TextSize = baseTextSize;
                         }
 
                         x = start_x;
@@ -19640,6 +19677,7 @@ namespace GnollHackX.Pages.Game
             }
 
             EquipmentSlotActive = null;
+            EquipmentDrawFirstTime = true;
 
             bool oldMenuRefresh = MenuRefresh;
             bool doAnim = GHApp.EquipmentFlipAnimation;
