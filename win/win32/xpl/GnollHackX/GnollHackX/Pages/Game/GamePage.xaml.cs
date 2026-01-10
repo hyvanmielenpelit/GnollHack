@@ -16679,6 +16679,28 @@ namespace GnollHackX.Pages.Game
             //SimpleGameMenuButton.IsEnabled = true;
         }
 
+        private void FlipMenuCanvas()
+        {
+            try
+            {
+                MainThread.BeginInvokeOnMainThread(async () =>
+                {
+                    try
+                    {
+                        await FlipMenuCanvasAsync();
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.WriteLine(ex);
+                    }
+                });
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+            }
+        }
+
         private void OpenGameMenu()
         {
             try
@@ -19669,8 +19691,9 @@ namespace GnollHackX.Pages.Game
 
         private int _menuEquipmentSideShown = 0;
         public bool MenuEquipmentSideShown { get { return Interlocked.CompareExchange(ref _menuEquipmentSideShown, 0, 0) != 0; } set { Interlocked.Exchange(ref _menuEquipmentSideShown, value ? 1 : 0); } }
-        private async Task FlipMenuCanvas()
+        private async Task FlipMenuCanvasAsync()
         {
+            MenuFlipButton.IsEnabled = false;
             lock (_menuScrollLock)
             {
                 _menuScrollSpeed = 0;
@@ -19710,40 +19733,41 @@ namespace GnollHackX.Pages.Game
                 }
                 MenuRefresh = oldMenuRefresh;
             }
+            MenuFlipButton.IsEnabled = true;
         }
 
-//        void FlipiOS(bool showBack)
-//        {
-//#if IOS || MACCATALYST
-//            if (MenuCanvas.Handler?.PlatformView is not UIView view)
-//                return;
+        //        void FlipiOS(bool showBack)
+        //        {
+        //#if IOS || MACCATALYST
+        //            if (MenuCanvas.Handler?.PlatformView is not UIView view)
+        //                return;
 
-//            // Ensure anchor is centered
-//            view.Layer.AnchorPoint = new CGPoint(0.5, 0.5);
+        //            // Ensure anchor is centered
+        //            view.Layer.AnchorPoint = new CGPoint(0.5, 0.5);
 
-//            var angle = showBack ? Math.PI : 0;
-//            var transform = CATransform3D.MakeRotation(
-//                (nfloat)angle,
-//                0,
-//                1,
-//                0
-//            );
+        //            var angle = showBack ? Math.PI : 0;
+        //            var transform = CATransform3D.MakeRotation(
+        //                (nfloat)angle,
+        //                0,
+        //                1,
+        //                0
+        //            );
 
-//            // Apply perspective AFTER creation
-//            transform.M34 = -1.0f / 800f; // adjust depth here
+        //            // Apply perspective AFTER creation
+        //            transform.M34 = -1.0f / 800f; // adjust depth here
 
-//            UIView.Animate(
-//                duration: 0.5,
-//                delay: 0,
-//                options: UIViewAnimationOptions.CurveEaseInOut,
-//                animation: () =>
-//                {
-//                    view.Layer.Transform = transform;
-//                },
-//                completion: null
-//            );
-//#endif
-//        }
+        //            UIView.Animate(
+        //                duration: 0.5,
+        //                delay: 0,
+        //                options: UIViewAnimationOptions.CurveEaseInOut,
+        //                animation: () =>
+        //                {
+        //                    view.Layer.Transform = transform;
+        //                },
+        //                completion: null
+        //            );
+        //#endif
+        //        }
 
         private bool _unselectOnTap = false;
 
@@ -19783,15 +19807,13 @@ namespace GnollHackX.Pages.Game
             }
             //else if (MenuCanvas.MenuStyle >= ghmenu_styles.GHMENU_STYLE_INVENTORY && MenuCanvas.MenuStyle <= ghmenu_styles.GHMENU_STYLE_OTHERS_INVENTORY)
             //{
-            //    await FlipMenuCanvas();
+            //    await FlipMenuCanvasAsync();
             //}
         }
 
         private async void MenuFlipButton_Clicked(object sender, EventArgs e)
         {
-            MenuFlipButton.IsEnabled = false;
-            await FlipMenuCanvas();
-            MenuFlipButton.IsEnabled = true;
+            await FlipMenuCanvasAsync();
         }
 
         private void MenuCountOkButton_Clicked(object sender, EventArgs e)
@@ -22738,7 +22760,7 @@ namespace GnollHackX.Pages.Game
                 }
                 handled = true;
             }
-            else if (MenuGrid.IsVisible && !MenuCountGrid.IsVisible && (key == GHSpecialKey.Escape || key == GHSpecialKey.Enter || key == GHSpecialKey.Up || key == GHSpecialKey.Down || key == GHSpecialKey.Space || key == GHSpecialKey.PageUp || key == GHSpecialKey.PageDown || key == GHSpecialKey.Home || key == GHSpecialKey.End))
+            else if (MenuGrid.IsVisible && !MenuCountGrid.IsVisible && (key == GHSpecialKey.Tab || key == GHSpecialKey.Escape || key == GHSpecialKey.Enter || key == GHSpecialKey.Up || key == GHSpecialKey.Down || key == GHSpecialKey.Space || key == GHSpecialKey.PageUp || key == GHSpecialKey.PageDown || key == GHSpecialKey.Home || key == GHSpecialKey.End))
             {
                 if (MenuCancelButton.IsEnabled && key == GHSpecialKey.Escape && !PlayingReplay)
                     PressMenuCancelButton();
@@ -22762,6 +22784,10 @@ namespace GnollHackX.Pages.Game
                         ScrollMenu(-1200);
                     else if (MenuOKButton.IsEnabled && !PlayingReplay)
                         PressMenuOKButton();
+                }
+                else if (key == GHSpecialKey.Tab && MenuFlipButton.IsEnabled)
+                {
+                    FlipMenuCanvas();
                 }
                 handled = true;
             }
