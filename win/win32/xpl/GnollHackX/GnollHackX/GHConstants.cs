@@ -274,6 +274,7 @@ namespace GnollHackX
         AutoDig =               0x00020000UL, /* Set autodig to true by default */
         IgnoreStopping =        0x00040000UL, /* Set ignore_stopping to true by default */
         DefaultVIKeys =         0x00080000UL, /* VI Keys are default instead of number pad movement */
+        WornShowsEquipment =    0x00100000UL, /* Show the equipment screen of inventory instead of only worn items in normal menu */
 
         RightMouseButtonBit1 =  0x00400000UL, 
         RightMouseButtonBit2 =  0x00800000UL, 
@@ -660,6 +661,7 @@ namespace GnollHackX
         GHMENU_STYLE_ACCEPT_PLAYER,
         GHMENU_STYLE_VIEW_SPELL,
         GHMENU_STYLE_VIEW_SPELL_ALTERNATE,
+        GHMENU_STYLE_INVENTORY_EQUIPMENT,
         MAX_GHMENU_STYLES
     }
 
@@ -1569,6 +1571,7 @@ namespace GnollHackX
         GUI_CMD_BREADCRUMB,
         GUI_CMD_BREADCRUMB2,
         GUI_CMD_BREADCRUMB3,
+        GUI_CMD_TOGGLE_WORN_SHOWS_EQUIPMENT,
     }
 
     public enum game_status_types
@@ -2109,6 +2112,7 @@ namespace GnollHackX
 #endif
         public const bool DefaultCharacterClickAction = false;
         public const bool DefaultDiceAsRanges = true;
+        public const bool DefaultWornShowsEquipment = true;
         public const bool DefaultAutoDig = true;
         public const bool DefaultIgnoreStopping = false; /* Since travel is also used for normal movement in the modern version */
         public const long MapDataLockTimeOutTicks = 100L;

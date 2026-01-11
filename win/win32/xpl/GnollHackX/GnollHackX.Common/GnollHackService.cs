@@ -321,6 +321,10 @@ namespace GnollHackX.Unknown
         [DllImport(PlatformConstants.dll)]
         public static extern void LibSetDiceAsRanges(int new_value);
         [DllImport(PlatformConstants.dll)]
+        public static extern int LibGetWornShowsEquipment();
+        [DllImport(PlatformConstants.dll)]
+        public static extern void LibSetWornShowsEquipment(int new_value);
+        [DllImport(PlatformConstants.dll)]
         public static extern void LibSetAutoDig(int new_value);
         [DllImport(PlatformConstants.dll)]
         public static extern void LibSetIgnoreStopping(int new_value);
@@ -1189,6 +1193,17 @@ namespace GnollHackX.Unknown
         {
             LibSetDiceAsRanges(newValue ? 1 : 0);
         }
+
+        public bool GetWornShowsEquipment()
+        {
+            return LibGetWornShowsEquipment() != 0;
+        }
+
+        public void SetWornShowsEquipment(bool newValue)
+        {
+            LibSetWornShowsEquipment(newValue ? 1 : 0);
+        }
+
         public void SetAutoDig(bool newValue)
         {
             LibSetAutoDig(newValue ? 1 : 0);
@@ -1245,6 +1260,7 @@ namespace GnollHackX.Unknown
             bool getposarrows = GHApp.GetPositionArrows;
             bool characterclickaction = GHApp.MirroredCharacterClickAction;
             bool diceasranges = GHApp.MirroredDiceAsRanges;
+            bool wornshowsequipment = GHApp.MirroredWornShowsEquipment;
             bool autodig = GHApp.MirroredAutoDig;
             bool ignorestopping = GHApp.MirroredIgnoreStopping;
             bool defaultvikeys = GHApp.DefaultVIKeys;
@@ -1263,7 +1279,8 @@ namespace GnollHackX.Unknown
                 (ulong)(GHApp.IsDebug ? RunGnollHackFlags.GUIDebugMode : 0) |
                 (ulong)(getposarrows ? RunGnollHackFlags.GetPositionArrows : 0) | /* Set the iflag to right value */
                 (ulong)(characterclickaction ? RunGnollHackFlags.CharacterClickAction : 0) | /* Use the default; GHApp.CharacterClickAction may contain the option value from the last game */
-                (ulong)(diceasranges ? RunGnollHackFlags.DiceAsRanges : 0) | /* Use the default; GHApp.DiceAsRanges may contain the option value from the last game */
+                (ulong)(diceasranges ? RunGnollHackFlags.DiceAsRanges : 0) | 
+                (ulong)(wornshowsequipment ? RunGnollHackFlags.WornShowsEquipment : 0) |
                 (ulong)(autodig ? RunGnollHackFlags.AutoDig : 0) | /* Use the default; GHApp.AutoDig may contain the option value from the last game */
                 (ulong)(ignorestopping ? RunGnollHackFlags.IgnoreStopping : 0) | /* Use the default; GHApp.IgnoreStopping may contain the option value from the last game */
                 (ulong)(defaultvikeys ? RunGnollHackFlags.DefaultVIKeys : 0) | /* Use the default */

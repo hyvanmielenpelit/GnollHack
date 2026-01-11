@@ -91,13 +91,7 @@ static struct Bool_Opt {
     { "asksavedisk", "prompt for saving to a disk", (boolean *) 0, FALSE, SET_IN_FILE },
 #endif
     { "autodescribe", "describe terrain under cursor", &iflags.autodescribe, TRUE, SET_IN_GAME },
-    { "autodig", "dig if moving and wielding a digging tool", &flags.autodig, 
-#ifdef GNH_MOBILE
-    TRUE,
-#else
-    FALSE,
-#endif
-    SET_IN_GAME },
+    { "autodig", "dig if moving and wielding a digging tool", &flags.autodig, TRUE_IF_GNH, SET_IN_GAME },
 #ifdef ANDROID
     {"autokick", "walking into a door attempts to kick it", &flags.autokick, TRUE, SET_IN_GAME},
 #endif
@@ -189,22 +183,10 @@ static struct Bool_Opt {
 #else
     { "ignintr", "ignore interrupt signals", (boolean *) 0, FALSE, SET_IN_FILE },
 #endif
-    { "ignore_stopping", "travelling is not interrupted by items, doors, or engravings", &flags.ignore_stopping, 
-#ifdef GNH_MOBILE
-        FALSE, /* Travelling is used also for normal movement; this option is overrideable by the GUI settings */
-#else
-        TRUE,
-#endif
-        SET_IN_GAME },
+    { "ignore_stopping", "travelling is not interrupted by items, doors, or engravings", &flags.ignore_stopping, FALSE_IF_GNH, SET_IN_GAME },
     { "implicit_uncursed", "omit \"uncursed\" from inventory", &iflags.implicit_uncursed, TRUE, SET_IN_GAME },
     { "inventory_obj_cmd", "display a command menu upon selecting an object in inventory", &flags.inventory_obj_cmd, TRUE, SET_IN_GAME},
-    { "inventory_weights_last", "display object weights in parentheses after object name", &flags.inventory_weights_last, 
-#if GNH_MOBILE
-        TRUE,
-#else
-        FALSE, 
-#endif
-        SET_IN_GAME},
+    { "inventory_weights_last", "display object weights in parentheses after object name", &flags.inventory_weights_last, TRUE_IF_GNH, SET_IN_GAME},
     { "knapsack_prompt", "prompt for an action when inventory is full", &flags.knapsack_prompt, TRUE, SET_IN_GAME},
     { "large_font", "obsolete: use large font", &iflags.obsolete, FALSE, SET_IN_FILE}, /* OBSOLETE */
     { "legacy", "show introductory message", &flags.legacy, TRUE, DISP_IN_GAME },
@@ -279,13 +261,7 @@ static struct Bool_Opt {
         SET_IN_WIZGAME },
     { "search_box_traps", "search command searches boxes for traps first", &flags.search_box_traps, TRUE, SET_IN_GAME },
     { "selectsaved", "select a saved game at program start", &iflags.wc2_selectsaved, TRUE, DISP_IN_GAME}, /*WC*/
-    { "self_click_action", "clicking the player character executes an action", &flags.self_click_action, 
-#ifdef GNH_MOBILE
-    FALSE,
-#else
-    TRUE,
-#endif
-    SET_IN_GAME},
+    { "self_click_action", "clicking the player character executes an action", &flags.self_click_action, FALSE_IF_GNH, SET_IN_GAME},
     { "showexp", "show experience points in status line", &flags.showexp, TRUE, SET_IN_GAME},
     { "showmove", "show current movement speed in status line", &flags.showmove, TRUE, SET_IN_GAME },
     { "showrace", "show your character by race rather than role", &flags.showrace, FALSE, SET_IN_GAME },
@@ -294,13 +270,7 @@ static struct Bool_Opt {
     { "show_buff_timer", "show buff timer on tiles", &flags.show_buff_timer, FALSE, SET_IN_GAME},
     { "show_comparison_stats", "show comparison statistics for items when picking them up", &iflags.show_comparison_stats, TRUE, SET_IN_GAME },
     { "show_decorations", "show decorations via colors in ASCII mode", &flags.show_decorations, TRUE, SET_IN_GAME },
-    { "show_dice_as_ranges", "show dice as ranges (e.g., 2-12 instead of 2d6)", &iflags.show_dice_as_ranges,
-#ifdef GNH_MOBILE
-        TRUE,
-#else
-        FALSE,
-#endif
-        SET_IN_GAME },
+    { "show_dice_as_ranges", "show dice as ranges (e.g., 2-12 instead of 2d6)", &iflags.show_dice_as_ranges, TRUE_IF_GNH, SET_IN_GAME },
     { "show_grid", "show grid between tiles", &flags.show_grid, FALSE, SET_IN_GAME},
     { "show_tile_mon_hp_bar", "show monster hit points on tiles", &flags.show_tile_mon_hp_bar, FALSE, SET_IN_GAME},
     { "show_tile_pet_hp_bar", "show pet hit points on tiles", &flags.show_tile_pet_hp_bar, FALSE, SET_IN_GAME },
@@ -308,23 +278,11 @@ static struct Bool_Opt {
     { "show_weapon_style", "show used weapon type in status line", &flags.show_weapon_style, TRUE, SET_IN_GAME },
     { "show_weight_summary", "show total weight at the end of inventory", &flags.show_weight_summary, TRUE, SET_IN_GAME },
     { "silent", "don't use terminal bell", &flags.silent, TRUE, SET_IN_GAME },
-    { "skill_table_format", "show skills in a table format rather than a list",  &iflags.skill_table_format, 
-#ifdef GNH_MOBILE
-    FALSE,
-#else
-    TRUE, 
-#endif
-    SET_IN_GAME},
+    { "skill_table_format", "show skills in a table format rather than a list",  &iflags.skill_table_format, FALSE_IF_GNH, SET_IN_GAME},
     { "softkeyboard", "soft keyboard", &iflags.wc2_softkeyboard, FALSE, SET_IN_FILE}, /*WC2*/
     { "sortpack", "group inventory items by type", &flags.sortpack, TRUE, SET_IN_GAME },
     { "sparkle", "display sparkly effect when resisting magic", &flags.sparkle, TRUE, SET_IN_GAME },
-    { "spell_table_format", "show spells in a table format rather than a list", &iflags.spell_table_format, 
-#ifdef GNH_MOBILE
-    FALSE,
-#else
-    TRUE,
-#endif
-        SET_IN_GAME },
+    { "spell_table_format", "show spells in a table format rather than a list", &iflags.spell_table_format, FALSE_IF_GNH, SET_IN_GAME },
     { "splash_screen", "show splash screen", &iflags.wc_splash_screen, TRUE, DISP_IN_GAME}, /*WC*/
     { "standout", "use standout for --more--", &flags.standout, FALSE, SET_IN_GAME },
     { "stash_on_autopickup", "stash items into a container on autopickup (but no thrown if pick_thrown is on)", &flags.stash_on_autopickup, FALSE, SET_IN_GAME },
@@ -363,6 +321,7 @@ static struct Bool_Opt {
     { "wiz_alwaysenc", "always generate an encounter in wizard mode", &flags.wiz_alwaysenc, FALSE, SET_IN_WIZGAME},
     { "wiz_mstatusline", "enable extended monster status line in wizard mode", &flags.wiz_mstatusline, FALSE, SET_IN_WIZGAME},
     { "wizweight", "show weights in inventory in wizard mode", &iflags.wizweight, FALSE, SET_IN_WIZGAME},
+    { "worn_shows_equipment", "worn items shows equipment screen", &iflags.worn_shows_equipment, TRUE_IF_GNH, SET_IN_GAME_IF_GNH },
     { "wraptext", "wrap text", &iflags.wc2_wraptext, FALSE, SET_IN_GAME}, /*WC2*/
 #ifdef ZEROCOMP
     { "zerocomp", "use zerocomp", &iflags.zerocomp,
@@ -1020,6 +979,9 @@ init_options()
 
     if (initial_flags.dice_as_ranges_set)
         iflags.show_dice_as_ranges = initial_flags.dice_as_ranges_value;
+
+    if (initial_flags.worn_shows_equipment_set)
+        iflags.worn_shows_equipment = initial_flags.worn_shows_equipment_value;
 
     if (initial_flags.autodig_set)
         flags.autodig = initial_flags.autodig_value;
@@ -2310,6 +2272,7 @@ int style;
     switch (style)
     {
     case GHMENU_STYLE_INVENTORY:
+    case GHMENU_STYLE_INVENTORY_EQUIPMENT:
     case GHMENU_STYLE_PERMANENT_INVENTORY:
     case GHMENU_STYLE_OTHERS_INVENTORY:
     case GHMENU_STYLE_PICK_ITEM_LIST:
@@ -5448,6 +5411,10 @@ boolean tinitial, tfrom_file;
             else if (boolopt[i].addr == &flags.self_click_action)
             {
                 issue_boolean_gui_command(GUI_CMD_TOGGLE_CHARACTER_CLICK_ACTION, flags.self_click_action);
+            }
+            else if (boolopt[i].addr == &iflags.worn_shows_equipment)
+            {
+                issue_boolean_gui_command(GUI_CMD_TOGGLE_WORN_SHOWS_EQUIPMENT, iflags.worn_shows_equipment);
             }
             else if (boolopt[i].addr == &iflags.show_dice_as_ranges)
             {

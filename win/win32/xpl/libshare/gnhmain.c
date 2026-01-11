@@ -150,6 +150,7 @@ notify_gui_pregame(VOID_ARGS)
     issue_boolean_gui_command(GUI_CMD_TOGGLE_IGNORE_STOPPING, flags.ignore_stopping); /* Notification is needed */
     issue_boolean_gui_command(GUI_CMD_TOGGLE_DICE_AS_RANGES, iflags.show_dice_as_ranges); /* Since this is an iflag, notification is really not needed but good to make sure that things align and for debug purposes */
     issue_boolean_gui_command(GUI_CMD_TOGGLE_GETPOS_ARROWS, iflags.getpos_arrows); /* Since this is an iflag, notification is really not needed but good to make sure that things align and for debug purposes */
+    issue_boolean_gui_command(GUI_CMD_TOGGLE_WORN_SHOWS_EQUIPMENT, iflags.worn_shows_equipment); /* Since this is an iflag, notification is really not needed but good to make sure that things align and for debug purposes */
     issue_gui_command(GUI_CMD_REPORT_MOUSE_COMMAND, (int)flags.right_click_command, 0, (const char*)0); /* Notification is needed */
     issue_gui_command(GUI_CMD_REPORT_MOUSE_COMMAND, (int)flags.middle_click_command, 1, (const char*)0); /* Notification is needed */
     

@@ -649,6 +649,12 @@ enum bodypart_types {
 #define SET_IN_WIZGAME 5  /* may be set set in the game if wizmode */
 #define SET__IS_VALUE_VALID(s) ((s < SET_IN_SYS) || (s > SET_IN_WIZGAME))
 
+#if GNH_MOBILE
+#define SET_IN_GAME_IF_GNH SET_IN_GAME  /* may be set via extern program or set in the game */
+#else
+#define SET_IN_GAME_IF_GNH SET_IN_SYS  /* may be set via extern program or set in the game */
+#endif
+
 #define FEATURE_NOTICE_VER(major, minor, patch)                    \
     (((uint64_t) major << 24) | ((uint64_t) minor << 16) \
      | ((uint64_t) patch << 8) | ((uint64_t) 0))

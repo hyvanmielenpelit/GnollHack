@@ -106,6 +106,7 @@ namespace GnollHackX
         ForceExitThread,
         TerminateGnollHackAndRestartGameInNewGamePage,
         ToggleZoomMini,
+        SetWornShowsEquipment,
     }
 
     public struct AddContextMenuData

@@ -320,6 +320,7 @@ namespace GnollHackX
                     case ghmenu_styles.GHMENU_STYLE_VIEW_FILE:
                         break;
                     case ghmenu_styles.GHMENU_STYLE_INVENTORY:
+                    case ghmenu_styles.GHMENU_STYLE_INVENTORY_EQUIPMENT:
                     case ghmenu_styles.GHMENU_STYLE_PERMANENT_INVENTORY:
                     case ghmenu_styles.GHMENU_STYLE_OTHERS_INVENTORY:
                     case ghmenu_styles.GHMENU_STYLE_PICK_ITEM_LIST:
@@ -428,6 +429,7 @@ namespace GnollHackX
                         case ghmenu_styles.GHMENU_STYLE_VIEW_FILE:
                             break;
                         case ghmenu_styles.GHMENU_STYLE_INVENTORY:
+                        case ghmenu_styles.GHMENU_STYLE_INVENTORY_EQUIPMENT:
                         case ghmenu_styles.GHMENU_STYLE_SKILLS_ALTERNATE:
                         case ghmenu_styles.GHMENU_STYLE_SPELLS_ALTERNATE:
                         case ghmenu_styles.GHMENU_STYLE_VIEW_SPELL_ALTERNATE:
@@ -504,6 +506,7 @@ namespace GnollHackX
                         case ghmenu_styles.GHMENU_STYLE_VIEW_FILE:
                             break;
                         case ghmenu_styles.GHMENU_STYLE_INVENTORY:
+                        case ghmenu_styles.GHMENU_STYLE_INVENTORY_EQUIPMENT:
                         case ghmenu_styles.GHMENU_STYLE_SKILLS_ALTERNATE:
                         case ghmenu_styles.GHMENU_STYLE_SPELLS_ALTERNATE:
                         case ghmenu_styles.GHMENU_STYLE_VIEW_SPELL_ALTERNATE:
@@ -594,6 +597,7 @@ namespace GnollHackX
                     case ghmenu_styles.GHMENU_STYLE_VIEW_FILE:
                         break;
                     case ghmenu_styles.GHMENU_STYLE_INVENTORY:
+                    case ghmenu_styles.GHMENU_STYLE_INVENTORY_EQUIPMENT:
                         break;
                     case ghmenu_styles.GHMENU_STYLE_SKILLS_ALTERNATE:
                         res = res * 17.0 / 15.0;

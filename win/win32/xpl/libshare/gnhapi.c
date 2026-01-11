@@ -680,6 +680,24 @@ LibSetDiceAsRanges(int new_value)
     iflags.show_dice_as_ranges = new_value != 0;
 }
 
+DLLEXPORT int
+LibGetDiceAsRanges(VOID_ARGS)
+{
+    return (int)iflags.show_dice_as_ranges;
+}
+
+DLLEXPORT void
+LibSetWornShowsEquipment(int new_value)
+{
+    iflags.worn_shows_equipment = new_value != 0;
+}
+
+DLLEXPORT int
+LibGetWornShowsEquipment(VOID_ARGS)
+{
+    return (int)iflags.worn_shows_equipment;
+}
+
 DLLEXPORT void
 LibSetAutoDig(int new_value)
 {
@@ -690,12 +708,6 @@ DLLEXPORT void
 LibSetIgnoreStopping(int new_value)
 {
     flags.ignore_stopping = new_value != 0;
-}
-
-DLLEXPORT int
-LibGetDiceAsRanges(VOID_ARGS)
-{
-    return (int)iflags.show_dice_as_ranges;
 }
 
 DLLEXPORT void
@@ -999,6 +1011,8 @@ DLLEXPORT int RunGnollHack(
     initial_flags.getpos_arrows_value = (runflags & GHRUNFLAGS_GETPOS_ARROWS) != 0;
     initial_flags.dice_as_ranges_set = TRUE;
     initial_flags.dice_as_ranges_value = (runflags & GHRUNFLAGS_DICE_AS_RANGES) != 0;
+    initial_flags.worn_shows_equipment_set = TRUE;
+    initial_flags.worn_shows_equipment_value = (runflags & GHRUNFLAGS_WORN_SHOWS_EQUIPMENT) != 0;
     initial_flags.autodig_set = TRUE;
     initial_flags.autodig_value = (runflags & GHRUNFLAGS_AUTO_DIG) != 0;
     initial_flags.ignore_stopping_set = TRUE;

@@ -36,7 +36,7 @@ STATIC_PTR int FDECL(ckvalidcat, (struct obj *));
 STATIC_PTR int FDECL(ckunpaid, (struct obj *));
 STATIC_PTR char *FDECL(safeq_xprname, (struct obj *));
 STATIC_PTR char *FDECL(safeq_shortxprname, (struct obj *));
-STATIC_DCL char FDECL(display_pickinv, (const char *, char *, char *, BOOLEAN_P, int64_t *, int, const char*, BOOLEAN_P, BOOLEAN_P));
+STATIC_DCL char FDECL(display_pickinv, (const char *, char *, char *, BOOLEAN_P, int64_t *, int, const char*, UCHAR_P, BOOLEAN_P));
 STATIC_DCL char FDECL(display_used_invlets, (CHAR_P));
 STATIC_DCL boolean FDECL(this_type_only, (struct obj *));
 STATIC_DCL void NDECL(dounpaid);
@@ -4411,7 +4411,7 @@ ddoinv()
     {
         pickcnt = 0;
         return_to_inv = FALSE;
-        invlet = display_inventory_with_header((const char*)0, TRUE, &pickcnt, SHOWWEIGHTS_INVENTORY, FALSE);
+        invlet = display_inventory_with_header((const char*)0, TRUE, &pickcnt, SHOWWEIGHTS_INVENTORY, FALSE, FALSE);
         if (invlet == '\033' || invlet == '\0')
         {
             issue_gui_command(GUI_CMD_TOGGLE_MENU_POSITION_SAVING, GHMENU_STYLE_INVENTORY, 0, (char*)0);
@@ -4456,7 +4456,7 @@ doseeworn()
     {
         pickcnt = 0;
         return_to_inv = FALSE;
-        invlet = display_inventory_with_header((const char*)0, TRUE, &pickcnt, SHOWWEIGHTS_INVENTORY, TRUE);
+        invlet = display_inventory_with_header((const char*)0, TRUE, &pickcnt, SHOWWEIGHTS_INVENTORY, iflags.worn_shows_equipment, TRUE);
         if (!invlet || invlet == '\033' || invlet == '\0')
             return 0;
 
@@ -4939,7 +4939,8 @@ boolean want_reply;
 int64_t *out_cnt;
 int show_weights;
 const char* headertext;
-boolean addinventoryheader, wornonly;
+uchar addinventoryheader;
+boolean wornonly;
 {
     static const char not_carrying_anything[] = "Not carrying anything";
     struct obj *otmp, wizid_fakeobj;
@@ -5042,7 +5043,7 @@ boolean addinventoryheader, wornonly;
     sortedinvent = sortloot(&invent, sortflags, FALSE,
                             (boolean FDECL((*), (OBJ_P))) 0);
 
-    start_menu_ex(win, addinventoryheader ? GHMENU_STYLE_INVENTORY : GHMENU_STYLE_PICK_ITEM_LIST);
+    start_menu_ex(win, addinventoryheader == 2 ? GHMENU_STYLE_INVENTORY_EQUIPMENT : addinventoryheader ? GHMENU_STYLE_INVENTORY : GHMENU_STYLE_PICK_ITEM_LIST);
     any = zeroany;
     if (wizard && iflags.override_ID) 
     {
@@ -5223,6 +5224,8 @@ nextclass:
 
         if(wornonly)
             Strcpy(qbuf, "Worn Items");
+        else if (addinventoryheader == 2)
+            Strcpy(qbuf, "Equipment");
         else
             Strcpy(qbuf, "Inventory");
 
@@ -5524,14 +5527,14 @@ int show_weights;
 }
 
 char
-display_inventory_with_header(lets, want_reply, out_cnt, show_weights, wornonly)
+display_inventory_with_header(lets, want_reply, out_cnt, show_weights, isequipment, wornonly)
 const char* lets;
-boolean want_reply, wornonly;
+boolean want_reply, isequipment, wornonly;
 int64_t* out_cnt;
 int show_weights;
 {
     return display_pickinv(lets, (char*)0, (char*)0,
-        want_reply, out_cnt, show_weights, "", TRUE, wornonly);
+        want_reply, out_cnt, show_weights, "", isequipment ? 2 : TRUE, isequipment ? 0 : wornonly);
 }
 
 /*
@@ -7248,7 +7251,7 @@ doprinuse()
         {
             pickcnt = 0;
             return_to_inv = FALSE;
-            invlet = display_inventory_with_header(lets, TRUE, &pickcnt, SHOWWEIGHTS_INVENTORY, FALSE);
+            invlet = display_inventory_with_header(lets, TRUE, &pickcnt, SHOWWEIGHTS_INVENTORY, FALSE, FALSE);
             if (!invlet || invlet == '\033' || invlet == '\0')
                 return 0;
 

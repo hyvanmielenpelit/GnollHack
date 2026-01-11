@@ -1600,7 +1600,7 @@ E int NDECL(dolastpickeditem);
 E int FDECL(display_item_command_menu_by_invlet, (CHAR_P, int64_t, boolean*));
 E int FDECL(display_item_command_menu, (struct obj*, int64_t, boolean*));
 E char FDECL(display_inventory, (const char *, BOOLEAN_P, int));
-E char FDECL(display_inventory_with_header, (const char*, BOOLEAN_P, int64_t*, int, BOOLEAN_P));
+E char FDECL(display_inventory_with_header, (const char*, BOOLEAN_P, int64_t*, int, BOOLEAN_P, BOOLEAN_P));
 E int FDECL(display_binventory, (int, int, BOOLEAN_P));
 E struct obj *FDECL(display_cinventory, (struct obj *));
 E struct obj *FDECL(display_minventory, (struct monst *, int, char *));

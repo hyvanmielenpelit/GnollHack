@@ -1145,6 +1145,11 @@ namespace GnollHackX.Pages.Game
             GHGame curGame = GHApp.CurrentGHGame;
             curGame?.ResponseQueue.Enqueue(new GHResponse(curGame, GHRequestType.SetDiceAsRanges, newValue));
         }
+        public void SetWornShowsEquipment(bool newValue)
+        {
+            GHGame curGame = GHApp.CurrentGHGame;
+            curGame?.ResponseQueue.Enqueue(new GHResponse(curGame, GHRequestType.SetWornShowsEquipment, newValue));
+        }
         public void SetAutoDig(bool newValue)
         {
             if (MapAutoDig != newValue)
@@ -4153,7 +4158,7 @@ namespace GnollHackX.Pages.Game
             RefreshScreen = false;
 
             EquipmentDrawFirstTime = true;
-            MenuEquipmentSideShown = false;
+            MenuEquipmentSideShown = menuinfo.Style == ghmenu_styles.GHMENU_STYLE_INVENTORY_EQUIPMENT;
             MenuDrawOnlyClear = true;
             MenuRefresh = false;
             //lock (_menuDrawOnlyLock)
@@ -4162,7 +4167,7 @@ namespace GnollHackX.Pages.Game
             //    _menuRefresh = false;
             //}
 
-            if (menuinfo.Style == ghmenu_styles.GHMENU_STYLE_INVENTORY || menuinfo.Style == ghmenu_styles.GHMENU_STYLE_PERMANENT_INVENTORY)
+            if (menuinfo.Style == ghmenu_styles.GHMENU_STYLE_INVENTORY || menuinfo.Style == ghmenu_styles.GHMENU_STYLE_INVENTORY_EQUIPMENT || menuinfo.Style == ghmenu_styles.GHMENU_STYLE_PERMANENT_INVENTORY)
             {
                 GHGame curGame = GHApp.CurrentGHGame;
                 if (curGame != null)
@@ -4384,6 +4389,7 @@ namespace GnollHackX.Pages.Game
                     MenuCanvas.AllowHighlight = false;
                     break;
                 case ghmenu_styles.GHMENU_STYLE_INVENTORY:
+                case ghmenu_styles.GHMENU_STYLE_INVENTORY_EQUIPMENT:
                 case ghmenu_styles.GHMENU_STYLE_PERMANENT_INVENTORY:
                     MenuBackground.BackgroundStyle = BackgroundStyles.Automatic;
                     MenuBackground.BackgroundBitmap = BackgroundBitmaps.AutoMenuBackground;
@@ -17002,7 +17008,7 @@ namespace GnollHackX.Pages.Game
             bool usingGL = MenuCanvas.UseGL;
             bool fixRects = GHApp.FixRects;
             bool revertBW = MenuCanvas.RevertBlackAndWhite;
-            bool isInventory = menuStyle >= ghmenu_styles.GHMENU_STYLE_INVENTORY && menuStyle <= ghmenu_styles.GHMENU_STYLE_OTHERS_INVENTORY;
+            bool isInventory = (menuStyle >= ghmenu_styles.GHMENU_STYLE_INVENTORY && menuStyle <= ghmenu_styles.GHMENU_STYLE_OTHERS_INVENTORY) || menuStyle == ghmenu_styles.GHMENU_STYLE_INVENTORY_EQUIPMENT;
             float x = 0, y = 0;
             string str;
             SKRect textBounds = new SKRect();

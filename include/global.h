@@ -86,6 +86,14 @@ typedef xchar boolean; /* 0 or 1 */
 #define FALSE 0 //((boolean) 0)
 #endif
 
+#ifdef GNH_MOBILE
+#define TRUE_IF_GNH TRUE
+#define FALSE_IF_GNH FALSE
+#else
+#define TRUE_IF_GNH FALSE
+#define FALSE_IF_GNH TRUE
+#endif
+
 #ifndef STRNCMPI
 #ifndef __SASC_60 /* SAS/C already shifts to stricmp */
 #define strcmpi(a, b) strncmpi((a), (b), -1)

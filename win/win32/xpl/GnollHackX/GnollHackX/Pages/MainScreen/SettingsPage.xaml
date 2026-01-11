@@ -640,6 +640,14 @@
                                     HorizontalOptions="Start" />
                                 <Switch Grid.Column="1" x:Name="EquipmentFlipAnimationSwitch" HorizontalOptions="End" VerticalOptions="Center" />
                             </Grid>
+                            <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
+                                <Label Text="Worn Shows Equipment"
+                                    FontFamily="Underwood" TextColor="Black"
+                                    FontSize="15"
+                                    VerticalOptions="Center" 
+                                    HorizontalOptions="Start" />
+                                <Switch Grid.Column="1" x:Name="WornShowsEquipmentSwitch" HorizontalOptions="End" VerticalOptions="Center" />
+                            </Grid>
 
                             <Label Text="Behavior" FontSize="23" FontAttributes="Bold" FontFamily="Immortal" TextColor="Black" Margin="0,18,0,2" />
                             <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
