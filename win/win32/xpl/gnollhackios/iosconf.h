@@ -8,6 +8,7 @@
 #ifndef IOSCONF_H
 #define IOSCONF_H
 
+#define PORT_ID "iOS"
 #define error debuglog
 
 #define NO_FILE_LINKS /* if no hard links */
