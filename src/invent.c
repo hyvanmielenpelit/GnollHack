@@ -18,6 +18,7 @@
 #define NOINVSYM '#'
 #define CONTAINED_SYM '>' /* designator for inside a container */
 #define HANDS_SYM '-'
+#define SWAP_SYM '\010'
 
 STATIC_DCL void FDECL(loot_classify, (Loot *, struct obj *));
 STATIC_DCL char *FDECL(loot_xname, (struct obj *));
@@ -3057,7 +3058,7 @@ unsigned int getobjflags; /* 1 = cost is specified; 2 = header text is about cos
             ilet = display_pickinv(allowed_choices, *qbuf ? qbuf : (char *) 0,
                                    menuquery,
                                    TRUE, allowcnt ? &ctmp : (int64_t *) 0, show_weights, headertext, FALSE, FALSE);
-            if (!ilet)
+            if (!ilet || ilet == SWAP_SYM)
                 continue;
             if (ilet == HANDS_SYM)
                 return (struct obj *) &zeroobj; /* cast away 'const' */
@@ -4418,7 +4419,12 @@ ddoinv()
             return 0;
         }
 
-        if (flags.inventory_obj_cmd)
+        if (invlet == SWAP_SYM)
+        {
+            doswapweapon();
+            return_to_inv = TRUE;
+        }
+        else if (flags.inventory_obj_cmd)
         {
             int res = display_item_command_menu_by_invlet(invlet, pickcnt, &return_to_inv);
             if (res || !return_to_inv)
@@ -5277,7 +5283,7 @@ nextclass:
         free((genericptr_t) selected);
     } 
     else
-        ret = !n ? '\0' : '\033'; /* cancelled */
+        ret = !n ? '\0' : n == -2 ? SWAP_SYM : '\033'; /* cancelled */
 
     return ret;
 }

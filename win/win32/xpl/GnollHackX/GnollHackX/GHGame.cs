@@ -50,6 +50,7 @@ namespace GnollHackX
         private bool _useHideMessageHistory = false;
         private int _saveFileTrackingFinished = -1;
         private bool _abortShowMenuPage = false;
+        private bool _requestSwapWeapon = false;
 
         public GamePage ActiveGamePage => GHApp.CurrentGamePage;
         //{
@@ -216,6 +217,15 @@ namespace GnollHackX
                         else
                         {
                             _abortShowMenuPage = true;
+                        }
+                        switch (response.ResponseIntValue)
+                        {
+                            case 1:
+                                _requestSwapWeapon = true;
+                                break;
+                            case 0:
+                            default:
+                                break;
                         }
                         break;
                     case GHRequestType.DisplayScreenText:
@@ -1900,6 +1910,7 @@ namespace GnollHackX
 
             bool enqueued = DoShowMenu(winid, how);
             _abortShowMenuPage = false;
+            _requestSwapWeapon = false;
 
             if (enqueued)
             {
@@ -1929,7 +1940,9 @@ namespace GnollHackX
 
             //lock (_ghWindowsLock)
             {
-                if (_abortShowMenuPage || _ghWindows[winid] == null || _ghWindows[winid].SelectedMenuItems == null || _ghWindows[winid].WasCancelled || _fastForwardGameOver)
+                if (_requestSwapWeapon)
+                    cnt = -2;
+                else if (_abortShowMenuPage || _ghWindows[winid] == null || _ghWindows[winid].SelectedMenuItems == null || _ghWindows[winid].WasCancelled || _fastForwardGameOver)
                     cnt = -1;
                 else if (_ghWindows[winid].SelectedMenuItems.Count <= 0)
                     cnt = 0;
@@ -1956,7 +1969,7 @@ namespace GnollHackX
 
             picklistptr = arrayptr;
             _outGoingIntPtr = arrayptr;
-            listsize = cnt * 2;
+            listsize = cnt < 1 ? 1 : cnt * 2;
 
             _abortShowMenuPage = false;
             RecordFunctionCall(RecordedFunctionID.SelectMenu, winid, how, picklist, listsize, cnt);

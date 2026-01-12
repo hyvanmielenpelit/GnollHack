@@ -55,13 +55,14 @@ namespace GnollHackX
             RequestType = requesttype;
             ResponseBoolValue = responseboolvalue;
         }
-        public GHResponse(GHGame ghGame, GHRequestType requesttype, GHWindow window, List<GHMenuItem> responselist, bool wasCancelled)
+        public GHResponse(GHGame ghGame, GHRequestType requesttype, GHWindow window, List<GHMenuItem> responselist, bool wasCancelled, int responseIntValue = 0)
         {
             RequestingGame = ghGame;
             RequestType = requesttype;
             RequestingGHWindow = window;
             SelectedMenuItems = responselist;
             ResponseBoolValue = wasCancelled;
+            ResponseIntValue = responseIntValue;
         }
         public GHResponse(GHGame ghGame, GHRequestType requesttype, int x, int y, int mod)
         {

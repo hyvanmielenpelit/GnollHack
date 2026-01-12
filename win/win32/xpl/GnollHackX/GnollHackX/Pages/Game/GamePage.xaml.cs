@@ -22,6 +22,7 @@ using System.Data;
 using System.Xml.Linq;
 
 
+
 #if GNH_MAUI
 using GnollHackX;
 using Microsoft.Maui.Controls.PlatformConfiguration;
@@ -16862,6 +16863,9 @@ namespace GnollHackX.Pages.Game
         SKRect[] _equipmentPaintDrawBounds = new SKRect[32];
         SKRect[] _equipmentTouchDrawBounds = new SKRect[32];
         private readonly object _equipmentRectLock = new object();
+        private readonly object _swapButtonRectLock = new object();
+        SKRect _swapButtonRect = new SKRect();
+        private string _swapButtonImagePath = "resource://" + GHApp.AppResourceName + ".Assets.UI.swap.png";
         private long _allWornBits = 0;
 
         private int _equipmentDrawFirstTime = 1;
@@ -17012,6 +17016,15 @@ namespace GnollHackX.Pages.Game
             float x = 0, y = 0;
             string str;
             SKRect textBounds = new SKRect();
+            SKPoint menuHoverPoint = new SKPoint();
+            bool isMenuHovering = false;
+#if WINDOWS
+            lock (_menuHoverLock)
+            {
+                menuHoverPoint = _menuHoverPoint;
+                isMenuHovering = _menuIsHovering;
+            }
+#endif
 
             using (GHSkiaFontPaint textPaint = new GHSkiaFontPaint())
             {
@@ -17050,6 +17063,7 @@ namespace GnollHackX.Pages.Game
                     float frameymargin = framewidth / 10;
                     float totalgridwith = numColumns * framewidth + (numColumns - 1) * framexmargin;
                     innerleftpadding = Math.Max(0, (menuwidthoncanvas - totalgridwith) / 2);
+                    bool showSwapButton = (equipmentSlotActive != null && (equipmentSlotActive.WornFlag == obj_worn_flags.W_SWAPWEP || equipmentSlotActive.WornFlag == obj_worn_flags.W_SWAPWEP2));
 
                     if (equipmentDrawFirstTime)
                     {
@@ -17123,7 +17137,6 @@ namespace GnollHackX.Pages.Game
                             }
                         }
 
-                        bool isHover = false;
                         float textpadding = - textPaint.FontMetrics.Ascent;
                         //float textpadding = (minrowheight - (textPaint.FontMetrics.Descent - textPaint.FontMetrics.Ascent)) / 2;
                         x += framewidth / 2;
@@ -17140,6 +17153,7 @@ namespace GnollHackX.Pages.Game
                         SKRect picRect = new SKRect(x, y, x + framewidth, y + framewidth);
                         SKRect highlightRect = new SKRect(x + highLightPadding, y + highLightPadding, x + framewidth - highLightPadding, y + framewidth - highLightPadding);
                         _equipmentPaintDrawBounds[equipIdx] = picRect;
+                        bool isHover = isMenuHovering && picRect.Contains(menuHoverPoint);
                         bool selMatches = selectionIndex >= 0 && foundItemIndex >= 0 && selectionIndex == foundItemIndex;
                         bool isItemSelected = (foundItem != null && (selMatches || foundItem.Selected));
                         bool isHighlighted = (equipmentSlotActive != null && slot.WornFlag == equipmentSlotActive.WornFlag);
@@ -17159,12 +17173,6 @@ namespace GnollHackX.Pages.Game
                             canvas.DrawRect(highlightRect, textPaint.Paint);
                         textPaint.Color = oldColor;
 
-#if WINDOWS
-                        lock (_menuHoverLock)
-                        {
-                            isHover = _menuIsHovering && picRect.Contains(_menuHoverPoint);
-                        }
-#endif
                         if (isNotActive)
                             textPaint.Color = UIUtils.GHSemiTransparentBlack;
                         else if (isHover)
@@ -17276,6 +17284,36 @@ namespace GnollHackX.Pages.Game
                             y = curmenuoffset;
                         }
                     }
+
+                    SKRect swapButtonRect;
+                    if (showSwapButton)
+                    {
+                        y += textPaint.FontMetrics.Descent + framepadding;
+                        swapButtonRect = new SKRect(x, y, x + framewidth, y + framewidth);
+                        bool isSwapHover = isMenuHovering && swapButtonRect.Contains(menuHoverPoint);
+                        if (isSwapHover)
+                            textPaint.Paint.ColorFilter = UIUtils.HighlightColorFilter;
+                        canvas.DrawImage(GHApp.GetCachedImageSourceBitmap(_swapButtonImagePath, true), swapButtonRect, textPaint.Paint);
+                        textPaint.Paint.ColorFilter = null;
+                    }
+                    else 
+                        swapButtonRect = new SKRect();
+
+                    lockTaken = false;
+                    try
+                    {
+                        Monitor.TryEnter(_swapButtonRectLock, ref lockTaken);
+                        if (lockTaken)
+                        {
+                            _swapButtonRect = swapButtonRect;
+                        }
+                    }
+                    finally
+                    {
+                        if (lockTaken)
+                            Monitor.Exit(_swapButtonRectLock);
+                    }
+                    lockTaken = false;
 
                     x = leftmenupadding + innerleftpadding;
                     y = gridHeight;
@@ -18598,7 +18636,7 @@ namespace GnollHackX.Pages.Game
         private float _interlockedEquipmentMenuScrollOffset = 0;
         private float InterlockedEquipmentMenuScrollOffset { get { return Interlocked.CompareExchange(ref _interlockedEquipmentMenuScrollOffset, 0.0f, 0.0f); } set { Interlocked.Exchange(ref _interlockedEquipmentMenuScrollOffset, value); } }
         private float _menuEquipmentScrollOffset = 0;
-
+        private SKRect _touchSwapButtonRect = new SKRect();
 
         private void HandleEquipmentTouch(object sender, SKTouchEventArgs e)
         {
@@ -18609,6 +18647,21 @@ namespace GnollHackX.Pages.Game
             }
 
             bool lockTaken = false;
+            try
+            {
+                Monitor.TryEnter(_swapButtonRectLock, ref lockTaken);
+                if (lockTaken)
+                {
+                    _touchSwapButtonRect = _swapButtonRect;
+                }
+            }
+            finally
+            {
+                if (lockTaken)
+                    Monitor.Exit(_swapButtonRectLock);
+            }
+            lockTaken = false;
+
             try
             {
                 Monitor.TryEnter(_equipmentRectLock, ref lockTaken);
@@ -18782,7 +18835,15 @@ namespace GnollHackX.Pages.Game
                                 //else
                                 {
                                     MenuClickResult clickRes = MenuCanvas_EquipmentClickRelease(sender, e, false);
-                                    if (GHApp.OkOnDoubleClick && selectionHow == SelectionMode.Single && e.MouseButton == SKMouseButton.Left)
+                                    if (clickRes.MenuItemClickIndex == -2)
+                                    {
+                                        MenuCanvas.InvalidateSurface();
+                                        RequestMenuSwapWeapon();
+                                        _menuPreviousReleaseClick = false;
+                                        _menuPreviousReleaseClickIndex = -1;
+                                        _savedPreviousMenuReleaseTimeStamp = new DateTime();
+                                    }
+                                    else if(GHApp.OkOnDoubleClick && selectionHow == SelectionMode.Single && e.MouseButton == SKMouseButton.Left)
                                     {
                                         long timeSincePreviousReleaseInMs = (nowTicks - _savedPreviousMenuReleaseTimeStamp.Ticks) / TimeSpan.TicksPerMillisecond;
                                         if (!clickRes.OkClicked && MenuOKButton.IsEnabled && _menuPreviousReleaseClick &&
@@ -19118,6 +19179,11 @@ namespace GnollHackX.Pages.Game
             bool okClicked = false;
             int clickIdx = -1;
             long identifier = 0;
+            if (_swapButtonRect.Contains(e.Location))
+            {
+                clickIdx = -2;
+                return new MenuClickResult(okClicked, clickIdx, identifier);
+            }
             for (int idx = 0; idx < _equipmentSlots.Length; idx++)
             {
                 if (_equipmentTouchDrawBounds[idx].Contains(e.Location))
@@ -19502,6 +19568,10 @@ namespace GnollHackX.Pages.Game
         }
         private async Task MenuCancelButtonPressedAsync()
         {
+            await CloseMenu(0);
+        }
+        private async Task CloseMenu(int responseIntValue)
+        {
             MenuOKButton.IsEnabled = false;
             MenuCancelButton.IsEnabled = false;
             GHApp.PlayButtonClickedSound();
@@ -19538,14 +19608,36 @@ namespace GnollHackX.Pages.Game
             GHGame curGame = GHApp.CurrentGHGame;
             GHWindow origWindow;
             if (MenuCanvas.GHWindow.ClonedFrom == null)
-                curGame?.ResponseQueue.Enqueue(new GHResponse(curGame, GHRequestType.ShowMenuPage, MenuCanvas.GHWindow, new List<GHMenuItem>(1), true));
+                curGame?.ResponseQueue.Enqueue(new GHResponse(curGame, GHRequestType.ShowMenuPage, MenuCanvas.GHWindow, new List<GHMenuItem>(1), true, responseIntValue));
             else if (MenuCanvas.GHWindow.ClonedFrom.TryGetTarget(out origWindow))
-                curGame?.ResponseQueue.Enqueue(new GHResponse(curGame, GHRequestType.ShowMenuPage, origWindow, new List<GHMenuItem>(1), true));
+                curGame?.ResponseQueue.Enqueue(new GHResponse(curGame, GHRequestType.ShowMenuPage, origWindow, new List<GHMenuItem>(1), true, responseIntValue));
             else
-                curGame?.ResponseQueue.Enqueue(new GHResponse(curGame, GHRequestType.ShowMenuPage, null, new List<GHMenuItem>(1), true));
+                curGame?.ResponseQueue.Enqueue(new GHResponse(curGame, GHRequestType.ShowMenuPage, null, new List<GHMenuItem>(1), true, responseIntValue));
 
             if (!UIUtils.StyleClosesMenuUponDestroy(MenuCanvas.MenuStyle))
                 await DelayedMenuHide();
+        }
+
+        private void RequestMenuSwapWeapon()
+        {
+            try
+            {
+                MainThread.BeginInvokeOnMainThread(async () =>
+                {
+                    try
+                    {
+                        await CloseMenu(1);
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.WriteLine(ex);
+                    }
+                });
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+            }
         }
 
 #if GNH_MAUI
