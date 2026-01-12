@@ -5092,7 +5092,15 @@ int* max_range;
 /* Distance attacks by pole-weapons */
 STATIC_OVL int
 use_pole(obj)
+struct obj* obj;
+{
+    return use_pole2(obj, (coord*)0);
+}
+
+int
+use_pole2(obj, cc_ptr)
 struct obj *obj;
+coord* cc_ptr;
 {
     if (!obj)
         return 0;
@@ -5148,20 +5156,33 @@ struct obj *obj;
     polearm_range_min = min_range;
     polearm_range_max = max_range;
 
-    /* Prompt for a location */
-    pline(where_to_hit);
-    cc.x = u.ux;
-    cc.y = u.uy;
-    if (!find_poleable_mon(&cc, min_range, max_range) && hitm
-        && !DEADMONSTER(hitm) && couldsee(hitm->mx, hitm->my) && canspotmon(hitm)
-        && distu(hitm->mx, hitm->my) <= max_range
-        && distu(hitm->mx, hitm->my) >= min_range) {
-        cc.x = hitm->mx;
-        cc.y = hitm->my;
+    if (!cc_ptr)
+    {
+        /* Prompt for a location */
+        pline(where_to_hit);
+        cc.x = u.ux;
+        cc.y = u.uy;
+        if (!find_poleable_mon(&cc, min_range, max_range) && hitm
+            && !DEADMONSTER(hitm) && couldsee(hitm->mx, hitm->my) && canspotmon(hitm)
+            && distu(hitm->mx, hitm->my) <= max_range
+            && distu(hitm->mx, hitm->my) >= min_range) {
+            cc.x = hitm->mx;
+            cc.y = hitm->my;
+        }
+        getpos_sethilite(display_polearm_positions, get_invalid_polearm_position);
+        if (getpos(&cc, TRUE, "the spot to hit", CURSOR_STYLE_POLEARM_CURSOR) < 0)
+            return res; /* ESC; uses turn iff polearm became wielded */
     }
-    getpos_sethilite(display_polearm_positions, get_invalid_polearm_position);
-    if (getpos(&cc, TRUE, "the spot to hit", CURSOR_STYLE_POLEARM_CURSOR) < 0)
-        return res; /* ESC; uses turn iff polearm became wielded */
+    else
+    {
+        cc = *cc_ptr;
+        if (!isok(cc.x, cc.y))
+        {
+            play_sfx_sound(SFX_GENERAL_CANNOT);
+            pline_ex(ATR_NONE, CLR_MSG_FAIL, "Illegal!");
+            return res;
+        }
+    }
 
     glyph = glyph_at(cc.x, cc.y);
     if (distu(cc.x, cc.y) > max_range)

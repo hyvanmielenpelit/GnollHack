@@ -3886,6 +3886,7 @@ namespace GnollHackX
             new MouseCommandItem("Cast", (int)NhGetPosMods.ClickCast),
             new MouseCommandItem("Fire", (int)NhGetPosMods.ClickFire),
             new MouseCommandItem("Zap", (int)NhGetPosMods.ClickZap),
+            new MouseCommandItem("Polearm", (int)NhGetPosMods.ClickPole),
         };
 
         public static readonly List<ScreenScaleItem> ScreenScaleItems = new List<ScreenScaleItem>()

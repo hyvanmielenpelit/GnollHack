@@ -168,7 +168,8 @@ typedef struct mi {
 #define CLICK_CAST          6 /* Cast the selected directional spell (normally right mouse button) */
 #define CLICK_FIRE          7 /* Fire a ranged weapon */
 #define CLICK_ZAP           8 /* Zap the selected wand */
-#define MAX_CLICK_TYPES     9
+#define CLICK_POLE          9 /* Use a polearm */
+#define MAX_CLICK_TYPES     10
 
 
 /* invalid winid */

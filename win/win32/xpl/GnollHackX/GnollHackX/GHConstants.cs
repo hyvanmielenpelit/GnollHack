@@ -227,6 +227,7 @@ namespace GnollHackX
         ClickCast,
         ClickFire,
         ClickZap,
+        ClickPole,
     }
 
     [Flags]
@@ -1764,6 +1765,8 @@ namespace GnollHackX
         NHKF_CLICKFIRE,
         NHKF_CLICKLOOK,
         NHKF_CLICKCAST,
+        NHKF_CLICKZAP,
+        NHKF_CLICKPOLE,
 
         NHKF_REDRAW,
         NHKF_REDRAW2,

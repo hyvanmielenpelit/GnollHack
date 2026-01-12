@@ -1379,13 +1379,15 @@ set_mouse_buttons(VOID_ARGS)
         case PM_ARCHAEOLOGIST:
         case PM_BARBARIAN:
         case PM_CAVEMAN:
-        case PM_KNIGHT:
         case PM_RANGER:
         case PM_ROGUE:
         case PM_SAMURAI:
         case PM_TOURIST:
         case PM_VALKYRIE:
             flags.right_click_command = CLICK_FIRE;
+            break;
+        case PM_KNIGHT:
+            flags.right_click_command = CLICK_POLE;
             break;
         case PM_MONK:
         case PM_HEALER:

@@ -58,7 +58,8 @@ extern const char *enc_stat[]; /* encumbrance status from botl.c */
 #define CMD_CLICKFIRE (char) 0xE0 //(Meta-0x60)
 #define CMD_CLICKCAST (char) 0xDE //(Meta-0x5E)
 #define CMD_CLICKZAP (char) 0xDD //(Meta-0x5D)
- /* Meta-DB-DC available */
+#define CMD_CLICKPOLE (char) 0xDC //(Meta-0x5C)
+ /* Meta-DB available */
 
 #ifdef DEBUG
 extern int NDECL(wiz_debug_cmd_bury);
@@ -253,7 +254,7 @@ STATIC_DCL void FDECL(print_weapon_skill_line, (struct obj*, BOOLEAN_P, int));
 
 STATIC_VAR const char *readchar_queue = "";
 STATIC_VAR coord clicklook_cc;
-//STATIC_VAR coord clickfire_cc;
+STATIC_VAR coord clickpole_cc;
 STATIC_VAR boolean special_effect_shown = FALSE;
 
 STATIC_PTR int
@@ -7451,6 +7452,7 @@ struct {
     { NHKF_CLICKLOOK,        CMD_CLICKLOOK, (char *) 0 }, /* no binding */
     { NHKF_CLICKCAST,        CMD_CLICKCAST, (char*)0 }, /* no binding */
     { NHKF_CLICKZAP,         CMD_CLICKZAP, (char*)0 }, /* no binding */
+    { NHKF_CLICKPOLE,        CMD_CLICKPOLE, (char*)0 }, /* no binding */
     { NHKF_REDRAW,           C('r'), "redraw" },
     { NHKF_REDRAW2,          C('l'), "redraw.numpad" },
     { NHKF_GETDIR_SELF,      '.', "getdir.self" },
@@ -7660,6 +7662,7 @@ boolean initial;
         timed_occ_fn = 0;
         readchar_queue = "";
         memset((genericptr_t)&clicklook_cc, 0, sizeof(clicklook_cc));
+        memset((genericptr_t)&clickpole_cc, 0, sizeof(clickpole_cc));
         //memset((genericptr_t)&clickfire_cc, 0, sizeof(clickfire_cc));
         struct ext_func_tab* efp;
         for (efp = extcmdlist; efp->ef_txt; efp++)
@@ -7957,7 +7960,7 @@ register char *cmd;
     /* handle most movement commands */
     prefix_seen = FALSE;
     clear_run_and_travel();
-    spkey = ch2spkeys(*cmd, NHKF_RUN, NHKF_CLICKZAP);
+    spkey = ch2spkeys(*cmd, NHKF_RUN, NHKF_CLICKPOLE);
 
     if (flags.prefer_fast_move)
     {
@@ -8051,27 +8054,34 @@ register char *cmd;
         context.is_click_looking = TRUE;
         do_look(2, &clicklook_cc);
         return;
+    case NHKF_CLICKPOLE:
+    {
+        context.move = FALSE;
+        if (uwep && is_pole(uwep))
+            use_pole2(uwep, &clickpole_cc);
+        return;
+    }
     case NHKF_CLICKFIRE:
-        {
-            int fireres = dofire();
-            if (!fireres)
-                readchar_queue = ""; //Prevent movement if firing failed.
-        }
+    {
+        int fireres = dofire();
+        if (!fireres)
+            readchar_queue = ""; //Prevent movement if firing failed.
         return;
+    }
     case NHKF_CLICKCAST:
-        {
-            int castres = docastquick();
-            if (!castres)
-                readchar_queue = ""; //Prevent movement if casting failed.
-        }
+    {
+        int castres = docastquick();
+        if (!castres)
+            readchar_queue = ""; //Prevent movement if casting failed.
         return;
+    }
     case NHKF_CLICKZAP:
     {
         int zapres = dozapquick();
         if (!zapres)
             readchar_queue = ""; //Prevent movement if casting failed.
+        return;
     }
-    return;
     case NHKF_TRAVEL:
     case NHKF_TRAVEL_ATTACK:
     case NHKF_TRAVEL_WALK:
@@ -8988,6 +8998,15 @@ int x, y, mod;
         clicklook_cc.x = target_x;
         clicklook_cc.y = target_y;
         cmd[0] = Cmd.spkeys[NHKF_CLICKLOOK];
+        return cmd;
+    }
+
+    /* Polearm */
+    if (mod == CLICK_POLE)
+    {
+        clickpole_cc.x = target_x;
+        clickpole_cc.y = target_y;
+        cmd[0] = Cmd.spkeys[NHKF_CLICKPOLE];
         return cmd;
     }
 
