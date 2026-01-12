@@ -1616,7 +1616,7 @@ coord *click_cc;
             struct obj *invobj;
 
             invlet = display_inventory((const char *) 0, TRUE, SHOWWEIGHTS_INVENTORY);
-            if (!invlet || invlet == '\033')
+            if (!invlet || invlet == CANCEL_LET || invlet == SWAP_LET)
                 return 0;
             *out_str = '\0';
             for (invobj = invent; invobj; invobj = invobj->nobj)

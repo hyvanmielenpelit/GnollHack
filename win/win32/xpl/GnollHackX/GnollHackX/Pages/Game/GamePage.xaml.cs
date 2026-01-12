@@ -18836,10 +18836,10 @@ namespace GnollHackX.Pages.Game
                                 //else
                                 {
                                     MenuClickResult clickRes = MenuCanvas_EquipmentClickRelease(sender, e, false);
-                                    if (clickRes.MenuItemClickIndex == -2)
+                                    if (clickRes.MenuItemClickIndex == -2 && MenuCancelButton.IsEnabled)
                                     {
                                         MenuCanvas.InvalidateSurface();
-                                        RequestMenuSwapWeapon();
+                                        RequestSwapWeaponAndCloseMenu();
                                         _menuPreviousReleaseClick = false;
                                         _menuPreviousReleaseClickIndex = -1;
                                         _savedPreviousMenuReleaseTimeStamp = new DateTime();
@@ -19571,7 +19571,7 @@ namespace GnollHackX.Pages.Game
         {
             await CloseMenu(0);
         }
-        private async Task CloseMenu(int responseIntValue)
+        private async Task CloseMenu(int responseIntValue) // 1 = request weapon swap
         {
             MenuOKButton.IsEnabled = false;
             MenuCancelButton.IsEnabled = false;
@@ -19619,7 +19619,7 @@ namespace GnollHackX.Pages.Game
                 await DelayedMenuHide();
         }
 
-        private void RequestMenuSwapWeapon()
+        private void RequestSwapWeaponAndCloseMenu()
         {
             try
             {

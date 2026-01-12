@@ -18,7 +18,6 @@
 #define NOINVSYM '#'
 #define CONTAINED_SYM '>' /* designator for inside a container */
 #define HANDS_SYM '-'
-#define SWAP_SYM '\010'
 
 STATIC_DCL void FDECL(loot_classify, (Loot *, struct obj *));
 STATIC_DCL char *FDECL(loot_xname, (struct obj *));
@@ -3058,7 +3057,7 @@ unsigned int getobjflags; /* 1 = cost is specified; 2 = header text is about cos
             ilet = display_pickinv(allowed_choices, *qbuf ? qbuf : (char *) 0,
                                    menuquery,
                                    TRUE, allowcnt ? &ctmp : (int64_t *) 0, show_weights, headertext, FALSE, FALSE);
-            if (!ilet || ilet == SWAP_SYM)
+            if (!ilet || ilet == SWAP_LET)
                 continue;
             if (ilet == HANDS_SYM)
                 return (struct obj *) &zeroobj; /* cast away 'const' */
@@ -4413,13 +4412,13 @@ ddoinv()
         pickcnt = 0;
         return_to_inv = FALSE;
         invlet = display_inventory_with_header((const char*)0, TRUE, &pickcnt, SHOWWEIGHTS_INVENTORY, FALSE, FALSE);
-        if (invlet == '\033' || invlet == '\0')
+        if (invlet == CANCEL_LET || invlet == '\0')
         {
             issue_gui_command(GUI_CMD_TOGGLE_MENU_POSITION_SAVING, GHMENU_STYLE_INVENTORY, 0, (char*)0);
             return 0;
         }
 
-        if (invlet == SWAP_SYM)
+        if (invlet == SWAP_LET)
         {
             doswapweapon();
             return_to_inv = TRUE;
@@ -4463,10 +4462,15 @@ doseeworn()
         pickcnt = 0;
         return_to_inv = FALSE;
         invlet = display_inventory_with_header((const char*)0, TRUE, &pickcnt, SHOWWEIGHTS_INVENTORY, iflags.worn_shows_equipment, TRUE);
-        if (!invlet || invlet == '\033' || invlet == '\0')
+        if (!invlet || invlet == CANCEL_LET || invlet == '\0')
             return 0;
 
-        if (flags.inventory_obj_cmd)
+        if (invlet == SWAP_LET)
+        {
+            doswapweapon();
+            return_to_inv = TRUE;
+        }
+        else if (flags.inventory_obj_cmd)
         {
             int res = display_item_command_menu_by_invlet(invlet, pickcnt, &return_to_inv);
             if (res || !return_to_inv)
@@ -5250,7 +5254,7 @@ nextclass:
     n = select_menu(win,
                     wizid ? PICK_ANY : want_reply ? PICK_ONE : PICK_NONE,
                     &selected);
-    if (n > 0) 
+    if (n > 0)
     {
         if (wizid) 
         {
@@ -5283,7 +5287,7 @@ nextclass:
         free((genericptr_t) selected);
     } 
     else
-        ret = !n ? '\0' : n == -2 ? SWAP_SYM : '\033'; /* cancelled */
+        ret = !n ? '\0' : n == -2 ? SWAP_LET : CANCEL_LET; /* cancelled */
 
     return ret;
 }
@@ -7258,10 +7262,15 @@ doprinuse()
             pickcnt = 0;
             return_to_inv = FALSE;
             invlet = display_inventory_with_header(lets, TRUE, &pickcnt, SHOWWEIGHTS_INVENTORY, FALSE, FALSE);
-            if (!invlet || invlet == '\033' || invlet == '\0')
+            if (!invlet || invlet == CANCEL_LET || invlet == '\0')
                 return 0;
 
-            if (flags.inventory_obj_cmd)
+            if (invlet == SWAP_LET)
+            {
+                doswapweapon();
+                return_to_inv = TRUE;
+            }
+            else if (flags.inventory_obj_cmd)
             {
                 int res = display_item_command_menu_by_invlet(invlet, pickcnt, & return_to_inv);
                 if (res || !return_to_inv)

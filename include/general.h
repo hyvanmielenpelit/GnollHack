@@ -1013,5 +1013,9 @@ enum cat_breeds {
 #define TOURIST_ROLE_ACHIEVEMENT_SCORE 50000L
 #define WIZARD_ROLE_ACHIEVEMENT_SCORE 50000L
 
+#define SWAP_LET '\010'
+#define CANCEL_LET '\033'
+#define NULL_LET '\0'
+
 #endif /* GENERAL_H */
 
