@@ -1017,5 +1017,8 @@ enum cat_breeds {
 #define CANCEL_LET '\033'
 #define NULL_LET '\0'
 
+#define INVENTORY_CANCEL_RESULT -1
+#define INVENTORY_SWAP_RESULT   -2
+
 #endif /* GENERAL_H */
 

@@ -5287,7 +5287,7 @@ nextclass:
         free((genericptr_t) selected);
     } 
     else
-        ret = !n ? '\0' : n == -2 ? SWAP_LET : CANCEL_LET; /* cancelled */
+        ret = !n ? '\0' : n == INVENTORY_SWAP_RESULT ? SWAP_LET : CANCEL_LET; /* cancelled */
 
     return ret;
 }
