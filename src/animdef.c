@@ -4417,6 +4417,46 @@ NEARDATA const struct animation_definition animations[MAX_ANIMATIONS] =
       PHOENIX_ATTACK_ENLARGEMENT,
       { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
     },
+    { "chickatrice-attack-animation", ANIMATION_TYPE_NORMAL, 8, 8,
+      1,
+      1,
+      ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, ANIMATION_MAIN_TILE_IGNORE,
+      AUTODRAW_NONE,
+      { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31 },
+      4, 6,
+      NO_ENLARGEMENT,
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
+    },
+    { "cockatrice-attack-animation", ANIMATION_TYPE_NORMAL, 8, 8,
+      1,
+      1,
+      ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, ANIMATION_MAIN_TILE_IGNORE,
+      AUTODRAW_NONE,
+      { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31 },
+      4, 6,
+      COCKATRICE_ATTACK_ENLARGEMENT,
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
+    },
+    { "giant-cockatrice-attack-animation", ANIMATION_TYPE_NORMAL, 8, 8,
+      1,
+      1,
+      ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, ANIMATION_MAIN_TILE_IGNORE,
+      AUTODRAW_NONE,
+      { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31 },
+      4, 6,
+      GIANT_COCKATRICE_ATTACK_ENLARGEMENT,
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
+    },
+    { "gargantuan-cockatrice-attack-animation", ANIMATION_TYPE_NORMAL, 8, 8,
+      1,
+      1,
+      ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, ANIMATION_MAIN_TILE_IGNORE,
+      AUTODRAW_NONE,
+      { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31 },
+      4, 6,
+      GARGANTUAN_COCKATRICE_ATTACK_ENLARGEMENT,
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
+    },
 };
 
 NEARDATA const struct enlargement_definition enlargements[MAX_ENLARGEMENTS] =
@@ -9790,6 +9830,14 @@ NEARDATA const struct enlargement_definition enlargements[MAX_ENLARGEMENTS] =
         { 0, 0, 0, 0, 0 },
         { 0, 0, 0, 0, 0 }
       },
+      { "gargantuan-cockatrice-attack-enlargement",
+        8, 8,
+        5,
+        3, 2, 0,
+        { 0, 1, 2, 3, 4 },
+        { 0, 0, 0, 0, 0 },
+        { 0, 0, 0, 0, 0 }
+      },
       { "gargantuan-mimic-enlargement", 0, 0,
         5,
         3, 2, 0,
@@ -9964,6 +10012,14 @@ NEARDATA const struct enlargement_definition enlargements[MAX_ENLARGEMENTS] =
         { 0, 0, 0, 0, 0 }
       },
       { "giant-cockatrice-statue-enlargement", 0, 0,
+        5,
+        3, 2, 0,
+        { 0, 1, 2, 3, 4 },
+        { 0, 0, 0, 0, 0 },
+        { 0, 0, 0, 0, 0 }
+      },
+      { "giant-cockatrice-attack-enlargement",
+        8, 8,
         5,
         3, 2, 0,
         { 0, 1, 2, 3, 4 },
@@ -11710,6 +11766,14 @@ NEARDATA const struct enlargement_definition enlargements[MAX_ENLARGEMENTS] =
        { 0, 0, 0, 0, 0 },
        { 0, 0, 0, 0, 0 }
       },
+      { "cockatrice-attack-enlargement",
+      8, 8,
+      2,
+      3, 1, 0,
+      { -1, -1, -1, 0, 1 },
+      { 0, 0, 0, 0, 0 },
+      { 0, 0, 0, 0, 0 }
+    },
 };
 
 NEARDATA const struct replacement_definition replacements[MAX_REPLACEMENTS] =
