@@ -8057,8 +8057,14 @@ register char *cmd;
     case NHKF_CLICKPOLE:
     {
         context.move = FALSE;
-        if (uwep && is_pole(uwep))
-            use_pole2(uwep, &clickpole_cc);
+        if (!(uwep && is_appliable_pole_type_weapon(uwep)) && (uswapwep && is_appliable_pole_type_weapon(uswapwep)))
+            (void)doswapweapon();
+        if (uwep && is_appliable_pole_type_weapon(uwep))
+        {
+            int poleres = use_pole2(uwep, &clickpole_cc);
+            if (!poleres)
+                readchar_queue = ""; //Prevent movement if using polearm failed.
+        }
         return;
     }
     case NHKF_CLICKFIRE:
