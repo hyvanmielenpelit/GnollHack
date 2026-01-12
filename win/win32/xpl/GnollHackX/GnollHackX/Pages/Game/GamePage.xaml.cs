@@ -4158,6 +4158,7 @@ namespace GnollHackX.Pages.Game
             }
             RefreshScreen = false;
 
+            EquipmentSlotActive = null;
             EquipmentDrawFirstTime = true;
             MenuEquipmentSideShown = menuinfo.Style == ghmenu_styles.GHMENU_STYLE_INVENTORY_EQUIPMENT;
             MenuDrawOnlyClear = true;
