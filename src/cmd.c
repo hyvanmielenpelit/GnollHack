@@ -8040,14 +8040,14 @@ register char *cmd;
     case NHKF_DOINV:
         if (!Cmd.num_pad)
             break;
-        (void) ddoinv(); /* a convenience borrowed from the PC */
-        context.move = FALSE;
+        if (!ddoinv()) /* a convenience borrowed from the PC */
+            context.move = FALSE;
         return;
     case NHKF_DOSEEWORN:
         if (!Cmd.num_pad)
             break;
-        (void)doseeworn();
-        context.move = FALSE;
+        if (!doseeworn())
+            context.move = FALSE;
         return;
     case NHKF_CLICKLOOK:
         context.move = FALSE;
@@ -8056,7 +8056,6 @@ register char *cmd;
         return;
     case NHKF_CLICKPOLE:
     {
-        context.move = FALSE;
         if (!(uwep && is_appliable_pole_type_weapon(uwep)) && (uswapwep && is_appliable_pole_type_weapon(uswapwep)))
             (void)doswapweapon();
         if (uwep && is_appliable_pole_type_weapon(uwep))
