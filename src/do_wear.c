@@ -3941,7 +3941,7 @@ int retry;
     return 0;
 }
 
-/* the M('W') command -- wear multiple items */
+/* the M('w') command -- wear multiple items */
 int
 ddowear()
 {
