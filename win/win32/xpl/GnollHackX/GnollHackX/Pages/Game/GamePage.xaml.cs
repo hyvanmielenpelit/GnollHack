@@ -15426,7 +15426,7 @@ namespace GnollHackX.Pages.Game
                             }
                             else if (_touchWithinPrevWepButton && !PlayingReplay)
                             {
-                                GenericButton_Clicked(sender, e, GHUtils.Meta('P'));
+                                GenericButton_Clicked(sender, e, GHUtils.Meta('W'));
                             }
                             else if (_touchWithinContextButton != 0 && !PlayingReplay)
                             {

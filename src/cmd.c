@@ -6435,11 +6435,11 @@ struct ext_func_tab extcmdlist[] = {
     { 'p', "pay", "pay your shopping bill", dopay },
     { ';', "pickstash", "pick up things at the current location and stash them into a container", doput2bag },
     { ',', "pickup", "pick up things at the current location", dopickup },
-    { C('p'), "pole", "strike with a polearm or lance", dopole, AUTOCOMPLETE },
+    { M('P'), "pole", "strike with a polearm or lance", dopole, AUTOCOMPLETE },
     { M(1), "polyself", "polymorph self", wiz_polyself, IFBURIED | AUTOCOMPLETE | WIZMODECMD },
     { M('p'), "pray", "pray to the gods for help", dopray, IFBURIED | AUTOCOMPLETE | INCMDMENU },
-    { C('<'), "prevmsg", "view recent game messages", doprev_message, IFBURIED | AUTOCOMPLETE | GENERALCMD },
-    { M('P'), "prevwep", "wield a previously wielded weapon", dowieldprevwep}, /* For wielding back weapons that were wielded before wielding a pick-axe or a saw */
+    { C('p'), "prevmsg", "view recent game messages", doprev_message, IFBURIED | GENERALCMD },
+    { M('W'), "prevwep", "wield a previously wielded weapon", dowieldprevwep}, /* For wielding back weapons that were wielded before wielding a pick-axe or a saw */
     { 'P', "puton", "put on an accessory (ring, amulet, etc)", doputon, SINGLE_OBJ_CMD_SPECIFIC, ATR_NONE, NO_COLOR, 0, getobj_accessories, "put on", "put on" },
     { 'q', "quaff", "quaff (drink) something", dodrink, SINGLE_OBJ_CMD_SPECIFIC, ATR_NONE, NO_COLOR, 0, getobj_beverages, "drink", "drink" },
     { M('q'), "quit", "exit without saving current game", done2, IFBURIED | AUTOCOMPLETE | GENERALCMD },
@@ -6713,7 +6713,6 @@ commands_init(VOID_ARGS)
     (void) bind_key(M('N'), "name");
     (void) bind_key('u',    "untrap"); /* if number_pad is on */
     (void) bind_key(M('y'), "yell"); /* if number_pad is on */
-    (void) bind_key(28,     "prevmsg"); /* Ctrl+< on Windows seems to produce ASCII code 28 */
     
 //#ifdef USE_TILES
 //    (void) bind_key(C('0'), "zoommini");
@@ -6742,9 +6741,10 @@ commands_init(VOID_ARGS)
     /* M('M') is monster ability */
     /* M('N') is name */
     /* M('O') is overview */
-    /* M('P') is previous weapon */
+    /* M('P') is apply a polearm */
     /* M('R') is ride nearby */
     /* M('Y') is toggle buff timers */
+    /* M('W') is previous weapon */
 
     update_bindings_list();
 }
