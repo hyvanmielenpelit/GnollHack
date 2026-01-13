@@ -8060,31 +8060,39 @@ register char *cmd;
             (void)doswapweapon();
         if (uwep && is_appliable_pole_type_weapon(uwep))
         {
-            int poleres = use_pole2(uwep, &clickpole_cc);
-            if (!poleres)
+            if (!use_pole2(uwep, &clickpole_cc))
+            {
+                context.move = FALSE;
                 readchar_queue = ""; //Prevent movement if using polearm failed.
+            }
         }
         return;
     }
     case NHKF_CLICKFIRE:
     {
-        int fireres = dofire();
-        if (!fireres)
+        if (!dofire())
+        {
+            context.move = FALSE;
             readchar_queue = ""; //Prevent movement if firing failed.
+        }
         return;
     }
     case NHKF_CLICKCAST:
     {
-        int castres = docastquick();
-        if (!castres)
+        if (!docastquick())
+        {
+            context.move = FALSE;
             readchar_queue = ""; //Prevent movement if casting failed.
+        }
         return;
     }
     case NHKF_CLICKZAP:
     {
-        int zapres = dozapquick();
-        if (!zapres)
+        if (!dozapquick())
+        {
+            context.move = FALSE;
             readchar_queue = ""; //Prevent movement if casting failed.
+        }
         return;
     }
     case NHKF_TRAVEL:
