@@ -8070,6 +8070,8 @@ register char *cmd;
     }
     case NHKF_CLICKFIRE:
     {
+        if (!(uwep && is_launcher(uwep)) && (uswapwep && is_launcher(uswapwep)))
+            (void)doswapweapon();
         if (!dofire())
         {
             context.move = FALSE;
