@@ -172,7 +172,7 @@ namespace GnollHackX.Pages.Game
             MainLayout.IsEnabled = false;
             GHApp.PlayButtonClickedSound();
             GHApp.CollectNursery();
-            _gamePage.GenericButton_Clicked(btnSnapshot, EventArgs.Empty, GHUtils.Meta(28));
+            _gamePage.GenericButton_Clicked(btnSnapshot, EventArgs.Empty, GHUtils.Meta(29));
             var page = await GHApp.Navigation.PopModalAsync();
             GHApp.DisconnectIViewHandlers(page);
         }

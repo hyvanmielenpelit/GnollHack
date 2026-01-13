@@ -131,6 +131,7 @@ E int FDECL(use_torch, (struct obj**));
 E void FDECL(use_lamp, (struct obj*));
 E void FDECL(light_cocktail, (struct obj**));
 E int FDECL(use_pole2, (struct obj*, coord*));
+E int NDECL(dopole);
 
 /* ### artifact.c ### */
 

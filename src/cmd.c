@@ -6435,9 +6435,10 @@ struct ext_func_tab extcmdlist[] = {
     { 'p', "pay", "pay your shopping bill", dopay },
     { ';', "pickstash", "pick up things at the current location and stash them into a container", doput2bag },
     { ',', "pickup", "pick up things at the current location", dopickup },
+    { C('p'), "pole", "strike with a polearm or lance", dopole, AUTOCOMPLETE },
     { M(1), "polyself", "polymorph self", wiz_polyself, IFBURIED | AUTOCOMPLETE | WIZMODECMD },
     { M('p'), "pray", "pray to the gods for help", dopray, IFBURIED | AUTOCOMPLETE | INCMDMENU },
-    { C('p'), "prevmsg", "view recent game messages", doprev_message, IFBURIED | GENERALCMD },
+    { C('<'), "prevmsg", "view recent game messages", doprev_message, IFBURIED | AUTOCOMPLETE | GENERALCMD },
     { M('P'), "prevwep", "wield a previously wielded weapon", dowieldprevwep}, /* For wielding back weapons that were wielded before wielding a pick-axe or a saw */
     { 'P', "puton", "put on an accessory (ring, amulet, etc)", doputon, SINGLE_OBJ_CMD_SPECIFIC, ATR_NONE, NO_COLOR, 0, getobj_accessories, "put on", "put on" },
     { 'q', "quaff", "quaff (drink) something", dodrink, SINGLE_OBJ_CMD_SPECIFIC, ATR_NONE, NO_COLOR, 0, getobj_beverages, "drink", "drink" },
@@ -6478,7 +6479,7 @@ struct ext_func_tab extcmdlist[] = {
     { C('s'), "sit", "sit down", dosit, AUTOCOMPLETE | INCMDMENU },
     { 'S', "skill", "view and advance skills", doskill, IFBURIED | AUTOCOMPLETE },
 #if defined (DUMPLOG) || defined (DUMPHTML)
-    { M(28), "snapshot", "save a snapshot log", dosnapshot, IFBURIED
+    { M(29), "snapshot", "save a snapshot log", dosnapshot, IFBURIED
 #if defined (ALLOW_SNAPSHOT)
         | AUTOCOMPLETE
 #endif
@@ -6712,7 +6713,8 @@ commands_init(VOID_ARGS)
     (void) bind_key(M('N'), "name");
     (void) bind_key('u',    "untrap"); /* if number_pad is on */
     (void) bind_key(M('y'), "yell"); /* if number_pad is on */
-
+    (void) bind_key(28,     "prevmsg"); /* Ctrl+< on Windows seems to produce ASCII code 28 */
+    
 //#ifdef USE_TILES
 //    (void) bind_key(C('0'), "zoommini");
 //    (void) bind_key(C('1'), "zoomnormal");

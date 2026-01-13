@@ -586,6 +586,13 @@ dofire()
         }
     }
 
+    if (obj && is_ammo(obj) 
+        && (!uwep || !is_launcher(uwep) || !ammo_and_launcher(obj, uwep)) 
+        && uswapwep && is_launcher(uswapwep) && ammo_and_launcher(obj, uswapwep))
+    {
+        (void)doswapweapon();
+    }
+
     if (obj && is_ammo(obj) && (!uwep || (uwep && !is_launcher(uwep))))
     {
         play_sfx_sound(SFX_GENERAL_CANNOT);

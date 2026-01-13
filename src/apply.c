@@ -5090,6 +5090,23 @@ int* max_range;
 //}
 
 /* Distance attacks by pole-weapons */
+int
+dopole()
+{
+    if (!(uwep && is_appliable_pole_type_weapon(uwep)) && (uswapwep && is_appliable_pole_type_weapon(uswapwep)))
+        (void)doswapweapon();
+    if (uwep && is_appliable_pole_type_weapon(uwep))
+        return use_pole(uwep);
+    else
+    {
+        play_sfx_sound(SFX_GENERAL_CANNOT);
+        pline_ex(ATR_NONE, CLR_MSG_FAIL, "You are not wielding a polearm or lance.");
+        return 0;
+    }
+}
+
+
+/* Distance attacks by pole-weapons */
 STATIC_OVL int
 use_pole(obj)
 struct obj* obj;
