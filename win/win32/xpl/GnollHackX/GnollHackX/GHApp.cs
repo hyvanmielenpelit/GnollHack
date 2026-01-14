@@ -3470,10 +3470,9 @@ namespace GnollHackX
                     _moreBtnMatrix[3, 1, 4] = new GHCommandButtonItem("Quick Spell", AppResourceName + ".Assets.UI.quickset.png", GHUtils.Meta(4));
                     _moreBtnMatrix[3, 2, 4] = new GHCommandButtonItem("Cast Quick", AppResourceName + ".Assets.UI.quickcast.png", GHUtils.Meta(26));
                     _moreBtnMatrix[3, 3, 4] = new GHCommandButtonItem("Zap Quick", AppResourceName + ".Assets.UI.zapquick.png", GHUtils.Meta(27));
-                    //_moreBtnMatrix[3, 2, 4] = new GHCommandButtonItem("Pick & Stash", AppResourceName + ".Assets.UI.picktobag.png", (int)';');
-                    //_moreBtnMatrix[3, 1, 0] = new GHCommandButtonItem("Pick Up", AppResourceName + ".Assets.UI.pickup.png", (int)',');
 
-                    _moreBtnMatrix[3, 0, 5] = new GHCommandButtonItem("Help", AppResourceName + ".Assets.UI.help.png", (int)'?');
+                    //_moreBtnMatrix[3, 0, 5] = new GHCommandButtonItem("Help", AppResourceName + ".Assets.UI.help.png", (int)'?');
+                    _moreBtnMatrix[3, 0, 5] = new GHCommandButtonItem("Polearm", AppResourceName + ".Assets.UI.polearm.png", GHUtils.Meta((int)'P'));
                     _moreBtnMatrix[3, 1, 5] = new GHCommandButtonItem("Commands", AppResourceName + ".Assets.UI.commands.png", GHUtils.Meta((int)'c'));
                     _moreBtnMatrix[3, 2, 5] = new GHCommandButtonItem("Extended", AppResourceName + ".Assets.UI.extended.png", (int)'#');
                     _moreBtnMatrix[3, 3, 5] = new GHCommandButtonItem("Back to Game", AppResourceName + ".Assets.UI.more.png", -101);
@@ -3769,6 +3768,7 @@ namespace GnollHackX
             new SelectableShortcutButton("Force Fight", "Fight", 'F', false, false, 0, AppResourceName + ".Assets.UI.fight.png"),
             new SelectableShortcutButton("Inventory", "Inventory", 'i', false, false, 0, AppResourceName + ".Assets.UI.inventory.png"),
             new SelectableShortcutButton("Kick", "Kick", 'd', true, false, 0, AppResourceName + ".Assets.UI.kick.png"),
+            new SelectableShortcutButton("Polearm", "Polearm", 'P', false, true, 0, AppResourceName + ".Assets.UI.polearm.png"),
             new SelectableShortcutButton("Read", "Read", 'r', false, false, 0, AppResourceName + ".Assets.UI.read.png"),
             new SelectableShortcutButton("Repeat", "Repeat", 'A', true, false, 0, AppResourceName + ".Assets.UI.repeat.png"),
             new SelectableShortcutButton("Rest", "Rest", '\0', false, false, -103, AppResourceName + ".Assets.UI.rest.png"),

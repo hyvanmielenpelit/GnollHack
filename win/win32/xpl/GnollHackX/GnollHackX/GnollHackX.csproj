@@ -205,6 +205,7 @@
     <None Remove="Assets\UI\pay.png" />
     <None Remove="Assets\UI\picktobag.png" />
     <None Remove="Assets\UI\pickup.png" />
+    <None Remove="Assets\UI\polearm.png" />
     <None Remove="Assets\UI\polymorph.png" />
     <None Remove="Assets\UI\pray.png" />
     <None Remove="Assets\UI\previous.png" />
@@ -424,6 +425,7 @@
     <EmbeddedResource Include="Assets\UI\page-next.png" />
     <EmbeddedResource Include="Assets\UI\page-previous.png" />
     <EmbeddedResource Include="Assets\UI\picktobag.png" />
+    <EmbeddedResource Include="Assets\UI\polearm.png" />
     <EmbeddedResource Include="Assets\UI\quickcast.png" />
     <EmbeddedResource Include="Assets\UI\quickset.png" />
     <EmbeddedResource Include="Assets\UI\rest.png" />
