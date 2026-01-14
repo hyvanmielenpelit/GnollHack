@@ -115,16 +115,13 @@ namespace GnollHackX.Controls
             ThreadSafeX = X;
             ThreadSafeY = Y;
             ThreadSafeIsVisible = IsVisible;
+            if (Parent == null || !(Parent is IThreadSafeView))
+                ThreadSafeParent = null;
+            else
+                ThreadSafeParent = new WeakReference<IThreadSafeView>((IThreadSafeView)Parent);
             lock (_propertyLock)
             {
                 _threadSafeMargin = Margin;
-                if (Parent == null || !(Parent is IThreadSafeView))
-                    _threadSafeParent = null;
-                else
-                    _threadSafeParent = new WeakReference<IThreadSafeView>((IThreadSafeView)Parent);
-                //_threadSafeInternalCanvasSize = internalCanvasView.CanvasSize;
-                //if (HasGL)
-                //    _threadSafeInternalGLCanvasSize = _internalGLView.CanvasSize;
             }
             SizeChanged += SwitchableCanvasView_SizeChanged;
             PropertyChanged += SwitchableCanvasView_PropertyChanged;
@@ -256,7 +253,7 @@ namespace GnollHackX.Controls
         public double ThreadSafeY { get { return Interlocked.CompareExchange(ref _threadSafeY, 0.0, 0.0); } private set { Interlocked.Exchange(ref _threadSafeY, value); } }
         public bool ThreadSafeIsVisible { get { return Interlocked.CompareExchange(ref _threadSafeIsVisible, 0, 0) != 0; } private set { Interlocked.Exchange(ref _threadSafeIsVisible, value ? 1 : 0); } }
         public Thickness ThreadSafeMargin { get { lock (_propertyLock) { return _threadSafeMargin; } } private set { lock (_propertyLock) { _threadSafeMargin = value; } } }
-        public WeakReference<IThreadSafeView> ThreadSafeParent { get { lock (_propertyLock) { return _threadSafeParent; } } private set { lock (_propertyLock) { _threadSafeParent = value; } } }
+        public WeakReference<IThreadSafeView> ThreadSafeParent { get { return Interlocked.CompareExchange(ref _threadSafeParent, null, null); } private set { Interlocked.Exchange(ref _threadSafeParent, value); } }
         
         //public SKSize ThreadSafeCanvasSize { 
         //    get 

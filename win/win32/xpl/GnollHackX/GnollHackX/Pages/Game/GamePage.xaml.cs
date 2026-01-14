@@ -21643,7 +21643,8 @@ namespace GnollHackX.Pages.Game
             double screenCoordinateX = view.ThreadSafeX;
             double screenCoordinateY = view.ThreadSafeY;
             // Get the view's parent (if it has one...)
-            if(view.ThreadSafeParent != null && view.ThreadSafeParent.TryGetTarget(out IThreadSafeView parent))
+            var viewThreadSafeParent = view.ThreadSafeParent;
+            if (viewThreadSafeParent != null && viewThreadSafeParent.TryGetTarget(out IThreadSafeView parent))
             {
                 if (!(parent is App))
                 {
@@ -21654,7 +21655,8 @@ namespace GnollHackX.Pages.Game
                         screenCoordinateY += parent.ThreadSafeY;
 
                         // If the parent of this parent isn't the app itself, get the parent's parent.
-                        if (parent.ThreadSafeParent == null || !parent.ThreadSafeParent.TryGetTarget(out parent))
+                        var parentThreadSafeParent = parent.ThreadSafeParent;
+                        if (parentThreadSafeParent == null || !parentThreadSafeParent.TryGetTarget(out parent))
                             parent = null;
                         else if (parent is App)
                             parent = null;
