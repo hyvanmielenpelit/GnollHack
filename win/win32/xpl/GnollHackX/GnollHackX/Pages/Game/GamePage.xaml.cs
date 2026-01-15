@@ -1276,6 +1276,7 @@ namespace GnollHackX.Pages.Game
                     tasks.Add(Task.Run(() =>
                     {
                         GHApp._skillBitmap = GHApp.LoadEmbeddedUIBitmap("skill.png");
+                        GHApp._polearmBitmap = GHApp.LoadEmbeddedUIBitmap("polearm.png");
                         GHApp._prevWepBitmap = GHApp.LoadEmbeddedUIBitmap("wield.png");
                         GHApp._prevUnwieldBitmap = GHApp.LoadEmbeddedUIBitmap("unwield.png");
 
@@ -7115,6 +7116,7 @@ namespace GnollHackX.Pages.Game
             SKRect healthRect = new SKRect();
             SKRect manaRect = new SKRect();
             SKRect skillRect = new SKRect();
+            SKRect poleRect = new SKRect();
             SKRect prevWepRect = new SKRect();
             SKRect youRect = new SKRect();
             //bool skillRectDrawn = false;
@@ -11357,18 +11359,20 @@ namespace GnollHackX.Pages.Game
                         bool orbsok = false;
                         bool prevwepok = false;
                         bool isunwield = false;
+                        bool polearmok = false;
                         bool skillbuttonok = false;
                         orbsok = _localStatusFields[(int)NhStatusFields.BL_HPMAX].Text != "" && _localStatusFields[(int)NhStatusFields.BL_HPMAX].Text != "0";
-                        skillbuttonok = _localStatusFields[(int)NhStatusFields.BL_SKILL].Text != null && _localStatusFields[(int)NhStatusFields.BL_SKILL].Text == "Skill";
+                        skillbuttonok = GHApp.ShowSkillContextButton && _localStatusFields[(int)NhStatusFields.BL_SKILL].Text != null && _localStatusFields[(int)NhStatusFields.BL_SKILL].Text == "Skill";
                         if (_localWeaponStyleObjDataItem[0] != null)
                         {
                             prevwepok = _localWeaponStyleObjDataItem[0].PreviousWeaponFound || _localWeaponStyleObjDataItem[0].PreviousUnwield;
                             isunwield = _localWeaponStyleObjDataItem[0].PreviousUnwield;
+                            polearmok = _localWeaponStyleObjDataItem[0].IsAppliablePolearm && GHApp.ShowPolearmContextButton;
                         }
                         float lastdrawnrecty = ClassicStatusBar ? Math.Max(abilitybuttonbottom, lastStatusRowPrintY + 0.0f * lastStatusRowFontSpacing) : statusbarheight;
                         tx = orbleft;
                         ty = lastdrawnrecty + 5.0f;
-                        if (orbsok && skillbuttonok && prevwepok && ty + orbbordersize * 4 + 5 + 15 + 15 > Math.Min(herewindowtop, messagewindowtop))
+                        if (orbsok && skillbuttonok && (prevwepok || polearmok) && ty + orbbordersize * 4 + 5 + 15 + 15 > Math.Min(herewindowtop, messagewindowtop))
                             skillbuttonok = false;
 
                         /* HP and MP */
@@ -11456,6 +11460,28 @@ namespace GnollHackX.Pages.Game
 #endif
                             //textPaint.TextAlign = SKTextAlign.Left;
                             lastdrawnrecty = skillDest.Bottom + textPaint.FontSpacing;
+                        }
+
+                        if (polearmok)
+                        {
+                            SKRect poleDest = new SKRect(tx, lastdrawnrecty + 15.0f, tx + orbbordersize, lastdrawnrecty + 15.0f + orbbordersize);
+                            poleRect = poleDest;
+                            //skillRectDrawn = true;
+                            textPaint.Color = SKColors.White;
+                            textPaint.Typeface = GHApp.LatoRegular;
+                            textPaint.TextSize = GHConstants.SkillButtonBaseFontSize * poleDest.Width / 50.0f;
+                            using (SKPaint btnPaint = new SKPaint())
+                            {
+                                if (_localIsPointerHovering && poleDest.Contains(_localPointerHoverLocation))
+                                {
+                                    btnPaint.ColorFilter = UIUtils.HighlightColorFilter;
+                                }
+                                canvas.DrawImage(GHApp._polearmBitmap, poleDest, btnPaint);
+                            }
+                            float text_x = (poleDest.Left + poleDest.Right) / 2;
+                            float text_y = poleDest.Bottom - textPaint.FontMetrics.Ascent;
+                            textPaint.DrawTextOnCanvas(canvas, "Polearm", text_x, text_y, SKTextAlign.Center);
+                            lastdrawnrecty = poleDest.Bottom + textPaint.FontSpacing;
                         }
 
                         if (prevwepok)
@@ -11828,6 +11854,7 @@ namespace GnollHackX.Pages.Game
                     _uiHealthRect = healthRect;
                     _uiManaRect = manaRect;
                     _uiSkillRect = skillRect;
+                    _uiPoleRect = poleRect;
                     _uiPrevWepRect = prevWepRect;
                     _uiYouRect = youRect;
                 }
@@ -14949,6 +14976,7 @@ namespace GnollHackX.Pages.Game
         public float _statusClipBottom = 0;
         private bool _touchMoved = false;
         private bool _touchWithinSkillButton = false;
+        private bool _touchWithinPoleButton = false;
         private bool _touchWithinPrevWepButton = false;
         private bool _touchWithinHealthOrb = false;
         private bool _touchWithinManaOrb = false;
@@ -14984,6 +15012,7 @@ namespace GnollHackX.Pages.Game
         private SKRect _uiHealthRect;
         private SKRect _uiManaRect;
         private SKRect _uiSkillRect;
+        private SKRect _uiPoleRect;
         private SKRect _uiPrevWepRect;
         private SKRect _uiYouRect;
 
@@ -14991,6 +15020,7 @@ namespace GnollHackX.Pages.Game
         private SKRect _uiLocalHealthRect;
         private SKRect _uiLocalManaRect;
         private SKRect _uiLocalSkillRect;
+        private SKRect _uiLocalPoleRect;
         private SKRect _uiLocalPrevWepRect;
         private SKRect _uiLocalYouRect;
 
@@ -15010,6 +15040,7 @@ namespace GnollHackX.Pages.Game
                         _uiLocalHealthRect = _uiHealthRect;
                         _uiLocalManaRect = _uiManaRect;
                         _uiLocalSkillRect = _uiSkillRect;
+                        _uiLocalPoleRect = _uiPoleRect;
                         _uiLocalPrevWepRect = _uiPrevWepRect;
                         _uiLocalYouRect = _uiYouRect;
                     }
@@ -15029,6 +15060,7 @@ namespace GnollHackX.Pages.Game
                         _savedSender = null;
                         _savedEventArgs = null;
                         _touchWithinSkillButton = false;
+                        _touchWithinPoleButton = false;
                         _touchWithinPrevWepButton = false;
                         _touchWithinHealthOrb = false;
                         _touchWithinManaOrb = false;
@@ -15051,6 +15083,10 @@ namespace GnollHackX.Pages.Game
                             if (_uiLocalSkillRect.Contains(e.Location))
                             {
                                 _touchWithinSkillButton = true;
+                            }
+                            else if (_uiLocalPoleRect.Contains(e.Location))
+                            {
+                                _touchWithinPoleButton = true;
                             }
                             else if (_uiLocalPrevWepRect.Contains(e.Location))
                             {
@@ -15127,7 +15163,7 @@ namespace GnollHackX.Pages.Game
 
                                 if (TouchDictionary.Count == 1)
                                 {
-                                    if (_touchWithinSkillButton || _touchWithinPrevWepButton || _touchWithinHealthOrb || _touchWithinManaOrb || _touchWithinStatusBar || (_touchWithinPet > 0 && !ShowDirections && !ShowNumberPad) || _touchWithinYouButton || _touchWithinContextButton != 0)
+                                    if (_touchWithinSkillButton || _touchWithinPoleButton || _touchWithinPrevWepButton || _touchWithinHealthOrb || _touchWithinManaOrb || _touchWithinStatusBar || (_touchWithinPet > 0 && !ShowDirections && !ShowNumberPad) || _touchWithinYouButton || _touchWithinContextButton != 0)
                                     {
                                         /* Do nothing */
                                     }
@@ -15314,6 +15350,7 @@ namespace GnollHackX.Pages.Game
                                     _savedSender = null;
                                     _savedEventArgs = null;
                                     _touchWithinSkillButton = false;
+                                    _touchWithinPoleButton = false;
                                     _touchWithinPrevWepButton = false;
                                     _touchWithinHealthOrb = false;
                                     _touchWithinManaOrb = false;
@@ -15423,6 +15460,10 @@ namespace GnollHackX.Pages.Game
                             else if (_touchWithinSkillButton && !PlayingReplay)
                             {
                                 GenericButton_Clicked(sender, e, (int)'S');
+                            }
+                            else if (_touchWithinPoleButton && !PlayingReplay)
+                            {
+                                GenericButton_Clicked(sender, e, GHUtils.Meta('P'));
                             }
                             else if (_touchWithinPrevWepButton && !PlayingReplay)
                             {

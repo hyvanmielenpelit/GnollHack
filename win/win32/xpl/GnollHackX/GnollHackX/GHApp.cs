@@ -174,6 +174,8 @@ namespace GnollHackX
             DefaultVIKeys = Preferences.Get("DefaultVIKeys", false);
             ShowKeyboardShortcuts = Preferences.Get("ShowKeyboardShortcuts", IsDesktop);
             UseSingleMoreCommandsPage = Preferences.Get("UseSingleMoreCommandsPage", IsDesktop);
+            ShowSkillContextButton = Preferences.Get("ShowSkillContextButton", true);
+            ShowPolearmContextButton = Preferences.Get("ShowPolearmContextButton", GHConstants.DefaultShowPolearmContextButton);
             EquipmentFlipAnimation = Preferences.Get("EquipmentFlipAnimation", true);
             ShowEquipmentIcons = Preferences.Get("ShowEquipmentIcons", true);
 
@@ -2109,6 +2111,8 @@ namespace GnollHackX
         private static int _defaultVIKeys = 0;
         private static int _showKeyboardShortcuts = 0;
         private static int _useSingleMoreCommandsPage = 0;
+        private static int _showSkillContextButton = 0;
+        private static int _showPolearmContextButton = 0;
         private static int _equipmentFlipAnimation = 0;
         private static int _showEquipmentIcons = 0;
 
@@ -2120,6 +2124,8 @@ namespace GnollHackX
         public static bool DefaultVIKeys { get { return Interlocked.CompareExchange(ref _defaultVIKeys, 0, 0) != 0; } set { Interlocked.Exchange(ref _defaultVIKeys, value ? 1 : 0); } }
         public static bool ShowKeyboardShortcuts { get { return Interlocked.CompareExchange(ref _showKeyboardShortcuts, 0, 0) != 0; } set { Interlocked.Exchange(ref _showKeyboardShortcuts, value ? 1 : 0); } }
         public static bool UseSingleMoreCommandsPage { get { return Interlocked.CompareExchange(ref _useSingleMoreCommandsPage, 0, 0) != 0; } set { Interlocked.Exchange(ref _useSingleMoreCommandsPage, value ? 1 : 0); } }
+        public static bool ShowSkillContextButton { get { return Interlocked.CompareExchange(ref _showSkillContextButton, 0, 0) != 0; } set { Interlocked.Exchange(ref _showSkillContextButton, value ? 1 : 0); } }
+        public static bool ShowPolearmContextButton { get { return Interlocked.CompareExchange(ref _showPolearmContextButton, 0, 0) != 0; } set { Interlocked.Exchange(ref _showPolearmContextButton, value ? 1 : 0); } }
         public static bool EquipmentFlipAnimation { get { return Interlocked.CompareExchange(ref _equipmentFlipAnimation, 0, 0) != 0; } set { Interlocked.Exchange(ref _equipmentFlipAnimation, value ? 1 : 0); } }
         public static bool ShowEquipmentIcons { get { return Interlocked.CompareExchange(ref _showEquipmentIcons, 0, 0) != 0; } set { Interlocked.Exchange(ref _showEquipmentIcons, value ? 1 : 0); } }
 
@@ -3045,6 +3051,7 @@ namespace GnollHackX
 
         public static SKImage _logoBitmap;
         public static SKImage _skillBitmap;
+        public static SKImage _polearmBitmap;
         public static SKImage _prevWepBitmap;
         public static SKImage _prevUnwieldBitmap;
         public static SKImage[] _arrowBitmap = new SKImage[9];

@@ -48,10 +48,11 @@ struct objclassdata
     uchar ocdata_flags;
 };
 
-#define OCDATA_BIMANUAL         0x01
-#define OCDATA_WIELDED_WEAPON   0x02
-#define OCDATA_QUIVERABLE       0x04
-#define OCDATA_BLINDFOLD        0x08
+#define OCDATA_BIMANUAL             0x01
+#define OCDATA_WIELDED_WEAPON       0x02
+#define OCDATA_QUIVERABLE           0x04
+#define OCDATA_BLINDFOLD            0x08
+#define OCDATA_APPLIABLE_POLEARM    0x10
 
 
  /* General callback types */

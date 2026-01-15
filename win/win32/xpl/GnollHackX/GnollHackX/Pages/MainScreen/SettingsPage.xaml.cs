@@ -724,6 +724,12 @@ namespace GnollHackX.Pages.MainScreen
             GHApp.UseSingleMoreCommandsPage = UseSingleMoreCommandsPageSwitch.IsToggled;
             Preferences.Set("UseSingleMoreCommandsPage", UseSingleMoreCommandsPageSwitch.IsToggled);
 
+            GHApp.ShowSkillContextButton = ShowSkillContextButtonSwitch.IsToggled;
+            Preferences.Set("ShowSkillContextButton", ShowSkillContextButtonSwitch.IsToggled);
+
+            GHApp.ShowPolearmContextButton = ShowPolearmContextButtonSwitch.IsToggled;
+            Preferences.Set("ShowPolearmContextButton", ShowPolearmContextButtonSwitch.IsToggled);
+
             GHApp.EquipmentFlipAnimation = EquipmentFlipAnimationSwitch.IsToggled;
             Preferences.Set("EquipmentFlipAnimation", EquipmentFlipAnimationSwitch.IsToggled);
 
@@ -1022,7 +1028,7 @@ namespace GnollHackX.Pages.MainScreen
             bool breatheanimations = GHConstants.DefaultBreatheAnimations; //, put2bag = GHConstants.DefaultShowPickNStashContextCommand, prevwep = GHConstants.DefaultShowPrevWepContextCommand;
             bool devmode = GHConstants.DefaultDeveloperMode, logmessages = GHConstants.DefaultLogMessages, lowlevellogging = false, debugpostchannel = GHConstants.DefaultDebugPostChannel, tournament = false, hpbars = false, nhstatusbarclassic = GHConstants.IsDefaultStatusBarClassic, desktopstatusbar = false, rightaligned2ndrow = false, showscore = false, showxp = false, desktopbuttons = false, menufadeeffects = false, menuhighfilterquality = true, menuhighlightedkeys = false, pets = true, orbs = true, orbmaxhp = false, orbmaxmana = false, mapgrid = false, playermark = false, monstertargeting = false, walkarrows = true;
             bool forcemaxmsg = false, showexstatus = false, noclipmode = GHConstants.DefaultMapNoClipMode, silentmode = false, characterclickaction = false, diceasranges = true, wornshowsequipment = true, autodig = false, ignorestopping = false;
-            bool postgamestatus = GHConstants.DefaultPosting, postxlog = GHConstants.DefaultPosting, postreplays = GHConstants.DefaultPosting, postbones = GHConstants.DefaultPosting, boneslistisblack = false, showkeyboardshortcuts = false, singlecmdpage = false, equipmentflipanimation = true, showequipmenticons = true;
+            bool postgamestatus = GHConstants.DefaultPosting, postxlog = GHConstants.DefaultPosting, postreplays = GHConstants.DefaultPosting, postbones = GHConstants.DefaultPosting, boneslistisblack = false, showkeyboardshortcuts = false, singlecmdpage = false, skillbutton = false, polearmbutton = false, equipmentflipanimation = true, showequipmenticons = true;
 #if !SENTRY
             bool postdiagnostics = GHConstants.DefaultPosting;
 #endif
@@ -1121,6 +1127,8 @@ namespace GnollHackX.Pages.MainScreen
             defaultvikeys = Preferences.Get("DefaultVIKeys", false);
             showkeyboardshortcuts = Preferences.Get("ShowKeyboardShortcuts", GHApp.IsDesktop);
             singlecmdpage = Preferences.Get("UseSingleMoreCommandsPage", GHApp.IsDesktop);
+            skillbutton = Preferences.Get("ShowSkillContextButton", true);
+            polearmbutton = Preferences.Get("ShowPolearmContextButton", GHConstants.DefaultShowPolearmContextButton);
             equipmentflipanimation = Preferences.Get("EquipmentFlipAnimation", true);
             showequipmenticons = Preferences.Get("ShowEquipmentIcons", true);
             maprefresh = Preferences.Get("MapRefreshRate", -1);
@@ -1678,6 +1686,8 @@ namespace GnollHackX.Pages.MainScreen
             DefaultVIKeysSwitch.IsToggled = defaultvikeys;
             ShowKeyboardShortcutsSwitch.IsToggled = showkeyboardshortcuts;
             UseSingleMoreCommandsPageSwitch.IsToggled = singlecmdpage;
+            ShowSkillContextButtonSwitch.IsToggled = skillbutton;
+            ShowPolearmContextButtonSwitch.IsToggled = polearmbutton;
             EquipmentFlipAnimationSwitch.IsToggled = equipmentflipanimation;
             ShowEquipmentIconsSwitch.IsToggled = showequipmenticons;
             _doChangeVolume = true; // !GHApp.IsMuted;

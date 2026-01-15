@@ -240,7 +240,7 @@
                                 <Switch Grid.Column="1" x:Name="AllowBonesSwitch" Toggled="AllowBonesSwitch_Toggled" HorizontalOptions="End" VerticalOptions="Center" />
                             </Grid>
 
-                            <Label Text="Interface" FontSize="23" FontAttributes="Bold" FontFamily="Immortal" TextColor="Black" Margin="0,18,0,2" />
+                            <Label Text="Command Layout" FontSize="23" FontAttributes="Bold" FontFamily="Immortal" TextColor="Black" Margin="0,18,0,2" />
                             <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
                                 <Label Text="Simple Command Layout"
                                             FontFamily="Underwood" TextColor="Black"
@@ -290,7 +290,32 @@
                                             HorizontalOptions="Start" />
                                 <Switch Grid.Column="1" x:Name="DesktopButtonsSwitch" HorizontalOptions="End" VerticalOptions="Center" />
                             </Grid>
-                            
+                            <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
+                                <Label Text="Skill Context Button"
+                                    FontFamily="Underwood" TextColor="Black"
+                                    FontSize="15"
+                                    VerticalOptions="Center" 
+                                    HorizontalOptions="Start" />
+                                <Switch Grid.Column="1" x:Name="ShowSkillContextButtonSwitch" HorizontalOptions="End" VerticalOptions="Center" />
+                            </Grid>
+                            <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
+                                <Label Text="Polearm Context Button"
+                                    FontFamily="Underwood" TextColor="Black"
+                                    FontSize="15"
+                                    VerticalOptions="Center" 
+                                    HorizontalOptions="Start" />
+                                <Switch Grid.Column="1" x:Name="ShowPolearmContextButtonSwitch" HorizontalOptions="End" VerticalOptions="Center" />
+                            </Grid>
+                            <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
+                                <Label Text="Single Commands Page"
+                                    FontFamily="Underwood" TextColor="Black"
+                                    FontSize="15"
+                                    VerticalOptions="Center" 
+                                    HorizontalOptions="Start" />
+                                <Switch Grid.Column="1" x:Name="UseSingleMoreCommandsPageSwitch" HorizontalOptions="End" VerticalOptions="Center" />
+                            </Grid>
+
+                            <Label Text="Status Bar" FontSize="23" FontAttributes="Bold" FontFamily="Immortal" TextColor="Black" Margin="0,18,0,2" />
                             <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
                                 <Label Text="Classic Status Bar"
                                             FontFamily="Underwood" TextColor="Black"
@@ -346,6 +371,7 @@
                                 <Switch Grid.Column="1" x:Name="ShowExtendedStatusBarSwitch" HorizontalOptions="End" VerticalOptions="Center" />
                             </Grid>
 
+                            <Label Text="Interface" FontSize="23" FontAttributes="Bold" FontFamily="Immortal" TextColor="Black" Margin="0,18,0,2" />
                             <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
                                 <Label Text="Grid"
                                             FontFamily="Underwood" TextColor="Black"
@@ -587,14 +613,6 @@
                                     VerticalOptions="Center" 
                                     HorizontalOptions="Start" />
                                 <Switch Grid.Column="1" x:Name="ShowKeyboardShortcutsSwitch" HorizontalOptions="End" VerticalOptions="Center" />
-                            </Grid>
-                            <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
-                                <Label Text="Single Commands Page"
-                                    FontFamily="Underwood" TextColor="Black"
-                                    FontSize="15"
-                                    VerticalOptions="Center" 
-                                    HorizontalOptions="Start" />
-                                <Switch Grid.Column="1" x:Name="UseSingleMoreCommandsPageSwitch" HorizontalOptions="End" VerticalOptions="Center" />
                             </Grid>
 
                             <Label Text="Menu Styling" FontSize="23" FontAttributes="Bold" FontFamily="Immortal" TextColor="Black" Margin="0,18,0,2" />

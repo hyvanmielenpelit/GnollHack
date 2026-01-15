@@ -1187,6 +1187,7 @@ namespace GnollHackX
         OCDATA_WIELDED_WEAPON = 0x02,
         OCDATA_QUIVERABLE = 0x04,
         OCDATA_BLINDFOLD = 0x08,
+        OCDATA_APPLIABLE_POLEARM = 0x10,
     }
 
     public enum obj_class_types
@@ -2140,6 +2141,7 @@ namespace GnollHackX
         public const float TextRowMultiplierWithKeyboardShortcuts = 1.0f + KeyboardShortcutRelativeFontSize;
         public const GHSpecialKey GameMenuKeyboardShortcut = GHSpecialKey.F10;
         public const GHSpecialKey CancelKeyboardShortcut = GHSpecialKey.Escape;
+        public const bool DefaultShowPolearmContextButton = true;
     }
 
     [StructLayout(LayoutKind.Sequential)]

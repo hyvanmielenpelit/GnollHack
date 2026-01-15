@@ -179,6 +179,13 @@ namespace GnollHackX
                 return (OtypData.ocdata_flags & (byte)ocdata_flag_types.OCDATA_BIMANUAL) != 0;
             }
         }
+        public bool IsAppliablePolearm
+        {
+            get
+            {
+                return (OtypData.ocdata_flags & (byte)ocdata_flag_types.OCDATA_APPLIABLE_POLEARM) != 0;
+            }
+        }
 
         public readonly bool Hallucinated;
         public readonly bool OutOfAmmo;
