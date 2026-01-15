@@ -3917,14 +3917,14 @@ NEARDATA const struct animation_definition animations[MAX_ANIMATIONS] =
       YEENAGHU_ATTACK_ENLARGEMENT,
       { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
     },
-    { "yeenaghu-cast-indir-animation", ANIMATION_TYPE_NORMAL, 12, 12,
+    { "yeenaghu-cast-dir-animation", ANIMATION_TYPE_NORMAL, 12, 12,
       1,
       1,
       ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, ANIMATION_MAIN_TILE_IGNORE,
       AUTODRAW_NONE,
       { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31 },
-      5, 8,
-      YEENAGHU_CAST_NODIR_ANIMATION,
+      4, 8,
+      YEENAGHU_CAST_DIR_ANIMATION,
       { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
     },
 };
@@ -10920,7 +10920,7 @@ NEARDATA const struct enlargement_definition enlargements[MAX_ENLARGEMENTS] =
         { 0, 0, 0, 0, 0 },
         { 0, 0, 0, 0, 0 }
       },
-      { "yeenaghu-cast-indir-enlargement",
+      { "yeenaghu-cast-dir-enlargement",
         12, 12,
         5,
         3, 2, 0,
