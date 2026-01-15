@@ -7080,6 +7080,10 @@ namespace GnollHackX.Pages.Game
             SKColors.Black,
         };
 
+        private string _skillsKeyboardShortcut = GHUtils.ConstructShortcutText('S');
+        private string _polearmKeyboardShortcut = GHUtils.ConstructShortcutText(GHUtils.Meta('P'));
+        private string _prevWepKeyboardShortcut = GHUtils.ConstructShortcutText(GHUtils.Meta('<'));
+
         private void PaintMainGamePage(object sender, SKPaintSurfaceEventArgs e, bool isCanvasOnMainThread)
         {
             if (!IsMainCanvasOn || GHApp.IsReplaySearching)
@@ -11362,7 +11366,7 @@ namespace GnollHackX.Pages.Game
                         bool polearmok = false;
                         bool skillbuttonok = false;
                         orbsok = _localStatusFields[(int)NhStatusFields.BL_HPMAX].Text != "" && _localStatusFields[(int)NhStatusFields.BL_HPMAX].Text != "0";
-                        skillbuttonok = GHApp.ShowSkillContextButton && _localStatusFields[(int)NhStatusFields.BL_SKILL].Text != null && _localStatusFields[(int)NhStatusFields.BL_SKILL].Text == "Skill";
+                        skillbuttonok = _localStatusFields[(int)NhStatusFields.BL_SKILL].Text != null && _localStatusFields[(int)NhStatusFields.BL_SKILL].Text == "Skill" && GHApp.ShowSkillContextButton;
                         if (_localWeaponStyleObjDataItem[0] != null)
                         {
                             prevwepok = _localWeaponStyleObjDataItem[0].PreviousWeaponFound || _localWeaponStyleObjDataItem[0].PreviousUnwield;
@@ -11372,8 +11376,19 @@ namespace GnollHackX.Pages.Game
                         float lastdrawnrecty = ClassicStatusBar ? Math.Max(abilitybuttonbottom, lastStatusRowPrintY + 0.0f * lastStatusRowFontSpacing) : statusbarheight;
                         tx = orbleft;
                         ty = lastdrawnrecty + 5.0f;
-                        if (orbsok && skillbuttonok && (prevwepok || polearmok) && ty + orbbordersize * 4 + 5 + 15 + 15 > Math.Min(herewindowtop, messagewindowtop))
-                            skillbuttonok = false;
+                        float oldFontSize = textPaint.TextSize;
+                        float testFontSize = GHConstants.SkillButtonBaseFontSize * orbbordersize / 50.0f;
+                        textPaint.TextSize = testFontSize;
+                        float fontspaceneeded = textPaint.FontSpacing * (showKeyboardShortcuts ? 1.0f + GHConstants.KeyboardShortcutRelativeFontSize : 1f);
+                        if (orbsok && skillbuttonok && (prevwepok || polearmok))
+                        {
+                            int noContextButtons = prevwepok && polearmok ? 3 : 2;
+                            float contextButtonBottom = ty + (orbbordersize + 15) * 2 + (orbbordersize + fontspaceneeded) * noContextButtons;
+                            float windowTop = Math.Min(herewindowtop, messagewindowtop);
+                            if (contextButtonBottom > windowTop)
+                                skillbuttonok = false;
+                        }
+                        textPaint.TextSize = oldFontSize;
 
                         /* HP and MP */
                         if ((ShowOrbs || !ClassicStatusBar) && orbsok)
@@ -11430,14 +11445,10 @@ namespace GnollHackX.Pages.Game
                         {
                             SKRect skillDest = new SKRect(tx, lastdrawnrecty + 15.0f, tx + orbbordersize, lastdrawnrecty + 15.0f + orbbordersize);
                             skillRect = skillDest;
-                            //skillRectDrawn = true;
                             textPaint.Color = SKColors.White;
                             textPaint.Typeface = GHApp.LatoRegular;
-                            textPaint.TextSize = GHConstants.SkillButtonBaseFontSize * skillDest.Width / 50.0f;
-                            //textPaint.TextAlign = SKTextAlign.Center;
-#if GNH_MAP_PROFILING && DEBUG
-                            StartProfiling(GHProfilingStyle.Bitmap);
-#endif
+                            float btnBaseFontSize = GHConstants.SkillButtonBaseFontSize * skillDest.Width / 50.0f;
+                            textPaint.TextSize = btnBaseFontSize;
                             using(SKPaint btnPaint = new SKPaint())
                             {
                                 if (_localIsPointerHovering && skillDest.Contains(_localPointerHoverLocation))
@@ -11446,30 +11457,29 @@ namespace GnollHackX.Pages.Game
                                 }
                                 canvas.DrawImage(GHApp._skillBitmap, skillDest, btnPaint);
                             }
-#if GNH_MAP_PROFILING && DEBUG
-                            StopProfiling(GHProfilingStyle.Bitmap);
-#endif
                             float text_x = (skillDest.Left + skillDest.Right) / 2;
                             float text_y = skillDest.Bottom - textPaint.FontMetrics.Ascent;
-#if GNH_MAP_PROFILING && DEBUG
-                            StartProfiling(GHProfilingStyle.Text);
-#endif
                             textPaint.DrawTextOnCanvas(canvas, "Skills", text_x, text_y, SKTextAlign.Center);
-#if GNH_MAP_PROFILING && DEBUG
-                            StopProfiling(GHProfilingStyle.Text);
-#endif
-                            //textPaint.TextAlign = SKTextAlign.Left;
                             lastdrawnrecty = skillDest.Bottom + textPaint.FontSpacing;
+                            if (showKeyboardShortcuts && !string.IsNullOrEmpty(_skillsKeyboardShortcut))
+                            {
+                                textPaint.Color = SKColors.Gray;
+                                textPaint.TextSize = btnBaseFontSize * GHConstants.KeyboardShortcutRelativeFontSize;
+                                textPaint.DrawTextOnCanvas(canvas, _skillsKeyboardShortcut, text_x, text_y + textPaint.FontSpacing, SKTextAlign.Center);
+                                textPaint.Color = SKColors.White;
+                                lastdrawnrecty += textPaint.FontSpacing;
+                                textPaint.TextSize = btnBaseFontSize;
+                            }
                         }
 
                         if (polearmok)
                         {
                             SKRect poleDest = new SKRect(tx, lastdrawnrecty + 15.0f, tx + orbbordersize, lastdrawnrecty + 15.0f + orbbordersize);
                             poleRect = poleDest;
-                            //skillRectDrawn = true;
                             textPaint.Color = SKColors.White;
                             textPaint.Typeface = GHApp.LatoRegular;
-                            textPaint.TextSize = GHConstants.SkillButtonBaseFontSize * poleDest.Width / 50.0f;
+                            float btnBaseFontSize = GHConstants.SkillButtonBaseFontSize * poleDest.Width / 50.0f;
+                            textPaint.TextSize = btnBaseFontSize;
                             using (SKPaint btnPaint = new SKPaint())
                             {
                                 if (_localIsPointerHovering && poleDest.Contains(_localPointerHoverLocation))
@@ -11482,20 +11492,25 @@ namespace GnollHackX.Pages.Game
                             float text_y = poleDest.Bottom - textPaint.FontMetrics.Ascent;
                             textPaint.DrawTextOnCanvas(canvas, "Polearm", text_x, text_y, SKTextAlign.Center);
                             lastdrawnrecty = poleDest.Bottom + textPaint.FontSpacing;
+                            if (showKeyboardShortcuts && !string.IsNullOrEmpty(_skillsKeyboardShortcut))
+                            {
+                                textPaint.Color = SKColors.Gray;
+                                textPaint.TextSize = btnBaseFontSize * GHConstants.KeyboardShortcutRelativeFontSize;
+                                textPaint.DrawTextOnCanvas(canvas, _polearmKeyboardShortcut, text_x, text_y + textPaint.FontSpacing, SKTextAlign.Center);
+                                textPaint.Color = SKColors.White;
+                                lastdrawnrecty += textPaint.FontSpacing;
+                                textPaint.TextSize = btnBaseFontSize;
+                            }
                         }
 
                         if (prevwepok)
                         {
                             SKRect prevWepDest = new SKRect(tx, lastdrawnrecty + 15.0f, tx + orbbordersize, lastdrawnrecty + 15.0f + orbbordersize);
                             prevWepRect = prevWepDest;
-                            //prevWepRectDrawn = true;
                             textPaint.Color = SKColors.White;
                             textPaint.Typeface = GHApp.LatoRegular;
-                            textPaint.TextSize = GHConstants.SkillButtonBaseFontSize * prevWepDest.Width / 50.0f;
-                            //textPaint.TextAlign = SKTextAlign.Center;
-#if GNH_MAP_PROFILING && DEBUG
-                            StartProfiling(GHProfilingStyle.Bitmap);
-#endif
+                            float btnBaseFontSize = GHConstants.SkillButtonBaseFontSize * prevWepDest.Width / 50.0f;
+                            textPaint.TextSize = btnBaseFontSize;
                             using (SKPaint btnPaint = new SKPaint())
                             {
                                 if (_localIsPointerHovering && prevWepDest.Contains(_localPointerHoverLocation))
@@ -11504,19 +11519,18 @@ namespace GnollHackX.Pages.Game
                                 }
                                 canvas.DrawImage(isunwield ? GHApp._prevUnwieldBitmap : GHApp._prevWepBitmap, prevWepDest, btnPaint);
                             }
-#if GNH_MAP_PROFILING && DEBUG
-                            StopProfiling(GHProfilingStyle.Bitmap);
-#endif
                             float text_x = (prevWepDest.Left + prevWepDest.Right) / 2;
                             float text_y = prevWepDest.Bottom - textPaint.FontMetrics.Ascent;
-#if GNH_MAP_PROFILING && DEBUG
-                            StartProfiling(GHProfilingStyle.Text);
-#endif
                             textPaint.DrawTextOnCanvas(canvas, isunwield ? "Unwield" : "Wield Last", text_x, text_y, SKTextAlign.Center);
-#if GNH_MAP_PROFILING && DEBUG
-                            StopProfiling(GHProfilingStyle.Text);
-#endif
-                            //textPaint.TextAlign = SKTextAlign.Left;
+                            if (showKeyboardShortcuts && !string.IsNullOrEmpty(_prevWepKeyboardShortcut))
+                            {
+                                textPaint.Color = SKColors.Gray;
+                                textPaint.TextSize = btnBaseFontSize * GHConstants.KeyboardShortcutRelativeFontSize;
+                                textPaint.DrawTextOnCanvas(canvas, _prevWepKeyboardShortcut, text_x, text_y + textPaint.FontSpacing, SKTextAlign.Center);
+                                textPaint.Color = SKColors.White;
+                                lastdrawnrecty += textPaint.FontSpacing;
+                                textPaint.TextSize = btnBaseFontSize;
+                            }
                         }
                     }
 
