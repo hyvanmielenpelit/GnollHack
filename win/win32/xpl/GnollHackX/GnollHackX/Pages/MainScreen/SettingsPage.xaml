@@ -240,7 +240,7 @@
                                 <Switch Grid.Column="1" x:Name="AllowBonesSwitch" Toggled="AllowBonesSwitch_Toggled" HorizontalOptions="End" VerticalOptions="Center" />
                             </Grid>
 
-                            <Label Text="Command Layout" FontSize="23" FontAttributes="Bold" FontFamily="Immortal" TextColor="Black" Margin="0,18,0,2" />
+                            <Label Text="Layout" FontSize="23" FontAttributes="Bold" FontFamily="Immortal" TextColor="Black" Margin="0,18,0,2" />
                             <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
                                 <Label Text="Simple Command Layout"
                                             FontFamily="Underwood" TextColor="Black"
@@ -615,7 +615,7 @@
                                 <Switch Grid.Column="1" x:Name="ShowKeyboardShortcutsSwitch" HorizontalOptions="End" VerticalOptions="Center" />
                             </Grid>
 
-                            <Label Text="Menu Styling" FontSize="23" FontAttributes="Bold" FontFamily="Immortal" TextColor="Black" Margin="0,18,0,2" />
+                            <Label Text="Menu" FontSize="23" FontAttributes="Bold" FontFamily="Immortal" TextColor="Black" Margin="0,18,0,2" />
                             <Grid x:Name="MenuFadeEffectsGrid" ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
                                 <Label x:Name="MenuFadeEffectsLabel"
                                             Text="Menu Fade Effects"
