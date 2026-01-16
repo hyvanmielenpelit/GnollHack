@@ -569,33 +569,36 @@ namespace GnollHackX.Pages.Game
         private int _shownMessageRows = GHConstants.DefaultMessageRows;
         private int _shownPetRows = GHConstants.DefaultPetRows;
         private int _gridOpacity = 0;
-        private readonly object _styleLock = new object();
-        private TTYCursorStyle _cursorStyle;
-        private GHGraphicsStyle _graphicsStyle;
-        private MapRefreshRateStyle _mapRefreshRate = MapRefreshRateStyle.MapFPS60;
+        //private readonly object _styleLock = new object();
+        private int _cursorStyle;
+        private int _graphicsStyle;
+        private int _mapRefreshRate = (int)MapRefreshRateStyle.MapFPS60;
 
         public int NumDisplayedMessages { get { return Interlocked.CompareExchange(ref _shownMessageRows, 0, 0); } set { Interlocked.Exchange(ref _shownMessageRows, value); } }
         public int ActualDisplayedMessages { get { return ForceAllMessages ? (LongerMessageHistory ? GHConstants.MaxLongerMessageHistoryLength : GHConstants.AllMessageRows) : NumDisplayedMessages; } }
         public int NumDisplayedPetRows { get { return Interlocked.CompareExchange(ref _shownPetRows, 0, 0); } set { Interlocked.Exchange(ref _shownPetRows, value); } }
         public int GridOpacity { get { return Interlocked.CompareExchange(ref _gridOpacity, 0, 0); } set { Interlocked.Exchange(ref _gridOpacity, value); } }
 
-        public TTYCursorStyle CursorStyle { get { lock (_styleLock) { return _cursorStyle; } } set { lock (_styleLock) { _cursorStyle = value; } } }
-        public GHGraphicsStyle GraphicsStyle { get { lock (_styleLock) { return _graphicsStyle; } } set { lock (_styleLock) { _graphicsStyle = value; } } }
+        public TTYCursorStyle CursorStyle { get { return (TTYCursorStyle)Interlocked.CompareExchange(ref _cursorStyle, 0, 0); } set { Interlocked.Exchange(ref _cursorStyle, (int)value); } }
+        public GHGraphicsStyle GraphicsStyle { get { return (GHGraphicsStyle)Interlocked.CompareExchange(ref _graphicsStyle, 0, 0); } set { Interlocked.Exchange(ref _graphicsStyle, (int)value); } }
         public MapRefreshRateStyle MapRefreshRate
         {
             get
             {
-                lock (_styleLock) { return _mapRefreshRate; }
+                //lock (_styleLock) { return _mapRefreshRate; }
+                return (MapRefreshRateStyle)Interlocked.CompareExchange(ref _mapRefreshRate, 0, 0);
             }
             set
             {
-                lock (_styleLock)
-                {
-                    if (_mapRefreshRate == value)
-                        return;
+                if (Interlocked.Exchange(ref _mapRefreshRate, (int)value) == (int)value)
+                    return;
+                //lock (_styleLock)
+                //{
+                //    if (_mapRefreshRate == value)
+                //        return;
 
-                    _mapRefreshRate = value;
-                }
+                //    _mapRefreshRate = value;
+                //}
                 StopMainCanvasAnimation();
                 if (!LoadingGrid.ThreadSafeIsVisible)
                     StartMainCanvasAnimation();
