@@ -545,9 +545,15 @@ namespace GnollHackX.Pages.Game
         private int _refreshScreen = 1;
         public bool RefreshScreen { get { return Interlocked.CompareExchange(ref _refreshScreen, 0, 0) != 0; } set { Interlocked.Exchange(ref _refreshScreen, value ? 1 : 0); } }
 
-        private game_cursor_types _cursorType;
+        private int _cursorType;
+        public game_cursor_types CursorType { get { return (game_cursor_types)Interlocked.CompareExchange(ref _cursorType, 0, 0); } set { Interlocked.Exchange(ref _cursorType, (int)value); } }
         private bool _force_paint_at_cursor;
         private bool _show_cursor_on_u;
+        public bool IsGetPosCursor()
+        {
+            var ctype = CursorType;
+            return ctype > game_cursor_types.CURSOR_STYLE_GENERIC_CURSOR && ctype < game_cursor_types.CURSOR_STYLE_INVISIBLE;
+        }
 
         private ObjectData[,] _objectData = new ObjectData[GHConstants.MapCols, GHConstants.MapRows];
         private ObjectDataItem _uChain = null;
@@ -5005,9 +5011,10 @@ namespace GnollHackX.Pages.Game
                 && (mapx == _localMapCursorX && mapy == _localMapCursorY)
                 )
             {
-                int cidx = (cannotseeself && _cursorType == game_cursor_types.CURSOR_STYLE_GENERIC_CURSOR ?
+                game_cursor_types ctype = CursorType;
+                int cidx = (cannotseeself && ctype == game_cursor_types.CURSOR_STYLE_GENERIC_CURSOR ?
                     (int)game_cursor_types.CURSOR_STYLE_INVISIBLE :
-                    (int)_cursorType);
+                    (int)ctype);
                 int cglyph = cidx + GHApp.CursorOff;
                 int ctile = GHApp.Glyph2Tile[cglyph];
                 int animation = GHApp.Tile2Animation[ctile];
@@ -7382,7 +7389,7 @@ namespace GnollHackX.Pages.Game
                 _local_uy = u_y;
                 _localMapCursorX = mapCursorX;
                 _localMapCursorY = mapCursorY;
-                _cursorType = cursorType;
+                CursorType = cursorType;
                 _force_paint_at_cursor = force_paint_at_cursor;
                 _show_cursor_on_u = show_cursor_on_u;
                 lockTaken = false;
@@ -23070,6 +23077,8 @@ namespace GnollHackX.Pages.Game
                         resp = -1 - (key - GHSpecialKey.NumberPad1);
                     else if (isMeta && key >= GHSpecialKey.A && key <= GHSpecialKey.Z)
                         resp = GHUtils.Meta((isShift ? (int)'A' : (int)'a') + (int)key - (int)GHSpecialKey.A);
+                    else if ((key == GHSpecialKey.Enter || key == GHSpecialKey.Space) && IsGetPosCursor())
+                        resp = '.';
 
                     if (resp != 0)
                     {
