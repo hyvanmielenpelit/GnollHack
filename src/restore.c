@@ -175,9 +175,11 @@ boolean quietly;
                 || otmp->otyp == CANDELABRUM_OF_INVOCATION
                 || otmp->otyp == BELL_OF_OPENING
                 || otmp->otyp == SPE_BOOK_OF_THE_DEAD
-                || is_quest_artifact(otmp)
-                || otmp->oartifact > 0
-                || Is_proper_container(otmp)
+                || (!quietly && ( /* Prevent finishing only if done non-quietly (not in end but in restore) */
+                       is_quest_artifact(otmp)
+                    || otmp->oartifact > 0
+                    || Is_proper_container(otmp)
+                    ))
                 )
             {
                 otmp->in_use = 0; /* Likely memory corruption; prevent destruction of any critical items */

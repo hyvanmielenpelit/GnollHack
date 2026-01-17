@@ -482,7 +482,7 @@ register struct monst *mtmp;
      */
     boolean skipnonmagc = FALSE;
     /* Are further physical attack attempts useless? */
-    issue_breadcrumb3("mattacku start", range2, foundyou);
+    debugprint("mattacku 1: mnum=%d, ranged=%d, range2=%d, foundyou=%d, mux=%d, muy=%d, ux=%d, uy=%d", mtmp->mnum, ranged, range2, foundyou, (int)mtmp->mux, (int)mtmp->muy, (int)u.ux, (int)u.uy);
 
     if (!ranged)
         nomul(0);
@@ -795,7 +795,7 @@ register struct monst *mtmp;
                 }
                 else
                 {
-                    issue_breadcrumb3("wildmiss: AT_CLAW", range2 != ranged, foundyou);
+                    debugprint("mattacku 2: mnum=%d, ranged=%d, range2=%d, foundyou=%d, mux=%d, muy=%d, ux=%d, uy=%d", mtmp->mnum, ranged, range2, foundyou, (int)mtmp->mux, (int)mtmp->muy, (int)u.ux, (int)u.uy);
                     wildmiss(mtmp, mattk, range2 != ranged);
                     /* skip any remaining non-spell attacks */
                     skipnonmagc = TRUE;
@@ -1030,7 +1030,7 @@ register struct monst *mtmp;
                 } 
                 else
                 {
-                    issue_breadcrumb3("wildmiss: AT_WEAP", range2 != ranged, foundyou);
+                    debugprint("mattacku 3: mnum=%d, ranged=%d, range2=%d, foundyou=%d, mux=%d, muy=%d, ux=%d, uy=%d", mtmp->mnum, ranged, range2, foundyou, (int)mtmp->mux, (int)mtmp->muy, (int)u.ux, (int)u.uy);
                     wildmiss(mtmp, mattk, range2 != ranged);
                     /* skip any remaining non-spell attacks */
                     skipnonmagc = TRUE;
