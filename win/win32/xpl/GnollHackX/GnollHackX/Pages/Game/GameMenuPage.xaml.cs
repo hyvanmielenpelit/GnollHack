@@ -96,8 +96,7 @@ namespace GnollHackX.Pages.Game
             GHApp.CollectNursery();
             //GHApp.AddSentryBreadcrumb(btnSave.Text + " menu button pressed.", GHConstants.SentryGnollHackButtonClickCategoryName);
             _gamePage.GenericButton_Clicked(btnSave, EventArgs.Empty, GHUtils.Meta('s'));
-            var page = await GHApp.Navigation.PopModalAsync();
-            GHApp.DisconnectIViewHandlers(page);
+            await GHApp.PopModalPageAsync();
         }
 
         private async void btnQuit_Clicked(object sender, EventArgs e)
@@ -112,8 +111,7 @@ namespace GnollHackX.Pages.Game
             GHApp.CollectNursery();
             //GHApp.AddSentryBreadcrumb(btnQuit.Text + " menu button pressed.", GHConstants.SentryGnollHackButtonClickCategoryName);
             _gamePage.GenericButton_Clicked(btnQuit, EventArgs.Empty, _gamePage.GameEnded ? 'q' : GHUtils.Meta('q'));
-            var page = await GHApp.Navigation.PopModalAsync();
-            GHApp.DisconnectIViewHandlers(page);
+            await GHApp.PopModalPageAsync();
         }
 
         public void ClosePage()
@@ -142,8 +140,7 @@ namespace GnollHackX.Pages.Game
             _backPressed = true;
             GHApp.PlayButtonClickedSound();
             GHApp.CollectNursery();
-            var page = await GHApp.Navigation.PopModalAsync();
-            GHApp.DisconnectIViewHandlers(page);
+            await GHApp.PopModalPageAsync();
         }
 
         private async void btnOptions_Clicked(object sender, EventArgs e)
@@ -158,8 +155,7 @@ namespace GnollHackX.Pages.Game
             GHApp.DebugWriteRestart("ProfilingStopwatch.Restart: Options");
             GHApp.CollectNursery();
             _gamePage.GenericButton_Clicked(btnOptions, EventArgs.Empty, 'O');
-            var page = await GHApp.Navigation.PopModalAsync();
-            GHApp.DisconnectIViewHandlers(page);
+            await GHApp.PopModalPageAsync();
         }
 
         private async void btnSnapshot_Clicked(object sender, EventArgs e)
@@ -173,8 +169,7 @@ namespace GnollHackX.Pages.Game
             GHApp.PlayButtonClickedSound();
             GHApp.CollectNursery();
             _gamePage.GenericButton_Clicked(btnSnapshot, EventArgs.Empty, GHUtils.Meta(29));
-            var page = await GHApp.Navigation.PopModalAsync();
-            GHApp.DisconnectIViewHandlers(page);
+            await GHApp.PopModalPageAsync();
         }
 
         private async void btnSettings_Clicked(object sender, EventArgs e)
@@ -236,8 +231,7 @@ namespace GnollHackX.Pages.Game
                 _backPressed = true;
                 MainLayout.IsEnabled = false;
                 GHApp.CollectNursery();
-                var page = await GHApp.Navigation.PopModalAsync();
-                GHApp.DisconnectIViewHandlers(page);
+                await GHApp.PopModalPageAsync();
             }
             return false;
         }
@@ -285,8 +279,7 @@ namespace GnollHackX.Pages.Game
             if (_gamePage.ShownTip == -1)
                 _gamePage.ShowGUITips(false);
             GHApp.CollectNursery();
-            var page = await GHApp.Navigation.PopModalAsync();
-            GHApp.DisconnectIViewHandlers(page);
+            await GHApp.PopModalPageAsync();
         }
 
         private double _currentPageWidth = 0;

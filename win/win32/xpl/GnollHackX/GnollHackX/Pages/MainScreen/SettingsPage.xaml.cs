@@ -1943,8 +1943,7 @@ namespace GnollHackX.Pages.MainScreen
             await MaybeShowPleaseWait();
             await SetSettingValues();
             GHApp.CurrentMainPage?.InvalidateCarousel();
-            var page = await GHApp.Navigation.PopModalAsync();
-            GHApp.DisconnectIViewHandlers(page);
+            await GHApp.PopModalPageAsync();
         }
 
         public bool HandleSpecialKeyPress(GHSpecialKey key, bool isCtrl, bool isMeta, bool isShift)

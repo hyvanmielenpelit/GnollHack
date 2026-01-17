@@ -770,6 +770,19 @@ namespace GnollHackX
             }
         }
 
+        public static async Task PopModalPageAsync()
+        {
+            try
+            {
+                var page = await Navigation.PopModalAsync();
+                DisconnectIViewHandlers(page);
+            }
+            catch (Exception ex)
+            {
+                MaybeWriteGHLog(ex.Message);
+            }
+        }
+
         public static bool IsKeyboardConnected
         {
             get
@@ -2088,16 +2101,15 @@ namespace GnollHackX
             }
         }
 
-        private static readonly object _breadcrumbLock = new object();
         public static void AddSentryBreadcrumb(string message, string category)
         {
 #if SENTRY
             if (!string.IsNullOrWhiteSpace(message))
             {
-                lock (_breadcrumbLock)
+                MainThread.BeginInvokeOnMainThread(() =>
                 {
                     SentrySdk.AddBreadcrumb(message, category);
-                }
+                });
             }
 #endif
         }

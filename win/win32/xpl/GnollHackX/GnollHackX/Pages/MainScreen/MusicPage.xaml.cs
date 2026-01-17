@@ -175,10 +175,17 @@ namespace GnollHackX.Pages.MainScreen
             GHApp.FmodService.StopAllUISounds();
             if (playClickedSound)
                 GHApp.PlayButtonClickedSound();
-            var page = await GHApp.Navigation.PopModalAsync();
-            GHApp.FmodService.PlayUIMusic(GHConstants.IntroGHSound, GHConstants.IntroEventPath, GHConstants.IntroBankId, GHConstants.IntroMusicVolume, 1.0f);
-            GHApp.FmodService.UnloadBanks(sound_bank_loading_type.Music);
-            GHApp.DisconnectIViewHandlers(page);
+            try
+            {
+                var page = await GHApp.Navigation.PopModalAsync();
+                GHApp.FmodService.PlayUIMusic(GHConstants.IntroGHSound, GHConstants.IntroEventPath, GHConstants.IntroBankId, GHConstants.IntroMusicVolume, 1.0f);
+                GHApp.FmodService.UnloadBanks(sound_bank_loading_type.Music);
+                GHApp.DisconnectIViewHandlers(page);
+            }
+            catch (Exception ex)
+            {
+                GHApp.MaybeWriteGHLog(ex.Message);
+            }
         }
 
         public void ClosePage()

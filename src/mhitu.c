@@ -482,6 +482,7 @@ register struct monst *mtmp;
      */
     boolean skipnonmagc = FALSE;
     /* Are further physical attack attempts useless? */
+    issue_breadcrumb3("mattacku start", range2, foundyou);
 
     if (!ranged)
         nomul(0);
@@ -772,7 +773,7 @@ register struct monst *mtmp;
         case AT_BUTT:
         case AT_TAIL:
         case AT_TENT:
-            if (!range2 && (!MON_WEP(mtmp) || is_confused(mtmp) || Conflict || is_crazed(mtmp) || !touch_petrifies(youmonst.data)))
+            if (!range2 && (!MON_WEP(mtmp) || !touch_petrifies(youmonst.data) || is_confused(mtmp) || Conflict || is_crazed(mtmp)))
             {
                 if (first_attack)
                 {
@@ -794,6 +795,7 @@ register struct monst *mtmp;
                 }
                 else
                 {
+                    issue_breadcrumb3("wildmiss: AT_CLAW", range2 != ranged, foundyou);
                     wildmiss(mtmp, mattk, range2 != ranged);
                     /* skip any remaining non-spell attacks */
                     skipnonmagc = TRUE;
@@ -1028,6 +1030,7 @@ register struct monst *mtmp;
                 } 
                 else
                 {
+                    issue_breadcrumb3("wildmiss: AT_WEAP", range2 != ranged, foundyou);
                     wildmiss(mtmp, mattk, range2 != ranged);
                     /* skip any remaining non-spell attacks */
                     skipnonmagc = TRUE;

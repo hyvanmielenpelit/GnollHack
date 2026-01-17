@@ -129,8 +129,7 @@ namespace GnollHackX.Pages.Game
             _backPressed = true;
             if (playClickSound)
                 GHApp.PlayButtonClickedSound();
-            var page = await GHApp.Navigation.PopModalAsync();
-            GHApp.DisconnectIViewHandlers(page);
+            await GHApp.PopModalPageAsync();
         }
 
         public void ClosePage()

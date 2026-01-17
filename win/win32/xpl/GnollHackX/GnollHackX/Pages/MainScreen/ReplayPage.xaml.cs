@@ -831,8 +831,7 @@ namespace GnollHackX.Pages.MainScreen
             _backPressed = true;
             if (playClickedSound)
                 GHApp.PlayButtonClickedSound();
-            var page = await GHApp.Navigation.PopModalAsync();
-            GHApp.DisconnectIViewHandlers(page);
+            await GHApp.PopModalPageAsync();
         }
 
         private bool _backPressed = false;

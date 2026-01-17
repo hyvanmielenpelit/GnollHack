@@ -204,8 +204,7 @@ namespace GnollHackX.Pages.MainScreen
             if (playClickSound)
                 GHApp.PlayButtonClickedSound();
             GHApp.CurrentMainPage?.InvalidateCarousel();
-            var page = await GHApp.Navigation.PopModalAsync();
-            GHApp.DisconnectIViewHandlers(page);
+            await GHApp.PopModalPageAsync();
         }
 
         private bool _backPressed = false;

@@ -93,8 +93,7 @@ namespace GnollHackX.Pages.MainScreen
                     }
                     ErrorLabel.Text = "";
                     GHApp.CurrentMainPage?.InvalidateCarousel();
-                    var page = await GHApp.Navigation.PopModalAsync();
-                    GHApp.DisconnectIViewHandlers(page);
+                    await GHApp.PopModalPageAsync();
                 }
                 else
                 {
@@ -108,8 +107,7 @@ namespace GnollHackX.Pages.MainScreen
             {
                 ErrorLabel.Text = "";
                 GHApp.CurrentMainPage?.InvalidateCarousel();
-                var page = await GHApp.Navigation.PopModalAsync();
-                GHApp.DisconnectIViewHandlers(page);
+                await GHApp.PopModalPageAsync();
             }
         }
 
@@ -157,8 +155,7 @@ namespace GnollHackX.Pages.MainScreen
                 {
                     ErrorLabel.Text = "";
                     GHApp.CurrentMainPage?.InvalidateCarousel();
-                    var page = await GHApp.Navigation.PopModalAsync();
-                    GHApp.DisconnectIViewHandlers(page);
+                    await GHApp.PopModalPageAsync();
                 }
                 else
                 {
@@ -172,8 +169,7 @@ namespace GnollHackX.Pages.MainScreen
             {
                 ErrorLabel.Text = "";
                 GHApp.CurrentMainPage?.InvalidateCarousel();
-                var page = await GHApp.Navigation.PopModalAsync();
-                GHApp.DisconnectIViewHandlers(page);
+                await GHApp.PopModalPageAsync();
             }
         }
         private bool _backPressed = false;
@@ -213,8 +209,7 @@ namespace GnollHackX.Pages.MainScreen
                 ErrorLabel.Text = "";
                 await GHApp.GnollHackService.ResetDefaultsFile();
                 GHApp.CurrentMainPage?.InvalidateCarousel();
-                var page = await GHApp.Navigation.PopModalAsync();
-                GHApp.DisconnectIViewHandlers(page);
+                await GHApp.PopModalPageAsync();
             }
             else
             {

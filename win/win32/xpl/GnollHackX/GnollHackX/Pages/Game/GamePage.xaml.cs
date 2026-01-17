@@ -4622,14 +4622,12 @@ namespace GnollHackX.Pages.Game
         {
             if (!FastForwardRequested) /* If FastForwardRequested, then this will be handled by GHApp.PopAllModalPages async */
             {
-                var page = await GHApp.Navigation.PopModalAsync();
-                GHApp.DisconnectIViewHandlers(page);
+                await GHApp.PopModalPageAsync();
             }
         }
         private async Task HideAskNamePage()
         {
-            var page = await GHApp.Navigation.PopModalAsync();
-            GHApp.DisconnectIViewHandlers(page);
+            await GHApp.PopModalPageAsync();
         }
 
         private async Task<bool> BackButtonPressed(object sender, EventArgs e)

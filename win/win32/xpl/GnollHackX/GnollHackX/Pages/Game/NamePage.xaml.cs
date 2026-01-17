@@ -114,9 +114,8 @@ namespace GnollHackX.Pages.Game
                 return;
             }
 
-            var page = await _gamePage.Navigation.PopModalAsync();
+            await GHApp.PopModalPageAsync();
             _currentGame?.ResponseQueue.Enqueue(new GHResponse(_currentGame, GHRequestType.AskName, usedName));
-            GHApp.DisconnectIViewHandlers(page);
         }
 
         private void ReplayDoEnterName()
@@ -241,9 +240,8 @@ namespace GnollHackX.Pages.Game
             btnCancel.IsEnabled = false;
             GHApp.PlayButtonClickedSound();
 
-            var page = await _gamePage.Navigation.PopModalAsync();
+            await GHApp.PopModalPageAsync();
             _currentGame?.ResponseQueue.Enqueue(new GHResponse(_currentGame, GHRequestType.AskName, ""));
-            GHApp.DisconnectIViewHandlers(page);
         }
 
         public bool HandleSpecialKeyPress(GHSpecialKey key, bool isCtrl, bool isMeta, bool isShift)
