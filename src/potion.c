@@ -4142,6 +4142,7 @@ dodip()
                 goto poof;
             else
             {
+                potion->in_use = FALSE; /* didn't go poof */
                 potion->charges--;
                 update_inventory();
             }
