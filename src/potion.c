@@ -3789,7 +3789,12 @@ dodip()
         pline_ex(ATR_NONE, CLR_MSG_FAIL, "That is a potion bottle, not a Klein bottle!");
         return 0;
     }
-    potion->in_use = TRUE; /* assume it will be used up */
+
+    boolean useupliquidonly = otyp_expends_charges_when_dipped_into(potion->otyp) && potion->charges > 0;
+    boolean neutralizingliquid = !!(objects[potion->otyp].oc_flags5 & O5_MIXTURE_CLEARS);
+    if (!useupliquidonly && !potion->oartifact && !is_obj_indestructible(potion))
+        potion->in_use = TRUE; /* assume it will be used up */
+
     if (potion->otyp == POT_WATER)
     {
         boolean useeit = !Blind || (obj == ublindf && Blind_because_of_blindfold_only);
@@ -3803,13 +3808,12 @@ dodip()
         /* some objects can't be polymorphed */
         if (obj->otyp == potion->otyp /* both POT_POLY */
             || obj == uball || obj == uskin
-            || !is_polymorphable(obj)
-            || obj_resists(obj->otyp == POT_POLYMORPH ? potion : obj,
-                           5, 95))
+            || !is_polymorphable(obj->otyp == POT_POLYMORPH ? potion : obj)
+            || obj_resists(obj->otyp == POT_POLYMORPH ? potion : obj, 5, 95))
         {
             pline1(nothing_happens);
         } 
-        else 
+        else if (potion->otyp == POT_POLYMORPH)
         {
             short save_otyp = obj->otyp;
 
@@ -3827,6 +3831,7 @@ dodip()
             if (!obj)
             {
                 makeknown(POT_POLYMORPH);
+                potion->in_use = FALSE; /* didn't go poof */
                 return 1;
             } 
             else if (obj->otyp != save_otyp) 
@@ -3843,6 +3848,49 @@ dodip()
                 goto poof;
             }
         }
+        else if (obj->otyp == POT_POLYMORPH) /* Just in case instead of else */
+        {
+            short save_otyp = potion->otyp;
+
+            /* KMH, conduct */
+            if (!u.uconduct.polypiles++)
+                livelog_printf(LL_CONDUCT, "polymorphed %s first item", uhis());
+
+            potion->in_use = FALSE; /* didn't go poof, it's being polymorphed */
+            potion = poly_obj(potion, STRANGE_OBJECT);
+
+            /*
+             * potion might be gone
+             */
+            if (!potion)
+            {
+                makeknown(POT_POLYMORPH);
+                return 1;
+            }
+            else if (potion->otyp != save_otyp)
+            {
+                makeknown(POT_POLYMORPH);
+                debugprint("dodip3b: %d", obj->otyp);
+                useup(obj);
+                prinv((char*)0, potion, 0L);
+                return 1;
+            }
+            else
+            {
+                pline("Nothing seems to happen.");
+                obj->in_use = TRUE; /* goes poof instead */
+                if (!objects[obj->otyp].oc_name_known && !objects[obj->otyp].oc_uname)
+                    docall(obj, (char*)0);
+                debugprint("dodip7b: %d", obj->otyp);
+                useup(obj);
+                return 1;
+            }
+        }
+        else
+        {
+            /* Should not go here */
+            pline1(nothing_happens);
+        }
         potion->in_use = FALSE; /* didn't go poof */
         return 1;
     }
@@ -3854,11 +3902,14 @@ dodip()
             obj->known = 1;
         if (obj->where == OBJ_INVENT)
             update_inventory();
+        potion->in_use = FALSE; /* didn't go poof */
         return 1;
     }
     else if (obj->oclass == POTION_CLASS && potion->oclass != POTION_CLASS
         && !obj_currently_allows_object_to_be_dipped_into_it(potion))
     {
+        potion->in_use = FALSE; /* didn't go poof */
+
         /* Dipping a potion into an empty Holy Grail, an empty jar, or into a lamp etc. */
         if (obj->otyp == POT_OIL && is_refillable_with_oil(potion))
         {
@@ -3889,8 +3940,6 @@ dodip()
         int amt = (int) obj->quan;
         boolean magic;
         char dcbuf[BUFSZ] = "";
-        boolean useupliquidonly = otyp_expends_charges_when_dipped_into(potion->otyp) && potion->charges > 0;
-        boolean neutralizingliquid = !!(objects[potion->otyp].oc_flags5 & O5_MIXTURE_CLEARS);
 
         mixture = mixtype(obj, potion);
         if (mixture == obj->otyp) /* Can happen with a potion of extra healing and a jar of extra healing salve, for example */
@@ -3941,8 +3990,11 @@ dodip()
                 debugprint("dodip4: %d", potion->otyp);
                 if (useupliquidonly)
                     potion->charges = 0;
+                
                 if (!potion->oartifact && !is_obj_indestructible(potion))
                     useup(potion); /* now gone */
+                else
+                    potion->in_use = FALSE; /* didn't go poof */
 
                 char dcbuf2[IBUFSZ] = "";
                 char dcbuf3[IBUFSZ] = "";
@@ -3971,6 +4023,8 @@ dodip()
             /* get rid of 'dippee' before potential perm_invent updates */
             if (!useupliquidonly && !potion->oartifact && !is_obj_indestructible(potion))
                 useup(potion); /* now gone */
+            else
+                potion->in_use = FALSE;
 
             obj->blessed = obj->cursed = obj->bknown = 0;
             if (Blind || Hallucination)
@@ -4075,15 +4129,22 @@ dodip()
         } 
         else if (obj->opoisoned && (potion->otyp == POT_HEALING
                                       || potion->otyp == POT_EXTRA_HEALING || potion->otyp == POT_GREATER_HEALING
-                                      || potion->otyp == POT_FULL_HEALING  || potion->otyp == JAR_OF_EXTRA_HEALING_SALVE
+                                      || potion->otyp == POT_FULL_HEALING  || 
+                                      (potion->charges > 0 && (potion->otyp == JAR_OF_EXTRA_HEALING_SALVE
                                       || potion->otyp == JAR_OF_GREATER_HEALING_SALVE || potion->otyp == JAR_OF_PRODIGIOUS_HEALING_SALVE
-                                      || potion->otyp == JAR_OF_MEDICINAL_SALVE
+                                      || potion->otyp == JAR_OF_MEDICINAL_SALVE))
             ))
         {
             play_sfx_sound(SFX_POISON_DISSOLVES);
             pline_ex(ATR_NONE, CLR_MSG_WARNING, "A coating wears off %s.", the(xname(obj)));
             obj->opoisoned = 0;
-            goto poof;
+            if (!useupliquidonly)
+                goto poof;
+            else
+            {
+                potion->charges--;
+                update_inventory();
+            }
         }
     }
 
@@ -4152,7 +4213,14 @@ dodip()
     }
     else if (potion->otyp == JAR_OF_BASILISK_BLOOD)
     {
-        return stone_to_flesh_obj(obj);
+        potion->in_use = FALSE;
+        if (potion->charges > 0)
+        {
+            potion->charges--;
+            int res = stone_to_flesh_obj(obj);
+            update_inventory();
+            return res;
+        }
     }
 
     potion->in_use = FALSE; /* didn't go poof */
@@ -4232,8 +4300,13 @@ int
 refill_obj_with_oil(obj, potion)
 struct obj* obj, * potion;
 {
-    if (!obj || !potion || !is_refillable_with_oil(obj))
+    if (!potion)
         return 0;
+    if (!obj || !is_refillable_with_oil(obj))
+    {
+        potion->in_use = FALSE;
+        return 0;
+    }
 
     /* Turn off engine before fueling, turn off fuel too :-)  */
     if (obj->lamplit || potion->lamplit)
