@@ -3789,7 +3789,7 @@ namespace GnollHackX
             new SelectableShortcutButton("Kick", "Kick", 'd', true, false, 0, AppResourceName + ".Assets.UI.kick.png"),
             new SelectableShortcutButton("Polearm", "Polearm", 'P', false, true, 0, AppResourceName + ".Assets.UI.polearm.png"),
             new SelectableShortcutButton("Read", "Read", 'r', false, false, 0, AppResourceName + ".Assets.UI.read.png"),
-            new SelectableShortcutButton("Repeat", "Repeat", 'A', true, false, 0, AppResourceName + ".Assets.UI.repeat.png"),
+            new SelectableShortcutButton("Repeat", "Repeat", 'a', true, false, 0, AppResourceName + ".Assets.UI.repeat.png"),
             new SelectableShortcutButton("Rest", "Rest", '\0', false, false, -103, AppResourceName + ".Assets.UI.rest.png"),
             new SelectableShortcutButton("Search", "Search", 's', false, false, 0, AppResourceName + ".Assets.UI.search.png"),
             new SelectableShortcutButton("Search 20 Times", "Search 20", '\0', false, false, -102, AppResourceName + ".Assets.UI.search20.png"),
@@ -3813,7 +3813,7 @@ namespace GnollHackX
         private static readonly SelectableShortcutButton _defSwap = new SelectableShortcutButton("Swap Weapon", "Swap", 'x', false, false, 0, AppResourceName + ".Assets.UI.swap.png");
         private static readonly SelectableShortcutButton _defKick = new SelectableShortcutButton("Kick", "Kick", 'd', true, false, 0, AppResourceName + ".Assets.UI.kick.png");
         private static readonly SelectableShortcutButton _defCast = new SelectableShortcutButton("Cast Spell", "Cast", 'Z', false, false, 0, AppResourceName + ".Assets.UI.cast.png");
-        private static readonly SelectableShortcutButton _defRepeat = new SelectableShortcutButton("Repeat", "Repeat", 'A', true, false, 0, AppResourceName + ".Assets.UI.repeat.png");
+        private static readonly SelectableShortcutButton _defRepeat = new SelectableShortcutButton("Repeat", "Repeat", 'a', true, false, 0, AppResourceName + ".Assets.UI.repeat.png");
 
         private static readonly SelectableShortcutButton _defApply = new SelectableShortcutButton("Apply Item", "Apply", 'a', false, false, 0, AppResourceName + ".Assets.UI.apply.png");
         private static readonly SelectableShortcutButton _defChat = new SelectableShortcutButton("Chat", "Chat", 'C', false, false, 0, AppResourceName + ".Assets.UI.chat.png");

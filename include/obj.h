@@ -399,7 +399,7 @@ enum elemental_enchantments {
     ((objects[(o)->otyp].oc_flags4 & O4_TETHERED_WEAPON) != 0 && ((wmask) & W_WIELDED_WEAPON) != 0)
 
 #define is_unweapon(o) (((o)->oclass == WEAPON_CLASS) \
-    ? is_launcher(o) || is_ammo(o) || is_missile(o) || (is_appliable_pole_type_weapon(o) && !is_spear(o) && !is_trident(o) && !u.usteed) \
+    ? is_launcher(o) || is_ammo(o) || nonmelee_throwing_weapon(o) || (is_appliable_pole_type_weapon(o) && !is_spear(o) && !is_trident(o) && !u.usteed) \
     : !is_wieldable_weapon(o) && !is_wet_towel(o))
 
 #define uslinging() (uwep && objects[uwep->otyp].oc_skill == P_SLING)

@@ -100,6 +100,7 @@ static struct Bool_Opt {
     { "autoquiver", "fill empty quiver automatically when firing", &flags.autoquiver, FALSE, SET_IN_GAME },
     { "autostatuslines", "adjust the number of status lines automatically", &iflags.wc2_autostatuslines, FALSE, SET_IN_FILE },
     { "autoswap_launchers", "automatically swap launchers on for ranged attacks and off for melee attacks", &iflags.autoswap_launchers, TRUE, SET_IN_GAME },
+    { "autoswap_polearms", "automatically swap polearms off for melee attacks", &iflags.autoswap_polearms, TRUE, SET_IN_GAME },
     { "autounlock", "automatically unlock a locked door or chest", &flags.autounlock, TRUE, SET_IN_GAME },
     { "baseacasbonus", "display base armor class as a bonus rather than a number starting at 10", &flags.baseacasbonus, TRUE, SET_IN_GAME },
 #if defined(MICRO) && !defined(AMIGA)

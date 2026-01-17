@@ -496,6 +496,18 @@ register struct monst *mtmp;
             update_unweapon();
         }
     }
+    else if (iflags.autoswap_polearms && unweapon1 && uwep && is_appliable_pole_type_weapon(uwep) && ((uswapwep && !is_unweapon(uswapwep)) || (!uswapwep && Role_if(PM_MONK))))
+    {
+        boolean cursed_weapon_blocks_swap = (uwep && objects[uwep->otyp].oc_bimanual) || (uwep && uarms && !flags.swap_rhand_only) ? ((uwep && welded(uwep, &youmonst)) || (uarms && welded(uarms, &youmonst))) : (uwep && welded(uwep, &youmonst));
+        if (!cursed_weapon_blocks_swap)
+        {
+            if (uwep && objects[uwep->otyp].oc_bimanual)
+                (void)doswapweapon();
+            else
+                (void)doswapweapon_right_or_both();
+            update_unweapon();
+        }
+    }
 
     char qbuf[BUFSZ * 2];
     Strcpy(qbuf, "");
