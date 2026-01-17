@@ -497,6 +497,7 @@ register struct monst *mtmp;
         u.ustuck->muy = u.uy;
         range2 = 0;
         foundyou = 1;
+        debugprint("mattacku ustuck: mnum=%d, ranged=%d, range2=%d, foundyou=%d, mux=%d, muy=%d, ux=%d, uy=%d", mtmp->mnum, ranged, range2, foundyou, (int)mtmp->mux, (int)mtmp->muy, (int)u.ux, (int)u.uy);
         if (u.uinvulnerable)
             return 0; /* stomachs can't hurt you! */
 
