@@ -990,13 +990,13 @@ public class SaveGameService : Service
             StartForeground(1, notification);
 
             // Should come after StartForeground if takes time
-            GHApp.MaybeWriteGHLog("SaveGameService: OnStartCommand", true, GHConstants.SentryGnollHackGeneralCategoryName);
+            GHApp.MaybeWriteGHLog("SaveGameService: OnStartCommand, StartId=" + startId, true, GHConstants.SentryGnollHackGeneralCategoryName);
 
             if (Interlocked.CompareExchange(ref _isSaving, 1, 0) == 1) /* Sets IsSaving to true if it was false; if it was already true, stops this foreground service; effectively should never go here, since if IsSaving is true, a new foreground service should not be started */
             {
                 StopForeground(StopForegroundFlags.Remove);
-                StopSelf();
-                GHApp.MaybeWriteGHLog("SaveGameService: Was saving already", true, GHConstants.SentryGnollHackGeneralCategoryName);
+                StopSelf(startId);
+                GHApp.MaybeWriteGHLog("SaveGameService: Was saving already, StartId=" + startId, true, GHConstants.SentryGnollHackGeneralCategoryName);
                 return StartCommandResult.NotSticky;
             }
 
@@ -1007,19 +1007,19 @@ public class SaveGameService : Service
             {
                 try
                 {
-                    GHApp.MaybeWriteGHLog("SaveGameService: Saving game", true, GHConstants.SentryGnollHackGeneralCategoryName);
+                    GHApp.MaybeWriteGHLog("SaveGameService: Saving game, StartId=" + startId, true, GHConstants.SentryGnollHackGeneralCategoryName);
                     await GHApp.SaveGameOnSleepAsync();
                 }
                 catch (Exception ex)
                 {
-                    GHApp.MaybeWriteGHLog("SaveGameService: Exception: " + ex.Message, true, GHConstants.SentryGnollHackGeneralCategoryName);
+                    GHApp.MaybeWriteGHLog("SaveGameService: StartId=" + startId + ", Exception: " + ex.Message, true, GHConstants.SentryGnollHackGeneralCategoryName);
                 }
                 finally
                 {
                     IsSaving = false;
                     StopForeground(StopForegroundFlags.Remove);
-                    StopSelf();
-                    GHApp.MaybeWriteGHLog("SaveGameService: Saving finished", true, GHConstants.SentryGnollHackGeneralCategoryName);
+                    StopSelf(startId);
+                    GHApp.MaybeWriteGHLog("SaveGameService: Saving finished, StartId=" + startId, true, GHConstants.SentryGnollHackGeneralCategoryName);
                 }
             });
         }
