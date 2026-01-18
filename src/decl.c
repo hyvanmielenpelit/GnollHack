@@ -294,6 +294,7 @@ NEARDATA const struct replacement_info zeroreplacementinfo = DUMMY;
 NEARDATA const struct extended_menu_info zeroextendedmenuinfo = DUMMY;
 NEARDATA const struct extended_create_window_info zerocreatewindowinfo = DUMMY;
 NEARDATA const struct d_level zerodlevel = DUMMY;
+NEARDATA const coord zerocoord = DUMMY;
 
 #ifdef GNH_MOBILE
 NEARDATA int gnh_has_rogue_level = 0;

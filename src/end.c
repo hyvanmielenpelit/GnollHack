@@ -4146,6 +4146,7 @@ reset_remaining_static_variables(VOID_ARGS)
     aborting = FALSE;
 #endif
     reset_allmain();
+    reset_apply();
     reset_hunger_status();
     reset_drawbridge();
     reset_dig();

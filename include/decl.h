@@ -8,6 +8,7 @@
 #ifndef DECL_H
 #define DECL_H
 
+#include "coord.h"
 #include "config.h"
 #include "flag.h"
 #include "general.h"
@@ -443,6 +444,7 @@ E NEARDATA const struct extended_menu_info zeroextendedmenuinfo;
 E NEARDATA const struct extended_create_window_info zerocreatewindowinfo;
 
 E NEARDATA const struct d_level zerodlevel;
+E NEARDATA const coord zerocoord;
 
 E NEARDATA int gnh_has_rogue_level;
 
