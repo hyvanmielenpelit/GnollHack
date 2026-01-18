@@ -5090,7 +5090,7 @@ int* max_range;
 //}
 
 /* Distance attacks by pole-weapons */
-unsigned saved_poletarget_mid = 0;
+//unsigned saved_poletarget_mid = 0;
 coord saved_poletarget_coord = { 0 };
 
 int
@@ -5100,20 +5100,24 @@ dopole()
         (void)doswapweapon();
     if (uwep && is_appliable_pole_type_weapon(uwep))
     {
-        int max_range = 2, min_range = 1;
+        int max_range = 2, min_range = 1, distance2 = 0;
         get_pole_type_weapon_min_max_distances(uwep, &youmonst, &min_range, &max_range);
-        struct monst* mtmp;
-        if (in_doagain && !Hallucination && saved_poletarget_mid > 0 && isok(saved_poletarget_coord.x, saved_poletarget_coord.y)
+        //struct monst* mtmp;
+        if (in_doagain 
+            //&& !Hallucination && saved_poletarget_mid > 0 
+            && isok(saved_poletarget_coord.x, saved_poletarget_coord.y)
             && couldsee(saved_poletarget_coord.x, saved_poletarget_coord.y) 
-            && (mtmp = m_at(saved_poletarget_coord.x, saved_poletarget_coord.y)) != 0 && !DEADMONSTER(mtmp)
-            && mtmp->m_id == saved_poletarget_mid 
-            && distu(saved_poletarget_coord.x, saved_poletarget_coord.y) >= min_range
-            && distu(saved_poletarget_coord.x, saved_poletarget_coord.y) <= max_range
-            && canspotmon(mtmp))
+            && cansee(saved_poletarget_coord.x, saved_poletarget_coord.y)
+            //&& (mtmp = m_at(saved_poletarget_coord.x, saved_poletarget_coord.y)) != 0 && !DEADMONSTER(mtmp)
+            //&& mtmp->m_id == saved_poletarget_mid 
+            && (distance2 = distu(saved_poletarget_coord.x, saved_poletarget_coord.y)) >= min_range
+            && distance2 <= max_range
+            //&& canspotmon(mtmp)
+            )
             return use_pole2(uwep, &saved_poletarget_coord);
         else
         {
-            saved_poletarget_mid = 0;
+            //saved_poletarget_mid = 0;
             saved_poletarget_coord = zerocoord;
             return use_pole(uwep);
         }
@@ -5150,7 +5154,7 @@ coord* cc_ptr;
 
     /* Are you allowed to use the pole? */
     if (u.uswallow) {
-        saved_poletarget_mid = 0;
+        //saved_poletarget_mid = 0;
         saved_poletarget_coord = zerocoord;
         pline_ex(ATR_NONE, CLR_MSG_FAIL, not_enough_room);
         return 0;
@@ -5158,7 +5162,7 @@ coord* cc_ptr;
     if (obj != uwep) {
         if (!wield_tool(obj, "swing"))
         {
-            saved_poletarget_mid = 0;
+            //saved_poletarget_mid = 0;
             saved_poletarget_coord = zerocoord;
             return 0;
         }
@@ -5216,7 +5220,7 @@ coord* cc_ptr;
         getpos_sethilite(display_polearm_positions, get_invalid_polearm_position);
         if (getpos(&cc, TRUE, "the spot to hit", CURSOR_STYLE_POLEARM_CURSOR) < 0)
         {
-            saved_poletarget_mid = 0;
+            //saved_poletarget_mid = 0;
             saved_poletarget_coord = zerocoord;
             return res; /* ESC; uses turn iff polearm became wielded */
         }
@@ -5226,7 +5230,7 @@ coord* cc_ptr;
         cc = *cc_ptr;
         if (!isok(cc.x, cc.y))
         {
-            saved_poletarget_mid = 0;
+            //saved_poletarget_mid = 0;
             saved_poletarget_coord = zerocoord;
             play_sfx_sound(SFX_GENERAL_CANNOT);
             pline_ex(ATR_NONE, CLR_MSG_FAIL, "Illegal!");
@@ -5234,7 +5238,7 @@ coord* cc_ptr;
         }
     }
 
-    saved_poletarget_mid = 0;
+    //saved_poletarget_mid = 0;
     saved_poletarget_coord = zerocoord;
     glyph = glyph_at(cc.x, cc.y);
     if (distu(cc.x, cc.y) > max_range)
@@ -5266,6 +5270,7 @@ coord* cc_ptr;
     context.polearm.hitmon = (struct monst *) 0;
     /* Attack the monster there */
     bhitpos = cc;
+    saved_poletarget_coord = bhitpos;
     uchar hitres = 0;
     if ((mtmp = m_at(bhitpos.x, bhitpos.y)) != (struct monst *) 0) 
     {
@@ -5274,8 +5279,8 @@ coord* cc_ptr;
         if (overexertion())
             return 1; /* burn nutrition; maybe pass out */
 
-        saved_poletarget_coord = bhitpos;
-        saved_poletarget_mid = mtmp->m_id;
+        //saved_poletarget_coord = bhitpos;
+        //saved_poletarget_mid = mtmp->m_id;
 
         play_monster_simple_weapon_sound(&youmonst, 0, obj, OBJECT_SOUND_TYPE_SWING_MELEE);
         if(dist2(u.ux, u.uy, bhitpos.x, bhitpos.y) > 0)
@@ -7109,7 +7114,7 @@ struct trap* lever;
 
 void reset_apply(VOID_ARGS)
 {
-    saved_poletarget_mid = 0;
+    //saved_poletarget_mid = 0;
     saved_poletarget_coord = zerocoord;
 }
 
