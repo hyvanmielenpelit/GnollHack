@@ -8,7 +8,7 @@
 #ifndef IOSCONF_H
 #define IOSCONF_H
 
-#define PORT_ID "iOS"
+// #define PORT_ID "iOS" /* Need to use "Unix" since nhdat uses a commond Android version for all mobile platforms */
 #define error debuglog
 
 #define NO_FILE_LINKS /* if no hard links */
