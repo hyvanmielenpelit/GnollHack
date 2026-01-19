@@ -414,7 +414,7 @@ namespace GnollHackX.Unknown
                 }
                 if (found)
                 {
-                    if (file.Name != "logfile" && file.Name != "xlogfile")
+                    if (file.Name != "logfile" && file.Name != "xlogfile" && file.Name != "record" && file.Name != "defaults.gnh")
                         file.Delete();
                 }
             }
