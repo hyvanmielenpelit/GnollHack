@@ -846,4 +846,6 @@ extern void FDECL(gnollhack_exit, (int)) NORETURN;
 #define gnollhack_exit exit
 #endif
 
+#define debugprint_pos() debugprint("Line:%d, File:%s", __LINE__, basefilename(__FILE__))
+
 #endif /* HACK_H */

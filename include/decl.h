@@ -567,8 +567,6 @@ E NEARDATA winid WIN_MAP, WIN_INVEN, WIN_HERE;
 
 #define pline_ex1_popup(a, b, cstr, title, dopop) pline_ex1(a, b, cstr); if (dopop) display_popup_text(cstr, title, POPUP_TEXT_GENERAL, a, b, NO_GLYPH, 0)
 
-#define debugprint_pos() debugprint("Line:%d, File:%s", __LINE__, __FILE__)
-
 E const int no_multiattrs[32];
 E const int multicolor_red1[1];
 E const int multicolor_red2[2];

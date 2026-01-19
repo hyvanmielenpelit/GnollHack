@@ -2827,6 +2827,7 @@ E void NDECL(reset_pline);
 E int* NDECL(get_colorless_multicolor_buffer);
 E void FDECL(pline1_multi_ex, (const char*, const char*, const char*, int, int));
 E char* FDECL(allocate_buffer_with_debug_buffers, (const char*));
+E const char* FDECL(basefilename, (const char*));
 
 /* ### polyself.c ### */
 

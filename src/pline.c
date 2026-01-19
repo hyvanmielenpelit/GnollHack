@@ -1222,6 +1222,23 @@ VA_DECL(const char *, s)
     VA_END();
 }
 
+const char* basefilename(filepath)
+const char* filepath;
+{
+    if (!filepath)
+        return 0;
+    size_t length = strlen(filepath);
+    if (length == 0)
+        return filepath;
+    const char* p = filepath + length;
+    do
+    {
+        p--;
+        if (*p == '\\' || *p == '/')
+            return p + 1;
+    } while (p > filepath);
+    return filepath;
+}
 
 /*VARARGS1*/
 void debugprint
