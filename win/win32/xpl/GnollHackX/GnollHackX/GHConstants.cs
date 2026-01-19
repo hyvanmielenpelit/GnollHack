@@ -823,7 +823,7 @@ namespace GnollHackX
         BL_COND_RIDE,
         BL_COND_SLOWED,
         BL_COND_PARALYZED,
-        BL_COND_FEARFU,
+        BL_COND_FEARFUL,
         BL_COND_SLEEPING,
         BL_COND_CANCELLED,
         BL_COND_SILENCED,

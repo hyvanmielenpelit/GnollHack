@@ -1192,30 +1192,30 @@ void print_status_field(int idx, boolean first_field)
            it past the first position, provide one */
         lib_putstr_ex(WIN_STATUS, " ", ATR_NONE, CLR_WHITE, 0);
     }
-    else if (iflags.wc2_statuslines >= 3)
-    {
-        /* looks like first field */
-        if (idx == BL_SKILL && *val == ' ')
-        {
-            if (!strcmp(status_vals[BL_2WEP], " "))
-                val++;
-        }
-        else if (idx == BL_HUNGER && *val == ' ')
-        {
-            if (!strcmp(status_vals[BL_2WEP], " ") && !strcmp(status_vals[BL_SKILL], " "))
-                val++;
-        }
-        else if (idx == BL_CAP && *val == ' ')
-        {
-            if (!strcmp(status_vals[BL_2WEP], " ") && !strcmp(status_vals[BL_SKILL], " ") && !strcmp(status_vals[BL_HUNGER], " "))
-                val++;
-        }
-        else if (idx == BL_CONDITION && *val == ' ')
-        {
-            if (!strcmp(status_vals[BL_2WEP], " ") && !strcmp(status_vals[BL_SKILL], " ") && !strcmp(status_vals[BL_HUNGER], " ") && !strcmp(status_vals[BL_CAP], " "))
-                val++;
-        }
-    }
+    //else if (iflags.wc2_statuslines >= 3)
+    //{
+    //    /* looks like first field */
+    //    if (idx == BL_SKILL && *val == ' ')
+    //    {
+    //        if (!strcmp(status_vals[BL_2WEP], " "))
+    //            val++;
+    //    }
+    //    else if (idx == BL_HUNGER && *val == ' ')
+    //    {
+    //        if (!strcmp(status_vals[BL_2WEP], " ") && !strcmp(status_vals[BL_SKILL], " "))
+    //            val++;
+    //    }
+    //    else if (idx == BL_CAP && *val == ' ')
+    //    {
+    //        if (!strcmp(status_vals[BL_2WEP], " ") && !strcmp(status_vals[BL_SKILL], " ") && !strcmp(status_vals[BL_HUNGER], " "))
+    //            val++;
+    //    }
+    //    else if (idx == BL_CONDITION && *val == ' ')
+    //    {
+    //        if (!strcmp(status_vals[BL_2WEP], " ") && !strcmp(status_vals[BL_SKILL], " ") && !strcmp(status_vals[BL_HUNGER], " ") && !strcmp(status_vals[BL_CAP], " "))
+    //            val++;
+    //    }
+    //}
 
     // Don't want coloring on leading spaces (ATR_INVERSE would show), so print those first
     while (*val == ' ')
