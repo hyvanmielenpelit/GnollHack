@@ -595,10 +595,18 @@ boolean deserted;
     {
         if (mkspecl == 1)
         {
+            mtmp = m_at(sx, sy);
+            if (mtmp != 0)
+                mnexto(mtmp);
+            struct trap* ttmp = t_at(sx, sy);
+            if (ttmp != 0 && ttmp->ttyp != MAGIC_PORTAL && ttmp->ttyp < MODRON_PORTAL)
+                deltrap(ttmp);
             if (!MON_AT(sx, sy) && !t_at(sx, sy)
-                && (mtmp = makemon(&mons[PM_GARGANTUAN_MIMIC], sx, sy, NO_MM_FLAGS)) != 0) {
+                && (mtmp = makemon(&mons[PM_GARGANTUAN_MIMIC], sx, sy, NO_MM_FLAGS)) != 0) 
+            {
                 /* note: makemon will set the mimic symbol to a shop item */
-                if (rn2(10) >= depth(&u.uz)) {
+                if (rn2(10) >= depth(&u.uz)) 
+                {
                     mtmp->m_ap_type = M_AP_OBJECT;
                     mtmp->mappearance = STRANGE_OBJECT;
                     if (has_mobj(mtmp))
@@ -613,8 +621,15 @@ boolean deserted;
         }
         else if (mkspecl == 2)
         {
+            mtmp = m_at(sx, sy);
+            if (mtmp != 0)
+                mnexto(mtmp);
+            struct trap* ttmp = t_at(sx, sy);
+            if (ttmp != 0 && ttmp->ttyp != MAGIC_PORTAL && ttmp->ttyp < MODRON_PORTAL)
+                deltrap(ttmp);
             if (!MON_AT(sx, sy) && !t_at(sx, sy)
-                && (mtmp = makemon(&mons[PM_GIANT_MIMIC], sx, sy, NO_MM_FLAGS)) != 0) {
+                && (mtmp = makemon(&mons[PM_GIANT_MIMIC], sx, sy, NO_MM_FLAGS)) != 0) 
+            {
                 /* note: makemon will set the mimic symbol to a shop item */
                 if (rn2(10) >= depth(&u.uz)) {
                     mtmp->m_ap_type = M_AP_OBJECT;
