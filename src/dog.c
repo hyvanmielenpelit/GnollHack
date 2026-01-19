@@ -1480,6 +1480,7 @@ boolean pets_only, nearby_only; /* pets_only is true for ascension or final esca
                 cnt = count_wsegs(mtmp);
                 num_segs = min(cnt, MAX_NUM_WORMS - 1);
                 wormgone(mtmp);
+                debugprint_pos();
                 place_monster(mtmp, mtmp->mx, mtmp->my);
             } else
                 num_segs = 0;

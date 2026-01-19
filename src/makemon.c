@@ -2342,6 +2342,7 @@ boolean origin_at_mon;
         m2->issmith = FALSE;
     if (mon->isnpc)
         m2->isnpc = FALSE;
+    debugprint_pos();
     place_monster(m2, m2->mx, m2->my);
 
     if (emitted_light_range(m2->data))
@@ -3023,6 +3024,7 @@ aligntyp alignment;
 
     mtmp->facing_right = (mmflags2 & MM2_FACING_LEFT) ? 0 : (mmflags2 & MM2_FACING_RIGHT) ? 1 : rn2(2);
 
+    debugprint_pos();
     place_monster(mtmp, x, y);
     if (setorigin)
     {

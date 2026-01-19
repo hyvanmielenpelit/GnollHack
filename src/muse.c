@@ -1155,6 +1155,7 @@ struct monst *mtmp;
         }
 
         /*  don't use rloc_to() because worm tails must "move" */
+        debugprint_pos();
         remove_monster(mtmp->mx, mtmp->my);
         newsym(mtmp->mx, mtmp->my); /* update old location */
         place_monster(mtmp, trapx, trapy);
@@ -1262,6 +1263,7 @@ struct monst *mtmp;
             seetrap(t_at(trapx, trapy));
         }
         /*  don't use rloc_to() because worm tails must "move" */
+        debugprint_pos();
         remove_monster(mtmp->mx, mtmp->my);
         newsym(mtmp->mx, mtmp->my); /* update old location */
         place_monster(mtmp, trapx, trapy);
@@ -2994,6 +2996,7 @@ struct monst *mtmp;
             seetrap(t_at(trapx, trapy));
 
         /*  don't use rloc() due to worms */
+        debugprint_pos();
         remove_monster(mtmp->mx, mtmp->my);
         newsym(mtmp->mx, mtmp->my);
         place_monster(mtmp, trapx, trapy);
@@ -3892,6 +3895,7 @@ boolean by_you; /* true: if mon kills itself, hero gets credit/blame */
         } 
         else 
         {
+            debugprint_pos();
             remove_monster(mon->mx, mon->my);
             newsym(mon->mx, mon->my);
             place_monster(mon, trap->tx, trap->ty);

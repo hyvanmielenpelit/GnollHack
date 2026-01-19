@@ -162,6 +162,7 @@ struct monst *grd;
     if (grd == context.polearm.hitmon)
         context.polearm.hitmon = 0;
     if (grd->mx) {
+        debugprint_pos();
         remove_monster(grd->mx, grd->my);
         newsym(grd->mx, grd->my);
         place_monster(grd, 0, 0);
@@ -756,6 +757,7 @@ int goldx, goldy; /* <gold->ox, gold->oy> */
             } while (--tryct >= 0);
 
             if (bestdelta < gdelta) {
+                debugprint_pos();
                 remove_monster(guardx, guardy);
                 newsym(guardx, guardy);
                 place_monster(grd, (int) bestcc.x, (int) bestcc.y);
@@ -776,6 +778,7 @@ int goldx, goldy; /* <gold->ox, gold->oy> */
         /* just for insurance... */
         gd_mv_monaway(grd, goldx, goldy); /* make room for guard */
         if (see_it) { /* skip if player won't see the message */
+            debugprint_pos();
             remove_monster(grd->mx, grd->my);
             newsym(grd->mx, grd->my);
             place_monster(grd, goldx, goldy); /* sets <grd->mx, grd->my> */
@@ -797,6 +800,7 @@ int goldx, goldy; /* <gold->ox, gold->oy> */
 
     /* if guard was moved to get the gold, move him back */
     if (grd->mx != guardx || grd->my != guardy) {
+        debugprint_pos();
         remove_monster(grd->mx, grd->my);
         newsym(grd->mx, grd->my);
         place_monster(grd, guardx, guardy);
@@ -1209,6 +1213,7 @@ register struct monst *grd;
     int face_right = grd->mx - egrd->ogx;
     egrd->ogx = grd->mx; /* update old positions */
     egrd->ogy = grd->my;
+    debugprint_pos();
     remove_monster(grd->mx, grd->my);
     place_monster(grd, nx, ny);
     play_movement_sound(grd, CLIMBING_TYPE_NONE);

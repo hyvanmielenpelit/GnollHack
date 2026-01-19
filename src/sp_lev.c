@@ -2019,6 +2019,7 @@ struct mkroom *croom;
                         while (m_bad_boulder_spot(x, y)
                                  && --retrylimit > 0);
 
+                        debugprint_pos();
                         place_monster(mtmp, x, y);
                         /* if we didn't find a good spot
                            then mimic something else */

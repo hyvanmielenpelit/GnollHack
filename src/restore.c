@@ -1457,6 +1457,7 @@ boolean ghostly;
     debugprint("getlev7: %d", lev);
     find_memory_obj();
     rest_engravings(fd);
+    debugprint_pos();
 
     /* reset level.monsters for new level */
     for (x = 0; x < COLNO; x++)

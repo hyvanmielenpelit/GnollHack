@@ -1637,6 +1637,7 @@ register int x, y;
     }
 
     memset(mtmp->mtrack, 0, sizeof mtmp->mtrack);
+    debugprint_pos();
     place_monster(mtmp, x, y); /* put monster down */
     update_monster_region(mtmp);
 

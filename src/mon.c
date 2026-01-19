@@ -2917,6 +2917,7 @@ struct monst *mtmp, *mtmp2;
     relmon(mtmp, (struct monst **) 0);
 
     /* finish adding its replacement */
+    debugprint_pos();
     if (mtmp != u.usteed) /* don't place steed onto the map */
         place_monster(mtmp2, mtmp2->mx, mtmp2->my);
     if (mtmp2->wormno)      /* update level.monsters[wseg->wx][wseg->wy] */
@@ -5877,6 +5878,7 @@ boolean msg;      /* "The oldmon turns into a newmon!" */
 
     if (mtmp->wormno) { /* throw tail away */
         wormgone(mtmp);
+        debugprint_pos();
         place_monster(mtmp, mtmp->mx, mtmp->my);
     }
     if (M_AP_TYPE(mtmp) && !is_mimic(mdat))
@@ -6839,6 +6841,7 @@ boolean override_mextra, polyspot, msg;
         {
             if (mtmp->wormno) { /* throw tail away */
                 wormgone(mtmp);
+                debugprint_pos();
                 place_monster(mtmp, mtmp->mx, mtmp->my);
             }
             if (M_AP_TYPE(mtmp) && !is_mimic(&mons[mtraits->mnum]))

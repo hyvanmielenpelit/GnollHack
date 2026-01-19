@@ -555,6 +555,7 @@ register struct monst *mtmp;
                    message and keep both mtmp and hero at their
                    original positions; hero has become unconcealed
                    so mtmp's next move will be a regular attack */
+                debugprint_pos();
                 place_monster(mtmp, mtmp->mx, mtmp->my); /* put back */
                 newsym(u.ux, u.uy); /* u.uundetected was toggled */
                 pline("%s draws back as you drop!", Monnam(mtmp));
@@ -563,6 +564,7 @@ register struct monst *mtmp;
 
             /* put mtmp at hero's spot and move hero to <cc.x,.y> */
             newsym(mtmp->mx, mtmp->my); /* finish removal */
+            debugprint_pos();
             place_monster(mtmp, u.ux, u.uy);
             if (mtmp->wormno) {
                 worm_move(mtmp);
@@ -3374,6 +3376,7 @@ struct attack *mattk;
             unplacebc(); /* ball&chain go away */
         remove_monster(omx, omy);
         mtmp->mtrapped = 0; /* no longer on old trap */
+        debugprint_pos();
         place_monster(mtmp, u.ux, u.uy);
         u.ustuck = mtmp;
         newsym(mtmp->mx, mtmp->my);
@@ -3410,6 +3413,7 @@ struct attack *mattk;
         if (touch_petrifies(youmonst.data) && !resists_ston(mtmp)) {
             /* put the attacker back where it started;
                the resulting statue will end up there */
+            debugprint_pos();
             remove_monster(mtmp->mx, mtmp->my); /* u.ux,u.uy */
             place_monster(mtmp, omx, omy);
             int existing_stoning = get_mon_property(mtmp, STONED);

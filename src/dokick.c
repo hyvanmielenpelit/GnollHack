@@ -272,6 +272,7 @@ boolean clumsy;
                 if (m_in_out_region(mon, mdx, mdy)) {
                     remove_monster(mon->mx, mon->my);
                     newsym(mon->mx, mon->my);
+                    debugprint_pos();
                     place_monster(mon, mdx, mdy);
                     newsym(mon->mx, mon->my);
                     set_apparxy(mon);
