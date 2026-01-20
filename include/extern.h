@@ -3593,6 +3593,7 @@ E void NDECL(sysopt_release);
 E void FDECL(sysopt_seduce_set, (int));
 E void NDECL(reset_global_variables);
 E void NDECL(reset_item_global_variables);
+E void NDECL(init_debug_bufs);
 
 /* ### sys/msdos/sound.c ### */
 

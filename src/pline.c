@@ -1252,17 +1252,24 @@ VA_DECL(const char*, s)
     {
         int i;
         int jump_size = TOTALNUM_DEBUGBUFS - NUM_DEBUGBUFS;
+        char* tmp;
         for (i = 0; i < NUM_DEBUGBUFS - 1; i++)
         {
-            Strcpy(debug_bufs[i], debug_bufs[i + jump_size + 1]);
+            tmp = debug_bufs[i];
+            debug_bufs[i] = debug_bufs[i + jump_size + 1];
+            debug_bufs[i + jump_size + 1] = tmp;
+            *debug_bufs[i + jump_size + 1] = 0;
+            //Strcpy(debug_bufs[i], debug_bufs[i + jump_size + 1]);
         }
-        for (i = NUM_DEBUGBUFS; i < TOTALNUM_DEBUGBUFS; i++)
-        {
-            *debug_bufs[i] = 0;
-        }
+        //for (i = NUM_DEBUGBUFS; i < TOTALNUM_DEBUGBUFS; i++)
+        //{
+        //    *debug_bufs[i] = 0;
+        //}
         debug_buf_idx = NUM_DEBUGBUFS - 1;
     }
     char* pbuf = debug_bufs[debug_buf_idx];
+    if (!pbuf) /* insurance */
+        return;
     VA_START(s);
     VA_INIT(s, const char*);
     Vsprintf(pbuf, s, VA_ARGS);

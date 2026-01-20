@@ -24,6 +24,7 @@ struct startup_flags initial_flags = DUMMY; /* flags.h */
 void
 sys_early_init()
 {
+    init_debug_bufs();
     reset_global_variables();
 
     sysopt.support = (char *) 0;
@@ -358,6 +359,17 @@ reset_item_global_variables(VOID_ARGS)
     trackedobj = 0;
     trackedobj_gone = FALSE;
     getobj_autoselect_obj = (struct obj*)0;
+}
+
+void
+init_debug_bufs(VOID_ARGS)
+{
+    int i;
+    for (i = 0; i < TOTALNUM_DEBUGBUFS; i++)
+    {
+        debug_bufs[i] = debug_buf_array[i];
+        *debug_bufs[i] = 0;
+    }
 }
 
 /*sys.c*/
