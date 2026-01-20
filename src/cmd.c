@@ -10451,6 +10451,80 @@ enum create_context_menu_types menu_type;
         struct rm* lev = &levl[u.ux][u.uy];
         int levtyp = lev ? lev->typ : UNDEFINED_LOCATION;
         struct trap* t = t_at(u.ux, u.uy);
+
+        struct obj* otmp_here;
+        boolean showpickup = FALSE;
+        for (otmp_here = otmp; otmp_here; otmp_here = otmp_here->nexthere)
+            if (otmp_here != uchain)
+            {
+                showpickup = TRUE;
+                break;
+            }
+
+        if (showpickup)
+        {
+            add_context_menu(',', nondir_cmd_from_func(dopickup), CONTEXT_MENU_STYLE_GENERAL, otmp->gui_glyph, "Pick Up", cxname(otmp), 0, NO_COLOR);
+            if (count_bags_for_stashing(invent, otmp, FALSE, TRUE) > 0)
+                add_context_menu(';', nondir_cmd_from_func(doput2bag), CONTEXT_MENU_STYLE_GENERAL, otmp->gui_glyph, "Pick & Stash", cxname(otmp), 0, NO_COLOR);
+            boolean eat_added = FALSE;
+            boolean loot_added = FALSE;
+            boolean loot_out_added = FALSE;
+            boolean loot_in_added = FALSE;
+            for (otmp_here = otmp; otmp_here; otmp_here = otmp_here->nexthere)
+            {
+                if (!eat_added && is_edible(otmp_here))
+                {
+                    add_context_menu('e', nondir_cmd_from_func(doeat), CONTEXT_MENU_STYLE_GENERAL, otmp_here->gui_glyph, "Eat", cxname(otmp_here), 0, NO_COLOR);
+                    eat_added = TRUE;
+                }
+
+                if (Is_container(otmp_here))
+                {
+                    if (!loot_added)
+                    {
+                        add_context_menu('l', nondir_cmd_from_func(doloot), CONTEXT_MENU_STYLE_GENERAL, otmp_here->gui_glyph, "Loot", cxname(otmp_here), 0, NO_COLOR);
+                        loot_added = TRUE;
+                    }
+
+                    boolean is_known_improper = (objects[otmp_here->otyp].oc_name_known && !Is_proper_container(otmp_here));
+                    if (!loot_out_added && !is_known_improper)
+                    {
+                        boolean isknownempty = FALSE;
+                        if (otmp_here->cknown && (otmp_here->otyp == BAG_OF_TRICKS ? (otmp_here->charges == 0) : !Has_contained_contents(otmp_here)))
+                            isknownempty = TRUE;
+
+                        if (!isknownempty)
+                        {
+                            add_context_menu('b', nondir_cmd_from_func(dolootout), CONTEXT_MENU_STYLE_GENERAL, otmp_here->gui_glyph, "Take out", cxname(otmp_here), 0, NO_COLOR);
+                            loot_out_added = TRUE;
+                        }
+                    }
+
+                    if (!loot_in_added && invent && !is_known_improper)
+                    {
+                        add_context_menu('B', nondir_cmd_from_func(dolootin), CONTEXT_MENU_STYLE_GENERAL, otmp_here->gui_glyph, "Put in", cxname(otmp_here), 0, NO_COLOR);
+                        loot_in_added = TRUE;
+                    }
+                }
+            }
+        }
+
+        const char* dfeature = adjusted_dfeature_at(u.ux, u.uy);
+        struct engr* ep = engr_at(u.ux, u.uy);
+        int displ_style = here_window_display_style(dfeature, ep, otmp);
+
+        if (Blind || displ_style == 2)
+        {
+            add_context_menu(':', nondir_cmd_from_func(dolook), CONTEXT_MENU_STYLE_GENERAL, NO_GLYPH, "Look Here", "", 0, NO_COLOR);
+        }
+
+        if (context.last_picked_obj_oid > 0 && context.last_picked_obj_show_duration_left > 0)
+        {
+            struct obj* lpobj;
+            if ((lpobj = o_on(context.last_picked_obj_oid, invent)) != 0)
+                add_context_menu(M('<'), nondir_cmd_from_func(dolastpickeditem), CONTEXT_MENU_STYLE_GENERAL, lpobj ? lpobj->gui_glyph : 0, "Last Item", lpobj ? cxname(lpobj) : "", 0, NO_COLOR);
+        }
+
         if (IS_ALTAR(levtyp))
         {
             add_context_menu(M('o'), nondir_cmd_from_func(dosacrifice), CONTEXT_MENU_STYLE_GENERAL, back_to_glyph(u.ux, u.uy), "Offer", 0, 0, NO_COLOR);
@@ -10583,78 +10657,6 @@ enum create_context_menu_types menu_type;
             add_context_menu('C', nondir_cmd_from_func(dotalksteed), CONTEXT_MENU_STYLE_GENERAL, any_mon_to_glyph(u.usteed, rn2_on_display_rng), "Steed", Monnam(u.usteed), 0, NO_COLOR);
         }
 
-        struct obj* otmp_here;
-        boolean showpickup = FALSE;
-        for (otmp_here = otmp; otmp_here; otmp_here = otmp_here->nexthere)
-            if (otmp_here != uchain)
-            {
-                showpickup = TRUE;
-                break;
-            }
-
-        if (showpickup)
-        {
-            add_context_menu(',', nondir_cmd_from_func(dopickup), CONTEXT_MENU_STYLE_GENERAL, otmp->gui_glyph, "Pick Up", cxname(otmp), 0, NO_COLOR);
-            if(count_bags_for_stashing(invent, otmp, FALSE, TRUE) > 0)
-                add_context_menu(';', nondir_cmd_from_func(doput2bag), CONTEXT_MENU_STYLE_GENERAL, otmp->gui_glyph, "Pick & Stash", cxname(otmp), 0, NO_COLOR);
-            boolean eat_added = FALSE;
-            boolean loot_added = FALSE;
-            boolean loot_out_added = FALSE;
-            boolean loot_in_added = FALSE;
-            for (otmp_here = otmp; otmp_here; otmp_here = otmp_here->nexthere)
-            {
-                if (!eat_added && is_edible(otmp_here))
-                {
-                    add_context_menu('e', nondir_cmd_from_func(doeat), CONTEXT_MENU_STYLE_GENERAL, otmp_here->gui_glyph, "Eat", cxname(otmp_here), 0, NO_COLOR);
-                    eat_added = TRUE;
-                }
-
-                if (Is_container(otmp_here))
-                {
-                    if (!loot_added)
-                    {
-                        add_context_menu('l', nondir_cmd_from_func(doloot), CONTEXT_MENU_STYLE_GENERAL, otmp_here->gui_glyph, "Loot", cxname(otmp_here), 0, NO_COLOR);
-                        loot_added = TRUE;
-                    }
-
-                    boolean is_known_improper = (objects[otmp_here->otyp].oc_name_known && !Is_proper_container(otmp_here));
-                    if (!loot_out_added && !is_known_improper)
-                    {
-                        boolean isknownempty = FALSE;
-                        if (otmp_here->cknown && (otmp_here->otyp == BAG_OF_TRICKS ? (otmp_here->charges == 0) : !Has_contained_contents(otmp_here)))
-                            isknownempty = TRUE;
-
-                        if (!isknownempty)
-                        {
-                            add_context_menu('b', nondir_cmd_from_func(dolootout), CONTEXT_MENU_STYLE_GENERAL, otmp_here->gui_glyph, "Take out", cxname(otmp_here), 0, NO_COLOR);
-                            loot_out_added = TRUE;
-                        }
-                    }
-
-                    if (!loot_in_added && invent && !is_known_improper)
-                    {
-                        add_context_menu('B', nondir_cmd_from_func(dolootin), CONTEXT_MENU_STYLE_GENERAL, otmp_here->gui_glyph, "Put in", cxname(otmp_here), 0, NO_COLOR);
-                        loot_in_added = TRUE;
-                    }
-                }
-            }
-        }
-
-        const char* dfeature = adjusted_dfeature_at(u.ux, u.uy);
-        struct engr* ep = engr_at(u.ux, u.uy);
-        int displ_style = here_window_display_style(dfeature, ep, otmp);
-
-        if (Blind || displ_style == 2)
-        {
-            add_context_menu(':', nondir_cmd_from_func(dolook), CONTEXT_MENU_STYLE_GENERAL, NO_GLYPH, "Look Here", "", 0, NO_COLOR);
-        }
-
-        if (context.last_picked_obj_oid > 0 && context.last_picked_obj_show_duration_left > 0)
-        {
-            struct obj* lpobj;
-            if ((lpobj = o_on(context.last_picked_obj_oid, invent)) != 0)
-                add_context_menu(M('<'), nondir_cmd_from_func(dolastpickeditem), CONTEXT_MENU_STYLE_GENERAL, lpobj ? lpobj->gui_glyph : 0, "Last Item", lpobj ? cxname(lpobj) : "", 0, NO_COLOR);
-        }
         break;
     }
     }
