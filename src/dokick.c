@@ -685,6 +685,7 @@ xchar x, y; /* coordinates where object was before the impact, not after */
     if (!Is_container(obj) || !Has_contents(obj) || Is_mbag(obj))
         return;
 
+    debugprint_pos();
     costly = ((shkp = shop_keeper(*in_rooms(x, y, SHOPBASE)))
               && costly_spot(x, y));
     insider = (*u.ushops && inside_shop(u.ux, u.uy)
@@ -890,6 +891,7 @@ boolean is_golf_swing;
         || closed_door(x + u.dx, y + u.dy))
         range = 1;
 
+    debugprint_pos();
     costly = (!(kickedobj->no_charge && !Has_contents(kickedobj))
               && (shkp = shop_keeper(*in_rooms(x, y, SHOPBASE))) != 0
               && costly_spot(x, y));
@@ -2058,6 +2060,7 @@ boolean dropall;
      * unsavory pline repetitions.
      */
     if (costly) {
+        debugprint_pos();
         if ((shkp = shop_keeper(*in_rooms(x, y, SHOPBASE))) != 0) {
             debit = ESHK(shkp)->debit;
             robbed = ESHK(shkp)->robbed;

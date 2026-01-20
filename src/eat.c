@@ -632,6 +632,7 @@ boolean message;
         {
             struct monst* shkp = 0;
             boolean billable_food = FALSE;
+            debugprint_pos();
             char* o_shop = in_rooms(u.ux, u.uy, SHOPBASE);
             shkp = shop_keeper(*o_shop);
             if (shkp && inhishop(shkp) && is_obj_on_shk_bill(piece, shkp))

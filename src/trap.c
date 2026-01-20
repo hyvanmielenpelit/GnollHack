@@ -804,6 +804,7 @@ int *fail_reason;
     {
         play_sfx_sound(SFX_STATUE_BECOMES_ALIVE);
         /* "the|your|Manlobbi's statue [of a wombat]" */
+        debugprint_pos();
         shkp = shop_keeper(*in_rooms(mon->mx, mon->my, SHOPBASE));
         Sprintf(statuename, "%s%s", shk_your(tmpbuf, statue),
                 (cause == ANIMATE_SPELL
@@ -850,6 +851,7 @@ int *fail_reason;
            stolen_value gives a message (about debt or use of credit)
            which refers to "it" so needs to follow a message describing
            the object ("the statue comes to life" one above) */
+        debugprint_pos();
         if (cause != ANIMATE_NORMAL && costly_spot(x, y)
             && (carried(statue) ? statue->unpaid : !statue->no_charge)
             && (shkp = shop_keeper(*in_rooms(x, y, SHOPBASE))) != 0
@@ -6917,6 +6919,7 @@ boolean disarm;
             register xchar ox = obj->ox, oy = obj->oy;
 
             /* the obj location need not be that of player */
+            debugprint_pos();
             costly = (costly_spot(ox, oy)
                       && (shkp = shop_keeper(*in_rooms(ox, oy, SHOPBASE)))
                              != (struct monst *) 0);

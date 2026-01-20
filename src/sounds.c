@@ -5589,6 +5589,7 @@ struct monst* mtmp;
             struct monst* shkp;
             if(otmp)
             {
+                debugprint_pos();
                 if (otmp->owornmask & (W_ARMOR | W_ACCESSORY))
                 {
                     play_sfx_sound(SFX_GENERAL_CANNOT);

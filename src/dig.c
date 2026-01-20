@@ -3084,6 +3084,7 @@ int x, y;
     int64_t loss = 0L;
     boolean costly;
 
+    debugprint_pos();
     costly = ((shkp = shop_keeper(*in_rooms(x, y, SHOPBASE)))
               && costly_spot(x, y));
 

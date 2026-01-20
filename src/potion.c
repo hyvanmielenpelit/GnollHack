@@ -835,6 +835,7 @@ dodrink()
 
     if (otmp->unpaid && costly_spot(u.ux, u.uy))
     {
+        debugprint_pos();
         char* o_shop = in_rooms(u.ux, u.uy, SHOPBASE);
         shkp = shop_keeper(*o_shop);
         if (shkp && inhishop(shkp) && is_obj_on_shk_bill(otmp, shkp))
@@ -898,6 +899,7 @@ struct obj *otmp;
 
     if (otmp->unpaid && costly_spot(u.ux, u.uy))
     {
+        debugprint_pos();
         char* o_shop = in_rooms(u.ux, u.uy, SHOPBASE);
         shkp = shop_keeper(*o_shop);
         if (shkp && inhishop(shkp) && is_obj_on_shk_bill(otmp, shkp))
@@ -2138,6 +2140,7 @@ boolean dopopup;
 
     if (obj->unpaid && costly_spot(u.ux, u.uy))
     {
+        debugprint_pos();
         char* o_shop = in_rooms(u.ux, u.uy, SHOPBASE);
         struct monst* shkp = 0;
         shkp = shop_keeper(*o_shop);
@@ -2685,7 +2688,9 @@ do_illness: /* Pestilence's potion of healing effect */
              && !objects[obj->otyp].oc_uname && cansee(tx, ty))
         docall(obj, dcbuf);
 
-    if (*u.ushops && obj->unpaid) {
+    if (*u.ushops && obj->unpaid) 
+    {
+        debugprint_pos();
         struct monst *shkp = shop_keeper(*in_rooms(u.ux, u.uy, SHOPBASE));
 
         /* neither of the first two cases should be able to happen;
@@ -2696,8 +2701,7 @@ do_illness: /* Pestilence's potion of healing effect */
         else if (context.mon_moving) /* obj thrown by monster */
             subfrombill(obj, shkp);
         else /* obj thrown by hero */
-            (void) stolen_value(obj, u.ux, u.uy, is_peaceful(shkp),
-                                FALSE);
+            (void) stolen_value(obj, u.ux, u.uy, is_peaceful(shkp), FALSE);
     }
     debugprint("potionhit: %d", obj->otyp);
     obfree(obj, (struct obj *) 0);

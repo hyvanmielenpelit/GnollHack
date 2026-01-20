@@ -418,6 +418,7 @@ boolean newlev;
     if (!*leavestring && (!levl[u.ux][u.uy].edge || levl[u.ux0][u.uy0].edge))
         return;
 
+    debugprint_pos();
     shkp = shop_keeper(*u.ushops0);
     if (!shkp || !inhishop(shkp))
         return; /* shk died, teleported, changed levels... */
@@ -459,6 +460,7 @@ xchar x, y;
     struct monst *shkp;
     struct eshk *eshkp;
 
+    debugprint_pos();
     shkp = shop_keeper(*in_rooms(x, y, SHOPBASE));
     if (!shkp || !inhishop(shkp))
         return; /* shk died, teleported, changed levels... */
@@ -557,6 +559,7 @@ char *enterstring;
         u.uachieve.entered_shop = 1;
     }
 
+    debugprint_pos();
     if (!(shkp = shop_keeper(*enterstring))) {
         if (!index(empty_shops, *enterstring)
             && in_rooms(u.ux, u.uy, SHOPBASE)
@@ -763,6 +766,7 @@ struct obj *obj;
 
     if (obj->unpaid || !is_pick(obj))
         return;
+    debugprint_pos();
     shkp = shop_keeper(*u.ushops);
     if (shkp && inhishop(shkp)) {
 
@@ -845,6 +849,7 @@ struct eshk *eshkp;
 void
 shopper_financial_report()
 {
+    debugprint_pos();
     struct monst *shkp, *this_shkp = shop_keeper(inside_shop(u.ux, u.uy));
     struct eshk *eshkp;
     int64_t amt;
@@ -2152,6 +2157,7 @@ int *nochrg; /* alternate return value: 1: no charge, 0: shop owned,        */
     int64_t cost = 0L;
 
     *nochrg = -1; /* assume 'not applicable' */
+    debugprint_pos();
     if (*u.ushops && obj->oclass != COIN_CLASS
         && obj != uball && obj != uchain
         && get_obj_location(obj, &x, &y, CONTAINED_TOO)
@@ -2617,6 +2623,7 @@ boolean include_contents;
 
     if (!get_obj_location(unp_obj, &ox, &oy, BURIED_TOO | CONTAINED_TOO))
         ox = u.ux, oy = u.uy; /* (shouldn't happen) */
+    debugprint_pos();
     if ((shkp = shop_keeper(*in_rooms(ox, oy, SHOPBASE))) != 0) {
         bp = onbill(unp_obj, shkp, TRUE);
     } else {
@@ -2773,6 +2780,7 @@ boolean reset_nocharge;
     {
         if (!roomno)
             return FALSE;
+        debugprint_pos();
         shkp = shop_keeper(roomno);
         if (!shkp || !inhishop(shkp))
             return FALSE;
@@ -3010,6 +3018,7 @@ register struct obj *obj, *otmp;
     /* otmp has been split off from obj */
     register struct bill_x *bp;
     register int64_t tmp;
+    debugprint_pos();
     register struct monst *shkp = shop_keeper(*u.ushops);
 
     if (!shkp || !inhishop(shkp)) {
@@ -3305,6 +3314,7 @@ xchar x, y;
 
     if (!*u.ushops) /* do cheapest exclusion test first */
         return;
+    debugprint_pos();
     if (!(shkp = shop_keeper(*in_rooms(x, y, SHOPBASE))) || !inhishop(shkp))
         return;
     if (!costly_spot(x, y))
@@ -3595,6 +3605,7 @@ int mode; /* 0: deliver count 1: paged */
     char *buf_p;
     winid datawin;
 
+    debugprint_pos();
     shkp = shop_keeper(*u.ushops);
     if (!shkp || !inhishop(shkp)) {
         if (mode != 0)
@@ -3814,6 +3825,7 @@ register xchar x, y;
 {
     register struct monst *shkp;
 
+    debugprint_pos();
     if (!(shkp = shop_keeper(inside_shop(x, y))) || !inhishop(shkp))
         return 0;
 
@@ -3855,6 +3867,7 @@ int64_t cost;
         struct monst *mtmp;
 
         /* Don't schedule for repair unless it's a real shop entrance */
+        debugprint_pos();
         for (shops = in_rooms(x, y, SHOPBASE); *shops; shops++)
             if ((mtmp = shop_keeper(*shops)) != 0
                 && x == ESHK(mtmp)->shd.x && y == ESHK(mtmp)->shd.y)
@@ -4362,6 +4375,7 @@ void
 shopdig(fall)
 register int fall;
 {
+    debugprint_pos();
     register struct monst *shkp = shop_keeper(*u.ushops);
     int lang;
     const char *grabs = "grabs";
@@ -4545,6 +4559,7 @@ boolean cant_mollify;
             struct monst *tmp_shk;
             unsigned int shk_distance;
 
+            debugprint_pos();
             if (!(tmp_shk = shop_keeper(*shp)))
                 continue;
 
@@ -4767,6 +4782,7 @@ register xchar x, y;
 
     if (!level.flags.has_shop)
         return FALSE;
+    debugprint_pos();
     shkp = shop_keeper(*in_rooms(x, y, SHOPBASE));
     if (!shkp || !inhishop(shkp))
         return FALSE;
@@ -4784,6 +4800,7 @@ register xchar x, y;
     register struct obj *otmp;
     register struct monst *shkp;
 
+    debugprint_pos();
     if (!(shkp = shop_keeper(*in_rooms(x, y, SHOPBASE))) || !inhishop(shkp))
         return (struct obj *) 0;
 
@@ -4808,6 +4825,7 @@ register struct obj *first_obj;
     int cnt = 0;
     boolean contentsonly = FALSE;
     winid tmpwin;
+    debugprint_pos();
     struct monst *shkp = shop_keeper(inside_shop(u.ux, u.uy));
 
     tmpwin = create_nhwindow(NHW_MENU);
@@ -5225,6 +5243,7 @@ boolean altusage;
     if (!otmp->unpaid || !*u.ushops
         || (otmp->charges <= 0 && objects[otmp->otyp].oc_charged))
         return;
+    debugprint_pos();
     if (!(shkp = shop_keeper(*u.ushops)) || !inhishop(shkp))
         return;
     if ((tmp = cost_per_charge(shkp, otmp, altusage)) == 0L)
@@ -5348,6 +5367,7 @@ register int64_t amount;
     if (!costly_spot(x, y))
         return;
     /* shkp now guaranteed to exist by costly_spot() */
+    debugprint_pos();
     shkp = shop_keeper(*in_rooms(x, y, SHOPBASE));
 
     eshkp = ESHK(shkp);
@@ -5387,6 +5407,7 @@ register xchar x, y;
     if (roomno != *u.ushops)
         return FALSE;
 
+    debugprint_pos();
     if (!(shkp = shop_keeper((char) roomno)) || !inhishop(shkp))
         return FALSE;
 
@@ -5423,6 +5444,7 @@ register xchar x, y;
     roomno = *in_rooms(x, y, SHOPBASE);
     if (roomno < 0 || !IS_SHOP(roomno))
         return FALSE;
+    debugprint_pos();
     if (!(shkp = shop_keeper((char) roomno)) || !inhishop(shkp))
         return FALSE;
 
@@ -5475,6 +5497,7 @@ struct obj *obj;
     if (get_obj_location(obj, &x, &y, 0)
         && (obj->unpaid || (obj->where == OBJ_FLOOR && !obj->no_charge
                             && costly_spot(x, y)))) {
+        debugprint_pos();
         shkp = shop_keeper(inside_shop(x, y));
         return strcpy(buf, shkp ? s_suffix(shkname(shkp)) : the_your[0]);
     }
@@ -5544,6 +5567,7 @@ boolean eating, ugivingitems;
 
     if (is_unpaid_shop_item(obj, omx, omy))
     {
+        debugprint_pos();
         shkp = shop_keeper(inside_shop(omx, omy));
         char shopkeeper_name[BUFSZ] = "";
         if (shkp)

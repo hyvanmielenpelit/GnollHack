@@ -1155,6 +1155,7 @@ register struct obj *otmp;
 
     if (otmp->unpaid) {
         cost = unpaid_cost(otmp, FALSE);
+        debugprint_pos();
         subfrombill(otmp, shop_keeper(*u.ushops));
     }
     dummy = newobj();
@@ -1451,6 +1452,7 @@ int alter_type;
         boolean didtalk = FALSE;
         if (iflags.using_gui_sounds)
         {
+            debugprint_pos();
             char* o_shop = in_rooms(u.ux, u.uy, SHOPBASE);
             shkp = shop_keeper(*o_shop);
             if (obj->unpaid && shkp && inhishop(shkp) && is_obj_on_shk_bill(obj, shkp) && costly_spot(u.ux, u.uy))

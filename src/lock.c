@@ -334,6 +334,7 @@ boolean destroyit;
     else 
     { /* #force has destroyed this box (at <u.ux,u.uy>) */
         struct obj *otmp;
+        debugprint_pos();
         struct monst *shkp = (*u.ushops && costly_spot(u.ux, u.uy))
                                  ? shop_keeper(*u.ushops)
                                  : 0;

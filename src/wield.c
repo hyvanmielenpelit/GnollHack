@@ -315,6 +315,7 @@ int64_t mask;
         {
             struct monst *this_shkp;
 
+            debugprint_pos();
             if ((this_shkp = shop_keeper(inside_shop(u.ux, u.uy)))
                 != (struct monst *) 0) {
                 pline("%s says \"You be careful with my %s!\"",

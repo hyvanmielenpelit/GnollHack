@@ -7322,6 +7322,7 @@ uint64_t newsym_flags;
     {
         if (index(u.urooms, *in_rooms(otmp->ox, otmp->oy, 0)))
         {
+            debugprint_pos();
             char* o_shop = in_rooms(otmp->ox, otmp->oy, SHOPBASE);
             struct monst* shkp = shop_keeper(*o_shop);
             if (shkp && inhishop(shkp) && !Deaf && !muteshk(shkp) && !(otmp->speflags & SPEFLAGS_ADDED_TO_YOUR_BILL))

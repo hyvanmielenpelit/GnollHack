@@ -2967,6 +2967,7 @@ boolean replaceundead;
     {
         struct monst *shkp = 0;
 
+        debugprint_pos();
         x = corpse->ox, y = corpse->oy;
         if (costly_spot(x, y)
             && (carried(corpse) ? corpse->unpaid : !corpse->no_charge))
@@ -4114,6 +4115,7 @@ int id;
     /* note: if otmp is gone, billing for it was handled by useup() */
     if (((otmp && !carried(otmp)) || obj->unpaid) && costly_spot(ox, oy)) 
     {
+        debugprint_pos();
         struct monst *shkp = shop_keeper(*in_rooms(ox, oy, SHOPBASE));
 
         if ((!obj->no_charge
@@ -4202,6 +4204,7 @@ struct obj *obj;
                 {
                     if (costly_spot(oox, ooy)
                         && (carried(obj) ? obj->unpaid : !obj->no_charge)) {
+                        debugprint_pos();
                         shkp = shop_keeper(*in_rooms(oox, ooy, SHOPBASE));
                         stolen_value(obj, oox, ooy,
                                      (shkp && is_peaceful(shkp)), FALSE);

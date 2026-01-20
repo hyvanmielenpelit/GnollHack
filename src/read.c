@@ -495,6 +495,7 @@ doread(VOID_ARGS)
     struct monst* shkp = 0;
     if (scroll->unpaid && costly_spot(u.ux, u.uy))
     {
+        debugprint_pos();
         char* o_shop = in_rooms(u.ux, u.uy, SHOPBASE);
         shkp = shop_keeper(*o_shop);
         if (shkp && inhishop(shkp) && is_obj_on_shk_bill(scroll, shkp))

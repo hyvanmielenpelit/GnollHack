@@ -187,6 +187,7 @@ stealarm(VOID_ARGS)
                         impossible("stealarm(): dead monster stealing");
                     if (!dmgtype(mtmp->data, AD_SITM)) /* polymorphed */
                         goto botm;
+                    debugprint_pos();
                     if (otmp->unpaid)
                         subfrombill(otmp, shop_keeper(*u.ushops));
                     freeinv(otmp);
@@ -508,6 +509,7 @@ gotobj:
      */
     mtmp->mavenge = 1;
 
+    debugprint_pos();
     if (otmp->unpaid)
         subfrombill(otmp, shop_keeper(*u.ushops));
     freeinv(otmp);
@@ -665,6 +667,7 @@ struct monst *mtmp;
         /* finally, steal the target item */
         if (otmp->owornmask)
             remove_worn_item(otmp, TRUE);
+        debugprint_pos();
         if (otmp->unpaid)
             subfrombill(otmp, shop_keeper(*u.ushops));
         freeinv(otmp);
@@ -695,6 +698,7 @@ int ochance, achance; /* percent chance for ordinary item, artifact */
     if (carried(obj)) {
         if (obj->owornmask)
             remove_worn_item(obj, TRUE);
+        debugprint_pos();
         if (obj->unpaid)
             subfrombill(obj, shop_keeper(*u.ushops));
         if (cansee(mon->mx, mon->my)) {

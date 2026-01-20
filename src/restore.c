@@ -254,6 +254,7 @@ boolean ghostly;
              * shop_keeper().  just wait and process the damage on
              * the second pass.
              */
+            debugprint_pos();
             for (shp = damaged_shops; *shp; shp++) {
                 struct monst *shkp = shop_keeper(*shp);
 

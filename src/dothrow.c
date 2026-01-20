@@ -1162,6 +1162,7 @@ xchar x, y;
 boolean broken;
 boolean sellitem;
 {
+    debugprint_pos();
     boolean costly_xy;
     struct monst *shkp = shop_keeper(*u.ushops);
 
@@ -2543,6 +2544,7 @@ boolean from_invent;
                 check_shop_obj(obj, x, y, TRUE, FALSE);
         } else if (!obj->no_charge && costly_spot(x, y)) {
             /* it is assumed that the obj is a floor-object */
+            debugprint_pos();
             char *o_shop = in_rooms(x, y, SHOPBASE);
             struct monst *shkp = shop_keeper(*o_shop);
 

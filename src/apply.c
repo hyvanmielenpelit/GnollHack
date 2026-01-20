@@ -2257,6 +2257,7 @@ struct obj **optr;
 
     if (is_unpaid_shop_item(obj, u.ux, u.uy))
     {
+        debugprint_pos();
         char* o_shop = in_rooms(u.ux, u.uy, SHOPBASE);
         struct monst* shkp = shop_keeper(*o_shop);
         if (shkp && inhishop(shkp) && (obj->where == OBJ_FLOOR || is_obj_on_shk_bill(obj, shkp)))
@@ -2465,6 +2466,7 @@ struct obj *obj;
             check_unpaid(obj);
             if (iflags.using_gui_sounds)
             {
+                debugprint_pos();
                 char* o_shop = in_rooms(u.ux, u.uy, SHOPBASE);
                 struct monst* shkp = shop_keeper(*o_shop);
                 if (shkp && inhishop(shkp) && is_obj_on_shk_bill(obj, shkp))
@@ -2552,6 +2554,7 @@ struct obj *obj;
             {
                 const char *ithem = (obj->quan > 1L) ? "them" : "it";
 
+                debugprint_pos();
                 char* o_shop = in_rooms(u.ux, u.uy, SHOPBASE);
                 struct monst* shkp = shop_keeper(*o_shop);
                 if (shkp && inhishop(shkp) && (obj->where == OBJ_FLOOR || is_obj_on_shk_bill(obj, shkp)))
@@ -2690,6 +2693,7 @@ struct obj **optr;
         /* Normally, we shouldn't both partially and fully charge
          * for an item, but (Yendorian Fuel) Taxes are inevitable...
          */
+        debugprint_pos();
         check_unpaid(obj);
         char* o_shop = in_rooms(u.ux, u.uy, SHOPBASE);
         struct monst* shkp = shop_keeper(*o_shop);
@@ -3274,6 +3278,7 @@ struct obj *obj;
         {
             if (corpse->unpaid)
             {
+                debugprint_pos();
                 char* o_shop = in_rooms(u.ux, u.uy, SHOPBASE);
                 struct monst* shkp = shop_keeper(*o_shop);
                 if (shkp && inhishop(shkp) && is_obj_on_shk_bill(corpse, shkp))
@@ -6411,6 +6416,7 @@ int arrowtype, quan; //ObjID and quantity
 
         if ((bag->unpaid || (bag->where == OBJ_FLOOR && !bag->no_charge)) && costly_spot(u.ux, u.uy))
         {
+            debugprint_pos();
             char* o_shop = in_rooms(u.ux, u.uy, SHOPBASE);
             struct monst* shkp = shop_keeper(*o_shop);
             if (shkp && inhishop(shkp) && (bag->where == OBJ_FLOOR || is_obj_on_shk_bill(bag, shkp)))

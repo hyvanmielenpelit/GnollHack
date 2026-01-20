@@ -2515,6 +2515,7 @@ boolean* got_something_ptr;
                 }
                 if (costly_spot(u.ux, u.uy))
                 {
+                    debugprint_pos();
                     char* o_shop = in_rooms(u.ux, u.uy, SHOPBASE);
                     struct monst* shkp = shop_keeper(*o_shop);
                     if (shkp && inhishop(shkp))
@@ -3845,6 +3846,7 @@ struct obj *item;
     else
         You("%s %s disappear!", Blind ? "notice" : "see", doname(item));
 
+    debugprint_pos();
     if (*u.ushops && (shkp = shop_keeper(*u.ushops)) != 0)
     {
         if (held ? (boolean) item->unpaid : costly_spot(u.ux, u.uy))
@@ -5201,6 +5203,7 @@ struct obj *box; /* or bag */
             box->charges = 0; /* empty */
             box->cknown = 1;
         }
+        debugprint_pos();
         if (maybeshopgoods && !box->no_charge)
             subfrombill(box, shop_keeper(*in_rooms(ox, oy, SHOPBASE)));
     } else if (SchroedingersBox(box)) {
