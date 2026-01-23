@@ -832,7 +832,7 @@ namespace GnollHackX
         {  
             get 
             {
-                return GHConstants.AllowRestartGameUponActivityDestruction && GHApp.WasGameSaved && GHApp.GameStarted; 
+                return GHConstants.AllowRestartGameUponActivityDestruction && GHApp.IsAndroid && GHApp.WasGameSaved && GHApp.GameStarted; 
             } 
         }
 
