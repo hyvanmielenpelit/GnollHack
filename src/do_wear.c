@@ -4089,7 +4089,7 @@ register struct obj *atmp;
         boolean has_stone_res = Stone_resistance;
         debugprint("destroy_arm3: %d", otmp->otyp);
         useup(otmp);
-        check_wielded_cockatrice(FALSE, FALSE, !has_stone_res && has_stone_res);
+        check_wielded_cockatrice(FALSE, FALSE, !has_stone_res && had_stone_res);
     } else if (DESTROY_ARM(uarmu)) {
         if (donning(otmp))
             cancel_don();
