@@ -495,14 +495,37 @@ namespace GnollHackX
 #endif
         }
 
-        public static void BeforeExitApp()
+        public static void UnsubscribeFromEvents()
         {
-            AddSentryBreadcrumb("BeforeExitApp", GHConstants.SentryGnollHackGeneralCategoryName);
+            AddSentryBreadcrumb("UnsubscribeFromEvents", GHConstants.SentryGnollHackGeneralCategoryName);
             Connectivity.ConnectivityChanged -= Connectivity_ConnectivityChanged;
             Battery.BatteryInfoChanged -= Battery_BatteryInfoChanged;
             DeviceDisplay.MainDisplayInfoChanged -= DeviceDisplay_MainDisplayInfoChanged;
+        }
+
+        public static void BeforeExitApp()
+        {
+            AddSentryBreadcrumb("BeforeExitApp", GHConstants.SentryGnollHackGeneralCategoryName);
             RevertScreenResolution();
-            //CollectGarbage();
+        }
+
+        public static async Task FinishApp()
+        {
+            bool didAwait = false;
+#if GNH_MAUI
+            AddSentryBreadcrumb("FinishApp", GHConstants.SentryGnollHackGeneralCategoryName);
+#if ANDROID
+            var activity = Platform.CurrentActivity;
+            if (activity != null)
+            {
+                activity.FinishAffinity();
+                await Task.Delay(250);
+                didAwait = true;
+            }
+#endif
+#endif
+            if (!didAwait)
+                await Task.Delay(40);
         }
 
         private static void InitializeScreenResolutions()

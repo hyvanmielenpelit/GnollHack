@@ -142,8 +142,16 @@ namespace GnollHackX.Droid
                 GHApp.AddSentryBreadcrumb("CloseApplication", GHConstants.SentryGnollHackGeneralCategoryName);
                 RevertAnimatorDuration(true);
 #if GNH_MAUI
-                //Platform.CurrentActivity.FinishAffinity();
-                //Platform.CurrentActivity.Finish();
+                /* FinishAffinity seems to leave MAUI in an unstable state, so need to hard quit */
+                try
+                {
+                    Process.KillProcess(Process.MyPid());
+                }
+                catch (Exception) 
+                {
+                    //GHApp.MaybeWriteGHLog(ex.Message);
+                }
+                /* KillProcess above has failed if we end up here */
                 Microsoft.Maui.Controls.Application.Current.Quit();
 #else
                 MainActivity.CurrentMainActivity.FinishAffinity();
