@@ -360,7 +360,7 @@ E char NDECL(pgetchar);
 E void FDECL(pushch, (CHAR_P));
 E void FDECL(savech, (CHAR_P));
 E const char *FDECL(key2extcmddesc, (UCHAR_P));
-E boolean FDECL(bind_specialkey, (UCHAR_P, const char *));
+E boolean FDECL(bind_specialkey, (CHAR_P, const char *));
 E char FDECL(txt2key, (char *));
 E void FDECL(parseautocomplete, (char *, BOOLEAN_P));
 E void FDECL(reset_commands, (BOOLEAN_P));

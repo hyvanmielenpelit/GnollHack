@@ -6662,6 +6662,9 @@ bind_key(key, command)
 uchar key;
 const char *command;
 {
+    if (!command)
+        return FALSE;
+
     struct ext_func_tab *extcmd;
 
     /* special case: "nothing" is reserved for unbinding */
@@ -7488,9 +7491,12 @@ struct {
 
 boolean
 bind_specialkey(key, command)
-uchar key;
+char key;
 const char *command;
 {
+    if (!command)
+        return FALSE;
+
     int i;
     for (i = 0; i < SIZE(spkeys_binds); i++) {
         if (!spkeys_binds[i].name || strcmp(command, spkeys_binds[i].name))
@@ -7507,6 +7513,9 @@ char
 txt2key(txt)
 char *txt;
 {
+    if (!txt)
+        return '\0';
+
     txt = trimspaces(txt);
     if (!*txt)
         return '\0';

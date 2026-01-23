@@ -215,6 +215,9 @@ char *
 trimspaces(txt)
 char *txt;
 {
+    if (!txt)
+        return (char*)0;
+
     char *end;
 
     /* leading whitespace will remain in the buffer */
