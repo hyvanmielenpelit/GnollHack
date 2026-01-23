@@ -17135,10 +17135,9 @@ namespace GnollHackX.Pages.Game
                         _allWornBits = 0;
                         for (int j = 0; j < _equipmentSlots.Length; j++)
                             _equipmentMatchingItems[j] = 0;
-                        var curMenuItems = MenuCanvas.MenuItems;
-                        for (int i = 0; i < curMenuItems?.Count; i++)
+                        for (int i = 0; i < menuItems?.Count; i++)
                         {
-                            var menuItem = curMenuItems[i];
+                            var menuItem = menuItems[i];
                             if (menuItem != null)
                             {
                                 long wornBits = menuItem.ObjWornBits;
