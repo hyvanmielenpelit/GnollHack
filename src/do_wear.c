@@ -37,7 +37,7 @@ STATIC_PTR int NDECL(Armor_on);
 STATIC_PTR int NDECL(Cloak_on);
 STATIC_PTR int NDECL(Helmet_on);
 STATIC_PTR int NDECL(Gloves_on);
-STATIC_DCL void FDECL(wielding_corpse, (struct obj *, BOOLEAN_P));
+STATIC_DCL void FDECL(wielding_corpse, (struct obj *, BOOLEAN_P, BOOLEAN_P, BOOLEAN_P));
 STATIC_PTR int NDECL(Shield_on);
 STATIC_PTR int NDECL(Shirt_on);
 STATIC_PTR int NDECL(Robe_on);
@@ -282,6 +282,8 @@ Boots_off(VOID_ARGS)
     struct obj *otmp = uarmf;
     int otyp = otmp->otyp;
     int64_t oldprop = u.uprops[objects[otyp].oc_oprop].extrinsic & ~WORN_BOOTS;
+    boolean on_purpose = !context.mon_moving && otmp && !otmp->in_use;
+    boolean had_stone_res = Stone_resistance;
 
     if (flags.verbose && otmp)
         play_simple_object_sound(otmp, OBJECT_SOUND_TYPE_TAKE_OFF);
@@ -310,6 +312,8 @@ Boots_off(VOID_ARGS)
         break;
     }
     context.takeoff.cancelled_don = FALSE;
+    boolean has_stone_res = Stone_resistance;
+    check_wielded_cockatrice(on_purpose, FALSE, !has_stone_res && had_stone_res);
     return 0;
 }
 
@@ -348,6 +352,8 @@ Cloak_off(VOID_ARGS)
     struct obj *otmp = uarmc;
     int otyp = otmp->otyp;
     int64_t oldprop = u.uprops[objects[otyp].oc_oprop].extrinsic & ~WORN_CLOAK;
+    boolean on_purpose = !context.mon_moving && otmp && !otmp->in_use;
+    boolean had_stone_res = Stone_resistance;
 
     if (flags.verbose && otmp)
         play_simple_object_sound(otmp, OBJECT_SOUND_TYPE_TAKE_OFF);
@@ -365,6 +371,8 @@ Cloak_off(VOID_ARGS)
         toggle_displacement(otmp, oldprop, FALSE);
         break;
     }
+    boolean has_stone_res = Stone_resistance;
+    check_wielded_cockatrice(on_purpose, FALSE, !has_stone_res && had_stone_res);
     return 0;
 }
 
@@ -437,6 +445,8 @@ Helmet_off(VOID_ARGS)
     if (!uarmh)
         return 0;
 
+    boolean on_purpose = !context.mon_moving && uarmh && !uarmh->in_use;
+    boolean had_stone_res = Stone_resistance;
     if (flags.verbose && uarmh)
         play_simple_object_sound(uarmh, OBJECT_SOUND_TYPE_TAKE_OFF);
 
@@ -452,8 +462,9 @@ Helmet_off(VOID_ARGS)
     }
 
     setworn((struct obj *) 0, W_ARMH);
-
     context.takeoff.cancelled_don = FALSE;
+    boolean has_stone_res = Stone_resistance;
+    check_wielded_cockatrice(on_purpose, FALSE, !has_stone_res && had_stone_res);
     return 0;
 }
 
@@ -472,9 +483,9 @@ Gloves_on(VOID_ARGS)
 }
 
 STATIC_OVL void
-wielding_corpse(obj, voluntary)
+wielding_corpse(obj, voluntary, lostgloves, loststoneresistance)
 struct obj *obj;
-boolean voluntary; /* taking gloves off on purpose? */
+boolean voluntary, lostgloves, loststoneresistance; /* taking gloves off on purpose? */
 {
     char kbuf[BUFSZ];
 
@@ -483,12 +494,25 @@ boolean voluntary; /* taking gloves off on purpose? */
     if (obj != uwep && obj != uarms)
         return;
 
-    if (obj->corpsenm >= LOW_PM && touch_petrifies(&mons[obj->corpsenm]) && !Stone_resistance) {
-        You("now wield %s in your bare %s.",
-            corpse_xname(obj, (const char *) 0, CXN_ARTICLE),
-            makeplural(body_part(HAND)));
-        Sprintf(kbuf, "%s gloves while wielding %s",
+    if (obj->corpsenm >= LOW_PM && touch_petrifies(&mons[obj->corpsenm]) && !Stone_resistance) 
+    {
+        if (lostgloves)
+        {
+            You_ex(ATR_NONE, CLR_MSG_NEGATIVE, "now wield %s in your bare %s.",
+                corpse_xname(obj, (const char*)0, CXN_ARTICLE),
+                makeplural(body_part(HAND)));
+            Sprintf(kbuf, "%s gloves while wielding %s",
                 voluntary ? "removing" : "losing", killer_xname(obj));
+        }
+        else
+        {
+            if (loststoneresistance)
+                Sprintf(kbuf, "%s petrification resistance while wielding %s",
+                    voluntary ? "removing" : "losing", killer_xname(obj));
+            else
+                Sprintf(kbuf, "wielding %s bare-handed", killer_xname(obj));
+            pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "Wielding %s bare-handed is a fatal mistake.", corpse_xname(obj, (const char*)0, CXN_ARTICLE));
+        }
         killer.hint_idx = HINT_KILLED_TOUCHED_COCKATRICE_CORPSE;
         instapetrify(kbuf);
         /* life-saved; can't continue wielding cockatrice corpse though */
@@ -499,8 +523,8 @@ boolean voluntary; /* taking gloves off on purpose? */
 int
 Gloves_off(VOID_ARGS)
 {
-    boolean on_purpose = !context.mon_moving && !uarmg->in_use;
-
+    boolean on_purpose = !context.mon_moving && uarmg && !uarmg->in_use;
+    boolean had_stone_res = Stone_resistance;
     if (flags.verbose && uarmg)
         play_simple_object_sound(uarmg, OBJECT_SOUND_TYPE_TAKE_OFF);
 
@@ -510,17 +534,8 @@ Gloves_off(VOID_ARGS)
 
     context.takeoff.cancelled_don = FALSE;
     (void) encumber_msg(); /* immediate feedback for GoP */
-
-    /* prevent wielding cockatrice when not wearing gloves */
-    if (uwep && uwep->otyp == CORPSE)
-        wielding_corpse(uwep, on_purpose);
-
-    /* KMH -- ...or your secondary weapon when you're wielding it
-       [This case can't actually happen; twoweapon mode won't
-       engage if a corpse has been set up as the alternate weapon.] */
-    if (uarms && uarms->otyp == CORPSE)
-        wielding_corpse(uarms, on_purpose);
-
+    boolean has_stone_res = Stone_resistance;
+    check_wielded_cockatrice(on_purpose, TRUE, !has_stone_res && had_stone_res);
     return 0;
 }
 
@@ -571,6 +586,8 @@ Shirt_on(VOID_ARGS)
 int
 Shirt_off(VOID_ARGS)
 {
+    boolean on_purpose = !context.mon_moving && uarmu && !uarmu->in_use;
+    boolean had_stone_res = Stone_resistance;
     if (flags.verbose && uarmu)
         play_simple_object_sound(uarmu, OBJECT_SOUND_TYPE_TAKE_OFF);
 
@@ -579,6 +596,8 @@ Shirt_off(VOID_ARGS)
     setworn((struct obj*) 0, W_ARMU);
 
     context.takeoff.cancelled_don = FALSE;
+    boolean has_stone_res = Stone_resistance;
+    check_wielded_cockatrice(on_purpose, FALSE, !has_stone_res && had_stone_res);
     return 0;
 }
 
@@ -598,12 +617,16 @@ Robe_on(VOID_ARGS)
 int
 Robe_off(VOID_ARGS)
 {
+    boolean on_purpose = !context.mon_moving && uarmo && !uarmo->in_use;
+    boolean had_stone_res = Stone_resistance;
     if (flags.verbose && uarmo)
         play_simple_object_sound(uarmo, OBJECT_SOUND_TYPE_TAKE_OFF);
 
     context.takeoff.mask &= ~W_ARMO;
     setworn((struct obj*) 0, W_ARMO);
     context.takeoff.cancelled_don = FALSE;
+    boolean has_stone_res = Stone_resistance;
+    check_wielded_cockatrice(on_purpose, FALSE, !has_stone_res && had_stone_res);
 
     return 0;
 }
@@ -624,6 +647,8 @@ Bracers_on(VOID_ARGS)
 int
 Bracers_off(VOID_ARGS)
 {
+    boolean on_purpose = !context.mon_moving && uarmb && !uarmb->in_use;
+    boolean had_stone_res = Stone_resistance;
     if (flags.verbose && uarmb)
         play_simple_object_sound(uarmb, OBJECT_SOUND_TYPE_TAKE_OFF);
 
@@ -631,6 +656,8 @@ Bracers_off(VOID_ARGS)
 
     setworn((struct obj*) 0, W_ARMB);
     context.takeoff.cancelled_don = FALSE;
+    boolean has_stone_res = Stone_resistance;
+    check_wielded_cockatrice(on_purpose, FALSE, !has_stone_res && had_stone_res);
     return 0;
 }
 
@@ -678,6 +705,8 @@ struct obj* ud;
     if (!ud)
         return 0;
 
+    boolean on_purpose = !context.mon_moving && ud && !ud->in_use;
+    boolean had_stone_res = Stone_resistance;
     if (flags.verbose && ud)
         play_simple_object_sound(ud, OBJECT_SOUND_TYPE_TAKE_OFF);
 
@@ -692,6 +721,9 @@ struct obj* ud;
         pline("%s orbiting around your %s.", Tobjnam(ud, "stop"), body_part(HEAD));
     }
 
+    (void) encumber_msg();
+    boolean has_stone_res = Stone_resistance;
+    check_wielded_cockatrice(on_purpose, FALSE, !has_stone_res && had_stone_res);
     return 0;
 }
 
@@ -716,12 +748,16 @@ Armor_on(VOID_ARGS)
 int
 Armor_off(VOID_ARGS)
 {
+    boolean on_purpose = !context.mon_moving && uarm && !uarm->in_use;
+    boolean had_stone_res = Stone_resistance;
     if (flags.verbose && uarm)
         play_simple_object_sound(uarm, OBJECT_SOUND_TYPE_TAKE_OFF);
 
     context.takeoff.mask &= ~W_ARM;
     setworn((struct obj *) 0, W_ARM);
     context.takeoff.cancelled_don = FALSE;
+    boolean has_stone_res = Stone_resistance;
+    check_wielded_cockatrice(on_purpose, FALSE, !has_stone_res && had_stone_res);
     return 0;
 }
 
@@ -788,6 +824,8 @@ Amulet_off()
     if (!uamul)
         return;
 
+    boolean on_purpose = !context.mon_moving && uamul && !uamul->in_use;
+    boolean had_stone_res = Stone_resistance;
     if (flags.verbose && uamul)
         play_simple_object_sound(uamul, OBJECT_SOUND_TYPE_TAKE_OFF);
 
@@ -807,6 +845,8 @@ Amulet_off()
     }
 
     setworn((struct obj *) 0, W_AMUL);
+    boolean has_stone_res = Stone_resistance;
+    check_wielded_cockatrice(on_purpose, FALSE, !has_stone_res && had_stone_res);
     return;
 }
 
@@ -1370,8 +1410,44 @@ struct obj *obj;
         if (obj->owornmask)
             remove_worn_item(obj, FALSE);
     }
-
     return 1;
+}
+
+void
+check_wielded_cockatrice(on_purpose, lostgloves, loststoneresistance)
+boolean on_purpose, lostgloves, loststoneresistance;
+{
+    if (!uarmg && !Stone_resistance)
+    {
+        /* prevent wielding cockatrice when not wearing gloves */
+        if (uwep && uwep->otyp == CORPSE)
+            wielding_corpse(uwep, on_purpose, lostgloves, loststoneresistance);
+
+        /* KMH -- ...or your secondary weapon when you're wielding it
+           [This case can't actually happen; twoweapon mode won't
+           engage if a corpse has been set up as the alternate weapon.] */
+        if (uarms && uarms->otyp == CORPSE)
+            wielding_corpse(uarms, on_purpose, lostgloves, loststoneresistance);
+
+        //if (uwep && uwep->otyp == CORPSE && uwep->corpsenm >= LOW_PM && touch_petrifies(&mons[uwep->corpsenm])
+        //    && !(poly_when_stoned(youmonst.data) && polymon(PM_STONE_GOLEM)))
+        //{
+        //    char kbuf[BUFSZ];
+        //    Sprintf(kbuf, "%s corpse", an(corpse_monster_name(uwep)));
+        //    pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "Wielding %s bare-handed is a fatal mistake.", kbuf);
+        //    killer.hint_idx = HINT_KILLED_TOUCHED_COCKATRICE_CORPSE;
+        //    instapetrify(kbuf);
+        //}
+        //else if (uarms && uarms->otyp == CORPSE && uarms->corpsenm >= LOW_PM && touch_petrifies(&mons[uarms->corpsenm])
+        //    && !(poly_when_stoned(youmonst.data) && polymon(PM_STONE_GOLEM)))
+        //{
+        //    char kbuf[BUFSZ];
+        //    Sprintf(kbuf, "%s corpse", an(corpse_monster_name(uarms)));
+        //    pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "Wielding %s bare-handed in your left %s is a fatal mistake.", kbuf, body_part(HAND));
+        //    killer.hint_idx = HINT_KILLED_TOUCHED_COCKATRICE_CORPSE;
+        //    instapetrify(kbuf);
+        //}
+    }
 }
 
 
@@ -4008,9 +4084,12 @@ register struct obj *atmp;
             cancel_don();
         play_sfx_sound(SFX_ITEM_CRUMBLES_TO_DUST);
         Your_ex(ATR_NONE, CLR_MSG_WARNING, "armor turns to dust and falls to the %s!", surface(u.ux, u.uy));
+        boolean had_stone_res = Stone_resistance;
         (void) Armor_gone();
+        boolean has_stone_res = Stone_resistance;
         debugprint("destroy_arm3: %d", otmp->otyp);
         useup(otmp);
+        check_wielded_cockatrice(FALSE, FALSE, !has_stone_res && has_stone_res);
     } else if (DESTROY_ARM(uarmu)) {
         if (donning(otmp))
             cancel_don();

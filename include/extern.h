@@ -866,6 +866,7 @@ E int NDECL(get_role_AC_bonus);
 E int NDECL(get_role_MC_bonus);
 E int FDECL(armor_or_accessory_off, (struct obj*));
 E void NDECL(reset_dowear);
+E void FDECL(check_wielded_cockatrice, (BOOLEAN_P, BOOLEAN_P, BOOLEAN_P));
 
 /* ### dog.c ### */
 

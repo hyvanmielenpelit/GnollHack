@@ -3904,6 +3904,7 @@ boolean was_flying;
         {
             play_sfx_sound(SFX_PROTECTION_END_WARNING);
             You_ex(ATR_NONE, CLR_MSG_ATTENTION, "feel less limber than before.");
+            check_wielded_cockatrice(FALSE, FALSE, TRUE);
         }
         break;
     case DRAIN_RESISTANCE:

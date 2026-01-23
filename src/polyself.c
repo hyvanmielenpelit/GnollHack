@@ -1143,9 +1143,12 @@ break_armor()
                 play_simple_object_sound(otmp, OBJECT_SOUND_TYPE_BREAK);
                 You_ex(ATR_NONE, CLR_MSG_NEGATIVE, "break out of %s!", yname(otmp));
                 exercise(A_STR, FALSE);
+                boolean had_stone_res = Stone_resistance;
                 (void)Armor_gone();
                 debugprint("break_armor: %d", otmp->otyp);
                 useup(otmp);
+                boolean has_stone_res = Stone_resistance;
+                check_wielded_cockatrice(FALSE, FALSE, !has_stone_res && had_stone_res);
             }
         }
         if ((otmp = uarmc) != 0) 
@@ -1218,8 +1221,11 @@ break_armor()
             if (donning(otmp))
                 cancel_don();
             Your_ex(ATR_NONE, CLR_MSG_WARNING, "armor falls around you!");
+            boolean had_stone_res = Stone_resistance;
             (void) Armor_gone();
             dropxf(otmp);
+            boolean has_stone_res = Stone_resistance;
+            check_wielded_cockatrice(FALSE, FALSE, !has_stone_res && had_stone_res);
         }
         if ((otmp = uarmo) != 0)
         {

@@ -2271,7 +2271,7 @@ uchar* hitres_ptr;
         if (hitres_ptr)
             *hitres_ptr = 1;
         wakeup(mon, TRUE);
-        if (obj->otyp == CORPSE && obj->corpsenm >= LOW_PM && touch_petrifies(&mons[obj->corpsenm]))
+        if (obj->otyp == CORPSE && obj->corpsenm >= LOW_PM && touch_petrifies(&mons[obj->corpsenm]) && !resists_ston(u.ustuck))
         {
             if (is_animal(u.ustuck->data)) 
             {

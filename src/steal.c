@@ -518,11 +518,11 @@ gotobj:
     could_petrify =
         (otmp->otyp == CORPSE && otmp->corpsenm >= LOW_PM && touch_petrifies(&mons[otmp->corpsenm]));
     (void) mpickobj(mtmp, otmp); /* may free otmp */
-
-    if (could_petrify && !(mtmp->worn_item_flags & W_ARMG))
+    if (could_petrify && !resists_ston(mtmp) && !(mtmp->worn_item_flags & W_ARMG))
     {
         start_delayed_petrification(mtmp, FALSE);
     }
+
     if(mtmp->mnum == PM_HARPY)
         standard_hint("You can use a wand of slow monster on the harpy, or a wand of lightning to blind the harpy, and then kill it with ranged weapons. Consider also genociding harpies as early as possible.", &u.uhint.stuff_got_stolen_by_harpy);
     else
