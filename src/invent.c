@@ -5131,7 +5131,7 @@ boolean wornonly;
        if (!classcount)
        {
            add_extended_menu(win, NO_GLYPH, &any,
-               0, 0, iflags.menu_headings, NO_COLOR,
+               0, 0, iflags.menu_headings | ATR_HEADING, NO_COLOR,
                "Favorites",
                MENU_UNSELECTED,
                menu_group_heading_info('\0'));
@@ -5162,7 +5162,7 @@ nextclass:
             if (flags.sortpack && !classcount)
             {
                 add_extended_menu(win, NO_GLYPH, &any,
-                    0, 0, iflags.menu_headings, NO_COLOR,
+                    0, 0, iflags.menu_headings | ATR_HEADING, NO_COLOR,
                          let_to_name(*classlet, FALSE,
                                      (want_reply && iflags.menu_head_objsym)),
                          MENU_UNSELECTED,
@@ -5172,7 +5172,7 @@ nextclass:
             else if (!flags.sortpack && !classcount && favorites_printed)
             {
                 add_extended_menu(win, NO_GLYPH, &any,
-                    0, 0, iflags.menu_headings, NO_COLOR,
+                    0, 0, iflags.menu_headings | ATR_HEADING, NO_COLOR,
                     "Items",
                     MENU_UNSELECTED,
                     menu_group_heading_info('\0'));

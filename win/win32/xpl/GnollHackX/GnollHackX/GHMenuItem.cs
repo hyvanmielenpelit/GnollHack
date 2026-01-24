@@ -419,7 +419,7 @@ namespace GnollHackX
         public string FontFamily {
             get 
             {
-                if (((int)NHAttribute & ((int)MenuItemAttributes.Bold | (int)MenuItemAttributes.Heading | (int)MenuItemAttributes.Title)) != 0)
+                if (((int)NHAttribute & (/* (int)MenuItemAttributes.Bold | */ (int)MenuItemAttributes.Heading | (int)MenuItemAttributes.Title)) != 0)
                 {
                     string res = "Diablo";
                     switch (_menuInfo.Style)

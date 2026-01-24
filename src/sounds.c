@@ -6704,7 +6704,7 @@ struct monst* mtmp;
                     madeheader = TRUE;
                     any = zeroany;
 
-                    add_extended_menu(win, NO_GLYPH, &any, 0, 0, iflags.menu_headings, NO_COLOR,
+                    add_extended_menu(win, NO_GLYPH, &any, 0, 0, iflags.menu_headings | ATR_HEADING, NO_COLOR,
                         get_class_name(oclass), MENU_UNSELECTED, menu_group_heading_info(def_oc_syms[(int)oclass].sym));
                 }
 
@@ -6986,7 +6986,7 @@ struct monst* mtmp;
                     madeheader = TRUE;
                     any = zeroany;
 
-                    add_extended_menu(win, NO_GLYPH, &any, 0, 0, iflags.menu_headings, NO_COLOR,
+                    add_extended_menu(win, NO_GLYPH, &any, 0, 0, iflags.menu_headings | ATR_HEADING, NO_COLOR,
                         get_class_name(oclass), MENU_UNSELECTED, menu_group_heading_info(def_oc_syms[(int)oclass].sym));
                 }
 

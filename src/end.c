@@ -3080,7 +3080,7 @@ boolean ask, isend;
                 if (class_header && mlet != prev_mlet) 
                 {
                     Strcpy(buf, def_monsyms[(int) mlet].name);
-                    putstr(klwin, ask ? ATR_NONE : iflags.menu_headings,
+                    putstr(klwin, ask ? ATR_NONE : iflags.menu_headings | ATR_HEADING,
                            upstart(buf));
                     prev_mlet = mlet;
                 }

@@ -1294,7 +1294,7 @@ doclassdisco()
     ct = 0;
     switch (c) {
     case 'u':
-        putstr(tmpwin, iflags.menu_headings,
+        putstr(tmpwin, iflags.menu_headings | ATR_HEADING,
                upstart(strcpy(buf, unique_items)));
         for (i = 0; i < SIZE(uniq_objs); i++)
             if (objects[uniq_objs[i]].oc_name_known) {
@@ -1314,7 +1314,7 @@ doclassdisco()
     default:
         oclass = def_char_to_objclass(c);
         Sprintf(buf, "Discovered %s", let_to_name(oclass, FALSE, FALSE));
-        putstr(tmpwin, iflags.menu_headings, buf);
+        putstr(tmpwin, iflags.menu_headings | ATR_HEADING, buf);
         for (i = bases[(int) oclass];
              i < NUM_OBJECTS && objects[i].oc_class == oclass; ++i) {
             if ((dis = disco[i]) != 0 && interesting_to_discover(dis)) {

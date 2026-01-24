@@ -5307,7 +5307,7 @@ minimal_enlightenment()
     buf[0] = buf2[0] = '\0';
     tmpwin = create_nhwindow(NHW_MENU);
     start_menu(tmpwin);
-    add_extended_menu(tmpwin, NO_GLYPH, &any, 0, 0, iflags.menu_headings, NO_COLOR,
+    add_extended_menu(tmpwin, NO_GLYPH, &any, 0, 0, iflags.menu_headings | ATR_HEADING, NO_COLOR,
              "Starting", FALSE, menu_heading_info());
 
     /* Starting name, race, role, gender */
@@ -5327,7 +5327,7 @@ minimal_enlightenment()
 
     /* Current name, race, role, gender */
     add_menu(tmpwin, NO_GLYPH, &any, 0, 0, ATR_NONE, NO_COLOR, "", FALSE);
-    add_extended_menu(tmpwin, NO_GLYPH, &any, 0, 0, iflags.menu_headings, NO_COLOR,
+    add_extended_menu(tmpwin, NO_GLYPH, &any, 0, 0, iflags.menu_headings | ATR_HEADING, NO_COLOR,
              "Current", FALSE, menu_heading_info());
     Sprintf(buf, fmtstr, "race", Upolyd ? youmonst.data->mname : urace.noun);
     add_menu(tmpwin, NO_GLYPH, &any, 0, 0, ATR_NONE, NO_COLOR, buf, FALSE);
@@ -5357,7 +5357,7 @@ minimal_enlightenment()
 
     /* Deity list */
     add_menu(tmpwin, NO_GLYPH, &any, 0, 0, ATR_NONE, NO_COLOR, "", FALSE);
-    add_extended_menu(tmpwin, NO_GLYPH, &any, 0, 0, iflags.menu_headings, NO_COLOR,
+    add_extended_menu(tmpwin, NO_GLYPH, &any, 0, 0, iflags.menu_headings | ATR_HEADING, NO_COLOR,
              "Deities", FALSE, menu_heading_info());
     Sprintf(buf2, deity_fmtstr, align_gname(A_CHAOTIC),
             (u.ualignbase[A_ORIGINAL] == u.ualign.type
