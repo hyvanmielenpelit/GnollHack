@@ -5025,8 +5025,8 @@ namespace GnollHackX.Pages.Game
                 int tile_animation_idx = _gnollHackService.GetTileAnimationIndexFromGlyph(cglyph);
                 ctile = _gnollHackService.GetAnimatedTile(ctile, tile_animation_idx, (int)animation_play_types.ANIMATION_PLAY_TYPE_ALWAYS, generalcountervalue, out anim_frame_idx, out main_tile_idx, out mapAnimated, ref autodraw);
                 int sheet_idx = GHApp.TileSheetIdx(ctile);
-                int tile_x = GHApp.TileSheetX(ctile);
-                int tile_y = GHApp.TileSheetY(ctile);
+                int tile_x = GHApp.TileSheetX(ctile, sheet_idx);
+                int tile_y = GHApp.TileSheetY(ctile, sheet_idx);
 
                 tx = (offsetX + usedOffsetX + (loc_is_you ? base_move_offset_x : 0) + width * (float)mapx);
                 ty = (offsetY + usedOffsetY + (loc_is_you ? base_move_offset_y : 0) + scaled_y_height_change + mapFontAscent + height * (float)mapy);
@@ -5084,8 +5084,8 @@ namespace GnollHackX.Pages.Game
                 int mglyph = (int)game_ui_tile_types.ITEM_AUTODRAW_GRAPHICS + GHApp.UITileOff;
                 int mtile = GHApp.Glyph2Tile[mglyph];
                 int m_sheet_idx = GHApp.TileSheetIdx(mtile);
-                int source_x = GHApp.TileSheetX(mtile) + 0;
-                int source_y = GHApp.TileSheetY(mtile) + 64;
+                int source_x = GHApp.TileSheetX(mtile, m_sheet_idx) + 0;
+                int source_y = GHApp.TileSheetY(mtile, m_sheet_idx) + 64;
                 int source_width = 32;
                 int source_height = 32;
                 float target_x = tx + 2.0f * targetscale;
@@ -5117,8 +5117,8 @@ namespace GnollHackX.Pages.Game
                 int tile_animation_idx = _gnollHackService.GetTileAnimationIndexFromGlyph(cglyph);
                 ctile = _gnollHackService.GetAnimatedTile(ctile, tile_animation_idx, (int)animation_play_types.ANIMATION_PLAY_TYPE_ALWAYS, generalcountervalue, out anim_frame_idx, out main_tile_idx, out mapAnimated, ref autodraw);
                 int sheet_idx = GHApp.TileSheetIdx(ctile);
-                int tile_x = GHApp.TileSheetX(ctile);
-                int tile_y = GHApp.TileSheetY(ctile);
+                int tile_x = GHApp.TileSheetX(ctile, sheet_idx);
+                int tile_y = GHApp.TileSheetY(ctile, sheet_idx);
 
                 SKRect targetrect = new SKRect(tx, ty, tx + width, ty + height);
                 SKRect sourcerect = new SKRect(tile_x, tile_y, tile_x + GHConstants.TileWidth, tile_y + GHConstants.TileHeight);
@@ -5143,8 +5143,8 @@ namespace GnollHackX.Pages.Game
                 int tile_animation_idx = _gnollHackService.GetTileAnimationIndexFromGlyph(cglyph);
                 ctile = _gnollHackService.GetAnimatedTile(ctile, tile_animation_idx, (int)animation_play_types.ANIMATION_PLAY_TYPE_ALWAYS, generalcountervalue, out anim_frame_idx, out main_tile_idx, out mapAnimated, ref autodraw);
                 int sheet_idx = GHApp.TileSheetIdx(ctile);
-                int tile_x = GHApp.TileSheetX(ctile);
-                int tile_y = GHApp.TileSheetY(ctile);
+                int tile_x = GHApp.TileSheetX(ctile, sheet_idx);
+                int tile_y = GHApp.TileSheetY(ctile, sheet_idx);
 
                 SKRect targetrect = new SKRect(tx, ty, tx + width, ty + height);
                 SKRect sourcerect = new SKRect(tile_x, tile_y, tile_x + GHConstants.TileWidth, tile_y + GHConstants.TileHeight);
@@ -5195,8 +5195,8 @@ namespace GnollHackX.Pages.Game
                             int mglyph = (int)game_ui_tile_types.STATUS_MARKS + status_mark / GHConstants.MAX_UI_TILE_16_x_16_COMPONENTS + GHApp.UITileOff;
                             int mtile = GHApp.Glyph2Tile[mglyph];
                             int sheet_idx = GHApp.TileSheetIdx(mtile);
-                            int tile_x = GHApp.TileSheetX(mtile);
-                            int tile_y = GHApp.TileSheetY(mtile);
+                            int tile_x = GHApp.TileSheetX(mtile, sheet_idx);
+                            int tile_y = GHApp.TileSheetY(mtile, sheet_idx);
                             int within_tile_x = (status_mark % GHConstants.MAX_UI_TILE_16_x_16_COMPONENTS) % tiles_per_row;
                             int within_tile_y = (status_mark % GHConstants.MAX_UI_TILE_16_x_16_COMPONENTS) / tiles_per_row;
                             int c_x = tile_x + within_tile_x * GHConstants.StatusMarkWidth;
@@ -5247,8 +5247,8 @@ namespace GnollHackX.Pages.Game
                             int mglyph = (int)game_ui_tile_types.CONDITION_MARKS + condition_mark / GHConstants.MAX_UI_TILE_16_x_16_COMPONENTS + GHApp.UITileOff;
                             int mtile = GHApp.Glyph2Tile[mglyph];
                             int sheet_idx = GHApp.TileSheetIdx(mtile);
-                            int tile_x = GHApp.TileSheetX(mtile);
-                            int tile_y = GHApp.TileSheetY(mtile);
+                            int tile_x = GHApp.TileSheetX(mtile, sheet_idx);
+                            int tile_y = GHApp.TileSheetY(mtile, sheet_idx);
                             int within_tile_x = (condition_mark % GHConstants.MAX_UI_TILE_16_x_16_COMPONENTS) % tiles_per_row;
                             int within_tile_y = (condition_mark % GHConstants.MAX_UI_TILE_16_x_16_COMPONENTS) / tiles_per_row;
                             int c_x = tile_x + within_tile_x * GHConstants.StatusMarkWidth;
@@ -5307,8 +5307,8 @@ namespace GnollHackX.Pages.Game
                                 int mglyph = (propidx - 1) / GHConstants.BUFFS_PER_TILE + GHApp.BuffTileOff;
                                 int mtile = GHApp.Glyph2Tile[mglyph];
                                 int sheet_idx = GHApp.TileSheetIdx(mtile);
-                                int tile_x = GHApp.TileSheetX(mtile);
-                                int tile_y = GHApp.TileSheetY(mtile);
+                                int tile_x = GHApp.TileSheetX(mtile, sheet_idx);
+                                int tile_y = GHApp.TileSheetY(mtile, sheet_idx);
 
                                 int buff_mark = (propidx - 1) % GHConstants.BUFFS_PER_TILE;
                                 int within_tile_x = buff_mark % tiles_per_row;
@@ -5355,8 +5355,8 @@ namespace GnollHackX.Pages.Game
                 int mglyph = (int)general_tile_types.GENERAL_TILE_DEATH + GHApp.GeneralTileOff;
                 int mtile = GHApp.Glyph2Tile[mglyph];
                 int sheet_idx = GHApp.TileSheetIdx(mtile);
-                int tile_x = GHApp.TileSheetX(mtile);
-                int tile_y = GHApp.TileSheetY(mtile);
+                int tile_x = GHApp.TileSheetX(mtile, sheet_idx);
+                int tile_y = GHApp.TileSheetY(mtile, sheet_idx);
 
                 SKRect targetrect = new SKRect(tx, ty, tx + width, ty + height);
                 SKRect sourcerect = new SKRect(tile_x, tile_y, tile_x + GHConstants.TileWidth, tile_y + GHConstants.TileHeight);
@@ -5369,8 +5369,8 @@ namespace GnollHackX.Pages.Game
                 int mglyph = Math.Max(0, Math.Min((int)hit_tile_types.MAX_HIT_TILES - 1, (int)hit_text_num)) + GHApp.HitTileOff;
                 int mtile = GHApp.Glyph2Tile[mglyph];
                 int sheet_idx = GHApp.TileSheetIdx(mtile);
-                int tile_x = GHApp.TileSheetX(mtile);
-                int tile_y = GHApp.TileSheetY(mtile);
+                int tile_x = GHApp.TileSheetX(mtile, sheet_idx);
+                int tile_y = GHApp.TileSheetY(mtile, sheet_idx);
 
                 SKRect targetrect = new SKRect(tx, ty, tx + width, ty + height);
                 SKRect sourcerect = new SKRect(tile_x, tile_y, tile_x + GHConstants.TileWidth, tile_y + GHConstants.TileHeight);
@@ -5404,8 +5404,8 @@ namespace GnollHackX.Pages.Game
             }
 
             int sheet_idx = GHApp.TileSheetIdx(ntile);
-            int tile_x = GHApp.TileSheetX(ntile);
-            int tile_y = GHApp.TileSheetY(ntile);
+            int tile_x = GHApp.TileSheetX(ntile, sheet_idx);
+            int tile_y = GHApp.TileSheetY(ntile, sheet_idx);
 
             SKRect sourcerect;
             float scaled_tile_width = width;
@@ -10596,8 +10596,8 @@ namespace GnollHackX.Pages.Game
                                                 int mglyph = (int)game_ui_tile_types.STATUS_MARKS + status_mark / GHConstants.MAX_UI_TILE_16_x_16_COMPONENTS + GHApp.UITileOff;
                                                 int mtile = GHApp.Glyph2Tile[mglyph];
                                                 int sheet_idx = GHApp.TileSheetIdx(mtile);
-                                                int tile_x = GHApp.TileSheetX(mtile);
-                                                int tile_y = GHApp.TileSheetY(mtile);
+                                                int tile_x = GHApp.TileSheetX(mtile, sheet_idx);
+                                                int tile_y = GHApp.TileSheetY(mtile, sheet_idx);
                                                 int within_tile_x = (status_mark % GHConstants.MAX_UI_TILE_16_x_16_COMPONENTS) % tiles_per_row;
                                                 int within_tile_y = (status_mark % GHConstants.MAX_UI_TILE_16_x_16_COMPONENTS) / tiles_per_row;
                                                 int c_x = tile_x + within_tile_x * GHConstants.StatusMarkWidth;
@@ -10639,8 +10639,8 @@ namespace GnollHackX.Pages.Game
                                                 int mglyph = (int)game_ui_tile_types.CONDITION_MARKS + condition_mark / GHConstants.MAX_UI_TILE_16_x_16_COMPONENTS + GHApp.UITileOff;
                                                 int mtile = GHApp.Glyph2Tile[mglyph];
                                                 int sheet_idx = GHApp.TileSheetIdx(mtile);
-                                                int tile_x = GHApp.TileSheetX(mtile);
-                                                int tile_y = GHApp.TileSheetY(mtile);
+                                                int tile_x = GHApp.TileSheetX(mtile, sheet_idx);
+                                                int tile_y = GHApp.TileSheetY(mtile, sheet_idx);
                                                 int within_tile_x = (condition_mark % GHConstants.MAX_UI_TILE_16_x_16_COMPONENTS) % tiles_per_row;
                                                 int within_tile_y = (condition_mark % GHConstants.MAX_UI_TILE_16_x_16_COMPONENTS) / tiles_per_row;
                                                 int c_x = tile_x + within_tile_x * GHConstants.StatusMarkWidth;
@@ -10689,8 +10689,8 @@ namespace GnollHackX.Pages.Game
                                                     int mglyph = (propidx - 1) / GHConstants.BUFFS_PER_TILE + GHApp.BuffTileOff;
                                                     int mtile = GHApp.Glyph2Tile[mglyph];
                                                     int sheet_idx = GHApp.TileSheetIdx(mtile);
-                                                    int tile_x = GHApp.TileSheetX(mtile);
-                                                    int tile_y = GHApp.TileSheetY(mtile);
+                                                    int tile_x = GHApp.TileSheetX(mtile, sheet_idx);
+                                                    int tile_y = GHApp.TileSheetY(mtile, sheet_idx);
 
                                                     int buff_mark = (propidx - 1) % GHConstants.BUFFS_PER_TILE;
                                                     int within_tile_x = buff_mark % tiles_per_row;
@@ -11203,8 +11203,8 @@ namespace GnollHackX.Pages.Game
                                                                 int mglyph = (int)game_ui_tile_types.STATUS_MARKS + status_mark / GHConstants.MAX_UI_TILE_16_x_16_COMPONENTS + GHApp.UITileOff;
                                                                 int mtile = GHApp.Glyph2Tile[mglyph];
                                                                 int sheet_idx = GHApp.TileSheetIdx(mtile);
-                                                                int tile_x = GHApp.TileSheetX(mtile);
-                                                                int tile_y = GHApp.TileSheetY(mtile);
+                                                                int tile_x = GHApp.TileSheetX(mtile, sheet_idx);
+                                                                int tile_y = GHApp.TileSheetY(mtile, sheet_idx);
                                                                 int within_tile_x = (status_mark % GHConstants.MAX_UI_TILE_16_x_16_COMPONENTS) % tiles_per_row;
                                                                 int within_tile_y = (status_mark % GHConstants.MAX_UI_TILE_16_x_16_COMPONENTS) / tiles_per_row;
                                                                 int c_x = tile_x + within_tile_x * GHConstants.StatusMarkWidth;
@@ -11249,8 +11249,8 @@ namespace GnollHackX.Pages.Game
                                                                 int mglyph = (int)game_ui_tile_types.CONDITION_MARKS + condition_mark / GHConstants.MAX_UI_TILE_16_x_16_COMPONENTS + GHApp.UITileOff;
                                                                 int mtile = GHApp.Glyph2Tile[mglyph];
                                                                 int sheet_idx = GHApp.TileSheetIdx(mtile);
-                                                                int tile_x = GHApp.TileSheetX(mtile);
-                                                                int tile_y = GHApp.TileSheetY(mtile);
+                                                                int tile_x = GHApp.TileSheetX(mtile, sheet_idx);
+                                                                int tile_y = GHApp.TileSheetY(mtile, sheet_idx);
                                                                 int within_tile_x = (condition_mark % GHConstants.MAX_UI_TILE_16_x_16_COMPONENTS) % tiles_per_row;
                                                                 int within_tile_y = (condition_mark % GHConstants.MAX_UI_TILE_16_x_16_COMPONENTS) / tiles_per_row;
                                                                 int c_x = tile_x + within_tile_x * GHConstants.StatusMarkWidth;
@@ -11300,8 +11300,8 @@ namespace GnollHackX.Pages.Game
                                                                     int mglyph = (propidx - 1) / GHConstants.BUFFS_PER_TILE + GHApp.BuffTileOff;
                                                                     int mtile = GHApp.Glyph2Tile[mglyph];
                                                                     int sheet_idx = GHApp.TileSheetIdx(mtile);
-                                                                    int tile_x = GHApp.TileSheetX(mtile);
-                                                                    int tile_y = GHApp.TileSheetY(mtile);
+                                                                    int tile_x = GHApp.TileSheetX(mtile, sheet_idx);
+                                                                    int tile_y = GHApp.TileSheetY(mtile, sheet_idx);
 
                                                                     int buff_mark = (propidx - 1) % GHConstants.BUFFS_PER_TILE;
                                                                     int within_tile_x = buff_mark % tiles_per_row;
@@ -12346,8 +12346,8 @@ namespace GnollHackX.Pages.Game
                             int mglyph = (int)game_ui_tile_types.STATUS_MARKS + status_mark / GHConstants.MAX_UI_TILE_16_x_16_COMPONENTS + GHApp.UITileOff;
                             int mtile = GHApp.Glyph2Tile[mglyph];
                             int sheet_idx = GHApp.TileSheetIdx(mtile);
-                            int tile_x = GHApp.TileSheetX(mtile);
-                            int tile_y = GHApp.TileSheetY(mtile);
+                            int tile_x = GHApp.TileSheetX(mtile, sheet_idx);
+                            int tile_y = GHApp.TileSheetY(mtile, sheet_idx);
                             int within_tile_x = (status_mark % GHConstants.MAX_UI_TILE_16_x_16_COMPONENTS) % tiles_per_row;
                             int within_tile_y = (status_mark % GHConstants.MAX_UI_TILE_16_x_16_COMPONENTS) / tiles_per_row;
                             int c_x = tile_x + within_tile_x * GHConstants.StatusMarkWidth;
@@ -12392,8 +12392,8 @@ namespace GnollHackX.Pages.Game
                             int mglyph = (int)game_ui_tile_types.CONDITION_MARKS + condition_mark / GHConstants.MAX_UI_TILE_16_x_16_COMPONENTS + GHApp.UITileOff;
                             int mtile = GHApp.Glyph2Tile[mglyph];
                             int sheet_idx = GHApp.TileSheetIdx(mtile);
-                            int tile_x = GHApp.TileSheetX(mtile);
-                            int tile_y = GHApp.TileSheetY(mtile);
+                            int tile_x = GHApp.TileSheetX(mtile, sheet_idx);
+                            int tile_y = GHApp.TileSheetY(mtile, sheet_idx);
                             int within_tile_x = (condition_mark % GHConstants.MAX_UI_TILE_16_x_16_COMPONENTS) % tiles_per_row;
                             int within_tile_y = (condition_mark % GHConstants.MAX_UI_TILE_16_x_16_COMPONENTS) / tiles_per_row;
                             int c_x = tile_x + within_tile_x * GHConstants.StatusMarkWidth;
@@ -12448,8 +12448,8 @@ namespace GnollHackX.Pages.Game
                                 int mglyph = (propidx - 1) / GHConstants.BUFFS_PER_TILE + GHApp.BuffTileOff;
                                 int mtile = GHApp.Glyph2Tile[mglyph];
                                 int sheet_idx = GHApp.TileSheetIdx(mtile);
-                                int tile_x = GHApp.TileSheetX(mtile);
-                                int tile_y = GHApp.TileSheetY(mtile);
+                                int tile_x = GHApp.TileSheetX(mtile, sheet_idx);
+                                int tile_y = GHApp.TileSheetY(mtile, sheet_idx);
 
                                 int buff_mark = (propidx - 1) % GHConstants.BUFFS_PER_TILE;
                                 int within_tile_x = buff_mark % tiles_per_row;
@@ -12702,8 +12702,8 @@ namespace GnollHackX.Pages.Game
                                     int source_glyph = GHApp._autodraws[autodraw].source_glyph;
                                     int atile = GHApp.Glyph2Tile[source_glyph];
                                     int a_sheet_idx = GHApp.TileSheetIdx(atile);
-                                    int at_x = GHApp.TileSheetX(atile);
-                                    int at_y = GHApp.TileSheetY(atile);
+                                    int at_x = GHApp.TileSheetX(atile, a_sheet_idx);
+                                    int at_y = GHApp.TileSheetY(atile, a_sheet_idx);
 
                                     SKRect source_rt = new SKRect();
                                     switch (dir)
@@ -12714,8 +12714,8 @@ namespace GnollHackX.Pages.Game
                                                 source_glyph = GHApp._autodraws[autodraw].source_glyph2; /* S_vwall */
                                                 atile = GHApp.Glyph2Tile[source_glyph];
                                                 a_sheet_idx = GHApp.TileSheetIdx(atile);
-                                                at_x = GHApp.TileSheetX(atile);
-                                                at_y = GHApp.TileSheetY(atile);
+                                                at_x = GHApp.TileSheetX(atile, a_sheet_idx);
+                                                at_y = GHApp.TileSheetY(atile, a_sheet_idx);
                                             }
                                             source_rt.Left = at_x;
                                             source_rt.Right = source_rt.Left + 12;
@@ -12737,8 +12737,8 @@ namespace GnollHackX.Pages.Game
                                                 source_glyph = GHApp._autodraws[autodraw].source_glyph2; /* S_vwall */
                                                 atile = GHApp.Glyph2Tile[source_glyph];
                                                 a_sheet_idx = GHApp.TileSheetIdx(atile);
-                                                at_x = GHApp.TileSheetX(atile);
-                                                at_y = GHApp.TileSheetY(atile);
+                                                at_x = GHApp.TileSheetX(atile, a_sheet_idx);
+                                                at_y = GHApp.TileSheetY(atile, a_sheet_idx);
                                             }
                                             source_rt.Right = at_x + GHConstants.TileWidth;
                                             source_rt.Left = source_rt.Right - 12;
@@ -12760,8 +12760,8 @@ namespace GnollHackX.Pages.Game
                                                 source_glyph = GHApp._autodraws[autodraw].source_glyph3; /* S_hwall */
                                                 atile = GHApp.Glyph2Tile[source_glyph];
                                                 a_sheet_idx = GHApp.TileSheetIdx(atile);
-                                                at_x = GHApp.TileSheetX(atile);
-                                                at_y = GHApp.TileSheetY(atile);
+                                                at_x = GHApp.TileSheetX(atile, a_sheet_idx);
+                                                at_y = GHApp.TileSheetY(atile, a_sheet_idx);
                                             }
                                             if (corner == 0)
                                             {
@@ -12783,8 +12783,8 @@ namespace GnollHackX.Pages.Game
                                                 source_glyph = GHApp._autodraws[autodraw].source_glyph3; /* S_hwall */
                                                 atile = GHApp.Glyph2Tile[source_glyph];
                                                 a_sheet_idx = GHApp.TileSheetIdx(atile);
-                                                at_x = GHApp.TileSheetX(atile);
-                                                at_y = GHApp.TileSheetY(atile);
+                                                at_x = GHApp.TileSheetX(atile, a_sheet_idx);
+                                                at_y = GHApp.TileSheetY(atile, a_sheet_idx);
                                             }
                                             if (corner == 0)
                                             {
@@ -12921,8 +12921,8 @@ namespace GnollHackX.Pages.Game
 
                             int atile = GHApp.Glyph2Tile[source_glyph];
                             int a_sheet_idx = GHApp.TileSheetIdx(atile);
-                            int at_x = GHApp.TileSheetX(atile);
-                            int at_y = GHApp.TileSheetY(atile);
+                            int at_x = GHApp.TileSheetX(atile, a_sheet_idx);
+                            int at_y = GHApp.TileSheetY(atile, a_sheet_idx);
 
                             int worm_source_x = at_x;
                             int worm_source_y = at_y;
@@ -12998,8 +12998,8 @@ namespace GnollHackX.Pages.Game
                             int source_glyph = GHApp._autodraws[autodraw].source_glyph;
                             int atile = GHApp.Glyph2Tile[source_glyph];
                             int a_sheet_idx = GHApp.TileSheetIdx(atile);
-                            int at_x = GHApp.TileSheetX(atile);
-                            int at_y = GHApp.TileSheetY(atile);
+                            int at_x = GHApp.TileSheetX(atile, a_sheet_idx);
+                            int at_y = GHApp.TileSheetY(atile, a_sheet_idx);
 
                             SKRect source_rt = new SKRect();
                             source_rt.Left = at_x + src_x;
@@ -13066,8 +13066,8 @@ namespace GnollHackX.Pages.Game
 
                         int atile = GHApp.Glyph2Tile[source_glyph];
                         int a_sheet_idx = GHApp.TileSheetIdx(atile);
-                        int at_x = GHApp.TileSheetX(atile);
-                        int at_y = GHApp.TileSheetY(atile);
+                        int at_x = GHApp.TileSheetX(atile, a_sheet_idx);
+                        int at_y = GHApp.TileSheetY(atile, a_sheet_idx);
 
                         SKRect source_rt = new SKRect();
                         source_rt.Left = at_x + src_x;
@@ -13143,8 +13143,8 @@ namespace GnollHackX.Pages.Game
                         int source_glyph = GHApp._autodraws[autodraw].source_glyph;
                         int atile = GHApp.Glyph2Tile[source_glyph];
                         int a_sheet_idx = GHApp.TileSheetIdx(atile);
-                        int at_x = GHApp.TileSheetX(atile);
-                        int at_y = GHApp.TileSheetY(atile);
+                        int at_x = GHApp.TileSheetX(atile, a_sheet_idx);
+                        int at_y = GHApp.TileSheetY(atile, a_sheet_idx);
 
                         SKRect source_rt = new SKRect();
                         source_rt.Left = at_x + src_x;
@@ -13231,8 +13231,8 @@ namespace GnollHackX.Pages.Game
                         int source_glyph = GHApp._autodraws[autodraw].source_glyph;
                         int atile = GHApp.Glyph2Tile[source_glyph];
                         int a_sheet_idx = GHApp.TileSheetIdx(atile);
-                        int at_x = GHApp.TileSheetX(atile);
-                        int at_y = GHApp.TileSheetY(atile);
+                        int at_x = GHApp.TileSheetX(atile, a_sheet_idx);
+                        int at_y = GHApp.TileSheetY(atile, a_sheet_idx);
 
                         SKRect source_rt = new SKRect();
                         source_rt.Left = at_x + src_x;
@@ -13281,14 +13281,14 @@ namespace GnollHackX.Pages.Game
                         int source_glyph = GHApp._autodraws[autodraw].source_glyph;
                         int atile = GHApp.Glyph2Tile[source_glyph];
                         int a_sheet_idx = GHApp.TileSheetIdx(atile);
-                        int at_x = GHApp.TileSheetX(atile);
-                        int at_y = GHApp.TileSheetY(atile);
+                        int at_x = GHApp.TileSheetX(atile, a_sheet_idx);
+                        int at_y = GHApp.TileSheetY(atile, a_sheet_idx);
 
                         int source_glyph2 = GHApp._autodraws[autodraw].source_glyph2;
                         int atile2 = GHApp.Glyph2Tile[source_glyph2];
                         int a2_sheet_idx = GHApp.TileSheetIdx(atile2);
-                        int a2t_x = GHApp.TileSheetX(atile2);
-                        int a2t_y = GHApp.TileSheetY(atile2);
+                        int a2t_x = GHApp.TileSheetX(atile2, a2_sheet_idx);
+                        int a2t_y = GHApp.TileSheetY(atile2, a2_sheet_idx);
 
                         source_rt.Left = at_x;
                         source_rt.Right = source_rt.Left + jar_width;
@@ -13807,8 +13807,8 @@ namespace GnollHackX.Pages.Game
                     int source_glyph = src_tile + GHApp.UITileOff;
                     int atile = GHApp.Glyph2Tile[source_glyph];
                     int a_sheet_idx = GHApp.TileSheetIdx(atile);
-                    int at_x = GHApp.TileSheetX(atile);
-                    int at_y = GHApp.TileSheetY(atile);
+                    int at_x = GHApp.TileSheetX(atile, a_sheet_idx);
+                    int at_y = GHApp.TileSheetY(atile, a_sheet_idx);
 
                     SKRect source_rt = new SKRect();
                     source_rt.Left = at_x + src_x;
@@ -13865,8 +13865,8 @@ namespace GnollHackX.Pages.Game
                     int dir_idx = GHApp._autodraws[autodraw].flags;
                     int atile = GHApp.Glyph2Tile[source_glyph];
                     int a_sheet_idx = GHApp.TileSheetIdx(atile);
-                    int at_x = GHApp.TileSheetX(atile);
-                    int at_y = GHApp.TileSheetY(atile);
+                    int at_x = GHApp.TileSheetX(atile, a_sheet_idx);
+                    int at_y = GHApp.TileSheetY(atile, a_sheet_idx);
                     float adscale = scale * targetscale;
 
                     for (int n = 0; n < 2; n++)
@@ -17935,8 +17935,8 @@ namespace GnollHackX.Pages.Game
                     int mglyph = (int)game_ui_tile_types.STATUS_MARKS + status_mark / GHConstants.MAX_UI_TILE_16_x_16_COMPONENTS + GHApp.UITileOff;
                     int mtile = GHApp.Glyph2Tile[mglyph];
                     int sheet_idx = GHApp.TileSheetIdx(mtile);
-                    int tile_x = GHApp.TileSheetX(mtile);
-                    int tile_y = GHApp.TileSheetY(mtile);
+                    int tile_x = GHApp.TileSheetX(mtile, sheet_idx);
+                    int tile_y = GHApp.TileSheetY(mtile, sheet_idx);
                     int within_tile_x = (status_mark % GHConstants.MAX_UI_TILE_16_x_16_COMPONENTS) % tiles_per_row;
                     int within_tile_y = (status_mark % GHConstants.MAX_UI_TILE_16_x_16_COMPONENTS) / tiles_per_row;
                     int c_x = tile_x + within_tile_x * GHConstants.StatusMarkWidth;
@@ -17965,8 +17965,8 @@ namespace GnollHackX.Pages.Game
                     int mglyph = (int)game_ui_tile_types.CONDITION_MARKS + condition_mark / GHConstants.MAX_UI_TILE_16_x_16_COMPONENTS + GHApp.UITileOff;
                     int mtile = GHApp.Glyph2Tile[mglyph];
                     int sheet_idx = GHApp.TileSheetIdx(mtile);
-                    int tile_x = GHApp.TileSheetX(mtile);
-                    int tile_y = GHApp.TileSheetY(mtile);
+                    int tile_x = GHApp.TileSheetX(mtile, sheet_idx);
+                    int tile_y = GHApp.TileSheetY(mtile, sheet_idx);
                     int within_tile_x = (condition_mark % GHConstants.MAX_UI_TILE_16_x_16_COMPONENTS) % tiles_per_row;
                     int within_tile_y = (condition_mark % GHConstants.MAX_UI_TILE_16_x_16_COMPONENTS) / tiles_per_row;
                     int c_x = tile_x + within_tile_x * GHConstants.StatusMarkWidth;
@@ -17997,8 +17997,8 @@ namespace GnollHackX.Pages.Game
                         int mglyph = (propidx - 1) / GHConstants.BUFFS_PER_TILE + GHApp.BuffTileOff;
                         int mtile = GHApp.Glyph2Tile[mglyph];
                         int sheet_idx = GHApp.TileSheetIdx(mtile);
-                        int tile_x = GHApp.TileSheetX(mtile);
-                        int tile_y = GHApp.TileSheetY(mtile);
+                        int tile_x = GHApp.TileSheetX(mtile, sheet_idx);
+                        int tile_y = GHApp.TileSheetY(mtile, sheet_idx);
 
                         int buff_mark = (propidx - 1) % GHConstants.BUFFS_PER_TILE;
                         int within_tile_x = buff_mark % tiles_per_row;

@@ -50,6 +50,7 @@ using Azure;
 using System.Text.RegularExpressions;
 using System.ComponentModel;
 using System.Runtime.InteropServices;
+using System.Runtime.CompilerServices;
 
 namespace GnollHackX
 {
@@ -3215,18 +3216,22 @@ namespace GnollHackX
         public static int WizButtonCount { get { return Interlocked.CompareExchange(ref _wizBtnCount, 0, 0); } set { Interlocked.Exchange(ref _wizBtnCount, value); } }
         public static List<GHCommandButtonRect> _moreBtnList = new List<GHCommandButtonRect>(GHConstants.DefaultMoreButtonListSize);
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int TileSheetIdx(int ntile)
         {
             return (Math.Min(UsedTileSheets - 1, Math.Max(0, (ntile / GHConstants.NumberOfTilesPerSheet))));
         }
 
-        public static int TileSheetX(int ntile)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int TileSheetX(int ntile, int tileSheetIdx)
         {
-            return (((ntile % GHConstants.NumberOfTilesPerSheet) % _tilesPerRow[TileSheetIdx(ntile)]) * GHConstants.TileWidth);
+            return (((ntile % GHConstants.NumberOfTilesPerSheet) % _tilesPerRow[tileSheetIdx]) * GHConstants.TileWidth);
         }
-        public static int TileSheetY(int ntile)
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int TileSheetY(int ntile, int tileSheetIdx)
         {
-            return (((ntile % GHConstants.NumberOfTilesPerSheet) / _tilesPerRow[TileSheetIdx(ntile)]) * GHConstants.TileHeight);
+            return (((ntile % GHConstants.NumberOfTilesPerSheet) / _tilesPerRow[tileSheetIdx]) * GHConstants.TileHeight);
         }
 
         public static List<SelectableShortcutButton> GetSimpleShortcutButtonsToAllocate()
