@@ -1955,6 +1955,15 @@ namespace GnollHackX
                         picklist[2 * i] = _ghWindows[winid].SelectedMenuItems[i].Identifier;
                         picklist[2 * i + 1] = (long)_ghWindows[winid].SelectedMenuItems[i].Count;
                     }
+                    if (cnt == 1)
+                    {
+                        if (!string.IsNullOrEmpty(_ghWindows[winid].SelectedMenuItems[0].Text))
+                            GHApp.AddSentryBreadcrumb("SelectMenu: " + _ghWindows[winid].SelectedMenuItems[0].Text, GHConstants.SentryGnollHackCallbackCategoryName);
+                        else
+                            GHApp.AddSentryBreadcrumb("SelectMenu: 1 item selected, no text", GHConstants.SentryGnollHackCallbackCategoryName);
+                    }
+                    else
+                        GHApp.AddSentryBreadcrumb("SelectMenu: " + cnt + " items selected", GHConstants.SentryGnollHackCallbackCategoryName);
                 }
                 long i64var = 0;
                 int size = (picklist == null ? 0 : picklist.Length);
