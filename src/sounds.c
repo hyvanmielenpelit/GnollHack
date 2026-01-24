@@ -5593,7 +5593,14 @@ struct monst* mtmp;
                 if (otmp->owornmask & (W_ARMOR | W_ACCESSORY))
                 {
                     play_sfx_sound(SFX_GENERAL_CANNOT);
-                    Sprintf(pbuf, "You cannot give %s to %s. You are wearing it.", doname(otmp), noittame_mon_nam(mtmp));
+                    Sprintf(pbuf, "You cannot give %s to %s; you are wearing it.", thecxname(otmp), noittame_mon_nam(mtmp));
+                    pline_ex1_popup(ATR_NONE, CLR_MSG_FAIL, pbuf, "Cannot Give Item", TRUE);
+                }
+                else if ((otmp->owornmask & (W_BALL | W_CHAIN)) != 0 || otmp == uball || otmp == uchain)
+                {
+                    play_sfx_sound(SFX_GENERAL_CANNOT);
+                    Sprintf(pbuf, "You cannot give %s to %s; it is %s to you.", thecxname(otmp), noittame_mon_nam(mtmp),
+                        (otmp->owornmask & W_CHAIN) != 0 || otmp == uchain ? "attached": "chained");
                     pline_ex1_popup(ATR_NONE, CLR_MSG_FAIL, pbuf, "Cannot Give Item", TRUE);
                 }
                 else if (carryamt == 0 || carryamt < otmp->quan)
@@ -6242,6 +6249,8 @@ struct obj* obj;
     if (!obj)
         return 0;
     if (!canletgo(obj, "give"))
+        return 0;
+    if (obj == uball || obj == uchain) /* Cannot be given even though can be let go */
         return 0;
     if (obj == uwep) 
     {
