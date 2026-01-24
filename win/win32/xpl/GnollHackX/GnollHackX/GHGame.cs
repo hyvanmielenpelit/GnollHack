@@ -1903,6 +1903,19 @@ namespace GnollHackX
             return cnt;
         }
 
+        public void AddSelectMenuBreadcrumb(int cnt, string text)
+        {
+            if (cnt == 1)
+            {
+                if (!string.IsNullOrEmpty(text))
+                    GHApp.AddSentryBreadcrumb("SelectMenu: " + text, GHConstants.SentryGnollHackCallbackCategoryName);
+                else
+                    GHApp.AddSentryBreadcrumb("SelectMenu: 1 item selected, no text", GHConstants.SentryGnollHackCallbackCategoryName);
+            }
+            else
+                GHApp.AddSentryBreadcrumb("SelectMenu: " + cnt + " items selected", GHConstants.SentryGnollHackCallbackCategoryName);
+        }
+
         public int ClientCallback_SelectMenu(int winid, int how, out IntPtr picklistptr, out int listsize)
         {
             GHApp.DebugWriteProfilingStopwatchTimeAndStart("SelectMenu");
@@ -1955,15 +1968,7 @@ namespace GnollHackX
                         picklist[2 * i] = _ghWindows[winid].SelectedMenuItems[i].Identifier;
                         picklist[2 * i + 1] = (long)_ghWindows[winid].SelectedMenuItems[i].Count;
                     }
-                    if (cnt == 1)
-                    {
-                        if (!string.IsNullOrEmpty(_ghWindows[winid].SelectedMenuItems[0].Text))
-                            GHApp.AddSentryBreadcrumb("SelectMenu: " + _ghWindows[winid].SelectedMenuItems[0].Text, GHConstants.SentryGnollHackCallbackCategoryName);
-                        else
-                            GHApp.AddSentryBreadcrumb("SelectMenu: 1 item selected, no text", GHConstants.SentryGnollHackCallbackCategoryName);
-                    }
-                    else
-                        GHApp.AddSentryBreadcrumb("SelectMenu: " + cnt + " items selected", GHConstants.SentryGnollHackCallbackCategoryName);
+                    AddSelectMenuBreadcrumb(cnt, _ghWindows[winid].SelectedMenuItems[0].Text);
                 }
                 long i64var = 0;
                 int size = (picklist == null ? 0 : picklist.Length);
