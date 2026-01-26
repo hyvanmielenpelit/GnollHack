@@ -4459,7 +4459,7 @@ SPELL("mass conflict","odious", None, None, "Causes all monsters to attack each 
     9, 100, A_MAX_INT_CHA, 0, 0, 100, 0, 1, NODIR, CONFLICT, 0, 0, 0, 0, 3, 10, 50,
     S1_NO_SOMATIC_COMPONENT | S1_FLAGS_EFFECT_USES_SAVING_THROW_VS_WIS, S2_NONE, ALL_TARGETS, AD_NONE, CLR_BLACK, OBJECT_SOUNDSET_SPELLBOOK,
     O1_NONE, O2_NONE, O3_NONE, O4_VERY_RARE, O5_NONE, O6_NONE),
-SPELL("mirror image","nonsensical", None, None, "A displaced mirror image appears beside the caster",
+SPELL("mirror image","nonsensical", None, None, "A displaced mirror image appears beside the caster, causing enemies to sometimes attack the wrong square",
     P_ENCHANTMENT_SPELL,4, 3, 0, 
     1, 6, A_MAX_INT_CHA, 0, 0, 100, 0, 1, NODIR, DISPLACED, 0, 0, 0, 0, 6, 10, 180,
     S1_NO_SOMATIC_COMPONENT, S2_NONE, ALL_TARGETS, AD_NONE, HI_ZAP, OBJECT_SOUNDSET_SPELLBOOK,
