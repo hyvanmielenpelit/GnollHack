@@ -351,7 +351,7 @@ docharacterstatistics(VOID_ARGS)
     //putstr(datawin, ATR_HALF_SIZE, buf);
 
     /* Current rates */
-    Sprintf(buf, "Current rates:");
+    Sprintf(buf, "Current known rates:");
     putstr(datawin, ATR_HEADING, buf);
 
     /* Nutrition consumption */
