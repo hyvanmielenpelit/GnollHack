@@ -216,7 +216,8 @@ boolean clumsy;
     if (silverhit)
         pline_ex(ATR_NONE, CLR_MSG_MYSTICAL, "Your silver boots sear %s flesh!", s_suffix(mon_nam(mon)));
 
-    if (!DEADMONSTER(mon))
+    boolean was_alive = !DEADMONSTER(mon);
+    if (was_alive)
     {
         /* squeeze some guilt feelings... */
         if (mon->mtame)
@@ -282,9 +283,10 @@ boolean clumsy;
             }
         }
     }
+    boolean is_alive = !DEADMONSTER(mon);
 
     (void) passive(mon, uarmf, TRUE, !DEADMONSTER(mon), AT_KICK, FALSE);
-    if (DEADMONSTER(mon) && !trapkilled)
+    if (!was_alive && !is_alive && !trapkilled)
         killed(mon);
 
     use_skill(P_MARTIAL_ARTS, 1);
@@ -401,7 +403,6 @@ xchar x, y;
                 (void) passive(mon, uarmf, FALSE, 1, AT_KICK, FALSE);
             }
             update_u_action_revert(ACTION_TILE_NO_ACTION);
-
         }
         return;
     }
