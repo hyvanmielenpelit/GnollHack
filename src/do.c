@@ -359,7 +359,7 @@ docharacterstatistics(VOID_ARGS)
     putstr(datawin, ATR_INDENT_AT_COLON, buf);
 
     /* Regeneration */
-    Sprintf(buf, " HP Regeneration:   %.2f / round", calculate_hp_regeneration(known_props));
+    Sprintf(buf, " HP regeneration:   %.2f / round", calculate_hp_regeneration(known_props));
     putstr(datawin, ATR_INDENT_AT_COLON, buf);
 
     /* Mana regeneration */
