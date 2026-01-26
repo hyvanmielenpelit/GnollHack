@@ -260,7 +260,8 @@ docharacterstatistics(VOID_ARGS)
     }
 
 
-
+    boolean known_props[MAX_PROPS] = { 0 };
+    
     /* Current intrinsics */
     Sprintf(buf, "Intrinsic and known extrinsic abilities:");
     putstr(datawin, ATR_HEADING, buf);
@@ -280,6 +281,7 @@ docharacterstatistics(VOID_ARGS)
         if (innate_intrinsic || obj || (temporary_intrinsic && !is_recurring))
         {
             intrinsic_count++;
+            known_props[i] = TRUE;
 
             char dbuf2[BUFSZ];
             char dbuf3[BUFSZ];
@@ -343,6 +345,27 @@ docharacterstatistics(VOID_ARGS)
         Sprintf(buf, " (None)");
         putstr(datawin, 0, buf);
     }
+
+    ///* Empty line, half size since the next line is a heading with its own margin */
+    //Strcpy(buf, " ");
+    //putstr(datawin, ATR_HALF_SIZE, buf);
+
+    /* Current rates */
+    Sprintf(buf, "Current rates:");
+    putstr(datawin, ATR_HEADING, buf);
+
+    /* Nutrition consumption */
+    Sprintf(buf, " Nutrition usage:   %.2f / round", calchungry(known_props));
+    putstr(datawin, ATR_INDENT_AT_COLON, buf);
+
+    /* Regeneration */
+    Sprintf(buf, " HP Regeneration:   %.2f / round", calculate_hp_regeneration(known_props));
+    putstr(datawin, ATR_INDENT_AT_COLON, buf);
+
+    /* Mana regeneration */
+    Sprintf(buf, " Mana regeneration: %.2f / round", calculate_mana_regeneration(known_props));
+    putstr(datawin, ATR_INDENT_AT_COLON, buf);
+
 
     /* Level-up intrinsics */
     for(i = 1; i <= 2; i++)

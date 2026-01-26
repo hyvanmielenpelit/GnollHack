@@ -4087,6 +4087,62 @@ bite()
     return 0;
 }
 
+/* calculate the nutrition consumption rate */
+double
+calchungry(known_props)
+boolean* known_props;
+{
+    if (!known_props)
+        return 0.0;
+
+    double res = 0.0;
+    if (!is_non_eater(youmonst.data) && (!known_props[SLOW_DIGESTION] || !Slow_digestion))
+    {
+        if (known_props[HALF_SLOW_DIGESTION] && Half_slow_digestion)
+        {
+            res = 0.5;
+        }
+        else
+        {
+            res = 1;
+        }
+        if (Unaware)
+            res /= 10;
+    }
+
+    if (known_props[HUNGER] && Hunger)
+        res += 1;
+
+    if (known_props[REGENERATION] && ((HRegeneration & ~FROM_FORM) || (ERegeneration & ~(W_ARTIFACT_INVOKED | W_WEP))))
+        res += 0.5;
+    if (near_capacity() > SLT_ENCUMBER)
+        res += 0.5;
+    if (known_props[CONFLICT] && (HConflict || (EConflict & (~W_ARTIFACT_INVOKED))))
+        res += 0.5;
+
+    if (umisc && objects[umisc->otyp].oc_name_known && obj_consumes_nutrition_every_20_rounds(umisc))
+        res += 0.05;
+    if (uleft && objects[uleft->otyp].oc_name_known && objects[uleft->otyp].oc_magic && (uleft->enchantment || !objects[uleft->otyp].oc_enchantable))
+        res += 0.05;
+    if (umisc2 && objects[umisc2->otyp].oc_name_known && obj_consumes_nutrition_every_20_rounds(umisc2))
+        res += 0.05;
+    if (uamul && objects[uamul->otyp].oc_name_known && objects[uamul->otyp].oc_magic)
+        res += 0.05;
+    if (umisc3 && objects[umisc3->otyp].oc_name_known && obj_consumes_nutrition_every_20_rounds(umisc3))
+        res += 0.05;
+    if (uright && objects[uright->otyp].oc_name_known && objects[uright->otyp].oc_magic && (uright->enchantment || !objects[uright->otyp].oc_enchantable))
+        res += 0.05;
+    if (umisc4 && objects[umisc4->otyp].oc_name_known && obj_consumes_nutrition_every_20_rounds(umisc4))
+        res += 0.05;
+    if (objects[AMULET_OF_YENDOR].oc_name_known && u.uhave.amulet)
+        res += 0.05;
+    if (umisc5 && objects[umisc5->otyp].oc_name_known && obj_consumes_nutrition_every_20_rounds(umisc5))
+        res += 0.05;
+
+    return res;
+}
+
+
 /* as time goes by - called by moveloop(every move) & domove(melee attack) */
 void
 gethungry()

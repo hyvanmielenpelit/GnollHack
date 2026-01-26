@@ -53,6 +53,8 @@ E void NDECL(reset_all_object_origin_coordinates);
 E void NDECL(lock_thread_lock);
 E void NDECL(unlock_thread_lock);
 E void NDECL(reset_allmain);
+E double FDECL(calculate_hp_regeneration, (boolean*));
+E double FDECL(calculate_mana_regeneration, (boolean*));
 
 /* ### animation.c ### */
 
@@ -1062,6 +1064,7 @@ E int NDECL(Hear_again);
 E void NDECL(reset_eat);
 E int NDECL(doeat);
 E int FDECL(use_tin_opener, (struct obj *));
+E double FDECL(calchungry, (boolean*));
 E void NDECL(gethungry);
 E void FDECL(morehungry, (int));
 E void FDECL(lesshungry, (int));

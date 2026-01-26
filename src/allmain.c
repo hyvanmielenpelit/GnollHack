@@ -17,7 +17,9 @@
 #ifdef POSITIONBAR
 STATIC_DCL void NDECL(do_positionbar);
 #endif
+STATIC_DCL int FDECL(regenerate_hp_rounds_to_full, (int, boolean*));
 STATIC_DCL void NDECL(regenerate_hp);
+STATIC_DCL int FDECL(regenerate_mana_rounds_to_full, (boolean*));
 STATIC_DCL void NDECL(regenerate_mana);
 STATIC_DCL void FDECL(interrupt_multi, (const char *, int, int));
 STATIC_DCL void FDECL(debug_fields, (const char *));
@@ -767,19 +769,88 @@ maybe_create_rwraith()
     return rwraith_appeared;
 }
 
+STATIC_OVL int
+regenerate_hp_rounds_to_full(relevant_hpmax, known_props)
+int relevant_hpmax;
+boolean* known_props;
+{
+    int roundstofull =
+        ((!known_props || known_props[DIVINE_REGENERATION]) && Divine_regeneration) ? max(1, min(relevant_hpmax / 16, 10)) :
+        ((!known_props || known_props[RAPIDEST_REGENERATION]) && Rapidest_regeneration) ? max(1, min(relevant_hpmax / 8, 20)) :
+        ((!known_props || known_props[RAPIDER_REGENERATION]) && Rapider_regeneration) ? max(1, min(relevant_hpmax / 4, 40)) :
+        ((!known_props || known_props[RAPID_REGENERATION]) && Rapid_regeneration) ? max(1, min(relevant_hpmax / 2, 80)) :
+        ((!known_props || known_props[REGENERATION]) && Regeneration) ? max(1, min(relevant_hpmax, 160)) :
+        320;
+    return roundstofull;
+}
+
+double
+calculate_hp_regeneration(known_props)
+boolean* known_props;
+{
+    if (!known_props)
+        return 0.0;
+
+    int relevant_hpmax = Upolyd ? u.mhmax : u.uhpmax;
+    int roundstofull = regenerate_hp_rounds_to_full(relevant_hpmax, known_props);
+    double res = (double)relevant_hpmax / (double)roundstofull;
+
+    /* Mummy rot here */
+    if (known_props[MUMMY_ROT] && MummyRot && (!known_props[SICK_RESISTANCE] || !Sick_resistance))
+    {
+        if (known_props[DIVINE_REGENERATION] && Divine_regeneration)
+        {
+            res = 4.0;
+        }
+        else if (known_props[RAPIDEST_REGENERATION] && Rapidest_regeneration)
+        {
+            res = 3.0;
+        }
+        else if (known_props[RAPIDER_REGENERATION] && Rapider_regeneration)
+        {
+            res = 2.0;
+        }
+        else if (known_props[RAPID_REGENERATION] && Rapid_regeneration)
+        {
+            res = 1.0;
+        }
+        else if (known_props[REGENERATION] && Regeneration)
+        {
+            res = 0.0;
+            return res;
+        }
+        else
+        {
+            roundstofull = 960;
+            res = -1.0 * (double) relevant_hpmax / (double)roundstofull;
+        }
+    }
+
+    if (Upolyd)
+    {
+        if (youmonst.data->mlet == S_EEL && !is_pool(u.ux, u.uy) && !Is_waterlevel(&u.uz))
+        {
+            if ((!known_props[REGENERATION] || !Regeneration) 
+                && (!known_props[RAPID_REGENERATION] || !Rapid_regeneration) 
+                && (!known_props[RAPIDER_REGENERATION] || !Rapider_regeneration)
+                && (!known_props[RAPIDEST_REGENERATION] || !Rapidest_regeneration)
+                && (!known_props[DIVINE_REGENERATION] || !Divine_regeneration))
+            {
+                res = -1 * (known_props[HALF_PHYSICAL_DAMAGE] && Half_physical_damage ? 0.5 : 1.0);
+            }
+        }
+    }
+    return res;
+}
+
+
 /* maybe recover some lost health (or lose some when an eel out of water) */
 STATIC_OVL void
 regenerate_hp(VOID_ARGS)
 {
     /* regenerate hp */
     int relevant_hpmax = Upolyd ? u.mhmax : u.uhpmax;
-    int roundstofull = 
-        Divine_regeneration ? max(1, min(relevant_hpmax / 16, 10)) :
-        Rapidest_regeneration ? max(1, min(relevant_hpmax / 8, 20)) :
-        Rapider_regeneration ? max(1, min(relevant_hpmax / 4, 40)) :
-        Rapid_regeneration ? max(1, min(relevant_hpmax / 2, 80)) :
-        Regeneration ? max(1, min(relevant_hpmax, 160)) :
-        320;
+    int roundstofull = regenerate_hp_rounds_to_full(relevant_hpmax, (boolean*)0);
     int fixedhpperround = relevant_hpmax / roundstofull;
     int fractional_hp = (10000 * (relevant_hpmax % roundstofull)) / roundstofull;
     int added_hp = 0;
@@ -831,7 +902,8 @@ regenerate_hp(VOID_ARGS)
         {
             /* eel out of water loses hp, similar to monster eels;
                as hp gets lower, rate of further loss slows down */
-            if (!Regeneration && rn2(u.mh) > rn2(8) && (!Half_physical_damage || (Half_physical_damage && !rn2(2))))
+            if (!Regeneration && !Rapid_regeneration && !Rapider_regeneration && !Rapidest_regeneration && !Divine_regeneration 
+                && rn2(u.mh) > rn2(8) && (!Half_physical_damage || (Half_physical_damage && !rn2(2))))
             {
                 u.mh--;
                 context.botl = TRUE;
@@ -1022,16 +1094,25 @@ regenerate_hp(VOID_ARGS)
 #endif
 }
 
+STATIC_OVL int
+regenerate_mana_rounds_to_full(known_props)
+boolean* known_props;
+{
+    /* regenerate mana */
+    int roundstofull =
+        ((!known_props || known_props[RAPIDEST_ENERGY_REGENERATION]) && Rapidest_energy_regeneration) ? max(1, min(u.uenmax / 12, 15)) :
+        ((!known_props || known_props[RAPIDER_ENERGY_REGENERATION]) && Rapider_energy_regeneration) ? max(1, min(u.uenmax / 6, 30)) :
+        ((!known_props || known_props[RAPID_ENERGY_REGENERATION]) && Rapid_energy_regeneration) ? max(1, min(u.uenmax / 3, 60)) :
+        ((!known_props || known_props[ENERGY_REGENERATION]) && Energy_regeneration) ? max(1, min((2 * u.uenmax) / 3, 120)) :
+        240;
+    return roundstofull;
+}
+
 STATIC_OVL void
 regenerate_mana(VOID_ARGS)
 {
     /* regenerate mana */
-    int roundstofull =
-        Rapidest_energy_regeneration ? max(1, min(u.uenmax / 12, 15)) :
-        Rapider_energy_regeneration ? max(1, min(u.uenmax / 6, 30)) :
-        Rapid_energy_regeneration ? max(1, min(u.uenmax / 3, 60)) :
-        Energy_regeneration ? max(1, min((2 * u.uenmax) / 3, 120)) :
-        240;
+    int roundstofull = regenerate_mana_rounds_to_full((boolean*)0);
     int fixedmanaperround = u.uenmax / roundstofull;
     int fractional_mana = (10000 * (u.uenmax % roundstofull)) / roundstofull;
 
@@ -1056,6 +1137,14 @@ regenerate_mana(VOID_ARGS)
             interrupt_multi("You feel full of energy.", ATR_NONE, CLR_MSG_SUCCESS);
     }
 
+}
+
+double
+calculate_mana_regeneration(known_props)
+boolean* known_props;
+{
+    int roundstofull = regenerate_mana_rounds_to_full(known_props);
+    return (double)u.uenmax / (double)roundstofull;
 }
 
 
