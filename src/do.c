@@ -355,15 +355,15 @@ docharacterstatistics(VOID_ARGS)
     putstr(datawin, ATR_HEADING, buf);
 
     /* Nutrition consumption */
-    Sprintf(buf, " Nutrition usage:   %.2f / round", calchungry(known_props));
+    Sprintf(buf, " Nutrition usage:   %6.2f / round", calchungry(known_props));
     putstr(datawin, ATR_INDENT_AT_COLON, buf);
 
     /* Regeneration */
-    Sprintf(buf, " HP regeneration:   %.2f / round", calculate_hp_regeneration(known_props));
+    Sprintf(buf, " HP regeneration:   %6.2f / round", calculate_hp_regeneration(known_props));
     putstr(datawin, ATR_INDENT_AT_COLON, buf);
 
     /* Mana regeneration */
-    Sprintf(buf, " Mana regeneration: %.2f / round", calculate_mana_regeneration(known_props));
+    Sprintf(buf, " Mana regeneration: %6.2f / round", calculate_mana_regeneration(known_props));
     putstr(datawin, ATR_INDENT_AT_COLON, buf);
 
 
