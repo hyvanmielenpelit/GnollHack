@@ -244,7 +244,7 @@ struct flag {
     schar max_hint_difficulty; /* Maximum difficulty level where hints are shown */
     boolean non_scoring; /* The game has been, for example, loaded from an imported save file and has thereby become non-scoring */
     uchar auto_bag_in_style;
-    boolean no_pets_preference;
+    boolean pets_not_gifted;
 
     uchar right_click_command;
     uchar middle_click_command;
@@ -796,6 +796,8 @@ struct startup_flags {
     boolean dice_as_ranges_value;
     boolean worn_shows_equipment_set;
     boolean worn_shows_equipment_value;
+    boolean no_pets_preference_set;
+    boolean no_pets_preference_value;
     boolean autodig_set;
     boolean autodig_value;
     boolean ignore_stopping_set;

@@ -232,6 +232,7 @@ static struct Bool_Opt {
     { "partymultiline", "print statistics of each pet on a separate status line", &flags.partymultiline, FALSE, SET_IN_GAME },
     /* 3.6.2: move perm_invent from flags to iflags and out of save file */
     { "perm_invent", "show permanent inventory window", &iflags.perm_invent, FALSE, SET_IN_GAME },
+    { "pets_not_gifted", "you receive no gifted pets", &flags.pets_not_gifted, FALSE, SET_IN_GAME },
     { "pickup_thrown", "autopickup thrown items", &flags.pickup_thrown, TRUE, SET_IN_GAME },
     { "popup_dialog", "use popup dialog", &iflags.wc_popup_dialog, FALSE, SET_IN_GAME},   /*WC*/
     { "prefer_fast_move", "swap slow move and fast move commands' key bindings", &flags.prefer_fast_move, FALSE, SET_IN_GAME},
@@ -983,6 +984,9 @@ init_options()
 
     if (initial_flags.worn_shows_equipment_set)
         iflags.worn_shows_equipment = initial_flags.worn_shows_equipment_value;
+
+    if (initial_flags.no_pets_preference_set)
+        flags.pets_not_gifted = initial_flags.no_pets_preference_value;
 
     if (initial_flags.autodig_set)
         flags.autodig = initial_flags.autodig_value;
@@ -2546,7 +2550,6 @@ boolean tinitial, tfrom_file;
                     break;
                 case 'n': /* no pet */
                     preferred_pet = 'n';
-                    flags.no_pets_preference = TRUE;
                     break;
                 case '*': /* random */
                     preferred_pet = '\0';
@@ -2560,7 +2563,6 @@ boolean tinitial, tfrom_file;
         else if (negated)
         {
             preferred_pet = 'n';
-            flags.no_pets_preference = TRUE;
         }
         return retval;
     }
@@ -5416,6 +5418,10 @@ boolean tinitial, tfrom_file;
             else if (boolopt[i].addr == &iflags.worn_shows_equipment)
             {
                 issue_boolean_gui_command(GUI_CMD_TOGGLE_WORN_SHOWS_EQUIPMENT, iflags.worn_shows_equipment);
+            }
+            else if (boolopt[i].addr == &flags.pets_not_gifted)
+            {
+                issue_boolean_gui_command(GUI_CMD_TOGGLE_NO_PET, flags.pets_not_gifted);
             }
             else if (boolopt[i].addr == &iflags.show_dice_as_ranges)
             {

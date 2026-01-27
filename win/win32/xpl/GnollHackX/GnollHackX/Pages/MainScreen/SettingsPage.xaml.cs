@@ -276,7 +276,7 @@ namespace GnollHackX.Pages.MainScreen
             PostXlogLabel.TextColor = PostXlogSwitch.IsEnabled ? usedOnColor : GHColors.Gray;
             PostReplaysLabel.TextColor = PostReplaysSwitch.IsEnabled ? usedOnColor : GHColors.Gray;
             PostBonesLabel.TextColor = PostBonesSwitch.IsEnabled ? usedOnColor : GHColors.Gray;
-            AllowBonesLabel.TextColor= AllowBonesSwitch.IsEnabled ? usedOnColor : GHColors.Gray;
+            AllowBonesLabel.TextColor = AllowBonesSwitch.IsEnabled ? usedOnColor : GHColors.Gray;
             GZipLabel.TextColor = GZipSwitch.IsEnabled ? usedOnColor : GHColors.Gray;
             SaveFileTrackingLabel.TextColor = SaveFileTrackingSwitch.IsEnabled ? usedOnColor : GHColors.Gray;
             DebugPostChannelLabel.TextColor = DebugPostChannelSwitch.IsEnabled ? usedOffColor : GHColors.Gray;
@@ -449,8 +449,8 @@ namespace GnollHackX.Pages.MainScreen
 
             GHApp.AllowBones = AllowBonesSwitch.IsToggled;
             Preferences.Set("AllowBones", AllowBonesSwitch.IsToggled);
-            GHApp.AllowPet = AllowPetSwitch.IsToggled;
-            Preferences.Set("AllowPet", AllowPetSwitch.IsToggled);
+            //GHApp.AllowPet = AllowPetSwitch.IsToggled; //Use MirroredPetsNotGifted below instead
+            //Preferences.Set("AllowPet", AllowPetSwitch.IsToggled);
 
             if (RecordSwitch.IsEnabled)
             {
@@ -499,6 +499,13 @@ namespace GnollHackX.Pages.MainScreen
             Preferences.Set("WornShowsEquipment", WornShowsEquipmentSwitch.IsToggled);
             if (_gamePage != null)
                 _gamePage.SetWornShowsEquipment(WornShowsEquipmentSwitch.IsToggled);
+
+            /* This is flags, saved in save file */
+            GHApp.MirroredPetsNotGifted = !AllowPetSwitch.IsToggled;
+            if (_gamePage != null) /* During game only doubles as the option; outside of game sets the default */
+                _gamePage.SetNoPetsPreference(!AllowPetSwitch.IsToggled);
+            else
+                Preferences.Set("AllowPet", AllowPetSwitch.IsToggled);
 
             /* This is flags, saved in save file */
             GHApp.MirroredAutoDig = AutoDigSwitch.IsToggled;
@@ -1105,7 +1112,6 @@ namespace GnollHackX.Pages.MainScreen
             bones_allowed_users = Preferences.Get("BonesAllowedUsers", "");
             forcepostbones = Preferences.Get("ForcePostBones", false);
             allowbones = Preferences.Get("AllowBones", true);
-            allowpet = Preferences.Get("AllowPet", true);
             emptywishisnothing = Preferences.Get("EmptyWishIsNothing", true);
             doubleclick = Preferences.Get("OkOnDoubleClick", GHApp.IsDesktop);
             recordgame = Preferences.Get("RecordGame", false);
@@ -1190,6 +1196,7 @@ namespace GnollHackX.Pages.MainScreen
                 wornshowsequipment = Preferences.Get("WornShowsEquipment", GHConstants.DefaultWornShowsEquipment); /* Default value */
                 autodig = Preferences.Get("AutoDig", GHConstants.DefaultAutoDig); /* Default value */
                 ignorestopping = Preferences.Get("IgnoreStopping", GHConstants.DefaultIgnoreStopping); /* Default value */
+                allowpet = Preferences.Get("AllowPet", true);
                 rightmouse = Preferences.Get("RightMouseCommand", GHConstants.DefaultRightMouseCommand);
                 middlemouse = Preferences.Get("MiddleMouseCommand", GHConstants.DefaultMiddleMouseCommand);
             }
@@ -1251,6 +1258,7 @@ namespace GnollHackX.Pages.MainScreen
                 wornshowsequipment = GHApp.MirroredWornShowsEquipment;
                 autodig = GHApp.MirroredAutoDig;
                 ignorestopping = GHApp.MirroredIgnoreStopping;
+                allowpet = GHApp.AllowPet;
                 rightmouse = GHApp.MirroredRightMouseCommand; //_gamePage.GetRightMouseCommand();
                 middlemouse = GHApp.MirroredMiddleMouseCommand; //_gamePage.GetMiddleMouseCommand();
             }
@@ -1461,6 +1469,11 @@ namespace GnollHackX.Pages.MainScreen
             StreamingBankToMemorySwitch.IsToggled = streamingbanktomemory;
             StreamingBankToDiskSwitch.IsToggled = streamingbanktodisk;
             AllowBonesSwitch.IsToggled = allowbones;
+            if (_gamePage != null) /* Cannot turn on or off in the middle of the game */
+            {
+                AllowBonesSwitch.IsEnabled = false;
+                AllowBonesLabel.TextColor = GHColors.Gray;
+            }
             AllowPetSwitch.IsToggled = allowpet;
             RecordSwitch.IsToggled = recordgame;
             if (_gamePage != null || (!RecordSwitch.IsToggled && GHApp.PlatformService.GetDeviceFreeDiskSpaceInBytes() < GHConstants.LowFreeDiskSpaceThresholdInBytes)) /* Cannot turn on or off in the middle of the game; need to save and restart; otherwise either relevant commands are not recorded or things may get prone to bugs */

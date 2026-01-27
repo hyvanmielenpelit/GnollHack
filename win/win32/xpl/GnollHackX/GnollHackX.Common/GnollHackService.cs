@@ -325,6 +325,8 @@ namespace GnollHackX.Unknown
         [DllImport(PlatformConstants.dll)]
         public static extern void LibSetWornShowsEquipment(int new_value);
         [DllImport(PlatformConstants.dll)]
+        public static extern void LibSetNoPetsPreference(int new_value);
+        [DllImport(PlatformConstants.dll)]
         public static extern void LibSetAutoDig(int new_value);
         [DllImport(PlatformConstants.dll)]
         public static extern void LibSetIgnoreStopping(int new_value);
@@ -1204,6 +1206,11 @@ namespace GnollHackX.Unknown
             LibSetWornShowsEquipment(newValue ? 1 : 0);
         }
 
+        public void SetNoPetsPreference(bool newValue)
+        {
+            LibSetNoPetsPreference(newValue ? 1 : 0);
+        }
+
         public void SetAutoDig(bool newValue)
         {
             LibSetAutoDig(newValue ? 1 : 0);
@@ -1256,8 +1263,8 @@ namespace GnollHackX.Unknown
             GHApp.SetMirroredOptionsToDefaults();
             string filesdir = GetGnollHackPath();
             bool allowbones = GHApp.AllowBones;
-            bool allowpet = GHApp.AllowPet;
             bool getposarrows = GHApp.GetPositionArrows;
+            bool nopet = GHApp.MirroredPetsNotGifted;
             bool characterclickaction = GHApp.MirroredCharacterClickAction;
             bool diceasranges = GHApp.MirroredDiceAsRanges;
             bool wornshowsequipment = GHApp.MirroredWornShowsEquipment;
@@ -1271,7 +1278,7 @@ namespace GnollHackX.Unknown
                 (ulong)(ghGame.ModernMode ? RunGnollHackFlags.ModernMode : 0) |
                 (ulong)(ghGame.CasualMode ? RunGnollHackFlags.CasualMode : 0) |
                 (ulong)(allowbones ? 0 : RunGnollHackFlags.DisableBones) |
-                (ulong)(allowpet ? 0 : RunGnollHackFlags.NoPet) |
+                (ulong)(nopet ? RunGnollHackFlags.NoPet : 0) |
                 (ulong)(GHApp.TournamentMode ? RunGnollHackFlags.TournamentMode : 0) |
                 (ulong)(RunGnollHackFlags.SaveFileTrackingSupported) |
                 (ulong)(GHApp.IsSaveFileTrackingNeeded ? RunGnollHackFlags.SaveFileTrackingNeeded : 0) |

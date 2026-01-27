@@ -699,6 +699,18 @@ LibGetWornShowsEquipment(VOID_ARGS)
 }
 
 DLLEXPORT void
+LibSetNoPetsPreference(int new_value)
+{
+    flags.pets_not_gifted = new_value != 0;
+}
+
+DLLEXPORT int
+LibGetNoPetsPreference(VOID_ARGS)
+{
+    return (int)flags.pets_not_gifted;
+}
+
+DLLEXPORT void
 LibSetAutoDig(int new_value)
 {
     flags.autodig = new_value != 0;
@@ -1013,6 +1025,8 @@ DLLEXPORT int RunGnollHack(
     initial_flags.dice_as_ranges_value = (runflags & GHRUNFLAGS_DICE_AS_RANGES) != 0;
     initial_flags.worn_shows_equipment_set = TRUE;
     initial_flags.worn_shows_equipment_value = (runflags & GHRUNFLAGS_WORN_SHOWS_EQUIPMENT) != 0;
+    initial_flags.no_pets_preference_set = TRUE;
+    initial_flags.no_pets_preference_value = (runflags & GHRUNFLAGS_NO_PET) != 0;
     initial_flags.autodig_set = TRUE;
     initial_flags.autodig_value = (runflags & GHRUNFLAGS_AUTO_DIG) != 0;
     initial_flags.ignore_stopping_set = TRUE;

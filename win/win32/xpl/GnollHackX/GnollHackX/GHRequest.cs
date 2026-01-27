@@ -107,6 +107,7 @@ namespace GnollHackX
         TerminateGnollHackAndRestartGameInNewGamePage,
         ToggleZoomMini,
         SetWornShowsEquipment,
+        SetNoPetsPreference,
     }
 
     public struct AddContextMenuData

@@ -141,7 +141,7 @@ namespace GnollHackX
             XlogPassword = Preferences.Get("XlogPassword", "");
             XlogReleaseAccount = Preferences.Get("XlogReleaseAccount", false);
             AllowBones = Preferences.Get("AllowBones", true);
-            AllowPet = Preferences.Get("AllowPet", true);
+            //AllowPet = Preferences.Get("AllowPet", true);  //Use MirroredPetsNotGifted instead
             BonesAllowedUsers = Preferences.Get("BonesAllowedUsers", "");
             EmptyWishIsNothing = Preferences.Get("EmptyWishIsNothing", true);
             RecommendedSettingsChecked = Preferences.Get("RecommendedSettingsChecked", false);
@@ -998,6 +998,7 @@ namespace GnollHackX
             MirroredWornShowsEquipment = Preferences.Get("WornShowsEquipment", GHConstants.DefaultWornShowsEquipment);
             MirroredAutoDig = Preferences.Get("AutoDig", GHConstants.DefaultAutoDig);
             MirroredIgnoreStopping = Preferences.Get("IgnoreStopping", GHConstants.DefaultIgnoreStopping);
+            MirroredPetsNotGifted = !Preferences.Get("AllowPet", true);
         }
 
         public static void MaybeFixRects(ref SKRect source, ref SKRect dest, float targetscale, bool usingGL, bool fixRects)
@@ -4803,6 +4804,7 @@ namespace GnollHackX
         private static int _allowPet = 0;
         public static bool AllowBones { get { return Interlocked.CompareExchange(ref _allowBones, 0, 0) != 0 || TournamentMode; } set { Interlocked.Exchange(ref _allowBones, value ? 1 : 0); } }
         public static bool AllowPet { get { return Interlocked.CompareExchange(ref _allowPet, 0, 0) != 0; } set { Interlocked.Exchange(ref _allowPet, value ? 1 : 0); } }
+        public static bool MirroredPetsNotGifted { get { return Interlocked.CompareExchange(ref _allowPet, 0, 0) == 0; } set { Interlocked.Exchange(ref _allowPet, value ? 0 : 1); } }
 
         //private static readonly object _behaviorLock = new object();
         private static int _emptyWishIsNothing = 0;

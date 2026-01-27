@@ -1383,7 +1383,7 @@ gcrownu()
         }
         /* acquire axe or sword skill */
         unrestrict_weapon_skill(gifttype  == DWARVISH_AXE ? P_AXE : P_SWORD);
-        if (!flags.no_pets_preference)
+        if (!flags.pets_not_gifted)
             steed_gift = PM_PEGASUS;
     }
     else if (Role_if(PM_KNIGHT))
@@ -1436,15 +1436,15 @@ gcrownu()
             /* acquire Rhongomyniad's skill regardless of weapon or gift */
             unrestrict_weapon_skill(P_THRUSTING_WEAPON);
 
-            if (!flags.no_pets_preference)
+            if (!flags.pets_not_gifted)
                 steed_gift = PM_KI_RIN;
             break;
         case A_NEUTRAL:
-            if (!flags.no_pets_preference)
+            if (!flags.pets_not_gifted)
                 steed_gift = PM_ROC;
             break;
         case A_CHAOTIC:
-            if (!flags.no_pets_preference)
+            if (!flags.pets_not_gifted)
                 steed_gift = PM_GORGON;
             break;
         default:
@@ -1486,7 +1486,7 @@ gcrownu()
             break;
         }
     }
-    else if (Role_if(PM_TOURIST) && !(mvitals[PM_GIANT_LUGGAGE].mvflags & MV_GONE) && !flags.no_pets_preference)
+    else if (Role_if(PM_TOURIST) && !(mvitals[PM_GIANT_LUGGAGE].mvflags & MV_GONE) && !flags.pets_not_gifted)
     {
         struct monst* luggage = summoncreature(STRANGE_OBJECT, PM_GIANT_LUGGAGE, "%s appears in a puff of smoke.", MM_SUMMON_IN_SMOKE_ANIMATION | MM_NO_MONSTER_INVENTORY, SUMMONCREATURE_FLAGS_CAPITALIZE);
         if (luggage)

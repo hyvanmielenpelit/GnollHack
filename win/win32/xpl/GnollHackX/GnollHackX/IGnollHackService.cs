@@ -80,6 +80,7 @@ namespace GnollHackX
         void SetGetPositionArrows(bool newValue);
         void SetDiceAsRanges(bool newValue);
         void SetWornShowsEquipment(bool newValue);
+        void SetNoPetsPreference(bool newValue);
         void SetAutoDig(bool newValue);
         void SetIgnoreStopping(bool newValue);
         int GetMouseCommand(bool isMiddle);

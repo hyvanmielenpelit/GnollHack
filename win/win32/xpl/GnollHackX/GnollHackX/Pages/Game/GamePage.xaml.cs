@@ -1160,6 +1160,11 @@ namespace GnollHackX.Pages.Game
             GHGame curGame = GHApp.CurrentGHGame;
             curGame?.ResponseQueue.Enqueue(new GHResponse(curGame, GHRequestType.SetWornShowsEquipment, newValue));
         }
+        public void SetNoPetsPreference(bool newValue)
+        {
+            GHGame curGame = GHApp.CurrentGHGame;
+            curGame?.ResponseQueue.Enqueue(new GHResponse(curGame, GHRequestType.SetNoPetsPreference, newValue));
+        }
         public void SetAutoDig(bool newValue)
         {
             if (MapAutoDig != newValue)

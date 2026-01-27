@@ -1111,7 +1111,7 @@ boolean fromspell;
         /* send in some hostile angels instead */
         lose_guardian_angel((struct monst *) 0);
     }
-    else if (fromspell || (u.ualign.record > 8 && !flags.no_pets_preference))
+    else if (fromspell || (u.ualign.record > 8 && !flags.pets_not_gifted))
     { /* fervent */
         play_voice_god_simple_line_by_align(u.ualign.type, GOD_LINE_THOU_HAST_BEEN_WORTHY_OF_ME);
         pline("A voice whispers:");

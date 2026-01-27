@@ -711,6 +711,7 @@ enum gui_command_types {
     GUI_CMD_BREADCRUMB2,
     GUI_CMD_BREADCRUMB3,
     GUI_CMD_TOGGLE_WORN_SHOWS_EQUIPMENT,
+    GUI_CMD_TOGGLE_NO_PET,
 };
 
 enum game_status_types
