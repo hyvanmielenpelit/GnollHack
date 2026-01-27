@@ -105,7 +105,7 @@ E boolean FDECL(snuff_candle, (struct obj *));
 E boolean FDECL(snuff_torch, (struct obj*));
 E boolean FDECL(snuff_lit, (struct obj *));
 E boolean FDECL(catch_lit, (struct obj *));
-E void FDECL(use_unicorn_horn, (struct obj *));
+E int FDECL(use_unicorn_horn, (struct obj *, BOOLEAN_P));
 E int FDECL(use_golf_club, (struct obj*));
 E boolean FDECL(tinnable, (struct obj *));
 E void NDECL(reset_trapset);
@@ -2404,7 +2404,6 @@ E int FDECL(mbhitm, (struct monst *, struct obj *, struct monst*));
 #endif
 E int FDECL(use_offensive, (struct monst *));
 E int FDECL(rnd_offensive_item, (struct monst *));
-E boolean FDECL(set_misc_unicorn_horn, (struct monst*, struct obj*));
 E boolean FDECL(set_misc_potion, (struct monst *, struct obj *));
 E boolean FDECL(find_misc, (struct monst*));
 E int FDECL(use_misc, (struct monst *));

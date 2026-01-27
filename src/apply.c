@@ -3301,12 +3301,13 @@ struct obj *obj;
         impossible("Tinning failed.");
 }
 
-void
-use_unicorn_horn(obj)
+int
+use_unicorn_horn(obj, you_only)
 struct obj *obj;
+boolean you_only;
 {
     if (!obj)
-        return;
+        return 0;
 
 #define PROP_COUNT 7           /* number of properties we're dealing with */
 #define ATTR_COUNT (A_MAX * 3) /* number of attribute points we might fix */
@@ -3314,11 +3315,68 @@ struct obj *obj;
         did_attr;
     int trouble_list[PROP_COUNT + ATTR_COUNT];
 
+    if (you_only)
+        u.dx = u.dy = u.dz = 0;
+    else if (!getdir((char*)0))
+    {
+        pline1(Never_mind);
+        return 0;
+    }
+
+    update_u_facing(TRUE);
+
+    if (u.dx || u.dy)
+    {
+        xchar x = u.ux + u.dx;
+        xchar y = u.uy + u.dy;
+
+        if (!isok(x, y))
+        {
+            play_sfx_sound(SFX_GENERAL_NOTHING_THERE);
+            pline_ex1(ATR_NONE, CLR_MSG_FAIL, "There's nothing there.");
+            return 0;
+        }
+        /* Monster */
+        struct monst* mtmp = m_at(x, y);
+        if (!mtmp || !canspotmon(mtmp))
+        {
+            play_sfx_sound(SFX_GENERAL_NOTHING_THERE);
+            pline_ex1(ATR_NONE, CLR_MSG_FAIL, "There's nothing there to apply a unicorn horn on.");
+            return 1;
+        }
+        if (!is_tame(mtmp))
+        {
+            play_sfx_sound(SFX_GENERAL_CANNOT);
+            pline_ex(ATR_NONE, CLR_MSG_FAIL, "%s does not allow you to apply %s on %s.", Monnam(mtmp), thecxname(obj), mhim(mtmp));
+            return 1;
+        }
+        if (set_defensive_unicorn_horn(mtmp, obj))
+        {
+            use_defensive(mtmp);
+            clear_defensive();
+        }
+        return 1;
+    }
+    else if (u.dz > 0 && u.usteed)
+    {
+        if (set_defensive_unicorn_horn(u.usteed, obj))
+        {
+            use_defensive(u.usteed);
+            clear_defensive();
+        }
+        return 1;
+    }
+    else if (u.dz)
+    {
+        play_sfx_sound(SFX_GENERAL_NOTHING_THERE);
+        pline_ex1(ATR_NONE, CLR_MSG_FAIL, "There's nothing there.");
+        return 0;
+    }
 
     if (obj->charges <= 0) {
         play_sfx_sound(SFX_GENERAL_OUT_OF_CHARGES);
         pline1(nothing_happens);
-        return;
+        return 1;
     }
     consume_obj_charge(obj, TRUE);
 
@@ -3369,7 +3427,7 @@ struct obj *obj;
             make_deaf((HDeaf & TIMEOUT) + lcount, TRUE);
             break;
         }
-        return;
+        return 1;
     }
 
 /*
@@ -3435,7 +3493,7 @@ struct obj *obj;
     if (trouble_count == 0) 
     {
         pline1(nothing_happens);
-        return;
+        return 1;
     } 
     else if (trouble_count > 1)
     { /* shuffle */
@@ -3517,7 +3575,7 @@ struct obj *obj;
             else
             {
                 panic("use_unicorn_horn: bad trouble? (%d)", idx);
-                return;
+                return 1;
             }
             break;
         }
@@ -3543,6 +3601,8 @@ struct obj *obj;
 #undef prop_trouble
 #undef attr_trouble
 #undef TimedTrouble
+
+    return 1;
 }
 
 /*
@@ -6152,7 +6212,7 @@ int applymode; /* 0 = normal, 1 = take out items, 2 = put in items */
             use_figurine(&obj);
             break;
         case UNICORN_HORN:
-            use_unicorn_horn(obj);
+            res = use_unicorn_horn(obj, FALSE);
             break;
         case WOODEN_FLUTE:
         case MAGIC_FLUTE:

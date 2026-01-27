@@ -2423,15 +2423,17 @@ douseunicornhorn()
         You_ex(ATR_NONE, CLR_MSG_FAIL, "lack the energy to use your horn!");
         return 1;
     }
-    u.uen -= UNICORN_HORN_MANA_COST;
-    context.botl = 1;
-
     struct obj dummyhorn = { 0 };
     dummyhorn.otyp = UNICORN_HORN;
     dummyhorn.oclass = TOOL_CLASS;
     dummyhorn.charges = 10;
-    use_unicorn_horn(&dummyhorn);
-    return 1;
+    if (use_unicorn_horn(&dummyhorn, TRUE))
+    {
+        u.uen -= UNICORN_HORN_MANA_COST;
+        context.botl = 1;
+        return 1;
+    }
+    return 0;
 }
 
 int

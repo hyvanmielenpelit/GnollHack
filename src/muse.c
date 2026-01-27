@@ -913,14 +913,20 @@ struct monst *mtmp;
             else
             {
                 if (is_yours)
-                    You_ex(ATR_NONE, CLR_MSG_ATTENTION, "use the unicorn horn on %s but nothing happens.", noittame_mon_nam(mtmp));
+                {
+                    You_ex(ATR_NONE, NO_COLOR, "apply the unicorn horn on %s.", noittame_mon_nam(mtmp));
+                    pline_ex1(ATR_NONE, CLR_MSG_ATTENTION, "However, nothing seems to happen.");
+                }
                 else if (vismon)
-                    pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s uses a unicorn horn but nothing happens!", Monnam(mtmp));
+                {
+                    pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s uses a unicorn horn!", Monnam(mtmp));
+                    pline_ex1(ATR_NONE, CLR_MSG_ATTENTION, "However, nothing seems to happen.");
+                }
                 return 2;
             }
         }
         if (is_yours)
-            You_ex(ATR_NONE, CLR_MSG_ATTENTION, "apply the unicorn horn on %s.", noittame_mon_nam(mtmp));
+            You_ex(ATR_NONE, NO_COLOR, "apply the unicorn horn on %s.", noittame_mon_nam(mtmp));
         else if (vismon)
         {
             if (otmp)
