@@ -3847,7 +3847,7 @@ struct permonst _mons2[] = {
     /*
      * Rust monster or disenchanter
      */
-    MON("rust monster", None, "creature whose touch causes iron items to rust", None, None, S_RUSTMONST, LVL(5, 18, 2, 8, 0, 0), (G_GENO | 2),
+    ANIMATED_MON("rust monster", None, "creature whose touch causes iron items to rust", None, None, S_RUSTMONST, LVL(5, 18, 2, 8, 0, 0), (G_GENO | 2),
         A(ATTK(AT_TUCH, AD_RUST, 0, 0, 0, 0, 0, 0, 0UL, 0), ATTK(AT_TUCH, AD_RUST, 0, 0, 0, 0, 0, 0, 0UL, 0),
           ATTK(AT_PASV, AD_RUST, 0, 0, 0, 0, 0, 0, 0UL, 0), NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
         SIZ(1000, 250, MS_SILENT, MZ_MEDIUM, 1, 0, MAT_FLESH), STATS(9, 12, 12, 3, 3, 1), 
@@ -3855,9 +3855,10 @@ struct permonst _mons2[] = {
         MR2_NONE, MC_NONE,
         M1_SWIM | M1_ANIMAL | M1_NOHANDS | M1_METALLIVORE | M1_RUST_CAUSING_IRONVORE, M2_HOSTILE,
         M3_INFRAVISIBLE, 
-        M4_NONE, M5_NONE, M6_ANIMAL_BREATHE_ANIMATION, M7_NONE, M8_NONE,
-        8, CLR_BROWN, MONSTER_SOUNDSET_GENERIC, MONSTER_SOUNDSET_GENERIC, NO_SOUNDSET_SUBTYPE),
-    ENLARGED_MON("disenchanter", None, "creature whose touch causes magical items to lose their enchantment", None, None, S_RUSTMONST, LVL(12, 12, -10, 18, 0, -3),
+        M4_NONE, M5_ATTACK_TILE, M6_ANIMAL_BREATHE_ANIMATION, M7_NONE, M8_NONE,
+        8, CLR_BROWN, MONSTER_SOUNDSET_GENERIC, MONSTER_SOUNDSET_GENERIC, NO_SOUNDSET_SUBTYPE,
+        ACTION_INFO(0, RUST_MONSTER_ATTACK_ANIMATION, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0), NO_ACTION_INFO),
+    ENLARGED_ANIMATED_MON("disenchanter", None, "creature whose touch causes magical items to lose their enchantment", None, None, S_RUSTMONST, LVL(12, 12, -10, 18, 0, -3),
         (G_HELL | G_GENO | 2),
         A(ATTK(AT_CLAW, AD_ENCH, 4, 4, 0, 0, 0, 0, 0UL, 0), ATTK(AT_PASV, AD_ENCH, 0, 0, 0, 0, 0, 0, 0UL, 0), NO_ATTK,
           NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
@@ -3867,10 +3868,12 @@ struct permonst _mons2[] = {
         M1_ANIMAL | M1_CARNIVORE,
         M2_HOSTILE, 
         M3_INFRAVISIBLE,
-        M4_NONE, M5_NONE, M6_ANIMAL_BREATHE_ANIMATION, M7_NONE, M8_NONE,
+        M4_NONE, M5_ATTACK_TILE, M6_ANIMAL_BREATHE_ANIMATION, M7_NONE, M8_NONE,
         16, CLR_BLUE, MONSTER_SOUNDSET_GENERIC, MONSTER_SOUNDSET_GENERIC, NO_SOUNDSET_SUBTYPE,
-        ACTION_INFO(DISENCHANTER_ENLARGEMENT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, DISENCHANTER_STATUE_ENLARGEMENT, 0, 0),
-        ACTION_INFO(DISENCHANTER_ENLARGEMENT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, DISENCHANTER_STATUE_ENLARGEMENT, 0, 0)),
+        ACTION_INFO(0, DISENCHANTER_ATTACK_ANIMATION, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
+        NO_ACTION_INFO,
+        ACTION_INFO(DISENCHANTER_ENLARGEMENT, DISENCHANTER_ENLARGEMENT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, DISENCHANTER_STATUE_ENLARGEMENT, 0, 0),
+        ACTION_INFO(DISENCHANTER_ENLARGEMENT, DISENCHANTER_ENLARGEMENT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, DISENCHANTER_STATUE_ENLARGEMENT, 0, 0)),
     /*
      * Snakes
      */
