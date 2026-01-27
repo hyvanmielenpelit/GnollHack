@@ -1189,7 +1189,7 @@ int show_weights;
                 if (sorted && !printed_type_name) {
                     any = zeroany;
                     add_extended_menu(win, NO_GLYPH, &any, 
-                        0, 0, iflags.menu_headings, NO_COLOR,
+                        0, 0, iflags.menu_headings | ATR_HEADING, NO_COLOR,
                              let_to_name(*pack, FALSE,
                                          ((how != PICK_NONE)
                                           && iflags.menu_head_objsym)),
