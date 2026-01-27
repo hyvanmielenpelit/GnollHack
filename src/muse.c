@@ -1026,6 +1026,9 @@ struct monst *mtmp;
                 //impossible("No need for unicorn horn?");
             }
         }
+        refresh_m_tile_gui_info(mtmp, TRUE);
+        if (is_yours)
+            update_inventory();
         return 2;
     }
     case MUSE_BUGLE:
