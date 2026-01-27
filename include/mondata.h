@@ -427,7 +427,6 @@
 #define is_confused(mon) \
     (has_confused(mon))
 
-
 /* blindness and can see (meaning can detect the player at the first place) */
 #define has_blinded(mon) \
     has_property(mon, BLINDED)

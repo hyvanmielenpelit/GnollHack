@@ -454,6 +454,12 @@ struct obj* obj;
     return (boolean)(obj->oclass != COIN_CLASS);
 }
 
+boolean
+allow_unicorn_horn(obj)
+struct obj* obj UNUSED;
+{
+    return (boolean)(obj->otyp == UNICORN_HORN);
+}
 
 /* query_objlist callback: return TRUE */
 /*ARGUSED*/

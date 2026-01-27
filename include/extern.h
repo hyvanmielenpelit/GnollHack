@@ -2392,6 +2392,8 @@ E void NDECL(reset_mthrowu);
 /* ### muse.c ### */
 
 E boolean FDECL(set_defensive_potion, (struct monst*, struct obj*));
+E boolean FDECL(set_defensive_unicorn_horn, (struct monst*, struct obj*));
+E void NDECL(clear_defensive);
 E boolean FDECL(find_defensive, (struct monst *));
 E int FDECL(use_defensive, (struct monst *));
 E int FDECL(rnd_defensive_item, (struct monst *));
@@ -2401,6 +2403,7 @@ E int FDECL(mbhitm, (struct monst *, struct obj *, struct monst*));
 #endif
 E int FDECL(use_offensive, (struct monst *));
 E int FDECL(rnd_offensive_item, (struct monst *));
+E boolean FDECL(set_misc_unicorn_horn, (struct monst*, struct obj*));
 E boolean FDECL(set_misc_potion, (struct monst *, struct obj *));
 E boolean FDECL(find_misc, (struct monst*));
 E int FDECL(use_misc, (struct monst *));
@@ -2736,6 +2739,7 @@ E void FDECL(add_valid_menu_class, (int));
 E boolean FDECL(allow_all, (struct obj *));
 E boolean FDECL(allow_all_but_coins, (struct obj*));
 E boolean FDECL(allow_category, (struct obj *));
+E boolean FDECL(allow_unicorn_horn, (struct obj*));
 E boolean FDECL(is_potion_of_water, (struct obj*));
 E boolean FDECL(is_scroll_of_remove_curse, (struct obj*));
 E boolean FDECL(is_worn_by_type, (struct obj *));

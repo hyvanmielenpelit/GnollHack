@@ -833,6 +833,8 @@ extern struct objclass saved_objects[NUM_OBJECTS];
 #define m_unpaid_item_no_pickup(m, o) m_unpaid_item_no_pickup_at_location(m, o, (o)->ox, (o)->oy)
 
 #define is_knight_bounty(ptr) ((u.ualign.type == A_LAWFUL ? is_demon(ptr) || (ptr)->mlet == S_IMP : u.ualign.type == A_CHAOTIC ? is_angel(ptr) : is_undead(ptr)) || (is_dragon(ptr) && u.ualign.type * (ptr)->maligntyp < 0))
+#define has_mon_need_for_unicorn_horn(m) (is_confused(m) || is_stunned(m) || is_blinded(m) || is_hallucinating(m) || is_sick(m) || is_food_poisoned(m) || is_mummy_rotted(m) || has_vomiting(m))
+
 
 #if defined(BSD) || defined(ULTRIX)
 #define readLenType int

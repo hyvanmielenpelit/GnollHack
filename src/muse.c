@@ -367,6 +367,13 @@ struct obj *otmp;
  * that if you polymorph into one you teleport at will.
  */
 
+void
+clear_defensive(VOID_ARGS)
+{
+    m.defensive = (struct obj*)0;
+    m.has_defense = 0;
+}
+
 boolean
 set_defensive_potion(mtmp, obj)
 struct monst* mtmp;
@@ -398,6 +405,23 @@ struct obj* obj;
     if (m.has_defense != 0)
         m.defensive = obj;
     return (m.has_defense != 0);
+}
+
+boolean
+set_defensive_unicorn_horn(mtmp, obj)
+struct monst* mtmp;
+struct obj* obj;
+{
+    if (!mtmp || !obj || obj->otyp != UNICORN_HORN)
+    {
+        m.defensive = (struct obj*)0;
+        m.has_defense = 0;
+        return FALSE;
+    }
+
+    m.has_defense = MUSE_UNICORN_HORN;
+    m.defensive = obj;
+    return TRUE;
 }
 
 
@@ -456,7 +480,7 @@ struct monst *mtmp;
     /* since unicorn horns don't get used up, the monster would look
      * silly trying to use the same cursed horn round after round
      */
-    if (is_confused(mtmp) || is_stunned(mtmp) || is_blinded(mtmp) || is_hallucinating(mtmp) || is_sick(mtmp) || is_food_poisoned(mtmp) || is_mummy_rotted(mtmp) || has_vomiting(mtmp))
+    if (has_mon_need_for_unicorn_horn(mtmp))
     {
         if (!is_unicorn(mtmp->data) && can_operate_objects(mtmp->data)) 
         {
@@ -877,53 +901,131 @@ struct monst *mtmp;
     {
         int maxcures = 1;
         int cures = 0;
+        boolean is_yours = FALSE;
         if (otmp)
         {
+            is_yours = otmp->where == OBJ_INVENT;
             play_simple_object_sound(otmp, OBJECT_SOUND_TYPE_APPLY);
             if (otmp->blessed)
                 maxcures++;
             if (otmp->charges > 0)
                 otmp->charges--;
+            else
+            {
+                if (is_yours)
+                    You_ex(ATR_NONE, CLR_MSG_ATTENTION, "use the unicorn horn on %s but nothing happens.", noittame_mon_nam(mtmp));
+                else if (vismon)
+                    pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s uses a unicorn horn but nothing happens!", Monnam(mtmp));
+                return 2;
+            }
         }
-        if (vismon) {
+        if (is_yours)
+            You_ex(ATR_NONE, CLR_MSG_ATTENTION, "apply the unicorn horn on %s.", noittame_mon_nam(mtmp));
+        else if (vismon)
+        {
             if (otmp)
                 pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s uses a unicorn horn!", Monnam(mtmp));
             else
                 pline_The_ex(ATR_NONE, CLR_MSG_ATTENTION, "tip of %s's horn glows!", mon_nam(mtmp));
         }
-        if (cures < maxcures && is_sick(mtmp)) {
-            (void)set_mon_property_b(mtmp, SICK, 0, vismon);
-            cures++;
+
+        if (otmp && otmp->cursed)
+        {
+            int lcount = rn1(90, 10);
+
+            switch (rn2(13) / 2) { /* case 6 is half as likely as the others */
+            case 0:
+                if (!resists_sickness(mtmp))
+                {
+                    if (!is_sick(mtmp) && vismon)
+                        play_sfx_sound_at_location(SFX_CATCH_TERMINAL_ILLNESS, mtmp->mx, mtmp->my);
+
+                    set_mon_property_b(mtmp, SICK,
+                        is_sick(mtmp) ? max(1, (get_mon_property(mtmp, SICK) + 1) / 3) : rn1(M_ACURR(mtmp, A_CON), 20), vismon);
+                }
+                break;
+            case 1:
+                if (!resists_blnd(mtmp))
+                {
+                    if (!is_blinded(mtmp) && vismon)
+                        play_sfx_sound_at_location(SFX_ACQUIRE_BLINDNESS, mtmp->mx, mtmp->my);
+                    increase_mon_property_b(mtmp, BLINDED, lcount, vismon);
+                }
+                break;
+            case 2:
+                if (!is_confused(mtmp) && vismon)
+                    play_sfx_sound_at_location(SFX_ACQUIRE_CONFUSION, mtmp->mx, mtmp->my);
+                increase_mon_property_b(mtmp, CONFUSION, lcount, vismon);
+                break;
+            case 3:
+                if (!resists_stun(mtmp))
+                {
+                    if (!is_confused(mtmp) && vismon)
+                        play_sfx_sound_at_location(SFX_ACQUIRE_STUN, mtmp->mx, mtmp->my);
+                    increase_mon_property_b(mtmp, STUNNED, lcount, vismon);
+                }
+                break;
+            case 4:
+                if (!has_fixed_ability(mtmp))
+                {
+                    if (vismon)
+                        play_sfx_sound_at_location(SFX_LOSE_ABILITY, mtmp->mx, mtmp->my);
+                    (void)m_adjattrib(mtmp, rn2(A_MAX), -1, vismon);
+                }
+                break;
+            case 5:
+                if (!has_hallucination_resistance(mtmp))
+                {
+                    if (!is_hallucinating(mtmp) && vismon)
+                        play_sfx_sound_at_location(SFX_ACQUIRE_HALLUCINATION, mtmp->mx, mtmp->my);
+                    increase_mon_property_b(mtmp, STUNNED, lcount, vismon);
+                }
+                break;
+            case 6:
+                increase_mon_property_b(mtmp, DEAF, lcount, vismon);
+                break;
+            }
         }
-        if (cures < maxcures && is_food_poisoned(mtmp)) {
-            (void)set_mon_property_b(mtmp, FOOD_POISONED, 0, vismon);
-            cures++;
+        else
+        {
+            if (cures < maxcures && is_sick(mtmp)) {
+                (void)set_mon_property_b(mtmp, SICK, 0, vismon);
+                cures++;
+            }
+            if (cures < maxcures && is_food_poisoned(mtmp)) {
+                (void)set_mon_property_b(mtmp, FOOD_POISONED, 0, vismon);
+                cures++;
+            }
+            if (cures < maxcures && is_mummy_rotted(mtmp)) {
+                (void)set_mon_property_b(mtmp, MUMMY_ROT, -3, vismon);
+                cures++;
+            }
+            if (cures < maxcures && has_vomiting(mtmp)) {
+                (void)set_mon_property_b(mtmp, VOMITING, 0, vismon);
+                cures++;
+            }
+            if (cures < maxcures && is_hallucinating(mtmp)) {
+                (void)set_mon_property_b(mtmp, HALLUC, 0, vismon);
+                cures++;
+            }
+            if (cures < maxcures && is_blinded(mtmp)) {
+                mcureblindness(mtmp, vismon);
+                cures++;
+            }
+            if (cures < maxcures && (is_confused(mtmp) || is_stunned(mtmp))) {
+                mtmp->mprops[CONFUSION] = 0;
+                mtmp->mprops[STUNNED] = 0;
+                if (vismon)
+                    pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s seems steadier now.", Monnam(mtmp));
+                cures++;
+            }
+            if (!cures)
+            {
+                if (vismon)
+                    pline_ex1(ATR_NONE, CLR_MSG_ATTENTION, "However, nothing seems to happen.");
+                //impossible("No need for unicorn horn?");
+            }
         }
-        if (cures < maxcures && is_mummy_rotted(mtmp)) {
-            (void)set_mon_property_b(mtmp, MUMMY_ROT, -3, vismon);
-            cures++;
-        }
-        if (cures < maxcures && has_vomiting(mtmp)) {
-            (void)set_mon_property_b(mtmp, VOMITING, 0, vismon);
-            cures++;
-        }
-        if (cures < maxcures && is_hallucinating(mtmp)) {
-            (void)set_mon_property_b(mtmp, HALLUC, 0, vismon);
-            cures++;
-        }
-        if (cures < maxcures && is_blinded(mtmp)) {
-            mcureblindness(mtmp, vismon);
-            cures++;
-        }
-        if (cures < maxcures && (is_confused(mtmp) || is_stunned(mtmp))) {
-            mtmp->mprops[CONFUSION] = 0;
-            mtmp->mprops[STUNNED] = 0;
-            if (vismon)
-                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s seems steadier now.", Monnam(mtmp));
-            cures++;
-        }
-        if (!cures)
-            impossible("No need for unicorn horn?");
         return 2;
     }
     case MUSE_BUGLE:

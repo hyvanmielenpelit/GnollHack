@@ -98,6 +98,7 @@ STATIC_DCL int FDECL(do_chat_pet_dowield_axe, (struct monst*));
 STATIC_DCL int FDECL(do_chat_pet_dounwield, (struct monst*));
 STATIC_DCL int FDECL(do_chat_feed, (struct monst*));
 STATIC_DCL int FDECL(do_chat_quaff, (struct monst*));
+STATIC_DCL int FDECL(do_chat_unicorn_horn, (struct monst*));
 STATIC_DCL int FDECL(do_chat_uncurse_items, (struct monst*));
 STATIC_DCL int FDECL(do_chat_buy_items, (struct monst*));
 STATIC_DCL int FDECL(do_chat_join_party, (struct monst*));
@@ -3262,21 +3263,6 @@ struct monst* mtmp;
             //    available_chat_list[chatnum].name, MENU_UNSELECTED);
 
             chatnum++;
-
-            Sprintf(available_chat_list[chatnum].name, "Give a potion to %s to drink", noittame_mon_nam(mtmp));
-            available_chat_list[chatnum].function_ptr = &do_chat_quaff;
-            //available_chat_list[chatnum].charnum = 'a' + chatnum;
-            available_chat_list[chatnum].stops_dialogue = TRUE;
-            available_chat_list[chatnum].category = CHAT_CATEGORY_INTERACTION;
-
-            //any = zeroany;
-            //any.a_char = available_chat_list[chatnum].charnum;
-
-            //add_menu(win, NO_GLYPH, &any,
-            //    any.a_char, 0, ATR_NONE, NO_COLOR,
-            //    available_chat_list[chatnum].name, MENU_UNSELECTED);
-
-            chatnum++;
         }
 
         if (is_tame(mtmp) && invent && is_peaceful(mtmp)) /*  && !mtmp->issummoned */
@@ -3314,6 +3300,22 @@ struct monst* mtmp;
 
                 chatnum++;
 
+            }
+
+            Sprintf(available_chat_list[chatnum].name, "Give a potion to %s to drink", noittame_mon_nam(mtmp));
+            available_chat_list[chatnum].function_ptr = &do_chat_quaff;
+            //available_chat_list[chatnum].charnum = 'a' + chatnum;
+            available_chat_list[chatnum].stops_dialogue = TRUE;
+            available_chat_list[chatnum].category = CHAT_CATEGORY_INTERACTION;
+            chatnum++;
+
+            if (carrying(UNICORN_HORN) && has_mon_need_for_unicorn_horn(mtmp))
+            {
+                Sprintf(available_chat_list[chatnum].name, "Use a unicorn horn on %s", noittame_mon_nam(mtmp));
+                available_chat_list[chatnum].function_ptr = &do_chat_unicorn_horn;
+                available_chat_list[chatnum].stops_dialogue = TRUE;
+                available_chat_list[chatnum].category = CHAT_CATEGORY_INTERACTION;
+                chatnum++;
             }
         }
 
@@ -6086,6 +6088,7 @@ struct monst* mtmp;
 
     return 0;
 }
+
 STATIC_OVL int
 do_chat_quaff(mtmp)
 struct monst* mtmp;
@@ -6240,6 +6243,93 @@ struct monst* mtmp;
     }
 
     return (n_given > 0) && res;
+}
+
+STATIC_OVL int
+do_chat_unicorn_horn(mtmp)
+struct monst* mtmp;
+{
+    if (!mtmp)
+        return 0;
+
+    int n, i;
+    int64_t cnt;
+    struct obj* otmp, * otmp2;
+    menu_item* pick_list;
+
+    boolean appritemfound = FALSE;
+    for (otmp = invent; otmp; otmp = otmp->nobj)
+    {
+        if (otmp->otyp == UNICORN_HORN)
+        {
+            appritemfound = TRUE;
+            break;
+        }
+    }
+    if (!appritemfound)
+    {
+        char fbuf[BUFSZ];
+        Sprintf(fbuf, "don't have unicorn horns to apply on %s.", mon_nam(mtmp));
+        play_sfx_sound(SFX_GENERAL_CANNOT);
+        You_ex1_popup(fbuf, "No Unicorn Horns", ATR_NONE, CLR_MSG_FAIL, NO_GLYPH, POPUP_FLAGS_NONE);
+        return 0;
+    }
+
+    char qbuf[BUFSZ * 2] = "";
+    Sprintf(qbuf, "What would you like to apply on %s?", noittame_mon_nam(mtmp));
+
+    add_valid_menu_class(0); /* clear any classes already there */
+    add_valid_menu_class(TOOL_CLASS);
+
+    n = query_objlist(qbuf, &invent,
+        (USE_INVLET | INVORDER_SORT), &pick_list, PICK_ONE,
+        allow_unicorn_horn, SHOWWEIGHTS_DROP);
+
+    boolean res = 0;
+    if (n > 0)
+    {
+        bypass_objlist(invent, TRUE);
+        for (i = 0; i < n; i++)
+        {
+            otmp = pick_list[i].item.a_obj;
+
+            for (otmp2 = invent; otmp2; otmp2 = otmp2->nobj)
+                if (otmp2 == otmp)
+                    break;
+            if (!otmp2 || !otmp2->bypass)
+                continue;
+
+            /* found next selected invent item */
+            cnt = pick_list[i].count;
+            /* only one food item or potion can be fed at a time*/
+            if (cnt > 1)
+                cnt = 1;
+
+            /* Use here */
+            if (set_defensive_unicorn_horn(mtmp, otmp))
+            {
+                use_defensive(mtmp);
+                clear_defensive();
+                //char cstr[BUFSZ];
+                //Sprintf(cstr, "%s has used %s.", upstart(noittame_mon_nam(mtmp)), thecxname(otmp));
+                //display_popup_text(cstr, "Unicorn Horn Used", POPUP_TEXT_GENERAL, ATR_NONE, NO_COLOR, obj_to_glyph(otmp, rn2_on_display_rng), 0);
+            }
+            //else
+            //{
+            //    char cstr[BUFSZ];
+            //    Sprintf(cstr, "%s did not use %s.", upstart(noittame_mon_nam(mtmp)), thecxname(otmp));
+            //    display_popup_text(cstr, "Unicorn Horn Not Used", POPUP_TEXT_GENERAL, ATR_NONE, NO_COLOR, obj_to_glyph(otmp, rn2_on_display_rng), 0);
+            //}
+        }
+        bypass_objlist(invent, FALSE); /* reset invent to normal */
+        free((genericptr_t)pick_list);
+    }
+    else
+    {
+        pline1(Never_mind);
+    }
+
+    return res;
 }
 
 int
