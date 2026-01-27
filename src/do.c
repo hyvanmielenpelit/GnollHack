@@ -1243,6 +1243,9 @@ struct item_description_stats* stats_ptr; /* If non-null, only returns item stat
                     case EDIBLEFX_CURE_TELEPORTITIS:
                         Strcpy(buf2, "Cures teleportitis");
                         break;
+                    case EDIBLEFX_CURE_HALLUCINATION:
+                        Strcpy(buf2, "Cures hallucination");
+                        break;
                     default:
                         break;
                     }

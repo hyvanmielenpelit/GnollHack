@@ -768,6 +768,7 @@ struct objclass {
 #define EDIBLEFX_GAIN_LEVEL -15
 #define EDIBLEFX_CURE_PETRIFICATION -16
 #define EDIBLEFX_CURE_TELEPORTITIS -17
+#define EDIBLEFX_CURE_HALLUCINATION -18
 
 
 /* spells, wands, scrolls */

@@ -687,6 +687,10 @@ boolean verbose;
             }
         }    
         break;
+    case EDIBLEFX_CURE_HALLUCINATION:
+        if (!otmp->cursed)
+            mcurehallucination(mtmp, verbose);
+        break;
     }
     return;
 }

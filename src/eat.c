@@ -3264,6 +3264,18 @@ struct obj *otmp;
         else
             pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "Ulch! That %s had a nasty rubbery texture.", cxname(otmp));
         break;
+    case EDIBLEFX_CURE_HALLUCINATION:
+    {
+        boolean cured = FALSE;
+        if (Hallucination && !otmp->cursed)
+        {
+            cured = TRUE;
+            make_hallucinated(0L, TRUE, 0);
+        }
+        if (cured)
+            play_sfx_sound(SFX_CURE_DISEASE);
+        break;
+    }
     }
     return;
 }
