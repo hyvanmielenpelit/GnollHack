@@ -2281,9 +2281,22 @@ register int type;
 
     for (otmp = invent; otmp; otmp = otmp->nobj)
         if (otmp->otyp == type)
-            return  otmp;
+            return otmp;
     return (struct obj *) 0;
 }
+
+struct obj *
+carrying_class(oclass)
+char oclass;
+{
+    register struct obj *otmp;
+
+    for (otmp = invent; otmp; otmp = otmp->nobj)
+        if (otmp->oclass == oclass)
+            return otmp;
+    return (struct obj *) 0;
+}
+
 
 struct obj*
 carrying_leashed_leash()

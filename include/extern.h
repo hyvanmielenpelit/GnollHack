@@ -1564,6 +1564,7 @@ E struct obj* FDECL(any_obj_at, (int, int, int));
 E struct obj* FDECL(otyp_in_objchn, (int, struct obj*));
 E struct obj *FDECL(nxtobj, (struct obj *, int, BOOLEAN_P));
 E struct obj *FDECL(carrying, (int));
+E struct obj* FDECL(carrying_class, (CHAR_P));
 E struct obj* NDECL(carrying_leashed_leash);
 E struct obj* FDECL(carrying_fitting_unlocking_tool_for_box, (struct obj*));
 E struct obj* FDECL(carrying_fitting_unlocking_tool_for_door, (struct rm*));

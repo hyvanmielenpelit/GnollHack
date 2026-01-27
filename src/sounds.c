@@ -3302,12 +3302,15 @@ struct monst* mtmp;
 
             }
 
-            Sprintf(available_chat_list[chatnum].name, "Give a potion to %s to drink", noittame_mon_nam(mtmp));
-            available_chat_list[chatnum].function_ptr = &do_chat_quaff;
-            //available_chat_list[chatnum].charnum = 'a' + chatnum;
-            available_chat_list[chatnum].stops_dialogue = TRUE;
-            available_chat_list[chatnum].category = CHAT_CATEGORY_INTERACTION;
-            chatnum++;
+            if (carrying_class(POTION_CLASS))
+            {
+                Sprintf(available_chat_list[chatnum].name, "Give a potion to %s to drink", noittame_mon_nam(mtmp));
+                available_chat_list[chatnum].function_ptr = &do_chat_quaff;
+                //available_chat_list[chatnum].charnum = 'a' + chatnum;
+                available_chat_list[chatnum].stops_dialogue = TRUE;
+                available_chat_list[chatnum].category = CHAT_CATEGORY_INTERACTION;
+                chatnum++;
+            }
 
             if (carrying(UNICORN_HORN) && has_mon_need_for_unicorn_horn(mtmp))
             {
