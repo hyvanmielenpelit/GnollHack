@@ -409,7 +409,7 @@ char *argv[];
             break;
         case 'P': /* Petless */
             preferred_pet = 'n';
-            flags.no_pets_preference = TRUE;
+            flags.pets_not_gifted = TRUE;
             break;
         case 'T':
             TournamentMode = TRUE;
