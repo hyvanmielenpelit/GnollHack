@@ -943,7 +943,7 @@ int x, y;
         return;
     }
     if (level.monsters[x][y])
-        impossible("placing monster (mnum=%d) over another (mnum=%d) at <%d,%d>?", mon->mnum, level.monsters[x][y]->mnum, x, y);
+        impossible("placing monster (mnum=%d) over another (mnum=%d) at <%d,%d> on level (%d,%d)?", mon->mnum, level.monsters[x][y]->mnum, x, y, (int)u.uz.dnum, (int)u.uz.dlevel);
     mon->mx = x, mon->my = y;
     level.monsters[x][y] = mon;
 }

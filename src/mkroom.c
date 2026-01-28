@@ -453,6 +453,8 @@ STATIC_OVL int
 mkzoo(type)
 int type;
 {
+    debugprint("mkzoo: %d", type);
+
     register struct mkroom *sroom;
     int x, y;
 
@@ -611,6 +613,7 @@ struct mkroom *sroom;
     int rmno = (int) ((sroom - rooms) + ROOMOFFSET);
     coord mm;
     int librarytype = 0;
+    debugprint("fill_zoo: %d", type);
 
     register int roll = rn2(4);
     int hd = level_difficulty();
@@ -1189,6 +1192,7 @@ int mm_flags;
     struct obj *otmp;
     coord cc;
     struct monst* mtmp;
+    debugprint("mkundead");
 
     context.makemon_spef_idx = 0;
     while (cnt--) {
@@ -1331,6 +1335,7 @@ mkswamp() /* Michiel Huisjes & Fred de Wilde */
     register struct mkroom *sroom;
     register int sx, sy, i, eelct = 0;
     int swampnumber = 0;
+    debugprint("mkswamp");
 
     for (i = 0; i < 5; i++) { /* turn up to 5 rooms swampy */
         sroom = &rooms[rn2(nroom)];
@@ -1414,6 +1419,7 @@ mkgarden()
 {
     register struct mkroom* sroom = (struct mkroom*)0;
     register int sx, sy, i;
+    debugprint("mkgarden");
 
     for (i = 0; i < nroom; i++) { /* turn up to 1 rooms gardenlike */
         sroom = &rooms[rn2(nroom)];
@@ -1675,6 +1681,7 @@ mkdragonlair()
 {
     register struct mkroom* sroom = (struct mkroom*)0;
     register int sx, sy, i, j;
+    debugprint("mkdragonlair");
 
     for (i = 0; i < nroom; i++) { /* turn up to 1 rooms into a dragon lair */
         sroom = &rooms[rn2(nroom)];
@@ -1897,6 +1904,7 @@ mktemple()
     if (!(sroom = pick_room(TRUE)))
         return 0;
 
+    debugprint("mktemple");
     /* set up Priest and shrine */
     sroom->rtype = TEMPLE;
     /*
@@ -2025,6 +2033,7 @@ mksmithy()
     if (!(sroom = pick_room(TRUE)))
         return 0;
 
+    debugprint("mksmithy");
     /* set up the smith and the smithy */
     sroom->rtype = SMITHY;
     /*
@@ -2097,6 +2106,7 @@ int npctyp;
     if (!(sroom = pick_room(TRUE)))
         return 0;
 
+    debugprint("mknpcroom");
     sroom->rtype = NPCROOM;
 
     schar u_depth = depth(&u.uz);
