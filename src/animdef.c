@@ -4493,7 +4493,7 @@ NEARDATA const struct animation_definition animations[MAX_ANIMATIONS] =
       ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, ANIMATION_MAIN_TILE_IGNORE,
       AUTODRAW_NONE,
       { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31 },
-      4, 7,
+      4, 6,
       RUST_MONSTER_ATTACK_ENLARGEMENT,
       { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
     },
@@ -4503,11 +4503,10 @@ NEARDATA const struct animation_definition animations[MAX_ANIMATIONS] =
       ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, ANIMATION_MAIN_TILE_IGNORE,
       AUTODRAW_NONE,
       { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31 },
-      5, 10,
+      4, 10,
       DISENCHANTER_ATTACK_ENLARGEMENT,
       { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
     },
-    
 };
 
 NEARDATA const struct enlargement_definition enlargements[MAX_ENLARGEMENTS] =
@@ -9765,6 +9764,14 @@ NEARDATA const struct enlargement_definition enlargements[MAX_ENLARGEMENTS] =
         { 0, 0, 0, 0, 0 },
         { 0, 0, 0, 0, 0 }
       },
+      { "disenchanter-attack-enlargement",
+        14, 14,
+        5,
+        3, 2, 0,
+        { 0, 1, 2, 3, 4 },
+        { 0, 0, 0, 0, 0 },
+        { 0, 0, 0, 0, 0 }
+      },
       { "leucrotta-enlargement", 0, 0,
         5,
         3, 2, 0,
@@ -11842,28 +11849,20 @@ NEARDATA const struct enlargement_definition enlargements[MAX_ENLARGEMENTS] =
        { 0, 0, 0, 0, 0 }
       },
       { "cockatrice-attack-enlargement",
-      8, 8,
-      2,
-      3, 1, 0,
-      { -1, -1, -1, 0, 1 },
-      { 0, 0, 0, 0, 0 },
-      { 0, 0, 0, 0, 0 }
-    },
-    { "rust-monster-attack-enlargement",
-        9, 9,
-        2,
-        3, 1, 0,
-        { -1, -1, -1, 0, 1 },
-        { 0, 0, 0, 0, 0 },
-        { 0, 0, 0, 0, 0 }
-     },
-     { "disenchanter-attack-enlargement",
-        14, 14,
-        5,
-        3, 2, 0,
-        { 0, 1, 2, 3, 4 },
-        { 0, 0, 0, 0, 0 },
-        { 0, 0, 0, 0, 0 }
+       8, 8,
+       2,
+       3, 1, 0,
+       { -1, -1, -1, 0, 1 },
+       { 0, 0, 0, 0, 0 },
+       { 0, 0, 0, 0, 0 }
+      },
+      { "rust-monster-attack-enlargement",
+       9, 9,
+       2,
+       3, 1, 0,
+       { -1, -1, -1, 0, 1 },
+       { 0, 0, 0, 0, 0 },
+       { 0, 0, 0, 0, 0 }
       },
 };
 
