@@ -151,7 +151,10 @@ namespace GnollHackX.Droid
                 {
                     //GHApp.MaybeWriteGHLog(ex.Message);
                 }
-                /* KillProcess above has failed if we end up here */
+                /* Try also this way if KillProcess didn't work */
+                Java.Lang.JavaSystem.Exit(0);
+
+                /* KillProcess and JavaSystem.Exit both failed if we end up here */
                 Microsoft.Maui.Controls.Application.Current.Quit();
 #else
                 MainActivity.CurrentMainActivity.FinishAffinity();

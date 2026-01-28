@@ -520,6 +520,7 @@ namespace GnollHackX
             if (activity != null)
             {
                 activity.FinishAffinity();
+                activity.Finish();
                 await Task.Delay(250);
                 didAwait = true;
             }
