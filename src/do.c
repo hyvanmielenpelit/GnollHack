@@ -355,15 +355,15 @@ docharacterstatistics(VOID_ARGS)
     putstr(datawin, ATR_HEADING, buf);
 
     /* Nutrition consumption */
-    Sprintf(buf, " Nutrition usage:   %6.2f / round", calchungry(known_props));
+    Sprintf(buf, " Nutrition usage:   %6.2f / turn", calchungry(known_props));
     putstr(datawin, ATR_INDENT_AT_COLON, buf);
 
     /* Regeneration */
-    Sprintf(buf, " HP regeneration:   %6.2f / round", calculate_hp_regeneration(known_props));
+    Sprintf(buf, " HP regeneration:   %6.2f / turn", calculate_hp_regeneration(known_props));
     putstr(datawin, ATR_INDENT_AT_COLON, buf);
 
     /* Mana regeneration */
-    Sprintf(buf, " Mana regeneration: %6.2f / round", calculate_mana_regeneration(known_props));
+    Sprintf(buf, " Mana regeneration: %6.2f / turn", calculate_mana_regeneration(known_props));
     putstr(datawin, ATR_INDENT_AT_COLON, buf);
 
 
@@ -1137,7 +1137,8 @@ struct item_description_stats* stats_ptr; /* If non-null, only returns item stat
         /* Nutritinal value */
         if (obj ? is_edible(obj) : is_otyp_normally_edible(otyp))
         {
-            Sprintf(buf2, "%u rounds", !obj ? objects[otyp].oc_nutrition : obj->oeaten ? obj->oeaten : obj_nutrition(obj, &youmonst));
+            unsigned nutvalue = !obj ? objects[otyp].oc_nutrition : obj->oeaten ? obj->oeaten : obj_nutrition(obj, &youmonst);
+            Sprintf(buf2, "%u turn%s", nutvalue, plur(nutvalue));
             Sprintf(buf, "Nutritional value:      %s", buf2);            
             putstr(datawin, ATR_INDENT_AT_COLON, buf);
         }
@@ -1479,8 +1480,8 @@ struct item_description_stats* stats_ptr; /* If non-null, only returns item stat
         if (objects[otyp].oc_multishot_style > 0 || is_otyp_launcher(otyp) || is_otyp_nonmelee_throwing_weapon(otyp)) {
 
             Sprintf(buf, "%s  %s", 
-                is_otyp_launcher(otyp) ? "Shots per round:      " : 
-                is_otyp_nonmelee_throwing_weapon(otyp) ? "Throws per round:     " : "Attacks per round:    ", 
+                is_otyp_launcher(otyp) ? "Shots per turn:       " : 
+                is_otyp_nonmelee_throwing_weapon(otyp) ? "Throws per turn:      " : "Attacks per turn:     ", 
                 multishot_style_names[objects[otyp].oc_multishot_style]);
 
             putstr(datawin, ATR_INDENT_AT_COLON, buf);
@@ -2141,7 +2142,7 @@ struct item_description_stats* stats_ptr; /* If non-null, only returns item stat
                 //    Strcat(buf, plusbuf);
                 //}
 
-                Sprintf(plusbuf, " round%s", (objects[otyp].oc_spell_dur_dice == 0 && objects[otyp].oc_spell_dur_diesize == 0 && applied_plus == 1) ? "" : "s");
+                Sprintf(plusbuf, " turn%s", (objects[otyp].oc_spell_dur_dice == 0 && objects[otyp].oc_spell_dur_diesize == 0 && applied_plus == 1) ? "" : "s");
                 Strcat(buf, plusbuf);
 
                 if (objects[otyp].oc_spell_dur_buc_plus != 0 && obj && !obj->bknown)
@@ -2256,7 +2257,7 @@ struct item_description_stats* stats_ptr; /* If non-null, only returns item stat
                 else if (objects[otyp].oc_flags5 & O5_EFFECT_IS_MANA)
                     Strcpy(plusbuf, " mana");
                 else
-                    Sprintf(plusbuf, " round%s", (dice == 0 && objects[otyp].oc_potion_normal_diesize == 0 && plus == 1) ? "" : "s");
+                    Sprintf(plusbuf, " turn%s", (dice == 0 && objects[otyp].oc_potion_normal_diesize == 0 && plus == 1) ? "" : "s");
                 Strcat(buf, plusbuf);
 
                 if(objects[otyp].oc_flags5 & O5_EFFECT_FOR_BLESSED_ONLY)
@@ -2316,7 +2317,7 @@ struct item_description_stats* stats_ptr; /* If non-null, only returns item stat
                 else if (objects[otyp].oc_flags5 & O5_EFFECT_IS_MANA)
                     Strcpy(plusbuf, " mana");
                 else
-                    Sprintf(plusbuf, " round%s", (dice == 0 && objects[otyp].oc_potion_breathe_diesize == 0 && plus == 1) ? "" : "s");
+                    Sprintf(plusbuf, " turn%s", (dice == 0 && objects[otyp].oc_potion_breathe_diesize == 0 && plus == 1) ? "" : "s");
                 Strcat(buf, plusbuf);
 
                 if (objects[otyp].oc_flags5 & O5_EFFECT_FOR_BLESSED_ONLY)
@@ -2493,7 +2494,7 @@ struct item_description_stats* stats_ptr; /* If non-null, only returns item stat
                 //    Strcat(buf, plusbuf);
                 //}
 
-                Sprintf(plusbuf, " round%s", (dice == 0 && objects[otyp].oc_potion_nutrition_diesize == 0 && plus == 1) ? "" : "s");
+                Sprintf(plusbuf, " turn%s", (dice == 0 && objects[otyp].oc_potion_nutrition_diesize == 0 && plus == 1) ? "" : "s");
                 Strcat(buf, plusbuf);
                 putstr(datawin, ATR_INDENT_AT_COLON, buf);
             }
@@ -2837,19 +2838,19 @@ struct item_description_stats* stats_ptr; /* If non-null, only returns item stat
 
     if (stats_known && objects[otyp].oc_item_cooldown > 0)
     {
-        Sprintf(buf, "Cooldown time:          %d rounds", (int)objects[otyp].oc_item_cooldown);
+        Sprintf(buf, "Cooldown time:          %d turn%s", (int)objects[otyp].oc_item_cooldown, plur((int)objects[otyp].oc_item_cooldown));
         putstr(datawin, ATR_INDENT_AT_COLON, buf);
 
         if (obj && obj->cooldownleft > 0)
         {
-            Sprintf(buf, "Cooldown left:          %d rounds", (int)obj->cooldownleft);
+            Sprintf(buf, "Cooldown left:          %d turn%s", (int)obj->cooldownleft, plur((int)obj->cooldownleft));
             putstr(datawin, ATR_INDENT_AT_COLON, buf);
         }
     }
 
     if (obj && stats_known && obj->repowerleft > 0)
     {
-        Sprintf(buf, "Repowering time left:   %d rounds", (int)obj->repowerleft);
+        Sprintf(buf, "Repowering time left:   %d turn%s", (int)obj->repowerleft, plur((int)obj->repowerleft));
         putstr(datawin, ATR_INDENT_AT_COLON, buf);
     }
 
@@ -2861,7 +2862,7 @@ struct item_description_stats* stats_ptr; /* If non-null, only returns item stat
 
     if (obj && stats_known && obj->invokeleft > 0)
     {
-        Sprintf(buf, "Invoke time left:       %d rounds", (int)obj->invokeleft);
+        Sprintf(buf, "Invoke time left:       %d turn%s", (int)obj->invokeleft, plur((int)obj->invokeleft));
         putstr(datawin, ATR_INDENT_AT_COLON, buf);
     }
 
@@ -3713,7 +3714,7 @@ struct item_description_stats* stats_ptr; /* If non-null, only returns item stat
             || (ocflags6 & (O6_THROWING_REQUIRES_STR_18_00))
             || otyp_shines_magical_light(otyp)
             || (obj && has_obj_mythic_fire_resistance(obj)) || (obj && has_obj_mythic_cold_resistance(obj)) || (obj && has_obj_mythic_shock_resistance(obj))
-            || is_otyp_special_praying_item(otyp) || otyp_consumes_nutrition_every_20_rounds(otyp)
+            || is_otyp_special_praying_item(otyp) || otyp_consumes_nutrition_every_20_turns(otyp)
             || (obj ? is_death_enchantable(obj) : is_otyp_death_enchantable(otyp)) //|| is_otyp_elemental_enchantable(otyp) 
             )
         {
@@ -3865,10 +3866,10 @@ struct item_description_stats* stats_ptr; /* If non-null, only returns item stat
                 Sprintf(buf, " %2d - If blessed, shimmers when it is safe to pray", powercnt);
                 putstr(datawin, ATR_INDENT_AT_DASH | ATR_ORDERED_LIST, buf);
             }
-            if (otyp_consumes_nutrition_every_20_rounds(otyp))
+            if (otyp_consumes_nutrition_every_20_turns(otyp))
             {
                 powercnt++;
-                Sprintf(buf, " %2d - Consumes nutrition every 20 rounds when worn", powercnt);
+                Sprintf(buf, " %2d - Consumes nutrition every 20 turns when worn", powercnt);
                 putstr(datawin, ATR_INDENT_AT_DASH | ATR_ORDERED_LIST, buf);
             }
             if (ocflags5 & O5_MBAG_DESTROYING_ITEM)
@@ -4113,7 +4114,7 @@ struct item_description_stats* stats_ptr; /* If non-null, only returns item stat
 
                     //if (artilist[obj->oartifact].inv_duration_dice > 0 && artilist[obj->oartifact].inv_duration_diesize > 0)
                     //{
-                    //    Sprintf(buf, "      * Effect duration is %dd%d%s rounds", artilist[obj->oartifact].inv_duration_dice, artilist[obj->oartifact].inv_duration_diesize, plusbuf);
+                    //    Sprintf(buf, "      * Effect duration is %dd%d%s turns", artilist[obj->oartifact].inv_duration_dice, artilist[obj->oartifact].inv_duration_diesize, plusbuf);
                     //}
                     //else
                     //    Sprintf(buf, "      * Effect duration is %s", plusbuf);
@@ -4142,7 +4143,7 @@ struct item_description_stats* stats_ptr; /* If non-null, only returns item stat
 
             if (artilist[obj->oartifact].repower_time > 0)
             {
-                Sprintf(buf, "      * Repowers over %d round%s", artilist[obj->oartifact].repower_time, plur(artilist[obj->oartifact].repower_time));
+                Sprintf(buf, "      * Repowers over %d turn%s", artilist[obj->oartifact].repower_time, plur(artilist[obj->oartifact].repower_time));
                 putstr(datawin, ATR_INDENT_AT_ASTR, buf);
             }
 
@@ -4772,13 +4773,13 @@ struct item_description_stats* stats_ptr; /* If non-null, only returns item stat
                 powercnt++;
                 const char* applicable_verb = is_thrown_weapon_only(obj) ? "throw" : is_launcher(obj) || ammo_and_launcher(obj, applicable_launcher) ? "fire" : "strike";
                 if (average_multi_shot_times == 1.0)
-                    Sprintf(buf, " %2d - You %s once per round", powercnt, applicable_verb);
+                    Sprintf(buf, " %2d - You %s once per turn", powercnt, applicable_verb);
                 else if (average_multi_shot_times == 2.0)
-                    Sprintf(buf, " %2d - You %s twice per round", powercnt, applicable_verb);
+                    Sprintf(buf, " %2d - You %s twice per turn", powercnt, applicable_verb);
                 else if (average_multi_shot_times == 3.0)
-                    Sprintf(buf, " %2d - You %s three times per round", powercnt, applicable_verb);
+                    Sprintf(buf, " %2d - You %s three times per turn", powercnt, applicable_verb);
                 else
-                    Sprintf(buf, " %2d - You %s an average of %.1f time%s per round", powercnt, applicable_verb, average_multi_shot_times, plur(average_multi_shot_times));
+                    Sprintf(buf, " %2d - You %s an average of %.1f time%s per turn", powercnt, applicable_verb, average_multi_shot_times, plur(average_multi_shot_times));
 
                 putstr(datawin, ATR_INDENT_AT_DASH | ATR_ORDERED_LIST, buf);
 
@@ -4793,12 +4794,12 @@ struct item_description_stats* stats_ptr; /* If non-null, only returns item stat
                 }
 
                 powercnt++;
-                Sprintf(buf, " %2d - Your basic average damage is %.1f per round", powercnt, wep_avg_dmg);
+                Sprintf(buf, " %2d - Your basic average damage is %.1f per turn", powercnt, wep_avg_dmg);
                 putstr(datawin, ATR_INDENT_AT_DASH | ATR_ORDERED_LIST, buf);
                 if (wep_all_extra_avg_dmg != 0)
                 {
                     powercnt++;
-                    Sprintf(buf, " %2d - Your average damage with extras is %.1f per round", powercnt, wep_avg_dmg + wep_all_extra_avg_dmg);
+                    Sprintf(buf, " %2d - Your average damage with extras is %.1f per turn", powercnt, wep_avg_dmg + wep_all_extra_avg_dmg);
                     putstr(datawin, ATR_INDENT_AT_DASH | ATR_ORDERED_LIST, buf);
                 }
 
@@ -4812,17 +4813,17 @@ struct item_description_stats* stats_ptr; /* If non-null, only returns item stat
                     else
                         Strcpy(dmgbuf, "further");
                     powercnt++;
-                    Sprintf(buf, " %2d - %s will cause %s damage per round", powercnt, uquiver ? Yname2(uquiver) : "Your ammo", dmgbuf);
+                    Sprintf(buf, " %2d - %s will cause %s damage per turn", powercnt, uquiver ? Yname2(uquiver) : "Your ammo", dmgbuf);
                     putstr(datawin, ATR_INDENT_AT_DASH | ATR_ORDERED_LIST, buf);
                     if (ammo_stats.stats_set && ammo_stats.weapon_stats_printed)
                     {
                         powercnt++;
-                        Sprintf(buf, " %2d - Your average damage with ammo is %.1f per round", powercnt, wep_avg_dmg + ammo_stats.avg_damage);
+                        Sprintf(buf, " %2d - Your average damage with ammo is %.1f per turn", powercnt, wep_avg_dmg + ammo_stats.avg_damage);
                         putstr(datawin, ATR_INDENT_AT_DASH | ATR_ORDERED_LIST, buf);
                         if (wep_all_extra_avg_dmg != 0)
                         {
                             powercnt++;
-                            Sprintf(buf, " %2d - Your average damage with ammo and extras is %.1f per round", powercnt, wep_avg_dmg + wep_all_extra_avg_dmg + ammo_stats.avg_damage);
+                            Sprintf(buf, " %2d - Your average damage with ammo and extras is %.1f per turn", powercnt, wep_avg_dmg + wep_all_extra_avg_dmg + ammo_stats.avg_damage);
                             putstr(datawin, ATR_INDENT_AT_DASH | ATR_ORDERED_LIST, buf);
                         }
                     }
@@ -4837,17 +4838,17 @@ struct item_description_stats* stats_ptr; /* If non-null, only returns item stat
                     else
                         Strcpy(dmgbuf, "further");
                     powercnt++;
-                    Sprintf(buf, " %2d - %s will cause %s damage per round", powercnt, applicable_launcher ? Yname2(applicable_launcher) : "Your launcher", dmgbuf);
+                    Sprintf(buf, " %2d - %s will cause %s damage per turn", powercnt, applicable_launcher ? Yname2(applicable_launcher) : "Your launcher", dmgbuf);
                     putstr(datawin, ATR_INDENT_AT_DASH | ATR_ORDERED_LIST, buf);
                     if (launcher_stats.stats_set && launcher_stats.weapon_stats_printed)
                     {
                         powercnt++;
-                        Sprintf(buf, " %2d - Your average damage with launcher is %.1f per round", powercnt, wep_avg_dmg + launcher_stats.avg_damage);
+                        Sprintf(buf, " %2d - Your average damage with launcher is %.1f per turn", powercnt, wep_avg_dmg + launcher_stats.avg_damage);
                         putstr(datawin, ATR_INDENT_AT_DASH | ATR_ORDERED_LIST, buf);
                         if (wep_all_extra_avg_dmg != 0)
                         {
                             powercnt++;
-                            Sprintf(buf, " %2d - Your average damage with launcher and extras is %.1f per round", powercnt, wep_avg_dmg + wep_all_extra_avg_dmg + launcher_stats.avg_damage);
+                            Sprintf(buf, " %2d - Your average damage with launcher and extras is %.1f per turn", powercnt, wep_avg_dmg + wep_all_extra_avg_dmg + launcher_stats.avg_damage);
                             putstr(datawin, ATR_INDENT_AT_DASH | ATR_ORDERED_LIST, buf);
                         }
                     }

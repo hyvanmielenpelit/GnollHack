@@ -727,10 +727,10 @@ enum elemental_enchantments {
     ((objects[(otyp)].oc_flags3 & O3_BURIED_SEARCHABLE) != 0)
 #define is_otyp_content_description_shuffled(otyp) \
     ((objects[(otyp)].oc_flags3 & O3_CONTENT_DESCRIPTION_SHUFFLED) != 0)
-#define otyp_consumes_nutrition_every_20_rounds(otyp) \
-    ((objects[(otyp)].oc_flags3 & O3_CONSUMES_NUTRITION_EVERY_20_ROUNDS) != 0)
-#define obj_consumes_nutrition_every_20_rounds(otmp) \
-    otyp_consumes_nutrition_every_20_rounds((otmp)->otyp)
+#define otyp_consumes_nutrition_every_20_turns(otyp) \
+    ((objects[(otyp)].oc_flags3 & O3_CONSUMES_NUTRITION_EVERY_20_TURNS) != 0)
+#define obj_consumes_nutrition_every_20_turns(otmp) \
+    otyp_consumes_nutrition_every_20_turns((otmp)->otyp)
 #define is_otyp_quaffable(otyp)                                 \
     ((objects[otyp].oc_flags3 & O3_QUAFFABLE) != 0)
 #define is_obj_quaffable(obj)                                 \

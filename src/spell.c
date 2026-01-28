@@ -2059,9 +2059,9 @@ int spell, booktype;
 
     /* Casting time*/
     if(objects[booktype].oc_spell_flags & S1_DOES_NOT_TAKE_A_TURN)
-        Strcpy(buf2, "0 rounds");
+        Strcpy(buf2, "0 turns");
     else
-        Strcpy(buf2, "1 round");
+        Strcpy(buf2, "1 turn");
 
     Sprintf(buf, "Casting time:     %s", buf2);    
     putstr(datawin, ATR_INDENT_AT_COLON, buf);
@@ -2069,7 +2069,7 @@ int spell, booktype;
     /* Cooldown */
     if (objects[booktype].oc_spell_cooldown > 0)
     {
-        Sprintf(buf2, "%lld round%s", (long long)objects[booktype].oc_spell_cooldown, objects[booktype].oc_spell_cooldown == 1 ? "" : "s");
+        Sprintf(buf2, "%lld turn%s", (long long)objects[booktype].oc_spell_cooldown, objects[booktype].oc_spell_cooldown == 1 ? "" : "s");
     }
     else
     {
@@ -2323,7 +2323,7 @@ int spell, booktype;
         //    Sprintf(plusbuf, "%d", objects[booktype].oc_spell_dur_plus);
         //    Strcat(buf, plusbuf);
         //}
-        Sprintf(plusbuf, " round%s", (objects[booktype].oc_spell_dur_dice == 0 && objects[booktype].oc_spell_dur_diesize == 0 && objects[booktype].oc_spell_dur_plus == 1) ? "" : "s");
+        Sprintf(plusbuf, " turn%s", (objects[booktype].oc_spell_dur_dice == 0 && objects[booktype].oc_spell_dur_diesize == 0 && objects[booktype].oc_spell_dur_plus == 1) ? "" : "s");
         Strcat(buf, plusbuf);        
         putstr(datawin, ATR_INDENT_AT_COLON, buf);
     }

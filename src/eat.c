@@ -4132,23 +4132,23 @@ boolean* known_props;
     if (known_props[CONFLICT] && (HConflict || (EConflict & (~W_ARTIFACT_INVOKED))))
         res += 0.5;
 
-    if (umisc && objects[umisc->otyp].oc_name_known && obj_consumes_nutrition_every_20_rounds(umisc))
+    if (umisc && objects[umisc->otyp].oc_name_known && obj_consumes_nutrition_every_20_turns(umisc))
         res += 0.05;
     if (uleft && objects[uleft->otyp].oc_name_known && objects[uleft->otyp].oc_magic && (uleft->enchantment || !objects[uleft->otyp].oc_enchantable))
         res += 0.05;
-    if (umisc2 && objects[umisc2->otyp].oc_name_known && obj_consumes_nutrition_every_20_rounds(umisc2))
+    if (umisc2 && objects[umisc2->otyp].oc_name_known && obj_consumes_nutrition_every_20_turns(umisc2))
         res += 0.05;
     if (uamul && objects[uamul->otyp].oc_name_known && objects[uamul->otyp].oc_magic)
         res += 0.05;
-    if (umisc3 && objects[umisc3->otyp].oc_name_known && obj_consumes_nutrition_every_20_rounds(umisc3))
+    if (umisc3 && objects[umisc3->otyp].oc_name_known && obj_consumes_nutrition_every_20_turns(umisc3))
         res += 0.05;
     if (uright && objects[uright->otyp].oc_name_known && objects[uright->otyp].oc_magic && (uright->enchantment || !objects[uright->otyp].oc_enchantable))
         res += 0.05;
-    if (umisc4 && objects[umisc4->otyp].oc_name_known && obj_consumes_nutrition_every_20_rounds(umisc4))
+    if (umisc4 && objects[umisc4->otyp].oc_name_known && obj_consumes_nutrition_every_20_turns(umisc4))
         res += 0.05;
     if (objects[AMULET_OF_YENDOR].oc_name_known && u.uhave.amulet)
         res += 0.05;
-    if (umisc5 && objects[umisc5->otyp].oc_name_known && obj_consumes_nutrition_every_20_rounds(umisc5))
+    if (umisc5 && objects[umisc5->otyp].oc_name_known && obj_consumes_nutrition_every_20_turns(umisc5))
         res += 0.05;
 
     return res;
@@ -4206,7 +4206,7 @@ gethungry()
            Slow digestion cancels move hunger but still causes ring hunger. */
         switch ((int) (moves % 20)) { /* note: use even cases only */
         case 2:
-            if(umisc && obj_consumes_nutrition_every_20_rounds(umisc))
+            if(umisc && obj_consumes_nutrition_every_20_turns(umisc))
                 u.uhunger--;
             break;
         case 4:
@@ -4214,7 +4214,7 @@ gethungry()
                 u.uhunger--;
             break;
         case 6:
-            if (umisc2 && obj_consumes_nutrition_every_20_rounds(umisc2))
+            if (umisc2 && obj_consumes_nutrition_every_20_turns(umisc2))
                 u.uhunger--;
             break;
         case 8:
@@ -4222,7 +4222,7 @@ gethungry()
                 u.uhunger--;
             break;
         case 10:
-            if (umisc3 && obj_consumes_nutrition_every_20_rounds(umisc3))
+            if (umisc3 && obj_consumes_nutrition_every_20_turns(umisc3))
                 u.uhunger--;
             break;
         case 12:
@@ -4230,7 +4230,7 @@ gethungry()
                 u.uhunger--;
             break;
         case 14:
-            if (umisc4 && obj_consumes_nutrition_every_20_rounds(umisc4))
+            if (umisc4 && obj_consumes_nutrition_every_20_turns(umisc4))
                 u.uhunger--;
             break;
         case 16:
@@ -4238,7 +4238,7 @@ gethungry()
                 u.uhunger--;
             break;
         case 18:
-            if (umisc5 && obj_consumes_nutrition_every_20_rounds(umisc5))
+            if (umisc5 && obj_consumes_nutrition_every_20_turns(umisc5))
                 u.uhunger--;
             break;
         default:

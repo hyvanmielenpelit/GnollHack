@@ -1509,7 +1509,7 @@ int abilitynum;
             any = zeroany;
             if (u.usteed->mspec_used > 0)
             {
-                Sprintf(available_ability_list[abilitynum].name, "Breath weapon cooling down (%u round%s left)", u.usteed->mspec_used, plur(u.usteed->mspec_used));
+                Sprintf(available_ability_list[abilitynum].name, "Breath weapon cooling down (%u turn%s left)", u.usteed->mspec_used, plur(u.usteed->mspec_used));
                 mcolor = CLR_GRAY;
             }
             else
@@ -1522,7 +1522,7 @@ int abilitynum;
                 else
                     printdice(cooldownbuf, MONSTER_BREATH_WEAPON_NORMAL_COOLDOWN_DICE, MONSTER_BREATH_WEAPON_NORMAL_COOLDOWN_DIESIZE, MONSTER_BREATH_WEAPON_NORMAL_COOLDOWN_CONSTANT);
                 const char* steedbreathefmt = ((windowprocs.wincap2 & WC2_SPECIAL_SYMBOLS) != 0) ?
-                    "%s (&cool; %s after use)" : "%s (%s round cooldown after use)";
+                    "%s (&cool; %s after use)" : "%s (%s turn cooldown after use)";
                 Sprintf(available_ability_list[abilitynum].name, steedbreathefmt, "Command the steed to use breath weapon", cooldownbuf);
                 any.a_int = abilitynum + 1;
                 mcolor = NO_COLOR;

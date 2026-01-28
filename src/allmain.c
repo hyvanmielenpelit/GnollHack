@@ -17,9 +17,9 @@
 #ifdef POSITIONBAR
 STATIC_DCL void NDECL(do_positionbar);
 #endif
-STATIC_DCL int FDECL(regenerate_hp_rounds_to_full, (int, boolean*));
+STATIC_DCL int FDECL(regenerate_hp_turns_to_full, (int, boolean*));
 STATIC_DCL void NDECL(regenerate_hp);
-STATIC_DCL int FDECL(regenerate_mana_rounds_to_full, (boolean*));
+STATIC_DCL int FDECL(regenerate_mana_turns_to_full, (boolean*));
 STATIC_DCL void NDECL(regenerate_mana);
 STATIC_DCL void FDECL(interrupt_multi, (const char *, int, int));
 STATIC_DCL void FDECL(debug_fields, (const char *));
@@ -770,7 +770,7 @@ maybe_create_rwraith()
 }
 
 STATIC_OVL int
-regenerate_hp_rounds_to_full(relevant_hpmax, known_props)
+regenerate_hp_turns_to_full(relevant_hpmax, known_props)
 int relevant_hpmax;
 boolean* known_props;
 {
@@ -792,7 +792,7 @@ boolean* known_props;
         return 0.0;
 
     int relevant_hpmax = Upolyd ? u.mhmax : u.uhpmax;
-    int roundstofull = regenerate_hp_rounds_to_full(relevant_hpmax, known_props);
+    int roundstofull = regenerate_hp_turns_to_full(relevant_hpmax, known_props);
     double res = (double)relevant_hpmax / (double)roundstofull;
 
     /* Mummy rot here */
@@ -850,7 +850,7 @@ regenerate_hp(VOID_ARGS)
 {
     /* regenerate hp */
     int relevant_hpmax = Upolyd ? u.mhmax : u.uhpmax;
-    int roundstofull = regenerate_hp_rounds_to_full(relevant_hpmax, (boolean*)0);
+    int roundstofull = regenerate_hp_turns_to_full(relevant_hpmax, (boolean*)0);
     int fixedhpperround = relevant_hpmax / roundstofull;
     int fractional_hp = (10000 * (relevant_hpmax % roundstofull)) / roundstofull;
     int added_hp = 0;
@@ -1095,7 +1095,7 @@ regenerate_hp(VOID_ARGS)
 }
 
 STATIC_OVL int
-regenerate_mana_rounds_to_full(known_props)
+regenerate_mana_turns_to_full(known_props)
 boolean* known_props;
 {
     /* regenerate mana */
@@ -1112,7 +1112,7 @@ STATIC_OVL void
 regenerate_mana(VOID_ARGS)
 {
     /* regenerate mana */
-    int roundstofull = regenerate_mana_rounds_to_full((boolean*)0);
+    int roundstofull = regenerate_mana_turns_to_full((boolean*)0);
     int fixedmanaperround = u.uenmax / roundstofull;
     int fractional_mana = (10000 * (u.uenmax % roundstofull)) / roundstofull;
 
@@ -1143,7 +1143,7 @@ double
 calculate_mana_regeneration(known_props)
 boolean* known_props;
 {
-    int roundstofull = regenerate_mana_rounds_to_full(known_props);
+    int roundstofull = regenerate_mana_turns_to_full(known_props);
     return (double)u.uenmax / (double)roundstofull;
 }
 

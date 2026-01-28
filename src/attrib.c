@@ -1863,7 +1863,7 @@ int propidx; /* OBSOLETE: special cases can have negative values */
                 int64_t dur = u.uprops[propidx].intrinsic & TIMEOUT;
                 if (*buf)
                     Strcat(buf, " and");
-                Sprintf(eos(buf), " %s%s (%lld round%s left)", because_used ? "" : "because of ", "an effect", (long long)dur, plur(dur));
+                Sprintf(eos(buf), " %s%s (%lld turn%s left)", because_used ? "" : "because of ", "an effect", (long long)dur, plur(dur));
             }
         }
         else { /* negative property index */

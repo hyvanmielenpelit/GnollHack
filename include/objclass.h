@@ -994,7 +994,7 @@ struct objclass {
 #define O3_DOUBLE_DIGGING_EFFORT                       0x00000010UL  /* double normal digging effort */
 #define O3_BURIED_SEARCHABLE                           0x00000020UL  /* if buried, can be found by explicit searching */
 #define O3_CONTENT_DESCRIPTION_SHUFFLED                0x00000040UL  /* uses (shuffled) description index instead of name index for content description */
-#define O3_CONSUMES_NUTRITION_EVERY_20_ROUNDS          0x00000080UL  /* consumes nutrition every 20 rounds when worn. WORKS ONLY FOR MISCELLANEOUS MAGIC ITEMS */
+#define O3_CONSUMES_NUTRITION_EVERY_20_TURNS           0x00000080UL  /* consumes nutrition every 20 rounds when worn. WORKS ONLY FOR MISCELLANEOUS MAGIC ITEMS */
 #define O3_USES_FIXED_DAMAGE_BONUS_INSTEAD_OF_STRENGTH 0x00000100UL 
 
 #define O3_PREVENTS_REVIVAL_OF_PERMITTED_TARGETS       0x00000200UL  /* wielding or wearing prohibits the revival of permitted targets */

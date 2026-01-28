@@ -1775,7 +1775,7 @@ struct permonst* ptr;
                 if (strcmp(endbuf, ""))
                     Strcat(endbuf, ", ");
 
-                Sprintf(eos(endbuf), "temporary for %d rounds", temp_dur);
+                Sprintf(eos(endbuf), "temporary for %d turn%s", temp_dur, plur(temp_dur));
             }
 
             if (strcmp(endbuf, ""))

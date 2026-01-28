@@ -3193,7 +3193,7 @@ struct monst* mtmp;
                     available_chat_list[chatnum].category = CHAT_CATEGORY_COMBAT;
                     if (mtmp->mspec_used > 0)
                     {
-                        Sprintf(available_chat_list[chatnum].name, "Breath weapon cooling down (%u round%s left)", mtmp->mspec_used, plur(mtmp->mspec_used));
+                        Sprintf(available_chat_list[chatnum].name, "Breath weapon cooling down (%u turn%s left)", mtmp->mspec_used, plur(mtmp->mspec_used));
                         available_chat_list[chatnum].using_menu_color = TRUE;
                         available_chat_list[chatnum].color = CLR_GRAY;
                     }
@@ -3207,7 +3207,7 @@ struct monst* mtmp;
                         else
                             printdice(cooldownbuf, MONSTER_BREATH_WEAPON_NORMAL_COOLDOWN_DICE, MONSTER_BREATH_WEAPON_NORMAL_COOLDOWN_DIESIZE, MONSTER_BREATH_WEAPON_NORMAL_COOLDOWN_CONSTANT);
                         const char* steedbreathefmt = ((windowprocs.wincap2 & WC2_SPECIAL_SYMBOLS) != 0) ?
-                            "%s (&cool; %s after use)" : "%s (%s round cooldown after use)";
+                            "%s (&cool; %s after use)" : "%s (%s turn cooldown after use)";
                         Sprintf(available_chat_list[chatnum].name, steedbreathefmt, "Command the steed to use breath weapon", cooldownbuf);
                         //any.a_char = available_chat_list[chatnum].charnum;
                     }
