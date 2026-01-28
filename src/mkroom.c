@@ -1381,16 +1381,20 @@ mkswamp() /* Michiel Huisjes & Fred de Wilde */
                     }
                     else if (!rn2(4)) /* swamps tend to be moldy */
                         (void)makemon(mkclass(S_FUNGUS, 0), sx, sy, NO_MM_FLAGS);
-                    else if (!rn2(8)) /* swamps may have cloudberries */
+                    else if (!rn2(8)) /* swamps may have dragon fruits */
                         (void)mksobj_at(DRAGON_FRUIT, sx, sy, TRUE, FALSE);
                     else if (!rn2(10)) /* swamps may have cloudberries */
                         (void)mksobj_at(CLOUDBERRY, sx, sy, TRUE, FALSE);
-                    else if (!rn2(10)) /* swamps may have cloudberries */
+                    else if (!rn2(10)) /* swamps may have panther caps */
                         (void)mksobj_at(PANTHER_CAP, sx, sy, TRUE, FALSE);
-                    else if (!rn2(10)) /* swamps may have cloudberries */
+                    else if (!rn2(10)) /* swamps may have death caps */
                         (void)mksobj_at(DEATH_CAP, sx, sy, TRUE, FALSE);
-                    else if (!rn2(8)) /* swamps may have cloudberries */
-                        (void)mksobj_at(!rn2(4) ? CHANTERELLE : !rn2(3) ? PENNY_BUN : !rn2(2) ? CHAMPIGNON : FLY_AGARIC, sx, sy, TRUE, FALSE);
+                    else if (!rn2(7)) /* swamps may have chanterelles */
+                        (void)mksobj_at(CHANTERELLE, sx, sy, TRUE, FALSE);
+                    else if (!rn2(7)) /* swamps may have penny buns */
+                        (void)mksobj_at(PENNY_BUN, sx, sy, TRUE, FALSE);
+                    else if (!rn2(7)) /* swamps may have other mushrooms */
+                        (void)mksobj_at(!rn2(2) ? CHAMPIGNON : FLY_AGARIC, sx, sy, TRUE, FALSE);
                     else if (!rn2(50)) /* swamps may have phantomberries */
                         (void)mksobj_at(PHANTOMBERRY, sx, sy, TRUE, FALSE);
                 }

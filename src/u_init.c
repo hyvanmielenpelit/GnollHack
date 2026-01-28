@@ -363,8 +363,8 @@ STATIC_VAR const struct inv_sub {
     { PM_DWARF, LONG_SWORD, DWARVISH_AXE },
     { PM_DWARF, HELMET, DWARVISH_HELM },
     { PM_DWARF, SMALL_SHIELD, DWARVISH_ROUNDSHIELD },
-    { PM_DWARF, APPLE, PENNY_BUN },
-    { PM_DWARF, CARROT, CHANTERELLE },
+    { PM_DWARF, APPLE, CHAMPIGNON },
+    { PM_DWARF, CARROT, PENNY_BUN },
     { PM_DWARF, ELVEN_WAYBREAD, CRAM_RATION },
     { PM_GNOLL, LONG_SWORD, FLAIL },
     { PM_GNOLL, SHORT_SWORD, FLAIL },
@@ -1806,16 +1806,23 @@ register const struct trobj * trop;
                         if (!rn2(2))
                             (void)mk_obj_in_container_known(obj, CRAM_RATION);
                         (void)mk_obj_in_container_known(obj, POT_FRUIT_JUICE);
-                        (void)mk_obj_in_container_known(obj, CHANTERELLE);
-                        (void)mk_obj_in_container_known(obj, CHANTERELLE);
+                        (void)mk_obj_in_container_known(obj, CHAMPIGNON);
+                        (void)mk_obj_in_container_known(obj, CHAMPIGNON);
                         if (!rn2(2))
+                            (void)mk_obj_in_container_known(obj, CHAMPIGNON);
+                        if (!rn2(2))
+                            (void)mk_obj_in_container_known(obj, CHAMPIGNON);
+                        if (!rn2(4))
+                        {
                             (void)mk_obj_in_container_known(obj, CHANTERELLE);
-                        (void)mk_obj_in_container_known(obj, PENNY_BUN);
-                        (void)mk_obj_in_container_known(obj, PENNY_BUN);
-                        if (!rn2(2))
+                            knows_object(CHANTERELLE);
+                        }
+                        if (!rn2(4))
+                        {
                             (void)mk_obj_in_container_known(obj, PENNY_BUN);
-                        knows_object(CHANTERELLE);
-                        knows_object(PENNY_BUN);
+                            knows_object(PENNY_BUN);
+                        }
+                        knows_object(CHAMPIGNON);
                         knows_object(POT_FRUIT_JUICE);
                         obj->owt = weight(obj);
                     }
@@ -1859,11 +1866,14 @@ register const struct trobj * trop;
                     /* Add some food */
                     for (i = 1; i <= 2; i++)
                     {
-                        otmp = mksobj(!rn2(3) ? CHANTERELLE : !rn2(2) ? CHAMPIGNON : PENNY_BUN, TRUE, FALSE, TRUE);
-                        knows_object(otmp->otyp);
-                        otmp->known = 1;
-                        otmp->dknown = otmp->bknown = otmp->rknown = otmp->nknown = 1;
-                        otmp = add_to_container(obj, otmp);
+                        otmp = mksobj(!rn2(5) ? CHANTERELLE : rn2(5) ? CHAMPIGNON : PENNY_BUN, TRUE, FALSE, TRUE);
+                        if (otmp)
+                        {
+                            knows_object(otmp->otyp);
+                            otmp->known = 1;
+                            otmp->dknown = otmp->bknown = otmp->rknown = otmp->nknown = 1;
+                            otmp = add_to_container(obj, otmp);
+                        }
                     }
 
                     otmp = mksobj(SLIME_MOLD, TRUE, FALSE, TRUE);
