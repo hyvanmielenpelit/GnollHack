@@ -919,7 +919,7 @@ int64_t silverhit;
 STATIC_DCL struct obj *FDECL(oselect, (struct monst *, int));
 STATIC_DCL struct obj* FDECL(oselect_with_best_exceptionality, (struct monst*, int));
 STATIC_DCL struct obj* FDECL(oselect_with_best_bounded_exceptionality, (struct monst*, int, int, int));
-STATIC_DCL struct obj* FDECL(oskillselect_with_best_exceptionality, (struct monst*, SCHAR_P));
+//STATIC_DCL struct obj* FDECL(oskillselect_with_best_exceptionality, (struct monst*, SCHAR_P));
 STATIC_DCL struct obj* FDECL(oskillselect_with_best_bounded_exceptionality, (struct monst*, SCHAR_P, int, int));
 STATIC_DCL struct obj* FDECL(oselect_with_exceptionality, (struct monst*, int, int));
 STATIC_DCL struct obj* FDECL(oskillselect_with_exceptionality, (struct monst*, SCHAR_P, int));
@@ -1039,6 +1039,7 @@ int lowestexc, highestexc;
     return (struct obj*)0;
 }
 
+#if 0
 STATIC_OVL struct obj*
 oskillselect_with_best_exceptionality(mtmp, oskill)
 struct monst* mtmp;
@@ -1061,6 +1062,7 @@ schar oskill;
     }
     return oskillselect_with_best_bounded_exceptionality(mtmp, oskill, lowestexc, highestexc);
 }
+#endif
 
 /* TODO: have monsters use aklys' throw-and-return */
 STATIC_VAR NEARDATA const int rwep[] = {
