@@ -1412,7 +1412,7 @@ boolean loc_is_you, ispeaceful, ispet, isdetected;
                 display_this_status_mark = TRUE;
             break;
         case STATUS_MARK_BOUNTY:
-            if (!loc_is_you && Role_if(PM_KNIGHT) && !ispeaceful && !Hallucination && is_knight_bounty(mtmp->data))
+            if (!loc_is_you && Role_if(PM_KNIGHT) && !ispeaceful && !ispet && !Hallucination && is_knight_bounty(mtmp->data))
                 display_this_status_mark = TRUE;
             break;
         case STATUS_MARK_SATIATED:
