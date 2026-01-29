@@ -897,7 +897,8 @@ int64_t silverhit;
         really_l_ag = ((ltyp != STRANGE_OBJECT && uleft ? uleft->material == MAT_SILVER : objects[ltyp].oc_material == MAT_SILVER) && uleft && uleft->dknown),
         really_r_ag = ((rtyp != STRANGE_OBJECT && uright ? uright->material == MAT_SILVER : objects[rtyp].oc_material == MAT_SILVER) && uright && uright->dknown);
 
-    if ((silverhit & (W_RINGL | W_RINGR)) != 0L) {
+    if ((silverhit & (W_RINGL | W_RINGR)) != 0L) 
+    {
         /* plural if both the same type (so not multi_claw and both rings
            are non-Null) and either both known or neither known, or both
            silver (in case there is ever more than one type of silver ring)
@@ -946,12 +947,14 @@ int otyp, exceptionality;
 {
     struct obj *otmp;
 
-    for (otmp = mtmp->minvent; otmp; otmp = otmp->nobj) {
+    for (otmp = mtmp->minvent; otmp; otmp = otmp->nobj) 
+    {
         if (otmp->otyp == otyp && (exceptionality < 0 || otmp->exceptionality == (uchar)exceptionality)
             /* never select non-cockatrice corpses */
             && !((otyp == CORPSE || otyp == EGG)
                  && (otmp->corpsenm < LOW_PM || !touch_petrifies(&mons[otmp->corpsenm])))
             && (!otmp->oartifact || touch_artifact(otmp, mtmp))
+            && !(otmp->material == MAT_SILVER && mon_hates_silver(mtmp))
             && !inappropriate_exceptionality(mtmp, otmp)
             )
             return otmp;
@@ -967,9 +970,11 @@ int exceptionality;
 {
     struct obj* otmp;
 
-    for (otmp = mtmp->minvent; otmp; otmp = otmp->nobj) {
+    for (otmp = mtmp->minvent; otmp; otmp = otmp->nobj) 
+    {
         if (objects[otmp->otyp].oc_skill == oskill && (exceptionality < 0 || otmp->exceptionality == (uchar)exceptionality)
             && (!otmp->oartifact || touch_artifact(otmp, mtmp))
+            && !(otmp->material == MAT_SILVER && mon_hates_silver(mtmp))
             && !inappropriate_exceptionality(mtmp, otmp)
             )
             return otmp;
@@ -1125,11 +1130,8 @@ register struct monst *mtmp;
                  * Big weapon is basically the same as bimanual.
                  * All monsters can wield the remaining weapons.
                  */
-                if ((((strongmonst(mtmp->data) || mtmp->data->str >= 14)
-                      && (mtmp->worn_item_flags & W_ARMS) == 0)
-                     || !objects[pwep[i]].oc_bimanual)
-                    && (objects[pwep[i]].oc_material != MAT_SILVER
-                        || !mon_hates_silver(mtmp))) 
+                if (!objects[pwep[i]].oc_bimanual 
+                    || ((strongmonst(mtmp->data) || mtmp->data->str >= 10) && (mtmp->worn_item_flags & W_ARMS) == 0)) 
                 {
                     if ((otmp = oselect_with_exceptionality(mtmp, pwep[i], exc)) != 0
                         && (otmp == mwep || !mweponly)) 
@@ -1185,7 +1187,8 @@ register struct monst *mtmp;
                     if (otmp->exceptionality > highestexc)
                         highestexc = otmp->exceptionality;
                 }
-                switch (-prop) {
+                switch (-prop) 
+                {
                 case P_BOW:
                     propellor = oskillselect_with_best_bounded_exceptionality(mtmp, (schar)(-prop), lowestexc, highestexc);
                     if (propellor && !propellor->exceptionality && highestexc > propellor->exceptionality)
@@ -1245,7 +1248,8 @@ register struct monst *mtmp;
              * propellor = &zeroobj, doesn't need a propellor
              * propellor = 0, needed one and didn't have one
              */
-            if (propellor != 0) {
+            if (propellor != 0) 
+            {
                 /* Note: cannot use m_carrying for loadstones, since it will
                  * always select the first object of a type, and maybe the
                  * monster is carrying two but only the first is unthrowable.
@@ -1330,16 +1334,27 @@ xchar tx, ty;
 {
     register struct obj *otmp;
     register int i;
-    boolean strong = (strongmonst(mtmp->data) || mtmp->data->str >= 13);
+    boolean strong = (strongmonst(mtmp->data) || mtmp->data->str >= 10);
     boolean wearing_shield = (mtmp->worn_item_flags & W_ARMS) != 0;
 
     /* prefer artifacts to everything else */
-    for (otmp = mtmp->minvent; otmp; otmp = otmp->nobj) {
+    for (otmp = mtmp->minvent; otmp; otmp = otmp->nobj) 
+    {
         if (otmp->oclass == WEAPON_CLASS && otmp->oartifact
             && touch_artifact(otmp, mtmp)
             && ((strong && !wearing_shield)
                 || !objects[otmp->otyp].oc_bimanual))
             return otmp;
+    }
+
+    int lowestexc = MAX_EXCEPTIONALITY_TYPES - 1;
+    int highestexc = 0;
+    for (otmp = mtmp->minvent; otmp; otmp = otmp->nobj)
+    {
+        if (otmp->exceptionality < lowestexc)
+            lowestexc = otmp->exceptionality;
+        if (otmp->exceptionality > highestexc)
+            highestexc = otmp->exceptionality;
     }
 
 //    if (is_giant(mtmp->data)) /* giants just love to use clubs */
@@ -1349,9 +1364,10 @@ xchar tx, ty;
     /* big weapon is basically the same as bimanual */
     /* all monsters can wield the remaining weapons */
     int exc;
-    for (exc = MAX_EXCEPTIONALITY_TYPES - 1; exc >= 0; exc--)
+    for (exc = highestexc; exc >= lowestexc; exc--)
     {
-        for (i = 0; i < SIZE(hwep); i++) {
+        for (i = 0; i < SIZE(hwep); i++) 
+        {
             if (hwep[i] == CORPSE && !(mtmp->worn_item_flags & W_ARMG)
                 && !resists_ston(mtmp))
                 continue;
@@ -1371,9 +1387,7 @@ xchar tx, ty;
                         continue;
                 }
             }
-            if (((strong && !wearing_shield) || !objects[hwep[i]].oc_bimanual)
-                && (objects[hwep[i]].oc_material != MAT_SILVER
-                    || !mon_hates_silver(mtmp)))
+            if (!objects[hwep[i]].oc_bimanual || (strong && !wearing_shield))
                 Oselect_with_exceptionality(hwep[i], exc);
         }
     }
@@ -1406,13 +1420,15 @@ int handindex;
         weaponindex++; //Second hand is not free, previously returned MON_WEP
 
     //Is in hwep table, extra hands do not use two-handed weapons for simplicity (maybe too weak)
-    for (otmp = mtmp->minvent; otmp; otmp = otmp->nobj) {
+    for (otmp = mtmp->minvent; otmp; otmp = otmp->nobj) 
+    {
         if (otmp != MON_WEP(mtmp) && !objects[otmp->otyp].oc_bimanual
             && !(obj_counts_as_silver(otmp) && mon_hates_silver(mtmp)) && otmp->otyp != CORPSE)
         {
             //Suitable weapons are in hwep array
             int i;
-            for (i = 0; i < SIZE(hwep); i++) {
+            for (i = 0; i < SIZE(hwep); i++) 
+            {
                 if (otmp->otyp == hwep[i])
                 {
                     //Suitable weapon found
@@ -1443,22 +1459,26 @@ boolean polyspot;
     for (obj = mon->minvent; obj; obj = obj->nobj)
         if (obj == mw_tmp)
             break;
-    if (!obj) { /* The weapon was stolen or destroyed */
+    if (!obj) 
+    { /* The weapon was stolen or destroyed */
         MON_NOWEP(mon);
         mon->weapon_strategy = NEED_WEAPON;
         return;
     }
-    if (!attacktype(mon->data, AT_WEAP)) {
+    if (!attacktype(mon->data, AT_WEAP)) 
+    {
         setmnotwielded(mon, mw_tmp);
         mon->weapon_strategy = NO_WEAPON_WANTED;
         debugprint("possibly_unwield");
         obj_extract_self(obj);
-        if (cansee(mon->mx, mon->my)) {
+        if (cansee(mon->mx, mon->my)) 
+        {
             pline("%s drops %s.", Monnam(mon), distant_name(obj, doname));
             newsym(mon->mx, mon->my);
         }
         /* might be dropping object into water or lava */
-        if (!flooreffects(obj, mon->mx, mon->my, "drop")) {
+        if (!flooreffects(obj, mon->mx, mon->my, "drop")) 
+        {
             if (polyspot)
                 bypass_obj(obj);
             place_object(obj, mon->mx, mon->my);
@@ -1507,7 +1527,8 @@ xchar tx, ty;
         return 0;
     }
 
-    switch (mon->weapon_strategy) {
+    switch (mon->weapon_strategy) 
+    {
     case NEED_HTH_WEAPON:
     case NEED_HTH_NO_POLE:
         obj = select_hwep(mon, mon->weapon_strategy == NEED_HTH_WEAPON, tx, ty);
@@ -1549,10 +1570,12 @@ xchar tx, ty;
                    mon_nam(mon));
         return 0;
     }
-    if (obj && obj != &zeroobj) {
+    if (obj && obj != &zeroobj) 
+    {
         struct obj *mw_tmp = MON_WEP(mon);
 
-        if (mw_tmp && mw_tmp->otyp == obj->otyp) {
+        if (mw_tmp && mw_tmp->otyp == obj->otyp) 
+        {
             /* already wielding it */
             if (verbose_fail)
                 pline("%s is already wielding %s.", Monnam(mon), 
@@ -1570,8 +1593,10 @@ xchar tx, ty;
          * can know it's cursed and needn't even bother trying.
          * Still....
          */
-        if (mw_tmp && mwelded(mw_tmp, mon)) {
-            if (canseemon(mon)) {
+        if (mw_tmp && mwelded(mw_tmp, mon)) 
+        {
+            if (canseemon(mon)) 
+            {
                 char welded_buf[BUFSZ];
                 const char *mon_hand = mbodypart(mon, HAND);
 
@@ -1580,12 +1605,15 @@ xchar tx, ty;
                 Sprintf(welded_buf, "%s welded to %s %s",
                         otense(mw_tmp, "are"), mhis(mon), mon_hand);
 
-                if (obj->otyp == PICK_AXE) {
+                if (obj->otyp == PICK_AXE) 
+                {
                     pline("Since %s weapon%s %s,", s_suffix(mon_nam(mon)),
                           plur(mw_tmp->quan), welded_buf);
                     pline("%s cannot wield that %s.", mon_nam(mon),
                           xname(obj));
-                } else {
+                }
+                else 
+                {
                     pline("%s tries to wield %s.", Monnam(mon), acxname(obj));
                     pline("%s %s!", Yname2(mw_tmp), welded_buf);
                 }
@@ -1597,16 +1625,19 @@ xchar tx, ty;
         mon->mw = obj; /* wield obj */
         setmnotwielded(mon, mw_tmp);
         mon->weapon_strategy = NEED_WEAPON;
-        if (canseemon(mon)) {
+        if (canseemon(mon)) 
+        {
             pline("%s wields %s!", Monnam(mon), acxname(obj));
-            if (mwelded(mw_tmp, mon)) {
+            if (mwelded(mw_tmp, mon)) 
+            {
                 pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s %s to %s %s!", Tobjnam(obj, "weld"),
                       is_plural(obj) ? "themselves" : "itself",
                       s_suffix(mon_nam(mon)), mbodypart(mon, HAND));
                 obj->bknown = 1;
             }
         }
-        if (obj && (artifact_light(obj) || has_obj_mythic_magical_light(obj) || (obj_shines_magical_light(obj) && !inappropriate_monster_character_type(mon, obj))) && !obj->lamplit) {
+        if (obj && (artifact_light(obj) || has_obj_mythic_magical_light(obj) || (obj_shines_magical_light(obj) && !inappropriate_monster_character_type(mon, obj))) && !obj->lamplit) 
+        {
             begin_burn(obj, FALSE);
             if (canseemon(mon))
                 pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s %s in %s %s!", Tobjnam(obj, "shine"),
