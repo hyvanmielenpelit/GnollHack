@@ -403,16 +403,21 @@ public static class MauiProgram
                     {
                         try
                         {
-                            GHApp.MaybeWriteGHLog("androidLifecycleBuilder: Paused 1", true, GHConstants.SentryGnollHackGeneralCategoryName);
-                            if (SaveGameService.IsSaving)
+                            GHApp.MaybeWriteGHLog("androidLifecycleBuilder: Paused 0", true, GHConstants.SentryGnollHackGeneralCategoryName);
+                            GHGame game = GHApp.CurrentGHGame;
+                            if (game != null && !game.PlayingReplay && (game.ActiveGamePage?.IsGameOn ?? false))
                             {
-                                GHApp.MaybeWriteGHLog("androidLifecycleBuilder: Was saving already", true, GHConstants.SentryGnollHackGeneralCategoryName);
-                            }
-                            else if (activity.IsFinishing || !activity.HasWindowFocus)
-                            {
-                                GHApp.MaybeWriteGHLog("androidLifecycleBuilder: Paused 2", true, GHConstants.SentryGnollHackGeneralCategoryName);
-                                var intent = new Intent(Android.App.Application.Context, typeof(SaveGameService));
-                                AndroidX.Core.Content.ContextCompat.StartForegroundService(Android.App.Application.Context, intent);
+                                GHApp.MaybeWriteGHLog("androidLifecycleBuilder: Paused 1", true, GHConstants.SentryGnollHackGeneralCategoryName);
+                                if (SaveGameService.IsSaving)
+                                {
+                                    GHApp.MaybeWriteGHLog("androidLifecycleBuilder: Was saving already", true, GHConstants.SentryGnollHackGeneralCategoryName);
+                                }
+                                else if (activity.IsFinishing || !activity.HasWindowFocus)
+                                {
+                                    GHApp.MaybeWriteGHLog("androidLifecycleBuilder: Paused 2", true, GHConstants.SentryGnollHackGeneralCategoryName);
+                                    var intent = new Intent(Android.App.Application.Context, typeof(SaveGameService));
+                                    AndroidX.Core.Content.ContextCompat.StartForegroundService(Android.App.Application.Context, intent);
+                                }
                             }
                         }
                         catch (Exception ex)
@@ -428,25 +433,30 @@ public static class MauiProgram
                 ios.OnResignActivation((app) =>
                 {
                     GHApp.MaybeWriteGHLog("OnResignActivation: Start", true, GHConstants.SentryGnollHackGeneralCategoryName);
-                    GHApp.BackgroundTaskId = UIApplication.SharedApplication.BeginBackgroundTask("SaveGameTask", () =>
+                    GHGame game = GHApp.CurrentGHGame;
+                    if (game != null && !game.PlayingReplay && (game.ActiveGamePage?.IsGameOn ?? false))
                     {
-                        GHApp.MaybeWriteGHLog("OnResignActivation: Task timeout", true, GHConstants.SentryGnollHackGeneralCategoryName);
-                        GHApp.EndBackgroundTask();
-                    });
-
-                    Task.Run(async () =>
-                    {
-                        try
+                        GHApp.MaybeWriteGHLog("OnResignActivation: Starting Background Task", true, GHConstants.SentryGnollHackGeneralCategoryName);
+                        GHApp.BackgroundTaskId = UIApplication.SharedApplication.BeginBackgroundTask("SaveGameTask", () =>
                         {
-                            GHApp.MaybeWriteGHLog("OnResignActivation: Saving game", true, GHConstants.SentryGnollHackGeneralCategoryName);
-                            await GHApp.SaveGameOnSleepAsync();
-                        }
-                        finally
-                        {
-                            GHApp.MaybeWriteGHLog("OnResignActivation: Save finished", true, GHConstants.SentryGnollHackGeneralCategoryName);
+                            GHApp.MaybeWriteGHLog("OnResignActivation: Background Task Timeout", true, GHConstants.SentryGnollHackGeneralCategoryName);
                             GHApp.EndBackgroundTask();
-                        }
-                    });
+                        });
+
+                        Task.Run(async () =>
+                        {
+                            try
+                            {
+                                GHApp.MaybeWriteGHLog("OnResignActivation: Saving game", true, GHConstants.SentryGnollHackGeneralCategoryName);
+                                await GHApp.SaveGameOnSleepAsync();
+                            }
+                            finally
+                            {
+                                GHApp.MaybeWriteGHLog("OnResignActivation: Save finished", true, GHConstants.SentryGnollHackGeneralCategoryName);
+                                GHApp.EndBackgroundTask();
+                            }
+                        });
+                    }
                 });
                 ios.OnActivated((app) =>
                 {
