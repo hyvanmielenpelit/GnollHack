@@ -917,7 +917,12 @@ int64_t silverhit;
 }
 
 STATIC_DCL struct obj *FDECL(oselect, (struct monst *, int));
+STATIC_DCL struct obj* FDECL(oselect_with_best_exceptionality, (struct monst*, int));
+STATIC_DCL struct obj* FDECL(oselect_with_best_bounded_exceptionality, (struct monst*, int, int, int));
+STATIC_DCL struct obj* FDECL(oskillselect_with_best_exceptionality, (struct monst*, SCHAR_P));
+STATIC_DCL struct obj* FDECL(oskillselect_with_best_bounded_exceptionality, (struct monst*, SCHAR_P, int, int));
 STATIC_DCL struct obj* FDECL(oselect_with_exceptionality, (struct monst*, int, int));
+STATIC_DCL struct obj* FDECL(oskillselect_with_exceptionality, (struct monst*, SCHAR_P, int));
 #define Oselect(x)                      \
     if ((otmp = oselect(mtmp, x)) != 0) \
         return otmp;
@@ -952,6 +957,109 @@ int otyp, exceptionality;
             return otmp;
     }
     return (struct obj *) 0;
+}
+
+STATIC_OVL struct obj*
+oskillselect_with_exceptionality(mtmp, oskill, exceptionality)
+struct monst* mtmp;
+schar oskill;
+int exceptionality;
+{
+    struct obj* otmp;
+
+    for (otmp = mtmp->minvent; otmp; otmp = otmp->nobj) {
+        if (objects[otmp->otyp].oc_skill == oskill && (exceptionality < 0 || otmp->exceptionality == (uchar)exceptionality)
+            && (!otmp->oartifact || touch_artifact(otmp, mtmp))
+            && !inappropriate_exceptionality(mtmp, otmp)
+            )
+            return otmp;
+    }
+    return (struct obj*)0;
+}
+
+STATIC_OVL struct obj*
+oselect_with_best_bounded_exceptionality(mtmp, otyp, lowestexc, highestexc)
+struct monst* mtmp;
+int otyp, lowestexc, highestexc;
+{
+    if (!mtmp->minvent)
+        return (struct obj*)0;
+
+    struct obj* otmp;
+    int exc;
+    for (exc = highestexc; exc >= lowestexc; exc--)
+    {
+        otmp = oselect_with_exceptionality(mtmp, otyp, exc);
+        if (otmp)
+            return otmp;
+    }
+    return (struct obj*)0;
+}
+
+STATIC_OVL struct obj*
+oselect_with_best_exceptionality(mtmp, otyp)
+struct monst* mtmp;
+int otyp;
+{
+    if (!mtmp->minvent)
+        return (struct obj*)0;
+
+    int lowestexc = MAX_EXCEPTIONALITY_TYPES - 1;
+    int highestexc = 0;
+    struct obj* otmp;
+    for (otmp = mtmp->minvent; otmp; otmp = otmp->nobj)
+    {
+        if (otmp->otyp != otyp)
+            continue;
+        if (otmp->exceptionality < lowestexc)
+            lowestexc = otmp->exceptionality;
+        if (otmp->exceptionality > highestexc)
+            highestexc = otmp->exceptionality;
+    }
+    return oselect_with_best_bounded_exceptionality(mtmp, otyp, lowestexc, highestexc);
+}
+
+STATIC_OVL struct obj*
+oskillselect_with_best_bounded_exceptionality(mtmp, oskill, lowestexc, highestexc)
+struct monst* mtmp;
+schar oskill;
+int lowestexc, highestexc;
+{
+    if (!mtmp->minvent)
+        return (struct obj*)0;
+
+    struct obj* otmp;
+    int exc;
+    for (exc = highestexc; exc >= lowestexc; exc--)
+    {
+        otmp = oskillselect_with_exceptionality(mtmp, oskill, exc);
+        if (otmp)
+            return otmp;
+    }
+    return (struct obj*)0;
+}
+
+STATIC_OVL struct obj*
+oskillselect_with_best_exceptionality(mtmp, oskill)
+struct monst* mtmp;
+schar oskill;
+{
+    if (!mtmp->minvent)
+        return (struct obj*)0;
+
+    int lowestexc = MAX_EXCEPTIONALITY_TYPES - 1;
+    int highestexc = 0;
+    struct obj* otmp;
+    for (otmp = mtmp->minvent; otmp; otmp = otmp->nobj)
+    {
+        if (objects[otmp->otyp].oc_skill != oskill)
+            continue;
+        if (otmp->exceptionality < lowestexc)
+            lowestexc = otmp->exceptionality;
+        if (otmp->exceptionality > highestexc)
+            highestexc = otmp->exceptionality;
+    }
+    return oskillselect_with_best_bounded_exceptionality(mtmp, oskill, lowestexc, highestexc);
 }
 
 /* TODO: have monsters use aklys' throw-and-return */
@@ -1007,7 +1115,7 @@ register struct monst *mtmp;
         && couldsee(mtmp->mx, mtmp->my))
     {
         int exc;
-        for (exc = MAX_EXCEPTIONALITY_TYPES; exc >= 0; exc--)
+        for (exc = MAX_EXCEPTIONALITY_TYPES - 1; exc >= 0; exc--)
         {
             for (i = 0; i < SIZE(pwep); i++) 
             {
@@ -1036,8 +1144,8 @@ register struct monst *mtmp;
      * other than these two specific cases, always select the
      * most potent ranged weapon to hand.
      */
-    int exc;
-    for (exc = MAX_EXCEPTIONALITY_TYPES; exc >= 0; exc--)
+    //int exc;
+    //for (exc = MAX_EXCEPTIONALITY_TYPES; exc >= 0; exc--)
     {
         for (i = 0; i < SIZE(rwep); i++)
         {
@@ -1046,7 +1154,9 @@ register struct monst *mtmp;
             /* shooting gems from slings; this goes just before the darts */
             /* (shooting rocks is already handled via the rwep[] ordering) */
             if (rwep[i] == DART && !likes_gems(mtmp->data)
-                && (otmp2 = m_carrying(mtmp, SLING)) != 0 && otmp2->exceptionality == (uchar)exc && !inappropriate_exceptionality(mtmp, otmp2)) { /* propellor */
+                && ((otmp2 = m_carrying_with_best_exceptionality(mtmp, SLING)) != 0 || (otmp2 = m_carrying_with_best_exceptionality(mtmp, STAFF_SLING)) != 0)
+                /*&& otmp2->exceptionality == (uchar)exc && !inappropriate_exceptionality(mtmp, otmp2) */) 
+            { /* propellor */
                 for (otmp = mtmp->minvent; otmp; otmp = otmp->nobj)
                     if (otmp->oclass == GEM_CLASS
                         && (!(objects[otmp->otyp].oc_flags & O1_CANNOT_BE_DROPPED_IF_CURSED) || !otmp->cursed))
@@ -1060,40 +1170,70 @@ register struct monst *mtmp;
             propellor = (struct obj*)&zeroobj;
 
             prop = objects[rwep[i]].oc_skill;
-            if (prop < 0) {
+            if (prop < 0) 
+            {
+                int lowestexc = MAX_EXCEPTIONALITY_TYPES - 1;
+                int highestexc = 0;
+                for (otmp = mtmp->minvent; otmp; otmp = otmp->nobj)
+                {
+                    if (objects[otmp->otyp].oc_skill != (schar)(-prop))
+                        continue;
+                    if (otmp->exceptionality < lowestexc)
+                        lowestexc = otmp->exceptionality;
+                    if (otmp->exceptionality > highestexc)
+                        highestexc = otmp->exceptionality;
+                }
                 switch (-prop) {
                 case P_BOW:
-                    propellor = oselect_with_exceptionality(mtmp, GALADHRIM_BOW, exc);
-                    if (!propellor)
-                        propellor = oselect_with_exceptionality(mtmp, YUMI, exc);
-                    if (!propellor)
-                        propellor = oselect_with_exceptionality(mtmp, COMPOSITE_LONG_BOW, exc);
-                    if (!propellor)
-                        propellor = oselect_with_exceptionality(mtmp, ELVEN_LONG_BOW, exc);
-                    if (!propellor)
-                        propellor = oselect_with_exceptionality(mtmp, LONG_BOW, exc);
-                    if (!propellor)
-                        propellor = oselect_with_exceptionality(mtmp, COMPOSITE_SHORT_BOW, exc);
-                    if (!propellor)
-                        propellor = oselect_with_exceptionality(mtmp, SHORT_BOW, exc);
-                    if (!propellor)
-                        propellor = oselect_with_exceptionality(mtmp, ORCISH_SHORT_BOW, exc);
+                    propellor = oskillselect_with_best_bounded_exceptionality(mtmp, (schar)(-prop), lowestexc, highestexc);
+                    if (propellor && !propellor->exceptionality && highestexc > propellor->exceptionality)
+                    {
+                        struct obj* savedpropellor = propellor;
+                        propellor = oselect_with_best_bounded_exceptionality(mtmp, GALADHRIM_BOW, lowestexc, highestexc);
+                        if (!propellor)
+                            propellor = oselect_with_best_bounded_exceptionality(mtmp, YUMI, lowestexc, highestexc);
+                        if (!propellor)
+                            propellor = oselect_with_best_bounded_exceptionality(mtmp, COMPOSITE_LONG_BOW, lowestexc, highestexc);
+                        if (!propellor)
+                            propellor = oselect_with_best_bounded_exceptionality(mtmp, ELVEN_LONG_BOW, lowestexc, highestexc);
+                        if (!propellor)
+                            propellor = oselect_with_best_bounded_exceptionality(mtmp, LONG_BOW, lowestexc, highestexc);
+                        if (!propellor)
+                            propellor = oselect_with_best_bounded_exceptionality(mtmp, COMPOSITE_SHORT_BOW, lowestexc, highestexc);
+                        if (!propellor)
+                            propellor = oselect_with_best_bounded_exceptionality(mtmp, SHORT_BOW, lowestexc, highestexc);
+                        if (!propellor)
+                            propellor = oselect_with_best_bounded_exceptionality(mtmp, ORCISH_SHORT_BOW, lowestexc, highestexc);
+                        if (!propellor)
+                            propellor = oselect_with_best_bounded_exceptionality(mtmp, BOW, lowestexc, highestexc);
+                        if (!propellor)
+                            propellor = savedpropellor;
+                    }
                     break;
                 case P_SLING:
-                    propellor = oselect_with_exceptionality(mtmp, STAFF_SLING, exc);
+                    propellor = oselect_with_best_bounded_exceptionality(mtmp, STAFF_SLING, lowestexc, highestexc);
                     if (!propellor)
-                        propellor = oselect_with_exceptionality(mtmp, SLING, exc);
+                        propellor = oselect_with_best_bounded_exceptionality(mtmp, SLING, lowestexc, highestexc);
                     break;
                 case P_CROSSBOW:
-                    propellor = oselect_with_exceptionality(mtmp, REPEATING_HEAVY_CROSSBOW, exc);
+                    propellor = oselect_with_best_bounded_exceptionality(mtmp, REPEATING_HEAVY_CROSSBOW, lowestexc, highestexc);
                     if (!propellor)
-                        propellor = oselect_with_exceptionality(mtmp, HEAVY_CROSSBOW, exc);
+                        propellor = oselect_with_best_bounded_exceptionality(mtmp, REPEATING_CROSSBOW, lowestexc, highestexc);
                     if (!propellor)
-                        propellor = oselect_with_exceptionality(mtmp, REPEATING_CROSSBOW, exc);
-                    if (!propellor)
-                        propellor = oselect_with_exceptionality(mtmp, CROSSBOW, exc);
-                    if (!propellor)
-                        propellor = oselect_with_exceptionality(mtmp, HAND_CROSSBOW, exc);
+                    {
+                        propellor = oskillselect_with_best_bounded_exceptionality(mtmp, (schar)(-prop), lowestexc, highestexc);
+                        if (propellor && !propellor->exceptionality && highestexc > propellor->exceptionality)
+                        {
+                            struct obj* savedpropellor = propellor;
+                            propellor = oselect_with_best_bounded_exceptionality(mtmp, HEAVY_CROSSBOW, lowestexc, highestexc);
+                            if (!propellor)
+                                propellor = oselect_with_best_bounded_exceptionality(mtmp, CROSSBOW, lowestexc, highestexc);
+                            if (!propellor)
+                                propellor = oselect_with_best_bounded_exceptionality(mtmp, HAND_CROSSBOW, lowestexc, highestexc);
+                            if (!propellor)
+                                propellor = savedpropellor;
+                        }
+                    }
                 }
                 if ((otmp = MON_WEP(mtmp)) && mwelded(otmp, mtmp) && otmp != propellor
                     && mtmp->weapon_strategy == NO_WEAPON_WANTED)
@@ -1108,17 +1248,34 @@ register struct monst *mtmp;
                  * always select the first object of a type, and maybe the
                  * monster is carrying two but only the first is unthrowable.
                  */
-                if (!(objects[rwep[i]].oc_flags & O1_CANNOT_BE_DROPPED_IF_CURSED)) {
+                if (!(objects[rwep[i]].oc_flags & O1_CANNOT_BE_DROPPED_IF_CURSED)) 
+                {
                     /* Don't throw a cursed weapon-in-hand or an artifact */
-                    if ((otmp = oselect_with_exceptionality(mtmp, rwep[i], exc)) && !otmp->oartifact
+                    if ((otmp = oselect_with_best_exceptionality(mtmp, rwep[i])) && !otmp->oartifact
                         && !(otmp == MON_WEP(mtmp) && mwelded(otmp, mtmp)))
                         return otmp;
                 }
                 else
-                    for (otmp = mtmp->minvent; otmp; otmp = otmp->nobj) {
-                        if ((objects[otmp->otyp].oc_flags & O1_CANNOT_BE_DROPPED_IF_CURSED) && !otmp->cursed && otmp->exceptionality == (uchar)exc && !inappropriate_exceptionality(mtmp, otmp))
-                            return otmp;
+                {
+                    int lowestexc = MAX_EXCEPTIONALITY_TYPES - 1;
+                    int highestexc = 0;
+                    for (otmp = mtmp->minvent; otmp; otmp = otmp->nobj)
+                    {
+                        if (otmp->exceptionality < lowestexc)
+                            lowestexc = otmp->exceptionality;
+                        if (otmp->exceptionality > highestexc)
+                            highestexc = otmp->exceptionality;
                     }
+                    int exc;
+                    for (exc = highestexc; exc >= lowestexc; exc--)
+                    {
+                        for (otmp = mtmp->minvent; otmp; otmp = otmp->nobj)
+                        {
+                            if ((objects[otmp->otyp].oc_flags & O1_CANNOT_BE_DROPPED_IF_CURSED) && !otmp->cursed && otmp->exceptionality == (uchar)exc && !inappropriate_exceptionality(mtmp, otmp))
+                                return otmp;
+                        }
+                    }
+                }
             }
         }
     }

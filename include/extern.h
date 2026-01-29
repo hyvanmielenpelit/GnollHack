@@ -2374,6 +2374,8 @@ E int FDECL(eyesmu, (struct monst*, struct attack*));
 E boolean FDECL(linedup, (XCHAR_P, XCHAR_P, XCHAR_P, XCHAR_P, int, BOOLEAN_P, BOOLEAN_P, BOOLEAN_P, int, BOOLEAN_P, int));
 E boolean FDECL(lined_up, (struct monst *, BOOLEAN_P, int, BOOLEAN_P, int));
 E struct obj *FDECL(m_carrying, (struct monst *, int));
+E struct obj* FDECL(m_carrying_with_best_bounded_exceptionality, (struct monst*, int, int, int));
+E struct obj* FDECL(m_carrying_with_best_exceptionality, (struct monst*, int));
 E int FDECL(thrwmm, (struct monst *, struct monst *));
 E int FDECL(spitmm, (struct monst *, struct attack *, struct monst *));
 E int FDECL(breamm, (struct monst *, struct attack *, struct monst *));

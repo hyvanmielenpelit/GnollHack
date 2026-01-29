@@ -2094,6 +2094,49 @@ int type;
     return (struct obj *) 0;
 }
 
+struct obj *
+m_carrying_with_best_bounded_exceptionality(mtmp, type, lowestexc, highestexc)
+struct monst *mtmp;
+int type, lowestexc, highestexc;
+{
+    if (!mtmp->minvent)
+        return (struct obj*)0;
+
+    struct obj* otmp;
+    int exc;
+    for (exc = highestexc; exc >= lowestexc; exc--)
+    {
+        for (otmp = mtmp->minvent; otmp; otmp = otmp->nobj)
+            if (otmp->otyp == type && otmp->exceptionality == (uchar)exc && !inappropriate_exceptionality(mtmp, otmp))
+                return otmp;
+    }
+    return (struct obj*)0;
+}
+
+struct obj *
+m_carrying_with_best_exceptionality(mtmp, type)
+struct monst *mtmp;
+int type;
+{
+    if (!mtmp->minvent)
+        return (struct obj*)0;
+
+    int lowestexc = MAX_EXCEPTIONALITY_TYPES - 1;
+    int highestexc = 0;
+    struct obj *otmp;
+    for (otmp = mtmp->minvent; otmp; otmp = otmp->nobj)
+    {
+        if (otmp->otyp != type)
+            continue;
+        if (otmp->exceptionality < lowestexc)
+            lowestexc = otmp->exceptionality;
+        if (otmp->exceptionality > highestexc)
+            highestexc = otmp->exceptionality;
+    }
+    return m_carrying_with_best_bounded_exceptionality(mtmp, type, lowestexc, highestexc);
+}
+
+
 void
 hit_bars(objp, objx, objy, barsx, barsy, your_fault, from_invent)
 struct obj **objp;      /* *objp will be set to NULL if object breaks */
