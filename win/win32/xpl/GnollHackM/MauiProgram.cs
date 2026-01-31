@@ -437,10 +437,11 @@ public static class MauiProgram
                     if (game != null && !game.PlayingReplay && (game.ActiveGamePage?.IsGameOn ?? false))
                     {
                         GHApp.MaybeWriteGHLog("OnResignActivation: Starting Background Task", true, GHConstants.SentryGnollHackGeneralCategoryName);
-                        GHApp.BackgroundTaskId = UIApplication.SharedApplication.BeginBackgroundTask("SaveGameTask", () =>
+                        IntPtr localTaskId = UIApplication.BackgroundTaskInvalid;
+                        localTaskId = UIApplication.SharedApplication.BeginBackgroundTask("SaveGameTask", () =>
                         {
                             GHApp.MaybeWriteGHLog("OnResignActivation: Background Task Timeout", true, GHConstants.SentryGnollHackGeneralCategoryName);
-                            GHApp.EndBackgroundTask();
+                            GHApp.EndBackgroundTask(localTaskId);
                         });
 
                         Task.Run(async () =>
@@ -450,10 +451,14 @@ public static class MauiProgram
                                 GHApp.MaybeWriteGHLog("OnResignActivation: Saving game", true, GHConstants.SentryGnollHackGeneralCategoryName);
                                 await GHApp.SaveGameOnSleepAsync();
                             }
+                            catch (Exception ex)
+                            {
+                                GHApp.MaybeWriteGHLog("OnResignActivation: Save exception: " + ex.Message, true, GHConstants.SentryGnollHackGeneralCategoryName);
+                            }
                             finally
                             {
                                 GHApp.MaybeWriteGHLog("OnResignActivation: Save finished", true, GHConstants.SentryGnollHackGeneralCategoryName);
-                                GHApp.EndBackgroundTask();
+                                GHApp.EndBackgroundTask(localTaskId);
                             }
                         });
                     }

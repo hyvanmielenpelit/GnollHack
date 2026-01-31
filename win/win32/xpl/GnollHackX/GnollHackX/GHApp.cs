@@ -1932,15 +1932,14 @@ namespace GnollHackX
         }
 
 #if IOS
-        private static IntPtr _backgroundTaskId = UIKit.UIApplication.BackgroundTaskInvalid;
-        public static IntPtr BackgroundTaskId { get { return Interlocked.CompareExchange(ref _backgroundTaskId, 0, 0); } set { Interlocked.Exchange(ref _backgroundTaskId, value); } }
-        public static void EndBackgroundTask()
+        //private static IntPtr _backgroundTaskId = UIKit.UIApplication.BackgroundTaskInvalid;
+        //public static IntPtr BackgroundTaskId { get { return Interlocked.CompareExchange(ref _backgroundTaskId, 0, 0); } set { Interlocked.Exchange(ref _backgroundTaskId, value); } }
+        public static void EndBackgroundTask(IntPtr localTaskId)
         {
-            IntPtr localTaskId = BackgroundTaskId;
             if (localTaskId != UIKit.UIApplication.BackgroundTaskInvalid)
             {
                 UIKit.UIApplication.SharedApplication.EndBackgroundTask(localTaskId);
-                BackgroundTaskId = UIKit.UIApplication.BackgroundTaskInvalid;
+                //BackgroundTaskId = UIKit.UIApplication.BackgroundTaskInvalid;
             }
         }
 #endif
