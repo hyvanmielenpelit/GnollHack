@@ -995,30 +995,44 @@ struct monst *mtmp;
         else
         {
             if (cures < maxcures && is_sick(mtmp)) {
+                if (vismon)
+                    play_sfx_sound_at_location(SFX_CURE_DISEASE, mtmp->mx, mtmp->my);
                 (void)set_mon_property_b(mtmp, SICK, 0, vismon);
                 cures++;
             }
             if (cures < maxcures && is_food_poisoned(mtmp)) {
+                if (vismon)
+                    play_sfx_sound_at_location(SFX_CURE_DISEASE, mtmp->mx, mtmp->my);
                 (void)set_mon_property_b(mtmp, FOOD_POISONED, 0, vismon);
                 cures++;
             }
             if (cures < maxcures && is_mummy_rotted(mtmp)) {
+                if (vismon)
+                    play_sfx_sound_at_location(SFX_CURE_DISEASE, mtmp->mx, mtmp->my);
                 (void)set_mon_property_b(mtmp, MUMMY_ROT, -3, vismon);
                 cures++;
             }
             if (cures < maxcures && has_vomiting(mtmp)) {
+                if (vismon)
+                    play_sfx_sound_at_location(SFX_CURE_DISEASE, mtmp->mx, mtmp->my);
                 (void)set_mon_property_b(mtmp, VOMITING, 0, vismon);
                 cures++;
             }
             if (cures < maxcures && is_hallucinating(mtmp)) {
+                if (vismon)
+                    play_sfx_sound_at_location(SFX_CURE_AILMENT, mtmp->mx, mtmp->my);
                 (void)set_mon_property_b(mtmp, HALLUC, 0, vismon);
                 cures++;
             }
             if (cures < maxcures && is_blinded(mtmp)) {
+                if (vismon)
+                    play_sfx_sound_at_location(SFX_CURE_AILMENT, mtmp->mx, mtmp->my);
                 mcureblindness(mtmp, vismon);
                 cures++;
             }
             if (cures < maxcures && (is_confused(mtmp) || is_stunned(mtmp))) {
+                if (vismon)
+                    play_sfx_sound_at_location(SFX_CURE_AILMENT, mtmp->mx, mtmp->my);
                 mtmp->mprops[CONFUSION] = 0;
                 mtmp->mprops[STUNNED] = 0;
                 if (vismon)
