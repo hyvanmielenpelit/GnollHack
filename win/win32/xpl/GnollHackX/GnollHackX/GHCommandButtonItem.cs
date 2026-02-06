@@ -9,15 +9,17 @@ namespace GnollHackX
     {
         public readonly string Text;
         public readonly string ImageSourcePath;
-        public readonly int Command;
+        public readonly int GHCommand;
+        public readonly int MappedGHCommand;
         public readonly string ShortcutText;
 
         public GHCommandButtonItem(string text, string imgsrcpath, int command)
         {
             Text = text;
             ImageSourcePath = imgsrcpath;
-            Command = command;
-            ShortcutText = GHUtils.ConstructShortcutText(command);
+            GHCommand = command;
+            MappedGHCommand = GHApp.MapCommand(command);
+            ShortcutText = GHUtils.ConstructShortcutText(MappedGHCommand);
         }
     }
 

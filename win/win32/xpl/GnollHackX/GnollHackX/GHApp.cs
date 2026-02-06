@@ -55,6 +55,11 @@ using System.Runtime.CompilerServices;
 namespace GnollHackX
 {
     public delegate Task<bool> BackButtonHandler(object sender, EventArgs e);
+    public struct KeyMap
+    {
+        public int MappedCommand;
+        public IntPtr FunctionPointer;
+    }
 
     public static class GHApp
     {
@@ -209,6 +214,17 @@ namespace GnollHackX
             InitializePlatformRenderLoop();
             InitializeMemoryWarnings();
         }
+
+        private static KeyMap[] KeyMapArray = new KeyMap[256];
+
+        public static int MapCommand(int c)
+        {
+            if (c <= 0 || c >= 256 || KeyMapArray[c].MappedCommand == 0)
+                return c;
+            else
+                return KeyMapArray[c].MappedCommand;
+        }
+
 
         private static int _closingApp = 0;
         public static bool CheckCloseAndSetTrue { get { return Interlocked.Exchange(ref _closingApp, 1) != 0; } }
@@ -2139,6 +2155,65 @@ namespace GnollHackX
 #endif
         }
 
+
+        public static void ReadCommands(int param)
+        {
+            IGnollHackService gnollHackService = GnollHackService;
+            if (gnollHackService != null)
+            {
+                if (param == 0)
+                {
+                    /* Set function pointers */
+                    for (int i = 1; i < 256; i++)
+                    {
+                        IntPtr ptr = gnollHackService.GetCommandFunctionPointer(i);
+                        KeyMapArray[i].FunctionPointer = ptr;
+                    }
+                }
+                else
+                {
+                    for (int i = 1; i < 256; i++)
+                    {
+                        IntPtr ptr = gnollHackService.GetCommandFunctionPointer(i);
+                        if (ptr != IntPtr.Zero)
+                        {
+                            bool wasFound = false;
+                            /* Find the corresponding function pointer, and set mapped command to i */
+                            for (int j = 1; j < 256; j++)
+                            {
+                                if (KeyMapArray[j].FunctionPointer == ptr
+                                    && (KeyMapArray[i].MappedCommand == 0 
+                                        || i == j 
+                                        || ((j >= 32 && j < 128) && !(KeyMapArray[i].MappedCommand >= 32 && KeyMapArray[i].MappedCommand < 128))
+                                        ))
+                                {
+                                    KeyMapArray[i].MappedCommand = j;
+                                    wasFound = true;
+                                    break;
+                                }
+                            }
+                            /* This is a new command not present earlier, so we map it to where it is, if that key is free */
+                            /* Since these are not used by the GUI in buttons (GUI uses only the ones present in the original bindings so that the commands in fact work), this does not do much anything */
+                            if (!wasFound && KeyMapArray[i].FunctionPointer == IntPtr.Zero)
+                            {
+                                KeyMapArray[i].MappedCommand = i;
+                            }
+                        }
+                    }
+
+                    /* These are old commands that are not found in new bindings; we map them where they are if there is no other mapped command overriding them */
+                    /* This obviously does not cause the old command to executed but at least does something when the key is pressed */
+                    for (int i = 1; i < 256; i++)
+                    {
+                        if (KeyMapArray[i].MappedCommand == 0 && KeyMapArray[i].FunctionPointer != IntPtr.Zero)
+                        {
+                            KeyMapArray[i].MappedCommand = i;
+                        }
+                    }
+                }
+            }
+        }
+
         //private static readonly object _keyboardLock = new object();
         private static int _ctrlDown = 0;
         private static int _altDown = 0;
@@ -3241,7 +3316,7 @@ namespace GnollHackX
             List<SelectableShortcutButton> list = new List<SelectableShortcutButton>();
             for (int i = 0; i < 6; i++)
             {
-                int defCmd = GHApp.DefaultShortcutButton(0, i, true).GetCommand();
+                int defCmd = GHApp.DefaultShortcutButton(0, i, true).GHCommand;
                 int listselidx = GHApp.SelectableShortcutButtonIndexInList(defCmd, defCmd);
                 if (listselidx >= 0 && listselidx < SelectableShortcutButtons.Count)
                 {
@@ -3258,7 +3333,7 @@ namespace GnollHackX
             for (int i = 0; i < 6; i++)
             {
                 string keystr = "SimpleUILayoutCommandButton" + (i + 1);
-                int defCmd = GHApp.DefaultShortcutButton(0, i, true).GetCommand();
+                int defCmd = GHApp.DefaultShortcutButton(0, i, true).GHCommand;
                 int savedCmd = Preferences.Get(keystr, defCmd);
                 int listselidx = GHApp.SelectableShortcutButtonIndexInList(savedCmd, defCmd);
                 if(listselidx >= 0 && listselidx < SelectableShortcutButtons.Count)
@@ -3273,7 +3348,7 @@ namespace GnollHackX
             List<SelectableShortcutButton> list = new List<SelectableShortcutButton>();
             for (int i = 0; i < 13; i++)
             {
-                int defCmd = GHApp.DefaultShortcutButton(0, i, false).GetCommand();
+                int defCmd = GHApp.DefaultShortcutButton(0, i, false).GHCommand;
                 int listselidx = GHApp.SelectableShortcutButtonIndexInList(defCmd, defCmd);
                 if (listselidx >= 0 && listselidx < SelectableShortcutButtons.Count)
                 {
@@ -3290,7 +3365,7 @@ namespace GnollHackX
             for (int i = 0; i < 13; i++)
             {
                 string keystr = "FullUILayoutCommandButton" + (i + 1);
-                int defCmd = GHApp.DefaultShortcutButton(0, i, false).GetCommand();
+                int defCmd = GHApp.DefaultShortcutButton(0, i, false).GHCommand;
                 int savedCmd = Preferences.Get(keystr, defCmd);
                 int listselidx = GHApp.SelectableShortcutButtonIndexInList(savedCmd, defCmd);
                 if (listselidx >= 0 && listselidx < SelectableShortcutButtons.Count)
@@ -3396,10 +3471,10 @@ namespace GnollHackX
                                 {
                                     for(int bidx = 0; bidx < buttonsOnBar.Count; bidx++)
                                     {
-                                        if (_moreBtnMatrix[p, i, j] != null && _moreBtnMatrix[p, i, j].Command == buttonsOnBar[bidx].GetCommand())
+                                        if (_moreBtnMatrix[p, i, j] != null && _moreBtnMatrix[p, i, j].GHCommand == buttonsOnBar[bidx].GHCommand)
                                         {
                                             foundloc = true;
-                                            _moreBtnMatrix[p, i, j] = new GHCommandButtonItem(button.Label, button.ImageSourcePath, button.GetCommand());
+                                            _moreBtnMatrix[p, i, j] = new GHCommandButtonItem(button.Label, button.ImageSourcePath, button.GHCommand);
                                             //_moreBtnMatrix[p, i, j].Text = button.Label;
                                             //_moreBtnMatrix[p, i, j].ImageSourcePath = button.ImageSourcePath;
                                             //_moreBtnMatrix[p, i, j].Command = button.GetCommand();
@@ -3538,10 +3613,10 @@ namespace GnollHackX
                                 {
                                     for (int bidx = 0; bidx < buttonsOnBar.Count; bidx++)
                                     {
-                                        if (_moreBtnMatrix[p, i, j] != null && _moreBtnMatrix[p, i, j].Command == buttonsOnBar[bidx].GetCommand())
+                                        if (_moreBtnMatrix[p, i, j] != null && _moreBtnMatrix[p, i, j].GHCommand == buttonsOnBar[bidx].GHCommand)
                                         {
                                             foundloc = true;
-                                            _moreBtnMatrix[p, i, j] = new GHCommandButtonItem(button.Label, button.ImageSourcePath, button.GetCommand());
+                                            _moreBtnMatrix[p, i, j] = new GHCommandButtonItem(button.Label, button.ImageSourcePath, button.GHCommand);
                                             //_moreBtnMatrix[p, i, j].Text = button.Label;
                                             //_moreBtnMatrix[p, i, j].ImageSourcePath = button.ImageSourcePath;
                                             //_moreBtnMatrix[p, i, j].Command = button.GetCommand();
@@ -3584,22 +3659,22 @@ namespace GnollHackX
                                 try
                                 {
                                     _moreBtnBitmaps[k, i, j] = GetCachedImageSourceBitmap("resource://" + _moreBtnMatrix[k, i, j].ImageSourcePath, true);
-                                    if (_moreBtnMatrix[k, i, j].Command == -101)
+                                    if (_moreBtnMatrix[k, i, j].GHCommand == -101)
                                     {
                                         lastReturnBtn = _moreBtnMatrix[k, i, j];
                                         lastReturnBitmap = _moreBtnBitmaps[k, i, j];
                                     }
-                                    else if (_moreBtnMatrix[k, i, j].Command == (int)'#')
+                                    else if (_moreBtnMatrix[k, i, j].GHCommand == (int)'#')
                                     {
                                         lastExtendedBtn = _moreBtnMatrix[k, i, j];
                                         lastExtendedBitmap = _moreBtnBitmaps[k, i, j];
                                     }
-                                    else if (_moreBtnMatrix[k, i, j].Command == -102)
+                                    else if (_moreBtnMatrix[k, i, j].GHCommand == -102)
                                     {
                                         lastSearchBtn = _moreBtnMatrix[k, i, j];
                                         lastSearchBitmap = _moreBtnBitmaps[k, i, j];
                                     }
-                                    else if (_moreBtnMatrix[k, i, j].Command == -103)
+                                    else if (_moreBtnMatrix[k, i, j].GHCommand == -103)
                                     {
                                         lastRestBtn = _moreBtnMatrix[k, i, j];
                                         lastRestBitmap = _moreBtnBitmaps[k, i, j];
@@ -3633,7 +3708,7 @@ namespace GnollHackX
                 {
                     var btn1 = _moreBtnList[i].CommandButtonItem;
                     var btn2 = _moreBtnList[i - 1].CommandButtonItem;
-                    if (btn1 != null && btn2 != null && btn1.Command != 0 && btn1.Command == btn2.Command)
+                    if (btn1 != null && btn2 != null && btn1.GHCommand != 0 && btn1.GHCommand == btn2.GHCommand)
                     {
                         bool isWizBtn = _moreBtnList[i].IsWizardModeCommand;
                         _moreBtnList.RemoveAt(i);
@@ -3913,13 +3988,13 @@ namespace GnollHackX
             for(int i = 0; i < SelectableShortcutButtons.Count; i++) 
             {
                 SelectableShortcutButton button = SelectableShortcutButtons[i];
-                if (button.GetCommand() == cmd)
+                if (button.GHCommand == cmd)
                     return i;
             }
             for (int i = 0; i < SelectableShortcutButtons.Count; i++)
             {
                 SelectableShortcutButton button = SelectableShortcutButtons[i];
-                if (button.GetCommand() == defcmd)
+                if (button.GHCommand == defcmd)
                     return i;
             }
             return -1;

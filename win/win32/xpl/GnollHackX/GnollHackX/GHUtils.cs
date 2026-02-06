@@ -85,11 +85,11 @@ namespace GnollHackX
         {
             if (btn == null)
                 return GHApp.IsiOS ? " " : "";
-            int command = btn.BtnCommand;
+            int command = btn.MappedBtnCommand;
             if (command < 0)
                 return GHApp.IsiOS ? " " : "";
             if (command == 0)
-                return ConstructShortcutText(btn.BtnLetter, btn.BtnCtrl, btn.BtnMeta);
+                return ConstructShortcutText(btn.MappedBtnLetter, btn.MappedBtnCtrl, btn.MappedBtnMeta);
             int btnAsciiCode = UnMetaCtrl(command);
             if (!(btnAsciiCode >= 32 && btnAsciiCode <= 123))
                 return GHApp.IsiOS ? " " : "";

@@ -791,7 +791,7 @@ namespace GnollHackX.Pages.MainScreen
                 }
                 else
                 {
-                    Preferences.Set(keystr, GHApp.SelectableShortcutButtons[targetPicker.SelectedIndex].GetCommand());
+                    Preferences.Set(keystr, GHApp.SelectableShortcutButtons[targetPicker.SelectedIndex].GHCommand);
                     if (_gamePage != null)
                         _gamePage.SetSimpleLayoutCommandButton(i, targetPicker.SelectedIndex);
                 }
@@ -811,7 +811,7 @@ namespace GnollHackX.Pages.MainScreen
                 }
                 else
                 {
-                    Preferences.Set(keystr, GHApp.SelectableShortcutButtons[targetPicker.SelectedIndex].GetCommand());
+                    Preferences.Set(keystr, GHApp.SelectableShortcutButtons[targetPicker.SelectedIndex].GHCommand);
                     if (_gamePage != null)
                         _gamePage.SetFullLayoutCommandButton(i, targetPicker.SelectedIndex);
                 }
@@ -1057,7 +1057,7 @@ namespace GnollHackX.Pages.MainScreen
             for (int i = 0; i < 6; i++)
             {
                 string keystr = "SimpleUILayoutCommandButton" + (i + 1);
-                int defCmd = GHApp.DefaultShortcutButton(0, i, true).GetCommand();
+                int defCmd = GHApp.DefaultShortcutButton(0, i, true).GHCommand;
                 int savedCmd = Preferences.Get(keystr, defCmd);
                 int listselidx = GHApp.SelectableShortcutButtonIndexInList(savedCmd, defCmd);
                 cmdidxs[i] = listselidx;
@@ -1067,7 +1067,7 @@ namespace GnollHackX.Pages.MainScreen
             for (int i = 0; i < 13; i++)
             {
                 string keystr = "FullUILayoutCommandButton" + (i + 1);
-                int defCmd = GHApp.DefaultShortcutButton(0, i, false).GetCommand();
+                int defCmd = GHApp.DefaultShortcutButton(0, i, false).GHCommand;
                 int savedCmd = Preferences.Get(keystr, defCmd);
                 int listselidx = GHApp.SelectableShortcutButtonIndexInList(savedCmd, defCmd);
                 fullCmdIdxs[i] = listselidx;

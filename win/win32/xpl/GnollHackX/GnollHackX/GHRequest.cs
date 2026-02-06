@@ -108,6 +108,7 @@ namespace GnollHackX
         ToggleZoomMini,
         SetWornShowsEquipment,
         SetNoPetsPreference,
+        UpdateShortcutLabels,
     }
 
     public struct AddContextMenuData

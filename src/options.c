@@ -815,7 +815,7 @@ process_options_file()
 #endif
 #endif /* SYSCF */
     finish_options();
-
+    issue_parametered_gui_command(GUI_CMD_REPORT_COMMANDS, 1);
 }
 
 void
@@ -829,6 +829,7 @@ init_options()
     n_menu_mapped = 0;
     /* set up the command parsing */
     reset_commands(TRUE); /* init */
+    issue_parametered_gui_command(GUI_CMD_REPORT_COMMANDS, 0);
 
     /* initialize the random number generator(s) */
     init_random(rn2);

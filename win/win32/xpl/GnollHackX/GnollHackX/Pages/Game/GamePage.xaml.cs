@@ -984,7 +984,7 @@ namespace GnollHackX.Pages.Game
             for (int i = 0; i < 6; i++)
             {
                 string keystr = "SimpleUILayoutCommandButton" + (i + 1);
-                int defCmd = GHApp.DefaultShortcutButton(0, i, true).GetCommand();
+                int defCmd = GHApp.DefaultShortcutButton(0, i, true).GHCommand;
                 int savedCmd = Preferences.Get(keystr, defCmd);
                 int listselidx = GHApp.SelectableShortcutButtonIndexInList(savedCmd, defCmd);
                 if (listselidx >= 0)
@@ -994,7 +994,7 @@ namespace GnollHackX.Pages.Game
             for (int i = 0; i < 13; i++)
             {
                 string keystr = "FullUILayoutCommandButton" + (i + 1);
-                int defCmd = GHApp.DefaultShortcutButton(0, i, false).GetCommand();
+                int defCmd = GHApp.DefaultShortcutButton(0, i, false).GHCommand;
                 int savedCmd = Preferences.Get(keystr, defCmd);
                 int listselidx = GHApp.SelectableShortcutButtonIndexInList(savedCmd, defCmd);
                 if (listselidx >= 0)
@@ -3176,6 +3176,9 @@ namespace GnollHackX.Pages.Game
                                 break;
                             case GHRequestType.KeyboardFocus:
                                 GHApp.DoKeyboardFocus();
+                                break;
+                            case GHRequestType.UpdateShortcutLabels:
+                                DoUpdateButtonShortcutLabels();
                                 break;
                         }
                     }
@@ -7096,6 +7099,9 @@ namespace GnollHackX.Pages.Game
         private string _skillsKeyboardShortcut = GHUtils.ConstructShortcutText('S');
         private string _polearmKeyboardShortcut = GHUtils.ConstructShortcutText(GHUtils.Meta('P'));
         private string _prevWepKeyboardShortcut = GHUtils.ConstructShortcutText(GHUtils.Meta('<'));
+        public string SkillsKeyboardShortcut { get { return Interlocked.CompareExchange(ref _skillsKeyboardShortcut, null, null); } set { Interlocked.Exchange(ref _skillsKeyboardShortcut, value); } }
+        public string PolearmKeyboardShortcut { get { return Interlocked.CompareExchange(ref _polearmKeyboardShortcut, null, null); } set { Interlocked.Exchange(ref _polearmKeyboardShortcut, value); } }
+        public string PrevWepKeyboardShortcut { get { return Interlocked.CompareExchange(ref _prevWepKeyboardShortcut, null, null); } set { Interlocked.Exchange(ref _prevWepKeyboardShortcut, value); } }
 
         private void PaintMainGamePage(object sender, SKPaintSurfaceEventArgs e, bool isCanvasOnMainThread)
         {
@@ -11474,11 +11480,12 @@ namespace GnollHackX.Pages.Game
                             float text_y = skillDest.Bottom - textPaint.FontMetrics.Ascent;
                             textPaint.DrawTextOnCanvas(canvas, "Skills", text_x, text_y, SKTextAlign.Center);
                             lastdrawnrecty = skillDest.Bottom + textPaint.FontSpacing;
-                            if (showKeyboardShortcuts && !string.IsNullOrEmpty(_skillsKeyboardShortcut))
+                            string skillsKeyboardShortcut = SkillsKeyboardShortcut;
+                            if (showKeyboardShortcuts && !string.IsNullOrEmpty(skillsKeyboardShortcut))
                             {
                                 textPaint.Color = SKColors.Gray;
                                 textPaint.TextSize = btnBaseFontSize * GHConstants.KeyboardShortcutRelativeFontSize;
-                                textPaint.DrawTextOnCanvas(canvas, _skillsKeyboardShortcut, text_x, text_y + textPaint.FontSpacing, SKTextAlign.Center);
+                                textPaint.DrawTextOnCanvas(canvas, skillsKeyboardShortcut, text_x, text_y + textPaint.FontSpacing, SKTextAlign.Center);
                                 textPaint.Color = SKColors.White;
                                 lastdrawnrecty += textPaint.FontSpacing;
                                 textPaint.TextSize = btnBaseFontSize;
@@ -11505,11 +11512,12 @@ namespace GnollHackX.Pages.Game
                             float text_y = poleDest.Bottom - textPaint.FontMetrics.Ascent;
                             textPaint.DrawTextOnCanvas(canvas, "Polearm", text_x, text_y, SKTextAlign.Center);
                             lastdrawnrecty = poleDest.Bottom + textPaint.FontSpacing;
-                            if (showKeyboardShortcuts && !string.IsNullOrEmpty(_skillsKeyboardShortcut))
+                            string polearmKeyboardShortcut = PolearmKeyboardShortcut;
+                            if (showKeyboardShortcuts && !string.IsNullOrEmpty(polearmKeyboardShortcut))
                             {
                                 textPaint.Color = SKColors.Gray;
                                 textPaint.TextSize = btnBaseFontSize * GHConstants.KeyboardShortcutRelativeFontSize;
-                                textPaint.DrawTextOnCanvas(canvas, _polearmKeyboardShortcut, text_x, text_y + textPaint.FontSpacing, SKTextAlign.Center);
+                                textPaint.DrawTextOnCanvas(canvas, polearmKeyboardShortcut, text_x, text_y + textPaint.FontSpacing, SKTextAlign.Center);
                                 textPaint.Color = SKColors.White;
                                 lastdrawnrecty += textPaint.FontSpacing;
                                 textPaint.TextSize = btnBaseFontSize;
@@ -11535,11 +11543,12 @@ namespace GnollHackX.Pages.Game
                             float text_x = (prevWepDest.Left + prevWepDest.Right) / 2;
                             float text_y = prevWepDest.Bottom - textPaint.FontMetrics.Ascent;
                             textPaint.DrawTextOnCanvas(canvas, isunwield ? "Unwield" : "Wield Last", text_x, text_y, SKTextAlign.Center);
-                            if (showKeyboardShortcuts && !string.IsNullOrEmpty(_prevWepKeyboardShortcut))
+                            string prevWepKeyboardShortcut = PrevWepKeyboardShortcut;
+                            if (showKeyboardShortcuts && !string.IsNullOrEmpty(prevWepKeyboardShortcut))
                             {
                                 textPaint.Color = SKColors.Gray;
                                 textPaint.TextSize = btnBaseFontSize * GHConstants.KeyboardShortcutRelativeFontSize;
-                                textPaint.DrawTextOnCanvas(canvas, _prevWepKeyboardShortcut, text_x, text_y + textPaint.FontSpacing, SKTextAlign.Center);
+                                textPaint.DrawTextOnCanvas(canvas, prevWepKeyboardShortcut, text_x, text_y + textPaint.FontSpacing, SKTextAlign.Center);
                                 textPaint.Color = SKColors.White;
                                 lastdrawnrecty += textPaint.FontSpacing;
                                 textPaint.TextSize = btnBaseFontSize;
@@ -16582,7 +16591,7 @@ namespace GnollHackX.Pages.Game
         {
             LabeledImageButton ghb = sender as LabeledImageButton;
             if (ghb != null)
-                YnButton_Pressed(sender, e, ghb.GHCommand);
+                YnButton_Pressed(sender, e, ghb.MappedGHCommand);
         }
 
         private void YnButton_Pressed(object sender, EventArgs e, int resp)
@@ -16815,7 +16824,7 @@ namespace GnollHackX.Pages.Game
             LabeledImageButton lib = sender as LabeledImageButton;
             if (lib == null)
                 return;
-            switch ((int)lib.GHCommand)
+            switch ((int)lib.MappedGHCommand)
             {
                 case -102:
                     GenericButton_Clicked(sender, e, 'n');
@@ -16838,7 +16847,7 @@ namespace GnollHackX.Pages.Game
                     DoShowNumberPad();
                     break;
                 default:
-                    GenericButton_Clicked(sender, e, (int)lib.GHCommand);
+                    GenericButton_Clicked(sender, e, (int)lib.MappedGHCommand);
                     break;
             }
         }
@@ -20826,25 +20835,25 @@ namespace GnollHackX.Pages.Game
                                         } while (usedWiz && !wizModeOn);
                                         if (stopLoop)
                                             break;
-                                        if (usedButtonItem.Command == -101 && listIdx == GHApp._moreBtnList.Count - 1)
+                                        if (usedButtonItem.GHCommand == -101 && listIdx == GHApp._moreBtnList.Count - 1)
                                         {
                                             /* Move to bottom right corner */
                                             i = buttonColumns - 1;
                                             j = pos_j = buttonRows - 1;
                                         }
-                                        else if (usedButtonItem.Command == (int)'#' && listIdx == GHApp._moreBtnList.Count - 2 && buttonRows - 2 >= 0)
+                                        else if (usedButtonItem.GHCommand == (int)'#' && listIdx == GHApp._moreBtnList.Count - 2 && buttonRows - 2 >= 0)
                                         {
                                             /* Move to left side of the bottom right corner */
                                             i = buttonColumns - 1;
                                             j = pos_j = buttonRows - 2;
                                         }
-                                        else if (usedButtonItem.Command == -102 && listIdx == GHApp._moreBtnList.Count - 3 && buttonRows - 3 >= 0)
+                                        else if (usedButtonItem.GHCommand == -102 && listIdx == GHApp._moreBtnList.Count - 3 && buttonRows - 3 >= 0)
                                         {
                                             /* Move to left side of the bottom right corner */
                                             i = buttonColumns - 1;
                                             j = pos_j = buttonRows - 3;
                                         }
-                                        else if (usedButtonItem.Command == -103 && listIdx == GHApp._moreBtnList.Count - 4 && buttonRows - 4 >= 0)
+                                        else if (usedButtonItem.GHCommand == -103 && listIdx == GHApp._moreBtnList.Count - 4 && buttonRows - 4 >= 0)
                                         {
                                             /* Move to left side of the bottom right corner */
                                             i = buttonColumns - 1;
@@ -20880,7 +20889,7 @@ namespace GnollHackX.Pages.Game
                                         }
                                         canvas.DrawImage(usedBitmap, targetrect, paint);
                                         textPaint.DrawTextOnCanvas(canvas, usedButtonItem.Text, text_x, text_y, SKTextAlign.Center);
-                                        if (useKeyboardShortcuts && usedButtonItem.Command > 0 && !string.IsNullOrEmpty(usedButtonItem.ShortcutText))
+                                        if (useKeyboardShortcuts && usedButtonItem.MappedGHCommand > 0 && !string.IsNullOrEmpty(usedButtonItem.ShortcutText))
                                         {
                                             float kbsc_text_x = text_x = (targetrect.Left + targetrect.Right) / 2;
                                             float kbsc_text_y = targetrect.Bottom + textPaint.FontSpacing - textPaint.FontMetrics.Ascent * GHConstants.KeyboardShortcutRelativeFontSize;
@@ -21116,7 +21125,7 @@ namespace GnollHackX.Pages.Game
                                             if (rect.CommandButtonItem != null && rect.Rect.Contains(e.Location))
                                             {
                                                 cbi = rect.CommandButtonItem;
-                                                cbi_cmd = cbi.Command;
+                                                cbi_cmd = cbi.MappedGHCommand;
                                                 break;
                                             }
                                         }
@@ -21150,7 +21159,7 @@ namespace GnollHackX.Pages.Game
                                             int page = MoreCmdPage;
                                             cbi = GHApp._moreBtnMatrix[page, i, j];
                                             if (cbi != null)
-                                                cbi_cmd = cbi.Command;
+                                                cbi_cmd = cbi.MappedGHCommand;
                                         }
                                     }
 
@@ -22078,11 +22087,12 @@ namespace GnollHackX.Pages.Game
                 return;
             SelectableShortcutButton sourceButton = GHApp.SelectableShortcutButtons[btnSelectionIndex];
             targetButton.LblText = sourceButton.Label;
-            targetButton.BtnCommand = sourceButton.RawCommand;
-            targetButton.BtnLetter = sourceButton.Letter;
-            targetButton.BtnCtrl = sourceButton.Ctrl;
-            targetButton.BtnMeta = sourceButton.Meta;
+            targetButton.BtnCommand = sourceButton.MappedRawCommand;
+            targetButton.BtnLetter = sourceButton.MappedLetter;
+            targetButton.BtnCtrl = sourceButton.MappedCtrl;
+            targetButton.BtnMeta = sourceButton.MappedMeta;
             targetButton.ImgSourcePath = sourceButton.ImageSourcePath;
+            targetButton.ShortcutText = GHUtils.ConstructShortcutText(targetButton);
         }
 
         public void SetFullLayoutCommandButton(int btnCol, int btnSelectionIndex)
@@ -22102,11 +22112,57 @@ namespace GnollHackX.Pages.Game
             targetButton.BtnCtrl = sourceButton.Ctrl;
             targetButton.BtnMeta = sourceButton.Meta;
             targetButton.ImgSourcePath = sourceButton.ImageSourcePath;
+            targetButton.ShortcutText = GHUtils.ConstructShortcutText(targetButton);
         }
+
         public void SendRequestForTallyRealTime()
         {
             GHGame curGame = GHApp.CurrentGHGame;
             curGame?.ResponseQueue.Enqueue(new GHResponse(curGame, GHRequestType.TallyRealTime));
+        }
+
+        public void DoUpdateButtonShortcutLabels()
+        {
+            SkillsKeyboardShortcut = GHUtils.ConstructShortcutText(GHApp.MapCommand('S'));
+            PolearmKeyboardShortcut = GHUtils.ConstructShortcutText(GHApp.MapCommand(GHUtils.Meta('P')));
+            PrevWepKeyboardShortcut = GHUtils.ConstructShortcutText(GHApp.MapCommand(GHUtils.Meta('<')));
+            UpdateButtonShortcutLabels(RootGrid);
+        }
+
+        private void UpdateButtonShortcutLabels(View view)
+        {
+            if (view == null)
+                return;
+
+            if (view is Grid)
+            {
+                Grid grid = (Grid)view;
+                foreach (View child in grid.Children)
+                {
+                    UpdateButtonShortcutLabels(child);
+                }
+            }
+            else if (view is StackLayout)
+            {
+                StackLayout layout = (StackLayout)view;
+                foreach (View child in layout.Children)
+                {
+                    UpdateButtonShortcutLabels(child);
+                }
+            }
+            else if (view is AbsoluteLayout)
+            {
+                AbsoluteLayout layout = (AbsoluteLayout)view;
+                foreach (View child in layout.Children)
+                {
+                    UpdateButtonShortcutLabels(child);
+                }
+            }
+            else if (view is LabeledImageButton)
+            {
+                LabeledImageButton lib = (LabeledImageButton)view;
+                lib.ShortcutText = GHUtils.ConstructShortcutText(lib);
+            }
         }
 
         public void Suspend()

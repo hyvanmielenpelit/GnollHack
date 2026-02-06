@@ -782,6 +782,13 @@ LibTerminateGnollHack(int used_exit_hack_code)
     nh_terminate(EXIT_SUCCESS);
 }
 
+DLLEXPORT void*
+LibGetCommandFunctionPointer(int cmd)
+{
+    if (cmd < 0 || cmd >= 256 || Cmd.commands[cmd] == 0)
+        return 0;
+    return (void*)Cmd.commands[cmd]->ef_funct;
+}
 
 DLLEXPORT int GnollHackStart(cmdlineargs)
 char* cmdlineargs;

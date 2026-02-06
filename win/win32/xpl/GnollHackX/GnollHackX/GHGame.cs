@@ -26,6 +26,7 @@ using SkiaSharp;
 using System.Threading.Tasks;
 #if SENTRY
 using Sentry.Protocol;
+using WinRT.Interop;
 #endif
 
 namespace GnollHackX
@@ -3593,6 +3594,17 @@ namespace GnollHackX
                     break;
                 case (int)gui_command_types.GUI_CMD_BREADCRUMB3:
                     GHApp.AddSentryBreadcrumb(cmd_str + ": " + cmd_param + ", " + cmd_param2, GHConstants.SentryGnollHackLibraryCategoryName);
+                    break;
+                case (int)gui_command_types.GUI_CMD_REPORT_COMMANDS:
+                    if (!PlayingReplay)
+                    {
+                        GHApp.ReadCommands(cmd_param);
+                        if (cmd_param == 1)
+                        {
+                            GHApp.InitializeMoreCommandButtons(ActiveGamePage?.UseSimpleCmdLayout ?? false);
+                            RequestQueue.Enqueue(new GHRequest(this, GHRequestType.UpdateShortcutLabels));
+                        }
+                    }
                     break;
                 default:
                     break;

@@ -153,6 +153,30 @@ namespace GnollHackX.Controls
                 return ViewButton.GHCommand;
             }
         }
+        public char MappedBtnLetter
+        {
+            get => ViewButton.MappedLetter;
+        }
+        public bool MappedBtnMeta
+        {
+            get => ViewButton.MappedMeta;
+        }
+        public bool MappedBtnCtrl
+        {
+            get => ViewButton.MappedCtrl;
+        }
+        public int MappedBtnCommand
+        {
+            get => ViewButton.MappedRawCommand;
+        }
+        public int MappedGHCommand
+        {
+            get => ViewButton.MappedGHCommand;
+        }
+        public bool IsCommandMapped
+        {
+            get => MappedGHCommand != 0;
+        }
 
         public bool LargerFont { get; set; }
         public int LandscapeButtonsInRow { get; set; } = 0;

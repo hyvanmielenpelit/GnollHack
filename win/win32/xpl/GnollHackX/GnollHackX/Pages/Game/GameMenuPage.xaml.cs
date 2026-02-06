@@ -95,7 +95,7 @@ namespace GnollHackX.Pages.Game
             GHApp.PlayButtonClickedSound();
             GHApp.CollectNursery();
             //GHApp.AddSentryBreadcrumb(btnSave.Text + " menu button pressed.", GHConstants.SentryGnollHackButtonClickCategoryName);
-            _gamePage.GenericButton_Clicked(btnSave, EventArgs.Empty, GHUtils.Meta('s'));
+            _gamePage.GenericButton_Clicked(btnSave, EventArgs.Empty, GHApp.MapCommand(GHUtils.Meta('s')));
             await GHApp.PopModalPageAsync();
         }
 
@@ -110,7 +110,7 @@ namespace GnollHackX.Pages.Game
             GHApp.PlayButtonClickedSound();
             GHApp.CollectNursery();
             //GHApp.AddSentryBreadcrumb(btnQuit.Text + " menu button pressed.", GHConstants.SentryGnollHackButtonClickCategoryName);
-            _gamePage.GenericButton_Clicked(btnQuit, EventArgs.Empty, _gamePage.GameEnded ? 'q' : GHUtils.Meta('q'));
+            _gamePage.GenericButton_Clicked(btnQuit, EventArgs.Empty, _gamePage.GameEnded ? 'q' : GHApp.MapCommand(GHUtils.Meta('q')));
             await GHApp.PopModalPageAsync();
         }
 
@@ -154,7 +154,7 @@ namespace GnollHackX.Pages.Game
             GHApp.PlayButtonClickedSound();
             GHApp.DebugWriteRestart("ProfilingStopwatch.Restart: Options");
             GHApp.CollectNursery();
-            _gamePage.GenericButton_Clicked(btnOptions, EventArgs.Empty, 'O');
+            _gamePage.GenericButton_Clicked(btnOptions, EventArgs.Empty, GHApp.MapCommand('O'));
             await GHApp.PopModalPageAsync();
         }
 
@@ -168,7 +168,7 @@ namespace GnollHackX.Pages.Game
             MainLayout.IsEnabled = false;
             GHApp.PlayButtonClickedSound();
             GHApp.CollectNursery();
-            _gamePage.GenericButton_Clicked(btnSnapshot, EventArgs.Empty, GHUtils.Meta(29));
+            _gamePage.GenericButton_Clicked(btnSnapshot, EventArgs.Empty, GHApp.MapCommand(GHUtils.Meta(29)));
             await GHApp.PopModalPageAsync();
         }
 
