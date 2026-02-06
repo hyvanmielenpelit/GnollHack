@@ -16827,23 +16827,23 @@ namespace GnollHackX.Pages.Game
             switch ((int)lib.MappedGHCommand)
             {
                 case -102:
-                    GenericButton_Clicked(sender, e, 'n');
+                    GenericButton_Clicked(sender, e, -100 - (int)nh_keyfunc.NHKF_COUNT);
                     GenericButton_Clicked(sender, e, -12);
                     GenericButton_Clicked(sender, e, -10);
-                    GenericButton_Clicked(sender, e, 's');
+                    GenericButton_Clicked(sender, e, GHApp.MapCommand('s'));
                     break;
                 case -103:
-                    GenericButton_Clicked(sender, e, 'n');
+                    GenericButton_Clicked(sender, e, -100 - (int)nh_keyfunc.NHKF_COUNT);
                     GenericButton_Clicked(sender, e, -12);
                     GenericButton_Clicked(sender, e, -10);
                     GenericButton_Clicked(sender, e, -10);
-                    GenericButton_Clicked(sender, e, '.');
+                    GenericButton_Clicked(sender, e, GHApp.MapCommand('.'));
                     break;
                 case -104:
                     OpenGameMenu();
                     break;
                 case -105:
-                    GenericButton_Clicked(sender, e, 'n');
+                    GenericButton_Clicked(sender, e, -100 - (int)nh_keyfunc.NHKF_COUNT);
                     DoShowNumberPad();
                     break;
                 default:
@@ -21172,23 +21172,23 @@ namespace GnollHackX.Pages.Game
                                             switch (cbi_cmd)
                                             {
                                                 case -102:
-                                                    GenericButton_Clicked(sender, e, 'n');
+                                                    GenericButton_Clicked(sender, e, -100 - (int)nh_keyfunc.NHKF_COUNT);
                                                     GenericButton_Clicked(sender, e, -12);
                                                     GenericButton_Clicked(sender, e, -10);
-                                                    GenericButton_Clicked(sender, e, 's');
+                                                    GenericButton_Clicked(sender, e, GHApp.MapCommand('s'));
                                                     break;
                                                 case -103:
-                                                    GenericButton_Clicked(sender, e, 'n');
+                                                    GenericButton_Clicked(sender, e, -100 - (int)nh_keyfunc.NHKF_COUNT);
                                                     GenericButton_Clicked(sender, e, -12);
                                                     GenericButton_Clicked(sender, e, -10);
                                                     GenericButton_Clicked(sender, e, -10);
-                                                    GenericButton_Clicked(sender, e, '.');
+                                                    GenericButton_Clicked(sender, e, GHApp.MapCommand('.'));
                                                     break;
                                                 case -104:
                                                     OpenGameMenu();
                                                     break;
                                                 case -105:
-                                                    GenericButton_Clicked(sender, e, 'n');
+                                                    GenericButton_Clicked(sender, e, -100 - (int)nh_keyfunc.NHKF_COUNT);
                                                     DoShowNumberPad();
                                                     break;
                                                 default:
