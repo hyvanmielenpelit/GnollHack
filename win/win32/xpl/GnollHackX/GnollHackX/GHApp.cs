@@ -215,16 +215,21 @@ namespace GnollHackX
             InitializeMemoryWarnings();
         }
 
-        private static KeyMap[] KeyMapArray = new KeyMap[256];
+        private static KeyMap[] _tempKeyMapArray = new KeyMap[256];
+        private static KeyMap[] _keyMapArray = new KeyMap[256];
+        private static KeyMap[] KeyMapArray { get { return Interlocked.CompareExchange(ref _keyMapArray, null, null); } set { Interlocked.Exchange(ref _keyMapArray, value); } }
 
         public static int MapCommand(int c)
         {
-            if (c <= 0 || c >= 256 || KeyMapArray[c].MappedCommand == 0)
+            if (c <= 0 || c >= 256)
+                return c;
+
+            KeyMap[] arr = KeyMapArray;
+            if (arr[c].MappedCommand == 0)
                 return c;
             else
-                return KeyMapArray[c].MappedCommand;
+                return arr[c].MappedCommand;
         }
-
 
         private static int _closingApp = 0;
         public static bool CheckCloseAndSetTrue { get { return Interlocked.Exchange(ref _closingApp, 1) != 0; } }
@@ -2163,11 +2168,12 @@ namespace GnollHackX
             {
                 if (param == 0)
                 {
-                    /* Set function pointers */
+                    /* Set function pointers, initialize mapped command */
                     for (int i = 1; i < 256; i++)
                     {
                         IntPtr ptr = gnollHackService.GetCommandFunctionPointer(i);
-                        KeyMapArray[i].FunctionPointer = ptr;
+                        _tempKeyMapArray[i].FunctionPointer = ptr;
+                        _tempKeyMapArray[i].MappedCommand = 0;
                     }
                 }
                 else
@@ -2181,22 +2187,22 @@ namespace GnollHackX
                             /* Find the corresponding function pointer, and set mapped command to i */
                             for (int j = 1; j < 256; j++)
                             {
-                                if (KeyMapArray[j].FunctionPointer == ptr
-                                    && (KeyMapArray[i].MappedCommand == 0 
+                                if (_tempKeyMapArray[j].FunctionPointer == ptr
+                                    && (_tempKeyMapArray[i].MappedCommand == 0 
                                         || i == j 
-                                        || ((j >= 32 && j < 128) && !(KeyMapArray[i].MappedCommand >= 32 && KeyMapArray[i].MappedCommand < 128))
+                                        || ((j >= 32 && j < 128) && !(_tempKeyMapArray[i].MappedCommand >= 32 && _tempKeyMapArray[i].MappedCommand < 128))
                                         ))
                                 {
-                                    KeyMapArray[i].MappedCommand = j;
+                                    _tempKeyMapArray[i].MappedCommand = j;
                                     wasFound = true;
                                     break;
                                 }
                             }
                             /* This is a new command not present earlier, so we map it to where it is, if that key is free */
                             /* Since these are not used by the GUI in buttons (GUI uses only the ones present in the original bindings so that the commands in fact work), this does not do much anything */
-                            if (!wasFound && KeyMapArray[i].FunctionPointer == IntPtr.Zero)
+                            if (!wasFound && _tempKeyMapArray[i].FunctionPointer == IntPtr.Zero)
                             {
-                                KeyMapArray[i].MappedCommand = i;
+                                _tempKeyMapArray[i].MappedCommand = i;
                             }
                         }
                     }
@@ -2205,11 +2211,13 @@ namespace GnollHackX
                     /* This obviously does not cause the old command to executed but at least does something when the key is pressed */
                     for (int i = 1; i < 256; i++)
                     {
-                        if (KeyMapArray[i].MappedCommand == 0 && KeyMapArray[i].FunctionPointer != IntPtr.Zero)
+                        if (_tempKeyMapArray[i].MappedCommand == 0 && _tempKeyMapArray[i].FunctionPointer != IntPtr.Zero)
                         {
-                            KeyMapArray[i].MappedCommand = i;
+                            _tempKeyMapArray[i].MappedCommand = i;
                         }
                     }
+
+                    _tempKeyMapArray = Interlocked.Exchange(ref _keyMapArray, _tempKeyMapArray);
                 }
             }
         }

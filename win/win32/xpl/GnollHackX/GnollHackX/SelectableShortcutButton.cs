@@ -19,7 +19,7 @@ namespace GnollHackX
         public string ImageSourcePath { get; private set; }
 
         public readonly int GHCommand;
-        public readonly int MappedGHCommand;
+        public  int MappedGHCommand { get => GHApp.MapCommand(GHCommand); }
 
         public SelectableShortcutButton(string name, string label, char letter, bool ctrl, bool meta, int cmd, string imgsourcepath) 
         {
@@ -31,7 +31,6 @@ namespace GnollHackX
             RawCommand = cmd;
             ImageSourcePath = imgsourcepath;
             GHCommand = CalculateGHCommand();
-            MappedGHCommand = GHApp.MapCommand(GHCommand);
         }
 
         private int CalculateGHCommand()

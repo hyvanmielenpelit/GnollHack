@@ -3178,7 +3178,7 @@ namespace GnollHackX.Pages.Game
                                 GHApp.DoKeyboardFocus();
                                 break;
                             case GHRequestType.UpdateShortcutLabels:
-                                DoUpdateButtonShortcutLabels();
+                                    DoUpdateButtonShortcutLabels();
                                 break;
                         }
                     }
@@ -22087,10 +22087,10 @@ namespace GnollHackX.Pages.Game
                 return;
             SelectableShortcutButton sourceButton = GHApp.SelectableShortcutButtons[btnSelectionIndex];
             targetButton.LblText = sourceButton.Label;
-            targetButton.BtnCommand = sourceButton.MappedRawCommand;
-            targetButton.BtnLetter = sourceButton.MappedLetter;
-            targetButton.BtnCtrl = sourceButton.MappedCtrl;
-            targetButton.BtnMeta = sourceButton.MappedMeta;
+            targetButton.BtnCommand = sourceButton.RawCommand;
+            targetButton.BtnLetter = sourceButton.Letter;
+            targetButton.BtnCtrl = sourceButton.Ctrl;
+            targetButton.BtnMeta = sourceButton.Meta;
             targetButton.ImgSourcePath = sourceButton.ImageSourcePath;
             targetButton.ShortcutText = GHUtils.ConstructShortcutText(targetButton);
         }

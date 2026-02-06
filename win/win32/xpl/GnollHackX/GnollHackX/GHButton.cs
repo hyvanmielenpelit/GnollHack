@@ -58,15 +58,36 @@ namespace GnollHackX
 
         public char MappedLetter
         {
-            get => (char)GHUtils.UnMetaCtrl(MappedGHCommand);
+            get
+            {
+                int mappedCmd = MappedGHCommand;
+                if (mappedCmd <= 0)
+                    return (char)0;
+                else
+                    return (char)GHUtils.UnMetaCtrl(mappedCmd);
+            }
         }
         public bool MappedMeta
         {
-            get => GHUtils.IsMeta(MappedGHCommand);
+            get
+            {
+                int mappedCmd = MappedGHCommand;
+                if (mappedCmd <= 0)
+                    return false;
+                else
+                    return GHUtils.IsMeta(mappedCmd);
+            }
         }
         public bool MappedCtrl
         {
-            get => GHUtils.IsCtrl(MappedGHCommand);
+            get
+            {
+                int mappedCmd = MappedGHCommand;
+                if (mappedCmd <= 0)
+                    return false;
+                else
+                    return GHUtils.IsCtrl(mappedCmd);
+            }
         }
         public int MappedRawCommand
         {
