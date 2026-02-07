@@ -8392,7 +8392,8 @@ namespace GnollHackX
                                                 }
                                                 break;
                                             default:
-                                                breakwhile = true; /* error; quitting */
+                                                if (cmd <= 0 || cmd > (int)RecordedFunctionID.NumberOfFunctionCalls + 32)
+                                                    breakwhile = true; /* error; quitting; otherwise, likely a new function call added in a newer game version */
                                                 break;
                                         }
                                     } while (!breakwhile);
