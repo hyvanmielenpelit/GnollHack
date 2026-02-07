@@ -2161,12 +2161,12 @@ namespace GnollHackX
         }
 
 
-        public static void ReadCommands(int param)
+        public static void ReadCommands(int customKeyBindingsRead)
         {
             IGnollHackService gnollHackService = GnollHackService;
             if (gnollHackService != null)
             {
-                if (param == 0)
+                if (customKeyBindingsRead == 0)
                 {
                     /* Set function pointers, initialize mapped command */
                     for (int i = 1; i < 256; i++)

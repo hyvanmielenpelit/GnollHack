@@ -3178,7 +3178,7 @@ namespace GnollHackX.Pages.Game
                                 GHApp.DoKeyboardFocus();
                                 break;
                             case GHRequestType.UpdateShortcutLabels:
-                                    DoUpdateButtonShortcutLabels();
+                                DoUpdateButtonShortcutLabels();
                                 break;
                         }
                     }
