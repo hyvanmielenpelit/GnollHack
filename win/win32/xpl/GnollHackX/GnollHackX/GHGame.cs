@@ -26,7 +26,6 @@ using SkiaSharp;
 using System.Threading.Tasks;
 #if SENTRY
 using Sentry.Protocol;
-using WinRT.Interop;
 #endif
 
 namespace GnollHackX
