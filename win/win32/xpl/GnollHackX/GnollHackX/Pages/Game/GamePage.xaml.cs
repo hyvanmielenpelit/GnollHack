@@ -11969,8 +11969,8 @@ namespace GnollHackX.Pages.Game
 
             float twidth = textPaint.MeasureText("Strength");
             float theight = textPaint.FontSpacing;
-            float tscale_one_column = Math.Max(0.1f, Math.Min((bkgrect.Width * (1 - 2f / 12.6f) / 4) / twidth, (bkgrect.Height * (1 - 2f / 8.5f) / 21) / theight));
-            float tscale_two_columns = Math.Max(0.1f, Math.Min((bkgrect.Width * (1 - 2f / 12.6f) / 4) / twidth, (bkgrect.Height * (1 - 2f / 8.5f) / 18) / theight));
+            float tscale_one_column = Math.Max(0.1f, Math.Min((bkgrect.Width * (1 - 2f / 12.6f) / 4) / twidth, (bkgrect.Height * (1 - 2f / 8.5f) / 22) / theight));
+            float tscale_two_columns = Math.Max(0.1f, Math.Min((bkgrect.Width * (1 - 2f / 12.6f) / 4) / twidth, (bkgrect.Height * (1 - 2f / 8.5f) / 19) / theight));
             //float strwidth_one_column = twidth * tscale_one_column;
             float strwidth_two_columns = twidth * tscale_two_columns;
             //float indentation_one_column = strwidth_one_column * 20f / 8f;
