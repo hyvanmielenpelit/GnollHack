@@ -1077,6 +1077,7 @@ register struct monst *mtmp;
                         if (!is_cancelled(mtmp) && rn2(100) < chance && !item_prevents_summoning(mtmp->mnum))
                         {
                             pline_ex(ATR_NONE, CLR_MSG_SPELL, "%s gates in some help.", Monnam(mtmp));
+                            debugprint_pos();
                             (void)msummon(mtmp);
                             sum[i] = 1;
                             mtmp->mdemonsummon_used = 30;
@@ -1114,6 +1115,7 @@ register struct monst *mtmp;
                             char buf[BUFSZ], genericwere[BUFSZ];
 
                             Strcpy(genericwere, "creature");
+                            debugprint_pos();
                             numhelp = were_summon(mdat, FALSE, &numseen, genericwere);
                             mtmp->mdemonsummon_used = 30;
                             if (youseeit)
@@ -1167,6 +1169,7 @@ register struct monst *mtmp;
                         int chance = mattk->mlevel;
                         if (!is_cancelled(mtmp) && rn2(100) < chance && !item_prevents_summoning(mtmp->mnum))
                         {
+                            debugprint_pos();
                             (void)yeenaghu_gnoll_summon(mtmp);
                             sum[i] = 1;
                             mtmp->mspecialsummon_used = 45;
@@ -1196,6 +1199,7 @@ register struct monst *mtmp;
                         int chance = mattk->mlevel;
                         if (!is_cancelled(mtmp) && rn2(100) < chance && !item_prevents_summoning(mtmp->mnum))
                         {
+                            debugprint_pos();
                             (void)yeenaghu_ghoul_summon(mtmp);
                             sum[i] = 1;
                             mtmp->mspecialsummon2_used = 45;
@@ -1226,6 +1230,7 @@ register struct monst *mtmp;
                         if (!is_cancelled(mtmp) && rn2(100) < chance && !item_prevents_summoning(mtmp->mnum))
                         {
                             pline_ex(ATR_NONE, CLR_MSG_SPELL, "%s summons some bison!", Monnam(mtmp));
+                            debugprint_pos();
                             (void)yacc_bison_summon();
                             sum[i] = 1;
                             mtmp->mspecialsummon_used = 45;
@@ -1250,6 +1255,7 @@ register struct monst *mtmp;
                         if (!is_cancelled(mtmp) && rn2(100) < chance && !item_prevents_summoning(mtmp->mnum))
                         {
                             pline_ex(ATR_NONE, CLR_MSG_SPELL, "%s summons some undead!", Monnam(mtmp));
+                            debugprint_pos();
                             (void)orcus_undead_summon();
                             sum[i] = 1;
                             mtmp->mspecialsummon_used = 90;
