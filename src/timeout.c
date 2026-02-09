@@ -3066,7 +3066,7 @@ run_timers()
         if (curr->kind == TIMER_OBJECT)
         {
             (curr->arg.a_obj)->timed--;
-            debugprint("run_timers: %d, %d", (curr->arg.a_obj)->otyp, (curr->arg.a_obj)->corpsenm);
+            //debugprint("run_timers: %d, %d", (curr->arg.a_obj)->otyp, (curr->arg.a_obj)->corpsenm);
         }
         else if (curr->kind == TIMER_MONSTER)
         {
