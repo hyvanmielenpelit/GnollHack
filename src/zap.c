@@ -10751,7 +10751,7 @@ int64_t min_time; /* <x,y>'s old melt timeout (deleted by time we get here) */
 /*
  * Called when ice has melted completely away.
  */
-void
+int
 melt_ice_away(arg, timeout)
 anything *arg;
 int64_t timeout UNUSED;
@@ -10767,6 +10767,7 @@ int64_t timeout UNUSED;
     /* melt_ice does newsym when appropriate */
     melt_ice(x, y, "Some ice melts away.");
     context.mon_moving = save_mon_moving;
+    return FALSE;
 }
 
 /* Burn floor scrolls, evaporate pools, etc... in a single square.

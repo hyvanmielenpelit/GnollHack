@@ -10,7 +10,7 @@
 #include "wintype.h"
 
 /* generic timeout function */
-typedef void FDECL((*timeout_proc), (ANY_P *, int64_t));
+typedef int FDECL((*timeout_proc), (ANY_P *, int64_t));
 
 /* kind of timer */
 enum timer_type {

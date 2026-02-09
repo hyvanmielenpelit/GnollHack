@@ -3171,7 +3171,7 @@ boolean verbose, buriedsearchableonly;
  * away, any contents become newly buried objects.
  */
 /* ARGSUSED */
-void
+int
 rot_organic(arg, timeout)
 anything *arg;
 int64_t timeout UNUSED;
@@ -3197,12 +3197,13 @@ int64_t timeout UNUSED;
     //context.suppress_container_deletion_warning = 1;
     obfree(obj, (struct obj *) 0);
     //context.suppress_container_deletion_warning = 0;
+    return TRUE;
 }
 
 /*
  * Called when a corpse has rotted completely away.
  */
-void
+int
 rot_corpse(arg, timeout)
 anything *arg;
 int64_t timeout;
@@ -3211,6 +3212,8 @@ int64_t timeout;
     struct obj *obj = arg->a_obj;
     boolean on_floor = obj->where == OBJ_FLOOR,
             in_invent = obj->where == OBJ_INVENT;
+
+    int obj_gone = 0;
 
     if (on_floor) {
         x = obj->ox;
@@ -3253,7 +3256,7 @@ int64_t timeout;
         obj->owornmask = 0L;
     }
     debugprint("rot_corpse: %d, %d", obj->otyp, obj->corpsenm);
-    rot_organic(arg, timeout);
+    obj_gone = rot_organic(arg, timeout);
     if (on_floor) {
         struct monst *mtmp = m_at(x, y);
 
@@ -3266,6 +3269,7 @@ int64_t timeout;
         newsym(x, y);
     } else if (in_invent)
         update_inventory();
+    return obj_gone;
 }
 
 #if 0

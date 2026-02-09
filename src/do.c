@@ -8439,7 +8439,7 @@ int animateintomon; // monstid to be animated into
 
 /* Revive the corpse via a timeout. */
 /*ARGSUSED*/
-void
+int
 revive_mon(arg, timeout)
 anything *arg;
 int64_t timeout UNUSED;
@@ -8450,7 +8450,7 @@ int64_t timeout UNUSED;
     xchar x, y;
 
     if (!mptr)
-        return;
+        return 0;
 
     int body_where = body->where;
 
@@ -8472,7 +8472,7 @@ int64_t timeout UNUSED;
     }
 
     /* if we succeed, the corpse is gone */
-    if (!revive_corpse(body)) 
+    if (!revive_corpse(body))
     {
         int64_t when;
         int action;
@@ -8488,8 +8488,8 @@ int64_t timeout UNUSED;
                     if (!rn2(3))
                         break;
             }
-        } 
-        else 
+        }
+        else
         { /* rot this corpse away */
             You_feel_ex(ATR_NONE, CLR_MSG_ATTENTION, "%sless hassled.", is_rider_or_tarrasque(mptr) ? "much " : "");
             action = ROT_CORPSE;
@@ -8497,8 +8497,11 @@ int64_t timeout UNUSED;
             if (when < 1L)
                 when = 1L;
         }
-        (void) start_timer(when, TIMER_OBJECT, action, arg);
+        (void)start_timer(when, TIMER_OBJECT, action, arg);
+        return FALSE;
     }
+    else
+        return TRUE;
 }
 
 int

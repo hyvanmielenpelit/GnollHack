@@ -3608,7 +3608,7 @@ boolean you_only;
 /*
  * Timer callback routine: turn figurine into monster
  */
-void
+int
 fig_transform(arg, timeout)
 anything *arg;
 int64_t timeout;
@@ -3623,7 +3623,7 @@ int64_t timeout;
 
     if (!figurine) {
         debugpline0("null figurine in fig_transform()");
-        return;
+        return FALSE;
     }
     silent = (timeout != monstermoves); /* happened while away */
     okay_spot = get_obj_location(figurine, &cc.x, &cc.y, 0);
@@ -3633,7 +3633,7 @@ int64_t timeout;
         /* reset the timer to try again later */
         (void) start_timer((int64_t) rnd(5000), TIMER_OBJECT, FIG_TRANSFORM,
                            obj_to_any(figurine));
-        return;
+        return FALSE;
     }
 
     cansee_spot = cansee(cc.x, cc.y);
@@ -3722,6 +3722,7 @@ int64_t timeout;
     }
     if (redraw)
         newsym(cc.x, cc.y);
+    return TRUE;
 }
 
 STATIC_OVL boolean
