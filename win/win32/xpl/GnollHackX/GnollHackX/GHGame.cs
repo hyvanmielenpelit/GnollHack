@@ -1995,7 +1995,7 @@ namespace GnollHackX
 
         private IntPtr _outGoingIntPtr;
 
-        public void ClientCallback_FreeMemory(ref IntPtr ptr)
+        public void ClientCallback_FreeMemory(IntPtr ptr)
         {
             //RecordFunctionCall(RecordedFunctionID.FreeMemory);
 

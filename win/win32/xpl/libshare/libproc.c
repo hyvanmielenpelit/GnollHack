@@ -433,7 +433,7 @@ int lib_select_menu(winid wid, int how, MENU_ITEM_P** selected)
         }
     }
 
-    lib_callbacks.callback_free_memory(&picklist);
+    lib_callbacks.callback_free_memory(picklist);
 
     return cnt;
 }

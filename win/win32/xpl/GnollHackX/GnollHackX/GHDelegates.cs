@@ -187,7 +187,7 @@ namespace GnollHackX
     public delegate void StatusEnableFieldCallback(int value1, string value2, string value3, byte value4);
 
     [UnmanagedFunctionPointer(CallingConvention.StdCall)]
-    public delegate void FreeMemoryCallback(ref IntPtr ptr);
+    public delegate void FreeMemoryCallback(IntPtr ptr);
 
     [UnmanagedFunctionPointer(CallingConvention.StdCall)]
     public delegate void ReportPlayerNameCallback(string used_player_name);
