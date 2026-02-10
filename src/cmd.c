@@ -8413,7 +8413,15 @@ coord *cc;
 
 int
 getdir(s)
+const char* s;
+{
+    return getdir_ex(s, FALSE);
+}
+
+int
+getdir_ex(s, self_always_ok)
 const char *s;
+boolean self_always_ok;
 {
     char dirsym;
     int is_mov;
@@ -8471,8 +8479,12 @@ retry:
         create_context_menu(CREATE_CONTEXT_MENU_NORMAL);
         return 0;
     }
-    if (!u.dz && (Stunned || (Confusion && !rn2(5))))
-        confdir();
+
+    if (!self_always_ok || (u.dx || u.dy || u.dz)) /* if self_always_ok then not all of dx/dy/dz can be zero to apply confdir */
+    {
+        if (!u.dz && (Stunned || (Confusion && !rn2(5))))
+            confdir();
+    }
 
     create_context_menu(CREATE_CONTEXT_MENU_NORMAL);
     return 1;

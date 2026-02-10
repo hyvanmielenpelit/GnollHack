@@ -89,7 +89,7 @@ boolean drink_yourself;
 
     if (drink_yourself)
         u.dx = u.dy = u.dz = 0;
-    else if (!getdir((char*)0))
+    else if (!getdir_ex((char*)0, TRUE))
         return 0;
 
     update_u_facing(TRUE);
@@ -188,7 +188,7 @@ boolean drink_yourself;
 
     if(drink_yourself)
         u.dx = u.dy = u.dz = 0;
-    else if (!getdir((char*)0))
+    else if (!getdir_ex((char*)0, TRUE))
         return 0;
 
     update_u_facing(TRUE);
@@ -3317,7 +3317,7 @@ boolean you_only;
 
     if (you_only)
         u.dx = u.dy = u.dz = 0;
-    else if (!getdir((char*)0))
+    else if (!getdir_ex((char*)0, TRUE))
     {
         pline1(Never_mind);
         return 0;
