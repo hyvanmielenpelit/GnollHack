@@ -2196,7 +2196,7 @@ namespace GnollHackX
                                 {
                                     _tempKeyMapArray[i].MappedCommand = j;
                                     wasFound = true;
-                                    break;
+                                    //break;
                                 }
                             }
                         }
