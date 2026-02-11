@@ -2180,14 +2180,15 @@ namespace GnollHackX
                 {
                     for (int i = 1; i < 256; i++)
                     {
-                        IntPtr ptr = gnollHackService.GetCommandFunctionPointer(i);
-                        if (ptr != IntPtr.Zero)
+                        bool wasFound = false;
+                        IntPtr origPtr = _tempKeyMapArray[i].FunctionPointer; /* We need to look for this original one */
+                        if (origPtr != IntPtr.Zero)
                         {
-                            bool wasFound = false;
                             /* Find the corresponding function pointer, and set mapped command to i */
                             for (int j = 1; j < 256; j++)
                             {
-                                if (_tempKeyMapArray[j].FunctionPointer == ptr
+                                IntPtr curPtr = gnollHackService.GetCommandFunctionPointer(j);
+                                if (curPtr != IntPtr.Zero && curPtr == origPtr
                                     && (_tempKeyMapArray[i].MappedCommand == 0 
                                         || i == j 
                                         || ((j >= 32 && j < 128) && !(_tempKeyMapArray[i].MappedCommand >= 32 && _tempKeyMapArray[i].MappedCommand < 128))
@@ -2198,12 +2199,12 @@ namespace GnollHackX
                                     break;
                                 }
                             }
-                            /* This is a new command not present earlier, so we map it to where it is, if that key is free */
-                            /* Since these are not used by the GUI in buttons (GUI uses only the ones present in the original bindings so that the commands in fact work), this does not do much anything */
-                            if (!wasFound && _tempKeyMapArray[i].FunctionPointer == IntPtr.Zero)
-                            {
-                                _tempKeyMapArray[i].MappedCommand = i;
-                            }
+                        }
+                        /* This is a new command not present earlier, so we map it to where it is, if that key is free */
+                        /* Since these are not used by the GUI in buttons (GUI uses only the ones present in the original bindings so that the commands in fact work), this does not do much anything */
+                        if (!wasFound && origPtr == IntPtr.Zero)
+                        {
+                            _tempKeyMapArray[i].MappedCommand = i;
                         }
                     }
 
