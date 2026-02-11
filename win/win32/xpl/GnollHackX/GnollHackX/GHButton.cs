@@ -97,10 +97,6 @@ namespace GnollHackX
         {
             get => GHApp.MapCommand(GHCommand);
         }
-        public bool IsCommandMapped
-        {
-            get => MappedGHCommand != 0;
-        }
 
         public GHButton()
         {
