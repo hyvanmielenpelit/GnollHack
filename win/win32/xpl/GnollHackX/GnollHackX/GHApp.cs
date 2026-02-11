@@ -3249,8 +3249,12 @@ namespace GnollHackX
         public static int[] ReplacementOffsets;
         public static int Glyph2TileSize;
         public static SKImage[] _tileMap = new SKImage[GHConstants.MaxTileSheets];
+        public static SKImage[] _animationMap = null;
+        public static SKImage[] _enlargementMap = null;
         public static int UsedTileSheets;
         public static int TotalTiles;
+        public static int NoOfAnimations;
+        public static int NoOfEnlargements;
         public static int UnexploredGlyph;
         public static int NoGlyph;
         public static int AnimationOff;
@@ -7523,6 +7527,8 @@ namespace GnollHackX
                                                         AnimationOffsets = anoff;
                                                         EnlargementOffsets = enoff;
                                                         ReplacementOffsets = reoff;
+                                                        NoOfAnimations = anoff_sz;
+                                                        NoOfEnlargements = enoff_sz;
                                                         UsedTileSheets = nosheets;
                                                         TotalTiles = notiles;
                                                         for (int j = 0; j < tilesperrow_sz; j++)
@@ -8584,6 +8590,87 @@ namespace GnollHackX
                 Debug.WriteLine(ex.Message);
             }
             return client;
+        }
+
+        private static bool IsAnimationPresent(int animIndex)
+        {
+            return true;
+        }
+        private static bool IsEnlargementPresent(int animIndex)
+        {
+            return true;
+        }
+
+
+        public static void ProcessLoadableAnimations()
+        {
+            lock (Glyph2TileLock)
+            {
+                _animationMap = new SKImage[NoOfAnimations];
+                _enlargementMap = new SKImage[NoOfEnlargements];
+                int firstAnimationTile = Glyph2Tile[AnimationOff];
+                int firstEnlargementTile = Glyph2Tile[EnlargementOff];
+                for (int i = 1; i < NoOfAnimations; i++)
+                {
+                    if (_animationMap[i] != null)
+                    {
+                        _animationMap[i].Dispose();
+                        _animationMap[i] = null;
+                    }
+                    if (IsAnimationPresent(i))
+                    {
+                        int firstOffsetTile = Glyph2Tile[AnimationOffsets[i] + AnimationOff];
+                        int lastOffsetTile = i == NoOfAnimations - 1 ? Glyph2Tile[EnlargementOff - 1] : Glyph2Tile[AnimationOffsets[i + 1] - 1 + AnimationOff];
+                        int numTiles = lastOffsetTile - firstOffsetTile + 1;
+                        for (int j = firstOffsetTile; j <= lastOffsetTile; j++)
+                        {
+                            int sheet_idx = GHApp.TileSheetIdx(j);
+                            int tile_x = GHApp.TileSheetX(j, sheet_idx);
+                            int tile_y = GHApp.TileSheetY(j, sheet_idx);
+                            SKRect sourceRect = new SKRect(tile_x, tile_y, tile_x + GHConstants.TileWidth * numTiles, tile_y + GHConstants.TileHeight);
+                            SKRect targetRect = new SKRect(0, 0, GHConstants.TileWidth * numTiles, GHConstants.TileHeight);
+                            SKBitmap copyBitmap = new SKBitmap(GHConstants.TileWidth * numTiles, GHConstants.TileHeight, _tileMap[0].ColorType, _tileMap[0].AlphaType, _tileMap[0].ColorSpace);
+                            using (var canvas = new SKCanvas(copyBitmap))
+                            {
+                                canvas.Clear(SKColors.Transparent);
+                                canvas.DrawImage(_tileMap[sheet_idx], sourceRect, targetRect);
+                            }
+                            copyBitmap.SetImmutable();
+                            _animationMap[i] = SKImage.FromBitmap(copyBitmap);
+                        }
+                    }
+                }
+                for (int i = 1; i < NoOfEnlargements; i++)
+                {
+                    if (_enlargementMap[i] != null)
+                    {
+                        _enlargementMap[i].Dispose();
+                        _enlargementMap[i] = null;
+                    }
+                    if (IsEnlargementPresent(i))
+                    {
+                        int firstOffsetTile = Glyph2Tile[EnlargementOffsets[i] + EnlargementOff];
+                        int lastOffsetTile = i == NoOfEnlargements - 1 ? TotalTiles : Glyph2Tile[EnlargementOffsets[i + 1] - 1 + EnlargementOff];
+                        int numTiles = lastOffsetTile - firstOffsetTile + 1;
+                        for (int j = firstOffsetTile; j <= lastOffsetTile; j++)
+                        {
+                            int sheet_idx = GHApp.TileSheetIdx(j);
+                            int tile_x = GHApp.TileSheetX(j, sheet_idx);
+                            int tile_y = GHApp.TileSheetY(j, sheet_idx);
+                            SKRect sourceRect = new SKRect(tile_x, tile_y, tile_x + GHConstants.TileWidth * numTiles, tile_y + GHConstants.TileHeight);
+                            SKRect targetRect = new SKRect(0, 0, GHConstants.TileWidth * numTiles, GHConstants.TileHeight);
+                            SKBitmap copyBitmap = new SKBitmap(GHConstants.TileWidth * numTiles, GHConstants.TileHeight, _tileMap[0].ColorType, _tileMap[0].AlphaType, _tileMap[0].ColorSpace);
+                            using (var canvas = new SKCanvas(copyBitmap))
+                            {
+                                canvas.Clear(SKColors.Transparent);
+                                canvas.DrawImage(_tileMap[sheet_idx], sourceRect, targetRect);
+                            }
+                            copyBitmap.SetImmutable();
+                            _enlargementMap[i] = SKImage.FromBitmap(copyBitmap);
+                        }
+                    }
+                }
+            }
         }
 
         //public static async Task ListBlobPrefixes(BlobContainerClient container,

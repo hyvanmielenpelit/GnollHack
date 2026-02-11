@@ -376,12 +376,18 @@ namespace GnollHackX
                     {
                         GHApp.AnimationOffsets = new int[anoff_size];
                         Marshal.Copy(anoff_ptr, GHApp.AnimationOffsets, 0, anoff_size);
+                        GHApp.NoOfAnimations = anoff_size;
                     }
+                    else
+                        GHApp.NoOfAnimations = 0;
                     if (enoff_ptr != IntPtr.Zero && enoff_size > 0)
                     {
                         GHApp.EnlargementOffsets = new int[enoff_size];
                         Marshal.Copy(enoff_ptr, GHApp.EnlargementOffsets, 0, enoff_size);
+                        GHApp.NoOfEnlargements = enoff_size;
                     }
+                    else
+                        GHApp.NoOfEnlargements = 0;
                     if (reoff_ptr != IntPtr.Zero && reoff_size > 0)
                     {
                         GHApp.ReplacementOffsets = new int[reoff_size];
@@ -414,6 +420,7 @@ namespace GnollHackX
                         GHApp.TilesPerRow[i] = GHApp._tileMap[i].Width / GHConstants.TileWidth;
                     }
                 }
+                GHApp.ProcessLoadableAnimations();
             }
 
             int[] gl2ti = null;
