@@ -16591,7 +16591,7 @@ namespace GnollHackX.Pages.Game
         {
             LabeledImageButton ghb = sender as LabeledImageButton;
             if (ghb != null)
-                YnButton_Pressed(sender, e, ghb.MappedGHCommand);
+                YnButton_Pressed(sender, e, ghb.GHCommand);
         }
 
         private void YnButton_Pressed(object sender, EventArgs e, int resp)
@@ -16824,7 +16824,7 @@ namespace GnollHackX.Pages.Game
             LabeledImageButton lib = sender as LabeledImageButton;
             if (lib == null)
                 return;
-            switch ((int)lib.MappedGHCommand)
+            switch ((int)lib.GHCommand)
             {
                 case -102:
                     GenericButton_Clicked(sender, e, -100 - (int)nh_keyfunc.NHKF_COUNT);

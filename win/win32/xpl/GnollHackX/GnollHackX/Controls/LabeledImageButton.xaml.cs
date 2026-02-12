@@ -39,7 +39,6 @@ namespace GnollHackX.Controls
         public static readonly BindableProperty ShortcutFontFamilyProperty = BindableProperty.Create(nameof(ShortcutFontFamily), typeof(string), typeof(LabeledImageButton), "LatoRegular");
         public static readonly BindableProperty ShortcutFontColorProperty = BindableProperty.Create(nameof(ShortcutFontColor), typeof(Color), typeof(LabeledImageButton), GHColors.Gray);
         public static readonly BindableProperty IsShortcutVisibleProperty = BindableProperty.Create(nameof(IsShortcutVisible), typeof(bool), typeof(LabeledImageButton), false);
-        public static readonly BindableProperty DisableShortcutMappingProperty = BindableProperty.Create(nameof(DisableShortcutMapping), typeof(bool), typeof(LabeledImageButton), false);
 
         public event EventHandler<EventArgs> BtnClicked;
         public char BtnLetter
@@ -109,12 +108,6 @@ namespace GnollHackX.Controls
             get => (bool)GetValue(LabeledImageButton.IsShortcutVisibleProperty);
             set => SetValue(LabeledImageButton.IsShortcutVisibleProperty, value);
         }
-        public bool DisableShortcutMapping
-        {
-            get => (bool)GetValue(LabeledImageButton.DisableShortcutMappingProperty);
-            set => SetValue(LabeledImageButton.DisableShortcutMappingProperty, value);
-        }
-
         public string ImgSourcePath
         {
             get => (string)GetValue(LabeledImageButton.ImgSourcePathProperty);
@@ -161,23 +154,23 @@ namespace GnollHackX.Controls
         }
         public char MappedBtnLetter
         {
-            get => DisableShortcutMapping ? ViewButton.Letter : ViewButton.MappedLetter;
+            get => ViewButton.MappedLetter;
         }
         public bool MappedBtnMeta
         {
-            get => DisableShortcutMapping ? ViewButton.ApplyMeta : ViewButton.MappedMeta;
+            get => ViewButton.MappedMeta;
         }
         public bool MappedBtnCtrl
         {
-            get => DisableShortcutMapping ? ViewButton.ApplyCtrl : ViewButton.MappedCtrl;
+            get => ViewButton.MappedCtrl;
         }
         public int MappedBtnCommand
         {
-            get => DisableShortcutMapping ? ViewButton.RawCommand : ViewButton.MappedRawCommand;
+            get => ViewButton.MappedRawCommand;
         }
         public int MappedGHCommand
         {
-            get => DisableShortcutMapping ? ViewButton.GHCommand : ViewButton.MappedGHCommand;
+            get => ViewButton.MappedGHCommand;
         }
 
         public bool LargerFont { get; set; }
