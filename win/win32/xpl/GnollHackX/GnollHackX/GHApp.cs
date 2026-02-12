@@ -185,7 +185,7 @@ namespace GnollHackX
             EquipmentFlipAnimation = Preferences.Get("EquipmentFlipAnimation", true);
             ShowEquipmentIcons = Preferences.Get("ShowEquipmentIcons", true);
 
-            ulong freeDiskSpaceInBytes = PlatformService.GetDeviceFreeDiskSpaceInBytes();
+            ulong freeDiskSpaceInBytes = PlatformService?.GetDeviceFreeDiskSpaceInBytes() ?? 0;
             FreeDiskSpaceInBytes = freeDiskSpaceInBytes;
             if (freeDiskSpaceInBytes < GHConstants.LowFreeDiskSpaceThresholdInBytes)
             {
@@ -226,7 +226,7 @@ namespace GnollHackX
                 {
                     try
                     {
-                        FreeDiskSpaceInBytes = PlatformService.GetDeviceFreeDiskSpaceInBytes();
+                        FreeDiskSpaceInBytes = PlatformService?.GetDeviceFreeDiskSpaceInBytes() ?? 0;
                     }
                     catch (Exception ex)
                     {
@@ -6979,9 +6979,9 @@ namespace GnollHackX
 
             ulong TotalMemInBytes = TotalMemory;
             ulong TotalMemInMB = (TotalMemInBytes / 1024) / 1024;
-            ulong FreeDiskSpaceInBytes = GHApp.PlatformService.GetDeviceFreeDiskSpaceInBytes();
+            ulong FreeDiskSpaceInBytes = PlatformService?.GetDeviceFreeDiskSpaceInBytes() ?? 0;
             ulong FreeDiskSpaceInGB = ((FreeDiskSpaceInBytes / 1024) / 1024) / 1024;
-            ulong TotalDiskSpaceInBytes = GHApp.PlatformService.GetDeviceTotalDiskSpaceInBytes();
+            ulong TotalDiskSpaceInBytes = PlatformService?.GetDeviceTotalDiskSpaceInBytes() ?? 0;
             ulong TotalDiskSpaceInGB = ((TotalDiskSpaceInBytes / 1024) / 1024) / 1024;
 
             string totmem = TotalMemInMB + " MB";

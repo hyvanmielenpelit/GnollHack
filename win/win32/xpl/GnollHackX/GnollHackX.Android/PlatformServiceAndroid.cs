@@ -98,8 +98,8 @@ namespace GnollHackX.Droid
                 //Using StatFS
                 var path = new StatFs(System.Environment.GetFolderPath(System.Environment.SpecialFolder.LocalApplicationData));
                 long blockSize = path.BlockSizeLong;
-                long avaliableBlocks = path.AvailableBlocksLong;
-                long freeSpace = blockSize * avaliableBlocks;
+                long avalaibleBlocks = path.AvailableBlocksLong;
+                long freeSpace = blockSize * avalaibleBlocks;
                 return (ulong)freeSpace;
             }
             catch
