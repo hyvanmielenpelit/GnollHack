@@ -6977,15 +6977,15 @@ namespace GnollHackX
             else if (IsSteam)
                 platform_with_version += " Steam";
 
-            ulong TotalMemInBytes = TotalMemory;
-            ulong TotalMemInMB = (TotalMemInBytes / 1024) / 1024;
-            ulong FreeDiskSpaceInBytes = PlatformService?.GetDeviceFreeDiskSpaceInBytes() ?? 0;
-            ulong FreeDiskSpaceInGB = ((FreeDiskSpaceInBytes / 1024) / 1024) / 1024;
-            ulong TotalDiskSpaceInBytes = PlatformService?.GetDeviceTotalDiskSpaceInBytes() ?? 0;
-            ulong TotalDiskSpaceInGB = ((TotalDiskSpaceInBytes / 1024) / 1024) / 1024;
+            ulong totalMemInBytes = TotalMemory;
+            ulong totalMemInMB = (totalMemInBytes / 1024) / 1024;
+            ulong freeDiskSpaceInBytes = PlatformService?.GetDeviceFreeDiskSpaceInBytes() ?? 0;
+            ulong freeDiskSpaceInGB = ((freeDiskSpaceInBytes / 1024) / 1024) / 1024;
+            ulong totalDiskSpaceInBytes = PlatformService?.GetDeviceTotalDiskSpaceInBytes() ?? 0;
+            ulong totalDiskSpaceInGB = ((totalDiskSpaceInBytes / 1024) / 1024) / 1024;
 
-            string totmem = TotalMemInMB + " MB";
-            string diskspace = FreeDiskSpaceInGB + " GB" + " / " + TotalDiskSpaceInGB + " GB";
+            string totmem = totalMemInMB + " MB";
+            string diskspace = freeDiskSpaceInGB + " GB" + " / " + totalDiskSpaceInGB + " GB";
 
             string player_name = TournamentMode ? LastUsedTournamentPlayerName : LastUsedPlayerName;
             if (string.IsNullOrEmpty(player_name))
