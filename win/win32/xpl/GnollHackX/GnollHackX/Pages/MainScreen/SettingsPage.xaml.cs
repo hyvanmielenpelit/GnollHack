@@ -398,7 +398,11 @@ namespace GnollHackX.Pages.MainScreen
             Preferences.Set("ShowBattery", BatterySwitch.IsToggled);
 
             if (_gamePage != null)
+            {
                 _gamePage.WarnLowDiskSpace = WarnLowDiskSpaceSwitch.IsToggled;
+                if (WarnLowDiskSpaceSwitch.IsToggled)
+                    GHApp.UpdateFreeDiskSpace();
+            }
             Preferences.Set("WarnLowDiskSpace", WarnLowDiskSpaceSwitch.IsToggled);
 
             if (_gamePage != null)
