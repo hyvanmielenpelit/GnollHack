@@ -1478,6 +1478,14 @@
                                     HorizontalOptions="Start" />
                                 <Switch Grid.Column="1" x:Name="MemorySwitch" HorizontalOptions="End" VerticalOptions="Center" />
                             </Grid>
+                            <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
+                                <Label Text="Low Disk Space Warning"
+                                    FontFamily="Underwood" TextColor="Black"
+                                    FontSize="15"
+                                    VerticalOptions="Center" 
+                                    HorizontalOptions="Start" />
+                                <Switch Grid.Column="1" x:Name="WarnLowDiskSpaceSwitch" HorizontalOptions="End" VerticalOptions="Center" />
+                            </Grid>
                             <Grid x:Name="AlternativeDrawingStackLayout" ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
                                 <Label Text="Alternative Layer Drawing"
                                     x:Name="AlternativeDrawingLabel"

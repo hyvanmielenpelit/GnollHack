@@ -106,6 +106,7 @@
     <None Remove="Assets\UI\dig.png" />
     <None Remove="Assets\UI\dip.png" />
     <None Remove="Assets\UI\discoveries.png" />
+    <None Remove="Assets\UI\disk.png" />
     <None Remove="Assets\UI\dropmany.png" />
     <None Remove="Assets\UI\droptypes.png" />
     <None Remove="Assets\UI\eat.png" />
@@ -364,6 +365,7 @@
     <EmbeddedResource Include="Assets\UI\battery-frame.png" />
     <EmbeddedResource Include="Assets\UI\catalogue.png" />
     <EmbeddedResource Include="Assets\UI\delphi.png" />
+    <EmbeddedResource Include="Assets\UI\disk.png" />
     <EmbeddedResource Include="Assets\UI\fps.png" />
     <EmbeddedResource Include="Assets\UI\frame-darkmode-horizontal.png" />
     <EmbeddedResource Include="Assets\UI\frame-darkmode-topleft-small.png" />

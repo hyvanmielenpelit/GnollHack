@@ -185,8 +185,9 @@ namespace GnollHackX
             EquipmentFlipAnimation = Preferences.Get("EquipmentFlipAnimation", true);
             ShowEquipmentIcons = Preferences.Get("ShowEquipmentIcons", true);
 
-            ulong FreeDiskSpaceInBytes = PlatformService.GetDeviceFreeDiskSpaceInBytes();
-            if (FreeDiskSpaceInBytes < GHConstants.LowFreeDiskSpaceThresholdInBytes)
+            ulong freeDiskSpaceInBytes = PlatformService.GetDeviceFreeDiskSpaceInBytes();
+            FreeDiskSpaceInBytes = freeDiskSpaceInBytes;
+            if (freeDiskSpaceInBytes < GHConstants.LowFreeDiskSpaceThresholdInBytes)
             {
                 if (RecordGame)
                 {
@@ -195,7 +196,7 @@ namespace GnollHackX
                     InformAboutRecordingSetOff = true;
                 }
 
-                if (FreeDiskSpaceInBytes < GHConstants.VeryLowFreeDiskSpaceThresholdInBytes)
+                if (freeDiskSpaceInBytes < GHConstants.VeryLowFreeDiskSpaceThresholdInBytes)
                 {
                     InformAboutFreeDiskSpace = true;
                 }
@@ -213,6 +214,30 @@ namespace GnollHackX
             ChangeToCustomScreenResolution();
             InitializePlatformRenderLoop();
             InitializeMemoryWarnings();
+        }
+
+        private static long _freeDiskSpaceInBytes = 0L;
+        public static ulong FreeDiskSpaceInBytes { get { return (ulong)Interlocked.CompareExchange(ref _freeDiskSpaceInBytes, 0L, 0L); } set { Interlocked.Exchange(ref _freeDiskSpaceInBytes, (long)value); } }
+        public static void UpdateFreeDiskSpace()
+        {
+            try
+            {
+                MainThread.BeginInvokeOnMainThread(() =>
+                {
+                    try
+                    {
+                        FreeDiskSpaceInBytes = PlatformService.GetDeviceFreeDiskSpaceInBytes();
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.WriteLine(ex.Message);
+                    }
+                });
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+            }
         }
 
         private static KeyMap[] _tempKeyMapArray = new KeyMap[256];
@@ -3184,6 +3209,9 @@ namespace GnollHackX
 
         public static SKImage _batteryFrameBitmap;
         public static SKImage _batteryRedFrameBitmap;
+        public static SKImage _diskBitmap;
+        public static SKImage _diskYellowBitmap;
+        public static SKImage _diskRedBitmap;
         public static SKImage _fpsBitmap;
         public static SKImage _memoryBitmap;
         public static SKImage _zoomBitmap;
@@ -3809,6 +3837,7 @@ namespace GnollHackX
 
             _orbGlassBitmap = LoadEmbeddedUIBitmap("orb_glass.png");
             _batteryFrameBitmap = LoadEmbeddedUIBitmap("battery-frame.png");
+            _diskBitmap = LoadEmbeddedUIBitmap("disk.png");
             _fpsBitmap = LoadEmbeddedUIBitmap("fps.png");
             _memoryBitmap = LoadEmbeddedUIBitmap("memory.png");
             _zoomBitmap = LoadEmbeddedUIBitmap("zoom.png");
@@ -3831,6 +3860,46 @@ namespace GnollHackX
                 }
                 redbitmap.SetImmutable();
                 _batteryRedFrameBitmap = SKImage.FromBitmap(redbitmap);
+            }
+
+            using (SKPaint bmpPaint = new SKPaint())
+            {
+                bmpPaint.Color = SKColors.White;
+                var redbitmap = new SKBitmap(_diskBitmap.Width, _diskBitmap.Height, SKImageInfo.PlatformColorType, SKAlphaType.Premul);
+                using (var redcanvas = new SKCanvas(redbitmap))
+                {
+                    redcanvas.Clear(SKColors.Transparent);
+                    bmpPaint.ColorFilter = SKColorFilter.CreateColorMatrix(new float[]
+                        {
+                            1.0f,  0,     0,    0, 0,
+                            0,     0.25f,  0,    0, 0,
+                            0,     0,     0.25f, 0, 0,
+                            0,     0,     0,    1, 0
+                        });
+                    redcanvas.DrawImage(_diskBitmap, 0, 0, bmpPaint);
+                }
+                redbitmap.SetImmutable();
+                _diskRedBitmap = SKImage.FromBitmap(redbitmap);
+            }
+
+            using (SKPaint bmpPaint = new SKPaint())
+            {
+                bmpPaint.Color = SKColors.White;
+                var yellowbitmap = new SKBitmap(_diskBitmap.Width, _diskBitmap.Height, SKImageInfo.PlatformColorType, SKAlphaType.Premul);
+                using (var yellowcanvas = new SKCanvas(yellowbitmap))
+                {
+                    yellowcanvas.Clear(SKColors.Transparent);
+                    bmpPaint.ColorFilter = SKColorFilter.CreateColorMatrix(new float[]
+                        {
+                            1.0f,  0,     0,    0, 0,
+                            0,     1.0f,  0,    0, 0,
+                            0,     0,     0.25f, 0, 0,
+                            0,     0,     0,    1, 0
+                        });
+                    yellowcanvas.DrawImage(_diskBitmap, 0, 0, bmpPaint);
+                }
+                yellowbitmap.SetImmutable();
+                _diskYellowBitmap = SKImage.FromBitmap(yellowbitmap);
             }
 
             _statusWizardBitmap = LoadEmbeddedUIBitmap("status-wizard-mode.png");

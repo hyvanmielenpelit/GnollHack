@@ -665,6 +665,8 @@ namespace GnollHackX.Pages.Game
 
         private int _showBattery;
         public bool ShowBattery { get { return Interlocked.CompareExchange(ref _showBattery, 0, 0) != 0; } set { Interlocked.Exchange(ref _showBattery, value ? 1 : 0); } }
+        private int _warnLowDiskSpace;
+        public bool WarnLowDiskSpace { get { return Interlocked.CompareExchange(ref _warnLowDiskSpace, 0, 0) != 0; } set { Interlocked.Exchange(ref _warnLowDiskSpace, value ? 1 : 0); } }
 
         private int _showFPS;
         public bool ShowFPS { get { return Interlocked.CompareExchange(ref _showFPS, 0, 0) != 0; } set { Interlocked.Exchange(ref _showFPS, value ? 1 : 0); } }
@@ -931,6 +933,7 @@ namespace GnollHackX.Pages.Game
             GraphicsStyle = (GHGraphicsStyle)Preferences.Get("GraphicsStyle", 1);
             ShowFPS = Preferences.Get("ShowFPS", false);
             ShowBattery = Preferences.Get("ShowBattery", false);
+            WarnLowDiskSpace = Preferences.Get("WarnLowDiskSpace", true);
             ShowZoom = Preferences.Get("ShowZoom", false);
             ShowRecording = Preferences.Get("ShowRecording", true);
             UseMainMipMap = Preferences.Get("UseMainMipMap", GHApp.IsUseMainMipMapDefault);
@@ -1633,7 +1636,10 @@ namespace GnollHackX.Pages.Game
                     Interlocked.Exchange(ref _updateTimerTickCount, 0);
 
                 if (incrementedValue % 10 == 0)
+                {
                     GHApp.LogMemory();
+                    GHApp.UpdateFreeDiskSpace();
+                }
 
                 //lock (_updateTimerTickCountLock)
                 //{
@@ -10951,6 +10957,26 @@ namespace GnollHackX.Pages.Game
                                     statusDest = new SKRect(curx + hMargin * target_scale, cury + (topMargin + addedFillTop) * target_scale, curx + target_width - hMargin * target_scale, cury + target_height - bottomMargin * target_scale);
                                     canvas.DrawRect(statusDest, textPaint.Paint);
                                     textPaint.Color = SKColors.White;
+
+                                    curx += target_width;
+                                }
+
+                                ulong freeDiskSpaceInBytes = GHApp.FreeDiskSpaceInBytes;
+                                if (WarnLowDiskSpace && freeDiskSpaceInBytes <= GHConstants.DiskSpaceLowThresholdInBytes)
+                                {
+                                    target_width = target_scale * GHApp._diskBitmap.Width;
+                                    target_height = target_scale * GHApp._diskBitmap.Height;
+                                    curx = desktopleft - innerspacing * 5 - target_width;
+                                    statusDest = new SKRect(curx, cury, curx + target_width, cury + target_height);
+                                    canvas.DrawImage(freeDiskSpaceInBytes <= GHConstants.DiskSpaceCriticalThresholdInBytes ? GHApp._diskRedBitmap : GHApp._diskYellowBitmap, statusDest);
+                                    desktopleft = curx;
+
+                                    int alen = _shineAnimation.Length;
+                                    if (freeDiskSpaceInBytes <= GHConstants.DiskSpaceSuperCriticalThresholdInBytes)
+                                    {
+                                        textPaint.Color = _magicShineOutlineColor.WithAlpha((byte)(_shineAnimation[generalcountervalue % alen] * 255));
+                                        canvas.DrawImage(GHApp._diskBitmap, statusDest, textPaint.Paint);
+                                    }
 
                                     curx += target_width;
                                 }

@@ -2144,6 +2144,9 @@ namespace GnollHackX
         public const GHSpecialKey GameMenuKeyboardShortcut = GHSpecialKey.F10;
         public const GHSpecialKey CancelKeyboardShortcut = GHSpecialKey.Escape;
         public const bool DefaultShowPolearmContextButton = true;
+        public const ulong DiskSpaceSuperCriticalThresholdInBytes = 512UL * 1024UL * 1024UL;
+        public const ulong DiskSpaceCriticalThresholdInBytes = 1024UL * 1024UL * 1024UL;
+        public const ulong DiskSpaceLowThresholdInBytes = 5 * 1024UL * 1024UL * 1024UL;
     }
 
     [StructLayout(LayoutKind.Sequential)]

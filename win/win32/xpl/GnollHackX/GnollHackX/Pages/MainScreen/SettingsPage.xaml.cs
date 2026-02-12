@@ -398,6 +398,10 @@ namespace GnollHackX.Pages.MainScreen
             Preferences.Set("ShowBattery", BatterySwitch.IsToggled);
 
             if (_gamePage != null)
+                _gamePage.WarnLowDiskSpace = WarnLowDiskSpaceSwitch.IsToggled;
+            Preferences.Set("WarnLowDiskSpace", WarnLowDiskSpaceSwitch.IsToggled);
+
+            if (_gamePage != null)
                 _gamePage.ShowZoom = ZoomSwitch.IsToggled;
             Preferences.Set("ShowZoom", ZoomSwitch.IsToggled);
 
@@ -1030,7 +1034,7 @@ namespace GnollHackX.Pages.MainScreen
         private void SetInitialValues()
         {
             int cursor = 0, graphics = 0, gridopacity = 0, savestyle = 0, maprefresh = -1, msgnum = 0, petrows = 0;
-            bool mem = false, fps = false, zoom = false, battery = false, showrecording = true, autoupload = false, gpu = GHApp.IsGPUDefault, disableauxgpu = false, platformloop = false, mipmap = false, simplecmdlayout = GHConstants.DefaultSimpleCmdLayout, showaltzoom = !GHConstants.DefaultSimpleCmdLayout, showtravelmode = !GHConstants.DefaultSimpleCmdLayout, showautodig = false, showignore = false, darkmode = false, windowedmode = false, bank = true, navbar = GHConstants.DefaultHideNavigation, statusbar = GHConstants.DefaultHideStatusBar;
+            bool mem = false, fps = false, zoom = false, battery = false, lowdiskspace = true, showrecording = true, autoupload = false, gpu = GHApp.IsGPUDefault, disableauxgpu = false, platformloop = false, mipmap = false, simplecmdlayout = GHConstants.DefaultSimpleCmdLayout, showaltzoom = !GHConstants.DefaultSimpleCmdLayout, showtravelmode = !GHConstants.DefaultSimpleCmdLayout, showautodig = false, showignore = false, darkmode = false, windowedmode = false, bank = true, navbar = GHConstants.DefaultHideNavigation, statusbar = GHConstants.DefaultHideStatusBar;
             bool allowbones = true, allowpet = true, emptywishisnothing = true, doubleclick = GHApp.IsDesktop, getpositionarrows = false, recordgame = false, gzip = GHConstants.GZipIsDefaultReplayCompression, lighterdarkening = false, accuratedrawing = GHConstants.DefaultAlternativeLayerDrawing, html = GHConstants.DefaultHTMLDumpLogs, singledumplog = GHConstants.DefaultUseSingleDumpLog, streamingbanktomemory = false, streamingbanktodisk = false, wallends = GHConstants.DefaultDrawWallEnds;
             bool breatheanimations = GHConstants.DefaultBreatheAnimations; //, put2bag = GHConstants.DefaultShowPickNStashContextCommand, prevwep = GHConstants.DefaultShowPrevWepContextCommand;
             bool devmode = GHConstants.DefaultDeveloperMode, logmessages = GHConstants.DefaultLogMessages, lowlevellogging = false, debugpostchannel = GHConstants.DefaultDebugPostChannel, tournament = false, hpbars = false, nhstatusbarclassic = GHConstants.IsDefaultStatusBarClassic, desktopstatusbar = false, rightaligned2ndrow = false, showscore = false, showxp = false, desktopbuttons = false, menufadeeffects = false, menuhighfilterquality = true, menuhighlightedkeys = false, pets = true, orbs = true, orbmaxhp = false, orbmaxmana = false, mapgrid = false, playermark = false, monstertargeting = false, walkarrows = true;
@@ -1171,6 +1175,7 @@ namespace GnollHackX.Pages.MainScreen
                 fps = Preferences.Get("ShowFPS", false);
                 zoom = Preferences.Get("ShowZoom", false);
                 battery = Preferences.Get("ShowBattery", false);
+                lowdiskspace = Preferences.Get("WarnLowDiskSpace", true);
                 showrecording = Preferences.Get("ShowRecording", true);
                 autoupload = Preferences.Get("AutoUploadReplays", false);
                 mipmap = Preferences.Get("UseMainMipMap", GHApp.IsUseMainMipMapDefault);
@@ -1234,6 +1239,7 @@ namespace GnollHackX.Pages.MainScreen
                 fps = _gamePage.ShowFPS;
                 zoom = _gamePage.ShowZoom;
                 battery = _gamePage.ShowBattery;
+                lowdiskspace = _gamePage.WarnLowDiskSpace;
                 showrecording = _gamePage.ShowRecording;
                 mipmap = _gamePage.UseMainMipMap;
                 gpu = _gamePage.UseMainGLCanvas;
@@ -1361,6 +1367,7 @@ namespace GnollHackX.Pages.MainScreen
             FPSSwitch.IsToggled = fps;
             ZoomSwitch.IsToggled = zoom;
             BatterySwitch.IsToggled = battery;
+            WarnLowDiskSpaceSwitch.IsToggled = lowdiskspace;
             ShowRecordingSwitch.IsToggled = showrecording;
             AutoUploadReplaysSwitch.IsToggled = autoupload;
             DisableAuxGPUSwitch.IsToggled = disableauxgpu;

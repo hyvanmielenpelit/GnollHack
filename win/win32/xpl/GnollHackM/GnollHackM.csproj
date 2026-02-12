@@ -262,6 +262,7 @@
 		<None Remove="Assets\UI\battery-frame.png" />
 		<None Remove="Assets\UI\catalogue.png" />
 		<None Remove="Assets\UI\delphi.png" />
+		<None Remove="Assets\UI\disk.png" />
 		<None Remove="Assets\UI\fps.png" />
 		<None Remove="Assets\UI\frame-darkmode-horizontal.png" />
 		<None Remove="Assets\UI\frame-darkmode-topleft-small.png" />
@@ -864,6 +865,7 @@
 		<EmbeddedResource Include="Assets\endr.ttf" />
 		<EmbeddedResource Include="Assets\FMOD-Logo-192-White.png" />
 		<EmbeddedResource Include="Assets\UI\delphi.png" />
+		<EmbeddedResource Include="Assets\UI\disk.png" />
 		<EmbeddedResource Include="Assets\UI\frame-darkmode-transform.png" />
 		<EmbeddedResource Include="Assets\UI\frame-transform.png" />
 		<EmbeddedResource Include="Assets\UI\frame2-darkmode-transform.png" />
