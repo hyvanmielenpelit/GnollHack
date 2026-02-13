@@ -1429,7 +1429,7 @@ uchar gender UNUSED; /* 0 = male, 1 = female, 2 = unknown */
                 u.uen = u.uenmax;
             }
             if (old_uen != u.uen) {
-                You_feel("a mild buzz.");
+                You_feel_ex(ATR_NONE, CLR_MSG_ATTENTION, "a mild buzz.");
                 context.botl = 1;
             }
         }

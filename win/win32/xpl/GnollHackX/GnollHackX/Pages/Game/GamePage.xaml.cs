@@ -16964,6 +16964,7 @@ namespace GnollHackX.Pages.Game
             new EquipmentSlot("Misc", (int)InventorySlotPictureIndices.Miscellaneous4, 0, 0, obj_worn_flags.W_MISC4, obj_class_types.MISCELLANEOUS_CLASS, obj_armor_types.MAX_ARMOR_TYPES),
             new EquipmentSlot("Misc", (int)InventorySlotPictureIndices.Miscellaneous5, 0, 0, obj_worn_flags.W_MISC5, obj_class_types.MISCELLANEOUS_CLASS, obj_armor_types.MAX_ARMOR_TYPES),
         };
+
         EquipmentSlot _equipmentSlotActive = null;
         EquipmentSlot EquipmentSlotActive { get { return Interlocked.CompareExchange(ref _equipmentSlotActive, null, null); } set { Interlocked.Exchange(ref _equipmentSlotActive, value); } }
         SKRect[] _equipmentDrawBounds = new SKRect[32];

@@ -915,7 +915,7 @@ struct monst *mtmp;
                 if (is_yours)
                 {
                     You_ex(ATR_NONE, NO_COLOR, "apply the unicorn horn on %s.", noittame_mon_nam(mtmp));
-                    pline_ex1(ATR_NONE, CLR_MSG_ATTENTION, "However, nothing seems to happen.");
+                    pline_ex1(ATR_NONE, NO_COLOR, "However, nothing seems to happen.");
                 }
                 else if (vismon)
                 {
