@@ -733,7 +733,7 @@ maybe_create_rwraith()
         struct obj* ring = carrying(RIN_SUPREME_POWER);
         if (ring && ring->oartifact == ART_RULING_RING_OF_YENDOR && mdx >= LOW_PM && !rn2(20))
         {
-            if (!context.made_witch_king && mdx == PM_WRAITHLORD && !rn2(9))
+            if (!context.made_witch_king && mdx == PM_WRAITHLORD && !rn2(max(2, 9 - (int)mvitals[PM_WRAITHLORD].born)))
             {
                 rwraith = makemon(&mons[PM_WRAITHLORD], 0, 0, MM_MAX_HP | MM_MALE);
                 if (rwraith)
