@@ -13733,12 +13733,6 @@ namespace GnollHackX.Pages.Game
                     if (cnt >= 8)
                         break;
 
-                    int src_tile = (int)game_ui_tile_types.ITEM_PROPERTY_MARKS + (int)ipm_idx / GHConstants.MAX_UI_TILE_8_x_24_COMPONENTS;
-                    src_x = (((int)ipm_idx % GHConstants.MAX_UI_TILE_8_x_24_COMPONENTS) % marks_per_row) * mark_width;
-                    src_y = (((int)ipm_idx % GHConstants.MAX_UI_TILE_8_x_24_COMPONENTS) / marks_per_row) * mark_height;
-                    dest_x = 0;
-                    dest_y = 0;
-
                     switch (ipm_idx)
                     {
                         case item_property_mark_types.ITEM_PROPERTY_MARK_POISONED:
@@ -13841,6 +13835,12 @@ namespace GnollHackX.Pages.Game
                         default:
                             continue;
                     }
+
+                    int src_tile = (int)game_ui_tile_types.ITEM_PROPERTY_MARKS + (int)ipm_idx / GHConstants.MAX_UI_TILE_8_x_24_COMPONENTS;
+                    src_x = (((int)ipm_idx % GHConstants.MAX_UI_TILE_8_x_24_COMPONENTS) % marks_per_row) * mark_width;
+                    src_y = (((int)ipm_idx % GHConstants.MAX_UI_TILE_8_x_24_COMPONENTS) / marks_per_row) * mark_height;
+                    dest_x = 0;
+                    dest_y = 0;
 
                     int item_xpos = ((int)GHConstants.TileWidth) / 2 - mark_width + (cnt % 2 != 0 ? 1 : -1) * ((cnt + 1) / 2) * mark_width;
 
