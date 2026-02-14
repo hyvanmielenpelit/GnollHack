@@ -314,7 +314,6 @@
     <Image Include="$(WinWin32Dir)gnollhack_64x96_transparent_32bits.png" />
     <Image Include="$(WinWin32Dir)gnollhack_64x96_transparent_32bits-2.png" />
     <Image Include="$(WinWin32Dir)gnollhack_64x96_transparent_32bits-3.png" />
-    <Image Include="..\png_tile.png" />
   </ItemGroup>
   <ItemGroup>
     <Font Include="$(WinWin32Dir)uwch.ttf" />
