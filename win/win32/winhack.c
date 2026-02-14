@@ -149,9 +149,10 @@ WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine,
     for (int i = 0; i < _GnollHack_app.mapTileSheets; i++)
     {
         tiles_in_sheet[i] = (i == total_sheets - 1 ? ((total_tiles - 1) % NUM_TILES_PER_SHEET) + 1 : NUM_TILES_PER_SHEET);
-        tiles_per_line[i] = (int)ceil(sqrt(1.5 * ((double)(tiles_in_sheet[i]))));
-        if (tiles_per_line[i] % 3)
-            tiles_per_line[i] += (3 - (tiles_per_line[i] % 3));
+        //tiles_per_line[i] = (int)ceil(sqrt(1.5 * ((double)(tiles_in_sheet[i]))));
+        //if (tiles_per_line[i] % 3)
+        //    tiles_per_line[i] += (3 - (tiles_per_line[i] % 3));
+        tiles_per_line[i] = min(tiles_in_sheet[i], MAX_TILE_SHEET_WIDTH);
 
         int resource_idx = IDB_PNG_TILES;
         switch (i)

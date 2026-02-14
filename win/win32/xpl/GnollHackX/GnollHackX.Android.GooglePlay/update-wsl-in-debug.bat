@@ -3,6 +3,7 @@ echo Executing update-wsl-in-debug.bat
 echo Preparing GnollHack tilesets
 copy ..\tileset\gnollhack_64x96_transparent_32bits.png ..\tileset\gnollhack_64x96_transparent_32bits.ghpng
 copy ..\tileset\gnollhack_64x96_transparent_32bits-2.png ..\tileset\gnollhack_64x96_transparent_32bits-2.ghpng
+copy ..\tileset\gnollhack_64x96_transparent_32bits-3.png ..\tileset\gnollhack_64x96_transparent_32bits-3.ghpng
 
 echo Copying tileset to c:\wsl-in\assetpack\Assets\tileset
 copy ..\tileset\*.ghpng c:\wsl-in\assetpack\Assets\tileset

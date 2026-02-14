@@ -1877,7 +1877,10 @@ namespace GnollHackX
         public const int StatusMarkWidth = 16;
         public const int StatusMarkHeight = 16;
         public const int MaxTileSheets = 4;
-        public const int NumberOfTilesPerSheet = 16224;
+        public const int NumberOfTilesPerSheet = 8192; // 16224;
+        public const int PowerOf2ForNumberOfTilesPerSheet = 13;
+        public const int MaxTileSheetWidthInTiles = 128;
+        public const int PowerOf2ForMaxTileSheetWidthInTiles = 7;
         public const int MaxSoundParameters = 10;
         public const int MaxFramesPerAnimation = 32;
         public const int NumPositionsInEnlargement = 5;

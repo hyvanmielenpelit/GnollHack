@@ -36,6 +36,7 @@
 #define IDB_PNG_TILES_2                 180
 #define IDR_RCDATA2                     181
 #define IDR_RCDATA_AUXILIARY            181
+#define IDB_PNG_TILES_3                 181
 #define IDR_RCDATA3                     182
 #define IDR_RCDATA_INTRO                182
 #define IDR_RCDATA_MUSIC                183

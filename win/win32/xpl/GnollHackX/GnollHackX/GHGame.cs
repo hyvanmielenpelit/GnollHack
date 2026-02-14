@@ -409,10 +409,10 @@ namespace GnollHackX
                 {
                     GHApp.UsedTileSheets = total_sheets_used;
                     GHApp.TotalTiles = total_tiles_used;
-                    for (int i = 0; i < total_sheets_used; i++)
-                    {
-                        GHApp.TilesPerRow[i] = GHApp._tileMap[i].Width / GHConstants.TileWidth;
-                    }
+                    //for (int i = 0; i < total_sheets_used; i++)
+                    //{
+                    //    GHApp.TilesPerRow[i] = GHApp._tileMap[i].Width / GHConstants.TileWidth;
+                    //}
                 }
             }
 
@@ -437,7 +437,7 @@ namespace GnollHackX
                 reoffs = GHApp.ReplacementOffsets;
                 nosheets = GHApp.UsedTileSheets;
                 notiles = GHApp.TotalTiles;
-                tilesperrow = GHApp.TilesPerRow;
+                tilesperrow = GHApp.DummyTilesPerRow; // For compatibility
             }
             RecordFunctionCall(RecordedFunctionID.InitializeWindows, gl2ti, gltifl, ti2an, ti2en, ti2ad, anoffs, enoffs, reoffs, nosheets, notiles, tilesperrow,
                 animoff, enloff, reoff, general_tile_off, hit_tile_off, ui_tile_off, spell_tile_off, skill_tile_off, command_tile_off, buff_tile_off, cursor_off);

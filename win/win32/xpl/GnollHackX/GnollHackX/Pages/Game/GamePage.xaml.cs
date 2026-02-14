@@ -1263,7 +1263,7 @@ namespace GnollHackX.Pages.Game
                     await Task.WhenAll(tasks);
                     tasks.Clear();
 
-                    LoadingDetailsLabel.Text = "Loading Tile Sheet 1/2...";
+                    LoadingDetailsLabel.Text = "Loading Tile Sheet 1/3...";
                     tasks.Add(LoadingProgressBar.ProgressTo(0.45, 400, Easing.Linear));
                     tileSetTask = GHApp.LoadTilesetAsync("gnollhack_64x96_transparent_32bits.ghpng");
                     tasks.Add(tileSetTask);
@@ -1271,7 +1271,7 @@ namespace GnollHackX.Pages.Game
                     GHApp._tileMap[0] = tileSetTask.Result;
                     tasks.Clear();
 
-                    LoadingDetailsLabel.Text = "Loading Tile Sheet 2/2...";
+                    LoadingDetailsLabel.Text = "Loading Tile Sheet 2/3...";
                     tasks.Add(LoadingProgressBar.ProgressTo(0.55, 200, Easing.Linear));
                     tileSetTask = GHApp.LoadTilesetAsync("gnollhack_64x96_transparent_32bits-2.ghpng");
                     tasks.Add(tileSetTask);
@@ -1279,8 +1279,16 @@ namespace GnollHackX.Pages.Game
                     GHApp._tileMap[1] = tileSetTask.Result;
                     tasks.Clear();
 
+                    LoadingDetailsLabel.Text = "Loading Tile Sheet 3/3...";
+                    tasks.Add(LoadingProgressBar.ProgressTo(0.575, 200, Easing.Linear));
+                    tileSetTask = GHApp.LoadTilesetAsync("gnollhack_64x96_transparent_32bits-3.ghpng");
+                    tasks.Add(tileSetTask);
+                    await Task.WhenAll(tasks);
+                    GHApp._tileMap[2] = tileSetTask.Result;
+                    tasks.Clear();
+
                     LoadingDetailsLabel.Text = "Loading GnollHack icon...";
-                    tasks.Add(LoadingProgressBar.ProgressTo(0.575, 50, Easing.Linear));
+                    tasks.Add(LoadingProgressBar.ProgressTo(0.600, 50, Easing.Linear));
                     tasks.Add(Task.Run(() =>
                     {
                         GHApp._logoBitmap = GHApp.LoadEmbeddedAssetsBitmap("gnollhack-icon-v2-512.png");
@@ -5045,7 +5053,7 @@ namespace GnollHackX.Pages.Game
                 //int tile_x = GHApp.TileSheetX(ctile, sheet_idx);
                 //int tile_y = GHApp.TileSheetY(ctile, sheet_idx);
                 int tile_x, tile_y;
-                GHApp.TileSheetXY(ctile, sheet_idx, out tile_x, out tile_y);
+                GHApp.TileSheetXY(ctile, out tile_x, out tile_y);
 
                 tx = (offsetX + usedOffsetX + (loc_is_you ? base_move_offset_x : 0) + width * (float)mapx);
                 ty = (offsetY + usedOffsetY + (loc_is_you ? base_move_offset_y : 0) + scaled_y_height_change + mapFontAscent + height * (float)mapy);
@@ -5139,7 +5147,7 @@ namespace GnollHackX.Pages.Game
                 //int tile_x = GHApp.TileSheetX(ctile, sheet_idx);
                 //int tile_y = GHApp.TileSheetY(ctile, sheet_idx);
                 int tile_x, tile_y;
-                GHApp.TileSheetXY(ctile, sheet_idx, out tile_x, out tile_y);
+                GHApp.TileSheetXY(ctile, out tile_x, out tile_y);
 
                 SKRect targetrect = new SKRect(tx, ty, tx + width, ty + height);
                 SKRect sourcerect = new SKRect(tile_x, tile_y, tile_x + GHConstants.TileWidth, tile_y + GHConstants.TileHeight);
@@ -5167,7 +5175,7 @@ namespace GnollHackX.Pages.Game
                 //int tile_x = GHApp.TileSheetX(ctile, sheet_idx);
                 //int tile_y = GHApp.TileSheetY(ctile, sheet_idx);
                 int tile_x, tile_y;
-                GHApp.TileSheetXY(ctile, sheet_idx, out tile_x, out tile_y);
+                GHApp.TileSheetXY(ctile, out tile_x, out tile_y);
 
                 SKRect targetrect = new SKRect(tx, ty, tx + width, ty + height);
                 SKRect sourcerect = new SKRect(tile_x, tile_y, tile_x + GHConstants.TileWidth, tile_y + GHConstants.TileHeight);
@@ -5221,7 +5229,7 @@ namespace GnollHackX.Pages.Game
                             //int tile_x = GHApp.TileSheetX(mtile, sheet_idx);
                             //int tile_y = GHApp.TileSheetY(mtile, sheet_idx);
                             int tile_x, tile_y;
-                            GHApp.TileSheetXY(mtile, sheet_idx, out tile_x, out tile_y);
+                            GHApp.TileSheetXY(mtile, out tile_x, out tile_y);
                             int within_tile_x = (status_mark % GHConstants.MAX_UI_TILE_16_x_16_COMPONENTS) % tiles_per_row;
                             int within_tile_y = (status_mark % GHConstants.MAX_UI_TILE_16_x_16_COMPONENTS) / tiles_per_row;
                             int c_x = tile_x + within_tile_x * GHConstants.StatusMarkWidth;
@@ -5275,7 +5283,7 @@ namespace GnollHackX.Pages.Game
                             //int tile_x = GHApp.TileSheetX(mtile, sheet_idx);
                             //int tile_y = GHApp.TileSheetY(mtile, sheet_idx);
                             int tile_x, tile_y;
-                            GHApp.TileSheetXY(mtile, sheet_idx, out tile_x, out tile_y);
+                            GHApp.TileSheetXY(mtile, out tile_x, out tile_y);
                             int within_tile_x = (condition_mark % GHConstants.MAX_UI_TILE_16_x_16_COMPONENTS) % tiles_per_row;
                             int within_tile_y = (condition_mark % GHConstants.MAX_UI_TILE_16_x_16_COMPONENTS) / tiles_per_row;
                             int c_x = tile_x + within_tile_x * GHConstants.StatusMarkWidth;
@@ -5337,7 +5345,7 @@ namespace GnollHackX.Pages.Game
                                 //int tile_x = GHApp.TileSheetX(mtile, sheet_idx);
                                 //int tile_y = GHApp.TileSheetY(mtile, sheet_idx);
                                 int tile_x, tile_y;
-                                GHApp.TileSheetXY(mtile, sheet_idx, out tile_x, out tile_y);
+                                GHApp.TileSheetXY(mtile, out tile_x, out tile_y);
 
                                 int buff_mark = (propidx - 1) % GHConstants.BUFFS_PER_TILE;
                                 int within_tile_x = buff_mark % tiles_per_row;
@@ -5387,7 +5395,7 @@ namespace GnollHackX.Pages.Game
                 //int tile_x = GHApp.TileSheetX(mtile, sheet_idx);
                 //int tile_y = GHApp.TileSheetY(mtile, sheet_idx);
                 int tile_x, tile_y;
-                GHApp.TileSheetXY(mtile, sheet_idx, out tile_x, out tile_y);
+                GHApp.TileSheetXY(mtile, out tile_x, out tile_y);
 
                 SKRect targetrect = new SKRect(tx, ty, tx + width, ty + height);
                 SKRect sourcerect = new SKRect(tile_x, tile_y, tile_x + GHConstants.TileWidth, tile_y + GHConstants.TileHeight);
@@ -5403,7 +5411,7 @@ namespace GnollHackX.Pages.Game
                 //int tile_x = GHApp.TileSheetX(mtile, sheet_idx);
                 //int tile_y = GHApp.TileSheetY(mtile, sheet_idx);
                 int tile_x, tile_y;
-                GHApp.TileSheetXY(mtile, sheet_idx, out tile_x, out tile_y);
+                GHApp.TileSheetXY(mtile, out tile_x, out tile_y);
 
                 SKRect targetrect = new SKRect(tx, ty, tx + width, ty + height);
                 SKRect sourcerect = new SKRect(tile_x, tile_y, tile_x + GHConstants.TileWidth, tile_y + GHConstants.TileHeight);
@@ -5440,7 +5448,7 @@ namespace GnollHackX.Pages.Game
             //int tile_x = GHApp.TileSheetX(ntile, sheet_idx);
             //int tile_y = GHApp.TileSheetY(ntile, sheet_idx);
             int tile_x, tile_y;
-            GHApp.TileSheetXY(ntile, sheet_idx, out tile_x, out tile_y);
+            GHApp.TileSheetXY(ntile, out tile_x, out tile_y);
 
             SKRect sourcerect;
             float scaled_tile_width = width;
@@ -7770,7 +7778,7 @@ namespace GnollHackX.Pages.Game
                             }
                             else
                             {
-                                if (GHApp.Glyph2Tile != null && GHApp._tilesPerRow[0] > 0 && GHApp.UsedTileSheets > 0)
+                                if (GHApp.Glyph2Tile != null /* && GHApp._tilesPerRow[0] > 0 */ && GHApp.UsedTileSheets > 0)
                                 {
                                     using (SKPaint paint = new SKPaint())
                                     {
@@ -10637,7 +10645,7 @@ namespace GnollHackX.Pages.Game
                                                 //int tile_x = GHApp.TileSheetX(mtile, sheet_idx);
                                                 //int tile_y = GHApp.TileSheetY(mtile, sheet_idx);
                                                 int tile_x, tile_y;
-                                                GHApp.TileSheetXY(mtile, sheet_idx, out tile_x, out tile_y);
+                                                GHApp.TileSheetXY(mtile, out tile_x, out tile_y);
                                                 int within_tile_x = (status_mark % GHConstants.MAX_UI_TILE_16_x_16_COMPONENTS) % tiles_per_row;
                                                 int within_tile_y = (status_mark % GHConstants.MAX_UI_TILE_16_x_16_COMPONENTS) / tiles_per_row;
                                                 int c_x = tile_x + within_tile_x * GHConstants.StatusMarkWidth;
@@ -10682,7 +10690,7 @@ namespace GnollHackX.Pages.Game
                                                 //int tile_x = GHApp.TileSheetX(mtile, sheet_idx);
                                                 //int tile_y = GHApp.TileSheetY(mtile, sheet_idx);
                                                 int tile_x, tile_y;
-                                                GHApp.TileSheetXY(mtile, sheet_idx, out tile_x, out tile_y);
+                                                GHApp.TileSheetXY(mtile, out tile_x, out tile_y);
                                                 int within_tile_x = (condition_mark % GHConstants.MAX_UI_TILE_16_x_16_COMPONENTS) % tiles_per_row;
                                                 int within_tile_y = (condition_mark % GHConstants.MAX_UI_TILE_16_x_16_COMPONENTS) / tiles_per_row;
                                                 int c_x = tile_x + within_tile_x * GHConstants.StatusMarkWidth;
@@ -10734,7 +10742,7 @@ namespace GnollHackX.Pages.Game
                                                     //int tile_x = GHApp.TileSheetX(mtile, sheet_idx);
                                                     //int tile_y = GHApp.TileSheetY(mtile, sheet_idx);
                                                     int tile_x, tile_y;
-                                                    GHApp.TileSheetXY(mtile, sheet_idx, out tile_x, out tile_y);
+                                                    GHApp.TileSheetXY(mtile, out tile_x, out tile_y);
 
                                                     int buff_mark = (propidx - 1) % GHConstants.BUFFS_PER_TILE;
                                                     int within_tile_x = buff_mark % tiles_per_row;
@@ -11270,7 +11278,7 @@ namespace GnollHackX.Pages.Game
                                                                 //int tile_x = GHApp.TileSheetX(mtile, sheet_idx);
                                                                 //int tile_y = GHApp.TileSheetY(mtile, sheet_idx);
                                                                 int tile_x, tile_y;
-                                                                GHApp.TileSheetXY(mtile, sheet_idx, out tile_x, out tile_y);
+                                                                GHApp.TileSheetXY(mtile, out tile_x, out tile_y);
                                                                 int within_tile_x = (status_mark % GHConstants.MAX_UI_TILE_16_x_16_COMPONENTS) % tiles_per_row;
                                                                 int within_tile_y = (status_mark % GHConstants.MAX_UI_TILE_16_x_16_COMPONENTS) / tiles_per_row;
                                                                 int c_x = tile_x + within_tile_x * GHConstants.StatusMarkWidth;
@@ -11318,7 +11326,7 @@ namespace GnollHackX.Pages.Game
                                                                 //int tile_x = GHApp.TileSheetX(mtile, sheet_idx);
                                                                 //int tile_y = GHApp.TileSheetY(mtile, sheet_idx);
                                                                 int tile_x, tile_y;
-                                                                GHApp.TileSheetXY(mtile, sheet_idx, out tile_x, out tile_y);
+                                                                GHApp.TileSheetXY(mtile, out tile_x, out tile_y);
                                                                 int within_tile_x = (condition_mark % GHConstants.MAX_UI_TILE_16_x_16_COMPONENTS) % tiles_per_row;
                                                                 int within_tile_y = (condition_mark % GHConstants.MAX_UI_TILE_16_x_16_COMPONENTS) / tiles_per_row;
                                                                 int c_x = tile_x + within_tile_x * GHConstants.StatusMarkWidth;
@@ -11371,7 +11379,7 @@ namespace GnollHackX.Pages.Game
                                                                     //int tile_x = GHApp.TileSheetX(mtile, sheet_idx);
                                                                     //int tile_y = GHApp.TileSheetY(mtile, sheet_idx);
                                                                     int tile_x, tile_y;
-                                                                    GHApp.TileSheetXY(mtile, sheet_idx, out tile_x, out tile_y);
+                                                                    GHApp.TileSheetXY(mtile, out tile_x, out tile_y);
 
                                                                     int buff_mark = (propidx - 1) % GHConstants.BUFFS_PER_TILE;
                                                                     int within_tile_x = buff_mark % tiles_per_row;
@@ -12422,7 +12430,7 @@ namespace GnollHackX.Pages.Game
                             //int tile_x = GHApp.TileSheetX(mtile, sheet_idx);
                             //int tile_y = GHApp.TileSheetY(mtile, sheet_idx);
                             int tile_x, tile_y;
-                            GHApp.TileSheetXY(mtile, sheet_idx, out tile_x, out tile_y);
+                            GHApp.TileSheetXY(mtile, out tile_x, out tile_y);
                             int within_tile_x = (status_mark % GHConstants.MAX_UI_TILE_16_x_16_COMPONENTS) % tiles_per_row;
                             int within_tile_y = (status_mark % GHConstants.MAX_UI_TILE_16_x_16_COMPONENTS) / tiles_per_row;
                             int c_x = tile_x + within_tile_x * GHConstants.StatusMarkWidth;
@@ -12470,7 +12478,7 @@ namespace GnollHackX.Pages.Game
                             //int tile_x = GHApp.TileSheetX(mtile, sheet_idx);
                             //int tile_y = GHApp.TileSheetY(mtile, sheet_idx);
                             int tile_x, tile_y;
-                            GHApp.TileSheetXY(mtile, sheet_idx, out tile_x, out tile_y);
+                            GHApp.TileSheetXY(mtile, out tile_x, out tile_y);
                             int within_tile_x = (condition_mark % GHConstants.MAX_UI_TILE_16_x_16_COMPONENTS) % tiles_per_row;
                             int within_tile_y = (condition_mark % GHConstants.MAX_UI_TILE_16_x_16_COMPONENTS) / tiles_per_row;
                             int c_x = tile_x + within_tile_x * GHConstants.StatusMarkWidth;
@@ -12528,7 +12536,7 @@ namespace GnollHackX.Pages.Game
                                 //int tile_x = GHApp.TileSheetX(mtile, sheet_idx);
                                 //int tile_y = GHApp.TileSheetY(mtile, sheet_idx);
                                 int tile_x, tile_y;
-                                GHApp.TileSheetXY(mtile, sheet_idx, out tile_x, out tile_y);
+                                GHApp.TileSheetXY(mtile, out tile_x, out tile_y);
 
                                 int buff_mark = (propidx - 1) % GHConstants.BUFFS_PER_TILE;
                                 int within_tile_x = buff_mark % tiles_per_row;
@@ -12784,7 +12792,7 @@ namespace GnollHackX.Pages.Game
                                     //int at_x = GHApp.TileSheetX(atile, a_sheet_idx);
                                     //int at_y = GHApp.TileSheetY(atile, a_sheet_idx);
                                     int at_x, at_y;
-                                    GHApp.TileSheetXY(atile, a_sheet_idx, out at_x, out at_y);
+                                    GHApp.TileSheetXY(atile, out at_x, out at_y);
 
                                     SKRect source_rt = new SKRect();
                                     switch (dir)
@@ -12798,7 +12806,7 @@ namespace GnollHackX.Pages.Game
                                                 //at_x = GHApp.TileSheetX(atile, a_sheet_idx);
                                                 //at_y = GHApp.TileSheetY(atile, a_sheet_idx);
                                                 //int at_x, at_y;
-                                                GHApp.TileSheetXY(atile, a_sheet_idx, out at_x, out at_y);
+                                                GHApp.TileSheetXY(atile, out at_x, out at_y);
                                             }
                                             source_rt.Left = at_x;
                                             source_rt.Right = source_rt.Left + 12;
@@ -12823,7 +12831,7 @@ namespace GnollHackX.Pages.Game
                                                 //at_x = GHApp.TileSheetX(atile, a_sheet_idx);
                                                 //at_y = GHApp.TileSheetY(atile, a_sheet_idx);
                                                 //int at_x, at_y;
-                                                GHApp.TileSheetXY(atile, a_sheet_idx, out at_x, out at_y);
+                                                GHApp.TileSheetXY(atile, out at_x, out at_y);
                                             }
                                             source_rt.Right = at_x + GHConstants.TileWidth;
                                             source_rt.Left = source_rt.Right - 12;
@@ -12848,7 +12856,7 @@ namespace GnollHackX.Pages.Game
                                                 //at_x = GHApp.TileSheetX(atile, a_sheet_idx);
                                                 //at_y = GHApp.TileSheetY(atile, a_sheet_idx);
                                                 //int at_x, at_y;
-                                                GHApp.TileSheetXY(atile, a_sheet_idx, out at_x, out at_y);
+                                                GHApp.TileSheetXY(atile, out at_x, out at_y);
                                             }
                                             if (corner == 0)
                                             {
@@ -12873,7 +12881,7 @@ namespace GnollHackX.Pages.Game
                                                 //at_x = GHApp.TileSheetX(atile, a_sheet_idx);
                                                 //at_y = GHApp.TileSheetY(atile, a_sheet_idx);
                                                 //int at_x, at_y;
-                                                GHApp.TileSheetXY(atile, a_sheet_idx, out at_x, out at_y);
+                                                GHApp.TileSheetXY(atile, out at_x, out at_y);
                                             }
                                             if (corner == 0)
                                             {
@@ -13013,7 +13021,7 @@ namespace GnollHackX.Pages.Game
                             //int at_x = GHApp.TileSheetX(atile, a_sheet_idx);
                             //int at_y = GHApp.TileSheetY(atile, a_sheet_idx);
                             int at_x, at_y;
-                            GHApp.TileSheetXY(atile, a_sheet_idx, out at_x, out at_y);
+                            GHApp.TileSheetXY(atile, out at_x, out at_y);
 
                             int worm_source_x = at_x;
                             int worm_source_y = at_y;
@@ -13092,7 +13100,7 @@ namespace GnollHackX.Pages.Game
                             //int at_x = GHApp.TileSheetX(atile, a_sheet_idx);
                             //int at_y = GHApp.TileSheetY(atile, a_sheet_idx);
                             int at_x, at_y;
-                            GHApp.TileSheetXY(atile, a_sheet_idx, out at_x, out at_y);
+                            GHApp.TileSheetXY(atile, out at_x, out at_y);
 
                             SKRect source_rt = new SKRect();
                             source_rt.Left = at_x + src_x;
@@ -13162,7 +13170,7 @@ namespace GnollHackX.Pages.Game
                         //int at_x = GHApp.TileSheetX(atile, a_sheet_idx);
                         //int at_y = GHApp.TileSheetY(atile, a_sheet_idx);
                         int at_x, at_y;
-                        GHApp.TileSheetXY(atile, a_sheet_idx, out at_x, out at_y);
+                        GHApp.TileSheetXY(atile, out at_x, out at_y);
 
                         SKRect source_rt = new SKRect();
                         source_rt.Left = at_x + src_x;
@@ -13241,7 +13249,7 @@ namespace GnollHackX.Pages.Game
                         //int at_x = GHApp.TileSheetX(atile, a_sheet_idx);
                         //int at_y = GHApp.TileSheetY(atile, a_sheet_idx);
                         int at_x, at_y;
-                        GHApp.TileSheetXY(atile, a_sheet_idx, out at_x, out at_y);
+                        GHApp.TileSheetXY(atile, out at_x, out at_y);
 
                         SKRect source_rt = new SKRect();
                         source_rt.Left = at_x + src_x;
@@ -13331,7 +13339,7 @@ namespace GnollHackX.Pages.Game
                         //int at_x = GHApp.TileSheetX(atile, a_sheet_idx);
                         //int at_y = GHApp.TileSheetY(atile, a_sheet_idx);
                         int at_x, at_y;
-                        GHApp.TileSheetXY(atile, a_sheet_idx, out at_x, out at_y);
+                        GHApp.TileSheetXY(atile, out at_x, out at_y);
 
                         SKRect source_rt = new SKRect();
                         source_rt.Left = at_x + src_x;
@@ -13383,7 +13391,7 @@ namespace GnollHackX.Pages.Game
                         //int at_x = GHApp.TileSheetX(atile, a_sheet_idx);
                         //int at_y = GHApp.TileSheetY(atile, a_sheet_idx);
                         int at_x, at_y;
-                        GHApp.TileSheetXY(atile, a_sheet_idx, out at_x, out at_y);
+                        GHApp.TileSheetXY(atile, out at_x, out at_y);
 
                         int source_glyph2 = GHApp._autodraws[autodraw].source_glyph2;
                         int atile2 = GHApp.Glyph2Tile[source_glyph2];
@@ -13391,7 +13399,7 @@ namespace GnollHackX.Pages.Game
                         //int a2t_x = GHApp.TileSheetX(atile2, a2_sheet_idx);
                         //int a2t_y = GHApp.TileSheetY(atile2, a2_sheet_idx);
                         int a2t_x, a2t_y;
-                        GHApp.TileSheetXY(atile2, a2_sheet_idx, out a2t_x, out a2t_y);
+                        GHApp.TileSheetXY(atile2, out a2t_x, out a2t_y);
 
                         source_rt.Left = at_x;
                         source_rt.Right = source_rt.Left + jar_width;
@@ -13913,7 +13921,7 @@ namespace GnollHackX.Pages.Game
                     //int at_x = GHApp.TileSheetX(atile, a_sheet_idx);
                     //int at_y = GHApp.TileSheetY(atile, a_sheet_idx);
                     int at_x, at_y;
-                    GHApp.TileSheetXY(atile, a_sheet_idx, out at_x, out at_y);
+                    GHApp.TileSheetXY(atile, out at_x, out at_y);
 
                     SKRect source_rt = new SKRect();
                     source_rt.Left = at_x + src_x;
@@ -13973,7 +13981,7 @@ namespace GnollHackX.Pages.Game
                     //int at_x = GHApp.TileSheetX(atile, a_sheet_idx);
                     //int at_y = GHApp.TileSheetY(atile, a_sheet_idx);
                     int at_x, at_y;
-                    GHApp.TileSheetXY(atile, a_sheet_idx, out at_x, out at_y);
+                    GHApp.TileSheetXY(atile, out at_x, out at_y);
                     float adscale = scale * targetscale;
 
                     for (int n = 0; n < 2; n++)
@@ -18046,7 +18054,7 @@ namespace GnollHackX.Pages.Game
                     //int tile_x = GHApp.TileSheetX(mtile, sheet_idx);
                     //int tile_y = GHApp.TileSheetY(mtile, sheet_idx);
                     int tile_x, tile_y;
-                    GHApp.TileSheetXY(mtile, sheet_idx, out tile_x, out tile_y);
+                    GHApp.TileSheetXY(mtile, out tile_x, out tile_y);
                     int within_tile_x = (status_mark % GHConstants.MAX_UI_TILE_16_x_16_COMPONENTS) % tiles_per_row;
                     int within_tile_y = (status_mark % GHConstants.MAX_UI_TILE_16_x_16_COMPONENTS) / tiles_per_row;
                     int c_x = tile_x + within_tile_x * GHConstants.StatusMarkWidth;
@@ -18078,7 +18086,7 @@ namespace GnollHackX.Pages.Game
                     //int tile_x = GHApp.TileSheetX(mtile, sheet_idx);
                     //int tile_y = GHApp.TileSheetY(mtile, sheet_idx);
                     int tile_x, tile_y;
-                    GHApp.TileSheetXY(mtile, sheet_idx, out tile_x, out tile_y);
+                    GHApp.TileSheetXY(mtile, out tile_x, out tile_y);
                     int within_tile_x = (condition_mark % GHConstants.MAX_UI_TILE_16_x_16_COMPONENTS) % tiles_per_row;
                     int within_tile_y = (condition_mark % GHConstants.MAX_UI_TILE_16_x_16_COMPONENTS) / tiles_per_row;
                     int c_x = tile_x + within_tile_x * GHConstants.StatusMarkWidth;
@@ -18112,7 +18120,7 @@ namespace GnollHackX.Pages.Game
                         //int tile_x = GHApp.TileSheetX(mtile, sheet_idx);
                         //int tile_y = GHApp.TileSheetY(mtile, sheet_idx);
                         int tile_x, tile_y;
-                        GHApp.TileSheetXY(mtile, sheet_idx, out tile_x, out tile_y);
+                        GHApp.TileSheetXY(mtile, out tile_x, out tile_y);
 
                         int buff_mark = (propidx - 1) % GHConstants.BUFFS_PER_TILE;
                         int within_tile_x = buff_mark % tiles_per_row;

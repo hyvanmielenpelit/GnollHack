@@ -115,6 +115,7 @@
     <BundleResource Include="banks\Preliminary.bank" />
     <BundleResource Include="tileset\gnollhack_64x96_transparent_32bits.ghpng" />
     <BundleResource Include="tileset\gnollhack_64x96_transparent_32bits-2.ghpng" />
+    <BundleResource Include="tileset\gnollhack_64x96_transparent_32bits-3.ghpng" />
     <ITunesArtwork Include="iTunesArtwork" />
     <ITunesArtwork Include="iTunesArtwork%402x" />
     <BundleResource Include="Resources\DejaVuSansMono-Bold.woff" />
