@@ -52,11 +52,13 @@
 #define TILE_BK_COLOR RGB(TILE_BK_COLOR_RED, TILE_BK_COLOR_GREEN, TILE_BK_COLOR_BLUE)
 
 #define TILE_SHEET_IDX(ntile) \
-    (min(GetNHApp()->mapTileSheets - 1, max(0, (ntile / NUM_TILES_PER_SHEET))))
+    (min(GetNHApp()->mapTileSheets - 1, max(0, (ntile >> POW2_FOR_NUM_TILES_PER_SHEET))))
+    //(min(GetNHApp()->mapTileSheets - 1, max(0, (ntile / NUM_TILES_PER_SHEET))))
 #define TILEBMP_X(ntile) \
-    (((ntile % NUM_TILES_PER_SHEET) % GetNHApp()->mapTilesPerLine[TILE_SHEET_IDX(ntile)]) * GetNHApp()->mapTile_X)
+    (((ntile & (NUM_TILES_PER_SHEET - 1)) & (MAX_TILE_SHEET_WIDTH - 1)) * GetNHApp()->mapTile_X)
+    //(((ntile % NUM_TILES_PER_SHEET) % GetNHApp()->mapTilesPerLine[TILE_SHEET_IDX(ntile)]) * GetNHApp()->mapTile_X)
 #define TILEBMP_Y(ntile) \
-    (((ntile % NUM_TILES_PER_SHEET) / GetNHApp()->mapTilesPerLine[TILE_SHEET_IDX(ntile)]) * GetNHApp()->mapTile_Y)
+    (((ntile & (NUM_TILES_PER_SHEET - 1)) >> POW2_FOR_MAX_TILE_SHEET_WIDTH) * GetNHApp()->mapTile_Y)
 
 
 /* minimum/maximum font size (in points - 1/72 inch) */
@@ -94,7 +96,7 @@ typedef struct mswin_nhwindow_app {
     HBITMAP bmpFMOD;
     int mapTile_X;       /* tile width */
     int mapTile_Y;       /* tile height */
-    int mapTilesPerLine[MAX_TILE_SHEETS]; /* number of tile per row in the bitmap */
+    int mapTilesPerLine[MAX_TILE_SHEETS]; /* number of tiles per row in the bitmap */
     int mapTileSheets;   /* number of used tile sheets */
 
     boolean bNoHScroll; /* disable cliparound for horizontal grid (map) */
