@@ -39,7 +39,8 @@ namespace GnollHackX.Controls
         public static readonly BindableProperty ShortcutFontFamilyProperty = BindableProperty.Create(nameof(ShortcutFontFamily), typeof(string), typeof(LabeledImageButton), "LatoRegular");
         public static readonly BindableProperty ShortcutFontColorProperty = BindableProperty.Create(nameof(ShortcutFontColor), typeof(Color), typeof(LabeledImageButton), GHColors.Gray);
         public static readonly BindableProperty IsShortcutVisibleProperty = BindableProperty.Create(nameof(IsShortcutVisible), typeof(bool), typeof(LabeledImageButton), false);
-
+        public static readonly BindableProperty IsCommandMappingEnabledProperty = BindableProperty.Create(nameof(IsCommandMappingEnabled), typeof(bool), typeof(LabeledImageButton), true);
+        
         public event EventHandler<EventArgs> BtnClicked;
         public char BtnLetter
         {
@@ -108,6 +109,11 @@ namespace GnollHackX.Controls
             get => (bool)GetValue(LabeledImageButton.IsShortcutVisibleProperty);
             set => SetValue(LabeledImageButton.IsShortcutVisibleProperty, value);
         }
+        public bool IsCommandMappingEnabled
+        {
+            get => (bool)GetValue(LabeledImageButton.IsCommandMappingEnabledProperty);
+            set => SetValue(LabeledImageButton.IsCommandMappingEnabledProperty, value);
+        }
         public string ImgSourcePath
         {
             get => (string)GetValue(LabeledImageButton.ImgSourcePathProperty);
@@ -154,23 +160,23 @@ namespace GnollHackX.Controls
         }
         public char MappedBtnLetter
         {
-            get => ViewButton.MappedLetter;
+            get => IsCommandMappingEnabled ? ViewButton.MappedLetter : ViewButton.Letter;
         }
         public bool MappedBtnMeta
         {
-            get => ViewButton.MappedMeta;
+            get => IsCommandMappingEnabled ? ViewButton.MappedMeta : ViewButton.ApplyMeta;
         }
         public bool MappedBtnCtrl
         {
-            get => ViewButton.MappedCtrl;
+            get => IsCommandMappingEnabled ? ViewButton.MappedCtrl : ViewButton.ApplyCtrl;
         }
         public int MappedBtnCommand
         {
-            get => ViewButton.MappedRawCommand;
+            get => IsCommandMappingEnabled ? ViewButton.MappedRawCommand : ViewButton.RawCommand;
         }
         public int MappedGHCommand
         {
-            get => ViewButton.MappedGHCommand;
+            get => IsCommandMappingEnabled ? ViewButton.MappedGHCommand : ViewButton.GHCommand;
         }
 
         public bool LargerFont { get; set; }
