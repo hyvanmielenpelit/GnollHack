@@ -3332,19 +3332,30 @@ namespace GnollHackX
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int TileSheetIdx(int ntile)
         {
-            return (Math.Min(UsedTileSheets - 1, Math.Max(0, (ntile / GHConstants.NumberOfTilesPerSheet))));
+            return ntile < GHConstants.NumberOfTilesPerSheet ? 0 : (Math.Min(UsedTileSheets - 1, Math.Max(0, (ntile / GHConstants.NumberOfTilesPerSheet))));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int TileSheetX(int ntile, int tileSheetIdx)
         {
-            return (((ntile % GHConstants.NumberOfTilesPerSheet) % _tilesPerRow[tileSheetIdx]) * GHConstants.TileWidth);
+            return (((ntile < GHConstants.NumberOfTilesPerSheet ? ntile : ntile % GHConstants.NumberOfTilesPerSheet) % _tilesPerRow[tileSheetIdx]) * GHConstants.TileWidth);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int TileSheetY(int ntile, int tileSheetIdx)
         {
-            return (((ntile % GHConstants.NumberOfTilesPerSheet) / _tilesPerRow[tileSheetIdx]) * GHConstants.TileHeight);
+            return (((ntile < GHConstants.NumberOfTilesPerSheet ? ntile : ntile % GHConstants.NumberOfTilesPerSheet) / _tilesPerRow[tileSheetIdx]) * GHConstants.TileHeight);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void TileSheetXY(int ntile, int tileSheetIdx, out int x, out int y)
+        {
+            int tileNumberWithinSheet = ntile < GHConstants.NumberOfTilesPerSheet ? ntile : ntile % GHConstants.NumberOfTilesPerSheet;
+            int tilesPerRowInSheet = _tilesPerRow[tileSheetIdx];
+            int row = tileNumberWithinSheet / tilesPerRowInSheet;
+            x = (tileNumberWithinSheet - row * tilesPerRowInSheet) * GHConstants.TileWidth;
+            y = row * GHConstants.TileHeight;
+            //x = (tileNumberWithinSheet % tilesPerRowInSheet) * GHConstants.TileWidth;
         }
 
         public static List<SelectableShortcutButton> GetSimpleShortcutButtonsToAllocate()

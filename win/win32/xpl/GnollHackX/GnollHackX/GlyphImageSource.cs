@@ -372,8 +372,10 @@ namespace GnollHackX
 
                 int enlargement_idx = GHApp.Tile2Enlargement[ntile];
                 int sheet_idx = GHApp.TileSheetIdx(ntile);
-                int tile_x = GHApp.TileSheetX(ntile, sheet_idx);
-                int tile_y = GHApp.TileSheetY(ntile, sheet_idx);
+                //int tile_x = GHApp.TileSheetX(ntile, sheet_idx);
+                //int tile_y = GHApp.TileSheetY(ntile, sheet_idx);
+                int tile_x, tile_y;
+                GHApp.TileSheetXY(ntile, sheet_idx, out tile_x, out tile_y);
 
                 using (SKPaint paint = new SKPaint())
                 {
@@ -513,8 +515,10 @@ namespace GnollHackX
                                 int glyph = enltile + GHApp.EnlargementOffsets[enlargement_idx] /* enlargements[enlargement_idx].glyph_offset */ + GHApp.EnlargementOff;
                                 int etile = GHApp.Glyph2Tile[glyph];
                                 int e_sheet_idx = GHApp.TileSheetIdx(etile);
-                                int etile_x = GHApp.TileSheetX(etile, e_sheet_idx);
-                                int etile_y = GHApp.TileSheetY(etile, e_sheet_idx);
+                                //int etile_x = GHApp.TileSheetX(etile, e_sheet_idx);
+                                //int etile_y = GHApp.TileSheetY(etile, e_sheet_idx);
+                                int etile_x, etile_y;
+                                GHApp.TileSheetXY(etile, e_sheet_idx, out etile_x, out etile_y);
                                 float target_x = 0;
                                 float target_y = 0;
                                 autodraw = GHApp.Tile2Autodraw[etile];
