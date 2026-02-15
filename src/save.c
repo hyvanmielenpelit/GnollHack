@@ -1489,7 +1489,7 @@ int fd;
     /* bwrite() before bufon() uses plain write() */
     bwrite(fd, (genericptr_t) &plsiztmp, sizeof(plsiztmp));
     bwrite(fd, (genericptr_t) plname, plsiztmp);
-    debugprint("store_plname_in_file (fd=%d)", fd);
+    //debugprint("store_plname_in_file (fd=%d)", fd);
     bufon(fd);
     return;
 }
@@ -1537,7 +1537,7 @@ int64_t time_stamp;
     bufoff(fd);
     /* bwrite() before bufon() uses plain write() */
     bwrite(fd, (genericptr_t)&gamestats, sizeof gamestats);
-    debugprint("store_save_game_stats_in_file (fd=%d)", fd);
+    //debugprint("store_save_game_stats_in_file (fd=%d)", fd);
     bufon(fd);
     return;
 }
@@ -1594,7 +1594,7 @@ int fd;
     bufoff(fd);
     /* bwrite() before bufon() uses plain write() */
     bwrite(fd, (genericptr_t) &sfsaveinfo, sizeof sfsaveinfo);
-    debugprint("store_savefileinfo (fd=%d)", fd);
+    //debugprint("store_savefileinfo (fd=%d)", fd);
     bufon(fd);
     return;
 }

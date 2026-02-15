@@ -19077,7 +19077,7 @@ int fd;
 {
     int count;
     sound_source* ss;
-    debugprint("restore_sound_sources");
+    //debugprint("restore_sound_sources");
 
     /* restore elements */
     mread(fd, (genericptr_t)&count, sizeof count);

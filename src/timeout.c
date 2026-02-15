@@ -3744,7 +3744,7 @@ int64_t adjust;     /* how much to adjust timeout */
 {
     int count;
     timer_element *curr;
-    debugprint("restore_timers");
+    //debugprint("restore_timers");
 
     if (range == RANGE_GLOBAL)
         mread(fd, (genericptr_t) &timer_id, sizeof timer_id);

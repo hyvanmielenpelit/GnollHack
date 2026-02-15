@@ -3597,7 +3597,7 @@ restore_killers(fd)
 int fd;
 {
     struct kinfo *kptr;
-    debugprint("restore_killers");
+    //debugprint("restore_killers");
 
     for (kptr = &killer; kptr != (struct kinfo *) 0; kptr = kptr->next) {
         mread(fd, (genericptr_t) kptr, sizeof (struct kinfo));

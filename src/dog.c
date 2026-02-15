@@ -933,7 +933,7 @@ boolean with_you;
     int num_segs;
     boolean failed_to_place = FALSE;
 
-    debugprint("mon_arrive: from: %d/%d, to: %d/%d.", u.uz0.dnum, u.uz0.dlevel, u.uz.dnum, u.uz.dlevel);
+    debugprint("mon_arrive: mnum:%d, from: %d/%d, to: %d/%d.", mtmp->mnum, u.uz0.dnum, u.uz0.dlevel, u.uz.dnum, u.uz.dlevel);
 
     mtmp->nmon = fmon;
     fmon = mtmp;

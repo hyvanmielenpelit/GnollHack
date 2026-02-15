@@ -1771,7 +1771,7 @@ int fd;
     if (!Is_waterlevel(&u.uz) && !Is_airlevel(&u.uz))
         return;
 
-    debugprint("restore_waterlevel");
+    //debugprint("restore_waterlevel");
     set_wportal();
     mread(fd, (genericptr_t) &n, sizeof(int));
     mread(fd, (genericptr_t) &xmin, sizeof(int));

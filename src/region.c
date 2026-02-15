@@ -741,7 +741,7 @@ boolean ghostly; /* If a bones file restore */
     size_t n;
     int64_t tmstamp;
     char *msg_buf;
-    debugprint("rest_regions");
+    //debugprint("rest_regions");
 
     clear_regions(); /* Just for security */
     mread(fd, (genericptr_t) &tmstamp, sizeof(tmstamp));

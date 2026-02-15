@@ -230,7 +230,7 @@ int fd;
     int count, i;
     mapseen *curr_ms, *last_ms;
 
-    debugprint("restore_dungeon");
+    //debugprint("restore_dungeon");
     mread(fd, (genericptr_t) &n_dgns, sizeof(n_dgns));
     mread(fd, (genericptr_t) dungeons, sizeof(dungeon) * (size_t) n_dgns);
     mread(fd, (genericptr_t) &dungeon_topology, sizeof dungeon_topology);

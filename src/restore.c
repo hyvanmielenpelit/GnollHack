@@ -206,7 +206,7 @@ register int fd;
 {
     int cnt;
     s_level *tmplev, *x;
-    debugprint("restlevchn");
+    //debugprint("restlevchn");
 
     sp_levchn = (s_level *) 0;
     mread(fd, (genericptr_t) &cnt, sizeof(int));
@@ -234,7 +234,7 @@ boolean ghostly;
 {
     int counter;
     struct damage *tmp_dam;
-    debugprint("restdamage");
+    //debugprint("restdamage");
 
     mread(fd, (genericptr_t) &counter, sizeof(counter));
     if (!counter)
@@ -279,7 +279,7 @@ int fd;
 struct obj *otmp;
 {
     size_t buflen;
-    debugprint("restobj");
+    //debugprint("restobj");
 
     mread(fd, (genericptr_t) otmp, sizeof(struct obj));
 
@@ -342,8 +342,7 @@ boolean ghostly, frozen;
     register struct obj *otmp, *otmp2 = 0;
     register struct obj *first = (struct obj *) 0;
     size_t buflen;
-    debugprint("restobjchn");
-    debugprint("restobjchn");
+    //debugprint("restobjchn");
 
     while (1) {
         mread(fd, (genericptr_t) &buflen, sizeof buflen);
@@ -436,7 +435,7 @@ int fd;
 struct monst *mtmp;
 {
     size_t buflen;
-    debugprint("restmon");
+    //debugprint("restmon");
 
     mread(fd, (genericptr_t) mtmp, sizeof(struct monst));
 
@@ -529,8 +528,7 @@ boolean ghostly;
     register struct monst *mtmp, *mtmp2 = 0;
     register struct monst *first = (struct monst *) 0;
     size_t buflen;
-    debugprint("restmonchn");
-    debugprint("restmonchn");
+    //debugprint("restmonchn");
 
     while (1) {
         mread(fd, (genericptr_t) &buflen, sizeof(buflen));
@@ -607,7 +605,7 @@ loadfruitchn(fd)
 int fd;
 {
     register struct fruit *flist, *fnext;
-    debugprint("loadfruitchn");
+    //debugprint("loadfruitchn");
 
     flist = 0;
     while (fnext = newfruit(), mread(fd, (genericptr_t) fnext, sizeof *fnext), fnext->fid != 0)
@@ -675,9 +673,7 @@ unsigned int *stuckid, *steedid;
     char timebuf[15];
     uint64_t uid;
     boolean defer_perm_invent;
-    debugprint("restgamestate1");
-    debugprint("restgamestate");
-    debugprint("restgamestate");
+    //debugprint("restgamestate1");
 
     mread(fd, (genericptr_t) &uid, sizeof uid);
     if (SYSOPT_CHECK_SAVE_UID
@@ -785,12 +781,12 @@ unsigned int *stuckid, *steedid;
     restore_timers(fd, RANGE_GLOBAL, FALSE, 0L);
     restore_light_sources(fd);
     restore_sound_sources(fd);
-    debugprint("restgamestate2");
+    //debugprint("restgamestate2");
     invent = restobjchn(fd, FALSE, FALSE);
     /* tmp_bc only gets set here if the ball & chain were orphaned
        because you were swallowed; otherwise they will be on the floor
        or in your inventory */
-    debugprint("restgamestate3");
+    //debugprint("restgamestate3");
     tmp_bc = restobjchn(fd, FALSE, FALSE);
     if (tmp_bc) {
         for (otmp = tmp_bc; otmp; otmp = otmp->nobj) {
@@ -801,13 +797,13 @@ unsigned int *stuckid, *steedid;
             impossible("restgamestate: lost ball & chain");
     }
 
-    debugprint("restgamestate4");
+    //debugprint("restgamestate4");
     magic_objs = restobjchn(fd, FALSE, FALSE);
-    debugprint("restgamestate5");
+    //debugprint("restgamestate5");
     migrating_objs = restobjchn(fd, FALSE, FALSE);
-    debugprint("restgamestate6");
+    //debugprint("restgamestate6");
     migrating_mons = restmonchn(fd, FALSE);
-    debugprint("restgamestate7");
+    //debugprint("restgamestate7");
     mread(fd, (genericptr_t) mvitals, sizeof(mvitals));
 
     /*
@@ -958,7 +954,7 @@ xchar ltmp;
         nh_terminate(EXIT_SUCCESS);
     }
 #endif /* MFLOPPY */
-    debugprint("restlevelfile (fd=%d)", nfd);
+    //debugprint("restlevelfile (fd=%d)", nfd);
     bufon(nfd);
     savelev(nfd, ltmp, WRITE_SAVE | FREE_SAVE);
     bclose(nfd);
@@ -1105,7 +1101,7 @@ register int fd;
         }
         mark_synch();
 #endif
-        debugprint("dorestore0B (fd=%d, ltmp=%d)", fd, (int)ltmp);
+        //debugprint("dorestore0B (fd=%d, ltmp=%d)", fd, (int)ltmp);
         rtmp = restlevelfile(fd, ltmp);
         if (rtmp < 2)
             return rtmp; /* dorestore called recursively */
@@ -1288,7 +1284,7 @@ struct cemetery **cemeteryaddr;
 {
     struct cemetery *bonesinfo, **bonesaddr;
     int flag;
-    debugprint("restcemetery");
+    //debugprint("restcemetery");
 
     mread(fd, (genericptr_t) &flag, sizeof flag);
     if (flag == 0) {
@@ -1339,7 +1335,7 @@ boolean rlecomp;
 #else /* !RLECOMP */
     nhUse(rlecomp);
 #endif /* ?RLECOMP */
-    debugprint("rest_levl");
+    //debugprint("rest_levl");
     mread(fd, (genericptr_t) levl, sizeof levl);
 }
 
@@ -1432,7 +1428,7 @@ boolean ghostly;
     restore_timers(fd, RANGE_LEVEL, ghostly, elapsed);
     restore_light_sources(fd);
     restore_sound_sources(fd);
-    debugprint("getlev2: %d", lev);
+    //debugprint("getlev2: %d", lev);
     fmon = restmonchn(fd, ghostly);
 
     rest_worm(fd); /* restore worm information */
@@ -1444,18 +1440,18 @@ boolean ghostly;
         ftrap = trap;
     }
     dealloc_trap(trap);
-    debugprint("getlev3: %d", lev);
+    //debugprint("getlev3: %d", lev);
     fobj = restobjchn(fd, ghostly, FALSE);
     find_lev_obj();
     /* restobjchn()'s `frozen' argument probably ought to be a callback
        routine so that we can check for objects being buried under ice */
-    debugprint("getlev4: %d", lev);
+    //debugprint("getlev4: %d", lev);
     level.buriedobjlist = restobjchn(fd, ghostly, FALSE);
-    debugprint("getlev5: %d", lev);
+    //debugprint("getlev5: %d", lev);
     billobjs = restobjchn(fd, ghostly, FALSE);
-    debugprint("getlev6: %d", lev);
+    //debugprint("getlev6: %d", lev);
     memoryobjs = restobjchn(fd, ghostly, FALSE);
-    debugprint("getlev7: %d", lev);
+    //debugprint("getlev7: %d", lev);
     find_memory_obj();
     rest_engravings(fd);
     debugprint_pos();
@@ -1593,7 +1589,7 @@ register int fd;
     int slen = 0;
     struct gamelog_line tmp;
     char* tmpstr = 0;
-    debugprint("restore_gamelog");
+    //debugprint("restore_gamelog");
 
     while (1) {
         mread(fd, &slen, sizeof slen);
@@ -1617,7 +1613,7 @@ register int fd;
     char msg[BUFSZ];
     char attrs[BUFSZ];
     char colors[BUFSZ];
-    debugprint("restore_msghistory");
+    //debugprint("restore_msghistory");
 
     while (1) {
         mread(fd, (genericptr_t) &msgsize, sizeof(msgsize));

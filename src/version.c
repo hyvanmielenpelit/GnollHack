@@ -366,7 +366,7 @@ int fd;
     bufoff(fd);
     /* bwrite() before bufon() uses plain write() */
     bwrite(fd, (genericptr_t) &version_data, sizeof version_data);
-    debugprint("store_version (fd=%d)", fd);
+    //debugprint("store_version (fd=%d)", fd);
     bufon(fd);
     return;
 }
