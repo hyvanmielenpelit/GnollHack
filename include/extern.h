@@ -3331,6 +3331,7 @@ E boolean FDECL(same_price, (struct obj *, struct obj *));
 E void NDECL(shopper_financial_report);
 E int FDECL(inhishop, (struct monst *));
 E struct monst *FDECL(shop_keeper, (CHAR_P));
+E struct monst* FDECL(shop_keeper_ex_debug, (CHAR_P, struct obj*, struct obj*));
 E boolean FDECL(tended_shop, (struct mkroom *));
 E boolean FDECL(is_unpaid, (struct obj *));
 E void FDECL(delete_contents, (struct obj *));
