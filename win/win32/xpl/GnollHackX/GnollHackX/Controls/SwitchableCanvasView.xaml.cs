@@ -8,7 +8,6 @@ using System.Threading.Tasks;
 using System.Diagnostics;
 using GnollHackX;
 
-
 #if GNH_MAUI
 using SkiaSharp.Views.Maui;
 using SkiaSharp.Views.Maui.Controls;
@@ -403,7 +402,7 @@ namespace GnollHackX.Controls
                 {
                     if(CanvasType == CanvasTypes.MainCanvas)
                         GHApp.GPUBackend = e.BackendRenderTarget.Backend.ToString();
-
+                    
                     Debug.WriteLine("Using is Skia GPU Rendering: GRContext Backend is " + e.BackendRenderTarget.Backend.ToString());
                 }
                 else
@@ -413,6 +412,9 @@ namespace GnollHackX.Controls
                 long defaultSize = GHApp.DefaultGPUCacheSize;
                 if (CanvasType == CanvasTypes.MainCanvas)
                 {
+                    Debug.WriteLine("GRContext MaxTextureSize is " + (canvas?.Context?.MaxTextureSize.ToString() ?? "N/A"));
+                    Debug.WriteLine("GRContext MaxRenderTargetSize is " + (canvas?.Context?.MaxRenderTargetSize.ToString() ?? "N/A"));
+
                     long limit = GHApp.PrimaryGPUCacheLimit;
                     Debug.WriteLine("PrimaryGPUCacheLimit is " + limit);
                     try
