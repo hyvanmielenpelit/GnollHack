@@ -2494,7 +2494,7 @@ boolean timer_attached;
     if (obj_burns_infinitely(obj))
         timer_attached = FALSE;
 
-    boolean was_timed = obj->timed;
+    xchar was_timed = obj->timed;
     if (!timer_attached) 
     {
         debugprint("end_burn");
