@@ -343,7 +343,7 @@ int x, y;
     u.twoweap = 0; /* ensure curse() won't cause swapwep to drop twice */
     while ((otmp = invent) != 0) 
     {
-        debugprint("drop_upon_death");
+        debugprint("drop_upon_death: otyp=%d, cont->otyp=%d, mnum=%d", otmp->otyp, cont ? cont->otyp : -1, mtmp ? mtmp->mnum : -1);
         obj_extract_self(otmp);
         /* when turning into green slime, all gear remains held;
            other types "arise from the dead" do aren't holding

@@ -2485,7 +2485,8 @@ end_burn(obj, timer_attached)
 struct obj *obj;
 boolean timer_attached;
 {
-    if (!obj->lamplit) {
+    if (!obj->lamplit) 
+    {
         impossible("end_burn: obj %s not lit", xname(obj));
         return;
     }
@@ -2493,14 +2494,17 @@ boolean timer_attached;
     if (obj_burns_infinitely(obj))
         timer_attached = FALSE;
 
-    if (!timer_attached) {
+    boolean was_timed = obj->timed;
+    if (!timer_attached) 
+    {
         debugprint("end_burn");
         /* [DS] Cleanup explicitly, since timer cleanup won't happen */
         del_light_source(LS_OBJECT, obj_to_any(obj));
         obj->lamplit = 0;
         if (obj->where == OBJ_INVENT)
             update_inventory();
-    } else if (!stop_timer(BURN_OBJECT, obj_to_any(obj)))
+    }
+    else if (!stop_timer(BURN_OBJECT, obj_to_any(obj)) && was_timed) /* Could be also timeout == monstermoves */
         impossible("end_burn: obj %s not timed!", xname(obj));
 }
 

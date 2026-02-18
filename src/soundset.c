@@ -19554,14 +19554,16 @@ boolean timer_attached;
     //if (1) //obj->otyp == MAGIC_LAMP || obj->otyp == MAGIC_CANDLE || artifact_light(obj) || obj_shines_magical_light(obj))
     timer_attached = FALSE;
 
-    if (!timer_attached) {
+    boolean was_timed = obj->timed;
+    if (!timer_attached)
+    {
         /* [DS] Cleanup explicitly, since timer cleanup won't happen */
         del_sound_source(SOUNDSOURCE_OBJECT, obj_to_any(obj));
         obj->makingsound = 0;
         if (obj->where == OBJ_INVENT)
             update_inventory();
     }
-    else if (!stop_timer(MAKE_SOUND_OBJECT, obj_to_any(obj)))
+    else if (!stop_timer(MAKE_SOUND_OBJECT, obj_to_any(obj)) && was_timed) /* Could be also timeout == monstermoves */
         impossible("end_sound: obj %s not timed!", xname(obj));
 }
 
