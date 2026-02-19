@@ -388,6 +388,7 @@ namespace GnollHackX.Controls
             if (IsShutDown)
                 return;
 
+            var grContext = _internalGLView?.GRContext;
             if (_firstDraw)
             {
                 _firstDraw = false;
@@ -408,58 +409,62 @@ namespace GnollHackX.Controls
                 else
                     Debug.WriteLine("Using Skia GPU Rendering: BackendRenderTarget is null");
 
-                /* Set to requested PrimaryCache limits */
-                long defaultSize = GHApp.DefaultGPUCacheSize;
-                if (CanvasType == CanvasTypes.MainCanvas)
+                if (grContext != null)
                 {
-                    Debug.WriteLine("GRContext MaxTextureSize is " + (canvas?.Context?.MaxTextureSize.ToString() ?? "N/A"));
-                    Debug.WriteLine("GRContext MaxRenderTargetSize is " + (canvas?.Context?.MaxRenderTargetSize.ToString() ?? "N/A"));
+                    /* Set to requested PrimaryCache limits */
+                    long defaultSize = GHApp.DefaultGPUCacheSize;
+                    if (CanvasType == CanvasTypes.MainCanvas)
+                    {
+#if GNH_MAUI
+                        Debug.WriteLine("GRContext MaxTextureSize is " + (canvas?.Context?.MaxTextureSize.ToString() ?? "N/A"));
+                        Debug.WriteLine("GRContext MaxRenderTargetSize is " + (canvas?.Context?.MaxRenderTargetSize.ToString() ?? "N/A"));
+#endif
+                        long limit = GHApp.PrimaryGPUCacheLimit;
+                        Debug.WriteLine("PrimaryGPUCacheLimit is " + limit);
+                        try
+                        {
+                            if (limit > 0)
+                                grContext.SetResourceCacheLimit(limit);
+                            else if (limit == -2 && GHApp.RecommendedPrimaryGPUCacheSize > 0)
+                                grContext.SetResourceCacheLimit(GHApp.RecommendedPrimaryGPUCacheSize);
+                            else if (limit == -3 && defaultSize > 0)
+                                grContext.SetResourceCacheLimit(defaultSize);
 
-                    long limit = GHApp.PrimaryGPUCacheLimit;
-                    Debug.WriteLine("PrimaryGPUCacheLimit is " + limit);
-                    try
-                    {
-                        if (limit > 0)
-                            _internalGLView.GRContext.SetResourceCacheLimit(limit);
-                        else if (limit == -2 && GHApp.RecommendedPrimaryGPUCacheSize > 0)
-                            _internalGLView.GRContext.SetResourceCacheLimit(GHApp.RecommendedPrimaryGPUCacheSize);
-                        else if (limit == -3 && defaultSize > 0)
-                            _internalGLView.GRContext.SetResourceCacheLimit(defaultSize);
+                            long newLimit = grContext.GetResourceCacheLimit();
+                            Debug.WriteLine("ResourceCacheSize is now " + newLimit);
+                            GHApp.CurrentGPUCacheSize = newLimit;
+                            GHApp.CurrentGPUCacheUsage = ResourceCacheUsage;
+                        }
+                        catch (Exception ex)
+                        {
+                            Debug.WriteLine(ex.Message);
+                        }
                     }
-                    catch (Exception ex)
+                    else
                     {
-                        Debug.WriteLine(ex.Message);
-                    }
-
-                    long newLimit = ResourceCacheLimit;
-                    Debug.WriteLine("ResourceCacheSize is now " + newLimit);
-                    GHApp.CurrentGPUCacheSize = newLimit;
-                    GHApp.CurrentGPUCacheUsage = ResourceCacheUsage;
-                }
-                else
-                {
-                    long limit = GHApp.SecondaryGPUCacheLimit;
-                    Debug.WriteLine("SecondaryGPUCacheLimit is " + limit);
-                    try
-                    {
-                        if (limit > 0)
-                            _internalGLView.GRContext.SetResourceCacheLimit(limit);
-                        else if (limit == -2 && GHApp.RecommendedSecondaryGPUCacheSize > 0)
-                            _internalGLView.GRContext.SetResourceCacheLimit(GHApp.RecommendedSecondaryGPUCacheSize);
-                        else if (limit == -3 && defaultSize > 0)
-                            _internalGLView.GRContext.SetResourceCacheLimit(defaultSize);
-                        Debug.WriteLine("ResourceCacheSize is now " + ResourceCacheLimit);
-                    }
-                    catch (Exception ex)
-                    {
-                        Debug.WriteLine(ex.Message);
+                        long limit = GHApp.SecondaryGPUCacheLimit;
+                        Debug.WriteLine("SecondaryGPUCacheLimit is " + limit);
+                        try
+                        {
+                            if (limit > 0)
+                                grContext.SetResourceCacheLimit(limit);
+                            else if (limit == -2 && GHApp.RecommendedSecondaryGPUCacheSize > 0)
+                                grContext.SetResourceCacheLimit(GHApp.RecommendedSecondaryGPUCacheSize);
+                            else if (limit == -3 && defaultSize > 0)
+                                grContext.SetResourceCacheLimit(defaultSize);
+                            Debug.WriteLine("ResourceCacheSize is now " + grContext.GetResourceCacheLimit());
+                        }
+                        catch (Exception ex)
+                        {
+                            Debug.WriteLine(ex.Message);
+                        }
                     }
                 }
             }
 
             /* Note: this case most likely will never happen, but is here still as a backup */
             long delayedResourceCacheLimit = DelayedResourceCacheLimit;
-            if (delayedResourceCacheLimit != -1 && _internalGLView?.GRContext != null)
+            if (delayedResourceCacheLimit != -1 && grContext != null)
             {
                 Debug.WriteLine("CanvasType is " + CanvasType.ToString());
                 Debug.WriteLine("ResourceCacheSize is " + ResourceCacheLimit);
@@ -468,8 +473,8 @@ namespace GnollHackX.Controls
                     if (delayedResourceCacheLimit > 0)
                     {
                         Debug.WriteLine("_delayedResourceCacheLimit is " + delayedResourceCacheLimit);
-                        _internalGLView.GRContext.SetResourceCacheLimit(delayedResourceCacheLimit);
-                        Debug.WriteLine("ResourceCacheSize is now " + ResourceCacheLimit);
+                        grContext.SetResourceCacheLimit(delayedResourceCacheLimit);
+                        Debug.WriteLine("ResourceCacheSize is now " + grContext.GetResourceCacheLimit());
                     }
                     else if (delayedResourceCacheLimit == -2) /* Recommended */
                     {
@@ -478,9 +483,9 @@ namespace GnollHackX.Controls
                         Debug.WriteLine("RecommendedGPUCacheSize is " + defaultSize);
                         if (defaultSize > 0)
                         {
-                            _internalGLView.GRContext.SetResourceCacheLimit(defaultSize);
+                            grContext.SetResourceCacheLimit(defaultSize);
                         }
-                        Debug.WriteLine("ResourceCacheSize is now " + ResourceCacheLimit);
+                        Debug.WriteLine("ResourceCacheSize is now " + grContext.GetResourceCacheLimit());
                     }
                     else if (delayedResourceCacheLimit == -3) /* Skia Default */
                     {
@@ -489,9 +494,9 @@ namespace GnollHackX.Controls
                         Debug.WriteLine("DefaultGPUCacheSize is " + defaultSize);
                         if (defaultSize > 0)
                         {
-                            _internalGLView.GRContext.SetResourceCacheLimit(defaultSize);
+                            grContext.SetResourceCacheLimit(defaultSize);
                         }
-                        Debug.WriteLine("ResourceCacheSize is now " + ResourceCacheLimit);
+                        Debug.WriteLine("ResourceCacheSize is now " + grContext.GetResourceCacheLimit());
                     }
                 }
                 catch (Exception ex)
