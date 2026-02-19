@@ -15296,6 +15296,8 @@ namespace GnollHackX.Pages.Game
 
                                 float diffX = e.Location.X - anchor.X;
                                 float diffY = e.Location.Y - anchor.Y;
+                                if (diffX == float.NaN || diffY == float.NaN)
+                                    break;
                                 float dist = (float)Math.Sqrt((Math.Pow(diffX, 2) + Math.Pow(diffY, 2)));
 
                                 if (TouchDictionary.Count == 1)
@@ -18499,7 +18501,14 @@ namespace GnollHackX.Pages.Game
                 return;
             if (MenuEquipmentSideShown)
             {
-                HandleEquipmentTouch(sender, e);
+                try
+                {
+                    HandleEquipmentTouch(sender, e);
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine(ex.Message);
+                }
                 return;
             }
             //lock (_menuDrawOnlyLock)
@@ -18580,6 +18589,8 @@ namespace GnollHackX.Pages.Game
 
                             float diffX = e.Location.X - anchor.X;
                             float diffY = e.Location.Y - anchor.Y;
+                            if (diffX == float.NaN || diffY == float.NaN)
+                                break;
                             float dist = (float)Math.Sqrt((Math.Pow(diffX, 2) + Math.Pow(diffY, 2)));
 
                             if (MenuTouchDictionary.Count == 1)
@@ -18903,6 +18914,8 @@ namespace GnollHackX.Pages.Game
 
                             float diffX = e.Location.X - anchor.X;
                             float diffY = e.Location.Y - anchor.Y;
+                            if (diffX == float.NaN || diffY == float.NaN)
+                                break;
                             float dist = (float)Math.Sqrt((Math.Pow(diffX, 2) + Math.Pow(diffY, 2)));
 
                             if (MenuTouchDictionary.Count == 1)
@@ -20470,6 +20483,8 @@ namespace GnollHackX.Pages.Game
 
                                 float diffX = e.Location.X - anchor.X;
                                 float diffY = e.Location.Y - anchor.Y;
+                                if (diffX == float.NaN || diffY == float.NaN)
+                                    break;
                                 float dist = (float)Math.Sqrt((Math.Pow(diffX, 2) + Math.Pow(diffY, 2)));
 
                                 if (TextTouchDictionary.Count == 1)
@@ -21164,6 +21179,8 @@ namespace GnollHackX.Pages.Game
 
                                 float diffX = e.Location.X - anchor.X;
                                 float diffY = e.Location.Y - anchor.Y;
+                                if (diffX == float.NaN || diffY == float.NaN)
+                                    break;
                                 //float dist = (float)Math.Sqrt((Math.Pow(diffX, 2) + Math.Pow(diffY, 2)));
                                 float xdist = (float)Math.Abs(diffX);
                                 long elapsedms = (DateTime.Now.Ticks - entry.PressTime.Ticks) / TimeSpan.TicksPerMillisecond;
