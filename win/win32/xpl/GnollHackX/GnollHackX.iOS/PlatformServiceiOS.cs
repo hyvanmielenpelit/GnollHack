@@ -47,27 +47,36 @@ namespace GnollHackX.iOS
         private const int TASK_VM_INFO = 22;
 
         [StructLayout(LayoutKind.Sequential)]
-        struct task_vm_info_data_t
+        private struct task_vm_info_data_t
         {
             public ulong virtual_size;
-            public ulong region_count;
-            public ulong page_size;
+            public int region_count;
+            public int page_size;
+
             public ulong resident_size;
             public ulong resident_size_peak;
+
             public ulong device;
             public ulong device_peak;
+
             public ulong internal_bytes;
             public ulong internal_peak;
+
             public ulong external_bytes;
             public ulong external_peak;
+
             public ulong reusable;
             public ulong reusable_peak;
+
             public ulong purgeable_volatile_pmap;
             public ulong purgeable_volatile_resident;
             public ulong purgeable_volatile_virtual;
+
             public ulong compressed;
             public ulong compressed_peak;
             public ulong compressed_lifetime;
+
+            public ulong phys_footprint;
         }
 
         [DllImport("/usr/lib/libSystem.dylib")]
@@ -83,7 +92,7 @@ namespace GnollHackX.iOS
         public static ulong GetMemory()
         {
             var info = new task_vm_info_data_t();
-            uint count = (uint)(Marshal.SizeOf(info) / sizeof(int));
+            uint count = (uint)(Marshal.SizeOf<task_vm_info_data_t>() / sizeof(int));
 
             int result = task_info(
                 mach_task_self(),
@@ -94,7 +103,7 @@ namespace GnollHackX.iOS
             if (result != 0)
                 return 0;
 
-            return info.resident_size;
+            return info.phys_footprint;
         }
 
         public ulong GetUsedMemoryInBytes()
