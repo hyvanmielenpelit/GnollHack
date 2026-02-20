@@ -308,26 +308,38 @@ namespace GnollHackX
                 case MemoryPressureLevel.Critical:
                     if (!IsAppClosing && Interlocked.Exchange(ref _isCriticalClearCachesAndMemoryOk, 0) == 1)
                     {
+                        ulong TotalMemInBytes = PlatformService?.GetDeviceMemoryInBytes() ?? 0;
+                        ulong TotalMemInMB = TotalMemInBytes / (1024 * 1024);
+                        long UsedMemInBytes = GetUsedMemoryInBytes();
+                        long UsedMemInMB = UsedMemInBytes == -1 ? -1 : UsedMemInBytes / (1024 * 1024);
                         CurrentGamePage?.RequestClearCaches((int)level);
-                        AddSentryBreadcrumb("MemoryWarning at " + level.ToString(), GHConstants.SentryGnollHackGeneralCategoryName);
+                        AddSentryBreadcrumb("MemoryWarning at " + level.ToString() + " (" + UsedMemInMB + " / " + TotalMemInMB + " MB)", GHConstants.SentryGnollHackGeneralCategoryName);
                     }
                     break;
                 case MemoryPressureLevel.Background:
                     if (!IsAppClosing && Interlocked.Exchange(ref _isCompleteClearCachesAndMemoryOk, 0) == 1)
                     {
+                        ulong TotalMemInBytes = PlatformService?.GetDeviceMemoryInBytes() ?? 0;
+                        ulong TotalMemInMB = TotalMemInBytes / (1024 * 1024);
+                        long UsedMemInBytes = GetUsedMemoryInBytes();
+                        long UsedMemInMB = UsedMemInBytes == -1 ? -1 : UsedMemInBytes / (1024 * 1024);
                         if (!SavingGame) /* Due to backgrounding must be done first */
                             CollectGarbage();
                         CurrentGamePage?.RequestClearCaches((int)level);
-                        AddSentryBreadcrumb("MemoryWarning at " + level.ToString(), GHConstants.SentryGnollHackGeneralCategoryName);
+                        AddSentryBreadcrumb("MemoryWarning at " + level.ToString() + " (" + UsedMemInMB + " / " + TotalMemInMB + " MB)", GHConstants.SentryGnollHackGeneralCategoryName);
                     }
                     break;
                 case MemoryPressureLevel.Complete:
                     if (!IsAppClosing && Interlocked.Exchange(ref _isCompleteClearCachesAndMemoryOk, 0) == 1)
                     {
+                        ulong TotalMemInBytes = PlatformService?.GetDeviceMemoryInBytes() ?? 0;
+                        ulong TotalMemInMB = TotalMemInBytes / (1024 * 1024);
+                        long UsedMemInBytes = GetUsedMemoryInBytes();
+                        long UsedMemInMB = UsedMemInBytes == -1 ? -1 : UsedMemInBytes / (1024 * 1024);
                         if (!SavingGame)
                             CollectGarbage(); /* Do this already here too, as we may not be able to wait until after clearing caches */
                         CurrentGamePage?.RequestClearCaches((int)level);
-                        AddSentryBreadcrumb("MemoryWarning at " + level.ToString(), GHConstants.SentryGnollHackGeneralCategoryName);
+                        AddSentryBreadcrumb("MemoryWarning at " + level.ToString() + " (" + UsedMemInMB + " / " + TotalMemInMB + " MB)", GHConstants.SentryGnollHackGeneralCategoryName);
                     }
                     break;
             }
