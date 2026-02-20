@@ -1968,6 +1968,8 @@ namespace GnollHackX.Pages.MainScreen
             await SetSettingValues();
             GHApp.CurrentMainPage?.InvalidateCarousel();
             await GHApp.PopModalPageAsync();
+            GHApp.UpdateFreeDiskSpace();
+            GHApp.UpdateUsedMemory();
         }
 
         public bool HandleSpecialKeyPress(GHSpecialKey key, bool isCtrl, bool isMeta, bool isShift)

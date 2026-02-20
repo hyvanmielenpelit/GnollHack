@@ -247,6 +247,31 @@ namespace GnollHackX
             }
         }
 
+        private static long _memUsage = 0;
+        public static long MemoryUsageInBytes { get { return Interlocked.CompareExchange(ref _memUsage, 0L, 0L); } set { Interlocked.Exchange(ref _memUsage, value); } }
+
+        public static void UpdateUsedMemory()
+        {
+            try
+            {
+                MainThread.BeginInvokeOnMainThread(() =>
+                {
+                    try
+                    {
+                        MemoryUsageInBytes = GetUsedMemoryInBytes();
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.WriteLine(ex.Message);
+                    }
+                });
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+            }
+        }
+
         private static KeyMap[] _tempKeyMapArray = new KeyMap[256];
         private static KeyMap[] _keyMapArray = new KeyMap[256];
         private static KeyMap[] KeyMapArray { get { return Interlocked.CompareExchange(ref _keyMapArray, null, null); } set { Interlocked.Exchange(ref _keyMapArray, value); } }

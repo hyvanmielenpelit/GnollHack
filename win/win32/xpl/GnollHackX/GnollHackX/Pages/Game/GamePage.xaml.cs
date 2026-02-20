@@ -672,7 +672,6 @@ namespace GnollHackX.Pages.Game
         public bool ShowFPS { get { return Interlocked.CompareExchange(ref _showFPS, 0, 0) != 0; } set { Interlocked.Exchange(ref _showFPS, value ? 1 : 0); } }
 
         private int _showMemory;
-        private long _memUsage = 0;
         public bool ShowMemory { get { return Interlocked.CompareExchange(ref _showMemory, 0, 0) != 0; } set { Interlocked.Exchange(ref _showMemory, value ? 1 : 0); } }
 
         private int _showZoom;
@@ -1562,7 +1561,8 @@ namespace GnollHackX.Pages.Game
                 return IsGameOn;
             });
 #endif
-
+            GHApp.UpdateFreeDiskSpace();
+            GHApp.UpdateUsedMemory();
         }
 
         public void StopTimers()
@@ -1650,26 +1650,11 @@ namespace GnollHackX.Pages.Game
                     GHApp.LogMemory();
                     if (WarnLowDiskSpace)
                         GHApp.UpdateFreeDiskSpace();
-                }
-
-                //lock (_updateTimerTickCountLock)
-                //{
-                //    _updateTimerTickCount++;
-                //    if (_updateTimerTickCount == long.MaxValue)
-                //        _updateTimerTickCount = 0L;
-                //}
-                //lock (_cursorIsOnLock)
-                //{
-                //    _cursorIsOn = !_cursorIsOn;
-                //}
-                CursorIsOn = !CursorIsOn;
-                //lock (_showMemoryLock)
-                {
                     if (ShowMemory)
-                        Interlocked.Exchange(ref _memUsage, GC.GetTotalMemory(false));
-
-                    //_memUsage = GC.GetTotalMemory(false);
+                        GHApp.UpdateUsedMemory();
                 }
+
+                CursorIsOn = !CursorIsOn;
 
                 if (ShowFPS)
                 {
@@ -11068,25 +11053,8 @@ namespace GnollHackX.Pages.Game
                                     desktopleft = curx;
 
                                     string drawtext;
-                                    _localMemUsage = Interlocked.CompareExchange(ref _memUsage, 0, 0);
-                                    //lockTaken = false;
-                                    ////lock (_showMemoryLock)
-                                    //try
-                                    //{
-                                    //    Monitor.TryEnter(_showMemoryLock, ref lockTaken);
-                                    //    if (lockTaken)
-                                    //    {
-                                    //        _localMemUsage = _memUsage;
-                                    //    }
-                                    //}
-                                    //finally
-                                    //{
-                                    //    if (lockTaken)
-                                    //        Monitor.Exit(_showMemoryLock);
-                                    //}
-                                    //lockTaken = false;
-
-                                    drawtext = (_localMemUsage / 1024).ToString();
+                                    _localMemUsage = GHApp.MemoryUsageInBytes;
+                                    drawtext = (_localMemUsage / (1024 * 1024)).ToString();
 
                                     const int topMargin = 7, bottomMargin = 20;
                                     textPaint.Color = SKColors.White;
