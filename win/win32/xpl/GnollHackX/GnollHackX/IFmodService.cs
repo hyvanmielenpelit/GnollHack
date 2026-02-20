@@ -44,5 +44,6 @@ namespace GnollHackX
         void PollTasks();
         uint GetVersionCode();
         string GetVersionString();
+        void GetStats(out int current, out int max);
     }
 }

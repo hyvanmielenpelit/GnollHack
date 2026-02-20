@@ -6712,7 +6712,6 @@ commands_init(VOID_ARGS)
     (void) bind_key('k',    "kick"); /* if number_pad is on */
     (void) bind_key('l',    "loot"); /* if number_pad is on */
     (void) bind_key(C('n'), "annotate"); /* if number_pad is on */
-    (void) bind_key(M('n'), "name");
     (void) bind_key(M('N'), "name");
     (void) bind_key('u',    "untrap"); /* if number_pad is on */
     (void) bind_key(M('y'), "yell"); /* if number_pad is on */
@@ -7464,6 +7463,7 @@ struct {
     { NHKF_GETDIR_SELF2,     's', "getdir.self2" },
     { NHKF_GETDIR_HELP,      '?', "getdir.help" },
     { NHKF_COUNT,            'n', "count" },
+    { NHKF_COUNT2,           M('n'), "count2" },
     { NHKF_GETPOS_SELF,      '@', "getpos.self" },
     { NHKF_GETPOS_PICK,      '.', "getpos.pick" },
     { NHKF_GETPOS_PICK_Q,    ',', "getpos.pick.quick" },
@@ -9698,9 +9698,9 @@ parse(VOID_ARGS)
 #endif
     escape_sequence_key_start_allowed = 1;
 
-    if ((!Cmd.num_pad && !Cmd.gnh_layout) || ((foo = readchar()) == Cmd.spkeys[NHKF_COUNT])) {
+    if ((!Cmd.num_pad && !Cmd.gnh_layout) || ((foo = readchar()) != 0 && (foo == Cmd.spkeys[NHKF_COUNT] || foo == Cmd.spkeys[NHKF_COUNT2]))) 
+    {
         int64_t tmpmulti = (int64_t)multi;
-
         foo = get_count((char *) 0, '\0', LARGEST_INT, &tmpmulti, FALSE);
         last_multi = multi = (int)tmpmulti;
     }

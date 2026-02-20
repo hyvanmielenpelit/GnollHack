@@ -1777,6 +1777,7 @@ namespace GnollHackX
         NHKF_GETDIR_SELF2,
         NHKF_GETDIR_HELP,
         NHKF_COUNT,
+        NHKF_COUNT2,
         NHKF_GETPOS_SELF,
         NHKF_GETPOS_PICK,
         NHKF_GETPOS_PICK_Q,  /* quick */

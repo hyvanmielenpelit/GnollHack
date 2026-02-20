@@ -22,6 +22,7 @@ using GnollHackX;
 #if __IOS__
 using Foundation;
 using AVFoundation;
+using Microsoft.Maui.ApplicationModel;
 
 #if GNH_MAUI
 namespace GnollHackM
@@ -1875,6 +1876,18 @@ namespace GnollHackX.Unknown
 
             string str = majorversion.ToString("X") + "." + minorversion.ToString("X") + "." + patchversion.ToString("X");
             return str;
+        }
+
+        public void GetStats(out int current, out int max)
+        {
+            try
+            {
+                Memory.GetStats(out current, out max, false);
+            }
+            catch
+            {
+                current = max = -1;
+            }
         }
     }
 }

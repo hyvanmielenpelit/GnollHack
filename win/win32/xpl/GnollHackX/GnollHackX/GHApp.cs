@@ -352,6 +352,19 @@ namespace GnollHackX
 #endif
         }
 
+        public static long GetUsedManagedMemoryInBytes()
+        {
+            try
+            {
+                return GC.GetTotalMemory(false);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                return -1;
+            }
+        }
+
         public static long GetUsedMemoryInBytes()
         {
             try
