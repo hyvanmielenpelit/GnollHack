@@ -62,6 +62,11 @@ namespace GnollHackM
             throw new NotImplementedException();
         }
 
+        public ulong GetUsedMemoryInBytes()
+        {
+            throw new NotImplementedException();
+        }
+
         public ulong GetDeviceMemoryInBytes()
         {
             throw new NotImplementedException();

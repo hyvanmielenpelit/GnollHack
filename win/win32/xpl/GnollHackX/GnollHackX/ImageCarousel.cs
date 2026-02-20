@@ -67,6 +67,8 @@ namespace GnollHackX
                         SKBitmap res = SKBitmap.Decode(stream);
                         res.SetImmutable();
                         _caruselBitmaps[i].Bitmap = SKImage.FromBitmap(res);
+                        if (_caruselBitmaps[i].Bitmap != null)
+                            GHApp.AddUsedBitmapBytes(_caruselBitmaps[i].Bitmap.Info.BytesSize64);
                     }
                 }
             }
@@ -83,6 +85,7 @@ namespace GnollHackX
                 {
                     if (_caruselBitmaps[i].Bitmap != null)
                     {
+                        GHApp.AddUsedBitmapBytes(-1L * _caruselBitmaps[i].Bitmap.Info.BytesSize64);
                         _caruselBitmaps[i].Bitmap.Dispose();
                         _caruselBitmaps[i].Bitmap = null;
                     }

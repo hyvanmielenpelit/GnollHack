@@ -216,6 +216,13 @@ namespace GnollHackX
             InitializeMemoryWarnings();
         }
 
+        private static long _usedBitmapBytes = 0L;
+        public static ulong UsedBitmapBytes { get { return (ulong)Interlocked.CompareExchange(ref _usedBitmapBytes, 0L, 0L); } set { Interlocked.Exchange(ref _usedBitmapBytes, (long)value); } }
+        public static void AddUsedBitmapBytes(long amount)
+        {
+            Interlocked.Add(ref _usedBitmapBytes, amount);
+        }
+
         private static long _freeDiskSpaceInBytes = 0L;
         public static ulong FreeDiskSpaceInBytes { get { return (ulong)Interlocked.CompareExchange(ref _freeDiskSpaceInBytes, 0L, 0L); } set { Interlocked.Exchange(ref _freeDiskSpaceInBytes, (long)value); } }
         public static void UpdateFreeDiskSpace()
@@ -370,6 +377,9 @@ namespace GnollHackX
             try
             {
 #if IOS
+                ulong mem = _platformService?.GetUsedMemoryInBytes() ?? 0;
+                if (mem > 0)
+                    return (long)mem;
                 return -1;
 #else
                 var process = Process.GetCurrentProcess();
@@ -3018,6 +3028,8 @@ namespace GnollHackX
                     SKBitmap bmp = SKBitmap.Decode(stream);
                     bmp.SetImmutable();
                     res = SKImage.FromBitmap(bmp);
+                    if (res != null)
+                        AddUsedBitmapBytes(res.Info.BytesSize64);
                 }
             }
             catch (Exception ex)
@@ -3037,6 +3049,8 @@ namespace GnollHackX
                     SKBitmap bmp = SKBitmap.Decode(stream);
                     bmp.SetImmutable();
                     res = SKImage.FromBitmap(bmp);
+                    if (res != null)
+                        AddUsedBitmapBytes(res.Info.BytesSize64);
                 }
             }
             catch (Exception ex)
@@ -4834,7 +4848,10 @@ namespace GnollHackX
                             if (newBitmap != null)
                             {
                                 newBitmap.SetImmutable();
-                                _cachedBitmaps.TryAdd("resource://" + imagePath, SKImage.FromBitmap(newBitmap));
+                                SKImage res = SKImage.FromBitmap(newBitmap);
+                                _cachedBitmaps.TryAdd("resource://" + imagePath, res);
+                                if (res != null)
+                                    AddUsedBitmapBytes(res.Info.BytesSize64);
                             }
                         }
                     }
@@ -4902,7 +4919,10 @@ namespace GnollHackX
                             if (newBitmap != null)
                             {
                                 newBitmap.SetImmutable();
-                                _cachedBitmaps.TryAdd("resource://" + imagePath, SKImage.FromBitmap(newBitmap));
+                                SKImage res = SKImage.FromBitmap(newBitmap);
+                                _cachedBitmaps.TryAdd("resource://" + imagePath, res);
+                                if (res != null)
+                                    AddUsedBitmapBytes(res.Info.BytesSize64);
                             }
                         }
                     }
@@ -4936,6 +4956,8 @@ namespace GnollHackX
                                 SKImage newImage = SKImage.FromBitmap(newBitmap);
                                 if (addToCache)
                                     _cachedBitmaps.TryAdd(sourcePath, newImage);
+                                if (newImage != null)
+                                    AddUsedBitmapBytes(newImage.Info.BytesSize64);
 
                                 return newImage;
                             }

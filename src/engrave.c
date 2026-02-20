@@ -1428,7 +1428,7 @@ int fd;
 {
     struct engr *ep;
     size_t lth;
-    debugprint("rest_engravings");
+    //debugprint("rest_engravings");
 
     head_engr = 0;
     while (1) {

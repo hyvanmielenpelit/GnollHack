@@ -1366,7 +1366,7 @@ boolean ghostly;
 #ifdef TOS
     short tlev;
 #endif
-    debugprint("getlev1: %d", lev);
+    //debugprint("getlev1: %d", lev);
 
     if (ghostly)
         clear_id_mapping();
@@ -1454,7 +1454,7 @@ boolean ghostly;
     //debugprint("getlev7: %d", lev);
     find_memory_obj();
     rest_engravings(fd);
-    debugprint_pos();
+    //debugprint_pos();
 
     /* reset level.monsters for new level */
     for (x = 0; x < COLNO; x++)

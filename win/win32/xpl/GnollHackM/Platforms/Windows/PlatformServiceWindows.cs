@@ -10,6 +10,7 @@ using System.Runtime.Intrinsics.Arm;
 using Windows.Services.Store;
 using Windows.System;
 using System.IO;
+using System.Diagnostics;
 
 namespace GnollHackM
 {
@@ -68,12 +69,28 @@ namespace GnollHackM
             return true;
         }
 
+        public ulong GetUsedMemoryInBytes()
+        {
+            try
+            {
+                var process = Process.GetCurrentProcess();
+                return (ulong)(process?.PrivateMemorySize64 ?? 0);
+                //MemoryStatus memoryStatus = GetMemoryStatus();
+                //if (memoryStatus.TotalPhysical >= memoryStatus.AvailablePhysical)
+                //    return memoryStatus.TotalPhysical - memoryStatus.AvailablePhysical;
+                //else
+                //    return 0;
+            }
+            catch
+            {
+                return 0;
+            }
+        }
+
         public ulong GetDeviceMemoryInBytes()
         {
             try
             {
-                //var ci = new Microsoft.VisualBasic.Devices.ComputerInfo();
-                //return ci.TotalPhysicalMemory;
                 MemoryStatus memoryStatus = GetMemoryStatus();
                 return memoryStatus.TotalPhysical;
             }

@@ -21,6 +21,7 @@ namespace GnollHackX
         bool IsRunningOnDesktop();
 
         string GetVersionString();
+        ulong GetUsedMemoryInBytes();
         ulong GetDeviceMemoryInBytes();
         ulong GetDeviceFreeDiskSpaceInBytes();
         ulong GetDeviceTotalDiskSpaceInBytes();

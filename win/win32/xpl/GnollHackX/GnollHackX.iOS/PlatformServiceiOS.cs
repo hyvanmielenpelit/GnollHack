@@ -44,6 +44,71 @@ namespace GnollHackX.iOS
             }
         }
 
+        private const int TASK_VM_INFO = 22;
+
+        [StructLayout(LayoutKind.Sequential)]
+        struct task_vm_info_data_t
+        {
+            public ulong virtual_size;
+            public ulong region_count;
+            public ulong page_size;
+            public ulong resident_size;
+            public ulong resident_size_peak;
+            public ulong device;
+            public ulong device_peak;
+            public ulong internal_bytes;
+            public ulong internal_peak;
+            public ulong external_bytes;
+            public ulong external_peak;
+            public ulong reusable;
+            public ulong reusable_peak;
+            public ulong purgeable_volatile_pmap;
+            public ulong purgeable_volatile_resident;
+            public ulong purgeable_volatile_virtual;
+            public ulong compressed;
+            public ulong compressed_peak;
+            public ulong compressed_lifetime;
+        }
+
+        [DllImport("/usr/lib/libSystem.dylib")]
+        private static extern int mach_task_self();
+
+        [DllImport("/usr/lib/libSystem.dylib")]
+        private static extern int task_info(
+            int task,
+            int flavor,
+            ref task_vm_info_data_t info,
+            ref uint count);
+
+        public static ulong GetMemory()
+        {
+            var info = new task_vm_info_data_t();
+            uint count = (uint)(Marshal.SizeOf(info) / sizeof(int));
+
+            int result = task_info(
+                mach_task_self(),
+                TASK_VM_INFO,
+                ref info,
+                ref count);
+
+            if (result != 0)
+                return 0; // (0, 0);
+
+            return info.resident_size; // (info.resident_size, info.virtual_size);
+        }
+
+        public ulong GetUsedMemoryInBytes()
+        {
+            try
+            {
+                return GetMemory();
+            }
+            catch
+            { 
+                return 0; 
+            }
+        }
+
         public ulong GetDeviceMemoryInBytes()
         {
             try

@@ -59,6 +59,23 @@ namespace GnollHackX.Droid
 #pragma warning restore CS0618 // Type or member is obsolete            }
             }
         }
+        public ulong GetUsedMemoryInBytes()
+        {
+            try
+            {
+                //var activityManager = (ActivityManager)Platform.CurrentActivity.GetSystemService(Context.ActivityService);
+                //var pid = Android.OS.Process.MyPid();
+                //var memoryInfo = activityManager.GetProcessMemoryInfo(new int[] { pid })[0];
+                //int totalPss = memoryInfo.TotalPss; // in KB
+                //return (ulong)totalPss * 1024UL;
+                var process = System.Diagnostics.Process.GetCurrentProcess();
+                return (ulong)(process?.PrivateMemorySize64 ?? 0);
+            }
+            catch
+            {
+                return 0;
+            }
+        }
 
         public ulong GetDeviceMemoryInBytes()
         {
