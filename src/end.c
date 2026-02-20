@@ -740,7 +740,8 @@ VA_DECL(const char *, str)
         NH_abort(); /* avoid loops - this should never happen*/
     }
 
-    if (iflags.window_inited) {
+    if (iflags.window_inited) 
+    {
         raw_print("\r\nOops...");
         wait_synch(); /* make sure all pending output gets flushed */
         exit_nhwindows((char *) 0);
@@ -760,7 +761,8 @@ VA_DECL(const char *, str)
     else if (program_state.something_worth_saving)
         raw_print("\nError save file being written.\n");
 #else /* !NOTIFY_GNOLLHACK_BUGS */
-    if (!wizard) {
+    if (!wizard) 
+    {
         const char *maybe_rebuild = !program_state.something_worth_saving
                                      ? "."
                                      : ", and it may be possible to rebuild.";
@@ -776,10 +778,24 @@ VA_DECL(const char *, str)
                        maybe_rebuild);
     }
 #endif /* ?NOTIFY_GNOLLHACK_BUGS */
+
+    char buf[BUFSZ];
+    Vsprintf(buf, str, VA_ARGS);
+
+#ifdef GNOLLHACK_MAIN_PROGRAM
+    char* dbufs = 0;
+    if (issue_gui_command)
+    {
+        /* allocate before error save file, which has more debugprints */
+        dbufs = allocate_buffer_with_debug_buffers(buf);
+        /* free below after saving error save file */
+    }
+#endif
     /* XXX can we move this above the prints?  Then we'd be able to
      * suppress "it may be possible to rebuild" based on dosave0()
      * or say it's NOT possible to rebuild. */
-    if (program_state.something_worth_saving && !iflags.debug_fuzzer) {
+    if (program_state.something_worth_saving && !iflags.debug_fuzzer) 
+    {
         set_error_savefile();
         issue_breadcrumb("Panic: Saving Error savefile");
         int saveres = dosave0(TRUE);
@@ -791,41 +807,35 @@ VA_DECL(const char *, str)
         }
     }
 #endif /* !MICRO */
-    {
-        char buf[BUFSZ];
 
-        Vsprintf(buf, str, VA_ARGS);
-        raw_print(buf);
-        paniclog("panic", buf);
+    raw_print(buf);
+    paniclog("panic", buf);
 
 #ifdef GNOLLHACK_MAIN_PROGRAM
+    if (dbufs)
+    {
         if (issue_gui_command)
-        {
-            char* dbufs = allocate_buffer_with_debug_buffers(buf);
-            if (dbufs)
-            {
-                issue_debuglog_panic(0, dbufs);
-                free(dbufs);
-            }
-        }
-
-        if (open_special_view)
-        {
-            /* Add mode to posted panic */
-            char mbuf[BUFSZ] = "";
-            (void)describe_mode(mbuf);
-            Sprintf(eos(buf), " [%s]", mbuf);
-
-            struct special_view_info info = { 0 };
-            info.viewtype = SPECIAL_VIEW_PANIC;
-            info.text = buf;
-            (void)open_special_view(info);
-        }
-        /* Special view now handles both sending the crash report and forum posting */
-        //if (issue_gui_command)
-        //    issue_gui_command(GUI_CMD_POST_DIAGNOSTIC_DATA, DIAGNOSTIC_DATA_PANIC, 0, buf);
-#endif
+            issue_debuglog_panic(0, dbufs);
+        free(dbufs);
     }
+
+    if (open_special_view)
+    {
+        /* Add mode to posted panic */
+        char mbuf[BUFSZ] = "";
+        (void)describe_mode(mbuf);
+        Sprintf(eos(buf), " [%s]", mbuf);
+
+        struct special_view_info info = { 0 };
+        info.viewtype = SPECIAL_VIEW_PANIC;
+        info.text = buf;
+        (void)open_special_view(info);
+    }
+    /* Special view now handles both sending the crash report and forum posting */
+    //if (issue_gui_command)
+    //    issue_gui_command(GUI_CMD_POST_DIAGNOSTIC_DATA, DIAGNOSTIC_DATA_PANIC, 0, buf);
+#endif
+
 #if defined(WIN32) && !defined(GNH_MOBILE)
     interject(INTERJECT_PANIC);
 #endif
