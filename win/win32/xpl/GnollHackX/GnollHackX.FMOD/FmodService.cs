@@ -22,7 +22,6 @@ using GnollHackX;
 #if __IOS__
 using Foundation;
 using AVFoundation;
-using Microsoft.Maui.ApplicationModel;
 
 #if GNH_MAUI
 namespace GnollHackM
