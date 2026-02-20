@@ -92,9 +92,9 @@ namespace GnollHackX.iOS
                 ref count);
 
             if (result != 0)
-                return 0; // (0, 0);
+                return 0;
 
-            return info.resident_size; // (info.resident_size, info.virtual_size);
+            return info.resident_size;
         }
 
         public ulong GetUsedMemoryInBytes()

@@ -308,8 +308,7 @@ namespace GnollHackX
                 case MemoryPressureLevel.Critical:
                     if (!IsAppClosing && Interlocked.Exchange(ref _isCriticalClearCachesAndMemoryOk, 0) == 1)
                     {
-                        ulong TotalMemInBytes = PlatformService?.GetDeviceMemoryInBytes() ?? 0;
-                        ulong TotalMemInMB = TotalMemInBytes / (1024 * 1024);
+                        ulong TotalMemInMB = TotalMemory / (1024 * 1024);
                         long UsedMemInBytes = GetUsedMemoryInBytes();
                         long UsedMemInMB = UsedMemInBytes == -1 ? -1 : UsedMemInBytes / (1024 * 1024);
                         CurrentGamePage?.RequestClearCaches((int)level);
@@ -319,8 +318,7 @@ namespace GnollHackX
                 case MemoryPressureLevel.Background:
                     if (!IsAppClosing && Interlocked.Exchange(ref _isCompleteClearCachesAndMemoryOk, 0) == 1)
                     {
-                        ulong TotalMemInBytes = PlatformService?.GetDeviceMemoryInBytes() ?? 0;
-                        ulong TotalMemInMB = TotalMemInBytes / (1024 * 1024);
+                        ulong TotalMemInMB = TotalMemory / (1024 * 1024);
                         long UsedMemInBytes = GetUsedMemoryInBytes();
                         long UsedMemInMB = UsedMemInBytes == -1 ? -1 : UsedMemInBytes / (1024 * 1024);
                         if (!SavingGame) /* Due to backgrounding must be done first */
@@ -332,8 +330,7 @@ namespace GnollHackX
                 case MemoryPressureLevel.Complete:
                     if (!IsAppClosing && Interlocked.Exchange(ref _isCompleteClearCachesAndMemoryOk, 0) == 1)
                     {
-                        ulong TotalMemInBytes = PlatformService?.GetDeviceMemoryInBytes() ?? 0;
-                        ulong TotalMemInMB = TotalMemInBytes / (1024 * 1024);
+                        ulong TotalMemInMB = TotalMemory / (1024 * 1024);
                         long UsedMemInBytes = GetUsedMemoryInBytes();
                         long UsedMemInMB = UsedMemInBytes == -1 ? -1 : UsedMemInBytes / (1024 * 1024);
                         if (!SavingGame)
