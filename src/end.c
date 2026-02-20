@@ -748,6 +748,19 @@ VA_DECL(const char *, str)
         iflags.window_inited = 0; /* they're gone; force raw_print()ing */
     }
 
+    char buf[BUFSZ];
+    Vsprintf(buf, str, VA_ARGS);
+
+#ifdef GNOLLHACK_MAIN_PROGRAM
+    char* dbufs = 0;
+    if (issue_gui_command)
+    {
+        /* allocate before error save file, which has more debugprints */
+        dbufs = allocate_buffer_with_debug_buffers(buf);
+        /* free below after saving error save file */
+    }
+#endif
+
     raw_print(program_state.gameover
                   ? "Postgame wrapup disrupted."
                   : !program_state.something_worth_saving
@@ -779,18 +792,6 @@ VA_DECL(const char *, str)
     }
 #endif /* ?NOTIFY_GNOLLHACK_BUGS */
 
-    char buf[BUFSZ];
-    Vsprintf(buf, str, VA_ARGS);
-
-#ifdef GNOLLHACK_MAIN_PROGRAM
-    char* dbufs = 0;
-    if (issue_gui_command)
-    {
-        /* allocate before error save file, which has more debugprints */
-        dbufs = allocate_buffer_with_debug_buffers(buf);
-        /* free below after saving error save file */
-    }
-#endif
     /* XXX can we move this above the prints?  Then we'd be able to
      * suppress "it may be possible to rebuild" based on dosave0()
      * or say it's NOT possible to rebuild. */
