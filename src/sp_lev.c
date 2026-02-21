@@ -1500,7 +1500,7 @@ struct mkroom *broom;
             y = broom->ly - 1;
             x = broom->lx
                 + ((dpos == -1) ? rn2(1 + (broom->hx - broom->lx)) : dpos);
-            if (IS_ROCK(levl[x][y - 1].typ))
+            if (!isok(x, y - 1) || IS_ROCK(levl[x][y - 1].typ))
                 goto redoloop;
             goto outdirloop;
         case 1:
@@ -1509,7 +1509,7 @@ struct mkroom *broom;
             y = broom->hy + 1;
             x = broom->lx
                 + ((dpos == -1) ? rn2(1 + (broom->hx - broom->lx)) : dpos);
-            if (IS_ROCK(levl[x][y + 1].typ))
+            if (!isok(x, y + 1) || IS_ROCK(levl[x][y + 1].typ))
                 goto redoloop;
             goto outdirloop;
         case 2:
@@ -1518,7 +1518,7 @@ struct mkroom *broom;
             x = broom->lx - 1;
             y = broom->ly
                 + ((dpos == -1) ? rn2(1 + (broom->hy - broom->ly)) : dpos);
-            if (IS_ROCK(levl[x - 1][y].typ))
+            if (!isok(x - 1, y) || IS_ROCK(levl[x - 1][y].typ))
                 goto redoloop;
             goto outdirloop;
         case 3:
@@ -1527,7 +1527,7 @@ struct mkroom *broom;
             x = broom->hx + 1;
             y = broom->ly
                 + ((dpos == -1) ? rn2(1 + (broom->hy - broom->ly)) : dpos);
-            if (IS_ROCK(levl[x + 1][y].typ))
+            if (!isok(x + 1, y) || IS_ROCK(levl[x + 1][y].typ))
                 goto redoloop;
             goto outdirloop;
         default:
@@ -7441,7 +7441,7 @@ struct sp_coder *coder;
         impossible("spo_mazewalk: Bad MAZEWALK direction");
     }
 
-    if (!IS_DOOR(levl[x][y].typ)) 
+    if (isok(x, y) && !IS_DOOR(levl[x][y].typ)) 
     {
         set_initial_location_type_at(x, y, (int)OV_i(ftyp));
     }
@@ -7468,9 +7468,12 @@ struct sp_coder *coder;
             y--;
     }
 
-    walkfrom(x, y, (schar)OV_i(ftyp));
-    if (OV_i(fstocked))
-        fill_empty_maze();
+    if (isok(x, y))
+    {
+        walkfrom(x, y, (schar)OV_i(ftyp));
+        if (OV_i(fstocked))
+            fill_empty_maze();
+    }
 
     opvar_free(mcoord);
     opvar_free(fdir);

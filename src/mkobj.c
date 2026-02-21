@@ -4522,7 +4522,7 @@ boolean tipping; /* caller emptying entire contents; affects shop handling */
             /* assumes this is taking place at hero's location */
             if (!can_reach_floor(TRUE))
             {
-                hitfloor(obj, TRUE); /* does altar check, message, drop */
+                (void)hitfloor(obj, TRUE); /* does altar check, message, drop */
             }
             else 
             {
@@ -4531,7 +4531,7 @@ boolean tipping; /* caller emptying entire contents; affects shop handling */
                 else
                     pline("%s %s to the %s.", Doname2(obj),
                           otense(obj, "drop"), surface(u.ux, u.uy));
-                dropyf(obj);
+                (void) dropyf(obj);
             }
         }
         iflags.suppress_price--;

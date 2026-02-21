@@ -460,7 +460,8 @@ struct obj *obj;
                     struct obj *saved_ublindf = ublindf;
                     You("push your %s off.", what);
                     Blindf_off(ublindf);
-                    dropxf(saved_ublindf);
+                    (void)dropxf(saved_ublindf);
+                    return 1;
                 }
             }
             if (is_wet_towel(obj))
@@ -2114,7 +2115,7 @@ struct obj **optr;
             {
                 pline("Oops! %s from your %s.", Tobjnam(lightedcandle, "slip"), body_part(HAND));
                 sellobj_state(SELL_DONTSELL);
-                dropyf(lightedcandle);
+                (void)dropyf(lightedcandle);
                 sellobj_state(SELL_NORMAL);
             }
             else
@@ -2362,7 +2363,7 @@ struct obj** optr;
         {
             pline("Oops! %s from your %s.", Tobjnam(lightedcandle, "slip"), body_part(HAND));
             sellobj_state(SELL_DONTSELL);
-            dropyf(lightedcandle);
+            (void)dropyf(lightedcandle);
             sellobj_state(SELL_NORMAL);
         }
         else
@@ -3825,7 +3826,7 @@ struct obj *obj;
     if (Glib) {
         pline("%s from your %s.", Tobjnam(obj, "slip"),
               makeplural(body_part(FINGER)));
-        dropxf(obj);
+        (void)dropxf(obj);
         return;
     }
 
@@ -3837,7 +3838,7 @@ struct obj *obj;
 
             pline("%s from your %s.", Tobjnam(obj, "slip"),
                   makeplural(body_part(FINGER)));
-            dropxf(obj);
+            (void)dropxf(obj);
             return;
         }
 
@@ -3905,7 +3906,7 @@ struct obj* obj;
     {
         pline("%s from your %s.", Tobjnam(obj, "slip"),
             makeplural(body_part(FINGER)));
-        dropxf(obj);
+        (void)dropxf(obj);
         return 0;
     }
 
@@ -4308,7 +4309,7 @@ uchar enchantmenttype;
         freeinv(otmp);
         if (inv_cnt(FALSE) >= 52) {
             sellobj_state(SELL_DONTSELL);
-            dropyf(otmp);
+            (void)dropyf(otmp);
             sellobj_state(SELL_NORMAL);
         }
         else {
@@ -4566,7 +4567,7 @@ struct obj *otmp;
                     You("drop %s!",
                         the(defsyms[trap_to_defsym(what_trap(ttyp, rn2))]
                                 .explanation));
-                    dropxf(otmp);
+                    (void)dropxf(otmp);
                     return;
                 }
             }
@@ -4731,7 +4732,7 @@ struct obj *obj;
 
     } else if ((Fumbling || Glib) && !rn2(5)) {
         pline_The("bullwhip slips out of your %s.", body_part(HAND));
-        dropxf(obj);
+        (void)dropxf(obj);
 
     } else if (u.utrap && u.utraptype == TT_PIT) {
         /*

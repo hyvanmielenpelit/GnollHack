@@ -138,7 +138,7 @@ register struct obj *pen;
     {
         pline("%s from your %s.", Tobjnam(pen, "slip"),
               makeplural(body_part(FINGER)));
-        dropxf(pen);
+        (void)dropxf(pen);
         return 1;
     }
 

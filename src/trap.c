@@ -3480,6 +3480,7 @@ register struct monst *mtmp;
             if ((!in_sight || !can_see_trap) && !Deaf)
                 pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "Kaablamm!  You hear an explosion in the distance!");
 
+            xchar tx = trap->tx, ty = trap->ty;
             blow_up_landmine(trap);
             /* explosion might have destroyed a drawbridge; don't
                dish out more damage if monster is already dead */
@@ -3495,7 +3496,7 @@ register struct monst *mtmp;
                     trapkilled = TRUE;
             }
             /* a boulder may fill the new pit, crushing monster */
-            fill_pit(trap->tx, trap->ty);
+            fill_pit(tx, ty);
             if (DEADMONSTER(mtmp))
                 trapkilled = TRUE;
             if (unconscious())
@@ -4884,7 +4885,7 @@ boolean *lostsome;
         if (otmp->owornmask)
             remove_worn_item(otmp, FALSE);
         *lostsome = TRUE;
-        dropx(otmp);
+        (void)dropx(otmp);
         invc--;
     }
     return TRUE;
@@ -6939,8 +6940,8 @@ boolean disarm;
             struct obj* curr;
             while ((curr = obj->cobj) != 0) {
                 obj_extract_self(curr);
-                dropy(curr);
-                (void)scatter(curr->ox, curr->oy, 3, VIS_EFFECTS | MAY_HIT | MAY_DESTROY | MAY_FRACTURE, curr);
+                if (!dropy(curr))
+                    (void)scatter(curr->ox, curr->oy, 3, VIS_EFFECTS | MAY_HIT | MAY_DESTROY | MAY_FRACTURE, curr);
             }
             delete_contents(obj);
             /* unpunish() in advance if either ball or chain (or both)

@@ -340,7 +340,7 @@ dig(VOID_ARGS)
         case 0:
             if (!welded(wep, &youmonst)) {
                 You_ex(ATR_NONE, CLR_MSG_WARNING, "fumble and drop %s.", yname(wep));
-                dropx(wep);
+                (void)dropx(wep);
             } else {
                 if (u.usteed)
                     pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s and %s %s!", Yobjnam2(wep, "bounce"),

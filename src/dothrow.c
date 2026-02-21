@@ -627,14 +627,14 @@ boolean verbose;
 
 /* Object hits floor at hero's feet.
    Called from drop(), throwit(), hold_another_object(). */
-void
+/* returns TRUE if obj is gone */
+boolean
 hitfloor(obj, verbosely)
 struct obj *obj;
 boolean verbosely; /* usually True; False if caller has given drop message */
 {
     if (IS_SOFT(levl[u.ux][u.uy].typ) || u.uinwater || u.uswallow) {
-        dropy(obj);
-        return;
+        return dropy(obj);
     }
     if (IS_ALTAR(levl[u.ux][u.uy].typ))
         doaltarobj(obj);
@@ -643,10 +643,10 @@ boolean verbosely; /* usually True; False if caller has given drop message */
               surface(u.ux, u.uy));
 
     if (hero_breaks(obj, u.ux, u.uy, TRUE))
-        return;
+        return TRUE;
     if (ship_object(obj, u.ux, u.uy, FALSE))
-        return;
-    dropz(obj, TRUE);
+        return TRUE;
+    return dropz(obj, TRUE);
 }
 
 /*
@@ -1211,6 +1211,7 @@ boolean hitsroof;
     boolean petrifier = ((obj->otyp == EGG || obj->otyp == CORPSE)
                           && obj->corpsenm >= LOW_PM && touch_petrifies(&mons[obj->corpsenm]));
     /* note: obj->quan == 1 */
+    boolean still_there = TRUE;
 
     if (!has_ceiling(&u.uz))
     {
@@ -1339,19 +1340,19 @@ boolean hitsroof;
             play_sfx_sound(SFX_PETRIFY);
             You_ex(ATR_NONE, CLR_MSG_NEGATIVE, "turn to stone.");
             if (obj)
-                dropy(obj); /* bypass most of hitfloor() */
+                still_there = !dropy(obj); /* bypass most of hitfloor() */
             thrownobj = 0;  /* now either gone or on floor */
             done(STONING);
-            return obj ? TRUE : FALSE;
+            return obj && still_there ? TRUE : FALSE;
         }
-        hitfloor(obj, TRUE);
+        still_there = !hitfloor(obj, TRUE);
         thrownobj = 0;
         if(isinstakill)
             kill_player("falling object", KILLED_BY_AN);
         else
             losehp(damage, "falling object", KILLED_BY_AN);
     }
-    return TRUE;
+    return still_there;
 }
 
 /* the currently thrown object is returning to you (not for boomerangs) */
@@ -1482,7 +1483,7 @@ int64_t wep_mask; /* used to re-equip returning boomerang / aklys / Mjollnir / J
         }
         else
         {
-            hitfloor(obj, TRUE);
+            (void)hitfloor(obj, TRUE);
         }
         thrownobj = (struct obj *) 0;
         return;
@@ -1700,7 +1701,7 @@ int64_t wep_mask; /* used to re-equip returning boomerang / aklys / Mjollnir / J
                         thrownobj = (struct obj *) 0;
                         return;
                     }
-                    dropy(obj);
+                    (void)dropy(obj);
                 }
                 thrownobj = (struct obj *) 0;
                 return;

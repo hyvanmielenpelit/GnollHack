@@ -3013,7 +3013,7 @@ reverse_loot()
         return FALSE;
 
     if (!IS_THRONE(levl[x][y].typ)) {
-        dropx(goldob);
+        (void)dropx(goldob);
         /* the dropped gold might have fallen to lower level */
         if (g_at(x, y))
             pline("Ok, now there is loot here.");
@@ -3053,7 +3053,7 @@ reverse_loot()
                 levl[x][y].looted = T_LOOTED;
         } else {
             You("drop %s.", doname(goldob));
-            dropx(goldob);
+            (void)dropx(goldob);
         }
     }
     return TRUE;
@@ -3486,15 +3486,15 @@ boolean dobot;
         register struct obj* curr;
         while ((curr = current_container->cobj) != 0) {
             obj_extract_self(curr);
-            dropy(curr);
-            (void)scatter(curr->ox, curr->oy, 3, VIS_EFFECTS | MAY_HIT | MAY_DESTROY | MAY_FRACTURE, curr);
+            if (!dropy(curr))
+                (void)scatter(curr->ox, curr->oy, 3, VIS_EFFECTS | MAY_HIT | MAY_DESTROY | MAY_FRACTURE, curr);
         }
 
         /* The artifact flies out last */
         if (!destroyobj && obj)
         {
-            dropy(obj);
-            (void)scatter(obj->ox, obj->oy, 3, VIS_EFFECTS | MAY_HIT | MAY_DESTROY | MAY_FRACTURE, obj);
+            if (!dropy(obj))
+                (void)scatter(obj->ox, obj->oy, 3, VIS_EFFECTS | MAY_HIT | MAY_DESTROY | MAY_FRACTURE, obj);
         }
 
         debugprint("in_container_core2: %d, %d", current_container->otyp, saved_otyp);
@@ -5271,7 +5271,7 @@ struct obj *box; /* or bag */
 
             if (highdrop) {
                 /* might break or fall down stairs; handles altars itself */
-                hitfloor(otmp, TRUE);
+                (void)hitfloor(otmp, TRUE);
             } else {
                 if (altarizing) {
                     doaltarobj(otmp);
@@ -5282,7 +5282,7 @@ struct obj *box; /* or bag */
                     pline("%s%c", doname(otmp), nobj ? ',' : '.');
                     iflags.last_msg = PLNMSG_OBJNAM_ONLY;
                 }
-                dropyf(otmp);
+                (void) dropyf(otmp);
                 if (iflags.last_msg != PLNMSG_OBJNAM_ONLY)
                     terse = FALSE; /* terse formatting has been interrupted */
             }

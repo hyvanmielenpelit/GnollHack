@@ -1894,16 +1894,20 @@ boolean doprinv;
         if (!touch_artifact(obj, &youmonst)) {
             debugprint("hold_another_object1");
             obj_extract_self(obj); /* remove it from the floor */
-            dropy(obj);            /* now put it back again :-) */
-            return obj;
+            if (!dropy(obj))            /* now put it back again :-) */
+                return obj;
+            else
+                return (struct obj*)0;
         } else if (wasUpolyd && !Upolyd) {
             /* loose your grip if you revert your form */
             if (drop_fmt)
                 pline(drop_fmt, drop_arg);
             debugprint("hold_another_object2");
             obj_extract_self(obj);
-            dropy(obj);
-            return obj;
+            if (!dropy(obj))
+                return obj;
+            else
+                return (struct obj*)0;
         }
         debugprint("hold_another_object3");
         obj_extract_self(obj);
@@ -1956,10 +1960,10 @@ boolean doprinv;
         pline(drop_fmt, drop_arg);
     obj->nomerge = 0;
     if (can_reach_floor(TRUE)) {
-        dropxf(obj);
+        (void)dropxf(obj);
     } else {
         freeinv(obj);
-        hitfloor(obj, FALSE);
+        (void)hitfloor(obj, FALSE);
     }
     newsym(u.ux, u.uy);
     return (struct obj *) 0; /* might be gone */

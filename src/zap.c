@@ -8934,14 +8934,14 @@ boolean stop_at_first_hit_object;
         } 
         else 
         {
+            boolean obj_gone = FALSE;
             if ((weapon == KICKED_WEAPON || weapon == GOLF_SWING)
                 && ((obj->oclass == COIN_CLASS
                      && OBJ_AT(bhitpos.x, bhitpos.y))
-                    || ship_object(obj, bhitpos.x, bhitpos.y,
-                                   costly_spot(bhitpos.x, bhitpos.y))))
+                    || (obj_gone = ship_object(obj, bhitpos.x, bhitpos.y, costly_spot(bhitpos.x, bhitpos.y))) != 0))
             {
                 tmp_at(DISP_END, 0);
-                if (obj)
+                if (!obj_gone && obj)
                     stop_ambient_ray_sound(object_soundsets[objects[obj->otyp].oc_soundset].ray_soundset);
                 return (struct monst *) 0;
             }

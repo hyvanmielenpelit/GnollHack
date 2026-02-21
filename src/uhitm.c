@@ -1653,6 +1653,8 @@ boolean* obj_destroyed;
                         debugprint("hmon_hitmon4: %d", obj->otyp);
                         useup(obj);
                     }
+                    obj = (struct obj*)0;
+                    *obj_destroyed = TRUE;
                     hittxt = TRUE;
                     get_dmg_bonus = FALSE;
                     damage = 0;
@@ -1677,6 +1679,8 @@ boolean* obj_destroyed;
                         obfree(obj, (struct obj*) 0);
                     else
                         useup(obj);
+                    obj = (struct obj*)0;
+                    *obj_destroyed = TRUE;
                     hittxt = TRUE;
                     get_dmg_bonus = FALSE;
                     break;
@@ -1972,7 +1976,7 @@ boolean* obj_destroyed;
         }
     }
 
-    if (jousting && !isdisintegrated) 
+    if (jousting && obj && !isdisintegrated) 
     {
         damage += adjust_damage(d(2, (obj == uwep) ? 10 : 2), &youmonst, mon, objects[obj->otyp].oc_damagetype, ADFLAGS_NONE); /* [was in weapon_dmg_value()] */
         You("joust %s%s", mon_nam(mon), canseemon(mon) ? exclam((int)ceil(damage)) : ".");
@@ -1989,6 +1993,7 @@ boolean* obj_destroyed;
             debugprint("hmon_hitmon6: %d", obj->otyp);
             useup(obj);
             obj = 0;
+            *obj_destroyed = TRUE;
         }
         /* avoid migrating a dead monster */
         if (mon->mhp > (int)ceil(damage)) 
@@ -2108,7 +2113,7 @@ boolean* obj_destroyed;
         const char* critical_text = skill_critical_success ? " critically" : "";
 
         if (thrown)
-            hit_with_hit_tile(mshot_xname(obj), mon, exclam(destroyed ? 100 : damagedealt), hide_damage_amount ? -1 : damagedealt, critical_text, hit_tile, FALSE);
+            hit_with_hit_tile(obj ? mshot_xname(obj) : "something", mon, exclam(destroyed ? 100 : damagedealt), hide_damage_amount ? -1 : damagedealt, critical_text, hit_tile, FALSE);
         else if (!hide_damage_amount && damagedealt > 0) 
         {
 
@@ -2228,7 +2233,7 @@ boolean* obj_destroyed;
 
     boolean uses_spell_flags = obj ? object_uses_spellbook_wand_flags_and_properties(obj) : FALSE;
 
-    int crit_strike_probability = get_critical_strike_percentage_chance(obj, mon, &youmonst);
+    int crit_strike_probability = obj ? get_critical_strike_percentage_chance(obj, mon, &youmonst) : 0;
     int crit_strike_die_roll_threshold = crit_strike_probability / 5;
 
     /* Wounding */
@@ -2380,7 +2385,7 @@ boolean* obj_destroyed;
        "poisoned <obj>" has now been given; we want just "<obj>" for
        last message, so reformat while obj is still accessible */
     if (unpoisonmsg || unenchantmsg)
-        Strcpy(saved_oname, cxname(obj));
+        Strcpy(saved_oname, obj ? cxname(obj) : "something");
 
     /* [note: thrown obj might go away during killed()/xkilled() call
        (via 'thrownobj'; if swallowed, it gets added to engulfer's
@@ -3071,7 +3076,7 @@ int specialdmg; /* blessed and/or silver bonus against various things */
                 play_ui_sound(UI_SOUND_KNAPSACK_FULL);
                 You_ex(ATR_NONE, CLR_MSG_SUCCESS, "grab %s's gold, but find no room in your inventory.",
                     mon_nam(mdef));
-                dropyf(mongold);
+                (void)dropyf(mongold);
             }
         }
         exercise(A_DEX, TRUE);

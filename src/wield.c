@@ -1673,7 +1673,7 @@ drop_uswapwep()
     /* Avoid trashing makeplural's static buffer */
     Strcpy(str, makeplural(body_part(HAND)));
     pline("%s from your %s!", Yobjnam2(obj, "slip"), str);
-    dropxf(obj);
+    (void)dropxf(obj);
 }
 
 int

@@ -502,7 +502,7 @@ struct obj *otmp;
         freeinv(otmp);
         if (inv_cnt(FALSE) >= 52) {
             sellobj_state(SELL_DONTSELL);
-            dropyf(otmp);
+            (void)dropyf(otmp);
             sellobj_state(SELL_NORMAL);
         } else {
             otmp->nomerge = 1; /* used to prevent merge */
@@ -2144,7 +2144,7 @@ struct obj *otmp;
                 otmp = splitobj(otmp, 1L);
             }
             if (carried(otmp))
-                dropxf(otmp);
+                (void)dropxf(otmp);
             else
                 stackobj(otmp);
             return;
@@ -3652,15 +3652,17 @@ doeat()
             You("spit %s out onto the %s.", the(xname(otmp)),
                 surface(u.ux, u.uy));
 
+            boolean obj_gone = FALSE;
             if (carried(otmp))
             {
                 /* no need to check for leash in use; it's not metallic */
                 if (otmp->owornmask)
                     remove_worn_item(otmp, FALSE);
                 freeinv(otmp);
-                dropyf(otmp);
+                obj_gone = dropyf(otmp);
             }
-            stackobj(otmp);
+            if (!obj_gone)
+                stackobj(otmp);
         }
         return 1;
     }

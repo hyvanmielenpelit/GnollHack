@@ -997,9 +997,6 @@ gcrownu()
             {
                 class_gift = GAUNTLETS_OF_BALANCE;
                 obj = oname(obj, artiname(ART_GAUNTLETS_OF_YIN_AND_YANG));
-                at_your_feet("A pair of gauntlets");
-                dropyf(obj);
-                u.ugifts++;
                 if (obj && obj->oartifact == ART_GAUNTLETS_OF_YIN_AND_YANG)
                 {
                     obj->enchantment = 1;
@@ -1009,6 +1006,9 @@ gcrownu()
                         "was bestowed with %s",
                         artiname(ART_GAUNTLETS_OF_YIN_AND_YANG));
                 }
+                at_your_feet("A pair of gauntlets");
+                (void)dropyf(obj);
+                u.ugifts++;
             }
         }
 
@@ -1025,7 +1025,7 @@ gcrownu()
                 livelog_printf(LL_DIVINEGIFT | LL_ARTIFACT | LL_SPOILER,
                     "was bestowed with %s", an(actualoname(obj)));
                 at_your_feet("A belt");
-                dropyf(obj);
+                (void)dropyf(obj);
                 u.ugifts++;
             }
         }
@@ -1134,7 +1134,7 @@ gcrownu()
         livelog_printf(LL_DIVINEGIFT | LL_ARTIFACT,
             "was bestowed with %s", an(actualoname(obj)));
         at_your_feet("A golden chest");
-        dropyf(obj);
+        (void) dropyf(obj);
         u.ugifts++;
     }
     else if (Role_if(PM_PRIEST))
@@ -1336,7 +1336,7 @@ gcrownu()
         livelog_printf(LL_DIVINEGIFT | LL_ARTIFACT,
             "was bestowed with %s", an(actualoname(obj)));
         at_your_feet("A golden chest");
-        dropyf(obj);
+        (void) dropyf(obj);
         u.ugifts++;
     }
     else if (Role_if(PM_VALKYRIE))
@@ -1374,10 +1374,10 @@ gcrownu()
             }
             obj->enchantment = 2 + rnd(3);
             obj->oerodeproof = 1;
-            at_your_feet(is_axe(obj) ? "An axe" : is_sword(obj) ? "A sword" : "A weapon");
-            dropyf(obj);
-            u.ugifts++;
             obj->mknown = TRUE;
+            at_your_feet(is_axe(obj) ? "An axe" : is_sword(obj) ? "A sword" : "A weapon");
+            (void)dropyf(obj);
+            u.ugifts++;
             livelog_printf(LL_DIVINEGIFT | LL_ARTIFACT | LL_SPOILER,
                 "was bestowed with %s", an(actualoname(obj)));
         }
@@ -1399,9 +1399,6 @@ gcrownu()
                     class_gift = LANCE;
                     obj = oname(obj, artiname(ART_RHONGOMYNIAD));
                     obj->enchantment = 1;
-                    at_your_feet("A lance");
-                    dropyf(obj);
-                    u.ugifts++;
                     if (obj->oartifact == ART_RHONGOMYNIAD)
                     {
                         obj->aknown = obj->nknown = TRUE;
@@ -1410,6 +1407,9 @@ gcrownu()
                             "was bestowed with %s",
                             artiname(ART_RHONGOMYNIAD));
                     }
+                    at_your_feet("A lance");
+                    (void)dropyf(obj);
+                    u.ugifts++;
                 }
             }
             else if (!grail_already_exists)
@@ -1419,9 +1419,6 @@ gcrownu()
                 {
                     class_gift = GRAIL_OF_HEALING;
                     obj = oname(obj, artiname(ART_HOLY_GRAIL));
-                    at_your_feet("A grail");
-                    dropyf(obj);
-                    u.ugifts++;
                     if (obj->oartifact == ART_HOLY_GRAIL)
                     {
                         obj->aknown = obj->nknown = TRUE;
@@ -1430,6 +1427,9 @@ gcrownu()
                             "was bestowed with %s",
                             artiname(ART_HOLY_GRAIL));
                     }
+                    at_your_feet("A grail");
+                    (void)dropyf(obj);
+                    u.ugifts++;
                 }
             }
 
@@ -1466,9 +1466,6 @@ gcrownu()
                 {
                     class_gift = GRAIL_OF_HEALING;
                     obj = oname(obj, artiname(ART_HOLY_GRAIL));
-                    at_your_feet("A grail");
-                    dropyf(obj);
-                    u.ugifts++;
                     if (obj->oartifact == ART_HOLY_GRAIL)
                     {
                         obj->aknown = obj->nknown = TRUE;
@@ -1477,6 +1474,9 @@ gcrownu()
                             "was bestowed with %s",
                             artiname(ART_HOLY_GRAIL));
                     }
+                    at_your_feet("A grail");
+                    (void)dropyf(obj);
+                    u.ugifts++;
                 }
             }
             break;
@@ -1668,9 +1668,6 @@ gcrownu()
                     class_gift = KATANA;
                     obj = oname(obj, artiname(ART_KATANA_OF_MASAMUNE));
                     obj->enchantment = 1;
-                    at_your_feet("A katana");
-                    dropyf(obj);
-                    u.ugifts++;
                     if (obj->oartifact == ART_KATANA_OF_MASAMUNE)
                     {
                         obj->aknown = obj->nknown = TRUE;
@@ -1679,6 +1676,9 @@ gcrownu()
                             "was bestowed with %s",
                             artiname(ART_KATANA_OF_MASAMUNE));
                     }
+                    at_your_feet("A katana");
+                    (void)dropyf(obj);
+                    u.ugifts++;
                 }
             }
             else if (!excalibur_already_exists && obj && objects[obj->otyp].oc_subtyp == WEP_LONG_SWORD && get_object_base_value(obj) < 2000L && !obj->oartifact)
@@ -1727,12 +1727,12 @@ gcrownu()
                         obj->material = MAT_SILVER;
                     randomize_mythic_quality(obj, 2, &obj->mythic_prefix, &obj->mythic_suffix);
                     obj->enchantment = 2 + rnd(3);
-                    at_your_feet("A sword");
-                    dropyf(obj);
-                    u.ugifts++;
                     obj->mknown = TRUE;
                     livelog_printf(LL_DIVINEGIFT | LL_ARTIFACT | LL_SPOILER,
                         "was bestowed with %s", an(actualoname(obj)));
+                    at_your_feet("A sword");
+                    (void)dropyf(obj);
+                    u.ugifts++;
                     /* sword skill is acquired below */
                 }
             }
@@ -1765,9 +1765,6 @@ gcrownu()
                     class_gift = LONG_SWORD;
                     obj = oname(obj, artiname(ART_VORPAL_BLADE));
                     obj->enchantment = 1;
-                    at_your_feet("A sword");
-                    dropyf(obj);
-                    u.ugifts++;
                     obj->aknown = obj->nknown = TRUE;
                     if (obj->oartifact == ART_VORPAL_BLADE)
                     {
@@ -1775,6 +1772,9 @@ gcrownu()
                             "was bestowed with %s",
                             artiname(ART_VORPAL_BLADE));
                     }
+                    at_your_feet("A sword");
+                    (void)dropyf(obj);
+                    u.ugifts++;
                 }
             }
             else
@@ -1786,12 +1786,12 @@ gcrownu()
                     obj->exceptionality = EXCEPTIONALITY_PRIMORDIAL;
                     randomize_mythic_quality(obj, 2, &obj->mythic_prefix, &obj->mythic_suffix);
                     obj->enchantment = 2 + rnd(3);
-                    at_your_feet("A sword");
-                    dropyf(obj);
-                    u.ugifts++;
                     obj->mknown= TRUE;
                     livelog_printf(LL_DIVINEGIFT | LL_ARTIFACT | LL_SPOILER,
                         "was bestowed with %s", an(actualoname(obj)));
+                    at_your_feet("A sword");
+                    (void)dropyf(obj);
+                    u.ugifts++;
                     /* sword skill is acquired below */
                 }
             }
@@ -1833,9 +1833,6 @@ gcrownu()
                     class_gift = chaotic_crowning_gift_baseitem;
                     obj = oname(obj, artiname(chaotic_crowning_gift_oartifact));
                     obj->enchantment = 1;
-                    at_your_feet(An(swordbuf));
-                    dropyf(obj);
-                    u.ugifts++;
                     obj->aknown = obj->nknown = TRUE;
                     if (obj->oartifact == chaotic_crowning_gift_oartifact)
                     {
@@ -1843,6 +1840,9 @@ gcrownu()
                             "was bestowed with %s",
                             artiname(chaotic_crowning_gift_oartifact));
                     }
+                    at_your_feet(An(swordbuf));
+                    (void)dropyf(obj);
+                    u.ugifts++;
                 }
             }
             else
@@ -1854,12 +1854,12 @@ gcrownu()
                     obj->exceptionality = EXCEPTIONALITY_INFERNAL;
                     randomize_mythic_quality(obj, 2, &obj->mythic_prefix, &obj->mythic_suffix);
                     obj->enchantment = 2 + rnd(3);
-                    at_your_feet("A sword");
-                    dropyf(obj);
-                    u.ugifts++;
                     obj->mknown = TRUE;
                     livelog_printf(LL_DIVINEGIFT | LL_ARTIFACT | LL_SPOILER,
                         "was bestowed with %s", an(actualoname(obj)));
+                    at_your_feet("A sword");
+                    (void)dropyf(obj);
+                    u.ugifts++;
                     /* acquire long sword skill */
                     unrestrict_weapon_skill(P_SWORD);
                 }
@@ -3189,9 +3189,24 @@ dosacrifice()
                         uncurse(otmp);
                     if(erosion_matters(otmp))
                         otmp->oerodeproof = TRUE;
+                    if (!Hallucination && !Blind)
+                    {
+                        otmp->dknown = 1;
+                        makeknown(otmp->otyp);
+                        if (otmp->oartifact)
+                        {
+                            otmp->nknown = 1;
+                            discover_artifact(otmp->oartifact);
+                        }
+                    }
+                    livelog_printf(LL_DIVINEGIFT | LL_ARTIFACT,
+                        "was bestowed with %s by %s",
+                        artiname(otmp->oartifact),
+                        align_gname(u.ualign.type));
                     at_your_feet("An object");
-                    dropyf(otmp);
-                    if (is_launcher(otmp))
+                    boolean islauncher = is_launcher(otmp);
+                    (void)dropyf(otmp);
+                    if (islauncher)
                     {
                         struct obj* otmp2 = (struct obj*)0;
                         if (objects[otmp->otyp].oc_skill == P_BOW)
@@ -3208,7 +3223,7 @@ dosacrifice()
                             bless(otmp2);
                             otmp2->enchantment = rn2(4);
                             otmp2->owt = weight(otmp2);
-                            dropyf(otmp2);
+                            (void)dropyf(otmp2);
                         }
                     }
                     play_voice_god_simple_line_by_align(u.ualign.type, GOD_LINE_USE_MY_GIFT_WISELY);
@@ -3216,26 +3231,12 @@ dosacrifice()
                     u.ugifts++;
                     u.uprayer_timeout = Role_if(PM_PRIEST) ? rnz(150 + (25 * nartifacts)) : rnz(300 + (50 * nartifacts));
                     exercise(A_WIS, TRUE);
-                    livelog_printf(LL_DIVINEGIFT | LL_ARTIFACT,
-                        "was bestowed with %s by %s",
-                        artiname(otmp->oartifact),
-                        align_gname(u.ualign.type));
 
                     /* make sure we can use this weapon */
                     enum p_skills wep_skill_idx = weapon_skill_type(otmp);
                     if (wep_skill_idx > P_NONE)
                     {
                         unrestrict_weapon_skill(wep_skill_idx);
-                    }
-                    if (!Hallucination && !Blind)
-                    {
-                        otmp->dknown = 1;
-                        makeknown(otmp->otyp);
-                        if (otmp->oartifact)
-                        {
-                            otmp->nknown = 1;
-                            discover_artifact(otmp->oartifact);
-                        }
                     }
                     return 1;
                 }

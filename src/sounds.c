@@ -6961,7 +6961,7 @@ struct monst* mtmp;
                     
                     debugprint("do_chat_buy_items");
                     obj_extract_self(item_to_buy);
-                    hold_another_object(item_to_buy, "Oops!  %s out of your grasp!",
+                    (void) hold_another_object(item_to_buy, "Oops!  %s out of your grasp!",
                         The(aobjnam(item_to_buy, "slip")),
                         (const char*)0, TRUE);
                     buy_count++;
@@ -7160,7 +7160,7 @@ struct monst* mtmp;
                     //You("took %s from %s.", doname(item_to_take), noittame_mon_nam(mtmp));
                     Strcpy(itembuf, doname(item_to_take));
 
-                    hold_another_object(item_to_take, "Oops!  %s out of your grasp!",
+                    (void) hold_another_object(item_to_take, "Oops!  %s out of your grasp!",
                         The(aobjnam(item_to_take, "slip")),
                         (const char*)0, TRUE);
                     take_count++;
@@ -12246,7 +12246,7 @@ boolean initialize;
         fully_identify_obj(craftedobj);
         Sprintf(talkbuf, "%s hands %s to you.", noittame_Monnam(mtmp), acxname(craftedobj));
         popup_talk_line_ex(mtmp, talkbuf, ATR_NONE, NO_COLOR, TRUE, FALSE);
-        hold_another_object(craftedobj, "Oops!  %s out of your grasp!",
+        (void) hold_another_object(craftedobj, "Oops!  %s out of your grasp!",
             The(aobjnam(craftedobj, "slip")),
             (const char*)0, TRUE);
 

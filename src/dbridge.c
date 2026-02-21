@@ -144,16 +144,16 @@ int x, y;
     if (lev->typ != DOOR && lev->typ != DBWALL)
         return -1;
 
-    if (IS_DRAWBRIDGE(levl[x + 1][y].typ)
+    if (isok(x + 1, y) && IS_DRAWBRIDGE(levl[x + 1][y].typ)
         && (levl[x + 1][y].drawbridgemask & DB_DIR) == DB_WEST)
         return DB_WEST;
-    if (IS_DRAWBRIDGE(levl[x - 1][y].typ)
+    if (isok(x - 1, y) && IS_DRAWBRIDGE(levl[x - 1][y].typ)
         && (levl[x - 1][y].drawbridgemask & DB_DIR) == DB_EAST)
         return DB_EAST;
-    if (IS_DRAWBRIDGE(levl[x][y - 1].typ)
+    if (isok(x, y - 1) && IS_DRAWBRIDGE(levl[x][y - 1].typ)
         && (levl[x][y - 1].drawbridgemask & DB_DIR) == DB_SOUTH)
         return DB_SOUTH;
-    if (IS_DRAWBRIDGE(levl[x][y + 1].typ)
+    if (isok(x, y + 1) && IS_DRAWBRIDGE(levl[x][y + 1].typ)
         && (levl[x][y + 1].drawbridgemask & DB_DIR) == DB_NORTH)
         return DB_NORTH;
 

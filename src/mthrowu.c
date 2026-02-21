@@ -876,7 +876,7 @@ struct obj *obj;         /* missile (or stack providing it) */
                     You("are not interested in %s junk.",
                         s_suffix(mon_nam(mon)));
                     makeknown(singleobj->otyp);
-                    dropy(singleobj);
+                    (void) dropy(singleobj);
                 } else {
                     You(
                      "accept %s gift in the spirit in which it was intended.",
@@ -1964,7 +1964,7 @@ int range;
         do {
             /* <bx,by> is guaranteed to eventually converge with <ax,ay> */
             bx += dx, by += dy;
-            if (IS_ROCK(levl[bx][by].typ) || closed_door(bx, by))
+            if (!isok(bx, by) || IS_ROCK(levl[bx][by].typ) || closed_door(bx, by))
                 return FALSE;
             if (bx != ax || by != ay)
             {

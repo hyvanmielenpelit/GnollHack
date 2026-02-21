@@ -147,7 +147,7 @@ int64_t amount;
 
     if (!merge_choice(invent, mongold) && inv_cnt(FALSE) >= 52) {
         You("have no room for the money!");
-        dropyf(mongold);
+        (void)dropyf(mongold);
     } else {
         addinv(mongold);
         context.botl = 1;

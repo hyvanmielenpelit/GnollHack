@@ -3204,7 +3204,7 @@ struct monst *mtmp;
             case 2: /* onto floor beneath you */
                 pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s yanks %s to the %s!", Monnam(mtmp), the_weapon,
                       surface(u.ux, u.uy));
-                dropy(obj);
+                (void) dropy(obj);
                 break;
             case 3: /* into mon's inventory */
                 pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s snatches %s!", Monnam(mtmp), the_weapon);

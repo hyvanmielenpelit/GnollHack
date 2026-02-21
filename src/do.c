@@ -5889,8 +5889,8 @@ register struct obj *obj;
         pline_The_ex1(ATR_NONE, CLR_MSG_ATTENTION, "ring is regurgitated!");
  giveback:
         obj->in_use = FALSE;
-        dropxf(obj);
-        trycall(obj);
+        if (!dropxf(obj))
+            trycall(obj);
         return;
     case RIN_LEVITATION:
         pline_The_ex1(ATR_NONE, CLR_MSG_ATTENTION, "sink quivers upward for a moment.");
@@ -6056,7 +6056,7 @@ register struct obj *obj;
     if (!rn2(20) && !nosink) {
         pline_The("sink backs up, leaving %s.", doname(obj));
         obj->in_use = FALSE;
-        dropxf(obj);
+        (void)dropxf(obj);
     } else if (!rn2(5)) {
         freeinv(obj);
         obj->in_use = FALSE;
@@ -6187,7 +6187,7 @@ register struct obj *obj;
             if (obj->oclass == COIN_CLASS)
                 context.botl = 1;
             freeinv(obj);
-            hitfloor(obj, TRUE);
+            (void)hitfloor(obj, TRUE);
             //if (levhack)
             //    float_down(I_SPECIAL | TIMEOUT, W_ARTIFACT_INVOKED | W_ARTIFACT_CARRIED);
             return 1;
@@ -6195,7 +6195,7 @@ register struct obj *obj;
         if (!IS_ALTAR(levl[u.ux][u.uy].typ) && flags.verbose)
             You("drop %s.", doname(obj));
     }
-    dropx(obj);
+    (void)dropx(obj);
     return 1;
 }
 
@@ -6209,7 +6209,8 @@ register struct obj* obj;
 /* dropx - take dropped item out of inventory;
    called in several places - may produce output
    (eg ship_object() and dropy() -> sellobj() both produce output) */
-void
+/* returns TRUE if obj is gone */
+boolean
 dropx(obj)
 register struct obj *obj;
 {
@@ -6219,17 +6220,18 @@ register struct obj *obj;
     freeinv(obj);
     if (!u.uswallow) {
         if (ship_object(obj, u.ux, u.uy, FALSE))
-            return;
+            return TRUE;
         if (IS_ALTAR(levl[u.ux][u.uy].typ))
             doaltarobj(obj); /* set bknown */
     }
-    dropy(obj);
+    return dropy(obj);
 }
 
 /* dropxf - take dropped item out of inventory;
    called in several places - may produce output
    (eg ship_object() and dropy() -> sellobj() both produce output) */
-void
+/* returns TRUE if obj is gone */
+boolean
 dropxf(obj)
 register struct obj* obj;
 {
@@ -6240,32 +6242,35 @@ register struct obj* obj;
     obj_set_found(obj);
     if (!u.uswallow) {
         if (ship_object(obj, u.ux, u.uy, FALSE))
-            return;
+            return TRUE;
         if (IS_ALTAR(levl[u.ux][u.uy].typ))
             doaltarobj(obj); /* set bknown */
     }
-    dropy(obj);
+    return dropy(obj);
 }
 
 /* dropy - put dropped object at destination; called from lots of places */
-void
+/* returns TRUE if obj is gone */
+boolean
 dropy(obj)
 struct obj *obj;
 {
-    dropz(obj, FALSE);
+    return dropz(obj, FALSE);
 }
 
 /* dropyf - put dropped object at destination; called from lots of places */
-void
+/* returns TRUE if obj is gone */
+boolean
 dropyf(obj)
 struct obj* obj;
 {
     obj_set_found(obj);
-    dropz(obj, FALSE);
+    return dropz(obj, FALSE);
 }
 
 /* dropz - really put dropped object at its destination... */
-void
+/* returns TRUE if obj is gone */
+boolean
 dropz(obj, with_impact)
 struct obj *obj;
 boolean with_impact;
@@ -6282,16 +6287,11 @@ boolean with_impact;
         setuswapwep((struct obj*) 0, W_SWAPWEP2);
 
     if (!u.uswallow && flooreffects(obj, u.ux, u.uy, "drop"))
-    {
-        if (iflags.using_gui_sounds && !ui_has_input())
-        {
-            play_object_floor_sound_at_location(obj, OBJECT_SOUND_TYPE_DROP, u.ux, u.uy, Underwater);
-            delay_output_milliseconds(ITEM_PICKUP_DROP_DELAY);
-        }
-        return;
-    }
+        return TRUE;
+
+    boolean res = FALSE;
     /* uswallow check done by GAN 01/29/87 */
-    if (u.uswallow) 
+    if (u.uswallow)
     {
         boolean could_petrify = FALSE;
         boolean could_poly = FALSE;
@@ -6314,6 +6314,7 @@ boolean with_impact;
                 (void) stolen_value(obj, u.ux, u.uy, TRUE, FALSE);
 
             int was_obj_freed = mpickobj(u.ustuck, obj);
+            res = was_obj_freed != 0;
 
             if (is_animal(u.ustuck->data)) 
             {
@@ -6325,6 +6326,7 @@ boolean with_impact;
                     {
                         debugprint("dropz1: %d", obj->otyp);
                         delobj(obj); /* corpse is digested */
+                        res = TRUE;
                     }
                 }
                 else if (could_petrify) 
@@ -6337,6 +6339,7 @@ boolean with_impact;
                     {
                         debugprint("dropz2: %d", obj->otyp);
                         delobj(obj);
+                        res = TRUE;
                     }
                 } 
                 else if (could_grow)
@@ -6346,6 +6349,7 @@ boolean with_impact;
                     {
                         debugprint("dropz3: %d", obj->otyp);
                         delobj(obj); /* corpse is digested */
+                        res = TRUE;
                     }
                 } 
                 else if (could_heal)
@@ -6355,6 +6359,7 @@ boolean with_impact;
                     {
                         debugprint("dropz4: %d", obj->otyp);
                         delobj(obj); /* corpse is digested */
+                        res = TRUE;
                     }
                 }
             }
@@ -6381,6 +6386,7 @@ boolean with_impact;
         }
         newsym(u.ux, u.uy); /* remap location under self */
     }
+    return res;
 }
 
 /* things that must change when not held; recurse into containers.

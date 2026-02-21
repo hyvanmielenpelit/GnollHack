@@ -4322,9 +4322,9 @@ struct obj *sobj;
         || unsolid(youmonst.data) || is_incorporeal(youmonst.data)) {
         if (!reuse_ball) {
             pline("A ball and chain appears, then falls away.");
-            dropy(mkobj(BALL_CLASS, TRUE, FALSE));
+            (void)dropy(mkobj(BALL_CLASS, TRUE, FALSE));
         } else {
-            dropy(reuse_ball);
+            (void)dropy(reuse_ball);
         }
         return;
     }

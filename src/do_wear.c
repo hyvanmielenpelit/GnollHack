@@ -2954,12 +2954,12 @@ glibr()
         if (leftfall) {
             otmp = uleft;
             Ring_off(uleft);
-            dropxf(otmp);
+            (void)dropxf(otmp);
         }
         if (rightfall) {
             otmp = uright;
             Ring_off(uright);
-            dropxf(otmp);
+            (void)dropxf(otmp);
         }
     }
 
@@ -2981,7 +2981,7 @@ glibr()
         wastwoweap = TRUE;
         setuwep((struct obj *) 0, otmp->owornmask);
         if (canletgo(otmp, ""))
-            dropxf(otmp);
+            (void)dropxf(otmp);
     }
     otmp = uwep;
     if (otmp && !welded(otmp, &youmonst)) {
@@ -3016,7 +3016,7 @@ glibr()
         otmp->quan = savequan;
         setuwep((struct obj *) 0, W_WEP);
         if (canletgo(otmp, ""))
-            dropxf(otmp);
+            (void)dropxf(otmp);
     }
 }
 

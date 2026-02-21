@@ -861,7 +861,7 @@ litter()
                 You_ex(ATR_NONE, CLR_MSG_WARNING, "drop %s and %s %s down the stairs with you.",
                     yname(otmp), (otmp->quan == 1L) ? "it" : "they",
                     otense(otmp, "fall"));
-                dropx(otmp);
+                (void)dropx(otmp);
                 encumber_msg(); /* drop[xyz]() probably ought to to this... */
             }
         }
