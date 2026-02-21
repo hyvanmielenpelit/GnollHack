@@ -712,13 +712,16 @@ ghost_from_bottle()
     }
     pline_ex(ATR_NONE, CLR_MSG_WARNING, "As you open the bottle, an enormous %s emerges!",
           Hallucination ? rndmonnam(NULL) : (const char *) "ghost");
-    if (flags.verbose)
-        You_ex(ATR_NONE, CLR_MSG_WARNING, "are frightened to death, and unable to move.");
-    nomul(-3);
-    multi_reason = "being frightened to death";
-    nomovemsg = "You regain your composure.";
-    nomovemsg_attr = ATR_NONE;
-    nomovemsg_color = NO_COLOR;
+    if (!Fear_resistance)
+    {
+        if (flags.verbose)
+            You_ex(ATR_NONE, CLR_MSG_WARNING, "are frightened to death, and unable to move.");
+        nomul(-3);
+        multi_reason = "being frightened to death";
+        nomovemsg = "You regain your composure.";
+        nomovemsg_attr = ATR_NONE;
+        nomovemsg_color = NO_COLOR;
+    }
 }
 
 /* "Quaffing is like drinking, except you spill more." - Terry Pratchett */

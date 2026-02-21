@@ -1533,12 +1533,15 @@ bark_here:
     case MS_BONES:
         pline("%s rattles noisily.", fromchatmenu ? noittame_Monnam(mtmp) : Monnam(mtmp));
         chat_line = 0;
-        You("freeze for a moment.");
-        nomul(-2);
-        multi_reason = "scared by rattling";
-        nomovemsg = 0;
-        nomovemsg_attr = ATR_NONE;
-        nomovemsg_color = NO_COLOR;
+        if (!Fear_resistance)
+        {
+            You("freeze for a moment.");
+            nomul(-2);
+            multi_reason = "scared by rattling";
+            nomovemsg = 0;
+            nomovemsg_attr = ATR_NONE;
+            nomovemsg_color = NO_COLOR;
+        }
         break;
     case MS_LAUGH: {
         static const char *const laugh_msg[4] = {

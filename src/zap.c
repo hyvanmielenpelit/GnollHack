@@ -7226,7 +7226,7 @@ boolean ordinary;
         damage = 0;
         learn_it = TRUE;
         if (is_undead(youmonst.data)) {
-            You_feel("frightened and %sstunned.",
+            You_feel("%s%sstunned.", Fear_resistance ? "" : "frightened and ",
                      Stunned ? "even more " : "");
             make_stunned((HStun & TIMEOUT) + (int64_t) rnd(30), FALSE); //Not strictly the same effect, so keep hard coding for the time being
         } else

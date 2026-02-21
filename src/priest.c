@@ -1110,13 +1110,16 @@ int roomno;
             mtmp->mpeaceful = 0;
             set_mhostility(mtmp);
             newsym(mtmp->mx, mtmp->my);
-            if (flags.verbose)
-                You_ex(ATR_NONE, CLR_MSG_NEGATIVE, "are frightened to death, and unable to move.");
-            nomul(-3);
-            multi_reason = "being terrified of a ghost";
-            nomovemsg = "You regain your composure.";
-            nomovemsg_attr = ATR_NONE;
-            nomovemsg_color = CLR_MSG_SUCCESS;
+            if (!Fear_resistance)
+            {
+                if (flags.verbose)
+                    You_ex(ATR_NONE, CLR_MSG_NEGATIVE, "are frightened to death, and unable to move.");
+                nomul(-3);
+                multi_reason = "being terrified of a ghost";
+                nomovemsg = "You regain your composure.";
+                nomovemsg_attr = ATR_NONE;
+                nomovemsg_color = CLR_MSG_SUCCESS;
+            }
         }
     }
 }
