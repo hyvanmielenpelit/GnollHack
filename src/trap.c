@@ -7490,8 +7490,6 @@ lava_effects()
             iflags.in_lava_effects++; /* (see above) */
             (void)Boots_off();
             debugprint("lava_effects: %d", obj->otyp);
-            debugprint("lava_effects: %d", obj->otyp);
-            debugprint("lava_effects: %d", obj->otyp);
             useup(obj);
             iflags.in_lava_effects--;
         }
@@ -7546,7 +7544,6 @@ lava_effects()
                     else
                         pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s into flame!", Yobjnam2(obj, "burst"));
                 }
-                debugprint("lava_effects2: %d", obj->otyp);
                 debugprint("lava_effects2: %d", obj->otyp);
                 useupall(obj);
             }
