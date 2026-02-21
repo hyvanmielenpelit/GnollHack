@@ -725,6 +725,10 @@ boolean require_restoring;
         program_state.panic_handling = handling;
 }
 
+#ifdef GNOLLHACK_MAIN_PROGRAM
+STATIC_VAR char* dbufs = 0;
+#endif
+
 /*VARARGS1*/
 void panic
 VA_DECL(const char *, str)
@@ -733,6 +737,14 @@ VA_DECL(const char *, str)
     VA_INIT(str, char *);
 
     issue_breadcrumb("Panic: Start");
+
+#ifdef GNOLLHACK_MAIN_PROGRAM
+    /* Check that dbufs has been freed in the case of recursive panic calls */
+    if (dbufs)
+        free(dbufs);
+    dbufs = 0;
+#endif
+
     if (program_state.panicking++)
     {
         issue_breadcrumb("Panic: panicking++");
@@ -752,7 +764,6 @@ VA_DECL(const char *, str)
     Vsprintf(buf, str, VA_ARGS);
 
 #ifdef GNOLLHACK_MAIN_PROGRAM
-    char* dbufs = 0;
     if (issue_gui_command)
     {
         /* allocate before error save file, which has more debugprints */
@@ -818,6 +829,7 @@ VA_DECL(const char *, str)
         if (issue_gui_command)
             issue_debuglog_panic(0, dbufs);
         free(dbufs);
+        dbufs = 0;
     }
 
     if (open_special_view)
