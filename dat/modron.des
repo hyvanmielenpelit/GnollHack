@@ -98,7 +98,7 @@ MONSTER:('M',"modron quadrone"),(26,12),hostile,waitforu
 MONSTER:('M',"modron quadrone"),(26,14),hostile,waitforu
 MONSTER:('M',"modron quadrone"),(16,12),hostile,waitforu
 MONSTER:('M',"modron quadrone"),(16,14),hostile,waitforu
-CONTAINER:('(',"chest"),locked,keytype:('(',"geometric key"),special_quality:5,(21,13),no_pickup {
+CONTAINER:('(',"chest"),locked,not_trapped,keytype:('(',"geometric key"),special_quality:5,(21,13),no_pickup {
     OBJECT:random_contents
     OBJECT:random_contents
     [50%]:OBJECT:random_contents
@@ -126,7 +126,7 @@ MONSTER:('M',"modron pentadrone"),(32,08),hostile,waitforu
 # 4: Portal door key holder
 MONSTER:('M',"modron quinton"),(11,12),waitforu,hostile
 MONSTER:('M',"modron pentadrone"),(12,11),hostile,waitforu
-CONTAINER:('(',"chest"),(08,11),no_pickup {
+CONTAINER:('(',"chest"),(08,11),not_trapped,no_pickup {
         OBJECT:('(', "geometric key"),special_quality:4
         [50%]:OBJECT:random_contents
         [50%]:OBJECT:random_contents
@@ -135,7 +135,7 @@ CONTAINER:('(',"chest"),(08,11),no_pickup {
 # 5: Treasure room chest key holder
 MONSTER:('M',"modron quinton"),(31,12),waitforu,hostile
 MONSTER:('M',"modron pentadrone"),(30,11),hostile,waitforu
-CONTAINER:('(',"chest"),(34,11),no_pickup {
+CONTAINER:('(',"chest"),(34,11),not_trapped,no_pickup {
         OBJECT:('(', "geometric key"),special_quality:5
         [50%]:OBJECT:random_contents
         [50%]:OBJECT:random_contents
@@ -228,7 +228,7 @@ MONSTER:('M',"modron quarton"),(08,06),waitforu,hostile {
 }
 MONSTER:('M',"modron quadrone"),(09,06),waitforu,hostile
 MONSTER:('M',"modron quadrone"),(09,07),waitforu,hostile
-CONTAINER:('(',"chest"),(06,05),no_pickup {
+CONTAINER:('(',"chest"),(06,05),not_trapped,no_pickup {
     OBJECT:('(', "geometric key"),special_quality:3
     [50%]:OBJECT:random_contents
     [50%]:OBJECT:random_contents
@@ -246,7 +246,7 @@ REGION:(06,13,10,15),lit,"modron shop" montype:"modron quarton"
 MONSTER:('M',"modron quarton"),(40,14),waitforu,hostile
 MONSTER:('M',"modron quadrone"),(39,13),waitforu,hostile
 MONSTER:('M',"modron quadrone"),(39,14),waitforu,hostile
-CONTAINER:('(',"chest"),(42,15),no_pickup {
+CONTAINER:('(',"chest"),(42,15),not_trapped,no_pickup {
     OBJECT:('7', "modronite tetrahedron")
     [50%]:OBJECT:random_contents
     [50%]:OBJECT:random_contents
@@ -350,7 +350,7 @@ MONSTER:('M',"modron tertian"),(25,04),waitforu,hostile
 MONSTER:('M',"modron tridrone"),(24,05),waitforu,hostile
 MONSTER:('M',"modron tridrone"),(26,05),waitforu,hostile
 BRAZIER:(25,04)
-CONTAINER:('(',"chest"),locked,keytype:('(',"magic key"),(25,03),no_pickup {
+CONTAINER:('(',"chest"),locked,not_trapped,keytype:('(',"magic key"),(25,03),no_pickup {
         OBJECT:random_contents
         [50%]:OBJECT:random_contents
         [50%]:OBJECT:random_contents
@@ -358,7 +358,7 @@ CONTAINER:('(',"chest"),locked,keytype:('(',"magic key"),(25,03),no_pickup {
 
 MONSTER:('M',"modron tertian"),(10,12),waitforu,hostile
 BRAZIER:(08,12)
-CONTAINER:('(',"chest"),locked,keytype:('(',"magic key"),(07,12),no_pickup {
+CONTAINER:('(',"chest"),locked,not_trapped,keytype:('(',"magic key"),(07,12),no_pickup {
         OBJECT:('7', "modronite monopole")
         [50%]:OBJECT:random_contents
         [50%]:OBJECT:random_contents
@@ -368,7 +368,7 @@ MONSTER:('M',"modron tridrone"),(12,12),waitforu,hostile
 
 MONSTER:('M',"modron tertian"),(40,12),waitforu,hostile
 BRAZIER:(42,12)
-CONTAINER:('(',"chest"),locked,keytype:('(',"magic key"),(43,12),no_pickup {
+CONTAINER:('(',"chest"),locked,not_trapped,keytype:('(',"magic key"),(43,12),no_pickup {
         OBJECT:('(', "geometric key"),special_quality:2
         [50%]:OBJECT:random_contents
         [50%]:OBJECT:random_contents
@@ -386,7 +386,7 @@ MONSTER:('M',"modron tridrone"),(23,12),waitforu,hostile
 MONSTER:('M',"modron tridrone"),(25,12),waitforu,hostile
 MONSTER:('M',"modron tridrone"),(27,12),waitforu,hostile
 
-CONTAINER:('(',"chest"),locked,keytype:('(',"magic key"),(20,12),no_pickup {
+CONTAINER:('(',"chest"),locked,not_trapped,keytype:('(',"magic key"),(20,12),no_pickup {
         OBJECT:random_contents
         OBJECT:random_contents
         [50%]:OBJECT:random_contents
@@ -394,7 +394,7 @@ CONTAINER:('(',"chest"),locked,keytype:('(',"magic key"),(20,12),no_pickup {
         [50%]:OBJECT:random_contents
 }
 
-CONTAINER:('(',"chest"),locked,keytype:('(',"magic key"),(30,12),no_pickup {
+CONTAINER:('(',"chest"),locked,not_trapped,keytype:('(',"magic key"),(30,12),no_pickup {
         OBJECT:random_contents
         OBJECT:random_contents
         [50%]:OBJECT:random_contents
@@ -493,7 +493,7 @@ MONSTER:('M',"modron secundus"),(65,10),waitforu,hostile {
 }
 BRAZIER:(62,10)
 DECORATION:(62,08),decoration_wall_sculpture,wall_sculpture_modron_triangular,direction_top
-CONTAINER:('(',"chest"),locked,keytype:('(',"magic key"),special_quality:1,(54,11),no_pickup {
+CONTAINER:('(',"chest"),locked,not_trapped,keytype:('(',"magic key"),special_quality:1,(54,11),no_pickup {
         OBJECT:('7', "modronite sphere")
         OBJECT:class_treasure_armor
         [50%]:OBJECT:random_contents
@@ -504,7 +504,7 @@ CONTAINER:('(',"chest"),locked,keytype:('(',"magic key"),special_quality:1,(54,1
 MONSTER:('M',"modron secundus"),(07,10),waitforu,hostile
 BRAZIER:(10,10)
 DECORATION:(10,08),decoration_wall_sculpture,wall_sculpture_modron_triangular,direction_top
-CONTAINER:('(',"chest"),locked,keytype:('(',"magic key"),special_quality:1,(18,11),no_pickup {
+CONTAINER:('(',"chest"),locked,not_trapped,keytype:('(',"magic key"),special_quality:1,(18,11),no_pickup {
         OBJECT:('(', "geometric key"),special_quality:1
         OBJECT:class_treasure_weapon
         [50%]:OBJECT:random_contents
@@ -640,11 +640,11 @@ MONSTER:('M',"Modron Primus"),(16,07),waitforu,hostile {
 }
 
 # Treasures
-CONTAINER:('(',"golden chest"),locked,keytype:('(',"geometric key"),special_quality:8,(11,07),no_pickup {
+CONTAINER:('(',"golden chest"),locked,not_trapped,keytype:('(',"geometric key"),special_quality:8,(11,07),no_pickup {
         OBJECT:artifact
         OBJECT:('*', "dilithium crystal")
 }
-CONTAINER:('(',"golden chest"),locked,keytype:('(',"geometric key"),special_quality:8,(21,07),no_pickup {
+CONTAINER:('(',"golden chest"),locked,not_trapped,keytype:('(',"geometric key"),special_quality:8,(21,07),no_pickup {
         OBJECT:('+', "Book of Modron"),name:"The Prime Codex"
         OBJECT:('+', "call hierarch modron")
 }

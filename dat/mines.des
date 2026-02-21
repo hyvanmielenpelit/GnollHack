@@ -237,7 +237,7 @@ OBJECT:('/',"striking"),$place[4],uncursed,0
 OBJECT:('/',"magic missile"),$place[4],uncursed,0
 OBJECT:('/',"magic missile"),$place[0],uncursed,0
 
-CONTAINER:('(',"chest"),locked,(20,14),keytype:('(',"bronze key"),no_pickup {
+CONTAINER:('(',"chest"),locked,not_trapped,(20,14),keytype:('(',"bronze key"),no_pickup {
   OBJECT:('$',"gold piece"),quantity:(1000+(2d500))
   [50%]:OBJECT:'*'
   [50%]:OBJECT:'*'
