@@ -3280,7 +3280,9 @@ namespace GnollHackX
                             };
                             if (strs.Length > 1)
                                 sentryEvent.SetExtra("Debug Buffers", strs[1]);
-                            sentryEvent.SetExtra("Disk Space", (GHApp.FreeDiskSpaceInBytes / 1024).ToString() + " kB");
+                            sentryEvent.SetExtra("Disk Space", (GHApp.FreeDiskSpaceInBytes / (1024 * 1024)).ToString() + " MB");
+                            sentryEvent.SetExtra("Used Memory", (GHApp.MemoryUsageInBytes / (1024 * 1024)).ToString() + " MB");
+                            sentryEvent.SetExtra("Total Memory", (GHApp.TotalMemory / (1024 * 1024)).ToString() + " MB");
                             SentrySdk.CaptureEvent(sentryEvent);
                             break;
                     }
@@ -3468,7 +3470,9 @@ namespace GnollHackX
                             };
                             if (strs.Length > 1)
                                 sentryEvent.SetExtra("Debug Buffers", strs[1]);
-                            sentryEvent.SetExtra("Disk Space", (GHApp.FreeDiskSpaceInBytes / 1024).ToString() + " kB");
+                            sentryEvent.SetExtra("Disk Space", (GHApp.FreeDiskSpaceInBytes / (1024 * 1024)).ToString() + " MB");
+                            sentryEvent.SetExtra("Used Memory", (GHApp.MemoryUsageInBytes / (1024 * 1024)).ToString() + " MB");
+                            sentryEvent.SetExtra("Total Memory", (GHApp.TotalMemory / (1024 * 1024)).ToString() + " MB");
                             SentrySdk.CaptureEvent(sentryEvent);
 #endif
                         }

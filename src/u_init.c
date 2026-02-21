@@ -888,6 +888,7 @@ u_init()
 {
     register int i;
     struct u_roleplay tmpuroleplay = u.uroleplay; /* set by rcfile options */
+    debugprint("u_init");
 
     flags.female = flags.initgend;
     flags.beginner = 1;

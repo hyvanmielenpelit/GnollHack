@@ -128,6 +128,7 @@ char *outbuf;
                               ? ansimpleoname(otmp)
                               : an(obj_descr[STRANGE_OBJECT].oc_name));
             if (fakeobj && otmp) {
+                debugprint("mhidden_description");
                 otmp->where = OBJ_FREE; /* object_from_map set to OBJ_FLOOR */
                 dealloc_obj(otmp);
             }
@@ -311,6 +312,7 @@ int x, y, glyph;
 
         if (fakeobj) 
         {
+            debugprint("look_at_object");
             otmp->where = OBJ_FREE; /* object_from_map set it to OBJ_FLOOR */
             dealloc_obj(otmp), otmp = 0;
         }

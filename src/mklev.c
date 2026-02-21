@@ -1782,6 +1782,8 @@ boolean skip_lvl_checks;
         }
     }
 
+    debugprint("mineralize");
+
     /*
      * Seed rock areas with gold and/or gems.
      * We use fairly low level object handling to avoid unnecessary

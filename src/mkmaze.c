@@ -707,6 +707,7 @@ struct monst *mtmp;
     int gemprob, goldprob, otyp;
     struct obj *otmp;
     boolean is_captain = (mtmp->data == &mons[PM_ORC_CAPTAIN]);
+    debugprint("shiny_orc_stuff");
 
     /* probabilities */
     goldprob = is_captain ? 600 : 300;

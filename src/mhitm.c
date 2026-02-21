@@ -2263,6 +2263,7 @@ register struct obj* omonwep;
             {
                 struct obj* virtualcorpse = mksobj(CORPSE, FALSE, FALSE, FALSE);
                 int nutrit;
+                debugprint("mdamagem: virtual corpse");
 
                 set_corpsenm(virtualcorpse, num);
                 nutrit = dog_nutrition(magr, virtualcorpse);
