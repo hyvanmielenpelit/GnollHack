@@ -715,6 +715,7 @@ struct monst *mtmp;
             /* calls Gloves_off() to handle wielded cockatrice corpse */
             (void)remove_worn_item(uarmg, FALSE);
 
+        trackedobj_extra = 0;
         if (!trackedobj_extra_gone)
         {
             /* finally, steal the target item */
@@ -737,7 +738,6 @@ struct monst *mtmp;
                 }
             }
         }
-        trackedobj_extra = 0;
         trackedobj_extra_gone = FALSE;
     }
 }

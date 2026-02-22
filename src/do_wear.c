@@ -2980,18 +2980,18 @@ glibr()
             otmp = uleft;
             trackedobj_extra = otmp;
             Ring_off(uleft);
+            trackedobj_extra = 0;
             if (!trackedobj_extra_gone)
                 (void)dropxf(otmp);
-            trackedobj_extra = 0;
             trackedobj_extra_gone = FALSE;
         }
         if (rightfall) {
             otmp = uright;
             trackedobj_extra = otmp;
             Ring_off(uright);
+            trackedobj_extra = 0;
             if (!trackedobj_extra_gone)
                 (void)dropxf(otmp);
-            trackedobj_extra = 0;
             trackedobj_extra_gone = FALSE;
         }
     }
@@ -4105,12 +4105,12 @@ register struct obj *atmp;
         otmp->item_flags |= ITEM_FLAGS_LAVA_EFFECTS_SKIP; /* Prevent lava_effects etc. from destroying the item when they are taken off */
         trackedobj_destroyarm = otmp;
         (void) Cloak_off();
-        if (!trackedobj_destroyarm)
+        trackedobj_destroyarm = 0;
+        if (!trackedobj_destroyarm_gone)
         {
             debugprint("destroy_arm: %d", otmp->otyp);
             useup(otmp);
         }
-        trackedobj_destroyarm = 0;
         trackedobj_destroyarm_gone = FALSE;
     } else if (DESTROY_ARM(uarmo)) {
         if (donning(otmp))
@@ -4121,12 +4121,12 @@ register struct obj *atmp;
         otmp->item_flags |= ITEM_FLAGS_LAVA_EFFECTS_SKIP; /* Prevent lava_effects etc. from destroying the item when they are taken off */
         trackedobj_destroyarm = otmp;
         (void)Robe_off();
+        trackedobj_destroyarm = 0;
         if (!trackedobj_destroyarm_gone)
         {
             debugprint("destroy_arm2: %d", otmp->otyp);
             useup(otmp);
         }
-        trackedobj_destroyarm = 0;
         trackedobj_destroyarm_gone = FALSE;
     } else if (DESTROY_ARM(uarm)) {
         if (donning(otmp))
@@ -4139,12 +4139,12 @@ register struct obj *atmp;
         trackedobj_destroyarm = otmp;
         (void) Armor_gone();
         boolean has_stone_res = Stone_resistance;
+        trackedobj_destroyarm = 0;
         if (!trackedobj_destroyarm_gone)
         {
             debugprint("destroy_arm3: %d", otmp->otyp);
             useup(otmp);
         }
-        trackedobj_destroyarm = 0;
         trackedobj_destroyarm_gone = FALSE;
         check_wielded_cockatrice(FALSE, FALSE, !has_stone_res && had_stone_res);
     } else if (DESTROY_ARM(uarmu)) {
@@ -4156,12 +4156,12 @@ register struct obj *atmp;
         otmp->item_flags |= ITEM_FLAGS_LAVA_EFFECTS_SKIP; /* Prevent lava_effects etc. from destroying the item when they are taken off */
         trackedobj_destroyarm = otmp;
         (void) Shirt_off();
+        trackedobj_destroyarm = 0;
         if (!trackedobj_destroyarm_gone)
         {
             debugprint("destroy_arm4: %d", otmp->otyp);
             useup(otmp);
         }
-        trackedobj_destroyarm = 0;
         trackedobj_destroyarm_gone = FALSE;
     } else if (DESTROY_ARM(uarmh)) {
         if (donning(otmp))
@@ -4172,12 +4172,12 @@ register struct obj *atmp;
         otmp->item_flags |= ITEM_FLAGS_LAVA_EFFECTS_SKIP; /* Prevent lava_effects etc. from destroying the item when they are taken off */
         trackedobj_destroyarm = otmp;
         (void) Helmet_off();
+        trackedobj_destroyarm = 0;
         if (!trackedobj_destroyarm_gone)
         {
             debugprint("destroy_arm5: %d", otmp->otyp);
             useup(otmp);
         }
-        trackedobj_destroyarm = 0;
         trackedobj_destroyarm_gone = FALSE;
     } else if (DESTROY_ARM(uarmb)) {
         if (donning(otmp))
@@ -4188,12 +4188,12 @@ register struct obj *atmp;
         otmp->item_flags |= ITEM_FLAGS_LAVA_EFFECTS_SKIP; /* Prevent lava_effects etc. from destroying the item when they are taken off */
         trackedobj_destroyarm = otmp;
         (void)Bracers_off();
+        trackedobj_destroyarm = 0;
         if (!trackedobj_destroyarm_gone)
         {
             debugprint("destroy_arm6: %d", otmp->otyp);
             useup(otmp);
         }
-        trackedobj_destroyarm = 0;
         trackedobj_destroyarm_gone = FALSE;
     } else if (DESTROY_ARM(uarmg)) {
         if (donning(otmp))
@@ -4204,12 +4204,12 @@ register struct obj *atmp;
         otmp->item_flags |= ITEM_FLAGS_LAVA_EFFECTS_SKIP; /* Prevent lava_effects etc. from destroying the item when they are taken off */
         trackedobj_destroyarm = otmp;
         (void) Gloves_off();
+        trackedobj_destroyarm = 0;
         if (!trackedobj_destroyarm_gone)
         {
             debugprint("destroy_arm7: %d", otmp->otyp);
             useup(otmp);
         }
-        trackedobj_destroyarm = 0;
         trackedobj_destroyarm_gone = FALSE;
         selftouch("You");
     } else if (DESTROY_ARM(uarmf)) {
@@ -4221,12 +4221,12 @@ register struct obj *atmp;
         otmp->item_flags |= ITEM_FLAGS_LAVA_EFFECTS_SKIP; /* Prevent lava_effects etc. from destroying the item when they are taken off */
         trackedobj_destroyarm = otmp;
         (void) Boots_off();
+        trackedobj_destroyarm = 0;
         if (!trackedobj_destroyarm_gone)
         {
             debugprint("destroy_arm8: %d", otmp->otyp);
             useup(otmp);
         }
-        trackedobj_destroyarm = 0;
         trackedobj_destroyarm_gone = FALSE;
     }
     else if (uarms && is_shield(uarms) && DESTROY_ARM(uarms)) {
@@ -4238,12 +4238,12 @@ register struct obj *atmp;
         otmp->item_flags |= ITEM_FLAGS_LAVA_EFFECTS_SKIP; /* Prevent lava_effects etc. from destroying the item when they are taken off */
         trackedobj_destroyarm = otmp;
         (void) Shield_off();
+        trackedobj_destroyarm = 0;
         if (!trackedobj_destroyarm_gone)
         {
             debugprint("destroy_arm9: %d", otmp->otyp);
             useup(otmp);
         }
-        trackedobj_destroyarm = 0;
         trackedobj_destroyarm_gone = FALSE;
     } else {
         return 0; /* could not destroy anything */
