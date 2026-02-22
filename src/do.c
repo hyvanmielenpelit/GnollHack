@@ -5123,6 +5123,8 @@ struct permonst* ptr;
     if (!ptr)
         return 0;
 
+    issue_breadcrumb3("monsterdescription_core", mon ? (int)mon->mnum : (int)(ptr - &mons[0]), mon ? (is_tame(mon) | (mon->data ? 2 : 0)) : 0);
+
     winid datawin = WIN_ERR;
     int glyph = mon ? any_mon_to_glyph(mon, rn2_on_display_rng) : (int)(ptr - &mons[0]) + GLYPH_MON_OFF;
     int gui_glyph = mon ? maybe_get_replaced_glyph(glyph, mon->mx, mon->my, data_to_replacement_info(glyph, LAYER_MONSTER, (struct obj*)0, mon, 0UL, 0UL, 0UL, MAT_NONE, 0)) : glyph;
