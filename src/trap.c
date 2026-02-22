@@ -7503,14 +7503,19 @@ lava_effects()
          * make the player sink into the lava. Assumption: water walking only
          * comes from boots.
          */
-        if (uarmf && obj_destroyed_in_lava_effects(uarmf))
+        if (uarmf && Walks_on_water && obj_destroyed_in_lava_effects(uarmf))
         {
             obj = uarmf;
             pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s into flame!", Yobjnam2(obj, "burst"));
             iflags.in_lava_effects++; /* (see above) */
+            int trackidx = add_to_obj_tracking(obj);
             (void)Boots_off();
-            debugprint("lava_effects: %d", obj->otyp);
-            useup(obj);
+            boolean bootsgone = finish_obj_tracking(trackidx);
+            if (!bootsgone)
+            {
+                debugprint("lava_effects: %d", obj->otyp);
+                useup(obj);
+            }
             iflags.in_lava_effects--;
         }
 
