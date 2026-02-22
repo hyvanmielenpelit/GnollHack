@@ -5123,7 +5123,7 @@ struct permonst* ptr;
     if (!ptr)
         return 0;
 
-    issue_breadcrumb3("monsterdescription_core", mon ? (int)mon->mnum : (int)(ptr - &mons[0]), mon ? (is_tame(mon) | (mon->data ? 2 : 0)) : 0);
+    issue_breadcrumb3("monsterdescription_core", mon ? (int)mon->mnum : (int)(ptr - &mons[0]), mon ? ((mon == &youmonst ? 1 : 0) | (mon != &youmonst && is_tame(mon) ? 2 : 0) | (mon->data ? 4 : 0)) : -1);
 
     winid datawin = WIN_ERR;
     int glyph = mon ? any_mon_to_glyph(mon, rn2_on_display_rng) : (int)(ptr - &mons[0]) + GLYPH_MON_OFF;
