@@ -7531,7 +7531,7 @@ lava_effects()
                 if (usurvive)
                     read_the_ruling_ring(obj);
             }
-            else if (obj->in_use)
+            else if (obj->in_use && !(obj->item_flags & ITEM_FLAGS_LAVA_EFFECTS_SKIP))
             {
                 if (obj->owornmask) 
                     remove_worn_item(obj, TRUE);

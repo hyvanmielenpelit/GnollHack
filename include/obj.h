@@ -55,6 +55,7 @@ struct obj {
 #define ITEM_FLAGS_GIVEN_BY_HERO               0x00000001UL
 #define ITEM_FLAGS_MEMORY_OBJECT_LAMPLIT       0x00000002UL /* Lamplit for graphics but it does not have an associated light source */
 #define ITEM_FLAGS_FIRED_BY_MONSTER            0x00000004UL
+#define ITEM_FLAGS_LAVA_EFFECTS_SKIP           0x00000008UL
 
     uint64_t speflags;    /* anything else that might be going on with an item, not affected by cancellation */
 
@@ -1210,6 +1211,7 @@ extern NEARDATA const struct mythic_power_definition mythic_suffix_powers[MAX_MY
 #define obj_destroyed_in_lava_effects(o) \
     ((melts_in_lava(o) || o->oclass == POTION_CLASS) \
         && !o->oerodeproof \
+        && !((o)->item_flags & ITEM_FLAGS_LAVA_EFFECTS_SKIP) \
         && !oresist_fire(o))
 
 /* Manuals */

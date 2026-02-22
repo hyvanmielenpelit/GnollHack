@@ -4068,9 +4068,10 @@ register struct obj *atmp;
             cancel_don();
         play_sfx_sound(SFX_ITEM_CRUMBLES_TO_DUST);
         Your_ex(ATR_NONE, CLR_MSG_WARNING, "%s crumbles and turns to dust!", cloak_simple_name(uarmc));
-        otmp->speflags |= SPEFLAGS_INDESTRUCTIBLE; /* Prevent lava_effects etc. from destroying the item when they are taken off */
+        otmp->in_use = 1;
+        otmp->item_flags |= ITEM_FLAGS_LAVA_EFFECTS_SKIP; /* Prevent lava_effects etc. from destroying the item when they are taken off */
         (void) Cloak_off();
-        otmp->speflags &= ~SPEFLAGS_INDESTRUCTIBLE;
+        otmp->item_flags &= ~ITEM_FLAGS_LAVA_EFFECTS_SKIP;
         debugprint("destroy_arm: %d", otmp->otyp);
         useup(otmp);
     } else if (DESTROY_ARM(uarmo)) {
@@ -4078,9 +4079,10 @@ register struct obj *atmp;
             cancel_don();
         play_sfx_sound(SFX_ITEM_CRUMBLES_TO_DUST);
         Your_ex(ATR_NONE, CLR_MSG_WARNING, "%s crumbles and turns to dust!", robe_simple_name(uarmc));
-        otmp->speflags |= SPEFLAGS_INDESTRUCTIBLE; /* Prevent lava_effects etc. from destroying the item when they are taken off */
+        otmp->in_use = 1;
+        otmp->item_flags |= ITEM_FLAGS_LAVA_EFFECTS_SKIP; /* Prevent lava_effects etc. from destroying the item when they are taken off */
         (void)Robe_off();
-        otmp->speflags &= ~SPEFLAGS_INDESTRUCTIBLE;
+        otmp->item_flags &= ~ITEM_FLAGS_LAVA_EFFECTS_SKIP;
         debugprint("destroy_arm2: %d", otmp->otyp);
         useup(otmp);
     } else if (DESTROY_ARM(uarm)) {
@@ -4089,9 +4091,10 @@ register struct obj *atmp;
         play_sfx_sound(SFX_ITEM_CRUMBLES_TO_DUST);
         Your_ex(ATR_NONE, CLR_MSG_WARNING, "armor turns to dust and falls to the %s!", surface(u.ux, u.uy));
         boolean had_stone_res = Stone_resistance;
-        otmp->speflags |= SPEFLAGS_INDESTRUCTIBLE; /* Prevent lava_effects etc. from destroying the item when it is taken off */
+        otmp->in_use = 1;
+        otmp->item_flags |= ITEM_FLAGS_LAVA_EFFECTS_SKIP; /* Prevent lava_effects etc. from destroying the item when they are taken off */
         (void) Armor_gone();
-        otmp->speflags &= ~SPEFLAGS_INDESTRUCTIBLE;
+        otmp->item_flags &= ~ITEM_FLAGS_LAVA_EFFECTS_SKIP;
         boolean has_stone_res = Stone_resistance;
         debugprint("destroy_arm3: %d", otmp->otyp);
         useup(otmp);
@@ -4101,9 +4104,10 @@ register struct obj *atmp;
             cancel_don();
         play_sfx_sound(SFX_ITEM_CRUMBLES_TO_DUST);
         Your_ex(ATR_NONE, CLR_MSG_WARNING, "shirt crumbles into tiny threads and falls apart!");
-        otmp->speflags |= SPEFLAGS_INDESTRUCTIBLE; /* Prevent lava_effects etc. from destroying the item when it is taken off */
+        otmp->in_use = 1;
+        otmp->item_flags |= ITEM_FLAGS_LAVA_EFFECTS_SKIP; /* Prevent lava_effects etc. from destroying the item when they are taken off */
         (void) Shirt_off();
-        otmp->speflags &= ~SPEFLAGS_INDESTRUCTIBLE;
+        otmp->item_flags &= ~ITEM_FLAGS_LAVA_EFFECTS_SKIP;
         debugprint("destroy_arm4: %d", otmp->otyp);
         useup(otmp);
     } else if (DESTROY_ARM(uarmh)) {
@@ -4111,9 +4115,10 @@ register struct obj *atmp;
             cancel_don();
         play_sfx_sound(SFX_ITEM_CRUMBLES_TO_DUST);
         Your_ex(ATR_NONE, CLR_MSG_WARNING, "%s turns to dust and is blown away!", helm_simple_name(uarmh));
-        otmp->speflags |= SPEFLAGS_INDESTRUCTIBLE; /* Prevent lava_effects etc. from destroying the item when it is taken off */
+        otmp->in_use = 1;
+        otmp->item_flags |= ITEM_FLAGS_LAVA_EFFECTS_SKIP; /* Prevent lava_effects etc. from destroying the item when they are taken off */
         (void) Helmet_off();
-        otmp->speflags &= ~SPEFLAGS_INDESTRUCTIBLE;
+        otmp->item_flags &= ~ITEM_FLAGS_LAVA_EFFECTS_SKIP;
         debugprint("destroy_arm5: %d", otmp->otyp);
         useup(otmp);
     } else if (DESTROY_ARM(uarmb)) {
@@ -4121,9 +4126,10 @@ register struct obj *atmp;
             cancel_don();
         play_sfx_sound(SFX_ITEM_VANISHES);
         Your_ex(ATR_NONE, CLR_MSG_WARNING, "bracers vanish!");
-        otmp->speflags |= SPEFLAGS_INDESTRUCTIBLE; /* Prevent lava_effects etc. from destroying the item when it is taken off */
+        otmp->in_use = 1;
+        otmp->item_flags |= ITEM_FLAGS_LAVA_EFFECTS_SKIP; /* Prevent lava_effects etc. from destroying the item when they are taken off */
         (void)Bracers_off();
-        otmp->speflags &= ~SPEFLAGS_INDESTRUCTIBLE;
+        otmp->item_flags &= ~ITEM_FLAGS_LAVA_EFFECTS_SKIP;
         debugprint("destroy_arm6: %d", otmp->otyp);
         useup(otmp);
     } else if (DESTROY_ARM(uarmg)) {
@@ -4131,9 +4137,10 @@ register struct obj *atmp;
             cancel_don();
         play_sfx_sound(SFX_ITEM_VANISHES);
         Your_ex(ATR_NONE, CLR_MSG_WARNING, "gloves vanish!");
-        otmp->speflags |= SPEFLAGS_INDESTRUCTIBLE; /* Prevent lava_effects etc. from destroying the gloves when they are taken off */
+        otmp->in_use = 1;
+        otmp->item_flags |= ITEM_FLAGS_LAVA_EFFECTS_SKIP; /* Prevent lava_effects etc. from destroying the item when they are taken off */
         (void) Gloves_off();
-        otmp->speflags &= ~SPEFLAGS_INDESTRUCTIBLE;
+        otmp->item_flags &= ~ITEM_FLAGS_LAVA_EFFECTS_SKIP;
         debugprint("destroy_arm7: %d", otmp->otyp);
         useup(otmp);
         selftouch("You");
@@ -4142,9 +4149,10 @@ register struct obj *atmp;
             cancel_don();
         play_sfx_sound(SFX_ITEM_CRUMBLES_TO_DUST);
         Your_ex(ATR_NONE, CLR_MSG_WARNING, "boots disintegrate!");
-        otmp->speflags |= SPEFLAGS_INDESTRUCTIBLE; /* Prevent lava_effects etc. from destroying the boots when they are taken off */
+        otmp->in_use = 1;
+        otmp->item_flags |= ITEM_FLAGS_LAVA_EFFECTS_SKIP; /* Prevent lava_effects etc. from destroying the item when they are taken off */
         (void) Boots_off();
-        otmp->speflags &= ~SPEFLAGS_INDESTRUCTIBLE;
+        otmp->item_flags &= ~ITEM_FLAGS_LAVA_EFFECTS_SKIP;
         debugprint("destroy_arm8: %d", otmp->otyp);
         useup(otmp);
     }
@@ -4153,9 +4161,10 @@ register struct obj *atmp;
             cancel_don();
         play_sfx_sound(SFX_ITEM_CRUMBLES_TO_DUST);
         Your_ex(ATR_NONE, CLR_MSG_WARNING, "shield crumbles away!");
-        otmp->speflags |= SPEFLAGS_INDESTRUCTIBLE; /* Prevent lava_effects etc. from destroying the item when it is taken off */
+        otmp->in_use = 1;
+        otmp->item_flags |= ITEM_FLAGS_LAVA_EFFECTS_SKIP; /* Prevent lava_effects etc. from destroying the item when they are taken off */
         (void) Shield_off();
-        otmp->speflags &= ~SPEFLAGS_INDESTRUCTIBLE;
+        otmp->item_flags &= ~ITEM_FLAGS_LAVA_EFFECTS_SKIP;
         debugprint("destroy_arm9: %d", otmp->otyp);
         useup(otmp);
     } else {
