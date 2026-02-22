@@ -1082,7 +1082,8 @@ register struct obj *obj, *merge;
         /* unfortunately at this point we don't know whether worn mask
            applied to hero or a monster or perhaps something bogus, so
            can't call remove_worn_item() to get <X>_off() side-effects */
-        setnotworn(obj);
+        if (setnotworn(obj))
+            return;
     }
     dealloc_obj(obj);
 }
@@ -4501,11 +4502,13 @@ register int fall;
                 continue;
             if (obj == current_wand)
                 continue;
-            setnotworn(obj);
-            freeinv(obj);
-            subfrombill(obj, shkp);
-            obj->speflags |= SPEFLAGS_GRABBED_FROM_YOU;
-            (void) add_to_minv(shkp, obj); /* may free obj */
+            if (!setnotworn(obj))
+            {
+                freeinv(obj);
+                subfrombill(obj, shkp);
+                obj->speflags |= SPEFLAGS_GRABBED_FROM_YOU;
+                (void)add_to_minv(shkp, obj); /* may free obj */
+            }
         }
     }
 }

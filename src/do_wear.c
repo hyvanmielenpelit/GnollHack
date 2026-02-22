@@ -779,7 +779,7 @@ int
 Armor_gone()
 {
     context.takeoff.mask &= ~W_ARM;
-    setnotworn(uarm);
+    (void)setnotworn(uarm);
     context.takeoff.cancelled_don = FALSE;
     return 0;
 }
@@ -994,7 +994,7 @@ boolean gone;
     //if (!(u.uprops[objects[obj->otyp].oc_oprop].extrinsic & mask))
     //   impossible("Strange... I didn't know you had that ring.");
     if (gone)
-        setnotworn(obj);
+        (void)setnotworn(obj);
     else
         setworn((struct obj *) 0, obj->owornmask);
 

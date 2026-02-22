@@ -337,9 +337,11 @@ int ef_flags;
         if (ef_flags & EF_PAY)
             costly_alteration(otmp, cost_type);
 
-        setnotworn(otmp);
-        debugprint("erode_obj: %d", otmp->otyp);
-        delobj(otmp);
+        if (!setnotworn(otmp))
+        {
+            debugprint("erode_obj: %d", otmp->otyp);
+            delobj(otmp);
+        }
         return ER_DESTROYED;
     } 
     else 
@@ -4401,9 +4403,11 @@ xchar x, y;
                     place_object(otmp, x, y);
             }
         }
-        setnotworn(obj);
-        debugprint("fire_damage: %d", obj->otyp);
-        delobj(obj);
+        if (!setnotworn(obj))
+        {
+            debugprint("fire_damage: %d", obj->otyp);
+            delobj(obj);
+        }
         return TRUE;
     } 
     else if (!force && (Luck + 5) > rn2(20)) 
@@ -4433,9 +4437,11 @@ xchar x, y;
         if (in_sight)
             pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s %s.", Yname2(obj),
                   destroy_strings[dindx][(obj->quan > 1L)]);
-        setnotworn(obj);
-        debugprint("fire_damage2: %d", obj->otyp);
-        delobj(obj);
+        if (!setnotworn(obj))
+        {
+            debugprint("fire_damage2: %d", obj->otyp);
+            delobj(obj);
+        }
         return TRUE;
     } 
     else if (obj->oclass == POTION_CLASS)
@@ -4448,9 +4454,11 @@ xchar x, y;
         if (in_sight)
             pline("%s %s.", Yname2(obj),
                   destroy_strings[dindx][(obj->quan > 1L)]);
-        setnotworn(obj);
-        debugprint("fire_damage3: %d", obj->otyp);
-        delobj(obj);
+        if (!setnotworn(obj))
+        {
+            debugprint("fire_damage3: %d", obj->otyp);
+            delobj(obj);
+        }
         return TRUE;
     }
     else if (erode_obj(obj, (char *) 0, ERODE_BURN, EF_DESTROY)
@@ -4752,9 +4760,11 @@ boolean force;
                 else
                     acid_ctx.unk_boom++;
             }
-            setnotworn(obj);
-            debugprint("water_damage: %d, %u", obj->otyp, obj->o_id);
-            delobj(obj);
+            if (!setnotworn(obj))
+            {
+                debugprint("water_damage: %d, %u", obj->otyp, obj->o_id);
+                delobj(obj);
+            }
             if (update)
                 update_inventory();
             return ER_DESTROYED;

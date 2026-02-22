@@ -1486,12 +1486,14 @@ struct obj *obj;
         else
             pline("It steals your %s!", mirror);
 
-        setnotworn(obj); /* in case mirror was wielded */
-        freeinv(obj);
-        (void) mpickobj(mtmp, obj);
-        if (!tele_restrict(mtmp))
+        if (!setnotworn(obj)) /* in case mirror was wielded */
         {
-            (void)rloc2(mtmp, TRUE, TRUE);
+            freeinv(obj);
+            (void)mpickobj(mtmp, obj);
+            if (!tele_restrict(mtmp))
+            {
+                (void)rloc2(mtmp, TRUE, TRUE);
+            }
         }
     }
     else if (!is_unicorn(mtmp->data) && !humanoid(mtmp->data)
@@ -5443,12 +5445,14 @@ struct obj *obj;
                      body_part(FACE));
     }
 
-    setnotworn(obj);
-    /* useup() is appropriate, but we want costly_alteration()'s message */
-    costly_alteration(obj, COST_SPLAT);
-    debugprint("use_cream_pie: %d", obj->otyp);
-    obj_extract_self(obj);
-    delobj(obj);
+    if (!setnotworn(obj))
+    {
+        /* useup() is appropriate, but we want costly_alteration()'s message */
+        costly_alteration(obj, COST_SPLAT);
+        debugprint("use_cream_pie: %d", obj->otyp);
+        obj_extract_self(obj);
+        delobj(obj);
+    }
     return 0;
 }
 
@@ -5673,7 +5677,8 @@ struct obj *obj;
 
     current_wand = obj; /* destroy_item might reset this */
     freeinv(obj);       /* hide it from destroy_item instead... */
-    setnotworn(obj);    /* so we need to do this ourselves */
+    if (setnotworn(obj))    /* so we need to do this ourselves */
+        return 1;
 
     if (!zappable(obj)) {
         pline(nothing_else_happens);

@@ -777,8 +777,10 @@ struct obj **potmp, **pobj;
         if (obj->timed)
             obj_stop_timers(obj); /* follows lights */
 
+        boolean objgone = FALSE; /* Should not become true since it has been extracted above */
         /* fixup for `#adjust' merging wielded darts, daggers, &c */
-        if (obj->owornmask && carried(otmp)) {
+        if (obj->owornmask && carried(otmp)) 
+        {
             int64_t wmask = otmp->owornmask | obj->owornmask;
 
             /* Both the items might be worn in competing slots;
@@ -799,10 +801,16 @@ struct obj **potmp, **pobj;
                 impossible("merging strangely worn items (%lx)", wmask);
                 wmask = otmp->owornmask;
             }
+            int trackidx = add_to_obj_tracking(otmp);
+            int trackidx2 = add_to_obj_tracking(obj);
             if ((otmp->owornmask & ~wmask) != 0L)
                 setnotworn(otmp);
-            setworn(otmp, wmask);
-            setnotworn(obj);
+            boolean otmpgone = finish_obj_tracking(trackidx);
+            if (!otmpgone)
+                setworn(otmp, wmask);
+            objgone = finish_obj_tracking(trackidx2);
+            if (!objgone)
+                setnotworn(obj);
 #if 0
         /* (this should not be necessary, since items
             already in a monster's inventory don't ever get
@@ -815,16 +823,19 @@ struct obj **potmp, **pobj;
 #endif /*0*/
         }
 
-        /* handle puddings a bit differently; absorption will free the
-           other object automatically so we can just return out from here */
-        if (obj->globby) {
-            pudding_merge_message(otmp, obj);
-            obj_absorb(potmp, pobj);
-            return TRUE;
-        }
+        if (!objgone)
+        {
+            /* handle puddings a bit differently; absorption will free the
+               other object automatically so we can just return out from here */
+            if (obj->globby) {
+                pudding_merge_message(otmp, obj);
+                obj_absorb(potmp, pobj);
+                return TRUE;
+            }
 
-        debugprint("merged: %d", obj->otyp);
-        obfree(obj, otmp); /* free(obj), bill->otmp */
+            debugprint("merged: %d", obj->otyp);
+            obfree(obj, otmp); /* free(obj), bill->otmp */
+        }
         return TRUE;
     }
     return FALSE;
@@ -1974,10 +1985,12 @@ void
 useupall(obj)
 struct obj *obj;
 {
-    setnotworn(obj);
-    freeinv(obj);
-    debugprint("useupall: %d", obj->otyp);
-    obfree(obj, (struct obj *) 0); /* deletes contents also */
+    if (!setnotworn(obj))
+    {
+        freeinv(obj);
+        debugprint("useupall: %d", obj->otyp);
+        obfree(obj, (struct obj*)0); /* deletes contents also */
+    }
 }
 
 void

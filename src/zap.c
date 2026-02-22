@@ -11528,20 +11528,25 @@ boolean forcedestroy;
                 potionbreathe(obj, dcbuf);
         }
 
+        int trackidx = add_to_obj_tracking(obj);
         if (obj->owornmask) 
         {
             if (obj->owornmask & W_RING) /* ring being worn */
                 Ring_gone(obj);
             else
-                setnotworn(obj);
+                (void)setnotworn(obj);
         }
+        boolean ogone = finish_obj_tracking(trackidx);
 
         if (obj == current_wand)
             current_wand = 0; /* destroyed */
 
-        debugprint("destroy_one_item: %d", obj->otyp);
-        for (i = 0; i < cnt; i++)
-            useup(obj);
+        if (!ogone)
+        {
+            debugprint("destroy_one_item: %d", obj->otyp);
+            for (i = 0; i < cnt; i++)
+                useup(obj);
+        }
 
         if (dmg) 
         {

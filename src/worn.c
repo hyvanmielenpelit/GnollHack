@@ -279,23 +279,23 @@ boolean verbose_and_update_stats;
 }
 
 
-void
+boolean
 setnotworn(obj)
 register struct obj* obj;
 {
-    setnotworncore(obj, TRUE);
+    return setnotworncore(obj, TRUE);
 }
 
-void
+boolean
 setnotwornquietly(obj)
 register struct obj* obj;
 {
-    setnotworncore(obj, FALSE);
+    return setnotworncore(obj, FALSE);
 }
 
 /* called e.g. when obj is destroyed */
 /* Updated to use the extrinsic and blocked fields. */
-void
+boolean
 setnotworncore(obj, verbose)
 register struct obj *obj;
 boolean verbose;
@@ -303,7 +303,7 @@ boolean verbose;
     register const struct worn *wp;
 
     if (!obj)
-        return;
+        return FALSE;
 
     int oldmanamax = u.uenmax;
     int oldhpmax = u.uhpmax;
@@ -328,7 +328,11 @@ boolean verbose;
         }
     }
 
+    boolean trackidx = add_to_obj_tracking(obj);
     update_all_character_properties(obj, verbose);
+    boolean obj_gone = finish_obj_tracking(trackidx);
+    if (obj_gone)
+        obj = 0;
 
     if (obj)
     {
@@ -358,6 +362,7 @@ boolean verbose;
         context.botl = context.botlx = 1;
     }
     update_inventory();
+    return obj_gone;
 }
 
 /* return item worn in slot indiciated by wornmask; needed by poly_obj() */

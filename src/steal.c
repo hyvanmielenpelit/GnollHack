@@ -147,7 +147,7 @@ register struct monst *mtmp;
         if (tmp < ygold->quan)
             ygold = splitobj(ygold, tmp);
         else
-            setnotworn(ygold);
+            (void)setnotworn(ygold);
         freeinv(ygold);
         (void)add_to_minv(mtmp, ygold);
 
@@ -344,7 +344,7 @@ boolean being_taken_away; /* shoud not be destroyed by lava_effects etc. */
     else if (obj->owornmask) 
     {
         /* catchall */
-        setnotworn(obj);
+        (void)setnotworn(obj);
     }
     boolean obj_gone = finish_obj_tracking(saved_item_idx);
     if (!obj_gone && being_taken_away && !had_flag)

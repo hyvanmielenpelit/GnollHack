@@ -4453,11 +4453,11 @@ E boolean FDECL(is_wseg_tailend, (struct monst*, int, int));
 /* ### worn.c ### */
 
 E void FDECL(setworn, (struct obj *, int64_t));
-E void FDECL(setnotworn, (struct obj *));
+E boolean FDECL(setnotworn, (struct obj *));
 E void FDECL(setworncore, (struct obj*, int64_t, BOOLEAN_P));
 E void FDECL(setwornquietly, (struct obj*, int64_t));
-E void FDECL(setnotworncore, (struct obj*, BOOLEAN_P));
-E void FDECL(setnotwornquietly, (struct obj*));
+E boolean FDECL(setnotworncore, (struct obj*, BOOLEAN_P));
+E boolean FDECL(setnotwornquietly, (struct obj*));
 E struct obj *FDECL(wearmask_to_obj, (int64_t));
 E int64_t FDECL(wearslot, (struct obj *));
 //E void FDECL(mon_adjust_speed, (struct monst *, int, struct obj *));
