@@ -344,6 +344,8 @@ struct debug_flags {
 #endif
 };
 
+#define MAX_REMOVE_ITEM_TRACK_OBJS 64
+
 struct instance_flags {
     /* stuff that really isn't option or platform related. They are
      * set and cleared during the game to control the internal
@@ -357,7 +359,9 @@ struct instance_flags {
     int failing_untrap;    /* move_into_trap() -> spoteffects() -> dotrap() */
     int in_lava_effects;   /* hack for Boots_off() */
     int in_remove_worn_item; /* another hack preventing lava_effects from destroying item being removed, which would lead to all sorts of dangling pointer errors */
-    struct obj* remove_worn_item_object; /* object related to above */
+    struct obj* remove_worn_item_preserve_object; /* do not destroy this item */
+    struct obj* remove_worn_item_object[MAX_REMOVE_ITEM_TRACK_OBJS]; /* objects related to above */
+    boolean remove_worn_item_object_gone[MAX_REMOVE_ITEM_TRACK_OBJS];
     int last_msg;          /* indicator of last message player saw */
     int override_ID;       /* true to force full identification of objects */
     int parse_config_file_src;  /* hack for parse_config_line() */

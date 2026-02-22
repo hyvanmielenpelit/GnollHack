@@ -124,10 +124,14 @@ struct obj *otmp;
     if (rn2(100) < chance) {
         play_simple_object_sound(otmp, OBJECT_SOUND_TYPE_APPLY);
         You_ex(ATR_NONE, CLR_MSG_SUCCESS, "put the saddle on %s.", mon_nam(mtmp));
+        boolean ogone = FALSE;
         if (otmp->owornmask)
-            remove_worn_item(otmp, FALSE);
-        freeinv(otmp);
-        put_saddle_on_mon(otmp, mtmp);
+            ogone = remove_worn_item(otmp, FALSE);
+        if (!ogone)
+        {
+            freeinv(otmp);
+            put_saddle_on_mon(otmp, mtmp);
+        }
     }
     else
     {

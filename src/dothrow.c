@@ -157,15 +157,19 @@ boolean firing;
 
         context.multishot_target_killed = FALSE;
         /* split this object off from its slot if necessary */
+        boolean ogone = FALSE;
         if (obj->quan > 1L) {
             otmp = splitobj(obj, 1L);
         } else {
             otmp = obj;
             if (otmp->owornmask)
-                remove_worn_item(otmp, FALSE);
+                ogone = remove_worn_item(otmp, FALSE);
         }
-        freeinv(otmp);
-        throwit(otmp, wep_mask);
+        if (!ogone)
+        {
+            freeinv(otmp);
+            throwit(otmp, wep_mask);
+        }
         update_u_action_revert(ACTION_TILE_NO_ACTION);
         if (context.multishot_target_killed == TRUE)
         {
@@ -2568,9 +2572,11 @@ boolean from_invent;
         debugprint("breakobj: %d", obj->otyp);
         if (obj->where == OBJ_INVENT)
         {
+            boolean ogone = FALSE;
             if (obj->owornmask)
-                remove_worn_item(obj, FALSE);
-            useupall(obj);
+                ogone = remove_worn_item(obj, FALSE);
+            if (!ogone)
+                useupall(obj);
         }
         else if (obj->where == OBJ_MINVENT)
         {

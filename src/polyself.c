@@ -1377,7 +1377,7 @@ break_armor()
             else
             {
                 You_ex(ATR_NONE, CLR_MSG_WARNING, canwearshield ? "drop your %s!" : "can no longer hold your %s!", cxname(otmp));
-                remove_worn_item(otmp, FALSE);
+                (void)remove_worn_item(otmp, FALSE);
             }
             if (!trackedobj_breakarm_gone)
                 (void)dropxf(otmp);

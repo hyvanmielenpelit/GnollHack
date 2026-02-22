@@ -4457,6 +4457,17 @@ struct obj *obj;
         trackedobj_extra = 0;
         trackedobj_extra_gone = TRUE;
     }
+    if (iflags.in_remove_worn_item > 0 && iflags.in_remove_worn_item <= MAX_REMOVE_ITEM_TRACK_OBJS)
+    {
+        int i;
+        for (i = 0; i < iflags.in_remove_worn_item; i++)
+        {
+            if (obj == iflags.remove_worn_item_object[i])
+            {
+                iflags.remove_worn_item_object_gone[i] = TRUE;
+            }
+        }
+    }
 
     if (obj->oextra)
         dealloc_oextra(obj);

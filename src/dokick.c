@@ -2242,8 +2242,11 @@ boolean shop_floor_obj;
             otmp->no_charge = 0;
     }
 
+    boolean ogone = FALSE;
     if (otmp->owornmask)
-        remove_worn_item(otmp, TRUE);
+        ogone = remove_worn_item(otmp, TRUE);
+    if (ogone)
+        return TRUE;
 
     /* some things break rather than ship */
     if (breaktest(otmp)) {

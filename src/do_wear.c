@@ -524,7 +524,7 @@ boolean voluntary, lostgloves, loststoneresistance; /* taking gloves off on purp
         killer.hint_idx = HINT_KILLED_TOUCHED_COCKATRICE_CORPSE;
         instapetrify(kbuf);
         /* life-saved; can't continue wielding cockatrice corpse though */
-        remove_worn_item(obj, FALSE);
+        (void)remove_worn_item(obj, FALSE);
     }
 }
 
@@ -1032,10 +1032,14 @@ Blindf_on(otmp)
 struct obj *otmp;
 {
     /* blindfold might be wielded; release it for wearing */
+    boolean ogone = FALSE;
     if (otmp->owornmask & W_WEAPON)
-        remove_worn_item(otmp, FALSE);
-    setworn(otmp, W_BLINDFOLD);
-    on_msg(otmp);
+        ogone = remove_worn_item(otmp, FALSE);
+    if (!ogone)
+    {
+        setworn(otmp, W_BLINDFOLD);
+        on_msg(otmp);
+    }
 }
 
 void
@@ -1390,7 +1394,7 @@ struct obj *obj;
         if (is_shield(obj))
             (void)armoroff(obj);
         else
-            remove_worn_item(obj, FALSE);
+            (void)remove_worn_item(obj, FALSE);
     } 
     else if (obj->owornmask & W_ARMOR) 
     {
@@ -1424,7 +1428,7 @@ struct obj *obj;
     {
         impossible("removing strange accessory?");
         if (obj->owornmask)
-            remove_worn_item(obj, FALSE);
+            (void)remove_worn_item(obj, FALSE);
     }
     return 1;
 }
@@ -2643,66 +2647,70 @@ int* result_style_ptr;
     {
         /* if the armor is wielded, release it for wearing (won't be
            welded even if cursed; that only happens for weapons/weptools) */
+        boolean ogone = FALSE;
         if (obj->owornmask & W_WEAPON)
-            remove_worn_item(obj, FALSE);
-        /*
-         * Setting obj->known=1 is done because setworn() causes hero's AC
-         * to change so armor's +/- value is evident via the status line.
-         * We used to set it here because of that, but then it would stick
-         * if a nymph stole the armor before it was fully worn.  Delay it
-         * until the aftermv action.  The player may still know this armor's
-         * +/- amount if donning gets interrupted, but the hero won't.
-         *
-        obj->known = 1;
-         */
-        setworn(obj, mask);
-        /* if there's no delay, we'll execute 'aftermv' immediately */
-        if (obj == uarm)
-            afternmv = Armor_on;
-        else if (obj == uarmh)
-            afternmv = Helmet_on;
-        else if (obj == uarmb)
-            afternmv = Bracers_on;
-        else if (obj == uarmg)
-            afternmv = Gloves_on;
-        else if (obj == uarmf)
-            afternmv = Boots_on;
-        else if (obj == uarms && obj->oclass == ARMOR_CLASS && objects[obj->otyp].oc_armor_category == ARM_SHIELD)
-            afternmv = Shield_on;
-        else if (obj == uarmc)
-            afternmv = Cloak_on;
-        else if (obj == uarmo)
-            afternmv = Robe_on;
-        else if (obj == uarmu)
-            afternmv = Shirt_on;
-        else
+            ogone = remove_worn_item(obj, FALSE);
+        if (!ogone)
         {
-            panic("wearing armor not worn as armor? [%08lx]", obj->owornmask);
-            return 0;
-        }
+            /*
+ * Setting obj->known=1 is done because setworn() causes hero's AC
+ * to change so armor's +/- value is evident via the status line.
+ * We used to set it here because of that, but then it would stick
+ * if a nymph stole the armor before it was fully worn.  Delay it
+ * until the aftermv action.  The player may still know this armor's
+ * +/- amount if donning gets interrupted, but the hero won't.
+ *
+obj->known = 1;
+ */
+            setworn(obj, mask);
+            /* if there's no delay, we'll execute 'aftermv' immediately */
+            if (obj == uarm)
+                afternmv = Armor_on;
+            else if (obj == uarmh)
+                afternmv = Helmet_on;
+            else if (obj == uarmb)
+                afternmv = Bracers_on;
+            else if (obj == uarmg)
+                afternmv = Gloves_on;
+            else if (obj == uarmf)
+                afternmv = Boots_on;
+            else if (obj == uarms && obj->oclass == ARMOR_CLASS && objects[obj->otyp].oc_armor_category == ARM_SHIELD)
+                afternmv = Shield_on;
+            else if (obj == uarmc)
+                afternmv = Cloak_on;
+            else if (obj == uarmo)
+                afternmv = Robe_on;
+            else if (obj == uarmu)
+                afternmv = Shirt_on;
+            else
+            {
+                panic("wearing armor not worn as armor? [%08lx]", obj->owornmask);
+                return 0;
+            }
 
-        if (!in_takeoff_wear)
-            delay = -objects[obj->otyp].oc_delay - added_time;
-        else
-            delay = 0;
+            if (!in_takeoff_wear)
+                delay = -objects[obj->otyp].oc_delay - added_time;
+            else
+                delay = 0;
 
-        added_time = 0;
-        if (delay) 
-        {
-            nomul(delay);
-            multi_reason = "dressing up";
-            nomovemsg = "You finish your dressing maneuver.";
-            nomovemsg_attr = ATR_NONE;
-            nomovemsg_color = NO_COLOR;
-        }
-        else 
-        {
-            unmul(""); /* call (*aftermv)(), clear it+nomovemsg+multi_reason */
-            on_msg(obj);
-        }
+            added_time = 0;
+            if (delay)
+            {
+                nomul(delay);
+                multi_reason = "dressing up";
+                nomovemsg = "You finish your dressing maneuver.";
+                nomovemsg_attr = ATR_NONE;
+                nomovemsg_color = NO_COLOR;
+            }
+            else
+            {
+                unmul(""); /* call (*aftermv)(), clear it+nomovemsg+multi_reason */
+                on_msg(obj);
+            }
 
-        if(!in_takeoff_wear)
-            context.takeoff.mask = context.takeoff.what = context.wear.mask = context.wear.what = 0L;
+            if (!in_takeoff_wear)
+                context.takeoff.mask = context.takeoff.what = context.wear.mask = context.wear.what = 0L;
+        }
     } 
     else 
     { /* not armor */

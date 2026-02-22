@@ -18,9 +18,10 @@ take_gold()
         nobj = otmp->nobj;
         if (otmp->oclass == COIN_CLASS) {
             lost_money = 1;
-            remove_worn_item(otmp, FALSE);
             debugprint("take_gold: %d", otmp->otyp);
-            delobj(otmp);
+            boolean ogone = remove_worn_item(otmp, FALSE);
+            if (!ogone)
+                delobj(otmp);
         }
     }
     if (!lost_money) {

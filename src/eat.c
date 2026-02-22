@@ -3657,9 +3657,12 @@ doeat()
             {
                 /* no need to check for leash in use; it's not metallic */
                 if (otmp->owornmask)
-                    remove_worn_item(otmp, FALSE);
-                freeinv(otmp);
-                obj_gone = dropyf(otmp);
+                    obj_gone = remove_worn_item(otmp, FALSE);
+                if (!obj_gone)
+                {
+                    freeinv(otmp);
+                    obj_gone = dropyf(otmp);
+                }
             }
             if (!obj_gone)
                 stackobj(otmp);

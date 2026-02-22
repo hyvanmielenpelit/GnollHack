@@ -2572,9 +2572,11 @@ int64_t timeout;
     }
     else if (in_invent) 
     {
+        boolean ogone = FALSE;
         if (obj->owornmask)
-            remove_worn_item(obj, TRUE);
-
+            ogone = remove_worn_item(obj, TRUE);
+        if (ogone)
+            return TRUE;
         Strcpy(whosebuf, "Your ");
         canseeunsummon = TRUE;
     }

@@ -4067,7 +4067,9 @@ int id;
             /* wearslot() returns a mask which might have multiple bits set;
                narrow that down to the bit(s) currently in use */
             new_wornmask = wearslot(otmp) & old_wornmask;
-            remove_worn_item(obj, TRUE);
+            iflags.in_lava_effects++;
+            (void)remove_worn_item(obj, TRUE);
+            iflags.in_lava_effects--;
             /* if the new form can be worn in the same slot, make it so */
             if ((new_wornmask & W_WEP) != 0L)
             {

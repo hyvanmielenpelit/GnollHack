@@ -883,11 +883,13 @@ int *fail_reason;
     m_dowear(mon, TRUE, FALSE);
 
     /* in case statue is wielded and hero zaps stone-to-flesh at self */
-    if (statue->owornmask)
-        remove_worn_item(statue, TRUE);
-    /* statue no longer exists */
     debugprint("animate_statue: %d", statue->otyp);
-    delobj(statue);
+    boolean ogone = FALSE;
+    if (statue->owornmask)
+        ogone = remove_worn_item(statue, TRUE);
+    /* statue no longer exists */
+    if (!ogone)
+        delobj(statue);
 
     /* avoid hiding under nothing */
     if (x == u.ux && y == u.uy && Upolyd && hides_under(youmonst.data)
@@ -4520,9 +4522,10 @@ xchar x, y;
                 You_see("%s hit lava and burn up!", doname(obj));
         }
         if (carried(obj)) { /* shouldn't happen */
-            remove_worn_item(obj, TRUE);
             debugprint("lava_damage: %d", obj->otyp);
-            useupall(obj);
+            boolean ogone = remove_worn_item(obj, TRUE);
+            if (!ogone)
+                useupall(obj);
         }
         else
         {
@@ -4882,10 +4885,12 @@ boolean *lostsome;
         }
         if (!otmp)
             return FALSE; /* nothing to drop! */
+        boolean ogone = FALSE;
         if (otmp->owornmask)
-            remove_worn_item(otmp, FALSE);
+            ogone = remove_worn_item(otmp, FALSE);
+        if (!ogone)
+            ogone = dropx(otmp);
         *lostsome = TRUE;
-        (void)dropx(otmp);
         invc--;
     }
     return TRUE;
@@ -7554,21 +7559,25 @@ lava_effects()
             }
             else if (obj->in_use 
                 && !(obj->item_flags & ITEM_FLAGS_LAVA_EFFECTS_SKIP) /* Avoid double messaging and deallocation for destroyed items */
-                && !(iflags.in_remove_worn_item && iflags.remove_worn_item_object == obj)) /* Do not burn items being removed in remove_worn_item; this will cause all sorts of dangling pointer errors */
+                && !(iflags.in_remove_worn_item && iflags.remove_worn_item_preserve_object == obj)) /* Do not burn item that is being removed from the hero's inventory soon (e.g. in the process of stolen) */
             {
-                if (obj->owornmask) 
-                    remove_worn_item(obj, TRUE);
-                if (usurvive)
-                {
-                    if (obj->oclass == FOOD_CLASS || obj->oclass == REAGENT_CLASS)
-                        pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s burnt to ashes!", Yobjnam2(obj, "are"));
-                    else if (is_fragile(obj)) /* Glass */
-                        pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s!", Yobjnam2(obj, "melt"));
-                    else
-                        pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s into flame!", Yobjnam2(obj, "burst"));
-                }
                 debugprint("lava_effects2: %d", obj->otyp);
-                useupall(obj);
+                boolean ogone = FALSE;
+                if (obj->owornmask) 
+                    ogone = remove_worn_item(obj, TRUE);
+                if (!ogone)
+                {
+                    if (usurvive)
+                    {
+                        if (obj->oclass == FOOD_CLASS || obj->oclass == REAGENT_CLASS)
+                            pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s burnt to ashes!", Yobjnam2(obj, "are"));
+                        else if (is_fragile(obj)) /* Glass */
+                            pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s!", Yobjnam2(obj, "melt"));
+                        else
+                            pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s into flame!", Yobjnam2(obj, "burst"));
+                    }
+                    useupall(obj);
+                }
             }
         }
 

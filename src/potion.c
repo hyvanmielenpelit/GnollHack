@@ -813,71 +813,75 @@ dodrink()
        that led to an "object lost" panic since subsequent useup()
        was no longer dealing with an inventory item.  Unwearing
        the current potion is intended to keep it in inventory.] */
-    if (otmp->quan > 1L) 
+    int res = 1;
+    struct monst* shkp = 0;
+    boolean billable_potion = FALSE;
+    boolean gone = FALSE;
+
+    if (otmp->quan > 1L)
     {
         otmp = splitobj(otmp, 1L);
         otmp->owornmask = 0L; /* rest of original stuck unaffected */
     }
     else if (otmp->owornmask) 
     {
-        remove_worn_item(otmp, FALSE);
+        gone = remove_worn_item(otmp, FALSE);
     }
-
-    otmp->in_use = TRUE; /* you've opened the stopper */
-
-    if (u_item_use_flags() & ACTION_ITEM_USE_FLAGS_POTION)
+    if (!gone)
     {
-        action_taken = TRUE;
-        update_u_action(ACTION_TILE_ITEM_USE);
-        u_wait_until_action();
+        otmp->in_use = TRUE; /* you've opened the stopper */
+
+        if (u_item_use_flags() & ACTION_ITEM_USE_FLAGS_POTION)
+        {
+            action_taken = TRUE;
+            update_u_action(ACTION_TILE_ITEM_USE);
+            u_wait_until_action();
+        }
+
+        if (otmp->unpaid && costly_spot(u.ux, u.uy))
+        {
+            debugprint_pos();
+            char* o_shop = in_rooms(u.ux, u.uy, SHOPBASE);
+            shkp = shop_keeper(*o_shop);
+            if (shkp && inhishop(shkp) && is_obj_on_shk_bill(otmp, shkp))
+            {
+                billable_potion = TRUE;
+            }
+        }
+
+        potion_descr = OBJ_DESCR(objects[otmp->otyp]);
+        if (potion_descr)
+        {
+            if (!strcmp(potion_descr, "milky")
+                && !(mvitals[PM_GHOST].mvflags & MV_GONE)
+                && !rn2(POTION_OCCUPANT_CHANCE(mvitals[PM_GHOST].born)))
+            {
+                ghost_from_bottle();
+                debugprint("dodrink: %d", otmp->otyp);
+                useup(otmp);
+                gone = TRUE;
+                if (action_taken)
+                    update_u_action_revert(ACTION_TILE_NO_ACTION);
+                goto check_add_to_bill_here;
+
+            }
+            else if (!strcmp(potion_descr, "smoky")
+                && !(mvitals[PM_DJINNI].mvflags & MV_GONE)
+                && ((otmp->speflags & SPEFLAGS_CERTAIN_WISH) != 0 || !rn2(POTION_OCCUPANT_CHANCE(mvitals[PM_DJINNI].born))))
+            {
+                djinni_from_bottle(otmp);
+                debugprint("dodrink2: %d", otmp->otyp);
+                useup(otmp);
+                gone = TRUE;
+                if (action_taken)
+                    update_u_action_revert(ACTION_TILE_NO_ACTION);
+                goto check_add_to_bill_here;
+            }
+        }
+
+        res = dopotion(otmp);
     }
 
-    struct monst* shkp = 0;
-    boolean billable_potion = FALSE;
-    boolean gone = FALSE;
-
-    if (otmp->unpaid && costly_spot(u.ux, u.uy))
-    {
-        debugprint_pos();
-        char* o_shop = in_rooms(u.ux, u.uy, SHOPBASE);
-        shkp = shop_keeper(*o_shop);
-        if (shkp && inhishop(shkp) && is_obj_on_shk_bill(otmp, shkp))
-        {
-            billable_potion = TRUE;
-        }
-    }
-
-    potion_descr = OBJ_DESCR(objects[otmp->otyp]);
-    if (potion_descr)
-    {
-        if (!strcmp(potion_descr, "milky")
-            && !(mvitals[PM_GHOST].mvflags & MV_GONE)
-            && !rn2(POTION_OCCUPANT_CHANCE(mvitals[PM_GHOST].born)))
-        {
-            ghost_from_bottle();
-            debugprint("dodrink: %d", otmp->otyp);
-            useup(otmp);
-            gone = TRUE;
-            if (action_taken)
-                update_u_action_revert(ACTION_TILE_NO_ACTION);
-            goto check_add_to_bill_here;
-
-        }
-        else if (!strcmp(potion_descr, "smoky")
-                   && !(mvitals[PM_DJINNI].mvflags & MV_GONE)
-                   && ((otmp->speflags & SPEFLAGS_CERTAIN_WISH) != 0 || !rn2(POTION_OCCUPANT_CHANCE(mvitals[PM_DJINNI].born))))
-        {
-            djinni_from_bottle(otmp);
-            debugprint("dodrink2: %d", otmp->otyp);
-            useup(otmp);
-            gone = TRUE;
-            if (action_taken)
-                update_u_action_revert(ACTION_TILE_NO_ACTION);
-            goto check_add_to_bill_here;
-        }
-    }
-
-    int res = dopotion(otmp);
     if (action_taken)
     {
         u_wait_until_end();

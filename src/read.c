@@ -1298,8 +1298,8 @@ boolean dopopup;
                 hcolor_multi_buf3((Blind || same_color) ? "" : scursed ? NH_BLACK
                     : NH_SILVER),
                 otense(otmp, "evaporate"));
-            remove_worn_item(otmp, FALSE);
             debugprint("seffects: %d", otmp->otyp);
+            (void)remove_worn_item(otmp, FALSE);
             useup(otmp);
             return;
         }

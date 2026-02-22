@@ -4301,11 +4301,15 @@ struct monst *mon;
                       Who, yname(ring));
             makeknown(RIN_ADORNMENT);
             /* might be in left or right ring slot or weapon/alt-wep/quiver */
+            boolean ogone = FALSE;
             if (ring->owornmask)
-                remove_worn_item(ring, FALSE);
-            freeinv(ring);
-            (void) mpickobj(mon, ring);
-            play_sfx_sound(SFX_STEAL_GOLD);
+                ogone = remove_worn_item_ex(ring, FALSE, TRUE);
+            if (!ogone)
+            {
+                freeinv(ring);
+                ogone = mpickobj(mon, ring);
+                play_sfx_sound(SFX_STEAL_GOLD);
+            }
         } else {
             if (uleft && uright && uleft->otyp == RIN_ADORNMENT
                 && uright->otyp == RIN_ADORNMENT)
@@ -4605,7 +4609,7 @@ const char *str;
                                  /* obj == uarmh */
                                  : hairbuf);
     }
-    remove_worn_item(obj, TRUE);
+    (void)remove_worn_item_ex(obj, TRUE, TRUE);
 }
 
 /* FIXME:

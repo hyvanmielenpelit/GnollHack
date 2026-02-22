@@ -3932,10 +3932,13 @@ boolean loseit;    /* whether to drop it if hero can longer touch it */
     /* removing a worn item might result in loss of levitation,
        dropping the hero onto a polymorph trap or into water or
        lava and potentially dropping or destroying the item */
-    if (obj->owornmask) {
+    if (obj->owornmask) 
+    {
         struct obj *otmp;
 
-        remove_worn_item(obj, FALSE);
+        boolean ogone = remove_worn_item(obj, FALSE);
+        if (ogone)
+            return 0;
         for (otmp = invent; otmp; otmp = otmp->nobj)
             if (otmp == obj)
                 break;

@@ -652,7 +652,9 @@ struct obj* wep;
         {
             /* Automate the unwield to assist the player */
             /* If weapon is bimanual and you have an unused secondardy weapon in hand, unwield it */
-            remove_worn_item(uarms, FALSE);
+            iflags.in_lava_effects++;
+            (void)remove_worn_item(uarms, FALSE);
+            iflags.in_lava_effects--;
         }
 
         /* Set your new primary weapon */
@@ -1067,7 +1069,11 @@ doswapweapon()
         if (oldwep2)
         {
             if (is_shield(oldwep2))
-                remove_worn_item(oldwep2, FALSE);
+            {
+                iflags.in_lava_effects++;
+                (void)remove_worn_item(oldwep2, FALSE);
+                iflags.in_lava_effects--;
+            }
             else
                 setuwep((struct obj*) 0, W_WEP2);
         }

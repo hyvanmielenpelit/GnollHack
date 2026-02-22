@@ -3193,23 +3193,26 @@ struct monst *mtmp;
                    weapon; drop it at hero's feet instead */
                 where_to = 2;
             }
-            remove_worn_item(obj, FALSE);
-            freeinv(obj);
-            switch (where_to) {
-            case 1: /* onto floor beneath mon */
-                pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s yanks %s from your %s!", Monnam(mtmp), the_weapon,
-                      hand);
-                place_object(obj, mtmp->mx, mtmp->my);
-                break;
-            case 2: /* onto floor beneath you */
-                pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s yanks %s to the %s!", Monnam(mtmp), the_weapon,
-                      surface(u.ux, u.uy));
-                (void) dropy(obj);
-                break;
-            case 3: /* into mon's inventory */
-                pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s snatches %s!", Monnam(mtmp), the_weapon);
-                (void) mpickobj(mtmp, obj);
-                break;
+            boolean ogone = remove_worn_item_ex(obj, FALSE, TRUE);
+            if (!ogone)
+            {
+                freeinv(obj);
+                switch (where_to) {
+                case 1: /* onto floor beneath mon */
+                    pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s yanks %s from your %s!", Monnam(mtmp), the_weapon,
+                        hand);
+                    place_object(obj, mtmp->mx, mtmp->my);
+                    break;
+                case 2: /* onto floor beneath you */
+                    pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s yanks %s to the %s!", Monnam(mtmp), the_weapon,
+                        surface(u.ux, u.uy));
+                    ogone = dropy(obj);
+                    break;
+                case 3: /* into mon's inventory */
+                    pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s snatches %s!", Monnam(mtmp), the_weapon);
+                    ogone = mpickobj(mtmp, obj);
+                    break;
+                }
             }
             return 1;
         }

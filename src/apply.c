@@ -4172,18 +4172,23 @@ struct obj* obj;
                 }
 
                 //Now disintegrate object
+                boolean obj_gone = FALSE;
                 if (otmp->owornmask)
-                    remove_worn_item(otmp, TRUE);
+                    obj_gone = remove_worn_item(otmp, TRUE);
 
-                play_sfx_sound(SFX_DISINTEGRATE);
-                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s disintegrated!", Yobjnam2(otmp, "are"));
-                wandknown = TRUE;
-                //Destroy item;
-                debugprint("use_wand_on_object: %d", otmp->otyp);
-                useupall(otmp);
+                if (!obj_gone)
+                {
+                    play_sfx_sound(SFX_DISINTEGRATE);
+                    pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s disintegrated!", Yobjnam2(otmp, "are"));
+                    wandknown = TRUE;
+                    //Destroy item;
+                    debugprint("use_wand_on_object: %d", otmp->otyp);
+                    useupall(otmp);
+                }
                 break;
             case WAN_POLYMORPH:
-                if (!is_polymorphable(otmp) || obj_resists(otmp, 5, 95)) 
+            {
+                if (!is_polymorphable(otmp) || obj_resists(otmp, 5, 95))
                 {
                     if (!Blind)
                     {
@@ -4198,20 +4203,25 @@ struct obj* obj;
 
                 //Polymorph it now
                 wandknown = TRUE;
+                boolean ogone = FALSE;
                 if (otmp->owornmask)
                 {
-                    remove_worn_item(otmp, TRUE);
+                    ogone = remove_worn_item(otmp, TRUE);
                     undonned = TRUE;
                 }
-                Strcpy(buftext, Yname2(otmp));
-                Strcpy(buftext2, otense(otmp, "morph"));
-                Strcpy(buftext3, otense(otmp, "undon"));
-                Strcat(buftext3, " and ");
+                if (!ogone)
+                {
+                    Strcpy(buftext, Yname2(otmp));
+                    Strcpy(buftext2, otense(otmp, "morph"));
+                    Strcpy(buftext3, otense(otmp, "undon"));
+                    Strcat(buftext3, " and ");
 
-                otmp = poly_obj(otmp, STRANGE_OBJECT);
-                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s %s%s into %s!", buftext, undonned ? buftext3 : "", buftext2, an(xname(otmp)));
+                    otmp = poly_obj(otmp, STRANGE_OBJECT);
+                    pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s %s%s into %s!", buftext, undonned ? buftext3 : "", buftext2, an(xname(otmp)));
+                }
                 update_inventory();
                 break;
+            }
             case WAN_EVAPORATION:
                 if (otmp->oclass == POTION_CLASS)
                 {
@@ -4229,24 +4239,30 @@ struct obj* obj;
                     pline("Nothing much happens.");
                 break;
             case WAN_TELEPORTATION:
-                if(otmp->owornmask)
-                    remove_worn_item(otmp, TRUE);
-                if (otmp->otyp == LEASH && otmp->leashmon)
-                    o_unleash(otmp);
-                freeinv(otmp);
-                obj_clear_found(otmp);
-                place_object(otmp, u.ux, u.uy);
-                char tbuf[BUFSZ * 2];
-                Strcpy(tbuf, Tobjnam(otmp, "vanish"));
-                boolean stillexists = rloco(otmp);
-                play_sfx_sound(SFX_TELEPORT);
-                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s from your person%s.", tbuf, !stillexists ? "" :
-                    otmp->ox == u.ux && otmp->oy == u.uy ? " and then appears at your feet" : 
-                    cansee(otmp->ox, otmp->oy) && dist2(u.ux, u.uy, otmp->ox, otmp->oy) <= 9 ? " and then appears near you" : 
-                    cansee(otmp->ox, otmp->oy) ? " and then appears at a distance from you" :
-                    "");
-                res = 1;
+            {
+                boolean ogone = FALSE;
+                if (otmp->owornmask)
+                    ogone = remove_worn_item(otmp, TRUE);
+                if (!ogone)
+                {
+                    if (otmp->otyp == LEASH && otmp->leashmon)
+                        o_unleash(otmp);
+                    freeinv(otmp);
+                    obj_clear_found(otmp);
+                    place_object(otmp, u.ux, u.uy);
+                    char tbuf[BUFSZ * 2];
+                    Strcpy(tbuf, Tobjnam(otmp, "vanish"));
+                    boolean stillexists = rloco(otmp);
+                    play_sfx_sound(SFX_TELEPORT);
+                    pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s from your person%s.", tbuf, !stillexists ? "" :
+                        otmp->ox == u.ux && otmp->oy == u.uy ? " and then appears at your feet" :
+                        cansee(otmp->ox, otmp->oy) && dist2(u.ux, u.uy, otmp->ox, otmp->oy) <= 9 ? " and then appears near you" :
+                        cansee(otmp->ox, otmp->oy) ? " and then appears at a distance from you" :
+                        "");
+                    res = 1;
+                }
                 break;
+            }
             default:
                 pline("Nothing much happens.");
                 res = 0;

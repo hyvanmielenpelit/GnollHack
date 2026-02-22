@@ -213,22 +213,36 @@ botm:
 
 /* An object you're wearing has been taken off by a monster (theft or
    seduction).  Also used if a worn item gets transformed (stone to flesh). */
-void
+boolean
 remove_worn_item(obj, unchain_ball)
+struct obj* obj;
+boolean unchain_ball; /* whether to unpunish or just unwield */
+{
+    return remove_worn_item_ex(obj, unchain_ball, FALSE);
+}
+
+boolean
+remove_worn_item_ex(obj, unchain_ball, being_taken_away)
 struct obj *obj;
 boolean unchain_ball; /* whether to unpunish or just unwield */
+boolean being_taken_away; /* shoud not be destroyed by lava_effects etc. */
 {
     if (donning(obj))
         cancel_don();
     if (!obj->owornmask)
-        return;
-    int was_in_lava_effects = iflags.in_lava_effects;
-    if (!was_in_lava_effects) /* Prevent reset by the recursive call in lava_effects */
-    {
-        iflags.in_remove_worn_item++;
-        iflags.remove_worn_item_object = obj;
-    }
-    if (obj->owornmask & W_ARMOR) 
+        return FALSE;
+    boolean obj_gone = FALSE;
+
+    iflags.in_remove_worn_item++;
+    if (iflags.in_remove_worn_item > MAX_REMOVE_ITEM_TRACK_OBJS)
+        iflags.in_remove_worn_item = MAX_REMOVE_ITEM_TRACK_OBJS;
+    int saved_item_idx = iflags.in_remove_worn_item - 1;
+    iflags.remove_worn_item_object[saved_item_idx] = obj;
+    iflags.remove_worn_item_object_gone[saved_item_idx] = FALSE;
+    if (being_taken_away)
+        iflags.remove_worn_item_preserve_object = obj;
+
+    if (obj->owornmask & W_ARMOR)
     {
         if (obj == uskin) 
         {
@@ -299,11 +313,18 @@ boolean unchain_ball; /* whether to unpunish or just unwield */
         /* catchall */
         setnotworn(obj);
     }
-    if (!was_in_lava_effects) /* Prevent reset by the recursive call in lava_effects */
-    {
-        iflags.remove_worn_item_object = 0;
-        iflags.in_remove_worn_item--;
-    }
+    if (iflags.remove_worn_item_object_gone[saved_item_idx])
+        obj_gone = TRUE;
+    iflags.remove_worn_item_object[saved_item_idx] = 0;
+    iflags.remove_worn_item_object_gone[saved_item_idx] = FALSE;
+    
+    iflags.in_remove_worn_item--;
+    if (iflags.in_remove_worn_item < 0)
+        iflags.in_remove_worn_item = 0;
+    if (being_taken_away)
+        iflags.remove_worn_item_preserve_object = 0;
+
+    return obj_gone;
 }
 
 
@@ -451,6 +472,7 @@ gotobj:
     if (uarms && is_shield(uarms))
         wmask |= W_ARMS;
 
+    boolean ogone = FALSE;
     if (otmp->owornmask & wmask) {
         switch (otmp->oclass) {
         case TOOL_CLASS:
@@ -458,7 +480,7 @@ gotobj:
         case MISCELLANEOUS_CLASS:
         case RING_CLASS:
         case FOOD_CLASS: /* meat ring */
-            remove_worn_item(otmp, TRUE);
+            ogone = remove_worn_item_ex(otmp, TRUE, TRUE);
             break;
         case ARMOR_CLASS:
             armordelay = objects[otmp->otyp].oc_delay;
@@ -469,7 +491,7 @@ gotobj:
                    to take off items which require extra time */
                 if (armordelay >= 1 && !olddelay && rn2(10))
                     goto cant_take;
-                remove_worn_item(otmp, TRUE);
+                ogone = remove_worn_item(otmp, TRUE);
                 break;
             } else {
                 int curssv = otmp->cursed;
@@ -505,17 +527,20 @@ gotobj:
                 nomovemsg = 0;
                 nomovemsg_attr = ATR_NONE;
                 nomovemsg_color = NO_COLOR;
-                remove_worn_item(otmp, TRUE);
-                otmp->cursed = curssv;
-                if (multi < 0) {
-                    /*
-                    multi = 0;
-                    afternmv = 0;
-                    */
-                    stealoid = otmp->o_id;
-                    stealmid = mtmp->m_id;
-                    afternmv = stealarm;
-                    return 0;
+                ogone = remove_worn_item_ex(otmp, TRUE, TRUE);
+                if (!ogone)
+                {
+                    otmp->cursed = curssv;
+                    if (multi < 0) {
+                        /*
+                        multi = 0;
+                        afternmv = 0;
+                        */
+                        stealoid = otmp->o_id;
+                        stealmid = mtmp->m_id;
+                        afternmv = stealarm;
+                        return 0;
+                    }
                 }
             }
             break;
@@ -524,7 +549,7 @@ gotobj:
                        otmp->oclass);
         }
     } else if (otmp->owornmask)
-        remove_worn_item(otmp, TRUE);
+        ogone = remove_worn_item_ex(otmp, TRUE, TRUE);
 
     /* do this before removing it from inventory */
     if (objnambuf)
@@ -669,41 +694,51 @@ struct monst *mtmp;
     { /* we have something to snatch */
         /* take off outer gear if we're targetting [hypothetical]
            quest artifact suit, shirt, gloves, or rings */
+        trackedobj_extra = otmp;
         if ((otmp == uarm || otmp == uarmo || otmp == uarmu) && uarmc)
-            remove_worn_item(uarmc, FALSE);
+            (void)remove_worn_item(uarmc, FALSE);
         if ((otmp == uarm || otmp == uarmu) && uarmo)
-            remove_worn_item(uarmo, FALSE);
+            (void)remove_worn_item(uarmo, FALSE);
         if (otmp == uarmu && uarm)
-            remove_worn_item(uarm, FALSE);
+            (void)remove_worn_item(uarm, FALSE);
         if ((otmp == uarmg || ((otmp == uright || otmp == uleft) && uarmg))
             && uwep) {
             /* gloves are about to be unworn; unwield weapon first */
-            remove_worn_item(uwep, FALSE);
+            (void)remove_worn_item(uwep, FALSE);
         }
         if ((otmp == uarmg || ((otmp == uright || otmp == uleft) && uarmg))
             && uarms) {
             /* gloves are about to be unworn; unwield shields & left hand weapon */
-            remove_worn_item(uarms, FALSE);
+            (void)remove_worn_item(uarms, FALSE);
         }
         if ((otmp == uright || otmp == uleft) && uarmg)
             /* calls Gloves_off() to handle wielded cockatrice corpse */
-            remove_worn_item(uarmg, FALSE);
+            (void)remove_worn_item(uarmg, FALSE);
 
-        /* finally, steal the target item */
-        if (otmp->owornmask)
-            remove_worn_item(otmp, TRUE);
-        debugprint_pos();
-        if (otmp->unpaid)
-            subfrombill(otmp, shop_keeper(*u.ushops));
-        freeinv(otmp);
-        Strcpy(buf, doname(otmp));
-        (void) mpickobj(mtmp, otmp); /* could merge and free otmp but won't */
-        play_sfx_sound(SFX_STEAL_ITEM);
-        pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s steals %s!", Monnam(mtmp), buf);
-        if (has_teleportation(mtmp) && !tele_restrict(mtmp))
+        if (!trackedobj_extra_gone)
         {
-            (void)rloc2(mtmp, TRUE, TRUE);
+            /* finally, steal the target item */
+            boolean ogone = FALSE;
+            if (otmp->owornmask)
+                ogone = remove_worn_item_ex(otmp, TRUE, TRUE);
+            if (!ogone)
+            {
+                debugprint_pos();
+                if (otmp->unpaid)
+                    subfrombill(otmp, shop_keeper(*u.ushops));
+                freeinv(otmp);
+                Strcpy(buf, doname(otmp));
+                (void)mpickobj(mtmp, otmp); /* could merge and free otmp but won't */
+                play_sfx_sound(SFX_STEAL_ITEM);
+                pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s steals %s!", Monnam(mtmp), buf);
+                if (has_teleportation(mtmp) && !tele_restrict(mtmp))
+                {
+                    (void)rloc2(mtmp, TRUE, TRUE);
+                }
+            }
         }
+        trackedobj_extra = 0;
+        trackedobj_extra_gone = FALSE;
     }
 }
 
@@ -721,28 +756,33 @@ int ochance, achance; /* percent chance for ordinary item, artifact */
         return;
 
     if (carried(obj)) {
+        boolean ogone = FALSE;
         if (obj->owornmask)
-            remove_worn_item(obj, TRUE);
-        debugprint_pos();
-        if (obj->unpaid)
-            subfrombill(obj, shop_keeper(*u.ushops));
-        if (cansee(mon->mx, mon->my)) {
-            const char *MonName = Monnam(mon);
+            ogone = remove_worn_item(obj, TRUE);
+        if (!ogone)
+        {
+            debugprint_pos();
+            if (obj->unpaid)
+                subfrombill(obj, shop_keeper(*u.ushops));
+            if (cansee(mon->mx, mon->my)) {
+                const char* MonName = Monnam(mon);
 
-            /* mon might be invisible; avoid "It pulls ... and absorbs it!" */
-            if (!strcmp(MonName, "It"))
-                MonName = "Something";
-            pline("%s pulls %s away from you and absorbs %s!", MonName,
-                  yname(obj), (obj->quan > 1L) ? "them" : "it");
-        } else {
-            const char *hand_s = body_part(HAND);
+                /* mon might be invisible; avoid "It pulls ... and absorbs it!" */
+                if (!strcmp(MonName, "It"))
+                    MonName = "Something";
+                pline("%s pulls %s away from you and absorbs %s!", MonName,
+                    yname(obj), (obj->quan > 1L) ? "them" : "it");
+            }
+            else {
+                const char* hand_s = body_part(HAND);
 
-            if (bimanual(obj))
-                hand_s = makeplural(hand_s);
-            pline("%s %s pulled from your %s!", upstart(yname(obj)),
-                  otense(obj, "are"), hand_s);
+                if (bimanual(obj))
+                    hand_s = makeplural(hand_s);
+                pline("%s %s pulled from your %s!", upstart(yname(obj)),
+                    otense(obj, "are"), hand_s);
+            }
+            freeinv(obj);
         }
-        freeinv(obj);
     } else {
         /* not carried; presumably thrown or kicked */
         if (canspotmon(mon))

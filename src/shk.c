@@ -101,12 +101,16 @@ int64_t amount;
         return 0L;
     }
 
+    boolean ogone = FALSE;
     if (ygold->quan > amount)
         ygold = splitobj(ygold, amount);
     else if (ygold->owornmask)
-        remove_worn_item(ygold, FALSE); /* quiver */
-    freeinv(ygold);
-    (void)add_to_minv(mon, ygold);
+        ogone = remove_worn_item(ygold, FALSE); /* quiver */
+    if (!ogone)
+    {
+        freeinv(ygold);
+        ogone = add_to_minv(mon, ygold);
+    }
 
     if (isok(u.ux, u.uy))
     {
