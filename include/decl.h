@@ -436,6 +436,8 @@ E NEARDATA struct obj* trackedobj_breakarm;
 E NEARDATA boolean trackedobj_breakarm_gone;
 E NEARDATA struct obj* trackedobj_destroyarm;
 E NEARDATA boolean trackedobj_destroyarm_gone;
+E NEARDATA struct obj* trackedobj_extra;
+E NEARDATA boolean trackedobj_extra_gone;
 
 E NEARDATA const struct obj zeroobj; /* for init; also, &zeroobj is used
                                       * as special value */

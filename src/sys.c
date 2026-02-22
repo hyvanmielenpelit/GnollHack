@@ -362,6 +362,8 @@ reset_item_global_variables(VOID_ARGS)
     trackedobj_breakarm_gone = FALSE;
     trackedobj_destroyarm = 0;
     trackedobj_destroyarm_gone = FALSE;
+    trackedobj_extra = 0;
+    trackedobj_extra_gone = FALSE;
     getobj_autoselect_obj = (struct obj*)0;
 }
 

@@ -2970,23 +2970,21 @@ glibr()
         xfl++;
         if (leftfall) {
             otmp = uleft;
-            otmp->item_flags |= ITEM_FLAGS_LAVA_EFFECTS_SKIP;
-            trackedobj_destroyarm = otmp;
+            trackedobj_extra = otmp;
             Ring_off(uleft);
-            if (!trackedobj_destroyarm_gone)
+            if (!trackedobj_extra_gone)
                 (void)dropxf(otmp);
-            trackedobj_destroyarm = 0;
-            trackedobj_destroyarm_gone = FALSE;
+            trackedobj_extra = 0;
+            trackedobj_extra_gone = FALSE;
         }
         if (rightfall) {
             otmp = uright;
-            otmp->item_flags |= ITEM_FLAGS_LAVA_EFFECTS_SKIP;
-            trackedobj_destroyarm = otmp;
+            trackedobj_extra = otmp;
             Ring_off(uright);
-            if (!trackedobj_destroyarm_gone)
+            if (!trackedobj_extra_gone)
                 (void)dropxf(otmp);
-            trackedobj_destroyarm = 0;
-            trackedobj_destroyarm_gone = FALSE;
+            trackedobj_extra = 0;
+            trackedobj_extra_gone = FALSE;
         }
     }
 

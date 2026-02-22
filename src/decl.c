@@ -212,6 +212,8 @@ NEARDATA struct obj* trackedobj_breakarm = (struct obj*)0;
 NEARDATA boolean trackedobj_breakarm_gone = FALSE;
 NEARDATA struct obj* trackedobj_destroyarm = (struct obj*)0;
 NEARDATA boolean trackedobj_destroyarm_gone = FALSE;
+NEARDATA struct obj* trackedobj_extra = (struct obj*)0;
+NEARDATA boolean trackedobj_extra_gone = FALSE;
 
 NEARDATA const struct zap_type_definition zap_type_definitions[MAX_ZAP_TYPES] = {
     {"magic", HI_ZAP, MAGIC_MISSILE_RAY_ANIMATION},

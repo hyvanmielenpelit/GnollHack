@@ -4452,6 +4452,11 @@ struct obj *obj;
         trackedobj_destroyarm = 0;
         trackedobj_destroyarm_gone = TRUE;
     }
+    if (obj == trackedobj_extra)
+    {
+        trackedobj_extra = 0;
+        trackedobj_extra_gone = TRUE;
+    }
 
     if (obj->oextra)
         dealloc_oextra(obj);
