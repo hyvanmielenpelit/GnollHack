@@ -4050,7 +4050,7 @@ int id;
          * equivalent to calling freeinv on obj and addinv on otmp,
          * while doing an in-place swap of the actual objects.
          */
-        freeinv_core(obj);
+        freeinv_core(obj);/* replace_object did extraction to free, so this remains to be done */
         addinv_core1(otmp);
         addinv_core2(otmp);
         /*
@@ -4067,41 +4067,44 @@ int id;
             /* wearslot() returns a mask which might have multiple bits set;
                narrow that down to the bit(s) currently in use */
             new_wornmask = wearslot(otmp) & old_wornmask;
-            iflags.in_lava_effects++;
-            (void)remove_worn_item(obj, TRUE);
-            iflags.in_lava_effects--;
-            /* if the new form can be worn in the same slot, make it so */
-            if ((new_wornmask & W_WEP) != 0L)
+            int save_idx = add_to_obj_tracking(otmp);
+            (void)remove_worn_item(obj, TRUE); /* Note that obj is now free; so it should not be destroyed */
+            boolean ogone = finish_obj_tracking(save_idx);
+            if (!ogone)
             {
-                if (was_twohanded || !bimanual(otmp) || !uarms)
-                    setuwep(otmp, W_WEP);
-            }
-            else if ((new_wornmask & W_WEP2) != 0L)
-            {
-                if (was_twohanded || !bimanual(otmp) || !uwep)
-                    setuwep(otmp, W_WEP2);
-            }
-            else if ((new_wornmask & W_SWAPWEP) != 0L)
-            {
-                if (was_twohanded || !bimanual(otmp) || !uswapwep2)
-                    setuswapwep(otmp, W_SWAPWEP);
-            }
-            else if ((new_wornmask & W_SWAPWEP2) != 0L)
-            {
-                if (was_twohanded || !bimanual(otmp) || !uswapwep)
-                    setuswapwep(otmp, W_SWAPWEP2);
-            }
-            else if ((new_wornmask & W_QUIVER) != 0L) 
-            {
-                setuqwep(otmp);
-            } 
-            else if (new_wornmask)
-            {
-                setworn(otmp, new_wornmask);
-                /* set_wear() might result in otmp being destroyed if
-                   worn amulet has been turned into an amulet of change */
-                set_wear(otmp);
-                otmp = wearmask_to_obj(new_wornmask); /* might be Null */
+                /* if the new form can be worn in the same slot, make it so */
+                if ((new_wornmask & W_WEP) != 0L)
+                {
+                    if (was_twohanded || !bimanual(otmp) || !uarms)
+                        setuwep(otmp, W_WEP);
+                }
+                else if ((new_wornmask & W_WEP2) != 0L)
+                {
+                    if (was_twohanded || !bimanual(otmp) || !uwep)
+                        setuwep(otmp, W_WEP2);
+                }
+                else if ((new_wornmask & W_SWAPWEP) != 0L)
+                {
+                    if (was_twohanded || !bimanual(otmp) || !uswapwep2)
+                        setuswapwep(otmp, W_SWAPWEP);
+                }
+                else if ((new_wornmask & W_SWAPWEP2) != 0L)
+                {
+                    if (was_twohanded || !bimanual(otmp) || !uswapwep)
+                        setuswapwep(otmp, W_SWAPWEP2);
+                }
+                else if ((new_wornmask & W_QUIVER) != 0L)
+                {
+                    setuqwep(otmp);
+                }
+                else if (new_wornmask)
+                {
+                    setworn(otmp, new_wornmask);
+                    /* set_wear() might result in otmp being destroyed if
+                       worn amulet has been turned into an amulet of change */
+                    set_wear(otmp);
+                    otmp = wearmask_to_obj(new_wornmask); /* might be Null */
+                }
             }
         } /* old_wornmask */
     } 

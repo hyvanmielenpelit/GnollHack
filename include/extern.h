@@ -3693,6 +3693,8 @@ E int NDECL(stealarm);
 #endif
 E int64_t FDECL(somegold, (int64_t));
 E void FDECL(stealgold, (struct monst *));
+E int FDECL(add_to_obj_tracking, (struct obj*));
+E boolean FDECL(finish_obj_tracking, (int));
 E boolean FDECL(remove_worn_item, (struct obj*, BOOLEAN_P));
 E boolean FDECL(remove_worn_item_ex, (struct obj *, BOOLEAN_P, BOOLEAN_P));
 E int FDECL(steal, (struct monst *, char *));

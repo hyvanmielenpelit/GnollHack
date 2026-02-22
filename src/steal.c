@@ -211,6 +211,45 @@ botm:
     return 0;
 }
 
+int
+add_to_obj_tracking(obj)
+struct obj* obj;
+{
+    if (!obj)
+        return -1;
+    iflags.object_tracking_item_index++;
+    int saved_item_idx = iflags.object_tracking_item_index - 1;
+    if (saved_item_idx >= MAX_TRACKED_OBJECTS)
+        saved_item_idx = MAX_TRACKED_OBJECTS - 1;
+    iflags.tracked_object_obj[saved_item_idx] = obj;
+    iflags.tracked_object_gone[saved_item_idx] = FALSE;
+    return saved_item_idx;
+}
+
+boolean
+finish_obj_tracking(saved_item_idx)
+int saved_item_idx;
+{
+    if (saved_item_idx < 0)
+        return FALSE; /* No object was destroyed since obj was zero */
+    if (saved_item_idx >= MAX_TRACKED_OBJECTS)
+    {
+        iflags.object_tracking_item_index--;
+        if (iflags.object_tracking_item_index < 0)
+            iflags.object_tracking_item_index = 0;
+        return FALSE; /* Some problem occurred */
+    }
+
+    if (iflags.tracked_object_obj[saved_item_idx] == 0) /* Should not happen */
+        debugprint("finish_obj_tracking with zero obj: idx=%d, maxidx=%d", saved_item_idx, iflags.object_tracking_item_index);
+
+    boolean obj_gone = iflags.tracked_object_gone[saved_item_idx];
+    iflags.tracked_object_obj[saved_item_idx] = 0;
+    iflags.tracked_object_gone[saved_item_idx] = FALSE;
+    iflags.object_tracking_item_index--;
+    return obj_gone;
+}
+
 /* An object you're wearing has been taken off by a monster (theft or
    seduction).  Also used if a worn item gets transformed (stone to flesh). */
 boolean
@@ -231,16 +270,10 @@ boolean being_taken_away; /* shoud not be destroyed by lava_effects etc. */
         cancel_don();
     if (!obj->owornmask)
         return FALSE;
-    boolean obj_gone = FALSE;
-
-    iflags.in_remove_worn_item++;
-    if (iflags.in_remove_worn_item > MAX_REMOVE_ITEM_TRACK_OBJS)
-        iflags.in_remove_worn_item = MAX_REMOVE_ITEM_TRACK_OBJS;
-    int saved_item_idx = iflags.in_remove_worn_item - 1;
-    iflags.remove_worn_item_object[saved_item_idx] = obj;
-    iflags.remove_worn_item_object_gone[saved_item_idx] = FALSE;
-    if (being_taken_away)
-        iflags.remove_worn_item_preserve_object = obj;
+    boolean had_flag = (obj->item_flags & ITEM_FLAGS_LAVA_EFFECTS_SKIP) != 0;
+    int saved_item_idx = add_to_obj_tracking(obj);
+    if (being_taken_away && !had_flag)
+        obj->item_flags |= ITEM_FLAGS_LAVA_EFFECTS_SKIP;
 
     if (obj->owornmask & W_ARMOR)
     {
@@ -313,16 +346,9 @@ boolean being_taken_away; /* shoud not be destroyed by lava_effects etc. */
         /* catchall */
         setnotworn(obj);
     }
-    if (iflags.remove_worn_item_object_gone[saved_item_idx])
-        obj_gone = TRUE;
-    iflags.remove_worn_item_object[saved_item_idx] = 0;
-    iflags.remove_worn_item_object_gone[saved_item_idx] = FALSE;
-    
-    iflags.in_remove_worn_item--;
-    if (iflags.in_remove_worn_item < 0)
-        iflags.in_remove_worn_item = 0;
-    if (being_taken_away)
-        iflags.remove_worn_item_preserve_object = 0;
+    boolean obj_gone = finish_obj_tracking(saved_item_idx);
+    if (!obj_gone && being_taken_away && !had_flag)
+        obj->item_flags &= ~ITEM_FLAGS_LAVA_EFFECTS_SKIP;
 
     return obj_gone;
 }
@@ -694,7 +720,7 @@ struct monst *mtmp;
     { /* we have something to snatch */
         /* take off outer gear if we're targetting [hypothetical]
            quest artifact suit, shirt, gloves, or rings */
-        trackedobj_extra = otmp;
+        int trackidx = add_to_obj_tracking(otmp);
         if ((otmp == uarm || otmp == uarmo || otmp == uarmu) && uarmc)
             (void)remove_worn_item(uarmc, FALSE);
         if ((otmp == uarm || otmp == uarmu) && uarmo)
@@ -715,11 +741,10 @@ struct monst *mtmp;
             /* calls Gloves_off() to handle wielded cockatrice corpse */
             (void)remove_worn_item(uarmg, FALSE);
 
-        trackedobj_extra = 0;
-        if (!trackedobj_extra_gone)
+        boolean ogone = finish_obj_tracking(trackidx);
+        if (!ogone)
         {
             /* finally, steal the target item */
-            boolean ogone = FALSE;
             if (otmp->owornmask)
                 ogone = remove_worn_item_ex(otmp, TRUE, TRUE);
             if (!ogone)
@@ -738,7 +763,6 @@ struct monst *mtmp;
                 }
             }
         }
-        trackedobj_extra_gone = FALSE;
     }
 }
 

@@ -7513,6 +7513,7 @@ lava_effects()
         else
             You_ex(ATR_NONE, CLR_MSG_NEGATIVE, "fall into the %s!", hliquid("lava"));
 
+        issue_breadcrumb("lava_effects");
         usurvive = Lifesaved || discover || wizard || ModernMode || CasualMode;
 
         /* prevent remove_worn_item() -> Boots_off(WATER_WALKING_BOOTS) ->
@@ -7524,9 +7525,7 @@ lava_effects()
         /* Additional note by JG: now that any item can give any property,
            and effects are handled in setnotworn immediately for those items,
            this requires more detailed attention. remove_worn_item now has
-           iflags.in_remove_worn_item and iflags.remove_worn_item_object
-           that can be used with one level of recursion to prevent
-           destruction of the removed item by lava_effects. */
+           add_to_obj_tracking and finish_obj_tracking to prevent this. */
 
         /* Also, adding ITEM_FLAGS_LAVA_EFFECTS_SKIP to item_flags will 
            prevent destruction by lava_effects. This is generally used for
@@ -7559,7 +7558,7 @@ lava_effects()
             }
             else if (obj->in_use 
                 && !(obj->item_flags & ITEM_FLAGS_LAVA_EFFECTS_SKIP) /* Avoid double messaging and deallocation for destroyed items */
-                && !(iflags.in_remove_worn_item && iflags.remove_worn_item_preserve_object == obj)) /* Do not burn item that is being removed from the hero's inventory soon (e.g. in the process of stolen) */
+                    )
             {
                 debugprint("lava_effects2: %d", obj->otyp);
                 boolean ogone = FALSE;

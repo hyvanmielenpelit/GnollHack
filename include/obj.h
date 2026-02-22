@@ -1212,7 +1212,6 @@ extern NEARDATA const struct mythic_power_definition mythic_suffix_powers[MAX_MY
     ((melts_in_lava(o) || o->oclass == POTION_CLASS) \
         && !o->oerodeproof \
         && !((o)->item_flags & ITEM_FLAGS_LAVA_EFFECTS_SKIP) \
-        && !(iflags.in_remove_worn_item > 0 && iflags.remove_worn_item_preserve_object == (o)) \
         && !oresist_fire(o))
 
 /* Manuals */

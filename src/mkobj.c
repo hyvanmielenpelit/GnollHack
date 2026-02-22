@@ -4442,29 +4442,15 @@ struct obj *obj;
         trackedobj = 0;
         trackedobj_gone = TRUE;
     }
-    if (obj == trackedobj_breakarm)
-    {
-        trackedobj_breakarm = 0;
-        trackedobj_breakarm_gone = TRUE;
-    }
-    if (obj == trackedobj_destroyarm)
-    {
-        trackedobj_destroyarm = 0;
-        trackedobj_destroyarm_gone = TRUE;
-    }
-    if (obj == trackedobj_extra)
-    {
-        trackedobj_extra = 0;
-        trackedobj_extra_gone = TRUE;
-    }
-    if (iflags.in_remove_worn_item > 0 && iflags.in_remove_worn_item <= MAX_REMOVE_ITEM_TRACK_OBJS)
+    if (iflags.object_tracking_item_index > 0)
     {
         int i;
-        for (i = 0; i < iflags.in_remove_worn_item; i++)
+        int objcnt = min(iflags.object_tracking_item_index, MAX_TRACKED_OBJECTS);
+        for (i = 0; i < objcnt; i++)
         {
-            if (obj == iflags.remove_worn_item_object[i])
+            if (obj == iflags.tracked_object_obj[i])
             {
-                iflags.remove_worn_item_object_gone[i] = TRUE;
+                iflags.tracked_object_gone[i] = TRUE;
             }
         }
     }

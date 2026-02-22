@@ -652,9 +652,13 @@ struct obj* wep;
         {
             /* Automate the unwield to assist the player */
             /* If weapon is bimanual and you have an unused secondardy weapon in hand, unwield it */
-            iflags.in_lava_effects++;
+            int saved_idx1 = add_to_obj_tracking(wep);
+            int saved_idx2 = add_to_obj_tracking(uarms);
             (void)remove_worn_item(uarms, FALSE);
-            iflags.in_lava_effects--;
+            boolean isobjgone1 = finish_obj_tracking(saved_idx1);
+            boolean isobjgone2 = finish_obj_tracking(saved_idx2);
+            if (isobjgone1 || isobjgone2)
+                return 1;
         }
 
         /* Set your new primary weapon */
@@ -1070,9 +1074,17 @@ doswapweapon()
         {
             if (is_shield(oldwep2))
             {
-                iflags.in_lava_effects++;
+                int saved_idx1 = add_to_obj_tracking(oldwep);
+                int saved_idx2 = add_to_obj_tracking(oldwep2);
+                int saved_idx3 = add_to_obj_tracking(oldswap);
+                int saved_idx4 = add_to_obj_tracking(oldswap2);
                 (void)remove_worn_item(oldwep2, FALSE);
-                iflags.in_lava_effects--;
+                boolean isobjgone1 = finish_obj_tracking(saved_idx1);
+                boolean isobjgone2 = finish_obj_tracking(saved_idx2);
+                boolean isobjgone3 = finish_obj_tracking(saved_idx3);
+                boolean isobjgone4 = finish_obj_tracking(saved_idx4);
+                if (isobjgone1 || isobjgone2 || isobjgone3 || isobjgone4)
+                    return 1;
             }
             else
                 setuwep((struct obj*) 0, W_WEP2);

@@ -344,7 +344,7 @@ struct debug_flags {
 #endif
 };
 
-#define MAX_REMOVE_ITEM_TRACK_OBJS 64
+#define MAX_TRACKED_OBJECTS 24
 
 struct instance_flags {
     /* stuff that really isn't option or platform related. They are
@@ -358,10 +358,9 @@ struct instance_flags {
     boolean invis_goldsym; /* gold symbol is ' '? */
     int failing_untrap;    /* move_into_trap() -> spoteffects() -> dotrap() */
     int in_lava_effects;   /* hack for Boots_off() */
-    int in_remove_worn_item; /* another hack preventing lava_effects from destroying item being removed, which would lead to all sorts of dangling pointer errors */
-    struct obj* remove_worn_item_preserve_object; /* do not destroy this item */
-    struct obj* remove_worn_item_object[MAX_REMOVE_ITEM_TRACK_OBJS]; /* objects related to above */
-    boolean remove_worn_item_object_gone[MAX_REMOVE_ITEM_TRACK_OBJS];
+    int object_tracking_item_index; /* another hack preventing lava_effects from destroying item being removed, which would lead to all sorts of dangling pointer errors */
+    struct obj* tracked_object_obj[MAX_TRACKED_OBJECTS]; /* objects related to above */
+    boolean tracked_object_gone[MAX_TRACKED_OBJECTS];
     int last_msg;          /* indicator of last message player saw */
     int override_ID;       /* true to force full identification of objects */
     int parse_config_file_src;  /* hack for parse_config_line() */
