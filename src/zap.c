@@ -6581,8 +6581,13 @@ struct obj* obj;
         play_simple_object_sound(obj, OBJECT_SOUND_TYPE_ZAP);
 
         current_wand = obj;
+        int trackidx = add_to_obj_tracking(obj);
         weffects(obj);
-        obj = current_wand;
+        boolean wandgone = finish_obj_tracking(trackidx);
+        if (wandgone && current_wand == obj)
+            obj = 0;
+        else
+            obj = current_wand;
         current_wand = 0;
     }
     if (obj && obj->charges < 0)
@@ -8190,6 +8195,7 @@ struct obj *obj;
     int otyp = obj->otyp;
     boolean disclose = FALSE;
     //boolean was_unkn = !objects[otyp].oc_name_known;
+    int trackidx = add_to_obj_tracking(obj);
 
     exercise(A_WIS, TRUE);
     if (u.usteed && (objects[otyp].oc_dir != NODIR) && !u.dx && !u.dy
@@ -8293,8 +8299,18 @@ struct obj *obj;
 
         disclose = TRUE;
     }
-    if (disclose) {
-        learnwand(obj);
+    boolean wandgone = finish_obj_tracking(trackidx);
+    if (disclose) 
+    {
+        if (wandgone)
+        {
+            if (!Blind)
+                makeknown(otyp);
+        }
+        else
+        {
+            learnwand(obj);
+        }
 //        if (was_unkn)
 //            more_experienced(0, 10);
     }
