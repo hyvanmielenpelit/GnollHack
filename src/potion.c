@@ -919,9 +919,12 @@ struct obj *otmp;
 
     otmp->in_use = TRUE;
     nothing = unkn = 0;
-    if ((retval = peffects(otmp)) >= 0)
+    int trackidx = add_to_obj_tracking(otmp);
+    retval = peffects(otmp);
+    gone = finish_obj_tracking(trackidx);
+    if (retval >= 0 || gone)
     {
-        if (retval == 1)
+        if (retval == 1 || gone)
         {
             gone = TRUE;
             goto check_billable_potion_here;

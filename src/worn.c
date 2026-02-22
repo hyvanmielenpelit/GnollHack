@@ -202,7 +202,15 @@ boolean verbose_and_update_stats;
         obj->nknown = TRUE;
     }
 
+    boolean trackidx = add_to_obj_tracking(obj);
+    boolean trackidx2 = add_to_obj_tracking(oobj);
     update_all_character_properties(obj, verbose_and_update_stats);
+    boolean obj_gone = finish_obj_tracking(trackidx);
+    boolean oobj_gone = finish_obj_tracking(trackidx2);
+    if (obj_gone)
+        obj = 0;
+    if (oobj_gone)
+        oobj = 0;
 
     /* Note that this does not work for weapons if there is an old weapon, since we do not know whether the change was caused by the old or the new weapon */
     if ((obj && !oobj) || (oobj && !obj))

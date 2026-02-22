@@ -504,7 +504,11 @@ doread(VOID_ARGS)
         }
     }
 
-    if (!(gone = seffects(scroll, &effect_happened, &youmonst)))
+    int trackidx = add_to_obj_tracking(scroll);
+    gone = seffects(scroll, &effect_happened, &youmonst);
+    if (finish_obj_tracking(trackidx))
+        gone = TRUE;
+    if (!gone)
     {
         if (!objects[scroll->otyp].oc_name_known)
         {
