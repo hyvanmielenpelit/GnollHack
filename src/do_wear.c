@@ -300,7 +300,9 @@ Boots_off(VOID_ARGS)
     /* For levitation, float_down() returns if Levitation, so we
      * must do a setworn() _before_ the levitation case.
      */
+    int trackidx = add_to_obj_tracking(otmp);
     setworn((struct obj *) 0, W_ARMF);
+    boolean objgone = finish_obj_tracking(trackidx);
 
     switch (otyp) {
     case WATER_WALKING_BOOTS:
