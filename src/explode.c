@@ -694,6 +694,7 @@ int expltype;
         destroy_item(WAND_CLASS, (int) adtyp);
 
         item_destruction_hint((int)adtyp, FALSE);
+        clear_bypasses();
 
         ugolemeffects((int) adtyp, damu);
         if (uhurt == 2 && (damu > 0 || instadeath)) 

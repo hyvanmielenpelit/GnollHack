@@ -2163,6 +2163,7 @@ register struct obj* omonwep;
                 destroy_item(SPBOOK_CLASS, AD_FIRE);
             burn_away_slime();
             item_destruction_hint(AD_FIRE, FALSE);
+            clear_bypasses();
         }
         //else
         //    damage = 0;
@@ -3760,6 +3761,7 @@ boolean ufound;
                 destroy_item(WAND_CLASS, (int)mattk->adtyp);
 
                 item_destruction_hint((int)mattk->adtyp, FALSE);
+                clear_bypasses();
             }
             break;
 
@@ -4057,6 +4059,7 @@ struct attack *mattk;
                 if (damage > 0)
                     mdamageu_with_hit_tile(mtmp, damage, TRUE, HIT_ON_FIRE);
                 item_destruction_hint(AD_FIRE, FALSE);
+                clear_bypasses();
             }
         }
         break;

@@ -9752,6 +9752,7 @@ const char *fltxt;
         if (!rn2(3))
             destroy_item(RING_CLASS, AD_ELEC);
         item_destruction_hint(AD_ELEC, TRUE);
+        clear_bypasses();
         break;
     case ZT_POISON_GAS:
         damage = 0;
