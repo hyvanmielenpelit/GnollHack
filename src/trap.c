@@ -7488,7 +7488,7 @@ lava_effects()
          * make the player sink into the lava. Assumption: water walking only
          * comes from boots.
          */
-        if (uarmf && melts_in_lava(uarmf) && !uarmf->oerodeproof && !oresist_fire(uarmf))
+        if (uarmf && obj_destroyed_in_lava_effects(uarmf))
         {
             obj = uarmf;
             pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s into flame!", Yobjnam2(obj, "burst"));
@@ -7515,6 +7515,22 @@ lava_effects()
            successfully delete (via useupall) the no-longer-worn boots;
            once recursive call returned, we would try to delete them again
            here in the outer call (and access stale memory, probably panic) */
+
+        /* Additional note by JG: now that any item can give any property,
+           and effects are handled in setnotworn immediately for those items,
+           this requires more detailed attention. remove_worn_item now has
+           iflags.in_remove_worn_item and iflags.remove_worn_item_object
+           that can be used with one level of recursion to prevent
+           destruction of the removed item by lava_effects. */
+
+        /* Also, adding ITEM_FLAGS_LAVA_EFFECTS_SKIP to item_flags will 
+           prevent destruction by lava_effects. This is generally used for
+           already destroyed items that has also in_use set to 1.
+           Otherwise, you would have double messaging that the item first
+           e.g. crumbles to dust and then it is burnt by lava to crisp.
+           This works with any level of recursion, but the flag needs to be
+           cleared in bones and upon restore (for error save files). */
+
         iflags.in_lava_effects++;
 
         for (obj = invent; obj; obj = obj2)
@@ -7536,7 +7552,9 @@ lava_effects()
                 if (usurvive)
                     read_the_ruling_ring(obj);
             }
-            else if (obj->in_use && !(obj->item_flags & ITEM_FLAGS_LAVA_EFFECTS_SKIP))
+            else if (obj->in_use 
+                && !(obj->item_flags & ITEM_FLAGS_LAVA_EFFECTS_SKIP) /* Avoid double messaging and deallocation for destroyed items */
+                && !(iflags.in_remove_worn_item && iflags.remove_worn_item_object == obj)) /* Do not burn items being removed in remove_worn_item; this will cause all sorts of dangling pointers */
             {
                 if (obj->owornmask) 
                     remove_worn_item(obj, TRUE);

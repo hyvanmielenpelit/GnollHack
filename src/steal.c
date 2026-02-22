@@ -222,9 +222,12 @@ boolean unchain_ball; /* whether to unpunish or just unwield */
         cancel_don();
     if (!obj->owornmask)
         return;
-
-    iflags.in_remove_worn_item++;
-    iflags.remove_worn_item_object = obj;
+    boolean was_in_lava_effects = iflags.in_lava_effects;
+    if (!was_in_lava_effects) /* Prevent reset by the recursive call in lava_effects */
+    {
+        iflags.in_remove_worn_item++;
+        iflags.remove_worn_item_object = obj;
+    }
     if (obj->owornmask & W_ARMOR) 
     {
         if (obj == uskin) 
@@ -296,8 +299,11 @@ boolean unchain_ball; /* whether to unpunish or just unwield */
         /* catchall */
         setnotworn(obj);
     }
-    iflags.remove_worn_item_object = 0;
-    iflags.in_remove_worn_item--;
+    if (!was_in_lava_effects) /* Prevent reset by the recursive call in lava_effects */
+    {
+        iflags.remove_worn_item_object = 0;
+        iflags.in_remove_worn_item--;
+    }
 }
 
 
