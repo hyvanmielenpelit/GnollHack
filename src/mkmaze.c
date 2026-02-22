@@ -716,7 +716,7 @@ struct monst *mtmp;
         if ((otmp = mksobj(GOLD_PIECE, FALSE, FALSE, FALSE)) != 0) {
             otmp->quan = 1L + rnd(goldprob);
             otmp->owt = weight(otmp);
-            add_to_minv(mtmp, otmp);
+            (void)add_to_minv(mtmp, otmp);
         }
     }
     if (rn2(1000) < gemprob) {
@@ -724,13 +724,13 @@ struct monst *mtmp;
             if (is_rock(otmp))
                 dealloc_obj(otmp);
             else
-                add_to_minv(mtmp, otmp);
+                (void)add_to_minv(mtmp, otmp);
         }
     }
     if (is_captain || !rn2(8)) {
         otyp = shiny_obj(RING_CLASS);
         if (otyp != STRANGE_OBJECT && (otmp = mksobj(otyp, FALSE, FALSE, FALSE)) != 0)
-            add_to_minv(mtmp, otmp);
+            (void)add_to_minv(mtmp, otmp);
     }
 }
 void

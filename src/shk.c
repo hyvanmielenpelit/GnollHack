@@ -106,7 +106,7 @@ int64_t amount;
     else if (ygold->owornmask)
         remove_worn_item(ygold, FALSE); /* quiver */
     freeinv(ygold);
-    add_to_minv(mon, ygold);
+    (void)add_to_minv(mon, ygold);
 
     if (isok(u.ux, u.uy))
     {

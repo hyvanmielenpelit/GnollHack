@@ -732,8 +732,8 @@ struct obj *objlist, *obj;
     return objlist;
 }
 
-/* merge obj with otmp and delete obj if types agree */
-int
+/* merge obj with otmp and delete obj if types agree; if so, return TRUE, otherwise FALSE */
+boolean
 merged(potmp, pobj)
 struct obj **potmp, **pobj;
 {
@@ -820,14 +820,14 @@ struct obj **potmp, **pobj;
         if (obj->globby) {
             pudding_merge_message(otmp, obj);
             obj_absorb(potmp, pobj);
-            return 1;
+            return TRUE;
         }
 
         debugprint("merged: %d", obj->otyp);
         obfree(obj, otmp); /* free(obj), bill->otmp */
-        return 1;
+        return TRUE;
     }
-    return 0;
+    return FALSE;
 }
 
 /*

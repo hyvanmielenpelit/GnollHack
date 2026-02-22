@@ -7554,7 +7554,7 @@ lava_effects()
             }
             else if (obj->in_use 
                 && !(obj->item_flags & ITEM_FLAGS_LAVA_EFFECTS_SKIP) /* Avoid double messaging and deallocation for destroyed items */
-                && !(iflags.in_remove_worn_item && iflags.remove_worn_item_object == obj)) /* Do not burn items being removed in remove_worn_item; this will cause all sorts of dangling pointers */
+                && !(iflags.in_remove_worn_item && iflags.remove_worn_item_object == obj)) /* Do not burn items being removed in remove_worn_item; this will cause all sorts of dangling pointer errors */
             {
                 if (obj->owornmask) 
                     remove_worn_item(obj, TRUE);

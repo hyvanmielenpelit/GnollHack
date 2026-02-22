@@ -1274,7 +1274,7 @@ int64_t amount;
     struct obj *gold = mksobj(GOLD_PIECE, FALSE, FALSE, FALSE);
 
     gold->quan = amount;
-    add_to_minv(mtmp, gold);
+    (void)add_to_minv(mtmp, gold);
 }
 
 STATIC_OVL void

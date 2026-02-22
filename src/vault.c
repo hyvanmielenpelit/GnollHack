@@ -766,7 +766,7 @@ int goldx, goldy; /* <gold->ox, gold->oy> */
         }
         debugprint("gd_pick_corridor_gold");
         obj_extract_self(gold);
-        add_to_minv(grd, gold);
+        (void)add_to_minv(grd, gold);
         newsym(goldx, goldy);
 
     /* guard is already at gold's location */

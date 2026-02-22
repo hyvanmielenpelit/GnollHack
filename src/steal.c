@@ -113,7 +113,7 @@ register struct monst *mtmp;
     if (fgold && (!ygold || fgold->quan > ygold->quan || !rn2(5))) {
         debugprint("stealgold");
         obj_extract_self(fgold);
-        add_to_minv(mtmp, fgold);
+        (void)add_to_minv(mtmp, fgold);
         newsym(u.ux, u.uy);
         if (u.usteed) {
             who = u.usteed;
@@ -149,7 +149,7 @@ register struct monst *mtmp;
         else
             setnotworn(ygold);
         freeinv(ygold);
-        add_to_minv(mtmp, ygold);
+        (void)add_to_minv(mtmp, ygold);
 
         if (isok(u.ux, u.uy))
         {
@@ -555,13 +555,13 @@ gotobj:
     return (multi < 0) ? 0 : 1;
 }
 
-/* Returns 1 if otmp is free'd, 0 otherwise. */
-int
+/* Returns TRUE if otmp is free'd, FALSE otherwise. */
+boolean
 mpickobj(mtmp, otmp)
 register struct monst *mtmp;
 register struct obj *otmp;
 {
-    int freed_otmp;
+    boolean freed_otmp;
     boolean snuff_otmp = FALSE;
 
     /* if monster is acquiring a thrown or kicked object, the throwing

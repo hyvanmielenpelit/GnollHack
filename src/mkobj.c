@@ -4265,10 +4265,10 @@ struct obj *obj, **head_ptr;
 
 /*
  * Add obj to mon's inventory.  If obj is able to merge with something already
- * in the inventory, then the passed obj is deleted and 1 is returned.
- * Otherwise 0 is returned.
+ * in the inventory, then the passed obj is deleted and TRUE is returned.
+ * Otherwise FALSE is returned.
  */
-int
+boolean
 add_to_minv(mon, obj)
 struct monst *mon;
 struct obj *obj;
@@ -4278,19 +4278,19 @@ struct obj *obj;
     if (obj->where != OBJ_FREE)
     {
         panic("add_to_minv: obj not free");
-        return 0;
+        return FALSE;
     }
     /* merge if possible */
     debugprint("add_to_minv: %d", obj->otyp);
     for (otmp = mon->minvent; otmp; otmp = otmp->nobj)
         if (merged(&otmp, &obj))
-            return 1; /* obj merged and then free'd */
+            return TRUE; /* obj merged and then free'd */
     /* else insert; don't bother forcing it to end of chain */
     obj->where = OBJ_MINVENT;
     obj->ocarry = mon;
     obj->nobj = mon->minvent;
     mon->minvent = obj;
-    return 0; /* obj on mon's inventory chain */
+    return FALSE; /* obj on mon's inventory chain */
 }
 
 /*

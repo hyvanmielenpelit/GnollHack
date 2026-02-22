@@ -3026,7 +3026,7 @@ boolean replaceundead;
             {
                 debugprint("revive1");
                 obj_extract_self(otmp);
-                add_to_minv(mtmp, otmp);
+                (void)add_to_minv(mtmp, otmp);
             }
 
             /* tame the revived monster if its ghost was tame */

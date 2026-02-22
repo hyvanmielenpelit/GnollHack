@@ -6313,8 +6313,8 @@ boolean with_impact;
             if (is_unpaid(obj))
                 (void) stolen_value(obj, u.ux, u.uy, TRUE, FALSE);
 
-            int was_obj_freed = mpickobj(u.ustuck, obj);
-            res = was_obj_freed != 0;
+            boolean was_obj_freed = mpickobj(u.ustuck, obj);
+            res = was_obj_freed;
 
             if (is_animal(u.ustuck->data)) 
             {

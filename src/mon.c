@@ -2233,7 +2233,7 @@ register struct monst *mtmp;
         mat_idx = gold->material;
         debugprint("mpickgold");
         obj_extract_self(gold);
-        add_to_minv(mtmp, gold);
+        (void)add_to_minv(mtmp, gold);
         if (cansee(mtmp->mx, mtmp->my)) 
         {
             if (flags.verbose && !mtmp->isgd)
@@ -4094,7 +4094,7 @@ int xkill_flags; /* 1: suppress message, 2: suppress corpse, 4: pacifist */
            stuff prior to lookhere/autopickup when hero is expelled
            below (as a side-effect, this missile has immunity from
            being consumed [for this shot/throw only]) */
-        mpickobj(mtmp, thrownobj);
+        (void) mpickobj(mtmp, thrownobj);
         /* let throwing code know that missile has been disposed of */
         thrownobj = 0;
     }

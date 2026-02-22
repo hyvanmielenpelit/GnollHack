@@ -1199,7 +1199,7 @@ boolean sellitem;
 /*
  * Hero tosses an object upwards with appropriate consequences.
  *
- * Returns FALSE if the object is gone.
+ * Returns TRUE if the object is gone.
  */
 STATIC_OVL boolean
 toss_up(obj, hitsroof)
@@ -1211,7 +1211,7 @@ boolean hitsroof;
     boolean petrifier = ((obj->otyp == EGG || obj->otyp == CORPSE)
                           && obj->corpsenm >= LOW_PM && touch_petrifies(&mons[obj->corpsenm]));
     /* note: obj->quan == 1 */
-    boolean still_there = TRUE;
+    boolean obj_gone = FALSE;
 
     if (!has_ceiling(&u.uz))
     {
@@ -1330,7 +1330,7 @@ boolean hitsroof;
                     Your_ex(ATR_NONE, CLR_MSG_WARNING, "%s does not protect you.", helm_simple_name(uarmh));
             }
         } 
-        else if (petrifier && !Stone_resistance
+        else if (obj && petrifier && !Stone_resistance
                    && !(poly_when_stoned(youmonst.data)
                         && polymon(PM_STONE_GOLEM)))
         {
@@ -1339,20 +1339,19 @@ boolean hitsroof;
             Strcpy(killer.name, "elementary physics"); /* "what goes up..." */
             play_sfx_sound(SFX_PETRIFY);
             You_ex(ATR_NONE, CLR_MSG_NEGATIVE, "turn to stone.");
-            if (obj)
-                still_there = !dropy(obj); /* bypass most of hitfloor() */
+            obj_gone = dropy(obj); /* bypass most of hitfloor() */
             thrownobj = 0;  /* now either gone or on floor */
             done(STONING);
-            return obj && still_there ? TRUE : FALSE;
+            return obj_gone;
         }
-        still_there = !hitfloor(obj, TRUE);
+        obj_gone = hitfloor(obj, TRUE);
         thrownobj = 0;
         if(isinstakill)
             kill_player("falling object", KILLED_BY_AN);
         else
             losehp(damage, "falling object", KILLED_BY_AN);
     }
-    return still_there;
+    return obj_gone;
 }
 
 /* the currently thrown object is returning to you (not for boomerangs) */
@@ -2683,7 +2682,7 @@ struct obj *obj;
         pline_ex(ATR_NONE, CLR_MSG_ATTENTION, is_animal(u.ustuck->data) ? "%s in the %s's entrails."
                                         : "%s into %s.",
               "The money disappears", mon_nam(u.ustuck));
-        add_to_minv(u.ustuck, obj);
+        (void)add_to_minv(u.ustuck, obj);
         return 1;
     }
 

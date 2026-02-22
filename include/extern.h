@@ -1542,7 +1542,7 @@ E Loot *FDECL(sortloot, (struct obj **, unsigned, BOOLEAN_P,
 E void FDECL(unsortloot, (Loot **));
 E void FDECL(assigninvlet, (struct obj *));
 E struct obj *FDECL(merge_choice, (struct obj *, struct obj *));
-E int FDECL(merged, (struct obj **, struct obj **));
+E boolean FDECL(merged, (struct obj **, struct obj **));
 #ifdef USE_TRAMPOLI
 E int FDECL(ckunpaid, (struct obj *));
 #endif
@@ -2070,7 +2070,7 @@ E void FDECL(discard_minvent, (struct monst *));
 E void FDECL(obj_extract_self, (struct obj *));
 E void FDECL(extract_nobj, (struct obj *, struct obj **));
 E void FDECL(extract_nexthere, (struct obj *, struct obj **));
-E int FDECL(add_to_minv, (struct monst *, struct obj *));
+E boolean FDECL(add_to_minv, (struct monst *, struct obj *));
 E struct obj *FDECL(add_to_container, (struct obj *, struct obj *));
 E struct obj* FDECL(add_to_magic_chest, (struct obj*));
 E void FDECL(add_to_migration, (struct obj *));
@@ -3695,7 +3695,7 @@ E int64_t FDECL(somegold, (int64_t));
 E void FDECL(stealgold, (struct monst *));
 E void FDECL(remove_worn_item, (struct obj *, BOOLEAN_P));
 E int FDECL(steal, (struct monst *, char *));
-E int FDECL(mpickobj, (struct monst *, struct obj *));
+E boolean FDECL(mpickobj, (struct monst *, struct obj *));
 E void FDECL(stealamulet, (struct monst *));
 E void FDECL(maybe_absorb_item, (struct monst *, struct obj *, int, int));
 E void FDECL(mdrop_obj, (struct monst *, struct obj *, BOOLEAN_P, BOOLEAN_P));

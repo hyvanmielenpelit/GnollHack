@@ -1857,7 +1857,7 @@ register struct obj* omonwep;
                 break;
             debugprint("mdamagem1");
             obj_extract_self(gold);
-            add_to_minv(magr, gold);
+            (void)add_to_minv(magr, gold);
         }
         mdef->mstrategy &= ~STRAT_WAITFORU;
         play_sfx_sound_at_location(SFX_STEAL_GOLD, mdef->mx, mdef->my);
