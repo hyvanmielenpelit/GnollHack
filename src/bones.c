@@ -70,6 +70,7 @@ boolean restore;
         if (otmp->cobj)
             resetobjs(otmp->cobj, restore);
         
+        otmp->item_flags &= ~ITEM_FLAGS_LAVA_EFFECTS_SKIP;
         if (otmp->in_use) 
         {
             obj_extract_self(otmp);

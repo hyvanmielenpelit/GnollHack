@@ -358,6 +358,10 @@ reset_item_global_variables(VOID_ARGS)
     kickedobj = 0;     /* object in flight due to kicking */
     trackedobj = 0;
     trackedobj_gone = FALSE;
+    trackedobj_breakarm = 0;
+    trackedobj_breakarm_gone = FALSE;
+    trackedobj_destroyarm = 0;
+    trackedobj_destroyarm_gone = FALSE;
     getobj_autoselect_obj = (struct obj*)0;
 }
 

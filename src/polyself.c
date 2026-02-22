@@ -1131,12 +1131,14 @@ break_armor()
             if (donning(otmp))
                 cancel_don();
 
+            trackedobj_breakarm = otmp;
             if (otmp->oartifact || is_obj_indestructible(otmp))
             {
                 /* Luckily, you do not die, just the armor pops off, so having an indestructible armor is not life-threatening --JG */
                 pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s falls off!", Yname2(otmp));
                 (void)Armor_off();
-                (void)dropxf(otmp);
+                if (!trackedobj_breakarm_gone)
+                    (void)dropxf(otmp);
             }
             else
             {
@@ -1144,38 +1146,55 @@ break_armor()
                 You_ex(ATR_NONE, CLR_MSG_NEGATIVE, "break out of %s!", yname(otmp));
                 exercise(A_STR, FALSE);
                 boolean had_stone_res = Stone_resistance;
+                otmp->in_use = 1;
+                otmp->item_flags |= ITEM_FLAGS_LAVA_EFFECTS_SKIP; /* Do not burn it in lava; it is already broken */
                 (void)Armor_gone();
-                debugprint("break_armor: %d", otmp->otyp);
-                useup(otmp);
+                if (!trackedobj_breakarm_gone)
+                {
+                    debugprint("break_armor: %d", otmp->otyp);
+                    useup(otmp);
+                }
                 boolean has_stone_res = Stone_resistance;
                 check_wielded_cockatrice(FALSE, FALSE, !has_stone_res && had_stone_res);
             }
+            trackedobj_breakarm = 0;
+            trackedobj_breakarm_gone = FALSE;
         }
         if ((otmp = uarmc) != 0) 
         {
             if (donning(otmp))
                 cancel_don();
 
+            trackedobj_breakarm = otmp;
             if (otmp->oartifact || is_obj_indestructible(otmp))
             {
                 Your_ex(ATR_NONE, CLR_MSG_WARNING, "%s falls off!", cloak_simple_name(otmp));
                 (void) Cloak_off();
-                (void)dropxf(otmp);
+                if (!trackedobj_breakarm_gone)
+                    (void)dropxf(otmp);
             } 
             else 
             {
                 play_simple_object_sound(otmp, OBJECT_SOUND_TYPE_BREAK);
                 Your_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s tears apart!", cloak_simple_name(otmp));
+                otmp->in_use = 1;
+                otmp->item_flags |= ITEM_FLAGS_LAVA_EFFECTS_SKIP; /* Do not burn it in lava; it is already broken */
                 (void) Cloak_off();
-                debugprint("break_armor2: %d", otmp->otyp);
-                useup(otmp);
+                if (!trackedobj_breakarm_gone)
+                {
+                    debugprint("break_armor2: %d", otmp->otyp);
+                    useup(otmp);
+                }
             }
+            trackedobj_breakarm = 0;
+            trackedobj_breakarm_gone = FALSE;
         }
         if ((otmp = uarmo) != 0)
         {
             if (donning(otmp))
                 cancel_don();
 
+            trackedobj_breakarm = otmp;
             if (otmp->oartifact || is_obj_indestructible(otmp))
             {
                 /* Not sure how this happens but at least it is not life-threatening */
@@ -1187,31 +1206,47 @@ break_armor()
             {
                 play_simple_object_sound(otmp, OBJECT_SOUND_TYPE_BREAK);
                 Your_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s is torn to pieces!", robe_simple_name(otmp));
+                otmp->in_use = 1;
+                otmp->item_flags |= ITEM_FLAGS_LAVA_EFFECTS_SKIP; /* Do not burn it in lava; it is already broken */
                 (void)Robe_off();
-                debugprint("break_armor3: %d", otmp->otyp);
-                useup(otmp);
+                if (!trackedobj_breakarm_gone)
+                {
+                    debugprint("break_armor3: %d", otmp->otyp);
+                    useup(otmp);
+                }
             }
+            trackedobj_breakarm = 0;
+            trackedobj_breakarm_gone = FALSE;
         }
         if ((otmp = uarmu) != 0)
         {
             if (donning(otmp))
                 cancel_don();
 
+            trackedobj_breakarm = otmp;
             if (otmp->oartifact || is_obj_indestructible(otmp))
             {
                 /* Not sure how this happens but at least it is not life-threatening */
                 Your_ex(ATR_NONE, CLR_MSG_WARNING, "shirt falls off!");
                 (void)Shirt_off();
-                (void)dropxf(otmp);
+                if (!trackedobj_breakarm_gone)
+                    (void)dropxf(otmp);
             }
             else
             {
                 play_simple_object_sound(otmp, OBJECT_SOUND_TYPE_BREAK);
                 Your_ex(ATR_NONE, CLR_MSG_NEGATIVE, "shirt rips to shreds!");
+                otmp->in_use = 1;
+                otmp->item_flags |= ITEM_FLAGS_LAVA_EFFECTS_SKIP; /* Do not burn it in lava; it is already broken */
                 (void)Shirt_off();
-                debugprint("break_armor4: %d", otmp->otyp);
-                useup(otmp);
+                if (!trackedobj_breakarm_gone)
+                {
+                    debugprint("break_armor4: %d", otmp->otyp);
+                    useup(otmp);
+                }
             }
+            trackedobj_breakarm = 0;
+            trackedobj_breakarm_gone = FALSE;
         }
     } 
     else if (sliparm(youmonst.data)) 
@@ -1222,8 +1257,12 @@ break_armor()
                 cancel_don();
             Your_ex(ATR_NONE, CLR_MSG_WARNING, "armor falls around you!");
             boolean had_stone_res = Stone_resistance;
+            trackedobj_breakarm = otmp;
             (void) Armor_gone();
-            (void)dropxf(otmp);
+            if (!trackedobj_breakarm_gone)
+                (void)dropxf(otmp);
+            trackedobj_breakarm = 0;
+            trackedobj_breakarm_gone = FALSE;
             boolean has_stone_res = Stone_resistance;
             check_wielded_cockatrice(FALSE, FALSE, !has_stone_res && had_stone_res);
         }
@@ -1233,16 +1272,24 @@ break_armor()
                 Your_ex(ATR_NONE, CLR_MSG_WARNING, "%s falls, unsupported!", robe_simple_name(otmp));
             else
                 You_ex(ATR_NONE, CLR_MSG_WARNING, "shrink out of your %s!", robe_simple_name(otmp));
+            trackedobj_breakarm = otmp;
             (void)Robe_off();
-            (void)dropxf(otmp);
+            if (!trackedobj_breakarm_gone)
+                (void)dropxf(otmp);
+            trackedobj_breakarm = 0;
+            trackedobj_breakarm_gone = FALSE;
         }
         if ((otmp = uarmc) != 0) {
             if (is_whirly(youmonst.data))
                 Your_ex(ATR_NONE, CLR_MSG_WARNING, "%s falls, unsupported!", cloak_simple_name(otmp));
             else
                 You_ex(ATR_NONE, CLR_MSG_WARNING, "shrink out of your %s!", cloak_simple_name(otmp));
+            trackedobj_breakarm = otmp;
             (void) Cloak_off();
-            (void)dropxf(otmp);
+            if (!trackedobj_breakarm_gone)
+                (void)dropxf(otmp);
+            trackedobj_breakarm = 0;
+            trackedobj_breakarm_gone = FALSE;
         }
         if ((otmp = uarmu) != 0) 
         {
@@ -1250,8 +1297,12 @@ break_armor()
                 You_ex(ATR_NONE, CLR_MSG_WARNING, "seep right through your shirt!");
             else
                 You_ex(ATR_NONE, CLR_MSG_WARNING, "become much too small for your shirt!");
+            trackedobj_breakarm = otmp;
             setworn((struct obj *) 0, otmp->owornmask & W_ARMU);
-            (void)dropxf(otmp);
+            if (!trackedobj_breakarm_gone)
+                (void)dropxf(otmp);
+            trackedobj_breakarm = 0;
+            trackedobj_breakarm_gone = FALSE;
         }
     }
 
@@ -1266,8 +1317,12 @@ break_armor()
                 cancel_don();
             Your_ex(ATR_NONE, CLR_MSG_WARNING, "%s falls to the %s!", helm_simple_name(otmp),
                 surface(u.ux, u.uy));
+            trackedobj_breakarm = otmp;
             (void)Helmet_off();
-            (void)dropxf(otmp);
+            if (!trackedobj_breakarm_gone)
+                (void)dropxf(otmp);
+            trackedobj_breakarm = 0;
+            trackedobj_breakarm_gone = FALSE;
         }
         else if (horned && flimsy)
         {
@@ -1290,9 +1345,13 @@ break_armor()
                 cancel_don();
             /* Drop weapon along with gloves */
             You_ex(ATR_NONE, CLR_MSG_WARNING, "drop your gloves%s!", uwep ? " and weapon" : "");
+            trackedobj_breakarm = otmp;
             drop_weapon(0);
             (void)Gloves_off();
-            (void)dropxf(otmp);
+            if (!trackedobj_breakarm_gone)
+                (void)dropxf(otmp);
+            trackedobj_breakarm = 0;
+            trackedobj_breakarm_gone = FALSE;
             dropped_gloves = TRUE;
         }
     }
@@ -1309,6 +1368,7 @@ break_armor()
     {
         if ((otmp = uarms) != 0)
         {
+            trackedobj_breakarm = otmp;
             if (is_shield(otmp))
             {
                 You_ex1(ATR_NONE, CLR_MSG_WARNING, canwearshield ? "drop your shield!" : "can no longer hold your shield!");
@@ -1319,7 +1379,10 @@ break_armor()
                 You_ex(ATR_NONE, CLR_MSG_WARNING, canwearshield ? "drop your %s!" : "can no longer hold your %s!", cxname(otmp));
                 remove_worn_item(otmp, FALSE);
             }
-            (void)dropxf(otmp);
+            if (!trackedobj_breakarm_gone)
+                (void)dropxf(otmp);
+            trackedobj_breakarm = 0;
+            trackedobj_breakarm_gone = FALSE;
         }
     }
 
@@ -1337,8 +1400,12 @@ break_armor()
             else
                 Your_ex(ATR_NONE, CLR_MSG_WARNING, "boots %s off your feet!",
                      verysmall(youmonst.data) ? "slide" : "are pushed");
+            trackedobj_breakarm = otmp;
             (void) Boots_off();
-            (void)dropxf(otmp);
+            if (!trackedobj_breakarm_gone)
+                (void)dropxf(otmp);
+            trackedobj_breakarm = 0;
+            trackedobj_breakarm_gone = FALSE;
         }
     }
 
@@ -1353,8 +1420,12 @@ break_armor()
             else
                 Your_ex(ATR_NONE, CLR_MSG_WARNING, "bracers %s off your %s!",
                     verysmall(youmonst.data) ? "slide" : "are pushed", makeplural(body_part(ARM)));
+            trackedobj_breakarm = otmp;
             (void)Bracers_off();
-            (void)dropxf(otmp);
+            if (!trackedobj_breakarm_gone)
+                (void)dropxf(otmp);
+            trackedobj_breakarm = 0;
+            trackedobj_breakarm_gone = FALSE;
         }
     }
 
@@ -1396,8 +1467,12 @@ break_armor()
                 if (is_whirly(youmonst.data) || verysmall(youmonst.data))
                 {
                     pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s away!", Yobjnam2(otmp, "fall"));
+                    trackedobj_breakarm = otmp;
                     (void)MiscellaneousItem_off(otmp);
-                    (void)dropxf(otmp);
+                    if (!trackedobj_breakarm_gone)
+                        (void)dropxf(otmp);
+                    trackedobj_breakarm = 0;
+                    trackedobj_breakarm_gone = FALSE;
                 }
                 break;
             case MISC_PANTS:
@@ -1405,8 +1480,12 @@ break_armor()
                 if (is_whirly(youmonst.data) || verysmall(youmonst.data) || nofeet(youmonst.data) || slithy(youmonst.data))
                 {
                     pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s away!", Yobjnam2(otmp, "fall"));
+                    trackedobj_breakarm = otmp;
                     (void)MiscellaneousItem_off(otmp);
-                    (void)dropxf(otmp);
+                    if (!trackedobj_breakarm_gone)
+                        (void)dropxf(otmp);
+                    trackedobj_breakarm = 0;
+                    trackedobj_breakarm_gone = FALSE;
                 }
                 break;
             case MISC_WRIST_WATCH:
@@ -1419,18 +1498,24 @@ break_armor()
                     else
                         pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s%s off your %s!",
                             Yobjnam2(otmp, verysmall(youmonst.data) ? "slide" : "are"), verysmall(youmonst.data) ? "" : " pushed", subtyp == MISC_BRACERS ? makeplural(body_part(ARM)) : body_part(ARM));
+                    trackedobj_breakarm = otmp;
                     (void)MiscellaneousItem_off(otmp);
-                    (void)dropxf(otmp);
+                    if (!trackedobj_breakarm_gone)
+                        (void)dropxf(otmp);
+                    trackedobj_breakarm = 0;
+                    trackedobj_breakarm_gone = FALSE;
                 }
                 break;
             case MISC_BELT:
                 if (breakarm(youmonst.data))
                 {
+                    trackedobj_breakarm = otmp;
                     if (otmp->oartifact || is_obj_indestructible(otmp))
                     {
                         pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s falls off!", Yname2(otmp));
                         (void)MiscellaneousItem_off(otmp);
-                        (void)dropxf(otmp);
+                        if (!trackedobj_breakarm_gone)
+                            (void)dropxf(otmp);
                     }
                     else
                     {
@@ -1438,15 +1523,26 @@ break_armor()
                         pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s!", Yobjnam2(otmp, "break"));
                         exercise(A_STR, FALSE);
                         (void)MiscellaneousItem_off(otmp);
+                        if (!trackedobj_breakarm_gone)
+                        {
+                            debugprint("break_armor5: %d", otmp->otyp);
+                            useup(otmp);
+                        }
                         debugprint("break_armor5: %d", otmp->otyp);
                         useup(otmp);
                     }
+                    trackedobj_breakarm = 0;
+                    trackedobj_breakarm_gone = FALSE;
                 }
                 else if (sliparm(youmonst.data))
                 {
                     pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s falls off!", Yname2(otmp));
+                    trackedobj_breakarm = otmp;
                     (void)MiscellaneousItem_off(otmp);
-                    (void)dropxf(otmp);
+                    if (!trackedobj_breakarm_gone)
+                        (void)dropxf(otmp);
+                    trackedobj_breakarm = 0;
+                    trackedobj_breakarm_gone = FALSE;
                 }
                 break;
             case MISC_NOSERING:
@@ -1461,8 +1557,12 @@ break_armor()
                     else
                         pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s%s off your %s!",
                             Yobjnam2(otmp, verysmall(youmonst.data) ? "slide" : "are"), verysmall(youmonst.data) ? "" : " pushed", body_part(subtyp == MISC_NOSERING ? NOSE : HEAD));
+                    trackedobj_breakarm = otmp;
                     (void)MiscellaneousItem_off(otmp);
-                    (void)dropxf(otmp);
+                    if (!trackedobj_breakarm_gone)
+                        (void)dropxf(otmp);
+                    trackedobj_breakarm = 0;
+                    trackedobj_breakarm_gone = FALSE;
                 }
                 break;
             case MISC_SCARF:
@@ -1474,8 +1574,12 @@ break_armor()
                     else
                         pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s%s off your %s!",
                             Yobjnam2(otmp, verysmall(youmonst.data) ? "slide" : "are"), verysmall(youmonst.data) ? "" : " pushed", body_part(NECK));
+                    trackedobj_breakarm = otmp;
                     (void)MiscellaneousItem_off(otmp);
-                    (void)dropxf(otmp);
+                    if (!trackedobj_breakarm_gone)
+                        (void)dropxf(otmp);
+                    trackedobj_breakarm = 0;
+                    trackedobj_breakarm_gone = FALSE;
                 }
                 break;
             }

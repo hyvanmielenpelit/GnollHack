@@ -7450,9 +7450,14 @@ unconscious()
 
 STATIC_VAR const char lava_killer[] = "molten lava";
 
+/* Return TRUE if hero changes location */
 boolean
 lava_effects()
 {
+    /* Prevent recursion; one time is enough --JG */
+    if (iflags.in_lava_effects)
+        return FALSE;
+
     register struct obj *obj, *obj2;
     int dmg = d(6, 6); /* only applicable for water walking */
     double damage = adjust_damage(dmg, (struct monst*)0, &youmonst, AD_FIRE, ADFLAGS_NONE);

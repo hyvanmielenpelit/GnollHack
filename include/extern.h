@@ -822,6 +822,7 @@ E int FDECL(select_on, (struct obj*));
 E int NDECL(take_off);
 #endif
 E void FDECL(off_msg, (struct obj *));
+E void FDECL(off_msg_with_flags, (struct obj*, unsigned));
 E void FDECL(set_wear, (struct obj *));
 E boolean FDECL(donning, (struct obj *));
 E boolean FDECL(doffing, (struct obj *));

@@ -4092,7 +4092,8 @@ int id;
             else if ((new_wornmask & W_QUIVER) != 0L) 
             {
                 setuqwep(otmp);
-            } else if (new_wornmask)
+            } 
+            else if (new_wornmask)
             {
                 setworn(otmp, new_wornmask);
                 /* set_wear() might result in otmp being destroyed if

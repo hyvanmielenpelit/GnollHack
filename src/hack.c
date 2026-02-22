@@ -839,18 +839,20 @@ dosinkfall()
     HLevitation++;
     if (uleft && uleft->otyp == RIN_LEVITATION) {
         obj = uleft;
-        Ring_off(obj);
         off_msg(obj);
+        Ring_off(obj);
     }
     if (uright && uright->otyp == RIN_LEVITATION) {
         obj = uright;
-        Ring_off(obj);
         off_msg(obj);
+        Ring_off(obj);
     }
+
+    lev_boots = (uarmf && uarmf->otyp == LEVITATION_BOOTS); /* Have to update as Ring_off might have caused armf to be destroyed */
     if (lev_boots) {
         obj = uarmf;
+        off_msg_with_flags(obj, DONAME_HIDE_WORN);
         (void) Boots_off();
-        off_msg(obj);
     }
     HLevitation--;
     /* probably moot; we're either still levitating or went

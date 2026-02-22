@@ -68,12 +68,20 @@ STATIC_DCL int FDECL(wear_oid_bit_to_index, (int64_t));
 
 void
 off_msg(otmp)
+struct obj* otmp;
+{
+    off_msg_with_flags(otmp, 0U);
+}
+
+void
+off_msg_with_flags(otmp, donameflags)
 struct obj *otmp;
+unsigned donameflags;
 {
     if (flags.verbose && otmp)
     {
         play_simple_object_sound(otmp, OBJECT_SOUND_TYPE_TAKE_OFF);
-        You("were wearing %s.", doname(otmp));
+        You("were wearing %s.", doname_with_flags(otmp, donameflags, (char**)0, (char**)0));
     }
 }
 
@@ -1397,15 +1405,23 @@ struct obj *obj;
          */
         off_msg(obj);
         Ring_off(obj);
-    } else if (obj == uamul) {
+    }
+    else if (obj == uamul) 
+    {
+        off_msg_with_flags(obj, DONAME_HIDE_WORN);
         Amulet_off();
-        off_msg(obj);
-    } else if (obj == umisc || obj == umisc2 || obj == umisc3 || obj == umisc4 || obj == umisc5) {
+    } 
+    else if (obj == umisc || obj == umisc2 || obj == umisc3 || obj == umisc4 || obj == umisc5)
+    {
+        off_msg_with_flags(obj, DONAME_HIDE_WORN);
         MiscellaneousItem_off(obj);
-        off_msg(obj);
-    } else if (obj == ublindf) {
+    } 
+    else if (obj == ublindf) 
+    {
         Blindf_off(obj); /* does its own off_msg */
-    } else {
+    }
+    else 
+    {
         impossible("removing strange accessory?");
         if (obj->owornmask)
             remove_worn_item(obj, FALSE);
@@ -1634,6 +1650,7 @@ register struct obj *otmp;
          * doesn't force the resistance granting item to be re-worn
          * after being lifesaved anymore.
          */
+        off_msg_with_flags(otmp, DONAME_HIDE_WORN); /* Any of the off functions below may remove levitation or flying, and otmp can then be destroyed in lava_effects */
         if (is_cloak(otmp))
             (void) Cloak_off();
         else if (is_gloves(otmp)) //here just in case is instantaneous
@@ -1654,7 +1671,7 @@ register struct obj *otmp;
             (void) Armor_off();
         else
             setworn((struct obj *) 0, otmp->owornmask & W_ARMOR);
-        off_msg(otmp);
+        //off_msg(otmp);
     }
     context.takeoff.mask = context.takeoff.what = context.wear.mask = context.wear.what = 0L;
     return 1;
@@ -2953,13 +2970,23 @@ glibr()
         xfl++;
         if (leftfall) {
             otmp = uleft;
+            otmp->item_flags |= ITEM_FLAGS_LAVA_EFFECTS_SKIP;
+            trackedobj_destroyarm = otmp;
             Ring_off(uleft);
-            (void)dropxf(otmp);
+            if (!trackedobj_destroyarm_gone)
+                (void)dropxf(otmp);
+            trackedobj_destroyarm = 0;
+            trackedobj_destroyarm_gone = FALSE;
         }
         if (rightfall) {
             otmp = uright;
+            otmp->item_flags |= ITEM_FLAGS_LAVA_EFFECTS_SKIP;
+            trackedobj_destroyarm = otmp;
             Ring_off(uright);
-            (void)dropxf(otmp);
+            if (!trackedobj_destroyarm_gone)
+                (void)dropxf(otmp);
+            trackedobj_destroyarm = 0;
+            trackedobj_destroyarm_gone = FALSE;
         }
     }
 
@@ -4070,10 +4097,15 @@ register struct obj *atmp;
         Your_ex(ATR_NONE, CLR_MSG_WARNING, "%s crumbles and turns to dust!", cloak_simple_name(uarmc));
         otmp->in_use = 1;
         otmp->item_flags |= ITEM_FLAGS_LAVA_EFFECTS_SKIP; /* Prevent lava_effects etc. from destroying the item when they are taken off */
+        trackedobj_destroyarm = otmp;
         (void) Cloak_off();
-        otmp->item_flags &= ~ITEM_FLAGS_LAVA_EFFECTS_SKIP;
-        debugprint("destroy_arm: %d", otmp->otyp);
-        useup(otmp);
+        if (!trackedobj_destroyarm)
+        {
+            debugprint("destroy_arm: %d", otmp->otyp);
+            useup(otmp);
+        }
+        trackedobj_destroyarm = 0;
+        trackedobj_destroyarm_gone = FALSE;
     } else if (DESTROY_ARM(uarmo)) {
         if (donning(otmp))
             cancel_don();
@@ -4081,10 +4113,15 @@ register struct obj *atmp;
         Your_ex(ATR_NONE, CLR_MSG_WARNING, "%s crumbles and turns to dust!", robe_simple_name(uarmc));
         otmp->in_use = 1;
         otmp->item_flags |= ITEM_FLAGS_LAVA_EFFECTS_SKIP; /* Prevent lava_effects etc. from destroying the item when they are taken off */
+        trackedobj_destroyarm = otmp;
         (void)Robe_off();
-        otmp->item_flags &= ~ITEM_FLAGS_LAVA_EFFECTS_SKIP;
-        debugprint("destroy_arm2: %d", otmp->otyp);
-        useup(otmp);
+        if (!trackedobj_destroyarm_gone)
+        {
+            debugprint("destroy_arm2: %d", otmp->otyp);
+            useup(otmp);
+        }
+        trackedobj_destroyarm = 0;
+        trackedobj_destroyarm_gone = FALSE;
     } else if (DESTROY_ARM(uarm)) {
         if (donning(otmp))
             cancel_don();
@@ -4093,11 +4130,16 @@ register struct obj *atmp;
         boolean had_stone_res = Stone_resistance;
         otmp->in_use = 1;
         otmp->item_flags |= ITEM_FLAGS_LAVA_EFFECTS_SKIP; /* Prevent lava_effects etc. from destroying the item when they are taken off */
+        trackedobj_destroyarm = otmp;
         (void) Armor_gone();
-        otmp->item_flags &= ~ITEM_FLAGS_LAVA_EFFECTS_SKIP;
         boolean has_stone_res = Stone_resistance;
-        debugprint("destroy_arm3: %d", otmp->otyp);
-        useup(otmp);
+        if (!trackedobj_destroyarm_gone)
+        {
+            debugprint("destroy_arm3: %d", otmp->otyp);
+            useup(otmp);
+        }
+        trackedobj_destroyarm = 0;
+        trackedobj_destroyarm_gone = FALSE;
         check_wielded_cockatrice(FALSE, FALSE, !has_stone_res && had_stone_res);
     } else if (DESTROY_ARM(uarmu)) {
         if (donning(otmp))
@@ -4106,10 +4148,15 @@ register struct obj *atmp;
         Your_ex(ATR_NONE, CLR_MSG_WARNING, "shirt crumbles into tiny threads and falls apart!");
         otmp->in_use = 1;
         otmp->item_flags |= ITEM_FLAGS_LAVA_EFFECTS_SKIP; /* Prevent lava_effects etc. from destroying the item when they are taken off */
+        trackedobj_destroyarm = otmp;
         (void) Shirt_off();
-        otmp->item_flags &= ~ITEM_FLAGS_LAVA_EFFECTS_SKIP;
-        debugprint("destroy_arm4: %d", otmp->otyp);
-        useup(otmp);
+        if (!trackedobj_destroyarm_gone)
+        {
+            debugprint("destroy_arm4: %d", otmp->otyp);
+            useup(otmp);
+        }
+        trackedobj_destroyarm = 0;
+        trackedobj_destroyarm_gone = FALSE;
     } else if (DESTROY_ARM(uarmh)) {
         if (donning(otmp))
             cancel_don();
@@ -4117,10 +4164,15 @@ register struct obj *atmp;
         Your_ex(ATR_NONE, CLR_MSG_WARNING, "%s turns to dust and is blown away!", helm_simple_name(uarmh));
         otmp->in_use = 1;
         otmp->item_flags |= ITEM_FLAGS_LAVA_EFFECTS_SKIP; /* Prevent lava_effects etc. from destroying the item when they are taken off */
+        trackedobj_destroyarm = otmp;
         (void) Helmet_off();
-        otmp->item_flags &= ~ITEM_FLAGS_LAVA_EFFECTS_SKIP;
-        debugprint("destroy_arm5: %d", otmp->otyp);
-        useup(otmp);
+        if (!trackedobj_destroyarm_gone)
+        {
+            debugprint("destroy_arm5: %d", otmp->otyp);
+            useup(otmp);
+        }
+        trackedobj_destroyarm = 0;
+        trackedobj_destroyarm_gone = FALSE;
     } else if (DESTROY_ARM(uarmb)) {
         if (donning(otmp))
             cancel_don();
@@ -4128,10 +4180,15 @@ register struct obj *atmp;
         Your_ex(ATR_NONE, CLR_MSG_WARNING, "bracers vanish!");
         otmp->in_use = 1;
         otmp->item_flags |= ITEM_FLAGS_LAVA_EFFECTS_SKIP; /* Prevent lava_effects etc. from destroying the item when they are taken off */
+        trackedobj_destroyarm = otmp;
         (void)Bracers_off();
-        otmp->item_flags &= ~ITEM_FLAGS_LAVA_EFFECTS_SKIP;
-        debugprint("destroy_arm6: %d", otmp->otyp);
-        useup(otmp);
+        if (!trackedobj_destroyarm_gone)
+        {
+            debugprint("destroy_arm6: %d", otmp->otyp);
+            useup(otmp);
+        }
+        trackedobj_destroyarm = 0;
+        trackedobj_destroyarm_gone = FALSE;
     } else if (DESTROY_ARM(uarmg)) {
         if (donning(otmp))
             cancel_don();
@@ -4139,10 +4196,15 @@ register struct obj *atmp;
         Your_ex(ATR_NONE, CLR_MSG_WARNING, "gloves vanish!");
         otmp->in_use = 1;
         otmp->item_flags |= ITEM_FLAGS_LAVA_EFFECTS_SKIP; /* Prevent lava_effects etc. from destroying the item when they are taken off */
+        trackedobj_destroyarm = otmp;
         (void) Gloves_off();
-        otmp->item_flags &= ~ITEM_FLAGS_LAVA_EFFECTS_SKIP;
-        debugprint("destroy_arm7: %d", otmp->otyp);
-        useup(otmp);
+        if (!trackedobj_destroyarm_gone)
+        {
+            debugprint("destroy_arm7: %d", otmp->otyp);
+            useup(otmp);
+        }
+        trackedobj_destroyarm = 0;
+        trackedobj_destroyarm_gone = FALSE;
         selftouch("You");
     } else if (DESTROY_ARM(uarmf)) {
         if (donning(otmp))
@@ -4151,10 +4213,15 @@ register struct obj *atmp;
         Your_ex(ATR_NONE, CLR_MSG_WARNING, "boots disintegrate!");
         otmp->in_use = 1;
         otmp->item_flags |= ITEM_FLAGS_LAVA_EFFECTS_SKIP; /* Prevent lava_effects etc. from destroying the item when they are taken off */
+        trackedobj_destroyarm = otmp;
         (void) Boots_off();
-        otmp->item_flags &= ~ITEM_FLAGS_LAVA_EFFECTS_SKIP;
-        debugprint("destroy_arm8: %d", otmp->otyp);
-        useup(otmp);
+        if (!trackedobj_destroyarm_gone)
+        {
+            debugprint("destroy_arm8: %d", otmp->otyp);
+            useup(otmp);
+        }
+        trackedobj_destroyarm = 0;
+        trackedobj_destroyarm_gone = FALSE;
     }
     else if (uarms && is_shield(uarms) && DESTROY_ARM(uarms)) {
         if (donning(otmp))
@@ -4163,10 +4230,15 @@ register struct obj *atmp;
         Your_ex(ATR_NONE, CLR_MSG_WARNING, "shield crumbles away!");
         otmp->in_use = 1;
         otmp->item_flags |= ITEM_FLAGS_LAVA_EFFECTS_SKIP; /* Prevent lava_effects etc. from destroying the item when they are taken off */
+        trackedobj_destroyarm = otmp;
         (void) Shield_off();
-        otmp->item_flags &= ~ITEM_FLAGS_LAVA_EFFECTS_SKIP;
-        debugprint("destroy_arm9: %d", otmp->otyp);
-        useup(otmp);
+        if (!trackedobj_destroyarm_gone)
+        {
+            debugprint("destroy_arm9: %d", otmp->otyp);
+            useup(otmp);
+        }
+        trackedobj_destroyarm = 0;
+        trackedobj_destroyarm_gone = FALSE;
     } else {
         return 0; /* could not destroy anything */
     }

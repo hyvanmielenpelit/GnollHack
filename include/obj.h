@@ -55,7 +55,7 @@ struct obj {
 #define ITEM_FLAGS_GIVEN_BY_HERO               0x00000001UL
 #define ITEM_FLAGS_MEMORY_OBJECT_LAMPLIT       0x00000002UL /* Lamplit for graphics but it does not have an associated light source */
 #define ITEM_FLAGS_FIRED_BY_MONSTER            0x00000004UL
-#define ITEM_FLAGS_LAVA_EFFECTS_SKIP           0x00000008UL
+#define ITEM_FLAGS_LAVA_EFFECTS_SKIP           0x00000008UL /* The item is already on its way to be destroyed (e.g. by destroy armor scroll), so do not burn it in lava effects */
 
     uint64_t speflags;    /* anything else that might be going on with an item, not affected by cancellation */
 
@@ -188,7 +188,7 @@ struct obj {
     Bitfield(nomerge, 1);     /* set temporarily to prevent merging */
     Bitfield(was_thrown, 1);  /* thrown by hero since last picked up */
     Bitfield(has_special_tileset, 1); /* the object uses a dungeon-specific tileset defined in special_tileset; in particular, applies to boulders */
-    Bitfield(in_use, 1);      /* for magic items before useup items */
+    Bitfield(in_use, 1);      /* item is going to be deallocated (used, broken, destroyed, etc.), but the hero may die before deallocation; ensure that the item does not appear in bones or in error save files or the like. For magic items before useup items */
     Bitfield(bypass, 1);      /* mark this as an object to be skipped by bhito() */
     Bitfield(cknown, 1);      /* contents of container assumed to be known */
     Bitfield(lknown, 1);      /* locked/unlocked status is known */
@@ -1212,6 +1212,7 @@ extern NEARDATA const struct mythic_power_definition mythic_suffix_powers[MAX_MY
     ((melts_in_lava(o) || o->oclass == POTION_CLASS) \
         && !o->oerodeproof \
         && !((o)->item_flags & ITEM_FLAGS_LAVA_EFFECTS_SKIP) \
+        && !(iflags.in_remove_worn_item && iflags.remove_worn_item_object == (o)) \
         && !oresist_fire(o))
 
 /* Manuals */

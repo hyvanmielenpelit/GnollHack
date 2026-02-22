@@ -169,7 +169,8 @@ boolean quietly;
     for (otmp = invent; otmp; otmp = otmp2) 
     {
         otmp2 = otmp->nobj;
-        if (otmp->in_use) 
+        otmp->item_flags &= ~ITEM_FLAGS_LAVA_EFFECTS_SKIP;
+        if (otmp->in_use)
         {
             if (otmp->otyp == AMULET_OF_YENDOR
                 || otmp->otyp == CANDELABRUM_OF_INVOCATION

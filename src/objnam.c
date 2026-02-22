@@ -1329,6 +1329,7 @@ char** attrs_ptr, ** colors_ptr;
             weightlast = (doname_flags & DONAME_WITH_WEIGHT_LAST) != 0,
             loadstonecorrectly = (doname_flags & DONAME_LOADSTONE_CORRECTLY) != 0,
             lit_in_front = (doname_flags & DONAME_LIT_IN_FRONT) != 0,
+            hide_worn = (doname_flags & DONAME_HIDE_WORN) != 0,
             comparison_stats = (doname_flags & DONAME_COMPARISON) != 0 && iflags.show_comparison_stats && !iflags.in_dumplog && !program_state.gameover,
             do_library = (doname_flags & DONAME_NO_LIBRARY) == 0 && !iflags.in_dumplog;
     boolean known, dknown, cknown, bknown, lknown, tknown;
@@ -1339,9 +1340,12 @@ char** attrs_ptr, ** colors_ptr;
                                 end (Strcat is used on the end) */
     char *bp = xname(obj);
 
-    if (iflags.override_ID) {
+    if (iflags.override_ID)
+    {
         known = dknown = cknown = bknown = lknown = tknown = TRUE;
-    } else {
+    }
+    else
+    {
         known = obj->known;
         dknown = obj->dknown;
         cknown = obj->cknown;
@@ -1356,41 +1360,54 @@ char** attrs_ptr, ** colors_ptr;
      * combining both into one function taking a parameter.
      */
     /* must check opoisoned--someone can have a weirdly-named fruit */
-    if (!strncmp(bp, "poisoned ", 9) && obj->opoisoned) {
+    if (!strncmp(bp, "poisoned ", 9) && obj->opoisoned)
+    {
         bp += 9;
         ispoisoned = TRUE;
     }
 
-    if (!strncmp(bp, "freezing ", 9) && obj->elemental_enchantment == COLD_ENCHANTMENT) {
+    if (!strncmp(bp, "freezing ", 9) && obj->elemental_enchantment == COLD_ENCHANTMENT) 
+    {
         bp += 9;
         isenchanted = obj->elemental_enchantment;
-    } else if (!strncmp(bp, "flaming ", 8) && obj->elemental_enchantment == FIRE_ENCHANTMENT) {
+    } 
+    else if (!strncmp(bp, "flaming ", 8) && obj->elemental_enchantment == FIRE_ENCHANTMENT) 
+    {
         bp += 8;
         isenchanted = obj->elemental_enchantment;
     }
-    else if (!strncmp(bp, "electrified ", 12) && obj->elemental_enchantment == LIGHTNING_ENCHANTMENT) {
+    else if (!strncmp(bp, "electrified ", 12) && obj->elemental_enchantment == LIGHTNING_ENCHANTMENT) 
+    {
         bp += 12;
         isenchanted = obj->elemental_enchantment;
     }
-    else if (!strncmp(bp, "death-magical ", 14) && obj->elemental_enchantment == DEATH_ENCHANTMENT) {
+    else if (!strncmp(bp, "death-magical ", 14) && obj->elemental_enchantment == DEATH_ENCHANTMENT) 
+    {
         bp += 14;
         isenchanted = obj->elemental_enchantment;
     }
 
-    if (obj->quan != 1L) {
+    if (obj->quan != 1L) 
+    {
         if (dknown || !vague_quan)
             Sprintf(prefix, "%lld ", (long long)obj->quan);
         else
             Strcpy(prefix, "some ");
-    } else if (obj->otyp == CORPSE) {
+    }
+    else if (obj->otyp == CORPSE)
+    {
         /* skip article prefix for corpses [else corpse_xname()
            would have to be taught how to strip it off again] */
         *prefix = '\0';
-    } else if (obj_is_pname(obj) || the_unique_obj(obj)) {
+    }
+    else if (obj_is_pname(obj) || the_unique_obj(obj)) 
+    {
         if (!strncmpi(bp, "the ", 4))
             bp += 4;
         Strcpy(prefix, "the ");
-    } else {
+    } 
+    else
+    {
         Strcpy(prefix, "a ");
     }
 
@@ -1413,7 +1430,8 @@ char** attrs_ptr, ** colors_ptr;
 
     if (bknown && obj->oclass != COIN_CLASS
         && (obj->otyp != POT_WATER || !objects[POT_WATER].oc_name_known
-            || (!obj->cursed && !obj->blessed))) {
+            || (!obj->cursed && !obj->blessed))) 
+    {
         /* allow 'blessed clear potion' if we don't know it's holy water;
          * always allow "uncursed potion of water"
          */
@@ -1492,7 +1510,8 @@ char** attrs_ptr, ** colors_ptr;
     }
 
 
-    if (cknown && Has_contained_contents(obj)) {
+    if (cknown && Has_contained_contents(obj))
+    {
         /* we count the number of separate stacks, which corresponds
            to the number of inventory slots needed to be able to take
            everything out if no merges occur */
@@ -1520,11 +1539,11 @@ char** attrs_ptr, ** colors_ptr;
     /* post and prefixes */
     switch (is_weptool(obj) ? WEAPON_CLASS : obj->oclass) {
     case AMULET_CLASS:
-        if (obj->owornmask & W_AMUL)
+        if ((obj->owornmask & W_AMUL) != 0 && !hide_worn)
             Strcat(bp, " (being worn)");
         break;
     case MISCELLANEOUS_CLASS:
-        if (obj->owornmask & W_MISCITEMS)
+        if ((obj->owornmask & W_MISCITEMS) != 0 && !hide_worn)
         {
             if(strcmp(misc_type_worn_texts[objects[obj->otyp].oc_subtyp], "") == 0)
                 Strcat(bp, " (being worn)");
@@ -1559,7 +1578,7 @@ char** attrs_ptr, ** colors_ptr;
         }
         break;
     case ARMOR_CLASS:
-        if (obj->owornmask & W_ARMS)
+        if ((obj->owornmask & W_ARMS) != 0 && !hide_worn)
         {
             if(is_shield(obj))
             {
@@ -1593,7 +1612,7 @@ char** attrs_ptr, ** colors_ptr;
                 }
             }
         }
-        else if (obj->owornmask & W_ARMOR)
+        else if ((obj->owornmask & W_ARMOR) != 0 && !hide_worn)
         {
             Strcat(bp, (obj == uskin) ? " (embedded in your skin"
                        /* in case of perm_invent update while Wear/Takeoff
@@ -1650,7 +1669,8 @@ weapon_here:
             }
         }
         add_erosion_words(obj, prefix);
-        if (known) {
+        if (known) 
+        {
             Strcat(prefix, sitoa(obj->enchantment));
             Strcat(prefix, " ");
         }
@@ -1676,17 +1696,21 @@ weapon_here:
                 break;
             }
         }
-        if (obj->owornmask & (W_BLINDFOLD | W_SADDLE)) { /* blindfold */
+        if ((obj->owornmask & (W_BLINDFOLD | W_SADDLE)) != 0 && !hide_worn) 
+        { /* blindfold */
             Strcat(bp, " (being worn)");
             break;
         }
         if (obj->otyp == LEASH && obj->leashmon != 0) {
             struct monst *mlsh = find_mid(obj->leashmon, FM_FMON);
 
-            if (!mlsh) {
+            if (!mlsh) 
+            {
                 impossible("leashed monster not on this level");
                 obj->leashmon = 0;
-            } else {
+            } 
+            else 
+            {
                 Sprintf(eos(bp), " (attached to %s)",
                         noit_mon_nam(mlsh));
             }
@@ -1793,16 +1817,21 @@ weapon_here:
         }
         break;
     case RING_CLASS:
- ring:
-        if (obj->owornmask & W_RINGR)
-            Strcat(bp, " (on right ");
-        if (obj->owornmask & W_RINGL)
-            Strcat(bp, " (on left ");
-        if (obj->owornmask & W_RING) {
-            Strcat(bp, body_part(HAND));
-            Strcat(bp, ")");
+    ring:
+        if (!hide_worn)
+        {
+            if (obj->owornmask & W_RINGR)
+                Strcat(bp, " (on right ");
+            if (obj->owornmask & W_RINGL)
+                Strcat(bp, " (on left ");
+            if (obj->owornmask & W_RING)
+            {
+                Strcat(bp, body_part(HAND));
+                Strcat(bp, ")");
+            }
         }
-        if (known && objects[obj->otyp].oc_enchantable) {
+        if (known && objects[obj->otyp].oc_enchantable) 
+        {
             Strcat(prefix, sitoa(obj->enchantment));
             Strcat(prefix, " ");
         }
@@ -1839,8 +1868,8 @@ weapon_here:
             if (known && stale_egg(obj))
                 Strcat(prefix, "stale ");
 #endif
-            if (omndx >= LOW_PM
-                && (known || (mvitals[omndx].mvflags & MV_KNOWS_EGG))) {
+            if (omndx >= LOW_PM && (known || (mvitals[omndx].mvflags & MV_KNOWS_EGG))) 
+            {
                 Strcat(prefix, mons[omndx].mname);
                 Strcat(prefix, " ");
                 if (obj->speflags & SPEFLAGS_YOURS)
@@ -1853,7 +1882,7 @@ weapon_here:
     case BALL_CLASS:
     case CHAIN_CLASS:
         add_erosion_words(obj, prefix);
-        if (obj->owornmask & W_BALL)
+        if ((obj->owornmask & W_BALL) != 0 && !hide_worn)
             Strcat(bp, " (chained to you)");
         break;
     case GEM_CLASS:
@@ -1872,7 +1901,8 @@ weapon_here:
 
     const char* hand_s = body_part(HAND);
     const char* hands_s = makeplural(hand_s);
-    if ((obj->owornmask & W_WEP) && !mrg_to_wielded) {
+    if ((obj->owornmask & W_WEP) && !mrg_to_wielded && !hide_worn) 
+    {
         if (obj->quan != 1L || !is_wieldable_weapon(obj))
         {
             if (u.twoweap)
@@ -1884,7 +1914,9 @@ weapon_here:
             }
             else
                 Strcat(bp, " (wielded)");
-        } else {
+        } 
+        else 
+        {
 
             Sprintf(eos(bp), " (%sweapon in %s%s)",
                     is_obj_tethered_weapon(obj, obj->owornmask) ? "tethered " : "", u.twoweap && !bimanual(obj) ? "right " : "", bimanual(obj)? hands_s : hand_s);
@@ -1892,7 +1924,8 @@ weapon_here:
         }
     }
 
-    if ((obj->owornmask & W_WEP2) && obj->oclass != ARMOR_CLASS && !mrg_to_wielded) {
+    if ((obj->owornmask & W_WEP2) && obj->oclass != ARMOR_CLASS && !mrg_to_wielded && !hide_worn) 
+    {
         if (obj->quan != 1L || !is_wieldable_weapon(obj))
         {
             if (u.twoweap)
@@ -1915,13 +1948,15 @@ weapon_here:
         }
     }
 
-    if (obj->owornmask & W_SWAPWEP) {
+    if ((obj->owornmask & W_SWAPWEP) != 0 && !hide_worn) 
+    {
         if (u.twoweap && !bimanual(obj))
             Sprintf(eos(bp), " (readied as alternate right %s weapon)", hand_s);
         else
             Strcat(bp, " (readied as alternate weapon)");
     }
-    if (obj->owornmask & W_SWAPWEP2) {
+    if ((obj->owornmask & W_SWAPWEP2) != 0 && !hide_worn)
+    {
         if (is_shield(obj))
             Strcat(bp, " (readied as shield)");
         else
@@ -1932,20 +1967,28 @@ weapon_here:
                 Strcat(bp, " (readied as another alternate weapon)");
         }
     }
-    if (obj->owornmask & W_QUIVER) {
-        switch (obj->oclass) {
+    if ((obj->owornmask & W_QUIVER) != 0 && !hide_worn) 
+    {
+        switch (obj->oclass) 
+        {
         case WEAPON_CLASS:
-            if (is_ammo(obj)) {
-                if (objects[obj->otyp].oc_skill == -P_BOW) {
+            if (is_ammo(obj)) 
+            {
+                if (objects[obj->otyp].oc_skill == -P_BOW) 
+                {
                     /* Ammo for a bow */
                     Strcat(bp, " (in quiver)");
                     break;
-                } else {
+                }
+                else 
+                {
                     /* Ammo not for a bow */
                     Strcat(bp, " (in quiver pouch)");
                     break;
                 }
-            } else {
+            }
+            else 
+            {
                 /* Weapons not considered ammo */
                 Strcat(bp, " (at the ready)");
                 break;
@@ -1966,15 +2009,20 @@ weapon_here:
 
     /* treat 'restoring' like suppress_price because shopkeeper and
        bill might not be available yet while restore is in progress */
-    if (iflags.suppress_price || restoring || saving) {
+    if (iflags.suppress_price || restoring || saving) 
+    {
         ; /* don't attempt to obtain any stop pricing, even if 'with_price' */
-    } else if (is_unpaid(obj)) { /* in inventory or in container in invent */
+    }
+    else if (is_unpaid(obj)) 
+    { /* in inventory or in container in invent */
         int64_t quotedprice = unpaid_cost(obj, TRUE);
 
         Sprintf(eos(bp), " (%s, %lld %s)",
                 obj->unpaid ? "unpaid" : "contents",
                 (long long)quotedprice, currency(quotedprice));
-    } else if (with_price) { /* on floor or in container on floor */
+    }
+    else if (with_price) 
+    { /* on floor or in container on floor */
         int nochrg = 0;
         int64_t price = get_cost_of_shop_item(obj, &nochrg);
 
@@ -1986,7 +2034,8 @@ weapon_here:
             Strcat(bp, " (no charge)");
     }
 
-    if (!strncmp(prefix, "a ", 2)) {
+    if (!strncmp(prefix, "a ", 2)) 
+    {
         /* save current prefix, without "a "; might be empty */
         Strcpy(tmpbuf, prefix + 2);
         /* set prefix[] to "", "a ", or "an " */

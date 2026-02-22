@@ -223,8 +223,12 @@ boolean unchain_ball; /* whether to unpunish or just unwield */
     if (!obj->owornmask)
         return;
 
-    if (obj->owornmask & W_ARMOR) {
-        if (obj == uskin) {
+    iflags.in_remove_worn_item++;
+    iflags.remove_worn_item_object = obj;
+    if (obj->owornmask & W_ARMOR) 
+    {
+        if (obj == uskin) 
+        {
             impossible("Removing embedded scales?");
             skinback(TRUE); /* uarm = uskin; uskin = 0; */
         }
@@ -251,15 +255,25 @@ boolean unchain_ball; /* whether to unpunish or just unwield */
         /* catchall -- should never happen, except for uarms with non-shields & non-weapons */
         else
             setworn((struct obj *) 0, obj->owornmask & W_ARMOR);
-    } else if (obj->owornmask & W_AMUL) {
+    }
+    else if (obj->owornmask & W_AMUL) 
+    {
         Amulet_off();
-    } else if (obj->owornmask & W_MISCITEMS) {
+    }
+    else if (obj->owornmask & W_MISCITEMS)
+    {
         MiscellaneousItem_off(obj);
-    } else if (obj->owornmask & W_RING) {
+    }
+    else if (obj->owornmask & W_RING) 
+    {
         Ring_gone(obj);
-    } else if (obj->owornmask & W_BLINDFOLD) {
+    } 
+    else if (obj->owornmask & W_BLINDFOLD) 
+    {
         Blindf_off(obj);
-    } else if (obj->owornmask & W_WEAPON) {
+    }
+    else if (obj->owornmask & W_WEAPON)
+    {
         if (obj == uwep)
             uwepgone();
         if (obj == uarms)
@@ -272,13 +286,18 @@ boolean unchain_ball; /* whether to unpunish or just unwield */
             uqwepgone();
     }
 
-    if (obj->owornmask & (W_BALL | W_CHAIN)) {
+    if (obj->owornmask & (W_BALL | W_CHAIN))
+    {
         if (unchain_ball)
             unpunish();
-    } else if (obj->owornmask) {
+    }
+    else if (obj->owornmask) 
+    {
         /* catchall */
         setnotworn(obj);
     }
+    iflags.remove_worn_item_object = 0;
+    iflags.in_remove_worn_item--;
 }
 
 
