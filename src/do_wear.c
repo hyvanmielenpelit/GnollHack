@@ -30,8 +30,8 @@ STATIC_VAR NEARDATA const int64_t wear_order[] = {
 };
 
 STATIC_DCL void FDECL(on_msg, (struct obj *));
-STATIC_DCL void FDECL(toggle_stealth, (struct obj *, int64_t, BOOLEAN_P));
-STATIC_DCL void FDECL(toggle_displacement, (struct obj *, int64_t, BOOLEAN_P));
+STATIC_DCL void FDECL(toggle_stealth, (struct obj *, int, int64_t, BOOLEAN_P));
+STATIC_DCL void FDECL(toggle_displacement, (struct obj *, int, int64_t, BOOLEAN_P));
 STATIC_PTR int NDECL(Armor_on);
 /* int NDECL(Boots_on); -- moved to extern.h */
 STATIC_PTR int NDECL(Cloak_on);
@@ -183,8 +183,9 @@ STATIC_VAR boolean initial_don = FALSE; /* manipulated in set_wear() */
    give feedback and discover it iff stealth state is changing */
 STATIC_OVL
 void
-toggle_stealth(obj, oldprop, on)
+toggle_stealth(obj, otyp, oldprop, on)
 struct obj *obj;
+int otyp;
 int64_t oldprop; /* prop[].extrinsic, with obj->owornmask stripped by caller */
 boolean on;
 {
@@ -192,14 +193,21 @@ boolean on;
         return;
 
     if (!oldprop /* extrinsic stealth from something else */
-        && !HStealth) { /* stealth blocked by something */
-        if (obj->otyp == RIN_STEALTH)
-            learnring(obj, TRUE);
-        else
-            makeknown(obj->otyp);
+        && !HStealth) 
+    { /* stealth blocked by something */
+        if (obj)
+        {
+            if (obj->otyp == RIN_STEALTH)
+                learnring(obj, TRUE);
+            else
+                makeknown(obj->otyp);
+        }
+        else if (otyp > 0)
+            makeknown(otyp);
 
-        if (on) {
-            if (!is_boots(obj))
+        if (on) 
+        {
+            if (obj ? !is_boots(obj) : otyp > 0 ? is_otyp_boots(otyp) : TRUE)
                 You("move very quietly.");
             else if (Levitation || Flying)
                 You("float imperceptibly.");
@@ -216,8 +224,9 @@ boolean on;
    hero is able to see self (or sense monsters) */
 STATIC_OVL
 void
-toggle_displacement(obj, oldprop, on)
+toggle_displacement(obj, otyp, oldprop, on)
 struct obj *obj;
+int otyp;
 int64_t oldprop; /* prop[].extrinsic, with obj->owornmask stripped by caller */
 boolean on;
 {
@@ -237,8 +246,12 @@ boolean on;
                hero also senses self in this situation */
             || (Unblind_telepat
                 || (Blind_telepat && Blind)
-                || Detect_monsters))) {
-        makeknown(obj->otyp);
+                || Detect_monsters))) 
+    {
+        if (obj)
+            makeknown(obj->otyp);
+        else if (otyp > 0)
+            makeknown(otyp);
 
         You_feel("that monsters%s have difficulty pinpointing your location.",
                  on ? "" : " no longer");
@@ -274,7 +287,7 @@ Boots_on(VOID_ARGS)
         makeknown(uarmf->otyp);
         break;
     case ELVEN_BOOTS:
-        toggle_stealth(uarmf, oldprop, TRUE);
+        toggle_stealth(uarmf, uarmf->otyp, oldprop, TRUE);
         break;
     }
     uarmf->known = 1; /* boots' +/- evident because of status line AC */
@@ -318,7 +331,7 @@ Boots_off(VOID_ARGS)
         }
         break;
     case ELVEN_BOOTS:
-        toggle_stealth(otmp, oldprop, FALSE);
+        toggle_stealth(objgone ? 0 : otmp, otyp, oldprop, FALSE);
         break;
     }
     context.takeoff.cancelled_don = FALSE;
@@ -343,10 +356,10 @@ Cloak_on(VOID_ARGS)
 
     switch (uarmc->otyp) {
     case ELVEN_CLOAK:
-        toggle_stealth(uarmc, oldprop, TRUE);
+        toggle_stealth(uarmc, uarmc->otyp, oldprop, TRUE);
         break;
     case CLOAK_OF_DISPLACEMENT:
-        toggle_displacement(uarmc, oldprop, TRUE);
+        toggle_displacement(uarmc, uarmc->otyp, oldprop, TRUE);
         break;
     case OILSKIN_CLOAK:
         pline("%s very tightly.", Tobjnam(uarmc, "fit"));
@@ -368,17 +381,19 @@ Cloak_off(VOID_ARGS)
     if (flags.verbose && otmp)
         play_simple_object_sound(otmp, OBJECT_SOUND_TYPE_TAKE_OFF);
 
+    int trackidx = add_to_obj_tracking(otmp);
     context.takeoff.mask &= ~W_ARMC;
     /* For mummy wrapping, taking it off first resets `Invisible'. */
     setworn((struct obj *) 0, W_ARMC);
     context.takeoff.cancelled_don = FALSE;
+    boolean objgone = finish_obj_tracking(trackidx);
 
     switch (otyp) {
     case ELVEN_CLOAK:
-        toggle_stealth(otmp, oldprop, FALSE);
+        toggle_stealth(objgone ? 0 : otmp, otyp, oldprop, FALSE);
         break;
     case CLOAK_OF_DISPLACEMENT:
-        toggle_displacement(otmp, oldprop, FALSE);
+        toggle_displacement(objgone ? 0 : otmp, otyp, oldprop, FALSE);
         break;
     }
     boolean has_stone_res = Stone_resistance;
@@ -722,14 +737,14 @@ struct obj* ud;
 
     int64_t bit = ud->owornmask & W_MISCITEMS;
 
-    context.takeoff.mask &= ~bit;
-    setworn((struct obj*) 0, bit);
-    context.takeoff.cancelled_don = FALSE;
-
     if (objects[ud->otyp].oc_subtyp == MISC_IOUN_STONE)
     {
         pline("%s orbiting around your %s.", Tobjnam(ud, "stop"), body_part(HEAD));
     }
+
+    context.takeoff.mask &= ~bit;
+    setworn((struct obj*) 0, bit);
+    context.takeoff.cancelled_don = FALSE;
 
     (void) encumber_msg();
     boolean has_stone_res = Stone_resistance;
@@ -969,7 +984,7 @@ register struct obj *obj;
 
     switch (obj->otyp) {
     case RIN_STEALTH:
-        toggle_stealth(obj, oldprop, TRUE);
+        toggle_stealth(obj, obj->otyp, oldprop, TRUE);
         break;
 
     case RIN_PROTECTION_FROM_SHAPE_CHANGERS:
@@ -987,7 +1002,7 @@ boolean gone;
 {
     if (!obj)
         return;
-
+    int otyp = obj->otyp;
     if (flags.verbose && obj && !gone)
         play_simple_object_sound(obj, OBJECT_SOUND_TYPE_TAKE_OFF);
 
@@ -995,14 +1010,15 @@ boolean gone;
     context.takeoff.mask &= ~mask;
     //if (!(u.uprops[objects[obj->otyp].oc_oprop].extrinsic & mask))
     //   impossible("Strange... I didn't know you had that ring.");
+    int trackidx = add_to_obj_tracking(obj);
     if (gone)
         (void)setnotworn(obj);
     else
         setworn((struct obj *) 0, obj->owornmask);
-
-    switch (obj->otyp) {
+    boolean ogone = finish_obj_tracking(trackidx);
+    switch (otyp) {
     case RIN_STEALTH:
-        toggle_stealth(obj, (EStealth & ~mask), FALSE);
+        toggle_stealth(ogone ? 0 : obj, otyp, (EStealth & ~mask), FALSE);
         break;
     case RIN_PROTECTION_FROM_SHAPE_CHANGERS:
         /* If you're no longer protected, let the chameleons
@@ -1011,7 +1027,6 @@ boolean gone;
         restartcham();
         break;
     }
-
     return;
 }
 
@@ -1055,8 +1070,8 @@ struct obj *otmp;
         return;
     }
     context.takeoff.mask &= ~W_BLINDFOLD;
+    off_msg_with_flags(otmp, DONAME_HIDE_WORN);
     setworn((struct obj *) 0, otmp->owornmask);
-    off_msg(otmp);
 
     if (Blind) {
         if (was_blind) {
