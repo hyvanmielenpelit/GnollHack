@@ -222,7 +222,7 @@ boolean unchain_ball; /* whether to unpunish or just unwield */
         cancel_don();
     if (!obj->owornmask)
         return;
-    boolean was_in_lava_effects = iflags.in_lava_effects;
+    int was_in_lava_effects = iflags.in_lava_effects;
     if (!was_in_lava_effects) /* Prevent reset by the recursive call in lava_effects */
     {
         iflags.in_remove_worn_item++;
