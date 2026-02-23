@@ -773,8 +773,8 @@ boolean dropping_piercer;
         switch (M_AP_TYPE(mon)) 
         {
         default:
-            impossible("display_monster:  bad m_ap_type value [ = %d ]",
-                       (int) mon->m_ap_type);
+            impossible("display_monster:  bad m_ap_type value [ = %d ] (mnum=%d, hp=%d, dnum=%d, dlevel=%d)",
+                       (int) mon->m_ap_type, mon->mnum, mon->mhp, u.uz.dnum, u.uz.dlevel);
             /*FALLTHRU*/
         case M_AP_NOTHING:
             show_monster_glyph_with_extra_info(x, y, any_mon_to_glyph(mon, newsym_rn2),  mon, 0UL, 0UL, 0, 0);
