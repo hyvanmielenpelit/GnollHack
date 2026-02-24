@@ -6540,6 +6540,7 @@ struct obj* obj;
             default:
                 break;
             }
+            return taketurn; /* obj may be gone in dostash etc. */
         }
     }
     else if (obj->cursed && !rn2(WAND_BACKFIRE_CHANCE))
@@ -6560,7 +6561,8 @@ struct obj* obj;
     {
 
         play_simple_object_sound(obj, OBJECT_SOUND_TYPE_ZAP);
-
+        
+        int trackidx = add_to_obj_tracking(obj);
         if ((damage = zapyourself(obj, TRUE)) != 0)
         {
             char buf[BUFSZ];
@@ -6568,6 +6570,8 @@ struct obj* obj;
             Sprintf(buf, "zapped %sself with a wand", uhim());
             losehp(damage, buf, NO_KILLER_PREFIX);
         }
+        if (finish_obj_tracking(trackidx))
+            obj = 0;
     }
     else
     {

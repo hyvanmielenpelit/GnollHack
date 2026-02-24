@@ -4326,6 +4326,7 @@ domagictrap()
             pseudo = zeroobj; /* neither cursed nor blessed,
                                  and zero out oextra */
             pseudo.otyp = SCR_REMOVE_CURSE;
+            pseudo.quan = 20L;
             HConfusion = 0L;
             boolean effect_happened = 0;
             (void)seffects(&pseudo, &effect_happened, &youmonst);

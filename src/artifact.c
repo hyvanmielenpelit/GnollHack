@@ -2789,6 +2789,7 @@ struct obj *obj;
             struct obj pseudo;
             pseudo = zeroobj; /* neither cursed nor blessed, zero oextra too */
             pseudo.otyp = SCR_TAMING;
+            pseudo.quan = 20L;
             boolean effect_happened = 0;
             (void) seffects(&pseudo, &effect_happened, &youmonst);
             break;

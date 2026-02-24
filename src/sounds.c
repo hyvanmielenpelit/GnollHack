@@ -11325,15 +11325,18 @@ int special_dialogue_sound_id;
     pseudo->quan = 20L; /* do not let useup get it */
     pseudo->speflags = SPEFLAGS_SERVICED_SPELL;
     boolean effect_happened = 0;
-    (void)seffects(pseudo, &effect_happened, &youmonst);
+    boolean gone = seffects(pseudo, &effect_happened, &youmonst);
     if (effect_happened)
     {
         money2mon(mtmp, u_pay);
         bot();
     }
-    debugprint("spell_service_query: %d", pseudo->otyp);
-    obfree(pseudo, (struct obj*)0);
-    /* gnostic handled in seffects */
+    if (!gone)
+    {
+        debugprint("spell_service_query: %d", pseudo->otyp);
+        obfree(pseudo, (struct obj*)0);
+        /* gnostic handled in seffects */
+    }
 
     stop_all_dialogue_of_mon_on_mobile(mtmp);
     return 1;

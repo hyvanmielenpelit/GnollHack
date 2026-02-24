@@ -98,6 +98,7 @@ boolean drink_yourself;
 
     const char* contents = (objects[obj->otyp].oc_name_known && OBJ_CONTENT_NAME(obj->otyp) != 0 ? OBJ_CONTENT_NAME(obj->otyp) : OBJ_CONTENT_DESC(obj->otyp) != 0 ? OBJ_CONTENT_DESC(obj->otyp) : "unknown contents");
 
+    int trackidx = add_to_obj_tracking(obj);
     if (u.dz) 
     {
         if (u.dz > 0 && !u.ux && !u.uy && u.usteed)
@@ -158,7 +159,8 @@ boolean drink_yourself;
         weffects(obj);
     }
 
-    if (obj->charges <= 0)
+    boolean ogone = finish_obj_tracking(trackidx);
+    if (!ogone && obj->charges <= 0)
     {
         play_sfx_sound(SFX_GENERAL_OUT_OF_CHARGES);
         pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s now empty.", Tobjnam(obj, "are"));
@@ -195,6 +197,7 @@ boolean drink_yourself;
 
     consume_obj_charge(obj, TRUE);
 
+    int trackidx = add_to_obj_tracking(obj);
     if (u.dz)
     {
         play_simple_object_sound(obj, OBJECT_SOUND_TYPE_APPLY);
@@ -245,7 +248,8 @@ boolean drink_yourself;
         weffects(obj);
     }
 
-    if (obj->charges <= 0)
+    boolean ogone = finish_obj_tracking(trackidx);
+    if (!ogone && obj->charges <= 0)
     {
         play_sfx_sound(SFX_GENERAL_OUT_OF_CHARGES);
         pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s now empty.", Tobjnam(obj, "are"));
@@ -5761,17 +5765,26 @@ struct obj *obj;
     zapsetup();
 
     /* this makes it hit us last, so that we can see the action first */
-    for (i = 0; i <= 8; i++) {
-        bhitpos.x = x = obj->ox + xdir[i];
-        bhitpos.y = y = obj->oy + ydir[i];
+
+    struct obj pseudo = *obj;
+    pseudo.cobj = pseudo.nobj = pseudo.v.v_nexthere = 0;
+    pseudo.oextra = 0;
+    for (i = 0; i <= 8; i++) 
+    {
+        struct obj* used_obj = obj ? obj : &pseudo;
+        bhitpos.x = x = used_obj->ox + xdir[i];
+        bhitpos.y = y = used_obj->oy + ydir[i];
         if (!isok(x, y))
             continue;
 
-        if (obj->otyp == WAN_DIGGING) {
+        if (used_obj->otyp == WAN_DIGGING)
+        {
             schar typ;
 
-            if (dig_check(BY_OBJECT, FALSE, x, y)) {
-                if (IS_WALL(levl[x][y].typ) || IS_DOOR(levl[x][y].typ)) {
+            if (dig_check(BY_OBJECT, FALSE, x, y)) 
+            {
+                if (IS_WALL(levl[x][y].typ) || IS_DOOR(levl[x][y].typ)) 
+                {
                     /* normally, pits and holes don't anger guards, but they
                      * do if it's a wall or door that's being dug */
                     watch_dig((struct monst *) 0, x, y, TRUE);
@@ -5784,26 +5797,32 @@ struct obj *obj;
                  * drum of earthquake if you alter this sequence.
                  */
                 typ = fillholetyp(x, y, FALSE);
-                if (!IS_FLOOR(typ)) {
+                if (!IS_FLOOR(typ)) 
+                {
                     levl[x][y].typ = typ, levl[x][y].flags = 0;
                     liquid_flow(x, y, typ, t_at(x, y),
                                 fillmsg
                                   ? (char *) 0
                                   : "Some holes are quickly filled with %s!");
                     fillmsg = TRUE;
-                } else
-                    digactualhole(x, y, BY_OBJECT, (rn2(obj->charges) < 3
+                } 
+                else
+                    digactualhole(x, y, BY_OBJECT, (rn2(used_obj->charges) < 3
                                                     || (!Can_dig_down(&u.uz)
                                                         && !levl[x][y].candig))
                                                       ? PIT
                                                       : HOLE);
             }
             continue;
-        } else if (obj->otyp == WAN_CREATE_MONSTER) {
+        } 
+        else if (used_obj->otyp == WAN_CREATE_MONSTER)
+        {
             /* u.ux,u.uy creates it near you--x,y might create it in rock */
             (void) makemon2((struct permonst *) 0, u.ux, u.uy, NO_MM_FLAGS, MM2_RANDOMIZE_SUBTYPE);
             continue;
-        } else if (x != u.ux || y != u.uy) {
+        } 
+        else if (x != u.ux || y != u.uy) 
+        {
             /*
              * Wand breakage is targetting a square adjacent to the hero,
              * which might contain a monster or a pile of objects or both.
@@ -5813,16 +5832,23 @@ struct obj *obj;
              * dropped due to monster's polymorph and prevents undead
              * turning that kills an undead from raising resulting corpse.
              */
-            if ((mon = m_at(x, y)) != 0) {
-                (void) bhitm(mon, obj, (struct monst*)0);
+            int trackidx = obj ? add_to_obj_tracking(obj) : -1;
+            if ((mon = m_at(x, y)) != 0) 
+            {
+                (void) bhitm(mon, used_obj, (struct monst*)0);
                 /* if (context.botl) bot(); */
             }
-            if (affects_objects && level.objects[x][y]) {
-                (void) bhitpile(obj, (struct monst*)0, bhito, x, y, 0, hit_only_one, FALSE);
+            if (affects_objects && level.objects[x][y]) 
+            {
+                (void) bhitpile(used_obj, (struct monst*)0, bhito, x, y, 0, hit_only_one, FALSE);
                 if (context.botl)
                     bot(); /* potion effects */
             }
-        } else {
+            if (finish_obj_tracking(trackidx))
+                obj = 0, current_wand = &pseudo;
+        } 
+        else 
+        {
             /*
              * Wand breakage is targetting the hero.  Using xdir[]+ydir[]
              * deltas for location selection causes this case to happen
@@ -5835,13 +5861,19 @@ struct obj *obj;
              * of obj->bypass in the zap code to accomplish that last case
              * since it's also used by retouch_equipment() for polyself.)
              */
+            int trackidx = obj ? add_to_obj_tracking(obj) : -1;
             if (affects_objects && level.objects[x][y]) {
-                (void) bhitpile(obj, (struct monst*)0, bhito, x, y, 0, hit_only_one, FALSE);
+                (void) bhitpile(used_obj, (struct monst*)0, bhito, x, y, 0, hit_only_one, FALSE);
                 if (context.botl)
                     bot(); /* potion effects */
             }
-            damage = zapyourself(obj, FALSE);
-            if (damage > 0) 
+            if (finish_obj_tracking(trackidx))
+                obj = 0, current_wand = &pseudo;
+            trackidx = obj ? add_to_obj_tracking(obj) : -1;
+            damage = zapyourself(used_obj, FALSE);
+            if (finish_obj_tracking(trackidx))
+                obj = 0, current_wand = &pseudo;
+            if (damage > 0)
             {
                 Sprintf(buf, "killed %sself by breaking a wand", uhim());
                 losehp(damage, buf, NO_KILLER_PREFIX);
@@ -5859,13 +5891,13 @@ struct obj *obj;
     if (shop_damage)
         pay_for_damage("dig into", FALSE);
 
-    if (obj->otyp == WAN_LIGHT)
+    if (obj && obj->otyp == WAN_LIGHT)
         litroom(TRUE, obj); /* only needs to be done once */
 
 discard_broken_wand:
     obj = current_wand; /* [see dozap() and destroy_item()] */
     current_wand = 0;
-    if (obj)
+    if (obj && obj != &pseudo)
     {
         debugprint("do_break_wand: %d", obj->otyp);
         delobj(obj);
