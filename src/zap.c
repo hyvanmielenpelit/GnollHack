@@ -6588,10 +6588,9 @@ struct obj* obj;
         int trackidx = add_to_obj_tracking(obj);
         weffects(obj);
         boolean wandgone = finish_obj_tracking(trackidx);
-        if (wandgone && current_wand == obj)
-            obj = 0;
-        else
-            obj = current_wand;
+        if (wandgone)
+            obj = 0, current_wand = 0;
+        obj = current_wand;
         current_wand = 0;
     }
     if (obj && obj->charges < 0)

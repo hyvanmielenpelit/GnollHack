@@ -5682,7 +5682,10 @@ struct obj *obj;
     current_wand = obj; /* destroy_item might reset this */
     freeinv(obj);       /* hide it from destroy_item instead... */
     if (setnotworn(obj))    /* so we need to do this ourselves */
-        return 1;
+    {
+        obj = current_wand = 0;
+        goto discard_broken_wand;
+    }
 
     if (!zappable(obj)) {
         pline(nothing_else_happens);
@@ -5845,7 +5848,7 @@ struct obj *obj;
                     bot(); /* potion effects */
             }
             if (finish_obj_tracking(trackidx))
-                obj = 0, current_wand = &pseudo;
+                obj = 0, current_wand = 0;
         } 
         else 
         {
@@ -5868,11 +5871,11 @@ struct obj *obj;
                     bot(); /* potion effects */
             }
             if (finish_obj_tracking(trackidx))
-                obj = 0, current_wand = &pseudo;
+                obj = 0, current_wand = 0;
             trackidx = obj ? add_to_obj_tracking(obj) : -1;
             damage = zapyourself(used_obj, FALSE);
             if (finish_obj_tracking(trackidx))
-                obj = 0, current_wand = &pseudo;
+                obj = 0, current_wand = 0;
             if (damage > 0)
             {
                 Sprintf(buf, "killed %sself by breaking a wand", uhim());
