@@ -6726,7 +6726,10 @@ boolean setinitial, setfromfile;
 
             multicolor_buffer[0] = CLR_MSG_HINT;
             multicolor_buffer[1] = CLR_COMPOUND_OPT_SET;
-            pline_multi_ex(ATR_NONE, NO_COLOR, no_multiattrs, multicolor_buffer, "Option \'%s\' is now %s.", optname, npchoices[mode_pick->item.a_int - 1]);
+            const char* cptr = npchoices[mode_pick->item.a_int - 1];
+            if (*cptr == ' ')
+                cptr++;
+            pline_multi_ex(ATR_NONE, NO_COLOR, no_multiattrs, multicolor_buffer, "Option \'%s\' is now %s.", optname, cptr);
 
             free((genericptr_t) mode_pick);
         }
