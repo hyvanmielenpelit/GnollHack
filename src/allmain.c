@@ -1676,8 +1676,9 @@ boolean new_game; /* false => restoring an old game */
                 : currentgend != flags.initgend))
         Sprintf(eos(buf), " %s", genders[currentgend].adj);
 
-    int multicolors[5] = { NO_COLOR, NO_COLOR, NO_COLOR, NO_COLOR, NO_COLOR };
-    pline_multi_ex(ATR_NONE, CLR_MSG_HINT, no_multiattrs, multicolors, new_game ? "%s %s, welcome to GnollHack!  You are a%s %s %s."
+    //int multicolors[5] = { NO_COLOR, NO_COLOR, NO_COLOR, NO_COLOR, NO_COLOR };
+    //pline_multi_ex(ATR_NONE, CLR_MSG_HINT, no_multiattrs, multicolors, new_game ? "%s %s, welcome to GnollHack!  You are a%s %s %s."
+    pline_ex(ATR_NONE, CLR_MSG_HINT, new_game ? "%s %s, welcome to GnollHack!  You are a%s %s %s."
                    : "%s %s, the%s %s %s, welcome back to GnollHack!",
           Hello((struct monst *) 0), plname, buf, urace.adj,
           (currentgend && urole.name.f) ? urole.name.f : urole.name.m);

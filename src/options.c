@@ -44,6 +44,7 @@ enum window_option_types {
     TEXT_OPTION
 };
 
+#define CLR_COMPOUND_OPT_SET CLR_GREEN
 #define PILE_LIMIT_DFLT 5
 #define HERE_WIN_SIZ_DFLT 8
 #define DEFAULT_PILE_LIMIT (iflags.wc2_herewindow ? iflags.wc2_here_window_size + 1 : PILE_LIMIT_DFLT)
@@ -6117,7 +6118,7 @@ doset() /* changing options via menu by Per Liboriussen */
                         if (parseoptions(buf, setinitial, fromfile))
                         {
                             multicolor_buffer[0] = CLR_MSG_HINT;
-                            multicolor_buffer[1] = CLR_MAGENTA;
+                            multicolor_buffer[1] = CLR_COMPOUND_OPT_SET;
                             pline_multi_ex(ATR_NONE, NO_COLOR, no_multiattrs, multicolor_buffer, "Option \'%s\' is now %s.", compopt[opt_indx].name, buf2);
                         };
                     }
@@ -6289,7 +6290,7 @@ boolean setinitial, setfromfile;
             flags.menu_style = style_pick->item.a_int - 1;
             free((genericptr_t) style_pick);
             multicolor_buffer[0] = CLR_MSG_HINT;
-            multicolor_buffer[1] = CLR_MAGENTA;
+            multicolor_buffer[1] = CLR_COMPOUND_OPT_SET;
             pline_multi_ex(ATR_NONE, NO_COLOR, no_multiattrs, multicolor_buffer, "Option \'%s\' is now %s.", optname, menutype[(int)flags.menu_style]);
         }
         destroy_nhwindow(tmpwin);
@@ -6345,7 +6346,7 @@ boolean setinitial, setfromfile;
             flags.pickup_burden = burden_pick->item.a_int - 1;
             free((genericptr_t) burden_pick);
             multicolor_buffer[0] = CLR_MSG_HINT;
-            multicolor_buffer[1] = CLR_MAGENTA;
+            multicolor_buffer[1] = CLR_COMPOUND_OPT_SET;
             pline_multi_ex(ATR_NONE, NO_COLOR, no_multiattrs, multicolor_buffer, "Option \'%s\' is now %s.", optname, burdentype[flags.pickup_burden]);
         }
         destroy_nhwindow(tmpwin);
@@ -6356,7 +6357,12 @@ boolean setinitial, setfromfile;
         {
             multicolor_buffer[0] = CLR_MSG_HINT;
             multicolor_buffer[1] = NO_COLOR;
-            pline_multi_ex(ATR_NONE, NO_COLOR, no_multiattrs, multicolor_buffer, "Option \'%s\' has been %s.", optname, "set");
+            multicolor_buffer[2] = CLR_COMPOUND_OPT_SET;
+            multicolor_buffer[3] = NO_COLOR;
+            char tbuf[MAX_OBJECT_CLASSES + 1];
+            oc_to_str(flags.pickup_types, tbuf);
+            pline_multi_ex(ATR_NONE, NO_COLOR, no_multiattrs, multicolor_buffer, "Option \'%s\' is now %s%s%s.", optname,
+                flags.pickup_types[0] ? "\'" : "", flags.pickup_types[0] ? tbuf : "all", flags.pickup_types[0] ? "\'" : "");
         }
     } else if (!strcmp("disclose", optname)) {
         /* order of disclose_names[] must correspond to
@@ -6464,7 +6470,7 @@ boolean setinitial, setfromfile;
             flags.runmode = mode_pick->item.a_int - 1;
             free((genericptr_t) mode_pick);
             multicolor_buffer[0] = CLR_MSG_HINT;
-            multicolor_buffer[1] = CLR_MAGENTA;
+            multicolor_buffer[1] = CLR_COMPOUND_OPT_SET;
             pline_multi_ex(ATR_NONE, NO_COLOR, no_multiattrs, multicolor_buffer, "Option \'%s\' is now %s.", optname, runmodes[flags.runmode]);
         }
         destroy_nhwindow(tmpwin);
@@ -6719,7 +6725,7 @@ boolean setinitial, setfromfile;
             number_pad(iflags.num_pad ? 1 : 0);
 
             multicolor_buffer[0] = CLR_MSG_HINT;
-            multicolor_buffer[1] = CLR_MAGENTA;
+            multicolor_buffer[1] = CLR_COMPOUND_OPT_SET;
             pline_multi_ex(ATR_NONE, NO_COLOR, no_multiattrs, multicolor_buffer, "Option \'%s\' is now %s.", optname, npchoices[mode_pick->item.a_int - 1]);
 
             free((genericptr_t) mode_pick);
@@ -6743,7 +6749,7 @@ boolean setinitial, setfromfile;
             sortspells();
             free((genericptr_t)mode_pick);
             multicolor_buffer[0] = CLR_MSG_HINT;
-            multicolor_buffer[1] = CLR_MAGENTA;
+            multicolor_buffer[1] = CLR_COMPOUND_OPT_SET;
             pline_multi_ex(ATR_NONE, NO_COLOR, no_multiattrs, multicolor_buffer, "Option \'%s\' is now %s.", optname, spl_sortchoices[flags.spellorder]);
         }
         destroy_nhwindow(tmpwin);
@@ -6767,7 +6773,7 @@ boolean setinitial, setfromfile;
             flags.max_hint_difficulty = mode_pick->item.a_int - 1 + (MIN_DIFFICULTY_LEVEL - 1);
             free((genericptr_t)mode_pick);
             multicolor_buffer[0] = CLR_MSG_HINT;
-            multicolor_buffer[1] = CLR_MAGENTA;
+            multicolor_buffer[1] = CLR_COMPOUND_OPT_SET;
             pline_multi_ex(ATR_NONE, NO_COLOR, no_multiattrs, multicolor_buffer, "Option \'%s\' is now %s.", optname, flags.max_hint_difficulty < MIN_DIFFICULTY_LEVEL ? "off" : get_game_difficulty_text(flags.max_hint_difficulty));
         }
         destroy_nhwindow(tmpwin);
@@ -6794,7 +6800,7 @@ boolean setinitial, setfromfile;
                 flags.right_click_command = (uchar)res;
             free((genericptr_t) mode_pick);
             multicolor_buffer[0] = CLR_MSG_HINT;
-            multicolor_buffer[1] = CLR_MAGENTA;
+            multicolor_buffer[1] = CLR_COMPOUND_OPT_SET;
             pline_multi_ex(ATR_NONE, NO_COLOR, no_multiattrs, multicolor_buffer, "Option \'%s\' is now %s.", optname, mouse_cmd_names[res]);
             /* Notification is needed */
             if (is_middle)
@@ -7102,7 +7108,7 @@ boolean setinitial, setfromfile;
                     symset[which_set].name = dupstr(sl->name);
                     ready_to_switch = TRUE;
                     multicolor_buffer[0] = CLR_MSG_HINT;
-                    multicolor_buffer[1] = CLR_MAGENTA;
+                    multicolor_buffer[1] = CLR_COMPOUND_OPT_SET;
                     pline_multi_ex(ATR_NONE, NO_COLOR, no_multiattrs, multicolor_buffer, "Option \'%s\' is now %s.", optname, symset[which_set].name);
                 }
             } else if (chosen == -1) {
@@ -7110,7 +7116,7 @@ boolean setinitial, setfromfile;
                 /* free the now stale symset attributes */
                 clear_symsetentry(which_set, TRUE);
                 multicolor_buffer[0] = CLR_MSG_HINT;
-                multicolor_buffer[1] = CLR_MAGENTA;
+                multicolor_buffer[1] = CLR_COMPOUND_OPT_SET;
                 pline_multi_ex(ATR_NONE, NO_COLOR, no_multiattrs, multicolor_buffer, "Option \'%s\' is now %s.", optname, "set to default");
             } else
                 nothing_to_do = TRUE;
