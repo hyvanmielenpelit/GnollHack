@@ -4302,6 +4302,15 @@ namespace GnollHackX
 
         public static void PlayButtonClickedSound()
         {
+            var curGame = CurrentGHGame;
+            if (curGame != null)
+                curGame.ResponseQueue.Enqueue(new GHResponse(curGame, GHRequestType.PlayButtonClickSound));
+            else
+                PlayButtonClickedSoundCore();
+        }
+
+        public static void PlayButtonClickedSoundCore()
+        {
             if (_fmodService != null)
             {
                 try
@@ -4325,6 +4334,15 @@ namespace GnollHackX
         }
 
         public static void PlayMenuSelectSound()
+        {
+            var curGame = CurrentGHGame;
+            if (curGame != null)
+                curGame.ResponseQueue.Enqueue(new GHResponse(curGame, GHRequestType.PlayMenuSelectSound));
+            else
+                PlayMenuSelectSoundCore();
+        }
+
+        public static void PlayMenuSelectSoundCore()
         {
             if (_fmodService != null)
             {

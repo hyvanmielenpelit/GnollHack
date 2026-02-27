@@ -321,6 +321,12 @@ namespace GnollHackX
                         GHApp.FmodService?.AdjustGameVolumes(response.GeneralVolume, response.MusicVolume, response.AmbientVolume, 
                             response.DialogueVolume, response.EffectsVolume, response.GameUIVolume);
                         break;
+                    case GHRequestType.PlayButtonClickSound:
+                        GHApp.PlayButtonClickedSoundCore();
+                        break;
+                    case GHRequestType.PlayMenuSelectSound:
+                        GHApp.PlayMenuSelectSoundCore();
+                        break;
                     default:
                         break;
                 }

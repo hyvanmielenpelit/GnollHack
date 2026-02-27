@@ -109,6 +109,8 @@ namespace GnollHackX
         SetWornShowsEquipment,
         SetNoPetsPreference,
         UpdateShortcutLabels,
+        PlayButtonClickSound,
+        PlayMenuSelectSound,
     }
 
     public struct AddContextMenuData
