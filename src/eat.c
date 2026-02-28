@@ -4716,19 +4716,19 @@ eaten_stat(base, obj)
 int base;
 struct obj *obj;
 {
-    int64_t uneaten_amt, full_amount;
+    unsigned uneaten_amt, full_amount;
 
     /* get full_amount first; obj_nutrition() might modify obj->oeaten */
-    full_amount = (int64_t) obj_nutrition(obj, &youmonst);
-    uneaten_amt = (int64_t) obj->oeaten;
+    full_amount = obj_nutrition(obj, &youmonst);
+    uneaten_amt = obj->oeaten;
     if (uneaten_amt > full_amount) {
         impossible(
-          "partly eaten food (%ld) more nutritious than untouched food (%ld): otyp=%d, corpsenm=%d",
+          "partly eaten food (%u) more nutritious than untouched food (%u): otyp=%d, corpsenm=%d",
                    uneaten_amt, full_amount, obj->otyp, obj->corpsenm);
         uneaten_amt = full_amount;
     }
 
-    base = (int) (full_amount ? (int64_t) base * uneaten_amt / full_amount : 0L);
+    base = (int) (full_amount ? ((int64_t) base * (int64_t) uneaten_amt) / ((int64_t) full_amount) : (int64_t)0);
     return (base < 1) ? 1 : base;
 }
 
