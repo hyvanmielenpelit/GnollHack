@@ -568,9 +568,11 @@ mon_obj_nutrition_value(otmp, mtmp)
 struct obj* otmp;
 struct monst* mtmp;
 {
-    if (!otmp || !mtmp)
+    if (!otmp)
         return 0U;
     unsigned nut = obj_nutrition(otmp);
+    if (!mtmp)
+        return nut;
     unsigned mult = mon_nutrition_factor(otmp, mtmp, TRUE);
     unsigned divisor = mon_nutrition_factor(otmp, mtmp, FALSE);
     return (nut * mult) / divisor;
@@ -594,9 +596,11 @@ mon_obj_oeaten_value(otmp, mtmp)
 struct obj* otmp;
 struct monst* mtmp;
 {
-    if (!otmp || !mtmp)
+    if (!otmp)
         return 0U;
     unsigned nut = otmp->oeaten;
+    if (!mtmp)
+        return nut;
     unsigned mult = mon_nutrition_factor(otmp, mtmp, TRUE);
     unsigned divisor = mon_nutrition_factor(otmp, mtmp, FALSE);
     return (nut * mult) / divisor;
@@ -4837,10 +4841,9 @@ struct obj *obj;
     full_amount = obj_nutrition(obj);
     uneaten_amt = obj->oeaten;
     if (uneaten_amt > full_amount) {
-        impossible(
-          "partly eaten food (%u) more nutritious than untouched food (%u): otyp=%d, corpsenm=%d",
+        impossible("partly eaten food (%u) more nutritious than untouched food (%u): otyp=%d, corpsenm=%d",
                    uneaten_amt, full_amount, obj->otyp, obj->corpsenm);
-        obj->oeaten = uneaten_amt = full_amount; /* Update oeaten so that the */
+        obj->oeaten = uneaten_amt = full_amount; /* Update oeaten so that the impossible does not repeat */
     }
 
     base = (int) (full_amount ? ((int64_t) base * (int64_t) uneaten_amt) / ((int64_t) full_amount) : (int64_t)0);
