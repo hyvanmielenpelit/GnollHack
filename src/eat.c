@@ -472,11 +472,21 @@ struct monst* mtmp;
     {
         if (isyou ? maybe_polyd(is_dwarf(mtmp->data), Race_if(PM_DWARF)) : is_dwarf(mtmp->data))
             nut += nut / 6; /* 600 -> 700 */
+        /* prevent polymorph making a partly eaten ration
+           become more nutritious than an untouched one */
+        if (otmp->oeaten >= nut)
+            otmp->oeaten = (otmp->oeaten < objects[CRAM_RATION].oc_nutrition)
+            ? (nut - 1) : nut;
     }
     else if (otmp->otyp == TRIPE_RATION) 
     {
         if (isyou ? maybe_polyd(is_gnoll(mtmp->data), Race_if(PM_GNOLL)) : is_gnoll(mtmp->data))
             nut += nut * 2; /* 200 -> 600 */
+        /* prevent polymorph making a partly eaten ration
+           become more nutritious than an untouched one */
+        if (otmp->oeaten >= nut)
+            otmp->oeaten = (otmp->oeaten < objects[TRIPE_RATION].oc_nutrition)
+            ? (nut - 1) : nut;
     }
     return nut;
 }
@@ -4713,8 +4723,8 @@ struct obj *obj;
     uneaten_amt = (int64_t) obj->oeaten;
     if (uneaten_amt > full_amount) {
         impossible(
-          "partly eaten food (%ld) more nutritious than untouched food (%ld)",
-                   uneaten_amt, full_amount);
+          "partly eaten food (%ld) more nutritious than untouched food (%ld): otyp=%d, corpsenm=%d",
+                   uneaten_amt, full_amount, obj->otyp, obj->corpsenm);
         uneaten_amt = full_amount;
     }
 
