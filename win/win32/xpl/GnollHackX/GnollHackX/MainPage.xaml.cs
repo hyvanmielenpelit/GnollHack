@@ -1177,6 +1177,7 @@ namespace GnollHackX
             GHApp.InitAdditionalCachedBitmaps();
             GHApp.InitSymbolBitmaps();
             GHApp.InitGameBitmaps();
+            GHApp.InitRuntimeEffects();
 
             GHApp.ReadUserData();
             GHApp.CheckUserData();

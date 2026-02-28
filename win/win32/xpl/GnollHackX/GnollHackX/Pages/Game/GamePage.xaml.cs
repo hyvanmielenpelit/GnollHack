@@ -8725,6 +8725,29 @@ namespace GnollHackX.Pages.Game
                                         canvas.DrawImage(GHApp._waitBitmap, effRect, textPaint.Paint);
                                     }
                                     break;
+                                case (int)gui_effect_types.GUI_EFFECT_LIGHTNING:
+                                    {
+                                        if (usingGL)
+                                        {
+                                            float hitTime = Math.Max(0f, Math.Min(1f, (float)(maincountervalue - eff.CreatedAt) / 100));
+
+                                            var uniforms = new SKRuntimeEffectUniforms(GHApp.LightningEffect);
+                                            uniforms["resolution"] = new SKPoint(e.Info.Width, e.Info.Height);
+                                            uniforms["time"] = hitTime;
+                                            uniforms["impactPos"] = new SKPoint(tx + width / 2, ty + height / 2);
+
+                                            using var shader = GHApp.LightningEffect.ToShader(uniforms);
+
+                                            using var paint = new SKPaint
+                                            {
+                                                Shader = shader,
+                                                BlendMode = SKBlendMode.Plus // additive glow
+                                            };
+
+                                            canvas.DrawRect(e.Info.Rect, paint);
+                                        }
+                                    }
+                                    break;
                                 case (int)gui_effect_types.GUI_EFFECT_POLEARM:
                                     {
                                         using (new SKAutoCanvasRestore(canvas))

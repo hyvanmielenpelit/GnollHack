@@ -106,6 +106,7 @@ namespace GnollHackX
             {
                 case (int)gui_effect_types.GUI_EFFECT_SEARCH:
                 case (int)gui_effect_types.GUI_EFFECT_WAIT:
+                case (int)gui_effect_types.GUI_EFFECT_LIGHTNING:
                     return SKColors.White;
                 case (int)gui_effect_types.GUI_EFFECT_POLEARM:
                     switch(_data.subtype)

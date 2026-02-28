@@ -9623,7 +9623,86 @@ namespace GnollHackX
             return res;
         }
 
+        private static string _skslLightning = @"
+                uniform float2 resolution;
+                uniform float time;      // 0 → 1 animation progress
+                uniform float2 impactPos; // screen space impact position
 
+                float hash(float2 p) {
+                    return fract(sin(dot(p, float2(127.1, 311.7))) * 43758.5453);
+                }
+
+                float noise(float2 p) {
+                    float2 i = floor(p);
+                    float2 f = fract(p);
+
+                    float a = hash(i);
+                    float b = hash(i + float2(1.0, 0.0));
+                    float c = hash(i + float2(0.0, 1.0));
+                    float d = hash(i + float2(1.0, 1.0));
+
+                    float2 u = f * f * (3.0 - 2.0 * f);
+
+                    return mix(a, b, u.x) +
+                           (c - a) * u.y * (1.0 - u.x) +
+                           (d - b) * u.x * u.y;
+                }
+
+                half4 main(float2 fragCoord)
+                {
+                    float2 uv = fragCoord;
+                    float2 center = impactPos;
+
+                    float2 dir = uv - center;
+                    float dist = length(dir);
+
+                    float progress = time;
+
+                    // Expanding radius
+                    float radius = progress * 250.0;
+
+                    // Sharp radial ring
+                    float ring = smoothstep(radius, radius - 20.0, dist);
+
+                    // Lightning filament distortion
+                    float angle = atan(dir.y, dir.x);
+                    float flicker = noise(float2(angle * 6.0, time * 10.0));
+                    float spikes = step(0.7, flicker);
+
+                    float lightning = ring * spikes;
+
+                    // Core flash
+                    float core = smoothstep(60.0, 0.0, dist) * (1.0 - progress);
+
+                    float intensity = lightning + core;
+
+                    // Fade out
+                    intensity *= (1.0 - progress);
+
+                    // Electric blue-white color
+                    float3 color = mix(
+                        float3(0.2, 0.6, 1.0),
+                        float3(1.0, 1.0, 1.0),
+                        intensity
+                    );
+
+                    return half4(color * intensity, intensity);
+                }
+            ";
+
+        public static SKRuntimeEffect LightningEffect = null;
+
+        public static void InitRuntimeEffects()
+        {
+            try
+            {
+                LightningEffect = SKRuntimeEffect.CreateShader(_skslLightning, out var error);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+            }
+        }
 #if WINDOWS
         [StructLayout(LayoutKind.Sequential)]
         struct PROCESS_POWER_THROTTLING_STATE
