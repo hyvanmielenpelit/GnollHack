@@ -215,7 +215,8 @@ struct monst *mtmp;
 struct obj *obj;
 {
     int nutrit;
-    int nutr_size_mult = (int)mon_nutrition_size_multiplier(mtmp);
+    int nutr_mult = (int)mon_nutrition_factor(obj, mtmp, TRUE);
+    int nutr_divisor = (int)mon_nutrition_factor(obj, mtmp, FALSE);
 
     /*
      * It is arbitrary that the pet takes the same length of time to eat
@@ -223,32 +224,22 @@ struct obj *obj;
      */
     if (obj->oclass == FOOD_CLASS) 
     {
-        boolean is_veg = FALSE;
         if (obj->otyp == CORPSE && obj->corpsenm >= LOW_PM)
         {
             mtmp->meating = 3 + (mons[obj->corpsenm].cwt >> 6);
             if (mtmp->meating < 3)
                 mtmp->meating = 3;
             nutrit = mons[obj->corpsenm].cnutrit;
-            if (is_vegetarian_food(&mons[obj->corpsenm]) || is_vegan_food(&mons[obj->corpsenm]))
-                is_veg = TRUE;
             refresh_m_tile_gui_info(mtmp, FALSE);
         }
         else 
         {
             mtmp->meating = objects[obj->otyp].oc_delay;
             nutrit = objects[obj->otyp].oc_nutrition;
-            if(obj->otyp == TIN && (obj->special_quality == SPEQUAL_TIN_CONTAINS_SPINACH || (obj->corpsenm >= LOW_PM && (is_vegetarian_food(&mons[obj->corpsenm]) || is_vegan_food(&mons[obj->corpsenm])))))
-                is_veg = TRUE;
-            else if(obj->material == MAT_VEGGY)
-                is_veg = TRUE;
             refresh_m_tile_gui_info(mtmp, FALSE);
         }
 
-        nutrit *= nutr_size_mult;
-
-        if(herbivorous(mtmp->data) && is_veg)
-            nutrit *= 4;
+        nutrit = (nutrit * nutr_mult) / nutr_divisor;
 
         if (obj->oeaten)
         {
@@ -263,7 +254,7 @@ struct obj *obj;
         if (mtmp->meating < 0)
             mtmp->meating = 1;
         nutrit = (int) (obj->quan / 2);
-        nutrit *= nutr_size_mult;
+        nutrit = (nutrit * nutr_mult) / nutr_divisor;
         refresh_m_tile_gui_info(mtmp, FALSE);
     }
     else if (obj->oclass == POTION_CLASS)
@@ -273,7 +264,7 @@ struct obj *obj;
         int nutrition = (int)d(max(0, objects[obj->otyp].oc_potion_nutrition_dice + nutrdicebuc * bcsign(obj)), 
             max(1, objects[obj->otyp].oc_potion_nutrition_diesize)) 
             + objects[obj->otyp].oc_potion_nutrition_plus + bcsign(obj) * (int)objects[obj->otyp].oc_potion_nutrition_buc_multiplier;
-        nutrit = nutrition * nutr_size_mult;
+        nutrit = (nutrition * nutr_mult) / nutr_divisor;
         refresh_m_tile_gui_info(mtmp, FALSE);
     }
     else
@@ -286,7 +277,7 @@ struct obj *obj;
         mtmp->meating = obj->owt / 20 + 1;
         if (mtmp->meating < 1)
             mtmp->meating = 1;
-        nutrit = nutr_size_mult * (int)obj_nutrition(obj, mtmp); // objects[obj->otyp].oc_nutrition;
+        nutrit = (int)mon_obj_nutrition_value(obj, mtmp);
         refresh_m_tile_gui_info(mtmp, FALSE);
     }
     if (nutrit < 0)

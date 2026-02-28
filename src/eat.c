@@ -410,52 +410,122 @@ reset_eat(VOID_ARGS)
     return;
 }
 
+//unsigned
+//mon_nutrition_size_multiplier(mtmp)
+//struct monst* mtmp;
+//{
+//    unsigned nutr_size_mult = 1;
+//    switch (mtmp->data->msize)
+//    {
+//    case MZ_TINY:
+//        nutr_size_mult = 4;
+//        break;
+//    case MZ_SMALL:
+//        nutr_size_mult = 2;
+//        break;
+//    default:
+//    case MZ_MEDIUM:
+//        nutr_size_mult = 1;
+//        break;
+//    case MZ_LARGE:
+//        nutr_size_mult = 1;
+//        break;
+//    case MZ_HUGE:
+//        nutr_size_mult = 1;
+//        break;
+//    case MZ_GIGANTIC:
+//        nutr_size_mult = 1;
+//        break;
+//    }
+//
+//    return nutr_size_mult;
+//}
+
 unsigned
-mon_nutrition_size_multiplier(mtmp)
+mon_nutrition_factor(otmp, mtmp, is_numerator)
+struct obj* otmp;
 struct monst* mtmp;
+boolean is_numerator;
 {
-    unsigned nutr_size_mult = 1;
+    if (!mtmp || !otmp)
+        return 1U;
+
+    unsigned res = 1U;
+    boolean isyou = mtmp == &youmonst;
+    if (otmp->otyp == ELVEN_WAYBREAD
+        && (isyou ? maybe_polyd(is_elf(mtmp->data), Race_if(PM_ELF)) : is_elf(mtmp->data)))
+        res = is_numerator ? 5U : 4U;
+    else if (otmp->otyp == ELVEN_WAYBREAD
+        && (isyou ? maybe_polyd(is_orc(mtmp->data), Race_if(PM_ORC)) : is_orc(mtmp->data)))
+        res = is_numerator ? 3U : 4U;
+    else if (otmp->otyp == CRAM_RATION 
+        && (isyou ? maybe_polyd(is_dwarf(mtmp->data), Race_if(PM_DWARF)) : is_dwarf(mtmp->data)))
+        res = is_numerator ? 7U : 6U;
+    else if (otmp->otyp == TRIPE_RATION
+        && (isyou ? maybe_polyd(is_gnoll(mtmp->data), Race_if(PM_GNOLL)) : is_gnoll(mtmp->data)))
+        res = is_numerator ? 3U : 1U;
+
+    if (otmp->oclass == FOOD_CLASS)
+    {
+        boolean is_veg = FALSE;
+        if (otmp->otyp == CORPSE && otmp->corpsenm >= LOW_PM)
+        {
+            if (is_vegetarian_food(&mons[otmp->corpsenm]) || is_vegan_food(&mons[otmp->corpsenm]))
+                is_veg = TRUE;
+        }
+        else
+        {
+            if (otmp->otyp == TIN && (otmp->special_quality == SPEQUAL_TIN_CONTAINS_SPINACH || (otmp->corpsenm >= LOW_PM && (is_vegetarian_food(&mons[otmp->corpsenm]) || is_vegan_food(&mons[otmp->corpsenm])))))
+                is_veg = TRUE;
+            else if (otmp->material == MAT_VEGGY)
+                is_veg = TRUE;
+        }
+        if (is_numerator && is_veg && herbivorous(mtmp->data) && !carnivorous(mtmp->data))
+            res *= 4U;
+    }
+
     switch (mtmp->data->msize)
     {
     case MZ_TINY:
-        nutr_size_mult = 4;
+        res *= is_numerator ? 4U : 1U;
         break;
     case MZ_SMALL:
-        nutr_size_mult = 2;
+        res *= is_numerator ? 2U : 1U;
         break;
     default:
     case MZ_MEDIUM:
-        nutr_size_mult = 1;
+        //res *= is_numerator ? 1U : 1U;
         break;
     case MZ_LARGE:
-        nutr_size_mult = 1;
+        //res *= is_numerator ? 1U : 1U;
         break;
     case MZ_HUGE:
-        nutr_size_mult = 1;
+        //res *= is_numerator ? 1U : 1U;
         break;
     case MZ_GIGANTIC:
-        nutr_size_mult = 1;
+        //res *= is_numerator ? 1U : 1U;
         break;
     }
 
-    return nutr_size_mult;
+    return res;
 }
 
 /* base nutrition of a food-class object */
 unsigned
-obj_nutrition(otmp, mtmp)
+obj_nutrition(otmp)
 struct obj* otmp;
-struct monst* mtmp;
 {
-    if (!otmp || !mtmp || (otmp->otyp == CORPSE && otmp->corpsenm < LOW_PM))
+    if (!otmp || (otmp->otyp == CORPSE && otmp->corpsenm < LOW_PM))
         return 0;
 
-    boolean isyou = mtmp == &youmonst;
+    //boolean isyou = mtmp == &youmonst;
     unsigned nut = (otmp->otyp == CORPSE && otmp->corpsenm >= LOW_PM) ? mons[otmp->corpsenm].cnutrit
         : (otmp->otyp == STATUE) ? (unsigned)((otmp->owt * objects[ROCK].oc_nutrition) / (max(1, otmp->quan * objects[ROCK].oc_weight)))
                       : otmp->globby ? otmp->owt
                          : objects[otmp->otyp].oc_nutrition;
 
+    /* Moved elsewhere to be just a multiplier on gained nutrition; oeaten now always corresponds to the original */
+#if 0
     if (otmp->otyp == ELVEN_WAYBREAD) 
     {
         if (isyou ? maybe_polyd(is_elf(mtmp->data), Race_if(PM_ELF)) : is_elf(mtmp->data))
@@ -488,7 +558,48 @@ struct monst* mtmp;
             otmp->oeaten = (otmp->oeaten < objects[TRIPE_RATION].oc_nutrition)
             ? (nut - 1) : nut;
     }
+#endif
+
     return nut;
+}
+
+unsigned
+mon_obj_nutrition_value(otmp, mtmp)
+struct obj* otmp;
+struct monst* mtmp;
+{
+    if (!otmp || !mtmp)
+        return 0U;
+    unsigned nut = obj_nutrition(otmp);
+    unsigned mult = mon_nutrition_factor(otmp, mtmp, TRUE);
+    unsigned divisor = mon_nutrition_factor(otmp, mtmp, FALSE);
+    return (nut * mult) / divisor;
+}
+
+int
+adjust_nutrition_base_value(basevalue, otmp, mtmp)
+int basevalue;
+struct obj* otmp;
+struct monst* mtmp;
+{
+    if (!otmp || !mtmp)
+        return basevalue;
+    unsigned mult = mon_nutrition_factor(otmp, mtmp, TRUE);
+    unsigned divisor = mon_nutrition_factor(otmp, mtmp, FALSE);
+    return (basevalue * (int)mult) / (int)divisor;
+}
+
+unsigned
+mon_obj_oeaten_value(otmp, mtmp)
+struct obj* otmp;
+struct monst* mtmp;
+{
+    if (!otmp || !mtmp)
+        return 0U;
+    unsigned nut = otmp->oeaten;
+    unsigned mult = mon_nutrition_factor(otmp, mtmp, TRUE);
+    unsigned divisor = mon_nutrition_factor(otmp, mtmp, FALSE);
+    return (nut * mult) / divisor;
 }
 
 STATIC_OVL struct obj *
@@ -505,7 +616,7 @@ struct obj *otmp;
 
     if (!otmp->oeaten) {
         costly_alteration(otmp, COST_BITE);
-        otmp->oeaten = obj_nutrition(otmp, &youmonst);
+        otmp->oeaten = obj_nutrition(otmp);
     }
 
     if (carried(otmp)) {
@@ -634,7 +745,8 @@ boolean message;
     else
         food_after_effect(piece);
 
-    display_nutrition_floating_text(u.ux, u.uy, context.victual.total_nutrition);
+    int nutr = adjust_nutrition_base_value(context.victual.total_nutrition, piece, &youmonst);
+    display_nutrition_floating_text(u.ux, u.uy, nutr);
 
     if (carried(piece))
     {
@@ -1978,8 +2090,9 @@ const char *mesg;
             make_vomiting((int64_t) rn1(15, 10), FALSE);
         else
         {
-            lesshungry(tintxts[r].nut);
-            display_nutrition_floating_text(u.ux, u.uy, tintxts[r].nut);
+            int nutr = adjust_nutrition_base_value(tintxts[r].nut, tin, &youmonst);
+            lesshungry(nutr);
+            display_nutrition_floating_text(u.ux, u.uy, nutr);
         }
 
         if (tintxts[r].greasy) 
@@ -2001,6 +2114,7 @@ const char *mesg;
             : !tin->cursed
             ? (400 + rnd(200))   /* uncursed */
             : (200 + rnd(400)); /* cursed */
+        nutr = adjust_nutrition_base_value(nutr, tin, &youmonst);
         boolean chokewarn = u.uhs == SATIATED && u.uhunger >= NUTRITION_CHOKE_AMOUNT - nutr;
         const char* eatit = chokewarn ? "However, you are feeling very full; eat it nevertheless?" : "Eat it?";
         if (tin->cursed)
@@ -3610,11 +3724,12 @@ doeat()
 
     if (otmp->otyp != TIN) //Tins are treated separately, since you do not know their nutrition before
     {
-        int total_nutrition = (int)obj_nutrition(otmp, &youmonst);
+        int total_nutrition = (int)obj_nutrition(otmp);
         int nutrition_left = otmp->oeaten ? (int)otmp->oeaten : total_nutrition;
         int reqtime = otmp->otyp == CORPSE ? get_corpse_reqtime(otmp) : is_obj_normally_edible(otmp) && objects[otmp->otyp].oc_delay && total_nutrition > 0 ? rounddiv((int)objects[otmp->otyp].oc_delay * nutrition_left, total_nutrition) : 1;
         int nmod = get_food_nmod(otmp, reqtime);
-        boolean chokewarn = u.uhs == SATIATED && can_obj_cause_choking(otmp) && u.uhunger >= NUTRITION_CHOKE_AMOUNT + min(0, nmod) * (int)mon_nutrition_size_multiplier(&youmonst);
+        boolean chokewarn = u.uhs == SATIATED && can_obj_cause_choking(otmp) 
+            && u.uhunger >= NUTRITION_CHOKE_AMOUNT + adjust_nutrition_base_value(min(0, nmod), otmp, &youmonst);
         if (chokewarn)
         {
             char qbuf[QBUFSZ];
@@ -4015,7 +4130,7 @@ doeat()
     }
 
     /* re-calc the nutrition */
-    basenutrit = (int) obj_nutrition(otmp, & youmonst);
+    basenutrit = (int) obj_nutrition(otmp);
 
     if (!objects[otmp->otyp].oc_name_known && (objects[otmp->otyp].oc_flags3 & O3_EATING_IDENTIFIES) && !hadhallucination)
     {
@@ -4098,7 +4213,7 @@ bite()
 
     if (context.victual.nmod < 0) 
     {
-        int amt = -context.victual.nmod * (int)mon_nutrition_size_multiplier(&youmonst);
+        int amt = adjust_nutrition_base_value(-context.victual.nmod, context.victual.piece, &youmonst);
         lesshungry(amt);
         consume_oeaten(context.victual.piece,
                        context.victual.nmod); /* -= -nmod */
@@ -4719,13 +4834,13 @@ struct obj *obj;
     unsigned uneaten_amt, full_amount;
 
     /* get full_amount first; obj_nutrition() might modify obj->oeaten */
-    full_amount = obj_nutrition(obj, &youmonst);
+    full_amount = obj_nutrition(obj);
     uneaten_amt = obj->oeaten;
     if (uneaten_amt > full_amount) {
         impossible(
           "partly eaten food (%u) more nutritious than untouched food (%u): otyp=%d, corpsenm=%d",
                    uneaten_amt, full_amount, obj->otyp, obj->corpsenm);
-        uneaten_amt = full_amount;
+        obj->oeaten = uneaten_amt = full_amount; /* Update oeaten so that the */
     }
 
     base = (int) (full_amount ? ((int64_t) base * (int64_t) uneaten_amt) / ((int64_t) full_amount) : (int64_t)0);
@@ -4812,6 +4927,7 @@ boolean stopping;
         if (stopping && context.victual.piece)
         {
             int nutr = context.victual.total_nutrition - context.victual.piece->oeaten;
+            nutr = adjust_nutrition_base_value(nutr, context.victual.piece, &youmonst);
             display_nutrition_floating_text(u.ux, u.uy, nutr);
         }
     }
@@ -4887,7 +5003,7 @@ int reqtime;
      *       to this method.
      * TODO: add in a "remainder" value to be given at the end of the meal.
      */
-    int nutrition_left = otmp->oeaten ? (int)otmp->oeaten : (int)obj_nutrition(otmp, &youmonst);
+    int nutrition_left = otmp->oeaten ? (int)otmp->oeaten : (int)obj_nutrition(otmp);
 
     if (!otmp || reqtime == 0 || nutrition_left == 0)
         /* possible if most has been eaten before */
