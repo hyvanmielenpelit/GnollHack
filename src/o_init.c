@@ -462,7 +462,7 @@ NEARDATA const struct mythic_definition mythic_suffix_qualities[MAX_MYTHIC_SUFFI
         "eyes", " of eyes", "Confers searching and see invisible (armors only)", 
         20, MYTHIC_STANDARD_PRICE_MULTIPLIER, MYTHIC_STANDARD_PRICE_ADDITION,
         MYTHIC_SUFFIX_POWER_SEARCHING | MYTHIC_SUFFIX_POWER_SEE_INVISIBLE,
-        MYTHIC_FLAG_DIRECTLY_WISHABLE | MYTHIC_FLAG_ARMOR_REQUIRED
+        MYTHIC_FLAG_DIRECTLY_WISHABLE | MYTHIC_FLAG_ARMOR_REQUIRED | MYTHIC_FLAG_NO_BOOTS
     },
     {
         "elemental protection", " of elemental protection", "Confers fire, cold, and shock resistances (armors only)", 
@@ -1611,6 +1611,8 @@ uchar is_wish; /* 1 = mythic wishing, 2 = legendary wishing */
     if ((mythic_definitions[affix_idx].mythic_flags & MYTHIC_FLAG_NO_DEMONIC_ITEMS) && is_demon_obj(obj))
         return FALSE;
     if ((mythic_definitions[affix_idx].mythic_flags & MYTHIC_FLAG_NO_OTHER_SORCERY) && (affix_type == 0 ? (obj->mythic_suffix == MYTHIC_SUFFIX_SORCERY) : (obj->mythic_prefix == MYTHIC_PREFIX_SORCERERS)))
+        return FALSE;
+    if ((mythic_definitions[affix_idx].mythic_flags & MYTHIC_FLAG_NO_BOOTS) && is_boots(obj))
         return FALSE;
 
     return TRUE;
