@@ -354,37 +354,37 @@ NEARDATA const struct mythic_definition mythic_suffix_qualities[MAX_MYTHIC_SUFFI
         "troll slaying", " of troll slaying", "Extra damage to trolls; prevents troll revival (weapons only)", 
         15, MYTHIC_STANDARD_PRICE_MULTIPLIER, MYTHIC_STANDARD_PRICE_ADDITION,
         MYTHIC_SUFFIX_POWER_TROLL_SLAYING | MYTHIC_SUFFIX_POWER_TROLL_REVIVAL_PREVENTION,
-        MYTHIC_FLAG_DIRECTLY_WISHABLE | MYTHIC_FLAG_WEAPON_REQUIRED
+        MYTHIC_FLAG_DIRECTLY_WISHABLE | MYTHIC_FLAG_WEAPON_REQUIRED | MYTHIC_FLAG_NO_BOOTS
     },
     {
         "ogre slaying", " of ogre slaying", "Extra damage to ogres (weapons only)", 
         15, MYTHIC_STANDARD_PRICE_MULTIPLIER, MYTHIC_STANDARD_PRICE_ADDITION,
         MYTHIC_SUFFIX_POWER_OGRE_SLAYING,
-        MYTHIC_FLAG_DIRECTLY_WISHABLE | MYTHIC_FLAG_WEAPON_REQUIRED
+        MYTHIC_FLAG_DIRECTLY_WISHABLE | MYTHIC_FLAG_WEAPON_REQUIRED | MYTHIC_FLAG_NO_BOOTS
     },
     {
         "demon slaying", " of demon slaying", "Extra damage to demons (weapons only)", 
         15, MYTHIC_STANDARD_PRICE_MULTIPLIER, MYTHIC_STANDARD_PRICE_ADDITION,
         MYTHIC_SUFFIX_POWER_DEMON_SLAYING,
-        MYTHIC_FLAG_DIRECTLY_WISHABLE | MYTHIC_FLAG_WEAPON_REQUIRED | MYTHIC_FLAG_NO_INFERNAL_WEAPONS | MYTHIC_FLAG_NO_PRIMORDIAL_WEAPONS | MYTHIC_FLAG_NO_DEMONIC_ITEMS
+        MYTHIC_FLAG_DIRECTLY_WISHABLE | MYTHIC_FLAG_WEAPON_REQUIRED | MYTHIC_FLAG_NO_INFERNAL_WEAPONS | MYTHIC_FLAG_NO_PRIMORDIAL_WEAPONS | MYTHIC_FLAG_NO_DEMONIC_ITEMS | MYTHIC_FLAG_NO_BOOTS
     },
     {
         "dragon slaying", " of dragon slaying", "Extra damage to dragons (weapons only)", 
         20, MYTHIC_STANDARD_PRICE_MULTIPLIER, MYTHIC_STANDARD_PRICE_ADDITION,
         MYTHIC_SUFFIX_POWER_DRAGON_SLAYING,
-        MYTHIC_FLAG_DIRECTLY_WISHABLE | MYTHIC_FLAG_WEAPON_REQUIRED
+        MYTHIC_FLAG_DIRECTLY_WISHABLE | MYTHIC_FLAG_WEAPON_REQUIRED | MYTHIC_FLAG_NO_BOOTS
     },
     {
         "giant slaying", " of giant slaying", "Extra damage to giants (weapons only)", 
         15, MYTHIC_STANDARD_PRICE_MULTIPLIER, MYTHIC_STANDARD_PRICE_ADDITION,
         MYTHIC_SUFFIX_POWER_GIANT_SLAYING,
-        MYTHIC_FLAG_DIRECTLY_WISHABLE | MYTHIC_FLAG_WEAPON_REQUIRED
+        MYTHIC_FLAG_DIRECTLY_WISHABLE | MYTHIC_FLAG_WEAPON_REQUIRED | MYTHIC_FLAG_NO_BOOTS
     },
     {
         "lycanthrope slaying", " of lycanthrope slaying", "Extra damage to lycanthropes; confers lycanthropy resistance (weapons only)", 
         15, MYTHIC_STANDARD_PRICE_MULTIPLIER, MYTHIC_STANDARD_PRICE_ADDITION,
         MYTHIC_SUFFIX_POWER_WERE_SLAYING | MYTHIC_SUFFIX_POWER_LYCANTHROPY_RESISTANCE,
-        MYTHIC_FLAG_DIRECTLY_WISHABLE | MYTHIC_FLAG_WEAPON_REQUIRED
+        MYTHIC_FLAG_DIRECTLY_WISHABLE | MYTHIC_FLAG_WEAPON_REQUIRED | MYTHIC_FLAG_NO_BOOTS
     },
     {
         "disruption", " of disruption", "Extra damage to undead (weapons only)", 
@@ -396,7 +396,7 @@ NEARDATA const struct mythic_definition mythic_suffix_qualities[MAX_MYTHIC_SUFFI
         "speed", " of speed", "Confers very fast speed (weapons only)", 
         15, MYTHIC_STANDARD_PRICE_MULTIPLIER, MYTHIC_STANDARD_PRICE_ADDITION,
         MYTHIC_SUFFIX_POWER_SPEED,
-        MYTHIC_FLAG_DIRECTLY_WISHABLE | MYTHIC_FLAG_WEAPON_REQUIRED | MYTHIC_FLAG_NO_THROWN_OR_AMMO
+        MYTHIC_FLAG_DIRECTLY_WISHABLE | MYTHIC_FLAG_WEAPON_OR_BOOTS_REQUIRED | MYTHIC_FLAG_NO_THROWN_OR_AMMO
     },
     {
         "wounding", " of wounding", "Causes permanent damage (weapons only)", 
@@ -408,7 +408,7 @@ NEARDATA const struct mythic_definition mythic_suffix_qualities[MAX_MYTHIC_SUFFI
         "defense", " of defense", "Weapon acts also as an armor", 
         20, MYTHIC_STANDARD_PRICE_MULTIPLIER, MYTHIC_STANDARD_PRICE_ADDITION,
         MYTHIC_SUFFIX_POWER_DEFENSE,
-        MYTHIC_FLAG_DIRECTLY_WISHABLE | MYTHIC_FLAG_WEAPON_REQUIRED | MYTHIC_FLAG_NO_THROWN_OR_AMMO
+        MYTHIC_FLAG_DIRECTLY_WISHABLE | MYTHIC_FLAG_WEAPON_REQUIRED | MYTHIC_FLAG_NO_THROWN_OR_AMMO | MYTHIC_FLAG_NO_ARMOR
     },
     {
         "sharpness", " of sharpness", "Has a chance of causing substantial extra damage (weapons only)", 
@@ -456,7 +456,7 @@ NEARDATA const struct mythic_definition mythic_suffix_qualities[MAX_MYTHIC_SUFFI
         "cockatrice slaying", " of cockatrice slaying", "Extra damage to cockatrices; confers petrification resistance (weapons only)", 
         10, MYTHIC_STANDARD_PRICE_MULTIPLIER, MYTHIC_STANDARD_PRICE_ADDITION,
         MYTHIC_SUFFIX_POWER_COCKATRICE_SLAYING | MYTHIC_SUFFIX_POWER_STONE_RESISTANCE,
-        MYTHIC_FLAG_DIRECTLY_WISHABLE | MYTHIC_FLAG_WEAPON_REQUIRED
+        MYTHIC_FLAG_DIRECTLY_WISHABLE | MYTHIC_FLAG_WEAPON_REQUIRED | MYTHIC_FLAG_NO_BOOTS
     },
     {
         "eyes", " of eyes", "Confers searching and see invisible (armors only)", 
@@ -474,13 +474,13 @@ NEARDATA const struct mythic_definition mythic_suffix_qualities[MAX_MYTHIC_SUFFI
         "orc slaying", " of orc slaying", "Extra damage to orcs (weapons only)", 
         10, MYTHIC_STANDARD_PRICE_MULTIPLIER, MYTHIC_STANDARD_PRICE_ADDITION,
         MYTHIC_SUFFIX_POWER_ORC_SLAYING,
-        MYTHIC_FLAG_DIRECTLY_WISHABLE | MYTHIC_FLAG_WEAPON_REQUIRED | MYTHIC_FLAG_NO_ORCISH_ITEMS
+        MYTHIC_FLAG_DIRECTLY_WISHABLE | MYTHIC_FLAG_WEAPON_REQUIRED | MYTHIC_FLAG_NO_ORCISH_ITEMS | MYTHIC_FLAG_NO_BOOTS
     },
     {
         "elf slaying", " of elf slaying", "Extra damage to elves (weapons only)", 
         5, MYTHIC_STANDARD_PRICE_MULTIPLIER, MYTHIC_STANDARD_PRICE_ADDITION,
         MYTHIC_SUFFIX_POWER_ELF_SLAYING,
-        MYTHIC_FLAG_DIRECTLY_WISHABLE | MYTHIC_FLAG_WEAPON_REQUIRED | MYTHIC_FLAG_NO_ELVEN_ITEMS
+        MYTHIC_FLAG_DIRECTLY_WISHABLE | MYTHIC_FLAG_WEAPON_REQUIRED | MYTHIC_FLAG_NO_ELVEN_ITEMS | MYTHIC_FLAG_NO_BOOTS
     },
     {
         "returning", " of returning", "Returns to hand after thrown (throwing weapons only)", 
@@ -498,7 +498,13 @@ NEARDATA const struct mythic_definition mythic_suffix_qualities[MAX_MYTHIC_SUFFI
         "Last Alliance", " of the Last Alliance", "Extra damage to orcs, ogres, giants, and trolls; prevents troll revival (weapons only)", 
         4, MYTHIC_STANDARD_PRICE_MULTIPLIER + 0.5, MYTHIC_STANDARD_PRICE_ADDITION * 2L,
         MYTHIC_SUFFIX_POWER_ORC_SLAYING | MYTHIC_SUFFIX_POWER_OGRE_SLAYING | MYTHIC_SUFFIX_POWER_GIANT_SLAYING | MYTHIC_SUFFIX_POWER_TROLL_SLAYING | MYTHIC_SUFFIX_POWER_TROLL_REVIVAL_PREVENTION,
-        MYTHIC_FLAG_WEAPON_REQUIRED | MYTHIC_FLAG_NO_ORCISH_ITEMS
+        MYTHIC_FLAG_WEAPON_REQUIRED | MYTHIC_FLAG_NO_ORCISH_ITEMS | MYTHIC_FLAG_NO_BOOTS
+    },
+    {
+        "stealth", " of stealth", "Confers stealth (boots only)",
+        20, MYTHIC_STANDARD_PRICE_MULTIPLIER, MYTHIC_STANDARD_PRICE_ADDITION,
+        MYTHIC_SUFFIX_POWER_STEALTH,
+        MYTHIC_FLAG_DIRECTLY_WISHABLE | MYTHIC_FLAG_ARMOR_REQUIRED | MYTHIC_FLAG_BOOTS_REQUIRED | MYTHIC_FLAG_NO_ELVEN_ITEMS
     },
 };
 
@@ -536,6 +542,7 @@ NEARDATA const struct mythic_power_definition mythic_suffix_powers[MAX_MYTHIC_SU
     { "Searching", "Searching", MYTHIC_POWER_TYPE_CONFERS_PROPERTY, SEARCHING, 0.0, 0, 0UL, MYTHIC_POWER_FLAG_NO_THROWN_OR_AMMO },
     { "See invisible", "See invisible", MYTHIC_POWER_TYPE_CONFERS_PROPERTY, SEE_INVISIBLE, 0.0, 0, 0UL, MYTHIC_POWER_FLAG_NO_THROWN_OR_AMMO },
     { "Returns to hand", "Returns to hand after throwing", MYTHIC_POWER_TYPE_GENERAL, 0L, 0.0, 0, 0UL, MYTHIC_POWER_FLAG_THROWN_WEAPONS_ONLY },
+    { "Stealth", "Stealth", MYTHIC_POWER_TYPE_CONFERS_PROPERTY, STEALTH, 0.0, 0, 0UL, MYTHIC_POWER_FLAG_NO_THROWN_OR_AMMO },
 };
 
 //STATIC_DCL void FDECL(setgemprobs, (d_level *));
@@ -1613,6 +1620,10 @@ uchar is_wish; /* 1 = mythic wishing, 2 = legendary wishing */
     if ((mythic_definitions[affix_idx].mythic_flags & MYTHIC_FLAG_NO_OTHER_SORCERY) && (affix_type == 0 ? (obj->mythic_suffix == MYTHIC_SUFFIX_SORCERY) : (obj->mythic_prefix == MYTHIC_PREFIX_SORCERERS)))
         return FALSE;
     if ((mythic_definitions[affix_idx].mythic_flags & MYTHIC_FLAG_NO_BOOTS) && is_boots(obj))
+        return FALSE;
+    if ((mythic_definitions[affix_idx].mythic_flags & MYTHIC_FLAG_BOOTS_REQUIRED) && !is_boots(obj))
+        return FALSE;
+    if ((mythic_definitions[affix_idx].mythic_flags & MYTHIC_FLAG_WEAPON_OR_BOOTS_REQUIRED) && !(is_boots(obj) || is_weapon(obj)))
         return FALSE;
 
     return TRUE;
