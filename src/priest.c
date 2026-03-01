@@ -151,7 +151,7 @@ pick_move:
             }
         }
     }
-    if (mtmp->ispriest && avoid && nix == omx && niy == omy
+    if ((mtmp->ispriest || mtmp->issmith) && avoid && nix == omx && niy == omy
         && onlineu(omx, omy)) 
     {
         /* might as well move closer as long it's going to stay
@@ -162,6 +162,7 @@ pick_move:
 
     if (nix != omx || niy != omy) 
     {
+        debugprint_pos();
         remove_monster(omx, omy);
         place_monster(mtmp, nix, niy);
         play_movement_sound(mtmp, CLIMBING_TYPE_NONE);
@@ -738,8 +739,8 @@ int mtype;
         /* Nothing here */
     }
 
+    issue_breadcrumb2("Creating smith of montype", smith_montype);
     uint64_t extraflags = Inhell ? MM_MALE : 0UL; /* Since there is only one soundset for unusual creature types */
-
     smith = makemon(&mons[smith_montype], smith_loc_x, smith_loc_y, MM_ESMI | extraflags);
     if(!smith)
         smith = makemon(&mons[PM_SMITH], smith_loc_x, smith_loc_y, MM_ESMI | extraflags); /* Fallback */
