@@ -5904,6 +5904,7 @@ doset() /* changing options via menu by Per Liboriussen */
     int indexoffset, startpass, endpass, optflags;
     boolean setinitial = FALSE, fromfile = FALSE;
     size_t longest_name_len;
+    issue_breadcrumb("Starting doset");
 
     tmpwin = create_nhwindow(NHW_MENU);
     start_menu_ex(tmpwin, GHMENU_STYLE_OPTIONS);
@@ -5918,14 +5919,16 @@ doset() /* changing options via menu by Per Liboriussen */
         startpass = DISP_IN_GAME;
     endpass = (wizard) ? SET_IN_WIZGAME : SET_IN_GAME;
 
-    if (!made_fmtstr && !iflags.menu_tab_sep) {
+    if (!made_fmtstr && !iflags.menu_tab_sep) 
+    {
         /* spin through the options to find the longest name
            and adjust the format string accordingly */
         longest_name_len = 0;
         for (pass = 0; pass <= 2; pass++)
             for (i = 0; (name = ((pass == 0) ? boolopt[i].name
                                  : (pass == 1) ? compopt[i].name
-                                   : othropt[i].name)) != 0; i++) {
+                                   : othropt[i].name)) != 0; i++) 
+            {
                 if (pass == 0 && !boolopt[i].addr)
                     continue;
                 optflags = (pass == 0) ? boolopt[i].optflags
@@ -5944,6 +5947,7 @@ doset() /* changing options via menu by Per Liboriussen */
         made_fmtstr = TRUE;
     }
 
+    issue_breadcrumb("doset booleans");
     any = zeroany;
     add_extended_menu(tmpwin, NO_GLYPH, &any, 0, 0, iflags.menu_headings | ATR_NOTABS | ATR_HEADING, NO_COLOR,
              "Booleans (selecting will toggle value):", MENU_UNSELECTED, menu_heading_info());
@@ -5953,7 +5957,8 @@ doset() /* changing options via menu by Per Liboriussen */
         for (i = 0; (name = boolopt[i].name) != 0; i++)
             if ((bool_p = boolopt[i].addr) != 0
                 && ((boolopt[i].optflags <= DISP_IN_GAME && pass == 0)
-                    || (boolopt[i].optflags >= SET_IN_GAME && pass == 1))) {
+                    || (boolopt[i].optflags >= SET_IN_GAME && pass == 1))) 
+            {
                 if (bool_p == &flags.female)
                     continue; /* obsolete */
                 if (boolopt[i].optflags == SET_IN_WIZGAME && !wizard)
@@ -5992,6 +5997,7 @@ doset() /* changing options via menu by Per Liboriussen */
     indexoffset = boolcount;
     any = zeroany;
     add_menu(tmpwin, NO_GLYPH, &any, 0, 0, ATR_NONE, NO_COLOR, "", MENU_UNSELECTED);
+    issue_breadcrumb("doset compounds");
     add_extended_menu(tmpwin, NO_GLYPH, &any, 0, 0, iflags.menu_headings | ATR_NOTABS | ATR_HEADING, NO_COLOR,
              "Compounds (selecting will prompt for new value):",
              MENU_UNSELECTED, menu_heading_info());
@@ -6006,7 +6012,8 @@ doset() /* changing options via menu by Per Liboriussen */
 
     for (pass = startpass; pass <= endpass; pass++)
         for (i = 0; (name = compopt[i].name) != 0; i++)
-            if (compopt[i].optflags == pass) {
+            if (compopt[i].optflags == pass) 
+            {
                 if (!strcmp(name, "playmode")  || !strcmp(name, "name")
                     || !strcmp(name, "role")   || !strcmp(name, "race")
                     || !strcmp(name, "gender") || !strcmp(name, "align"))
@@ -6020,10 +6027,12 @@ doset() /* changing options via menu by Per Liboriussen */
 
     any = zeroany;
     add_menu(tmpwin, NO_GLYPH, &any, 0, 0, ATR_NONE, NO_COLOR, "", MENU_UNSELECTED);
+    issue_breadcrumb("doset other settings");
     add_extended_menu(tmpwin, NO_GLYPH, &any, 0, 0, iflags.menu_headings | ATR_NOTABS | ATR_HEADING, NO_COLOR,
              "Other settings:", MENU_UNSELECTED, menu_heading_info());
 
-    for (i = 0; (name = othropt[i].name) != 0; i++) {
+    for (i = 0; (name = othropt[i].name) != 0; i++)
+    {
         if ((is_wc_option(name) && !wc_supported(name))
             || (is_wc2_option(name) && !wc2_supported(name)))
             continue;
@@ -6034,6 +6043,7 @@ doset() /* changing options via menu by Per Liboriussen */
 #ifdef PREFIXES_IN_USE
     any = zeroany;
     add_menu(tmpwin, NO_GLYPH, &any, 0, 0, ATR_NONE, NO_COLOR, "", MENU_UNSELECTED);
+    issue_breadcrumb("doset locations");
     add_extended_menu(tmpwin, NO_GLYPH, &any, 0, 0, iflags.menu_headings | ATR_NOTABS | ATR_HEADING, NO_COLOR,
              "Variable playground locations:", MENU_UNSELECTED, menu_heading_info());
     for (i = 0; i < PREFIX_COUNT; i++)
@@ -6049,24 +6059,29 @@ doset() /* changing options via menu by Per Liboriussen */
     need_status_initialize = FALSE;
     need_here_window = FALSE;
 
-    if ((pick_cnt = select_menu(tmpwin, PICK_ANY, &pick_list)) > 0) {
+    if ((pick_cnt = select_menu(tmpwin, PICK_ANY, &pick_list)) > 0) 
+    {
         /*
          * Walk down the selection list and either invert the booleans
          * or prompt for new values. In most cases, call parseoptions()
          * to take care of options that require special attention, like
          * redraws.
          */
-        for (pick_idx = 0; pick_idx < pick_cnt; ++pick_idx) {
+        for (pick_idx = 0; pick_idx < pick_cnt; ++pick_idx) 
+        {
             opt_indx = pick_list[pick_idx].item.a_int - 1;
             if (opt_indx < -1)
                 opt_indx++; /* -1 offset for select_menu() */
-            if (opt_indx == OPT_OTHER_APEXC) {
+            if (opt_indx == OPT_OTHER_APEXC) 
+            {
+                issue_breadcrumb("doset OPT_OTHER_APEXC");
                 (void) special_handling("autopickup_exception", setinitial,
                                         fromfile);
 #ifdef STATUS_HILITES
             } 
             else if (opt_indx == OPT_OTHER_STATHILITE)
             {
+                issue_breadcrumb("doset OPT_OTHER_STATHILITE");
                 if (!status_hilite_menu())
                 {
                     pline("Bad status hilite(s) specified.");
@@ -6080,18 +6095,20 @@ doset() /* changing options via menu by Per Liboriussen */
             } 
             else if (opt_indx == OPT_OTHER_MENUCOLOR) 
             {
-                    (void) special_handling("menu_colors", setinitial,
+                issue_breadcrumb("doset OPT_OTHER_MENUCOLOR");
+                (void) special_handling("menu_colors", setinitial,
                                             fromfile);
             } 
             else if (opt_indx == OPT_OTHER_MSGTYPE) 
             {
-                    (void) special_handling("msgtype", setinitial, fromfile);
+                issue_breadcrumb("doset OPT_OTHER_MSGTYPE");
+                (void) special_handling("msgtype", setinitial, fromfile);
             } 
             else if (opt_indx < boolcount && opt_indx >= 0)
             {
+                issue_breadcrumb3(boolopt[opt_indx].name ? boolopt[opt_indx].name : "doset boolopt no name", opt_indx, !*boolopt[opt_indx].addr);
                 /* boolean option */
-                Sprintf(buf, "%s%s", *boolopt[opt_indx].addr ? "!" : "",
-                        boolopt[opt_indx].name);
+                Sprintf(buf, "%s%s", *boolopt[opt_indx].addr ? "!" : "", boolopt[opt_indx].name);
                 if (parseoptions(buf, setinitial, fromfile))
                 {
                     multicolor_buffer[0] = CLR_MSG_HINT;
@@ -6101,19 +6118,24 @@ doset() /* changing options via menu by Per Liboriussen */
                 if (wc_supported(boolopt[opt_indx].name)
                     || wc2_supported(boolopt[opt_indx].name))
                     preference_update(boolopt[opt_indx].name);
-            } else {
+            } 
+            else 
+            {
                 /* compound option */
                 opt_indx -= boolcount;
 
                 if (opt_indx >= 0)
                 {
-                    if (!special_handling(compopt[opt_indx].name, setinitial,
-                        fromfile)) {
+                    issue_breadcrumb3(opt_indx >= SIZE(compopt) ? "doset compopt opt_indx too high" : compopt[opt_indx].name ? compopt[opt_indx].name : "doset compopt no name", opt_indx, SIZE(compopt));
+                    if (!special_handling(compopt[opt_indx].name, setinitial, fromfile)) 
+                    {
                         Sprintf(buf, "Set %s to what?", compopt[opt_indx].name);
+                        *buf2 = 0;
                         getlin(buf, buf2);
                         if (buf2[0] == '\033')
                             continue;
                         Sprintf(buf, "%s:%s", compopt[opt_indx].name, buf2);
+                        issue_breadcrumb2(buf, opt_indx);
                         /* pass the buck */
                         if (parseoptions(buf, setinitial, fromfile))
                         {

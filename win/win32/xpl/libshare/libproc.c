@@ -88,15 +88,13 @@ void monst_to_info(struct monst*, struct monst_info*);
 int get_condition_color(int cond_mask);
 
 /* Moved these outside of function so that they do not take stack space */
-STATIC_VAR char _buf[UTF8QBUFSZ] = "";
-STATIC_VAR char _buf2[UTF8QBUFSZ] = "";
-STATIC_VAR char _tbuf[UTF8QBUFSZ] = "", _ibuf[UTF8IBUFSZ] = "";
-STATIC_VAR char _phbuf[UTF8BUFSZ] = "";
-STATIC_VAR char _dvbuf[UTF8BUFSZ] = "";
+STATIC_VAR char _buf[UTF8BUFSZ] = "";
+STATIC_VAR char _buf2[UTF8BUFSZ] = "";
+STATIC_VAR char _qbuf[UTF8QBUFSZ] = "";
+STATIC_VAR char _qtbuf[UTF8QBUFSZ] = "";
+STATIC_VAR char _ibuf[UTF8IBUFSZ] = "";
 STATIC_VAR char _bigbuf[UTF8BUFSZ * 4] = "";
 STATIC_VAR char _utf8buf[UTF8BUFSZ] = "";
-STATIC_VAR char _cmdutf8buf[UTF8BUFSZ] = "";
-STATIC_VAR char _targetutf8buf[UTF8BUFSZ] = "";
 STATIC_VAR char _superutf8buf[UTF8BUFSZ] = "";
 STATIC_VAR char _subutf8buf[UTF8BUFSZ] = "";
 STATIC_VAR char _titleutf8buf[UTF8BUFSZ] = "";
@@ -310,7 +308,6 @@ void lib_putstr_ex(winid wid, const char* text, int attr, int color, int append)
 void lib_putstr_ex2(winid wid, const char* text, const char* attrs, const char* colors, int attr, int color, int append)
 {
     *_buf = 0;
-    char buf[UTF8BUFSZ];
     if (text)
         write_text2buf_utf8(_buf, UTF8BUFSZ, text);
     //lib_callbacks.callback_putstr_ex(wid, attrs ? attrs[0] : attr, text ? buf : 0, append, colors ? colors[0] : color);
@@ -743,16 +740,16 @@ char lib_yn_function_ex(int style, int attr, int color, int glyph, const char* t
 {
     reset_found_this_turn(); /* Otherwise, after user input, the animation might play again upon flush_screen */
 
-    *_buf = *_tbuf = *_ibuf = 0;
+    *_qbuf = *_qtbuf = *_ibuf = 0;
     if(question)
-        write_text2buf_utf8(_buf, UTF8QBUFSZ, question);
+        write_text2buf_utf8(_qbuf, UTF8QBUFSZ, question);
     if (title)
-        write_text2buf_utf8(_tbuf, UTF8QBUFSZ, title);
+        write_text2buf_utf8(_qtbuf, UTF8QBUFSZ, title);
     if (introline)
         write_text2buf_utf8(_ibuf, UTF8IBUFSZ, introline);
     char defs[2] = { 0,0 };
     defs[0] = (char)def;
-    int res = lib_callbacks.callback_yn_function_ex(style, attr, color, glyph, title ? _tbuf : 0, question ? _buf : 0, choices, defs, resp_desc, introline ? _ibuf : 0, ynflags);
+    int res = lib_callbacks.callback_yn_function_ex(style, attr, color, glyph, title ? _qtbuf : 0, question ? _qbuf : 0, choices, defs, resp_desc, introline ? _ibuf : 0, ynflags);
     return convert_gnhch(res);
 }
 
@@ -760,17 +757,17 @@ void lib_getlin_ex(int style, int attr, int color, const char* question, char* i
 {
     reset_found_this_turn(); /* Otherwise, after user input, the animation might play again upon flush_screen */
 
-    *_buf = *_phbuf = *_dvbuf = *_ibuf = *_utf8buf = 0;
+    *_qbuf = *_buf = *_buf2 = *_ibuf = *_utf8buf = 0;
     if (question)
-        write_text2buf_utf8(_buf, UTF8QBUFSZ, question);
+        write_text2buf_utf8(_qbuf, UTF8QBUFSZ, question);
     if (placeholder)
-        write_text2buf_utf8(_phbuf, UTF8BUFSZ, placeholder);
+        write_text2buf_utf8(_buf, UTF8BUFSZ, placeholder);
     if (linesuffix)
-        write_text2buf_utf8(_dvbuf, UTF8BUFSZ, linesuffix);
+        write_text2buf_utf8(_buf2, UTF8BUFSZ, linesuffix);
     if (introline)
         write_text2buf_utf8(_ibuf, UTF8IBUFSZ, introline);
 
-    int res = lib_callbacks.callback_getlin_ex(style, attr, color, _buf, placeholder ? _phbuf : 0, linesuffix ? _dvbuf : 0, introline ? _ibuf : 0, _utf8buf);
+    int res = lib_callbacks.callback_getlin_ex(style, attr, color, _qbuf, placeholder ? _buf : 0, linesuffix ? _buf2 : 0, introline ? _ibuf : 0, _utf8buf);
     if (res && input)
     {
         char msgbuf[BUFSZ] = "";
@@ -1515,12 +1512,12 @@ lib_clear_context_menu(VOID_ARGS)
 void
 lib_add_context_menu(int cmd_def_char, int cmd_cur_char, int style, int glyph, const char* cmd_text, const char* target_text, int attr, int color)
 {
-    *_cmdutf8buf = *_targetutf8buf = 0;
+    *_buf = *_buf2 = 0;
     if (cmd_text)
-        write_text2buf_utf8(_cmdutf8buf, sizeof(_cmdutf8buf), cmd_text);
+        write_text2buf_utf8(_buf, sizeof(_buf), cmd_text);
     if (target_text)
-        write_text2buf_utf8(_targetutf8buf, sizeof(_targetutf8buf), target_text);
-    lib_callbacks.callback_add_context_menu(cmd_def_char, cmd_cur_char, style, glyph, cmd_text ? _cmdutf8buf : 0, target_text ? _targetutf8buf : 0, attr, color);
+        write_text2buf_utf8(_buf2, sizeof(_buf2), target_text);
+    lib_callbacks.callback_add_context_menu(cmd_def_char, cmd_cur_char, style, glyph, cmd_text ? _buf : 0, target_text ? _buf2 : 0, attr, color);
 }
 
 void
