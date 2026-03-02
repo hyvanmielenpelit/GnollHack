@@ -8510,6 +8510,25 @@ namespace GnollHackX.Pages.Game
 #if GNH_MAP_PROFILING && DEBUG
                                 StartProfiling(GHProfilingStyle.Text);
 #endif
+                            if (usingGL)
+                            {
+                                var uniforms = new SKRuntimeEffectUniforms(GHApp.FireHazeEffect);
+                                uniforms["resolution"] = new SKPoint(e.Info.Width, e.Info.Height);
+                                uniforms["time"] = (float)maincountervalue * 0.016f;
+
+                                using var shader = GHApp.FireHazeEffect.ToShader(uniforms);
+
+                                using var hazePaint = new SKPaint
+                                {
+                                    Shader = shader,
+                                    BlendMode = SKBlendMode.Plus  // nice glow
+                                };
+
+                                // Draw haze first
+                                canvas.DrawRect(e.Info.Rect, hazePaint);
+                            }
+
+
                             /* Shadow first */
                             {
                                 textPaint.Color = SKColors.Black.WithAlpha(fillcolor.Alpha);

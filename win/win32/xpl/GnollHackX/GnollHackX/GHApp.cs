@@ -9623,6 +9623,73 @@ namespace GnollHackX
             return res;
         }
 
+        
+        private static string _skslFireHaze = @"
+            uniform float2 resolution;
+            uniform float time;
+
+            float hash(float2 p) {
+                return fract(sin(dot(p, float2(127.1, 311.7))) * 43758.5453);
+            }
+
+            float noise(float2 p) {
+                float2 i = floor(p);
+                float2 f = fract(p);
+
+                float a = hash(i);
+                float b = hash(i + float2(1.0, 0.0));
+                float c = hash(i + float2(0.0, 1.0));
+                float d = hash(i + float2(1.0, 1.0));
+
+                float2 u = f * f * (3.0 - 2.0 * f);
+
+                return mix(a, b, u.x) +
+                        (c - a) * u.y * (1.0 - u.x) +
+                        (d - b) * u.x * u.y;
+            }
+
+            float fbm(float2 p) {
+                float value = 0.0;
+                float amplitude = 0.5;
+
+                for (int i = 0; i < 4; i++) {
+                    value += amplitude * noise(p);
+                    p *= 2.0;
+                    amplitude *= 0.5;
+                }
+
+                return value;
+            }
+
+            half4 main(float2 fragCoord)
+            {
+                float2 uv = fragCoord / resolution;
+
+                // Horizontal movement
+                float2 p = float2(uv.x * 3.0 - time * 0.8,
+                                    uv.y * 2.0);
+
+                float n = fbm(p);
+
+                // Create horizontal band centered vertically
+                float band = smoothstep(0.6, 0.4, abs(uv.y - 0.5));
+
+                // Distort band with noise
+                float haze = band * n;
+
+                // Fire gradient
+                float3 fireColor = mix(
+                    float3(0.8, 0.1, 0.0),   // deep red
+                    float3(1.0, 0.9, 0.2),   // yellow
+                    haze
+                );
+
+                float alpha = haze * 0.9;
+
+                return half4(fireColor * alpha, alpha);
+            }
+            ";
+
         private static string _skslLightning = @"
                 uniform float2 resolution;
                 uniform float time;      // 0 → 1 animation progress
@@ -9691,12 +9758,15 @@ namespace GnollHackX
             ";
 
         public static SKRuntimeEffect LightningEffect = null;
+        public static SKRuntimeEffect FireHazeEffect = null;
 
         public static void InitRuntimeEffects()
         {
             try
             {
-                LightningEffect = SKRuntimeEffect.CreateShader(_skslLightning, out var error);
+                string error;
+                LightningEffect = SKRuntimeEffect.CreateShader(_skslLightning, out error);
+                FireHazeEffect = SKRuntimeEffect.CreateShader(_skslFireHaze, out error);
             }
             catch (Exception ex)
             {
