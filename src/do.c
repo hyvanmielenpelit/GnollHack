@@ -1141,6 +1141,13 @@ struct item_description_stats* stats_ptr; /* If non-null, only returns item stat
             Sprintf(buf2, "%u turn%s", nutvalue, plur(nutvalue));
             Sprintf(buf, "Nutritional value:      %s", buf2);            
             putstr(datawin, ATR_INDENT_AT_COLON, buf);
+            unsigned basenutvalue = !obj ? objects[otyp].oc_nutrition : obj->oeaten ? obj->oeaten : obj_nutrition(obj);
+            if (basenutvalue != nutvalue)
+            {
+                Sprintf(buf2, "%u turn%s", basenutvalue, plur(basenutvalue));
+                Sprintf(buf, "Base nutritional value: %s", buf2);
+                putstr(datawin, ATR_INDENT_AT_COLON, buf);
+            }
         }
         if (obj && otyp == EGG && obj->corpsenm >= LOW_PM && obj->known && (mvitals[obj->corpsenm].mvflags & MV_KNOWS_EGG))
         {
