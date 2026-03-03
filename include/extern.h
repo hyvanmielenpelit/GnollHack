@@ -913,6 +913,7 @@ E void NDECL(reset_dogmove);
 
 /* ### dokick.c ### */
 
+E boolean FDECL(maybe_kick_monster, (struct monst*, XCHAR_P, XCHAR_P));
 E boolean FDECL(ghitm, (struct monst *, struct obj *, uchar *));
 E void FDECL(container_impact_dmg, (struct obj *, XCHAR_P, XCHAR_P));
 E int NDECL(dokick);

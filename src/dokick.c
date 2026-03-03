@@ -20,8 +20,6 @@ STATIC_VAR NEARDATA const char *gate_str;
 extern boolean notonhead; /* for long worms */
 
 STATIC_DCL void FDECL(kickdmg, (struct monst *, BOOLEAN_P));
-STATIC_DCL boolean FDECL(maybe_kick_monster, (struct monst *,
-                                              XCHAR_P, XCHAR_P));
 STATIC_DCL void FDECL(kick_monster, (struct monst *, XCHAR_P, XCHAR_P));
 STATIC_DCL int FDECL(really_kick_object, (XCHAR_P, XCHAR_P, BOOLEAN_P));
 STATIC_DCL char *FDECL(kickstr, (char *, const char *));
@@ -292,7 +290,7 @@ boolean clumsy;
     use_skill(P_MARTIAL_ARTS, 1);
 }
 
-STATIC_OVL boolean
+boolean
 maybe_kick_monster(mon, x, y)
 struct monst *mon;
 xchar x, y;

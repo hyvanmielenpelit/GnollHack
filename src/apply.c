@@ -6728,7 +6728,7 @@ struct obj* obj;
     if (mtmp) 
     {
         oldglyph = glyph_at(x, y);
-        if (!attack(mtmp))
+        if (!maybe_kick_monster(mtmp, x, y))
             return context.move;
     }
 
