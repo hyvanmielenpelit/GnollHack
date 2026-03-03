@@ -2788,10 +2788,17 @@ mm_aggression(magr, mdef)
 struct monst *magr, /* monster that is currently deciding where to move */
              *mdef; /* another monster which is next to it */
 {
+    /* peaceful NPCs should not attack anyone; if they are attacked, they will retaliate */
+    if (is_peaceful(magr) && (magr->issmith || magr->ispriest || magr->isnpc || magr->isshk))
+        return 0L;
+
+    /* peaceful NPCs should not be attacked by anyone */
+    if (is_peaceful(mdef) && (mdef->issmith || mdef->ispriest || mdef->isnpc || mdef->isshk))
+        return 0L;
+
     /* supposedly purple worms are attracted to shrieking because they
        like to eat shriekers, so attack the latter when feasible */
-    if (magr->data == &mons[PM_PURPLE_WORM]
-        && mdef->data == &mons[PM_SHRIEKER])
+    if (is_purple_worm(magr->data) && mdef->data == &mons[PM_SHRIEKER])
         return ALLOW_M | ALLOW_TM;
     
     if (is_demon(magr->data) && is_angel(mdef->data))
