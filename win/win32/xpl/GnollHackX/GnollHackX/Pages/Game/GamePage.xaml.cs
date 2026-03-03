@@ -8763,7 +8763,25 @@ namespace GnollHackX.Pages.Game
                                                 BlendMode = SKBlendMode.Plus // additive glow
                                             };
 
-                                            canvas.DrawRect(e.Info.Rect, paint);
+                                            //canvas.DrawRect(e.Info.Rect, paint);
+
+                                            //if (burstActive)
+                                            {
+                                                uniforms = new SKRuntimeEffectUniforms(GHApp.LightningBurstEffect);
+                                                uniforms["resolution"] = new SKPoint(e.Info.Width, e.Info.Height);
+                                                uniforms["impactPos"] = new SKPoint(tx + width / 2, ty + height / 2);
+                                                uniforms["time"] = hitTime;
+
+                                                using var shader2 = GHApp.LightningBurstEffect.ToShader(uniforms);
+
+                                                using var paint2 = new SKPaint
+                                                {
+                                                    Shader = shader2,
+                                                    BlendMode = SKBlendMode.Plus // IMPORTANT for lightning glow
+                                                };
+
+                                                canvas.DrawRect(e.Info.Rect, paint2);
+                                            }
                                         }
                                     }
                                     break;

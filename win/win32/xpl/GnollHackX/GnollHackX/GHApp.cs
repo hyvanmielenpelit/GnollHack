@@ -9624,6 +9624,70 @@ namespace GnollHackX
         }
 
         
+        private static string _skslLightningBurst = @"
+            uniform float2 resolution;
+            uniform float2 impactPos;
+            uniform float time;   // 0 → 1
+
+            float hash(float n) {
+                return fract(sin(n) * 43758.5453123);
+            }
+
+            float hash2(float2 p) {
+                return fract(sin(dot(p, float2(127.1, 311.7))) * 43758.5453);
+            }
+
+            half4 main(float2 fragCoord)
+            {
+                float2 p = fragCoord - impactPos;
+                float dist = length(p);
+                float angle = atan(p.y, p.x);
+
+                float progress = time;
+                float maxRadius = 300.0;
+                float radius = progress * maxRadius;
+
+                // Normalize direction
+                float aNorm = (angle + 3.1415926) / (6.2831852);
+
+                // Create discrete lightning rays
+                float rays = 24.0;
+                float sector = floor(aNorm * rays);
+                float rand = hash(sector);
+
+                // Randomize ray thickness & speed
+                float rayThickness = mix(0.01, 0.05, rand);
+                float raySpeed = mix(0.8, 1.2, rand);
+
+                float rayMask = smoothstep(rayThickness, 0.0,
+                                 abs(fract(aNorm * rays) - 0.5));
+
+                float front = smoothstep(radius, radius - 25.0, dist);
+                float tail  = smoothstep(radius - 80.0, radius - 20.0, dist);
+
+                float spark = rayMask * front * tail;
+
+                // Flicker variation
+                spark *= 0.7 + 0.3 * sin(progress * 30.0 + rand * 6.28);
+
+                // Core flash
+                float core = smoothstep(50.0, 0.0, dist) * (1.0 - progress);
+
+                float intensity = spark + core;
+
+                // Fade out at end
+                intensity *= (1.0 - progress);
+
+                float3 color = mix(
+                    float3(0.2, 0.6, 1.0),   // electric blue
+                    float3(1.0, 1.0, 1.0),   // white hot
+                    intensity
+                );
+
+                return half4(color * intensity, intensity);
+            }
+            ";
+
         private static string _skslFireHaze = @"
             uniform float2 resolution;
             uniform float time;
@@ -9759,6 +9823,7 @@ namespace GnollHackX
 
         public static SKRuntimeEffect LightningEffect = null;
         public static SKRuntimeEffect FireHazeEffect = null;
+        public static SKRuntimeEffect LightningBurstEffect = null;        
 
         public static void InitRuntimeEffects()
         {
@@ -9767,6 +9832,7 @@ namespace GnollHackX
                 string error;
                 LightningEffect = SKRuntimeEffect.CreateShader(_skslLightning, out error);
                 FireHazeEffect = SKRuntimeEffect.CreateShader(_skslFireHaze, out error);
+                LightningBurstEffect = SKRuntimeEffect.CreateShader(_skslLightningBurst, out error);
             }
             catch (Exception ex)
             {
