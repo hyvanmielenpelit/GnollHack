@@ -2692,8 +2692,15 @@ uint64_t mmflags;
         mtmp2->mprops[BLINDED] = 0;
         mtmp2->mprops[STUNNED] = 0;
         mtmp2->mprops[CONFUSION] = 0;
+        mtmp2->mprops[PARALYZED] = 0;
+        mtmp2->mprops[UNDEAD_IMMOBILITY] = 0;
+        mtmp2->mprops[FEARFUL] = 0;
+        mtmp2->mprops[CHARMED] = 0;
+        mtmp2->mprops[UNDEAD_CONTROL] = 0;
+        mtmp2->mprops[CRAZED] = 0;
+        mtmp2->mprops[SLOWED] = 0;
 
-        if (mtmp2->isshk) 
+        if (mtmp2->isshk)
         {
             neweshk(mtmp);
             *ESHK(mtmp) = *ESHK(mtmp2);
