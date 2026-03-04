@@ -1772,8 +1772,9 @@ boolean itemize;
         /* dealing with ordinary unpaid item */
         quan = obj->quan;
     }
-    obj->quan = quan;        /* to be used by doname() */
-    obj->unpaid = 0;         /* ditto */
+    //obj->quan = quan;        /* to be used by doname() */
+    //obj->unpaid = 0;         /* ditto */
+    iflags.payobj_special_quan = quan;
     iflags.suppress_price++; /* affects containers */
     ltmp = bp->price * quan;
     buy = PAY_BUY; /* flag; if changed then return early */
@@ -1783,7 +1784,7 @@ boolean itemize;
 
         Sprintf(qsfx, " for %lld %s.  Pay?", (long long)ltmp, currency(ltmp));
         (void) safe_qbuf(qbuf, (char *) 0, qsfx, obj,
-                         (quan == 1L) ? Doname2 : doname, ansimpleoname,
+                         (quan == 1L) ? Doname_payobj2 : doname_payobj, ansimpleoname_payobj,
                          (quan == 1L) ? "that" : "those");
         if (yn_query(qbuf) == 'n')
         {
@@ -1791,13 +1792,13 @@ boolean itemize;
         } 
         else if (quan < bp->bquan && !consumed) 
         { /* partly used goods */
-            obj->quan = bp->bquan - save_quan;      /* used up amount */
+            iflags.payobj_special_quan = bp->bquan - save_quan;      /* used up amount */
             if (!Deaf && !muteshk(shkp))
             {
-                play_voice_shopkeeper_pay_before_buying(shkp, obj->quan, save_quan);
+                play_voice_shopkeeper_pay_before_buying(shkp, iflags.payobj_special_quan, save_quan);
                 verbalize_ex(ATR_NONE, CLR_MSG_TALK_NORMAL, "%s for the other %s before buying %s.",
                       ANGRY(shkp) ? "Pay" : "Please pay",
-                      simpleonames(obj), /* short name suffices */
+                      simpleonames_payobj(obj), /* short name suffices */
                       save_quan > 1L ? "these" : "this one");
             }
             else
@@ -1806,7 +1807,7 @@ boolean itemize;
                       Shknam(shkp),
                       ANGRY(shkp) ? "angrily " : "",
                       nolimbs(shkp->data) ? "motions to" : "points out",
-                      simpleonames(obj));
+                      simpleonames_payobj(obj));
             }
             buy = PAY_SKIP; /* shk won't sell */
         }
@@ -1816,14 +1817,15 @@ boolean itemize;
         You("don't%s have gold%s enough to pay for %s.",
             stashed_gold ? " seem to" : "",
             (ESHK(shkp)->credit > 0L) ? " or credit" : "",
-            thesimpleoname(obj));
+            thesimpleoname_payobj(obj));
         buy = itemize ? PAY_SKIP : PAY_CANT;
     }
 
     if (buy != PAY_BUY) {
         /* restore unpaid object to original state */
-        obj->quan = save_quan;
-        obj->unpaid = 1;
+        //obj->quan = save_quan;
+        //obj->unpaid = 1;
+        iflags.payobj_special_quan = 0;
         iflags.suppress_price--;
         return buy;
     }
@@ -1834,7 +1836,8 @@ boolean itemize;
                   consumed ? "paid for %s at a cost of %ld gold piece%s.%s"
                            : "bought %s for %ld gold piece%s.%s",
                   ltmp, "");
-    obj->quan = save_quan; /* restore original count */
+    iflags.payobj_special_quan = 0;
+    //obj->quan = save_quan; /* restore original count */
     /* quan => amount just bought, save_quan => remaining unpaid count */
     if (consumed) {
         if (quan != bp->bquan) {
@@ -2772,7 +2775,7 @@ const char *arg;
     //    was_unknown |= !objects[obj->otyp].oc_name_known;
     //    makeknown(obj->otyp);
     //}
-    obj_name = doname(obj);
+    obj_name = doname_payobj(obj);
     /* Use an alternate message when extra information is being provided */
     if (was_unknown) {
         Sprintf(fmtbuf, "%%s; you %s", fmt);

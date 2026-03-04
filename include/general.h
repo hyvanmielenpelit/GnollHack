@@ -622,6 +622,8 @@ enum context_menu_styles {
 #define DONAME_COMPARISON                   0x0080
 #define DONAME_NO_LIBRARY                   0x0100
 #define DONAME_HIDE_WORN                    0x0200
+#define DONAME_HIDE_UNPAID                  0x0400
+#define DONAME_USE_SPECIAL_QUAN             0x0800
 
 /* Moved from shk.c */
 #define NOTANGRY(mon) ((mon)->mpeaceful)

@@ -1324,7 +1324,9 @@ char** attrs_ptr, ** colors_ptr;
 
     boolean ispoisoned = FALSE,
             with_price = (doname_flags & DONAME_WITH_PRICE) != 0,
+            hide_unpaid = (doname_flags & DONAME_HIDE_UNPAID) != 0,
             vague_quan = (doname_flags & DONAME_VAGUE_QUAN) != 0,
+            special_quan = (doname_flags & DONAME_USE_SPECIAL_QUAN) != 0,
             weightfirst = (doname_flags & DONAME_WITH_WEIGHT_FIRST) != 0,
             weightlast = (doname_flags & DONAME_WITH_WEIGHT_LAST) != 0,
             loadstonecorrectly = (doname_flags & DONAME_LOADSTONE_CORRECTLY) != 0,
@@ -1387,10 +1389,11 @@ char** attrs_ptr, ** colors_ptr;
         isenchanted = obj->elemental_enchantment;
     }
 
-    if (obj->quan != 1L) 
+    int64_t quan = special_quan ? iflags.payobj_special_quan : obj->quan;
+    if (quan != 1L) 
     {
         if (dknown || !vague_quan)
-            Sprintf(prefix, "%lld ", (long long)obj->quan);
+            Sprintf(prefix, "%lld ", (long long)quan);
         else
             Strcpy(prefix, "some ");
     }
@@ -1854,7 +1857,7 @@ weapon_here:
             /* (quan == 1) => want corpse_xname() to supply article,
                (quan != 1) => already have count or "some" as prefix;
                "corpse" is already in the buffer returned by xname() */
-            unsigned cxarg = (((obj->quan != 1L) ? 0 : CXN_ARTICLE)
+            unsigned cxarg = (((quan != 1L) ? 0 : CXN_ARTICLE)
                               | CXN_NOCORPSE);
             char *cxstr = corpse_xname(obj, prefix, cxarg);
 
@@ -1903,7 +1906,7 @@ weapon_here:
     const char* hands_s = makeplural(hand_s);
     if ((obj->owornmask & W_WEP) && !mrg_to_wielded && !hide_worn) 
     {
-        if (obj->quan != 1L || !is_wieldable_weapon(obj))
+        if (quan != 1L || !is_wieldable_weapon(obj))
         {
             if (u.twoweap)
             {
@@ -1926,7 +1929,7 @@ weapon_here:
 
     if ((obj->owornmask & W_WEP2) && obj->oclass != ARMOR_CLASS && !mrg_to_wielded && !hide_worn) 
     {
-        if (obj->quan != 1L || !is_wieldable_weapon(obj))
+        if (quan != 1L || !is_wieldable_weapon(obj))
         {
             if (u.twoweap)
                 if (bimanual(obj))
@@ -2013,7 +2016,7 @@ weapon_here:
     {
         ; /* don't attempt to obtain any stop pricing, even if 'with_price' */
     }
-    else if (is_unpaid(obj)) 
+    else if (is_unpaid(obj) && !hide_unpaid) 
     { /* in inventory or in container in invent */
         int64_t quotedprice = unpaid_cost(obj, TRUE);
 
@@ -2164,6 +2167,13 @@ doname(obj)
 struct obj *obj;
 {
     return doname_with_flags(obj, 0U, (char**)0, (char**)0);
+}
+
+char*
+doname_payobj(obj)
+struct obj* obj;
+{
+    return doname_with_flags(obj, DONAME_HIDE_UNPAID | DONAME_USE_SPECIAL_QUAN, (char**)0, (char**)0);
 }
 
 char*
@@ -2967,6 +2977,16 @@ struct obj *obj;
     return s;
 }
 
+char*
+Doname_payobj2(obj)
+struct obj* obj;
+{
+    char* s = doname_payobj(obj);
+
+    *s = highc(*s);
+    return s;
+}
+
 /* returns "[your ]xname(obj)" or "Foobar's xname(obj)" or "the xname(obj)" */
 char *
 yname(obj)
@@ -3052,6 +3072,16 @@ struct obj *obj;
     return simpleoname;
 }
 
+char*
+simpleonames_payobj(obj)
+struct obj* obj;
+{
+    char* simpleoname = minimal_xname(obj);
+
+    if (iflags.payobj_special_quan != 1L)
+        simpleoname = makeplural(simpleoname);
+    return simpleoname;
+}
 /* "a scroll" or "scrolls"; "a silver bell" or "the Bell of Opening" */
 char *
 ansimpleoname(obj)
@@ -3075,12 +3105,43 @@ struct obj *obj;
     return simpleoname;
 }
 
+char*
+ansimpleoname_payobj(obj)
+struct obj* obj;
+{
+    char* simpleoname = simpleonames_payobj(obj);
+    int otyp = obj->otyp;
+
+    /* prefix with "the" if a unique item, or a fake one imitating same,
+       has been formatted with its actual name (we let typename() handle
+       any `known' and `dknown' checking necessary) */
+    if (otyp == FAKE_AMULET_OF_YENDOR)
+        otyp = AMULET_OF_YENDOR;
+    if (is_otyp_unique(otyp)
+        && !strcmp(simpleoname, OBJ_NAME(objects[otyp])))
+        return the(simpleoname);
+
+    /* simpleoname is singular if quan==1, plural otherwise */
+    if (iflags.payobj_special_quan == 1L)
+        simpleoname = an(simpleoname);
+    return simpleoname;
+}
+
 /* "the scroll" or "the scrolls" */
 char *
 thesimpleoname(obj)
 struct obj *obj;
 {
     char *simpleoname = simpleonames(obj);
+
+    return the(simpleoname);
+}
+
+char*
+thesimpleoname_payobj(obj)
+struct obj* obj;
+{
+    char* simpleoname = simpleonames_payobj(obj);
 
     return the(simpleoname);
 }
