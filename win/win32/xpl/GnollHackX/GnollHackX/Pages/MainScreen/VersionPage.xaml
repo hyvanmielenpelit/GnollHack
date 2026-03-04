@@ -109,7 +109,7 @@
                                TextColor="Black" BackgroundColor="Transparent" FontFamily="DejaVuSansMono" FontSize="13" Margin="0,0,0,4" />
                                 <Label Grid.Row="20" Text="Total Memory:" HorizontalOptions="Start" VerticalOptions="Start" HorizontalTextAlignment="Start" VerticalTextAlignment="Start"
                                TextColor="Black" BackgroundColor="Transparent" FontFamily="DejaVuSansMono" FontSize="13" Margin="0,0,0,4" />
-                                <Label Grid.Row="21" Text="Memory Use:" HorizontalOptions="Start" VerticalOptions="Start" HorizontalTextAlignment="Start" VerticalTextAlignment="Start"
+                                <Label Grid.Row="21" Text="Memory Usage:" HorizontalOptions="Start" VerticalOptions="Start" HorizontalTextAlignment="Start" VerticalTextAlignment="Start"
                                TextColor="Black" BackgroundColor="Transparent" FontFamily="DejaVuSansMono" FontSize="13" Margin="0,0,0,4" />
                                 <Label Grid.Row="22" Text="Disk Space:" HorizontalOptions="Start" VerticalOptions="Start" HorizontalTextAlignment="Start" VerticalTextAlignment="Start"
                                TextColor="Black" BackgroundColor="Transparent" FontFamily="DejaVuSansMono" FontSize="13" Margin="0,0,0,4" />
