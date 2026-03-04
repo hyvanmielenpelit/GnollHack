@@ -12,7 +12,7 @@ STATIC_DCL boolean FDECL(m_dowear_type,
                       (struct monst *, int64_t, BOOLEAN_P, BOOLEAN_P));
 STATIC_DCL int FDECL(extra_pref, (struct monst *, struct obj *));
 STATIC_DCL void FDECL(set_mon_temporary_property, (struct monst*, int, UNSIGNED_SHORT_P));
-STATIC_DCL boolean FDECL(mon_wears_misc_subtype, (struct monst*, schar));
+STATIC_DCL boolean FDECL(mon_wears_misc_subtype, (struct monst*, SCHAR_P));
 
 const struct worn {
     int64_t w_mask;
