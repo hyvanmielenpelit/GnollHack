@@ -257,7 +257,7 @@ NEARDATA const struct mythic_definition mythic_prefix_qualities[MAX_MYTHIC_PREFI
         "radiant", "radiant ", "Causes a weapon to shine light", 
         20, MYTHIC_STANDARD_PRICE_MULTIPLIER, MYTHIC_STANDARD_PRICE_ADDITION,
         MYTHIC_PREFIX_POWER_SHINES_LIGHT,
-        MYTHIC_FLAG_DIRECTLY_WISHABLE | MYTHIC_FLAG_WEAPON_REQUIRED | MYTHIC_FLAG_NO_THROWN_OR_AMMO | MYTHIC_FLAG_NO_BOOTS
+        MYTHIC_FLAG_DIRECTLY_WISHABLE | MYTHIC_FLAG_WEAPON_REQUIRED | MYTHIC_FLAG_NO_THROWN_OR_AMMO | MYTHIC_FLAG_NO_ARMOR
     },
     {
         "hallowed", "hallowed ", "Uncurseable and counts as silver; armors confer curse resistance", 
