@@ -1723,6 +1723,10 @@ boolean racialexception;
             if ((objects[obj->otyp].oc_name_known || !is_peaceful(mon)) && is_cursed_magic_item(obj))
                 continue;
 
+            /* Belts and amulets of change are not implemented for monsters */
+            if (obj->otyp == BELT_OF_CHANGE)
+                continue;
+
             /* Prefer non-cursed items */
             if ((!best->cursed || !best->bknown) && obj->cursed && obj->bknown && !cursed_items_are_positive_mon(mon))
                 continue;
