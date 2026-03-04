@@ -451,12 +451,15 @@ boolean exclude_ascii;
         return;
 
     register int x = obj->ox, y = obj->oy;
+    if (!isok(x, y))
+        return;
+
     register int glyph = obj_to_glyph(obj, newsym_rn2);
     boolean draw_in_front = is_obj_drawn_in_front(obj);
     enum layer_types layer = draw_in_front ? LAYER_COVER_OBJECT : LAYER_OBJECT;
     boolean in_pit = FALSE;
     struct trap* t = 0;
-    if (isok(x, y) && (t = t_at(x, y)) != 0 && t->tseen && (t->ttyp == PIT || t->ttyp == SPIKED_PIT))
+    if ((t = t_at(x, y)) != 0 && t->tseen && (t->ttyp == PIT || t->ttyp == SPIKED_PIT))
         in_pit = TRUE;
 
     int obj_height = get_obj_height(obj);

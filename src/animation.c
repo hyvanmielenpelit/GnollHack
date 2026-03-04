@@ -1477,7 +1477,7 @@ struct replacement_info info;
         case REPLACEMENT_ACTION_BOTTOM_TILE:
         {
             int below_y = y + 1;
-            if (!isok(x, below_y)
+            if (!isok(x, below_y) || !isok(x, y)
                 || (!couldsee(x, below_y) && glyph_is_specific_cmap_or_its_variation(levl[x][below_y].hero_memory_layers.layer_glyphs[LAYER_FLOOR], S_unexplored))
                 || (IS_DOORJOIN(levl[x][below_y].typ) && !IS_TREE(levl[x][below_y].typ))
                 || levl[x][below_y].typ == DOOR
@@ -1497,12 +1497,15 @@ struct replacement_info info;
         }
         case REPLACEMENT_ACTION_SHORE_TILE:
         {
+            if (!isok(x, y))
+                return glyph;
+
             int above_y = y - 1;
             //int below_y = y + 1;
             int floortype = IS_FLOOR(levl[x][y].typ) || IS_POOL(levl[x][y].typ) || levl[x][y].typ == LAVAPOOL || levl[x][y].typ == ICE ? levl[x][y].typ : levl[x][y].floortyp;
             boolean is_water_or_air_level = (Is_airlevel(&u.uz) || Is_waterlevel(&u.uz));
 
-            if (!(is_water_or_air_level && info.layer == LAYER_FLOOR) && (Underwater || !isok(x, above_y)
+            if (!(is_water_or_air_level && info.layer == LAYER_FLOOR) && (Underwater || !isok(x, above_y) || !isok(x, y)
                 || (levl[x][y].typ == levl[x][above_y].typ && levl[x][y].subtyp == levl[x][above_y].subtyp)
                 || (level.flags.hero_memory && glyph_is_specific_cmap_or_its_variation(levl[x][above_y].hero_memory_layers.layer_glyphs[LAYER_FLOOR], S_unexplored))
                 || levl[x][above_y].typ == UNDEFINED_LOCATION || (IS_SOLID_FLOOR(floortype) && (IS_DOORJOIN(levl[x][above_y].typ)))))
@@ -1562,7 +1565,7 @@ struct replacement_info info;
         }
         case REPLACEMENT_ACTION_FLOOR_ADJUSTED_TILE:
         {
-            if (Underwater || glyph_is_specific_cmap_or_its_variation(levl[x][y].hero_memory_layers.layer_glyphs[LAYER_FLOOR], S_unexplored)
+            if (Underwater || !isok(x, y) || glyph_is_specific_cmap_or_its_variation(levl[x][y].hero_memory_layers.layer_glyphs[LAYER_FLOOR], S_unexplored)
                 || !IS_SOLID_FLOOR(levl[x][y].floortyp))
             {
                 /* No action */
@@ -1579,7 +1582,7 @@ struct replacement_info info;
             int above_y = y - 1;
             int left_x = x - 1;
             int right_x = x + 1;
-            if (Underwater || glyph_is_specific_cmap_or_its_variation(levl[x][y].hero_memory_layers.layer_glyphs[LAYER_FLOOR], S_unexplored)
+            if (Underwater || !isok(x, y) || glyph_is_specific_cmap_or_its_variation(levl[x][y].hero_memory_layers.layer_glyphs[LAYER_FLOOR], S_unexplored)
                 || !IS_SOLID_FLOOR(levl[x][y].floortyp))
             {
                 /* No action */
