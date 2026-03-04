@@ -1658,7 +1658,9 @@ boolean racialexception;
         case W_MISC5:
             if (obj->oclass != MISCELLANEOUS_CLASS || !can_wear_miscellaneous(mon->data, obj->otyp))
                 continue;
-            if ((((is_priest(mon->data) && obj->cursed) || is_cursed_magic_item(obj)) && !cursed_items_are_positive_mon(mon)) || (obj->owornmask && obj->owornmask != flag))
+            if (((is_priest(mon->data) || obj->bknown) && obj->cursed && !cursed_items_are_positive_mon(mon))
+                || ((objects[obj->otyp].oc_name_known || !is_peaceful(mon)) && is_cursed_magic_item(obj)) 
+                || (obj->owornmask && obj->owornmask != flag))
                 continue;
             if (objects[obj->otyp].oc_subtyp > MISC_MULTIPLE_PERMITTED && mon_wears_misc_subtype(mon, objects[obj->otyp].oc_subtyp))
                 continue;
@@ -1717,19 +1719,23 @@ boolean racialexception;
 
         if (best)
         {
-            /* Prefer artifacts */
-            if (best->oartifact && !obj->oartifact)
+            /* Do not wear cursed magic items */
+            if ((objects[obj->otyp].oc_name_known || !is_peaceful(mon)) && is_cursed_magic_item(obj))
                 continue;
 
             /* Prefer non-cursed items */
             if ((!best->cursed || !best->bknown) && obj->cursed && obj->bknown && !cursed_items_are_positive_mon(mon))
                 continue;
 
+            /* Prefer artifacts */
+            if (best->oartifact && !obj->oartifact)
+                continue;
+
             /* Prefer items with highest number of mythic properties */
             int best_mythic_no = (best->mythic_prefix != 0) + (best->mythic_suffix != 0);
             int obj_mythic_no = (obj->mythic_prefix != 0) + (obj->mythic_suffix != 0);
-            int best_power_no = (objects[best->otyp].oc_oprop) != NO_POWER + (objects[best->otyp].oc_oprop2) != NO_POWER || (objects[best->otyp].oc_oprop3) != NO_POWER;
-            int obj_power_no = (objects[obj->otyp].oc_oprop) != NO_POWER + (objects[obj->otyp].oc_oprop2) != NO_POWER || (objects[obj->otyp].oc_oprop3) != NO_POWER;
+            int best_power_no = (objects[best->otyp].oc_oprop) != NO_POWER + (objects[best->otyp].oc_oprop2) != NO_POWER + (objects[best->otyp].oc_oprop3) != NO_POWER;
+            int obj_power_no = (objects[obj->otyp].oc_oprop) != NO_POWER + (objects[obj->otyp].oc_oprop2) != NO_POWER + (objects[obj->otyp].oc_oprop3) != NO_POWER;
             int best_total_no = best_mythic_no + best_power_no;
             int obj_total_no = obj_mythic_no + obj_power_no;
 
