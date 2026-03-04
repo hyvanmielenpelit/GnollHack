@@ -1734,8 +1734,8 @@ boolean racialexception;
             /* Prefer items with highest number of mythic properties */
             int best_mythic_no = (best->mythic_prefix != 0) + (best->mythic_suffix != 0);
             int obj_mythic_no = (obj->mythic_prefix != 0) + (obj->mythic_suffix != 0);
-            int best_power_no = (objects[best->otyp].oc_oprop) != NO_POWER + (objects[best->otyp].oc_oprop2) != NO_POWER + (objects[best->otyp].oc_oprop3) != NO_POWER;
-            int obj_power_no = (objects[obj->otyp].oc_oprop) != NO_POWER + (objects[obj->otyp].oc_oprop2) != NO_POWER + (objects[obj->otyp].oc_oprop3) != NO_POWER;
+            int best_power_no = (objects[best->otyp].oc_oprop != NO_POWER) + (objects[best->otyp].oc_oprop2 != NO_POWER) + (objects[best->otyp].oc_oprop3 != NO_POWER);
+            int obj_power_no = (objects[obj->otyp].oc_oprop != NO_POWER) + (objects[obj->otyp].oc_oprop2 != NO_POWER) + (objects[obj->otyp].oc_oprop3 != NO_POWER);
             int best_total_no = best_mythic_no + best_power_no;
             int obj_total_no = obj_mythic_no + obj_power_no;
 
