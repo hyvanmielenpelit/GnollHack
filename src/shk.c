@@ -1836,6 +1836,7 @@ boolean itemize;
                   consumed ? "paid for %s at a cost of %ld gold piece%s.%s"
                            : "bought %s for %ld gold piece%s.%s",
                   ltmp, "");
+    obj->unpaid = 0; /* It is now finally unpaid in reality! */
     iflags.payobj_special_quan = 0;
     //obj->quan = save_quan; /* restore original count */
     /* quan => amount just bought, save_quan => remaining unpaid count */

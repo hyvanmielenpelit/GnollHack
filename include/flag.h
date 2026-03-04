@@ -366,7 +366,7 @@ struct instance_flags {
     int parse_config_file_src;  /* hack for parse_config_line() */
     int purge_monsters;    /* # of dead monsters still on fmon list */
     int suppress_price;    /* controls doname() for unpaid objects */
-    int payobj_special_quan;
+    int64_t payobj_special_quan;
     int terrainmode; /* for getpos()'s autodescribe when #terrain is active */
 #define TER_MAP    0x01
 #define TER_TRP    0x02
