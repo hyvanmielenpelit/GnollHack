@@ -1866,6 +1866,9 @@ can_wear_miscellaneous(ptr, otyp)
 struct permonst* ptr;
 int otyp;
 {
+    if (!ptr || otyp <= STRANGE_OBJECT || otyp >= NUM_OBJECTS || objects[otyp].oc_class != MISCELLANEOUS_CLASS)
+        return FALSE;
+
     switch (objects[otyp].oc_subtyp)
     {
         default:
