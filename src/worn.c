@@ -1714,15 +1714,40 @@ boolean racialexception;
         }
         if (obj->owornmask)
             continue;
-        /* I'd like to define a VISIBLE_ARM_BONUS which doesn't assume the
-         * monster knows obj->enchantment, but if I did that, a monster would keep
-         * switching forever between two -2 caps since when it took off one
-         * it would forget enchantment and once again think the object is better
-         * than what it already has.
-         */
-        if (best && (ARM_AC_BONUS(best, mon->data) + extra_pref(mon, best)
-                     >= ARM_AC_BONUS(obj, mon->data) + extra_pref(mon, obj)))
-            continue;
+
+        if (best)
+        {
+            /* Prefer artifacts */
+            if (best->oartifact && !obj->oartifact)
+                continue;
+
+            /* Prefer non-cursed items */
+            if ((!best->cursed || !best->bknown) && obj->cursed && obj->bknown && !cursed_items_are_positive_mon(mon))
+                continue;
+
+            /* Prefer items with highest number of mythic properties */
+            int best_mythic_no = (best->mythic_prefix != 0) + (best->mythic_suffix != 0);
+            int obj_mythic_no = (obj->mythic_prefix != 0) + (obj->mythic_suffix != 0);
+            int best_power_no = (objects[best->otyp].oc_oprop) != NO_POWER + (objects[best->otyp].oc_oprop2) != NO_POWER || (objects[best->otyp].oc_oprop3) != NO_POWER;
+            int obj_power_no = (objects[obj->otyp].oc_oprop) != NO_POWER + (objects[obj->otyp].oc_oprop2) != NO_POWER || (objects[obj->otyp].oc_oprop3) != NO_POWER;
+            int best_total_no = best_mythic_no + best_power_no;
+            int obj_total_no = obj_mythic_no + obj_power_no;
+
+            if (best_total_no > obj_total_no)
+                continue;
+            if (obj_total_no > 0 && best_total_no == obj_total_no
+                && getprice(best, FALSE) > getprice(obj, FALSE))
+                continue;
+            /* I'd like to define a VISIBLE_ARM_BONUS which doesn't assume the
+             * monster knows obj->enchantment, but if I did that, a monster would keep
+             * switching forever between two -2 caps since when it took off one
+             * it would forget enchantment and once again think the object is better
+             * than what it already has.
+             */
+            if (ARM_AC_BONUS(best, mon->data) + extra_pref(mon, best)
+                >= ARM_AC_BONUS(obj, mon->data) + extra_pref(mon, obj))
+                continue;
+        }
         best = obj;
     }
 outer_break:
