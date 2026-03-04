@@ -9016,6 +9016,7 @@ int x, y, mod;
     int target_x = x;
     int target_y = y;
     memset(cmd, 0, sizeof(cmd));
+    debugprint("click_to_cmd: x=%d, y=%d, mod=%d, ux=%d, uy=%d", x, y, mod, u.ux, u.uy);
 
     /* mod can be any value except CLICK_OFF */
     if (mod == CLICK_SECONDARY)
@@ -9069,7 +9070,8 @@ int x, y, mod;
     /* Cast spell */
     if (mod == CLICK_CAST)
     {
-        if (!context.quick_cast_spell_set || context.quick_cast_spell_no < 0 || spl_book[context.quick_cast_spell_no].sp_id <= STRANGE_OBJECT)
+        if (!context.quick_cast_spell_set || context.quick_cast_spell_no < 0 || context.quick_cast_spell_no > MAXSPELL
+            || spl_book[context.quick_cast_spell_no].sp_id <= STRANGE_OBJECT || spl_book[context.quick_cast_spell_no].sp_id >= NUM_OBJECTS)
         {
             /* Quick cast handles error messaging */
             cmd[0] = Cmd.spkeys[NHKF_CLICKCAST];
@@ -9520,7 +9522,7 @@ int x, y, mod;
 
         dir = xytod(x, y);
 
-        if (!u.uswallow && !m_at(u.ux + x, u.uy + y)
+        if (!u.uswallow && isok(u.ux + x, u.uy + y) && !m_at(u.ux + x, u.uy + y)
             && !test_move(u.ux, u.uy, x, y, TEST_MOVE)) 
         {
             cmd[1] = Cmd.dirchars[dir];
