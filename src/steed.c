@@ -949,7 +949,10 @@ int x, y;
     if (level.monsters[x][y])
     {
         s_level* slev = Is_special(&u.uz);
-        impossible("placing monster (mnum=%d%s) over another (mnum=%d) at <%d,%d> on level (%d,%d,%s) [mklev=%d,ux=%d,uy=%d]?", mon->mnum, mon->issmith ? ", smith" :"", level.monsters[x][y]->mnum, x, y, (int)u.uz.dnum, (int)u.uz.dlevel, slev ? slev->name : "normal", (int)in_mklev, u.ux, u.uy);
+        impossible("placing monster (mnum=%d%s) over another (mnum=%d%s) at <%d,%d> on level (%d,%d,%s) [mklev=%d,mx=%d,my=%d,ux=%d,uy=%d]?", 
+            mon->mnum, mon->isshk ? ", shopkeeper" : mon->isnpc ? ", npc" : mon->ispriest ? ", priest" : mon->issmith ? ", smith" : "",
+            level.monsters[x][y]->mnum, level.monsters[x][y] == mon ? ", same" : "",
+            x, y, (int)u.uz.dnum, (int)u.uz.dlevel, slev ? slev->name : "normal", (int)in_mklev, mon->mx, mon->my, u.ux, u.uy);
     }
     mon->mx = x, mon->my = y;
     level.monsters[x][y] = mon;

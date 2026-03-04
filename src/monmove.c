@@ -1917,6 +1917,7 @@ register int after;
         if (!m_in_out_region(mtmp, nix, niy))
             return 3;
 
+        debugprint("m_move: mnum=%d, omx=%d, omy=%d, nix=%d, niy=%d", mtmp->mnum, omx, omy, nix, niy);
         remove_monster(omx, omy);
         place_monster(mtmp, nix, niy);
         play_movement_sound(mtmp, CLIMBING_TYPE_NONE);

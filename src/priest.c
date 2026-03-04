@@ -88,8 +88,8 @@ register xchar omx, omy, gx, gy;
     struct obj *ib = (struct obj *) 0;
 #endif
 
-    debugprint("move_special: mnum=%d, pri=%d, smi=%d, npc=%d, mx=%d, my=%d, ux=%d, uy=%d, in_his_shop=%d, appr=%d, uondoor=%d, avoid=%d, omx=%d, omy=%d, gx=%d, gy=%d", 
-        mtmp->mnum, (int)mtmp->ispriest, (int)mtmp->issmith, (int)mtmp->isnpc, mtmp->mx, mtmp->my, u.ux, u.uy, (int)in_his_shop, (int)appr, (int)uondoor, (int)avoid, omx, omy, gx, gy);
+    debugprint("move_special: mnum=%d, shk=%d, pri=%d, smi=%d, npc=%d, mx=%d, my=%d, ux=%d, uy=%d, in_his_shop=%d, appr=%d, uondoor=%d, avoid=%d, omx=%d, omy=%d, gx=%d, gy=%d", 
+        mtmp->mnum, (int)mtmp->isshk, (int)mtmp->ispriest, (int)mtmp->issmith, (int)mtmp->isnpc, mtmp->mx, mtmp->my, u.ux, u.uy, (int)in_his_shop, (int)appr, (int)uondoor, (int)avoid, omx, omy, gx, gy);
 
     if (omx == gx && omy == gy)
         return 0;
@@ -165,6 +165,7 @@ pick_move:
 
     if (nix != omx || niy != omy) 
     {
+        debugprint("move_special2: mnum=%d, omx=%d, omy=%d, nix=%d, niy=%d", mtmp->mnum, omx, omy, nix, niy);
         remove_monster(omx, omy);
         place_monster(mtmp, nix, niy);
         play_movement_sound(mtmp, CLIMBING_TYPE_NONE);

@@ -2357,6 +2357,7 @@ newdogpos:
 
             /* insert a worm_move() if worms ever begin to eat things */
             wasseen = canseemon(mtmp);
+            debugprint("dog_move: mnum=%d, omx=%d, omy=%d, nix=%d, niy=%d", mtmp->mnum, omx, omy, nix, niy);
             remove_monster(omx, omy);
             place_monster(mtmp, nix, niy);
             play_movement_sound(mtmp, CLIMBING_TYPE_NONE);
@@ -2449,6 +2450,7 @@ newdogpos:
         dognext:
             if (!m_in_out_region(mtmp, nix, niy))
                 return 1;
+            debugprint("dog_move2: mnum=%d, mx=%d, my=%d, cc.x=%d, cc.y=%d", mtmp->mnum, mtmp->mx, mtmp->my, cc.x, cc.y);
             remove_monster(mtmp->mx, mtmp->my);
             place_monster(mtmp, cc.x, cc.y);
             newsym(cc.x, cc.y);
