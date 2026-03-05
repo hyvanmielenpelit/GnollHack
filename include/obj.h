@@ -784,6 +784,9 @@ enum elemental_enchantments {
 #define can_obj_joust(obj) \
     (can_otyp_joust((obj)->otyp))
 
+#define is_sex_changing_item(o)                                            \
+    ((objects[(o)->otyp].oc_flags6 & O6_SEX_CHANGE_AND_DISINTEGRATE) != 0 || (o)->otyp == BELT_OF_CHANGE || (o)->otyp == AMULET_OF_CHANGE)
+
 #define is_obj_found_this_turn(obj) \
     (((obj)->speflags & SPEFLAGS_FOUND_THIS_TURN) != 0)
 

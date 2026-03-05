@@ -917,6 +917,61 @@ struct obj* uitem;
     newsym(u.ux, u.uy);
 }
 
+void
+mon_item_change_sex_and_useup(mon, uitem, creation)
+struct monst* mon;
+struct obj* uitem;
+boolean creation; 
+{
+    if (!mon || !uitem)
+        return;
+
+    if (mon == &youmonst)
+    {
+        item_change_sex_and_useup(uitem);
+        return;
+    }
+
+    char dcbuf[BUFSZ] = "";
+
+    if (mon->mprops[UNCHANGING])
+        return;
+
+    unsigned orig_sex = mon->female;
+    if (!(is_male(mon->data) || is_female(mon->data) || is_neuter(mon->data)))
+        mon->female = !mon->female;
+
+    if (!creation && canseemon(mon))
+    {
+        /* Don't use same message as polymorph */
+        if (orig_sex != mon->female) {
+            makeknown(uitem->otyp);
+            play_sfx_sound_at_location(SFX_SEX_CHANGE, mon->mx, mon->my);
+            Sprintf(dcbuf, "%s is suddenly very %s!", Monnam(mon),
+                mon->female ? "feminine" : "masculine");
+            pline_ex1(ATR_NONE, CLR_MSG_ATTENTION, dcbuf);
+        }
+        else
+        {
+            play_sfx_sound_at_location(SFX_UNKNOWN_ODD_EFFECT, mon->mx, mon->my);
+            /* already polymorphed into single-gender monster; only
+               changed the character's base sex */
+            Sprintf(dcbuf, "%s doesn't feel like %sself.", Monnam(mon), mhim(mon));
+            pline_ex1(ATR_NONE, CLR_MSG_ATTENTION, dcbuf);
+        }
+        play_sfx_sound_at_location(SFX_ITEM_CRUMBLES_TO_DUST, mon->mx, mon->my);
+        pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s disintegrates!", The(cxname(uitem)));
+        if (orig_sex == mon->female && uitem->dknown
+            && !objects[uitem->otyp].oc_name_known
+            && !objects[uitem->otyp].oc_uname)
+            docall(uitem, dcbuf);
+    }
+ 
+    debugprint("mon_item_change_sex_and_useup: mnum=%d, otyp=%d", mon->mnum, uitem->otyp);
+    m_useup(mon, uitem);
+    newsym(mon->mx, mon->my);
+}
+
 /* handle ring discovery; comparable to learnwand() */
 void
 learnring(ring, observed)

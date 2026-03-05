@@ -1659,7 +1659,7 @@ boolean racialexception;
             if (obj->oclass != MISCELLANEOUS_CLASS || !can_wear_miscellaneous(mon->data, obj->otyp))
                 continue;
             if (((is_priest(mon->data) || obj->bknown) && obj->cursed && !cursed_items_are_positive_mon(mon))
-                || ((objects[obj->otyp].oc_name_known || !is_peaceful(mon)) && is_cursed_magic_item(obj)) 
+                || ((objects[obj->otyp].oc_name_known || !is_peaceful(mon)) && is_cursed_magic_item(obj) && !is_sex_changing_item(obj))
                 || (obj->owornmask && obj->owornmask != flag))
                 continue;
             if (objects[obj->otyp].oc_subtyp > MISC_MULTIPLE_PERMITTED && mon_wears_misc_subtype(mon, objects[obj->otyp].oc_subtyp))
@@ -1720,11 +1720,7 @@ boolean racialexception;
         if (best)
         {
             /* Do not wear cursed magic items */
-            if ((objects[obj->otyp].oc_name_known || !is_peaceful(mon)) && is_cursed_magic_item(obj))
-                continue;
-
-            /* Belts and amulets of change are not implemented for monsters */
-            if (obj->otyp == BELT_OF_CHANGE)
+            if ((objects[obj->otyp].oc_name_known || !is_peaceful(mon)) && is_cursed_magic_item(obj) && !is_sex_changing_item(obj))
                 continue;
 
             /* Prefer non-cursed items */
@@ -1776,23 +1772,20 @@ outer_break:
             dismount_steed(DISMOUNT_FELL);
     }
 
-    if (!creation) 
+    if (!creation && canseemon(mon))
     {
-        if (canseemon(mon)) 
-        {
-            char buf[BUFSZ];
+        char buf[BUFSZ];
 
-            if (old)
-                Sprintf(buf, " removes %s and", distant_name(old, doname));
-            else
-                buf[0] = '\0';
-            pline("%s%s puts on %s.", Monnam(mon), buf,
-                  distant_name(best, doname));
-            if (autocurse)
-                pline_multi_ex(ATR_NONE, Hallucination ? CLR_MSG_HALLUCINATED : CLR_MSG_NEGATIVE, no_multiattrs, multicolor_buffer, "%s %s %s %s for a moment.", s_suffix(Monnam(mon)),
-                      simpleonames(best), otense(best, "glow"),
-                      hcolor_multi_buf2(NH_BLACK));
-        } /* can see it */
+        if (old)
+            Sprintf(buf, " removes %s and", distant_name(old, doname));
+        else
+            buf[0] = '\0';
+        pline("%s%s puts on %s.", Monnam(mon), buf,
+            distant_name(best, doname));
+        if (autocurse)
+            pline_multi_ex(ATR_NONE, Hallucination ? CLR_MSG_HALLUCINATED : CLR_MSG_NEGATIVE, no_multiattrs, multicolor_buffer, "%s %s %s %s for a moment.", s_suffix(Monnam(mon)),
+                simpleonames(best), otense(best, "glow"),
+                hcolor_multi_buf2(NH_BLACK));
     }
 
     /* Put new on */
@@ -1809,6 +1802,9 @@ outer_break:
         } /* else if (!mon->minvis) pline("%s suddenly appears!",
              Amonnam(mon)); */
     }
+
+    if (is_sex_changing_item(best))
+        mon_item_change_sex_and_useup(mon, best, creation);
 
     return 1;
 }

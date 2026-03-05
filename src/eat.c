@@ -2992,6 +2992,7 @@ struct obj *otmp;
                 You_feel_ex(ATR_NONE, CLR_MSG_POSITIVE, "wide awake.");
             HSleep_resistance |= FROM_ACQUIRED;
             break;
+        case BELT_OF_CHANGE:
         case AMULET_OF_CHANGE:
             accessory_has_effect(otmp);
             makeknown(typ);
