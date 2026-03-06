@@ -2389,7 +2389,7 @@ int fd;
 
     load = (mapseen *) alloc(sizeof *load);
 
-    debugprint("load_mapseen");
+    //debugprint("load_mapseen");
     mread(fd, (genericptr_t) &branchnum, sizeof branchnum);
     for (brindx = 0, curr = branches; curr; curr = curr->next, ++brindx)
         if (brindx == branchnum)
