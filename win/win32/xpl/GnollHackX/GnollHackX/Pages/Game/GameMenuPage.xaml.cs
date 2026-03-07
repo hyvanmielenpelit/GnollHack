@@ -182,7 +182,7 @@ namespace GnollHackX.Pages.Game
             MainLayout.IsEnabled = false;
             GHApp.PlayButtonClickedSound();
             var settingsPage = new SettingsPage(this, null);
-            await GHApp.Navigation.PushModalAsync(settingsPage);
+            await GHApp.PushModalPageAsync(settingsPage);
             MainLayout.IsEnabled = true;
         }
 
@@ -197,7 +197,7 @@ namespace GnollHackX.Pages.Game
             GHApp.PlayButtonClickedSound();
             var libPage = new LibraryPage();
             libPage.ReadLibrary();
-            await GHApp.Navigation.PushModalAsync(libPage);
+            await GHApp.PushModalPageAsync(libPage);
             MainLayout.IsEnabled = true;
         }
 
@@ -212,7 +212,7 @@ namespace GnollHackX.Pages.Game
             GHApp.PlayButtonClickedSound();
             var oraclePage = new OraclePage();
             oraclePage.ReadConsultations();
-            await GHApp.Navigation.PushModalAsync(oraclePage);
+            await GHApp.PushModalPageAsync(oraclePage);
             MainLayout.IsEnabled = true;
         }
 
@@ -306,7 +306,7 @@ namespace GnollHackX.Pages.Game
             MainLayout.IsEnabled = false;
             GHApp.PlayButtonClickedSound();
             var verPage = new VersionPage(_gamePage);
-            await GHApp.Navigation.PushModalAsync(verPage);
+            await GHApp.PushModalPageAsync(verPage);
             MainLayout.IsEnabled = true;
         }
 
@@ -381,7 +381,7 @@ namespace GnollHackX.Pages.Game
             {
                 /* Android seems to trigger app switching (OnSleep / OnResume) using OpenBrowser; use WebView instead */
                 var wikiPage = new WikiPage("Wiki", GHConstants.GnollHackWikiPage);
-                await GHApp.Navigation.PushModalAsync(wikiPage);
+                await GHApp.PushModalPageAsync(wikiPage);
             }
             MainLayout.IsEnabled = true;
         }

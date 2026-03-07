@@ -67,7 +67,7 @@ namespace GnollHackX.Pages.MainScreen
             }
             else
             {
-                await GHApp.Navigation.PushModalAsync(displFilePage);
+                await GHApp.PushModalPageAsync(displFilePage);
             }
             AboutGrid.IsEnabled = true;
         }
@@ -85,7 +85,7 @@ namespace GnollHackX.Pages.MainScreen
         //    }
         //    else
         //    {
-        //        await GHApp.Navigation.PushModalAsync(displFilePage);
+        //        await GHApp.PushModalPageAsync(displFilePage);
         //    }
         //    AboutGrid.IsEnabled = true;
         //}
@@ -108,7 +108,7 @@ namespace GnollHackX.Pages.MainScreen
             }
             else
             {
-                await GHApp.Navigation.PushModalAsync(displFilePage);
+                await GHApp.PushModalPageAsync(displFilePage);
             }
             AboutGrid.IsEnabled = true;
         }
@@ -268,7 +268,7 @@ namespace GnollHackX.Pages.MainScreen
             }
             else
             {
-                await GHApp.Navigation.PushModalAsync(displFilePage);
+                await GHApp.PushModalPageAsync(displFilePage);
             }
             AboutGrid.IsEnabled = true;
         }
@@ -296,7 +296,7 @@ namespace GnollHackX.Pages.MainScreen
             }
             else
             {
-                await GHApp.Navigation.PushModalAsync(displFilePage);
+                await GHApp.PushModalPageAsync(displFilePage);
             }
             AboutGrid.IsEnabled = true;
         }
@@ -326,7 +326,7 @@ namespace GnollHackX.Pages.MainScreen
             AboutGrid.IsEnabled = false;
             GHApp.PlayButtonClickedSound();
             var verPage = new VersionPage(null);
-            await GHApp.Navigation.PushModalAsync(verPage);
+            await GHApp.PushModalPageAsync(verPage);
             AboutGrid.IsEnabled = true;
         }
 
@@ -341,7 +341,7 @@ namespace GnollHackX.Pages.MainScreen
             GHApp.PlayButtonClickedSound();
 
             ImportExportPage manageFilesPage = new ImportExportPage();
-            await GHApp.Navigation.PushModalAsync(manageFilesPage);
+            await GHApp.PushModalPageAsync(manageFilesPage);
 
             AboutGrid.IsEnabled = true;
         }

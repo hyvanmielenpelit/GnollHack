@@ -796,7 +796,7 @@ namespace GnollHackX.Pages.MainScreen
                 if(GHApp.ValidateReplayFile(filePath, out outstr))
                 {
                     var gamePage = new GamePage(_mainPage);
-                    await GHApp.Navigation.PushModalAsync(gamePage);
+                    await GHApp.PushModalPageAsync(gamePage);
                     await gamePage.StartReplay(filePath, -1);
                 }
                 else

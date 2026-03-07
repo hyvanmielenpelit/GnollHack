@@ -403,14 +403,14 @@ namespace GnollHackX.Pages.MainScreen
                 }
                 else
                 {
-                    await GHApp.Navigation.PushModalAsync(topScorePage);
+                    await GHApp.PushModalPageAsync(topScorePage);
                 }
             }
             else
             {
                 /* No top scores */
                 var topScorePage = new TopScorePage();
-                await GHApp.Navigation.PushModalAsync(topScorePage);
+                await GHApp.PushModalPageAsync(topScorePage);
             }
             VaultGrid.IsEnabled = true;
         }
@@ -426,7 +426,7 @@ namespace GnollHackX.Pages.MainScreen
             GHApp.PlayButtonClickedSound();
             var libPage = new LibraryPage();
             libPage.ReadLibrary();
-            await GHApp.Navigation.PushModalAsync(libPage);
+            await GHApp.PushModalPageAsync(libPage);
             VaultGrid.IsEnabled = true;
         }
 
@@ -441,7 +441,7 @@ namespace GnollHackX.Pages.MainScreen
             GHApp.PlayButtonClickedSound();
             var oraclePage = new OraclePage();
             oraclePage.ReadConsultations();
-            await GHApp.Navigation.PushModalAsync(oraclePage);
+            await GHApp.PushModalPageAsync(oraclePage);
             VaultGrid.IsEnabled = true;
         }
 
@@ -455,7 +455,7 @@ namespace GnollHackX.Pages.MainScreen
             VaultGrid.IsEnabled = false;
             GHApp.PlayButtonClickedSound();
             var musicPage = new MusicPage();
-            await GHApp.Navigation.PushModalAsync(musicPage);
+            await GHApp.PushModalPageAsync(musicPage);
             VaultGrid.IsEnabled = true;
         }
 
@@ -470,7 +470,7 @@ namespace GnollHackX.Pages.MainScreen
             GHApp.PlayButtonClickedSound();
             var snapPage = new SnapshotPage();
             snapPage.LoadSnapshots();
-            await GHApp.Navigation.PushModalAsync(snapPage);
+            await GHApp.PushModalPageAsync(snapPage);
             VaultGrid.IsEnabled = true;
         }
 
@@ -484,7 +484,7 @@ namespace GnollHackX.Pages.MainScreen
             VaultGrid.IsEnabled = false;
             GHApp.PlayButtonClickedSound();
             ReplayPage selectFilePage = new ReplayPage(_mainPage);
-            await GHApp.Navigation.PushModalAsync(selectFilePage);
+            await GHApp.PushModalPageAsync(selectFilePage);
             VaultGrid.IsEnabled = true;
         }
 

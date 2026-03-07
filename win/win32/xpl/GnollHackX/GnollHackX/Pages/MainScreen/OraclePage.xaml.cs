@@ -176,7 +176,7 @@ namespace GnollHackX.Pages.MainScreen
                     dispfilepage.UseFixedFontSize = true;
                     dispfilepage.FontSize = 14;
                     if (dispfilepage.ReadFile(out errormsg))
-                        await GHApp.Navigation.PushModalAsync(dispfilepage);
+                        await GHApp.PushModalPageAsync(dispfilepage);
                     else
                         await GHApp.DisplayMessageBox(this, "Error Reading Consultation", "Reading the consultation entitled " + sm.Name + " failed: " + errormsg, "OK");
                 }

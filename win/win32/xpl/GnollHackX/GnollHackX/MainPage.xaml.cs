@@ -760,7 +760,7 @@ namespace GnollHackX
                     gamePage.EnableWizardMode = wizardModeSwitch.IsToggled;
                     gamePage.EnableCasualMode = casualModeSwitch.IsToggled;
                     gamePage.EnableModernMode = !classicModeSwitch.IsToggled;
-                    await GHApp.Navigation.PushModalAsync(gamePage);
+                    await GHApp.PushModalPageAsync(gamePage);
                     await gamePage.StartNewGame();
                 }
             }
@@ -819,7 +819,7 @@ namespace GnollHackX
                 //}
                 //else
                 //{
-                    //await GHApp.Navigation.PushModalAsync(gamePage, false);
+                    //await GHApp.PushModalPageAsync(gamePage, false);
                     //gamePage.StartExistingGame();
                     //curGame.ReactivateGame();
                     //ShowWaitAndCloseApp();
@@ -1665,7 +1665,8 @@ namespace GnollHackX
             carouselView.Stop();
             StopGeneralTimer = true;
             var resetPage = new ResetPage(this);
-            await GHApp.Navigation.PushModalAsync(resetPage);
+            //await GHApp.PushModalPageAsync(resetPage);
+            await GHApp.PushModalPageAsync(resetPage);
             StopGeneralTimer = false;
             await StartGeneralTimerAsync();
             UpperButtonGrid.IsEnabled = true;
@@ -1682,7 +1683,8 @@ namespace GnollHackX
             GHApp.PlayButtonClickedSound();
             carouselView.Stop();
             var settingsPage = new SettingsPage(null, this);
-            await GHApp.Navigation.PushModalAsync(settingsPage);
+            await GHApp.PushModalPageAsync(settingsPage);
+            //await GHApp.PushModalPageAsync(settingsPage);
             UpperButtonGrid.IsEnabled = true;
         }
 
@@ -1701,7 +1703,7 @@ namespace GnollHackX
             {
                 editorPage.ReadFile();
                 carouselView.Stop();
-                await GHApp.Navigation.PushModalAsync(editorPage);
+                await GHApp.PushModalPageAsync(editorPage);
             }
             catch (Exception ex)
             {
@@ -1723,7 +1725,8 @@ namespace GnollHackX
             carouselView.Stop();
             StopGeneralTimer = true;
             var aboutPage = new AboutPage(this);
-            await GHApp.Navigation.PushModalAsync(aboutPage);
+            //await GHApp.PushModalPageAsync(aboutPage);
+            await GHApp.PushModalPageAsync(aboutPage);
             StopGeneralTimer = false;
             await StartGeneralTimerAsync();
             UpperButtonGrid.IsEnabled = true;
@@ -1775,7 +1778,7 @@ namespace GnollHackX
             GHApp.PlayButtonClickedSound();
             carouselView.Stop();
             var vaultPage = new VaultPage(this);
-            await GHApp.Navigation.PushModalAsync(vaultPage);
+            await GHApp.PushModalPageAsync(vaultPage);
             UpperButtonGrid.IsEnabled = true;
         }
 

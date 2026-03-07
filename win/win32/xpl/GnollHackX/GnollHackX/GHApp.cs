@@ -911,6 +911,32 @@ namespace GnollHackX
             }
         }
 
+        public static async Task PushModalPageAsync(Page page)
+        {
+            try
+            {
+                await Task.Yield();
+                await Navigation.PushModalAsync(page);
+            }
+            catch (Exception ex)
+            {
+                MaybeWriteGHLog(ex.Message);
+            }
+        }
+
+        public static async Task PushModalPageAsync(Page page, bool animated)
+        {
+            try
+            {
+                await Task.Yield();
+                await Navigation.PushModalAsync(page, animated);
+            }
+            catch (Exception ex)
+            {
+                MaybeWriteGHLog(ex.Message);
+            }
+        }
+
         public static bool IsKeyboardConnected
         {
             get

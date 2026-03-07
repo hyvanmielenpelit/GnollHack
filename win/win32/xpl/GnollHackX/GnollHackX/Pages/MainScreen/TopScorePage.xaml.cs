@@ -358,7 +358,7 @@ namespace GnollHackX.Pages.MainScreen
                             }
                             else
                             {
-                                await GHApp.Navigation.PushModalAsync(displFilePage);
+                                await GHApp.PushModalPageAsync(displFilePage);
                                 HTMLDumplogDisplayed = true;
                             }
                         }
@@ -383,7 +383,7 @@ namespace GnollHackX.Pages.MainScreen
                             }
                             else
                             {
-                                await GHApp.Navigation.PushModalAsync(displFilePage);
+                                await GHApp.PushModalPageAsync(displFilePage);
                             }
                         }
                         else

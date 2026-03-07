@@ -1781,7 +1781,7 @@ namespace GnollHackX.Pages.Game
             GHApp.FmodService?.ResetGameState();
             //GHApp.GnollHackService?.SetExitHack((int)exit_hack_types.EXITHACK_RECOVER_NEW);
             GHApp.CurrentGHGame = null;
-            await GHApp.Navigation.PushModalAsync(this);
+            await GHApp.PushModalPageAsync(this);
             await StartResetGame();
         }
 
@@ -3814,7 +3814,7 @@ namespace GnollHackX.Pages.Game
         private async Task AskName(string modeName, string modeDescription, string replayEnteredPlayerName)
         {
             var namePage = new NamePage(this, modeName, modeDescription, replayEnteredPlayerName);
-            await GHApp.Navigation.PushModalAsync(namePage);
+            await GHApp.PushModalPageAsync(namePage);
         }
 
         private int _getLineStyle = 0;
@@ -4626,7 +4626,7 @@ namespace GnollHackX.Pages.Game
         private async Task ShowOutRipPage(GHOutRipInfo outripinfo, GHWindow ghwindow)
         {
             var outRipPage = new OutRipPage(this, ghwindow, outripinfo);
-            await GHApp.Navigation.PushModalAsync(outRipPage);
+            await GHApp.PushModalPageAsync(outRipPage);
         }
         private async Task HideOutRipPage()
         {
@@ -4709,7 +4709,7 @@ namespace GnollHackX.Pages.Game
             {
                 var menu = new GameMenuPage(this);
                 SendRequestForTallyRealTime();
-                await GHApp.Navigation.PushModalAsync(menu);
+                await GHApp.PushModalPageAsync(menu);
             }
 
             return false;
@@ -4718,7 +4718,7 @@ namespace GnollHackX.Pages.Game
         {
             var menu = new GameMenuPage(this);
             SendRequestForTallyRealTime();
-            await GHApp.Navigation.PushModalAsync(menu);
+            await GHApp.PushModalPageAsync(menu);
         }
 
         private void ContentPage_Disappearing(object sender, EventArgs e)
@@ -22610,7 +22610,7 @@ namespace GnollHackX.Pages.Game
                     GetLineCaption.IsEnabled = false;
                     GHApp.PlayButtonClickedSound();
                     var menuPage = new GameMenuPage(this, true);
-                    await GHApp.Navigation.PushModalAsync(menuPage);
+                    await GHApp.PushModalPageAsync(menuPage);
                     GetLineCaption.IsEnabled = true;
                     break;
                 default:
@@ -22624,7 +22624,7 @@ namespace GnollHackX.Pages.Game
             GetLineMenuButton.IsEnabled = false;
             GHApp.PlayButtonClickedSound();
             var menuPage = new GameMenuPage(this, true);
-            await GHApp.Navigation.PushModalAsync(menuPage);
+            await GHApp.PushModalPageAsync(menuPage);
             GetLineMenuButton.IsEnabled = true;
         }
 

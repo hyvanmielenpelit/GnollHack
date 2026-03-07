@@ -170,7 +170,7 @@ namespace GnollHackX.Pages.MainScreen
                         dispfilepage.FontSize = 15;
                         string errormsg;
                         if (dispfilepage.ReadFile(out errormsg))
-                            await GHApp.Navigation.PushModalAsync(dispfilepage);
+                            await GHApp.PushModalPageAsync(dispfilepage);
                         else
                             await GHApp.DisplayMessageBox(this, "Error Reading Snapshot", "Error reading snapshot at " + usedFilePath + ": " + errormsg, "OK");
                     }
