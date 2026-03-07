@@ -168,6 +168,8 @@ notify_gui_pregame(VOID_ARGS)
         issue_gui_command(GUI_CMD_TOGGLE_QUICK_ZAP_WAND, (int)obj_to_glyph(obj, rn2_on_display_rng), Hallucination ? 0 : (int)obj->exceptionality, cxname(obj)); /* Notification is needed */
     else
         issue_gui_command(GUI_CMD_TOGGLE_QUICK_ZAP_WAND, NO_GLYPH, 0, "");
+
+    issue_breadcrumb("Notify GUI finished");
 }
 
 boolean 
