@@ -883,7 +883,8 @@ unsigned int stuckid, steedid;
                 break;
         if (!mtmp)
         {
-            panic("Cannot find the monster ustuck.");
+            program_state.panic_handling = 3; /* Safe to do a full game reset and ok to replace the save file with backup */
+            panic("Cannot find the monster ustuck: stuckid=%u", stuckid);
             return;
         }
         u.ustuck = mtmp;
@@ -894,7 +895,8 @@ unsigned int stuckid, steedid;
                 break;
         if (!mtmp)
         {
-            panic("Cannot find the monster usteed.");
+            program_state.panic_handling = 3; /* Safe to do a full game reset and ok to replace the save file with backup */
+            panic("Cannot find the monster usteed: steedid=%u", steedid);
             return;
         }
         u.usteed = mtmp;
