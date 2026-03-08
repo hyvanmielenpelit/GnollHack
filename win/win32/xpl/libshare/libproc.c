@@ -735,6 +735,7 @@ int lib_doprev_message(void)
 {
     return 0;
 }
+STATIC_VAR char _defs[16] = { 0 };
 
 char lib_yn_function_ex(int style, int attr, int color, int glyph, const char* title, const char* question, const char* choices, CHAR_P def, const char* resp_desc, const char* introline, uint64_t ynflags)
 {
@@ -747,9 +748,9 @@ char lib_yn_function_ex(int style, int attr, int color, int glyph, const char* t
         write_text2buf_utf8(_qtbuf, UTF8QBUFSZ, title);
     if (introline)
         write_text2buf_utf8(_ibuf, UTF8IBUFSZ, introline);
-    char defs[2] = { 0,0 };
-    defs[0] = (char)def;
-    int res = lib_callbacks.callback_yn_function_ex(style, attr, color, glyph, title ? _qtbuf : 0, question ? _qbuf : 0, choices, defs, resp_desc, introline ? _ibuf : 0, ynflags);
+    _defs[0] = (char)def;
+    _defs[1] = (char)0;
+    int res = lib_callbacks.callback_yn_function_ex(style, attr, color, glyph, title ? _qtbuf : 0, question ? _qbuf : 0, choices, _defs, resp_desc, introline ? _ibuf : 0, ynflags);
     return convert_gnhch(res);
 }
 
