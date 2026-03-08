@@ -2653,7 +2653,7 @@ size_t lenlimit;
         Strncpy(unamebuf, save_uname, sizeof unamebuf - 4);
         Strcpy(unamebuf + sizeof unamebuf - 4, "...");
         objects[obj->otyp].oc_uname = unamebuf;
-        //releaseobuf(outbuf);
+        releaseobuf(outbuf);
         outbuf = (*func)(obj);
         objects[obj->otyp].oc_uname = save_uname; /* restore called string */
         if (strlen(outbuf) <= lenlimit)
@@ -2666,7 +2666,7 @@ size_t lenlimit;
         Strncpy(onamebuf, save_oname, sizeof onamebuf - 4);
         Strcpy(onamebuf + sizeof onamebuf - 4, "...");
         ONAME(obj) = onamebuf;
-        //releaseobuf(outbuf);
+        releaseobuf(outbuf);
         outbuf = (*func)(obj);
         ONAME(obj) = save_oname; /* restore named string */
         if (strlen(outbuf) <= lenlimit)
@@ -2679,7 +2679,7 @@ size_t lenlimit;
         && strlen(save_oname) >= sizeof onamebuf) {
         objects[obj->otyp].oc_uname = unamebuf;
         ONAME(obj) = onamebuf;
-        //releaseobuf(outbuf);
+        releaseobuf(outbuf);
         outbuf = (*func)(obj);
         if (strlen(outbuf) <= lenlimit) {
             objects[obj->otyp].oc_uname = save_uname;
@@ -2693,12 +2693,12 @@ size_t lenlimit;
     save_obj = *obj;
     obj->bknown = obj->rknown = obj->greased = 0;
     obj->oeroded = obj->oeroded2 = 0;
-    //releaseobuf(outbuf);
+    releaseobuf(outbuf);
     outbuf = (*func)(obj);
     if (altfunc && strlen(outbuf) > lenlimit) {
         /* still long; use the alternate function (usually one of
            the jackets around minimal_xname()) */
-        //releaseobuf(outbuf);
+        releaseobuf(outbuf);
         outbuf = (*altfunc)(obj);
     }
     /* restore the object */
@@ -6134,12 +6134,12 @@ const char *lastR;
 
     char *bufp;
     /* convert size_t (or int for ancient systems) to ordinary unsigned */
-    size_t len, lenlimit,
+    size_t len;
+    const size_t lenlimit = QBUFSZ - 1,
         len_qpfx = (qprefix ? strlen(qprefix) : 0),
         len_qsfx = (qsuffix ? strlen(qsuffix) : 0),
-        len_lastR = strlen(lastR);
+        len_lastR = (lastR ? strlen(lastR) : 0);
 
-    lenlimit = QBUFSZ - 1;
     /* sanity check, aimed mainly at paniclog (it's conceivable for
        the result of short_oname() to be shorter than the length of
        the last resort string, but we ignore that possibility here) */
@@ -6179,12 +6179,12 @@ const char *lastR;
         /* too long; skip formatting, last resort output is truncated */
         if (len < lenlimit) 
         {
-            Strncpy(&qbuf[len], lastR, lenlimit - len);
+            Strncpy(&qbuf[len], lastR ? lastR : "", lenlimit >= len ? lenlimit - len : 0);
             qbuf[lenlimit] = '\0';
             len = strlen(qbuf);
             if (qsuffix && len < lenlimit)
             {
-                Strncpy(&qbuf[len], qsuffix, lenlimit - len);
+                Strncpy(&qbuf[len], qsuffix, lenlimit >= len ? lenlimit - len : 0);
                 qbuf[lenlimit] = '\0';
                 /* len = (unsigned) strlen(qbuf); */
             }
@@ -6195,12 +6195,12 @@ const char *lastR;
         /* suffix and last resort are guaranteed to fit */
         len += len_qsfx; /* include the pending suffix */
         /* format the object */
-        bufp = short_oname(obj, func, altfunc, lenlimit - len);
+        bufp = short_oname(obj, func, altfunc, lenlimit >= len ? lenlimit - len : 0);
         if (len + strlen(bufp) <= lenlimit)
             Strcat(qbuf, bufp); /* formatted name fits */
         else
-            Strcat(qbuf, lastR); /* use last resort */
-        //releaseobuf(bufp);
+            Strcat(qbuf, lastR ? lastR : ""); /* use last resort */
+        releaseobuf(bufp);
 
         if (qsuffix)
             Strcat(qbuf, qsuffix);

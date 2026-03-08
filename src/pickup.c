@@ -3495,6 +3495,8 @@ boolean dobot;
         {
             if (!dropy(obj))
                 (void)scatter(obj->ox, obj->oy, 3, VIS_EFFECTS | MAY_HIT | MAY_DESTROY | MAY_FRACTURE, obj);
+            else
+                obj = 0;
         }
 
         debugprint("in_container_core2: %d, %d", current_container->otyp, saved_otyp);
