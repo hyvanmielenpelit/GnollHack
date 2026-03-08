@@ -1753,7 +1753,7 @@ char yn_function(const char *ques, const char *choices, char default)
                    ports might use a popup.
 */
 char
-mswin_yn_function_ex(int style, int attr, int color, int glyph, const char* title, const char *question, const char *choices, CHAR_P def, const char* resp_desc, const char* introline, uint64_t ynflags)
+mswin_yn_function_ex(int style, int attr, int color, int glyph, const char* title, const char *question, const char *choices, int def, const char* resp_desc, const char* introline, uint64_t ynflags)
 {
     char ch;
     char yn_esc_map = '\033';
@@ -3715,7 +3715,7 @@ mswin_open_special_view(struct special_view_info info)
     case SPECIAL_VIEW_GUI_YN_CONFIRMATION_DEFAULT_Y:
     case SPECIAL_VIEW_GUI_YN_CONFIRMATION_DEFAULT_N:
         return (int)mswin_yn_function_ex(0, info.attr, info.color, 0, info.title, info.text, ynchars, 
-            info.viewtype == SPECIAL_VIEW_GUI_YN_CONFIRMATION_DEFAULT_Y ? 'y' : 'n',
+            info.viewtype == SPECIAL_VIEW_GUI_YN_CONFIRMATION_DEFAULT_Y ? (int)'y' : (int)'n',
             "Yes\nNo", (char*)0, 0UL);
     default:
         break;

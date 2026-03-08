@@ -1389,7 +1389,7 @@ char yn_function(const char *ques, const char *choices, char default)
                    ports might use a popup.
 */
 char
-mswin_yn_function_ex(int style, int attr, int color, int glyph, const char* title, const char *question, const char *choices, CHAR_P def, const char* resp_desc, const char* introline, uint64_t ynflags)
+mswin_yn_function_ex(int style, int attr, int color, int glyph, const char* title, const char *question, const char *choices, int def, const char* resp_desc, const char* introline, uint64_t ynflags)
 {
     int result = -1;
     char ch;
@@ -1397,7 +1397,7 @@ mswin_yn_function_ex(int style, int attr, int color, int glyph, const char* titl
     char message[BUFSZ];
     char res_ch[2];
 
-    logDebug("mswin_yn_function_ex(%s, %s, %d)\n", question, choices, def);
+    logDebug("mswin_yn_function_ex(%s, %s, %c, %d)\n", question, choices, (char)def, def);
 
     if (choices) {
         char *cb, choicebuf[QBUFSZ];
@@ -1410,11 +1410,11 @@ mswin_yn_function_ex(int style, int attr, int color, int glyph, const char* titl
         message[QBUFSZ - 1] = '\0';
         sprintf(eos(message), " [%s]", choicebuf);
         if (def)
-            sprintf(eos(message), " (%c)", def);
+            sprintf(eos(message), " (%c)", (char)def);
         Strcat(message, " ");
         /* escape maps to 'q' or 'n' or default, in that order */
         yn_esc_map =
-            (index(choices, 'q') ? 'q' : (index(choices, 'n') ? 'n' : def));
+            (index(choices, 'q') ? 'q' : (index(choices, 'n') ? 'n' : (char)def));
     } else {
         Strcpy(message, question);
     }

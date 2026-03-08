@@ -779,7 +779,7 @@ trace_yn_function_ex(vp, style, attr, color, glyph, title, query, resp, def, res
 void *vp;
 int style, attr, color, glyph;
 const char *title, *query, *resp, *resp_desc, *introline;
-char def;
+int def;
 uint64_t ynflags;
 {
     struct trace_data *tdp = vp;
@@ -800,7 +800,7 @@ uint64_t ynflags;
     }
 
     if (isprint(def)) {
-        sprintf(buf, "'%c'(%d)", def, def);
+        sprintf(buf, "'%c'(%d)", (char)def, def);
     } else {
         sprintf(buf, "(%d)", def);
     }

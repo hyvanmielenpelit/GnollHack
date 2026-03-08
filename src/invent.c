@@ -7631,7 +7631,7 @@ doorganize() /* inventory organizer by Del Lamb */
         Sprintf(qbuf, "Adjust letter to what [%s]%s?", lets,
             invent ? " (? see used letters)" : "");
         //let = yn_function(qbuf, (char *)0, '\0', (char *)0);
-        let = yn_function_ex(YN_STYLE_GENERAL, ATR_NONE, NO_COLOR, NO_GLYPH, (const char*)0, qbuf, (const char*)0, '\0', (const char*)0, (const char*)0, 1UL);
+        let = yn_function_core(YN_STYLE_GENERAL, ATR_NONE, NO_COLOR, NO_GLYPH, (const char*)0, qbuf, (const char*)0, '\0', (const char*)0, (const char*)0, 1UL);
 #endif
         if (let == '?' || let == '*') {
             let = display_used_invlets(splitting ? obj->invlet : 0);

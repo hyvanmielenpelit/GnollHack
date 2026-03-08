@@ -1010,7 +1010,7 @@ char
 amii_yn_function_ex(style, attr, color, title, query, resp, def, resp_desc)
 int style, attr, color;
 const char *title, * query, * resp, *resp_desc;
-char def;
+int def;
 {
     /*
      *   Generic yes/no function. 'def' is the default (returned by space or
@@ -1043,7 +1043,7 @@ char def;
         prompt[QBUFSZ - 1] = '\0';
         Sprintf(eos(prompt), " [%s]", respbuf);
         if (def)
-            Sprintf(eos(prompt), " (%c)", def);
+            Sprintf(eos(prompt), " (%c)", (char)def);
         Strcat(prompt, " ");
         pline("%s", prompt);
     } else {
@@ -1085,10 +1085,10 @@ char def;
             else if (index(resp, 'n'))
                 q = 'n';
             else
-                q = def;
+                q = (char)def;
             break;
         } else if (index(quitchars, q)) {
-            q = def;
+            q = (char)def;
             break;
         }
         if (!index(resp, q) && !digit_ok) {

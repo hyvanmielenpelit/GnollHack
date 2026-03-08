@@ -652,7 +652,7 @@ const char *query;
 const char *resp;
 const char* resp_desc;
 const char* introline;
-char def;
+int def;
 uint64_t ynflags;
 {
     return '\033';

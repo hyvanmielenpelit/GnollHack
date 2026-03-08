@@ -397,7 +397,7 @@ E char NDECL(readchar);
 E void NDECL(sanity_check);
 E char* FDECL(key2txt, (UCHAR_P, char *));
 E char FDECL(yn_function, (const char*, const char*, CHAR_P, const char*));
-E char FDECL(yn_function_ex, (int, int, int, int, const char*, const char *, const char *, CHAR_P, const char*, const char*, uint64_t));
+E char FDECL(yn_function_core, (int, int, int, int, const char*, const char *, const char *, CHAR_P, const char*, const char*, uint64_t));
 E char FDECL(yn_function_mon, (struct monst*, const char*, const char*, CHAR_P, const char*));
 E char FDECL(yn_function_end, (const char*, const char*, CHAR_P, const char*));
 E char FDECL(yn_query_mon, (struct monst*, const char*));

@@ -509,7 +509,7 @@ register struct monst *mtmp;
         }
     }
 
-    char qbuf[BUFSZ * 2];
+    char qbuf[QBUFSZ * 2];
     Strcpy(qbuf, "");
     if (unweapon1 && unweapon2)
     {

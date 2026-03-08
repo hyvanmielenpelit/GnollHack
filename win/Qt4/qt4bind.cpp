@@ -522,7 +522,7 @@ int NetHackQtBind::qt_doprev_message()
     return 0;
 }
 
-char NetHackQtBind::qt_yn_function_ex(int style, int attr, int color, int glyph, const char* title, const char *question_, const char *choices, CHAR_P def, const char* resp_desc, const char* introline, uint64_t ynflags)
+char NetHackQtBind::qt_yn_function_ex(int style, int attr, int color, int glyph, const char* title, const char *question_, const char *choices, int def, const char* resp_desc, const char* introline, uint64_t ynflags)
 {
     QString question(QString::fromLatin1(question_));
     QString message;
@@ -534,10 +534,10 @@ char NetHackQtBind::qt_yn_function_ex(int style, int attr, int color, int glyph,
         size_t cb = choicebuf.indexOf('\033');
         choicebuf = choicebuf.mid(0U, cb);
         message = QString("%1 [%2] ").arg(question, choicebuf);
-        if (def) message += QString("(%1) ").arg(QChar(def));
+        if (def) message += QString("(%1) ").arg(QChar((char)def));
         // escape maps to 'q' or 'n' or default, in that order
         yn_esc_map = (strchr(choices, 'q') ? 'q' :
-                      (strchr(choices, 'n') ? 'n' : def));
+                      (strchr(choices, 'n') ? 'n' : (char)def));
     } else {
         message = question;
     }
@@ -586,12 +586,12 @@ char NetHackQtBind::qt_yn_function_ex(int style, int attr, int color, int glyph,
 
 	return result;
     } else {
-	NetHackQtYnDialog dialog(mainWidget(),question,choices,def);
+	NetHackQtYnDialog dialog(mainWidget(),question,choices,(char)def);
 	char ret = dialog.Exec();
         if (!(ret == '\0' || ret == '\033') && choices)
             message += QString(" %1").arg(ret);
         else if (def)
-            message += QString(" %1").arg(def);
+            message += QString(" %1").arg((char)def);
 	NetHackQtBind::qt_putstr(WIN_MESSAGE, ATR_BOLD, message);
 
         return ret;

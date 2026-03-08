@@ -532,7 +532,7 @@ char
 tty_yn_function_ex(style, attr, color, glyph, title, query, resp, def, resp_desc, introline, ynflags)
 int style UNUSED, attr UNUSED, color UNUSED, glyph UNUSED;
 const char *title UNUSED, *query, *resp, *resp_desc UNUSED, *introline UNUSED;
-char def;
+int def;
 uint64_t ynflags UNUSED;
 /*
  *   Generic yes/no function. 'def' is the default (returned by space or
@@ -580,7 +580,7 @@ uint64_t ynflags UNUSED;
         prompt[QBUFSZ - 1] = '\0';
         Sprintf(eos(prompt), " [%s]", respbuf);
         if (def)
-            Sprintf(eos(prompt), " (%c)", def);
+            Sprintf(eos(prompt), " (%c)", (char)def);
         /* not pline("%s ", prompt);
            trailing space is wanted here in case of reprompt */
         Strcat(prompt, " ");

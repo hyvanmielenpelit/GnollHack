@@ -375,7 +375,7 @@ char
 chainin_yn_function_ex(style, attr, color, glyph, title, query, resp, def, resp_desc, introline, ynflags)
 int style, attr, color, glyph;
 const char *title, * query, * resp, *resp_desc, *introline;
-char def;
+int def;
 uint64_t ynflags;
 {
     int rv;

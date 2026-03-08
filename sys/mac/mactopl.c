@@ -26,13 +26,13 @@ queued_resp(char *resp)
 }
 
 char
-topl_yn_function_ex(int style, int attr, int color, int glyph, const char* title, const char *query, const char *resp, char def, const char* resp_desc, uint64_t ynflags)
+topl_yn_function_ex(int style, int attr, int color, int glyph, const char* title, const char *query, const char *resp, int def, const char* resp_desc, uint64_t ynflags)
 {
     char buf[30];
     char c = queued_resp((char *) resp);
     if (!c) {
         enter_topl_mode(attr, color, (char *) query);
-        topl_set_resp((char *) resp, def);
+        topl_set_resp((char *) resp, (char)def);
 
         do {
             c = readchar();
@@ -54,7 +54,7 @@ char
 mac_yn_function_ex(style, attr, color, glyph title, query, resp, def, resp_desc, introline, ynflags)
 int style, attr, color, glyph;
 const char *title, *query, *resp, *resp_desc, *introline;
-char def;
+int def;
 uint64_t ynflags;
 /*
  *   Generic yes/no function. 'def' is the default (returned by space or

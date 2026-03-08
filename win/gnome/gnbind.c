@@ -1082,7 +1082,7 @@ char yn_function(const char *ques, const char *choices, char default)
                    ports might use a popup.
 */
 char
-gnome_yn_function_ex(int style, int attr, int color, int glyph, const char* title, const char *question, const char *choices, CHAR_P def, const char* resp_desc, const char* introline, uint64_t ynflags)
+gnome_yn_function_ex(int style, int attr, int color, int glyph, const char* title, const char *question, const char *choices, int def, const char* resp_desc, const char* introline, uint64_t ynflags)
 {
     int ch;
     int result = -1;
@@ -1101,18 +1101,18 @@ gnome_yn_function_ex(int style, int attr, int color, int glyph, const char* titl
         message[QBUFSZ - 1] = '\0';
         sprintf(eos(message), " [%s]", choicebuf);
         if (def)
-            sprintf(eos(message), " (%c)", def);
+            sprintf(eos(message), " (%c)", (char)def);
         Strcat(message, " ");
         /* escape maps to 'q' or 'n' or default, in that order */
         yn_esc_map =
-            (index(choices, 'q') ? 'q' : (index(choices, 'n') ? 'n' : def));
+            (index(choices, 'q') ? 'q' : (index(choices, 'n') ? 'n' : (char)def));
     } else {
         Strcpy(message, question);
     }
 
     gnome_putstr(WIN_MESSAGE, ATR_BOLD, message);
     if (mainWnd != NULL && choices && !index(choices, ch)) {
-        return (ghack_yes_no_dialog(question, choices, def));
+        return (ghack_yes_no_dialog(question, choices, (char)def));
     }
 
     /* Only here if main window is not present */

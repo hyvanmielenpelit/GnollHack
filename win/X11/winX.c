@@ -2183,7 +2183,7 @@ int style, attr, color, glyph;
 const char* title;
 const char* ques;
 const char *choices; /* string of possible response chars; any char if Null */
-char def;            /* default response if user hits <space> or <return> */
+int def;             /* default response if user hits <space> or <return> */
 const char* resp_desc;
 const char* introline;
 unsigned long ynflags;
@@ -2193,7 +2193,7 @@ unsigned long ynflags;
     Cardinal num_args;
 
     yn_choices = choices; /* set up globals for callback to use */
-    yn_def = def;
+    yn_def = (char)def;
     yn_preserve_case = !choices; /* preserve case when an arbitrary
                                     response is allowed */
 
@@ -2228,13 +2228,13 @@ unsigned long ynflags;
         buf[QBUFSZ - 1] = '\0';
         Sprintf(eos(buf), " [%s]", choicebuf);
         if (def)
-            Sprintf(eos(buf), " (%c)", def);
+            Sprintf(eos(buf), " (%c)", (char)def);
         Strcat(buf, " ");
 
         /* escape maps to 'q' or 'n' or default, in that order */
         yn_esc_map = (index(choices, 'q') ? 'q'
                       : index(choices, 'n') ? 'n'
-                        : def);
+                        : (char)def);
     } else {
         if ((int) (1 + strlen(ques) + 1) >= BUFSZ)
             panic("X11_yn_function:  question too long");

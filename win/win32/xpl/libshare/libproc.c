@@ -183,7 +183,7 @@ void lib_askname(void)
                             char qbuf[BUFSZ] = "";
                             Sprintf(qbuf, "There is already a saved game for a character named \'%s\'. Do you want to overwrite the save file and delete the existing character?", plname);
                             char ans = lib_yn_function_ex(YN_STYLE_GENERAL, ATR_NONE, CLR_RED, NO_GLYPH, "Overwrite Existing Character?",
-                                qbuf, "ynql", 'n', "Yes\nNo\nQuit\nLoad", (const char*)0, 0UL);
+                                qbuf, "ynql", (int)'n', "Yes\nNo\nQuit\nLoad", (const char*)0, 0UL);
                             if (ans == 'l')
                             {
                                 return;

@@ -467,7 +467,7 @@ chainout_yn_function_ex(vp, style, attr, color, glyph, title, query, resp, def, 
 void *vp;
 int style, attr, color, glyph;
 const char *title, *query, *resp, *resp_desc, *introline;
-char def;
+int def;
 uint64_t ynflags;
 {
     struct chainout_data *tdp = vp;

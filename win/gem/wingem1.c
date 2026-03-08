@@ -3197,7 +3197,7 @@ char
 Gem_yn_function_ex(style, attr, color, glyph, title, query, resp, def, resp_desc, introline, ynflags)
 int style, attr, color, glyph;
 const char *title, *query, *resp, *resp_desc, *introline;
-char def;
+int def;
 uint64_t ynflags;
 {
     OBJECT *z_ob = zz_oblist[YNCHOICE];
@@ -3229,7 +3229,7 @@ uint64_t ynflags;
             send_yn_esc('n');
         else
             send_yn_esc(
-                def); /* strictly def should be returned, but in trad. I it's
+                (char)def); /* strictly def should be returned, but in trad. I it's
                          0 */
 
         if (strchr(resp, '#')) { /* count possible */
@@ -3249,7 +3249,7 @@ uint64_t ynflags;
             ob_hide(z_ob, YN1 + i, FALSE);
             mar_change_button_char(z_ob, YN1 + i, *ptr);
             ob_undoflag(z_ob, YN1 + i, DEFAULT);
-            if (*ptr == def)
+            if (*ptr == (char)def)
                 ob_doflag(z_ob, YN1 + i, DEFAULT);
         }
 
