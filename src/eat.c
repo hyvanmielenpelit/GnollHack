@@ -3739,7 +3739,7 @@ doeat()
         {
             char qbuf[QBUFSZ];
             Sprintf(qbuf, "You are feeling very full; eat %s nevertheless?", thecxname(otmp));
-            char ans = yn_function_ex(YN_STYLE_GENERAL, ATR_NONE, CLR_MSG_WARNING, NO_GLYPH, (const char*)0, qbuf, ynqchars, 'n', ynqdescs, (const char*)0, 0UL);
+            char ans = yn_function_core(YN_STYLE_GENERAL, ATR_NONE, CLR_MSG_WARNING, NO_GLYPH, (const char*)0, qbuf, ynqchars, 'n', ynqdescs, (const char*)0, 0UL);
             if (ans != 'y')
             {
                 return 0;
@@ -4772,7 +4772,7 @@ int corpsecheck; /* 0, no check, 1, corpses, 2, tinnable corpses */
             (void) safe_qbuf(qbuf, qbuf, qsfx, otmp, doname, ansimpleoname,
                              one ? something : (const char *) "things");
             
-            if ((c = yn_function_ex(YN_STYLE_GENERAL, ATR_NONE, NO_COLOR, NO_GLYPH, (const char*)0, qbuf, ynqchars, 'n', ynqdescs, (const char*)0, 0UL)) == 'y')
+            if ((c = yn_function_core(YN_STYLE_GENERAL, ATR_NONE, NO_COLOR, NO_GLYPH, (const char*)0, qbuf, ynqchars, 'n', ynqdescs, (const char*)0, 0UL)) == 'y')
                 return  otmp;
             else if (c == 'q')
                 return (struct obj *) 0;

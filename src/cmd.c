@@ -9984,7 +9984,7 @@ dotravel(VOID_ARGS)
  *   window port causing a buffer overflow there.
  */
 char
-yn_function_ex(style, attr, color, glyph, title, query, resp, def, resp_desc, introline, ynflags)
+yn_function_core(style, attr, color, glyph, title, query, resp, def, resp_desc, introline, ynflags)
 int style, attr, color, glyph;
 const char *title, *query, *resp, *resp_desc, * introline;
 char def;
@@ -9998,10 +9998,13 @@ uint64_t ynflags; /* 1 means use upper side for half-sized tile */
     char dumplog_buf[QBUFSZ + 1 + 15]; /* [QBUFSZ+1+7] should suffice */
 #endif
 
+    issue_breadcrumb3(query ? query : "yn_function_core: no query", style, (int)def);
+
     iflags.last_msg = PLNMSG_UNKNOWN; /* most recent pline is clobbered */
 
     /* maximum acceptable length is QBUFSZ-1 */
-    if (strlen(query) >= QBUFSZ) {
+    if (query && strlen(query) >= QBUFSZ) 
+    {
         /* caller shouldn't have passed anything this long */
         paniclog("Query truncated: ", query);
         Strncpy(qbuf, query, QBUFSZ - 1 - 3);
@@ -10010,11 +10013,12 @@ uint64_t ynflags; /* 1 means use upper side for half-sized tile */
     }
     res = (*windowprocs.win_yn_function_ex)(style, attr, color, glyph, title, query, resp, def, resp_desc, introline, ynflags);
 #if defined(DUMPLOG) || defined(DUMPHTML)
-    if (idx == saved_pline_index) {
+    if (idx == saved_pline_index) 
+    {
         /* when idx is still the same as saved_pline_index, the interface
            didn't put the prompt into saved_plines[]; we put a simplified
            version in there now (without response choices or default) */
-        Sprintf(dumplog_buf, "%s ", query);
+        Sprintf(dumplog_buf, "%s ", query ? query : "null query ");
         (void) key2txt((uchar) res, eos(dumplog_buf));
         dumplogmsg(dumplog_buf, (char*)0, (char*)0, attr, color);
     }
@@ -10027,7 +10031,7 @@ yn_function(query, resp, def, resp_desc)
 const char* query, *resp, *resp_desc;
 char def;
 {
-    return yn_function_ex(YN_STYLE_GENERAL, ATR_NONE, NO_COLOR, NO_GLYPH, (const char*)0, query, resp, def, resp_desc, (const char*)0, 0UL);
+    return yn_function_core(YN_STYLE_GENERAL, ATR_NONE, NO_COLOR, NO_GLYPH, (const char*)0, query, resp, def, resp_desc, (const char*)0, 0UL);
 }
 
 char
@@ -10035,7 +10039,7 @@ yn_function_end(query, resp, def, resp_desc)
 const char* query, * resp, * resp_desc;
 char def;
 {
-    return yn_function_ex(YN_STYLE_END, ATR_NONE, NO_COLOR, NO_GLYPH, (const char*)0, query, resp, def, resp_desc, (const char*)0, 0UL);
+    return yn_function_core(YN_STYLE_END, ATR_NONE, NO_COLOR, NO_GLYPH, (const char*)0, query, resp, def, resp_desc, (const char*)0, 0UL);
 }
 
 char
@@ -10052,7 +10056,7 @@ char def;
     char namebuf[BUFSZ];
     strcpy_capitalized_for_title(namebuf, Monnam(mtmp));
 
-    return yn_function_ex(YN_STYLE_MONSTER_QUESTION, ATR_NONE, NO_COLOR, glyph, namebuf, query, chars, def, descs, (const char*)0, 0UL);
+    return yn_function_core(YN_STYLE_MONSTER_QUESTION, ATR_NONE, NO_COLOR, glyph, namebuf, query, chars, def, descs, (const char*)0, 0UL);
 }
 
 char
