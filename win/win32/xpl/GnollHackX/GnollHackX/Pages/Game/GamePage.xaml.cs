@@ -1459,8 +1459,6 @@ namespace GnollHackX.Pages.Game
                 t.Start();
 
                 LoadingDetailsLabel.Text = "Finishing up...";
-                if (WarnLowDiskSpace)
-                    GHApp.UpdateFreeDiskSpace();
                 await LoadingProgressBar.ProgressTo(0.99, 40, Easing.Linear);
 
                 StartGameFinalTasks();

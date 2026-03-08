@@ -134,6 +134,7 @@ namespace GnollHackX.Pages.Game
         {
             await BackToGame();
         }
+
         private async Task BackToGame()
         {
             MainLayout.IsEnabled = false;
@@ -141,6 +142,8 @@ namespace GnollHackX.Pages.Game
             GHApp.PlayButtonClickedSound();
             GHApp.CollectNursery();
             await GHApp.PopModalPageAsync();
+            GHApp.UpdateFreeDiskSpace();
+            GHApp.UpdateUsedMemory();
         }
 
         private async void btnOptions_Clicked(object sender, EventArgs e)
