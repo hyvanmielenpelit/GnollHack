@@ -735,6 +735,7 @@ int lib_doprev_message(void)
 {
     return 0;
 }
+
 STATIC_VAR char _defs[16] = { 0 };
 
 char lib_yn_function_ex(int style, int attr, int color, int glyph, const char* title, const char* question, const char* choices, CHAR_P def, const char* resp_desc, const char* introline, uint64_t ynflags)
