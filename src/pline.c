@@ -213,11 +213,12 @@ VA_DECL(const char *, line)
 #endif /* USE_STDARG | USE_VARARG */
 {       /* start of vpline() or of nested block in USE_OLDARG's pline() */
     static int in_pline = 0;
-    char pbuf[VERYBIGBUFSZ]; /* will get chopped down to BUFSZ-1 if longer */
+    static char pbuf[VERYBIGBUFSZ], combined_line[VERYBIGBUFSZ]; /* will get chopped down to BUFSZ-1 if longer */
+    char multi_line[BIGBUFSZ], attrs[BIGBUFSZ], colors[BIGBUFSZ];
     int ln;
     int msgtyp;
     boolean no_repeat;
-    char multi_line[BIGBUFSZ], combined_line[VERYBIGBUFSZ], attrs[BIGBUFSZ], colors[BIGBUFSZ];
+    pbuf[0] = 0;
     multi_line[0] = 0;
     combined_line[0] = 0;
     attrs[0] = 0;
