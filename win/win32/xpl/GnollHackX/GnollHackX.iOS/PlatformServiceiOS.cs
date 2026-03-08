@@ -6,6 +6,7 @@ using System.Text;
 #else
 using Xamarin.Forms;
 using Xamarin.Forms.PlatformConfiguration;
+using Xamarin.Essentials;
 #endif
 using System.Runtime.InteropServices;
 using GnollHackX;
