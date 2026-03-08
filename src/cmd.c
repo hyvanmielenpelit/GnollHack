@@ -10018,7 +10018,7 @@ uint64_t ynflags; /* 1 means use upper side for half-sized tile */
         /* when idx is still the same as saved_pline_index, the interface
            didn't put the prompt into saved_plines[]; we put a simplified
            version in there now (without response choices or default) */
-        Sprintf(dumplog_buf, "%s ", query ? query : "null query ");
+        Sprintf(dumplog_buf, "%s ", query ? query : "null query");
         (void) key2txt((uchar) res, eos(dumplog_buf));
         dumplogmsg(dumplog_buf, (char*)0, (char*)0, attr, color);
     }
