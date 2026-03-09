@@ -70,7 +70,7 @@ namespace GnollHackX
 
         public MainPage()
         {
-            GHApp.MaybeWriteGHLog("MainPage constructor.", true, GHConstants.SentryGnollHackGeneralCategoryName);
+            GHApp.MaybeWriteGHLog("MainPage constructor: " + GHApp.MainPageConstructorRunNumber, true, GHConstants.SentryGnollHackGeneralCategoryName);
             InitializeComponent();
             GHApp.CurrentMainPage = this;
             GamePage gamePage = GHApp.CurrentGamePage;
