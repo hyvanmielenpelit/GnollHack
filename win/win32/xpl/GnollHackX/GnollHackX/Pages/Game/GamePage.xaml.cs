@@ -8728,12 +8728,13 @@ namespace GnollHackX.Pages.Game
                                 case (int)gui_effect_types.GUI_EFFECT_LIGHTNING:
                                     if (usingGL && runtimeEffects)
                                     {
-                                        float hitTime = Math.Max(0f, Math.Min(1f, (float)(maincountervalue - eff.CreatedAt) / 100));
+                                        float hitTime = Math.Max(0f, Math.Min(1f, (float)(maincountervalue - eff.CreatedAt) / 50));
 
                                         var uniforms = new SKRuntimeEffectUniforms(GHApp.LightningEffect);
                                         uniforms["resolution"] = new SKPoint(e.Info.Width, e.Info.Height);
                                         uniforms["time"] = hitTime;
                                         uniforms["impactPos"] = new SKPoint(tx + width / 2, ty + height / 2);
+                                        uniforms["tileSize"] = width;
 
                                         using var shader = GHApp.LightningEffect.ToShader(uniforms);
 
@@ -8756,7 +8757,71 @@ namespace GnollHackX.Pages.Game
                                         uniforms["impactPos"] = new SKPoint(tx + width / 2, ty + height / 2);
                                         uniforms["intensity"] = 1.0f;
                                         uniforms["tileSize"] = width;
+
                                         using var shader = GHApp.FlameHitEffect.ToShader(uniforms);
+
+                                        using var paint = new SKPaint
+                                        {
+                                            Shader = shader,
+                                            BlendMode = SKBlendMode.Plus
+                                        };
+
+                                        canvas.DrawRect(e.Info.Rect, paint);
+                                    }
+                                    break;
+                                case (int)gui_effect_types.GUI_EFFECT_FREEZE:
+                                    if (usingGL && runtimeEffects)
+                                    {
+                                        float hitTime = Math.Max(0f, Math.Min(1f, (float)(maincountervalue - eff.CreatedAt) / 10));
+                                        var uniforms = new SKRuntimeEffectUniforms(GHApp.FreezeHitEffect);
+                                        uniforms["resolution"] = new SKPoint(e.Info.Width, e.Info.Height);
+                                        uniforms["time"] = hitTime;
+                                        uniforms["impactPos"] = new SKPoint(tx + width / 2, ty + height / 2);
+                                        uniforms["tileSize"] = width;
+
+                                        using var shader = GHApp.FreezeHitEffect.ToShader(uniforms);
+
+                                        using var paint = new SKPaint
+                                        {
+                                            Shader = shader,
+                                            BlendMode = SKBlendMode.Plus
+                                        };
+
+                                        canvas.DrawRect(e.Info.Rect, paint);
+                                    }
+                                    break;
+                                case (int)gui_effect_types.GUI_EFFECT_MAGIC_HIT:
+                                    if (usingGL && runtimeEffects)
+                                    {
+                                        float hitTime = Math.Max(0f, Math.Min(1f, (float)(maincountervalue - eff.CreatedAt) / 10));
+                                        var uniforms = new SKRuntimeEffectUniforms(GHApp.MagicHitEffect);
+                                        uniforms["resolution"] = new SKPoint(e.Info.Width, e.Info.Height);
+                                        uniforms["time"] = hitTime;
+                                        uniforms["impactPos"] = new SKPoint(tx + width / 2, ty + height / 2);
+                                        uniforms["tileSize"] = width;
+
+                                        using var shader = GHApp.MagicHitEffect.ToShader(uniforms);
+
+                                        using var paint = new SKPaint
+                                        {
+                                            Shader = shader,
+                                            BlendMode = SKBlendMode.Plus
+                                        };
+
+                                        canvas.DrawRect(e.Info.Rect, paint);
+                                    }
+                                    break;
+                                case (int)gui_effect_types.GUI_EFFECT_STUN_HIT:
+                                    if (usingGL && runtimeEffects)
+                                    {
+                                        float hitTime = Math.Max(0f, Math.Min(1f, (float)(maincountervalue - eff.CreatedAt) / 10));
+                                        var uniforms = new SKRuntimeEffectUniforms(GHApp.StunHitEffect);
+                                        uniforms["resolution"] = new SKPoint(e.Info.Width, e.Info.Height);
+                                        uniforms["time"] = hitTime;
+                                        uniforms["impactPos"] = new SKPoint(tx + width / 2, ty + height / 2);
+                                        uniforms["tileSize"] = width;
+
+                                        using var shader = GHApp.StunHitEffect.ToShader(uniforms);
 
                                         using var paint = new SKPaint
                                         {

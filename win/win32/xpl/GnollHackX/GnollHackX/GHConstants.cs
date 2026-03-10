@@ -1649,6 +1649,9 @@ namespace GnollHackX
         GUI_EFFECT_POLEARM,
         GUI_EFFECT_LIGHTNING,
         GUI_EFFECT_FIRE,
+        GUI_EFFECT_FREEZE,
+        GUI_EFFECT_MAGIC_HIT,
+        GUI_EFFECT_STUN_HIT,
     }
 
     public enum gui_polearm_types

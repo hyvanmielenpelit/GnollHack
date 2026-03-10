@@ -108,6 +108,9 @@ namespace GnollHackX
                 case (int)gui_effect_types.GUI_EFFECT_WAIT:
                 case (int)gui_effect_types.GUI_EFFECT_LIGHTNING:
                 case (int)gui_effect_types.GUI_EFFECT_FIRE:
+                case (int)gui_effect_types.GUI_EFFECT_FREEZE:
+                case (int)gui_effect_types.GUI_EFFECT_MAGIC_HIT:
+                case (int)gui_effect_types.GUI_EFFECT_STUN_HIT:
                     return SKColors.White;
                 case (int)gui_effect_types.GUI_EFFECT_POLEARM:
                     switch(_data.subtype)

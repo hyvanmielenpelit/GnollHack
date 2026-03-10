@@ -1339,6 +1339,8 @@ char *hittee;              /* target's name: "you" or mon_nam(mdef) */
         attack_indx = MB_INDEX_CANCEL;
         *dmgptr += adjust_damage(rnd(4), magr, mdef, objects[mb->otyp].oc_damagetype, ADFLAGS_NONE); /* (4..6)d4 */
     }
+    if (attack_indx > MB_INDEX_PROBE)
+        display_gui_effect(do_stun ? GUI_EFFECT_STUN_HIT : GUI_EFFECT_MAGIC_HIT, 0, mdef->mx, mdef->my, 0, 0, 0UL);
 
     /* give the hit message prior to inflicting the effects */
     verb = mb_verb[!!Hallucination][attack_indx];
@@ -1550,6 +1552,7 @@ int dieroll; /* needed for Magicbane and vorpal blades */
     {
         if (spec_dbon_applies)
         {
+            play_sfx_sound_at_location(SFX_ALTAR_BURST_OF_FLAME, mdef->mx, mdef->my);
             display_gui_effect(GUI_EFFECT_FIRE, 0, mdef->mx, mdef->my, 0, 0, 0UL);
         }
         if (realizes_damage)
@@ -1574,6 +1577,11 @@ int dieroll; /* needed for Magicbane and vorpal blades */
     }
     if (artifact_attack_type(AD_COLD, otmp)) 
     {
+        if (spec_dbon_applies)
+        {
+            play_sfx_sound_at_location(SFX_ICY_COATING_FORMS, mdef->mx, mdef->my);
+            display_gui_effect(GUI_EFFECT_FREEZE, 0, mdef->mx, mdef->my, 0, 0, 0UL);
+        }
         if (realizes_damage)
             pline_The_ex(ATR_NONE, HI_ICE, "%s %s %s%c", artifact_hit_desc,
                       !spec_dbon_applies ? "hits" : "freezes", hittee,
@@ -1606,6 +1614,10 @@ int dieroll; /* needed for Magicbane and vorpal blades */
     }
     if (artifact_attack_type(AD_MAGM, otmp))
     {
+        if (spec_dbon_applies)
+        {
+            display_gui_effect(GUI_EFFECT_MAGIC_HIT, 0, mdef->mx, mdef->my, 0, 0, 0UL);
+        }
         if (realizes_damage)
             pline_The_ex(ATR_NONE, HI_ZAP, "%s hits%s %s%c", artifact_hit_desc,
                       !spec_dbon_applies

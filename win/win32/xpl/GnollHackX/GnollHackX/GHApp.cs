@@ -9635,70 +9635,73 @@ namespace GnollHackX
         }
 
         private static string _skslLightning = @"
-                uniform float2 resolution;
-                uniform float time;      // 0 → 1 animation progress
-                uniform float2 impactPos; // screen space impact position
+            uniform float2 resolution;
+            uniform float time;        // 0 → 1 animation progress
+            uniform float2 impactPos;  // screen space impact position
+            uniform float tileSize;    // size of tile in pixels
 
-                float hash(float2 p) {
-                    return fract(sin(dot(p, float2(127.1, 311.7))) * 43758.5453);
-                }
+            float hash(float2 p) {
+                return fract(sin(dot(p, float2(127.1, 311.7))) * 43758.5453);
+            }
 
-                float noise(float2 p) {
-                    float2 i = floor(p);
-                    float2 f = fract(p);
+            float noise(float2 p) {
+                float2 i = floor(p);
+                float2 f = fract(p);
 
-                    float a = hash(i);
-                    float b = hash(i + float2(1.0, 0.0));
-                    float c = hash(i + float2(0.0, 1.0));
-                    float d = hash(i + float2(1.0, 1.0));
+                float a = hash(i);
+                float b = hash(i + float2(1.0, 0.0));
+                float c = hash(i + float2(0.0, 1.0));
+                float d = hash(i + float2(1.0, 1.0));
 
-                    float2 u = f * f * (3.0 - 2.0 * f);
+                float2 u = f * f * (3.0 - 2.0 * f);
 
-                    return mix(a, b, u.x) +
-                           (c - a) * u.y * (1.0 - u.x) +
-                           (d - b) * u.x * u.y;
-                }
+                return mix(a, b, u.x) +
+                       (c - a) * u.y * (1.0 - u.x) +
+                       (d - b) * u.x * u.y;
+            }
 
-                half4 main(float2 fragCoord)
-                {
-                    float2 uv = fragCoord;
-                    float2 center = impactPos;
+            half4 main(float2 fragCoord)
+            {
+                float2 uv = fragCoord;
+                float2 center = impactPos;
 
-                    float2 dir = uv - center;
-                    float dist = length(dir);
+                float2 dir = uv - center;
 
-                    float progress = time;
+                // Normalize distance to tile size
+                float dist = length(dir) / tileSize;
 
-                    // Expanding radius
-                    float radius = progress * 250.0;
+                float progress = time;
 
-                    // Sharp radial ring
-                    float ring = smoothstep(radius, radius - 20.0, dist);
+                // Expanding radius relative to tile
+                float radius = progress * 1.5;
 
-                    // Lightning filament distortion
-                    float angle = atan(dir.y, dir.x);
-                    float flicker = noise(float2(angle * 6.0, time * 10.0));
-                    float spikes = step(0.7, flicker);
+                // Ring thickness relative to tile
+                float ring = smoothstep(radius, radius - 0.15, dist);
 
-                    float lightning = ring * spikes;
+                // Lightning filament distortion
+                float angle = atan(dir.y, dir.x);
+                float flicker = noise(float2(angle * 6.0, time * 10.0));
+                float spikes = step(0.7, flicker);
 
-                    // Core flash
-                    float core = smoothstep(60.0, 0.0, dist) * (1.0 - progress);
+                float lightning = ring * spikes;
 
-                    float intensity = lightning + core;
+                // Core flash relative to tile
+                float core = smoothstep(0.4, 0.0, dist) * (1.0 - progress);
 
-                    // Fade out
-                    intensity *= (1.0 - progress);
+                float intensity = lightning + core;
 
-                    // Electric blue-white color
-                    float3 color = mix(
-                        float3(0.2, 0.6, 1.0),
-                        float3(1.0, 1.0, 1.0),
-                        intensity
-                    );
+                // Fade out
+                intensity *= (1.0 - progress);
 
-                    return half4(color * intensity, intensity);
-                }
+                // Electric blue-white color
+                float3 color = mix(
+                    float3(0.2, 0.6, 1.0),
+                    float3(1.0, 1.0, 1.0),
+                    intensity
+                );
+
+                return half4(color * intensity, intensity);
+            }
             ";
 
         private static string _skslFlameHit = @"
@@ -9772,8 +9775,235 @@ namespace GnollHackX
             }
             ";
 
+        private static string _skslFreezeHit = @"
+            uniform float2 resolution;
+            uniform float time;        // 0 → 1 animation progress
+            uniform float2 impactPos;  // screen space impact position
+            uniform float tileSize;    // tile size in pixels
+
+            float hash(float2 p) {
+                return fract(sin(dot(p, float2(127.1, 311.7))) * 43758.5453);
+            }
+
+            float noise(float2 p) {
+                float2 i = floor(p);
+                float2 f = fract(p);
+
+                float a = hash(i);
+                float b = hash(i + float2(1.0, 0.0));
+                float c = hash(i + float2(0.0, 1.0));
+                float d = hash(i + float2(1.0, 1.0));
+
+                float2 u = f * f * (3.0 - 2.0 * f);
+
+                return mix(a, b, u.x) +
+                        (c - a) * u.y * (1.0 - u.x) +
+                        (d - b) * u.x * u.y;
+            }
+
+            half4 main(float2 fragCoord)
+            {
+                float2 uv = fragCoord;
+                float2 center = impactPos;
+
+                float2 dir = uv - center;
+
+                // Normalize distance by tile size
+                float dist = length(dir) / tileSize;
+
+                float progress = time;
+
+                // Expanding frost wave
+                float radius = progress * 1.2;
+                float ring = smoothstep(radius, radius - 0.12, dist);
+
+                // Angular ice crystal spikes
+                float angle = atan(dir.y, dir.x);
+                float spikes = abs(sin(angle * 12.0 + noise(float2(angle * 2.0, time * 6.0)) * 2.0));
+
+                spikes = pow(spikes, 6.0);
+
+                float crystal = ring * spikes;
+
+                // Frozen core flash
+                float core = smoothstep(0.35, 0.0, dist) * (1.0 - progress);
+
+                float frost = crystal + core;
+
+                // subtle frost texture
+                float frostNoise = noise(dir * 4.0 + time * 2.0) * 0.4;
+                frost += frostNoise * (1.0 - progress) * smoothstep(0.8, 0.0, dist);
+
+                // fade
+                frost *= (1.0 - progress);
+
+                // icy color palette
+                float3 color = mix(
+                    float3(0.6, 0.85, 1.0),   // ice blue
+                    float3(1.0, 1.0, 1.0),    // frost white
+                    frost
+                );
+
+                return half4(color * frost, frost);
+            }
+            ";
+
+        private static string _skslMagicHit = @"
+            uniform float2 resolution;
+            uniform float time;        // 0 → 1 animation progress
+            uniform float2 impactPos;  // screen space impact position
+            uniform float tileSize;    // tile size in pixels
+
+            float hash(float2 p) {
+                return fract(sin(dot(p, float2(127.1, 311.7))) * 43758.5453);
+            }
+
+            float noise(float2 p) {
+                float2 i = floor(p);
+                float2 f = fract(p);
+
+                float a = hash(i);
+                float b = hash(i + float2(1.0, 0.0));
+                float c = hash(i + float2(0.0, 1.0));
+                float d = hash(i + float2(1.0, 1.0));
+
+                float2 u = f * f * (3.0 - 2.0 * f);
+
+                return mix(a, b, u.x) +
+                       (c - a) * u.y * (1.0 - u.x) +
+                       (d - b) * u.x * u.y;
+            }
+
+            half4 main(float2 fragCoord)
+            {
+                float2 uv = fragCoord;
+                float2 center = impactPos;
+
+                float2 dir = uv - center;
+
+                // Normalize distance to tile
+                float dist = length(dir) / tileSize;
+
+                float progress = time;
+
+                // Expanding magical shockwave
+                float radius = progress * 1.3;
+                float wave = smoothstep(radius, radius - 0.15, dist);
+
+                // Rotating arcane swirl
+                float angle = atan(dir.y, dir.x);
+                float swirl = sin(angle * 6.0 + time * 10.0);
+
+                swirl = abs(swirl);
+                swirl = pow(swirl, 4.0);
+
+                float arcaneRing = wave * swirl;
+
+                // Magical spark noise
+                float sparkNoise = noise(dir * 6.0 + time * 8.0);
+                float sparks = step(0.82, sparkNoise) * (1.0 - progress);
+
+                sparks *= smoothstep(0.9, 0.0, dist);
+
+                // Core energy pulse
+                float core = smoothstep(0.35, 0.0, dist) * (1.0 - progress);
+
+                float energy = arcaneRing + core + sparks;
+
+                // Fade out
+                energy *= (1.0 - progress);
+
+                // Arcane purple-blue color
+                float3 color = mix(
+                    float3(0.4, 0.2, 1.0),  // deep arcane
+                    float3(0.8, 0.6, 1.0),  // magical glow
+                    energy
+                );
+
+                return half4(color * energy, energy);
+            }
+            ";
+
+        private static string _skslStunHit = @"
+            uniform float2 resolution;
+            uniform float time;        // 0 → 1 animation progress
+            uniform float2 impactPos;  // screen position
+            uniform float tileSize;    // tile size in pixels
+
+            float hash(float2 p) {
+                return fract(sin(dot(p, float2(127.1,311.7))) * 43758.5453);
+            }
+
+            float noise(float2 p) {
+                float2 i = floor(p);
+                float2 f = fract(p);
+
+                float a = hash(i);
+                float b = hash(i + float2(1.0,0.0));
+                float c = hash(i + float2(0.0,1.0));
+                float d = hash(i + float2(1.0,1.0));
+
+                float2 u = f*f*(3.0-2.0*f);
+
+                return mix(a,b,u.x) +
+                       (c-a)*u.y*(1.0-u.x) +
+                       (d-b)*u.x*u.y;
+            }
+
+            half4 main(float2 fragCoord)
+            {
+                float2 uv = fragCoord;
+                float2 center = impactPos;
+
+                float2 dir = uv - center;
+
+                // normalize to tile size
+                float dist = length(dir) / tileSize;
+
+                float progress = time;
+
+                // expanding concussive ring
+                float radius = progress * 1.4;
+                float ring = smoothstep(radius, radius - 0.18, dist);
+
+                // star-shaped impact spikes
+                float angle = atan(dir.y, dir.x);
+                float star = abs(cos(angle * 4.0));
+                star = pow(star, 8.0);
+
+                float spikes = ring * star;
+
+                // bright impact flash
+                float core = smoothstep(0.35, 0.0, dist) * (1.0 - progress);
+
+                // small spark particles
+                float sparkNoise = noise(dir * 8.0 + time * 12.0);
+                float sparks = step(0.85, sparkNoise);
+
+                sparks *= smoothstep(0.9, 0.0, dist);
+                sparks *= (1.0 - progress);
+
+                float impact = spikes + core + sparks;
+
+                // fade out
+                impact *= (1.0 - progress);
+
+                // golden stun color
+                float3 color = mix(
+                    float3(1.0, 0.85, 0.2),
+                    float3(1.0, 1.0, 0.8),
+                    impact
+                );
+
+                return half4(color * impact, impact);
+            }
+            ";
+
         public static SKRuntimeEffect LightningEffect = null;
         public static SKRuntimeEffect FlameHitEffect = null;
+        public static SKRuntimeEffect FreezeHitEffect = null;
+        public static SKRuntimeEffect MagicHitEffect = null;
+        public static SKRuntimeEffect StunHitEffect = null;
 
         public static void InitRuntimeEffects()
         {
@@ -9783,6 +10013,9 @@ namespace GnollHackX
                 string error;
                 LightningEffect = SKRuntimeEffect.CreateShader(_skslLightning, out error);
                 FlameHitEffect = SKRuntimeEffect.CreateShader(_skslFlameHit, out error);
+                FreezeHitEffect = SKRuntimeEffect.CreateShader(_skslFreezeHit, out error);
+                MagicHitEffect = SKRuntimeEffect.CreateShader(_skslMagicHit, out error);
+                StunHitEffect = SKRuntimeEffect.CreateShader(_skslStunHit, out error);
             }
             catch (Exception ex)
             {

@@ -449,6 +449,9 @@ enum gui_effect_types {
     GUI_EFFECT_POLEARM,
     GUI_EFFECT_LIGHTNING,
     GUI_EFFECT_FIRE,
+    GUI_EFFECT_FREEZE,
+    GUI_EFFECT_MAGIC_HIT,
+    GUI_EFFECT_STUN_HIT,
 };
 
 enum gui_polearm_types {
