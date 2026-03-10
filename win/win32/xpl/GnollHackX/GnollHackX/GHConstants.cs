@@ -2126,6 +2126,7 @@ namespace GnollHackX
         public const int FadeFromBlackDurationAtStart = 700;
         public const double FadeFromBlackAtStartExtraDelaySecs = 0.15;
 #endif
+        public const bool DefaultRuntimeEffects = false;
         public const bool DefaultCharacterClickAction = false;
         public const bool DefaultDiceAsRanges = true;
         public const bool DefaultWornShowsEquipment = true;
