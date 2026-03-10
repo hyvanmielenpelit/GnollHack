@@ -9958,11 +9958,76 @@ namespace GnollHackX
             }
             ";
 
+        private static string _skslDeathMagic = @"
+            uniform float tileSize;
+            uniform float time;        // 0 → 1 animation progress
+
+            float hash(float2 p) {
+                return fract(sin(dot(p, float2(127.1, 311.7))) * 43758.5453);
+            }
+
+            float noise(float2 p) {
+                float2 i = floor(p);
+                float2 f = fract(p);
+
+                float a = hash(i);
+                float b = hash(i + float2(1.0,0.0));
+                float c = hash(i + float2(0.0,1.0));
+                float d = hash(i + float2(1.0,1.0));
+
+                float2 u = f*f*(3.0-2.0*f);
+
+                return mix(a,b,u.x) +
+                       (c-a)*u.y*(1.0-u.x) +
+                       (d-b)*u.x*u.y;
+            }
+
+            half4 main(float2 fragCoord)
+            {
+                // Local coordinates (0,0) = impact center
+                float2 p = fragCoord / tileSize;
+                float dist = length(p);
+                float progress = time;
+
+                // Expanding shadowy ring
+                float radius = progress * 1.3;
+                float ring = smoothstep(radius, radius - 0.15, dist);
+
+                // Wispy necrotic tendrils
+                float angle = atan(p.y, p.x);
+                float tendril = sin(angle * 10.0 + time * 8.0);
+                tendril = abs(tendril);
+                tendril = pow(tendril, 5.0);
+                tendril *= ring;
+
+                // Core necrotic pulse
+                float core = smoothstep(0.35, 0.0, dist) * (1.0 - progress);
+
+                // Fading wisps noise
+                float wisps = noise(p * 6.0 + time * 4.0) * 0.4;
+                wisps *= smoothstep(0.8, 0.0, dist) * (1.0 - progress);
+
+                float intensity = 1.0;
+                float deathEnergy = (tendril + core + wisps) * intensity;
+                deathEnergy *= (1.0 - progress);
+
+                // Dark death color palette (green-purple-black)
+                float3 color = mix(
+                    float3(0.3, 0.0, 0.4),   // deep purple
+                    float3(0.6, 1.0, 0.4),   // sickly green
+                    deathEnergy
+                );
+
+                return half4(color * deathEnergy, deathEnergy);
+            }
+            ";
+
         public static SKRuntimeEffect LightningEffect = null;
         public static SKRuntimeEffect FlameHitEffect = null;
         public static SKRuntimeEffect FreezeHitEffect = null;
         public static SKRuntimeEffect MagicHitEffect = null;
         public static SKRuntimeEffect StunHitEffect = null;
+        public static SKRuntimeEffect DeathMagicEffect = null;
 
         public static void InitRuntimeEffects()
         {
@@ -9975,6 +10040,7 @@ namespace GnollHackX
                 FreezeHitEffect = SKRuntimeEffect.CreateShader(_skslFreezeHit, out error);
                 MagicHitEffect = SKRuntimeEffect.CreateShader(_skslMagicHit, out error);
                 StunHitEffect = SKRuntimeEffect.CreateShader(_skslStunHit, out error);
+                DeathMagicEffect = SKRuntimeEffect.CreateShader(_skslDeathMagic, out error);
             }
             catch (Exception ex)
             {

@@ -8730,9 +8730,11 @@ namespace GnollHackX.Pages.Game
                                 case (int)gui_effect_types.GUI_EFFECT_FREEZE:
                                 case (int)gui_effect_types.GUI_EFFECT_MAGIC_HIT:
                                 case (int)gui_effect_types.GUI_EFFECT_STUN_HIT:
+                                case (int)gui_effect_types.GUI_EFFECT_DEATH_MAGIC:
                                     if (usingGL && runtimeEffects)
                                     {
                                         SKRuntimeEffect effect;
+                                        int divisor = 50;
                                         switch ((gui_effect_types)eff.Style)
                                         {
                                             case gui_effect_types.GUI_EFFECT_LIGHTNING:
@@ -8750,12 +8752,16 @@ namespace GnollHackX.Pages.Game
                                             case gui_effect_types.GUI_EFFECT_STUN_HIT:
                                                 effect = GHApp.StunHitEffect;
                                                 break;
+                                            case gui_effect_types.GUI_EFFECT_DEATH_MAGIC:
+                                                effect = GHApp.DeathMagicEffect;
+                                                divisor = 100;
+                                                break;
                                             default:
                                                 effect = GHApp.LightningEffect;
                                                 break;
                                         }
                                         
-                                        float hitTime = Math.Max(0f, Math.Min(1f, (float)(maincountervalue - eff.CreatedAt) / 50));
+                                        float hitTime = Math.Max(0f, Math.Min(1f, (float)(maincountervalue - eff.CreatedAt) / divisor));
                                         var uniforms = new SKRuntimeEffectUniforms(effect);
                                         uniforms["time"] = hitTime;
                                         uniforms["tileSize"] = width;

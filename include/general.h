@@ -452,6 +452,7 @@ enum gui_effect_types {
     GUI_EFFECT_FREEZE,
     GUI_EFFECT_MAGIC_HIT,
     GUI_EFFECT_STUN_HIT,
+    GUI_EFFECT_DEATH_MAGIC,
 };
 
 enum gui_polearm_types {

@@ -1652,6 +1652,7 @@ namespace GnollHackX
         GUI_EFFECT_FREEZE,
         GUI_EFFECT_MAGIC_HIT,
         GUI_EFFECT_STUN_HIT,
+        GUI_EFFECT_DEATH_MAGIC,
     }
 
     public enum gui_polearm_types

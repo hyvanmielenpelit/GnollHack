@@ -564,6 +564,7 @@ boolean verbose;    /* give message(s) even when you can't see what happened */
                     if (vis)
                     {
                         play_sfx_sound_at_location(SFX_MONSTER_COVERED_IN_FROST, mtmp->mx, mtmp->my);
+                        display_gui_effect(GUI_EFFECT_FREEZE, 0, mtmp->mx, mtmp->my, 0, 0, 0UL);
                         pline_The_ex(ATR_NONE, CLR_MSG_ATTENTION, "cold sears %s!", mon_nam(mtmp));
                     }
                     else if (verbose && !target)
@@ -591,6 +592,7 @@ boolean verbose;    /* give message(s) even when you can't see what happened */
                     if (vis)
                     {
                         play_sfx_sound_at_location(SFX_MONSTER_ON_FIRE, mtmp->mx, mtmp->my);
+                        display_gui_effect(GUI_EFFECT_FIRE, 0, mtmp->mx, mtmp->my, 0, 0, 0UL);
                         pline_The_ex(ATR_NONE, CLR_MSG_ATTENTION, "fire burns %s!", mon_nam(mtmp));
                     }
                     else if (verbose && !target)
@@ -618,6 +620,7 @@ boolean verbose;    /* give message(s) even when you can't see what happened */
                     if (vis)
                     {
                         play_sfx_sound_at_location(SFX_MONSTER_GETS_ZAPPED, mtmp->mx, mtmp->my);
+                        display_gui_effect(GUI_EFFECT_LIGHTNING, 0, mtmp->mx, mtmp->my, 0, 0, 0UL);
                         pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s is jolted by lightning!", Monnam(mtmp));
                     }
                     else if (verbose && !target)
@@ -650,8 +653,8 @@ boolean verbose;    /* give message(s) even when you can't see what happened */
                     if (vis)
                     {
                         play_sfx_sound_at_location(SFX_MONSTER_IS_HIT_WITH_DEATH_MAGIC, mtmp->mx, mtmp->my);
+                        display_gui_effect(GUI_EFFECT_DEATH_MAGIC, 0, mtmp->mx, mtmp->my, 0, 0, 0UL);
                         pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s is slain!", Monnam(mtmp));
-
                     }
                     else if (verbose && !target)
                     {

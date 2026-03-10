@@ -1552,7 +1552,7 @@ int dieroll; /* needed for Magicbane and vorpal blades */
     {
         if (spec_dbon_applies)
         {
-            play_sfx_sound_at_location(SFX_ALTAR_BURST_OF_FLAME, mdef->mx, mdef->my);
+            play_sfx_sound_at_location(SFX_MONSTER_ON_FIRE, mdef->mx, mdef->my);
             display_gui_effect(GUI_EFFECT_FIRE, 0, mdef->mx, mdef->my, 0, 0, 0UL);
         }
         if (realizes_damage)
@@ -1579,7 +1579,7 @@ int dieroll; /* needed for Magicbane and vorpal blades */
     {
         if (spec_dbon_applies)
         {
-            play_sfx_sound_at_location(SFX_ICY_COATING_FORMS, mdef->mx, mdef->my);
+            play_sfx_sound_at_location(SFX_MONSTER_COVERED_IN_FROST, mdef->mx, mdef->my);
             display_gui_effect(GUI_EFFECT_FREEZE, 0, mdef->mx, mdef->my, 0, 0, 0UL);
         }
         if (realizes_damage)

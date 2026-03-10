@@ -2393,14 +2393,13 @@ boolean* obj_destroyed;
     
     if (mon)
     {
-
         if (needpoismsg)
         {
             //play_sfx_sound_at_location(SFX_GENERAL_UNAFFECTED, mon->mx, mon->my);
             pline_The_ex(ATR_NONE, CLR_MSG_ATTENTION, "poison doesn't seem to affect %s.", mon_nam(mon));
         }
 
-        if (needenchantmsg && !destroyed)    
+        if (needenchantmsg && (!destroyed || needenchantmsg > 0))
         {
             if (iflags.using_gui_sounds)
                 delay_output_milliseconds(100);
@@ -2428,18 +2427,22 @@ boolean* obj_destroyed;
                 break;
             case COLD_ENCHANTMENT:
                 play_sfx_sound_at_location(SFX_MONSTER_COVERED_IN_FROST, mon->mx, mon->my);
+                display_gui_effect(GUI_EFFECT_FREEZE, 0, mon->mx, mon->my, 0, 0, 0UL);
                 pline_The_ex(ATR_NONE, CLR_MSG_ATTENTION, "cold sears %s.", mon_nam(mon));
                 break;
             case FIRE_ENCHANTMENT:
                 play_sfx_sound_at_location(SFX_MONSTER_ON_FIRE, mon->mx, mon->my);
+                display_gui_effect(GUI_EFFECT_FIRE, 0, mon->mx, mon->my, 0, 0, 0UL);
                 pline_The_ex(ATR_NONE, CLR_MSG_ATTENTION, "fire burns %s.", mon_nam(mon));
                 break;
             case LIGHTNING_ENCHANTMENT:
                 play_sfx_sound_at_location(SFX_MONSTER_GETS_ZAPPED, mon->mx, mon->my);
+                display_gui_effect(GUI_EFFECT_LIGHTNING, 0, mon->mx, mon->my, 0, 0, 0UL);
                 pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s is jolted by lightning.", Monnam(mon));
                 break;
             case DEATH_ENCHANTMENT:
                 play_sfx_sound_at_location(SFX_MONSTER_IS_HIT_WITH_DEATH_MAGIC, mon->mx, mon->my);
+                display_gui_effect(GUI_EFFECT_DEATH_MAGIC, 0, mon->mx, mon->my, 0, 0, 0UL);
                 pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s feels its life energy draining away.", Monnam(mon));
                 break;
             default:
@@ -2462,6 +2465,7 @@ boolean* obj_destroyed;
             {
                 delay_output_milliseconds(100);
                 play_sfx_sound_at_location(SFX_MONSTER_IS_HIT_WITH_DEATH_MAGIC, mon->mx, mon->my);
+                display_gui_effect(GUI_EFFECT_DEATH_MAGIC, 0, mon->mx, mon->my, 0, 0, 0UL);
                 delay_output_milliseconds(200);
             }
             pline_The("magic was deadly...");
