@@ -479,6 +479,11 @@ namespace GnollHackX.Pages.MainScreen
                 GHApp.FixRects = FixRectsSwitch.IsToggled;
                 Preferences.Set("FixRects", FixRectsSwitch.IsToggled);
             }
+            if (RuntimeEffectsSwitch.IsEnabled)
+            {
+                GHApp.RuntimeEffects = RuntimeEffectsSwitch.IsToggled;
+                Preferences.Set("RuntimeEffects", RuntimeEffectsSwitch.IsToggled);
+            }
 
             GHApp.EmptyWishIsNothing = EmptyWishIsNothingSwitch.IsToggled;
             Preferences.Set("EmptyWishIsNothing", EmptyWishIsNothingSwitch.IsToggled);
@@ -1047,7 +1052,7 @@ namespace GnollHackX.Pages.MainScreen
 #if !SENTRY
             bool postdiagnostics = GHConstants.DefaultPosting;
 #endif
-            bool longermsghistory = false, hidemsghistory = false, xlog_release_account = false, forcepostbones = false, fixrects = false, save_file_tracking = false, disablewindowskey = false, defaultvikeys = false;
+            bool longermsghistory = false, hidemsghistory = false, xlog_release_account = false, forcepostbones = false, fixrects = false, runtimeeffects = true, save_file_tracking = false, disablewindowskey = false, defaultvikeys = false;
             long primarygpucache = -2, secondarygpucache = -2;
             int rightmouse = GHConstants.DefaultRightMouseCommand, middlemouse = GHConstants.DefaultMiddleMouseCommand;
             float screenscale = 0.0f;
@@ -1125,6 +1130,7 @@ namespace GnollHackX.Pages.MainScreen
             recordgame = Preferences.Get("RecordGame", false);
             gzip = Preferences.Get("UseGZipForReplays", GHConstants.GZipIsDefaultReplayCompression);
             fixrects = Preferences.Get("FixRects", GHApp.IsFixRectsDefault);
+            runtimeeffects = Preferences.Get("RuntimeEffects", true);
             noclipmode = Preferences.Get("DefaultMapNoClipMode", GHConstants.DefaultMapNoClipMode);
             savestyle = Preferences.Get("AppSwitchSaveStyle", GHApp.IsDesktop ? 1 : 0);
             primarygpucache = Preferences.Get("PrimaryGPUCacheLimit", -2L);
@@ -1375,6 +1381,7 @@ namespace GnollHackX.Pages.MainScreen
             ShowRecordingSwitch.IsToggled = showrecording;
             AutoUploadReplaysSwitch.IsToggled = autoupload;
             DisableAuxGPUSwitch.IsToggled = disableauxgpu;
+            RuntimeEffectsSwitch.IsToggled = runtimeeffects;
             PlatformRenderLoopSwitch.IsToggled = platformloop;
             FixRectsSwitch.IsToggled = fixrects;
             MipMapSwitch.IsToggled = mipmap;
@@ -1391,6 +1398,8 @@ namespace GnollHackX.Pages.MainScreen
                 //FixRectsLabel.TextColor = gpu ? (GHApp.DarkMode ? GHColors.White : GHColors.Black) : GHColors.Gray;
                 MipMapSwitch.IsEnabled = gpu;
                 MipMapLabel.TextColor = gpu ? (GHApp.DarkMode ? GHColors.White : GHColors.Black) : GHColors.Gray;
+                RuntimeEffectsSwitch.IsEnabled = gpu;
+                RuntimeEffectsLabel.TextColor = gpu ? (GHApp.DarkMode ? GHColors.White : GHColors.Black) : GHColors.Gray;
             }
             else
             {
@@ -1407,6 +1416,8 @@ namespace GnollHackX.Pages.MainScreen
 
                 MipMapSwitch.IsEnabled = false;
                 MipMapLabel.TextColor = GHColors.Gray;
+                RuntimeEffectsSwitch.IsEnabled = false;
+                RuntimeEffectsLabel.TextColor = GHColors.Gray;
             }
             SimpleCmdLayoutSwitch.IsToggled = simplecmdlayout;
             ShowAltZoomButtonSwitch.IsToggled = showaltzoom;

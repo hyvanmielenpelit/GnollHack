@@ -1581,7 +1581,10 @@ int dieroll; /* needed for Magicbane and vorpal blades */
     if (artifact_attack_type(AD_ELEC, otmp))
     {
         if (spec_dbon_applies)
+        {
             play_sfx_sound_at_location(SFX_LIGHTNING_STRIKES, mdef->mx, mdef->my);
+            display_gui_effect(GUI_EFFECT_LIGHTNING, 0, mdef->mx, mdef->my, 0, 0, 0UL);
+        }
 
         if (realizes_damage)
             pline_The_ex(ATR_NONE, HI_SHOCK, "%s hits%s %s%c", artifact_hit_desc,

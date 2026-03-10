@@ -7170,6 +7170,7 @@ namespace GnollHackX.Pages.Game
             bool drawwallends = DrawWallEnds;
             bool breatheanimations = BreatheAnimations;
             bool fixRects = GHApp.FixRects;
+            bool runtimeEffects = GHApp.RuntimeEffects;
             bool showKeyboardShortcuts = GHApp.ShowKeyboardShortcuts;
             bool usingGL = UseMainGLCanvas;
             bool usingMipMap = UseMainMipMap;
@@ -8722,6 +8723,31 @@ namespace GnollHackX.Pages.Game
                                         GHApp.MaybeFixRects(ref sourcerect, ref effRect, targetscale, usingGL, fixRects);
                                         canvas.DrawImage(GHApp._waitBitmap, effRect, textPaint.Paint);
                                     }
+                                    break;
+                                case (int)gui_effect_types.GUI_EFFECT_LIGHTNING:
+#if GNH_MAUI
+                                    {
+                                        if (usingGL && runtimeEffects)
+                                        {
+                                            float hitTime = Math.Max(0f, Math.Min(1f, (float)(maincountervalue - eff.CreatedAt) / 100));
+
+                                            var uniforms = new SKRuntimeEffectUniforms(GHApp.LightningEffect);
+                                            uniforms["resolution"] = new SKPoint(e.Info.Width, e.Info.Height);
+                                            uniforms["time"] = hitTime;
+                                            uniforms["impactPos"] = new SKPoint(tx + width / 2, ty + height / 2);
+
+                                            using var shader = GHApp.LightningEffect.ToShader(uniforms);
+
+                                            using var paint = new SKPaint
+                                            {
+                                                Shader = shader,
+                                                BlendMode = SKBlendMode.Plus // additive glow
+                                            };
+
+                                            canvas.DrawRect(e.Info.Rect, paint);
+                                        }
+                                    }
+#endif
                                     break;
                                 case (int)gui_effect_types.GUI_EFFECT_POLEARM:
                                     {

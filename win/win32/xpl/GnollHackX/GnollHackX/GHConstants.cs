@@ -1647,6 +1647,7 @@ namespace GnollHackX
         GUI_EFFECT_SEARCH = 0,
         GUI_EFFECT_WAIT,
         GUI_EFFECT_POLEARM,
+        GUI_EFFECT_LIGHTNING,
     }
 
     public enum gui_polearm_types
