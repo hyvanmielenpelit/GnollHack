@@ -448,6 +448,7 @@ enum gui_effect_types {
     GUI_EFFECT_WAIT,
     GUI_EFFECT_POLEARM,
     GUI_EFFECT_LIGHTNING,
+    GUI_EFFECT_FIRE,
 };
 
 enum gui_polearm_types {

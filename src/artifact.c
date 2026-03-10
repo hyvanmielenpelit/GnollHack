@@ -1548,6 +1548,10 @@ int dieroll; /* needed for Magicbane and vorpal blades */
     /* the four basic attacks: fire, cold, shock and missiles */
     if (artifact_attack_type(AD_FIRE, otmp)) 
     {
+        if (spec_dbon_applies)
+        {
+            display_gui_effect(GUI_EFFECT_FIRE, 0, mdef->mx, mdef->my, 0, 0, 0UL);
+        }
         if (realizes_damage)
         {
             pline_The_ex(ATR_NONE, HI_FIRE, "%s %s %s%c", artifact_hit_desc,

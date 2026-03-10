@@ -9701,14 +9701,88 @@ namespace GnollHackX
                 }
             ";
 
+        private static string _skslFlameHit = @"
+            uniform float2 resolution;
+            uniform float2 impactPos;
+            uniform float tileSize;
+            uniform float time;
+            uniform float intensity;
+
+            float hash(float2 p)
+            {
+                return fract(sin(dot(p, float2(127.1,311.7))) * 43758.5453);
+            }
+
+            float noise(float2 p)
+            {
+                float2 i = floor(p);
+                float2 f = fract(p);
+
+                float a = hash(i);
+                float b = hash(i + float2(1.0,0.0));
+                float c = hash(i + float2(0.0,1.0));
+                float d = hash(i + float2(1.0,1.0));
+
+                float2 u = f*f*(3.0-2.0*f);
+
+                return mix(a,b,u.x) +
+                       (c-a)*u.y*(1.0-u.x) +
+                       (d-b)*u.x*u.y;
+            }
+
+            float fbm(float2 p)
+            {
+                float v = 0.0;
+                float a = 0.5;
+
+                v += a * noise(p); p *= 2.0; a *= 0.5;
+                v += a * noise(p); p *= 2.0; a *= 0.5;
+                v += a * noise(p); p *= 2.0; a *= 0.5;
+                v += a * noise(p);
+
+                return v;
+            }
+
+            half4 main(float2 fragCoord)
+            {
+                float2 uv = fragCoord;
+
+                // convert to local tile space (-1..1 roughly)
+                float2 p = (uv - impactPos) / tileSize;
+
+                float dist = length(p);
+
+                float t = time * 2.5;
+
+                // flame turbulence
+                float n = fbm(p * 4.0 + float2(0.0, -t*3.0));
+
+                // compact radial falloff
+                float falloff = smoothstep(0.7, 0.0, dist);
+
+                float flame = n * falloff * intensity;
+
+                float r = flame * 3.0;
+                float g = flame * 1.6;
+                float b = flame * 0.4;
+
+                float alpha = flame;
+
+                return half4(r, g, b, alpha);
+            }
+            ";
+
         public static SKRuntimeEffect LightningEffect = null;
+        public static SKRuntimeEffect FlameHitEffect = null;
 
         public static void InitRuntimeEffects()
         {
 #if GNH_MAUI
             try
             {
-                LightningEffect = SKRuntimeEffect.CreateShader(_skslLightning, out var error);
+                string error;
+                LightningEffect = SKRuntimeEffect.CreateShader(_skslLightning, out error);
+                FlameHitEffect = SKRuntimeEffect.CreateShader(_skslFlameHit, out error);
             }
             catch (Exception ex)
             {
