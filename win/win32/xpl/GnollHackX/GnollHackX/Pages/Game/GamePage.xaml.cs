@@ -8726,110 +8726,55 @@ namespace GnollHackX.Pages.Game
                                     break;
 #if GNH_MAUI
                                 case (int)gui_effect_types.GUI_EFFECT_LIGHTNING:
+                                case (int)gui_effect_types.GUI_EFFECT_FIRE:
+                                case (int)gui_effect_types.GUI_EFFECT_FREEZE:
+                                case (int)gui_effect_types.GUI_EFFECT_MAGIC_HIT:
+                                case (int)gui_effect_types.GUI_EFFECT_STUN_HIT:
                                     if (usingGL && runtimeEffects)
                                     {
+                                        SKRuntimeEffect effect;
+                                        switch ((gui_effect_types)eff.Style)
+                                        {
+                                            case gui_effect_types.GUI_EFFECT_LIGHTNING:
+                                                effect = GHApp.LightningEffect;
+                                                break;
+                                            case gui_effect_types.GUI_EFFECT_FIRE:
+                                                effect = GHApp.FlameHitEffect;
+                                                break;
+                                            case gui_effect_types.GUI_EFFECT_FREEZE:
+                                                effect = GHApp.FreezeHitEffect;
+                                                break;
+                                            case gui_effect_types.GUI_EFFECT_MAGIC_HIT:
+                                                effect = GHApp.MagicHitEffect;
+                                                break;
+                                            case gui_effect_types.GUI_EFFECT_STUN_HIT:
+                                                effect = GHApp.StunHitEffect;
+                                                break;
+                                            default:
+                                                effect = GHApp.LightningEffect;
+                                                break;
+                                        }
+                                        
                                         float hitTime = Math.Max(0f, Math.Min(1f, (float)(maincountervalue - eff.CreatedAt) / 50));
-
-                                        var uniforms = new SKRuntimeEffectUniforms(GHApp.LightningEffect);
-                                        uniforms["resolution"] = new SKPoint(e.Info.Width, e.Info.Height);
+                                        var uniforms = new SKRuntimeEffectUniforms(effect);
                                         uniforms["time"] = hitTime;
-                                        uniforms["impactPos"] = new SKPoint(tx + width / 2, ty + height / 2);
                                         uniforms["tileSize"] = width;
-
-                                        using var shader = GHApp.LightningEffect.ToShader(uniforms);
-
+                                        using var shader = effect.ToShader(uniforms);
                                         using var paint = new SKPaint
                                         {
                                             Shader = shader,
                                             BlendMode = SKBlendMode.Plus // additive glow
                                         };
-
-                                        canvas.DrawRect(e.Info.Rect, paint);
-                                    }
-                                    break;
-                                case (int)gui_effect_types.GUI_EFFECT_FIRE:
-                                    if (usingGL && runtimeEffects)
-                                    {
-                                        float hitTime = Math.Max(0f, Math.Min(1f, (float)(maincountervalue - eff.CreatedAt) / 10));
-                                        var uniforms = new SKRuntimeEffectUniforms(GHApp.FlameHitEffect);
-                                        uniforms["resolution"] = new SKPoint(e.Info.Width, e.Info.Height);
-                                        uniforms["time"] = hitTime;
-                                        uniforms["impactPos"] = new SKPoint(tx + width / 2, ty + height / 2);
-                                        uniforms["intensity"] = 1.0f;
-                                        uniforms["tileSize"] = width;
-
-                                        using var shader = GHApp.FlameHitEffect.ToShader(uniforms);
-
-                                        using var paint = new SKPaint
-                                        {
-                                            Shader = shader,
-                                            BlendMode = SKBlendMode.Plus
-                                        };
-
-                                        canvas.DrawRect(e.Info.Rect, paint);
-                                    }
-                                    break;
-                                case (int)gui_effect_types.GUI_EFFECT_FREEZE:
-                                    if (usingGL && runtimeEffects)
-                                    {
-                                        float hitTime = Math.Max(0f, Math.Min(1f, (float)(maincountervalue - eff.CreatedAt) / 10));
-                                        var uniforms = new SKRuntimeEffectUniforms(GHApp.FreezeHitEffect);
-                                        uniforms["resolution"] = new SKPoint(e.Info.Width, e.Info.Height);
-                                        uniforms["time"] = hitTime;
-                                        uniforms["impactPos"] = new SKPoint(tx + width / 2, ty + height / 2);
-                                        uniforms["tileSize"] = width;
-
-                                        using var shader = GHApp.FreezeHitEffect.ToShader(uniforms);
-
-                                        using var paint = new SKPaint
-                                        {
-                                            Shader = shader,
-                                            BlendMode = SKBlendMode.Plus
-                                        };
-
-                                        canvas.DrawRect(e.Info.Rect, paint);
-                                    }
-                                    break;
-                                case (int)gui_effect_types.GUI_EFFECT_MAGIC_HIT:
-                                    if (usingGL && runtimeEffects)
-                                    {
-                                        float hitTime = Math.Max(0f, Math.Min(1f, (float)(maincountervalue - eff.CreatedAt) / 10));
-                                        var uniforms = new SKRuntimeEffectUniforms(GHApp.MagicHitEffect);
-                                        uniforms["resolution"] = new SKPoint(e.Info.Width, e.Info.Height);
-                                        uniforms["time"] = hitTime;
-                                        uniforms["impactPos"] = new SKPoint(tx + width / 2, ty + height / 2);
-                                        uniforms["tileSize"] = width;
-
-                                        using var shader = GHApp.MagicHitEffect.ToShader(uniforms);
-
-                                        using var paint = new SKPaint
-                                        {
-                                            Shader = shader,
-                                            BlendMode = SKBlendMode.Plus
-                                        };
-
-                                        canvas.DrawRect(e.Info.Rect, paint);
-                                    }
-                                    break;
-                                case (int)gui_effect_types.GUI_EFFECT_STUN_HIT:
-                                    if (usingGL && runtimeEffects)
-                                    {
-                                        float hitTime = Math.Max(0f, Math.Min(1f, (float)(maincountervalue - eff.CreatedAt) / 10));
-                                        var uniforms = new SKRuntimeEffectUniforms(GHApp.StunHitEffect);
-                                        uniforms["resolution"] = new SKPoint(e.Info.Width, e.Info.Height);
-                                        uniforms["time"] = hitTime;
-                                        uniforms["impactPos"] = new SKPoint(tx + width / 2, ty + height / 2);
-                                        uniforms["tileSize"] = width;
-
-                                        using var shader = GHApp.StunHitEffect.ToShader(uniforms);
-
-                                        using var paint = new SKPaint
-                                        {
-                                            Shader = shader,
-                                            BlendMode = SKBlendMode.Plus
-                                        };
-
-                                        canvas.DrawRect(e.Info.Rect, paint);
+                                        canvas.Save();
+                                        canvas.Translate(tx + width / 2, ty + height / 2);
+                                        float effectSize = width * 3f;
+                                        canvas.DrawRect(
+                                            -effectSize,
+                                            -effectSize,
+                                            effectSize * 2,
+                                            effectSize * 2,
+                                            paint);
+                                        canvas.Restore();
                                     }
                                     break;
 #endif

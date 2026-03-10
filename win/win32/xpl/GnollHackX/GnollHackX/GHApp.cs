@@ -9635,10 +9635,8 @@ namespace GnollHackX
         }
 
         private static string _skslLightning = @"
-            uniform float2 resolution;
-            uniform float time;        // 0 → 1 animation progress
-            uniform float2 impactPos;  // screen space impact position
-            uniform float tileSize;    // size of tile in pixels
+            uniform float time;      // 0 → 1 animation progress
+            uniform float tileSize;  // tile size in pixels
 
             float hash(float2 p) {
                 return fract(sin(dot(p, float2(127.1, 311.7))) * 43758.5453);
@@ -9662,38 +9660,35 @@ namespace GnollHackX
 
             half4 main(float2 fragCoord)
             {
-                float2 uv = fragCoord;
-                float2 center = impactPos;
+                // fragCoord is now local to the effect rect
+                // convert to tile-scaled coordinates
+                float2 dir = fragCoord / tileSize;
 
-                float2 dir = uv - center;
-
-                // Normalize distance to tile size
-                float dist = length(dir) / tileSize;
+                float dist = length(dir);
 
                 float progress = time;
 
-                // Expanding radius relative to tile
+                // expanding radius (in tiles)
                 float radius = progress * 1.5;
 
-                // Ring thickness relative to tile
+                // lightning shock ring
                 float ring = smoothstep(radius, radius - 0.15, dist);
 
-                // Lightning filament distortion
+                // lightning filament distortion
                 float angle = atan(dir.y, dir.x);
                 float flicker = noise(float2(angle * 6.0, time * 10.0));
                 float spikes = step(0.7, flicker);
 
                 float lightning = ring * spikes;
 
-                // Core flash relative to tile
+                // central flash
                 float core = smoothstep(0.4, 0.0, dist) * (1.0 - progress);
 
                 float intensity = lightning + core;
 
-                // Fade out
+                // fade out
                 intensity *= (1.0 - progress);
 
-                // Electric blue-white color
                 float3 color = mix(
                     float3(0.2, 0.6, 1.0),
                     float3(1.0, 1.0, 1.0),
@@ -9705,11 +9700,8 @@ namespace GnollHackX
             ";
 
         private static string _skslFlameHit = @"
-            uniform float2 resolution;
-            uniform float2 impactPos;
             uniform float tileSize;
             uniform float time;
-            uniform float intensity;
 
             float hash(float2 p)
             {
@@ -9748,21 +9740,19 @@ namespace GnollHackX
 
             half4 main(float2 fragCoord)
             {
-                float2 uv = fragCoord;
-
-                // convert to local tile space (-1..1 roughly)
-                float2 p = (uv - impactPos) / tileSize;
+                // fragCoord is now local to the effect center
+                float2 p = fragCoord / tileSize;
 
                 float dist = length(p);
 
                 float t = time * 2.5;
 
                 // flame turbulence
-                float n = fbm(p * 4.0 + float2(0.0, -t*3.0));
+                float n = fbm(p * 4.0 + float2(0.0, -t * 3.0));
 
                 // compact radial falloff
                 float falloff = smoothstep(0.7, 0.0, dist);
-
+                float intensity = 1.0;
                 float flame = n * falloff * intensity;
 
                 float r = flame * 3.0;
@@ -9776,162 +9766,11 @@ namespace GnollHackX
             ";
 
         private static string _skslFreezeHit = @"
-            uniform float2 resolution;
+            uniform float tileSize;
             uniform float time;        // 0 → 1 animation progress
-            uniform float2 impactPos;  // screen space impact position
-            uniform float tileSize;    // tile size in pixels
 
             float hash(float2 p) {
                 return fract(sin(dot(p, float2(127.1, 311.7))) * 43758.5453);
-            }
-
-            float noise(float2 p) {
-                float2 i = floor(p);
-                float2 f = fract(p);
-
-                float a = hash(i);
-                float b = hash(i + float2(1.0, 0.0));
-                float c = hash(i + float2(0.0, 1.0));
-                float d = hash(i + float2(1.0, 1.0));
-
-                float2 u = f * f * (3.0 - 2.0 * f);
-
-                return mix(a, b, u.x) +
-                        (c - a) * u.y * (1.0 - u.x) +
-                        (d - b) * u.x * u.y;
-            }
-
-            half4 main(float2 fragCoord)
-            {
-                float2 uv = fragCoord;
-                float2 center = impactPos;
-
-                float2 dir = uv - center;
-
-                // Normalize distance by tile size
-                float dist = length(dir) / tileSize;
-
-                float progress = time;
-
-                // Expanding frost wave
-                float radius = progress * 1.2;
-                float ring = smoothstep(radius, radius - 0.12, dist);
-
-                // Angular ice crystal spikes
-                float angle = atan(dir.y, dir.x);
-                float spikes = abs(sin(angle * 12.0 + noise(float2(angle * 2.0, time * 6.0)) * 2.0));
-
-                spikes = pow(spikes, 6.0);
-
-                float crystal = ring * spikes;
-
-                // Frozen core flash
-                float core = smoothstep(0.35, 0.0, dist) * (1.0 - progress);
-
-                float frost = crystal + core;
-
-                // subtle frost texture
-                float frostNoise = noise(dir * 4.0 + time * 2.0) * 0.4;
-                frost += frostNoise * (1.0 - progress) * smoothstep(0.8, 0.0, dist);
-
-                // fade
-                frost *= (1.0 - progress);
-
-                // icy color palette
-                float3 color = mix(
-                    float3(0.6, 0.85, 1.0),   // ice blue
-                    float3(1.0, 1.0, 1.0),    // frost white
-                    frost
-                );
-
-                return half4(color * frost, frost);
-            }
-            ";
-
-        private static string _skslMagicHit = @"
-            uniform float2 resolution;
-            uniform float time;        // 0 → 1 animation progress
-            uniform float2 impactPos;  // screen space impact position
-            uniform float tileSize;    // tile size in pixels
-
-            float hash(float2 p) {
-                return fract(sin(dot(p, float2(127.1, 311.7))) * 43758.5453);
-            }
-
-            float noise(float2 p) {
-                float2 i = floor(p);
-                float2 f = fract(p);
-
-                float a = hash(i);
-                float b = hash(i + float2(1.0, 0.0));
-                float c = hash(i + float2(0.0, 1.0));
-                float d = hash(i + float2(1.0, 1.0));
-
-                float2 u = f * f * (3.0 - 2.0 * f);
-
-                return mix(a, b, u.x) +
-                       (c - a) * u.y * (1.0 - u.x) +
-                       (d - b) * u.x * u.y;
-            }
-
-            half4 main(float2 fragCoord)
-            {
-                float2 uv = fragCoord;
-                float2 center = impactPos;
-
-                float2 dir = uv - center;
-
-                // Normalize distance to tile
-                float dist = length(dir) / tileSize;
-
-                float progress = time;
-
-                // Expanding magical shockwave
-                float radius = progress * 1.3;
-                float wave = smoothstep(radius, radius - 0.15, dist);
-
-                // Rotating arcane swirl
-                float angle = atan(dir.y, dir.x);
-                float swirl = sin(angle * 6.0 + time * 10.0);
-
-                swirl = abs(swirl);
-                swirl = pow(swirl, 4.0);
-
-                float arcaneRing = wave * swirl;
-
-                // Magical spark noise
-                float sparkNoise = noise(dir * 6.0 + time * 8.0);
-                float sparks = step(0.82, sparkNoise) * (1.0 - progress);
-
-                sparks *= smoothstep(0.9, 0.0, dist);
-
-                // Core energy pulse
-                float core = smoothstep(0.35, 0.0, dist) * (1.0 - progress);
-
-                float energy = arcaneRing + core + sparks;
-
-                // Fade out
-                energy *= (1.0 - progress);
-
-                // Arcane purple-blue color
-                float3 color = mix(
-                    float3(0.4, 0.2, 1.0),  // deep arcane
-                    float3(0.8, 0.6, 1.0),  // magical glow
-                    energy
-                );
-
-                return half4(color * energy, energy);
-            }
-            ";
-
-        private static string _skslStunHit = @"
-            uniform float2 resolution;
-            uniform float time;        // 0 → 1 animation progress
-            uniform float2 impactPos;  // screen position
-            uniform float tileSize;    // tile size in pixels
-
-            float hash(float2 p) {
-                return fract(sin(dot(p, float2(127.1,311.7))) * 43758.5453);
             }
 
             float noise(float2 p) {
@@ -9952,50 +9791,170 @@ namespace GnollHackX
 
             half4 main(float2 fragCoord)
             {
-                float2 uv = fragCoord;
-                float2 center = impactPos;
-
-                float2 dir = uv - center;
-
-                // normalize to tile size
-                float dist = length(dir) / tileSize;
-
+                // Local effect coordinates: (0,0) = impact center
+                float2 p = fragCoord / tileSize;
+                float dist = length(p);
                 float progress = time;
 
-                // expanding concussive ring
-                float radius = progress * 1.4;
-                float ring = smoothstep(radius, radius - 0.18, dist);
+                // Expanding frost ring
+                float radius = progress * 1.3;
+                float ring = smoothstep(radius, radius - 0.15, dist);
 
-                // star-shaped impact spikes
-                float angle = atan(dir.y, dir.x);
-                float star = abs(cos(angle * 4.0));
-                star = pow(star, 8.0);
+                // Angular ice shards
+                float angle = atan(p.y, p.x);
+                float shards = abs(sin(angle * 12.0 + noise(p * 3.0 + time * 5.0) * 2.0));
+                shards = pow(shards, 6.0);
+                shards *= ring;
 
-                float spikes = ring * star;
-
-                // bright impact flash
+                // Central frost core
                 float core = smoothstep(0.35, 0.0, dist) * (1.0 - progress);
 
-                // small spark particles
-                float sparkNoise = noise(dir * 8.0 + time * 12.0);
-                float sparks = step(0.85, sparkNoise);
+                // Frost texture
+                float frostNoise = noise(p * 5.0 + time * 3.0) * 0.4;
+                frostNoise *= smoothstep(0.8, 0.0, dist) * (1.0 - progress);
 
-                sparks *= smoothstep(0.9, 0.0, dist);
-                sparks *= (1.0 - progress);
+                float intensity = 1.0;
+                float frost = (shards + core) * intensity + frostNoise;
 
-                float impact = spikes + core + sparks;
+                // Fade out over time
+                frost *= (1.0 - progress);
 
-                // fade out
-                impact *= (1.0 - progress);
-
-                // golden stun color
+                // Icy color palette
                 float3 color = mix(
-                    float3(1.0, 0.85, 0.2),
-                    float3(1.0, 1.0, 0.8),
-                    impact
+                    float3(0.6, 0.85, 1.0),   // ice blue
+                    float3(1.0, 1.0, 1.0),    // frost white
+                    frost
                 );
 
-                return half4(color * impact, impact);
+                return half4(color * frost, frost);
+            }
+            ";
+
+        private static string _skslMagicHit = @"
+            uniform float tileSize;
+            uniform float time;        // 0 → 1 animation progress
+
+            float hash(float2 p) {
+                return fract(sin(dot(p, float2(127.1, 311.7))) * 43758.5453);
+            }
+
+            float noise(float2 p) {
+                float2 i = floor(p);
+                float2 f = fract(p);
+
+                float a = hash(i);
+                float b = hash(i + float2(1.0,0.0));
+                float c = hash(i + float2(0.0,1.0));
+                float d = hash(i + float2(1.0,1.0));
+
+                float2 u = f*f*(3.0-2.0*f);
+
+                return mix(a,b,u.x) +
+                       (c-a)*u.y*(1.0-u.x) +
+                       (d-b)*u.x*u.y;
+            }
+
+            half4 main(float2 fragCoord)
+            {
+                // Local tile-space coordinates
+                float2 p = fragCoord / tileSize;
+                float dist = length(p);
+                float progress = time;
+
+                // Expanding energy ring
+                float radius = progress * 1.3;
+                float ring = smoothstep(radius, radius - 0.15, dist);
+
+                // Arcane swirling sparks
+                float angle = atan(p.y, p.x);
+                float swirl = sin(angle * 6.0 + time * 10.0);
+                swirl = abs(swirl);
+                swirl = pow(swirl, 4.0);
+                swirl *= ring;
+
+                // Flickering small sparks
+                float sparkNoise = noise(p * 6.0 + time * 8.0);
+                float sparks = step(0.82, sparkNoise) * (1.0 - progress);
+                sparks *= smoothstep(0.9, 0.0, dist);
+
+                // Core pulse
+                float core = smoothstep(0.35, 0.0, dist) * (1.0 - progress);
+                float intensity = 1.0;
+                float energy = (swirl + sparks + core) * intensity;
+                energy *= (1.0 - progress);
+
+                // Arcane color palette
+                float3 color = mix(
+                    float3(0.4, 0.2, 1.0),  // deep arcane
+                    float3(0.8, 0.6, 1.0),  // magical glow
+                    energy
+                );
+
+                return half4(color * energy, energy);
+            }
+            ";
+
+        private static string _skslStunHit = @"
+            uniform float tileSize;
+            uniform float time;        // 0 → 1 animation progress
+
+            float hash(float2 p) {
+                return fract(sin(dot(p, float2(127.1, 311.7))) * 43758.5453);
+            }
+
+            float noise(float2 p) {
+                float2 i = floor(p);
+                float2 f = fract(p);
+
+                float a = hash(i);
+                float b = hash(i + float2(1.0,0.0));
+                float c = hash(i + float2(0.0,1.0));
+                float d = hash(i + float2(1.0,1.0));
+
+                float2 u = f*f*(3.0-2.0*f);
+
+                return mix(a,b,u.x) +
+                       (c-a)*u.y*(1.0-u.x) +
+                       (d-b)*u.x*u.y;
+            }
+
+            half4 main(float2 fragCoord)
+            {
+                // Local tile-space coordinates
+                float2 p = fragCoord / tileSize;
+                float dist = length(p);
+                float progress = time;
+
+                // Expanding energy ring
+                float radius = progress * 1.3;
+                float ring = smoothstep(radius, radius - 0.15, dist);
+
+                // Arcane swirling sparks
+                float angle = atan(p.y, p.x);
+                float swirl = sin(angle * 6.0 + time * 10.0);
+                swirl = abs(swirl);
+                swirl = pow(swirl, 4.0);
+                swirl *= ring;
+
+                // Flickering small sparks
+                float sparkNoise = noise(p * 6.0 + time * 8.0);
+                float sparks = step(0.82, sparkNoise) * (1.0 - progress);
+                sparks *= smoothstep(0.9, 0.0, dist);
+
+                // Core pulse
+                float core = smoothstep(0.35, 0.0, dist) * (1.0 - progress);
+                float intensity = 1.0;
+                float energy = (swirl + sparks + core) * intensity;
+                energy *= (1.0 - progress);
+
+                // Arcane color palette
+                float3 color = mix(
+                    float3(0.4, 0.2, 1.0),  // deep arcane
+                    float3(0.8, 0.6, 1.0),  // magical glow
+                    energy
+                );
+
+                return half4(color * energy, energy);
             }
             ";
 
