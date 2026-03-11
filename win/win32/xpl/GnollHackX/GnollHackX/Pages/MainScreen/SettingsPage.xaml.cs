@@ -115,6 +115,11 @@ namespace GnollHackX.Pages.MainScreen
             {
                 PlatformRenderLoopGrid.IsVisible = false;
             }
+            if (!GHApp.IsGPUAvailable || !GHConstants.EnableExperimentalFeatures)
+            {
+                RuntimeEffectsGrid.IsVisible = false;
+            }
+
 
             SimpleCommandBarButton1Picker.ItemsSource = GHApp.SelectableShortcutButtons;
             SimpleCommandBarButton2Picker.ItemsSource = GHApp.SelectableShortcutButtons;
