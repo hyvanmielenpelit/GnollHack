@@ -1405,7 +1405,7 @@ namespace GnollHackX
         public static bool FixRects { get { return Interlocked.CompareExchange(ref _fixRects, 0, 0) != 0; } set { Interlocked.Exchange(ref _fixRects, value ? 1 : 0); } }
 
         private static int _runtimeEffects = GHConstants.DefaultRuntimeEffects ? 1 : 0;
-        public static bool RuntimeEffects { get { return Interlocked.CompareExchange(ref _runtimeEffects, 0, 0) != 0; } set { Interlocked.Exchange(ref _runtimeEffects, value ? 1 : 0); } }
+        public static bool RuntimeEffects { get { return GHConstants.EnableExperimentalFeatures && Interlocked.CompareExchange(ref _runtimeEffects, 0, 0) != 0; } set { Interlocked.Exchange(ref _runtimeEffects, value ? 1 : 0); } }
 
         //private static readonly object _drawWallEndsLock = new object();
         private static int _drawWallEnds = GHConstants.DefaultDrawWallEnds ? 1 : 0;

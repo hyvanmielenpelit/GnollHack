@@ -1053,6 +1053,7 @@ namespace GnollHackX.Pages.MainScreen
             bool postdiagnostics = GHConstants.DefaultPosting;
 #endif
             bool longermsghistory = false, hidemsghistory = false, xlog_release_account = false, forcepostbones = false, fixrects = false, runtimeeffects = GHConstants.DefaultRuntimeEffects, save_file_tracking = false, disablewindowskey = false, defaultvikeys = false;
+            bool experimental = GHConstants.EnableExperimentalFeatures;
             long primarygpucache = -2, secondarygpucache = -2;
             int rightmouse = GHConstants.DefaultRightMouseCommand, middlemouse = GHConstants.DefaultMiddleMouseCommand;
             float screenscale = 0.0f;
@@ -1398,8 +1399,8 @@ namespace GnollHackX.Pages.MainScreen
                 //FixRectsLabel.TextColor = gpu ? (GHApp.DarkMode ? GHColors.White : GHColors.Black) : GHColors.Gray;
                 MipMapSwitch.IsEnabled = gpu;
                 MipMapLabel.TextColor = gpu ? (GHApp.DarkMode ? GHColors.White : GHColors.Black) : GHColors.Gray;
-                RuntimeEffectsSwitch.IsEnabled = gpu;
-                RuntimeEffectsLabel.TextColor = gpu ? (GHApp.DarkMode ? GHColors.White : GHColors.Black) : GHColors.Gray;
+                RuntimeEffectsSwitch.IsEnabled = gpu && experimental; /* Currently experimental so disabled unless experimental is true to avoid setting the setting value before the feature is fully developed */
+                RuntimeEffectsLabel.TextColor = gpu && experimental ? (GHApp.DarkMode ? GHColors.White : GHColors.Black) : GHColors.Gray;
             }
             else
             {

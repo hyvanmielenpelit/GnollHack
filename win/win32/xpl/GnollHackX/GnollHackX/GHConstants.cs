@@ -2158,6 +2158,7 @@ namespace GnollHackX
         public const ulong DiskSpaceSuperCriticalThresholdInBytes = 512UL * 1024UL * 1024UL;
         public const ulong DiskSpaceCriticalThresholdInBytes = 1024UL * 1024UL * 1024UL;
         public const ulong DiskSpaceLowThresholdInBytes = 5 * 1024UL * 1024UL * 1024UL;
+        public const bool EnableExperimentalFeatures = false;
     }
 
     [StructLayout(LayoutKind.Sequential)]
