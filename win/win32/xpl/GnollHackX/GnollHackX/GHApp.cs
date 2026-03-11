@@ -10029,22 +10029,29 @@ namespace GnollHackX
         public static SKRuntimeEffect StunHitEffect = null;
         public static SKRuntimeEffect DeathMagicEffect = null;
 
+        private static int _runtimeEffectsInited = 1;
+        public static bool RuntimeEffectsInited { get { return Interlocked.CompareExchange(ref _runtimeEffectsInited, 0, 0) != 0; } set { Interlocked.Exchange(ref _runtimeEffectsInited, value ? 1 : 0); } }
+
         public static void InitRuntimeEffects()
         {
 #if GNH_MAUI
-            try
+            if (GHConstants.EnableExperimentalFeatures && Interlocked.Exchange(ref _runtimeEffectsInited, 1) == 0)
             {
-                string error;
-                LightningEffect = SKRuntimeEffect.CreateShader(_skslLightning, out error);
-                FlameHitEffect = SKRuntimeEffect.CreateShader(_skslFlameHit, out error);
-                FreezeHitEffect = SKRuntimeEffect.CreateShader(_skslFreezeHit, out error);
-                MagicHitEffect = SKRuntimeEffect.CreateShader(_skslMagicHit, out error);
-                StunHitEffect = SKRuntimeEffect.CreateShader(_skslStunHit, out error);
-                DeathMagicEffect = SKRuntimeEffect.CreateShader(_skslDeathMagic, out error);
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine(ex);
+                try
+                {
+                    string error;
+                    LightningEffect = SKRuntimeEffect.CreateShader(_skslLightning, out error);
+                    FlameHitEffect = SKRuntimeEffect.CreateShader(_skslFlameHit, out error);
+                    FreezeHitEffect = SKRuntimeEffect.CreateShader(_skslFreezeHit, out error);
+                    MagicHitEffect = SKRuntimeEffect.CreateShader(_skslMagicHit, out error);
+                    StunHitEffect = SKRuntimeEffect.CreateShader(_skslStunHit, out error);
+                    DeathMagicEffect = SKRuntimeEffect.CreateShader(_skslDeathMagic, out error);
+                }
+                catch (Exception ex)
+                {
+                    RuntimeEffectsInited = false; /* Change back to false in the case of error */
+                    Debug.WriteLine(ex);
+                }
             }
 #endif
         }

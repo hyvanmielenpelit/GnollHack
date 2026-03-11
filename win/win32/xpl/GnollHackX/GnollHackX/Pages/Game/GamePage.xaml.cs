@@ -7170,7 +7170,7 @@ namespace GnollHackX.Pages.Game
             bool drawwallends = DrawWallEnds;
             bool breatheanimations = BreatheAnimations;
             bool fixRects = GHApp.FixRects;
-            bool runtimeEffects = GHApp.RuntimeEffects;
+            bool runtimeEffects = GHApp.RuntimeEffects && GHApp.RuntimeEffectsInited;
             bool showKeyboardShortcuts = GHApp.ShowKeyboardShortcuts;
             bool usingGL = UseMainGLCanvas;
             bool usingMipMap = UseMainMipMap;
