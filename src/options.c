@@ -5891,8 +5891,10 @@ static struct other_opts {
 
 /* the 'O' command */
 int
-doset() /* changing options via menu by Per Liboriussen */
+doset(VOID_ARGS) /* changing options via menu by Per Liboriussen */
 {
+    issue_breadcrumb("Starting doset");
+
     static boolean made_fmtstr = FALSE;
     char buf[BUFSZ], buf2[BUFSZ] = DUMMY;
     const char *name;
@@ -5904,7 +5906,6 @@ doset() /* changing options via menu by Per Liboriussen */
     int indexoffset, startpass, endpass, optflags;
     boolean setinitial = FALSE, fromfile = FALSE;
     size_t longest_name_len;
-    issue_breadcrumb("Starting doset");
 
     tmpwin = create_nhwindow(NHW_MENU);
     start_menu_ex(tmpwin, GHMENU_STYLE_OPTIONS);
@@ -5921,6 +5922,7 @@ doset() /* changing options via menu by Per Liboriussen */
 
     if (!made_fmtstr && !iflags.menu_tab_sep) 
     {
+        issue_breadcrumb("doset: Making format string");
         /* spin through the options to find the longest name
            and adjust the format string accordingly */
         longest_name_len = 0;
