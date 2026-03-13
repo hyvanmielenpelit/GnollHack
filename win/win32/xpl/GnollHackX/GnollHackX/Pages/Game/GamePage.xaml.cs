@@ -1216,10 +1216,9 @@ namespace GnollHackX.Pages.Game
             await StartGame(replayFileName, fromTurn);
         }
 
-        private readonly object _replayLock = new object();
         private string _replayFileName = null;
-        public string ReplayFileName { get { lock (_replayLock) { return _replayFileName; } } set { lock (_replayLock) { _replayFileName = value; } } }
-        public bool PlayingReplay { get { lock (_replayLock) { return _replayFileName != null; } } }
+        public string ReplayFileName { get { return Interlocked.CompareExchange(ref _replayFileName, null, null); } set { Interlocked.Exchange(ref _replayFileName, value); } }
+        public bool PlayingReplay { get { return ReplayFileName != null; } }
 
 #if GNH_MAUI
         private IDispatcherTimer _pollingTimer = null;

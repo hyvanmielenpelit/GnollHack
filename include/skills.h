@@ -27,9 +27,9 @@ enum p_skills {
     P_DAGGER,
     P_AXE,
     P_SWORD,
-    P_BLUDGEONING_WEAPON,      /* Heavy-shafted bludgeon */
-    P_FLAIL,                   /* Two pieces hinged or chained together */
-    P_QUARTERSTAFF,            /* Long-shafted bludgeon */
+    P_BLUDGEONING_WEAPON,      /* heavy-shafted bludgeon */
+    P_FLAIL,                   /* two pieces hinged or chained together */
+    P_QUARTERSTAFF,            /* long-shafted bludgeon */
     P_POLEARM,                 /* attack two or three steps away */
     P_THRUSTING_WEAPON,        /* includes javelin */
     P_BOW,                     /* launchers */
@@ -58,7 +58,7 @@ enum p_skills {
     P_TWO_HANDED_WEAPON,       /* two-handed weapons */
     P_THROWN_WEAPON,           /* hand-thrown missiles */
     P_DODGE,                   /* increases AC */
-    P_SHIELD,                  /* increases AC and MC, and for figthing with weapon shields */
+    P_SHIELD,                  /* increases AC and MC, and for fighting with weapon shields */
     P_WAND,                    /* shooting rays with wands */
 
     /* Miscellaneous skills */
