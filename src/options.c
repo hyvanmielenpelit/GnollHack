@@ -1663,7 +1663,7 @@ int clr;
     for (i = 0; i < SIZE(colornames); i++)
         if (colornames[i].name && colornames[i].color == clr)
             return colornames[i].name;
-    return (char *) 0;
+    return "unknown color";
 }
 
 /* Note: compares only the const pointers, not the actual strings */
