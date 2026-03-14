@@ -9575,6 +9575,7 @@ namespace GnollHackX
             return false;
         }
 
+#if GNH_MAUI
         private static string _skslLightning = @"
             uniform float time;      // 0 → 1 animation progress
             uniform float tileSize;  // tile size in pixels
@@ -9969,8 +9970,9 @@ namespace GnollHackX
         public static SKRuntimeEffect MagicHitEffect = null;
         public static SKRuntimeEffect StunHitEffect = null;
         public static SKRuntimeEffect DeathMagicEffect = null;
+#endif
 
-        private static int _runtimeEffectsInited = 1;
+        private static int _runtimeEffectsInited = 0;
         public static bool RuntimeEffectsInited { get { return Interlocked.CompareExchange(ref _runtimeEffectsInited, 0, 0) != 0; } set { Interlocked.Exchange(ref _runtimeEffectsInited, value ? 1 : 0); } }
 
         public static void InitRuntimeEffects()
