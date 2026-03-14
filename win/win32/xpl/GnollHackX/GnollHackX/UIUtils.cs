@@ -656,6 +656,7 @@ namespace GnollHackX
                     res = 21;
                     break;
                 case ghmenu_styles.GHMENU_STYLE_CHOOSE_PLAYER:
+                    res = 16;
                     break;
                 case ghmenu_styles.GHMENU_STYLE_CHOOSE_DIFFICULTY:
                     break;
@@ -691,6 +692,7 @@ namespace GnollHackX
                 case ghmenu_styles.GHMENU_STYLE_VIEW_SPELL:
                 case ghmenu_styles.GHMENU_STYLE_SPELLS_ALTERNATE:
                 case ghmenu_styles.GHMENU_STYLE_VIEW_SPELL_ALTERNATE:
+                case ghmenu_styles.GHMENU_STYLE_CHOOSE_PLAYER:
                     return true;
                 default:
                     return false;

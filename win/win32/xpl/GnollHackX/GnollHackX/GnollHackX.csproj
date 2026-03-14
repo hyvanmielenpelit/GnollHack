@@ -297,6 +297,7 @@
     <None Remove="Assets\UI\symbol-food.png" />
     <None Remove="Assets\UI\symbol-mana.png" />
     <None Remove="Assets\UI\symbol-gold.png" />
+    <None Remove="Assets\UI\symbol-recommended.png" />
     <None Remove="Assets\UI\symbol-spell-abjuration.png" />
     <None Remove="Assets\UI\symbol-spell-arcane.png" />
     <None Remove="Assets\UI\symbol-spell-celestial.png" />
@@ -455,6 +456,7 @@
     <EmbeddedResource Include="Assets\UI\stone-ignore-off.png" />
     <EmbeddedResource Include="Assets\UI\stone-ignore-on.png" />
     <EmbeddedResource Include="Assets\UI\symbol-damage.png" />
+    <EmbeddedResource Include="Assets\UI\symbol-recommended.png" />
     <EmbeddedResource Include="Assets\UI\unwield.png" />
     <EmbeddedResource Include="Assets\Lato-Bold.ttf" />
     <EmbeddedResource Include="Assets\Lato-Regular.ttf" />

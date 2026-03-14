@@ -2554,6 +2554,7 @@ back_from_race:
             win = create_nhwindow(NHW_MENU);
             start_menu_ex(win, GHMENU_STYLE_CHOOSE_PLAYER);
             any = zeroany; /* zero out all bits */
+            boolean didUseRecommended = FALSE;
             for (i = 0; roles[i].name.m; i++)
             {
                 if (ok_role(i, flags.initrace, flags.initgend,
@@ -2582,19 +2583,31 @@ back_from_race:
                         else
                             Strcpy(rolenamebuf, roles[i].name.m);
                     }
+                    boolean usingSpecialSymbols = FALSE;
                     char* anbuf = an(rolenamebuf);
-                    if (anbuf && roles[i].desciption && *roles[i].desciption)
+#ifdef GNH_MOBILE
+                    if ((windowprocs.wincap2 & WC2_SPECIAL_SYMBOLS) != 0 && !wizard
+                        && (i == ROLE_BARBARIAN || i == ROLE_VALKYRIE))
+                    {
+                        Strcat(anbuf, " &bgnr;");
+                        usingSpecialSymbols = didUseRecommended = TRUE;
+                    }
+                    if (roles[i].desciption && *roles[i].desciption)
                     {
                         Sprintf(eos(anbuf), " (%s)", roles[i].desciption);
                     }
+#endif
                     int player_glyph_index = player_to_glyph_index(i,
                         flags.initrace >= 0 ? flags.initrace : RACE_HUMAN,
                         flags.initgend >= 0 ? flags.initgend : GENDER_MALE,
                         flags.initalign >= 0 ? aligns[flags.initalign].value : A_NEUTRAL,
                         0);
                     int glyph = player_glyph_index + GLYPH_PLAYER_OFF;
-                    add_menu(win, glyph, &any, thisch, 0, ATR_NONE, NO_COLOR,
-                        anbuf, MENU_UNSELECTED);
+                    struct extended_menu_info info = zeroextendedmenuinfo;
+                    if (usingSpecialSymbols)
+                        info.menu_flags |= MENU_FLAGS_USE_SPECIAL_SYMBOLS;
+                    add_extended_menu(win, glyph, &any, thisch, 0, ATR_NONE, NO_COLOR,
+                        anbuf, MENU_UNSELECTED, info);
                     lastch = thisch;
                 }
             }
@@ -2616,7 +2629,10 @@ back_from_race:
             add_menu(win, NO_GLYPH, &any, 'q', 0, ATR_NONE, NO_COLOR, "Quit",
                 MENU_UNSELECTED);
             Sprintf(pbuf, "Pick a role for your %s", plbuf);
-            end_menu(win, pbuf);
+            if (didUseRecommended && (windowprocs.wincap2 & WC2_MENU_PROPER_SUBTITLE) != 0 && (windowprocs.wincap2 & WC2_SPECIAL_SYMBOLS) != 0)
+                end_menu_ex(win, pbuf, "&bgnr;  Recommended for beginners");
+            else
+                end_menu(win, pbuf);
             n = select_menu(win, PICK_ONE, &selected);
             destroy_nhwindow(win);
             did_pick_role = TRUE;
@@ -2689,6 +2705,7 @@ back_from_gender:
                 win = create_nhwindow(NHW_MENU);
                 start_menu_ex(win, GHMENU_STYLE_CHOOSE_PLAYER);
                 any = zeroany; /* zero out all bits */
+                boolean didUseRecommended = FALSE;
                 for (i = 0; races[i].noun; i++)
                     if (ok_race(flags.initrole, i, flags.initgend,
                         flags.initalign))
@@ -2702,12 +2719,23 @@ back_from_gender:
                         int glyph = player_glyph_index + GLYPH_PLAYER_OFF;
                         Strcpy(buf, races[i].noun);
                         *buf = highc(*buf);
+                        boolean usingSpecialSymbols = FALSE;
+#ifdef GNH_MOBILE
+                        if ((windowprocs.wincap2 & WC2_SPECIAL_SYMBOLS) != 0 && !wizard && i == RACE_GNOLL)
+                        {
+                            Strcat(buf, " &bgnr;");
+                            usingSpecialSymbols = didUseRecommended = TRUE;
+                        }
                         if (races[i].desciption && *races[i].desciption)
                         {
                             Sprintf(eos(buf), " (%s)", races[i].desciption);
                         }
-                        add_menu(win, glyph, &any, races[i].noun[0], 0,
-                            ATR_NONE, NO_COLOR, buf, MENU_UNSELECTED);
+#endif
+                        struct extended_menu_info info = zeroextendedmenuinfo;
+                        if (usingSpecialSymbols)
+                            info.menu_flags |= MENU_FLAGS_USE_SPECIAL_SYMBOLS;
+                        add_extended_menu(win, glyph, &any, races[i].noun[0], 0,
+                            ATR_NONE, NO_COLOR, buf, MENU_UNSELECTED, info);
                     }
 
                 any.a_int = 0;
@@ -2728,7 +2756,10 @@ back_from_gender:
                 add_menu(win, NO_GLYPH, &any, 'q', 0, ATR_NONE, NO_COLOR, "Quit",
                     MENU_UNSELECTED);
                 Sprintf(pbuf, "Pick the race of your %s", plbuf);
-                end_menu(win, pbuf);
+                if (didUseRecommended && (windowprocs.wincap2 & WC2_MENU_PROPER_SUBTITLE) != 0 && (windowprocs.wincap2 & WC2_SPECIAL_SYMBOLS) != 0)
+                    end_menu_ex(win, pbuf, "&bgnr;  Recommended for beginners");
+                else
+                    end_menu(win, pbuf);
                 n = select_menu(win, PICK_ONE, &selected);
                 destroy_nhwindow(win);
                 did_pick_race = TRUE;

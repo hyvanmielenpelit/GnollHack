@@ -338,6 +338,7 @@
 		<None Remove="Assets\UI\stone-ignore-off.png" />
 		<None Remove="Assets\UI\stone-ignore-on.png" />
 		<None Remove="Assets\UI\symbol-damage.png" />
+		<None Remove="Assets\UI\symbol-recommended.png" />
 		<None Remove="Assets\UI\wiki.png" />
 		<None Remove="Assets\UI\worn.png" />
 		<None Remove="Assets\UI\zapquick.png" />
@@ -1109,6 +1110,7 @@
 		<EmbeddedResource Include="Assets\UI\symbol-food.png" />
 		<EmbeddedResource Include="Assets\UI\symbol-mana.png" />
     <EmbeddedResource Include="Assets\UI\symbol-gold.png" />
+    <EmbeddedResource Include="Assets\UI\symbol-recommended.png" />
     <EmbeddedResource Include="Assets\UI\symbol-spell-abjuration.png" />
 		<EmbeddedResource Include="Assets\UI\symbol-spell-arcane.png" />
 		<EmbeddedResource Include="Assets\UI\symbol-spell-celestial.png" />

@@ -3193,6 +3193,7 @@ namespace GnollHackX
         private static SKImage _addsBitmap;
         private static SKImage _foodBitmap;
         private static SKImage _goldBitmap;
+        private static SKImage _recommendedBitmap;
 
         private static SKImage _spellAbjurationBitmap;
         private static SKImage _spellArcaneBitmap;
@@ -3216,6 +3217,7 @@ namespace GnollHackX
             _addsBitmap = LoadEmbeddedUIBitmap("symbol-adds.png");
             _foodBitmap = LoadEmbeddedUIBitmap("symbol-food.png");
             _goldBitmap = LoadEmbeddedUIBitmap("symbol-gold.png");
+            _recommendedBitmap = LoadEmbeddedUIBitmap("symbol-recommended.png");
 
             _spellAbjurationBitmap = LoadEmbeddedUIBitmap("symbol-spell-abjuration.png");
             _spellArcaneBitmap = LoadEmbeddedUIBitmap("symbol-spell-arcane.png");
@@ -4646,6 +4648,10 @@ namespace GnollHackX
             {
                 bitmap = _statusMCBitmap;
             }
+            else if (trimmed_str == "&bgnr;")
+            {
+                bitmap = _recommendedBitmap;
+            }
 
             if (bitmap != null)
             {
@@ -4838,6 +4844,14 @@ namespace GnollHackX
                 ))
             {
                 bitmap = _statusMCBitmap;
+            }
+            else if (trimmedSpan.SequenceEqual("&bgnr;"
+#if !GNH_MAUI
+                .AsSpan()
+#endif
+                ))
+            {
+                bitmap = _recommendedBitmap;
             }
 
             if (bitmap != null)
