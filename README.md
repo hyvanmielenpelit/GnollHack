@@ -1,6 +1,6 @@
 # GnollHack
 
-**GnollHack** is a remastered and enhanced version of the classic roguelike game [NetHack](https://github.com/NetHack/NetHack).
+**GnollHack** builds upon the codebase of the classic roguelike game [NetHack](https://github.com/NetHack/NetHack), enhancing the game with modern gaming improvements, such as graphics, sounds, voiceovers, and a streamlined user interface.
 
 ## What Is NetHack?
 
