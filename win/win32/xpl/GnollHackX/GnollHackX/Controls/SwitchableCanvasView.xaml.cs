@@ -38,16 +38,11 @@ namespace GnollHackX.Controls
         public bool UseGL 
         {   get
             {
-                //lock (_glLock) { return _useGL; }
                 return Interlocked.CompareExchange(ref _useGL, 0, 0) != 0;
             }
             set
             {
                 Interlocked.Exchange(ref _useGL, value ? 1 : 0);
-                //lock(_glLock)
-                //{
-                //    _useGL = value;
-                //}
                 if(HasGL)
                 {
                     internalCanvasView.IsVisible = !value;
@@ -208,34 +203,6 @@ namespace GnollHackX.Controls
             }
         }
 
-        //private void internalCanvasView_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
-        //{
-        //    if (!HasGL || !UseGL)
-        //    {
-        //        if (e.PropertyName == nameof(internalCanvasView.CanvasSize))
-        //        {
-        //            lock (_propertyLock)
-        //            {
-        //                _threadSafeInternalCanvasSize = internalCanvasView.CanvasSize;
-        //            }
-        //        }
-        //    }
-        //}
-
-        //private void internalGLView_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
-        //{
-        //    if (HasGL)
-        //    {
-        //        if (e.PropertyName == nameof(_internalGLView.CanvasSize))
-        //        {
-        //            lock (_propertyLock)
-        //            {
-        //                _threadSafeInternalGLCanvasSize = _internalGLView.CanvasSize;
-        //            }
-        //        }
-        //    }
-        //}
-
         private double _threadSafeWidth = 0;
         private double _threadSafeHeight = 0;
         private double _threadSafeX = 0;
@@ -254,17 +221,6 @@ namespace GnollHackX.Controls
         public Thickness ThreadSafeMargin { get { lock (_propertyLock) { return _threadSafeMargin; } } private set { lock (_propertyLock) { _threadSafeMargin = value; } } }
         public WeakReference<IThreadSafeView> ThreadSafeParent { get { return Interlocked.CompareExchange(ref _threadSafeParent, null, null); } private set { Interlocked.Exchange(ref _threadSafeParent, value); } }
         
-        //public SKSize ThreadSafeCanvasSize { 
-        //    get 
-        //    { 
-        //        bool usingGL = UseGL && HasGL; 
-        //        lock (_propertyLock) 
-        //        { 
-        //            return usingGL ? _threadSafeInternalGLCanvasSize : _threadSafeInternalCanvasSize; 
-        //        } 
-        //    }  
-        //}
-
         private void SwitchableCanvasView_SizeChanged(object sender, EventArgs e)
         {
             ThreadSafeWidth = Width;

@@ -483,13 +483,6 @@ namespace GnollHackX
                 counter = 0;
             }
 
-            //lock (_renderingLock)
-            //{
-            //    _renderingCounter++;
-            //    if (_renderingCounter == long.MaxValue)
-            //        _renderingCounter = 0;
-            //}
-
             if (!UsePlatformRenderLoop)
                 return;
 
@@ -1886,13 +1879,8 @@ namespace GnollHackX
 
             if (Interlocked.Add(ref _aggregateSessionPlayTime, addition) < 0)
                 Interlocked.Exchange(ref _aggregateSessionPlayTime, 0);
-            //lock (_aggregateSessionPlayTimeLock)
-            //{
-            //    _aggregateSessionPlayTime = _aggregateSessionPlayTime + addition;
-            //}
         }
 
-        //private static readonly object _saveResumeLock = new object();
         private static int _cancelSaveGame = 0;
         private static int _savingGame = 0;
         private static int _appSwitchSaveStyle = 0;
@@ -2374,24 +2362,18 @@ namespace GnollHackX
             }
         }
 
-        //private readonly static object _windowedModeLock = new object();
         private static int _windowedMode = 0;
         public static bool WindowedMode
         {
             get { return Interlocked.CompareExchange(ref _windowedMode, 0, 0) != 0; }
             set { Interlocked.Exchange(ref _windowedMode, value ? 1 : 0); }
-            //get { lock (_windowedModeLock) { return _windowedMode; } }
-            //set { lock (_windowedModeLock) { _windowedMode = value; } }
         }
 
-        //private readonly static object _darkModeLock = new object();
         private static int _darkMode = 0;
         public static bool DarkMode
         {
             get { return Interlocked.CompareExchange(ref _darkMode, 0, 0) != 0; }
             set { Interlocked.Exchange(ref _darkMode, value ? 1 : 0); }
-            //get { lock (_darkModeLock) { return _darkMode; } }
-            //set { lock (_darkModeLock) { _darkMode = value; } UpdateTheme(value); }
         }
 
         private static void UpdateTheme(bool isDarkTheme)
@@ -2517,19 +2499,6 @@ namespace GnollHackX
                 UpdateSoundMuteness(oldGameMuted, oldSilentMode, oldSleepMuteMode, value, oldGameMuted, oldSilentMode, oldSleepMuteMode, oldUnfocusedMuteMode);
             } 
         }
-
-        //public static void UpdateSoundMuteness(bool newGameMuted, bool newSilentMode, bool newSleepMuteMode, bool newUnfocusedMuteMode)
-        //{
-        //    bool oldGameMuted, oldSilentMode, oldSleepMuteMode, oldUnfocusedMuteMode;
-        //    lock (_muteLock)
-        //    {
-        //        oldGameMuted = _gameMuteMode;
-        //        oldSilentMode = _silentMode;
-        //        oldSleepMuteMode = _sleepMuteMode;
-        //        oldUnfocusedMuteMode = _unfocusedMuteMode;
-        //    }
-        //    UpdateSoundMutenessCore(newGameMuted, newSilentMode, newSleepMuteMode, newUnfocusedMuteMode, oldGameMuted, oldSilentMode, oldSleepMuteMode, oldUnfocusedMuteMode);
-        //}
 
         public static void UpdateSoundMuteness(bool newGameMuted, bool newSilentMode, bool newSleepMuteMode, bool newUnfocusedMuteMode, bool oldGameMuted, bool oldSilentMode, bool oldSleepMuteMode, bool oldUnfocusedMuteMode)
         {
@@ -2680,23 +2649,10 @@ namespace GnollHackX
 
         private static int _debugPostChannel = GHConstants.DefaultDebugPostChannel ? 1 : 0;
         public static bool DebugPostChannel /* This is the setting value on Settings Page */
-        { get { return Interlocked.CompareExchange(ref _debugPostChannel, 0, 0) != 0; } set { Interlocked.Exchange(ref _debugPostChannel, value ? 1 : 0); } }
-        //{ 
-        //    get 
-        //    {
-        //        lock (_debugLock) 
-        //        { 
-        //            return _debugPostChannel; 
-        //        } 
-        //    } 
-        //    set 
-        //    { 
-        //        lock (_debugLock) 
-        //        { 
-        //            _debugPostChannel = value; 
-        //        } 
-        //    } 
-        //}
+        { 
+            get { return Interlocked.CompareExchange(ref _debugPostChannel, 0, 0) != 0; } 
+            set { Interlocked.Exchange(ref _debugPostChannel, value ? 1 : 0); } 
+        }
 
         public static bool UseDebugPostChannel  /* This should be used to check which channel to use */
         {
@@ -2874,20 +2830,15 @@ namespace GnollHackX
             }
         }
 
-        //private static readonly object _displayDataLock = new object();
         public static float DisplayDensity
         {
             get { return Interlocked.CompareExchange(ref _displayDensity, 0.0f, 0.0f); }
             set { Interlocked.Exchange(ref _displayDensity, value <= 0.0f ? 1.0f : value); }
-            //get { lock (_displayDataLock) { return _displayDensity; } }
-            //set { lock (_displayDataLock) { _displayDensity = value <= 0.0f ? 1.0f : value; } }
         }
         public static float DisplayRefreshRate
         {
             get { return Interlocked.CompareExchange(ref _displayRefreshRate, 0.0f, 0.0f); }
             set { Interlocked.Exchange(ref _displayRefreshRate, value <= 0.0f ? 1.0f : value); }
-            //get { lock (_displayDataLock) { return _displayRefreshRate; } }
-            //set { lock (_displayDataLock) { _displayRefreshRate = value <= 0.0f ? 1.0f : value; } }
         }
 
         private static float _customScreenScale = 1.0f;
@@ -2895,8 +2846,6 @@ namespace GnollHackX
         {
             get { return Interlocked.CompareExchange(ref _customScreenScale, 0.0f, 0.0f); }
             set { Interlocked.Exchange(ref _customScreenScale, value <= 0.0f ? 1.0f : value); }
-            //get { lock (_displayDataLock) { return _customScreenScale; } }
-            //set { lock (_displayDataLock) { _customScreenScale = value <= 0.0f ? 1.0f : value; } }
         }
 
         private static float _platformScreenScale = 1.0f;
@@ -2904,14 +2853,11 @@ namespace GnollHackX
         {
             get { return Interlocked.CompareExchange(ref _platformScreenScale, 0.0f, 0.0f); }
             set { Interlocked.Exchange(ref _platformScreenScale, value <= 0.0f ? 1.0f : value); }
-            //get { lock (_displayDataLock) { return _platformScreenScale; } }
-            //set { lock (_displayDataLock) { _platformScreenScale = value <= 0.0f ? 1.0f : value; } }
         }
 
         public static float TotalScreenScale
         {
             get { return DisplayDensity * PlatformScreenScale * CustomScreenScale; }
-            //get { lock (_displayDataLock) { return _displayDensity * _platformScreenScale * _customScreenScale; } }
         }
 
         public static GHPlatform PlatformId
@@ -4907,157 +4853,148 @@ namespace GnollHackX
 
         public static void InitBaseCachedBitmaps()
         {
-            //lock (_cachedBitmapsLock)
+            try
             {
-                try
+                _cachedBitmaps.Clear();
+                string[] cachedBitmaps = new string[]
                 {
-                    _cachedBitmaps.Clear();
-                    string[] cachedBitmaps = new string[]
+                AppResourceName + ".Assets.UI.missing_icon.png",
+                AppResourceName + ".Assets.FMOD-Logo-192-White.png",
+                AppResourceName + ".Assets.gnollhack-logo-test-2.png",
+                AppResourceName + ".Assets.gnollhack-icon-v2-512.png",
+                AppResourceName + ".Assets.button_normal.png",
+                AppResourceName + ".Assets.button_disabled.png",
+                AppResourceName + ".Assets.button_selected.png",
+                };
+                foreach (string imagePath in cachedBitmaps)
+                {
+                    using (Stream stream = _assembly.GetManifestResourceStream(imagePath))
                     {
-                    AppResourceName + ".Assets.UI.missing_icon.png",
-                    AppResourceName + ".Assets.FMOD-Logo-192-White.png",
-                    AppResourceName + ".Assets.gnollhack-logo-test-2.png",
-                    AppResourceName + ".Assets.gnollhack-icon-v2-512.png",
-                    AppResourceName + ".Assets.button_normal.png",
-                    AppResourceName + ".Assets.button_disabled.png",
-                    AppResourceName + ".Assets.button_selected.png",
-                    };
-                    foreach (string imagePath in cachedBitmaps)
-                    {
-                        using (Stream stream = _assembly.GetManifestResourceStream(imagePath))
+                        SKBitmap newBitmap = SKBitmap.Decode(stream);
+                        if (newBitmap != null)
                         {
-                            SKBitmap newBitmap = SKBitmap.Decode(stream);
-                            if (newBitmap != null)
-                            {
-                                newBitmap.SetImmutable();
-                                SKImage res = SKImage.FromBitmap(newBitmap);
-                                _cachedBitmaps.TryAdd("resource://" + imagePath, res);
-                                if (res != null)
-                                    AddUsedBitmapBytes(res.Info.BytesSize64);
-                            }
+                            newBitmap.SetImmutable();
+                            SKImage res = SKImage.FromBitmap(newBitmap);
+                            _cachedBitmaps.TryAdd("resource://" + imagePath, res);
+                            if (res != null)
+                                AddUsedBitmapBytes(res.Info.BytesSize64);
                         }
                     }
                 }
-                catch (Exception ex)
-                {
-                    Debug.WriteLine(ex.Message);
-                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
             }
         }
 
         public static void InitAdditionalCachedBitmaps()
         {
-            //lock (_cachedBitmapsLock)
+            try
             {
-                try
+                string[] cachedBitmaps = new string[]
                 {
-                    string[] cachedBitmaps = new string[]
+                AppResourceName + ".Assets.UI.yes.png",
+                AppResourceName + ".Assets.UI.yestoall.png",
+                AppResourceName + ".Assets.UI.no.png",
+                AppResourceName + ".Assets.UI.cancel.png",
+                AppResourceName + ".Assets.UI.inventory.png",
+                AppResourceName + ".Assets.UI.leftring.png",
+                AppResourceName + ".Assets.UI.rightring.png",
+                AppResourceName + ".Assets.UI.load.png",
+                AppResourceName + ".Assets.UI.name.png",
+                AppResourceName + ".Assets.UI.dropmany.png",
+                AppResourceName + ".Assets.UI.page-previous.png",
+                AppResourceName + ".Assets.UI.page-next.png",
+                AppResourceName + ".Assets.UI.stone-look-off.png",
+                AppResourceName + ".Assets.UI.stone-look-on.png",
+                AppResourceName + ".Assets.UI.stone-autocenter-off.png",
+                AppResourceName + ".Assets.UI.stone-autocenter-on.png",
+                AppResourceName + ".Assets.UI.stone-minimap-off.png",
+                AppResourceName + ".Assets.UI.stone-minimap-on.png",
+                AppResourceName + ".Assets.UI.stone-travel-off.png",
+                AppResourceName + ".Assets.UI.stone-travel-on.png",
+                AppResourceName + ".Assets.UI.stone-altmap-off.png",
+                AppResourceName + ".Assets.UI.stone-altmap-on.png",
+                AppResourceName + ".Assets.UI.stairs-down.png",
+                AppResourceName + ".Assets.UI.stairs-up.png",
+                AppResourceName + ".Assets.UI.chat.png",
+                AppResourceName + ".Assets.UI.pickup.png",
+                AppResourceName + ".Assets.UI.eat.png",
+                AppResourceName + ".Assets.UI.pray.png",
+                AppResourceName + ".Assets.UI.offer.png",
+                AppResourceName + ".Assets.UI.loot.png",
+                AppResourceName + ".Assets.UI.lastitem.png",
+                AppResourceName + ".Assets.UI.conduct.png",
+                AppResourceName + ".Assets.UI.manual.png",
+                AppResourceName + ".Assets.UI.delphi.png",
+                AppResourceName + ".Assets.UI.oracle.png",
+                AppResourceName + ".Assets.UI.chronicle.png",
+                AppResourceName + ".Assets.UI.music.png",
+                AppResourceName + ".Assets.UI.you.png",
+                AppResourceName + ".Assets.tombstone.png",
+                };
+                foreach (string imagePath in cachedBitmaps)
+                {
+                    using (Stream stream = _assembly.GetManifestResourceStream(imagePath))
                     {
-                    AppResourceName + ".Assets.UI.yes.png",
-                    AppResourceName + ".Assets.UI.yestoall.png",
-                    AppResourceName + ".Assets.UI.no.png",
-                    AppResourceName + ".Assets.UI.cancel.png",
-                    AppResourceName + ".Assets.UI.inventory.png",
-                    AppResourceName + ".Assets.UI.leftring.png",
-                    AppResourceName + ".Assets.UI.rightring.png",
-                    AppResourceName + ".Assets.UI.load.png",
-                    AppResourceName + ".Assets.UI.name.png",
-                    AppResourceName + ".Assets.UI.dropmany.png",
-                    AppResourceName + ".Assets.UI.page-previous.png",
-                    AppResourceName + ".Assets.UI.page-next.png",
-                    AppResourceName + ".Assets.UI.stone-look-off.png",
-                    AppResourceName + ".Assets.UI.stone-look-on.png",
-                    AppResourceName + ".Assets.UI.stone-autocenter-off.png",
-                    AppResourceName + ".Assets.UI.stone-autocenter-on.png",
-                    AppResourceName + ".Assets.UI.stone-minimap-off.png",
-                    AppResourceName + ".Assets.UI.stone-minimap-on.png",
-                    AppResourceName + ".Assets.UI.stone-travel-off.png",
-                    AppResourceName + ".Assets.UI.stone-travel-on.png",
-                    AppResourceName + ".Assets.UI.stone-altmap-off.png",
-                    AppResourceName + ".Assets.UI.stone-altmap-on.png",
-                    AppResourceName + ".Assets.UI.stairs-down.png",
-                    AppResourceName + ".Assets.UI.stairs-up.png",
-                    AppResourceName + ".Assets.UI.chat.png",
-                    AppResourceName + ".Assets.UI.pickup.png",
-                    AppResourceName + ".Assets.UI.eat.png",
-                    AppResourceName + ".Assets.UI.pray.png",
-                    AppResourceName + ".Assets.UI.offer.png",
-                    AppResourceName + ".Assets.UI.loot.png",
-                    AppResourceName + ".Assets.UI.lastitem.png",
-                    AppResourceName + ".Assets.UI.conduct.png",
-                    AppResourceName + ".Assets.UI.manual.png",
-                    AppResourceName + ".Assets.UI.delphi.png",
-                    AppResourceName + ".Assets.UI.oracle.png",
-                    AppResourceName + ".Assets.UI.chronicle.png",
-                    AppResourceName + ".Assets.UI.music.png",
-                    AppResourceName + ".Assets.UI.you.png",
-                    AppResourceName + ".Assets.tombstone.png",
-                    };
-                    foreach (string imagePath in cachedBitmaps)
-                    {
-                        using (Stream stream = _assembly.GetManifestResourceStream(imagePath))
+                        SKBitmap newBitmap = SKBitmap.Decode(stream);
+                        if (newBitmap != null)
                         {
-                            SKBitmap newBitmap = SKBitmap.Decode(stream);
-                            if (newBitmap != null)
-                            {
-                                newBitmap.SetImmutable();
-                                SKImage res = SKImage.FromBitmap(newBitmap);
-                                _cachedBitmaps.TryAdd("resource://" + imagePath, res);
-                                if (res != null)
-                                    AddUsedBitmapBytes(res.Info.BytesSize64);
-                            }
+                            newBitmap.SetImmutable();
+                            SKImage res = SKImage.FromBitmap(newBitmap);
+                            _cachedBitmaps.TryAdd("resource://" + imagePath, res);
+                            if (res != null)
+                                AddUsedBitmapBytes(res.Info.BytesSize64);
                         }
                     }
                 }
-                catch (Exception ex)
-                {
-                    Debug.WriteLine(ex.Message);
-                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
             }
         }
+
         public static SKImage GetCachedImageSourceBitmap(string sourcePath, bool addToCache)
         {
             if (sourcePath == null || sourcePath == "")
                 return null;
 
-            //lock (_cachedBitmapsLock)
+            try
             {
-                try
+                SKImage bitmap;
+                if (!_cachedBitmaps.TryGetValue(sourcePath, out bitmap))
                 {
-                    SKImage bitmap;
-                    if (!_cachedBitmaps.TryGetValue(sourcePath, out bitmap))
+                    string imagePath = sourcePath.Length > 11 && sourcePath.Substring(0, 11) == "resource://" ? sourcePath.Substring(11) : sourcePath;
+                    Assembly assembly = typeof(App).GetTypeInfo().Assembly;
+                    using (Stream stream = assembly.GetManifestResourceStream(imagePath))
                     {
-                        string imagePath = sourcePath.Length > 11 && sourcePath.Substring(0, 11) == "resource://" ? sourcePath.Substring(11) : sourcePath;
-                        Assembly assembly = typeof(App).GetTypeInfo().Assembly;
-                        using (Stream stream = assembly.GetManifestResourceStream(imagePath))
+                        SKBitmap newBitmap = SKBitmap.Decode(stream);
+                        if (newBitmap != null)
                         {
-                            SKBitmap newBitmap = SKBitmap.Decode(stream);
-                            if (newBitmap != null)
-                            {
-                                newBitmap.SetImmutable();
-                                SKImage newImage = SKImage.FromBitmap(newBitmap);
-                                if (addToCache)
-                                    _cachedBitmaps.TryAdd(sourcePath, newImage);
-                                if (newImage != null)
-                                    AddUsedBitmapBytes(newImage.Info.BytesSize64);
+                            newBitmap.SetImmutable();
+                            SKImage newImage = SKImage.FromBitmap(newBitmap);
+                            if (addToCache)
+                                _cachedBitmaps.TryAdd(sourcePath, newImage);
+                            if (newImage != null)
+                                AddUsedBitmapBytes(newImage.Info.BytesSize64);
 
-                                return newImage;
-                            }
+                            return newImage;
                         }
                     }
-                    else
-                        return bitmap;
                 }
-                catch (Exception ex)
-                {
-                    Debug.WriteLine(ex.Message);
-                }
-                return null;
+                else
+                    return bitmap;
             }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+            }
+            return null;
         }
 
 
-        //private static readonly object _postingGameStatusLock = new object();
         private static int _postingGameStatus = 0;
         public static bool PostingGameStatus { get { return Interlocked.CompareExchange(ref _postingGameStatus, 0, 0) != 0 || TournamentMode; } set { Interlocked.Exchange(ref _postingGameStatus, value ? 1 : 0); } }
 
@@ -5069,30 +5006,24 @@ namespace GnollHackX
         private static int  _postingDiagnosticData = 0;
         public static bool PostingDiagnosticData { get { return Interlocked.CompareExchange(ref _postingDiagnosticData, 0, 0) != 0; } set { Interlocked.Exchange(ref _postingDiagnosticData, value ? 1 : 0); } }
 #endif
-        //private static readonly object _postingXlogEntriesLock = new object();
         private static int _postingXlogEntries = 0;
         public static bool PostingXlogEntries { get { return Interlocked.CompareExchange(ref _postingXlogEntries, 0, 0) != 0 || TournamentMode; } set { Interlocked.Exchange(ref _postingXlogEntries, value ? 1 : 0); } }
 
-        //private static readonly object _postingReplaysLock = new object();
         private static int _postingReplays = 0;
         public static bool PostingReplays { get { return Interlocked.CompareExchange(ref _postingReplays, 0, 0) != 0 || TournamentMode; } set { Interlocked.Exchange(ref _postingReplays, value ? 1 : 0); } }
 
-        //private static readonly object _postingBonesFilesLock = new object();
         private static int _postingBonesFiles = 0;
         public static bool PostingBonesFiles { get { return Interlocked.CompareExchange(ref _postingBonesFiles, 0, 0) != 0 || TournamentMode; } set { Interlocked.Exchange(ref _postingBonesFiles, value ? 1 : 0); } }
 
-        //private static readonly object _bonesUserListIsBlackLock = new object();
         private static int _bonesUserListIsBlack = 0;
         public static bool BonesUserListIsBlack { get { return Interlocked.CompareExchange(ref _bonesUserListIsBlack, 0, 0) != 0; } set { Interlocked.Exchange(ref _bonesUserListIsBlack, value ? 1 : 0); } }
 
-        //private static readonly object _allowInGameLock = new object();
         private static int _allowBones = 0;
         private static int _allowPet = 0;
         public static bool AllowBones { get { return Interlocked.CompareExchange(ref _allowBones, 0, 0) != 0 || TournamentMode; } set { Interlocked.Exchange(ref _allowBones, value ? 1 : 0); } }
         public static bool AllowPet { get { return Interlocked.CompareExchange(ref _allowPet, 0, 0) != 0; } set { Interlocked.Exchange(ref _allowPet, value ? 1 : 0); } }
         public static bool MirroredPetsNotGifted { get { return Interlocked.CompareExchange(ref _allowPet, 0, 0) == 0; } set { Interlocked.Exchange(ref _allowPet, value ? 0 : 1); } }
 
-        //private static readonly object _behaviorLock = new object();
         private static int _emptyWishIsNothing = 0;
         private static int _okOnDoubleClick = 0;
         private static int _getPositionArrows = 0;
@@ -5251,26 +5182,25 @@ namespace GnollHackX
             }
         }
 
-        //private static readonly object _forcePostBonesLock = new object();
         private static int _forcePostBones = 0;
         public static bool ForcePostBones { get { return Interlocked.CompareExchange(ref _forcePostBones, 0, 0) != 0; } set { Interlocked.Exchange(ref _forcePostBones, value ? 1 : 0); } }
 
-        //private static readonly object _bonesAllowedUsersLock = new object();
         private static string _bonesAllowedUsers = "";
         public static string BonesAllowedUsers 
         { 
-            //get { lock (_bonesAllowedUsersLock) { return _bonesAllowedUsers; } } 
-            //set { lock (_bonesAllowedUsersLock) { _bonesAllowedUsers = value; } }
             get { return Interlocked.CompareExchange(ref _bonesAllowedUsers, null, null); }
             set { Interlocked.Exchange(ref _bonesAllowedUsers, value); }
         }
 
-        private static readonly object _saveFileTrackingLock = new object();
-        private static bool _saveFileTracking = false;
-        public static bool SaveFileTracking { get { bool t = TournamentMode; lock (_saveFileTrackingLock) { return _saveFileTracking || t; } } set { lock (_saveFileTrackingLock) { _saveFileTracking = value; } } }
+        private static int _saveFileTracking = 0;
+        public static bool SaveFileTracking 
+        { 
+            get { return TournamentMode || Interlocked.CompareExchange(ref _saveFileTracking, 0, 0) != 0; } 
+            set { Interlocked.Exchange(ref _saveFileTracking, value ? 1 : 0); } 
+        }
+
         public static bool IsSaveFileTrackingNeeded { get { return IsDesktop || IsMobileRunningOnDesktop; } }
 
-        //private static readonly object _xlogCreditialLock = new object();
         private static string _xlogUserName = "";
         private static string _xlogPassword = "";
 
@@ -5309,14 +5239,11 @@ namespace GnollHackX
 
         public static bool AreCredentialsVerified(string username, string password)
         {
-            //lock (_xlogCreditialLock)
-            {
-                if (!XlogUserNameVerified)
-                    return false;
-                string verifiedUserName = VerifiedUserName;
-                string verifiedPassword = VerifiedPassword;
-                return verifiedUserName != null && verifiedPassword != null && username == verifiedUserName && password == verifiedPassword;
-            }
+            if (!XlogUserNameVerified)
+                return false;
+            string verifiedUserName = VerifiedUserName;
+            string verifiedPassword = VerifiedPassword;
+            return verifiedUserName != null && verifiedPassword != null && username == verifiedUserName && password == verifiedPassword;
         }
 
         public static void TryVerifyXlogUserName()

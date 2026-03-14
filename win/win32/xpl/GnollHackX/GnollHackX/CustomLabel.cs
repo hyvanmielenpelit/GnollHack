@@ -204,12 +204,9 @@ namespace GnollHackX
         }
 
 
-
-        //private readonly object _textRowLock = new object();
         private List<string> _textRows = null;
         private List<string> TextRows
         {
-            //get { lock (_textRowLock) { return _textRows == null ? new string[1] {""} : _textRows; } }
             get 
             { 
                 var res = Interlocked.CompareExchange(ref _textRows, null, null);
@@ -660,10 +657,6 @@ namespace GnollHackX
                     else
                     {
                         usedTextOffset = InterlockedTextScrollOffset;
-                        //lock (_textScrollLock)
-                        //{
-                        //    usedTextOffset = _textScrollOffset;
-                        //}
                     }
 
                     y += usedTextOffset;
