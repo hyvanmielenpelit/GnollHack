@@ -358,6 +358,7 @@ namespace GnollHackX
                     case ghmenu_styles.GHMENU_STYLE_CHOOSE_SAVED_GAME:
                         break;
                     case ghmenu_styles.GHMENU_STYLE_CHOOSE_PLAYER:
+                        res = 1;
                         break;
                     case ghmenu_styles.GHMENU_STYLE_CHARACTER:
                         res = 1;
@@ -878,7 +879,7 @@ namespace GnollHackX
                 switch (_menuInfo.Style)
                 {
                     case ghmenu_styles.GHMENU_STYLE_CHOOSE_PLAYER:
-                        float altsize = Math.Min((float)GHConstants.TileHeight, (Math.Min(canvaswidth, canvasheight) / 15.25f - bottompadding - toppadding));
+                        float altsize = Math.Max(fontspacing * 1.6f, (Math.Min(canvaswidth, canvasheight) / 15.25f - bottompadding - toppadding));
                         if (altsize > fontspacing)
                             res = altsize;
                         break;

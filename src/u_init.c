@@ -2488,6 +2488,7 @@ common_player_selection(VOID_ARGS)
     int i, k, n;
     char pick4u = 'n', thisch, lastch = 0;
     char pbuf[QBUFSZ], plbuf[QBUFSZ];
+    char buf[BUFSZ];
     winid win;
     anything any;
     menu_item* selected = 0;
@@ -2581,6 +2582,11 @@ back_from_race:
                         else
                             Strcpy(rolenamebuf, roles[i].name.m);
                     }
+                    char* anbuf = an(rolenamebuf);
+                    if (anbuf && roles[i].desciption && *roles[i].desciption)
+                    {
+                        Sprintf(eos(anbuf), " (%s)", roles[i].desciption);
+                    }
                     int player_glyph_index = player_to_glyph_index(i,
                         flags.initrace >= 0 ? flags.initrace : RACE_HUMAN,
                         flags.initgend >= 0 ? flags.initgend : GENDER_MALE,
@@ -2588,12 +2594,12 @@ back_from_race:
                         0);
                     int glyph = player_glyph_index + GLYPH_PLAYER_OFF;
                     add_menu(win, glyph, &any, thisch, 0, ATR_NONE, NO_COLOR,
-                        an(rolenamebuf), MENU_UNSELECTED);
+                        anbuf, MENU_UNSELECTED);
                     lastch = thisch;
                 }
             }
             any.a_int = 0;
-            add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NONE, NO_COLOR, "",
+            add_menu(win, NO_GLYPH, &any, 0, 0, ATR_HALF_SIZE, NO_COLOR, "",
                 MENU_UNSELECTED);
             any.a_int = pick_role(flags.initrace, flags.initgend,
                 flags.initalign, PICK_RANDOM) + 1;
@@ -2694,12 +2700,18 @@ back_from_gender:
                             flags.initalign >= 0 ? aligns[flags.initalign].value : A_NEUTRAL,
                             0);
                         int glyph = player_glyph_index + GLYPH_PLAYER_OFF;
+                        Strcpy(buf, races[i].noun);
+                        *buf = highc(*buf);
+                        if (races[i].desciption && *races[i].desciption)
+                        {
+                            Sprintf(eos(buf), " (%s)", races[i].desciption);
+                        }
                         add_menu(win, glyph, &any, races[i].noun[0], 0,
-                            ATR_NONE, NO_COLOR, races[i].noun, MENU_UNSELECTED);
+                            ATR_NONE, NO_COLOR, buf, MENU_UNSELECTED);
                     }
 
                 any.a_int = 0;
-                add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NONE, NO_COLOR, "",
+                add_menu(win, NO_GLYPH, &any, 0, 0, ATR_HALF_SIZE, NO_COLOR, "",
                     MENU_UNSELECTED);
                 any.a_int = pick_race(flags.initrole, flags.initgend,
                     flags.initalign, PICK_RANDOM) + 1;
@@ -2809,12 +2821,18 @@ back_from_align:
                             flags.initalign >= 0 ? aligns[flags.initalign].value : A_NEUTRAL,
                             0);
                         int glyph = player_glyph_index + GLYPH_PLAYER_OFF;
+                        Strcpy(buf, genders[i].adj);
+                        *buf = highc(*buf);
+                        if (genders[i].desciption && *genders[i].desciption)
+                        {
+                            Sprintf(eos(buf), " (%s)", genders[i].desciption);
+                        }
                         add_menu(win, glyph, &any, genders[i].adj[0], 0,
-                            ATR_NONE, NO_COLOR, genders[i].adj, MENU_UNSELECTED);
+                            ATR_NONE, NO_COLOR, buf, MENU_UNSELECTED);
                     }
 
                 any.a_int = 0;
-                add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NONE, NO_COLOR, "",
+                add_menu(win, NO_GLYPH, &any, 0, 0, ATR_HALF_SIZE, NO_COLOR, "",
                     MENU_UNSELECTED);
                 any.a_int = pick_gend(flags.initrole, flags.initrace,
                     flags.initalign, PICK_RANDOM) + 1;
@@ -2928,12 +2946,18 @@ back_from_align:
                             aligns[i].value,
                             0);
                         int glyph = player_glyph_index + GLYPH_PLAYER_OFF;
+                        Strcpy(buf, aligns[i].adj);
+                        *buf = highc(*buf);
+                        if (aligns[i].desciption && *aligns[i].desciption)
+                        {
+                            Sprintf(eos(buf), " (%s)", aligns[i].desciption);
+                        }
                         add_menu(win, glyph, &any, aligns[i].adj[0], 0,
-                            ATR_NONE, NO_COLOR, aligns[i].adj, MENU_UNSELECTED);
+                            ATR_NONE, NO_COLOR, buf, MENU_UNSELECTED);
                     }
 
                 any.a_int = 0;
-                add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NONE, NO_COLOR, "",
+                add_menu(win, NO_GLYPH, &any, 0, 0, ATR_HALF_SIZE, NO_COLOR, "",
                     MENU_UNSELECTED);
                 any.a_int = pick_align(flags.initrole, flags.initrace,
                     flags.initgend, PICK_RANDOM) + 1;

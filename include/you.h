@@ -333,6 +333,7 @@ struct Role {
     const char *homebase; /* quest leader's location (from questpgr.c) */
     const char *intermed; /* quest intermediate goal (from questpgr.c) */
     short rolenum; /* increasing id number of the role */
+    const char* desciption;
     const char *trait_descriptions[MAX_TRAIT_DESCRIPTIONS]; /* Up to five descriptions of various role advantages and disadvantages */
     /*** Indices of important monsters and objects ***/
     short monsternum, /* index (PM_) (botl.c) */
@@ -405,6 +406,7 @@ struct Race {
     struct RoleName individual; /* individual as a noun ("man", "elf") */
     short racenum; /* increasing id number of the race */
 
+    const char* desciption;
     const char *trait_descriptions[MAX_TRAIT_DESCRIPTIONS]; /* Up to five descriptions of various race advantages and disadvantages */
 
     /*** Indices of important monsters and objects ***/
@@ -451,6 +453,7 @@ struct Gender {
     const char *his;      /* his/her/its */
     const char *filecode; /* file code */
     uint64_t allow;  /* equivalent ROLE_ mask */
+    const char* desciption;
 };
 #define ROLE_GENDERS 2    /* number of permitted player genders
                              increment to 3 if you allow neuter roles */
@@ -476,6 +479,7 @@ struct Align {
     const char *filecode; /* file code */
     uint64_t allow;  /* equivalent ROLE_ mask */
     aligntyp value;       /* equivalent A_ value */
+    const char* desciption;
 };
 #define ROLE_ALIGNS 3     /* number of permitted player alignments */
 
