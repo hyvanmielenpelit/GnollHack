@@ -480,7 +480,11 @@ boolean is_numerator;
             else if (otmp->material == MAT_VEGGY)
                 is_veg = TRUE;
         }
-        if (is_numerator && is_veg && herbivorous(mtmp->data) && !carnivorous(mtmp->data))
+        if (is_numerator && is_veg 
+            && herbivorous(mtmp->data) && !carnivorous(mtmp->data)
+            && !is_mplayer(mtmp->data) 
+            && !is_human(mtmp->data) && !is_elf(mtmp->data) && !is_dwarf(mtmp->data) && !is_gnoll(mtmp->data) && !is_orc(mtmp->data)
+            )
             res *= 4U;
     }
 
