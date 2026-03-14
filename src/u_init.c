@@ -3076,7 +3076,6 @@ back_from_align:
         add_menu(win, NO_GLYPH, &any, 0, 0, ATR_HALF_SIZE, NO_COLOR, " ",
             MENU_UNSELECTED);
 
-        char buf[BUFSZ];
         add_menu(win, NO_GLYPH, &any, 0, 0, iflags.menu_headings | ATR_TITLE, NO_COLOR, "Character Abilities",
             MENU_UNSELECTED);
 
