@@ -1197,7 +1197,7 @@ const struct Race races[] = {
         "Dwa",
         { 0, 0 },
         2,
-        "Sturdy with bonus to physical attributes",
+        "Sturdy and resilient",
         { "Increased nutrition from cram ration", "", "", "", ""},
         PM_DWARF,
         PM_DWARF_MUMMY,
@@ -1243,7 +1243,7 @@ const struct Race races[] = {
         "Orc",
         { 0, 0 },
         NUM_RACES - 1,
-        "Chaotic race with poison resistance",
+        "Chaotic and immune to poison",
         { "Can practice cannibalism", "Reduced nutrition from elven waybread", "", "", ""},
         PM_ORC,
         PM_ORC_MUMMY,
@@ -1301,7 +1301,7 @@ const struct Gender genders[] = {
 const struct Align aligns[] = {
     { "law", "lawful", "Law", ROLE_LAWFUL, A_LAWFUL, "Worships a deity of law and order" },
     { "balance", "neutral", "Neu", ROLE_NEUTRAL, A_NEUTRAL, "Worships a deity of balance"  },
-    { "chaos", "chaotic", "Cha", ROLE_CHAOTIC, A_CHAOTIC, "Worships a deity of chaos and anarchy"  },
+    { "chaos", "chaotic", "Cha", ROLE_CHAOTIC, A_CHAOTIC, "Worships a deity of chaos"  },
     { "evil", "unaligned", "Una", 0, A_NONE, "Worships an evil deity"  }
 };
 
