@@ -284,7 +284,7 @@ const struct Role roles[] = {
       "the Temple of Epidaurus",
       "the Temple of Coeus",
       ROLE_HEALER,
-      "Rich healing spell caster",
+      "Wealthy healing spell caster",
       { "Extra score from learnt new spells", "", "", "", ""},
       PM_HEALER,
       NON_PM,
