@@ -5763,7 +5763,7 @@ namespace GnollHackX.Pages.Game
                 tileflag_halfsize, tileflag_normalobjmissile, tileflag_fullsizeditem,
                 tx, ty, width, height,
                 scale, targetscale, scaled_x_padding, scaled_y_padding, scaled_tile_height,
-                false, drawwallends, usingGL, false, fixRects, fixVertical);
+                false, drawwallends, usingGL, false, fixRects, false);
 
             if (pointerIsHoveringOnTile && paint.ColorFilter != null)
             {
@@ -7169,7 +7169,7 @@ namespace GnollHackX.Pages.Game
             bool drawwallends = DrawWallEnds;
             bool breatheanimations = BreatheAnimations;
             bool fixRects = GHApp.FixRects;
-            bool fixVertical = GHApp.FixVertical;
+            bool fixVertical = false; /* Applies only to menus */ // GHApp.FixVertical;
             bool runtimeEffects = GHApp.RuntimeEffects && GHApp.RuntimeEffectsInited;
             bool showKeyboardShortcuts = GHApp.ShowKeyboardShortcuts;
             bool usingGL = UseMainGLCanvas;
@@ -17215,7 +17215,7 @@ namespace GnollHackX.Pages.Game
             bool isHighlightedKeys = MenuHighlightedKeys;
             bool usingGL = MenuCanvas.UseGL;
             bool fixRects = GHApp.FixRects;
-            bool fixVertical = GHApp.FixVertical;
+            bool fixVertical = isHighFilterQuality && GHApp.FixVertical; /* Applies only when high quality filtering is on; it is to remove the coloring from outside the tile due to linear filtering */
             bool revertBW = MenuCanvas.RevertBlackAndWhite;
             bool isInventory = (menuStyle >= ghmenu_styles.GHMENU_STYLE_INVENTORY && menuStyle <= ghmenu_styles.GHMENU_STYLE_OTHERS_INVENTORY) || menuStyle == ghmenu_styles.GHMENU_STYLE_INVENTORY_EQUIPMENT;
             float x = 0, y = 0;

@@ -1128,19 +1128,15 @@ namespace GnollHackX
 
         public static void MaybeFixRects(ref SKRect source, ref SKRect dest, float targetscale, bool usingGL, bool fixRects, bool fixVertical)
         {
-            bool fixApplies = usingGL || IsWindows;
-            if (fixApplies && (fixVertical || fixRects))
+            /* Requires only high quality filter to be on; can happen on GL and non-GL */
+            if (fixVertical && source.Height > 1.02f)
             {
-                /* Vertical bitmap height is not a power of 2, so it is more easily distorted */
                 /* Note that many horizontal artifacts in menus may be caused by Improved Menu Images and its high quality filtering that expands beyond the source bitmap */
-                if (source.Height > 0.04f)
-                {
-                    source.Top += 0.02f;
-                    source.Bottom -= 0.02f;
-                }
+                source.Top += 0.51f;
+                source.Bottom -= 0.51f;
             }
 
-            if (fixApplies && fixRects)
+            if ((usingGL || IsWindows) && fixRects)
             {
                 //if (targetscale <= 0)
                 //    targetscale = 1.0f;
@@ -1150,6 +1146,12 @@ namespace GnollHackX
                     source.Left += 0.01f;
                     source.Right -= 0.01f;
                 }
+                if (!fixVertical && source.Height > 0.02f)
+                {
+                    source.Top += 0.01f;
+                    source.Bottom -= 0.01f;
+                }
+
                 dest.Right += 1.0f;
                 dest.Bottom += 1.0f;
             }
@@ -1691,7 +1693,7 @@ namespace GnollHackX
             get
             {
 #if GNH_MAUI
-#if WINDOWS || IOS
+#if IOS
                 return true;
 #else
                 return false;

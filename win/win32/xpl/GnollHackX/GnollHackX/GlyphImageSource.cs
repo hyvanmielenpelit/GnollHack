@@ -435,7 +435,7 @@ namespace GnollHackX
                             scale = tileWidth / GHConstants.TileWidth;
                         }
 
-                        GHApp.MaybeFixRects(ref sourcerect, ref targetrect, scale, usingGL, fixRects, fixVertical);
+                        GHApp.MaybeFixRects(ref sourcerect, ref targetrect, scale, usingGL, fixRects, fixVertical && highFilterQuality && !tileflag_halfsize);
                         canvas.DrawImage(GHApp._tileMap[sheet_idx], sourcerect, targetrect,
 #if GNH_MAUI
                             new SKSamplingOptions(highFilterQuality ? SKFilterMode.Linear : SKFilterMode.Nearest),
@@ -479,7 +479,7 @@ namespace GnollHackX
                             canvas.Scale(flip_tile ? -1 : 1, 1, 0, 0);
                             SKRect sourcerect = new SKRect(tile_x, tile_y, tile_x + GHConstants.TileWidth, tile_y + GHConstants.TileHeight);
                             SKRect targetrect = new SKRect(0, 0, tileWidth, tileHeight);
-                            GHApp.MaybeFixRects(ref sourcerect, ref targetrect, scale, usingGL, fixRects, fixVertical);
+                            GHApp.MaybeFixRects(ref sourcerect, ref targetrect, scale, usingGL, fixRects, false);
                             canvas.DrawImage(GHApp._tileMap[sheet_idx], sourcerect, targetrect,
 #if GNH_MAUI
                             new SKSamplingOptions(highFilterQuality ? SKFilterMode.Linear : SKFilterMode.Nearest),
@@ -556,7 +556,7 @@ namespace GnollHackX
                                     canvas.Scale(flip_tile ? -1 : 1, 1, 0, 0);
                                     SKRect sourcerect = new SKRect(etile_x, etile_y, etile_x + GHConstants.TileWidth, etile_y + GHConstants.TileHeight);
                                     SKRect targetrect = new SKRect(0, 0, tileWidth, tileHeight);
-                                    GHApp.MaybeFixRects(ref sourcerect, ref targetrect, scale, usingGL, fixRects, fixVertical);
+                                    GHApp.MaybeFixRects(ref sourcerect, ref targetrect, scale, usingGL, fixRects, false);
                                     canvas.DrawImage(GHApp._tileMap[e_sheet_idx], sourcerect, targetrect,
 #if GNH_MAUI
                                         new SKSamplingOptions(highFilterQuality ? SKFilterMode.Linear : SKFilterMode.Nearest),

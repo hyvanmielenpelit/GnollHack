@@ -2496,6 +2496,8 @@ common_player_selection(VOID_ARGS)
     boolean did_pick_role, did_pick_race, did_pick_gender;
     boolean picksomething = (flags.initrole == ROLE_NONE || flags.initrace == ROLE_NONE
         || flags.initgend == ROLE_NONE || flags.initalign == ROLE_NONE);
+    struct extended_menu_info btninfo = zeroextendedmenuinfo;
+    //btninfo.menu_flags |= MENU_FLAGS_BUTTON_STYLE;
 
 back_from_role:
     /* prevent an unnecessary prompt */
@@ -2618,16 +2620,16 @@ back_from_race:
                 flags.initalign, PICK_RANDOM) + 1;
             if (any.a_int == 0) /* must be non-zero */
                 any.a_int = randrole(FALSE) + 1;
-            add_menu(win, NO_GLYPH, &any, '*', 0, ATR_NONE, NO_COLOR, "Random",
-                MENU_UNSELECTED);
+            add_extended_menu(win, NO_GLYPH, &any, '*', 0, ATR_NONE, NO_COLOR, "Random",
+                MENU_UNSELECTED, btninfo);
             int back_int = i + 2;
             any.a_int = back_int; /* must be non-zero */
-            add_menu(win, NO_GLYPH, &any, '<', 0, ATR_NONE, NO_COLOR, "Back",
-                MENU_UNSELECTED);
+            add_extended_menu(win, NO_GLYPH, &any, '<', 0, ATR_NONE, NO_COLOR, "Back",
+                MENU_UNSELECTED, btninfo);
             int quit_int = i + 1;
             any.a_int = quit_int; /* must be non-zero */
-            add_menu(win, NO_GLYPH, &any, 'q', 0, ATR_NONE, NO_COLOR, "Quit",
-                MENU_UNSELECTED);
+            add_extended_menu(win, NO_GLYPH, &any, 'q', 0, ATR_NONE, NO_COLOR, "Quit",
+                MENU_UNSELECTED, btninfo);
             Sprintf(pbuf, "Pick a role for your %s", plbuf);
             if (didUseRecommended && (windowprocs.wincap2 & WC2_MENU_PROPER_SUBTITLE) != 0 && (windowprocs.wincap2 & WC2_SPECIAL_SYMBOLS) != 0)
                 end_menu_ex(win, pbuf, "&rec;  Recommended for beginners");
@@ -2745,16 +2747,16 @@ back_from_gender:
                     flags.initalign, PICK_RANDOM) + 1;
                 if (any.a_int == 0) /* must be non-zero */
                     any.a_int = randrace(flags.initrole) + 1;
-                add_menu(win, NO_GLYPH, &any, '*', 0, ATR_NONE, NO_COLOR, "Random",
-                    MENU_UNSELECTED);
+                add_extended_menu(win, NO_GLYPH, &any, '*', 0, ATR_NONE, NO_COLOR, "Random",
+                    MENU_UNSELECTED, btninfo);
                 int back_int = i + 2;
                 any.a_int = back_int; /* must be non-zero */
-                add_menu(win, NO_GLYPH, &any, '<', 0, ATR_NONE, NO_COLOR, "Back",
-                    MENU_UNSELECTED);
+                add_extended_menu(win, NO_GLYPH, &any, '<', 0, ATR_NONE, NO_COLOR, "Back",
+                    MENU_UNSELECTED, btninfo);
                 int quit_int = i + 1;
                 any.a_int = quit_int; /* must be non-zero */
-                add_menu(win, NO_GLYPH, &any, 'q', 0, ATR_NONE, NO_COLOR, "Quit",
-                    MENU_UNSELECTED);
+                add_extended_menu(win, NO_GLYPH, &any, 'q', 0, ATR_NONE, NO_COLOR, "Quit",
+                    MENU_UNSELECTED, btninfo);
                 Sprintf(pbuf, "Pick the race of your %s", plbuf);
                 if (didUseRecommended && (windowprocs.wincap2 & WC2_MENU_PROPER_SUBTITLE) != 0 && (windowprocs.wincap2 & WC2_SPECIAL_SYMBOLS) != 0)
                     end_menu_ex(win, pbuf, "&rec;  Recommended for beginners");
@@ -2869,16 +2871,16 @@ back_from_align:
                     flags.initalign, PICK_RANDOM) + 1;
                 if (any.a_int == 0) /* must be non-zero */
                     any.a_int = randgend(flags.initrole, flags.initrace) + 1;
-                add_menu(win, NO_GLYPH, &any, '*', 0, ATR_NONE, NO_COLOR, "Random",
-                    MENU_UNSELECTED);
+                add_extended_menu(win, NO_GLYPH, &any, '*', 0, ATR_NONE, NO_COLOR, "Random",
+                    MENU_UNSELECTED, btninfo);
                 int back_int = i + 2;
                 any.a_int = back_int; /* must be non-zero */
-                add_menu(win, NO_GLYPH, &any, '<', 0, ATR_NONE, NO_COLOR, "Back",
-                    MENU_UNSELECTED);
+                add_extended_menu(win, NO_GLYPH, &any, '<', 0, ATR_NONE, NO_COLOR, "Back",
+                    MENU_UNSELECTED, btninfo);
                 int quit_int = i + 1;
                 any.a_int = quit_int; /* must be non-zero */
-                add_menu(win, NO_GLYPH, &any, 'q', 0, ATR_NONE, NO_COLOR, "Quit",
-                    MENU_UNSELECTED);
+                add_extended_menu(win, NO_GLYPH, &any, 'q', 0, ATR_NONE, NO_COLOR, "Quit",
+                    MENU_UNSELECTED, btninfo);
                 Sprintf(pbuf, "Pick the gender of your %s", plbuf);
                 end_menu(win, pbuf);
                 n = select_menu(win, PICK_ONE, &selected);
@@ -2994,16 +2996,16 @@ back_from_align:
                     flags.initgend, PICK_RANDOM) + 1;
                 if (any.a_int == 0) /* must be non-zero */
                     any.a_int = randalign(flags.initrole, flags.initrace) + 1;
-                add_menu(win, NO_GLYPH, &any, '*', 0, ATR_NONE, NO_COLOR, "Random",
-                    MENU_UNSELECTED);
+                add_extended_menu(win, NO_GLYPH, &any, '*', 0, ATR_NONE, NO_COLOR, "Random",
+                    MENU_UNSELECTED, btninfo);
                 int back_int = i + 2;
                 any.a_int = back_int; /* must be non-zero */
-                add_menu(win, NO_GLYPH, &any, '<', 0, ATR_NONE, NO_COLOR, "Back",
-                    MENU_UNSELECTED);
+                add_extended_menu(win, NO_GLYPH, &any, '<', 0, ATR_NONE, NO_COLOR, "Back",
+                    MENU_UNSELECTED, btninfo);
                 int quit_int = i + 1;
                 any.a_int = quit_int; /* must be non-zero */
-                add_menu(win, NO_GLYPH, &any, 'q', 0, ATR_NONE, NO_COLOR, "Quit",
-                    MENU_UNSELECTED);
+                add_extended_menu(win, NO_GLYPH, &any, 'q', 0, ATR_NONE, NO_COLOR, "Quit",
+                    MENU_UNSELECTED, btninfo);
                 Sprintf(pbuf, "Pick the alignment of your %s", plbuf);
                 end_menu(win, pbuf);
                 n = select_menu(win, PICK_ONE, &selected);
