@@ -1151,7 +1151,7 @@ const struct Race races[] = {
         "Hum",
         { "man", "woman" },
         0,
-        "Versatile with no special qualities",
+        "Versatile but no special qualities",
         { "", "", "", "", ""},
         PM_HUMAN,
         PM_HUMAN_MUMMY,
