@@ -1299,7 +1299,7 @@ const struct Gender genders[] = {
 
 /* Table of all alignments */
 const struct Align aligns[] = {
-    { "law", "lawful", "Law", ROLE_LAWFUL, A_LAWFUL, "Worships a deity of law and order" },
+    { "law", "lawful", "Law", ROLE_LAWFUL, A_LAWFUL, "Worships a deity of order" },
     { "balance", "neutral", "Neu", ROLE_NEUTRAL, A_NEUTRAL, "Worships a deity of balance"  },
     { "chaos", "chaotic", "Cha", ROLE_CHAOTIC, A_CHAOTIC, "Worships a deity of chaos"  },
     { "evil", "unaligned", "Una", 0, A_NONE, "Worships an evil deity"  }
