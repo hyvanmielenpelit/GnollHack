@@ -2589,7 +2589,7 @@ back_from_race:
                     if ((windowprocs.wincap2 & WC2_SPECIAL_SYMBOLS) != 0 && !wizard
                         && (i == ROLE_BARBARIAN || i == ROLE_VALKYRIE))
                     {
-                        Strcat(anbuf, " &bgnr;");
+                        Strcat(anbuf, " &rec;");
                         usingSpecialSymbols = didUseRecommended = TRUE;
                     }
                     if (roles[i].desciption && *roles[i].desciption)
@@ -2630,7 +2630,7 @@ back_from_race:
                 MENU_UNSELECTED);
             Sprintf(pbuf, "Pick a role for your %s", plbuf);
             if (didUseRecommended && (windowprocs.wincap2 & WC2_MENU_PROPER_SUBTITLE) != 0 && (windowprocs.wincap2 & WC2_SPECIAL_SYMBOLS) != 0)
-                end_menu_ex(win, pbuf, "&bgnr;  Recommended for beginners");
+                end_menu_ex(win, pbuf, "&rec;  Recommended for beginners");
             else
                 end_menu(win, pbuf);
             n = select_menu(win, PICK_ONE, &selected);
@@ -2723,7 +2723,7 @@ back_from_gender:
 #ifdef GNH_MOBILE
                         if ((windowprocs.wincap2 & WC2_SPECIAL_SYMBOLS) != 0 && !wizard && i == RACE_GNOLL)
                         {
-                            Strcat(buf, " &bgnr;");
+                            Strcat(buf, " &rec;");
                             usingSpecialSymbols = didUseRecommended = TRUE;
                         }
                         if (races[i].desciption && *races[i].desciption)
@@ -2757,7 +2757,7 @@ back_from_gender:
                     MENU_UNSELECTED);
                 Sprintf(pbuf, "Pick the race of your %s", plbuf);
                 if (didUseRecommended && (windowprocs.wincap2 & WC2_MENU_PROPER_SUBTITLE) != 0 && (windowprocs.wincap2 & WC2_SPECIAL_SYMBOLS) != 0)
-                    end_menu_ex(win, pbuf, "&bgnr;  Recommended for beginners");
+                    end_menu_ex(win, pbuf, "&rec;  Recommended for beginners");
                 else
                     end_menu(win, pbuf);
                 n = select_menu(win, PICK_ONE, &selected);

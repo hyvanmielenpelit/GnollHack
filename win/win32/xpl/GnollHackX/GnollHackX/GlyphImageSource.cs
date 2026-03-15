@@ -285,7 +285,7 @@ namespace GnollHackX
             using (var canvas = new SKCanvas(bitmap))
             {
                 canvas.Clear(SKColors.Transparent);
-                DrawOnCanvas(canvas, false, false, false, GHApp.FixRects);
+                DrawOnCanvas(canvas, false, false, false, GHApp.FixRects, GHApp.FixVertical);
             }
 
             var skImage = SKImage.FromBitmap(bitmap);            
@@ -337,7 +337,7 @@ namespace GnollHackX
             }
         }
 
-        public void DrawOnCanvas(SKCanvas canvas, bool usingGL, bool isHighlighted, bool highFilterQuality, bool fixRects, float extraOpacity = 1.0f)
+        public void DrawOnCanvas(SKCanvas canvas, bool usingGL, bool isHighlighted, bool highFilterQuality, bool fixRects, bool fixVertical, float extraOpacity = 1.0f)
         {
             int signed_glyph = Glyph;
             int abs_glyph = Math.Abs(signed_glyph);
@@ -363,10 +363,7 @@ namespace GnollHackX
                 }
                 else
                 {
-                    //lock (refPage.AnimationTimerLock)
-                    {
-                        counter_value = Interlocked.CompareExchange(ref ghGame.AnimationTimers.general_animation_counter, 0L, 0L);;
-                    }
+                    counter_value = Interlocked.CompareExchange(ref ghGame.AnimationTimers.general_animation_counter, 0L, 0L); ;
                 }
                 ntile = GHApp.GnollHackService.GetAnimatedTile(ntile, tile_animation_idx, (int)animation_play_types.ANIMATION_PLAY_TYPE_ALWAYS, counter_value, out anim_frame_idx, out main_tile_idx, out mapAnimated, ref autodraw);
 
@@ -406,20 +403,20 @@ namespace GnollHackX
                         if (tileflag_halfsize)
                         {
                             if (UseUpperSide)
-                                sourcerect = new SKRect(tile_x, tile_y, tile_x + (float)GHConstants.TileWidth, tile_y + (float)GHConstants.TileHeight / 2);
+                                sourcerect = new SKRect(tile_x, tile_y, tile_x + GHConstants.TileWidth, tile_y + GHConstants.TileHeight / 2);
                             else
-                                sourcerect = new SKRect(tile_x, tile_y + (float)GHConstants.TileHeight / 2, tile_x + (float)GHConstants.TileWidth, tile_y + (float)GHConstants.TileHeight);
+                                sourcerect = new SKRect(tile_x, tile_y + GHConstants.TileHeight / 2, tile_x + GHConstants.TileWidth, tile_y + GHConstants.TileHeight);
                         }
                         else
                         {
-                            sourcerect = new SKRect(tile_x, tile_y, tile_x + (float)GHConstants.TileWidth, tile_y + (float)GHConstants.TileHeight);
+                            sourcerect = new SKRect(tile_x, tile_y, tile_x + GHConstants.TileWidth, tile_y + GHConstants.TileHeight);
                         }
 
                         SKRect targetrect;
                         if (tileflag_halfsize)
                         {
                             //targetrect = new SKRect(0, 0, CanvasWidth, CanvasHeight);
-                            float halfsizeheight = Width / (float)GHConstants.TileWidth * (float)GHConstants.TileHeight / 2;
+                            float halfsizeheight = (float)(Width * GHConstants.TileHeight / 2) / (float)GHConstants.TileWidth;
                             float halfsizevpadding = Math.Max(0, CanvasHeight - halfsizeheight) / 2;
                             targetrect = new SKRect(0, halfsizevpadding, Width, halfsizevpadding + halfsizeheight);
                             ypadding = halfsizevpadding;
@@ -429,7 +426,7 @@ namespace GnollHackX
                         }
                         else
                         {
-                            float fullsizewidth = Height / (float)GHConstants.TileHeight * (float)GHConstants.TileWidth;
+                            float fullsizewidth = (float)(Height * GHConstants.TileWidth) / (float)GHConstants.TileHeight;
                             float fullsizepadding = Math.Max(0, CanvasWidth - fullsizewidth) / 2;
                             targetrect = new SKRect(fullsizepadding - CanvasXStart, 0, fullsizepadding + fullsizewidth - CanvasXStart, Height);
                             xpadding = fullsizepadding;
@@ -438,7 +435,7 @@ namespace GnollHackX
                             scale = tileWidth / GHConstants.TileWidth;
                         }
 
-                        GHApp.MaybeFixRects(ref sourcerect, ref targetrect, scale, usingGL, fixRects);
+                        GHApp.MaybeFixRects(ref sourcerect, ref targetrect, scale, usingGL, fixRects, fixVertical);
                         canvas.DrawImage(GHApp._tileMap[sheet_idx], sourcerect, targetrect,
 #if GNH_MAUI
                             new SKSamplingOptions(highFilterQuality ? SKFilterMode.Linear : SKFilterMode.Nearest),
@@ -450,7 +447,7 @@ namespace GnollHackX
                                 (int)layer_types.LAYER_OBJECT, 0, 0,
                                 tileflag_halfsize, false, tileflag_fullsizeditem,
                                 0, 0, tileWidth, tileHeight,
-                                1, scale, xpadding, ypadding, scaled_tile_height, true, drawwallends, usingGL, highFilterQuality, fixRects);
+                                1, scale, xpadding, ypadding, scaled_tile_height, true, drawwallends, usingGL, highFilterQuality, fixRects, fixVertical);
                     }
                     else
                     {
@@ -482,7 +479,7 @@ namespace GnollHackX
                             canvas.Scale(flip_tile ? -1 : 1, 1, 0, 0);
                             SKRect sourcerect = new SKRect(tile_x, tile_y, tile_x + GHConstants.TileWidth, tile_y + GHConstants.TileHeight);
                             SKRect targetrect = new SKRect(0, 0, tileWidth, tileHeight);
-                            GHApp.MaybeFixRects(ref sourcerect, ref targetrect, scale, usingGL, fixRects);
+                            GHApp.MaybeFixRects(ref sourcerect, ref targetrect, scale, usingGL, fixRects, fixVertical);
                             canvas.DrawImage(GHApp._tileMap[sheet_idx], sourcerect, targetrect,
 #if GNH_MAUI
                             new SKSamplingOptions(highFilterQuality ? SKFilterMode.Linear : SKFilterMode.Nearest),
@@ -493,7 +490,7 @@ namespace GnollHackX
                                     (int)layer_types.LAYER_OBJECT, 0, 0,
                                     tileflag_halfsize, false, true,
                                     0, 0, tileWidth, tileHeight,
-                                    1, scale, 0, 0, tileHeight, true, drawwallends, usingGL, highFilterQuality, fixRects);
+                                    1, scale, 0, 0, tileHeight, true, drawwallends, usingGL, highFilterQuality, fixRects, fixVertical);
 
                         }
 
@@ -559,7 +556,7 @@ namespace GnollHackX
                                     canvas.Scale(flip_tile ? -1 : 1, 1, 0, 0);
                                     SKRect sourcerect = new SKRect(etile_x, etile_y, etile_x + GHConstants.TileWidth, etile_y + GHConstants.TileHeight);
                                     SKRect targetrect = new SKRect(0, 0, tileWidth, tileHeight);
-                                    GHApp.MaybeFixRects(ref sourcerect, ref targetrect, scale, usingGL, fixRects);
+                                    GHApp.MaybeFixRects(ref sourcerect, ref targetrect, scale, usingGL, fixRects, fixVertical);
                                     canvas.DrawImage(GHApp._tileMap[e_sheet_idx], sourcerect, targetrect,
 #if GNH_MAUI
                                         new SKSamplingOptions(highFilterQuality ? SKFilterMode.Linear : SKFilterMode.Nearest),
@@ -570,7 +567,7 @@ namespace GnollHackX
                                             (int)layer_types.LAYER_OBJECT, 0, 0,
                                             tileflag_halfsize, false, true,
                                             0, 0, tileWidth, tileHeight,
-                                            1, scale, 0, 0, tileHeight, true, drawwallends, usingGL, highFilterQuality, fixRects);
+                                            1, scale, 0, 0, tileHeight, true, drawwallends, usingGL, highFilterQuality, fixRects, fixVertical);
                                 }
                             }
                         }

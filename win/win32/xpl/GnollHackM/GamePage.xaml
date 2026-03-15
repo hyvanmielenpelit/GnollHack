@@ -182,7 +182,7 @@
                 <gnh:BackgroundView x:Name="MenuBackground" BackgroundStyle="Automatic" BackgroundBitmap="AutoMenuBackground" BorderStyle="Simple" HorizontalOptions="Fill" VerticalOptions="Fill"/>
                 <Grid x:Name="MenuStack" RowDefinitions="Auto,*,Auto" RowSpacing="6" ColumnSpacing="0" Margin="0" Padding="0" VerticalOptions="Fill" HorizontalOptions="Fill">
                     <Grid Grid.Row="0" >
-                        <StackLayout Spacing="6" VerticalOptions="Start" HorizontalOptions="Fill" Orientation="Vertical"  BackgroundColor="Transparent">
+                        <Grid RowDefinitions="Auto,Auto" RowSpacing="6" VerticalOptions="Start" HorizontalOptions="Fill" BackgroundColor="Transparent">
                             <gnh:CustomLabel x:Name="MenuHeaderLabel"
                            TextColor="Black" FontAttributes="Bold" BackgroundColor="Transparent"
                            HorizontalOptions="Fill" VerticalOptions="Center" HorizontalTextAlignment="Center" VerticalTextAlignment="Center">
@@ -190,14 +190,14 @@
                                     <TapGestureRecognizer Tapped="MenuTapGestureRecognizer_Tapped" />
                                 </gnh:CustomLabel.GestureRecognizers>
                             </gnh:CustomLabel>
-                            <gnh:CustomLabel x:Name="MenuSubtitleLabel" UseSpecialSymbols="False"
+                            <gnh:CustomLabel Grid.Row="1" x:Name="MenuSubtitleLabel" UseSpecialSymbols="False"
                            TextColor="Black" Margin="1,2,1,6" BackgroundColor="Transparent"
                            HorizontalOptions="Fill" VerticalOptions="Center" HorizontalTextAlignment="Center" VerticalTextAlignment="Center">
                                 <gnh:CustomLabel.GestureRecognizers>
                                     <TapGestureRecognizer Tapped="MenuTapGestureRecognizer_Tapped" />
                                 </gnh:CustomLabel.GestureRecognizers>
                             </gnh:CustomLabel>
-                        </StackLayout>
+                        </Grid>
                         <gnh:NoTabStopButton x:Name="MenuFlipButton" Text="" BackgroundColor="Transparent" IsVisible="False" 
                                          HorizontalOptions="Start" VerticalOptions="Fill" Clicked="MenuFlipButton_Clicked" />
                     </Grid>

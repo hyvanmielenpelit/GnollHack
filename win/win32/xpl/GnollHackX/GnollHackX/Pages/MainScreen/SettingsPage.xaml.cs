@@ -484,6 +484,11 @@ namespace GnollHackX.Pages.MainScreen
                 GHApp.FixRects = FixRectsSwitch.IsToggled;
                 Preferences.Set("FixRects", FixRectsSwitch.IsToggled);
             }
+            if (FixVerticalSwitch.IsEnabled)
+            {
+                GHApp.FixVertical = FixVerticalSwitch.IsToggled;
+                Preferences.Set("FixVertical", FixVerticalSwitch.IsToggled);
+            }
             if (RuntimeEffectsSwitch.IsEnabled)
             {
                 GHApp.RuntimeEffects = RuntimeEffectsSwitch.IsToggled;
@@ -1057,7 +1062,7 @@ namespace GnollHackX.Pages.MainScreen
 #if !SENTRY
             bool postdiagnostics = GHConstants.DefaultPosting;
 #endif
-            bool longermsghistory = false, hidemsghistory = false, xlog_release_account = false, forcepostbones = false, fixrects = false, runtimeeffects = GHConstants.DefaultRuntimeEffects, save_file_tracking = false, disablewindowskey = false, defaultvikeys = false;
+            bool longermsghistory = false, hidemsghistory = false, xlog_release_account = false, forcepostbones = false, fixrects = false, fixvertical = true, runtimeeffects = GHConstants.DefaultRuntimeEffects, save_file_tracking = false, disablewindowskey = false, defaultvikeys = false;
             bool experimental = GHConstants.EnableExperimentalFeatures;
             long primarygpucache = -2, secondarygpucache = -2;
             int rightmouse = GHConstants.DefaultRightMouseCommand, middlemouse = GHConstants.DefaultMiddleMouseCommand;
@@ -1136,6 +1141,7 @@ namespace GnollHackX.Pages.MainScreen
             recordgame = Preferences.Get("RecordGame", false);
             gzip = Preferences.Get("UseGZipForReplays", GHConstants.GZipIsDefaultReplayCompression);
             fixrects = Preferences.Get("FixRects", GHApp.IsFixRectsDefault);
+            fixvertical = Preferences.Get("FixVertical", GHApp.IsFixVerticalDefault);
             runtimeeffects = Preferences.Get("RuntimeEffects", GHConstants.DefaultRuntimeEffects);
             noclipmode = Preferences.Get("DefaultMapNoClipMode", GHConstants.DefaultMapNoClipMode);
             savestyle = Preferences.Get("AppSwitchSaveStyle", GHApp.IsDesktop ? 1 : 0);
@@ -1390,6 +1396,7 @@ namespace GnollHackX.Pages.MainScreen
             RuntimeEffectsSwitch.IsToggled = runtimeeffects;
             PlatformRenderLoopSwitch.IsToggled = platformloop;
             FixRectsSwitch.IsToggled = fixrects;
+            FixVerticalSwitch.IsToggled = fixvertical;
             MipMapSwitch.IsToggled = mipmap;
             if (!GHApp.IsMaui)
             {
