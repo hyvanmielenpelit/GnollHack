@@ -4627,7 +4627,7 @@ int final;
     if (Fear_resistance)
         you_are("immune to fear", from_what(FEAR_RESISTANCE));
     if (Mind_shielding)
-        you_are("mind-shielded", from_what(MIND_SHIELDING));
+        you_are("protected from mind control, ESP, and psionics", from_what(MIND_SHIELDING));
     if (Lycanthropy_resistance)
         you_are("immune to lycanthropy", from_what(LYCANTHROPY_RESISTANCE));
     if (Curse_resistance)

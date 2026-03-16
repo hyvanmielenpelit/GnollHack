@@ -107,7 +107,7 @@ const struct propname propertynames[] = {
     { WARN_OGRE, "warned of ogres", "warning of ogres" },
     { WARN_OGRE, "warned of gnomes", "warning of gnomes" },
     { CHARM_RESISTANCE, "resistant to charm", "charm resistance" },
-    { MIND_SHIELDING, "mind shielded", "mind shielding" },
+    { MIND_SHIELDING, "protected from mind control, ESP, and psionics", "protection from mind control, ESP, and psionics" },
     { ODD_IDEAS, "having visionary ideas", "visionary ideas" },
     { MAGICAL_KICKING, "kicking magically", "magical kicking" },
     { BLOCKS_INVISIBILITY, "blocking invisibility", "blocks invisibility" },

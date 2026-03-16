@@ -3469,7 +3469,7 @@ int otyp;
             You_feel_ex(ATR_NONE, CLR_MSG_POSITIVE, "more courageous.");
             break;
         case MIND_SHIELDING:
-            You_feel_ex(ATR_NONE, CLR_MSG_POSITIVE, "shielded from mental detection.");
+            You_feel_ex(ATR_NONE, CLR_MSG_POSITIVE, "shielded from mental attacks, control, and detection.");
             break;
         case LYCANTHROPY_RESISTANCE:
             You_feel_ex(ATR_NONE, CLR_MSG_POSITIVE, "more protected from lycanthropy.");

@@ -1226,7 +1226,7 @@ nh_timeout()
                 You_ex(ATR_NONE, CLR_MSG_ATTENTION, "are starting to feel less courageous.");
                 break;
             case MIND_SHIELDING:
-                You_ex(ATR_NONE, CLR_MSG_ATTENTION, "are starting to feel less protected from mental detection.");
+                You_ex(ATR_NONE, CLR_MSG_ATTENTION, "are starting to feel less protected from mental attacks, control, and detection.");
                 break;
             case LYCANTHROPY_RESISTANCE:
                 You_ex(ATR_NONE, CLR_MSG_ATTENTION, "are starting to feel less protected from lycanthropy.");
@@ -4150,7 +4150,7 @@ boolean was_flying;
         if (!Mind_shielding)
         {
             play_sfx_sound(SFX_PROTECTION_END_WARNING);
-            You_feel_ex(ATR_NONE, CLR_MSG_ATTENTION, "unprotected from mental detection.");
+            You_feel_ex(ATR_NONE, CLR_MSG_ATTENTION, "unprotected from mental attacks, control, and detection.");
         }
         break;
     case LYCANTHROPY_RESISTANCE:
