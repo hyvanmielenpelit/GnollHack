@@ -10762,7 +10762,7 @@ struct monst* mtmp;
     const char* linearray[4] = {
         "That is a wand of town portal.",
         "It enables you to teleport back and forth between this town and your original location.",
-        "I supply them to local inhabitants and travellers alike.",
+        "I supply them to local inhabitants and travelers alike.",
         0 };
 
     hermit_talk(mtmp, linearray, GHSOUND_QUANTUM_SPECIAL_WAND);

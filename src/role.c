@@ -855,7 +855,7 @@ const struct Role roles[] = {
       "Ankh-Morpork",
       "the Thieves' Guild Hall",
       ROLE_TOURIST, 
-      "Widely skilled traveller",
+      "Widely skilled traveler",
       { "Extra score from taking selfies with monsters", "", "", "", ""},
       PM_TOURIST,
       PM_SMALL_LUGGAGE,
