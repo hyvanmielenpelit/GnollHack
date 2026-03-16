@@ -706,6 +706,9 @@ namespace GnollHackX
                     case ghmenu_styles.GHMENU_STYLE_START_GAME_MENU:
                         res = 0.675;
                         break;
+                    case ghmenu_styles.GHMENU_STYLE_CHOOSE_PLAYER:
+                        res = 0.75;
+                        break;
                     default:
                         break;
                 }
