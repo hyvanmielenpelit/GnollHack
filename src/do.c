@@ -202,7 +202,7 @@ docharacterstatistics(VOID_ARGS)
     putstr(datawin, ATR_HEADING, buf);
 
     int trait_count = 0;
-    int i;
+    int i, j;
 
     for (i = 0; i < MAX_TRAIT_DESCRIPTIONS; i++)
     {
@@ -226,6 +226,18 @@ docharacterstatistics(VOID_ARGS)
     {
         if (urole.trait_descriptions[i] && strcmp(urole.trait_descriptions[i], ""))
         {
+            boolean docontinue = FALSE;
+            for (j = 0; j < MAX_TRAIT_DESCRIPTIONS && urace.trait_descriptions[j] && *urace.trait_descriptions[j]; j++)
+            {
+                if (!strcmp(urace.trait_descriptions[j], urole.trait_descriptions[i]))
+                {
+                    docontinue = TRUE;
+                    break;
+                }
+            }
+            if (docontinue)
+                continue;
+
             trait_count++;
 
             char dbuf[BUFSZ * 2];
@@ -3917,8 +3929,9 @@ struct item_description_stats* stats_ptr; /* If non-null, only returns item stat
         /* Corpse properties */
         if (obj && is_obj_rotting_corpse(obj) && obj->corpsenm > NON_PM && obj->corpsenm < NUM_MONSTERS)
         {
-            if (mvitals[obj->corpsenm].mvflags & MV_KNOWS_CORPSE)
+            if ((mvitals[obj->corpsenm].mvflags & MV_KNOWS_CORPSE) || Corpse_property_detection || Race_if(PM_GNOLL) || Role_if(PM_HEALER))
             {
+                mvitals[obj->corpsenm].mvflags |= MV_KNOWS_CORPSE;
                 Sprintf(buf, "Corpse properties:");
                 putstr(datawin, ATR_HEADING, buf);
 

@@ -4672,8 +4672,10 @@ int final;
         enl_msg(You_, "resist", "resisted", " wounding", from_what(WOUNDING_RESISTANCE));
     if (Protection_from_armor_destruction)
         you_are("protected from armor destruction", from_what(PROTECTION_FROM_ARMOR_DESTRUCTION));
-    if (u.uedibility || maybe_polyd(is_gnoll(youmonst.data), Race_if(PM_GNOLL)))
+    if (u.uedibility || Edibility_detection || maybe_polyd(is_gnoll(youmonst.data), Race_if(PM_GNOLL)))
         you_can("recognize detrimental food", "");
+    if (Corpse_property_detection || maybe_polyd(is_gnoll(youmonst.data), Race_if(PM_GNOLL)))
+        you_can("recognize corpse properties", "");
 
 
     /*** Vision and senses ***/

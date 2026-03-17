@@ -2485,7 +2485,7 @@ struct monst* mon;
 int
 common_player_selection(VOID_ARGS)
 {
-    int i, k, n;
+    int i, j, k, n;
     char pick4u = 'n', thisch, lastch = 0;
     char pbuf[QBUFSZ], plbuf[QBUFSZ];
     char buf[BUFSZ];
@@ -2723,7 +2723,8 @@ back_from_gender:
                         *buf = highc(*buf);
                         boolean usingSpecialSymbols = FALSE;
 #ifdef GNH_MOBILE
-                        if ((windowprocs.wincap2 & WC2_SPECIAL_SYMBOLS) != 0 && !wizard && i == RACE_GNOLL)
+                        if ((windowprocs.wincap2 & WC2_SPECIAL_SYMBOLS) != 0 && !wizard && 
+                            (i == RACE_GNOLL || (flags.initrole == ROLE_VALKYRIE && i == RACE_DWARF)))
                         {
                             Strcat(buf, " &rec;");
                             usingSpecialSymbols = didUseRecommended = TRUE;
@@ -3091,6 +3092,18 @@ back_from_align:
         }
         for (i = 0; i < MAX_TRAIT_DESCRIPTIONS && roles[flags.initrole].trait_descriptions[i] != 0 && *(roles[flags.initrole].trait_descriptions[i]) != 0; i++)
         {
+            boolean docontinue = FALSE;
+            for (j = 0; j < MAX_TRAIT_DESCRIPTIONS && races[flags.initrace].trait_descriptions[j] != 0 && *(races[flags.initrace].trait_descriptions[j]) != 0; j++)
+            {
+                if (!strcmp(races[flags.initrace].trait_descriptions[j], roles[flags.initrole].trait_descriptions[i]))
+                {
+                    docontinue = TRUE;
+                    break;
+                }
+            }
+            if (docontinue)
+                continue;
+
             Sprintf(buf, "%s", roles[flags.initrole].trait_descriptions[i]);
             add_menu(win, NO_GLYPH, &any, 0, 0, ATR_INDENT_AT_DASH, NO_COLOR, buf,
                 MENU_UNSELECTED);
