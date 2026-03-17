@@ -637,6 +637,13 @@ int mtype;
                     (void)mpickobj(npc, otmp);
                 }
             }
+            mongets(npc, WAN_PROBING);
+            if (rn2(2))
+            {
+                struct obj* otmp = mkobj(WAND_CLASS, FALSE, MKOBJ_TYPE_INITIAL);
+                if (otmp)
+                    (void)mpickobj(npc, otmp);
+            }
             break;
         }
         case NPC_HERMIT2:
