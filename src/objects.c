@@ -3448,7 +3448,7 @@ SCROLL("teleportation",    "VENZAR BORGAVVE", "Teleports the reader to a random 
 SCROLL("gold detection",         "THARR", "Detects gold on the level.",
     1,  30, 100, 0, 0, 0, 0, 0, 0, 0, 
     S1_NONE, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
-SCROLL("food detection",           "YUM YUM", "Detects food on the level.",
+SCROLL("food detection",           "YUM YUM", "Detects food on the level.\nA blessed scroll also confers food appraisal and corpse property detection.",
     1,  25, 100, 0, 0, 0, 0, 0, 0, 0, 
     S1_NONE, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
 SCROLL("identify",          "KERNOD WEL", "Identifies one or more items.\nA cursed scroll identifies one, uncursed two, and blessed three.",
