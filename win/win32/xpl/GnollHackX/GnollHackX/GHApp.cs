@@ -4615,7 +4615,7 @@ namespace GnollHackX
         public static SKImage GetSpecialSymbol(string str, out SKRect source_rect)
         {
             source_rect = new SKRect();
-            if (str == null || !str.StartsWith("&"))
+            if (str == null || str.Length < 4 || str[0] != '&') //!str.StartsWith('&'))
                 return null;
 
             SKImage bitmap = null;
@@ -4746,7 +4746,7 @@ namespace GnollHackX
         public static SKImage GetSpecialSymbol(ReadOnlySpan<char> span, out SKRect source_rect)
         {
             source_rect = new SKRect();
-            if (span.IsEmpty || span[0] != '&')
+            if (span.IsEmpty || span.Length < 4 || span[0] != '&')
                 return null;
 
             SKImage bitmap = null;
