@@ -3929,7 +3929,8 @@ struct item_description_stats* stats_ptr; /* If non-null, only returns item stat
         /* Corpse properties */
         if (obj && is_obj_rotting_corpse(obj) && obj->corpsenm > NON_PM && obj->corpsenm < NUM_MONSTERS)
         {
-            if ((mvitals[obj->corpsenm].mvflags & MV_KNOWS_CORPSE) || Corpse_property_detection || Race_if(PM_GNOLL) || Role_if(PM_HEALER))
+            if ((mvitals[obj->corpsenm].mvflags & MV_KNOWS_CORPSE) || Corpse_property_appraisal 
+                || maybe_polyd(is_gnoll(youmonst.data), Race_if(PM_GNOLL)) || Role_if(PM_HEALER))
             {
                 mvitals[obj->corpsenm].mvflags |= MV_KNOWS_CORPSE;
                 Sprintf(buf, "Corpse properties:");

@@ -4675,13 +4675,13 @@ int final;
     
     if (u.uedibility || maybe_polyd(is_gnoll(youmonst.data), Race_if(PM_GNOLL)))
         you_can("recognize detrimental food", "");
-    else if (Edibility_detection)
-        you_can("recognize detrimental food", from_what(EDIBILITY_DETECTION));
+    else if (Edibility_appraisal)
+        you_can("recognize detrimental food", from_what(EDIBILITY_APPRAISAL));
     
     if (maybe_polyd(is_gnoll(youmonst.data), Race_if(PM_GNOLL)) || Role_if(PM_HEALER))
         you_can("recognize corpse properties", "");
-    else if (Corpse_property_detection)
-        you_can("recognize corpse properties", from_what(CORPSE_PROPERTY_DETECTION));
+    else if (Corpse_property_appraisal)
+        you_can("recognize corpse properties", from_what(CORPSE_PROPERTY_APPRAISAL));
 
 
     /*** Vision and senses ***/

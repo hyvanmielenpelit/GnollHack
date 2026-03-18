@@ -189,8 +189,8 @@ const struct propname propertynames[] = {
     { POLYMORPH_RESISTANCE, "resistant to polymorph", "polymorph resistance" },
     { EXTENDED_XRAY_VISION, "having extended X-ray vision", "extended X-ray vision" },
     { PROTECTION_FROM_ARMOR_DESTRUCTION, "protected from armor destruction", "protection from armor destruction" },
-    { EDIBILITY_DETECTION, "recognizing detrimental food", "recognition of detrimental food" },
-    { CORPSE_PROPERTY_DETECTION, "detecting corpse properties", "corpse property detection" },
+    { EDIBILITY_APPRAISAL, "recognizing detrimental food", "recognition of detrimental food" },
+    { CORPSE_PROPERTY_APPRAISAL, "recognizing corpse properties", "recognition of corpse properties" },
     {  0, 0, 0 },
 };
 
@@ -369,8 +369,8 @@ NEARDATA struct prop_info property_definitions[MAX_PROPS] =
     { "polymorph-resistance",         0, 0, 0,  0, 0,  PCLR_WHITE, PCLR_NONE, PROPFLAGS_NONE },  /* POLYMORPH_RESISTANCE = 170 */
     { "extended-xray-vision",         0, 0, 0,  0, 0,  PCLR_WHITE, PCLR_NONE, PROPFLAGS_NONE },  /* EXTENDED_XRAY_VISION = 171 */
     { "protection-from-armor-destruction", 0, 0, 0,  0, 0,  PCLR_WHITE, PCLR_NONE, PROPFLAGS_NONE },  /* PROTECTION_FROM_ARMOR_DESTRUCTION = 172 */
-    { "edibility-detection",          0, 0, 0,  0, 0,  PCLR_WHITE, PCLR_NONE, PROPFLAGS_NONE },  /* EDIBILITY_DETECTION */
-    { "corpse-property-detection",    0, 0, 0,  0, 0,  PCLR_WHITE, PCLR_NONE, PROPFLAGS_NONE },  /* CORPSE_PROPERTY_DETECTION */
+    { "edibility-appraisal",          0, 0, 0,  0, 0,  PCLR_WHITE, PCLR_NONE, PROPFLAGS_NONE },  /* EDIBILITY_APPRAISAL */
+    { "corpse-property-appraisal",    0, 0, 0,  0, 0,  PCLR_WHITE, PCLR_NONE, PROPFLAGS_NONE },  /* CORPSE_PROPERTY_APPRAISAL */
     { "reserved-prop-6",              0, 0, 0,  0, 0,  PCLR_WHITE, PCLR_NONE, PROPFLAGS_NONE },  /* RESERVED_PROP_X */
     { "reserved-prop-7",              0, 0, 0,  0, 0,  PCLR_WHITE, PCLR_NONE, PROPFLAGS_NONE },  /* RESERVED_PROP_X */
     { "reserved-prop-8",              0, 0, 0,  0, 0,  PCLR_WHITE, PCLR_NONE, PROPFLAGS_NONE },  /* RESERVED_PROP_X */

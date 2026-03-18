@@ -174,13 +174,13 @@
 #define EProtection_from_armor_destruction u.uprops[PROTECTION_FROM_ARMOR_DESTRUCTION].extrinsic
 #define Protection_from_armor_destruction (HProtection_from_armor_destruction || EProtection_from_armor_destruction)
 
-#define HEdibility_detection u.uprops[EDIBILITY_DETECTION].intrinsic
-#define EEdibility_detection u.uprops[EDIBILITY_DETECTION].extrinsic
-#define Edibility_detection (HEdibility_detection || EEdibility_detection)
+#define HEdibility_appraisal u.uprops[EDIBILITY_APPRAISAL].intrinsic
+#define EEdibility_appraisal u.uprops[EDIBILITY_APPRAISAL].extrinsic
+#define Edibility_appraisal (HEdibility_appraisal || EEdibility_appraisal)
 
-#define HCorpse_property_detection u.uprops[CORPSE_PROPERTY_DETECTION].intrinsic
-#define ECorpse_property_detection u.uprops[CORPSE_PROPERTY_DETECTION].extrinsic
-#define Corpse_property_detection (HCorpse_property_detection || ECorpse_property_detection)
+#define HCorpse_property_appraisal u.uprops[CORPSE_PROPERTY_APPRAISAL].intrinsic
+#define ECorpse_property_appraisal u.uprops[CORPSE_PROPERTY_APPRAISAL].extrinsic
+#define Corpse_property_appraisal (HCorpse_property_appraisal || ECorpse_property_appraisal)
 
 
 /*** Troubles ***/

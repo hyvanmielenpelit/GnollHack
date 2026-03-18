@@ -24,7 +24,7 @@ const char
 STATIC_VAR const struct innate 
   arc_abil[] = { { 1, STEALTH, "", "" }, /* &(HStealth) */
                  { 1, FAST, "", "" },
-                 { 7, CORPSE_PROPERTY_DETECTION, "sensitive to corpses", "" },
+                 { 7, CORPSE_PROPERTY_APPRAISAL, "sensitive to corpses", "" },
                  { 10, SEARCHING, "perceptive", "" },
                  { 0, 0, 0, 0 } },
 
@@ -34,12 +34,12 @@ STATIC_VAR const struct innate
                  { 0, 0, 0, 0 } },
 
   cav_abil[] = { { 7, FAST, "quick", "slow" },
-                 { 10, CORPSE_PROPERTY_DETECTION, "sensitive to corpses", "" },
+                 { 10, CORPSE_PROPERTY_APPRAISAL, "sensitive to corpses", "" },
                  { 15, WARNING, "sensitive", "" },
                  { 0, 0, 0, 0 } },
 
   hea_abil[] = { { 1, POISON_RESISTANCE, "", "" },
-                 { 1, CORPSE_PROPERTY_DETECTION, "sensitive to corpses", "" },
+                 { 1, CORPSE_PROPERTY_APPRAISAL, "sensitive to corpses", "" },
                  { 7, LYCANTHROPY_RESISTANCE, "immune to lycanthropy", "less protected from lycanthropy" },
                  { 14, SICK_RESISTANCE, "healthy", "" },
                  { 0, 0, 0, 0 } },
@@ -61,7 +61,7 @@ STATIC_VAR const struct innate
                  { 34, TELEPORT_CONTROL, "controlled", "uncontrolled" },
                  { 0, 0, 0, 0 } },
 
-  pri_abil[] = { {  4, CORPSE_PROPERTY_DETECTION, "sensitive to corpses", "" },
+  pri_abil[] = { {  4, CORPSE_PROPERTY_APPRAISAL, "sensitive to corpses", "" },
                  {  7, WARN_UNDEAD, "sensitive to undead", "" },
                  { 10, WARN_DEMON, "sensitive to demons", "" },
                  { 13, WARN_ANGEL, "sensitive to angels", "" },
@@ -115,8 +115,8 @@ STATIC_VAR const struct innate
                  { 0, 0, 0, 0 } },
 
   gnl_abil[] = { { 1, LYCANTHROPY_RESISTANCE, "", "" },
-                 { 1, CORPSE_PROPERTY_DETECTION, "", "" },
-                 { 1, EDIBILITY_DETECTION, "", "" },
+                 { 1, CORPSE_PROPERTY_APPRAISAL, "", "" },
+                 { 1, EDIBILITY_APPRAISAL, "", "" },
                  { 0, 0, 0, 0 } },
 
   hum_abil[] = { { 0, 0, 0, 0 } };

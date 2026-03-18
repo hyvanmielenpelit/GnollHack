@@ -3677,7 +3677,7 @@ doeat()
     if (check_capacity((char *) 0))
         return 0;
 
-    if (maybe_polyd(is_gnoll(youmonst.data), Race_if(PM_GNOLL)) || Edibility_detection)
+    if (maybe_polyd(is_gnoll(youmonst.data), Race_if(PM_GNOLL)) || Edibility_appraisal)
     {
         int res = edibility_prompts(otmp);
 

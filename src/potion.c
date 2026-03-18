@@ -790,7 +790,7 @@ dodrink()
         }
     }
 
-    if (Race_if(PM_GNOLL))
+    if (maybe_polyd(is_gnoll(youmonst.data), Race_if(PM_GNOLL)) || Edibility_appraisal)
     {
         if (otmp->otyp == POT_SICKNESS || otmp->otyp == POT_POISON || otmp->otyp == POT_URINE)
         {

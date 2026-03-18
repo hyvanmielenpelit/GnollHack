@@ -530,10 +530,10 @@ register struct obj *sobj;
             if (sobj && sobj->blessed) {
                 if (!u.uedibility)
                     Your_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s starts to tingle.", body_part(NOSE));
-                else if (!Corpse_property_detection)
+                else if (!Corpse_property_appraisal)
                     Your_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s starts to prickle.", body_part(NOSE));
                 u.uedibility = 1;
-                HCorpse_property_detection |= FROM_ACQUIRED;
+                HCorpse_property_appraisal |= FROM_ACQUIRED;
             }
         } else if (sobj) {
             char buf[BUFSZ];
@@ -541,11 +541,11 @@ register struct obj *sobj;
             Sprintf(buf, "Your %s twitches%s.", body_part(NOSE),
                     (sobj->blessed && !u.uedibility)
                         ? " then starts to tingle"
-                    : (sobj->blessed && !Corpse_property_detection)
+                    : (sobj->blessed && !Corpse_property_appraisal)
                         ? " then starts to prickle"
                         : "");
             if (sobj->blessed)
-                HCorpse_property_detection |= FROM_ACQUIRED;
+                HCorpse_property_appraisal |= FROM_ACQUIRED;
             if (sobj->blessed && !u.uedibility) {
                 boolean savebeginner = flags.beginner;
 
@@ -564,10 +564,10 @@ register struct obj *sobj;
         if (sobj && sobj->blessed) {
             if (!u.uedibility)
                 pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "Your %s starts to tingle.", body_part(NOSE));
-            else if (!Corpse_property_detection)
+            else if (!Corpse_property_appraisal)
                 pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "Your %s starts to prickle.", body_part(NOSE));
             u.uedibility = 1;
-            HCorpse_property_detection |= FROM_ACQUIRED;
+            HCorpse_property_appraisal |= FROM_ACQUIRED;
         }
     } else {
         struct obj *temp;
@@ -608,7 +608,7 @@ register struct obj *sobj;
                 Your("%s %s to tingle and you smell %s.", body_part(NOSE),
                      u.uedibility ? "continues" : "starts", what);
                 u.uedibility = 1;
-                HCorpse_property_detection |= FROM_ACQUIRED;
+                HCorpse_property_appraisal |= FROM_ACQUIRED;
             } else
                 Your("%s tingles and you smell %s.", body_part(NOSE), what);
         } else
