@@ -661,6 +661,17 @@ int control;
                         next_row[col] |= IN_XRAY_SIGHT;
                         oldseenv = levl[col][row].seenv;
                         levl[col][row].seenv = SVALL; /* see all! */
+                        if (OBJ_AT(col, row))
+                        {
+                            struct obj* obj;
+                            for (obj = o_at(col, row); obj; obj = obj->nexthere)
+                            {
+                                if (!obj->dknown)
+                                {
+                                    obj->dknown = 1;
+                                }
+                            }
+                        }
                         /* Update if previously not in sight or new angle. */
                         if (!(old_row_val & IN_XRAY_SIGHT) || oldseenv != SVALL)
                             newsym(col, row);

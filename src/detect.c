@@ -648,6 +648,7 @@ int class;            /* an object class, 0 for all */
     int do_dknown = (detector && (detector->oclass == POTION_CLASS
                                   || detector->oclass == SPBOOK_CLASS)
                      && detector->blessed);
+    int do_ore_dknown = detector && detector->otyp == WAN_ORE_DETECTION;
     int ct = 0, ctu = 0;
     register struct obj *obj, *otmp = (struct obj *) 0;
     register struct monst *mtmp;
@@ -681,6 +682,16 @@ int class;            /* an object class, 0 for all */
         for (obj = invent; obj; obj = obj->nobj)
             do_dknown_of(obj);
 
+    if (do_ore_dknown)
+    {
+        for (obj = invent; obj; obj = obj->nobj)
+            if (is_ore(obj))
+                do_dknown_of(obj);
+        for (obj = memoryobjs; obj; obj = obj->nobj)
+            if (is_ore(obj))
+                do_dknown_of(obj);
+    }
+
     for (obj = fobj; obj; obj = obj->nobj) {
         if ((!class && !boulder) || o_in(obj, class) || o_in(obj, boulder)) {
             if (obj->ox == u.ux && obj->oy == u.uy)
@@ -689,6 +700,8 @@ int class;            /* an object class, 0 for all */
                 ct++;
         }
         if (do_dknown)
+            do_dknown_of(obj);
+        if (do_ore_dknown && is_ore(obj))
             do_dknown_of(obj);
     }
 
@@ -700,6 +713,8 @@ int class;            /* an object class, 0 for all */
                 ct++;
         }
         if (do_dknown)
+            do_dknown_of(obj);
+        if (do_ore_dknown && is_ore(obj))
             do_dknown_of(obj);
     }
 
@@ -714,6 +729,8 @@ int class;            /* an object class, 0 for all */
                 || o_in(obj, boulder))
                 ct++;
             if (do_dknown)
+                do_dknown_of(obj);
+            if (do_ore_dknown && is_ore(obj))
                 do_dknown_of(obj);
         }
         if ((is_cursed && M_AP_TYPE(mtmp) == M_AP_OBJECT
