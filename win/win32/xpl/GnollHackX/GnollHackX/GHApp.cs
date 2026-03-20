@@ -360,6 +360,9 @@ namespace GnollHackX
         private static int _doAppExitOnReturn = 0;
         public static bool DoAppExitOnReturn { get { return Interlocked.CompareExchange(ref _doAppExitOnReturn, 0, 0) != 0; } set { Interlocked.Exchange(ref _doAppExitOnReturn, value ? 1 : 0); } }
 
+        private static int _handlingKeyPress = 0;
+        public static bool PushingModalPage { get { return Interlocked.CompareExchange(ref _handlingKeyPress, 0, 0) != 0; } set { Interlocked.Exchange(ref _handlingKeyPress, value ? 1 : 0); } }
+
 
 #if ANDROID
         //private static ValueAnimator _platformAnimator = null;
@@ -910,12 +913,17 @@ namespace GnollHackX
         {
             try
             {
+                PushingModalPage = true;
                 await Task.Yield();
                 await Navigation.PushModalAsync(page);
             }
             catch (Exception ex)
             {
                 MaybeWriteGHLog(ex.Message);
+            }
+            finally
+            {
+                PushingModalPage = false;
             }
         }
 

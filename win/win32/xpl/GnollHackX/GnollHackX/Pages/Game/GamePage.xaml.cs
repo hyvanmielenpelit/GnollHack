@@ -22871,6 +22871,10 @@ namespace GnollHackX.Pages.Game
         public bool HandleKeyPress(int key, bool isCtrl, bool isMeta)
         {
             Debug.WriteLine("HandleKeyPress: " + key);
+
+            if (GHApp.PushingModalPage) /* Ignore key presses when opening a page */
+                return true;
+
             bool handled = false;
             if (LoadingGrid.IsVisible || key == 13 || !GHApp.IsPageOnTopOfModalNavigationStack(this))
             {

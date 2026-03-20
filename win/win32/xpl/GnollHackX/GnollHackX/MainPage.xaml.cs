@@ -2161,6 +2161,9 @@ namespace GnollHackX
 
         public bool HandleKeyPress(int key, bool isCtrl, bool isMeta)
         {
+            if (GHApp.PushingModalPage) /* Ignore key presses when opening a page */
+                return true;
+
             bool handled = false;
             if (AlertGrid.IsVisible || PopupGrid.IsVisible || PendingTasksGrid.IsVisible)
                 return false;
