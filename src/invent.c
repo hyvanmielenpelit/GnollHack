@@ -3993,8 +3993,8 @@ int FDECL((*fn), (OBJ_P)), FDECL((*ckfn), (OBJ_P));
             cnt += tmp;
             if (--mx == 0)
                 goto ret;
-            /*FALLTHRU*/
         }
+        /*FALLTHRU*/
         case 'n':
             if (nodot)
                 dud++;

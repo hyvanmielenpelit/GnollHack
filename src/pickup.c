@@ -3591,7 +3591,7 @@ boolean dobot;
 
     obj->nomerge = 1;
     int res = 0;
-    boolean obj_gone = FALSE;
+    uchar obj_gone = FALSE;
     if ((res = out_container_core(obj, dobot, FALSE, &obj_gone)) <= 0)
     {
         if (!obj_gone)
