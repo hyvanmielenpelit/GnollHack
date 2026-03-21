@@ -3591,11 +3591,17 @@ boolean dobot;
 
     obj->nomerge = 1;
     int res = 0;
-    if ((res = out_container_core(obj, dobot, FALSE, (uchar*)0)) <= 0)
+    boolean obj_gone = FALSE;
+    if ((res = out_container_core(obj, dobot, FALSE, &obj_gone)) <= 0)
     {
-        obj->nomerge = 0;
+        if (!obj_gone)
+            obj->nomerge = 0;
         return res;
     }
+
+    if (obj_gone)
+        return -1;
+
     obj->nomerge = 0;
 
     if (obj->where != OBJ_INVENT)
@@ -3640,11 +3646,16 @@ boolean dobot;
 
     obj->nomerge = 1;
     int res = 0;
-    if ((res = out_container_core(obj, dobot, FALSE, (uchar*)0)) <= 0)
+    uchar obj_gone = FALSE;
+    if ((res = out_container_core(obj, dobot, FALSE, &obj_gone)) <= 0)
     {
-        obj->nomerge = 0;
+        if (!obj_gone)
+            obj->nomerge = 0;
         return res;
     }
+
+    if (obj_gone)
+        return -1;
 
     obj->nomerge = 0;
 
@@ -4746,10 +4757,11 @@ int applymode;
                     /* special split case also handled by askchain() */
                 }
 
+                int trackid = add_to_obj_tracking(otmp);
+                obj_gone = FALSE;
                 switch (command_id)
                 {
                 case 0:
-                    obj_gone = FALSE;
                     res = out_container_core(otmp, FALSE, do_auto_in_bag, &obj_gone);
                     if (res == -2 && flags.knapsack_prompt)
                     {
@@ -4781,6 +4793,7 @@ int applymode;
                     res = -1;
                     break;
                 }
+                boolean obj_gone2 = finish_obj_tracking(trackid);
 
                 if (res < 0) 
                 {
@@ -4790,7 +4803,7 @@ int applymode;
                            both are now gone */
                         otmp = 0; /* and break loop */
                     } 
-                    else if (otmp && otmp != pick_list[i].item.a_obj) 
+                    else if (!obj_gone && !obj_gone2 && otmp && otmp != pick_list[i].item.a_obj)
                     {
                         /* split occurred, merge again */
                         debugprint("menu_loot: %d", otmp->otyp);

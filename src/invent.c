@@ -3972,16 +3972,21 @@ int FDECL((*fn), (OBJ_P)), FDECL((*ckfn), (OBJ_P));
             allflag = 1;
             /*FALLTHRU*/
         case 'y':
+        {
+            int trackid = add_to_obj_tracking(otmp);
             tmp = (*fn)(otmp);
+            if (finish_obj_tracking(trackid))
+                otmp = 0; /* The object was destroyed */
             if (tmp < 0) {
                 if (container_gone(fn)) {
                     /* otmp caused magic bag to explode;
                        both are now gone */
                     otmp = 0; /* and return */
-                } else if (otmp && otmp != otmpo) {
+                }
+                else if (otmp && otmp != otmpo) {
                     /* split occurred, merge again */
                     debugprint("askchain: %d", otmp->otyp);
-                    (void) merged(&otmpo, &otmp);
+                    (void)merged(&otmpo, &otmp);
                 }
                 goto ret;
             }
@@ -3989,6 +3994,7 @@ int FDECL((*fn), (OBJ_P)), FDECL((*ckfn), (OBJ_P));
             if (--mx == 0)
                 goto ret;
             /*FALLTHRU*/
+        }
         case 'n':
             if (nodot)
                 dud++;
