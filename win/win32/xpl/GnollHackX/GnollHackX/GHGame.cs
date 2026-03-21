@@ -1227,7 +1227,7 @@ namespace GnollHackX
 
             if (string.IsNullOrEmpty(responses))
             {
-                GHApp.AddSentryBreadcrumb("YnFunction: ShowDirections", GHConstants.SentryGnollHackCallbackCategoryName);
+                GHApp.AddSentryBreadcrumb("YnFunction: ShowDirections Start", GHConstants.SentryGnollHackCallbackCategoryName);
                 if ((ynflags & 1UL) != 0)
                     RequestQueue.Enqueue(new GHRequest(this, GHRequestType.ShowDirections)); //TODO: Show keyboard
                 else
@@ -1237,6 +1237,7 @@ namespace GnollHackX
                     RequestQueue.Enqueue(new GHRequest(this, GHRequestType.HideDirections)); //TODO: Hide keyboard
                 else
                     RequestQueue.Enqueue(new GHRequest(this, GHRequestType.HideDirections));
+                GHApp.AddSentryBreadcrumb("YnFunction: ShowDirections End: " + res, GHConstants.SentryGnollHackCallbackCategoryName);
                 RecordFunctionCall(RecordedFunctionID.YnFunction, style, attr, color, glyph, title, question, responses, def, descriptions, introline, ynflags, res);
                 return res;
             }
