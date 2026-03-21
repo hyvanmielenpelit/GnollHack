@@ -435,7 +435,7 @@ namespace GnollHackX
                             scale = tileWidth / GHConstants.TileWidth;
                         }
 
-                        GHApp.MaybeFixRects(ref sourcerect, ref targetrect, scale, usingGL, fixRects, fixVertical && highFilterQuality && !tileflag_halfsize);
+                        GHApp.MaybeFixRects(ref sourcerect, ref targetrect, scale, usingGL, fixRects, fixVertical && highFilterQuality);
                         canvas.DrawImage(GHApp._tileMap[sheet_idx], sourcerect, targetrect,
 #if GNH_MAUI
                             new SKSamplingOptions(highFilterQuality ? SKFilterMode.Linear : SKFilterMode.Nearest),
