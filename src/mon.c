@@ -3856,7 +3856,7 @@ struct monst *mdef;
         || !rn2(2 + ((int) (mdef->data->geno & G_FREQ) > 2))) {
         oldminvent = 0;
         /* some objects may end up outside the statue */
-        debugprint("monstone");
+        debugprint("monstone1");
         while ((obj = mdef->minvent) != 0) {
             obj_extract_self(obj);
             obj_no_longer_held(obj);
@@ -3880,7 +3880,7 @@ struct monst *mdef;
                     continue;
                 place_object(obj, x, y);
             } else {
-                debugprint("monstone");
+                debugprint("monstone3");
                 if (obj->lamplit)
                     end_burn(obj, TRUE);
                 if (obj->makingsound)
@@ -3908,7 +3908,7 @@ struct monst *mdef;
     } else
         otmp = mksobj_at(ROCK, x, y, TRUE, FALSE);
 
-    debugprint("monstone: %d", otmp->otyp);
+    debugprint("monstone4: %d", otmp->otyp);
     stackobj(otmp);
     /* mondead() already does this, but we must do it before the newsym */
     if (glyph_is_invisible(levl[x][y].hero_memory_layers.glyph))
@@ -5923,7 +5923,7 @@ boolean msg;      /* "The oldmon turns into a newmon!" */
         mtmp->mhp = 1;
 
     if (emitted_light_range(olddata) != emitted_light_range(mtmp->data)) {
-        debugprint("newcham");
+        debugprint("newcham1");
         /* used to give light, now doesn't, or vice versa,
            or light's range has changed */
         if (emitted_light_range(olddata))
@@ -6040,7 +6040,7 @@ boolean msg;      /* "The oldmon turns into a newmon!" */
                    same zap that the monster that held it is polymorphed */
                 if (polyspot)
                     bypass_obj(otmp);
-                debugprint("newcham");
+                debugprint("newcham2");
                 obj_extract_self(otmp);
                 /* probably ought to give some "drop" message here */
                 if (flooreffects(otmp, mtmp->mx, mtmp->my, ""))
@@ -6996,7 +6996,7 @@ boolean override_mextra, polyspot, msg;
 
     struct permonst* mdat = mtmp->data;
     if (emitted_light_range(olddata) != emitted_light_range(mtmp->data)) {
-        debugprint("revert_mon_polymorph");
+        debugprint("revert_mon_polymorph1");
         /* used to give light, now doesn't, or vice versa,
            or light's range has changed */
         if (emitted_light_range(olddata))
@@ -7113,7 +7113,7 @@ boolean override_mextra, polyspot, msg;
                    same zap that the monster that held it is polymorphed */
                 if (polyspot)
                     bypass_obj(otmp);
-                debugprint("revert_mon_polymorph");
+                debugprint("revert_mon_polymorph2");
                 obj_extract_self(otmp);
                 /* probably ought to give some "drop" message here */
                 if (flooreffects(otmp, mtmp->mx, mtmp->my, ""))

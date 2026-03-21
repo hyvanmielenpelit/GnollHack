@@ -341,7 +341,7 @@ found_novel_or_manual:
         else
         {
             pline_The_ex(ATR_NONE, CLR_MSG_FAIL, "scroll is now useless and disappears!");
-            debugprint("dowrite: %d", paper->otyp);
+            debugprint("dowrite3: %d", paper->otyp);
             useup(paper);
         }
         update_inventory(); /* pen charges */
@@ -422,7 +422,7 @@ found_novel_or_manual:
             } else
                 Sprintf(namebuf, "%s was here!", plname);
             You_multi_ex(ATR_NONE, CLR_MSG_FAIL, no_multiattrs, multicolor_text1, "write \"%s\" and the scroll disappears.", namebuf);
-            debugprint("dowrite2: %d", paper->otyp);
+            debugprint("dowrite2b: %d", paper->otyp);
             useup(paper);
         }
         debugprint("dowrite5: %d", new_obj->otyp);
@@ -439,7 +439,7 @@ found_novel_or_manual:
            hard to write an unknown scroll while blind */
         play_sfx_sound(SFX_GENERAL_TRIED_ACTION_BUT_IT_FAILED);
         You_ex(ATR_NONE, CLR_MSG_FAIL, "fail to write the scroll correctly and it disappears.");
-        debugprint("dowrite3: %d", paper->otyp);
+        debugprint("dowrite3b: %d", paper->otyp);
         useup(paper);
         debugprint("dowrite6: %d", new_obj->otyp);
         obfree(new_obj, (struct obj *) 0);

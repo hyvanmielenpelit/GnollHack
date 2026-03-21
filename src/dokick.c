@@ -724,7 +724,7 @@ xchar x, y; /* coordinates where object was before the impact, not after */
                 debugprint("container_impact_dmg: %d", otmp->otyp);
                 useup(otmp);
             } else {
-                debugprint("container_impact_dmg 2: %d", otmp->otyp);
+                debugprint("container_impact_dmg2: %d", otmp->otyp);
                 obj_extract_self(otmp);
                 obfree(otmp, (struct obj *) 0);
             }
@@ -915,7 +915,7 @@ boolean is_golf_swing;
             pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s %s loose.", The(distant_name(kickedobj, xname)),
                   otense(kickedobj, "come"));
         kickedobj->speflags &= ~SPEFLAGS_CAUGHT_IN_LEAVES;
-        debugprint("really_kick_object");
+        debugprint("really_kick_object: %d", kickedobj->otyp);
         obj_extract_self(kickedobj);
         newsym(x, y);
         if (costly && (!costly_spot(u.ux, u.uy)
@@ -1045,7 +1045,7 @@ boolean is_golf_swing;
 
     if (costly && !isgold)
         addtobill(kickedobj, FALSE, FALSE, TRUE);
-    debugprint("really_kick_object2");
+    debugprint("really_kick_object2: %d", kickedobj->otyp);
     obj_extract_self(kickedobj);
     (void) snuff_candle(kickedobj);
     newsym(x, y);
@@ -2321,7 +2321,7 @@ boolean near_hero;
         if (!near_hero ^ (where == MIGR_WITH_HERO))
             continue;
 
-        debugprint("obj_delivery");
+        debugprint("obj_delivery: %d", otmp->otyp);
         obj_extract_self(otmp);
         otmp->owornmask = 0L;
 
@@ -2351,7 +2351,7 @@ boolean near_hero;
                         continue;
                 } else if (breaktest(otmp)) {
                     /* assume it broke before player arrived, no messages */
-                    debugprint("obj_delivery: %d", otmp->otyp);
+                    debugprint("obj_delivery3: %d", otmp->otyp);
                     delobj(otmp);
                     continue;
                 }

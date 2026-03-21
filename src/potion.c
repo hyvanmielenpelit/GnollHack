@@ -3748,7 +3748,7 @@ dodip()
                 {
                     delay_output_milliseconds(1000);
                 }
-                debugprint("dodip: %d", obj->otyp);
+                debugprint("dodip8: %d", obj->otyp);
                 if (obj->otyp == POT_ACID)
                     obj->in_use = 1;
                 if (water_damage(obj, 0, TRUE) != ER_DESTROYED && obj->in_use)
@@ -3782,7 +3782,7 @@ dodip()
             } 
             else 
             {
-                debugprint("dodip2: %d", obj->otyp);
+                debugprint("dodip11: %d", obj->otyp);
                 if (obj->otyp == POT_ACID)
                     obj->in_use = 1;
                 if (water_damage(obj, 0, TRUE) != ER_DESTROYED && obj->in_use)
@@ -4026,7 +4026,7 @@ dodip()
                 exercise(A_STR, FALSE);
                 if (!has_innate_breathless(youmonst.data) || haseyes(youmonst.data))
                     potionbreathe(obj, dcbuf3);
-                debugprint("dodip: %d", obj->otyp);
+                debugprint("dodip9: %d", obj->otyp);
                 useupall(obj);
                 losehp(adjust_damage(amt + rnd(9), (struct monst*)0, &youmonst, AD_MAGM, ADFLAGS_NONE), /* not physical damage */
                     "alchemic blast", KILLED_BY_AN);
@@ -4064,7 +4064,7 @@ dodip()
                 case 4: {
                     struct obj* otmp = mkobj(POTION_CLASS, FALSE, FALSE);
                     obj->otyp = otmp->otyp;
-                    debugprint("dodip: %d", otmp->otyp);
+                    debugprint("dodip10: %d", otmp->otyp);
                     obfree(otmp, (struct obj*)0);
                     if(neutralizingliquid && (obj->otyp == POT_SICKNESS || obj->otyp == POT_POISON))
                         obj->otyp = POT_WATER;

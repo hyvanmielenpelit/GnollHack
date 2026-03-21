@@ -3038,7 +3038,7 @@ boolean replaceundead;
             /* transfer the ghost's inventory along with it */
             while ((otmp = ghost->minvent) != 0) 
             {
-                debugprint("revive1");
+                debugprint("revive1: %d", otmp->otyp);
                 obj_extract_self(otmp);
                 (void)add_to_minv(mtmp, otmp);
             }
@@ -3090,7 +3090,7 @@ boolean replaceundead;
     /* finally, get rid of the corpse--it's gone now */
     switch (corpse->where) {
     case OBJ_INVENT:
-        debugprint("revive: %d", corpse->otyp);
+        debugprint("revive4: %d", corpse->otyp);
         useup(corpse);
         break;
     case OBJ_FLOOR:
@@ -3099,7 +3099,7 @@ boolean replaceundead;
         /* not useupf(), which charges */
         if (corpse->quan > 1L)
             corpse = splitobj(corpse, 1L);
-        debugprint("revive: %d", corpse->otyp);
+        debugprint("revive5: %d", corpse->otyp);
         delobj(corpse);
         newsym(x, y);
         break;
@@ -4231,7 +4231,6 @@ struct obj *obj;
                     }
                     if (obj->timed)
                         obj_stop_timers(obj);
-                    debugprint("stone_to_flesh_obj: %d", obj->otyp);
                     debugprint("stone_to_flesh_obj: %d", obj->otyp);
                     if (carried(obj))
                         useup(obj);
@@ -6433,7 +6432,7 @@ struct obj *otmp;
     {
         pline_ex1(ATR_NONE, CLR_MSG_WARNING, "Luckily, the explosion does not harm you.");
     }
-    debugprint("backfire: %d", otmp->otyp);
+    debugprint("backfire2: %d", otmp->otyp);
     useup(otmp);
     special_effect_wait_until_end(0);
 }
@@ -9915,7 +9914,6 @@ boolean u_caused;
                     obj->quan = scrquan;
                 }
                 /* useupf(), which charges, only if hero caused damage */
-                debugprint("burn_floor_objects: %d", obj->otyp);
                 debugprint("burn_floor_objects: %d", obj->otyp);
                 if (u_caused)
                     useupf_with_flags(obj, delquan, NEWSYM_FLAGS_KEEP_OLD_EFFECT_MISSILE_ZAP_GLYPHS);

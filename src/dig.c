@@ -1017,7 +1017,6 @@ coord *cc;
             (void) delfloortrap(ttmp);
         }
         debugprint("dighole: %d", boulder_here->otyp);
-        debugprint("dighole: %d", boulder_here->otyp);
         delobj(boulder_here);
         return TRUE;
 
@@ -2679,7 +2678,6 @@ struct obj* origobj;
                     pline("%s!", Tobjnam(otmp, "evaporate"));
 
                 debugprint("zap_evaporation: %d", otmp->otyp);
-                debugprint("zap_evaporation: %d", otmp->otyp);
                 delobj(otmp);
             }
         }
@@ -3018,7 +3016,7 @@ boolean *dealloced;
     if (otmp->otyp == LEASH && otmp->leashmon != 0)
         o_unleash(otmp);
 
-    debugprint("bury_an_obj");
+    debugprint("bury_an_obj1: %d", otmp->otyp);
     if (otmp->lamplit && otmp->otyp != POT_OIL)
         end_burn(otmp, TRUE);
 
@@ -3047,7 +3045,7 @@ boolean *dealloced;
         /* merges into burying material */
         if (dealloced)
             *dealloced = TRUE;
-        debugprint("bury_an_obj: %d", otmp->otyp);
+        debugprint("bury_an_obj2: %d", otmp->otyp);
         obfree(otmp, (struct obj *) 0);
         return otmp2;
     }

@@ -649,7 +649,7 @@ int x, y;
                  */
                 if (artifact_light(obj))
                     continue;
-                debugprint("snuff_light_source");
+                debugprint("snuff_light_source1");
                 end_burn(obj, obj->otyp != MAGIC_LAMP && obj->otyp != MAGIC_CANDLE);
                 /*
                  * The current ls element has just been removed (and
@@ -663,7 +663,7 @@ int x, y;
         {
             if (levl[x][y].lamplit)
             {
-                debugprint("snuff_light_source");
+                debugprint("snuff_light_source2");
                 levl[x][y].lamplit = 0;
                 del_light_source(LS_LOCATION, xy_to_any(x, y));
                 newsym(x, y);

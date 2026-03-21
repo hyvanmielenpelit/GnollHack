@@ -2669,7 +2669,7 @@ struct obj **optr;
     {        
         play_simple_object_sound(obj, OBJECT_SOUND_TYPE_APPLY2);
         You_ex(ATR_NONE, CLR_MSG_ATTENTION, "snuff the lit potion.");
-        debugprint("light_cocktail");
+        debugprint("light_cocktail1");
         end_burn(obj, TRUE);
         /*
          * Free & add to re-merge potion.  This will average the
@@ -2716,7 +2716,7 @@ struct obj **optr;
     begin_burn(obj, FALSE); /* after shop billing */
     if (split1off && carried(obj)) 
     {
-        debugprint("light_cocktail");
+        debugprint("light_cocktail2");
         obj_extract_self(obj); /* free from inv */
         obj->nomerge = 1;
         obj = hold_another_object(obj, "You drop %s!", doname(obj),
@@ -3294,12 +3294,12 @@ struct obj *obj;
                     verbalize_angry1(you_buy_it);
                 }
             }
-            debugprint("use_tinning_kit: %d", corpse->otyp);
+            debugprint("use_tinning_kit1: %d", corpse->otyp);
             useup(corpse);
         } else {
             if (costly_spot(corpse->ox, corpse->oy) && !corpse->no_charge)
                 verbalize_angry1(you_buy_it);
-            debugprint("use_tinning_kit: %d", corpse->otyp);
+            debugprint("use_tinning_kit2: %d", corpse->otyp);
             useupf(corpse, 1L);
         }
         (void) hold_another_object(can, "You make, but cannot pick up, %s.",

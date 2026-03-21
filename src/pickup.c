@@ -2492,7 +2492,7 @@ boolean* got_something_ptr;
         {
             if (levl[x][y].lamplit)
             {
-                debugprint("loot_decoration");
+                debugprint("loot_decoration1");
                 itemlit = TRUE;
                 del_light_source(LS_LOCATION, xy_to_any(x, y));
                 levl[x][y].lamplit = 0;
@@ -2530,7 +2530,7 @@ boolean* got_something_ptr;
                     }
                 }
                 play_simple_object_sound(newobj, OBJECT_SOUND_TYPE_PICK_UP);
-                debugprint("loot_decoration");
+                debugprint("loot_decoration2");
                 obj_extract_self(newobj);
                 newobj = hold_another_object(newobj, "Oops!  %s out of your grasp!",
                     The(aobjnam(newobj, "slip")), (const char*)0, TRUE);
@@ -3499,8 +3499,6 @@ boolean dobot;
                 obj = 0;
         }
 
-        debugprint("in_container_core2: %d, %d", current_container->otyp, saved_otyp);
-        debugprint("in_container_core2: %d, %d", current_container->otyp, saved_otyp);
         debugprint("in_container_core2: %d, %d", current_container->otyp, saved_otyp);
         //context.suppress_container_deletion_warning = 1;
         if (!floor_container)

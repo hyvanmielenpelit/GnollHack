@@ -1603,7 +1603,7 @@ m_useupall(mon, obj)
 struct monst *mon;
 struct obj *obj;
 {
-    debugprint("m_useupall");
+    debugprint("m_useupall1: %d", obj->otyp);
     obj_extract_self(obj);
     if (obj->owornmask) {
         if (obj == MON_WEP(mon))
@@ -1614,7 +1614,7 @@ struct obj *obj;
         if (mon == u.usteed && obj->otyp == SADDLE)
             dismount_steed(DISMOUNT_FELL);
     }
-    debugprint("m_useupall: %d", obj->otyp);
+    debugprint("m_useupall2: %d", obj->otyp);
     obfree(obj, (struct obj *) 0);
 }
 

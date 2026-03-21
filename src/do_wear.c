@@ -4178,7 +4178,7 @@ register struct obj *atmp;
         boolean ogone = finish_obj_tracking(trackidx);
         if (!ogone)
         {
-            debugprint("destroy_arm: %d", otmp->otyp);
+            debugprint("destroy_arm1: %d", otmp->otyp);
             useup(otmp);
         }
     } else if (DESTROY_ARM(uarmo)) {

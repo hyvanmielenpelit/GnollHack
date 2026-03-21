@@ -1603,12 +1603,12 @@ int64_t timeout;
             /* Instead of ordinary egg timeout use a short one */
             attach_egg_hatch_timeout(egg, (int64_t) rnd(12));
         } else if (carried(egg)) {
-            debugprint("hatch_egg: %d", egg->otyp);
+            debugprint("hatch_egg1: %d", egg->otyp);
             useup(egg);
             obj_gone = TRUE;
         } else {
             /* free egg here because we use it above */
-            debugprint("hatch_egg: %d", egg->otyp);
+            debugprint("hatch_egg2: %d", egg->otyp);
             obj_extract_self(egg);
             obfree(egg, (struct obj *) 0);
             obj_gone = TRUE;
@@ -1924,7 +1924,7 @@ int64_t timeout;
                 /* get rid of candles and burning oil potions;
                    we know this object isn't carried by hero,
                    nor is it migrating */
-                debugprint("burn_object1: %d", obj->otyp);
+                debugprint("burn_object1b: %d", obj->otyp);
                 obj_extract_self(obj);
                 obfree(obj, (struct obj *) 0);
                 obj = (struct obj *) 0;
@@ -1978,7 +1978,7 @@ int64_t timeout;
                to avoid false complaint of deleting worn item */
             if (obj->where == OBJ_MIGRATING)
                 obj->owornmask = 0L;
-            debugprint("burn_object2: %d", obj->otyp);
+            debugprint("burn_object2b: %d", obj->otyp);
             obj_extract_self(obj);
             obfree(obj, (struct obj *) 0);
         }
@@ -2136,7 +2136,7 @@ int64_t timeout;
 
             if (carried(obj)) 
             {
-                debugprint("burn_object5: %d", obj->otyp);
+                debugprint("burn_object5b: %d", obj->otyp);
                 useupall(obj);
             }
             else
@@ -2267,14 +2267,14 @@ int64_t timeout;
                 obj->owt = weight(obj);
             } else {
                 if (carried(obj)) {
-                    debugprint("burn_object3: %d", obj->otyp);
+                    debugprint("burn_object3b: %d", obj->otyp);
                     useupall(obj);
                 } else {
                     /* clear migrating obj's destination code
                        so obfree won't think this item is worn */
                     if (obj->where == OBJ_MIGRATING)
                         obj->owornmask = 0L;
-                    debugprint("burn_object4: %d", obj->otyp);
+                    debugprint("burn_object4b: %d", obj->otyp);
                     obj_extract_self(obj);
                     obfree(obj, (struct obj *) 0);
                 }

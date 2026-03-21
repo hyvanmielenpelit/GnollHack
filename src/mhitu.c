@@ -3309,13 +3309,13 @@ register struct obj* omonwep;
         )
     ))
     {
-        debugprint("hitmu: %d", omonwep->otyp);
+        debugprint("hitmu1: %d", omonwep->otyp);
         if(omonwep->where == OBJ_MINVENT)
             m_useup(mtmp, omonwep);
         else if (omonwep->where == OBJ_FLOOR)
         {
             int x = omonwep->ox, y = omonwep->oy;
-            debugprint("hitmu: %d", omonwep->otyp);
+            debugprint("hitmu2: %d", omonwep->otyp);
             delobj(omonwep);
             newsym(x, y);
         }

@@ -1760,7 +1760,7 @@ int how;
                 pline_The_ex(ATR_NONE, CLR_MSG_ATTENTION, "medallion crumbles to dust!");
                 if (uamul)
                 {
-                    debugprint("done: %d", uamul->otyp);
+                    debugprint("done3: %d", uamul->otyp);
                     useup(uamul);
                 }
             }

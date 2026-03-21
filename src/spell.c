@@ -5682,7 +5682,7 @@ int spell;
             int used_amount = (failure ? 1 : selected_multiplier) * mc->amount;
             if(otmp->quan >= used_amount)
             {
-                debugprint("domaterialcomponentsmenu: %d", otmp->otyp);
+                debugprint("domaterialcomponentsmenu1: %d", otmp->otyp);
                 for (i = 0; i < used_amount; i++)
                     useup(otmp);
 
@@ -5691,7 +5691,7 @@ int spell;
             else
             {
                 impossible("There should always be enough material components at this stage");
-                debugprint("domaterialcomponentsmenu: %d", otmp->otyp);
+                debugprint("domaterialcomponentsmenu2: %d", otmp->otyp);
                 useupall(otmp);
                 failure = TRUE;
             }

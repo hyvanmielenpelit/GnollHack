@@ -1244,7 +1244,7 @@ boolean* obj_destroyed;
                         else if (obj == uarms)
                             uwep2gone(); /* set unweapon */
                     }
-                    debugprint("hmon_hitmon: %d", obj->otyp);
+                    debugprint("hmon_hitmon1: %d", obj->otyp);
                     useup(obj);
                     if (!more_than_1)
                         obj = (struct obj*) 0;
@@ -1503,7 +1503,7 @@ boolean* obj_destroyed;
             } \
             else                             \
             {\
-                debugprint("useup_eggs: %d", (o)->otyp); \
+                debugprint("useup_eggs2: %d", (o)->otyp); \
                 useupall(o);                 \
             }\
             o = (struct obj*) 0;            \
@@ -1645,7 +1645,7 @@ boolean* obj_destroyed;
                     }
                     if (thrown)
                     {
-                        debugprint("hmon_hitmon: %d", obj->otyp);
+                        debugprint("hmon_hitmon8: %d", obj->otyp);
                         obfree(obj, (struct obj*)0);
                     }
                     else
@@ -1674,7 +1674,7 @@ boolean* obj_destroyed;
                         extratmp = weapon_extra_dmg_value(obj, mon, &youmonst, basedmg);
                         damage += adjust_damage(extratmp, &youmonst, mon, objects[obj->otyp].oc_extra_damagetype, ADFLAGS_NONE);
                     }
-                    debugprint("hmon_hitmon2: %d", obj->otyp);
+                    debugprint("hmon_hitmon2b: %d", obj->otyp);
                     if (thrown)
                         obfree(obj, (struct obj*) 0);
                     else
@@ -2525,7 +2525,7 @@ boolean* obj_destroyed;
                     uwepgone(); /* set unweapon */
                 else if (obj == uarms)
                     uwep2gone(); /* set unweapon */
-                debugprint("hmon_hitmon: %d", obj->otyp);
+                debugprint("hmon_hitmon9: %d", obj->otyp);
                 useupall(obj);
                 obj = 0;
             }
@@ -2542,7 +2542,7 @@ boolean* obj_destroyed;
         }
         else if (obj->where == OBJ_FREE)
         {
-            debugprint("hmon_hitmon3: %d", obj->otyp);
+            debugprint("hmon_hitmon3b: %d", obj->otyp);
             obfree(obj, (struct obj*)0);
             obj = (struct obj*)0;
         }

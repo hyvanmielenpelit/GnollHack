@@ -5987,7 +5987,7 @@ register struct obj *obj;
                           otense(otmp, "vanish"));
                     ideed = TRUE;
                 }
-                debugprint("dosinkring: %d", otmp->otyp);
+                debugprint("dosinkring2: %d", otmp->otyp);
                 delobj(otmp);
             }
         }
@@ -6089,7 +6089,7 @@ register struct obj *obj;
     }
     else
     {
-        debugprint("dosinkring: %d", obj->otyp);
+        debugprint("dosinkring1: %d", obj->otyp);
         useup(obj);
     }
 }
@@ -7235,7 +7235,7 @@ xchar portal; /* 1 = Magic portal, 2 = Modron portal down (find portal up), 3 = 
     boolean play_arrival_teleport_effect = !!(u.utotype & UTOFLAGS_TELEPORT_EFFECT);
     d_level fromlevel = u.uz;
 
-    debugprint("goto_level: dnum=%d, dlevel=%d, portal=%d", (int)newlevel->dnum, (int)newlevel->dlevel, (int)portal);
+    debugprint("goto_level0: dnum=%d, dlevel=%d, portal=%d", (int)newlevel->dnum, (int)newlevel->dlevel, (int)portal);
 
     if(at_location & 2)
         context.reviving = TRUE;
@@ -7376,7 +7376,7 @@ xchar portal; /* 1 = Magic portal, 2 = Modron portal down (find portal up), 3 = 
     if (!cant_go_back) 
     {
         update_mlstmv(); /* current monsters are becoming inactive */
-        debugprint("goto_level (fd=%d)", fd);
+        debugprint("goto_level1 (fd=%d)", fd);
         bufon(fd);       /* use buffered output */
     }
 
@@ -7454,7 +7454,7 @@ xchar portal; /* 1 = Magic portal, 2 = Modron portal down (find portal up), 3 = 
     }
     else 
     {
-        debugprint("goto_level");
+        debugprint("goto_level2");
         /* returning to previously visited level; reload it */
         fd = open_levelfile(new_ledger, whynot);
         if (tricked_fileremoved(fd, whynot))

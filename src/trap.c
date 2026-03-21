@@ -4364,7 +4364,7 @@ xchar x, y;
     if (catch_lit(obj))
         return FALSE;
 
-    debugprint("fire_damage: %d", obj->otyp);
+    debugprint("fire_damage0: %d", obj->otyp);
     if (Is_container(obj) && !oresist_fire(obj))
     {
         switch (obj->otyp) 
@@ -4398,7 +4398,7 @@ xchar x, y;
             for (otmp = obj->cobj; otmp; otmp = ncobj) 
             {
                 ncobj = otmp->nobj;
-                debugprint("fire_damage");
+                debugprint("fire_damage5: %d", otmp->otyp);
                 obj_extract_self(otmp);
                 if (!flooreffects(otmp, x, y, ""))
                     place_object(otmp, x, y);
@@ -4406,7 +4406,7 @@ xchar x, y;
         }
         if (!setnotworn(obj))
         {
-            debugprint("fire_damage: %d", obj->otyp);
+            debugprint("fire_damage4: %d", obj->otyp);
             delobj(obj);
         }
         return TRUE;

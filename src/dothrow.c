@@ -2285,7 +2285,7 @@ uchar* hitres_ptr;
                 /* Don't leave a cockatrice corpse available in a statue */
                 if (!u.uswallow) 
                 {
-                    debugprint("thitmonst: %d", obj->otyp);
+                    debugprint("thitmonst2: %d", obj->otyp);
                     delobj(obj);
                     return 1;
                 }

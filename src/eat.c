@@ -3077,7 +3077,6 @@ eatspecial()
     context.victual.eating = 0;
     context.victual.total_nutrition = 0;
     debugprint("eatspecial: %d", otmp->otyp);
-    debugprint("eatspecial: %d", otmp->otyp);
     if (otmp->oclass == COIN_CLASS) {
         if (carried(otmp))
             useupall(otmp);
@@ -3136,7 +3135,6 @@ eatspecial()
     if (otmp == uswapwep2 && otmp->quan == 1L)
         uswapwep2gone();
 
-    debugprint("eatspecial: %d", otmp->otyp);
     if (otmp == uball)
         unpunish();
     if (otmp == uchain)

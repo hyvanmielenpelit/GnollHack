@@ -381,7 +381,6 @@ boolean destroyit;
         if (loss)
             You("owe %ld %s for objects destroyed.", loss, currency(loss));
         debugprint("breakchestlock3: %d", box->otyp);
-        debugprint("breakchestlock3: %d", box->otyp);
         //context.suppress_container_deletion_warning = 1;
         delobj(box);
         //context.suppress_container_deletion_warning = 0;
