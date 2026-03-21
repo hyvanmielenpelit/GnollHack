@@ -698,7 +698,8 @@ doengrave()
     }
 
     /* SPFX for items */
-
+    int stylustyp = otmp->otyp;
+    int trackid = add_to_obj_tracking(otmp);
     switch (otmp->oclass) {
     default:
     case AMULET_CLASS:
@@ -757,6 +758,7 @@ doengrave()
             if (otmp->cursed && !rn2(WAND_BACKFIRE_CHANCE))
             {
                 wand_explode(otmp, 0);
+                (void)finish_obj_tracking(trackid);
                 return 1;
             }
             zapwand = TRUE;
@@ -969,6 +971,7 @@ doengrave()
         if (otmp == ublindf) {
             pline(
                 "That is a bit difficult to engrave with, don't you think?");
+            (void) finish_obj_tracking(trackid);
             return 0;
         }
         switch (otmp->otyp) {
@@ -1047,9 +1050,13 @@ doengrave()
      * End of implement setup
      */
 
+    boolean obj_gone = finish_obj_tracking(trackid);
     /* Identify stylus */
     if (doknown) {
-        learnwand(otmp);
+        if (obj_gone)
+            makeknown(stylustyp);
+        else
+            learnwand(otmp);
         //if (objects[otmp->otyp].oc_name_known)
         //    more_experienced(0, 10);
     }

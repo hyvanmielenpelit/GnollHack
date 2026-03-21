@@ -389,6 +389,7 @@ struct monst* origmonst;
         reveal_invis = FALSE;
 
     notonhead = (mtmp->mx != bhitpos.x || mtmp->my != bhitpos.y);
+    int trackid = add_to_obj_tracking(otmp);
 
     switch (otyp) {
     case WAN_STRIKING:
@@ -1604,8 +1605,14 @@ cure_petrification_here:
         use_skill(P_WAND, wandskilladded);
     /* if effect was observable then discover the wand type provided
        that the wand itself has been seen */
+    boolean obj_gone = finish_obj_tracking(trackid);
     if (learn_it)
-        learnwand(otmp);
+    {
+        if (obj_gone)
+            makeknown(otyp);
+        else
+            learnwand(otmp);
+    }
     return res;
 }
 
@@ -4314,6 +4321,7 @@ struct monst* origmonst;
 {
     int res = 0; /* affected object by default */
     boolean learn_it = FALSE, maybelearnit;
+    int wandtyp = otmp ? otmp->otyp : STRANGE_OBJECT;
 
     if (!origmonst)
     {
@@ -4329,7 +4337,7 @@ struct monst* origmonst;
     if (obj == otmp)
         return 0;
 
-    if (obj->bypass) 
+    if (obj->bypass)
     {
         /* The bypass bit is currently only used as follows:
          *
@@ -4379,16 +4387,17 @@ struct monst* origmonst;
      * obj->{ox,oy} to be valid.  The exception to this (so far) is
      * for the STONE_TO_FLESH spell.
      */
-    if (!(obj->where == OBJ_FLOOR || otmp->otyp == SPE_STONE_TO_FLESH))
+    if (!(obj->where == OBJ_FLOOR || wandtyp == SPE_STONE_TO_FLESH))
         impossible("bhito: obj is not floor or Stone To Flesh spell");
 
-    if (obj == uball) 
+    int wandtrackid = add_to_obj_tracking(otmp);
+    if (obj == uball)
     {
         res = 0;
     } 
     else if (obj == uchain)
     {
-        if (otmp->otyp == WAN_OPENING || otmp->otyp == SPE_KNOCK)
+        if (wandtyp == WAN_OPENING || wandtyp == SPE_KNOCK)
         {
             learn_it = TRUE;
             unpunish();
@@ -4396,7 +4405,7 @@ struct monst* origmonst;
             res = 0;
     } 
     else
-        switch (otmp->otyp) 
+        switch (wandtyp) 
         {
         case WAN_POLYMORPH:
         case SPE_POLYMORPH:
@@ -4407,7 +4416,7 @@ struct monst* origmonst;
                 break;
             }
             /* KMH, conduct */
-            if ((otmp->otyp != WAN_POLYMORPH || otmp->where == OBJ_INVENT) && (!u.uconduct.polypiles++))
+            if ((wandtyp != WAN_POLYMORPH || otmp->where == OBJ_INVENT) && (!u.uconduct.polypiles++))
                 livelog_printf(LL_CONDUCT, "polymorphed %s first object", uhis());
 
             /* any saved lock context will be dangerously obsolete */
@@ -4778,8 +4787,14 @@ struct monst* origmonst;
         }
     /* if effect was observable then discover the wand type provided
        that the wand itself has been seen */
+    boolean wandgone = finish_obj_tracking(wandtrackid);
     if (learn_it)
-        learnwand(otmp);
+    {
+        if (wandgone)
+            makeknown(wandtyp);
+        else
+            learnwand(otmp);
+    }
     return res;
 }
 
@@ -4866,6 +4881,7 @@ struct monst* origmonst;
     boolean gainwandskill = iswand && zapped_by_u && (otmp->speflags & SPEFLAGS_BEING_BROKEN) == 0;
     int wandskilladded = 0;
     int tx = t->tx, ty = t->ty;
+    int trackid = add_to_obj_tracking(otmp);
 
     switch (otyp) 
     {
@@ -4937,8 +4953,14 @@ struct monst* origmonst;
         use_skill(P_WAND, wandskilladded);
     /* if effect was observable then discover the wand type provided
        that the wand itself has been seen */
+    boolean obj_gone = finish_obj_tracking(trackid);
     if (learn_it)
-        learnwand(otmp);
+    {
+        if (obj_gone)
+            makeknown(otyp);
+        else
+            learnwand(otmp);
+    }
     return res;
 }
 
@@ -4979,8 +5001,10 @@ register struct obj *obj;
     struct monst* mtmp = (struct monst*)0;
     struct obj* otmp = (struct obj*)0;
     int duration = get_obj_spell_duration(obj);
+    int otyp = obj->otyp;
+    int trackid = add_to_obj_tracking(obj);
 
-    switch (obj->otyp)
+    switch (otyp)
     {
     case WAN_LIGHT:
     case SPE_LIGHT:
@@ -6257,13 +6281,13 @@ register struct obj *obj;
         context.spellpray = FALSE;
         u.uprayer_timeout = orig_uprayer_timeout;
         break;
-
     }
     case SPE_ABSOLUTION:
         You_ex(ATR_NONE, CLR_MSG_SPELL, "recite an aeon-old prayer to %s.", u_gname());
         (void)absolution_spell();
         break;
     }
+    boolean obj_gone = finish_obj_tracking(trackid);
 
     if (known)
     {
@@ -6271,7 +6295,10 @@ register struct obj *obj;
 //            more_experienced(0, 10);
         /* effect was observable; discover the wand type provided
            that the wand itself has been seen */
-        learnwand(obj);
+        if (obj_gone)
+            makeknown(otyp);
+        else
+            learnwand(obj);
     }
 }
 
@@ -6664,13 +6691,14 @@ boolean ordinary;
         return 0.0;
 
     boolean learn_it = FALSE;
+    int otyp = obj->otyp;
     int basedmg = get_spell_damage(obj->otyp, obj->exceptionality, &youmonst, &youmonst);
     int duration = get_obj_spell_duration(obj);
     double damage = 0;
     //boolean magic_resistance_success = check_magic_resistance_and_inflict_damage(&youmonst, obj, FALSE, 0, 0, NOTELL);
     int save_adj = get_saving_throw_adjustment(obj, &youmonst, obj->oclass == SPBOOK_CLASS && !(obj->speflags & SPEFLAGS_SERVICED_SPELL) ? &youmonst : (struct monst*)0);
-
-    switch (obj->otyp) {
+    int trackid = add_to_obj_tracking(obj);
+    switch (otyp) {
     case WAN_STRIKING:
     case SPE_FORCE_BOLT:
     case SPE_FORCE_STRIKE:
@@ -7575,8 +7603,14 @@ boolean ordinary;
     }
     /* if effect was observable then discover the wand type provided
        that the wand itself has been seen */
+    boolean obj_gone = finish_obj_tracking(trackid);
     if (learn_it)
-        learnwand(obj);
+    {
+        if (obj_gone)
+            makeknown(otyp);
+        else
+            learnwand(obj);
+    }
     return damage;
 }
 
@@ -7658,7 +7692,11 @@ STATIC_OVL boolean
 zap_steed(obj)
 struct obj *obj; /* wand or spell */
 {
+    if (!obj)
+        return FALSE;
+
     int steedhit = FALSE;
+    int otyp = obj->otyp;
 
     bhitpos.x = u.usteed->mx, bhitpos.y = u.usteed->my;
     notonhead = FALSE;
@@ -7676,14 +7714,22 @@ struct obj *obj; /* wand or spell */
         break;
     case WAN_TELEPORTATION:
     case SPE_TELEPORT_MONSTER:
+    {
         /* you go together */
+        int trackid = add_to_obj_tracking(obj);
         tele();
+        boolean obj_gone = finish_obj_tracking(trackid);
         /* same criteria as when unmounted (zapyourself) */
-        if ((Teleport_control && !Stunned) || !couldsee(u.ux0, u.uy0)
-            || distu(u.ux0, u.uy0) >= 16)
-            learnwand(obj);
+        if ((Teleport_control && !Stunned) || !couldsee(u.ux0, u.uy0) || distu(u.ux0, u.uy0) >= 16)
+        {
+            if (obj_gone)
+                makeknown(otyp);
+            else
+                learnwand(obj);
+        }
         steedhit = TRUE;
         break;
+    }
 
     /* Default processing via bhitm() for these */
     case WAN_MAKE_INVISIBLE:
@@ -8713,11 +8759,12 @@ boolean stop_at_first_hit_object;
         }
 
         /* Drawbridges */
+        int otyp = !obj ? STRANGE_OBJECT : obj->otyp;
         if (weapon == ZAPPED_WAND && !drawbridge_hit && find_drawbridge(&x, &y))
         {
             boolean learn_it = FALSE;
-
-            switch (obj->otyp) 
+            int trackid = add_to_obj_tracking(obj);
+            switch (otyp)
             {
             case WAN_OPENING:
             case SPE_KNOCK:
@@ -8748,17 +8795,22 @@ boolean stop_at_first_hit_object;
                 learn_it = TRUE;
                 break;
             }
-
+            boolean obj_gone = finish_obj_tracking(trackid);
             if (learn_it)
-                learnwand(obj);
-
+            {
+                if (obj_gone)
+                    makeknown(otyp);
+                else
+                    learnwand(obj);
+            }
         }
 
         /* Trees */
         if (weapon == ZAPPED_WAND && !tree_hit && IS_TREE(typ))
         {
             boolean learn_it = FALSE;
-            switch (obj->otyp)
+            int trackid = add_to_obj_tracking(obj);
+            switch (otyp)
             {
             case WAN_STRIKING:
             case SPE_FORCE_BOLT:
@@ -8770,8 +8822,14 @@ boolean stop_at_first_hit_object;
             default:
                 break;
             }
+            boolean obj_gone = finish_obj_tracking(trackid);
             if (learn_it)
-                learnwand(obj);
+            {
+                if (obj_gone)
+                    makeknown(otyp);
+                else
+                    learnwand(obj);
+            }
         }
 
         /* Monsters */
