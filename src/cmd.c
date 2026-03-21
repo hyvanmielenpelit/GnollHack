@@ -9024,7 +9024,10 @@ int x, y, mod;
     int target_x = x;
     int target_y = y;
     memset(cmd, 0, sizeof(cmd));
-    debugprint("click_to_cmd: x=%d, y=%d, mod=%d, ux=%d, uy=%d", x, y, mod, u.ux, u.uy);
+
+    char dbgbuf[BUFSZ];
+    Sprintf(dbgbuf, "click_to_cmd: x=%d, y=%d, mod=%d, ux=%d, uy=%d", x, y, mod, u.ux, u.uy);
+    issue_breadcrumb(dbgbuf);
 
     /* mod can be any value except CLICK_OFF */
     if (mod == CLICK_SECONDARY)
