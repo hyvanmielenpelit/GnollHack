@@ -3598,7 +3598,7 @@ boolean dobot;
     }
 
     if (obj_gone)
-        return -1;
+        return res;
 
     obj->nomerge = 0;
 
@@ -3653,7 +3653,7 @@ boolean dobot;
     }
 
     if (obj_gone)
-        return -1;
+        return res;
 
     obj->nomerge = 0;
 
