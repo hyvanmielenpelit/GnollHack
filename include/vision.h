@@ -88,5 +88,6 @@ extern char *viz_rmax;            /* max could see indices */
 #define MONSEEN_XRAYVIS 0x0010  /* via Xray vision */
 #define MONSEEN_DETECT 0x0020   /* via extended monster detection */
 #define MONSEEN_WARNMON 0x0040  /* via type-specific warning */
+#define MONSEEN_ASTRALVIS 0x0080   /* via astral vision */
 
 #endif /* VISION_H */

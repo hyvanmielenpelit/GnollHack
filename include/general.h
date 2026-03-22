@@ -1034,5 +1034,8 @@ enum cat_breeds {
 #define INVENTORY_CANCEL_RESULT -1
 #define INVENTORY_SWAP_RESULT   -2
 
+#define XRAY_VISION_RANGE 3
+#define ASTRAL_VISION_RANGE 4
+
 #endif /* GENERAL_H */
 

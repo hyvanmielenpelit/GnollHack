@@ -2175,7 +2175,7 @@ struct monst* mon;
         u.uspellcastingbonus_all = 0;
         u.uexperiencebonus = 0;
         u.uarcherybonus = 0;
-        u.xray_range = Extended_XRay_vision ? 5 : XRay_vision ? 3 : -1;
+        u.xray_range = Astral_vision ? ASTRAL_VISION_RANGE : XRay_vision ? XRAY_VISION_RANGE : -1;
 
         u.moreluck = 0;
         u.luck_does_not_timeout = 0;

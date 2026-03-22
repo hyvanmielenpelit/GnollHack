@@ -450,8 +450,15 @@ int x, y;
             }
             if (how_seen & MONSEEN_XRAYVIS) {
                 /* Eyes of the Overworld */
-                Strcat(extrabuf, "astral vision");
+                Strcat(extrabuf, "X-ray vision");
                 how_seen &= ~MONSEEN_XRAYVIS;
+                if (how_seen)
+                    Strcat(extrabuf, ", ");
+            }
+            if (how_seen & MONSEEN_ASTRALVIS) {
+                /* Eyes of the Overworld */
+                Strcat(extrabuf, "astral vision");
+                how_seen &= ~MONSEEN_ASTRALVIS;
                 if (how_seen)
                     Strcat(extrabuf, ", ");
             }

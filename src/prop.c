@@ -187,7 +187,7 @@ const struct propname propertynames[] = {
     { TOTTERING, "shaking and tottering", "shaking and tottering" },
     { MARTIAL_PROWESS, "imbued with martial prowess", "martial prowess" },
     { POLYMORPH_RESISTANCE, "resistant to polymorph", "polymorph resistance" },
-    { EXTENDED_XRAY_VISION, "having extended X-ray vision", "extended X-ray vision" },
+    { ASTRAL_VISION, "having astral vision", "astral vision" },
     { PROTECTION_FROM_ARMOR_DESTRUCTION, "protected from armor destruction", "protection from armor destruction" },
     { EDIBILITY_APPRAISAL, "recognizing detrimental food", "recognition of detrimental food" },
     { CORPSE_PROPERTY_APPRAISAL, "recognizing corpse properties", "recognition of corpse properties" },
@@ -367,7 +367,7 @@ NEARDATA struct prop_info property_definitions[MAX_PROPS] =
     { "tottering",                    0, 0, 0,  0, 0,  PCLR_WHITE, PCLR_NONE, PROPFLAGS_NONE },  /* TOTTERING = 168 */
     { "martial-prowess",              0, 0, 0,  0, 0,  PCLR_WHITE, PCLR_NONE, PROPFLAGS_NONE },  /* MARTIAL_PROWESS = 169 */
     { "polymorph-resistance",         0, 0, 0,  0, 0,  PCLR_WHITE, PCLR_NONE, PROPFLAGS_NONE },  /* POLYMORPH_RESISTANCE = 170 */
-    { "extended-xray-vision",         0, 0, 0,  0, 0,  PCLR_WHITE, PCLR_NONE, PROPFLAGS_NONE },  /* EXTENDED_XRAY_VISION = 171 */
+    { "astral-vision",                0, 0, 0,  0, 0,  PCLR_WHITE, PCLR_NONE, PROPFLAGS_NONE },  /* ASTRAL_VISION = 171 */
     { "protection-from-armor-destruction", 0, 0, 0,  0, 0,  PCLR_WHITE, PCLR_NONE, PROPFLAGS_NONE },  /* PROTECTION_FROM_ARMOR_DESTRUCTION = 172 */
     { "edibility-appraisal",          0, 0, 0,  0, 0,  PCLR_WHITE, PCLR_NONE, PROPFLAGS_NONE },  /* EDIBILITY_APPRAISAL */
     { "corpse-property-appraisal",    0, 0, 0,  0, 0,  PCLR_WHITE, PCLR_NONE, PROPFLAGS_NONE },  /* CORPSE_PROPERTY_APPRAISAL */

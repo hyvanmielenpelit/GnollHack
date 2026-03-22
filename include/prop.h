@@ -191,7 +191,7 @@ enum prop_types {
     TOTTERING         = 168,
     MARTIAL_PROWESS   = 169,
     POLYMORPH_RESISTANCE = 170, /* Different from unchanging in that it only protects against magical polymorph, not sliming etc., nor does it prevent one from reverting back from polymorph */
-    EXTENDED_XRAY_VISION = 171,
+    ASTRAL_VISION = 171,
     PROTECTION_FROM_ARMOR_DESTRUCTION = 172,
     EDIBILITY_APPRAISAL   = 173,
     CORPSE_PROPERTY_APPRAISAL = 174,

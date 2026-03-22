@@ -2855,7 +2855,7 @@ howmonseen(mon)
 struct monst *mon;
 {
     boolean useemon = (boolean) canseemon(mon);
-    int xraydist = (u.xray_range < 0) ? -1 : (u.xray_range * u.xray_range);
+    int xraydist = (u.xray_range < 0) ? -1 : ((u.xray_range + 1) * (u.xray_range + 1) - 1); /* Defined by circle_data --JG */
     unsigned how_seen = 0; /* result */
 
     /* normal vision;
@@ -2874,9 +2874,19 @@ struct monst *mon;
     /* telepathy */
     if (tp_sensemon(mon))
         how_seen |= MONSEEN_TELEPAT;
-    /* xray */
-    if (useemon && xraydist > 0 && distu(mon->mx, mon->my) <= xraydist)
-        how_seen |= MONSEEN_XRAYVIS;
+    /* xray and astral */
+    if (useemon && xraydist > 0)
+    {
+        int distance = distu(mon->mx, mon->my);
+        if (distance <= xraydist)
+        {
+            if (Astral_vision && distance <= (ASTRAL_VISION_RANGE + 1) * (ASTRAL_VISION_RANGE + 1) - 1)
+                how_seen |= MONSEEN_ASTRALVIS;
+            
+            if (!Astral_vision /* Insurance */ || (XRay_vision && distance <= (XRAY_VISION_RANGE + 1) * (XRAY_VISION_RANGE + 1) - 1))
+                how_seen |= MONSEEN_XRAYVIS;
+        }
+    }
     /* extended detection */
     if (Detect_monsters)
         how_seen |= MONSEEN_DETECT;

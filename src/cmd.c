@@ -4706,11 +4706,11 @@ int final;
         you_are("telepathic", from_what(TELEPAT));
     if (Blind_telepat)
         you_are("telepathic when blind", from_what(BLIND_TELEPATHY));
-    if (Extended_XRay_vision)
-        you_have("Extended X-ray vision", from_what(EXTENDED_XRAY_VISION));
+    if (Astral_vision)
+        you_have("astral vision", from_what(ASTRAL_VISION));
     if (XRay_vision)
     {
-        if (Extended_XRay_vision)
+        if (Astral_vision)
             you_have("latently X-ray vision", from_what(XRAY_VISION));
         else
             you_have("X-ray vision", from_what(XRAY_VISION));
