@@ -3435,6 +3435,7 @@ struct attack *mattk;
         }
 
         display_nhwindow(WIN_MESSAGE, FALSE);
+        debugprint_pos();
         vision_recalc(2); /* hero can't see anything */
         u.uswallow = 1;
         /* for digestion, shorter time is more dangerous;

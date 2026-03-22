@@ -2496,6 +2496,7 @@ finish_move:
         /* Clean old position -- vision_recalc() will print our new one. */
         newsym(u.ux0, u.uy0);
         /* Since the hero has moved, adjust what can be seen/unseen. */
+        debugprint_pos();
         vision_recalc(1); /* Do the work now in the recover time. */
         invocation_message();
         update_hearing_array_and_ambient_sounds();

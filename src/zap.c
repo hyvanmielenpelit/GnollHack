@@ -10775,6 +10775,7 @@ const char *msg;
     spot_stop_timers(x, y, MELT_ICE_AWAY); /* no more ice to melt away */
     obj_ice_effects(x, y, FALSE);
     unearth_objs(&youmonst, x, y, FALSE, FALSE);
+    debugprint_pos();
     if (Underwater)
         vision_recalc(1);
     newsym(x, y);

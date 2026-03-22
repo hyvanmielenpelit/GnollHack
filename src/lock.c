@@ -1622,6 +1622,7 @@ int x, y;
                 unblock_vision_and_hearing_at_point(x, y);
                 newsym(x, y);
                 /* force vision recalc before printing more messages */
+                debugprint_pos();
                 if (vision_full_recalc)
                     vision_recalc(0);
                 loudness = 20;

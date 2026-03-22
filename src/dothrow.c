@@ -957,6 +957,7 @@ int x, y;
     oy = u.uy;
     u_on_newpos(x, y); /* set u.<ux,uy>, u.usteed-><mx,my>; cliparound(); */
     newsym(ox, oy);    /* update old position */
+    debugprint_pos();
     vision_recalc(1);  /* update for new position */
     flush_screen(1);
     /* if terrain type changes, levitation or flying might become blocked

@@ -417,6 +417,7 @@ VA_DECL(const char *, line)
 
     if (!saving && !restoring && !reseting && !check_pointing && !program_state.in_tricked && !program_state.in_impossible && iflags.window_inited && WIN_MAP != WIN_ERR)
     {
+        debugprint_pos();
         if (vision_full_recalc)
             vision_recalc(0);
     }
@@ -533,6 +534,7 @@ int attr, color;
 
     if (!saving && !restoring && !reseting && !check_pointing && !program_state.in_tricked && !program_state.in_impossible && iflags.window_inited && WIN_MAP != WIN_ERR)
     {
+        debugprint_pos();
         if (vision_full_recalc)
             vision_recalc(0);
     }

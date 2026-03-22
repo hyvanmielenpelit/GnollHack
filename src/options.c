@@ -5463,6 +5463,7 @@ boolean tinitial, tfrom_file;
                  * initializing the options --- the vision system
                  * isn't set up yet.
                  */
+                debugprint_pos();
                 vision_recalc(2);       /* shut down vision */
                 vision_full_recalc = 1; /* delayed recalc */
                 if (iflags.use_color)

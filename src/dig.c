@@ -3317,6 +3317,7 @@ unearth_you()
     under_ground(0);
     if (!uamul || uamul->otyp != AMULET_OF_STRANGULATION)
         Strangled = 0;
+    debugprint_pos();
     vision_recalc(0);
 }
 

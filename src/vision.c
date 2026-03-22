@@ -885,6 +885,7 @@ skip:
     viz_rmin = next_rmin;
     viz_rmax = next_rmax;
 
+    debugprint_pos();
     recalc_mapseen();
 }
 
@@ -2829,6 +2830,7 @@ genericptr_t arg;
             return;
         }
 
+        debugprint_pos();
         if (vision_full_recalc)
             vision_recalc(0); /* recalc vision if dirty */
         limits = circle_ptr(range);

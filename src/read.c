@@ -3828,6 +3828,7 @@ struct obj *obj;
      *  correctly update all previously seen positions *and* correctly
      *  set the waslit bit [could be messed up from above].
      */
+    debugprint_pos();
     if (!Blind) {
         vision_recalc(2);
 
@@ -3841,6 +3842,7 @@ struct obj *obj;
         struct litmon *gremlin;
 
         /* can't delay vision recalc after all */
+        debugprint_pos();
         vision_recalc(0);
         /* after vision has been updated, monsters who are affected
            when hit by light can now be hit by it */

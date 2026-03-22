@@ -2336,6 +2336,7 @@ docrt()
     }
 
     /* shut down vision */
+    debugprint_pos();
     vision_recalc(2);
 
     /* clear detection markers from memory objects */
@@ -2367,6 +2368,7 @@ docrt()
     }
 
     /* see what is to be seen */
+    debugprint_pos();
     vision_recalc(0);
 
     /* overlay with monsters */

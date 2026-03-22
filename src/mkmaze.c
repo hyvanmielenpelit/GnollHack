@@ -1565,6 +1565,7 @@ movebubbles()
     if (!wportal)
         set_wportal();
 
+    debugprint_pos();
     vision_recalc(2);
 
     if (Is_waterlevel(&u.uz)) {

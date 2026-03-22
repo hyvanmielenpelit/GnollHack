@@ -539,6 +539,7 @@ toggle_blindness()
        (cited case was force bolt hitting an adjacent potion of blindness
        and then a secret door; hero was blinded by vapors but then got the
        message "a door appears in the wall" because wall spot was IN_SIGHT) */
+    debugprint_pos();
     vision_recalc(0);
     if (Blind_telepat || Unblind_telepat || Infravision || Warn_of_mon || Warning || Any_warning)
         see_monsters(); /* also counts EWarn_of_mon monsters */

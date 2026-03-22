@@ -4974,6 +4974,7 @@ drown()
             unplacebc();
             placebc();
         }
+        debugprint_pos();
         vision_recalc(2); /* unsee old position */
         u.uinwater = 1;
         under_water(1);
@@ -5487,6 +5488,7 @@ struct trap *ttmp;
         u.ux = x, u.uy = y;
         u.umoved = TRUE;
         newsym(u.ux0, u.uy0);
+        debugprint_pos();
         vision_recalc(1);
         check_leash(u.ux0, u.uy0);
         if (Punished)

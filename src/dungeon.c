@@ -2950,6 +2950,7 @@ int reason; /* how hero died; used when disclosing end-of-game level */
     winid win;
     int lastdun = -1;
 
+    debugprint_pos();
     /* lazy initialization */
     (void) recalc_mapseen();
 

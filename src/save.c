@@ -240,6 +240,7 @@ boolean quietly;
         display_screen_text("Saving...", (const char*)0, (const char*)0, SCREEN_TEXT_SAVING, ATR_NONE, NO_COLOR, 0UL);
 
     print_current_dgnlvl(saved_dgnlvl_name_buf);
+    debugprint_pos();
     vision_recalc(2); /* shut down vision to prevent problems
                          in the event of an impossible() call */
 

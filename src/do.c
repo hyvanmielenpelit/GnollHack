@@ -7357,12 +7357,14 @@ xchar portal; /* 1 = Magic portal, 2 = Modron portal down (find portal up), 3 = 
     removealtarsummons();
     if (u.uswallow) /* idem */
         u.uswldtim = u.uswallow = 0;
+    debugprint_pos();
     recalc_mapseen(); /* recalculate map overview before we leave the level */
     /*
      *  We no longer see anything on the level.  Make sure that this
      *  follows u.uswallow set to null since uswallow overrides all
      *  normal vision.
      */
+    debugprint_pos();
     vision_recalc(2);
 
     /*

@@ -4726,6 +4726,7 @@ struct obj *obj;
     obj->dknown = 1;
     if (Role_if(PM_PRIEST))
         obj->bknown = 1;
+    debugprint_pos();
     /* same criteria as lift_object()'s check for available inventory slot */
     if (obj->oclass != COIN_CLASS && inv_cnt(FALSE) >= 52
         && !merge_choice(invent, obj)) {

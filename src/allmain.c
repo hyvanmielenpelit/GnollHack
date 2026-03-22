@@ -437,6 +437,7 @@ uchar resuming; /* 0 = new game, 1 = loaded a saved game, 2 = continued playing 
             } else if (Warning || Warn_of_mon || Any_warning)
                 see_monsters();
 
+            debugprint_pos();
             if (vision_full_recalc)
                 vision_recalc(0); /* vision! */
         }
@@ -562,6 +563,7 @@ uchar resuming; /* 0 = new game, 1 = loaded a saved game, 2 = continued playing 
         else if (flags.time && (!context.move || !context.mv))
             context.botl = TRUE;
 
+        debugprint_pos();
         if (vision_full_recalc)
             vision_recalc(0); /* vision! */
 

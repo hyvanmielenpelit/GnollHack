@@ -373,6 +373,7 @@ boolean allow_drag, keep_effect_glyphs;
     see_monsters();
     vision_full_recalc = 1;
     nomul(0);
+    debugprint_pos();
     vision_recalc(0); /* vision before effects */
     update_hearing_array(0);
     /* if terrain type changes, levitation or flying might become blocked

@@ -715,7 +715,8 @@ boolean do_auto_in_bag;
 
     menu_pickup:
         n_tried = n;
-        for (n_picked = i = 0; i < n; i++) 
+        debugprint_pos();
+        for (n_picked = i = 0; i < n; i++)
         {
             uchar obj_gone = FALSE;
             res = pickup_object(pick_list[i].item.a_obj, pick_list[i].count, FALSE, do_auto_in_bag || (autopickup && flags.stash_on_autopickup && (!flags.pickup_thrown || !pick_list[i].item.a_obj->was_thrown)), &obj_gone);
@@ -1786,6 +1787,7 @@ boolean telekinesis;
     /* override weight consideration for loadstone picked up by anybody
        and for boulder picked up by hero poly'd into a giant; override
        availability of open inventory slot iff not already carrying one */
+    debugprint_pos();
     if (obj->otyp == LOADSTONE
         || (obj->otyp == BOULDER && throws_rocks(youmonst.data))) {
         if (inv_cnt(FALSE) < 52 || !carrying(obj->otyp)
@@ -1800,6 +1802,7 @@ boolean telekinesis;
 
     *cnt_p = carry_count(obj, container, *cnt_p, telekinesis,
                          &old_wt, &new_wt);
+    debugprint_pos();
     if (*cnt_p < 1L) {
         result = -1; /* nothing lifted */
     } else if (obj->oclass != COIN_CLASS
@@ -4625,6 +4628,7 @@ int applymode;
                 if (res < 0)
                     break;
                 n_looted += res;
+                debugprint_pos();
                 if (!carried(current_container) && !obj_gone && handle_knapsack_prefull(res, container_cnt, &do_auto_in_bag, &used_container, otmp, i, n, check_nonmergeable_nobj(otmp->nobj)) < 0)
                     break;
             }
@@ -4741,6 +4745,7 @@ int applymode;
                           all_categories ? allow_all : allow_category, SHOWWEIGHTS_PICKUP);
         if (n)
         {
+            debugprint_pos();
             n_looted = 0;
             context.quit_pressed = FALSE;
             uchar obj_gone;
