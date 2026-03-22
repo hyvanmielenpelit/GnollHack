@@ -202,8 +202,8 @@ boolean verbose_and_update_stats;
         obj->nknown = TRUE;
     }
 
-    boolean trackidx = add_to_obj_tracking(obj);
-    boolean trackidx2 = add_to_obj_tracking(oobj);
+    int trackidx = add_to_obj_tracking(obj);
+    int trackidx2 = add_to_obj_tracking(oobj);
     update_all_character_properties(obj, verbose_and_update_stats);
     boolean obj_gone = finish_obj_tracking(trackidx);
     boolean oobj_gone = finish_obj_tracking(trackidx2);
@@ -328,7 +328,7 @@ boolean verbose;
         }
     }
 
-    boolean trackidx = add_to_obj_tracking(obj);
+    int trackidx = add_to_obj_tracking(obj);
     update_all_character_properties(obj, verbose);
     boolean obj_gone = finish_obj_tracking(trackidx);
     if (obj_gone)
