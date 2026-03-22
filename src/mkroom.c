@@ -376,9 +376,6 @@ mkdesertedshop()
             i = 0;
     }
 
-    /* Change temporarily to so mimics look correct */
-    sroom->rtype = SHOPBASE + i;
-
     /* Change floor */
     int x, y;
     enum floor_subtypes lsubtype = !rn2(2) ? FLOOR_SUBTYPE_PARQUET : FLOOR_SUBTYPE_MARBLE;
@@ -400,13 +397,16 @@ mkdesertedshop()
     /* set room bits before stocking the shop */
     topologize(sroom);
 
-    /* stock the room with a shopkeeper and artifacts */
-    stock_room(i, sroom, TRUE);
+    /* Change temporarily to so mimics look correct */
+    sroom->rtype = SHOPBASE + i;
 
-    context.made_deserted_shop = 1;
+    /* stock the room with items and mimics */
+    stock_room(i, sroom, TRUE);
 
     /* Change back to get the right message */
     sroom->rtype = DESERTEDSHOP;
+
+    context.made_deserted_shop = 1;
 
     /* Remove doodads */
     for (x = sroom->lx - 1; x <= sroom->hx + 1; x++)
