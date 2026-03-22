@@ -353,7 +353,7 @@ doread(VOID_ARGS)
         if(Hallucination)
             pline_ex1(ATR_NONE, CLR_MSG_TEXT, "\"1 Zorkmid.  857 GUE.  In Frobs We Trust.\"");
         else
-            pline_ex(ATR_NONE, CLR_MSG_TEXT, "\"1 Gold Piece.  %d.  Treasury of Yendor.\"", 342 + 100 * ((int)scroll->o_id % 10) + 10 * ((int)scroll->o_id % 50) + ((int)scroll->o_id % 5) + (int)scroll->o_id % 3);
+            pline_ex(ATR_NONE, CLR_MSG_TEXT, "\"1 Gold Piece.  %d.  Treasury of Yendor.\"", 342 + 100 * ((int)scroll->o_id % 10) + 10 * ((int)scroll->o_id % 50) + ((int)scroll->o_id % 5) + ((int)scroll->o_id % 3));
 
         if (!u.uconduct.literate++)
             livelog_printf(LL_CONDUCT, "%s",
