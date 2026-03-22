@@ -893,7 +893,10 @@ struct mythic_definition {
 #define MYTHIC_FLAG_NO_OTHER_SORCERY            0x01000000UL
 #define MYTHIC_FLAG_NO_BOOTS                    0x02000000UL /* Must not be boots */
 #define MYTHIC_FLAG_BOOTS_REQUIRED              0x04000000UL /* Must be boots */
-#define MYTHIC_FLAG_WEAPON_OR_BOOTS_REQUIRED    0x08000001UL /* Must be a weapon or boots */
+#define MYTHIC_FLAG_WEAPON_BOOTS_OR_GLOVES_REQUIRED 0x08000001UL /* Must be a weapon, boots, or gloves */
+#define MYTHIC_FLAG_NO_GLOVES                   0x10000000UL /* Must not be gloves */
+#define MYTHIC_FLAG_GLOVES_REQUIRED             0x20000000UL /* Must be gloves */
+#define MYTHIC_FLAG_NO_GLOVES_WITH_WHACK        0x40000000UL /* Must not be gloves with whack damage (ordinary weapon gloves) */
 
 #define MYTHIC_FLAG_SLASHING_WEAPONS_ONLY    (MYTHIC_FLAG_NO_PIERCING_WEAPONS | MYTHIC_FLAG_NO_BLUDGEONING_WEAPONS)
 #define MYTHIC_FLAG_PIERCING_WEAPONS_ONLY    (MYTHIC_FLAG_NO_BLUDGEONING_WEAPONS | MYTHIC_FLAG_NO_SLASHING_WEAPONS)
