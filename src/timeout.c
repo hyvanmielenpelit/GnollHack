@@ -3821,7 +3821,7 @@ boolean ghostly;
                 curr->arg.a_obj = find_oid(nid);
                 if (!curr->arg.a_obj)
                 {
-                    panic("cant find o_id %d", nid);
+                    panic("cant find o_id %u", nid);
                     return;
                 }
                 curr->needs_fixup = 0;

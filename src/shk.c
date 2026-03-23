@@ -923,7 +923,7 @@ struct obj* obj, *merge;
             }
         } else {
             /* would have segfaulted on ESHK dereference previously */
-            impossible("%s? (rmno=%d, rtype=%d, mnum=%d, m_id=%d, mx=%d, my=%d, dnum=%d, dlevel=%d, \"%s\", dead=%d, hp=%d, repl=%d, dealloc=%d, revived=%d, mextra=%d, edog=%d, mtame=%d, e?=%d, other=%d, obj=%d, merge=%d, otyp=%d, mergetyp=%d, corpsenm=%d, unpaid=%d, where=%d, ox=%d, oy=%d)",
+            impossible("%s? (rmno=%d, rtype=%d, mnum=%d, m_id=%u, mx=%d, my=%d, dnum=%d, dlevel=%d, \"%s\", dead=%d, hp=%d, repl=%d, dealloc=%d, revived=%d, mextra=%d, edog=%d, mtame=%d, e?=%d, other=%d, obj=%d, merge=%d, otyp=%d, mergetyp=%d, corpsenm=%d, unpaid=%d, where=%d, ox=%d, oy=%d)",
                        shkp->isshk ? "shopkeeper career change"
                                    : "shop resident not shopkeeper",
                        (int) rmno,
