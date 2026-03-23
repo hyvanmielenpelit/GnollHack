@@ -234,9 +234,10 @@ register boolean zero_out;
 
 void
 replshk(mtmp, mtmp2)
-register struct monst *mtmp, *mtmp2;
+struct monst *mtmp, *mtmp2;
 {
-    rooms[ESHK(mtmp2)->shoproom - ROOMOFFSET].resident = mtmp2;
+    //rooms[ESHK(mtmp2)->shoproom - ROOMOFFSET].resident = mtmp2;
+    set_residency(mtmp2, FALSE);
     if (inhishop(mtmp) && *u.ushops == ESHK(mtmp)->shoproom) {
         ESHK(mtmp2)->bill_p = &(ESHK(mtmp2)->bill[0]);
     }

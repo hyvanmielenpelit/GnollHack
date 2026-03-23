@@ -2726,7 +2726,7 @@ uint64_t mmflags;
             mtmp->heads_left = mtmp2->data->heads;
 
         /* heal the monster */
-        if (mtmp->mbasehpmax > mtmp2->mbasehpmax&& is_rider(mtmp2->data))
+        if (mtmp->mbasehpmax > mtmp2->mbasehpmax && is_rider(mtmp2->data))
             mtmp2->mbasehpmax = mtmp->mbasehpmax;
 
         update_mon_maxhp(mtmp);
