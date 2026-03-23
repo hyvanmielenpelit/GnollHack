@@ -1547,13 +1547,13 @@ docast(VOID_ARGS)
 {
     if (in_doagain && docast_spell_no > -1)
     {
-        return spelleffects(docast_spell_no, FALSE, &youmonst);
+        return spelleffects(docast_spell_no, FALSE, &youmonst, (boolean*)0);
     }
     else
     {
         docast_spell_no = -1;
         if (getspell(&docast_spell_no, 0))
-            return spelleffects(docast_spell_no, FALSE, &youmonst);
+            return spelleffects(docast_spell_no, FALSE, &youmonst, (boolean*)0);
     }
     docast_spell_no = -1;
     return 0;
@@ -1563,14 +1563,23 @@ docast(VOID_ARGS)
 int
 docastquick(VOID_ARGS)
 {
+    return docastquick_core((boolean*)0);
+}
+
+int
+docastquick_core(stop_readchar_ptr)
+boolean* stop_readchar_ptr;
+{
     if (context.quick_cast_spell_set && context.quick_cast_spell_no > -1)
     {
-        return spelleffects(context.quick_cast_spell_no, FALSE, &youmonst);
+        return spelleffects(context.quick_cast_spell_no, FALSE, &youmonst, stop_readchar_ptr);
     }
     else
     {
         play_sfx_sound(SFX_GENERAL_CANNOT);
         pline_ex(ATR_NONE, CLR_MSG_FAIL, "Quick spell has not been set.");
+        if (stop_readchar_ptr)
+            *stop_readchar_ptr = TRUE;
         return 0;
     }
 }
@@ -2507,10 +2516,11 @@ int spell, booktype;
 }
 
 int
-spelleffects(spell, atme, targetmonst)
+spelleffects(spell, atme, targetmonst, stop_readchar_ptr)
 int spell;
 boolean atme;
 struct monst* targetmonst;
+boolean* stop_readchar_ptr;
 {
     double damage = 0;
     int chance, n; // , intell;
@@ -2532,11 +2542,15 @@ struct monst* targetmonst;
      */
     if (rejectcasting()) 
     {
+        if (stop_readchar_ptr)
+            *stop_readchar_ptr = TRUE;
         return 0; /* no time elapses */
     }
 
     if (reject_specific_spell_casting(spell)) 
     {
+        if (stop_readchar_ptr)
+            *stop_readchar_ptr = TRUE;
         return 0; /* no time elapses */
     }
 
@@ -2551,10 +2565,14 @@ struct monst* targetmonst;
             in_doagain = 0;
             res = domaterialcomponentsmenu(spell);
             skip_savech = 0;
+            if (stop_readchar_ptr)
+                *stop_readchar_ptr = TRUE;
             return res;
         }
 
         skip_savech = 0;
+        if (stop_readchar_ptr)
+            *stop_readchar_ptr = TRUE;
         return 0; /* no time elapses */
 
     }
@@ -2563,6 +2581,8 @@ struct monst* targetmonst;
     {
         play_sfx_sound(SFX_NOT_READY_YET);
         You_ex(ATR_NONE, CLR_MSG_FAIL, "cannot cast the spell before the cooldown has expired.");
+        if (stop_readchar_ptr)
+            *stop_readchar_ptr = TRUE;
         return 0; /* no time elapses */
     }
 
@@ -2571,6 +2591,8 @@ struct monst* targetmonst;
     {
         play_sfx_sound(SFX_GENERAL_CANNOT);
         You_ex(ATR_NONE, CLR_MSG_FAIL, "cannot recall this spell anymore.");
+        if (stop_readchar_ptr)
+            *stop_readchar_ptr = TRUE;
         return 0;
     }
 
@@ -2611,11 +2633,15 @@ struct monst* targetmonst;
     {
         play_sfx_sound(SFX_GENERAL_NOT_ENOUGH_STAMINA);
         You_ex(ATR_NONE, CLR_MSG_FAIL, "lack the strength to cast spells.");
+        if (stop_readchar_ptr)
+            *stop_readchar_ptr = TRUE;
         return 0;
     } 
     else if (check_capacity("Your concentration falters while carrying so much stuff.")) 
     {
         play_sfx_sound(SFX_FAIL_TO_CAST_CORRECTLY);
+        if (stop_readchar_ptr)
+            *stop_readchar_ptr = TRUE;
         return 1;
     }
 
@@ -2646,6 +2672,8 @@ struct monst* targetmonst;
     {
         play_sfx_sound(SFX_NOT_ENOUGH_MANA);
         You_ex(ATR_NONE, CLR_MSG_FAIL, "don't have enough mana to cast that spell.");
+        if (stop_readchar_ptr)
+            *stop_readchar_ptr = TRUE;
         return res;
     } 
     //else {
@@ -2734,6 +2762,8 @@ struct monst* targetmonst;
         deduct_mana_cost(denergy / 2);
         context.botl = 1;
         update_u_action_revert(ACTION_TILE_NO_ACTION);
+        if (stop_readchar_ptr)
+            *stop_readchar_ptr = TRUE;
         return 1;
     }
 

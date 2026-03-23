@@ -8101,7 +8101,9 @@ register char *cmd;
     }
     case NHKF_CLICKCAST:
     {
-        if (!docastquick())
+        boolean stop_readchar = FALSE;
+        (void)docastquick_core(&stop_readchar);
+        if (stop_readchar)
         {
             context.move = FALSE;
             readchar_queue = ""; //Prevent movement if casting failed.
@@ -8110,7 +8112,9 @@ register char *cmd;
     }
     case NHKF_CLICKZAP:
     {
-        if (!dozapquick())
+        boolean stop_readchar = FALSE;
+        (void)dozapquick_core(&stop_readchar);
+        if (stop_readchar)
         {
             context.move = FALSE;
             readchar_queue = ""; //Prevent movement if zapping failed.

@@ -6078,7 +6078,7 @@ struct monst* mtmp;
         break;
     case 3:
         if(spellid >= 0)
-            spelleffects(spellid, FALSE, mtmp);
+            spelleffects(spellid, FALSE, mtmp, (boolean*)0);
         break;
     case 4:
         if (priest)

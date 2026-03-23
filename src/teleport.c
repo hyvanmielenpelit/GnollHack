@@ -997,7 +997,7 @@ boolean break_the_rules; /* True: wizard mode ^T */
             castit = (has_teleport_self_spell && !Confusion && !Stunned);
             if (castit && yn_query("Cast the 'teleport self' spell?") == 'y')
             {
-                return spelleffects(sp_no, FALSE, &youmonst);
+                return spelleffects(sp_no, FALSE, &youmonst, (boolean*)0);
             }
             else if (!castit) 
             {

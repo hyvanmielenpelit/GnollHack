@@ -37,7 +37,7 @@ STATIC_DCL int FDECL(m_spell_hit_dex_bonus, (struct monst*, int));
 STATIC_DCL int FDECL(m_wand_hit_skill_bonus, (struct monst*, int));
 STATIC_DCL void FDECL(wishcmdassist, (int));
 STATIC_DCL int FDECL(get_summon_monster_type, (int));
-STATIC_DCL int FDECL(dozapcore, (struct obj*, BOOLEAN_P));
+STATIC_DCL int FDECL(dozapcore, (struct obj*, boolean*));
 
 #define ZT_MAGIC_MISSILE (AD_MAGM - 1)
 #define ZT_FIRE (AD_FIRE - 1)
@@ -6470,20 +6470,33 @@ dozap()
     if (check_capacity((char *) 0))
         return 0;
     obj = getobj(zap_syms, "zap", 0, "");
-    return dozapcore(obj, FALSE);
+    return dozapcore(obj, (boolean*)0);
 }
 
 int
-dozapquick()
+dozapquick(VOID_ARGS)
+{
+    return dozapquick_core((boolean*)0);
+}
+
+int
+dozapquick_core(stop_readchar_ptr)
+boolean* stop_readchar_ptr;
 {
     struct obj* obj;
     if (check_capacity((char*)0))
+    {
+        if (stop_readchar_ptr)
+            *stop_readchar_ptr = TRUE;
         return 0;
+    }
 
     if (!context.quick_zap_wand_oid)
     {
         play_sfx_sound(SFX_GENERAL_CANNOT);
         pline_ex(ATR_NONE, CLR_MSG_FAIL, "Your quick zap wand is not set.");
+        if (stop_readchar_ptr)
+            *stop_readchar_ptr = TRUE;
         return 0;
     }
     obj = o_on(context.quick_zap_wand_oid, invent);
@@ -6491,22 +6504,28 @@ dozapquick()
     {
         play_sfx_sound(SFX_GENERAL_CANNOT);
         pline_ex(ATR_NONE, CLR_MSG_FAIL, "Your quick zap wand is not in your inventory.");
+        if (stop_readchar_ptr)
+            *stop_readchar_ptr = TRUE;
         return 0;
     }
-    return dozapcore(obj, TRUE);
+    return dozapcore(obj, stop_readchar_ptr);
 }
 
 /* return value should be zero for zapquick if direction should not be given; for normal zap, it indicates if a turn should be taken */
 STATIC_OVL int
-dozapcore(obj, isquick)
+dozapcore(obj, stop_readchar_ptr)
 struct obj* obj;
-boolean isquick;
+boolean* stop_readchar_ptr;
 {
     double damage;
     boolean taketurn = TRUE;
 
     if (!obj)
+    {
+        if (stop_readchar_ptr)
+            *stop_readchar_ptr = TRUE;
         return 0;
+    }
 
     if (obj->otyp == WAN_PROBING)
         taketurn = FALSE;
@@ -6515,12 +6534,16 @@ boolean isquick;
     {
         play_sfx_sound(SFX_NOT_READY_YET);
         You_ex(ATR_NONE, CLR_MSG_FAIL, "cannot zap %s before its cooldown has expired.", the(cxname(obj)));
+        if (stop_readchar_ptr)
+            *stop_readchar_ptr = TRUE;
         return 0;
     }
     else if (Cancelled)
     {
         play_sfx_sound(SFX_CANCELLATION_IN_FORCE);
         Your_ex(ATR_NONE, CLR_MSG_FAIL, "magic is not flowing properly to allow for using a wand.");
+        if (stop_readchar_ptr)
+            *stop_readchar_ptr = TRUE;
         return 0;
     }
 
@@ -6532,6 +6555,8 @@ boolean isquick;
     {
         play_sfx_sound(SFX_GENERAL_OUT_OF_CHARGES);
         pline_ex1(ATR_NONE, CLR_MSG_FAIL, nothing_happens);
+        if (stop_readchar_ptr)
+            *stop_readchar_ptr = TRUE;
 
         //Mark empty query
         if ((obj->speflags & SPEFLAGS_EMPTY_NOTICED) == 0 && obj->charges >= 0)
@@ -6598,18 +6623,16 @@ boolean isquick;
             default:
                 break;
             }
-            return isquick ? 0 : taketurn; /* obj may be gone in dostash etc. */
-        }
-        else if (isquick)
-        {
-            taketurn = FALSE;
+            return taketurn; /* obj may be gone in dostash etc. */
         }
     }
     else if (obj->cursed && !rn2(WAND_BACKFIRE_CHANCE))
     {
         backfire(obj); /* the wand blows up in your face! */
         exercise(A_STR, FALSE);
-        return isquick ? 0 : taketurn;
+        if (stop_readchar_ptr)
+            *stop_readchar_ptr = TRUE;
+        return taketurn;
     }
     else if (!(objects[obj->otyp].oc_dir == NODIR) && !getdir((char*)0))
     {
@@ -6661,8 +6684,8 @@ boolean isquick;
         pline("%s to dust.", Tobjnam(obj, "turn"));
         debugprint("backfire: %d", obj->otyp);
         useup(obj);
-        if (isquick)
-            taketurn = FALSE;
+        if (stop_readchar_ptr)
+            *stop_readchar_ptr = TRUE;
     }
     update_inventory(); /* maybe used a charge */
     return taketurn;
