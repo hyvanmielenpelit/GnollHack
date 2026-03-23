@@ -2576,7 +2576,7 @@ mapseen *mptr;
 
 /* recalculate mapseen for the current level */
 void
-recalc_mapseen()
+recalc_mapseen(VOID_ARGS)
 {
     mapseen *mptr;
     struct monst *mtmp = (struct monst*)0;

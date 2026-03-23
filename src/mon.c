@@ -2959,6 +2959,7 @@ struct monst *mtmp, *mtmp2;
         replshk(mtmp, mtmp2);
 
     /* discard the old monster */
+    /* DEBUG */ mtmp->mon_flags |= MON_FLAGS_DEBUG_REPLMON;
     dealloc_monst(mtmp);
 }
 
@@ -3196,7 +3197,7 @@ struct monst *mon;
         dealloc_mextra(mon);
     if(mon->timed)
         mon_stop_timers(mon);
-
+    /* DEBUG */ mon->mon_flags |= MON_FLAGS_DEBUG_DEALLOCATED;
     free((genericptr_t) mon);
 }
 

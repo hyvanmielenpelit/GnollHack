@@ -214,6 +214,8 @@ struct monst {
 #define MON_FLAGS_BOSS_HOSTILITY                0x00000100UL
 #define MON_FLAGS_VORPAL_WARNING_GIVEN          0x00000200UL
 #define MON_FLAGS_SCHROEDINGERS_CAT             0x00000400UL
+#define MON_FLAGS_DEBUG_REPLMON                 0x00000800UL
+#define MON_FLAGS_DEBUG_DEALLOCATED             0x00001000UL
 
     uint64_t mstrategy; /* for monsters with mflag3: current strategy */
 

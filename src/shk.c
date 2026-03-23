@@ -923,7 +923,7 @@ struct obj* obj, *merge;
             }
         } else {
             /* would have segfaulted on ESHK dereference previously */
-            impossible("%s? (rmno=%d, rtype=%d, mnum=%d, mx=%d, my=%d, dnum=%d, dlevel=%d, \"%s\", dead=%d, revived=%d, mextra=%d, edog=%d, mtame=%d, e?=%d, other=%d, obj=%d, merge=%d, otyp=%d, mergetyp=%d, corpsenm=%d, unpaid=%d, where=%d, ox=%d, oy=%d)",
+            impossible("%s? (rmno=%d, rtype=%d, mnum=%d, mx=%d, my=%d, dnum=%d, dlevel=%d, \"%s\", dead=%d, hp=%d, repl=%d, dealloc=%d, revived=%d, mextra=%d, edog=%d, mtame=%d, e?=%d, other=%d, obj=%d, merge=%d, otyp=%d, mergetyp=%d, corpsenm=%d, unpaid=%d, where=%d, ox=%d, oy=%d)",
                        shkp->isshk ? "shopkeeper career change"
                                    : "shop resident not shopkeeper",
                        (int) rmno,
@@ -931,7 +931,8 @@ struct obj* obj, *merge;
                        shkp->mnum, shkp->mx, shkp->my, u.uz.dnum, u.uz.dlevel,
                        /* [real shopkeeper name is kept in ESHK, not MNAME] */
                        has_mname(shkp) ? MNAME(shkp) : "anonymous",
-                       DEADMONSTER(shkp), shkp->mrevived, shkp->mextra != 0, has_edog(shkp), shkp->mtame, 
+                       DEADMONSTER(shkp), shkp->mhp, (shkp->mon_flags & MON_FLAGS_DEBUG_REPLMON) != 0, (shkp->mon_flags & MON_FLAGS_DEBUG_DEALLOCATED) != 0,
+                       shkp->mrevived, shkp->mextra != 0, has_edog(shkp), shkp->mtame, 
                        shkp->isgd | shkp->isnpc | shkp->issmith | shkp->ispriest | shkp->isminion, shkp->issummoned | shkp->ispartymember,
                        obj != 0, merge != 0, obj ? obj->otyp : 0, merge ? merge->otyp : 0, 
                        obj ? obj->corpsenm : 0, obj ? obj->unpaid : 0, obj ? obj->where: 0, obj ? obj->ox : 0, obj ? obj->oy : 0);
