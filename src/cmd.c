@@ -8102,23 +8102,19 @@ register char *cmd;
     case NHKF_CLICKCAST:
     {
         boolean stop_readchar = FALSE;
-        (void)docastquick_core(&stop_readchar);
-        if (stop_readchar)
-        {
+        if (!docastquick_core(&stop_readchar))
             context.move = FALSE;
+        if (stop_readchar)
             readchar_queue = ""; //Prevent movement if casting failed.
-        }
         return;
     }
     case NHKF_CLICKZAP:
     {
         boolean stop_readchar = FALSE;
-        (void)dozapquick_core(&stop_readchar);
-        if (stop_readchar)
-        {
+        if (!dozapquick_core(&stop_readchar))
             context.move = FALSE;
+        if (stop_readchar)
             readchar_queue = ""; //Prevent movement if zapping failed.
-        }
         return;
     }
     case NHKF_TRAVEL:
