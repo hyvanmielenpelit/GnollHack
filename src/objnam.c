@@ -1793,6 +1793,10 @@ weapon_here:
 
         break;
     case WAND_CLASS:
+        if (context.quick_zap_wand_oid && context.quick_zap_wand_oid == obj->o_id)
+        {
+            Strcat(bp, " (quick wand)");
+        }
         break;
     case POTION_CLASS:
         if (obj->otyp == POT_OIL)

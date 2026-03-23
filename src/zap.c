@@ -3828,7 +3828,7 @@ int id;
                 delobj(otmp);
             otmp = mkobj(obj->oclass, FALSE, FALSE);
         } while (--try_limit > 0
-                 && objects[otmp->otyp].oc_magic != magic_obj);
+                 && (!otmp || objects[otmp->otyp].oc_magic != magic_obj));
     }
     else 
     {
@@ -3842,6 +3842,9 @@ int id;
             set_corpsenm(otmp, obj->corpsenm);
 #undef USES_CORPSENM
     }
+
+    if (!otmp)
+        return obj;
 
     /* preserve quantity */
     otmp->quan = obj->quan;
@@ -4167,6 +4170,22 @@ int id;
                 Norep_ex(ATR_NONE, CLR_MSG_WARNING, "%s is furious!", Monnam(shkp));
         }
     }
+    if (obj->oclass == WAND_CLASS && context.quick_zap_wand_oid && context.quick_zap_wand_oid == obj->o_id)
+    {
+        if (otmp->oclass == WAND_CLASS)
+        {
+            context.quick_zap_wand_oid = otmp->o_id;
+            if (otmp->where == OBJ_INVENT)
+                issue_gui_command(GUI_CMD_TOGGLE_QUICK_ZAP_WAND, (int)obj_to_glyph(otmp, rn2_on_display_rng), Hallucination ? 0 : (int)otmp->exceptionality, cxname(otmp));
+        }
+        else
+        {
+            context.quick_zap_wand_oid = 0;
+            if (otmp->where == OBJ_INVENT)
+                issue_gui_command(GUI_CMD_TOGGLE_QUICK_ZAP_WAND, NO_GLYPH, 0, "");
+        }
+    }
+
     debugprint("poly_obj2: %d", obj->otyp);
     delobj(obj);
     return otmp;

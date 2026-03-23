@@ -4454,6 +4454,12 @@ struct obj *obj;
             }
         }
     }
+    if (context.quick_zap_wand_oid && context.quick_zap_wand_oid == obj->o_id)
+    {
+        context.quick_zap_wand_oid = 0;
+        if (issue_gui_command)
+            issue_gui_command(GUI_CMD_TOGGLE_QUICK_ZAP_WAND, NO_GLYPH, 0, "");
+    }
 
     if (obj->oextra)
         dealloc_oextra(obj);
