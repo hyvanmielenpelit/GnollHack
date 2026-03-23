@@ -2068,6 +2068,7 @@ struct monst *mtmp;
 
         struct obj pseudo = { 0 };
         pseudo.otyp = m.has_offense == MUSE_WAN_ORCUS ? WAN_DEATH : otmp->special_quality == 0 ? WAN_COLD : otmp->special_quality == 1 ? WAN_LIGHTNING : WAN_FIRE;
+        pseudo.oclass = WAND_CLASS;
         pseudo.quan = 1L;
         raytype = -40 - objects[pseudo.otyp].oc_dir_subtype; //-40...-48;
         buzz(raytype, &pseudo, mtmp, 0, 0, 0, mtmp->mx, mtmp->my,

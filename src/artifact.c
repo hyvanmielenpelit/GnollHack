@@ -2808,6 +2808,7 @@ struct obj *obj;
             struct obj pseudo;
             pseudo = zeroobj; /* neither cursed nor blessed, zero oextra too */
             pseudo.otyp = SCR_TAMING;
+            pseudo.oclass = objects[pseudo.otyp].oc_class;
             pseudo.quan = 20L;
             boolean effect_happened = 0;
             (void) seffects(&pseudo, &effect_happened, &youmonst);
@@ -2946,6 +2947,7 @@ struct obj *obj;
         {
             struct obj pseudo = zeroobj;
             pseudo.otyp = SPE_ARROW_OF_DIANA;
+            pseudo.oclass = objects[pseudo.otyp].oc_class;
             pseudo.quan = 20L; /* do not let useup get it */
             double damage = 0;
 
@@ -2977,6 +2979,7 @@ struct obj *obj;
         {
             struct obj pseudo = zeroobj;
             pseudo.otyp = oart->inv_prop == ARTINVOKE_WAND_OF_DEATH ? WAN_DEATH : obj->special_quality == 0 ? WAN_COLD : obj->special_quality == 1 ? WAN_LIGHTNING : WAN_FIRE;
+            pseudo.oclass = objects[pseudo.otyp].oc_class;
             pseudo.quan = 1L; /* do not let useup get it */
             double damage = 0;
 

@@ -4326,6 +4326,7 @@ domagictrap()
             pseudo = zeroobj; /* neither cursed nor blessed,
                                  and zero out oextra */
             pseudo.otyp = SCR_REMOVE_CURSE;
+            pseudo.oclass = objects[pseudo.otyp].oc_class;
             pseudo.quan = 20L;
             HConfusion = 0L;
             boolean effect_happened = 0;

@@ -7416,6 +7416,7 @@ struct monst* mtmp;
 
     struct obj pseudo = { 0 };
     pseudo.otyp = otyp;
+    pseudo.oclass = objects[pseudo.otyp].oc_class;
     pseudo.quan = 20L;
     pseudo.speflags = SPEFLAGS_SERVICED_SPELL;
 
@@ -7477,6 +7478,7 @@ struct monst* mtmp;
 
     struct obj pseudo = { 0 };
     pseudo.otyp = SPE_EXTRA_HEALING;
+    pseudo.oclass = objects[pseudo.otyp].oc_class;
     pseudo.quan = 1L;
     pseudo.speflags = SPEFLAGS_SERVICED_SPELL;
     if (targetmonst == &youmonst)
@@ -7535,6 +7537,7 @@ struct monst* mtmp;
 
     struct obj pseudo = { 0 };
     pseudo.otyp = SPE_FULL_HEALING;
+    pseudo.oclass = objects[pseudo.otyp].oc_class;
     pseudo.quan = 1L;
     pseudo.speflags = SPEFLAGS_SERVICED_SPELL;
     if (targetmonst == &youmonst)
@@ -7593,6 +7596,7 @@ struct monst* mtmp;
 
     struct obj pseudo = { 0 };
     pseudo.otyp = SPE_CURE_SICKNESS;
+    pseudo.oclass = objects[pseudo.otyp].oc_class;
     pseudo.quan = 1L;
     pseudo.speflags = SPEFLAGS_SERVICED_SPELL;
     if (targetmonst == &youmonst)
@@ -8816,6 +8820,7 @@ const char* title_text;
         any.a_char = (char)forge_idx + 1;
         struct obj pseudo = zeroobj;
         pseudo.otyp = forge_any_target_otyp_temp;
+        pseudo.oclass = objects[pseudo.otyp].oc_class;
         pseudo.quan = (int64_t)forge_any_target_quan_temp;
         pseudo.exceptionality = forge_any_target_exceptionality_temp;
         pseudo.material = forge_any_target_material_temp == MAT_NONE ? objects[forge_any_target_otyp_temp].oc_material : forge_any_target_material_temp;
@@ -12332,6 +12337,7 @@ int* spell_otyps;
         char spellbuf[BUFSZ * 2] = "";
         struct obj pseudo = zeroobj;
         pseudo.otyp = i;
+        pseudo.oclass = objects[pseudo.otyp].oc_class;
         pseudo.blessed = 1;
         int64_t cost = get_cost(&pseudo, mtmp);
         Sprintf(spellbuf, "%s (%s%lld %s)", OBJ_NAME(objects[i]),
@@ -12388,6 +12394,7 @@ int* spell_otyps;
             char* txt = 0;
             struct obj pseudo = zeroobj;
             pseudo.otyp = spell_to_learn;
+            pseudo.oclass = objects[pseudo.otyp].oc_class;
             pseudo.blessed = 1;
             int64_t cost = get_cost(&pseudo, mtmp);
             char buf[BUFSZ * 2] = "";

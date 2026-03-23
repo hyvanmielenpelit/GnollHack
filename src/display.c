@@ -831,6 +831,7 @@ boolean dropping_piercer;
             {
                 obj = zeroobj;
                 obj.otyp = mon->mappearance;
+                obj.oclass = objects[mon->mappearance].oc_class;
                 obj.quan = 1L;
                 /* might be mimicing a corpse or statue */
                 obj.corpsenm = has_mcorpsenm(mon) ? MCORPSENM(mon) : PM_TENGU;

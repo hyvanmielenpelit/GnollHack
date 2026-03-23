@@ -433,6 +433,7 @@ outgoldmap:
         {
             gold = zeroobj; /* ensure oextra is cleared too */
             gold.otyp = GOLD_PIECE;
+            gold.oclass = COIN_CLASS;
             gold.quan = (int64_t) rnd(10); /* usually more than 1 */
             gold.ox = mtmp->mx;
             gold.oy = mtmp->my;
@@ -822,6 +823,7 @@ int class;            /* an object class, 0 for all */
             {
                 temp = zeroobj;
                 temp.otyp = mtmp->mappearance; /* needed for obj_to_glyph() */
+                temp.oclass = objects[mtmp->mappearance].oc_class;
                 temp.corpsenm = PM_TENGU; /* if mimicing a corpse */
                 temp.quan = 1L;
             }
@@ -834,6 +836,7 @@ int class;            /* an object class, 0 for all */
 
             gold = zeroobj; /* ensure oextra is cleared too */
             gold.otyp = GOLD_PIECE;
+            gold.oclass = COIN_CLASS;
             gold.quan = (int64_t) rnd(10); /* usually more than 1 */
             gold.ox = mtmp->mx;
             gold.oy = mtmp->my;
@@ -987,6 +990,7 @@ int src_cursed;
             obj.oy = y;
         }
         obj.otyp = !Hallucination ? GOLD_PIECE : random_object(rn2);
+        obj.oclass = objects[obj.otyp].oc_class;
         obj.quan = (int64_t) ((obj.otyp == GOLD_PIECE) ? rnd(10)
                            : objects[obj.otyp].oc_merge ? rnd(2) : 1);
         obj.corpsenm = random_monster(rn2); /* if otyp == CORPSE */

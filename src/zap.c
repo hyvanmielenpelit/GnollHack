@@ -206,8 +206,12 @@ int
 get_otyp_spell_duration(otyp)
 int otyp;
 {
+    if (otyp < 0 || otyp >= NUM_OBJECTS)
+        return 0;
+
     struct obj tempobj = { 0 };
     tempobj.otyp = otyp;
+    tempobj.oclass = objects[tempobj.otyp].oc_class;
     return get_obj_spell_duration(&tempobj);
 }
 
@@ -8657,6 +8661,7 @@ boolean stop_at_first_hit_object;
         {
             displayedobjtype = get_displayed_object_type_from_subdir_type(objects[obj->otyp].oc_dir_subtype);
             dispobj.otyp = displayedobjtype;
+            dispobj.oclass = objects[dispobj.otyp].oc_class;
         }
         else if (objects[obj->otyp].oc_dir_subtype < 0)
         {

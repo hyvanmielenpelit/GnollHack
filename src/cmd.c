@@ -2040,6 +2040,7 @@ wiz_debug(VOID_ARGS)
                 {
                     struct obj pseudo = { 0 };
                     pseudo.otyp = FIRST_SPELL + i;
+                    pseudo.oclass = objects[pseudo.otyp].oc_class;
                     initialspell(&pseudo);
                 }
             }

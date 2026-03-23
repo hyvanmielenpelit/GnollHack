@@ -3044,7 +3044,9 @@ reverse_loot()
             coffers->owt = weight(coffers);
             coffers->cknown = 0;
             if (!coffers->olocked) {
-                boxdummy = zeroobj, boxdummy.otyp = SPE_WIZARD_LOCK;
+                boxdummy = zeroobj;
+                boxdummy.otyp = SPE_WIZARD_LOCK;
+                boxdummy.oclass = objects[boxdummy.otyp].oc_class;
                 (void) boxlock(coffers, &boxdummy);
             }
         } else if (levl[x][y].looted != T_LOOTED

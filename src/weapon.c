@@ -1381,6 +1381,7 @@ xchar tx, ty;
                     int min_range = 0, max_range = 1;
                     struct obj poledummy = { 0 };
                     poledummy.otyp = hwep[i];
+                    poledummy.oclass = objects[poledummy.otyp].oc_class;
                     get_pole_type_weapon_min_max_distances(&poledummy, mtmp, &min_range, &max_range);
                     boolean poletooclose = dist2(mtmp->mx, mtmp->my, tx, ty) < min_range * min_range;
                     if (poletooclose)
