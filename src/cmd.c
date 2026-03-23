@@ -8113,7 +8113,7 @@ register char *cmd;
         if (!dozapquick())
         {
             context.move = FALSE;
-            readchar_queue = ""; //Prevent movement if casting failed.
+            readchar_queue = ""; //Prevent movement if zapping failed.
         }
         return;
     }

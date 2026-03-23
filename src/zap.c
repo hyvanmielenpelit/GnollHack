@@ -37,7 +37,7 @@ STATIC_DCL int FDECL(m_spell_hit_dex_bonus, (struct monst*, int));
 STATIC_DCL int FDECL(m_wand_hit_skill_bonus, (struct monst*, int));
 STATIC_DCL void FDECL(wishcmdassist, (int));
 STATIC_DCL int FDECL(get_summon_monster_type, (int));
-STATIC_DCL int FDECL(dozapcore, (struct obj*));
+STATIC_DCL int FDECL(dozapcore, (struct obj*, BOOLEAN_P));
 
 #define ZT_MAGIC_MISSILE (AD_MAGM - 1)
 #define ZT_FIRE (AD_FIRE - 1)
@@ -6451,7 +6451,7 @@ dozap()
     if (check_capacity((char *) 0))
         return 0;
     obj = getobj(zap_syms, "zap", 0, "");
-    return dozapcore(obj);
+    return dozapcore(obj, FALSE);
 }
 
 int
@@ -6474,12 +6474,14 @@ dozapquick()
         pline_ex(ATR_NONE, CLR_MSG_FAIL, "Your quick zap wand is not in your inventory.");
         return 0;
     }
-    return dozapcore(obj);
+    return dozapcore(obj, TRUE);
 }
 
+/* return value should be zero for zapquick if direction should not be given; for normal zap, it indicates if a turn should be taken */
 STATIC_OVL int
-dozapcore(obj)
+dozapcore(obj, isquick)
 struct obj* obj;
+boolean isquick;
 {
     double damage;
     boolean taketurn = TRUE;
@@ -6577,14 +6579,18 @@ struct obj* obj;
             default:
                 break;
             }
-            return taketurn; /* obj may be gone in dostash etc. */
+            return isquick ? 0 : taketurn; /* obj may be gone in dostash etc. */
+        }
+        else if (isquick)
+        {
+            taketurn = FALSE;
         }
     }
     else if (obj->cursed && !rn2(WAND_BACKFIRE_CHANCE))
     {
         backfire(obj); /* the wand blows up in your face! */
         exercise(A_STR, FALSE);
-        return taketurn;
+        return isquick ? 0 : taketurn;
     }
     else if (!(objects[obj->otyp].oc_dir == NODIR) && !getdir((char*)0))
     {
@@ -6636,6 +6642,8 @@ struct obj* obj;
         pline("%s to dust.", Tobjnam(obj, "turn"));
         debugprint("backfire: %d", obj->otyp);
         useup(obj);
+        if (isquick)
+            taketurn = FALSE;
     }
     update_inventory(); /* maybe used a charge */
     return taketurn;
