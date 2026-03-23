@@ -3195,8 +3195,10 @@ struct monst *mon;
     }
     if (mon->mextra)
         dealloc_mextra(mon);
-    if(mon->timed)
+    if (mon->timed)
         mon_stop_timers(mon);
+    if (mon->isshk)
+        debugprint("deallocated shk: mnum=%d, m_id=%d", mon->mnum, mon->m_id);
     /* DEBUG */ mon->mon_flags |= MON_FLAGS_DEBUG_DEALLOCATED;
     free((genericptr_t) mon);
 }
