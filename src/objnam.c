@@ -4386,13 +4386,17 @@ boolean* removed_from_game_ptr;
         }
         else if (!strncmpi(bp, "legendary ", l = 10))
         {
-            mythic_prefix = -2;
-            mythic_suffix = -2;
+            if (mythic_prefix <= 0)
+                mythic_prefix = -2;
+            if (mythic_suffix <= 0)
+                mythic_suffix = -2;
         }
         else if (!strncmpi(bp, "mythic ", l = 7))
         {
-            mythic_prefix = -1;
-            mythic_suffix = -1;
+            if (!mythic_prefix)
+                mythic_prefix = -1;
+            if (!mythic_suffix)
+                mythic_suffix = -1;
         }
         else if (!strncmpi(bp, "trapped ", l = 8)) {
             trapped = 0; /* undo any previous "untrapped" */
