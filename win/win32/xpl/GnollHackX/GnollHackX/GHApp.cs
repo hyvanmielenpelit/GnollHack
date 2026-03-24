@@ -176,7 +176,7 @@ namespace GnollHackX
             UseAuxGPU = Preferences.Get("UseAuxiliaryGLCanvas", IsUseAuxGPUDefault);
             DisableAuxGPU = Preferences.Get("DisableAuxiliaryGLCanvas", IsDisableAuxGPUDefault);
             FixRects = Preferences.Get("FixRects", IsFixRectsDefault);
-            FixVertical = Preferences.Get("FixVertical", IsFixVerticalDefault);
+            FixFiltering = Preferences.Get("FixFiltering", IsFixFilteringDefault);
             RuntimeEffects = Preferences.Get("RuntimeEffects", GHConstants.DefaultRuntimeEffects);
             DisableWindowsKey = Preferences.Get("DisableWindowsKey", false);
             DefaultVIKeys = Preferences.Get("DefaultVIKeys", false);
@@ -1134,14 +1134,16 @@ namespace GnollHackX
             MirroredPetsNotGifted = !Preferences.Get("AllowPet", true);
         }
 
-        public static void MaybeFixRects(ref SKRect source, ref SKRect dest, float targetscale, bool usingGL, bool fixRects, bool fixVertical)
+        public static void MaybeFixRects(ref SKRect source, ref SKRect dest, float targetscale, bool usingGL, bool fixRects, bool fixFiltering)
         {
             /* Requires only high quality filter to be on; can happen on GL and non-GL */
-            if (fixVertical && source.Height > 1.02f)
+            if (fixFiltering && source.Height > 1.02f)
             {
                 /* Note that many horizontal artifacts in menus may be caused by Improved Menu Images and its high quality filtering that expands beyond the source bitmap */
                 source.Top += 0.51f;
                 source.Bottom -= 0.51f;
+                source.Left += 0.51f;
+                source.Right -= 0.51f;
             }
 
             if ((usingGL || IsWindows) && fixRects)
@@ -1149,12 +1151,12 @@ namespace GnollHackX
                 //if (targetscale <= 0)
                 //    targetscale = 1.0f;
 
-                if (source.Width > 0.02f)
+                if (!fixFiltering && source.Width > 0.02f)
                 {
                     source.Left += 0.01f;
                     source.Right -= 0.01f;
                 }
-                if (!fixVertical && source.Height > 0.02f)
+                if (!fixFiltering && source.Height > 0.02f)
                 {
                     source.Top += 0.01f;
                     source.Bottom -= 0.01f;
@@ -1415,8 +1417,8 @@ namespace GnollHackX
         private static int _fixRects = 0;
         public static bool FixRects { get { return Interlocked.CompareExchange(ref _fixRects, 0, 0) != 0; } set { Interlocked.Exchange(ref _fixRects, value ? 1 : 0); } }
 
-        private static int _fixVertical = 0;
-        public static bool FixVertical { get { return Interlocked.CompareExchange(ref _fixVertical, 0, 0) != 0; } set { Interlocked.Exchange(ref _fixVertical, value ? 1 : 0); } }
+        private static int _fixFiltering = 0;
+        public static bool FixFiltering { get { return Interlocked.CompareExchange(ref _fixFiltering, 0, 0) != 0; } set { Interlocked.Exchange(ref _fixFiltering, value ? 1 : 0); } }
 
         private static int _runtimeEffects = GHConstants.DefaultRuntimeEffects ? 1 : 0;
         public static bool RuntimeEffects { get { return GHConstants.EnableExperimentalFeatures && Interlocked.CompareExchange(ref _runtimeEffects, 0, 0) != 0; } set { Interlocked.Exchange(ref _runtimeEffects, value ? 1 : 0); } }
@@ -1696,7 +1698,7 @@ namespace GnollHackX
             }
         }
 
-        public static bool IsFixVerticalDefault
+        public static bool IsFixFilteringDefault
         {
             get
             {

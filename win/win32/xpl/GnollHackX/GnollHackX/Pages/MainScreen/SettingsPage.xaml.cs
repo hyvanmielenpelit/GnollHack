@@ -486,8 +486,8 @@ namespace GnollHackX.Pages.MainScreen
             }
             if (FixVerticalSwitch.IsEnabled)
             {
-                GHApp.FixVertical = FixVerticalSwitch.IsToggled;
-                Preferences.Set("FixVertical", FixVerticalSwitch.IsToggled);
+                GHApp.FixFiltering = FixVerticalSwitch.IsToggled;
+                Preferences.Set("FixFiltering", FixVerticalSwitch.IsToggled);
             }
             if (RuntimeEffectsSwitch.IsEnabled)
             {
@@ -1141,7 +1141,7 @@ namespace GnollHackX.Pages.MainScreen
             recordgame = Preferences.Get("RecordGame", false);
             gzip = Preferences.Get("UseGZipForReplays", GHConstants.GZipIsDefaultReplayCompression);
             fixrects = Preferences.Get("FixRects", GHApp.IsFixRectsDefault);
-            fixvertical = Preferences.Get("FixVertical", GHApp.IsFixVerticalDefault);
+            fixvertical = Preferences.Get("FixFiltering", GHApp.IsFixFilteringDefault);
             runtimeeffects = Preferences.Get("RuntimeEffects", GHConstants.DefaultRuntimeEffects);
             noclipmode = Preferences.Get("DefaultMapNoClipMode", GHConstants.DefaultMapNoClipMode);
             savestyle = Preferences.Get("AppSwitchSaveStyle", GHApp.IsDesktop ? 1 : 0);
