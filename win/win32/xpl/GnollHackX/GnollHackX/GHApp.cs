@@ -2973,6 +2973,7 @@ namespace GnollHackX
                 "Diablo",
                 "Immortal",
                 "Underwood",
+                "LatoRegular",
                 "DejaVuSansMono",
                 "DejaVuSansMonoBold"
             };
