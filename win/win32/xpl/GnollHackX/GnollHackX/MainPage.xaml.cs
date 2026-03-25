@@ -1179,6 +1179,11 @@ namespace GnollHackX
             GHApp.InitGameBitmaps();
             GHApp.InitRuntimeEffects();
 
+            /* Loading MAUI fonts is needed on Windows to avoid COM re-entrancy issues */
+#if WINDOWS
+            await GHApp.InitBaseFontsViaLayout(RootGrid);
+#endif
+
             GHApp.ReadUserData();
             GHApp.CheckUserData();
             GHApp.DiscoveredMusicBits = GHApp.GetDiscoveredTracks();

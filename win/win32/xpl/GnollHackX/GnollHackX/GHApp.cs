@@ -94,7 +94,6 @@ namespace GnollHackX
             InitBaseTypefaces();
             InitBaseCachedBitmaps();
             InitBaseButtonBitmaps();
-            InitBaseFonts();
 
 #if false //GNH_MAUI && ANDROID
             /* Switch off GPU for menus one time on MAUI Android if it is currently on */
@@ -2966,31 +2965,35 @@ namespace GnollHackX
             return verstr;
         }
 
-        /* Force lazy loading for MAUI fonts, which seems to sometimes fail of Windows */
-        private static void InitBaseFonts()
+        /* Force lazy loading for MAUI fonts, which seems to sometimes fail on Windows */
+        public static async Task InitBaseFontsViaLayout(Layout layout)
         {
-#if WINDOWS
             var fonts = new[]
             {
-                    "Diablo",
-                    "Immortal",
-                    "Underwood",
-                    "DejaVuSansMono",
-                    "DejaVuSansMonoBold"
+                "Diablo",
+                "Immortal",
+                "Underwood",
+                "DejaVuSansMono",
+                "DejaVuSansMonoBold"
             };
 
-            foreach (var f in fonts)
+            foreach (var font in fonts)
             {
-                try
+                var lbl = new Label
                 {
-                    var lbl = new Label { Text = "A", FontFamily = f };
-                }
-                catch (Exception ex)
-                {
-                    Debug.WriteLine(ex.Message);
-                }
+                    Text = "G",
+                    FontFamily = font,
+                    Opacity = 0.01
+                };
+
+                layout.Children.Add(lbl);
+
+                await Task.Yield();
+
+                layout.Children.Remove(lbl);
+
+                await Task.Yield();
             }
-#endif
         }
 
         public static SKTypeface DiabloTypeface;
