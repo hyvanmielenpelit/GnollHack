@@ -40,7 +40,7 @@ namespace GnollHackX.Pages.Game
                 Url = wikiUrl,
             };
             DisplayWebView.Source = Source;
-            UpdateNavigationButtons();
+            UpdateNavigationButtons(true);
 #if GNH_MAUI && WINDOWS
             if (!string.IsNullOrWhiteSpace(title))
             {
@@ -109,13 +109,19 @@ namespace GnollHackX.Pages.Game
 #endif
         }
 
-        private void UpdateNavigationButtons()
+        private void UpdateNavigationButtons(bool force = false)
         {
-            BackButton.IsEnabled = DisplayWebView.CanGoBack;
-            BackButton.TextColor = BackButton.IsEnabled ? GHColors.White : GHColors.Gray;
+            if (force || BackButton.IsEnabled != DisplayWebView.CanGoBack)
+            {
+                BackButton.IsEnabled = DisplayWebView.CanGoBack;
+                BackButton.TextColor = BackButton.IsEnabled ? GHColors.White : GHColors.Gray;
+            }
 
-            ForwardButton.IsEnabled = DisplayWebView.CanGoForward;
-            ForwardButton.TextColor = ForwardButton.IsEnabled ? GHColors.White : GHColors.Gray;
+            if (force || ForwardButton.IsEnabled != DisplayWebView.CanGoForward)
+            {
+                ForwardButton.IsEnabled = DisplayWebView.CanGoForward;
+                ForwardButton.TextColor = ForwardButton.IsEnabled ? GHColors.White : GHColors.Gray;
+            }
         }
 
         private async void CloseButton_Clicked(object sender, EventArgs e)

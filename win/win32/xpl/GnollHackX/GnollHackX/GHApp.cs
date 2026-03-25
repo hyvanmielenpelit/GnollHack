@@ -94,6 +94,7 @@ namespace GnollHackX
             InitBaseTypefaces();
             InitBaseCachedBitmaps();
             InitBaseButtonBitmaps();
+            InitBaseFonts();
 
 #if false //GNH_MAUI && ANDROID
             /* Switch off GPU for menus one time on MAUI Android if it is currently on */
@@ -2963,6 +2964,26 @@ namespace GnollHackX
             ulong editver = (vernum) & 0xFFUL;
             string verstr = majorver.ToString() + minorver.ToString() + patchver.ToString() + "-" + editver;
             return verstr;
+        }
+
+        /* Force lazy loading for MAUI fonts, which seems to sometimes fail of Windows */
+        private static void InitBaseFonts()
+        {
+#if WINDOWS
+            var fonts = new[]
+            {
+                    "Diablo",
+                    "Immortal",
+                    "Underwood",
+                    "DejaVuSansMono",
+                    "DejaVuSansMonoBold"
+            };
+
+            foreach (var f in fonts)
+            {
+                var lbl = new Label { Text = "A", FontFamily = f };
+            }
+#endif
         }
 
         public static SKTypeface DiabloTypeface;
