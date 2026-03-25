@@ -2966,9 +2966,9 @@ namespace GnollHackX
         }
 
         /* Force lazy loading for MAUI fonts, which seems to sometimes fail on Windows */
-        public static async Task InitBaseFontsViaLayout(Layout layout)
+        public static async Task InitBaseFontsViaGrid(Grid grid)
         {
-            var fonts = new[]
+            string[] fonts = new string[]
             {
                 "Diablo",
                 "Immortal",
@@ -2983,14 +2983,29 @@ namespace GnollHackX
                 {
                     Text = "G",
                     FontFamily = font,
-                    Opacity = 0.01
+                    Opacity = 0
                 };
 
-                layout.Children.Add(lbl);
+#if GNH_MAUI
+                TaskCompletionSource tcs = new TaskCompletionSource();
+                lbl.HandlerChanged += (s, e) =>
+                {
+                    Debug.WriteLine("Handler changed " + (lbl.Handler is not null ? "on" : "off") + " for " + font);
+                    if (lbl.Handler is not null)
+                        tcs.TrySetResult();
+                };
+#endif
+                grid.Children.Add(lbl);
 
                 await Task.Yield();
-
-                layout.Children.Remove(lbl);
+#if GNH_MAUI
+                await tcs.Task.WaitAsync(TimeSpan.FromMilliseconds(84));
+#else
+                await Task.Delay(42);
+#endif
+                await Task.Yield();
+                
+                grid.Children.Remove(lbl);
 
                 await Task.Yield();
             }
