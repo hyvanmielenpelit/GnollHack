@@ -2981,7 +2981,14 @@ namespace GnollHackX
 
             foreach (var f in fonts)
             {
-                var lbl = new Label { Text = "A", FontFamily = f };
+                try
+                {
+                    var lbl = new Label { Text = "A", FontFamily = f };
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine(ex.Message);
+                }
             }
 #endif
         }
