@@ -2850,7 +2850,7 @@ struct monst *mtmp;
         {
             if (vismon)
             {
-                pline("%s seems more experienced.", Monnam(mtmp));
+                pline_ex(ATR_NONE, is_tame(mtmp) ? CLR_MSG_POSITIVE : CLR_MSG_ATTENTION, "%s seems more experienced.", Monnam(mtmp));
             }
             if (oseen)
                 makeknown(POT_GAIN_LEVEL);
@@ -2863,7 +2863,7 @@ struct monst *mtmp;
         {
             if (vismon)
             {
-                pline("%s looks peculiarly elevated.", Monnam(mtmp));
+                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s looks peculiarly elevated.", Monnam(mtmp));
             }
             if (oseen)
                 makeknown(POT_GAIN_LEVEL);
