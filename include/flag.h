@@ -365,6 +365,8 @@ struct instance_flags {
     int override_ID;       /* true to force full identification of objects */
     int parse_config_file_src;  /* hack for parse_config_line() */
     int purge_monsters;    /* # of dead monsters still on fmon list */
+    int purge_debug_mnum;
+    int purge_debug_isspec;
     int suppress_price;    /* controls doname() for unpaid objects */
     int64_t payobj_special_quan;
     int terrainmode; /* for getpos()'s autodescribe when #terrain is active */

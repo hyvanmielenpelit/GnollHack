@@ -2886,12 +2886,15 @@ dmonsfree()
 {
     struct monst **mtmp, *freetmp;
     int count = 0;
+    int lastfreemnum = NON_PM;
 
     for (mtmp = &fmon; *mtmp;) 
     {
         freetmp = *mtmp;
         if (DEADMONSTER(freetmp) && !freetmp->isgd) 
         {
+            lastfreemnum = freetmp->mnum; /* Debug */
+
             *mtmp = freetmp->nmon;
             freetmp->nmon = NULL;
             dealloc_monst(freetmp);
@@ -2902,8 +2905,8 @@ dmonsfree()
     }
 
     if (count != iflags.purge_monsters)
-        impossible("dmonsfree: %d removed doesn't match %d pending",
-                   count, iflags.purge_monsters);
+        impossible("dmonsfree: %d removed doesn't match %d pending (mnum1=%d, mnum2=%d, isspec2=%d)",
+                   count, iflags.purge_monsters, lastfreemnum, iflags.purge_debug_mnum, iflags.purge_debug_isspec);
     iflags.purge_monsters = 0;
 }
 
@@ -3212,7 +3215,7 @@ boolean is_mon_dead;
 {
     boolean onmap = (mtmp->mx > 0);
 
-    debugprint("m_detach");
+    debugprint("m_detach: mnum=%d", mtmp->mnum);
     if (mtmp == context.polearm.hitmon)
         context.polearm.hitmon = 0;
     if (mtmp->mleashed)
@@ -3245,6 +3248,10 @@ boolean is_mon_dead;
     if (mtmp->wormno)
         wormgone(mtmp);
     iflags.purge_monsters++;
+
+    /* Some debug info */
+    iflags.purge_debug_isspec = (int)mtmp->isgd + 2 * (int)mtmp->isshk;
+    iflags.purge_debug_mnum = mtmp->mnum;
 }
 
 /* find the worn amulet of life saving which will save a monster */
