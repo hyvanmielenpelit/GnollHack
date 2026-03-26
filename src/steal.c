@@ -220,7 +220,15 @@ struct obj* obj;
     iflags.object_tracking_item_index++;
     int saved_item_idx = iflags.object_tracking_item_index - 1;
     if (saved_item_idx >= MAX_TRACKED_OBJECTS)
-        saved_item_idx = MAX_TRACKED_OBJECTS - 1;
+    {
+        debugprint("add_to_obj_tracking with saved_item_idx >= MAX_TRACKED_OBJECTS: idx=%d, maxidx=%d", saved_item_idx, iflags.object_tracking_item_index);
+        // saved_item_idx = MAX_TRACKED_OBJECTS - 1;
+        /* Changed to reset the object_tracking_item_index to 1 so that an omitted finish_obj_tracking does not make the system inoperational */
+        /* This also has the effect of not checking any previous trackings beyond the presently set one */
+        /* Should never happen unless there is a programming error, as MAX_TRACKED_OBJECTS is more than enough to cover all tracking cases */
+        iflags.object_tracking_item_index = 1;
+        saved_item_idx = 0;
+    }
     iflags.tracked_object_obj[saved_item_idx] = obj;
     iflags.tracked_object_gone[saved_item_idx] = FALSE;
     return saved_item_idx;
@@ -234,6 +242,7 @@ int saved_item_idx;
         return FALSE; /* No object was destroyed since obj was zero */
     if (saved_item_idx >= MAX_TRACKED_OBJECTS)
     {
+        debugprint("finish_obj_tracking with saved_item_idx >= MAX_TRACKED_OBJECTS: idx=%d, maxidx=%d", saved_item_idx, iflags.object_tracking_item_index);
         iflags.object_tracking_item_index--;
         if (iflags.object_tracking_item_index < 0)
             iflags.object_tracking_item_index = 0;
@@ -247,6 +256,8 @@ int saved_item_idx;
     iflags.tracked_object_obj[saved_item_idx] = 0;
     iflags.tracked_object_gone[saved_item_idx] = FALSE;
     iflags.object_tracking_item_index--;
+    if (iflags.object_tracking_item_index < 0)
+        iflags.object_tracking_item_index = 0;
     return obj_gone;
 }
 
