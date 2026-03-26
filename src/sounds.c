@@ -5799,6 +5799,8 @@ struct monst* mtmp;
             {
                 
                 if (welded(otmp, &youmonst)
+                    || otmp == uball
+                    || otmp == uchain
                     || !willeat
                     || !mon_can_move(mtmp) 
                     || mtmp->meating
@@ -5870,6 +5872,8 @@ struct monst* mtmp;
                             pline("%s does not seem to be able to move in order to eat %s.", noittame_Monnam(mtmp), the(singular(otmp, cxname)));
                         else if (mtmp->meating)
                             pline("%s is already eating something else.", noittame_Monnam(mtmp));
+                        else if (otmp == uball || otmp == uchain)
+                            You_cant("give %s to %s; it is chained to you.", yname(otmp), noittame_mon_nam(mtmp));
                         else if (!releasesuccess)
                             ; /* Nothing here */
                         else
