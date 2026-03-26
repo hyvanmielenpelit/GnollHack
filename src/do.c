@@ -6803,7 +6803,12 @@ int retry;
          */
         bypass_objlist(invent, FALSE); /* clear bypass bit for invent */
         while ((otmp = nxt_unbypassed_obj(invent)) != 0)
-            n_autobagged += auto_bag_in(invent, otmp, FALSE);
+        {
+            int bagres = auto_bag_in(invent, otmp, FALSE);
+            n_autobagged += (bagres != 0);
+            if (bagres == -1)
+                break;
+        }
         /* we might not have autobagged everything (worn armor, welded weapon,
            cursed loadstones), so reset any remaining inventory to normal */
         bypass_objlist(invent, FALSE);
@@ -6855,7 +6860,10 @@ int retry;
                         otmp = splitobj(otmp, cnt);
                     }
                 }
-                n_autobagged += auto_bag_in(invent, otmp, FALSE);
+                int bagres = auto_bag_in(invent, otmp, FALSE);
+                n_autobagged += (bagres != 0);
+                if (bagres == -1)
+                    break;
             }
             bypass_objlist(invent, FALSE); /* reset invent to normal */
             free((genericptr_t)pick_list);

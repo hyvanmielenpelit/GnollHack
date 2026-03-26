@@ -698,7 +698,7 @@ boolean do_auto_in_bag;
         { /* looking for N of something */
             char qbuf[QBUFSZ];
 
-            Sprintf(qbuf, "Pick%s %d of what?", do_auto_in_bag ? " and out into bag" : "", count);
+            Sprintf(qbuf, "Pick up%s %d of what?", do_auto_in_bag ? " and auto-stash" : "", count);
             val_for_n_or_more = count; /* set up callback selector */
             n = query_objlist(qbuf, objchain_p, traverse_how | OBJECT_COMPARISON,
                               &pick_list, PICK_ONE, n_or_more, SHOWWEIGHTS_PICKUP);
@@ -1878,6 +1878,7 @@ boolean telekinesis, do_auto_in_bag; /* not picking it up directly by hand */
 uchar* obj_gone_ptr; /* 1 = merged, 2 = put in bag, 3 = gone */
 {
     int res, nearload;
+    struct obj* origobj = obj;
 
     if (obj->quan < count) 
     {
@@ -1945,25 +1946,35 @@ uchar* obj_gone_ptr; /* 1 = merged, 2 = put in bag, 3 = gone */
     if (obj->quan != count && !(objects[obj->otyp].oc_flags & O1_CANNOT_BE_DROPPED_IF_CURSED))
         obj = splitobj(obj, count);
 
-    /* Finally, pick the object up */
-    struct obj* oldobj = obj;
-    obj = pick_obj(obj);
-    if(obj_gone_ptr && obj != oldobj) /* merged */
-        *obj_gone_ptr = 1;
-
-    if (uwep && uwep == obj)
-        mrg_to_wielded = TRUE;
-    nearload = near_capacity();
-
-    /* Display message regarding a new item in inventory */
-    prinv(nearload == SLT_ENCUMBER ? moderateloadmsg : (char*)0, obj, count);
-    mrg_to_wielded = FALSE;
-
-    if (do_auto_in_bag && obj && obj == oldobj)
+    /* Might have changed in splitobj */
+    if (obj)
     {
-        int bagres = auto_bag_in(invent, obj, FALSE);
-        if (bagres && obj_gone_ptr)
-            *obj_gone_ptr = 2;
+        /* Finally, pick the object up */
+        struct obj* oldobj = obj;
+        obj = pick_obj(obj);
+        if (obj_gone_ptr && obj != oldobj && oldobj == origobj) /* merged */
+            *obj_gone_ptr = 1;
+
+        /* Might have changed in pick_obj */
+        if (obj)
+        {
+            if (uwep && uwep == obj)
+                mrg_to_wielded = TRUE;
+            nearload = near_capacity();
+
+            /* Display message regarding a new item in inventory */
+            prinv(nearload == SLT_ENCUMBER ? moderateloadmsg : (char*)0, obj, count);
+            mrg_to_wielded = FALSE;
+
+            if (do_auto_in_bag && obj == oldobj)
+            {
+                int bagres = auto_bag_in(invent, obj, FALSE);
+                if (bagres && obj_gone_ptr && obj == origobj)
+                    *obj_gone_ptr = 2;
+                if (bagres == -1)
+                    return -1;
+            }
+        }
     }
     return 1;
 }
@@ -3830,6 +3841,11 @@ uchar* obj_gone_ptr;
         int bagres = auto_bag_in(invent, otmp, FALSE);
         if (obj_gone_ptr && bagres)
             *obj_gone_ptr = 2;
+        if (bagres == -1)
+        {
+            res = -1;
+            goto default_outcountainer_end;
+        }
     }
     if (dobot && is_gold)
     {
