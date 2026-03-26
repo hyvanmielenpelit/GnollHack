@@ -7206,7 +7206,9 @@ namespace GnollHackX.Pages.Game
             bool breatheanimations = BreatheAnimations;
             bool fixRects = GHApp.FixRects;
             bool fixFiltering = false; /* Applies only to menus */ // GHApp.FixFiltering;
+#if GNH_MAUI && ENABLE_RUNTIME_EFFECTS
             bool runtimeEffects = GHApp.RuntimeEffects && GHApp.RuntimeEffectsInited;
+#endif
             bool showKeyboardShortcuts = GHApp.ShowKeyboardShortcuts;
             bool usingGL = UseMainGLCanvas;
             bool usingMipMap = UseMainMipMap;
@@ -8774,7 +8776,7 @@ namespace GnollHackX.Pages.Game
                                         canvas.DrawImage(GHApp._waitBitmap, effRect, textPaint.Paint);
                                     }
                                     break;
-#if GNH_MAUI
+#if GNH_MAUI && ENABLE_RUNTIME_EFFECTS
                                 case (int)gui_effect_types.GUI_EFFECT_LIGHTNING:
                                 case (int)gui_effect_types.GUI_EFFECT_FIRE:
                                 case (int)gui_effect_types.GUI_EFFECT_FREEZE:

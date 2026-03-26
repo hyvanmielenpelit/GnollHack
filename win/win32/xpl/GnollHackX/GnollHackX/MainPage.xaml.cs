@@ -1177,7 +1177,9 @@ namespace GnollHackX
             GHApp.InitAdditionalCachedBitmaps();
             GHApp.InitSymbolBitmaps();
             GHApp.InitGameBitmaps();
+#if GNH_MAUI && ENABLE_RUNTIME_EFFECTS
             GHApp.InitRuntimeEffects();
+#endif
 
             /* Loading MAUI fonts is needed on Windows to avoid COM re-entrancy issues */
 #if WINDOWS

@@ -9738,7 +9738,7 @@ namespace GnollHackX
             return false;
         }
 
-#if GNH_MAUI
+#if GNH_MAUI && ENABLE_RUNTIME_EFFECTS
         private static string _skslLightning = @"
             uniform float time;      // 0 → 1 animation progress
             uniform float tileSize;  // tile size in pixels
@@ -10133,14 +10133,12 @@ namespace GnollHackX
         public static SKRuntimeEffect MagicHitEffect = null;
         public static SKRuntimeEffect StunHitEffect = null;
         public static SKRuntimeEffect DeathMagicEffect = null;
-#endif
 
         private static int _runtimeEffectsInited = 0;
         public static bool RuntimeEffectsInited { get { return Interlocked.CompareExchange(ref _runtimeEffectsInited, 0, 0) != 0; } set { Interlocked.Exchange(ref _runtimeEffectsInited, value ? 1 : 0); } }
 
         public static void InitRuntimeEffects()
         {
-#if GNH_MAUI
             if (GHConstants.EnableExperimentalFeatures && Interlocked.Exchange(ref _runtimeEffectsInited, 1) == 0)
             {
                 try
@@ -10159,8 +10157,8 @@ namespace GnollHackX
                     Debug.WriteLine(ex);
                 }
             }
-#endif
         }
+#endif
 
         //private static readonly object _keyboardHookLock = new object();
         private static int _isKeyboardHookEnabled = 1;
