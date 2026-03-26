@@ -452,8 +452,8 @@ namespace GnollHackX
                     else
                     {
                         bool flip_tile = (signed_glyph < 0);
-                        sbyte enl_height = GHApp.Enlargements[enlargement_idx].height_in_tiles;
-                        sbyte enl_width = GHApp.Enlargements[enlargement_idx].width_in_tiles;
+                        sbyte enl_height = Math.Max((sbyte)1, GHApp.Enlargements[enlargement_idx].height_in_tiles);
+                        sbyte enl_width = Math.Max((sbyte)1, GHApp.Enlargements[enlargement_idx].width_in_tiles);
                         sbyte enl_x = (sbyte)(enl_width == 1 ? 0 : enl_width == 3 ? 1 : GHApp.Enlargements[enlargement_idx].main_tile_x_coordinate);
                         sbyte flipped_enl_x = (sbyte)(enl_width == 1 ? 0 : enl_width == 3 ? 1 : 1 - GHApp.Enlargements[enlargement_idx].main_tile_x_coordinate);
 

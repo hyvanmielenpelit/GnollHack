@@ -4437,7 +4437,7 @@ namespace GnollHackX
                             GHApp.MaybeWriteGHLog("Header: " + _headerSize + " bytes; Commands (" + _noOfCommmands +"): " + totalCommands + " bytes; Total: " + (_headerSize + totalCommands));
                             for (RecordedFunctionID i = RecordedFunctionID.InitializeWindows; i < RecordedFunctionID.NumberOfFunctionCalls; i++)
                             {
-                                GHApp.MaybeWriteGHLog("- " + i.ToString() + ": " + _commandSize[(int)i] + string.Format(" bytes ({0:P2})", ((double)_commandSize[(int)i]) / ((double)totalCommands)));
+                                GHApp.MaybeWriteGHLog("- " + i.ToString() + ": " + _commandSize[(int)i] + string.Format(" bytes ({0:P2})", totalCommands == 0 ? 0.0 : ((double)_commandSize[(int)i]) / ((double)totalCommands)));
                                 _commandSize[(int)i] = 0L;
                             }
                             _noOfCommmands = 0L;

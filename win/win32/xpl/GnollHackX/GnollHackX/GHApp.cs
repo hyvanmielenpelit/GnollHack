@@ -552,6 +552,8 @@ namespace GnollHackX
             else
             {
                 int divisor = screenRefreshRate / refreshRate;
+                if (divisor <= 0)
+                    divisor = 1;
                 if (divisor == 1 || counter % divisor == 0)
                 {
                     int mod = screenRefreshRate % refreshRate;
@@ -2870,7 +2872,11 @@ namespace GnollHackX
 
         public static float DisplayDensity
         {
-            get { return Interlocked.CompareExchange(ref _displayDensity, 0.0f, 0.0f); }
+            get 
+            { 
+                float res = Interlocked.CompareExchange(ref _displayDensity, 0.0f, 0.0f); 
+                return res == 0.0f ? 1.0f : res; 
+            }
             set { Interlocked.Exchange(ref _displayDensity, value <= 0.0f ? 1.0f : value); }
         }
         public static float DisplayRefreshRate
@@ -7501,7 +7507,7 @@ namespace GnollHackX
 
         public static bool StopReplay { get { lock (_replayLock) { return _stopReplay; } } set { lock (_replayLock) { _stopReplay = value; } } }
         public static bool PauseReplay { get { lock (_replayLock) { return _pauseReplay; } } set { lock (_replayLock) { _pauseReplay = value; } } }
-        public static double ReplaySpeed { get { lock (_replayLock) { return _replaySpeed; } } set { lock (_replayLock) { _replaySpeed = value; } } }
+        public static double ReplaySpeed { get { lock (_replayLock) { return _replaySpeed == 0.0 ? 1.0 : _replaySpeed; } } set { lock (_replayLock) { _replaySpeed = value; } } }
         public static int GoToTurn { get { lock (_replayLock) { return _replayGotoTurn; } } set { lock (_replayLock) { _replayGotoTurn = value; if (value == -1) _originalReplayTurn = -1; else _originalReplayTurn = _replayTurn; } } }
         public static int OriginalReplayTurn { get { lock (_replayLock) { return _originalReplayTurn; } } }
         public static int ReplayTurn { get { lock (_replayLock) { return _replayTurn; } } set { lock (_replayLock) { _replayTurn = value; } } }
@@ -8072,8 +8078,8 @@ namespace GnollHackX
                                                 {
                                                     //game.ClientCallback_DelayOutput();
                                                     double speed = ReplaySpeed;
-                                                    if (speed == 0)
-                                                        speed = 1.0;
+                                                    //if (speed == 0.0)
+                                                    //    speed = 1.0;
                                                     int used_ms = (int)((double)GHConstants.DelayOutputDurationInMilliseconds / speed);
                                                     if (used_ms > 0)
                                                         game.ClientCallback_DelayOutputMilliseconds(used_ms);
@@ -8083,8 +8089,8 @@ namespace GnollHackX
                                                 {
                                                     int ms = br.ReadInt32();
                                                     double speed = ReplaySpeed;
-                                                    if (speed == 0) 
-                                                        speed = 1.0;
+                                                    //if (speed == 0.0) 
+                                                    //    speed = 1.0;
                                                     int used_ms = (int)((double)ms / speed);
                                                     if (used_ms > 0)
                                                         game.ClientCallback_DelayOutputMilliseconds(used_ms);

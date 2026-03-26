@@ -349,7 +349,7 @@ namespace GnollHackX
 
                 SKRect targetrect = new SKRect(0, 0, canvaswidth, canvasheight);
                 bool widthsmaller = canvaswidth < canvasheight;
-                float sourceWHRatio = (float)targetBitmap.Width / (float)targetBitmap.Height;
+                float sourceWHRatio = targetBitmap.Width == 0 || targetBitmap.Height == 0 ? 1.0f : (float)targetBitmap.Width / (float)targetBitmap.Height;
                 switch (Aspect)
                 {
                     case GHAspect.AspectFit:

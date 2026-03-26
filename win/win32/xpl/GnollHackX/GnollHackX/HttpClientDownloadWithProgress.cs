@@ -91,7 +91,7 @@ namespace GnollHackX
 
             double? progressPercentage = null;
             if (totalDownloadSize.HasValue)
-                progressPercentage = Math.Round((double)totalBytesRead / totalDownloadSize.Value * 100, 2);
+                progressPercentage = totalDownloadSize == 0 ? 0 : Math.Round((double)totalBytesRead / totalDownloadSize.Value * 100, 2);
 
             ProgressChanged(totalDownloadSize, totalBytesRead, progressPercentage);
 

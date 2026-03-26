@@ -1009,7 +1009,7 @@ namespace GnollHackX
                     cornerbitmap = GHApp.SimpleFrameTopLeftCornerBitmap;
                     break;
             }
-            double scale = Math.Max(0.1, Math.Min(1.0, bordermargin / (double)cornerbitmap.Height));
+            double scale = Math.Max(0.1, Math.Min(1.0, bordermargin / (double)Math.Max(1 , cornerbitmap.Height)));
             return scale;
         }
         public static double GetBorderWidth(BorderStyles borderstyle, double width, double height)
@@ -1058,8 +1058,8 @@ namespace GnollHackX
                     break;
             }
 
-            double borderscalex = (width / GHConstants.BackgroundBorderDivisor / 6) / bordervertical.Width;
-            double borderscaley = (height / GHConstants.BackgroundBorderDivisor / 6) / borderhorizontal.Height;
+            double borderscalex = (width / GHConstants.BackgroundBorderDivisor / 6) / Math.Max(1, bordervertical.Width);
+            double borderscaley = (height / GHConstants.BackgroundBorderDivisor / 6) / Math.Max(1, borderhorizontal.Height);
             double borderscale = Math.Max(0.10, Math.Min(10.0, Math.Sqrt(borderscalex * borderscaley)));
 
             return cornerbitmap.Width * borderscale;
@@ -1504,7 +1504,7 @@ namespace GnollHackX
             float freeSpace = skiaCanvasHeight - skiaStatusBarHeight - 2 * orbHeight - skillButtonHeight - noOfCommandRows * commandRowHeight + (noOfCommandRows - 1) * 6 * inverseCanvasScale;
             int requiredNumberOfTextRows = 9;
             float freeSpacePerTextRow = freeSpace / requiredNumberOfTextRows;
-            float fontHeight = messageFontSize * inverseCanvasScale;
+            float fontHeight = Math.Max(0.01f, messageFontSize * inverseCanvasScale);
             float possibleScaling = freeSpacePerTextRow / fontHeight;
 
             return Math.Max(1.0f, Math.Min(possibleScaling, Math.Min(GHConstants.WindowMessageFontSizeMaxMultiplier, (float)relevantScale)));
