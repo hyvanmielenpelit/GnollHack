@@ -3456,7 +3456,8 @@ boolean dobot;
         pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "As you put %s inside, you are blasted by a magical explosion!",
               doname(obj));
 
-        livelog_printf(LL_ACHIEVE, "just blew up %s %s", uhis(), cxname(obj));
+        livelog_printf(LL_ACHIEVE, "just blew up %s %s by putting %s inside", uhis(), cxname(current_container), acxname(obj));
+        issue_breadcrumb3("Blew up a magic bag", current_container->otyp, obj->otyp);
 
         /* did not actually insert obj yet */
         if (was_unpaid)
