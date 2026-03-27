@@ -1226,7 +1226,7 @@ boolean* obj_destroyed;
                     reallysilverobj = obj->material == MAT_SILVER;
 
                     /* if it will already inflict dmg, make it worse */
-                    damage += adjust_damage(rnd((int)damage > 0 ? 20 : 10), &youmonst, mon, AD_PHYS, ADFLAGS_NONE);
+                    damage += adjust_damage(rnd((min(1, (int)damage)) ? 20 : 10), &youmonst, mon, AD_PHYS, ADFLAGS_NONE);
                 }
                 if (!thrown && (obj == uwep || obj == uarms) && obj->otyp == BOOMERANG
                     && rnl(4) == 4 - 1) 
@@ -1359,17 +1359,11 @@ boolean* obj_destroyed;
                     silvermsg = TRUE;
                     silverobj = TRUE;
                     reallysilverobj = obj->material == MAT_SILVER;
-
-                    /* if it will already inflict dmg, make it worse */
-                    damage += adjust_damage(rnd((int)damage > 0 ? 20 : 10), &youmonst, mon, AD_PHYS, ADFLAGS_NONE);
                 }
 
                 if ((artifact_light(obj) || obj_shines_magical_light(obj) || has_obj_mythic_magical_light(obj)) && obj->lamplit
                     && mon_hates_light(mon))
-                {
                     lightobj = TRUE;
-                    damage += adjust_damage(rnd(8), &youmonst, mon, AD_PHYS, ADFLAGS_NONE);
-                }
 
                 if (u.usteed && !thrown && damage > 0
                     && obj && can_obj_joust(obj) && mon != u.ustuck)
