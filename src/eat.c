@@ -3864,6 +3864,33 @@ doeat()
         /* oc_nutrition is usually weight anyway */
         else
             basenutrit = objects[otmp->otyp].oc_nutrition;
+
+        boolean magiceaten = FALSE;
+        if (magicvorous(youmonst.data))
+        {
+            magiceaten = TRUE;
+            if (otmp->material == MAT_FORCEFIELD)
+            {
+                if (otmp->oclass == ARMOR_CLASS)
+                {
+                    basenutrit += 25 * (int)objects[otmp->otyp].oc_armor_class;
+                    basenutrit += 25 * (int)objects[otmp->otyp].oc_magic_cancellation;
+                }
+                else
+                    basenutrit += 50;
+            }
+            basenutrit += 25 * abs(otmp->enchantment);
+            basenutrit += 25 * otmp->charges;
+            if (otmp->elemental_enchantment > 0)
+            {
+                basenutrit += 100 * (int)otmp->elemental_enchantment;
+            }
+            if (otmp->mythic_prefix > 0)
+                basenutrit += 250;
+            if (otmp->mythic_suffix > 0)
+                basenutrit += 250;
+        }
+
 #ifdef MAIL
         if (otmp->otyp == SCR_MAIL) {
             basenutrit = 0;
@@ -3897,7 +3924,7 @@ doeat()
             }
         }
 
-        if (otmp->cursed) 
+        if (!magiceaten && otmp->cursed)
         {
             play_occupation_immediate_sound(objects[otmp->otyp].oc_soundset, OCCUPATION_EATING, OCCUPATION_SOUND_TYPE_START);
             (void) rottenfood(otmp);
@@ -3906,7 +3933,7 @@ doeat()
         else if (otmp->material == MAT_PAPER)
             nodelicious = TRUE;
 
-        if (otmp->elemental_enchantment == DEATH_ENCHANTMENT && !(Death_resistance || Invulnerable || is_not_living(youmonst.data) || is_demon(youmonst.data)))
+        if (!magiceaten && otmp->elemental_enchantment == DEATH_ENCHANTMENT && !(Death_resistance || Invulnerable || is_not_living(youmonst.data) || is_demon(youmonst.data)))
         {
             pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "Ingesting %s is fatal.", acxname(otmp));
             Sprintf(killer.name, "unwisely ate %s", acxname(otmp));
