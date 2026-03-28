@@ -614,7 +614,7 @@ boolean lifesavedalready;
             pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s%s %s imbued by death magic!",
                 isupper((uchar)*reason) ? "" : "The ", reason,
                 plural ? "were" : "was");
-            if (Death_resistance || is_not_living(youmonst.data) || is_demon(youmonst.data))
+            if (Death_resistance || Invulnerable || is_not_living(youmonst.data) || is_demon(youmonst.data))
             {
                 play_sfx_sound(SFX_GENERAL_UNAFFECTED);
                 u_shieldeff();

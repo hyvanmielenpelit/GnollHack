@@ -520,7 +520,7 @@ int spellnum;
         pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "Oh no, %s's using the touch of death!", mhe(mtmp));
         //boolean magic_resistance_success = check_magic_resistance_and_inflict_damage(&youmonst, (struct obj*)0, mtmp->m_lev, 0, 0, NOTELL);
 
-        if (is_not_living(youmonst.data) || is_demon(youmonst.data) || Death_resistance)
+        if (is_not_living(youmonst.data) || is_demon(youmonst.data) || Death_resistance || Invulnerable)
         { //Invulnerability does not protect against death attacks
             You("seem no deader than before.");
         }
@@ -799,7 +799,7 @@ int spellnum;
     case CLC_DEATH_TOUCH:
         pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "Oh no, %s's using the touch of death!", mhe(mtmp));
 
-        if (is_not_living(youmonst.data) || is_demon(youmonst.data) || Death_resistance)
+        if (is_not_living(youmonst.data) || is_demon(youmonst.data) || Death_resistance || Invulnerable)
         {
             You("seem no deader than before.");
         }
@@ -1271,7 +1271,7 @@ int spellnum;
             return TRUE;
         if (spellnum == CLC_PARALYZE && Free_action)
             return TRUE;
-        if (spellnum == CLC_DEATH_TOUCH && (is_not_living(youmonst.data) || is_demon(youmonst.data) || Death_resistance))
+        if (spellnum == CLC_DEATH_TOUCH && (is_not_living(youmonst.data) || is_demon(youmonst.data) || Death_resistance || Invulnerable))
             return TRUE;
         /* Only high priests and demon lords can cast the touch of death */
         if (mtmp->mnum != PM_HIGH_PRIEST && !((mtmp->data->geno & G_UNIQ) && (mtmp->data->mlet == S_DEMON))

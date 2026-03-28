@@ -7222,7 +7222,7 @@ boolean ordinary;
     case SPE_TOUCH_OF_DEATH:
     case SPE_POWER_WORD_KILL:
         damage = 0;
-        if (is_not_living(youmonst.data) || is_demon(youmonst.data) || Death_resistance) // || magic_resistance_success
+        if (is_not_living(youmonst.data) || is_demon(youmonst.data) || Death_resistance || Invulnerable) // || magic_resistance_success
         {
             pline((obj->otyp == WAN_DEATH)
                       ? "The wand shoots an apparently harmless beam at you."

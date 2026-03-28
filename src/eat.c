@@ -90,7 +90,22 @@ register struct obj *obj;
         && (!rust_causing_and_ironvorous(youmonst.data) || is_rustprone(obj)))
         return TRUE;
 
-    if (lithovore(youmonst.data) && is_obj_stony(obj) && !((In_sokoban(&u.uz) && obj->otyp == BOULDER)))
+    if (lithovorous(youmonst.data) && is_obj_stony(obj) && !((In_sokoban(&u.uz) && obj->otyp == BOULDER)))
+        return TRUE;
+
+    if (magicvorous(youmonst.data) && obj->material == MAT_FORCEFIELD)
+        return TRUE;
+
+    if (woodvorous(youmonst.data) && obj->material == MAT_WOOD)
+        return TRUE;
+
+    if (bonevorous(youmonst.data) && obj->material == MAT_BONE)
+        return TRUE;
+
+    if (chitinvorous(youmonst.data) && obj->material == MAT_CHITIN)
+        return TRUE;
+
+    if (toothvorous(youmonst.data) && obj->material == MAT_TOOTH)
         return TRUE;
 
     /* Ghouls only eat non-veggy corpses or eggs (see dogfood()) */
@@ -140,10 +155,10 @@ struct obj* obj;
     }
 
     if (is_obj_stony(obj))
-        return !lithovore(ptr) ? "stony" : (const char*)0;
+        return !lithovorous(ptr) ? "stony" : (const char*)0;
 
     if (obj->material >= MAT_GLASS && obj->material <= MAT_GEMSTONE)
-        return !lithovore(ptr) ? "not made of edible material" : (const char*)0;
+        return !lithovorous(ptr) ? "not made of edible material" : (const char*)0;
 
     if (is_obj_void(obj)) /* Wraith corpses are ok */
         return (const char*)0;
@@ -156,13 +171,13 @@ struct obj* obj;
 
     /* Special cases */
     if (obj->material == MAT_MODRONITE) /* Only special eaters and modrons can eat modronite */
-        return is_modron(ptr) || lithovore(ptr) || metallivorous(ptr) ? (const char*)0 : "too alien";
+        return is_modron(ptr) || lithovorous(ptr) || toothvorous(ptr) || chitinvorous(ptr) ? (const char*)0 : "too alien";
 
     if (obj->material == MAT_PLASTIC)
-        return lithovore(ptr) ? (const char*)0 : "made of plastic";
+        return lithovorous(ptr) || toothvorous(ptr) || chitinvorous(ptr) ? (const char*)0 : "made of plastic";
 
     if (obj->material == MAT_FORCEFIELD)
-        return "made of force field";
+        return magicvorous(ptr) ? (const char*)0 : "made of force field";
 
     if (obj->material == MAT_BONE)
         return bonevorous(ptr) ? (const char*)0 : "made of bone";
@@ -3890,6 +3905,16 @@ doeat()
         }
         else if (otmp->material == MAT_PAPER)
             nodelicious = TRUE;
+
+        if (otmp->elemental_enchantment == DEATH_ENCHANTMENT && !(Death_resistance || Invulnerable || is_not_living(youmonst.data) || is_demon(youmonst.data)))
+        {
+            pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "Ingesting %s is fatal.", acxname(otmp));
+            Sprintf(killer.name, "unwisely ate %s", acxname(otmp));
+            killer.format = NO_KILLER_PREFIX;
+            done(DIED);
+            /* life-saving needed to reach here */
+            exercise(A_WIS, FALSE);
+        }
 
         if (otmp->oclass == WEAPON_CLASS && otmp->opoisoned) 
         {

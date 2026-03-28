@@ -2222,7 +2222,7 @@ register int after;
             }
 
             /* Maybe a rock mole just ate some metal object */
-            if (lithovore(ptr))
+            if (lithovorous(ptr))
             {
                 if (meatrock(mtmp) == 2)
                     return 2; /* it died */

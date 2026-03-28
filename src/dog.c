@@ -1740,7 +1740,7 @@ register struct obj *obj;
             return TABU;
         if (slurps_items(mptr) && is_slurpable(obj))
             return ACCFOOD;
-        if (lithovore(mptr) && is_obj_stony(obj))
+        if (lithovorous(mptr) && is_obj_stony(obj))
             return (In_sokoban(&u.uz) && obj->otyp == BOULDER) ? TABU : eschewed ? ACCFOOD : DOGFOOD;
         /* Non-rustproofed ferrous based metals are preferred. */
         if (metallivorous(mptr) && is_metallic(obj)  && (is_rustprone(obj) || !rust_causing_and_ironvorous(mptr)))

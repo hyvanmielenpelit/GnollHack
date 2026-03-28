@@ -204,7 +204,7 @@
 #define has_monster_type_nontinnable_corpse(ptr) (((ptr)->mflags6 & M6_NON_TINNABLE) != 0)
 #define has_monster_type_nonedible_corpse(ptr) (((ptr)->mflags6 & M6_NON_EDIBLE) != 0)
 #define revives_upon_meddling(ptr) (((ptr)->mflags6 & M6_REVIVES_UPON_MEDDLING) != 0)
-#define lithovore(ptr) (((ptr)->mflags6 & M6_LITHOVORE) != 0L)
+#define lithovorous(ptr) (((ptr)->mflags6 & M6_LITHOVORE) != 0L)
 #define has_blobby_animation(ptr) (((ptr)->mflags6 & M6_BLOB_ANIMATION) != 0L)
 #define has_shark_animation(ptr) (((ptr)->mflags6 & M6_SHARK_ANIMATION) != 0L)
 #define has_human_breathe_animation(ptr) (((ptr)->mflags6 & M6_HUMAN_BREATHE_ANIMATION) != 0L)
@@ -214,6 +214,7 @@
 #define toothvorous(ptr) (((ptr)->mflags6 & M6_TOOTHVORE) != 0L)
 #define chitinvorous(ptr) (((ptr)->mflags6 & M6_CHITINVORE) != 0L)
 #define woodvorous(ptr) (((ptr)->mflags6 & M6_WOODVORE) != 0L)
+#define magicvorous(ptr) (((ptr)->mflags6 & M6_MAGICVORE) != 0L)
 
 #define is_archaeologist(ptr) (((ptr)->mflags7 & M7_ARCHAEOLOGIST) != 0L)
 #define is_barbarian(ptr) (((ptr)->mflags7 & M7_BARBARIAN) != 0L)
@@ -237,7 +238,7 @@
     ((ptr) == &mons[PM_GREEN_SLIME] || flaming(ptr) || is_incorporeal(ptr))
 
 #define is_non_eater(ptr) \
-    ((is_not_living(ptr) || is_angel(ptr) || is_demon(ptr) || has_mflag_is_non_eater(ptr) || (!carnivorous(ptr) && !herbivorous(ptr) && !metallivorous(ptr) && !lithovore(ptr))) && !is_corpse_eater(ptr))
+    ((is_not_living(ptr) || is_angel(ptr) || is_demon(ptr) || has_mflag_is_non_eater(ptr) || (!carnivorous(ptr) && !herbivorous(ptr) && !metallivorous(ptr) && !lithovorous(ptr) && !woodvorous(ptr) && !magicvorous(ptr) && !bonevorous(ptr) && !toothvorous(ptr) && !chitinvorous(ptr))) && !is_corpse_eater(ptr))
 
 #define mon_is_literate(m) (is_speaking((m)->data) && !mindless((m)->data) && haseyes((m)->data))
 #define is_cloned_wizard(m) (((m)->mon_flags & MON_FLAGS_CLONED_WIZ) != 0L)

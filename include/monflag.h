@@ -378,6 +378,7 @@
 #define M6_TOOTHVORE                0x10000000UL   /* Can eat tooth */
 #define M6_CHITINVORE               0x20000000UL   /* Can eat chitin */
 #define M6_WOODVORE                 0x40000000UL   /* Can eat wood */
+#define M6_MAGICVORE                0x80000000UL   /* Can eat force field and other magic */
 
 #define M7_NONE                     0x00000000UL
 #define M7_ARCHAEOLOGIST            0x00000001UL   /* monster can use archaeologist items */
