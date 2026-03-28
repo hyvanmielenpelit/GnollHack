@@ -9092,7 +9092,8 @@ int x, y, mod;
         }
         
         int targeting_type = objects[spl_book[context.quick_cast_spell_no].sp_id].oc_dir;
-        boolean is_directional = targeting_type > NODIR && targeting_type != TARGETED;
+        boolean is_directional = targeting_type > NODIR && targeting_type != TARGETED 
+            && spl_book[context.quick_cast_spell_no].sp_id != SPE_METEOR_SWARM; /* This last check to fix this for ongoing games; can be removed later */
         if (!is_directional)
         {
             cmd[0] = Cmd.spkeys[NHKF_CLICKCAST];
