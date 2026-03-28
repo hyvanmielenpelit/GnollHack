@@ -426,7 +426,12 @@ register struct monst *mtmp;
                 (void)mongets(mtmp, DOUBLE_HEADED_FLAIL);
             break;
         case PM_FLIND_LORD:
-            (void)mongets(mtmp, FLINDBAR);
+            if (rn2(3))
+                (void)mongets(mtmp, FLINDBAR);
+            else if (!rn2(9))
+                (void)mongets(mtmp, TRIPLE_HEADED_FLAIL);
+            else
+                (void)mongets(mtmp, DOUBLE_HEADED_FLAIL);
             break;
         default:
             break;
