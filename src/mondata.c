@@ -167,6 +167,8 @@ STATIC_VAR const NEARDATA struct mflag_description m6flag_descriptions[] = {
     { M6_NON_EATER, "non-eating living monster", "non-eating living monsters" },
     { M6_CORPSE_EATER, "corpse-eating monster", "corpse-eating monsters" },
     { M6_LITHOVORE, "lithovore", "lithovores" },
+    { M6_BONEVORE, "bonevore", "bonevores" },
+    { M6_WOODVORE, "woodvore", "woodvores" },
     { M6_SHADE, "impervious to physical weapons", "monsters impervious to physical weapons" },
     { M6_TELEPORT_HEAL_TACTICS, "using teleport and heal tactics", "monsters using teleport and heal tactics" },
     { M6_ABLE_TO_WEAR_OBJECTS, "item wearing and using monster", "item wearing and using monsters" },

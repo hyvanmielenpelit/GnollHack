@@ -164,6 +164,18 @@ struct obj* obj;
     if (obj->material == MAT_FORCEFIELD)
         return "made of force field";
 
+    if (obj->material == MAT_BONE)
+        return bonevorous(ptr) ? (const char*)0 : "made of bone";
+
+    if (obj->material == MAT_TOOTH)
+        return toothvorous(ptr) ? (const char*)0 : "made of tooth";
+
+    if (obj->material == MAT_CHITIN)
+        return chitinvorous(ptr) ? (const char*)0 : "made of chitin";
+
+    if (obj->material == MAT_WOOD)
+        return woodvorous(ptr) ? (const char*)0 : "made of wood";
+
     if (!is_organic(obj))
         return "inorganic";
 

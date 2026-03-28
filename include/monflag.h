@@ -374,6 +374,10 @@
 #define M6_HUMAN_BREATHE_ANIMATION  0x01000000UL   /* GUI can add a human breathe (2 legs standing) animation */
 #define M6_ANIMAL_BREATHE_ANIMATION 0x02000000UL   /* GUI can add an animal breathe (4 legs standing) animation */
 #define M6_ABLE_TO_WEAR_OBJECTS     0x04000000UL   /* Override animal etc. flags preventing the use of items */
+#define M6_BONEVORE                 0x08000000UL   /* Can eat bone */
+#define M6_TOOTHVORE                0x10000000UL   /* Can eat tooth */
+#define M6_CHITINVORE               0x20000000UL   /* Can eat chitin */
+#define M6_WOODVORE                 0x40000000UL   /* Can eat wood */
 
 #define M7_NONE                     0x00000000UL
 #define M7_ARCHAEOLOGIST            0x00000001UL   /* monster can use archaeologist items */
