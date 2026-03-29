@@ -86,26 +86,26 @@ register struct obj *obj;
     /* above also prevents the Amulet from being eaten, so we must never
        allow fake amulets to be eaten either [which is already the case] */
 
-    if (metallivorous(&mons[u.umonnum]) && is_metallic(obj)
-        && (!rust_causing_and_ironvorous(&mons[u.umonnum]) || is_rustprone(obj)))
+    if (metallivorous(&mons[Upolyd ? u.umonnum : urace.monsternum]) && is_metallic(obj)
+        && (!rust_causing_and_ironvorous(&mons[Upolyd ? u.umonnum : urace.monsternum]) || is_rustprone(obj)))
         return TRUE;
 
-    if (lithovorous(&mons[u.umonnum]) && is_obj_stony(obj) && !((In_sokoban(&u.uz) && obj->otyp == BOULDER)))
+    if (lithovorous(&mons[Upolyd ? u.umonnum : urace.monsternum]) && is_obj_stony(obj) && !((In_sokoban(&u.uz) && obj->otyp == BOULDER)))
         return TRUE;
 
-    if (magicvorous(&mons[u.umonnum]) && obj->material == MAT_FORCEFIELD)
+    if (magicvorous(&mons[Upolyd ? u.umonnum : urace.monsternum]) && obj->material == MAT_FORCEFIELD)
         return TRUE;
 
-    if (woodvorous(&mons[u.umonnum]) && obj->material == MAT_WOOD)
+    if (woodvorous(&mons[Upolyd ? u.umonnum : urace.monsternum]) && obj->material == MAT_WOOD)
         return TRUE;
 
-    if (bonevorous(&mons[u.umonnum]) && obj->material == MAT_BONE)
+    if (bonevorous(&mons[Upolyd ? u.umonnum : urace.monsternum]) && obj->material == MAT_BONE)
         return TRUE;
 
-    if (chitinvorous(&mons[u.umonnum]) && obj->material == MAT_CHITIN)
+    if (chitinvorous(&mons[Upolyd ? u.umonnum : urace.monsternum]) && obj->material == MAT_CHITIN)
         return TRUE;
 
-    if (toothvorous(&mons[u.umonnum]) && obj->material == MAT_TOOTH)
+    if (toothvorous(&mons[Upolyd ? u.umonnum : urace.monsternum]) && obj->material == MAT_TOOTH)
         return TRUE;
 
     /* Ghouls only eat non-veggy corpses or eggs (see dogfood()) */
@@ -114,7 +114,7 @@ register struct obj *obj;
                           && !vegan(&mons[obj->corpsenm]))
                          || (obj->otyp == EGG));
 
-    if (slurps_items(&mons[u.umonnum]) && is_slurpable(obj)
+    if (slurps_items(&mons[Upolyd ? u.umonnum : urace.monsternum]) && is_slurpable(obj)
         /* [g.cubes can eat containers and retain all contents
             as engulfed items, but poly'd player can't do that] */
         && !Has_contents(obj))
