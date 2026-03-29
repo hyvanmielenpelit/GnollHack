@@ -186,6 +186,7 @@ public static class MauiProgram
                                 GHApp.AddSentryBreadcrumb("Closed: WindowsApp.Exit, Windowed Mode: " + GHApp.WindowedMode, GHConstants.SentryGnollHackGeneralCategoryName);
                                 GHApp.WindowsApp.Exit();
                                 GHApp.WindowsApp = null;
+                                Environment.Exit(0);
                             }
                             else
                             {
@@ -202,7 +203,8 @@ public static class MauiProgram
                         appWindow.Closing += (s, e) =>
                         {
                             var curGamePage = GHApp.CurrentGamePage;
-                            if (curGamePage != null)
+                            bool winFocus = GHApp.WindowFocused;
+                            if (curGamePage != null && winFocus)
                             {
                                 GHApp.AddSentryBreadcrumb("AppWindow.Closing: Executing GenericButton_Clicked, Windowed Mode: " + GHApp.WindowedMode, GHConstants.SentryGnollHackGeneralCategoryName);
                                 e.Cancel = true;
@@ -216,7 +218,8 @@ public static class MauiProgram
                             else
                             {
                                 GHApp.AddSentryBreadcrumb("AppWindow.Closing: Closing window, Windowed Mode: " + GHApp.WindowedMode, GHConstants.SentryGnollHackGeneralCategoryName);
-                                GHApp.SaveWindowPosition();
+                                if (winFocus)
+                                    GHApp.SaveWindowPosition();
                                 //GHApp.FmodService?.StopAllGameSounds((uint)StopSoundFlags.All, 0U);
                                 GHGame curGame = GHApp.CurrentGHGame;
                                 curGame?.ResponseQueue.Enqueue(new GHResponse(curGame, GHRequestType.StopAllGameSounds));
