@@ -479,6 +479,10 @@ struct objclass {
 #define is_obj_energy(otmp)  (material_definitions[(otmp)->material].phase == PHASE_ENERGY) 
 #define is_obj_void(otmp)  (material_definitions[(otmp)->material].phase == PHASE_VOID) 
 
+#define is_obj_edible_by_lithovore(o)  (is_obj_stony(o) || ((o)->material >= MAT_PLASTIC && (o)->material <= MAT_CRYSTAL) || (o)->material == MAT_MODRONITE) 
+#define is_obj_edible_by_chitinvore(o)  ((o)->material == MAT_CHITIN || ((o)->material >= MAT_PLASTIC && (o)->material <= MAT_CRYSTAL) || (o)->material == MAT_MODRONITE) 
+#define is_obj_edible_by_toothvore(o)  ((o)->material == MAT_TOOTH || ((o)->material >= MAT_PLASTIC && (o)->material <= MAT_CRYSTAL) || (o)->material == MAT_MODRONITE) 
+
 /* primary damage: fire/rust/--- */
 /* is_flammable(otmp), is_rottable(otmp) in mkobj.c */
 #define is_rustprone(otmp) ((material_definitions[(otmp)->material].rustprone != 0) && !(get_obj_oc_flags(otmp) & O1_RUST_RESISTANT))

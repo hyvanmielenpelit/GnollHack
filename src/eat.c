@@ -90,7 +90,7 @@ register struct obj *obj;
         && (!rust_causing_and_ironvorous(&mons[Upolyd ? u.umonnum : urace.monsternum]) || is_rustprone(obj)))
         return TRUE;
 
-    if (lithovorous(&mons[Upolyd ? u.umonnum : urace.monsternum]) && is_obj_stony(obj) && !((In_sokoban(&u.uz) && obj->otyp == BOULDER)))
+    if (lithovorous(&mons[Upolyd ? u.umonnum : urace.monsternum]) && is_obj_edible_by_lithovore(obj) && !((In_sokoban(&u.uz) && obj->otyp == BOULDER)))
         return TRUE;
 
     if (magicvorous(&mons[Upolyd ? u.umonnum : urace.monsternum]) && obj->material == MAT_FORCEFIELD)
@@ -102,10 +102,10 @@ register struct obj *obj;
     if (bonevorous(&mons[Upolyd ? u.umonnum : urace.monsternum]) && obj->material == MAT_BONE)
         return TRUE;
 
-    if (chitinvorous(&mons[Upolyd ? u.umonnum : urace.monsternum]) && obj->material == MAT_CHITIN)
+    if (chitinvorous(&mons[Upolyd ? u.umonnum : urace.monsternum]) && is_obj_edible_by_chitinvore(obj))
         return TRUE;
 
-    if (toothvorous(&mons[Upolyd ? u.umonnum : urace.monsternum]) && obj->material == MAT_TOOTH)
+    if (toothvorous(&mons[Upolyd ? u.umonnum : urace.monsternum]) && is_obj_edible_by_toothvore(obj))
         return TRUE;
 
     /* Ghouls only eat non-veggy corpses or eggs (see dogfood()) */
@@ -157,8 +157,8 @@ struct obj* obj;
     if (is_obj_stony(obj))
         return !lithovorous(ptr) ? "stony" : (const char*)0;
 
-    if (obj->material >= MAT_GLASS && obj->material <= MAT_GEMSTONE)
-        return !lithovorous(ptr) ? "not made of edible material" : (const char*)0;
+    if (obj->material >= MAT_PLASTIC && obj->material <= MAT_CRYSTAL)
+        return !lithovorous(ptr) && !chitinvorous(ptr) && !toothvorous(ptr) ? "not made of edible material" : (const char*)0;
 
     if (is_obj_void(obj)) /* Wraith corpses are ok */
         return (const char*)0;
