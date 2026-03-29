@@ -19,7 +19,6 @@ using System.Linq;
 using System.Drawing;
 using System.Runtime.InteropServices.ComTypes;
 using System.IO.Compression;
-using static System.Net.Mime.MediaTypeNames;
 using System.Collections;
 using System.Security.Cryptography;
 using SkiaSharp;
@@ -140,11 +139,13 @@ namespace GnollHackX
 
         private bool _savedZoomMiniMode = false;
         private bool _gameHasEnded = false;
-        private bool _fastForwardGameOver = false;
+        private int _fastForwardGameOver = 0;
+        public bool FastForwardGameOver { get { return Interlocked.CompareExchange(ref _fastForwardGameOver, 0, 0) != 0; } set { Interlocked.Exchange(ref _fastForwardGameOver, value ? 1 : 0); } }
+
         private void GameOverHandling()
         {
             if(_gameHasEnded && GHApp.OperatingSystemKillsAppsOnBackground)
-                _fastForwardGameOver = true;
+                FastForwardGameOver = true;
         }
 
         private void PollResponseQueue()
@@ -465,8 +466,8 @@ namespace GnollHackX
             ResponseQueue.Enqueue(new GHResponse(this, GHRequestType.SaveInsuranceCheckPoint));
         }
 
-        private static int _saveDoneConfirmed = 0;
-        public static bool SaveDoneConfirmed { get { return Interlocked.CompareExchange(ref _saveDoneConfirmed, 0, 0) != 0; } set { Interlocked.Exchange(ref _saveDoneConfirmed, value ? 1 : 0); } }
+        private int _saveDoneConfirmed = 0;
+        public bool SaveDoneConfirmed { get { return Interlocked.CompareExchange(ref _saveDoneConfirmed, 0, 0) != 0; } set { Interlocked.Exchange(ref _saveDoneConfirmed, value ? 1 : 0); } }
 
         /* This is called from the UI thread */
         public async Task SaveGameAndWaitForFinishedConfirmation()
@@ -736,9 +737,9 @@ namespace GnollHackX
 
             if((blocking != 0 && ismap) || ismenu || istext)
             {
-                if((PlayingReplay && !GHApp.IsReplaySearching) || _fastForwardGameOver)
+                if((PlayingReplay && !GHApp.IsReplaySearching) || FastForwardGameOver)
                 {
-                    if(!_fastForwardGameOver)
+                    if(!FastForwardGameOver)
                         WaitAndCheckPauseReplay(GHConstants.ReplayDisplayWindowDelay);
                     RequestQueue.Enqueue(new GHRequest(this, GHRequestType.HideTextWindow));
                 }
@@ -1121,7 +1122,7 @@ namespace GnollHackX
                 }
                 return 0;
             }
-            if (_fastForwardGameOver)
+            if (FastForwardGameOver)
             {
                 RecordFunctionCall(RecordedFunctionID.GetChar, 0);
                 return 0;
@@ -1132,7 +1133,7 @@ namespace GnollHackX
             {
                 Thread.Sleep(GHConstants.PollingInterval);
                 PollResponseQueue();
-                if (_fastForwardGameOver)
+                if (FastForwardGameOver)
                 {
                     RecordFunctionCall(RecordedFunctionID.GetChar, 0);
                     return 0;
@@ -1171,7 +1172,7 @@ namespace GnollHackX
                 }
                 return 0;
             }
-            if (_fastForwardGameOver)
+            if (FastForwardGameOver)
             {
                 RecordFunctionCall(RecordedFunctionID.PosKey, x, y, mod, 0);
                 return 0;
@@ -1191,7 +1192,7 @@ namespace GnollHackX
                 }
                 Thread.Sleep(GHConstants.PollingInterval);
                 PollResponseQueue();
-                if (_fastForwardGameOver)
+                if (FastForwardGameOver)
                 {
                     RecordFunctionCall(RecordedFunctionID.PosKey, x, y, mod, 0);
                     return 0;
@@ -1219,7 +1220,7 @@ namespace GnollHackX
 
             WriteFunctionCallsAndCheckEnd();
 
-            if (_fastForwardGameOver)
+            if (FastForwardGameOver)
             {
                 RecordFunctionCall(RecordedFunctionID.YnFunction, style, attr, color, glyph, title, question, responses, def, descriptions, introline, ynflags, GHConstants.CancelChar);
                 return GHConstants.CancelChar;
@@ -1947,7 +1948,7 @@ namespace GnollHackX
                         else
                             continuepolling = (_ghWindows[winid].SelectedMenuItems == null);
                     }
-                    if (!continuepolling || _fastForwardGameOver || _abortShowMenuPage)
+                    if (!continuepolling || FastForwardGameOver || _abortShowMenuPage)
                         break;
 
                     Thread.Sleep(GHConstants.PollingInterval);
@@ -1965,7 +1966,7 @@ namespace GnollHackX
             {
                 if (_requestSwapWeapon)
                     cnt = -2;
-                else if (_abortShowMenuPage || _ghWindows[winid] == null || _ghWindows[winid].SelectedMenuItems == null || _ghWindows[winid].WasCancelled || _fastForwardGameOver)
+                else if (_abortShowMenuPage || _ghWindows[winid] == null || _ghWindows[winid].SelectedMenuItems == null || _ghWindows[winid].WasCancelled || FastForwardGameOver)
                     cnt = -1;
                 else if (_ghWindows[winid].SelectedMenuItems.Count <= 0)
                     cnt = 0;
@@ -3626,7 +3627,7 @@ namespace GnollHackX
         {
             RecordFunctionCall(RecordedFunctionID.OutRip, winid, plname, points, killer, time);
 
-            if (_fastForwardGameOver)
+            if (FastForwardGameOver)
                 return;
 
             if (_ghWindows[winid] != null)
@@ -3637,10 +3638,10 @@ namespace GnollHackX
             }
 
             int res = ClientCallback_nhgetch();
-            if(PlayingReplay || _fastForwardGameOver)
+            if(PlayingReplay || FastForwardGameOver)
             {
                 /* Only like this for replay, as normal hiding code is a bit more robust */
-                if (!_fastForwardGameOver && !GHApp.StopReplay && !GHApp.IsReplaySearching) /* No pause, since outrip page hides the controls */
+                if (!FastForwardGameOver && !GHApp.StopReplay && !GHApp.IsReplaySearching) /* No pause, since outrip page hides the controls */
                 {
                     Thread.Sleep((int)(GHConstants.ReplayOutripDelay / GHApp.ReplaySpeed));
                     GHApp.FmodService?.PollTasks();
@@ -3783,7 +3784,7 @@ namespace GnollHackX
                             break;
                         }
                         char def = viewtype == (int)special_view_types.SPECIAL_VIEW_GUI_YN_CONFIRMATION_DEFAULT_Y ? 'y' : 'n'; ;
-                        if (_fastForwardGameOver)
+                        if (FastForwardGameOver)
                             return def;
                         _ynConfirmationFinished = false;
                         RequestQueue.Enqueue(new GHRequest(this, GHRequestType.YnConfirmation, title, text, "Yes", "No"));
@@ -3791,7 +3792,7 @@ namespace GnollHackX
                         {
                             Thread.Sleep(GHConstants.PollingInterval);
                             PollResponseQueue();
-                            if (_fastForwardGameOver)
+                            if (FastForwardGameOver)
                                 return def;
                         }
                         return _ynConfirmationResult ? 'y' : 'n';

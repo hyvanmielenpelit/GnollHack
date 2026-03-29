@@ -2119,6 +2119,31 @@ namespace GnollHackX
             CurrentGamePage = null;
         }
 
+        public static async Task PopAllModalPagesAboveGamePageAsync()
+        {
+            try
+            {
+                Page topPage;
+                while ((topPage = PageFromTopOfModalNavigationStack()) != null && topPage is not GamePage)
+                {
+                    Page poppedPage;
+                    if (topPage is ICloseablePage)
+                    {
+                        poppedPage = topPage;
+                        (topPage as ICloseablePage)?.ClosePage();
+                    }
+                    else
+                    {
+                        await PopModalPageAsync();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MaybeWriteGHLog(ex.Message);
+            }
+        }
+
         public static void OnResume()
         {
             HandleResume(false);

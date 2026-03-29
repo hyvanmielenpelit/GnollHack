@@ -16753,6 +16753,60 @@ namespace GnollHackX.Pages.Game
 #endif
         }
 
+        public void CloseMoreCommands()
+        {
+            if (MoreCommandsGrid.IsVisible)
+                CommandCanvas_Pressed(this, EventArgs.Empty);
+        }
+
+        public void PressCharForSaving()
+        {
+            if (GameEnded)
+            {
+                GHGame curGame = GHApp.CurrentGHGame;
+                if (curGame != null)
+                    curGame.FastForwardGameOver = true;
+            }            
+            
+            if (MenuGrid.IsVisible || TextGrid.IsVisible)
+            {
+                GenericButton_Clicked(this, EventArgs.Empty, 27);
+            }
+            else if (YnGrid.IsVisible)
+            {
+                if (!string.IsNullOrWhiteSpace(YnQuestionLabel.Text))
+                {
+                    bool alsoPressSave = false;
+                    int charForSaving = 0;
+                    if (YnQuestionLabel.Text == "Really save?")
+                        charForSaving = 'y';
+                    if (YnQuestionLabel.Text == "Continue playing after saving?")
+                        charForSaving = 'n';
+                    if (YnQuestionLabel.Text == "Overwrite the old file?")
+                        charForSaving = 'y';
+                    if (YnQuestionLabel.Text == "Do you want to keep the save file?")
+                    {
+                        charForSaving = 'y';
+                        alsoPressSave = true;
+                    }
+                    if (YnQuestionLabel.Text == "Do you want your possessions identified?")
+                        charForSaving = 'q';
+                    if (YnQuestionLabel.Text.StartsWith("Do you want to see"))
+                        charForSaving = 'q';
+                    if (charForSaving != 0)
+                    {
+                        YnButton_Pressed(this, EventArgs.Empty, charForSaving);
+                        if (alsoPressSave)
+                            GenericButton_Clicked(this, EventArgs.Empty, GHUtils.Meta('s'));
+                    }
+                }
+            }
+            else if (!GameEnded)
+            {
+                GenericButton_Clicked(this, EventArgs.Empty, GHUtils.Meta('s'));
+            }
+        }
+
         public void GenericButton_Clicked(object sender, EventArgs e, int resp)
         {
             if (!((resp >= '0' && resp <= '9') || (resp <= -1 && resp >= -19)))

@@ -201,11 +201,17 @@ public static class MauiProgram
                         var appWindow = window.AppWindow;
                         appWindow.Closing += (s, e) =>
                         {
-                            if(GHApp.CurrentGamePage != null)
+                            var curGamePage = GHApp.CurrentGamePage;
+                            if (curGamePage != null)
                             {
                                 GHApp.AddSentryBreadcrumb("AppWindow.Closing: Executing GenericButton_Clicked, Windowed Mode: " + GHApp.WindowedMode, GHConstants.SentryGnollHackGeneralCategoryName);
                                 e.Cancel = true;
-                                GHApp.CurrentGamePage?.GenericButton_Clicked(s, EventArgs.Empty, GHUtils.Meta('s'));
+                                MainThread.InvokeOnMainThreadAsync(async () =>
+                                {                                    
+                                    await GHApp.PopAllModalPagesAboveGamePageAsync();
+                                    curGamePage?.CloseMoreCommands();
+                                    curGamePage?.PressCharForSaving();
+                                });
                             }
                             else
                             {
