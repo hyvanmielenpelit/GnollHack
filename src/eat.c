@@ -3536,7 +3536,7 @@ struct obj *otmp;
      * These problems with food should be checked in
      * order from most detrimental to least detrimental.
      */
-    if (objects[otmp->otyp].oc_class == FOOD_CLASS)
+    if (is_obj_normally_edible(otmp))
     {
         if (objects[otmp->otyp].oc_edible_subtype == EDIBLETYPE_TAINTED || (cadaver && mnum != PM_ACID_BLOB && rotted > 5L && !Sick_resistance))
         {
