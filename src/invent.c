@@ -3358,7 +3358,7 @@ struct obj* otmp_only;
                             && otyp != TOWEL)))
                 || (!strcmp(word, "wield")
                     && (otmp->oclass == TOOL_CLASS && !is_weptool(otmp)))
-                || (!strcmp(word, "eat") && !is_edible(otmp))
+                || (!strcmp(word, "eat") && !is_obj_normally_edible(otmp))
                 || (!strcmp(word, "drink") && otmp->oclass == TOOL_CLASS && !is_obj_quaffable(otmp))
                 || (!strcmp(word, "sacrifice")
                     && (otyp != CORPSE && otyp != AMULET_OF_YENDOR

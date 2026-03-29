@@ -10512,7 +10512,7 @@ enum create_context_menu_types menu_type;
             boolean loot_in_added = FALSE;
             for (otmp_here = otmp; otmp_here; otmp_here = otmp_here->nexthere)
             {
-                if (!eat_added && is_edible(otmp_here))
+                if (!eat_added && is_obj_normally_edible(otmp_here))
                 {
                     add_context_menu('e', nondir_cmd_from_func(doeat), CONTEXT_MENU_STYLE_GENERAL, otmp_here->gui_glyph, "Eat", cxname(otmp_here), 0, NO_COLOR);
                     eat_added = TRUE;

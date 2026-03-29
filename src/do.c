@@ -1147,7 +1147,7 @@ struct item_description_stats* stats_ptr; /* If non-null, only returns item stat
         putstr(datawin, ATR_INDENT_AT_COLON, buf);
 
         /* Nutritinal value */
-        if (obj ? is_edible(obj) : is_otyp_normally_edible(otyp))
+        if (obj ? is_obj_normally_edible(obj) : is_otyp_normally_edible(otyp))
         {
             unsigned nutvalue = !obj ? objects[otyp].oc_nutrition : obj->oeaten ? mon_obj_oeaten_value(obj, &youmonst) : mon_obj_nutrition_value(obj, &youmonst);
             Sprintf(buf2, "%u turn%s", nutvalue, plur(nutvalue));
