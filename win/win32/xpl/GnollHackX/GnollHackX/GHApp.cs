@@ -1879,7 +1879,7 @@ namespace GnollHackX
         {
             Assembly assembly = typeof(App).GetTypeInfo().Assembly;
             string json = "";
-            using (Stream stream = assembly.GetManifestResourceStream(GHApp.AppResourceName + GHConstants.GHSecretsResourcePath))
+            using (Stream stream = assembly.GetManifestResourceStream(AppResourceName + GHConstants.GHSecretsResourcePath))
             {
                 if (stream != null)
                 {
@@ -1905,7 +1905,7 @@ namespace GnollHackX
             }
             catch (Exception ex)
             {
-                MaybeWriteGHLog("GnollHack failed to read user secrets file: " + ex.Message);
+                Debug.WriteLine("GnollHack failed to read user secrets file: " + ex.Message); //MaybeWriteGHLog
             }
         }
 
