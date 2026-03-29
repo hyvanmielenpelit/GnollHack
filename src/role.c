@@ -1221,7 +1221,7 @@ const struct Race races[] = {
         { 0, 0 },
         3,
         "Keen smell and taste for tripe",
-        { "Smells rotten food", "Smells underground roots", "Recognizes corpse properties", "Triple nutrition from tripe ration", ""},
+        { "Smells rotten food", "Smells underground roots", "Recognizes corpse properties", "Triple nutrition from tripe ration", "Can eat bones" },
         PM_GNOLL,
         PM_GNOLL_MUMMY,
         PM_GNOLL_ZOMBIE,
