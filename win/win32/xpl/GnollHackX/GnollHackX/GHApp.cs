@@ -2124,12 +2124,10 @@ namespace GnollHackX
             try
             {
                 Page topPage;
-                while ((topPage = PageFromTopOfModalNavigationStack()) != null && topPage is not GamePage)
+                while ((topPage = PageFromTopOfModalNavigationStack()) != null && !(topPage is GamePage))
                 {
-                    Page poppedPage;
                     if (topPage is ICloseablePage)
                     {
-                        poppedPage = topPage;
                         (topPage as ICloseablePage)?.ClosePage();
                     }
                     else
