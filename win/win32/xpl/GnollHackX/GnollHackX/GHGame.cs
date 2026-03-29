@@ -3618,6 +3618,9 @@ namespace GnollHackX
                         }
                     }
                     break;
+                case (int)gui_command_types.GUI_CMD_GAME_ENTERED_MOVELOOP:
+                    RequestQueue.Enqueue(new GHRequest(this, GHRequestType.GameEnteredMoveloop));
+                    break;
                 default:
                     break;
             }

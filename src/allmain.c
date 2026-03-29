@@ -116,6 +116,7 @@ uchar resuming; /* 0 = new game, 1 = loaded a saved game, 2 = continued playing 
 
     /* Main move loop */
     program_state.in_moveloop = 1;
+    issue_simple_gui_command(GUI_CMD_GAME_ENTERED_MOVELOOP);
 
 #ifdef WHEREIS_FILE
     touch_whereis();

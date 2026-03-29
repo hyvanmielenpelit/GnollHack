@@ -1576,6 +1576,7 @@ namespace GnollHackX
         GUI_CMD_TOGGLE_WORN_SHOWS_EQUIPMENT,
         GUI_CMD_TOGGLE_NO_PET,
         GUI_CMD_REPORT_COMMANDS,
+        GUI_CMD_GAME_ENTERED_MOVELOOP,
     }
 
     public enum game_status_types

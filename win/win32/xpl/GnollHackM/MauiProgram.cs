@@ -202,28 +202,67 @@ public static class MauiProgram
                         var appWindow = window.AppWindow;
                         appWindow.Closing += (s, e) =>
                         {
-                            var curGamePage = GHApp.CurrentGamePage;
-                            bool winFocus = GHApp.WindowFocused;
-                            if (curGamePage != null && winFocus)
+                            try
                             {
-                                GHApp.AddSentryBreadcrumb("AppWindow.Closing: Executing GenericButton_Clicked, Windowed Mode: " + GHApp.WindowedMode, GHConstants.SentryGnollHackGeneralCategoryName);
-                                e.Cancel = true;
-                                MainThread.InvokeOnMainThreadAsync(async () =>
-                                {                                    
-                                    await GHApp.PopAllModalPagesAboveGamePageAsync();
-                                    curGamePage?.CloseMoreCommands();
-                                    curGamePage?.PressCharForSaving();
-                                });
+                                var curGamePage = GHApp.CurrentGamePage;
+                                bool winFocus = GHApp.WindowFocused;
+                                if (curGamePage != null && winFocus)
+                                {
+                                    GHApp.AddSentryBreadcrumb("AppWindow.Closing: Executing GenericButton_Clicked, Windowed Mode: " + GHApp.WindowedMode, GHConstants.SentryGnollHackGeneralCategoryName);
+                                    e.Cancel = true;
+                                    MainThread.InvokeOnMainThreadAsync(async () =>
+                                    {
+                                        try
+                                        {
+                                            Page topPage = GHApp.PageFromTopOfModalNavigationStack();
+                                            if (topPage is NamePage)
+                                            {
+                                                await ((NamePage)topPage).DoPressCancel();
+                                            }
+                                            else
+                                            {
+                                                await GHApp.PopAllModalPagesAboveGamePageAsync();
+                                                curGamePage?.CloseMoreCommands();
+                                                curGamePage?.PressCharForSaving();
+                                            }
+                                        }
+                                        catch (Exception ex)
+                                        {
+                                            Debug.WriteLine(ex.Message);
+                                        }
+                                    });
+                                }
+                                else
+                                {
+                                    GHApp.AddSentryBreadcrumb("AppWindow.Closing: Closing window, Windowed Mode: " + GHApp.WindowedMode, GHConstants.SentryGnollHackGeneralCategoryName);
+                                    var curMainPage = GHApp.CurrentMainPage;
+                                    if (curMainPage != null && winFocus)
+                                    {
+                                        e.Cancel = true;
+                                        GHApp.SaveWindowPosition();
+                                        MainThread.InvokeOnMainThreadAsync(async () =>
+                                        {
+                                            try
+                                            {
+                                                await curMainPage.CheckPendingOrPressOk();
+                                            }
+                                            catch (Exception ex)
+                                            {
+                                                Debug.WriteLine(ex.Message);
+                                            }
+                                        });
+                                    }
+                                    else
+                                    {
+                                        GHGame curGame = GHApp.CurrentGHGame;
+                                        curGame?.ResponseQueue.Enqueue(new GHResponse(curGame, GHRequestType.StopAllGameSounds));
+                                        GHApp.FmodService?.StopAllUISounds();
+                                    }
+                                }
                             }
-                            else
+                            catch (Exception ex)
                             {
-                                GHApp.AddSentryBreadcrumb("AppWindow.Closing: Closing window, Windowed Mode: " + GHApp.WindowedMode, GHConstants.SentryGnollHackGeneralCategoryName);
-                                if (winFocus)
-                                    GHApp.SaveWindowPosition();
-                                //GHApp.FmodService?.StopAllGameSounds((uint)StopSoundFlags.All, 0U);
-                                GHGame curGame = GHApp.CurrentGHGame;
-                                curGame?.ResponseQueue.Enqueue(new GHResponse(curGame, GHRequestType.StopAllGameSounds));
-                                GHApp.FmodService?.StopAllUISounds();
+                                Debug.WriteLine(ex.Message);
                             }
                         };
 

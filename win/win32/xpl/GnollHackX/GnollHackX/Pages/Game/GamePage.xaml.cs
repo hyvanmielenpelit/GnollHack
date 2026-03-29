@@ -85,9 +85,11 @@ namespace GnollHackX.Pages.Game
 
         private int _isGameOn = 0;
         private int _gameEnded = 0;
+        private int _gameEnteredMoveloop = 0;
         private int _fastForwardRequested = 0;
         public bool IsGameOn { get { return Interlocked.CompareExchange(ref _isGameOn, 0, 0) != 0; } set { Interlocked.Exchange(ref _isGameOn, value ? 1 : 0); } }
         public bool GameEnded { get { return Interlocked.CompareExchange(ref _gameEnded, 0, 0) != 0; } set { Interlocked.Exchange(ref _gameEnded, value ? 1 : 0); } }
+        public bool GameEnteredMoveloop { get { return Interlocked.CompareExchange(ref _gameEnteredMoveloop, 0, 0) != 0; } set { Interlocked.Exchange(ref _gameEnteredMoveloop, value ? 1 : 0); } }
         public bool FastForwardRequested { get { return Interlocked.CompareExchange(ref _fastForwardRequested, 0, 0) != 0; } set { Interlocked.Exchange(ref _fastForwardRequested, value ? 1 : 0); } }
 
         private int _isMainCanvasOn = 0;
@@ -3212,6 +3214,9 @@ namespace GnollHackX.Pages.Game
                                 break;
                             case GHRequestType.UpdateShortcutLabels:
                                 DoUpdateButtonShortcutLabels();
+                                break;
+                            case GHRequestType.GameEnteredMoveloop:
+                                GameEnteredMoveloop = true;
                                 break;
                         }
                     }
@@ -16768,9 +16773,13 @@ namespace GnollHackX.Pages.Game
                     curGame.FastForwardGameOver = true;
             }            
             
-            if (MenuGrid.IsVisible || TextGrid.IsVisible)
+            if (MenuGrid.IsVisible)
             {
-                GenericButton_Clicked(this, EventArgs.Empty, 27);
+                PressMenuCancelButton();
+            }
+            else if (TextGrid.IsVisible)
+            {
+                TextCanvasPressed();
             }
             else if (YnGrid.IsVisible)
             {
@@ -16793,6 +16802,10 @@ namespace GnollHackX.Pages.Game
                         charForSaving = 'q';
                     else if (YnQuestionLabel.Text.StartsWith("Do you want to see"))
                         charForSaving = 'q';
+                    else if (YnQuestionLabel.Text.StartsWith("Shall I pick a character"))
+                        charForSaving = 'q';
+                    else if (!GameEnteredMoveloop)
+                        charForSaving = GHConstants.CancelChar;
 
                     if (charForSaving != 0)
                     {
@@ -16802,7 +16815,7 @@ namespace GnollHackX.Pages.Game
                     }
                 }
             }
-            else if (!GameEnded)
+            else if (!GameEnded && GameEnteredMoveloop)
             {
                 GenericButton_Clicked(this, EventArgs.Empty, GHUtils.Meta('s'));
             }
@@ -19904,7 +19917,7 @@ namespace GnollHackX.Pages.Game
                 Debug.WriteLine(ex);
             }
         }
-        private async Task MenuCancelButtonPressedAsync()
+        public async Task MenuCancelButtonPressedAsync()
         {
             await CloseMenu(0);
         }

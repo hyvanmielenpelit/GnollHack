@@ -1511,7 +1511,7 @@ namespace GnollHackX
             await ExitApp();
         }
 
-        private async Task ExitApp()
+        private async Task ExitApp(bool allowAlerts = true)
         {
             GHApp.AddSentryBreadcrumb("ExitApp", GHConstants.SentryGnollHackGeneralCategoryName);
             UpperButtonGrid.IsEnabled = false;
@@ -1521,7 +1521,7 @@ namespace GnollHackX
 
             bool hideautoupdatealert = Preferences.Get("HideAutoUpdateAlert", false);
             bool isfromgoogleplay = true;
-            if (!hideautoupdatealert && !GHApp.IsNoStore)
+            if (allowAlerts && !hideautoupdatealert && !GHApp.IsNoStore)
             {
                 _popupStyle = popup_style.DisableAutoUpdate;
                 PopupCheckBoxLayout.IsVisible = true;
@@ -1554,6 +1554,30 @@ namespace GnollHackX
             else
             {
                 await CheckPendingTasksAndExit();
+            }
+        }
+
+        public async Task CheckPendingOrPressOk()
+        {
+            if (PopupGrid.IsVisible)
+            {
+                PopupOkButton.IsEnabled = false;
+                PopupOkButton2.IsEnabled = false;
+                PopupGrid.IsVisible = false;
+                PopupOkButton.IsVisible = true;
+                PopupButtonGrid.IsVisible = false;
+            }
+
+            if (PendingTasksGrid.IsVisible)
+            {
+                if (PendingTasksGrid.IsEnabled)
+                    await PendingTasksOk();
+            }
+            else
+            {
+                if (!ExitButton.IsEnabled)
+                    return;
+                await ExitApp(false);
             }
         }
 
