@@ -16780,19 +16780,20 @@ namespace GnollHackX.Pages.Game
                     int charForSaving = 0;
                     if (YnQuestionLabel.Text == "Really save?")
                         charForSaving = 'y';
-                    if (YnQuestionLabel.Text == "Continue playing after saving?")
+                    else if (YnQuestionLabel.Text == "Continue playing after saving?")
                         charForSaving = 'n';
-                    if (YnQuestionLabel.Text == "Overwrite the old file?")
+                    else if (YnQuestionLabel.Text == "Overwrite the old file?")
                         charForSaving = 'y';
-                    if (YnQuestionLabel.Text == "Do you want to keep the save file?")
+                    else if (YnQuestionLabel.Text == "Do you want to keep the save file?")
                     {
                         charForSaving = 'y';
                         alsoPressSave = true;
                     }
-                    if (YnQuestionLabel.Text == "Do you want your possessions identified?")
+                    else if (YnQuestionLabel.Text == "Do you want your possessions identified?")
                         charForSaving = 'q';
-                    if (YnQuestionLabel.Text.StartsWith("Do you want to see"))
+                    else if (YnQuestionLabel.Text.StartsWith("Do you want to see"))
                         charForSaving = 'q';
+
                     if (charForSaving != 0)
                     {
                         YnButton_Pressed(this, EventArgs.Empty, charForSaving);
