@@ -901,14 +901,6 @@ struct monst*
 shop_keeper(rmno)
 char rmno;
 {
-    return shop_keeper_ex_debug(rmno, (struct obj*)0, (struct obj*)0);
-}
-
-struct monst *
-shop_keeper_ex_debug(rmno, obj, merge)
-char rmno;
-struct obj* obj, *merge;
-{
     struct monst *shkp;
 
     shkp = (rmno >= ROOMOFFSET) ? rooms[rmno - ROOMOFFSET].resident : 0;
@@ -923,19 +915,19 @@ struct obj* obj, *merge;
             }
         } else {
             /* would have segfaulted on ESHK dereference previously */
-            impossible("%s? (rmno=%d, rtype=%d, mnum=%d, m_id=%u, mx=%d, my=%d, dnum=%d, dlevel=%d, \"%s\", dead=%d, hp=%d, repl=%d, dealloc=%d, revived=%d, mextra=%d, edog=%d, mtame=%d, e?=%d, other=%d, obj=%d, merge=%d, otyp=%d, mergetyp=%d, corpsenm=%d, unpaid=%d, where=%d, ox=%d, oy=%d)",
+            s_level* slev = Is_special(&u.uz);
+            impossible("%s? (rmno=%d, rtype=%d, mnum=%d, m_id=%u, mx=%d, my=%d, dnum=%d, dlevel=%d, slev=%s, \"%s\", dead=%d, hp=%d, repl=%d, dealloc=%d, revived=%d, mextra=%d, edog=%d, mtame=%d, e?=%d, other=%d)",
                        shkp->isshk ? "shopkeeper career change"
                                    : "shop resident not shopkeeper",
                        (int) rmno,
                        (int) rooms[rmno - ROOMOFFSET].rtype,
-                       shkp->mnum, shkp->m_id, shkp->mx, shkp->my, u.uz.dnum, u.uz.dlevel,
+                       shkp->mnum, shkp->m_id, shkp->mx, shkp->my, u.uz.dnum, u.uz.dlevel, slev ? slev->name : "normal",
                        /* [real shopkeeper name is kept in ESHK, not MNAME] */
                        has_mname(shkp) ? MNAME(shkp) : "anonymous",
                        DEADMONSTER(shkp), shkp->mhp, (shkp->mon_flags & MON_FLAGS_DEBUG_REPLMON) != 0, (shkp->mon_flags & MON_FLAGS_DEBUG_DEALLOCATED) != 0,
                        shkp->mrevived, shkp->mextra != 0, has_edog(shkp), shkp->mtame, 
-                       shkp->isgd | shkp->isnpc | shkp->issmith | shkp->ispriest | shkp->isminion, shkp->issummoned | shkp->ispartymember,
-                       obj != 0, merge != 0, obj ? obj->otyp : 0, merge ? merge->otyp : 0, 
-                       obj ? obj->corpsenm : 0, obj ? obj->unpaid : 0, obj ? obj->where: 0, obj ? obj->ox : 0, obj ? obj->oy : 0);
+                       shkp->isgd | shkp->isnpc | shkp->issmith | shkp->ispriest | shkp->isminion, shkp->issummoned | shkp->ispartymember
+                       );
             /* not sure if this is appropriate, because it does nothing to
                correct the underlying rooms[].resident issue but... */
             return (struct monst *) 0;
@@ -1030,7 +1022,7 @@ register struct obj *obj, *merge;
     /* sanity check, in case obj is on bill but not marked 'unpaid' */
     if (!shkp)
     {
-        shkp = shop_keeper_ex_debug(*u.ushops, obj, merge);
+        shkp = shop_keeper(*u.ushops);
     }
     /*
      * Note:  `shkp = shop_keeper(*u.ushops)' used to be
