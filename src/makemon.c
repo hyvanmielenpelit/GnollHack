@@ -843,7 +843,7 @@ register struct monst *mtmp;
                 else 
                 {
                     (void) mongets(mtmp, rn2(2) ? AXE : DWARVISH_SPEAR);
-                    (void) mongets(mtmp, DWARVISH_ROUNDSHIELD);
+                    (void) mongets(mtmp, rn2(7) ? DWARVISH_ROUNDSHIELD : SPIKED_SHIELD);
                 }
                 (void) mongets(mtmp, DWARVISH_HELM);
                 if (!rn2(3))
@@ -873,7 +873,7 @@ register struct monst *mtmp;
             if (!rn2(3))
                 (void) mongets(mtmp, SCIMITAR);
             if (!rn2(3))
-                (void) mongets(mtmp, ORCISH_SHIELD);
+                (void) mongets(mtmp, rn2(6) ? ORCISH_SHIELD : SPIKED_SHIELD);
             if (!rn2(3))
                 (void) mongets(mtmp, KNIFE);
             if (!rn2(3))
@@ -892,7 +892,7 @@ register struct monst *mtmp;
                 m_initthrow(mtmp, ORCISH_ARROW, 10, 12, TRUE, -1, -1, MAT_NONE);
             }
             if (!rn2(3))
-                (void) mongets(mtmp, GREAT_ORCISH_SHIELD);
+                (void) mongets(mtmp, rn2(6) ? GREAT_ORCISH_SHIELD : SPIKED_SHIELD);
             break;
         case PM_ORC_SHAMAN:
             if (!rn2(2))
@@ -1409,10 +1409,9 @@ register struct monst *mtmp;
                 mac += 7 + mongets_return_enchantment(mtmp, PLATE_MAIL);
             else if (mac < 3 && rn2(5))
                 mac +=
-                6 + mongets_return_enchantment(mtmp, (rn2(3)) ? SPLINT_MAIL : BANDED_MAIL);
+                6 + mongets_return_enchantment(mtmp, rn2(3) ? SPLINT_MAIL : BANDED_MAIL);
             else if (rn2(5))
-                mac += 3 + mongets_return_enchantment(mtmp, (rn2(3)) ? RING_MAIL
-                    : STUDDED_LEATHER_ARMOR);
+                mac += 3 + mongets_return_enchantment(mtmp, rn2(3) ? RING_MAIL : STUDDED_LEATHER_ARMOR);
             else
                 mac += 2 + mongets_return_enchantment(mtmp, LEATHER_ARMOR);
 
@@ -1420,17 +1419,27 @@ register struct monst *mtmp;
                 mac += 1 + mongets_return_enchantment(mtmp, HELMET);
             else if (mac < 10 && rn2(2))
                 mac += 1 + mongets_return_enchantment(mtmp, DENTED_POT);
+            
             if (mac < 10 && rn2(3))
                 mac += 1 + mongets_return_enchantment(mtmp, SMALL_SHIELD);
             else if (mac < 10 && rn2(2))
                 mac += 2 + mongets_return_enchantment(mtmp, LARGE_SHIELD);
+            else if (mac < 10 && !rn2(3))
+                mac += 2 + mongets_return_enchantment(mtmp, SPIKED_SHIELD);
+            
             if (mac < 10 && rn2(3))
                 mac += 1 + mongets_return_enchantment(mtmp, LOW_BOOTS);
             else if (mac < 10 && rn2(2))
                 mac += 2 + mongets_return_enchantment(mtmp, HIGH_BOOTS);
+            else if (mac < 10 && !rn2(4))
+                mac += 2 + mongets_return_enchantment(mtmp, SPIKED_BOOTS);
+            
             if (mac < 10 && rn2(3))
-                mac += 1 + mongets_return_enchantment(mtmp, LEATHER_GLOVES);
-            else if (mac < 10 && rn2(2))
+                mac += 1 + mongets_return_enchantment(mtmp, rn2(3) ? LEATHER_GLOVES : GAUNTLETS);
+            else if (mac < 10 && !rn2(5))
+                mac += 2 + mongets_return_enchantment(mtmp, SPIKED_GAUNTLETS);
+
+            if (mac < 10 && !rn2(6))
                 mac += 1 + mongets_return_enchantment(mtmp, LEATHER_CLOAK);
 
             nhUse(mac); /* suppress 'dead increment' from static analyzer */
