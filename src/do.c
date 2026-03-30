@@ -7244,7 +7244,11 @@ xchar portal; /* 1 = Magic portal, 2 = Modron portal down (find portal up), 3 = 
     boolean play_arrival_teleport_effect = !!(u.utotype & UTOFLAGS_TELEPORT_EFFECT);
     d_level fromlevel = u.uz;
 
-    debugprint("goto_level0: dnum=%d, dlevel=%d, portal=%d", (int)newlevel->dnum, (int)newlevel->dlevel, (int)portal);
+    char dbgbuf[BUFSZ * 2];
+    s_level* slev = Is_special(newlevel);
+    Sprintf(dbgbuf, "goto_level: dnum=%d, dlevel=%d, slev=%s, at_location=%d, falling=%d, inside_tower=%d, portal=%d", (int)newlevel->dnum, (int)newlevel->dlevel, slev ? slev->name : "normal", (int)at_location, (int)falling, (int)inside_tower, (int)portal);
+    issue_breadcrumb(dbgbuf);
+    debugprint("%s", dbgbuf);
 
     if(at_location & 2)
         context.reviving = TRUE;
