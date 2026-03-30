@@ -549,7 +549,7 @@ uchar resuming; /* 0 = new game, 1 = loaded a saved game, 2 = continued playing 
             }
             else if (multi == 0)
             {
-#ifdef MAIL
+#if defined(MAIL) && !defined(GNH_MOBILE)
                 ckmailstatus();
 #endif
                 rhack((char*)0);

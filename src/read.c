@@ -1907,7 +1907,7 @@ struct monst* targetmonst;
                 "This seems to be junk mail addressed to the finder of the Eye of Larn.");
         else
         {
-#ifdef MAIL
+#if defined(MAIL) && !defined(GNH_MOBILE)
             readmail(sobj);
 #else
             pline("This scroll is mail, but it is totally scrambled.");
