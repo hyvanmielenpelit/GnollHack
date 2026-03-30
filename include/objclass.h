@@ -482,6 +482,9 @@ struct objclass {
 #define is_obj_edible_by_lithovore(o)  (is_obj_stony(o) || ((o)->material >= MAT_PLASTIC && (o)->material <= MAT_CRYSTAL) || (o)->material == MAT_MODRONITE) 
 #define is_obj_edible_by_chitinvore(o)  ((o)->material == MAT_CHITIN || ((o)->material >= MAT_PLASTIC && (o)->material <= MAT_CRYSTAL) || (o)->material == MAT_MODRONITE) 
 #define is_obj_edible_by_toothvore(o)  ((o)->material == MAT_TOOTH || ((o)->material >= MAT_PLASTIC && (o)->material <= MAT_CRYSTAL) || (o)->material == MAT_MODRONITE) 
+#define is_obj_edible_by_bonevore(o)  ((o)->material == MAT_BONE) 
+#define is_obj_edible_by_woodvore(o)  ((o)->material == MAT_WOOD) 
+#define is_obj_edible_by_magicvore(o)  ((o)->material == MAT_FORCEFIELD) 
 
 /* primary damage: fire/rust/--- */
 /* is_flammable(otmp), is_rottable(otmp) in mkobj.c */

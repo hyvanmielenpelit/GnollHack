@@ -1100,6 +1100,7 @@ E void FDECL(display_famine_floating_text, (int, int, int));
 E int64_t FDECL(get_rotted_status, (struct obj*));
 E void NDECL(reset_hunger_status);
 E boolean FDECL(intrinsic_possible, (int, struct permonst*));
+E int FDECL(magic_nutrition, (struct obj*));
 
 /* ### encounter.c ### */
 

@@ -93,13 +93,13 @@ register struct obj *obj;
     if (lithovorous(&mons[Upolyd ? u.umonnum : urace.monsternum]) && is_obj_edible_by_lithovore(obj) && !((In_sokoban(&u.uz) && obj->otyp == BOULDER)))
         return TRUE;
 
-    if (magicvorous(&mons[Upolyd ? u.umonnum : urace.monsternum]) && obj->material == MAT_FORCEFIELD)
+    if (magicvorous(&mons[Upolyd ? u.umonnum : urace.monsternum]) && is_obj_edible_by_magicvore(obj))
         return TRUE;
 
-    if (woodvorous(&mons[Upolyd ? u.umonnum : urace.monsternum]) && obj->material == MAT_WOOD)
+    if (woodvorous(&mons[Upolyd ? u.umonnum : urace.monsternum]) && is_obj_edible_by_woodvore(obj))
         return TRUE;
 
-    if (bonevorous(&mons[Upolyd ? u.umonnum : urace.monsternum]) && obj->material == MAT_BONE)
+    if (bonevorous(&mons[Upolyd ? u.umonnum : urace.monsternum]) && is_obj_edible_by_bonevore(obj))
         return TRUE;
 
     if (chitinvorous(&mons[Upolyd ? u.umonnum : urace.monsternum]) && is_obj_edible_by_chitinvore(obj))
@@ -604,6 +604,8 @@ struct monst* mtmp;
     unsigned nut = obj_nutrition(otmp);
     if (!mtmp)
         return nut;
+    if (magicvorous(mtmp->data))
+        nut += (unsigned)magic_nutrition(otmp);
     unsigned mult = mon_nutrition_factor(otmp, mtmp, TRUE);
     unsigned divisor = mon_nutrition_factor(otmp, mtmp, FALSE);
     return (nut * mult) / divisor;
@@ -3676,6 +3678,37 @@ struct obj *otmp;
     return 0;
 }
 
+int
+magic_nutrition(otmp)
+struct obj* otmp;
+{
+    if (!otmp)
+        return 0;
+
+    int basenutrit = 0;
+    if (otmp->material == MAT_FORCEFIELD)
+    {
+        if (otmp->oclass == ARMOR_CLASS)
+        {
+            basenutrit += 25 * (int)objects[otmp->otyp].oc_armor_class;
+            basenutrit += 25 * (int)objects[otmp->otyp].oc_magic_cancellation;
+        }
+        else
+            basenutrit += 50;
+    }
+    basenutrit += 25 * abs(otmp->enchantment);
+    basenutrit += 25 * otmp->charges;
+    if (otmp->elemental_enchantment > 0)
+    {
+        basenutrit += 100 * (int)otmp->elemental_enchantment;
+    }
+    if (otmp->mythic_prefix > 0)
+        basenutrit += 250;
+    if (otmp->mythic_suffix > 0)
+        basenutrit += 250;
+    return basenutrit;
+}
+
 /* 'e' command */
 int
 doeat()
@@ -3873,26 +3906,7 @@ doeat()
         if (magicvorous(youmonst.data))
         {
             magiceaten = TRUE;
-            if (otmp->material == MAT_FORCEFIELD)
-            {
-                if (otmp->oclass == ARMOR_CLASS)
-                {
-                    basenutrit += 25 * (int)objects[otmp->otyp].oc_armor_class;
-                    basenutrit += 25 * (int)objects[otmp->otyp].oc_magic_cancellation;
-                }
-                else
-                    basenutrit += 50;
-            }
-            basenutrit += 25 * abs(otmp->enchantment);
-            basenutrit += 25 * otmp->charges;
-            if (otmp->elemental_enchantment > 0)
-            {
-                basenutrit += 100 * (int)otmp->elemental_enchantment;
-            }
-            if (otmp->mythic_prefix > 0)
-                basenutrit += 250;
-            if (otmp->mythic_suffix > 0)
-                basenutrit += 250;
+            basenutrit += magic_nutrition(otmp);
         }
 
 #ifdef MAIL

@@ -1707,12 +1707,6 @@ register struct obj *obj;
                 return (starving && carni && !is_elf(mptr)) ? ACCFOOD : TABU;
             else
                 return carni ? CADAVER : MANFOOD;
-        case CLOVE_OF_GARLIC:
-            return (is_undead(mptr) || is_vampshifter(mon))
-                      ? TABU
-                      : (herbi || starving)
-                         ? ACCFOOD
-                         : MANFOOD;
         case TIN:
             return metallivorous(mptr) ? ACCFOOD : MANFOOD;
         case APPLE:
@@ -1736,15 +1730,32 @@ register struct obj *obj;
     case ART_CLASS:
     case REAGENT_CLASS:
     default:
+        if (obj->otyp == CLOVE_OF_GARLIC)
+            return (is_undead(mptr) || is_vampshifter(mon))
+            ? TABU
+            : (herbi || starving)
+            ? ACCFOOD
+            : MANFOOD;
         if (obj->otyp == AMULET_OF_STRANGULATION || obj->otyp == RIN_SLOW_DIGESTION)
             return TABU;
         if (slurps_items(mptr) && is_slurpable(obj))
             return ACCFOOD;
-        if (lithovorous(mptr) && is_obj_stony(obj))
+        if (lithovorous(mptr) && is_obj_edible_by_lithovore(obj))
             return (In_sokoban(&u.uz) && obj->otyp == BOULDER) ? TABU : eschewed ? ACCFOOD : DOGFOOD;
+        if (obj->oclass == REAGENT_CLASS)
+        {
+            if (bonevorous(mptr) && is_obj_edible_by_bonevore(obj))
+                return eschewed ? APPORT : starving ? DOGFOOD : ACCFOOD;
+            if (toothvorous(mptr) && is_obj_edible_by_toothvore(obj))
+                return eschewed ? APPORT : starving ? DOGFOOD : ACCFOOD;
+            if (chitinvorous(mptr) && is_obj_edible_by_chitinvore(obj))
+                return eschewed ? APPORT : starving ? DOGFOOD : ACCFOOD;
+        }
         /* Non-rustproofed ferrous based metals are preferred. */
         if (metallivorous(mptr) && is_metallic(obj)  && (is_rustprone(obj) || !rust_causing_and_ironvorous(mptr)))
             return (is_rustprone(obj) && !obj->oerodeproof) ? DOGFOOD : ACCFOOD;
+        if (magicvorous(mptr) && is_obj_edible_by_magicvore(obj))
+            return eschewed ? APPORT : starving ? DOGFOOD : ACCFOOD;
         if (!obj->cursed && obj->oclass != BALL_CLASS && obj->oclass != CHAIN_CLASS)
             return APPORT;
         return UNDEF;
