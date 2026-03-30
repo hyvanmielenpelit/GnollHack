@@ -900,6 +900,7 @@ enum game_cursor_types cursor_style;
 
         if (c == Cmd.spkeys[NHKF_GETPOS_HELP] || redraw_cmd(c)) 
         {
+            debugprint_pos();
             if (c == Cmd.spkeys[NHKF_GETPOS_HELP])
                 getpos_help(force, goal);
             else /* ^R */

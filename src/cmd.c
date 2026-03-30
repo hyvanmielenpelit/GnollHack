@@ -1756,6 +1756,7 @@ wiz_makemap(VOID_ARGS)
             unplacebc();
             placebc();
         }
+        debugprint_pos();
         docrt();
         flush_screen(1);
         deliver_splev_message(); /* level entry */
@@ -8450,6 +8451,7 @@ retry:
 
     if (redraw_cmd(dirsym)) 
     { /* ^R */
+        debugprint_pos();
         docrt();              /* redraw */
         goto retry;
     }

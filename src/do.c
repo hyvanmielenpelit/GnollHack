@@ -5529,6 +5529,7 @@ boolean pushing;
             if (fills_up && u.uinwater && distu(rx, ry) == 0) 
             {
                 u.uinwater = 0;
+                debugprint_pos();
                 docrt();
                 vision_full_recalc = 1;
                 play_environment_ambient_sounds();
@@ -7670,6 +7671,7 @@ xchar portal; /* 1 = Magic portal, 2 = Modron portal down (find portal up), 3 = 
 
     /* Reset the screen. */
     vision_reset(); /* reset the blockages */
+    debugprint_pos();
     docrt();        /* does a full vision recalc */
     flush_screen(-1);
 

@@ -386,6 +386,7 @@ register struct obj *sobj;
         return 1;
     }
     /* only under me - no separate display required */
+    debugprint_pos();
     if (stale)
         docrt();
     You("notice some gold between your %s.", makeplural(body_part(FOOT)));
@@ -480,6 +481,7 @@ outgoldmap:
     reconstrain_map();
     issue_simple_gui_command(GUI_CMD_RESTORE_ZOOM);
     //zoomtoscale(scale_before);
+    debugprint_pos();
     docrt();
     if (Underwater)
         under_water(2);
@@ -526,6 +528,7 @@ register struct obj *sobj;
     if (!ct && !ctu) {
         known = stale && !confused;
         if (stale) {
+            debugprint_pos();
             docrt();
             You("sense a lack of %s nearby.", what);
             if (sobj && sobj->blessed) {
@@ -623,6 +626,7 @@ register struct obj *sobj;
         reconstrain_map();
         issue_simple_gui_command(GUI_CMD_RESTORE_ZOOM);
         //zoomtoscale(scale_before);
+        debugprint_pos();
         docrt();
         if (Underwater)
             under_water(2);
@@ -864,6 +868,7 @@ int class;            /* an object class, 0 for all */
     reconstrain_map();
     issue_simple_gui_command(GUI_CMD_RESTORE_ZOOM);
     //zoomtoscale(scale_before);
+    debugprint_pos();
     docrt(); /* this will correctly reset vision */
     if (Underwater)
         under_water(2);
@@ -963,6 +968,7 @@ int mclass;                /* monster class, 0 for all */
         reconstrain_map();
         issue_simple_gui_command(GUI_CMD_RESTORE_ZOOM);
         //zoomtoscale(scale_before);
+        debugprint_pos();
         docrt(); /* redraw the screen to remove unseen monsters from map */
         if (Underwater)
             under_water(2);
@@ -1160,6 +1166,7 @@ outtrapmap:
     reconstrain_map();
     issue_simple_gui_command(GUI_CMD_RESTORE_ZOOM);
     //zoomtoscale(scale_before);
+    debugprint_pos();
     docrt(); /* redraw the screen to remove unseen traps from the map */
     if (Underwater)
         under_water(2);
@@ -1599,6 +1606,7 @@ do_mapping()
         /* browse_map() instead of display_nhwindow(WIN_MAP, TRUE) */
         browse_map(TER_DETECT | TER_MAP | TER_TRP | TER_OBJ,
                    "anything of interest");
+        debugprint_pos();
         docrt();
     }
     reconstrain_map();
@@ -1726,6 +1734,7 @@ struct obj *sobj; /* scroll--actually fake spellbook--object */
         }
     see_monsters();
 
+    debugprint_pos();
     if (refresh)
         docrt();
 }
@@ -1996,6 +2005,7 @@ struct trap *trap;
         create_context_menu(CREATE_CONTEXT_MENU_BLOCKING_WINDOW);
         display_nhwindow(WIN_MAP, TRUE); /* wait */
         create_context_menu(CREATE_CONTEXT_MENU_NORMAL);
+        debugprint_pos();
         docrt();
     }
 }
@@ -2446,6 +2456,7 @@ int which_subset; /* when not full, whether to suppress objs and/or traps */
                 keep_mons = (which_subset & TER_MON) != 0; /* not used */
         boolean swallowed = u.uswallow; /* before unconstrain_map() */
 
+        debugprint_pos();
         if (unconstrain_map())
             docrt();
         default_glyph = cmap_to_glyph(level.flags.arboreal ? S_tree : S_unexplored);
@@ -2483,6 +2494,7 @@ int which_subset; /* when not full, whether to suppress objs and/or traps */
         browse_map(which_subset, "anything of interest");
 
         reconstrain_map();
+        debugprint_pos();
         docrt(); /* redraw the screen, restoring regular map */
         if (Underwater)
             under_water(2);

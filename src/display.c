@@ -2310,6 +2310,7 @@ curs_on_u()
 int
 doredraw()
 {
+    debugprint_pos();
     docrt();
     return 0;
 }

@@ -3987,6 +3987,7 @@ struct monst *mtmp;
             if (Punished && uchain && uchain->where == OBJ_FREE)
                 placebc();
             vision_full_recalc = 1;
+            debugprint_pos();
             docrt();
             /* prevent swallower (mtmp might have just poly'd into something
                without an engulf attack) from immediately re-engulfing */

@@ -340,6 +340,7 @@ boolean allow_drag, keep_effect_glyphs;
             ball_active = TRUE;
             allow_drag = FALSE;
         }
+        debugprint_pos();
         docrt();
     }
     if (ball_active) {
@@ -1649,6 +1650,7 @@ register int x, y;
         if (u.uswallow) {
             u.ux = x;
             u.uy = y;
+            debugprint_pos();
             docrt();
         }
         else

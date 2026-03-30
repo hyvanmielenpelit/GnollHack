@@ -373,13 +373,13 @@ struct monst* origmonst;
     boolean wake = TRUE; /* Most 'zaps' should wake monster */
     boolean reveal_invis = FALSE, learn_it = FALSE;
     boolean helpful_gesture = FALSE;
-    int otyp = otmp->otyp;
+    int otyp = otmp ? otmp->otyp : STRANGE_OBJECT;
     const char *zap_type_text = otmp && OBJ_CONTENT_NAME(otmp->otyp) ? OBJ_CONTENT_NAME(otmp->otyp) : otmp && otmp->oclass == SPBOOK_CLASS ? OBJ_NAME(objects[otmp->otyp]) : "spell";
     struct obj *obj;
     boolean disguised_mimic = (is_mimic(mtmp->data)
                                && M_AP_TYPE(mtmp) != M_AP_NOTHING);
     int duration = get_obj_spell_duration(otmp);
-    int dmg = get_spell_damage(otyp, otmp->exceptionality, origmonst, mtmp);
+    int dmg = get_spell_damage(otyp, otmp ? otmp->exceptionality : 0, origmonst, mtmp);
     int save_adj = get_saving_throw_adjustment(otmp, mtmp, origmonst);
     boolean surpress_noeffect_message = FALSE;
     //boolean magic_resistance_success = check_magic_resistance_and_inflict_damage(mtmp, otmp, 0, 0, 0, NOTELL);
@@ -1164,6 +1164,7 @@ struct monst* origmonst;
     case WAN_TELEPORTATION:
     case SPE_TELEPORT_MONSTER:
         res = 1;
+        debugprint("bhitm teleport: mnum=%d, isshk=%d", mtmp->mnum, (int)mtmp->isshk);
         if (disguised_mimic)
             seemimic(mtmp);
         reveal_invis = !u_teleport_mon(mtmp, TRUE);
@@ -4533,6 +4534,7 @@ struct monst* origmonst;
         case WAN_TELEPORTATION:
         case SPE_TELEPORT_MONSTER:
             res = 1;
+            debugprint("bhito teleport: otyp=%d, wandtyp=%d", obj->otyp, wandtyp);
             if(!level.flags.noteleport)
                 (void) rloco(obj);
             break;
@@ -7210,6 +7212,7 @@ boolean ordinary;
     case WAN_TELEPORTATION:
     case SPE_TELEPORT_MONSTER:
         damage = 0;
+        debugprint("zapyourself: otyp=%d", obj->otyp);
         tele();
         /* same criteria as when mounted (zap_steed) */
         if ((Teleport_control && !Stunned) || !couldsee(u.ux0, u.uy0)
@@ -7769,6 +7772,7 @@ struct obj *obj; /* wand or spell */
     case SPE_TELEPORT_MONSTER:
     {
         /* you go together */
+        debugprint("zap_steed: otyp=%d", obj->otyp);
         int trackid = add_to_obj_tracking(obj);
         tele();
         boolean obj_gone = finish_obj_tracking(trackid);
@@ -8234,6 +8238,7 @@ struct obj *obj; /* wand or spell */
                 break;
             case WAN_TELEPORTATION:
             case SPE_TELEPORT_MONSTER:
+                debugprint("zap_updown: otyp=%d", obj->otyp);
                 if(!level.flags.noteleport)
                     rloc_engr(e);
                 break;
@@ -11045,6 +11050,7 @@ short exploding_wand_typ;
                         /* leave the no longer existent water */
                         u.uinwater = 0;
                         u.uundetected = 0;
+                        debugprint_pos();
                         docrt();
                         vision_full_recalc = 1;
                         play_environment_ambient_sounds();

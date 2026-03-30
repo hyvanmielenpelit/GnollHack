@@ -2736,7 +2736,9 @@ aligntyp alignment;
 
     uint64_t gpflags = (mmflags & MM_IGNOREWATER) ? MM_IGNOREWATER : 0;
     int origin_x = x, origin_y = y;
-    
+
+    debugprint_pos();
+
     /* if caller wants random location, do it here */
     if (x == 0 && y == 0) 
     {

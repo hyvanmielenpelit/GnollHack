@@ -1675,6 +1675,7 @@ int howmuch;
      * thing to do is to run it through the vision system again, which
      * is always correct.
      */
+    debugprint_pos();
     docrt(); /* this correctly will reset vision */
 }
 

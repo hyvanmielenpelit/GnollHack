@@ -3244,6 +3244,7 @@ struct monst *mtmp;
     create_context_menu(CREATE_CONTEXT_MENU_BLOCKING_WINDOW);
     display_nhwindow(WIN_MAP, TRUE);
     create_context_menu(CREATE_CONTEXT_MENU_NORMAL);
+    debugprint_pos();
     docrt();
     if (unconscious()) {
         multi = -1;

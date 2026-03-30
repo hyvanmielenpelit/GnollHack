@@ -1590,6 +1590,7 @@ newgame(VOID_ARGS)
     /* Change to intro music */
     update_game_music();
 
+    debugprint_pos();
     docrt();
     status_reassess();
 

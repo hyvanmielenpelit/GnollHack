@@ -1184,6 +1184,7 @@ register int fd;
 
     vision_reset();
     vision_full_recalc = 1; /* recompute vision (not saved) */
+    debugprint_pos();
     docrt();
     clear_nhwindow(WIN_MESSAGE);
     status_reassess();
