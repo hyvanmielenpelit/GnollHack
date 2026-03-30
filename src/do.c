@@ -7464,12 +7464,14 @@ xchar portal; /* 1 = Magic portal, 2 = Modron portal down (find portal up), 3 = 
             impossible("goto_level: returning to discarded level?");
             level_info[new_ledger].flags &= ~(FORGOTTEN | VISITED);
         }
+        issue_breadcrumb2("Making a new level", (int)new_ledger);
         mklev();
         isnew = TRUE; /* made the level */
     }
     else 
     {
         debugprint("goto_level2");
+        issue_breadcrumb2("Opening an existing level", (int)new_ledger);
         /* returning to previously visited level; reload it */
         fd = open_levelfile(new_ledger, whynot);
         if (tricked_fileremoved(fd, whynot))
