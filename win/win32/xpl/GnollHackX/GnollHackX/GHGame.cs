@@ -3294,6 +3294,8 @@ namespace GnollHackX
                             sentryEvent.SetExtra("Disk Space", (GHApp.FreeDiskSpaceInBytes / (1024 * 1024)).ToString() + " MB");
                             sentryEvent.SetExtra("Used Memory", (GHApp.MemoryUsageInBytes / (1024 * 1024)).ToString() + " MB");
                             sentryEvent.SetExtra("Total Memory", (GHApp.TotalMemory / (1024 * 1024)).ToString() + " MB");
+                            string playerName = GHApp.TournamentMode ? GHApp.LastUsedTournamentPlayerName : GHApp.LastUsedPlayerName;
+                            sentryEvent.SetExtra("Player Name", playerName == null ? "[was null]" : playerName);
                             SentrySdk.CaptureEvent(sentryEvent);
                             break;
                     }
