@@ -792,6 +792,7 @@ boolean message;
             debugprint_pos();
             char* o_shop = in_rooms(u.ux, u.uy, SHOPBASE);
             shkp = shop_keeper(*o_shop);
+            debugprint_pos();
             if (shkp && inhishop(shkp) && is_obj_on_shk_bill(piece, shkp))
             {
                 billable_food = TRUE;

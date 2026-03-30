@@ -1455,6 +1455,7 @@ int alter_type;
             debugprint_pos();
             char* o_shop = in_rooms(u.ux, u.uy, SHOPBASE);
             shkp = shop_keeper(*o_shop);
+            debugprint_pos();
             if (obj->unpaid && shkp && inhishop(shkp) && is_obj_on_shk_bill(obj, shkp) && costly_spot(u.ux, u.uy))
             {
                 //play_voice_shopkeeper_simple_line(shkp, obj->quan == 1L ? SHOPKEEPER_LINE_YOU_ALTER_THAT_YOU_PAY_FOR_IT : SHOPKEEPER_LINE_YOU_ALTER_THOSE_YOU_PAY_FOR_THEM);

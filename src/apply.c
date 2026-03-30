@@ -2267,6 +2267,7 @@ struct obj **optr;
         debugprint_pos();
         char* o_shop = in_rooms(u.ux, u.uy, SHOPBASE);
         struct monst* shkp = shop_keeper(*o_shop);
+        debugprint_pos();
         if (shkp && inhishop(shkp) && (obj->where == OBJ_FLOOR || is_obj_on_shk_bill(obj, shkp)))
         {
             play_voice_shopkeeper_simple_line(shkp, otmp->lamplit ? ((obj->quan > 1L) ? SHOPKEEPER_LINE_BURN_THEM_BOUGHT_THEM : SHOPKEEPER_LINE_BURN_IT_BOUGHT_IT) :
@@ -2476,6 +2477,7 @@ struct obj *obj;
                 debugprint_pos();
                 char* o_shop = in_rooms(u.ux, u.uy, SHOPBASE);
                 struct monst* shkp = shop_keeper(*o_shop);
+                debugprint_pos();
                 if (shkp && inhishop(shkp) && is_obj_on_shk_bill(obj, shkp))
                 {
                     play_voice_shopkeeper_simple_line(shkp, obj->quan == 1L ? SHOPKEEPER_LINE_IN_ADDITION_TO_COST_OF_ITEM_ITSELF : SHOPKEEPER_LINE_IN_ADDITION_TO_COST_OF_ITEMS_THEMSELVES);
@@ -2564,6 +2566,7 @@ struct obj *obj;
                 debugprint_pos();
                 char* o_shop = in_rooms(u.ux, u.uy, SHOPBASE);
                 struct monst* shkp = shop_keeper(*o_shop);
+                debugprint_pos();
                 if (shkp && inhishop(shkp) && (obj->where == OBJ_FLOOR || is_obj_on_shk_bill(obj, shkp)))
                 {
                     play_voice_shopkeeper_simple_line(shkp, (obj->quan > 1L) ? SHOPKEEPER_LINE_BURN_THEM_BOUGHT_THEM : SHOPKEEPER_LINE_BURN_IT_BOUGHT_IT);
@@ -2704,6 +2707,7 @@ struct obj **optr;
         check_unpaid(obj);
         char* o_shop = in_rooms(u.ux, u.uy, SHOPBASE);
         struct monst* shkp = shop_keeper(*o_shop);
+        debugprint_pos();
         if (shkp && inhishop(shkp) && (obj->where == OBJ_FLOOR || is_obj_on_shk_bill(obj, shkp)))
         {
             play_voice_shopkeeper_simple_line(shkp, SHOPKEEPER_LINE_IN_ADDITION_TO_COST_OF_POTION);
@@ -3288,6 +3292,7 @@ struct obj *obj;
                 debugprint_pos();
                 char* o_shop = in_rooms(u.ux, u.uy, SHOPBASE);
                 struct monst* shkp = shop_keeper(*o_shop);
+                debugprint_pos();
                 if (shkp && inhishop(shkp) && is_obj_on_shk_bill(corpse, shkp))
                 {
                     play_voice_shopkeeper_simple_line(shkp, SHOPKEEPER_LINE_YOU_TIN_IT_YOU_BOUGHT_IT);
@@ -6537,6 +6542,7 @@ int arrowtype, quan; //ObjID and quantity
             debugprint_pos();
             char* o_shop = in_rooms(u.ux, u.uy, SHOPBASE);
             struct monst* shkp = shop_keeper(*o_shop);
+            debugprint_pos();
             if (shkp && inhishop(shkp) && (bag->where == OBJ_FLOOR || is_obj_on_shk_bill(bag, shkp)))
             {
                 add_one_tobill(otmp, FALSE, shkp);

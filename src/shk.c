@@ -272,6 +272,7 @@ struct obj *otmp;
 {
     if (Has_contents(otmp))
         clear_unpaid(shkp, otmp->cobj);
+    debugprint_pos();
     if (onbill(otmp, shkp, TRUE))
         otmp->unpaid = 0;
 }
@@ -810,16 +811,20 @@ struct obj *obj1, *obj2;
     boolean are_mergable = FALSE;
 
     /* look up the first object by finding shk whose bill it's on */
-    for (shkp1 = next_shkp(fmon, TRUE); shkp1;
-         shkp1 = next_shkp(shkp1->nmon, TRUE))
+    debugprint_pos();
+    for (shkp1 = next_shkp(fmon, TRUE); shkp1; shkp1 = next_shkp(shkp1->nmon, TRUE))
         if ((bp1 = onbill(obj1, shkp1, TRUE)) != 0)
             break;
     /* second object is probably owned by same shk; if not, look harder */
-    if (shkp1 && (bp2 = onbill(obj2, shkp1, TRUE)) != 0) {
+    debugprint_pos();
+    if (shkp1 && (bp2 = onbill(obj2, shkp1, TRUE)) != 0) 
+    {
         shkp2 = shkp1;
-    } else {
-        for (shkp2 = next_shkp(fmon, TRUE); shkp2;
-             shkp2 = next_shkp(shkp2->nmon, TRUE))
+    }
+    else 
+    {
+        debugprint_pos();
+        for (shkp2 = next_shkp(fmon, TRUE); shkp2; shkp2 = next_shkp(shkp2->nmon, TRUE))
             if ((bp2 = onbill(obj2, shkp2, TRUE)) != 0)
                 break;
     }
@@ -1012,10 +1017,11 @@ register struct obj *obj, *merge;
         maybe_reset_pick(obj);
     
     shkp = 0;
-    if (obj->unpaid) {
+    if (obj->unpaid) 
+    {
         /* look for a shopkeeper who owns this object */
-        for (shkp = next_shkp(fmon, TRUE); shkp;
-             shkp = next_shkp(shkp->nmon, TRUE))
+        debugprint_pos();
+        for (shkp = next_shkp(fmon, TRUE); shkp; shkp = next_shkp(shkp->nmon, TRUE))
             if (onbill(obj, shkp, TRUE))
                 break;
     }
@@ -1031,6 +1037,7 @@ register struct obj *obj, *merge;
      *    upon player location doesn't make much sense.
      */
 
+    debugprint_pos();
     if ((bp = onbill(obj, shkp, FALSE)) != 0) {
         if (!merge) {
             bp->useup = 1;
@@ -1038,6 +1045,7 @@ register struct obj *obj, *merge;
             add_to_billobjs(obj);
             return;
         }
+        debugprint_pos();
         bpm = onbill(merge, shkp, FALSE);
         if (!bpm) {
             /* this used to be a rename */
@@ -2615,6 +2623,7 @@ int64_t amt; /* if 0, use regular shop pricing, otherwise force amount;
     struct monst *shkp;
     int64_t new_price;
 
+    debugprint_pos();
     for (shkp = next_shkp(fmon, TRUE); shkp; shkp = next_shkp(shkp, TRUE))
         if ((bp = onbill(obj, shkp, TRUE)) != 0) {
             new_price = !amt ? get_cost(obj, shkp) : (amt < 0L) ? -amt : amt;
@@ -2641,14 +2650,20 @@ boolean include_contents;
     if (!get_obj_location(unp_obj, &ox, &oy, BURIED_TOO | CONTAINED_TOO))
         ox = u.ux, oy = u.uy; /* (shouldn't happen) */
     debugprint_pos();
-    if ((shkp = shop_keeper(*in_rooms(ox, oy, SHOPBASE))) != 0) {
+    if ((shkp = shop_keeper(*in_rooms(ox, oy, SHOPBASE))) != 0) 
+    {
+        debugprint_pos();
         bp = onbill(unp_obj, shkp, TRUE);
-    } else {
+    } 
+    else 
+    {
         /* didn't find shk?  try searching bills */
-        for (shkp = next_shkp(fmon, TRUE); shkp;
-             shkp = next_shkp(shkp->nmon, TRUE))
+        for (shkp = next_shkp(fmon, TRUE); shkp; shkp = next_shkp(shkp->nmon, TRUE))
+        {
+            debugprint_pos();
             if ((bp = onbill(unp_obj, shkp, TRUE)) != 0)
                 break;
+        }
     }
 
     /* onbill() gave no message if unexpected problem occurred */
@@ -2804,6 +2819,7 @@ boolean reset_nocharge;
         *shkpp = shkp;
     }
     /* perhaps we threw it away earlier */
+    debugprint_pos();
     if (onbill(obj, shkp, FALSE)
         || (obj->oclass == FOOD_CLASS && obj->oeaten))
         return FALSE;
@@ -3075,6 +3091,7 @@ register struct monst *shkp;
 {
     register struct bill_x *bp;
 
+    debugprint_pos();
     if ((bp = onbill(obj, shkp, FALSE)) != 0) {
         register struct obj *otmp;
 
@@ -3149,6 +3166,7 @@ boolean ininv;
         billamt = 0L;
         if (!billable(&shkp, otmp, ESHK(shkp)->shoproom, TRUE)) {
             /* billable() returns false for objects already on bill */
+            debugprint_pos();
             if ((bp = onbill(otmp, shkp, FALSE)) == 0)
                 continue;
             /* this assumes that we're being called by stolen_value()
@@ -3194,6 +3212,7 @@ boolean peaceful, silent;
     if (!billable(&shkp, obj, roomno, FALSE)) {
         /* things already on the bill yield a not-billable result, so
            we need to check bill before deciding that shk doesn't care */
+        debugprint_pos();
         if ((bp = onbill(obj, shkp, FALSE)) != 0) {
             /* shk does care; take obj off bill to avoid double billing */
             billamt = bp->bquan * bp->price;
@@ -5661,6 +5680,7 @@ is_obj_on_shk_bill(obj, shkp)
 struct obj* obj;
 struct monst* shkp;
 {
+    debugprint_pos();
     return !!onbill(obj, shkp, FALSE);
 }
 

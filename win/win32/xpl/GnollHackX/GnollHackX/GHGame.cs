@@ -158,6 +158,7 @@ namespace GnollHackX
                 if (!GHApp.CancelSaveGame)
                 {
                     GHApp.SavingGame = true;
+                    GHApp.AddSentryBreadcrumb("GHGame PollResponseQueue: Saving game: " + GHApp.AppSwitchSaveStyle, GHConstants.SentryGnollHackGeneralCategoryName);
                     GHApp.GnollHackService?.SaveAndRestoreSavedGame(GHApp.AppSwitchSaveStyle);
                     GameOverHandling();
                 }
@@ -168,6 +169,7 @@ namespace GnollHackX
             else if (_checkPointRequested)
             {
                 _checkPointRequested = false;
+                GHApp.AddSentryBreadcrumb("GHGame PollResponseQueue: Saving checkpoint", GHConstants.SentryGnollHackGeneralCategoryName);
                 GHApp.GnollHackService?.SaveAndRestoreSavedGame(2); /* Check point and return immediately */
                 GameOverHandling();
             }
@@ -3252,6 +3254,7 @@ namespace GnollHackX
                         PollResponseQueue();
                     }
                     _restoreRequested = false;
+                    GHApp.AddSentryBreadcrumb("GHGame GUI_CMD_WAIT_FOR_RESUME: Starting to restore saved game", GHConstants.SentryGnollHackGeneralCategoryName);
                     break;
                 case (int)gui_command_types.GUI_CMD_POST_DIAGNOSTIC_DATA:
                     if (PlayingReplay)

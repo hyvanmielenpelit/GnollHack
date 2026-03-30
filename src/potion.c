@@ -844,6 +844,7 @@ dodrink()
             debugprint_pos();
             char* o_shop = in_rooms(u.ux, u.uy, SHOPBASE);
             shkp = shop_keeper(*o_shop);
+            debugprint_pos();
             if (shkp && inhishop(shkp) && is_obj_on_shk_bill(otmp, shkp))
             {
                 billable_potion = TRUE;
@@ -910,6 +911,7 @@ struct obj *otmp;
         debugprint_pos();
         char* o_shop = in_rooms(u.ux, u.uy, SHOPBASE);
         shkp = shop_keeper(*o_shop);
+        debugprint_pos();
         if (shkp && inhishop(shkp) && is_obj_on_shk_bill(otmp, shkp))
         {
             billable_potion = TRUE;
@@ -2155,6 +2157,7 @@ boolean dopopup;
         char* o_shop = in_rooms(u.ux, u.uy, SHOPBASE);
         struct monst* shkp = 0;
         shkp = shop_keeper(*o_shop);
+        debugprint_pos();
         if (shkp && inhishop(shkp) && is_obj_on_shk_bill(obj, shkp) && !Deaf && !muteshk(shkp))
         {
             play_voice_shopkeeper_simple_line(shkp, SHOPKEEPER_LINE_ILL_ADD_THAT_TO_YOUR_BILL);
