@@ -4900,6 +4900,7 @@ boolean* removed_from_game_ptr;
         && strncmpi(bp, "studded leather armor", 21)
         && strncmpi(bp, "leather armor", 13)
         && strncmpi(bp, "force field armor", 17)
+        && strncmpi(bp, "mage armor", 10)
         && strncmpi(bp, "bone armor", 10)
         && strncmpi(bp, "tooled horn", 11)
         && strncmpi(bp, "food ration", 11)
