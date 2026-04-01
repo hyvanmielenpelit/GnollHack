@@ -533,9 +533,19 @@ char* buf;
                 int plus = 0;
                 int res = 0;
                 if (qp && (!qs || qp < qs) && (int)(qp - buf) <= len - 1 && *(qp + 1) >= '0' && *(qp + 1) <= '9')
-                    res = sscanf(p, usenone ? "%dd%d+%d" : useplus ? "+%dd%d+%d" : " %dd%d+%d", &dice, &diesize, &plus);
+                {
+                    if (usenone)
+                        res = sscanf(p + 1, "%dd%d+%d", &dice, &diesize, &plus);
+                    else
+                        res = sscanf(p, useplus ? "+%dd%d+%d" : " %dd%d+%d", &dice, &diesize, &plus);
+                }
                 else
-                    res = sscanf(p, usenone ? "%dd%d" : useplus ? "+%dd%d" : " %dd%d", &dice, &diesize);
+                {
+                    if (usenone)
+                        res = sscanf(p + 1, "%dd%d", &dice, &diesize);
+                    else
+                        res = sscanf(p, useplus ? "+%dd%d" : " %dd%d", &dice, &diesize);
+                }
 
                 if (res >= 2)
                 {
