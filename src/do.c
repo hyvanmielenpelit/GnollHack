@@ -500,13 +500,21 @@ char* buf;
 
     int len = (int)strlen(buf);
     char* p;
-    boolean found = FALSE, useplus = FALSE;
-    for (p = buf; (int)(p - buf) < len - 3; p++)
+    boolean found = FALSE, useplus = FALSE, usenone = FALSE;
+    for (p = buf - 1; (int)(p - buf) < len - 3; p++)
     {
-        if ((*p == ' ' || *p == '+') && *(p + 1) >= '0' && *(p + 1) <= '9' && *(p + 2) <= 'd' && *(p + 3) >= '0' && *(p + 3) <= '9')
+        if ((p == buf - 1 || *p == ' ' || *p == '+')
+            && (
+                (*(p + 1) >= '0' && *(p + 1) <= '9' && *(p + 2) == 'd' && *(p + 3) >= '0' && *(p + 3) <= '9') ||
+                ((int)(p - buf) < len - 4 && *(p + 1) >= '0' && *(p + 1) <= '9' && *(p + 2) >= '0' && *(p + 2) <= '9' && *(p + 3) == 'd' && *(p + 4) >= '0' && *(p + 4) <= '9')
+                )
+           )
         {
             found = TRUE;
-            useplus = *p == '+';
+            if (p == buf - 1)
+                usenone = TRUE;
+            else
+                useplus = *p == '+';
             break;
         }
     }
@@ -518,16 +526,16 @@ char* buf;
         {
             char* qp = strstr(p + 1, "+");
             char* qs = strstr(p + 1, " ");
-            if (qs)
+            //if (qs)
             {
                 int dice = 0;
                 int diesize = 0;
                 int plus = 0;
                 int res = 0;
-                if (qp && qp < qs && *(qp + 1) >= '0' && *(qp + 1) <= '9')
-                    res = sscanf(p, useplus ? "+%dd%d+%d" : " %dd%d+%d", &dice, &diesize, &plus);
+                if (qp && (!qs || qp < qs) && (int)(qp - buf) <= len - 1 && *(qp + 1) >= '0' && *(qp + 1) <= '9')
+                    res = sscanf(p, usenone ? "%dd%d+%d" : useplus ? "+%dd%d+%d" : " %dd%d+%d", &dice, &diesize, &plus);
                 else
-                    res = sscanf(p, useplus ? "+%dd%d" : " %dd%d", &dice, &diesize);
+                    res = sscanf(p, usenone ? "%dd%d" : useplus ? "+%dd%d" : " %dd%d", &dice, &diesize);
 
                 if (res >= 2)
                 {
@@ -537,10 +545,11 @@ char* buf;
                     int minvalue = dice + plus;
                     int maxvalue = dice * diesize + plus;
                     if (minvalue == maxvalue)
-                        Sprintf(tptr, useplus ? "+%d" : " %d", minvalue);
+                        Sprintf(tptr, usenone ? "%d": useplus ? "+%d" : " %d", minvalue);
                     else
-                        Sprintf(tptr, useplus ? "+%d-%d" : " %d-%d", minvalue, maxvalue);
-                    Strcat(tptr, qs);
+                        Sprintf(tptr, usenone ? "%d-%d" : useplus ? "+%d-%d" : " %d-%d", minvalue, maxvalue);
+                    if (qs)
+                        Strcat(tptr, qs);
                     Strcpy(buf, tmpstr);
                     free(tmpstr);
                 }
