@@ -4015,6 +4015,9 @@ STATIC_VAR const struct alt_spellings {
     { "potion of super heroism", POT_SUPER_HEROISM },
     { "potion of superheroism", POT_SUPER_HEROISM },
     { "smooth shield", SHIELD_OF_REFLECTION },
+    { "bone mail", GNOLLISH_BONE_MAIL },
+    { "bone armor", GNOLLISH_BONE_MAIL },
+    { "haircloth robe", GNOLLISH_HAIRCLOTH_ROBE },
     { "gauntlets of power", GAUNTLETS_OF_OGRE_POWER },
     { "helmet of telepathy", HELM_OF_TELEPATHY },
     { "helmet of opposite alignment", HELM_OF_OPPOSITE_ALIGNMENT },
@@ -4896,6 +4899,8 @@ boolean* removed_from_game_ptr;
         && strncmpi(bp, "wand of orcus", 13)
         && strncmpi(bp, "studded leather armor", 21)
         && strncmpi(bp, "leather armor", 13)
+        && strncmpi(bp, "force field armor", 17)
+        && strncmpi(bp, "bone armor", 10)
         && strncmpi(bp, "tooled horn", 11)
         && strncmpi(bp, "food ration", 11)
         && strncmpi(bp, "weapon rack", 11)
