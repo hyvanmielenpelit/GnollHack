@@ -2338,6 +2338,7 @@ newdogpos:
 
             if (info[chi] & ALLOW_U)
             {
+                set_apparxy(mtmp); /* May need to update after mattacku above */
                 if (mtmp->mleashed)
                 { /* play it safe */
                     play_sfx_sound(SFX_PULLS_FREE_OF_LEASH);

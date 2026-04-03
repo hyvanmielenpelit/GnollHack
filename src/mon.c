@@ -2636,7 +2636,7 @@ nexttry: /* eels prefer the water, but if there is no water nearby,
                 if ((nx == u.ux && ny == u.uy)
                     || (nx == mon->mux && ny == mon->muy)) 
                 {
-                    if (nx == u.ux && ny == u.uy) 
+                    if ((nx == u.ux && ny == u.uy) || is_tame(mon)) /* Insurance */
                     {
                         /* If it's right next to you, it found you,
                          * displaced or no.  We must set mux and muy
