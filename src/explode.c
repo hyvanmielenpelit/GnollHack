@@ -527,8 +527,10 @@ int expltype;
                 idamnonres += adjust_damage(destroy_mitem(mtmp, WAND_CLASS, (int) adtyp), (struct monst*)0, mtmp, adtyp, ADFLAGS_NONE);
                 idamnonres += adjust_damage(destroy_mitem(mtmp, RING_CLASS, (int) adtyp), (struct monst*)0, mtmp, adtyp, ADFLAGS_NONE);
 
-                int ddami = objtype > 0 ? get_spell_damage(objtype, 0, origmonst, mtmp) : max(0, d(dmg_n, dmg_d) + dmg_p);
-                double ddam = adjust_damage(ddami, (struct monst*)0, mtmp, adtyp, ADFLAGS_NONE);
+                int ddami = objtype > 0 ? get_spell_damage(objtype, 0, origmonst, mtmp) : d(dmg_n, dmg_d) + dmg_p;
+                if (ddami < 0)
+                    ddami = 0;
+                double ddam = adjust_damage(ddami, origmonst, mtmp, adtyp, ADFLAGS_NONE);
 
                 if (explmask[i][j] == 1) 
                 {
