@@ -622,7 +622,7 @@ int use_type; //OBSOLETE /* 0 = Melee weapon (full enchantment bonuses), 1 = thr
            this bonus so that effectively it's added after the doubling */
         if (bonus > 1 && otmp->oartifact)
         {
-            double sbonus = spec_dbon(otmp, mon, 25.0);
+            double sbonus = spec_dbon(otmp, mon, mattacker, 25.0);
             if (sbonus > 0)
             {
                 double bonmult =  1.0 / (sbonus / 25.0 + 1.0);

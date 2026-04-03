@@ -1159,9 +1159,9 @@ struct monst *mon;
 
 /* special damage bonus */
 double
-spec_dbon(otmp, mon, damage)
+spec_dbon(otmp, mon, mattacker, damage)
 struct obj *otmp;
-struct monst *mon;
+struct monst *mon, *mattacker;
 double damage;
 {
     register const struct artifact *weap = get_artifact(otmp);
@@ -1176,7 +1176,7 @@ double damage;
     {
         double dbon = 0;
         if (weap->attk.damd > 0 && weap->attk.damn > 0)
-            dbon += adjust_damage(d(weap->attk.damn, weap->attk.damd) + weap->attk.damp, (struct monst*)0, mon, !weap ? AD_PHYS : weap->attk.adtyp, ADFLAGS_NONE);
+            dbon += adjust_damage(d(weap->attk.damn, weap->attk.damd) + weap->attk.damp, mattacker, mon, !weap ? AD_PHYS : weap->attk.adtyp, ADFLAGS_NONE);
         else if(weap->attk.damn < 0)
             dbon += max(-(((double)weap->attk.damn) / 20.0) * damage, 0);
 
@@ -1529,7 +1529,7 @@ int dieroll; /* needed for Magicbane and vorpal blades */
      * the exception being for level draining, which is specially
      * handled.  Messages are done in this function, however.
      */
-    *dmgptr += spec_dbon(otmp, mdef, *dmgptr);
+    *dmgptr += spec_dbon(otmp, mdef, magr, *dmgptr);
 
     if (youattack && youdefend)
     {

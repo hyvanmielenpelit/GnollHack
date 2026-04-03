@@ -9883,7 +9883,7 @@ const char *fltxt;
         break;
     case ZT_POISON_GAS:
         damage = 0;
-        poisoned("blast", A_DEX, "poisoned blast", 15, FALSE, dmgdice ? dmgdice : 4);
+        poisoned("blast", A_DEX, "poisoned blast", 15, FALSE, dmgdice ? dmgdice : 4, origmonst);
         break;
     case ZT_ACID:
         hit_tile = HIT_SPLASHED_ACID;

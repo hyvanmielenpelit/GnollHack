@@ -418,12 +418,13 @@ boolean exclaim; /* emphasis */
 
 /* called when an attack or trap has poisoned hero (used to be in mon.c) */
 void
-poisoned(reason, typ, pkiller, fatal, thrown_weapon, poison_strength)
+poisoned(reason, typ, pkiller, fatal, thrown_weapon, poison_strength, mattacker)
 const char *reason,    /* controls what messages we display */
            *pkiller;   /* for score+log file if fatal */
 int typ, fatal;        /* if fatal is 0, limit damage to adjattrib */
 boolean thrown_weapon; /* thrown weapons are less deadly */
 int poison_strength;   /* d6 per level damage*/
+struct monst* mattacker;
 {
     int i, loss, kprefix = KILLED_BY_AN;
     double damage = 0;
@@ -472,7 +473,7 @@ int poison_strength;   /* d6 per level damage*/
     if (i == 0 && typ != A_CHA)
     {
         /* no more instant kill but (4 + poison strength)d6 + 10 damage */
-        damage = adjust_damage(d(poison_strength ? 4 + poison_strength : 6, 6) + 10, (struct monst*)0, &youmonst, AD_DRST, ADFLAGS_NONE);
+        damage = adjust_damage(d(poison_strength ? 4 + poison_strength : 6, 6) + 10, mattacker, &youmonst, AD_DRST, ADFLAGS_NONE);
         losehp(damage, pkiller, kprefix); /* poison damage */
 
         //Attribute loss
@@ -490,7 +491,7 @@ int poison_strength;   /* d6 per level damage*/
     else
     {
         /* HP damage; more likely--but less severe--with missiles */
-        damage = adjust_damage(poison_strength ? d(poison_strength, 6) : thrown_weapon ? rnd(6) : rn1(10, 6), (struct monst*)0, & youmonst, AD_DRST, ADFLAGS_NONE); //10...15
+        damage = adjust_damage(poison_strength ? d(poison_strength, 6) : thrown_weapon ? rnd(6) : rn1(10, 6), mattacker, & youmonst, AD_DRST, ADFLAGS_NONE); //10...15
         losehp(damage, pkiller, kprefix); /* poison damage */
 
         if (rn2(100) < (poison_strength ? 5 * poison_strength : 15))
@@ -533,11 +534,12 @@ int poison_strength;   /* d6 per level damage*/
 
 /* called when an attack with elemental enchantment has hit the hero (used to be in mon.c) */
 void
-extra_enchantment_damage(reason, elemental_enchantment, pkiller, lifesavedalready)
+extra_enchantment_damage(reason, elemental_enchantment, pkiller, lifesavedalready, mattacker)
 const char* reason,    /* controls what messages we display */
 * pkiller;   /* for score+log file if fatal */
 uchar elemental_enchantment;
 boolean lifesavedalready;
+struct monst* mattacker;
 {
     int kprefix = KILLED_BY_AN;
     double damage = 0;
@@ -569,7 +571,7 @@ boolean lifesavedalready;
             }
 
             play_sfx_sound(SFX_MONSTER_COVERED_IN_FROST);
-            damage = adjust_damage(d(12, 6), (struct monst*)0, &youmonst, AD_COLD, ADFLAGS_NONE);
+            damage = adjust_damage(d(12, 6), mattacker, &youmonst, AD_COLD, ADFLAGS_NONE);
             losehp(damage, pkiller, kprefix);
             break;
         }
@@ -587,7 +589,7 @@ boolean lifesavedalready;
             }
 
             play_sfx_sound(SFX_MONSTER_ON_FIRE);
-            damage = adjust_damage(d(4, 6), (struct monst*)0, &youmonst, AD_FIRE, ADFLAGS_NONE);
+            damage = adjust_damage(d(4, 6), mattacker, &youmonst, AD_FIRE, ADFLAGS_NONE);
             losehp(damage, pkiller, kprefix);
             break;
         }
@@ -605,7 +607,7 @@ boolean lifesavedalready;
             }
 
             play_sfx_sound(SFX_MONSTER_GETS_ZAPPED);
-            damage = adjust_damage(d(6, 6), (struct monst*)0, &youmonst, AD_ELEC, ADFLAGS_NONE);
+            damage = adjust_damage(d(6, 6), mattacker, &youmonst, AD_ELEC, ADFLAGS_NONE);
             losehp(damage, pkiller, kprefix);
             break;
         }
@@ -627,7 +629,7 @@ boolean lifesavedalready;
             if (lifesavedalready)
             {
                 //Just do 10d6 damage if life was saved by amulet of life saving
-                damage = adjust_damage(d(10, 6), (struct monst*)0, &youmonst, AD_DRAY, ADFLAGS_NONE);
+                damage = adjust_damage(d(10, 6), mattacker, &youmonst, AD_DRAY, ADFLAGS_NONE);
                 losehp(damage, pkiller, kprefix);
             }
             else

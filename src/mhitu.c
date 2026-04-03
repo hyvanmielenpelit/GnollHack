@@ -2284,7 +2284,7 @@ register struct obj* omonwep;
             Sprintf(buf, "%s %s", s_suffix(Monnam(mtmp)),
                     mpoisons_subj(mtmp, mattk));
 
-            poisoned(buf, ptmp, mon_monster_name(mtmp), mtmp->m_lev <= 8 ? 0 : 10, FALSE, mtmp->m_lev <= 2 ? 1 : mtmp->m_lev <= 5 ? 2 : 3);
+            poisoned(buf, ptmp, mon_monster_name(mtmp), mtmp->m_lev <= 8 ? 0 : 10, FALSE, mtmp->m_lev <= 2 ? 1 : mtmp->m_lev <= 5 ? 2 : 3, mtmp);
         }
         else if(damagedealt > 0)
             display_u_being_hit(HIT_GENERAL, damagedealt, 0UL);
@@ -3276,7 +3276,7 @@ register struct obj* omonwep;
             Strcpy(onmbuf, xname(mweapon));
             Sprintf(knmbuf, "%s wielded by %s", killer_xname(mweapon), a_monnam(mtmp));
 
-            extra_enchantment_damage(onmbuf, omonwep->elemental_enchantment, knmbuf, (u.umortality > oldumort));
+            extra_enchantment_damage(onmbuf, omonwep->elemental_enchantment, knmbuf, (u.umortality > oldumort), mtmp);
 
             switch (omonwep->elemental_enchantment)
             {

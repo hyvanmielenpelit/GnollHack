@@ -1199,7 +1199,7 @@ unsigned short trflags;
                     poisoned("dart", A_CON, "little dart",
                              /* if damage triggered life-saving,
                                 poison is limited to attrib loss */
-                             0, TRUE, 2);
+                             0, TRUE, 2, (struct monst*)0);
                 debugprint("dotrap2: %d", otmp->otyp);
                 obfree(otmp, (struct obj *) 0);
             }
@@ -1620,7 +1620,7 @@ unsigned short trflags;
                                 : "fall onto poison spikes",
                              /* if damage triggered life-saving,
                                 poison is limited to attrib loss */
-                                0, FALSE, 2);
+                                0, FALSE, 2, (struct monst*)0);
             } 
             else 
             {
@@ -7008,7 +7008,7 @@ boolean disarm;
             play_sfx_sound(SFX_ENVELOPED_IN_CLOUD_OF_GAS);
             special_effect_wait_until_action(0);
             pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "A cloud of noxious gas billows from %s.", the(xname(obj)));
-            poisoned("gas cloud", A_STR, "cloud of poison gas", 0, FALSE, 2);
+            poisoned("gas cloud", A_STR, "cloud of poison gas", 0, FALSE, 2, (struct monst*)0);
             exercise(A_CON, FALSE);
             special_effect_wait_until_end(0);
             break;
@@ -7026,7 +7026,7 @@ boolean disarm;
                 play_player_ouch_sound(MONSTER_OUCH_SOUND_OUCH);
             }
             display_u_being_hit(HIT_POISONED, 0, 0UL);
-            poisoned("needle", A_CON, "poisoned needle", 0, FALSE, 2);
+            poisoned("needle", A_CON, "poisoned needle", 0, FALSE, 2, (struct monst*)0);
 
             exercise(A_CON, FALSE);
             special_effect_wait_until_end(0);

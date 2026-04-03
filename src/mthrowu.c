@@ -1009,7 +1009,7 @@ struct obj *obj;         /* missile (or stack providing it) */
                 poisoned(onmbuf, A_STR, knmbuf,
                          /* if damage triggered life-saving,
                             poison is limited to attrib loss */
-                           0, TRUE, 2);
+                           0, TRUE, 2, mon);
             }
 
             if (hitu && singleobj->elemental_enchantment)
@@ -1021,7 +1021,7 @@ struct obj *obj;         /* missile (or stack providing it) */
                 
                 /* if damage triggered life-saving,
                    major death magic is limited to minor death magic */
-                extra_enchantment_damage(onmbuf, singleobj->elemental_enchantment, knmbuf, (u.umortality > oldumort));
+                extra_enchantment_damage(onmbuf, singleobj->elemental_enchantment, knmbuf, (u.umortality > oldumort), mon);
             
                 //Remove special enchantment
                 switch (singleobj->elemental_enchantment)
