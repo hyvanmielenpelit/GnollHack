@@ -46,6 +46,6 @@ struct materialcomponentlist {
 
 #define NO_MATCOMP {NO_MATCOMP_ALTERNATIVES, NO_MATCOMP_MONSTER_ALTERNATIVES, 0, MATCOMP_NO_FLAGS}
 
-extern NEARDATA struct materialcomponentlist matlists[];
+extern NEARDATA const struct materialcomponentlist matlists[];
 
 #endif /* MATCOMPS_H */

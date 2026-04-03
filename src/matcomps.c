@@ -6,7 +6,7 @@
 
 #define NO_DESC (char*)0
 
-struct materialcomponentlist matlists[] =
+const struct materialcomponentlist matlists[] =
 {
     {STRANGE_OBJECT,
     "",
@@ -1423,7 +1423,7 @@ struct materialcomponentlist matlists[] =
     },
 
     { SPE_SUMMON_RAVEN,
-        "feather",
+        "Feather",
         STRANGE_OBJECT,
         1,
         {
@@ -1437,7 +1437,7 @@ struct materialcomponentlist matlists[] =
     },
 
     { SPE_SUMMON_WINTER_WOLF,
-        "nugget of iron ore",
+        "Nugget of iron ore",
         STRANGE_OBJECT,
         1,
         {

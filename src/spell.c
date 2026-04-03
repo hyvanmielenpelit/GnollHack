@@ -59,10 +59,10 @@ STATIC_DCL void FDECL(add_spell_prepare_menu_item, (winid, int, int, int, int, B
 STATIC_DCL void FDECL(add_spell_prepare_menu_heading, (winid, int, int, BOOLEAN_P));
 STATIC_DCL void FDECL(add_alt_spell_cast_menu_item, (winid, int, int));
 STATIC_DCL void FDECL(add_alt_spell_prepare_menu_item, (winid, int, int));
-STATIC_DCL boolean FDECL(is_acceptable_component_object_type, (struct materialcomponent*, int));
-STATIC_DCL boolean FDECL(is_acceptable_component_monster_type, (struct materialcomponent*, int));
-STATIC_DCL uchar FDECL(is_obj_acceptable_component, (struct materialcomponent*, struct obj* otmp, BOOLEAN_P));
-STATIC_DCL int FDECL(count_matcomp_alternatives, (struct materialcomponent*));
+STATIC_DCL boolean FDECL(is_acceptable_component_object_type, (const struct materialcomponent*, int));
+STATIC_DCL boolean FDECL(is_acceptable_component_monster_type, (const struct materialcomponent*, int));
+STATIC_DCL uchar FDECL(is_obj_acceptable_component, (const struct materialcomponent*, struct obj* otmp, BOOLEAN_P));
+STATIC_DCL int FDECL(count_matcomp_alternatives, (const struct materialcomponent*));
 STATIC_DCL struct extended_create_window_info FDECL(extended_create_window_info_for_spell, (BOOLEAN_P));
 STATIC_DCL const char* FDECL(get_spell_attribute_description, (int));
 STATIC_DCL const char* FDECL(get_targeting_description, (int));
@@ -5508,7 +5508,7 @@ int spell;
         matcnt++;
         struct obj* otmp = (struct obj*)0;
         char buf[BUFSZ], buf3[BUFSZ], buf5[BUFSZ];
-        struct materialcomponent* mc = &matlists[spellmatcomp(spell)].matcomp[j];
+        const struct materialcomponent* mc = &matlists[spellmatcomp(spell)].matcomp[j];
         Strcpy(buf3, domatcompname(mc));
 
         Sprintf(buf, "You need %s%s. ",
@@ -5668,7 +5668,7 @@ int spell;
     for (j = 0; j < matcnt; j++)
     {
         struct obj* otmp = selcomps[j];
-        struct materialcomponent* mc = &matlists[spellmatcomp(spell)].matcomp[j];
+        const struct materialcomponent* mc = &matlists[spellmatcomp(spell)].matcomp[j];
 
         if (!otmp || !mc)
             continue;
@@ -5799,7 +5799,7 @@ int spell;
 STATIC_OVL
 int
 count_matcomp_alternatives(mc)
-struct materialcomponent* mc;
+const struct materialcomponent* mc;
 {
     int cnt = 0;
     int i;
@@ -5818,7 +5818,7 @@ struct materialcomponent* mc;
 STATIC_OVL
 boolean
 is_acceptable_component_object_type(mc, otyp)
-struct materialcomponent *mc;
+const struct materialcomponent *mc;
 int otyp;
 {
     int i;
@@ -5836,7 +5836,7 @@ int otyp;
 STATIC_OVL
 boolean
 is_acceptable_component_monster_type(mc, mnum)
-struct materialcomponent* mc;
+const struct materialcomponent* mc;
 int mnum;
 {
     int i;
@@ -5854,7 +5854,7 @@ int mnum;
 STATIC_OVL
 uchar
 is_obj_acceptable_component(mc, otmp, also_possible)
-struct materialcomponent* mc;
+const struct materialcomponent* mc;
 struct obj* otmp;
 boolean also_possible;
 {
@@ -5892,7 +5892,7 @@ struct obj* otmp;
     uchar res;
     for (j = 0; matlists[spellmatcomp(spell)].matcomp[j].amount != 0; j++)
     {
-        struct materialcomponent* mc = &matlists[spellmatcomp(spell)].matcomp[j];
+        const struct materialcomponent* mc = &matlists[spellmatcomp(spell)].matcomp[j];
         res = is_obj_acceptable_component(mc, otmp, TRUE);
         if (res)
             return res;
@@ -5911,7 +5911,7 @@ int* corpsenm_ptr;
     uchar res;
     for (j = 0; matlists[objects[booktype].oc_material_components].matcomp[j].amount != 0; j++)
     {
-        struct materialcomponent* mc = &matlists[objects[booktype].oc_material_components].matcomp[j];
+        const struct materialcomponent* mc = &matlists[objects[booktype].oc_material_components].matcomp[j];
         res = is_acceptable_component_object_type(mc, otyp);
         if (res)
         {
@@ -5927,7 +5927,7 @@ int* corpsenm_ptr;
 
 const char*
 domatcompname(mc)
-struct materialcomponent* mc;
+const struct materialcomponent* mc;
 {
     /* in general, use the description for complicated (e.g., multialternative) cases */
     if(mc->description && strcmp(mc->description, ""))

@@ -3679,7 +3679,7 @@ E void FDECL(initialspell, (struct obj *));
 E boolean FDECL(already_learnt_spell_type, (int));
 E int NDECL(domix);
 E int FDECL(getspellcooldown, (int));
-E const char* FDECL(domatcompname, (struct materialcomponent*));
+E const char* FDECL(domatcompname, (const struct materialcomponent*));
 E int FDECL(subdirtype2explosiontype, (int));
 E void FDECL(addspellintrinsictimeout, (int));
 E double FDECL(get_spell_mana_cost, (int));
