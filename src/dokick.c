@@ -282,11 +282,9 @@ boolean clumsy;
         }
     }
     boolean is_alive = !DEADMONSTER(mon);
-
-    (void) passive(mon, uarmf, TRUE, !DEADMONSTER(mon), AT_KICK, FALSE);
     if (!was_alive && !is_alive && !trapkilled)
         killed(mon);
-
+    (void)passive(mon, uarmf, TRUE, !DEADMONSTER(mon), AT_KICK, FALSE);
     use_skill(P_MARTIAL_ARTS, 1);
 }
 
