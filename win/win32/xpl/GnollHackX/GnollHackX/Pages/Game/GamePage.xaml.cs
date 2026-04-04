@@ -3218,6 +3218,9 @@ namespace GnollHackX.Pages.Game
                             case GHRequestType.GameEnteredMoveloop:
                                 GameEnteredMoveloop = true;
                                 break;
+                            case GHRequestType.ProcessPendingAchievements:
+                                GHApp.ProcessPendingAchievements();
+                                break;
                         }
                     }
                     catch (Exception ex)

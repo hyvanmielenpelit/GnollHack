@@ -3626,6 +3626,10 @@ namespace GnollHackX
                 case (int)gui_command_types.GUI_CMD_GAME_ENTERED_MOVELOOP:
                     RequestQueue.Enqueue(new GHRequest(this, GHRequestType.GameEnteredMoveloop));
                     break;
+                case (int)gui_command_types.GUI_CMD_ACHIEVEMENT:
+                    GHApp.AddPendingAchievement(cmd_param);
+                    RequestQueue.Enqueue(new GHRequest(this, GHRequestType.ProcessPendingAchievements));
+                    break;
                 default:
                     break;
             }

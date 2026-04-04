@@ -9581,8 +9581,9 @@ namespace GnollHackX
                 _userData.Clear();
         }
 
-        public static void AddAndWriteUserData(string key, long val)
+        public static bool AddAndWriteUserData(string key, long val, bool addBit = false, int writeStyle = 0)
         {
+            bool addSuccessful = false;
             string dirPath = Path.Combine(GHPath, GHConstants.UserDataDirectory);
             string filePath = Path.Combine(dirPath, GHConstants.UserDataFileName);
             if(_userData == null)
@@ -9590,23 +9591,38 @@ namespace GnollHackX
             if(_userData != null)
             {
                 /* Add first */
-                bool addSuccessful = false;
-                if (_userData.LongDictionary.ContainsKey(key))
+                if (key != null)
                 {
-                    try
+                    if (_userData.LongDictionary.ContainsKey(key))
                     {
-                        _userData.LongDictionary[key] = val;
-                        addSuccessful = true;
+                        try
+                        {
+                            if (addBit)
+                            {
+                                if ((_userData.LongDictionary[key] & val) != 0)
+                                {
+                                    _userData.LongDictionary[key] |= val;
+                                    addSuccessful = true;
+                                }
+                            }
+                            else
+                            {
+                                if (_userData.LongDictionary[key] != val)
+                                {
+                                    _userData.LongDictionary[key] = val;
+                                    addSuccessful = true;
+                                }
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            Debug.WriteLine(ex.Message);
+                        }
                     }
-                    catch (Exception ex)
+                    else
                     {
-                        Debug.WriteLine(ex.Message);
-                    }
-                }
-                else
-                {
 #if GNH_MAUI
-                    addSuccessful = _userData.LongDictionary.TryAdd(key, val);
+                        addSuccessful = _userData.LongDictionary.TryAdd(key, val);
 #else
                     try
                     {
@@ -9618,10 +9634,11 @@ namespace GnollHackX
                         Debug.WriteLine(ex.Message);
                     }
 #endif
+                    }
                 }
 
-                /* Then write to disk */
-                if (addSuccessful)
+                /* Then write to disk (and only if the value did change) */
+                if ((addSuccessful && writeStyle != -1) || writeStyle == 1)
                 {
                     try
                     {
@@ -9658,7 +9675,80 @@ namespace GnollHackX
                     }
                 }
             }
+            return addSuccessful;
         }
+
+        public static List<int> AchievementsGained = new List<int>();
+        public static ConcurrentQueue<int> AchievementQueue = new ConcurrentQueue<int>();
+
+        public static void AddPendingAchievement(int achievementId)
+        {
+            AchievementQueue.Enqueue(achievementId);
+        }
+
+        public static void ProcessPendingAchievements()
+        {
+            MainThread.BeginInvokeOnMainThread(() =>
+            {
+                long[] resultBits = new long[GHConstants.NumGuiAchievementLongs];
+                Array.Clear(resultBits, 0, resultBits.Length);
+                bool didDoSomething = false;
+                while (AchievementQueue.TryDequeue(out int achievementId))
+                {
+                    didDoSomething = true;
+                    int achievementLongIdx = (achievementId - 1) / 64 + 1;
+                    int achievementBitIdx = achievementId % 64;
+                    long achievementBit = 1L << achievementBitIdx;
+                    resultBits[achievementLongIdx] |= achievementBit;
+                    string key = GHConstants.AchievementLongPrefix + achievementLongIdx;
+                    if ((!_userData.LongDictionary.ContainsKey(key) || (_userData.LongDictionary[key] & achievementBit) == 0) && !AchievementsGained.Contains(achievementId))
+                        AchievementsGained.Add(achievementId);
+                }
+                if (!didDoSomething)
+                    return;
+
+                bool didChange = false;
+                for (int i = 0; i < GHConstants.NumGuiAchievementLongs; i++)
+                {
+                    if (resultBits[i] == 0)
+                        continue;
+                    try
+                    {
+                        if (AddAndWriteUserData(GHConstants.AchievementLongPrefix + i, resultBits[i], true, -1))
+                            didChange = true;
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.WriteLine(ex.Message);
+                    }
+                }
+                if (didChange)
+                    AddAndWriteUserData(null, 0L, true, 1);
+            });
+        }
+
+
+        public static void AddAchievement(int achievementId)
+        {
+            MainThread.BeginInvokeOnMainThread(() =>
+            {
+                int achievementLongIdx = (achievementId - 1) / 64 + 1;
+                int achievementBitIdx = achievementId % 64;
+                long achievementBit = 1L << achievementBitIdx;
+                string key = GHConstants.AchievementLongPrefix + achievementLongIdx;
+                if ((!_userData.LongDictionary.ContainsKey(key) || (_userData.LongDictionary[key] & achievementBit) == 0) && !AchievementsGained.Contains(achievementId))
+                    AchievementsGained.Add(achievementId);
+                try
+                {
+                    AddAndWriteUserData(key, achievementBit, true);
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine(ex.Message);
+                }
+            });
+        }
+
 
         //private static long _lockCount = 0;
         //private static long _lock5tickCount = 0;

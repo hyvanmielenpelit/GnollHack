@@ -1577,6 +1577,7 @@ namespace GnollHackX
         GUI_CMD_TOGGLE_NO_PET,
         GUI_CMD_REPORT_COMMANDS,
         GUI_CMD_GAME_ENTERED_MOVELOOP,
+        GUI_CMD_ACHIEVEMENT,
     }
 
     public enum gui_achievement_types
@@ -2319,6 +2320,7 @@ namespace GnollHackX
         public const string SavedGameSharedZipFileNameSuffix = ".zip";
         public const string ManualFilePrefix = "manual_id_";
         public const string OracleMajorConsultationFilePrefix = "major_consultation_id_";
+        public const string AchievementLongPrefix = "achievement_bits_";
         public const bool DefaultReadStreamingBankToMemory = false;
         public const ulong AndroidBanksToMemoryThreshold = 3500000000UL;
         public const bool DefaultCopyStreamingBankToDisk = false;
