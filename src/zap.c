@@ -6763,14 +6763,14 @@ boolean ordinary;
             play_sfx_sound(SFX_GENERAL_REFLECTS);
             u_shieldeff();
             damage = 0;
-            pline("Boing!");
+            pline_ex(ATR_NONE, CLR_MSG_SPELL, "Boing!");
         }
         else
         {
             if (ordinary)
             {
                 play_sfx_sound(SFX_MAGIC_ARROW_HIT);
-                You("bash yourself!");
+                You_ex(ATR_NONE, CLR_MSG_NEGATIVE, "bash yourself!");
             } 
             else
                 basedmg = d(1 + obj->charges, 6);
@@ -6795,7 +6795,7 @@ boolean ordinary;
             if (ordinary)
             {
                 play_sfx_sound(SFX_MAGIC_ARROW_HIT);
-                You("shoot yourself with a magical arrow!");
+                You_ex(ATR_NONE, CLR_MSG_NEGATIVE, "shoot yourself with a magical arrow!");
             }
             else
                 basedmg = d(1 + obj->charges, 3);
@@ -6917,7 +6917,7 @@ boolean ordinary;
     case SPE_DEATHSPELL:
     {
         int expl_type = obj->otyp == SPE_METEOR_SWARM ? EXPL_METEOR_SWARM : objects[obj->otyp].oc_damagetype == AD_FIRE ? EXPL_FIERY : objects[obj->otyp].oc_damagetype == AD_COLD ? EXPL_FROSTY : EXPL_MAGICAL;
-        You("conjure %s on top of yourself!", OBJ_CONTENT_NAME(obj->otyp) ? an(OBJ_CONTENT_NAME(obj->otyp)) : an(OBJ_NAME(objects[obj->otyp])));
+        You_ex(ATR_NONE, CLR_MSG_WARNING, "conjure %s on top of yourself!", OBJ_CONTENT_NAME(obj->otyp) ? an(OBJ_CONTENT_NAME(obj->otyp)) : an(OBJ_NAME(objects[obj->otyp])));
         explode(u.ux, u.uy, objects[obj->otyp].oc_dir_subtype, &youmonst, objects[obj->otyp].oc_spell_dmg_dice, objects[obj->otyp].oc_spell_dmg_diesize, objects[obj->otyp].oc_spell_dmg_plus, obj->otyp, obj->oclass, expl_type);
         break;
     }
@@ -6979,12 +6979,12 @@ boolean ordinary;
         if (Cold_immunity || Invulnerable) 
         {
             u_shieldeff();
-            You_feel("a little chill.");
+            You_feel_ex(ATR_NONE, CLR_MSG_SUCCESS, "a little chill.");
             ugolemeffects(AD_COLD, damage);
             damage = 0;
         } else {
             play_sfx_sound(SFX_MONSTER_COVERED_IN_FROST);
-            You("imitate a popsicle!");
+            You_ex(ATR_NONE, CLR_MSG_NEGATIVE, "imitate a popsicle!");
             display_u_being_hit(HIT_FROZEN, 0, 0UL);
         }
         destroy_item(POTION_CLASS, AD_COLD);
@@ -7063,7 +7063,7 @@ boolean ordinary;
         if (block_otmp && block_otmp->oclass == ARMOR_CLASS) 
         {
             /* A mummy wrapping absorbs it and protects you */
-            You_feel("rather itchy under %s.", yname(uarmo));
+            You_feel_ex(ATR_NONE, CLR_MSG_SPELL, "rather itchy under %s.", yname(uarmo));
         }
 
         incr_itimeout(&HInvis, duration);
@@ -7099,7 +7099,7 @@ boolean ordinary;
         {
             learn_it = TRUE;
             play_sfx_sound(SFX_ACQUIRE_HASTE);
-            You("speed up.");
+            You_ex(ATR_NONE, CLR_MSG_POSITIVE, "speed up.");
             exercise(A_DEX, TRUE);
         }
         break;
@@ -7134,7 +7134,7 @@ boolean ordinary;
         {
             learn_it = TRUE;
             play_sfx_sound(SFX_ACQUIRE_SLOW);
-            You("slow down.");
+            You_ex(ATR_NONE, CLR_MSG_NEGATIVE, "slow down.");
         }
         //u_slow_down();
         break;
@@ -7148,7 +7148,7 @@ boolean ordinary;
         {
             learn_it = TRUE;
             play_sfx_sound(SFX_ACQUIRE_HASTE);
-            You("speed up.");
+            You_ex(ATR_NONE, CLR_MSG_POSITIVE, "speed up.");
         }
         break;
     case SPE_HOLD_MONSTER:
@@ -7206,7 +7206,7 @@ boolean ordinary;
         {
             learn_it = TRUE;
             play_sfx_sound(SFX_ACQUIRE_SILENCE);
-            Your("voice disappears.");
+            Your_ex(ATR_NONE, CLR_MSG_NEGATIVE, "voice disappears.");
         }
         break;
     case WAN_TELEPORTATION:
@@ -7227,7 +7227,7 @@ boolean ordinary;
         damage = 0;
         if (is_not_living(youmonst.data) || is_demon(youmonst.data) || Death_resistance || Invulnerable) // || magic_resistance_success
         {
-            pline((obj->otyp == WAN_DEATH)
+            pline_ex(ATR_NONE, CLR_MSG_SPELL, (obj->otyp == WAN_DEATH)
                       ? "The wand shoots an apparently harmless beam at you."
                       : "You seem no deader than before.");
             break;
@@ -7254,7 +7254,7 @@ boolean ordinary;
         }
         break;
     case SPE_GAZE_OF_PETRIFICATION:
-        You("try to gaze at yourself but cannot!");
+        You_ex(ATR_NONE, CLR_MSG_FAIL, "try to gaze at yourself but cannot!");
         break;
     case SPE_POWER_WORD_STUN:
     {
@@ -7275,10 +7275,10 @@ boolean ordinary;
         learn_it = TRUE;
         damage = adjust_damage(basedmg, &youmonst, &youmonst, objects[obj->otyp].oc_damagetype, ADFLAGS_SPELL_DAMAGE);
         if (is_undead(youmonst.data) || is_demon(youmonst.data) || hates_light(youmonst.data)) {
-            pline("Idiot!  You've shot yourself with a %s!", OBJ_NAME(objects[obj->otyp]));
+            pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "Idiot!  You've shot yourself with a %s!", OBJ_NAME(objects[obj->otyp]));
         }
         else {
-            pline_The("%s has no effect on you.", OBJ_NAME(objects[obj->otyp]));
+            pline_The_ex(ATR_NONE, CLR_MSG_SUCCESS, "%s has no effect on you.", OBJ_NAME(objects[obj->otyp]));
             damage = 0;
         }
         break;
@@ -7287,7 +7287,7 @@ boolean ordinary;
         damage = 0;
         if (Disint_resistance || is_incorporeal(youmonst.data) || Invulnerable)
         {
-            pline((obj->otyp == WAN_DISINTEGRATION)
+            pline_ex(ATR_NONE, CLR_MSG_SPELL, (obj->otyp == WAN_DISINTEGRATION)
                 ? "The wand shoots an apparently harmless beam at you."
                 : "You seem to exist as you did before.");
             break;
@@ -7331,15 +7331,15 @@ boolean ordinary;
         damage = 0;
         learn_it = TRUE;
         if (is_undead(youmonst.data)) {
-            You_feel("%s%sstunned.", Fear_resistance ? "" : "frightened and ",
+            You_feel_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s%sstunned.", Fear_resistance ? "" : "frightened and ",
                      Stunned ? "even more " : "");
             make_stunned((HStun & TIMEOUT) + (int64_t) rnd(30), FALSE); //Not strictly the same effect, so keep hard coding for the time being
         } else
-            You("don't feel much different than you did before.");
+            You_ex(ATR_NONE, CLR_MSG_SPELL, "don't feel much different than you did before.");
         break;
     case SPE_FEAR:
         if(!Fear_resistance)
-            You("shudder in dread.");
+            You_ex(ATR_NONE, CLR_MSG_NEGATIVE, "shudder in dread.");
         break;
     case WAN_RESURRECTION:
     case SPE_RESURRECTION:
@@ -7386,7 +7386,7 @@ boolean ordinary;
 
         }
         else
-            You_feel("no different than before.");
+            You_feel_ex(ATR_NONE, CLR_MSG_SPELL, "no different than before.");
         damage = 0;
         break;
     case SPE_FULL_HEALING:
@@ -7401,8 +7401,7 @@ boolean ordinary;
             special_effect_wait_until_end(0);
         }
         else
-            You_feel("no different than before.");
-
+            You_feel_ex(ATR_NONE, CLR_MSG_SPELL, "no different than before.");
 
         damage = 0;
         break;
@@ -7447,7 +7446,7 @@ boolean ordinary;
             special_effect_wait_until_end(0);
         }
         else
-            You_feel("no different than before.");
+            You_feel_ex(ATR_NONE, CLR_MSG_SPELL, "no different than before.");
 
         damage = 0;
         break;
@@ -7492,7 +7491,7 @@ boolean ordinary;
             special_effect_wait_until_end(0);
         }
         else
-            You_feel("no different than before.");
+            You_feel_ex(ATR_NONE, CLR_MSG_SPELL, "no different than before.");
         damage = 0;
         break;
     case WAN_LIGHT: /* (broken wand) */

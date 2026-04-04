@@ -217,6 +217,7 @@ struct attack *mattk;
     }
 }
 
+#if 0
 /* called when your intrinsic speed is taken away */
 void
 u_slow_down()
@@ -229,6 +230,7 @@ u_slow_down()
         Your("quickness feels less natural.");
     exercise(A_DEX, FALSE);
 }
+#endif
 
 /* monster attacked your displaced image */
 STATIC_OVL void

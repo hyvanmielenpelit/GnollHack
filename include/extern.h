@@ -1887,7 +1887,7 @@ E void NDECL(reset_mhitm);
 E boolean FDECL(u_slip_free, (struct monst*, struct attack*));
 E boolean FDECL(check_stuck_and_slip, (struct monst*));
 E const char *FDECL(mpoisons_subj, (struct monst *, struct attack *));
-E void NDECL(u_slow_down);
+//E void NDECL(u_slow_down);
 E struct monst *NDECL(cloneu);
 E void FDECL(expels, (struct monst *, struct permonst *, BOOLEAN_P));
 E struct attack *FDECL(getmattk, (struct monst *, struct monst *,
