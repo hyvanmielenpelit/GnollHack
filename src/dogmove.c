@@ -2281,7 +2281,7 @@ int after; /* this is extra fast monster movement */
 
             if (mtarg == &youmonst)
             {
-                debugprint("mattacku dog1, mnum:%d, mx:%d, my:%d, mux:%d, muy:%d, ux:%d, uy:%d, peaceful:%d, tame:%d, blinded:%d, crazed:%d, confused:%d, conflict:%d, displaced:%d, invisible:%d",
+                debugprint("dog_move mattacku1, mnum:%d, mx:%d, my:%d, mux:%d, muy:%d, ux:%d, uy:%d, peaceful:%d, tame:%d, blinded:%d, crazed:%d, confused:%d, conflict:%d, displaced:%d, invisible:%d",
                     (int)mtmp->mnum, (int)mtmp->mx, (int)mtmp->my, (int)mtmp->mux, (int)mtmp->muy, (int)u.ux, (int)u.uy,
                     is_peaceful(mtmp) != 0, is_tame(mtmp) != 0, is_blinded(mtmp) != 0, is_crazed(mtmp) != 0, is_confused(mtmp) != 0,
                     Conflict != 0, Displaced != 0, Invis != 0);
@@ -2345,7 +2345,7 @@ newdogpos:
                     pline("%s breaks loose of %s leash!", Monnam(mtmp), mhis(mtmp));
                     m_unleash(mtmp, FALSE);
                 }
-                debugprint("mattacku dog2, mnum:%d, mx:%d, my:%d, mux:%d, muy:%d, ux:%d, uy:%d, peaceful:%d, tame:%d, blinded:%d, crazed:%d, confused:%d, conflict:%d, displaced:%d, invisible:%d",
+                debugprint("dog_move mattacku2, mnum:%d, mx:%d, my:%d, mux:%d, muy:%d, ux:%d, uy:%d, peaceful:%d, tame:%d, blinded:%d, crazed:%d, confused:%d, conflict:%d, displaced:%d, invisible:%d",
                     (int)mtmp->mnum, (int)mtmp->mx, (int)mtmp->my, (int)mtmp->mux, (int)mtmp->muy, (int)u.ux, (int)u.uy,
                     is_peaceful(mtmp) != 0, is_tame(mtmp) != 0, is_blinded(mtmp) != 0, is_crazed(mtmp) != 0, is_confused(mtmp) != 0, 
                     Conflict != 0, Displaced != 0, Invisib != 0);

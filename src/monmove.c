@@ -1430,6 +1430,7 @@ register int after;
     /* my dog gets special treatment */
     if (is_tame(mtmp)) 
     {
+        debugprint_pos();
         mmoved = dog_move(mtmp, after);
         goto postmov;
     }
