@@ -68,6 +68,26 @@ namespace GnollHackX.Pages.MainScreen
             _buttons.Add(rib);
 
             rib = new LabeledImageButton();
+            rib.ImgSourcePath = "resource://" + GHApp.AppResourceName + ".Assets.UI.levelchange.png";
+            rib.ImgHighFilterQuality = true;
+            rib.LblText = "Achievements";
+            rib.LblFontSize = 20;
+            rib.LblFontColor = GHApp.DarkMode ? GHColors.White : GHColors.Black;
+            rib.LblFontFamily = "Immortal";
+            rib.ImgWidth = 110;
+            rib.ImgHeight = 110;
+            rib.GridWidth = 200;
+            rib.GridHeight = 140;
+            rib.GridMargin = gridMargin;
+            rib.WidthRequest = 200 + rib.ImgWidth / 5;
+            rib.HeightRequest = 140;
+            rib.Margin = margin;
+            rib.HorizontalOptions = LayoutOptions.Center;
+            rib.VerticalOptions = LayoutOptions.Center;
+            rib.BtnClicked += btnAchievements_Clicked;
+            _buttons.Add(rib);
+
+            rib = new LabeledImageButton();
             rib.ImgSourcePath = "resource://" + GHApp.AppResourceName + ".Assets.UI.manual.png";
             rib.ImgHighFilterQuality = true;
             rib.LblText = "Library";
@@ -249,7 +269,7 @@ namespace GnollHackX.Pages.MainScreen
             {
                 //bool shouldUseFlex = width >= 460 && height >= 600; // && !GHApp.IsWindows;
                 //bool widerWidth = height < 280 + 6 + 24 + 60 + lblHeader.Margin.Top + lblHeader.Margin.Bottom + CloseButton.Margin.Top + CloseButton.Margin.Bottom;
-                double usedWidth = 720; // widerWidth ? 2048 : 720;
+                double usedWidth = 800; // widerWidth ? 2048 : 720;
 #if GNH_MAUI
                 ViewGrid.MaximumWidthRequest = usedWidth;
 #else
@@ -271,12 +291,12 @@ namespace GnollHackX.Pages.MainScreen
                     }
 
                     double widthAvailableFull = Math.Max(0, usedWidth - 2 * 10);
-                    int noOfColumnsFull = Math.Max(1, (int)(widthAvailableFull / 230));
+                    int noOfColumnsFull = Math.Max(1, (int)(widthAvailableFull / 180));
                     int noOfRowsFull = 1 + (_buttons.Count - 1) / noOfColumnsFull;
 
                     double widthAvailable = Math.Max(0, Math.Min(width, usedWidth) - 2 * 10);
                     double heightAvailable = height - 60 - 80;
-                    int noOfColumnsScreen = Math.Max(1, (int)(widthAvailable / 230));
+                    int noOfColumnsScreen = Math.Max(1, (int)(widthAvailable / 180));
                     int noOfRowsScreen = 1 + (_buttons.Count - 1) / noOfColumnsScreen;
                     double heightTaken = 160 * noOfRowsScreen;
 
@@ -335,7 +355,7 @@ namespace GnollHackX.Pages.MainScreen
                         Grid.SetRow(button, row);
                         j++;
                     }
-                    VaultGrid.WidthRequest = noOfColumns * 230;
+                    VaultGrid.WidthRequest = noOfColumns * 200;
 
                     //if (widthAvailable < noOfColumns * 230)
                     //    VaultScrollView.HorizontalScrollBarVisibility = ScrollBarVisibility.Default;
@@ -429,6 +449,21 @@ namespace GnollHackX.Pages.MainScreen
             await GHApp.PushModalPageAsync(libPage);
             VaultGrid.IsEnabled = true;
         }
+
+        private async void btnAchievements_Clicked(object sender, EventArgs e)
+        {
+            await OpenAchievementsPage();
+        }
+
+        private async Task OpenAchievementsPage()
+        {
+            VaultGrid.IsEnabled = false;
+            GHApp.PlayButtonClickedSound();
+            var achievementsPage = new AchievementsPage();
+            await GHApp.PushModalPageAsync(achievementsPage);
+            VaultGrid.IsEnabled = true;
+        }
+
 
         private async void btnOracle_Clicked(object sender, EventArgs e)
         {
