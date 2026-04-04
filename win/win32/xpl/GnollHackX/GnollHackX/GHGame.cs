@@ -3630,6 +3630,12 @@ namespace GnollHackX
                     GHApp.AddPendingAchievement(cmd_param);
                     RequestQueue.Enqueue(new GHRequest(this, GHRequestType.ProcessPendingAchievements));
                     break;
+                case (int)gui_command_types.GUI_CMD_PENDING_ACHIEVEMENT:
+                    GHApp.AddPendingAchievement(cmd_param);
+                    break;
+                case (int)gui_command_types.GUI_CMD_FLUSH_ACHIEVEMENTS:
+                    GHApp.ProcessPendingAchievements();
+                    break;
                 default:
                     break;
             }

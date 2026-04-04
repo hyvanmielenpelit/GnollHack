@@ -1578,6 +1578,8 @@ namespace GnollHackX
         GUI_CMD_REPORT_COMMANDS,
         GUI_CMD_GAME_ENTERED_MOVELOOP,
         GUI_CMD_ACHIEVEMENT,
+        GUI_CMD_PENDING_ACHIEVEMENT,
+        GUI_CMD_FLUSH_ACHIEVEMENTS,
     }
 
     public enum gui_achievement_types
