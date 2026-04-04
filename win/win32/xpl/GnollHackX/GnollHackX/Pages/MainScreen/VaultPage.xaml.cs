@@ -460,6 +460,7 @@ namespace GnollHackX.Pages.MainScreen
             VaultGrid.IsEnabled = false;
             GHApp.PlayButtonClickedSound();
             var achievementsPage = new AchievementsPage();
+            achievementsPage.ReadAchievements();
             await GHApp.PushModalPageAsync(achievementsPage);
             VaultGrid.IsEnabled = true;
         }
