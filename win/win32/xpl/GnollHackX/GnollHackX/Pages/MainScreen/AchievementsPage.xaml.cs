@@ -114,10 +114,11 @@ namespace GnollHackX.Pages.MainScreen
 
         Dictionary<int, AchievementCategory> _achievementCategories = new Dictionary<int, AchievementCategory>()
         {
-            { 0, new AchievementCategory("Gameplay Achievements", 0) },
-            { 1, new AchievementCategory("Exploration Achievements", 1) },
-            { 2, new AchievementCategory("Playthrough Achievements", 2) },
-            { 3, new AchievementCategory("Ascension Achievements", 3) },
+            { 0, new AchievementCategory("Gameplay", 0) },
+            { 1, new AchievementCategory("Combat", 1) },
+            { 2, new AchievementCategory("Exploration", 2) },
+            { 3, new AchievementCategory("Playthrough", 3) },
+            { 4, new AchievementCategory("Ascension", 4) },
         };
 
         public void ReadAchievements()
@@ -132,7 +133,7 @@ namespace GnollHackX.Pages.MainScreen
                     RowImageButton rib = new RowImageButton();
                     rib.ImgSourcePath = "resource://" + GHApp.AppResourceName + ".Assets.UI.sit.png";
                     rib.ImgHighFilterQuality = true;
-                    rib.LblText = ac.Name;
+                    rib.LblText = ac.Name + " Achievements";
                     rib.LblTextColor = GHApp.DarkMode ? GHColors.White : GHColors.Black;
                     rib.LblFontSize = 17;
                     rib.SubLblText = numCategoryAchievements + " achievement" + (numCategoryAchievements != 1 ? "s" : "");
@@ -167,8 +168,12 @@ namespace GnollHackX.Pages.MainScreen
             if (ghbutton != null)
             {
                 int categoryId = ghbutton.BtnCommand;
-                var dispfilepage = new AchievementsDisplayPage();
-                await GHApp.PushModalPageAsync(dispfilepage);
+                if (_achievementCategories.TryGetValue(categoryId, out AchievementCategory category))
+                {
+                    var dispAchievementPage = new AchievementsDisplayPage();
+                    dispAchievementPage.ReadAchievementCategory(category);
+                    await GHApp.PushModalPageAsync(dispAchievementPage);
+                }
             }
             AchievementLayout.IsEnabled = true;
         }

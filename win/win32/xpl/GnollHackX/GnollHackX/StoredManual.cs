@@ -28,19 +28,25 @@ namespace GnollHackX
     public class Achievement
     {
         public string Name;
+        public string Description;
         public int Id;
         public int CategoryId;
+        public int SubCategoryId;
+        public bool IsUnknown; /* Visible but unknown what the achievement is */
 
         public Achievement()
         {
 
         }
 
-        public Achievement(string name, int id, int categoryId) : base()
+        public Achievement(string name, string description, int id, int categoryId, int subCategoryId, bool isUnknown) : base()
         {
             Name = name;
-            Id = id;
+            Description = description;
+            Name = name;
             CategoryId = categoryId;
+            SubCategoryId = subCategoryId;
+            IsUnknown = isUnknown;
         }
     }
 

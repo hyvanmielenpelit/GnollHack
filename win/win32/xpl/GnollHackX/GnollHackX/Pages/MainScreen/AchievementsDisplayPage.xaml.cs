@@ -111,5 +111,10 @@ namespace GnollHackX.Pages.MainScreen
         {
             GHApp.BackButtonPressed -= BackButtonPressed;
         }
+
+        public void ReadAchievementCategory(AchievementCategory category)
+        {
+
+        }
     }
 }
