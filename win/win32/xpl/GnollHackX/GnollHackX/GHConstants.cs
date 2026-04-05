@@ -1580,6 +1580,17 @@ namespace GnollHackX
         GUI_CMD_ACHIEVEMENT,
     }
 
+    public enum gui_achievement_categories
+    {
+        Gameplay = 0,
+        Combat,
+        Exploration,
+        Playthrough,
+        Ascension,
+
+        NumberOfCategories
+    }
+
     public enum gui_achievement_types
     {
         /* Gameplay: Strategies */

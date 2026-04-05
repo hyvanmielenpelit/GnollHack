@@ -3633,7 +3633,6 @@ namespace GnollHackX
                 case (int)gui_command_types.GUI_CMD_ACHIEVEMENT:
                     GHApp.AddPendingAchievement(cmd_param);
                     break;
-                    break;
                 default:
                     break;
             }

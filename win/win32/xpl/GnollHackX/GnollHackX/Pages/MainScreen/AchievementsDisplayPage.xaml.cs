@@ -112,8 +112,60 @@ namespace GnollHackX.Pages.MainScreen
             GHApp.BackButtonPressed -= BackButtonPressed;
         }
 
-        public void ReadAchievementCategory(AchievementCategory category)
+        public void ReadAchievementCategory(int categoryId)
         {
+            if (categoryId < 0 || categoryId >= (int)gui_achievement_categories.NumberOfCategories)
+                return;
+
+            int gained, visible;
+            GHApp.CalculateAchievementsInCategory(categoryId, out gained, out visible);
+            lblHeader.Text = GHApp.AchievementCategories[categoryId].Name;
+            lblSubtitle.Text = "Gained " + gained + " of " + visible + " achievement" + (visible != 1 ? "s" : "");
+            
+            Achievement[] achievementList = GHApp.AchievementDefinitions;
+            if (achievementList.Length > 0)
+            {
+                for (int i = 0; i < achievementList.Length; i++)
+                {
+                    if (achievementList[i] == null)
+                        continue;
+                    if (!achievementList[i].IsVisible || (categoryId >= 0 && achievementList[i].CategoryId != categoryId))
+                        continue;
+                    Achievement achievement = achievementList[i];
+                    bool isAchieved = GHApp.IsAchievementGained(i);
+                    bool isKnown = achievementList[i].IsKnown;
+                    bool isLocked = achievementList[i].IsLocked;
+                    RowImageButton rib = new RowImageButton();
+                    rib.ImgSourcePath = "resource://" + GHApp.AppResourceName 
+                        + ".Assets.UI." 
+                        + (isLocked ? "forcelock" : !isKnown ? "help" : isAchieved ? "conduct" : "loot") 
+                        + ".png";
+                    rib.ImgHighFilterQuality = true;
+                    rib.LblText = isLocked ? "Locked" : !isKnown ? "Unknown" : achievement.Name;
+                    rib.LblTextColor = GHApp.DarkMode ? GHColors.White : GHColors.Black;
+                    rib.LblFontSize = 17;
+                    rib.SubLblText = achievement.Description;
+                    rib.SubLblTextColor = GHApp.DarkMode ? GHColors.White : GHColors.Black;
+                    rib.SubLblFontSize = 14;
+                    rib.IsSubLblVisible = isKnown && !isLocked;
+                    rib.ImgWidth = 80;
+                    rib.ImgHeight = 80;
+                    rib.GridWidth = 480;
+                    rib.GridHeight = 80;
+#if GNH_MAUI
+                    rib.MaximumWidthRequest = 480;
+#else
+                    rib.WidthRequest = 480;
+#endif
+                    rib.HeightRequest = 80;
+                    rib.GridMargin = new Thickness(rib.ImgWidth / 15, 0);
+                    rib.BtnCommand = i;
+                    //rib.BtnClicked += AchievementButton_Clicked;
+                    AchievementLayout.Children.Add(rib);
+                }
+            }
+            else
+                EmptyLabel.IsVisible = true;
 
         }
     }

@@ -9528,6 +9528,36 @@ namespace GnollHackX
             }
         }
 
+        public static void CalculateAchievementsInCategory(int categoryId, out int gainedCount, out int visibleCount)
+        {
+            int achievementLongIdx;
+            int achievementBitIdx;
+            long achievementBit; 
+            var achievementList = AchievementDefinitions;
+            gainedCount = visibleCount = 0;
+            for (int i = 0; i < achievementList.Length; i++)
+            {
+                if (achievementList[i] == null)
+                    continue;
+                if (!achievementList[i].IsVisible || (categoryId >= 0 && achievementList[i].CategoryId != categoryId))
+                    continue;
+                visibleCount++;
+                achievementLongIdx = (i - 1) / 64 + 1;
+                achievementBitIdx = i % 64;
+                achievementBit = 1L << achievementBitIdx;
+                if ((_achievements[achievementLongIdx] & achievementBit) != 0L)
+                    gainedCount++;
+            }
+        }
+
+        public static void InitAchievements()
+        {
+            AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_IDENTIFIED_AN_ITEM] =
+                new Achievement("Identified Item", "Identify an item in a game", 
+                (int)gui_achievement_categories.Gameplay, 0);
+        }
+
+
         private static GHUserData _userData = null;
         private static int _userDataNeedsSavingToDisk = 0;
         public static bool UserDataNeedsSavingToDisk { get { return Interlocked.CompareExchange(ref _userDataNeedsSavingToDisk, 0, 0) != 0; } set { Interlocked.Exchange(ref _userDataNeedsSavingToDisk, value ? 1 : 0); } } 
@@ -9698,11 +9728,33 @@ namespace GnollHackX
             }
         }
 
+        public static AchievementCategory[] AchievementCategories = new AchievementCategory[5]
+        {
+            new AchievementCategory("Gameplay"),
+            new AchievementCategory("Combat"),
+            new AchievementCategory("Exploration"),
+            new AchievementCategory("Playthrough"),
+            new AchievementCategory("Ascension"),
+        };
+
+        public static readonly Achievement[] AchievementDefinitions = new Achievement[(int)gui_achievement_types.NUM_GUI_ACHIEVEMENTS];
+
         /* Access only from the main thread */
         private static long[] _achievements = new long[GHConstants.NumGuiAchievementLongs];
         public static readonly List<int> AchievementsGained = new List<int>();
         /* Access from any thread */
         public static readonly ConcurrentQueue<int> AchievementQueue = new ConcurrentQueue<int>();
+
+        public static bool IsAchievementGained(int achievementId)
+        {
+            if (achievementId < 0 || achievementId >= (int)gui_achievement_types.NUM_GUI_ACHIEVEMENTS)
+                return false;
+
+            int achievementLongIdx = (achievementId - 1) / 64 + 1;
+            int achievementBitIdx = achievementId % 64;
+            long achievementBit = 1L << achievementBitIdx;
+            return (_achievements[achievementLongIdx] & achievementBit) != 0L;
+        }
 
         public static void AddPendingAchievement(int achievementId)
         {

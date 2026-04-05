@@ -1190,6 +1190,7 @@ namespace GnollHackX
             GHApp.CheckUserData();
             GHApp.DiscoveredMusicBits = GHApp.GetDiscoveredTracks();
             GHApp.AddPreDiscoveredMusic();
+            GHApp.InitAchievements();
             GHApp.AddGainedAchievements();
 
             carouselView.Init();

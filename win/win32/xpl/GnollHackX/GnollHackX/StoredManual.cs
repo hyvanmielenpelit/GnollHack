@@ -17,7 +17,7 @@ namespace GnollHackX
             
         }
 
-        public StoredManual(string name, int id, string text) : base()
+        public StoredManual(string name, int id, string text) : this()
         {
             Name = name;
             Id = id;
@@ -29,41 +29,56 @@ namespace GnollHackX
     {
         public string Name;
         public string Description;
-        public int Id;
         public int CategoryId;
         public int SubCategoryId;
-        public bool IsUnknown; /* Visible but unknown what the achievement is */
+        public bool IsLocked; /* Achievement cannot be gained yet; shows locked instead (normally cannot be achieved before some other achievement is gained) */
+        public bool IsKnown; /* If false, unknown what the achievement is; shows question mark instead */
+        public bool IsVisible; /* If false, the achievement is not listed */
+        public int MadeUnlockedById;
+        public int MadeKnownById;
+        public int MadeVisibleById;
 
         public Achievement()
         {
 
         }
 
-        public Achievement(string name, string description, int id, int categoryId, int subCategoryId, bool isUnknown) : base()
+        public Achievement(string name, string description, int categoryId, int subCategoryId, 
+            bool isLocked, bool isKnown, bool isVisible,
+            int madeUnlockedById, int madeKnownById, int madeVisibleById) : this()
         {
             Name = name;
             Description = description;
             Name = name;
             CategoryId = categoryId;
             SubCategoryId = subCategoryId;
-            IsUnknown = isUnknown;
+            IsLocked = isLocked;
+            IsKnown = isKnown;
+            IsVisible = isVisible;
+            MadeUnlockedById = madeUnlockedById;
+            MadeKnownById = madeKnownById;
+            MadeVisibleById = madeVisibleById;
+        }
+
+        public Achievement(string name, string description, int categoryId, int subCategoryId) 
+            : this(name, description, categoryId, subCategoryId, false, true, true, 0, 0, 0)
+        {
+
         }
     }
 
     public class AchievementCategory
     {
         public string Name;
-        public int Id;
 
         public AchievementCategory()
         {
 
         }
 
-        public AchievementCategory(string name, int id) : base()
+        public AchievementCategory(string name) : this()
         {
             Name = name;
-            Id = id;
         }
     }
 }

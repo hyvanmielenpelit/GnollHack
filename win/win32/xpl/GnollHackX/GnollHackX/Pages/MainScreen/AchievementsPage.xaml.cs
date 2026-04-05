@@ -112,31 +112,24 @@ namespace GnollHackX.Pages.MainScreen
         }
 
 
-        Dictionary<int, AchievementCategory> _achievementCategories = new Dictionary<int, AchievementCategory>()
-        {
-            { 0, new AchievementCategory("Gameplay", 0) },
-            { 1, new AchievementCategory("Combat", 1) },
-            { 2, new AchievementCategory("Exploration", 2) },
-            { 3, new AchievementCategory("Playthrough", 3) },
-            { 4, new AchievementCategory("Ascension", 4) },
-        };
-
         public void ReadAchievements()
         {
-            List<AchievementCategory> achievementList = _achievementCategories.Values.ToList();
+            AchievementCategory[] achievementList = GHApp.AchievementCategories;
             //lblSubtitle.Text = "Found " + manuallist.Count + " of " + maxManuals + " manuals";
-            if (achievementList.Count > 0)
+            if (achievementList.Length > 0)
             {
-                foreach (AchievementCategory ac in achievementList)
+                for(int i = 0; i < achievementList.Length; i++)
                 {
-                    int numCategoryAchievements = 0;
+                    AchievementCategory ac = achievementList[i];
+                    int numCategoryAchievementsGained, numCategoryAchievementsVisible;
+                    GHApp.CalculateAchievementsInCategory(i, out numCategoryAchievementsGained, out numCategoryAchievementsVisible);
                     RowImageButton rib = new RowImageButton();
                     rib.ImgSourcePath = "resource://" + GHApp.AppResourceName + ".Assets.UI.sit.png";
                     rib.ImgHighFilterQuality = true;
                     rib.LblText = ac.Name + " Achievements";
                     rib.LblTextColor = GHApp.DarkMode ? GHColors.White : GHColors.Black;
                     rib.LblFontSize = 17;
-                    rib.SubLblText = numCategoryAchievements + " achievement" + (numCategoryAchievements != 1 ? "s" : "");
+                    rib.SubLblText = numCategoryAchievementsGained + " of " + numCategoryAchievementsVisible + " achievement" + (numCategoryAchievementsVisible != 1 ? "s" : "") + " gained";
                     rib.SubLblTextColor = GHApp.DarkMode ? GHColors.White : GHColors.Black;
                     rib.SubLblFontSize = 14;
                     rib.IsSubLblVisible = true;
@@ -151,14 +144,13 @@ namespace GnollHackX.Pages.MainScreen
 #endif
                     rib.HeightRequest = 80;
                     rib.GridMargin = new Thickness(rib.ImgWidth / 15, 0);
-                    rib.BtnCommand = ac.Id;
+                    rib.BtnCommand = i;
                     rib.BtnClicked += AchievementButton_Clicked;
                     AchievementLayout.Children.Add(rib);
                 }
             }
             else
                 EmptyLabel.IsVisible = true;
-
         }
 
         private async void AchievementButton_Clicked(object sender, EventArgs e)
@@ -167,13 +159,9 @@ namespace GnollHackX.Pages.MainScreen
             RowImageButton ghbutton = sender as RowImageButton;
             if (ghbutton != null)
             {
-                int categoryId = ghbutton.BtnCommand;
-                if (_achievementCategories.TryGetValue(categoryId, out AchievementCategory category))
-                {
-                    var dispAchievementPage = new AchievementsDisplayPage();
-                    dispAchievementPage.ReadAchievementCategory(category);
-                    await GHApp.PushModalPageAsync(dispAchievementPage);
-                }
+                var dispAchievementPage = new AchievementsDisplayPage();
+                dispAchievementPage.ReadAchievementCategory(ghbutton.BtnCommand);
+                await GHApp.PushModalPageAsync(dispAchievementPage);
             }
             AchievementLayout.IsEnabled = true;
         }
