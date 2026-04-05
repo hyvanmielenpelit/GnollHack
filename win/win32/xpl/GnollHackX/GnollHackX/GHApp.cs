@@ -3184,31 +3184,6 @@ namespace GnollHackX
             return res;
         }
 
-        //private static SKImage LoadTilesetFromPlatformAssets(string tilesetName)
-        //{
-        //    SKImage res = null;
-        //    try
-        //    {
-        //        byte[] data = PlatformService.GetPlatformAssetsTilesetBytes(GHConstants.AssetsTilesetDirectory, tilesetName);
-        //        WriteGHLog("data: " + (data != null ? "not null" : "null"));
-        //        WriteGHLog("data length: " + data.Length);
-        //        using (MemoryStream ms = new MemoryStream(data))
-        //        {
-        //            WriteGHLog("ms length: " + ms.Length);
-        //            SKBitmap bmp = SKBitmap.Decode(ms);
-        //            WriteGHLog("bmp: " + (bmp != null ? "not null" : "null"));
-        //            bmp.SetImmutable();
-        //            res = SKImage.FromBitmap(bmp);
-        //            WriteGHLog("res: " + (res != null ? "not null" : "null"));
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        MaybeWriteGHLog("LoadTilesetFromPlatformAssets (" + tilesetName + "): " + ex.Message);
-        //    }
-        //    return res;
-        //}
-
         public static SKImage LoadEmbeddedAssetsBitmap(string bitmapName)
         {
             return LoadEmbeddedResourceBitmap(AppResourceName + ".Assets." + bitmapName);
@@ -6085,12 +6060,6 @@ namespace GnollHackX
                                             await DisplayMessageBox(displayPage, "Save File Tracking Error", "Sending save file tracking information to the server failed. Status Code: " + (int)res.StatusCode + ", Error: " + res.Message, "OK");
                                     }
                                 }
-
-                                //if (!res.IsSuccess && !is_from_queue && !string.IsNullOrWhiteSpace(xlogentry_string))
-                                //{
-                                //    WriteGHLog((string.IsNullOrEmpty(xlogentry_string) ? "Server authentication failed." : "Sending XLog entry failed.") + " Writing the send request to disk. Status Code: " + (int)res.StatusCode + ", Message: " + res.Message);
-                                //    SaveXLogEntryToDisk(status_type, status_datatype, xlogentry_string, xlogattachments);
-                                //}
                             }
                             content1.Dispose();
                             content2.Dispose();
@@ -6241,12 +6210,6 @@ namespace GnollHackX
                                             await DisplayMessageBox(displayPage, "Save File Tracking Error", "Save file tracking verification failed upon loading a saved game. Status Code: " + (int)res.StatusCode + ", Error: " + res.Message, "OK");
                                     }
                                 }
-
-                                //if (!res.IsSuccess && !is_from_queue && !string.IsNullOrWhiteSpace(xlogentry_string))
-                                //{
-                                //    WriteGHLog((string.IsNullOrEmpty(xlogentry_string) ? "Server authentication failed." : "Sending XLog entry failed.") + " Writing the send request to disk. Status Code: " + (int)res.StatusCode + ", Message: " + res.Message);
-                                //    SaveXLogEntryToDisk(status_type, status_datatype, xlogentry_string, xlogattachments);
-                                //}
                             }
                             content1.Dispose();
                             content2.Dispose();
@@ -9330,7 +9293,7 @@ namespace GnollHackX
             }
             if (changed)
             {
-                SetDiscoveredTracks(bits, true);
+                SetDiscoveredTracks(bits, true, false);
             }
         }
 
@@ -9461,12 +9424,12 @@ namespace GnollHackX
                         if (val != val2)
                         {
                             DeleteUserData();
-                            SetDiscoveredTracks(val, false);
+                            SetDiscoveredTracks(val, false, true);
                         }
                     }
                     else
                     {
-                        SetDiscoveredTracks(val, false);
+                        SetDiscoveredTracks(val, false, true);
                     }
                 }
                 else
@@ -9502,7 +9465,7 @@ namespace GnollHackX
             return defVal;
         }
 
-        public static void SetDiscoveredTracks(long val, bool preferencesToo)
+        public static void SetDiscoveredTracks(long val, bool preferencesToo, bool initial)
         {
             MainThread.BeginInvokeOnMainThread(() => 
             {
@@ -9510,7 +9473,7 @@ namespace GnollHackX
                 {
                     if (preferencesToo)
                         Preferences.Set("DiscoveredMusicBits", val);
-                    AddUserData("DiscoveredMusicBits", val);
+                    AddUserData("DiscoveredMusicBits", val, initial);
                 }
                 catch (Exception ex)
                 {
@@ -9542,7 +9505,7 @@ namespace GnollHackX
                 if (!achievementList[i].IsVisible || (categoryId >= 0 && achievementList[i].CategoryId != categoryId))
                     continue;
                 visibleCount++;
-                achievementLongIdx = (i - 1) / 64 + 1;
+                achievementLongIdx = i / 64;
                 achievementBitIdx = i % 64;
                 achievementBit = 1L << achievementBitIdx;
                 if ((_achievements[achievementLongIdx] & achievementBit) != 0L)
@@ -9632,7 +9595,7 @@ namespace GnollHackX
                 _userData.Clear();
         }
 
-        public static void AddUserData(string key, long val, bool addBit = false)
+        public static bool AddUserData(string key, long val, bool initial, bool addBit = false)
         {
             bool addSuccessful = false;
             if(_userData == null)
@@ -9648,7 +9611,7 @@ namespace GnollHackX
                         {
                             if (addBit)
                             {
-                                if ((_userData.LongDictionary[key] & val) != 0)
+                                if ((_userData.LongDictionary[key] & val) == 0)
                                 {
                                     _userData.LongDictionary[key] |= val;
                                     addSuccessful = true;
@@ -9673,25 +9636,26 @@ namespace GnollHackX
 #if GNH_MAUI
                         addSuccessful = _userData.LongDictionary.TryAdd(key, val);
 #else
-                    try
-                    {
-                        _userData.LongDictionary.Add(key, val);
-                        addSuccessful = true;
-                    }
-                    catch (Exception ex)
-                    {
-                        Debug.WriteLine(ex.Message);
-                    }
+                        try
+                        {
+                            _userData.LongDictionary.Add(key, val);
+                            addSuccessful = true;
+                        }
+                        catch (Exception ex)
+                        {
+                            Debug.WriteLine(ex.Message);
+                        }
 #endif
                     }
                 }
 
                 /* Then queue for writing to disk (and only if the value did change) */
-                if (addSuccessful)
+                if (addSuccessful && !initial)
                 {
                     UserDataNeedsSavingToDisk = true;
                 }
             }
+            return addSuccessful;
         }
 
         public static void CheckWriteUserDataToDisk()
@@ -9722,6 +9686,8 @@ namespace GnollHackX
             {
                 Debug.WriteLine(ex.Message);
             }
+            if (_userData == null)
+                return;
             try
             {
                 using (FileStream fs = File.OpenWrite(filePath))
@@ -9753,7 +9719,6 @@ namespace GnollHackX
 
         /* Access only from the main thread */
         private static long[] _achievements = new long[GHConstants.NumGuiAchievementLongs];
-        public static readonly List<int> AchievementsGained = new List<int>();
         /* Access from any thread */
         public static readonly ConcurrentQueue<int> AchievementQueue = new ConcurrentQueue<int>();
 
@@ -9762,10 +9727,56 @@ namespace GnollHackX
             if (achievementId < 0 || achievementId >= (int)gui_achievement_types.NUM_GUI_ACHIEVEMENTS)
                 return false;
 
-            int achievementLongIdx = (achievementId - 1) / 64 + 1;
+            int achievementLongIdx = achievementId / 64;
             int achievementBitIdx = achievementId % 64;
             long achievementBit = 1L << achievementBitIdx;
             return (_achievements[achievementLongIdx] & achievementBit) != 0L;
+        }
+
+        public static List<int> GetAchievementsGained()
+        {
+            List<int> achievementsGained = new List<int>();
+            if (_userData == null)
+                return achievementsGained;
+            for (int i = 0; i < GHConstants.NumGuiAchievementLongs; i++)
+            {
+                if (_userData.LongDictionary.TryGetValue(GHConstants.GainedAchievementLongPrefix + i, out long bits))
+                {
+                    if (bits != 0)
+                    {
+                        for (int j = 0; j < 64; j++)
+                        {
+                            long bit = 1L << j;
+                            if ((bits & bit) != 0)
+                            {
+                                achievementsGained.Add(i * 64 + j);
+                            }
+                        }
+                    }
+                }
+            }
+            return achievementsGained;
+        }
+
+        public static void ClearAchievementsGained()
+        {
+            if (_userData == null)
+                return;
+
+            bool didSomething = false;
+            for (int i = 0; i < GHConstants.NumGuiAchievementLongs; i++)
+            {
+                if (_userData.LongDictionary.ContainsKey(GHConstants.GainedAchievementLongPrefix + i))
+                {
+                    _userData.LongDictionary.Remove(GHConstants.GainedAchievementLongPrefix + i);
+                    didSomething = true;
+                }
+            }
+            if (didSomething)
+            {
+                WriteUserDataToDisk();
+                UserDataNeedsSavingToDisk = false;
+            }
         }
 
         public static void AddPendingAchievement(int achievementId)
@@ -9786,13 +9797,11 @@ namespace GnollHackX
                 while (AchievementQueue.TryDequeue(out int achievementId))
                 {
                     didDoSomething = true;
-                    int achievementLongIdx = (achievementId - 1) / 64 + 1;
+                    int achievementLongIdx = achievementId / 64;
                     int achievementBitIdx = achievementId % 64;
                     long achievementBit = 1L << achievementBitIdx;
                     resultBits[achievementLongIdx] |= achievementBit;
                     string key = GHConstants.AchievementLongPrefix + achievementLongIdx;
-                    if ((!_userData.LongDictionary.ContainsKey(key) || (_userData.LongDictionary[key] & achievementBit) == 0) && !AchievementsGained.Contains(achievementId))
-                        AchievementsGained.Add(achievementId);
                 }
                 if (!didDoSomething)
                     return;
@@ -9808,7 +9817,8 @@ namespace GnollHackX
                     /* Write achievements to user data, which will be marked to be written to disk later */
                     try
                     {
-                        AddUserData(GHConstants.AchievementLongPrefix + i, resultBits[i], true);
+                        if (AddUserData(GHConstants.AchievementLongPrefix + i, resultBits[i], false, true))
+                            AddUserData(GHConstants.GainedAchievementLongPrefix + i, resultBits[i], false, true);
                     }
                     catch (Exception ex)
                     {
@@ -9823,12 +9833,11 @@ namespace GnollHackX
         {
             MainThread.BeginInvokeOnMainThread(() =>
             {
-                int achievementLongIdx = (achievementId - 1) / 64 + 1;
+                int achievementLongIdx = achievementId / 64;
                 int achievementBitIdx = achievementId % 64;
                 long achievementBit = 1L << achievementBitIdx;
                 string key = GHConstants.AchievementLongPrefix + achievementLongIdx;
-                if ((!_userData.LongDictionary.ContainsKey(key) || (_userData.LongDictionary[key] & achievementBit) == 0) && !AchievementsGained.Contains(achievementId))
-                    AchievementsGained.Add(achievementId);
+                string gainedkey = GHConstants.GainedAchievementLongPrefix + achievementLongIdx;
 
                 /* Write achievements to memory */
                 _achievements[achievementLongIdx] |= achievementBit;
@@ -9836,7 +9845,8 @@ namespace GnollHackX
                 /* Write achievements to user data, which will be marked to be written to disk later */
                 try
                 {
-                    AddUserData(key, achievementBit, true);
+                    if (AddUserData(key, achievementBit, false, true))
+                        AddUserData(gainedkey, achievementBit, false, true);
                 }
                 catch (Exception ex)
                 {

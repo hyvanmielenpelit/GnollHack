@@ -203,6 +203,8 @@ namespace GnollHackX.Pages.MainScreen
             {
                 try
                 {
+                    GHApp.DeleteUserData();
+
                     string datadir = Path.Combine(GHApp.GHPath, GHConstants.UserDataDirectory);
                     if (Directory.Exists(datadir))
                         Directory.Delete(datadir, true);

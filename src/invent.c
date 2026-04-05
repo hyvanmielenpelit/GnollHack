@@ -4257,6 +4257,8 @@ boolean learning_id; /* true if we just read unknown identify scroll */
             res += idres;
         }
     }
+    if (res > 0)
+        issue_achievement(GUI_ACHIEVEMENT_IDENTIFIED_AN_ITEM);
     return res;
 }
 

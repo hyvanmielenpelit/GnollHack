@@ -2332,6 +2332,7 @@ namespace GnollHackX
         public const string ManualFilePrefix = "manual_id_";
         public const string OracleMajorConsultationFilePrefix = "major_consultation_id_";
         public const string AchievementLongPrefix = "achievement_bits_";
+        public const string GainedAchievementLongPrefix = "gained_achievement_bits_";
         public const bool DefaultReadStreamingBankToMemory = false;
         public const ulong AndroidBanksToMemoryThreshold = 3500000000UL;
         public const bool DefaultCopyStreamingBankToDisk = false;
