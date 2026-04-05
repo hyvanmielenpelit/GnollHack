@@ -12384,6 +12384,8 @@ retry:
             "wished for \"%s\"", bufcpy);
     }
 
+    issue_achievement(GUI_ACHIEVEMENT_MADE_A_WISH);
+
     if (otmp != &zeroobj)
     {
         const char

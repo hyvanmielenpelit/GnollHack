@@ -872,6 +872,7 @@ struct obj *obj;
         {
             achievement_gained("Amulet of Yendor");
             livelog_printf(LL_ACHIEVE, "%s", "acquired the Amulet of Yendor");
+            issue_achievement(GUI_ACHIEVEMENT_FOUND_AMULET_OF_YENDOR);
             if (iflags.using_gui_sounds)
             {
                 delay_output_milliseconds(500);
@@ -898,6 +899,7 @@ struct obj *obj;
         {
             achievement_gained("Candelabrum of Invocation");
             livelog_printf(LL_ACHIEVE, "%s", "acquired the Candelabrum of Invocation");
+            issue_achievement(GUI_ACHIEVEMENT_FOUND_CANDELABRUM_OF_INVOCATION);
             u.uachieve.menorah = 1;
             invocation_ritual_quest_update(TRUE);
         }
@@ -913,6 +915,7 @@ struct obj *obj;
         {
             achievement_gained("Bell of Opening");
             livelog_printf(LL_ACHIEVE, "%s", "acquired the Bell of Opening");
+            issue_achievement(GUI_ACHIEVEMENT_FOUND_BELL_OF_OPENING);
             u.uachieve.bell = 1;
             invocation_ritual_quest_update(TRUE);
         }
@@ -928,6 +931,7 @@ struct obj *obj;
         {
             achievement_gained("Book of the Dead");
             livelog_printf(LL_ACHIEVE, "%s", "acquired the Book of the Dead");
+            issue_achievement(GUI_ACHIEVEMENT_FOUND_BOOK_OF_THE_DEAD);
             u.uachieve.book = 1;
             invocation_ritual_quest_update(TRUE);
         }
@@ -952,6 +956,7 @@ struct obj *obj;
             {
                 achievement_gained("Prime Codex");
                 livelog_printf(LL_ACHIEVE, "%s", "acquired the Prime Codex");
+                issue_achievement(GUI_ACHIEVEMENT_FOUND_PRIME_CODEX);
             }
             u.uachieve.prime_codex = 1;
         }
@@ -992,6 +997,7 @@ struct obj *obj;
             strcpy_capitalized_for_title(abuf, ra_desc);
             achievement_gained(abuf);
             livelog_printf(LL_ACHIEVE, "%s", ra_desc);
+            issue_achievement(GUI_ACHIEVEMENT_COMPLETED_OPTIONAL_QUEST);
         }
     }
 
@@ -1008,6 +1014,7 @@ struct obj *obj;
         {
             achievement_gained("Gladstone");
             livelog_printf(LL_ACHIEVE, "%s", "acquired the Gladstone from Mines' End");
+            issue_achievement(GUI_ACHIEVEMENT_FOUND_GLADSTONE);
         }
         u.uachieve.mines_luckstone = 1;
         obj->speflags &= ~(SPEFLAGS_MINES_PRIZE);
@@ -1021,6 +1028,7 @@ struct obj *obj;
         {
             achievement_gained("Sokoban Solved");
             livelog_printf(LL_ACHIEVE, "completed Sokoban, acquiring %s", an(xname(obj)));
+            issue_achievement(GUI_ACHIEVEMENT_SOLVED_SOKOBAN);
         }
         u.uachieve.finish_sokoban = 1;
         obj->speflags &= ~(SPEFLAGS_SOKO_PRIZE1 | SPEFLAGS_SOKO_PRIZE2);

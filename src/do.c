@@ -7760,6 +7760,7 @@ xchar portal; /* 1 = Magic portal, 2 = Modron portal down (find portal up), 3 = 
         {
             achievement_gained("Entered Gehennom");
             livelog_printf(LL_ACHIEVE, "%s", "entered Gehennom");
+            issue_achievement(GUI_ACHIEVEMENT_ENTERED_GEHENNOM);
         }
         u.uachieve.enter_gehennom = 1;
     }
@@ -7770,6 +7771,7 @@ xchar portal; /* 1 = Magic portal, 2 = Modron portal down (find portal up), 3 = 
         //    achievement_gained("Entered Gnomish Mines");
         livelog_printf(LL_ACHIEVE, "%s", "entered the Gnomish Mines");
         u.uachieve.entered_gnomish_mines = 1;
+        issue_achievement(GUI_ACHIEVEMENT_ENTERED_GNOMISH_MINES);
     }
 
     if (In_endgame(&u.uz))
@@ -7780,12 +7782,14 @@ xchar portal; /* 1 = Magic portal, 2 = Modron portal down (find portal up), 3 = 
                 livelog_printf(LL_ACHIEVE, "%s", "entered the Astral Plane");
 
             u.uachieve.entered_astral_plane = 1;
+            issue_achievement(GUI_ACHIEVEMENT_ENTERED_ASTRAL_PLANE);
         }
         else
         {
             if(!u.uachieve.entered_elemental_planes)
                 livelog_printf(LL_ACHIEVE, "%s", "entered the Elemental Planes");
             u.uachieve.entered_elemental_planes = 1;
+            issue_achievement(GUI_ACHIEVEMENT_ENTERED_ELEMENTAL_PLANES);
         }
     }
 
@@ -7801,6 +7805,7 @@ xchar portal; /* 1 = Magic portal, 2 = Modron portal down (find portal up), 3 = 
         //    achievement_gained("Entered Sokoban");
         livelog_printf(LL_ACHIEVE, "%s", "entered Sokoban");
         u.uachieve.entered_sokoban = 1;
+        issue_achievement(GUI_ACHIEVEMENT_ENTERED_SOKOBAN);
     }
 
     if (Is_bigroom(&u.uz) && !u.uachieve.entered_bigroom)
@@ -7820,6 +7825,7 @@ xchar portal; /* 1 = Magic portal, 2 = Modron portal down (find portal up), 3 = 
             livelog_printf(LL_ACHIEVE, "%s", "entered the Plane of the Modron");
         u.uevent.modron_plane_entered = 1;
         u.uachieve.entered_plane_of_modron = 1;
+        issue_achievement(GUI_ACHIEVEMENT_ENTERED_PLANE_OF_THE_MODRON);
     }
     
     if (In_bovine_level(&u.uz))
@@ -7828,6 +7834,7 @@ xchar portal; /* 1 = Magic portal, 2 = Modron portal down (find portal up), 3 = 
             livelog_printf(LL_ACHIEVE, "%s", "entered the Hellish Pastures");
         u.uevent.hellish_pastures_entered = 1;
         u.uachieve.entered_hellish_pastures = 1;
+        issue_achievement(GUI_ACHIEVEMENT_ENTERED_HELLISH_PASTURES);
     }
 
     if (In_large_circular_dgn_level(&u.uz))
@@ -7836,6 +7843,7 @@ xchar portal; /* 1 = Magic portal, 2 = Modron portal down (find portal up), 3 = 
             livelog_printf(LL_ACHIEVE, "%s", "entered the Large Circular Dungeon");
         u.uevent.large_circular_dgn_entered = 1;
         u.uachieve.entered_large_circular_dungeon = 1;
+        issue_achievement(GUI_ACHIEVEMENT_ENTERED_LARGE_CIRCULAR_DUNGEON);
     }
 
     if (isnew)

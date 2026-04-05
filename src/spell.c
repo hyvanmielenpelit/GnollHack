@@ -277,6 +277,7 @@ struct obj *book2;
             {
                 achievement_gained("Performed the Invocation Ritual");
                 livelog_printf(LL_ACHIEVE, "%s", "performed the invocation");
+                issue_achievement(GUI_ACHIEVEMENT_PERFORMED_THE_RITUAL);
                 u.uevent.invoked = 1;
             }
             /* in case you haven't killed the Wizard yet, behave as if
@@ -3413,6 +3414,7 @@ boolean* stop_readchar_ptr;
         strcpy_capitalized_for_title(abuf, ra_desc);
         achievement_gained(abuf);
         livelog_printf(LL_ACHIEVE, "%s", ra_desc);
+        issue_achievement(GUI_ACHIEVEMENT_COMPLETED_OPTIONAL_QUEST);
     }
 
     return result;
