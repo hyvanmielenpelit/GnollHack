@@ -9758,6 +9758,11 @@ namespace GnollHackX
             return achievementsGained;
         }
 
+        public static void ClearAchievementsFromMemory()
+        {
+            Array.Clear(_achievements, 0, _achievements.Length);
+        }
+
         public static void ClearAchievementsGained()
         {
             if (_userData == null)

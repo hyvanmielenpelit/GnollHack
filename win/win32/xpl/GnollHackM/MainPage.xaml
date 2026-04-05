@@ -234,11 +234,11 @@
             <Grid x:Name="AchievementGrid" HorizontalOptions="Fill" VerticalOptions="Fill" 
               BackgroundColor="#66000000" AbsoluteLayout.LayoutBounds="0,0,1,1"
               AbsoluteLayout.LayoutFlags="All"  IsVisible="False">
-                <Grid MaximumWidthRequest="600" Margin="5" HorizontalOptions="Fill" VerticalOptions="Center">
+                <Grid x:Name="AchievementFrameCenterGrid" MaximumWidthRequest="600" Margin="5" HorizontalOptions="Fill" VerticalOptions="Center">
                     <Border x:Name="AchievementFrame"  BackgroundColor="#99000000" Stroke="Black" Padding="12,12" StrokeThickness="1" StrokeShape="RoundRectangle 10,10,10,10" HorizontalOptions="Center" VerticalOptions="Center">
                         <StackLayout x:Name="AchievementMainLayout" Padding="5" Spacing="6"
                                      HorizontalOptions="Center" VerticalOptions="Center">
-                            <Label x:Name="AchievementTitleLabel" Text="Achievements Gained" FontFamily="Immortal" FontSize="20" TextColor="White"
+                            <Label x:Name="AchievementTitleLabel" Text="Achievements Gained" FontFamily="Immortal" FontSize="24" TextColor="White"
                                        VerticalTextAlignment="Center" HorizontalOptions="Center"  />
                             <ScrollView x:Name="AchievementScrollView" HeightRequest="100" HorizontalOptions="Fill" VerticalOptions="Start">
                                 <StackLayout x:Name="AchievementGainedLayout" Spacing="6" HorizontalOptions="Fill">

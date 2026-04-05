@@ -2345,12 +2345,17 @@ namespace GnollHackX
                     AchievementTitleLabel.Text = "Achievement Gained";
 
                 AchievementTitleLabel.TextColor = GHColors.TitleGoldColor;
-                if (newAchievementsGained == 1)
-                    AchievementScrollView.HeightRequest = 100;
-                else if (newAchievementsGained == 2)
-                    AchievementScrollView.HeightRequest = 190;
-                else if (newAchievementsGained > 2)
-                    AchievementScrollView.HeightRequest = 240;
+
+                double spaceAvailable = RootGrid.Height
+                    - AchievementFrameCenterGrid.Padding.Top - AchievementFrameCenterGrid.Padding.Bottom - AchievementFrameCenterGrid.Margin.Top - AchievementFrameCenterGrid.Margin.Bottom
+                    - AchievementFrame.Padding.Top - AchievementFrame.Padding.Bottom - AchievementFrame.Margin.Top - AchievementFrame.Margin.Bottom
+                    - AchievementMainLayout.Padding.Top - AchievementMainLayout.Padding.Bottom - AchievementMainLayout.Margin.Top - AchievementMainLayout.Margin.Bottom
+                    - 20 /* Title */
+                    - 55 - 10 /* Button */
+                    ;
+                double spaceNeeded = newAchievementsGained * 100;
+                double spaceRequested = Math.Min(600, Math.Max(100, Math.Min(spaceAvailable, spaceNeeded)));
+                AchievementScrollView.HeightRequest = spaceRequested;
 
                 foreach (int achievementId in achievementsGained)
                 {
