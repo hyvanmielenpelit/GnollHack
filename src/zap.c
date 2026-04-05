@@ -1202,6 +1202,7 @@ struct monst* origmonst;
         break;
     case SPE_PROBE:
     case WAN_PROBING:
+        issue_achievement(GUI_ACHIEVEMENT_USED_WAND_OF_PROBING);
         res = 1;
         wake = FALSE;
         reveal_invis = TRUE;
@@ -4465,6 +4466,7 @@ struct monst* origmonst;
             break;
         case SPE_PROBE:
         case WAN_PROBING:
+            issue_achievement(GUI_ACHIEVEMENT_USED_WAND_OF_PROBING);
             res = probe_object(obj);
             if (res)
                 learn_it = TRUE;
@@ -7570,6 +7572,7 @@ boolean ordinary;
             switch (ans)
             {
             case 'y':
+                issue_achievement(GUI_ACHIEVEMENT_USED_WAND_OF_PROBING);
                 probe_object(otmp);
                 effectfinished = TRUE;
                 otmp = 0;
@@ -7764,6 +7767,7 @@ struct obj *obj; /* wand or spell */
      */
     case WAN_PROBING:
     case SPE_PROBE:
+        issue_achievement(GUI_ACHIEVEMENT_USED_WAND_OF_PROBING);
         probe_monster(u.usteed);
         learnwand(obj);
         steedhit = TRUE;
@@ -8084,6 +8088,7 @@ struct obj *obj; /* wand or spell */
     switch (obj->otyp) {
     case WAN_PROBING:
     case SPE_PROBE:
+        issue_achievement(GUI_ACHIEVEMENT_USED_WAND_OF_PROBING);
         ptmp = 0;
         if (u.dz < 0) {
             You("probe towards the %s.", ceiling(x, y));

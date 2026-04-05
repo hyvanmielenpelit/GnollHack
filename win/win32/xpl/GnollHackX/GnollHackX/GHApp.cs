@@ -9495,20 +9495,24 @@ namespace GnollHackX
         {
             int achievementLongIdx;
             int achievementBitIdx;
-            long achievementBit; 
+            long achievementBit;
+            bool isGained;
             var achievementList = AchievementDefinitions;
             gainedCount = visibleCount = 0;
             for (int i = 0; i < achievementList.Length; i++)
             {
                 if (achievementList[i] == null)
                     continue;
-                if (!achievementList[i].IsVisible || (categoryId >= 0 && achievementList[i].CategoryId != categoryId))
+                if (categoryId >= 0 && achievementList[i].CategoryId != categoryId)
                     continue;
-                visibleCount++;
                 achievementLongIdx = i / 64;
                 achievementBitIdx = i % 64;
                 achievementBit = 1L << achievementBitIdx;
-                if ((_achievements[achievementLongIdx] & achievementBit) != 0L)
+                isGained = (_achievements[achievementLongIdx] & achievementBit) != 0L;
+                if (!achievementList[i].IsVisible && !isGained)
+                    continue;
+                visibleCount++;
+                if (isGained)
                     gainedCount++;
             }
         }
@@ -9518,6 +9522,13 @@ namespace GnollHackX
             AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_IDENTIFIED_AN_ITEM] =
                 new Achievement("Identify an Item", "Use any of the identification means in the game", 
                 (int)gui_achievement_categories.Gameplay, 0);
+            AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_USED_WAND_OF_PROBING] =
+                new Achievement("Probing", "Use a wand or spell of probing to probe something",
+                (int)gui_achievement_categories.Gameplay, 0);
+            AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_ENGRAVED_ELBERETH] =
+                new Achievement("Engraved Elbereth", "Engrave the name of Elbereth on the ground to protect you",
+                (int)gui_achievement_categories.Gameplay, 0, false, true, false, 0, 0, 0);
+
             AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_ENTERED_ASTRAL_PLANE] =
                 new Achievement("Enter Astral Plane", "Reach the final level of the end game",
                 (int)gui_achievement_categories.Playthrough, 0, (int)gui_achievement_types.GUI_ACHIEVEMENT_FOUND_AMULET_OF_YENDOR);

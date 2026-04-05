@@ -129,10 +129,13 @@ namespace GnollHackX.Pages.MainScreen
                 {
                     if (achievementList[i] == null)
                         continue;
-                    if (!achievementList[i].IsVisible || (categoryId >= 0 && achievementList[i].CategoryId != categoryId))
+                    if (categoryId >= 0 && achievementList[i].CategoryId != categoryId)
                         continue;
-                    Achievement achievement = achievementList[i];
                     bool isAchieved = GHApp.IsAchievementGained(i);
+                    if (!achievementList[i].IsVisible && !isAchieved)
+                        continue;
+
+                    Achievement achievement = achievementList[i];
                     bool isKnown = achievementList[i].IsKnown || isAchieved;
                     bool isLocked = achievementList[i].IsLocked;
                     RowImageButton rib = new RowImageButton();

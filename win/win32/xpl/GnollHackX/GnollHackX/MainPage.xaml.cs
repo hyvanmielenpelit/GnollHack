@@ -2353,8 +2353,8 @@ namespace GnollHackX
                     - 20 /* Title */
                     - 55 - 10 /* Button */
                     ;
-                double spaceNeeded = newAchievementsGained * 100;
-                double spaceRequested = Math.Min(600, Math.Max(100, Math.Min(spaceAvailable, spaceNeeded)));
+                double spaceNeeded = newAchievementsGained * 90;
+                double spaceRequested = Math.Min(450, Math.Max(90, Math.Min(spaceAvailable, spaceNeeded)));
                 AchievementScrollView.HeightRequest = spaceRequested;
 
                 foreach (int achievementId in achievementsGained)
