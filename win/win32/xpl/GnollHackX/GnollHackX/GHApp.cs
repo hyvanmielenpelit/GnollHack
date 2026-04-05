@@ -9553,8 +9553,20 @@ namespace GnollHackX
         public static void InitAchievements()
         {
             AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_IDENTIFIED_AN_ITEM] =
-                new Achievement("Identified Item", "Identify an item in a game", 
+                new Achievement("Identify an Item", "Use any of the identification means in the game", 
                 (int)gui_achievement_categories.Gameplay, 0);
+            AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_ENTERED_ASTRAL_PLANE] =
+                new Achievement("Enter Astral Plane", "Reach the final level of the end game",
+                (int)gui_achievement_categories.Playthrough, 0, (int)gui_achievement_types.GUI_ACHIEVEMENT_FOUND_AMULET_OF_YENDOR);
+            AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_ENTERED_ELEMENTAL_PLANES] =
+                new Achievement("Enter the Elemental Planes", "Reach the end game",
+                (int)gui_achievement_categories.Playthrough, 0, (int)gui_achievement_types.GUI_ACHIEVEMENT_FOUND_AMULET_OF_YENDOR);
+            AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_ENTERED_GEHENNOM] =
+                new Achievement("Enter Gehennom", "Reach Gehennom",
+                (int)gui_achievement_categories.Playthrough, 0, (int)gui_achievement_types.GUI_ACHIEVEMENT_REACHED_CASTLE);
+            AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_REACHED_BOTTOM_OF_GEHENNOM] =
+                new Achievement("Reach the bottom of Gehennom", "Reach the bottom of Gehennom",
+                (int)gui_achievement_categories.Playthrough, 0, (int)gui_achievement_types.GUI_ACHIEVEMENT_REACHED_CASTLE);
         }
 
 

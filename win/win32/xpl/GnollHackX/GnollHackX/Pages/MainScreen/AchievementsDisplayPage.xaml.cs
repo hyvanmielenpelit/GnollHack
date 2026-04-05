@@ -133,15 +133,15 @@ namespace GnollHackX.Pages.MainScreen
                         continue;
                     Achievement achievement = achievementList[i];
                     bool isAchieved = GHApp.IsAchievementGained(i);
-                    bool isKnown = achievementList[i].IsKnown;
+                    bool isKnown = achievementList[i].IsKnown || isAchieved;
                     bool isLocked = achievementList[i].IsLocked;
                     RowImageButton rib = new RowImageButton();
                     rib.ImgSourcePath = "resource://" + GHApp.AppResourceName 
                         + ".Assets.UI." 
-                        + (isLocked ? "forcelock" : !isKnown ? "help" : isAchieved ? "conduct" : "loot") 
+                        + (isLocked ? "forcelock" : isAchieved ? "conduct" : !isKnown ? "help" : "loot") 
                         + ".png";
                     rib.ImgHighFilterQuality = true;
-                    rib.LblText = isLocked ? "Locked" : !isKnown ? "Unknown" : achievement.Name;
+                    rib.LblText = isLocked ? "Locked" : !isKnown && !isAchieved ? "Unknown" : achievement.Name;
                     rib.LblTextColor = GHApp.DarkMode ? GHColors.White : GHColors.Black;
                     rib.LblFontSize = 17;
                     rib.SubLblText = achievement.Description;
