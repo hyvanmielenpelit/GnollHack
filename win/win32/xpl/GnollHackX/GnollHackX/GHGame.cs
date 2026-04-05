@@ -180,7 +180,9 @@ namespace GnollHackX
                 GHApp.GnollHackService?.TallyRealTime();
             }
 
-            GHApp.SaveDiscoveredMusic();
+            GHApp.ProcessDiscoveredMusic();
+            GHApp.ProcessPendingAchievements();
+            GHApp.CheckWriteUserDataToDisk();
             GHApp.FmodService?.PollTasks();  
 
             GHResponse response;
@@ -1104,7 +1106,9 @@ namespace GnollHackX
                 case (int)exit_hack_types.EXITHACK_NORMAL: /* Normal case; return to main menu */
                     GHApp.FmodService?.StopAllGameSounds((uint)StopSoundFlags.All, 0);
                     GHApp.FmodService?.ResetGameState();
-                    GHApp.SaveDiscoveredMusic();
+                    GHApp.ProcessDiscoveredMusic();
+                    GHApp.ProcessPendingAchievements();
+                    GHApp.CheckWriteUserDataToDisk();
                     RequestQueue.Enqueue(new GHRequest(this, GHRequestType.ReturnToMainMenu));
                     break;
             }
@@ -3628,13 +3632,7 @@ namespace GnollHackX
                     break;
                 case (int)gui_command_types.GUI_CMD_ACHIEVEMENT:
                     GHApp.AddPendingAchievement(cmd_param);
-                    RequestQueue.Enqueue(new GHRequest(this, GHRequestType.ProcessPendingAchievements));
                     break;
-                case (int)gui_command_types.GUI_CMD_PENDING_ACHIEVEMENT:
-                    GHApp.AddPendingAchievement(cmd_param);
-                    break;
-                case (int)gui_command_types.GUI_CMD_FLUSH_ACHIEVEMENTS:
-                    GHApp.ProcessPendingAchievements();
                     break;
                 default:
                     break;

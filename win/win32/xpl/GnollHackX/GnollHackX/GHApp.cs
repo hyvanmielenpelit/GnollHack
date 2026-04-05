@@ -9242,7 +9242,6 @@ namespace GnollHackX
             });
         }
 
-
         private static readonly object _discoveredMusicLock = new object();
         private static List<DiscoveredMusic> _discoveredMusicList = new List<DiscoveredMusic>();
         private static long _discoveredMusicBits = 0L;
@@ -9294,7 +9293,7 @@ namespace GnollHackX
             }
         }
 
-        public static void SaveDiscoveredMusic()
+        public static void ProcessDiscoveredMusic()
         {
             bool changed = false;
             long bits = 0L;
@@ -9498,8 +9497,7 @@ namespace GnollHackX
                 return defVal;
             if (_userData == null)
                 return defVal;
-            long res;
-            if (_userData.LongDictionary.TryGetValue(key, out res))
+            if (_userData.LongDictionary.TryGetValue(key, out long res))
                 return res;
             return defVal;
         }
@@ -9512,7 +9510,7 @@ namespace GnollHackX
                 {
                     if (preferencesToo)
                         Preferences.Set("DiscoveredMusicBits", val);
-                    AddAndWriteUserData("DiscoveredMusicBits", val);
+                    AddUserData("DiscoveredMusicBits", val);
                 }
                 catch (Exception ex)
                 {
@@ -9521,7 +9519,18 @@ namespace GnollHackX
             });
         }
 
+        public static void AddGainedAchievements()
+        {
+            for (int i = 0; i < GHConstants.NumGuiAchievementLongs; i++)
+            {
+                long val = GetUserData(GHConstants.AchievementLongPrefix + i, 0L);
+                _achievements[i] = val;
+            }
+        }
+
         private static GHUserData _userData = null;
+        private static int _userDataNeedsSavingToDisk = 0;
+        public static bool UserDataNeedsSavingToDisk { get { return Interlocked.CompareExchange(ref _userDataNeedsSavingToDisk, 0, 0) != 0; } set { Interlocked.Exchange(ref _userDataNeedsSavingToDisk, value ? 1 : 0); } } 
         public static void ReadUserData()
         {
             string dirPath = Path.Combine(GHPath, GHConstants.UserDataDirectory);
@@ -9581,11 +9590,9 @@ namespace GnollHackX
                 _userData.Clear();
         }
 
-        public static bool AddAndWriteUserData(string key, long val, bool addBit = false, int writeStyle = 0)
+        public static void AddUserData(string key, long val, bool addBit = false)
         {
             bool addSuccessful = false;
-            string dirPath = Path.Combine(GHPath, GHConstants.UserDataDirectory);
-            string filePath = Path.Combine(dirPath, GHConstants.UserDataFileName);
             if(_userData == null)
                 _userData = new GHUserData();
             if(_userData != null)
@@ -9637,49 +9644,65 @@ namespace GnollHackX
                     }
                 }
 
-                /* Then write to disk (and only if the value did change) */
-                if ((addSuccessful && writeStyle != -1) || writeStyle == 1)
+                /* Then queue for writing to disk (and only if the value did change) */
+                if (addSuccessful)
                 {
-                    try
-                    {
-                        if (File.Exists(filePath))
-                            File.Delete(filePath);
-                    }
-                    catch (Exception ex)
-                    {
-                        Debug.WriteLine(ex.Message);
-                    }
-                    try
-                    {
-                        if (!Directory.Exists(dirPath))
-                            CheckCreateDirectory(dirPath);
-                    }
-                    catch (Exception ex)
-                    {
-                        Debug.WriteLine(ex.Message);
-                    }
-                    try
-                    {
-                        using (FileStream fs = File.OpenWrite(filePath))
-                        {
-                            using (StreamWriter sr = new StreamWriter(fs))
-                            {
-                                string json = JsonConvert.SerializeObject(_userData);
-                                sr.Write(json);
-                            }
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        Debug.WriteLine(ex.Message);
-                    }
+                    UserDataNeedsSavingToDisk = true;
                 }
             }
-            return addSuccessful;
         }
 
-        public static List<int> AchievementsGained = new List<int>();
-        public static ConcurrentQueue<int> AchievementQueue = new ConcurrentQueue<int>();
+        public static void CheckWriteUserDataToDisk()
+        {
+            if (UserDataNeedsSavingToDisk)
+                WriteUserDataToDisk();
+        }
+
+        public static void WriteUserDataToDisk()
+        {
+            string dirPath = Path.Combine(GHPath, GHConstants.UserDataDirectory);
+            string filePath = Path.Combine(dirPath, GHConstants.UserDataFileName);
+            try
+            {
+                if (File.Exists(filePath))
+                    File.Delete(filePath);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+            }
+            try
+            {
+                if (!Directory.Exists(dirPath))
+                    CheckCreateDirectory(dirPath);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+            }
+            try
+            {
+                using (FileStream fs = File.OpenWrite(filePath))
+                {
+                    using (StreamWriter sr = new StreamWriter(fs))
+                    {
+                        string json = JsonConvert.SerializeObject(_userData);
+                        sr.Write(json);
+                    }
+                }
+                UserDataNeedsSavingToDisk = false;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+            }
+        }
+
+        /* Access only from the main thread */
+        private static long[] _achievements = new long[GHConstants.NumGuiAchievementLongs];
+        public static readonly List<int> AchievementsGained = new List<int>();
+        /* Access from any thread */
+        public static readonly ConcurrentQueue<int> AchievementQueue = new ConcurrentQueue<int>();
 
         public static void AddPendingAchievement(int achievementId)
         {
@@ -9688,6 +9711,9 @@ namespace GnollHackX
 
         public static void ProcessPendingAchievements()
         {
+            if (AchievementQueue.IsEmpty)
+                return;
+
             MainThread.BeginInvokeOnMainThread(() =>
             {
                 long[] resultBits = new long[GHConstants.NumGuiAchievementLongs];
@@ -9707,23 +9733,24 @@ namespace GnollHackX
                 if (!didDoSomething)
                     return;
 
-                bool didChange = false;
                 for (int i = 0; i < GHConstants.NumGuiAchievementLongs; i++)
                 {
                     if (resultBits[i] == 0)
                         continue;
+
+                    /* Write achievements to memory */
+                    _achievements[i] |= resultBits[i];
+
+                    /* Write achievements to user data, which will be marked to be written to disk later */
                     try
                     {
-                        if (AddAndWriteUserData(GHConstants.AchievementLongPrefix + i, resultBits[i], true, -1))
-                            didChange = true;
+                        AddUserData(GHConstants.AchievementLongPrefix + i, resultBits[i], true);
                     }
                     catch (Exception ex)
                     {
                         Debug.WriteLine(ex.Message);
                     }
                 }
-                if (didChange)
-                    AddAndWriteUserData(null, 0L, true, 1);
             });
         }
 
@@ -9738,9 +9765,14 @@ namespace GnollHackX
                 string key = GHConstants.AchievementLongPrefix + achievementLongIdx;
                 if ((!_userData.LongDictionary.ContainsKey(key) || (_userData.LongDictionary[key] & achievementBit) == 0) && !AchievementsGained.Contains(achievementId))
                     AchievementsGained.Add(achievementId);
+
+                /* Write achievements to memory */
+                _achievements[achievementLongIdx] |= achievementBit;
+
+                /* Write achievements to user data, which will be marked to be written to disk later */
                 try
                 {
-                    AddAndWriteUserData(key, achievementBit, true);
+                    AddUserData(key, achievementBit, true);
                 }
                 catch (Exception ex)
                 {
