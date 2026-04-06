@@ -5791,18 +5791,22 @@ register struct obj *obj;
     if (Blind)
         return;
 
-    if (obj->oclass != COIN_CLASS) {
+    if (obj->oclass != COIN_CLASS) 
+    {
         /* KMH, conduct */
         if (!u.uconduct.gnostic++)
             livelog_printf(LL_CONDUCT,
                 "eschewed atheism, by dropping %s on an altar",
                 doname(obj));
-    } else {
+    } 
+    else 
+    {
         /* coins don't have bless/curse status */
         obj->blessed = obj->cursed = 0;
     }
 
-    if (obj->blessed || obj->cursed) {
+    if (obj->blessed || obj->cursed) 
+    {
         const char* hclr = hcolor_multi_buf1(obj->blessed ? NH_AMBER : NH_BLACK);
         //multicolor_buffer[2] = multicolor_buffer[1];
         There_ex(ATR_NONE, Hallucination ? CLR_MSG_HALLUCINATED : obj->blessed ? CLR_MSG_POSITIVE : CLR_MSG_NEGATIVE, // no_multiattrs, multicolor_buffer, 
@@ -5810,11 +5814,19 @@ register struct obj *obj;
             an_prefix(hclr), hclr, " flash", doname(obj),
               otense(obj, "hit"));
         if (!Hallucination)
+        {
             obj->bknown = 1;
-    } else {
+            issue_achievement(GUI_ACHIEVEMENT_IDENTIFIED_BLESSEDNESS_ON_ALTAR);
+        }
+    } 
+    else 
+    {
         pline("%s %s on the altar.", Doname2(obj), otense(obj, "land"));
         if (obj->oclass != COIN_CLASS)
+        {
             obj->bknown = 1;
+            issue_achievement(GUI_ACHIEVEMENT_IDENTIFIED_BLESSEDNESS_ON_ALTAR);
+        }
     }
 }
 

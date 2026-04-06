@@ -9556,11 +9556,39 @@ namespace GnollHackX
             AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_USED_WAND_OF_PROBING] =
                 new Achievement("Probing", "Use a wand or spell of probing to probe something",
                 (int)gui_achievement_categories.Gameplay, 0);
+            AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_MADE_A_WISH] =
+                new Achievement("Make a Wish", "Wish for an object using any means in the game",
+                (int)gui_achievement_categories.Gameplay, 0);
+            AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_CONSULTED_ORACLE] =
+                new Achievement("Consult the Oracle", "Locate the Oracle and buy a consultation",
+                (int)gui_achievement_categories.Gameplay, 0);
             AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_ENGRAVED_ELBERETH] =
                 new Achievement("Engrave Elbereth", "Engrave the name of Elbereth on the ground to protect you",
                 (int)gui_achievement_categories.Gameplay, 0, false, true, false, 0, 0, 0);
             AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_SOLVED_CASTLE_TUNE] =
                 new Achievement("The Castle Tune", "Solve the castle tune to control the drawbridge",
+                (int)gui_achievement_categories.Playthrough, 0, false, true, false, 0, 0, 0);
+
+            AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_IDENTIFIED_BLESSEDNESS_ON_ALTAR] =
+                new Achievement("Blessedness on Altar", "Determine an object's blessed or cursed status by dropping it on an altar",
+                (int)gui_achievement_categories.Playthrough, 0, false, true, false, 0, 0, 0);
+            AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_PRAYED] =
+                new Achievement("Praying", "Pray for your god successfully",
+                (int)gui_achievement_categories.Playthrough, 0, false, true, false, 0, 0, 0);
+            AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_SACRIFICED] =
+                new Achievement("Sacrifing", "Sacrifice a suitable corpse for your god",
+                (int)gui_achievement_categories.Playthrough, 0, false, true, false, 0, 0, 0);
+            AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_WAS_GIFTED_ARTIFACT] =
+                new Achievement("Gift of God", "Receive an item gifted by your god",
+                (int)gui_achievement_categories.Playthrough, 0, false, true, false, 0, 0, 0);
+            AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_WAS_CROWNED] =
+                new Achievement("Crowning", "Be crowned by your god",
+                (int)gui_achievement_categories.Playthrough, 0, false, true, false, 0, 0, 0);
+            AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_CREATED_HOLY_WATER_ON_ALTAR] =
+                new Achievement("Create Holy Water", "Create holy water by praying on an altar",
+                (int)gui_achievement_categories.Playthrough, 0, false, true, false, 0, 0, 0);
+            AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_CONVERTED_ALTAR] =
+                new Achievement("Convert an Altar", "Convert an altar by sacrificing a corpse on it",
                 (int)gui_achievement_categories.Playthrough, 0, false, true, false, 0, 0, 0);
 
             AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_DEFEATED_WIZARD_OF_YENDOR] =

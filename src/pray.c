@@ -1009,6 +1009,7 @@ gcrownu()
                 at_your_feet("A pair of gauntlets");
                 (void)dropyf(obj);
                 u.ugifts++;
+                issue_achievement(GUI_ACHIEVEMENT_WAS_GIFTED_ARTIFACT);
             }
         }
 
@@ -1027,6 +1028,7 @@ gcrownu()
                 at_your_feet("A belt");
                 (void)dropyf(obj);
                 u.ugifts++;
+                issue_achievement(GUI_ACHIEVEMENT_WAS_GIFTED_ARTIFACT);
             }
         }
     }
@@ -1136,6 +1138,7 @@ gcrownu()
         at_your_feet("A golden chest");
         (void) dropyf(obj);
         u.ugifts++;
+        issue_achievement(GUI_ACHIEVEMENT_WAS_GIFTED_ARTIFACT);
     }
     else if (Role_if(PM_PRIEST))
     {
@@ -1338,6 +1341,7 @@ gcrownu()
         at_your_feet("A golden chest");
         (void) dropyf(obj);
         u.ugifts++;
+        issue_achievement(GUI_ACHIEVEMENT_WAS_GIFTED_ARTIFACT);
     }
     else if (Role_if(PM_VALKYRIE))
     {
@@ -1380,6 +1384,7 @@ gcrownu()
             u.ugifts++;
             livelog_printf(LL_DIVINEGIFT | LL_ARTIFACT | LL_SPOILER,
                 "was bestowed with %s", an(actualoname(obj)));
+            issue_achievement(GUI_ACHIEVEMENT_WAS_GIFTED_ARTIFACT);
         }
         /* acquire axe or sword skill */
         unrestrict_weapon_skill(gifttype  == DWARVISH_AXE ? P_AXE : P_SWORD);
@@ -1410,6 +1415,7 @@ gcrownu()
                     at_your_feet("A lance");
                     (void)dropyf(obj);
                     u.ugifts++;
+                    issue_achievement(GUI_ACHIEVEMENT_WAS_GIFTED_ARTIFACT);
                 }
             }
             else if (!grail_already_exists)
@@ -1430,6 +1436,7 @@ gcrownu()
                     at_your_feet("A grail");
                     (void)dropyf(obj);
                     u.ugifts++;
+                    issue_achievement(GUI_ACHIEVEMENT_WAS_GIFTED_ARTIFACT);
                 }
             }
 
@@ -1477,6 +1484,7 @@ gcrownu()
                     at_your_feet("A grail");
                     (void)dropyf(obj);
                     u.ugifts++;
+                    issue_achievement(GUI_ACHIEVEMENT_WAS_GIFTED_ARTIFACT);
                 }
             }
             break;
@@ -1679,6 +1687,7 @@ gcrownu()
                     at_your_feet("A katana");
                     (void)dropyf(obj);
                     u.ugifts++;
+                    issue_achievement(GUI_ACHIEVEMENT_WAS_GIFTED_ARTIFACT);
                 }
             }
             else if (!excalibur_already_exists && obj && objects[obj->otyp].oc_subtyp == WEP_LONG_SWORD && get_object_base_value(obj) < 2000L && !obj->oartifact)
@@ -1696,6 +1705,7 @@ gcrownu()
                     livelog_printf(LL_DIVINEGIFT | LL_ARTIFACT,
                         "was bestowed with %s",
                         artiname(ART_EXCALIBUR));
+                    issue_achievement(GUI_ACHIEVEMENT_WAS_GIFTED_ARTIFACT);
                 }
             }
             else if (!excalibur_already_exists && obj2 && objects[obj2->otyp].oc_subtyp == WEP_LONG_SWORD && get_object_base_value(obj2) < 2000L && !obj2->oartifact)
@@ -1713,6 +1723,7 @@ gcrownu()
                     livelog_printf(LL_DIVINEGIFT | LL_ARTIFACT | LL_SPOILER,
                         "was bestowed with %s",
                         artiname(ART_EXCALIBUR));
+                    issue_achievement(GUI_ACHIEVEMENT_WAS_GIFTED_ARTIFACT);
                 }
             }
             else
@@ -1733,6 +1744,7 @@ gcrownu()
                     at_your_feet("A sword");
                     (void)dropyf(obj);
                     u.ugifts++;
+                    issue_achievement(GUI_ACHIEVEMENT_WAS_GIFTED_ARTIFACT);
                     /* sword skill is acquired below */
                 }
             }
@@ -1775,6 +1787,7 @@ gcrownu()
                     at_your_feet("A sword");
                     (void)dropyf(obj);
                     u.ugifts++;
+                    issue_achievement(GUI_ACHIEVEMENT_WAS_GIFTED_ARTIFACT);
                 }
             }
             else
@@ -1792,6 +1805,7 @@ gcrownu()
                     at_your_feet("A sword");
                     (void)dropyf(obj);
                     u.ugifts++;
+                    issue_achievement(GUI_ACHIEVEMENT_WAS_GIFTED_ARTIFACT);
                     /* sword skill is acquired below */
                 }
             }
@@ -1843,6 +1857,7 @@ gcrownu()
                     at_your_feet(An(swordbuf));
                     (void)dropyf(obj);
                     u.ugifts++;
+                    issue_achievement(GUI_ACHIEVEMENT_WAS_GIFTED_ARTIFACT);
                 }
             }
             else
@@ -1860,6 +1875,7 @@ gcrownu()
                     at_your_feet("A sword");
                     (void)dropyf(obj);
                     u.ugifts++;
+                    issue_achievement(GUI_ACHIEVEMENT_WAS_GIFTED_ARTIFACT);
                     /* acquire long sword skill */
                     unrestrict_weapon_skill(P_SWORD);
                 }
@@ -1941,6 +1957,7 @@ aligntyp g_align;
     int trouble = in_trouble(); /* what's your worst difficulty? */
     int pat_on_head = 0, kick_on_butt;
 
+    issue_achievement(GUI_ACHIEVEMENT_PRAYED);
     play_sfx_sound(SFX_PRAY_PLEASED);
     You_feel_ex(ATR_NONE, CLR_MSG_SUCCESS, "that %s is %s.", align_gname(g_align),
              (u.ualign.record >= DEVOUT)
@@ -2370,6 +2387,8 @@ boolean bless_water;
 
     if (changed)
     {
+        if (bless_water)
+            issue_achievement(GUI_ACHIEVEMENT_CREATED_HOLY_WATER_ON_ALTAR);
         play_sfx_sound(bless_water ? SFX_PRAY_BLESS_WATER : SFX_PRAY_CURSE_WATER);
 
         if (!Blind)
@@ -3022,11 +3041,13 @@ dosacrifice()
             else 
             {
                 consume_offering(otmp);
+                issue_achievement(GUI_ACHIEVEMENT_SACRIFICED);
                 if(!godlessaltar)
                     You_ex(ATR_NONE, CLR_MSG_WARNING, "sense a conflict between %s and %s.", u_gname(), a_gname());
                 if (godlessaltar || rn2(8 + u.ulevel) > 5)
                 {
                     struct monst *pri;
+                    issue_achievement(GUI_ACHIEVEMENT_CONVERTED_ALTAR);
                     play_sfx_sound(SFX_ALTAR_POWER_INCREASE);
                     You_feel_ex(ATR_NONE, CLR_MSG_POSITIVE, "the power of %s increase.", u_gname());
                     exercise(A_WIS, TRUE);
@@ -3070,6 +3091,7 @@ dosacrifice()
         }
 
         consume_offering(otmp);
+        issue_achievement(GUI_ACHIEVEMENT_SACRIFICED);
 
         boolean bless_savestone = FALSE;
 
@@ -3239,6 +3261,7 @@ dosacrifice()
                     u.ugifts++;
                     u.uprayer_timeout = Role_if(PM_PRIEST) ? rnz(150 + (25 * nartifacts)) : rnz(300 + (50 * nartifacts));
                     exercise(A_WIS, TRUE);
+                    issue_achievement(GUI_ACHIEVEMENT_WAS_GIFTED_ARTIFACT);
 
                     /* make sure we can use this weapon */
                     enum p_skills wep_skill_idx = weapon_skill_type(otmp);

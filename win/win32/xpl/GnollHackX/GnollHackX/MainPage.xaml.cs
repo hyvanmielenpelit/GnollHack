@@ -2369,7 +2369,7 @@ namespace GnollHackX
                     for (int i = 0; i < unlockCount; i++)
                     {
                         Achievement unlocked = GHApp.AchievementDefinitions[achievementsUnlocked[i]];
-                        builder.Append(unlocked?.Name ?? "(null)");
+                        builder.Append(unlocked?.Name ?? "(null, id=" + achievementsUnlocked[i] +")");
                         if (i < unlockCount - 2)
                             builder.Append(", ");
                         else if (i == unlockCount - 2)
@@ -2405,10 +2405,10 @@ namespace GnollHackX
                     rib.IgnoreDarkMode = true;
                     rib.ImgSourcePath = "resource://" + GHApp.AppResourceName + ".Assets.UI.conduct.png";
                     rib.ImgHighFilterQuality = true;
-                    rib.LblText = achievement?.Name ?? "(null)";
+                    rib.LblText = achievement?.Name ?? "(null, id=" + achievementId + ")";
                     rib.LblTextColor = GHColors.TitleGoldColor; // GHApp.DarkMode ? GHColors.White : GHColors.Black;
                     rib.LblFontSize = 17;
-                    rib.SubLblText = achievement?.Description ?? "(null)";
+                    rib.SubLblText = achievement?.Description ?? "(null, id=" + achievementId + ")";
                     rib.SubLblTextColor = GHColors.LightGray;
                     rib.SubLblFontSize = 14;
                     rib.IsSubLblVisible = true;
