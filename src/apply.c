@@ -6025,7 +6025,7 @@ dobreak(VOID_ARGS)
             You_cant_ex(ATR_NONE, CLR_MSG_FAIL, "break %s without hands!", yname(obj));
             return 0;
         }
-        res = hero_breaks(obj, u.ux, u.uy, TRUE);
+        res = (int)hero_breaks(obj, u.ux, u.uy, TRUE);
     }
     else
     {

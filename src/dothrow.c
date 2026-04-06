@@ -1228,8 +1228,8 @@ boolean hitsroof;
         {
             pline("%s hits the %s.", Doname2(obj), ceiling(u.ux, u.uy));
             breakmsg(obj, u.ux, u.uy, !Blind);
-            breakobj(obj, u.ux, u.uy, TRUE, TRUE);
-            return FALSE;
+            (void)breakobj(obj, u.ux, u.uy, TRUE, TRUE);
+            return TRUE;
         }
         action = "hits";
     }
@@ -1259,7 +1259,7 @@ boolean hitsroof;
                        ? rnd(25)
                        : 0;
         breakmsg(obj, u.ux, u.uy, !Blind);
-        breakobj(obj, u.ux, u.uy, TRUE, TRUE);
+        obj_gone = breakobj(obj, u.ux, u.uy, TRUE, TRUE);
         obj = 0; /* it's now gone */
         switch (otyp) {
         case EGG:
@@ -1292,7 +1292,7 @@ boolean hitsroof;
         default:
             break;
         }
-        return FALSE;
+        return obj_gone;
     }
     else
     { /* neither potion nor other breaking object */
@@ -1734,7 +1734,7 @@ int64_t wep_mask; /* used to re-equip returning boomerang / aklys / Mjollnir / J
             adjusted_delay_output();
             tmp_at(DISP_END, 0);
             breakmsg(obj, bhitpos.x, bhitpos.y, cansee(bhitpos.x, bhitpos.y));
-            breakobj(obj, bhitpos.x, bhitpos.y, TRUE, TRUE);
+            (void)breakobj(obj, bhitpos.x, bhitpos.y, TRUE, TRUE);
             thrownobj = (struct obj *) 0;
             return;
         }
@@ -2417,7 +2417,7 @@ register struct obj *obj;
  * The hero causes breakage of an object (throwing, dropping it, etc.)
  * Return 0 if the object didn't break, 1 if the object broke.
  */
-int
+boolean
 hero_breaks(obj, x, y, from_invent)
 struct obj *obj;
 xchar x, y;          /* object location (ox, oy may not be right) */
@@ -2426,24 +2426,24 @@ boolean from_invent; /* thrown or dropped by player; maybe on shop bill */
     boolean in_view = Blind ? FALSE : (from_invent || cansee(x, y));
 
     if (!breaktest(obj))
-        return 0;
+        return FALSE;
     if (obj->owornmask && obj->where == OBJ_INVENT && obj->cursed && is_obj_worn(obj) && !cursed_items_are_positive_mon(&youmonst) && !Curse_resistance)
     {
         play_sfx_sound(SFX_MALIGNANT_AURA_SURROUNDS);
         pline_ex(ATR_NONE, CLR_MSG_WARNING, "A malignant force momentarily surrounds %s, preventing you from breaking %s.", yname(obj), is_plural(obj) ? "them" : "it");
-        return 0;
+        return FALSE;
     }
     breakmsg(obj, x, y, in_view);
-    breakobj(obj, x, y, TRUE, from_invent);
-    return 1;
+    (void)breakobj(obj, x, y, TRUE, from_invent);
+    return TRUE;
 }
 
 /*
  * The object is going to break for a reason other than the hero doing
  * something to it.
- * Return 0 if the object doesn't break, 1 if the object broke.
+ * Return FALSE if the object doesn't break, TRUE if the object broke.
  */
-int
+boolean
 breaks(obj, x, y)
 struct obj *obj;
 xchar x, y; /* object location (ox, oy may not be right) */
@@ -2451,10 +2451,10 @@ xchar x, y; /* object location (ox, oy may not be right) */
     boolean in_view = Blind ? FALSE : cansee(x, y);
 
     if (!breaktest(obj))
-        return 0;
+        return FALSE;
     breakmsg(obj, x, y, in_view);
-    breakobj(obj, x, y, FALSE, FALSE);
-    return 1;
+    (void)breakobj(obj, x, y, FALSE, FALSE);
+    return TRUE;
 }
 
 void
@@ -2482,8 +2482,9 @@ STATIC_VAR NEARDATA boolean peaceful_shk = FALSE;
 /*
  * Unconditionally break an object. Assumes all resistance checks
  * and break messages have been delivered prior to getting here.
+ * Returns TRUE if obj is gone
  */
-void
+boolean
 breakobj(obj, x, y, hero_caused, from_invent)
 struct obj *obj;
 xchar x, y;          /* object location (ox, oy may not be right) */
@@ -2592,7 +2593,9 @@ boolean from_invent;
         {
             delobj(obj);
         }
+        obj = 0;
     }
+    return !fracture;
 }
 
 /*

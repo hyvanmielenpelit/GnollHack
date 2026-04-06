@@ -3644,7 +3644,7 @@ boolean confused, byu;
         obfree(otmp2, (struct obj *) 0);
         /* fall through to player */
         drop_boulder_on_player(confused, TRUE, FALSE, TRUE);
-        return 1;
+        return TRUE;
     }
     /* Drop the rock/boulder to the floor */
     if (!flooreffects(otmp2, x, y, "fall")) {

@@ -1088,7 +1088,7 @@ boolean is_golf_swing;
     place_object(kickedobj, bhitpos.x, bhitpos.y);
     play_object_floor_sound(kickedobj, OBJECT_SOUND_TYPE_DROP_AFTER_THROW, Underwater);
     stackobj(kickedobj);
-    newsym(kickedobj->ox, kickedobj->oy);
+    newsym(bhitpos.x, bhitpos.y);
     return 1;
 }
 

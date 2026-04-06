@@ -856,7 +856,7 @@ struct obj *obj; /* only scatter this obj        */
         {
             obj = (struct obj *) 0; /* all used */
         }
-        debugprint("scatter1");
+        debugprint("scatter1, otyp=%d", otmp->otyp);
         obj_extract_self(otmp);
         used_up = FALSE;
 
@@ -868,15 +868,15 @@ struct obj *obj; /* only scatter this obj        */
             if (otmp->otyp == BOULDER)
             {
                 if (cansee(sx, sy))
-                    pline("%s apart.", Tobjnam(otmp, "break"));
+                    pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s apart.", Tobjnam(otmp, "break"));
                 else
-                    You_hear("stone breaking.");
-                fracture_rock(otmp, TRUE);
+                    You_hear_ex(ATR_NONE, CLR_MSG_WARNING, "stone breaking.");
+                if (!fracture_rock(otmp, TRUE))
                 place_object(otmp, sx, sy);
                 if ((otmp = sobj_at(BOULDER, sx, sy)) != 0) 
                 {
                     /* another boulder here, restack it to the top */
-                    debugprint("scatter2");
+                    debugprint("scatter2: otyp=%d", otmp->otyp);
                     obj_extract_self(otmp);
                     place_object(otmp, sx, sy);
                 }
@@ -888,10 +888,13 @@ struct obj *obj; /* only scatter this obj        */
                 if ((trap = t_at(sx, sy)) && trap->ttyp == STATUE_TRAP)
                     deltrap(trap);
                 if (cansee(sx, sy))
-                    pline("%s.", Tobjnam(otmp, "crumble"));
+                    pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s.", Tobjnam(otmp, "crumble"));
                 else
-                    You_hear("stone crumbling.");
+                    You_hear_ex(ATR_NONE, CLR_MSG_WARNING, "stone crumbling.");
+                int statuetrackid = add_to_obj_tracking(otmp);
                 (void) break_statue(otmp);
+                boolean statuegone = finish_obj_tracking(statuetrackid);
+                if (!statuegone)
                 place_object(otmp, sx, sy); /* put fragments on floor */
             }
             newsym(sx, sy); /* in case it's beyond radius of 'farthest' */

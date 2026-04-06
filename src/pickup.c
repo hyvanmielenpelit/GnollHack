@@ -3470,13 +3470,26 @@ boolean dobot;
         livelog_printf(LL_ACHIEVE, "just blew up %s %s by putting %s inside", uhis(), cxname(current_container), acxname(obj));
         issue_breadcrumb3("Blew up a magic bag", current_container->otyp, obj->otyp);
 
+        int trackid_container = add_to_obj_tracking(current_container);
+        int trackid_obj = add_to_obj_tracking(obj);
+
         /* did not actually insert obj yet */
         if (was_unpaid)
             addtobill(obj, FALSE, FALSE, TRUE);
 
         boolean destroyobj = !(is_obj_indestructible(obj) || obj->oartifact);
+        struct obj* curr;
         if (destroyobj)
         {
+            if (Is_proper_container(obj))
+            {
+                debugprint("in_container_core: scattering contests of obj, otyp=%d", obj->otyp);
+                while ((curr = obj->cobj) != 0) {
+                    obj_extract_self(curr);
+                    if (!dropy(curr))
+                        (void)scatter(curr->ox, curr->oy, 3, VIS_EFFECTS | MAY_HIT | MAY_DESTROY | MAY_FRACTURE, curr);
+                }
+            }
             debugprint("in_container_core1: %d, %d", current_container->otyp, obj->otyp);
             obfree(obj, (struct obj*)0);
             obj = 0;
@@ -3497,18 +3510,18 @@ boolean dobot;
             current_container->no_charge = save_no_charge.no_charge;
         }
 
-        explode(u.ux, u.uy, RAY_MAGIC_MISSILE, (struct monst*)0, 2, 6, 0, saved_otyp, saved_oclass, EXPL_MAGICAL);
         /*delete_contents(current_container);*/
-        debugprint("in_container_core");
-        register struct obj* curr;
+        debugprint("in_container_core: scattering the contents of current_container, otyp=%d", current_container->otyp);
         while ((curr = current_container->cobj) != 0) {
             obj_extract_self(curr);
             if (!dropy(curr))
                 (void)scatter(curr->ox, curr->oy, 3, VIS_EFFECTS | MAY_HIT | MAY_DESTROY | MAY_FRACTURE, curr);
         }
 
-        /* The artifact flies out last */
-        if (!destroyobj && obj)
+        boolean obj_gone = finish_obj_tracking(trackid_obj);
+
+        /* The undestroyed obj flies out last */
+        if (!destroyobj && obj && !obj_gone)
         {
             if (!dropy(obj))
                 (void)scatter(obj->ox, obj->oy, 3, VIS_EFFECTS | MAY_HIT | MAY_DESTROY | MAY_FRACTURE, obj);
@@ -3516,6 +3529,9 @@ boolean dobot;
                 obj = 0;
         }
 
+        boolean current_container_gone = finish_obj_tracking(trackid_container);
+        if (!current_container_gone)
+        {
         debugprint("in_container_core2: %d, %d", current_container->otyp, saved_otyp);
         //context.suppress_container_deletion_warning = 1;
         if (!floor_container)
@@ -3524,15 +3540,14 @@ boolean dobot;
             useupf(current_container, current_container->quan);
         else
         {
-            //context.suppress_container_deletion_warning = 0;
             panic("in_container:  bag not found.");
             return 0;
         }
-        //context.suppress_container_deletion_warning = 0;
-
-        losehp(adjust_damage(d(6, 6), (struct monst*)0, &youmonst, AD_PHYS, ADFLAGS_SPELL_DAMAGE), "magical explosion", KILLED_BY_AN);
+        }
         current_container = 0; /* baggone = TRUE; */
 
+        explode(u.ux, u.uy, RAY_MAGIC_MISSILE, (struct monst*)0, 2, 6, 0, saved_otyp, saved_oclass, EXPL_MAGICAL);
+        losehp(adjust_damage(d(6, 6), (struct monst*)0, &youmonst, AD_PHYS, ADFLAGS_SPELL_DAMAGE), "magical explosion", KILLED_BY_AN);
         standard_hint("Putting a wand of cancellation into a magical bag will typically cause it to explode. To avoid doing this accidently, put unidentified wands into a non-magical bag.", &u.uhint.bag_destroyed_by_cancellation);
     }
 

@@ -458,7 +458,7 @@ dig(VOID_ARGS)
         {
             struct obj *bobj;
 
-            fracture_rock(obj, TRUE);
+            (void)fracture_rock(obj, TRUE);
             if ((bobj = sobj_at(BOULDER, dpx, dpy)) != 0) 
             {
                 /* another boulder here, restack it to the top */

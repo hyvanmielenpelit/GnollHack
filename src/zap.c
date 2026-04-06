@@ -4482,14 +4482,16 @@ struct monst* origmonst;
                     pline_The("boulder falls apart.");
                 else
                     You_hear("a crumbling sound.");
-                fracture_rock(obj, TRUE);
+                (void)fracture_rock(obj, TRUE);
             } 
             else if (obj->otyp == STATUE) 
             {
                 res = 1;
+                int oox = obj->ox;
+                int ooy = obj->oy;
                 if (break_statue(obj)) 
                 {
-                    if (cansee(obj->ox, obj->oy))
+                    if (cansee(oox, ooy))
                     {
                         if (Hallucination)
                             pline_The("%s shatters.", rndmonnam(NULL));
@@ -11406,11 +11408,15 @@ short exploding_wand_typ;
 }
 
 /* fractured by pick-axe or wand of striking */
-void
+/* returns TRUE if obj is gone (should not happen normally) */
+boolean
 fracture_rock(obj, verbose)
 register struct obj *obj; /* no texts here! */
 boolean verbose;
 {
+    if (!obj)
+        return TRUE;
+
     xchar x, y;
     boolean by_you = !context.mon_moving;
 
@@ -11425,9 +11431,13 @@ boolean verbose;
                to precede that with a message explaining what "it" is */
             if(verbose)
                 You_ex(ATR_NONE, CLR_MSG_ATTENTION, "fracture %s %s.", s_suffix(shkname(shkp)), xname(obj));
-            breakobj(obj, x, y, TRUE, FALSE); /* charges for shop goods */
+            if (breakobj(obj, x, y, TRUE, FALSE)) /* charges for shop goods */
+                obj = 0;
         }
     }
+
+    if (!obj) /* is gone */
+        return TRUE;
 
     if (by_you && obj->otyp == BOULDER)
         sokoban_guilt();
@@ -11455,6 +11465,8 @@ boolean verbose;
         if (cansee(obj->ox, obj->oy))
             newsym(obj->ox, obj->oy);
     }
+
+    return FALSE;
 }
 
 /* handle statue hit by striking/force bolt/pick-axe */
@@ -11494,7 +11506,7 @@ register struct obj *obj;
 {
     if (pre_break_statue(obj))
     {
-        fracture_rock(obj, TRUE); /* Make it into a rubble */
+        (void)fracture_rock(obj, TRUE); /* Make it into a rubble */
         return TRUE;
     }
     else
