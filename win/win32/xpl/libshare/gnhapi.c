@@ -745,8 +745,8 @@ LibSetEngraveQuickText(const char* new_value)
 {
     if (new_value && *new_value)
     {
-        Strncpy(iflags.engrave_quicktext, new_value, BUFSZ - 1);
-        iflags.engrave_quicktext[BUFSZ - 1] = '\0';
+        Strncpy(iflags.engrave_quicktext, new_value, PL_ESIZ);
+        iflags.engrave_quicktext[PL_ESIZ] = '\0';
     }
     else
         *iflags.engrave_quicktext = '\0';
@@ -1054,8 +1054,8 @@ DLLEXPORT int RunGnollHack(
     *initial_flags.engrave_quicktext = 0;
     if (engrave_quicktext && strcmp(engrave_quicktext, ""))
     {
-        Strncpy(initial_flags.engrave_quicktext, engrave_quicktext, BUFSZ - 1);
-        initial_flags.engrave_quicktext[BUFSZ - 1] = '\0';
+        Strncpy(initial_flags.engrave_quicktext, engrave_quicktext, PL_ESIZ);
+        initial_flags.engrave_quicktext[PL_ESIZ] = '\0';
     }
 
     if (runflags & GHRUNFLAGS_NO_PET)

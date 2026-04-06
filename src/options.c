@@ -374,7 +374,7 @@ static struct Comp_Opt {
       MAX_DUNGEON_CHARS + 1, SET_IN_FILE },
     { "effects", "the symbols to use in drawing special effects",
       MAX_EFFECT_CHARS + 1, SET_IN_FILE },
-    { "engrave_quicktext", "the preset text for engrave quick command", BUFSZ - 1, SET_IN_GAME },
+    { "engrave_quicktext", "the preset text for engrave quick command", PL_ESIZ, SET_IN_GAME },
     { "font_map", "the font to use in the map window", 40,
       DISP_IN_GAME },                                              /*WC*/
     { "font_menu", "the font to use in menus", 40, DISP_IN_GAME }, /*WC*/
@@ -2906,7 +2906,7 @@ boolean tinitial, tfrom_file;
             return FALSE;
         }
         else if ((op = string_for_opt(opts, FALSE)) != 0) {
-            nmcpy(iflags.engrave_quicktext, op, BUFSZ - 1);
+            nmcpy(iflags.engrave_quicktext, op, PL_ESIZ);
         }
         else
             return FALSE;

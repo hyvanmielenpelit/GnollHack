@@ -2119,9 +2119,11 @@ namespace GnollHackX
         public const int InputBufferLength = 32;
         public const int BUFSZ = 256;
         public const int UTF8BUFSZ = 256 * 4;
+        public const int MaxEngraveQuickTextLength = 95; /* PL_ESIZ */
+        public const int MaxXlogUserNameLength = 31;        
         public const int MaxGHWindows = 32;
         public const int MapCols = 80;
-        public const int MapRows = 21;
+        public const int MapRows = 21;        
         public const int DelayOutputDurationInMilliseconds = 50;
         public const int ExitWindowsWithStringDelay = 1100;
         public const int FadeToBlackDelay = 325;

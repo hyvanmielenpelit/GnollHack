@@ -162,8 +162,8 @@ namespace GnollHackX.Pages.MainScreen
             FullCommandBarButton12Picker.ItemDisplayBinding = new Binding("Name");
             FullCommandBarButton13Picker.ItemDisplayBinding = new Binding("Name");
 
-            EngraveQuickTextValidationExpression = new Regex(@"^[\x20-\x7E]{0,127}$");
-            XlogUserNameValidationExpression = new Regex(@"^[A-Za-z0-9_]{1,31}$");
+            EngraveQuickTextValidationExpression = new Regex(@"^[\x20-\x7E]{0," + GHConstants.MaxEngraveQuickTextLength + "}$");
+            XlogUserNameValidationExpression = new Regex(@"^[A-Za-z0-9_]{1," + GHConstants.MaxXlogUserNameLength + "}$");
             BonesAllowedUsersValidationExpression = new Regex(@"^([A-Za-z0-9_]*[ \,]+)*([A-Za-z0-9_]*)?$");
 
             SetInitialValues();

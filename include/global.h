@@ -382,6 +382,7 @@ struct savefile_info {
 #define PL_CSIZ 32 /* sizeof pl_character */
 #define PL_FSIZ 32 /* fruit name */
 #define PL_PSIZ 63 /* player-given names for pets, other monsters, objects */
+#define PL_ESIZ 95 /* maximum length for preset quick engraving text */ 
 
 #define BUFSZ 256  /* for getlin buffers */
 #define QBUFSZ 256 /* for building question text */
