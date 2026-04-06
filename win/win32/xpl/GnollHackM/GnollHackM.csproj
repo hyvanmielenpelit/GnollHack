@@ -238,6 +238,8 @@
 		<None Remove="..\GnollHackX\GnollHackX\Pages\MainScreen\VaultPage.xaml.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\Pages\MainScreen\TopScorePage.xaml.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\Pages\MainScreen\LibraryPage.xaml.cs" />
+    <None Remove="..\GnollHackX\GnollHackX\Pages\MainScreen\AchievementsPage.xaml.cs" />
+    <None Remove="..\GnollHackX\GnollHackX\Pages\MainScreen\AchievementsDisplayPage.xaml.cs" />
     <None Remove="..\GnollHackX\GnollHackX\Pages\MainScreen\OraclePage.xaml.cs" />
     <None Remove="..\GnollHackX\GnollHackX\Pages\MainScreen\MusicPage.xaml.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\Pages\MainScreen\SnapshotPage.xaml.cs" />
@@ -449,6 +451,8 @@
 		<Compile Include="..\GnollHackX\GnollHackX\Pages\MainScreen\VaultPage.xaml.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\Pages\MainScreen\TopScorePage.xaml.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\Pages\MainScreen\LibraryPage.xaml.cs" />
+    <Compile Include="..\GnollHackX\GnollHackX\Pages\MainScreen\AchievementsPage.xaml.cs" />
+    <Compile Include="..\GnollHackX\GnollHackX\Pages\MainScreen\AchievementsDisplayPage.xaml.cs" />
     <Compile Include="..\GnollHackX\GnollHackX\Pages\MainScreen\OraclePage.xaml.cs" />
     <Compile Include="..\GnollHackX\GnollHackX\Pages\MainScreen\MusicPage.xaml.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\Pages\MainScreen\SnapshotPage.xaml.cs" />

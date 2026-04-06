@@ -3218,6 +3218,9 @@ namespace GnollHackX.Pages.Game
                             case GHRequestType.GameEnteredMoveloop:
                                 GameEnteredMoveloop = true;
                                 break;
+                            case GHRequestType.ProcessPendingAchievements:
+                                GHApp.ProcessPendingAchievements();
+                                break;
                         }
                     }
                     catch (Exception ex)
@@ -4166,6 +4169,8 @@ namespace GnollHackX.Pages.Game
             }
             if (GHApp.DoAppExitOnReturn)
                 _mainPage.ForceCloseApp();
+            else
+                _mainPage.DisplayAchievementsGained();
             await _mainPage.StartGeneralTimerAsync(); /* Just to be doubly sure */
         }
 

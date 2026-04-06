@@ -926,6 +926,7 @@ struct obj *instr;
                                 {
                                     achievement_gained("Solved Castle Drawbridge Tune");
                                     u.uachieve.learned_castle_tune = 1;
+                                    issue_achievement(GUI_ACHIEVEMENT_SOLVED_CASTLE_TUNE);
                                 }
 
                                 return 1;

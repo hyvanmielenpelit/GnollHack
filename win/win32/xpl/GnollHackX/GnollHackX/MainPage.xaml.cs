@@ -45,6 +45,7 @@ using GnollHackX.Pages.MainScreen;
 using Xamarin.Essentials;
 using Xamarin.Forms.PlatformConfiguration;
 using Xamarin.Forms.PlatformConfiguration.iOSSpecific;
+using GnollHackX.Controls;
 
 namespace GnollHackX
 #endif
@@ -1047,6 +1048,12 @@ namespace GnollHackX
                     }
                 }
 
+                if (!previousInformationShown)
+                {
+                    if (DisplayAchievementsGained())
+                        previousInformationShown = true;
+                }
+
                 /* This last, since the store review may not show up */
                 if (!previousInformationShown && GHApp.HasInternetAccess)
                 {
@@ -1190,6 +1197,8 @@ namespace GnollHackX
             GHApp.CheckUserData();
             GHApp.DiscoveredMusicBits = GHApp.GetDiscoveredTracks();
             GHApp.AddPreDiscoveredMusic();
+            GHApp.InitAchievements();
+            GHApp.AddGainedAchievements();
 
             carouselView.Init();
 
@@ -2321,6 +2330,74 @@ namespace GnollHackX
 
             EventButtonGrid.IsEnabled = true;
             EventGrid.IsVisible = true;
+        }
+
+        public bool DisplayAchievementsGained()
+        {
+            bool didShowGrid = false;
+            List<int> achievementsGained = GHApp.GetAchievementsGained();
+            int newAchievementsGained = achievementsGained?.Count ?? 0;
+            if (newAchievementsGained > 0)
+            {
+                if (newAchievementsGained > 1)
+                    AchievementTitleLabel.Text = newAchievementsGained + " Achievement" + (newAchievementsGained == 1 ? "" : "s") + " Gained";
+                else
+                    AchievementTitleLabel.Text = "Achievement Gained";
+
+                AchievementTitleLabel.TextColor = GHColors.TitleGoldColor;
+
+                double spaceAvailable = RootGrid.Height
+                    - AchievementFrameCenterGrid.Padding.Top - AchievementFrameCenterGrid.Padding.Bottom - AchievementFrameCenterGrid.Margin.Top - AchievementFrameCenterGrid.Margin.Bottom
+                    - AchievementFrame.Padding.Top - AchievementFrame.Padding.Bottom - AchievementFrame.Margin.Top - AchievementFrame.Margin.Bottom
+                    - AchievementMainLayout.Padding.Top - AchievementMainLayout.Padding.Bottom - AchievementMainLayout.Margin.Top - AchievementMainLayout.Margin.Bottom
+                    - 20 /* Title */
+                    - 55 - 10 /* Button */
+                    ;
+                double spaceNeeded = newAchievementsGained * 90;
+                double spaceRequested = Math.Min(450, Math.Max(90, Math.Min(spaceAvailable, spaceNeeded)));
+                AchievementScrollView.HeightRequest = spaceRequested;
+
+                foreach (int achievementId in achievementsGained)
+                {
+                    var achievement = GHApp.AchievementDefinitions[achievementId];
+                    RowImageButton rib = new RowImageButton();
+                    rib.IgnoreDarkMode = true;
+                    rib.ImgSourcePath = "resource://" + GHApp.AppResourceName + ".Assets.UI.conduct.png";
+                    rib.ImgHighFilterQuality = true;
+                    rib.LblText = achievement?.Name ?? "(null)";
+                    rib.LblTextColor = GHColors.TitleGoldColor; // GHApp.DarkMode ? GHColors.White : GHColors.Black;
+                    rib.LblFontSize = 17;
+                    rib.SubLblText = achievement?.Description ?? "(null)";
+                    rib.SubLblTextColor = GHColors.LightGray;
+                    rib.SubLblFontSize = 14;
+                    rib.IsSubLblVisible = true;
+                    rib.ImgWidth = 80;
+                    rib.ImgHeight = 80;
+                    rib.GridWidth = 480;
+                    rib.GridHeight = 80;
+#if GNH_MAUI
+                    rib.MaximumWidthRequest = 480;
+                    rib.GridMargin = new Microsoft.Maui.Thickness(rib.ImgWidth / 15, 0);
+#else
+                    rib.WidthRequest = 480;
+                    rib.GridMargin = new Thickness(rib.ImgWidth / 15, 0);
+#endif
+                    rib.HeightRequest = 80;
+                    AchievementGainedLayout.Children.Add(rib);
+                }
+                AchievementGrid.IsVisible = true;
+                GHApp.ClearAchievementsGained();
+                didShowGrid = true;
+            }
+            return didShowGrid;
+        }
+
+        private void AchievementOkButton_Clicked(object sender, EventArgs e)
+        {
+            AchievementOkButton.IsEnabled = false;
+            GHApp.PlayButtonClickedSound();
+            AchievementGrid.IsVisible = false;
+            AchievementOkButton.IsEnabled = true;
         }
     }
 }

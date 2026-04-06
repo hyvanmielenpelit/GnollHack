@@ -53,6 +53,7 @@ namespace GnollHackX.Controls
         public static readonly BindableProperty ImgWidthProperty = BindableProperty.Create(nameof(ImgWidth), typeof(double), typeof(RowImageButton), 80.0);
         public static readonly BindableProperty ImgHeightProperty = BindableProperty.Create(nameof(ImgHeight), typeof(double), typeof(RowImageButton), 80.0);
         public static readonly BindableProperty BtnCommandProperty = BindableProperty.Create(nameof(BtnCommand), typeof(int), typeof(RowImageButton), 0);
+        public static readonly BindableProperty IgnoreDarkModeProperty = BindableProperty.Create(nameof(IgnoreDarkMode), typeof(bool), typeof(LabeledImageButton), false);
 
         public event EventHandler<EventArgs> BtnClicked;
         public int BtnCommand
@@ -72,7 +73,7 @@ namespace GnollHackX.Controls
             set
             {
                 SetValue(LblTextColorProperty, value);
-                ViewLabel.TextColor = _isHoveringEnabled && (!_isHovering || !IsEnabled) ? UIUtils.NonHoveringColorAdjustment(value, GHApp.DarkMode) : UIUtils.HoveringColorAdjustment(value, GHApp.DarkMode);
+                ViewLabel.TextColor = _isHoveringEnabled && (!_isHovering || !IsEnabled) ? UIUtils.NonHoveringColorAdjustment(value, !IgnoreDarkMode && GHApp.DarkMode) : UIUtils.HoveringColorAdjustment(value, !IgnoreDarkMode && GHApp.DarkMode);
             }
         }
         public double LblFontSize
@@ -116,7 +117,7 @@ namespace GnollHackX.Controls
             set
             {
                 SetValue(SubLblTextColorProperty, value);
-                SubViewLabel.TextColor = _isHoveringEnabled && (!_isHovering || !IsEnabled) ? UIUtils.NonHoveringColorAdjustment(value, GHApp.DarkMode) : UIUtils.HoveringColorAdjustment(value, GHApp.DarkMode);
+                SubViewLabel.TextColor = _isHoveringEnabled && (!_isHovering || !IsEnabled) ? UIUtils.NonHoveringColorAdjustment(value, !IgnoreDarkMode && GHApp.DarkMode) : UIUtils.HoveringColorAdjustment(value, !IgnoreDarkMode && GHApp.DarkMode);
             }
         }
         public Color SubLbl2TextColor
@@ -125,7 +126,7 @@ namespace GnollHackX.Controls
             set
             {
                 SetValue(SubLbl2TextColorProperty, value);
-                SubViewLabel2.TextColor = _isHoveringEnabled && (!_isHovering || !IsEnabled) ? UIUtils.NonHoveringColorAdjustment(value, GHApp.DarkMode) : UIUtils.HoveringColorAdjustment(value, GHApp.DarkMode);
+                SubViewLabel2.TextColor = _isHoveringEnabled && (!_isHovering || !IsEnabled) ? UIUtils.NonHoveringColorAdjustment(value, !IgnoreDarkMode && GHApp.DarkMode) : UIUtils.HoveringColorAdjustment(value, !IgnoreDarkMode && GHApp.DarkMode);
             }
         }
         public Color SubLbl3TextColor
@@ -134,7 +135,7 @@ namespace GnollHackX.Controls
             set
             {
                 SetValue(SubLbl3TextColorProperty, value);
-                SubViewLabel3.TextColor = _isHoveringEnabled && (!_isHovering || !IsEnabled) ? UIUtils.NonHoveringColorAdjustment(value, GHApp.DarkMode) : UIUtils.HoveringColorAdjustment(value, GHApp.DarkMode);
+                SubViewLabel3.TextColor = _isHoveringEnabled && (!_isHovering || !IsEnabled) ? UIUtils.NonHoveringColorAdjustment(value, !IgnoreDarkMode && GHApp.DarkMode) : UIUtils.HoveringColorAdjustment(value, !IgnoreDarkMode && GHApp.DarkMode);
             }
         }
         public Color SubLbl4TextColor
@@ -143,7 +144,7 @@ namespace GnollHackX.Controls
             set
             {
                 SetValue(SubLbl4TextColorProperty, value);
-                SubViewLabel4.TextColor = _isHoveringEnabled && (!_isHovering || !IsEnabled) ? UIUtils.NonHoveringColorAdjustment(value, GHApp.DarkMode) : UIUtils.HoveringColorAdjustment(value, GHApp.DarkMode);
+                SubViewLabel4.TextColor = _isHoveringEnabled && (!_isHovering || !IsEnabled) ? UIUtils.NonHoveringColorAdjustment(value, !IgnoreDarkMode && GHApp.DarkMode) : UIUtils.HoveringColorAdjustment(value, !IgnoreDarkMode && GHApp.DarkMode);
             }
         }
         public double SubLblFontSize
@@ -245,8 +246,13 @@ namespace GnollHackX.Controls
         }
         public bool ImgHighFilterQuality
         {
-            get => (bool)GetValue(LabeledImageButton.ImgHighFilterQualityProperty);
-            set => SetValue(LabeledImageButton.ImgHighFilterQualityProperty, value);
+            get => (bool)GetValue(RowImageButton.ImgHighFilterQualityProperty);
+            set => SetValue(RowImageButton.ImgHighFilterQualityProperty, value);
+        }
+        public bool IgnoreDarkMode
+        {
+            get => (bool)GetValue(RowImageButton.IgnoreDarkModeProperty);
+            set => SetValue(RowImageButton.IgnoreDarkModeProperty, value);
         }
 
         public RowImageButton()
@@ -335,7 +341,7 @@ namespace GnollHackX.Controls
             if (cib != null && newValue is Color)
             {
                 Color newColor = (Color)newValue;
-                cib.ViewLabel.TextColor = cib._isHoveringEnabled && (!cib._isHovering || !cib.IsEnabled) ? UIUtils.NonHoveringColorAdjustment(newColor, GHApp.DarkMode) : UIUtils.HoveringColorAdjustment(newColor, GHApp.DarkMode);
+                cib.ViewLabel.TextColor = cib._isHoveringEnabled && (!cib._isHovering || !cib.IsEnabled) ? UIUtils.NonHoveringColorAdjustment(newColor, !cib.IgnoreDarkMode && GHApp.DarkMode) : UIUtils.HoveringColorAdjustment(newColor, !cib.IgnoreDarkMode && GHApp.DarkMode);
             }
         }
 
@@ -345,7 +351,7 @@ namespace GnollHackX.Controls
             if (cib != null && newValue is Color)
             {
                 Color newColor = (Color)newValue;
-                cib.SubViewLabel.TextColor = cib._isHoveringEnabled && (!cib._isHovering || !cib.IsEnabled) ? UIUtils.NonHoveringColorAdjustment(newColor, GHApp.DarkMode) : UIUtils.HoveringColorAdjustment(newColor, GHApp.DarkMode);
+                cib.SubViewLabel.TextColor = cib._isHoveringEnabled && (!cib._isHovering || !cib.IsEnabled) ? UIUtils.NonHoveringColorAdjustment(newColor, !cib.IgnoreDarkMode && GHApp.DarkMode) : UIUtils.HoveringColorAdjustment(newColor, !cib.IgnoreDarkMode && GHApp.DarkMode);
             }
         }
         private static void OnSub2TextColorChanged(BindableObject bindable, object oldValue, object newValue)
@@ -354,7 +360,7 @@ namespace GnollHackX.Controls
             if (cib != null && newValue is Color)
             {
                 Color newColor = (Color)newValue;
-                cib.SubViewLabel2.TextColor = cib._isHoveringEnabled && (!cib._isHovering || !cib.IsEnabled) ? UIUtils.NonHoveringColorAdjustment(newColor, GHApp.DarkMode) : UIUtils.HoveringColorAdjustment(newColor, GHApp.DarkMode);
+                cib.SubViewLabel2.TextColor = cib._isHoveringEnabled && (!cib._isHovering || !cib.IsEnabled) ? UIUtils.NonHoveringColorAdjustment(newColor, !cib.IgnoreDarkMode && GHApp.DarkMode) : UIUtils.HoveringColorAdjustment(newColor, !cib.IgnoreDarkMode && GHApp.DarkMode);
             }
         }
         private static void OnSub3TextColorChanged(BindableObject bindable, object oldValue, object newValue)
@@ -363,7 +369,7 @@ namespace GnollHackX.Controls
             if (cib != null && newValue is Color)
             {
                 Color newColor = (Color)newValue;
-                cib.SubViewLabel3.TextColor = cib._isHoveringEnabled && (!cib._isHovering || !cib.IsEnabled) ? UIUtils.NonHoveringColorAdjustment(newColor, GHApp.DarkMode) : UIUtils.HoveringColorAdjustment(newColor, GHApp.DarkMode);
+                cib.SubViewLabel3.TextColor = cib._isHoveringEnabled && (!cib._isHovering || !cib.IsEnabled) ? UIUtils.NonHoveringColorAdjustment(newColor, !cib.IgnoreDarkMode && GHApp.DarkMode) : UIUtils.HoveringColorAdjustment(newColor, !cib.IgnoreDarkMode && GHApp.DarkMode);
             }
         }
         private static void OnSub4TextColorChanged(BindableObject bindable, object oldValue, object newValue)
@@ -372,7 +378,7 @@ namespace GnollHackX.Controls
             if (cib != null && newValue is Color)
             {
                 Color newColor = (Color)newValue;
-                cib.SubViewLabel4.TextColor = cib._isHoveringEnabled && (!cib._isHovering || !cib.IsEnabled) ? UIUtils.NonHoveringColorAdjustment(newColor, GHApp.DarkMode) : UIUtils.HoveringColorAdjustment(newColor, GHApp.DarkMode);
+                cib.SubViewLabel4.TextColor = cib._isHoveringEnabled && (!cib._isHovering || !cib.IsEnabled) ? UIUtils.NonHoveringColorAdjustment(newColor, !cib.IgnoreDarkMode && GHApp.DarkMode) : UIUtils.HoveringColorAdjustment(newColor, !cib.IgnoreDarkMode && GHApp.DarkMode);
             }
         }
     }

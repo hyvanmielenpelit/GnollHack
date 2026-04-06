@@ -1369,7 +1369,10 @@ doengrave()
     {
         u.uevent.elbereth_known = 1;
         if (!u.uconduct.elbereths++)
+        {
             livelog_printf(LL_CONDUCT, "engraved Elbereth for the first time");
+            issue_achievement(GUI_ACHIEVEMENT_ENGRAVED_ELBERETH);
+        }
     }
 
     if (post_engr_text[0])

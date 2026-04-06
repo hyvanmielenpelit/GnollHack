@@ -257,6 +257,7 @@ struct obj *obj; /* quest artifact; possibly null if carrying Amulet */
         fully_identify_obj(obj);
         update_inventory();
         livelog_printf(LL_ACHIEVE, "completed %s quest without incident", uhis());
+        issue_achievement(GUI_ACHIEVEMENT_COMPLETED_THE_QUEST);
         update_game_music();
     }
 }

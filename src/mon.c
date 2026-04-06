@@ -3560,6 +3560,7 @@ uint64_t mondeadflags;
         {
             achievement_gained("Defeated Medusa");
             livelog_printf(LL_ACHIEVE | LL_UMONST, "%s", "killed Medusa");
+            issue_achievement(GUI_ACHIEVEMENT_DEFEATED_MEDUSA);
         }
         u.uachieve.killed_medusa = 1;
     }
@@ -3571,6 +3572,7 @@ uint64_t mondeadflags;
         {
             achievement_gained("Defeated Yacc");
             livelog_printf(LL_ACHIEVE | LL_UMONST, "%s", "killed Yacc");
+            issue_achievement(GUI_ACHIEVEMENT_DEFEATED_YACC);
         }
         u.uachieve.killed_yacc = 1;
     }
@@ -3582,6 +3584,7 @@ uint64_t mondeadflags;
         {
             achievement_gained("Defeated Demogorgon");
             livelog_printf(LL_ACHIEVE | LL_UMONST, "%s", "killed Demogorgon");
+            issue_achievement(GUI_ACHIEVEMENT_DEFEATED_DEMOGORGON);
         }
         u.uachieve.killed_demogorgon = 1;
     }
@@ -3647,6 +3650,7 @@ uint64_t mondeadflags;
         strcpy_capitalized_for_title(abuf, ra_desc);
         achievement_gained(abuf);
         livelog_printf(LL_ACHIEVE, "%s", ra_desc);
+        issue_achievement(GUI_ACHIEVEMENT_COMPLETED_OPTIONAL_QUEST);
     }
 
     if (glyph_is_invisible(levl[mtmp->mx][mtmp->my].hero_memory_layers.glyph))

@@ -112,6 +112,7 @@ namespace GnollHackX
         PlayButtonClickSound,
         PlayMenuSelectSound,
         GameEnteredMoveloop,
+        ProcessPendingAchievements,
     }
 
     public struct AddContextMenuData

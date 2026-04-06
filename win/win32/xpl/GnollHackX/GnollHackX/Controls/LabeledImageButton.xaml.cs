@@ -40,7 +40,7 @@ namespace GnollHackX.Controls
         public static readonly BindableProperty ShortcutFontColorProperty = BindableProperty.Create(nameof(ShortcutFontColor), typeof(Color), typeof(LabeledImageButton), GHColors.Gray);
         public static readonly BindableProperty IsShortcutVisibleProperty = BindableProperty.Create(nameof(IsShortcutVisible), typeof(bool), typeof(LabeledImageButton), false);
         public static readonly BindableProperty IsCommandMappingEnabledProperty = BindableProperty.Create(nameof(IsCommandMappingEnabled), typeof(bool), typeof(LabeledImageButton), true);
-        
+
         public event EventHandler<EventArgs> BtnClicked;
         public char BtnLetter
         {

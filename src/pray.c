@@ -1928,6 +1928,7 @@ gcrownu()
 
         u.uachieve.crowned = 1;
         achievement_gained(hofe);
+        issue_achievement(GUI_ACHIEVEMENT_WAS_CROWNED);
     }
     return;
 }
@@ -2896,6 +2897,13 @@ dosacrifice()
                 You_ex(ATR_NONE, CLR_MSG_POSITIVE, "ascend to the status of Demigod%s...",
                     flags.female ? "dess" : "");
                 achievement_gained("Ascended");
+                issue_achievement(GUI_ACHIEVEMENT_ASCENDED);
+                if (context.game_difficulty >= 0)
+                    issue_achievement(GUI_ACHIEVEMENT_ASCENDED_AT_EXPERT_DIFFICULTY);
+                if (context.game_difficulty >= 1)
+                    issue_achievement(GUI_ACHIEVEMENT_ASCENDED_AT_MASTER_DIFFICULTY);
+                if (context.game_difficulty >= 2)
+                    issue_achievement(GUI_ACHIEVEMENT_ASCENDED_AT_GRAND_MASTER_DIFFICULTY);
                 done(ASCENDED);
             }
         }

@@ -4246,6 +4246,7 @@ struct obj* obj;
 
                 break;
             case WAN_PROBING:
+                issue_achievement(GUI_ACHIEVEMENT_USED_WAND_OF_PROBING);
                 if (!probe_object(otmp))
                     pline("Nothing much happens.");
                 break;

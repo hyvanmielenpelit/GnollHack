@@ -2318,6 +2318,7 @@ int skill;
         strcpy_capitalized_for_title(abuf, ra_desc);
         achievement_gained(abuf);
         livelog_printf(LL_ACHIEVE, "%s", ra_desc);
+        issue_achievement(GUI_ACHIEVEMENT_COMPLETED_OPTIONAL_QUEST);
     }
 
     update_can_advance_any_skill();
