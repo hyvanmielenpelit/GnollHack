@@ -66,12 +66,11 @@ namespace GnollHackX
 
         }
 
-        public Achievement(string name, string description, int categoryId, int subCategoryId, int madeKnownById)
-            : this(name, description, categoryId, subCategoryId, false, false, true, 0, madeKnownById, 0)
+        public Achievement(string name, string description, int categoryId, int subCategoryId, int madeVisibleById)
+            : this(name, description, categoryId, subCategoryId, false, true, false, 0, 0, madeVisibleById)
         {
 
         }
-
     }
 
     public class AchievementCategory

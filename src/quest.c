@@ -118,6 +118,7 @@ nemdead()
 {
     if (!Qstat(killed_nemesis)) {
         Qstat(killed_nemesis) = TRUE;
+        issue_achievement(GUI_ACHIEVEMENT_DEFEATED_QUEST_NEMESIS);
         qt_pager_ex((struct monst*)0, QT_KILLEDNEM, ATR_NONE, CLR_MSG_HINT, FALSE);
     }
 }

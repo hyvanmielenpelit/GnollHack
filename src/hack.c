@@ -2554,7 +2554,7 @@ int x1, y1, x2, y2;
 
 /* combat increases metabolism */
 boolean
-overexertion()
+overexertion(VOID_ARGS)
 {
     /* this used to be part of domove() when moving to a monster's
        position, but is now called by attack() so that it doesn't
@@ -2575,7 +2575,7 @@ overexertion()
 }
 
 void
-invocation_message()
+invocation_message(VOID_ARGS)
 {
     /* a special clue-msg when on the Invocation position */
     if (invocation_pos(u.ux, u.uy) && !On_stairs(u.ux, u.uy)) {
@@ -2592,6 +2592,7 @@ invocation_message()
 
         You_feel_ex(ATR_NONE, CLR_MSG_ATTENTION, "a strange vibration %s.", buf);
         u.uevent.uvibrated = 1;
+        issue_achievement(GUI_ACHIEVEMENT_FOUND_VIBRATING_SQUARE);
         if (otmp && otmp->special_quality == 7 && otmp->lamplit)
             pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s %s!", The(xname(otmp)),
                   Blind ? "throbs palpably" : "glows with a strange light");
@@ -2604,7 +2605,7 @@ invocation_message()
    might be going into solid rock, inhibiting levitation or flight,
    or coming back out of such, reinstating levitation/flying */
 void
-switch_terrain()
+switch_terrain(VOID_ARGS)
 {
     boolean blocklev = loc_blocks_flying_and_leviation(u.ux, u.uy),
             was_levitating = !!Levitation, was_flying = !!Flying;

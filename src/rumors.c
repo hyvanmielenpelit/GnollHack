@@ -738,6 +738,7 @@ struct monst *oracl;
     {
         //achievement_gained("Consulted the Oracle");
         u.uachieve.consulted_oracle = 1;
+        issue_achievement(GUI_ACHIEVEMENT_CONSULTED_ORACLE);
     }
 
     return 1;

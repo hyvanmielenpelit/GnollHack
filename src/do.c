@@ -7749,7 +7749,7 @@ xchar portal; /* 1 = Magic portal, 2 = Modron portal down (find portal up), 3 = 
             display_nhwindow(WIN_MESSAGE, FALSE);
 #endif
             You_hear_ex(ATR_NONE, CLR_MSG_WARNING, "groans and moans everywhere.");
-        } 
+        }
         else
             pline_ex(ATR_NONE, CLR_MSG_WARNING, "It is hot here.  You smell smoke...");
 
@@ -7765,13 +7765,25 @@ xchar portal; /* 1 = Magic portal, 2 = Modron portal down (find portal up), 3 = 
         u.uachieve.enter_gehennom = 1;
     }
 
-    if (In_mines(&u.uz) && !u.uachieve.entered_gnomish_mines)
+    if (In_mines(&u.uz))
     {
-        //if (!u.uachieve.entered_gnomish_mines)
-        //    achievement_gained("Entered Gnomish Mines");
-        livelog_printf(LL_ACHIEVE, "%s", "entered the Gnomish Mines");
-        u.uachieve.entered_gnomish_mines = 1;
-        issue_achievement(GUI_ACHIEVEMENT_ENTERED_GNOMISH_MINES);
+        if (!u.uachieve.entered_gnomish_mines)
+        {
+            //if (!u.uachieve.entered_gnomish_mines)
+            //    achievement_gained("Entered Gnomish Mines");
+            livelog_printf(LL_ACHIEVE, "%s", "entered the Gnomish Mines");
+            u.uachieve.entered_gnomish_mines = 1;
+            issue_achievement(GUI_ACHIEVEMENT_ENTERED_GNOMISH_MINES);
+        }
+        if (Is_minetown_level(&u.uz) && !u.uachieve.entered_mine_town)
+        {
+            //    achievement_gained("Entered Mine Town");
+            livelog_printf(LL_MINORAC, "%s", "reached Mine Town");
+            u.uachieve.entered_mine_town = 1;
+            issue_achievement(GUI_ACHIEVEMENT_REACHED_MINE_TOWN);
+        }
+        if (Is_mineend_level(&u.uz))
+            issue_achievement(GUI_ACHIEVEMENT_REACHED_MINES_END);
     }
 
     if (In_endgame(&u.uz))
@@ -7793,19 +7805,17 @@ xchar portal; /* 1 = Magic portal, 2 = Modron portal down (find portal up), 3 = 
         }
     }
 
-    if (Is_minetown_level(&u.uz) && !u.uachieve.entered_mine_town)
+    if (In_sokoban(&u.uz))
     {
-        //    achievement_gained("Entered Mine Town");
-        livelog_printf(LL_MINORAC, "%s", "reached Mine Town");
-        u.uachieve.entered_mine_town = 1;
-    }
-
-    if (In_sokoban(&u.uz) && !u.uachieve.entered_sokoban)
-    {
-        //    achievement_gained("Entered Sokoban");
-        livelog_printf(LL_ACHIEVE, "%s", "entered Sokoban");
-        u.uachieve.entered_sokoban = 1;
-        issue_achievement(GUI_ACHIEVEMENT_ENTERED_SOKOBAN);
+        if (!u.uachieve.entered_sokoban)
+        {
+            //    achievement_gained("Entered Sokoban");
+            livelog_printf(LL_ACHIEVE, "%s", "entered Sokoban");
+            u.uachieve.entered_sokoban = 1;
+            issue_achievement(GUI_ACHIEVEMENT_ENTERED_SOKOBAN);
+        }
+        if (Is_sokoend_level(&u.uz))
+            issue_achievement(GUI_ACHIEVEMENT_REACHED_TOP_OF_SOKOBAN);
     }
 
     if (Is_bigroom(&u.uz) && !u.uachieve.entered_bigroom)
@@ -7826,6 +7836,8 @@ xchar portal; /* 1 = Magic portal, 2 = Modron portal down (find portal up), 3 = 
         u.uevent.modron_plane_entered = 1;
         u.uachieve.entered_plane_of_modron = 1;
         issue_achievement(GUI_ACHIEVEMENT_ENTERED_PLANE_OF_THE_MODRON);
+        if (Is_primus_modron_level(&u.uz))
+            issue_achievement(GUI_ACHIEVEMENT_REACHED_PROTONUS);
     }
     
     if (In_bovine_level(&u.uz))
@@ -7844,7 +7856,42 @@ xchar portal; /* 1 = Magic portal, 2 = Modron portal down (find portal up), 3 = 
         u.uevent.large_circular_dgn_entered = 1;
         u.uachieve.entered_large_circular_dungeon = 1;
         issue_achievement(GUI_ACHIEVEMENT_ENTERED_LARGE_CIRCULAR_DUNGEON);
+        if (Is_quantum_core_level(&u.uz))
+            issue_achievement(GUI_ACHIEVEMENT_REACHED_QUANTUM_CORE);
     }
+
+    if (In_quest(&u.uz))
+    {
+        issue_achievement(GUI_ACHIEVEMENT_ENTERED_THE_QUEST);
+        if (Is_nemesis(&u.uz))
+            issue_achievement(GUI_ACHIEVEMENT_REACHED_FINAL_QUEST_LEVEL);
+    }
+
+    if (In_W_tower(u.ux, u.uy, &u.uz))
+    {
+        issue_achievement(GUI_ACHIEVEMENT_REACHED_WIZARD_TOWER);
+    }
+    else if (In_V_tower(&u.uz))
+    {
+        issue_achievement(GUI_ACHIEVEMENT_ENTERED_VLAD_TOWER);
+    }
+    else if (Is_stronghold(&u.uz))
+    {
+        issue_achievement(GUI_ACHIEVEMENT_REACHED_CASTLE);
+    }
+    else if(Is_valley(&u.uz))
+    {
+        issue_achievement(GUI_ACHIEVEMENT_REACHED_VALLEY_OF_THE_DEAD);
+    }
+    else if (Is_sanctum(&u.uz))
+    {
+        issue_achievement(GUI_ACHIEVEMENT_REACHED_SANCTUM);
+    }
+    else if (Invocation_lev(&u.uz))
+    {
+        issue_achievement(GUI_ACHIEVEMENT_REACHED_BOTTOM_OF_GEHENNOM);
+    }
+
 
     if (isnew)
     {

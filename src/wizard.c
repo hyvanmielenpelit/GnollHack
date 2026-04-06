@@ -888,6 +888,7 @@ wizdead()
     if (!u.uevent.ukilled_wizard) {
         u.uevent.ukilled_wizard = TRUE;
         u.uintervene_timer = rn1(250, 50);
+        issue_achievement(GUI_ACHIEVEMENT_DEFEATED_WIZARD_OF_YENDOR);
     }
 }
 

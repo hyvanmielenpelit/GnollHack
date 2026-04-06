@@ -3637,6 +3637,20 @@ uint64_t mondeadflags;
         }
     }
 
+    if (mtmp->data == &mons[PM_HIGH_PRIEST] && Is_sanctum(&u.uz)
+        && mtmp->ispriest && has_epri(mtmp) && EPRI(mtmp)->shralign == A_NONE)
+    {
+        issue_achievement(GUI_ACHIEVEMENT_DEFEATED_HIGH_PRIEST_OF_MOLOCH);
+    }
+    else if (mtmp->data == &mons[PM_MODRON_PRIMUS])
+    {
+        issue_achievement(GUI_ACHIEVEMENT_DEFEATED_MODRON_PRIMUS);
+    }
+    else if (mtmp->data == &mons[PM_VLAD_THE_IMPALER])
+    {
+        issue_achievement(GUI_ACHIEVEMENT_DEFEATED_VLAD_THE_IMPALER);
+    }
+
     if (!u.uachieve.role_achievement &&
         (      (Role_if(PM_ARCHAEOLOGIST) && mtmp->mnum == PM_AMONKET)
             || (Role_if(PM_ROGUE) && mtmp->mnum == PM_CROESUS)
