@@ -10,6 +10,7 @@
 
 STATIC_VAR NEARDATA struct engr *head_engr;
 STATIC_DCL const char *NDECL(blengr);
+STATIC_DCL int FDECL(doengrave_core, (const char*));
 
 char *
 random_engraving(outbuf)
