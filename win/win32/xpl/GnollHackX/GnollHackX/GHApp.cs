@@ -9539,17 +9539,17 @@ namespace GnollHackX
 
             AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_COMPLETED_THE_QUEST] =
                 new Achievement("The Quest", "Complete the Quest branch",
-                (int)gui_achievement_categories.Playthrough, 0, false, true, false, 0, 0, (int)gui_achievement_types.GUI_ACHIEVEMENT_ENTERED_THE_QUEST);
+                (int)gui_achievement_categories.Playthrough, 0, (int)gui_achievement_types.GUI_ACHIEVEMENT_ENTERED_THE_QUEST);
 
             AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_FOUND_BELL_OF_OPENING] =
                 new Achievement("The Bell of Opening", "Find and obtain the possession of the Bell of Opening",
-                (int)gui_achievement_categories.Playthrough, 0, false, true, false, 0, 0, 0);
+                (int)gui_achievement_categories.Playthrough, 0, false);
             AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_FOUND_CANDELABRUM_OF_INVOCATION] =
                 new Achievement("The Candelabrum of Invocation", "Find and obtain the possession of the Candelarbrum of Invocation",
-                (int)gui_achievement_categories.Playthrough, 0, false, true, false, 0, 0, 0);
+                (int)gui_achievement_categories.Playthrough, 0, false);
             AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_FOUND_BOOK_OF_THE_DEAD] =
                 new Achievement("The Book of the Dead", "Find and obtain the possession of the Book of the Dead",
-                (int)gui_achievement_categories.Playthrough, 0, false, true, false, 0, 0, 0);
+                (int)gui_achievement_categories.Playthrough, 0, false);
 
 
             /* Gameplay */
@@ -9567,32 +9567,32 @@ namespace GnollHackX
                 (int)gui_achievement_categories.Gameplay, 0);
             AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_ENGRAVED_ELBERETH] =
                 new Achievement("Engrave Elbereth", "Engrave the name of Elbereth on the ground to protect you",
-                (int)gui_achievement_categories.Gameplay, 0, false, true, false, 0, 0, 0);
+                (int)gui_achievement_categories.Gameplay, 0, false);
             AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_SOLVED_CASTLE_TUNE] =
                 new Achievement("Castle Tune", "Solve the castle tune to control the drawbridge",
-                (int)gui_achievement_categories.Gameplay, 0, false, true, false, 0, 0, 0);
+                (int)gui_achievement_categories.Gameplay, 0, false);
 
             AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_IDENTIFIED_BLESSEDNESS_ON_ALTAR] =
                 new Achievement("Blessedness on Altar", "Determine an object's blessed or cursed status by dropping it on an altar",
-                (int)gui_achievement_categories.Gameplay, 0, false, true, false, 0, 0, 0);
+                (int)gui_achievement_categories.Gameplay, 0, false);
             AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_PRAYED] =
                 new Achievement("Praying", "Pray for your god successfully",
-                (int)gui_achievement_categories.Gameplay, 0, false, true, false, 0, 0, 0);
+                (int)gui_achievement_categories.Gameplay, 0, false);
             AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_SACRIFICED] =
                 new Achievement("Sacrifing", "Sacrifice a suitable corpse for your god",
-                (int)gui_achievement_categories.Gameplay, 0, false, true, false, 0, 0, 0);
+                (int)gui_achievement_categories.Gameplay, 0, false);
             AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_WAS_GIFTED_ARTIFACT] =
                 new Achievement("Gift of God", "Receive an item gifted by your god",
-                (int)gui_achievement_categories.Gameplay, 0, false, true, false, 0, 0, 0);
+                (int)gui_achievement_categories.Gameplay, 0, false);
             AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_WAS_CROWNED] =
                 new Achievement("Crowning", "Become crowned by your god",
-                (int)gui_achievement_categories.Gameplay, 0, false, true, false, 0, 0, 0);
+                (int)gui_achievement_categories.Gameplay, 0, false);
             AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_CREATED_HOLY_WATER_ON_ALTAR] =
                 new Achievement("Create Holy Water", "Create holy water by praying on an altar",
-                (int)gui_achievement_categories.Gameplay, 0, false, true, false, 0, 0, 0);
+                (int)gui_achievement_categories.Gameplay, 0, false);
             AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_CONVERTED_ALTAR] =
                 new Achievement("Convert an Altar", "Convert an altar by sacrificing a corpse on it",
-                (int)gui_achievement_categories.Gameplay, 0, false, true, false, 0, 0, 0);
+                (int)gui_achievement_categories.Gameplay, 0, false);
 
 
             /* Combat */
@@ -9601,96 +9601,96 @@ namespace GnollHackX
                 (int)gui_achievement_categories.Combat, 0);
             AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_DEFEATED_QUEST_NEMESIS] =
                 new Achievement("Defeat Quest Nemesis", "Defeat a quest nemesis",
-                (int)gui_achievement_categories.Combat, 0, false, true, false, 0, 0, (int)gui_achievement_types.GUI_ACHIEVEMENT_ENTERED_THE_QUEST);
+                (int)gui_achievement_categories.Combat, 0, (int)gui_achievement_types.GUI_ACHIEVEMENT_ENTERED_THE_QUEST);
             AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_DEFEATED_VLAD_THE_IMPALER] =
                 new Achievement("Defeat Vlad the Impaler", "Defeat Vlad the Impaler, Lord of the Vampires",
-                (int)gui_achievement_categories.Combat, 0, false, true, false, 0, 0, 0);
+                (int)gui_achievement_categories.Combat, 0, false);
             AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_DEFEATED_HIGH_PRIEST_OF_MOLOCH] =
                 new Achievement("Defeat High Priest of Moloch", "Defeat the High Priest of Moloch at the Sanctum",
-                (int)gui_achievement_categories.Combat, 0, false, true, false, 0, 0, (int)gui_achievement_types.GUI_ACHIEVEMENT_REACHED_SANCTUM);
+                (int)gui_achievement_categories.Combat, 0, (int)gui_achievement_types.GUI_ACHIEVEMENT_REACHED_SANCTUM);
             AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_DEFEATED_YACC] =
                 new Achievement("Defeat Yacc", "Defeat Yacc, the Demon Lord of Bovines",
-                (int)gui_achievement_categories.Combat, 0, false, true, false, 0, 0, 0);
+                (int)gui_achievement_categories.Combat, 0, false);
             AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_DEFEATED_DEMOGORGON] =
                 new Achievement("Defeat Demogorgon", "Defeat Demogorgon, the Prince of Demons",
                 (int)gui_achievement_categories.Combat, 0);
             AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_DEFEATED_MODRON_PRIMUS] =
                 new Achievement("Defeat Modron Primus", "Defeat the Modron Primus, Ruler of the Modrons",
-                (int)gui_achievement_categories.Combat, 0, false, true, false, 0, 0, (int)gui_achievement_types.GUI_ACHIEVEMENT_REACHED_PROTONUS);
+                (int)gui_achievement_categories.Combat, 0, (int)gui_achievement_types.GUI_ACHIEVEMENT_REACHED_PROTONUS);
 
 
             /* Exploration */
             AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_ENTERED_GNOMISH_MINES] =
                 new Achievement("Gnomish Mines", "Find and enter the Gnomish Mines",
-                (int)gui_achievement_categories.Exploration, 0, false, true, false, 0, 0, 0);
+                (int)gui_achievement_categories.Exploration, 0, false);
             AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_REACHED_MINE_TOWN] =
                 new Achievement("Visit Mine Town", "Find and visit Mine Town",
-                (int)gui_achievement_categories.Exploration, 0, false, true, false, 0, 0, 0);
+                (int)gui_achievement_categories.Exploration, 0, false);
             AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_REACHED_MINES_END] =
                 new Achievement("Reach Mines' End", "Descend to the bottom of the Gnomish Mines",
-                (int)gui_achievement_categories.Exploration, 0, false, true, false, 0, 0, (int)gui_achievement_types.GUI_ACHIEVEMENT_ENTERED_GNOMISH_MINES);
+                (int)gui_achievement_categories.Exploration, 0, (int)gui_achievement_types.GUI_ACHIEVEMENT_ENTERED_GNOMISH_MINES);
             AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_FOUND_GLADSTONE] =
                 new Achievement("Find Gladstone", "Find and obtain the possession of the Gladstone",
-                (int)gui_achievement_categories.Exploration, 0, false, true, false, 0, 0, (int)gui_achievement_types.GUI_ACHIEVEMENT_ENTERED_GNOMISH_MINES);
+                (int)gui_achievement_categories.Exploration, 0, (int)gui_achievement_types.GUI_ACHIEVEMENT_ENTERED_GNOMISH_MINES);
 
             AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_ENTERED_SOKOBAN] =
                 new Achievement("Sokoban", "Find Sokoban, a tower with a boulder puzzle",
-                (int)gui_achievement_categories.Exploration, 0, false, true, false, 0, 0, 0);
+                (int)gui_achievement_categories.Exploration, 0, false);
             AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_REACHED_TOP_OF_SOKOBAN] =
                 new Achievement("Reach the top of Sokoban", "Reach the top level of Sokoban",
-                (int)gui_achievement_categories.Exploration, 0, false, true, false, 0, 0, (int)gui_achievement_types.GUI_ACHIEVEMENT_ENTERED_SOKOBAN);
+                (int)gui_achievement_categories.Exploration, 0, (int)gui_achievement_types.GUI_ACHIEVEMENT_ENTERED_SOKOBAN);
             AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_SOLVED_SOKOBAN] =
                 new Achievement("Solve Sokoban", "Solve the Sokoban puzzles",
-                (int)gui_achievement_categories.Exploration, 0, false, true, false, 0, 0, (int)gui_achievement_types.GUI_ACHIEVEMENT_ENTERED_SOKOBAN);
+                (int)gui_achievement_categories.Exploration, 0, (int)gui_achievement_types.GUI_ACHIEVEMENT_ENTERED_SOKOBAN);
 
             AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_ENTERED_LARGE_CIRCULAR_DUNGEON] =
                 new Achievement("Large Circular Dungeon", "Find the Large Circular Dungeon",
-                (int)gui_achievement_categories.Exploration, 0, false, true, false, 0, 0, 0);
+                (int)gui_achievement_categories.Exploration, 0, false);
             AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_REACHED_QUANTUM_CORE] =
                 new Achievement("Reach Quantum Core", "Find and enter the Quantum Core",
-                (int)gui_achievement_categories.Exploration, 0, false, true, false, 0, 0, (int)gui_achievement_types.GUI_ACHIEVEMENT_ENTERED_LARGE_CIRCULAR_DUNGEON);
+                (int)gui_achievement_categories.Exploration, 0, (int)gui_achievement_types.GUI_ACHIEVEMENT_ENTERED_LARGE_CIRCULAR_DUNGEON);
 
             AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_ENTERED_HELLISH_PASTURES] =
                 new Achievement("Hellish Pastures", "Locate and enter the Hellish Pastures, a special branch of Gehennom",
-                (int)gui_achievement_categories.Exploration, 0, false, true, false, 0, 0, 0);
+                (int)gui_achievement_categories.Exploration, 0, false);
 
             AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_ENTERED_PLANE_OF_THE_MODRON] =
                 new Achievement("Plane of the Modron", "Locate and enter the Plane of Modron",
-                (int)gui_achievement_categories.Exploration, 0, false, true, false, 0, 0, 0);
+                (int)gui_achievement_categories.Exploration, 0, false);
             AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_REACHED_PROTONUS] =
                 new Achievement("Protonus", "Enter the final level to the Plane of the Modron",
-                (int)gui_achievement_categories.Exploration, 0, false, true, false, 0, 0, (int)gui_achievement_types.GUI_ACHIEVEMENT_ENTERED_THE_QUEST);
+                (int)gui_achievement_categories.Exploration, 0, (int)gui_achievement_types.GUI_ACHIEVEMENT_ENTERED_THE_QUEST);
             AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_FOUND_PRIME_CODEX] =
                 new Achievement("The Prime Codex", "Find and obtain the possession of the Prime Codex",
-                (int)gui_achievement_categories.Exploration, 0, false, true, false, 0, 0, 0);
+                (int)gui_achievement_categories.Exploration, 0, false);
             AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_ENTERED_GEHENNOM] =
                 new Achievement("Gehennom", "Reach Gehennom",
                 (int)gui_achievement_categories.Exploration, 0, (int)gui_achievement_types.GUI_ACHIEVEMENT_REACHED_CASTLE);
             AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_REACHED_BOTTOM_OF_GEHENNOM] =
                 new Achievement("Reach the bottom of Gehennom", "Reach the bottom of Gehennom",
-                (int)gui_achievement_categories.Exploration, 0, false, true, false, 0, 0, (int)gui_achievement_types.GUI_ACHIEVEMENT_ENTERED_GEHENNOM);
+                (int)gui_achievement_categories.Exploration, 0, (int)gui_achievement_types.GUI_ACHIEVEMENT_ENTERED_GEHENNOM);
             AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_REACHED_VALLEY_OF_THE_DEAD] =
                 new Achievement("Valley of the Dead", "Reach the Valley of the Dead",
-                (int)gui_achievement_categories.Exploration, 0, false, true, false, 0, 0, 0);
+                (int)gui_achievement_categories.Exploration, 0, false);
 
 
             /* Playthrough */
             AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_ENTERED_THE_QUEST] =
                 new Achievement("Enter the Quest", "Locate and enter the Quest branch",
-                (int)gui_achievement_categories.Playthrough, 0, false, true, false, 0, 0, 0);
+                (int)gui_achievement_categories.Playthrough, 0, false);
             AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_REACHED_FINAL_QUEST_LEVEL] =
                 new Achievement("Lair of Quest Nemesis", "Enter the final quest level to face the quest nemesis",
-                (int)gui_achievement_categories.Playthrough, 0, false, true, false, 0, 0, 0);
+                (int)gui_achievement_categories.Playthrough, 0, false);
 
             AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_FOUND_VIBRATING_SQUARE] =
                 new Achievement("Vibrating Square", "Find the vibrating square at the bottom of Gehennom",
-                (int)gui_achievement_categories.Playthrough, 0, false, true, false, 0, 0, (int)gui_achievement_types.GUI_ACHIEVEMENT_REACHED_BOTTOM_OF_GEHENNOM);
+                (int)gui_achievement_categories.Playthrough, 0, (int)gui_achievement_types.GUI_ACHIEVEMENT_REACHED_BOTTOM_OF_GEHENNOM);
             AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_PERFORMED_THE_RITUAL] =
                 new Achievement("Invocation Ritual", "Perform the Invocation Ritual",
-                (int)gui_achievement_categories.Playthrough, 0, false, true, false, 0, 0, (int)gui_achievement_types.GUI_ACHIEVEMENT_FOUND_VIBRATING_SQUARE);
+                (int)gui_achievement_categories.Playthrough, 0, (int)gui_achievement_types.GUI_ACHIEVEMENT_FOUND_VIBRATING_SQUARE);
             AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_REACHED_SANCTUM] =
                 new Achievement("Sanctum of Moloch", "Enter the Sanctum of Moloch",
-                (int)gui_achievement_categories.Playthrough, 0, false, true, false, 0, 0, (int)gui_achievement_types.GUI_ACHIEVEMENT_PERFORMED_THE_RITUAL);
+                (int)gui_achievement_categories.Playthrough, 0, (int)gui_achievement_types.GUI_ACHIEVEMENT_PERFORMED_THE_RITUAL);
 
             AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_ENTERED_ELEMENTAL_PLANES] =
                 new Achievement("Elemental Planes", "Reach the end game",
@@ -9706,13 +9706,13 @@ namespace GnollHackX
                 (int)gui_achievement_categories.Ascension, 0);
             AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_AT_EXPERT_DIFFICULTY] =
                 new Achievement("Ascended at Expert", "Ascended a character at expert difficulty",
-                (int)gui_achievement_categories.Ascension, 0, false, true, false, 0, 0, (int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED);
+                (int)gui_achievement_categories.Ascension, 0, (int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED);
             AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_AT_MASTER_DIFFICULTY] =
                 new Achievement("Ascended at Master", "Ascended a character at master difficulty",
-                (int)gui_achievement_categories.Ascension, 0, false, true, false, 0, 0, (int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED);
+                (int)gui_achievement_categories.Ascension, 0, (int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED);
             AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_AT_GRAND_MASTER_DIFFICULTY] =
                 new Achievement("Ascended at Grand Master", "Ascended a character at grand master difficulty",
-                (int)gui_achievement_categories.Ascension, 0, false, true, false, 0, 0, (int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED);
+                (int)gui_achievement_categories.Ascension, 0, (int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED);
         }
 
 

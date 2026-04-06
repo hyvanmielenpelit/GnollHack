@@ -761,7 +761,7 @@
                                     FontSize="15"
                                     VerticalOptions="Center" 
                                     HorizontalOptions="Start" />
-                                <Entry Grid.Column="1" x:Name="EngraveQuickEntry" MaxLength="127" HorizontalOptions="End" VerticalOptions="Center" Placeholder="Enter engrave text" PlaceholderColor="Gray"
+                                <Entry Grid.Column="1" x:Name="EngraveQuickEntry" MaxLength="{x:Static gnh:GHConstants.MaxEngraveQuickTextLength}" HorizontalOptions="End" VerticalOptions="Center" Placeholder="Enter engrave text" PlaceholderColor="Gray"
                                     Keyboard="Plain" TextColor="Black" FontFamily="DejaVuSansMono" FontSize="15" BackgroundColor="Transparent" HorizontalTextAlignment="Center" WidthRequest="160" />
                             </Grid>
 

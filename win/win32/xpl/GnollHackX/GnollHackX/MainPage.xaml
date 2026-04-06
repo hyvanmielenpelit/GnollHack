@@ -255,7 +255,7 @@
                     </Frame>
                 </Grid>
                 <Grid.GestureRecognizers>
-                    <TapGestureRecognizer />
+                    <TapGestureRecognizer Tapped="AchievementTapGestureRecognizer_Tapped" />
                 </Grid.GestureRecognizers>
             </Grid>
             

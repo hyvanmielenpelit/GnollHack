@@ -1796,6 +1796,8 @@ namespace GnollHackX
                 _currentPageWidth = width;
                 _currentPageHeight = height;
                 UpdateMainScreenBackgroundElement(true);
+                if (AchievementGrid.IsVisible)
+                    CalculateAndSetAchievementScrollViewHeight(_savedNewAchievementsGained, _savedNewAchievementsUnlocked);
             }
         }
 
@@ -2334,6 +2336,21 @@ namespace GnollHackX
             EventGrid.IsVisible = true;
         }
 
+        private void CalculateAndSetAchievementScrollViewHeight(int newAchievementsGained, int newAchievementsUnlocked)
+        {
+            double spaceAvailable = RootGrid.Height
+                    - AchievementFrameCenterGrid.Padding.Top - AchievementFrameCenterGrid.Padding.Bottom - AchievementFrameCenterGrid.Margin.Top - AchievementFrameCenterGrid.Margin.Bottom
+                    - AchievementFrame.Padding.Top - AchievementFrame.Padding.Bottom - AchievementFrame.Margin.Top - AchievementFrame.Margin.Bottom
+                    - AchievementMainLayout.Padding.Top - AchievementMainLayout.Padding.Bottom - AchievementMainLayout.Margin.Top - AchievementMainLayout.Margin.Bottom
+                    - 24 /* Title */
+                    - (newAchievementsUnlocked > 0 ? 18 + 3 + 14 * 2 : 0) /* Subtitle */
+                    - 55 - 10 /* Button */
+                    ;
+            double spaceNeeded = newAchievementsGained * 90;
+            double spaceRequested = Math.Min(450, Math.Max(90, Math.Min(spaceAvailable, spaceNeeded)));
+            AchievementScrollView.HeightRequest = spaceRequested;
+        }
+
         private int CompareAchievements(int a, int b)
         {
             Achievement achA = (a < 0 || a >= (int)gui_achievement_types.NUM_GUI_ACHIEVEMENTS)
@@ -2350,11 +2367,16 @@ namespace GnollHackX
             return string.Compare(achA.Name, achB.Name);
         }
 
+        private int _savedNewAchievementsGained = 0;
+        private int _savedNewAchievementsUnlocked = 0;
+
         public bool DisplayAchievementsGained()
         {
             bool didShowGrid = false;
             List<int> achievementsGained = GHApp.GetAchievementsGained();
             int newAchievementsGained = achievementsGained?.Count ?? 0;
+            _savedNewAchievementsGained = newAchievementsGained;
+            _savedNewAchievementsUnlocked = 0;
             if (newAchievementsGained > 0)
             {
                 if (newAchievementsGained > 1)
@@ -2366,6 +2388,7 @@ namespace GnollHackX
 
                 List<int> achievementsUnlocked = GHApp.GetAchievementsUnlocked(achievementsGained);
                 int newAchievementsUnlocked = achievementsUnlocked?.Count ?? 0;
+                _savedNewAchievementsUnlocked = newAchievementsUnlocked;
                 if (newAchievementsUnlocked > 0)
                 {
                     StringBuilder builder = new StringBuilder();
@@ -2402,17 +2425,7 @@ namespace GnollHackX
                     AchievementUnlockDetailLabel.IsVisible = false;
                 }
 
-                double spaceAvailable = RootGrid.Height
-                    - AchievementFrameCenterGrid.Padding.Top - AchievementFrameCenterGrid.Padding.Bottom - AchievementFrameCenterGrid.Margin.Top - AchievementFrameCenterGrid.Margin.Bottom
-                    - AchievementFrame.Padding.Top - AchievementFrame.Padding.Bottom - AchievementFrame.Margin.Top - AchievementFrame.Margin.Bottom
-                    - AchievementMainLayout.Padding.Top - AchievementMainLayout.Padding.Bottom - AchievementMainLayout.Margin.Top - AchievementMainLayout.Margin.Bottom
-                    - 24 /* Title */
-                    - (newAchievementsUnlocked > 0 ? 18 + 3 + 14 * 2 : 0) /* Subtitle */
-                    - 55 - 10 /* Button */
-                    ;
-                double spaceNeeded = newAchievementsGained * 90;
-                double spaceRequested = Math.Min(450, Math.Max(90, Math.Min(spaceAvailable, spaceNeeded)));
-                AchievementScrollView.HeightRequest = spaceRequested;
+                CalculateAndSetAchievementScrollViewHeight(newAchievementsGained, newAchievementsUnlocked);
                 achievementsGained.Sort(CompareAchievements);
 
                 foreach (int achievementId in achievementsGained)
@@ -2456,6 +2469,11 @@ namespace GnollHackX
             GHApp.PlayButtonClickedSound();
             AchievementGrid.IsVisible = false;
             AchievementOkButton.IsEnabled = true;
+        }
+
+        private void AchievementTapGestureRecognizer_Tapped(object sender, EventArgs e)
+        {
+            AchievementOkButton_Clicked(sender, e);
         }
     }
 }

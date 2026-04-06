@@ -106,6 +106,8 @@ namespace GnollHackX.Pages.MainScreen
             RightMousePicker.ItemsSource = mouseCommandItems;
             MiddleMousePicker.ItemsSource = mouseCommandItems;
 
+            EngraveQuickEntry.MaxLength = GHConstants.MaxEngraveQuickTextLength;
+
             ScreenScalePicker.ItemsSource = GHApp.ScreenScaleItems;
             ScreenResolutionPicker.ItemsSource = GHApp.ScreenResolutionItems;
             if (!GHApp.IsWindows)

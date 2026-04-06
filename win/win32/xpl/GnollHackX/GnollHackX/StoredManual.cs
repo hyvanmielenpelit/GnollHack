@@ -31,11 +31,7 @@ namespace GnollHackX
         public string Description;
         public int CategoryId;
         public int SubCategoryId;
-        public bool IsLocked; /* Achievement cannot be gained yet; shows locked instead (normally cannot be achieved before some other achievement is gained) */
-        public bool IsKnown; /* If false, unknown what the achievement is; shows question mark instead */
         public bool IsVisible; /* If false, the achievement is not listed */
-        public int MadeUnlockedById;
-        public int MadeKnownById;
         public int MadeVisibleById;
 
         public Achievement()
@@ -44,30 +40,25 @@ namespace GnollHackX
         }
 
         public Achievement(string name, string description, int categoryId, int subCategoryId, 
-            bool isLocked, bool isKnown, bool isVisible,
-            int madeUnlockedById, int madeKnownById, int madeVisibleById) : this()
+            bool isVisible, int madeVisibleById) : this()
         {
             Name = name;
             Description = description;
             Name = name;
             CategoryId = categoryId;
             SubCategoryId = subCategoryId;
-            IsLocked = isLocked;
-            IsKnown = isKnown;
             IsVisible = isVisible;
-            MadeUnlockedById = madeUnlockedById;
-            MadeKnownById = madeKnownById;
             MadeVisibleById = madeVisibleById;
         }
 
-        public Achievement(string name, string description, int categoryId, int subCategoryId) 
-            : this(name, description, categoryId, subCategoryId, false, true, true, 0, 0, 0)
+        public Achievement(string name, string description, int categoryId, int subCategoryId, bool isVisible = true) 
+            : this(name, description, categoryId, subCategoryId, isVisible, 0)
         {
 
         }
 
         public Achievement(string name, string description, int categoryId, int subCategoryId, int madeVisibleById)
-            : this(name, description, categoryId, subCategoryId, false, true, false, 0, 0, madeVisibleById)
+            : this(name, description, categoryId, subCategoryId, false, madeVisibleById)
         {
 
         }
