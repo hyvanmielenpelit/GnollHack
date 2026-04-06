@@ -125,6 +125,7 @@ namespace GnollHackX.Pages.MainScreen
             Achievement[] achievementList = GHApp.AchievementDefinitions;
             if (achievementList.Length > 0)
             {
+                List<RowImageButton> ribList = new List<RowImageButton>();
                 for (int i = 0; i < achievementList.Length; i++)
                 {
                     Achievement achievement = achievementList[i];
@@ -136,21 +137,19 @@ namespace GnollHackX.Pages.MainScreen
                         continue;
 
                     bool isAchieved = GHApp.IsAchievementGained(i);
-                    bool isKnown = achievementList[i].IsKnown || isAchieved;
-                    bool isLocked = achievementList[i].IsLocked;
                     RowImageButton rib = new RowImageButton();
                     rib.ImgSourcePath = "resource://" + GHApp.AppResourceName 
                         + ".Assets.UI." 
-                        + (isLocked ? "forcelock" : isAchieved ? "conduct" : !isKnown ? "help" : "loot") 
+                        + (isAchieved ? "conduct" : "forcelock") 
                         + ".png";
                     rib.ImgHighFilterQuality = true;
-                    rib.LblText = isLocked ? "Locked" : !isKnown && !isAchieved ? "Unknown" : achievement.Name;
-                    rib.LblTextColor = GHApp.DarkMode ? GHColors.White : GHColors.Black;
+                    rib.LblText = achievement.Name;
+                    rib.LblTextColor = isAchieved ? (GHApp.DarkMode ? GHColors.TitleGoldColor : GHColors.SemiDarkGreen) : (GHApp.DarkMode ? GHColors.White : GHColors.Black);
                     rib.LblFontSize = 17;
                     rib.SubLblText = achievement.Description;
-                    rib.SubLblTextColor = GHApp.DarkMode ? GHColors.White : GHColors.Black;
+                    rib.SubLblTextColor = isAchieved ? (GHApp.DarkMode ? GHColors.Yellow : GHColors.DarkGreen) : (GHApp.DarkMode ? GHColors.LighterGray : GHColors.DarkerGray);
                     rib.SubLblFontSize = 14;
-                    rib.IsSubLblVisible = isKnown && !isLocked;
+                    rib.IsSubLblVisible = true;
                     rib.ImgWidth = 80;
                     rib.ImgHeight = 80;
                     rib.GridWidth = 480;
@@ -164,12 +163,23 @@ namespace GnollHackX.Pages.MainScreen
                     rib.GridMargin = new Thickness(rib.ImgWidth / 15, 0);
                     rib.BtnCommand = i;
                     //rib.BtnClicked += AchievementButton_Clicked;
-                    AchievementLayout.Children.Add(rib);
+                    ribList.Add(rib);
                 }
+                ribList.Sort((a, b) => 
+                {
+                    int gainDiff = (GHApp.IsAchievementGained(a.BtnCommand) ? 1 : 0) - (GHApp.IsAchievementGained(b.BtnCommand) ? 1 : 0);
+                    if (gainDiff != 0)
+                        return -gainDiff;
+                    int catDiff = achievementList[a.BtnCommand].SubCategoryId - achievementList[b.BtnCommand].SubCategoryId;
+                    if (catDiff != 0)
+                        return catDiff;
+                    return string.Compare(a.LblText, b.LblText); 
+                });
+                foreach(var rib in ribList)
+                    AchievementLayout.Children.Add(rib);
             }
             else
                 EmptyLabel.IsVisible = true;
-
         }
     }
 }

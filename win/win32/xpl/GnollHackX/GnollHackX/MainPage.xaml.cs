@@ -27,6 +27,8 @@ using GnollHackX;
 using Microsoft.Maui.Controls.PlatformConfiguration;
 using Microsoft.Maui.Controls.PlatformConfiguration.iOSSpecific;
 using Newtonsoft.Json.Linq;
+using Microsoft.Extensions.Primitives;
+
 
 #if WINDOWS
 using Microsoft.UI;
@@ -2350,19 +2352,46 @@ namespace GnollHackX
                 int newAchievementsUnlocked = achievementsUnlocked?.Count ?? 0;
                 if (newAchievementsUnlocked > 0)
                 {
-                    AchievementUnlockLabel.Text = newAchievementsUnlocked + " New Achievement" + (newAchievementsUnlocked == 1 ? "" : "s") + " Available";
-                    AchievementUnlockLabel.TextColor = GHColors.TitleGoldColor;
+                    StringBuilder builder = new StringBuilder();
+                    builder.Append(newAchievementsUnlocked == 1 ? "This has" : "These have");
+                    builder.Append(" unlocked ");
+                    builder.Append(newAchievementsUnlocked == 1 ? "a" : newAchievementsUnlocked.ToString());
+                    builder.Append(" new achievement");
+                    builder.Append(newAchievementsUnlocked == 1 ? "" : "s");
+                    builder.Append("!");
+
+                    AchievementUnlockLabel.Text = builder.ToString();
+                    AchievementUnlockLabel.TextColor = GHColors.White;
                     AchievementUnlockLabel.IsVisible = true;
+
+                    builder.Clear();
+                    int unlockCount = achievementsUnlocked.Count;
+                    for (int i = 0; i < unlockCount; i++)
+                    {
+                        Achievement unlocked = GHApp.AchievementDefinitions[achievementsUnlocked[i]];
+                        builder.Append(unlocked?.Name ?? "(null)");
+                        if (i < unlockCount - 2)
+                            builder.Append(", ");
+                        else if (i == unlockCount - 2)
+                            builder.Append(unlockCount == 2 ? " and " : ", and ");
+                    }
+
+                    AchievementUnlockDetailLabel.Text = builder.ToString();
+                    AchievementUnlockDetailLabel.TextColor = GHColors.LighterGray;
+                    AchievementUnlockDetailLabel.IsVisible = true;
                 }
                 else
+                {
                     AchievementUnlockLabel.IsVisible = false;
+                    AchievementUnlockDetailLabel.IsVisible = false;
+                }
 
                 double spaceAvailable = RootGrid.Height
                     - AchievementFrameCenterGrid.Padding.Top - AchievementFrameCenterGrid.Padding.Bottom - AchievementFrameCenterGrid.Margin.Top - AchievementFrameCenterGrid.Margin.Bottom
                     - AchievementFrame.Padding.Top - AchievementFrame.Padding.Bottom - AchievementFrame.Margin.Top - AchievementFrame.Margin.Bottom
                     - AchievementMainLayout.Padding.Top - AchievementMainLayout.Padding.Bottom - AchievementMainLayout.Margin.Top - AchievementMainLayout.Margin.Bottom
                     - 24 /* Title */
-                    - (newAchievementsUnlocked > 0 ? 18 : 0) /* Subtitle */
+                    - (newAchievementsUnlocked > 0 ? 18 + 3 + 14 * 2 : 0) /* Subtitle */
                     - 55 - 10 /* Button */
                     ;
                 double spaceNeeded = newAchievementsGained * 90;

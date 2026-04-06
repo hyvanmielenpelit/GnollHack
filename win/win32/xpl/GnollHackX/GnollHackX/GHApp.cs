@@ -9528,7 +9528,7 @@ namespace GnollHackX
         {
             AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_FOUND_AMULET_OF_YENDOR] =
                 new Achievement("The Amulet of Yendor", "Find and obtain the possession of the fabled Amulet of Yendor",
-                (int)gui_achievement_categories.Playthrough, 0);
+                (int)gui_achievement_categories.Playthrough, -1);
             AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_REACHED_CASTLE] =
                 new Achievement("Bottom of the Dungeon", "Reach the bottom of the Dungeons of Doom",
                 (int)gui_achievement_categories.Exploration, 0);
@@ -9557,10 +9557,10 @@ namespace GnollHackX
                 new Achievement("Probing", "Use a wand or spell of probing to probe something",
                 (int)gui_achievement_categories.Gameplay, 0);
             AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_ENGRAVED_ELBERETH] =
-                new Achievement("Engraved Elbereth", "Engrave the name of Elbereth on the ground to protect you",
+                new Achievement("Engrave Elbereth", "Engrave the name of Elbereth on the ground to protect you",
                 (int)gui_achievement_categories.Gameplay, 0, false, true, false, 0, 0, 0);
             AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_SOLVED_CASTLE_TUNE] =
-                new Achievement("Solve Castle Tune", "Solve the castle tune to control the drawbridge",
+                new Achievement("The Castle Tune", "Solve the castle tune to control the drawbridge",
                 (int)gui_achievement_categories.Playthrough, 0, false, true, false, 0, 0, 0);
 
             AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_DEFEATED_WIZARD_OF_YENDOR] =
@@ -9586,10 +9586,10 @@ namespace GnollHackX
                 (int)gui_achievement_categories.Combat, 0, false, true, false, 0, 0, (int)gui_achievement_types.GUI_ACHIEVEMENT_REACHED_PROTONUS);
 
             AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_ENTERED_GNOMISH_MINES] =
-                new Achievement("Enter the Gnomish Mines", "Find and enter the Gnomish Mines",
+                new Achievement("The Gnomish Mines", "Find and enter the Gnomish Mines",
                 (int)gui_achievement_categories.Exploration, 0, false, true, false, 0, 0, 0);
             AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_REACHED_MINE_TOWN] =
-                new Achievement("Reach Mine Town", "Find and visit Mine Town",
+                new Achievement("Visit Mine Town", "Find and visit Mine Town",
                 (int)gui_achievement_categories.Exploration, 0, false, true, false, 0, 0, 0);
             AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_REACHED_MINES_END] =
                 new Achievement("Reach Mines' End", "Descend to the bottom of the Gnomish Mines",
@@ -9599,14 +9599,14 @@ namespace GnollHackX
                 (int)gui_achievement_categories.Playthrough, 0, false, true, false, 0, 0, (int)gui_achievement_types.GUI_ACHIEVEMENT_ENTERED_GNOMISH_MINES);
 
             AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_ENTERED_SOKOBAN] =
-                new Achievement("Enter Sokoban", "Find the Sokoban",
+                new Achievement("The Sokoban", "Find the Sokoban",
                 (int)gui_achievement_categories.Exploration, 0, false, true, false, 0, 0, 0);
             AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_SOLVED_SOKOBAN] =
                 new Achievement("Solve Sokoban", "Solve the Sokoban puzzles",
                 (int)gui_achievement_categories.Playthrough, 0, false, true, false, 0, 0, (int)gui_achievement_types.GUI_ACHIEVEMENT_ENTERED_SOKOBAN);
 
             AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_ENTERED_LARGE_CIRCULAR_DUNGEON] =
-                new Achievement("Enter Large Circular Dungeon", "Find the Large Circular Dungeon",
+                new Achievement("The Large Circular Dungeon", "Find the Large Circular Dungeon",
                 (int)gui_achievement_categories.Exploration, 0, false, true, false, 0, 0, 0);
             AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_REACHED_QUANTUM_CORE] =
                 new Achievement("Reach Quantum Core", "Find and enter the Quantum Core",
@@ -9616,25 +9616,25 @@ namespace GnollHackX
                 new Achievement("Enter the Quest", "Locate and enter the Quest branch",
                 (int)gui_achievement_categories.Exploration, 0, false, true, false, 0, 0, 0);
             AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_REACHED_FINAL_QUEST_LEVEL] =
-                new Achievement("Quest Nemesis Level", "Enter the final quest level to face the quest nemesis",
+                new Achievement("The Lair of Quest Nemesis", "Enter the final quest level to face the quest nemesis",
                 (int)gui_achievement_categories.Exploration, 0, false, true, false, 0, 0, 0);
 
             AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_ENTERED_HELLISH_PASTURES] =
-                new Achievement("Hellish Pastures", "Locate and enter the Hellish Pastures, a special branch of Gehennom",
+                new Achievement("The Hellish Pastures", "Locate and enter the Hellish Pastures, a special branch of Gehennom",
                 (int)gui_achievement_categories.Exploration, 0, false, true, false, 0, 0, 0);
 
             AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_ENTERED_PLANE_OF_THE_MODRON] =
-                new Achievement("Plane of the Modron", "Locate and enter the Plane of Modron",
+                new Achievement("The Plane of the Modron", "Locate and enter the Plane of Modron",
                 (int)gui_achievement_categories.Exploration, 0, false, true, false, 0, 0, 0);
             AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_REACHED_PROTONUS] =
-                new Achievement("Reach Protonus", "Enter the final level to the Plane of the Modron",
+                new Achievement("Protonus", "Enter the final level to the Plane of the Modron",
                 (int)gui_achievement_categories.Exploration, 0, false, true, false, 0, 0, (int)gui_achievement_types.GUI_ACHIEVEMENT_ENTERED_THE_QUEST);
             AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_FOUND_PRIME_CODEX] =
                 new Achievement("The Prime Codex", "Find and obtain the possession of the Prime Codex",
                 (int)gui_achievement_categories.Exploration, 0, false, true, false, 0, 0, 0);
 
             AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_ENTERED_ASTRAL_PLANE] =
-                new Achievement("Astral Plane", "Reach the final level of the end game",
+                new Achievement("The Astral Plane", "Reach the final level of the end game",
                 (int)gui_achievement_categories.Playthrough, 0, (int)gui_achievement_types.GUI_ACHIEVEMENT_FOUND_AMULET_OF_YENDOR);
             AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_ENTERED_ELEMENTAL_PLANES] =
                 new Achievement("The Elemental Planes", "Reach the end game",

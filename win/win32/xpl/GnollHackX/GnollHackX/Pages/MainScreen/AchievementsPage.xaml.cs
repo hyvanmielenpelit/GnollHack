@@ -130,7 +130,7 @@ namespace GnollHackX.Pages.MainScreen
                     rib.LblTextColor = GHApp.DarkMode ? GHColors.White : GHColors.Black;
                     rib.LblFontSize = 17;
                     rib.SubLblText = numCategoryAchievementsGained + " of " + numCategoryAchievementsVisible + " achievement" + (numCategoryAchievementsVisible != 1 ? "s" : "") + " gained";
-                    rib.SubLblTextColor = GHApp.DarkMode ? GHColors.White : GHColors.Black;
+                    rib.SubLblTextColor = GHApp.DarkMode ? GHColors.LighterGray : GHColors.DarkerGray;
                     rib.SubLblFontSize = 14;
                     rib.IsSubLblVisible = true;
                     rib.ImgWidth = 80;

@@ -7739,55 +7739,62 @@ xchar portal; /* 1 = Magic portal, 2 = Modron portal down (find portal up), 3 = 
     obj_delivery(TRUE);
 
     /* Check whether we just entered Gehennom. */
-    if (!In_hell(&u.uz0) && Inhell) 
+    if (Inhell) 
     {
-        if (Is_valley(&u.uz))
+        issue_achievement(GUI_ACHIEVEMENT_ENTERED_GEHENNOM);
+        if (!In_hell(&u.uz0))
         {
-            You_ex(ATR_NONE, CLR_MSG_WARNING, "arrive at the Valley of the Dead...");
-            pline_The_ex1(ATR_NONE, CLR_MSG_WARNING, "odor of burnt flesh and decay pervades the air.");
+            if (Is_valley(&u.uz))
+            {
+                You_ex(ATR_NONE, CLR_MSG_WARNING, "arrive at the Valley of the Dead...");
+                pline_The_ex1(ATR_NONE, CLR_MSG_WARNING, "odor of burnt flesh and decay pervades the air.");
 #ifdef MICRO
-            display_nhwindow(WIN_MESSAGE, FALSE);
+                display_nhwindow(WIN_MESSAGE, FALSE);
 #endif
-            You_hear_ex(ATR_NONE, CLR_MSG_WARNING, "groans and moans everywhere.");
-        }
-        else
-            pline_ex(ATR_NONE, CLR_MSG_WARNING, "It is hot here.  You smell smoke...");
+                You_hear_ex(ATR_NONE, CLR_MSG_WARNING, "groans and moans everywhere.");
+            }
+            else
+                pline_ex(ATR_NONE, CLR_MSG_WARNING, "It is hot here.  You smell smoke...");
 
-        if (flags.showscore && !u.uachieve.enter_gehennom)
-            context.botl = 1;
+            if (flags.showscore && !u.uachieve.enter_gehennom)
+                context.botl = 1;
 
-        if (!u.uachieve.enter_gehennom)
-        {
-            achievement_gained("Entered Gehennom");
-            livelog_printf(LL_ACHIEVE, "%s", "entered Gehennom");
-            issue_achievement(GUI_ACHIEVEMENT_ENTERED_GEHENNOM);
+            if (!u.uachieve.enter_gehennom)
+            {
+                achievement_gained("Entered Gehennom");
+                livelog_printf(LL_ACHIEVE, "%s", "entered Gehennom");
+            }
+            u.uachieve.enter_gehennom = 1;
         }
-        u.uachieve.enter_gehennom = 1;
     }
 
     if (In_mines(&u.uz))
     {
+        issue_achievement(GUI_ACHIEVEMENT_ENTERED_GNOMISH_MINES);
         if (!u.uachieve.entered_gnomish_mines)
         {
             //if (!u.uachieve.entered_gnomish_mines)
             //    achievement_gained("Entered Gnomish Mines");
             livelog_printf(LL_ACHIEVE, "%s", "entered the Gnomish Mines");
             u.uachieve.entered_gnomish_mines = 1;
-            issue_achievement(GUI_ACHIEVEMENT_ENTERED_GNOMISH_MINES);
         }
-        if (Is_minetown_level(&u.uz) && !u.uachieve.entered_mine_town)
+        if (Is_minetown_level(&u.uz))
         {
-            //    achievement_gained("Entered Mine Town");
-            livelog_printf(LL_MINORAC, "%s", "reached Mine Town");
-            u.uachieve.entered_mine_town = 1;
+            if (!u.uachieve.entered_mine_town)
+            {
+                //    achievement_gained("Entered Mine Town");
+                livelog_printf(LL_MINORAC, "%s", "reached Mine Town");
+                u.uachieve.entered_mine_town = 1;
+            }
             issue_achievement(GUI_ACHIEVEMENT_REACHED_MINE_TOWN);
         }
-        if (Is_mineend_level(&u.uz))
+        else if (Is_mineend_level(&u.uz))
             issue_achievement(GUI_ACHIEVEMENT_REACHED_MINES_END);
     }
 
     if (In_endgame(&u.uz))
     {
+        issue_achievement(GUI_ACHIEVEMENT_ENTERED_ELEMENTAL_PLANES);
         if (Is_astralevel(&u.uz))
         {
             if (!u.uachieve.entered_astral_plane)
@@ -7801,18 +7808,17 @@ xchar portal; /* 1 = Magic portal, 2 = Modron portal down (find portal up), 3 = 
             if(!u.uachieve.entered_elemental_planes)
                 livelog_printf(LL_ACHIEVE, "%s", "entered the Elemental Planes");
             u.uachieve.entered_elemental_planes = 1;
-            issue_achievement(GUI_ACHIEVEMENT_ENTERED_ELEMENTAL_PLANES);
         }
     }
 
     if (In_sokoban(&u.uz))
     {
+        issue_achievement(GUI_ACHIEVEMENT_ENTERED_SOKOBAN);
         if (!u.uachieve.entered_sokoban)
         {
             //    achievement_gained("Entered Sokoban");
             livelog_printf(LL_ACHIEVE, "%s", "entered Sokoban");
             u.uachieve.entered_sokoban = 1;
-            issue_achievement(GUI_ACHIEVEMENT_ENTERED_SOKOBAN);
         }
         if (Is_sokoend_level(&u.uz))
             issue_achievement(GUI_ACHIEVEMENT_REACHED_TOP_OF_SOKOBAN);
@@ -7839,8 +7845,7 @@ xchar portal; /* 1 = Magic portal, 2 = Modron portal down (find portal up), 3 = 
         if (Is_primus_modron_level(&u.uz))
             issue_achievement(GUI_ACHIEVEMENT_REACHED_PROTONUS);
     }
-    
-    if (In_bovine_level(&u.uz))
+    else if (In_bovine_level(&u.uz))
     {
         if (!u.uachieve.entered_hellish_pastures)
             livelog_printf(LL_ACHIEVE, "%s", "entered the Hellish Pastures");
@@ -7848,8 +7853,7 @@ xchar portal; /* 1 = Magic portal, 2 = Modron portal down (find portal up), 3 = 
         u.uachieve.entered_hellish_pastures = 1;
         issue_achievement(GUI_ACHIEVEMENT_ENTERED_HELLISH_PASTURES);
     }
-
-    if (In_large_circular_dgn_level(&u.uz))
+    else if (In_large_circular_dgn_level(&u.uz))
     {
         if (!u.uachieve.entered_large_circular_dungeon)
             livelog_printf(LL_ACHIEVE, "%s", "entered the Large Circular Dungeon");
@@ -7859,15 +7863,13 @@ xchar portal; /* 1 = Magic portal, 2 = Modron portal down (find portal up), 3 = 
         if (Is_quantum_core_level(&u.uz))
             issue_achievement(GUI_ACHIEVEMENT_REACHED_QUANTUM_CORE);
     }
-
-    if (In_quest(&u.uz))
+    else if (In_quest(&u.uz))
     {
         issue_achievement(GUI_ACHIEVEMENT_ENTERED_THE_QUEST);
         if (Is_nemesis(&u.uz))
             issue_achievement(GUI_ACHIEVEMENT_REACHED_FINAL_QUEST_LEVEL);
     }
-
-    if (In_W_tower(u.ux, u.uy, &u.uz))
+    else if (In_W_tower(u.ux, u.uy, &u.uz))
     {
         issue_achievement(GUI_ACHIEVEMENT_REACHED_WIZARD_TOWER);
     }
@@ -7891,7 +7893,6 @@ xchar portal; /* 1 = Magic portal, 2 = Modron portal down (find portal up), 3 = 
     {
         issue_achievement(GUI_ACHIEVEMENT_REACHED_BOTTOM_OF_GEHENNOM);
     }
-
 
     if (isnew)
     {

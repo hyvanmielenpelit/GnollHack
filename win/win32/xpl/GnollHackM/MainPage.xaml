@@ -240,13 +240,15 @@
                                      HorizontalOptions="Center" VerticalOptions="Center">
                             <Label x:Name="AchievementTitleLabel" Text="Achievements Gained" FontFamily="Immortal" FontSize="24" TextColor="White"
                                        VerticalTextAlignment="Center" HorizontalOptions="Center"  />
-                            <Label x:Name="AchievementUnlockLabel" Text="Achievements Unlocked" FontFamily="Immortal" FontSize="18" TextColor="White"
-                                       VerticalTextAlignment="Center" HorizontalOptions="Center" IsVisible="False" />
                             <ScrollView x:Name="AchievementScrollView" HeightRequest="100" HorizontalOptions="Fill" VerticalOptions="Start">
                                 <StackLayout x:Name="AchievementGainedLayout" Spacing="6" HorizontalOptions="Fill">
                                     
                                 </StackLayout>
                             </ScrollView>
+                            <Label x:Name="AchievementUnlockLabel" Text="Achievements Unlocked" FontFamily="Immortal" FontSize="19" TextColor="White"
+                                       VerticalTextAlignment="Center" HorizontalOptions="Center" IsVisible="False" />
+                            <Label x:Name="AchievementUnlockDetailLabel" Text="" FontFamily="Immortal" FontSize="14" TextColor="LightGray"
+                                       Margin="0,3,0,0" MaximumWidthRequest="480" LineBreakMode="WordWrap" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" HorizontalOptions="Fill" IsVisible="False" />
                             <controls:CustomImageButton x:Name="AchievementOkButton" Text="OK" FontSize="19" WidthRequest="170" HeightRequest="55" Margin="0,10,0,0" FontFamily="Diablo" HorizontalOptions="Center" BackgroundColor="Transparent" TextColor="White"
                                         Clicked="AchievementOkButton_Clicked" />
                         </StackLayout>
