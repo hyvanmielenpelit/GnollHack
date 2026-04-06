@@ -9576,10 +9576,10 @@ namespace GnollHackX
                 new Achievement("Blessedness on Altar", "Determine an object's blessed or cursed status by dropping it on an altar",
                 (int)gui_achievement_categories.Gameplay, 0, false);
             AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_PRAYED] =
-                new Achievement("Praying", "Pray for your god successfully",
+                new Achievement("Praying", "Pray successfully to your god",
                 (int)gui_achievement_categories.Gameplay, 0, false);
             AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_SACRIFICED] =
-                new Achievement("Sacrifing", "Sacrifice a suitable corpse for your god",
+                new Achievement("Sacrifing", "Sacrifice a suitable corpse to your god on an altar",
                 (int)gui_achievement_categories.Gameplay, 0, false);
             AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_WAS_GIFTED_ARTIFACT] =
                 new Achievement("Gift of God", "Receive an item gifted by your god",
@@ -9591,7 +9591,7 @@ namespace GnollHackX
                 new Achievement("Create Holy Water", "Create holy water by praying on an altar",
                 (int)gui_achievement_categories.Gameplay, 0, false);
             AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_CONVERTED_ALTAR] =
-                new Achievement("Convert an Altar", "Convert an altar by sacrificing a corpse on it",
+                new Achievement("Convert an Altar", "Convert an altar to your alignment by sacrificing a corpse on it",
                 (int)gui_achievement_categories.Gameplay, 0, false);
 
 
