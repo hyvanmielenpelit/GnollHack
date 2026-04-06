@@ -394,7 +394,7 @@ struct attack *alt_attk_buf;
        from hitting with both of them on the same turn; if the first has
        already hit, switch to a stun attack for the second */
     if (indx > 0 && prev_result[indx - 1] > 0
-        && (attk->adtyp == AD_DISE || attk->adtyp == AD_ROTS || attk->adtyp == AD_PEST
+        && (((attk->adtyp == AD_DISE || attk->adtyp == AD_ROTS || attk->adtyp == AD_PEST) && !Sick_resistance)
             || attk->adtyp == AD_FAMN)
         && attk->adtyp == mptr->mattk[indx - 1].adtyp) {
         *alt_attk_buf = *attk;

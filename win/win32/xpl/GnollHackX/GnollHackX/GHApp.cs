@@ -9579,7 +9579,7 @@ namespace GnollHackX
                 new Achievement("Praying", "Pray successfully to your god",
                 (int)gui_achievement_categories.Gameplay, 0, false);
             AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_SACRIFICED] =
-                new Achievement("Sacrifing", "Sacrifice a suitable corpse to your god on an altar",
+                new Achievement("Sacrifice", "Sacrifice a suitable corpse to your god on an altar",
                 (int)gui_achievement_categories.Gameplay, 0, false);
             AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_WAS_GIFTED_ARTIFACT] =
                 new Achievement("Gift of God", "Receive an item gifted by your god",
