@@ -170,6 +170,9 @@ notify_gui_pregame(VOID_ARGS)
     else
         issue_gui_command(GUI_CMD_TOGGLE_QUICK_ZAP_WAND, NO_GLYPH, 0, "");
 
+    if(!ModernMode && !CasualMode && !discover)
+        issue_achievement(GUI_ACHIEVEMENT_PLAYED_GAME_IN_CLASSIC_MODE);
+
     issue_breadcrumb("Notify GUI finished");
 }
 

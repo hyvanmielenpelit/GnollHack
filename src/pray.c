@@ -2917,12 +2917,16 @@ dosacrifice()
                     flags.female ? "dess" : "");
                 achievement_gained("Ascended");
                 issue_achievement(GUI_ACHIEVEMENT_ASCENDED);
-                if (context.game_difficulty >= 0)
-                    issue_achievement(GUI_ACHIEVEMENT_ASCENDED_AT_EXPERT_DIFFICULTY);
-                if (context.game_difficulty >= 1)
-                    issue_achievement(GUI_ACHIEVEMENT_ASCENDED_AT_MASTER_DIFFICULTY);
-                if (context.game_difficulty >= 2)
-                    issue_achievement(GUI_ACHIEVEMENT_ASCENDED_AT_GRAND_MASTER_DIFFICULTY);
+                if (!ModernMode && !CasualMode && !discover)
+                {
+                    issue_achievement(GUI_ACHIEVEMENT_ASCENDED_IN_CLASSIC_MODE);
+                    if (context.game_difficulty >= 0)
+                        issue_achievement(GUI_ACHIEVEMENT_ASCENDED_AT_EXPERT_DIFFICULTY);
+                    if (context.game_difficulty >= 1)
+                        issue_achievement(GUI_ACHIEVEMENT_ASCENDED_AT_MASTER_DIFFICULTY);
+                    if (context.game_difficulty >= 2)
+                        issue_achievement(GUI_ACHIEVEMENT_ASCENDED_AT_GRAND_MASTER_DIFFICULTY);
+                }
                 done(ASCENDED);
             }
         }

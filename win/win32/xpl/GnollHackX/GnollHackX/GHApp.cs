@@ -9553,6 +9553,9 @@ namespace GnollHackX
 
 
             /* Gameplay */
+            AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_PLAYED_GAME_IN_CLASSIC_MODE] =
+                new Achievement("Play in Classic Mode", "Play a game in classic mode",
+                (int)gui_achievement_categories.Gameplay, 0);
             AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_IDENTIFIED_AN_ITEM] =
                 new Achievement("Identify an Item", "Use any of the identification means in the game", 
                 (int)gui_achievement_categories.Gameplay, 0);
@@ -9704,15 +9707,18 @@ namespace GnollHackX
             AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED] =
                 new Achievement("Ascended", "Won the game by ascending a character to demigodhood",
                 (int)gui_achievement_categories.Ascension, 0);
+            AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_IN_CLASSIC_MODE] =
+                new Achievement("Ascended in Classic Mode", "Ascended a character in classic mode",
+                (int)gui_achievement_categories.Ascension, 0, (int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED);
             AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_AT_EXPERT_DIFFICULTY] =
-                new Achievement("Ascended at Expert", "Ascended a character at expert difficulty",
-                (int)gui_achievement_categories.Ascension, 0, (int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED);
+                new Achievement("Ascended at Expert", "Ascended a character at expert difficulty in classic mode",
+                (int)gui_achievement_categories.Ascension, 0, (int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_IN_CLASSIC_MODE);
             AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_AT_MASTER_DIFFICULTY] =
-                new Achievement("Ascended at Master", "Ascended a character at master difficulty",
-                (int)gui_achievement_categories.Ascension, 0, (int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED);
+                new Achievement("Ascended at Master", "Ascended a character at master difficulty in classic mode",
+                (int)gui_achievement_categories.Ascension, 0, (int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_IN_CLASSIC_MODE);
             AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_AT_GRAND_MASTER_DIFFICULTY] =
-                new Achievement("Ascended at Grand Master", "Ascended a character at grand master difficulty",
-                (int)gui_achievement_categories.Ascension, 0, (int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED);
+                new Achievement("Ascended at Grand Master", "Ascended a character at grand master difficulty in classic mode",
+                (int)gui_achievement_categories.Ascension, 0, (int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_IN_CLASSIC_MODE);
         }
 
 
@@ -9969,7 +9975,7 @@ namespace GnollHackX
                         Achievement achievement = AchievementDefinitions[i];
                         if (achievement == null || achievement.IsVisible || achievement.MadeVisibleById != achievementId)
                             continue;
-                        if (!achievementsUnlocked.Contains(i))
+                        if (!achievementsUnlocked.Contains(i) && !achievementsGained.Contains(i))
                             achievementsUnlocked.Add(i);
                     }
                 }
