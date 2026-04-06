@@ -315,6 +315,9 @@ namespace GnollHackX
                     case GHRequestType.SetMiddleMouseCommand:
                         GHApp.GnollHackService?.SetMouseCommand(response.ResponseIntValue, response.RequestType == GHRequestType.SetMiddleMouseCommand);
                         break;
+                    case GHRequestType.SetEngraveQuickText:
+                        GHApp.GnollHackService?.SetEngraveQuickText(response.ResponseStringValue);
+                        break;
                     case GHRequestType.SaveFileTrackingLoad:
                     case GHRequestType.SaveFileTrackingSave:
                         _saveFileTrackingFinished = response.ResponseIntValue;
@@ -3566,6 +3569,14 @@ namespace GnollHackX
                         GHApp.MirroredMiddleMouseCommand = cmd_param;
                     else
                         GHApp.MirroredRightMouseCommand = cmd_param;
+                    break;
+                case (int)gui_command_types.GUI_CMD_REPORT_ENGRAVE_QUICK_TEXT:
+                    GHApp.MirroredEngraveQuickText = cmd_str != null ? cmd_str : "";
+                    MainThread.BeginInvokeOnMainThread(() =>
+                    {
+                        /* Setting the compound option in the game should change the setting in GUI, too */
+                        Preferences.Set("EngraveQuickText", cmd_str != null ? cmd_str : "");
+                    });
                     break;
                 case (int)gui_command_types.GUI_CMD_TOGGLE_QUICK_ZAP_WAND:
                     SetQuickZapWand(cmd_param, cmd_param2, cmd_str);

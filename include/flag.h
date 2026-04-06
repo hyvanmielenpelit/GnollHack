@@ -599,6 +599,7 @@ struct instance_flags {
     boolean show_dice_as_ranges;
     boolean worn_shows_equipment;
     boolean getpos_arrows;
+    char engrave_quicktext[BUFSZ];
  
     boolean save_file_secure; /* Is the save file secure (like on Unix servers) */
     boolean save_file_tracking_supported; /* Does this version of GnollHack support save file tracking (= modern GUI) */
@@ -823,6 +824,7 @@ struct startup_flags {
     boolean save_file_tracking_on_value;
 
     uint64_t found_manuals;
+    char engrave_quicktext[BUFSZ];
 };
 
 extern NEARDATA struct startup_flags initial_flags;

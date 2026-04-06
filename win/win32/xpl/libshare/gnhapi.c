@@ -740,6 +740,18 @@ LibGetMouseCommand(int is_middle)
         return flags.right_click_command;
 }
 
+DLLEXPORT void
+LibSetEngraveQuickText(const char* new_value)
+{
+    if (new_value && *new_value)
+    {
+        Strncpy(iflags.engrave_quicktext, new_value, BUFSZ - 1);
+        iflags.engrave_quicktext[BUFSZ - 1] = '\0';
+    }
+    else
+        *iflags.engrave_quicktext = '\0';
+}
+
 DLLEXPORT const char*
 LibGetEventPathForGHSound(int ghsound)
 {
@@ -849,7 +861,7 @@ extern struct callback_procs lib_callbacks;
 DLLEXPORT int RunGnollHack(
     char* gnhdir,
     char* cmdlineargs,
-    char* preset_player_name,
+    char* engrave_quicktext,
     char* last_used_player_name,
     uint64_t runflags,
     uint64_t foundmanuals,
@@ -973,16 +985,6 @@ DLLEXPORT int RunGnollHack(
             Strcat(cmdbuf, " ");
         Sprintf(eos(cmdbuf), "-D -u %s", "wizard");
     }
-    else if (preset_player_name && strcmp(preset_player_name, ""))
-    {
-        char plbuf[PL_NSIZ];
-        Strncpy(plbuf, preset_player_name, PL_NSIZ - 1);
-        plbuf[PL_NSIZ - 1] = '\0';
-
-        if (*cmdbuf)
-            Strcat(cmdbuf, " ");
-        Sprintf(eos(cmdbuf), "-u %s", plbuf);
-    }
     else if ((runflags & GHRUNFLAGS_FORCE_LAST_PLAYER_NAME) && last_used_player_name && strcmp(last_used_player_name, ""))
     {
         char plbuf[PL_NSIZ];
@@ -1049,6 +1051,12 @@ DLLEXPORT int RunGnollHack(
     initial_flags.right_click_action = (uchar)((runflags & GHRUNFLAGS_RIGHT_MOUSE_BIT_MASK) >> GHRUNFLAGS_RIGHT_MOUSE_BIT_INDEX);
     initial_flags.middle_click_action = (uchar)((runflags & GHRUNFLAGS_MIDDLE_MOUSE_BIT_MASK) >> GHRUNFLAGS_MIDDLE_MOUSE_BIT_INDEX);
     initial_flags.found_manuals = foundmanuals;
+    *initial_flags.engrave_quicktext = 0;
+    if (engrave_quicktext && strcmp(engrave_quicktext, ""))
+    {
+        Strncpy(initial_flags.engrave_quicktext, engrave_quicktext, BUFSZ - 1);
+        initial_flags.engrave_quicktext[BUFSZ - 1] = '\0';
+    }
 
     if (runflags & GHRUNFLAGS_NO_PET)
     {

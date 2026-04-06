@@ -1134,6 +1134,8 @@ namespace GnollHackX
             MirroredAutoDig = Preferences.Get("AutoDig", GHConstants.DefaultAutoDig);
             MirroredIgnoreStopping = Preferences.Get("IgnoreStopping", GHConstants.DefaultIgnoreStopping);
             MirroredPetsNotGifted = !Preferences.Get("AllowPet", true);
+
+            MirroredEngraveQuickText = Preferences.Get("EngraveQuickText", "");
         }
 
         public static void MaybeFixRects(ref SKRect source, ref SKRect dest, float targetscale, bool usingGL, bool fixRects, bool fixFiltering)
@@ -3614,8 +3616,8 @@ namespace GnollHackX
                     _moreBtnMatrix[2, 2, 0] = new GHCommandButtonItem("Travel", AppResourceName + ".Assets.UI.travel.png", (int)'_');
                     _moreBtnMatrix[2, 3, 0] = new GHCommandButtonItem("Autostash", AppResourceName + ".Assets.UI.autostash.png", GHUtils.Meta(15));
 
-                    _moreBtnMatrix[2, 0, 1] = new GHCommandButtonItem("Fight", AppResourceName + ".Assets.UI.fight.png", (int)'F');
-                    _moreBtnMatrix[2, 1, 1] = new GHCommandButtonItem("Examine", AppResourceName + ".Assets.UI.examine.png", GHUtils.Meta((int)'x'));
+                    _moreBtnMatrix[2, 0, 1] = new GHCommandButtonItem("Examine", AppResourceName + ".Assets.UI.examine.png", GHUtils.Meta((int)'x'));
+                    _moreBtnMatrix[2, 1, 1] = new GHCommandButtonItem("Engrave Quick", AppResourceName + ".Assets.UI.engravequick.png", GHUtils.Meta('E'));
                     _moreBtnMatrix[2, 2, 1] = new GHCommandButtonItem("Cast Quick", AppResourceName + ".Assets.UI.quickcast.png", GHUtils.Meta(26));
                     _moreBtnMatrix[2, 3, 1] = new GHCommandButtonItem("Zap Quick", AppResourceName + ".Assets.UI.zapquick.png", GHUtils.Meta(27));
 
@@ -3624,7 +3626,8 @@ namespace GnollHackX
                     _moreBtnMatrix[2, 2, 2] = new GHCommandButtonItem("Dig", AppResourceName + ".Assets.UI.dig.png", GHUtils.Ctrl((int)'g'));
                     _moreBtnMatrix[2, 3, 2] = new GHCommandButtonItem("Handedness", AppResourceName + ".Assets.UI.handedness.png", GHUtils.Meta((int)'h'));
 
-                    _moreBtnMatrix[2, 0, 3] = new GHCommandButtonItem("Light", AppResourceName + ".Assets.UI.light.png", GHUtils.Meta((int)'I'));
+                    //_moreBtnMatrix[2, 0, 3] = new GHCommandButtonItem("Light", AppResourceName + ".Assets.UI.light.png", GHUtils.Meta((int)'I'));
+                    _moreBtnMatrix[2, 0, 3] = new GHCommandButtonItem("Fight", AppResourceName + ".Assets.UI.fight.png", (int)'F');
                     _moreBtnMatrix[2, 1, 3] = new GHCommandButtonItem("Loot", AppResourceName + ".Assets.UI.loot.png", GHUtils.Meta((int)'l'));
                     _moreBtnMatrix[2, 2, 3] = new GHCommandButtonItem("Open", AppResourceName + ".Assets.UI.open.png", (int)'o');
                     _moreBtnMatrix[2, 3, 3] = new GHCommandButtonItem("Close", AppResourceName + ".Assets.UI.close.png", (int)'c');
@@ -3770,14 +3773,15 @@ namespace GnollHackX
                     _moreBtnMatrix[3, 2, 3] = new GHCommandButtonItem("Teleport", AppResourceName + ".Assets.UI.teleport.png", GHUtils.Ctrl((int)'t'));
                     _moreBtnMatrix[3, 3, 3] = new GHCommandButtonItem("Monster", AppResourceName + ".Assets.UI.monster.png", GHUtils.Meta((int)'M'));
 
-                    _moreBtnMatrix[3, 0, 4] = new GHCommandButtonItem("Spells", AppResourceName + ".Assets.UI.spells.png", (int)'+');
+                    _moreBtnMatrix[3, 0, 4] = new GHCommandButtonItem("Engrave Quick", AppResourceName + ".Assets.UI.engravequick.png", GHUtils.Meta((int)'E'));
                     _moreBtnMatrix[3, 1, 4] = new GHCommandButtonItem("Quick Spell", AppResourceName + ".Assets.UI.quickset.png", GHUtils.Meta(4));
                     _moreBtnMatrix[3, 2, 4] = new GHCommandButtonItem("Cast Quick", AppResourceName + ".Assets.UI.quickcast.png", GHUtils.Meta(26));
                     _moreBtnMatrix[3, 3, 4] = new GHCommandButtonItem("Zap Quick", AppResourceName + ".Assets.UI.zapquick.png", GHUtils.Meta(27));
 
                     //_moreBtnMatrix[3, 0, 5] = new GHCommandButtonItem("Help", AppResourceName + ".Assets.UI.help.png", (int)'?');
+                    //_moreBtnMatrix[3, 1, 5] = new GHCommandButtonItem("Commands", AppResourceName + ".Assets.UI.commands.png", GHUtils.Meta((int)'c'));
                     _moreBtnMatrix[3, 0, 5] = new GHCommandButtonItem("Polearm", AppResourceName + ".Assets.UI.polearm.png", GHUtils.Meta((int)'P'));
-                    _moreBtnMatrix[3, 1, 5] = new GHCommandButtonItem("Commands", AppResourceName + ".Assets.UI.commands.png", GHUtils.Meta((int)'c'));
+                    _moreBtnMatrix[3, 1, 5] = new GHCommandButtonItem("Spells", AppResourceName + ".Assets.UI.spells.png", (int)'+');
                     _moreBtnMatrix[3, 2, 5] = new GHCommandButtonItem("Extended", AppResourceName + ".Assets.UI.extended.png", (int)'#');
                     _moreBtnMatrix[3, 3, 5] = new GHCommandButtonItem("Back to Game", AppResourceName + ".Assets.UI.more.png", -101);
 
@@ -4108,6 +4112,7 @@ namespace GnollHackX
             new SelectableShortcutButton("Drop Item Types", "Drop Types", 'D', false, false, 0, AppResourceName + ".Assets.UI.droptypes.png"),
             new SelectableShortcutButton("Eat", "Eat", 'e', false, false, 0, AppResourceName + ".Assets.UI.eat.png"),
             new SelectableShortcutButton("Engrave", "Engrave", 'E', false, false, 0, AppResourceName + ".Assets.UI.engrave.png"),
+            new SelectableShortcutButton("Engrave Quick", "Engrave!", 'E', false, true, 0, AppResourceName + ".Assets.UI.engravequick.png"),
             new SelectableShortcutButton("Examine Item", "Examine", 'x', false, true, 0, AppResourceName + ".Assets.UI.examine.png"),
             new SelectableShortcutButton("Fire Weapon", "Fire", 'f', false, false, 0, AppResourceName + ".Assets.UI.fire.png"),
             new SelectableShortcutButton("Force Fight", "Fight", 'F', false, false, 0, AppResourceName + ".Assets.UI.fight.png"),
@@ -5210,6 +5215,8 @@ namespace GnollHackX
 
         private static int _rightMouseCommand;
         private static int _middleMouseCommand;
+        private static string _engraveQuickText;
+
         public static bool EmptyWishIsNothing { get { return Interlocked.CompareExchange(ref _emptyWishIsNothing, 0, 0) != 0; } set { Interlocked.Exchange(ref _emptyWishIsNothing, value ? 1 : 0); } }
         public static bool OkOnDoubleClick { get { return Interlocked.CompareExchange(ref _okOnDoubleClick, 0, 0) != 0; } set { Interlocked.Exchange(ref _okOnDoubleClick, value ? 1 : 0); } }
         public static bool GetPositionArrows { get { return Interlocked.CompareExchange(ref _getPositionArrows, 0, 0) != 0; } set { Interlocked.Exchange(ref _getPositionArrows, value ? 1 : 0); } }
@@ -5220,6 +5227,7 @@ namespace GnollHackX
         public static bool MirroredIgnoreStopping { get { return Interlocked.CompareExchange(ref _ignoreStopping, 0, 0) != 0; } set { Interlocked.Exchange(ref _ignoreStopping, value ? 1 : 0); } }
         public static int MirroredRightMouseCommand { get { return Interlocked.CompareExchange(ref _rightMouseCommand, 0, 0); } set { Interlocked.Exchange(ref _rightMouseCommand, value); } }
         public static int MirroredMiddleMouseCommand { get { return Interlocked.CompareExchange(ref _middleMouseCommand, 0, 0); } set { Interlocked.Exchange(ref _middleMouseCommand, value); } }
+        public static string MirroredEngraveQuickText { get { return Interlocked.CompareExchange(ref _engraveQuickText, null, null); } set { Interlocked.Exchange(ref _engraveQuickText, value); } }
 
         public static string CustomGameStatusLink { get; set; }
         public static string CustomXlogAccountLink { get; set; }

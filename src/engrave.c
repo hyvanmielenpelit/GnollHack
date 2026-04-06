@@ -562,7 +562,25 @@ STATIC_VAR NEARDATA const char styluses[] = { ALL_CLASSES, ALLOW_NONE,
 
 /* return 1 if action took 1 (or more) moves, 0 if error or aborted */
 int
-doengrave()
+doengrave(VOID_ARGS)
+{
+    return doengrave_core((const char*)0);
+}
+
+int
+doengravequick(VOID_ARGS)
+{
+    if (!*iflags.engrave_quicktext)
+    {
+        pline_ex(ATR_NONE, CLR_MSG_FAIL, "The text for quick engraving has not been set.");
+        return 0;
+    }
+    return doengrave_core(iflags.engrave_quicktext);
+}
+
+int
+doengrave_core(engrave_text)
+const char* engrave_text;
 {
     boolean dengr = FALSE;    /* TRUE if we wipe out the current engraving */
     boolean doblind = FALSE;  /* TRUE if engraving blinds the player */
@@ -1191,10 +1209,18 @@ doengrave()
     else
         You("%s the %s with your %s.", everb, eloc, body_part(FINGERTIP));
 
-    /* Prompt for engraving! */
-    Sprintf(qbuf, "What do you want to %s the %s here?", everb, eloc);
-    getlin(qbuf, ebuf);
-    /* convert tabs to spaces and condense consecutive spaces to one */
+    if (engrave_text && *engrave_text)
+    {
+        Strncpy(ebuf, engrave_text, BUFSZ - 1);
+        ebuf[BUFSZ - 1] = '\0';
+    }
+    else
+    {
+        /* Prompt for engraving! */
+        Sprintf(qbuf, "What do you want to %s the %s here?", everb, eloc);
+        getlin(qbuf, ebuf);
+        /* convert tabs to spaces and condense consecutive spaces to one */
+    }
     mungspaces(ebuf);
 
     /* Count the actual # of chars engraved not including spaces */

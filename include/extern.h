@@ -1187,6 +1187,7 @@ E void FDECL(make_engr_at, (int, int, const char *, int64_t, XCHAR_P, UNSIGNED_S
 E void FDECL(del_engr_at, (int, int));
 E int NDECL(freehand);
 E int NDECL(doengrave);
+E int NDECL(doengravequick);
 E void NDECL(sanitize_engravings);
 E void FDECL(save_engravings, (int, int));
 E void NDECL(reset_engravings);

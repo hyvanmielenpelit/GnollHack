@@ -72,8 +72,8 @@ namespace GnollHackX.Unknown
         public static extern int RunGnollHack(
             [MarshalAs(UnmanagedType.LPStr)] string gnhdir,
             [MarshalAs(UnmanagedType.LPStr)] string cmdlineargs,
-            [MarshalAs(UnmanagedType.LPStr)] string preset_player_name,
-            [MarshalAs(UnmanagedType.LPStr)] string recovery_name,
+            [MarshalAs(UnmanagedType.LPStr)] string engrave_quicktext,
+            [MarshalAs(UnmanagedType.LPStr)] string last_used_player_name,
             ulong runflags,
             ulong foundmanuals,
             ulong wincaps1,
@@ -334,6 +334,9 @@ namespace GnollHackX.Unknown
         public static extern int LibGetMouseCommand(int is_middle);
         [DllImport(PlatformConstants.dll)]
         public static extern void LibSetMouseCommand(int new_value, int is_middle);
+
+        [DllImport(PlatformConstants.dll)]
+        public static extern void LibSetEngraveQuickText(string newValue);
 
         [DllImport(PlatformConstants.dll)]
         public static extern IntPtr LibGetEventPathForGHSound(int ghsound);
@@ -1231,6 +1234,10 @@ namespace GnollHackX.Unknown
         {
             LibSetMouseCommand(newValue, isMiddle ? 1 : 0);
         }
+        public void SetEngraveQuickText(string newValue)
+        {
+            LibSetEngraveQuickText(newValue);
+        }
 
         public string GetEventPathForGHSound(int ghsound)
         {
@@ -1277,6 +1284,7 @@ namespace GnollHackX.Unknown
             bool autodig = GHApp.MirroredAutoDig;
             bool ignorestopping = GHApp.MirroredIgnoreStopping;
             bool defaultvikeys = GHApp.DefaultVIKeys;
+            string engravetext = GHApp.MirroredEngraveQuickText;
             ulong rightmouse = (ulong)GHApp.MirroredRightMouseCommand << GHConstants.RightMouseBitIndex;
             ulong middlemouse = (ulong)GHApp.MirroredMiddleMouseCommand << GHConstants.MiddleMouseBitIndex;
             ulong runflags = (ulong)(ghGame.WizardMode ? RunGnollHackFlags.WizardMode : 0) |
@@ -1304,7 +1312,7 @@ namespace GnollHackX.Unknown
             return RunGnollHack(
                 filesdir,
                 "",
-                "",
+                engravetext,
                 lastusedplname,
                 runflags,
                 foundManuals,

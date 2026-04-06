@@ -374,6 +374,7 @@ static struct Comp_Opt {
       MAX_DUNGEON_CHARS + 1, SET_IN_FILE },
     { "effects", "the symbols to use in drawing special effects",
       MAX_EFFECT_CHARS + 1, SET_IN_FILE },
+    { "engrave_quicktext", "the preset text for engrave quick command", BUFSZ - 1, SET_IN_GAME },
     { "font_map", "the font to use in the map window", 40,
       DISP_IN_GAME },                                              /*WC*/
     { "font_menu", "the font to use in menus", 40, DISP_IN_GAME }, /*WC*/
@@ -1015,6 +1016,11 @@ init_options()
     if (initial_flags.getpos_arrows_set)
         iflags.getpos_arrows = initial_flags.getpos_arrows_value;
 
+    /* GUI setting will override anything in the default options file; if no GUI, options file will be used */
+    if (*initial_flags.engrave_quicktext)
+        Strcpy(iflags.engrave_quicktext, initial_flags.engrave_quicktext);
+
+    /* SAVE FILE TRACKING */
     if (initial_flags.save_file_tracking_supported_set)
         iflags.save_file_tracking_supported = initial_flags.save_file_tracking_supported_value;
 
@@ -2888,6 +2894,23 @@ boolean tinitial, tfrom_file;
                 }
             }
         }
+        return retval;
+    }
+
+    fullname = "engrave_quicktext";
+    if (match_optname(opts, fullname, 17, TRUE)) {
+        if (duplicate)
+            complain_about_duplicate(opts, 1);
+        if (negated) {
+            bad_negation(fullname, FALSE);
+            return FALSE;
+        }
+        else if ((op = string_for_opt(opts, FALSE)) != 0) {
+            nmcpy(iflags.engrave_quicktext, op, BUFSZ - 1);
+        }
+        else
+            return FALSE;
+        mungspaces(iflags.engrave_quicktext);
         return retval;
     }
 
@@ -6130,7 +6153,7 @@ doset(VOID_ARGS) /* changing options via menu by Per Liboriussen */
                 if (opt_indx >= 0)
                 {
                     issue_breadcrumb3(opt_indx >= SIZE(compopt) ? "doset compopt opt_indx too high" : compopt[opt_indx].name ? compopt[opt_indx].name : "doset compopt no name", opt_indx, SIZE(compopt));
-                    if (!special_handling(compopt[opt_indx].name, setinitial, fromfile)) 
+                    if (compopt[opt_indx].name && !special_handling(compopt[opt_indx].name, setinitial, fromfile))
                     {
                         Sprintf(buf, "Set %s to what?", compopt[opt_indx].name);
                         *buf2 = 0;
@@ -6145,6 +6168,10 @@ doset(VOID_ARGS) /* changing options via menu by Per Liboriussen */
                             multicolor_buffer[0] = CLR_MSG_HINT;
                             multicolor_buffer[1] = CLR_COMPOUND_OPT_SET;
                             pline_multi_ex(ATR_NONE, NO_COLOR, no_multiattrs, multicolor_buffer, "Option \'%s\' is now %s.", compopt[opt_indx].name, buf2);
+                            if (!strcmp("engrave_quicktext", compopt[opt_indx].name))
+                            {
+                                issue_gui_command(GUI_CMD_REPORT_ENGRAVE_QUICK_TEXT, 0, 0, iflags.engrave_quicktext);
+                            }
                         };
                     }
                     if (wc_supported(compopt[opt_indx].name)
@@ -7283,6 +7310,8 @@ char *buf;
         Sprintf(buf, "%s", to_be_done);
     else if (!strcmp(optname, "effects"))
         Sprintf(buf, "%s", to_be_done);
+    else if (!strcmp(optname, "engrave_quicktext"))
+        Sprintf(buf, "%s", *iflags.engrave_quicktext ? iflags.engrave_quicktext : none);
     else if (!strcmp(optname, "font_map"))
         Sprintf(buf, "%s", iflags.wc_font_map ? iflags.wc_font_map : defopt);
     else if (!strcmp(optname, "font_message"))

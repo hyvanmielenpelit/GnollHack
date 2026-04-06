@@ -6379,6 +6379,7 @@ struct ext_func_tab extcmdlist[] = {
     { 'D', "droptype", "drop specific item types", doddrop },
     { 'e', "eat", "eat something", doeat, SINGLE_OBJ_CMD_SPECIFIC, ATR_NONE, NO_COLOR, 0, getobj_allobj, "eat" },
     { 'E', "engrave", "engrave writing on the floor", doengrave, SINGLE_OBJ_CMD_SPECIFIC, ATR_NONE, NO_COLOR, 0, getobj_styluses, "write with" },
+    { M('E'), "engravequick", "engrave the preset writing on the floor", doengravequick },
     { '\0', "enhance", "advance or check weapon and spell skills", enhance_weapon_skill, IFBURIED | AUTOCOMPLETE },
     { M('x'), "examine", "describe an item", 
         doitemdescriptions, IFBURIED | AUTOCOMPLETE | SINGLE_OBJ_CMD_INFO | ALLOW_RETURN_TO_INVENTORY | ALLOW_RETURN_TO_CMD_MENU | CMD_MENU_AUTO_CLICK_OK, ATR_NONE, NO_COLOR, 0,
@@ -6747,8 +6748,9 @@ commands_init(VOID_ARGS)
     (void)bind_key(M('B'), "break"); /* backup for C('b') */
     (void)bind_key(M('C'), "lootin"); /* backup for 'Y' */
     (void)bind_key(M('D'), "lootout"); /* backup for 'y' */
-    (void)bind_key(M('E'), "itemsin"); /* backup for 'B' */
-    (void)bind_key(M('F'), "itemsout"); /* backup for 'b' */
+    /* M('E') is engrave quick */
+    (void)bind_key(M('F'), "itemsin"); /* backup for 'B' */
+    (void)bind_key(M('G'), "itemsout"); /* backup for 'b' */
     (void)bind_key(M('I'), "light"); /* backup for C('l') */
     /* M('M') is monster ability */
     /* M('N') is name */

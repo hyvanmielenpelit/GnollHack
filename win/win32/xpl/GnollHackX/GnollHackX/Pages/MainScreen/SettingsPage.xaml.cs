@@ -38,6 +38,7 @@ namespace GnollHackX.Pages.MainScreen
         private GameMenuPage _gameMenuPage;
         private MainPage _mainPage;
         private bool _doChangeVolume = false;
+        public Regex EngraveQuickTextValidationExpression { get; set; }
         public Regex XlogUserNameValidationExpression { get; set; }
         public Regex BonesAllowedUsersValidationExpression { get; set; }
 
@@ -161,6 +162,7 @@ namespace GnollHackX.Pages.MainScreen
             FullCommandBarButton12Picker.ItemDisplayBinding = new Binding("Name");
             FullCommandBarButton13Picker.ItemDisplayBinding = new Binding("Name");
 
+            EngraveQuickTextValidationExpression = new Regex(@"^[\x20-\x7E]{0,127}$");
             XlogUserNameValidationExpression = new Regex(@"^[A-Za-z0-9_]{1,31}$");
             BonesAllowedUsersValidationExpression = new Regex(@"^([A-Za-z0-9_]*[ \,]+)*([A-Za-z0-9_]*)?$");
 
@@ -567,6 +569,11 @@ namespace GnollHackX.Pages.MainScreen
                         Preferences.Set("MiddleMouseCommand", ((MouseCommandItem)MiddleMousePicker.SelectedItem).Value);
                 }
             }
+
+            GHApp.MirroredEngraveQuickText = EngraveQuickEntry.Text;
+            Preferences.Set("EngraveQuickText", EngraveQuickEntry.Text);
+            if (_gameMenuPage != null)
+                _gamePage.SetEngraveQuickText(EngraveQuickEntry.Text);
 
             GHApp.OkOnDoubleClick = DoubleClickSwitch.IsToggled;
             Preferences.Set("OkOnDoubleClick", DoubleClickSwitch.IsToggled);
@@ -1076,6 +1083,7 @@ namespace GnollHackX.Pages.MainScreen
             string xlog_username = "";
             string xlog_password = "";
             string bones_allowed_users = "";
+            string engravequick = "";
 
             int[] cmdidxs = new int[6];
             for (int i = 0; i < 6; i++)
@@ -1226,6 +1234,7 @@ namespace GnollHackX.Pages.MainScreen
                 allowpet = Preferences.Get("AllowPet", true);
                 rightmouse = Preferences.Get("RightMouseCommand", GHConstants.DefaultRightMouseCommand);
                 middlemouse = Preferences.Get("MiddleMouseCommand", GHConstants.DefaultMiddleMouseCommand);
+                engravequick = Preferences.Get("EngraveQuickText", "");
             }
             else
             {
@@ -1289,6 +1298,7 @@ namespace GnollHackX.Pages.MainScreen
                 allowpet = GHApp.AllowPet;
                 rightmouse = GHApp.MirroredRightMouseCommand; //_gamePage.GetRightMouseCommand();
                 middlemouse = GHApp.MirroredMiddleMouseCommand; //_gamePage.GetMiddleMouseCommand();
+                engravequick = GHApp.MirroredEngraveQuickText;
             }
 
             CursorPicker.SelectedIndex = cursor;
@@ -1562,6 +1572,8 @@ namespace GnollHackX.Pages.MainScreen
                     }
                 }
             }
+
+            EngraveQuickEntry.Text = engravequick;
 
             if(!GHApp.IsWindows)
             {
@@ -1929,6 +1941,18 @@ namespace GnollHackX.Pages.MainScreen
             SetTournamentModeLabelColors(TournamentSwitch.IsToggled);
             //PostXlogUserNameLabel.TextColor = GHApp.DarkMode ? GHColors.White : GHColors.Black;
             BonesAllowedUsersLabel.TextColor = GHApp.DarkMode ? GHColors.White : GHColors.Black;
+            if (EngraveQuickEntry.Text != null && EngraveQuickEntry.Text != "")
+            {
+                if (!EngraveQuickTextValidationExpression.IsMatch(EngraveQuickEntry.Text))
+                {
+                    EngraveQuickLabel.TextColor = GHColors.Red;
+                    await MainScrollView.ScrollToAsync(EngraveQuickGrid.X, EngraveQuickGrid.Y, true);
+                    EngraveQuickEntry.Focus();
+                    CloseButton.IsEnabled = true;
+                    _backPressed = false;
+                    return;
+                }
+            }
             if (PostXlogUserNameEntry.Text != null && PostXlogUserNameEntry.Text != "")
             {
                 if (!XlogUserNameValidationExpression.IsMatch(PostXlogUserNameEntry.Text))

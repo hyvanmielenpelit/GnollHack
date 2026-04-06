@@ -113,6 +113,7 @@ namespace GnollHackX
         PlayMenuSelectSound,
         GameEnteredMoveloop,
         ProcessPendingAchievements,
+        SetEngraveQuickText,
     }
 
     public struct AddContextMenuData

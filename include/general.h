@@ -727,6 +727,7 @@ enum gui_command_types {
     GUI_CMD_REPORT_COMMANDS,
     GUI_CMD_GAME_ENTERED_MOVELOOP,
     GUI_CMD_ACHIEVEMENT,
+    GUI_CMD_REPORT_ENGRAVE_QUICK_TEXT,
 };
 
 enum gui_achievement_types

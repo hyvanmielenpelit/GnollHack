@@ -1224,6 +1224,11 @@ namespace GnollHackX.Pages.Game
             curGame?.ResponseQueue.Enqueue(new GHResponse(curGame, GHRequestType.SetMiddleMouseCommand, newValue));
         }
 
+        public void SetEngraveQuickText(string newValue)
+        {
+            GHGame curGame = GHApp.CurrentGHGame;
+            curGame?.ResponseQueue.Enqueue(new GHResponse(curGame, GHRequestType.SetEngraveQuickText, newValue));
+        }
         public void StartExistingGame()
         {
             //CurrentGame = GHApp.CurrentGHGame;
