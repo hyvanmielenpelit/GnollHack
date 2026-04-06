@@ -2772,8 +2772,6 @@ struct mkroom *croom;
     if(added_to_container)
         return; /* The rest is not appropriate anymore for an item in a container */
 
-    otmp->owt = weight(otmp);
-
     if(!added_to_monster_inventory)
         stackobj(otmp);
 

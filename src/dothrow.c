@@ -1785,15 +1785,15 @@ int64_t wep_mask; /* used to re-equip returning boomerang / aklys / Mjollnir / J
         else if (costly_spot(bhitpos.x, bhitpos.y))
             obj->no_charge = 1;
 
+        if (obj_sheds_light(obj))
+            vision_full_recalc = 1;
+        if (obj_has_sound_source(obj))
+            hearing_full_recalc = 1;
         stackobj(obj);
         if (obj == uball)
             drop_ball(bhitpos.x, bhitpos.y);
         if (cansee(bhitpos.x, bhitpos.y))
             newsym(bhitpos.x, bhitpos.y);
-        if (obj_sheds_light(obj))
-            vision_full_recalc = 1;
-        if (obj_has_sound_source(obj))
-            hearing_full_recalc = 1;
         flush_screen(1);
     }
 }
