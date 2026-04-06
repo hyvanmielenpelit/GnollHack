@@ -2489,7 +2489,12 @@ namespace GnollHackX
                     else if (cmddefchar == SitCmd)
                         icon_string = GHApp.AppResourceName + ".Assets.UI.sit.png";
                     else if (cmddefchar == RideCmd)
-                        icon_string = GHApp.AppResourceName + ".Assets.UI.ride.png";
+                    {
+                        if (data.cmd_text == "Dismount")
+                            icon_string = GHApp.AppResourceName + ".Assets.UI.dismount.png";
+                        else
+                            icon_string = GHApp.AppResourceName + ".Assets.UI.ride.png";
+                    }
                     //else if (cmddefchar == PickNStashCmd)
                     //    icon_string = GHApp.AppResourceName + ".Assets.UI.picktobag.png";
                     //else if (cmddefchar == PrevWepCmd)

@@ -872,7 +872,7 @@ struct obj *obj; /* only scatter this obj        */
                 else
                     You_hear_ex(ATR_NONE, CLR_MSG_WARNING, "stone breaking.");
                 if (!fracture_rock(otmp, TRUE))
-                place_object(otmp, sx, sy);
+                    place_object(otmp, sx, sy);
                 if ((otmp = sobj_at(BOULDER, sx, sy)) != 0) 
                 {
                     /* another boulder here, restack it to the top */
@@ -895,7 +895,7 @@ struct obj *obj; /* only scatter this obj        */
                 (void) break_statue(otmp);
                 boolean statuegone = finish_obj_tracking(statuetrackid);
                 if (!statuegone)
-                place_object(otmp, sx, sy); /* put fragments on floor */
+                    place_object(otmp, sx, sy); /* put fragments on floor */
             }
             newsym(sx, sy); /* in case it's beyond radius of 'farthest' */
             used_up = TRUE;

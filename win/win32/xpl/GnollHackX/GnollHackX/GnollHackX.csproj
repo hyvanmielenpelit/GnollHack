@@ -107,10 +107,12 @@
     <None Remove="Assets\UI\dip.png" />
     <None Remove="Assets\UI\discoveries.png" />
     <None Remove="Assets\UI\disk.png" />
+    <None Remove="Assets\UI\dismount.png" />
     <None Remove="Assets\UI\dropmany.png" />
     <None Remove="Assets\UI\droptypes.png" />
     <None Remove="Assets\UI\eat.png" />
     <None Remove="Assets\UI\engrave.png" />
+    <None Remove="Assets\UI\engravequick.png" />
     <None Remove="Assets\UI\examine.png" />
     <None Remove="Assets\UI\exit-to-map.png" />
     <None Remove="Assets\UI\extended.png" />
@@ -367,6 +369,8 @@
     <EmbeddedResource Include="Assets\UI\catalogue.png" />
     <EmbeddedResource Include="Assets\UI\delphi.png" />
     <EmbeddedResource Include="Assets\UI\disk.png" />
+    <EmbeddedResource Include="Assets\UI\dismount.png" />
+    <EmbeddedResource Include="Assets\UI\engravequick.png" />
     <EmbeddedResource Include="Assets\UI\fps.png" />
     <EmbeddedResource Include="Assets\UI\frame-darkmode-horizontal.png" />
     <EmbeddedResource Include="Assets\UI\frame-darkmode-topleft-small.png" />
