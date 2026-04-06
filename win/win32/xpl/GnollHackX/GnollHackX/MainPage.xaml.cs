@@ -2334,6 +2334,22 @@ namespace GnollHackX
             EventGrid.IsVisible = true;
         }
 
+        private int CompareAchievements(int a, int b)
+        {
+            Achievement achA = (a < 0 || a >= (int)gui_achievement_types.NUM_GUI_ACHIEVEMENTS)
+                ? null
+                : GHApp.AchievementDefinitions[a];
+
+            Achievement achB = (b < 0 || b >= (int)gui_achievement_types.NUM_GUI_ACHIEVEMENTS)
+                ? null
+                : GHApp.AchievementDefinitions[b];
+
+            if (achA == null || achB == null)
+                return (achA == null ? 0 : 1) - (achB == null ? 0 : 1);
+
+            return string.Compare(achA.Name, achB.Name);
+        }
+
         public bool DisplayAchievementsGained()
         {
             bool didShowGrid = false;
@@ -2364,16 +2380,16 @@ namespace GnollHackX
                     AchievementUnlockLabel.TextColor = GHColors.White;
                     AchievementUnlockLabel.IsVisible = true;
 
+                    achievementsUnlocked.Sort(CompareAchievements);
                     builder.Clear();
-                    int unlockCount = achievementsUnlocked.Count;
-                    for (int i = 0; i < unlockCount; i++)
+                    for (int i = 0; i < newAchievementsUnlocked; i++)
                     {
                         Achievement unlocked = GHApp.AchievementDefinitions[achievementsUnlocked[i]];
                         builder.Append(unlocked?.Name ?? "(null, id=" + achievementsUnlocked[i] +")");
-                        if (i < unlockCount - 2)
+                        if (i < newAchievementsUnlocked - 2)
                             builder.Append(", ");
-                        else if (i == unlockCount - 2)
-                            builder.Append(unlockCount == 2 ? " and " : ", and ");
+                        else if (i == newAchievementsUnlocked - 2)
+                            builder.Append(newAchievementsUnlocked == 2 ? " and " : ", and ");
                     }
 
                     AchievementUnlockDetailLabel.Text = builder.ToString();
@@ -2397,6 +2413,7 @@ namespace GnollHackX
                 double spaceNeeded = newAchievementsGained * 90;
                 double spaceRequested = Math.Min(450, Math.Max(90, Math.Min(spaceAvailable, spaceNeeded)));
                 AchievementScrollView.HeightRequest = spaceRequested;
+                achievementsGained.Sort(CompareAchievements);
 
                 foreach (int achievementId in achievementsGained)
                 {
