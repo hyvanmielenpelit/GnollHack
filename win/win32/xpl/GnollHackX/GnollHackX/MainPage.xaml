@@ -240,6 +240,8 @@
                                      HorizontalOptions="Center" VerticalOptions="Center">
                             <Label x:Name="AchievementTitleLabel" Text="Achievements Gained" FontFamily="Immortal" FontSize="24" TextColor="White"
                                        VerticalTextAlignment="Center" HorizontalOptions="Center"  />
+                            <Label x:Name="AchievementUnlockLabel" Text="Achievements Unlocked" FontFamily="Immortal" FontSize="18" TextColor="White"
+                                       VerticalTextAlignment="Center" HorizontalOptions="Center" IsVisible="False" />
                             <ScrollView x:Name="AchievementScrollView" HeightRequest="100" HorizontalOptions="Fill" VerticalOptions="Start">
                                 <StackLayout x:Name="AchievementGainedLayout" Spacing="6" HorizontalOptions="Fill">
                                     

@@ -9914,6 +9914,26 @@ namespace GnollHackX
             return achievementsGained;
         }
 
+        public static List<int> GetAchievementsUnlocked(List<int> achievementsGained)
+        {
+            List<int> achievementsUnlocked = new List<int>();
+            if (achievementsGained != null && achievementsGained.Count > 0)
+            {
+                foreach (int achievementId in achievementsGained)
+                {
+                    for (int i = 0; i < (int)gui_achievement_types.NUM_GUI_ACHIEVEMENTS; i++)
+                    {
+                        Achievement achievement = AchievementDefinitions[i];
+                        if (achievement == null || achievement.IsVisible || achievement.MadeVisibleById != achievementId)
+                            continue;
+                        if (!achievementsUnlocked.Contains(i))
+                            achievementsUnlocked.Add(i);
+                    }
+                }
+            }
+            return achievementsUnlocked;
+        }
+
         public static void ClearAchievementsFromMemory()
         {
             Array.Clear(_achievements, 0, _achievements.Length);

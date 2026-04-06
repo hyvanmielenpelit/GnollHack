@@ -2346,11 +2346,23 @@ namespace GnollHackX
 
                 AchievementTitleLabel.TextColor = GHColors.TitleGoldColor;
 
+                List<int> achievementsUnlocked = GHApp.GetAchievementsUnlocked(achievementsGained);
+                int newAchievementsUnlocked = achievementsUnlocked?.Count ?? 0;
+                if (newAchievementsUnlocked > 0)
+                {
+                    AchievementUnlockLabel.Text = newAchievementsUnlocked + " New Achievement" + (newAchievementsUnlocked == 1 ? "" : "s") + " Available";
+                    AchievementUnlockLabel.TextColor = GHColors.TitleGoldColor;
+                    AchievementUnlockLabel.IsVisible = true;
+                }
+                else
+                    AchievementUnlockLabel.IsVisible = false;
+
                 double spaceAvailable = RootGrid.Height
                     - AchievementFrameCenterGrid.Padding.Top - AchievementFrameCenterGrid.Padding.Bottom - AchievementFrameCenterGrid.Margin.Top - AchievementFrameCenterGrid.Margin.Bottom
                     - AchievementFrame.Padding.Top - AchievementFrame.Padding.Bottom - AchievementFrame.Margin.Top - AchievementFrame.Margin.Bottom
                     - AchievementMainLayout.Padding.Top - AchievementMainLayout.Padding.Bottom - AchievementMainLayout.Margin.Top - AchievementMainLayout.Margin.Bottom
-                    - 20 /* Title */
+                    - 24 /* Title */
+                    - (newAchievementsUnlocked > 0 ? 18 : 0) /* Subtitle */
                     - 55 - 10 /* Button */
                     ;
                 double spaceNeeded = newAchievementsGained * 90;
