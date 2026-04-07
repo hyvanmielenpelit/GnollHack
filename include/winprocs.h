@@ -186,7 +186,7 @@ extern
 #ifdef DEBUG
 #define issue_achievement(a) if(windowprocs.win_issue_gui_command) (*windowprocs.win_issue_gui_command)(GUI_CMD_ACHIEVEMENT, a, 0, (char*)0)
 #else
-#define issue_achievement(a) if(windowprocs.win_issue_gui_command && !wizard && !discover) (*windowprocs.win_issue_gui_command)(GUI_CMD_ACHIEVEMENT, a, 0, (char*)0)
+#define issue_achievement(a) if(windowprocs.win_issue_gui_command && !wizard && !discover && !flags.non_scoring) (*windowprocs.win_issue_gui_command)(GUI_CMD_ACHIEVEMENT, a, 0, (char*)0)
 #endif
 #define raw_print (*windowprocs.win_raw_print)
 #define raw_print_bold (*windowprocs.win_raw_print_bold)
