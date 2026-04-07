@@ -2921,11 +2921,149 @@ dosacrifice()
                 {
                     issue_achievement(GUI_ACHIEVEMENT_ASCENDED_IN_CLASSIC_MODE);
                     if (context.game_difficulty >= 0)
+                    {
                         issue_achievement(GUI_ACHIEVEMENT_ASCENDED_AT_EXPERT_DIFFICULTY);
+                        switch (Role_switch)
+                        {
+                        case PM_ARCHAEOLOGIST:
+                            issue_achievement(GUI_ACHIEVEMENT_ASCENDED_ARCHAEOLOGIST_AT_EXPERT_DIFFICULTY);
+                            break;
+                        case PM_BARBARIAN:
+                            issue_achievement(GUI_ACHIEVEMENT_ASCENDED_BARBARIAN_AT_EXPERT_DIFFICULTY);
+                            break;
+                        case PM_CAVEMAN:
+                            issue_achievement(GUI_ACHIEVEMENT_ASCENDED_CAVEMAN_AT_EXPERT_DIFFICULTY);
+                            break;
+                        case PM_HEALER:
+                            issue_achievement(GUI_ACHIEVEMENT_ASCENDED_HEALER_AT_EXPERT_DIFFICULTY);
+                            break;
+                        case PM_KNIGHT:
+                            issue_achievement(GUI_ACHIEVEMENT_ASCENDED_KNIGHT_AT_EXPERT_DIFFICULTY);
+                            break;
+                        case PM_MONK:
+                            issue_achievement(GUI_ACHIEVEMENT_ASCENDED_MONK_AT_EXPERT_DIFFICULTY);
+                            break;
+                        case PM_PRIEST:
+                            issue_achievement(GUI_ACHIEVEMENT_ASCENDED_PRIEST_AT_EXPERT_DIFFICULTY);
+                            break;
+                        case PM_RANGER:
+                            issue_achievement(GUI_ACHIEVEMENT_ASCENDED_RANGER_AT_EXPERT_DIFFICULTY);
+                            break;
+                        case PM_ROGUE:
+                            issue_achievement(GUI_ACHIEVEMENT_ASCENDED_ROGUE_AT_EXPERT_DIFFICULTY);
+                            break;
+                        case PM_SAMURAI:
+                            issue_achievement(GUI_ACHIEVEMENT_ASCENDED_SAMURAI_AT_EXPERT_DIFFICULTY);
+                            break;
+                        case PM_TOURIST:
+                            issue_achievement(GUI_ACHIEVEMENT_ASCENDED_TOURIST_AT_EXPERT_DIFFICULTY);
+                            break;
+                        case PM_VALKYRIE:
+                            issue_achievement(GUI_ACHIEVEMENT_ASCENDED_VALKYRIE_AT_EXPERT_DIFFICULTY);
+                            break;
+                        case PM_WIZARD:
+                            issue_achievement(GUI_ACHIEVEMENT_ASCENDED_WIZARD_AT_EXPERT_DIFFICULTY);
+                            break;
+                        default:
+                            break;
+                        }
+                    }
                     if (context.game_difficulty >= 1)
+                    {
                         issue_achievement(GUI_ACHIEVEMENT_ASCENDED_AT_MASTER_DIFFICULTY);
+                        switch (Role_switch)
+                        {
+                        case PM_ARCHAEOLOGIST:
+                            issue_achievement(GUI_ACHIEVEMENT_ASCENDED_ARCHAEOLOGIST_AT_MASTER_DIFFICULTY);
+                            break;
+                        case PM_BARBARIAN:
+                            issue_achievement(GUI_ACHIEVEMENT_ASCENDED_BARBARIAN_AT_MASTER_DIFFICULTY);
+                            break;
+                        case PM_CAVEMAN:
+                            issue_achievement(GUI_ACHIEVEMENT_ASCENDED_CAVEMAN_AT_MASTER_DIFFICULTY);
+                            break;
+                        case PM_HEALER:
+                            issue_achievement(GUI_ACHIEVEMENT_ASCENDED_HEALER_AT_MASTER_DIFFICULTY);
+                            break;
+                        case PM_KNIGHT:
+                            issue_achievement(GUI_ACHIEVEMENT_ASCENDED_KNIGHT_AT_MASTER_DIFFICULTY);
+                            break;
+                        case PM_MONK:
+                            issue_achievement(GUI_ACHIEVEMENT_ASCENDED_MONK_AT_MASTER_DIFFICULTY);
+                            break;
+                        case PM_PRIEST:
+                            issue_achievement(GUI_ACHIEVEMENT_ASCENDED_PRIEST_AT_MASTER_DIFFICULTY);
+                            break;
+                        case PM_RANGER:
+                            issue_achievement(GUI_ACHIEVEMENT_ASCENDED_RANGER_AT_MASTER_DIFFICULTY);
+                            break;
+                        case PM_ROGUE:
+                            issue_achievement(GUI_ACHIEVEMENT_ASCENDED_ROGUE_AT_MASTER_DIFFICULTY);
+                            break;
+                        case PM_SAMURAI:
+                            issue_achievement(GUI_ACHIEVEMENT_ASCENDED_SAMURAI_AT_MASTER_DIFFICULTY);
+                            break;
+                        case PM_TOURIST:
+                            issue_achievement(GUI_ACHIEVEMENT_ASCENDED_TOURIST_AT_MASTER_DIFFICULTY);
+                            break;
+                        case PM_VALKYRIE:
+                            issue_achievement(GUI_ACHIEVEMENT_ASCENDED_VALKYRIE_AT_MASTER_DIFFICULTY);
+                            break;
+                        case PM_WIZARD:
+                            issue_achievement(GUI_ACHIEVEMENT_ASCENDED_WIZARD_AT_MASTER_DIFFICULTY);
+                            break;
+                        default:
+                            break;
+                        }
+                    }
                     if (context.game_difficulty >= 2)
+                    {
                         issue_achievement(GUI_ACHIEVEMENT_ASCENDED_AT_GRAND_MASTER_DIFFICULTY);
+                        switch (Role_switch)
+                        {
+                        case PM_ARCHAEOLOGIST:
+                            issue_achievement(GUI_ACHIEVEMENT_ASCENDED_ARCHAEOLOGIST_AT_GRAND_MASTER_DIFFICULTY);
+                            break;
+                        case PM_BARBARIAN:
+                            issue_achievement(GUI_ACHIEVEMENT_ASCENDED_BARBARIAN_AT_GRAND_MASTER_DIFFICULTY);
+                            break;
+                        case PM_CAVEMAN:
+                            issue_achievement(GUI_ACHIEVEMENT_ASCENDED_CAVEMAN_AT_GRAND_MASTER_DIFFICULTY);
+                            break;
+                        case PM_HEALER:
+                            issue_achievement(GUI_ACHIEVEMENT_ASCENDED_HEALER_AT_GRAND_MASTER_DIFFICULTY);
+                            break;
+                        case PM_KNIGHT:
+                            issue_achievement(GUI_ACHIEVEMENT_ASCENDED_KNIGHT_AT_GRAND_MASTER_DIFFICULTY);
+                            break;
+                        case PM_MONK:
+                            issue_achievement(GUI_ACHIEVEMENT_ASCENDED_MONK_AT_GRAND_MASTER_DIFFICULTY);
+                            break;
+                        case PM_PRIEST:
+                            issue_achievement(GUI_ACHIEVEMENT_ASCENDED_PRIEST_AT_GRAND_MASTER_DIFFICULTY);
+                            break;
+                        case PM_RANGER:
+                            issue_achievement(GUI_ACHIEVEMENT_ASCENDED_RANGER_AT_GRAND_MASTER_DIFFICULTY);
+                            break;
+                        case PM_ROGUE:
+                            issue_achievement(GUI_ACHIEVEMENT_ASCENDED_ROGUE_AT_GRAND_MASTER_DIFFICULTY);
+                            break;
+                        case PM_SAMURAI:
+                            issue_achievement(GUI_ACHIEVEMENT_ASCENDED_SAMURAI_AT_GRAND_MASTER_DIFFICULTY);
+                            break;
+                        case PM_TOURIST:
+                            issue_achievement(GUI_ACHIEVEMENT_ASCENDED_TOURIST_AT_GRAND_MASTER_DIFFICULTY);
+                            break;
+                        case PM_VALKYRIE:
+                            issue_achievement(GUI_ACHIEVEMENT_ASCENDED_VALKYRIE_AT_GRAND_MASTER_DIFFICULTY);
+                            break;
+                        case PM_WIZARD:
+                            issue_achievement(GUI_ACHIEVEMENT_ASCENDED_WIZARD_AT_GRAND_MASTER_DIFFICULTY);
+                            break;
+                        default:
+                            break;
+                        }
+                    }
                 }
                 done(ASCENDED);
             }

@@ -9597,6 +9597,51 @@ namespace GnollHackX
                 new Achievement("Convert an Altar", "Convert an altar to your alignment by sacrificing a corpse on it",
                 (int)gui_achievement_categories.Gameplay, 0, false);
 
+            /* Experience levels */
+            AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_REACHED_EXPERIENCE_LEVEL_5] =
+                new Achievement("Experience Level 5", "Reach experience level 5 in any character",
+                (int)gui_achievement_categories.Gameplay, 0);
+            AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_REACHED_EXPERIENCE_LEVEL_10] =
+                new Achievement("Experience Level 10", "Reach experience level 10 in any character",
+                (int)gui_achievement_categories.Gameplay, 0, (int)gui_achievement_types.GUI_ACHIEVEMENT_REACHED_EXPERIENCE_LEVEL_5);
+            AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_REACHED_EXPERIENCE_LEVEL_15] =
+                new Achievement("Experience Level 15", "Reach experience level 15 in any character",
+                (int)gui_achievement_categories.Gameplay, 0, (int)gui_achievement_types.GUI_ACHIEVEMENT_REACHED_EXPERIENCE_LEVEL_10);
+            AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_REACHED_EXPERIENCE_LEVEL_20] =
+                new Achievement("Experience Level 20", "Reach experience level 20 in any character",
+                (int)gui_achievement_categories.Gameplay, 0, (int)gui_achievement_types.GUI_ACHIEVEMENT_REACHED_EXPERIENCE_LEVEL_15);
+            AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_REACHED_EXPERIENCE_LEVEL_25] =
+                new Achievement("Experience Level 25", "Reach experience level 25 in any character",
+                (int)gui_achievement_categories.Gameplay, 0, (int)gui_achievement_types.GUI_ACHIEVEMENT_REACHED_EXPERIENCE_LEVEL_20);
+            AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_REACHED_EXPERIENCE_LEVEL_30] =
+                new Achievement("Experience Level 30", "Reach experience level 30 in any character",
+                (int)gui_achievement_categories.Gameplay, 0, (int)gui_achievement_types.GUI_ACHIEVEMENT_REACHED_EXPERIENCE_LEVEL_25);
+            AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_REACHED_EXPERIENCE_LEVEL_35] =
+                new Achievement("Experience Level 35", "Reach experience level 35 in any character",
+                (int)gui_achievement_categories.Gameplay, 0, (int)gui_achievement_types.GUI_ACHIEVEMENT_REACHED_EXPERIENCE_LEVEL_30);
+            AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_REACHED_EXPERIENCE_LEVEL_40] =
+                new Achievement("Experience Level 40", "Reach experience level 40 in any character",
+                (int)gui_achievement_categories.Gameplay, 0, (int)gui_achievement_types.GUI_ACHIEVEMENT_REACHED_EXPERIENCE_LEVEL_35);
+            AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_REACHED_EXPERIENCE_LEVEL_45] =
+                new Achievement("Experience Level 45", "Reach experience level 45 in any character",
+                (int)gui_achievement_categories.Gameplay, 0, (int)gui_achievement_types.GUI_ACHIEVEMENT_REACHED_EXPERIENCE_LEVEL_40);
+            AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_REACHED_EXPERIENCE_LEVEL_50] =
+                new Achievement("Experience Level 50", "Reach experience level 50 in any character",
+                (int)gui_achievement_categories.Gameplay, 0, (int)gui_achievement_types.GUI_ACHIEVEMENT_REACHED_EXPERIENCE_LEVEL_45);
+
+            /* Dungeon level */
+            AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_REACHED_DUNGEON_LEVEL_5] =
+                new Achievement("Dungeon Level 5", "Reach dungeon level 5 with any character",
+                (int)gui_achievement_categories.Exploration, 0);
+            AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_REACHED_DUNGEON_LEVEL_10] =
+                new Achievement("Dungeon Level 10", "Reach dungeon level 10 with any character",
+                (int)gui_achievement_categories.Exploration, 0, (int)gui_achievement_types.GUI_ACHIEVEMENT_REACHED_DUNGEON_LEVEL_5);
+            AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_REACHED_DUNGEON_LEVEL_15] =
+                new Achievement("Dungeon Level 15", "Reach dungeon level 15 with any character",
+                (int)gui_achievement_categories.Exploration, 0, (int)gui_achievement_types.GUI_ACHIEVEMENT_REACHED_DUNGEON_LEVEL_10);
+            AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_REACHED_DUNGEON_LEVEL_20] =
+                new Achievement("Dungeon Level 20", "Reach dungeon level 20 with any character",
+                (int)gui_achievement_categories.Exploration, 0, (int)gui_achievement_types.GUI_ACHIEVEMENT_REACHED_DUNGEON_LEVEL_15);
 
             /* Combat */
             AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_DEFEATED_WIZARD_OF_YENDOR] =
@@ -9623,6 +9668,10 @@ namespace GnollHackX
 
 
             /* Exploration */
+            AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_REACHED_MEDUSA_ISLAND] =
+                new Achievement("Medusa Level", "Reach the Medusa's Island in the Dungeons of Doom",
+                (int)gui_achievement_categories.Exploration, 0, false);
+
             AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_ENTERED_GNOMISH_MINES] =
                 new Achievement("Gnomish Mines", "Find and enter the Gnomish Mines",
                 (int)gui_achievement_categories.Exploration, 0, false);
@@ -9670,10 +9719,16 @@ namespace GnollHackX
                 new Achievement("Gehennom", "Reach Gehennom",
                 (int)gui_achievement_categories.Exploration, 0, (int)gui_achievement_types.GUI_ACHIEVEMENT_REACHED_CASTLE);
             AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_REACHED_BOTTOM_OF_GEHENNOM] =
-                new Achievement("Reach the bottom of Gehennom", "Reach the bottom of Gehennom",
+                new Achievement("Invocation Level", "Reach the bottom of Gehennom",
                 (int)gui_achievement_categories.Exploration, 0, (int)gui_achievement_types.GUI_ACHIEVEMENT_ENTERED_GEHENNOM);
             AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_REACHED_VALLEY_OF_THE_DEAD] =
                 new Achievement("Valley of the Dead", "Reach the Valley of the Dead",
+                (int)gui_achievement_categories.Exploration, 0, false);
+            AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_REACHED_WIZARD_TOWER] =
+                new Achievement("Wizard's Tower", "Reach the Tower of the Wizard of Yendor",
+                (int)gui_achievement_categories.Exploration, 0, false);
+            AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_ENTERED_VLAD_TOWER] =
+                new Achievement("Vlad's Tower", "Reach the Tower of the Vlad the Impaler",
                 (int)gui_achievement_categories.Exploration, 0, false);
 
 
@@ -9702,10 +9757,9 @@ namespace GnollHackX
                 new Achievement("Astral Plane", "Reach the final level of the end game",
                 (int)gui_achievement_categories.Playthrough, 0, (int)gui_achievement_types.GUI_ACHIEVEMENT_FOUND_AMULET_OF_YENDOR);
 
-
             /* Ascension */
             AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED] =
-                new Achievement("Ascended", "Won the game by ascending a character to demigodhood",
+                new Achievement("Ascended", "Win the game by ascending a character to demigodhood",
                 (int)gui_achievement_categories.Ascension, 0);
             AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_IN_CLASSIC_MODE] =
                 new Achievement("Ascended in Classic Mode", "Ascended a character in classic mode",
@@ -9719,6 +9773,127 @@ namespace GnollHackX
             AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_AT_GRAND_MASTER_DIFFICULTY] =
                 new Achievement("Ascended at Grand Master", "Ascended a character at grand master difficulty in classic mode",
                 (int)gui_achievement_categories.Ascension, 0, (int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_IN_CLASSIC_MODE);
+
+            AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_ARCHAEOLOGIST_AT_EXPERT_DIFFICULTY] =
+                new Achievement("Ascended Archaeologist at Expert", "Ascended an archaeologist at expert difficulty in classic mode",
+                (int)gui_achievement_categories.Ascension, 0, (int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_AT_EXPERT_DIFFICULTY);
+            AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_BARBARIAN_AT_EXPERT_DIFFICULTY] =
+                new Achievement("Ascended Barbarian at Expert", "Ascended a barbarian at expert difficulty in classic mode",
+                (int)gui_achievement_categories.Ascension, 0, (int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_AT_EXPERT_DIFFICULTY);
+            AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_CAVEMAN_AT_EXPERT_DIFFICULTY] =
+                new Achievement("Ascended Caveman/woman at Expert", "Ascended a caveman/woman at expert difficulty in classic mode",
+                (int)gui_achievement_categories.Ascension, 0, (int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_AT_EXPERT_DIFFICULTY);
+            AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_HEALER_AT_EXPERT_DIFFICULTY] =
+                new Achievement("Ascended Healer at Expert", "Ascended a healer at expert difficulty in classic mode",
+                (int)gui_achievement_categories.Ascension, 0, (int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_AT_EXPERT_DIFFICULTY);
+            AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_KNIGHT_AT_EXPERT_DIFFICULTY] =
+                new Achievement("Ascended Knight at Expert", "Ascended a knight at expert difficulty in classic mode",
+                (int)gui_achievement_categories.Ascension, 0, (int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_AT_EXPERT_DIFFICULTY);
+            AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_MONK_AT_EXPERT_DIFFICULTY] =
+                new Achievement("Ascended Monk at Expert", "Ascended a monk at expert difficulty in classic mode",
+                (int)gui_achievement_categories.Ascension, 0, (int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_AT_EXPERT_DIFFICULTY);
+            AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_PRIEST_AT_EXPERT_DIFFICULTY] =
+                new Achievement("Ascended Priest at Expert", "Ascended a priest at expert difficulty in classic mode",
+                (int)gui_achievement_categories.Ascension, 0, (int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_AT_EXPERT_DIFFICULTY);
+            AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_RANGER_AT_EXPERT_DIFFICULTY] =
+                new Achievement("Ascended Ranger at Expert", "Ascended a ranger at expert difficulty in classic mode",
+                (int)gui_achievement_categories.Ascension, 0, (int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_AT_EXPERT_DIFFICULTY);
+            AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_ROGUE_AT_EXPERT_DIFFICULTY] =
+                new Achievement("Ascended Rogue at Expert", "Ascended a rogue at expert difficulty in classic mode",
+                (int)gui_achievement_categories.Ascension, 0, (int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_AT_EXPERT_DIFFICULTY);
+            AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_SAMURAI_AT_EXPERT_DIFFICULTY] =
+                new Achievement("Ascended Samurai at Expert", "Ascended a samurai at expert difficulty in classic mode",
+                (int)gui_achievement_categories.Ascension, 0, (int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_AT_EXPERT_DIFFICULTY);
+            AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_VALKYRIE_AT_EXPERT_DIFFICULTY] =
+                new Achievement("Ascended Valkyrie at Expert", "Ascended a valkyrie at expert difficulty in classic mode",
+                (int)gui_achievement_categories.Ascension, 0, (int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_AT_EXPERT_DIFFICULTY);
+            AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_TOURIST_AT_EXPERT_DIFFICULTY] =
+                new Achievement("Ascended Tourist at Expert", "Ascended a tourist at expert difficulty in classic mode",
+                (int)gui_achievement_categories.Ascension, 0, (int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_AT_EXPERT_DIFFICULTY);
+            AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_WIZARD_AT_EXPERT_DIFFICULTY] =
+                new Achievement("Ascended Wizard at Expert", "Ascended a wizard at expert difficulty in classic mode",
+                (int)gui_achievement_categories.Ascension, 0, (int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_AT_EXPERT_DIFFICULTY);
+
+            AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_ARCHAEOLOGIST_AT_MASTER_DIFFICULTY] =
+                new Achievement("Ascended Archaeologist at Master", "Ascended an archaeologist at master difficulty in classic mode",
+                (int)gui_achievement_categories.Ascension, 0, (int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_AT_MASTER_DIFFICULTY);
+            AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_BARBARIAN_AT_MASTER_DIFFICULTY] =
+                new Achievement("Ascended Barbarian at Master", "Ascended a barbarian at master difficulty in classic mode",
+                (int)gui_achievement_categories.Ascension, 0, (int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_AT_MASTER_DIFFICULTY);
+            AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_CAVEMAN_AT_MASTER_DIFFICULTY] =
+                new Achievement("Ascended Caveman/woman at Master", "Ascended a caveman/woman at master difficulty in classic mode",
+                (int)gui_achievement_categories.Ascension, 0, (int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_AT_MASTER_DIFFICULTY);
+            AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_HEALER_AT_MASTER_DIFFICULTY] =
+                new Achievement("Ascended Healer at Master", "Ascended a healer at master difficulty in classic mode",
+                (int)gui_achievement_categories.Ascension, 0, (int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_AT_MASTER_DIFFICULTY);
+            AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_KNIGHT_AT_MASTER_DIFFICULTY] =
+                new Achievement("Ascended Knight at Master", "Ascended a knight at master difficulty in classic mode",
+                (int)gui_achievement_categories.Ascension, 0, (int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_AT_MASTER_DIFFICULTY);
+            AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_MONK_AT_MASTER_DIFFICULTY] =
+                new Achievement("Ascended Monk at Master", "Ascended a monk at master difficulty in classic mode",
+                (int)gui_achievement_categories.Ascension, 0, (int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_AT_MASTER_DIFFICULTY);
+            AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_PRIEST_AT_MASTER_DIFFICULTY] =
+                new Achievement("Ascended Priest at Master", "Ascended a priest at master difficulty in classic mode",
+                (int)gui_achievement_categories.Ascension, 0, (int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_AT_MASTER_DIFFICULTY);
+            AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_RANGER_AT_MASTER_DIFFICULTY] =
+                new Achievement("Ascended Ranger at Master", "Ascended a ranger at master difficulty in classic mode",
+                (int)gui_achievement_categories.Ascension, 0, (int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_AT_MASTER_DIFFICULTY);
+            AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_ROGUE_AT_MASTER_DIFFICULTY] =
+                new Achievement("Ascended Rogue at Master", "Ascended a rogue at master difficulty in classic mode",
+                (int)gui_achievement_categories.Ascension, 0, (int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_AT_MASTER_DIFFICULTY);
+            AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_SAMURAI_AT_MASTER_DIFFICULTY] =
+                new Achievement("Ascended Samurai at Master", "Ascended a samurai at master difficulty in classic mode",
+                (int)gui_achievement_categories.Ascension, 0, (int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_AT_MASTER_DIFFICULTY);
+            AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_VALKYRIE_AT_MASTER_DIFFICULTY] =
+                new Achievement("Ascended Valkyrie at Master", "Ascended a valkyrie at master difficulty in classic mode",
+                (int)gui_achievement_categories.Ascension, 0, (int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_AT_MASTER_DIFFICULTY);
+            AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_TOURIST_AT_MASTER_DIFFICULTY] =
+                new Achievement("Ascended Tourist at Master", "Ascended a tourist at master difficulty in classic mode",
+                (int)gui_achievement_categories.Ascension, 0, (int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_AT_MASTER_DIFFICULTY);
+            AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_WIZARD_AT_MASTER_DIFFICULTY] =
+                new Achievement("Ascended Wizard at Master", "Ascended a wizard at master difficulty in classic mode",
+                (int)gui_achievement_categories.Ascension, 0, (int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_AT_MASTER_DIFFICULTY);
+
+            AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_ARCHAEOLOGIST_AT_GRAND_MASTER_DIFFICULTY] =
+                new Achievement("Ascended Archaeologist at Grand Master", "Ascended an archaeologist at grand master difficulty in classic mode",
+                (int)gui_achievement_categories.Ascension, 0, (int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_AT_GRAND_MASTER_DIFFICULTY);
+            AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_BARBARIAN_AT_GRAND_MASTER_DIFFICULTY] =
+                new Achievement("Ascended Barbarian at Grand Master", "Ascended a barbarian at grand master difficulty in classic mode",
+                (int)gui_achievement_categories.Ascension, 0, (int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_AT_GRAND_MASTER_DIFFICULTY);
+            AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_CAVEMAN_AT_GRAND_MASTER_DIFFICULTY] =
+                new Achievement("Ascended Caveman/woman at Grand Master", "Ascended a caveman/woman at grand master difficulty in classic mode",
+                (int)gui_achievement_categories.Ascension, 0, (int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_AT_GRAND_MASTER_DIFFICULTY);
+            AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_HEALER_AT_GRAND_MASTER_DIFFICULTY] =
+                new Achievement("Ascended Healer at Grand Master", "Ascended a healer at grand master difficulty in classic mode",
+                (int)gui_achievement_categories.Ascension, 0, (int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_AT_GRAND_MASTER_DIFFICULTY);
+            AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_KNIGHT_AT_GRAND_MASTER_DIFFICULTY] =
+                new Achievement("Ascended Knight at Grand Master", "Ascended a knight at grand master difficulty in classic mode",
+                (int)gui_achievement_categories.Ascension, 0, (int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_AT_GRAND_MASTER_DIFFICULTY);
+            AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_MONK_AT_GRAND_MASTER_DIFFICULTY] =
+                new Achievement("Ascended Monk at Grand Master", "Ascended a monk at grand master difficulty in classic mode",
+                (int)gui_achievement_categories.Ascension, 0, (int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_AT_GRAND_MASTER_DIFFICULTY);
+            AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_PRIEST_AT_GRAND_MASTER_DIFFICULTY] =
+                new Achievement("Ascended Priest at Grand Master", "Ascended a priest at grand master difficulty in classic mode",
+                (int)gui_achievement_categories.Ascension, 0, (int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_AT_GRAND_MASTER_DIFFICULTY);
+            AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_RANGER_AT_GRAND_MASTER_DIFFICULTY] =
+                new Achievement("Ascended Ranger at Grand Master", "Ascended a ranger at grand master difficulty in classic mode",
+                (int)gui_achievement_categories.Ascension, 0, (int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_AT_GRAND_MASTER_DIFFICULTY);
+            AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_ROGUE_AT_GRAND_MASTER_DIFFICULTY] =
+                new Achievement("Ascended Rogue at Grand Master", "Ascended a rogue at grand master difficulty in classic mode",
+                (int)gui_achievement_categories.Ascension, 0, (int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_AT_GRAND_MASTER_DIFFICULTY);
+            AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_SAMURAI_AT_GRAND_MASTER_DIFFICULTY] =
+                new Achievement("Ascended Samurai at Grand Master", "Ascended a samurai at grand master difficulty in classic mode",
+                (int)gui_achievement_categories.Ascension, 0, (int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_AT_GRAND_MASTER_DIFFICULTY);
+            AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_VALKYRIE_AT_GRAND_MASTER_DIFFICULTY] =
+                new Achievement("Ascended Valkyrie at Grand Master", "Ascended a valkyrie at grand master difficulty in classic mode",
+                (int)gui_achievement_categories.Ascension, 0, (int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_AT_GRAND_MASTER_DIFFICULTY);
+            AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_TOURIST_AT_GRAND_MASTER_DIFFICULTY] =
+                new Achievement("Ascended Tourist at Grand Master", "Ascended a tourist at grand master difficulty in classic mode",
+                (int)gui_achievement_categories.Ascension, 0, (int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_AT_GRAND_MASTER_DIFFICULTY);
+            AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_WIZARD_AT_GRAND_MASTER_DIFFICULTY] =
+                new Achievement("Ascended Wizard at Grand Master", "Ascended a wizard at grand master difficulty in classic mode",
+                (int)gui_achievement_categories.Ascension, 0, (int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_AT_GRAND_MASTER_DIFFICULTY);
+
         }
 
 

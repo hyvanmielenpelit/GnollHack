@@ -296,6 +296,28 @@ newman(VOID_ARGS)
         u.ulevelmax = newlvl;
     u.ulevel = newlvl;
 
+    if (u.ulevel >= 5)
+        issue_achievement(GUI_ACHIEVEMENT_REACHED_EXPERIENCE_LEVEL_5);
+    if (u.ulevel >= 10)
+        issue_achievement(GUI_ACHIEVEMENT_REACHED_EXPERIENCE_LEVEL_10);
+    if (u.ulevel >= 15)
+        issue_achievement(GUI_ACHIEVEMENT_REACHED_EXPERIENCE_LEVEL_15);
+    if (u.ulevel >= 20)
+        issue_achievement(GUI_ACHIEVEMENT_REACHED_EXPERIENCE_LEVEL_20);
+    if (u.ulevel >= 25)
+        issue_achievement(GUI_ACHIEVEMENT_REACHED_EXPERIENCE_LEVEL_25);
+    if (u.ulevel >= 30)
+        issue_achievement(GUI_ACHIEVEMENT_REACHED_EXPERIENCE_LEVEL_30);
+    if (u.ulevel >= 35)
+        issue_achievement(GUI_ACHIEVEMENT_REACHED_EXPERIENCE_LEVEL_35);
+    if (u.ulevel >= 40)
+        issue_achievement(GUI_ACHIEVEMENT_REACHED_EXPERIENCE_LEVEL_40);
+    if (u.ulevel >= 45)
+        issue_achievement(GUI_ACHIEVEMENT_REACHED_EXPERIENCE_LEVEL_45);
+    if (u.ulevel >= 50)
+        issue_achievement(GUI_ACHIEVEMENT_REACHED_EXPERIENCE_LEVEL_50);
+
+
     if (sex_change_ok && !rn2(10))
         change_sex();
 

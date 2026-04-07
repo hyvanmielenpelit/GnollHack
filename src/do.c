@@ -7889,6 +7889,10 @@ xchar portal; /* 1 = Magic portal, 2 = Modron portal down (find portal up), 3 = 
     {
         issue_achievement(GUI_ACHIEVEMENT_ENTERED_VLAD_TOWER);
     }
+    else if (Is_medusa_level(&u.uz))
+    {
+        issue_achievement(GUI_ACHIEVEMENT_REACHED_MEDUSA_ISLAND);
+    }
     else if (Is_stronghold(&u.uz))
     {
         issue_achievement(GUI_ACHIEVEMENT_REACHED_CASTLE);
@@ -7906,6 +7910,24 @@ xchar portal; /* 1 = Magic portal, 2 = Modron portal down (find portal up), 3 = 
         issue_achievement(GUI_ACHIEVEMENT_REACHED_BOTTOM_OF_GEHENNOM);
     }
 
+    schar new_level_depth = depth(&u.uz);
+    if (new_level_depth >= 5)
+    {
+        issue_achievement(GUI_ACHIEVEMENT_REACHED_DUNGEON_LEVEL_5);
+    }
+    if (new_level_depth >= 10)
+    {
+        issue_achievement(GUI_ACHIEVEMENT_REACHED_DUNGEON_LEVEL_10);
+    }
+    if (new_level_depth >= 15)
+    {
+        issue_achievement(GUI_ACHIEVEMENT_REACHED_DUNGEON_LEVEL_15);
+    }
+    if (new_level_depth >= 20)
+    {
+        issue_achievement(GUI_ACHIEVEMENT_REACHED_DUNGEON_LEVEL_20);
+    }
+
     if (isnew)
     {
         char dloc[BUFSZ];
@@ -7914,7 +7936,7 @@ xchar portal; /* 1 = Magic portal, 2 = Modron portal down (find portal up), 3 = 
         boolean major = In_endgame(&u.uz) && !Is_astralevel(&u.uz);
         if (major)
         {
-            (void)endgamelevelname(dloc, depth(&u.uz));
+            (void)endgamelevelname(dloc, new_level_depth);
             livelog_printf(LL_ACHIEVE, "entered the %s", dloc);
         }
         else

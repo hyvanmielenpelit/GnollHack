@@ -429,6 +429,27 @@ boolean incr; /* true iff via incremental experience growth */
         Sprintf(lvlbuf, "Experience Level %d", u.ulevel);
         display_screen_text(lvlbuf, welcomenormal ? "Welcome to" : "Welcome Back to", (const char*)0, SCREEN_TEXT_GAIN_LEVEL, 0, 0, 0UL);
 
+        if (u.ulevel == 5)
+            issue_achievement(GUI_ACHIEVEMENT_REACHED_EXPERIENCE_LEVEL_5);
+        else if (u.ulevel == 10)
+            issue_achievement(GUI_ACHIEVEMENT_REACHED_EXPERIENCE_LEVEL_10);
+        else if (u.ulevel == 15)
+            issue_achievement(GUI_ACHIEVEMENT_REACHED_EXPERIENCE_LEVEL_15);
+        else if (u.ulevel == 20)
+            issue_achievement(GUI_ACHIEVEMENT_REACHED_EXPERIENCE_LEVEL_20);
+        else if (u.ulevel == 25)
+            issue_achievement(GUI_ACHIEVEMENT_REACHED_EXPERIENCE_LEVEL_25);
+        else if (u.ulevel == 30)
+            issue_achievement(GUI_ACHIEVEMENT_REACHED_EXPERIENCE_LEVEL_30);
+        else if (u.ulevel == 35)
+            issue_achievement(GUI_ACHIEVEMENT_REACHED_EXPERIENCE_LEVEL_35);
+        else if (u.ulevel == 40)
+            issue_achievement(GUI_ACHIEVEMENT_REACHED_EXPERIENCE_LEVEL_40);
+        else if (u.ulevel == 45)
+            issue_achievement(GUI_ACHIEVEMENT_REACHED_EXPERIENCE_LEVEL_45);
+        else if (u.ulevel == 50)
+            issue_achievement(GUI_ACHIEVEMENT_REACHED_EXPERIENCE_LEVEL_50);
+
         int currank = xlev_to_rank(u.ulevel);
         if (currank > 0 && currank > prevrank)
         {
