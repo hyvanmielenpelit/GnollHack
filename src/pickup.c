@@ -2821,7 +2821,7 @@ int applymode;
             default:
                 break;
             }
-            if (is_lootable_dir)
+            if (is_lootable_dir || Passes_walls || (cc.x == u.ux && cc.y == u.uy))
             {
                 boolean has_item1 = decoration_type_definitions[levl[cc.x][cc.y].decoration_typ].lootable_item != STRANGE_OBJECT && (levl[cc.x][cc.y].decoration_flags & DECORATION_FLAGS_ITEM_IN_HOLDER) != 0;
                 boolean has_item2 = decoration_type_definitions[levl[cc.x][cc.y].decoration_typ].lootable_item2 != STRANGE_OBJECT && (levl[cc.x][cc.y].decoration_flags & DECORATION_FLAGS_ITEM2_IN_HOLDER) != 0;
