@@ -3861,7 +3861,7 @@ get_current_game_score(VOID_ARGS)
         //struct item_score_count_result cnt = count_artifacts(invent);
         //struct item_score_count_result cnt2 = count_artifacts(magic_objs);
         //struct item_score_count_result cnt3 = count_historic_statues(invent);
-        //struct item_score_count_result cnt4 = count_historic_statues(magic_objs); /* Should not fit in, but let's check anyway */
+        //struct item_score_count_result cnt4 = count_historic_statues(magic_objs);
         //struct item_score_count_result cnt5 = count_sarcophaguses(invent);
         //struct item_score_count_result cnt6 = count_sarcophaguses(magic_objs); /* Should not fit in, but let's check anyway */
         //struct item_score_count_result cnt7 = count_mummy_wrappings(invent);

@@ -6164,7 +6164,7 @@ int final;
         struct item_score_count_result artifacts = count_artifacts(invent);
         struct item_score_count_result artifacts2 = count_artifacts(magic_objs);
         struct item_score_count_result statues = count_historic_statues(invent);
-        struct item_score_count_result statues2 = count_historic_statues(magic_objs); /* Should not fit in, but let's check anyway */
+        struct item_score_count_result statues2 = count_historic_statues(magic_objs);
         struct item_score_count_result sarcophaguses = count_sarcophaguses(invent);
         struct item_score_count_result sarcophaguses2 = count_sarcophaguses(magic_objs); /* Should not fit in, but let's check anyway */
         struct item_score_count_result wrappings = count_mummy_wrappings(invent);
