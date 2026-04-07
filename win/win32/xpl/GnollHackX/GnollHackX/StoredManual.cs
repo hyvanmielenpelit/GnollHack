@@ -78,4 +78,22 @@ namespace GnollHackX
             Name = name;
         }
     }
+
+    public class AchievementBundle
+    {
+        public int AchievementId;
+        public List<int> BundleAchievements;
+
+        public AchievementBundle()
+        {
+            BundleAchievements = new List<int>();
+        }
+
+        public AchievementBundle(int achievementId, List<int> bundleAchievements  ) : this()
+        {
+            AchievementId = achievementId;
+            BundleAchievements = bundleAchievements;
+        }
+    }
+
 }

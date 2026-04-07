@@ -9629,20 +9629,6 @@ namespace GnollHackX
                 new Achievement("Experience Level 50", "Reach experience level 50 with any character",
                 (int)gui_achievement_categories.Gameplay, 0, (int)gui_achievement_types.GUI_ACHIEVEMENT_REACHED_EXPERIENCE_LEVEL_45);
 
-            /* Dungeon level */
-            AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_REACHED_DUNGEON_LEVEL_5] =
-                new Achievement("Dungeon Level 5", "Reach dungeon level 5 with any character",
-                (int)gui_achievement_categories.Exploration, 0);
-            AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_REACHED_DUNGEON_LEVEL_10] =
-                new Achievement("Dungeon Level 10", "Reach dungeon level 10 with any character",
-                (int)gui_achievement_categories.Exploration, 0, (int)gui_achievement_types.GUI_ACHIEVEMENT_REACHED_DUNGEON_LEVEL_5);
-            AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_REACHED_DUNGEON_LEVEL_15] =
-                new Achievement("Dungeon Level 15", "Reach dungeon level 15 with any character",
-                (int)gui_achievement_categories.Exploration, 0, (int)gui_achievement_types.GUI_ACHIEVEMENT_REACHED_DUNGEON_LEVEL_10);
-            AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_REACHED_DUNGEON_LEVEL_20] =
-                new Achievement("Dungeon Level 20", "Reach dungeon level 20 with any character",
-                (int)gui_achievement_categories.Exploration, 0, (int)gui_achievement_types.GUI_ACHIEVEMENT_REACHED_DUNGEON_LEVEL_15);
-
             /* Combat */
             AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_DEFEATED_WIZARD_OF_YENDOR] =
                 new Achievement("Defeat the Wizard", "Defeat the Wizard of Yendor",
@@ -9659,15 +9645,103 @@ namespace GnollHackX
             AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_DEFEATED_YACC] =
                 new Achievement("Defeat Yacc", "Defeat Yacc, the Demon Lord of Bovines",
                 (int)gui_achievement_categories.Combat, 0, false);
-            AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_DEFEATED_DEMOGORGON] =
-                new Achievement("Defeat Demogorgon", "Defeat Demogorgon, the Prince of Demons",
-                (int)gui_achievement_categories.Combat, 0);
             AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_DEFEATED_MODRON_PRIMUS] =
                 new Achievement("Defeat Modron Primus", "Defeat the Modron Primus, Ruler of the Modrons",
                 (int)gui_achievement_categories.Combat, 0, (int)gui_achievement_types.GUI_ACHIEVEMENT_REACHED_PROTONUS);
 
+            AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_DEFEATED_DEMOGORGON] =
+                new Achievement("Defeat Demogorgon", "Defeat Demogorgon, the Prince of Demons",
+                (int)gui_achievement_categories.Combat, 0, false);
+
+            AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_DEFEATED_ASMODEUS] =
+                new Achievement("Defeat Asmodeus", "Defeat Asmodeus, Arch-Devil and Ruler of Nine Hells",
+                (int)gui_achievement_categories.Combat, 0, false);
+
+            AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_DEFEATED_DISPATER] =
+                new Achievement("Defeat Dispater", "Defeat Dispater, Arch-Devil and ruler of Dis",
+                (int)gui_achievement_categories.Combat, 0, false);
+
+            AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_DEFEATED_BAALZEBUB] =
+                new Achievement("Defeat Baalzebub", "Defeat Baalzebub, Arch-Devil and Lord of Lies",
+                (int)gui_achievement_categories.Combat, 0, false);
+
+            AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_DEFEATED_ORCUS] =
+                new Achievement("Defeat Orcus", "Defeat Orcus, the Demon Prince of the Undead",
+                (int)gui_achievement_categories.Combat, 0, false);
+
+            AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_DEFEATED_YEENAGHU] =
+                new Achievement("Defeat Yeenaghu", "Defeat Yeenaghu, the Demon Lord of Gnolls",
+                (int)gui_achievement_categories.Combat, 0, false);
+
+            AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_DEFEATED_JUBILEX] =
+                new Achievement("Defeat Jubilex", "Defeat Jubilex, the Faceless Lord, Demon Lord of Slimes",
+                (int)gui_achievement_categories.Combat, 0, false);
+
+            AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_DEFEATED_GERYON] =
+                new Achievement("Defeat Geryon", "Defeat Geryon, the Arch-Devil",
+                (int)gui_achievement_categories.Combat, 0, false);
+
+            AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_DEFEATED_BAPHOMET] =
+                new Achievement("Defeat Baphomet", "Defeat Baphomet, the Demon Prince of Minotaurs",
+                (int)gui_achievement_categories.Combat, 0, false);
+
+            AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_DEFEATED_ALL_DEMON_PRINCES] =
+                new Achievement("Defeat All Demon Princes", "Defeat all demon princes",
+                (int)gui_achievement_categories.Combat, 0, false);
+
+            AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_DEFEATED_TARRASQUE] =
+                new Achievement("Defeat Tarrasque", "Defeat the Tarrasque, the great reptilian punisher",
+                (int)gui_achievement_categories.Combat, 0, false);
+
+            AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_DEFEATED_DEATH] =
+                new Achievement("Defeat Death", "Defeat Death, one of the horsemen of the apocalypse",
+                (int)gui_achievement_categories.Combat, 0, false);
+
+            AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_DEFEATED_PESTILENCE] =
+                new Achievement("Defeat Pestilence", "Defeat Pestilence, one of the horsemen of the apocalypse",
+                (int)gui_achievement_categories.Combat, 0, false);
+
+            AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_DEFEATED_FAMINE] =
+                new Achievement("Defeat Famine", "Defeat Famine, one of the horsemen of the apocalypse",
+                (int)gui_achievement_categories.Combat, 0, false);
+
+            AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_DEFEATED_ALL_RIDERS] =
+                new Achievement("Defeat All Horsemen", "Defeat Death, Famine, and Pestilence",
+                (int)gui_achievement_categories.Combat, 0, false);
+
+            AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_DEFEATED_CERBERUS] =
+                new Achievement("Defeat Cerberus", "Defeat Cerberus, the three-headed hell hound",
+                (int)gui_achievement_categories.Combat, 0, false);
+
+            AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_DEFEATED_AMONKET] =
+                new Achievement("Defeat Amonket", "Defeat Amonket, the ruler of the Greater Mummies",
+                (int)gui_achievement_categories.Combat, 0, false);
+
+            AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_DEFEATED_CROESUS] =
+                new Achievement("Defeat Croesus", "Defeat Croesus, the ruler of Fort Ludious",
+                (int)gui_achievement_categories.Combat, 0, false);
+
+            AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_DEFEATED_GARGANTUAN_MIMIC] =
+                new Achievement("Defeat Gargantuan Mimic", "Defeat the Gargantuan Mimic, the largest and meanest mimic in the Dungeons of Doom",
+                (int)gui_achievement_categories.Combat, 0, false);
+
+            AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_DEFEATED_XAN] =
+                new Achievement("Defeat Xan", "Defeat a xan, a troublesome insect",
+                (int)gui_achievement_categories.Combat, 0);
 
             /* Exploration */
+            AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_REACHED_DUNGEON_LEVEL_5] =
+                new Achievement("Dungeon Level 5", "Reach dungeon level 5 with any character",
+                (int)gui_achievement_categories.Exploration, 0);
+            AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_REACHED_DUNGEON_LEVEL_10] =
+                new Achievement("Dungeon Level 10", "Reach dungeon level 10 with any character",
+                (int)gui_achievement_categories.Exploration, 0, (int)gui_achievement_types.GUI_ACHIEVEMENT_REACHED_DUNGEON_LEVEL_5);
+            AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_REACHED_DUNGEON_LEVEL_15] =
+                new Achievement("Dungeon Level 15", "Reach dungeon level 15 with any character",
+                (int)gui_achievement_categories.Exploration, 0, (int)gui_achievement_types.GUI_ACHIEVEMENT_REACHED_DUNGEON_LEVEL_10);
+            AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_REACHED_DUNGEON_LEVEL_20] =
+                new Achievement("Dungeon Level 20", "Reach dungeon level 20 with any character",
+                (int)gui_achievement_categories.Exploration, 0, (int)gui_achievement_types.GUI_ACHIEVEMENT_REACHED_DUNGEON_LEVEL_15);
             AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_REACHED_MEDUSA_ISLAND] =
                 new Achievement("Medusa Level", "Reach the Medusa's Island in the Dungeons of Doom",
                 (int)gui_achievement_categories.Exploration, 0, false);
@@ -9814,6 +9888,10 @@ namespace GnollHackX
                 new Achievement("Ascended Wizard at Expert", "Ascended a wizard at expert difficulty in classic mode",
                 (int)gui_achievement_categories.Ascension, 0, (int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_AT_EXPERT_DIFFICULTY);
 
+            AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_ALL_ROLES_AT_EXPERT_DIFFICULTY] =
+                new Achievement("Ascended All Roles at Expert", "Ascended all roles at expert difficulty in classic mode",
+                (int)gui_achievement_categories.Ascension, -1, false);
+
             AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_ARCHAEOLOGIST_AT_MASTER_DIFFICULTY] =
                 new Achievement("Ascended Archaeologist at Master", "Ascended an archaeologist at master difficulty in classic mode",
                 (int)gui_achievement_categories.Ascension, 0, (int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_AT_MASTER_DIFFICULTY);
@@ -9853,6 +9931,10 @@ namespace GnollHackX
             AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_WIZARD_AT_MASTER_DIFFICULTY] =
                 new Achievement("Ascended Wizard at Master", "Ascended a wizard at master difficulty in classic mode",
                 (int)gui_achievement_categories.Ascension, 0, (int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_AT_MASTER_DIFFICULTY);
+
+            AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_ALL_ROLES_AT_MASTER_DIFFICULTY] =
+                new Achievement("Ascended All Roles at Master", "Ascended all roles at master difficulty in classic mode",
+                (int)gui_achievement_categories.Ascension, -1, false);
 
             AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_ARCHAEOLOGIST_AT_GRAND_MASTER_DIFFICULTY] =
                 new Achievement("Ascended Archaeologist at Grand Master", "Ascended an archaeologist at grand master difficulty in classic mode",
@@ -9894,6 +9976,9 @@ namespace GnollHackX
                 new Achievement("Ascended Wizard at Grand Master", "Ascended a wizard at grand master difficulty in classic mode",
                 (int)gui_achievement_categories.Ascension, 0, (int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_AT_GRAND_MASTER_DIFFICULTY);
 
+            AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_ALL_ROLES_AT_GRAND_MASTER_DIFFICULTY] =
+                new Achievement("Ascended All Roles at Grand Master", "Ascended all roles at grand master difficulty in classic mode",
+                (int)gui_achievement_categories.Ascension, -1, false);
         }
 
 
@@ -10079,13 +10164,84 @@ namespace GnollHackX
             }
         }
 
-        public static AchievementCategory[] AchievementCategories = new AchievementCategory[5]
+        public static readonly AchievementCategory[] AchievementCategories = new AchievementCategory[5]
         {
             new AchievementCategory("Gameplay"),
             new AchievementCategory("Combat"),
             new AchievementCategory("Exploration"),
             new AchievementCategory("Playthrough"),
             new AchievementCategory("Ascension"),
+        };
+
+        public static readonly AchievementBundle[] AchievementBundles =
+        {
+            new AchievementBundle((int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_ALL_ROLES_AT_EXPERT_DIFFICULTY,
+                new List<int>{
+                    (int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_ARCHAEOLOGIST_AT_EXPERT_DIFFICULTY,
+                    (int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_BARBARIAN_AT_EXPERT_DIFFICULTY,
+                    (int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_CAVEMAN_AT_EXPERT_DIFFICULTY,
+                    (int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_HEALER_AT_EXPERT_DIFFICULTY,
+                    (int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_KNIGHT_AT_EXPERT_DIFFICULTY,
+                    (int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_MONK_AT_EXPERT_DIFFICULTY,
+                    (int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_PRIEST_AT_EXPERT_DIFFICULTY,
+                    (int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_RANGER_AT_EXPERT_DIFFICULTY,
+                    (int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_ROGUE_AT_EXPERT_DIFFICULTY,
+                    (int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_SAMURAI_AT_EXPERT_DIFFICULTY,
+                    (int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_VALKYRIE_AT_EXPERT_DIFFICULTY,
+                    (int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_TOURIST_AT_EXPERT_DIFFICULTY,
+                    (int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_WIZARD_AT_EXPERT_DIFFICULTY,
+                }),
+            new AchievementBundle((int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_ALL_ROLES_AT_MASTER_DIFFICULTY,
+                new List<int>{
+                    (int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_ARCHAEOLOGIST_AT_MASTER_DIFFICULTY,
+                    (int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_BARBARIAN_AT_MASTER_DIFFICULTY,
+                    (int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_CAVEMAN_AT_MASTER_DIFFICULTY,
+                    (int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_HEALER_AT_MASTER_DIFFICULTY,
+                    (int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_KNIGHT_AT_MASTER_DIFFICULTY,
+                    (int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_MONK_AT_MASTER_DIFFICULTY,
+                    (int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_PRIEST_AT_MASTER_DIFFICULTY,
+                    (int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_RANGER_AT_MASTER_DIFFICULTY,
+                    (int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_ROGUE_AT_MASTER_DIFFICULTY,
+                    (int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_SAMURAI_AT_MASTER_DIFFICULTY,
+                    (int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_VALKYRIE_AT_MASTER_DIFFICULTY,
+                    (int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_TOURIST_AT_MASTER_DIFFICULTY,
+                    (int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_WIZARD_AT_MASTER_DIFFICULTY,
+                }),
+            new AchievementBundle((int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_ALL_ROLES_AT_GRAND_MASTER_DIFFICULTY,
+                new List<int>{
+                    (int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_ARCHAEOLOGIST_AT_GRAND_MASTER_DIFFICULTY,
+                    (int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_BARBARIAN_AT_GRAND_MASTER_DIFFICULTY,
+                    (int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_CAVEMAN_AT_GRAND_MASTER_DIFFICULTY,
+                    (int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_HEALER_AT_GRAND_MASTER_DIFFICULTY,
+                    (int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_KNIGHT_AT_GRAND_MASTER_DIFFICULTY,
+                    (int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_MONK_AT_GRAND_MASTER_DIFFICULTY,
+                    (int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_PRIEST_AT_GRAND_MASTER_DIFFICULTY,
+                    (int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_RANGER_AT_GRAND_MASTER_DIFFICULTY,
+                    (int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_ROGUE_AT_GRAND_MASTER_DIFFICULTY,
+                    (int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_SAMURAI_AT_GRAND_MASTER_DIFFICULTY,
+                    (int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_VALKYRIE_AT_GRAND_MASTER_DIFFICULTY,
+                    (int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_TOURIST_AT_GRAND_MASTER_DIFFICULTY,
+                    (int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_WIZARD_AT_GRAND_MASTER_DIFFICULTY,
+                }),
+            new AchievementBundle((int)gui_achievement_types.GUI_ACHIEVEMENT_DEFEATED_ALL_RIDERS,
+                new List<int>{
+                    (int)gui_achievement_types.GUI_ACHIEVEMENT_DEFEATED_DEATH,
+                    (int)gui_achievement_types.GUI_ACHIEVEMENT_DEFEATED_FAMINE,
+                    (int)gui_achievement_types.GUI_ACHIEVEMENT_DEFEATED_PESTILENCE,
+                }),
+            new AchievementBundle((int)gui_achievement_types.GUI_ACHIEVEMENT_DEFEATED_ALL_DEMON_PRINCES,
+                new List<int>{
+                    (int)gui_achievement_types.GUI_ACHIEVEMENT_DEFEATED_DEMOGORGON,
+                    (int)gui_achievement_types.GUI_ACHIEVEMENT_DEFEATED_ASMODEUS,
+                    (int)gui_achievement_types.GUI_ACHIEVEMENT_DEFEATED_DISPATER,
+                    (int)gui_achievement_types.GUI_ACHIEVEMENT_DEFEATED_BAALZEBUB,
+                    (int)gui_achievement_types.GUI_ACHIEVEMENT_DEFEATED_ORCUS,
+                    (int)gui_achievement_types.GUI_ACHIEVEMENT_DEFEATED_YEENAGHU,
+                    (int)gui_achievement_types.GUI_ACHIEVEMENT_DEFEATED_JUBILEX,
+                    (int)gui_achievement_types.GUI_ACHIEVEMENT_DEFEATED_GERYON,
+                    (int)gui_achievement_types.GUI_ACHIEVEMENT_DEFEATED_BAPHOMET,
+                    (int)gui_achievement_types.GUI_ACHIEVEMENT_DEFEATED_YACC,
+                }),
         };
 
         public static readonly Achievement[] AchievementDefinitions = new Achievement[(int)gui_achievement_types.NUM_GUI_ACHIEVEMENTS];
@@ -10104,6 +10260,17 @@ namespace GnollHackX
             int achievementBitIdx = achievementId % 64;
             long achievementBit = 1L << achievementBitIdx;
             return (_achievements[achievementLongIdx] & achievementBit) != 0L;
+        }
+
+        public static bool IsAchievementGainedWithNewBits(int achievementId, long[] newBitArray)
+        {
+            if (achievementId < 0 || achievementId >= (int)gui_achievement_types.NUM_GUI_ACHIEVEMENTS)
+                return false;
+
+            int achievementLongIdx = achievementId / 64;
+            int achievementBitIdx = achievementId % 64;
+            long achievementBit = 1L << achievementBitIdx;
+            return ((_achievements[achievementLongIdx] | newBitArray[achievementLongIdx]) & achievementBit) != 0L;
         }
 
         public static bool IsAchievementVisible(int achievementId)
@@ -10215,10 +10382,32 @@ namespace GnollHackX
                     int achievementBitIdx = achievementId % 64;
                     long achievementBit = 1L << achievementBitIdx;
                     resultBits[achievementLongIdx] |= achievementBit;
-                    string key = GHConstants.AchievementLongPrefix + achievementLongIdx;
                 }
                 if (!didDoSomething)
                     return;
+
+                /* Check bundles and mark their achievements gained */
+                foreach (var bundle in AchievementBundles)
+                {
+                    if (IsAchievementGained(bundle.AchievementId))
+                        continue;
+                    bool areAllComponentAchievementsGained = true;
+                    foreach(int componentAchievementId in bundle.BundleAchievements)
+                    {
+                        if (!IsAchievementGainedWithNewBits(componentAchievementId, resultBits))
+                        {
+                            areAllComponentAchievementsGained = false;
+                            break;
+                        }
+                    }
+                    if (areAllComponentAchievementsGained)
+                    {
+                        int achievementLongIdx = bundle.AchievementId / 64;
+                        int achievementBitIdx = bundle.AchievementId % 64;
+                        long achievementBit = 1L << achievementBitIdx;
+                        resultBits[achievementLongIdx] |= achievementBit;
+                    }
+                }
 
                 for (int i = 0; i < GHConstants.NumGuiAchievementLongs; i++)
                 {
@@ -10243,31 +10432,31 @@ namespace GnollHackX
         }
 
 
-        public static void AddAchievement(int achievementId)
-        {
-            MainThread.BeginInvokeOnMainThread(() =>
-            {
-                int achievementLongIdx = achievementId / 64;
-                int achievementBitIdx = achievementId % 64;
-                long achievementBit = 1L << achievementBitIdx;
-                string key = GHConstants.AchievementLongPrefix + achievementLongIdx;
-                string gainedkey = GHConstants.GainedAchievementLongPrefix + achievementLongIdx;
+        //public static void AddAchievement(int achievementId)
+        //{
+        //    MainThread.BeginInvokeOnMainThread(() =>
+        //    {
+        //        int achievementLongIdx = achievementId / 64;
+        //        int achievementBitIdx = achievementId % 64;
+        //        long achievementBit = 1L << achievementBitIdx;
+        //        string key = GHConstants.AchievementLongPrefix + achievementLongIdx;
+        //        string gainedkey = GHConstants.GainedAchievementLongPrefix + achievementLongIdx;
 
-                /* Write achievements to memory */
-                _achievements[achievementLongIdx] |= achievementBit;
+        //        /* Write achievements to memory */
+        //        _achievements[achievementLongIdx] |= achievementBit;
 
-                /* Write achievements to user data, which will be marked to be written to disk later */
-                try
-                {
-                    if (AddUserData(key, achievementBit, false, true))
-                        AddUserData(gainedkey, achievementBit, false, true);
-                }
-                catch (Exception ex)
-                {
-                    Debug.WriteLine(ex.Message);
-                }
-            });
-        }
+        //        /* Write achievements to user data, which will be marked to be written to disk later */
+        //        try
+        //        {
+        //            if (AddUserData(key, achievementBit, false, true))
+        //                AddUserData(gainedkey, achievementBit, false, true);
+        //        }
+        //        catch (Exception ex)
+        //        {
+        //            Debug.WriteLine(ex.Message);
+        //        }
+        //    });
+        //}
 
 
         //private static long _lockCount = 0;

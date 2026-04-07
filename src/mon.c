@@ -3554,43 +3554,44 @@ uint64_t mondeadflags;
         nemdead();
     if (is_medusa(mtmp->data))
     {
+        issue_achievement(GUI_ACHIEVEMENT_DEFEATED_MEDUSA);
         if (flags.showscore && !u.uachieve.killed_medusa)
             context.botl = 1;
         if (!u.uachieve.killed_medusa)
         {
             achievement_gained("Defeated Medusa");
             livelog_printf(LL_ACHIEVE | LL_UMONST, "%s", "killed Medusa");
-            issue_achievement(GUI_ACHIEVEMENT_DEFEATED_MEDUSA);
         }
         u.uachieve.killed_medusa = 1;
     }
     else if (mtmp->data == &mons[PM_YACC])
     {
+        issue_achievement(GUI_ACHIEVEMENT_DEFEATED_YACC);
         if (flags.showscore && !u.uachieve.killed_yacc)
             context.botl = 1;
         if (!u.uachieve.killed_yacc)
         {
             achievement_gained("Defeated Yacc");
             livelog_printf(LL_ACHIEVE | LL_UMONST, "%s", "killed Yacc");
-            issue_achievement(GUI_ACHIEVEMENT_DEFEATED_YACC);
         }
         u.uachieve.killed_yacc = 1;
     }
     else if (mtmp->data == &mons[PM_DEMOGORGON])
     {
+        issue_achievement(GUI_ACHIEVEMENT_DEFEATED_DEMOGORGON);
         if (flags.showscore && !u.uachieve.killed_demogorgon)
             context.botl = 1;
         if (!u.uachieve.killed_demogorgon)
         {
             achievement_gained("Defeated Demogorgon");
             livelog_printf(LL_ACHIEVE | LL_UMONST, "%s", "killed Demogorgon");
-            issue_achievement(GUI_ACHIEVEMENT_DEFEATED_DEMOGORGON);
         }
         u.uachieve.killed_demogorgon = 1;
     }
     else if (mtmp->data == &mons[PM_DEATH])
     {
-        switch (mvitals[tmp].died) 
+        issue_achievement(GUI_ACHIEVEMENT_DEFEATED_DEATH);
+        switch (mvitals[tmp].died)
         {
         case 1:
             livelog_printf(LL_UMONST, "put %s down for a little nap",
@@ -3642,13 +3643,65 @@ uint64_t mondeadflags;
     {
         issue_achievement(GUI_ACHIEVEMENT_DEFEATED_HIGH_PRIEST_OF_MOLOCH);
     }
-    else if (mtmp->data == &mons[PM_MODRON_PRIMUS])
+
+    switch (mtmp->mnum)
     {
+    case PM_MODRON_PRIMUS:
         issue_achievement(GUI_ACHIEVEMENT_DEFEATED_MODRON_PRIMUS);
-    }
-    else if (mtmp->data == &mons[PM_VLAD_THE_IMPALER])
-    {
+        break;
+    case PM_VLAD_THE_IMPALER:
         issue_achievement(GUI_ACHIEVEMENT_DEFEATED_VLAD_THE_IMPALER);
+        break;
+    case PM_GARGANTUAN_MIMIC:
+        issue_achievement(GUI_ACHIEVEMENT_DEFEATED_GARGANTUAN_MIMIC);
+        break;
+    case PM_FAMINE:
+        issue_achievement(GUI_ACHIEVEMENT_DEFEATED_FAMINE);
+        break;
+    case PM_PESTILENCE:
+        issue_achievement(GUI_ACHIEVEMENT_DEFEATED_PESTILENCE);
+        break;
+    case PM_CERBERUS:
+        issue_achievement(GUI_ACHIEVEMENT_DEFEATED_CERBERUS);
+        break;
+    case PM_AMONKET:
+        issue_achievement(GUI_ACHIEVEMENT_DEFEATED_AMONKET);
+        break;
+    case PM_CROESUS:
+        issue_achievement(GUI_ACHIEVEMENT_DEFEATED_CROESUS);
+        break;
+    case PM_TARRASQUE:
+        issue_achievement(GUI_ACHIEVEMENT_DEFEATED_TARRASQUE);
+        break;
+    case PM_JUBILEX:
+        issue_achievement(GUI_ACHIEVEMENT_DEFEATED_JUBILEX);
+        break;
+    case PM_YEENAGHU:
+        issue_achievement(GUI_ACHIEVEMENT_DEFEATED_YEENAGHU);
+        break;
+    case PM_BAPHOMET:
+        issue_achievement(GUI_ACHIEVEMENT_DEFEATED_BAPHOMET);
+        break;
+    case PM_ORCUS:
+        issue_achievement(GUI_ACHIEVEMENT_DEFEATED_ORCUS);
+        break;
+    case PM_DISPATER:
+        issue_achievement(GUI_ACHIEVEMENT_DEFEATED_DISPATER);
+        break;
+    case PM_BAALZEBUB:
+        issue_achievement(GUI_ACHIEVEMENT_DEFEATED_BAALZEBUB);
+        break;
+    case PM_GERYON:
+        issue_achievement(GUI_ACHIEVEMENT_DEFEATED_GERYON);
+        break;
+    case PM_ASMODEUS:
+        issue_achievement(GUI_ACHIEVEMENT_DEFEATED_ASMODEUS);
+        break;
+    case PM_XAN:
+        issue_achievement(GUI_ACHIEVEMENT_DEFEATED_XAN);
+        break;
+    default:
+        break;
     }
 
     if (!u.uachieve.role_achievement &&

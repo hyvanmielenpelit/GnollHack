@@ -2393,7 +2393,7 @@ namespace GnollHackX
                 if (newAchievementsUnlocked > 0)
                 {
                     StringBuilder builder = new StringBuilder();
-                    builder.Append(newAchievementsUnlocked == 1 ? "This has" : "These have");
+                    builder.Append(newAchievementsGained == 1 ? "This has" : "These have");
                     builder.Append(" unlocked ");
                     builder.Append(newAchievementsUnlocked == 1 ? "a" : newAchievementsUnlocked.ToString());
                     builder.Append(" new achievement");
