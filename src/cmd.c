@@ -6181,6 +6181,10 @@ int final;
         you_have(goalbuf, "");
         Sprintf(goalbuf, "%lld mummy wrapping%s in your %s", (long long)wrappings2.quantity, plur(wrappings2.quantity), chest_name);
         you_have(goalbuf, "");
+        Sprintf(goalbuf, "%lld historic statue%s with you", (long long)statues.quantity, plur(statues.quantity));
+        you_have(goalbuf, "");
+        Sprintf(goalbuf, "%lld historic statue%s in your %s", (long long)statues2.quantity, plur(statues2.quantity), chest_name);
+        you_have(goalbuf, "");
         Sprintf(goalbuf, "%lld sarcophagus%s with you", (long long)sarcophaguses.quantity, plur_es(sarcophaguses.quantity));
         you_have(goalbuf, "");
         if (sarcophaguses2.quantity > 0)
@@ -6188,10 +6192,6 @@ int final;
             Sprintf(goalbuf, "%lld sarcophagus%s in your %s", (long long)sarcophaguses2.quantity, plur_es(sarcophaguses2.quantity), chest_name);
             you_have(goalbuf, "");
         }
-        Sprintf(goalbuf, "%lld historic statue%s with you", (long long)statues.quantity, plur(statues.quantity));
-        you_have(goalbuf, "");
-        Sprintf(goalbuf, "%lld historic statue%s in your %s", (long long)statues2.quantity, plur(statues2.quantity), chest_name);
-        you_have(goalbuf, "");
         Sprintf(goalbuf, "%lld %s worth of art objects with you", (long long)artobjects.score, currency(artobjects.score));
         you_have(goalbuf, "");
         Sprintf(goalbuf, "%lld %s worth of art objects in your %s", (long long)artobjects2.score, currency(artobjects2.score), chest_name);
