@@ -9534,7 +9534,7 @@ namespace GnollHackX
                 new Achievement("Bottom of the Dungeon", "Reach the bottom of the Dungeons of Doom",
                 (int)gui_achievement_categories.Exploration, 0);
             AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_COMPLETED_OPTIONAL_QUEST] =
-                new Achievement("Optional Quest", "Complete your optional quest",
+                new Achievement("Optional Quest", "Complete the optional quest with any character",
                 (int)gui_achievement_categories.Playthrough, 0);
 
             AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_COMPLETED_THE_QUEST] =
@@ -9554,7 +9554,7 @@ namespace GnollHackX
 
             /* Gameplay */
             AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_PLAYED_GAME_IN_CLASSIC_MODE] =
-                new Achievement("Play in Classic Mode", "Play a game in classic mode",
+                new Achievement("Play in Classic Mode", "Start a game in classic mode",
                 (int)gui_achievement_categories.Gameplay, 0);
             AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_IDENTIFIED_AN_ITEM] =
                 new Achievement("Identify an Item", "Use any of the identification means in the game", 
@@ -9599,34 +9599,34 @@ namespace GnollHackX
 
             /* Experience levels */
             AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_REACHED_EXPERIENCE_LEVEL_5] =
-                new Achievement("Experience Level 5", "Reach experience level 5 in any character",
+                new Achievement("Experience Level 5", "Reach experience level 5 with any character",
                 (int)gui_achievement_categories.Gameplay, 0);
             AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_REACHED_EXPERIENCE_LEVEL_10] =
-                new Achievement("Experience Level 10", "Reach experience level 10 in any character",
+                new Achievement("Experience Level 10", "Reach experience level 10 with any character",
                 (int)gui_achievement_categories.Gameplay, 0, (int)gui_achievement_types.GUI_ACHIEVEMENT_REACHED_EXPERIENCE_LEVEL_5);
             AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_REACHED_EXPERIENCE_LEVEL_15] =
-                new Achievement("Experience Level 15", "Reach experience level 15 in any character",
+                new Achievement("Experience Level 15", "Reach experience level 15 with any character",
                 (int)gui_achievement_categories.Gameplay, 0, (int)gui_achievement_types.GUI_ACHIEVEMENT_REACHED_EXPERIENCE_LEVEL_10);
             AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_REACHED_EXPERIENCE_LEVEL_20] =
-                new Achievement("Experience Level 20", "Reach experience level 20 in any character",
+                new Achievement("Experience Level 20", "Reach experience level 20 with any character",
                 (int)gui_achievement_categories.Gameplay, 0, (int)gui_achievement_types.GUI_ACHIEVEMENT_REACHED_EXPERIENCE_LEVEL_15);
             AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_REACHED_EXPERIENCE_LEVEL_25] =
-                new Achievement("Experience Level 25", "Reach experience level 25 in any character",
+                new Achievement("Experience Level 25", "Reach experience level 25 with any character",
                 (int)gui_achievement_categories.Gameplay, 0, (int)gui_achievement_types.GUI_ACHIEVEMENT_REACHED_EXPERIENCE_LEVEL_20);
             AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_REACHED_EXPERIENCE_LEVEL_30] =
-                new Achievement("Experience Level 30", "Reach experience level 30 in any character",
+                new Achievement("Experience Level 30", "Reach experience level 30 with any character",
                 (int)gui_achievement_categories.Gameplay, 0, (int)gui_achievement_types.GUI_ACHIEVEMENT_REACHED_EXPERIENCE_LEVEL_25);
             AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_REACHED_EXPERIENCE_LEVEL_35] =
-                new Achievement("Experience Level 35", "Reach experience level 35 in any character",
+                new Achievement("Experience Level 35", "Reach experience level 35 with any character",
                 (int)gui_achievement_categories.Gameplay, 0, (int)gui_achievement_types.GUI_ACHIEVEMENT_REACHED_EXPERIENCE_LEVEL_30);
             AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_REACHED_EXPERIENCE_LEVEL_40] =
-                new Achievement("Experience Level 40", "Reach experience level 40 in any character",
+                new Achievement("Experience Level 40", "Reach experience level 40 with any character",
                 (int)gui_achievement_categories.Gameplay, 0, (int)gui_achievement_types.GUI_ACHIEVEMENT_REACHED_EXPERIENCE_LEVEL_35);
             AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_REACHED_EXPERIENCE_LEVEL_45] =
-                new Achievement("Experience Level 45", "Reach experience level 45 in any character",
+                new Achievement("Experience Level 45", "Reach experience level 45 with any character",
                 (int)gui_achievement_categories.Gameplay, 0, (int)gui_achievement_types.GUI_ACHIEVEMENT_REACHED_EXPERIENCE_LEVEL_40);
             AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_REACHED_EXPERIENCE_LEVEL_50] =
-                new Achievement("Experience Level 50", "Reach experience level 50 in any character",
+                new Achievement("Experience Level 50", "Reach experience level 50 with any character",
                 (int)gui_achievement_categories.Gameplay, 0, (int)gui_achievement_types.GUI_ACHIEVEMENT_REACHED_EXPERIENCE_LEVEL_45);
 
             /* Dungeon level */
