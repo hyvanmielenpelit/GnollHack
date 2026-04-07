@@ -10025,7 +10025,16 @@ namespace GnollHackX
         public static void CheckWriteUserDataToDisk()
         {
             if (UserDataNeedsSavingToDisk)
-                WriteUserDataToDisk();
+            {
+                try
+                {
+                    WriteUserDataToDisk();
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine(ex.Message);
+                }
+            }
         }
 
         public static void WriteUserDataToDisk()

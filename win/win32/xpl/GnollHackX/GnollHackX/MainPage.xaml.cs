@@ -1609,6 +1609,7 @@ namespace GnollHackX
         private async Task CheckPendingTasksAndExit()
         {
             GHApp.AddSentryBreadcrumb("CheckPendingTasksAndExit", GHConstants.SentryGnollHackGeneralCategoryName);
+            GHApp.CheckWriteUserDataToDisk(); /* Just in case */
             PendingGeneralTimerTasks = CalculatePendingGeneralTimerTasks();
             if (PendingGeneralTimerTasks > 0)
             {
