@@ -672,6 +672,7 @@ enum bodypart_types {
 #define min(x, y) ((x) < (y) ? (x) : (y))
 #endif
 #define plur(x) (((x) == 1) ? "" : "s")
+#define plur_es(x) (((x) == 1) ? "" : "es")
 
 #define ARM_AC_BONUS(obj, ptr) \
     ((int)(((obj)->oclass == ARMOR_CLASS || (objects[(obj)->otyp].oc_flags & O1_IS_ARMOR_WHEN_WIELDED) || has_obj_mythic_defense(obj)) ? \

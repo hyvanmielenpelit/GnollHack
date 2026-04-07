@@ -6164,7 +6164,11 @@ int final;
         struct item_score_count_result artifacts = count_artifacts(invent);
         struct item_score_count_result artifacts2 = count_artifacts(magic_objs);
         struct item_score_count_result statues = count_historic_statues(invent);
-        struct item_score_count_result statues2 = count_historic_statues(magic_objs);
+        struct item_score_count_result statues2 = count_historic_statues(magic_objs); /* Should not fit in, but let's check anyway */
+        struct item_score_count_result sarcophaguses = count_sarcophaguses(invent);
+        struct item_score_count_result sarcophaguses2 = count_sarcophaguses(magic_objs); /* Should not fit in, but let's check anyway */
+        struct item_score_count_result wrappings = count_mummy_wrappings(invent);
+        struct item_score_count_result wrappings2 = count_mummy_wrappings(magic_objs);
         struct item_score_count_result artobjects = count_valuable_art_objects(invent);
         struct item_score_count_result artobjects2 = count_valuable_art_objects(magic_objs);
         int64_t score_percentage = ((artifacts.score + artifacts2.score + statues.score + statues2.score + (artobjects.score + artobjects2.score) * ARCHAEOLOGIST_ART_OBJECT_SCORE_MULTIPLIER + (int64_t)u.uachieve.role_achievement * ARCHAEOLOGIST_ROLE_ACHIEVEMENT_SCORE) * 100) / MAXIMUM_ROLE_SCORE;
@@ -6173,10 +6177,24 @@ int final;
         you_have(goalbuf, "");
         Sprintf(goalbuf, "%lld %sartifact%s in your %s", (long long)artifacts2.quantity, program_state.gameover ? "" : "known ", plur(artifacts2.quantity), chest_name);
         you_have(goalbuf, "");
+        Sprintf(goalbuf, "%lld mummy wrapping%s with you", (long long)wrappings.quantity, plur(wrappings.quantity));
+        you_have(goalbuf, "");
+        Sprintf(goalbuf, "%lld mummy wrapping%s in your %s", (long long)wrappings2.quantity, plur(wrappings2.quantity), chest_name);
+        you_have(goalbuf, "");
+        Sprintf(goalbuf, "%lld sarcophagus%s with you", (long long)sarcophaguses.quantity, plur_es(sarcophaguses.quantity));
+        you_have(goalbuf, "");
+        if (sarcophaguses2.quantity > 0)
+        {
+            Sprintf(goalbuf, "%lld sarcophagus%s in your %s", (long long)sarcophaguses2.quantity, plur_es(sarcophaguses2.quantity), chest_name);
+            you_have(goalbuf, "");
+        }
         Sprintf(goalbuf, "%lld historic statue%s with you", (long long)statues.quantity, plur(statues.quantity));
         you_have(goalbuf, "");
-        Sprintf(goalbuf, "%lld historic statue%s in your %s", (long long)statues2.quantity, plur(statues2.quantity), chest_name);
-        you_have(goalbuf, "");
+        if (statues2.quantity > 0)
+        {
+            Sprintf(goalbuf, "%lld historic statue%s in your %s", (long long)statues2.quantity, plur(statues2.quantity), chest_name);
+            you_have(goalbuf, "");
+        }
         Sprintf(goalbuf, "%lld %s worth of art objects with you", (long long)artobjects.score, currency(artobjects.score));
         you_have(goalbuf, "");
         Sprintf(goalbuf, "%lld %s worth of art objects in your %s", (long long)artobjects2.score, currency(artobjects2.score), chest_name);

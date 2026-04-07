@@ -1406,6 +1406,44 @@ winid endwin;
 }
 #endif
 
+int64_t
+count_archaeologist_item_score(list)
+struct obj* list;
+{
+    struct obj* otmp;
+    int64_t score = 0;
+    for (otmp = list; otmp; otmp = otmp->nobj)
+    {
+        if (otmp->oartifact && (program_state.gameover || otmp->nknown || otmp->aknown))
+        {
+            score += ARCHAEOLOGIST_PER_ARTIFACT_SCORE * otmp->quan;
+        }
+        else if (otmp->otyp == STATUE && otmp->special_quality == SPEQUAL_STATUE_HISTORIC)
+        {
+            score += ARCHAEOLOGIST_PER_HISTORIC_STATUE_SCORE * otmp->quan;
+        }
+        else if (otmp->otyp == SARCOPHAGUS)
+        {
+            score += ARCHAEOLOGIST_PER_SARCOPHAGUS_SCORE * otmp->quan;
+        }
+        else if (otmp->otyp == MUMMY_WRAPPING)
+        {
+            score += ARCHAEOLOGIST_PER_MUMMY_WRAPPING_SCORE * otmp->quan;
+        }
+        else if (otmp->oclass == ART_CLASS)
+        {
+            score += ARCHAEOLOGIST_ART_OBJECT_SCORE_MULTIPLIER * (get_object_base_value(otmp) * otmp->quan);
+        }
+
+        if (Has_contents(otmp))
+        {
+            int64_t cont_score = count_archaeologist_item_score(otmp->cobj);
+            score += cont_score;
+        }
+    }
+    return score;
+}
+
 struct item_score_count_result
 count_artifacts(list)
 struct obj* list;
@@ -1445,6 +1483,52 @@ struct obj* list;
         if (Has_contents(otmp))
         {
             struct item_score_count_result cont_cnt = count_historic_statues(otmp->cobj);
+            cnt.quantity += cont_cnt.quantity;
+            cnt.score += cont_cnt.score;
+        }
+    }
+    return cnt;
+}
+
+struct item_score_count_result
+count_sarcophaguses(list)
+struct obj* list;
+{
+    struct obj* otmp;
+    struct item_score_count_result cnt = { 0 };
+    for (otmp = list; otmp; otmp = otmp->nobj)
+    {
+        if (otmp->otyp == SARCOPHAGUS)
+        {
+            cnt.quantity += otmp->quan;
+            cnt.score += ARCHAEOLOGIST_PER_SARCOPHAGUS_SCORE * otmp->quan;
+        }
+        if (Has_contents(otmp))
+        {
+            struct item_score_count_result cont_cnt = count_sarcophaguses(otmp->cobj);
+            cnt.quantity += cont_cnt.quantity;
+            cnt.score += cont_cnt.score;
+        }
+    }
+    return cnt;
+}
+
+struct item_score_count_result
+count_mummy_wrappings(list)
+struct obj* list;
+{
+    struct obj* otmp;
+    struct item_score_count_result cnt = { 0 };
+    for (otmp = list; otmp; otmp = otmp->nobj)
+    {
+        if (otmp->otyp == MUMMY_WRAPPING)
+        {
+            cnt.quantity += otmp->quan;
+            cnt.score += ARCHAEOLOGIST_PER_MUMMY_WRAPPING_SCORE * otmp->quan;
+        }
+        if (Has_contents(otmp))
+        {
+            struct item_score_count_result cont_cnt = count_mummy_wrappings(otmp->cobj);
             cnt.quantity += cont_cnt.quantity;
             cnt.score += cont_cnt.score;
         }
@@ -3774,13 +3858,21 @@ get_current_game_score(VOID_ARGS)
     {
     case PM_ARCHAEOLOGIST:
     {
-        struct item_score_count_result cnt = count_artifacts(invent);
-        struct item_score_count_result cnt2 = count_artifacts(magic_objs);
-        struct item_score_count_result cnt3 = count_historic_statues(invent);
-        struct item_score_count_result cnt4 = count_historic_statues(magic_objs);
-        struct item_score_count_result cnt5 = count_valuable_art_objects(invent);
-        struct item_score_count_result cnt6 = count_valuable_art_objects(magic_objs);
-        Role_Specific_Score = cnt.score + cnt2.score + cnt3.score + cnt4.score + (cnt5.score + cnt6.score) * ARCHAEOLOGIST_ART_OBJECT_SCORE_MULTIPLIER;
+        //struct item_score_count_result cnt = count_artifacts(invent);
+        //struct item_score_count_result cnt2 = count_artifacts(magic_objs);
+        //struct item_score_count_result cnt3 = count_historic_statues(invent);
+        //struct item_score_count_result cnt4 = count_historic_statues(magic_objs); /* Should not fit in, but let's check anyway */
+        //struct item_score_count_result cnt5 = count_sarcophaguses(invent);
+        //struct item_score_count_result cnt6 = count_sarcophaguses(magic_objs); /* Should not fit in, but let's check anyway */
+        //struct item_score_count_result cnt7 = count_mummy_wrappings(invent);
+        //struct item_score_count_result cnt8 = count_mummy_wrappings(magic_objs);
+        //struct item_score_count_result cnt9 = count_valuable_art_objects(invent);
+        //struct item_score_count_result cnt10 = count_valuable_art_objects(magic_objs);
+        //Role_Specific_Score = cnt.score + cnt2.score + cnt3.score + cnt4.score + cnt5.score + cnt6.score + cnt7.score + cnt8.score + (cnt9.score + cnt10.score) * ARCHAEOLOGIST_ART_OBJECT_SCORE_MULTIPLIER;
+
+        int64_t score1 = count_archaeologist_item_score(invent);
+        int64_t score2 = count_archaeologist_item_score(magic_objs);
+        Role_Specific_Score = score1 + score2;
         Role_Achievement_Score = ARCHAEOLOGIST_ROLE_ACHIEVEMENT_SCORE * (int64_t)u.uachieve.role_achievement;
         break;
     }
