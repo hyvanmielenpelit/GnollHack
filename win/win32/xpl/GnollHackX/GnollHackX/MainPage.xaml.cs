@@ -1797,7 +1797,7 @@ namespace GnollHackX
                 _currentPageHeight = height;
                 UpdateMainScreenBackgroundElement(true);
                 if (AchievementGrid.IsVisible)
-                    CalculateAndSetAchievementScrollViewHeight(_savedNewAchievementsGained, _savedNewAchievementsUnlocked);
+                    CalculateAndSetAchievementScrollViewHeight(height, _savedNewAchievementsGained, _savedNewAchievementsUnlocked);
             }
         }
 
@@ -2336,9 +2336,9 @@ namespace GnollHackX
             EventGrid.IsVisible = true;
         }
 
-        private void CalculateAndSetAchievementScrollViewHeight(int newAchievementsGained, int newAchievementsUnlocked)
+        private void CalculateAndSetAchievementScrollViewHeight(double totalHeight, int newAchievementsGained, int newAchievementsUnlocked)
         {
-            double spaceAvailable = RootGrid.Height
+            double spaceAvailable = totalHeight
                     - AchievementFrameCenterGrid.Padding.Top - AchievementFrameCenterGrid.Padding.Bottom - AchievementFrameCenterGrid.Margin.Top - AchievementFrameCenterGrid.Margin.Bottom
                     - AchievementFrame.Padding.Top - AchievementFrame.Padding.Bottom - AchievementFrame.Margin.Top - AchievementFrame.Margin.Bottom
                     - AchievementMainLayout.Padding.Top - AchievementMainLayout.Padding.Bottom - AchievementMainLayout.Margin.Top - AchievementMainLayout.Margin.Bottom
@@ -2425,7 +2425,7 @@ namespace GnollHackX
                     AchievementUnlockDetailLabel.IsVisible = false;
                 }
 
-                CalculateAndSetAchievementScrollViewHeight(newAchievementsGained, newAchievementsUnlocked);
+                CalculateAndSetAchievementScrollViewHeight(RootGrid.Height, newAchievementsGained, newAchievementsUnlocked);
                 achievementsGained.Sort(CompareAchievements);
 
                 foreach (int achievementId in achievementsGained)
