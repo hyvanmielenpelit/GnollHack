@@ -2327,53 +2327,53 @@ int how;
         if (u.u_gamescore >= 100000000L)
             issue_achievement(GUI_ACHIEVEMENT_ASCENDED_WITH_AT_LEAST_HUNDRED_MILLION_POINTS);
 
-        /* Ascended within turns, can be Modern or Classic mode */
+        /* Ascended within turns, these only in Classic mode */
         if (!ModernMode)
         {
             if (context.game_difficulty >= 0)
             {
                 if (moves <= 40000)
-                    issue_achievement(GUI_ACHIEVEMENT_ASCENDED_AT_EXPERT_DIFFICULTY_IN_LESS_THAN_40000_TURNS);
+                    issue_achievement(GUI_ACHIEVEMENT_ASCENDED_AT_EXPERT_DIFFICULTY_WITHIN_40000_TURNS);
                 if (moves <= 35000)
-                    issue_achievement(GUI_ACHIEVEMENT_ASCENDED_AT_EXPERT_DIFFICULTY_IN_LESS_THAN_35000_TURNS);
+                    issue_achievement(GUI_ACHIEVEMENT_ASCENDED_AT_EXPERT_DIFFICULTY_WITHIN_35000_TURNS);
                 if (moves <= 30000)
-                    issue_achievement(GUI_ACHIEVEMENT_ASCENDED_AT_EXPERT_DIFFICULTY_IN_LESS_THAN_30000_TURNS);
+                    issue_achievement(GUI_ACHIEVEMENT_ASCENDED_AT_EXPERT_DIFFICULTY_WITHIN_30000_TURNS);
                 if (moves <= 25000)
-                    issue_achievement(GUI_ACHIEVEMENT_ASCENDED_AT_EXPERT_DIFFICULTY_IN_LESS_THAN_25000_TURNS);
+                    issue_achievement(GUI_ACHIEVEMENT_ASCENDED_AT_EXPERT_DIFFICULTY_WITHIN_25000_TURNS);
                 if (moves <= 20000)
-                    issue_achievement(GUI_ACHIEVEMENT_ASCENDED_AT_EXPERT_DIFFICULTY_IN_LESS_THAN_20000_TURNS);
+                    issue_achievement(GUI_ACHIEVEMENT_ASCENDED_AT_EXPERT_DIFFICULTY_WITHIN_20000_TURNS);
                 if (moves <= 15000)
-                    issue_achievement(GUI_ACHIEVEMENT_ASCENDED_AT_EXPERT_DIFFICULTY_IN_LESS_THAN_15000_TURNS);
+                    issue_achievement(GUI_ACHIEVEMENT_ASCENDED_AT_EXPERT_DIFFICULTY_WITHIN_15000_TURNS);
             }
             if (context.game_difficulty >= 1)
             {
                 if (moves <= 40000)
-                    issue_achievement(GUI_ACHIEVEMENT_ASCENDED_AT_MASTER_DIFFICULTY_IN_LESS_THAN_40000_TURNS);
+                    issue_achievement(GUI_ACHIEVEMENT_ASCENDED_AT_MASTER_DIFFICULTY_WITHIN_40000_TURNS);
                 if (moves <= 35000)
-                    issue_achievement(GUI_ACHIEVEMENT_ASCENDED_AT_MASTER_DIFFICULTY_IN_LESS_THAN_35000_TURNS);
+                    issue_achievement(GUI_ACHIEVEMENT_ASCENDED_AT_MASTER_DIFFICULTY_WITHIN_35000_TURNS);
                 if (moves <= 30000)
-                    issue_achievement(GUI_ACHIEVEMENT_ASCENDED_AT_MASTER_DIFFICULTY_IN_LESS_THAN_30000_TURNS);
+                    issue_achievement(GUI_ACHIEVEMENT_ASCENDED_AT_MASTER_DIFFICULTY_WITHIN_30000_TURNS);
                 if (moves <= 25000)
-                    issue_achievement(GUI_ACHIEVEMENT_ASCENDED_AT_MASTER_DIFFICULTY_IN_LESS_THAN_25000_TURNS);
+                    issue_achievement(GUI_ACHIEVEMENT_ASCENDED_AT_MASTER_DIFFICULTY_WITHIN_25000_TURNS);
                 if (moves <= 20000)
-                    issue_achievement(GUI_ACHIEVEMENT_ASCENDED_AT_MASTER_DIFFICULTY_IN_LESS_THAN_20000_TURNS);
+                    issue_achievement(GUI_ACHIEVEMENT_ASCENDED_AT_MASTER_DIFFICULTY_WITHIN_20000_TURNS);
                 if (moves <= 15000)
-                    issue_achievement(GUI_ACHIEVEMENT_ASCENDED_AT_MASTER_DIFFICULTY_IN_LESS_THAN_15000_TURNS);
+                    issue_achievement(GUI_ACHIEVEMENT_ASCENDED_AT_MASTER_DIFFICULTY_WITHIN_15000_TURNS);
             }
             if (context.game_difficulty >= 2)
             {
                 if (moves <= 40000)
-                    issue_achievement(GUI_ACHIEVEMENT_ASCENDED_AT_GRAND_MASTER_DIFFICULTY_IN_LESS_THAN_40000_TURNS);
+                    issue_achievement(GUI_ACHIEVEMENT_ASCENDED_AT_GRAND_MASTER_DIFFICULTY_WITHIN_40000_TURNS);
                 if (moves <= 35000)
-                    issue_achievement(GUI_ACHIEVEMENT_ASCENDED_AT_GRAND_MASTER_DIFFICULTY_IN_LESS_THAN_35000_TURNS);
+                    issue_achievement(GUI_ACHIEVEMENT_ASCENDED_AT_GRAND_MASTER_DIFFICULTY_WITHIN_35000_TURNS);
                 if (moves <= 30000)
-                    issue_achievement(GUI_ACHIEVEMENT_ASCENDED_AT_GRAND_MASTER_DIFFICULTY_IN_LESS_THAN_30000_TURNS);
+                    issue_achievement(GUI_ACHIEVEMENT_ASCENDED_AT_GRAND_MASTER_DIFFICULTY_WITHIN_30000_TURNS);
                 if (moves <= 25000)
-                    issue_achievement(GUI_ACHIEVEMENT_ASCENDED_AT_GRAND_MASTER_DIFFICULTY_IN_LESS_THAN_25000_TURNS);
+                    issue_achievement(GUI_ACHIEVEMENT_ASCENDED_AT_GRAND_MASTER_DIFFICULTY_WITHIN_25000_TURNS);
                 if (moves <= 20000)
-                    issue_achievement(GUI_ACHIEVEMENT_ASCENDED_AT_GRAND_MASTER_DIFFICULTY_IN_LESS_THAN_20000_TURNS);
+                    issue_achievement(GUI_ACHIEVEMENT_ASCENDED_AT_GRAND_MASTER_DIFFICULTY_WITHIN_20000_TURNS);
                 if (moves <= 15000)
-                    issue_achievement(GUI_ACHIEVEMENT_ASCENDED_AT_GRAND_MASTER_DIFFICULTY_IN_LESS_THAN_15000_TURNS);
+                    issue_achievement(GUI_ACHIEVEMENT_ASCENDED_AT_GRAND_MASTER_DIFFICULTY_WITHIN_15000_TURNS);
             }
         }
     }

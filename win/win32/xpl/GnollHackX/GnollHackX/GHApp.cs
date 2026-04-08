@@ -9915,24 +9915,24 @@ namespace GnollHackX
                 new Achievement("Ascended All Roles at Expert", "Ascended all roles at expert difficulty in classic mode",
                 (int)gui_achievement_categories.Ascension, -11, false);
 
-            AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_AT_EXPERT_DIFFICULTY_IN_LESS_THAN_40000_TURNS] =
+            AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_AT_EXPERT_DIFFICULTY_WITHIN_40000_TURNS] =
                 new Achievement("Ascended within 40000 turns at Expert", "Ascended a character within 40,000 turns at expert difficulty in classic mode",
                 (int)gui_achievement_categories.Ascension, -1, (int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_AT_EXPERT_DIFFICULTY);
-            AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_AT_EXPERT_DIFFICULTY_IN_LESS_THAN_35000_TURNS] =
+            AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_AT_EXPERT_DIFFICULTY_WITHIN_35000_TURNS] =
                 new Achievement("Ascended within 35000 turns at Expert", "Ascended a character within 35,000 turns at expert difficulty in classic mode",
-                (int)gui_achievement_categories.Ascension, -1, (int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_AT_EXPERT_DIFFICULTY_IN_LESS_THAN_40000_TURNS);
-            AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_AT_EXPERT_DIFFICULTY_IN_LESS_THAN_30000_TURNS] =
+                (int)gui_achievement_categories.Ascension, -1, (int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_AT_EXPERT_DIFFICULTY_WITHIN_40000_TURNS);
+            AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_AT_EXPERT_DIFFICULTY_WITHIN_30000_TURNS] =
                 new Achievement("Ascended within 30000 turns at Expert", "Ascended a character within 30,000 turns at expert difficulty in classic mode",
-                (int)gui_achievement_categories.Ascension, -1, (int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_AT_EXPERT_DIFFICULTY_IN_LESS_THAN_35000_TURNS);
-            AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_AT_EXPERT_DIFFICULTY_IN_LESS_THAN_25000_TURNS] =
+                (int)gui_achievement_categories.Ascension, -1, (int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_AT_EXPERT_DIFFICULTY_WITHIN_35000_TURNS);
+            AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_AT_EXPERT_DIFFICULTY_WITHIN_25000_TURNS] =
                 new Achievement("Ascended within 25000 turns at Expert", "Ascended a character within 25,000 turns at expert difficulty in classic mode",
-                (int)gui_achievement_categories.Ascension, -1, (int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_AT_EXPERT_DIFFICULTY_IN_LESS_THAN_30000_TURNS);
-            AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_AT_EXPERT_DIFFICULTY_IN_LESS_THAN_20000_TURNS] =
+                (int)gui_achievement_categories.Ascension, -1, (int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_AT_EXPERT_DIFFICULTY_WITHIN_30000_TURNS);
+            AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_AT_EXPERT_DIFFICULTY_WITHIN_20000_TURNS] =
                 new Achievement("Ascended within 20000 turns at Expert", "Ascended a character within 20,000 turns at expert difficulty in classic mode",
-                (int)gui_achievement_categories.Ascension, -1, (int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_AT_EXPERT_DIFFICULTY_IN_LESS_THAN_25000_TURNS);
-            AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_AT_EXPERT_DIFFICULTY_IN_LESS_THAN_15000_TURNS] =
+                (int)gui_achievement_categories.Ascension, -1, (int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_AT_EXPERT_DIFFICULTY_WITHIN_25000_TURNS);
+            AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_AT_EXPERT_DIFFICULTY_WITHIN_15000_TURNS] =
                 new Achievement("Ascended within 15000 turns at Expert", "Ascended a character within 15,000 turns at expert difficulty in classic mode",
-                (int)gui_achievement_categories.Ascension, -1, (int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_AT_EXPERT_DIFFICULTY_IN_LESS_THAN_20000_TURNS);
+                (int)gui_achievement_categories.Ascension, -1, (int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_AT_EXPERT_DIFFICULTY_WITHIN_20000_TURNS);
 
             AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_ARCHAEOLOGIST_AT_MASTER_DIFFICULTY] =
                 new Achievement("Ascended Archaeologist at Master", "Ascended an archaeologist at master difficulty in classic mode",
@@ -9978,24 +9978,24 @@ namespace GnollHackX
                 new Achievement("Ascended All Roles at Master", "Ascended all roles at master difficulty in classic mode",
                 (int)gui_achievement_categories.Ascension, -12, false);
 
-            AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_AT_MASTER_DIFFICULTY_IN_LESS_THAN_40000_TURNS] =
+            AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_AT_MASTER_DIFFICULTY_WITHIN_40000_TURNS] =
                 new Achievement("Ascended within 40000 turns at Master", "Ascended a character within 40,000 turns at master difficulty in classic mode",
                 (int)gui_achievement_categories.Ascension, -2, (int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_AT_MASTER_DIFFICULTY);
-            AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_AT_MASTER_DIFFICULTY_IN_LESS_THAN_35000_TURNS] =
+            AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_AT_MASTER_DIFFICULTY_WITHIN_35000_TURNS] =
                 new Achievement("Ascended within 35000 turns at Master", "Ascended a character within 35,000 turns at master difficulty in classic mode",
-                (int)gui_achievement_categories.Ascension, -2, (int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_AT_MASTER_DIFFICULTY_IN_LESS_THAN_40000_TURNS);
-            AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_AT_MASTER_DIFFICULTY_IN_LESS_THAN_30000_TURNS] =
+                (int)gui_achievement_categories.Ascension, -2, (int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_AT_MASTER_DIFFICULTY_WITHIN_40000_TURNS);
+            AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_AT_MASTER_DIFFICULTY_WITHIN_30000_TURNS] =
                 new Achievement("Ascended within 30000 turns at Master", "Ascended a character within 30,000 turns at master difficulty in classic mode",
-                (int)gui_achievement_categories.Ascension, -2, (int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_AT_MASTER_DIFFICULTY_IN_LESS_THAN_35000_TURNS);
-            AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_AT_MASTER_DIFFICULTY_IN_LESS_THAN_25000_TURNS] =
+                (int)gui_achievement_categories.Ascension, -2, (int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_AT_MASTER_DIFFICULTY_WITHIN_35000_TURNS);
+            AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_AT_MASTER_DIFFICULTY_WITHIN_25000_TURNS] =
                 new Achievement("Ascended within 25000 turns at Master", "Ascended a character within 25,000 turns at master difficulty in classic mode",
-                (int)gui_achievement_categories.Ascension, -2, (int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_AT_MASTER_DIFFICULTY_IN_LESS_THAN_30000_TURNS);
-            AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_AT_MASTER_DIFFICULTY_IN_LESS_THAN_20000_TURNS] =
+                (int)gui_achievement_categories.Ascension, -2, (int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_AT_MASTER_DIFFICULTY_WITHIN_30000_TURNS);
+            AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_AT_MASTER_DIFFICULTY_WITHIN_20000_TURNS] =
                 new Achievement("Ascended within 20000 turns at Master", "Ascended a character within 20,000 turns at master difficulty in classic mode",
-                (int)gui_achievement_categories.Ascension, -2, (int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_AT_MASTER_DIFFICULTY_IN_LESS_THAN_25000_TURNS);
-            AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_AT_MASTER_DIFFICULTY_IN_LESS_THAN_15000_TURNS] =
+                (int)gui_achievement_categories.Ascension, -2, (int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_AT_MASTER_DIFFICULTY_WITHIN_25000_TURNS);
+            AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_AT_MASTER_DIFFICULTY_WITHIN_15000_TURNS] =
                 new Achievement("Ascended within 15000 turns at Master", "Ascended a character within 15,000 turns at master difficulty in classic mode",
-                (int)gui_achievement_categories.Ascension, -2, (int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_AT_MASTER_DIFFICULTY_IN_LESS_THAN_20000_TURNS);
+                (int)gui_achievement_categories.Ascension, -2, (int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_AT_MASTER_DIFFICULTY_WITHIN_20000_TURNS);
 
             AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_ARCHAEOLOGIST_AT_GRAND_MASTER_DIFFICULTY] =
                 new Achievement("Ascended Archaeologist at Grand Master", "Ascended an archaeologist at grand master difficulty in classic mode",
@@ -10041,24 +10041,24 @@ namespace GnollHackX
                 new Achievement("Ascended All Roles at Grand Master", "Ascended all roles at grand master difficulty in classic mode",
                 (int)gui_achievement_categories.Ascension, -13, false);
 
-            AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_AT_GRAND_MASTER_DIFFICULTY_IN_LESS_THAN_40000_TURNS] =
+            AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_AT_GRAND_MASTER_DIFFICULTY_WITHIN_40000_TURNS] =
                 new Achievement("Ascended within 40000 turns at Grand Master", "Ascended a character within 40,000 turns at grand master difficulty in classic mode",
                 (int)gui_achievement_categories.Ascension, -3, (int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_AT_GRAND_MASTER_DIFFICULTY);
-            AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_AT_GRAND_MASTER_DIFFICULTY_IN_LESS_THAN_35000_TURNS] =
+            AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_AT_GRAND_MASTER_DIFFICULTY_WITHIN_35000_TURNS] =
                 new Achievement("Ascended within 35000 turns at Grand Master", "Ascended a character within 35,000 turns at grand master difficulty in classic mode",
-                (int)gui_achievement_categories.Ascension, -3, (int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_AT_GRAND_MASTER_DIFFICULTY_IN_LESS_THAN_40000_TURNS);
-            AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_AT_GRAND_MASTER_DIFFICULTY_IN_LESS_THAN_30000_TURNS] =
+                (int)gui_achievement_categories.Ascension, -3, (int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_AT_GRAND_MASTER_DIFFICULTY_WITHIN_40000_TURNS);
+            AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_AT_GRAND_MASTER_DIFFICULTY_WITHIN_30000_TURNS] =
                 new Achievement("Ascended within 30000 turns at Grand Master", "Ascended a character within 30,000 turns at grand master difficulty in classic mode",
-                (int)gui_achievement_categories.Ascension, -3, (int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_AT_GRAND_MASTER_DIFFICULTY_IN_LESS_THAN_35000_TURNS);
-            AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_AT_GRAND_MASTER_DIFFICULTY_IN_LESS_THAN_25000_TURNS] =
+                (int)gui_achievement_categories.Ascension, -3, (int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_AT_GRAND_MASTER_DIFFICULTY_WITHIN_35000_TURNS);
+            AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_AT_GRAND_MASTER_DIFFICULTY_WITHIN_25000_TURNS] =
                 new Achievement("Ascended within 25000 turns at Grand Master", "Ascended a character within 25,000 turns at grand master difficulty in classic mode",
-                (int)gui_achievement_categories.Ascension, -3, (int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_AT_GRAND_MASTER_DIFFICULTY_IN_LESS_THAN_30000_TURNS);
-            AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_AT_GRAND_MASTER_DIFFICULTY_IN_LESS_THAN_20000_TURNS] =
+                (int)gui_achievement_categories.Ascension, -3, (int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_AT_GRAND_MASTER_DIFFICULTY_WITHIN_30000_TURNS);
+            AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_AT_GRAND_MASTER_DIFFICULTY_WITHIN_20000_TURNS] =
                 new Achievement("Ascended within 20000 turns at Grand Master", "Ascended a character within 20,000 turns at grand master difficulty in classic mode",
-                (int)gui_achievement_categories.Ascension, -3, (int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_AT_GRAND_MASTER_DIFFICULTY_IN_LESS_THAN_25000_TURNS);
-            AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_AT_GRAND_MASTER_DIFFICULTY_IN_LESS_THAN_15000_TURNS] =
+                (int)gui_achievement_categories.Ascension, -3, (int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_AT_GRAND_MASTER_DIFFICULTY_WITHIN_25000_TURNS);
+            AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_AT_GRAND_MASTER_DIFFICULTY_WITHIN_15000_TURNS] =
                 new Achievement("Ascended within 15000 turns at Grand Master", "Ascended a character within 15,000 turns at grand master difficulty in classic mode",
-                (int)gui_achievement_categories.Ascension, -3, (int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_AT_GRAND_MASTER_DIFFICULTY_IN_LESS_THAN_20000_TURNS);
+                (int)gui_achievement_categories.Ascension, -3, (int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_AT_GRAND_MASTER_DIFFICULTY_WITHIN_20000_TURNS);
 
         }
 
