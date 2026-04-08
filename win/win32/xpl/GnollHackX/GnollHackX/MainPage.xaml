@@ -236,22 +236,28 @@
               AbsoluteLayout.LayoutFlags="All"  IsVisible="False">
                 <Grid x:Name="AchievementFrameCenterGrid" WidthRequest  ="600" Margin="5" HorizontalOptions  ="Center" VerticalOptions="Center">
                     <Frame x:Name="AchievementFrame"  BackgroundColor="#99000000" BorderColor="Black" CornerRadius="10" HorizontalOptions="Center" VerticalOptions="Center">
-                        <StackLayout x:Name="AchievementMainLayout" Padding="5" Spacing="6"
-                                     HorizontalOptions="Center" VerticalOptions="Center">
-                            <Label x:Name="AchievementTitleLabel" Text="Achievements Gained" FontFamily="Immortal" FontSize="24" TextColor="White"
-                                       VerticalTextAlignment="Center" HorizontalOptions="Center"  />
-                            <ScrollView x:Name="AchievementScrollView" HeightRequest="100" HorizontalOptions="Fill" VerticalOptions="Start">
+                        <Grid x:Name="AchievementMainLayout" Padding="5" RowSpacing="0"  HorizontalOptions="Center" VerticalOptions="Center">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+                            <Label Grid.Row="0" x:Name="AchievementTitleLabel" Text="Achievements Gained" FontFamily="Immortal" FontSize="24" TextColor="White"
+                                       HorizontalTextAlignment="Center" VerticalTextAlignment="Center" HorizontalOptions="Center"  />
+                            <ScrollView Grid.Row="1" x:Name="AchievementScrollView" HeightRequest  ="450" Margin="0,6,0,0" HorizontalOptions="Fill" VerticalOptions="Start">
                                 <StackLayout x:Name="AchievementGainedLayout" Spacing="6" HorizontalOptions="Fill">
                                     
                                 </StackLayout>
                             </ScrollView>
-                            <Label x:Name="AchievementUnlockLabel" Text="Achievements Unlocked" FontFamily="Immortal" FontSize="19" TextColor="White"
-                                       VerticalTextAlignment="Center" HorizontalOptions="Center" IsVisible="False" />
-                            <Label x:Name="AchievementUnlockDetailLabel" Text="" FontFamily="Immortal" FontSize="14" TextColor="LightGray"
-                                       Margin="0,3,0,0" WidthRequest  ="480" LineBreakMode="WordWrap" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" HorizontalOptions="Fill" IsVisible="False" />
-                            <controls:CustomImageButton x:Name="AchievementOkButton" Text="OK" FontSize="19" WidthRequest="170" HeightRequest="55" Margin="0,10,0,0" FontFamily="Diablo" HorizontalOptions="Center" BackgroundColor="Transparent" TextColor="White"
-                                        Clicked="AchievementOkButton_Clicked" />
-                        </StackLayout>
+                            <Label Grid.Row="2" x:Name="AchievementUnlockLabel" Text="Achievements Unlocked" FontFamily="Immortal" FontSize="19" TextColor="White"
+                                        Margin="0,9,0,6" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" HorizontalOptions="Center" IsVisible="False" />
+                            <Label Grid.Row="3" x:Name="AchievementUnlockDetailLabel" Text="" FontFamily="Immortal" FontSize="14" TextColor="LightGray"
+                                       Margin="0,0,0,6" WidthRequest  ="480" LineBreakMode="WordWrap" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" HorizontalOptions="Fill" IsVisible="False" />
+                            <controls:CustomImageButton Grid.Row="4" x:Name="AchievementOkButton" Text="OK" FontSize="19" WidthRequest="170" HeightRequest="55" FontFamily="Diablo" HorizontalOptions="Center" BackgroundColor="Transparent" TextColor="White"
+                                       Margin="0,10,0,0" Clicked="AchievementOkButton_Clicked" />
+                        </Grid>
                     </Frame>
                 </Grid>
                 <Grid.GestureRecognizers>

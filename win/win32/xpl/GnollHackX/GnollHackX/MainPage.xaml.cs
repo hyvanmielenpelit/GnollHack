@@ -1797,8 +1797,8 @@ namespace GnollHackX
                 _currentPageWidth = width;
                 _currentPageHeight = height;
                 UpdateMainScreenBackgroundElement(true);
-                if (AchievementGrid.IsVisible)
-                    CalculateAndSetAchievementScrollViewHeight(height, _savedNewAchievementsGained, _savedNewAchievementsUnlocked);
+                //if (AchievementGrid.IsVisible)
+                //    CalculateAndSetAchievementScrollViewHeight(height, _savedNewAchievementsGained, _savedNewAchievementsUnlocked);
             }
         }
 
@@ -2337,20 +2337,20 @@ namespace GnollHackX
             EventGrid.IsVisible = true;
         }
 
-        private void CalculateAndSetAchievementScrollViewHeight(double totalHeight, int newAchievementsGained, int newAchievementsUnlocked)
-        {
-            double spaceAvailable = totalHeight
-                    - AchievementFrameCenterGrid.Padding.Top - AchievementFrameCenterGrid.Padding.Bottom - AchievementFrameCenterGrid.Margin.Top - AchievementFrameCenterGrid.Margin.Bottom
-                    - AchievementFrame.Padding.Top - AchievementFrame.Padding.Bottom - AchievementFrame.Margin.Top - AchievementFrame.Margin.Bottom
-                    - AchievementMainLayout.Padding.Top - AchievementMainLayout.Padding.Bottom - AchievementMainLayout.Margin.Top - AchievementMainLayout.Margin.Bottom
-                    - 24 /* Title */
-                    - (newAchievementsUnlocked > 0 ? 18 + 3 + 14 * 2 : 0) /* Subtitle */
-                    - 55 - 10 /* Button */
-                    ;
-            double spaceNeeded = newAchievementsGained * 90;
-            double spaceRequested = Math.Min(450, Math.Max(90, Math.Min(spaceAvailable, spaceNeeded)));
-            AchievementScrollView.HeightRequest = spaceRequested;
-        }
+        //private void CalculateAndSetAchievementScrollViewHeight(double totalHeight, int newAchievementsGained, int newAchievementsUnlocked)
+        //{
+        //    double spaceAvailable = totalHeight
+        //            - AchievementFrameCenterGrid.Padding.Top - AchievementFrameCenterGrid.Padding.Bottom - AchievementFrameCenterGrid.Margin.Top - AchievementFrameCenterGrid.Margin.Bottom
+        //            - AchievementFrame.Padding.Top - AchievementFrame.Padding.Bottom - AchievementFrame.Margin.Top - AchievementFrame.Margin.Bottom
+        //            - AchievementMainLayout.Padding.Top - AchievementMainLayout.Padding.Bottom - AchievementMainLayout.Margin.Top - AchievementMainLayout.Margin.Bottom
+        //            - 24 /* Title */
+        //            - (newAchievementsUnlocked > 0 ? 18 + 3 + 14 * 2 : 0) /* Subtitle */
+        //            - 55 - 10 /* Button */
+        //            ;
+        //    double spaceNeeded = newAchievementsGained * 90;
+        //    double spaceRequested = Math.Min(450, Math.Max(90, Math.Min(spaceAvailable, spaceNeeded)));
+        //    AchievementScrollView.HeightRequest = spaceRequested;
+        //}
 
         private int CompareAchievements(int a, int b)
         {
@@ -2426,7 +2426,7 @@ namespace GnollHackX
                     AchievementUnlockDetailLabel.IsVisible = false;
                 }
 
-                CalculateAndSetAchievementScrollViewHeight(RootGrid.Height, newAchievementsGained, newAchievementsUnlocked);
+                //CalculateAndSetAchievementScrollViewHeight(RootGrid.Height, newAchievementsGained, newAchievementsUnlocked);
                 achievementsGained.Sort(CompareAchievements);
                 AchievementGainedLayout.Children.Clear();
 
