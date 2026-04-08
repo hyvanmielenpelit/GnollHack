@@ -10062,10 +10062,11 @@ namespace GnollHackX
                             if (addBit)
                             {
                                 long oldVal = _userData.LongDictionary[key];
-                                if ((oldVal & val) != val)
+                                long newVal = oldVal | val;
+                                if (newVal != oldVal)
                                 {
-                                    _userData.LongDictionary[key] |= val;
-                                    changedVal = _userData.LongDictionary[key] & ~oldVal;
+                                    _userData.LongDictionary[key] = newVal;
+                                    changedVal = newVal & ~oldVal;
                                     addSuccessful = true;
                                 }
                             }
