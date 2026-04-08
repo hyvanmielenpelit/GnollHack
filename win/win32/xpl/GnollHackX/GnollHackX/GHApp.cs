@@ -9573,6 +9573,9 @@ namespace GnollHackX
                 (int)gui_achievement_categories.Gameplay, 0, false);
             AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_SOLVED_CASTLE_TUNE] =
                 new Achievement("Castle Tune", "Solve the castle tune to control the drawbridge",
+                (int)gui_achievement_categories.Playthrough, 0, false);
+            AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_GENOCIDED_MONSTERS] =
+                new Achievement("Genocide", "Genocide a type of monsters using any means available in the game",
                 (int)gui_achievement_categories.Gameplay, 0, false);
 
             AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_IDENTIFIED_BLESSEDNESS_ON_ALTAR] =
@@ -9776,6 +9779,10 @@ namespace GnollHackX
                 new Achievement("Reach Quantum Core", "Find and enter the Quantum Core",
                 (int)gui_achievement_categories.Exploration, 0, (int)gui_achievement_types.GUI_ACHIEVEMENT_ENTERED_LARGE_CIRCULAR_DUNGEON);
 
+            AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_ENTERED_FORT_LUDIOUS] =
+                new Achievement("Fort Ludious", "Find Fort Ludious",
+                (int)gui_achievement_categories.Exploration, 0, false);
+
             AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_ENTERED_HELLISH_PASTURES] =
                 new Achievement("Hellish Pastures", "Locate and enter the Hellish Pastures, a special branch of Gehennom",
                 (int)gui_achievement_categories.Exploration, 0, false);
@@ -9847,6 +9854,22 @@ namespace GnollHackX
             AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_AT_GRAND_MASTER_DIFFICULTY] =
                 new Achievement("Ascended at Grand Master", "Ascended a character at grand master difficulty in classic mode",
                 (int)gui_achievement_categories.Ascension, 0, (int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_IN_CLASSIC_MODE);
+
+            AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_WITH_AT_LEAST_ONE_MILLION_POINTS] =
+                new Achievement("Ascended with Million Points", "Ascended a character with at least a million points", "Ascended with 001 Million Points",
+                (int)gui_achievement_categories.Ascension, 0, (int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED);
+            AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_WITH_AT_LEAST_FIVE_MILLION_POINTS] =
+                new Achievement("Ascended with 5 Million Points", "Ascended a character with at least 5 million points", "Ascended with 005 Million Points",
+                (int)gui_achievement_categories.Ascension, 0, (int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_WITH_AT_LEAST_ONE_MILLION_POINTS);
+            AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_WITH_AT_LEAST_TEN_MILLION_POINTS] =
+                new Achievement("Ascended with 10 Million Points", "Ascended a character with at least 10 million points", "Ascended with 010 Million Points",
+                (int)gui_achievement_categories.Ascension, 0, (int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_WITH_AT_LEAST_FIVE_MILLION_POINTS);
+            AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_WITH_AT_LEAST_FIFTY_MILLION_POINTS] =
+                new Achievement("Ascended with 50 Million Points", "Ascended a character with at least 50 million points", "Ascended with 050 Million Points",
+                (int)gui_achievement_categories.Ascension, 0, (int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_WITH_AT_LEAST_TEN_MILLION_POINTS);
+            AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_WITH_AT_LEAST_HUNDRED_MILLION_POINTS] =
+                new Achievement("Ascended with 100 Million Points", "Ascended a character with at least 100 million points", "Ascended with 100 Million Points",
+                (int)gui_achievement_categories.Ascension, 0, (int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_WITH_AT_LEAST_FIFTY_MILLION_POINTS);
 
             AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_ARCHAEOLOGIST_AT_EXPERT_DIFFICULTY] =
                 new Achievement("Ascended Archaeologist at Expert", "Ascended an archaeologist at expert difficulty in classic mode",

@@ -8009,6 +8009,7 @@ xchar portal; /* 1 = Magic portal, 2 = Modron portal down (find portal up), 3 = 
     } 
     else if (Is_knox(&u.uz))
     {
+        issue_achievement(GUI_ACHIEVEMENT_ENTERED_FORT_LUDIOUS);
         /* alarm stops working once Croesus has died */
         if (isnew || !mvitals[PM_CROESUS].died) 
         {

@@ -2313,6 +2313,21 @@ int how;
 #endif
     }
 
+    /* Ascended with points, can be Modern or Classic mode */
+    if (how == ASCENDED && !CasualMode && !flags.non_scoring)
+    {
+        if (u.u_gamescore >= 1000000L)
+            issue_achievement(GUI_ACHIEVEMENT_ASCENDED_WITH_AT_LEAST_ONE_MILLION_POINTS);
+        if (u.u_gamescore >= 5000000L)
+            issue_achievement(GUI_ACHIEVEMENT_ASCENDED_WITH_AT_LEAST_FIVE_MILLION_POINTS);
+        if (u.u_gamescore >= 10000000L)
+            issue_achievement(GUI_ACHIEVEMENT_ASCENDED_WITH_AT_LEAST_TEN_MILLION_POINTS);
+        if (u.u_gamescore >= 50000000L)
+            issue_achievement(GUI_ACHIEVEMENT_ASCENDED_WITH_AT_LEAST_FIFTY_MILLION_POINTS);
+        if (u.u_gamescore >= 100000000L)
+            issue_achievement(GUI_ACHIEVEMENT_ASCENDED_WITH_AT_LEAST_HUNDRED_MILLION_POINTS);
+    }
+
     if (u.ugrave_arise >= LOW_PM && !done_stopprint)
     {
         /* give this feedback even if bones aren't going to be created,

@@ -4000,6 +4000,7 @@ do_class_genocide()
                     kill_genocided_monsters();
                     update_inventory(); /* eggs & tins */
                     pline("Wiped out all %s.", nam);
+                    issue_achievement(GUI_ACHIEVEMENT_GENOCIDED_MONSTERS);
 
                     if (!ll_done++) 
                     {
@@ -4227,6 +4228,7 @@ int how;
         mvitals[mndx].mvflags |= (MV_GENOCIDED | MV_NOCORPSE);
         pline("Wiped out %s%s.", which, pluralbuf);
               //(*which != 'a') ? buf : makeplural(buf));
+        issue_achievement(GUI_ACHIEVEMENT_GENOCIDED_MONSTERS);
 
         if (!u.uconduct.genocides++)
             livelog_printf(LL_CONDUCT | LL_GENOCIDE,
