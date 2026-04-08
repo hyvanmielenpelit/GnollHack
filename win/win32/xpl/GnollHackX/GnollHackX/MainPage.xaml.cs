@@ -2428,6 +2428,7 @@ namespace GnollHackX
 
                 CalculateAndSetAchievementScrollViewHeight(RootGrid.Height, newAchievementsGained, newAchievementsUnlocked);
                 achievementsGained.Sort(CompareAchievements);
+                AchievementGainedLayout.Children.Clear();
 
                 foreach (int achievementId in achievementsGained)
                 {
@@ -2470,6 +2471,7 @@ namespace GnollHackX
             GHApp.PlayButtonClickedSound();
             AchievementGrid.IsVisible = false;
             AchievementOkButton.IsEnabled = true;
+            AchievementGainedLayout.Children.Clear();
         }
 
         private void AchievementTapGestureRecognizer_Tapped(object sender, EventArgs e)

@@ -9481,7 +9481,7 @@ namespace GnollHackX
                 {
                     if (preferencesToo)
                         Preferences.Set("DiscoveredMusicBits", val);
-                    AddUserData("DiscoveredMusicBits", val, initial);
+                    AddUserData("DiscoveredMusicBits", val, initial, out long changedBits);
                 }
                 catch (Exception ex)
                 {
@@ -10044,11 +10044,12 @@ namespace GnollHackX
                 _userData.Clear();
         }
 
-        public static bool AddUserData(string key, long val, bool initial, bool addBit = false)
+        public static bool AddUserData(string key, long val, bool initial, out long changedVal, bool addBit = false)
         {
             bool addSuccessful = false;
             if(_userData == null)
                 _userData = new GHUserData();
+            changedVal = 0;
             if(_userData != null)
             {
                 /* Add first */
@@ -10060,9 +10061,11 @@ namespace GnollHackX
                         {
                             if (addBit)
                             {
-                                if ((_userData.LongDictionary[key] & val) == 0)
+                                long oldVal = _userData.LongDictionary[key];
+                                if ((oldVal & val) != val)
                                 {
                                     _userData.LongDictionary[key] |= val;
+                                    changedVal = _userData.LongDictionary[key] & ~oldVal;
                                     addSuccessful = true;
                                 }
                             }
@@ -10071,6 +10074,7 @@ namespace GnollHackX
                                 if (_userData.LongDictionary[key] != val)
                                 {
                                     _userData.LongDictionary[key] = val;
+                                    changedVal = val;
                                     addSuccessful = true;
                                 }
                             }
@@ -10084,11 +10088,14 @@ namespace GnollHackX
                     {
 #if GNH_MAUI
                         addSuccessful = _userData.LongDictionary.TryAdd(key, val);
+                        if (addSuccessful)
+                            changedVal = val;
 #else
                         try
                         {
                             _userData.LongDictionary.Add(key, val);
                             addSuccessful = true;
+                            changedVal = val;
                         }
                         catch (Exception ex)
                         {
@@ -10420,8 +10427,8 @@ namespace GnollHackX
                     /* Write achievements to user data, which will be marked to be written to disk later */
                     try
                     {
-                        if (AddUserData(GHConstants.AchievementLongPrefix + i, resultBits[i], false, true))
-                            AddUserData(GHConstants.GainedAchievementLongPrefix + i, resultBits[i], false, true);
+                        if (AddUserData(GHConstants.AchievementLongPrefix + i, resultBits[i], false, out long changedBits, true))
+                            AddUserData(GHConstants.GainedAchievementLongPrefix + i, changedBits, false, out long changedGainedBits, true);
                     }
                     catch (Exception ex)
                     {
