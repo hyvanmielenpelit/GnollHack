@@ -173,7 +173,7 @@ namespace GnollHackX.Pages.MainScreen
                     int catDiff = achievementList[a.BtnCommand].SubCategoryId - achievementList[b.BtnCommand].SubCategoryId;
                     if (catDiff != 0)
                         return catDiff;
-                    return string.Compare(a.LblText, b.LblText); 
+                    return string.Compare(achievementList[a.BtnCommand].SortName, achievementList[b.BtnCommand].SortName); 
                 });
                 foreach(var rib in ribList)
                     AchievementLayout.Children.Add(rib);

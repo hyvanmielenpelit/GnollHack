@@ -2365,7 +2365,7 @@ namespace GnollHackX
             if (achA == null || achB == null)
                 return (achA == null ? 0 : 1) - (achB == null ? 0 : 1);
 
-            return string.Compare(achA.Name, achB.Name);
+            return string.Compare(achA.SortName, achB.SortName);
         }
 
         private int _savedNewAchievementsGained = 0;

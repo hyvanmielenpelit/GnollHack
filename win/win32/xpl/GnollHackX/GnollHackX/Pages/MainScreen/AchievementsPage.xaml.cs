@@ -159,6 +159,7 @@ namespace GnollHackX.Pages.MainScreen
             RowImageButton ghbutton = sender as RowImageButton;
             if (ghbutton != null)
             {
+                GHApp.PlayButtonClickedSound();
                 var dispAchievementPage = new AchievementsDisplayPage();
                 dispAchievementPage.ReadAchievementCategory(ghbutton.BtnCommand);
                 await GHApp.PushModalPageAsync(dispAchievementPage);

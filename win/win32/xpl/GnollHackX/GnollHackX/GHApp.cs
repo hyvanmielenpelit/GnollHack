@@ -9599,7 +9599,7 @@ namespace GnollHackX
 
             /* Experience levels */
             AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_REACHED_EXPERIENCE_LEVEL_5] =
-                new Achievement("Experience Level 5", "Reach experience level 5 with any character",
+                new Achievement("Experience Level 5", "Reach experience level 5 with any character", "Experience Level 05",
                 (int)gui_achievement_categories.Gameplay, 0);
             AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_REACHED_EXPERIENCE_LEVEL_10] =
                 new Achievement("Experience Level 10", "Reach experience level 10 with any character",
@@ -9731,7 +9731,7 @@ namespace GnollHackX
 
             /* Exploration */
             AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_REACHED_DUNGEON_LEVEL_5] =
-                new Achievement("Dungeon Level 5", "Reach dungeon level 5 with any character",
+                new Achievement("Dungeon Level 5", "Reach dungeon level 5 with any character", "Dungeon Level 05",
                 (int)gui_achievement_categories.Exploration, 0);
             AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_REACHED_DUNGEON_LEVEL_10] =
                 new Achievement("Dungeon Level 10", "Reach dungeon level 10 with any character",

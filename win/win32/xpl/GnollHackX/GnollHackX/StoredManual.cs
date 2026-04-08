@@ -29,6 +29,7 @@ namespace GnollHackX
     {
         public string Name;
         public string Description;
+        public string SortName; /* Special name used for sorting */
         public int CategoryId;
         public int SubCategoryId;
         public bool IsVisible; /* If false, the achievement is not listed */
@@ -39,12 +40,12 @@ namespace GnollHackX
 
         }
 
-        public Achievement(string name, string description, int categoryId, int subCategoryId, 
+        public Achievement(string name, string description, string sortName, int categoryId, int subCategoryId, 
             bool isVisible, int madeVisibleById) : this()
         {
             Name = name;
             Description = description;
-            Name = name;
+            SortName = sortName != null ? sortName : name;
             CategoryId = categoryId;
             SubCategoryId = subCategoryId;
             IsVisible = isVisible;
@@ -52,13 +53,25 @@ namespace GnollHackX
         }
 
         public Achievement(string name, string description, int categoryId, int subCategoryId, bool isVisible = true) 
-            : this(name, description, categoryId, subCategoryId, isVisible, 0)
+            : this(name, description, null, categoryId, subCategoryId, isVisible, 0)
         {
 
         }
 
         public Achievement(string name, string description, int categoryId, int subCategoryId, int madeVisibleById)
-            : this(name, description, categoryId, subCategoryId, false, madeVisibleById)
+            : this(name, description, null, categoryId, subCategoryId, false, madeVisibleById)
+        {
+
+        }
+
+        public Achievement(string name, string description, string sortName, int categoryId, int subCategoryId, bool isVisible = true)
+            : this(name, description, sortName, categoryId, subCategoryId, isVisible, 0)
+        {
+
+        }
+
+        public Achievement(string name, string description, string sortName, int categoryId, int subCategoryId, int madeVisibleById)
+            : this(name, description, sortName, categoryId, subCategoryId, false, madeVisibleById)
         {
 
         }
