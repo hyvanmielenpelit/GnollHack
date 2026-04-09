@@ -10372,14 +10372,14 @@ namespace GnollHackX
                 {
                     new List<int>() { (int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED, },
                 }),
-            new AchievementTier("Grand Ascended Hero of Yendor",
+            new AchievementTier("Ascended Grand Hero of Yendor",
                 new List<List<int>>()
                 {
                     new List<int>() { (int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_IN_CLASSIC_MODE, },
                 }),
-            new AchievementTier("Grand Ascended Hero of Yendor", "Expert Class", (int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_AT_EXPERT_DIFFICULTY),
-            new AchievementTier("Grand Ascended Hero of Yendor", "Master Class", (int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_AT_MASTER_DIFFICULTY),
-            new AchievementTier("Grand Ascended Hero of Yendor", "Grand Master Class", (int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_AT_GRAND_MASTER_DIFFICULTY),
+            new AchievementTier("Ascended Grand Hero of Yendor", "Expert Class", (int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_AT_EXPERT_DIFFICULTY),
+            new AchievementTier("Ascended Grand Hero of Yendor", "Master Class", (int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_AT_MASTER_DIFFICULTY),
+            new AchievementTier("Ascended Grand Hero of Yendor", "Grand Master Class", (int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_AT_GRAND_MASTER_DIFFICULTY),
         };
 
         public static readonly AchievementBundle[] AchievementBundles =
