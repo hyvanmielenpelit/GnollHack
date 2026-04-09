@@ -10339,6 +10339,7 @@ namespace GnollHackX
             new AchievementTier("Adventurer",
                 new List<List<int>>()
                 {
+                    new List<int>() { (int)gui_achievement_types.GUI_ACHIEVEMENT_REACHED_EXPERIENCE_LEVEL_20, },
                     new List<int>() { (int)gui_achievement_types.GUI_ACHIEVEMENT_REACHED_CASTLE },
                     new List<int>() { (int)gui_achievement_types.GUI_ACHIEVEMENT_FOUND_BELL_OF_OPENING },
                     new List<int>() { (int)gui_achievement_types.GUI_ACHIEVEMENT_COMPLETED_THE_QUEST },
@@ -10346,6 +10347,7 @@ namespace GnollHackX
             new AchievementTier("Grand Adventurer",
                 new List<List<int>>()
                 {
+                    new List<int>() { (int)gui_achievement_types.GUI_ACHIEVEMENT_REACHED_EXPERIENCE_LEVEL_25, },
                     new List<int>() { (int)gui_achievement_types.GUI_ACHIEVEMENT_ENTERED_GEHENNOM, },
                 }),
             new AchievementTier("Hero",
