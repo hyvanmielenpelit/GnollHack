@@ -79,30 +79,69 @@ namespace GnollHackX
 
     public class AchievementCategory
     {
-        public string Name;
+        public readonly string Name;
 
         public AchievementCategory()
         {
-
+            Name = "";
         }
 
-        public AchievementCategory(string name) : this()
+        public AchievementCategory(string name)
         {
             Name = name;
         }
     }
 
+    public class AchievementTier
+    {
+        public readonly string Name;
+        public readonly string SubName;
+        public readonly List<List<int>> UnlockAchievements; /* Outer List is OR and inner List AND */
+
+        public AchievementTier()
+        {
+            Name = "";
+            UnlockAchievements = new List<List<int>>();
+        }
+
+        public AchievementTier(string name, List<List<int>> unlockAchievements)
+        {
+            Name = name;
+            UnlockAchievements = unlockAchievements;
+        }
+
+        public AchievementTier(string name, string subName, List<List<int>> unlockAchievements)
+        {
+            Name = name;
+            SubName = subName;
+            UnlockAchievements = unlockAchievements;
+        }
+
+        public AchievementTier(string name, int unlockAchievement)
+        {
+            Name = name;
+            UnlockAchievements = new List<List<int>>() { new List<int>() { unlockAchievement } };
+        }
+
+        public AchievementTier(string name, string subName, int unlockAchievement)
+        {
+            Name = name;
+            SubName = subName;
+            UnlockAchievements = new List<List<int>>() { new List<int>() { unlockAchievement } };
+        }
+    }
+
     public class AchievementBundle
     {
-        public int AchievementId;
-        public List<int> BundleAchievements;
+        public readonly int AchievementId;
+        public readonly List<int> BundleAchievements;
 
         public AchievementBundle()
         {
             BundleAchievements = new List<int>();
         }
 
-        public AchievementBundle(int achievementId, List<int> bundleAchievements  ) : this()
+        public AchievementBundle(int achievementId, List<int> bundleAchievements  )
         {
             AchievementId = achievementId;
             BundleAchievements = bundleAchievements;

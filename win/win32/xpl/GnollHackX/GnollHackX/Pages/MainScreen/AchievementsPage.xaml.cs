@@ -35,8 +35,18 @@ namespace GnollHackX.Pages.MainScreen
             {
                 lblHeader.TextColor = GHColors.White;
                 lblSubtitle.TextColor = GHColors.White;
+                lblSubtitle2.TextColor = GHColors.White;
                 EmptyLabel.TextColor = GHColors.White;
+#if GNH_MAUI
+                TierFrame.Stroke = GHColors.TitleGoldColor;
+#else
+                TierFrame.BorderColor = GHColors.TitleGoldColor;
+#endif
             }
+            lblSubtitle.TextColor = GHApp.DarkMode ? GHColors.TitleGoldColor : GHColors.DarkGreen;
+            lblSubtitle2.TextColor = GHApp.DarkMode ? GHColors.LightYellow : GHColors.SemiDarkGreen;
+            TierTitleLabel.TextColor = GHColors.TitleGoldColor;
+            TierSubNameLabel.TextColor = GHColors.LightYellow;
         }
         private async void Button_Clicked(object sender, EventArgs e)
         {
@@ -114,6 +124,30 @@ namespace GnollHackX.Pages.MainScreen
 
         public void ReadAchievements()
         {
+            AchievementTier tier = GHApp.GetAchievementTier();
+            if (tier != null)
+            {
+                lblSubtitle.Text = tier.Name;
+                if (tier.SubName != null)
+                {
+                    lblSubtitle2.Text = tier.SubName;
+                    lblSubtitle2.IsVisible = true;
+                }
+                if (GHApp.IsNewAchievementTierGained())
+                {
+                    TierNameLabel.Text = tier.Name;
+                    if (tier.SubName != null)
+                    {
+                        TierSubNameLabel.Text = tier.SubName;
+                        TierSubNameLabel.IsVisible = true;
+                    }
+                    ImageLeft.Source = "resource://" + GHApp.AppResourceName + ".Assets.UI.levelchange.png";
+                    ImageRight.Source = "resource://" + GHApp.AppResourceName + ".Assets.UI.levelchange.png";
+                    TierGrid.IsVisible = true;
+                    GHApp.ClearAchievementTierGained();
+                }
+            }
+
             AchievementCategory[] achievementList = GHApp.AchievementCategories;
             //lblSubtitle.Text = "Found " + manuallist.Count + " of " + maxManuals + " manuals";
             if (achievementList.Length > 0)
@@ -165,6 +199,20 @@ namespace GnollHackX.Pages.MainScreen
                 await GHApp.PushModalPageAsync(dispAchievementPage);
             }
             AchievementLayout.IsEnabled = true;
+        }
+
+        private void TierOkButton_Clicked(object sender, EventArgs e)
+        {
+            TierOkButton.IsEnabled = false;
+            GHApp.PlayButtonClickedSound();
+            TierGrid.IsVisible = false;
+            TierOkButton.IsEnabled = true;
+
+        }
+
+        private void TapGestureRecognizer_Tapped(object sender, EventArgs e)
+        {
+            TierOkButton_Clicked(sender, e);
         }
     }
 }

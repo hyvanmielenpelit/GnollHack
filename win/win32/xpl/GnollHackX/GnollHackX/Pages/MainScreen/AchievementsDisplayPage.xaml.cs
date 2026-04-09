@@ -147,7 +147,7 @@ namespace GnollHackX.Pages.MainScreen
                     rib.LblTextColor = isAchieved ? (GHApp.DarkMode ? GHColors.TitleGoldColor : GHColors.SemiDarkGreen) : (GHApp.DarkMode ? GHColors.White : GHColors.Black);
                     rib.LblFontSize = 17;
                     rib.SubLblText = achievement.Description;
-                    rib.SubLblTextColor = isAchieved ? (GHApp.DarkMode ? GHColors.Yellow : GHColors.DarkGreen) : (GHApp.DarkMode ? GHColors.LighterGray : GHColors.DarkerGray);
+                    rib.SubLblTextColor = isAchieved ? (GHApp.DarkMode ? GHColors.LightYellow : GHColors.DarkGreen) : (GHApp.DarkMode ? GHColors.LighterGray : GHColors.DarkerGray);
                     rib.SubLblFontSize = 14;
                     rib.IsSubLblVisible = true;
                     rib.ImgWidth = 80;

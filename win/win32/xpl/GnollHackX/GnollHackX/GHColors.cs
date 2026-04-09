@@ -47,6 +47,7 @@ namespace GnollHackX
         public static Color DarkGreen = new Color(0, 0.25f, 0);
         public static Color DarkerGray = new Color(0.2f, 0.2f, 0.2f);
         public static Color LighterGray = new Color(0.8f, 0.8f, 0.8f);
+        public static Color LightYellow = new Color(1f, 1f, 0.5f);
 #else
         public static Color White = Color.White;
         public static Color Black = Color.Black;
@@ -83,6 +84,7 @@ namespace GnollHackX
         public static Color DarkGreen = new Color(0, 0.25, 0);
         public static Color DarkerGray = new Color(0.2, 0.2, 0.2);
         public static Color LighterGray = new Color(0.8, 0.8, 0.8);
+        public static Color LightYellow = new Color(1.0, 1.0, 0.5);
 #endif
     }
 }

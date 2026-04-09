@@ -17,8 +17,12 @@
                 </Grid.RowDefinitions>
                 <Label Grid.Row="0" x:Name="lblHeader" Text="Achievements" HorizontalTextAlignment="Center" FontSize="23" FontAttributes="Bold" FontFamily="Diablo" TextColor="Black"
                     HorizontalOptions="Center" VerticalOptions="Fill" Margin="30,10,30,10" />
-                <Label Grid.Row="1" x:Name="lblSubtitle" Text="Summary" TextColor="Black" Margin="1,2,1,6" BackgroundColor="Transparent" FontFamily="Immortal" FontSize="20" 
+                <StackLayout Grid.Row="1" Margin="1,2,1,6">
+                    <Label x:Name="lblSubtitle" Text="" TextColor="Black" BackgroundColor="Transparent" FontFamily="Immortal" FontSize="18" 
                        HorizontalOptions="Center" VerticalOptions="Fill" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" />
+                    <Label x:Name="lblSubtitle2" Text="" Margin="0,3,0,0" TextColor="Black" BackgroundColor="Transparent" FontFamily="Immortal" FontSize="18" 
+                       HorizontalOptions="Center" VerticalOptions="Fill" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" IsVisible="False" />
+                </StackLayout>
                 <Grid Grid.Row="2" WidthRequest  ="480" HorizontalOptions  ="Center" VerticalOptions="Fill">
                     <ScrollView HorizontalOptions="Fill" VerticalOptions="Fill">
                         <StackLayout x:Name="AchievementLayout" Spacing="6" HorizontalOptions="Fill">
@@ -28,6 +32,47 @@
                 </Grid>
                 <controls:CustomImageButton Grid.Row="3" x:Name="CloseButton" Text="Close" Margin="0,10,0,10" WidthRequest="280" HeightRequest="60" FontFamily="Diablo" FontSize="20" HorizontalOptions="Center" VerticalOptions="End" BackgroundColor="Transparent" TextColor="White"
                         Clicked="Button_Clicked" />
+            </Grid>
+            <Grid x:Name="TierGrid" HorizontalOptions="Fill" VerticalOptions="Fill" 
+              BackgroundColor="#66000000" AbsoluteLayout.LayoutBounds="0,0,1,1"
+              AbsoluteLayout.LayoutFlags="All"  IsVisible="False">
+                <Grid x:Name="TierFrameCenterGrid" WidthRequest  ="640" Margin="5" HorizontalOptions  ="Center" VerticalOptions="Center">
+                    <Frame x:Name="TierFrame"  BackgroundColor="#99000000" BorderColor="Black" CornerRadius="10" HorizontalOptions="Center" VerticalOptions="Center">
+                        <Grid x:Name="TierLayoutGrid" Padding="5" RowSpacing="0"  HorizontalOptions="Center" VerticalOptions="Center">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+                            <Label Grid.Row="0" x:Name="TierTitleLabel" Text="New Tier Reached" FontFamily="Immortal" FontSize="24" TextColor="White"
+                                       HorizontalTextAlignment="Center" VerticalTextAlignment="Center" HorizontalOptions="Center" />
+                            <Grid Grid.Row="1" Margin="0,5">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <gnh:GHCachedImage Grid.Column="0" x:Name="ImageLeft" HighFilterQuality="True"
+                                    WidthRequest="80" HeightRequest="80" 
+                                    BackgroundColor="Transparent" VerticalOptions="Center" HorizontalOptions="Start" />
+                                <gnh:GHCachedImage Grid.Column="2" x:Name="ImageRight" HighFilterQuality="True"
+                                    WidthRequest="80" HeightRequest="80" 
+                                    BackgroundColor="Transparent" VerticalOptions="Center" HorizontalOptions="End" />
+                                <StackLayout Grid.Column="1" Margin="10,0" VerticalOptions="Center" HorizontalOptions="Center" >
+                                    <Label x:Name="TierNameLabel" Text="Tier Name" FontFamily="Immortal" FontSize="23" TextColor="White"
+                                       HorizontalTextAlignment="Center" VerticalTextAlignment="Center" HorizontalOptions="Center" VerticalOptions="Center" IsVisible="True" />
+                                    <Label x:Name="TierSubNameLabel" Text="Tier Specifier" Margin="0,3,0,0" FontFamily="Immortal" FontSize="23" TextColor="White"
+                                       HorizontalTextAlignment="Center" VerticalTextAlignment="Center" HorizontalOptions="Center" VerticalOptions="Center" IsVisible="False" />
+                                </StackLayout>
+                            </Grid>
+                            <controls:CustomImageButton Grid.Row="2" x:Name="TierOkButton" Text="OK" FontSize="19" WidthRequest="170" HeightRequest="55" FontFamily="Diablo" HorizontalOptions="Center" BackgroundColor="Transparent" TextColor="White"
+                                       Margin="0,10,0,0" Clicked="TierOkButton_Clicked" />
+                        </Grid>
+                    </Frame>
+                </Grid>
+                <Grid.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped" />
+                </Grid.GestureRecognizers>
             </Grid>
         </Grid>
     </ContentPage.Content>

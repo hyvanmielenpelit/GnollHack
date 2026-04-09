@@ -1050,7 +1050,7 @@ namespace GnollHackX
                     }
                 }
 
-                if (!previousInformationShown)
+                //if (!previousInformationShown)
                 {
                     if (DisplayAchievementsGained())
                         previousInformationShown = true;
@@ -1797,8 +1797,6 @@ namespace GnollHackX
                 _currentPageWidth = width;
                 _currentPageHeight = height;
                 UpdateMainScreenBackgroundElement(true);
-                //if (AchievementGrid.IsVisible)
-                //    CalculateAndSetAchievementScrollViewHeight(height, _savedNewAchievementsGained, _savedNewAchievementsUnlocked);
             }
         }
 
@@ -2368,16 +2366,11 @@ namespace GnollHackX
             return string.Compare(achA.SortName, achB.SortName);
         }
 
-        private int _savedNewAchievementsGained = 0;
-        private int _savedNewAchievementsUnlocked = 0;
-
         public bool DisplayAchievementsGained()
         {
             bool didShowGrid = false;
             List<int> achievementsGained = GHApp.GetAchievementsGained();
             int newAchievementsGained = achievementsGained?.Count ?? 0;
-            _savedNewAchievementsGained = newAchievementsGained;
-            _savedNewAchievementsUnlocked = 0;
             if (newAchievementsGained > 0)
             {
                 if (newAchievementsGained > 1)
@@ -2389,7 +2382,6 @@ namespace GnollHackX
 
                 List<int> achievementsUnlocked = GHApp.GetAchievementsUnlocked(achievementsGained);
                 int newAchievementsUnlocked = achievementsUnlocked?.Count ?? 0;
-                _savedNewAchievementsUnlocked = newAchievementsUnlocked;
                 if (newAchievementsUnlocked > 0)
                 {
                     StringBuilder builder = new StringBuilder();
@@ -2411,7 +2403,15 @@ namespace GnollHackX
                         Achievement unlocked = GHApp.AchievementDefinitions[achievementsUnlocked[i]];
                         builder.Append(unlocked?.Name ?? "(null, id=" + achievementsUnlocked[i] +")");
                         if (i < newAchievementsUnlocked - 2)
+                        {
+                            if (i == 9)
+                            {
+                                /* Show maximum of 10 unlocked achievements */
+                                builder.Append("...");
+                                break;
+                            }
                             builder.Append(", ");
+                        }
                         else if (i == newAchievementsUnlocked - 2)
                             builder.Append(newAchievementsUnlocked == 2 ? " and " : ", and ");
                     }

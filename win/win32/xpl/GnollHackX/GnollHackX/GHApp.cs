@@ -353,7 +353,7 @@ namespace GnollHackX
 
         private static int _gameStarted = 0;
         public static bool GameStarted { get { return Interlocked.CompareExchange(ref _gameStarted, 0, 0) != 0; } set { Interlocked.Exchange(ref _gameStarted, value ? 1 : 0); } }
-        
+
         private static int _mainScreenMusicStarted = 0;
         public static bool MainScreenMusicStarted { get { return Interlocked.CompareExchange(ref _mainScreenMusicStarted, 0, 0) != 0; } set { Interlocked.Exchange(ref _mainScreenMusicStarted, value ? 1 : 0); } }
 
@@ -463,16 +463,16 @@ namespace GnollHackX
 
         private static int _usePlatformAnimationLoop = 0;
         public static bool UsePlatformRenderLoop { get { return IsPlatformRenderLoopAvailable && Interlocked.CompareExchange(ref _usePlatformAnimationLoop, 0, 0) != 0; } set { Interlocked.Exchange(ref _usePlatformAnimationLoop, value ? 1 : 0); } }
-        public static bool IsPlatformRenderLoopAvailable 
-        { 
-            get 
+        public static bool IsPlatformRenderLoopAvailable
+        {
+            get
             {
 #if GNH_MAUI && (WINDOWS || ANDROID || IOS)
                 return true;
 #else
                 return false;
 #endif
-            } 
+            }
         }
 
         private static readonly Stopwatch _renderingStopWatch = new Stopwatch();
@@ -1009,7 +1009,7 @@ namespace GnollHackX
             if (args != null && args.Length > 0)
             {
                 int cnt = args.Length;
-                for(int i = 0; i < cnt; i++)
+                for (int i = 0; i < cnt; i++)
                 {
                     if (args[i] != null && args[i].ToLower() == "-store")
                     {
@@ -1393,7 +1393,7 @@ namespace GnollHackX
             }
         }
 
-        public static readonly bool IsDebug = 
+        public static readonly bool IsDebug =
 #if DEBUG
             true;
 #else
@@ -1527,7 +1527,7 @@ namespace GnollHackX
         }
 
         private static GHGame _currentGHGame = null;
-        public static GHGame CurrentGHGame 
+        public static GHGame CurrentGHGame
         {
             get { return Interlocked.CompareExchange(ref _currentGHGame, null, null); }
             set { Interlocked.Exchange(ref _currentGHGame, value); }
@@ -1678,11 +1678,11 @@ namespace GnollHackX
             get
             {
                 return true;
-//#if WINDOWS
-//                return IsPackaged;
-//#else
-//                return true;
-//#endif
+                //#if WINDOWS
+                //                return IsPackaged;
+                //#else
+                //                return true;
+                //#endif
             }
         }
 
@@ -1935,11 +1935,11 @@ namespace GnollHackX
 
 
         private static readonly object _gameSaveResultLock = new object();
-        public static int GameSaveResult 
-        { 
-            get 
-            { 
-                lock (_gameSaveResultLock) 
+        public static int GameSaveResult
+        {
+            get
+            {
+                lock (_gameSaveResultLock)
                 {
                     try
                     {
@@ -1950,11 +1950,11 @@ namespace GnollHackX
                         Debug.WriteLine(ex);
                         return 0;
                     }
-                } 
-            } 
-            set 
-            { 
-                lock (_gameSaveResultLock) 
+                }
+            }
+            set
+            {
+                lock (_gameSaveResultLock)
                 {
                     try
                     {
@@ -1964,8 +1964,8 @@ namespace GnollHackX
                     {
                         Debug.WriteLine(ex);
                     }
-                } 
-            } 
+                }
+            }
         }
 
         public static void CollectGarbage()
@@ -2168,7 +2168,7 @@ namespace GnollHackX
                 var timer = Microsoft.Maui.Controls.Application.Current.Dispatcher.CreateTimer();
                 timer.Interval = TimeSpan.FromSeconds(0.25);
                 timer.IsRepeating = false;
-                timer.Tick += async (s, e) => 
+                timer.Tick += async (s, e) =>
                 {
                     try
                     {
@@ -2354,8 +2354,8 @@ namespace GnollHackX
                             {
                                 IntPtr curPtr = gnollHackService.GetCommandFunctionPointer(j);
                                 if (curPtr != IntPtr.Zero && curPtr == origPtr
-                                    && (_tempKeyMapArray[i].MappedCommand == 0 
-                                        || i == j 
+                                    && (_tempKeyMapArray[i].MappedCommand == 0
+                                        || i == j
                                         || ((j >= 32 && j < 128) && !(_tempKeyMapArray[i].MappedCommand >= 32 && _tempKeyMapArray[i].MappedCommand < 128))
                                         ))
                                 {
@@ -2406,7 +2406,7 @@ namespace GnollHackX
         public static bool AltDown { get { return Interlocked.CompareExchange(ref _altDown, 0, 0) != 0; } set { Interlocked.Exchange(ref _altDown, value ? 1 : 0); } }
         public static bool ShiftDown { get { return Interlocked.CompareExchange(ref _shiftDown, 0, 0) != 0; } set { Interlocked.Exchange(ref _shiftDown, value ? 1 : 0); } }
         public static bool WindowsKeyDown { get { return Interlocked.CompareExchange(ref _windowsKeyDown, 0, 0) != 0; } set { Interlocked.Exchange(ref _windowsKeyDown, value ? 1 : 0); } }
-        public static bool DisableWindowsKey{ get { return Interlocked.CompareExchange(ref _disableWindowsKey, 0, 0) != 0; } set { Interlocked.Exchange(ref _disableWindowsKey, value ? 1 : 0); } }
+        public static bool DisableWindowsKey { get { return Interlocked.CompareExchange(ref _disableWindowsKey, 0, 0) != 0; } set { Interlocked.Exchange(ref _disableWindowsKey, value ? 1 : 0); } }
         public static bool DefaultVIKeys { get { return Interlocked.CompareExchange(ref _defaultVIKeys, 0, 0) != 0; } set { Interlocked.Exchange(ref _defaultVIKeys, value ? 1 : 0); } }
         public static bool ShowKeyboardShortcuts { get { return Interlocked.CompareExchange(ref _showKeyboardShortcuts, 0, 0) != 0; } set { Interlocked.Exchange(ref _showKeyboardShortcuts, value ? 1 : 0); } }
         public static bool UseSingleMoreCommandsPage { get { return Interlocked.CompareExchange(ref _useSingleMoreCommandsPage, 0, 0) != 0; } set { Interlocked.Exchange(ref _useSingleMoreCommandsPage, value ? 1 : 0); } }
@@ -2489,15 +2489,15 @@ namespace GnollHackX
 
         private static bool _silentMode = false;
         public static bool SilentMode /* Manual mute by user  */
-        { 
-            get 
-            { 
-                lock (_muteLock) 
-                { 
-                    return _silentMode; 
-                } 
-            } 
-            set 
+        {
+            get
+            {
+                lock (_muteLock)
+                {
+                    return _silentMode;
+                }
+            }
+            set
             {
                 //UpdateSoundMuteness(GameMuteMode, value, SleepMuteMode, UnfocusedMuteMode); 
                 bool oldGameMuted, oldSilentMode, oldSleepMuteMode, oldUnfocusedMuteMode;
@@ -2510,20 +2510,20 @@ namespace GnollHackX
                     _silentMode = value;
                 }
                 UpdateSoundMuteness(oldGameMuted, value, oldSleepMuteMode, oldUnfocusedMuteMode, oldGameMuted, oldSilentMode, oldSleepMuteMode, oldUnfocusedMuteMode);
-            } 
+            }
         }
 
         private static bool _sleepMuteMode = false;
         public static bool SleepMuteMode /* Muteness because switched apps */
-        { 
-            get 
-            { 
-                lock (_muteLock) 
-                { 
-                    return _sleepMuteMode; 
-                } 
-            } 
-            set 
+        {
+            get
+            {
+                lock (_muteLock)
+                {
+                    return _sleepMuteMode;
+                }
+            }
+            set
             {
                 //UpdateSoundMuteness(GameMuteMode, SilentMode, value, UnfocusedMuteMode);
                 bool oldGameMuted, oldSilentMode, oldSleepMuteMode, oldUnfocusedMuteMode;
@@ -2541,15 +2541,15 @@ namespace GnollHackX
 
         private static bool _unfocusedMuteMode = false;
         public static bool UnfocusedMuteMode /* Muteness due to window being unfocused  */
-        { 
-            get 
-            { 
-                lock (_muteLock) 
-                { 
-                    return _unfocusedMuteMode; 
-                } 
-            } 
-            set 
+        {
+            get
+            {
+                lock (_muteLock)
+                {
+                    return _unfocusedMuteMode;
+                }
+            }
+            set
             {
                 //UpdateSoundMuteness(GameMuteMode, SilentMode, SleepMuteMode, value); 
                 bool oldGameMuted, oldSilentMode, oldSleepMuteMode, oldUnfocusedMuteMode;
@@ -2562,7 +2562,7 @@ namespace GnollHackX
                     _unfocusedMuteMode = value;
                 }
                 UpdateSoundMuteness(oldGameMuted, oldSilentMode, oldSleepMuteMode, value, oldGameMuted, oldSilentMode, oldSleepMuteMode, oldUnfocusedMuteMode);
-            } 
+            }
         }
 
         public static void UpdateSoundMuteness(bool newGameMuted, bool newSilentMode, bool newSleepMuteMode, bool newUnfocusedMuteMode, bool oldGameMuted, bool oldSilentMode, bool oldSleepMuteMode, bool oldUnfocusedMuteMode)
@@ -2680,7 +2680,7 @@ namespace GnollHackX
                 if (_hideNavBar)
                 {
 #if GNH_MAUI
-                    if(PlatformService != null)
+                    if (PlatformService != null)
                         PlatformService.HideOsNavigationBar();
 #else
                     MessagingCenter.Send<Object>(new object(), "HideOsNavigationBar");
@@ -2689,7 +2689,7 @@ namespace GnollHackX
                 else
                 {
 #if GNH_MAUI
-                    if(PlatformService != null)
+                    if (PlatformService != null)
                         PlatformService.ShowOsNavigationBar();
 #else
                     MessagingCenter.Send<Object>(new object(), "ShowOsNavigationBar");
@@ -2714,9 +2714,9 @@ namespace GnollHackX
 
         private static int _debugPostChannel = GHConstants.DefaultDebugPostChannel ? 1 : 0;
         public static bool DebugPostChannel /* This is the setting value on Settings Page */
-        { 
-            get { return Interlocked.CompareExchange(ref _debugPostChannel, 0, 0) != 0; } 
-            set { Interlocked.Exchange(ref _debugPostChannel, value ? 1 : 0); } 
+        {
+            get { return Interlocked.CompareExchange(ref _debugPostChannel, 0, 0) != 0; }
+            set { Interlocked.Exchange(ref _debugPostChannel, value ? 1 : 0); }
         }
 
         public static bool UseDebugPostChannel  /* This should be used to check which channel to use */
@@ -2788,7 +2788,7 @@ namespace GnollHackX
         public static readonly bool IsiOS = (DeviceInfo.Platform == DevicePlatform.iOS);
         public static readonly bool IsWindows = (DeviceInfo.Platform == DevicePlatform.WinUI);
         public static readonly bool IsMacCatalyst = (DeviceInfo.Platform == DevicePlatform.MacCatalyst);
-        public static readonly bool IsDesktop = 
+        public static readonly bool IsDesktop =
 #if WINDOWS
             true;
 #else
@@ -2810,8 +2810,8 @@ namespace GnollHackX
         public static readonly bool IsPackaged = true;
 #endif
 
-        public static bool IsSamsung 
-        { 
+        public static bool IsSamsung
+        {
             get
             {
                 string manufacturer = DeviceInfo.Manufacturer;
@@ -2897,10 +2897,10 @@ namespace GnollHackX
 
         public static float DisplayDensity
         {
-            get 
-            { 
-                float res = Interlocked.CompareExchange(ref _displayDensity, 0.0f, 0.0f); 
-                return res == 0.0f ? 1.0f : res; 
+            get
+            {
+                float res = Interlocked.CompareExchange(ref _displayDensity, 0.0f, 0.0f);
+                return res == 0.0f ? 1.0f : res;
             }
             set { Interlocked.Exchange(ref _displayDensity, value <= 0.0f ? 1.0f : value); }
         }
@@ -3036,7 +3036,7 @@ namespace GnollHackX
                 await Task.Delay(42);
 #endif
                 await Task.Yield();
-                
+
                 grid.Children.Remove(lbl);
 
                 await Task.Yield();
@@ -3503,7 +3503,7 @@ namespace GnollHackX
                 int listselidx = GHApp.SelectableShortcutButtonIndexInList(defCmd, defCmd);
                 if (listselidx >= 0 && listselidx < SelectableShortcutButtons.Count)
                 {
-                    if(!barlist.Contains(SelectableShortcutButtons[listselidx]))
+                    if (!barlist.Contains(SelectableShortcutButtons[listselidx]))
                         list.Add(SelectableShortcutButtons[listselidx]);
                 }
             }
@@ -3512,14 +3512,14 @@ namespace GnollHackX
 
         public static List<SelectableShortcutButton> GetSimpleBarButtons()
         {
-            List <SelectableShortcutButton> list = new List<SelectableShortcutButton>();
+            List<SelectableShortcutButton> list = new List<SelectableShortcutButton>();
             for (int i = 0; i < 6; i++)
             {
                 string keystr = "SimpleUILayoutCommandButton" + (i + 1);
                 int defCmd = GHApp.DefaultShortcutButton(0, i, true).GHCommand;
                 int savedCmd = Preferences.Get(keystr, defCmd);
                 int listselidx = GHApp.SelectableShortcutButtonIndexInList(savedCmd, defCmd);
-                if(listselidx >= 0 && listselidx < SelectableShortcutButtons.Count)
+                if (listselidx >= 0 && listselidx < SelectableShortcutButtons.Count)
                     list.Add(SelectableShortcutButtons[listselidx]);
             }
             return list;
@@ -3653,7 +3653,7 @@ namespace GnollHackX
                             {
                                 for (int j = 0; j < GHConstants.MoreButtonsPerColumn; j++)
                                 {
-                                    for(int bidx = 0; bidx < buttonsOnBar.Count; bidx++)
+                                    for (int bidx = 0; bidx < buttonsOnBar.Count; bidx++)
                                     {
                                         if (_moreBtnMatrix[p, i, j] != null && _moreBtnMatrix[p, i, j].GHCommand == buttonsOnBar[bidx].GHCommand)
                                         {
@@ -3880,13 +3880,13 @@ namespace GnollHackX
                         }
                     }
                 }
-                _moreBtnList.Sort((a, b) => 
+                _moreBtnList.Sort((a, b) =>
                 {
                     if (a.CommandButtonItem == null || a.CommandButtonItem.Text == null)
                         return -1;
-                    if (b.CommandButtonItem == null ||b.CommandButtonItem.Text == null)
+                    if (b.CommandButtonItem == null || b.CommandButtonItem.Text == null)
                         return 1;
-                    return a.CommandButtonItem.Text.CompareTo(b.CommandButtonItem.Text); 
+                    return a.CommandButtonItem.Text.CompareTo(b.CommandButtonItem.Text);
                 });
                 /* Remove duplicates */
                 for (int i = _moreBtnList.Count - 1; i >= 1; i--)
@@ -4156,7 +4156,7 @@ namespace GnollHackX
 
         public static SelectableShortcutButton DefaultShortcutButton(int row, int column, bool issimple)
         {
-            if(issimple)
+            if (issimple)
             {
                 switch (column)
                 {
@@ -4212,7 +4212,7 @@ namespace GnollHackX
 
         public static int SelectableShortcutButtonIndexInList(int cmd, int defcmd)
         {
-            for(int i = 0; i < SelectableShortcutButtons.Count; i++) 
+            for (int i = 0; i < SelectableShortcutButtons.Count; i++)
             {
                 SelectableShortcutButton button = SelectableShortcutButtons[i];
                 if (button.GHCommand == cmd)
@@ -4343,7 +4343,7 @@ namespace GnollHackX
         {
             /* Send Diagnostic Data via C */
             GnollHackService?.ReportFileDescriptors();
-            if(IsAndroid)
+            if (IsAndroid)
             {
 #if !GNH_MAUI || ANDROID
                 /* Print file descriptors via C# */
@@ -4442,21 +4442,21 @@ namespace GnollHackX
                 {
                     archive.CreateEntryFromFile(fPath, Path.GetFileName(fPath));
                 }
-                string[] ghsubdirlist = { GHConstants.SaveDirectory, GHConstants.DumplogDirectory, GHConstants.SnapshotDirectory, GHConstants.UserDataDirectory, 
+                string[] ghsubdirlist = { GHConstants.SaveDirectory, GHConstants.DumplogDirectory, GHConstants.SnapshotDirectory, GHConstants.UserDataDirectory,
                     GHConstants.ForumPostQueueDirectory, GHConstants.XlogPostQueueDirectory, GHConstants.BonesPostQueueDirectory, GHConstants.ReplayPostQueueDirectory,
-                    GHConstants.AppLogDirectory }; 
-                    //These may be too large: GHConstants.ReplayDirectory, GHConstants.ReplayDownloadFromCloudDirectory
+                    GHConstants.AppLogDirectory };
+                //These may be too large: GHConstants.ReplayDirectory, GHConstants.ReplayDownloadFromCloudDirectory
                 foreach (string ghsubdir in ghsubdirlist)
                 {
                     string subdirpath = Path.Combine(ghdir, ghsubdir);
-                    if(Directory.Exists(subdirpath))
+                    if (Directory.Exists(subdirpath))
                     {
                         string[] subfiles = Directory.GetFiles(subdirpath);
-                        if(subfiles != null)
+                        if (subfiles != null)
                         {
                             foreach (var fPath in subfiles)
                             {
-                                if(fPath != null)
+                                if (fPath != null)
                                     archive.CreateEntryFromFile(fPath, Path.Combine(ghsubdir, Path.GetFileName(fPath)));
                             }
                         }
@@ -4549,12 +4549,12 @@ namespace GnollHackX
                     string[] subfiles = Directory.GetFiles(subdirpath);
                     foreach (var fPath in subfiles)
                     {
-                        if(!string.IsNullOrWhiteSpace(fPath))
+                        if (!string.IsNullOrWhiteSpace(fPath))
                         {
                             FileInfo fi = new FileInfo(fPath);
                             if (!string.IsNullOrWhiteSpace(fi.Name))
                             {
-                                if(!fi.Name.StartsWith(GHConstants.ReplaySharedZipFileNamePrefix))
+                                if (!fi.Name.StartsWith(GHConstants.ReplaySharedZipFileNamePrefix))
                                     archive.CreateEntryFromFile(fPath, Path.GetFileName(fPath));
                             }
                         }
@@ -4677,7 +4677,7 @@ namespace GnollHackX
 
         //    { "&rec;", _recommendedBitmap }
         //}.ToImmutableDictionary();
-        
+
         public static SKImage GetSpecialSymbol(string str, out SKRect source_rect)
         {
             source_rect = new SKRect();
@@ -5369,17 +5369,17 @@ namespace GnollHackX
         public static bool ForcePostBones { get { return Interlocked.CompareExchange(ref _forcePostBones, 0, 0) != 0; } set { Interlocked.Exchange(ref _forcePostBones, value ? 1 : 0); } }
 
         private static string _bonesAllowedUsers = "";
-        public static string BonesAllowedUsers 
-        { 
+        public static string BonesAllowedUsers
+        {
             get { return Interlocked.CompareExchange(ref _bonesAllowedUsers, null, null); }
             set { Interlocked.Exchange(ref _bonesAllowedUsers, value); }
         }
 
         private static int _saveFileTracking = 0;
-        public static bool SaveFileTracking 
-        { 
-            get { return TournamentMode || Interlocked.CompareExchange(ref _saveFileTracking, 0, 0) != 0; } 
-            set { Interlocked.Exchange(ref _saveFileTracking, value ? 1 : 0); } 
+        public static bool SaveFileTracking
+        {
+            get { return TournamentMode || Interlocked.CompareExchange(ref _saveFileTracking, 0, 0) != 0; }
+            set { Interlocked.Exchange(ref _saveFileTracking, value ? 1 : 0); }
         }
 
         public static bool IsSaveFileTrackingNeeded { get { return IsDesktop || IsMobileRunningOnDesktop; } }
@@ -5389,7 +5389,7 @@ namespace GnollHackX
 
         public static string XlogUserName { get { return Interlocked.CompareExchange(ref _xlogUserName, null, null); } set { Interlocked.Exchange(ref _xlogUserName, value); } }
         public static string XlogPassword { get { return Interlocked.CompareExchange(ref _xlogPassword, null, null); } set { Interlocked.Exchange(ref _xlogPassword, value); } }
-        public static string XlogAntiForgeryToken 
+        public static string XlogAntiForgeryToken
         {
             get
             {
@@ -5453,7 +5453,7 @@ namespace GnollHackX
 
         public static async Task TryVerifyXlogUserNameAsync()
         {
-            if(!PostingXlogEntries && !PostingReplays && !PostingBonesFiles && !AutoUploadReplays)
+            if (!PostingXlogEntries && !PostingReplays && !PostingBonesFiles && !AutoUploadReplays)
             {
                 SetXlogUserNameVerified(false, null, null);
                 return;
@@ -5576,13 +5576,13 @@ namespace GnollHackX
                     else //In assets directory
                     {
                         /* Assetpacks in .NET MAUI Android Release configuration work as in Xamarin */
-//#if GNH_MAUI && !(ANDROID && !DEBUG)
-//                        string sdir = Path.Combine(PlatformService.GetAssetsPath(), "Platforms", GHApp.IsAndroid ? "Android" : GHApp.IsiOS ? "iOS" : "Unknown", sf.source_directory);
-//                        string rfile = Path.Combine("Platforms", GHApp.IsAndroid ? "Android" : GHApp.IsiOS ? "iOS" : "Unknown", sf.source_directory, sf.name);
-//#else
+                        //#if GNH_MAUI && !(ANDROID && !DEBUG)
+                        //                        string sdir = Path.Combine(PlatformService.GetAssetsPath(), "Platforms", GHApp.IsAndroid ? "Android" : GHApp.IsiOS ? "iOS" : "Unknown", sf.source_directory);
+                        //                        string rfile = Path.Combine("Platforms", GHApp.IsAndroid ? "Android" : GHApp.IsiOS ? "iOS" : "Unknown", sf.source_directory, sf.name);
+                        //#else
                         string sdir = Path.Combine(PlatformService.GetAssetsPath(), sf.source_directory);
                         string rfile = Path.Combine(sf.source_directory, sf.name);
-//#endif
+                        //#endif
                         string sfile = Path.Combine(sdir, sf.name);
 
                         if (IsReadToMemoryBank(sf))  //Read to memory first and use from there
@@ -5782,7 +5782,7 @@ namespace GnollHackX
                         Debug.WriteLine("AntiForgeryToken: " + XlogAntiForgeryToken);
 
                         string adjusted_entry_string = "";
-                        if(!string.IsNullOrWhiteSpace(xlogentry_string))
+                        if (!string.IsNullOrWhiteSpace(xlogentry_string))
                         {
                             adjusted_entry_string = xlogentry_string
                                     + "\tplatform=" + DeviceInfo.Platform.ToString()?.ToLower()
@@ -5881,15 +5881,15 @@ namespace GnollHackX
 
                             if (!res.IsSuccess && !is_from_queue && !string.IsNullOrWhiteSpace(xlogentry_string))
                             {
-                                MaybeWriteGHLog((string.IsNullOrEmpty(xlogentry_string) ? "Server authentication failed." : "Sending XLog entry failed.") + " Writing the send request to disk. Status Code: " + (int)res.StatusCode + ", Message: "+ res.Message);
+                                MaybeWriteGHLog((string.IsNullOrEmpty(xlogentry_string) ? "Server authentication failed." : "Sending XLog entry failed.") + " Writing the send request to disk. Status Code: " + (int)res.StatusCode + ", Message: " + res.Message);
                                 SaveXLogEntryToDisk(status_type, status_datatype, xlogentry_string, xlogattachments);
-                            }                            
+                            }
                         }
                         content1.Dispose();
                         content2.Dispose();
                         content3.Dispose();
                         content4.Dispose();
-                        foreach(FileStream fs in filestreams)
+                        foreach (FileStream fs in filestreams)
                         {
                             fs.Dispose();
                         }
@@ -5912,7 +5912,7 @@ namespace GnollHackX
             }
             if (xlogattachments != null)
             {
-                if(res.IsSuccess)
+                if (res.IsSuccess)
                 {
                     foreach (var attachment in xlogattachments)
                     {
@@ -6407,7 +6407,7 @@ namespace GnollHackX
                                 res.Message = ex.Message;
                             }
 
-                            if(res.IsSuccess)
+                            if (res.IsSuccess)
                             {
                                 MaybeWriteGHLog("Forum post successfully sent" + (is_from_queue ? " from the post queue" : "") + ". (" + (int)res.StatusCode + ")");
                             }
@@ -6418,7 +6418,7 @@ namespace GnollHackX
                                 SaveForumPostToDisk(is_game_status, status_type, status_datatype, message, forumpostattachments, forcesend);
                             }
                         }
-                        if(content1 != null)
+                        if (content1 != null)
                             content1.Dispose();
                         if (content != null)
                             content.Dispose();
@@ -6443,7 +6443,7 @@ namespace GnollHackX
 
             if (forumpostattachments != null)
             {
-                if(res.IsSuccess)
+                if (res.IsSuccess)
                 {
                     foreach (var attachment in forumpostattachments)
                     {
@@ -6638,12 +6638,12 @@ namespace GnollHackX
                             {
                                 using (HttpResponseMessage response = await client.PostAsync(postaddress, multicontent, cts.Token))
                                 {
-                                    if(response.Content.Headers.ContentType.MediaType == "application/octet-stream")
+                                    if (response.Content.Headers.ContentType.MediaType == "application/octet-stream")
                                         bytearray = await response.Content.ReadAsByteArrayAsync();
                                     res.IsSuccess = response.IsSuccessStatusCode;
                                     res.HasHttpStatusCode = true;
                                     res.StatusCode = response.StatusCode;
-                                    if(res.IsSuccess)
+                                    if (res.IsSuccess)
                                     {
                                         MaybeWriteGHLog("Bones file successfully sent" + (is_from_queue ? " from the post queue" : "") + ". (" + (int)res.StatusCode + "): " + full_filepath);
                                         if (res.StatusCode == HttpStatusCode.OK)
@@ -6692,10 +6692,10 @@ namespace GnollHackX
                                                                     }
                                                                     didWriteBonesFileSuccessfully = true;
 
-                                                                    if(response.Headers.TryGetValues("X-GH-BonesFilePath", out IEnumerable<string> bonesfilepathienum))
+                                                                    if (response.Headers.TryGetValues("X-GH-BonesFilePath", out IEnumerable<string> bonesfilepathienum))
                                                                     {
                                                                         var bonesfilepathlist = bonesfilepathienum.ToList();
-                                                                        if(bonesfilepathlist.Count > 0)
+                                                                        if (bonesfilepathlist.Count > 0)
                                                                             receivedBonesServerFilePath = bonesfilepathlist[0];
                                                                     }
                                                                 }
@@ -6742,7 +6742,7 @@ namespace GnollHackX
                                         {
                                             str = await response.Content.ReadAsStringAsync();
                                         }
-                                        catch (Exception ex) 
+                                        catch (Exception ex)
                                         {
                                             MaybeWriteGHLog("Reading bones response content failed: " + ex.Message);
                                         }
@@ -6913,7 +6913,7 @@ namespace GnollHackX
                                 {
                                     using (HttpResponseMessage response = await client.PostAsync(postaddress, multicontent, cts.Token))
                                     {
-                                        if(response.IsSuccessStatusCode)
+                                        if (response.IsSuccessStatusCode)
                                         {
                                             MaybeWriteGHLog("Bones receipt confirmation of server bones file " + receivedBonesServerFilePath + " sent successfully (" + (int)response.StatusCode + ").");
                                         }
@@ -7326,7 +7326,7 @@ namespace GnollHackX
                 case (byte)RecordedFunctionID.DisplayWindow:
                 case (byte)RecordedFunctionID.DisplayPopupText:
                 case (byte)RecordedFunctionID.InitializeWindows:
-                case (byte)RecordedFunctionID.ExitHack:                    
+                case (byte)RecordedFunctionID.ExitHack:
                     return true;
                 default:
                     return false;
@@ -7378,12 +7378,12 @@ namespace GnollHackX
 
         public static string GetReplayFileName(ulong versionCode, long timeStampInBinary, int contNumber, string playerName, int firstTurn, bool newFormat)
         {
-            return (contNumber > 0 ? GHConstants.ReplayContinuationFileNamePrefix : GHConstants.ReplayFileNamePrefix) 
-                + (playerName != null ? playerName + "-" : "") 
-                + (firstTurn >= 0 ? "T" + firstTurn + "-" : "") 
-                + (newFormat ? VersionNumberToFileNameSuffix(versionCode) : versionCode.ToString()) 
-                + GHConstants.ReplayFileNameMiddleDivisor + (newFormat ? ((ulong)timeStampInBinary).ToString() :  timeStampInBinary.ToString()) 
-                + (contNumber > 0 ? (GHConstants.ReplayFileContinuationNumberDivisor + contNumber.ToString()) : "") 
+            return (contNumber > 0 ? GHConstants.ReplayContinuationFileNamePrefix : GHConstants.ReplayFileNamePrefix)
+                + (playerName != null ? playerName + "-" : "")
+                + (firstTurn >= 0 ? "T" + firstTurn + "-" : "")
+                + (newFormat ? VersionNumberToFileNameSuffix(versionCode) : versionCode.ToString())
+                + GHConstants.ReplayFileNameMiddleDivisor + (newFormat ? ((ulong)timeStampInBinary).ToString() : timeStampInBinary.ToString())
+                + (contNumber > 0 ? (GHConstants.ReplayFileContinuationNumberDivisor + contNumber.ToString()) : "")
                 + GHConstants.ReplayFileNameSuffix;
         }
 
@@ -7416,7 +7416,7 @@ namespace GnollHackX
                     if (File.Exists(unZippedFileName))
                         File.Delete(unZippedFileName);
 
-                    if(isGZip)
+                    if (isGZip)
                     {
                         using (FileStream compressedFileStream = File.Open(replayFileName, FileMode.Open))
                         {
@@ -7551,7 +7551,7 @@ namespace GnollHackX
         {
             if (game == null)
                 return PlayReplayResult.GameIsNull;
-            if(string.IsNullOrWhiteSpace(replayFileName))
+            if (string.IsNullOrWhiteSpace(replayFileName))
                 return PlayReplayResult.FilePathIsNullOrEmpty;
 
             string knownPlayerName = null;
@@ -7657,11 +7657,11 @@ namespace GnollHackX
                                 ulong verno = br.ReadUInt64();
                                 ulong vercompat = br.ReadUInt64();
 
-                                bool isValid = GHVersionNumber == verno ? true : 
+                                bool isValid = GHVersionNumber == verno ? true :
                                     GHVersionNumber > verno ? GHVersionCompatibility <= verno : /* If the replay is made with an older GnollHack version than the current app, check that current app version's compatibility covers the replay's version */
                                     vercompat <= GHVersionNumber; /* If the replay is made with a newer GnollHack version than the current app, check that replay's version compatibility covers the current app version */
 
-                                if(isValid)
+                                if (isValid)
                                 {
                                     /* Read the rest of the header */
                                     ulong date = br.ReadUInt64();
@@ -7706,7 +7706,7 @@ namespace GnollHackX
                                             }
                                             else if (PauseReplay && !IsReplaySearching)
                                                 Thread.Sleep(GHConstants.PollingInterval);
-                                        } 
+                                        }
                                         while (PauseReplay && !IsReplaySearching);
 
                                         switch (cmd)
@@ -7723,7 +7723,7 @@ namespace GnollHackX
                                                     rawFileName = Path.Combine(replayPath, GetReplayFileName(nextfile_versionnumber, nextfile_timestamp, nextfile_replay_continuation, knownPlayerName, knownFirstTurn, true));
                                                     if (isZip)
                                                         rawFileName += usedZipSuffix;
-                                                    for(int i = 0; i < 8; i++) /* Support for various other name formats */
+                                                    for (int i = 0; i < 8; i++) /* Support for various other name formats */
                                                     {
                                                         if (File.Exists(rawFileName))
                                                             break;
@@ -7813,9 +7813,9 @@ namespace GnollHackX
                                                     }
                                                     lock (Glyph2TileLock)
                                                     {
-                                                        if(gl2ti.Length > 0)
+                                                        if (gl2ti.Length > 0)
                                                             Glyph2Tile = gl2ti;
-                                                        if(gltifl.Length > 0)
+                                                        if (gltifl.Length > 0)
                                                             GlyphTileFlags = gltifl;
                                                         Tile2Animation = ti2an;
                                                         Tile2Enlargement = ti2en;
@@ -8135,17 +8135,17 @@ namespace GnollHackX
                                                     for (int i = 0; i < condlen; i++)
                                                         condcolors[i] = br.ReadInt16();
 
-                                                    if(fieldidx == (int)NhStatusFields.BL_TIME && !string.IsNullOrWhiteSpace(text) && int.TryParse(text.Trim(), out int curTurn))
+                                                    if (fieldidx == (int)NhStatusFields.BL_TIME && !string.IsNullOrWhiteSpace(text) && int.TryParse(text.Trim(), out int curTurn))
                                                     {
                                                         ReplayTurn = curTurn;
-                                                        if(knownFirstTurn == -1)
+                                                        if (knownFirstTurn == -1)
                                                             knownFirstTurn = curTurn;
                                                     }
                                                     else if (fieldidx == (int)NhStatusFields.BL_REALTIME && !string.IsNullOrWhiteSpace(text))
                                                     {
                                                         ReplayRealTime = text;
                                                     }
-                                                    if(GoToTurn >= 0)
+                                                    if (GoToTurn >= 0)
                                                     {
                                                         if (ReplayTurn >= GoToTurn && GoToTurn >= OriginalReplayTurn) /* Was searching for a túrn in the future */
                                                             GoToTurn = -1;
@@ -8155,7 +8155,7 @@ namespace GnollHackX
                                                             breakwhile = true;
                                                         }
                                                     }
-                                                    if(ReplaySearchRegexString != null && ReplayRestarted && ReplayTurn >= StartSearchReplayTurn)
+                                                    if (ReplaySearchRegexString != null && ReplayRestarted && ReplayTurn >= StartSearchReplayTurn)
                                                     {
                                                         string txt = ReplaySearchRegexString;
                                                         ReplaySearchRegexString = null;
@@ -8873,7 +8873,7 @@ namespace GnollHackX
             BlobServiceClient client = null;
             if (string.IsNullOrWhiteSpace(connectionString))
                 return client;
-            
+
             try
             {
                 client = new BlobServiceClient(connectionString);
@@ -9048,7 +9048,7 @@ namespace GnollHackX
             if (!Directory.Exists(baseDir))
                 GHApp.CheckCreateDirectory(baseDir);
             string targetDir = baseDir;
-            if(!string.IsNullOrWhiteSpace(prefix) && prefix.Length > 0)
+            if (!string.IsNullOrWhiteSpace(prefix) && prefix.Length > 0)
             {
                 string modPrefix = prefix[prefix.Length - 1] == GHConstants.AzureBlobStorageDelimiter[0] ? prefix.Substring(0, prefix.Length - 1) : prefix;
                 targetDir = Path.Combine(targetDir, modPrefix);
@@ -9061,7 +9061,7 @@ namespace GnollHackX
             else
                 targetFile = blobName.Substring(prefix.Length);
             string targetPath = Path.Combine(targetDir, targetFile);
-            if(File.Exists(targetPath))
+            if (File.Exists(targetPath))
             {
                 FileInfo fi = new FileInfo(targetPath);
                 if (fi.Length != fileLength || fileLength <= 0)
@@ -9077,7 +9077,7 @@ namespace GnollHackX
         {
             try
             {
-                if (IsWindows && !forceExternalBrowser) 
+                if (IsWindows && !forceExternalBrowser)
                 {
                     var wikiPage = new WikiPage(title, uri.ToString());
                     await Navigation.PushModalAsync(wikiPage);
@@ -9096,7 +9096,7 @@ namespace GnollHackX
         public static bool IsPageOnTopOfModalNavigationStack(Page page)
         {
             Page topPage = PageFromTopOfModalNavigationStack();
-            if (topPage == null) 
+            if (topPage == null)
                 return false;
             return topPage == page;
         }
@@ -9125,7 +9125,7 @@ namespace GnollHackX
             string res;
 
             int pluspos = fullverid.IndexOf("+");
-            if(pluspos >= 0)
+            if (pluspos >= 0)
             {
                 res = fullverid.Substring(0, pluspos);
 #if !WINDOWS
@@ -9168,7 +9168,7 @@ namespace GnollHackX
         public static void SaveLastUsedTournamentPlayerName(string used_player_name)
         {
             LastUsedTournamentPlayerName = used_player_name;
-            MainThread.BeginInvokeOnMainThread(() => 
+            MainThread.BeginInvokeOnMainThread(() =>
             {
                 try
                 {
@@ -9292,7 +9292,7 @@ namespace GnollHackX
                         }
                     }
                 }
-                if(changed)
+                if (changed)
                 {
                     _discoveredMusicBits = bits;
                 }
@@ -9464,7 +9464,7 @@ namespace GnollHackX
 
         public static long GetUserData(string key, long defVal)
         {
-            if(string.IsNullOrEmpty(key))
+            if (string.IsNullOrEmpty(key))
                 return defVal;
             if (_userData == null)
                 return defVal;
@@ -9475,7 +9475,7 @@ namespace GnollHackX
 
         public static void SetDiscoveredTracks(long val, bool preferencesToo, bool initial)
         {
-            MainThread.BeginInvokeOnMainThread(() => 
+            MainThread.BeginInvokeOnMainThread(() =>
             {
                 try
                 {
@@ -9557,7 +9557,7 @@ namespace GnollHackX
                 new Achievement("Play in Classic Mode", "Start a game in classic mode",
                 (int)gui_achievement_categories.Gameplay, 0);
             AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_IDENTIFIED_AN_ITEM] =
-                new Achievement("Identify an Item", "Use any of the identification means in the game", 
+                new Achievement("Identify an Item", "Use any of the identification means in the game",
                 (int)gui_achievement_categories.Gameplay, 0);
             AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_USED_WAND_OF_PROBING] =
                 new Achievement("Probing", "Use a wand or spell of probing to probe something",
@@ -10065,7 +10065,7 @@ namespace GnollHackX
 
         private static GHUserData _userData = null;
         private static int _userDataNeedsSavingToDisk = 0;
-        public static bool UserDataNeedsSavingToDisk { get { return Interlocked.CompareExchange(ref _userDataNeedsSavingToDisk, 0, 0) != 0; } set { Interlocked.Exchange(ref _userDataNeedsSavingToDisk, value ? 1 : 0); } } 
+        public static bool UserDataNeedsSavingToDisk { get { return Interlocked.CompareExchange(ref _userDataNeedsSavingToDisk, 0, 0) != 0; } set { Interlocked.Exchange(ref _userDataNeedsSavingToDisk, value ? 1 : 0); } }
         public static void ReadUserData()
         {
             string dirPath = Path.Combine(GHPath, GHConstants.UserDataDirectory);
@@ -10128,10 +10128,10 @@ namespace GnollHackX
         public static bool AddUserData(string key, long val, bool initial, out long changedVal, bool addBit = false)
         {
             bool addSuccessful = false;
-            if(_userData == null)
+            if (_userData == null)
                 _userData = new GHUserData();
             changedVal = 0;
-            if(_userData != null)
+            if (_userData != null)
             {
                 /* Add first */
                 if (key != null)
@@ -10178,6 +10178,58 @@ namespace GnollHackX
                             _userData.LongDictionary.Add(key, val);
                             addSuccessful = true;
                             changedVal = val;
+                        }
+                        catch (Exception ex)
+                        {
+                            Debug.WriteLine(ex.Message);
+                        }
+#endif
+                    }
+                }
+
+                /* Then queue for writing to disk (and only if the value did change) */
+                if (addSuccessful && !initial)
+                {
+                    UserDataNeedsSavingToDisk = true;
+                }
+            }
+            return addSuccessful;
+        }
+
+        public static bool AddUserData(string key, bool val, bool initial = false)
+        {
+            bool addSuccessful = false;
+            if (_userData == null)
+                _userData = new GHUserData();
+            if (_userData != null)
+            {
+                /* Add first */
+                if (key != null)
+                {
+                    if (_userData.BoolDictionary.ContainsKey(key))
+                    {
+                        try
+                        {
+                            if (_userData.BoolDictionary[key] != val)
+                            {
+                                _userData.BoolDictionary[key] = val;
+                                addSuccessful = true;
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            Debug.WriteLine(ex.Message);
+                        }
+                    }
+                    else
+                    {
+#if GNH_MAUI
+                        addSuccessful = _userData.BoolDictionary.TryAdd(key, val);
+#else
+                        try
+                        {
+                            _userData.BoolDictionary.Add(key, val);
+                            addSuccessful = true;
                         }
                         catch (Exception ex)
                         {
@@ -10253,13 +10305,79 @@ namespace GnollHackX
             }
         }
 
-        public static readonly AchievementCategory[] AchievementCategories = new AchievementCategory[5]
+        public static readonly AchievementCategory[] AchievementCategories =
         {
             new AchievementCategory("Gameplay"),
             new AchievementCategory("Combat"),
             new AchievementCategory("Exploration"),
             new AchievementCategory("Playthrough"),
             new AchievementCategory("Ascension"),
+        };
+
+        public static readonly AchievementTier[] AchievementTiers =
+        {
+            new AchievementTier("Novice", 0),
+            new AchievementTier("Explorer", 
+                new List<List<int>>()
+                {
+                    new List<int>() { (int)gui_achievement_types.GUI_ACHIEVEMENT_REACHED_EXPERIENCE_LEVEL_5 },
+                    new List<int>() { (int)gui_achievement_types.GUI_ACHIEVEMENT_REACHED_DUNGEON_LEVEL_5 },
+                }),
+            new AchievementTier("Dungeoneer",
+                new List<List<int>>()
+                {
+                    new List<int>() { (int)gui_achievement_types.GUI_ACHIEVEMENT_REACHED_EXPERIENCE_LEVEL_10, },
+                    new List<int>() { (int)gui_achievement_types.GUI_ACHIEVEMENT_REACHED_DUNGEON_LEVEL_10 },
+                }),
+            new AchievementTier("Venturer",
+                new List<List<int>>()
+                {
+                    new List<int>() { (int)gui_achievement_types.GUI_ACHIEVEMENT_REACHED_EXPERIENCE_LEVEL_15, },
+                    new List<int>() { (int)gui_achievement_types.GUI_ACHIEVEMENT_REACHED_DUNGEON_LEVEL_15 },
+                    new List<int>() { (int)gui_achievement_types.GUI_ACHIEVEMENT_ENTERED_THE_QUEST },
+                }),
+            new AchievementTier("Adventurer",
+                new List<List<int>>()
+                {
+                    new List<int>() { (int)gui_achievement_types.GUI_ACHIEVEMENT_REACHED_CASTLE },
+                    new List<int>() { (int)gui_achievement_types.GUI_ACHIEVEMENT_FOUND_BELL_OF_OPENING },
+                    new List<int>() { (int)gui_achievement_types.GUI_ACHIEVEMENT_COMPLETED_THE_QUEST },
+                }),
+            new AchievementTier("Grand Adventurer",
+                new List<List<int>>()
+                {
+                    new List<int>() { (int)gui_achievement_types.GUI_ACHIEVEMENT_ENTERED_GEHENNOM, },
+                }),
+            new AchievementTier("Hero",
+                new List<List<int>>()
+                {
+                    new List<int>() { (int)gui_achievement_types.GUI_ACHIEVEMENT_FOUND_CANDELABRUM_OF_INVOCATION, },
+                    new List<int>() { (int)gui_achievement_types.GUI_ACHIEVEMENT_DEFEATED_VLAD_THE_IMPALER, },
+                }),
+            new AchievementTier("Grand Hero",
+                new List<List<int>>()
+                {
+                    new List<int>() { (int)gui_achievement_types.GUI_ACHIEVEMENT_FOUND_BOOK_OF_THE_DEAD, },
+                    new List<int>() { (int)gui_achievement_types.GUI_ACHIEVEMENT_DEFEATED_WIZARD_OF_YENDOR, },
+                }),
+            new AchievementTier("Hero of Yendor",
+                new List<List<int>>()
+                {
+                    new List<int>() { (int)gui_achievement_types.GUI_ACHIEVEMENT_FOUND_AMULET_OF_YENDOR, },
+                }),
+            new AchievementTier("Ascended Hero of Yendor",
+                new List<List<int>>()
+                {
+                    new List<int>() { (int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED, },
+                }),
+            new AchievementTier("Grand Ascended Hero of Yendor",
+                new List<List<int>>()
+                {
+                    new List<int>() { (int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_IN_CLASSIC_MODE, },
+                }),
+            new AchievementTier("Grand Ascended Hero of Yendor", "Expert Class", (int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_AT_EXPERT_DIFFICULTY),
+            new AchievementTier("Grand Ascended Hero of Yendor", "Master Class", (int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_AT_MASTER_DIFFICULTY),
+            new AchievementTier("Grand Ascended Hero of Yendor", "Grand Master Class", (int)gui_achievement_types.GUI_ACHIEVEMENT_ASCENDED_AT_GRAND_MASTER_DIFFICULTY),
         };
 
         public static readonly AchievementBundle[] AchievementBundles =
@@ -10449,6 +10567,33 @@ namespace GnollHackX
             }
         }
 
+        public static bool IsNewAchievementTierGained()
+        {
+            if (_userData == null)
+                return false;
+            if (_userData.BoolDictionary.ContainsKey(GHConstants.GainedAchievementTierKey))
+                return true;
+            else return false;
+        }
+
+        public static void ClearAchievementTierGained()
+        {
+            if (_userData == null)
+                return;
+
+            bool didSomething = false;
+            if (_userData.BoolDictionary.ContainsKey(GHConstants.GainedAchievementTierKey))
+            {
+                _userData.BoolDictionary.Remove(GHConstants.GainedAchievementTierKey);
+                didSomething = true;
+            }
+            if (didSomething)
+            {
+                WriteUserDataToDisk();
+                UserDataNeedsSavingToDisk = false;
+            }
+        }
+
         public static void AddPendingAchievement(int achievementId)
         {
             AchievementQueue.Enqueue(achievementId);
@@ -10498,6 +10643,9 @@ namespace GnollHackX
                     }
                 }
 
+                /* Record old tier */
+                AchievementTier oldTier = GetAchievementTier();
+
                 for (int i = 0; i < GHConstants.NumGuiAchievementLongs; i++)
                 {
                     if (resultBits[i] == 0)
@@ -10517,7 +10665,48 @@ namespace GnollHackX
                         Debug.WriteLine(ex.Message);
                     }
                 }
+
+                /* Check new tier */
+                AchievementTier newTier = GetAchievementTier();
+                if (oldTier != newTier)
+                    AddUserData(GHConstants.GainedAchievementTierKey, true);
             });
+        }
+
+        public static bool IsTierAchieved(AchievementTier tier)
+        {
+            if (tier == null)
+                return false;
+            if (tier.UnlockAchievements.Count == 0)
+                return true;
+
+            foreach(List<int> unlockOrList in tier.UnlockAchievements)
+            {
+                bool areAllAchived = true;
+                foreach(int unlockAchievement in unlockOrList)
+                {
+                    if (!IsAchievementGained(unlockAchievement))
+                    {
+                        areAllAchived = false;
+                        break;
+                    }
+                }
+                if (areAllAchived)
+                    return true;
+            }
+            return false;
+        }
+
+        public static AchievementTier GetAchievementTier()
+        {
+            int numTiers = AchievementTiers.Length;
+            for (int i = numTiers - 1; i >= 1; i--)
+            {
+                if (IsTierAchieved(AchievementTiers[i]))
+                    return AchievementTiers[i];
+            }
+
+            return AchievementTiers[0];
         }
 
 
