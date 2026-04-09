@@ -48,7 +48,7 @@ const struct Role roles[] = {
       "the Tomb of the Toltec Kings",
       ROLE_ARCHAEOLOGIST,
       "Lightly equipped explorer",
-      { "Extra score from artifacts, historic statues, and art objects", "", "", "", ""},
+      { "Extra score from artifacts, mummy wrappings, historic statues, sarcophaguses, and art objects", "", "", "", ""},
       PM_ARCHAEOLOGIST,
       NON_PM,
       PM_LORD_CARNARVON,
