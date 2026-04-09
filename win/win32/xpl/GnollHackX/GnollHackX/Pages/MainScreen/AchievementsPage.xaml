@@ -58,7 +58,7 @@
                                 <gnh:GHCachedImage Grid.Column="2" x:Name="ImageRight" HighFilterQuality="True"
                                     WidthRequest="80" HeightRequest="80" 
                                     BackgroundColor="Transparent" VerticalOptions="Center" HorizontalOptions="End" />
-                                <StackLayout Grid.Column="1" Margin="10,0" VerticalOptions="Center" HorizontalOptions="Center" >
+                                <StackLayout Grid.Column="1" Margin="20,0" VerticalOptions="Center" HorizontalOptions="Center" >
                                     <Label x:Name="TierNameLabel" Text="Tier Name" FontFamily="Immortal" FontSize="23" TextColor="White"
                                        HorizontalTextAlignment="Center" VerticalTextAlignment="Center" HorizontalOptions="Center" VerticalOptions="Center" IsVisible="True" />
                                     <Label x:Name="TierSubNameLabel" Text="Tier Specifier" Margin="0,3,0,0" FontFamily="Immortal" FontSize="23" TextColor="White"
