@@ -259,6 +259,9 @@
                                        Margin="0,10,0,0" Clicked="AchievementOkButton_Clicked" />
                         </Grid>
                     </Frame>
+                    <Grid.GestureRecognizers>
+                        <TapGestureRecognizer />
+                    </Grid.GestureRecognizers>
                 </Grid>
                 <Grid.GestureRecognizers>
                     <TapGestureRecognizer Tapped="AchievementTapGestureRecognizer_Tapped" />
