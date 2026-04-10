@@ -113,6 +113,7 @@ namespace GnollHackX
             DeveloperMode = Preferences.Get("DeveloperMode", GHConstants.DefaultDeveloperMode);
             DebugLogMessages = DeveloperMode && Preferences.Get("DebugLogMessages", GHConstants.DefaultLogMessages);
             LowLevelLogging = DeveloperMode && Preferences.Get("LowLevelLogging", false);
+            ScreenLogging = DeveloperMode && Preferences.Get("ScreenLogging", false);
             DebugPostChannel = DeveloperMode && Preferences.Get("DebugPostChannel", GHConstants.DefaultDebugPostChannel);
             TournamentMode = Preferences.Get("TournamentMode", false);
             FullVersionMode = true; // Preferences.Get("FullVersion", true);
@@ -2708,9 +2709,12 @@ namespace GnollHackX
         //private static readonly object _debugLock = new object();
         private static int _debugLogMessages = GHConstants.DefaultLogMessages ? 1 : 0;
         private static int _lowLevelLogging = 0;
+        private static int _screenLogging = 0;
         public static bool DebugLogMessages { get { return Interlocked.CompareExchange(ref _debugLogMessages, 0, 0) != 0; } set { Interlocked.Exchange(ref _debugLogMessages, value ? 1 : 0); } }
         public static bool LowLevelLogging { get { return Interlocked.CompareExchange(ref _lowLevelLogging, 0, 0) != 0; } set { Interlocked.Exchange(ref _lowLevelLogging, value ? 1 : 0); } }
+        public static bool ScreenLogging { get { return Interlocked.CompareExchange(ref _screenLogging, 0, 0) != 0; } set { Interlocked.Exchange(ref _screenLogging, value ? 1 : 0); } }
         public static bool IsDebugLowLevelLoggingOn { get { return DebugLogMessages && LowLevelLogging; } }
+        public static bool IsDebugScreenLoggingOn { get { return DebugLogMessages && ScreenLogging; } }
 
         private static int _debugPostChannel = GHConstants.DefaultDebugPostChannel ? 1 : 0;
         public static bool DebugPostChannel /* This is the setting value on Settings Page */
@@ -7268,12 +7272,31 @@ namespace GnollHackX
                 Debug.WriteLine(loggedtext);
         }
 
+        public static readonly ConcurrentQueue<string> PendingScreenLogMessages = new ConcurrentQueue<string>();
+        public static void MaybeWriteScreenLog(string loggedText)
+        {
+            if (IsDebugScreenLoggingOn)
+            {
+                PendingScreenLogMessages.Enqueue(loggedText);
+            }
+        }
+
+        public static void MaybeWriteScreenLog(bool screenLogging, string loggedText)
+        {
+            if (screenLogging)
+            {
+                PendingScreenLogMessages.Enqueue(loggedText);
+            }
+        }
+
         private static readonly object _ghlogLock = new object();
-        public static void WriteGHLog(string loggedtext)
+        public static void WriteGHLog(string loggedText)
         {
             try
             {
-                Debug.WriteLine(loggedtext);
+                Debug.WriteLine(loggedText);
+                MaybeWriteScreenLog(loggedText);
+
                 string logdir = Path.Combine(GHPath, GHConstants.AppLogDirectory);
                 string logfullpath = Path.Combine(logdir, GHConstants.AppLogFileName);
                 if (!Directory.Exists(logdir))
@@ -7301,7 +7324,7 @@ namespace GnollHackX
                         }
                         var now = DateTime.Now;
                         File.AppendAllText(logfullpath, now.ToString("yyyy-MM-dd HH:mm:ss zzz") + ": "
-                            + loggedtext
+                            + loggedText
                             + " [" + GetPortVersionString() + "]"
                             + Environment.NewLine);
                     }
