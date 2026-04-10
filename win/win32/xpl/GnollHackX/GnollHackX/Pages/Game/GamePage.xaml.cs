@@ -17231,12 +17231,12 @@ namespace GnollHackX.Pages.Game
             public SKRect EquipmentDrawBounds;
         }
 
-        class DrawBoundInfos()
+        class DrawBoundInfos
         {
             public DrawBoundInfo[] DrawBoundList = null;
             public int FirstDrawnMenuItemIdx = -1;
             public int LastDrawnMenuItemIdx = -1;
-            public DrawBoundInfos(int boundsSize) : this()
+            public DrawBoundInfos(int boundsSize)
             {
                 DrawBoundList = new DrawBoundInfo[boundsSize];
             }
