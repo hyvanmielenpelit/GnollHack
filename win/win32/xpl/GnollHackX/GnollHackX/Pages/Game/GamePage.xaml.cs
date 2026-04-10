@@ -18204,12 +18204,22 @@ namespace GnollHackX.Pages.Game
                 if (screenLogging)
                 {
                     textPaint.TextSize = 14 * scale * customScale;
-                    textPaint.Color = SKColors.Red;
                     textPaint.Typeface = GHApp.LatoRegular;
                     float textSpacing = textPaint.FontSpacing;
                     float tx = 5;
                     float ty = 5 - textPaint.FontMetrics.Ascent;
                     int startIndex = Math.Max(0, _localMenuScreenDebugLogs.Count - _maxShownScreenLogs);
+                    textPaint.Color = SKColors.Black;
+                    textPaint.StrokeWidth = textPaint.TextSize / 3;
+                    textPaint.Style = SKPaintStyle.Stroke;
+                    for (int i = startIndex; i < _localMenuScreenDebugLogs.Count; i++)
+                    {
+                        textPaint.DrawTextOnCanvas(canvas, _localMenuScreenDebugLogs[i], tx, ty);
+                        ty += textSpacing;
+                    }
+                    textPaint.Color = SKColors.Red;
+                    textPaint.Style = SKPaintStyle.Fill;
+                    ty = 5 - textPaint.FontMetrics.Ascent;
                     for (int i = startIndex; i < _localMenuScreenDebugLogs.Count; i++)
                     {
                         textPaint.DrawTextOnCanvas(canvas, _localMenuScreenDebugLogs[i], tx, ty);
