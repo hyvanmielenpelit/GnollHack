@@ -18789,7 +18789,7 @@ namespace GnollHackX.Pages.Game
                         _savedMenuEventArgs = e;
 
                         GHApp.MaybeWriteScreenLog(screenLogging, "MenuTouch " + e?.ActionType.ToString() + ": HighlightMenuItems");
-                        HighlightMenuItems(e.Location);
+                        HighlightMenuItems(e.Location, screenLogging);
 
                         if (MenuCanvas.AllowLongTap)
                         {
@@ -18830,7 +18830,7 @@ namespace GnollHackX.Pages.Game
                                 /* Just one finger => Scroll the menu */
                                 if (diffX != 0 || diffY != 0)
                                 {
-                                    HighlightMenuItems(e.Location);
+                                    HighlightMenuItems(e.Location, screenLogging);
 
                                     DateTime now = DateTime.Now;
                                     /* Do not scroll within button press time threshold, unless large move */
@@ -19113,6 +19113,7 @@ namespace GnollHackX.Pages.Game
             lockTaken = false;
 
             float bottomScrollLimit = Math.Min(0, canvasheight - TotalEquipmentMenuHeight);
+            bool screenLogging = GHApp.IsDebugScreenLoggingOn;
             switch (e?.ActionType)
             {
                 case SKTouchAction.Entered:
@@ -19271,7 +19272,7 @@ namespace GnollHackX.Pages.Game
                                 //}
                                 //else
                                 {
-                                    MenuClickResult clickRes = MenuCanvas_EquipmentClickRelease(sender, e, false);
+                                    MenuClickResult clickRes = MenuCanvas_EquipmentClickRelease(sender, e, false, screenLogging);
                                     if (clickRes.MenuItemClickIndex == -2 && MenuCancelButton.IsEnabled)
                                     {
                                         MenuCanvas.InvalidateSurface();
@@ -19423,6 +19424,7 @@ namespace GnollHackX.Pages.Game
                 if (localDrawBounds == null)
                     return;
 
+                GHApp.MaybeWriteScreenLog("MenuTouch: LongTap: first=" + localDrawBounds.FirstDrawnMenuItemIdx + ", last=" + localDrawBounds.LastDrawnMenuItemIdx);
                 for (int idx = localDrawBounds.FirstDrawnMenuItemIdx; idx >= 0 && idx <= localDrawBounds.LastDrawnMenuItemIdx; idx++)
                 {
                     if (idx >= menuItems.Count)
@@ -19531,7 +19533,7 @@ namespace GnollHackX.Pages.Game
             }
         }
 
-        private void HighlightMenuItems(SKPoint p)
+        private void HighlightMenuItems(SKPoint p, bool screenLogging = false)
         {
             if (!MenuCanvas.AllowHighlight)
                 return;
@@ -19546,6 +19548,7 @@ namespace GnollHackX.Pages.Game
                     return;
                 SelectionMode selectionHow = MenuCanvas.SelectionHow;
                 bool clickOKOnSelection = MenuCanvas.ClickOKOnSelection;
+                GHApp.MaybeWriteScreenLog(screenLogging, "MenuTouch: HighlightMenuItems: first=" + localDrawBounds.FirstDrawnMenuItemIdx + ", last=" + localDrawBounds.LastDrawnMenuItemIdx);
                 for (int idx = localDrawBounds.FirstDrawnMenuItemIdx; idx >= 0 && idx <= localDrawBounds.LastDrawnMenuItemIdx; idx++)
                 {
                     if (idx >= menuItems.Count)
@@ -19618,7 +19621,7 @@ namespace GnollHackX.Pages.Game
             return new MenuClickResult(okClicked, clickIdx, identifier);
         }
 
-        private MenuClickResult MenuCanvas_EquipmentClickRelease(object sender, SKTouchEventArgs e, bool isLongTap)
+        private MenuClickResult MenuCanvas_EquipmentClickRelease(object sender, SKTouchEventArgs e, bool isLongTap, bool screenLogging = false)
         {
             bool doclickok = false;
             bool okClicked = false;
@@ -19647,6 +19650,7 @@ namespace GnollHackX.Pages.Game
                     return new MenuClickResult(okClicked, clickIdx, identifier);
                 //int sidx = SelectedEquipmentIndex;
                 bool foundItem = false;
+                GHApp.MaybeWriteScreenLog(screenLogging, "MenuTouch: EquipmentClickRelease: first=" + localDrawBounds.FirstDrawnMenuItemIdx + ", last=" + localDrawBounds.LastDrawnMenuItemIdx);
                 for (int idx = localDrawBounds.FirstDrawnMenuItemIdx; idx >= 0 && idx <= localDrawBounds.LastDrawnMenuItemIdx; idx++)
                 {
                     if (idx >= menuItems.Count)
