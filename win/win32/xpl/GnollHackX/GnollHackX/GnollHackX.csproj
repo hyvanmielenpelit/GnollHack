@@ -73,6 +73,11 @@
     <None Remove="Assets\test2.mp3" />
     <None Remove="Assets\tombstone.png" />
     <None Remove="Assets\UI\abilities.png" />
+    <None Remove="Assets\UI\achievement-category.png" />
+    <None Remove="Assets\UI\achievement-gained.png" />
+    <None Remove="Assets\UI\achievement-locked.png" />
+    <None Remove="Assets\UI\achievement-page.png" />
+    <None Remove="Assets\UI\achievement-rank.png" />
     <None Remove="Assets\UI\apply.png" />
     <None Remove="Assets\UI\arrow_down.png" />
     <None Remove="Assets\UI\arrow_downleft.png" />
@@ -363,6 +368,11 @@
     <EmbeddedResource Include="Assets\ghsettings.json" />
     <EmbeddedResource Include="Assets\gnollhack-icon-v2-512.png" />
     <EmbeddedResource Include="Assets\gnollhack-logo-test-2.png" />
+    <EmbeddedResource Include="Assets\UI\achievement-category.png" />
+    <EmbeddedResource Include="Assets\UI\achievement-gained.png" />
+    <EmbeddedResource Include="Assets\UI\achievement-locked.png" />
+    <EmbeddedResource Include="Assets\UI\achievement-page.png" />
+    <EmbeddedResource Include="Assets\UI\achievement-rank.png" />
     <EmbeddedResource Include="Assets\UI\autostash.png" />
     <EmbeddedResource Include="Assets\UI\background-darkmarble.png" />
     <EmbeddedResource Include="Assets\UI\battery-frame.png" />

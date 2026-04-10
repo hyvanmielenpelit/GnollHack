@@ -5117,6 +5117,11 @@ namespace GnollHackX
                 AppResourceName + ".Assets.UI.music.png",
                 AppResourceName + ".Assets.UI.you.png",
                 AppResourceName + ".Assets.tombstone.png",
+                AppResourceName + ".Assets.UI.achievement-page.png",
+                AppResourceName + ".Assets.UI.achievement-category.png",
+                AppResourceName + ".Assets.UI.achievement-gained.png",
+                AppResourceName + ".Assets.UI.achievement-locked.png",
+                AppResourceName + ".Assets.UI.achievement-rank.png",
                 };
                 foreach (string imagePath in cachedBitmaps)
                 {

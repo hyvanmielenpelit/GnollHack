@@ -139,8 +139,8 @@ namespace GnollHackX.Pages.MainScreen
                     bool isAchieved = GHApp.IsAchievementGained(i);
                     RowImageButton rib = new RowImageButton();
                     rib.ImgSourcePath = "resource://" + GHApp.AppResourceName 
-                        + ".Assets.UI." 
-                        + (isAchieved ? "conduct" : "forcelock") 
+                        + ".Assets.UI."
+                        + (isAchieved ? "achievement-gained" : "achievement-locked") 
                         + ".png";
                     rib.ImgHighFilterQuality = true;
                     rib.LblText = achievement.Name;

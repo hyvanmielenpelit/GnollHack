@@ -142,8 +142,8 @@ namespace GnollHackX.Pages.MainScreen
                         TierSubNameLabel.Text = tier.SubName;
                         TierSubNameLabel.IsVisible = true;
                     }
-                    ImageLeft.Source = "resource://" + GHApp.AppResourceName + ".Assets.UI.levelchange.png";
-                    ImageRight.Source = "resource://" + GHApp.AppResourceName + ".Assets.UI.levelchange.png";
+                    ImageLeft.Source = "resource://" + GHApp.AppResourceName + ".Assets.UI.achievement-rank.png";
+                    ImageRight.Source = "resource://" + GHApp.AppResourceName + ".Assets.UI.achievement-rank.png";
                     TierGrid.IsVisible = true;
                     GHApp.ClearAchievementTierGained();
                 }
@@ -159,7 +159,7 @@ namespace GnollHackX.Pages.MainScreen
                     int numCategoryAchievementsGained, numCategoryAchievementsVisible;
                     GHApp.CalculateAchievementsInCategory(i, out numCategoryAchievementsGained, out numCategoryAchievementsVisible);
                     RowImageButton rib = new RowImageButton();
-                    rib.ImgSourcePath = "resource://" + GHApp.AppResourceName + ".Assets.UI.sit.png";
+                    rib.ImgSourcePath = "resource://" + GHApp.AppResourceName + ".Assets.UI.achievement-category.png";
                     rib.ImgHighFilterQuality = true;
                     rib.LblText = ac.Name + " Achievements";
                     rib.LblTextColor = GHApp.DarkMode ? GHColors.White : GHColors.Black;

@@ -68,7 +68,7 @@ namespace GnollHackX.Pages.MainScreen
             _buttons.Add(rib);
 
             rib = new LabeledImageButton();
-            rib.ImgSourcePath = "resource://" + GHApp.AppResourceName + ".Assets.UI.levelchange.png";
+            rib.ImgSourcePath = "resource://" + GHApp.AppResourceName + ".Assets.UI.achievement-page.png";
             rib.ImgHighFilterQuality = true;
             rib.LblText = "Achievements";
             rib.LblFontSize = 20;

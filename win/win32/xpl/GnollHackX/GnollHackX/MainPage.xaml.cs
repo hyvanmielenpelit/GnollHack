@@ -2435,7 +2435,7 @@ namespace GnollHackX
                     var achievement = GHApp.AchievementDefinitions[achievementId];
                     RowImageButton rib = new RowImageButton();
                     rib.IgnoreDarkMode = true;
-                    rib.ImgSourcePath = "resource://" + GHApp.AppResourceName + ".Assets.UI.conduct.png";
+                    rib.ImgSourcePath = "resource://" + GHApp.AppResourceName + ".Assets.UI.achievement-gained.png";
                     rib.ImgHighFilterQuality = true;
                     rib.LblText = achievement?.Name ?? "(null, id=" + achievementId + ")";
                     rib.LblTextColor = GHColors.TitleGoldColor; // GHApp.DarkMode ? GHColors.White : GHColors.Black;
