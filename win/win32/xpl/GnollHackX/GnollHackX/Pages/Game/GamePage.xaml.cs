@@ -7170,6 +7170,9 @@ namespace GnollHackX.Pages.Game
         public string SkillsKeyboardShortcut { get { return Interlocked.CompareExchange(ref _skillsKeyboardShortcut, null, null); } set { Interlocked.Exchange(ref _skillsKeyboardShortcut, value); } }
         public string PolearmKeyboardShortcut { get { return Interlocked.CompareExchange(ref _polearmKeyboardShortcut, null, null); } set { Interlocked.Exchange(ref _polearmKeyboardShortcut, value); } }
         public string PrevWepKeyboardShortcut { get { return Interlocked.CompareExchange(ref _prevWepKeyboardShortcut, null, null); } set { Interlocked.Exchange(ref _prevWepKeyboardShortcut, value); } }
+        
+        private List<string> _localMainScreenDebugLogs = new List<string>();
+        private List<string> _localMainTempScreenDebugLogs = new List<string>();
 
         private void PaintMainGamePage(object sender, SKPaintSurfaceEventArgs e, bool isCanvasOnMainThread)
         {
@@ -7340,6 +7343,7 @@ namespace GnollHackX.Pages.Game
             if (curGame == null)
                 return;
 
+            bool screenLogging = GHApp.IsDebugScreenLoggingOn;
             long generalcountervalue, maincountervalue;
             maincountervalue = curGame.MainCounterValue; // Interlocked.CompareExchange(ref _mainCounterValue, 0L, 0L);
             /* Moved general_animation_counter outside of the lock to minimize the time spent in lock;  since InvalidateSurface is called after IncrementCounters and nothing else modifies general_animation_counter, generalcountervalue should be consistent of the copy result below */
@@ -7666,6 +7670,24 @@ namespace GnollHackX.Pages.Game
             lockTaken = false;
 
 #endif
+            /* Screen logging */
+            while (GHApp.PendingScreenLogMessages.TryDequeue(out string debugMessage))
+            {
+                if (!string.IsNullOrEmpty(debugMessage))
+                    _localMainScreenDebugLogs.Add(debugMessage);
+
+                if (_localMainScreenDebugLogs.Count >= _maxSavedScreenLogs)
+                {
+                    List<string> orig = _localMainScreenDebugLogs;
+                    for (int i = _maxSavedScreenLogs - _maxShownScreenLogs; i < _localMainScreenDebugLogs.Count; i++)
+                        _localMainTempScreenDebugLogs.Add(_localMainScreenDebugLogs[i]);
+                    _localMainScreenDebugLogs.Clear(); /* Is now empty and set as new temp below */
+                    /* Swap the lists */
+                    _localMainScreenDebugLogs = _localMainTempScreenDebugLogs;
+                    _localMainTempScreenDebugLogs = orig;
+                }
+            }
+
             using (GHSkiaFontPaint textPaint = new GHSkiaFontPaint())
             {
                 string str = "";
@@ -11953,6 +11975,34 @@ namespace GnollHackX.Pages.Game
                 {
                     DrawExtendedStatusBar(canvas, textPaint, canvaswidth, canvasheight, inverse_canvas_scale, statusBarSkiaHeight, canvasViewWidth, canvasViewHeight, stdButtonWidth, stdButtonHeight, usedButtonRowStackHeight, usingGL, fixRects, fixFiltering, ref youRect);
                 }
+
+                /* Screen debug logging */
+                if (screenLogging)
+                {
+                    textPaint.TextSize = 14 * inverse_canvas_scale * customScale;
+                    textPaint.Typeface = GHApp.LatoRegular;
+                    float textSpacing = textPaint.FontSpacing;
+                    tx = 5;
+                    ty = 5 - textPaint.FontMetrics.Ascent;
+                    int startIndex = Math.Max(0, _localMainScreenDebugLogs.Count - _maxShownScreenLogs);
+                    textPaint.Color = SKColors.Black;
+                    textPaint.StrokeWidth = textPaint.TextSize / 3;
+                    textPaint.Style = SKPaintStyle.Stroke;
+                    for (int i = startIndex; i < _localMainScreenDebugLogs.Count; i++)
+                    {
+                        textPaint.DrawTextOnCanvas(canvas, _localMainScreenDebugLogs[i], tx, ty);
+                        ty += textSpacing;
+                    }
+                    textPaint.Color = SKColors.Red;
+                    textPaint.Style = SKPaintStyle.Fill;
+                    ty = 5 - textPaint.FontMetrics.Ascent;
+                    for (int i = startIndex; i < _localMainScreenDebugLogs.Count; i++)
+                    {
+                        textPaint.DrawTextOnCanvas(canvas, _localMainScreenDebugLogs[i], tx, ty);
+                        ty += textSpacing;
+                    }
+                }
+
 #if WINDOWS
                 GameCursorType newCursor = GameCursorType.Normal;
                 bool doChangeCursor = false;
@@ -17401,6 +17451,7 @@ namespace GnollHackX.Pages.Game
             SelectionMode selectionHow = MenuCanvas.SelectionHow;
             float scale = GHApp.DisplayDensity; // (float)Math.Sqrt((double)(canvaswidth * canvasheight / (float)(referenceCanvasView.Width * referenceCanvasView.Height)));
             float customScale = GHApp.CustomScreenScale;
+            bool screenLogging = GHApp.IsDebugScreenLoggingOn;
             bool isHighFilterQuality = MenuHighFilterQuality;
             bool isHighlightedKeys = MenuHighlightedKeys;
             bool usingGL = MenuCanvas.UseGL;
@@ -18150,14 +18201,14 @@ namespace GnollHackX.Pages.Game
                     }
                 }
 
-                if (GHApp.IsDebugScreenLoggingOn)
+                if (screenLogging)
                 {
                     textPaint.TextSize = 14 * scale * customScale;
                     textPaint.Color = SKColors.Red;
                     textPaint.Typeface = GHApp.LatoRegular;
                     float textSpacing = textPaint.FontSpacing;
                     float tx = 5;
-                    float ty = 5;
+                    float ty = 5 - textPaint.FontMetrics.Ascent;
                     int startIndex = Math.Max(0, _localMenuScreenDebugLogs.Count - _maxShownScreenLogs);
                     for (int i = startIndex; i < _localMenuScreenDebugLogs.Count; i++)
                     {
