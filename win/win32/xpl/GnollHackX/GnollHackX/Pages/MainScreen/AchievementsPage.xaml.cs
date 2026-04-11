@@ -142,8 +142,8 @@ namespace GnollHackX.Pages.MainScreen
                         TierSubNameLabel.Text = tier.SubName;
                         TierSubNameLabel.IsVisible = true;
                     }
-                    ImageLeft.Source = "resource://" + GHApp.AppResourceName + ".Assets.UI.achievement-rank.png";
-                    ImageRight.Source = "resource://" + GHApp.AppResourceName + ".Assets.UI.achievement-rank.png";
+                    ImageLeft.Source = "resource://" + GHApp.AppResourceName + ".Assets.UI.achievement-page.png";
+                    ImageRight.Source = "resource://" + GHApp.AppResourceName + ".Assets.UI.achievement-page.png";
                     TierGrid.IsVisible = true;
                     GHApp.ClearAchievementTierGained();
                 }

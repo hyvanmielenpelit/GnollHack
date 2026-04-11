@@ -5118,7 +5118,6 @@ namespace GnollHackX
                 AppResourceName + ".Assets.UI.achievement-category.png",
                 AppResourceName + ".Assets.UI.achievement-gained.png",
                 AppResourceName + ".Assets.UI.achievement-locked.png",
-                AppResourceName + ".Assets.UI.achievement-rank.png",
                 };
                 foreach (string imagePath in cachedBitmaps)
                 {

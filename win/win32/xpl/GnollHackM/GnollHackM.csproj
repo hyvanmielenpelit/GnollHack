@@ -263,7 +263,6 @@
 		<None Remove="Assets\UI\achievement-gained.png" />
 		<None Remove="Assets\UI\achievement-locked.png" />
 		<None Remove="Assets\UI\achievement-page.png" />
-		<None Remove="Assets\UI\achievement-rank.png" />
 		<None Remove="Assets\UI\autostash.png" />
 		<None Remove="Assets\UI\background-darkmarble.png" />
 		<None Remove="Assets\UI\battery-frame.png" />
@@ -887,7 +886,6 @@
 		<EmbeddedResource Include="Assets\UI\achievement-gained.png" />
 		<EmbeddedResource Include="Assets\UI\achievement-locked.png" />
 		<EmbeddedResource Include="Assets\UI\achievement-page.png" />
-		<EmbeddedResource Include="Assets\UI\achievement-rank.png" />
 		<EmbeddedResource Include="Assets\UI\delphi.png" />
 		<EmbeddedResource Include="Assets\UI\disk.png" />
 		<EmbeddedResource Include="Assets\UI\dismount.png" />
