@@ -9720,7 +9720,7 @@ namespace GnollHackX
                 (int)gui_achievement_categories.Combat, 0, false);
 
             AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_DEFEATED_ALL_DEMON_PRINCES] =
-                new Achievement("Defeat All Demon Princes", "Defeat all demon princes",
+                new Achievement("Defeat Lords of Gehennom", "Defeat all arch-devils, demon lords, and demon princes",
                 (int)gui_achievement_categories.Combat, 0, false);
 
             AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_DEFEATED_TARRASQUE] =
@@ -9797,7 +9797,7 @@ namespace GnollHackX
                 new Achievement("Sokoban", "Find Sokoban, a tower with a boulder puzzle",
                 (int)gui_achievement_categories.Exploration, 0, false);
             AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_REACHED_TOP_OF_SOKOBAN] =
-                new Achievement("Reach the top of Sokoban", "Reach the top level of Sokoban",
+                new Achievement("Reach the Top of Sokoban", "Reach the top level of Sokoban",
                 (int)gui_achievement_categories.Exploration, 0, (int)gui_achievement_types.GUI_ACHIEVEMENT_ENTERED_SOKOBAN);
             AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_SOLVED_SOKOBAN] =
                 new Achievement("Solve Sokoban", "Solve the Sokoban puzzles",
