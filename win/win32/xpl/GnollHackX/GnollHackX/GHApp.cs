@@ -9664,6 +9664,9 @@ namespace GnollHackX
             AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_DEFEATED_WIZARD_OF_YENDOR] =
                 new Achievement("Defeat the Wizard", "Defeat the Wizard of Yendor",
                 (int)gui_achievement_categories.Combat, 0);
+            AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_DEFEATED_MEDUSA] =
+                new Achievement("Defeat Medusa", "Defeat Medusa, a legendary monster with a petrifying gaze",
+                (int)gui_achievement_categories.Combat, 0, false);
             AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_DEFEATED_QUEST_NEMESIS] =
                 new Achievement("Defeat Quest Nemesis", "Defeat a quest nemesis",
                 (int)gui_achievement_categories.Combat, 0, (int)gui_achievement_types.GUI_ACHIEVEMENT_ENTERED_THE_QUEST);
