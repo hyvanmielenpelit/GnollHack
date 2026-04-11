@@ -2318,10 +2318,7 @@ namespace GnollHackX
 #if SENTRY
             if (!string.IsNullOrWhiteSpace(message))
             {
-                MainThread.BeginInvokeOnMainThread(() =>
-                {
-                    SentrySdk.AddBreadcrumb(message, category);
-                });
+                SentrySdk.AddBreadcrumb(message, category);
             }
 #endif
         }
