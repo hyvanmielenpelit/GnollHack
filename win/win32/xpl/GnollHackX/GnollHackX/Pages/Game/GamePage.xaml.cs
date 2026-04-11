@@ -63,7 +63,7 @@ namespace GnollHackX.Pages.Game
 #endif
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class GamePage : ContentPage
+    public partial class GamePage : ContentPage, IKeyPressHandlingPage, ISpecialKeyPressHandlingPage
     {
         private struct MenuClickResult
         {

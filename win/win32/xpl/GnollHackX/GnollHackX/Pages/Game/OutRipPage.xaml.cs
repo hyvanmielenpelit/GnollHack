@@ -21,7 +21,7 @@ namespace GnollHackX.Pages.Game
 #endif
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class OutRipPage : ContentPage
+    public partial class OutRipPage : ContentPage, ISpecialKeyPressHandlingPage
     {
         GamePage _gamePage;
         GHWindow _window;
@@ -140,6 +140,17 @@ namespace GnollHackX.Pages.Game
         protected override bool OnBackButtonPressed()
         {
             return true;
+        }
+
+        public bool HandleSpecialKeyPress(GHSpecialKey key, bool isCtrl, bool isMeta, bool isShift)
+        {
+            bool handled = false;
+            if (key == GHSpecialKey.Escape || key == GHSpecialKey.Enter || key == GHSpecialKey.Space)
+            {
+                CloseOutrip();
+                return true;
+            }
+            return handled;
         }
     }
 }

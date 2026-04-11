@@ -25,7 +25,7 @@ namespace GnollHackX.Pages.MainScreen
 #endif
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class VaultPage : ContentPage, ICloseablePage
+    public partial class VaultPage : ContentPage, ICloseablePage, IKeyPressHandlingPage
     {
         private MainPage _mainPage;
         List<LabeledImageButton> _buttons = new List<LabeledImageButton>();
@@ -542,6 +542,12 @@ namespace GnollHackX.Pages.MainScreen
                             case (int)'T':
                                 if (VaultGrid.IsEnabled)
                                     await OpenTopScorePage();
+                                handled = true;
+                                break;
+                            case (int)'a':
+                            case (int)'A':
+                                if (VaultGrid.IsEnabled)
+                                    await OpenAchievementsPage();
                                 handled = true;
                                 break;
                             case (int)'l':

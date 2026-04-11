@@ -32,7 +32,7 @@ namespace GnollHackX.Pages.MainScreen
 #endif
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class SettingsPage : ContentPage
+    public partial class SettingsPage : ContentPage, ISpecialKeyPressHandlingPage
     {
         private GamePage _gamePage;
         private GameMenuPage _gameMenuPage;

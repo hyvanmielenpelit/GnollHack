@@ -52,7 +52,7 @@ using GnollHackX.Controls;
 namespace GnollHackX
 #endif
 {
-    public partial class MainPage : ContentPage
+    public partial class MainPage : ContentPage, IKeyPressHandlingPage, ISpecialKeyPressHandlingPage
     {
         //private readonly object _generalTimerLock = new object();
         private int _generaTimerIsOn = 0;

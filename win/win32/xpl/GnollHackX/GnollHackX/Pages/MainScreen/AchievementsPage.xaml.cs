@@ -22,7 +22,7 @@ namespace GnollHackX.Pages.MainScreen
 #endif
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class AchievementsPage : ContentPage, ICloseablePage
+    public partial class AchievementsPage : ContentPage, IKeyPressHandlingPage, ISpecialKeyPressHandlingPage
     {
         public AchievementsPage()
         {
@@ -190,15 +190,20 @@ namespace GnollHackX.Pages.MainScreen
 
         private async void AchievementButton_Clicked(object sender, EventArgs e)
         {
-            AchievementLayout.IsEnabled = false;
-            RowImageButton ghbutton = sender as RowImageButton;
-            if (ghbutton != null)
+            RowImageButton rib = sender as RowImageButton;
+            if (rib != null)
             {
-                GHApp.PlayButtonClickedSound();
-                var dispAchievementPage = new AchievementsDisplayPage();
-                dispAchievementPage.ReadAchievementCategory(ghbutton.BtnCommand);
-                await GHApp.PushModalPageAsync(dispAchievementPage);
+                await OpenAchievementDetailsPage(rib.BtnCommand);
             }
+        }
+
+        private async Task OpenAchievementDetailsPage(int categoryId)
+        {
+            AchievementLayout.IsEnabled = false;
+            GHApp.PlayButtonClickedSound();
+            var dispAchievementPage = new AchievementsDisplayPage();
+            dispAchievementPage.ReadAchievementCategory(categoryId);
+            await GHApp.PushModalPageAsync(dispAchievementPage);
             AchievementLayout.IsEnabled = true;
         }
 
@@ -214,6 +219,68 @@ namespace GnollHackX.Pages.MainScreen
         private void TapGestureRecognizer_Tapped(object sender, EventArgs e)
         {
             TierOkButton_Clicked(sender, e);
+        }
+
+        public bool HandleKeyPress(int key, bool isCtrl, bool isMeta)
+        {
+            if (GHApp.PushingModalPage) /* Ignore key presses when opening a page */
+                return true;
+            if (isCtrl || isMeta) /* Nothing should happen with these */
+                return false;
+            if (!AchievementLayout.IsEnabled) /* Ignore key presses when layout is disabled s*/
+                return true;
+            bool handled = false;
+            try
+            {
+                MainThread.BeginInvokeOnMainThread(async () =>
+                {
+                    try
+                    {
+                        foreach (var child in AchievementLayout.Children)
+                        {
+                            var rib = child as RowImageButton;
+                            if (rib != null)
+                            {
+                                if (!string.IsNullOrEmpty(rib.LblText))
+                                {
+                                    
+                                    char upperLetter = char.ToUpper(rib.LblText[0]);
+                                    char lowerLetter = char.ToLower(rib.LblText[0]);
+                                    if (key == upperLetter || key == lowerLetter)
+                                    {
+                                        await OpenAchievementDetailsPage(rib.BtnCommand);
+                                        handled = true;
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        System.Diagnostics.Debug.WriteLine(ex);
+                    }
+                });
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine(ex);
+            }
+            return handled;
+        }
+        public bool HandleSpecialKeyPress(GHSpecialKey key, bool isCtrl, bool isMeta, bool isShift)
+        {
+            if (TierGrid.IsVisible && (key == GHSpecialKey.Escape || key == GHSpecialKey.Space || key == GHSpecialKey.Enter))
+            {
+                TierOkButton_Clicked(this, EventArgs.Empty);
+                return true;
+            }
+            if (key == GHSpecialKey.Escape)
+            {
+                ClosePage();
+                return true;
+            }
+            return false;
         }
     }
 }

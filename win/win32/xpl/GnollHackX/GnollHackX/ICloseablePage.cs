@@ -12,4 +12,12 @@ namespace GnollHackX
     {
         void ClosePage();
     }
+    public interface IKeyPressHandlingPage
+    {
+        bool HandleKeyPress(int key, bool isCtrl, bool isMeta);
+    }
+    public interface ISpecialKeyPressHandlingPage
+    {
+        bool HandleSpecialKeyPress(GHSpecialKey key, bool isCtrl, bool isMeta, bool isShift);
+    }
 }

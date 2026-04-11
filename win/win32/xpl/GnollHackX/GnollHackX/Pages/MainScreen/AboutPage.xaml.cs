@@ -26,7 +26,7 @@ namespace GnollHackX.Pages.MainScreen
 #endif
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class AboutPage : ContentPage, ICloseablePage
+    public partial class AboutPage : ContentPage, ICloseablePage, IKeyPressHandlingPage
     {
         MainPage _mainPage = null;
         public AboutPage(MainPage mainPage)
