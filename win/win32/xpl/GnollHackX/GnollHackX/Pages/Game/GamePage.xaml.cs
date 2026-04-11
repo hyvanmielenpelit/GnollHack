@@ -3887,7 +3887,9 @@ namespace GnollHackX.Pages.Game
             else
                 GetLineCaption.Text = "";
 
-            GetLineCaption.Text += query;
+            if (!string.IsNullOrEmpty(query))
+                GetLineCaption.Text += query;
+
             if (!string.IsNullOrWhiteSpace(linesuffix) && linesuffix != " -")
                 GetLineCaption.Text += " " + linesuffix;
 
@@ -4093,6 +4095,7 @@ namespace GnollHackX.Pages.Game
                     break;
             }
 
+            GHApp.AddSentryBreadcrumb("GetLineOkButton (" + GetLineCaption.Text + "): " + res, GHConstants.SentryGnollHackButtonClickCategoryName);
             GHGame curGame = GHApp.CurrentGHGame;
             curGame?.ResponseQueue.Enqueue(new GHResponse(curGame, GHRequestType.GetLine, res));
             HideGetLine();
