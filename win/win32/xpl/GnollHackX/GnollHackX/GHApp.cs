@@ -9717,7 +9717,7 @@ namespace GnollHackX
 
             AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_DEFEATED_ALL_DEMON_PRINCES] =
                 new Achievement("Defeat Lords of Gehennom", "Defeat all arch-devils, demon lords, and demon princes",
-                (int)gui_achievement_categories.Combat, 0, false);
+                (int)gui_achievement_categories.Combat, 0, (int)gui_achievement_types.GUI_ACHIEVEMENT_ENTERED_GEHENNOM);
 
             AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_DEFEATED_TARRASQUE] =
                 new Achievement("Defeat Tarrasque", "Defeat the Tarrasque, the great reptilian punisher",
