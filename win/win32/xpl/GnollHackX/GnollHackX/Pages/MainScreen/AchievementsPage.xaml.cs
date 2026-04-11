@@ -135,7 +135,7 @@ namespace GnollHackX.Pages.MainScreen
                 }
                 if (GHApp.IsNewAchievementTierGained())
                 {
-                    TierTitleLabel.Text = "Higher Rank Claimed";
+                    TierTitleLabel.Text = "New Rank Claimed";
                     TierNameLabel.Text = tier.Name;
                     if (tier.SubName != null)
                     {
