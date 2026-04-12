@@ -4612,11 +4612,13 @@ boolean* return_to_inv_ptr;
             slen = (int)strlen(headings[j]);
             if (slen > longest_len_header)
                 longest_len_header = slen;
-
         }
         for (i = 0; extcmdlist[i].ef_txt; i++)
         {
             if (!(extcmdlist[i].flags & allflags) || !extcmdlist[i].getobj_word)
+                continue;
+
+            if ((extcmdlist[i].flags & SPECIAL_SHOW_CONDITIONS) && context.engrave_quick_obj_oid == 0) /* Can add more detail later if more than one command uses this */
                 continue;
 
             slen = (int)strlen(extcmdlist[i].ef_txt_word ? extcmdlist[i].ef_txt_word : extcmdlist[i].ef_txt);
@@ -4630,6 +4632,9 @@ boolean* return_to_inv_ptr;
             for (i = 0; extcmdlist[i].ef_txt; i++)
             {
                 if (!(extcmdlist[i].flags & section_flags[j]) || !extcmdlist[i].getobj_word)
+                    continue;
+
+                if ((extcmdlist[i].flags & SPECIAL_SHOW_CONDITIONS) && context.engrave_quick_obj_oid == 0) /* Can add more detail later if more than one command uses this */
                     continue;
 
                 Strcpy(class_list, "");
@@ -4687,6 +4692,9 @@ boolean* return_to_inv_ptr;
             for (i = 0; extcmdlist[i].ef_txt; i++)
             {
                 if (!(extcmdlist[i].flags & section_flags[j]) || !extcmdlist[i].getobj_word)
+                    continue;
+
+                if ((extcmdlist[i].flags & SPECIAL_SHOW_CONDITIONS) && context.engrave_quick_obj_oid == 0) /* Can add more detail later if more than one command uses this */
                     continue;
 
                 Strcpy(class_list, "");

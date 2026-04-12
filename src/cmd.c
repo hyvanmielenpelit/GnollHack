@@ -6498,7 +6498,7 @@ struct ext_func_tab extcmdlist[] = {
         dounsetquickwand, IFBURIED | SINGLE_OBJ_CMD_SPECIFIC, ATR_NONE, NO_COLOR, 0,
         getobj_zap_syms, "unset as quick wand", "unset as quick wand" },
     { '\0', "setquickengrave", "set quick engrave item",
-        dosetquickengraveitem, IFBURIED | SINGLE_OBJ_CMD_GENERAL, ATR_NONE, NO_COLOR, 0,
+        dosetquickengraveitem, IFBURIED | SINGLE_OBJ_CMD_GENERAL | SPECIAL_SHOW_CONDITIONS, ATR_NONE, NO_COLOR, 0,
         getobj_styluses, "set as quick engrave item", "set as quick engrave item" },
     { '\0', "unsetquickengrave", "unset quick engrave item",
         dounsetquickengraveitem, IFBURIED | SINGLE_OBJ_CMD_GENERAL, ATR_NONE, NO_COLOR, 0,
