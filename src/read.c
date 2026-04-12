@@ -3131,11 +3131,17 @@ struct monst* targetmonst;
         }
         if (sblessed) {
             register int x, y;
-
+            boolean foundsdoor = FALSE;
             for (x = 1; x < COLNO; x++)
                 for (y = 0; y < ROWNO; y++)
                     if (levl[x][y].typ == SDOOR)
+                    {
                         cvt_sdoor_to_door(x, y);
+                        foundsdoor = TRUE;
+                    }
+            if (foundsdoor)
+                issue_achievement(GUI_ACHIEVEMENT_FOUND_SECRET_DOOR_OR_PASSAGE);
+
             /* do_mapping() already reveals secret passages */
         }
         known = TRUE;

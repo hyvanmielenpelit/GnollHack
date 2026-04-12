@@ -950,6 +950,7 @@ boolean is_golf_swing;
             {
                 if (kickedobj->keyotyp == STRANGE_OBJECT || kickedobj->keyotyp == NON_PM || kickedobj->keyotyp == SKELETON_KEY || kickedobj->keyotyp == MASTER_KEY)
                 {
+                    issue_achievement(GUI_ACHIEVEMENT_BROKE_CHEST_LOCK_BY_KICKING);
                     play_simple_container_sound(kickedobj, CONTAINER_SOUND_TYPE_BREAK_LOCK);
                     You_ex(ATR_NONE, CLR_MSG_SUCCESS, "break open the lock!");
                     breakchestlock(kickedobj, FALSE);
@@ -1458,6 +1459,7 @@ boolean has_dir;
         {
             if (is_door_kickable_at_ptr(maploc) && !Levitation && rn2(30) < avrg_attrib)
             {
+                issue_achievement(GUI_ACHIEVEMENT_FOUND_SECRET_DOOR_OR_PASSAGE);
                 play_monster_weapon_hit_sound(&youmonst, HIT_SURFACE_SOURCE_LOCATION, xy_to_any(x, y), NATTK, (struct obj*)0, 5.0, HMON_MELEE);
                 cvt_sdoor_to_door(x, y); /* ->typ = DOOR */
                 pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "Crash!  %s a secret door!",
@@ -1503,6 +1505,7 @@ boolean has_dir;
         {
             if (!Levitation && rn2(30) < avrg_attrib)
             {
+                issue_achievement(GUI_ACHIEVEMENT_FOUND_SECRET_DOOR_OR_PASSAGE);
                 play_monster_weapon_hit_sound(&youmonst, HIT_SURFACE_SOURCE_LOCATION, xy_to_any(x, y), NATTK, (struct obj*)0, 5.0, HMON_MELEE);
                 pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "Crash!  You kick open a secret passage!");
                 exercise(A_DEX, TRUE);
@@ -1880,6 +1883,8 @@ boolean has_dir;
 
             if (!is_door_indestructible_at_ptr(maploc))
             {
+                if (maploc->doormask & D_LOCKED)
+                    issue_achievement(GUI_ACHIEVEMENT_KICKED_IN_LOCKED_DOOR);
                 maploc->doormask &= ~D_MASK;
                 maploc->doormask |= D_NODOOR;
                 maploc->subtyp = 0;
@@ -1893,6 +1898,8 @@ boolean has_dir;
         }
         else if (ACURR(A_STR) > 18 && !rn2(5) && !shopdoor)
         {
+            if (maploc->doormask & D_LOCKED)
+                issue_achievement(GUI_ACHIEVEMENT_KICKED_IN_LOCKED_DOOR);
             play_simple_location_sound(x, y, LOCATION_SOUND_TYPE_WHAM);
             play_simple_location_sound(x, y, LOCATION_SOUND_TYPE_BREAK);
             pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "As you kick the %s, it shatters to pieces!", get_door_name_at(x, y));
@@ -1908,6 +1915,8 @@ boolean has_dir;
         } 
         else
         {
+            if (maploc->doormask & D_LOCKED)
+                issue_achievement(GUI_ACHIEVEMENT_KICKED_IN_LOCKED_DOOR);
             play_simple_location_sound(x, y, LOCATION_SOUND_TYPE_WHAM);
             play_simple_location_sound(x, y, LOCATION_SOUND_TYPE_BREAK);
             pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "As you kick the %s, it crashes open!", get_door_name_at(x, y));

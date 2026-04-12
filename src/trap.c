@@ -5632,6 +5632,7 @@ boolean force_failure;
         }
         return 1;
     }
+    issue_achievement(GUI_ACHIEVEMENT_DISARMED_TRAP);
     return 2;
 }
 
@@ -6419,6 +6420,7 @@ boolean force;
             }
             else 
             {
+                issue_achievement(GUI_ACHIEVEMENT_DISARMED_TRAP);
                 play_sfx_sound(SFX_DISARM_TRAP_SUCCESS);
                 You_ex(ATR_NONE, CLR_MSG_SUCCESS, "disarm it!");
                 levl[x][y].doormask &= ~D_TRAPPED;
@@ -6577,6 +6579,7 @@ boolean force;
             }
             else
             {
+                issue_achievement(GUI_ACHIEVEMENT_DISARMED_TRAP);
                 play_sfx_sound(SFX_DISARM_TRAP_SUCCESS);
                 You_ex(ATR_NONE, CLR_MSG_SUCCESS, "disarm it!");
                 otmp->otrapped = 0;

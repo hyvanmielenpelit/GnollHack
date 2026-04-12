@@ -11167,6 +11167,8 @@ short exploding_wand_typ;
     /* secret door gets revealed, converted into regular door */
     if (levl[x][y].typ == SDOOR) 
     {
+        if (yourzap)
+            issue_achievement(GUI_ACHIEVEMENT_FOUND_SECRET_DOOR_OR_PASSAGE);
         cvt_sdoor_to_door(x, y); /* .typ = DOOR */
         /* target spot will now pass closed_door() test below
            (except on rogue level) */

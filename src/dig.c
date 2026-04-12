@@ -558,6 +558,7 @@ dig(VOID_ARGS)
         } 
         else if (lev->typ == SDOOR) 
         {
+            issue_achievement(GUI_ACHIEVEMENT_FOUND_SECRET_DOOR_OR_PASSAGE);
             play_simple_location_sound(dpx, dpy, LOCATION_SOUND_TYPE_BREAK);
             cvt_sdoor_to_door(dpx, dpy); /* ->typ = DOOR */
             digtxt = "You break through a secret door!";
@@ -2301,7 +2302,10 @@ struct obj* origobj;
                 play_simple_location_sound(zx, zy, LOCATION_SOUND_TYPE_BREAK);
                 int otherflags = room->doormask & ~D_MASK;
                 if (room->typ == SDOOR)
+                {
+                    issue_achievement(GUI_ACHIEVEMENT_FOUND_SECRET_DOOR_OR_PASSAGE);
                     transform_location_type(zx, zy, DOOR, 0);  /* doormask set below */
+                }
                 else if (cansee(zx, zy))
                     pline_The_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s is razed!", get_door_name_at_ptr(room));
                 watch_dig((struct monst*)0, zx, zy, TRUE);

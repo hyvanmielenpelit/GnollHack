@@ -1811,6 +1811,7 @@ genericptr_t num;
 
     if (levl[zx][zy].typ == SDOOR) 
     {
+        issue_achievement(GUI_ACHIEVEMENT_FOUND_SECRET_DOOR_OR_PASSAGE);
         cvt_sdoor_to_door(zx, zy); /* .typ = DOOR */
         magic_map_background(zx, zy, 0);
         newsym(zx, zy);
@@ -1819,6 +1820,7 @@ genericptr_t num;
     else if (levl[zx][zy].typ == SCORR)
     {
         levl[zx][zy].typ = CORR;
+        issue_achievement(GUI_ACHIEVEMENT_FOUND_SECRET_DOOR_OR_PASSAGE);
         unblock_vision_and_hearing_at_point(zx, zy);
         magic_map_background(zx, zy, 0);
         newsym(zx, zy);
@@ -1867,9 +1869,12 @@ genericptr_t num;
     register struct obj *otmp;
     int *num_p = (int *) num;
 
-    if (OBJ_AT(zx, zy)) {
-        for (otmp = level.objects[zx][zy]; otmp; otmp = otmp->nexthere) {
-            if (Is_box(otmp) && otmp->olocked) {
+    if (OBJ_AT(zx, zy)) 
+    {
+        for (otmp = level.objects[zx][zy]; otmp; otmp = otmp->nexthere) 
+        {
+            if (Is_box(otmp) && otmp->olocked) 
+            {
                 otmp->olocked = 0;
                 (*num_p)++;
             }
@@ -1878,10 +1883,15 @@ genericptr_t num;
     }
     if (levl[zx][zy].typ == SDOOR
         || (levl[zx][zy].typ == DOOR
-            && (levl[zx][zy].doormask & (D_CLOSED | D_LOCKED)))) {
+            && (levl[zx][zy].doormask & (D_CLOSED | D_LOCKED)))) 
+    {
         if (levl[zx][zy].typ == SDOOR)
+        {
+            issue_achievement(GUI_ACHIEVEMENT_FOUND_SECRET_DOOR_OR_PASSAGE);
             cvt_sdoor_to_door(zx, zy); /* .typ = DOOR */
-        if (levl[zx][zy].doormask & D_TRAPPED) {
+        }
+        if (levl[zx][zy].doormask & D_TRAPPED) 
+        {
             if (distu(zx, zy) < 3)
             {
                 b_trapped(get_door_name_at(zx, zy), 0, zx, zy);
@@ -1907,16 +1917,21 @@ genericptr_t num;
         unblock_vision_and_hearing_at_point(zx, zy);
         newsym(zx, zy);
         (*num_p)++;
-    } else if (levl[zx][zy].typ == SCORR) {
+    }
+    else if (levl[zx][zy].typ == SCORR) 
+    {
         levl[zx][zy].typ = CORR;
         unblock_vision_and_hearing_at_point(zx, zy);
         newsym(zx, zy);
         (*num_p)++;
-    } else if ((ttmp = t_at(zx, zy)) != 0) {
+    }
+    else if ((ttmp = t_at(zx, zy)) != 0) 
+    {
         struct monst *mon;
         boolean dummy; /* unneeded "you notice it arg" */
 
-        if (!ttmp->tseen && ttmp->ttyp != STATUE_TRAP) {
+        if (!ttmp->tseen && ttmp->ttyp != STATUE_TRAP) 
+        {
             ttmp->tseen = 1;
             newsym(zx, zy);
             (*num_p)++;
@@ -1925,7 +1940,9 @@ genericptr_t num;
         if (openholdingtrap(mon, &dummy)
             || openfallingtrap(mon, TRUE, &dummy))
             (*num_p)++;
-    } else if (find_drawbridge(&zx, &zy)) {
+    }
+    else if (find_drawbridge(&zx, &zy))
+    {
         /* make sure it isn't an open drawbridge */
         open_drawbridge(zx, zy, FALSE);
         (*num_p)++;
@@ -2138,6 +2155,7 @@ register int aflag; /* intrinsic autosearch vs explicit searching */
                     {
                         if (rn2(7 - fund))
                             continue;
+                        issue_achievement(GUI_ACHIEVEMENT_FOUND_SECRET_DOOR_OR_PASSAGE);
                         play_sfx_sound(SFX_HIDDEN_DOOR_FOUND);
                         You_ex(ATR_NONE, CLR_MSG_SUCCESS, "find a hidden door.");
                         cvt_sdoor_to_door_with_animation(x, y); /* .typ = DOOR */
@@ -2150,6 +2168,7 @@ register int aflag; /* intrinsic autosearch vs explicit searching */
                     {
                         if (rn2(7 - fund))
                             continue;
+                        issue_achievement(GUI_ACHIEVEMENT_FOUND_SECRET_DOOR_OR_PASSAGE);
                         play_sfx_sound(SFX_HIDDEN_DOOR_FOUND);
                         You_ex(ATR_NONE, CLR_MSG_SUCCESS, "find a hidden passage.");
                         cvt_scorr_to_corr_with_animation(x, y);

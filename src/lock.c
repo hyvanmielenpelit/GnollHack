@@ -192,6 +192,7 @@ picklock(VOID_ARGS)
                 what = is_chest(xlock.box) ? "chest" : "box";
                 alreadyunlocked = !xlock.box->olocked;
             }
+            issue_achievement(GUI_ACHIEVEMENT_DISARMED_TRAP);
             You_ex(ATR_NONE, CLR_MSG_SUCCESS, "succeed in disarming the trap.  The %s is still %slocked.",
                 what, alreadyunlocked ? "un" : "");
             exercise(A_WIS, TRUE);

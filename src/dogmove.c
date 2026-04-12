@@ -2375,6 +2375,7 @@ newdogpos:
                                  && glyph_is_object(levl[nix][niy].hero_memory_layers.glyph))
                                    ? vobj_at(nix, niy) : 0;
 #endif
+                issue_achievement(GUI_ACHIEVEMENT_DETERMINED_CURSED_STATUS_WITH_PET);
                 const char *what = cursedobj[chi] ? distant_name(cursedobj[chi], doname) : something;
                 play_monster_unhappy_sound(mtmp, MONSTER_UNHAPPY_SOUND_WARN_CURSED);
                 pline_multi_ex(ATR_NONE, CLR_MSG_ATTENTION, no_multiattrs, what != something ? multicolor_orange3 : get_colorless_multicolor_buffer(), "%s %s reluctantly over %s.", noit_Monnam(mtmp),

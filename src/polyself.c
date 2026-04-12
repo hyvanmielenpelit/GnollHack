@@ -749,6 +749,7 @@ int mntmp;
     }
 
     /* KMH, conduct */
+    issue_achievement(GUI_ACHIEVEMENT_POLYMORPHED_FORM);
     if (!u.uconduct.polyselfs++)
         livelog_printf(LL_CONDUCT,
             "changed form for the first time, becoming %s",

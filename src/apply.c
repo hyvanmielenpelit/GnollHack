@@ -781,6 +781,7 @@ register struct obj *obj;
     switch (lev->typ) {
     case SDOOR:
         You_hear(hollow_str, "door");
+        issue_achievement(GUI_ACHIEVEMENT_FOUND_SECRET_DOOR_OR_PASSAGE);
         cvt_sdoor_to_door_with_animation(rx, ry); /* ->typ = DOOR */
         feel_newsym(rx, ry);
         return res;
@@ -789,6 +790,7 @@ register struct obj *obj;
         //create_basic_floor_location(rx, ry, levl[rx][ry].floortyp ? levl[rx][ry].floortyp : CORR, 0, 0, FALSE);
         //unblock_vision_and_hearing_at_point(rx, ry);
         //feel_newsym(rx, ry);
+        issue_achievement(GUI_ACHIEVEMENT_FOUND_SECRET_DOOR_OR_PASSAGE);
         cvt_scorr_to_corr_with_animation(rx, ry);
         return res;
     }
@@ -6830,6 +6832,7 @@ struct obj* obj;
     {
         if (maploc->typ == SDOOR) 
         {
+            issue_achievement(GUI_ACHIEVEMENT_FOUND_SECRET_DOOR_OR_PASSAGE);
             cvt_sdoor_to_door_with_animation(x, y); /* ->typ = DOOR */
             play_sfx_sound(SFX_THUMP_HIT);
             pline("Thump!  Your swing uncovers a secret door!");

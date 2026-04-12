@@ -9601,6 +9601,21 @@ namespace GnollHackX
             AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_GENOCIDED_MONSTERS] =
                 new Achievement("Genocide", "Genocide a type of monsters using any means available in the game",
                 (int)gui_achievement_categories.Gameplay, 0, false);
+            AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_BROKE_CHEST_LOCK_BY_KICKING] =
+                new Achievement("Kick Chest Lock", "Break the lock on a locked chest or box by kicking",
+                (int)gui_achievement_categories.Gameplay, 0);
+            AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_KICKED_IN_LOCKED_DOOR] =
+                new Achievement("Kick In Locked Door", "Break a locked door by kicking",
+                (int)gui_achievement_categories.Gameplay, 0);
+            AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_FOUND_SECRET_DOOR_OR_PASSAGE] =
+                new Achievement("Secret Door or Passage", "Find a secret door or passage by searching or other means",
+                (int)gui_achievement_categories.Gameplay, 0);
+            AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_POLYMORPHED_FORM] =
+                new Achievement("Polymorph Self", "Polymorphed one's own form",
+                (int)gui_achievement_categories.Gameplay, 0, false);
+            AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_DISARMED_TRAP] =
+                new Achievement("Disarm Trap", "Disarm any trap in the game",
+                (int)gui_achievement_categories.Gameplay, 0, false);
 
             AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_IDENTIFIED_BLESSEDNESS_ON_ALTAR] =
                 new Achievement("Blessedness on Altar", "Determine an object's blessed or cursed status by dropping it on an altar",
@@ -9622,6 +9637,9 @@ namespace GnollHackX
                 (int)gui_achievement_categories.Gameplay, 0, false);
             AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_CONVERTED_ALTAR] =
                 new Achievement("Convert an Altar", "Convert an altar to your alignment by sacrificing a corpse on it",
+                (int)gui_achievement_categories.Gameplay, 0, false);
+            AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_DETERMINED_CURSED_STATUS_WITH_PET] =
+                new Achievement("Cursed Item Eschewed", "Observe a pet reluctantly step over a cursed item on the floor",
                 (int)gui_achievement_categories.Gameplay, 0, false);
 
             /* Experience levels */

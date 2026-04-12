@@ -742,6 +742,7 @@ nh_timeout()
                 break;
             case SLIMED:
                 /* involuntarily break "never changed form" conduct */
+                issue_achievement(GUI_ACHIEVEMENT_POLYMORPHED_FORM);
                 if (!u.uconduct.polyselfs++)
                     livelog_printf(LL_CONDUCT, "%s",
                         "changed form for the first time by turning to slime");

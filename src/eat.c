@@ -1631,7 +1631,7 @@ uchar gender UNUSED; /* 0 = male, 1 = female, 2 = unknown */
         tmp += 20;
         if (!is_mimic(youmonst.data) && !Unchanging) {
             char buf[BUFSZ];
-
+            issue_achievement(GUI_ACHIEVEMENT_POLYMORPHED_FORM);
             if (!u.uconduct.polyselfs++) /* you're changing form */
                 livelog_printf(LL_CONDUCT, "changed form for the first time by mimicking %s",
                     Hallucination ? "an orange" : "a pile of gold");
