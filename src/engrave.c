@@ -673,7 +673,7 @@ uchar item_selection_style;
     case 0:
         break;
     case 1:
-        otmp = (struct obj*) &zeroobj; /* Dropping the const qualifier here, so one needs to be careful below */
+        otmp = (struct obj*) &zeroobj; /* Dropping the const qualifier here, so one needs to be careful below not to modify otmp anymore */
         context.engrave_quick_obj_oid = 0;
         prompt_for_stylus = FALSE;
         break;

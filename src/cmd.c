@@ -6500,7 +6500,7 @@ struct ext_func_tab extcmdlist[] = {
     { '\0', "setquickengrave", "set quick engrave item",
         dosetquickengraveitem, IFBURIED | SINGLE_OBJ_CMD_GENERAL, ATR_NONE, NO_COLOR, 0,
         getobj_styluses, "set as quick engrave item", "set as quick engrave item" },
-    { M(28), "unsetquickengrave", "unset quick engrave item",
+    { '\0', "unsetquickengrave", "unset quick engrave item",
         dounsetquickengraveitem, IFBURIED | SINGLE_OBJ_CMD_GENERAL, ATR_NONE, NO_COLOR, 0,
         getobj_styluses, "unset as quick engrave item", "unset as quick engrave item" },
     { '!', "shell", "do a shell escape", dosh_core, IFBURIED | GENERALCMD
