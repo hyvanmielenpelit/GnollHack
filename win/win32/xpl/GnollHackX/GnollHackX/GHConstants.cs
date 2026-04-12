@@ -277,17 +277,17 @@ namespace GnollHackX
         DefaultVIKeys =         0x00080000UL, /* VI Keys are default instead of number pad movement */
         WornShowsEquipment =    0x00100000UL, /* Show the equipment screen of inventory instead of only worn items in normal menu */
 
-        RightMouseButtonBit1 =  0x00400000UL, 
-        RightMouseButtonBit2 =  0x00800000UL, 
-        RightMouseButtonBit3 =  0x01000000UL, 
-        RightMouseButtonBit4 =  0x02000000UL,
-        RightMouseButtonBit5 =  0x04000000UL,
+        //RightMouseButtonBit1 =  0x00400000UL, 
+        //RightMouseButtonBit2 =  0x00800000UL, 
+        //RightMouseButtonBit3 =  0x01000000UL, 
+        //RightMouseButtonBit4 =  0x02000000UL,
+        //RightMouseButtonBit5 =  0x04000000UL,
 
-        MiddleMouseButtonBit1 = 0x08000000UL,
-        MiddleMouseButtonBit2 = 0x10000000UL, 
-        MiddleMouseButtonBit3 = 0x20000000UL, 
-        MiddleMouseButtonBit4 = 0x40000000UL, 
-        MiddleMouseButtonBit5 = 0x80000000UL, 
+        //MiddleMouseButtonBit1 = 0x08000000UL,
+        //MiddleMouseButtonBit2 = 0x10000000UL, 
+        //MiddleMouseButtonBit3 = 0x20000000UL, 
+        //MiddleMouseButtonBit4 = 0x40000000UL, 
+        //MiddleMouseButtonBit5 = 0x80000000UL, 
     }
 
     [Flags]
@@ -2373,8 +2373,8 @@ namespace GnollHackX
         public const bool DefaultUseSingleDumpLog = true;
         public const int DefaultRightMouseCommand = (int)NhGetPosMods.DefClickRole;
         public const int DefaultMiddleMouseCommand = (int)NhGetPosMods.DefClickRole;
-        public const int RightMouseBitIndex = 22;
-        public const int MiddleMouseBitIndex = 27;
+        //public const int RightMouseBitIndex = 22;
+        //public const int MiddleMouseBitIndex = 27;
         public const string InstallTimePackName = "installtimepack";
         public const string OnDemandPackName = "ondemandpack";
         public const string UserDataDirectory = "usrdata";
