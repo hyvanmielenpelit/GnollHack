@@ -3333,8 +3333,8 @@ struct obj* otmp_only;
                     && (otmp->speflags & SPEFLAGS_FAVORITE))
                 || (!strcmp(word, "unmark as favorite") /* exclude if not a favorite */
                     && !(otmp->speflags & SPEFLAGS_FAVORITE))
-                || (!strcmp(word, "set as quick engrave item") /* exclude if already a quick engrave item */
-                    && otmp->o_id == context.engrave_quick_obj_oid)
+                || (!strcmp(word, "set as quick engrave item") /* exclude if already a quick engrave item, or if a quick engrave item has not been set yet (the first time you should do it via the engrave quick command) */
+                    && (context.engrave_quick_obj_oid == 0 || otmp->o_id == context.engrave_quick_obj_oid))
                 || (!strcmp(word, "unset as quick engrave item") /* exclude if not a quick engrave item */
                     && otmp->o_id != context.engrave_quick_obj_oid)
                 || (!strcmp(word, "set as quick wand") /* exclude if already a quick wand */
@@ -4618,9 +4618,6 @@ boolean* return_to_inv_ptr;
             if (!(extcmdlist[i].flags & allflags) || !extcmdlist[i].getobj_word)
                 continue;
 
-            if ((extcmdlist[i].flags & SPECIAL_SHOW_CONDITIONS) && context.engrave_quick_obj_oid == 0) /* Can add more detail later if more than one command uses this */
-                continue;
-
             slen = (int)strlen(extcmdlist[i].ef_txt_word ? extcmdlist[i].ef_txt_word : extcmdlist[i].ef_txt);
             if (slen > longest_len)
                 longest_len = slen;
@@ -4632,9 +4629,6 @@ boolean* return_to_inv_ptr;
             for (i = 0; extcmdlist[i].ef_txt; i++)
             {
                 if (!(extcmdlist[i].flags & section_flags[j]) || !extcmdlist[i].getobj_word)
-                    continue;
-
-                if ((extcmdlist[i].flags & SPECIAL_SHOW_CONDITIONS) && context.engrave_quick_obj_oid == 0) /* Can add more detail later if more than one command uses this */
                     continue;
 
                 Strcpy(class_list, "");
@@ -4692,9 +4686,6 @@ boolean* return_to_inv_ptr;
             for (i = 0; extcmdlist[i].ef_txt; i++)
             {
                 if (!(extcmdlist[i].flags & section_flags[j]) || !extcmdlist[i].getobj_word)
-                    continue;
-
-                if ((extcmdlist[i].flags & SPECIAL_SHOW_CONDITIONS) && context.engrave_quick_obj_oid == 0) /* Can add more detail later if more than one command uses this */
                     continue;
 
                 Strcpy(class_list, "");
