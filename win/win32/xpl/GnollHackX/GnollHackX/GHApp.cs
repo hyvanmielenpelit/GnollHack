@@ -9780,6 +9780,14 @@ namespace GnollHackX
                 new Achievement("Defeat Xan", "Defeat a xan, a troublesome insect",
                 (int)gui_achievement_categories.Combat, 0);
 
+            AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_DEFEATED_ORC_AND_A_PIE] =
+                new Achievement("Orc and a Pie", "Defeat the orc guarding a pie",
+                (int)gui_achievement_categories.Combat, 0, false);
+
+            AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_DEFEATED_ORC_CAPTAIN_AND_A_PIE] =
+                new Achievement("Orc Captain and Many Pies", "Defeat the orc captain guarding a box full of pies",
+                (int)gui_achievement_categories.Combat, 0, false);
+
             /* Exploration */
             AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_REACHED_DUNGEON_LEVEL_5] =
                 new Achievement("Dungeon Level 5", "Reach dungeon level 5 with any character", "Dungeon Level 05",

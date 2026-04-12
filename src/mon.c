@@ -3700,6 +3700,14 @@ uint64_t mondeadflags;
     case PM_XAN:
         issue_achievement(GUI_ACHIEVEMENT_DEFEATED_XAN);
         break;
+    case PM_ORC:
+        if (mtmp->mon_flags & MON_FLAGS_ORC_AND_A_PIE)
+            issue_achievement(GUI_ACHIEVEMENT_DEFEATED_ORC_AND_A_PIE);
+        break;
+    case PM_ORC_CAPTAIN:
+        if (mtmp->mon_flags & MON_FLAGS_ORC_AND_A_PIE)
+            issue_achievement(GUI_ACHIEVEMENT_DEFEATED_ORC_CAPTAIN_AND_A_PIE);
+        break;
     default:
         break;
     }

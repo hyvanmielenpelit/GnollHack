@@ -957,6 +957,7 @@ int trap_type;
                         struct monst* mon = makemon(&mons[PM_ORC], xx, yy + dy, MM_MAX_HP | MM_WAITFORU);
                         if (mon)
                         {
+                            mon->mon_flags |= MON_FLAGS_ORC_AND_A_PIE;
                             context.made_orc_and_a_pie = TRUE;
                             if (!m_carrying(mon, ORCISH_CHAIN_MAIL))
                                 (void)mongets(mon, ORCISH_CHAIN_MAIL);
@@ -983,6 +984,7 @@ int trap_type;
                         struct monst* mon = makemon(&mons[PM_ORC_CAPTAIN], xx, yy + dy, MM_MAX_HP);
                         if (mon)
                         {
+                            mon->mon_flags |= MON_FLAGS_ORC_AND_A_PIE;
                             context.made_orc_and_a_pie2 = TRUE;
                             if (!m_carrying(mon, ORCISH_CHAIN_MAIL))
                                 mongets(mon, ORCISH_CHAIN_MAIL);

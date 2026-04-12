@@ -216,6 +216,7 @@ struct monst {
 #define MON_FLAGS_SCHROEDINGERS_CAT             0x00000400UL
 #define MON_FLAGS_DEBUG_REPLMON                 0x00000800UL
 #define MON_FLAGS_DEBUG_DEALLOCATED             0x00001000UL
+#define MON_FLAGS_ORC_AND_A_PIE                 0x00002000UL
 
     uint64_t mstrategy; /* for monsters with mflag3: current strategy */
 
