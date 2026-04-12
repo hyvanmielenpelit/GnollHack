@@ -1883,8 +1883,8 @@ boolean has_dir;
 
             if (!is_door_indestructible_at_ptr(maploc))
             {
-                if (maploc->doormask & D_LOCKED)
-                    issue_achievement(GUI_ACHIEVEMENT_KICKED_IN_LOCKED_DOOR);
+                //if (maploc->doormask & D_LOCKED)
+                //    issue_achievement(GUI_ACHIEVEMENT_KICKED_IN_LOCKED_DOOR);
                 maploc->doormask &= ~D_MASK;
                 maploc->doormask |= D_NODOOR;
                 maploc->subtyp = 0;
@@ -1898,8 +1898,8 @@ boolean has_dir;
         }
         else if (ACURR(A_STR) > 18 && !rn2(5) && !shopdoor)
         {
-            if (maploc->doormask & D_LOCKED)
-                issue_achievement(GUI_ACHIEVEMENT_KICKED_IN_LOCKED_DOOR);
+            //if (maploc->doormask & D_LOCKED)
+            //    issue_achievement(GUI_ACHIEVEMENT_KICKED_IN_LOCKED_DOOR);
             play_simple_location_sound(x, y, LOCATION_SOUND_TYPE_WHAM);
             play_simple_location_sound(x, y, LOCATION_SOUND_TYPE_BREAK);
             pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "As you kick the %s, it shatters to pieces!", get_door_name_at(x, y));
@@ -1915,8 +1915,8 @@ boolean has_dir;
         } 
         else
         {
-            if (maploc->doormask & D_LOCKED)
-                issue_achievement(GUI_ACHIEVEMENT_KICKED_IN_LOCKED_DOOR);
+            //if (maploc->doormask & D_LOCKED)
+            //    issue_achievement(GUI_ACHIEVEMENT_KICKED_IN_LOCKED_DOOR);
             play_simple_location_sound(x, y, LOCATION_SOUND_TYPE_WHAM);
             play_simple_location_sound(x, y, LOCATION_SOUND_TYPE_BREAK);
             pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "As you kick the %s, it crashes open!", get_door_name_at(x, y));

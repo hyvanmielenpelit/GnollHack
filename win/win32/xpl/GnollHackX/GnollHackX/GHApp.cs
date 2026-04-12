@@ -9607,9 +9607,9 @@ namespace GnollHackX
             AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_BROKE_CHEST_LOCK_BY_KICKING] =
                 new Achievement("Kick Chest Lock", "Break the lock on a locked chest or box by kicking",
                 (int)gui_achievement_categories.Gameplay, 0);
-            AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_KICKED_IN_LOCKED_DOOR] =
-                new Achievement("Kick In Locked Door", "Break a locked door by kicking",
-                (int)gui_achievement_categories.Gameplay, 0, false);
+            //AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_KICKED_IN_LOCKED_DOOR] =
+            //    new Achievement("Kick In Locked Door", "Break a locked door by kicking",
+            //    (int)gui_achievement_categories.Gameplay, 0, false);
             AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_FOUND_SECRET_DOOR_OR_PASSAGE] =
                 new Achievement("Secret Door or Passage", "Find a secret door or passage by searching or other means",
                 (int)gui_achievement_categories.Gameplay, 0);
