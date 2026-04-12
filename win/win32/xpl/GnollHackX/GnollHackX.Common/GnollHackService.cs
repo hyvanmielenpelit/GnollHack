@@ -74,6 +74,10 @@ namespace GnollHackX.Unknown
             [MarshalAs(UnmanagedType.LPStr)] string cmdlineargs,
             [MarshalAs(UnmanagedType.LPStr)] string engrave_quicktext,
             [MarshalAs(UnmanagedType.LPStr)] string last_used_player_name,
+            int right_mouse_button,
+            int middle_mouse_button,
+            int engrave_quickstyle,
+            int reserved_int,
             ulong runflags,
             ulong foundmanuals,
             ulong wincaps1,
@@ -337,6 +341,8 @@ namespace GnollHackX.Unknown
 
         [DllImport(PlatformConstants.dll)]
         public static extern void LibSetEngraveQuickText(string newValue);
+        [DllImport(PlatformConstants.dll)]
+        public static extern void LibSetEngraveQuickStyle(int newValue);
 
         [DllImport(PlatformConstants.dll)]
         public static extern IntPtr LibGetEventPathForGHSound(int ghsound);
@@ -1238,6 +1244,10 @@ namespace GnollHackX.Unknown
         {
             LibSetEngraveQuickText(newValue);
         }
+        public void SetEngraveQuickStyle(int newValue)
+        {
+            LibSetEngraveQuickStyle(newValue);
+        }
 
         public string GetEventPathForGHSound(int ghsound)
         {
@@ -1285,6 +1295,9 @@ namespace GnollHackX.Unknown
             bool ignorestopping = GHApp.MirroredIgnoreStopping;
             bool defaultvikeys = GHApp.DefaultVIKeys;
             string engravetext = GHApp.MirroredEngraveQuickText;
+            int rightmousebutton = GHApp.MirroredRightMouseCommand;
+            int middlemousebutton = GHApp.MirroredMiddleMouseCommand;
+            int engravequickstyle = GHApp.MirroredEngraveQuickStyle;
             ulong rightmouse = (ulong)GHApp.MirroredRightMouseCommand << GHConstants.RightMouseBitIndex;
             ulong middlemouse = (ulong)GHApp.MirroredMiddleMouseCommand << GHConstants.MiddleMouseBitIndex;
             ulong runflags = (ulong)(ghGame.WizardMode ? RunGnollHackFlags.WizardMode : 0) |
@@ -1314,6 +1327,10 @@ namespace GnollHackX.Unknown
                 "",
                 engravetext,
                 lastusedplname,
+                rightmousebutton,
+                middlemousebutton,
+                engravequickstyle,
+                0,
                 runflags,
                 foundManuals,
                 0,

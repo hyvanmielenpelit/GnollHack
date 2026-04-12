@@ -272,8 +272,8 @@ struct context_info
     int64_t reserved_int64_4;
     
     int yeenaghu_wishes;
+    unsigned engrave_quick_obj_oid;
 
-    int reserved_int2;
     int reserved_int3;
     int reserved_int4;
     short reserved_short1;

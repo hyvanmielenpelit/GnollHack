@@ -3333,6 +3333,10 @@ struct obj* otmp_only;
                     && (otmp->speflags & SPEFLAGS_FAVORITE))
                 || (!strcmp(word, "unmark as favorite") /* exclude if not a favorite */
                     && !(otmp->speflags & SPEFLAGS_FAVORITE))
+                || (!strcmp(word, "set as quick engrave item") /* exclude if already a quick engrave item */
+                    && otmp->o_id == context.engrave_quick_obj_oid)
+                || (!strcmp(word, "unset as quick engrave item") /* exclude if not a quick engrave item */
+                    && otmp->o_id != context.engrave_quick_obj_oid)
                 || (!strcmp(word, "set as quick wand") /* exclude if already a quick wand */
                     && otmp->o_id == context.quick_zap_wand_oid)
                 || (!strcmp(word, "unset as quick wand") /* exclude if not the quick wand */
@@ -4964,9 +4968,9 @@ int* wtcount_ptr;
     memset(attrs, ATR_NONE, sizeof(attrs));
     memset(colors, NO_COLOR, sizeof(colors));
     Strcpy(objbuf,
-        show_weights > SHOWWEIGHTS_NONE ? (flags.inventory_weights_last ? doname_with_weight_last(otmp, loadstonecorrectly, iflags.perm_invent && !want_reply)
-            : doname_with_weight_first(otmp, loadstonecorrectly, iflags.perm_invent && !want_reply))
-        : doname_with_flags(otmp, iflags.perm_invent && !want_reply ? DONAME_HIDE_REMAINING_LIT_TURNS : 0, (char**)0, (char**)0));
+        show_weights > SHOWWEIGHTS_NONE ? (flags.inventory_weights_last ? doname_with_weight_last(otmp, loadstonecorrectly, iflags.perm_invent && !want_reply, DONAME_SHOW_QUICK_ITEMS)
+            : doname_with_weight_first(otmp, loadstonecorrectly, iflags.perm_invent && !want_reply, DONAME_SHOW_QUICK_ITEMS))
+        : doname_with_flags(otmp, DONAME_SHOW_QUICK_ITEMS | (iflags.perm_invent && !want_reply ? DONAME_HIDE_REMAINING_LIT_TURNS : 0), (char**)0, (char**)0));
     struct extended_menu_info eminfo = obj_to_extended_menu_info(otmp);
     if (comparison_stats)
     {
@@ -5634,8 +5638,8 @@ char avoidlet;
                     int gui_glyph = maybe_get_replaced_glyph(glyph, u.ux, u.uy, data_to_replacement_info(glyph, LAYER_OBJECT, otmp, (struct monst*)0, 0UL, 0UL, 0UL, MAT_NONE, 0));
                     add_extended_menu(win, gui_glyph,
                              &any, ilet, 0, ATR_NONE, NO_COLOR,
-                             (flags.inventory_weights_last ? doname_with_weight_last(otmp, TRUE, FALSE) : 
-                                 doname_with_weight_first(otmp, TRUE, FALSE)), MENU_UNSELECTED, obj_to_extended_menu_info(otmp));
+                             (flags.inventory_weights_last ? doname_with_weight_last(otmp, TRUE, FALSE, 0) : 
+                                 doname_with_weight_first(otmp, TRUE, FALSE, 0)), MENU_UNSELECTED, obj_to_extended_menu_info(otmp));
                 }
             }
             if (flags.sortpack && *++classlet)

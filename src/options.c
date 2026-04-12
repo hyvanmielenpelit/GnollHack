@@ -374,6 +374,7 @@ static struct Comp_Opt {
       MAX_DUNGEON_CHARS + 1, SET_IN_FILE },
     { "effects", "the symbols to use in drawing special effects",
       MAX_EFFECT_CHARS + 1, SET_IN_FILE },
+    { "engrave_quickstyle", "stylus selection style for engrave quick command", 3, SET_IN_GAME },
     { "engrave_quicktext", "the preset text for engrave quick command", PL_ESIZ, SET_IN_GAME },
     { "font_map", "the font to use in the map window", 40,
       DISP_IN_GAME },                                              /*WC*/
@@ -1017,8 +1018,11 @@ init_options()
         iflags.getpos_arrows = initial_flags.getpos_arrows_value;
 
     /* GUI setting will override anything in the default options file; if no GUI, options file will be used */
-    if (*initial_flags.engrave_quicktext)
+    if (initial_flags.engrave_quick_set)
+    {
         Strcpy(iflags.engrave_quicktext, initial_flags.engrave_quicktext);
+        iflags.engrave_quickstyle = initial_flags.engrave_quickstyle;
+    }
 
     /* SAVE FILE TRACKING */
     if (initial_flags.save_file_tracking_supported_set)
@@ -2911,6 +2915,31 @@ boolean tinitial, tfrom_file;
         else
             return FALSE;
         mungspaces(iflags.engrave_quicktext);
+        return retval;
+    }
+
+    fullname = "engrave_quickstyle";
+    if (match_optname(opts, fullname, 18, TRUE)) {
+        if (duplicate)
+            complain_about_duplicate(opts, 1);
+        op = string_for_opt(opts, FALSE);
+        if (!op)
+            return FALSE;
+        else if (negated) {
+            bad_negation(fullname, TRUE);
+            return FALSE;
+        }
+        else {
+            int mode = atoi(op);
+
+            if (mode < 0 || mode > 2 || (mode == 0 && *op != '0')) {
+                config_error_add("Illegal %s parameter '%s'", fullname, op);
+                return FALSE;
+            }
+            else { /* mode >= 0 */
+                iflags.engrave_quickstyle = (uchar)mode;
+            }
+        }
         return retval;
     }
 
@@ -5624,6 +5653,8 @@ STATIC_VAR NEARDATA const char *burdentype[] = { "unencumbered", "burdened",
 STATIC_VAR NEARDATA const char *runmodes[] = { "teleport", "run", "walk",
                                            "crawl" };
 
+STATIC_VAR NEARDATA const char *quickengravemodes[] = { "0 (always ask)", "1 (always finger)", "2 (last item)" };
+
 STATIC_VAR NEARDATA const char *sortltype[] = { "none", "loot", "full" };
 
 /*
@@ -6526,6 +6557,30 @@ boolean setinitial, setfromfile;
             pline_multi_ex(ATR_NONE, NO_COLOR, no_multiattrs, multicolor_buffer, "Option \'%s\' is now %s.", optname, runmodes[flags.runmode]);
         }
         destroy_nhwindow(tmpwin);
+    }
+    else if (!strcmp("engrave_quickstyle", optname)) {
+        const char* mode_name;
+        menu_item* mode_pick = (menu_item*)0;
+
+        tmpwin = create_nhwindow(NHW_MENU);
+        start_menu(tmpwin);
+        any = zeroany;
+        for (i = 0; i < SIZE(quickengravemodes); i++) {
+            mode_name = quickengravemodes[i];
+            any.a_int = i + 1;
+            add_menu(tmpwin, NO_GLYPH, &any, 'a' + i, 0, ATR_NONE, NO_COLOR,
+                mode_name, MENU_UNSELECTED);
+        }
+        end_menu(tmpwin, "Select quick engrave item selection mode:");
+        if (select_menu(tmpwin, PICK_ONE, &mode_pick) > 0) {
+            iflags.engrave_quickstyle = (uchar)(mode_pick->item.a_int - 1);
+            free((genericptr_t)mode_pick);
+            multicolor_buffer[0] = CLR_MSG_HINT;
+            multicolor_buffer[1] = CLR_COMPOUND_OPT_SET;
+            pline_multi_ex(ATR_NONE, NO_COLOR, no_multiattrs, multicolor_buffer, "Option \'%s\' is now %s.", optname, quickengravemodes[iflags.engrave_quickstyle]);
+            issue_gui_command(GUI_CMD_REPORT_ENGRAVE_QUICK_STYLE, (int)iflags.engrave_quickstyle, 0, (char*)0);
+        }
+        destroy_nhwindow(tmpwin);
     } else if (!strcmp("whatis_coord", optname)) {
         menu_item *window_pick = (menu_item *) 0;
         int pick_cnt;
@@ -7310,6 +7365,14 @@ char *buf;
         Sprintf(buf, "%s", to_be_done);
     else if (!strcmp(optname, "effects"))
         Sprintf(buf, "%s", to_be_done);
+
+    else if (!strcmp(optname, "engrave_quickstyle"))
+    {
+        static const char* quickstyles[] = {
+            "0=always ask", "1=always finger", "2=last item",
+        };
+        Sprintf(buf, "%s", iflags.engrave_quickstyle <= 2 ? quickstyles[iflags.engrave_quickstyle] : "unknown");
+    }
     else if (!strcmp(optname, "engrave_quicktext"))
         Sprintf(buf, "%s", *iflags.engrave_quicktext ? iflags.engrave_quicktext : none);
     else if (!strcmp(optname, "font_map"))

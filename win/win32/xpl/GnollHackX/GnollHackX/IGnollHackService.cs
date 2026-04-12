@@ -86,6 +86,7 @@ namespace GnollHackX
         int GetMouseCommand(bool isMiddle);
         void SetMouseCommand(int newValue, bool isMiddle);
         void SetEngraveQuickText(string newValue);
+        void SetEngraveQuickStyle(int newValue);
 
         string GetEventPathForGHSound(int ghsound);
         float GetVolumeForGHSound(int ghsound);

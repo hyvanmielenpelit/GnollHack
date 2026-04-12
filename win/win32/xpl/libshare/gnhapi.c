@@ -752,6 +752,13 @@ LibSetEngraveQuickText(const char* new_value)
         *iflags.engrave_quicktext = '\0';
 }
 
+DLLEXPORT void
+LibSetEngraveQuickStyle(int new_value)
+{
+    iflags.engrave_quickstyle = (uchar)new_value;
+}
+
+
 DLLEXPORT const char*
 LibGetEventPathForGHSound(int ghsound)
 {
@@ -863,6 +870,10 @@ DLLEXPORT int RunGnollHack(
     char* cmdlineargs,
     char* engrave_quicktext,
     char* last_used_player_name,
+    int right_mouse_button,
+    int middle_mouse_button,
+    int engrave_quickstyle,
+    int reserved_int,
     uint64_t runflags,
     uint64_t foundmanuals,
     uint64_t wincap1,
@@ -1048,9 +1059,11 @@ DLLEXPORT int RunGnollHack(
     initial_flags.save_file_tracking_needed_value = (runflags & GHRUNFLAGS_SAVE_FILE_TRACKING_NEEDED) != 0;
     initial_flags.save_file_tracking_on_set = TRUE;
     initial_flags.save_file_tracking_on_value = (runflags & GHRUNFLAGS_SAVE_FILE_TRACKING_ON) != 0;
-    initial_flags.right_click_action = (uchar)((runflags & GHRUNFLAGS_RIGHT_MOUSE_BIT_MASK) >> GHRUNFLAGS_RIGHT_MOUSE_BIT_INDEX);
-    initial_flags.middle_click_action = (uchar)((runflags & GHRUNFLAGS_MIDDLE_MOUSE_BIT_MASK) >> GHRUNFLAGS_MIDDLE_MOUSE_BIT_INDEX);
+    initial_flags.right_click_action = (uchar)right_mouse_button; // (uchar)((runflags & GHRUNFLAGS_RIGHT_MOUSE_BIT_MASK) >> GHRUNFLAGS_RIGHT_MOUSE_BIT_INDEX);
+    initial_flags.middle_click_action = (uchar)middle_mouse_button; // (uchar)((runflags & GHRUNFLAGS_MIDDLE_MOUSE_BIT_MASK) >> GHRUNFLAGS_MIDDLE_MOUSE_BIT_INDEX);
     initial_flags.found_manuals = foundmanuals;
+    initial_flags.engrave_quick_set = TRUE;
+    initial_flags.engrave_quickstyle = (uchar)engrave_quickstyle;
     *initial_flags.engrave_quicktext = 0;
     if (engrave_quicktext && strcmp(engrave_quicktext, ""))
     {

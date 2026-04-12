@@ -6497,6 +6497,12 @@ struct ext_func_tab extcmdlist[] = {
     { '\0', "unsetquickwand", "unset quick wand", 
         dounsetquickwand, IFBURIED | SINGLE_OBJ_CMD_SPECIFIC, ATR_NONE, NO_COLOR, 0,
         getobj_zap_syms, "unset as quick wand", "unset as quick wand" },
+    { '\0', "setquickengrave", "set quick engrave item",
+        dosetquickengraveitem, IFBURIED | SINGLE_OBJ_CMD_GENERAL, ATR_NONE, NO_COLOR, 0,
+        getobj_styluses, "set as quick engrave item", "set as quick engrave item" },
+    { M(28), "unsetquickengrave", "unset quick engrave item",
+        dounsetquickengraveitem, IFBURIED | SINGLE_OBJ_CMD_GENERAL, ATR_NONE, NO_COLOR, 0,
+        getobj_styluses, "unset as quick engrave item", "unset as quick engrave item" },
     { '!', "shell", "do a shell escape", dosh_core, IFBURIED | GENERALCMD
 #ifndef SHELL
                        | CMD_NOT_AVAILABLE
@@ -8980,12 +8986,12 @@ boolean doit;
     struct obj* otmp = level.objects[u.ux][u.uy];
     if (otmp) 
     {
-        Sprintf(buf, "Pick up %s", otmp->nexthere ? "items" : doname_with_weight_last(otmp, objects[LOADSTONE].oc_name_known, FALSE));
+        Sprintf(buf, "Pick up %s", otmp->nexthere ? "items" : doname_with_weight_last(otmp, objects[LOADSTONE].oc_name_known, FALSE, 0));
         add_herecmd_menuitem(win, dopickup, buf);
 
         if (count_bags_for_stashing(invent, otmp, FALSE, TRUE) > 0)
         {
-            Sprintf(buf, "Pick up and auto-stash %s", otmp->nexthere ? "items" : doname_with_weight_last(otmp, objects[LOADSTONE].oc_name_known, FALSE));
+            Sprintf(buf, "Pick up and auto-stash %s", otmp->nexthere ? "items" : doname_with_weight_last(otmp, objects[LOADSTONE].oc_name_known, FALSE, 0));
             add_herecmd_menuitem(win, doput2bag, buf);
         }
         if (Is_container(otmp)) 
@@ -10764,6 +10770,52 @@ dounfavorite(VOID_ARGS)
     {
         obj->speflags &= ~SPEFLAGS_FAVORITE;
         pline("%s was unmarked as a favorite.", The(cxname(obj)));
+        update_inventory();
+    }
+    return 0;
+}
+
+int
+dosetquickengraveitem(VOID_ARGS)
+{
+    struct obj* obj = getobj(getobj_styluses, "set as quick engrave item", 0, "");
+    if (!obj)
+    {
+        pline1(Never_mind);
+        return 0;
+    }
+
+    if (obj->o_id == context.engrave_quick_obj_oid)
+    {
+        pline("%s is already the quick engrave item.", The(cxname(obj)));
+    }
+    else
+    {
+        context.engrave_quick_obj_oid = obj->o_id;
+        pline("%s was marked as the quick engrave item.", The(cxname(obj)));
+        update_inventory();
+    }
+    return 0;
+}
+
+int
+dounsetquickengraveitem(VOID_ARGS)
+{
+    struct obj* obj = getobj(getobj_styluses, "unset as quick engrave item", 0, "");
+    if (!obj)
+    {
+        pline1(Never_mind);
+        return 0;
+    }
+
+    if (obj->o_id != context.engrave_quick_obj_oid)
+    {
+        pline("%s is not the quick engrave item.", The(cxname(obj)));
+    }
+    else
+    {
+        context.engrave_quick_obj_oid = 0;
+        pline("%s was unmarked as the quick engrave item.", The(cxname(obj)));
         update_inventory();
     }
     return 0;

@@ -318,6 +318,9 @@ namespace GnollHackX
                     case GHRequestType.SetEngraveQuickText:
                         GHApp.GnollHackService?.SetEngraveQuickText(response.ResponseStringValue);
                         break;
+                    case GHRequestType.SetEngraveQuickStyle:
+                        GHApp.GnollHackService?.SetEngraveQuickStyle(response.ResponseIntValue);
+                        break;
                     case GHRequestType.SaveFileTrackingLoad:
                     case GHRequestType.SaveFileTrackingSave:
                         _saveFileTrackingFinished = response.ResponseIntValue;
@@ -3576,6 +3579,14 @@ namespace GnollHackX
                     {
                         /* Setting the compound option in the game should change the setting in GUI, too */
                         Preferences.Set("EngraveQuickText", cmd_str != null ? cmd_str : "");
+                    });
+                    break;
+                case (int)gui_command_types.GUI_CMD_REPORT_ENGRAVE_QUICK_STYLE:
+                    GHApp.MirroredEngraveQuickStyle = cmd_param;
+                    MainThread.BeginInvokeOnMainThread(() =>
+                    {
+                        /* Setting the compound option in the game should change the setting in GUI, too */
+                        Preferences.Set("EngraveQuickStyle", cmd_param);
                     });
                     break;
                 case (int)gui_command_types.GUI_CMD_TOGGLE_QUICK_ZAP_WAND:

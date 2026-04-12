@@ -764,6 +764,32 @@
                                 <Entry Grid.Column="1" x:Name="EngraveQuickEntry" MaxLength="{x:Static gnh:GHConstants.MaxEngraveQuickTextLength}" HorizontalOptions="End" VerticalOptions="Center" Placeholder="Enter engrave text" PlaceholderColor="Gray"
                                     Keyboard="Plain" TextColor="Black" FontFamily="DejaVuSansMono" FontSize="15" BackgroundColor="Transparent" HorizontalTextAlignment="Center" WidthRequest="160" />
                             </Grid>
+                            <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
+                                <Label Text="Quick Engrave Style"
+                                            FontFamily="Underwood" TextColor="Black"
+                                            FontSize="15"
+                                            VerticalOptions="Center" 
+                                            HorizontalOptions="Start" />
+                                <Picker Grid.Column="1" x:Name="EngraveQuickPicker"
+                                            Title="Select engrave style"
+                                            FontFamily="Underwood" 
+                                            FontSize="16"
+                                            TextColor="Black"
+                                            TitleColor="Black"
+                                            HorizontalTextAlignment="End"
+                                            BackgroundColor="Transparent"
+                                            WidthRequest="175"
+                                            VerticalOptions="Center"
+                                            HorizontalOptions="End" >
+                                    <Picker.ItemsSource>
+                                        <x:Array Type="{x:Type x:String}">
+                                            <x:String>Always ask</x:String>
+                                            <x:String>Always finger</x:String>
+                                            <x:String>Last item</x:String>
+                                        </x:Array>
+                                    </Picker.ItemsSource>
+                                </Picker>
+                            </Grid>
 
                             <Label Text="Bar Commands" FontSize="23" FontAttributes="Bold" FontFamily="Immortal" TextColor="Black" Margin="0,18,0,2" />
                             <StackLayout x:Name="SimpleCommandBarButtonsLayout" Spacing="6" >

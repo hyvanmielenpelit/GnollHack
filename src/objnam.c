@@ -1333,7 +1333,8 @@ char** attrs_ptr, ** colors_ptr;
             lit_in_front = (doname_flags & DONAME_LIT_IN_FRONT) != 0,
             hide_worn = (doname_flags & DONAME_HIDE_WORN) != 0,
             comparison_stats = (doname_flags & DONAME_COMPARISON) != 0 && iflags.show_comparison_stats && !iflags.in_dumplog && !program_state.gameover,
-            do_library = (doname_flags & DONAME_NO_LIBRARY) == 0 && !iflags.in_dumplog;
+            do_library = (doname_flags & DONAME_NO_LIBRARY) == 0 && !iflags.in_dumplog,
+            show_quick = (doname_flags & DONAME_SHOW_QUICK_ITEMS) != 0 && !iflags.in_dumplog;
     boolean known, dknown, cknown, bknown, lknown, tknown;
     int omndx = obj->corpsenm, isenchanted = 0;
     char prefix[PREFIXBUFSZ] = "";
@@ -1793,7 +1794,7 @@ weapon_here:
 
         break;
     case WAND_CLASS:
-        if (context.quick_zap_wand_oid && context.quick_zap_wand_oid == obj->o_id)
+        if (show_quick && context.quick_zap_wand_oid && context.quick_zap_wand_oid == obj->o_id)
         {
             Strcat(bp, " (quick wand)");
         }
@@ -1904,6 +1905,11 @@ weapon_here:
                 Strcat(bp, " (already in your library)");
         }
         break;
+    }
+
+    if (show_quick && context.engrave_quick_obj_oid && context.engrave_quick_obj_oid == obj->o_id)
+    {
+        Strcat(bp, " (quick engrave)");
     }
 
     const char* hand_s = body_part(HAND);
@@ -2279,12 +2285,12 @@ struct obj *obj;
 }
 
 char*
-doname_with_weight_first(obj, loadstonecorrectly, is_perm_inv)
+doname_with_weight_first(obj, loadstonecorrectly, is_perm_inv, addflags)
 struct obj* obj;
 boolean loadstonecorrectly, is_perm_inv;
-
+unsigned addflags;
 {
-    return doname_with_flags(obj, DONAME_WITH_WEIGHT_FIRST | (loadstonecorrectly ? DONAME_LOADSTONE_CORRECTLY : 0) | (is_perm_inv ? DONAME_HIDE_REMAINING_LIT_TURNS : 0), (char**)0, (char**)0);
+    return doname_with_flags(obj, DONAME_WITH_WEIGHT_FIRST | addflags | (loadstonecorrectly ? DONAME_LOADSTONE_CORRECTLY : 0) | (is_perm_inv ? DONAME_HIDE_REMAINING_LIT_TURNS : 0), (char**)0, (char**)0);
 }
 
 char*
@@ -2304,13 +2310,13 @@ struct obj* obj;
 
 
 char*
-doname_with_weight_last(obj, loadstonecorrectly, is_perm_inv)
+doname_with_weight_last(obj, loadstonecorrectly, is_perm_inv, addflags)
 struct obj* obj;
 boolean loadstonecorrectly, is_perm_inv;
+unsigned addflags;
 {
-    return doname_with_flags(obj, DONAME_WITH_WEIGHT_LAST | (loadstonecorrectly ? DONAME_LOADSTONE_CORRECTLY : 0) | (is_perm_inv ? DONAME_HIDE_REMAINING_LIT_TURNS : 0), (char**)0, (char**)0);
+    return doname_with_flags(obj, DONAME_WITH_WEIGHT_LAST | addflags | (loadstonecorrectly ? DONAME_LOADSTONE_CORRECTLY : 0) | (is_perm_inv ? DONAME_HIDE_REMAINING_LIT_TURNS : 0), (char**)0, (char**)0);
 }
-
 
 /* used from invent.c */
 boolean

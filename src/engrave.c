@@ -10,7 +10,7 @@
 
 STATIC_VAR NEARDATA struct engr *head_engr;
 STATIC_DCL const char *NDECL(blengr);
-STATIC_DCL int FDECL(doengrave_core, (const char*));
+STATIC_DCL int FDECL(doengrave_core, (const char*, UCHAR_P));
 
 char *
 random_engraving(outbuf)
@@ -565,7 +565,7 @@ STATIC_VAR NEARDATA const char styluses[] = { ALL_CLASSES, ALLOW_NONE,
 int
 doengrave(VOID_ARGS)
 {
-    return doengrave_core((const char*)0);
+    return doengrave_core((const char*)0, 0);
 }
 
 int
@@ -573,15 +573,17 @@ doengravequick(VOID_ARGS)
 {
     if (!*iflags.engrave_quicktext)
     {
+        play_sfx_sound(SFX_GENERAL_CANNOT);
         pline_ex(ATR_NONE, CLR_MSG_FAIL, "The text for quick engraving has not been set.");
         return 0;
     }
-    return doengrave_core(iflags.engrave_quicktext);
+    return doengrave_core(iflags.engrave_quicktext, iflags.engrave_quickstyle);
 }
 
 int
-doengrave_core(engrave_text)
+doengrave_core(engrave_text, item_selection_style)
 const char* engrave_text;
+uchar item_selection_style;
 {
     boolean dengr = FALSE;    /* TRUE if we wipe out the current engraving */
     boolean doblind = FALSE;  /* TRUE if engraving blinds the player */
@@ -663,8 +665,35 @@ const char* engrave_text;
     /* One may write with finger, or weapon, or wand, or..., or...
      * Edited by GAN 10/20/86 so as not to change weapon wielded.
      */
+    boolean prompt_for_stylus = TRUE;
+    otmp = 0;
+    switch (item_selection_style)
+    {
+    default:
+    case 0:
+        break;
+    case 1:
+        otmp = (struct obj*) &zeroobj; /* Dropping the const qualifier here, so one needs to be careful below */
+        context.engrave_quick_obj_oid = 0;
+        prompt_for_stylus = FALSE;
+        break;
+    case 2:
+        if (context.engrave_quick_obj_oid > 0)
+        {
+            otmp = o_on(context.engrave_quick_obj_oid, invent);
+            if (otmp)
+                prompt_for_stylus = FALSE;
+        }
+        break;
+    }
 
-    otmp = getobj(styluses, "write with", 0, "");
+    if (prompt_for_stylus)
+    {
+        otmp = getobj(styluses, "write with", 0, "");
+        if (otmp && otmp != &zeroobj && engrave_text) /* Mark as quick only if the command was quick engrave */
+            context.engrave_quick_obj_oid = otmp->o_id;
+    }
+
     if (!otmp) /* otmp == zeroobj if fingers */
         return 0;
 

@@ -1137,6 +1137,7 @@ namespace GnollHackX
             MirroredPetsNotGifted = !Preferences.Get("AllowPet", true);
 
             MirroredEngraveQuickText = Preferences.Get("EngraveQuickText", "");
+            MirroredEngraveQuickStyle = Preferences.Get("EngraveQuickStyle", 0);
         }
 
         public static void MaybeFixRects(ref SKRect source, ref SKRect dest, float targetscale, bool usingGL, bool fixRects, bool fixFiltering)
@@ -5221,6 +5222,7 @@ namespace GnollHackX
         private static int _rightMouseCommand;
         private static int _middleMouseCommand;
         private static string _engraveQuickText;
+        private static int _engraveQuickStyle;
 
         public static bool EmptyWishIsNothing { get { return Interlocked.CompareExchange(ref _emptyWishIsNothing, 0, 0) != 0; } set { Interlocked.Exchange(ref _emptyWishIsNothing, value ? 1 : 0); } }
         public static bool OkOnDoubleClick { get { return Interlocked.CompareExchange(ref _okOnDoubleClick, 0, 0) != 0; } set { Interlocked.Exchange(ref _okOnDoubleClick, value ? 1 : 0); } }
@@ -5233,6 +5235,7 @@ namespace GnollHackX
         public static int MirroredRightMouseCommand { get { return Interlocked.CompareExchange(ref _rightMouseCommand, 0, 0); } set { Interlocked.Exchange(ref _rightMouseCommand, value); } }
         public static int MirroredMiddleMouseCommand { get { return Interlocked.CompareExchange(ref _middleMouseCommand, 0, 0); } set { Interlocked.Exchange(ref _middleMouseCommand, value); } }
         public static string MirroredEngraveQuickText { get { return Interlocked.CompareExchange(ref _engraveQuickText, null, null); } set { Interlocked.Exchange(ref _engraveQuickText, value); } }
+        public static int MirroredEngraveQuickStyle { get { return Interlocked.CompareExchange(ref _engraveQuickStyle, 0, 0); } set { Interlocked.Exchange(ref _engraveQuickStyle, value); } }
 
         public static string CustomGameStatusLink { get; set; }
         public static string CustomXlogAccountLink { get; set; }

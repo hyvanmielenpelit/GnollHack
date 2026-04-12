@@ -1579,6 +1579,7 @@ namespace GnollHackX
         GUI_CMD_GAME_ENTERED_MOVELOOP,
         GUI_CMD_ACHIEVEMENT,
         GUI_CMD_REPORT_ENGRAVE_QUICK_TEXT,
+        GUI_CMD_REPORT_ENGRAVE_QUICK_STYLE,
     }
 
     public enum gui_achievement_categories

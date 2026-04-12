@@ -630,6 +630,7 @@ enum context_menu_styles {
 #define DONAME_HIDE_WORN                    0x0200
 #define DONAME_HIDE_UNPAID                  0x0400
 #define DONAME_USE_SPECIAL_QUAN             0x0800
+#define DONAME_SHOW_QUICK_ITEMS             0x1000
 
 /* Moved from shk.c */
 #define NOTANGRY(mon) ((mon)->mpeaceful)
@@ -728,6 +729,7 @@ enum gui_command_types {
     GUI_CMD_GAME_ENTERED_MOVELOOP,
     GUI_CMD_ACHIEVEMENT,
     GUI_CMD_REPORT_ENGRAVE_QUICK_TEXT,
+    GUI_CMD_REPORT_ENGRAVE_QUICK_STYLE,
 };
 
 enum gui_achievement_types

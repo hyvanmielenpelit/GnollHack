@@ -577,6 +577,14 @@ namespace GnollHackX.Pages.MainScreen
             if (_gameMenuPage != null)
                 _gamePage.SetEngraveQuickText(EngraveQuickEntry.Text);
 
+            if (EngraveQuickPicker.SelectedIndex >= 0)
+            {
+                GHApp.MirroredEngraveQuickStyle = EngraveQuickPicker.SelectedIndex;
+                Preferences.Set("EngraveQuickStyle", EngraveQuickPicker.SelectedIndex);
+                if (_gameMenuPage != null)
+                    _gamePage.SetEngraveQuickStyle(EngraveQuickPicker.SelectedIndex);
+            }
+
             GHApp.OkOnDoubleClick = DoubleClickSwitch.IsToggled;
             Preferences.Set("OkOnDoubleClick", DoubleClickSwitch.IsToggled);
 
@@ -1088,6 +1096,7 @@ namespace GnollHackX.Pages.MainScreen
             string xlog_password = "";
             string bones_allowed_users = "";
             string engravequick = "";
+            int engraveqstyle = 0;
 
             int[] cmdidxs = new int[6];
             for (int i = 0; i < 6; i++)
@@ -1240,6 +1249,7 @@ namespace GnollHackX.Pages.MainScreen
                 rightmouse = Preferences.Get("RightMouseCommand", GHConstants.DefaultRightMouseCommand);
                 middlemouse = Preferences.Get("MiddleMouseCommand", GHConstants.DefaultMiddleMouseCommand);
                 engravequick = Preferences.Get("EngraveQuickText", "");
+                engraveqstyle = Preferences.Get("EngraveQuickStyle", 0);
             }
             else
             {
@@ -1304,6 +1314,7 @@ namespace GnollHackX.Pages.MainScreen
                 rightmouse = GHApp.MirroredRightMouseCommand; //_gamePage.GetRightMouseCommand();
                 middlemouse = GHApp.MirroredMiddleMouseCommand; //_gamePage.GetMiddleMouseCommand();
                 engravequick = GHApp.MirroredEngraveQuickText;
+                engraveqstyle = GHApp.MirroredEngraveQuickStyle;
             }
 
             CursorPicker.SelectedIndex = cursor;
@@ -1584,6 +1595,8 @@ namespace GnollHackX.Pages.MainScreen
             }
 
             EngraveQuickEntry.Text = engravequick;
+            if (engraveqstyle >= 0 && engraveqstyle < EngraveQuickPicker.Items?.Count)
+                EngraveQuickPicker.SelectedIndex = engraveqstyle;
 
             if(!GHApp.IsWindows)
             {

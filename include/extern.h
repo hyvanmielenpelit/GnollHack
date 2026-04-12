@@ -419,6 +419,8 @@ E void FDECL(clear_found_this_turn_at, (int, int));
 E int NDECL(doviewpet);
 E int NDECL(dofavorite);
 E int NDECL(dounfavorite);
+E int NDECL(dosetquickengraveitem);
+E int NDECL(dounsetquickengraveitem);
 E struct monst* FDECL(spotted_linedup_monster_in_way, (int, int, int, int));
 E int NDECL(do_gamelog);
 
@@ -2550,8 +2552,8 @@ E char* FDECL(doname_in_text_with_price_and_weight_last_and_comparison, (struct 
 E char *FDECL(doname_vague_quan, (struct obj *));
 E char* FDECL(doname_with_weight_first_true, (struct obj*));
 E char* FDECL(doname_with_weight_last_true, (struct obj*));
-E char* FDECL(doname_with_weight_first, (struct obj*, BOOLEAN_P, BOOLEAN_P));
-E char* FDECL(doname_with_weight_last, (struct obj*, BOOLEAN_P, BOOLEAN_P));
+E char* FDECL(doname_with_weight_first, (struct obj*, BOOLEAN_P, BOOLEAN_P, unsigned));
+E char* FDECL(doname_with_weight_last, (struct obj*, BOOLEAN_P, BOOLEAN_P, unsigned));
 E char* FDECL(doname_with_price, (struct obj*));
 E char* FDECL(doname_with_price_and_weight_first, (struct obj*, BOOLEAN_P));
 E char* FDECL(doname_with_price_and_weight_last, (struct obj*, BOOLEAN_P));
