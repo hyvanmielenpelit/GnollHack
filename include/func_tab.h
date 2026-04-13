@@ -23,6 +23,7 @@
 #define ALLOW_RETURN_TO_INVENTORY   0x0800 /* if invoked from inventory, return to inventory when done */
 #define ALLOW_RETURN_TO_CMD_MENU    0x1000 /* if invoked from inventory, return to cmd menu when done */
 #define CMD_MENU_AUTO_CLICK_OK      0x2000 /* adds auto-click-ok to the respective command menu item */
+#define SPECIAL_SHOW_CONDITIONS     0x4000 /* checks special show conditions for this command */
 
 struct ext_func_tab {
     uchar key;
