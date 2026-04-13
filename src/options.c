@@ -5789,7 +5789,6 @@ boolean dolist;
 
 STATIC_VAR char fmtstr_doset_notab_buf[BUFSZ] = "%s%-15s [%s]   ";
 STATIC_VAR const char* fmtstr_doset_tab = "%s\t[%s]";
-STATIC_VAR const char* n_currently_set = "(%d currently set)";
 
 /* doset('O' command) menu entries for compound options */
 STATIC_OVL void
@@ -5905,7 +5904,7 @@ int nset;
 
     any.a_int = id;
     if (!bufx)
-        Sprintf(buf2, n_currently_set, nset);
+        Sprintf(buf2, "(%d currently set)", nset);
     else
         Sprintf(buf2, "%s", bufx);
     if (!iflags.menu_tab_sep)
