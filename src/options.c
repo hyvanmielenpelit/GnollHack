@@ -5787,9 +5787,9 @@ boolean dolist;
 
 #define MAX_OPT_VALUE_LENGTH 20
 
-static char fmtstr_doset[] = "%s%-15s [%s]   ";
-static char fmtstr_doset_tab[] = "%s\t[%s]";
-static char n_currently_set[] = "(%d currently set)";
+STATIC_VAR char fmtstr_doset_notab_buf[BUFSZ] = "%s%-15s [%s]   ";
+STATIC_VAR const char* fmtstr_doset_tab = "%s\t[%s]";
+STATIC_VAR const char* n_currently_set = "(%d currently set)";
 
 /* doset('O' command) menu entries for compound options */
 STATIC_OVL void
@@ -5800,14 +5800,14 @@ int indexoffset;    /* value to add to index in compopt[], or zero
                        if option cannot be changed */
 int idx, notruncate;
 {
+    if (!option)
+        return;
+
     const char *value = "unknown"; /* current value */
-    char buf[BUFSZ], buf2[BUFSZ], buf3[BUFSZ];
+    char buf[BUFSZ] = "", buf2[BUFSZ] = "", buf3[BUFSZ] = "";
     anything any;
     int i;
 
-    Strcpy(buf, "");
-    Strcpy(buf2, "");
-    Strcpy(buf3, "");
     any = zeroany;
     if (idx >= 0)
         i = idx;
@@ -5849,7 +5849,7 @@ int idx, notruncate;
     }
     /* "    " replaces "a - " -- assumes menus follow that style */
 
-    char valuebuf[BUFSZ];
+    char valuebuf[BUFSZ] = "";
 #ifdef GNH_MOBILE
     Strcpy(valuebuf, value);
 #else
@@ -5869,8 +5869,7 @@ int idx, notruncate;
 
     if (!iflags.menu_tab_sep)
     {
-        char buf4[BUFSZ];
-        Strcpy(buf4, "");
+        char buf4[BUFSZ] = "";
         char* p = buf4;
         int j;
         int len = (int)strlen(valuebuf);
@@ -5879,7 +5878,7 @@ int idx, notruncate;
         *p = 0;
         Strcat(buf4, "  ");
 
-        Sprintf(buf, fmtstr_doset, any.a_int ? "" : "    ", option, valuebuf);
+        Sprintf(buf, fmtstr_doset_notab_buf, any.a_int ? "" : "    ", option, valuebuf);
         Strcat(buf, buf4);
     }
     else
@@ -5898,7 +5897,10 @@ int id;
 char *bufx;
 int nset;
 {
-    char buf[BUFSZ], buf2[BUFSZ];
+    if (!name)
+        return;
+
+    char buf[BUFSZ] = "", buf2[BUFSZ] = "";
     anything any = zeroany;
 
     any.a_int = id;
@@ -5907,8 +5909,7 @@ int nset;
     else
         Sprintf(buf2, "%s", bufx);
     if (!iflags.menu_tab_sep)
-        Sprintf(buf, fmtstr_doset, any.a_int ? "" : "    ",
-                name, buf2);
+        Sprintf(buf, fmtstr_doset_notab_buf, any.a_int ? "" : "    ", name, buf2);
     else
         Sprintf(buf, fmtstr_doset_tab, name, buf2);
     add_menu(win, NO_GLYPH, &any, 0, 0, ATR_INDENT_AT_DOUBLE_SPACE | ATR_ALT_DIVISORS, NO_COLOR, buf, MENU_UNSELECTED);
@@ -5951,7 +5952,7 @@ doset(VOID_ARGS) /* changing options via menu by Per Liboriussen */
     issue_breadcrumb("Starting doset");
 
     static boolean made_fmtstr = FALSE;
-    char buf[BUFSZ], buf2[BUFSZ] = DUMMY;
+    char buf[BUFSZ] = DUMMY, buf2[BUFSZ] = DUMMY;
     const char *name;
     int i = 0, pass, boolcount, pick_cnt, pick_idx, opt_indx;
     boolean *bool_p;
@@ -5975,7 +5976,8 @@ doset(VOID_ARGS) /* changing options via menu by Per Liboriussen */
         startpass = DISP_IN_GAME;
     endpass = (wizard) ? SET_IN_WIZGAME : SET_IN_GAME;
 
-    if (!made_fmtstr && !iflags.menu_tab_sep) 
+    issue_breadcrumb("doset main");
+    if (!made_fmtstr && !iflags.menu_tab_sep)
     {
         issue_breadcrumb("doset: Making format string");
         /* spin through the options to find the longest name
@@ -6000,7 +6002,7 @@ doset(VOID_ARGS) /* changing options via menu by Per Liboriussen */
                 if (strlen(name) > longest_name_len)
                     longest_name_len = strlen(name);
             }
-        Sprintf(fmtstr_doset, "%%s%%-%us [%%s]", (unsigned)longest_name_len);
+        Sprintf(fmtstr_doset_notab_buf, "%%s%%-%us [%%s]", (unsigned)longest_name_len);
         made_fmtstr = TRUE;
     }
 
@@ -6026,7 +6028,7 @@ doset(VOID_ARGS) /* changing options via menu by Per Liboriussen */
 
                 any.a_int = (pass == 0) ? 0 : i + 1;
                 if (!iflags.menu_tab_sep)
-                    Sprintf(buf, fmtstr_doset, (pass == 0) ? "    " : "",
+                    Sprintf(buf, fmtstr_doset_notab_buf, (pass == 0) ? "    " : "",
                         name, *bool_p ? "true" : "false");
                 else
                     Sprintf(buf, fmtstr_doset_tab,
@@ -7299,6 +7301,9 @@ get_compopt_value(optname, buf)
 const char *optname;
 char *buf;
 {
+    if (!buf)
+        return buf;
+
     static const char none[] = "(none)", randomrole[] = "random",
                       to_be_done[] = "(to be done)",
                       defopt[] = "default", defbrief[] = "def";
@@ -7306,6 +7311,9 @@ char *buf;
     int i;
 
     buf[0] = '\0';
+    if (!optname)
+        return buf;
+
     if (!strcmp(optname, "align_message")
         || !strcmp(optname, "align_status")) {
         int which = !strcmp(optname, "align_status") ? iflags.wc_align_status
@@ -8646,8 +8654,10 @@ STATIC_OVL boolean
 is_wc_option(optnam)
 const char *optnam;
 {
-    int k = 0;
+    if (!optnam)
+        return FALSE;
 
+    int k = 0;
     while (wc_options[k].wc_name) {
         if (strcmp(wc_options[k].wc_name, optnam) == 0)
             return TRUE;
@@ -8660,8 +8670,10 @@ STATIC_OVL boolean
 wc_supported(optnam)
 const char *optnam;
 {
-    int k;
+    if (!optnam)
+        return FALSE;
 
+    int k;
     for (k = 0; wc_options[k].wc_name; ++k) {
         if (!strcmp(wc_options[k].wc_name, optnam))
             return (windowprocs.wincap & wc_options[k].wc_bit) ? TRUE : FALSE;
@@ -8704,8 +8716,10 @@ STATIC_OVL boolean
 is_wc2_option(optnam)
 const char *optnam;
 {
-    int k = 0;
+    if (!optnam)
+        return FALSE;
 
+    int k = 0;
     while (wc2_options[k].wc_name) {
         if (strcmp(wc2_options[k].wc_name, optnam) == 0)
             return TRUE;
@@ -8718,8 +8732,10 @@ STATIC_OVL boolean
 wc2_supported(optnam)
 const char *optnam;
 {
-    int k;
+    if (!optnam)
+        return FALSE;
 
+    int k;
     for (k = 0; wc2_options[k].wc_name; ++k) {
         if (!strcmp(wc2_options[k].wc_name, optnam))
             return (windowprocs.wincap2 & wc2_options[k].wc_bit) ? TRUE
