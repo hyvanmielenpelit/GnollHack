@@ -54,8 +54,8 @@ STATIC_DCL void FDECL(rile_shk, (struct monst *));
 STATIC_DCL void FDECL(rouse_shk, (struct monst *, BOOLEAN_P));
 STATIC_DCL void FDECL(remove_damage, (struct monst *, BOOLEAN_P));
 STATIC_DCL void FDECL(sub_one_frombill, (struct obj *, struct monst *));
-STATIC_DCL void FDECL(dropped_container, (struct obj *, struct monst *,
-                                          BOOLEAN_P));
+STATIC_DCL void FDECL(dropped_container, (struct obj *, struct monst *, BOOLEAN_P));
+STATIC_DCL void FDECL(adjust_dropped_container_on_sale, (struct obj*, struct monst*));
 STATIC_DCL void FDECL(add_to_billobjs, (struct obj *));
 STATIC_DCL void FDECL(bill_box_content, (struct obj *, BOOLEAN_P, BOOLEAN_P,
                                          struct monst *));
@@ -2446,6 +2446,66 @@ register boolean sale;
     }
 }
 
+STATIC_OVL void
+adjust_dropped_container_on_sale(obj, shkp)
+register struct obj* obj;
+register struct monst* shkp;
+{
+    register struct obj* otmp;
+
+    /* the "top" container is treated in the calling fn */
+    for (otmp = obj->cobj; otmp; otmp = otmp->nobj) {
+        if (otmp->oclass == COIN_CLASS)
+            continue;
+
+        /* Cannot use unpaid, since it has been cleared out earlier */
+        if ((otmp->item_flags & ITEM_FLAGS_SAVED_UNPAID) == 0 && saleable(shkp, otmp))
+            otmp->no_charge = 0;
+
+        otmp->item_flags &= ~ITEM_FLAGS_SAVED_UNPAID; // No longer needed, so clear out just in case
+
+        if (Has_contents(otmp))
+            adjust_dropped_container_on_sale(otmp, shkp);
+    }
+}
+
+void
+mark_unpaid_container_contents(obj)
+register struct obj* obj;
+{
+    register struct obj* otmp;
+
+    /* the "top" container is treated in the calling fn */
+    for (otmp = obj->cobj; otmp; otmp = otmp->nobj) {
+        if (otmp->oclass == COIN_CLASS)
+            continue;
+
+        if (otmp->unpaid)
+            otmp->item_flags |= ITEM_FLAGS_SAVED_UNPAID;
+
+        if (Has_contents(otmp))
+            mark_unpaid_container_contents(otmp);
+    }
+}
+
+void
+unmark_unpaid_container_contents(obj)
+register struct obj* obj;
+{
+    register struct obj* otmp;
+
+    /* the "top" container is treated in the calling fn */
+    for (otmp = obj->cobj; otmp; otmp = otmp->nobj) {
+        if (otmp->oclass == COIN_CLASS)
+            continue;
+
+        otmp->item_flags &= ~ITEM_FLAGS_SAVED_UNPAID;
+
+        if (Has_contents(otmp))
+            unmark_unpaid_container_contents(otmp);
+    }
+}
+
 void
 picked_container(obj)
 register struct obj *obj;
@@ -2785,6 +2845,7 @@ const char *arg;
     //    was_unknown |= !objects[obj->otyp].oc_name_known;
     //    makeknown(obj->otyp);
     //}
+    iflags.payobj_special_quan = obj->quan;
     obj_name = doname_payobj(obj);
     /* Use an alternate message when extra information is being provided */
     if (was_unknown) {
@@ -3356,11 +3417,13 @@ xchar x, y;
     if (!costly_spot(x, y))
         return;
 
-    if (obj->unpaid && !container && !isgold) {
+    if (obj->unpaid && !container && !isgold) 
+    {
         sub_one_frombill(obj, shkp);
         return;
     }
-    if (container) {
+    if (container) 
+    {
         /* find the price of content before subfrombill */
         cltmp = contained_cost(obj, shkp, cltmp, TRUE, FALSE);
         /* find the value of contained gold */
@@ -3376,7 +3439,8 @@ xchar x, y;
 
     /* get one case out of the way: nothing to sell, and no gold */
     if (!(isgold || cgold)
-        && ((offer + gltmp) == 0L || sell_how == SELL_DONTSELL)) {
+        && ((offer + gltmp) == 0L || sell_how == SELL_DONTSELL)) 
+    {
         boolean unpaid = is_unpaid(obj);
 
         if (container) {
@@ -3385,7 +3449,8 @@ xchar x, y;
                 obj->no_charge = 1;
             if (unpaid)
                 subfrombill(obj, shkp);
-        } else
+        }
+        else
             obj->no_charge = 1;
 
         if (!unpaid && (sell_how != SELL_DONTSELL)
@@ -3401,7 +3466,8 @@ xchar x, y;
     rouse_shk(shkp, TRUE); /* wake up sleeping or paralyzed shk */
     eshkp = ESHK(shkp);
 
-    if (ANGRY(shkp)) { /* they become shop-objects, no pay */
+    if (ANGRY(shkp)) 
+    { /* they become shop-objects, no pay */
         if (!Deaf && !muteshk(shkp))
         {
             play_voice_shopkeeper_simple_line(shkp, SHOPKEEPER_LINE_THANK_YOU_SCUM);
@@ -3413,7 +3479,8 @@ xchar x, y;
         return;
     }
 
-    if (eshkp->robbed) { /* shkp is not angry? */
+    if (eshkp->robbed) 
+    { /* shkp is not angry? */
         if (isgold)
             offer = obj->quan;
         else if (cgold)
@@ -3430,11 +3497,13 @@ xchar x, y;
         return;
     }
 
-    if (isgold || cgold) {
+    if (isgold || cgold) 
+    {
         if (!cgold)
             gltmp = obj->quan;
 
-        if (eshkp->debit >= gltmp) {
+        if (eshkp->debit >= gltmp)
+        {
             if (eshkp->loan) { /* you carry shop's gold */
                 if (eshkp->loan >= gltmp)
                     eshkp->loan -= gltmp;
@@ -3443,11 +3512,14 @@ xchar x, y;
             }
             eshkp->debit -= gltmp;
             Your("debt is %spaid off.", eshkp->debit ? "partially " : "");
-        } else {
+        } 
+        else 
+        {
             int64_t delta = gltmp - eshkp->debit;
 
             eshkp->credit += delta;
-            if (eshkp->debit) {
+            if (eshkp->debit) 
+            {
                 eshkp->debit = 0L;
                 eshkp->loan = 0L;
                 Your("debt is paid off.");
@@ -3461,8 +3533,10 @@ xchar x, y;
                       currency(eshkp->credit));
         }
 
-        if (!offer || sell_how == SELL_DONTSELL) {
-            if (!isgold) {
+        if (!offer || sell_how == SELL_DONTSELL) 
+        {
+            if (!isgold) 
+            {
                 if (container)
                     dropped_container(obj, shkp, FALSE);
                 if (!obj->unpaid)
@@ -3491,27 +3565,45 @@ xchar x, y;
     }
 
     shkmoney = money_cnt(shkp->minvent);
-    if (!shkmoney) {
+    if (!shkmoney) 
+    {
         char c, qbuf[BUFSZ];
         int64_t tmpcr = ((offer * 9L) / 10L) + (offer <= 1L);
 
-        if (sell_how == SELL_NORMAL || auto_credit) {
+        /* Assume no sale first, and adjust upon sale (this is for saving during the question) */
+        boolean was_unpaid = obj->unpaid;
+        if (container)
+        {
+            mark_unpaid_container_contents(obj);
+            dropped_container(obj, shkp, FALSE);
+        }
+        if (obj->unpaid)
+            obj->no_charge = 1;
+        subfrombill(obj, shkp);
+
+        if (sell_how == SELL_NORMAL || auto_credit) 
+        {
             c = sell_response = 'y';
-        } else if (sell_response != 'n') {
+        } 
+        else if (sell_response != 'n') 
+        {
             play_sfx_sound(SFX_CANNOT_PAY);
             pline("%s cannot pay you at present.", Shknam(shkp));
             Sprintf(qbuf, "Will you accept %lld %s in credit for ", (long long)tmpcr,
                     currency(tmpcr));
             c = ynaq(safe_qbuf(qbuf, qbuf, "?", obj, doname, thesimpleoname,
                                (obj->quan == 1L) ? "that" : "those"));
-            if (c == 'a') {
+            if (c == 'a') 
+            {
                 c = 'y';
                 auto_credit = TRUE;
             }
-        } else /* previously specified "quit" */
+        } 
+        else /* previously specified "quit" */
             c = 'n';
 
-        if (c == 'y') {
+        if (c == 'y') 
+        {
             shk_names_obj(
                 shkp, obj,
                 (sell_how != SELL_NORMAL)
@@ -3520,26 +3612,32 @@ xchar x, y;
                 tmpcr, (eshkp->credit > 0L) ? "additional " : "");
             eshkp->credit += tmpcr;
             play_sfx_sound(SFX_TRANSACT_SINGLE_ITEM);
-            subfrombill(obj, shkp);
-        } else {
+            if (container)
+                adjust_dropped_container_on_sale(obj, shkp);
+            if (!was_unpaid)
+                obj->no_charge = 0;
+        }
+        else 
+        {
             if (c == 'q')
                 sell_response = 'n';
-            if (container)
-                dropped_container(obj, shkp, FALSE);
-            if (!obj->unpaid)
-                obj->no_charge = 1;
-            subfrombill(obj, shkp);
         }
-    } else {
+        if (container)
+            unmark_unpaid_container_contents(obj);
+    }
+    else 
+    {
         char qbuf[BUFSZ], qsfx[BUFSZ];
         boolean short_funds = (offer > shkmoney), one;
 
         if (short_funds)
             offer = shkmoney;
-        if (!sell_response) {
+        if (!sell_response) 
+        {
             int64_t yourc = 0L, shksc;
 
-            if (container) {
+            if (container)
+            {
                 /* number of items owned by shk */
                 shksc = count_contents(obj, TRUE, TRUE, FALSE);
                 /* number of items owned by you (total - shksc) */
@@ -3589,27 +3687,41 @@ xchar x, y;
         } else
             qbuf[0] = '\0'; /* just to pacify lint */
 
-        switch (sell_response ? sell_response : ynaq(qbuf)) {
+        /* Assume no sale first, and then make adjustments below if it in fact a sale; this way the game can be saved in the middle of the question */
+        boolean was_unpaid = obj->unpaid;
+        if (container)
+        {
+            mark_unpaid_container_contents(obj);
+            dropped_container(obj, shkp, FALSE); /* This marks all items non-unpaid items as no charge */
+        }
+        if (!obj->unpaid)
+            obj->no_charge = 1;
+        subfrombill(obj, shkp); /* Note that this clears out unpaid */
+
+        switch (sell_response ? sell_response : ynaq(qbuf))
+        {
         case 'q':
             sell_response = 'n';
             context.quit_pressed = TRUE;
             /*FALLTHRU*/
         case 'n':
-            if (container)
-                dropped_container(obj, shkp, FALSE);
-            if (!obj->unpaid)
-                obj->no_charge = 1;
-            subfrombill(obj, shkp);
+            /* Moved to above to allow saving during question */
+            //if (container)
+            //    dropped_container(obj, shkp, FALSE);
+            //if (!obj->unpaid)
+            //    obj->no_charge = 1;
+            //subfrombill(obj, shkp);
             break;
         case 'a':
             sell_response = 'y';
             /*FALLTHRU*/
         case 'y':
-            if (container)
-                dropped_container(obj, shkp, TRUE);
-            if (!obj->unpaid && !saleitem)
-                obj->no_charge = 1;
-            subfrombill(obj, shkp);
+            /* The below marks all sold items as not being no charge anymore; these are the ones that were not unpaid (you do not sell unpaid items) and were saleable */
+            if (container) /* Unmark saleable items from being nocharge; you need here knowledge of what has been unpaid before */
+                adjust_dropped_container_on_sale(obj, shkp); // dropped_container(obj, shkp, TRUE);
+            if (!was_unpaid && saleitem) /* Adjust the item itself */
+                obj->no_charge = 0;
+            //subfrombill(obj, shkp);
             pay(-offer, shkp);
             play_sfx_sound(SFX_TRANSACT_SINGLE_ITEM);
             shk_names_obj(shkp, obj,
@@ -3623,6 +3735,8 @@ xchar x, y;
         default:
             impossible("invalid sell response");
         }
+        if (container)
+            unmark_unpaid_container_contents(obj);
     }
 }
 

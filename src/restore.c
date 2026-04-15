@@ -170,6 +170,8 @@ boolean quietly;
     {
         otmp2 = otmp->nobj;
         otmp->item_flags &= ~ITEM_FLAGS_LAVA_EFFECTS_SKIP;
+        if (Is_proper_container(otmp))
+            unmark_unpaid_container_contents(otmp);
         if (otmp->in_use)
         {
             if (otmp->otyp == AMULET_OF_YENDOR

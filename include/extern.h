@@ -3408,6 +3408,8 @@ E boolean FDECL(is_obj_on_shk_bill, (struct obj*, struct monst*));
 E void FDECL(add_one_tobill, (struct obj*, BOOLEAN_P, struct monst*));
 E void NDECL(reset_shk);
 E int64_t FDECL(getprice, (struct obj*, BOOLEAN_P));
+E void FDECL(mark_unpaid_container_contents, (struct obj*));
+E void FDECL(unmark_unpaid_container_contents, (struct obj*));
 
 /* ### shknam.c ### */
 

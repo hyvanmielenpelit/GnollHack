@@ -56,6 +56,7 @@ struct obj {
 #define ITEM_FLAGS_MEMORY_OBJECT_LAMPLIT       0x00000002UL /* Lamplit for graphics but it does not have an associated light source */
 #define ITEM_FLAGS_FIRED_BY_MONSTER            0x00000004UL
 #define ITEM_FLAGS_LAVA_EFFECTS_SKIP           0x00000008UL /* The item is already on its way to be destroyed (e.g. by destroy armor scroll), so do not burn it in lava effects */
+#define ITEM_FLAGS_SAVED_UNPAID                0x00000010UL
 
     uint64_t speflags;    /* anything else that might be going on with an item, not affected by cancellation */
 
