@@ -1766,12 +1766,39 @@ struct item_description_stats* stats_ptr; /* If non-null, only returns item stat
         }
 
         /* Damage type - Main */
-        if (printmaindmgtype && objects[otyp].oc_damagetype != AD_PHYS)
+        if (printmaindmgtype)
         {
             char dmgttext[BUFSZ] = "";
-            Strcpy(dmgttext, get_damage_type_text(objects[otyp].oc_damagetype));
-            *dmgttext = highc(*dmgttext);
-            if (strcmp(dmgttext, "") != 0)
+            if (!objects[otyp].oc_dir)
+                Strcpy(dmgttext, "Bludgeoning");
+            else
+            {
+                if (objects[otyp].oc_dir & PIERCE)
+                {
+                    Strcpy(dmgttext, "Piercing");
+                }
+                if (objects[otyp].oc_dir & SLASH)
+                {
+                    boolean has_prev = *dmgttext != 0;
+                    if (has_prev)
+                        Strcat(dmgttext, ", ");
+                    Strcpy(dmgttext, "slashing");
+                    if (!has_prev)
+                        *dmgttext = highc(*dmgttext);
+                }
+            }
+            if (objects[otyp].oc_damagetype != AD_PHYS)
+            {
+                boolean has_prev = *dmgttext != 0;
+                if (has_prev)
+                    Strcat(dmgttext, ", ");
+                char dmgtypebuf[BUFSZ] = "";
+                Strcpy(dmgtypebuf, get_damage_type_text(objects[otyp].oc_damagetype));
+                if (!has_prev)
+                    *dmgtypebuf = highc(*dmgtypebuf);
+                Strcpy(dmgttext, dmgtypebuf);
+            }
+            if (*dmgttext)
             {
                 Sprintf(buf, "Damage type:            %s", dmgttext);
                 putstr(datawin, ATR_INDENT_AT_COLON, buf);

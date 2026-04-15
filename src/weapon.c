@@ -268,7 +268,7 @@ struct obj* launcher;
 
     int baserange = 0, range = 0;
     boolean is_you = (mtmp == &youmonst);
-    boolean curstr = M_ACURRSTR(mtmp);
+    short curstr = M_ACURRSTR(mtmp);
 
     /* Ammunition range */
     if (!ammo && launcher && is_launcher(launcher)) {
