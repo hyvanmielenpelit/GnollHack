@@ -1782,7 +1782,7 @@ struct item_description_stats* stats_ptr; /* If non-null, only returns item stat
                     boolean has_prev = *dmgttext != 0;
                     if (has_prev)
                         Strcat(dmgttext, ", ");
-                    Strcpy(dmgttext, "slashing");
+                    Strcat(dmgttext, "slashing");
                     if (!has_prev)
                         *dmgttext = highc(*dmgttext);
                 }
@@ -1796,7 +1796,7 @@ struct item_description_stats* stats_ptr; /* If non-null, only returns item stat
                 Strcpy(dmgtypebuf, get_damage_type_text(objects[otyp].oc_damagetype));
                 if (!has_prev)
                     *dmgtypebuf = highc(*dmgtypebuf);
-                Strcpy(dmgttext, dmgtypebuf);
+                Strcat(dmgttext, dmgtypebuf);
             }
             if (*dmgttext)
             {
