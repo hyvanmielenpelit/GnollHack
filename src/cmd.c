@@ -10926,10 +10926,10 @@ dosetquickbag(VOID_ARGS)
         play_sfx_sound(SFX_GENERAL_CANNOT);
         pline_ex(ATR_NONE, CLR_MSG_FAIL, "%s cannot be set as a quick bag without opening its lid first.", The(cxname(obj)));
     }
-    else if (!obj->cknown) /* This should prevent checking out which are non-containers */
+    else if (!objects[obj->otyp].oc_name_known && !obj->cknown) /* This should prevent checking out which are non-containers */
     {
         play_sfx_sound(SFX_GENERAL_CANNOT);
-        pline_ex(ATR_NONE, CLR_MSG_FAIL, "%s cannot be set as a quick bag without investigating its contents first.", The(cxname(obj)));
+        pline_ex(ATR_NONE, CLR_MSG_FAIL, "%s cannot be set as a quick bag without investigating its contents or determining its nature first.", The(cxname(obj)));
     }
     else if (!Is_proper_container(obj)) /* Insurance */
     {
