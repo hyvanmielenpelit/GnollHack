@@ -424,6 +424,8 @@ E int NDECL(dosetquickengraveitem);
 E int NDECL(dounsetquickengraveitem);
 E int NDECL(dosetquickpickaxeitem);
 E int NDECL(dounsetquickpickaxeitem);
+E int NDECL(dosetquickbag);
+E int NDECL(dounsetquickbag);
 E struct monst* FDECL(spotted_linedup_monster_in_way, (int, int, int, int));
 E int NDECL(do_gamelog);
 

@@ -274,8 +274,9 @@ struct context_info
     int yeenaghu_wishes;
     unsigned quick_engrave_obj_oid;
     unsigned quick_pickaxe_obj_oid;
+    unsigned quick_bag_obj_oid;
+    /* Note: out of emergency ints now */
 
-    int reserved_int4;
     short reserved_short1;
     short reserved_short2;
     short reserved_short3;

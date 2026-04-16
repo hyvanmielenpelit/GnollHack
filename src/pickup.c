@@ -1993,39 +1993,50 @@ boolean bynexthere;
     struct obj* bag_of_treasure_hauling = 0;
     struct obj* bag_of_wizardry = 0;
     struct obj* normal_bag = 0;
+    struct obj* quick_bag = 0;
     /* Note: If you know cancellation, then you know all other similar wands such as Rod of Disjunction / wand of disjunction */
     boolean maybe_cancellation = (objects[obj->otyp].oc_name_known || objects[WAN_CANCELLATION].oc_name_known ? (objects[obj->otyp].oc_flags5 & O5_MBAG_DESTROYING_ITEM) != 0 : obj->oclass == WAND_CLASS);
 
     for (curr = objchn_container; curr; curr = (bynexthere ? curr->nexthere : curr->nobj))
     {
-        if (objects[curr->otyp].oc_name_known && curr != obj && !curr->olocked)
+        if (curr != obj && !curr->olocked)
         {
-            if (curr->otyp == BAG_OF_HOLDING && curr->bknown && !curr->cursed && !maybe_cancellation)
+            if (curr->o_id == context.quick_bag_obj_oid &&
+                Is_proper_container(curr)
+                && (objects[curr->otyp].oc_flags4 & (O4_CONTAINER_ACCEPTS_ONLY_SCROLLS_AND_BOOKS | O4_CONTAINER_ACCEPTS_ONLY_WEAPONS)) == 0
+                && !((objects[curr->otyp].oc_flags4 & O4_CONTAINER_HAS_LID) && !(curr->speflags & (SPEFLAGS_LID_OPENED)))
+                )
+                quick_bag = curr;
+
+            if (objects[curr->otyp].oc_name_known)
             {
-                if (!bag_of_holding || (curr->blessed && !bag_of_holding->blessed))
-                    bag_of_holding = curr;
-            }
-            else if (curr->otyp == BAG_OF_THE_GLUTTON && curr->bknown && !curr->cursed && !maybe_cancellation)
-            {
-                if (!bag_of_the_glutton || (curr->blessed && !bag_of_the_glutton->blessed))
-                    bag_of_the_glutton = curr;
-            }
-            else if (curr->otyp == BAG_OF_TREASURE_HAULING && curr->bknown && !curr->cursed && !maybe_cancellation)
-            {
-                if (!bag_of_treasure_hauling || (curr->blessed && !bag_of_treasure_hauling->blessed))
-                    bag_of_treasure_hauling = curr;
-            }
-            else if (curr->otyp == BAG_OF_WIZARDRY && curr->bknown && !curr->cursed && !maybe_cancellation)
-            {
-                if (!bag_of_wizardry || (curr->blessed && !bag_of_wizardry->blessed))
-                    bag_of_wizardry = curr;
-            }
-            else if (Is_proper_container(curr) && !Is_mbag(curr) 
-                && (objects[curr->otyp].oc_flags4 & (O4_CONTAINER_ACCEPTS_ONLY_SCROLLS_AND_BOOKS | O4_CONTAINER_ACCEPTS_ONLY_WEAPONS)) == 0 
-                && !((objects[curr->otyp].oc_flags4 & (O4_CONTAINER_HAS_LID)) && !(curr->speflags & (SPEFLAGS_LID_OPENED))))
-            {
-                if (!normal_bag)
-                    normal_bag = curr;
+                if (curr->otyp == BAG_OF_HOLDING && curr->bknown && !curr->cursed && !maybe_cancellation)
+                {
+                    if (!bag_of_holding || (curr->blessed && !bag_of_holding->blessed))
+                        bag_of_holding = curr;
+                }
+                else if (curr->otyp == BAG_OF_THE_GLUTTON && curr->bknown && !curr->cursed && !maybe_cancellation)
+                {
+                    if (!bag_of_the_glutton || (curr->blessed && !bag_of_the_glutton->blessed))
+                        bag_of_the_glutton = curr;
+                }
+                else if (curr->otyp == BAG_OF_TREASURE_HAULING && curr->bknown && !curr->cursed && !maybe_cancellation)
+                {
+                    if (!bag_of_treasure_hauling || (curr->blessed && !bag_of_treasure_hauling->blessed))
+                        bag_of_treasure_hauling = curr;
+                }
+                else if (curr->otyp == BAG_OF_WIZARDRY && curr->bknown && !curr->cursed && !maybe_cancellation)
+                {
+                    if (!bag_of_wizardry || (curr->blessed && !bag_of_wizardry->blessed))
+                        bag_of_wizardry = curr;
+                }
+                else if (Is_proper_container(curr) && !Is_mbag(curr)
+                    && (objects[curr->otyp].oc_flags4 & (O4_CONTAINER_ACCEPTS_ONLY_SCROLLS_AND_BOOKS | O4_CONTAINER_ACCEPTS_ONLY_WEAPONS)) == 0
+                    && !((objects[curr->otyp].oc_flags4 & (O4_CONTAINER_HAS_LID)) && !(curr->speflags & (SPEFLAGS_LID_OPENED))))
+                {
+                    if (!normal_bag)
+                        normal_bag = curr;
+                }
             }
         }
     }
@@ -2041,6 +2052,8 @@ boolean bynexthere;
         num_choices++;
     if (normal_bag)
         num_choices++;
+    if (quick_bag) /* Might double count the above, but does not matter here */
+        num_choices++;
 
     if (!num_choices)
         return 0;
@@ -2051,6 +2064,8 @@ boolean bynexthere;
     default:
     {
         struct obj* used_container = 0;
+        if (!used_container && quick_bag)
+            used_container = quick_bag;
         if (!used_container && bag_of_treasure_hauling && is_obj_weight_reduced_by_treasure_hauling(obj))
             used_container = bag_of_treasure_hauling;
         if (!used_container && bag_of_wizardry && is_obj_weight_reduced_by_wizardry(obj))

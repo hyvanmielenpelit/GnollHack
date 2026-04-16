@@ -3338,10 +3338,14 @@ struct obj* otmp_only;
                     && otmp->o_id == context.quick_engrave_obj_oid)
                 || (!strcmp(word, "unset as quick engrave item") /* exclude if not a quick engrave item */
                     && otmp->o_id != context.quick_engrave_obj_oid)
-                || (!strcmp(word, "set as quick pick-axe item") /* exclude if already a quick pick-axe item */
-                    && otmp->o_id == context.quick_pickaxe_obj_oid)
-                || (!strcmp(word, "unset as quick pick-axe item") /* exclude if not a quick pick-axe item */
+                || (!strcmp(word, "set as quick pick-axe") /* exclude if already a quick pick-axe */
+                    && (otmp->o_id == context.quick_pickaxe_obj_oid || (!(is_pick(otmp) || is_saw(otmp) || is_axe(otmp)))))
+                || (!strcmp(word, "unset as quick pick-axe") /* exclude if not a quick pick-axe */
                     && otmp->o_id != context.quick_pickaxe_obj_oid)
+                || (!strcmp(word, "set as quick bag") /* exclude if already a quick bag */
+                    && (otmp->o_id == context.quick_bag_obj_oid || !Is_container(otmp) || !otmp->cknown))
+                || (!strcmp(word, "unset as quick bag") /* exclude if not a quick bag */
+                    && otmp->o_id != context.quick_bag_obj_oid)
                 || (!strcmp(word, "set as quick wand") /* exclude if already a quick wand */
                     && otmp->o_id == context.quick_zap_wand_oid)
                 || (!strcmp(word, "unset as quick wand") /* exclude if not the quick wand */

@@ -1917,6 +1917,10 @@ weapon_here:
         {
             Strcat(bp, " (quick pick-axe)");
         }
+        if (context.quick_bag_obj_oid && context.quick_bag_obj_oid == obj->o_id)
+        {
+            Strcat(bp, " (quick bag)");
+        }
     }
 
     const char* hand_s = body_part(HAND);

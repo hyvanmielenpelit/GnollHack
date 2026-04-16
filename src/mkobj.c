@@ -4468,6 +4468,10 @@ struct obj *obj;
     {
         context.quick_pickaxe_obj_oid = 0;
     }
+    if (context.quick_bag_obj_oid && context.quick_bag_obj_oid == obj->o_id)
+    {
+        context.quick_bag_obj_oid = 0;
+    }
 
     if (obj->oextra)
         dealloc_oextra(obj);

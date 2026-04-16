@@ -6498,18 +6498,24 @@ struct ext_func_tab extcmdlist[] = {
     { '\0', "unsetquickwand", "unset quick wand", 
         dounsetquickwand, IFBURIED | SINGLE_OBJ_CMD_SPECIFIC, ATR_NONE, NO_COLOR, 0,
         getobj_zap_syms, "unset as quick wand", "unset as quick wand" },
-    { '\0', "setquickengrave", "set quick engrave item",
+    { '\0', "setquickengrave", "set as quick engrave item",
         dosetquickengraveitem, IFBURIED | SINGLE_OBJ_CMD_GENERAL | SPECIAL_SHOW_CONDITIONS, ATR_NONE, NO_COLOR, 0,
         getobj_styluses, "set as quick engrave item", "set as quick engrave item" },
-    { '\0', "unsetquickengrave", "unset quick engrave item",
+    { '\0', "unsetquickengrave", "unset as quick engrave item",
         dounsetquickengraveitem, IFBURIED | SINGLE_OBJ_CMD_GENERAL, ATR_NONE, NO_COLOR, 0,
         getobj_styluses, "unset as quick engrave item", "unset as quick engrave item" },
-    { '\0', "setquickpickaxe", "set quick pick-axe item",
+    { '\0', "setquickpickaxe", "set as quick pick-axe",
         dosetquickpickaxeitem, IFBURIED | SINGLE_OBJ_CMD_GENERAL | SPECIAL_SHOW_CONDITIONS, ATR_NONE, NO_COLOR, 0,
-        getobj_pickaxe_objects, "set as quick pick-axe item", "set as quick pick-axe item" },
-    { '\0', "unsetquickpickaxe", "unset quick pick-axe item",
+        getobj_quick_pickaxes, "set as quick pick-axe", "set as quick pick-axe" },
+    { '\0', "unsetquickpickaxe", "unset as quick pick-axe",
         dounsetquickpickaxeitem, IFBURIED | SINGLE_OBJ_CMD_GENERAL, ATR_NONE, NO_COLOR, 0,
-        getobj_pickaxe_objects, "unset as quick pick-axe item", "unset as quick pick-axe item" },
+        getobj_quick_pickaxes, "unset as quick pick-axe", "unset as quick pick-axe" },
+    { '\0', "setquickbag", "set as quick bag",
+        dosetquickbag, IFBURIED | SINGLE_OBJ_CMD_GENERAL, ATR_NONE, NO_COLOR, 0,
+        getobj_quick_bags, "set as quick bag", "set as quick bag" },
+    { '\0', "unsetquickbag", "unset as quick bag",
+        dounsetquickbag, IFBURIED | SINGLE_OBJ_CMD_GENERAL, ATR_NONE, NO_COLOR, 0,
+        getobj_quick_bags, "unset as quick bag", "unset as quick bag" },
     { '!', "shell", "do a shell escape", dosh_core, IFBURIED | GENERALCMD
 #ifndef SHELL
                        | CMD_NOT_AVAILABLE
@@ -10833,7 +10839,7 @@ dounsetquickengraveitem(VOID_ARGS)
 int
 dosetquickpickaxeitem(VOID_ARGS)
 {
-    struct obj* obj = getobj(getobj_pickaxe_objects, "set as quick pick-axe item", 0, "");
+    struct obj* obj = getobj(getobj_quick_pickaxes, "set as quick pick-axe", 0, "");
     if (!obj)
     {
         pline1(Never_mind);
@@ -10842,12 +10848,17 @@ dosetquickpickaxeitem(VOID_ARGS)
 
     if (obj->o_id == context.quick_pickaxe_obj_oid)
     {
-        pline("%s is already the quick pick-axe item.", The(cxname(obj)));
+        pline("%s is already the quick pick-axe.", The(cxname(obj)));
+    }
+    else if (!(is_pick(obj) || is_saw(obj) || is_axe(obj)))
+    {
+        play_sfx_sound(SFX_GENERAL_CANNOT);
+        pline_ex(ATR_NONE, CLR_MSG_FAIL, "%s is not a digging or cutting tool.", The(cxname(obj)));
     }
     else
     {
         context.quick_pickaxe_obj_oid = obj->o_id;
-        pline("%s was marked as the quick pick-axe item.", The(cxname(obj)));
+        pline("%s was marked as the quick pick-axe.", The(cxname(obj)));
         update_inventory();
     }
     return 0;
@@ -10856,7 +10867,7 @@ dosetquickpickaxeitem(VOID_ARGS)
 int
 dounsetquickpickaxeitem(VOID_ARGS)
 {
-    struct obj* obj = getobj(getobj_pickaxe_objects, "unset as quick pick-axe item", 0, "");
+    struct obj* obj = getobj(getobj_quick_pickaxes, "unset as quick pick-axe", 0, "");
     if (!obj)
     {
         pline1(Never_mind);
@@ -10865,16 +10876,73 @@ dounsetquickpickaxeitem(VOID_ARGS)
 
     if (obj->o_id != context.quick_pickaxe_obj_oid)
     {
-        pline("%s is not the quick pick-axe item.", The(cxname(obj)));
+        pline("%s is not the quick pick-axe.", The(cxname(obj)));
     }
     else
     {
         context.quick_pickaxe_obj_oid = 0;
-        pline("%s was unmarked as the quick pick-axe item.", The(cxname(obj)));
+        pline("%s was unmarked as the quick pick-axe.", The(cxname(obj)));
         update_inventory();
     }
     return 0;
 }
+
+int
+dosetquickbag(VOID_ARGS)
+{
+    struct obj* obj = getobj(getobj_quick_bags, "set as quick bag", 0, "");
+    if (!obj)
+    {
+        pline1(Never_mind);
+        return 0;
+    }
+
+    if (obj->o_id == context.quick_bag_obj_oid)
+    {
+        pline("%s is already the quick bag.", The(cxname(obj)));
+    }
+    else if (!obj->cknown) /* This should prevent checking out which are non-containers */
+    {
+        play_sfx_sound(SFX_GENERAL_CANNOT);
+        pline_ex(ATR_NONE, CLR_MSG_FAIL, "%s cannot be set as a quick bag without knowing its contents first.", The(cxname(obj)));
+    }
+    else if (!Is_proper_container(obj)) /* Insurance */
+    {
+        play_sfx_sound(SFX_GENERAL_CANNOT);
+        pline_ex(ATR_NONE, CLR_MSG_FAIL, "%s is not a proper container.", The(cxname(obj)));
+    }
+    else
+    {
+        context.quick_bag_obj_oid = obj->o_id;
+        pline("%s was marked as the quick bag.", The(cxname(obj)));
+        update_inventory();
+    }
+    return 0;
+}
+
+int
+dounsetquickbag(VOID_ARGS)
+{
+    struct obj* obj = getobj(getobj_quick_bags, "unset as quick bag", 0, "");
+    if (!obj)
+    {
+        pline1(Never_mind);
+        return 0;
+    }
+
+    if (obj->o_id != context.quick_bag_obj_oid)
+    {
+        pline("%s is not the quick bag.", The(cxname(obj)));
+    }
+    else
+    {
+        context.quick_bag_obj_oid = 0;
+        pline("%s was unmarked as the quick bag.", The(cxname(obj)));
+        update_inventory();
+    }
+    return 0;
+}
+
 
 struct monst*
 spotted_linedup_monster_in_way(x1, y1, x2, y2)
