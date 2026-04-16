@@ -1178,8 +1178,8 @@
 	<ItemGroup>
 		<PackageReference Include="Azure.Identity" Version="1.15.0" />
 		<PackageReference Include="Azure.Storage.Blobs" Version="12.25.0" />
-		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="9.0.14" />
-		<PackageReference Include="System.Text.Json" Version="9.0.14" />
+		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="9.0.15" />
+		<PackageReference Include="System.Text.Json" Version="9.0.15" />
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
 
 		<PackageReference Include="SkiaSharp" Version="3.119.1" />
@@ -1209,14 +1209,14 @@
     <!--<PackageReference Include="Microsoft.WindowsAppSDK" Version="[1.6.241114003]" Condition="'$(TargetFramework)'!='net9.0-windows10.0.19041.0' or '$(WindowsPackageType)'!='MSIX'" />-->
 
 		<!-- Platform-specific packages -->
-		<PackageReference Include="System.Management" Version="9.0.14" Condition="'$(TargetFramework)'=='net9.0-windows10.0.19041.0'" />
-		<PackageReference Include="Xamarin.Google.Android.Play.Core" Version="1.10.3.19" Condition="'$(TargetFramework)'=='net9.0-android'" />
+		<PackageReference Include="System.Management" Version="9.0.15" Condition="'$(TargetFramework)'=='net9.0-windows10.0.19041.0'" />
+		<PackageReference Include="Xamarin.Google.Android.Play.Core" Version="1.10.3.21" Condition="'$(TargetFramework)'=='net9.0-android'" />
 
 	</ItemGroup>
 
 	<ItemGroup Condition="$(DefineConstants.Contains('SENTRY'))">
-		<PackageReference Include="Sentry.Maui" Version="6.0.0" />
-		<PackageReference Include="Sentry.Profiling" Version="6.0.0" Condition="'$(TargetFramework)'=='net9.0-windows10.0.19041.0'" />
+		<PackageReference Include="Sentry.Maui" Version="6.3.2" />
+		<PackageReference Include="Sentry.Profiling" Version="6.3.2" Condition="'$(TargetFramework)'=='net9.0-windows10.0.19041.0'" />
 	</ItemGroup>
 
 	<ItemGroup>
