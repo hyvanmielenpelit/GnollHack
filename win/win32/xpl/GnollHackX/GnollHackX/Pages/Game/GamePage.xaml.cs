@@ -22577,7 +22577,7 @@ namespace GnollHackX.Pages.Game
         {
             SkillsKeyboardShortcut = GHUtils.ConstructShortcutText(GHApp.MapCommand('S'));
             PolearmKeyboardShortcut = GHUtils.ConstructShortcutText(GHApp.MapCommand(GHUtils.Meta('P')));
-            PrevWepKeyboardShortcut = GHUtils.ConstructShortcutText(GHApp.MapCommand(GHUtils.Meta('<')));
+            PrevWepKeyboardShortcut = GHUtils.ConstructShortcutText(GHApp.MapCommand(GHUtils.Meta('W')));
             UpdateButtonShortcutLabels(RootGrid);
         }
 

@@ -6788,6 +6788,7 @@ commands_init(VOID_ARGS)
     /* M('X') is apply a pickaxe */
     /* M('Y') is toggle buff timers */
     /* M('W') is previous weapon */
+    /* M('<') is last item */
 
     update_bindings_list();
 }

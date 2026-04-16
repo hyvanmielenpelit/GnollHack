@@ -962,7 +962,18 @@ public class KeyboardHook
                             break;
                     }
                 }
-                handled = GHApp.SendSpecialKeyPress(spkey, isCtrlDown, true, isShiftDown);
+                if (spkey != GHSpecialKey.None)
+                    handled = GHApp.SendSpecialKeyPress(spkey, isCtrlDown, true, isShiftDown);
+                else
+                {
+                    string character = VkCodeToUnicode(Convert.ToUInt32(vkCode));
+                    if (!string.IsNullOrEmpty(character) && character.Length > 0)
+                    {
+                        int key = character[0];
+                        handled = GHApp.SendKeyPress(key, GHApp.CtrlDown, true);
+                        GHApp.MaybeWriteLowLevelGHLog("HookCallback: Send Keypress SysKeyDown Fallback: '" + character + "', Handled: " + handled);
+                    }
+                }
                 if (handled)
                     return 1;
                 else
