@@ -317,10 +317,11 @@ struct obj* launcher;
             range = baserange;
         else
         {
+            int64_t quan = max((int64_t)1, ammo->quan);
             if (objects[ammo->otyp].oc_flags & O1_THROWN_WEAPON_ONLY)
-                range = baserange - (int)(ammo->owt / 100);
+                range = baserange - (int)(((int64_t)ammo->owt / quan) / 100);
             else
-                range = baserange - (int)(ammo->owt / 40);
+                range = baserange - (int)(((int64_t)ammo->owt / quan) / 40);
         }
     }
 
