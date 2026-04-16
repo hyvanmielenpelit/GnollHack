@@ -301,6 +301,7 @@ E NEARDATA const char getobj_toss_objs[];
 E NEARDATA const char getobj_tippables[];
 E NEARDATA const char getobj_zap_syms[];
 E NEARDATA const char getobj_favorites[];
+E NEARDATA const char getobj_pickaxe_objects[];
 E NEARDATA const char getobj_enchant_weapon_objects[];
 E NEARDATA const char getobj_enchant_armor_objects[];
 E NEARDATA const char getobj_enchant_accessory_objects[];

@@ -1907,9 +1907,16 @@ weapon_here:
         break;
     }
 
-    if (show_quick && context.engrave_quick_obj_oid && context.engrave_quick_obj_oid == obj->o_id)
+    if (show_quick)
     {
-        Strcat(bp, " (quick engrave)");
+        if (context.quick_engrave_obj_oid && context.quick_engrave_obj_oid == obj->o_id)
+        {
+            Strcat(bp, " (quick engrave)");
+        }
+        if (context.quick_pickaxe_obj_oid && context.quick_pickaxe_obj_oid == obj->o_id)
+        {
+            Strcat(bp, " (quick pick-axe)");
+        }
     }
 
     const char* hand_s = body_part(HAND);

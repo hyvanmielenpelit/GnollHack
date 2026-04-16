@@ -47,6 +47,7 @@ STATIC_DCL int FDECL(menu_identify, (int));
 STATIC_DCL boolean FDECL(tool_in_use, (struct obj *));
 STATIC_DCL char FDECL(obj_to_let, (struct obj *));
 STATIC_DCL void FDECL(add_inventory_menu_item, (winid, struct obj*, CHAR_P, BOOLEAN_P, BOOLEAN_P, int, BOOLEAN_P, BOOLEAN_P, int*));
+STATIC_DCL boolean FDECL(is_special_show_condition_satisfied, (int));
 
 static int lastinvnr = 51; /* 0 ... 51 (never saved&restored) */
 
@@ -3334,9 +3335,13 @@ struct obj* otmp_only;
                 || (!strcmp(word, "unmark as favorite") /* exclude if not a favorite */
                     && !(otmp->speflags & SPEFLAGS_FAVORITE))
                 || (!strcmp(word, "set as quick engrave item") /* exclude if already a quick engrave item */
-                    && otmp->o_id == context.engrave_quick_obj_oid)
+                    && otmp->o_id == context.quick_engrave_obj_oid)
                 || (!strcmp(word, "unset as quick engrave item") /* exclude if not a quick engrave item */
-                    && otmp->o_id != context.engrave_quick_obj_oid)
+                    && otmp->o_id != context.quick_engrave_obj_oid)
+                || (!strcmp(word, "set as quick pick-axe item") /* exclude if already a quick pick-axe item */
+                    && otmp->o_id == context.quick_pickaxe_obj_oid)
+                || (!strcmp(word, "unset as quick pick-axe item") /* exclude if not a quick pick-axe item */
+                    && otmp->o_id != context.quick_pickaxe_obj_oid)
                 || (!strcmp(word, "set as quick wand") /* exclude if already a quick wand */
                     && otmp->o_id == context.quick_zap_wand_oid)
                 || (!strcmp(word, "unset as quick wand") /* exclude if not the quick wand */
@@ -3383,6 +3388,7 @@ struct obj* otmp_only;
                 || (!strcmp(word, "rub")
                     && ((otmp->oclass == TOOL_CLASS && !is_otyp_lamp(otyp))
                         || (otmp->oclass == GEM_CLASS && !is_graystone(otmp))))
+                || (!strcmp(word, "cut rock or wood with") && !(is_pick(otmp) || is_saw(otmp) || is_axe(otmp)))
                 || (!strcmp(word, "use or apply")
                     /* Picks, axes, pole-weapons, bullwhips */
                     && ((otmp->oclass == WEAPON_CLASS && !is_appliable_weapon(otmp))
@@ -4562,6 +4568,18 @@ boolean* return_to_inv_ptr;
         return display_item_command_menu(otmp, pickcnt, return_to_inv_ptr);
 }
 
+STATIC_OVL boolean
+is_special_show_condition_satisfied(i)
+int i; /* extcmdlist index */
+{
+    if (extcmdlist[i].ef_funct == dosetquickengraveitem)
+        return context.quick_engrave_obj_oid != 0;
+    if (extcmdlist[i].ef_funct == dosetquickpickaxeitem)
+        return context.quick_pickaxe_obj_oid != 0;
+
+    return FALSE;
+}
+
 #define NUM_CMD_SECTIONS 3
 
 int
@@ -4618,7 +4636,7 @@ boolean* return_to_inv_ptr;
             if (!(extcmdlist[i].flags & allflags) || !extcmdlist[i].getobj_word)
                 continue;
 
-            if ((extcmdlist[i].flags & SPECIAL_SHOW_CONDITIONS) && context.engrave_quick_obj_oid == 0) /* Can add more detail later if more than one command uses this */
+            if ((extcmdlist[i].flags & SPECIAL_SHOW_CONDITIONS) && !is_special_show_condition_satisfied(i))
                 continue;
 
             slen = (int)strlen(extcmdlist[i].ef_txt_word ? extcmdlist[i].ef_txt_word : extcmdlist[i].ef_txt);
@@ -4634,7 +4652,7 @@ boolean* return_to_inv_ptr;
                 if (!(extcmdlist[i].flags & section_flags[j]) || !extcmdlist[i].getobj_word)
                     continue;
 
-                if ((extcmdlist[i].flags & SPECIAL_SHOW_CONDITIONS) && context.engrave_quick_obj_oid == 0) /* Can add more detail later if more than one command uses this */
+                if ((extcmdlist[i].flags & SPECIAL_SHOW_CONDITIONS) && !is_special_show_condition_satisfied(i))
                     continue;
 
                 Strcpy(class_list, "");
@@ -4642,6 +4660,8 @@ boolean* return_to_inv_ptr;
                     Strcpy(class_list, extcmdlist[i].getobj_classes);
                 else if (!strcmp(extcmdlist[i].getobj_word, "break"))
                     setbreakclasses(class_list);
+                else if (!strcmp(extcmdlist[i].getobj_word, "cut rock or wood with"))
+                    setapplyclasses(class_list);
                 else if (!strcmp(extcmdlist[i].getobj_word, "use or apply"))
                     setapplyclasses(class_list);
                 else if (!strcmp(extcmdlist[i].getobj_word, "take items out of"))
@@ -4694,7 +4714,7 @@ boolean* return_to_inv_ptr;
                 if (!(extcmdlist[i].flags & section_flags[j]) || !extcmdlist[i].getobj_word)
                     continue;
 
-                if ((extcmdlist[i].flags & SPECIAL_SHOW_CONDITIONS) && context.engrave_quick_obj_oid == 0) /* Can add more detail later if more than one command uses this */
+                if ((extcmdlist[i].flags & SPECIAL_SHOW_CONDITIONS) && !is_special_show_condition_satisfied(i))
                     continue;
 
                 Strcpy(class_list, "");
@@ -4702,6 +4722,8 @@ boolean* return_to_inv_ptr;
                     Strcpy(class_list, extcmdlist[i].getobj_classes);
                 else if (!strcmp(extcmdlist[i].getobj_word, "break"))
                     setbreakclasses(class_list);
+                else if (!strcmp(extcmdlist[i].getobj_word, "cut rock or wood with"))
+                    setapplyclasses(class_list);
                 else if (!strcmp(extcmdlist[i].getobj_word, "use or apply"))
                     setapplyclasses(class_list);
                 else if (!strcmp(extcmdlist[i].getobj_word, "take items out of"))

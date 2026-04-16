@@ -133,7 +133,8 @@ E int FDECL(use_torch, (struct obj**));
 E void FDECL(use_lamp, (struct obj*));
 E void FDECL(light_cocktail, (struct obj**));
 E int FDECL(use_pole2, (struct obj*, coord*));
-E int NDECL(dopole);
+E int NDECL(dopolearm);
+E int NDECL(dopickaxe);
 E void NDECL(reset_apply);
 
 /* ### artifact.c ### */
@@ -421,6 +422,8 @@ E int NDECL(dofavorite);
 E int NDECL(dounfavorite);
 E int NDECL(dosetquickengraveitem);
 E int NDECL(dounsetquickengraveitem);
+E int NDECL(dosetquickpickaxeitem);
+E int NDECL(dounsetquickpickaxeitem);
 E struct monst* FDECL(spotted_linedup_monster_in_way, (int, int, int, int));
 E int NDECL(do_gamelog);
 

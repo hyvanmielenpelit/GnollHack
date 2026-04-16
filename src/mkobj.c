@@ -4460,9 +4460,13 @@ struct obj *obj;
         context.quick_zap_wand_oid = 0;
         /* No need to notify GUI, since where must be OBJ_FREE */
     }
-    if (context.engrave_quick_obj_oid && context.engrave_quick_obj_oid == obj->o_id)
+    if (context.quick_engrave_obj_oid && context.quick_engrave_obj_oid == obj->o_id)
     {
-        context.engrave_quick_obj_oid = 0;
+        context.quick_engrave_obj_oid = 0;
+    }
+    if (context.quick_pickaxe_obj_oid && context.quick_pickaxe_obj_oid == obj->o_id)
+    {
+        context.quick_pickaxe_obj_oid = 0;
     }
 
     if (obj->oextra)

@@ -674,13 +674,13 @@ uchar item_selection_style;
         break;
     case 1:
         otmp = (struct obj*) &zeroobj; /* Dropping the const qualifier here, so one needs to be careful below not to modify otmp anymore */
-        context.engrave_quick_obj_oid = 0;
+        context.quick_engrave_obj_oid = 0;
         prompt_for_stylus = FALSE;
         break;
     case 2:
-        if (context.engrave_quick_obj_oid > 0)
+        if (context.quick_engrave_obj_oid > 0)
         {
-            otmp = o_on(context.engrave_quick_obj_oid, invent);
+            otmp = o_on(context.quick_engrave_obj_oid, invent);
             if (otmp)
                 prompt_for_stylus = FALSE;
         }
@@ -691,7 +691,7 @@ uchar item_selection_style;
     {
         otmp = getobj(styluses, "write with", 0, "");
         if (otmp && otmp != &zeroobj && engrave_text) /* Mark as quick only if the command was quick engrave */
-            context.engrave_quick_obj_oid = otmp->o_id;
+            context.quick_engrave_obj_oid = otmp->o_id;
     }
 
     if (!otmp) /* otmp == zeroobj if fingers */

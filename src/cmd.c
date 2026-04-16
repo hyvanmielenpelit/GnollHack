@@ -6459,9 +6459,10 @@ struct ext_func_tab extcmdlist[] = {
     { '\0', "panic", "test panic routine (fatal to game)", wiz_panic, IFBURIED },
 #endif
     { 'p', "pay", "pay your shopping bill", dopay },
+    { M('X'), "pickaxequick", "apply a pick-axe or another cutting tool", dopickaxe, AUTOCOMPLETE },
     { ';', "pickstash", "pick up things at the current location and stash them into a container", doput2bag },
     { ',', "pickup", "pick up things at the current location", dopickup },
-    { M('P'), "pole", "strike with a polearm or lance", dopole, AUTOCOMPLETE },
+    { M('P'), "pole", "strike with a polearm or lance", dopolearm, AUTOCOMPLETE },
     { M(1), "polyself", "polymorph self", wiz_polyself, IFBURIED | AUTOCOMPLETE | WIZMODECMD },
     { M('p'), "pray", "pray to the gods for help", dopray, IFBURIED | AUTOCOMPLETE | INCMDMENU },
     { C('p'), "prevmsg", "view recent game messages", doprev_message, IFBURIED | GENERALCMD },
@@ -6503,6 +6504,12 @@ struct ext_func_tab extcmdlist[] = {
     { '\0', "unsetquickengrave", "unset quick engrave item",
         dounsetquickengraveitem, IFBURIED | SINGLE_OBJ_CMD_GENERAL, ATR_NONE, NO_COLOR, 0,
         getobj_styluses, "unset as quick engrave item", "unset as quick engrave item" },
+    { '\0', "setquickpickaxe", "set quick pick-axe item",
+        dosetquickpickaxeitem, IFBURIED | SINGLE_OBJ_CMD_GENERAL | SPECIAL_SHOW_CONDITIONS, ATR_NONE, NO_COLOR, 0,
+        getobj_pickaxe_objects, "set as quick pick-axe item", "set as quick pick-axe item" },
+    { '\0', "unsetquickpickaxe", "unset quick pick-axe item",
+        dounsetquickpickaxeitem, IFBURIED | SINGLE_OBJ_CMD_GENERAL, ATR_NONE, NO_COLOR, 0,
+        getobj_pickaxe_objects, "unset as quick pick-axe item", "unset as quick pick-axe item" },
     { '!', "shell", "do a shell escape", dosh_core, IFBURIED | GENERALCMD
 #ifndef SHELL
                        | CMD_NOT_AVAILABLE
@@ -6778,6 +6785,7 @@ commands_init(VOID_ARGS)
     /* M('O') is overview */
     /* M('P') is apply a polearm */
     /* M('R') is ride nearby */
+    /* M('X') is apply a pickaxe */
     /* M('Y') is toggle buff timers */
     /* M('W') is previous weapon */
 
@@ -10785,13 +10793,13 @@ dosetquickengraveitem(VOID_ARGS)
         return 0;
     }
 
-    if (obj->o_id == context.engrave_quick_obj_oid)
+    if (obj->o_id == context.quick_engrave_obj_oid)
     {
         pline("%s is already the quick engrave item.", The(cxname(obj)));
     }
     else
     {
-        context.engrave_quick_obj_oid = obj->o_id;
+        context.quick_engrave_obj_oid = obj->o_id;
         pline("%s was marked as the quick engrave item.", The(cxname(obj)));
         update_inventory();
     }
@@ -10808,14 +10816,60 @@ dounsetquickengraveitem(VOID_ARGS)
         return 0;
     }
 
-    if (obj->o_id != context.engrave_quick_obj_oid)
+    if (obj->o_id != context.quick_engrave_obj_oid)
     {
         pline("%s is not the quick engrave item.", The(cxname(obj)));
     }
     else
     {
-        context.engrave_quick_obj_oid = 0;
+        context.quick_engrave_obj_oid = 0;
         pline("%s was unmarked as the quick engrave item.", The(cxname(obj)));
+        update_inventory();
+    }
+    return 0;
+}
+
+int
+dosetquickpickaxeitem(VOID_ARGS)
+{
+    struct obj* obj = getobj(getobj_pickaxe_objects, "set as quick pick-axe item", 0, "");
+    if (!obj)
+    {
+        pline1(Never_mind);
+        return 0;
+    }
+
+    if (obj->o_id == context.quick_pickaxe_obj_oid)
+    {
+        pline("%s is already the quick pick-axe item.", The(cxname(obj)));
+    }
+    else
+    {
+        context.quick_pickaxe_obj_oid = obj->o_id;
+        pline("%s was marked as the quick pick-axe item.", The(cxname(obj)));
+        update_inventory();
+    }
+    return 0;
+}
+
+int
+dounsetquickpickaxeitem(VOID_ARGS)
+{
+    struct obj* obj = getobj(getobj_pickaxe_objects, "unset as quick pick-axe item", 0, "");
+    if (!obj)
+    {
+        pline1(Never_mind);
+        return 0;
+    }
+
+    if (obj->o_id != context.quick_pickaxe_obj_oid)
+    {
+        pline("%s is not the quick pick-axe item.", The(cxname(obj)));
+    }
+    else
+    {
+        context.quick_pickaxe_obj_oid = 0;
+        pline("%s was unmarked as the quick pick-axe item.", The(cxname(obj)));
         update_inventory();
     }
     return 0;

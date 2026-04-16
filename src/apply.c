@@ -5191,7 +5191,7 @@ int* max_range;
 coord saved_poletarget_coord = { 0 };
 
 int
-dopole()
+dopolearm(VOID_ARGS)
 {
     if (!(uwep && is_appliable_pole_type_weapon(uwep)) && (uswapwep && is_appliable_pole_type_weapon(uswapwep)))
         (void)doswapweapon();
@@ -5226,7 +5226,6 @@ dopole()
         return 0;
     }
 }
-
 
 /* Distance attacks by pole-weapons */
 STATIC_OVL int
@@ -5426,6 +5425,61 @@ coord* cc_ptr;
     u_wipe_engr(2); /* same as for melee or throwing */
     return 1;
 }
+
+int
+dopickaxe(VOID_ARGS)
+{
+    struct obj* obj = 0;
+    if (context.quick_pickaxe_obj_oid)
+        obj = o_on(context.quick_pickaxe_obj_oid, invent);
+    if (!obj)
+    {
+        int cnt = 0;
+        struct obj* otmp, *last_obj = 0;
+        for (otmp = invent; otmp; otmp = otmp->nobj)
+        {
+            if (is_pick(otmp) || is_saw(otmp) || is_axe(otmp))
+            {
+                cnt++;
+                last_obj = otmp;
+            }
+        }
+        if (cnt == 0)
+        {
+            play_sfx_sound(SFX_GENERAL_CANNOT);
+            You_ex1(ATR_NONE, CLR_MSG_FAIL, "do not have any digging or cutting tools.");
+            return 0;
+        }
+        else if (cnt == 1 && last_obj && ((last_obj->bknown && !last_obj->cursed) || cursed_items_are_positive_mon(&youmonst)))
+        {
+            if (check_capacity((char*)0))
+                return 0;
+            obj = last_obj;
+        }
+        else
+        {
+            char class_list[MAX_OBJECT_CLASSES + 2];
+            if (check_capacity((char*)0))
+                return 0;
+            setapplyclasses(class_list); /* tools[] */
+            obj = getobj(class_list, "cut rock or wood with", 0, "");
+            if (!obj)
+                return 0;
+            if (!is_pick(obj) && !is_saw(obj) && !is_axe(obj))
+            {
+                play_sfx_sound(SFX_GENERAL_CANNOT);
+                pline_ex(ATR_NONE, CLR_MSG_FAIL, "%s is not a digging or cutting tool.", The(cxname(obj)));
+                return 0;
+            }
+        }
+        context.quick_pickaxe_obj_oid = obj ? obj->o_id : 0;
+    }
+    if (obj)
+        return use_pick_axe(obj);
+    else
+        return 0;
+}
+
 
 STATIC_OVL int
 use_cream_pie(obj)
