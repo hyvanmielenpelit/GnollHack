@@ -932,7 +932,7 @@ handle_knapsack_full(VOID_ARGS)
                 struct obj* container = 0;
                 if (context.quick_bag_obj_oid)
                     container = o_on(context.quick_bag_obj_oid, invent);
-                if (!container || !Is_proper_container(container))
+                if (!container || !Is_proper_container(container) || container->olocked || Is_specialized_container(container) || Is_container_with_closed_lid(container))
                     container = select_other_container(invent, (struct obj*)0, FALSE);
                 if (container)
                 {
@@ -2007,8 +2007,8 @@ boolean bynexthere;
         {
             if (context.quick_bag_obj_oid > 0 && curr->o_id == context.quick_bag_obj_oid &&
                 Is_proper_container(curr)
-                && (objects[curr->otyp].oc_flags4 & (O4_CONTAINER_ACCEPTS_ONLY_SCROLLS_AND_BOOKS | O4_CONTAINER_ACCEPTS_ONLY_WEAPONS)) == 0
-                && !((objects[curr->otyp].oc_flags4 & O4_CONTAINER_HAS_LID) && !(curr->speflags & (SPEFLAGS_LID_OPENED)))
+                && !Is_specialized_container(curr)
+                && !Is_container_with_closed_lid(curr)
                 )
                 quick_bag = curr;
 
@@ -2035,8 +2035,9 @@ boolean bynexthere;
                         bag_of_wizardry = curr;
                 }
                 else if (Is_proper_container(curr) && !Is_mbag(curr)
-                    && (objects[curr->otyp].oc_flags4 & (O4_CONTAINER_ACCEPTS_ONLY_SCROLLS_AND_BOOKS | O4_CONTAINER_ACCEPTS_ONLY_WEAPONS)) == 0
-                    && !((objects[curr->otyp].oc_flags4 & (O4_CONTAINER_HAS_LID)) && !(curr->speflags & (SPEFLAGS_LID_OPENED))))
+                    && !Is_specialized_container(curr)
+                    && !Is_container_with_closed_lid(curr)
+                    )
                 {
                     if (!normal_bag)
                         normal_bag = curr;
@@ -2423,7 +2424,7 @@ int cindex, ccount, applymode; /* index of this container (1..N), number of them
     }
 
     boolean lidopened = FALSE;
-    if ((objects[cobj->otyp].oc_flags4 & O4_CONTAINER_HAS_LID) && !(cobj->speflags & SPEFLAGS_LID_OPENED))
+    if (Is_container_with_closed_lid(cobj))
     {
         lidopened = TRUE;
         cobj->speflags |= SPEFLAGS_LID_OPENED;
@@ -2485,15 +2486,12 @@ struct obj* cobj;
         {
             boolean lid_opened = FALSE;
             /* Monster opens the lid first */
-            if (objects[cobj->otyp].oc_flags4 & O4_CONTAINER_HAS_LID)
+            if (Is_container_with_closed_lid(cobj))
             {
-                if (!(cobj->speflags & SPEFLAGS_LID_OPENED))
-                {
-                    lid_opened = TRUE;
-                    play_simple_container_sound(cobj, CONTAINER_SOUND_TYPE_OPEN);
-                    cobj->speflags |= SPEFLAGS_LID_OPENED;
-                    newsym(x, y);
-                }
+                lid_opened = TRUE;
+                play_simple_container_sound(cobj, CONTAINER_SOUND_TYPE_OPEN);
+                cobj->speflags |= SPEFLAGS_LID_OPENED;
+                newsym(x, y);
             }
 
             if (iflags.using_gui_sounds)
@@ -4052,7 +4050,7 @@ boolean more_containers;
 }
 
 boolean
-u_handsy()
+u_handsy(VOID_ARGS)
 {
     if (nohands(youmonst.data)) {
         play_sfx_sound(SFX_GENERAL_CURRENT_FORM_DOES_NOT_ALLOW);
@@ -5056,7 +5054,7 @@ STATIC_VAR const char tippables[] = { ALL_CLASSES, TOOL_CLASS, 0 };
 
 /* #tip command -- empty container contents onto floor */
 int
-dotip()
+dotip(VOID_ARGS)
 {
     struct obj *cobj, *nobj;
     coord cc;
@@ -5369,7 +5367,7 @@ struct obj *box; /* or bag */
 }
 
 boolean
-can_stash_objs()
+can_stash_objs(VOID_ARGS)
 {
     struct obj* otmp;
     for (otmp = invent; otmp; otmp = otmp->nobj)
@@ -5381,7 +5379,7 @@ can_stash_objs()
 }
 
 boolean
-can_floor_stash_objs()
+can_floor_stash_objs(VOID_ARGS)
 {
     if (!can_reach_floor(TRUE))
         return FALSE;
@@ -5399,21 +5397,21 @@ can_floor_stash_objs()
 STATIC_VAR struct obj dummy_container = { 0 };
 
 void
-set_current_container_to_dummyobj()
+set_current_container_to_dummyobj(VOID_ARGS)
 {
     current_container = &dummy_container;
 }
 
 
 void
-set_current_container_to_null()
+set_current_container_to_null(VOID_ARGS)
 {
     current_container = 0;
 }
 
 /* the stash command */
 int
-dostash()
+dostash(VOID_ARGS)
 {
     struct obj* otmp = (struct obj*)0;
 
@@ -5441,7 +5439,7 @@ dostash()
     struct obj* container = 0;
     if (context.quick_bag_obj_oid)
         container = o_on(context.quick_bag_obj_oid, invent);
-    if (!container || !Is_proper_container(container) || container == otmp)
+    if (!container || !Is_proper_container(container) || container->olocked || container == otmp || Is_specialized_container(container) || Is_container_with_closed_lid(container))
         container = select_other_container(invent, (struct obj*)0, FALSE);
     if (!container)
     {
@@ -5460,7 +5458,7 @@ dostash()
 
 /* the stashfloor command */
 int
-dostashfloor()
+dostashfloor(VOID_ARGS)
 {
     struct obj* otmp = (struct obj*)0;
 

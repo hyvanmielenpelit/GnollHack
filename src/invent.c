@@ -3343,7 +3343,7 @@ struct obj* otmp_only;
                 || (!strcmp(word, "unset as quick pick-axe") /* exclude if not a quick pick-axe */
                     && otmp->o_id != context.quick_pickaxe_obj_oid)
                 || (!strcmp(word, "set as quick bag") /* exclude if already a quick bag */
-                    && (otmp->o_id == context.quick_bag_obj_oid || !Is_container(otmp) || !otmp->cknown))
+                    && (otmp->o_id == context.quick_bag_obj_oid || !Is_container(otmp) || (Is_box(otmp) && (!otmp->lknown || otmp->olocked)) || !otmp->cknown || Is_specialized_container(otmp) || Is_container_with_closed_lid(otmp)))
                 || (!strcmp(word, "unset as quick bag") /* exclude if not a quick bag */
                     && otmp->o_id != context.quick_bag_obj_oid)
                 || (!strcmp(word, "set as quick wand") /* exclude if already a quick wand */

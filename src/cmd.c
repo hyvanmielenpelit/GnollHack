@@ -10916,12 +10916,12 @@ dosetquickbag(VOID_ARGS)
         play_sfx_sound(SFX_GENERAL_CANNOT);
         pline_ex(ATR_NONE, CLR_MSG_FAIL, "%s cannot be set as a quick bag; it is locked!", The(cxname(obj)));
     }
-    else if (objects[obj->otyp].oc_flags4 & (O4_CONTAINER_ACCEPTS_ONLY_SCROLLS_AND_BOOKS | O4_CONTAINER_ACCEPTS_ONLY_WEAPONS))
+    else if (Is_specialized_container(obj))
     {
         play_sfx_sound(SFX_GENERAL_CANNOT);
         pline_ex(ATR_NONE, CLR_MSG_FAIL, "%s cannot be set as a quick bag.", The(cxname(obj)));
     }
-    else if ((objects[obj->otyp].oc_flags4 & O4_CONTAINER_HAS_LID) && !(obj->speflags & (SPEFLAGS_LID_OPENED)))
+    else if (Is_container_with_closed_lid(obj))
     {
         play_sfx_sound(SFX_GENERAL_CANNOT);
         pline_ex(ATR_NONE, CLR_MSG_FAIL, "%s cannot be set as a quick bag without opening its lid first.", The(cxname(obj)));

@@ -536,6 +536,8 @@ enum elemental_enchantments {
 #define Is_container_with_lid(o) Is_otyp_container_with_lid((o)->otyp)
 #define Is_noncontainer(o) ((objects[(o)->otyp].oc_flags2 & O2_CONTAINER_NONCONTAINER) != 0)
 #define Is_proper_container(o) (Is_container(o) && !Is_noncontainer(o))
+#define Is_specialized_container(o) ((objects[(o)->otyp].oc_flags4 & (O4_CONTAINER_ACCEPTS_ONLY_SCROLLS_AND_BOOKS | O4_CONTAINER_ACCEPTS_ONLY_WEAPONS)) != 0)
+#define Is_container_with_closed_lid(o) (Is_container_with_lid(o) && !((o)->speflags & (SPEFLAGS_LID_OPENED)))
 #define Is_box(o) ((objects[(o)->otyp].oc_flags2 & O2_CONTAINER_BOX) != 0)
 #define Is_mbag(o) \
     ((objects[(o)->otyp].oc_flags2 & O2_CONTAINER_MAGIC_BAG) != 0)
