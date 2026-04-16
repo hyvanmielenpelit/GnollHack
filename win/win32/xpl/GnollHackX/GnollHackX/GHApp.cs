@@ -3782,8 +3782,9 @@ namespace GnollHackX
 
                     //_moreBtnMatrix[3, 0, 5] = new GHCommandButtonItem("Help", AppResourceName + ".Assets.UI.help.png", (int)'?');
                     //_moreBtnMatrix[3, 1, 5] = new GHCommandButtonItem("Commands", AppResourceName + ".Assets.UI.commands.png", GHUtils.Meta((int)'c'));
+                    //_moreBtnMatrix[3, 1, 5] = new GHCommandButtonItem("Spells", AppResourceName + ".Assets.UI.spells.png", (int)'+');
                     _moreBtnMatrix[3, 0, 5] = new GHCommandButtonItem("Polearm", AppResourceName + ".Assets.UI.polearm.png", GHUtils.Meta((int)'P'));
-                    _moreBtnMatrix[3, 1, 5] = new GHCommandButtonItem("Spells", AppResourceName + ".Assets.UI.spells.png", (int)'+');
+                    _moreBtnMatrix[3, 1, 5] = new GHCommandButtonItem("Pick-axe", AppResourceName + ".Assets.UI.pickaxe.png", GHUtils.Meta((int)'X'));
                     _moreBtnMatrix[3, 2, 5] = new GHCommandButtonItem("Extended", AppResourceName + ".Assets.UI.extended.png", (int)'#');
                     _moreBtnMatrix[3, 3, 5] = new GHCommandButtonItem("Back to Game", AppResourceName + ".Assets.UI.more.png", -101);
 
@@ -4120,6 +4121,7 @@ namespace GnollHackX
             new SelectableShortcutButton("Force Fight", "Fight", 'F', false, false, 0, AppResourceName + ".Assets.UI.fight.png"),
             new SelectableShortcutButton("Inventory", "Inventory", 'i', false, false, 0, AppResourceName + ".Assets.UI.inventory.png"),
             new SelectableShortcutButton("Kick", "Kick", 'd', true, false, 0, AppResourceName + ".Assets.UI.kick.png"),
+            new SelectableShortcutButton("Pick-axe", "Pick-axe", 'X', false, true, 0, AppResourceName + ".Assets.UI.pickaxe.png"),
             new SelectableShortcutButton("Polearm", "Polearm", 'P', false, true, 0, AppResourceName + ".Assets.UI.polearm.png"),
             new SelectableShortcutButton("Read", "Read", 'r', false, false, 0, AppResourceName + ".Assets.UI.read.png"),
             new SelectableShortcutButton("Repeat", "Repeat", 'a', true, false, 0, AppResourceName + ".Assets.UI.repeat.png"),

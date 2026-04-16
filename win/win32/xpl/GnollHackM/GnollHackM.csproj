@@ -320,6 +320,7 @@
 		<None Remove="Assets\UI\oracle.png" />
 		<None Remove="Assets\UI\page-next.png" />
 		<None Remove="Assets\UI\page-previous.png" />
+		<None Remove="Assets\UI\pickaxe.png" />
 		<None Remove="Assets\UI\picktobag.png" />
 		<None Remove="Assets\UI\polearm.png" />
 		<None Remove="Assets\UI\quickcast.png" />
@@ -1033,6 +1034,7 @@
 		<EmbeddedResource Include="Assets\UI\page-next.png" />
 		<EmbeddedResource Include="Assets\UI\page-previous.png" />
 		<EmbeddedResource Include="Assets\UI\pay.png" />
+		<EmbeddedResource Include="Assets\UI\pickaxe.png" />
 		<EmbeddedResource Include="Assets\UI\picktobag.png" />
 		<EmbeddedResource Include="Assets\UI\pickup.png" />
 		<EmbeddedResource Include="Assets\UI\polearm.png" />

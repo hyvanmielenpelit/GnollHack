@@ -929,7 +929,11 @@ handle_knapsack_full(VOID_ARGS)
         {
         case 's':
             {
-                struct obj* container = select_other_container(invent, (struct obj*)0, FALSE);
+                struct obj* container = 0;
+                if (context.quick_bag_obj_oid)
+                    container = o_on(context.quick_bag_obj_oid, invent);
+                if (!container || !Is_proper_container(container))
+                    container = select_other_container(invent, (struct obj*)0, FALSE);
                 if (container)
                 {
                     current_container = container;
@@ -2001,7 +2005,7 @@ boolean bynexthere;
     {
         if (curr != obj && !curr->olocked)
         {
-            if (curr->o_id == context.quick_bag_obj_oid &&
+            if (context.quick_bag_obj_oid > 0 && curr->o_id == context.quick_bag_obj_oid &&
                 Is_proper_container(curr)
                 && (objects[curr->otyp].oc_flags4 & (O4_CONTAINER_ACCEPTS_ONLY_SCROLLS_AND_BOOKS | O4_CONTAINER_ACCEPTS_ONLY_WEAPONS)) == 0
                 && !((objects[curr->otyp].oc_flags4 & O4_CONTAINER_HAS_LID) && !(curr->speflags & (SPEFLAGS_LID_OPENED)))
@@ -5434,7 +5438,11 @@ dostash()
         return 0;
     }
 
-    struct obj* container = select_other_container(invent, (struct obj*)0, FALSE);
+    struct obj* container = 0;
+    if (context.quick_bag_obj_oid)
+        container = o_on(context.quick_bag_obj_oid, invent);
+    if (!container || !Is_proper_container(container) || container == otmp)
+        container = select_other_container(invent, (struct obj*)0, FALSE);
     if (!container)
     {
         pline1(Never_mind);
