@@ -3618,12 +3618,13 @@ namespace GnollHackX
                     _moreBtnMatrix[2, 2, 0] = new GHCommandButtonItem("Travel", AppResourceName + ".Assets.UI.travel.png", (int)'_');
                     _moreBtnMatrix[2, 3, 0] = new GHCommandButtonItem("Autostash", AppResourceName + ".Assets.UI.autostash.png", GHUtils.Meta(15));
 
-                    _moreBtnMatrix[2, 0, 1] = new GHCommandButtonItem("Examine", AppResourceName + ".Assets.UI.examine.png", GHUtils.Meta((int)'x'));
+                    _moreBtnMatrix[2, 0, 1] = new GHCommandButtonItem("Pick-axe", AppResourceName + ".Assets.UI.pickaxe.png", GHUtils.Meta((int)'X'));
                     _moreBtnMatrix[2, 1, 1] = new GHCommandButtonItem("Engrave Quick", AppResourceName + ".Assets.UI.engravequick.png", GHUtils.Meta('E'));
                     _moreBtnMatrix[2, 2, 1] = new GHCommandButtonItem("Cast Quick", AppResourceName + ".Assets.UI.quickcast.png", GHUtils.Meta(26));
                     _moreBtnMatrix[2, 3, 1] = new GHCommandButtonItem("Zap Quick", AppResourceName + ".Assets.UI.zapquick.png", GHUtils.Meta(27));
 
-                    _moreBtnMatrix[2, 0, 2] = new GHCommandButtonItem("Ride", AppResourceName + ".Assets.UI.ride.png", GHUtils.Meta((int)'R'));
+                    //_moreBtnMatrix[2, 0, 2] = new GHCommandButtonItem("Ride", AppResourceName + ".Assets.UI.ride.png", GHUtils.Meta((int)'R'));
+                    _moreBtnMatrix[2, 0, 2] = new GHCommandButtonItem("Examine", AppResourceName + ".Assets.UI.examine.png", GHUtils.Meta((int)'x'));
                     _moreBtnMatrix[2, 1, 2] = new GHCommandButtonItem("Untrap", AppResourceName + ".Assets.UI.untrap.png", GHUtils.Meta((int)'u'));
                     _moreBtnMatrix[2, 2, 2] = new GHCommandButtonItem("Dig", AppResourceName + ".Assets.UI.dig.png", GHUtils.Ctrl((int)'g'));
                     _moreBtnMatrix[2, 3, 2] = new GHCommandButtonItem("Handedness", AppResourceName + ".Assets.UI.handedness.png", GHUtils.Meta((int)'h'));
