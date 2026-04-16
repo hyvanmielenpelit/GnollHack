@@ -10901,10 +10901,35 @@ dosetquickbag(VOID_ARGS)
     {
         pline("%s is already the quick bag.", The(cxname(obj)));
     }
+    else if (!Is_container(obj))
+    {
+        play_sfx_sound(SFX_GENERAL_CANNOT);
+        pline_ex(ATR_NONE, CLR_MSG_FAIL, "%s is not a container.", The(cxname(obj)));
+    }
+    else if (Is_box(obj) && !obj->lknown)
+    {
+        play_sfx_sound(SFX_GENERAL_CANNOT);
+        pline_ex(ATR_NONE, CLR_MSG_FAIL, "%s cannot be set as a quick bag without first knowing whether it is locked.", The(cxname(obj)));
+    }
+    else if (Is_box(obj) && obj->lknown && obj->olocked)
+    {
+        play_sfx_sound(SFX_GENERAL_CANNOT);
+        pline_ex(ATR_NONE, CLR_MSG_FAIL, "%s cannot be set as a quick bag; it is locked!", The(cxname(obj)));
+    }
+    else if (objects[obj->otyp].oc_flags4 & (O4_CONTAINER_ACCEPTS_ONLY_SCROLLS_AND_BOOKS | O4_CONTAINER_ACCEPTS_ONLY_WEAPONS))
+    {
+        play_sfx_sound(SFX_GENERAL_CANNOT);
+        pline_ex(ATR_NONE, CLR_MSG_FAIL, "%s cannot be set as a quick bag.", The(cxname(obj)));
+    }
+    else if ((objects[obj->otyp].oc_flags4 & O4_CONTAINER_HAS_LID) && !(obj->speflags & (SPEFLAGS_LID_OPENED)))
+    {
+        play_sfx_sound(SFX_GENERAL_CANNOT);
+        pline_ex(ATR_NONE, CLR_MSG_FAIL, "%s cannot be set as a quick bag without opening its lid first.", The(cxname(obj)));
+    }
     else if (!obj->cknown) /* This should prevent checking out which are non-containers */
     {
         play_sfx_sound(SFX_GENERAL_CANNOT);
-        pline_ex(ATR_NONE, CLR_MSG_FAIL, "%s cannot be set as a quick bag without knowing its contents first.", The(cxname(obj)));
+        pline_ex(ATR_NONE, CLR_MSG_FAIL, "%s cannot be set as a quick bag without investigating its contents first.", The(cxname(obj)));
     }
     else if (!Is_proper_container(obj)) /* Insurance */
     {
