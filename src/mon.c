@@ -3700,6 +3700,23 @@ uint64_t mondeadflags;
     case PM_XAN:
         issue_achievement(GUI_ACHIEVEMENT_DEFEATED_XAN);
         break;
+    case PM_ARCH_LICH:
+        issue_achievement(GUI_ACHIEVEMENT_DEFEATED_ARCH_LICH);
+        /* FALLTHRU */
+    case PM_MASTER_LICH:
+        issue_achievement(GUI_ACHIEVEMENT_DEFEATED_MASTER_LICH);
+        /* FALLTHRU */
+    case PM_DEMILICH:
+    case PM_LICH:
+        issue_achievement(GUI_ACHIEVEMENT_DEFEATED_LICH);
+        break;
+    case PM_ELDER_TENTACLED_ONE:
+        issue_achievement(GUI_ACHIEVEMENT_DEFEATED_ELDER_TENTACLED_ONE);
+        /* FALLTHRU */
+    case PM_DEATH_FLAYER:
+    case PM_TENTACLED_ONE:
+        issue_achievement(GUI_ACHIEVEMENT_DEFEATED_TENTACLED_ONE);
+        break;
     case PM_ORC:
         if (mtmp->mon_flags & MON_FLAGS_ORC_AND_A_PIE)
             issue_achievement(GUI_ACHIEVEMENT_DEFEATED_ORC_AND_A_PIE);

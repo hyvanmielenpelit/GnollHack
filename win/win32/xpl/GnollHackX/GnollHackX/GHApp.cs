@@ -9790,6 +9790,27 @@ namespace GnollHackX
                 new Achievement("Orc Captain and Many Pies", "Defeat the orc captain guarding a box full of pies",
                 (int)gui_achievement_categories.Combat, 0, false);
 
+            AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_DEFEATED_LICH] =
+                new Achievement("Defeat Lich", "Defeat any type of lich, a high-level undead wizard",
+                (int)gui_achievement_categories.Combat, 0);
+
+            AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_DEFEATED_MASTER_LICH] =
+                new Achievement("Defeat Master Lich", "Defeat a lich of at least master level",
+                (int)gui_achievement_categories.Combat, 0, (int)gui_achievement_types.GUI_ACHIEVEMENT_DEFEATED_LICH);
+
+            AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_DEFEATED_ARCH_LICH] =
+                new Achievement("Defeat Arch-Lich", "Defeat an arch-lich, the most powerful type of lich",
+                (int)gui_achievement_categories.Combat, 0, (int)gui_achievement_types.GUI_ACHIEVEMENT_DEFEATED_MASTER_LICH);
+
+            AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_DEFEATED_TENTACLED_ONE] =
+                new Achievement("Defeat Tentacled One", "Defeat any type of a tentacled one, a brain-eating horror",
+                (int)gui_achievement_categories.Combat, 0, false);
+
+            AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_DEFEATED_ELDER_TENTACLED_ONE] =
+                new Achievement("Defeat Elder Tentacled One", "Defeat an elder tentacled one, a powerful brain-eating horror",
+                (int)gui_achievement_categories.Combat, 0, (int)gui_achievement_types.GUI_ACHIEVEMENT_DEFEATED_TENTACLED_ONE);
+
+
             /* Exploration */
             AchievementDefinitions[(int)gui_achievement_types.GUI_ACHIEVEMENT_REACHED_DUNGEON_LEVEL_5] =
                 new Achievement("Dungeon Level 5", "Reach dungeon level 5 with any character", "Dungeon Level 05",
