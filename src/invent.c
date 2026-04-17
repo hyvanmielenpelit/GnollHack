@@ -3349,7 +3349,7 @@ struct obj* otmp_only;
                 || (!strcmp(word, "unmark as favorite") /* exclude if not a favorite */
                     && !(otmp->speflags & SPEFLAGS_FAVORITE))
                 || (!strcmp(word, "set as quick engrave item") /* exclude if already a quick engrave item */
-                    && otmp->o_id == context.quick_engrave_obj_oid)
+                    && (otmp->o_id == context.quick_engrave_obj_oid || Is_container(otmp)))
                 || (!strcmp(word, "unset as quick engrave item") /* exclude if not a quick engrave item */
                     && otmp->o_id != context.quick_engrave_obj_oid)
                 || (!strcmp(word, "set as quick pick-axe") /* exclude if already a quick pick-axe */
