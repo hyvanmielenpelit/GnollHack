@@ -165,7 +165,7 @@ notify_gui_pregame(VOID_ARGS)
         issue_gui_command(GUI_CMD_TOGGLE_QUICK_CAST_SPELL, NO_GLYPH, 0, "");
 
     struct obj* obj;
-    if (context.quick_zap_wand_oid > 0 && (obj = o_on(context.quick_zap_wand_oid, invent)) != 0)
+    if (context.quick_zap_wand_oid > 0 && (obj = o_on_open_inventory(context.quick_zap_wand_oid)) != 0)
         issue_gui_command(GUI_CMD_TOGGLE_QUICK_ZAP_WAND, (int)obj_to_glyph(obj, rn2_on_display_rng), Hallucination ? 0 : (int)obj->exceptionality, cxname(obj)); /* Notification is needed */
     else
         issue_gui_command(GUI_CMD_TOGGLE_QUICK_ZAP_WAND, NO_GLYPH, 0, "");

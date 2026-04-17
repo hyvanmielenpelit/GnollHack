@@ -2474,6 +2474,19 @@ register struct obj *objchn;
     return (struct obj *) 0;
 }
 
+struct obj*
+o_on_open_inventory(id)
+unsigned int id;
+{
+    struct obj* objchn = invent;
+    while (objchn) {
+        if (objchn->o_id == id)
+            return objchn;
+        /* Does not check contents, since the item needs to be in open inventory */
+        objchn = objchn->nobj;
+    }
+    return (struct obj*)0;
+}
 
 struct obj*
 o_on_memory(id, objchn)

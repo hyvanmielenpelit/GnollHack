@@ -3722,7 +3722,7 @@ take_off(VOID_ARGS)
             }
 
             unsigned id = don->oid[idx];
-            if (id == 0 || (otmp = o_on(id, invent)) == 0)
+            if (id == 0 || (otmp = o_on_open_inventory(id)) == 0)
             {
                 reset_remarm();
                 return 0; /* Can't find the object to be worn in the inventory; cancel the process */

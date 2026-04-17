@@ -9230,7 +9230,7 @@ int x, y, mod;
     if (mod == CLICK_ZAP)
     {
         struct obj* obj;
-        if (!context.quick_zap_wand_oid || !(obj = o_on(context.quick_zap_wand_oid, invent)))
+        if (!context.quick_zap_wand_oid || !(obj = o_on_open_inventory(context.quick_zap_wand_oid)))
         {
             /* Quick zap handles error messaging */
             cmd[0] = Cmd.spkeys[NHKF_CLICKZAP];
@@ -10601,7 +10601,7 @@ enum create_context_menu_types menu_type;
         if (context.last_picked_obj_oid > 0 && context.last_picked_obj_show_duration_left > 0)
         {
             struct obj* lpobj;
-            if ((lpobj = o_on(context.last_picked_obj_oid, invent)) != 0)
+            if ((lpobj = o_on_open_inventory(context.last_picked_obj_oid)) != 0)
                 add_context_menu(M('<'), nondir_cmd_from_func(dolastpickeditem), CONTEXT_MENU_STYLE_GENERAL, lpobj ? lpobj->gui_glyph : 0, "Last Item", lpobj ? cxname(lpobj) : "", 0, NO_COLOR);
         }
 

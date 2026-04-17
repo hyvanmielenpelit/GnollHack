@@ -931,7 +931,7 @@ handle_knapsack_full(VOID_ARGS)
             {
                 struct obj* container = 0;
                 if (context.quick_bag_obj_oid)
-                    container = o_on(context.quick_bag_obj_oid, invent);
+                    container = o_on_open_inventory(context.quick_bag_obj_oid);
                 if (!container || !Is_proper_container(container) || container->olocked || Is_specialized_container(container) || Is_container_with_closed_lid(container))
                     container = select_other_container(invent, (struct obj*)0, FALSE);
                 if (container)
@@ -5438,7 +5438,7 @@ dostash(VOID_ARGS)
 
     struct obj* container = 0;
     if (context.quick_bag_obj_oid)
-        container = o_on(context.quick_bag_obj_oid, invent);
+        container = o_on_open_inventory(context.quick_bag_obj_oid);
     if (!container || !Is_proper_container(container) || container->olocked || container == otmp || Is_specialized_container(container) || Is_container_with_closed_lid(container))
         container = select_other_container(invent, (struct obj*)0, FALSE);
     if (!container)

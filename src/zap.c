@@ -6505,7 +6505,7 @@ boolean* stop_readchar_ptr;
             *stop_readchar_ptr = TRUE;
         return 0;
     }
-    obj = o_on(context.quick_zap_wand_oid, invent);
+    obj = o_on_open_inventory(context.quick_zap_wand_oid);
     if (!obj)
     {
         play_sfx_sound(SFX_GENERAL_CANNOT);

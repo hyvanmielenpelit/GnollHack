@@ -680,7 +680,7 @@ uchar item_selection_style;
     case 2:
         if (context.quick_engrave_obj_oid > 0)
         {
-            otmp = o_on(context.quick_engrave_obj_oid, invent);
+            otmp = o_on_open_inventory(context.quick_engrave_obj_oid);
             if (otmp)
                 prompt_for_stylus = FALSE;
         }

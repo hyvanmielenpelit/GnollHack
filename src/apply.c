@@ -5431,7 +5431,7 @@ dopickaxe(VOID_ARGS)
 {
     struct obj* obj = 0;
     if (context.quick_pickaxe_obj_oid)
-        obj = o_on(context.quick_pickaxe_obj_oid, invent);
+        obj = o_on_open_inventory(context.quick_pickaxe_obj_oid);
     if (!obj)
     {
         int cnt = 0;
