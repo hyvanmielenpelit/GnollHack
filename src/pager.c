@@ -1624,7 +1624,7 @@ coord *click_cc;
             char invlet;
             struct obj *invobj;
 
-            invlet = display_inventory((const char *) 0, TRUE, SHOWWEIGHTS_INVENTORY);
+            invlet = display_inventory((const char *) 0, TRUE, SHOWWEIGHTS_INVENTORY, TRUE);
             if (!invlet || invlet == CANCEL_LET || invlet == SWAP_LET)
                 return 0;
             *out_str = '\0';

@@ -255,7 +255,7 @@ int applymode;
             }
             else if (sym == 'i') 
             {
-                (void) display_inventory((char *) 0, TRUE, SHOWWEIGHTS_INVENTORY);
+                (void) display_inventory((char *) 0, TRUE, SHOWWEIGHTS_INVENTORY, TRUE);
                 goto ask_again;
             }
             else if (sym == 'm') 
@@ -700,7 +700,7 @@ boolean do_auto_in_bag;
 
             Sprintf(qbuf, "Pick up%s %d of what?", do_auto_in_bag ? " and auto-stash" : "", count);
             val_for_n_or_more = count; /* set up callback selector */
-            n = query_objlist(qbuf, objchain_p, traverse_how | OBJECT_COMPARISON,
+            n = query_objlist(qbuf, objchain_p, traverse_how | OBJECT_COMPARISON | SHOW_QUICK,
                               &pick_list, PICK_ONE, n_or_more, SHOWWEIGHTS_PICKUP);
             /* correct counts, if any given */
             for (i = 0; i < n; i++)
@@ -709,7 +709,7 @@ boolean do_auto_in_bag;
         else 
         {
             n = query_objlist(do_auto_in_bag ? "Pick up and auto-stash what?" : "Pick up what?", objchain_p,
-                              (traverse_how | FEEL_COCKATRICE | OBJECT_COMPARISON),
+                              (traverse_how | FEEL_COCKATRICE | OBJECT_COMPARISON | SHOW_QUICK),
                               &pick_list, PICK_ANY, all_but_uchain, SHOWWEIGHTS_PICKUP);
         }
 
@@ -770,7 +770,7 @@ boolean do_auto_in_bag;
                     goto pickupdone;
                 if (selective)
                     traverse_how |= INVORDER_SORT;
-                n = query_objlist(do_auto_in_bag ? "Pick up and auto-stash what?" : "Pick up what?", objchain_p, traverse_how | OBJECT_COMPARISON,
+                n = query_objlist(do_auto_in_bag ? "Pick up and auto-stash what?" : "Pick up what?", objchain_p, traverse_how | OBJECT_COMPARISON | SHOW_QUICK,
                                   &pick_list, PICK_ANY,
                                   (via_menu == -2) ? allow_all
                                                    : allow_category, SHOWWEIGHTS_PICKUP);
@@ -1126,6 +1126,7 @@ int show_weights;
     boolean printed_type_name, first,
             sorted = (qflags & INVORDER_SORT) != 0,
             comparison_stats = (qflags & OBJECT_COMPARISON) != 0 && iflags.show_comparison_stats && !iflags.in_dumplog && !program_state.gameover,
+            show_quick = (qflags & SHOW_QUICK) != 0,
             engulfer = (qflags & INCLUDE_HERO) != 0;
     unsigned sortflags;
     Loot *sortedolist, *srtoli;
@@ -1236,8 +1237,8 @@ int show_weights;
                 memset(colors, NO_COLOR, sizeof(colors));
                 Strcpy(objbuf, 
                     show_weights > SHOWWEIGHTS_NONE ? 
-                    (flags.inventory_weights_last ? doname_with_price_and_weight_last(curr, loadstonecorrectly) : doname_with_price_and_weight_first(curr, loadstonecorrectly)) : 
-                    doname_with_price(curr));
+                    (flags.inventory_weights_last ? doname_with_price_and_weight_last(curr, loadstonecorrectly, show_quick) : doname_with_price_and_weight_first(curr, loadstonecorrectly, show_quick)) :
+                    show_quick ? doname_with_price_quick(curr) : doname_with_price(curr));
                 struct extended_menu_info eminfo = obj_to_extended_menu_info(curr);
                 if (comparison_stats)
                 {
@@ -4765,7 +4766,7 @@ int applymode;
     }
     else 
     {
-        mflags = INVORDER_SORT | OBJECT_COMPARISON;
+        mflags = INVORDER_SORT | OBJECT_COMPARISON | SHOW_QUICK;
         if (command_id == 1 && flags.invlet_constant)
             mflags |= USE_INVLET;
         if (command_id == 6)

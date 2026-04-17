@@ -1132,8 +1132,8 @@ E void FDECL(set_panic_handling, (int, BOOLEAN_P));
 E void VDECL(panic, (const char *, ...)) PRINTF_F(1, 2) NORETURN;
 #if !defined(MAKEDEFS_C) && !defined(LEV_LEX_C)
 E void FDECL(done, (int));
-E void FDECL(container_contents, (struct obj *, BOOLEAN_P, BOOLEAN_P, BOOLEAN_P, int));
-E void FDECL(magic_chest_contents, (BOOLEAN_P, BOOLEAN_P, BOOLEAN_P, int));
+E void FDECL(container_contents, (struct obj *, BOOLEAN_P, BOOLEAN_P, BOOLEAN_P, int, BOOLEAN_P));
+E void FDECL(magic_chest_contents, (BOOLEAN_P, BOOLEAN_P, BOOLEAN_P, int, BOOLEAN_P));
 #ifdef VMS
 E void FDECL(nh_terminate, (int));
 E void FDECL(nh_bail, (int, const char*, BOOLEAN_P));
@@ -1602,12 +1602,12 @@ E boolean FDECL(is_wearable, (struct obj*));
 E struct obj *FDECL(g_at, (int, int));
 E boolean FDECL(splittable, (struct obj *));
 E struct obj *FDECL(getobj, (const char *, const char *, int, const char*));
-E struct obj* FDECL(getobj_ex, (const char*, const char*, int, const char*, boolean (*)(struct obj*), int64_t, unsigned int));
+E struct obj* FDECL(getobj_ex, (const char*, const char*, int, BOOLEAN_P, const char*, boolean (*)(struct obj*), int64_t, unsigned int));
 void FDECL(construct_getobj_letters, (const char*, const char*, boolean(*)(struct obj*), char*, char*, char*, size_t, size_t, size_t, int*, xchar*, char**, xchar*, boolean*, boolean*, boolean*, boolean*, struct obj*));
 
 E boolean FDECL(acceptable_getobj_obj, (struct obj*, const char*, const char*));
 E int FDECL(ggetobj, (const char *, int (*)(OBJ_P), int,
-                      BOOLEAN_P, unsigned *, int));
+                      BOOLEAN_P, unsigned *, int, BOOLEAN_P));
 E int FDECL(askchain, (struct obj **, const char *, int, int (*)(OBJ_P),
                        int (*)(OBJ_P), int, const char *));
 E void FDECL(fully_identify_obj, (struct obj *));
@@ -1627,8 +1627,8 @@ E int NDECL(doseeworn);
 E int NDECL(dolastpickeditem);
 E int FDECL(display_item_command_menu_by_invlet, (CHAR_P, int64_t, boolean*));
 E int FDECL(display_item_command_menu, (struct obj*, int64_t, boolean*));
-E char FDECL(display_inventory, (const char *, BOOLEAN_P, int));
-E char FDECL(display_inventory_with_header, (const char*, BOOLEAN_P, int64_t*, int, BOOLEAN_P, BOOLEAN_P));
+E char FDECL(display_inventory, (const char *, BOOLEAN_P, int, BOOLEAN_P));
+E char FDECL(display_inventory_with_header, (const char*, BOOLEAN_P, int64_t*, int, BOOLEAN_P, BOOLEAN_P, BOOLEAN_P));
 E int FDECL(display_binventory, (int, int, BOOLEAN_P));
 E struct obj *FDECL(display_cinventory, (struct obj *));
 E struct obj *FDECL(display_minventory, (struct monst *, int, char *));
@@ -2561,8 +2561,9 @@ E char* FDECL(doname_with_weight_last_true, (struct obj*));
 E char* FDECL(doname_with_weight_first, (struct obj*, BOOLEAN_P, BOOLEAN_P, unsigned));
 E char* FDECL(doname_with_weight_last, (struct obj*, BOOLEAN_P, BOOLEAN_P, unsigned));
 E char* FDECL(doname_with_price, (struct obj*));
-E char* FDECL(doname_with_price_and_weight_first, (struct obj*, BOOLEAN_P));
-E char* FDECL(doname_with_price_and_weight_last, (struct obj*, BOOLEAN_P));
+E char* FDECL(doname_with_price_quick, (struct obj*));
+E char* FDECL(doname_with_price_and_weight_first, (struct obj*, BOOLEAN_P, BOOLEAN_P));
+E char* FDECL(doname_with_price_and_weight_last, (struct obj*, BOOLEAN_P, BOOLEAN_P));
 E char* FDECL(doname_with_price_and_comparison, (struct obj*, BOOLEAN_P, char**, char**));
 E char* FDECL(doname_with_price_and_weight_first_and_comparison, (struct obj*, BOOLEAN_P, BOOLEAN_P, char**, char**));
 E char* FDECL(doname_with_price_and_weight_last_and_comparison, (struct obj*, BOOLEAN_P, BOOLEAN_P, char**, char**));

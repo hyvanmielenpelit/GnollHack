@@ -6528,7 +6528,7 @@ dodropmany()
 
     /* should coordinate with perm invent, maybe not show worn items */
     n = query_objlist("What would you like to drop?", &invent,
-        (USE_INVLET | INVORDER_SORT | OBJECT_COMPARISON), &pick_list, PICK_ANY, allow_all, SHOWWEIGHTS_DROP);
+        (USE_INVLET | INVORDER_SORT | OBJECT_COMPARISON | SHOW_QUICK), &pick_list, PICK_ANY, allow_all, SHOWWEIGHTS_DROP);
 
     if (n > 0 && pick_list)
     {
@@ -6600,7 +6600,7 @@ doddrop()
     if (*u.ushops)
         sellobj_state(SELL_DELIBERATE);
     if (flags.menu_style != MENU_TRADITIONAL
-        || (result = ggetobj("drop", drop, 0, FALSE, (unsigned *) 0, 3)) < -1)
+        || (result = ggetobj("drop", drop, 0, FALSE, (unsigned *) 0, 3, TRUE)) < -1)
         result = menu_drop(result);
     if (*u.ushops)
         sellobj_state(SELL_NORMAL);
@@ -6663,7 +6663,7 @@ int retry;
 
         all_categories = FALSE;
         /* Gather valid classes via traditional GnollHack method */
-        i = ggetobj("drop", drop, 0, TRUE, &ggoresults, 3);
+        i = ggetobj("drop", drop, 0, TRUE, &ggoresults, 3, TRUE);
         if (i == -2)
             all_categories = TRUE;
         if (ggoresults & ALL_FINISHED) 
@@ -6700,7 +6700,7 @@ int retry;
     {
         /* should coordinate with perm invent, maybe not show worn items */
         n = query_objlist("What would you like to drop?", &invent,
-                          (USE_INVLET | INVORDER_SORT | OBJECT_COMPARISON), &pick_list, PICK_ANY,
+                          (USE_INVLET | INVORDER_SORT | OBJECT_COMPARISON | SHOW_QUICK), &pick_list, PICK_ANY,
                           all_categories ? allow_all : allow_category, SHOWWEIGHTS_DROP);
         if (n > 0 && pick_list)
         {
@@ -6773,7 +6773,7 @@ doautostash()
     }
     add_valid_menu_class(0); /* clear any classes already there */
     if (flags.menu_style != MENU_TRADITIONAL
-        || (result = ggetobj("put in bag", autobag, 0, FALSE, (unsigned*)0, 3)) < -1)
+        || (result = ggetobj("put in bag", autobag, 0, FALSE, (unsigned*)0, 3, TRUE)) < -1)
         result = menu_autostash(result);
     if (result)
         reset_occupations();
@@ -6834,7 +6834,7 @@ int retry;
 
         all_categories = FALSE;
         /* Gather valid classes via traditional GnollHack method */
-        i = ggetobj("put in bag", autobag, 0, TRUE, &ggoresults, 3);
+        i = ggetobj("put in bag", autobag, 0, TRUE, &ggoresults, 3, TRUE);
         if (i == -2)
             all_categories = TRUE;
         if (ggoresults & ALL_FINISHED)
@@ -6876,7 +6876,7 @@ int retry;
     {
         /* should coordinate with perm invent, maybe not show worn items */
         n = query_objlist("What would you like to put in bag?", &invent,
-            (USE_INVLET | INVORDER_SORT | OBJECT_COMPARISON), &pick_list, PICK_ANY,
+            (USE_INVLET | INVORDER_SORT | OBJECT_COMPARISON | SHOW_QUICK), &pick_list, PICK_ANY,
             all_categories ? allow_all : allow_category, SHOWWEIGHTS_DROP);
         if (n > 0 && pick_list)
         {

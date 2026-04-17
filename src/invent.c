@@ -36,7 +36,7 @@ STATIC_PTR int FDECL(ckvalidcat, (struct obj *));
 STATIC_PTR int FDECL(ckunpaid, (struct obj *));
 STATIC_PTR char *FDECL(safeq_xprname, (struct obj *));
 STATIC_PTR char *FDECL(safeq_shortxprname, (struct obj *));
-STATIC_DCL char FDECL(display_pickinv, (const char *, char *, char *, BOOLEAN_P, int64_t *, int, const char*, UCHAR_P, BOOLEAN_P));
+STATIC_DCL char FDECL(display_pickinv, (const char *, char *, char *, BOOLEAN_P, int64_t *, int, BOOLEAN_P, const char*, UCHAR_P, BOOLEAN_P));
 STATIC_DCL char FDECL(display_used_invlets, (CHAR_P));
 STATIC_DCL boolean FDECL(this_type_only, (struct obj *));
 STATIC_DCL void NDECL(dounpaid);
@@ -46,7 +46,7 @@ STATIC_DCL struct obj *FDECL(find_unpaid, (struct obj *, struct obj **));
 STATIC_DCL int FDECL(menu_identify, (int));
 STATIC_DCL boolean FDECL(tool_in_use, (struct obj *));
 STATIC_DCL char FDECL(obj_to_let, (struct obj *));
-STATIC_DCL void FDECL(add_inventory_menu_item, (winid, struct obj*, CHAR_P, BOOLEAN_P, BOOLEAN_P, int, BOOLEAN_P, BOOLEAN_P, int*));
+STATIC_DCL void FDECL(add_inventory_menu_item, (winid, struct obj*, CHAR_P, BOOLEAN_P, BOOLEAN_P, int, BOOLEAN_P, BOOLEAN_P, BOOLEAN_P, int*));
 STATIC_DCL boolean FDECL(is_special_show_condition_satisfied, (int));
 
 static int lastinvnr = 51; /* 0 ... 51 (never saved&restored) */
@@ -2675,13 +2675,14 @@ register const char* let, * word;
 int show_weights;
 const char* headertext;
 {
-    return getobj_ex(let, word, show_weights, headertext, (boolean (*)(struct obj*))0, (int64_t)0, 0U);
+    return getobj_ex(let, word, show_weights, TRUE, headertext, (boolean (*)(struct obj*))0, (int64_t)0, 0U);
 }
 
 struct obj *
-getobj_ex(let, word, show_weights, headertext, validitemfunc, cost, getobjflags)
+getobj_ex(let, word, show_weights, show_quick, headertext, validitemfunc, cost, getobjflags)
 register const char *let, *word;
 int show_weights;
+boolean show_quick;
 const char* headertext;
 boolean (*validitemfunc)(struct obj*);
 int64_t cost;
@@ -3109,7 +3110,7 @@ unsigned int getobjflags; /* 1 = cost is specified; 2 = header text is about cos
                 allowed_choices = altlets;
             ilet = display_pickinv(allowed_choices, *qbuf ? qbuf : (char *) 0,
                                    menuquery,
-                                   TRUE, allowcnt ? &ctmp : (int64_t *) 0, show_weights, headertext, FALSE, FALSE);
+                                   TRUE, allowcnt ? &ctmp : (int64_t *) 0, show_weights, show_quick, headertext, FALSE, FALSE);
             if (!ilet || ilet == SWAP_LET)
                 continue;
             if (ilet == HANDS_SYM)
@@ -3709,10 +3710,10 @@ STATIC_VAR NEARDATA const char removeables[] = { ARMOR_CLASS, WEAPON_CLASS,
    Return the number of times fn was called successfully.
    If combo is TRUE, we just use this to get a category list. */
 int
-ggetobj(word, fn, mx, combo, resultflags, show_weights)
+ggetobj(word, fn, mx, combo, resultflags, show_weights, show_quick)
 const char *word;
 int FDECL((*fn), (OBJ_P)), mx;
-boolean combo; /* combination menu flag */
+boolean combo, show_quick; /* combination menu flag */
 unsigned *resultflags;
 int show_weights;
 {
@@ -3784,7 +3785,7 @@ int show_weights;
                     /* index() check: limit overflow items to one '#' */
                     if ((*ofilter)(otmp) && !index(ailets, otmp->invlet))
                         (void) strkitten(ailets, otmp->invlet);
-            if (display_inventory(ailets, TRUE, show_weights) == '\033')
+            if (display_inventory(ailets, TRUE, show_weights, show_quick) == '\033')
                 return 0;
         } else
             break;
@@ -4120,7 +4121,7 @@ int id_limit;
             original_id_limit <= 1 ? "" : first ? " first" : " next");
 
         n = query_objlist(buf, &invent, (SIGNAL_NOMENU | SIGNAL_ESCAPE
-                                         | USE_INVLET | INVORDER_SORT | OBJECT_COMPARISON),
+                                         | USE_INVLET | INVORDER_SORT | OBJECT_COMPARISON | SHOW_QUICK),
                           &pick_list, id_limit == 1 ? PICK_ONE : PICK_ANY, not_fully_identified, SHOWWEIGHTS_NONE);
 
         if (n > 0)
@@ -4263,8 +4264,7 @@ boolean learning_id; /* true if we just read unknown identify scroll */
         {
             do
             {
-                n = ggetobj("identify", identify, id_limit, FALSE,
-                    (unsigned*)0, 0);
+                n = ggetobj("identify", identify, id_limit, FALSE, (unsigned*)0, 0, TRUE);
                 if (n < 0)
                     break; /* quit or no eligible items */
                 else
@@ -4485,7 +4485,7 @@ ddoinv()
     {
         pickcnt = 0;
         return_to_inv = FALSE;
-        invlet = display_inventory_with_header((const char*)0, TRUE, &pickcnt, SHOWWEIGHTS_INVENTORY, FALSE, FALSE);
+        invlet = display_inventory_with_header((const char*)0, TRUE, &pickcnt, SHOWWEIGHTS_INVENTORY, TRUE, FALSE, FALSE);
         if (invlet == CANCEL_LET || invlet == '\0')
         {
             issue_gui_command(GUI_CMD_TOGGLE_MENU_POSITION_SAVING, GHMENU_STYLE_INVENTORY, 0, (char*)0);
@@ -4535,7 +4535,7 @@ doseeworn()
     {
         pickcnt = 0;
         return_to_inv = FALSE;
-        invlet = display_inventory_with_header((const char*)0, TRUE, &pickcnt, SHOWWEIGHTS_INVENTORY, iflags.worn_shows_equipment, TRUE);
+        invlet = display_inventory_with_header((const char*)0, TRUE, &pickcnt, SHOWWEIGHTS_INVENTORY, TRUE, iflags.worn_shows_equipment, TRUE);
         if (!invlet || invlet == CANCEL_LET || invlet == '\0')
             return 0;
 
@@ -4984,11 +4984,11 @@ free_pickinv_cache()
 }
 
 STATIC_OVL void
-add_inventory_menu_item(win, otmp, ilet, wizid, loadstonecorrectly, show_weights, want_reply, comparison_stats, wtcount_ptr)
+add_inventory_menu_item(win, otmp, ilet, wizid, loadstonecorrectly, show_weights, show_quick, want_reply, comparison_stats, wtcount_ptr)
 winid win;
 struct obj* otmp;
 char ilet;
-boolean wizid, loadstonecorrectly, want_reply, comparison_stats;
+boolean wizid, loadstonecorrectly, want_reply, comparison_stats, show_quick;
 int show_weights;
 int* wtcount_ptr;
 {
@@ -5015,9 +5015,9 @@ int* wtcount_ptr;
     memset(attrs, ATR_NONE, sizeof(attrs));
     memset(colors, NO_COLOR, sizeof(colors));
     Strcpy(objbuf,
-        show_weights > SHOWWEIGHTS_NONE ? (flags.inventory_weights_last ? doname_with_weight_last(otmp, loadstonecorrectly, iflags.perm_invent && !want_reply, DONAME_SHOW_QUICK_ITEMS)
-            : doname_with_weight_first(otmp, loadstonecorrectly, iflags.perm_invent && !want_reply, DONAME_SHOW_QUICK_ITEMS))
-        : doname_with_flags(otmp, DONAME_SHOW_QUICK_ITEMS | (iflags.perm_invent && !want_reply ? DONAME_HIDE_REMAINING_LIT_TURNS : 0), (char**)0, (char**)0));
+        show_weights > SHOWWEIGHTS_NONE ? (flags.inventory_weights_last ? doname_with_weight_last(otmp, loadstonecorrectly, iflags.perm_invent && !want_reply, show_quick ? DONAME_SHOW_QUICK_ITEMS : 0)
+            : doname_with_weight_first(otmp, loadstonecorrectly, iflags.perm_invent && !want_reply, show_quick ? DONAME_SHOW_QUICK_ITEMS : 0))
+        : doname_with_flags(otmp, (show_quick ? DONAME_SHOW_QUICK_ITEMS : 0) | (iflags.perm_invent && !want_reply ? DONAME_HIDE_REMAINING_LIT_TURNS : 0), (char**)0, (char**)0));
     struct extended_menu_info eminfo = obj_to_extended_menu_info(otmp);
     if (comparison_stats)
     {
@@ -5039,11 +5039,11 @@ int* wtcount_ptr;
  * any count returned from the menu selection is placed here.
  */
 STATIC_OVL char
-display_pickinv(lets, xtra_choice, query, want_reply, out_cnt, show_weights, headertext, addinventoryheader, wornonly)
+display_pickinv(lets, xtra_choice, query, want_reply, out_cnt, show_weights, show_quick, headertext, addinventoryheader, wornonly)
 const char *lets;
 char *xtra_choice; /* "fingers", pick hands rather than an object */
 char *query;
-boolean want_reply;
+boolean want_reply, show_quick;
 int64_t *out_cnt;
 int show_weights;
 const char* headertext;
@@ -5236,7 +5236,7 @@ boolean wornonly;
            classcount++;
            favorites_printed = TRUE;
        }
-       add_inventory_menu_item(win, otmp, ilet, wizid, loadstonecorrectly, show_weights, want_reply, comparison_stats && !otmp->owornmask, &wtcount);
+       add_inventory_menu_item(win, otmp, ilet, wizid, loadstonecorrectly, show_weights, show_quick, want_reply, comparison_stats && !otmp->owornmask, &wtcount);
    }
 
    /* Others by class */
@@ -5276,7 +5276,7 @@ nextclass:
                     menu_group_heading_info('\0'));
                 classcount++;
             }
-            add_inventory_menu_item(win, otmp, ilet, wizid, loadstonecorrectly, show_weights, want_reply, comparison_stats && !otmp->owornmask, &wtcount);
+            add_inventory_menu_item(win, otmp, ilet, wizid, loadstonecorrectly, show_weights, show_quick, want_reply, comparison_stats && !otmp->owornmask, &wtcount);
         }
     }
     if (flags.sortpack) 
@@ -5625,24 +5625,24 @@ int show_weights;
  * was selected.
  */
 char
-display_inventory(lets, want_reply, show_weights)
+display_inventory(lets, want_reply, show_weights, show_quick)
 const char *lets;
-boolean want_reply;
+boolean want_reply, show_quick;
 int show_weights;
 {
     return display_pickinv(lets, (char *) 0, (char *) 0,
-                           want_reply, (int64_t *) 0, show_weights, "", FALSE, FALSE);
+                           want_reply, (int64_t *) 0, show_weights, show_quick, "", FALSE, FALSE);
 }
 
 char
-display_inventory_with_header(lets, want_reply, out_cnt, show_weights, isequipment, wornonly)
+display_inventory_with_header(lets, want_reply, out_cnt, show_weights, show_quick, isequipment, wornonly)
 const char* lets;
-boolean want_reply, isequipment, wornonly;
+boolean want_reply, show_quick, isequipment, wornonly;
 int64_t* out_cnt;
 int show_weights;
 {
     return display_pickinv(lets, (char*)0, (char*)0,
-        want_reply, out_cnt, show_weights, "", isequipment ? 2 : TRUE, isequipment ? 0 : wornonly);
+        want_reply, out_cnt, show_weights, show_quick, "", isequipment ? 2 : TRUE, isequipment ? 0 : wornonly);
 }
 
 /*
@@ -6315,7 +6315,7 @@ dotypeinv()
     }
     if (query_objlist((char *) 0, &invent,
                       ((flags.invlet_constant ? USE_INVLET : 0)
-                       | INVORDER_SORT | OBJECT_COMPARISON),
+                       | INVORDER_SORT | OBJECT_COMPARISON | SHOW_QUICK),
                       &pick_list, PICK_NONE, this_type_only, SHOWWEIGHTS_INVENTORY) > 0)
         free((genericptr_t) pick_list);
     return 0;
@@ -6762,7 +6762,7 @@ boolean picked_some, explicit_cmd;
                 else
                     totalweight += otmp->owt;
 
-                Sprintf(buf, "%s", (flags.inventory_weights_last ? doname_with_price_and_weight_last(otmp, objects[LOADSTONE].oc_name_known) : doname_with_price_and_weight_first(otmp, objects[LOADSTONE].oc_name_known))); //Looking at what is on the ground
+                Sprintf(buf, "%s", (flags.inventory_weights_last ? doname_with_price_and_weight_last(otmp, objects[LOADSTONE].oc_name_known, TRUE) : doname_with_price_and_weight_first(otmp, objects[LOADSTONE].oc_name_known, TRUE))); //Looking at what is on the ground
                 Sprintf(buf2, "%2d - %s", count, ""); //Looking at what is on the ground
                 int attr = ATR_NONE;
                 int color = NO_COLOR;
@@ -6977,7 +6977,6 @@ print_things_here_to_window(VOID_ARGS)
             }
             else
             {
-                //Sprintf(buf2, "%s", item_name_buf); // (flags.inventory_weights_last ? doname_with_price_and_weight_last(otmp, objects[LOADSTONE].oc_name_known) : doname_with_price_and_weight_first(otmp, objects[LOADSTONE].oc_name_known)));
                 if (iflags.use_menu_color && get_menu_coloring(item_name_buf, &mcolor, &mattr))
                     putstr_ex(tmpwin, item_name_buf, mattr, mcolor, 0);
                 else
@@ -7267,7 +7266,7 @@ doprarm()
         if (uarmf)
             lets[ct++] = obj_to_let(uarmf);
         lets[ct] = 0;
-        (void) display_inventory(lets, FALSE, SHOWWEIGHTS_NONE);
+        (void) display_inventory(lets, FALSE, SHOWWEIGHTS_NONE, FALSE);
     }
     return 0;
 }
@@ -7287,7 +7286,7 @@ doprring()
         if (uright)
             lets[ct++] = obj_to_let(uright);
         lets[ct] = 0;
-        (void) display_inventory(lets, FALSE, SHOWWEIGHTS_NONE);
+        (void) display_inventory(lets, FALSE, SHOWWEIGHTS_NONE, FALSE);
     }
     return 0;
 }
@@ -7330,7 +7329,7 @@ doprtool()
     if (!ct)
         You1("are not using any tools.");
     else
-        (void) display_inventory(lets, FALSE, SHOWWEIGHTS_NONE);
+        (void) display_inventory(lets, FALSE, SHOWWEIGHTS_NONE, FALSE);
     return 0;
 }
 
@@ -7359,7 +7358,7 @@ doprinuse()
         {
             pickcnt = 0;
             return_to_inv = FALSE;
-            invlet = display_inventory_with_header(lets, TRUE, &pickcnt, SHOWWEIGHTS_INVENTORY, FALSE, FALSE);
+            invlet = display_inventory_with_header(lets, TRUE, &pickcnt, SHOWWEIGHTS_INVENTORY, TRUE, FALSE, FALSE);
             if (!invlet || invlet == CANCEL_LET || invlet == '\0')
                 return 0;
 
@@ -7959,7 +7958,7 @@ register struct obj *obj;
                      "that");
 
     if (contained_object_chain(obj)) {
-        n = query_objlist(qbuf, contained_object_chain_ptr(obj), INVORDER_SORT | OBJECT_COMPARISON,
+        n = query_objlist(qbuf, contained_object_chain_ptr(obj), INVORDER_SORT | OBJECT_COMPARISON | SHOW_QUICK,
                           &selected, PICK_NONE, allow_all, SHOWWEIGHTS_OTHER_PICKUP); //Looking at things in container's inventory far away
     } else {
         invdisp_nothing(qbuf, "(empty)");
@@ -8011,7 +8010,7 @@ boolean as_if_seen;
         only.x = x;
         only.y = y;
         if (query_objlist("Things that are buried here:",
-                          &level.buriedobjlist, INVORDER_SORT | OBJECT_COMPARISON,
+                          &level.buriedobjlist, INVORDER_SORT | OBJECT_COMPARISON | SHOW_QUICK,
                           &selected, PICK_NONE, only_here, SHOWWEIGHTS_PICKUP) > 0)
             free((genericptr_t) selected);
         only.x = only.y = 0;

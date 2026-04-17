@@ -4002,7 +4002,7 @@ doddoremarm()
     add_valid_menu_class(0); /* reset */
     if (flags.menu_style != MENU_TRADITIONAL
         || (result = ggetobj("take off", select_off, 0, FALSE,
-                             (unsigned *) 0, 0)) < -1)
+                             (unsigned *) 0, 0, TRUE)) < -1)
         result = menu_remarm(result);
 
     activate_take_off();
@@ -4041,7 +4041,7 @@ int retry;
     } else if (flags.menu_style == MENU_COMBINATION) {
         unsigned ggofeedback = 0;
 
-        i = ggetobj("take off", select_off, 0, TRUE, &ggofeedback, 0);
+        i = ggetobj("take off", select_off, 0, TRUE, &ggofeedback, 0, TRUE);
         if (ggofeedback & ALL_FINISHED)
             return 0;
         all_worn_categories = (i == -2);
@@ -4052,7 +4052,7 @@ int retry;
         all_worn_categories = FALSE;
 
     n = query_objlist("What do you want to take off?", &invent,
-                      (SIGNAL_NOMENU | USE_INVLET | INVORDER_SORT),
+                      (SIGNAL_NOMENU | USE_INVLET | INVORDER_SORT | SHOW_QUICK),
                       &pick_list, PICK_ANY,
                       all_worn_categories ? is_worn : is_worn_by_type, SHOWWEIGHTS_NONE);
     if (n > 0) {
@@ -4095,7 +4095,7 @@ int retry;
     else if (flags.menu_style == MENU_COMBINATION) {
         unsigned ggofeedback = 0;
 
-        i = ggetobj("wear", select_on, 0, TRUE, &ggofeedback, 0);
+        i = ggetobj("wear", select_on, 0, TRUE, &ggofeedback, 0, TRUE);
         if (ggofeedback & ALL_FINISHED)
             return 0;
         all_wearable_categories = (i == -2);
@@ -4106,7 +4106,7 @@ int retry;
         all_wearable_categories = FALSE;
 
     n = query_objlist("What do you want to wear?", &invent,
-        (SIGNAL_NOMENU | USE_INVLET | INVORDER_SORT | WORN_UNSELECTABLE),
+        (SIGNAL_NOMENU | USE_INVLET | INVORDER_SORT | WORN_UNSELECTABLE | SHOW_QUICK),
         &pick_list, PICK_ANY,
         all_wearable_categories ? is_wearable : is_wearable_by_type, SHOWWEIGHTS_NONE);
     if (n > 0) {
@@ -4140,7 +4140,7 @@ ddowear()
     add_valid_menu_class(0); /* reset */
     if (flags.menu_style != MENU_TRADITIONAL
         || (result = ggetobj("wear", select_on, 0, FALSE,
-            (unsigned*)0, 0)) < -1)
+            (unsigned*)0, 0, TRUE)) < -1)
         result = menu_wearmany(result);
 
     activate_wear();

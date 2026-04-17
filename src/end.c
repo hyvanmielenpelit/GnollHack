@@ -1016,9 +1016,9 @@ time_t when; /* date+time at end of game */
     dump_plines();
     putstr(NHW_DUMPTXT, 0, "");
     putstr(0, ATR_HEADING, "Inventory:");
-    (void) display_inventory((char *) 0, TRUE, SHOWWEIGHTS_NONE);
-    container_contents(invent, how != SNAPSHOT, TRUE, FALSE, SHOWWEIGHTS_NONE);
-    magic_chest_contents(how != SNAPSHOT, TRUE, FALSE, SHOWWEIGHTS_NONE);
+    (void) display_inventory((char *) 0, TRUE, SHOWWEIGHTS_NONE, FALSE);
+    container_contents(invent, how != SNAPSHOT, TRUE, FALSE, SHOWWEIGHTS_NONE, FALSE);
+    magic_chest_contents(how != SNAPSHOT, TRUE, FALSE, SHOWWEIGHTS_NONE, FALSE);
     enlightenment(how == SNAPSHOT ? BASICENLIGHTENMENT | GAMEENLIGHTENMENT : (BASICENLIGHTENMENT | MAGICENLIGHTENMENT | GAMEENLIGHTENMENT),
                   how == SNAPSHOT ? ENL_GAMEINPROGRESS : (how >= PANICKED) ? ENL_GAMEOVERALIVE : ENL_GAMEOVERDEAD);
     putstr(NHW_DUMPTXT, 0, "");
@@ -1145,9 +1145,9 @@ boolean taken;
         
         if (c == 'y') {
             /* caller has already ID'd everything */
-            (void) display_inventory((char *) 0, FALSE, SHOWWEIGHTS_NONE);
-            container_contents(invent, TRUE, TRUE, FALSE, SHOWWEIGHTS_NONE);
-            magic_chest_contents(TRUE, TRUE, FALSE, SHOWWEIGHTS_NONE);
+            (void) display_inventory((char *) 0, FALSE, SHOWWEIGHTS_NONE, FALSE);
+            container_contents(invent, TRUE, TRUE, FALSE, SHOWWEIGHTS_NONE, FALSE);
+            magic_chest_contents(TRUE, TRUE, FALSE, SHOWWEIGHTS_NONE, FALSE);
         }
         if (c == 'q')
             done_stopprint++;
@@ -2739,9 +2739,9 @@ int how;
 }
 
 void
-container_contents(list, identified, all_containers, reportempty, show_weights)
+container_contents(list, identified, all_containers, reportempty, show_weights, show_quick)
 struct obj *list;
-boolean identified, all_containers, reportempty;
+boolean identified, all_containers, reportempty, show_quick;
 int show_weights;
 {
     register struct obj *box, *obj;
@@ -2817,7 +2817,7 @@ int show_weights;
                         else
                             totalweight += obj->owt;
     
-                        Sprintf(&buf[2], "%2d - %s", count, show_weights > SHOWWEIGHTS_NONE ? (flags.inventory_weights_last ? doname_with_price_and_weight_last(obj, loadstonecorrectly) : doname_with_price_and_weight_first(obj, loadstonecorrectly)) : doname_with_price(obj));
+                        Sprintf(&buf[2], "%2d - %s", count, show_weights > SHOWWEIGHTS_NONE ? (flags.inventory_weights_last ? doname_with_price_and_weight_last(obj, loadstonecorrectly, show_quick) : doname_with_price_and_weight_first(obj, loadstonecorrectly, show_quick)) : show_quick ? doname_with_price_quick(obj) : doname_with_price(obj));
                         //Strcpy(&buf[2], doname_with_price_and_weight_first(obj));
                         putstr(tmpwin, ATR_INDENT_AT_DASH | ATR_ORDERED_LIST, buf);
                     }
@@ -2841,7 +2841,7 @@ int show_weights;
                 destroy_nhwindow(tmpwin);
                 if (all_containers)
                     container_contents(contained_object_chain(box), identified, TRUE,
-                                       reportempty, show_weights);
+                                       reportempty, show_weights, show_quick);
             } 
             else if (reportempty) 
             {
@@ -2855,8 +2855,8 @@ int show_weights;
 }
 
 void
-magic_chest_contents(identified, all_containers, reportempty, show_weights)
-boolean identified, all_containers, reportempty;
+magic_chest_contents(identified, all_containers, reportempty, show_weights, show_quick)
+boolean identified, all_containers, reportempty, show_quick;
 int show_weights;
 {
     register struct obj* obj;
@@ -2907,7 +2907,7 @@ int show_weights;
                 else
                     totalweight += obj->owt;
 
-                Sprintf(&buf[2], "%2d - %s", count, show_weights > SHOWWEIGHTS_NONE ? (flags.inventory_weights_last ? doname_with_price_and_weight_last(obj, loadstonecorrectly) : doname_with_price_and_weight_first(obj, loadstonecorrectly)) : doname_with_price(obj));
+                Sprintf(&buf[2], "%2d - %s", count, show_weights > SHOWWEIGHTS_NONE ? (flags.inventory_weights_last ? doname_with_price_and_weight_last(obj, loadstonecorrectly, show_quick) : doname_with_price_and_weight_first(obj, loadstonecorrectly, show_quick)) : show_quick ? doname_with_price_quick(obj) : doname_with_price(obj));
                 //Strcpy(&buf[2], doname_with_price_and_weight_first(obj));
                 putstr(tmpwin, ATR_INDENT_AT_DASH | ATR_ORDERED_LIST, buf);
             }
@@ -2925,7 +2925,7 @@ int show_weights;
         display_nhwindow(tmpwin, TRUE);
         destroy_nhwindow(tmpwin);
         if (all_containers)
-            container_contents(magic_objs, identified, TRUE, reportempty, show_weights);
+            container_contents(magic_objs, identified, TRUE, reportempty, show_weights, show_quick);
     }
     else if (reportempty)
     {

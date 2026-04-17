@@ -3788,7 +3788,7 @@ namespace GnollHackX
                     _moreBtnMatrix[3, 1, 5] = new GHCommandButtonItem("Pick-axe", AppResourceName + ".Assets.UI.pickaxe.png", GHUtils.Meta((int)'X'));
                     _moreBtnMatrix[3, 2, 5] = new GHCommandButtonItem("Extended", AppResourceName + ".Assets.UI.extended.png", (int)'#');
                     _moreBtnMatrix[3, 3, 5] = new GHCommandButtonItem("Back to Game", AppResourceName + ".Assets.UI.more.png", -101);
-
+                    
                     List<SelectableShortcutButton> buttonsToAllocate = GetFullShortcutButtonsToAllocate();
                     List<SelectableShortcutButton> buttonsOnBar = GetFullBarButtons();
                     foreach (SelectableShortcutButton button in buttonsToAllocate)

@@ -5562,7 +5562,7 @@ struct monst* mtmp;
 
     /* should coordinate with perm invent, maybe not show worn items */
     n = query_objlist(qbuf, &invent,
-        (USE_INVLET | INVORDER_SORT | OBJECT_COMPARISON), &pick_list, PICK_ANY,
+        (USE_INVLET | INVORDER_SORT | OBJECT_COMPARISON | SHOW_QUICK), &pick_list, PICK_ANY,
         is_packmule(mtmp->data) ? allow_all : allow_all_but_coins, SHOWWEIGHTS_DROP);
     if (n > 0) 
     {
@@ -5768,7 +5768,7 @@ struct monst* mtmp;
     add_valid_menu_class(REAGENT_CLASS);
 
     n = query_objlist(qbuf, &invent,
-        (USE_INVLET | INVORDER_SORT), &pick_list, PICK_ONE,
+        (USE_INVLET | INVORDER_SORT | SHOW_QUICK), &pick_list, PICK_ONE,
         allow_category, SHOWWEIGHTS_DROP);
 
     if (n > 0)
@@ -6037,7 +6037,7 @@ struct monst* mtmp;
     {
     case 1:
         Strcpy(qbuf, "Which potion would you like to dip items into?");
-        n = query_objlist(qbuf, &invent, (SIGNAL_NOMENU | SIGNAL_ESCAPE | USE_INVLET | INVORDER_SORT),
+        n = query_objlist(qbuf, &invent, (SIGNAL_NOMENU | SIGNAL_ESCAPE | USE_INVLET | INVORDER_SORT | SHOW_QUICK),
             &pick_list, PICK_ONE, is_potion_of_water, SHOWWEIGHTS_NONE);
         if (n && pick_list && pick_list[0].item.a_obj)
         {
@@ -6045,7 +6045,7 @@ struct monst* mtmp;
             free((genericptr_t)pick_list);
             pick_list = 0;
             Sprintf(qbuf, "What would you like to dip into %s?", the(cxname(otmp)));
-            n = query_objlist(qbuf, &mtmp->minvent, (SIGNAL_NOMENU | SIGNAL_ESCAPE | USE_INVLET | INVORDER_SORT),
+            n = query_objlist(qbuf, &mtmp->minvent, (SIGNAL_NOMENU | SIGNAL_ESCAPE | USE_INVLET | INVORDER_SORT | SHOW_QUICK),
                 &pick_list, PICK_ONE, allow_all, SHOWWEIGHTS_NONE);
             if (n && pick_list && pick_list[0].item.a_obj)
             {
@@ -6064,7 +6064,7 @@ struct monst* mtmp;
         break;
     case 2:
         Sprintf(qbuf, "Which scroll would you like to have %s read?", mon_nam(mtmp));
-        n = query_objlist(qbuf, &invent, (SIGNAL_NOMENU | SIGNAL_ESCAPE | USE_INVLET | INVORDER_SORT),
+        n = query_objlist(qbuf, &invent, (SIGNAL_NOMENU | SIGNAL_ESCAPE | USE_INVLET | INVORDER_SORT | SHOW_QUICK),
             &pick_list, PICK_ONE, is_scroll_of_remove_curse, SHOWWEIGHTS_NONE);
         if (n && pick_list && pick_list[0].item.a_obj)
         {
@@ -6136,7 +6136,7 @@ struct monst* mtmp;
     add_valid_menu_class(POTION_CLASS);
 
     n = query_objlist(qbuf, &invent,
-        (USE_INVLET | INVORDER_SORT), &pick_list, PICK_ONE,
+        (USE_INVLET | INVORDER_SORT | SHOW_QUICK), &pick_list, PICK_ONE,
         allow_category, SHOWWEIGHTS_DROP);
 
     boolean res = 0;
@@ -6292,7 +6292,7 @@ struct monst* mtmp;
     add_valid_menu_class(TOOL_CLASS);
 
     n = query_objlist(qbuf, &invent,
-        (USE_INVLET | INVORDER_SORT), &pick_list, PICK_ONE,
+        (USE_INVLET | INVORDER_SORT | SHOW_QUICK), &pick_list, PICK_ONE,
         allow_unicorn_horn, SHOWWEIGHTS_DROP);
 
     boolean res = 0;
@@ -9287,7 +9287,7 @@ boolean FDECL((*allow), (OBJ_P)); /* allow function */
 
     /* should coordinate with perm invent, maybe not show worn items */
     n = query_objlist("What would you like to sell?", &invent,
-        (USE_INVLET | INVORDER_SORT | OBJECT_COMPARISON), &pick_list, PICK_ANY, allow, SHOWWEIGHTS_DROP);
+        (USE_INVLET | INVORDER_SORT | OBJECT_COMPARISON | SHOW_QUICK), &pick_list, PICK_ANY, allow, SHOWWEIGHTS_DROP);
 
     if (n > 0 && pick_list)
     {
@@ -10300,7 +10300,7 @@ int64_t id_cost;
     Strcpy(buf, "What would you like to identify?");
 
     n = query_objlist(buf, &invent, (SIGNAL_NOMENU | SIGNAL_ESCAPE
-        | USE_INVLET | INVORDER_SORT | OBJECT_COMPARISON),
+        | USE_INVLET | INVORDER_SORT | OBJECT_COMPARISON | SHOW_QUICK),
         &pick_list, PICK_ANY, not_fully_identified, SHOWWEIGHTS_NONE);
 
     if (n > 0)
@@ -11568,7 +11568,7 @@ int64_t service_cost;
         play_monster_special_dialogue_line(mtmp, special_dialogue_sound_id);
     }
 
-    struct obj* otmp = getobj_ex(selectable_item_categories, "enchant", 0, costbuf, (boolean(*)(struct obj*))0, service_cost, 3U);
+    struct obj* otmp = getobj_ex(selectable_item_categories, "enchant", 0, TRUE, costbuf, (boolean(*)(struct obj*))0, service_cost, 3U);
     if (!otmp)
         return 0;
 
@@ -11904,7 +11904,7 @@ refill_lantern_func(mtmp)
 struct monst* mtmp;
 {
     const char refill_lantern_objects[] = { ALL_CLASSES, TOOL_CLASS, 0 };
-    struct obj* otmp = getobj_ex(refill_lantern_objects, "refill", 0, "", maybe_refillable_with_oil, 0, 0U);
+    struct obj* otmp = getobj_ex(refill_lantern_objects, "refill", 0, TRUE, "", maybe_refillable_with_oil, 0, 0U);
     char talkbuf[BUFSZ];
 
     if (!otmp)
@@ -12000,7 +12000,7 @@ forge_dragon_scale_mail_func(mtmp)
 struct monst* mtmp;
 {
     const char forge_objects[] = { ALL_CLASSES, ARMOR_CLASS, 0 };
-    struct obj* otmp = getobj_ex(forge_objects, "forge into a dragon scale mail", 0, "", maybe_dragon_scales, 0, 0U);
+    struct obj* otmp = getobj_ex(forge_objects, "forge into a dragon scale mail", 0, TRUE, "", maybe_dragon_scales, 0, 0U);
     char talkbuf[BUFSZ];
 
     if (!otmp)
@@ -12176,7 +12176,7 @@ boolean initialize;
     }
 
     otyp_for_maybe_otyp = forge_source_otyp;
-    struct obj* otmp = getobj_ex((const char*)forge_objects, forge_string, 0, header_string, maybe_otyp, 0, 0U);
+    struct obj* otmp = getobj_ex((const char*)forge_objects, forge_string, 0, TRUE, header_string, maybe_otyp, 0, 0U);
 
     if (!otmp)
         return 0;

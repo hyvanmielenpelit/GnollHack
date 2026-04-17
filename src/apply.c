@@ -2634,7 +2634,7 @@ struct obj* obj;
         case 2:
         {
             const char refill_lantern_objects[] = { ALL_CLASSES, TOOL_CLASS, 0 };
-            struct obj* target_obj = getobj_ex(refill_lantern_objects, "refill", 0, "", maybe_refillable_with_oil, 0, 0U);
+            struct obj* target_obj = getobj_ex(refill_lantern_objects, "refill", 0, TRUE, "", maybe_refillable_with_oil, 0, 0U);
             if (!target_obj)
             {
                 pline1(Never_mind);

@@ -2213,6 +2213,13 @@ struct obj *obj;
 }
 
 char*
+doname_with_price_quick(obj)
+struct obj* obj;
+{
+    return doname_with_flags(obj, DONAME_WITH_PRICE | DONAME_SHOW_QUICK_ITEMS, (char**)0, (char**)0);
+}
+
+char*
 doname_with_price_and_comparison(obj, comparison_stats, attrs_ptr, colors_ptr)
 struct obj* obj;
 boolean comparison_stats;
@@ -2223,11 +2230,11 @@ char** attrs_ptr, ** colors_ptr;
 
 /* Name of object including price. */
 char*
-doname_with_price_and_weight_last(obj,  loadstonecorrectly)
+doname_with_price_and_weight_last(obj,  loadstonecorrectly, show_quick)
 struct obj* obj;
-boolean loadstonecorrectly;
+boolean loadstonecorrectly, show_quick;
 {
-    return doname_with_flags(obj, DONAME_WITH_PRICE | DONAME_WITH_WEIGHT_LAST | (loadstonecorrectly ? DONAME_LOADSTONE_CORRECTLY : 0), (char**)0, (char**)0);
+    return doname_with_flags(obj, DONAME_WITH_PRICE | DONAME_WITH_WEIGHT_LAST | (show_quick ? DONAME_SHOW_QUICK_ITEMS : 0) | (loadstonecorrectly ? DONAME_LOADSTONE_CORRECTLY : 0), (char**)0, (char**)0);
 }
 
 char*
@@ -2259,11 +2266,11 @@ char** attrs_ptr, ** colors_ptr;
 
 /* Name of object including price. */
 char*
-doname_with_price_and_weight_first(obj, loadstonecorrectly)
+doname_with_price_and_weight_first(obj, loadstonecorrectly, show_quick)
 struct obj* obj;
-boolean loadstonecorrectly;
+boolean loadstonecorrectly, show_quick;
 {
-    return doname_with_flags(obj, DONAME_WITH_PRICE | DONAME_WITH_WEIGHT_FIRST | (loadstonecorrectly ? DONAME_LOADSTONE_CORRECTLY : 0), (char**)0, (char**)0);
+    return doname_with_flags(obj, DONAME_WITH_PRICE | DONAME_WITH_WEIGHT_FIRST | (show_quick ? DONAME_SHOW_QUICK_ITEMS : 0) | (loadstonecorrectly ? DONAME_LOADSTONE_CORRECTLY : 0), (char**)0, (char**)0);
 }
 
 char*
