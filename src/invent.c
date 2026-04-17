@@ -6762,7 +6762,7 @@ boolean picked_some, explicit_cmd;
                 else
                     totalweight += otmp->owt;
 
-                Sprintf(buf, "%s", (flags.inventory_weights_last ? doname_with_price_and_weight_last(otmp, objects[LOADSTONE].oc_name_known, TRUE) : doname_with_price_and_weight_first(otmp, objects[LOADSTONE].oc_name_known, TRUE))); //Looking at what is on the ground
+                Sprintf(buf, "%s", (flags.inventory_weights_last ? doname_with_price_and_weight_last(otmp, objects[LOADSTONE].oc_name_known, FALSE) : doname_with_price_and_weight_first(otmp, objects[LOADSTONE].oc_name_known, FALSE))); //Looking at what is on the ground
                 Sprintf(buf2, "%2d - %s", count, ""); //Looking at what is on the ground
                 int attr = ATR_NONE;
                 int color = NO_COLOR;
