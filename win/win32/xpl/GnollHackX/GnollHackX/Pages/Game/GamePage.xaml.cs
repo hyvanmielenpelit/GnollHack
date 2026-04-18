@@ -1084,7 +1084,7 @@ namespace GnollHackX.Pages.Game
         private int _isResizing;
         private int _resizeVersion;
         private CancellationTokenSource _resizeCts;
-        public bool IsResizing => Interlocked.CompareExchange(ref _isResizing, 0, 0) != 0;
+        public bool IsResizing => Volatile.Read(ref _isResizing) != 0;
 
         void DoResizeCanvasUpdatePause()
         {
@@ -1113,7 +1113,7 @@ namespace GnollHackX.Pages.Game
                 {
                     try
                     {
-                        await Task.Delay(100, token);
+                        await Task.Delay(150, token);
 
                         // Only the latest version is allowed to end resizing
                         if (myVersion == Volatile.Read(ref _resizeVersion))
@@ -1132,6 +1132,7 @@ namespace GnollHackX.Pages.Game
             {
                 GHApp.MaybeWriteScreenLog("_isResizing exception newCts: " + myVersion + ", " + ex.Message);
                 Interlocked.Exchange(ref _isResizing, 0);
+                newCts.Dispose();
             }
         }
 
