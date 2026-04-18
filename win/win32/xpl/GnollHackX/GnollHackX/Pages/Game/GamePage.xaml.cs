@@ -1103,7 +1103,7 @@ namespace GnollHackX.Pages.Game
             }
             catch (Exception ex)
             {
-                GHApp.MaybeWriteScreenLog("_isResizing exception oldCts: " + ex.Message);
+                GHApp.MaybeWriteScreenLog("_isResizing exception oldCts: " + myVersion + ", " + ex.Message);
             }
 
             try
@@ -1130,7 +1130,8 @@ namespace GnollHackX.Pages.Game
             }
             catch (Exception ex)
             {
-                GHApp.MaybeWriteScreenLog("_isResizing exception newCts: " + ex.Message);
+                GHApp.MaybeWriteScreenLog("_isResizing exception newCts: " + myVersion + ", " + ex.Message);
+                Interlocked.Exchange(ref _isResizing, 0);
             }
         }
 
