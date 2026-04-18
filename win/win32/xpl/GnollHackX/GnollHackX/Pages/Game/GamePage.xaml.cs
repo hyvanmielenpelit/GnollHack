@@ -1076,9 +1076,9 @@ namespace GnollHackX.Pages.Game
 
         private void GamePage_SizeChanged(object sender, EventArgs e)
         {
+            DoResizeCanvasUpdatePause();
             ThreadSafeWidth = Width;
             ThreadSafeHeight = Height;
-            DoResizeCanvasUpdatePause();
         }
 
         private int _isResizing;
