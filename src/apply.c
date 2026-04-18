@@ -5450,7 +5450,7 @@ dopickaxe(VOID_ARGS)
             You_ex1(ATR_NONE, CLR_MSG_FAIL, "do not have any digging or cutting tools.");
             return 0;
         }
-        else if (cnt == 1 && last_obj && ((last_obj->bknown && !last_obj->cursed) || cursed_items_are_positive_mon(&youmonst)))
+        else if (cnt == 1 && last_obj && is_pick(last_obj) && ((last_obj->bknown && !last_obj->cursed) || cursed_items_are_positive_mon(&youmonst)))
         {
             if (check_capacity((char*)0))
                 return 0;
