@@ -1076,7 +1076,7 @@ namespace GnollHackX.Pages.Game
 
         private void GamePage_SizeChanged(object sender, EventArgs e)
         {
-            DoResizeCanvasUpdatePause();
+            GHApp.MaybeWriteScreenLog("GamePage_SizeChanged");
             ThreadSafeWidth = Width;
             ThreadSafeHeight = Height;
         }
@@ -14430,14 +14430,22 @@ namespace GnollHackX.Pages.Game
 
         protected override void OnSizeAllocated(double width, double height)
         {
-            base.OnSizeAllocated(width, height);
-            if (width != _currentPageWidth || height != _currentPageHeight)
+            bool needUpdate = width != _currentPageWidth || height != _currentPageHeight;
+            if (needUpdate)
             {
                 _currentPageWidth = width;
                 _currentPageHeight = height;
 
-                IsLandscape = width > height;
+                GHApp.MaybeWriteScreenLog("OnSizeAllocated");
+                DoResizeCanvasUpdatePause();
 
+                IsLandscape = width > height;
+            }
+
+            base.OnSizeAllocated(width, height);
+
+            if (needUpdate)
+            {
                 if (TipView.IsVisible)
                     TipView.InvalidateSurface();
 
