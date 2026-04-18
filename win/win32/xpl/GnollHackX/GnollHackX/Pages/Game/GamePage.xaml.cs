@@ -1078,6 +1078,60 @@ namespace GnollHackX.Pages.Game
         {
             ThreadSafeWidth = Width;
             ThreadSafeHeight = Height;
+            DoResizeCanvasUpdatePause();
+        }
+
+        private int _isResizing;
+        private int _resizeVersion;
+        private CancellationTokenSource _resizeCts;
+        public bool IsResizing => Interlocked.CompareExchange(ref _isResizing, 0, 0) != 0;
+
+        void DoResizeCanvasUpdatePause()
+        {
+            /* This is needed especially on Windows while SKGLView is being resized */
+            int myVersion = Interlocked.Increment(ref _resizeVersion);
+            /* Now the old thread does not modify _isResizing anymore, so safe to switch it on */
+            Interlocked.Exchange(ref _isResizing, 1);
+            GHApp.MaybeWriteScreenLog("_isResizing = 1: " + myVersion);
+            var newCts = new CancellationTokenSource();
+            var oldCts = Interlocked.Exchange(ref _resizeCts, newCts);
+
+            try
+            {
+                oldCts?.Cancel();
+                oldCts?.Dispose();
+            }
+            catch (Exception ex)
+            {
+                GHApp.MaybeWriteScreenLog("_isResizing exception oldCts: " + ex.Message);
+            }
+
+            try
+            {
+                var token = newCts.Token;
+                _ = Task.Run(async () =>
+                {
+                    try
+                    {
+                        await Task.Delay(100, token);
+
+                        // Only the latest version is allowed to end resizing
+                        if (myVersion == Volatile.Read(ref _resizeVersion))
+                        {
+                            GHApp.MaybeWriteScreenLog("_isResizing = 0: " + myVersion);
+                            Interlocked.Exchange(ref _isResizing, 0);
+                        }
+                    }
+                    catch (TaskCanceledException)
+                    {
+                        GHApp.MaybeWriteScreenLog("_isResizing cancelled: " + myVersion);
+                    }
+                });
+            }
+            catch (Exception ex)
+            {
+                GHApp.MaybeWriteScreenLog("_isResizing exception newCts: " + ex.Message);
+            }
         }
 
         ~GamePage()
@@ -1873,7 +1927,10 @@ namespace GnollHackX.Pages.Game
 
         public void UpdateMainCanvas(MapRefreshRateStyle refreshRateStyle)
         {
-            if (RefreshScreen)
+            bool resizing = IsResizing;
+            if (resizing)
+                GHApp.MaybeWriteScreenLog("UpdateMainCanvas: Resizing");
+            if (RefreshScreen && !resizing)
             {
                 if (MainCanvasView.ThreadSafeIsVisible)
                 {
@@ -1985,7 +2042,7 @@ namespace GnollHackX.Pages.Game
 
         public void UpdateCommandCanvas(MapRefreshRateStyle refreshRateStyle)
         {
-            if (MoreCommandsGrid.ThreadSafeIsVisible)
+            if (MoreCommandsGrid.ThreadSafeIsVisible && !IsResizing)
             {
                 float timePassed = 1.0f / UIUtils.GetAuxiliaryCanvasAnimationFrequency(refreshRateStyle);
                 //float timePassed = 0;
@@ -2032,12 +2089,7 @@ namespace GnollHackX.Pages.Game
         //private int _menuUpdateGCCounter = 0;
         public void UpdateMenuCanvas(MapRefreshRateStyle refreshRateStyle)
         {
-            bool refresh = MenuRefresh;
-            //lock (_menuDrawOnlyLock)
-            //{
-            //    refresh = _menuRefresh;
-            //}
-            if (refresh)
+            if (MenuRefresh && !IsResizing)
             {
                 if (MenuGrid.ThreadSafeIsVisible)
                 {
@@ -2172,7 +2224,7 @@ namespace GnollHackX.Pages.Game
 
         public void UpdateTextCanvas(MapRefreshRateStyle refreshRateStyle)
         {
-            if (TextGrid.ThreadSafeIsVisible)
+            if (TextGrid.ThreadSafeIsVisible && !IsResizing)
             {
                 //float canvasheight = TextCanvas.ThreadSafeCanvasSize.Height;
                 float canvasheight;
