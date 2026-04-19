@@ -1769,8 +1769,14 @@ struct item_description_stats* stats_ptr; /* If non-null, only returns item stat
         if (printmaindmgtype)
         {
             char dmgttext[BUFSZ] = "";
-            if (!objects[otyp].oc_dir)
+            if (is_otyp_launcher(otyp))
+            {
+                Strcpy(dmgttext, "By ammunition");
+            }
+            else if (!objects[otyp].oc_dir)
+            {
                 Strcpy(dmgttext, "Bludgeoning");
+            }
             else
             {
                 if (objects[otyp].oc_dir & PIERCE)
