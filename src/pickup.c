@@ -5401,7 +5401,7 @@ can_stash_objs(VOID_ARGS)
     struct obj* otmp;
     for (otmp = invent; otmp; otmp = otmp->nobj)
     {
-        if (Is_container(otmp) && !(otmp->dknown && ((objects[otmp->otyp].oc_name_known && !Is_proper_container(otmp)) || otmp->olocked)))
+        if (Is_container(otmp) && !(otmp->dknown && ((objects[otmp->otyp].oc_name_known && !Is_proper_container(otmp)) || (Is_box(otmp) && otmp->lknown && otmp->olocked) || Is_container_with_closed_lid(otmp))))
             return TRUE;
     }
     return FALSE;
@@ -5416,7 +5416,7 @@ can_floor_stash_objs(VOID_ARGS)
     struct obj* otmp;
     for (otmp = level.objects[u.ux][u.uy]; otmp; otmp = otmp->nexthere)
     {
-        if (Is_container(otmp) && !(otmp->dknown && ((objects[otmp->otyp].oc_name_known && !Is_proper_container(otmp)) || otmp->olocked)))
+        if (Is_container(otmp) && !(otmp->dknown && ((objects[otmp->otyp].oc_name_known && !Is_proper_container(otmp)) || (Is_box(otmp) && otmp->lknown && otmp->olocked) || Is_container_with_closed_lid(otmp))))
             return TRUE;
     }
     return FALSE;
