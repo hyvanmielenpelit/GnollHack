@@ -14436,11 +14436,10 @@ namespace GnollHackX.Pages.Game
             {
                 _currentPageWidth = width;
                 _currentPageHeight = height;
+                IsLandscape = width > height;
 
                 GHApp.MaybeWriteScreenLog("OnSizeAllocated");
                 DoResizeCanvasUpdatePause();
-
-                IsLandscape = width > height;
             }
 
             base.OnSizeAllocated(width, height);
