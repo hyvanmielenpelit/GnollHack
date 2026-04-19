@@ -2131,7 +2131,7 @@ boolean bynexthere_container, bynexthere_obj;
             /* No non-containers */
             continue;
         }
-        if (Is_box(curr) && (!curr->lknown || curr->olocked))
+        else if (Is_box(curr) && (!curr->lknown || curr->olocked))
         {
             /* No (potentially) locked boxes */
             continue;
