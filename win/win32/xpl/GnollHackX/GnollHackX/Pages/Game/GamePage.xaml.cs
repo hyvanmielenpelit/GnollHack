@@ -1050,12 +1050,24 @@ namespace GnollHackX.Pages.Game
             /* Do this last just in case */
             DesktopButtons = Preferences.Get("DesktopButtons", GHApp.IsDesktop);
 #if WINDOWS
-            Loaded += (s, e) => 
+            Loaded += async (s, e) => 
             {
                 UpdateMoreNextPrevButtonVisibility(true, true);
-                CommandCanvas.InvalidateSurface();
-                MenuCanvas.InvalidateSurface();
-                TextCanvas.InvalidateSurface();
+                await Task.Delay(50);
+                MainThread.BeginInvokeOnMainThread(() =>
+                {
+                    CommandCanvas.InvalidateSurface();
+                });
+                await Task.Delay(50);
+                MainThread.BeginInvokeOnMainThread(() =>
+                {
+                    MenuCanvas.InvalidateSurface();
+                });
+                await Task.Delay(50);
+                MainThread.BeginInvokeOnMainThread(() =>
+                {
+                    TextCanvas.InvalidateSurface();
+                });
             };
 #endif
 
@@ -1334,7 +1346,7 @@ namespace GnollHackX.Pages.Game
                 LoadingProgressBar.Progress = 0.0;
 
                 StartGameInitialTasks();
-                bool initAuxCanvases = MaybeInitAuxCanvases();
+                bool initAuxCanvases = await MaybeInitAuxCanvases();
 
                 LoadingDetailsLabel.Text = "Initializing GnollHack...";
                 await _gnollHackService.InitializeGnollHack();
@@ -1597,7 +1609,7 @@ namespace GnollHackX.Pages.Game
             TipView._parentGrid = null;
         }
 
-        private bool MaybeInitAuxCanvases()
+        private async Task<bool> MaybeInitAuxCanvases()
         {
             bool initAuxCanvases = GHApp.IsAndroid && GHApp.UseGPU && !GHApp.DisableAuxGPU;
             if (initAuxCanvases)
@@ -1605,9 +1617,22 @@ namespace GnollHackX.Pages.Game
                 MenuGrid.IsVisible = true;
                 TextGrid.IsVisible = true;
                 MoreCommandsGrid.IsVisible = true;
-                MenuCanvas.InvalidateSurface();
-                TextCanvas.InvalidateSurface();
-                CommandCanvas.InvalidateSurface();
+                LoadingDetailsLabel.Text = "Initializing canvases...";
+                await Task.Delay(50);
+                MainThread.BeginInvokeOnMainThread(() =>
+                {
+                    MenuCanvas.InvalidateSurface();
+                });
+                await Task.Delay(50);
+                MainThread.BeginInvokeOnMainThread(() =>
+                {
+                    TextCanvas.InvalidateSurface();
+                });
+                await Task.Delay(50);
+                MainThread.BeginInvokeOnMainThread(() =>
+                {
+                    CommandCanvas.InvalidateSurface();
+                });
             }
             return initAuxCanvases;
         }
@@ -19089,7 +19114,10 @@ namespace GnollHackX.Pages.Game
                                             clickRes.ItemIdentifier != 0 &&
                                             timeSincePreviousReleaseInMs <= GHConstants.DoubleClickTimeThreshold)
                                         {
-                                            MenuCanvas.InvalidateSurface();
+                                            MainThread.BeginInvokeOnMainThread(() =>
+                                            {
+                                                MenuCanvas.InvalidateSurface();
+                                            });
                                             PressMenuOKButton();
                                             _menuPreviousReleaseClick = false;
                                             _menuPreviousReleaseClickIndex = -1;
@@ -19407,7 +19435,10 @@ namespace GnollHackX.Pages.Game
                                     MenuClickResult clickRes = MenuCanvas_EquipmentClickRelease(sender, e, false, screenLogging);
                                     if (clickRes.MenuItemClickIndex == -2 && MenuCancelButton.IsEnabled)
                                     {
-                                        MenuCanvas.InvalidateSurface();
+                                        MainThread.BeginInvokeOnMainThread(() =>
+                                        {
+                                            MenuCanvas.InvalidateSurface();
+                                        });
                                         RequestSwapWeaponAndCloseMenu();
                                         _menuPreviousReleaseClick = false;
                                         _menuPreviousReleaseClickIndex = -1;
@@ -19421,7 +19452,10 @@ namespace GnollHackX.Pages.Game
                                             clickRes.ItemIdentifier != 0 &&
                                             timeSincePreviousReleaseInMs <= GHConstants.DoubleClickTimeThreshold)
                                         {
-                                            MenuCanvas.InvalidateSurface();
+                                            MainThread.BeginInvokeOnMainThread(() =>
+                                            {
+                                                MenuCanvas.InvalidateSurface();
+                                            });
                                             PressMenuOKButton();
                                             _menuPreviousReleaseClick = false;
                                             _menuPreviousReleaseClickIndex = -1;
@@ -19747,7 +19781,10 @@ namespace GnollHackX.Pages.Game
             okClicked = doclickok && MenuOKButton.IsEnabled;
             if (okClicked)
             {
-                MenuCanvas.InvalidateSurface();
+                MainThread.BeginInvokeOnMainThread(() =>
+                {
+                    MenuCanvas.InvalidateSurface();
+                });
                 PressMenuOKButton();
             }
             return new MenuClickResult(okClicked, clickIdx, identifier);
@@ -19814,7 +19851,10 @@ namespace GnollHackX.Pages.Game
             okClicked = doclickok && MenuOKButton.IsEnabled;
             if (okClicked)
             {
-                MenuCanvas.InvalidateSurface();
+                MainThread.BeginInvokeOnMainThread(() =>
+                {
+                    MenuCanvas.InvalidateSurface();
+                });
                 PressMenuOKButton();
             }
             return new MenuClickResult(okClicked, clickIdx, identifier);
