@@ -2104,6 +2104,7 @@ boolean bynexthere_container, bynexthere_obj;
     if (!can_stash_objs())
         return 0;
 
+    /* Count first the number of items in objchn that can be stashed */
     struct obj* curr;
     int fitcnt = 0;
     int no_cancellation_cnt = 0;
@@ -2117,13 +2118,40 @@ boolean bynexthere_container, bynexthere_obj;
         }
     }
 
+    /* If nothing can be stashed then return 0 */
     if(!fitcnt)
         return 0;
 
+    /* Then calculate the actual number of bags */
     int cnt = 0;
     for (curr = objchn_container; curr; curr = (bynexthere_container ? curr->nexthere : curr->nobj))
     {
-        if (objects[curr->otyp].oc_name_known)
+        if (!Is_container(curr))
+        {
+            /* No non-containers */
+            continue;
+        }
+        if (Is_box(curr) && (!curr->lknown || curr->olocked))
+        {
+            /* No (potentially) locked boxes */
+            continue;
+        }
+        else if (Is_container_with_closed_lid(curr))
+        {
+            /* No containers with closed lids */
+            continue;
+        }
+        else if (Is_specialized_container(curr))
+        {
+            /* No specialized containers */
+            continue;
+        }
+        else if (curr->o_id == context.quick_bag_obj_oid)
+        {
+            /* Quick bags always do; they should always be real containers, but we should not reveal it if it happens not to be the case */
+            cnt++;
+        }
+        else if (objects[curr->otyp].oc_name_known)
         {
             if (curr->otyp == BAG_OF_HOLDING && curr->bknown && !curr->cursed && no_cancellation_cnt > 0)
             {
@@ -2141,12 +2169,12 @@ boolean bynexthere_container, bynexthere_obj;
             {
                 cnt++;
             }
-            else if (Is_proper_container(curr) && !Is_mbag(curr) && (objects[curr->otyp].oc_flags4 & (O4_CONTAINER_ACCEPTS_ONLY_SCROLLS_AND_BOOKS | O4_CONTAINER_ACCEPTS_ONLY_WEAPONS)) == 0)
+            else if (Is_proper_container(curr) && !Is_mbag(curr))
             {
                 cnt++;
             }
         }
-        else if (curr->cknown && Is_proper_container(curr) && curr->bknown && !curr->cursed && no_cancellation_cnt > 0 && (objects[curr->otyp].oc_flags4 & (O4_CONTAINER_ACCEPTS_ONLY_SCROLLS_AND_BOOKS | O4_CONTAINER_ACCEPTS_ONLY_WEAPONS)) == 0)
+        else if (curr->cknown && Is_proper_container(curr) && curr->bknown && !curr->cursed && no_cancellation_cnt > 0)
         {
             /* Is a real container based on contents, but it may or may not be a magic bag, so we need to know that it is not cursed */
             cnt++;
@@ -5373,7 +5401,7 @@ can_stash_objs(VOID_ARGS)
     struct obj* otmp;
     for (otmp = invent; otmp; otmp = otmp->nobj)
     {
-        if (Is_container(otmp) && !(otmp->dknown && objects[otmp->otyp].oc_name_known && (!Is_proper_container(otmp) || otmp->olocked)))
+        if (Is_container(otmp) && !(otmp->dknown && ((objects[otmp->otyp].oc_name_known && !Is_proper_container(otmp)) || otmp->olocked)))
             return TRUE;
     }
     return FALSE;
@@ -5388,7 +5416,7 @@ can_floor_stash_objs(VOID_ARGS)
     struct obj* otmp;
     for (otmp = level.objects[u.ux][u.uy]; otmp; otmp = otmp->nexthere)
     {
-        if (Is_container(otmp) && !(otmp->dknown && objects[otmp->otyp].oc_name_known && (!Is_proper_container(otmp) || otmp->olocked)))
+        if (Is_container(otmp) && !(otmp->dknown && ((objects[otmp->otyp].oc_name_known && !Is_proper_container(otmp)) || otmp->olocked)))
             return TRUE;
     }
     return FALSE;
