@@ -4879,6 +4879,7 @@ boolean* return_to_inv_ptr;
                 savech(invlet);
             }
 
+            int tracked_otmp_id = getobj_autoselect_obj != otmp ? add_to_obj_tracking(otmp) : -1;
             trackedobj = getobj_autoselect_obj;
             res = (extcmdlist[selected_action].ef_funct)();
             getobj_autoselect_obj = (struct obj*)0;
@@ -4887,8 +4888,9 @@ boolean* return_to_inv_ptr;
             trackedobj_gone = FALSE;
             repeatmenu = (boolean)((extcmdlist[selected_action].flags & ALLOW_RETURN_TO_CMD_MENU) != 0) && !res;
             returntoinv = (boolean)((extcmdlist[selected_action].flags & ALLOW_RETURN_TO_INVENTORY) != 0) && !res;
+            boolean otmp_gone = finish_obj_tracking(tracked_otmp_id);
 
-            if (!autoobjgone) /* otmp or otmpsplit may have been deallocated, e.g., scrolls */
+            if (!autoobjgone && !otmp_gone) /* otmp or otmpsplit may have been deallocated, e.g., scrolls */
             {
                 if ((repeatmenu || returntoinv || !res) && otmpsplit && otmpsplit != otmp && otmpsplit->where == OBJ_INVENT && otmp->where == OBJ_INVENT)
                 {
