@@ -4890,7 +4890,7 @@ boolean* return_to_inv_ptr;
 
             if (!autoobjgone) /* otmp or otmpsplit may have been deallocated, e.g., scrolls */
             {
-                if ((repeatmenu || returntoinv) && otmpsplit && otmpsplit != otmp && otmpsplit->where == OBJ_INVENT && otmp->where == OBJ_INVENT)
+                if ((repeatmenu || returntoinv || !res) && otmpsplit && otmpsplit != otmp && otmpsplit->where == OBJ_INVENT && otmp->where == OBJ_INVENT)
                 {
                     debugprint("display_item_command_menu: %d, %d", otmp->otyp, otmpsplit->otyp);
                     (void)merged(&otmp, &otmpsplit); /* Merge the split object back to the original */
