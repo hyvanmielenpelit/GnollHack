@@ -2133,8 +2133,10 @@ domove_core()
         {
             /* try to attack; note that it might evade */
             /* also, we don't attack tame when _safepet_ */
+            debugprint("domove_core1: mnum=%d, mx=%d, my=%d", mtmp->mnum, mtmp->mx, mtmp->my);
             if (attack(mtmp))
                 return;
+            debugprint("domove_core2: mnum=%d, mx=%d, my=%d", mtmp->mnum, mtmp->mx, mtmp->my);
         }
     }
 
@@ -2319,6 +2321,9 @@ domove_core()
         play_movement_sound(&youmonst, CLIMBING_TYPE_NONE);
     }
 
+    if (mtmp)
+        debugprint("domove_core3: mnum=%d, mx=%d, my=%d, x=%d, y=%d, ux0=%d, uy0=%d", mtmp->mnum, mtmp->mx, mtmp->my, x, y, u.ux0, u.uy0);
+
     /*
      * If safepet at destination then move the pet to the hero's
      * previous location using the same conditions as in attack().
@@ -2332,7 +2337,7 @@ domove_core()
      * Ceiling-hiding pets are skipped by this section of code, to
      * be caught by the normal falling-monster code.
      */
-    if ((is_safepet(mtmp) || is_displaceable_peaceful(mtmp)) && !(is_hider(mtmp->data) && mtmp->mundetected))
+    if (mtmp && (is_safepet(mtmp) || is_displaceable_peaceful(mtmp)) && !(is_hider(mtmp->data) && mtmp->mundetected))
     {
         /* if trapped, there's a chance the pet goes wild */
         if (mtmp->mtrapped && is_safepet(mtmp))
@@ -2406,6 +2411,7 @@ domove_core()
             /* save its current description in case of polymorph */
             Strcpy(pnambuf, y_monnam(mtmp));
             mtmp->mtrapped = 0;
+            debugprint("domove_core4: mnum=%d, mx=%d, my=%d, x=%d, y=%d, ux0=%d, uy0=%d", mtmp->mnum, mtmp->mx, mtmp->my, x, y, u.ux0, u.uy0);
             remove_monster(x, y);
             place_monster(mtmp, u.ux0, u.uy0);
             newsym(x, y);
