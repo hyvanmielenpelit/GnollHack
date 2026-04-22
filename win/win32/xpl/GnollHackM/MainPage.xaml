@@ -231,6 +231,51 @@
                 </Grid.GestureRecognizers>
             </Grid>
 
+            <Grid x:Name="TierGrid" HorizontalOptions="Fill" VerticalOptions="Fill" 
+              BackgroundColor="#66000000" AbsoluteLayout.LayoutBounds="0,0,1,1"
+              AbsoluteLayout.LayoutFlags="All" IsVisible="False">
+                <Grid x:Name="TierFrameCenterGrid" MaximumWidthRequest="640" Margin="5" HorizontalOptions="Fill" VerticalOptions="Center">
+                    <Border x:Name="TierFrame"  BackgroundColor="#99000000" Stroke="Black" Padding="12,12" StrokeThickness="1" StrokeShape="RoundRectangle 10,10,10,10" HorizontalOptions="Center" VerticalOptions="Center">
+                        <Grid x:Name="TierLayoutGrid" Padding="5" RowSpacing="0"  HorizontalOptions="Center" VerticalOptions="Center">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+                            <Label Grid.Row="0" x:Name="TierTitleLabel" Text="New Rank Claimed" FontFamily="Immortal" FontSize="23" TextColor="White"
+                                       HorizontalTextAlignment="Center" VerticalTextAlignment="Center" HorizontalOptions="Center" />
+                            <Grid Grid.Row="1" Margin="0,5">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <local:GHCachedImage Grid.Column="0" x:Name="ImageLeft" HighFilterQuality="True"
+                                    WidthRequest="80" HeightRequest="80" 
+                                    BackgroundColor="Transparent" VerticalOptions="Center" HorizontalOptions="Start" />
+                                <local:GHCachedImage Grid.Column="2" x:Name="ImageRight" HighFilterQuality="True"
+                                    WidthRequest="80" HeightRequest="80" 
+                                    BackgroundColor="Transparent" VerticalOptions="Center" HorizontalOptions="End" />
+                                <StackLayout Grid.Column="1" Margin="20,0" VerticalOptions="Center" HorizontalOptions="Center" >
+                                    <Label x:Name="TierNameLabel" Text="Tier Name" FontFamily="Immortal" FontSize="23" TextColor="White"
+                                       HorizontalTextAlignment="Center" VerticalTextAlignment="Center" HorizontalOptions="Center" VerticalOptions="Center" IsVisible="True" />
+                                    <Label x:Name="TierSubNameLabel" Text="Tier Specifier" Margin="0,3,0,0" FontFamily="Immortal" FontSize="23" TextColor="White"
+                                       HorizontalTextAlignment="Center" VerticalTextAlignment="Center" HorizontalOptions="Center" VerticalOptions="Center" IsVisible="False" />
+                                </StackLayout>
+                            </Grid>
+                            <controls:CustomImageButton Grid.Row="2" x:Name="TierOkButton" Text="OK" FontSize="19" WidthRequest="170" HeightRequest="55" FontFamily="Diablo" HorizontalOptions="Center" BackgroundColor="Transparent" TextColor="White"
+                                       Margin="0,10,0,0" Clicked="TierOkButton_Clicked" />
+                        </Grid>
+                    </Border>
+                    <Grid.GestureRecognizers>
+                        <TapGestureRecognizer />
+                    </Grid.GestureRecognizers>
+                </Grid>
+                <Grid.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="TierTapGestureRecognizer_Tapped" />
+                </Grid.GestureRecognizers>
+            </Grid>
+
             <Grid x:Name="AchievementGrid" HorizontalOptions="Fill" VerticalOptions="Fill" 
               BackgroundColor="#66000000" AbsoluteLayout.LayoutBounds="0,0,1,1"
               AbsoluteLayout.LayoutFlags="All"  IsVisible="False">

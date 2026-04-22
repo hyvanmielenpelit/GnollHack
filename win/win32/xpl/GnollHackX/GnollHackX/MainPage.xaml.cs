@@ -88,6 +88,8 @@ namespace GnollHackX
             GHApp.IncrementMainConstructorRunNumber();
             On<iOS>().SetUseSafeArea(true);
             UIUtils.SetPageThemeOnHandler(this, GHApp.DarkMode);
+            TierTitleLabel.TextColor = GHColors.TitleGoldColor;
+            TierSubNameLabel.TextColor = GHColors.LightYellow;
             if (GHApp.CurrentGHGame != null)
             {
                 WaitLabel.Text = "Please Wait...";
@@ -2177,6 +2179,16 @@ namespace GnollHackX
                                 await ClosePopup();
                                 handled = true;
                             }
+                            else if (AchievementGrid.IsVisible && AchievementOkButton.IsEnabled)
+                            {
+                                AchievementOkButton_Clicked(this, EventArgs.Empty);
+                                handled = true;
+                            }
+                            else if (TierGrid.IsVisible && TierOkButton.IsEnabled)
+                            {
+                                TierOkButton_Clicked(this, EventArgs.Empty);
+                                handled = true;
+                            }
                             else if (PendingTasksGrid.IsVisible && key == GHSpecialKey.Escape && PendingTasksCancelButton.IsVisible && PendingTasksCancelButton.IsEnabled)
                             {
                                 PendingTasksCancelButton_Clicked(this, EventArgs.Empty);
@@ -2472,11 +2484,51 @@ namespace GnollHackX
             AchievementGrid.IsVisible = false;
             AchievementOkButton.IsEnabled = true;
             AchievementGainedLayout.Children.Clear();
+            CheckNewTier();
         }
 
         private void AchievementTapGestureRecognizer_Tapped(object sender, EventArgs e)
         {
             AchievementOkButton_Clicked(sender, e);
+        }
+
+        private void CheckNewTier()
+        {
+            AchievementTier tier = GHApp.GetAchievementTier();
+            if (tier != null)
+            {
+                if (GHApp.IsNewAchievementTierGained())
+                {
+                    TierNameLabel.Text = tier.Name;
+                    if (tier.SubName != null)
+                    {
+                        TierSubNameLabel.Text = tier.SubName;
+                        TierSubNameLabel.IsVisible = true;
+                    }
+                    else
+                    {
+                        TierSubNameLabel.Text = "";
+                        TierSubNameLabel.IsVisible = false;
+                    }
+                    ImageLeft.Source = "resource://" + GHApp.AppResourceName + ".Assets.UI.achievement-page.png";
+                    ImageRight.Source = "resource://" + GHApp.AppResourceName + ".Assets.UI.achievement-page.png";
+                    TierGrid.IsVisible = true;
+                    GHApp.ClearAchievementTierGained();
+                }
+            }
+        }
+
+        private void TierOkButton_Clicked(object sender, EventArgs e)
+        {
+            TierOkButton.IsEnabled = false;
+            GHApp.PlayButtonClickedSound();
+            TierGrid.IsVisible = false;
+            TierOkButton.IsEnabled = true;
+        }
+
+        private void TierTapGestureRecognizer_Tapped(object sender, EventArgs e)
+        {
+            TierOkButton_Clicked(sender, e);
         }
     }
 }

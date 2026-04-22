@@ -213,7 +213,6 @@ namespace GnollHackX.Pages.MainScreen
             GHApp.PlayButtonClickedSound();
             TierGrid.IsVisible = false;
             TierOkButton.IsEnabled = true;
-
         }
 
         private void TapGestureRecognizer_Tapped(object sender, EventArgs e)
@@ -272,7 +271,8 @@ namespace GnollHackX.Pages.MainScreen
         {
             if (TierGrid.IsVisible && (key == GHSpecialKey.Escape || key == GHSpecialKey.Space || key == GHSpecialKey.Enter))
             {
-                TierOkButton_Clicked(this, EventArgs.Empty);
+                if (TierOkButton.IsEnabled)
+                    TierOkButton_Clicked(this, EventArgs.Empty);
                 return true;
             }
             if (key == GHSpecialKey.Escape)
