@@ -2169,14 +2169,14 @@ namespace GnollHackX
                     {
                         if (key == GHSpecialKey.Escape || key == GHSpecialKey.Enter || key == GHSpecialKey.Space)
                         {
-                            if (AlertGrid.IsVisible && AlertOkButton.IsEnabled)
+                            if (PendingTasksGrid.IsVisible && key == GHSpecialKey.Escape && PendingTasksCancelButton.IsVisible && PendingTasksCancelButton.IsEnabled)
                             {
-                                AlertOkButton_Clicked(this, EventArgs.Empty);
+                                PendingTasksCancelButton_Clicked(this, EventArgs.Empty);
                                 handled = true;
                             }
-                            else if (PopupGrid.IsVisible && ((PopupOkButton.IsVisible && PopupOkButton.IsEnabled) || (PopupButtonGrid.IsVisible && PopupOkButton2.IsVisible && PopupOkButton2.IsEnabled)))
+                            else if (PendingTasksGrid.IsVisible && (key == GHSpecialKey.Enter || key == GHSpecialKey.Space) && PendingTasksOkButton.IsVisible && PendingTasksOkButton.IsEnabled)
                             {
-                                await ClosePopup();
+                                await PendingTasksOk();
                                 handled = true;
                             }
                             else if (AchievementGrid.IsVisible && AchievementOkButton.IsEnabled)
@@ -2189,14 +2189,24 @@ namespace GnollHackX
                                 TierOkButton_Clicked(this, EventArgs.Empty);
                                 handled = true;
                             }
-                            else if (PendingTasksGrid.IsVisible && key == GHSpecialKey.Escape && PendingTasksCancelButton.IsVisible && PendingTasksCancelButton.IsEnabled)
+                            else if (EventGrid.IsVisible && EventButtonGrid.IsEnabled && key == GHSpecialKey.Escape)
                             {
-                                PendingTasksCancelButton_Clicked(this, EventArgs.Empty);
+                                EventCancelButton_Clicked(this, EventArgs.Empty);
                                 handled = true;
                             }
-                            else if (PendingTasksGrid.IsVisible && (key == GHSpecialKey.Enter || key == GHSpecialKey.Space) && PendingTasksOkButton.IsVisible && PendingTasksOkButton.IsEnabled)
+                            else if (EventGrid.IsVisible && EventButtonGrid.IsEnabled && (key == GHSpecialKey.Enter || key == GHSpecialKey.Space))
                             {
-                                await PendingTasksOk();
+                                EventOkButton_Clicked(this, EventArgs.Empty);
+                                handled = true;
+                            }
+                            else if (AlertGrid.IsVisible && AlertOkButton.IsEnabled)
+                            {
+                                AlertOkButton_Clicked(this, EventArgs.Empty);
+                                handled = true;
+                            }
+                            else if (PopupGrid.IsVisible && ((PopupOkButton.IsVisible && PopupOkButton.IsEnabled) || (PopupButtonGrid.IsVisible && PopupOkButton2.IsVisible && PopupOkButton2.IsEnabled)))
+                            {
+                                await ClosePopup();
                                 handled = true;
                             }
                         }
