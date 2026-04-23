@@ -10473,10 +10473,10 @@ boolean auto_yes;
     }
     else if(has_enpc(mtmp))
     {
-        if ((npc_subtype_definitions[ENPC(mtmp)->npc_typ].service_flags & NPC_SERVICE_BUY_DILITHIUM_CRYSTALS) && obj->otyp == DILITHIUM_CRYSTAL)
+        if ((npc_subtype_definitions[ENPC(mtmp)->npc_typ].service_flags & NPC_SERVICE_BUY_DILITHIUM_CRYSTALS) && obj->oclass == GEM_CLASS) // && obj->otyp == DILITHIUM_CRYSTAL)
         {
             saleitem = TRUE;
-            makeknown(DILITHIUM_CRYSTAL);
+            //makeknown(DILITHIUM_CRYSTAL);
         }
 
         if((npc_subtype_definitions[ENPC(mtmp)->npc_typ].service_flags & NPC_SERVICE_BUY_GEMS_AND_STONES) && obj->oclass == GEM_CLASS)
