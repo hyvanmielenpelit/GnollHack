@@ -1549,7 +1549,10 @@ boolean ghostly;
             for (trap = ftrap; trap; trap = ttmp) {
                 ttmp = trap->ntrap;
                 if (trap->ttyp == MAGIC_PORTAL)
+                {
                     deltrap(trap);
+                    issue_breadcrumb("Dangling portal deleted.");
+                }
             }
         }
     }

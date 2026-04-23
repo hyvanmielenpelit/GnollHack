@@ -8338,6 +8338,11 @@ deferred_goto()
             {
                 deltrap(t);
                 newsym(u.ux, u.uy);
+                issue_breadcrumb("Quest far portal deleted.");
+            }
+            else
+            {
+                issue_breadcrumb("Quest far portal marked for deletion but not found.");
             }
         }
 
