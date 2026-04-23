@@ -698,8 +698,8 @@ E const char* const hofe_titles[3];
 
 E uint64_t file_end_marker;
 
-#define NUM_DEBUGBUFS 15
-#define TOTALNUM_DEBUGBUFS 30
+#define NUM_DEBUGBUFS 20
+#define TOTALNUM_DEBUGBUFS 40
 #define DEBUGBUFSIZ (BUFSZ * 2)
 E char debug_buf_array[TOTALNUM_DEBUGBUFS][DEBUGBUFSIZ];
 E char* debug_bufs[TOTALNUM_DEBUGBUFS];
