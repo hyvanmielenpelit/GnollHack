@@ -45,8 +45,8 @@ namespace GnollHackX.Pages.MainScreen
             }
             lblSubtitle.TextColor = GHApp.DarkMode ? GHColors.TitleGoldColor : GHColors.DarkGreen;
             lblSubtitle2.TextColor = GHApp.DarkMode ? GHColors.LightYellow : GHColors.SemiDarkGreen;
-            TierTitleLabel.TextColor = GHColors.TitleGoldColor;
-            TierSubNameLabel.TextColor = GHColors.LightYellow;
+            //TierTitleLabel.TextColor = GHColors.TitleGoldColor;
+            //TierSubNameLabel.TextColor = GHColors.LightYellow;
         }
         private async void Button_Clicked(object sender, EventArgs e)
         {
@@ -135,7 +135,7 @@ namespace GnollHackX.Pages.MainScreen
                 }
                 if (GHApp.IsNewAchievementTierGained())
                 {
-                    TierTitleLabel.Text = "New Rank Claimed";
+                    //TierTitleLabel.Text = "New Rank Claimed";
                     TierNameLabel.Text = tier.Name;
                     if (tier.SubName != null)
                     {

@@ -242,7 +242,7 @@
                                 <RowDefinition Height="*"/>
                                 <RowDefinition Height="Auto"/>
                             </Grid.RowDefinitions>
-                            <Label Grid.Row="0" x:Name="TierTitleLabel" Text="New Rank Claimed" FontFamily="Immortal" FontSize="23" TextColor="White"
+                            <Label Grid.Row="0" x:Name="TierTitleLabel" Text="New Rank Claimed" FontFamily="Immortal" FontSize="23" TextColor="{x:Static local:GHColors.TitleGoldColor}"
                                        HorizontalTextAlignment="Center" VerticalTextAlignment="Center" HorizontalOptions="Center" />
                             <Grid Grid.Row="1" Margin="0,5">
                                 <Grid.ColumnDefinitions>
@@ -259,7 +259,7 @@
                                 <StackLayout Grid.Column="1" Margin="20,0" VerticalOptions="Center" HorizontalOptions="Center" >
                                     <Label x:Name="TierNameLabel" Text="Tier Name" FontFamily="Immortal" FontSize="23" TextColor="White"
                                        HorizontalTextAlignment="Center" VerticalTextAlignment="Center" HorizontalOptions="Center" VerticalOptions="Center" IsVisible="True" />
-                                    <Label x:Name="TierSubNameLabel" Text="Tier Specifier" Margin="0,3,0,0" FontFamily="Immortal" FontSize="23" TextColor="White"
+                                    <Label x:Name="TierSubNameLabel" Text="Tier Specifier" Margin="0,3,0,0" FontFamily="Immortal" FontSize="23" TextColor="{x:Static local:GHColors.LightYellow}"
                                        HorizontalTextAlignment="Center" VerticalTextAlignment="Center" HorizontalOptions="Center" VerticalOptions="Center" IsVisible="False" />
                                 </StackLayout>
                             </Grid>
@@ -289,7 +289,7 @@
                                 <RowDefinition Height="Auto"/>
                                 <RowDefinition Height="Auto"/>
                             </Grid.RowDefinitions>
-                            <Label Grid.Row="0" x:Name="AchievementTitleLabel" Text="Achievements Gained" FontFamily="Immortal" FontSize="24" TextColor="White"
+                            <Label Grid.Row="0" x:Name="AchievementTitleLabel" Text="Achievements Gained" FontFamily="Immortal" FontSize="24" TextColor="{x:Static local:GHColors.TitleGoldColor}"
                                        HorizontalTextAlignment="Center" VerticalTextAlignment="Center" HorizontalOptions="Center"  />
                             <ScrollView Grid.Row="1" x:Name="AchievementScrollView" MaximumHeightRequest="450" Margin="0,6,0,0" HorizontalOptions="Fill" VerticalOptions="Start">
                                 <StackLayout x:Name="AchievementGainedLayout" Spacing="6" HorizontalOptions="Fill">

@@ -44,7 +44,7 @@
                                 <RowDefinition Height="*"/>
                                 <RowDefinition Height="Auto"/>
                             </Grid.RowDefinitions>
-                            <Label Grid.Row="0" x:Name="TierTitleLabel" Text="New Title Achieved" FontFamily="Immortal" FontSize="23" TextColor="White"
+                            <Label Grid.Row="0" x:Name="TierTitleLabel" Text="New Rank Claimed" FontFamily="Immortal" FontSize="23" TextColor="{x:Static gnh:GHColors.TitleGoldColor}"
                                        HorizontalTextAlignment="Center" VerticalTextAlignment="Center" HorizontalOptions="Center" />
                             <Grid Grid.Row="1" Margin="0,5">
                                 <Grid.ColumnDefinitions>
@@ -61,7 +61,7 @@
                                 <StackLayout Grid.Column="1" Margin="20,0" VerticalOptions="Center" HorizontalOptions="Center" >
                                     <Label x:Name="TierNameLabel" Text="Tier Name" FontFamily="Immortal" FontSize="23" TextColor="White"
                                        HorizontalTextAlignment="Center" VerticalTextAlignment="Center" HorizontalOptions="Center" VerticalOptions="Center" IsVisible="True" />
-                                    <Label x:Name="TierSubNameLabel" Text="Tier Specifier" Margin="0,3,0,0" FontFamily="Immortal" FontSize="23" TextColor="White"
+                                    <Label x:Name="TierSubNameLabel" Text="Tier Specifier" Margin="0,3,0,0" FontFamily="Immortal" FontSize="23" TextColor="{x:Static gnh:GHColors.LightYellow}"
                                        HorizontalTextAlignment="Center" VerticalTextAlignment="Center" HorizontalOptions="Center" VerticalOptions="Center" IsVisible="False" />
                                 </StackLayout>
                             </Grid>

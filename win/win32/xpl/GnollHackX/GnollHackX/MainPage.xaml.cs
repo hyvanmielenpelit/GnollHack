@@ -88,8 +88,8 @@ namespace GnollHackX
             GHApp.IncrementMainConstructorRunNumber();
             On<iOS>().SetUseSafeArea(true);
             UIUtils.SetPageThemeOnHandler(this, GHApp.DarkMode);
-            TierTitleLabel.TextColor = GHColors.TitleGoldColor;
-            TierSubNameLabel.TextColor = GHColors.LightYellow;
+            //TierTitleLabel.TextColor = GHColors.TitleGoldColor;
+            //TierSubNameLabel.TextColor = GHColors.LightYellow;
             if (GHApp.CurrentGHGame != null)
             {
                 WaitLabel.Text = "Please Wait...";
@@ -2400,7 +2400,7 @@ namespace GnollHackX
                 else
                     AchievementTitleLabel.Text = "Achievement Gained";
 
-                AchievementTitleLabel.TextColor = GHColors.TitleGoldColor;
+                //AchievementTitleLabel.TextColor = GHColors.TitleGoldColor;
 
                 List<int> achievementsUnlocked = GHApp.GetAchievementsUnlocked(achievementsGained);
                 int newAchievementsUnlocked = achievementsUnlocked?.Count ?? 0;

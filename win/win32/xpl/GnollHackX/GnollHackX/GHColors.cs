@@ -3,11 +3,13 @@ using System.Collections.Generic;
 using System.Text;
 #if GNH_MAUI
 using Microsoft.Maui.Controls;
+
+namespace GnollHackM
 #else
 using Xamarin.Forms;
-#endif
 
 namespace GnollHackX
+#endif
 {
     public static class GHColors
     {
