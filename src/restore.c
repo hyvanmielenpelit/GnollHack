@@ -1501,12 +1501,14 @@ boolean ghostly;
     restdamage(fd, ghostly);
     rest_regions(fd, ghostly);
 
-    if (ghostly) {
+    if (ghostly) 
+    {
         /* Now get rid of all the temp fruits... */
         freefruitchn(oldfruit), oldfruit = 0;
 
         if (lev > ledger_no(&medusa_level)
-            && lev < ledger_no(&stronghold_level) && xdnstair == 0) {
+            && lev < ledger_no(&stronghold_level) && xdnstair == 0)
+        {
             coord cc;
 
             mazexy(&cc);
@@ -1516,7 +1518,8 @@ boolean ghostly;
         }
 
         br = Is_branchlev(&u.uz);
-        if (br && u.uz.dlevel == 1) {
+        if (br && u.uz.dlevel == 1) 
+        {
             d_level ltmp;
 
             if (on_level(&u.uz, &br->end1))
@@ -1524,7 +1527,8 @@ boolean ghostly;
             else
                 assign_level(&ltmp, &br->end1);
 
-            switch (br->type) {
+            switch (br->type) 
+            {
             case BR_STAIR:
             case BR_NO_END1:
             case BR_NO_END2: /* OK to assign to sstairs if it's not used */
@@ -1542,11 +1546,14 @@ boolean ghostly;
                 assign_level(&trap->dst, &ltmp);
                 break;
             }
-        } else if (!br) {
+        } 
+        else if (!br) 
+        {
             struct trap *ttmp = 0;
 
             /* Remove any dangling portals. */
-            for (trap = ftrap; trap; trap = ttmp) {
+            for (trap = ftrap; trap; trap = ttmp) 
+            {
                 ttmp = trap->ntrap;
                 if (trap->ttyp == MAGIC_PORTAL)
                 {
