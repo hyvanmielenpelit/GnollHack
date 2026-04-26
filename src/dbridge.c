@@ -759,7 +759,6 @@ struct entity *etmp;
         debugpline1("Moving %s", e_nam(etmp));
         if (!is_u(etmp)) 
         {
-            debugprint_pos();
             remove_monster(etmp->ex, etmp->ey);
             place_monster(etmp->emon, newx, newy);
             update_monster_region(etmp->emon);

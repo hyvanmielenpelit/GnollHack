@@ -286,7 +286,6 @@ boolean quietly;
 
     remove_monster(fx, fy); /* pick up from orig position */
     remove_monster(tx, ty);
-    debugprint_pos();
     place_monster(magr, tx, ty); /* put down at target spot */
     debugprint_pos();
     place_monster(mdef, fx, fy);
@@ -1096,7 +1095,6 @@ register struct attack *mattk;
      */
     remove_monster(dx, dy);
     remove_monster(ax, ay);
-    debugprint_pos();
     place_monster(magr, dx, dy);
     newsym(ax, ay); /* erase old position */
     newsym(dx, dy); /* update new position */
@@ -1134,7 +1132,6 @@ register struct attack *mattk;
             pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s is regurgitated!", Monnam(mdef));
 
         remove_monster(dx,dy);
-        debugprint_pos();
         place_monster(magr, ax, ay);
         debugprint_pos();
         place_monster(mdef, dx, dy);
@@ -2231,7 +2228,6 @@ register struct obj* omonwep;
         if (m_at(mdef->mx, mdef->my) == magr) { /* see gulpmm() */
             remove_monster(mdef->mx, mdef->my);
             mdef->mhp = 1; /* otherwise place_monster will complain */
-            debugprint_pos();
             place_monster(mdef, mdef->mx, mdef->my);
             reset_monster_origin_coordinates(mdef);
             mdef->mhp = 0;
