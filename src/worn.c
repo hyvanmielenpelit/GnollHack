@@ -695,6 +695,8 @@ boolean silently;
     boolean was_fearful = is_fearful(mtmp);
     boolean was_fleeing = is_fleeing(mtmp);
     boolean was_charmed = is_charmed(mtmp);
+    boolean was_controlled = is_controlled(mtmp);
+    boolean was_charmed_or_controlled = is_charmed_or_controlled(mtmp);
     boolean was_tame = is_tame(mtmp);
     boolean was_peaceful = is_peaceful(mtmp);
     boolean was_silenced = is_silenced(mtmp);
@@ -973,14 +975,24 @@ boolean silently;
         if (is_charmed(mtmp) && !was_charmed)
         {
             res = TRUE;
-            pline("%s is charmed!", Monnam(mtmp));
+            pline_ex(ATR_NONE, CLR_MSG_SUCCESS, "%s is charmed!", Monnam(mtmp));
             if (is_tame(mtmp) && !was_tame)
                 pline_ex(ATR_NONE, CLR_MSG_POSITIVE, "%s looks friendly.", Monnam(mtmp));
             else
                 pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s looks %s for a while.", Monnam(mtmp), is_tame(mtmp) ? "a little perplexed" :
                     is_peaceful(mtmp) ? "a little uncomfortable" : "uncomfortable");
         }
-        if (!is_charmed(mtmp) && was_charmed)
+        if (is_controlled(mtmp) && !was_controlled)
+        {
+            res = TRUE;
+            pline_ex(ATR_NONE, CLR_MSG_SUCCESS, "%s is controlled!", Monnam(mtmp));
+            if (is_tame(mtmp) && !was_tame)
+                pline_ex(ATR_NONE, CLR_MSG_POSITIVE, "%s looks friendly.", Monnam(mtmp));
+            else
+                pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s looks %s for a while.", Monnam(mtmp), is_tame(mtmp) ? "a little perplexed" :
+                    is_peaceful(mtmp) ? "a little uncomfortable" : "uncomfortable");
+        }
+        if (!is_charmed_or_controlled(mtmp) && was_charmed_or_controlled)
         {
             res = TRUE;
             if (is_tame(mtmp))

@@ -495,19 +495,20 @@
 #define has_charm_resistance(mon) \
     (has_innate_charm_resistance((mon)->data) || has_property(mon, CHARM_RESISTANCE))
 
+#define is_charmed(mon) (has_charmed(mon) && !has_charm_resistance(mon) && !is_undead((mon)->data) && !is_vampshifter(mon) && !mon_has_no_apparent_mind(mon))
+
 #define has_undead_control(mon) \
     has_property(mon, UNDEAD_CONTROL)
 
-#define is_charmed(mon) \
-    ((has_charmed(mon) && !has_charm_resistance(mon) && !is_undead((mon)->data) && !is_vampshifter(mon) && !mon_has_no_apparent_mind(mon)) \
-     || (has_undead_control(mon) && (is_undead((mon)->data) || is_vampshifter(mon))) \
-    )
+#define is_controlled(mon) (has_undead_control(mon) && (is_undead((mon)->data) || is_vampshifter(mon)))
+
+#define is_charmed_or_controlled(mon) (is_charmed(mon) || is_controlled(mon))
 
 #define is_tame(mon) \
-    ((is_charmed(mon) || (mon)->mtame) && (mon)->mextra && (mon)->mextra->edog) /* Note: currently a monster cannot be tame without an edog */
+    ((is_charmed_or_controlled(mon) || (mon)->mtame) && (mon)->mextra && (mon)->mextra->edog) /* Note: currently a monster cannot be tame without an edog */
 
 #define is_peaceful(mon) \
-    (is_charmed(mon) || (mon)->mpeaceful)
+    (is_charmed_or_controlled(mon) || (mon)->mpeaceful)
 
 #define is_mon_protecting(mtmp) (is_protector(mtmp) && is_peaceful(mtmp))
 

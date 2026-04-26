@@ -924,7 +924,7 @@ struct monst* origmonst;
             int chance = 5 * (15 + (otyp == WAN_UNDEAD_TURNING ? 12 : u.ulevel) - mtmp->m_lev + (!otmp ? 0 : otmp->blessed ? 4 : 0) - (is_demon(mtmp->data) ? 5 : 0) - ((mtmp->data->geno & G_UNIQ) ? 10 : 0));
             int dmgdice = max(0, (chance - 100) / 15);
             dmg = dmgdice > 0 ? d(dmgdice, 6) : 0;
-            turn_undead_success_effect(mtmp, dmg, duration);
+            (void)turn_undead_success_effect(mtmp, dmg, duration);
             //(void)inflict_spell_damage(mtmp, otmp, origmonst, dmg, AD_CLRC, TELL);
             //if (!DEADMONSTER(mtmp))
             //{

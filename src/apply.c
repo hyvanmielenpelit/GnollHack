@@ -1584,32 +1584,49 @@ struct obj* obj;
     return 1;
 }
 
-/* Turn undead */
-void
+/* Turn undead; return TRUE if mtmp was pacified */
+boolean
 turn_undead_success_effect(mtmp, dmg, duration)
 struct monst* mtmp;
 int dmg, duration;
 {
+    boolean res = FALSE;
     int xlev = 6;
     switch (mtmp->data->mlet)
     {
+    case S_DEMON:
+        xlev += 3; /*FALLTHRU*/
     case S_LICH:
-        xlev += 5; /*FALLTHRU*/
+        xlev += 3; /*FALLTHRU*/
     case S_GREATER_UNDEAD: /* Mummies */
-        xlev += 5; /*FALLTHRU*/
+        xlev += 3; /*FALLTHRU*/
     case S_VAMPIRE:
         xlev += 3; /*FALLTHRU*/
     case S_GHOST:
         xlev += 3; /*FALLTHRU*/
     case S_WRAITH:
         xlev += 3; /*FALLTHRU*/
+    case S_IMP:
+        xlev += 3; /*FALLTHRU*/
     case S_LESSER_UNDEAD:
-        if (u.ulevel >= xlev && !check_magic_resistance_and_inflict_damage(mtmp, (struct obj*)0, (struct monst*)0, FALSE, 0, 0, NOTELL))
+        if (u.ulevel >= xlev && !(mtmp->data->geno & G_UNIQ) && !check_magic_resistance_and_inflict_damage(mtmp, (struct obj*)0, (struct monst*)0, FALSE, 0, 0, NOTELL))
         {
             if (u.ualign.type == A_CHAOTIC)
             {
+                res = TRUE;
                 mtmp->mpeaceful = 1;
                 set_mhostility(mtmp);
+
+                /* Maybe become controlled */
+                int save_adj = 0;
+                if (mtmp->isshk)
+                {
+                    make_happy_shk(mtmp, FALSE);
+                }
+                else if (mindless(mtmp->data) || !check_ability_resistance_success(mtmp, A_WIS, save_adj))
+                {
+                    (void)tamedog(mtmp, (struct obj*)0, TAMEDOG_NO_FORCED_TAMING, 2, 0, TRUE, FALSE);
+                }
                 newsym(mtmp->mx, mtmp->my);
             }
             else
@@ -1617,7 +1634,7 @@ int dmg, duration;
                 killed(mtmp);
             }
             break;
-        } /* else flee */
+        } /* else flee and sustain damage */
     /*FALLTHRU*/
     default:
         //monflee(mtmp, 0, FALSE, TRUE);
@@ -1631,6 +1648,7 @@ int dmg, duration;
         }
         break;
     }
+    return res;
 }
 
 /* Routines for IMMEDIATE wands and spells. */
@@ -1639,19 +1657,14 @@ int
 uthitm(mtmp, otmp, origmonst)
 struct monst* mtmp;
 struct obj* otmp;
-struct monst* origmonst;
+struct monst* origmonst UNUSED;
 {
     boolean wake = TRUE; /* Most 'zaps' should wake monster */
     boolean reveal_invis = FALSE, learn_it = FALSE;
-    boolean helpful_gesture = FALSE;
+    boolean pacified = FALSE;
 
     if (!otmp || !mtmp)
         return 0;
-
-    if (origmonst) /* Remove gcc warning */
-    {
-        /* Do nothing */
-    }
 
     if (u.uswallow && mtmp == u.ustuck)
         reveal_invis = FALSE;
@@ -1679,9 +1692,9 @@ struct monst* origmonst;
         boolean turn_success = rn2(100) < chance;
         if (turn_success)
         {
-            pline_ex(ATR_NONE, CLR_MSG_SUCCESS, "%s brightly before %s!", Yobjnam2(otmp, "shine"), mon_nam(mtmp));
+            pline_ex(ATR_NONE, CLR_MSG_MYSTICAL, "%s brightly before %s!", Yobjnam2(otmp, "shine"), mon_nam(mtmp));
             int dmg = dmgdice > 0 ? d(dmgdice, 6) : 0;
-            turn_undead_success_effect(mtmp, dmg, 200 + rnd(100));
+            pacified = turn_undead_success_effect(mtmp, dmg, 200 + rnd(100));
             refresh_m_tile_gui_info(mtmp, TRUE);
 #if 0
             if (!is_peaceful(mtmp)
@@ -1782,6 +1795,10 @@ struct monst* origmonst;
                     You_ex(ATR_NONE, CLR_MSG_FAIL, "fail to turn %s.", mon_nam(mtmp));
                 }
             }
+            else
+            {
+                pline1("Nothing much seems to happen.");
+            }
         }
     }
     else if (is_demon(mtmp->data))
@@ -1797,7 +1814,7 @@ struct monst* origmonst;
     {
         if (!DEADMONSTER(mtmp)) 
         {
-            wakeup(mtmp, helpful_gesture ? FALSE : TRUE);
+            wakeup(mtmp, !pacified);
             m_respond(mtmp);
             if (mtmp->isshk && !*u.ushops)
                 hot_pursuit(mtmp);

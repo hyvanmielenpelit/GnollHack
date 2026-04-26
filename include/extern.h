@@ -111,7 +111,7 @@ E boolean FDECL(tinnable, (struct obj *));
 E void NDECL(reset_trapset);
 E int FDECL(fig_transform, (ANY_P *, int64_t));
 E int FDECL(unfixable_trouble_count, (BOOLEAN_P));
-E void FDECL(turn_undead_success_effect, (struct monst*, int, int));
+E boolean FDECL(turn_undead_success_effect, (struct monst*, int, int));
 E int FDECL(uthitm, (struct monst*, struct obj*, struct monst*));
 E int FDECL(uthito, (struct obj*, struct obj*, struct monst*));
 E int FDECL(uthitt, (struct trap*, struct obj*, struct monst*));
