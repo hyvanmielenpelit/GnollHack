@@ -914,18 +914,23 @@ struct monst* origmonst;
     case SPE_TURN_UNDEAD:
         res = 1;
         wake = FALSE;
-        if (is_undead(mtmp->data) || is_vampshifter(mtmp)) {
+        if (is_undead(mtmp->data) || is_vampshifter(mtmp) || (is_demon(mtmp->data) && !is_dlord(mtmp->data) && !is_dprince(mtmp->data))) 
+        {
             reveal_invis = TRUE;
             wake = TRUE;
             context.bypasses = TRUE; /* for make_corpse() */
             play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, 0, mtmp->mx, mtmp->my, FALSE);
             special_effect_wait_until_action(0);
-            (void)inflict_spell_damage(mtmp, otmp, origmonst, dmg, AD_CLRC, TELL);
-            if (!DEADMONSTER(mtmp))
-            {
-                play_sfx_sound_at_location(SFX_ACQUIRE_FEAR, mtmp->mx, mtmp->my);
-                monflee(mtmp, duration, FALSE, TRUE);
-            }
+            int chance = 5 * (15 + (otyp == WAN_UNDEAD_TURNING ? 12 : u.ulevel) - mtmp->m_lev + (!otmp ? 0 : otmp->blessed ? 4 : 0) - (is_demon(mtmp->data) ? 5 : 0) - ((mtmp->data->geno & G_UNIQ) ? 10 : 0));
+            int dmgdice = max(0, (chance - 100) / 15);
+            dmg = dmgdice > 0 ? d(dmgdice, 6) : 0;
+            turn_undead_success_effect(mtmp, dmg, duration);
+            //(void)inflict_spell_damage(mtmp, otmp, origmonst, dmg, AD_CLRC, TELL);
+            //if (!DEADMONSTER(mtmp))
+            //{
+            //    play_sfx_sound_at_location(SFX_ACQUIRE_FEAR, mtmp->mx, mtmp->my);
+            //    monflee(mtmp, duration, FALSE, TRUE);
+            //}
             special_effect_wait_until_end(0);
             if (gainwandskill)
                 wandskilladded = 3;

@@ -1584,6 +1584,55 @@ struct obj* obj;
     return 1;
 }
 
+/* Turn undead */
+void
+turn_undead_success_effect(mtmp, dmg, duration)
+struct monst* mtmp;
+int dmg, duration;
+{
+    int xlev = 6;
+    switch (mtmp->data->mlet)
+    {
+    case S_LICH:
+        xlev += 5; /*FALLTHRU*/
+    case S_GREATER_UNDEAD: /* Mummies */
+        xlev += 5; /*FALLTHRU*/
+    case S_VAMPIRE:
+        xlev += 3; /*FALLTHRU*/
+    case S_GHOST:
+        xlev += 3; /*FALLTHRU*/
+    case S_WRAITH:
+        xlev += 3; /*FALLTHRU*/
+    case S_LESSER_UNDEAD:
+        if (u.ulevel >= xlev && !check_magic_resistance_and_inflict_damage(mtmp, (struct obj*)0, (struct monst*)0, FALSE, 0, 0, NOTELL))
+        {
+            if (u.ualign.type == A_CHAOTIC)
+            {
+                mtmp->mpeaceful = 1;
+                set_mhostility(mtmp);
+                newsym(mtmp->mx, mtmp->my);
+            }
+            else
+            { /* damn them */
+                killed(mtmp);
+            }
+            break;
+        } /* else flee */
+    /*FALLTHRU*/
+    default:
+        //monflee(mtmp, 0, FALSE, TRUE);
+        if (!check_magic_resistance_and_inflict_damage(mtmp, (struct obj*)0, (struct monst*)0, TRUE, dmg, AD_CLRC, TELL))
+        {
+            if (!DEADMONSTER(mtmp))
+            {
+                play_sfx_sound_at_location(SFX_ACQUIRE_FEAR, mtmp->mx, mtmp->my);
+                monflee(mtmp, duration, FALSE, TRUE);
+            }
+        }
+        break;
+    }
+}
+
 /* Routines for IMMEDIATE wands and spells. */
 /* bhitm: monster mtmp was hit by the effect of wand or spell otmp */
 int
@@ -1632,47 +1681,7 @@ struct monst* origmonst;
         {
             pline_ex(ATR_NONE, CLR_MSG_SUCCESS, "%s brightly before %s!", Yobjnam2(otmp, "shine"), mon_nam(mtmp));
             int dmg = dmgdice > 0 ? d(dmgdice, 6) : 0;
-            int xlev = 6;
-            switch (mtmp->data->mlet)
-            {
-            case S_LICH:
-                xlev += 5; /*FALLTHRU*/
-            case S_GREATER_UNDEAD: /* Mummies */
-                xlev += 5; /*FALLTHRU*/
-            case S_VAMPIRE:
-                xlev += 3; /*FALLTHRU*/
-            case S_GHOST:
-                xlev += 3; /*FALLTHRU*/
-            case S_WRAITH:
-                xlev += 3; /*FALLTHRU*/
-            case S_LESSER_UNDEAD:
-                if (u.ulevel >= xlev && !check_magic_resistance_and_inflict_damage(mtmp, (struct obj*)0, (struct monst*)0, FALSE, 0, 0, NOTELL))
-                {
-                    if (u.ualign.type == A_CHAOTIC)
-                    {
-                        mtmp->mpeaceful = 1;
-                        set_mhostility(mtmp);
-                        newsym(mtmp->mx, mtmp->my);
-                    }
-                    else
-                    { /* damn them */
-                        killed(mtmp);
-                    }
-                    break;
-                } /* else flee */
-            /*FALLTHRU*/
-            default:
-                //monflee(mtmp, 0, FALSE, TRUE);
-                if (!check_magic_resistance_and_inflict_damage(mtmp, (struct obj*)0, (struct monst*)0, TRUE, dmg, AD_CLRC, TELL))
-                {
-                    if (!DEADMONSTER(mtmp))
-                    {
-                        play_sfx_sound_at_location(SFX_ACQUIRE_FEAR, mtmp->mx, mtmp->my);
-                        monflee(mtmp, 200 + rnd(100), FALSE, TRUE);
-                    }
-                }
-                break;
-            }
+            turn_undead_success_effect(mtmp, dmg, 200 + rnd(100));
             refresh_m_tile_gui_info(mtmp, TRUE);
 #if 0
             if (!is_peaceful(mtmp)
