@@ -4558,6 +4558,8 @@ struct monst* mtmp;
                 if (i != '\0')
                 {
                     stopsdialogue = available_chat_list[j].stops_dialogue;
+                    if (available_chat_list[j].function_ptr == monsterdescription)
+                        issue_breadcrumb("monsterdescription via chat menu");
                     res = (available_chat_list[j].function_ptr)(mtmp);
                     bot();
                     if (res == 2) /* Changed level or the like and mtmp does not exist anymore */
@@ -6702,6 +6704,7 @@ struct monst* mtmp;
     }
     else if (is_tame(mtmp)) 
     {
+        issue_breadcrumb("do_chat_explain_statistics");
         monsterdescription(mtmp);
         return 0;
     }
@@ -6743,6 +6746,7 @@ struct monst* mtmp;
         play_sfx_sound(SFX_READ);
         money2mon(mtmp, u_pay);
         bot();
+        issue_breadcrumb("do_chat_explain_statistics2");
         monsterdescription(mtmp);
         stop_all_dialogue_of_mon_on_mobile(mtmp);
         return 1;

@@ -1629,6 +1629,7 @@ struct monst *mtmp;
     mstatusline(mtmp);
     if (!notonhead)
     {
+        issue_breadcrumb("probe_monster");
         monsterdescription(mtmp);
         //display_monster_information(mtmp);
         display_monster_inventory(mtmp, TRUE);

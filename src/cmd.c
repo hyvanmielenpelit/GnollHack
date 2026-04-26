@@ -5404,12 +5404,14 @@ minimal_enlightenment()
 STATIC_PTR int
 dopolyformstatistics(VOID_ARGS)
 {
+    issue_breadcrumb("dopolyformstatistics");
     return monsterdescription(&youmonst);
 }
 
 STATIC_PTR int
 doviewpetstatistics(struct monst* mon)
 {
+    issue_breadcrumb("doviewpetstatistics");
     return monsterdescription(mon);
 }
 
