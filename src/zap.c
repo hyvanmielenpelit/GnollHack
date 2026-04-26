@@ -1548,7 +1548,7 @@ cure_petrification_here:
         {
             m_shieldeff(mtmp);
         }
-        else if (!check_magic_resistance_and_inflict_damage(mtmp, otmp, origmonst, 0, dmg, AD_DRLI, NOTELL) && !DEADMONSTER(mtmp))
+        else if (!check_magic_resistance_and_inflict_damage(mtmp, otmp, origmonst, FALSE, dmg, AD_DRLI, NOTELL) && !DEADMONSTER(mtmp))
         {
             double damage = adjust_damage(dmg, origmonst, mtmp, AD_DRLI, ADFLAGS_SPELL_DAMAGE);
             double bdamage = adjust_damage(basedmg, origmonst, mtmp, AD_DRLI, ADFLAGS_SPELL_DAMAGE);

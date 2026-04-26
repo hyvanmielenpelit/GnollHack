@@ -1608,13 +1608,10 @@ struct monst* origmonst;
         reveal_invis = FALSE;
 
     wake = FALSE;
-
-    if (is_undead(mtmp->data) || is_vampshifter(mtmp))  // || is_demon(mtmp->data)
+    if (is_undead(mtmp->data) || is_vampshifter(mtmp) || (is_demon(mtmp->data) && !is_dlord(mtmp->data) && !is_dprince(mtmp->data)))
     {
-
         reveal_invis = TRUE;
         wake = TRUE;
-
 #if 0
         if(otmp->blessed)
             dmg = d(2,6) + Role_if(PM_PRIEST) ? u.ulevel / 2 : 0;
@@ -1628,16 +1625,104 @@ struct monst* origmonst;
         if (is_dlord(mtmp->data) || is_dprince(mtmp->data))
             percentchance = 0;
 #endif
-        int chance = 10 * (10 + u.ulevel - mtmp->m_lev + (otmp->blessed ? 5 : 0) + Luck);
+        int chance = 5 * (2 + u.ulevel - mtmp->m_lev + (otmp->blessed ? 4 : 0) - (is_demon(mtmp->data) ? 5 : 0) - ((mtmp->data->geno & G_UNIQ) ? 10 : 0) + ACURR(A_WIS) / 2 + min(20, u.ualign.record) / 5 + Luck / 4);
+        int dmgdice = max(0, (chance - 100) / 15);
         boolean turn_success = rn2(100) < chance;
-        if (!(mtmp->data->geno & G_UNIQ) && turn_success)
+        if (turn_success)
         {
             pline_ex(ATR_NONE, CLR_MSG_SUCCESS, "%s brightly before %s!", Yobjnam2(otmp, "shine"), mon_nam(mtmp));
-            if (!DEADMONSTER(mtmp))
+            int dmg = dmgdice > 0 ? d(dmgdice, 6) : 0;
+            int xlev = 6;
+            switch (mtmp->data->mlet)
             {
-                play_sfx_sound_at_location(SFX_ACQUIRE_FEAR, mtmp->mx, mtmp->my);
-                monflee(mtmp, 200 + rnd(100), FALSE, TRUE);
+            case S_LICH:
+                xlev += 5; /*FALLTHRU*/
+            case S_GREATER_UNDEAD: /* Mummies */
+                xlev += 5; /*FALLTHRU*/
+            case S_VAMPIRE:
+                xlev += 3; /*FALLTHRU*/
+            case S_GHOST:
+                xlev += 3; /*FALLTHRU*/
+            case S_WRAITH:
+                xlev += 3; /*FALLTHRU*/
+            case S_LESSER_UNDEAD:
+                if (u.ulevel >= xlev && !check_magic_resistance_and_inflict_damage(mtmp, (struct obj*)0, (struct monst*)0, FALSE, 0, 0, NOTELL))
+                {
+                    if (u.ualign.type == A_CHAOTIC)
+                    {
+                        mtmp->mpeaceful = 1;
+                        set_mhostility(mtmp);
+                        newsym(mtmp->mx, mtmp->my);
+                    }
+                    else
+                    { /* damn them */
+                        killed(mtmp);
+                    }
+                    break;
+                } /* else flee */
+            /*FALLTHRU*/
+            default:
+                //monflee(mtmp, 0, FALSE, TRUE);
+                if (!check_magic_resistance_and_inflict_damage(mtmp, (struct obj*)0, (struct monst*)0, TRUE, dmg, AD_CLRC, TELL))
+                {
+                    if (!DEADMONSTER(mtmp))
+                    {
+                        play_sfx_sound_at_location(SFX_ACQUIRE_FEAR, mtmp->mx, mtmp->my);
+                        monflee(mtmp, 200 + rnd(100), FALSE, TRUE);
+                    }
+                }
+                break;
             }
+            refresh_m_tile_gui_info(mtmp, TRUE);
+#if 0
+            if (!is_peaceful(mtmp)
+                && (is_undead(mtmp->data) || is_vampshifter(mtmp)
+                    || (is_demon(mtmp->data) && (u.ulevel > (MAXULEV / 2))))) {
+                mtmp->msleeping = 0;
+                if (Confusion) {
+                    if (!once++)
+                        pline("Unfortunately, your voice falters.");
+                    mtmp->mflee = 0;
+                    mtmp->mfrozen = 0;
+                    mtmp->mcanmove = 1;
+                    refresh_m_tile_gui_info(mtmp, TRUE);
+                }
+                else if (!check_magic_resistance_and_inflict_damage(mtmp, (struct obj*)0, (struct monst*)0, u.ulevel, 0, 0, TELL)) {
+                    xlev = 6;
+                    switch (mtmp->data->mlet) {
+                        /* this is intentional, lichs are tougher
+                           than zombies. */
+                    case S_LICH:
+                        xlev += 2; /*FALLTHRU*/
+                    case S_GHOST:
+                        xlev += 2; /*FALLTHRU*/
+                    case S_VAMPIRE:
+                        xlev += 2; /*FALLTHRU*/
+                    case S_WRAITH:
+                        xlev += 2; /*FALLTHRU*/
+                    case S_GREATER_UNDEAD: /* Mummies */
+                        xlev += 2; /*FALLTHRU*/
+                    case S_LESSER_UNDEAD:
+                        if (u.ulevel >= xlev && !check_magic_resistance_and_inflict_damage(mtmp, (struct obj*)0, (struct monst*)0, u.ulevel, 0, 0, NOTELL)) {
+                            if (u.ualign.type == A_CHAOTIC) {
+                                mtmp->mpeaceful = 1;
+                                set_mhostility(mtmp);
+                                newsym(mtmp->mx, mtmp->my);
+                            }
+                            else { /* damn them */
+                                killed(mtmp);
+                            }
+                            break;
+                        } /* else flee */
+                    /*FALLTHRU*/
+                    default:
+                        monflee(mtmp, 0, FALSE, TRUE);
+                        break;
+                    }
+                }
+                refresh_m_tile_gui_info(mtmp, TRUE);
+            }
+#endif
 #if 0
             if (!otmp->cursed)
             {
@@ -1673,11 +1758,20 @@ struct monst* origmonst;
         {
             if (canseemon(mtmp))
             {
-                play_simple_monster_sound(mtmp, MONSTER_SOUND_TYPE_LAUGHTER);
-                if (!Deaf)
-                    pline("%s laughs at your feeble attempt.", Monnam(mtmp));
+                if (is_speaking(mtmp->data))
+                {
+                    if (!Deaf)
+                    {
+                        play_simple_monster_sound(mtmp, MONSTER_SOUND_TYPE_LAUGHTER);
+                        pline("%s laughs at your feeble attempt.", Monnam(mtmp));
+                    }
+                    else
+                        You_ex(ATR_NONE, CLR_MSG_FAIL, "fail to turn %s.", mon_nam(mtmp));
+                }
                 else
+                {
                     You_ex(ATR_NONE, CLR_MSG_FAIL, "fail to turn %s.", mon_nam(mtmp));
+                }
             }
         }
     }
@@ -1690,9 +1784,10 @@ struct monst* origmonst;
         pline("%s seems uninterested in %s.", Monnam(mtmp), yname(otmp));
     }
 
-
-    if (wake) {
-        if (!DEADMONSTER(mtmp)) {
+    if (wake)
+    {
+        if (!DEADMONSTER(mtmp)) 
+        {
             wakeup(mtmp, helpful_gesture ? FALSE : TRUE);
             m_respond(mtmp);
             if (mtmp->isshk && !*u.ushops)
@@ -1705,7 +1800,8 @@ struct monst* origmonst;
      * reveal_invis will be false.  We can't use mtmp->mx, my since it
      * might be an invisible worm hit on the tail.
      */
-    if (reveal_invis) {
+    if (reveal_invis) 
+    {
         if (!DEADMONSTER(mtmp) && cansee(bhitpos.x, bhitpos.y)
             && !canspotmon(mtmp))
             map_invisible(bhitpos.x, bhitpos.y);
