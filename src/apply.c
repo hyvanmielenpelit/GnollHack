@@ -1586,30 +1586,31 @@ struct obj* obj;
 
 /* Turn undead; return TRUE if mtmp was pacified */
 boolean
-turn_undead_success_effect(mtmp, dmg, duration)
+turn_undead_success_effect(mtmp, chance, dmg, duration)
 struct monst* mtmp;
-int dmg, duration;
+int chance, dmg, duration;
 {
     boolean res = FALSE;
     int xlev = 6;
+    boolean higher_success = rn2(100) < chance - 100; /* Better effect requires both minimum level and a turn success change above 100 */
     switch (mtmp->data->mlet)
     {
-    case S_DEMON:
-        xlev += 3; /*FALLTHRU*/
-    case S_LICH:
-        xlev += 3; /*FALLTHRU*/
-    case S_GREATER_UNDEAD: /* Mummies */
-        xlev += 3; /*FALLTHRU*/
-    case S_VAMPIRE:
-        xlev += 3; /*FALLTHRU*/
-    case S_GHOST:
-        xlev += 3; /*FALLTHRU*/
-    case S_WRAITH:
-        xlev += 3; /*FALLTHRU*/
-    case S_IMP:
-        xlev += 3; /*FALLTHRU*/
-    case S_LESSER_UNDEAD:
-        if (u.ulevel >= xlev && !(mtmp->data->geno & G_UNIQ) && !check_magic_resistance_and_inflict_damage(mtmp, (struct obj*)0, (struct monst*)0, FALSE, 0, 0, NOTELL))
+    case S_DEMON: /* 20 */
+        xlev += 2; /*FALLTHRU*/
+    case S_LICH: /* 18 */
+        xlev += 2; /*FALLTHRU*/
+    case S_IMP: /* 16 */
+        xlev += 2; /*FALLTHRU*/
+    case S_VAMPIRE: /* 14 */
+        xlev += 2; /*FALLTHRU*/
+    case S_GHOST: /* 12 */
+        xlev += 2; /*FALLTHRU*/
+    case S_WRAITH: /* 10 */
+        xlev += 2; /*FALLTHRU*/
+    case S_GREATER_UNDEAD: /* 8: Mummies */
+        xlev += 2; /*FALLTHRU*/
+    case S_LESSER_UNDEAD: /* 6 */
+        if (u.ulevel >= xlev && higher_success && !(mtmp->data->geno & G_UNIQ) && !check_magic_resistance_and_inflict_damage(mtmp, (struct obj*)0, (struct monst*)0, FALSE, 0, 0, NOTELL))
         {
             if (u.ualign.type == A_CHAOTIC)
             {
@@ -1694,7 +1695,7 @@ struct monst* origmonst UNUSED;
         {
             pline_ex(ATR_NONE, CLR_MSG_MYSTICAL, "%s brightly before %s!", Yobjnam2(otmp, "shine"), mon_nam(mtmp));
             int dmg = dmgdice > 0 ? d(dmgdice, 6) : 0;
-            pacified = turn_undead_success_effect(mtmp, dmg, 200 + rnd(100));
+            pacified = turn_undead_success_effect(mtmp, chance, dmg, 200 + rnd(100));
             refresh_m_tile_gui_info(mtmp, TRUE);
 #if 0
             if (!is_peaceful(mtmp)
