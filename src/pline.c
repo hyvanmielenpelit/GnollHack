@@ -1247,30 +1247,16 @@ const char* filepath;
 void debugprint
 VA_DECL(const char*, s)
 {
-    if (debug_buf_idx < TOTALNUM_DEBUGBUFS - 1)
+    if (debug_buf_count < NUM_DEBUGBUFS)
     {
-        debug_buf_idx++;
+        debug_buf_count++;
     }
     else
     {
-        int i;
-        int jump_size = TOTALNUM_DEBUGBUFS - NUM_DEBUGBUFS;
-        char* tmp;
-        for (i = 0; i < NUM_DEBUGBUFS - 1; i++)
-        {
-            tmp = debug_bufs[i];
-            debug_bufs[i] = debug_bufs[i + jump_size + 1];
-            debug_bufs[i + jump_size + 1] = tmp;
-            *debug_bufs[i + jump_size + 1] = 0;
-            //Strcpy(debug_bufs[i], debug_bufs[i + jump_size + 1]);
-        }
-        //for (i = NUM_DEBUGBUFS; i < TOTALNUM_DEBUGBUFS; i++)
-        //{
-        //    *debug_bufs[i] = 0;
-        //}
-        debug_buf_idx = NUM_DEBUGBUFS - 1;
+        debug_buf_start = (debug_buf_start + 1) % NUM_DEBUGBUFS;
     }
-    char* pbuf = debug_bufs[debug_buf_idx];
+    int debug_buf_idx = (debug_buf_start + debug_buf_count - 1) % NUM_DEBUGBUFS;
+    char* pbuf = debug_buf_array[debug_buf_idx];
     if (!pbuf) /* insurance */
         return;
     VA_START(s);
@@ -1302,21 +1288,20 @@ const char* message;
         *long_buffer = 0;
 
     int i, j = 0;
-    for (i = TOTALNUM_DEBUGBUFS - 1; i >= 0; i--)
+    for (i = debug_buf_count - 1; i >= 0; i--)
     {
-        if (!*debug_bufs[i])
+        int idx = (debug_buf_start + i) % NUM_DEBUGBUFS;
+        if (!*debug_buf_array[idx])
             continue;
         else
         {
             j++;
-            chars_written = sprintf(p, "%s%d:%s", j == 1 ? "" : "; ", j, debug_bufs[i]);
+            chars_written = sprintf(p, "%s%d:%s", j == 1 ? "" : "; ", j, debug_buf_array[idx]);
             if (chars_written >= 0)
                 p += chars_written;
             else
                 break;
         }
-        if (j == NUM_DEBUGBUFS)
-            break;
     }
 
     return long_buffer;

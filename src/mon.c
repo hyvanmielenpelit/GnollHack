@@ -1299,10 +1299,13 @@ update_monster_timeouts()
         /* must check non-moving monsters once/turn in case they managed
            to end up in water or lava; note: when not in liquid they regen,
            shape-shift, timeout temporary maladies just like other monsters */
-        debugprint_pos();
-        if (mtmp->data->mmove == 0) {
+        if (mtmp->data->mmove == 0) 
+        {
             if (vision_full_recalc)
+            {
+                debugprint_pos();
                 vision_recalc(0);
+            }
             if (minliquid(mtmp))
                 continue;
         }
