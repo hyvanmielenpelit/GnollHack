@@ -1128,6 +1128,7 @@ namespace GnollHackX
         public static void SetMirroredOptionsToDefaults()
         {
             MirroredCharacterClickAction = Preferences.Get("CharacterClickAction", GHConstants.DefaultCharacterClickAction);
+            MirroredMetricSystem = Preferences.Get("MetricSystem", GHConstants.DefaultMetricSystem);
             MirroredRightMouseCommand = Preferences.Get("RightMouseCommand", GHConstants.DefaultRightMouseCommand);
             MirroredMiddleMouseCommand = Preferences.Get("MiddleMouseCommand", GHConstants.DefaultMiddleMouseCommand);
             MirroredDiceAsRanges = Preferences.Get("DiceAsRanges", GHConstants.DefaultDiceAsRanges);
@@ -5225,6 +5226,7 @@ namespace GnollHackX
         private static int _wornShowsEquipment = 0;
         private static int _autoDig = 0;
         private static int _ignoreStopping = 0;
+        private static int _metricSystem = 0;
 
         private static int _rightMouseCommand;
         private static int _middleMouseCommand;
@@ -5243,6 +5245,7 @@ namespace GnollHackX
         public static int MirroredMiddleMouseCommand { get { return Interlocked.CompareExchange(ref _middleMouseCommand, 0, 0); } set { Interlocked.Exchange(ref _middleMouseCommand, value); } }
         public static string MirroredEngraveQuickText { get { return Interlocked.CompareExchange(ref _engraveQuickText, null, null); } set { Interlocked.Exchange(ref _engraveQuickText, value); } }
         public static int MirroredEngraveQuickStyle { get { return Interlocked.CompareExchange(ref _engraveQuickStyle, 0, 0); } set { Interlocked.Exchange(ref _engraveQuickStyle, value); } }
+        public static bool MirroredMetricSystem { get { return Interlocked.CompareExchange(ref _metricSystem, 0, 0) != 0; } set { Interlocked.Exchange(ref _metricSystem, value ? 1 : 0); } }
 
         public static string CustomGameStatusLink { get; set; }
         public static string CustomXlogAccountLink { get; set; }

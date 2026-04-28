@@ -801,6 +801,8 @@ extern NEARDATA struct cmd Cmd;
 struct startup_flags {
     boolean click_action_set;
     boolean click_action_value;
+    boolean metric_system_set;
+    boolean metric_system_value;
     uchar right_click_action;
     uchar middle_click_action;
     boolean dice_as_ranges_set;

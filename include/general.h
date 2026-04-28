@@ -730,6 +730,7 @@ enum gui_command_types {
     GUI_CMD_ACHIEVEMENT,
     GUI_CMD_REPORT_ENGRAVE_QUICK_TEXT,
     GUI_CMD_REPORT_ENGRAVE_QUICK_STYLE,
+    GUI_CMD_TOGGLE_METRIC_SYSTEM,
 };
 
 enum gui_achievement_types

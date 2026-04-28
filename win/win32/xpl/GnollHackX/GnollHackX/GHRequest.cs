@@ -115,6 +115,7 @@ namespace GnollHackX
         ProcessPendingAchievements,
         SetEngraveQuickText,
         SetEngraveQuickStyle,
+        SetMetricSystem,
     }
 
     public struct AddContextMenuData

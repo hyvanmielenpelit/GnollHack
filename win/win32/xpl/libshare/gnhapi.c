@@ -663,6 +663,12 @@ LibGetCharacterClickAction(VOID_ARGS)
 }
 
 DLLEXPORT void
+LibSetMetricSystem(int new_value)
+{
+    flags.metric_system = new_value != 0;
+}
+
+DLLEXPORT void
 LibSetGetPositionArrows(int new_value)
 {
     iflags.getpos_arrows = new_value != 0;
@@ -1039,6 +1045,8 @@ DLLEXPORT int RunGnollHack(
     memset(&initial_flags, 0, sizeof(initial_flags));
     initial_flags.click_action_set = TRUE;
     initial_flags.click_action_value = (runflags & GHRUNFLAGS_CHARACTER_CLICK_ACTION) != 0;
+    initial_flags.metric_system_set = TRUE;
+    initial_flags.metric_system_value = (runflags & GHRUNFLAGS_METRIC_SYSTEM) != 0;
     initial_flags.getpos_arrows_set = TRUE;
     initial_flags.getpos_arrows_value = (runflags & GHRUNFLAGS_GETPOS_ARROWS) != 0;
     initial_flags.dice_as_ranges_set = TRUE;

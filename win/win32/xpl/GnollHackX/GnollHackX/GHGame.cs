@@ -293,6 +293,9 @@ namespace GnollHackX
                     case GHRequestType.SetCharacterClickAction:
                         GHApp.GnollHackService?.SetCharacterClickAction(response.ResponseBoolValue);
                         break;
+                    case GHRequestType.SetMetricSystem:
+                        GHApp.GnollHackService?.SetMetricSystem(response.ResponseBoolValue);
+                        break;
                     case GHRequestType.SetGetPositionArrows:
                         GHApp.GnollHackService?.SetGetPositionArrows(response.ResponseBoolValue);
                         break;
@@ -3522,6 +3525,9 @@ namespace GnollHackX
                     break;
                 case (int)gui_command_types.GUI_CMD_TOGGLE_CHARACTER_CLICK_ACTION:
                     GHApp.MirroredCharacterClickAction = cmd_param != 0;
+                    break;
+                case (int)gui_command_types.GUI_CMD_TOGGLE_METRIC_SYSTEM:
+                    GHApp.MirroredMetricSystem = cmd_param != 0;
                     break;
                 case (int)gui_command_types.GUI_CMD_TOGGLE_DICE_AS_RANGES:
                     GHApp.MirroredDiceAsRanges = cmd_param != 0;

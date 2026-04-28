@@ -276,6 +276,7 @@ namespace GnollHackX
         IgnoreStopping =        0x00040000UL, /* Set ignore_stopping to true by default */
         DefaultVIKeys =         0x00080000UL, /* VI Keys are default instead of number pad movement */
         WornShowsEquipment =    0x00100000UL, /* Show the equipment screen of inventory instead of only worn items in normal menu */
+        MetricSystem =          0x00200000UL, /* Set metric_system to true by default */
 
         //RightMouseButtonBit1 =  0x00400000UL, 
         //RightMouseButtonBit2 =  0x00800000UL, 
@@ -1580,6 +1581,7 @@ namespace GnollHackX
         GUI_CMD_ACHIEVEMENT,
         GUI_CMD_REPORT_ENGRAVE_QUICK_TEXT,
         GUI_CMD_REPORT_ENGRAVE_QUICK_STYLE,
+        GUI_CMD_TOGGLE_METRIC_SYSTEM,
     }
 
     public enum gui_achievement_categories
@@ -2497,6 +2499,7 @@ namespace GnollHackX
         public const bool DefaultWornShowsEquipment = true;
         public const bool DefaultAutoDig = true;
         public const bool DefaultIgnoreStopping = false; /* Since travel is also used for normal movement in the modern version */
+        public const bool DefaultMetricSystem = false;
         public const long MapDataLockTimeOutTicks = 100L;
         public const long EffectLockTimeOutTicks = 50L;
         public const long MessageLockTimeOutTicks = 50L;

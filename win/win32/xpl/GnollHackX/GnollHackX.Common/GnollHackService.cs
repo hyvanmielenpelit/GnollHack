@@ -317,6 +317,8 @@ namespace GnollHackX.Unknown
         [DllImport(PlatformConstants.dll)]
         public static extern void LibSetCharacterClickAction(int new_value);
         [DllImport(PlatformConstants.dll)]
+        public static extern void LibSetMetricSystem(int new_value);
+        [DllImport(PlatformConstants.dll)]
         public static extern int LibGetGetPositionArrows();
         [DllImport(PlatformConstants.dll)]
         public static extern void LibSetGetPositionArrows(int new_value);
@@ -1188,6 +1190,11 @@ namespace GnollHackX.Unknown
             LibSetCharacterClickAction(newValue ? 1 : 0);
         }
 
+        public void SetMetricSystem(bool newValue)
+        {
+            LibSetMetricSystem(newValue ? 1 : 0);
+        }
+
         public bool GetGetPositionArrows()
         {
             return LibGetGetPositionArrows() != 0;
@@ -1289,6 +1296,7 @@ namespace GnollHackX.Unknown
             bool getposarrows = GHApp.GetPositionArrows;
             bool nopet = GHApp.MirroredPetsNotGifted;
             bool characterclickaction = GHApp.MirroredCharacterClickAction;
+            bool metricsystem = GHApp.MirroredMetricSystem;
             bool diceasranges = GHApp.MirroredDiceAsRanges;
             bool wornshowsequipment = GHApp.MirroredWornShowsEquipment;
             bool autodig = GHApp.MirroredAutoDig;
@@ -1313,6 +1321,7 @@ namespace GnollHackX.Unknown
                 (ulong)(GHApp.IsDebug ? RunGnollHackFlags.GUIDebugMode : 0) |
                 (ulong)(getposarrows ? RunGnollHackFlags.GetPositionArrows : 0) | /* Set the iflag to right value */
                 (ulong)(characterclickaction ? RunGnollHackFlags.CharacterClickAction : 0) | /* Use the default; GHApp.CharacterClickAction may contain the option value from the last game */
+                (ulong)(metricsystem ? RunGnollHackFlags.MetricSystem : 0) |
                 (ulong)(diceasranges ? RunGnollHackFlags.DiceAsRanges : 0) | 
                 (ulong)(wornshowsequipment ? RunGnollHackFlags.WornShowsEquipment : 0) |
                 (ulong)(autodig ? RunGnollHackFlags.AutoDig : 0) | /* Use the default; GHApp.AutoDig may contain the option value from the last game */

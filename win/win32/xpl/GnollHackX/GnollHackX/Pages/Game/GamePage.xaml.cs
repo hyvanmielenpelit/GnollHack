@@ -1247,6 +1247,11 @@ namespace GnollHackX.Pages.Game
             GHGame curGame = GHApp.CurrentGHGame;
             curGame?.ResponseQueue.Enqueue(new GHResponse(curGame, GHRequestType.SetCharacterClickAction, newValue));
         }
+        public void SetMetricSystem(bool newValue)
+        {
+            GHGame curGame = GHApp.CurrentGHGame;
+            curGame?.ResponseQueue.Enqueue(new GHResponse(curGame, GHRequestType.SetMetricSystem, newValue));
+        }
 
         public void SetGetPositionArrows(bool newValue)
         {

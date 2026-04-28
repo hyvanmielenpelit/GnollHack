@@ -76,6 +76,7 @@ namespace GnollHackX
 
         bool GetCharacterClickAction();
         void SetCharacterClickAction(bool newValue);
+        void SetMetricSystem(bool newValue);
         bool GetGetPositionArrows();
         void SetGetPositionArrows(bool newValue);
         void SetDiceAsRanges(bool newValue);
