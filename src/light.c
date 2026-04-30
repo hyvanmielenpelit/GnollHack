@@ -142,8 +142,22 @@ anything *id;
             return;
         }
     }
-    impossible("del_light_source: not found type=%d, id=%s, otyp=%d, where=%d, ox=%d, oy=%d", type,
-               fmt_ptr((genericptr_t) id->a_obj), id->a_obj->otyp, id->a_obj->where, id->a_obj->ox, id->a_obj->oy);
+    switch (type) {
+    case LS_OBJECT:
+        impossible("del_light_source: object not found: type=%d, id=%s, otyp=%d, where=%d, ox=%d, oy=%d", type,
+            fmt_ptr((genericptr_t)id->a_obj), id->a_obj->otyp, id->a_obj->where, id->a_obj->ox, id->a_obj->oy);
+        break;
+    case LS_MONSTER:
+        impossible("del_light_source: monster not found: type=%d, id=%s, mnum=%d, mx=%d, my=%d", type,
+            fmt_ptr((genericptr_t)id->a_monst), id->a_monst->mnum, id->a_monst->mx, id->a_monst->my);
+        break;
+    case LS_LOCATION:
+        impossible("del_light_source: location not found: type=%d, x=%d, y=%d", type, id->a_coord.x, id->a_coord.y);
+        break;
+    default:
+        impossible("del_light_source: unknown type not found: type=%d", type);
+        break;
+    }
 }
 
 /* Mark locations that are temporarily lit via mobile light sources. */
