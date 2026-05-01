@@ -1257,8 +1257,6 @@ VA_DECL(const char*, s)
     }
     int debug_buf_idx = (debug_buf_start + debug_buf_count - 1) % NUM_DEBUGBUFS;
     char* pbuf = debug_buf_array[debug_buf_idx];
-    if (!pbuf) /* insurance */
-        return;
     VA_START(s);
     VA_INIT(s, const char*);
     Vsprintf(pbuf, s, VA_ARGS);
