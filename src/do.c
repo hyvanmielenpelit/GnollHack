@@ -1447,7 +1447,7 @@ struct item_description_stats* stats_ptr; /* If non-null, only returns item stat
                     {
                         int polemin = 1, polemax = 2;
                         get_pole_type_weapon_min_max_distances(obj, &youmonst, &polemin, &polemax);
-                        Sprintf(buf2, "Yes, for a ranged attack (min: %.0f\', max: %.0f\')", floor(sqrt((double)polemin) * 5), ceil(sqrt((double)polemax) * 5));
+                        Sprintf(buf2, "Yes, for a ranged attack (min: %.0f sq. max: %.0f sq.)", floor(sqrt((double)polemin)), ceil(sqrt((double)polemax)));
                     }
                     else
                     {
@@ -1532,7 +1532,7 @@ struct item_description_stats* stats_ptr; /* If non-null, only returns item stat
             if(!obj && objects[otyp].oc_range < 0)
                 Strcpy(buf, "Ammunition range:       Based on strength");
             else 
-                Sprintf(buf, "Ammunition range:       %d'", max(1, baserange) * 5);
+                Sprintf(buf, "Ammunition range:       %d squares", max(1, baserange));
             putstr(datawin, ATR_INDENT_AT_COLON, buf);
         }
 
@@ -1567,11 +1567,11 @@ struct item_description_stats* stats_ptr; /* If non-null, only returns item stat
             else
                 range = weapon_range(obj, (struct obj*)0);
 
-            Sprintf(buf2, "%d", max(1, range) * 5);
+            Sprintf(buf2, "%d squares", max(1, range));
             if(thrown)
-                Sprintf(buf, "Throw distance:         %s'", buf2);
+                Sprintf(buf, "Throw distance:         %s", buf2);
             else
-                Sprintf(buf, "Range when fired:       %s'", buf2);
+                Sprintf(buf, "Range when fired:       %s", buf2);
             
             putstr(datawin, ATR_INDENT_AT_COLON, buf);
         }
