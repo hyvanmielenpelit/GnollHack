@@ -5824,7 +5824,7 @@ int idx, notruncate;
                 break;
     }
 
-    if (i >= SIZE(compopt))
+    if (i >= SIZE(compopt) || !compopt[i].name)
         return;
 
     if (compopt[i].descr)
@@ -5839,6 +5839,7 @@ int idx, notruncate;
             Sprintf(eos(buf3), "\t%s", compopt[i].descr);
     }
 
+    issue_breadcrumb2("doset_add_menu", i);
     if (indexoffset == 0) {
         any.a_int = 0;
         value = get_compopt_value(option, buf2);
@@ -5857,18 +5858,18 @@ int idx, notruncate;
 
     char valuebuf[BUFSZ] = "";
 #ifdef GNH_MOBILE
-    Strcpy(valuebuf, value);
+    Strcpy(valuebuf, value ? value : "null");
 #else
     if (notruncate && !iflags.menu_tab_sep)
     {
-        Strcpy(valuebuf, value);
+        Strcpy(valuebuf, value ? value : "null");
     }
     else
     {
         /* truncate value */
-        Strncpy(valuebuf, value, MAX_OPT_VALUE_LENGTH);
+        Strncpy(valuebuf, value ? value : "null", MAX_OPT_VALUE_LENGTH);
         valuebuf[MAX_OPT_VALUE_LENGTH] = 0;
-        if (strlen(value) > MAX_OPT_VALUE_LENGTH)
+        if (strlen(valuebuf) > MAX_OPT_VALUE_LENGTH)
             valuebuf[MAX_OPT_VALUE_LENGTH - 3] = valuebuf[MAX_OPT_VALUE_LENGTH - 2] = valuebuf[MAX_OPT_VALUE_LENGTH - 1] = '.';
     }
 #endif
