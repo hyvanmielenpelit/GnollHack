@@ -1238,7 +1238,7 @@ namespace GnollHackX
             if (FastForwardGameOver)
             {
                 RecordFunctionCall(RecordedFunctionID.YnFunction, style, attr, color, glyph, title, question, responses, def, descriptions, introline, ynflags, GHConstants.CancelChar);
-                return GHConstants.CancelChar;
+                return string.IsNullOrEmpty(responses) ? GHConstants.CancelChar : responses.Contains('q') ? 'q' : responses.Contains('n') ? 'n' : GHConstants.CancelChar;
             }
 
             if (string.IsNullOrEmpty(responses))
@@ -1308,7 +1308,7 @@ namespace GnollHackX
             }
             RequestQueue.Enqueue(new GHRequest(this, GHRequestType.HideYnResponses));
             RecordFunctionCall(RecordedFunctionID.YnFunction, style, attr, color, glyph, title, question, responses, def, descriptions, introline, ynflags, GHConstants.CancelChar);
-            return GHConstants.CancelChar;
+            return !string.IsNullOrEmpty(def) ? def[0] : string.IsNullOrEmpty(responses) ? GHConstants.CancelChar : responses.Contains('q') ? 'q' : responses.Contains('n') ? 'n' : GHConstants.CancelChar;
         }
 
         public void ClientCallback_Cliparound(int x, int y, byte force)
