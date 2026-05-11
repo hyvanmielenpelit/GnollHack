@@ -3627,8 +3627,9 @@ xchar x, y;
     }
     else 
     {
-        char qbuf[BUFSZ], qsfx[BUFSZ];
+        char qbuf[BUFSZ], qsfx[BUFSZ], creditbuf[BUFSZ] = "";
         boolean short_funds = (offer > shkmoney), one;
+        int64_t offered_credit = max(0, offer - shkmoney);
 
         if (short_funds)
             offer = shkmoney;
@@ -3666,9 +3667,12 @@ xchar x, y;
                 "... your item in the <bag>.  Sell it?"
                 "... your items in the <bag>.  Sell them?"
              */
-            Sprintf(qbuf, "%s offers%s %lld gold piece%s for %s%s ",
+            if (short_funds && offered_credit > 0)
+                Sprintf(creditbuf, " in cash but also %lld %s in credit", (long long)offered_credit, currency(offered_credit));
+
+            Sprintf(qbuf, "%s offers%s %lld %s%s for %s%s ",
                     Shknam(shkp), short_funds ? " only" : "", (long long)offer,
-                    plur(offer),
+                    currency(offer), creditbuf,
                     (cltmp && !ltmp)
                         ? ((yourc == 1L) ? "your item in " : "your items in ")
                         : "",
@@ -3731,6 +3735,38 @@ xchar x, y;
                          : "sold %s for %ld gold piece%s.%s")
             : "relinquish %s and receive %ld gold piece%s in compensation.%s",
                           offer, "");
+            if (short_funds && offered_credit > 0)
+            {
+                boolean credit_before = eshkp->credit > 0;
+                if (eshkp->debit > 0)
+                {
+                    if (eshkp->debit >= offered_credit)
+                    {
+                        eshkp->debit -= offered_credit;
+                        Your("debt is also %spaid off.", eshkp->debit ? "partially " : "");
+                    }
+                    else
+                    {
+                        int64_t added_credit_amount = offered_credit - eshkp->debit;
+                        eshkp->debit = 0;
+                        eshkp->credit += added_credit_amount;
+                        if (credit_before)
+                            Your("debt is also paid off and you added %lld %s to your credit; the total is now %lld %s.", (long long)added_credit_amount, currency(added_credit_amount),
+                                eshkp->credit, currency(eshkp->credit));
+                        else
+                            Your("debt is also paid off and you established %lld %s credit.", (long long)added_credit_amount, currency(added_credit_amount));
+                    }
+                }
+                else
+                {
+                    eshkp->credit += offered_credit;
+                    if (credit_before)
+                        You("also added %lld %s to your credit; the total is now %lld %s.", (long long)(offered_credit), currency(offered_credit), 
+                            eshkp->credit, currency(eshkp->credit));
+                    else
+                        You("have also established %lld %s credit.", (long long)(offered_credit), currency(offered_credit));
+                }
+            }
             break;
         default:
             impossible("invalid sell response");
