@@ -3614,8 +3614,8 @@ xchar x, y;
             play_sfx_sound(SFX_TRANSACT_SINGLE_ITEM);
             if (container)
                 adjust_dropped_container_on_sale(obj, shkp);
-            //if (!was_unpaid)
-            obj->no_charge = 0;
+            if (saleitem)
+                obj->no_charge = 0;
         }
         else 
         {
@@ -3694,7 +3694,7 @@ xchar x, y;
             mark_unpaid_container_contents(obj);
             dropped_container(obj, shkp, FALSE); /* This marks all items non-unpaid items as no charge */
         }
-        if (!obj->unpaid)
+        if (!was_unpaid)
             obj->no_charge = 1;
         subfrombill(obj, shkp); /* Note that this clears out unpaid */
 
@@ -3719,7 +3719,7 @@ xchar x, y;
             /* The below marks all sold items as not being no charge anymore; these are the ones that were not unpaid (you do not sell unpaid items) and were saleable */
             if (container) /* Unmark saleable items from being nocharge; you need here knowledge of what has been unpaid before */
                 adjust_dropped_container_on_sale(obj, shkp); // dropped_container(obj, shkp, TRUE);
-            if (!was_unpaid && saleitem) /* Adjust the item itself */
+            if (saleitem) /* Adjust the item itself */
                 obj->no_charge = 0;
             //subfrombill(obj, shkp);
             pay(-offer, shkp);
