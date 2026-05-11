@@ -3752,7 +3752,7 @@ xchar x, y;
                         eshkp->credit += added_credit_amount;
                         if (credit_before)
                             Your("debt is also paid off and you added %lld %s to your credit; the total is now %lld %s.", (long long)added_credit_amount, currency(added_credit_amount),
-                                eshkp->credit, currency(eshkp->credit));
+                                (long long)eshkp->credit, currency(eshkp->credit));
                         else
                             Your("debt is also paid off and you established %lld %s credit.", (long long)added_credit_amount, currency(added_credit_amount));
                     }
@@ -3762,7 +3762,7 @@ xchar x, y;
                     eshkp->credit += offered_credit;
                     if (credit_before)
                         You("also added %lld %s to your credit; the total is now %lld %s.", (long long)(offered_credit), currency(offered_credit), 
-                            eshkp->credit, currency(eshkp->credit));
+                            (long long)eshkp->credit, currency(eshkp->credit));
                     else
                         You("have also established %lld %s credit.", (long long)(offered_credit), currency(offered_credit));
                 }
