@@ -174,8 +174,8 @@ uchar resuming; /* 0 = new game, 1 = loaded a saved game, 2 = continued playing 
                         /* occasionally add another monster; since this takes
                            place after movement has been allotted, the new
                            monster effectively loses its first turn */
-                        if (!rn2(u.uevent.invoked && !In_endgame(&u.uz) ? 15 /* More monsters after invocation, since there is no mysterious force */
-                            : u.uevent.ukilled_wizard ? 25 /* If killed the wizard */
+                        if (!rn2(u.uevent.invoked && !In_endgame(&u.uz) ? 25 /* More monsters after invocation, since there is no mysterious force */
+                            : u.uevent.ukilled_wizard ? 35 /* If killed the wizard */
                             : Inhell ? 50
                             : 70))
                         {
