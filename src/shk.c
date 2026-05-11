@@ -3577,7 +3577,7 @@ xchar x, y;
             mark_unpaid_container_contents(obj);
             dropped_container(obj, shkp, FALSE);
         }
-        if (obj->unpaid)
+        if (!was_unpaid)
             obj->no_charge = 1;
         subfrombill(obj, shkp);
 
@@ -3614,8 +3614,8 @@ xchar x, y;
             play_sfx_sound(SFX_TRANSACT_SINGLE_ITEM);
             if (container)
                 adjust_dropped_container_on_sale(obj, shkp);
-            if (!was_unpaid)
-                obj->no_charge = 0;
+            //if (!was_unpaid)
+            obj->no_charge = 0;
         }
         else 
         {
