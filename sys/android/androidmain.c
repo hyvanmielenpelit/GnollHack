@@ -31,13 +31,10 @@ const char *filename;
 char *lockname;
 {
 #  ifdef NO_FILE_LINKS
-	Strcpy(lockname, LOCKDIR);
-	Strcat(lockname, "/");
-	Strcat(lockname, filename);
+	(void) snprintf(lockname, BUFSZ, "%s/%s_lock", LOCKDIR, filename);
 #  else
-	Strcpy(lockname, filename);
+	(void) snprintf(lockname, BUFSZ, "%s_lock", filename);
 #  endif
-	Strcat(lockname, "_lock");
 	return lockname;
 }
 
@@ -125,7 +122,7 @@ int GnollHackMain(int argc, char** argv)
 #endif
 	set_username();
 
-	Sprintf(lock, "%d%s", (int)getuid(), plname);
+	(void) snprintf(lock, SAVESIZE, "%d%s", (int)getuid(), plname);
 	getlock();
 
 	/* Set up level 0 file to keep the game state.
