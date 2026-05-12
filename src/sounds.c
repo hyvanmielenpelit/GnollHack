@@ -399,7 +399,7 @@ dosounds(VOID_ARGS)
                 switch (rn2(2) + hallu)
                 {
                 case 0:
-                    You_ex(ATR_NONE, CLR_MSG_ATTENTION, "suddenly realize it is quiter than usual.");
+                    You_ex(ATR_NONE, CLR_MSG_ATTENTION, "suddenly realize it is quieter than usual.");
                     break;
                 case 1:
                     play_sfx_sound(SFX_LEVEL_SOMEONE_DEMANDING_QUIETNESS);
