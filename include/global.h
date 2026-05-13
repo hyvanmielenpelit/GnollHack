@@ -306,6 +306,7 @@ typedef xchar boolean; /* 0 or 1 */
 #define Vprintf (void) vprintf
 #define Vfprintf (void) vfprintf
 #define Vsprintf (void) vsprintf
+#define Vsnprintf (void) vsnprintf
 #endif
 
 /* primitive memory leak debugging; see alloc.c */

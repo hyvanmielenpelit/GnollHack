@@ -1259,7 +1259,7 @@ VA_DECL(const char*, s)
     char* pbuf = debug_buf_array[debug_buf_idx];
     VA_START(s);
     VA_INIT(s, const char*);
-    Vsprintf(pbuf, s, VA_ARGS);
+    Vsnprintf(pbuf, DEBUGBUFSIZ, s, VA_ARGS);
     pbuf[DEBUGBUFSIZ - 1] = '\0'; /* sanity */
     VA_END();
 }
