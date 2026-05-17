@@ -3218,7 +3218,9 @@ boolean is_mon_dead;
 {
     boolean onmap = (mtmp->mx > 0);
 
-    debugprint("m_detach: mnum=%d", mtmp->mnum);
+    debugprint("m_detach: mnum=%d, mid=%u", mtmp->mnum, mtmp->m_id);
+    issue_breadcrumb3("m_detach (mnum, mid)", mtmp->mnum, (int)mtmp->m_id);
+
     if (mtmp == context.polearm.hitmon)
         context.polearm.hitmon = 0;
     if (mtmp->mleashed)
