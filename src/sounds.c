@@ -10538,7 +10538,8 @@ boolean auto_yes;
         (void)safe_qbuf(qbuf, qbuf, qsfx, obj, xname, simpleonames,
             one ? "that" : "those");
 
-        char ans = auto_yes ? 'y' : items_left_in_list > 1 ? ynaq(qbuf) : yn_query(qbuf);
+        /* Switching to yn_query could have been confusing in GUI, as yes and no buttons changed positions */
+        char ans = auto_yes ? 'y' : ynaq(qbuf); // items_left_in_list > 1 ? ynaq(qbuf) : yn_query(qbuf);
 
         switch (ans)
         {
