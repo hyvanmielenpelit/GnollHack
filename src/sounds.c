@@ -10412,7 +10412,7 @@ STATIC_OVL int
 sell_to_npc(obj, mtmp, items_left_in_list, auto_yes)
 struct obj* obj;
 struct monst* mtmp;
-int items_left_in_list;
+int items_left_in_list UNUSED;
 boolean auto_yes;
 {
     if (!obj)
