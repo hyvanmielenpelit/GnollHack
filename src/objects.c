@@ -4297,7 +4297,7 @@ SPELL("detect food",     "cyan", None, None, "Detects the location of all comest
     -1, 4, A_MAX_INT_WIS_CHA, 0, 0, 100, 0, 1, NODIR, NODIR_NONE, 0, 0, 0, 0, 0, 0, 0,
     S1_NO_SOMATIC_COMPONENT, S2_NONE, ALL_TARGETS, AD_NONE, CLR_CYAN, OBJECT_SOUNDSET_SPELLBOOK,
     O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE),
-SPELL("clairvoyance",    "dark blue", None, None, "An area of 19x11 squares around the caster is periodically mapped and revealed",
+SPELL("clairvoyance",    "dark blue", None, None, "Maps and reveals an area of 19x11 squares around the caster",
     P_DIVINATION_SPELL, 4,   3, 0, 
     2, 16, A_MAX_INT_WIS_CHA, 0, 0, 100, 0, 1, NODIR, NODIR_NONE, 0, 0, 0, 0, 0, 0, 0,
     S1_NO_SOMATIC_COMPONENT, S2_NONE, ALL_TARGETS, AD_NONE, CLR_BLUE, OBJECT_SOUNDSET_SPELLBOOK,
