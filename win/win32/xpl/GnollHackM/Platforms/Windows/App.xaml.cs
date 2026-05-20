@@ -21,6 +21,18 @@ public partial class App : MauiWinUIApplication
 		this.RequestedTheme = ApplicationTheme.Dark;
 		GHApp.WindowsApp = this;
         GHApp.InitializeGC();
+        Microsoft.UI.Xaml.Application.Current.UnhandledException += (s, e) =>
+        {
+            GHApp.MaybeWriteGHLog(e.Exception.Message);
+
+            if (e.Exception is InvalidOperationException ioe && ioe.Message != null &&
+                ((ioe.Message.Contains("already deactivated")) 
+                || (ioe.Message.Contains("already activated")))
+                )
+            {
+                e.Handled = true;
+            }
+        };
     }
 
     protected override MauiApp CreateMauiApp() => MauiProgram.CreateMauiApp();
