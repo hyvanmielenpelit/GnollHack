@@ -125,6 +125,34 @@ public static class MauiProgram
 
                 // Other Sentry options can be set here.
                 options.CaptureFailedRequests = false;
+
+                options.SetBeforeSend(@event =>
+                {
+                    var exception = @event.Exception;
+
+                    if (exception is InvalidOperationException ioe && ioe.Message != null &&
+                        (ioe.Message.Contains("already deactivated") 
+                        || ioe.Message.Contains("already activated")))
+                    {
+                        // Drop event entirely
+                        return null;
+                    }
+                    if (@event.SentryExceptions != null)
+                    {
+                        foreach (var ex in @event.SentryExceptions)
+                        {
+                            if (ex.Type == nameof(InvalidOperationException) &&
+                                ex.Value != null &&
+                                (ex.Value.Contains("already deactivated") ||
+                                    ex.Value.Contains("already activated")))
+                            {
+                                return null;
+                            }
+                        }
+                    }
+
+                    return @event;
+                });
             })
 #endif
 
