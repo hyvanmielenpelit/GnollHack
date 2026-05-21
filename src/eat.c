@@ -3748,9 +3748,8 @@ struct obj* otmp;
 {
     if (!u.uconduct.unvegan && !is_obj_vegan_food(otmp) && ParanoidVegan)
     {
-        char buf[BUFSZ];
-        Strcpy(buf, "You are about to start eating non-vegan food.  Continue?");
-        if (yn_function_es(YN_STYLE_GENERAL, ATR_NONE, CLR_MSG_NEGATIVE, (const char*)0, buf, ynchars, 'n', yndescs, (const char*)0) == 'n')
+        if (yn_query_ex(ATR_NONE, CLR_MSG_WARNING, "Non-Vegan Food", 
+            "You are about to start eating non-vegan food. Continue?") == 'n')
             return 1;
     }
     return 0;
