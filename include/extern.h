@@ -1074,6 +1074,8 @@ E const char* FDECL(is_nonedible_corpse_material, (struct permonst*, struct obj*
 E void NDECL(init_uhunger);
 E int NDECL(Hear_again);
 E void NDECL(reset_eat);
+E boolean FDECL(is_obj_vegan_food, (struct obj*));
+E int FDECL(check_vegan_food, (struct obj*));
 E int NDECL(doeat);
 E int FDECL(use_tin_opener, (struct obj *));
 E double FDECL(calchungry, (boolean*));

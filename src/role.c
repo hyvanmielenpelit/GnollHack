@@ -2667,7 +2667,7 @@ role_init()
     /* 0 or 1; no gods are neuter, nor is gender randomized */
     quest_status.godgend = !strcmpi(align_gtitle(alignmnt), "goddess");
     if (Role_if(PM_MONK))
-        flags.paranoia_bits |= PARANOID_WIELDED_WEAPON;
+        flags.paranoia_bits |= PARANOID_WIELDED_WEAPON | PARANOID_VEGAN;
 
 #if 0
 /*

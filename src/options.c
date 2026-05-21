@@ -1611,6 +1611,8 @@ STATIC_VAR const struct paranoia_opts {
       "yes vs y to tip a container" },
     { PARANOID_WIELDED_WEAPON, "Wielded-weapon", 1, (const char*)0, 0,
       "y to attack with a weapon" },
+    { PARANOID_VEGAN, "vegan", 1, (const char*)0, 0,
+      "y to eat non-vegan food" },
       /* for config file parsing; interactive menu skips these */
     { 0, "none", 4, 0, 0, 0 }, /* require full word match */
     { ~0, "all", 3, 0, 0, 0 }, /* ditto */

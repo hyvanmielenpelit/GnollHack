@@ -2095,7 +2095,8 @@ const char *mesg;
         pline1(smellsbuf);
 
         //if (yn_query("Eat it?") == 'n') 
-        if (yn_function_es(YN_STYLE_GENERAL, ATR_NONE, chokewarn ? CLR_MSG_WARNING : CLR_MSG_ATTENTION, "Tin Opened", eatit, ynchars, 'n', yndescs, smellsbuf) != 'y')
+        if (yn_function_es(YN_STYLE_GENERAL, ATR_NONE, chokewarn ? CLR_MSG_WARNING : CLR_MSG_ATTENTION, "Tin Opened", eatit, ynchars, 'n', yndescs, smellsbuf) != 'y'
+            || check_vegan_food(tin) == 1)
         {
             if (flags.verbose)
                 You("discard the open tin.");
@@ -3709,6 +3710,52 @@ struct obj* otmp;
     return basenutrit;
 }
 
+boolean
+is_obj_vegan_food(otmp)
+struct obj* otmp;
+{
+    if (!otmp)
+        return TRUE;
+
+    if (otmp->otyp == CORPSE && otmp->corpsenm >= LOW_PM)
+        return vegan(&mons[otmp->corpsenm]);
+
+    if (otmp->otyp == TIN && otmp->corpsenm >= LOW_PM)
+        return vegan(&mons[otmp->corpsenm]);
+
+    switch (otmp->material)
+    {
+    case MAT_ORGANIC:
+    case MAT_FLESH:
+    case MAT_WAX:
+        return FALSE;
+    default:
+        if (otmp->otyp == PANCAKE || otmp->otyp == FORTUNE_COOKIE /*eggs*/
+            || otmp->otyp == CREAM_PIE || otmp->otyp == CANDY_BAR /*milk*/
+            || otmp->otyp == LUMP_OF_ROYAL_JELLY)
+        {
+            return FALSE;
+        }
+        break;
+    }
+
+    return TRUE;
+}
+
+int
+check_vegan_food(otmp)
+struct obj* otmp;
+{
+    if (!u.uconduct.unvegan && !is_obj_vegan_food(otmp) && ParanoidVegan)
+    {
+        char buf[BUFSZ];
+        Strcpy(buf, "You are about to start eating non-vegan food.  Continue?");
+        if (yn_function_es(YN_STYLE_GENERAL, ATR_NONE, CLR_MSG_NEGATIVE, (const char*)0, buf, ynchars, 'n', yndescs, (const char*)0) == 'n')
+            return 1;
+    }
+    return 0;
+}
+
 /* 'e' command */
 int
 doeat()
@@ -3795,6 +3842,9 @@ doeat()
 
     if (otmp->otyp != TIN) //Tins are treated separately, since you do not know their nutrition before
     {
+        if (check_vegan_food(otmp))
+            return 0;
+
         int total_nutrition = (int)obj_nutrition(otmp);
         int nutrition_left = otmp->oeaten ? (int)otmp->oeaten : total_nutrition;
         int reqtime = otmp->otyp == CORPSE ? get_corpse_reqtime(otmp) : is_obj_normally_edible(otmp) && objects[otmp->otyp].oc_delay && total_nutrition > 0 ? rounddiv((int)objects[otmp->otyp].oc_delay * nutrition_left, total_nutrition) : 1;
