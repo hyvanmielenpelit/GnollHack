@@ -6262,7 +6262,7 @@ int final;
         struct item_score_count_result cnt2 = count_valuable_art_objects(magic_objs);
         int64_t valuableworth = money_cnt(invent) + hidden_gold() + carried_gem_value() + cnt.score;
         int64_t valuableworth2 =  magic_gold() + magic_gem_value() + cnt2.score;
-        int64_t score_percentage = ((valuableworth + valuableworth2 + (int64_t)u.uachieve.role_achievement * ROGUE_ROLE_ACHIEVEMENT_SCORE) * 100) / MAXIMUM_ROLE_SCORE;
+        int64_t score_percentage = ((ROGUE_PER_GOLD_SCORE * (valuableworth + valuableworth2) + (int64_t)u.uachieve.role_achievement * ROGUE_ROLE_ACHIEVEMENT_SCORE) * 100) / MAXIMUM_ROLE_SCORE;
         score_percentage = min(100, score_percentage);
         Sprintf(goalbuf, "%lld %s worth of %svaluables with you", (long long)valuableworth, currency(valuableworth), program_state.gameover ? "" : "known ");
         you_have(goalbuf, "");

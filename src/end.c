@@ -4029,7 +4029,7 @@ get_current_game_score(VOID_ARGS)
         struct item_score_count_result cnt = count_valuable_art_objects(invent);
         struct item_score_count_result cnt2 = count_valuable_art_objects(magic_objs);
         lootvalue += cnt.score + cnt2.score;
-        Role_Specific_Score = lootvalue;
+        Role_Specific_Score = ROGUE_PER_GOLD_SCORE * lootvalue;
         Role_Achievement_Score = ROGUE_ROLE_ACHIEVEMENT_SCORE * (int64_t)u.uachieve.role_achievement;
         break;
     }
