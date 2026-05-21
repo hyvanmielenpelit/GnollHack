@@ -109,6 +109,14 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM'">
   </PropertyGroup>
+  <ItemDefinitionGroup>
+      <ClCompile>
+          <AdditionalOptions>
+              -Wno-enum-enum-conversion
+              %(AdditionalOptions)
+          </AdditionalOptions>
+      </ClCompile>
+  </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
