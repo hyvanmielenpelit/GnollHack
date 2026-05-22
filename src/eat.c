@@ -3746,7 +3746,7 @@ int
 check_vegan_food(otmp)
 struct obj* otmp;
 {
-    if (!u.uconduct.unvegan && !is_obj_vegan_food(otmp) && ParanoidVegan)
+    if (!u.uconduct.unvegan && ParanoidVegan && !is_obj_vegan_food(otmp))
     {
         if (yn_query_ex(ATR_NONE, CLR_MSG_WARNING, "Non-Vegan Food", 
             "You are about to start eating non-vegan food. Continue?") == 'n')
