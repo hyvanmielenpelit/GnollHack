@@ -1187,8 +1187,8 @@ register struct monst *mtmp;
                 return 1; /* monster died (e.g. exploded) */
         }
 
-        if (mtmp->wormno)
-            wormhitu(mtmp);
+        //if (mtmp->wormno)
+        //    wormhitu(mtmp);
     }
 
     /* talking for normal monsters */
