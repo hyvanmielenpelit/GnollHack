@@ -2639,7 +2639,7 @@ recalc_mapseen(VOID_ARGS)
     /* track rooms the hero is in */
     for (i = 0; i < SIZE(u.urooms); ++i) {
         if (!u.urooms[i])
-            continue;
+            break;
 
         ridx = u.urooms[i] - ROOMOFFSET;
         mptr->msrooms[ridx].seen = 1;
