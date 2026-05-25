@@ -1929,17 +1929,42 @@ namespace GnollHackX
             return cnt;
         }
 
-        public void AddSelectMenuBreadcrumb(int cnt, string text)
+        public void AddSelectMenuBreadcrumb(List<GHMenuItem> selectedMenuItems)
         {
+            if (selectedMenuItems == null)
+                return;
+
+            int cnt = selectedMenuItems.Count;
             if (cnt == 1)
             {
+                string text = selectedMenuItems[0].Text;
                 if (!string.IsNullOrEmpty(text))
                     GHApp.AddSentryBreadcrumb("SelectMenu: " + text, GHConstants.SentryGnollHackCallbackCategoryName);
                 else
                     GHApp.AddSentryBreadcrumb("SelectMenu: 1 item selected, no text", GHConstants.SentryGnollHackCallbackCategoryName);
             }
             else
-                GHApp.AddSentryBreadcrumb("SelectMenu: " + cnt + " items selected", GHConstants.SentryGnollHackCallbackCategoryName);
+            {
+                StringBuilder builder = new StringBuilder(32 + 128 * cnt);
+                builder.Append("SelectMenu: ");
+                builder.Append(cnt.ToString());
+                builder.Append(" items selected: ");
+                int i = 0;
+                foreach (GHMenuItem mi in selectedMenuItems)
+                {
+                    i++;
+                    builder.Append(!string.IsNullOrEmpty(mi.Text) ? mi.Text : "(no text)");
+                    if (i == 10 && cnt > 10)
+                    {
+                        /* Print at most 10 items */
+                        builder.Append("...");
+                        break;
+                    }
+                    if (i < cnt)
+                        builder.Append(", ");
+                }
+                GHApp.AddSentryBreadcrumb(builder.ToString(), GHConstants.SentryGnollHackCallbackCategoryName);
+            }
         }
 
         public int ClientCallback_SelectMenu(int winid, int how, out IntPtr picklistptr, out int listsize)
@@ -1994,7 +2019,7 @@ namespace GnollHackX
                         picklist[2 * i] = _ghWindows[winid].SelectedMenuItems[i].Identifier;
                         picklist[2 * i + 1] = (long)_ghWindows[winid].SelectedMenuItems[i].Count;
                     }
-                    AddSelectMenuBreadcrumb(cnt, _ghWindows[winid].SelectedMenuItems[0].Text);
+                    AddSelectMenuBreadcrumb(_ghWindows[winid].SelectedMenuItems);
                 }
                 long i64var = 0;
                 int size = (picklist == null ? 0 : picklist.Length);
