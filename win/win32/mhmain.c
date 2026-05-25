@@ -545,7 +545,7 @@ MainWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         } else {
             /* prompt user for action */
             switch (NHMessageBox(hWnd, TEXT("Save?"),
-                                 MB_YESNOCANCEL | MB_ICONQUESTION)) {
+                    MB_YESNO | MB_ICONQUESTION)) {
             case IDYES:
 #ifdef SAFERHANGUP
                 /* destroy popup window - it has its own loop and we need to
@@ -557,13 +557,13 @@ MainWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                 /* tell GnollHack core that "hangup" is requested */
                 hangup(1);
 #else
-                NHEVENT_KBD('y');
+                //NHEVENT_KBD('y');
                 dosave();
 #endif
                 break;
             case IDNO:
-                NHEVENT_KBD('q');
-                done(QUIT);
+                //NHEVENT_KBD('q');
+                //done(QUIT);
                 break;
             case IDCANCEL:
                 break;
