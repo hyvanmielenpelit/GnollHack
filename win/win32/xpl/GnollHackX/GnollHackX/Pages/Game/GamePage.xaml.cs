@@ -15549,7 +15549,7 @@ namespace GnollHackX.Pages.Game
 
                                 float diffX = e.Location.X - anchor.X;
                                 float diffY = e.Location.Y - anchor.Y;
-                                if (diffX == float.NaN || diffY == float.NaN)
+                                if (float.IsNaN(diffX) || float.IsNaN(diffY) || float.IsInfinity(diffX) || float.IsInfinity(diffY))
                                     break;
                                 float dist = (float)Math.Sqrt((Math.Pow(diffX, 2) + Math.Pow(diffY, 2)));
 
@@ -18983,7 +18983,7 @@ namespace GnollHackX.Pages.Game
 
                             float diffX = e.Location.X - anchor.X;
                             float diffY = e.Location.Y - anchor.Y;
-                            if (diffX == float.NaN || diffY == float.NaN)
+                            if (float.IsNaN(diffX) || float.IsNaN(diffY) || float.IsInfinity(diffX) || float.IsInfinity(diffY))
                                 break;
                             float dist = (float)Math.Sqrt((Math.Pow(diffX, 2) + Math.Pow(diffY, 2)));
 
@@ -19318,7 +19318,7 @@ namespace GnollHackX.Pages.Game
 
                             float diffX = e.Location.X - anchor.X;
                             float diffY = e.Location.Y - anchor.Y;
-                            if (diffX == float.NaN || diffY == float.NaN)
+                            if (float.IsNaN(diffX) || float.IsNaN(diffY) || float.IsInfinity(diffX) || float.IsInfinity(diffY))
                                 break;
                             float dist = (float)Math.Sqrt((Math.Pow(diffX, 2) + Math.Pow(diffY, 2)));
 
@@ -20912,7 +20912,7 @@ namespace GnollHackX.Pages.Game
 
                                 float diffX = e.Location.X - anchor.X;
                                 float diffY = e.Location.Y - anchor.Y;
-                                if (diffX == float.NaN || diffY == float.NaN)
+                                if (float.IsNaN(diffX) || float.IsNaN(diffY) || float.IsInfinity(diffX) || float.IsInfinity(diffY))
                                     break;
                                 float dist = (float)Math.Sqrt((Math.Pow(diffX, 2) + Math.Pow(diffY, 2)));
 

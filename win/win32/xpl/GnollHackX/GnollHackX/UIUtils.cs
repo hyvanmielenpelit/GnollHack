@@ -1660,14 +1660,10 @@ namespace GnollHackX
         public float Duration;
         public DateTime TimeStamp;
 
-        public TouchSpeedRecord()
-        {
-
-        }
         public TouchSpeedRecord(float distance, float duration, DateTime time)
         {
-            Distance = distance;
-            Duration = duration;
+            Distance = float.IsNaN(distance) || float.IsInfinity(distance) ? 0.0f : distance;
+            Duration = float.IsNaN(duration) || float.IsInfinity(duration) ? 0.0f : duration;
             TimeStamp = time;
         }
     }
