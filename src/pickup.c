@@ -793,7 +793,7 @@ boolean do_auto_in_bag;
             {
                 char qbuf[BUFSZ];
 
-                (void) safe_qbuf(qbuf, do_auto_in_bag ? "Pick up " : "Pick up and auto-stash ", "?", obj, doname,
+                (void) safe_qbuf(qbuf, do_auto_in_bag ? "Pick up and auto-stash ": "Pick up ", "?", obj, doname,
                                  ansimpleoname, something);
                 switch ((obj->quan < 2L) ? ynaq(qbuf) : ynNaq(qbuf)) 
                 {
@@ -4935,7 +4935,7 @@ int i, n;
     for (j = i; j < n; j++)
     {
         otmp = pick_list[j].item.a_obj;
-        if (otmp->oclass != COIN_CLASS && !merge_choice(invent, otmp))
+        if (otmp && otmp->oclass != COIN_CLASS && !merge_choice(invent, otmp))
             return TRUE;
     }
     return FALSE;
