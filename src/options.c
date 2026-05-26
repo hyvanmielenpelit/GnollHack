@@ -216,6 +216,7 @@ static struct Bool_Opt {
 #endif
     { "metric_system", "use the metric system for weights", &flags.metric_system, FALSE, SET_IN_GAME },
     { "monpolycontrol", "control monster polymorphs", &iflags.mon_polycontrol, FALSE, SET_IN_WIZGAME },
+    { "multishot_always_fire", "attack always as many times as possible", &flags.multishot_always_fire, FALSE, SET_IN_GAME },
 #ifdef NEWS
     { "news", "show any news at game start", &iflags.news, TRUE, DISP_IN_GAME },
 #else
@@ -869,7 +870,7 @@ init_options()
     flags.end_own = FALSE;
     flags.end_top = 3;
     flags.end_around = 2;
-    flags.paranoia_bits = PARANOID_PRAY | PARANOID_AUTOALL; /* old prayconfirm=TRUE */
+    flags.paranoia_bits = PARANOID_PRAY | PARANOID_AUTOALL | PARANOID_MULTISHOT; /* old prayconfirm=TRUE */
     flags.runmode = RUN_LEAP;
     iflags.msg_history = 20;
     /* msg_window has conflicting defaults for multi-interface binary */
@@ -1613,6 +1614,8 @@ STATIC_VAR const struct paranoia_opts {
       "y to attack with a weapon" },
     { PARANOID_VEGAN, "vegan", 1, (const char*)0, 0,
       "y to eat non-vegan food" },
+    { PARANOID_MULTISHOT, "multishot", 1, (const char*)0, 0,
+      "y to continue firing multishot" },
       /* for config file parsing; interactive menu skips these */
     { 0, "none", 4, 0, 0, 0 }, /* require full word match */
     { ~0, "all", 3, 0, 0, 0 }, /* ditto */

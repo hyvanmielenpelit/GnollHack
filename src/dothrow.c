@@ -174,7 +174,10 @@ boolean firing;
         if (context.multishot_target_killed == TRUE)
         {
             context.multishot_target_killed = FALSE;
-            break;
+            if (!flags.multishot_always_fire)
+                break;
+            else if (m_shot.i < m_shot.n && ParanoidMultiShot && yn_query(firing ? "Target was killed. Continue firing?" : "Target was killed. Continue throwing?") != 'y')
+                break;
         }
     }
     m_shot.n = m_shot.i = 0;

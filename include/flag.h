@@ -183,6 +183,7 @@ struct flag {
 #define PARANOID_TIP            0x1000
 #define PARANOID_WIELDED_WEAPON 0x2000
 #define PARANOID_VEGAN          0x4000
+#define PARANOID_MULTISHOT      0x8000
     int pickup_burden; /* maximum burden before prompt */
     int pile_limit;    /* controls feedback when walking over objects */
     char inv_order[MAX_OBJECT_CLASSES];
@@ -253,7 +254,7 @@ struct flag {
     boolean save_file_tracking_migrated; /* 1 = save file tracking in use (if 0, migrate to save file tracking) */
     uchar save_file_tracking_value; /* this is the track value when tracking is supported and needed (desktop) */
     boolean ignore_stopping;
-    uchar reserved_uchar5;
+    boolean multishot_always_fire; /* Do not stop multishot firing if the target dies */
     uchar reserved_uchar6;
 
     uint64_t version_number_at_start;
@@ -691,6 +692,8 @@ enum runmode_types {
 #define ParanoidWieldedWeapon ((flags.paranoia_bits & PARANOID_WIELDED_WEAPON) != 0)
 /* vegan: accepting eating non-vegan food */
 #define ParanoidVegan ((flags.paranoia_bits & PARANOID_VEGAN) != 0)
+/* multishot: accepting continuing to fire multishot */
+#define ParanoidMultiShot ((flags.paranoia_bits & PARANOID_MULTISHOT) != 0)
 
 /* command parsing, mainly dealing with number_pad handling;
    not saved and restored */
