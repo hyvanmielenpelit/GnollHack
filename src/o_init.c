@@ -550,6 +550,13 @@ NEARDATA const struct mythic_definition mythic_suffix_qualities[MAX_MYTHIC_SUFFI
         MYTHIC_FLAG_DIRECTLY_WISHABLE | MYTHIC_FLAG_BOOTS_REQUIRED,
         MYTHIC_FLAG2_NONE
     },
+    {
+        "caution", " of caution", "Confers warning (helmets only)",
+        20, MYTHIC_STANDARD_PRICE_MULTIPLIER, MYTHIC_STANDARD_PRICE_ADDITION,
+        MYTHIC_SUFFIX_POWER_WARNING,
+        MYTHIC_FLAG_DIRECTLY_WISHABLE | MYTHIC_FLAG_HELMET_REQUIRED,
+        MYTHIC_FLAG2_NONE
+    },
 };
 
 #define SHARPNESS_DESC "Has " MYTHIC_DESC_XSTR(SHARPNESS_PERCENTAGE_CHANCE) "% chance of dealing damage equal to " MYTHIC_DESC_XSTR(SHARPNESS_MAX_HP_PERCENTAGE_DAMAGE) "% of max HP"
@@ -587,6 +594,7 @@ NEARDATA const struct mythic_power_definition mythic_suffix_powers[MAX_MYTHIC_SU
     { "See invisible", "See invisible", MYTHIC_POWER_TYPE_CONFERS_PROPERTY, SEE_INVISIBLE, 0.0, 0, 0UL, MYTHIC_POWER_FLAG_NO_THROWN_OR_AMMO },
     { "Returns to hand", "Returns to hand after throwing", MYTHIC_POWER_TYPE_GENERAL, 0L, 0.0, 0, 0UL, MYTHIC_POWER_FLAG_THROWN_WEAPONS_ONLY },
     { "Stealth", "Stealth", MYTHIC_POWER_TYPE_CONFERS_PROPERTY, STEALTH, 0.0, 0, 0UL, MYTHIC_POWER_FLAG_NO_THROWN_OR_AMMO },
+    { "Warning", "Warning", MYTHIC_POWER_TYPE_CONFERS_PROPERTY, WARNING, 0.0, 0, 0UL, MYTHIC_POWER_FLAG_NO_THROWN_OR_AMMO },
 };
 
 //STATIC_DCL void FDECL(setgemprobs, (d_level *));
