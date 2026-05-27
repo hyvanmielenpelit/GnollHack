@@ -2674,10 +2674,11 @@ namespace GnollHackX.Pages.Game
 #endif
         }
 
-        private bool _delayedFadeFromBlackAtStartOn = false;
+        private int _delayedFadeFromBlackAtStartOn = 0;
+        public bool DelayedFadeFromBlackAtStartOn { get { return Interlocked.CompareExchange(ref _delayedFadeFromBlackAtStartOn, 0, 0) != 0; } set { Interlocked.Exchange(ref _delayedFadeFromBlackAtStartOn, value ? 1 : 0); } }
         public void DelayedFadeFromBlackAtStart()
         {
-            _delayedFadeFromBlackAtStartOn = true;
+            DelayedFadeFromBlackAtStartOn = true;
 #if GNH_MAUI
             var timer = Microsoft.Maui.Controls.Application.Current.Dispatcher.CreateTimer();
             timer.Interval = TimeSpan.FromSeconds(UIUtils.GetWindowHideSecs() + GHConstants.FadeFromBlackAtStartExtraDelaySecs);
@@ -2714,7 +2715,7 @@ namespace GnollHackX.Pages.Game
                             await DoShowMenuCanvas(DelayedMenuShowDoTextHide);
                         }
                         await FadeFromBlackAtStart(GHConstants.FadeFromBlackDurationAtStart);
-                        _delayedFadeFromBlackAtStartOn = false;
+                        DelayedFadeFromBlackAtStartOn = false;
                     }
                     catch (Exception ex)
                     {
@@ -4678,7 +4679,7 @@ namespace GnollHackX.Pages.Game
                 MenuCanvas.EnableTouchEvents = false;
             }
 
-            DelayedMenuShow = _delayedFadeFromBlackAtStartOn;
+            DelayedMenuShow = DelayedFadeFromBlackAtStartOn;
             DelayedMenuShowDoTextHide = dohidetext;
 
             if (!DelayedMenuShow)
@@ -4732,7 +4733,11 @@ namespace GnollHackX.Pages.Game
         {
             try
             {
-                MainThread.BeginInvokeOnMainThread(async () =>
+                MainThread.BeginInvokeOnMainThread(
+#if !DEBUG
+                    async
+#endif
+                    () =>
                 {
                     try
                     {
@@ -4749,7 +4754,11 @@ namespace GnollHackX.Pages.Game
 #if !GNH_MAUI
                         MenuStack.ForceLayout();
 #endif
+#if DEBUG
+                        MenuStack.Opacity = 1.0;
+#else
                         await MenuStack.FadeTo(1.0, 256);
+#endif
                     }
                     catch (Exception ex)
                     {
