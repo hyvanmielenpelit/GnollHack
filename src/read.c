@@ -2783,7 +2783,7 @@ struct monst* targetmonst;
         if (confused || scursed) {
             level_tele(0, FALSE, zerodlevel, 0);
         } else {
-            known = scrolltele(sobj, FALSE, FALSE);
+            known = scrolltele(sobj, FALSE, sblessed);
         }
         break;
     case SCR_GOLD_DETECTION:

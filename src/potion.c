@@ -1092,17 +1092,27 @@ struct obj *otmp;
         }
         break;
     case POT_HALLUCINATION:
-        if (Hallucination || Halluc_resistance)
+    {
+        boolean aware = (otmp->blessed && !rn2(otmp->odiluted ? 5 : 3)) || (!otmp->cursed && !rn2(otmp->odiluted ? 10 : 6));
+        if ((Hallucination && !aware) || Halluc_resistance)
             nothing++;
         else
             play_sfx_sound(SFX_ACQUIRE_HALLUCINATION);
 
         if (!Halluc_resistance)
         {
-            (void)make_hallucinated(itimeout_incr(HHallucination, duration),
-                TRUE, 0L);
+            (void)make_hallucinated(itimeout_incr(HHallucination, duration), TRUE, 0L);
+            if (aware) 
+            {
+                pline_ex1_popup(ATR_NONE, NO_COLOR, "You perceive yourself...", "Enlightenment", TRUE);
+                display_nhwindow(WIN_MESSAGE, FALSE);
+                enlightenment(MAGICENLIGHTENMENT, ENL_GAMEINPROGRESS);
+                Your("awareness re-normalizes.");
+                exercise(A_WIS, TRUE);
+            }
         }
         break;
+    }
     case POT_WATER:
         if (!otmp->blessed && !otmp->cursed) {
             pline("This tastes like %s.", hliquid("water"));
@@ -1214,7 +1224,7 @@ struct obj *otmp;
                 (void) adjattrib(A_INT, 1, FALSE);
                 (void) adjattrib(A_WIS, 1, FALSE);
             }
-            You_feel_ex(ATR_NONE, CLR_MSG_POSITIVE, "self-knowledgeable...");
+            pline_ex1_popup(ATR_NONE, CLR_MSG_POSITIVE, "You feel self-knowledgeable...", "Enlightenment", TRUE);
             display_nhwindow(WIN_MESSAGE, FALSE);
             enlightenment(MAGICENLIGHTENMENT, ENL_GAMEINPROGRESS);
             pline_The("feeling subsides.");
