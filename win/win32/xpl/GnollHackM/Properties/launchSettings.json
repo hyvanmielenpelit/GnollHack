@@ -2,17 +2,11 @@
   "profiles": {
     "Windows Unpackaged": {
       "commandName": "Project",
-      "nativeDebugging": true,
-      "environmentVariables": {
-        "GNHWindowsPackageType": "MSIX"
-      }
+      "nativeDebugging": true
     },
     "Windows Packaged": {
       "commandName": "MsixPackage",
-      "nativeDebugging": true,
-      "environmentVariables": {
-        "GNHWindowsPackageType": "None"
-      }
+      "nativeDebugging": true
     }
   }
 }
