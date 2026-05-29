@@ -1544,9 +1544,17 @@ extern dlevel_t level; /* structure describing the current level */
     do { \
         debugprint("remove_monster at <%d,%d>: Line %d in %s", x, y, __LINE__, basefilename(__FILE__)); \
         if (!level.monsters[x][y]) \
+        { \
             debugprint("No monster to remove at <%d,%d>", x, y); \
+            if (wizard) \
+                impossible("No monster to remove at <%d,%d>", x, y); \
+        } \
         else if (level.monsters[x][y]->mx != (x) || level.monsters[x][y]->my != (y)) \
+        { \
             debugprint("Monster (mnum=%d) mx=%d, my=%d is different from <%d,%d>", level.monsters[x][y]->mnum, level.monsters[x][y]->mx, level.monsters[x][y]->my, x, y); \
+            if (wizard) \
+                impossible("Monster (mnum=%d) mx=%d, my=%d is different from <%d,%d>", level.monsters[x][y]->mnum, level.monsters[x][y]->mx, level.monsters[x][y]->my, x, y); \
+        } \
         level.monsters[x][y] = (struct monst *) 0; \
     } while(0)
 #endif

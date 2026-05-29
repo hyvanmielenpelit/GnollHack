@@ -2359,8 +2359,8 @@ newdogpos:
 
             /* insert a worm_move() if worms ever begin to eat things */
             wasseen = canseemon(mtmp);
-            debugprint("dog_move: mnum=%d, omx=%d, omy=%d, nix=%d, niy=%d", mtmp->mnum, omx, omy, nix, niy);
-            remove_monster(omx, omy);
+            debugprint("dog_move: mnum=%d, mx=%d, my=%d, omx=%d, omy=%d, nix=%d, niy=%d", mtmp->mnum, mtmp->mx, mtmp->my, omx, omy, nix, niy);
+            remove_monster(mtmp->mx, mtmp->my); //omx, omy);
             place_monster(mtmp, nix, niy);
             play_movement_sound(mtmp, CLIMBING_TYPE_NONE);
             update_m_facing(mtmp, nix - omx, FALSE);
