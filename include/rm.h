@@ -1539,6 +1539,13 @@ extern dlevel_t level; /* structure describing the current level */
     } while(0)
 #else
 #define place_worm_seg(m, x, y) level.monsters[x][y] = m
+
+#ifdef DEBUG
+#define wizard_or_debug (TRUE)
+#else
+#define wizard_or_debug (wizard)
+#endif
+
 //#define remove_monster(x, y) level.monsters[x][y] = (struct monst *) 0
 #define remove_monster(x, y) \
     do { \
@@ -1546,13 +1553,13 @@ extern dlevel_t level; /* structure describing the current level */
         if (!level.monsters[x][y]) \
         { \
             debugprint("No monster to remove at <%d,%d>", x, y); \
-            if (wizard) \
+            if (wizard_or_debug) \
                 impossible("No monster to remove at <%d,%d>", x, y); \
         } \
         else if (level.monsters[x][y]->mx != (x) || level.monsters[x][y]->my != (y)) \
         { \
             debugprint("Monster (mnum=%d) mx=%d, my=%d is different from <%d,%d>", level.monsters[x][y]->mnum, level.monsters[x][y]->mx, level.monsters[x][y]->my, x, y); \
-            if (wizard) \
+            if (wizard_or_debug) \
                 impossible("Monster (mnum=%d) mx=%d, my=%d is different from <%d,%d>", level.monsters[x][y]->mnum, level.monsters[x][y]->mx, level.monsters[x][y]->my, x, y); \
         } \
         level.monsters[x][y] = (struct monst *) 0; \
