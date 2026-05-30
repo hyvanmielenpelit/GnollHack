@@ -1982,18 +1982,31 @@ boolean* obj_destroyed;
         You("joust %s%s", mon_nam(mon), canseemon(mon) ? exclam((int)ceil(damage)) : ".");
         if (jousting < 0) 
         {
-            pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s shatters on impact!", Yname2(obj));
-            /* (must be either primary or secondary weapon to get here) */
-            //u.twoweap = FALSE; /* untwoweapon() is too verbose here */
-            if (obj == uwep)
-                uwepgone(); /* set unweapon */
-            if (obj == uarms)
-                uwep2gone(); /* set unweapon */
-            /* minor side-effect: broken lance won't split puddings */
-            debugprint("hmon_hitmon6: %d", obj->otyp);
-            useup(obj);
-            obj = 0;
-            *obj_destroyed = TRUE;
+            short break_threshold = min(obj->oerodeproof ? -2 : -1, -4 + greatest_erosion(obj) + (obj->cursed || obj->blessed ? -3 : 0));
+            if (objects[obj->otyp].oc_enchantable && obj->enchantment > break_threshold)
+            {
+                play_sfx_sound(SFX_ENCHANT_ITEM_SPECIAL_NEGATIVE);
+                obj->enchantment--;
+                costly_alteration(obj, COST_DEGRD);
+                pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s splinters%s on impact!", Yname2(obj), obj->enchantment == break_threshold ? " violently" : obj->enchantment >= 0 ? " slightly" : "");
+                update_inventory();
+            }
+            else /* Break lance */
+            {
+                play_simple_object_sound(obj, OBJECT_SOUND_TYPE_BREAK);
+                pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s shatters on impact!", Yname2(obj));
+                /* (must be either primary or secondary weapon to get here) */
+                //u.twoweap = FALSE; /* untwoweapon() is too verbose here */
+                if (obj == uwep)
+                    uwepgone(); /* set unweapon */
+                if (obj == uarms)
+                    uwep2gone(); /* set unweapon */
+                /* minor side-effect: broken lance won't split puddings */
+                debugprint("hmon_hitmon6: %d", obj->otyp);
+                useup(obj);
+                obj = 0;
+                *obj_destroyed = TRUE;
+            }
         }
         /* avoid migrating a dead monster */
         if (mon->mhp > (int)ceil(damage)) 

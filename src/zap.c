@@ -3547,15 +3547,14 @@ obj_resists(obj, ochance, achance)
 struct obj *obj;
 int ochance, achance; /* percent chance for ordinary objects, artifacts */
 {
-    if (is_obj_unremovable_from_the_game(obj) || is_obj_indestructible(obj))
+    if (!obj || is_obj_unremovable_from_the_game(obj) || is_obj_indestructible(obj))
     {
         return TRUE;
     }
     else 
     {
-        int chance = rn2(100);
-
-        return (boolean) (chance < (obj->oartifact ? achance : ochance));
+        int roll = rn2(100);
+        return (boolean) (roll < (obj->oartifact ? achance : ochance));
     }
 }
 
