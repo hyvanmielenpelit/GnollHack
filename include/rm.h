@@ -1556,7 +1556,7 @@ extern dlevel_t level; /* structure describing the current level */
             if (wizard_or_debug) \
                 impossible("No monster to remove at <%d,%d>", x, y); \
         } \
-        else if (level.monsters[x][y]->mx != (x) || level.monsters[x][y]->my != (y)) \
+        else if (!level.monsters[x][y]->wormno && (level.monsters[x][y]->mx != (x) || level.monsters[x][y]->my != (y))) \
         { \
             debugprint("Monster (mnum=%d) mx=%d, my=%d is different from <%d,%d>", level.monsters[x][y]->mnum, level.monsters[x][y]->mx, level.monsters[x][y]->my, x, y); \
             if (wizard_or_debug) \
