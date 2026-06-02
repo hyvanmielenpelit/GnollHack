@@ -244,6 +244,10 @@ boolean quietly;
         && magr->my != mdef->my)
         return MM_MISS;
 
+    /* Do not displace worms. */
+    if (magr->wormno || mdef->wormno)
+        return MM_MISS;
+
     update_m_facing(magr, mdef->mx - magr->mx, FALSE);
 
     /* undetected monster becomes un-hidden if it is displaced */
