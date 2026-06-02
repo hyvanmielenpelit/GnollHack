@@ -3218,8 +3218,10 @@ boolean is_mon_dead;
 {
     boolean onmap = (mtmp->mx > 0);
 
-    debugprint("m_detach: mnum=%d, mid=%u", mtmp->mnum, mtmp->m_id);
-    issue_breadcrumb3("m_detach (mnum, mid)", mtmp->mnum, (int)mtmp->m_id);
+    char bcbuf[BUFSZ];
+    Sprintf(bcbuf, "m_detach: mnum=%d (%s), mid=%u, mx=%d, my=%d, peaceful=%d, tame=%d", mtmp->mnum, mtmp->data->mname, mtmp->m_id, mtmp->mx, mtmp->my, is_peaceful(mtmp), is_tame(mtmp));
+    debugprint("%s", bcbuf);
+    issue_breadcrumb(bcbuf);
 
     if (mtmp == context.polearm.hitmon)
         context.polearm.hitmon = 0;
