@@ -614,6 +614,10 @@ unsigned cxn_flags; /* bitmask of CXN_xxx values */
         tknown = obj->tknown;
     }
 
+    /* Artifacts get just their name */
+    if (obj_is_pname(obj))
+        goto nameit;
+
     /* General prefixes */
     if (is_poisonable(obj) && obj->opoisoned && dknown)
         Strcpy(buf, "poisoned ");
@@ -638,10 +642,6 @@ unsigned cxn_flags; /* bitmask of CXN_xxx values */
             break;
         }
     }
-
-    /* Artifacts get just their name */
-    if (obj_is_pname(obj))
-        goto nameit;
 
     if (obj->oclass == ARMOR_CLASS)
     {
@@ -1363,10 +1363,18 @@ char** attrs_ptr, ** colors_ptr;
      * combining both into one function taking a parameter.
      */
     /* must check opoisoned--someone can have a weirdly-named fruit */
-    if (!strncmp(bp, "poisoned ", 9) && obj->opoisoned)
+    if (obj->opoisoned)
     {
-        bp += 9;
-        ispoisoned = TRUE;
+        if (!strncmp(bp, "poisoned ", 9))
+        {
+            bp += 9;
+            ispoisoned = TRUE;
+        }
+        else if (obj_is_pname(obj))
+        {
+            /* obj_is_pname is missing poisoned word */
+            ispoisoned = TRUE;
+        }
     }
 
     if (!strncmp(bp, "freezing ", 9) && obj->elemental_enchantment == COLD_ENCHANTMENT) 
@@ -1387,6 +1395,11 @@ char** attrs_ptr, ** colors_ptr;
     else if (!strncmp(bp, "death-magical ", 14) && obj->elemental_enchantment == DEATH_ENCHANTMENT) 
     {
         bp += 14;
+        isenchanted = obj->elemental_enchantment;
+    }
+    else if (obj_is_pname(obj))
+    {
+        /* obj_is_pname is missing elemental words */
         isenchanted = obj->elemental_enchantment;
     }
 
