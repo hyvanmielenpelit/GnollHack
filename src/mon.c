@@ -3219,7 +3219,7 @@ boolean is_mon_dead;
     boolean onmap = (mtmp->mx > 0);
 
     char bcbuf[BUFSZ];
-    Sprintf(bcbuf, "m_detach: mnum=%d (%s), mid=%u, mx=%d, my=%d, peaceful=%d, tame=%d", mtmp->mnum, mtmp->data->mname, mtmp->m_id, mtmp->mx, mtmp->my, is_peaceful(mtmp), is_tame(mtmp));
+    Sprintf(bcbuf, "m_detach: mnum=%d (%s), mid=%u, wormno=%u, mx=%d, my=%d, peaceful=%d, tame=%d", mtmp->mnum, mtmp->data->mname, mtmp->m_id, mtmp->wormno, mtmp->mx, mtmp->my, is_peaceful(mtmp), is_tame(mtmp));
     debugprint("%s", bcbuf);
     issue_breadcrumb(bcbuf);
 
