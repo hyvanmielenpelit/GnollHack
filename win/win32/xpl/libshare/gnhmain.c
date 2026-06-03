@@ -156,7 +156,8 @@ notify_gui_pregame(VOID_ARGS)
     issue_gui_command(GUI_CMD_REPORT_MOUSE_COMMAND, (int)flags.right_click_command, 0, (const char*)0); /* Notification is needed */
     issue_gui_command(GUI_CMD_REPORT_MOUSE_COMMAND, (int)flags.middle_click_command, 1, (const char*)0); /* Notification is needed */
     /* No notification is needed for iflags.engrave_quicktext or engrave_quickstyle, as it is in iflags */
-    
+    /* No notification is needed for iflags.show_damage_formula, as it is in iflags */
+
     if (context.quick_cast_spell_set)
     {
         const char* spellnam = spl_book[context.quick_cast_spell_no].sp_id > STRANGE_OBJECT ? OBJ_NAME(objects[spl_book[context.quick_cast_spell_no].sp_id]) : "";

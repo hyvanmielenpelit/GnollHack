@@ -277,18 +277,7 @@ namespace GnollHackX
         DefaultVIKeys =         0x00080000UL, /* VI Keys are default instead of number pad movement */
         WornShowsEquipment =    0x00100000UL, /* Show the equipment screen of inventory instead of only worn items in normal menu */
         MetricSystem =          0x00200000UL, /* Set metric_system to true by default */
-
-        //RightMouseButtonBit1 =  0x00400000UL, 
-        //RightMouseButtonBit2 =  0x00800000UL, 
-        //RightMouseButtonBit3 =  0x01000000UL, 
-        //RightMouseButtonBit4 =  0x02000000UL,
-        //RightMouseButtonBit5 =  0x04000000UL,
-
-        //MiddleMouseButtonBit1 = 0x08000000UL,
-        //MiddleMouseButtonBit2 = 0x10000000UL, 
-        //MiddleMouseButtonBit3 = 0x20000000UL, 
-        //MiddleMouseButtonBit4 = 0x40000000UL, 
-        //MiddleMouseButtonBit5 = 0x80000000UL, 
+        DamageFormula =         0x00400000UL, /* Set show_damage_formula to true by default */
     }
 
     [Flags]
@@ -1582,6 +1571,7 @@ namespace GnollHackX
         GUI_CMD_REPORT_ENGRAVE_QUICK_TEXT,
         GUI_CMD_REPORT_ENGRAVE_QUICK_STYLE,
         GUI_CMD_TOGGLE_METRIC_SYSTEM,
+        GUI_CMD_TOGGLE_DAMAGE_FORMULA,
     }
 
     public enum gui_achievement_categories
@@ -2500,6 +2490,7 @@ namespace GnollHackX
         public const bool DefaultRuntimeEffects = false;
         public const bool DefaultCharacterClickAction = false;
         public const bool DefaultDiceAsRanges = true;
+        public const bool DefaultDamageFormula = false;
         public const bool DefaultWornShowsEquipment = true;
         public const bool DefaultAutoDig = true;
         public const bool DefaultIgnoreStopping = false; /* Since travel is also used for normal movement in the modern version */

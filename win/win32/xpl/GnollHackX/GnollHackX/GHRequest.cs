@@ -116,6 +116,7 @@ namespace GnollHackX
         SetEngraveQuickText,
         SetEngraveQuickStyle,
         SetMetricSystem,
+        SetDamageFormula,
     }
 
     public struct AddContextMenuData

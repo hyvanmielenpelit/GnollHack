@@ -1263,6 +1263,11 @@ namespace GnollHackX.Pages.Game
             GHGame curGame = GHApp.CurrentGHGame;
             curGame?.ResponseQueue.Enqueue(new GHResponse(curGame, GHRequestType.SetDiceAsRanges, newValue));
         }
+        public void SetDamageFormula(bool newValue)
+        {
+            GHGame curGame = GHApp.CurrentGHGame;
+            curGame?.ResponseQueue.Enqueue(new GHResponse(curGame, GHRequestType.SetDamageFormula, newValue));
+        }
         public void SetWornShowsEquipment(bool newValue)
         {
             GHGame curGame = GHApp.CurrentGHGame;

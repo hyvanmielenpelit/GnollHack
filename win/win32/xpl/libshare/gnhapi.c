@@ -686,6 +686,12 @@ LibSetDiceAsRanges(int new_value)
     iflags.show_dice_as_ranges = new_value != 0;
 }
 
+DLLEXPORT void
+LibSetDamageFormula(int new_value)
+{
+    iflags.show_damage_formula = new_value != 0;
+}
+
 DLLEXPORT int
 LibGetDiceAsRanges(VOID_ARGS)
 {
@@ -1051,6 +1057,8 @@ DLLEXPORT int RunGnollHack(
     initial_flags.getpos_arrows_value = (runflags & GHRUNFLAGS_GETPOS_ARROWS) != 0;
     initial_flags.dice_as_ranges_set = TRUE;
     initial_flags.dice_as_ranges_value = (runflags & GHRUNFLAGS_DICE_AS_RANGES) != 0;
+    initial_flags.damage_formula_set = TRUE;
+    initial_flags.damage_formula_value = (runflags & GHRUNFLAGS_DAMAGE_FORMULA) != 0;
     initial_flags.worn_shows_equipment_set = TRUE;
     initial_flags.worn_shows_equipment_value = (runflags & GHRUNFLAGS_WORN_SHOWS_EQUIPMENT) != 0;
     initial_flags.no_pets_preference_set = TRUE;

@@ -273,6 +273,7 @@ static struct Bool_Opt {
     { "showscore", "show current score in status line", &flags.showscore, TRUE, SET_IN_GAME },
     { "show_buff_timer", "show buff timer on tiles", &flags.show_buff_timer, FALSE, SET_IN_GAME},
     { "show_comparison_stats", "show comparison statistics for items when picking them up", &iflags.show_comparison_stats, TRUE, SET_IN_GAME },
+    { "show_damage_formula", "show damage formula in examine", &iflags.show_damage_formula, FALSE, SET_IN_GAME },
     { "show_decorations", "show decorations via colors in ASCII mode", &flags.show_decorations, TRUE, SET_IN_GAME },
     { "show_dice_as_ranges", "show dice as ranges (e.g., 2-12 instead of 2d6)", &iflags.show_dice_as_ranges, TRUE_IF_GNH, SET_IN_GAME },
     { "show_grid", "show grid between tiles", &flags.show_grid, FALSE, SET_IN_GAME},
@@ -989,6 +990,9 @@ init_options()
 
     if (initial_flags.dice_as_ranges_set)
         iflags.show_dice_as_ranges = initial_flags.dice_as_ranges_value;
+
+    if (initial_flags.damage_formula_set)
+        iflags.show_damage_formula = initial_flags.damage_formula_value;
 
     if (initial_flags.worn_shows_equipment_set)
         iflags.worn_shows_equipment = initial_flags.worn_shows_equipment_value;
@@ -5492,6 +5496,10 @@ boolean tinitial, tfrom_file;
             else if (boolopt[i].addr == &iflags.show_dice_as_ranges)
             {
                 issue_boolean_gui_command(GUI_CMD_TOGGLE_DICE_AS_RANGES, iflags.show_dice_as_ranges);
+            }
+            else if (boolopt[i].addr == &iflags.show_damage_formula)
+            {
+                issue_boolean_gui_command(GUI_CMD_TOGGLE_DAMAGE_FORMULA, iflags.show_damage_formula);
             }
             else if (boolopt[i].addr == &flags.autodig)
             {

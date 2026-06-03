@@ -528,6 +528,11 @@ namespace GnollHackX.Pages.MainScreen
             if (_gamePage != null)
                 _gamePage.SetDiceAsRanges(DiceAsRangesSwitch.IsToggled);
 
+            GHApp.MirroredDamageFormula = DamageFormulaSwitch.IsToggled;
+            Preferences.Set("DamageFormula", DamageFormulaSwitch.IsToggled);
+            if (_gamePage != null)
+                _gamePage.SetDamageFormula(DamageFormulaSwitch.IsToggled);
+
             /* There's an iflag but not a corresponding option; iflag just need to be set always to the same value as here */
             GHApp.MirroredWornShowsEquipment = WornShowsEquipmentSwitch.IsToggled;
             Preferences.Set("WornShowsEquipment", WornShowsEquipmentSwitch.IsToggled);
@@ -1083,7 +1088,7 @@ namespace GnollHackX.Pages.MainScreen
             bool allowbones = true, allowpet = true, emptywishisnothing = true, doubleclick = GHApp.IsDesktop, getpositionarrows = false, recordgame = false, gzip = GHConstants.GZipIsDefaultReplayCompression, lighterdarkening = false, accuratedrawing = GHConstants.DefaultAlternativeLayerDrawing, html = GHConstants.DefaultHTMLDumpLogs, singledumplog = GHConstants.DefaultUseSingleDumpLog, streamingbanktomemory = false, streamingbanktodisk = false, wallends = GHConstants.DefaultDrawWallEnds;
             bool breatheanimations = GHConstants.DefaultBreatheAnimations; //, put2bag = GHConstants.DefaultShowPickNStashContextCommand, prevwep = GHConstants.DefaultShowPrevWepContextCommand;
             bool devmode = GHConstants.DefaultDeveloperMode, logmessages = GHConstants.DefaultLogMessages, lowlevellogging = false, screenlogging = false, debugpostchannel = GHConstants.DefaultDebugPostChannel, tournament = false, hpbars = false, nhstatusbarclassic = GHConstants.IsDefaultStatusBarClassic, desktopstatusbar = false, rightaligned2ndrow = false, showscore = false, showxp = false, desktopbuttons = false, menufadeeffects = false, menuhighfilterquality = true, menuhighlightedkeys = false, pets = true, orbs = true, orbmaxhp = false, orbmaxmana = false, mapgrid = false, playermark = false, monstertargeting = false, walkarrows = true;
-            bool forcemaxmsg = false, showexstatus = false, noclipmode = GHConstants.DefaultMapNoClipMode, silentmode = false, characterclickaction = false, metricsystem = false, diceasranges = true, wornshowsequipment = true, autodig = false, ignorestopping = false;
+            bool forcemaxmsg = false, showexstatus = false, noclipmode = GHConstants.DefaultMapNoClipMode, silentmode = false, characterclickaction = false, metricsystem = false, diceasranges = true, damageformula = false, wornshowsequipment = true, autodig = false, ignorestopping = false;
             bool postgamestatus = GHConstants.DefaultPosting, postxlog = GHConstants.DefaultPosting, postreplays = GHConstants.DefaultPosting, postbones = GHConstants.DefaultPosting, boneslistisblack = false, showkeyboardshortcuts = false, singlecmdpage = false, skillbutton = false, polearmbutton = false, equipmentflipanimation = true, showequipmenticons = true;
 #if !SENTRY
             bool postdiagnostics = GHConstants.DefaultPosting;
@@ -1250,6 +1255,7 @@ namespace GnollHackX.Pages.MainScreen
                 characterclickaction = Preferences.Get("CharacterClickAction", GHConstants.DefaultCharacterClickAction); /* Default value */
                 metricsystem = Preferences.Get("MetricSystem", GHConstants.DefaultMetricSystem); /* Default value */
                 diceasranges = Preferences.Get("DiceAsRanges", GHConstants.DefaultDiceAsRanges); /* Default value */
+                damageformula = Preferences.Get("DamageFormula", GHConstants.DefaultDamageFormula); /* Default value */
                 wornshowsequipment = Preferences.Get("WornShowsEquipment", GHConstants.DefaultWornShowsEquipment); /* Default value */
                 autodig = Preferences.Get("AutoDig", GHConstants.DefaultAutoDig); /* Default value */
                 ignorestopping = Preferences.Get("IgnoreStopping", GHConstants.DefaultIgnoreStopping); /* Default value */
@@ -1316,6 +1322,7 @@ namespace GnollHackX.Pages.MainScreen
                 characterclickaction = GHApp.MirroredCharacterClickAction; // _gamePage.GetCharacterClickAction(); /* Value of the option in the (saved) game */
                 metricsystem = GHApp.MirroredMetricSystem;
                 diceasranges = GHApp.MirroredDiceAsRanges;
+                damageformula = GHApp.MirroredDamageFormula;
                 wornshowsequipment = GHApp.MirroredWornShowsEquipment;
                 autodig = GHApp.MirroredAutoDig;
                 ignorestopping = GHApp.MirroredIgnoreStopping;
@@ -1566,6 +1573,7 @@ namespace GnollHackX.Pages.MainScreen
             CharacterClickActionSwitch.IsToggled = characterclickaction;
             MetricSystemSwitch.IsToggled = metricsystem;
             DiceAsRangesSwitch.IsToggled = diceasranges;
+            DamageFormulaSwitch.IsToggled = damageformula;
             WornShowsEquipmentSwitch.IsToggled = wornshowsequipment;
             AutoDigSwitch.IsToggled = autodig;
             IgnoreStoppingSwitch.IsToggled = ignorestopping;

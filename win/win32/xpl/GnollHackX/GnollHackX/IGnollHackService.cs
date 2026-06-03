@@ -80,6 +80,7 @@ namespace GnollHackX
         bool GetGetPositionArrows();
         void SetGetPositionArrows(bool newValue);
         void SetDiceAsRanges(bool newValue);
+        void SetDamageFormula(bool newValue);
         void SetWornShowsEquipment(bool newValue);
         void SetNoPetsPreference(bool newValue);
         void SetAutoDig(bool newValue);

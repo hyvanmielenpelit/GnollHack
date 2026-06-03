@@ -302,6 +302,9 @@ namespace GnollHackX
                     case GHRequestType.SetDiceAsRanges:
                         GHApp.GnollHackService?.SetDiceAsRanges(response.ResponseBoolValue);
                         break;
+                    case GHRequestType.SetDamageFormula:
+                        GHApp.GnollHackService?.SetDamageFormula(response.ResponseBoolValue);
+                        break;
                     case GHRequestType.SetWornShowsEquipment:
                         GHApp.GnollHackService?.SetWornShowsEquipment(response.ResponseBoolValue);
                         break;
@@ -3556,6 +3559,9 @@ namespace GnollHackX
                     break;
                 case (int)gui_command_types.GUI_CMD_TOGGLE_DICE_AS_RANGES:
                     GHApp.MirroredDiceAsRanges = cmd_param != 0;
+                    break;
+                case (int)gui_command_types.GUI_CMD_TOGGLE_DAMAGE_FORMULA:
+                    GHApp.MirroredDamageFormula = cmd_param != 0;
                     break;
                 case (int)gui_command_types.GUI_CMD_TOGGLE_WORN_SHOWS_EQUIPMENT:
                     GHApp.MirroredWornShowsEquipment = cmd_param != 0;

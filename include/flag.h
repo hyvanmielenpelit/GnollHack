@@ -599,11 +599,12 @@ struct instance_flags {
     struct monst* spell_target_monster;
     uint64_t found_manuals;
     boolean show_dice_as_ranges;
+    boolean show_damage_formula;
     boolean worn_shows_equipment;
     boolean getpos_arrows;
     char engrave_quicktext[PL_ESIZ + 10];
     uchar engrave_quickstyle;
- 
+
     boolean save_file_secure; /* Is the save file secure (like on Unix servers) */
     boolean save_file_tracking_supported; /* Does this version of GnollHack support save file tracking (= modern GUI) */
     boolean save_file_tracking_needed; /* Does GUI need save file tracking (= is desktop) */
@@ -813,6 +814,8 @@ struct startup_flags {
     uchar middle_click_action;
     boolean dice_as_ranges_set;
     boolean dice_as_ranges_value;
+    boolean damage_formula_set;
+    boolean damage_formula_value;
     boolean worn_shows_equipment_set;
     boolean worn_shows_equipment_value;
     boolean no_pets_preference_set;

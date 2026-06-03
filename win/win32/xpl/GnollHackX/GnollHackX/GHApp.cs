@@ -1132,6 +1132,7 @@ namespace GnollHackX
             MirroredRightMouseCommand = Preferences.Get("RightMouseCommand", GHConstants.DefaultRightMouseCommand);
             MirroredMiddleMouseCommand = Preferences.Get("MiddleMouseCommand", GHConstants.DefaultMiddleMouseCommand);
             MirroredDiceAsRanges = Preferences.Get("DiceAsRanges", GHConstants.DefaultDiceAsRanges);
+            MirroredDamageFormula = Preferences.Get("DamageFormula", GHConstants.DefaultDamageFormula);
             MirroredWornShowsEquipment = Preferences.Get("WornShowsEquipment", GHConstants.DefaultWornShowsEquipment);
             MirroredAutoDig = Preferences.Get("AutoDig", GHConstants.DefaultAutoDig);
             MirroredIgnoreStopping = Preferences.Get("IgnoreStopping", GHConstants.DefaultIgnoreStopping);
@@ -5223,6 +5224,7 @@ namespace GnollHackX
         private static int _getPositionArrows = 0;
         private static int _characterClickAction = 0;
         private static int _diceAsRanges = 0;
+        private static int _damageFormula = 0;
         private static int _wornShowsEquipment = 0;
         private static int _autoDig = 0;
         private static int _ignoreStopping = 0;
@@ -5238,6 +5240,7 @@ namespace GnollHackX
         public static bool GetPositionArrows { get { return Interlocked.CompareExchange(ref _getPositionArrows, 0, 0) != 0; } set { Interlocked.Exchange(ref _getPositionArrows, value ? 1 : 0); } }
         public static bool MirroredCharacterClickAction { get { return Interlocked.CompareExchange(ref _characterClickAction, 0, 0) != 0; } set { Interlocked.Exchange(ref _characterClickAction, value ? 1 : 0); } }
         public static bool MirroredDiceAsRanges { get { return Interlocked.CompareExchange(ref _diceAsRanges, 0, 0) != 0; } set { Interlocked.Exchange(ref _diceAsRanges, value ? 1 : 0); } }
+        public static bool MirroredDamageFormula { get { return Interlocked.CompareExchange(ref _damageFormula, 0, 0) != 0; } set { Interlocked.Exchange(ref _damageFormula, value ? 1 : 0); } }
         public static bool MirroredWornShowsEquipment { get { return Interlocked.CompareExchange(ref _wornShowsEquipment, 0, 0) != 0; } set { Interlocked.Exchange(ref _wornShowsEquipment, value ? 1 : 0); } }
         public static bool MirroredAutoDig { get { return Interlocked.CompareExchange(ref _autoDig, 0, 0) != 0; } set { Interlocked.Exchange(ref _autoDig, value ? 1 : 0); } }
         public static bool MirroredIgnoreStopping { get { return Interlocked.CompareExchange(ref _ignoreStopping, 0, 0) != 0; } set { Interlocked.Exchange(ref _ignoreStopping, value ? 1 : 0); } }
