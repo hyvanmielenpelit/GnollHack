@@ -692,7 +692,7 @@ register struct monst *worm;
             {
                 if (m_at(x, y) == worm)
                 {
-                    impossible("remove_worm: worm still at <x, y>: mnum=%d, mx=%d, my=%d, mid=%u, wormno=%u", x, y, worm->mnum, worm->mx, worm->my, worm->m_id, worm->wormno);
+                    impossible("remove_worm: worm still at <%d, %d>: mnum=%d, mx=%d, my=%d, mid=%u, wormno=%u", x, y, worm->mnum, worm->mx, worm->my, worm->m_id, worm->wormno);
                     level.monsters[x][y] = (struct monst*)0;
                 }
             }
