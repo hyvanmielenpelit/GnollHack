@@ -5089,6 +5089,12 @@ struct item_description_stats* stats_ptr; /* If non-null, only returns item stat
                                 formula_strength_dmg_bonus > 0.0 ? "+" : "-",
                                 formula_strength_dmg_bonus > 0.0 ? formula_strength_dmg_bonus : -formula_strength_dmg_bonus);
                     }
+                    else if (formula_fixed_dmg_bonus != 0)
+                    {
+                        Sprintf(eos(buf2), " %s %d [fixed]",
+                            formula_fixed_dmg_bonus > 0 ? "+" : "-",
+                            abs(formula_fixed_dmg_bonus));
+                    }
 
                     if (formula_skill_dmg_bonus != 0)
                     {
