@@ -2988,7 +2988,6 @@ struct monst **monst_list; /* &migrating_mons or &mydogs or null */
     {
         panic("relmon: no fmon available.");
         return;
-
     }
 
     if (unhide) 

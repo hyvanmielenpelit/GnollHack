@@ -168,6 +168,8 @@ pick_move:
         debugprint("move_special2: mnum=%d, omx=%d, omy=%d, nix=%d, niy=%d", mtmp->mnum, omx, omy, nix, niy);
         remove_monster(omx, omy);
         place_monster(mtmp, nix, niy);
+        if (mtmp->wormno)
+            worm_move(mtmp);
         play_movement_sound(mtmp, CLIMBING_TYPE_NONE);
         update_m_facing(mtmp, nix - omx, FALSE);
         newsym(nix, niy);

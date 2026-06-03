@@ -1023,6 +1023,10 @@ struct monst *magr, *mdef;
     if (mdef->data->msize >= MZ_HUGE)
         return FALSE;
 
+    /* can't swallow long worms */
+    if (mdef->wormno)
+        return FALSE;
+
     /* (hypothetical) engulfers who can pass through walls aren't
      limited by rock|trees|bars */
     if ((magr == &youmonst) ? Passes_walls : passes_walls(magr->data))

@@ -667,6 +667,9 @@ void
 remove_worm(worm)
 register struct monst *worm;
 {
+    if (!worm)
+        return;
+
     register struct wseg *curr = wtails[worm->wormno];
 
     /*  if (!mtmp->wormno) return;  bullet proofing */
@@ -678,6 +681,22 @@ register struct monst *worm;
             curr->wx = 0;
         }
         curr = curr->nseg;
+    }
+
+    if (wizard_or_debug)
+    {
+        int x, y;
+        for (x = 1; x < COLNO; x++)
+        {
+            for (y = 0; y < ROWNO; y++)
+            {
+                if (m_at(x, y) == worm)
+                {
+                    impossible("remove_worm: worm still at <x, y>: mnum=%d, mx=%d, my=%d, mid=%u, wormno=%u", x, y, worm->mnum, worm->mx, worm->my, worm->m_id, worm->wormno);
+                    level.monsters[x][y] = (struct monst*)0;
+                }
+            }
+        }
     }
 }
 

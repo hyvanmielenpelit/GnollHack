@@ -272,6 +272,8 @@ boolean clumsy;
                     remove_monster(mon->mx, mon->my);
                     newsym(mon->mx, mon->my);
                     place_monster(mon, mdx, mdy);
+                    if (mon->wormno)
+                        worm_move(mon);
                     newsym(mon->mx, mon->my);
                     set_apparxy(mon);
                     if (mintrap(mon) == 2)

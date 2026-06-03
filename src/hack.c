@@ -2414,6 +2414,8 @@ domove_core()
             debugprint("domove_core4: mnum=%d, mx=%d, my=%d, x=%d, y=%d, ux0=%d, uy0=%d", mtmp->mnum, mtmp->mx, mtmp->my, x, y, u.ux0, u.uy0);
             remove_monster(x, y);
             place_monster(mtmp, u.ux0, u.uy0);
+            if (mtmp->wormno) /* Should not happen, since worms are non-displaceable */
+                worm_move(mtmp);
             newsym(x, y);
             newsym(u.ux0, u.uy0);
 

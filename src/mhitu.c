@@ -3386,6 +3386,8 @@ struct attack *mattk;
         remove_monster(omx, omy);
         mtmp->mtrapped = 0; /* no longer on old trap */
         place_monster(mtmp, u.ux, u.uy);
+        if (mtmp->wormno)
+            worm_move(mtmp);
         u.ustuck = mtmp;
         newsym(mtmp->mx, mtmp->my);
         if (is_animal(mtmp->data) && u.usteed) {

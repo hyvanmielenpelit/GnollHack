@@ -1053,6 +1053,8 @@ int x, y;
         remove_monster(mon->mx, mon->my);
         newsym(mon->mx, mon->my);
         place_monster(mon, x, y);
+        if (mon->wormno)
+            worm_move(mon);
         newsym(mon->mx, mon->my);
         set_apparxy(mon);
         (void) mintrap(mon);

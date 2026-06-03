@@ -1921,6 +1921,8 @@ register int after;
         debugprint("m_move: mnum=%d, mx=%d, my=%d, omx=%d, omy=%d, nix=%d, niy=%d", mtmp->mnum, mtmp->mx, mtmp->my, omx, omy, nix, niy);
         remove_monster(mtmp->mx, mtmp->my); // omx, omy);
         place_monster(mtmp, nix, niy);
+        if (mtmp->wormno)
+            worm_move(mtmp);
         play_movement_sound(mtmp, CLIMBING_TYPE_NONE);
         update_m_facing(mtmp, nix - omx, FALSE);
 
@@ -1928,9 +1930,6 @@ register int after;
             mtmp->mtrack[j] = mtmp->mtrack[j - 1];
         mtmp->mtrack[0].x = omx;
         mtmp->mtrack[0].y = omy;
-        /* Place a segment at the old position. */
-        if (mtmp->wormno)
-            worm_move(mtmp);
     }
     else
     {
