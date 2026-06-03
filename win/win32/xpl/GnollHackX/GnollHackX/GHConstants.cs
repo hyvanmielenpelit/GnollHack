@@ -108,6 +108,7 @@ namespace GnollHackX
         IndentSpace =   0x00004000,
         IndentBracket = 0x00008000,
         IndentPeriod =  0x00001800,
+        IndentPlus =    0x00002800,
         IndentDoubleSpace = 0x00004800,
         IndentBracketOrDoubleSpace = 0x0000C800,
         IndentMask =    0x0000F800,

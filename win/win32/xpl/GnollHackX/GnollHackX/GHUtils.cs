@@ -193,6 +193,9 @@ namespace GnollHackX
                     case (int)MenuItemAttributes.IndentPeriod:
                         cstr = ".";
                         break;
+                    case (int)MenuItemAttributes.IndentPlus:
+                        cstr = "+";
+                        break;
                     case (int)MenuItemAttributes.IndentDash:
                         cstr = "-";
                         break;

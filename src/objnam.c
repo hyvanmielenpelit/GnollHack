@@ -614,10 +614,6 @@ unsigned cxn_flags; /* bitmask of CXN_xxx values */
         tknown = obj->tknown;
     }
 
-    /* Artifacts get just their name */
-    if (obj_is_pname(obj))
-        goto nameit;
-
     /* General prefixes */
     if (is_poisonable(obj) && obj->opoisoned && dknown)
         Strcpy(buf, "poisoned ");
@@ -642,6 +638,10 @@ unsigned cxn_flags; /* bitmask of CXN_xxx values */
             break;
         }
     }
+
+    /* Artifacts get just their name */
+    if (obj_is_pname(obj))
+        goto nameit;
 
     if (obj->oclass == ARMOR_CLASS)
     {

@@ -991,11 +991,42 @@ struct item_description_stats* stats_ptr; /* If non-null, only returns item stat
     double wep_avg_dmg = 0;
     double wep_multipliable_avg_dmg = 0; //Multiplied by slaying
     double wep_all_extra_avg_dmg = 0;
+
+    int formula_dmg_dice_small = 0;
+    int formula_dmg_diesize_small = 0;
+    int formula_dmg_plus_small = 0;
+    int formula_dmg_dice_big = 0;
+    int formula_dmg_diesize_big = 0;
+    int formula_dmg_plus_big = 0;
+    int formula_dmg_dice_extra = 0;
+    int formula_dmg_diesize_extra = 0;
+    int formula_dmg_plus_extra = 0;
+    int formula_dmg_dice_artifact = 0;
+    int formula_dmg_diesize_artifact = 0;
+    int formula_dmg_plus_artifact = 0;
+
+    int formula_fixed_dmg_bonus = 0;
+    int formula_skill_dmg_bonus = 0;
+    int formula_archery_dmg_bonus = 0;
+    int formula_enchantment_dmg_bonus = 0;
+    int formula_simple_damage = 0;
+    int formula_erosion_damage = 0;
+
+    double formula_strength_dmg_bonus = 0;
+    double formula_artifact_dmg_multiplier = 0.0;
+    double formula_avg_multishot_times = 1.0;
+
+    boolean formula_has_double_object_damage = FALSE;
+    boolean formula_has_great_damage = FALSE;
+    boolean formula_has_silver_damage = FALSE;
+    boolean formula_has_poison_damage = FALSE;
+    uchar formula_elemental_enchantment = 0;
+
     int knownacbonus = 0;
     int knownmcbonus = 0;
     int i;
-    char buf[BUFSZ];
-    char buf2[BUFSZ];
+    char buf[BUFSZ * 2];
+    char buf2[BUFSZ * 2];
     char buf3[BUFSZ];
     char plusbuf[BUFSZ];
     char endbuf[BUFSZ];
@@ -1410,6 +1441,7 @@ struct item_description_stats* stats_ptr; /* If non-null, only returns item stat
 
                 wep_avg_dmg += skilldmgbonus;
                 wep_multipliable_avg_dmg += skilldmgbonus;
+                formula_skill_dmg_bonus += skilldmgbonus;
             }
         }
     }
@@ -1742,20 +1774,33 @@ struct item_description_stats* stats_ptr; /* If non-null, only returns item stat
 
         double base_avg_dmg = 0.5 * ((double)wsdice * (double)exceptionality_multiplier * (1.0 + (double)wsdam) / 2.0 + (double)wsdmgplus * (double)exceptionality_multiplier
             + wldice * (double)exceptionality_multiplier * (1.0 + (double)wldam) / 2.0 + (double)wldmgplus * (double)exceptionality_multiplier);
+
+        formula_dmg_dice_small = wsdice * exceptionality_multiplier;
+        formula_dmg_diesize_small = wsdam;
+        formula_dmg_plus_small = wsdmgplus * exceptionality_multiplier;
+        formula_dmg_dice_big = wldice * exceptionality_multiplier;
+        formula_dmg_diesize_big = wldam;
+        formula_dmg_plus_big = wldmgplus * exceptionality_multiplier;
+
         /* Add mythic great damage if mknown */
         if (obj && obj->mknown)
         {
             if (has_obj_mythic_great_damage(obj))
             {
                 base_avg_dmg += MYTHIC_GREAT_DAMAGE_DICE * (double)(1 + MYTHIC_GREAT_DAMAGE_DIESIZE) / 2;
-                if(obj->known && objects[otyp].oc_enchantable)
+                formula_has_great_damage= TRUE;
+                if (obj->known && objects[otyp].oc_enchantable)
+                {
                     base_avg_dmg += obj->enchantment;
+                    formula_enchantment_dmg_bonus += obj->enchantment;
+                }
             }
         }
         wep_avg_dmg += base_avg_dmg;
         wep_multipliable_avg_dmg += base_avg_dmg;
         if (doubledamagetopermittedtargets)
         {
+            formula_has_double_object_damage = TRUE;
             if (objects[otyp].oc_target_permissions)
                 wep_all_extra_avg_dmg += base_avg_dmg;
             else
@@ -1884,6 +1929,9 @@ struct item_description_stats* stats_ptr; /* If non-null, only returns item stat
             putstr(datawin, ATR_INDENT_AT_COLON, buf);
 
             double extra_avg_dmg = (double)objects[otyp].oc_wedice * (1.0 + (double)objects[otyp].oc_wedam) / 2.0 + (double)objects[otyp].oc_wedmgplus;
+            formula_dmg_dice_extra = objects[otyp].oc_wedice;
+            formula_dmg_diesize_extra = objects[otyp].oc_wedam;
+            formula_dmg_plus_extra = objects[otyp].oc_wedmgplus;
             if (eligiblewielders || eligibletargets)
                 wep_all_extra_avg_dmg += extra_avg_dmg;
             else
@@ -1908,7 +1956,7 @@ struct item_description_stats* stats_ptr; /* If non-null, only returns item stat
         }
         else
         {
-            double simple_dmg = 0;
+            int simple_dmg = 0;
             if (objects[otyp].oc_class == POTION_CLASS)
                 simple_dmg += 1;
             else if (obj && otyp == CORPSE)
@@ -1916,8 +1964,9 @@ struct item_description_stats* stats_ptr; /* If non-null, only returns item stat
             else
                 simple_dmg += 0;
 
-            wep_avg_dmg += simple_dmg;
-            wep_multipliable_avg_dmg += simple_dmg;
+            wep_avg_dmg += (double)simple_dmg;
+            wep_multipliable_avg_dmg += (double)simple_dmg;
+            formula_simple_damage = simple_dmg;
         }
 
         /* Damage - Silver*/
@@ -1930,6 +1979,7 @@ struct item_description_stats* stats_ptr; /* If non-null, only returns item stat
             Strcat(buf, plusbuf);
             putstr(datawin, ATR_INDENT_AT_COLON, buf);
             wep_all_extra_avg_dmg += (1.0 + 20.0) / 2.0;
+            formula_has_silver_damage = TRUE;
         }
 
         /* Strength bonuses are not applied to ammo (just launchers) to avoid double-counting */
@@ -1941,9 +1991,10 @@ struct item_description_stats* stats_ptr; /* If non-null, only returns item stat
             
             putstr(datawin, ATR_INDENT_AT_COLON, buf);
 
-            double fixed_bonus = (double)objects[otyp].oc_fixed_damage_bonus;
-            wep_avg_dmg += fixed_bonus;
-            wep_multipliable_avg_dmg += fixed_bonus;
+            short fixed_bonus = objects[otyp].oc_fixed_damage_bonus;
+            formula_fixed_dmg_bonus += fixed_bonus;
+            wep_avg_dmg += (double)fixed_bonus;
+            wep_multipliable_avg_dmg += (double)fixed_bonus;
         }
         else if (obj && !is_ammo(obj))
         {
@@ -1962,6 +2013,7 @@ struct item_description_stats* stats_ptr; /* If non-null, only returns item stat
                 dmg_bonus >= 0 ? "+" : "", dmg_bonus);
             putstr(datawin, ATR_INDENT_AT_COLON, buf);
 
+            formula_strength_dmg_bonus += dmg_bonus;
             wep_avg_dmg += dmg_bonus;
             wep_multipliable_avg_dmg += dmg_bonus;
         }
@@ -1997,6 +2049,7 @@ struct item_description_stats* stats_ptr; /* If non-null, only returns item stat
         Sprintf(buf, "Archery bonus:          %s%d to hit and damage", u.uarcherybonus >= 0 ? "+" : "", u.uarcherybonus);
         putstr(datawin, ATR_INDENT_AT_DASH | ATR_ORDERED_LIST, buf);
 
+        formula_archery_dmg_bonus += u.uarcherybonus;
         double archery_avg_dmg = (double)u.uarcherybonus;
         wep_avg_dmg += archery_avg_dmg;
         wep_multipliable_avg_dmg += archery_avg_dmg;
@@ -2658,6 +2711,7 @@ struct item_description_stats* stats_ptr; /* If non-null, only returns item stat
                 int tohitplus = enchplus; // is_launcher(obj) ? (enchplus + 1 * sgn(enchplus)) / 2 : (throwing_weapon(obj) || is_ammo(obj)) ? (enchplus + 0) / 2 : enchplus;
                 int dmgplus = enchplus; //  is_launcher(obj) ? (enchplus + 0) / 2 : (throwing_weapon(obj) || is_ammo(obj)) ? (enchplus + 1 * sgn(enchplus)) / 2 : enchplus;
 
+                formula_enchantment_dmg_bonus += dmgplus;
                 double ench_bonus = (double)dmgplus;
                 wep_avg_dmg += ench_bonus;
                 wep_multipliable_avg_dmg += ench_bonus;
@@ -2666,6 +2720,7 @@ struct item_description_stats* stats_ptr; /* If non-null, only returns item stat
 
                 if (!uses_spell_flags && (objects[otyp].oc_aflags & A1_DEALS_DOUBLE_DAMAGE_TO_PERMITTED_TARGETS))
                 {
+                    formula_has_double_object_damage = TRUE;
                     enchplus *= 2;
                     wep_all_extra_avg_dmg += enchplus;
                 }
@@ -2815,6 +2870,7 @@ struct item_description_stats* stats_ptr; /* If non-null, only returns item stat
                 {
                     penalty = greatest_erosion(obj);
                     Sprintf(penaltybuf, "(%d to damage) ", -penalty);
+                    formula_erosion_damage = -penalty;
                     double erosion_bonus = -1.0 * (double)penalty;
                     wep_avg_dmg += erosion_bonus;
                     wep_multipliable_avg_dmg += erosion_bonus;
@@ -2852,6 +2908,7 @@ struct item_description_stats* stats_ptr; /* If non-null, only returns item stat
         {
             Sprintf(buf, "Poisoned status:        Poisoned (+2d6 poison damage)");
             convert_dice_to_ranges(buf);
+            formula_has_poison_damage = TRUE;
             wep_avg_dmg += 7.0;
             putstr(datawin, ATR_INDENT_AT_COLON, buf);
         }
@@ -2868,6 +2925,8 @@ struct item_description_stats* stats_ptr; /* If non-null, only returns item stat
                 obj->elemental_enchantment == COLD_ENCHANTMENT ? 42.0 :
                 obj->elemental_enchantment == LIGHTNING_ENCHANTMENT ? 21.0 :
                 obj->elemental_enchantment == DEATH_ENCHANTMENT ? 0.0 : 0.0;
+
+            formula_elemental_enchantment = obj->elemental_enchantment;
 
             convert_dice_to_ranges(buf);
             putstr(datawin, ATR_INDENT_AT_COLON, buf);
@@ -4081,9 +4140,17 @@ struct item_description_stats* stats_ptr; /* If non-null, only returns item stat
 
             double art_avg_dmg = 0;
             if (artilist[obj->oartifact].attk.damn < 0)
+            {
                 art_avg_dmg += wep_avg_dmg * (-((double)artilist[obj->oartifact].attk.damn) / 20.0);
+                formula_artifact_dmg_multiplier = (-((double)artilist[obj->oartifact].attk.damn) / 20.0);
+            }
             else
+            {
                 art_avg_dmg += (double)artilist[obj->oartifact].attk.damn * (1.0 + (double)artilist[obj->oartifact].attk.damd) / 2.0 + (double)artilist[obj->oartifact].attk.damp;
+                formula_dmg_dice_artifact += artilist[obj->oartifact].attk.damn;
+                formula_dmg_diesize_artifact += artilist[obj->oartifact].attk.damd;
+                formula_dmg_plus_artifact += artilist[obj->oartifact].attk.damp;
+            }
 
             if (artilist[obj->oartifact].aflags & (AF_DMONS | AF_DCLAS | AF_DFLAG1 | AF_DFLAG2))
                 wep_all_extra_avg_dmg += art_avg_dmg;
@@ -4856,6 +4923,7 @@ struct item_description_stats* stats_ptr; /* If non-null, only returns item stat
 
                 putstr(datawin, ATR_INDENT_AT_DASH | ATR_ORDERED_LIST, buf);
 
+                formula_avg_multishot_times = average_multi_shot_times;
                 wep_avg_dmg *= average_multi_shot_times;
                 wep_multipliable_avg_dmg *= average_multi_shot_times;
                 wep_all_extra_avg_dmg *= average_multi_shot_times;
@@ -4926,6 +4994,158 @@ struct item_description_stats* stats_ptr; /* If non-null, only returns item stat
                         }
                     }
                 }
+                if (iflags.show_damage_formula && !stats_ptr)
+                {
+                    *buf2 = 0;
+                    if (formula_avg_multishot_times != 1.0)
+                    {
+                        if (floor(formula_avg_multishot_times) == formula_avg_multishot_times)
+                            Sprintf(eos(buf2), "%d x [multishot] (", (int)formula_avg_multishot_times);
+                        else
+                            Sprintf(buf2, "%.2f x [multishot] (", formula_avg_multishot_times);
+                    }
+                    if (formula_artifact_dmg_multiplier != 0.0)
+                    {
+                        if (floor(formula_artifact_dmg_multiplier) == formula_artifact_dmg_multiplier)
+                            Sprintf(eos(buf2), "%d x [artifact] (", 1 + (int)formula_artifact_dmg_multiplier);
+                        else
+                            Sprintf(eos(buf2), "%.2f x [artifact] (", 1.0 + formula_artifact_dmg_multiplier);
+                    }
+                    if (formula_has_double_object_damage)
+                        Strcat(buf2, "2 x [item] (");
+
+                    if (formula_dmg_dice_small != 0)
+                    {
+                        if (formula_dmg_dice_big != 0)
+                            Strcat(buf2, "{");
+
+                        Sprintf(eos(buf2), "%dd%d", formula_dmg_dice_small, formula_dmg_diesize_small);
+                        if (formula_dmg_plus_small != 0)
+                            Sprintf(eos(buf2), "%s%d", formula_dmg_plus_small > 0 ? "+" : "", formula_dmg_plus_small);
+                        Strcat(buf2, " [small]");
+                    }
+
+                    if (formula_dmg_dice_big != 0)
+                    {
+                        if (formula_dmg_dice_small != 0)
+                            Strcat(buf2, " OR ");
+
+                        Sprintf(eos(buf2), "%dd%d", formula_dmg_dice_big, formula_dmg_diesize_big);
+                        if (formula_dmg_plus_big != 0)
+                            Sprintf(eos(buf2), "%s%d", formula_dmg_plus_big > 0 ? "+" : "", formula_dmg_plus_big);
+                        Strcat(buf2, " [large]");
+                        if (formula_dmg_dice_small != 0)
+                            Strcat(buf2, "}");
+                    }
+
+                    if (formula_simple_damage != 0)
+                    {
+                        if (formula_dmg_dice_small != 0 || formula_dmg_dice_big != 0)
+                            Strcat(buf2, " + ");
+                        Sprintf(eos(buf2), " %s %d [base]",
+                            formula_simple_damage > 0 ? "+" : "-",
+                            abs(formula_simple_damage));
+                    }
+
+                    if (formula_has_great_damage)
+                    {
+                        Sprintf(eos(buf2), " + %dd%d [mythic]", MYTHIC_GREAT_DAMAGE_DICE, MYTHIC_GREAT_DAMAGE_DIESIZE);
+                    }
+
+                    if (formula_enchantment_dmg_bonus != 0)
+                    {
+                        Sprintf(eos(buf2), " %s %d [enchantment]", 
+                            formula_enchantment_dmg_bonus > 0 ? "+" : "-", 
+                            abs(formula_enchantment_dmg_bonus));
+                    }
+
+                    if (formula_has_double_object_damage)
+                        Strcat(buf2, ")");
+
+                    if (formula_dmg_dice_extra != 0)
+                    {
+                        Sprintf(eos(buf2), " + %dd%d", formula_dmg_dice_extra, formula_dmg_diesize_extra);
+                        if (formula_dmg_plus_extra != 0)
+                            Sprintf(eos(buf2), "%s%d", formula_dmg_plus_extra > 0 ? "+" : "", formula_dmg_plus_extra);
+                        Strcat(buf2, " [extra]");
+                    }
+
+
+                    if (formula_erosion_damage != 0)
+                    {
+                        Sprintf(eos(buf2), " %s %d [erosion]",
+                            formula_erosion_damage > 0 ? "+" : "-",
+                            abs(formula_erosion_damage));
+                    }
+
+                    if (formula_strength_dmg_bonus != 0.0)
+                    {
+                        if (floor(formula_strength_dmg_bonus) == formula_strength_dmg_bonus)
+                            Sprintf(eos(buf2), " %s %d [strength]",
+                                (int)formula_strength_dmg_bonus > 0 ? "+" : "-",
+                                (int)formula_strength_dmg_bonus > 0 ? (int)formula_strength_dmg_bonus : -1 * (int)formula_strength_dmg_bonus);
+                        else
+                            Sprintf(eos(buf2), " %s %.2f [strength]",
+                                formula_strength_dmg_bonus > 0.0 ? "+" : "-",
+                                formula_strength_dmg_bonus > 0.0 ? formula_strength_dmg_bonus : -formula_strength_dmg_bonus);
+                    }
+
+                    if (formula_skill_dmg_bonus != 0)
+                    {
+                        Sprintf(eos(buf2), " %s %d [skill]",
+                            formula_skill_dmg_bonus > 0 ? "+" : "-",
+                            abs(formula_skill_dmg_bonus));
+                    }
+
+                    if (formula_archery_dmg_bonus != 0)
+                    {
+                        Sprintf(eos(buf2), " %s %d [archery]",
+                            formula_archery_dmg_bonus > 0 ? "+" : "-",
+                            abs(formula_archery_dmg_bonus));
+                    }
+
+                    if (formula_artifact_dmg_multiplier != 0.0)
+                        Strcat(buf2, ")");
+
+                    if (formula_dmg_dice_artifact != 0)
+                    {
+                        if (formula_dmg_dice_small != 0 || formula_dmg_dice_big != 0 || formula_dmg_dice_extra != 0)
+                            Strcat(buf2, " + ");
+
+                        Sprintf(eos(buf2), "%dd%d", formula_dmg_dice_artifact, formula_dmg_diesize_artifact);
+                        if (formula_dmg_plus_artifact != 0)
+                            Sprintf(eos(buf2), "%s%d", formula_dmg_plus_artifact > 0 ? "+" : "", formula_dmg_plus_artifact);
+                        Strcat(buf2, " [artifact]");
+                    }
+
+                    if (formula_has_silver_damage)
+                    {
+                        Sprintf(eos(buf2), " + %dd%d [silver]", 1, 20);
+                    }
+
+                    if (formula_has_poison_damage)
+                    {
+                        Sprintf(eos(buf2), " + %dd%d [poison]", 2, 6);
+                    }
+
+                    if (formula_elemental_enchantment)
+                    {
+                        if (obj->elemental_enchantment == DEATH_ENCHANTMENT)
+                            Strcat(buf2, " + [death enchantment]");
+                        else
+                            Sprintf(eos(buf2), " + %dd%d [elemental]", 
+                                obj->elemental_enchantment == FIRE_ENCHANTMENT ? 4 :
+                                obj->elemental_enchantment == COLD_ENCHANTMENT ? 12 :
+                                obj->elemental_enchantment == LIGHTNING_ENCHANTMENT ? 6 : 0, 6);
+                    }
+
+                    if (formula_avg_multishot_times != 1.0)
+                        Strcat(buf2, ")");
+
+                    powercnt++;
+                    Sprintf(buf, " %2d - Damage formula is %s", powercnt, buf2);
+                    putstr(datawin, ATR_INDENT_AT_DASH | ATR_ORDERED_LIST, buf);
+                }
             }
         }
 
@@ -4994,7 +5214,7 @@ struct item_description_stats* stats_ptr; /* If non-null, only returns item stat
                     Sprintf(buf, " %2d - Change in average damage is ", powercnt);
                     putstr_ex(datawin, buf, ATR_INDENT_AT_DASH | ATR_ORDERED_LIST, NO_COLOR, 1);
                     double dmgdiff = wep_avg_dmg - cwep_stats.avg_damage;
-                    Sprintf(buf, "%s%.1f", dmgdiff >= 0 ? "+" : "", dmgdiff);
+                    Sprintf(buf, "%s%.2f", dmgdiff >= 0 ? "+" : "", dmgdiff);
                     putstr_ex(datawin, buf, ATR_INDENT_AT_DASH | ATR_ORDERED_LIST, dmgdiff > 0 ? CLR_BRIGHT_GREEN : dmgdiff < 0 ? CLR_RED : NO_COLOR, 0);
                     if (wep_ac50pct_stat_set && cwep_stats.wep_ac50pct_set)
                     {
@@ -5021,7 +5241,7 @@ struct item_description_stats* stats_ptr; /* If non-null, only returns item stat
                     Sprintf(buf, " %2d - Change in average damage is ", powercnt);
                     putstr_ex(datawin, buf, ATR_INDENT_AT_DASH | ATR_ORDERED_LIST, NO_COLOR, 1);
                     double dmgdiff = wep_avg_dmg - cwep2_stats.avg_damage;
-                    Sprintf(buf, "%s%.1f", dmgdiff >= 0 ? "+" : "", dmgdiff);
+                    Sprintf(buf, "%s%.2f", dmgdiff >= 0 ? "+" : "", dmgdiff);
                     putstr_ex(datawin, buf, ATR_INDENT_AT_DASH | ATR_ORDERED_LIST, dmgdiff > 0 ? CLR_BRIGHT_GREEN : dmgdiff < 0 ? CLR_RED : NO_COLOR, 0);
                     if (wep_ac50pct_stat_set && cwep2_stats.wep_ac50pct_set)
                     {
