@@ -1482,7 +1482,7 @@ mkgarden()
                 levl[sx][sy].vartyp = get_initial_location_vartype(levl[sx][sy].typ, levl[sx][sy].subtyp);
                 levl[sx][sy].special_quality = 0;
                 /* Buried items */
-                if (!rn2(5))
+                if (!rn2(6))
                 {
                     int itemtype = MANDRAKE_ROOT;
                     int quan = 1;
@@ -1516,7 +1516,7 @@ mkgarden()
                 }
 
                 /* Non-buried items */
-                if (!rn2(4))
+                if (!rn2(5))
                 {
                     int itemtype = SPRIG_OF_WOLFSBANE;
                     int quan = 1;
