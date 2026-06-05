@@ -2402,14 +2402,14 @@ dump_map()
             sym = mapglyph(layers, &ch, &color, &special, x, y);
             if (SYMHANDLING(H_IBM) || SYMHANDLING(H_UNICODE))
             {
-                write_nhsym_utf8(&bp, ch, !!SYMHANDLING(H_IBM)); //buf[x - 1] = ch;
+                write_nhsym_utf8(&bp, ch, !!SYMHANDLING(H_IBM), TRUE); //buf[x - 1] = ch;
             }
             else
             {
                 /* Revert to basic symbols; no better looking processing available */
                 if(sym >= 0 && sym < MAX_CMAPPED_CHARS)
                     ch = (nhsym)defsyms[sym].sym;
-                write_nhsym_utf8(&bp, ch, FALSE);
+                write_nhsym_utf8(&bp, ch, FALSE, TRUE);
             }
 
 #if defined (DUMPHTML)

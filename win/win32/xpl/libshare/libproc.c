@@ -743,16 +743,20 @@ char lib_yn_function_ex(int style, int attr, int color, int glyph, const char* t
 {
     reset_found_this_turn(); /* Otherwise, after user input, the animation might play again upon flush_screen */
 
-    *_qbuf = *_qtbuf = *_ibuf = 0;
+    *_qbuf = *_qtbuf = *_buf = *_buf2 = *_ibuf = 0;
     if(question)
         write_text2buf_utf8(_qbuf, UTF8QBUFSZ, question);
     if (title)
         write_text2buf_utf8(_qtbuf, UTF8QBUFSZ, title);
     if (introline)
         write_text2buf_utf8(_ibuf, UTF8IBUFSZ, introline);
+    if (choices)
+        write_text2buf_utf8(_buf, UTF8BUFSZ, choices);
+    if (resp_desc)
+        write_text2buf_utf8(_buf2, UTF8BUFSZ, resp_desc);
     _defs[0] = (char)def;
     _defs[1] = (char)0;
-    int res = lib_callbacks.callback_yn_function_ex(style, attr, color, glyph, title ? _qtbuf : 0, question ? _qbuf : 0, choices, _defs, resp_desc, introline ? _ibuf : 0, ynflags);
+    int res = lib_callbacks.callback_yn_function_ex(style, attr, color, glyph, title ? _qtbuf : 0, question ? _qbuf : 0, choices ? _buf : 0, _defs, resp_desc ? _buf2 : 0, introline ? _ibuf : 0, ynflags);
     return convert_gnhch(res);
 }
 

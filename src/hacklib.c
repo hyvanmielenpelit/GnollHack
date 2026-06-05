@@ -1652,10 +1652,10 @@ tty_arrow_key_support_enabled()
 }
 
 void
-write_nhsym_utf8(buf_ptr, ch, is_CP437)
+write_nhsym_utf8(buf_ptr, ch, is_CP437, also_control_chars)
 char** buf_ptr;
 nhsym ch;
-boolean is_CP437; /* if false, then ch is assumed to be unicode */
+boolean is_CP437, also_control_chars; /* if false, then ch is assumed to be unicode */
 {
     if (!buf_ptr)
         return;
@@ -1668,7 +1668,7 @@ boolean is_CP437; /* if false, then ch is assumed to be unicode */
         ch += 256; /* Assume this is a char of over 127 value */
 
     /* Convert cp437 to Unicode first, if need be */
-    if (is_CP437 && ch >= 0 && ch < 256)
+    if (is_CP437 && ch >= (also_control_chars ? 0 : 32) && ch < 256)
         ch = cp437toUnicode[ch];
 
     unsigned long c = (unsigned long)ch;
@@ -1705,7 +1705,7 @@ const char* text;
     while (*tp && bp - buf < (int)(bufsize - 5))
     {
         sym = (nhsym)((uchar)*tp);
-        write_nhsym_utf8(&bp, sym, TRUE); /* All text is internally stored as CP437 */
+        write_nhsym_utf8(&bp, sym, TRUE, FALSE); /* All text is internally stored as CP437 */
         tp++;
     }
     *bp = '\0';

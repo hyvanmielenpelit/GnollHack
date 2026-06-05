@@ -1922,6 +1922,8 @@ uchar* obj_gone_ptr; /* 1 = merged, 2 = put in bag, 3 = gone */
             obj->special_quality = SPEQUAL_WILL_TURN_TO_DUST_ON_PICKUP;
         else 
         {
+            issue_breadcrumb("Scroll of scare monster turned to dust");
+
             char dcbuf[BUFSZ] = "";
             play_sfx_sound(SFX_ITEM_CRUMBLES_TO_DUST);
             Sprintf(dcbuf, "The scroll%s %s to dust as you %s %s up.", plur(obj->quan),
