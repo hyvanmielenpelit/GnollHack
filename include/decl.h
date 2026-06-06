@@ -567,7 +567,10 @@ E NEARDATA winid WIN_MAP, WIN_INVEN, WIN_HERE;
 #define verbalize_angry1(cstr) verbalize_ex(ATR_NONE, CLR_MSG_TALK_ANGRY, "%s", cstr)
 #define verbalize_happy1(cstr) verbalize_ex(ATR_NONE, CLR_MSG_TALK_HAPPY, "%s", cstr)
 
-#define pline_ex1_popup(a, b, cstr, title, dopop) pline_ex1(a, b, cstr); if (dopop) display_popup_text(cstr, title, POPUP_TEXT_GENERAL, a, b, NO_GLYPH, 0)
+#define pline_ex1_popup(a, b, cstr, title, dopop) do { pline_ex1(a, b, cstr); if (dopop) display_popup_text(cstr, title, POPUP_TEXT_GENERAL, a, b, NO_GLYPH, 0); } while (0)
+#define You_ex1_nomul(a, b, cstr) do { You_ex(a, b, "%s", cstr); nomul(0); } while (0)
+#define Your_ex1_nomul(a, b, cstr) do { Your_ex(a, b, "%s", cstr); nomul(0); } while (0)
+#define You_feel_ex1_nomul(a, b, cstr) do { You_feel_ex(a, b, "%s", cstr); nomul(0); } while (0)
 
 E const int no_multiattrs[32];
 E const int multicolor_red1[1];
