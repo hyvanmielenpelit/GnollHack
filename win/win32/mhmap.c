@@ -1405,11 +1405,11 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
 
                             if (worm && (cansee(enl_i, enl_j) || is_adj_worm_seen || (data->map[worm->mx][worm->my].monster_flags & LMFLAGS_WORM_SEEN)))
                             {
-                                if (is_long_worm_with_tail(worm->data) && !is_adj_worm_tail)
+                                if (is_tailed_long_worm(worm->data) && !is_adj_worm_tail)
                                 {
                                     signed_glyph = signed_base_glyph = NO_GLYPH;
                                 }
-                                else if (worm->mnum == PM_LONG_WORM_TAIL || worm->mnum == PM_ELDER_LONG_WORM_TAIL || (is_long_worm_with_tail(worm->data) && is_adj_worm_tail))
+                                else if (worm->mnum == PM_LONG_WORM_TAIL || worm->mnum == PM_ELDER_LONG_WORM_TAIL || (is_tailed_long_worm(worm->data) && is_adj_worm_tail))
                                 {
                                     int signed_main_glyph = data->map[adj_x][adj_y].layer_gui_glyphs[base_layer];
                                     int main_glyph = abs(signed_main_glyph);
