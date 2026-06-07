@@ -269,9 +269,9 @@ register struct monst *worm;
  */
 void
 wormgone(worm)
-register struct monst *worm;
+struct monst *worm;
 {
-    register int wnum = worm->wormno;
+    int wnum = worm->wormno;
 
     /*  if (!wnum) return;  bullet proofing */
 
@@ -283,6 +283,14 @@ register struct monst *worm;
     toss_wsegs(wtails[wnum], TRUE);
 
     wheads[wnum] = wtails[wnum] = (struct wseg *) 0;
+
+    /* Double-check that the main worm location has been removed; if not, remove it, too */
+    if (isok(worm->mx, worm->my) && level.monsters[worm->mx][worm->my] == worm)
+        remove_monster(worm->mx, worm->my);
+
+    /* This is not performant but necessary to capture an occasional dangling pointer */
+    debugprint("wormgone: mnum=%d, mx=%d, my=%d, mid=%u, wormno=%u, tame=%d", worm->mnum, worm->mx, worm->my, worm->m_id, worm->wormno, is_tame(worm));
+    check_and_remove_worm_from_map(worm);
 }
 
 /*
@@ -682,6 +690,10 @@ struct monst *worm;
         }
         curr = curr->nseg;
     }
+
+    /* Double-check that the main worm location has been removed; if not, remove it, too */
+    if (isok(worm->mx, worm->my) && level.monsters[worm->mx][worm->my] == worm)
+        remove_monster(worm->mx, worm->my);
 
     /* This is not performant but necessary to capture an occasional dangling pointer */
     debugprint("remove_worm: mnum=%d, mx=%d, my=%d, mid=%u, wormno=%u, tame=%d", worm->mnum, worm->mx, worm->my, worm->m_id, worm->wormno, is_tame(worm));

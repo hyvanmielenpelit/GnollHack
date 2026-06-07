@@ -2912,7 +2912,6 @@ dmonsfree(VOID_ARGS)
             if (freetmp->wormno)
             {
                 debugprint_pos();
-                remove_worm(freetmp);
                 wormgone(freetmp);
             }
 
