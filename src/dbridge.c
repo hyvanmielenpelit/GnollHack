@@ -759,11 +759,14 @@ struct entity *etmp;
         debugpline1("Moving %s", e_nam(etmp));
         if (!is_u(etmp)) 
         {
+            debugprint_pos();
             if (etmp->emon->wormno)
                 remove_worm(etmp->emon);
             else
                 remove_monster(etmp->ex, etmp->ey);
             place_monster(etmp->emon, newx, newy);
+            if (etmp->emon->wormno)
+                place_worm_tail_randomly(etmp->emon, etmp->emon->mx, etmp->emon->my);
             update_monster_region(etmp->emon);
         }
         else 

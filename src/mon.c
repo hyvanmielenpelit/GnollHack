@@ -2902,15 +2902,16 @@ dmonsfree(VOID_ARGS)
             if (isok(freetmp->mx, freetmp->my) && level.monsters[freetmp->mx][freetmp->my] == freetmp)
             {
                 if (!restoring && !reseting && !saving && !check_pointing)
-                    impossible("Dangling monster pointer (mnum=%d, tame=%d, wormno=%u) removed at <%d,%d>", freetmp->mnum, is_tame(freetmp), freetmp->wormno, freetmp->mx, freetmp->my);
+                    silent_impossible("Dangling monster pointer 1 (mnum=%d, tame=%d, wormno=%u) removed at <%d,%d>", freetmp->mnum, is_tame(freetmp), freetmp->wormno, freetmp->mx, freetmp->my);
                 else
-                    debugprint("Dangling monster pointer (mnum=%d, tame=%d, wormno=%u) removed at <%d,%d>", freetmp->mnum, is_tame(freetmp), freetmp->wormno, freetmp->mx, freetmp->my);
+                    debugprint("Dangling monster pointer 2 (mnum=%d, tame=%d, wormno=%u) removed at <%d,%d>", freetmp->mnum, is_tame(freetmp), freetmp->wormno, freetmp->mx, freetmp->my);
                 
                 level.monsters[freetmp->mx][freetmp->my] = 0; // same as remove_monster but without debug
             }
             /* This should never happen, but if it does, remove the worm */
             if (freetmp->wormno)
             {
+                debugprint_pos();
                 remove_worm(freetmp);
                 wormgone(freetmp);
             }
@@ -3020,6 +3021,7 @@ struct monst **monst_list; /* &migrating_mons or &mydogs or null */
     if (on_map) 
     {
         mon->mtrapped = 0;
+        debugprint_pos();
         if (mon->wormno)
             remove_worm(mon);
         else
@@ -3224,11 +3226,11 @@ struct monst *mon;
     /* remove_worm may have missed something, so when marking long worms dead, make an extra check and go through the map for dangling pointers */
     if (!saving && !restoring && !reseting && !check_pointing && is_long_worm_with_tail(mon->data))
     {
-        debugprint("dealloc_monst (long worm): mnum=%d, mx=%d, my=%d, tame=%d, wormno=%u", mon->mnum, mon->mx, mon->my, is_tame(mon), mon->wormno);
-        check_and_remove_worm_from_map(mon, wizard_or_debug);
+        debugprint("dealloc_monst (long worm): mnum=%d, mx=%d, my=%d, mid=%u, wormno=%u, tame=%d", mon->mnum, mon->mx, mon->my, mon->m_id, mon->wormno, is_tame(mon));
+        check_and_remove_worm_from_map(mon);
     }
     if (mon->mon_flags & MON_FLAGS_DEBUG_DEALLOCATED)
-        debugprint("mon already deallocated: mnum=%d, mx=%d, my=%d, m_id=%u, replmon=%d", mon->mnum, mon->mx, mon->my, mon->m_id, (mon->mon_flags & MON_FLAGS_DEBUG_REPLMON) != 0);
+        silent_impossible("mon already deallocated: mnum=%d, mx=%d, my=%d, mid=%u, replmon=%d", mon->mnum, mon->mx, mon->my, mon->m_id, (mon->mon_flags & MON_FLAGS_DEBUG_REPLMON) != 0);
     else
         mon->mon_flags |= MON_FLAGS_DEBUG_DEALLOCATED; /* DEBUG */ 
     free((genericptr_t) mon);
@@ -3258,6 +3260,7 @@ boolean is_mon_dead;
     release_monster_objects(mtmp, 0, FALSE, is_mon_dead);
     if (onmap || mtmp == level.monsters[0][0]) 
     {
+        debugprint_pos();
         if (mtmp->wormno)
             remove_worm(mtmp);
         else
@@ -3277,6 +3280,7 @@ boolean is_mon_dead;
 
     if (mtmp->isshk)
         shkgone(mtmp);
+    debugprint_pos();
     if (mtmp->wormno)
         wormgone(mtmp);
     iflags.purge_monsters++;
@@ -4654,7 +4658,9 @@ boolean move_other, has_effects; /* make sure mtmp gets to x, y! so move m_at(x,
     if (mtmp->mx == x && mtmp->my == y && m_at(x, y) == mtmp)
         return res;
 
-    if (move_other && (othermon = m_at(x, y)) != 0) {
+    if (move_other && (othermon = m_at(x, y)) != 0) 
+    {
+        debugprint_pos();
         if (othermon->wormno)
             remove_worm(othermon);
         else
@@ -5940,11 +5946,17 @@ unsigned short subtype;
 boolean polyspot; /* change is the result of wand or spell of polymorph */
 boolean msg;      /* "The oldmon turns into a newmon!" */
 {
+    if (!mtmp)
+        return;
+
     int hpn, hpd;
     int mndx, tryct;
     struct permonst *olddata = mtmp->data;
     int oldmnum = mtmp->mnum;
     char *p, oldname[BUFSZ], l_oldname[BUFSZ], newname[BUFSZ];
+
+    debugprint("newcham0");
+    issue_breadcrumb3("newcham (mnum, mid)", mtmp->mnum, (int)mtmp->m_id);
 
     /* Riders are immune to polymorph and green slime
        (but apparent Rider might actually be a doppelganger) */
@@ -6024,7 +6036,9 @@ boolean msg;      /* "The oldmon turns into a newmon!" */
         && has_mname(mtmp) && (p = strstr(MNAME(mtmp), " the ")) != 0)
         *p = '\0';
 
-    if (mtmp->wormno) { /* throw tail away */
+    if (mtmp->wormno) 
+    { /* throw tail away */
+        debugprint_pos();
         wormgone(mtmp);
         debugprint_pos();
         place_monster(mtmp, mtmp->mx, mtmp->my);
@@ -6117,6 +6131,8 @@ boolean msg;      /* "The oldmon turns into a newmon!" */
         } else if (!sticks(mdat) && !sticks(youmonst.data))
             unstuck(mtmp);
     }
+
+    debugprint_pos();
 
 #ifndef DCC30_BUG
     if (is_long_worm_with_tail(mdat) && (mtmp->wormno = get_wormno()) != 0) {
@@ -6987,7 +7003,9 @@ boolean override_mextra, polyspot, msg;
         struct monst* mtraits = get_saved_traits_mon(mtmp, FALSE);
         if (mtraits)
         {
-            if (mtmp->wormno) { /* throw tail away */
+            if (mtmp->wormno) 
+            { /* throw tail away */
+                debugprint_pos();
                 wormgone(mtmp);
                 debugprint_pos();
                 place_monster(mtmp, mtmp->mx, mtmp->my);

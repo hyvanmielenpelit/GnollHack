@@ -1626,13 +1626,17 @@ register int x, y;
     boolean resident_shk = mtmp->isshk && inhishop(mtmp);
 
     if (x == mtmp->mx && y == mtmp->my && m_at(x, y) == mtmp)
-    return; /* that was easy */
+        return; /* that was easy */
 
-    if (oldx) { /* "pick up" monster */
-        if (mtmp->wormno) {
+    if (oldx) 
+    { /* "pick up" monster */
+        if (mtmp->wormno) 
+        {
+            debugprint_pos();
             remove_worm(mtmp);
         }
-        else {
+        else 
+        {
             remove_monster(oldx, oldy);
             newsym(oldx, oldy); /* update old location */
         }
@@ -1646,8 +1650,10 @@ register int x, y;
     if (mtmp->wormno) /* now put down tail */
     place_worm_tail_randomly(mtmp, x, y);
 
-    if (u.ustuck == mtmp) {
-        if (u.uswallow) {
+    if (u.ustuck == mtmp) 
+    {
+        if (u.uswallow) 
+        {
             u.ux = x;
             u.uy = y;
             debugprint_pos();
@@ -1664,7 +1670,7 @@ register int x, y;
        teleportation or if they've been transformed into a jumpy monster;
        the latter only happens if you've attacked them with polymorph */
     if (resident_shk && !inhishop(mtmp))
-    make_angry_shk(mtmp, oldx, oldy);
+        make_angry_shk(mtmp, oldx, oldy);
 }
 
 /* place a monster at a random location, typically due to teleport */

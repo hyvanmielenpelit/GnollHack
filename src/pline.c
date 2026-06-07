@@ -1187,14 +1187,14 @@ VA_DECL(const char *, s)
     VA_INIT(s, const char *);
     if (program_state.in_impossible)
     {
-        Vsprintf(pbuf, s, VA_ARGS);
+        Vsnprintf(pbuf, BUFSZ, s, VA_ARGS);
         pbuf[BUFSZ - 1] = '\0';
         panic("impossible called impossible: %s", pbuf);
         return;
     }
 
     program_state.in_impossible = 1;
-    Vsprintf(pbuf, s, VA_ARGS);
+    Vsnprintf(pbuf, BUFSZ, s, VA_ARGS);
     pbuf[BUFSZ - 1] = '\0'; /* sanity */
     paniclog("impossible", pbuf);
     if (iflags.debug_fuzzer)
@@ -1224,6 +1224,48 @@ VA_DECL(const char *, s)
     program_state.in_impossible = 0;
     VA_END();
 }
+
+/*VARARGS1*/
+void silent_impossible
+VA_DECL(const char*, s)
+{
+    if (iflags.debug_fuzzer || program_state.in_impossible)
+        return;
+
+    VA_START(s);
+    VA_INIT(s, const char*);
+
+    char pbuf[BIGBUFSZ]; /* will be chopped down to BUFSZ-1 if longer */
+    Vsnprintf(pbuf, BUFSZ, s, VA_ARGS);
+    pbuf[BUFSZ - 1] = '\0'; /* sanity */
+
+#ifndef DEBUG
+    if (wizard)
+#endif
+        paniclog("impossible (silent)", pbuf);
+
+    /* Report to GUI */
+    if (issue_gui_command)
+    {
+        char* dbufs = allocate_buffer_with_debug_buffers(pbuf);
+        if (dbufs)
+        {
+            issue_debuglog_impossible(1, dbufs);
+            free(dbufs);
+        }
+    }
+
+    /* Print into internal debuglog after reporting it above */
+    debugprint("%s", pbuf);
+
+#ifndef DEBUG
+    if (wizard)
+#endif
+        pline_ex(ATR_NONE, CLR_MSG_ERROR, "impossible (silent): %s", pbuf);
+
+    VA_END();
+}
+
 
 const char* basefilename(filepath)
 const char* filepath;

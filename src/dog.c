@@ -1479,6 +1479,7 @@ boolean pets_only, nearby_only; /* pets_only is true for ascension or final esca
                 /* NOTE: worm is truncated to # segs = max wormno size */
                 cnt = count_wsegs(mtmp);
                 num_segs = min(cnt, MAX_NUM_WORMS - 1);
+                debugprint_pos();
                 wormgone(mtmp);
                 debugprint_pos();
                 place_monster(mtmp, mtmp->mx, mtmp->my);
@@ -1527,11 +1528,13 @@ coord *cc;   /* optional destination coordinates */
     if (mtmp->isshk)
         set_residency(mtmp, TRUE);
 
-    if (mtmp->wormno) {
+    if (mtmp->wormno) 
+    {
         int cnt = count_wsegs(mtmp);
 
         /* **** NOTE: worm is truncated to # segs = max wormno size **** */
         num_segs = min(cnt, MAX_NUM_WORMS - 1); /* used below */
+        debugprint_pos();
         wormgone(mtmp); /* destroys tail and takes head off map */
         /* there used to be a place_monster() here for the relmon() below,
            but it doesn't require the monster to be on the map anymore */

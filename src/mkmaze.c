@@ -1627,6 +1627,7 @@ movebubbles()
                             cons->next = b->cons;
                             b->cons = cons;
 
+                            debugprint_pos();
                             if (mon->wormno)
                                 remove_worm(mon);
                             else
