@@ -1005,7 +1005,7 @@ struct monst *mon;
         return TRUE;
     /* return False if it is a long worm; we might be chatting to its tail
        (not strictly needed; long worms are MS_SILENT so won't get here) */
-    if (is_long_worm_with_tail(mon->data))
+    if (is_tailed_long_worm(mon->data))
         return FALSE;
     /* result depends upon whether map spot shows a gecko, which will
        be due to hallucination or to mimickery since mon isn't one */

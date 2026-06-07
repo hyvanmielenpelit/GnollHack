@@ -1548,7 +1548,7 @@ extern dlevel_t level; /* structure describing the current level */
         { \
             silent_impossible("No monster to remove at <%d,%d>", x, y); \
         } \
-        else if (level.monsters[x][y]->wormno == 0 && !is_long_worm_with_tail(level.monsters[x][y]->data) && (level.monsters[x][y]->mx != (x) || level.monsters[x][y]->my != (y))) \
+        else if (level.monsters[x][y]->wormno == 0 && !is_tailed_long_worm(level.monsters[x][y]->data) && (level.monsters[x][y]->mx != (x) || level.monsters[x][y]->my != (y))) \
         { \
             silent_impossible("Monster (mnum=%d) mx=%d, my=%d is different from <%d,%d>", level.monsters[x][y]->mnum, level.monsters[x][y]->mx, level.monsters[x][y]->my, x, y); \
         } \

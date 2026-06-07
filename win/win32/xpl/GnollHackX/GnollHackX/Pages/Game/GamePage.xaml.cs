@@ -6588,7 +6588,7 @@ namespace GnollHackX.Pages.Game
                             if (worm_id_stored == 0)
                                 return false;
 
-                            bool is_long_worm_with_tail = (_mapData[mapx, mapy].Layers.monster_flags & (ulong)LayerMonsterFlags.LMFLAGS_LONG_WORM_WITH_TAIL) != 0;
+                            bool is_tailed_long_worm = (_mapData[mapx, mapy].Layers.monster_flags & (ulong)LayerMonsterFlags.LMFLAGS_LONG_WORM_WITH_TAIL) != 0;
                             bool is_long_worm_tail = (_mapData[mapx, mapy].Layers.monster_flags & (ulong)LayerMonsterFlags.LMFLAGS_LONG_WORM_TAIL) != 0;
                             bool is_adj_worm_tail = (_mapData[mapx, mapy].Layers.monster_flags & (ulong)LayerMonsterFlags.LMFLAGS_WORM_TAIL) != 0;
                             bool is_adj_worm_seen = (_mapData[mapx, mapy].Layers.monster_flags & (ulong)LayerMonsterFlags.LMFLAGS_WORM_SEEN) != 0;
@@ -6600,11 +6600,11 @@ namespace GnollHackX.Pages.Game
                                 _mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_CAN_SEE) != 0
                                 || is_adj_worm_seen || (_mapData[mapx, mapy].Layers.monster_flags & (ulong)LayerMonsterFlags.LMFLAGS_WORM_SEEN) != 0))
                             {
-                                if (is_long_worm_with_tail && !is_adj_worm_tail)
+                                if (is_tailed_long_worm && !is_adj_worm_tail)
                                 {
                                     signed_glyph = GHApp.NoGlyph;
                                 }
-                                else if (is_long_worm_tail || (is_long_worm_with_tail && is_adj_worm_tail))
+                                else if (is_long_worm_tail || (is_tailed_long_worm && is_adj_worm_tail))
                                 {
                                     int signed_main_glyph = _mapData[mapx, mapy].Layers.layer_gui_glyphs[layer_idx];
                                     int main_glyph = Math.Abs(signed_main_glyph);

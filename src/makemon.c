@@ -3152,7 +3152,7 @@ aligntyp alignment;
     if (in_mklev) 
     {
         if ((/* is_ndemon(ptr) ||mndx == PM_WUMPUS ||  */ 
-             is_long_worm_with_tail(&mons[mndx]) || mndx == PM_GIANT_EEL)
+             is_tailed_long_worm(&mons[mndx]) || mndx == PM_GIANT_EEL)
             && !u.uhave.amulet && rn2(5))
             mtmp->msleeping = TRUE;
     } 
@@ -3181,11 +3181,11 @@ aligntyp alignment;
 #endif
 
 #ifndef DCC30_BUG
-    if (is_long_worm_with_tail(&mons[mndx]) && (mtmp->wormno = get_wormno()) != 0)
+    if (is_tailed_long_worm(&mons[mndx]) && (mtmp->wormno = get_wormno()) != 0)
 #else
     /* DICE 3.0 doesn't like assigning and comparing mtmp->wormno in the
        same expression. */
-    if (is_long_worm_with_tail(&mons[mndx])
+    if (is_tailed_long_worm(&mons[mndx])
         && (mtmp->wormno = get_wormno(), mtmp->wormno != 0))
 #endif
     {

@@ -141,7 +141,7 @@ mon_sanity_check()
                     impossible("steed (%s) is on the map at <%d,%d>!",
                                fmt_ptr((genericptr_t) mtmp), x, y);
                 else if ((mtmp->mx != x || mtmp->my != y)
-                         && !is_long_worm_with_tail(mtmp->data))
+                         && !is_tailed_long_worm(mtmp->data))
                     impossible("map mon (%s) at <%d,%d> is found at <%d,%d>?",
                                fmt_ptr((genericptr_t) mtmp),
                                mtmp->mx, mtmp->my, x, y);
@@ -3223,7 +3223,7 @@ struct monst *mon;
     if (mon->isshk)
         debugprint("deallocated shk: mnum=%d, m_id=%u", mon->mnum, mon->m_id);
     /* remove_worm may have missed something, so when marking long worms dead, make an extra check and go through the map for dangling pointers */
-    if (!saving && !restoring && !reseting && !check_pointing && is_long_worm_with_tail(mon->data))
+    if (!saving && !restoring && !reseting && !check_pointing && is_tailed_long_worm(mon->data))
     {
         debugprint("dealloc_monst (long worm): mnum=%d, mx=%d, my=%d, mid=%u, wormno=%u, tame=%d", mon->mnum, mon->mx, mon->my, mon->m_id, mon->wormno, is_tame(mon));
         check_and_remove_worm_from_map(mon);
@@ -3386,12 +3386,19 @@ mondead_with_flags(mtmp, mondeadflags)
 register struct monst *mtmp;
 uint64_t mondeadflags;
 {
+    if (!mtmp)
+        return;
+
     struct permonst *mptr;
     int tmp;
     boolean disintegrated = (mondeadflags & MONDEAD_FLAGS_DISINTEGRATED) != 0;
     boolean disgested = (mondeadflags & MONDEAD_FLAGS_DIGESTED) != 0;
     boolean stoned = (mondeadflags & MONDEAD_FLAGS_STONED) != 0;
     boolean disintegested = disintegrated || disgested || (mondeadflags & MONDEAD_FLAGS_GENERIC_NO_CORPSE) != 0;
+
+    char bcbuf[BUFSZ];
+    Sprintf(bcbuf, "mondead_with_flags: mnum=%d (%s), mid=%u, wormno=%u, mx=%d, my=%d, peaceful=%d, tame=%d, flags=%lld", mtmp->mnum, mtmp->data->mname, mtmp->m_id, mtmp->wormno, mtmp->mx, mtmp->my, is_peaceful(mtmp), is_tame(mtmp), (long long)mondeadflags);
+    debugprint("%s", bcbuf);
 
     reset_monster_origin_coordinates(mtmp);
     mtmp->mhp = 0; /* in case caller hasn't done this */
@@ -4077,6 +4084,13 @@ struct monst *mdef;
 const char *fltxt;
 int adtyp, xkill_flags;
 {
+    if (!mdef)
+        return;
+
+    char bcbuf[BUFSZ];
+    Sprintf(bcbuf, "monkilled: mnum=%d (%s), mid=%u, wormno=%u, mx=%d, my=%d, peaceful=%d, tame=%d, flags=%d", mdef->mnum, mdef->data->mname, mdef->m_id, mdef->wormno, mdef->mx, mdef->my, is_peaceful(mdef), is_tame(mdef), xkill_flags);
+    debugprint("%s", bcbuf);
+
     boolean be_sad = FALSE; /* true if unseen pet is killed */
     if ((mdef->wormno ? worm_known(mdef) : cansee(mdef->mx, mdef->my))
         && fltxt)
@@ -4159,6 +4173,9 @@ xkilled(mtmp, xkill_flags)
 struct monst *mtmp;
 int xkill_flags; /* 1: suppress message, 2: suppress corpse, 4: pacifist */
 {
+    if (!mtmp)
+        return;
+
     int tmp, mndx, x = mtmp->mx, y = mtmp->my;
     schar luck_change = 0;
     struct permonst *mdat;
@@ -4172,6 +4189,10 @@ int xkill_flags; /* 1: suppress message, 2: suppress corpse, 4: pacifist */
             noconduct = (xkill_flags & XKILL_NOCONDUCT) != 0,
             stoned = (xkill_flags & XKILL_STONED) != 0,
             disintegrated = (xkill_flags & XKILL_DISINTEGRATED) != 0;
+
+    char bcbuf[BUFSZ];
+    Sprintf(bcbuf, "xkilled: mnum=%d (%s), mid=%u, wormno=%u, mx=%d, my=%d, peaceful=%d, tame=%d, flags=%d", mtmp->mnum, mtmp->data->mname, mtmp->m_id, mtmp->wormno, mtmp->mx, mtmp->my, is_peaceful(mtmp), is_tame(mtmp), xkill_flags);
+    debugprint("%s", bcbuf);
 
     if(!nomsg && !stoned)
         play_simple_monster_sound(mtmp, MONSTER_SOUND_TYPE_DEATH);
@@ -6134,12 +6155,12 @@ boolean msg;      /* "The oldmon turns into a newmon!" */
     debugprint_pos();
 
 #ifndef DCC30_BUG
-    if (is_long_worm_with_tail(mdat) && (mtmp->wormno = get_wormno()) != 0) {
+    if (is_tailed_long_worm(mdat) && (mtmp->wormno = get_wormno()) != 0) {
 #else
     /* DICE 3.0 doesn't like assigning and comparing mtmp->wormno in the
      * same expression.
      */
-    if (is_long_worm_with_tail(mdat)
+    if (is_tailed_long_worm(mdat)
         && (mtmp->wormno = get_wormno(), mtmp->wormno != 0)) {
 #endif
         /* we can now create worms with tails - 11/91 */
@@ -7213,12 +7234,12 @@ boolean override_mextra, polyspot, msg;
     }
 
 #ifndef DCC30_BUG
-    if (is_long_worm_with_tail(mdat) && (mtmp->wormno = get_wormno()) != 0) {
+    if (is_tailed_long_worm(mdat) && (mtmp->wormno = get_wormno()) != 0) {
 #else
     /* DICE 3.0 doesn't like assigning and comparing mtmp->wormno in the
      * same expression.
      */
-    if (is_long_worm_with_tail(mdat)
+    if (is_tailed_long_worm(mdat)
         && (mtmp->wormno = get_wormno(), mtmp->wormno != 0)) {
 #endif
         /* we can now create worms with tails - 11/91 */

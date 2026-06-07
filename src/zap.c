@@ -1036,7 +1036,7 @@ struct monst* origmonst;
     case SPE_POLYMORPH:
     case POT_POLYMORPH:
         res = 1;
-        if (is_long_worm_with_tail(mtmp->data) && has_mcorpsenm(mtmp)) 
+        if (is_tailed_long_worm(mtmp->data) && has_mcorpsenm(mtmp)) 
         {
             /* if a long worm has mcorpsenm set, it was polymophed by
                the current zap and shouldn't be affected if hit again */
@@ -1100,7 +1100,7 @@ struct monst* origmonst;
             /* do this even if polymorphed failed (otherwise using
                flags.mon_polycontrol prompting to force mtmp to remain
                'long worm' would prompt again if zap hit another segment) */
-            if (!DEADMONSTER(mtmp) && is_long_worm_with_tail(mtmp->data)) 
+            if (!DEADMONSTER(mtmp) && is_tailed_long_worm(mtmp->data)) 
             {
                 int mnum = mtmp->mnum;
                 if (!has_mcorpsenm(mtmp))

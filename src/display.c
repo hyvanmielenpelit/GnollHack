@@ -2945,7 +2945,7 @@ boolean exclude_ascii;
             if (is_glass_transparent(used_mtmp->data) && !Hallucination)
                 extra_mflags |= LMFLAGS_GLASS_TRANSPARENCY;
 
-            if (is_long_worm_with_tail(used_mtmp->data))
+            if (is_tailed_long_worm(used_mtmp->data))
                 extra_mflags |= LMFLAGS_LONG_WORM_WITH_TAIL;
 
             if (is_long_worm_tail(used_mtmp->data))

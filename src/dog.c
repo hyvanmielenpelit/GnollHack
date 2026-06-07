@@ -943,7 +943,7 @@ boolean with_you;
     num_segs = mtmp->wormno;
 
     /* baby long worms have no tail so don't use is_long_worm() */
-    if (is_long_worm_with_tail(mtmp->data))
+    if (is_tailed_long_worm(mtmp->data))
     {
         mtmp->wormno = get_wormno();
         if (mtmp->wormno)

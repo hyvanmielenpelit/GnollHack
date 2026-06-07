@@ -318,7 +318,7 @@ struct monst *mtmp; /* The animal */
         return (FALSE);
     }
 
-    if (is_long_worm_with_tail(mtmp->data)
+    if (is_tailed_long_worm(mtmp->data)
         && (u.ux + u.dx != mtmp->mx || u.uy + u.dy != mtmp->my))
     {
         /* 3.6.2:  test_move(below) is used to check for trying to mount

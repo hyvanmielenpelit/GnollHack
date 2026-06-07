@@ -1009,7 +1009,7 @@ STATIC_OVL boolean
 leashable(mtmp)
 struct monst *mtmp;
 {
-    return (boolean) (!is_long_worm_with_tail(mtmp->data) && !is_whirly(mtmp->data) && !is_incorporeal(mtmp->data));
+    return (boolean) (!is_tailed_long_worm(mtmp->data) && !is_whirly(mtmp->data) && !is_incorporeal(mtmp->data));
 }
 
 /* ARGSUSED */

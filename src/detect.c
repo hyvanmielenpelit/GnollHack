@@ -78,7 +78,7 @@ boolean showtail;
 {
     show_monster_glyph_with_extra_info(mtmp->mx, mtmp->my, any_mon_to_glyph(mtmp, newsym_rn2), mtmp, 0UL, 0UL, 0, 0);
     check_special_level_naming_by_mon(mtmp);
-    if (showtail && is_long_worm_with_tail(mtmp->data))
+    if (showtail && is_tailed_long_worm(mtmp->data))
         detect_wsegs(mtmp, 0);
 }
 
@@ -925,7 +925,7 @@ int mclass;                /* monster class, 0 for all */
             if (DEADMONSTER(mtmp))
                 continue;
             if (!mclass || mtmp->data->mlet == mclass
-                || (is_long_worm_with_tail(mtmp->data)
+                || (is_tailed_long_worm(mtmp->data)
                     && mclass == S_WORM_TAIL))
                 map_monst(mtmp, TRUE);
 

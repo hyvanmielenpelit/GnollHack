@@ -1772,7 +1772,7 @@ boolean showheads;
         Sprintf(eos(info), "  Heads %d(%d)", mtmp->heads_left, mtmp->data->heads);
     }
 
-    if (is_long_worm_with_tail(mtmp->data)) 
+    if (is_tailed_long_worm(mtmp->data)) 
     {
         int segndx, nsegs = count_wsegs(mtmp);
 
