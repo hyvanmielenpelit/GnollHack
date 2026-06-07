@@ -3399,6 +3399,7 @@ uint64_t mondeadflags;
     char bcbuf[BUFSZ];
     Sprintf(bcbuf, "mondead_with_flags: mnum=%d (%s), mid=%u, wormno=%u, mx=%d, my=%d, peaceful=%d, tame=%d, flags=%lld", mtmp->mnum, mtmp->data->mname, mtmp->m_id, mtmp->wormno, mtmp->mx, mtmp->my, is_peaceful(mtmp), is_tame(mtmp), (long long)mondeadflags);
     debugprint("%s", bcbuf);
+    issue_breadcrumb(bcbuf);
 
     reset_monster_origin_coordinates(mtmp);
     mtmp->mhp = 0; /* in case caller hasn't done this */
@@ -4090,6 +4091,7 @@ int adtyp, xkill_flags;
     char bcbuf[BUFSZ];
     Sprintf(bcbuf, "monkilled: mnum=%d (%s), mid=%u, wormno=%u, mx=%d, my=%d, peaceful=%d, tame=%d, flags=%d", mdef->mnum, mdef->data->mname, mdef->m_id, mdef->wormno, mdef->mx, mdef->my, is_peaceful(mdef), is_tame(mdef), xkill_flags);
     debugprint("%s", bcbuf);
+    issue_breadcrumb(bcbuf);
 
     boolean be_sad = FALSE; /* true if unseen pet is killed */
     if ((mdef->wormno ? worm_known(mdef) : cansee(mdef->mx, mdef->my))
@@ -4193,6 +4195,7 @@ int xkill_flags; /* 1: suppress message, 2: suppress corpse, 4: pacifist */
     char bcbuf[BUFSZ];
     Sprintf(bcbuf, "xkilled: mnum=%d (%s), mid=%u, wormno=%u, mx=%d, my=%d, peaceful=%d, tame=%d, flags=%d", mtmp->mnum, mtmp->data->mname, mtmp->m_id, mtmp->wormno, mtmp->mx, mtmp->my, is_peaceful(mtmp), is_tame(mtmp), xkill_flags);
     debugprint("%s", bcbuf);
+    issue_breadcrumb(bcbuf);
 
     if(!nomsg && !stoned)
         play_simple_monster_sound(mtmp, MONSTER_SOUND_TYPE_DEATH);
