@@ -665,12 +665,12 @@ struct monst *worm;
  */
 void
 remove_worm(worm)
-register struct monst *worm;
+struct monst *worm;
 {
     if (!worm)
         return;
 
-    register struct wseg *curr = wtails[worm->wormno];
+    struct wseg *curr = wtails[worm->wormno];
 
     /*  if (!mtmp->wormno) return;  bullet proofing */
 
@@ -685,16 +685,27 @@ register struct monst *worm;
 
     if (wizard_or_debug)
     {
-        int x, y;
-        for (x = 1; x < COLNO; x++)
+        debugprint("remove_worm: mnum=%d, mx=%d, my=%d, tame=%d, wormno=%d", worm->mnum, worm->mx, worm->my, is_tame(worm), worm->wormno);
+        check_and_remove_worm_from_map(worm);
+    }
+}
+
+void
+check_and_remove_worm_from_map(worm)
+struct monst* worm;
+{
+    if (!worm)
+        return;
+
+    int x, y;
+    for (x = 1; x < COLNO; x++)
+    {
+        for (y = 0; y < ROWNO; y++)
         {
-            for (y = 0; y < ROWNO; y++)
+            if (m_at(x, y) == worm)
             {
-                if (m_at(x, y) == worm)
-                {
-                    impossible("remove_worm: worm still at <%d, %d>: mnum=%d, mx=%d, my=%d, mid=%u, wormno=%u", x, y, worm->mnum, worm->mx, worm->my, worm->m_id, worm->wormno);
-                    level.monsters[x][y] = (struct monst*)0;
-                }
+                impossible("check_and_remove_worm_from_map: worm still at <%d, %d>: mnum=%d, mx=%d, my=%d, mid=%u, wormno=%u", x, y, worm->mnum, worm->mx, worm->my, worm->m_id, worm->wormno);
+                level.monsters[x][y] = (struct monst*)0;
             }
         }
     }

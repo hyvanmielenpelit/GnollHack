@@ -2885,7 +2885,7 @@ int x, y;
 
 /* really free dead monsters */
 void
-dmonsfree()
+dmonsfree(VOID_ARGS)
 {
     struct monst **mtmp, *freetmp;
     int count = 0;
@@ -2901,8 +2901,23 @@ dmonsfree()
             /* Insurance to remove dangling monster pointers */
             if (isok(freetmp->mx, freetmp->my) && level.monsters[freetmp->mx][freetmp->my] == freetmp)
             {
-                debugprint("Dangling monster pointer (mnum=%d) removed at <%d,%d>", freetmp->mnum, freetmp->mx, freetmp->my);
-                level.monsters[freetmp->mx][freetmp->my] = 0;
+                if (!restoring && !reseting && !saving && !check_pointing)
+                    impossible("Dangling monster pointer (mnum=%d, tame=%d, wormno=%d) removed at <%d,%d>", freetmp->mnum, is_tame(freetmp), freetmp->wormno, freetmp->mx, freetmp->my);
+                else
+                    debugprint("Dangling monster pointer (mnum=%d, tame=%d, wormno=%d) removed at <%d,%d>", freetmp->mnum, is_tame(freetmp), freetmp->wormno, freetmp->mx, freetmp->my);
+                
+                level.monsters[freetmp->mx][freetmp->my] = 0; // same as remove_monster but without debug
+            }
+            /* Insurance against dangling worms */
+            if (freetmp->wormno)
+            {
+                remove_worm(freetmp);
+                if (!wizard_or_debug && !restoring && !reseting && !saving && !check_pointing) /* Otherwise remove_worm will call this */
+                {
+                    debugprint("dmonsfree (worm): mnum=%d, mx=%d, my=%d, tame=%d, wormno=%d", freetmp->mnum, freetmp->mx, freetmp->my, is_tame(freetmp), freetmp->wormno);
+                    check_and_remove_worm_from_map(freetmp);
+                }
+                wormgone(freetmp);
             }
 
             *mtmp = freetmp->nmon;
@@ -2972,7 +2987,7 @@ struct monst *mtmp, *mtmp2;
         replshk(mtmp, mtmp2);
 
     /* discard the old monster */
-    /* DEBUG */ mtmp->mon_flags |= MON_FLAGS_DEBUG_REPLMON;
+    mtmp->mon_flags |= MON_FLAGS_DEBUG_REPLMON; /* DEBUG */ 
     dealloc_monst(mtmp);
 }
 
@@ -3211,7 +3226,10 @@ struct monst *mon;
         mon_stop_timers(mon);
     if (mon->isshk)
         debugprint("deallocated shk: mnum=%d, m_id=%u", mon->mnum, mon->m_id);
-    /* DEBUG */ mon->mon_flags |= MON_FLAGS_DEBUG_DEALLOCATED;
+    if (mon->mon_flags & MON_FLAGS_DEBUG_DEALLOCATED)
+        debugprint("mon already deallocated: mnum=%d, mx=%d, my=%d, m_id=%u, replmon=%d", mon->mnum, mon->mx, mon->my, mon->m_id, (mon->mon_flags & MON_FLAGS_DEBUG_REPLMON) != 0);
+    else
+        mon->mon_flags |= MON_FLAGS_DEBUG_DEALLOCATED; /* DEBUG */ 
     free((genericptr_t) mon);
 }
 
