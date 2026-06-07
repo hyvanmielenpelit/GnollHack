@@ -5946,7 +5946,7 @@ boolean polyspot; /* change is the result of wand or spell of polymorph */
 boolean msg;      /* "The oldmon turns into a newmon!" */
 {
     if (!mtmp)
-        return;
+        return 0;
 
     int hpn, hpd;
     int mndx, tryct;
