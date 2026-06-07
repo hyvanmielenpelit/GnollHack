@@ -4466,7 +4466,7 @@ E void FDECL(rest_worm, (int));
 E void FDECL(place_wsegs, (struct monst *, struct monst *));
 E void FDECL(sanity_check_worm, (struct monst *));
 E void FDECL(remove_worm, (struct monst *));
-E void FDECL(check_and_remove_worm_from_map, (struct monst*));
+E void FDECL(check_and_remove_worm_from_map, (struct monst*, BOOLEAN_P));
 E void FDECL(place_worm_tail_randomly, (struct monst *, XCHAR_P, XCHAR_P));
 E int FDECL(size_wseg, (struct monst *));
 E int FDECL(count_wsegs, (struct monst *));

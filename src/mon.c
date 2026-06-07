@@ -2902,21 +2902,16 @@ dmonsfree(VOID_ARGS)
             if (isok(freetmp->mx, freetmp->my) && level.monsters[freetmp->mx][freetmp->my] == freetmp)
             {
                 if (!restoring && !reseting && !saving && !check_pointing)
-                    impossible("Dangling monster pointer (mnum=%d, tame=%d, wormno=%d) removed at <%d,%d>", freetmp->mnum, is_tame(freetmp), freetmp->wormno, freetmp->mx, freetmp->my);
+                    impossible("Dangling monster pointer (mnum=%d, tame=%d, wormno=%u) removed at <%d,%d>", freetmp->mnum, is_tame(freetmp), freetmp->wormno, freetmp->mx, freetmp->my);
                 else
-                    debugprint("Dangling monster pointer (mnum=%d, tame=%d, wormno=%d) removed at <%d,%d>", freetmp->mnum, is_tame(freetmp), freetmp->wormno, freetmp->mx, freetmp->my);
+                    debugprint("Dangling monster pointer (mnum=%d, tame=%d, wormno=%u) removed at <%d,%d>", freetmp->mnum, is_tame(freetmp), freetmp->wormno, freetmp->mx, freetmp->my);
                 
                 level.monsters[freetmp->mx][freetmp->my] = 0; // same as remove_monster but without debug
             }
-            /* Insurance against dangling worms */
+            /* This should never happen, but if it does, remove the worm */
             if (freetmp->wormno)
             {
                 remove_worm(freetmp);
-                if (!wizard_or_debug && !restoring && !reseting && !saving && !check_pointing) /* Otherwise remove_worm will call this */
-                {
-                    debugprint("dmonsfree (worm): mnum=%d, mx=%d, my=%d, tame=%d, wormno=%d", freetmp->mnum, freetmp->mx, freetmp->my, is_tame(freetmp), freetmp->wormno);
-                    check_and_remove_worm_from_map(freetmp);
-                }
                 wormgone(freetmp);
             }
 
@@ -3226,6 +3221,12 @@ struct monst *mon;
         mon_stop_timers(mon);
     if (mon->isshk)
         debugprint("deallocated shk: mnum=%d, m_id=%u", mon->mnum, mon->m_id);
+    /* remove_worm may have missed something, so when marking long worms dead, make an extra check and go through the map for dangling pointers */
+    if (!saving && !restoring && !reseting && !check_pointing && is_long_worm_with_tail(mon->data))
+    {
+        debugprint("dealloc_monst (long worm): mnum=%d, mx=%d, my=%d, tame=%d, wormno=%u", mon->mnum, mon->mx, mon->my, is_tame(mon), mon->wormno);
+        check_and_remove_worm_from_map(mon, wizard_or_debug);
+    }
     if (mon->mon_flags & MON_FLAGS_DEBUG_DEALLOCATED)
         debugprint("mon already deallocated: mnum=%d, mx=%d, my=%d, m_id=%u, replmon=%d", mon->mnum, mon->mx, mon->my, mon->m_id, (mon->mon_flags & MON_FLAGS_DEBUG_REPLMON) != 0);
     else

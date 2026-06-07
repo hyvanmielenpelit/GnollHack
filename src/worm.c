@@ -683,16 +683,14 @@ struct monst *worm;
         curr = curr->nseg;
     }
 
-    if (wizard_or_debug)
-    {
-        debugprint("remove_worm: mnum=%d, mx=%d, my=%d, tame=%d, wormno=%d", worm->mnum, worm->mx, worm->my, is_tame(worm), worm->wormno);
-        check_and_remove_worm_from_map(worm);
-    }
+    debugprint("remove_worm: mnum=%d, mx=%d, my=%d, tame=%d, wormno=%u", worm->mnum, worm->mx, worm->my, is_tame(worm), worm->wormno);
+    check_and_remove_worm_from_map(worm, wizard_or_debug);
 }
 
 void
-check_and_remove_worm_from_map(worm)
+check_and_remove_worm_from_map(worm, report_impossible)
 struct monst* worm;
+boolean report_impossible;
 {
     if (!worm)
         return;
@@ -704,7 +702,8 @@ struct monst* worm;
         {
             if (m_at(x, y) == worm)
             {
-                impossible("check_and_remove_worm_from_map: worm still at <%d, %d>: mnum=%d, mx=%d, my=%d, mid=%u, wormno=%u", x, y, worm->mnum, worm->mx, worm->my, worm->m_id, worm->wormno);
+                if (report_impossible)
+                    impossible("check_and_remove_worm_from_map: worm still at <%d, %d>: mnum=%d, mx=%d, my=%d, mid=%u, wormno=%u", x, y, worm->mnum, worm->mx, worm->my, worm->m_id, worm->wormno);
                 level.monsters[x][y] = (struct monst*)0;
             }
         }
