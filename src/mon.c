@@ -2898,6 +2898,13 @@ dmonsfree()
         {
             lastfreemnum = freetmp->mnum; /* Debug */
 
+            /* Insurance to remove dangling monster pointers */
+            if (isok(freetmp->mx, freetmp->my) && level.monsters[freetmp->mx][freetmp->my] == freetmp)
+            {
+                debugprint("Dangling monster pointer (mnum=%d) removed at <%d,%d>", freetmp->mnum, freetmp->mx, freetmp->my);
+                level.monsters[freetmp->mx][freetmp->my] = 0;
+            }
+
             *mtmp = freetmp->nmon;
             freetmp->nmon = NULL;
             dealloc_monst(freetmp);
