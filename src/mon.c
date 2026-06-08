@@ -2901,7 +2901,7 @@ dmonsfree(VOID_ARGS)
             /* Insurance to remove dangling monster pointers */
             if (isok(freetmp->mx, freetmp->my) && level.monsters[freetmp->mx][freetmp->my] == freetmp)
             {
-                if (!restoring && !reseting && !saving && !check_pointing)
+                if (!restoring && !reseting && !saving && !check_pointing && !program_state.in_bones)
                     silent_impossible("Dangling monster pointer 1 (mnum=%d, tame=%d, wormno=%u) removed at <%d,%d>", freetmp->mnum, is_tame(freetmp), freetmp->wormno, freetmp->mx, freetmp->my);
                 else
                     debugprint("Dangling monster pointer 2 (mnum=%d, tame=%d, wormno=%u) removed at <%d,%d>", freetmp->mnum, is_tame(freetmp), freetmp->wormno, freetmp->mx, freetmp->my);
@@ -2913,6 +2913,11 @@ dmonsfree(VOID_ARGS)
             {
                 debugprint_pos();
                 wormgone(freetmp);
+            }
+            else if (is_tailed_long_worm(freetmp->data) && !saving && !restoring && !reseting && !check_pointing && !program_state.in_bones)
+            {
+                debugprint("dmonsfree (long worm): mnum=%d, mx=%d, my=%d, mid=%u, wormno=%u, tame=%d", freetmp->mnum, freetmp->mx, freetmp->my, freetmp->m_id, freetmp->wormno, is_tame(freetmp));
+                check_and_remove_worm_from_map(freetmp);
             }
 
             *mtmp = freetmp->nmon;
@@ -2982,7 +2987,13 @@ struct monst *mtmp, *mtmp2;
         replshk(mtmp, mtmp2);
 
     /* discard the old monster */
-    mtmp->mon_flags |= MON_FLAGS_DEBUG_REPLMON; /* DEBUG */ 
+    mtmp->mon_flags |= MON_FLAGS_DEBUG_REPLMON; /* DEBUG */
+    /* check worm has been removed from the map */
+    if (is_tailed_long_worm(mtmp->data) && !saving && !restoring && !reseting && !check_pointing && !program_state.in_bones)
+    {
+        debugprint("replmon (long worm): mnum=%d, mx=%d, my=%d, mid=%u, wormno=%u, tame=%d", mtmp->mnum, mtmp->mx, mtmp->my, mtmp->m_id, mtmp->wormno, is_tame(mtmp));
+        check_and_remove_worm_from_map(mtmp);
+    }
     dealloc_monst(mtmp);
 }
 
@@ -3222,12 +3233,6 @@ struct monst *mon;
         mon_stop_timers(mon);
     if (mon->isshk)
         debugprint("deallocated shk: mnum=%d, m_id=%u", mon->mnum, mon->m_id);
-    /* remove_worm may have missed something, so when marking long worms dead, make an extra check and go through the map for dangling pointers */
-    if (!saving && !restoring && !reseting && !check_pointing && is_tailed_long_worm(mon->data))
-    {
-        debugprint("dealloc_monst (long worm): mnum=%d, mx=%d, my=%d, mid=%u, wormno=%u, tame=%d", mon->mnum, mon->mx, mon->my, mon->m_id, mon->wormno, is_tame(mon));
-        check_and_remove_worm_from_map(mon);
-    }
     if (mon->mon_flags & MON_FLAGS_DEBUG_DEALLOCATED)
         silent_impossible("mon already deallocated: mnum=%d, mx=%d, my=%d, mid=%u, replmon=%d", mon->mnum, mon->mx, mon->my, mon->m_id, (mon->mon_flags & MON_FLAGS_DEBUG_REPLMON) != 0);
     else

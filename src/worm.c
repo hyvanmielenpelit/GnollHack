@@ -707,18 +707,31 @@ struct monst* worm;
     if (!worm)
         return;
 
-    int x, y;
+    char locbuf[BUFSZ] = "";
+    int x, y, cnt = 0;
+    boolean dobreak = FALSE;
+
     for (x = 1; x < COLNO; x++)
     {
         for (y = 0; y < ROWNO; y++)
         {
             if (m_at(x, y) == worm)
             {
-                silent_impossible("check_and_remove_worm_from_map: worm still at <%d, %d>: mnum=%d, mx=%d, my=%d, mid=%u, wormno=%u, tame=%d", x, y, worm->mnum, worm->mx, worm->my, worm->m_id, worm->wormno, is_tame(worm));
+                cnt++;
+                Sprintf(eos(locbuf), "%s<%d, %d>", *locbuf ? ", " : "", x, y);
                 level.monsters[x][y] = (struct monst*)0;
+                if (cnt == 12)
+                {
+                    dobreak = TRUE;
+                    break;
+                }
             }
+            if (dobreak)
+                break;
         }
     }
+    if (*locbuf)
+        silent_impossible("check_and_remove_worm_from_map: worm still at %s: mnum=%d, mx=%d, my=%d, mid=%u, wormno=%u, tame=%d", locbuf, worm->mnum, worm->mx, worm->my, worm->m_id, worm->wormno, is_tame(worm));
 }
 
 /*
