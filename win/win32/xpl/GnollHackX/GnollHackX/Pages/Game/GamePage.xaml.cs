@@ -6093,6 +6093,9 @@ namespace GnollHackX.Pages.Game
             if (dest.Bottom <= 0 || dest.Top >= canvasheight || dest.Right < 0 || dest.Left >= canvaswidth)
                 return;
 
+            if (bitmap == null)
+                return;
+
             if (destSplitY <= dest.Top || delayedDraw)
             {
                 if (delayedDraw)
