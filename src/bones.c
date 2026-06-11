@@ -515,6 +515,8 @@ struct obj *corpse;
 
 make_bones:
     program_state.in_bones = 1; /* Stays on until program termination */
+    issue_breadcrumb("savebones");
+
     unleash_all();
     /* in case these characters are not in their home bases */
     int minmlev = 0, maxmlev = 0;

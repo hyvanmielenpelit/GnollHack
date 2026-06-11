@@ -956,6 +956,8 @@ time_t when; /* date+time at end of game */
 
     //init_symbols(); /* Dumplog should now handle UTF-8 */ /* revert to default symbol set */
 
+    issue_breadcrumb("dump_everything");
+
     /* one line version ID, which includes build date+time;
        it's conceivable that the game started with a different
        build date+time or even with an older GnollHack version,
@@ -986,15 +988,20 @@ time_t when; /* date+time at end of game */
     putstr(NHW_DUMPTXT, 0, "");
 
     dump_start_screendump();
+    issue_breadcrumb("dump_map");
     dump_map();
+    issue_breadcrumb("dump: do_statusline1");
     putstr(NHW_DUMPTXT, 0, do_statusline1());
+    issue_breadcrumb("dump: do_statusline2");
     putstr(NHW_DUMPTXT, 0, do_statusline2());
     if (iflags.wc2_statuslines > 2)
     {
+        issue_breadcrumb("dump: do_statusline3");
         putstr(NHW_DUMPTXT, 0, do_statusline3());
     }
     if (iflags.wc2_statuslines > 3)
     {
+        issue_breadcrumb("dump: compose_partystatline");
         char partybuf[BUFSZ * 3];
         char partybuf2[BUFSZ * 3];
         char partybuf3[BUFSZ * 3];
@@ -1013,7 +1020,9 @@ time_t when; /* date+time at end of game */
     dump_end_screendump();
     putstr(NHW_DUMPTXT, 0, "");
 
+    issue_breadcrumb("dump_plines");
     dump_plines();
+    issue_breadcrumb("dump: display_inventory");
     putstr(NHW_DUMPTXT, 0, "");
     putstr(0, ATR_HEADING, "Inventory:");
     (void) display_inventory((char *) 0, TRUE, SHOWWEIGHTS_NONE, FALSE);
@@ -1022,18 +1031,24 @@ time_t when; /* date+time at end of game */
     enlightenment(how == SNAPSHOT ? BASICENLIGHTENMENT | GAMEENLIGHTENMENT : (BASICENLIGHTENMENT | MAGICENLIGHTENMENT | GAMEENLIGHTENMENT),
                   how == SNAPSHOT ? ENL_GAMEINPROGRESS : (how >= PANICKED) ? ENL_GAMEOVERALIVE : ENL_GAMEOVERDEAD);
     putstr(NHW_DUMPTXT, 0, "");
+    issue_breadcrumb("dump_skills");
     dump_skills();
     putstr(NHW_DUMPTXT, 0, "");
+    issue_breadcrumb("dump_spells");
     dump_spells();
     putstr(NHW_DUMPTXT, 0, "");
+    issue_breadcrumb("dump: show_gamelog");
     show_gamelog(how == SNAPSHOT ? ENL_GAMEINPROGRESS : (how >= PANICKED) ? ENL_GAMEOVERALIVE : ENL_GAMEOVERDEAD);
     putstr(NHW_DUMPTXT, 0, "");
+    issue_breadcrumb("dump: list_vanquished");
     list_vanquished('d', FALSE, TRUE); /* 'd' => 'y' */
     putstr(NHW_DUMPTXT, 0, "");
+    issue_breadcrumb("dump: list_genocided");
     list_genocided('d', FALSE, TRUE); /* 'd' => 'y' */
     putstr(NHW_DUMPTXT, 0, "");
     show_conduct(how == SNAPSHOT ? 0 : (how >= PANICKED) ? 1 : 2);
     putstr(NHW_DUMPTXT, 0, "");
+    issue_breadcrumb("dump: show_overview");
     show_overview(how == SNAPSHOT ? 0 : (how >= PANICKED) ? 1 : 2, how);
     putstr(NHW_DUMPTXT, 0, "");
     dump_redirect(FALSE);
@@ -2102,6 +2117,7 @@ int how;
     urealtime.realtime += ((int64_t)endtime - urealtime.start_timing);
     realtime = urealtime.realtime;
     issue_simple_gui_command(GUI_CMD_REPORT_PLAY_TIME);
+    issue_breadcrumb("really_done playtime");
 
     fixup_death(how); /* actually, fixup multi_reason */
 
@@ -2217,6 +2233,8 @@ int how;
 
     if (how != PANICKED && how != TRICKED && disclose_and_dumplog_ok)
     {
+        issue_breadcrumb("really_done disclose");
+
         struct obj *obj;
 
         /*
@@ -2265,6 +2283,8 @@ int how;
             has_existing_save_file && !(how == PANICKED && restoring) ? "You can load the game from the point at which you last saved the game." : "");
         display_popup_text(ebuf, "Game Over", POPUP_TEXT_MESSAGE, ATR_NONE, clr, NO_GLYPH, POPUP_FLAGS_NONE);
     }
+
+    issue_breadcrumb("really_done move_monsters_to_mydogs");
 
     /* if pets will contribute to score, populate mydogs list now
        (bones creation isn't a factor, but pline() messaging is; used to
@@ -2381,6 +2401,7 @@ int how;
 
     if (u.ugrave_arise >= LOW_PM && !done_stopprint)
     {
+        issue_breadcrumb2("really_done: body rises from the dead", u.ugrave_arise);
         /* give this feedback even if bones aren't going to be created,
            so that its presence or absence doesn't tip off the player to
            new bones or their lack; it might be a lie if makemon fails */
@@ -2428,6 +2449,8 @@ int how;
 
     if (disclose_and_dumplog_ok)
     {
+        issue_breadcrumb("really_done final text");
+
         int dumpwin = endwin;
 #if defined (DUMPLOG) || defined (DUMPHTML)
         /* 'how' reasons beyond genocide shouldn't show tombstone;
@@ -2650,6 +2673,8 @@ int how;
         IfModeAllowsPostToForum
         {
     #if defined (DUMPLOG) || defined (DUMPHTML)
+            issue_breadcrumb("really_done forum posting");
+
             char dlbuf[BUFSZ * 4];
             char* dlfilename = print_dumplog_filename_to_buffer(dlbuf);
             if (dlfilename)
@@ -2664,6 +2689,8 @@ int how;
             }
     #endif
     #endif
+            issue_breadcrumb("really_done post game status");
+
             char totalpostbuf[BUFSZ * 4];
             char mbuf[BUFSZ] = "";
             char cbuf[BUFSZ];
@@ -2687,6 +2714,7 @@ int how;
         && !(mvitals[u.umonnum].mvflags & MV_NOCORPSE))
     {
         int mnum = u.umonnum;
+        issue_breadcrumb2("really_done make grave", mnum);
 
         if (!Upolyd)
         {
@@ -2713,6 +2741,8 @@ int how;
         corpse = (struct obj*)0;
     }
 
+    issue_breadcrumb("really_done exiting windows");
+
     /* "So when I die, the first thing I will see in Heaven is a
      * score list?" */
     if (have_windows && !iflags.toptenwin)
@@ -2735,6 +2765,8 @@ int how;
         raw_print("");
     }
     livelog_dump_url(LL_DUMP_ALL | (how == ASCENDED ? LL_DUMP_ASC : 0));
+
+    issue_breadcrumb("really_done nh_terminate");
     nh_terminate(EXIT_SUCCESS);
 }
 
