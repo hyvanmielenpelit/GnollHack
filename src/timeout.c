@@ -2802,6 +2802,7 @@ int64_t timeout;
         return FALSE;
 
     debugprint("unsummon_monster: mnum=%d", mon->mnum);
+    issue_breadcrumb2("unsummon_monster: mnum=", mon->mnum);
 
     if (timeout)
     {
