@@ -7633,6 +7633,7 @@ xchar portal; /* 1 = Magic portal, 2 = Modron portal down (find portal up), 3 = 
 
     /* Fade to black */
     issue_simple_gui_command(GUI_CMD_FADE_TO_BLACK);
+    issue_breadcrumb2("goto_level", 1);
 
     /* discard context which applies to the level we're leaving;
        for lock-picking, container may be carried, in which case we
@@ -7704,6 +7705,7 @@ xchar portal; /* 1 = Magic portal, 2 = Modron portal down (find portal up), 3 = 
 
 
     /* NEW LEVEL STARTS HERE */
+    issue_breadcrumb2("goto_level", 2);
     if (Is_really_rogue_level(newlevel) || Is_really_rogue_level(&u.uz))
         assign_graphics(Is_really_rogue_level(newlevel) ? ROGUESET : PRIMARY);
 
@@ -7784,6 +7786,7 @@ xchar portal; /* 1 = Magic portal, 2 = Modron portal down (find portal up), 3 = 
     flush_screen(-1);       /* ensure all map flushes are postponed */
     char wakeupbuf[BUFSZ] = "";
 
+    issue_breadcrumb2("goto_level", 3);
     if (portal == 1 && !In_endgame(&u.uz))
     {
         /* find the portal on the new level */
@@ -7933,7 +7936,9 @@ xchar portal; /* 1 = Magic portal, 2 = Modron portal down (find portal up), 3 = 
 
     if (Punished)
         placebc();
+    issue_breadcrumb2("goto_level", 4);
     obj_delivery(FALSE);
+    issue_breadcrumb2("goto_level", 5);
     arrival_from_mydogs_and_migrating_mons();
     kill_genocided_monsters(); /* for those wiped out while in limbo */
     /*
@@ -7941,8 +7946,10 @@ xchar portal; /* 1 = Magic portal, 2 = Modron portal down (find portal up), 3 = 
      * after migrating monsters and objects are delivered
      * (arrival_from_mydogs_and_migrating_mons and obj_delivery).
      */
+    issue_breadcrumb2("goto_level", 6);
     run_timers();
 
+    issue_breadcrumb2("goto_level", 7);
     /* hero might be arriving at a spot containing a monster;
        if so, move one or the other to another location */
     if ((mtmp = m_at(u.ux, u.uy)) != 0)
@@ -8390,6 +8397,7 @@ xchar portal; /* 1 = Magic portal, 2 = Modron portal down (find portal up), 3 = 
 #endif
 
     context.reviving = FALSE;
+    issue_breadcrumb("goto_level: Finished");
 }
 
 
