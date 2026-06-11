@@ -959,10 +959,7 @@ boolean is_mon_dead;
              * Just their money mysteriously disappears when they die normally, to prevent hiring monsters always with the same money
              * Also cloned items (Aleax) will disappear when Aleax is gone / dies, unless you somehow managed to steal them from Aleax before that
              */
-            && otmp->otyp != AMULET_OF_YENDOR
-            && otmp->otyp != FAKE_AMULET_OF_YENDOR
-            && otmp->otyp != CANDELABRUM_OF_INVOCATION
-            && otmp->otyp != SPE_BOOK_OF_THE_DEAD
+            && !is_obj_unremovable_from_the_game(otmp)
             && !is_quest_artifact(otmp)
             )
         {
