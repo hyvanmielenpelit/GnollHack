@@ -966,6 +966,7 @@ boolean with_you;
     if (mtmp->mon_flags & MON_FLAGS_ADD_UNSUMMON_TIMER)
     {
         /* Timer has already elapsed, so add a few rounds to expiry after mon arrives on level */
+        mtmp->mon_flags &= ~MON_FLAGS_ADD_UNSUMMON_TIMER;
         mtmp->summonduration = rnd(3);
         begin_summontimer(mtmp);
     }
