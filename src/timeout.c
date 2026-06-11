@@ -8,6 +8,75 @@
 #include "hack.h"
 #include "lev.h" /* for checking save modes */
 
+/* -------------------------------------------------------------------------
+ */
+ /*
+  * Generic Timeout Functions.
+  *
+  * Interface:
+  *
+  * General:
+  *  boolean start_timer(int64_t timeout,short kind,short func_index,
+  *                      anything *arg)
+  *      Start a timer of kind 'kind' that will expire at time
+  *      monstermoves+'timeout'.  Call the function at 'func_index'
+  *      in the timeout table using argument 'arg'.  Return TRUE if
+  *      a timer was started.  This places the timer on a list ordered
+  *      "sooner" to "later".  If an object, increment the object's
+  *      timer count.
+  *
+  *  int64_t stop_timer(short func_index, anything *arg)
+  *      Stop a timer specified by the (func_index, arg) pair.  This
+  *      assumes that such a pair is unique.  Return the time the
+  *      timer would have gone off.  If no timer is found, return 0.
+  *      If an object, decrement the object's timer count.
+  *
+  *  int64_t peek_timer(short func_index, anything *arg)
+  *      Return time specified timer will go off (0 if no such timer).
+  *
+  *  void run_timers(void)
+  *      Call timers that have timed out.
+  *
+  * Save/Restore:
+  *  void save_timers(int fd, int mode, int range)
+  *      Save all timers of range 'range'.  Range is either global
+  *      or local.  Global timers follow game play, local timers
+  *      are saved with a level.  Object and monster timers are
+  *      saved using their respective id's instead of pointers.
+  *
+  *  void restore_timers(int fd, int range, boolean ghostly, int64_t adjust)
+  *      Restore timers of range 'range'.  If from a ghost pile,
+  *      adjust the timeout by 'adjust'.  The object and monster
+  *      ids are not restored until later.
+  *
+  *  void relink_timers(boolean ghostly)
+  *      Relink all object and monster timers that had been saved
+  *      using their object's or monster's id number.
+  *
+  * Object Specific:
+  *  void obj_move_timers(struct obj *src, struct obj *dest)
+  *      Reassign all timers from src to dest.
+  *
+  *  void obj_split_timers(struct obj *src, struct obj *dest)
+  *      Duplicate all timers assigned to src and attach them to dest.
+  *
+  *  void obj_stop_timers(struct obj *obj)
+  *      Stop all timers attached to obj.
+  *
+  *  boolean obj_has_timer(struct obj *object, short timer_type)
+  *      Check whether object has a timer of type timer_type.
+  */
+
+STATIC_DCL const char* FDECL(kind_name, (SHORT_P));
+STATIC_DCL void FDECL(print_queue, (winid, timer_element*));
+STATIC_DCL void FDECL(insert_timer, (timer_element*));
+STATIC_DCL timer_element* FDECL(remove_timer,
+    (timer_element**, SHORT_P, ANY_P*));
+STATIC_DCL void FDECL(write_timer, (int, timer_element*));
+STATIC_DCL boolean FDECL(mon_is_local, (struct monst*));
+STATIC_DCL boolean FDECL(timer_is_local, (timer_element*));
+STATIC_DCL int FDECL(maybe_write_timer, (int, int, BOOLEAN_P)); 
+
 STATIC_DCL void NDECL(stoned_dialogue);
 STATIC_DCL void NDECL(vomiting_dialogue);
 STATIC_DCL void NDECL(choke_dialogue);
@@ -2732,9 +2801,18 @@ int64_t timeout;
     if (!mon || (mon && DEADMONSTER(mon)))
         return FALSE;
 
+    debugprint("unsummon_monster: mnum=%d", mon->mnum);
+
     if (timeout)
     {
         /* Do nothing */
+    }
+
+    if (!mon_is_local(mon))
+    {
+        /* mon is migrating to another level */
+        mon->mon_flags |= MON_FLAGS_ADD_UNSUMMON_TIMER;
+        return TRUE;
     }
 
     if (canseemon(mon)) {
@@ -2849,75 +2927,6 @@ do_storms()
     } else
         You_hear("a rumbling noise.");
 }
-
-/* -------------------------------------------------------------------------
- */
-/*
- * Generic Timeout Functions.
- *
- * Interface:
- *
- * General:
- *  boolean start_timer(int64_t timeout,short kind,short func_index,
- *                      anything *arg)
- *      Start a timer of kind 'kind' that will expire at time
- *      monstermoves+'timeout'.  Call the function at 'func_index'
- *      in the timeout table using argument 'arg'.  Return TRUE if
- *      a timer was started.  This places the timer on a list ordered
- *      "sooner" to "later".  If an object, increment the object's
- *      timer count.
- *
- *  int64_t stop_timer(short func_index, anything *arg)
- *      Stop a timer specified by the (func_index, arg) pair.  This
- *      assumes that such a pair is unique.  Return the time the
- *      timer would have gone off.  If no timer is found, return 0.
- *      If an object, decrement the object's timer count.
- *
- *  int64_t peek_timer(short func_index, anything *arg)
- *      Return time specified timer will go off (0 if no such timer).
- *
- *  void run_timers(void)
- *      Call timers that have timed out.
- *
- * Save/Restore:
- *  void save_timers(int fd, int mode, int range)
- *      Save all timers of range 'range'.  Range is either global
- *      or local.  Global timers follow game play, local timers
- *      are saved with a level.  Object and monster timers are
- *      saved using their respective id's instead of pointers.
- *
- *  void restore_timers(int fd, int range, boolean ghostly, int64_t adjust)
- *      Restore timers of range 'range'.  If from a ghost pile,
- *      adjust the timeout by 'adjust'.  The object and monster
- *      ids are not restored until later.
- *
- *  void relink_timers(boolean ghostly)
- *      Relink all object and monster timers that had been saved
- *      using their object's or monster's id number.
- *
- * Object Specific:
- *  void obj_move_timers(struct obj *src, struct obj *dest)
- *      Reassign all timers from src to dest.
- *
- *  void obj_split_timers(struct obj *src, struct obj *dest)
- *      Duplicate all timers assigned to src and attach them to dest.
- *
- *  void obj_stop_timers(struct obj *obj)
- *      Stop all timers attached to obj.
- *
- *  boolean obj_has_timer(struct obj *object, short timer_type)
- *      Check whether object has a timer of type timer_type.
- */
-
-STATIC_DCL const char *FDECL(kind_name, (SHORT_P));
-STATIC_DCL void FDECL(print_queue, (winid, timer_element *));
-STATIC_DCL void FDECL(insert_timer, (timer_element *));
-STATIC_DCL timer_element *FDECL(remove_timer,
-                                (timer_element **, SHORT_P, ANY_P *));
-STATIC_DCL void FDECL(write_timer, (int, timer_element *));
-STATIC_DCL boolean FDECL(mon_is_local, (struct monst *));
-STATIC_DCL boolean FDECL(timer_is_local, (timer_element *));
-STATIC_DCL int FDECL(maybe_write_timer, (int, int, BOOLEAN_P));
 
 /* ordered timer list */
 STATIC_VAR timer_element *timer_base; /* "active" */

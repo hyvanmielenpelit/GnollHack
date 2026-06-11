@@ -3947,6 +3947,14 @@ void
 mongone(mdef)
 struct monst *mdef;
 {
+    if (!mdef)
+        return;
+
+    char bcbuf[BUFSZ];
+    Sprintf(bcbuf, "mongone: mnum=%d (%s), mid=%u, wormno=%u, mx=%d, my=%d, peaceful=%d, tame=%d", mdef->mnum, mdef->data->mname, mdef->m_id, mdef->wormno, mdef->mx, mdef->my, is_peaceful(mdef), is_tame(mdef));
+    debugprint("%s", bcbuf);
+    issue_breadcrumb(bcbuf);
+
     mdef->mhp = 0; /* can skip some inventory bookkeeping */
 
     if (!program_state.in_bones || program_state.gameover)

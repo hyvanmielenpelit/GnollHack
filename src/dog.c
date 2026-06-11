@@ -963,6 +963,12 @@ boolean with_you;
     xlocale = mtmp->mtrack[1].x;
     ylocale = mtmp->mtrack[1].y;
     memset(mtmp->mtrack, 0, sizeof mtmp->mtrack);
+    if (mtmp->mon_flags & MON_FLAGS_ADD_UNSUMMON_TIMER)
+    {
+        /* Timer has already elapsed, so add a few rounds to expiry after mon arrives on level */
+        mtmp->summonduration = rnd(3);
+        begin_summontimer(mtmp);
+    }
 
     if (mtmp == u.usteed)
         return; /* don't place steed on the map */
