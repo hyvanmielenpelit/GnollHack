@@ -5017,7 +5017,7 @@ struct item_description_stats* stats_ptr; /* If non-null, only returns item stat
                     if (formula_dmg_dice_small != 0)
                     {
                         if (formula_dmg_dice_big != 0)
-                            Strcat(buf2, "{");
+                            Strcat(buf2, "(");
 
                         Sprintf(eos(buf2), "%dd%d", formula_dmg_dice_small, formula_dmg_diesize_small);
                         if (formula_dmg_plus_small != 0)
@@ -5035,7 +5035,7 @@ struct item_description_stats* stats_ptr; /* If non-null, only returns item stat
                             Sprintf(eos(buf2), "%s%d", formula_dmg_plus_big > 0 ? "+" : "", formula_dmg_plus_big);
                         Strcat(buf2, " [large]");
                         if (formula_dmg_dice_small != 0)
-                            Strcat(buf2, "}");
+                            Strcat(buf2, ")");
                     }
 
                     if (formula_simple_damage != 0)
