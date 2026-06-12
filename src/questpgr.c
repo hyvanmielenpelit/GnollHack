@@ -777,11 +777,13 @@ qt_montype()
         qpm = urole.enemy1num;
         if (qpm != NON_PM && rn2(5) && !(mvitals[qpm].mvflags & MV_GENOCIDED))
             return &mons[qpm];
+        debugprint_pos();
         return mkclass(urole.enemy1sym, 0);
     }
     qpm = urole.enemy2num;
     if (qpm != NON_PM && rn2(5) && !(mvitals[qpm].mvflags & MV_GENOCIDED))
         return &mons[qpm];
+    debugprint_pos();
     return mkclass(urole.enemy2sym, 0);
 }
 

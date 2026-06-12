@@ -503,6 +503,7 @@ int psflags;
             {
             by_class:
                 class = name_to_monclass(buf, &mntmp);
+                debugprint_pos();
                 if (class && mntmp == NON_PM)
                     mntmp = mkclass_poly(class);
             }

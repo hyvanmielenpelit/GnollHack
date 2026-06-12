@@ -3821,7 +3821,7 @@ uint64_t mflags;
     boolean ispoly = (mflags & MKCLASS_FLAGS_POLYMORPH) != 0;
 
     if (mclass < 1 || mclass >= MAX_MONSTER_CLASSES) {
-        impossible("mkclass called with bad class!");
+        impossible("mkclass called with bad class: %d", (int)mclass);
         return (struct permonst*)0;
     }
 
@@ -4917,6 +4917,7 @@ uint64_t mmflags, mmflags2;
             }
             else if (level.flags.mon_gen_infos[sel_index].mclass > 0 && level.flags.mon_gen_infos[sel_index].mclass < MAX_MONSTER_CLASSES)
             {
+                debugprint_pos();
                 struct permonst* pm = mkclass(level.flags.mon_gen_infos[sel_index].mclass, 0);
                 if(pm)
                     mtmp = makemon2(pm, x, y, mmflags, mmflags2);

@@ -1846,6 +1846,7 @@ struct mkroom *croom;
     }
     else 
     {
+        debugprint_pos();
         pm = mkclass(class, 0UL); /* Removed G_NOGEN; did not seem to make a whole lot of sense here. --JG */
         /* if we can't get a specific monster type (pm == 0) then the
            class has been genocided, so settle for a random monster */
@@ -4411,6 +4412,7 @@ struct sp_coder *coder;
 
                     if (def_char_to_monclass(monclass) != MAX_MONSTER_CLASSES)
                     {
+                        debugprint_pos();
                         pm = mkclass(def_char_to_monclass(monclass), 0); /* Removed NOGEN */
                     }
                     else

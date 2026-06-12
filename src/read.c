@@ -4522,6 +4522,7 @@ struct _create_particular_data *d;
         whichpm = &mons[d->which];
     }
 
+    debugprint_pos();
     context.makemon_spef_idx = 0;
     for (i = 0; i <= multi; i++)
     {

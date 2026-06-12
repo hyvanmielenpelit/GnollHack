@@ -7289,6 +7289,7 @@ struct trap* lever;
                 int montyp = (int)lever->effect_param1;
                 if (lever->effect_param3 == STATUE_TRAP && montyp == NON_PM && (char)lever->effect_param2 > 0)
                 {
+                    debugprint_pos();
                     struct permonst* pm = mkclass((char)lever->effect_param2, 0);
                     if(pm)
                         montyp = monsndx(pm);
@@ -7348,6 +7349,7 @@ struct trap* lever;
             }
             else if (lever->effect_param2 >= 0)
             {
+                debugprint_pos();
                 mtmp = makemon(lever->effect_param2 == 0 ? (struct permonst*)0 : mkclass((char)lever->effect_param2, 0), target_x, target_y, lever->effect_flags | MM_ADJACENTOK);
             }
             if (mtmp)

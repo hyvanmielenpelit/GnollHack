@@ -875,6 +875,7 @@ int spellnum;
     case CLC_INSECTS: 
     case CLC_SNAKES:
     {
+        debugprint_pos();
         /* Try for insects, and if there are none
            left, go for (sticks to) snakes.  -3. */
         char let = (spellnum == CLC_INSECTS ? S_ANT : S_SNAKE);
@@ -901,6 +902,7 @@ int spellnum;
             if (!enexto(&bypos, mtmp->mux, mtmp->muy, mtmp->data))
                 break;
             
+            debugprint_pos();
             if ((pm = mkclass(let, 0)) != 0
                 && (mtmp2 = makemon(pm, bypos.x, bypos.y, MM_ANGRY | MM_PLAY_SUMMON_ANIMATION | MM_SUMMON_MONSTER_ANIMATION | (context.makemon_spef_idx == 0 ? MM_PLAY_SUMMON_SOUND : 0UL))) != 0)
             {
