@@ -2655,6 +2655,9 @@ int64_t timeout;
     if (!obj)
         return FALSE;
 
+    debugprint("unsummon_item: otyp=%d", obj->otyp);
+    issue_breadcrumb2("unsummon_item: otyp=", obj->otyp);
+
     if (timeout)
     {
         /* Do nothing */
@@ -2681,7 +2684,7 @@ int64_t timeout;
         Strcpy(whosebuf, "Your ");
         canseeunsummon = TRUE;
     }
-    else if (obj->where == OBJ_MINVENT && obj->owornmask) 
+    else if (obj->where == OBJ_MINVENT && obj->ocarry && obj->owornmask)
     {
         if (obj == MON_WEP(obj->ocarry))
         {
@@ -2691,7 +2694,7 @@ int64_t timeout;
         {
             obj->owornmask = 0L;
         }
-        if (obj->ocarry && canseemon(obj->ocarry))
+        if (mon_is_local_mx(obj->ocarry) && canseemon(obj->ocarry))
         {
             canseeunsummon = TRUE;
             Strcpy(whosebuf, s_suffix(Monnam(obj->ocarry)));
@@ -2850,7 +2853,7 @@ struct monst* mon;
 
 
 /*
- * Start a summon timeout on the given monster.
+ * Start a timeout for the time stop spell.
  */
 void
 begin_timestoptimer(duration)
