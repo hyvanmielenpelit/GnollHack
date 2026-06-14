@@ -1899,13 +1899,13 @@ int after; /* this is extra fast monster movement */
      * spend all their energy defending the player.  (They are the only
      * monsters with other structures that can be tame.)
      */
+     /* It seems that tame angels can have both structures --JG */
 
-    /* It seems that tame angels can have both structures --JG */
+    if (dog_hunger(mtmp, edog))
+        return 2; /* starved */
 
     omx = mtmp->mx;
     omy = mtmp->my;
-    if (dog_hunger(mtmp, edog))
-        return 2; /* starved */
 
     udist = distu(omx, omy);
     /* Let steeds eat and maybe throw rider during Conflict */
@@ -1929,6 +1929,7 @@ int after; /* this is extra fast monster movement */
         if (mtmp->mcomingtou && !m_canseeu(mtmp) && !couldsee(mtmp->mx, mtmp->my) && distu(mtmp->mx, mtmp->my) > 2)
         {
             mtmp->mcomingtou = 0;
+            debugprint_pos();
             mnexto2(mtmp, TRUE);
             return 1;
         }
@@ -1947,11 +1948,15 @@ int after; /* this is extra fast monster movement */
         {
             edog->chastised--;
         }
+        debugprint_pos();
         j = dog_invent(mtmp, edog, udist);
         if (j == 2)
             return 2; /* died */
         else if (j == 1)
+        {
+            debugprint_pos();
             goto newdogpos; /* eating something */
+        }
 
         whappr = (monstermoves - edog->whistletime < 5);
     }
@@ -2202,6 +2207,7 @@ int after; /* this is extra fast monster movement */
                     do_eat = TRUE;
                     cursemsg[i] = FALSE; /* not reluctant */
                     cursedobj[i] = 0;
+                    debugprint_pos();
                     goto newdogpos;
                 }
             }
@@ -2328,6 +2334,8 @@ int after; /* this is extra fast monster movement */
             }
         }
     }
+
+    debugprint_pos();
 
 newdogpos:
     if(mtmp->mwantstomove)

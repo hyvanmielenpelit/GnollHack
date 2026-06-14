@@ -348,6 +348,7 @@ register struct monst *magr, *mdef;
         return MM_MISS;
 
     //reset_monster_origin_coordinates(&youmonst);
+    debugprint("mattackm: magr: mnum=%d, mx=%d, my=%d, mdef: mnum=%d, mx=%d, my=%d, moves=%lld", magr->mnum, magr->mx, magr->my, mdef->mnum, mdef->mx, mdef->my, (long long)moves);
 
     /* Update facing */
     update_m_facing(magr, mdef->mx - magr->mx, TRUE);
