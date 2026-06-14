@@ -954,10 +954,12 @@ int x, y;
     if (level.monsters[x][y])
     {
         s_level* slev = Is_special(&u.uz);
-        impossible("placing monster (mnum=%d%s) over another (mnum=%d%s) at <%d,%d> on level (%d,%d,%s) [mklev=%d,mx=%d,my=%d,ux=%d,uy=%d]?", 
-            mon->mnum, mon->isshk ? ", shopkeeper" : mon->isnpc ? ", npc" : mon->ispriest ? ", priest" : mon->issmith ? ", smith" : "",
-            level.monsters[x][y]->mnum, level.monsters[x][y] == mon ? ", same" : "",
-            x, y, (int)u.uz.dnum, (int)u.uz.dlevel, slev ? slev->name : "normal", (int)in_mklev, mon->mx, mon->my, u.ux, u.uy);
+        impossible("placing monster (mnum=%d%s%s) over another (mnum=%d%s%s) at <%d,%d> on level (%d,%d,%s) [mklev=%d,mx=%d,my=%d,ux=%d,uy=%d,moves=%lld]?", 
+            mon->mnum, mon->isshk ? ", shopkeeper" : mon->isnpc ? ", npc" : mon->ispriest ? ", priest" : mon->issmith ? ", smith" : mon->isgd ? ", guard" : mon->isminion ? ", minion" : mon->wormno ? ", worm" : "",
+            is_tame(mon) ? ", tame" : ", nontame",
+            level.monsters[x][y]->mnum, level.monsters[x][y] == mon ? ", same" : mon->mnum == level.monsters[x][y]->mnum ? ", not same" : "",
+            is_tame(level.monsters[x][y]) ? ", tame" : ", nontame",
+            x, y, (int)u.uz.dnum, (int)u.uz.dlevel, slev ? slev->name : "normal", (int)in_mklev, mon->mx, mon->my, u.ux, u.uy, (long long)moves);
     }
     mon->mx = x, mon->my = y;
     level.monsters[x][y] = mon;
