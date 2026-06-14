@@ -1022,14 +1022,18 @@ struct monst* origmonst;
         res = 1;
         play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, 0, mtmp->mx, mtmp->my, FALSE);
         special_effect_wait_until_action(0);
+        debugprint("dominate/charm monster before: otyp=%d, mnum=%d, mx=%d, my=%d, tame=%d", otyp, mtmp->mnum, mtmp->mx, mtmp->my, is_tame(mtmp));
         helpful_gesture = (maybe_tame(mtmp, otmp, &youmonst) == 1 || is_tame(mtmp));
+        debugprint("dominate/charm monster after: otyp=%d, mnum=%d, mx=%d, my=%d, tame=%d, res=%d", otyp, mtmp->mnum, mtmp->mx, mtmp->my, is_tame(mtmp), (int)helpful_gesture);
         special_effect_wait_until_end(0);
         break;
     case SPE_CONTROL_UNDEAD:
         res = 1;
         play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, 0, mtmp->mx, mtmp->my, FALSE);
         special_effect_wait_until_action(0);
+        debugprint("control undead before: otyp=%d, mnum=%d, mx=%d, my=%d, tame=%d", otyp, mtmp->mnum, mtmp->mx, mtmp->my, is_tame(mtmp));
         helpful_gesture = (maybe_controlled(mtmp, otmp, &youmonst) == 1 || is_tame(mtmp));
+        debugprint("control undead after: otyp=%d, mnum=%d, mx=%d, my=%d, tame=%d, res=%d", otyp, mtmp->mnum, mtmp->mx, mtmp->my, is_tame(mtmp), (int)helpful_gesture);
         special_effect_wait_until_end(0);
         break;
     case WAN_POLYMORPH:
