@@ -933,6 +933,11 @@ place_monster(mon, x, y)
 struct monst *mon;
 int x, y;
 {
+    if (!mon)
+        return;
+
+    debugprint("place_monster: mnum=%d, x=%d, y=%d, mx=%d, my=%d, atmxmy=%d, tame=%d", mon->mnum, x, y, mon->mx, mon->my, isok(mon->mx, mon->my) ? level.monsters[mon->mx][mon->my] == mon : -1, is_tame(mon));
+    
     /* normal map bounds are <1..COLNO-1,0..ROWNO-1> but sometimes
        vault guards (either living or dead) are parked at <0,0> */
     if (!isok(x, y) && (x != 0 || y != 0 || !mon->isgd)) {

@@ -351,8 +351,8 @@ static struct Comp_Opt {
                * a different format */
     int optflags;
 } compopt[] = {
-    { "animation_interval", "animation frame interval in milliseconds", 3, SET_IN_GAME },  /*WC2*/
-    { "align", "your starting alignment (lawful, neutral, or chaotic)", 8,
+    { "animation_interval", "animation frame interval in milliseconds", 20, SET_IN_GAME },  /*WC2*/
+    { "align", "your starting alignment (lawful, neutral, or chaotic)", 10,
       DISP_IN_GAME },
     { "align_message", "message window alignment", 20, DISP_IN_GAME }, /*WC*/
     { "align_status", "status window alignment", 20, DISP_IN_GAME },   /*WC*/
@@ -361,22 +361,22 @@ static struct Comp_Opt {
     { "boulder", "deprecated (use S_boulder in sym file instead)", 1,
       SET_IN_GAME },
 #endif
-    { "catbreed", "the breed of your (first) cat (e.g., catbreed:white persian)", 32, DISP_IN_GAME },
-    { "catgender", "the gender of your (first) cat (e.g., catgender:female)", 7, DISP_IN_GAME },
+    { "catbreed", "the breed of your (first) cat (e.g., catbreed:white persian)", 40, DISP_IN_GAME },
+    { "catgender", "the gender of your (first) cat (e.g., catgender:female)", 20, DISP_IN_GAME },
     { "catname", "the name of your (first) cat (e.g., catname:Tabby)",
       PL_PSIZ, DISP_IN_GAME },
-    { "crawl_interval", "crawl movement interval in milliseconds", 3, SET_IN_GAME },
+    { "crawl_interval", "crawl movement interval in milliseconds", 20, SET_IN_GAME },
     { "disclose", "the kinds of information to disclose at end of game",
       sizeof flags.end_disclose * 2, SET_IN_GAME },
-    { "dogbreed", "the breed of your (first) dog (e.g., dogbreed:black labrador)", 32, DISP_IN_GAME },
-    { "doggender", "the gender of your (first) dog (e.g., doggender:male)", 7, DISP_IN_GAME },
+    { "dogbreed", "the breed of your (first) dog (e.g., dogbreed:black labrador)", 40, DISP_IN_GAME },
+    { "doggender", "the gender of your (first) dog (e.g., doggender:male)", 20, DISP_IN_GAME },
     { "dogname", "the name of your (first) dog (e.g., dogname:Fang)", PL_PSIZ,
       DISP_IN_GAME },
     { "dungeon", "the symbols to use in drawing the dungeon map",
       MAX_DUNGEON_CHARS + 1, SET_IN_FILE },
     { "effects", "the symbols to use in drawing special effects",
       MAX_EFFECT_CHARS + 1, SET_IN_FILE },
-    { "engrave_quickstyle", "stylus selection style for engrave quick command", 3, SET_IN_GAME },
+    { "engrave_quickstyle", "stylus selection style for engrave quick command", 10, SET_IN_GAME },
     { "engrave_quicktext", "the preset text for engrave quick command", PL_ESIZ, SET_IN_GAME },
     { "font_map", "the font to use in the map window", 40,
       DISP_IN_GAME },                                              /*WC*/
@@ -397,20 +397,20 @@ static struct Comp_Opt {
     { "font_text", "the font to use in text windows", 40,
       DISP_IN_GAME }, /*WC*/
     { "fruit", "the name of a fruit you enjoy eating", PL_FSIZ, SET_IN_GAME },
-    { "gender", "your starting gender (male or female)", 8, DISP_IN_GAME },
+    { "gender", "your starting gender (male or female)", 20, DISP_IN_GAME },
     { "here_window_size",
       "number of rows in the here window",
       20, SET_IN_GAME
     }, /*WC2*/
-    { "horsegender", "the gender of your (first) horse (e.g., horsegender:female)", 7, DISP_IN_GAME },
+    { "horsegender", "the gender of your (first) horse (e.g., horsegender:female)", 20, DISP_IN_GAME },
     { "horsename", "the name of your (first) horse (e.g., horsename:Silver)",
       PL_PSIZ, DISP_IN_GAME },
-    { "last_item_show_duration", "duration for showing last item in context menu", 3,
+    { "last_item_show_duration", "duration for showing last item in context menu", 10,
       SET_IN_GAME },
     { "luggagename", "the name of your (first) luggage (e.g., luggagename:Albert)",
       PL_PSIZ, DISP_IN_GAME },
     { "map_mode", "map display mode under Windows", 20, DISP_IN_GAME }, /*WC*/
-    { "max_hint_difficulty", "maximum difficulty level for showing hints", 3,
+    { "max_hint_difficulty", "maximum difficulty level for showing hints", 10,
       DISP_IN_GAME },
     { "menustyle", "user interface for object selection", MENUTYPELEN,
       SET_IN_GAME },
@@ -418,7 +418,7 @@ static struct Comp_Opt {
     { "menu_deselect_page", "deselect all items on this page of a menu", 4,
       SET_IN_FILE },
     { "menu_first_page", "jump to the first page in a menu", 4, SET_IN_FILE },
-    { "menu_headings", "text attribute for menu headings", 9, SET_IN_GAME },
+    { "menu_headings", "text attribute for menu headings", 20, SET_IN_GAME },
     { "menu_invert_all", "invert all items in a menu", 4, SET_IN_FILE },
     { "menu_invert_page", "invert all items on this page of a menu", 4,
       SET_IN_FILE },
@@ -429,11 +429,11 @@ static struct Comp_Opt {
     { "menu_select_all", "select all items in a menu", 4, SET_IN_FILE },
     { "menu_select_page", "select all items on this page of a menu", 4,
       SET_IN_FILE },
-    { "middle_click_command", "command upon clicking middle mouse button", 32, SET_IN_GAME },
+    { "middle_click_command", "command upon clicking middle mouse button", 40, SET_IN_GAME },
     { "monsters", "the symbols to use for monsters", MAX_MONSTER_CLASSES,
       SET_IN_FILE },
-    { "move_interval", "normal movement interval in milliseconds", 3, SET_IN_GAME },
-    { "msghistory", "number of top line messages to save", 5, DISP_IN_GAME },
+    { "move_interval", "normal movement interval in milliseconds", 20, SET_IN_GAME },
+    { "msghistory", "number of top line messages to save", 20, DISP_IN_GAME },
 #if defined(TTY_GRAPHICS) || defined(CURSES_GRAPHICS)
     { "msg_window", "the type of message window required", 1, SET_IN_GAME },
 #else
@@ -449,68 +449,68 @@ static struct Comp_Opt {
 #ifdef CHANGE_COLOR
     { "palette",
 #ifndef WIN32
-      "palette (00c/880/-fff is blue/yellow/reverse white)", 15, SET_IN_GAME
+      "palette (00c/880/-fff is blue/yellow/reverse white)", 40, SET_IN_GAME
 #else
-      "palette (adjust an RGB color in palette (color-R-G-B)", 15, SET_IN_FILE
+      "palette (adjust an RGB color in palette (color-R-G-B)", 40, SET_IN_FILE
 #endif
     },
 #if defined(MAC)
-    { "hicolor", "same as palette, only order is reversed", 15, SET_IN_FILE },
+    { "hicolor", "same as palette, only order is reversed", 40, SET_IN_FILE },
 #endif
 #endif
-    { "paranoid_confirmation", "extra prompting in certain situations", 28,
+    { "paranoid_confirmation", "extra prompting in certain situations", 256,
       SET_IN_GAME },
-    { "petattr",  "attributes for highlighting pets", 88, SET_IN_GAME },
-    { "pettype", "your preferred initial pet type", 4, DISP_IN_GAME },
+    { "petattr",  "attributes for highlighting pets", 128, SET_IN_GAME },
+    { "pettype", "your preferred initial pet type", 20, DISP_IN_GAME },
     { "pickup_burden", "maximum burden picked up before prompt", 20,
       SET_IN_GAME },
     { "pickup_types", "types of objects to pick up automatically",
       MAX_OBJECT_CLASSES, SET_IN_GAME },
-    { "pile_limit", "threshold for \"there are many objects here\"", 24,
+    { "pile_limit", "threshold for \"there are many objects here\"", 40,
       SET_IN_GAME },
-    { "playmode", "classic or modern play, non-scoring explore or casual mode, or debug mode", 8,
+    { "playmode", "classic or modern play, non-scoring explore or casual mode, or debug mode", 20,
       DISP_IN_GAME },
-    { "player_selection", "choose character via dialog or prompts", 12,
+    { "player_selection", "choose character via dialog or prompts", 20,
       DISP_IN_GAME },
 #ifdef USE_TILES
-    { "preferred_screen_scale", "preferred screen scale", 3,
+    { "preferred_screen_scale", "preferred screen scale", 20,
       SET_IN_GAME },
 #endif
     { "race", "your starting race (e.g., Human, Elf)", PL_CSIZ,
       DISP_IN_GAME },
-    { "ramgender", "the gender of your (first) ram (e.g., ramgender:male)", 7, DISP_IN_GAME },
+    { "ramgender", "the gender of your (first) ram (e.g., ramgender:male)", 20, DISP_IN_GAME },
     { "ramname", "the name of your (first) ram (e.g., ramname:Silver)",
       PL_PSIZ, DISP_IN_GAME },
-    { "right_click_command", "command upon clicking right mouse button", 32, SET_IN_GAME },
+    { "right_click_command", "command upon clicking right mouse button", 40, SET_IN_GAME },
     { "role", "your starting role (e.g., Barbarian, Valkyrie)", PL_CSIZ,
       DISP_IN_GAME },
     { "runmode", "display frequency when `running' or `travelling'",
-      sizeof "teleport", SET_IN_GAME },
-    { "run_spot_distance", "longest distance for spotting a monster to stop running or travelling", 3,
+      sizeof "teleport" + 10, SET_IN_GAME },
+    { "run_spot_distance", "longest distance for spotting a monster to stop running or travelling", 20,
       SET_IN_GAME },
-    { "scores", "the parts of the score list you wish to see", 32,
+    { "scores", "the parts of the score list you wish to see", 40,
       SET_IN_GAME },
     { "scroll_amount", "amount to scroll map when scroll_margin is reached",
       20, DISP_IN_GAME }, /*WC*/
     { "scroll_margin", "scroll map when this far from the edge", 20,
       DISP_IN_GAME }, /*WC*/
-    { "shield_effect_length", "shield effect length", 3,
+    { "shield_effect_length", "shield effect length", 20,
       SET_IN_GAME },
-    { "sortloot", "sort object selection lists by description", 4,
+    { "sortloot", "sort object selection lists by description", 20,
       SET_IN_GAME },
-    { "sound_volume_ambient", "ambient volume", 3,
+    { "sound_volume_ambient", "ambient volume", 20,
       SET_IN_GAME }, /*WC2*/
-    { "sound_volume_dialogue", "dialogue volume", 3,
+    { "sound_volume_dialogue", "dialogue volume", 20,
       SET_IN_GAME }, /*WC2*/
-    { "sound_volume_effects", "sound effect volume", 3,
+    { "sound_volume_effects", "sound effect volume", 20,
       SET_IN_GAME }, /*WC2*/
-    { "sound_volume_general", "general game volume", 3,
+    { "sound_volume_general", "general game volume", 20,
       SET_IN_GAME }, /*WC2*/
-    { "sound_volume_music", "music volume", 3,
+    { "sound_volume_music", "music volume", 20,
       SET_IN_GAME }, /*WC2*/
-    { "sound_volume_ui", "user interface sound volume", 3,
+    { "sound_volume_ui", "user interface sound volume", 20,
       SET_IN_GAME }, /*WC2*/
-    { "spellorder", "default spell sorting", 3,
+    { "spellorder", "default spell sorting", 20,
       SET_IN_GAME },
 #ifdef MSDOS
     { "soundcard", "type of sound card to use", 20, SET_IN_FILE },
@@ -538,11 +538,11 @@ static struct Comp_Opt {
       "load a set of rogue display symbols from the symbols file", 70,
       SET_IN_GAME },
 #ifdef WIN32
-    { "subkeyvalue", "override keystroke value", 7, SET_IN_FILE },
+    { "subkeyvalue", "override keystroke value", 10, SET_IN_FILE },
 #endif
-    { "suppress_alert", "suppress alerts about version-specific features", 8,
+    { "suppress_alert", "suppress alerts about version-specific features", 10,
       SET_IN_GAME },
-    { "talk_effect_length", "talk effect length", 3,
+    { "talk_effect_length", "talk effect length", 20,
       SET_IN_GAME },
     /* term_cols,term_rows -> WC2_TERM_SIZE (6: room to format 1..32767) */
     { "term_cols", "number of columns", 6, SET_IN_FILE }, /*WC2*/
@@ -560,7 +560,7 @@ static struct Comp_Opt {
 #ifdef VIDEOSHADES
     { "videocolors", "color mappings for internal screen routines", 40,
       DISP_IN_GAME },
-    { "videoshades", "gray shades to map to black/gray/white", 32,
+    { "videoshades", "gray shades to map to black/gray/white", 40,
       DISP_IN_GAME },
 #endif
     { "whatis_coord", "show coordinates when auto-describing cursor position",
@@ -575,7 +575,7 @@ static struct Comp_Opt {
 #ifdef WINCHAIN
     { "windowchain", "window processor to use", WINTYPELEN, SET_IN_SYS },
 #endif
-    { "wolfgender", "the gender of your (first) direwolf (e.g., wolfgender:female)", 7, DISP_IN_GAME },
+    { "wolfgender", "the gender of your (first) direwolf (e.g., wolfgender:female)", 20, DISP_IN_GAME },
     { "wolfname", "the name of your (first) direwolf (e.g., wolfname:Shadow)",
         PL_PSIZ, DISP_IN_GAME },
 #ifdef BACKWARD_COMPAT
