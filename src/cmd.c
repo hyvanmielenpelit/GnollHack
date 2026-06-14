@@ -9069,7 +9069,7 @@ int x, y, mod;
     memset(cmd, 0, sizeof(cmd));
 
     char dbgbuf[BUFSZ];
-    Sprintf(dbgbuf, "click_to_cmd: x=%d, y=%d, mod=%d, ux=%d, uy=%d", x, y, mod, u.ux, u.uy);
+    Sprintf(dbgbuf, "click_to_cmd: x=%d, y=%d, mod=%d, ux=%d, uy=%d, moves=%lld", x, y, mod, u.ux, u.uy, (long long)moves);
     issue_breadcrumb(dbgbuf);
 
     /* mod can be any value except CLICK_OFF */
@@ -10053,7 +10053,7 @@ uint64_t ynflags; /* 1 means use upper side for half-sized tile */
     char dumplog_buf[QBUFSZ + 1 + 15]; /* [QBUFSZ+1+7] should suffice */
 #endif
 
-    issue_breadcrumb3(query ? query : "yn_function_core: no query", style, (int)def);
+    issue_breadcrumb3(query ? query : "yn_function_core: no query", (int)def, (int)moves);
 
     iflags.last_msg = PLNMSG_UNKNOWN; /* most recent pline is clobbered */
 
