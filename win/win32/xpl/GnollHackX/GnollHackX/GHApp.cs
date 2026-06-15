@@ -3970,7 +3970,7 @@ namespace GnollHackX
                             0,     0,     1.0f, 0, 0,
                             0,     0,     0,    1, 0
                         });
-                    redcanvas.DrawImage(_orbFillBitmap, 0, 0, bmpPaint);
+                    redcanvas.DrawImage(_orbFillBitmap, 0, 0, SKSamplingOptions.Default, bmpPaint);
                 }
                 redbitmap.SetImmutable();
                 _orbFillBitmapRed = SKImage.FromBitmap(redbitmap);
@@ -3987,7 +3987,7 @@ namespace GnollHackX
                             0,     0,     0,     1,   0
                         });
 
-                    bluecanvas.DrawImage(_orbFillBitmap, 0, 0, bmpPaint);
+                    bluecanvas.DrawImage(_orbFillBitmap, 0, 0, SKSamplingOptions.Default, bmpPaint);
                 }
                 bluebitmap.SetImmutable();
                 _orbFillBitmapBlue = SKImage.FromBitmap(bluebitmap);
@@ -4014,7 +4014,7 @@ namespace GnollHackX
                             0,     0,     0.0f, 0, 0,
                             0,     0,     0,    1, 0
                         });
-                    redcanvas.DrawImage(_batteryFrameBitmap, 0, 0, bmpPaint);
+                    redcanvas.DrawImage(_batteryFrameBitmap, 0, 0, SKSamplingOptions.Default, bmpPaint);
                 }
                 redbitmap.SetImmutable();
                 _batteryRedFrameBitmap = SKImage.FromBitmap(redbitmap);
@@ -4034,7 +4034,7 @@ namespace GnollHackX
                             0,     0,     0.25f, 0, 0,
                             0,     0,     0,    1, 0
                         });
-                    redcanvas.DrawImage(_diskBitmap, 0, 0, bmpPaint);
+                    redcanvas.DrawImage(_diskBitmap, 0, 0, SKSamplingOptions.Default, bmpPaint);
                 }
                 redbitmap.SetImmutable();
                 _diskRedBitmap = SKImage.FromBitmap(redbitmap);
@@ -4054,7 +4054,7 @@ namespace GnollHackX
                             0,     0,     0.25f, 0, 0,
                             0,     0,     0,    1, 0
                         });
-                    yellowcanvas.DrawImage(_diskBitmap, 0, 0, bmpPaint);
+                    yellowcanvas.DrawImage(_diskBitmap, 0, 0, SKSamplingOptions.Default, bmpPaint);
                 }
                 yellowbitmap.SetImmutable();
                 _diskYellowBitmap = SKImage.FromBitmap(yellowbitmap);
