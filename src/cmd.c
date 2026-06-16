@@ -9469,21 +9469,17 @@ int x, y, mod;
                         }
                         if (!has_already_wielded_pole || !already_wielded_pole_inrange)
                         {
-                            boolean has_swapped_polearm = (uswapwep && is_appliable_pole_type_weapon(uswapwep));
-                            boolean swapped_pole_inrange = FALSE;
-                            boolean swapped_too_far = FALSE;
-                            if (has_swapped_polearm)
+                            if (uswapwep && is_appliable_pole_type_weapon(uswapwep))
                             {
+                                boolean swapped_pole_inrange = FALSE;
+                                boolean swapped_too_far = FALSE;
                                 int max_range = 2, min_range = 1;
                                 get_pole_type_weapon_min_max_distances(uswapwep, &youmonst, &min_range, &max_range);
                                 if (distance2 >= min_range && distance2 <= max_range)
                                     swapped_pole_inrange = TRUE;
                                 else
                                     swapped_too_far = distance2 > max_range;
-                            }
 
-                            if (has_swapped_polearm)
-                            {
                                 if (swapped_pole_inrange && !cursed_weapon_blocks_swap)
                                 {
                                     boolean doswap; /* Check that you could not fire instead */
@@ -9551,22 +9547,18 @@ int x, y, mod;
                         }
                     }
 
-                    boolean has_pole = uwep && is_appliable_pole_type_weapon(uwep);
-                    boolean too_far = FALSE;
-                    boolean pole_inrange = FALSE;
-                    if (has_pole)
+                    /* Polearm */
+                    if (uwep && is_appliable_pole_type_weapon(uwep))
                     {
+                        boolean pole_inrange = FALSE;
+                        boolean too_far = FALSE;
                         int max_range = 2, min_range = 1;
                         get_pole_type_weapon_min_max_distances(uwep, &youmonst, &min_range, &max_range);
                         if (distance2 >= min_range && distance2 <= max_range)
                             pole_inrange = TRUE;
                         else
                             too_far = distance2 > max_range;
-                    }
 
-                    /* Polearm */
-                    if (has_pole)
-                    {
                         if (pole_inrange)
                         {
                             clickpole_cc.x = target_x;
