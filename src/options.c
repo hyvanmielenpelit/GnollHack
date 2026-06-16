@@ -126,6 +126,7 @@ static struct Bool_Opt {
     { "classic_colors", "use classic colors for boulders and floor symbols", &flags.classic_colors, FALSE, SET_IN_GAME},
     { "clickfire", "enable firing via mouse click", &iflags.clickfire, TRUE, SET_IN_GAME},
     { "clicklook", "enable looking via mouse click", &iflags.clicklook, TRUE, SET_IN_GAME},
+    { "clickpole", "enable use of polearm via mouse click", &iflags.clickpole, TRUE, SET_IN_GAME},
     { "cmdassist", "give help for errors on direction input", &iflags.cmdassist, TRUE, SET_IN_GAME},
 #if defined(MICRO) || defined(WIN32) || defined(ANDROID) ||  defined(GNH_MOBILE) || defined(CURSES_GRAPHICS)
     { "color", "use color in map", &iflags.wc_color, TRUE, SET_IN_GAME }, /*WC*/

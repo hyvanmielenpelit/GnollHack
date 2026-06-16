@@ -9446,13 +9446,154 @@ int x, y, mod;
         {
             if (is_mtmp_spotted)
             {
-                if (iflags.clickfire && dist2(u.ux, u.uy, target_x, target_y) > 2 &&
-                    (has_launcher || (iflags.autoswap_launchers && has_swapped_launcher_and_ammo && !cursed_weapon_blocks_swap) || has_throwing_weapon_quivered))
+                int distance2 = distu(target_x, target_y);
+                boolean can_fire = iflags.clickfire && distance2 > 2 &&
+                    (has_launcher || (iflags.autoswap_launchers && has_swapped_launcher_and_ammo && !cursed_weapon_blocks_swap) || has_throwing_weapon_quivered);
+                boolean straight_or_diagonal = !x || !y || abs(x) == abs(y);
+                boolean path_data_set = FALSE;
+                boolean path_is_clear = FALSE;
+                struct monst* mtmpinway = FALSE;
+
+                if (iflags.clickpole && distance2 > 2)
                 {
-                    if (!x || !y || abs(x) == abs(y)) /* straight line or diagonal */
+                    if (iflags.autoswap_polearms)
                     {
-                        boolean path_is_clear = clear_path(u.ux, u.uy, target_x, target_y);
-                        struct monst* mtmpinway = spotted_linedup_monster_in_way(u.ux, u.uy, target_x, target_y);
+                        boolean has_already_wielded_pole = uwep && is_appliable_pole_type_weapon(uwep);
+                        boolean already_wielded_pole_inrange = FALSE;
+                        if (has_already_wielded_pole)
+                        {
+                            int max_range = 2, min_range = 1;
+                            get_pole_type_weapon_min_max_distances(uwep, &youmonst, &min_range, &max_range);
+                            if (distance2 >= min_range && distance2 <= max_range)
+                                already_wielded_pole_inrange = TRUE;
+                        }
+                        if (!has_already_wielded_pole || !already_wielded_pole_inrange)
+                        {
+                            boolean has_swapped_polearm = (uswapwep && is_appliable_pole_type_weapon(uswapwep));
+                            boolean swapped_pole_inrange = FALSE;
+                            boolean swapped_too_far = FALSE;
+                            if (has_swapped_polearm)
+                            {
+                                int max_range = 2, min_range = 1;
+                                get_pole_type_weapon_min_max_distances(uswapwep, &youmonst, &min_range, &max_range);
+                                if (distance2 >= min_range && distance2 <= max_range)
+                                    swapped_pole_inrange = TRUE;
+                                else
+                                    swapped_too_far = distance2 > max_range;
+                            }
+
+                            if (has_swapped_polearm)
+                            {
+                                if (swapped_pole_inrange && !cursed_weapon_blocks_swap)
+                                {
+                                    boolean doswap; /* Check that you could not fire instead */
+                                    if (!can_fire || !straight_or_diagonal)
+                                    {
+                                        doswap = TRUE;
+                                    }
+                                    else
+                                    {
+                                        path_is_clear = clear_path(u.ux, u.uy, target_x, target_y);
+                                        mtmpinway = spotted_linedup_monster_in_way(u.ux, u.uy, target_x, target_y);
+                                        path_data_set = TRUE;
+                                        doswap = !path_is_clear || mtmpinway;
+                                    }
+
+                                    if (doswap)
+                                    {
+                                        if (uswapwep && objects[uswapwep->otyp].oc_bimanual)
+                                            (void)doswapweapon();
+                                        else
+                                            (void)doswapweapon_right_or_both();
+                                    }
+                                }
+                                else
+                                {
+                                    if (!can_fire)
+                                    {
+                                        if (!swapped_pole_inrange)
+                                        {
+                                            play_sfx_sound(SFX_GENERAL_CANNOT);
+                                            pline_ex(ATR_NONE, CLR_MSG_FAIL, "You cannot swap and hit at %s with %s; it is too %s.", mon_nam(mtmp), yname(uswapwep), swapped_too_far ? "far" : "close");
+                                            cmd[0] = '\0';
+                                            return cmd;
+                                        }
+                                        else if (cursed_weapon_blocks_swap)
+                                        {
+                                            play_sfx_sound(SFX_GENERAL_CANNOT);
+                                            pline_ex(ATR_NONE, CLR_MSG_FAIL, "You cannot swap and hit at %s with %s; a cursed weapon blocks swapping.", mon_nam(mtmp), yname(uswapwep));
+                                            cmd[0] = '\0';
+                                            return cmd;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        if (!straight_or_diagonal)
+                                        {
+                                            if (!swapped_pole_inrange)
+                                            {
+                                                play_sfx_sound(SFX_GENERAL_CANNOT);
+                                                pline_ex(ATR_NONE, CLR_MSG_FAIL, "You cannot swap and hit at %s with %s; it is too %s. Nor is it lined up for %s.", mon_nam(mtmp), yname(uswapwep), swapped_too_far ? "far" : "close", uwep && is_launcher(uwep) ? "firing" : "throwing");
+                                                cmd[0] = '\0';
+                                                return cmd;
+                                            }
+                                            else if (cursed_weapon_blocks_swap)
+                                            {
+                                                play_sfx_sound(SFX_GENERAL_CANNOT);
+                                                pline_ex(ATR_NONE, CLR_MSG_FAIL, "You cannot swap and hit at %s with %s; a cursed weapon blocks swapping. Nor is it lined up for %s.", mon_nam(mtmp), yname(uswapwep), uwep && is_launcher(uwep) ? "firing" : "throwing");
+                                                cmd[0] = '\0';
+                                                return cmd;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    boolean has_pole = uwep && is_appliable_pole_type_weapon(uwep);
+                    boolean too_far = FALSE;
+                    boolean pole_inrange = FALSE;
+                    if (has_pole)
+                    {
+                        int max_range = 2, min_range = 1;
+                        get_pole_type_weapon_min_max_distances(uwep, &youmonst, &min_range, &max_range);
+                        if (distance2 >= min_range && distance2 <= max_range)
+                            pole_inrange = TRUE;
+                        else
+                            too_far = distance2 > max_range;
+                    }
+
+                    /* Polearm */
+                    if (has_pole)
+                    {
+                        if (pole_inrange)
+                        {
+                            clickpole_cc.x = target_x;
+                            clickpole_cc.y = target_y;
+                            cmd[0] = Cmd.spkeys[NHKF_CLICKPOLE];
+                            return cmd;
+                        }
+                        else if (!can_fire)
+                        {
+                            play_sfx_sound(SFX_GENERAL_CANNOT);
+                            pline_ex(ATR_NONE, CLR_MSG_FAIL, "You cannot hit at %s with %s; it is too %s.", mon_nam(mtmp), yname(uwep), too_far ? "far" : "close");
+                            cmd[0] = '\0';
+                            return cmd;
+                        }
+                    }
+                }
+
+                if (can_fire)
+                {
+                    if (straight_or_diagonal) /* straight line or diagonal */
+                    {
+                        if (!path_data_set)
+                        {
+                            path_is_clear = clear_path(u.ux, u.uy, target_x, target_y);
+                            mtmpinway = spotted_linedup_monster_in_way(u.ux, u.uy, target_x, target_y);
+                            path_data_set = TRUE;
+                        }
                         if (path_is_clear && !mtmpinway)
                         {
                             if (iflags.autoswap_launchers && !has_launcher && has_swapped_launcher_and_ammo && !cursed_weapon_blocks_swap)
