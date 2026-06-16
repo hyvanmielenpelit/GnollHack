@@ -409,6 +409,8 @@ learn(VOID_ARGS)
     boolean gone = FALSE;
     struct monst* shkp = 0;
     boolean billable_book = FALSE;
+    if (!book || !carried(book))
+        return 0;
 
     if (book->unpaid && costly_spot(u.ux, u.uy))
     {

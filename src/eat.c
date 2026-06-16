@@ -2221,6 +2221,8 @@ STATIC_PTR int
 opentin(VOID_ARGS)
 {
     /* perhaps it was stolen (although that should cause interruption) */
+    if (!context.tin.tin)
+        return 0;
     if (!carried(context.tin.tin)
         && (!obj_here(context.tin.tin, u.ux, u.uy) || !can_reach_floor(TRUE)))
         return 0; /* %% probably we should use tinoid */

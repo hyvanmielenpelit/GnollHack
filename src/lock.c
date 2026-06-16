@@ -81,6 +81,9 @@ lock_action()
 STATIC_PTR int
 picklock(VOID_ARGS)
 {
+    if (!xlock.key)
+        return ((xlock.usedtime = 0));
+
     boolean key_found = FALSE;
     struct obj* otmp;
     for(otmp = invent; otmp; otmp = otmp->nobj)
