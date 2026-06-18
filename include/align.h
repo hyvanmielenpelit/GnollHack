@@ -8,6 +8,8 @@
 #define ALIGN_H
 
 typedef schar aligntyp; /* basic alignment type */
+#define ALIGNTYP_MAX 127
+#define ALIGNTYP_MIN (-128)
 
 typedef struct align { /* alignment & record */
     aligntyp type;

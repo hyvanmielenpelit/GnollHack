@@ -4471,7 +4471,11 @@ struct monst *mtmp;
     {
         mtmp->mhostility = -20;
     } 
-    else if (mal == A_NONE) 
+    else if (mtmp->data->msound == MS_NEMESIS)
+    {
+        mtmp->mhostility = 20;
+    }
+    else if (mal == A_NONE)
     {
         if (is_peaceful(mtmp))
             mtmp->mhostility = 1;
@@ -4481,26 +4485,26 @@ struct monst *mtmp;
     else if (always_peaceful(mtmp->data))
     {
         if (is_peaceful(mtmp))
-            mtmp->mhostility = -3 * max(5, absmal);
+            mtmp->mhostility = max(ALIGNTYP_MIN, -3 * max(5, absmal));
         else
-            mtmp->mhostility = 3 * max(5, absmal); /* renegade */
+            mtmp->mhostility = min(ALIGNTYP_MAX, 3 * max(5, absmal)); /* renegade */
     } 
     else if (always_hostile(mtmp->data)) 
     {
         if (coaligned)
             mtmp->mhostility = 1;
         else
-            mtmp->mhostility = max(5, absmal);
+            mtmp->mhostility = min(ALIGNTYP_MAX, max(5, absmal));
     }
     else if (coaligned) 
     {
         if (is_peaceful(mtmp))
-            mtmp->mhostility = -3 * max(3, absmal);
+            mtmp->mhostility = max(ALIGNTYP_MIN, -3 * max(3, absmal));
         else /* renegade */
-            mtmp->mhostility = max(3, absmal);
+            mtmp->mhostility = min(ALIGNTYP_MAX, max(3, absmal));
     } 
     else /* not coaligned and therefore hostile */
-        mtmp->mhostility = absmal;
+        mtmp->mhostility = min(ALIGNTYP_MAX, absmal);
 }
 
 /* allocate a new mcorpsenm field for a monster; only need mextra itself */

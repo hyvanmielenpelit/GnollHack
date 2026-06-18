@@ -6214,7 +6214,7 @@ struct permonst _mons2[] = {
         M3_WANTSARTI | M3_WAITFORU | M3_INFRAVISIBLE | M3_SPEAKING, 
         M4_PROPER_NAME, M5_NONE, M6_BOSS_MONSTER | M6_HUMAN_BREATHE_ANIMATION, M7_MONK, M8_NONE,
         40, HI_LORD, MONSTER_SOUNDSET_GENERIC, MONSTER_SOUNDSET_GENERIC, NO_SOUNDSET_SUBTYPE),
-    ENLARGED_MON("Nalzok", "large demon", "powerful demon capable of casting spells", None, None, S_DEMON, LVL(25, 20, -2, 15, 85, -127),
+    ENLARGED_MON("Nalzok", "large demon", "powerful demon capable of casting spells", None, None, S_DEMON, LVL(25, 20, -2, 15, 85, -20),
         (G_NOGEN | G_UNIQ | G_NOCORPSE),
         A(ATTK(AT_WEAP, AD_PHYS, 8, 4, 0, 0, 0, 0, 0UL, 0), ATTK(AT_WEAP, AD_PHYS, 4, 6, 0, 0, 0, 0, 0UL, 0),
           ATTK(AT_MAGC, AD_SPEL, 0, 0, 0, 0, 0, 0, 0UL, 0), ATTK(AT_CLAW, AD_SAMU, 2, 6, 0, 0, 0, 0, 0UL, 0), NO_ATTK,
