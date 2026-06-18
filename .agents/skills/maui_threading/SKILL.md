@@ -318,11 +318,11 @@ MainThread.BeginInvokeOnMainThread(() =>
 The map rendering uses a double-buffer to avoid contention between the game thread writing map updates and the render thread reading map data:
 
 ```
-Game Thread:                              Render Thread:
-┌──────────────┐                          ┌──────────────┐
-│ _mapDataMaster │ ─── copy ──→ │ _mapDataBuffer1 │
+Game Thread:                    Render Thread:
+┌────────────────┐              ┌────────────────────┐
+│ _mapDataMaster │ ─── copy ──→ │ _mapDataBuffer1    │
 │ (writes here)  │     under    │ or _mapDataBuffer2 │
-└──────────────┘     lock()     └──────────────┘
+└────────────────┘     lock()   └────────────────────┘
                                           │ Monitor.TryEnter
                                           │ reads _mapDataCurrent
                                           ▼
