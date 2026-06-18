@@ -853,6 +853,7 @@ namespace GnollHackX
         STATUS_MARK_TOWNGUARD_HOSTILE,
         STATUS_MARK_EATING,
         STATUS_MARK_FROZEN,
+        STATUS_MARK_HIGH_LEVEL,
         MAX_STATUS_MARKS
     }
 

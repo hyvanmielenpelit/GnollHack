@@ -2153,7 +2153,7 @@ boolean called;
                     Sprintf(buf, "%s%s %s", tmpbuf, pm_name, name);
                 else
                 {
-                    boolean is_high_level = (int)mtmp->m_lev >= (int)mdat->mlevel + 5 && (int)mtmp->m_lev >= (5 * (int)mdat->mlevel) / 4;
+                    boolean is_high_level = is_mon_high_level(mtmp);
                     Sprintf(buf, "%s%s the %s%s", tmpbuf, name, is_high_level ? "high-level " : "", pm_name);
                 }
             }

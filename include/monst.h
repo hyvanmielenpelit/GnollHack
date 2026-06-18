@@ -274,7 +274,7 @@ struct monst {
 
 #define cursed_items_are_positive_mon(mon) \
     (cursed_items_are_positive((mon)->data) || ((mon)->cham >= LOW_PM && cursed_items_are_positive(&mons[(mon)->cham])))
-
+#define is_mon_high_level(m) ((int)(m)->m_lev >= (int)(m)->data->mlevel + 5 && (int)(m)->m_lev >= (5 * (int)(m)->data->mlevel) / 4)
 
 /* mimic appearances that block vision/light */
 #define is_lightblocker_mappear(mon)                       \
