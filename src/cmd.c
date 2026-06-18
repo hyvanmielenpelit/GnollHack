@@ -9334,8 +9334,9 @@ int x, y, mod;
     }
 
     boolean has_launcher = (uwep && is_launcher(uwep));
+    boolean has_launcher_and_ammo = (has_launcher && ammo_and_launcher(uquiver, uwep));
     boolean has_swapped_launcher_and_ammo = (uswapwep && is_launcher(uswapwep) && ammo_and_launcher(uquiver, uswapwep));
-    boolean has_throwing_weapon_quivered = (uquiver && throwing_weapon(uquiver));
+    boolean has_throwing_weapon_quivered = (uquiver && throwing_weapon(uquiver) && !is_ammo(uquiver));
     boolean cursed_weapon_blocks_swap = (uswapwep && objects[uswapwep->otyp].oc_bimanual) || (uswapwep && uswapwep2 && !flags.swap_rhand_only) ? ((uwep && welded(uwep, &youmonst)) || (uarms && welded(uarms, &youmonst))) : (uwep && welded(uwep, &youmonst));
 
     /* Fire a bow */
@@ -9449,6 +9450,8 @@ int x, y, mod;
                 int distance2 = distu(target_x, target_y);
                 boolean can_fire = iflags.clickfire && distance2 > 2 &&
                     (has_launcher || (iflags.autoswap_launchers && has_swapped_launcher_and_ammo && !cursed_weapon_blocks_swap) || has_throwing_weapon_quivered);
+                boolean can_fire2 = iflags.clickfire && distance2 > 2 &&
+                    (has_launcher_and_ammo || (iflags.autoswap_launchers && has_swapped_launcher_and_ammo && !cursed_weapon_blocks_swap) || has_throwing_weapon_quivered);
                 boolean straight_or_diagonal = !x || !y || abs(x) == abs(y);
                 boolean path_data_set = FALSE;
                 boolean path_is_clear = FALSE;
@@ -9483,7 +9486,7 @@ int x, y, mod;
                                 if (swapped_pole_inrange && !cursed_weapon_blocks_swap)
                                 {
                                     boolean doswap; /* Check that you could not fire instead */
-                                    if (!can_fire || !straight_or_diagonal)
+                                    if (!can_fire2 || !straight_or_diagonal)
                                     {
                                         doswap = TRUE;
                                     }
@@ -9505,19 +9508,19 @@ int x, y, mod;
                                 }
                                 else
                                 {
-                                    if (!can_fire)
+                                    if (!can_fire2)
                                     {
                                         if (!swapped_pole_inrange)
                                         {
                                             play_sfx_sound(SFX_GENERAL_CANNOT);
-                                            pline_ex(ATR_NONE, CLR_MSG_FAIL, "You cannot swap and hit at %s with %s; it is too %s.", mon_nam(mtmp), yname(uswapwep), swapped_too_far ? "far" : "close");
+                                            pline_ex(ATR_NONE, CLR_MSG_FAIL, "You cannot swap and hit %s with %s; it is too %s.", mon_nam(mtmp), yname(uswapwep), swapped_too_far ? "far" : "close");
                                             cmd[0] = '\0';
                                             return cmd;
                                         }
                                         else if (cursed_weapon_blocks_swap)
                                         {
                                             play_sfx_sound(SFX_GENERAL_CANNOT);
-                                            pline_ex(ATR_NONE, CLR_MSG_FAIL, "You cannot swap and hit at %s with %s; a cursed weapon blocks swapping.", mon_nam(mtmp), yname(uswapwep));
+                                            pline_ex(ATR_NONE, CLR_MSG_FAIL, "You cannot swap and hit %s with %s; a cursed weapon blocks swapping.", mon_nam(mtmp), yname(uswapwep));
                                             cmd[0] = '\0';
                                             return cmd;
                                         }
@@ -9529,14 +9532,14 @@ int x, y, mod;
                                             if (!swapped_pole_inrange)
                                             {
                                                 play_sfx_sound(SFX_GENERAL_CANNOT);
-                                                pline_ex(ATR_NONE, CLR_MSG_FAIL, "You cannot swap and hit at %s with %s; it is too %s. Nor is it lined up for %s.", mon_nam(mtmp), yname(uswapwep), swapped_too_far ? "far" : "close", uwep && is_launcher(uwep) ? "firing" : "throwing");
+                                                pline_ex(ATR_NONE, CLR_MSG_FAIL, "You cannot swap and hit %s with %s; it is too %s. Nor is it lined up for %s.", mon_nam(mtmp), yname(uswapwep), swapped_too_far ? "far" : "close", uwep && is_launcher(uwep) ? "firing" : "throwing");
                                                 cmd[0] = '\0';
                                                 return cmd;
                                             }
                                             else if (cursed_weapon_blocks_swap)
                                             {
                                                 play_sfx_sound(SFX_GENERAL_CANNOT);
-                                                pline_ex(ATR_NONE, CLR_MSG_FAIL, "You cannot swap and hit at %s with %s; a cursed weapon blocks swapping. Nor is it lined up for %s.", mon_nam(mtmp), yname(uswapwep), uwep && is_launcher(uwep) ? "firing" : "throwing");
+                                                pline_ex(ATR_NONE, CLR_MSG_FAIL, "You cannot swap and hit %s with %s; a cursed weapon blocks swapping. Nor is it lined up for %s.", mon_nam(mtmp), yname(uswapwep), uwep && is_launcher(uwep) ? "firing" : "throwing");
                                                 cmd[0] = '\0';
                                                 return cmd;
                                             }
@@ -9566,10 +9569,10 @@ int x, y, mod;
                             cmd[0] = Cmd.spkeys[NHKF_CLICKPOLE];
                             return cmd;
                         }
-                        else if (!can_fire)
+                        else if (!can_fire2)
                         {
                             play_sfx_sound(SFX_GENERAL_CANNOT);
-                            pline_ex(ATR_NONE, CLR_MSG_FAIL, "You cannot hit at %s with %s; it is too %s.", mon_nam(mtmp), yname(uwep), too_far ? "far" : "close");
+                            pline_ex(ATR_NONE, CLR_MSG_FAIL, "You cannot hit %s with %s; it is too %s.", mon_nam(mtmp), yname(uwep), too_far ? "far" : "close");
                             cmd[0] = '\0';
                             return cmd;
                         }
