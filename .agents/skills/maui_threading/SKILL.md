@@ -35,8 +35,10 @@ GnollHack uses multiple threads to run the C game engine, render graphics, proce
               ▼
 ┌──────────────────────────────────────────────────────────┐
 │  RENDER THREAD (PaintSurface handler)                    │
-│  - CPU mode (SKCanvasView): runs on UI thread            │
-│  - GPU mode (SKGLView): runs on separate GPU thread      │
+│  - CPU mode (SKCanvasView): runs on UI thread (all)      │
+│  - GPU mode (SKGLView):                                  │
+│      Android: runs on separate GL thread                 │
+│      iOS/Windows: runs on UI thread                      │
 │  - Uses Monitor.TryEnter for ALL data reads (non-block)  │
 │  - Uses Interlocked for simple property reads            │
 │  - NEVER calls lock() — would block rendering            │
@@ -56,12 +58,16 @@ GnollHack uses multiple threads to run the C game engine, render graphics, proce
 |----------|-------------|-----------|-------------------|-------------|-------|
 | Android (GPU on) | 1 | 1 | 1 (per SKGLView) | 1+ | 4+ |
 | Android (GPU off) | 1 | 1 | 0 (PaintSurface on UI) | 1+ | 3+ |
-| iOS (GPU on) | 1 | 1 | 1 (per SKGLView) | 1+ | 4+ |
-| iOS (GPU off) | 1 | 1 | 0 | 1+ | 3+ |
-| Windows (GPU on) | 1 | 1 | 1 (SwapChain panel) | 1+ | 4+ |
-| Windows (GPU off) | 1 | 1 | 0 | 1+ | 3+ |
+| iOS (GPU on) | 1 | 1 | 0 (PaintSurface on UI) | 1+ | 3+ |
+| iOS (GPU off) | 1 | 1 | 0 (PaintSurface on UI) | 1+ | 3+ |
+| Windows (GPU on) | 1 | 1 | 0 (PaintSurface on UI) | 1+ | 3+ |
+| Windows (GPU off) | 1 | 1 | 0 (PaintSurface on UI) | 1+ | 3+ |
+
+**Important**: Only Android uses a separate GL thread for GPU-mode rendering. On iOS, `SKGLView` is backed by `GLKView`, which invokes `PaintSurface` on the main thread because UIKit is not thread-safe. On Windows, `SKSwapChainPanel` defaults to `DrawInBackground = false`, so `PaintSurface` also runs on the UI thread. GnollHack does not change this default.
 
 GPU mode is controlled by `GHApp.IsGPUDefault` (true by default in MAUI builds). Low-memory Android devices may disable auxiliary GPU canvases via `IsDisableAuxGPUDefault`. The `SwitchableCanvasView` toggles between `SKCanvasView` (CPU) and `SKGLView` (GPU) at runtime.
+
+Despite iOS and Windows running `PaintSurface` on the UI thread in GPU mode, the code uses `Monitor.TryEnter` and `Interlocked` uniformly across all platforms. This is intentional — the thread safety patterns are designed for the worst case (Android's separate GL thread) and remain correct on platforms where `PaintSurface` happens to run on the UI thread.
 
 ---
 
@@ -339,12 +345,17 @@ The [SwitchableCanvasView](file:///c:/hmp/GnollHack/win/win32/xpl/GnollHackX/Gno
 
 | Mode | View | Render Thread | Notes |
 |------|------|---------------|-------|
-| CPU | `SKCanvasView` | `PaintSurface` runs on **UI thread** | Simpler, fewer threading issues |
-| GPU | `SKGLView` | `PaintSurface` runs on **separate GPU thread** | Better performance, requires full thread safety |
+| CPU | `SKCanvasView` | `PaintSurface` runs on **UI thread** (all platforms) | Simpler, fewer threading issues |
+| GPU | `SKGLView` | **Android**: `PaintSurface` runs on **separate GL thread** | Better performance, requires full thread safety |
+| GPU | `SKGLView` | **iOS/Windows**: `PaintSurface` runs on **UI thread** | GPU-accelerated but no separate render thread |
 
-**In GPU mode**, the `PaintSurface` handler runs on a thread separate from the UI thread. This is why all data accessed in `PaintSurface` must use `Monitor.TryEnter` or `Interlocked` — never bare field access or `lock()`.
+**On Android in GPU mode**, the `PaintSurface` handler runs on a dedicated GL thread separate from the UI thread (`GLSurfaceView` always creates its own render thread). **On iOS and Windows in GPU mode**, `PaintSurface` runs on the UI thread (iOS `GLKView` requires main-thread access; Windows `SKSwapChainPanel` defaults to `DrawInBackground = false`).
 
-On Android, GPU rendering uses OpenGL ES on a dedicated GL thread. Low-memory devices (`TotalMemory < DisableAuxGPUbyDefaultThresholdInBytes`) may disable GPU for auxiliary canvases to save resources.
+Because of Android's separate GL thread, all data accessed in `PaintSurface` must use `Monitor.TryEnter` or `Interlocked` — never bare field access or `lock()`. These patterns are applied uniformly on all platforms for correctness and consistency.
+
+The code in [GamePage.xaml.cs:4975-4979](file:///c:/hmp/GnollHack/win/win32/xpl/GnollHackX/GnollHackX/Pages/Game/GamePage.xaml.cs#L4975-L4979) detects which thread `PaintSurface` is running on at runtime via `MainThread.IsMainThread` and logs a warning when it is not on the main thread (i.e., on Android with GPU mode).
+
+Low-memory Android devices (`TotalMemory < DisableAuxGPUbyDefaultThresholdInBytes`) may disable GPU for auxiliary canvases to save resources.
 
 ---
 
