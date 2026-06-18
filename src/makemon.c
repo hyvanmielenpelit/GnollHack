@@ -4448,8 +4448,7 @@ void
 set_mhostility(mtmp)
 struct monst *mtmp;
 {
-    schar mal = mtmp->data->maligntyp;
-    boolean coaligned;
+    aligntyp mal = mtmp->data->maligntyp;
 
     if (mtmp->ispriest || mtmp->isminion) 
     {
@@ -4461,12 +4460,9 @@ struct monst *mtmp;
         /* unless alignment is none, set mal to -5,0,5 */
         /* (see align.h for valid aligntyp values)     */
         if (mal != A_NONE)
-            mal *= 5;
+            mal = (aligntyp)max(ALIGNTYP_MIN, min(ALIGNTYP_MAX, (int)mal * 5));
     }
 
-    coaligned = (sgn(mal) == sgn(u.ualign.type));
-
-    int absmal = abs(mal) + 1;
     if (mtmp->data->msound == MS_LEADER)
     {
         mtmp->mhostility = -20;
@@ -4482,29 +4478,34 @@ struct monst *mtmp;
         else
             mtmp->mhostility = 20; /* really hostile */
     }
-    else if (always_peaceful(mtmp->data))
+    else
     {
-        if (is_peaceful(mtmp))
-            mtmp->mhostility = max(ALIGNTYP_MIN, -3 * max(5, absmal));
-        else
-            mtmp->mhostility = min(ALIGNTYP_MAX, 3 * max(5, absmal)); /* renegade */
-    } 
-    else if (always_hostile(mtmp->data)) 
-    {
-        if (coaligned)
-            mtmp->mhostility = 1;
-        else
-            mtmp->mhostility = min(ALIGNTYP_MAX, max(5, absmal));
+        boolean coaligned = (sgn(mal) == sgn(u.ualign.type));
+        int absmal = abs(mal) + 1;
+        if (always_peaceful(mtmp->data))
+        {
+            if (is_peaceful(mtmp))
+                mtmp->mhostility = max(ALIGNTYP_MIN, -3 * max(5, absmal));
+            else
+                mtmp->mhostility = min(ALIGNTYP_MAX, 3 * max(5, absmal)); /* renegade */
+        }
+        else if (always_hostile(mtmp->data))
+        {
+            if (coaligned)
+                mtmp->mhostility = 1;
+            else
+                mtmp->mhostility = min(ALIGNTYP_MAX, max(5, absmal));
+        }
+        else if (coaligned)
+        {
+            if (is_peaceful(mtmp))
+                mtmp->mhostility = max(ALIGNTYP_MIN, -3 * max(3, absmal));
+            else /* renegade */
+                mtmp->mhostility = min(ALIGNTYP_MAX, max(3, absmal));
+        }
+        else /* not coaligned and therefore hostile */
+            mtmp->mhostility = min(ALIGNTYP_MAX, absmal);
     }
-    else if (coaligned) 
-    {
-        if (is_peaceful(mtmp))
-            mtmp->mhostility = max(ALIGNTYP_MIN, -3 * max(3, absmal));
-        else /* renegade */
-            mtmp->mhostility = min(ALIGNTYP_MAX, max(3, absmal));
-    } 
-    else /* not coaligned and therefore hostile */
-        mtmp->mhostility = min(ALIGNTYP_MAX, absmal);
 }
 
 /* allocate a new mcorpsenm field for a monster; only need mextra itself */
