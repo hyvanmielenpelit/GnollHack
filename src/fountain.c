@@ -515,9 +515,12 @@ drinkfountain()
             pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "This water's no good!");
             morehungry(rn1(20, 11));
             exercise(A_CON, FALSE);
-            for (obj = invent; obj; obj = obj->nobj)
-                if (!rn2(5))
-                    curse(obj);
+            if (!Curse_resistance)
+            {
+                for (obj = invent; obj; obj = obj->nobj)
+                    if (!rn2(5))
+                        curse(obj);
+            }
             break;
         }
         case 25: /* See invisible */
@@ -641,7 +644,8 @@ register struct obj *obj;
             pline_ex(ATR_NONE, CLR_MSG_MYSTICAL, "A freezing mist rises from the %s and envelopes the sword.",
                   hliquid("water"));
             pline_The_ex(ATR_NONE, CLR_MSG_ATTENTION, "fountain disappears!");
-            curse(obj);
+            if (!Curse_resistance)
+                curse(obj);
             if (obj->enchantment > -6 && !rn2(3))
                 obj->enchantment--;
             obj->oerodeproof = FALSE;
@@ -1049,7 +1053,7 @@ register struct obj *obj;
             effecthappened = FALSE;
             break;
         case 16: /* Curse the item */
-            if (!obj->cursed)
+            if (!obj->cursed && !Curse_resistance)
             {
                 curse(obj);
                 if (!Blind)

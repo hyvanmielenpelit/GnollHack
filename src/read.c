@@ -1348,7 +1348,7 @@ boolean dopopup;
        ever changed to care about curse/bless status of armor] */
     if (s < 0)
         costly_alteration(otmp, COST_DECHNT);
-    if (scursed && !otmp->cursed)
+    if (scursed && !otmp->cursed && (otmp->where != OBJ_INVENT || !Curse_resistance))
         curse(otmp);
     else if (sblessed && !otmp->blessed)
         bless(otmp);
