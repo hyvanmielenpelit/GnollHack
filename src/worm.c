@@ -704,6 +704,10 @@ void
 check_and_remove_worm_from_map(worm)
 struct monst* worm;
 {
+#ifndef DEBUG
+    if (!wizard)
+        return;
+#endif
     if (!worm)
         return;
 
