@@ -83,7 +83,7 @@ boolean check_pointing = FALSE;
 boolean ignore_onsleep_autosave = FALSE;
 
 int
-dosave()
+dosave(VOID_ARGS)
 {
     if (iflags.debug_fuzzer)
         return 0;
@@ -559,7 +559,7 @@ STATIC_VAR boolean havestate = TRUE;
 
 #ifdef INSURANCE
 void
-savestateinlock()
+savestateinlock(VOID_ARGS)
 {
     int fd, hpid;
     char whynot[BUFSZ];
@@ -1829,7 +1829,7 @@ int lev;
 }
 
 STATIC_OVL boolean
-swapout_oldest()
+swapout_oldest(VOID_ARGS)
 {
     char to[PATHLEN], from[PATHLEN];
     int i, oldest;
@@ -1888,7 +1888,7 @@ char *from, *to;
 
 /* see comment in bones.c */
 void
-co_false()
+co_false(VOID_ARGS)
 {
     count_only = FALSE;
     return;

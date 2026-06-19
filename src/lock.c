@@ -49,7 +49,7 @@ int x, y;
 
 /* produce an occupation string appropriate for the current activity */
 STATIC_OVL const char *
-lock_action()
+lock_action(VOID_ARGS)
 {
     /* "unlocking"+2 == "locking" */
     static const char *actions[] = {
@@ -847,7 +847,7 @@ boolean is_auto;
 
 #ifdef ANDROID
 boolean
-can_try_force()
+can_try_force(VOID_ARGS)
 {
     if (u.uswallow) {
         return FALSE;
@@ -869,7 +869,7 @@ can_try_force()
 
 /* try to force a chest with your weapon */
 int
-doforce()
+doforce(VOID_ARGS)
 {
     register struct obj *otmp;
     register int c, picktyp;
@@ -969,7 +969,7 @@ int x, y;
 
 /* the 'O' command - try to open a door */
 int
-doopen()
+doopen(VOID_ARGS)
 {
     return doopen_indir(0, 0) > 0;
 }
@@ -1230,7 +1230,7 @@ boolean quietly;
 
 /* the 'C' command - try to close a door */
 int
-doclose()
+doclose(VOID_ARGS)
 {
     register int x, y;
     register struct rm *door;

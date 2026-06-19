@@ -28,7 +28,7 @@ STATIC_VAR int rect_cnt;
  */
 
 void
-init_rect()
+init_rect(VOID_ARGS)
 {
     rect_cnt = 1;
     rect[0].lx = rect[0].ly = 0;
@@ -88,7 +88,7 @@ NhRect *r;
  */
 
 NhRect *
-rnd_rect()
+rnd_rect(VOID_ARGS)
 {
     return rect_cnt > 0 ? &rect[rn2(rect_cnt)] : 0;
 }

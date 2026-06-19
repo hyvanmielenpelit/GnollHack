@@ -314,7 +314,7 @@ boolean anyroom;
  * auto-magically wallify it.  Taken from lev_main.c.
  */
 void
-wallify_entire_map()
+wallify_entire_map(VOID_ARGS)
 {
     int x, y, xx, yy;
 

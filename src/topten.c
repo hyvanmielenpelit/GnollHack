@@ -342,7 +342,7 @@ struct toptenentry *tt;
 }
 
 int64_t
-encodeconduct()
+encodeconduct(VOID_ARGS)
 {
     int64_t e = 0L;
 
@@ -389,7 +389,7 @@ encodeconduct()
 }
 
 int64_t
-encodeachieve()
+encodeachieve(VOID_ARGS)
 {
     int64_t r = 0L;
 
@@ -577,7 +577,7 @@ int how;
 }
 
 STATIC_OVL int64_t
-encodexlogflags()
+encodexlogflags(VOID_ARGS)
 {
     int64_t e = 0L;
 
@@ -623,7 +623,7 @@ boolean condition;
 }
 
 STATIC_OVL char*
-encode_extended_achievements()
+encode_extended_achievements(VOID_ARGS)
 {
     static char buf[10 * BUFSZ]; /* Long enough */
 
@@ -676,7 +676,7 @@ encode_extended_achievements()
             
             */
 STATIC_OVL char*
-encode_extended_conducts()
+encode_extended_conducts(VOID_ARGS)
 {
     static char buf[4 * BUFSZ]; /* Long enough */
 
@@ -1028,7 +1028,7 @@ destroywin:
 
 
 STATIC_OVL void
-outheader()
+outheader(VOID_ARGS)
 {
     char linebuf[BUFSZ];
     register char *bp;
@@ -1423,7 +1423,7 @@ char *plch;
  * Get a random player name and class from the high score list,
  */
 struct toptenentry *
-get_rnd_toptenentry()
+get_rnd_toptenentry(VOID_ARGS)
 {
     int rank, i;
     FILE *rfile;

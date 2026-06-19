@@ -230,7 +230,7 @@ NH_abort()
 }
 
 STATIC_OVL boolean
-NH_panictrace_libc()
+NH_panictrace_libc(VOID_ARGS)
 {
 #ifdef PANICTRACE_LIBC
     void *bt[20];
@@ -265,7 +265,7 @@ NH_panictrace_libc()
 #endif /* PANICTRACE_GDB */
 
 STATIC_OVL boolean
-NH_panictrace_gdb()
+NH_panictrace_gdb(VOID_ARGS)
 {
 #ifdef PANICTRACE_GDB
     /* A (more) generic method to get a stack trace - invoke
@@ -347,7 +347,7 @@ int sig_unused UNUSED;
 
 /* "#quit" command or keyboard interrupt */
 int
-done2()
+done2(VOID_ARGS)
 {
     if (iflags.debug_fuzzer)
         return 0;
@@ -908,7 +908,7 @@ char *defquery;
 
 #if defined (DUMPLOG) || defined (DUMPHTML)
 STATIC_OVL void
-dump_plines()
+dump_plines(VOID_ARGS)
 {
     int i, j;
     char buf[BUFSZ], buf2[BUFSZ], buf3[BUFSZ], ** strp;
@@ -3156,7 +3156,7 @@ const genericptr vptr2;
 
 /* returns -1 if cancelled via ESC */
 STATIC_OVL int
-set_vanq_order()
+set_vanq_order(VOID_ARGS)
 {
     winid tmpwin;
     menu_item *selected;
@@ -3190,7 +3190,7 @@ set_vanq_order()
 
 /* #vanquished command */
 int
-dovanquished()
+dovanquished(VOID_ARGS)
 {
     list_vanquished('a', FALSE, FALSE);
     return 0;
@@ -3198,7 +3198,7 @@ dovanquished()
 
 /* #killed command */
 int
-dokilledmonsters()
+dokilledmonsters(VOID_ARGS)
 {
     list_vanquished('b', FALSE, FALSE);
     return 0;
@@ -3206,7 +3206,7 @@ dokilledmonsters()
 
 /* #genocided command */
 int
-dogenocidedmonsters()
+dogenocidedmonsters(VOID_ARGS)
 {
     list_genocided('a', FALSE, FALSE);
     return 0;
@@ -3573,7 +3573,7 @@ recalculate_knight_slaying_score(VOID_ARGS)
 
 /* number of monster species which have been genocided */
 int
-num_genocides()
+num_genocides(VOID_ARGS)
 {
     int i, n = 0;
 
@@ -3589,7 +3589,7 @@ num_genocides()
 }
 
 STATIC_OVL int
-num_extinct()
+num_extinct(VOID_ARGS)
 {
     int i, n = 0;
 

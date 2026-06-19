@@ -2248,7 +2248,7 @@ struct obj *otmp;
  * returns the new encumbrance value (from near_capacity()).
  */
 int
-encumber_msg()
+encumber_msg(VOID_ARGS)
 {
     int oldcap = u.carrying_capacity_level;
     int newcap = near_capacity();
@@ -3045,7 +3045,7 @@ int applymode;
 
 /* called when attempting to #loot while confused */
 STATIC_OVL boolean
-reverse_loot()
+reverse_loot(VOID_ARGS)
 {
     struct obj *goldob = 0, *coffers, *otmp, boxdummy;
     struct monst *mon;

@@ -1136,7 +1136,7 @@ enum explosion_types expltype;
 }
 
 void
-explosion_wait_until_action()
+explosion_wait_until_action(VOID_ARGS)
 {
     if (context.expl_intervals_to_wait_until_action > 0UL)
     {
@@ -1146,7 +1146,7 @@ explosion_wait_until_action()
 }
 
 void
-explosion_wait_until_end()
+explosion_wait_until_end(VOID_ARGS)
 {
     if (context.expl_intervals_to_wait_until_end > 0)
     {

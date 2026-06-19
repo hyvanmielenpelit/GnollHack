@@ -102,7 +102,7 @@ char *buf;
 
 /* the 'v' command */
 int
-doversion()
+doversion(VOID_ARGS)
 {
     char buf[BUFSZ];
 
@@ -112,7 +112,7 @@ doversion()
 
 /* the '#version' command; also a choice for '?' */
 int
-doextversion()
+doextversion(VOID_ARGS)
 {
     dlb *f;
     char buf[BUFSZ], *p = 0;
@@ -410,7 +410,7 @@ char *str;
 }
 
 uint64_t
-get_current_feature_ver()
+get_current_feature_ver(VOID_ARGS)
 {
     return FEATURE_NOTICE_VER(VERSION_MAJOR, VERSION_MINOR, PATCHLEVEL);
 }

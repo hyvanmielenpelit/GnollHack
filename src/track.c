@@ -14,14 +14,14 @@ STATIC_VAR NEARDATA int utcnt, utpnt;
 STATIC_VAR NEARDATA coord utrack[UTSZ];
 
 void
-initrack()
+initrack(VOID_ARGS)
 {
     utcnt = utpnt = 0;
 }
 
 /* add to track */
 void
-settrack()
+settrack(VOID_ARGS)
 {
     if (utcnt < UTSZ)
         utcnt++;

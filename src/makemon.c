@@ -2593,7 +2593,7 @@ int difficulty_level;
 }
 
 struct mextra *
-newmextra()
+newmextra(VOID_ARGS)
 {
     struct mextra *mextra;
 
@@ -3310,7 +3310,7 @@ aligntyp alignment;
 }
 
 void
-makemon_animation_wait_until_end()
+makemon_animation_wait_until_end(VOID_ARGS)
 {
     int num = min(MAX_PLAYED_SPECIAL_EFFECTS, max(1, context.makemon_spef_idx));
     for (int i = 0; i < num; i++)
@@ -3482,7 +3482,7 @@ STATIC_VAR NEARDATA struct {
 
 /* select a random monster type */
 struct permonst*
-rndmonst()
+rndmonst(VOID_ARGS)
 {
     return rndmonst_core(0, MONRNDTYPE_NORMAL);
 }

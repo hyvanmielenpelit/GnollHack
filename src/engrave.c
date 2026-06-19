@@ -523,7 +523,7 @@ forget_engravings(VOID_ARGS)
  * freehand - returns true if player has a free hand
  */
 int
-freehand()
+freehand(VOID_ARGS)
 {
     return (!uwep || !welded(uwep, &youmonst)
             || (!bimanual(uwep) && (!uarms || !uarms->cursed)));
@@ -1446,7 +1446,7 @@ uchar item_selection_style;
 /* while loading bones, clean up text which might accidentally
    or maliciously disrupt player's terminal when displayed */
 void
-sanitize_engravings()
+sanitize_engravings(VOID_ARGS)
 {
     struct engr *ep;
 

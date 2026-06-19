@@ -217,7 +217,7 @@ char *genbuf;
 }
 
 void
-you_were()
+you_were(VOID_ARGS)
 {
     char qbuf[QBUFSZ];
     boolean controllable_poly = Polymorph_control && !(Stunned || Unaware);

@@ -1039,7 +1039,7 @@ nevermind:
  */
 
 STATIC_OVL int
-atconsole()
+atconsole(VOID_ARGS)
 {
     /*
      * Kluge alert: This code assumes that your [34]86 has no X terminals

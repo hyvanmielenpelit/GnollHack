@@ -213,7 +213,7 @@ int x, y;
 }
 
 void
-makeroguerooms()
+makeroguerooms(VOID_ARGS)
 {
     register int x, y;
     /* Rogue levels are structured 3 by 3, with each section containing
@@ -308,7 +308,7 @@ int x, y;
 }
 
 void
-makerogueghost()
+makerogueghost(VOID_ARGS)
 {
     register struct monst *ghost;
     struct obj *ghostobj;

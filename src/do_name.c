@@ -37,7 +37,7 @@ extern const char what_is_an_unknown_object[]; /* from pager.c */
 
 /* manage a pool of BUFSZ buffers, so callers don't have to */
 STATIC_OVL char *
-nextmbuf()
+nextmbuf(VOID_ARGS)
 {
     static char NEARDATA bufs[NUMMBUF][BUFSZ];
     static int bufidx = 0;
@@ -349,7 +349,7 @@ int x, y;
 }
 
 void
-gloc_filter_init()
+gloc_filter_init(VOID_ARGS)
 {
     if (iflags.getloc_filter == GFILTER_AREA) {
         if (!gloc_filter_map) {
@@ -370,7 +370,7 @@ gloc_filter_init()
 }
 
 void
-gloc_filter_done()
+gloc_filter_done(VOID_ARGS)
 {
     if (gloc_filter_map) {
         opvar_free_x(gloc_filter_map);
@@ -1388,7 +1388,7 @@ char *monnambuf, *usrbuf;
 
 /* allow player to assign a name to some chosen monster */
 STATIC_OVL void
-do_mname()
+do_mname(VOID_ARGS)
 {
     char buf[BUFSZ] = DUMMY, monnambuf[BUFSZ], qbuf[QBUFSZ];
     coord cc;
@@ -1625,7 +1625,7 @@ int i;
 }
 
 int
-doname_specific_object()
+doname_specific_object(VOID_ARGS)
 {
     struct obj* obj = 0;
     char allowall[2];
@@ -1639,7 +1639,7 @@ doname_specific_object()
 }
 
 int
-doname_type_of_object()
+doname_type_of_object(VOID_ARGS)
 {
     struct obj* obj = 0;
     obj = getobj(callable, "call", 0, "");
@@ -1662,7 +1662,7 @@ doname_type_of_object()
 
 /* C and #name commands - player can name monster or object or type of obj */
 int
-docallcmd()
+docallcmd(VOID_ARGS)
 {
     struct obj *obj;
     winid win;
@@ -1864,7 +1864,7 @@ const char* introline;
 }
 
 STATIC_OVL void
-namefloorobj()
+namefloorobj(VOID_ARGS)
 {
     coord cc;
     int glyph;
@@ -1959,7 +1959,7 @@ STATIC_VAR const char *const ghostnames[] = {
 
 /* ghost names formerly set by x_monnam(), now by makemon() instead */
 const char *
-rndghostname()
+rndghostname(VOID_ARGS)
 {
     return rn2(7) ? ghostnames[rn2(SIZE(ghostnames))] : (const char *) plname;
 }
@@ -2449,7 +2449,7 @@ char code;
 
 /* name of a Rogue player */
 const char *
-roguename()
+roguename(VOID_ARGS)
 {
     char *i, *opts;
 
@@ -2610,7 +2610,7 @@ const char* colorpref;
 
 /* return a random real color unless hallucinating */
 const char *
-rndcolor()
+rndcolor(VOID_ARGS)
 {
     int k = rn2(CLR_MAX);
 

@@ -99,7 +99,7 @@ const char *msg;
 }
 
 void
-mon_sanity_check()
+mon_sanity_check(VOID_ARGS)
 {
     int x, y;
     struct monst *mtmp, *m;
@@ -968,7 +968,7 @@ boolean createcorpse;
 
 
 int
-randomtruegem()
+randomtruegem(VOID_ARGS)
 {
     return rnd_class(FIRST_GEM, LAST_GEM);
 }
@@ -1287,7 +1287,7 @@ boolean return_expected_value;
    individual monster's metabolism; some of these might need to
    be reclassified to occur more in proportion with movement rate */
 void
-update_monster_timeouts()
+update_monster_timeouts(VOID_ARGS)
 {
     struct monst *mtmp;
     int i;
@@ -1624,7 +1624,7 @@ update_monster_timeouts()
 }
 
 int
-movemon()
+movemon(VOID_ARGS)
 {
     register struct monst *mtmp, *nmtmp;
     register boolean somebody_can_move = FALSE;
@@ -5029,7 +5029,7 @@ boolean via_attack;
 
 /* Wake up nearby monsters without angering them. */
 void
-wake_nearby()
+wake_nearby(VOID_ARGS)
 {
     wake_nearto(u.ux, u.uy, u.ulevel * 20);
 }
@@ -5094,7 +5094,7 @@ register struct monst *mtmp;
 
 /* force all chameleons to become normal */
 void
-rescham()
+rescham(VOID_ARGS)
 {
     register struct monst *mtmp;
     int mcham;
@@ -5122,7 +5122,7 @@ rescham()
 
 /* Let the chameleons change again -dgk */
 void
-restartcham()
+restartcham(VOID_ARGS)
 {
     register struct monst *mtmp;
 
@@ -5298,7 +5298,7 @@ boolean construct;
 
 #if 0
 STATIC_OVL int
-pick_animal()
+pick_animal(VOID_ARGS)
 {
     int res = PM_NEWT;
 
@@ -6358,7 +6358,7 @@ struct obj *obj_list;
 
 /* kill all members of genocided species */
 void
-kill_genocided_monsters()
+kill_genocided_monsters(VOID_ARGS)
 {
     struct monst *mtmp, *mtmp2;
     boolean kill_cham;
@@ -6495,7 +6495,7 @@ boolean silent;
 }
 
 void
-pacify_guards()
+pacify_guards(VOID_ARGS)
 {
     struct monst *mtmp;
 

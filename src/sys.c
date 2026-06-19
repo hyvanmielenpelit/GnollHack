@@ -22,7 +22,7 @@ struct startup_flags initial_flags = DUMMY; /* flags.h */
 
 
 void
-sys_early_init()
+sys_early_init(VOID_ARGS)
 {
     reset_global_variables();
 
@@ -119,7 +119,7 @@ sys_early_init()
 }
 
 void
-sysopt_release()
+sysopt_release(VOID_ARGS)
 {
     if (sysopt.support)
         free((genericptr_t) sysopt.support), sysopt.support = (char *) 0;

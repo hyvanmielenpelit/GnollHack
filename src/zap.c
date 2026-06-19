@@ -6479,7 +6479,7 @@ STATIC_VAR NEARDATA const char zap_syms[] = { WAND_CLASS, 0 };
 
 /* 'z' command (or 'y' if numbed_pad==-1) */
 int
-dozap()
+dozap(VOID_ARGS)
 {
     struct obj *obj;
     if (check_capacity((char *) 0))
@@ -6707,7 +6707,7 @@ boolean* stop_readchar_ptr;
 }
 
 int
-dosetquickwand()
+dosetquickwand(VOID_ARGS)
 {
     struct obj* obj;
     obj = getobj(zap_syms, "set as quick wand", 0, "");
@@ -6736,7 +6736,7 @@ dosetquickwand()
 }
 
 int
-dounsetquickwand()
+dounsetquickwand(VOID_ARGS)
 {
     struct obj* obj;
     obj = getobj(zap_syms, "unset as quick wand", 0, "");
@@ -8299,13 +8299,13 @@ struct obj *obj; /* wand or spell */
 
 /* used by do_break_wand() was well as by weffects() */
 void
-zapsetup()
+zapsetup(VOID_ARGS)
 {
     obj_zapped = FALSE;
 }
 
 void
-zapwrapup()
+zapwrapup(VOID_ARGS)
 {
     /* if do_osshock() set obj_zapped while polying, give a message now */
     if (obj_zapped)

@@ -123,14 +123,14 @@ STATIC_VAR char NEARDATA obufs[NUMOBUF][OBUFSZ];
 STATIC_VAR int obufidx = 0;
 
 char *
-nextobuf()
+nextobuf(VOID_ARGS)
 {
     obufidx = (obufidx + 1) % NUMOBUF;
     return obufs[obufidx];
 }
 
 char*
-next_offset_init_obuf()
+next_offset_init_obuf(VOID_ARGS)
 {
     char* buf = nextobuf() + PREFIXBUFSZ;
     buf[0] = '\0';

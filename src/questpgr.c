@@ -50,7 +50,7 @@ STATIC_VAR char nambuf2[sizeof cvt_buf];
    build with DEBUG enabled and use DEBUGFILES=questpgr.c
    in sysconf file or environment */
 STATIC_OVL void
-dump_qtlist()
+dump_qtlist(VOID_ARGS)
 {
 #ifdef DEBUG
     struct qtmsg *msg;
@@ -102,7 +102,7 @@ int64_t hdr_offset;
 }
 
 void
-load_qtlist()
+load_qtlist(VOID_ARGS)
 {
     int n_classes, i;
     char qt_classes[N_HDR][LEN_HDR];
@@ -150,7 +150,7 @@ load_qtlist()
 
 /* called at program exit */
 void
-unload_qtlist()
+unload_qtlist(VOID_ARGS)
 {
     if (msg_file)
         (void) dlb_fclose(msg_file), msg_file = 0;
@@ -182,7 +182,7 @@ int typ;
 
 /* return your role leader's name */
 const char *
-ldrname()
+ldrname(VOID_ARGS)
 {
     int i = urole.ldrnum;
 
@@ -193,7 +193,7 @@ ldrname()
 
 /* return your intermediate target string */
 STATIC_OVL const char *
-intermed()
+intermed(VOID_ARGS)
 {
     return urole.intermed;
 }
@@ -261,7 +261,7 @@ unsigned whichchains;
 
 /* return your role nemesis' name */
 const char *
-neminame()
+neminame(VOID_ARGS)
 {
     int i = urole.neminum;
 
@@ -769,7 +769,7 @@ boolean dopopup;
 }
 
 struct permonst *
-qt_montype()
+qt_montype(VOID_ARGS)
 {
     int qpm;
 
@@ -828,7 +828,7 @@ int msgtyp;
 
 /* special levels can include a custom arrival message; display it */
 void
-deliver_splev_message()
+deliver_splev_message(VOID_ARGS)
 {
     char *str, *nl, in_line[BUFSZ], out_line[BUFSZ];
     struct lev_msg* lm, *nextlm;

@@ -2209,7 +2209,7 @@ xchar x, y;
 }
 
 boolean
-launch_in_progress()
+launch_in_progress(VOID_ARGS)
 {
     if (launchplace.obj)
         return TRUE;
@@ -2217,7 +2217,7 @@ launch_in_progress()
 }
 
 void
-force_launch_placement()
+force_launch_placement(VOID_ARGS)
 {
     if (launchplace.obj) {
         launchplace.obj->otrapped = 0;
@@ -3747,7 +3747,7 @@ boolean byplayer;
 
 /* start levitating */
 void
-float_up()
+float_up(VOID_ARGS)
 {
     play_movement_sound(&youmonst, CLIMBING_TYPE_STAIRS_UP);
     context.botl = context.botlx = TRUE;
@@ -3999,7 +3999,7 @@ int64_t hmask, emask; /* might cancel timeout */
 
 /* shared code for climbing out of a pit */
 void
-climb_pit()
+climb_pit(VOID_ARGS)
 {
     if (!u.utrap || u.utraptype != TT_PIT)
         return;
@@ -4168,7 +4168,7 @@ int dice; /* of d6 */
 }
 
 STATIC_OVL void
-domagictrap()
+domagictrap(VOID_ARGS)
 {
     register int fate = rnd(20);
 
@@ -4911,7 +4911,7 @@ boolean *lostsome;
 
 /*  return TRUE iff player relocated */
 boolean
-drown()
+drown(VOID_ARGS)
 {
     const char *pool_of_water;
     boolean inpool_ok = FALSE, crawl_ok;
@@ -5120,7 +5120,7 @@ int n;
 
 /* disarm a trap */
 int
-dountrap()
+dountrap(VOID_ARGS)
 {
     if (near_capacity() >= HVY_ENCUMBER) {
         play_sfx_sound(SFX_GENERAL_TOO_MUCH_ENCUMBRANCE);
@@ -7458,7 +7458,7 @@ boolean nocorpse;
 }
 
 boolean
-unconscious()
+unconscious(VOID_ARGS)
 {
     if (multi >= 0)
         return FALSE;
@@ -7666,7 +7666,7 @@ burn_stuff:
 
 /* called each turn when trapped in lava */
 void
-sink_into_lava()
+sink_into_lava(VOID_ARGS)
 {
     static const char sink_deeper[] = "You sink deeper into the lava.";
 
@@ -7711,7 +7711,7 @@ sink_into_lava()
 /* called when something has been done (breaking a boulder, for instance)
    which entails a luck penalty if performed on a sokoban level */
 void
-sokoban_guilt()
+sokoban_guilt(VOID_ARGS)
 {
     if (Sokoban) {
         change_luck(-1, TRUE);
@@ -7726,7 +7726,7 @@ sokoban_guilt()
 
 /* called when a trap has been deleted or had its ttyp replaced */
 STATIC_OVL void
-maybe_finish_sokoban()
+maybe_finish_sokoban(VOID_ARGS)
 {
     struct trap *t;
 

@@ -1227,7 +1227,7 @@ phase_of_the_moon() /* 0-7, with 0: new, 4: full */
 }
 
 boolean
-friday_13th()
+friday_13th(VOID_ARGS)
 {
     register struct tm *lt = getlt();
 
@@ -1236,7 +1236,7 @@ friday_13th()
 }
 
 int
-night()
+night(VOID_ARGS)
 {
     register int hour = getlt()->tm_hour;
 
@@ -1244,7 +1244,7 @@ night()
 }
 
 int
-midnight()
+midnight(VOID_ARGS)
 {
     return (getlt()->tm_hour == 0);
 }
@@ -1629,7 +1629,7 @@ int* x, * y, * mod;
 
 
 boolean
-use_utf8_encoding()
+use_utf8_encoding(VOID_ARGS)
 {
     /* Windows ASCII GnollHack does not use UTF-8 encoding with Unicode */
 #ifdef WIN32
@@ -1646,7 +1646,7 @@ extern int unix_is_stdin_empty(); /* From unixmain.c */
 #endif
 
 int
-tty_arrow_key_support_enabled()
+tty_arrow_key_support_enabled(VOID_ARGS)
 {
     return iflags.enablettyarrowkeys;
 }

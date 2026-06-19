@@ -747,7 +747,7 @@ struct obj* uitem;
 }
 
 void
-update_extrinsics()
+update_extrinsics(VOID_ARGS)
 {
     struct obj* uitem;
     int idx;
@@ -1222,7 +1222,7 @@ struct obj* uitem;
 /* there has just been an inventory change affecting a luck-granting item */
 /* OBSOLETE --JG */
 void
-set_moreluck()
+set_moreluck(VOID_ARGS)
 {
     int luckbon = stone_luck(TRUE);
 
@@ -1235,7 +1235,7 @@ set_moreluck()
 }
 
 void
-restore_attrib()
+restore_attrib(VOID_ARGS)
 {
     int i, equilibrium;;
 
@@ -1300,7 +1300,7 @@ boolean inc_or_dec UNUSED;
 }
 
 STATIC_OVL void
-exerper()
+exerper(VOID_ARGS)
 {
     if (!(moves % 10)) {
         /* Hunger Checks */
@@ -1380,7 +1380,7 @@ STATIC_VAR NEARDATA const char *const exertext[A_MAX][2] = {
 };
 
 void
-exerchk()
+exerchk(VOID_ARGS)
 {
     int i, ax, mod_val, lolim, hilim;
 
@@ -1535,7 +1535,7 @@ register int np;
 }
 
 void
-redist_attr()
+redist_attr(VOID_ARGS)
 {
     register int i, tmp;
 
@@ -1962,7 +1962,7 @@ int oldlevel, newlevel;
 }
 
 int
-newhp()
+newhp(VOID_ARGS)
 {
     int hp; // , conplus;
 
@@ -2097,7 +2097,7 @@ struct monst* mon;
 }
 
 void
-updatemaxhp()
+updatemaxhp(VOID_ARGS)
 {
     u.uhpmax = u.ubasehpmax + hpmaxadjustment(FALSE);
 
@@ -2121,7 +2121,7 @@ updatemaxhp()
 }
 
 void
-updateabon()
+updateabon(VOID_ARGS)
 {
     update_mon_abon(&youmonst);
 }
@@ -2586,7 +2586,7 @@ int x;
 /* condense clumsy ACURR(A_STR) value into value that fits into game formulas
  */
 schar
-acurrstr()
+acurrstr(VOID_ARGS)
 {
     return acurrstr_base(ACURR(A_STR));
 }

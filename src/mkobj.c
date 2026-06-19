@@ -79,7 +79,7 @@ STATIC_VAR const struct icp hellprobs[] = { { 15, WEAPON_CLASS },
                                         { 4, AMULET_CLASS } };
 
 struct oextra *
-newoextra()
+newoextra(VOID_ARGS)
 {
     struct oextra *oextra;
 
@@ -801,7 +801,7 @@ struct obj *box;
 
 /* select a random, common monster type, usually for a corpse */
 int
-rndmonnum()
+rndmonnum(VOID_ARGS)
 {
     register struct permonst *ptr;
     register int i;
@@ -1041,7 +1041,7 @@ struct obj *obj;
 
 /* reset splitobj()/unsplitobj() context */
 void
-clear_splitobjs()
+clear_splitobjs(VOID_ARGS)
 {
     context.objsplit.parent_oid = context.objsplit.child_oid = 0;
 }
@@ -1334,7 +1334,7 @@ struct obj* obj;
 }
 
 void
-clear_memoryobjs()
+clear_memoryobjs(VOID_ARGS)
 {
     struct obj* obj; // , * contained_obj;
     debugprint("clear_memoryobjs");

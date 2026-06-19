@@ -230,7 +230,7 @@ int x, y, nutrloss;
 /* used for hero init, life saving (if choking), and prayer results of fix
    starving, fix weak from hunger, or golden glow boon (if u.uhunger < 900) */
 void
-init_uhunger()
+init_uhunger(VOID_ARGS)
 {
     context.botl = (u.uhs != NOT_HUNGRY || ATEMP(A_STR) < 0);
     u.uhunger = 900;
@@ -291,7 +291,7 @@ eatmdone(VOID_ARGS)
 
 /* called when hallucination is toggled */
 void
-eatmupdate()
+eatmupdate(VOID_ARGS)
 {
     const char *altmsg = 0;
     int altapp = 0; /* lint suppression */
@@ -409,7 +409,7 @@ struct obj *food;
 
 /* modify object wt. depending on time spent consuming it */
 STATIC_OVL void
-recalc_wt()
+recalc_wt(VOID_ARGS)
 {
     struct obj *piece = context.victual.piece;
     if (!piece) {
@@ -1203,7 +1203,7 @@ uchar gender; /* 0 = male, 1 = female, 2 = unknown */
 }
 
 void
-fix_petrification()
+fix_petrification(VOID_ARGS)
 {
     char buf[BUFSZ];
 
@@ -1891,7 +1891,7 @@ uchar gender UNUSED; /* 0 = male, 1 = female, 2 = unknown */
 }
 
 void
-violated_vegetarian()
+violated_vegetarian(VOID_ARGS)
 {
     u.uconduct.unvegetarian++;
     if (Role_if(PM_MONK)) {
@@ -3095,7 +3095,7 @@ struct obj* obj;
 
 /* called after eating non-food */
 STATIC_OVL void
-eatspecial()
+eatspecial(VOID_ARGS)
 {
     struct obj *otmp = context.victual.piece;
 
@@ -3759,7 +3759,7 @@ struct obj* otmp;
 
 /* 'e' command */
 int
-doeat()
+doeat(VOID_ARGS)
 {
     struct obj *otmp;
     int basenutrit; /* nutrition of full item */
@@ -4335,7 +4335,7 @@ struct obj *obj;
  * modifying usedtime.  Returns 1 if they choked and survived, 0 otherwise.
  */
 STATIC_OVL int
-bite()
+bite(VOID_ARGS)
 {
     if (context.victual.canchoke && u.uhunger >= NUTRITION_CHOKE_AMOUNT)
     {
@@ -4427,7 +4427,7 @@ boolean* known_props;
 
 /* as time goes by - called by moveloop(every move) & domove(melee attack) */
 void
-gethungry()
+gethungry(VOID_ARGS)
 {
     if (u.uinvulnerable)
         return; /* you don't feel hungrier */
@@ -4613,14 +4613,14 @@ unfaint(VOID_ARGS)
 }
 
 boolean
-is_fainted()
+is_fainted(VOID_ARGS)
 {
     return (boolean) (u.uhs == FAINTED);
 }
 
 /* call when a faint must be prematurely terminated */
 void
-reset_faint()
+reset_faint(VOID_ARGS)
 {
     if (afternmv == unfaint)
         unmul_ex(ATR_NONE, CLR_MSG_ATTENTION, "You revive.");

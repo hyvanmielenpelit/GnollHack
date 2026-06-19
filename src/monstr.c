@@ -19,7 +19,7 @@ monstr_init() is deprecated.  Remove all references to it.
 void NDECL(monstr_init);
 
 void
-monstr_init()
+monstr_init(VOID_ARGS)
 {
     return;
 }

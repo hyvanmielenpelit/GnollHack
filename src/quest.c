@@ -24,7 +24,7 @@ STATIC_DCL boolean FDECL(chat_with_guardian, (struct monst*, BOOLEAN_P));
 STATIC_DCL boolean FDECL(prisoner_speaks, (struct monst *));
 
 STATIC_OVL void
-on_start()
+on_start(VOID_ARGS)
 {
     if (!Qstat(first_start)) {
         qt_pager_ex((struct monst*)0, QT_FIRSTTIME, ATR_NONE, CLR_MSG_HINT, FALSE);
@@ -43,7 +43,7 @@ on_start()
 }
 
 STATIC_OVL void
-on_locate()
+on_locate(VOID_ARGS)
 {
     /* the locate messages are phrased in a manner such that they only
        make sense when arriving on the level from above */
@@ -69,7 +69,7 @@ on_locate()
 }
 
 STATIC_OVL void
-on_goal()
+on_goal(VOID_ARGS)
 {
     if (Qstat(killed_nemesis)) {
         return;
@@ -97,7 +97,7 @@ on_goal()
 }
 
 void
-onquest()
+onquest(VOID_ARGS)
 {
     if (u.uevent.qcompleted || Not_firsttime)
         return;
@@ -114,7 +114,7 @@ onquest()
 }
 
 void
-nemdead()
+nemdead(VOID_ARGS)
 {
     if (!Qstat(killed_nemesis)) {
         Qstat(killed_nemesis) = TRUE;
@@ -143,14 +143,14 @@ struct obj *obj;
 
 /* external hook for do.c (level change check) */
 boolean
-ok_to_quest()
+ok_to_quest(VOID_ARGS)
 {
     return (boolean) ((Qstat(got_quest) || Qstat(got_thanks) || Qstat(leader_is_dead))
                       && is_pure(FALSE) > 0);
 }
 
 boolean
-not_capable()
+not_capable(VOID_ARGS)
 {
     return (boolean) (u.ulevel < MIN_QUEST_LEVEL);
 }

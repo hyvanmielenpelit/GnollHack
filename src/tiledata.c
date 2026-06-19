@@ -184,7 +184,7 @@ char search_ch, repl_ch;
 }
 
 void
-init_tiledata()
+init_tiledata(VOID_ARGS)
 {
     /* fill out condition names*/
     int i;

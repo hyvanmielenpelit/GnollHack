@@ -619,7 +619,7 @@ STATIC_DCL void NDECL(shuffle_tiles);
  * another routine.
  */
 STATIC_OVL void
-shuffle_tiles()
+shuffle_tiles(VOID_ARGS)
 {
     int i;
     int tmp_tilemap[NUM_OBJECTS];
@@ -730,7 +730,7 @@ boolean domaterial;
 }
 
 void
-init_objects()
+init_objects(VOID_ARGS)
 {
     register int i, first, last, sum;
     register char oclass;
@@ -934,7 +934,7 @@ int *lo_p, *hi_p; /* output: range that item belongs among */
 
 /* randomize object descriptions */
 STATIC_OVL void
-shuffle_all()
+shuffle_all(VOID_ARGS)
 {
     /* entire classes; obj_shuffle_range() handles their exceptions */
     static const char shuffle_classes[] = {
@@ -973,7 +973,7 @@ shuffle_all()
 
 /* find the object index for snow boots; used [once] by slippery ice code */
 int
-find_skates()
+find_skates(VOID_ARGS)
 {
     register int i;
     register const char *s;
@@ -988,7 +988,7 @@ find_skates()
 
 /* level dependent initialization */
 void
-oinit()
+oinit(VOID_ARGS)
 {
     //setgemprobs(&u.uz);
 }
@@ -1227,7 +1227,7 @@ char *buf;
 
 /* the '`' command - show discovered object types for one class */
 int
-doclassdisco()
+doclassdisco(VOID_ARGS)
 {
     STATIC_VAR NEARDATA const char
         prompt[] = "View discoveries for which sort of objects?",
@@ -1396,7 +1396,7 @@ doclassdisco()
 
 /* put up nameable subset of discoveries list as a menu */
 void
-rename_disco()
+rename_disco(VOID_ARGS)
 {
     register int i, dis;
     int ct = 0, mn = 0, sl;

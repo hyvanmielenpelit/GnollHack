@@ -1572,7 +1572,7 @@ struct monst *priest;
 }
 
 void
-angry_priest()
+angry_priest(VOID_ARGS)
 {
     register struct monst *priest;
     struct rm *lev;
@@ -1618,7 +1618,7 @@ angry_priest()
  * [Perhaps we should convert them into roamers instead?]
  */
 void
-clearpriests()
+clearpriests(VOID_ARGS)
 {
     struct monst *mtmp;
 
@@ -1645,7 +1645,7 @@ boolean ghostly;
 }
 
 void
-clearsmiths()
+clearsmiths(VOID_ARGS)
 {
     struct monst* mtmp;
 
@@ -1901,7 +1901,7 @@ boolean showheads;
 
 /* stethoscope or probing applied to hero -- one-line feedback */
 void
-ustatusline()
+ustatusline(VOID_ARGS)
 {
     char info[BUFSZ * 2];
 

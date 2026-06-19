@@ -1570,7 +1570,7 @@ int howmuch;
 
 /* Forget all traps on the level. */
 void
-forget_traps()
+forget_traps(VOID_ARGS)
 {
     register struct trap *trap;
 
@@ -3860,7 +3860,7 @@ struct obj *obj;
 }
 
 STATIC_OVL void
-do_class_genocide()
+do_class_genocide(VOID_ARGS)
 {
     int i, j, immunecnt, gonecnt, goodcnt, class, feel_dead = 0, ll_done = 0;
     char buf[BUFSZ] = DUMMY;
@@ -4363,7 +4363,7 @@ struct obj *sobj;
 
 /* remove the ball and chain */
 void
-unpunish()
+unpunish(VOID_ARGS)
 {
     struct obj *savechain = uchain;
 
@@ -4611,7 +4611,7 @@ struct _create_particular_data *d;
  * this code was also used for the scroll/spell in explore mode.
  */
 boolean
-create_particular()
+create_particular(VOID_ARGS)
 {
     char buf[BUFSZ] = DUMMY, *bufp;
     int  tryct = 5;

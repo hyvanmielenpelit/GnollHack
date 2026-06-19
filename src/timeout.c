@@ -108,7 +108,7 @@ STATIC_VAR NEARDATA const char* const sick_texts[] = {
 };
 
 STATIC_OVL void
-sick_dialogue()
+sick_dialogue(VOID_ARGS)
 {
     if (!is_living(youmonst.data))
         return;
@@ -166,7 +166,7 @@ STATIC_VAR NEARDATA const char* const food_poisoned_texts[] = {
 };
 
 STATIC_OVL void
-food_poisoned_dialogue()
+food_poisoned_dialogue(VOID_ARGS)
 {
     if (!is_living(youmonst.data))
         return;
@@ -214,7 +214,7 @@ food_poisoned_dialogue()
 
 
 STATIC_OVL void
-mummy_rot_dialogue()
+mummy_rot_dialogue(VOID_ARGS)
 {
     if (!is_living(youmonst.data) || Sick_resistance)
         return;
@@ -307,7 +307,7 @@ STATIC_VAR NEARDATA const char *const stoned_texts[] = {
 };
 
 STATIC_OVL void
-stoned_dialogue()
+stoned_dialogue(VOID_ARGS)
 {
     register int64_t i = (Stoned & TIMEOUT);
 
@@ -372,7 +372,7 @@ STATIC_VAR NEARDATA const char *const vomiting_texts[] = {
 };
 
 STATIC_OVL void
-vomiting_dialogue()
+vomiting_dialogue(VOID_ARGS)
 {
     const char *txt = 0;
     int64_t v = (Vomiting & TIMEOUT);
@@ -453,7 +453,7 @@ STATIC_VAR NEARDATA const char *const choke_texts2[] = {
 };
 
 STATIC_OVL void
-choke_dialogue()
+choke_dialogue(VOID_ARGS)
 {
     register int64_t i = (Strangled & TIMEOUT);
 
@@ -478,7 +478,7 @@ STATIC_VAR NEARDATA const char *const levi_texts[] = {
 };
 
 STATIC_OVL void
-levitation_dialogue()
+levitation_dialogue(VOID_ARGS)
 {
     /* -1 because the last message comes via float_down() */
     int64_t i = (((HLevitation & TIMEOUT) - 1L) / 2L);
@@ -513,7 +513,7 @@ STATIC_VAR NEARDATA const char *const slime_texts[] = {
 };
 
 STATIC_OVL void
-slime_dialogue()
+slime_dialogue(VOID_ARGS)
 {
     register int64_t i = (Slimed & TIMEOUT) / 2L;
 
@@ -567,7 +567,7 @@ slime_dialogue()
 }
 
 void
-burn_away_slime()
+burn_away_slime(VOID_ARGS)
 {
     if (Slimed) {
         make_slimed(0L, "The slime that covers you is burned away!", 0, (char*)0, 0);
@@ -648,7 +648,7 @@ STATIC_VAR NEARDATA const char *const phaze_texts[] = {
 };
 
 STATIC_OVL void
-phaze_dialogue()
+phaze_dialogue(VOID_ARGS)
 {
     int64_t i = ((HPasses_walls & TIMEOUT) / 2L);
 
@@ -660,7 +660,7 @@ phaze_dialogue()
 }
 
 void
-nh_timeout()
+nh_timeout(VOID_ARGS)
 {
     register struct prop *upp;
     struct kinfo *kptr;
@@ -1797,7 +1797,7 @@ struct obj *figurine;
 
 /* give a fumble message */
 STATIC_OVL void
-slip_or_trip()
+slip_or_trip(VOID_ARGS)
 {
     struct obj *otmp = vobj_at(u.ux, u.uy), *otmp2;
     const char *what;
@@ -1896,7 +1896,7 @@ slip_or_trip()
 
 /* give a fumble message */
 STATIC_OVL void
-laugh_uncontrollably()
+laugh_uncontrollably(VOID_ARGS)
 {
     play_simple_player_sound(MONSTER_SOUND_TYPE_LAUGHTER);
     switch (rn2(4)) {
@@ -1917,7 +1917,7 @@ laugh_uncontrollably()
 
 /* give an odd idea message */
 STATIC_OVL void
-get_odd_idea()
+get_odd_idea(VOID_ARGS)
 {
     context.oddideacnt++;
     switch (context.oddideacnt)
@@ -2884,7 +2884,7 @@ int64_t timeout;
 
 
 void
-do_storms()
+do_storms(VOID_ARGS)
 {
     int nstrike;
     register int x, y;
@@ -3017,7 +3017,7 @@ timer_element *base;
 }
 
 int
-wiz_timeout_queue()
+wiz_timeout_queue(VOID_ARGS)
 {
     winid win;
     char buf[BUFSZ];
@@ -3083,7 +3083,7 @@ wiz_timeout_queue()
 }
 
 void
-timer_sanity_check()
+timer_sanity_check(VOID_ARGS)
 {
     timer_element *curr;
 
@@ -3114,7 +3114,7 @@ timer_sanity_check()
  * Do this until their time is less than or equal to the move count.
  */
 void
-run_timers()
+run_timers(VOID_ARGS)
 {
     timer_element *curr;
 

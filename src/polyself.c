@@ -1142,7 +1142,7 @@ int attribute_index;
 }
 
 STATIC_OVL void
-break_armor()
+break_armor(VOID_ARGS)
 {
     register struct obj *otmp;
 
@@ -2089,7 +2089,7 @@ dosummon(VOID_ARGS)
 }
 
 int
-dogaze()
+dogaze(VOID_ARGS)
 {
     register struct monst *mtmp;
     int looked = 0;
@@ -2528,7 +2528,7 @@ dodryfountain(VOID_ARGS)
 }
 
 int
-douseunicornhorn()
+douseunicornhorn(VOID_ARGS)
 {
     if (u.uen < UNICORN_HORN_MANA_COST) {
         play_sfx_sound(SFX_NOT_ENOUGH_MANA);

@@ -1034,7 +1034,7 @@ struct obj *old_obj, *new_obj;
 
 /* called from moveloop() */
 void
-age_spells()
+age_spells(VOID_ARGS)
 {
     int i;
     /*
@@ -1052,7 +1052,7 @@ age_spells()
 /* return True if spellcasting is inhibited;
    only covers a small subset of reasons why casting won't work */
 STATIC_OVL boolean
-rejectcasting()
+rejectcasting(VOID_ARGS)
 {
     /* rejections which take place before selecting a particular spell */
     if (Stunned)
@@ -3762,7 +3762,7 @@ int what;
    they used to be lost entirely, as if never learned, but now we
    just set the memory retention to zero so that they can't be cast */
 void
-losespells()
+losespells(VOID_ARGS)
 {
     int n, nzap, i;
 
@@ -3952,7 +3952,7 @@ sortspells(VOID_ARGS)
 
 /* called if the [sort spells] entry in the view spells menu gets chosen */
 STATIC_OVL boolean
-spellsortmenu()
+spellsortmenu(VOID_ARGS)
 {
     winid tmpwin;
     menu_item *selected;
@@ -3995,7 +3995,7 @@ spellsortmenu()
 }
 
 int
-dosortspell()
+dosortspell(VOID_ARGS)
 {
     if (spellsortmenu())
         sortspells();
@@ -4004,7 +4004,7 @@ dosortspell()
 }
 
 int
-dovspell()
+dovspell(VOID_ARGS)
 {
     char qbuf[QBUFSZ];
     int splnum, othnum;
@@ -4919,7 +4919,7 @@ boolean usehotkey;
 }
 
 int
-dospellmanagemenu()
+dospellmanagemenu(VOID_ARGS)
 {
     int i = '\0';
 
@@ -5432,7 +5432,7 @@ struct obj *obj;
 STATIC_VAR int domix_spell_no = -1;
 /* the 'X' command, two-weapon moved to M(x) */
 int
-domix()
+domix(VOID_ARGS)
 {
     if (in_doagain && domix_spell_no > -1)
     {

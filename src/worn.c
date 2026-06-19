@@ -1909,7 +1909,7 @@ struct obj *obj;
 
 /* all objects with their bypass bit set should now be reset to normal */
 void
-clear_bypasses()
+clear_bypasses(VOID_ARGS)
 {
     struct obj *otmp, *nobj;
     struct monst *mtmp;

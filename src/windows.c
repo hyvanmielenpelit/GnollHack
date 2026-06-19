@@ -204,7 +204,7 @@ struct winlink {
 STATIC_VAR struct winlink *chain = 0;
 
 STATIC_OVL struct winlink *
-wl_new()
+wl_new(VOID_ARGS)
 {
     struct winlink *wl = (struct winlink *) alloc(sizeof *wl);
 
@@ -583,7 +583,7 @@ const char *s;
 }
 
 void
-commit_windowchain()
+commit_windowchain(VOID_ARGS)
 {
     struct winlink *p;
     int n;
@@ -844,7 +844,7 @@ STATIC_VAR void FDECL((*previnterface_exit_nhwindows), (const char *)) = 0;
 
 /* hangup has occurred; switch to no-op user interface */
 void
-nhwindows_hangup()
+nhwindows_hangup(VOID_ARGS)
 {
     char *FDECL((*previnterface_getmsghistory_ex), (char**, char**, BOOLEAN_P)) = 0;
 
@@ -2439,7 +2439,7 @@ boolean replacespace;
 #endif
 
 STATIC_OVL void
-dump_css()
+dump_css(VOID_ARGS)
 {
     int c = 0;
     FILE* css = 0;
@@ -2917,7 +2917,7 @@ const char* str, *attrs, *colors;
 static int htmlsym[SYM_MAX] = DUMMY;
 
 STATIC_OVL void
-html_init_sym()
+html_init_sym(VOID_ARGS)
 {
     /* see https://html-css-js.com/html/character-codes/drawing/ */
 
@@ -3038,7 +3038,7 @@ boolean onoff, usediv;
 /** HTML Headers and footers **/
 
 STATIC_OVL void
-dump_headers()
+dump_headers(VOID_ARGS)
 {
 #ifdef DUMPHTML
     char vers[BUFSZ]; /* buffer for short version string */
@@ -3073,7 +3073,7 @@ dump_headers()
 }
 
 STATIC_OVL void
-dump_footers()
+dump_footers(VOID_ARGS)
 {
 #ifdef DUMPHTML
     if (dumphtml_file) {
@@ -3086,7 +3086,7 @@ dump_footers()
 /** HTML Map and status bar (collectively, the 'screendump') **/
 
 void
-dump_start_screendump()
+dump_start_screendump(VOID_ARGS)
 {
 #ifdef DUMPHTML
     if (!dumphtml_file) return;
@@ -3098,7 +3098,7 @@ dump_start_screendump()
 }
 
 void
-dump_end_screendump()
+dump_end_screendump(VOID_ARGS)
 {
 #ifdef DUMPHTML
     if (dumphtml_file)

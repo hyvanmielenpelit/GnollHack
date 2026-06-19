@@ -220,7 +220,7 @@ struct attack *mattk;
 #if 0
 /* called when your intrinsic speed is taken away */
 void
-u_slow_down()
+u_slow_down(VOID_ARGS)
 {
     /* OBSOLETE, now shade really slows */
     HFast = 0L;
@@ -3337,7 +3337,7 @@ register struct obj* omonwep;
  * to see if an engulfing attack should immediately take affect, like
  * a passive attack. TRUE if engulfing blindness occurred */
 boolean
-gulp_blnd_check()
+gulp_blnd_check(VOID_ARGS)
 {
     struct attack *mattk;
 
@@ -4896,7 +4896,7 @@ assess_dmg:
 }
 
 struct monst *
-cloneu()
+cloneu(VOID_ARGS)
 {
     struct monst *mon;
     int mndx = monsndx(youmonst.data);

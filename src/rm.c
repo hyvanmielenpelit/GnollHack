@@ -570,7 +570,7 @@ NEARDATA const struct decoration_lit_color_definition decoration_lit_colors[CLR_
 
 /* force linkage */
 void
-init_rm()
+init_rm(VOID_ARGS)
 {
     return;
 }

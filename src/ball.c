@@ -39,7 +39,7 @@ boolean showmsg;
 
 /* ball&chain might hit hero when falling through a trap door */
 void
-ballfall()
+ballfall(VOID_ARGS)
 {
     boolean gets_hit;
 
@@ -113,7 +113,7 @@ ballfall()
  *  Should not be called while swallowed except on waterlevel.
  */
 void
-placebc()
+placebc(VOID_ARGS)
 {
     if (!uchain || !uball) {
         impossible("Where are your ball and chain?");
@@ -139,7 +139,7 @@ placebc()
 }
 
 void
-unplacebc()
+unplacebc(VOID_ARGS)
 {
     if (u.uswallow) {
         if (Is_waterlevel(&u.uz)) {
@@ -181,7 +181,7 @@ unplacebc()
  *  hero is being punished.
  */
 STATIC_OVL int
-bc_order()
+bc_order(VOID_ARGS)
 {
     struct obj *obj;
 
@@ -849,7 +849,7 @@ xchar x, y;
 
 /* ball&chain cause hero to randomly lose stuff from inventory */
 STATIC_OVL void
-litter()
+litter(VOID_ARGS)
 {
     struct obj *otmp, *nextobj = 0;
     int capacity = weight_cap();
@@ -869,7 +869,7 @@ litter()
 }
 
 void
-drag_down()
+drag_down(VOID_ARGS)
 {
     boolean forward;
     uchar dragchance = 3;
@@ -916,7 +916,7 @@ drag_down()
 }
 
 void
-bc_sanity_check()
+bc_sanity_check(VOID_ARGS)
 {
     int otyp;
     unsigned save_nameknown;

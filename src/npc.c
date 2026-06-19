@@ -148,7 +148,7 @@ struct npc_subtype_definition npc_subtype_definitions[MAX_NPC_SUBTYPES] =
 };
 
 schar
-min_npc_appearance_depth()
+min_npc_appearance_depth(VOID_ARGS)
 {
     schar minlvl = -1;
     int i;
@@ -1130,7 +1130,7 @@ boolean ghostly;
 }
 
 void
-clearnpcs()
+clearnpcs(VOID_ARGS)
 {
     struct monst* mtmp;
 

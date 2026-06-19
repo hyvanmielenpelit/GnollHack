@@ -527,7 +527,7 @@ boolean talk;
 /* blindness has just started or just ended--caller enforces that;
    called by Blindf_on(), Blindf_off(), and make_blinded() */
 void
-toggle_blindness()
+toggle_blindness(VOID_ARGS)
 {
     /* Note this is a kludge that works only with wielded weapons; */
     /* blindness has just been toggled */
@@ -688,7 +688,7 @@ boolean talk;
 }
 
 void
-self_invis_message()
+self_invis_message(VOID_ARGS)
 {
     pline("%s %s.",
           Hallucination ? "Far out, man!  You"
@@ -698,7 +698,7 @@ self_invis_message()
 }
 
 STATIC_OVL void
-ghost_from_bottle()
+ghost_from_bottle(VOID_ARGS)
 {
     struct monst *mtmp = makemon(&mons[PM_GHOST], u.ux, u.uy, MM_PLAY_SUMMON_ANIMATION | MM_SUMMON_IN_SMOKE_ANIMATION | MM_PLAY_SUMMON_SOUND | MM_ANIMATION_WAIT_UNTIL_END);
 
@@ -727,7 +727,7 @@ ghost_from_bottle()
 
 /* "Quaffing is like drinking, except you spill more." - Terry Pratchett */
 int
-dodrink()
+dodrink(VOID_ARGS)
 {
     struct obj *otmp;
     const char *potion_descr;
@@ -2182,7 +2182,7 @@ const char *bottlenames[] = { "bottle", "phial", "flagon", "carafe",
                               "flask",  "jar",   "vial" };
 
 const char *
-bottlename()
+bottlename(VOID_ARGS)
 {
     return bottlenames[rn2(SIZE(bottlenames))];
 }
@@ -3698,7 +3698,7 @@ struct obj *o1, *o2;
 STATIC_VAR const char Dip_[] = "Dip ";
 /* #dip command */
 int
-dodip()
+dodip(VOID_ARGS)
 {
     struct obj *potion, *obj;
     struct obj *singlepotion;

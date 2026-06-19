@@ -421,7 +421,7 @@ struct monst* summoner;
 
 /* Yacc summons bison */
 int
-yacc_bison_summon()
+yacc_bison_summon(VOID_ARGS)
 {
     int dtype = NON_PM, cnt = 0, result = 0, census;
     struct monst* mtmp = (struct monst*) 0;
@@ -499,7 +499,7 @@ yacc_bison_summon()
 
 /* Orcus summons undead */
 int
-orcus_undead_summon()
+orcus_undead_summon(VOID_ARGS)
 {
     int dtype = NON_PM, cnt = 0, result = 0, census;
     struct monst* mtmp = (struct monst*) 0;

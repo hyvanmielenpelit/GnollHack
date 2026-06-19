@@ -87,7 +87,7 @@ int64_t wgrowtime[MAX_NUM_WORMS] = DUMMY;
  *  Implementation is left to the interested hacker.
  */
 int
-get_wormno()
+get_wormno(VOID_ARGS)
 {
     register int new_wormno = 1;
 

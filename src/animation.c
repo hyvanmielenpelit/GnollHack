@@ -3464,7 +3464,7 @@ int intervals;
 }
 
 void
-stop_animations()
+stop_animations(VOID_ARGS)
 {
     if (toggle_animation_timer)
     {

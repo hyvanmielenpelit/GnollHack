@@ -407,7 +407,7 @@ NhRegion *reg;
  * when changing level, for instance).
  */
 void
-clear_regions()
+clear_regions(VOID_ARGS)
 {
     register int i;
 
@@ -426,7 +426,7 @@ clear_regions()
  * callbacks when needed.
  */
 void
-run_regions()
+run_regions(VOID_ARGS)
 {
     register int i, j, k;
 //    int f_indx;
@@ -569,7 +569,7 @@ xchar x, y;
  * Checks player's regions after a teleport for instance.
  */
 void
-update_player_regions()
+update_player_regions(VOID_ARGS)
 {
     register int i;
 
@@ -1181,7 +1181,7 @@ enum region_types type;
 
 /* for checking troubles during prayer; is hero at risk? */
 boolean
-region_danger()
+region_danger(VOID_ARGS)
 {
     int i, n = 0; //f_indx, 
 
@@ -1207,7 +1207,7 @@ region_danger()
 /* for fixing trouble at end of prayer;
    danger detected at start of prayer might have expired by now */
 void
-region_safety()
+region_safety(VOID_ARGS)
 {
     NhRegion *r = 0;
     int i, n = 0; //f_indx, 

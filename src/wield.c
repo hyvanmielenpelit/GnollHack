@@ -383,7 +383,7 @@ STATIC_VAR NEARDATA const char bullets[] = { /* (note: different from dothrow.c)
 STATIC_VAR NEARDATA const char unwield_objs[] = { ALL_CLASSES, 0 };
 
 int
-dowield()
+dowield(VOID_ARGS)
 {
     struct obj* wep;
 
@@ -405,7 +405,7 @@ dowield()
 }
 
 int
-dowieldprevwep()
+dowieldprevwep(VOID_ARGS)
 {
     multi = 0;
     if (cantwield(youmonst.data))
@@ -685,7 +685,7 @@ struct obj* wep;
 
 /* the unwield command */
 int
-dounwield()
+dounwield(VOID_ARGS)
 {
     struct obj* otmp = (struct obj*)0;
 
@@ -888,7 +888,7 @@ int64_t swap_wep_mask, swap_target_mask; // swap_wep_mask = mask of original wea
 }
 
 int
-doswaphandedness()
+doswaphandedness(VOID_ARGS)
 {
     flags.swap_rhand_only = !flags.swap_rhand_only;
 
@@ -908,7 +908,7 @@ doswaphandedness()
 
 
 int
-doswapweapon_right_or_both()
+doswapweapon_right_or_both(VOID_ARGS)
 {
     if (flags.swap_rhand_only)
         return dosingleswapweapon(W_SWAPWEP, W_WEP);
@@ -918,7 +918,7 @@ doswapweapon_right_or_both()
 
 
 int
-doswapweapon()
+doswapweapon(VOID_ARGS)
 {
     register struct obj *oldwep, *oldswap;
     register struct obj* oldwep2, * oldswap2;
@@ -1183,7 +1183,7 @@ doswapweapon()
 }
 
 int
-dowieldquiver()
+dowieldquiver(VOID_ARGS)
 {
     char qbuf[QBUFSZ];
     struct obj *newquiver;
@@ -1683,7 +1683,7 @@ const char *verb; /* "rub",&c */
 
 
 void
-drop_uswapwep()
+drop_uswapwep(VOID_ARGS)
 {
     char str[BUFSZ];
     struct obj *obj = uswapwep;
@@ -1695,7 +1695,7 @@ drop_uswapwep()
 }
 
 int
-dotwoweapon()
+dotwoweapon(VOID_ARGS)
 {
     /* You can always toggle it off */
     if (u.twoweap) 
@@ -1733,7 +1733,7 @@ dotwoweapon()
  * 2.  Making an item disappear for a bones pile.
  */
 void
-uwepgone()
+uwepgone(VOID_ARGS)
 {
     if (uwep) {
         if ((artifact_light(uwep) || has_obj_mythic_magical_light(uwep) || obj_shines_magical_light(uwep)) && uwep->lamplit) {
@@ -1750,7 +1750,7 @@ uwepgone()
 }
 
 void
-uwep2gone()
+uwep2gone(VOID_ARGS)
 {
     if (uarms) {
         if ((artifact_light(uarms) || has_obj_mythic_magical_light(uarms) || obj_shines_magical_light(uarms)) && uarms->lamplit) {
@@ -1767,7 +1767,7 @@ uwep2gone()
 }
 
 void
-uswapwepgone()
+uswapwepgone(VOID_ARGS)
 {
     if (uswapwep) {
         setworn((struct obj *) 0, W_SWAPWEP);
@@ -1776,7 +1776,7 @@ uswapwepgone()
 }
 
 void
-uswapwep2gone()
+uswapwep2gone(VOID_ARGS)
 {
     if (uswapwep2) {
         setworn((struct obj*) 0, W_SWAPWEP2);
@@ -1786,7 +1786,7 @@ uswapwep2gone()
 
 
 void
-uqwepgone()
+uqwepgone(VOID_ARGS)
 {
     if (uquiver) {
         setworn((struct obj *) 0, W_QUIVER);
@@ -1796,7 +1796,7 @@ uqwepgone()
 }
 
 void
-untwoweapon()
+untwoweapon(VOID_ARGS)
 {
     if (u.twoweap) {
         play_ui_sound(UI_SOUND_STOP_TWO_WEAPON_COMBAT);

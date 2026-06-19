@@ -1141,7 +1141,7 @@ const char *kickobjnam;
 
 #ifdef ANDROID
 void
-autokick()
+autokick(VOID_ARGS)
 {
     if (nolimbs(youmonst.data) || slithy(youmonst.data))
         return;
@@ -1164,7 +1164,7 @@ autokick()
 #endif
 
 int
-dokick() 
+dokick(VOID_ARGS) 
 {
     return dokick_indir(FALSE);
 }
