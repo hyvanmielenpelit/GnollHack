@@ -14,10 +14,10 @@ For advanced documentation patterns (macros, structs, enums, complex control flo
 GnollHack's C core is derived from NetHack 3.6.2 — a codebase with roots in the 1980s. It uses conventions that are unfamiliar to modern C developers:
 
 - **K&R-style function definitions** with separate parameter type declarations
-- **Single-letter global variables** (`u` for the player, `m` for monsters)
+- **Single-letter global variables** (`u` for the player character)
 - **Dense macro systems** that generate data tables and encode game logic
 - **Implicit conventions** passed down through decades of NetHack development
-- **Bitfield flags** accessed through macros with no obvious meaning
+- **Bitfield flags** defined through macros enable structs to be defined with or without bitfields
 - **Complex pointer chains** linking monsters, objects, and map tiles
 
 Without documentation, a modern developer reading `if (u.uswallow && u.ustuck == mtmp)` has no idea this checks whether the player has been swallowed by a specific monster. Documentation bridges this knowledge gap.
