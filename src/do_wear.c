@@ -793,7 +793,7 @@ Armor_off(VOID_ARGS)
  * repeating.]
  */
 int
-Armor_gone()
+Armor_gone(VOID_ARGS)
 {
     context.takeoff.mask &= ~W_ARM;
     (void)setnotworn(uarm);
@@ -802,7 +802,7 @@ Armor_gone()
 }
 
 STATIC_OVL void
-Amulet_on()
+Amulet_on(VOID_ARGS)
 {
     if (!uamul)
         return;
@@ -844,7 +844,7 @@ Amulet_on()
 }
 
 void
-Amulet_off()
+Amulet_off(VOID_ARGS)
 {
     if (!uamul)
         return;
@@ -1305,7 +1305,7 @@ int64_t slotmask;
 /* despite their names, cancel_don() and cancel_doff() both apply to both
    donning and doffing... */
 void
-cancel_don()
+cancel_don(VOID_ARGS)
 {
     /* the piece of armor we were donning/doffing has vanished, so stop
      * wasting time on it (and don't dereference it when donning would
@@ -1545,7 +1545,7 @@ boolean on_purpose, lostgloves, loststoneresistance;
 
 /* the 'T' command */
 int
-dotakeoff()
+dotakeoff(VOID_ARGS)
 {
     struct obj *otmp = (struct obj *) 0;
 
@@ -1606,7 +1606,7 @@ dotakeoff()
 
 /* the 'R' command */
 int
-doremring()
+doremring(VOID_ARGS)
 {
     struct obj *otmp = 0;
 
@@ -2868,7 +2868,7 @@ boolean wear_precheck(VOID_ARGS)
 
 /* the 'W' command */
 int
-dowear()
+dowear(VOID_ARGS)
 {
     if (!wear_precheck())
         return 0;
@@ -2878,7 +2878,7 @@ dowear()
 
 /* the 'P' command */
 int
-doputon()
+doputon(VOID_ARGS)
 {
     struct obj *otmp;
 
@@ -2900,7 +2900,7 @@ doputon()
 
 /* calculate current magic cancellation */
 void
-find_mc()
+find_mc(VOID_ARGS)
 {
     u.umc = magic_negation(&youmonst);
     context.botl = 1;
@@ -2909,7 +2909,7 @@ find_mc()
 
 /* calculate current armor class */
 void
-find_ac()
+find_ac(VOID_ARGS)
 {
     int uac = 0; /* base armor class for current form */
     int uac_natural_base = mons[u.umonnum].ac; /* base armor class for current form */
@@ -3031,7 +3031,7 @@ get_role_MC_bonus(VOID_ARGS)
 }
 
 void
-glibr()
+glibr(VOID_ARGS)
 {
     register struct obj *otmp;
     int xfl = 0;
@@ -3185,7 +3185,7 @@ int otyp;
 
 /* also for praying; find worn item that confers "Unchanging" attribute */
 struct obj *
-unchanger()
+unchanger(VOID_ARGS)
 {
     if (uamul && uamul->otyp == AMULET_OF_UNCHANGING)
         return uamul;
@@ -3538,7 +3538,7 @@ register struct obj* otmp;
 }
 
 STATIC_OVL struct obj *
-do_takeoff()
+do_takeoff(VOID_ARGS)
 {
     struct obj *otmp = (struct obj *) 0;
     struct takeoff_info *doff = &context.takeoff;
@@ -3971,7 +3971,7 @@ take_off(VOID_ARGS)
 
 /* clear saved context to avoid inappropriate resumption of interrupted 'A' */
 void
-reset_remarm()
+reset_remarm(VOID_ARGS)
 {
     context.takeoff.what = context.takeoff.mask = context.wear.what = context.wear.mask = 0L;
     context.takeoff.command = 0;
@@ -3983,7 +3983,7 @@ reset_remarm()
 
 /* the M('t') command -- remove multiple worn items */
 int
-doddoremarm()
+doddoremarm(VOID_ARGS)
 {
     int result = 0;
     if (context.takeoff.command != TAKEOFF_WEAR_CMD_TAKEOFF)
@@ -4122,7 +4122,7 @@ int retry;
 
 /* the M('w') command -- wear multiple items */
 int
-ddowear()
+ddowear(VOID_ARGS)
 {
     if (!wear_precheck())
         return 0;

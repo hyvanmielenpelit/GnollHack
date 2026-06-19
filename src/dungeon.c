@@ -81,7 +81,7 @@ STATIC_DCL char *FDECL(tunesuffix, (mapseen *, char *));
 STATIC_DCL void NDECL(dumpit);
 
 STATIC_OVL void
-dumpit()
+dumpit(VOID_ARGS)
 {
     int i;
     s_level *x;
@@ -773,7 +773,7 @@ struct level_map {
 
 /* initialize the "dungeon" structs */
 void
-init_dungeons()
+init_dungeons(VOID_ARGS)
 {
     dlb *dgn_file;
     register int i, cl = 0, cb = 0;
@@ -1146,7 +1146,7 @@ d_level *lev;
  * depth visited by the player.
  */
 xchar
-maxledgerno()
+maxledgerno(VOID_ARGS)
 {
     return (xchar) (dungeons[n_dgns - 1].ledger_start
                     + dungeons[n_dgns - 1].num_dunlevs);
@@ -1361,7 +1361,7 @@ int upflag;
 
 /* place you on upstairs (or special equivalent) */
 void
-u_on_upstairs()
+u_on_upstairs(VOID_ARGS)
 {
     if (xupstair)
         u_on_newpos(xupstair, yupstair);
@@ -1371,7 +1371,7 @@ u_on_upstairs()
 
 /* place you on dnstairs (or special equivalent) */
 void
-u_on_dnstairs()
+u_on_dnstairs(VOID_ARGS)
 {
     if (xdnstair)
         u_on_newpos(xdnstair, ydnstair);
@@ -1727,7 +1727,7 @@ d_level *lev;
  * dependent on the location in the dungeon (eg. monster creation).
  */
 xchar
-level_difficulty()
+level_difficulty(VOID_ARGS)
 {
     int res;
 
@@ -2219,7 +2219,7 @@ d_level *lev;
 
 /* #annotate command - add a custom name to the current level */
 int
-donamelevel()
+donamelevel(VOID_ARGS)
 {
     mapseen *mptr;
     char nbuf[BUFSZ]; /* Buffer for response */
@@ -2934,7 +2934,7 @@ int roomno;
 
 /* #overview command */
 int
-dooverview()
+dooverview(VOID_ARGS)
 {
     show_overview(0, 0);
     return 0;

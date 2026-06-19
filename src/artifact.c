@@ -74,7 +74,7 @@ int artidx;
 
 /* handle some special cases; must be called after u_init() */
 STATIC_OVL void
-hack_artifacts()
+hack_artifacts(VOID_ARGS)
 {
     struct artifact *art;
     int alignmnt = aligns[flags.initalign].value;
@@ -98,7 +98,7 @@ hack_artifacts()
 
 /* zero out the artifact existence list */
 void
-init_artifacts()
+init_artifacts(VOID_ARGS)
 {
     (void) memset((genericptr_t) artiexist, 0, sizeof artiexist);
     (void) memset((genericptr_t) artidisco, 0, sizeof artidisco);
@@ -407,7 +407,7 @@ const char* name;
 }
 
 int
-nartifact_exist()
+nartifact_exist(VOID_ARGS)
 {
     int a = 0;
     int n = SIZE(artiexist);
@@ -2704,7 +2704,7 @@ STATIC_VAR NEARDATA const char invoke_types[] = { ALL_CLASSES, 0 };
 
 /* the #invoke command */
 int
-doinvoke()
+doinvoke(VOID_ARGS)
 {
     struct obj *obj;
 
@@ -3297,7 +3297,7 @@ struct obj* obj;
 }
 
 int
-create_portal()
+create_portal(VOID_ARGS)
 {
     int i, num_ok_dungeons, last_ok_dungeon = 0;
     d_level newlev;
@@ -4144,7 +4144,7 @@ int x, y;
 
 /* sense adjacent traps if wielding MKoT without wearing gloves */
 void
-mkot_trap_warn()
+mkot_trap_warn(VOID_ARGS)
 {
     static const char *const heat[7] = {
         "cool", "slightly warm", "warm", "very warm",

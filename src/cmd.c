@@ -637,7 +637,7 @@ doextlist(VOID_ARGS)
  * Here after # - now show pick-list of possible commands.
  */
 int
-extcmd_via_menu()
+extcmd_via_menu(VOID_ARGS)
 {
     const struct ext_func_tab *efp;
     menu_item *pick_list = (menu_item *) 0;
@@ -3353,7 +3353,7 @@ int final;
 
 /* is hero actively using water walking capability on water (or lava)? */
 STATIC_OVL boolean
-walking_on_water()
+walking_on_water(VOID_ARGS)
 {
     if (u.uinwater || Moves_above_ground)
         return FALSE;
@@ -5296,7 +5296,7 @@ STATIC_DCL boolean NDECL(minimal_enlightenment);
  * Returns FALSE if menu cancelled (dismissed with ESC), TRUE otherwise.
  */
 STATIC_OVL boolean
-minimal_enlightenment()
+minimal_enlightenment(VOID_ARGS)
 {
     winid tmpwin;
     menu_item *selected;
@@ -7451,7 +7451,7 @@ sanity_check(VOID_ARGS)
 
 #ifdef DEBUG_MIGRATING_MONS
 STATIC_OVL int
-wiz_migrate_mons()
+wiz_migrate_mons(VOID_ARGS)
 {
     int mcount = 0;
     char inbuf[BUFSZ] = DUMMY;
@@ -8335,7 +8335,7 @@ register char *cmd;
 
 
 STATIC_OVL void
-check_gui_special_effect()
+check_gui_special_effect(VOID_ARGS)
 {
     if (u.uz.dnum != mines_dnum && depth(&u.uz) > GUI_SPECIAL_EFFECT_LEVEL_DEPTH_THRESHOLD)
     {

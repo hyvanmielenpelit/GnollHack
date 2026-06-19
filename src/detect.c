@@ -31,7 +31,7 @@ STATIC_DCL int FDECL(mfind0, (struct monst *, BOOLEAN_P));
 /* bring hero out from underwater or underground or being engulfed;
    return True iff any change occurred */
 STATIC_OVL boolean
-unconstrain_map()
+unconstrain_map(VOID_ARGS)
 {
     boolean res = u.uinwater || u.uburied || u.uswallow;
 
@@ -45,7 +45,7 @@ unconstrain_map()
 
 /* put hero back underwater or underground or engulfed */
 STATIC_OVL void
-reconstrain_map()
+reconstrain_map(VOID_ARGS)
 {
     u.uinwater = iflags.save_uinwater, iflags.save_uinwater = 0;
     u.uburied  = iflags.save_uburied,  iflags.save_uburied  = 0;
@@ -1585,7 +1585,7 @@ register int x, y;
 }
 
 void
-do_mapping()
+do_mapping(VOID_ARGS)
 {
     register int zx, zy;
     boolean unconstrained;
@@ -1951,7 +1951,7 @@ genericptr_t num;
 
 /* returns number of things found */
 int
-findit()
+findit(VOID_ARGS)
 {
     int num = 0;
 
@@ -1963,7 +1963,7 @@ findit()
 
 /* returns number of things found and opened */
 int
-openit()
+openit(VOID_ARGS)
 {
     int num = 0;
 
@@ -2218,13 +2218,13 @@ register int aflag; /* intrinsic autosearch vs explicit searching */
 
 /* the 's' command -- explicit searching */
 int
-dosearch()
+dosearch(VOID_ARGS)
 {
     return dosearch0(0);
 }
 
 void
-warnreveal()
+warnreveal(VOID_ARGS)
 {
     int x, y;
     struct monst *mtmp;
@@ -2241,7 +2241,7 @@ warnreveal()
 
 /* Pre-map the sokoban levels */
 void
-sokoban_detect()
+sokoban_detect(VOID_ARGS)
 {
     register int x, y;
     register struct trap *ttmp;
@@ -2364,7 +2364,7 @@ int default_glyph, which_subset;
 
 #if defined(DUMPLOG) || defined(DUMPHTML)
 void
-dump_map()
+dump_map(VOID_ARGS)
 {
     int x, y, glyph, skippedrows, lastnonblank;
     int subset = TER_MAP | TER_TRP | TER_OBJ | TER_MON;

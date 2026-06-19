@@ -884,7 +884,7 @@ register char sym;
 #endif
 
 void
-u_init()
+u_init(VOID_ARGS)
 {
     register int i;
     struct u_roleplay tmpuroleplay = u.uroleplay; /* set by rcfile options */
@@ -1397,7 +1397,7 @@ u_init()
 
 
 void
-u_skills_init()
+u_skills_init(VOID_ARGS)
 {
     /*** Role-specific skill initializations ***/
     switch (Role_switch) 

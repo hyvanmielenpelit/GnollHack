@@ -857,7 +857,7 @@ struct eshk *eshkp;
 
 /* called in response to the `$' command */
 void
-shopper_financial_report()
+shopper_financial_report(VOID_ARGS)
 {
     debugprint_pos();
     struct monst *shkp, *this_shkp = shop_keeper(inside_shop(u.ux, u.uy));
@@ -1150,7 +1150,7 @@ register boolean killkops;
 }
 
 STATIC_OVL boolean
-angry_shk_exists()
+angry_shk_exists(VOID_ARGS)
 {
     register struct monst *shkp;
 
@@ -1351,7 +1351,7 @@ register struct monst *shkp;
 }
 
 struct monst*
-can_pay_to_shkp()
+can_pay_to_shkp(VOID_ARGS)
 {
     register struct monst* shkp;
     struct monst* resident;
@@ -1370,7 +1370,7 @@ can_pay_to_shkp()
 }
 
 int
-dopay()
+dopay(VOID_ARGS)
 {
     register struct eshk *eshkp;
     register struct monst *shkp;
@@ -2093,7 +2093,7 @@ struct monst *shkp;
 /* called at game exit, after inventory disclosure but before making bones;
    shouldn't issue any messages */
 void
-finish_paybill()
+finish_paybill(VOID_ARGS)
 {
     struct monst *shkp = repo.shopkeeper;
     int ox = repo.location.x, oy = repo.location.y;

@@ -518,7 +518,7 @@ boolean write_it;
 }
 
 void
-light_sources_sanity_check()
+light_sources_sanity_check(VOID_ARGS)
 {
     light_source *ls;
     struct monst *mtmp;
@@ -630,7 +630,7 @@ light_source *ls;
 
 /* return true if there exist any light sources */
 boolean
-any_light_source()
+any_light_source(VOID_ARGS)
 {
     return (boolean) (light_base != (light_source *) 0);
 }
@@ -969,7 +969,7 @@ struct obj *obj;
 }
 
 int
-wiz_light_sources()
+wiz_light_sources(VOID_ARGS)
 {
     winid win;
     char buf[BUFSZ];

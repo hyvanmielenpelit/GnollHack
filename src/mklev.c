@@ -99,7 +99,7 @@ xchar xl, yl, xh, yh;
 }
 
 void
-sort_rooms()
+sort_rooms(VOID_ARGS)
 {
 #if defined(SYSV) || defined(DGUX)
 #define CAST_nroom (size_t) nroom
@@ -631,7 +631,7 @@ int floortyp, floorsubtyp, mtype, tileset;
 }
 
 STATIC_OVL void
-makerooms()
+makerooms(VOID_ARGS)
 {
     boolean tried_vault = FALSE;
 
@@ -726,7 +726,7 @@ boolean nxcor;
 }
 
 void
-makecorridors()
+makecorridors(VOID_ARGS)
 {
     int a, b, i;
     boolean any = TRUE;
@@ -1066,7 +1066,7 @@ int trap_type;
 }
 
 STATIC_OVL void
-make_niches()
+make_niches(VOID_ARGS)
 {
     int ct = rnd((nroom >> 1) + 1), dep = depth(&u.uz);
     boolean ltptr = (!level.flags.noteleport && dep > 15),
@@ -1085,7 +1085,7 @@ make_niches()
 }
 
 STATIC_OVL void
-makevtele()
+makevtele(VOID_ARGS)
 {
     makeniche(TELEP_TRAP);
 }
@@ -1096,7 +1096,7 @@ makevtele()
  * each type initializes what it needs to separately.
  */
 STATIC_OVL void
-clear_level_structures()
+clear_level_structures(VOID_ARGS)
 {
     static struct rm zerorm = { nul_layerinfo,
                                 0, 0, 0, 0, 0,  0, 0, 0,  0, 0, 0, 0, 0, 0, 0, 0,  0, 0, 0, 0, 0,  0, 0, 0, 0, 0,  0, 0, 0, 0 };
@@ -1183,7 +1183,7 @@ clear_level_structures()
 }
 
 STATIC_OVL void
-makelevel()
+makelevel(VOID_ARGS)
 {
     register struct mkroom *croom, *troom;
     register int tryct;
@@ -1834,7 +1834,7 @@ boolean skip_lvl_checks;
 }
 
 void
-mklev()
+mklev(VOID_ARGS)
 {
     struct mkroom *croom;
     int ridx;
@@ -2763,7 +2763,7 @@ struct mkroom *croom;
  * to read the Book of the Dead.
  */
 void
-mkinvokearea()
+mkinvokearea(VOID_ARGS)
 {
     int dist;
     xchar xmin = inv_pos.x, xmax = inv_pos.x;

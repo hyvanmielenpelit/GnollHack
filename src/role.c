@@ -1340,7 +1340,7 @@ boolean for_display;
 }
 
 STATIC_OVL int
-randrole_filtered()
+randrole_filtered(VOID_ARGS)
 {
     int i, n = 0, set[SIZE(roles)];
 
@@ -1866,7 +1866,7 @@ int rolenum, racenum, gendnum, pickhow;
 }
 
 void
-rigid_role_checks()
+rigid_role_checks(VOID_ARGS)
 {
     int tmp;
 
@@ -1935,7 +1935,7 @@ const char *bufp;
 }
 
 boolean
-gotrolefilter()
+gotrolefilter(VOID_ARGS)
 {
     int i;
 
@@ -1948,7 +1948,7 @@ gotrolefilter()
 }
 
 void
-clearrolefilter()
+clearrolefilter(VOID_ARGS)
 {
     int i;
 
@@ -2265,7 +2265,7 @@ boolean add_ynq;
 #undef NUM_BP
 
 void
-plnamesuffix()
+plnamesuffix(VOID_ARGS)
 {
     char *sptr, *eptr;
     int i;
@@ -2570,7 +2570,7 @@ boolean preselect;
  * This code also replaces quest_init().
  */
 void
-role_init()
+role_init(VOID_ARGS)
 {
     int alignmnt;
     struct permonst *pm;
@@ -2721,7 +2721,7 @@ struct monst *mtmp;
 }
 
 const char *
-Goodbye()
+Goodbye(VOID_ARGS)
 {
     switch (Role_switch) {
     case PM_KNIGHT:
@@ -2738,7 +2738,7 @@ Goodbye()
 }
 
 int
-u_to_glyph()
+u_to_glyph(VOID_ARGS)
 {
 
     if (Upolyd || (uarmo && uarmo->otyp == MUMMY_WRAPPING))

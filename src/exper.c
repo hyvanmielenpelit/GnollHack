@@ -64,7 +64,7 @@ int lev;
 
 /* calculate spell power/energy points for new level */
 int
-newpw()
+newpw(VOID_ARGS)
 {
     int en = 0, enrnd, enfix;
 
@@ -97,7 +97,7 @@ newpw()
 }
 
 int
-enmaxadjustment()
+enmaxadjustment(VOID_ARGS)
 {
     int baseen = u.ubaseenmax;
     int baseadj = (int)((max(0.0, (2.0 * (double)ACURR(A_INT) + (double)ACURR(A_WIS)) / 3.0 - 1.0) * (double)(u.ulevel + 3)) / 6.0) + u.ubaseendrain;
@@ -143,7 +143,7 @@ enmaxadjustment()
 
 
 void
-updatemaxen()
+updatemaxen(VOID_ARGS)
 {
     u.uenmax = u.ubaseenmax + enmaxadjustment();
     if (u.uenmax < 0)
@@ -370,7 +370,7 @@ const char *drainer; /* cause of death, if drain should be fatal */
  * at a dragon created with a wand of polymorph??
  */
 void
-newexplevel()
+newexplevel(VOID_ARGS)
 {
     if (u.ulevel < MAXULEV && u.uexp >= newuexp(u.ulevel))
         pluslvl(TRUE);

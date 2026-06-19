@@ -475,7 +475,7 @@ boolean allow_drag, keep_effect_glyphs;
 }
 
 STATIC_OVL void
-vault_tele()
+vault_tele(VOID_ARGS)
 {
     register struct mkroom *croom = search_special(VAULT);
     coord c;
@@ -519,21 +519,21 @@ boolean force_it;
 
 /* teleport the hero via some method other than scroll of teleport */
 void
-tele()
+tele(VOID_ARGS)
 {
     (void) scrolltele((struct obj *) 0, FALSE, FALSE);
 }
 
 /* teleport the hero as though he or she had teleport control */
 void
-controlled_teleportation()
+controlled_teleportation(VOID_ARGS)
 {
     (void)scrolltele((struct obj*) 0, FALSE, TRUE);
 }
 
 /* teleport the hero via some method other than scroll of teleport */
 void
-wiztele()
+wiztele(VOID_ARGS)
 {
     (void)scrolltele((struct obj*) 0, TRUE, TRUE);
 }
@@ -819,7 +819,7 @@ struct monst* mtmp;
 
 /* ^T command; 'm ^T' == choose among several teleport modes */
 int
-dotelecmd()
+dotelecmd(VOID_ARGS)
 {
     int64_t save_HTele, save_ETele;
     int res, added, hidden;
@@ -2098,7 +2098,7 @@ register struct obj *obj;
 
 /* Returns an absolute depth */
 int
-random_teleport_level()
+random_teleport_level(VOID_ARGS)
 {
     int nlev, max_depth, min_depth, cur_depth = (int) depth(&u.uz);
 

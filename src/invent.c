@@ -662,7 +662,7 @@ register struct obj *otmp;
 
 /* sort the inventory; used by addinv() and doorganize() */
 STATIC_OVL void
-reorder_invent()
+reorder_invent(VOID_ARGS)
 {
     struct obj *otmp, *prev, *next;
     boolean need_more_sorting;
@@ -2326,7 +2326,7 @@ char oclass;
 
 
 struct obj*
-carrying_leashed_leash()
+carrying_leashed_leash(VOID_ARGS)
 {
     register struct obj* otmp;
 
@@ -2435,7 +2435,7 @@ int64_t amount;
 }
 
 boolean
-have_lizard()
+have_lizard(VOID_ARGS)
 {
     register struct obj *otmp;
 
@@ -2447,7 +2447,7 @@ have_lizard()
 
 /* 3.6 tribute */
 struct obj *
-u_have_novel()
+u_have_novel(VOID_ARGS)
 {
     register struct obj *otmp;
 
@@ -3617,7 +3617,7 @@ struct obj *otmp;
 }
 
 boolean
-wearing_armor()
+wearing_armor(VOID_ARGS)
 {
     return (boolean) (uarm || uarmc || uarmf || uarmg
                       || uarmh || uarms || uarmu || uarmo || uarmb);
@@ -4292,7 +4292,7 @@ boolean learning_id; /* true if we just read unknown identify scroll */
 /* called when regaining sight; mark inventory objects which were picked
    up while blind as now having been seen */
 void
-learn_unseen_invent()
+learn_unseen_invent(VOID_ARGS)
 {
     struct obj *otmp;
 
@@ -4473,7 +4473,7 @@ extern struct ext_func_tab extcmdlist[];
 
 /* the 'i' command */
 int
-ddoinv()
+ddoinv(VOID_ARGS)
 {
     //(void) display_inventory((char *) 0, FALSE, 1);
 
@@ -4525,7 +4525,7 @@ ddoinv()
 
 /* the ']' command */
 int
-doseeworn()
+doseeworn(VOID_ARGS)
 {
     char invlet;
     int64_t pickcnt;
@@ -4908,7 +4908,7 @@ boolean* return_to_inv_ptr;
 
 
 int
-dolastpickeditem()
+dolastpickeditem(VOID_ARGS)
 {
     struct obj* selobj = 0;
     if (context.last_picked_obj_oid > 0)
@@ -4977,7 +4977,7 @@ struct obj *list, **last_found;
 static winid cached_pickinv_win = WIN_ERR;
 
 void
-free_pickinv_cache()
+free_pickinv_cache(VOID_ARGS)
 {
     if (cached_pickinv_win != WIN_ERR) {
         destroy_nhwindow(cached_pickinv_win);
@@ -5897,7 +5897,7 @@ everything; /* all objects vs only unpaid objects */
 }
 
 STATIC_OVL void
-dounpaid()
+dounpaid(VOID_ARGS)
 {
     winid win;
     struct obj *otmp, *marker, *contnr;
@@ -5998,7 +5998,7 @@ dounpaid()
 }
 
 STATIC_OVL void
-dounidentified()
+dounidentified(VOID_ARGS)
 {
     winid win;
     struct obj* otmp;
@@ -6043,7 +6043,7 @@ dounidentified()
 }
 
 STATIC_OVL void
-dounknown()
+dounknown(VOID_ARGS)
 {
     winid win;
     struct obj* otmp;
@@ -6124,7 +6124,7 @@ struct obj *obj;
 
 /* the 'I' command */
 int
-dotypeinv()
+dotypeinv(VOID_ARGS)
 {
     char c = '\0';
     int n, i = 0;
@@ -7002,7 +7002,7 @@ update_here_window(VOID_ARGS)
 
 /* the ':' command - explicitly look at what is here, including all objects */
 int
-dolook()
+dolook(VOID_ARGS)
 {
     int res;
 
@@ -7178,7 +7178,7 @@ register struct obj *otmp, *obj;
 
 /* the '$' command */
 int
-doprgold()
+doprgold(VOID_ARGS)
 {
     /* the messages used to refer to "carrying gold", but that didn't
        take containers into account */
@@ -7194,7 +7194,7 @@ doprgold()
 
 /* the ')' command */
 int
-doprwep()
+doprwep(VOID_ARGS)
 {
     if ((!u.twoweap && !uwep) || (u.twoweap && !uwep && !uarms))
     {
@@ -7236,7 +7236,7 @@ boolean report_uskin;
 
 /* the '[' command */
 int
-doprarm()
+doprarm(VOID_ARGS)
 {
     char lets[12];
     register int ct = 0;
@@ -7275,7 +7275,7 @@ doprarm()
 
 /* the '=' command */
 int
-doprring()
+doprring(VOID_ARGS)
 {
     if (!uleft && !uright)
         You1("are not wearing any rings.");
@@ -7295,7 +7295,7 @@ doprring()
 
 /* the '"' command */
 int
-dopramulet()
+dopramulet(VOID_ARGS)
 {
     if (!uamul)
         You1("are not wearing an amulet.");
@@ -7318,7 +7318,7 @@ struct obj *obj;
 
 /* the '(' command */
 int
-doprtool()
+doprtool(VOID_ARGS)
 {
     struct obj *otmp;
     int ct = 0;
@@ -7338,7 +7338,7 @@ doprtool()
 /* '*' command; combines the ')' + '[' + '=' + '"' + '(' commands;
    show inventory of all currently wielded, worn, or used objects */
 int
-doprinuse()
+doprinuse(VOID_ARGS)
 {
     struct obj *otmp;
     int ct = 0;
@@ -7520,7 +7520,7 @@ char oclass;
 
 /* release the static buffer used by let_to_name() */
 void
-free_invbuf()
+free_invbuf(VOID_ARGS)
 {
     if (invbuf)
         free((genericptr_t) invbuf), invbuf = (char *) 0;
@@ -7530,7 +7530,7 @@ free_invbuf()
 /* give consecutive letters to every item in inventory (for !fixinv mode);
    gold is always forced to '$' slot at head of list */
 void
-reassign()
+reassign(VOID_ARGS)
 {
     int i;
     struct obj *obj, *prevobj, *goldobj;

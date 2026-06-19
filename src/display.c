@@ -2092,7 +2092,7 @@ int mode;
  *        sit.c]
  */
 void
-see_monsters()
+see_monsters(VOID_ARGS)
 {
     register struct monst *mon;
     int new_warn_obj_cnt = 0;
@@ -2252,7 +2252,7 @@ see_monsters()
  * changes.
  */
 void
-set_mimic_blocking()
+set_mimic_blocking(VOID_ARGS)
 {
     register struct monst *mon;
 
@@ -2274,7 +2274,7 @@ set_mimic_blocking()
  *      + hallucinating.
  */
 void
-see_objects()
+see_objects(VOID_ARGS)
 {
     register struct obj *obj;
     for (obj = fobj; obj; obj = obj->nobj)
@@ -2286,7 +2286,7 @@ see_objects()
  * Update hallucinated traps.
  */
 void
-see_traps()
+see_traps(VOID_ARGS)
 {
     struct trap *trap;
     int glyph;
@@ -2302,13 +2302,13 @@ see_traps()
  * Put the cursor on the hero.  Flush all accumulated glyphs before doing it.
  */
 void
-curs_on_u()
+curs_on_u(VOID_ARGS)
 {
     flush_screen(1); /* Flush waiting glyphs & put cursor on hero */
 }
 
 int
-doredraw()
+doredraw(VOID_ARGS)
 {
     debugprint_pos();
     docrt();
@@ -2316,7 +2316,7 @@ doredraw()
 }
 
 void
-docrt()
+docrt(VOID_ARGS)
 {
     register int x, y;
     register struct rm *lev;
@@ -2383,7 +2383,7 @@ docrt()
 }
 
 void
-clear_memory_object_detection_marks()
+clear_memory_object_detection_marks(VOID_ARGS)
 {
     struct obj* otmp;
     for (otmp = memoryobjs; otmp; otmp = otmp->nobj)
@@ -2396,7 +2396,7 @@ clear_memory_object_detection_marks()
 /* for panning beyond a clipped region; resend the current map data to
    the interface rather than use docrt()'s regeneration of that data */
 void
-redraw_map()
+redraw_map(VOID_ARGS)
 {
     int x, y;
 
@@ -3349,7 +3349,7 @@ int x, y, glyph;
  * Turn the 3rd screen into stone.
  */
 void
-clear_glyph_buffer()
+clear_glyph_buffer(VOID_ARGS)
 {
     register int x, y;
     register gbuf_entry *gptr;
@@ -3378,7 +3378,7 @@ int start, stop, y;
 }
 
 void
-cls()
+cls(VOID_ARGS)
 {
     if (in_cls)
         return;
@@ -3392,7 +3392,7 @@ cls()
 }
 
 void
-show_memory_everywhere()
+show_memory_everywhere(VOID_ARGS)
 {
     int x, y;
     for (x = 1; x < COLNO; x++) 
@@ -3404,7 +3404,7 @@ show_memory_everywhere()
 }
 
 void
-show_detection_everywhere()
+show_detection_everywhere(VOID_ARGS)
 {
     int x, y;
     for (x = 1; x < COLNO; x++)
@@ -3416,7 +3416,7 @@ show_detection_everywhere()
 }
 
 void
-show_memory_and_detection_everywhere()
+show_memory_and_detection_everywhere(VOID_ARGS)
 {
     int x, y;
     for (x = 1; x < COLNO; x++)
@@ -3968,7 +3968,7 @@ xchar x, y;
 
 
 boolean
-use_extra_special_staircase()
+use_extra_special_staircase(VOID_ARGS)
 {
     return (depth(&u.uz) == dungeons[u.uz.dnum].depth_start
         || depth(&u.uz) == dungeons[u.uz.dnum].depth_start + dungeons[u.uz.dnum].num_dunlevs - 1);
@@ -4805,7 +4805,7 @@ int x, y;
 
 /* Called from mklev.  Scan the level and set the wall modes. */
 void
-set_wall_state()
+set_wall_state(VOID_ARGS)
 {
     int x, y;
     int wmode;
@@ -5309,7 +5309,7 @@ struct rm *lev;
 }
 
 int
-get_current_cmap_type_index()
+get_current_cmap_type_index(VOID_ARGS)
 {
     if (level.flags.has_tileset)
         return level.flags.tileset;
@@ -5380,7 +5380,7 @@ boolean exclude_ascii;
 }
 
 void
-u_shieldeff()
+u_shieldeff(VOID_ARGS)
 {
     //enum action_tile_types action_before = u.action;
     //update_u_action_and_wait(ACTION_TILE_PASSIVE_DEFENSE);

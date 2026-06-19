@@ -658,7 +658,7 @@ int prefix;
 #ifdef MFLOPPY
 /* Set names for bones[] and lock[] */
 void
-set_lock_and_bones()
+set_lock_and_bones(VOID_ARGS)
 {
     if (!ramdisk) {
         Strcpy(levels, permbones);
@@ -1052,7 +1052,7 @@ delete_excess_levelfiles(VOID_ARGS)
 }
 
 void
-clearlocks()
+clearlocks(VOID_ARGS)
 {
 #ifdef HANGUPHANDLING
     if (program_state.preserve_locks)
@@ -1152,7 +1152,7 @@ int lev, oflag;
 }
 
 void
-really_close()
+really_close(VOID_ARGS)
 {
     int fd;
 
@@ -1259,7 +1259,7 @@ d_level *lev;
  * the same array may be used instead of copying.)
  */
 STATIC_OVL char *
-set_bonestemp_name()
+set_bonestemp_name(VOID_ARGS)
 {
     char *tf;
 
@@ -1324,7 +1324,7 @@ char errbuf[];
 #ifdef MFLOPPY
 /* remove partial bonesfile in process of creation */
 void
-cancel_bonesfile()
+cancel_bonesfile(VOID_ARGS)
 {
     const char *tempname;
 
@@ -1391,7 +1391,7 @@ d_level *lev;
 /* assume we're compressing the recently read or created bonesfile, so the
  * file name is already set properly */
 void
-compress_bonesfile()
+compress_bonesfile(VOID_ARGS)
 {
     nh_compress(fqname(bones, BONESPREFIX, 0));
 }
@@ -1525,7 +1525,7 @@ set_imported_savefile(VOID_ARGS)
 
 /* create save file, overwriting one if it already exists */
 int
-create_savefile()
+create_savefile(VOID_ARGS)
 {
     const char *fq_save;
     int fd;
@@ -1557,7 +1557,7 @@ create_savefile()
 
 /* open savefile for reading */
 int
-open_savefile()
+open_savefile(VOID_ARGS)
 {
     const char *fq_save;
     int fd;
@@ -1910,7 +1910,7 @@ delete_savefile_if_exists(VOID_ARGS)
 
 /* returns 1 if save file exists, otherwise 0 */
 boolean
-check_existing_save_file()
+check_existing_save_file(VOID_ARGS)
 {
     const char* fq_save;
     register int fd;
@@ -1934,7 +1934,7 @@ check_existing_save_file()
 
 /* returns 1 if save file exists, otherwise 0 */
 boolean
-check_existing_error_save_file()
+check_existing_error_save_file(VOID_ARGS)
 {
     const char* fq_save;
     char fq_error[FQN_MAX_FILENAME + BUFSZ];
@@ -2406,7 +2406,7 @@ const struct dirent* entry;
 #endif /* defined(SELECTSAVED) */
 
 struct save_game_data *
-get_saved_games()
+get_saved_games(VOID_ARGS)
 {
 #if defined(SELECTSAVED)
     int j = 0;
@@ -3666,7 +3666,7 @@ char sep;
 }
 
 STATIC_OVL void
-free_config_sections()
+free_config_sections(VOID_ARGS)
 {
     Strcpy(config_section_chosen, "");
     Strcpy(config_section_current, "");
@@ -4600,7 +4600,7 @@ const char *buf;
 }
 
 int
-config_error_done()
+config_error_done(VOID_ARGS)
 {
     int n;
     struct _config_error_frame *tmp = config_error_data;
@@ -4646,7 +4646,7 @@ int src;
 }
 
 STATIC_OVL FILE *
-fopen_wizkit_file()
+fopen_wizkit_file(VOID_ARGS)
 {
     FILE *fp;
     char *envp;
@@ -4766,7 +4766,7 @@ char *buf;
 }
 
 void
-read_wizkit()
+read_wizkit(VOID_ARGS)
 {
     FILE *fp;
 
@@ -4971,7 +4971,7 @@ STATIC_VAR int symset_which_set = 0;
 
 STATIC_OVL
 FILE *
-fopen_sym_file()
+fopen_sym_file(VOID_ARGS)
 {
     FILE *fp;
 
@@ -5433,7 +5433,7 @@ const char *reason;   /* explanation */
 
 /* ----------  BEGIN INTERNAL RECOVER ----------- */
 boolean
-recover_savefile()
+recover_savefile(VOID_ARGS)
 {
     int gfd, lfd, sfd;
     int lev, savelev, hpid;
@@ -5674,7 +5674,7 @@ int ifd, ofd;
 #ifdef SYSCF
 #ifdef SYSCF_FILE
 void
-assure_syscf_file()
+assure_syscf_file(VOID_ARGS)
 {
     int fd;
 
@@ -6031,7 +6031,7 @@ int bufsz;
 /* ----------  END TRIBUTE ----------- */
 
 void
-list_files()
+list_files(VOID_ARGS)
 {
 #if defined(UNIX) && (defined(QT_GRAPHICS) || defined(ANDROID) || defined(GNH_MOBILE))
     char fileslist[BUFSIZ * 5] = "";
@@ -6415,7 +6415,7 @@ finish:
 
 
 void
-mk_dgl_extrainfo()
+mk_dgl_extrainfo(VOID_ARGS)
 {
     FILE* extrai = (FILE*)0;
 #ifdef UNIX
@@ -6526,7 +6526,7 @@ char* wishstring;
 #ifdef WHEREIS_FILE
 /** Set the filename for the whereis file. */
 void
-set_whereisfile()
+set_whereisfile(VOID_ARGS)
 {
     char* p = (char*)strstr(whereis_file, "%n");
 
@@ -6602,13 +6602,13 @@ int sig_unused UNUSED;
 }
 
 void
-touch_whereis()
+touch_whereis(VOID_ARGS)
 {
     write_whereis(TRUE);
 }
 
 void
-delete_whereis()
+delete_whereis(VOID_ARGS)
 {
     write_whereis(FALSE);
 }

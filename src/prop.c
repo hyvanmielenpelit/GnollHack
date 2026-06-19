@@ -452,7 +452,7 @@ const char* status_names[MAX_STATUS_MARKS] = {
 enum game_ui_status_mark_types statusmarkorder[MAX_STATUS_MARKS] = { STATUS_MARK_TOWNGUARD_PEACEFUL, STATUS_MARK_TOWNGUARD_HOSTILE, STATUS_MARK_HIGH_LEVEL, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, STATUS_MARK_EATING, STATUS_MARK_FROZEN };
 
 void
-props_init()
+props_init(VOID_ARGS)
 {
     /* Force linkage */
     return;

@@ -263,7 +263,7 @@ STATIC_VAR struct monst *invent_carrying_monster = NULL;
 #define SPLEV_STACK_RESERVE 128
 
 void
-solidify_map()
+solidify_map(VOID_ARGS)
 {
     xchar x, y;
 
@@ -738,7 +738,7 @@ int prop;
 }
 
 STATIC_OVL void
-shuffle_alignments()
+shuffle_alignments(VOID_ARGS)
 {
     int i;
     aligntyp atmp;
@@ -759,7 +759,7 @@ shuffle_alignments()
  * Count the different features (sinks, fountains) in the level.
  */
 STATIC_OVL void
-count_features()
+count_features(VOID_ARGS)
 {
     xchar x, y;
 
@@ -775,7 +775,7 @@ count_features()
 }
 
 void
-remove_boundary_syms()
+remove_boundary_syms(VOID_ARGS)
 {
     /*
      * If any CROSSWALLs are found, must change to ROOM after REGION's
@@ -861,7 +861,7 @@ struct mkroom *droom;
 }
 
 STATIC_OVL void
-link_doors_rooms()
+link_doors_rooms(VOID_ARGS)
 {
     int x, y;
     int tmpi, m;
@@ -884,7 +884,7 @@ link_doors_rooms()
 }
 
 void
-fill_rooms()
+fill_rooms(VOID_ARGS)
 {
     int tmpi, m;
 
@@ -901,7 +901,7 @@ fill_rooms()
  * Choose randomly the state (nodoor, open, closed or locked) for a door
  */
 STATIC_OVL int
-rnddoor()
+rnddoor(VOID_ARGS)
 {
     int i = 1 << rn2(5);
 
@@ -913,7 +913,7 @@ rnddoor()
  * Select a random trap
  */
 STATIC_OVL int
-rndtrap()
+rndtrap(VOID_ARGS)
 {
     int rtrap;
 
@@ -3433,7 +3433,7 @@ schar ftyp, btyp;
  * stairs don't get created until _after_ sorting takes place.
  */
 STATIC_OVL void
-fix_stair_rooms()
+fix_stair_rooms(VOID_ARGS)
 {
     int i;
     struct mkroom *croom;
@@ -3749,7 +3749,7 @@ int humidity;
  * to the size of the maze.
  */
 STATIC_OVL void
-fill_empty_maze()
+fill_empty_maze(VOID_ARGS)
 {
     int mapcountmax, mapcount, mapfact;
     xchar x, y;
@@ -7020,7 +7020,7 @@ struct opvar *ov;
 }
 
 STATIC_OVL void
-ensure_way_out()
+ensure_way_out(VOID_ARGS)
 {
     static const char nhFunc[] = "ensure_way_out";
     struct opvar *ov = selection_opvar((char *) 0);

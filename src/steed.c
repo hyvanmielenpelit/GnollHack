@@ -11,7 +11,7 @@ STATIC_DCL void FDECL(maybewakesteed, (struct monst *));
 
 /* caller has decided that hero can't reach something while mounted */
 void
-rider_cant_reach()
+rider_cant_reach(VOID_ARGS)
 {
     play_sfx_sound(SFX_GENERAL_NOT_SKILLED_ENOUGH);
     You_ex(ATR_NONE, CLR_MSG_FAIL, "aren't skilled enough to reach from %s.", y_monnam(u.usteed));
@@ -538,7 +538,7 @@ struct monst *mtmp; /* The animal */
 
 /* You and your steed have moved */
 void
-exercise_steed()
+exercise_steed(VOID_ARGS)
 {
     if (!u.usteed)
         return;
@@ -553,7 +553,7 @@ exercise_steed()
 
 /* The player kicks or whips the steed */
 void
-kick_steed()
+kick_steed(VOID_ARGS)
 {
     char He[4];
     if (!u.usteed)

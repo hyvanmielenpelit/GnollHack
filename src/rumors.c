@@ -189,7 +189,7 @@ boolean exclude_cookie;
  * test that the true/false rumor boundaries are valid.
  */
 void
-rumor_check()
+rumor_check(VOID_ARGS)
 {
     dlb *rumors = 0;
     winid tmpwin;

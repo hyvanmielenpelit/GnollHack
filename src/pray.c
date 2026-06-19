@@ -150,7 +150,7 @@ boolean only_if_injured; /* determines whether maxhp <= 5 matters */
 /* return True if surrounded by impassible rock, regardless of the state
    of your own location (for example, inside a doorless closet) */
 boolean
-stuck_in_wall()
+stuck_in_wall(VOID_ARGS)
 {
     int i, j, x, y, count = 0;
 
@@ -187,7 +187,7 @@ stuck_in_wall()
  * hands; that's a case where the ramifications override this doubt.
  */
 STATIC_OVL int
-in_trouble()
+in_trouble(VOID_ARGS)
 {
     struct obj *otmp;
     int i;
@@ -295,7 +295,7 @@ in_trouble()
 
 /* select an item for TROUBLE_CURSED_ITEMS */
 STATIC_OVL struct obj *
-worst_cursed_item()
+worst_cursed_item(VOID_ARGS)
 {
     register struct obj *otmp;
 
@@ -911,7 +911,7 @@ const char *str;
 }
 
 STATIC_OVL void
-gcrownu()
+gcrownu(VOID_ARGS)
 {
     struct obj *obj, *obj2;
     boolean in_hand, in_hand2;
@@ -2566,7 +2566,7 @@ register struct obj *otmp;
 }
 
 int
-dosacrifice()
+dosacrifice(VOID_ARGS)
 {
     STATIC_VAR NEARDATA const char cloud_of_smoke[] =
         "A cloud of %s smoke surrounds you...";
@@ -3487,7 +3487,7 @@ removealtarsummons(VOID_ARGS)
 }
 
 int
-get_artifact_replacement_item_otyp()
+get_artifact_replacement_item_otyp(VOID_ARGS)
 {
     /* Non-artifact replacement in the case an artifact couldn't be made (most likely a case for monk) */
     int repl_otyp = ACURR(A_STR) < STR19(19) && !rn2(2) && !carrying(BELT_OF_STORM_GIANT_STRENGTH) && !carrying(BELT_OF_STONE_GIANT_STRENGTH) && !carrying(BELT_OF_FIRE_GIANT_STRENGTH) && !carrying(BELT_OF_FROST_GIANT_STRENGTH) && !carrying(BELT_OF_HILL_GIANT_STRENGTH) ? BELT_OF_STORM_GIANT_STRENGTH :
@@ -3558,7 +3558,7 @@ boolean praying; /* false means no messages should be given */
 
 /* #pray commmand */
 int
-dopray()
+dopray(VOID_ARGS)
 {
     if (!context.spellpray)
     {
@@ -3733,7 +3733,7 @@ prayer_done() /* M. Stephenson (1.0.3b) */
 
 
 int
-absolution_spell()
+absolution_spell(VOID_ARGS)
 {
     /* You are absolved for your sins */
     boolean sins_absolved = FALSE;
@@ -3762,7 +3762,7 @@ absolution_spell()
 /* OBSOLETE --JG */
 /* #turn command */
 int
-doturn()
+doturn(VOID_ARGS)
 {
     /* Knights & Priest(esse)s only please */
     struct monst *mtmp, *mtmp2;
@@ -3875,7 +3875,7 @@ doturn()
 }
 
 const char *
-a_gname()
+a_gname(VOID_ARGS)
 {
     return a_gname_at(u.ux, u.uy);
 }
@@ -3899,7 +3899,7 @@ xchar x, y;
 
 /* returns the name of the hero's deity */
 const char *
-u_gname()
+u_gname(VOID_ARGS)
 {
     return align_gname(u.ualign.type);
 }
@@ -4003,7 +4003,7 @@ aligntyp alignment;
 }
 
 const char*
-u_ghisher()
+u_ghisher(VOID_ARGS)
 {
     return align_ghisher(u.ualign.type);
 }
@@ -4173,7 +4173,7 @@ int dx, dy;
 }
 
 int
-wiz_crown()
+wiz_crown(VOID_ARGS)
 {
     gcrownu();
     return 0;

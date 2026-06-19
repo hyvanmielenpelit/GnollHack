@@ -59,7 +59,7 @@ STATIC_VAR NEARDATA const unsigned wizapp[] = {
 /* If you've found the Amulet, make the Wizard appear after some time */
 /* Also, give hints about portal locations, if amulet is worn/wielded -dlc */
 void
-amulet()
+amulet(VOID_ARGS)
 {
     struct monst *mtmp;
     struct trap *ttmp;
@@ -496,7 +496,7 @@ struct monst *mon;
 }
 
 void
-aggravate()
+aggravate(VOID_ARGS)
 {
     register struct monst *mtmp;
     boolean in_w_tower = In_W_tower(u.ux, u.uy, &u.uz);
@@ -532,7 +532,7 @@ aggravate()
 }
 
 void
-clonewiz()
+clonewiz(VOID_ARGS)
 {
     register struct monst *mtmp2;
 
@@ -783,7 +783,7 @@ struct monst* summoner;
 
 /* Let's resurrect the wizard, for some unexpected fun. */
 void
-resurrect()
+resurrect(VOID_ARGS)
 {
     struct monst *mtmp, **mmtmp;
     int64_t elapsed;
@@ -854,7 +854,7 @@ resurrect()
 /* Here, we make trouble for the poor shmuck who actually
    managed to do in the Wizard. */
 void
-intervene()
+intervene(VOID_ARGS)
 {
     int which = Is_astralevel(&u.uz) ? rnd(4) : rn2(6);
     /* cases 0 and 5 don't apply on the Astral level */
@@ -882,7 +882,7 @@ intervene()
 }
 
 void
-wizdead()
+wizdead(VOID_ARGS)
 {
     context.no_of_wizards--;
     if (!u.uevent.ukilled_wizard) {

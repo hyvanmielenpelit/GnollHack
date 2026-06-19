@@ -157,7 +157,7 @@ int roomtype;
 }
 
 STATIC_OVL int
-mkshop()
+mkshop(VOID_ARGS)
 {
     register struct mkroom *sroom;
     int i = -1;
@@ -329,7 +329,7 @@ gottype:
 
 
 STATIC_OVL int
-mkdesertedshop()
+mkdesertedshop(VOID_ARGS)
 {
     register struct mkroom* sroom;
     int i = -1;
@@ -1213,7 +1213,7 @@ int mm_flags;
 }
 
 STATIC_OVL struct permonst *
-morguemon()
+morguemon(VOID_ARGS)
 {
     register int i = rn2(100), hd = rn2(level_difficulty());
 
@@ -1300,7 +1300,7 @@ int type;
 
 
 struct permonst *
-antholemon()
+antholemon(VOID_ARGS)
 {
     int mtyp, indx, trycnt = 0;
 
@@ -1415,7 +1415,7 @@ mkswamp() /* Michiel Huisjes & Fred de Wilde */
 
 
 STATIC_OVL int
-mkgarden() 
+mkgarden(VOID_ARGS) 
 {
     register struct mkroom* sroom = (struct mkroom*)0;
     register int sx, sy, i;
@@ -1677,7 +1677,7 @@ mkgarden()
 }
 
 STATIC_OVL int
-mkdragonlair()
+mkdragonlair(VOID_ARGS)
 {
     register struct mkroom* sroom = (struct mkroom*)0;
     register int sx, sy, i, j;
@@ -1895,7 +1895,7 @@ int roomno;
 }
 
 STATIC_OVL int
-mktemple()
+mktemple(VOID_ARGS)
 {
     register struct mkroom *sroom;
     coord *shrine_spot;
@@ -2024,7 +2024,7 @@ mktemple()
 }
 
 STATIC_OVL int
-mksmithy()
+mksmithy(VOID_ARGS)
 {
     register struct mkroom* sroom;
     coord* anvil_spot;
@@ -2588,7 +2588,7 @@ schar type;
 }
 
 struct permonst *
-courtmon()
+courtmon(VOID_ARGS)
 {
     int i = rn2(60) + rn2(3 * level_difficulty());
 
@@ -2624,7 +2624,7 @@ STATIC_VAR const struct {
 
 
 STATIC_OVL struct permonst*
-yeenaghumon()
+yeenaghumon(VOID_ARGS)
 {
     int mndx;
     if (!(mvitals[PM_FLIND_LORD].mvflags & MV_GONE) && rn2(3))
@@ -2642,7 +2642,7 @@ yeenaghumon()
 
 /* return soldier types. */
 STATIC_OVL struct permonst *
-squadmon()
+squadmon(VOID_ARGS)
 {
     int sel_prob, i, cpro, mndx;
     sel_prob = rnd(80 + level_difficulty());

@@ -145,7 +145,7 @@ STATIC_VAR NEARDATA int64_t lastmovetime;
 #endif
 
 STATIC_OVL int
-moverock()
+moverock(VOID_ARGS)
 {
     register xchar rx, ry, sx, sy;
     register struct obj *otmp;
@@ -774,7 +774,7 @@ register xchar ox, oy;
 STATIC_VAR NEARDATA const char fell_on_sink[] = "fell onto a sink";
 
 STATIC_OVL void
-dosinkfall()
+dosinkfall(VOID_ARGS)
 {
     register struct obj *obj;
     int dmg;
@@ -1712,7 +1712,7 @@ struct trap *desttrap; /* nonnull if another trap at <x,y> */
 }
 
 boolean
-u_rooted()
+u_rooted(VOID_ARGS)
 {
     if (!youmonst.data->mmove) {
         You("are rooted %s.",
@@ -1726,7 +1726,7 @@ u_rooted()
 }
 
 void
-domove()
+domove(VOID_ARGS)
 {
         int ux1 = u.ux, uy1 = u.uy;
 
@@ -1739,7 +1739,7 @@ domove()
 }
 
 void
-domove_core()
+domove_core(VOID_ARGS)
 {
     register struct monst *mtmp;
     register struct rm *tmpr;
@@ -3309,7 +3309,7 @@ register boolean newlev;
   -1 = do normal pickup
   -2 = loot the monster */
 int
-pickup_checks()
+pickup_checks(VOID_ARGS)
 {
     /* uswallow case added by GAN 01/29/87 */
     if (u.uswallow) {
@@ -3478,7 +3478,7 @@ doput2bag(VOID_ARGS)
 /* turn around a corner if that is the only way we can proceed */
 /* do not turn left or right twice */
 void
-lookaround()
+lookaround(VOID_ARGS)
 {
     register int x, y;
     int i, x0 = 0, y0 = 0, m0 = 1, i0 = 9;
@@ -3701,7 +3701,7 @@ int x, y;
 /* something like lookaround, but we are not running */
 /* react only to monsters that might hit us */
 int
-monster_nearby()
+monster_nearby(VOID_ARGS)
 {
     register int x, y;
     register struct monst *mtmp;
@@ -3789,7 +3789,7 @@ const char *msg_override;
 }
 
 STATIC_OVL void
-maybe_wail()
+maybe_wail(VOID_ARGS)
 {
     static const short powers[] = { TELEPORT, SEE_INVISIBLE, POISON_RESISTANCE, COLD_IMMUNITY,
                               SHOCK_IMMUNITY, FIRE_IMMUNITY, SLEEP_RESISTANCE, DISINTEGRATION_RESISTANCE,
@@ -3912,7 +3912,7 @@ boolean verbose;
 }
 
 int
-weight_cap()
+weight_cap(VOID_ARGS)
 {
     int64_t carrcap, save_ELev = ELevitation, save_BLev = HBlocks_Levitation;
 
@@ -4003,7 +4003,7 @@ STATIC_VAR int wc; /* current weight_cap(); valid after call to inv_weight() */
 /* returns how far beyond the normal capacity the player is currently. */
 /* inv_weight() is negative if the player is below normal capacity. */
 int
-inv_weight()
+inv_weight(VOID_ARGS)
 {
     register struct obj *otmp = invent;
     register int wt = 0;
@@ -4038,13 +4038,13 @@ int xtra_wt;
 }
 
 int
-near_capacity()
+near_capacity(VOID_ARGS)
 {
     return calc_capacity(0);
 }
 
 int
-max_capacity()
+max_capacity(VOID_ARGS)
 {
     int wt = inv_weight();
 
@@ -4117,7 +4117,7 @@ struct obj* otmp;
 }
 
 struct extended_menu_info
-menu_heading_info()
+menu_heading_info(VOID_ARGS)
 {
     struct extended_menu_info info = zeroextendedmenuinfo;
     info.menu_flags = MENU_FLAGS_IS_HEADING;
@@ -4126,7 +4126,7 @@ menu_heading_info()
 }
 
 struct extended_menu_info
-active_menu_info()
+active_menu_info(VOID_ARGS)
 {
     struct extended_menu_info info = zeroextendedmenuinfo;
     info.menu_flags = MENU_FLAGS_ACTIVE;
@@ -4173,7 +4173,7 @@ get_cmap_or_cmap_variation_glyph_explanation(int glyph)
 }
 
 void
-adjusted_delay_output()
+adjusted_delay_output(VOID_ARGS)
 {
     if (flags.animation_frame_interval_in_milliseconds > 0)
     {

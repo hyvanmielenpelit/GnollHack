@@ -30,7 +30,7 @@ enum dig_types {
 };
 
 STATIC_OVL boolean
-rm_waslit()
+rm_waslit(VOID_ARGS)
 {
     register xchar x, y;
 
@@ -184,7 +184,7 @@ xchar x, y;
 }
 
 boolean
-is_digging()
+is_digging(VOID_ARGS)
 {
     if (occupation == dig) {
         return TRUE;
@@ -662,7 +662,7 @@ dig(VOID_ARGS)
 
 /* When will hole be finished? Very rough indication used by shopkeeper. */
 int
-holetime()
+holetime(VOID_ARGS)
 {
     if (occupation != dig || !*u.ushops)
         return -1;
@@ -2945,7 +2945,7 @@ coord *cc;
 }
 
 void
-buried_ball_to_punishment()
+buried_ball_to_punishment(VOID_ARGS)
 {
     coord cc;
     struct obj *ball;
@@ -2969,7 +2969,7 @@ buried_ball_to_punishment()
 }
 
 void
-buried_ball_to_freedom()
+buried_ball_to_freedom(VOID_ARGS)
 {
     coord cc;
     struct obj *ball;
@@ -3296,7 +3296,7 @@ struct monst *mtmp;
 }
 
 void
-bury_you()
+bury_you(VOID_ARGS)
 {
     debugpline0("bury_you");
     if (!Levitation && !Flying) {
@@ -3314,7 +3314,7 @@ bury_you()
 }
 
 void
-unearth_you()
+unearth_you(VOID_ARGS)
 {
     debugpline0("unearth_you");
     u.uburied = FALSE;
@@ -3326,7 +3326,7 @@ unearth_you()
 }
 
 void
-escape_tomb()
+escape_tomb(VOID_ARGS)
 {
     debugpline0("escape_tomb");
     if ((Teleportation || has_innate_teleportation(youmonst.data))
@@ -3373,7 +3373,7 @@ struct obj *otmp;
 #ifdef DEBUG
 /* bury everything at your loc and around */
 int
-wiz_debug_cmd_bury()
+wiz_debug_cmd_bury(VOID_ARGS)
 {
     int x, y;
 
@@ -3389,7 +3389,7 @@ wiz_debug_cmd_bury()
 
 /* the C('d') command - Dig ground with hands or your weapon */
 int
-dodig()
+dodig(VOID_ARGS)
 {
     if (uwep && (uwep->otyp == PICK_AXE || uwep->otyp == DWARVISH_MATTOCK || uwep->otyp == SPADE_OF_COLOSSAL_EXCAVATION))
     {

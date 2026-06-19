@@ -728,7 +728,7 @@ STATIC_DCL void FDECL(wc_set_font_name, (int, char *));
 STATIC_DCL int FDECL(wc_set_window_colors, (char *));
 
 void
-reglyph_darkroom()
+reglyph_darkroom(VOID_ARGS)
 {
     if (flags.dark_room && iflags.use_color)
     {
@@ -795,7 +795,7 @@ const char *ev;
 
 /* process options, possibly including SYSCF */
 void
-process_options_file()
+process_options_file(VOID_ARGS)
 {
     init_options();
 #ifdef SYSCF
@@ -825,7 +825,7 @@ process_options_file()
 }
 
 void
-init_options()
+init_options(VOID_ARGS)
 {
 #if (defined(UNIX) || defined(VMS)) && defined (TTY_GRAPHICS)
     char *opts;
@@ -1068,7 +1068,7 @@ init_options()
 }
 
 void
-finish_options()
+finish_options(VOID_ARGS)
 {
 #ifndef MAC
     char *opts = getenv("NETHACKOPTIONS");
@@ -1906,7 +1906,7 @@ int typ;
 }
 
 int
-query_msgtype()
+query_msgtype(VOID_ARGS)
 {
     winid tmpwin;
     anything any;
@@ -1957,7 +1957,7 @@ char *pattern;
 }
 
 void
-msgtype_free()
+msgtype_free(VOID_ARGS)
 {
     struct plinemsg_type *tmp, *tmp2 = 0;
 
@@ -2241,7 +2241,7 @@ const char* str;
 
 
 void
-free_menu_coloring()
+free_menu_coloring(VOID_ARGS)
 {
     struct menucoloring *tmp, *tmp2;
 
@@ -7880,7 +7880,7 @@ char *buf;
 }
 
 int
-dotogglepickup()
+dotogglepickup(VOID_ARGS)
 {
     char buf[BUFSZ], ocl[MAX_OBJECT_CLASSES + 1];
     int color = NO_COLOR;
@@ -7983,7 +7983,7 @@ struct autopickup_exception *whichape;
 }
 
 int
-dotoggledecorations()
+dotoggledecorations(VOID_ARGS)
 {
     char buf[BUFSZ];
     int color = NO_COLOR;
@@ -8029,7 +8029,7 @@ int *leave, *grab;
 }
 
 void
-free_autopickup_exceptions()
+free_autopickup_exceptions(VOID_ARGS)
 {
     struct autopickup_exception *ape;
     int pass;
@@ -8066,7 +8066,7 @@ int which_set;
 }
 
 void
-free_symsets()
+free_symsets(VOID_ARGS)
 {
     clear_symsetentry(PRIMARY, TRUE);
     clear_symsetentry(ROGUESET, TRUE);
@@ -8212,7 +8212,7 @@ static const char *opt_epilog[] = {
 };
 
 void
-option_help()
+option_help(VOID_ARGS)
 {
     char buf[BUFSZ], buf2[BUFSZ];
     register int i;
@@ -8902,7 +8902,7 @@ char *op;
    OPTIONS=playmode:debug, or from dorestore()'s restgamestate() if
    restoring a game which was saved in wizard mode */
 void
-set_playmode()
+set_playmode(VOID_ARGS)
 {
 #ifndef ANDROID
     if (wizard) {

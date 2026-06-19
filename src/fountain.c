@@ -34,7 +34,7 @@ const char *what;
 
 /* Fountain of snakes! */
 STATIC_OVL void
-dowatersnakes()
+dowatersnakes(VOID_ARGS)
 {
     register int num = rn1(5, 2);
     struct monst *mtmp;
@@ -56,7 +56,7 @@ dowatersnakes()
 
 /* Water demon */
 STATIC_OVL void
-dowaterdemon()
+dowaterdemon(VOID_ARGS)
 {
     struct monst *mtmp;
     if (!(mvitals[PM_WATER_DEMON].mvflags & MV_GONE)) 
@@ -88,7 +88,7 @@ dowaterdemon()
 
 /* Water Nymph */
 STATIC_OVL void
-dowaternymph()
+dowaternymph(VOID_ARGS)
 {
     register struct monst *mtmp;
 
@@ -158,7 +158,7 @@ genericptr_t poolcnt;
 
 /* Find a gem in the sparkling waters. */
 STATIC_OVL void
-dofindgem()
+dofindgem(VOID_ARGS)
 {
     if (!Blind)
         You("spot a gem in the sparkling waters!");
@@ -232,7 +232,7 @@ boolean isyou;
 }
 
 void
-drinkfountain()
+drinkfountain(VOID_ARGS)
 {
     /* What happens when you drink from a fountain? */
     register boolean mgkftn = (levl[u.ux][u.uy].blessedftn == 1);
@@ -1298,7 +1298,7 @@ int x, y;
 }
 
 void
-drinksink()
+drinksink(VOID_ARGS)
 {
     struct obj *otmp;
     struct monst *mtmp;
@@ -1434,7 +1434,7 @@ drinksink()
 }
 
 void
-init_fountains()
+init_fountains(VOID_ARGS)
 {
     /*Initialize fountain variations */
     int i;

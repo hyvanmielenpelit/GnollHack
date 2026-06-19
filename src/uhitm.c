@@ -2699,7 +2699,7 @@ struct obj *obj;   /* weapon */
  *
  */
 STATIC_OVL void
-demonpet()
+demonpet(VOID_ARGS)
 {
     int i;
     struct permonst *pm;
@@ -3597,7 +3597,7 @@ struct monst *mdef;
 }
 
 STATIC_OVL void
-end_engulf()
+end_engulf(VOID_ARGS)
 {
     if (!Invisib) {
         tmp_at(DISP_END, 0);
@@ -5552,7 +5552,7 @@ uint64_t additional_newsym_flags;
 }
 
 void 
-u_wait_until_action()
+u_wait_until_action(VOID_ARGS)
 {
     if (context.u_intervals_to_wait_until_action > 0UL)
     {
@@ -5575,7 +5575,7 @@ enum action_tile_types action;
 }
 
 void
-u_wait_until_end()
+u_wait_until_end(VOID_ARGS)
 {
     if (context.u_intervals_to_wait_until_end > 0UL)
     {

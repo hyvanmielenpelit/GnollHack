@@ -18729,7 +18729,7 @@ int radius;
 }
 
 void
-update_ambient_sounds()
+update_ambient_sounds(VOID_ARGS)
 {
     struct soundsource_t* curr;
     for (curr = sound_base; curr; curr = curr->next)
@@ -18810,14 +18810,14 @@ update_ambient_sounds()
 }
 
 void
-update_hearing_array_and_ambient_sounds()
+update_hearing_array_and_ambient_sounds(VOID_ARGS)
 {
     update_hearing_array(0);
     update_ambient_sounds();
 }
 
 void
-clear_hearing_array_and_ambient_sounds()
+clear_hearing_array_and_ambient_sounds(VOID_ARGS)
 {
     update_hearing_array(1);
     update_ambient_sounds();
@@ -19221,7 +19221,7 @@ boolean write_it;
 }
 
 void
-sound_sources_sanity_check()
+sound_sources_sanity_check(VOID_ARGS)
 {
     sound_source* ss;
     struct monst* mtmp;
@@ -19373,7 +19373,7 @@ struct obj* src, * dest;
 
 /* return true if there exist any sound sources */
 boolean
-any_sound_source()
+any_sound_source(VOID_ARGS)
 {
     return (boolean)(sound_base != (sound_source*)0);
 }
@@ -20517,7 +20517,7 @@ boolean via_pline;
 }
 
 void
-stop_all_immediate_sounds()
+stop_all_immediate_sounds(VOID_ARGS)
 {
     struct stop_all_info info = { 0 };
     info.stop_flags = STOP_SOUNDS_FLAGS_IMMEDIATE_ALL;
@@ -20525,7 +20525,7 @@ stop_all_immediate_sounds()
 }
 
 void
-stop_all_long_immediate_sounds()
+stop_all_long_immediate_sounds(VOID_ARGS)
 {
     struct stop_all_info info = { 0 };
     info.stop_flags = STOP_SOUNDS_FLAGS_IMMEDIATE_LONG;

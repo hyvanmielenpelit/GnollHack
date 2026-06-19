@@ -1034,7 +1034,7 @@ STATIC_DCL void FDECL(calculate_encounter_difficulty, (int, int));
 
 
 void
-encounter_init()
+encounter_init(VOID_ARGS)
 {
     for (int j = 0; j < MAX_ENCOUNTERS; j++)
     {

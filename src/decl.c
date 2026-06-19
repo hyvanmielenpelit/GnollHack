@@ -597,7 +597,7 @@ NEARDATA int debug_buf_start = 0;
 
 /* dummy routine used to force linkage */
 void
-decl_init()
+decl_init(VOID_ARGS)
 {
     return;
 }

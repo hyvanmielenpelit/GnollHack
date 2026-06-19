@@ -425,7 +425,7 @@ int *shotlimit_p; /* (see dothrow()) */
 
 /* t command - throw */
 int
-dothrow()
+dothrow(VOID_ARGS)
 {
     register struct obj *obj;
     int shotlimit;
@@ -454,7 +454,7 @@ dothrow()
 /* KMH -- Automatically fill quiver */
 /* Suggested by Jeffrey Bay <jbay@convex.hp.com> */
 STATIC_OVL void
-autoquiver()
+autoquiver(VOID_ARGS)
 {
     struct obj *otmp, *oammo = 0, *omissile = 0, *omisc = 0, *altammo = 0;
 
@@ -529,7 +529,7 @@ autoquiver()
 
 /* f command -- fire: throw from the quiver */
 int
-dofire()
+dofire(VOID_ARGS)
 {
     int shotlimit;
     struct obj *obj;

@@ -1673,7 +1673,7 @@ struct monst *mon;
 
 /* attack bonus for strength & dexterity */
 int
-u_strdex_to_hit_bonus()
+u_strdex_to_hit_bonus(VOID_ARGS)
 {
     int sbon = 0;
     int str = ACURR(A_STR), dex = ACURR(A_DEX);
@@ -1689,7 +1689,7 @@ u_strdex_to_hit_bonus()
 
 /* attack bonus for dexterity only for ranged*/
 int
-u_ranged_strdex_to_hit_bonus()
+u_ranged_strdex_to_hit_bonus(VOID_ARGS)
 {
     int sbon = 0;
     int /*str = ACURR(A_STR),*/ dex = ACURR(A_DEX);
@@ -1748,7 +1748,7 @@ boolean is_average;
 
 /* damage bonus for strength */
 int
-u_str_dmg_bonus()
+u_str_dmg_bonus(VOID_ARGS)
 {
     int str = ACURR(A_STR);
 
@@ -1757,7 +1757,7 @@ u_str_dmg_bonus()
 
 /* damage bonus for strength for thrown weapons (bows get full strength)*/
 int
-u_thrown_str_dmg_bonus()
+u_thrown_str_dmg_bonus(VOID_ARGS)
 {
     return u_str_dmg_bonus() / 2;
 }
@@ -2338,7 +2338,7 @@ STATIC_VAR const struct skill_range {
 
 /* 'S' command  */
 int
-doskill()
+doskill(VOID_ARGS)
 {
     if(iflags.skill_table_format)
         return enhance_weapon_skill();
@@ -2347,7 +2347,7 @@ doskill()
 }
 
 int
-doskill_core()
+doskill_core(VOID_ARGS)
 {
     int pass, i, n;
     int color = CLR_WHITE;
@@ -3087,7 +3087,7 @@ boolean singular;
  * others unselectable.
  */
 int
-enhance_weapon_skill()
+enhance_weapon_skill(VOID_ARGS)
 {
     int pass, i, n, to_advance, eventually_advance, maxxed_cnt;
     size_t len, longest;
@@ -3711,7 +3711,7 @@ enhance_weapon_skill()
 }
 
 void
-update_can_advance_any_skill()
+update_can_advance_any_skill(VOID_ARGS)
 {
     int i = 0;
     /* check for more skills able to advance, if so then .. */
@@ -3869,7 +3869,7 @@ struct obj *obj;
 }
 
 enum p_skills
-uwep_skill_type()
+uwep_skill_type(VOID_ARGS)
 {
     //if (u.twoweap)
     //    return P_DUAL_WEAPON_COMBAT;

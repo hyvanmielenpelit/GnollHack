@@ -84,14 +84,14 @@ STATIC_VAR int64_t laststattime;
 #endif
 
 void
-free_maildata()
+free_maildata(VOID_ARGS)
 {
     if (mailbox)
         free((genericptr_t) mailbox), mailbox = (char *) 0;
 }
 
 void
-getmailstatus()
+getmailstatus(VOID_ARGS)
 {
     if (mailbox) {
         ; /* no need to repeat the setup */
@@ -438,7 +438,7 @@ struct mail_info *info;
 #if !defined(UNIX) && !defined(VMS)
 
 void
-ckmailstatus()
+ckmailstatus(VOID_ARGS)
 {
     if (u.uswallow || !flags.biff)
         return;
@@ -496,7 +496,7 @@ struct obj *otmp UNUSED;
 #ifdef UNIX
 
 void
-ckmailstatus()
+ckmailstatus(VOID_ARGS)
 {
     ck_server_admin_msg();
 
@@ -621,7 +621,7 @@ boolean adminmsg;
 #endif /* SIMPLE_MAIL */
 
 void
-ck_server_admin_msg()
+ck_server_admin_msg(VOID_ARGS)
 {
 #ifdef SERVER_ADMIN_MSG
     static struct stat ost,nst;
@@ -681,7 +681,7 @@ extern NDECL(struct mail_info *parse_next_broadcast);
 volatile int broadcasts = 0;
 
 void
-ckmailstatus()
+ckmailstatus(VOID_ARGS)
 {
     struct mail_info *brdcst;
 

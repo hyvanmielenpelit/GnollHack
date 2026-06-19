@@ -94,7 +94,7 @@ STATIC_VAR NEARDATA int64_t omoves;
 
 /* Recalculate level.objects[x][y], since this info was not saved. */
 STATIC_OVL void
-find_lev_obj()
+find_lev_obj(VOID_ARGS)
 {
     register struct obj *fobjtmp = (struct obj *) 0;
     register struct obj *otmp;
@@ -125,7 +125,7 @@ find_lev_obj()
 }
 
 STATIC_OVL void
-find_memory_obj()
+find_memory_obj(VOID_ARGS)
 {
     register struct obj* memoryobjstmp = (struct obj*)0;
     register struct obj* otmp;
@@ -1657,7 +1657,7 @@ register int fd;
 
 /* Clear all structures for object and monster ID mapping. */
 STATIC_OVL void
-clear_id_mapping()
+clear_id_mapping(VOID_ARGS)
 {
     struct bucket *curr;
 
@@ -2360,7 +2360,7 @@ check_saved_game_exists(void)
 
 
 void
-minit()
+minit(VOID_ARGS)
 {
     (*restoreprocs.restore_minit)();
     return;
@@ -2519,7 +2519,7 @@ STATIC_VAR NEARDATA short inrunlength = -1;
 STATIC_VAR NEARDATA int mreadfd;
 
 STATIC_OVL int
-zerocomp_mgetc()
+zerocomp_mgetc(VOID_ARGS)
 {
     if (inbufp >= inbufsz) {
         inbufsz = read(mreadfd, (genericptr_t) inbuf, sizeof inbuf);
@@ -2535,7 +2535,7 @@ zerocomp_mgetc()
 }
 
 STATIC_OVL void
-zerocomp_minit()
+zerocomp_minit(VOID_ARGS)
 {
     inbufsz = 0;
     inbufp = 0;
@@ -2572,7 +2572,7 @@ register size_t len;
 #endif /* ZEROCOMP */
 
 STATIC_OVL void
-def_minit()
+def_minit(VOID_ARGS)
 {
     return;
 }

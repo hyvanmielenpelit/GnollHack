@@ -680,7 +680,7 @@ create_monster_or_encounter(VOID_ARGS)
 
 STATIC_OVL
 int
-select_rwraith()
+select_rwraith(VOID_ARGS)
 {
     /* Special wraith appearance for the Ruling Ring of Yendor */
     int minlevel = 0, maxlevel = 1;
@@ -724,7 +724,7 @@ select_rwraith()
 
 STATIC_OVL
 boolean
-maybe_create_rwraith()
+maybe_create_rwraith(VOID_ARGS)
 {
     struct monst* rwraith = (struct monst*)0;
     boolean rwraith_appeared = FALSE;
@@ -1152,7 +1152,7 @@ boolean* known_props;
 
 
 void
-stop_occupation()
+stop_occupation(VOID_ARGS)
 {
     if (occupation) {
         if (!maybe_finished_meal(TRUE))
@@ -1173,7 +1173,7 @@ stop_occupation()
 }
 
 void
-display_gamewindows()
+display_gamewindows(VOID_ARGS)
 {
     WIN_MESSAGE = create_nhwindow(NHW_MESSAGE);
     if (VIA_WINDOWPORT()) {
@@ -1351,7 +1351,7 @@ boolean display_nonscoring, iswizardmode, isexporemode, ismodernmode, iscasualmo
 }
 
 const char*
-get_game_mode_description()
+get_game_mode_description(VOID_ARGS)
 {
     return get_game_mode_description_core(wizard, discover, ModernMode, CasualMode);
 }
@@ -1698,7 +1698,7 @@ boolean new_game; /* false => restoring an old game */
 
 #ifdef POSITIONBAR
 STATIC_DCL void
-do_positionbar()
+do_positionbar(VOID_ARGS)
 {
     static char pbar[COLNO];
     char *p;

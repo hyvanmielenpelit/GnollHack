@@ -1995,7 +1995,7 @@ bark_here:
 
 /* #yell command */
 int
-doyell()
+doyell(VOID_ARGS)
 {
     int result = 0;
 

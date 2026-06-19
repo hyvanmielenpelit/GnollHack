@@ -111,7 +111,7 @@ int attr, color;
    this data isn't saved and restored); end-of-game releases saved_pline[]
    while writing its contents to the final dump log */
 void
-dumplogfreemessages()
+dumplogfreemessages(VOID_ARGS)
 {
     unsigned indx;
 
@@ -979,7 +979,7 @@ size_t siz;
 }
 
 void
-free_youbuf()
+free_youbuf(VOID_ARGS)
 {
     if (you_buf)
         free((genericptr_t) you_buf), you_buf = (char *) 0;

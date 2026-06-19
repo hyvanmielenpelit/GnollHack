@@ -1925,21 +1925,21 @@ boolean without_asking;
 
 /* the '/' command */
 int
-dowhatis()
+dowhatis(VOID_ARGS)
 {
     return do_look(0, (coord *) 0);
 }
 
 /* the ';' command */
 int
-doquickwhatis()
+doquickwhatis(VOID_ARGS)
 {
     return do_look(1, (coord *) 0);
 }
 
 /* the '^' command */
 int
-doidtrap()
+doidtrap(VOID_ARGS)
 {
     register struct trap *trap;
     int x, y, tt, glyph;
@@ -2024,7 +2024,7 @@ doidtrap()
 */
 
 STATIC_DCL void
-whatdoes_help()
+whatdoes_help(VOID_ARGS)
 {
     dlb *fp;
     char *p, buf[BUFSZ];
@@ -2264,7 +2264,7 @@ char *cbuf;
 }
 
 int
-dowhatdoes()
+dowhatdoes(VOID_ARGS)
 {
     static boolean once = FALSE;
     char bufr[BUFSZ];
@@ -2442,7 +2442,7 @@ STATIC_VAR const struct {
 
 /* the '?' command */
 int
-dohelp()
+dohelp(VOID_ARGS)
 {
     winid tmpwin = create_nhwindow(NHW_MENU);
     char helpbuf[QBUFSZ];
@@ -2479,7 +2479,7 @@ dohelp()
 
 /* the 'V' command; also a choice for '?' */
 int
-dohistory()
+dohistory(VOID_ARGS)
 {
     display_file(HISTORY, TRUE);
     return 0;

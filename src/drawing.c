@@ -1413,7 +1413,7 @@ char ch;
  */
 
 void
-init_symbols()
+init_symbols(VOID_ARGS)
 {
     init_l_symbols();
     init_showsyms();
@@ -1421,7 +1421,7 @@ init_symbols()
 }
 
 void
-update_bouldersym()
+update_bouldersym(VOID_ARGS)
 {
     nhsym boulder = iflags.bouldersym;
 
@@ -1433,7 +1433,7 @@ update_bouldersym()
 }
 
 void
-init_showsyms()
+init_showsyms(VOID_ARGS)
 {
     register int i;
 
@@ -1457,7 +1457,7 @@ init_showsyms()
 
 /* initialize defaults for the loadable symset */
 void
-init_l_symbols()
+init_l_symbols(VOID_ARGS)
 {
     register int i;
 
@@ -1482,7 +1482,7 @@ init_l_symbols()
 }
 
 void
-init_r_symbols()
+init_r_symbols(VOID_ARGS)
 {
     register int i;
 

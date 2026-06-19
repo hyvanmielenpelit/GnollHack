@@ -2025,7 +2025,7 @@ status_reassess(VOID_ARGS)
 }
 
 STATIC_OVL void
-init_blstats()
+init_blstats(VOID_ARGS)
 {
     int i, j;
 

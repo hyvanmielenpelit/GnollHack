@@ -6100,7 +6100,7 @@ register struct obj *obj;
 /* Transforms the sink at the player's position into
    a fountain, throne, altar or grave. */
 STATIC_DCL void
-polymorph_sink()
+polymorph_sink(VOID_ARGS)
 {
     uchar sym = S_sink;
     boolean sinklooted;
@@ -6159,7 +6159,7 @@ polymorph_sink()
 /* Teleports the sink at the player's position;
    return True if sink teleported. */
 STATIC_DCL boolean
-teleport_sink()
+teleport_sink(VOID_ARGS)
 {
     int cx, cy;
     int cnt = 0;
@@ -6741,7 +6741,7 @@ struct obj *obj;
 
 /* '%' command: drop several things */
 int
-dodropmany()
+dodropmany(VOID_ARGS)
 {
     int result = 0;
 
@@ -6820,7 +6820,7 @@ dodropmany()
 
 /* 'D' command: drop several things */
 int
-doddrop()
+doddrop(VOID_ARGS)
 {
     int result = 0;
 
@@ -6989,7 +6989,7 @@ int retry;
 
 /* autostash command: stash several things automatically */
 int
-doautostash()
+doautostash(VOID_ARGS)
 {
     int result = 0;
 
@@ -7171,7 +7171,7 @@ STATIC_VAR NEARDATA boolean at_ladder = FALSE;
 
 /* the '>' command */
 int
-dodown()
+dodown(VOID_ARGS)
 {
     struct trap *trap = 0;
     boolean stairs_down = ((u.ux == xdnstair && u.uy == ydnstair)
@@ -7346,7 +7346,7 @@ dodown()
 
 /* the '<' command */
 int
-doup()
+doup(VOID_ARGS)
 {
     if (u_rooted())
         return 1;
@@ -7405,7 +7405,7 @@ d_level save_dlevel = { 0, 0 };
 
 /* check that we can write out the current level */
 STATIC_OVL int
-currentlevel_rewrite()
+currentlevel_rewrite(VOID_ARGS)
 {
     register int fd;
     char whynot[BUFSZ];
@@ -7441,7 +7441,7 @@ currentlevel_rewrite()
 
 #ifdef INSURANCE
 void
-save_currentstate()
+save_currentstate(VOID_ARGS)
 {
     int fd;
     check_pointing = TRUE;
@@ -8469,7 +8469,7 @@ char* wakeupbuf;
 }
 
 STATIC_OVL void
-final_level()
+final_level(VOID_ARGS)
 {
     struct monst *mtmp;
 
@@ -8547,7 +8547,7 @@ const char *pre_msg, *post_msg;
 
 /* handle something like portal ejection */
 void
-deferred_goto()
+deferred_goto(VOID_ARGS)
 {
     if (!on_level(&u.uz, &u.utolev))
     {
@@ -8934,7 +8934,7 @@ int64_t timeout UNUSED;
 }
 
 int
-donull()
+donull(VOID_ARGS)
 {
     if (context.first_time_cmd || !occupation)
     {
@@ -8973,7 +8973,7 @@ wipeoff(VOID_ARGS)
 }
 
 int
-dowipe()
+dowipe(VOID_ARGS)
 {
     if (u.ucreamed)
     {
@@ -9064,7 +9064,7 @@ int how; /* 0: ordinary, 1: dismounting steed, 2: limbs turn to stone */
 }
 
 int
-dotogglehpbars()
+dotogglehpbars(VOID_ARGS)
 {
     boolean main_flag = flags.show_tile_u_hp_bar;
     
@@ -9087,7 +9087,7 @@ dotogglehpbars()
 }
 
 int
-dotogglegrid()
+dotogglegrid(VOID_ARGS)
 {
     flags.show_grid = !flags.show_grid;
     redraw_map();
@@ -9096,7 +9096,7 @@ dotogglegrid()
 }
 
 int
-dotogglebufftimers()
+dotogglebufftimers(VOID_ARGS)
 {
     flags.show_buff_timer = !flags.show_buff_timer;
     newsym(u.ux, u.uy); //force_redraw_at(u.ux, u.uy);
@@ -9112,7 +9112,7 @@ dotogglebufftimers()
 }
 
 int
-dotogglemonstertargeting()
+dotogglemonstertargeting(VOID_ARGS)
 {
     boolean current_flag = flags.show_tile_monster_target;
 
@@ -9130,7 +9130,7 @@ dotogglemonstertargeting()
 }
 
 int
-dotoggleumark()
+dotoggleumark(VOID_ARGS)
 {
     boolean current_flag = flags.show_tile_u_mark;
 

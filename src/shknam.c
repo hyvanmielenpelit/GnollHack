@@ -477,7 +477,7 @@ const struct shclass shtypes[] = {
 /* validate shop probabilities; otherwise incorrect local changes could
    end up provoking infinite loops or wild subscripts fetching garbage */
 void
-init_shop_selection()
+init_shop_selection(VOID_ARGS)
 {
     register int i, j, item_prob, shop_prob;
 
@@ -531,7 +531,7 @@ int otyp; /* used iff obj is null */
 }
 
 STATIC_OVL int
-shkveg()
+shkveg(VOID_ARGS)
 {
     int i, j, maxprob, prob;
     char oclass = FOOD_CLASS;

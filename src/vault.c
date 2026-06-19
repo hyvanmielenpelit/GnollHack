@@ -206,7 +206,7 @@ int x, y;
 }
 
 struct monst *
-findgd()
+findgd(VOID_ARGS)
 {
     register struct monst *mtmp;
 
@@ -220,7 +220,7 @@ findgd()
 }
 
 void
-vault_summon_gd()
+vault_summon_gd(VOID_ARGS)
 {
     if (vault_occupied(u.urooms) && !findgd())
         u.uinvault = (VAULT_GUARD_TIME - 1);
@@ -304,7 +304,7 @@ xchar *rx, *ry;
 }
 
 void
-invault()
+invault(VOID_ARGS)
 {
 #ifdef BSD_43_BUG
     int dummy; /* hack to avoid schain botch */
@@ -1277,7 +1277,7 @@ boolean silently;
 }
 
 int64_t
-hidden_gold()
+hidden_gold(VOID_ARGS)
 {
     int64_t value = 0L;
     struct obj *obj;
@@ -1291,7 +1291,7 @@ hidden_gold()
 }
 
 int64_t
-magic_gold()
+magic_gold(VOID_ARGS)
 {
     int64_t value = 0L;
     struct obj* obj;
@@ -1357,7 +1357,7 @@ magic_gem_value(VOID_ARGS)
 
 /* prevent "You hear footsteps.." when inappropriate */
 boolean
-gd_sound()
+gd_sound(VOID_ARGS)
 {
     struct monst *grd = findgd();
 
