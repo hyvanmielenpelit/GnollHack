@@ -5,7 +5,7 @@ description: Guidelines for working on the C# .NET MAUI mobile and desktop front
 
 # .NET MAUI Frontend Development
 
-GnollHack's graphical client is a .NET 9.0 MAUI application targeting Android, iOS, and Windows Desktop (WinUI 3).
+GnollHack's graphical client is a .NET 10.0 MAUI application targeting Android, iOS, and Windows Desktop (WinUI 3).
 
 ## Project Structure
 

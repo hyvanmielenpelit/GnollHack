@@ -6,7 +6,7 @@ These rules apply to all AI-assisted development on the GnollHack codebase.
 
 GnollHack is a turn-based roguelike game derived from NetHack 3.6.2. It consists of:
 - A **C core** game engine (~120 source files in `src/`, ~114 headers in `include/`)
-- A **.NET 9.0 MAUI** graphical frontend (C#/XAML targeting Android, iOS, Windows)
+- A **.NET 10.0 MAUI** graphical frontend (C#/XAML targeting Android, iOS, Windows)
 - A **native bridge** connecting C and C# via P/Invoke callbacks (`win/win32/xpl/libshare/`)
 - **Build-time utilities** (`makedefs`, `levcomp`, `dgncomp`, `dlb`) that compile game data
 
@@ -69,7 +69,7 @@ Refer to [DEVEL/code_style.txt](file:///c:/hmp/GnollHack/DEVEL/code_style.txt) f
 ## Build Prerequisites
 
 - Visual Studio 2022 with C++ Desktop and .NET MAUI workloads
-- .NET 9.0 SDK
+- .NET 10.0 SDK
 - Windows 10 SDK
 - For Android: Android SDK with NDK
 - For iOS: Mac build host with Xcode

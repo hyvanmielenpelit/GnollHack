@@ -1,13 +1,13 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
 	<!-- BASE PROPERTIES -->
 	<PropertyGroup>
-		<TargetFrameworks>net9.0-android;net9.0-ios</TargetFrameworks>
+		<TargetFrameworks>net10.0-android;net10.0-ios</TargetFrameworks>
 		<!-- Uncomment to also build the MacCatalyst app. -->
-		<!-- <TargetFrameworks>$(TargetFrameworks);net9.0-maccatalyst</TargetFrameworks> -->
-		<TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('windows'))">$(TargetFrameworks);net9.0-windows10.0.19041.0</TargetFrameworks>
+		<!-- <TargetFrameworks>$(TargetFrameworks);net10.0-maccatalyst</TargetFrameworks> -->
+		<TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('windows'))">$(TargetFrameworks);net10.0-windows10.0.19041.0</TargetFrameworks>
 		<!-- Uncomment to also build the tizen app. You will need to install tizen by following this: https://github.com/Samsung/Tizen.NET -->
-		<!-- <TargetFrameworks>$(TargetFrameworks);net9.0-tizen</TargetFrameworks> -->
+		<!-- <TargetFrameworks>$(TargetFrameworks);net10.0-tizen</TargetFrameworks> -->
 		<OutputType>Exe</OutputType>
 		<RootNamespace>GnollHackM</RootNamespace>
 		<UseMaui>true</UseMaui>
@@ -48,7 +48,7 @@
 	<!-- CONFIGURATION SPECIFIC PROPERTIES -->
 	<PropertyGroup Condition="'$(Configuration)' == 'Debug'">
 		<UseInterpreter>false</UseInterpreter>
-		<_MauiForceXamlCForDebug Condition="'$(TargetFramework)'!='net9.0-windows10.0.19041.0'">true</_MauiForceXamlCForDebug>
+		<_MauiForceXamlCForDebug Condition="'$(TargetFramework)'!='net10.0-windows10.0.19041.0'">true</_MauiForceXamlCForDebug>
     <DebugSymbols>true</DebugSymbols>
 	</PropertyGroup>
 
@@ -88,13 +88,13 @@
 	</PropertyGroup>
   
   <!-- CONFIGURATION + FRAMEWORK SPECIFIC PROPERTIES -->
-	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)'=='Debug|net9.0-ios'">
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)'=='Debug|net10.0-ios'">
 		<CodesignKey>Apple Development: Janne Gustafsson (3JF32923Y3)</CodesignKey>
 		<CodesignProvision>Apple Dev GnollHack Development July 2025</CodesignProvision>
 		<MtouchLink>None</MtouchLink>
 	</PropertyGroup>
 
-	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)'=='Release|net9.0-ios'">
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)'=='Release|net10.0-ios'">
     <CodesignKey Condition="'$(ArchiveOnBuild)' == 'True'">Apple Distribution: Hyvan mielen pelit ry (CUG8RS847T)</CodesignKey>
 		<CodesignProvision Condition="'$(ArchiveOnBuild)' == 'True'">Apple Dev GnollHack Distribution July 2025</CodesignProvision>
     <CodesignKey Condition="'$(ArchiveOnBuild)' != 'True'">Apple Development: Janne Gustafsson (3JF32923Y3)</CodesignKey>
@@ -103,14 +103,14 @@
 		<MtouchLink>SdkOnly</MtouchLink>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)'=='Debug|net9.0-android'">
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)'=='Debug|net10.0-android'">
 		<EmbedAssembliesIntoApk>true</EmbedAssembliesIntoApk>
 		<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
 		<PublishTrimmed>False</PublishTrimmed>
 		<Debugger>Xamarin</Debugger>
 	</PropertyGroup>
 
-	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)'=='Release|net9.0-android'">
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)'=='Release|net10.0-android'">
 		<EnableLLVM>true</EnableLLVM>
 		<RunAOTCompilation>true</RunAOTCompilation>
 		<AndroidEnableProfiledAot>false</AndroidEnableProfiledAot>
@@ -119,21 +119,21 @@
 		<Debugger>Xamarin</Debugger>
 	</PropertyGroup>
 
-	<!--<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net9.0-android|AnyCPU'">
+	<!--<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net10.0-android|AnyCPU'">
     <Debugger>Xamarin</Debugger>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net9.0-android|AnyCPU'">
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net10.0-android|AnyCPU'">
     <Debugger>Xamarin</Debugger>
   </PropertyGroup>-->
 
   <!-- GENERAL PROPERTIES -->
 	<ItemGroup>
 		<!-- MauiIcon -->
-    <MauiIcon Condition="'$(TargetFramework)'=='net9.0-android'" Include="Resources\AppIcon\appicon.png" Color="#FFFFFF" ForegroundScale="0.6" />
-    <MauiIcon Condition="'$(TargetFramework)'=='net9.0-windows10.0.19041.0' And '$(WindowsPackageType)'!='MSIX'" Include="Resources\AppIcon\appicon.png" ForegroundScale="1.0" />
-    <MauiIcon Condition="'$(TargetFramework)'=='net9.0-windows10.0.19041.0' And '$(WindowsPackageType)'=='MSIX'" Include="Resources\AppIcon\Windows\MSIX\appicon.png" ForegroundFile="Resources\AppIcon\Windows\MSIX\appiconmsix.png" ForegroundScale="1.0" />
-    <MauiIcon Condition="'$(TargetFramework)'=='net9.0-ios'" Include="Resources\AppIcon\iOS\appicon.png" ForegroundFile="Resources\AppIcon\iOS\appiconios.png" />
-    <MauiIcon Condition="'$(TargetFramework)'=='net9.0-maccatalyst'" Include="Resources\AppIcon\iOS\appicon.png" ForegroundFile="Resources\AppIcon\iOS\appiconios.png" />
+    <MauiIcon Condition="'$(TargetFramework)'=='net10.0-android'" Include="Resources\AppIcon\appicon.png" Color="#FFFFFF" ForegroundScale="0.6" />
+    <MauiIcon Condition="'$(TargetFramework)'=='net10.0-windows10.0.19041.0' And '$(WindowsPackageType)'!='MSIX'" Include="Resources\AppIcon\appicon.png" ForegroundScale="1.0" />
+    <MauiIcon Condition="'$(TargetFramework)'=='net10.0-windows10.0.19041.0' And '$(WindowsPackageType)'=='MSIX'" Include="Resources\AppIcon\Windows\MSIX\appicon.png" ForegroundFile="Resources\AppIcon\Windows\MSIX\appiconmsix.png" ForegroundScale="1.0" />
+    <MauiIcon Condition="'$(TargetFramework)'=='net10.0-ios'" Include="Resources\AppIcon\iOS\appicon.png" ForegroundFile="Resources\AppIcon\iOS\appiconios.png" />
+    <MauiIcon Condition="'$(TargetFramework)'=='net10.0-maccatalyst'" Include="Resources\AppIcon\iOS\appicon.png" ForegroundFile="Resources\AppIcon\iOS\appiconios.png" />
 
     <!-- Splash Screen -->
 		<MauiSplashScreen Include="Resources\Splash\gnollhackicon.png" Color="#000000" BaseSize="160,160" />
@@ -142,11 +142,11 @@
 		<MauiImage Include="Resources\Images\*" />
 
 		<!-- Custom Fonts -->
-		<MauiFont Include="Resources\Fonts\*" Condition="'$(TargetFramework)'=='net9.0-ios'" />
-		<MauiFont Include="Resources\Fonts\*" Condition="'$(TargetFramework)'=='net9.0-maccatalyst'" />
+		<MauiFont Include="Resources\Fonts\*" Condition="'$(TargetFramework)'=='net10.0-ios'" />
+		<MauiFont Include="Resources\Fonts\*" Condition="'$(TargetFramework)'=='net10.0-maccatalyst'" />
 		<!-- Note: MauiFont has been unreliable on Android and Windows; workaround is to copy the files using MauiAsset to the right location instead -->
-		<MauiAsset Include="Resources\Fonts\**" LogicalName="%(RecursiveDir)%(Filename)%(Extension)" Condition="'$(TargetFramework)'=='net9.0-android'" />
-		<MauiAsset Include="Resources\Fonts\**" LogicalName="%(RecursiveDir)%(Filename)%(Extension)" Condition="'$(TargetFramework)'=='net9.0-windows10.0.19041.0'" />
+		<MauiAsset Include="Resources\Fonts\**" LogicalName="%(RecursiveDir)%(Filename)%(Extension)" Condition="'$(TargetFramework)'=='net10.0-android'" />
+		<MauiAsset Include="Resources\Fonts\**" LogicalName="%(RecursiveDir)%(Filename)%(Extension)" Condition="'$(TargetFramework)'=='net10.0-windows10.0.19041.0'" />
 
 		<!-- Raw Assets (also remove the "Resources\Raw" prefix) -->
 		<MauiAsset Include="Resources\Raw\**" LogicalName="%(RecursiveDir)%(Filename)%(Extension)" />
@@ -693,7 +693,7 @@
 		<None Remove="Platforms\Android\libs\arm64-v8a\libgnollhackdroid.so" />
 	</ItemGroup>
 
-	<ItemGroup Condition="'$(TargetFramework)'=='net9.0-android'">
+	<ItemGroup Condition="'$(TargetFramework)'=='net10.0-android'">
 		<!-- Both EmbeddedJar and AndroidLibrary seem to be required for things to work; this results in some warnings, though -->
 		<EmbeddedJar Include="Platforms\Android\jars\fmod.jar" />
 		<AndroidLibrary Include="Platforms\Android\jars\fmod.jar" />
@@ -737,7 +737,7 @@
 		<Compile Include="..\GnollHackX\GnollHackX.Android\PlatformServiceAndroid.cs" />
 	</ItemGroup>
 
-	<ItemGroup Condition="'$(TargetFramework)'=='net9.0-ios' or '$(TargetFramework)'=='net9.0-maccatalyst'">
+	<ItemGroup Condition="'$(TargetFramework)'=='net10.0-ios' or '$(TargetFramework)'=='net10.0-maccatalyst'">
 		<NativeReference Include="Platforms\iOS\libs\libfmodstudio_iphoneos.a">
 			<Kind>Static</Kind>
 			<Frameworks>AudioToolbox CoreAudio</Frameworks>
@@ -780,7 +780,7 @@
 		<Compile Include="..\GnollHackX\GnollHackX.iOS\GHUIApplication.cs" />
 	</ItemGroup>
 
-	<ItemGroup Condition="'$(TargetFramework)'=='net9.0-windows10.0.19041.0'">
+	<ItemGroup Condition="'$(TargetFramework)'=='net10.0-windows10.0.19041.0'">
 		<MauiAsset Include="Platforms\Windows\libs\fmod.dll" LogicalName="%(RecursiveDir)%(Filename)%(Extension)">
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</MauiAsset>
@@ -1178,45 +1178,45 @@
 	<ItemGroup>
 		<PackageReference Include="Azure.Identity" Version="1.15.0" />
 		<PackageReference Include="Azure.Storage.Blobs" Version="12.25.0" />
-		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="9.0.16" />
-		<PackageReference Include="System.Text.Json" Version="9.0.16" />
+		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="10.0.0" />
+		<PackageReference Include="System.Text.Json" Version="10.0.0" />
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
 
 		<PackageReference Include="SkiaSharp" Version="3.119.1" />
 		<PackageReference Include="SkiaSharp.Views.Maui.Controls" Version="3.119.1" />
 		<PackageReference Include="SkiaSharp.Views.Maui.Core" Version="3.119.1" />
 
-		<!--<PackageReference Include="SkiaSharp" Version="3.116.1" Condition="'$(TargetFramework)'!='net9.0-windows10.0.19041.0'" />
-    <PackageReference Include="SkiaSharp.Views.Maui.Controls" Version="3.116.1" Condition="'$(TargetFramework)'!='net9.0-windows10.0.19041.0'" />
-    <PackageReference Include="SkiaSharp.Views.Maui.Core" Version="3.116.1" Condition="'$(TargetFramework)'!='net9.0-windows10.0.19041.0'" />
+		<!--<PackageReference Include="SkiaSharp" Version="3.116.1" Condition="'$(TargetFramework)'!='net10.0-windows10.0.19041.0'" />
+    <PackageReference Include="SkiaSharp.Views.Maui.Controls" Version="3.116.1" Condition="'$(TargetFramework)'!='net10.0-windows10.0.19041.0'" />
+    <PackageReference Include="SkiaSharp.Views.Maui.Core" Version="3.116.1" Condition="'$(TargetFramework)'!='net10.0-windows10.0.19041.0'" />
     
-    <PackageReference Include="SkiaSharp" Version="3.116.1" Condition="'$(TargetFramework)'=='net9.0-windows10.0.19041.0'" />
-		<PackageReference Include="SkiaSharp.Views.Maui.Controls" Version="3.116.1" Condition="'$(TargetFramework)'=='net9.0-windows10.0.19041.0'" />
-		<PackageReference Include="SkiaSharp.Views.Maui.Core" Version="3.116.1" Condition="'$(TargetFramework)'=='net9.0-windows10.0.19041.0'" />-->
+    <PackageReference Include="SkiaSharp" Version="3.116.1" Condition="'$(TargetFramework)'=='net10.0-windows10.0.19041.0'" />
+		<PackageReference Include="SkiaSharp.Views.Maui.Controls" Version="3.116.1" Condition="'$(TargetFramework)'=='net10.0-windows10.0.19041.0'" />
+		<PackageReference Include="SkiaSharp.Views.Maui.Core" Version="3.116.1" Condition="'$(TargetFramework)'=='net10.0-windows10.0.19041.0'" />-->
 
 		<!--<PackageReference Include="Microsoft.Maui.Controls" Version="$(MauiVersion)" />
 		<PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="$(MauiVersion)" />-->
 
-		<!--<PackageReference Include="Microsoft.Maui.Controls" Version="9.0.100" Condition="'$(TargetFramework)'!='net9.0-windows10.0.19041.0'" />
-		<PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="9.0.100" Condition="'$(TargetFramework)'!='net9.0-windows10.0.19041.0'" />
+		<!--<PackageReference Include="Microsoft.Maui.Controls" Version="9.0.100" Condition="'$(TargetFramework)'!='net10.0-windows10.0.19041.0'" />
+		<PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="9.0.100" Condition="'$(TargetFramework)'!='net10.0-windows10.0.19041.0'" />
 
-		<PackageReference Include="Microsoft.Maui.Controls" Version="9.0.100" Condition="'$(TargetFramework)'=='net9.0-windows10.0.19041.0'" />
-		<PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="9.0.100" Condition="'$(TargetFramework)'=='net9.0-windows10.0.19041.0'" />-->
+		<PackageReference Include="Microsoft.Maui.Controls" Version="9.0.100" Condition="'$(TargetFramework)'=='net10.0-windows10.0.19041.0'" />
+		<PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="9.0.100" Condition="'$(TargetFramework)'=='net10.0-windows10.0.19041.0'" />-->
 
-		<PackageReference Include="Microsoft.Maui.Controls" Version="9.0.120" />
-    <PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="9.0.120" />
+		<PackageReference Include="Microsoft.Maui.Controls" Version="10.0.0" />
+    <PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="10.0.0" />
 
-    <!--<PackageReference Include="Microsoft.WindowsAppSDK" Version="[1.6.241114003]" Condition="'$(TargetFramework)'!='net9.0-windows10.0.19041.0' or '$(WindowsPackageType)'!='MSIX'" />-->
+    <!--<PackageReference Include="Microsoft.WindowsAppSDK" Version="[1.6.241114003]" Condition="'$(TargetFramework)'!='net10.0-windows10.0.19041.0' or '$(WindowsPackageType)'!='MSIX'" />-->
 
 		<!-- Platform-specific packages -->
-		<PackageReference Include="System.Management" Version="9.0.16" Condition="'$(TargetFramework)'=='net9.0-windows10.0.19041.0'" />
-		<PackageReference Include="Xamarin.Google.Android.Play.Core" Version="1.10.3.21" Condition="'$(TargetFramework)'=='net9.0-android'" />
+		<PackageReference Include="System.Management" Version="10.0.0" Condition="'$(TargetFramework)'=='net10.0-windows10.0.19041.0'" />
+		<PackageReference Include="Xamarin.Google.Android.Play.Core" Version="1.10.3.21" Condition="'$(TargetFramework)'=='net10.0-android'" />
 
 	</ItemGroup>
 
 	<ItemGroup Condition="$(DefineConstants.Contains('SENTRY'))">
 		<PackageReference Include="Sentry.Maui" Version="6.5.0" />
-		<PackageReference Include="Sentry.Profiling" Version="6.5.0" Condition="'$(TargetFramework)'=='net9.0-windows10.0.19041.0'" />
+		<PackageReference Include="Sentry.Profiling" Version="6.5.0" Condition="'$(TargetFramework)'=='net10.0-windows10.0.19041.0'" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -1241,11 +1241,11 @@
     <Folder Include="Platforms\Android\prebuilt\MonoAoT\x86_64\" />
 	</ItemGroup>-->
 
-	<!--<Import Project="AppxIcons.targets" Condition="'$(TargetFramework)'=='net9.0-windows10.0.19041.0'" />-->
+	<!--<Import Project="AppxIcons.targets" Condition="'$(TargetFramework)'=='net10.0-windows10.0.19041.0'" />-->
 
-	<!--<Import Project="MonoAoTLibraries.targets" Condition="'$(TargetFramework)|$(EnableLLVM)'=='net9.0-android|True'" />-->
-	<Import Project="CompileMonoAoTLibraries2.targets" Condition="'$(TargetFramework)|$(EnableLLVM)'=='net9.0-android|True'" />
-	<!--<Import Project="Angle.targets" Condition="'$(TargetFramework)'=='net9.0-windows10.0.19041.0'" />-->
+	<!--<Import Project="MonoAoTLibraries.targets" Condition="'$(TargetFramework)|$(EnableLLVM)'=='net10.0-android|True'" />-->
+	<Import Project="CompileMonoAoTLibraries2.targets" Condition="'$(TargetFramework)|$(EnableLLVM)'=='net10.0-android|True'" />
+	<!--<Import Project="Angle.targets" Condition="'$(TargetFramework)'=='net10.0-windows10.0.19041.0'" />-->
 
 	<!-- IMPLIED DEFINE CONSTANTS -->
 	<PropertyGroup Condition="$(TargetFramework.Contains('-android'))">
