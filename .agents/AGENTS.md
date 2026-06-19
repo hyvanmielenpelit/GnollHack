@@ -37,6 +37,7 @@ Refer to [DEVEL/code_style.txt](file:///c:/hmp/GnollHack/DEVEL/code_style.txt) f
 - Always marshal UI updates to the main thread via `MainThread.BeginInvokeOnMainThread()`
 - P/Invoke strings use `MarshalAs(UnmanagedType.LPStr)` for C interop
 - Shared code between GnollHackM and GnollHackX uses `<Compile Include>` file-linking, NOT project references
+- **File-linked platform code**: GnollHackM also compiles platform-specific `.cs` files from legacy `GnollHackX.Android/` and `GnollHackX.iOS/` directories via `<Compile Include>` (within platform-conditioned `<ItemGroup>` blocks). These files may import platform-specific NuGet packages (e.g., `Xamarin.Google.Android.Play.Core` for in-app reviews). When evaluating NuGet dependencies in `GnollHackM.csproj`, always check file-linked sources in `GnollHackX.*` directories — not just `GnollHackM/` itself.
 
 ## Key Terminology
 
@@ -61,6 +62,9 @@ Refer to [DEVEL/code_style.txt](file:///c:/hmp/GnollHack/DEVEL/code_style.txt) f
 | Build utilities | `util/` |
 | MAUI app project | `win/win32/xpl/GnollHackM/` |
 | Shared C# code | `win/win32/xpl/GnollHackX/GnollHackX/` |
+| Android platform code (file-linked) | `win/win32/xpl/GnollHackX/GnollHackX.Android/` |
+| iOS platform code (file-linked) | `win/win32/xpl/GnollHackX/GnollHackX.iOS/` |
+| FMOD audio wrappers (file-linked) | `win/win32/xpl/GnollHackX/GnollHackX.FMOD/` |
 | Native bridge (C) | `win/win32/xpl/libshare/` |
 | Native bridge (C#) | `win/win32/xpl/GnollHackX/GnollHackX.Common/GnollHackService.cs` |
 | VS solution | `win/win32/vs/GnollHack.sln` |
@@ -68,7 +72,7 @@ Refer to [DEVEL/code_style.txt](file:///c:/hmp/GnollHack/DEVEL/code_style.txt) f
 
 ## Build Prerequisites
 
-- Visual Studio 2022 with C++ Desktop and .NET MAUI workloads
+- Visual Studio 2022 or 2026 with C++ Desktop and .NET MAUI workloads
 - .NET 10.0 SDK
 - Windows 10 SDK
 - For Android: Android SDK with NDK
