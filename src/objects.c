@@ -3966,8 +3966,8 @@ SPELL("divine endurance",    "clay-studded", None, None, "Raises the caster's co
     O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE),
 SPELL("flame strike",    "pillar-patterned", None, None, "Projects a 3x3 fiery pillar of fire at target location",
     P_CLERIC_SPELL,   4,   1, 0, 
-    5, 20, A_WIS, 10, 1, 100, 0, 1, TARGETED, RAY_FIRE, 2, 8, 8, 8, 0, 0, 0,
-    S1_NO_SOMATIC_COMPONENT | S1_SPELL_EXPLOSION_EFFECT, S2_NONE, ALL_TARGETS, AD_NONE, CLR_RED, OBJECT_SOUNDSET_SPELLBOOK,
+    5, 20, A_WIS, 10, 1, 100, 0, 1, TARGETED, RAY_FIRE, 4, 8, 8, 0, 1, 8, 0,
+    S1_NO_SOMATIC_COMPONENT | S1_SPELL_EXPLOSION_EFFECT | S1_LDMG_IS_PER_LEVEL_DMG_INCREASE, S2_NONE, ALL_TARGETS, AD_NONE, CLR_RED, OBJECT_SOUNDSET_SPELLBOOK,
     O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE),
 
 SPELL("summon celestial dove",    "dove-patterned", None, None, "Summons a permanent celestial dove",
