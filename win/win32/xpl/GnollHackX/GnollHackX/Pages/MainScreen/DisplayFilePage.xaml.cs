@@ -23,7 +23,7 @@ namespace GnollHackX.Pages.MainScreen
 #endif
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class DisplayFilePage : ContentPage, ICloseablePage
+    public partial class DisplayFilePage : CustomModalPage, ICloseablePage
     {
         private string _fileName;
         private int _fixedWidth;
@@ -49,8 +49,12 @@ namespace GnollHackX.Pages.MainScreen
         public DisplayFilePage(string fileName, string header, int fixedWidth, bool displayshare, bool isHtml, bool isScrolledDown)
         {
             InitializeComponent();
-            SafeAreaEdges = SafeAreaEdges.All; //On<iOS>().SetUseSafeArea(true);
-            UIUtils.AdjustRootLayout(RootGrid);
+#if GNH_MAUI
+            SafeAreaEdges = SafeAreaEdges.All;
+#else
+            On<iOS>().SetUseSafeArea(true);
+#endif
+            //UIUtils.AdjustRootLayout(RootGrid);
             UIUtils.SetPageThemeOnHandler(this, GHApp.DarkMode);
             UIUtils.SetViewCursorOnHandler(RootGrid, GameCursorType.Normal);
 
@@ -290,7 +294,11 @@ namespace GnollHackX.Pages.MainScreen
                 {
                     try
                     {
+#if GNH_MAUI
                         await DisplayWebView.FadeToAsync(1.0, 512);
+#else
+                        await DisplayWebView.FadeTo(1.0, 512);
+#endif
                         //Animation displayFileAnimation = new Animation(v => DisplayWebView.Opacity = (double)v, 0.01, 1.00);
                         //displayFileAnimation.Commit(MainGrid, "DisplayFileShowAnimation", length: 512, rate: 16, repeat: () => false);
                     }

@@ -26,7 +26,7 @@ namespace GnollHackX.Pages.MainScreen
 #endif
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class AboutPage : ContentPage, ICloseablePage, IKeyPressHandlingPage
+    public partial class AboutPage : CustomModalPage, ICloseablePage, IKeyPressHandlingPage
     {
         MainPage _mainPage = null;
         public AboutPage(MainPage mainPage)
@@ -35,8 +35,12 @@ namespace GnollHackX.Pages.MainScreen
             Disappearing += (s, e) => { _mainPage.StartCarouselViewAndEnableButtons(); };
 
             InitializeComponent();
-            SafeAreaEdges = SafeAreaEdges.All; //On<iOS>().SetUseSafeArea(true);
-            UIUtils.AdjustRootLayout(RootGrid);
+#if GNH_MAUI
+            SafeAreaEdges = SafeAreaEdges.All;
+#else
+            On<iOS>().SetUseSafeArea(true);
+#endif
+            //UIUtils.AdjustRootLayout(RootGrid);
             UIUtils.SetPageThemeOnHandler(this, GHApp.DarkMode);
             UIUtils.SetViewCursorOnHandler(RootGrid, GameCursorType.Normal);
             if (GHApp.DarkMode)

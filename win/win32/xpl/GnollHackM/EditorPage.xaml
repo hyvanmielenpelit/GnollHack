@@ -1,14 +1,15 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+<gnh:CustomModalPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" 
-             xmlns:gnollhackclient="clr-namespace:GnollHackM" xmlns:controls="clr-namespace:GnollHackM"
+             xmlns:gnh="clr-namespace:GnollHackM"
+             xmlns:controls="clr-namespace:GnollHackM"
              BackgroundColor="Black"
              x:Class="GnollHackM.EditorPage"
              Appearing="ContentPage_Appearing"
              Disappearing="ContentPage_Disappearing">
     
         <Grid x:Name="RootGrid">
-            <gnollhackclient:BackgroundView x:Name="bkgView" BackgroundStyle="Automatic" BackgroundBitmap="AutoMenuBackground" BorderStyle="Simple" HorizontalOptions="Fill" VerticalOptions="Fill"/>
+            <gnh:BackgroundView x:Name="bkgView" BackgroundStyle="Automatic" BackgroundBitmap="AutoMenuBackground" BorderStyle="Simple" HorizontalOptions="Fill" VerticalOptions="Fill"/>
             <Grid MaximumWidthRequest="1024" RowSpacing="6" HorizontalOptions="Fill" VerticalOptions="Fill" >
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
@@ -21,9 +22,9 @@
                 </Grid.ColumnDefinitions>
                 <Label x:Name="HeaderLabel" Grid.Row="0" HorizontalOptions="Center" VerticalOptions="Start" HorizontalTextAlignment="Center" FontSize="23" TextColor="Black" FontFamily="Immortal"/>
                 <Label x:Name="ErrorLabel" Grid.Row="1" HorizontalOptions="Center" VerticalOptions="Start"  HorizontalTextAlignment="Center" FontSize="Small" TextColor="Red" FontFamily="LatoRegular"/>
-                <gnollhackclient:GHEditor x:Name="TextEditor" TextChanged="TextEditor_TextChanged" HorizontalOptions="Fill" VerticalOptions="Fill" Grid.Row="2" Text="" PlaceholderColor="Gray" TextColor="Black" BackgroundColor="Transparent"
+                <gnh:GHEditor x:Name="TextEditor" TextChanged="TextEditor_TextChanged" HorizontalOptions="Fill" VerticalOptions="Fill" Grid.Row="2" Text="" PlaceholderColor="Gray" TextColor="Black" BackgroundColor="Transparent"
                         FontFamily="LatoRegular" FontSize="16" IsSpellCheckEnabled="false" IsTextPredictionEnabled = "false" >
-                </gnollhackclient:GHEditor>
+                </gnh:GHEditor>
                 <Grid x:Name="CloseGrid" Grid.Row="3" ColumnSpacing="6" BackgroundColor="Transparent" HorizontalOptions="Center" >
                     <Grid.RowDefinitions>
                         <RowDefinition Height="*" />
@@ -40,4 +41,4 @@
             </Grid>
         </Grid>
     
-</ContentPage>
+</gnh:CustomModalPage>

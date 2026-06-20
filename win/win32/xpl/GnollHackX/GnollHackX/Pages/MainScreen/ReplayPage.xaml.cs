@@ -38,7 +38,7 @@ namespace GnollHackX.Pages.MainScreen
 #endif
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class ReplayPage : ContentPage, ICloseablePage
+    public partial class ReplayPage : CustomModalPage, ICloseablePage
     {
         MainPage _mainPage = null;
         string _subDirectoryLocal = null;
@@ -53,8 +53,12 @@ namespace GnollHackX.Pages.MainScreen
         public ReplayPage(MainPage mainPage)
 		{
 			InitializeComponent();
-            SafeAreaEdges = SafeAreaEdges.All; //On<iOS>().SetUseSafeArea(true);
-            UIUtils.AdjustRootLayout(RootGrid);
+#if GNH_MAUI
+            SafeAreaEdges = SafeAreaEdges.All;
+#else
+            On<iOS>().SetUseSafeArea(true);
+#endif
+            //UIUtils.AdjustRootLayout(RootGrid);
             UIUtils.SetPageThemeOnHandler(this, GHApp.DarkMode);
             UIUtils.SetViewCursorOnHandler(RootGrid, GameCursorType.Normal);
             if (GHApp.DarkMode)

@@ -23,7 +23,7 @@ namespace GnollHackX.Pages.Game
 #endif
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class WikiPage : ContentPage, ICloseablePage
+    public partial class WikiPage : CustomModalPage, ICloseablePage
     {
 #if GNH_MAUI
         IDispatcherTimer _timer = null;
@@ -31,8 +31,12 @@ namespace GnollHackX.Pages.Game
         public WikiPage(string title, string wikiUrl)
         {
             InitializeComponent();
-            SafeAreaEdges = SafeAreaEdges.All; //On<iOS>().SetUseSafeArea(true);
-            UIUtils.AdjustRootLayout(RootGrid);
+#if GNH_MAUI
+            SafeAreaEdges = SafeAreaEdges.All;
+#else
+            On<iOS>().SetUseSafeArea(true);
+#endif
+            //UIUtils.AdjustRootLayout(RootGrid);
             UIUtils.SetPageThemeOnHandler(this, GHApp.DarkMode);
             UIUtils.SetViewCursorOnHandler(RootGrid, GameCursorType.Normal);
             UrlWebViewSource Source = new UrlWebViewSource

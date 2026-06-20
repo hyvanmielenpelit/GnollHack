@@ -11374,14 +11374,22 @@ namespace GnollHackX
         public static async Task DisplayMessageBox(Page page, string title, string message, string cancel)
         {
             IsKeyboardHookEnabled = false;
+#if GNH_MAUI
             await page.DisplayAlertAsync(title, message, cancel);
+#else
+            await page.DisplayAlert(title, message, cancel);
+#endif
             IsKeyboardHookEnabled = true;
         }
 
         public static async Task<bool> DisplayMessageBox(Page page, string title, string message, string accept, string cancel)
         {
             IsKeyboardHookEnabled = false;
+#if GNH_MAUI
             bool res = await page.DisplayAlertAsync(title, message, accept, cancel);
+#else
+            bool res = await page.DisplayAlert(title, message, accept, cancel);
+#endif
             IsKeyboardHookEnabled = true;
             return res;
         }
