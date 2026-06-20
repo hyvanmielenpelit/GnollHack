@@ -29,6 +29,6 @@ When in wizard mode, special commands become available:
 - Check the `paniclog` file for the stack trace (if available on the platform).
 
 ## Testing the MAUI App
-- Use `dotnet build -t:Run -f net9.0-windows10.0.19041.0` to run the Windows app locally.
+- Use `dotnet build -t:Run -f net10.0-windows10.0.19041.0` to run the Windows app locally.
 - Use `Debug.WriteLine` in C# for console output.
 - For native C debug output, use `raw_printf` (only visible if the console is attached).
