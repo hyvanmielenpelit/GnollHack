@@ -49,11 +49,11 @@ namespace GnollHackX.Pages.MainScreen
         public DisplayFilePage(string fileName, string header, int fixedWidth, bool displayshare, bool isHtml, bool isScrolledDown)
         {
             InitializeComponent();
-#if GNH_MAUI
-            SafeAreaEdges = SafeAreaEdges.All;
-#else
-            On<iOS>().SetUseSafeArea(true);
-#endif
+//#if GNH_MAUI
+//            SafeAreaEdges = SafeAreaEdges.All;
+//#else
+//            On<iOS>().SetUseSafeArea(true);
+//#endif
             //UIUtils.AdjustRootLayout(RootGrid);
             UIUtils.SetPageThemeOnHandler(this, GHApp.DarkMode);
             UIUtils.SetViewCursorOnHandler(RootGrid, GameCursorType.Normal);

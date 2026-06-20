@@ -31,11 +31,11 @@ namespace GnollHackX.Pages.MainScreen
         public TopScorePage(string fileName)
         {
             InitializeComponent();
-#if GNH_MAUI
-            SafeAreaEdges = SafeAreaEdges.All;
-#else
-            On<iOS>().SetUseSafeArea(true);
-#endif
+//#if GNH_MAUI
+//            SafeAreaEdges = SafeAreaEdges.All;
+//#else
+//            On<iOS>().SetUseSafeArea(true);
+//#endif
             //UIUtils.AdjustRootLayout(RootGrid);
             UIUtils.SetPageThemeOnHandler(this, GHApp.DarkMode);
             UIUtils.SetViewCursorOnHandler(RootGrid, GameCursorType.Normal);
@@ -66,12 +66,12 @@ namespace GnollHackX.Pages.MainScreen
         public TopScorePage()
         {
             InitializeComponent();
-#if GNH_MAUI
-            SafeAreaEdges = SafeAreaEdges.All;
-#else
-            On<iOS>().SetUseSafeArea(true);
-#endif
-            UIUtils.AdjustRootLayout(RootGrid);
+//#if GNH_MAUI
+//            SafeAreaEdges = SafeAreaEdges.All;
+//#else
+//            On<iOS>().SetUseSafeArea(true);
+//#endif
+//            UIUtils.AdjustRootLayout(RootGrid);
             UIUtils.SetPageThemeOnHandler(this, GHApp.DarkMode);
             UIUtils.SetViewCursorOnHandler(RootGrid, GameCursorType.Normal);
 

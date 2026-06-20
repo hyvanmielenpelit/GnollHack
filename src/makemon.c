@@ -3992,9 +3992,11 @@ boolean
 is_mon_high_level(mtmp)
 struct monst* mtmp;
 {
-    if(!mtmp || !mtmp->data || mtmp->iswiz || mtmp->isnpc || mtmp->isshk || mtmp->ispriest || mtmp->issmith)
+    if(!mtmp || !mtmp->data)
         return FALSE;
     if (mtmp->m_lev < (int)mtmp->data->mlevel + 4)
+        return FALSE;
+    if (mtmp->iswiz || mtmp->isnpc || mtmp->isshk || mtmp->ispriest || mtmp->issmith)
         return FALSE;
     if (mtmp->m_lev >= (3 * ((int)mtmp->data->mlevel)) / 2 + 5)
         return TRUE;

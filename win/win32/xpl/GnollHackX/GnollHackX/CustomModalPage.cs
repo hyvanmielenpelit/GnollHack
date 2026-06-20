@@ -12,6 +12,8 @@ using Microsoft.Maui.Platform;
 namespace GnollHackM
 #else
 using Xamarin.Forms;
+using Xamarin.Forms.PlatformConfiguration;
+using Xamarin.Forms.PlatformConfiguration.iOSSpecific;
 
 namespace GnollHackX
 #endif
@@ -20,7 +22,11 @@ namespace GnollHackX
     {
         public CustomModalPage() : base()
         {
-
+#if GNH_MAUI
+            SafeAreaEdges = SafeAreaEdges.All;
+#else
+            On<iOS>().SetUseSafeArea(true);
+#endif
         }
 
         protected override void OnAppearing()
@@ -30,11 +36,18 @@ namespace GnollHackX
 #if WINDOWS
             if (!GHApp.WindowedMode)
             {
-                // Defer to ensure the modal's MAUI context is fully set up
-                Dispatcher.Dispatch(() =>
+                try
                 {
-                    FixModalTitleBarGap(this);
-                });
+                    // Defer to ensure the modal's MAUI context is fully set up
+                    Dispatcher.Dispatch(() =>
+                    {
+                        FixModalTitleBarGap(this);
+                    });
+                }
+                catch (Exception ex)
+                {
+                    GHApp.MaybeWriteGHLog(ex.Message);
+                }
             }
 #endif
         }
@@ -42,27 +55,34 @@ namespace GnollHackX
         public static void FixModalTitleBarGap(ContentPage modalPage)
         {
 #if WINDOWS
-            var mauiContext = modalPage.Handler?.MauiContext;
-            if (mauiContext is null)
-                return;
-
-            // 1. Get the NavigationRootManager for this modal's scoped context
-            var navManager = mauiContext.Services.GetService(
-                typeof(Microsoft.Maui.Platform.NavigationRootManager));
-
-            if (navManager is not null)
+            try
             {
-                // 2. Invoke internal void SetTitleBarVisibility(bool isVisible)
-                var method = navManager.GetType().GetMethod(
-                    "SetTitleBarVisibility",
-                    BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public);
+                var mauiContext = modalPage.Handler?.MauiContext;
+                if (mauiContext is null)
+                    return;
 
-                if (method is not null)
+                // 1. Get the NavigationRootManager for this modal's scoped context
+                var navManager = mauiContext.Services.GetService(
+                    typeof(Microsoft.Maui.Platform.NavigationRootManager));
+
+                if (navManager is not null)
                 {
-                    // Passing false tells it to collapse the title bar, zero the 32px margin,
-                    // and clear the unclickable non-client input regions.
-                    method.Invoke(navManager, new object[] { false });
+                    // 2. Invoke internal void SetTitleBarVisibility(bool isVisible)
+                    var method = navManager.GetType().GetMethod(
+                        "SetTitleBarVisibility",
+                        BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public);
+
+                    if (method is not null)
+                    {
+                        // Passing false tells it to collapse the title bar, zero the 32px margin,
+                        // and clear the unclickable non-client input regions.
+                        method.Invoke(navManager, new object[] { false });
+                    }
                 }
+            }
+            catch (Exception ex) 
+            {
+                GHApp.MaybeWriteGHLog(ex.Message);
             }
 #endif
         }

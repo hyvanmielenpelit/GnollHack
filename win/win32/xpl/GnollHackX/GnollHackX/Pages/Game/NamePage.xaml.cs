@@ -35,11 +35,11 @@ namespace GnollHackX.Pages.Game
         public NamePage(GamePage gamePage, string modeName, string modeDescription, string replayEnteredPlayerName)
         {
             InitializeComponent();
-#if GNH_MAUI
-            SafeAreaEdges = SafeAreaEdges.All;
-#else
-            On<iOS>().SetUseSafeArea(true);
-#endif
+//#if GNH_MAUI
+//            SafeAreaEdges = SafeAreaEdges.All;
+//#else
+//            On<iOS>().SetUseSafeArea(true);
+//#endif
             //UIUtils.AdjustRootLayout(RootGrid);
             UIUtils.SetPageThemeOnHandler(this, GHApp.DarkMode);
             UIUtils.SetViewCursorOnHandler(RootGrid, GameCursorType.Normal);

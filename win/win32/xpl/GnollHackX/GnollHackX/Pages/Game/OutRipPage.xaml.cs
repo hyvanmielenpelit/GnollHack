@@ -31,11 +31,11 @@ namespace GnollHackX.Pages.Game
         public OutRipPage(GamePage gamePage, GHWindow window, GHOutRipInfo outripinfo)
         {
             InitializeComponent();
-#if GNH_MAUI
-            SafeAreaEdges = SafeAreaEdges.All;
-#else
-            On<iOS>().SetUseSafeArea(true);
-#endif
+//#if GNH_MAUI
+//            SafeAreaEdges = SafeAreaEdges.All;
+//#else
+//            On<iOS>().SetUseSafeArea(true);
+//#endif
             //UIUtils.AdjustRootLayout(RootGrid);
             UIUtils.SetPageThemeOnHandler(this, GHApp.DarkMode);
             UIUtils.SetViewCursorOnHandler(RootGrid, GameCursorType.Normal);

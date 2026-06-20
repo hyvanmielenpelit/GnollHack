@@ -30,11 +30,11 @@ namespace GnollHackX.Pages.MainScreen
 		public OraclePage ()
 		{
 			InitializeComponent ();
-#if GNH_MAUI
-            SafeAreaEdges = SafeAreaEdges.All;
-#else
-            On<iOS>().SetUseSafeArea(true);
-#endif
+//#if GNH_MAUI
+//            SafeAreaEdges = SafeAreaEdges.All;
+//#else
+//            On<iOS>().SetUseSafeArea(true);
+//#endif
             //UIUtils.AdjustRootLayout(RootGrid);
             UIUtils.SetPageThemeOnHandler(this, GHApp.DarkMode);
             UIUtils.SetViewCursorOnHandler(RootGrid, GameCursorType.Normal);
