@@ -3994,10 +3994,13 @@ struct monst* mtmp;
 {
     if(!mtmp || !mtmp->data || mtmp->iswiz || mtmp->isnpc || mtmp->isshk || mtmp->ispriest || mtmp->issmith)
         return FALSE;
-    
-    int normal_adj_level, tmp2;
-    normal_adj_level = (int)mtmp->data->mlevel;
-    tmp2 = (level_difficulty() - normal_adj_level);
+    if (mtmp->m_lev < (int)mtmp->data->mlevel + 4)
+        return FALSE;
+    if (mtmp->m_lev >= (3 * ((int)mtmp->data->mlevel)) / 2 + 5)
+        return TRUE;
+
+    int normal_adj_level = (int)mtmp->data->mlevel;
+    int tmp2 = (level_difficulty() - normal_adj_level);
     if (tmp2 < 0)
         normal_adj_level--; /* if mlevel > u.uz decrement tmp */
     else
@@ -4012,7 +4015,7 @@ struct monst* mtmp;
         tmp2 = MAX_MONSTER_LEVEL;  /* hard upper limit */
     if (tmp2 < 0)
         tmp2 = 0;  /* hard lower limit */
-    normal_adj_level = min(normal_adj_level, tmp2);
+    normal_adj_level = max(0, min(normal_adj_level, tmp2));
 
     return mtmp->m_lev >= normal_adj_level + 5;
 }
