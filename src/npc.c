@@ -1123,9 +1123,14 @@ restnpc(mtmp, ghostly)
 register struct monst* mtmp;
 boolean ghostly;
 {
-    if (u.uz.dlevel) {
+    if (u.uz.dlevel) 
+    {
         if (ghostly)
+        {
             assign_level(&(ENPC(mtmp)->npc_room_level), &u.uz);
+            if (ANGRY(mtmp))
+                NOTANGRY(mtmp) = TRUE;
+        }
     }
 }
 

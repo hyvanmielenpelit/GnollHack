@@ -1667,7 +1667,11 @@ boolean ghostly;
     if (u.uz.dlevel) 
     {
         if (ghostly)
+        {
             assign_level(&(ESMI(mtmp)->smithy_level), &u.uz);
+            if (ANGRY(mtmp))
+                NOTANGRY(mtmp) = TRUE;
+        }
     }
 }
 
