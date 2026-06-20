@@ -17,20 +17,12 @@ Refer to [DEVEL/code_style.txt](file:///c:/hmp/GnollHack/DEVEL/code_style.txt) f
 ### Required Conventions
 - **Indentation**: 4 spaces, NO tabs
 - **Line width**: 78 characters maximum
-- **Function definitions**: K&R-style argument declarations:
-  ```c
-  void
-  foo(i, c)
-  int i;
-  char c;
-  {
-      /* body */
-  }
-  ```
+- **Function definitions & prototypes**: GnollHack is migrating from K&R C to C99.
+  - If a file has not yet been converted, match the existing K&R style and use `FDECL`/`NDECL`/`VDECL` macros for prototypes.
+  - If a file has been converted to C99, use standard ANSI C99 prototypes and definitions.
 - **Control statements**: Opening brace on same line: `if (cond) {`
 - **Switch/case**: `case` labels unindented within `switch`
 - **Variables**: Never declare in `for` init or conditions
-- **Function prototypes**: Use `FDECL(name, (args))`, `NDECL(name)`, or `VDECL(name, (args))` macros in header files. Add new prototypes to `include/extern.h`.
 
 ## C# / .NET Conventions
 - Use standard C# naming: PascalCase for public members, camelCase for locals
