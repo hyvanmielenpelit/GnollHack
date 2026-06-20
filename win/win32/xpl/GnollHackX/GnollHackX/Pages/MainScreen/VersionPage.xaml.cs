@@ -33,7 +33,7 @@ namespace GnollHackX.Pages.MainScreen
         public VersionPage(GamePage gamePage)
         {
             InitializeComponent();
-            On<iOS>().SetUseSafeArea(true);
+            SafeAreaEdges = SafeAreaEdges.All; //On<iOS>().SetUseSafeArea(true);
             UIUtils.AdjustRootLayout(RootGrid);
             UIUtils.SetPageThemeOnHandler(this, GHApp.DarkMode);
             UIUtils.SetViewCursorOnHandler(RootGrid, GameCursorType.Normal);

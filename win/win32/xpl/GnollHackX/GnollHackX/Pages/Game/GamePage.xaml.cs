@@ -929,7 +929,7 @@ namespace GnollHackX.Pages.Game
         public GamePage(MainPage mainPage)
         {
             InitializeComponent();
-            On<iOS>().SetUseSafeArea(true);
+            SafeAreaEdges = SafeAreaEdges.All; //On<iOS>().SetUseSafeArea(true);
             UIUtils.AdjustRootLayout(RootGrid);
             UIUtils.SetPageThemeOnHandler(this, GHApp.DarkMode);
             UIUtils.SetViewCursorOnHandler(RootGrid, GameCursorType.Normal);
@@ -1195,7 +1195,7 @@ namespace GnollHackX.Pages.Game
             {
                 MoreNextButton.Opacity = 0;
                 MoreNextButton.IsVisible = true;
-                await MoreNextButton.FadeTo(1.0);
+                await MoreNextButton.FadeToAsync(1.0);
             }
         }
 
@@ -1210,7 +1210,7 @@ namespace GnollHackX.Pages.Game
             {
                 MorePreviousButton.Opacity = 0;
                 MorePreviousButton.IsVisible = true;
-                await MorePreviousButton.FadeTo(1.0);
+                await MorePreviousButton.FadeToAsync(1.0);
             }
         }
 
@@ -3658,7 +3658,7 @@ namespace GnollHackX.Pages.Game
                 {
                     TextGrid.Opacity = 0;
                     TextGrid.IsVisible = true;
-                    await TextGrid.FadeTo(1.0);
+                    await TextGrid.FadeToAsync(1.0);
                 }
                 else
                     TextGrid.IsVisible = true;
@@ -3695,7 +3695,7 @@ namespace GnollHackX.Pages.Game
 #if !GNH_MAUI
                         TextStack.ForceLayout();
 #endif
-                        await TextStack.FadeTo(1.0, 256);
+                        await TextStack.FadeToAsync(1.0, 256);
                     }
                     catch (Exception ex)
                     {
@@ -4721,7 +4721,7 @@ namespace GnollHackX.Pages.Game
                 {
                     MenuGrid.Opacity = 0;
                     MenuGrid.IsVisible = true;
-                    await MenuGrid.FadeTo(1.0);
+                    await MenuGrid.FadeToAsync(1.0);
                 }
                 else
                     MenuGrid.IsVisible = true;
@@ -4763,7 +4763,7 @@ namespace GnollHackX.Pages.Game
 #if DEBUG
                         MenuStack.Opacity = 1.0;
 #else
-                        await MenuStack.FadeTo(1.0, 256);
+                        await MenuStack.FadeToAsync(1.0, 256);
 #endif
                     }
                     catch (Exception ex)
@@ -16897,7 +16897,7 @@ namespace GnollHackX.Pages.Game
         public async Task FadeFromBlackAtStart(uint milliseconds)
         {
             FadeFrameAtStart.Opacity = 1.0;
-            await FadeFrameAtStart.FadeTo(0.0, milliseconds);
+            await FadeFrameAtStart.FadeToAsync(0.0, milliseconds);
             FadeFrameAtStart.IsVisible = false;
         }
 
@@ -16917,10 +16917,10 @@ namespace GnollHackX.Pages.Game
 #if WINDOWS
             FadeFrame.Opacity = 0.0;
             FadeFrame.IsVisible = true;
-            await FadeFrame.FadeTo(1.0, milliseconds);
+            await FadeFrame.FadeToAsync(1.0, milliseconds);
 #else
             MainCanvasView.Opacity = 1.0;
-            await MainCanvasView.FadeTo(0.0, milliseconds);
+            await MainCanvasView.FadeToAsync(0.0, milliseconds);
 #endif
         }
 
@@ -16929,11 +16929,11 @@ namespace GnollHackX.Pages.Game
             MainGrid.IsEnabled = true;
 #if WINDOWS
             FadeFrame.Opacity = 1.0;
-            await FadeFrame.FadeTo(0.0, milliseconds);
+            await FadeFrame.FadeToAsync(0.0, milliseconds);
             FadeFrame.IsVisible = false;
 #else
             MainCanvasView.Opacity = 0.0;
-            await MainCanvasView.FadeTo(1.0, milliseconds);
+            await MainCanvasView.FadeToAsync(1.0, milliseconds);
 #endif
         }
 
@@ -20321,7 +20321,7 @@ namespace GnollHackX.Pages.Game
             if(GHApp.IsiOS)
             {
                 MenuStack.CancelAnimations();
-                await MenuStack.FadeTo(0.0, 64);
+                await MenuStack.FadeToAsync(0.0, 64);
             }
 
 #if GNH_MAUI
@@ -20382,7 +20382,7 @@ namespace GnollHackX.Pages.Game
             if (GHApp.IsiOS)
             {
                 TextStack.CancelAnimations();
-                await TextStack.FadeTo(0.0, 64);
+                await TextStack.FadeToAsync(0.0, 64);
             }
 #if GNH_MAUI
             var timer = Microsoft.Maui.Controls.Application.Current.Dispatcher.CreateTimer();
@@ -20455,7 +20455,7 @@ namespace GnollHackX.Pages.Game
                 //if (GHApp.IsiOS)
                 //    FlipiOS(false);
                 //else
-                    await MenuCanvas.RotateYTo(90, 250, Easing.Linear);
+                    await MenuCanvas.RotateYToAsync(90, 250, Easing.Linear);
             }
 
             bool isEquipmentSide = MenuEquipmentSideShown;
@@ -20471,7 +20471,7 @@ namespace GnollHackX.Pages.Game
                 //else
                 {
                     MenuCanvas.RotationY = -90;
-                    await MenuCanvas.RotateYTo(0, 250, Easing.Linear);
+                    await MenuCanvas.RotateYToAsync(0, 250, Easing.Linear);
                 }
                 MenuRefresh = oldMenuRefresh;
             }

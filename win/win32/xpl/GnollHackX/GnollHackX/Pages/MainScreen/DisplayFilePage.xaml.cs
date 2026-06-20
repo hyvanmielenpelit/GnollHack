@@ -49,7 +49,7 @@ namespace GnollHackX.Pages.MainScreen
         public DisplayFilePage(string fileName, string header, int fixedWidth, bool displayshare, bool isHtml, bool isScrolledDown)
         {
             InitializeComponent();
-            On<iOS>().SetUseSafeArea(true);
+            SafeAreaEdges = SafeAreaEdges.All; //On<iOS>().SetUseSafeArea(true);
             UIUtils.AdjustRootLayout(RootGrid);
             UIUtils.SetPageThemeOnHandler(this, GHApp.DarkMode);
             UIUtils.SetViewCursorOnHandler(RootGrid, GameCursorType.Normal);
@@ -200,7 +200,7 @@ namespace GnollHackX.Pages.MainScreen
                 {
                     Thickness safearea = new Thickness();
 #if GNH_MAUI
-                    bool usingsafe = On<iOS>().UsingSafeArea();
+                    bool usingsafe = SafeAreaEdges != SafeAreaEdges.None; // On<iOS>().UsingSafeArea();
 #else
                     bool usingsafe = On<Xamarin.Forms.PlatformConfiguration.iOS>().UsingSafeArea();
 #endif
@@ -290,7 +290,7 @@ namespace GnollHackX.Pages.MainScreen
                 {
                     try
                     {
-                        await DisplayWebView.FadeTo(1.0, 512);
+                        await DisplayWebView.FadeToAsync(1.0, 512);
                         //Animation displayFileAnimation = new Animation(v => DisplayWebView.Opacity = (double)v, 0.01, 1.00);
                         //displayFileAnimation.Commit(MainGrid, "DisplayFileShowAnimation", length: 512, rate: 16, repeat: () => false);
                     }

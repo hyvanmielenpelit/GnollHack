@@ -86,7 +86,7 @@ namespace GnollHackX
                 GHApp.CurrentGamePage = null;
             }
             GHApp.IncrementMainConstructorRunNumber();
-            On<iOS>().SetUseSafeArea(true);
+            SafeAreaEdges = SafeAreaEdges.All; //On<iOS>().SetUseSafeArea(true);
             UIUtils.SetPageThemeOnHandler(this, GHApp.DarkMode);
             //TierTitleLabel.TextColor = GHColors.TitleGoldColor;
             //TierSubNameLabel.TextColor = GHColors.LightYellow;
@@ -1446,9 +1446,9 @@ namespace GnollHackX
 
         private async Task StartFadeLogoIn()
         {
-            await StartLogoImage.FadeTo(1, 250);
+            await StartLogoImage.FadeToAsync(1, 250);
             StartLogoImage.Opacity = 1.0; /* To make sure */
-            await FmodLogoImage.FadeTo(1, 250);
+            await FmodLogoImage.FadeToAsync(1, 250);
             FmodLogoImage.Opacity = 1.0; /* To make sure */
             FinishedLogoFadeIn = true;
 
@@ -1490,28 +1490,28 @@ namespace GnollHackX
 
         private async Task StartFadeIn()
         {
-            await StartLogoImage.FadeTo(0, 250);
+            await StartLogoImage.FadeToAsync(0, 250);
             StartLogoImage.Opacity = 0.0; /* To make sure */
-            await FmodLogoImage.FadeTo(0, 250);
+            await FmodLogoImage.FadeToAsync(0, 250);
             FmodLogoImage.Opacity = 0.0; /* To make sure */
             //Task[] tasklist1 = new Task[2] { t1, t2 };
             //Task.WaitAll(tasklist1);
 
             carouselView.IsVisible = true;
             carouselView.InvalidateSurface();
-            await carouselView.FadeTo(1, 250);
+            await carouselView.FadeToAsync(1, 250);
             carouselView.Opacity = 1.0; /* To make sure */
             carouselView.Play();
 
             UpperButtonGrid.IsVisible = true;
 
-            await UpperButtonGrid.FadeTo(1, 250);
+            await UpperButtonGrid.FadeToAsync(1, 250);
             UpperButtonGrid.Opacity = 1.0;  /* To make sure */
             StartButtonLayout.IsVisible = true;
-            await StartButtonLayout.FadeTo(1, 250);
+            await StartButtonLayout.FadeToAsync(1, 250);
             StartButtonLayout.Opacity = 1.0;  /* To make sure */
             LogoGrid.IsVisible = true;
-            await LogoGrid.FadeTo(1, 250);
+            await LogoGrid.FadeToAsync(1, 250);
             LogoGrid.Opacity = 1.0;  /* To make sure */
 
             //List<Task> tasklist2 = new List<Task> { t3, t4, t5 };
@@ -2140,7 +2140,7 @@ namespace GnollHackX
                         AlertOkButton2.IsEnabled = true;
                         AlertExitButton.IsEnabled = true;
                         AlertGrid.IsVisible = true;
-                        GHApp.AddSentryBreadcrumb("DisplayAlert: " + alert.Message, GHConstants.SentryGnollHackGeneralCategoryName);
+                        GHApp.AddSentryBreadcrumb("DisplayAlertAsync: " + alert.Message, GHConstants.SentryGnollHackGeneralCategoryName);
                     }
                 }
                 catch (Exception ex)
