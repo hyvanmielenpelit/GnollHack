@@ -63,7 +63,7 @@ namespace GnollHackX.Pages.Game
 #endif
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class GamePage : ContentPage, IKeyPressHandlingPage, ISpecialKeyPressHandlingPage
+    public partial class GamePage : CustomModalPage, IKeyPressHandlingPage, ISpecialKeyPressHandlingPage
     {
         private struct MenuClickResult
         {
@@ -929,8 +929,12 @@ namespace GnollHackX.Pages.Game
         public GamePage(MainPage mainPage)
         {
             InitializeComponent();
+#if GNH_MAUI
+            SafeAreaEdges = SafeAreaEdges.All;
+#else
             On<iOS>().SetUseSafeArea(true);
-            UIUtils.AdjustRootLayout(RootGrid);
+#endif
+            //UIUtils.AdjustRootLayout(RootGrid);
             UIUtils.SetPageThemeOnHandler(this, GHApp.DarkMode);
             UIUtils.SetViewCursorOnHandler(RootGrid, GameCursorType.Normal);
             UIUtils.SetViewCursorOnHandler(ToggleMessageNumberButton, GameCursorType.Info);
@@ -1195,7 +1199,11 @@ namespace GnollHackX.Pages.Game
             {
                 MoreNextButton.Opacity = 0;
                 MoreNextButton.IsVisible = true;
+#if GNH_MAUI
+                await MoreNextButton.FadeToAsync(1.0);
+#else
                 await MoreNextButton.FadeTo(1.0);
+#endif
             }
         }
 
@@ -1210,7 +1218,11 @@ namespace GnollHackX.Pages.Game
             {
                 MorePreviousButton.Opacity = 0;
                 MorePreviousButton.IsVisible = true;
+#if GNH_MAUI
+                await MorePreviousButton.FadeToAsync(1.0);
+#else
                 await MorePreviousButton.FadeTo(1.0);
+#endif
             }
         }
 
@@ -3658,7 +3670,11 @@ namespace GnollHackX.Pages.Game
                 {
                     TextGrid.Opacity = 0;
                     TextGrid.IsVisible = true;
+#if GNH_MAUI
+                    await TextGrid.FadeToAsync(1.0);
+#else
                     await TextGrid.FadeTo(1.0);
+#endif
                 }
                 else
                     TextGrid.IsVisible = true;
@@ -3695,7 +3711,11 @@ namespace GnollHackX.Pages.Game
 #if !GNH_MAUI
                         TextStack.ForceLayout();
 #endif
+#if GNH_MAUI
+                        await TextStack.FadeToAsync(1.0, 256);
+#else
                         await TextStack.FadeTo(1.0, 256);
+#endif
                     }
                     catch (Exception ex)
                     {
@@ -4721,7 +4741,11 @@ namespace GnollHackX.Pages.Game
                 {
                     MenuGrid.Opacity = 0;
                     MenuGrid.IsVisible = true;
+#if GNH_MAUI
+                    await MenuGrid.FadeToAsync(1.0);
+#else
                     await MenuGrid.FadeTo(1.0);
+#endif
                 }
                 else
                     MenuGrid.IsVisible = true;
@@ -4763,7 +4787,11 @@ namespace GnollHackX.Pages.Game
 #if DEBUG
                         MenuStack.Opacity = 1.0;
 #else
+#if GNH_MAUI
+                        await MenuStack.FadeToAsync(1.0, 256);
+#else
                         await MenuStack.FadeTo(1.0, 256);
+#endif
 #endif
                     }
                     catch (Exception ex)
@@ -16897,7 +16925,11 @@ namespace GnollHackX.Pages.Game
         public async Task FadeFromBlackAtStart(uint milliseconds)
         {
             FadeFrameAtStart.Opacity = 1.0;
+#if GNH_MAUI
+            await FadeFrameAtStart.FadeToAsync(0.0, milliseconds);
+#else
             await FadeFrameAtStart.FadeTo(0.0, milliseconds);
+#endif
             FadeFrameAtStart.IsVisible = false;
         }
 
@@ -16917,10 +16949,14 @@ namespace GnollHackX.Pages.Game
 #if WINDOWS
             FadeFrame.Opacity = 0.0;
             FadeFrame.IsVisible = true;
-            await FadeFrame.FadeTo(1.0, milliseconds);
+            await FadeFrame.FadeToAsync(1.0, milliseconds);
 #else
             MainCanvasView.Opacity = 1.0;
+#if GNH_MAUI
+            await MainCanvasView.FadeToAsync(0.0, milliseconds);
+#else
             await MainCanvasView.FadeTo(0.0, milliseconds);
+#endif
 #endif
         }
 
@@ -16929,11 +16965,15 @@ namespace GnollHackX.Pages.Game
             MainGrid.IsEnabled = true;
 #if WINDOWS
             FadeFrame.Opacity = 1.0;
-            await FadeFrame.FadeTo(0.0, milliseconds);
+            await FadeFrame.FadeToAsync(0.0, milliseconds);
             FadeFrame.IsVisible = false;
 #else
             MainCanvasView.Opacity = 0.0;
+#if GNH_MAUI
+            await MainCanvasView.FadeToAsync(1.0, milliseconds);
+#else
             await MainCanvasView.FadeTo(1.0, milliseconds);
+#endif
 #endif
         }
 
@@ -20321,7 +20361,11 @@ namespace GnollHackX.Pages.Game
             if(GHApp.IsiOS)
             {
                 MenuStack.CancelAnimations();
+#if GNH_MAUI
+                await MenuStack.FadeToAsync(0.0, 64);
+#else
                 await MenuStack.FadeTo(0.0, 64);
+#endif
             }
 
 #if GNH_MAUI
@@ -20382,7 +20426,11 @@ namespace GnollHackX.Pages.Game
             if (GHApp.IsiOS)
             {
                 TextStack.CancelAnimations();
+#if GNH_MAUI
+                await TextStack.FadeToAsync(0.0, 64);
+#else
                 await TextStack.FadeTo(0.0, 64);
+#endif
             }
 #if GNH_MAUI
             var timer = Microsoft.Maui.Controls.Application.Current.Dispatcher.CreateTimer();
@@ -20452,10 +20500,11 @@ namespace GnollHackX.Pages.Game
             if (doAnim)
             {
                 MenuRefresh = false;
-                //if (GHApp.IsiOS)
-                //    FlipiOS(false);
-                //else
-                    await MenuCanvas.RotateYTo(90, 250, Easing.Linear);
+#if GNH_MAUI
+                await MenuCanvas.RotateYToAsync(90, 250, Easing.Linear);
+#else
+                await MenuCanvas.RotateYTo(90, 250, Easing.Linear);
+#endif
             }
 
             bool isEquipmentSide = MenuEquipmentSideShown;
@@ -20466,13 +20515,12 @@ namespace GnollHackX.Pages.Game
 
             if (doAnim)
             {
-                //if (GHApp.IsiOS)
-                //    FlipiOS(true);
-                //else
-                {
-                    MenuCanvas.RotationY = -90;
-                    await MenuCanvas.RotateYTo(0, 250, Easing.Linear);
-                }
+                MenuCanvas.RotationY = -90;
+#if GNH_MAUI
+                await MenuCanvas.RotateYToAsync(0, 250, Easing.Linear);
+#else
+                await MenuCanvas.RotateYTo(0, 250, Easing.Linear);
+#endif
                 MenuRefresh = oldMenuRefresh;
             }
             MenuFlipButton.IsEnabled = true;

@@ -22,13 +22,17 @@ namespace GnollHackX.Pages.MainScreen
 #endif
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class AchievementsPage : ContentPage, IKeyPressHandlingPage, ISpecialKeyPressHandlingPage
+    public partial class AchievementsPage : CustomModalPage, IKeyPressHandlingPage, ISpecialKeyPressHandlingPage
     {
         public AchievementsPage()
         {
             InitializeComponent();
+#if GNH_MAUI
+            SafeAreaEdges = SafeAreaEdges.All;
+#else
             On<iOS>().SetUseSafeArea(true);
-            UIUtils.AdjustRootLayout(RootGrid);
+#endif
+            //UIUtils.AdjustRootLayout(RootGrid);
             UIUtils.SetPageThemeOnHandler(this, GHApp.DarkMode);
             UIUtils.SetViewCursorOnHandler(RootGrid, GameCursorType.Normal);
             if (GHApp.DarkMode)

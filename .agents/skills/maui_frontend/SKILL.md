@@ -5,7 +5,7 @@ description: Guidelines for working on the C# .NET MAUI mobile and desktop front
 
 # .NET MAUI Frontend Development
 
-GnollHack's graphical client is a .NET 9.0 MAUI application targeting Android, iOS, and Windows Desktop (WinUI 3).
+GnollHack's graphical client is a .NET 10.0 MAUI application targeting Android, iOS, and Windows Desktop (WinUI 3).
 
 ## Project Structure
 
@@ -13,9 +13,13 @@ GnollHack's graphical client is a .NET 9.0 MAUI application targeting Android, i
 |-----------|------|----------|
 | **GnollHackM** | [win/win32/xpl/GnollHackM/](file:///c:/hmp/GnollHack/win/win32/xpl/GnollHackM) | .NET MAUI application project. Contains XAML pages, platform-specific code, and the `.csproj`. |
 | **GnollHackX** (shared code) | [win/win32/xpl/GnollHackX/GnollHackX/](file:///c:/hmp/GnollHack/win/win32/xpl/GnollHackX/GnollHackX) | 70+ shared C# files: game logic, rendering, constants, controls. Compiled into GnollHackM via `<Compile Include>` file-linking (NOT project references). |
-| **GnollHackX.Common** | [win/win32/xpl/GnollHackX/GnollHackX.Common/](file:///c:/hmp/GnollHack/win/win32/xpl/GnollHackX/GnollHackX.Common) | Contains ONLY [GnollHackService.cs](file:///c:/hmp/GnollHack/win/win32/xpl/GnollHackX/GnollHackX.Common/GnollHackService.cs) — the P/Invoke bridge to native code. |
-| **GnollHackX.FMOD** | [win/win32/xpl/GnollHackX/GnollHackX.FMOD/](file:///c:/hmp/GnollHack/win/win32/xpl/GnollHackX/GnollHackX.FMOD) | FMOD SDK C# wrappers for audio playback. |
+| **GnollHackX.Android** (platform) | [win/win32/xpl/GnollHackX/GnollHackX.Android/](file:///c:/hmp/GnollHack/win/win32/xpl/GnollHackX/GnollHackX.Android) | Android platform service. [PlatformServiceAndroid.cs](file:///c:/hmp/GnollHack/win/win32/xpl/GnollHackX/GnollHackX.Android/PlatformServiceAndroid.cs) is file-linked into GnollHackM (line 737 of `.csproj`, inside the `net10.0-android` ItemGroup). Uses `Xamarin.Google.Android.Play.Core` for Google Play Store in-app reviews (`IReviewManager`, `ReviewManagerFactory`, `ReviewInfo`). |
+| **GnollHackX.iOS** (platform) | [win/win32/xpl/GnollHackX/GnollHackX.iOS/](file:///c:/hmp/GnollHack/win/win32/xpl/GnollHackX/GnollHackX.iOS) | iOS platform service. [PlatformServiceiOS.cs](file:///c:/hmp/GnollHack/win/win32/xpl/GnollHackX/GnollHackX.iOS/PlatformServiceiOS.cs) and [GHUIApplication.cs](file:///c:/hmp/GnollHack/win/win32/xpl/GnollHackX/GnollHackX.iOS/GHUIApplication.cs) are file-linked into GnollHackM (inside the `net10.0-ios` ItemGroup). |
+| **GnollHackX.Common** | [win/win32/xpl/GnollHackX/GnollHackX.Common/](file:///c:/hmp/GnollHack/win/win32/xpl/GnollHackX/GnollHackX.Common) | Contains ONLY [GnollHackService.cs](file:///c:/hmp/GnollHack/win/win32/xpl/GnollHackX/GnollHackX.Common/GnollHackService.cs) — the P/Invoke bridge to native code. File-linked into GnollHackM. |
+| **GnollHackX.FMOD** | [win/win32/xpl/GnollHackX/GnollHackX.FMOD/](file:///c:/hmp/GnollHack/win/win32/xpl/GnollHackX/GnollHackX.FMOD) | FMOD SDK C# wrappers for audio playback. File-linked into GnollHackM. |
 | **libshare** (C side) | [win/win32/xpl/libshare/](file:///c:/hmp/GnollHack/win/win32/xpl/libshare) | Native C bridge code (gnhapi.h, callback.h, libproc.c). |
+
+> **Important:** Because GnollHackM uses `<Compile Include>` file-linking (not project references), NuGet packages required by file-linked code must be declared in `GnollHackM.csproj` — not in a separate project. When evaluating whether a NuGet package is used, always search `GnollHackX.*` source directories, not just `GnollHackM/`.
 
 ---
 
@@ -131,8 +135,8 @@ This pattern is used 119+ times across the codebase.
 |-------------|---------|----------|
 | Crash reporting | Sentry.Maui 6.5.0 | Error tracking on all platforms |
 | Cloud storage | Azure.Storage.Blobs 12.25.0 | Cloud save/import/export |
-| JSON | Newtonsoft.Json 13.0.4 + System.Text.Json 9.0.16 | Data serialization |
-| Play Store | Xamarin.Google.Android.Play.Core 1.10.3.21 | Android in-app updates (Android only) |
+| JSON | Newtonsoft.Json 13.0.4 + System.Text.Json 10.0.0 | Data serialization |
+| Play Store reviews | Xamarin.Google.Android.Play.Core 1.10.3.21 | Google Play in-app review flow (Android only). Used by file-linked [PlatformServiceAndroid.cs](file:///c:/hmp/GnollHack/win/win32/xpl/GnollHackX/GnollHackX.Android/PlatformServiceAndroid.cs) via `IReviewManager` / `ReviewManagerFactory`. |
 
 ---
 

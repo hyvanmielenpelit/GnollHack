@@ -25,7 +25,7 @@ namespace GnollHackX.Pages.Game
 #endif
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class NamePage : ContentPage, ICloseablePage, ISpecialKeyPressHandlingPage
+    public partial class NamePage : CustomModalPage, ICloseablePage, ISpecialKeyPressHandlingPage
     {
         public Regex ValidationExpression { get; set; }
         private GHGame _currentGame;
@@ -35,8 +35,12 @@ namespace GnollHackX.Pages.Game
         public NamePage(GamePage gamePage, string modeName, string modeDescription, string replayEnteredPlayerName)
         {
             InitializeComponent();
+#if GNH_MAUI
+            SafeAreaEdges = SafeAreaEdges.All;
+#else
             On<iOS>().SetUseSafeArea(true);
-            UIUtils.AdjustRootLayout(RootGrid);
+#endif
+            //UIUtils.AdjustRootLayout(RootGrid);
             UIUtils.SetPageThemeOnHandler(this, GHApp.DarkMode);
             UIUtils.SetViewCursorOnHandler(RootGrid, GameCursorType.Normal);
 #if GNH_MAUI

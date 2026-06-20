@@ -25,13 +25,17 @@ namespace GnollHackX.Pages.MainScreen
 #endif
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class SnapshotPage : ContentPage, ICloseablePage
+    public partial class SnapshotPage : CustomModalPage, ICloseablePage
     {
         public SnapshotPage()
         {
             InitializeComponent();
+#if GNH_MAUI
+            SafeAreaEdges = SafeAreaEdges.All;
+#else
             On<iOS>().SetUseSafeArea(true);
-            UIUtils.AdjustRootLayout(RootGrid);
+#endif
+            //UIUtils.AdjustRootLayout(RootGrid);
             UIUtils.SetPageThemeOnHandler(this, GHApp.DarkMode);
             UIUtils.SetViewCursorOnHandler(RootGrid, GameCursorType.Normal);
             if (GHApp.DarkMode)

@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+<gnh:CustomModalPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="GnollHackX.Pages.Game.GamePage"
              Appearing="ContentPage_Appearing" Disappearing="ContentPage_Disappearing"
@@ -7,7 +7,7 @@
              xmlns:controls="clr-namespace:GnollHackX.Controls"
              BackgroundColor="Black"
              >
-    <ContentPage.Content>
+    <gnh:CustomModalPage.Content>
         <Grid x:Name="RootGrid" HorizontalOptions="Fill" VerticalOptions="Fill" BackgroundColor="Black">
             <Grid x:Name="MainGrid" HorizontalOptions="Fill" VerticalOptions="Fill" IsVisible="false" >
                 <controls:SwitchableCanvasView x:Name="MainCanvasView"
@@ -502,5 +502,5 @@
                 </StackLayout>
             </gnh:MeasurableGrid>
         </Grid>
-    </ContentPage.Content>
-</ContentPage>
+    </gnh:CustomModalPage.Content>
+</gnh:CustomModalPage>

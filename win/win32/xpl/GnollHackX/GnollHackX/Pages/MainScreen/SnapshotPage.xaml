@@ -1,11 +1,11 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+<gnh:CustomModalPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              BackgroundColor="Black"
              xmlns:controls="clr-namespace:GnollHackX.Controls" 
              xmlns:gnh="clr-namespace:GnollHackX"
              x:Class="GnollHackX.Pages.MainScreen.SnapshotPage">
-    <ContentPage.Content>
+    <gnh:CustomModalPage.Content>
         <Grid x:Name="RootGrid" HorizontalOptions="Fill" VerticalOptions="Fill">
             <gnh:BackgroundView x:Name="bkgView" BackgroundStyle="Automatic" BackgroundBitmap="AutoMenuBackground" BorderStyle="Simple" HorizontalOptions="Fill" VerticalOptions="Fill"/>
             <Grid BackgroundColor="Transparent" RowSpacing="6" HorizontalOptions="Fill" VerticalOptions="Fill">
@@ -30,5 +30,5 @@
                         Clicked="Button_Clicked" />
             </Grid>
         </Grid>
-    </ContentPage.Content>
-</ContentPage>
+    </gnh:CustomModalPage.Content>
+</gnh:CustomModalPage>

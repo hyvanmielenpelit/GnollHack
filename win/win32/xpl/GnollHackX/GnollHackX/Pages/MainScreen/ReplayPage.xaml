@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+<gnh:CustomModalPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:gnh="clr-namespace:GnollHackX" 
              xmlns:controls="clr-namespace:GnollHackX.Controls"
@@ -7,7 +7,7 @@
              x:Class="GnollHackX.Pages.MainScreen.ReplayPage"
              Appearing="ContentPage_Appearing"
              Disappearing="ContentPage_Disappearing">
-    <ContentPage.Content>
+    <gnh:CustomModalPage.Content>
         <Grid x:Name="RootGrid">
             <gnh:BackgroundView x:Name="bkgView" BackgroundStyle="Automatic" BackgroundBitmap="AutoMenuBackground" BorderStyle="Simple" HorizontalOptions="Fill" VerticalOptions="Fill"/>
             <Grid x:Name="MainGrid" WidthRequest  ="900" RowSpacing="6" HorizontalOptions="Center" VerticalOptions="Fill" >
@@ -125,5 +125,5 @@
                 </Grid.GestureRecognizers>
             </Grid>
         </Grid>
-    </ContentPage.Content>
-</ContentPage>
+    </gnh:CustomModalPage.Content>
+</gnh:CustomModalPage>

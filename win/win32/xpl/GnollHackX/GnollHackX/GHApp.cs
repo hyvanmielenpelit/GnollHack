@@ -4357,31 +4357,40 @@ namespace GnollHackX
             if (IsAndroid)
             {
 #if !GNH_MAUI || ANDROID
-                /* Print file descriptors via C# */
-                int id = Process.GetCurrentProcess().Id;
-                string output = "";
-                var proc = new Process
-                {
-                    StartInfo = new ProcessStartInfo
-                    {
-                        FileName = "lsof",
-                        Arguments = "-a -p " + id.ToString(),
-                        UseShellExecute = false,
-                        RedirectStandardOutput = true,
-                        CreateNoWindow = true
-                    }
-                };
-                proc.Start();
-                while (!proc.StandardOutput.EndOfStream)
-                {
-                    output += proc.StandardOutput.ReadLine() + "\n";
-                }
+                string output = ReadFileDescriptorsFromStdOut();
                 await DisplayMessageBox(page, "File Descriptors", "GnollHack will now attempt to send critical diagnostic data." + (output != "" ? "The information is as follows:\n\n" + output : ""), "OK");
 #else
                 await DisplayMessageBox(page, "Unsupported Function", "ListFileDescriptors is unsupported.", "OK");
 #endif
             }
         }
+
+        private static string ReadFileDescriptorsFromStdOut()
+        {
+            string output = "";
+#if ANDROID
+            /* Print file descriptors via C# */
+            int id = Process.GetCurrentProcess().Id;
+            var proc = new Process
+            {
+                StartInfo = new ProcessStartInfo
+                {
+                    FileName = "lsof",
+                    Arguments = "-a -p " + id.ToString(),
+                    UseShellExecute = false,
+                    RedirectStandardOutput = true,
+                    CreateNoWindow = true
+                }
+            };
+            proc.Start();
+            while (!proc.StandardOutput.EndOfStream)
+            {
+                output += proc.StandardOutput.ReadLine() + "\n";
+            }
+#endif
+            return output;
+        }
+
 
         public static void PlayButtonClickedSound()
         {
@@ -11365,14 +11374,22 @@ namespace GnollHackX
         public static async Task DisplayMessageBox(Page page, string title, string message, string cancel)
         {
             IsKeyboardHookEnabled = false;
+#if GNH_MAUI
+            await page.DisplayAlertAsync(title, message, cancel);
+#else
             await page.DisplayAlert(title, message, cancel);
+#endif
             IsKeyboardHookEnabled = true;
         }
 
         public static async Task<bool> DisplayMessageBox(Page page, string title, string message, string accept, string cancel)
         {
             IsKeyboardHookEnabled = false;
+#if GNH_MAUI
+            bool res = await page.DisplayAlertAsync(title, message, accept, cancel);
+#else
             bool res = await page.DisplayAlert(title, message, accept, cancel);
+#endif
             IsKeyboardHookEnabled = true;
             return res;
         }

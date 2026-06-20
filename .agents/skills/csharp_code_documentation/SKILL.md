@@ -11,7 +11,7 @@ For supplementary patterns (regions, enums, XAML code-behind, exceptions, consta
 
 ## Overview
 
-GnollHack's C# codebase is a .NET 9.0 MAUI application that serves as the graphical frontend for the C game engine. It includes:
+GnollHack's C# codebase is a .NET 10.0 MAUI application that serves as the graphical frontend for the C game engine. It includes:
 
 - **UI pages and controls** (XAML + code-behind)
 - **SkiaSharp game rendering** (tile-based map, animations, effects)

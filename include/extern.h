@@ -1832,6 +1832,7 @@ E struct permonst *FDECL(mkclass_aligned, (CHAR_P, int, ALIGNTYP_P, uint64_t));
 E struct permonst* FDECL(mkclass_core, (CHAR_P, int, ALIGNTYP_P, int, uint64_t));
 E int FDECL(mkclass_poly, (int));
 E int FDECL(adj_lev, (struct permonst *, int));
+E boolean FDECL(is_mon_high_level, (struct monst*));
 E struct permonst *FDECL(grow_up, (struct monst *, struct monst *));
 E void FDECL(change_mon_ability_scores, (struct monst*, int, int));
 E struct obj* FDECL(mongets, (struct monst *, int));

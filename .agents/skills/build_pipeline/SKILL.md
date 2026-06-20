@@ -136,13 +136,13 @@ Project: [GnollHackM.csproj](file:///c:/hmp/GnollHack/win/win32/xpl/GnollHackM/G
 
 ```powershell
 # Windows
-dotnet build win/win32/xpl/GnollHackM/GnollHackM.csproj -c Debug -f net9.0-windows10.0.19041.0
+dotnet build win/win32/xpl/GnollHackM/GnollHackM.csproj -c Debug -f net10.0-windows10.0.19041.0
 
 # Android
-dotnet build win/win32/xpl/GnollHackM/GnollHackM.csproj -c Debug -f net9.0-android
+dotnet build win/win32/xpl/GnollHackM/GnollHackM.csproj -c Debug -f net10.0-android
 
 # iOS
-dotnet build win/win32/xpl/GnollHackM/GnollHackM.csproj -c Debug -f net9.0-ios
+dotnet build win/win32/xpl/GnollHackM/GnollHackM.csproj -c Debug -f net10.0-ios
 ```
 
 ---

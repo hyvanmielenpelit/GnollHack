@@ -21,7 +21,7 @@ namespace GnollHackX.Pages.Game
 #endif
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class OutRipPage : ContentPage, ISpecialKeyPressHandlingPage
+    public partial class OutRipPage : CustomModalPage, ISpecialKeyPressHandlingPage
     {
         GamePage _gamePage;
         GHWindow _window;
@@ -31,8 +31,12 @@ namespace GnollHackX.Pages.Game
         public OutRipPage(GamePage gamePage, GHWindow window, GHOutRipInfo outripinfo)
         {
             InitializeComponent();
+#if GNH_MAUI
+            SafeAreaEdges = SafeAreaEdges.All;
+#else
             On<iOS>().SetUseSafeArea(true);
-            UIUtils.AdjustRootLayout(RootGrid);
+#endif
+            //UIUtils.AdjustRootLayout(RootGrid);
             UIUtils.SetPageThemeOnHandler(this, GHApp.DarkMode);
             UIUtils.SetViewCursorOnHandler(RootGrid, GameCursorType.Normal);
 
