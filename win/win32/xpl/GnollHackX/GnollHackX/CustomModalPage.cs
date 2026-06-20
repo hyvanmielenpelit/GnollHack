@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using GnollHackX;
+
 #if GNH_MAUI
 #if WINDOWS
 using System.Reflection;
@@ -26,11 +28,14 @@ namespace GnollHackX
             base.OnAppearing();
 
 #if WINDOWS
-            // Defer to ensure the modal's MAUI context is fully set up
-            Dispatcher.Dispatch(() =>
+            if (!GHApp.WindowedMode)
             {
-                FixModalTitleBarGap(this);
-            });
+                // Defer to ensure the modal's MAUI context is fully set up
+                Dispatcher.Dispatch(() =>
+                {
+                    FixModalTitleBarGap(this);
+                });
+            }
 #endif
         }
 
