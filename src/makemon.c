@@ -3988,6 +3988,35 @@ int manual_adj;
     return ((tmp > tmp2) ? tmp2 : (tmp > 0 ? tmp : 0)); /* 0 lower limit */
 }
 
+boolean
+is_mon_high_level(mtmp)
+struct monst* mtmp;
+{
+    if(!mtmp || !mtmp->data || mtmp->iswiz || mtmp->isnpc || mtmp->isshk || mtmp->ispriest || mtmp->issmith)
+        return FALSE;
+    
+    int normal_adj_level, tmp2;
+    normal_adj_level = (int)mtmp->data->mlevel;
+    tmp2 = (level_difficulty() - normal_adj_level);
+    if (tmp2 < 0)
+        normal_adj_level--; /* if mlevel > u.uz decrement tmp */
+    else
+        normal_adj_level += (tmp2 / 5); /* else increment 1 per five diff */
+
+    tmp2 = (u.ulevel - (int)mtmp->data->mlevel); /* adjust vs. the player */
+    if (tmp2 > 0)
+        normal_adj_level += (tmp2 / 4); /* level as well */
+    
+    tmp2 = (3 * ((int)mtmp->data->mlevel)) / 2; /* crude upper limit */
+    if (tmp2 > MAX_MONSTER_LEVEL)
+        tmp2 = MAX_MONSTER_LEVEL;  /* hard upper limit */
+    if (tmp2 < 0)
+        tmp2 = 0;  /* hard lower limit */
+    normal_adj_level = min(normal_adj_level, tmp2);
+
+    return mtmp->m_lev >= normal_adj_level + 5;
+}
+
 /* monster earned experience and will gain some hit points; it might also
    grow into a bigger monster (baby to adult, soldier to officer, etc) */
 struct permonst *
