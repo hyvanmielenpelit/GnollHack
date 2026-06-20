@@ -64,7 +64,7 @@ Refer to [DEVEL/code_style.txt](file:///c:/hmp/GnollHack/DEVEL/code_style.txt) f
 
 ## Build Prerequisites
 
-- Visual Studio 2022 or 2026 with C++ Desktop and .NET MAUI workloads
+- Visual Studio 2026 with C++ Desktop (v143 build tools) and .NET MAUI workloads
 - .NET 10.0 SDK
 - Windows 10 SDK
 - For Android: Android SDK with NDK
