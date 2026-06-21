@@ -54,8 +54,8 @@
  * No item may be in more than one of these slots.
  */
 
-STATIC_DCL boolean FDECL(cant_wield_corpse, (struct obj *));
-STATIC_DCL int FDECL(ready_weapon, (struct obj *, int64_t));
+static boolean cant_wield_corpse(struct obj *);
+static int ready_weapon(struct obj *, int64_t);
 
 /* used by will_weld() */
 /* probably should be renamed */
@@ -84,26 +84,19 @@ STATIC_DCL int FDECL(ready_weapon, (struct obj *, int64_t));
  */
 
 void
-setuwep(obj, mask)
-struct obj* obj;
-int64_t mask;
+setuwep(struct obj *obj, int64_t mask)
 {
     setuwepcore(obj, mask, TRUE);
 }
 
 void
-setuwepquietly(obj, mask)
-struct obj* obj;
-int64_t mask;
+setuwepquietly(struct obj *obj, int64_t mask)
 {
     setuwepcore(obj, mask, FALSE);
 }
 
 void
-setuwepcore(obj, mask, verbose)
-struct obj *obj;
-int64_t mask;
-boolean verbose;
+setuwepcore(struct obj *obj, int64_t mask, boolean verbose)
 {
     struct obj* olduwep = (struct obj*)0;
     if (mask == W_WEP)
@@ -149,15 +142,14 @@ boolean verbose;
 }
 
 void
-update_unweapon(VOID_ARGS)
+update_unweapon(void)
 {
     update_hand_unweapon(1);
     update_hand_unweapon(2);
 }
 
 void
-update_hand_unweapon(hand)
-int hand;
+update_hand_unweapon(int hand)
 {
     struct obj* wep = (hand <= 1 ? uwep : uarms);
     boolean* unweapon_ptr = (hand <= 1 ? &unweapon1 : &unweapon2);
@@ -178,9 +170,8 @@ int hand;
     }
 }
 
-STATIC_OVL boolean
-cant_wield_corpse(obj)
-struct obj *obj;
+static boolean
+cant_wield_corpse(struct obj *obj)
 {
     char kbuf[BUFSZ];
 
@@ -198,10 +189,8 @@ struct obj *obj;
     return TRUE;
 }
 
-STATIC_OVL int
-ready_weapon(wep, mask)
-struct obj *wep;
-int64_t mask;
+static int
+ready_weapon(struct obj *wep, int64_t mask)
 {
     /* Separated function so swapping works easily */
     int res = 0;
@@ -327,8 +316,7 @@ int64_t mask;
 }
 
 void
-setuqwep(obj)
-struct obj *obj;
+setuqwep(struct obj *obj)
 {
     setworncore(obj, W_QUIVER, TRUE);
     context.botl = context.botlx = TRUE;
@@ -339,17 +327,14 @@ struct obj *obj;
 }
 
 void
-setuswapwep(obj, mask)
-struct obj *obj;
-int64_t mask;
+setuswapwep(struct obj *obj, int64_t mask)
 {
     setworncore(obj, mask, TRUE);
     return;
 }
 
 void
-setuqwepquietly(obj)
-struct obj* obj;
+setuqwepquietly(struct obj *obj)
 {
     setworncore(obj, W_QUIVER, FALSE);
     /* no extra handling needed; this used to include a call to
@@ -358,9 +343,7 @@ struct obj* obj;
 }
 
 void
-setuswapwepquietly(obj, mask)
-struct obj* obj;
-int64_t mask;
+setuswapwepquietly(struct obj *obj, int64_t mask)
 {
     setworncore(obj, mask, FALSE);
     return;
@@ -369,21 +352,21 @@ int64_t mask;
 
 /*** Commands to change particular slot(s) ***/
 
-STATIC_VAR NEARDATA const char wield_objs[] = {
+static NEARDATA const char wield_objs[] = {
     ALL_CLASSES, ALLOW_NONE, WEAPON_CLASS, TOOL_CLASS, 0
 };
-STATIC_VAR NEARDATA const char ready_objs[] = {
+static NEARDATA const char ready_objs[] = {
     ALLOW_COUNT, COIN_CLASS, ALL_CLASSES, ALLOW_NONE, WEAPON_CLASS, 0
 };
-STATIC_VAR NEARDATA const char bullets[] = { /* (note: different from dothrow.c) */
+static NEARDATA const char bullets[] = { /* (note: different from dothrow.c) */
     ALLOW_COUNT, COIN_CLASS, ALL_CLASSES, ALLOW_NONE,
     GEM_CLASS, WEAPON_CLASS, 0
 };
 
-STATIC_VAR NEARDATA const char unwield_objs[] = { ALL_CLASSES, 0 };
+static NEARDATA const char unwield_objs[] = { ALL_CLASSES, 0 };
 
 int
-dowield(VOID_ARGS)
+dowield(void)
 {
     struct obj* wep;
 
@@ -405,7 +388,7 @@ dowield(VOID_ARGS)
 }
 
 int
-dowieldprevwep(VOID_ARGS)
+dowieldprevwep(void)
 {
     multi = 0;
     if (cantwield(youmonst.data))
@@ -461,8 +444,7 @@ dowieldprevwep(VOID_ARGS)
 }
 
 int
-wield_weapon(wep)
-struct obj* wep;
+wield_weapon(struct obj *wep)
 {
     struct obj* oldwep;
     int result;
@@ -685,7 +667,7 @@ struct obj* wep;
 
 /* the unwield command */
 int
-dounwield(VOID_ARGS)
+dounwield(void)
 {
     struct obj* otmp = (struct obj*)0;
 
@@ -766,9 +748,12 @@ dounwield(VOID_ARGS)
 
 
 
+/*
+ * Parameters:
+ *   swap_wep_mask, swap_target_mask: swap_wep_mask = mask of original weapon in swapwep, swap_target_mask is the mask it is going to swapped to
+ */
 int
-dosingleswapweapon(swap_wep_mask, swap_target_mask)
-int64_t swap_wep_mask, swap_target_mask; // swap_wep_mask = mask of original weapon in swapwep, swap_target_mask is the mask it is going to swapped to
+dosingleswapweapon(int64_t swap_wep_mask, int64_t swap_target_mask)
 {
     struct obj *oldwep, * oldswap;
     struct obj *wep = (struct obj*)0, *altwep = (struct obj*)0, *swapwep = (struct obj*)0, *altswapwep = (struct obj*)0;
@@ -888,7 +873,7 @@ int64_t swap_wep_mask, swap_target_mask; // swap_wep_mask = mask of original wea
 }
 
 int
-doswaphandedness(VOID_ARGS)
+doswaphandedness(void)
 {
     flags.swap_rhand_only = !flags.swap_rhand_only;
 
@@ -908,7 +893,7 @@ doswaphandedness(VOID_ARGS)
 
 
 int
-doswapweapon_right_or_both(VOID_ARGS)
+doswapweapon_right_or_both(void)
 {
     if (flags.swap_rhand_only)
         return dosingleswapweapon(W_SWAPWEP, W_WEP);
@@ -918,7 +903,7 @@ doswapweapon_right_or_both(VOID_ARGS)
 
 
 int
-doswapweapon(VOID_ARGS)
+doswapweapon(void)
 {
     struct obj *oldwep, *oldswap;
     struct obj* oldwep2, * oldswap2;
@@ -1183,7 +1168,7 @@ doswapweapon(VOID_ARGS)
 }
 
 int
-dowieldquiver(VOID_ARGS)
+dowieldquiver(void)
 {
     char qbuf[QBUFSZ];
     struct obj *newquiver;
@@ -1489,11 +1474,13 @@ dowieldquiver(VOID_ARGS)
     return res;
 }
 
+/*
+ * Parameters:
+ *   verb: "rub",&c
+ */
 /* used for #rub and for applying pick-axe, whip, grappling hook or polearm */
 boolean
-wield_tool(obj, verb)
-struct obj *obj;
-const char *verb; /* "rub",&c */
+wield_tool(struct obj *obj, const char *verb)
 {
     if (!obj)
         return FALSE;
@@ -1683,7 +1670,7 @@ const char *verb; /* "rub",&c */
 
 
 void
-drop_uswapwep(VOID_ARGS)
+drop_uswapwep(void)
 {
     char str[BUFSZ];
     struct obj *obj = uswapwep;
@@ -1695,7 +1682,7 @@ drop_uswapwep(VOID_ARGS)
 }
 
 int
-dotwoweapon(VOID_ARGS)
+dotwoweapon(void)
 {
     /* You can always toggle it off */
     if (u.twoweap) 
@@ -1733,7 +1720,7 @@ dotwoweapon(VOID_ARGS)
  * 2.  Making an item disappear for a bones pile.
  */
 void
-uwepgone(VOID_ARGS)
+uwepgone(void)
 {
     if (uwep) {
         if ((artifact_light(uwep) || has_obj_mythic_magical_light(uwep) || obj_shines_magical_light(uwep)) && uwep->lamplit) {
@@ -1750,7 +1737,7 @@ uwepgone(VOID_ARGS)
 }
 
 void
-uwep2gone(VOID_ARGS)
+uwep2gone(void)
 {
     if (uarms) {
         if ((artifact_light(uarms) || has_obj_mythic_magical_light(uarms) || obj_shines_magical_light(uarms)) && uarms->lamplit) {
@@ -1767,7 +1754,7 @@ uwep2gone(VOID_ARGS)
 }
 
 void
-uswapwepgone(VOID_ARGS)
+uswapwepgone(void)
 {
     if (uswapwep) {
         setworn((struct obj *) 0, W_SWAPWEP);
@@ -1776,7 +1763,7 @@ uswapwepgone(VOID_ARGS)
 }
 
 void
-uswapwep2gone(VOID_ARGS)
+uswapwep2gone(void)
 {
     if (uswapwep2) {
         setworn((struct obj*) 0, W_SWAPWEP2);
@@ -1786,7 +1773,7 @@ uswapwep2gone(VOID_ARGS)
 
 
 void
-uqwepgone(VOID_ARGS)
+uqwepgone(void)
 {
     if (uquiver) {
         setworn((struct obj *) 0, W_QUIVER);
@@ -1796,7 +1783,7 @@ uqwepgone(VOID_ARGS)
 }
 
 void
-untwoweapon(VOID_ARGS)
+untwoweapon(void)
 {
     if (u.twoweap) {
         play_ui_sound(UI_SOUND_STOP_TWO_WEAPON_COMBAT);
@@ -1808,11 +1795,7 @@ untwoweapon(VOID_ARGS)
 }
 
 int
-enchant_weapon(otmp, weapon, amount, dopopup)
-struct obj *otmp;
-struct obj* weapon;
-int amount;
-boolean dopopup;
+enchant_weapon(struct obj *otmp, struct obj *weapon, int amount, boolean dopopup)
 {
     const char *color = (amount < 0) ? NH_BLACK : NH_BLUE;
     const char *xtime, *wepname = "";
@@ -2054,9 +2037,7 @@ boolean dopopup;
 }
 
 int
-welded(obj, mon)
-struct obj *obj;
-struct monst* mon;
+welded(struct obj *obj, struct monst *mon)
 {
     if (obj && mon && (obj == uwep || obj == uarms) && will_weld(obj, mon)) 
     {
@@ -2072,8 +2053,7 @@ struct monst* mon;
 }
 
 void
-weldmsg(obj)
-struct obj *obj;
+weldmsg(struct obj *obj)
 {
     int64_t savewornmask;
 
@@ -2087,9 +2067,7 @@ struct obj *obj;
 
 /* test whether monster's wielded weapon is stuck to hand/paw/whatever */
 boolean
-mwelded(obj, mon)
-struct obj *obj;
-struct monst* mon;
+mwelded(struct obj *obj, struct monst *mon)
 {
     /* caller is responsible for making sure this is a monster's item */
     if (obj && mon && (obj->owornmask & W_WEP) && will_weld(obj, mon)) /* cursed objects won't weld for demons and undead */

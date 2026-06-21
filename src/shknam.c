@@ -9,14 +9,14 @@
 
 #include "hack.h"
 
-STATIC_DCL boolean FDECL(stock_room_goodpos, (struct mkroom *, int, int, int, int));
-STATIC_DCL int NDECL(shkveg);
-STATIC_DCL void FDECL(mkveggy_at, (int, int));
-STATIC_DCL void FDECL(mkshobj_at, (const struct shclass *, int, int,
-                                   UCHAR_P, BOOLEAN_P));
-STATIC_DCL void FDECL(nameshk, (struct monst *, const char *const *));
-STATIC_DCL int FDECL(shkinit, (const struct shclass *, struct mkroom *));
-STATIC_DCL char* FDECL(shkname_core, (struct monst*, BOOLEAN_P));
+static boolean stock_room_goodpos(struct mkroom *, int, int, int, int);
+static int shkveg(void);
+static void mkveggy_at(int, int);
+static void mkshobj_at(const struct shclass *, int, int,
+                                   uchar, boolean);
+static void nameshk(struct monst *, const char *const *);
+static int shkinit(const struct shclass *, struct mkroom *);
+static char* shkname_core(struct monst*, boolean);
 
 /*
  *  Name prefix codes:
@@ -29,7 +29,7 @@ STATIC_DCL char* FDECL(shkname_core, (struct monst*, BOOLEAN_P));
  *  Personal names do not receive the honorific prefix "Mr." or "Ms.".
  */
 
-STATIC_VAR const char *const shkliquors[] = {
+static const char *const shkliquors[] = {
     /* Ukraine */
     "Njezjin", "Tsjernigof", "Ossipewsk", "Gorlowka",
     /* Belarus */
@@ -44,7 +44,7 @@ STATIC_VAR const char *const shkliquors[] = {
     "Vals", "Schuls", "Zum Loch", 0
 };
 
-STATIC_VAR const char *const shkbooks[] = {
+static const char *const shkbooks[] = {
     /* Eire */
     "Skibbereen",  "Kanturk",   "Rath Luirc",     "Ennistymon",
     "Lahinch",     "Kinnegad",  "Lugnaquillia",   "Enniscorthy",
@@ -55,7 +55,7 @@ STATIC_VAR const char *const shkbooks[] = {
     "Inishbofin",  "Kesh",      0
 };
 
-STATIC_VAR const char *const shkarmors[] = {
+static const char *const shkarmors[] = {
     /* Turquie */
     "Demirci",    "Kalecik",    "Boyabai",    "Yildizeli", "Gaziantep",
     "Siirt",      "Akhalataki", "Tirebolu",   "Aksaray",   "Ermenak",
@@ -66,7 +66,7 @@ STATIC_VAR const char *const shkarmors[] = {
     0
 };
 
-STATIC_VAR const char *const shkwands[] = {
+static const char *const shkwands[] = {
     /* Wales */
     "Yr Wyddgrug", "Trallwng", "Mallwyd", "Pontarfynach", "Rhaeader",
     "Llandrindod", "Llanfair-ym-muallt", "Y-Fenni", "Maesteg", "Rhydaman",
@@ -77,7 +77,7 @@ STATIC_VAR const char *const shkwands[] = {
     "Sgurr na Ciche", "Cannich", "Gairloch", "Kyleakin", "Dunvegan", 0
 };
 
-STATIC_VAR const char *const shkrings[] = {
+static const char *const shkrings[] = {
     /* Hollandse familienamen */
     "Feyfer",     "Flugi",         "Gheel",      "Havic",   "Haynin",
     "Hoboken",    "Imbyze",        "Juyn",       "Kinsky",  "Massis",
@@ -89,7 +89,7 @@ STATIC_VAR const char *const shkrings[] = {
     "Oeloe",      "Kajaani",       "Fauske",     0
 };
 
-STATIC_VAR const char *const shkfoods[] = {
+static const char *const shkfoods[] = {
     /* Indonesia */
     "Djasinga",    "Tjibarusa",   "Tjiwidej",      "Pengalengan",
     "Bandjar",     "Parbalingga", "Bojolali",      "Sarangan",
@@ -102,7 +102,7 @@ STATIC_VAR const char *const shkfoods[] = {
     0
 };
 
-STATIC_VAR const char *const shkweapons[] = {
+static const char *const shkweapons[] = {
     /* Perigord */
     "Voulgezac",   "Rouffiac",   "Lerignac",   "Touverac",  "Guizengeard",
     "Melac",       "Neuvicq",    "Vanzac",     "Picq",      "Urignac",
@@ -113,7 +113,7 @@ STATIC_VAR const char *const shkweapons[] = {
     "Labouheyre",  0
 };
 
-STATIC_VAR const char *const shktools[] = {
+static const char *const shktools[] = {
     /* Spmi */
     "Ymla", "Eed-morra", "Elan Lapinski", "Cubask", "Nieb", "Bnowr Falr",
     "Sperc", "Noskcirdneh", "Yawolloh", "Hyeghu", "Niskal", "Trahnil",
@@ -148,7 +148,7 @@ STATIC_VAR const char *const shktools[] = {
     0
 };
 
-STATIC_VAR const char *const shklight[] = {
+static const char *const shklight[] = {
     /* Romania */
     "Zarnesti", "Slanic", "Nehoiasu", "Ludus", "Sighisoara", "Nisipitu",
     "Razboieni", "Bicaz", "Dorohoi", "Vaslui", "Fetesti", "Tirgu Neamt",
@@ -159,7 +159,7 @@ STATIC_VAR const char *const shklight[] = {
     "Lovech", "Sliven", 0
 };
 
-STATIC_VAR const char *const shkgeneral[] = {
+static const char *const shkgeneral[] = {
     /* Suriname */
     "Hebiwerie",    "Possogroenoe", "Asidonhopo",   "Manlobbi",
     "Adjama",       "Pakka Pakka",  "Kabalebo",     "Wonotobo",
@@ -175,7 +175,7 @@ STATIC_VAR const char *const shkgeneral[] = {
     "Bordeyri",     "Holmavik",     0
 };
 
-STATIC_VAR const char* const shkreagents[] = {
+static const char* const shkreagents[] = {
     /* AD&D mages and others */
     "Merlin",    "Mordenkainen", "Leomund",   "Rary",
     "Bigby",     "Otiluke",  "Tenser", "Elminster",
@@ -183,7 +183,7 @@ STATIC_VAR const char* const shkreagents[] = {
     "Gandalf",   "Saruman",     0
 };
 
-STATIC_VAR const char* const shkmodron[] = {
+static const char* const shkmodron[] = {
     /* Modron names */
     "Alphadron",    "Betagon",    "Gammadron",   "Deltadron",
     "Iotadron",     "Omegadron",  "Kappagon",    "Lambdadron",
@@ -192,7 +192,7 @@ STATIC_VAR const char* const shkmodron[] = {
 };
 
 
-STATIC_VAR const char *const shkhealthfoods[] = {
+static const char *const shkhealthfoods[] = {
     /* Tibet */
     "Ga'er",    "Zhangmu",   "Rikaze",   "Jiangji",     "Changdu",
     "Linzhi",   "Shigatse",  "Gyantse",  "Ganden",      "Tsurphu",
@@ -477,7 +477,7 @@ const struct shclass shtypes[] = {
 /* validate shop probabilities; otherwise incorrect local changes could
    end up provoking infinite loops or wild subscripts fetching garbage */
 void
-init_shop_selection(VOID_ARGS)
+init_shop_selection(void)
 {
     int i, j, item_prob, shop_prob;
 
@@ -494,12 +494,14 @@ init_shop_selection(VOID_ARGS)
 }
 #endif /*0*/
 
+/*
+ * Parameters:
+ *   otyp: used iff obj is null
+ */
 /* decide whether an object or object type is considered vegetarian;
    for types, items which might go either way are assumed to be veggy */
 boolean
-veggy_item(obj, otyp)
-struct obj *obj;
-int otyp; /* used iff obj is null */
+veggy_item(struct obj *obj, int otyp)
 {
     int corpsenm;
     char oclass;
@@ -530,8 +532,8 @@ int otyp; /* used iff obj is null */
     return FALSE;
 }
 
-STATIC_OVL int
-shkveg(VOID_ARGS)
+static int
+shkveg(void)
 {
     int i, j, maxprob, prob;
     char oclass = FOOD_CLASS;
@@ -568,9 +570,8 @@ shkveg(VOID_ARGS)
 }
 
 /* make a random item for health food store */
-STATIC_OVL void
-mkveggy_at(sx, sy)
-int sx, sy;
+static void
+mkveggy_at(int sx, int sy)
 {
     struct obj *obj = mksobj_at(shkveg(), sx, sy, TRUE, TRUE);
 
@@ -580,12 +581,8 @@ int sx, sy;
 }
 
 /* make an object of the appropriate type for a shop square */
-STATIC_OVL void
-mkshobj_at(shp, sx, sy, mkspecl, deserted)
-const struct shclass *shp;
-int sx, sy;
-uchar mkspecl;
-boolean deserted;
+static void
+mkshobj_at(const struct shclass *shp, int sx, int sy, uchar mkspecl, boolean deserted)
 {
     struct monst *mtmp;
     struct permonst *ptr;
@@ -683,10 +680,8 @@ boolean deserted;
 
 
 /* extract a shopkeeper name for the given shop type */
-STATIC_OVL void
-nameshk(shk, nlp)
-struct monst *shk;
-const char *const *nlp;
+static void
+nameshk(struct monst *shk, const char *const *nlp)
 {
     int i, trycnt, names_avail;
     const char *shname = 0;
@@ -758,8 +753,7 @@ const char *const *nlp;
 }
 
 void
-neweshk(mtmp)
-struct monst *mtmp;
+neweshk(struct monst *mtmp)
 {
     if (!mtmp->mextra)
         mtmp->mextra = newmextra();
@@ -770,8 +764,7 @@ struct monst *mtmp;
 }
 
 void
-free_eshk(mtmp)
-struct monst *mtmp;
+free_eshk(struct monst *mtmp)
 {
     if (has_eshk(mtmp)) {
         free((genericptr_t) ESHK(mtmp));
@@ -781,10 +774,8 @@ struct monst *mtmp;
 }
 
 /* create a new shopkeeper in the given room */
-STATIC_OVL int
-shkinit(shp, sroom)
-const struct shclass *shp;
-struct mkroom *sroom;
+static int
+shkinit(const struct shclass *shp, struct mkroom *sroom)
 {
     int sh, sx, sy;
     struct monst *shk;
@@ -896,10 +887,8 @@ struct mkroom *sroom;
     return sh;
 }
 
-STATIC_OVL boolean
-stock_room_goodpos(sroom, rmno, sh, sx, sy)
-struct mkroom *sroom;
-int rmno, sh, sx,sy;
+static boolean
+stock_room_goodpos(struct mkroom *sroom, int rmno, int sh, int sx, int sy)
 {
     if (sroom->irregular) {
         if (levl[sx][sy].edge
@@ -915,8 +904,7 @@ int rmno, sh, sx,sy;
 }
 
 int
-get_gehennom_undead_spellcaster(origtype)
-int origtype;
+get_gehennom_undead_spellcaster(int origtype)
 {
     int shkomontype = origtype;
     boolean arch_lich_gone = (mvitals[PM_ARCH_LICH].mvflags & MV_GONE);
@@ -960,10 +948,7 @@ int origtype;
 
 /* stock a newly-created room with objects */
 void
-stock_room(shp_indx, sroom, deserted)
-int shp_indx;
-struct mkroom *sroom;
-boolean deserted;
+stock_room(int shp_indx, struct mkroom *sroom, boolean deserted)
 {
     /*
      * Someday soon we'll dispatch on the shdist field of shclass to do
@@ -1077,9 +1062,7 @@ boolean deserted;
 
 /* does shkp's shop stock this item type? */
 boolean
-saleable(shkp, obj)
-struct monst *shkp;
-struct obj *obj;
+saleable(struct monst *shkp, struct obj *obj)
 {
     int i, shp_indx = ESHK(shkp)->shoptype - SHOPBASE;
     const struct shclass *shp = &shtypes[shp_indx];
@@ -1104,8 +1087,7 @@ struct obj *obj;
 
 /* positive value: class; negative value: specific object type */
 int
-get_shop_item(type)
-int type;
+get_shop_item(int type)
 {
     const struct shclass *shp = shtypes + type;
     int i, j;
@@ -1119,8 +1101,7 @@ int type;
 
 /* version of shkname() for beginning of sentence */
 char *
-Shknam(mtmp)
-struct monst *mtmp;
+Shknam(struct monst *mtmp)
 {
     char* nam;
     nam = shkname(mtmp);
@@ -1134,23 +1115,19 @@ struct monst *mtmp;
    will yield some other shopkeeper's name (not necessarily one residing
    in the current game's dungeon, or who keeps same type of shop) */
 char*
-shkname(mtmp)
-struct monst* mtmp;
+shkname(struct monst *mtmp)
 {
     return shkname_core(mtmp, FALSE);
 }
 
 char*
-true_shkname(mtmp)
-struct monst* mtmp;
+true_shkname(struct monst *mtmp)
 {
     return shkname_core(mtmp, TRUE);
 }
 
-STATIC_OVL char *
-shkname_core(mtmp, istrue)
-struct monst *mtmp;
-boolean istrue;
+static char *
+shkname_core(struct monst *mtmp, boolean istrue)
 {
     static char nam[BUFSZ] = "shopkeeper";
 
@@ -1199,16 +1176,14 @@ boolean istrue;
 
 
 const char*
-shoptypename(shoptype)
-int shoptype;
+shoptypename(int shoptype)
 {
     const char* shopname = shtypes[shoptype - SHOPBASE].name;
     return shopname;
 }
 
 boolean
-shkname_is_pname(mtmp)
-struct monst *mtmp;
+shkname_is_pname(struct monst *mtmp)
 {
     if (!mtmp || !has_eshk(mtmp))
         return FALSE;
@@ -1219,9 +1194,7 @@ struct monst *mtmp;
 }
 
 boolean
-is_izchak(shkp, override_hallucination)
-struct monst *shkp;
-boolean override_hallucination;
+is_izchak(struct monst *shkp, boolean override_hallucination)
 {
     const char *shknm;
 

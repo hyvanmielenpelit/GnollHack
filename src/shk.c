@@ -13,64 +13,64 @@
 #define PAY_SKIP (-1)
 #define PAY_BROKE (-2)
 
-STATIC_DCL void FDECL(makekops, (coord *));
-STATIC_DCL void FDECL(call_kops, (struct monst *, BOOLEAN_P));
-STATIC_DCL void FDECL(kops_gone, (BOOLEAN_P));
+static void makekops(coord *);
+static void call_kops(struct monst *, boolean);
+static void kops_gone(boolean);
 
 extern const struct shclass shtypes[]; /* defined in shknam.c */
 
-STATIC_VAR NEARDATA int64_t followmsg; /* last time of follow message */
-STATIC_VAR const char and_its_contents[] = " and its contents";
-STATIC_VAR const char the_contents_of[] = "the contents of ";
+static NEARDATA int64_t followmsg; /* last time of follow message */
+static const char and_its_contents[] = " and its contents";
+static const char the_contents_of[] = "the contents of ";
 
-STATIC_DCL int FDECL(append_honorific, (char *));
-STATIC_DCL int64_t FDECL(addupbill, (struct monst *));
-STATIC_DCL void FDECL(pacify_shk, (struct monst *));
-STATIC_DCL struct bill_x *FDECL(onbill, (struct obj *, struct monst *,
-                                         BOOLEAN_P));
-STATIC_DCL struct monst *FDECL(next_shkp, (struct monst *, BOOLEAN_P));
-STATIC_DCL int64_t FDECL(shop_debt, (struct eshk *));
-STATIC_DCL char *FDECL(shk_owns, (char *, struct obj *));
-STATIC_DCL char *FDECL(mon_owns, (char *, struct obj *));
-STATIC_DCL void FDECL(clear_unpaid_obj, (struct monst *, struct obj *));
-STATIC_DCL void FDECL(clear_unpaid, (struct monst *, struct obj *));
-STATIC_DCL int64_t FDECL(check_credit, (int64_t, struct monst *));
-STATIC_DCL void FDECL(pay, (int64_t, struct monst *));
-STATIC_DCL const char *FDECL(shk_embellish, (struct obj *, int64_t));
-STATIC_DCL int64_t FDECL(cost_per_charge, (struct monst *, struct obj *,
-                                        BOOLEAN_P));
-STATIC_DCL int64_t FDECL(cheapest_item, (struct monst *));
-STATIC_DCL int FDECL(dopayobj, (struct monst *, struct bill_x *,
-                                struct obj **, int, BOOLEAN_P));
-STATIC_DCL int64_t FDECL(stolen_container, (struct obj *, struct monst *,
-                                         int64_t, BOOLEAN_P));
-STATIC_DCL void FDECL(shk_names_obj, (struct monst *, struct obj *,
-                                      const char *, int64_t, const char *));
-STATIC_DCL struct obj *FDECL(bp_to_obj, (struct bill_x *));
-STATIC_DCL boolean FDECL(inherits, (struct monst *, int, int, BOOLEAN_P));
-STATIC_DCL void FDECL(set_repo_loc, (struct monst *));
-STATIC_DCL boolean NDECL(angry_shk_exists);
-STATIC_DCL void FDECL(rile_shk, (struct monst *));
-STATIC_DCL void FDECL(rouse_shk, (struct monst *, BOOLEAN_P));
-STATIC_DCL void FDECL(remove_damage, (struct monst *, BOOLEAN_P));
-STATIC_DCL void FDECL(sub_one_frombill, (struct obj *, struct monst *));
-STATIC_DCL void FDECL(dropped_container, (struct obj *, struct monst *, BOOLEAN_P));
-STATIC_DCL void FDECL(adjust_dropped_container_on_sale, (struct obj*, struct monst*));
-STATIC_DCL void FDECL(add_to_billobjs, (struct obj *));
-STATIC_DCL void FDECL(bill_box_content, (struct obj *, BOOLEAN_P, BOOLEAN_P,
-                                         struct monst *));
-STATIC_DCL boolean FDECL(rob_shop, (struct monst *));
-STATIC_DCL void FDECL(deserted_shop, (char *));
-STATIC_DCL boolean FDECL(special_stock, (struct obj *, struct monst *,
-                                         BOOLEAN_P));
-STATIC_DCL const char *FDECL(cad, (BOOLEAN_P));
+static int append_honorific(char *);
+static int64_t addupbill(struct monst *);
+static void pacify_shk(struct monst *);
+static struct bill_x *onbill(struct obj *, struct monst *,
+                                         boolean);
+static struct monst *next_shkp(struct monst *, boolean);
+static int64_t shop_debt(struct eshk *);
+static char *shk_owns(char *, struct obj *);
+static char *mon_owns(char *, struct obj *);
+static void clear_unpaid_obj(struct monst *, struct obj *);
+static void clear_unpaid(struct monst *, struct obj *);
+static int64_t check_credit(int64_t, struct monst *);
+static void pay(int64_t, struct monst *);
+static const char *shk_embellish(struct obj *, int64_t);
+static int64_t cost_per_charge(struct monst *, struct obj *,
+                                        boolean);
+static int64_t cheapest_item(struct monst *);
+static int dopayobj(struct monst *, struct bill_x *,
+                                struct obj **, int, boolean);
+static int64_t stolen_container(struct obj *, struct monst *,
+                                         int64_t, boolean);
+static void shk_names_obj(struct monst *, struct obj *,
+                                      const char *, int64_t, const char *);
+static struct obj *bp_to_obj(struct bill_x *);
+static boolean inherits(struct monst *, int, int, boolean);
+static void set_repo_loc(struct monst *);
+static boolean angry_shk_exists(void);
+static void rile_shk(struct monst *);
+static void rouse_shk(struct monst *, boolean);
+static void remove_damage(struct monst *, boolean);
+static void sub_one_frombill(struct obj *, struct monst *);
+static void dropped_container(struct obj *, struct monst *, boolean);
+static void adjust_dropped_container_on_sale(struct obj*, struct monst*);
+static void add_to_billobjs(struct obj *);
+static void bill_box_content(struct obj *, boolean, boolean,
+                                         struct monst *);
+static boolean rob_shop(struct monst *);
+static void deserted_shop(char *);
+static boolean special_stock(struct obj *, struct monst *,
+                                         boolean);
+static const char *cad(boolean);
 
 /*
         invariants: obj->unpaid iff onbill(obj) [unless bp->useup]
                     obj->quan <= bp->bquan
  */
 
-STATIC_VAR const char *angrytexts[] = { "quite upset", "ticked off", "furious" };
+static const char *angrytexts[] = { "quite upset", "ticked off", "furious" };
 
 /*
  *  Transfer money from inventory to monster when paying
@@ -86,9 +86,7 @@ STATIC_VAR const char *angrytexts[] = { "quite upset", "ticked off", "furious" }
  *  if the monster kept the change.
  */
 int64_t
-money2mon(mon, amount)
-struct monst *mon;
-int64_t amount;
+money2mon(struct monst *mon, int64_t amount)
 {
     struct obj *ygold = findgold(invent);
 
@@ -128,9 +126,7 @@ int64_t amount;
  *  the priest gives you money for a ginger ale.
  */
 void
-money2u(mon, amount)
-struct monst *mon;
-int64_t amount;
+money2u(struct monst *mon, int64_t amount)
 {
     struct obj *mongold = findgold(mon->minvent);
 
@@ -158,10 +154,8 @@ int64_t amount;
     }
 }
 
-STATIC_OVL struct monst *
-next_shkp(shkp, withbill)
-struct monst *shkp;
-boolean withbill;
+static struct monst *
+next_shkp(struct monst *shkp, boolean withbill)
 {
     for (; shkp; shkp = shkp->nmon) {
         if (DEADMONSTER(shkp))
@@ -184,8 +178,7 @@ boolean withbill;
 
 /* called in mon.c */
 void
-shkgone(mtmp)
-struct monst *mtmp;
+shkgone(struct monst *mtmp)
 {
     struct eshk *eshk = ESHK(mtmp);
     struct mkroom *sroom = &rooms[eshk->shoproom - ROOMOFFSET];
@@ -223,9 +216,7 @@ struct monst *mtmp;
 }
 
 void
-set_residency(shkp, zero_out)
-struct monst *shkp;
-boolean zero_out;
+set_residency(struct monst *shkp, boolean zero_out)
 {
     if (on_level(&(ESHK(shkp)->shoplevel), &u.uz))
         rooms[ESHK(shkp)->shoproom - ROOMOFFSET].resident =
@@ -233,8 +224,7 @@ boolean zero_out;
 }
 
 void
-replshk(mtmp, mtmp2)
-struct monst *mtmp, *mtmp2;
+replshk(struct monst *mtmp, struct monst *mtmp2)
 {
     //rooms[ESHK(mtmp2)->shoproom - ROOMOFFSET].resident = mtmp2;
     set_residency(mtmp2, FALSE);
@@ -245,9 +235,7 @@ struct monst *mtmp, *mtmp2;
 
 /* do shopkeeper specific structure munging -dlc */
 void
-restshk(shkp, ghostly)
-struct monst *shkp;
-boolean ghostly;
+restshk(struct monst *shkp, boolean ghostly)
 {
     if (u.uz.dlevel) {
         struct eshk *eshkp = ESHK(shkp);
@@ -265,10 +253,8 @@ boolean ghostly;
 }
 
 /* Clear the unpaid bit on a single object and its contents. */
-STATIC_OVL void
-clear_unpaid_obj(shkp, otmp)
-struct monst *shkp;
-struct obj *otmp;
+static void
+clear_unpaid_obj(struct monst *shkp, struct obj *otmp)
 {
     if (Has_contents(otmp))
         clear_unpaid(shkp, otmp->cobj);
@@ -278,10 +264,8 @@ struct obj *otmp;
 }
 
 /* Clear the unpaid bit on all of the objects in the list. */
-STATIC_OVL void
-clear_unpaid(shkp, list)
-struct monst *shkp;
-struct obj *list;
+static void
+clear_unpaid(struct monst *shkp, struct obj *list)
 {
     while (list) {
         clear_unpaid_obj(shkp, list);
@@ -291,8 +275,7 @@ struct obj *list;
 
 /* either you paid or left the shop or the shopkeeper died */
 void
-setpaid(shkp)
-struct monst *shkp;
+setpaid(struct monst *shkp)
 {
     struct obj *obj;
     struct monst *mtmp;
@@ -322,9 +305,8 @@ struct monst *shkp;
     }
 }
 
-STATIC_OVL int64_t
-addupbill(shkp)
-struct monst *shkp;
+static int64_t
+addupbill(struct monst *shkp)
 {
     int ct = ESHK(shkp)->billct;
     struct bill_x *bp = ESHK(shkp)->bill_p;
@@ -337,10 +319,8 @@ struct monst *shkp;
     return total;
 }
 
-STATIC_OVL void
-call_kops(shkp, nearshop)
-struct monst *shkp;
-boolean nearshop;
+static void
+call_kops(struct monst *shkp, boolean nearshop)
 {
     /* Keystone Kops srt@ucla */
     boolean nokops;
@@ -395,8 +375,7 @@ boolean nearshop;
 
 /* x,y is strictly inside shop */
 char
-inside_shop(x, y)
-xchar x, y;
+inside_shop(xchar x, xchar y)
 {
     char rno;
 
@@ -407,9 +386,7 @@ xchar x, y;
 }
 
 void
-u_left_shop(leavestring, newlev)
-char *leavestring;
-boolean newlev;
+u_left_shop(char *leavestring, boolean newlev)
 {
     struct monst *shkp;
     struct eshk *eshkp;
@@ -460,8 +437,7 @@ boolean newlev;
 
 /* robbery from outside the shop via telekinesis or grappling hook */
 void
-remote_burglary(x, y)
-xchar x, y;
+remote_burglary(xchar x, xchar y)
 {
     struct monst *shkp;
     struct eshk *eshkp;
@@ -483,9 +459,8 @@ xchar x, y;
 
 /* shop merchandise has been taken; pay for it with any credit available;
    return false if the debt is fully covered by credit, true otherwise */
-STATIC_OVL boolean
-rob_shop(shkp)
-struct monst *shkp;
+static boolean
+rob_shop(struct monst *shkp)
 {
     struct eshk *eshkp;
     int64_t total;
@@ -518,10 +493,13 @@ struct monst *shkp;
     return TRUE;
 }
 
+/*
+ * Parameters:
+ *   enterstring: const
+ */
 /* give a message when entering an untended shop (caller has verified that) */
-STATIC_OVL void
-deserted_shop(enterstring)
-/*const*/ char *enterstring;
+static void
+deserted_shop(char *enterstring)
 {
     struct monst *mtmp;
     struct mkroom *r = &rooms[(int) *enterstring - ROOMOFFSET];
@@ -548,8 +526,7 @@ deserted_shop(enterstring)
 }
 
 void
-u_entered_shop(enterstring)
-char *enterstring;
+u_entered_shop(char *enterstring)
 {
     int rt;
     struct monst *shkp;
@@ -762,11 +739,10 @@ char *enterstring;
 }
 
 /* called when removing a pick-axe or mattock from a container */
-STATIC_VAR NEARDATA int64_t pickmovetime = 0L;
+static NEARDATA int64_t pickmovetime = 0L;
 
 void
-pick_pick(obj)
-struct obj *obj;
+pick_pick(struct obj *obj)
 {
     struct monst *shkp;
 
@@ -803,8 +779,7 @@ struct obj *obj;
    quoted by the shopkeeper and also that they both belong to the same shk.
  */
 boolean
-same_price(obj1, obj2)
-struct obj *obj1, *obj2;
+same_price(struct obj *obj1, struct obj *obj2)
 {
     struct monst *shkp1, *shkp2;
     struct bill_x *bp1 = 0, *bp2 = 0;
@@ -842,9 +817,8 @@ struct obj *obj1, *obj2;
  * turning the `$' command into a way to discover that the current
  * level is bones data which has a shk on the warpath.
  */
-STATIC_OVL int64_t
-shop_debt(eshkp)
-struct eshk *eshkp;
+static int64_t
+shop_debt(struct eshk *eshkp)
 {
     struct bill_x *bp;
     int ct;
@@ -857,7 +831,7 @@ struct eshk *eshkp;
 
 /* called in response to the `$' command */
 void
-shopper_financial_report(VOID_ARGS)
+shopper_financial_report(void)
 {
     debugprint_pos();
     struct monst *shkp, *this_shkp = shop_keeper(inside_shop(u.ux, u.uy));
@@ -893,8 +867,7 @@ shopper_financial_report(VOID_ARGS)
 }
 
 int
-inhishop(mtmp)
-struct monst *mtmp;
+inhishop(struct monst *mtmp)
 {
     struct eshk *eshkp = ESHK(mtmp);
 
@@ -903,8 +876,7 @@ struct monst *mtmp;
 }
 
 struct monst*
-shop_keeper(rmno)
-char rmno;
+shop_keeper(char rmno)
 {
     struct monst *shkp;
 
@@ -942,19 +914,15 @@ char rmno;
 }
 
 boolean
-tended_shop(sroom)
-struct mkroom *sroom;
+tended_shop(struct mkroom *sroom)
 {
     struct monst *mtmp = sroom->resident;
 
     return !mtmp ? FALSE : (boolean) inhishop(mtmp) != 0;
 }
 
-STATIC_OVL struct bill_x *
-onbill(obj, shkp, silent)
-struct obj *obj;
-struct monst *shkp;
-boolean silent;
+static struct bill_x *
+onbill(struct obj *obj, struct monst *shkp, boolean silent)
 {
     if (shkp) {
         struct bill_x *bp = ESHK(shkp)->bill_p;
@@ -975,16 +943,14 @@ boolean silent;
 
 /* check whether an object or any of its contents belongs to a shop */
 boolean
-is_unpaid(obj)
-struct obj *obj;
+is_unpaid(struct obj *obj)
 {
     return (boolean) (obj->unpaid || (Has_contents(obj) && count_unpaid(obj->cobj, 0, FALSE)));
 }
 
 /* Delete the contents of the given object. */
 void
-delete_contents(obj)
-struct obj *obj;
+delete_contents(struct obj *obj)
 {
     struct obj *curr;
 
@@ -996,8 +962,7 @@ struct obj *obj;
 
 /* called with two args on merge */
 void
-obfree(obj, merge)
-struct obj *obj, *merge;
+obfree(struct obj *obj, struct obj *merge)
 {
     struct bill_x *bp;
     struct bill_x *bpm;
@@ -1090,10 +1055,8 @@ struct obj *obj, *merge;
     dealloc_obj(obj);
 }
 
-STATIC_OVL int64_t
-check_credit(tmp, shkp)
-int64_t tmp;
-struct monst *shkp;
+static int64_t
+check_credit(int64_t tmp, struct monst *shkp)
 {
     int64_t credit = ESHK(shkp)->credit;
 
@@ -1111,10 +1074,8 @@ struct monst *shkp;
     return tmp;
 }
 
-STATIC_OVL void
-pay(tmp, shkp)
-int64_t tmp;
-struct monst *shkp;
+static void
+pay(int64_t tmp, struct monst *shkp)
 {
     int64_t robbed = ESHK(shkp)->robbed;
     int64_t balance = ((tmp <= 0L) ? tmp : check_credit(tmp, shkp));
@@ -1134,9 +1095,7 @@ struct monst *shkp;
 
 /* return shkp to home position */
 void
-home_shk(shkp, killkops)
-struct monst *shkp;
-boolean killkops;
+home_shk(struct monst *shkp, boolean killkops)
 {
     xchar x = ESHK(shkp)->shk.x, y = ESHK(shkp)->shk.y;
 
@@ -1149,8 +1108,8 @@ boolean killkops;
     after_shk_move(shkp);
 }
 
-STATIC_OVL boolean
-angry_shk_exists(VOID_ARGS)
+static boolean
+angry_shk_exists(void)
 {
     struct monst *shkp;
 
@@ -1162,9 +1121,8 @@ angry_shk_exists(VOID_ARGS)
 }
 
 /* remove previously applied surcharge from all billed items */
-STATIC_OVL void
-pacify_shk(shkp)
-struct monst *shkp;
+static void
+pacify_shk(struct monst *shkp)
 {
     NOTANGRY(shkp) = TRUE; /* make peaceful */
     if (ESHK(shkp)->surcharge) {
@@ -1183,9 +1141,8 @@ struct monst *shkp;
 }
 
 /* add aggravation surcharge to all billed items */
-STATIC_OVL void
-rile_shk(shkp)
-struct monst *shkp;
+static void
+rile_shk(struct monst *shkp)
 {
     NOTANGRY(shkp) = FALSE; /* make angry */
     if (!ESHK(shkp)->surcharge) {
@@ -1203,10 +1160,8 @@ struct monst *shkp;
 }
 
 /* wakeup and/or unparalyze shopkeeper */
-STATIC_OVL void
-rouse_shk(shkp, verbosely)
-struct monst *shkp;
-boolean verbosely;
+static void
+rouse_shk(struct monst *shkp, boolean verbosely)
 {
     if (!mon_can_move(shkp)) {
         /* greed induced recovery... */
@@ -1223,9 +1178,7 @@ boolean verbosely;
 }
 
 void
-make_happy_shk(shkp, silentkops)
-struct monst *shkp;
-boolean silentkops;
+make_happy_shk(struct monst *shkp, boolean silentkops)
 {
     if (!shkp)
         return;
@@ -1280,8 +1233,7 @@ boolean silentkops;
 
 /* called by make_happy_shk() and also by arrival_from_mydogs_and_migrating_mons() for migrating shk */
 void
-make_happy_shoppers(silentkops)
-boolean silentkops;
+make_happy_shoppers(boolean silentkops)
 {
     if (!angry_shk_exists())
     {
@@ -1291,8 +1243,7 @@ boolean silentkops;
 }
 
 void
-hot_pursuit(shkp)
-struct monst *shkp;
+hot_pursuit(struct monst *shkp)
 {
     if (!shkp->isshk)
         return;
@@ -1302,15 +1253,16 @@ struct monst *shkp;
     ESHK(shkp)->following = 1;
 }
 
+/*
+ * Parameters:
+ *   ox: <ox,oy> predate 'noit_Monnam()', let alone Shknam()
+ */
 /* Used when the shkp is teleported or falls (ox == 0) out of his shop, or
    when the player is not on a costly_spot and he damages something inside
    the shop.  These conditions must be checked by the calling function. */
 /*ARGSUSED*/
 void
-make_angry_shk(shkp, ox, oy)
-struct monst *shkp;
-xchar ox UNUSED; /* <ox,oy> predate 'noit_Monnam()', let alone Shknam() */
-xchar oy UNUSED;
+make_angry_shk(struct monst *shkp, xchar ox UNUSED, xchar oy UNUSED)
 {
     struct eshk *eshkp = ESHK(shkp);
 
@@ -1329,14 +1281,13 @@ xchar oy UNUSED;
     hot_pursuit(shkp);
 }
 
-STATIC_VAR const char
+static const char
         no_money[] = "Moreover, you%s have no money.",
         not_enough_money[] = "Besides, you don't have enough to interest %s.";
 
 /* delivers the cheapest item on the list */
-STATIC_OVL int64_t
-cheapest_item(shkp)
-struct monst *shkp;
+static int64_t
+cheapest_item(struct monst *shkp)
 {
     int ct = ESHK(shkp)->billct;
     struct bill_x *bp = ESHK(shkp)->bill_p;
@@ -1351,7 +1302,7 @@ struct monst *shkp;
 }
 
 struct monst*
-can_pay_to_shkp(VOID_ARGS)
+can_pay_to_shkp(void)
 {
     struct monst* shkp;
     struct monst* resident;
@@ -1370,7 +1321,7 @@ can_pay_to_shkp(VOID_ARGS)
 }
 
 int
-dopay(VOID_ARGS)
+dopay(void)
 {
     struct eshk *eshkp;
     struct monst *shkp;
@@ -1732,19 +1683,18 @@ dopay(VOID_ARGS)
     return 1;
 }
 
+/*
+ * Parameters:
+ *   which: 0 => used-up item, 1 => other (unpaid or lost)
+ */
 /* return 2 if used-up portion paid
  *        1 if paid successfully
  *        0 if not enough money
  *       -1 if skip this object
  *       -2 if no money/credit left
  */
-STATIC_OVL int
-dopayobj(shkp, bp, obj_p, which, itemize)
-struct monst *shkp;
-struct bill_x *bp;
-struct obj **obj_p;
-int which; /* 0 => used-up item, 1 => other (unpaid or lost) */
-boolean itemize;
+static int
+dopayobj(struct monst *shkp, struct bill_x *bp, struct obj **obj_p, int which, boolean itemize)
 {
     struct obj *obj = *obj_p;
     int64_t ltmp, quan, save_quan;
@@ -1862,16 +1812,19 @@ boolean itemize;
     return buy;
 }
 
-STATIC_VAR struct repo { /* repossession context */
+static struct repo { /* repossession context */
     struct monst *shopkeeper;
     coord location;
 } repo;
 
+/*
+ * Parameters:
+ *   croaked: -1: escaped dungeon; 0: quit; 1: died
+ *   silently: maybe avoid messages
+ */
 /* routine called after dying (or quitting) */
 boolean
-paybill(croaked, silently)
-int croaked; /* -1: escaped dungeon; 0: quit; 1: died */
-boolean silently; /* maybe avoid messages */
+paybill(int croaked, boolean silently)
 {
     struct monst *mtmp, *mtmp2, *firstshk, *resident, *creditor, *hostile,
         *localshk;
@@ -1956,12 +1909,8 @@ boolean silently; /* maybe avoid messages */
     return taken;
 }
 
-STATIC_OVL boolean
-inherits(shkp, numsk, croaked, silently)
-struct monst *shkp;
-int numsk;
-int croaked;
-boolean silently;
+static boolean
+inherits(struct monst *shkp, int numsk, int croaked, boolean silently)
 {
     int64_t loss = 0L;
     int64_t umoney;
@@ -2062,9 +2011,8 @@ boolean silently;
     return taken;
 }
 
-STATIC_OVL void
-set_repo_loc(shkp)
-struct monst *shkp;
+static void
+set_repo_loc(struct monst *shkp)
 {
     xchar ox, oy;
     struct eshk *eshkp = ESHK(shkp);
@@ -2093,7 +2041,7 @@ struct monst *shkp;
 /* called at game exit, after inventory disclosure but before making bones;
    shouldn't issue any messages */
 void
-finish_paybill(VOID_ARGS)
+finish_paybill(void)
 {
     struct monst *shkp = repo.shopkeeper;
     int ox = repo.location.x, oy = repo.location.y;
@@ -2116,9 +2064,8 @@ finish_paybill(VOID_ARGS)
 }
 
 /* find obj on one of the lists */
-STATIC_OVL struct obj *
-bp_to_obj(bp)
-struct bill_x *bp;
+static struct obj *
+bp_to_obj(struct bill_x *bp)
 {
     struct obj *obj;
     unsigned int id = bp->bo_id;
@@ -2136,8 +2083,7 @@ struct bill_x *bp;
  * be any timeouts on the billobjs chain.
  */
 struct obj *
-find_oid(id)
-unsigned id;
+find_oid(unsigned id)
 {
     struct obj *obj;
     struct monst *mon, *mmtmp[3];
@@ -2168,12 +2114,14 @@ unsigned id;
     return (struct obj *) 0;
 }
 
+/*
+ * Parameters:
+ *   nochrg: alternate return value: 1: no charge, 0: shop owned,
+ */
 /* Returns the price of an arbitrary item in the shop,
    0 if the item doesn't belong to a shopkeeper or hero is not in the shop. */
 int64_t
-get_cost_of_shop_item(obj, nochrg)
-struct obj *obj;
-int *nochrg; /* alternate return value: 1: no charge, 0: shop owned,        */
+get_cost_of_shop_item(struct obj *obj, int *nochrg)
 {            /* -1: not in a shop (so should't be formatted as "no charge") */
     struct monst *shkp;
     struct obj *top;
@@ -2207,9 +2155,7 @@ int *nochrg; /* alternate return value: 1: no charge, 0: shop owned,        */
 /* decide whether to apply a surcharge (or hypothetically, a discount) to obj
    if it had ID number 'oid'; returns 1: increase, 0: normal, -1: decrease */
 int
-oid_price_adjustment(obj, oid)
-struct obj *obj;
-unsigned oid;
+oid_price_adjustment(struct obj *obj, unsigned oid)
 {
     int res = 0, otyp = obj->otyp;
 
@@ -2220,11 +2166,13 @@ unsigned oid;
     return res;
 }
 
+/*
+ * Parameters:
+ *   shkp: if angry, impose a surcharge
+ */
 /* calculate the value that the shk will charge for [one of] an object */
 int64_t
-get_cost(obj, shkp)
-struct obj *obj;
-struct monst *shkp; /* if angry, impose a surcharge */
+get_cost(struct obj *obj, struct monst *shkp)
 {
     int64_t tmp = getprice(obj, FALSE),
          /* used to perform a single calculation even when multiple
@@ -2357,12 +2305,7 @@ struct monst *shkp; /* if angry, impose a surcharge */
  * a different price quoted for selling as vs. buying.
  */
 int64_t
-contained_cost(obj, shkp, price, usell, unpaid_only)
-struct obj *obj;
-struct monst *shkp;
-int64_t price;
-boolean usell;
-boolean unpaid_only;
+contained_cost(struct obj *obj, struct monst *shkp, int64_t price, boolean usell, boolean unpaid_only)
 {
     struct obj *otmp, *top;
     xchar x, y;
@@ -2409,8 +2352,7 @@ boolean unpaid_only;
 
 /* count amount of gold inside container 'obj' and any nested containers */
 int64_t
-contained_gold(obj)
-struct obj *obj;
+contained_gold(struct obj *obj)
 {
     struct obj *otmp;
     int64_t value = 0L;
@@ -2425,11 +2367,8 @@ struct obj *obj;
     return value;
 }
 
-STATIC_OVL void
-dropped_container(obj, shkp, sale)
-struct obj *obj;
-struct monst *shkp;
-boolean sale;
+static void
+dropped_container(struct obj *obj, struct monst *shkp, boolean sale)
 {
     struct obj *otmp;
 
@@ -2446,10 +2385,8 @@ boolean sale;
     }
 }
 
-STATIC_OVL void
-adjust_dropped_container_on_sale(obj, shkp)
-struct obj* obj;
-struct monst* shkp;
+static void
+adjust_dropped_container_on_sale(struct obj *obj, struct monst *shkp)
 {
     struct obj* otmp;
 
@@ -2470,8 +2407,7 @@ struct monst* shkp;
 }
 
 void
-mark_unpaid_container_contents(obj)
-struct obj* obj;
+mark_unpaid_container_contents(struct obj *obj)
 {
     struct obj* otmp;
 
@@ -2489,8 +2425,7 @@ struct obj* obj;
 }
 
 void
-unmark_unpaid_container_contents(obj)
-struct obj* obj;
+unmark_unpaid_container_contents(struct obj *obj)
 {
     struct obj* otmp;
 
@@ -2507,8 +2442,7 @@ struct obj* obj;
 }
 
 void
-picked_container(obj)
-struct obj *obj;
+picked_container(struct obj *obj)
 {
     struct obj *otmp;
 
@@ -2525,11 +2459,8 @@ struct obj *obj;
     }
 }
 
-STATIC_OVL boolean
-special_stock(obj, shkp, quietly)
-struct obj *obj;
-struct monst *shkp;
-boolean quietly;
+static boolean
+special_stock(struct obj *obj, struct monst *shkp, boolean quietly)
 {
     /* for unique situations */
     if (ESHK(shkp)->shoptype == CANDLESHOP
@@ -2581,9 +2512,7 @@ boolean quietly;
 
 /* calculate how much the shk will pay when buying [all of] an object */
 int64_t
-set_cost(obj, mtmp)
-struct obj *obj;
-struct monst * mtmp;
+set_cost(struct obj *obj, struct monst *mtmp)
 {
     int64_t tmp = getprice(obj, TRUE) * obj->quan, multiplier = 1L, divisor = 1L;
 
@@ -2634,8 +2563,7 @@ struct monst * mtmp;
 /* unlike alter_cost() which operates on a specific item, identifying or
    forgetting a gem causes all unpaid gems of its type to change value */
 void
-gem_learned(oindx)
-int oindx;
+gem_learned(int oindx)
 {
     struct obj *obj;
     struct monst *shkp;
@@ -2696,11 +2624,13 @@ int64_t amt; /* if 0, use regular shop pricing, otherwise force amount;
     return;
 }
 
+/*
+ * Parameters:
+ *   unp_obj: known to be unpaid or contain unpaid
+ */
 /* called from doinv(invent.c) for inventory of unpaid objects */
 int64_t
-unpaid_cost(unp_obj, include_contents)
-struct obj *unp_obj; /* known to be unpaid or contain unpaid */
-boolean include_contents;
+unpaid_cost(struct obj *unp_obj, boolean include_contents)
 {
     struct bill_x *bp = (struct bill_x *) 0;
     struct monst *shkp;
@@ -2739,10 +2669,7 @@ boolean include_contents;
 }
 
 void
-add_one_tobill(obj, dummy, shkp)
-struct obj *obj;
-boolean dummy;
-struct monst *shkp;
+add_one_tobill(struct obj *obj, boolean dummy, struct monst *shkp)
 {
     if (!obj || !shkp || !has_eshk(shkp))
         return;
@@ -2780,9 +2707,8 @@ struct monst *shkp;
     obj->unpaid = 1;
 }
 
-STATIC_OVL void
-add_to_billobjs(obj)
-struct obj *obj;
+static void
+add_to_billobjs(struct obj *obj)
 {
     if (obj->where != OBJ_FREE)
     {
@@ -2798,11 +2724,8 @@ struct obj *obj;
 }
 
 /* recursive billing of objects within containers. */
-STATIC_OVL void
-bill_box_content(obj, ininv, dummy, shkp)
-struct obj *obj;
-boolean ininv, dummy;
-struct monst *shkp;
+static void
+bill_box_content(struct obj *obj, boolean ininv, boolean dummy, struct monst *shkp)
 {
     struct obj *otmp;
 
@@ -2820,14 +2743,13 @@ struct monst *shkp;
     }
 }
 
+/*
+ * Parameters:
+ *   fmt: "%s %ld %s %s", doname(obj), amt, plur(amt), arg
+ */
 /* shopkeeper tells you what you bought or sold, sometimes partly IDing it */
-STATIC_OVL void
-shk_names_obj(shkp, obj, fmt, amt, arg)
-struct monst *shkp UNUSED;
-struct obj *obj;
-const char *fmt; /* "%s %ld %s %s", doname(obj), amt, plur(amt), arg */
-int64_t amt;
-const char *arg;
+static void
+shk_names_obj(struct monst *shkp UNUSED, struct obj *obj, const char *fmt, int64_t amt, const char *arg)
 {
     char *obj_name, fmtbuf[BUFSZ];
     boolean was_unknown = !obj->dknown;
@@ -2858,13 +2780,13 @@ const char *arg;
     }
 }
 
+/*
+ * Parameters:
+ *   shkpp: in: non-null if shk has been validated; out: shk
+ */
 /* decide whether a shopkeeper thinks an item belongs to her */
 boolean
-billable(shkpp, obj, roomno, reset_nocharge)
-struct monst **shkpp; /* in: non-null if shk has been validated; out: shk */
-struct obj *obj;
-char roomno;
-boolean reset_nocharge;
+billable(struct monst **shkpp, struct obj *obj, char roomno, boolean reset_nocharge)
 {
     struct monst *shkp = *shkpp;
 
@@ -2903,9 +2825,7 @@ boolean reset_nocharge;
 }
 
 void
-addtobill(obj, ininv, dummy, silent)
-struct obj *obj;
-boolean ininv, dummy, silent;
+addtobill(struct obj *obj, boolean ininv, boolean dummy, boolean silent)
 {
     struct monst *shkp = 0;
     int64_t ltmp, cltmp, gltmp;
@@ -3081,8 +3001,7 @@ boolean ininv, dummy, silent;
 }
 
 int
-append_honorific(buf)
-char *buf;
+append_honorific(char *buf)
 {
     /* (chooses among [0]..[3] normally; [1]..[4] after the
        Wizard has been killed or invocation ritual performed) */
@@ -3106,8 +3025,7 @@ char *buf;
 }
 
 void
-splitbill(obj, otmp)
-struct obj *obj, *otmp;
+splitbill(struct obj *obj, struct obj *otmp)
 {
     /* otmp has been split off from obj */
     struct bill_x *bp;
@@ -3145,10 +3063,8 @@ struct obj *obj, *otmp;
     }
 }
 
-STATIC_OVL void
-sub_one_frombill(obj, shkp)
-struct obj *obj;
-struct monst *shkp;
+static void
+sub_one_frombill(struct obj *obj, struct monst *shkp)
 {
     struct bill_x *bp;
 
@@ -3189,9 +3105,7 @@ struct monst *shkp;
 
 /* recursive check of unpaid objects within nested containers. */
 void
-subfrombill(obj, shkp)
-struct obj *obj;
-struct monst *shkp;
+subfrombill(struct obj *obj, struct monst *shkp)
 {
     struct obj *otmp;
 
@@ -3209,12 +3123,8 @@ struct monst *shkp;
         }
 }
 
-STATIC_OVL int64_t
-stolen_container(obj, shkp, price, ininv)
-struct obj *obj;
-struct monst *shkp;
-int64_t price;
-boolean ininv;
+static int64_t
+stolen_container(struct obj *obj, struct monst *shkp, int64_t price, boolean ininv)
 {
     struct obj *otmp;
     struct bill_x *bp;
@@ -3251,10 +3161,7 @@ boolean ininv;
 }
 
 int64_t
-stolen_value(obj, x, y, peaceful, silent)
-struct obj *obj;
-xchar x, y;
-boolean peaceful, silent;
+stolen_value(struct obj *obj, xchar x, xchar y, boolean peaceful, boolean silent)
 {
     int64_t value = 0L, gvalue = 0L, billamt = 0L;
     char roomno = *in_rooms(x, y, SHOPBASE);
@@ -3376,15 +3283,14 @@ boolean peaceful, silent;
 }
 
 /* auto-response flag for/from "sell foo?" 'a' => 'y', 'q' => 'n' */
-STATIC_VAR char sell_response = 'a';
-STATIC_VAR int sell_how = SELL_NORMAL;
+static char sell_response = 'a';
+static int sell_how = SELL_NORMAL;
 /* can't just use sell_response='y' for auto_credit because the 'a' response
    shouldn't carry over from ordinary selling to credit selling */
-STATIC_VAR boolean auto_credit = FALSE;
+static boolean auto_credit = FALSE;
 
 void
-sellobj_state(deliberate)
-int deliberate;
+sellobj_state(int deliberate)
 {
     /* If we're deliberately dropping something, there's no automatic
        response to the shopkeeper's "want to sell" query; however, if we
@@ -3398,9 +3304,7 @@ int deliberate;
 }
 
 void
-sellobj(obj, x, y)
-struct obj *obj;
-xchar x, y;
+sellobj(struct obj *obj, xchar x, xchar y)
 {
     struct monst *shkp;
     struct eshk *eshkp;
@@ -3776,9 +3680,12 @@ xchar x, y;
     }
 }
 
+/*
+ * Parameters:
+ *   mode: 0: deliver count 1: paged
+ */
 int
-doinvbill(mode)
-int mode; /* 0: deliver count 1: paged */
+doinvbill(int mode)
 {
 #ifdef __SASC
     void sasc_bug(struct obj *, unsigned);
@@ -3858,8 +3765,7 @@ int mode; /* 0: deliver count 1: paged */
 }
 
 int64_t
-get_object_base_value(obj)
-struct obj* obj; 
+get_object_base_value(struct obj *obj)
 {
     if (!obj)
         return 0L;
@@ -3901,9 +3807,7 @@ struct obj* obj;
 }
 
 int64_t
-getprice(obj, shk_buying)
-struct obj *obj;
-boolean shk_buying;
+getprice(struct obj *obj, boolean shk_buying)
 {
     int64_t tmp = get_object_base_value(obj);
     if (obj->oartifact)
@@ -4005,9 +3909,7 @@ boolean shk_buying;
 
 /* shk catches thrown pick-axe */
 struct monst *
-shkcatch(obj, x, y)
-struct obj *obj;
-xchar x, y;
+shkcatch(struct obj *obj, xchar x, xchar y)
 {
     struct monst *shkp;
 
@@ -4042,9 +3944,7 @@ xchar x, y;
 }
 
 void
-add_damage(x, y, cost)
-xchar x, y;
-int64_t cost;
+add_damage(xchar x, xchar y, int64_t cost)
 {
     struct damage *tmp_dam;
     char *shops;
@@ -4089,11 +3989,9 @@ int64_t cost;
  * assumption (they might all be dead too), but we have no reasonable way of
  * telling that.
  */
-STATIC_OVL
+static
 void
-remove_damage(shkp, croaked)
-struct monst *shkp;
-boolean croaked;
+remove_damage(struct monst *shkp, boolean croaked)
 {
     struct damage *tmp_dam, *tmp2_dam;
     struct obj *shk_inv = shkp->minvent;
@@ -4225,15 +4123,15 @@ boolean croaked;
 }
 
 /*
+ * Parameters:
+ *   catchup: restoring a level
+ */
+/*
  * 0: repair postponed, 1: silent repair (no messages), 2: normal repair
  * 3: untrap
  */
 int
-repair_damage(shkp, tmp_dam, once, catchup)
-struct monst *shkp;
-struct damage *tmp_dam;
-int *once;
-boolean catchup; /* restoring a level */
+repair_damage(struct monst *shkp, struct damage *tmp_dam, int *once, boolean catchup)
 {
     if (!shkp)
         return 0;
@@ -4409,8 +4307,7 @@ boolean catchup; /* restoring a level */
  * shk_move: return 1: moved  0: didn't  -1: let m_move do it  -2: died
  */
 int
-shk_move(shkp)
-struct monst *shkp;
+shk_move(struct monst *shkp)
 {
     xchar gx, gy, omx, omy;
     int udist;
@@ -4536,8 +4433,7 @@ struct monst *shkp;
 
 /* called after shopkeeper moves, in case themove causes re-entry into shop */
 void
-after_shk_move(shkp)
-struct monst *shkp;
+after_shk_move(struct monst *shkp)
 {
     struct eshk *eshkp = ESHK(shkp);
 
@@ -4550,16 +4446,14 @@ struct monst *shkp;
 
 /* for use in levl_follower (mondata.c) */
 boolean
-is_fshk(mtmp)
-struct monst *mtmp;
+is_fshk(struct monst *mtmp)
 {
     return (boolean) (mtmp->isshk && ESHK(mtmp)->following);
 }
 
 /* You are digging in the shop. */
 void
-shopdig(fall)
-int fall;
+shopdig(int fall)
 {
     debugprint_pos();
     struct monst *shkp = shop_keeper(*u.ushops);
@@ -4680,9 +4574,8 @@ int fall;
     }
 }
 
-STATIC_OVL void
-makekops(mm)
-coord *mm;
+static void
+makekops(coord *mm)
 {
     static const short k_mndx[4] = { PM_KEYSTONE_KOP, PM_KOP_SERGEANT,
                                      PM_KOP_LIEUTENANT, PM_KOP_KAPTAIN };
@@ -4714,9 +4607,7 @@ coord *mm;
 }
 
 void
-pay_for_damage(dmgstr, cant_mollify)
-const char *dmgstr;
-boolean cant_mollify;
+pay_for_damage(const char *dmgstr, boolean cant_mollify)
 {
     struct monst *shkp = (struct monst *) 0;
     char shops_affected[5];
@@ -4959,8 +4850,7 @@ boolean cant_mollify;
 
 /* called in dokick.c when we kick an object that might be in a store */
 boolean
-costly_spot(x, y)
-xchar x, y;
+costly_spot(xchar x, xchar y)
 {
     if (!isok(x, y))
         return FALSE;
@@ -4982,8 +4872,7 @@ xchar x, y;
 /* called by dotalk(sounds.c) when #chatting; returns obj if location
    contains shop goods and shopkeeper is willing & able to speak */
 struct obj *
-shop_object(x, y)
-xchar x, y;
+shop_object(xchar x, xchar y)
 {
     struct obj *otmp;
     struct monst *shkp;
@@ -5004,8 +4893,7 @@ xchar x, y;
 
 /* give price quotes for all objects linked to this one (ie, on this spot) */
 void
-price_quote(first_obj)
-struct obj *first_obj;
+price_quote(struct obj *first_obj)
 {
     struct obj *otmp;
     char buf[BUFSZ], price[40];
@@ -5057,10 +4945,8 @@ struct obj *first_obj;
     destroy_nhwindow(tmpwin);
 }
 
-STATIC_OVL const char *
-shk_embellish(itm, cost)
-struct obj *itm;
-int64_t cost;
+static const char *
+shk_embellish(struct obj *itm, int64_t cost)
 {
     if (!rn2(3)) {
         int o, choice = rn2(5);
@@ -5123,8 +5009,7 @@ const char* Izchak_speaks2[] = {
 };
 
 void
-shk_chat(shkp)
-struct monst *shkp;
+shk_chat(struct monst *shkp)
 {
     struct eshk *eshk;
     int64_t shkmoney;
@@ -5283,8 +5168,7 @@ struct monst *shkp;
 }
 
 void
-izchak_talk(shkp)
-struct monst* shkp;
+izchak_talk(struct monst *shkp)
 {
     if (shkp && has_eshk(shkp) && !Deaf && !muteshk(shkp))
     {
@@ -5296,9 +5180,8 @@ struct monst* shkp;
 }
 
 
-STATIC_OVL void
-kops_gone(silent)
-boolean silent;
+static void
+kops_gone(boolean silent)
 {
     int cnt = 0;
     struct monst *mtmp, *mtmp2;
@@ -5342,11 +5225,12 @@ boolean silent;
 
 }
 
-STATIC_OVL int64_t
-cost_per_charge(shkp, otmp, altusage)
-struct monst *shkp;
-struct obj *otmp;
-boolean altusage; /* some items have an "alternate" use with different cost */
+/*
+ * Parameters:
+ *   altusage: some items have an "alternate" use with different cost
+ */
+static int64_t
+cost_per_charge(struct monst *shkp, struct obj *otmp, boolean altusage)
 {
     int64_t tmp = 0L;
 
@@ -5419,9 +5303,7 @@ boolean altusage; /* some items have an "alternate" use with different cost */
  * when an object is completely used.
  */
 void
-check_unpaid_usage(otmp, altusage)
-struct obj *otmp;
-boolean altusage;
+check_unpaid_usage(struct obj *otmp, boolean altusage)
 {
     struct monst *shkp;
     const char *fmt, *arg1, *arg2, *pricedesc;
@@ -5537,16 +5419,13 @@ boolean altusage;
 
 /* for using charges of unpaid objects "used in the normal manner" */
 void
-check_unpaid(otmp)
-struct obj *otmp;
+check_unpaid(struct obj *otmp)
 {
     check_unpaid_usage(otmp, FALSE); /* normal item use */
 }
 
 void
-costly_gold(x, y, amount)
-xchar x, y;
-int64_t amount;
+costly_gold(xchar x, xchar y, int64_t amount)
 {
     int64_t delta;
     struct monst *shkp;
@@ -5582,8 +5461,7 @@ int64_t amount;
 /* used in domove to block diagonal shop-exit */
 /* x,y should always be a door */
 boolean
-block_door(x, y)
-xchar x, y;
+block_door(xchar x, xchar y)
 {
     int roomno = *in_rooms(x, y, SHOPBASE);
     struct monst *shkp;
@@ -5618,8 +5496,7 @@ xchar x, y;
 /* used in domove to block diagonal shop-entry;
    u.ux, u.uy should always be a door */
 boolean
-block_entry(x, y)
-xchar x, y;
+block_entry(xchar x, xchar y)
 {
     xchar sx, sy;
     int roomno;
@@ -5655,9 +5532,7 @@ xchar x, y;
 
 /* "your " or "Foobar's " (note the trailing space) */
 char *
-shk_your(buf, obj)
-char *buf;
-struct obj *obj;
+shk_your(char *buf, struct obj *obj)
 {
     if (!shk_owns(buf, obj) && !mon_owns(buf, obj))
         Strcpy(buf, the_your[carried(obj) ? 1 : 0]);
@@ -5665,19 +5540,15 @@ struct obj *obj;
 }
 
 char *
-Shk_Your(buf, obj)
-char *buf;
-struct obj *obj;
+Shk_Your(char *buf, struct obj *obj)
 {
     (void) shk_your(buf, obj);
     *buf = highc(*buf);
     return buf;
 }
 
-STATIC_OVL char *
-shk_owns(buf, obj)
-char *buf;
-struct obj *obj;
+static char *
+shk_owns(char *buf, struct obj *obj)
 {
     struct monst *shkp;
     xchar x, y;
@@ -5692,19 +5563,20 @@ struct obj *obj;
     return (char *) 0;
 }
 
-STATIC_OVL char *
-mon_owns(buf, obj)
-char *buf;
-struct obj *obj;
+static char *
+mon_owns(char *buf, struct obj *obj)
 {
     if (obj->where == OBJ_MINVENT)
         return strcpy(buf, s_suffix(y_monnam(obj->ocarry)));
     return (char *) 0;
 }
 
-STATIC_OVL const char *
-cad(altusage)
-boolean altusage; /* used as a verbalized exclamation:  \"Cad! ...\" */
+/*
+ * Parameters:
+ *   altusage: used as a verbalized exclamation:  \"Cad! ...\"
+ */
+static const char *
+cad(boolean altusage)
 {
     const char *res = 0;
 
@@ -5740,10 +5612,7 @@ boolean altusage; /* used as a verbalized exclamation:  \"Cad! ...\" */
 
 /* returns 2 if chastised, 1 if shkp is present and 0 otherwise */
 int
-shk_chastise_pet(mtmp, obj, eating, ugivingitems)
-struct monst* mtmp;
-struct obj* obj;
-boolean eating, ugivingitems;
+shk_chastise_pet(struct monst *mtmp, struct obj *obj, boolean eating, boolean ugivingitems)
 {
     if (!mtmp || !has_edog(mtmp) || !obj)
         return 0;
@@ -5826,16 +5695,14 @@ boolean eating, ugivingitems;
 }
 
 boolean
-is_obj_on_shk_bill(obj, shkp)
-struct obj* obj;
-struct monst* shkp;
+is_obj_on_shk_bill(struct obj *obj, struct monst *shkp)
 {
     debugprint_pos();
     return !!onbill(obj, shkp, FALSE);
 }
 
 void
-reset_shk(VOID_ARGS)
+reset_shk(void)
 {
     pickmovetime = 0L;
     followmsg = 0;
