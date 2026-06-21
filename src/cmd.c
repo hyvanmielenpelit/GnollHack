@@ -154,7 +154,7 @@ extern int doorganize(void);         /**/
 extern void quit_possible(void);
 #endif
 
-static int NDECL((*timed_occ_fn));
+static int (*timed_occ_fn)(void);
 
 static int dosuspend_core(void);
 static int dosh_core(void);
@@ -216,7 +216,7 @@ static void mon_chain(winid, const char *, struct monst *,
 static void contained_stats(winid, const char *, int64_t *, size_t *);
 static void misc_stats(winid, int64_t *, size_t *);
 static int wiz_show_stats(void);
-static boolean accept_menu_prefix(int NDECL((*)));
+static boolean accept_menu_prefix(int (*)(void));
 static int wiz_rumor_check(void);
 static int doattributes(void);
 static int dopolyformstatistics(void);
@@ -238,7 +238,7 @@ static void one_characteristic(int, int, int);
 static void status_enlightenment(int, int);
 static void attributes_enlightenment(int, int);
 
-static void add_herecmd_menuitem(winid, int NDECL((*)),
+static void add_herecmd_menuitem(winid, int (*)(void),
                                              const char *);
 static char here_cmd_menu(boolean);
 static char there_cmd_menu(boolean, int, int);
@@ -299,7 +299,7 @@ reset_occupations(void)
  * function times out by its own means.
  */
 void
-set_occupation(int NDECL ((*fn)), const char *txt, int attr, int color, enum object_soundset_types soundset_id, enum object_occupation_types occ_type, enum occupation_sound_types sound_type, int xtime)
+set_occupation(int (*fn)(void), const char *txt, int attr, int color, enum object_soundset_types soundset_id, enum object_occupation_types occ_type, enum occupation_sound_types sound_type, int xtime)
 {
     if (xtime) 
     {
@@ -396,7 +396,7 @@ static int
 doextcmd(void)
 {
     int idx, retval;
-    int NDECL((*func));
+    int (*func)(void);
 
     /* keep repeating until we don't run help or quit */
     do {
@@ -6932,7 +6932,7 @@ dokeylist(void)
 }
 
 char
-cmd_from_func(int NDECL ((*fn)))
+cmd_from_func(int (*fn)(void))
 {
     int i;
 
@@ -6959,7 +6959,7 @@ cmd_unctrl(char c)
 }
 
 char
-nondir_cmd_from_func(int NDECL ((*fn)))
+nondir_cmd_from_func(int (*fn)(void))
 {
     int i;
 
@@ -7794,7 +7794,7 @@ update_bindings_list(void)
 
 /* non-movement commands which accept 'm' prefix to request menu operation */
 static boolean
-accept_menu_prefix(int NDECL ((*cmd_func)))
+accept_menu_prefix(int (*cmd_func)(void))
 {
     if (cmd_func == dopickup || cmd_func == doput2bag || cmd_func == dotip
         /* eat, #offer, and apply tinning-kit all use floorfood() to pick
@@ -8132,7 +8132,7 @@ rhack(char *cmd)
     {
         /* (for func_tab cast, see below) */
         const struct ext_func_tab *ft = Cmd.commands[cmd[1] & 0xff];
-        int NDECL((*func)) = ft ? ((struct ext_func_tab *) ft)->ef_funct : 0;
+        int (*func)(void) = ft ? ((struct ext_func_tab *) ft)->ef_funct : 0;
 
         if (func && accept_menu_prefix(func)) 
         {
@@ -8184,7 +8184,7 @@ rhack(char *cmd)
     else
     {
         const struct ext_func_tab *tlist;
-        int res = 0, NDECL((*func));
+        int res = 0, (*func)(void);
 
         /* current - use *cmd to directly index cmdlist array */
         if ((tlist = Cmd.commands[(unsigned char)(*cmd & 0xff)]) != 0)
@@ -8720,7 +8720,7 @@ dotherecmdmenu(void)
 }
 
 static void
-add_herecmd_menuitem(winid win, int NDECL ((*func)), const char *text)
+add_herecmd_menuitem(winid win, int (*func)(void), const char *text)
 {
     char ch;
     anything any;
@@ -8824,7 +8824,7 @@ there_cmd_menu(boolean doit, int x, int y)
     destroy_nhwindow(win);
     ch = '\0';
     if (npick > 0) {
-        int NDECL((*func)) = picks->item.a_nfunc;
+        int (*func)(void) = picks->item.a_nfunc;
         free((genericptr_t) picks);
 
         if (doit) {
@@ -8936,7 +8936,7 @@ here_cmd_menu(boolean doit)
     ch = '\0';
     if (npick > 0) 
     {
-        int NDECL((*func)) = picks->item.a_nfunc;
+        int (*func)(void) = picks->item.a_nfunc;
         free((genericptr_t) picks);
 
         if (doit) 

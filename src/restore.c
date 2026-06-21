@@ -47,7 +47,7 @@ static void post_restore_to_forum(struct u_realtime);
 static struct restore_procs {
     const char *name;
     int mread_flags;
-    void NDECL((*restore_minit));
+    void (*restore_minit)(void);
     void (*restore_mread)(int, genericptr_t, size_t);
     void (*restore_bclose)(int);
 } restoreprocs = {

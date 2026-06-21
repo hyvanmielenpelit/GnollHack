@@ -20,8 +20,8 @@ extern char orgdir[];
 #endif
 
 #if defined(TTY_GRAPHICS)
-extern void NDECL(backsp);
-extern void NDECL(clear_screen);
+extern void backsp(void);
+extern void clear_screen(void);
 #endif
 
 #if 0
@@ -33,7 +33,7 @@ static struct stat hbuf;
 #endif
 
 #ifdef PC_LOCKING
-static int NDECL(eraseoldlocks);
+static int eraseoldlocks(void);
 #endif
 
 #if 0

@@ -69,17 +69,17 @@ typedef struct dlb_handle {
 #define DLB_P dlb *
 #endif
 
-boolean NDECL(dlb_init);
-void NDECL(dlb_cleanup);
-boolean NDECL(dlb_is_initialized);
+boolean dlb_init(void);
+void dlb_cleanup(void);
+boolean dlb_is_initialized(void);
 
-dlb* FDECL(dlb_fopen, (const char*, const char*));
-int FDECL(dlb_fclose, (DLB_P));
-long FDECL(dlb_fread, (char*, long, long, DLB_P));
-int FDECL(dlb_fseek, (DLB_P, long, int));
-char* FDECL(dlb_fgets, (char*, int, DLB_P));
-int FDECL(dlb_fgetc, (DLB_P));
-long FDECL(dlb_ftell, (DLB_P));
+dlb* dlb_fopen(const char*, const char*);
+int dlb_fclose(DLB_P);
+long dlb_fread(char*, long, long, DLB_P);
+int dlb_fseek(DLB_P, long, int);
+char* dlb_fgets(char*, int, DLB_P);
+int dlb_fgetc(DLB_P);
+long dlb_ftell(DLB_P);
 
 /* Resource DLB entry points */
 #ifdef DLBRSRC

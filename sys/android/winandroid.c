@@ -9,63 +9,63 @@
 #include "func_tab.h"   /* for extended commands */
 #include "dlb.h"
 
-static void FDECL(and_init_nhwindows, (int *, char **));
-static void NDECL(and_player_selection);
-static void NDECL(and_askname);
-static void NDECL(and_get_nh_event) ;
-static void FDECL(and_exit_nhwindows, (const char *));
-static void FDECL(and_suspend_nhwindows, (const char *));
-static void NDECL(and_resume_nhwindows);
-static winid FDECL(and_create_nhwindow_ex, (int, int, int, struct extended_create_window_info));
-static void FDECL(and_clear_nhwindow, (winid));
-static void FDECL(and_display_nhwindow, (winid, boolean));
-static void FDECL(and_dismiss_nhwindow, (winid));
-static void FDECL(and_destroy_nhwindow, (winid));
-static void FDECL(and_curs, (winid,int,int));
-static void FDECL(and_putstr_ex, (winid, const char *, int, int, int));
-static void FDECL(and_putstr_ex2, (winid, const char*, const char*, const char*, int, int, int));
-static void FDECL(and_putmixed_ex, (winid, const char *, int, int, int));
-static void FDECL(and_display_file, (const char *, boolean));
-static void FDECL(and_start_menu_ex, (winid, int));
-static void FDECL(and_add_menu, (winid,int,const ANY_P *, char,char,int,const char *, boolean));
-static void FDECL(and_add_extended_menu, (winid, int, const ANY_P*, char, char, int, int, const char*, boolean, struct extended_menu_info));
-static void FDECL(and_end_menu_ex, (winid, const char *, const char*));
-static int FDECL(and_select_menu, (winid, int, MENU_ITEM_P **));
-static char FDECL(and_message_menu, (char, int, const char *));
-static void NDECL(and_update_inventory);
-static void NDECL(and_mark_synch);
-static void NDECL(and_wait_synch);
+static void and_init_nhwindows(int *, char **);
+static void and_player_selection(void);
+static void and_askname(void);
+static void and_get_nh_event(void) ;
+static void and_exit_nhwindows(const char *);
+static void and_suspend_nhwindows(const char *);
+static void and_resume_nhwindows(void);
+static winid and_create_nhwindow_ex(int, int, int, struct extended_create_window_info);
+static void and_clear_nhwindow(winid);
+static void and_display_nhwindow(winid, boolean);
+static void and_dismiss_nhwindow(winid);
+static void and_destroy_nhwindow(winid);
+static void and_curs(winid,int,int);
+static void and_putstr_ex(winid, const char *, int, int, int);
+static void and_putstr_ex2(winid, const char*, const char*, const char*, int, int, int);
+static void and_putmixed_ex(winid, const char *, int, int, int);
+static void and_display_file(const char *, boolean);
+static void and_start_menu_ex(winid, int);
+static void and_add_menu(winid,int,const ANY_P *, char,char,int,const char *, boolean);
+static void and_add_extended_menu(winid, int, const ANY_P*, char, char, int, int, const char*, boolean, struct extended_menu_info);
+static void and_end_menu_ex(winid, const char *, const char*);
+static int and_select_menu(winid, int, MENU_ITEM_P **);
+static char and_message_menu(char, int, const char *);
+static void and_update_inventory(void);
+static void and_mark_synch(void);
+static void and_wait_synch(void);
 #ifdef CLIPPING
-static void FDECL(and_cliparound, (int, int, boolean));
+static void and_cliparound(int, int, boolean);
 #endif
 #ifdef POSITIONBAR
-static void FDECL(and_update_positionbar, (char *));
+static void and_update_positionbar(char *);
 #endif
-static void FDECL(and_print_glyph, (winid,xchar,xchar,struct layer_info));
-static void FDECL(and_issue_gui_command, (int, int, int, const char*));
-static void FDECL(and_raw_print, (const char *));
-static void FDECL(and_raw_print_bold, (const char *));
-static int NDECL(and_nhgetch);
-static int FDECL(and_nh_poskey, (int *, int *, int *));
-static void NDECL(and_nhbell);
-static int NDECL(and_doprev_message);
-static char FDECL(and_yn_function_ex, (int, int, int, int, const char *, const char *, const char *, char, const char*, const char*, uint64_t));
-static void FDECL(and_getlin_ex, (int, int, int, const char *,char *, const char*, const char*, const char*));
-static int NDECL(and_get_ext_cmd);
-static void FDECL(and_number_pad, (int));
-static void NDECL(and_delay_output);
-static void FDECL(and_delay_output_milliseconds, (int));
-static void FDECL(and_delay_output_intervals, (int));
+static void and_print_glyph(winid,xchar,xchar,struct layer_info);
+static void and_issue_gui_command(int, int, int, const char*);
+static void and_raw_print(const char *);
+static void and_raw_print_bold(const char *);
+static int and_nhgetch(void);
+static int and_nh_poskey(int *, int *, int *);
+static void and_nhbell(void);
+static int and_doprev_message(void);
+static char and_yn_function_ex(int, int, int, int, const char *, const char *, const char *, char, const char*, const char*, uint64_t);
+static void and_getlin_ex(int, int, int, const char *,char *, const char*, const char*, const char*);
+static int and_get_ext_cmd(void);
+static void and_number_pad(int);
+static void and_delay_output(void);
+static void and_delay_output_milliseconds(int);
+static void and_delay_output_intervals(int);
 #ifdef CHANGE_COLOR
-static void FDECL(and_change_color,(int color, int64_t rgb,int reverse));
-static char * NDECL(and_get_color_string);
+static void and_change_color(int color, int64_t rgb,int reverse);
+static char * and_get_color_string(void);
 #endif
-static void NDECL(and_start_screen);
-static void NDECL(and_end_screen);
-static char* FDECL(and_getmsghistory_ex, (char**, char**, boolean));
-static void FDECL(and_putmsghistory_ex, (const char *, const char *, const char *, boolean));
+static void and_start_screen(void);
+static void and_end_screen(void);
+static char* and_getmsghistory_ex(char**, char**, boolean);
+static void and_putmsghistory_ex(const char *, const char *, const char *, boolean);
 static void save_msg(const char* msg);
-static void FDECL(and_status_update, (int, genericptr_t, int, int, int, uint64_t *));
+static void and_status_update(int, genericptr_t, int, int, int, uint64_t *);
 static void and_status_flush();
 
 int GnollHackMain(int argc, char** argv);

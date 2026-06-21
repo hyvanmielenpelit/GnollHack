@@ -170,7 +170,7 @@ fix_wall_spines(int x1, int y1, int x2, int y2)
     uchar type;
     int x, y;
     struct rm *lev;
-    int FDECL((*loc_f), (int, int));
+    int (*loc_f)(int, int);
     int bits;
     int locale[3][3]; /* rock or wall status surrounding positions */
 

@@ -1292,7 +1292,7 @@ cancel_don(void)
     context.takeoff.cancelled_don =
         (afternmv == Boots_on || afternmv == Helmet_on
          || afternmv == Gloves_on || afternmv == Armor_on);
-    afternmv = (int NDECL((*))) 0;
+    afternmv = (int (*)(void)) 0;
     nomovemsg = (char *) 0;
     nomovemsg_attr = ATR_NONE;
     nomovemsg_color = NO_COLOR;
@@ -1329,7 +1329,7 @@ stop_donning(struct obj *stolenobj)
     cancel_don();
     /* don't want <armor>_on() or <armor>_off() being called
        by unmul() since the on or off action isn't completing */
-    afternmv = (int NDECL((*))) 0;
+    afternmv = (int (*)(void)) 0;
     if (putting_on || otmp != stolenobj) {
         Sprintf(buf, "You stop %s %s.",
                 putting_on ? "putting on" : "taking off",

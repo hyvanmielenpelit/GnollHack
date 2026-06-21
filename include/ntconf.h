@@ -95,9 +95,8 @@
 /* Stuff to help the user with some common, yet significant errors */
 #define INTERJECT_PANIC 0
 #define INTERJECTION_TYPES (INTERJECT_PANIC + 1)
-extern void FDECL(interject_assistance,
-                  (int, int, genericptr_t, genericptr_t));
-extern void FDECL(interject, (int));
+extern void interject_assistance(int, int, genericptr_t, genericptr_t);
+extern void interject(int);
 
 /*
  *===============================================
@@ -112,7 +111,7 @@ extern void FDECL(interject, (int));
 #ifdef strcasecmp
 #undef strcasecmp
 #endif
-extern void NDECL(getlock);
+extern void getlock(void);
 #endif
  
 #ifdef _MSC_VER
@@ -233,14 +232,14 @@ extern char hackdir[];
 #define ABORT C('a')
 #define getuid() 1
 #define getlogin() ((char *) 0)
-extern void NDECL(win32_abort);
-extern void FDECL(nttty_preference_update, (const char *));
-extern void NDECL(toggle_mouse_support);
-extern void FDECL(map_subkeyvalue, (char *));
+extern void win32_abort(void);
+extern void nttty_preference_update(const char *);
+extern void toggle_mouse_support(void);
+extern void map_subkeyvalue(char *);
 #if defined(WIN32CON)
-extern void FDECL(set_altkeyhandler, (const char *));
+extern void set_altkeyhandler(const char *);
 #endif
-extern void NDECL(raw_clear_screen);
+extern void raw_clear_screen(void);
 
 #include <fcntl.h>
 #ifndef __BORLANDC__
@@ -275,25 +274,25 @@ int _RTLENTRY _EXPFUNC read(int __handle, void _FAR *__buf, unsigned __len);
 #define ALLOCA_HACK /* used in util/panic.c */
 #endif
 
-extern int FDECL(set_win32_option, (const char *, const char *));
+extern int set_win32_option(const char *, const char *);
 #define LEFTBUTTON FROM_LEFT_1ST_BUTTON_PRESSED
 #define RIGHTBUTTON RIGHTMOST_BUTTON_PRESSED
 #define MIDBUTTON FROM_LEFT_2ND_BUTTON_PRESSED
 #define MOUSEMASK (LEFTBUTTON | RIGHTBUTTON | MIDBUTTON)
 #ifdef CHANGE_COLOR
-extern int FDECL(alternative_palette, (char *));
+extern int alternative_palette(char *);
 #endif
 
 #ifdef NDEBUG
 #define nhassert(expression) ((void)0)
 #else
-extern void FDECL(nhassert_failed, (const char * exp, const char * file,
-                                    int line));
+extern void nhassert_failed(const char * exp, const char * file,
+                                    int line);
 
 #define nhassert(expression) (void)((!!(expression)) || \
         (nhassert_failed(#expression, __FILE__, __LINE__), 0))
 #endif
 
 #define GnollHack_enter(argc, argv) GnollHack_enter_winnt()
-//extern void FDECL(gnollhack_exit, (int)) NORETURN;
+//extern void gnollhack_exit(int) NORETURN;
 #endif /* NTCONF_H */

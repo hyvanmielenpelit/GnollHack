@@ -20,13 +20,13 @@
  #pragma warning(disable : 4244)
 #endif
 
-typedef void FDECL((*select_iter_func), (int, int, genericptr));
-typedef void FDECL((*select_iter_func2), (int, int, genericptr, genericptr));
-typedef void FDECL((*select_iter_func3), (int, int, genericptr, genericptr, genericptr));
+typedef void (*select_iter_func)(int, int, genericptr);
+typedef void (*select_iter_func2)(int, int, genericptr, genericptr);
+typedef void (*select_iter_func3)(int, int, genericptr, genericptr, genericptr);
 #if 0 /* UNUSED */
-typedef void FDECL((*select_iter_func4), (int, int, genericptr, genericptr, genericptr, genericptr));
+typedef void (*select_iter_func4)(int, int, genericptr, genericptr, genericptr, genericptr);
 #endif
-typedef void FDECL((*select_iter_func5), (int, int, genericptr, genericptr, genericptr, genericptr, genericptr));
+typedef void (*select_iter_func5)(int, int, genericptr, genericptr, genericptr, genericptr, genericptr);
 
 extern void mkmap(lev_init *);
 
@@ -5586,11 +5586,11 @@ selection_do_grow(struct opvar *ov, int dir)
                 selection_setpoint(x, y, ov, 1);
 }
 
-static int FDECL((*selection_flood_check_func), (int, int));
+static int (*selection_flood_check_func)(int, int);
 static schar floodfillchk_match_under_typ;
 
 void
-set_selection_floodfillchk(int FDECL(( *f), (int, int)))
+set_selection_floodfillchk(int ( *f)(int, int))
 {
     selection_flood_check_func = f;
 }

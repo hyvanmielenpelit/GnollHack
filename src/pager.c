@@ -2393,7 +2393,7 @@ domenucontrols(void)
 
 /* data for dohelp() */
 static const struct {
-    void NDECL((*f));
+    void (*f)(void);
     const char *text;
 } help_menu_items[] = {
     { hmenu_doextversion, "About GnollHack (version information)." },
@@ -2414,7 +2414,7 @@ static const struct {
     { port_help, "%s-specific help and commands." },
 #endif
     { dispfile_debughelp, "List of wizard-mode commands." },
-    { (void NDECL((*))) 0, (char *) 0 }
+    { (void (*)(void)) 0, (char *) 0 }
 };
 
 /* the '?' command */

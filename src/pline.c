@@ -38,11 +38,11 @@ STATIC_VAR int pline_dopopup = 0;
 
 STATIC_VAR char prevmsg[BUFSZ];
 
-STATIC_DCL void FDECL(putmesg, (const char *));
-STATIC_DCL void FDECL(putmesg_ex2, (const char*, const char*, const char*));
-STATIC_DCL char *FDECL(You_buf, (size_t));
+STATIC_DCL void putmesg(const char *);
+STATIC_DCL void putmesg_ex2(const char*, const char*, const char*);
+STATIC_DCL char *You_buf(size_t);
 #if defined(MSGHANDLER) && (defined(POSIX_TYPES) || defined(__GNUC__))
-STATIC_DCL void FDECL(execplinehandler, (const char *));
+STATIC_DCL void execplinehandler(const char *);
 #endif
 
 #if defined (DUMPLOG) || defined (DUMPHTML)
@@ -179,7 +179,7 @@ const char* line, *attrs, *colors;
  */
 
 #if defined(USE_STDARG) || defined(USE_VARARGS)
-STATIC_DCL void FDECL(vpline, (const char *, va_list));
+STATIC_DCL void vpline(const char *, va_list);
 
 /*VARARGS1*/
 void
@@ -298,7 +298,7 @@ VA_DECL(const char *, line)
                     switch (typechar)
                     {
                     case 'c':
-                        Sprintf(cbuf, sbuf, va_arg(the_args, CHAR_P));
+                        Sprintf(cbuf, sbuf, (char) va_arg(the_args, int)); /* int represents the char type promoted to int */
                         break;
                     case 'f':
                         Sprintf(cbuf, sbuf, va_arg(the_args, double));
@@ -307,7 +307,7 @@ VA_DECL(const char *, line)
                     case 'i':
                     case 'd':
                         if (ep > p && *(ep - 1) == 'h')
-                            Sprintf(cbuf, sbuf, va_arg(the_args, SHORT_P));
+                            Sprintf(cbuf, sbuf, (short) va_arg(the_args, int)); /* int represents the short type promoted to int */
                         else if (ep > p && *(ep - 1) == 'l')
                         {
                             if (ep > p + 1 && *(ep - 2) == 'l')
@@ -328,7 +328,7 @@ VA_DECL(const char *, line)
                     case 'X':
                     case 'u':
                         if(ep > p && *(ep - 1) == 'h')
-                            Sprintf(cbuf, sbuf, va_arg(the_args, UNSIGNED_SHORT_P));
+                            Sprintf(cbuf, sbuf, (unsigned short) va_arg(the_args, int)); /* int represents the unsigned short type promoted to int */
                         else if (ep > p && *(ep - 1) == 'l')
                         {
                             if (ep > p + 1 && *(ep - 2) == 'l')
@@ -1128,7 +1128,7 @@ VA_DECL(const char *, line)
  */
 
 #if defined(USE_STDARG) || defined(USE_VARARGS)
-STATIC_DCL void FDECL(vraw_printf, (const char *, va_list));
+STATIC_DCL void vraw_printf(const char *, va_list);
 
 void raw_printf
 VA_DECL(const char *, line)
@@ -1394,7 +1394,7 @@ const char *line;
  * varargs handling for files.c
  */
 #if defined(USE_STDARG) || defined(USE_VARARGS)
-STATIC_DCL void FDECL(vconfig_error_add, (const char *, va_list));
+STATIC_DCL void vconfig_error_add(const char *, va_list);
 
 /*VARARGS1*/
 void

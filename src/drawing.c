@@ -1322,16 +1322,16 @@ static const uchar def_r_oc_syms[MAX_OBJECT_CLASSES] = {
 #undef C
 
 #ifdef TERMLIB
-void NDECL((*decgraphics_mode_callback)) = 0; /* set in tty_start_screen() */
+void (*decgraphics_mode_callback)(void) = 0; /* set in tty_start_screen() */
 #endif /* TERMLIB */
 
 #ifdef PC9800
-void NDECL((*ibmgraphics_mode_callback)) = 0; /* set in tty_start_screen() */
-void NDECL((*ascgraphics_mode_callback)) = 0; /* set in tty_start_screen() */
+void (*ibmgraphics_mode_callback)(void) = 0; /* set in tty_start_screen() */
+void (*ascgraphics_mode_callback)(void) = 0; /* set in tty_start_screen() */
 #endif
 
 #ifdef CURSES_GRAPHICS
-void NDECL((*cursesgraphics_mode_callback)) = 0;
+void (*cursesgraphics_mode_callback)(void) = 0;
 #endif
 
 /*

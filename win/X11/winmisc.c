@@ -93,23 +93,23 @@ static const char popup_entry_translations[] = "#override\n\
      <Btn4Down>: scroll(8)\n\
      <Btn5Down>: scroll(2)";
 
-static void FDECL(ps_quit, (Widget, XtPointer, XtPointer));
-static void FDECL(ps_random, (Widget, XtPointer, XtPointer));
-static void FDECL(ps_select, (Widget, XtPointer, XtPointer));
-static void FDECL(extend_select, (Widget, XtPointer, XtPointer));
-static void FDECL(extend_dismiss, (Widget, XtPointer, XtPointer));
-static void FDECL(extend_help, (Widget, XtPointer, XtPointer));
-static void FDECL(popup_delete, (Widget, XEvent *, String *, Cardinal *));
-static void NDECL(ec_dismiss);
-static void FDECL(ec_scroll_to_view, (int));
-static void NDECL(init_extended_commands_popup);
-static Widget FDECL(make_menu, (const char *, const char *, const char *,
+static void ps_quit(Widget, XtPointer, XtPointer);
+static void ps_random(Widget, XtPointer, XtPointer);
+static void ps_select(Widget, XtPointer, XtPointer);
+static void extend_select(Widget, XtPointer, XtPointer);
+static void extend_dismiss(Widget, XtPointer, XtPointer);
+static void extend_help(Widget, XtPointer, XtPointer);
+static void popup_delete(Widget, XEvent *, String *, Cardinal *);
+static void ec_dismiss(void);
+static void ec_scroll_to_view(int);
+static void init_extended_commands_popup(void);
+static Widget make_menu(const char *, const char *, const char *,
                                 const char *, XtCallbackProc, const char *,
                                 XtCallbackProc, int, const char **,
-                                Widget **, XtCallbackProc, Widget *));
+                                Widget **, XtCallbackProc, Widget *);
 
-void NDECL(X11_player_selection_setupOthers);
-void NDECL(X11_player_selection_randomize);
+void X11_player_selection_setupOthers(void);
+void X11_player_selection_randomize(void);
 
 /* Bad Hack alert. Using integers instead of XtPointers */
 XtPointer

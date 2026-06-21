@@ -39,28 +39,28 @@ long _stksize = 16 * 1024;
 
 #ifdef AMIGA
 extern int bigscreen;
-void NDECL(preserve_icon);
+void preserve_icon(void);
 #endif
 
-STATIC_DCL void FDECL(process_command_line_arguments, (int argc, char **argv));
-STATIC_DCL void NDECL(nhusage);
+STATIC_DCL void process_command_line_arguments(int argc, char **argv);
+STATIC_DCL void nhusage(void);
 
 #if defined(MICRO) || defined(OS2)
-extern void FDECL(gnollhack_exit, (int));
+extern void gnollhack_exit(int);
 #else
 #define gnollhack_exit exit
 #endif
 
 #ifdef EXEPATH
-STATIC_DCL char *FDECL(exepath, (char *));
+STATIC_DCL char *exepath(char *);
 #endif
 
-int FDECL(main, (int, char **));
+int main(int, char **);
 
-extern boolean FDECL(pcmain, (int, char **));
+extern boolean pcmain(int, char **);
 
 #if defined(__BORLANDC__)
-void NDECL(startup);
+void startup(void);
 unsigned _stklen = STKSIZ;
 #endif
 

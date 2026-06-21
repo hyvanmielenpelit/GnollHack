@@ -32,8 +32,8 @@
 
 #include <ctype.h>
 
-static char NDECL(DOSgetch);
-static char NDECL(BIOSgetch);
+static char DOSgetch(void);
+static char BIOSgetch(void);
 
 int
 tgetch()

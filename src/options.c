@@ -5909,7 +5909,7 @@ static struct other_opts {
     const char *name;
     int optflags;
     enum opt_other_enums code;
-    int NDECL((*othr_count_func));
+    int (*othr_count_func)(void);
 } othropt[] = {
     { "autopickup exceptions", SET_IN_GAME, OPT_OTHER_APEXC, count_apes },
     { "menu colors", SET_IN_GAME, OPT_OTHER_MENUCOLOR, count_menucolors },

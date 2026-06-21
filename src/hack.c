@@ -3745,11 +3745,11 @@ unmul_ex(int attr, int color, const char *msg_override)
     u.usleep = 0;
     multi_reason = NULL;
     if (afternmv) {
-        int NDECL((*f)) = afternmv;
+        int (*f)(void) = afternmv;
 
         /* clear afternmv before calling it (to override the
            encumbrance hack for levitation--see weight_cap()) */
-        afternmv = (int NDECL((*))) 0;
+        afternmv = (int (*)(void)) 0;
         (void) (*f)();
         /* for finishing Armor/Boots/&c_on() */
         update_inventory();

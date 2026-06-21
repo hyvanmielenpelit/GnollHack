@@ -17,12 +17,12 @@
 #include <signal.h>
 
 #ifdef _M_UNIX
-extern void NDECL(sco_mapon);
-extern void NDECL(sco_mapoff);
+extern void sco_mapon(void);
+extern void sco_mapoff(void);
 #endif
 #ifdef __linux__
-extern void NDECL(linux_mapon);
-extern void NDECL(linux_mapoff);
+extern void linux_mapon(void);
+extern void linux_mapoff(void);
 #endif
 
 #ifndef NHSTDC
@@ -345,12 +345,12 @@ int wt;
 
 #ifdef GETRES_SUPPORT
 
-extern int FDECL(nh_getresuid, (uid_t *, uid_t *, uid_t *));
-extern uid_t NDECL(nh_getuid);
-extern uid_t NDECL(nh_geteuid);
-extern int FDECL(nh_getresgid, (gid_t *, gid_t *, gid_t *));
-extern gid_t NDECL(nh_getgid);
-extern gid_t NDECL(nh_getegid);
+extern int nh_getresuid(uid_t *, uid_t *, uid_t *);
+extern uid_t nh_getuid(void);
+extern uid_t nh_geteuid(void);
+extern int nh_getresgid(gid_t *, gid_t *, gid_t *);
+extern gid_t nh_getgid(void);
+extern gid_t nh_getegid(void);
 
 /* the following several functions assume __STDC__ where parentheses
    around the name of a function-like macro prevent macro expansion */

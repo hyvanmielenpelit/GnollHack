@@ -1344,8 +1344,8 @@ enum manual_types
  *        for it to include/extern.h.  The majority of these are currently
  *        located in mkobj.c for convenience.
  *
- *        void FDECL(newXX, (struct obj *));
- *            void FDECL(free_XX, (struct obj *));
+ *        void newXX(struct obj *);
+ *            void free_XX(struct obj *);
  *
  *              void
  *              newxx(otmp)

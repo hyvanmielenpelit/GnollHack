@@ -13,7 +13,7 @@
 
 extern char orgdir[PATHLEN]; /* also used in pcsys.c, amidos.c */
 
-extern void FDECL(gnollhack_exit, (int));
+extern void gnollhack_exit(int);
 static TCHAR *_get_cmd_arg(TCHAR *pCmdLine);
 
 // Global Variables:
@@ -26,7 +26,7 @@ static void win_hack_init(int, char **);
 static void __cdecl mswin_moveloop(void *);
 static BOOL setMapTiles(const char *fname);
 
-extern boolean FDECL(pcmain, (int, char **));
+extern boolean pcmain(int, char **);
 
 #define MAX_CMDLINE_PARAM 255
 

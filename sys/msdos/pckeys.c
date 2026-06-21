@@ -15,11 +15,11 @@
 #include "wintty.h"
 #include "pcvideo.h"
 
-boolean FDECL(pckeys, (unsigned char, unsigned char));
-static void FDECL(userpan, (boolean));
-static void FDECL(overview, (boolean));
-static void FDECL(traditional, (boolean));
-static void NDECL(refresh);
+boolean pckeys(unsigned char, unsigned char);
+static void userpan(boolean);
+static void overview(boolean);
+static void traditional(boolean);
+static void refresh(void);
 
 extern struct WinDesc *wins[MAXWIN]; /* from wintty.c */
 extern boolean inmap;                /* from video.c */

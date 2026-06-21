@@ -28,7 +28,7 @@
 struct ext_func_tab {
     uchar key;
     const char *ef_txt, *ef_desc;
-    int NDECL((*ef_funct));
+    int (*ef_funct)(void);
     uint64_t flags;
     int attr;
     int color;

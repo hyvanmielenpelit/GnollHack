@@ -18,7 +18,7 @@
 #endif
 
 #ifdef TEXT_TOMBSTONE
-STATIC_DCL void FDECL(center, (int, char *));
+STATIC_DCL void center(int, char *);
 
 #ifndef NH320_DEDICATION
 /* A normal tombstone for end of game display. */

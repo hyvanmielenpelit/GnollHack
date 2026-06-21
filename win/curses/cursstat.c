@@ -32,19 +32,19 @@ static int curses_status_colors[MAXBLSTATS];
 static int hpbar_percent, hpbar_color;
 static int vert_status_dirty;
 
-static void NDECL(draw_status);
-static void FDECL(draw_vertical, (boolean));
-static void FDECL(draw_horizontal, (boolean));
+static void draw_status(void);
+static void draw_vertical(boolean);
+static void draw_horizontal(boolean);
 static void curs_HPbar(char *, int);
 static void curs_stat_conds(int, int *, int *, char *, boolean *, boolean);
 static void curs_vert_status_vals(int);
 #ifdef STATUS_HILITES
 #ifdef TEXTCOLOR
-static int FDECL(condcolor, (int64_t, uint64_t *));
+static int condcolor(int64_t, uint64_t *);
 #endif
-static int FDECL(condattr, (int64_t, uint64_t *));
-static int FDECL(nhattr2curses, (int));
-static void FDECL(curses_print_rest_partyline, (WINDOW*, boolean, char*, int*, int*));
+static int condattr(int64_t, uint64_t *);
+static int nhattr2curses(int);
+static void curses_print_rest_partyline(WINDOW*, boolean, char*, int*, int*);
 #endif /* STATUS_HILITES */
 
 /* width of a single line in vertical status orientation (one field per line;

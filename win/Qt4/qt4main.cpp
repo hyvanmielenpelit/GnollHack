@@ -523,7 +523,7 @@ NetHackQtMainWindow::NetHackQtMainWindow(NetHackQtKeyBuffer& ks) :
 	QMenu* menu;
 	const char* name;
 	int flags;
-        int NDECL((*funct));
+        int (*funct)(void);
     } item[] = {
         { game,    0, 3},
         { game,    "Version",            3, doversion},

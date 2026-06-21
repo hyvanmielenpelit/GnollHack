@@ -74,7 +74,7 @@ extern int GUILaunched;     /* We tell shared startup code in windmain.c
 #endif
 
 // Forward declarations of functions included in this code module:
-extern boolean FDECL(main, (int, char **));
+extern boolean main(int, char **);
 
 #define MAX_CMDLINE_PARAM 255
 

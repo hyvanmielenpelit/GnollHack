@@ -14,7 +14,7 @@ static isaac64_ctx rng_state;
 #endif
 
 struct rnglist_t {
-    int FDECL((*fn), (int));
+    int (*fn)(int);
     boolean init;
     isaac64_ctx rng_state;
 };
@@ -27,8 +27,7 @@ static struct rnglist_t rnglist[] = {
 };
 
 int
-whichrng(fn)
-int FDECL((*fn), (int));
+whichrng(int (*fn)(int))
 {
     int i;
 
@@ -39,9 +38,7 @@ int FDECL((*fn), (int));
 }
 
 void
-init_isaac64(seed, fn)
-uint64_t seed;
-int FDECL((*fn), (int));
+init_isaac64(uint64_t seed, int (*fn)(int))
 {
     unsigned char new_rng_state[sizeof seed];
     unsigned i;
@@ -71,8 +68,7 @@ RND(int x)
    used in cases where the answer doesn't affect gameplay and we don't
    want to give users easy control over the main RNG sequence. */
 int
-rn2_on_display_rng(x)
-int x;
+rn2_on_display_rng(int x)
 {
     return (isaac64_next_uint64(&rnglist[DISP].rng_state) % x);
 }
@@ -81,7 +77,7 @@ int x;
 
 /* "Rand()"s definition is determined by [OS]conf.h */
 #if defined(LINT) && defined(UNIX) /* rand() is int64_t... */
-extern int NDECL(rand);
+extern int rand(void);
 #define RND(x) (rand() % x)
 #else /* LINT */
 #if defined(UNIX) || defined(RANDOM)
@@ -92,8 +88,7 @@ extern int NDECL(rand);
 #endif
 #endif /* LINT */
 int
-rn2_on_display_rng(x)
-int x;
+rn2_on_display_rng(int x)
 {
     static unsigned seed = 1;
     seed *= 2739110765;
@@ -103,8 +98,7 @@ int x;
 
 /* 0 <= rn2(x) < x */
 int
-rn2(x)
-int x;
+rn2(int x)
 {
 #ifdef BETA
     if (x <= 0) {
@@ -121,8 +115,7 @@ int x;
 /* 0 <= rnl(x) < x; sometimes subtracting Luck;
    good luck approaches 0, bad luck approaches (x-1) */
 int
-rnl(x)
-int x;
+rnl(int x)
 {
     int i, adjustment;
 
@@ -165,8 +158,7 @@ int x;
 
 /* 1 <= rnd(x) <= x */
 int
-rnd(x)
-int x;
+rnd(int x)
 {
 #ifdef BETA
     if (x <= 0) {
@@ -180,8 +172,7 @@ int x;
 
 /* d(N,X) == NdX == dX+dX+...+dX N times; n <= d(n,x) <= (n*x) */
 int
-d(n, x)
-int n, x;
+d(int n, int x)
 {
     if (n <= 0 || x <= 0)
         return 0;
@@ -202,8 +193,7 @@ int n, x;
 
 /* 1 <= rne(x) <= max(u.ulevel/3,5) */
 int
-rne(x)
-int x;
+rne(int x)
 {
     int tmp, utmp;
 
@@ -225,8 +215,7 @@ int x;
 
 /* 1 <= rne(3) <= x */
 int
-rngh(x, limit)
-int x, limit;
+rngh(int x, int limit)
 {
     int tmp, utmp;
 
@@ -241,8 +230,7 @@ int x, limit;
 /* rnz: everyone's favorite! */
 /* Note: expected value of rnz(i) is 2i -- JG */
 int
-rnz(i)
-int i;
+rnz(int i)
 {
 #ifdef LINT
     int x = i;
@@ -266,8 +254,7 @@ int i;
 
 
 int
-dd(dice, diesize, plus)
-int dice, diesize, plus;
+dd(int dice, int diesize, int plus)
 {
     return (dice > 0 && diesize > 0 ? d(dice, diesize) : 0) + plus;
 }

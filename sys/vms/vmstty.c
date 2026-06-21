@@ -40,10 +40,10 @@ unsigned long sys$assign(), sys$dassgn(), sys$qiow();
 unsigned long smg$create_virtual_keyboard(), smg$delete_virtual_keyboard(),
     smg$read_keystroke(), smg$cancel_input();
 #else
-static short FDECL(parse_function_key, (int));
+static short parse_function_key(int);
 #endif
-static void NDECL(setctty);
-static void NDECL(resettty);
+static void setctty(void);
+static void resettty(void);
 
 #define vms_ok(sts) ((sts) &1)
 #define META(c) ((c) | 0x80) /* 8th bit */
@@ -106,7 +106,7 @@ static unsigned long tt_char_restore = 0, tt_char_active = 0,
 static unsigned long ctrl_mask = 0;
 
 #ifdef DEBUG
-extern int NDECL(nh_vms_getchar);
+extern int nh_vms_getchar(void);
 
 /* rename the real vms_getchar and interpose this one in front of it */
 int

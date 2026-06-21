@@ -329,7 +329,7 @@ extern short tile2enlargement[MAX_TILES];
 
 #ifdef USE_TRAMPOLI /* this doesn't belong here, but we have little choice */
 #undef NDECL
-#define NDECL(f) f()
+#define f(void) f()
 #endif
 
 #include "extern.h"
@@ -845,7 +845,7 @@ extern struct objclass saved_objects[NUM_OBJECTS];
 #endif
 
 #if defined(__BEOS__) || defined(MICRO) || defined(OS2) || defined(ANDROID) || defined(GNH_MOBILE) || defined(WIN32)
-extern void FDECL(gnollhack_exit, (int)) NORETURN;
+extern void gnollhack_exit(int) NORETURN;
 #else
 #define gnollhack_exit exit
 #endif

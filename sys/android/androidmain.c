@@ -18,13 +18,13 @@ extern void set_username();
 
 static jmp_buf env;
 
-extern struct passwd *FDECL( getpwuid, ( uid_t));
-extern struct passwd *FDECL( getpwnam, (const char *));
+extern struct passwd *getpwuid( uid_t);
+extern struct passwd *getpwnam(const char *);
 
-static boolean NDECL( whoami);
-static void FDECL( process_command_line_arguments, (int, char **));
+static boolean whoami(void);
+static void process_command_line_arguments(int, char **);
 
-static void NDECL( wd_message);
+static void wd_message(void);
 
 static char *make_lockname(filename, lockname)
 const char *filename;

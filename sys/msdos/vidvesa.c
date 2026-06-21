@@ -22,39 +22,39 @@
 #define BACKGROUND_VESA_COLOR 1
 #define FIRST_TEXT_COLOR 240
 
-static unsigned long FDECL(vesa_SetWindow, (int window, unsigned long offset));
-static unsigned long FDECL(vesa_ReadPixel32, (unsigned x, unsigned y));
-static void FDECL(vesa_WritePixel32, (unsigned x, unsigned y,
-        unsigned long color));
-static void FDECL(vesa_WritePixel, (unsigned x, unsigned y, unsigned color));
-static unsigned long FDECL(vesa_MakeColor, (unsigned r, unsigned g, unsigned b));
-static void FDECL(vesa_GetRGB, (
+static unsigned long vesa_SetWindow(int window, unsigned long offset);
+static unsigned long vesa_ReadPixel32(unsigned x, unsigned y);
+static void vesa_WritePixel32(unsigned x, unsigned y,
+        unsigned long color);
+static void vesa_WritePixel(unsigned x, unsigned y, unsigned color);
+static unsigned long vesa_MakeColor(unsigned r, unsigned g, unsigned b);
+static void vesa_GetRGB(
         unsigned long color,
-        unsigned char *rp, unsigned char *gp, unsigned char *bp));
-static void FDECL(vesa_FillRect, (
+        unsigned char *rp, unsigned char *gp, unsigned char *bp);
+static void vesa_FillRect(
         unsigned left, unsigned top,
         unsigned width, unsigned height,
-        unsigned color));
+        unsigned color);
 
-static void NDECL(vesa_redrawmap);
-static void FDECL(vesa_cliparound, (int, int, boolean));
-static void FDECL(decal_packed, (const struct TileImage *tile, unsigned special));
-static void FDECL(vesa_SwitchMode, (unsigned mode));
-static boolean FDECL(vesa_SetPalette, (const struct Pixel *));
-static boolean FDECL(vesa_SetHardPalette, (const struct Pixel *));
-static boolean FDECL(vesa_SetSoftPalette, (const struct Pixel *));
-static void FDECL(vesa_DisplayCell, (const struct TileImage *tile, int, int));
-static void FDECL(vesa_DisplayCellInMemory, (const struct TileImage *tile,
-        int, char buf[TILE_Y][640*2]));
-static unsigned FDECL(vesa_FindMode, (unsigned long mode_addr, unsigned bits));
-static void FDECL(vesa_WriteChar, (int, int, int, int, boolean));
-static void FDECL(vesa_WriteCharInMemory, (int, int, char buf[TILE_Y][640*2],
-        int));
-static void FDECL(vesa_WriteStr, (const char *, int, int, int, int));
-static char __far *NDECL(vesa_FontPtrs);
+static void vesa_redrawmap(void);
+static void vesa_cliparound(int, int, boolean);
+static void decal_packed(const struct TileImage *tile, unsigned special);
+static void vesa_SwitchMode(unsigned mode);
+static boolean vesa_SetPalette(const struct Pixel *);
+static boolean vesa_SetHardPalette(const struct Pixel *);
+static boolean vesa_SetSoftPalette(const struct Pixel *);
+static void vesa_DisplayCell(const struct TileImage *tile, int, int);
+static void vesa_DisplayCellInMemory(const struct TileImage *tile,
+        int, char buf[TILE_Y][640*2]);
+static unsigned vesa_FindMode(unsigned long mode_addr, unsigned bits);
+static void vesa_WriteChar(int, int, int, int, boolean);
+static void vesa_WriteCharInMemory(int, int, char buf[TILE_Y][640*2],
+        int);
+static void vesa_WriteStr(const char *, int, int, int, int);
+static char __far *vesa_FontPtrs(void);
 
 #ifdef POSITIONBAR
-static void NDECL(positionbar);
+static void positionbar(void);
 #endif
 
 extern int clipx, clipxmax; /* current clipping column from wintty.c */
