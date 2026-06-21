@@ -904,16 +904,15 @@ amii_loadlib(void)
 /* fatal error */
 /*VARARGS1*/
 void error
-VA_DECL(const char *, s)
+(const char *s, ...)
 {
-    VA_START(s);
-    VA_INIT(s, char *);
-
+    va_list the_args;
+    va_start(the_args, s);
     putchar('\n');
-    vprintf(s, VA_ARGS);
+    vprintf(s, the_args);
     putchar('\n');
 
-    VA_END();
+    va_end(the_args);
     Abort(0L);
 }
 #endif

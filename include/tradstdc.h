@@ -88,6 +88,10 @@
 
 #ifdef USE_STDARG
 #include <stdarg.h>
+#endif
+
+#if 0 /* Retired as part of the ANSI C89 migration */
+#ifdef USE_STDARG
 #define VA_DECL(typ1, var1) \
     (typ1 var1, ...)        \
     {                       \
@@ -194,6 +198,7 @@ typedef const char *vA;
 /* needed in pline.c, where full number of arguments is known and expected */
 #define VA_PASS1(a1)                                                  \
     (vA) a1, (vA) 0, (vA) 0, (vA) 0, (vA) 0, (vA) 0, (vA) 0, (vA) 0, (vA) 0
+#endif
 #endif
 #endif
 

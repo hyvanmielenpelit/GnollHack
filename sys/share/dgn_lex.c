@@ -640,11 +640,11 @@ char *yytext;
  * yyunput is properly declared in flex.skel.
  */
 #if !defined(FLEX_SCANNER) && !defined(FLEXHACK_SCANNER)
-int yyback(int *,int);
-int yylook(void);
-int yyinput(void);
-int yywrap(void);
-int yylex(void);
+int FDECL(yyback, (int *,int));
+int NDECL(yylook);
+int NDECL(yyinput);
+int NDECL(yywrap);
+int NDECL(yylex);
 	/* Traditional lexes let yyunput() and yyoutput() default to int;
 	 * newer ones may declare them as void since they don't return
 	 * values.  For even more fun, the lex supplied as part of the
@@ -674,11 +674,11 @@ int yylex(void);
 #  undef VOIDYYPUT
 # endif
 # ifdef VOIDYYPUT
-void yyunput(int);
-void yyoutput(int);
+void FDECL(yyunput, (int));
+void FDECL(yyoutput, (int));
 # else
-int yyunput(int);
-int yyoutput(int);
+int FDECL(yyunput, (int));
+int FDECL(yyoutput, (int));
 # endif
 
 #else	/* !FLEX_SCANNER && !FLEXHACK_SCANNER */
@@ -690,18 +690,18 @@ int yyoutput(int);
 #if defined(FLEX_SCANNER) || defined(FLEXHACK_SCANNER)
 /* older flex wants this */
 #ifdef _CRTDBG_MAP_ALLOC
-#define YY_MALLOC_DECL  genericptr_t _malloc_dbg(size_t, int, const char*, int); \
-                        genericptr_t _realloc_dbg(genericptr_t, size_t, int, const char*, int);
+#define YY_MALLOC_DECL  genericptr_t FDECL(_malloc_dbg, (size_t, int, const char*, int)); \
+                        genericptr_t FDECL(_realloc_dbg, (genericptr_t, size_t, int, const char*, int));
 #else
-#define YY_MALLOC_DECL  genericptr_t malloc(size_t); \
-                        genericptr_t realloc(genericptr_t, size_t);
+#define YY_MALLOC_DECL  genericptr_t FDECL(malloc, (size_t)); \
+                        genericptr_t FDECL(realloc, (genericptr_t, size_t));
 #endif
 /* newer flex assumes <stdlib.h> so needs this in case it's been suppressed */
 YY_MALLOC_DECL
 #endif
 
-void init_yyin(FILE *);
-void init_yyout(FILE *);
+void FDECL(init_yyin, (FILE *));
+void FDECL(init_yyout, (FILE *));
 
 /* this doesn't always get put in dgn_comp.h
  * (esp. when using older versions of bison)
@@ -862,7 +862,7 @@ YY_DECL
 	{
 	register yy_state_type yy_current_state;
 	register char *yy_cp, *yy_bp;
-	int yy_act;
+	register int yy_act;
 
 #line 92 "dgn_comp.l"
 
@@ -1358,7 +1358,7 @@ static int yy_get_next_buffer()
 	{
 	register char *dest = yy_current_buffer->yy_ch_buf;
 	register char *source = yytext_ptr;
-	int number_to_move, i;
+	register int number_to_move, i;
 	int ret_val;
 
 	if ( yy_c_buf_p > &yy_current_buffer->yy_ch_buf[yy_n_chars + 1] )
@@ -1528,7 +1528,7 @@ static yy_state_type yy_try_NUL_trans( yy_current_state )
 yy_state_type yy_current_state;
 #endif
 	{
-	int yy_is_jam;
+	register int yy_is_jam;
 	register char *yy_cp = yy_c_buf_p;
 
 	register YY_CHAR yy_c = 1;
@@ -1567,7 +1567,7 @@ register char *yy_bp;
 	if ( yy_cp < yy_current_buffer->yy_ch_buf + 2 )
 		{ /* need to shift things up to make room */
 		/* +2 for EOB chars. */
-		int number_to_move = yy_n_chars + 2;
+		register int number_to_move = yy_n_chars + 2;
 		register char *dest = &yy_current_buffer->yy_ch_buf[
 					yy_current_buffer->yy_buf_size + 2];
 		register char *source =
@@ -2032,7 +2032,7 @@ yyconst char *s2;
 int n;
 #endif
 	{
-	int i;
+	register int i;
 	for ( i = 0; i < n; ++i )
 		s1[i] = s2[i];
 	}
@@ -2046,7 +2046,7 @@ static int yy_flex_strlen( s )
 yyconst char *s;
 #endif
 	{
-	int n;
+	register int n;
 	for ( n = 0; s[n]; ++n )
 		;
 

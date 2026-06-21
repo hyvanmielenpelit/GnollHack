@@ -1142,19 +1142,19 @@ void set_altkeyhandler(const char * inName)
 /* fatal error */
 /*VARARGS1*/
 void nttty_error
-VA_DECL(const char *, s)
+(const char *s, ...)
 {
     char buf[BUFSZ];
-    VA_START(s);
-    VA_INIT(s, const char *);
+    va_list the_args;
+    va_start(the_args, s);
     /* error() may get called before tty is initialized */
     if (iflags.window_inited)
         end_screen();
     buf[0] = '\n';
-    (void) vsprintf(&buf[1], s, VA_ARGS);
+    (void) vsprintf(&buf[1], s, the_args);
     msmsg(buf);
     really_move_cursor();
-    VA_END();
+    va_end(the_args);
     gnollhack_exit(EXIT_FAILURE);
 }
 
@@ -1957,12 +1957,12 @@ void GnollHack_enter_nttty()
  * system isn't initialized yet
  */
 void msmsg
-VA_DECL(const char *, fmt)
+(const char *fmt, ...)
 {
     char buf[ROWNO * COLNO]; /* worst case scenario */
-    VA_START(fmt);
-    VA_INIT(fmt, const char *);
-    Vsprintf(buf, fmt, VA_ARGS);
+    va_list the_args;
+    va_start(the_args, fmt);
+    Vsprintf(buf, fmt, the_args);
     if (redirect_stdout)
         fprintf(stdout, "%s", buf);
     else {
@@ -1986,7 +1986,7 @@ VA_DECL(const char *, fmt)
         fprintf(stdout, "%s", buf);
 #endif
     }
-    VA_END();
+    va_end(the_args);
     return;
 }
 

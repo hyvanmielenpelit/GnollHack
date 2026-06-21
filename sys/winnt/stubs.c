@@ -140,21 +140,21 @@ map_subkeyvalue(char *op)
  * system isn't initialized yet
  */
 void msmsg
-VA_DECL(const char *, fmt)
+(const char *fmt, ...)
 {
-    VA_START(fmt);
-    VA_INIT(fmt, const char *);
-    VA_END();
+    va_list the_args;
+    va_start(the_args, fmt);
+    va_end(the_args);
     return;
 }
 
 /*VARARGS1*/
 void nttty_error
-VA_DECL(const char *, s)
+(const char *s, ...)
 {
-    VA_START(s);
-    VA_INIT(s, const char *);
-    VA_END();
+    va_list the_args;
+    va_start(the_args, s);
+    va_end(the_args);
     return;
 }
 

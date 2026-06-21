@@ -557,16 +557,15 @@ unsigned mseconds; /* milliseconds */
 /* fatal error */
 /*VARARGS1*/
 void error
-VA_DECL(const char *, s)
+(const char *s, ...)
 {
-    VA_START(s);
-    VA_INIT(s, const char *);
-
+    va_list the_args;
+    va_start(the_args, s);
     if (settty_needed)
         settty((char *) 0);
-    Vprintf(s, VA_ARGS);
+    Vprintf(s, the_args);
     (void) putchar('\n');
-    VA_END();
+    va_end(the_args);
 #ifndef SAVE_ON_FATAL_ERROR
     /* prevent vmsmain's exit handler byebye() from calling hangup() */
     sethanguphandler((void FDECL((*), (int) )) SIG_DFL);

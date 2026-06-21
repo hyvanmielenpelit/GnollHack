@@ -973,7 +973,7 @@ zerocomp_bputc(int c)
 }
 
 /*ARGSUSED*/
-void STATIC_OVL
+static void
 zerocomp_bufon(int fd)
 {
     compressing = TRUE;

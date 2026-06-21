@@ -720,11 +720,10 @@ static char* dbufs = 0;
 
 /*VARARGS1*/
 void panic
-VA_DECL(const char *, str)
+(const char *str, ...)
 {
-    VA_START(str);
-    VA_INIT(str, char *);
-
+    va_list the_args;
+    va_start(the_args, str);
     issue_breadcrumb("Panic: Start");
 
 #ifdef GNOLLHACK_MAIN_PROGRAM
@@ -750,7 +749,7 @@ VA_DECL(const char *, str)
     }
 
     char buf[BUFSZ];
-    Vsprintf(buf, str, VA_ARGS);
+    Vsprintf(buf, str, the_args);
 
 #ifdef GNOLLHACK_MAIN_PROGRAM
     if (issue_gui_command)
@@ -848,7 +847,7 @@ VA_DECL(const char *, str)
         NH_abort(); /* generate core dump */
 #endif
 #endif
-    VA_END();
+    va_end(the_args);
     really_done(PANICKED);
 }
 

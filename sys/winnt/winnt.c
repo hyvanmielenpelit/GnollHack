@@ -214,25 +214,25 @@ return &szFullPath[0];
 /* fatal error */
 /*VARARGS1*/
 void error
-VA_DECL(const char *, s)
+(const char *s, ...)
 {
     char buf[BUFSZ];
-    VA_START(s);
-    VA_INIT(s, const char *);
+    va_list the_args;
+    va_start(the_args, s);
     /* error() may get called before tty is initialized */
     if (iflags.window_inited)
         end_screen();
     if (WINDOWPORT("tty")) {
         buf[0] = '\n';
-        (void) vsprintf(&buf[1], s, VA_ARGS);
+        (void) vsprintf(&buf[1], s, the_args);
         Strcat(buf, "\n");
         msmsg(buf);
     } else {
-        (void) vsprintf(buf, s, VA_ARGS);
+        (void) vsprintf(buf, s, the_args);
         Strcat(buf, "\n");
         raw_printf(buf);
     }
-    VA_END();
+    va_end(the_args);
     gnollhack_exit(EXIT_FAILURE);
 }
 #endif

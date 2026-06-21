@@ -102,12 +102,12 @@ static void vprogerror();
 #endif
 
 /* Macro substitute for error() */
-void error VA_DECL(const char *, line)
+void error (const char *line, ...)
 {
-	VA_START(line);
-	VA_INIT(line, char *);
-	vprogerror(line, VA_ARGS);
-	VA_END();
+	va_list the_args;
+	va_start(the_args, line);
+	vprogerror(line, the_args);
+	va_end(the_args);
 }
 
 #ifdef USE_STDARG
@@ -121,13 +121,13 @@ vprogerror(line, the_args) const char *line; va_list the_args;
 #else /* USE_STDARG | USE_VARARG */
 
 void
-error VA_DECL(const char *, line)
+error (const char *line, ...)
 #endif
 {  /* opening brace for vprogerror(), nested block for USE_OLDARG error() */
 	char pbuf[BUFSZ];
 
 	if(index(line, '%')) {
-		Vsprintf(pbuf,line,VA_ARGS);
+		Vsprintf(pbuf,line,the_args);
 		line = pbuf;
 	}
 	showerror("of an internal error",line);

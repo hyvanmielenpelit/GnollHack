@@ -6165,40 +6165,40 @@ show_gamelog(int final)
 
 void
 livelog_printf
-VA_DECL2(unsigned int, ll_type, const char*, fmt)
+(unsigned int ll_type, const char *fmt, ...)
 {
     char ll_msgbuf[512];
-    VA_START(fmt);
-    VA_INIT(fmt, char*);
-    vsnprintf(ll_msgbuf, 512, fmt, VA_ARGS);
+    va_list the_args;
+    va_start(the_args, fmt);
+    vsnprintf(ll_msgbuf, 512, fmt, the_args);
     gamelog_add((int64_t)ll_type, moves, ll_msgbuf);
     livelog_write_string(ll_type, ll_msgbuf);
     livelog_post_to_forum(ll_type, ll_msgbuf);
-    VA_END();
+    va_end(the_args);
 }
 
 void
 post_to_forum_printf
-VA_DECL2(unsigned int, ll_type, const char*, fmt)
+(unsigned int ll_type, const char *fmt, ...)
 {
     char ll_msgbuf[512];
-    VA_START(fmt);
-    VA_INIT(fmt, char*);
-    vsnprintf(ll_msgbuf, 512, fmt, VA_ARGS);
+    va_list the_args;
+    va_start(the_args, fmt);
+    vsnprintf(ll_msgbuf, 512, fmt, the_args);
     livelog_post_to_forum(ll_type, ll_msgbuf);
-    VA_END();
+    va_end(the_args);
 }
 
 void
 post_to_forum_rt_printf
-VA_DECL3(unsigned int, ll_type, struct u_realtime, used_realtime, const char*, fmt)
+(unsigned int ll_type, struct u_realtime used_realtime, const char *fmt, ...)
 {
     char ll_msgbuf[512];
-    VA_START(fmt);
-    VA_INIT(fmt, char*);
-    vsnprintf(ll_msgbuf, 512, fmt, VA_ARGS);
+    va_list the_args;
+    va_start(the_args, fmt);
+    vsnprintf(ll_msgbuf, 512, fmt, the_args);
     livelog_post_to_forum_rt(ll_type, used_realtime, ll_msgbuf);
-    VA_END();
+    va_end(the_args);
 }
 
 #ifdef EXTRAINFO_FN

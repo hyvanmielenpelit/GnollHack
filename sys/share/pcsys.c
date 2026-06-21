@@ -404,17 +404,17 @@ const char *str;
 }
 
 void msmsg
-VA_DECL(const char *, fmt)
+(const char *fmt, ...)
 {
-    VA_START(fmt);
-    VA_INIT(fmt, const char *);
+    va_list the_args;
+    va_start(the_args, fmt);
 #if defined(MSDOS) && defined(NO_TERMS)
     if (iflags.grmode)
         gr_finish();
 #endif
-    Vprintf(fmt, VA_ARGS);
+    Vprintf(fmt, the_args);
     flushout();
-    VA_END();
+    va_end(the_args);
     return;
 }
 
