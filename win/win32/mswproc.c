@@ -153,7 +153,7 @@ struct window_procs mswin_procs = {
 };
 
 /*
-init_nhwindows(int* argcp, char** argv)
+init_nhwindows(int* argcp, char **argv)
                 -- Initialize the windows used by GnollHack.  This can also
                    create the standard windows listed at the top, but does
                    not display them.
@@ -996,7 +996,7 @@ mswin_clear_nhwindow(winid wid)
                    --more--, if necessary, in the tty window-port.
 */
 void
-mswin_display_nhwindow(winid wid, BOOLEAN_P block)
+mswin_display_nhwindow(winid wid, boolean block)
 {
     logDebug("mswin_display_nhwindow(%d, %d)\n", wid, block);
     if (GetNHApp()->windowlist[wid].win != NULL) {
@@ -1112,30 +1112,7 @@ mswin_curs(winid wid, int x, int y)
 }
 
 /*
-putstr(window, attr, str)
-                -- Print str on the window with the given attribute.  Only
-                   printable ASCII characters (040-0126) must be supported.
-                   Multiple putstr()s are output on separate lines.
-Attributes
-                   can be one of
-                        ATR_NONE (or 0)
-                        ATR_ULINE
-                        ATR_BOLD
-                        ATR_BLINK
-                        ATR_INVERSE
-                   If a window-port does not support all of these, it may map
-                   unsupported attributes to a supported one (e.g. map them
-                   all to ATR_INVERSE).  putstr() may compress spaces out of
-                   str, break str, or truncate str, if necessary for the
-                   display.  Where putstr() breaks a line, it has to clear
-                   to end-of-line.
-                -- putstr should be implemented such that if two putstr()s
-                   are done consecutively the user will see the first and
-                   then the second.  In the tty port, pline() achieves this
-                   by calling more() or displaying both on the same line.
-*/
-void
-mswin_putstr(winid wid, int attr, const char *text)
+putstr(-- Print str on the window with the given attribute. Only printable ASCII characters (040-0126) must be supported. Multiple putstr()s are output on separate lines. Attributes can be one of ATR_NONE (or 0) ATR_ULINE ATR_BOLD ATR_BLINK ATR_INVERSE If a window-port does not support all of these, -- Print str on the window with the given attribute. Only printable ASCII characters (040-0126) must be supported. Multiple putstr()s are output on separate lines. Attributes can be one of ATR_NONE (or 0) ATR_ULINE ATR_BOLD ATR_BLINK ATR_INVERSE If a pline() achieves this by calling more() or displaying both on the same line.*/ void mswin_putstr(winid wid, int attr, const char*text), -- Print str on the window with the given attribute. Only printable ASCII characters (040-0126) must be supported. Multiple putstr()s are output on separate lines. Attributes can be one of ATR_NONE (or 0) ATR_ULINE ATR_BOLD ATR_BLINK ATR_INVERSE If a or truncate str)
 {
     logDebug("mswin_putstr(%d, %d, %s)\n", wid, attr, text);
 
@@ -1223,7 +1200,7 @@ mswin_putstr_ex2(winid wid, const char* text, const char* attrs, const char* col
                    iff complain is TRUE.
 */
 void
-mswin_display_file(const char *filename, BOOLEAN_P must_exist)
+mswin_display_file(const char *filename, boolean must_exist)
 {
     dlb *f;
     TCHAR wbuf[BUFSZ];
@@ -1319,8 +1296,8 @@ identifier
 */
 void
 mswin_add_extended_menu(winid wid, int glyph, const ANY_P *identifier,
-               CHAR_P accelerator, CHAR_P group_accel, int attr, int color,
-               const char *str, BOOLEAN_P presel, struct extended_menu_info info)
+               char accelerator, char group_accel, int attr, int color,
+               const char *str, boolean presel, struct extended_menu_info info)
 {
     logDebug("mswin_add_menu(%d, %d, %p, %c, %c, %d, %s, %d)\n", wid, glyph,
              identifier, (char) accelerator, (char) group_accel, attr, str,
@@ -1350,8 +1327,8 @@ mswin_add_extended_menu(winid wid, int glyph, const ANY_P *identifier,
 
 void
 mswin_add_menu(winid wid, int glyph, const ANY_P* identifier,
-    CHAR_P accelerator, CHAR_P group_accel, int attr, int color,
-    const char* str, BOOLEAN_P presel)
+    char accelerator, char group_accel, int attr, int color,
+    const char* str, boolean presel)
 {
     mswin_add_extended_menu(wid, glyph, identifier,
         accelerator, group_accel, attr, color,
@@ -1359,16 +1336,7 @@ mswin_add_menu(winid wid, int glyph, const ANY_P* identifier,
 }
 
 /*
-end_menu(window, prompt)
-                -- Stop adding entries to the menu and flushes the window
-                   to the screen (brings to front?).  Prompt is a prompt
-                   to give the user.  If prompt is NULL, no prompt will
-                   be printed.
-                ** This probably shouldn't flush the window any more (if
-                ** it ever did).  That should be select_menu's job.  -dean
-*/
-void
-mswin_end_menu_ex(winid wid, const char *prompt, const char* subtitle)
+end_menu(-- Stop adding entries to the menu and flushes the no prompt will be printed.**This probably shouldn't flush the window any more (if**it ever did). That should be select_menu's job. -dean*/ void mswin_end_menu_ex(winid wid, const char*prompt, const char*subtitle), -- Stop adding entries to the menu and flushes the no prompt will be printed.**This probably shouldn't flush the window any more (if**it ever did). That should be select_menu's job. -dean*/ void mswin_end_menu_ex(winid wid, const char*prompt, const char*subtitle))
 {
     logDebug("mswin_end_menu_ex(%d, %s)\n", wid, prompt);
     if ((wid >= 0) && (wid < MAXWINDOWS)
@@ -1472,7 +1440,7 @@ cliparound(x, y)-- Make sure that the user is more-or-less centered on the
                 -- This function is only defined if CLIPPING is defined.
 */
 void
-mswin_cliparound(int x, int y, BOOLEAN_P force)
+mswin_cliparound(int x, int y, boolean force)
 {
     winid wid = WIN_MAP;
 
@@ -1489,7 +1457,7 @@ mswin_cliparound(int x, int y, BOOLEAN_P force)
     }
 }
 
-STATIC_VAR double saved_zoom = 1.0;
+static double saved_zoom = 1.0;
 void
 mswin_issue_gui_command(int cmd_id, int cmd_param, int cmd_param2, const char* cmd_str)
 {
@@ -1536,19 +1504,7 @@ mswin_issue_gui_command(int cmd_id, int cmd_param, int cmd_param2, const char* c
 }
 
 /*
-print_glyph(window, x, y, layers)
-                -- Print the glyph at (x,y) on the given window.  Glyphs are
-                   integers at the interface, mapped to whatever the window-
-                   port wants (symbol, font, color, attributes, ...there's
-                   a 1-1 map between glyphs and distinct things on the map).
-        -- bkglyph is a background glyph for potential use by some
-           graphical or tiled environments to allow the depiction
-           to fall against a background consistent with the grid 
-           around x,y.
-                   
-*/
-void
-mswin_print_glyph(winid wid, XCHAR_P x, XCHAR_P y, struct layer_info layers)
+print_glyph(-- Print the glyph at (x,y) on the given mapped to whatever the window- port wants (symbol, font, color, attributes, ...there's a 1-1 map between glyphs and distinct things on the map). -- bkglyph is a background glyph for potential use by some graphical or tiled environments to allow the depiction to fall against a background consistent with the grid around x, -- Print the glyph at (x,y) on the given y.*/ void mswin_print_glyph(winid wid, xchar x, xchar y, struct layer_info layers), -- Print the glyph at (x,y) on the given y.*/ void mswin_print_glyph(winid wid, xchar x, xchar y, struct layer_info layers), -- Print the glyph at (x,y) on the given y.*/ void mswin_print_glyph(winid wid, xchar x, xchar y, struct layer_info layers))
 {
     int glyph = layers.glyph;
     int bkglyph = layers.bkglyph;
@@ -1626,12 +1582,7 @@ mswin_raw_print(const char *str)
 }
 
 /*
-raw_print_bold(str)
-                -- Like raw_print(), but prints in bold/standout (if
-possible).
-*/
-void
-mswin_raw_print_bold(const char *str)
+raw_print_bold(but prints in bold/standout (if possible).*/ void mswin_raw_print_bold(const char*str))
 {
     logDebug("mswin_raw_print_bold(%s)\n", str);
     if (str && *str) {
@@ -1753,7 +1704,7 @@ char yn_function(const char *ques, const char *choices, char default)
                    ports might use a popup.
 */
 char
-mswin_yn_function_ex(int style, int attr, int color, int glyph, const char* title, const char *question, const char *choices, CHAR_P def, const char* resp_desc, const char* introline, uint64_t ynflags)
+mswin_yn_function_ex(int style, int attr, int color, int glyph, const char* title, const char *question, const char *choices, char def, const char* resp_desc, const char* introline, uint64_t ynflags)
 {
     char ch;
     char yn_esc_map = '\033';
@@ -2087,11 +2038,7 @@ mswin_get_ext_cmd()
 }
 
 /*
-number_pad(state)
-            -- Initialize the number pad to the given state.
-*/
-void
-mswin_number_pad(int state)
+number_pad(-- Initialize the number pad to the given state. */ void mswin_number_pad(int state))
 {
     /* Do Nothing */
     logDebug("mswin_number_pad(%d)\n", state);
@@ -2368,7 +2315,7 @@ mswin_preference_update(const char *pref)
 }
 
 char *
-mswin_getmsghistory_ex(char** attrs_ptr, char** colors_ptr, BOOLEAN_P init)
+mswin_getmsghistory_ex(char **attrs_ptr, char **colors_ptr, boolean init)
 {
     if (attrs_ptr)
         *attrs_ptr = (char*)0;
@@ -2444,7 +2391,7 @@ mswin_getmsghistory_ex(char** attrs_ptr, char** colors_ptr, BOOLEAN_P init)
 }
 
 void
-mswin_putmsghistory_ex(const char *msg, const char* attrs, const char* colors, BOOLEAN_P restoring)
+mswin_putmsghistory_ex(const char *msg, const char* attrs, const char* colors, boolean restoring)
 {
     BOOL save_sound_opt;
 
@@ -3489,9 +3436,7 @@ mswin_status_enablefield(int fieldidx, const char *nm, const char *fmt,
 
 /* TODO: turn this into a commmon helper; multiple identical implementations */
 static int
-mswin_condcolor(bm, bmarray)
-long bm;
-uint64_t *bmarray;
+mswin_condcolor(long bm, uint64_t *bmarray)
 {
     int i;
 
@@ -3504,9 +3449,7 @@ uint64_t *bmarray;
 }
 
 static int
-mswin_condattr(bm, bmarray)
-long bm;
-uint64_t *bmarray;
+mswin_condattr(long bm, uint64_t *bmarray)
 {
     if (bm && bmarray) {
         if (bm & bmarray[HL_ATTCLR_DIM]) return HL_DIM;
@@ -3796,7 +3739,7 @@ mswin_play_ghsound_environment_ambient(struct ghsound_environment_ambient_info i
 }
 
 void
-mswin_adjust_ghsound_general_volumes(VOID_ARGS)
+mswin_adjust_ghsound_general_volumes(void)
 {
     float new_general_volume = ((float)flags.sound_volume_general) / 100.0f;
     float new_music_volume = ((float)flags.sound_volume_music) / 100.0f;
@@ -3839,7 +3782,7 @@ mswin_set_ambient_ghsound_volume(struct soundsource_t* soundsource)
 }
 
 void
-mswin_init_platform(VOID_ARGS)
+mswin_init_platform(void)
 {
     /* GDI+ */
     StartGdiplus();
@@ -3896,7 +3839,7 @@ mswin_exit_hack(int status)
 
 
 void
-mswin_clear_context_menu(VOID_ARGS)
+mswin_clear_context_menu(void)
 {
     return;
 }
@@ -3987,7 +3930,7 @@ mswin_update_cursor(int style, int force_paint, int show_on_you)
 }
 
 int
-mswin_ui_has_input(VOID_ARGS)
+mswin_ui_has_input(void)
 {
     return FALSE;
 }

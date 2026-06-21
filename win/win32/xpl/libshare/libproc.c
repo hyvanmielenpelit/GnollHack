@@ -88,20 +88,20 @@ void monst_to_info(struct monst*, struct monst_info*);
 int get_condition_color(int cond_mask);
 
 /* Moved these outside of function so that they do not take stack space */
-STATIC_VAR char _buf[UTF8BUFSZ] = "";
-STATIC_VAR char _buf2[UTF8BUFSZ] = "";
-STATIC_VAR char _qbuf[UTF8QBUFSZ] = "";
-STATIC_VAR char _qtbuf[UTF8QBUFSZ] = "";
-STATIC_VAR char _ibuf[UTF8IBUFSZ] = "";
-STATIC_VAR char _bigbuf[UTF8BUFSZ * 4] = "";
-STATIC_VAR char _utf8buf[UTF8BUFSZ] = "";
-STATIC_VAR char _superutf8buf[UTF8BUFSZ] = "";
-STATIC_VAR char _subutf8buf[UTF8BUFSZ] = "";
-STATIC_VAR char _titleutf8buf[UTF8BUFSZ] = "";
+static char _buf[UTF8BUFSZ] = "";
+static char _buf2[UTF8BUFSZ] = "";
+static char _qbuf[UTF8QBUFSZ] = "";
+static char _qtbuf[UTF8QBUFSZ] = "";
+static char _ibuf[UTF8IBUFSZ] = "";
+static char _bigbuf[UTF8BUFSZ * 4] = "";
+static char _utf8buf[UTF8BUFSZ] = "";
+static char _superutf8buf[UTF8BUFSZ] = "";
+static char _subutf8buf[UTF8BUFSZ] = "";
+static char _titleutf8buf[UTF8BUFSZ] = "";
 
 
 /* Function definitions */
-void lib_init_nhwindows(int* argc, char** argv)
+void lib_init_nhwindows(int* argc, char **argv)
 {
     lib_callbacks.callback_init_nhwindows();
     iflags.window_inited = 1;
@@ -280,7 +280,7 @@ void lib_clear_nhwindow(winid wid)
     lib_callbacks.callback_clear_nhwindow(wid);
 }
 
-void lib_display_nhwindow(winid wid, BOOLEAN_P block)
+void lib_display_nhwindow(winid wid, boolean block)
 {
     lib_callbacks.callback_display_nhwindow(wid, (uchar)block);
 }
@@ -314,7 +314,7 @@ void lib_putstr_ex2(winid wid, const char* text, const char* attrs, const char* 
     lib_callbacks.callback_putstr_ex2(wid, text ? _buf : 0, attrs, colors, attr, color, append);
 }
 
-void lib_display_file(const char* filename, BOOLEAN_P must_exist)
+void lib_display_file(const char* filename, boolean must_exist)
 {
     dlb* f;
     //lib_callbacks.callback_display_file(filename, must_exist);
@@ -363,8 +363,8 @@ void lib_start_menu_ex(winid wid, int style)
 }
 
 void lib_add_menu(winid wid, int glyph, const ANY_P* identifier,
-    CHAR_P accelerator, CHAR_P group_accel, int attr, int color,
-    const char* str, BOOLEAN_P presel)
+    char accelerator, char group_accel, int attr, int color,
+    const char* str, boolean presel)
 {
     if (!str)
         return;
@@ -380,8 +380,8 @@ void lib_add_menu(winid wid, int glyph, const ANY_P* identifier,
 }
 
 void lib_add_extended_menu(winid wid, int glyph, const ANY_P* identifier,
-    CHAR_P accelerator, CHAR_P group_accel, int attr, int color,
-    const char* str, BOOLEAN_P presel, struct extended_menu_info info)
+    char accelerator, char group_accel, int attr, int color,
+    const char* str, boolean presel, struct extended_menu_info info)
 {
     if (!str)
         return;
@@ -464,14 +464,14 @@ void lib_wait_synch(void)
     libdef_wait_synch();
 }
 
-void lib_cliparound(int x, int y, BOOLEAN_P force)
+void lib_cliparound(int x, int y, boolean force)
 {
     lib_callbacks.callback_cliparound(x, y, (uchar)force);
 }
 
 extern const nhsym cp437toUnicode[256];
 
-void lib_print_glyph(winid wid, XCHAR_P x, XCHAR_P y, struct layer_info layers)
+void lib_print_glyph(winid wid, xchar x, xchar y, struct layer_info layers)
 {
     int64_t symbol;
     nhsym sym = 0;
@@ -737,9 +737,9 @@ int lib_doprev_message(void)
     return 0;
 }
 
-STATIC_VAR char _defs[16] = { 0 };
+static char _defs[16] = { 0 };
 
-char lib_yn_function_ex(int style, int attr, int color, int glyph, const char* title, const char* question, const char* choices, CHAR_P def, const char* resp_desc, const char* introline, uint64_t ynflags)
+char lib_yn_function_ex(int style, int attr, int color, int glyph, const char* title, const char* question, const char* choices, char def, const char* resp_desc, const char* introline, uint64_t ynflags)
 {
     reset_found_this_turn(); /* Otherwise, after user input, the animation might play again upon flush_screen */
 
@@ -839,18 +839,15 @@ void lib_change_color(int param1, int64_t param2, int param3)
 
 #ifdef MAC
 /*ARGUSED*/
-STATIC_OVL void
-lib_change_background(arg)
-int arg UNUSED;
+static void
+lib_change_background(int arg UNUSED)
 {
     return;
 }
 
 /*ARGSUSED*/
-STATIC_OVL short
-lib_set_font_name(window, fontname)
-winid window;
-char* fontname;
+static short
+lib_set_font_name(winid window, char *fontname)
 {
     return 0;
 }
@@ -895,7 +892,7 @@ void lib_preference_update(const char* pref)
     }
 }
 
-char* lib_getmsghistory_ex(char** attrs_ptr, char** colors_ptr, BOOLEAN_P init)
+char* lib_getmsghistory_ex(char **attrs_ptr, char **colors_ptr, boolean init)
 {
     static char buf[BUFSZ * 4] = "";
     static char attrs[BUFSZ * 4] = "";
@@ -919,7 +916,7 @@ char* lib_getmsghistory_ex(char** attrs_ptr, char** colors_ptr, BOOLEAN_P init)
     return res ? buf : 0;
 }
 
-void lib_putmsghistory_ex(const char* msg, const char* attrs, const char* colors, BOOLEAN_P is_restoring)
+void lib_putmsghistory_ex(const char* msg, const char* attrs, const char* colors, boolean is_restoring)
 {
     *_bigbuf = 0;
     if (msg)
@@ -957,7 +954,7 @@ void lib_status_finish(void)
     genl_status_finish();
 }
 
-void lib_status_enablefield(int fieldidx, const char* nm, const char* fmt, BOOLEAN_P enable)
+void lib_status_enablefield(int fieldidx, const char* nm, const char* fmt, boolean enable)
 {
     lib_callbacks.callback_status_enablefield(fieldidx, nm, fmt, (uchar)enable);
     genl_status_enablefield(fieldidx, nm, fmt, enable);
@@ -1164,7 +1161,7 @@ int get_condition_attr(int cond_mask)
     return attr;
 }
 
-void lib_print_conditions(const char** names)
+void lib_print_conditions(const char **names)
 {
     int i;
     for (i = 0; i < NUM_BL_CONDITIONS; i++) 
@@ -1366,7 +1363,7 @@ void lib_play_immediate_ghsound(struct ghsound_immediate_info info)
     int eventBank = ghsound2event[info.ghsound].bank_id;
     double eventVolume = (double)ghsound2event[info.ghsound].volume;
     double soundVolume = (double)info.volume;
-    const char** parameter_names = info.parameter_names;
+    const char **parameter_names = info.parameter_names;
     float* parameter_values = info.parameter_values;
     int parameterarraysize = MAX_SOUND_PARAMETERS;
     int sound_type = info.sound_type;
@@ -1460,7 +1457,7 @@ void lib_play_ghsound_environment_ambient(struct ghsound_environment_ambient_inf
     }
 }
 
-void lib_adjust_ghsound_general_volumes(VOID_ARGS)
+void lib_adjust_ghsound_general_volumes(void)
 {
     return;
 }
@@ -1511,7 +1508,7 @@ void lib_exit_hack(int status)
 
 
 void
-lib_clear_context_menu(VOID_ARGS)
+lib_clear_context_menu(void)
 {
     lib_callbacks.callback_clear_context_menu();
 }
@@ -1585,7 +1582,7 @@ lib_update_cursor(int style, int force_paint, int show_on_u)
 }
 
 int
-lib_ui_has_input(VOID_ARGS)
+lib_ui_has_input(void)
 {
     return lib_callbacks.callback_ui_has_input();
 }
@@ -1597,7 +1594,7 @@ void lib_bail(const char* mesg)
     nh_bail(EXIT_SUCCESS, mesg, TRUE);
 }
 
-void lib_init_platform(VOID_ARGS)
+void lib_init_platform(void)
 {
     thread_lock_init();
     /* Tiles */
@@ -1640,7 +1637,7 @@ libdef_raw_print_bold(const char* s)
 }
 
 void
-libdef_wait_synch(VOID_ARGS)
+libdef_wait_synch(void)
 {
     /* Config file error handling routines
      * call wait_sync() without checking to
@@ -1656,8 +1653,7 @@ libdef_wait_synch(VOID_ARGS)
 
 
 void
-set_wincaps(wincap1, wincap2)
-uint64_t wincap1, wincap2;
+set_wincaps(uint64_t wincap1, uint64_t wincap2)
 {
     if(wincap1 > 0)
         lib_procs.wincap = wincap1;

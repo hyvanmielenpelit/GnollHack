@@ -153,7 +153,7 @@ int lock_init_result = -1;
 //pthread_mutex_t threadlock = { 0 };
 
 void
-thread_lock_init(VOID_ARGS)
+thread_lock_init(void)
 {
     //if (!lock_init_result)
     //    thread_lock_destroy();
@@ -161,7 +161,7 @@ thread_lock_init(VOID_ARGS)
 }
 
 void
-thread_lock_destroy(VOID_ARGS)
+thread_lock_destroy(void)
 {
     //if (!lock_init_result)
     //{
@@ -171,7 +171,7 @@ thread_lock_destroy(VOID_ARGS)
 }
 
 void
-thread_lock_lock(VOID_ARGS)
+thread_lock_lock(void)
 {
     //if (!lock_init_result)
     //{
@@ -180,7 +180,7 @@ thread_lock_lock(VOID_ARGS)
 }
 
 void
-thread_lock_unlock(VOID_ARGS)
+thread_lock_unlock(void)
 {
     //if (!lock_init_result)
     //{
@@ -189,14 +189,13 @@ thread_lock_unlock(VOID_ARGS)
 }
 
 void
-exit_thread(retbuf)
-char* retbuf;
+exit_thread(char *retbuf)
 {
     exit(0);
 }
 
 void
-gnh_umask(VOID_ARGS)
+gnh_umask(void)
 {
     (void)umask(0777 & ~FCMASK);
 }

@@ -16,8 +16,8 @@
 #include <pwd.h>
 #include <sys/types.h>
 #include <dirent.h>
-extern struct passwd* FDECL(getpwuid, (uid_t));
-extern struct passwd* FDECL(getpwnam, (const char*));
+extern struct passwd* getpwuid(uid_t);
+extern struct passwd* getpwnam(const char*);
 
 void
 regularize(s)    /* normalize file name - we don't like .'s, /'s, spaces */
@@ -167,7 +167,7 @@ int lock_init_result = -1;
 pthread_mutex_t threadlock = { 0 };
 
 void
-thread_lock_init(VOID_ARGS)
+thread_lock_init(void)
 {
     if (!lock_init_result)
         thread_lock_destroy();
@@ -175,7 +175,7 @@ thread_lock_init(VOID_ARGS)
 }
 
 void
-thread_lock_destroy(VOID_ARGS)
+thread_lock_destroy(void)
 {
     if (!lock_init_result)
     {
@@ -185,7 +185,7 @@ thread_lock_destroy(VOID_ARGS)
 }
 
 void
-thread_lock_lock(VOID_ARGS)
+thread_lock_lock(void)
 {
     if (!lock_init_result)
     {
@@ -194,7 +194,7 @@ thread_lock_lock(VOID_ARGS)
 }
 
 void
-thread_lock_unlock(VOID_ARGS)
+thread_lock_unlock(void)
 {
     if (!lock_init_result)
     {
@@ -203,8 +203,7 @@ thread_lock_unlock(VOID_ARGS)
 }
 
 void
-gnollhack_exit(code)
-int code;
+gnollhack_exit(int code)
 {
     if (exit_hack)
         exit_hack(exit_hack_code);
@@ -225,8 +224,7 @@ int code;
  * be room for the /
  */
 void
-append_slash(name)
-char* name;
+append_slash(char *name)
 {
     char* ptr;
 
@@ -243,7 +241,7 @@ char* name;
 #endif
 
 void
-gnh_umask(VOID_ARGS)
+gnh_umask(void)
 {
     (void)umask(0777 & ~FCMASK);
 }

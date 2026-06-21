@@ -133,8 +133,7 @@ struct window_procs safe_procs = {
 
 
 struct window_procs *
-get_safe_procs(optn)
-int optn;
+get_safe_procs(int optn)
 {
     if (optn) {
         /* include the slightly more functional stdc versions */
@@ -148,9 +147,7 @@ int optn;
 
 /*ARGSUSED*/
 void
-safe_init_nhwindows(argcp, argv)
-int *argcp UNUSED;
-char **argv UNUSED;
+safe_init_nhwindows(int *argcp UNUSED, char **argv UNUSED)
 {
     return;
 }
@@ -174,8 +171,7 @@ safe_get_nh_event()
 }
 
 void
-safe_suspend_nhwindows(str)
-const char *str;
+safe_suspend_nhwindows(const char *str)
 {
     return;
 }
@@ -187,154 +183,136 @@ safe_resume_nhwindows()
 }
 
 void
-safe_exit_nhwindows(str)
-const char *str;
+safe_exit_nhwindows(const char *str)
 {
     return;
 }
 
 winid
-safe_create_nhwindow_ex(type, style, glyph, info)
-int type, style UNUSED, glyph UNUSED;
-struct extended_create_window_info info UNUSED;
+safe_create_nhwindow_ex(int type, int style UNUSED, int glyph UNUSED, struct extended_create_window_info info UNUSED)
 {
     return WIN_ERR;
 }
 
 void
-safe_clear_nhwindow(window)
-winid window;
+safe_clear_nhwindow(winid window)
 {
     return;
 }
 
 /*ARGSUSED*/
 void
-safe_display_nhwindow(window, blocking)
-winid window;
-boolean blocking;
+safe_display_nhwindow(winid window, boolean blocking)
 {
     return;
 }
 
 void
-safe_dismiss_nhwindow(window)
-winid window;
+safe_dismiss_nhwindow(winid window)
 {
     return;
 }
 
 void
-safe_destroy_nhwindow(window)
-winid window;
+safe_destroy_nhwindow(winid window)
 {
     return;
 }
 
 void
-safe_curs(window, x, y)
-winid window;
-int x, y;
+safe_curs(winid window, int x, int y)
 {
     return;
 }
 
 void
-safe_putstr_ex(window, str, attr, color, app)
-winid window;
-int attr, app, color;
-const char *str;
+safe_putstr_ex(winid window, const char *str, int attr, int color, int app)
 {
     return;
 }
 
 void
-safe_putstr_ex2(window, str, attrs, colors, attr, color, app)
-winid window;
-int attr, color, app;
-const char* str, *attrs, *colors;
+safe_putstr_ex2(winid window, const char *str, const char *attrs, const char *colors, int attr, int color, int app)
 {
     return;
 }
 
 void
-safe_display_file(fname, complain)
-const char *fname;
-boolean complain;
+safe_display_file(const char *fname, boolean complain)
 {
     return;
 }
 
 void
-safe_start_menu_ex(window, style)
-winid window;
-int style;
+safe_start_menu_ex(winid window, int style)
 {
     return;
 }
 
+/*
+ * Parameters:
+ *   window: window to use, must be of type NHW_MENU
+ *   glyph: glyph to display with item (not used)
+ *   identifier: what to return if selected
+ *   ch: keyboard accelerator (0 = pick our own)
+ *   gch: group accelerator (0 = no group)
+ *   attr: attribute for string (like safe_putstr())
+ *   color: color for string (like safe_putstr_ex())
+ *   str: menu string
+ *   preselected: item is marked as selected
+ */
 /*ARGSUSED*/
 /*
  * Add a menu item to the beginning of the menu list.  This list is reversed
  * later.
  */
 void
-safe_add_menu(window, glyph, identifier, ch, gch, attr, color, str, preselected)
-winid window;               /* window to use, must be of type NHW_MENU */
-int glyph UNUSED;           /* glyph to display with item (not used) */
-const anything *identifier; /* what to return if selected */
-char ch;                    /* keyboard accelerator (0 = pick our own) */
-char gch;                   /* group accelerator (0 = no group) */
-int attr;                   /* attribute for string (like safe_putstr()) */
-int color;                  /* color for string (like safe_putstr_ex()) */
-const char *str;            /* menu string */
-boolean preselected;        /* item is marked as selected */
-{
-    return;
-}
-
-void
-safe_add_extended_menu(window, glyph, identifier, ch, gch, attr, color, str, preselected, info)
-winid window;               /* window to use, must be of type NHW_MENU */
-int glyph UNUSED;           /* glyph to display with item (not used) */
-const anything* identifier; /* what to return if selected */
-char ch;                    /* keyboard accelerator (0 = pick our own) */
-char gch;                   /* group accelerator (0 = no group) */
-int attr;                   /* attribute for string (like safe_putstr()) */
-int color;                  /* color for string (like safe_putstr_ex()) */
-const char* str;            /* menu string */
-boolean preselected;        /* item is marked as selected */
-struct extended_menu_info info;
+safe_add_menu(winid window, int glyph UNUSED, const anything *identifier, char ch, char gch, int attr, int color, const char *str, boolean preselected)
 {
     return;
 }
 
 /*
+ * Parameters:
+ *   window: window to use, must be of type NHW_MENU
+ *   glyph: glyph to display with item (not used)
+ *   identifier: what to return if selected
+ *   ch: keyboard accelerator (0 = pick our own)
+ *   gch: group accelerator (0 = no group)
+ *   attr: attribute for string (like safe_putstr())
+ *   color: color for string (like safe_putstr_ex())
+ *   str: menu string
+ *   preselected: item is marked as selected
+ */
+void
+safe_add_extended_menu(winid window, int glyph UNUSED, const anything *identifier, char ch, char gch, int attr, int color, const char *str, boolean preselected, struct extended_menu_info info)
+{
+    return;
+}
+
+/*
+ * Parameters:
+ *   window: menu to use
+ *   prompt, subtitle: prompt to for menu
+ */
+/*
  * End a menu in this window, window must a type NHW_MENU.
  */
 void
-safe_end_menu_ex(window, prompt, subtitle)
-winid window;       /* menu to use */
-const char *prompt, *subtitle; /* prompt to for menu */
+safe_end_menu_ex(winid window, const char *prompt, const char *subtitle)
 {
     return;
 }
 
 int
-safe_select_menu(window, how, menu_list)
-winid window;
-int how;
-menu_item **menu_list;
+safe_select_menu(winid window, int how, menu_item **menu_list)
 {
     return 0;
 }
 
 /* special hack for treating top line --More-- as a one item menu */
 char
-safe_message_menu(let, how, mesg)
-char let;
-int how;
-const char *mesg;
+safe_message_menu(char let, int how, const char *mesg)
 {
     return '\033';
 }
@@ -357,17 +335,13 @@ safe_wait_synch()
 
 #ifdef CLIPPING
 void
-safe_cliparound(x, y, force)
-int x, y;
-boolean force;
+safe_cliparound(int x, int y, boolean force)
 {
 }
 #endif /* CLIPPING */
 
 void
-safe_issue_gui_command(cmd_id, cmd_param, cmd_param2, cmd_str)
-int cmd_id, cmd_param, cmd_param2;
-const char* cmd_str;
+safe_issue_gui_command(int cmd_id, int cmd_param, int cmd_param2, const char *cmd_str)
 {
     return;
 }
@@ -378,24 +352,19 @@ const char* cmd_str;
  *  Print the glyph to the output device.  Don't flush the output device.
  */
 void
-safe_print_glyph(window, x, y, layers)
-winid window;
-xchar x, y;
-struct layer_info layers;
+safe_print_glyph(winid window, xchar x, xchar y, struct layer_info layers)
 {
     return;
 }
 
 void
-safe_raw_print(str)
-const char *str;
+safe_raw_print(const char *str)
 {
     return;
 }
 
 void
-safe_raw_print_bold(str)
-const char *str;
+safe_raw_print_bold(const char *str)
 {
     return;
 }
@@ -413,23 +382,20 @@ safe_nhgetch()
  */
 /*ARGSUSED*/
 int
-safe_nh_poskey(x, y, mod)
-int *x, *y, *mod;
+safe_nh_poskey(int *x, int *y, int *mod)
 {
     return '\033';
 }
 
 void
-win_safe_init(dir)
-int dir;
+win_safe_init(int dir)
 {
     return;
 }
 
 #ifdef POSITIONBAR
 void
-safe_update_positionbar(posbar)
-char *posbar;
+safe_update_positionbar(char *posbar)
 {
     return;
 }
@@ -440,8 +406,7 @@ char *posbar;
  *      -- initialize the port-specific data structures.
  */
 void
-safe_status_init(reassessment)
-int reassessment;
+safe_status_init(int reassessment)
 {
     return;
 }
@@ -453,21 +418,19 @@ safe_can_suspend()
 }
 
 void
-safe_stretch_window(VOID_ARGS)
+safe_stretch_window(void)
 {
     return;
 }
 
 void
-safe_set_animation_timer_interval(interval)
-unsigned int interval;
+safe_set_animation_timer_interval(unsigned int interval)
 {
     return;
 }
 
 int
-safe_open_special_view(info)
-struct special_view_info info;
+safe_open_special_view(struct special_view_info info)
 {
     switch (info.viewtype)
     {
@@ -484,63 +447,55 @@ struct special_view_info info;
 }
 
 void
-safe_stop_all_sounds(info)
-struct stop_all_info info;
+safe_stop_all_sounds(struct stop_all_info info)
 {
     return;
 }
 
 void
-safe_play_immediate_ghsound(info)
-struct ghsound_immediate_info info;
+safe_play_immediate_ghsound(struct ghsound_immediate_info info)
 {
     return;
 }
 
 void
-safe_play_ghsound_occupation_ambient(info)
-struct ghsound_occupation_ambient_info info;
+safe_play_ghsound_occupation_ambient(struct ghsound_occupation_ambient_info info)
 {
     return;
 }
 
 void
-safe_play_ghsound_effect_ambient(info)
-struct ghsound_effect_ambient_info info;
+safe_play_ghsound_effect_ambient(struct ghsound_effect_ambient_info info)
 {
     return;
 }
 
 void
-safe_set_effect_ambient_volume(info)
-struct effect_ambient_volume_info info;
+safe_set_effect_ambient_volume(struct effect_ambient_volume_info info)
 {
     return;
 }
 
 void
-safe_play_ghsound_music(info)
-struct ghsound_music_info info;
+safe_play_ghsound_music(struct ghsound_music_info info)
 {
     return;
 }
 
 void
-safe_play_ghsound_level_ambient(info)
-struct ghsound_level_ambient_info info;
+safe_play_ghsound_level_ambient(struct ghsound_level_ambient_info info)
 {
     return;
 }
 
 void
-safe_play_ghsound_environment_ambient(info)
-struct ghsound_environment_ambient_info info;
+safe_play_ghsound_environment_ambient(struct ghsound_environment_ambient_info info)
 {
     return;
 }
 
 void
-safe_adjust_ghsound_general_volumes(VOID_ARGS)
+safe_adjust_ghsound_general_volumes(void)
 {
     return;
 }
@@ -564,13 +519,13 @@ safe_set_ambient_ghsound_volume(struct soundsource_t* soundsource)
 }
 
 void
-safe_clear_context_menu(VOID_ARGS)
+safe_clear_context_menu(void)
 {
     return;
 }
 
 int
-safe_ui_has_input(VOID_ARGS)
+safe_ui_has_input(void)
 {
     return FALSE;
 }
@@ -625,8 +580,7 @@ safe_update_cursor(int style UNUSED, int force_paint UNUSED, int show_on_u UNUSE
 }
 
 void
-safe_exit_hack(status)
-int status;
+safe_exit_hack(int status)
 {
 
 }
@@ -645,28 +599,14 @@ safe_doprev_message()
 }
 
 char
-safe_yn_function_ex(style, attr, color, glyph, title, query, resp, def, resp_desc, introline, ynflags)
-int style, attr, color, glyph;
-const char *title;
-const char *query;
-const char *resp;
-const char* resp_desc;
-const char* introline;
-char def;
-uint64_t ynflags;
+safe_yn_function_ex(int style, int attr, int color, int glyph, const char *title, const char *query, const char *resp, char def, const char *resp_desc, const char *introline, uint64_t ynflags)
 {
     return '\033';
 }
 
 /*ARGSUSED*/
 void
-safe_getlin_ex(style, attr, color, prompt, outbuf, placeholder, linesuffix, introline)
-int style UNUSED, attr UNUSED, color UNUSED;
-const char *prompt UNUSED;
-const char* placeholder UNUSED;
-const char* linesuffix UNUSED;
-const char* introline UNUSED;
-char *outbuf;
+safe_getlin_ex(int style UNUSED, int attr UNUSED, int color UNUSED, const char *prompt UNUSED, char *outbuf, const char *placeholder UNUSED, const char *linesuffix UNUSED, const char *introline UNUSED)
 {
     Strcpy(outbuf, "\033");
 }
@@ -678,8 +618,7 @@ safe_get_ext_cmd()
 }
 
 void
-safe_number_pad(mode)
-int mode;
+safe_number_pad(int mode)
 {
     return;
 }
@@ -691,15 +630,13 @@ safe_delay_output()
 }
 
 void
-safe_delay_output_milliseconds(interval)
-int interval;
+safe_delay_output_milliseconds(int interval)
 {
     return;
 }
 
 void
-safe_delay_output_intervals(intervals)
-int intervals;
+safe_delay_output_intervals(int intervals)
 {
     return;
 }
@@ -707,9 +644,7 @@ int intervals;
 #ifdef CHANGE_COLOR
 /*ARGSUSED*/
 void
-safe_change_color(color, rgb, reverse)
-int color, reverse;
-int64_t rgb;
+safe_change_color(int color, int64_t rgb, int reverse)
 {
     return;
 }
@@ -717,24 +652,21 @@ int64_t rgb;
 #ifdef MAC
 /*ARGUSED*/
 void
-safe_change_background(arg)
-int arg UNUSED;
+safe_change_background(int arg UNUSED)
 {
     return;
 }
 
 /*ARGSUSED*/
 short
-safe_set_font_name(window, fontname)
-winid window;
-char* fontname;
+safe_set_font_name(winid window, char *fontname)
 {
     return 0;
 }
 #endif /* MAC */
 
 char*
-safe_get_color_string(VOID_ARGS)
+safe_get_color_string(void)
 {
     return (char*)0;
 }
@@ -754,26 +686,20 @@ safe_end_screen()
 }
 
 void
-safe_outrip(tmpwin, how, when)
-winid tmpwin;
-int how;
-time_t when;
+safe_outrip(winid tmpwin, int how, time_t when)
 {
     return;
 }
 
 /*ARGSUSED*/
 void
-safe_preference_update(pref)
-const char *pref UNUSED;
+safe_preference_update(const char *pref UNUSED)
 {
     return;
 }
 
 char*
-safe_getmsghistory_ex(attrs_ptr, colors_ptr, init)
-char** attrs_ptr, ** colors_ptr;
-boolean init UNUSED;
+safe_getmsghistory_ex(char **attrs_ptr, char **colors_ptr, boolean init UNUSED)
 {
     if (attrs_ptr)
         *attrs_ptr = (char*)0;
@@ -783,10 +709,7 @@ boolean init UNUSED;
 }
 
 void
-safe_putmsghistory_ex(msg, attrs, colors, is_restoring)
-const char *msg UNUSED;
-const char* attrs UNUSED, *colors UNUSED;
-boolean is_restoring UNUSED;
+safe_putmsghistory_ex(const char *msg UNUSED, const char *attrs UNUSED, const char *colors UNUSED, boolean is_restoring UNUSED)
 {
 }
 
@@ -796,22 +719,14 @@ safe_status_finish()
 }
 
 void
-safe_status_enablefield(fieldidx, nm, fmt, enable)
-int fieldidx;
-const char *nm;
-const char *fmt;
-boolean enable;
+safe_status_enablefield(int fieldidx, const char *nm, const char *fmt, boolean enable)
 {
 }
 
 #ifdef STATUS_HILITES
 /* call once for each field, then call with BL_FLUSH to output the result */
 void
-safe_status_update(idx, ptr, chg, percent, color, colormasks)
-int idx;
-genericptr_t ptr;
-int chg UNUSED, percent UNUSED, color UNUSED;
-uint64_t *colormasks UNUSED;
+safe_status_update(int idx, genericptr_t ptr, int chg UNUSED, int percent UNUSED, int color UNUSED, uint64_t *colormasks UNUSED)
 {
 }
 #endif /* STATUS_HILITES */
@@ -845,8 +760,7 @@ stdio_wait_synch()
 
 /* Add to your code: windowprocs.win_raw_print = stdio_raw_print; */
 void
-stdio_raw_print(str)
-const char *str;
+stdio_raw_print(const char *str)
 {
     if (str)
         fprintf(stdout, "%s\n", str);
@@ -855,8 +769,7 @@ const char *str;
 
 /* Add to your code: windowprocs.win_raw_print_bold = stdio_raw_print_bold; */
 void
-stdio_raw_print_bold(str)
-const char *str;
+stdio_raw_print_bold(const char *str)
 {
     stdio_raw_print(str);
     return;
