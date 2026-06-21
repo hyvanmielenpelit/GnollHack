@@ -6,7 +6,7 @@ description: Guidance on modifying the GnollHack C core game logic, headers, win
 # NetHack C Core
 
 ## Critical Rules
-- **Match Surrounding Style**: GnollHack is migrating to C99. Match the file's current style (K&R or C99). Use 4-space indent, opening brace on same line for control structures, `switch` case labels unindented.
+- **Match Surrounding Style**: GnollHack is migrating to C89. Match the file's current style (K&R or C89). Use 4-space indent, opening brace on same line for control structures, `switch` case labels unindented.
 - **Do NOT use standard library directly** for common operations if a NetHack wrapper exists (e.g., use `alloc()` instead of `malloc()`, `pline()` instead of `printf()`).
 
 ## Key Data Structures

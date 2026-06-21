@@ -1,7 +1,7 @@
-# Pattern Catalog: K&R to C99 Edge Cases
+# Pattern Catalog: K&R to C89 Edge Cases
 
 ## 1. Parameter Order vs. Type Declaration Order
-- **Rule**: C99 parameter order MUST match the NAME LIST in parentheses, NOT the type declaration lines.
+- **Rule**: C89 parameter order MUST match the NAME LIST in parentheses, NOT the type declaration lines.
 - **Example**: `set_occupation(fn, txt, attr, color)` with `int attr, color;` must become `set_occupation(int (*fn)(void), const char *txt, int attr, int color)`.
 
 ## 2. Function Pointer Parameters

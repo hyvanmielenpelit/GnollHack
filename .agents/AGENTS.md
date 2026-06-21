@@ -17,9 +17,9 @@ Refer to [DEVEL/code_style.txt](file:///c:/hmp/GnollHack/DEVEL/code_style.txt) f
 ### Required Conventions
 - **Indentation**: 4 spaces, NO tabs
 - **Line width**: 78 characters maximum
-- **Function definitions & prototypes**: GnollHack is migrating from K&R C to C99.
+- **Function definitions & prototypes**: GnollHack is migrating from K&R C to C89.
   - If a file has not yet been converted, match the existing K&R style and use `FDECL`/`NDECL`/`VDECL` macros for prototypes.
-  - If a file has been converted to C99, use standard ANSI C99 prototypes and definitions.
+  - If a file has been converted to C89, use standard ANSI C89 prototypes and definitions.
 - **Control statements**: Opening brace on same line: `if (cond) {`
 - **Switch/case**: `case` labels unindented within `switch`
 - **Variables**: Never declare in `for` init or conditions

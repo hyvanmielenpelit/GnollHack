@@ -1,13 +1,13 @@
 ---
-name: c99_function_conversion
-description: Patterns for converting K&R C function definitions to C99 ANSI-style prototypes, removing STATIC_DCL/STATIC_OVL macros, converting VA_DECL variadic functions, removing register keywords, and eliminating parameter type macros (BOOLEAN_P, CHAR_P, etc.).
+name: c89_function_conversion
+description: Patterns for converting K&R C function definitions to C89 ANSI-style prototypes, removing STATIC_DCL/STATIC_OVL macros, converting VA_DECL variadic functions, removing register keywords, and eliminating parameter type macros (BOOLEAN_P, CHAR_P, etc.).
 ---
 
-# C99 Function Conversion
+# C89 Function Conversion
 
 ## Critical Rules
 - **Phase Order**: Convert one `.c` file at a time. Never leave a file half-converted. Verify it compiles.
-- **Parameter Order**: In C99, parameter order MUST match the name list in the K&R parenthesis, NOT the order of the K&R type declarations.
+- **Parameter Order**: In C89, parameter order MUST match the name list in the K&R parenthesis, NOT the order of the K&R type declarations.
 - **Do NOT modify function bodies**. Only alter signatures and declarations.
 - **Maintain 78-char width**: Break lines after commas and align with the opening parenthesis. Keep return type on its own line.
 
@@ -21,7 +21,7 @@ description: Patterns for converting K&R C function definitions to C99 ANSI-styl
 - **`genericptr` / `genericptr_t`** → `void *`
 - **`NEARDATA`** → remove entirely
 
-## K&R to C99 Parameters
+## K&R to C89 Parameters
 - **Expand grouped parameters**: `xchar x, y;` MUST become `xchar x, xchar y`.
 - **Type replacements** (`tradstdc.h` macros):
   - `BOOLEAN_P` → `boolean`
@@ -42,13 +42,13 @@ STATIC_OVL boolean
 goodpos(x, y, mtmp, gpflags)
 int x, y;
 struct monst *mtmp;
-uint64_t gpflags;
+long gpflags;
 {
 ```
 **After:**
 ```c
 static boolean
-goodpos(int x, int y, struct monst *mtmp, uint64_t gpflags)
+goodpos(int x, int y, struct monst *mtmp, long gpflags)
 {
 ```
 
