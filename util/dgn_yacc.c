@@ -920,7 +920,7 @@ yy_reduce_print (yyvsp, yyrule)
 {
   int yynrhs = yyr2[yyrule];
   int yyi;
-  uint64_t int yylno = yyrline[yyrule];
+  unsigned long int yylno = yyrline[yyrule];
   YYFPRINTF (stderr, "Reducing stack by rule %d (line %lu):\n",
 	     yyrule - 1, yylno);
   /* The symbols being reduced.  */
@@ -2210,8 +2210,7 @@ init_branch()
 }
 
 int
-getchain(s)
-	char	*s;
+getchain(char *s)
 {
 	int i;
 

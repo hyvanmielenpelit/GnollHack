@@ -15,11 +15,11 @@
  * yyunput is properly declared in flex.skel.
  */
 #if !defined(FLEX_SCANNER) && !defined(FLEXHACK_SCANNER)
-int FDECL(yyback, (int *,int));
-int NDECL(yylook);
-int NDECL(yyinput);
-int NDECL(yywrap);
-int NDECL(yylex);
+int yyback(int *,int);
+int yylook(void);
+int yyinput(void);
+int yywrap(void);
+int yylex(void);
 	/* Traditional lexes let yyunput() and yyoutput() default to int;
 	 * newer ones may declare them as void since they don't return
 	 * values.  For even more fun, the lex supplied as part of the
@@ -49,11 +49,11 @@ int NDECL(yylex);
 #  undef VOIDYYPUT
 # endif
 # ifdef VOIDYYPUT
-void FDECL(yyunput, (int));
-void FDECL(yyoutput, (int));
+void yyunput(int);
+void yyoutput(int);
 # else
-int FDECL(yyunput, (int));
-int FDECL(yyoutput, (int));
+int yyunput(int);
+int yyoutput(int);
 # endif
 
 #else	/* !FLEX_SCANNER && !FLEXHACK_SCANNER */
@@ -65,31 +65,31 @@ int FDECL(yyoutput, (int));
 #if defined(FLEX_SCANNER) || defined(FLEXHACK_SCANNER)
 /* older flex wants this */
 #ifdef _CRTDBG_MAP_ALLOC
-#define YY_MALLOC_DECL  genericptr_t FDECL(_malloc_dbg, (size_t, int, const char*, int)); \
-                        genericptr_t FDECL(_realloc_dbg, (genericptr_t, size_t, int, const char*, int));
+#define YY_MALLOC_DECL  genericptr_t _malloc_dbg(size_t, int, const char*, int); \
+                        genericptr_t _realloc_dbg(genericptr_t, size_t, int, const char*, int);
 #else
-#define YY_MALLOC_DECL  genericptr_t FDECL(malloc, (size_t)); \
-                        genericptr_t FDECL(realloc, (genericptr_t, size_t));
+#define YY_MALLOC_DECL  genericptr_t malloc(size_t); \
+                        genericptr_t realloc(genericptr_t, size_t);
 /* newer flex assumes <stdlib.h> so needs this in case it's been suppressed */
 #endif
 YY_MALLOC_DECL
 #endif
 
-void FDECL(init_yyin, (FILE *));
-void FDECL(init_yyout, (FILE *));
+void init_yyin(FILE *);
+void init_yyout(FILE *);
 
-int NDECL(handle_varstring_check);
+int handle_varstring_check(void);
 
-extern void VDECL(lc_error, (const char *, ...));
-extern struct lc_vardefs *FDECL(vardef_defined,(struct lc_vardefs *,char *, int));
+extern void lc_error(const char *, ...);
+extern struct lc_vardefs *vardef_defined(struct lc_vardefs *,char *, int);
 
 extern struct lc_vardefs *vardefs;
 
-extern int64_t FDECL(method_defined, (char *, int64_t, int64_t *));
+extern int64_t method_defined(char *, int64_t, int64_t *);
 
-void FDECL(savetoken, (char *));
-void NDECL(newline);
-void FDECL(advancepos, (char *));
+void savetoken(char *);
+void newline(void);
+void advancepos(char *);
 
 /*
  * This doesn't always get put in lev_comp.h
@@ -668,8 +668,7 @@ no_map_padding  { savetoken(yytext); yylval.i=NO_MAP_PADDING; return FLAG_TYPE; 
 %%
 #ifdef	AMIGA
 long *
-alloc(n)
-    unsigned n;
+alloc(unsigned n)
 {
     return (long *) malloc(n);
 }
@@ -677,8 +676,7 @@ alloc(n)
 
 /* routine to switch to another input file; needed for flex */
 void
-init_yyin( input_f )
-FILE *input_f;
+init_yyin(FILE *input_f)
 {
 #if defined(FLEX_SCANNER) || defined(FLEXHACK_SCANNER)
     if (yyin)
@@ -692,8 +690,7 @@ FILE *input_f;
 }
 /* analogous routine (for completeness) */
 void
-init_yyout( output_f )
-FILE *output_f;
+init_yyout(FILE *output_f)
 {
     yyout = output_f;
 }
@@ -740,16 +737,14 @@ newline()
 }
 
 void
-savetoken(s)
-char *s;
+savetoken(char *s)
 {
     Sprintf(curr_token, "%s", s);
     advancepos(s);
 }
 
 void
-advancepos(s)
-char *s;
+advancepos(char *s)
 {
     token_start_pos += strlen(s);
 }
