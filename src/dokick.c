@@ -11,28 +11,26 @@
     ((martial_bonus()/* && (Magical_kicking || !(uarmf && is_metallic(uarmf))) */) || is_bigfoot(youmonst.data) \
      || Magical_kicking)
 
-STATIC_VAR NEARDATA struct rm* maploc;
-STATIC_VAR NEARDATA struct rm nowhere;
-STATIC_VAR NEARDATA const char *gate_str;
+static NEARDATA struct rm* maploc;
+static NEARDATA struct rm nowhere;
+static NEARDATA const char *gate_str;
 
 /* kickedobj (decl.c) tracks a kicked object until placed or destroyed */
 
 extern boolean notonhead; /* for long worms */
 
-STATIC_DCL void FDECL(kickdmg, (struct monst *, BOOLEAN_P));
-STATIC_DCL void FDECL(kick_monster, (struct monst *, XCHAR_P, XCHAR_P));
-STATIC_DCL int FDECL(really_kick_object, (XCHAR_P, XCHAR_P, BOOLEAN_P));
-STATIC_DCL char *FDECL(kickstr, (char *, const char *));
-STATIC_DCL void FDECL(otransit_msg, (struct obj *, BOOLEAN_P, int64_t));
-STATIC_DCL void FDECL(drop_to, (coord *, SCHAR_P));
+static void kickdmg(struct monst *, boolean);
+static void kick_monster(struct monst *, xchar, xchar);
+static int really_kick_object(xchar, xchar, boolean);
+static char *kickstr(char *, const char *);
+static void otransit_msg(struct obj *, boolean, int64_t);
+static void drop_to(coord *, schar);
 
-STATIC_VAR const char kick_passes_thru[] = "kick passes harmlessly through";
+static const char kick_passes_thru[] = "kick passes harmlessly through";
 
 /* kicking damage when not poly'd into a form with a kick attack */
-STATIC_OVL void
-kickdmg(mon, clumsy)
-struct monst *mon;
-boolean clumsy;
+static void
+kickdmg(struct monst *mon, boolean clumsy)
 {
     int mdx, mdy;
     int dmg = 0; // (ACURRSTR + ACURR(A_DEX) + ACURR(A_CON)) / 15;
@@ -290,9 +288,7 @@ boolean clumsy;
 }
 
 boolean
-maybe_kick_monster(mon, x, y)
-struct monst *mon;
-xchar x, y;
+maybe_kick_monster(struct monst *mon, xchar x, xchar y)
 {
     if (mon) {
         boolean save_forcefight = context.forcefight;
@@ -311,10 +307,8 @@ xchar x, y;
     return (boolean) (mon != 0);
 }
 
-STATIC_OVL void
-kick_monster(mon, x, y)
-struct monst *mon;
-xchar x, y;
+static void
+kick_monster(struct monst *mon, xchar x, xchar y)
 {
     boolean clumsy = FALSE;
 
@@ -500,10 +494,7 @@ xchar x, y;
  *  The gold object is *not* attached to the fobj chain!
  */
 boolean
-ghitm(mtmp, gold, hitres_ptr)
-struct monst *mtmp;
-struct obj *gold;
-uchar* hitres_ptr;
+ghitm(struct monst *mtmp, struct obj *gold, uchar *hitres_ptr)
 {
     boolean msg_given = FALSE;
 
@@ -667,12 +658,14 @@ uchar* hitres_ptr;
     return FALSE;
 }
 
+/*
+ * Parameters:
+ *   x, y: coordinates where object was before the impact, not after
+ */
 /* container is kicked, dropped, thrown or otherwise impacted by player.
  * Assumes container is on floor.  Checks contents for possible damage. */
 void
-container_impact_dmg(obj, x, y)
-struct obj *obj;
-xchar x, y; /* coordinates where object was before the impact, not after */
+container_impact_dmg(struct obj *obj, xchar x, xchar y)
 {
     struct monst *shkp;
     struct obj *otmp, *otmp2;
@@ -745,10 +738,7 @@ xchar x, y; /* coordinates where object was before the impact, not after */
 /* jacket around really_kick_object */
 
 int
-kick_object(x, y, kickobjnam, is_golf_swing)
-xchar x, y;
-char *kickobjnam;
-boolean is_golf_swing;
+kick_object(xchar x, xchar y, char *kickobjnam, boolean is_golf_swing)
 {
     int res = 0;
 
@@ -765,10 +755,8 @@ boolean is_golf_swing;
 }
 
 /* guts of kick_object */
-STATIC_OVL int
-really_kick_object(x, y, is_golf_swing)
-xchar x, y;
-boolean is_golf_swing;
+static int
+really_kick_object(xchar x, xchar y, boolean is_golf_swing)
 {
     int range;
     struct monst *mon, *shkp = 0;
@@ -1050,9 +1038,9 @@ boolean is_golf_swing;
     (void) snuff_candle(kickedobj);
     newsym(x, y);
     mon = bhit(u.dx, u.dy, range, 0, is_golf_swing ? GOLF_SWING : KICKED_WEAPON,
-               (int FDECL((*), (MONST_P, OBJ_P, MONST_P))) 0,
-               (int FDECL((*), (OBJ_P, OBJ_P, MONST_P))) 0, 
-               (int FDECL((*), (TRAP_P, OBJ_P, MONST_P))) 0, 
+               (int FDECL((*), (struct monst *, struct obj *, struct monst *))) 0,
+               (int FDECL((*), (struct obj *, struct obj *, struct monst *))) 0, 
+               (int FDECL((*), (struct trap *, struct obj *, struct monst *))) 0, 
                &kickedobj, &youmonst, TRUE, FALSE);
     if (!kickedobj)
         return 1; /* object broken */
@@ -1095,10 +1083,8 @@ boolean is_golf_swing;
 }
 
 /* cause of death if kicking kills kicker */
-STATIC_OVL char *
-kickstr(buf, kickobjnam)
-char *buf;
-const char *kickobjnam;
+static char *
+kickstr(char *buf, const char *kickobjnam)
 {
     const char *what;
 
@@ -1141,7 +1127,7 @@ const char *kickobjnam;
 
 #ifdef ANDROID
 void
-autokick(VOID_ARGS)
+autokick(void)
 {
     if (nolimbs(youmonst.data) || slithy(youmonst.data))
         return;
@@ -1164,14 +1150,13 @@ autokick(VOID_ARGS)
 #endif
 
 int
-dokick(VOID_ARGS) 
+dokick(void) 
 {
     return dokick_indir(FALSE);
 }
 
 int
-dokick_indir(has_dir)
-boolean has_dir;
+dokick_indir(boolean has_dir)
 {
     int x, y;
     int avrg_attrib;
@@ -1992,10 +1977,8 @@ boolean has_dir;
     return 1;
 }
 
-STATIC_OVL void
-drop_to(cc, loc)
-coord *cc;
-schar loc;
+static void
+drop_to(coord *cc, schar loc)
 {
     /* cover all the MIGR_xxx choices generated by down_gate() */
     switch (loc) {
@@ -2026,13 +2009,15 @@ schar loc;
     }
 }
 
+/*
+ * Parameters:
+ *   missile: caused impact, won't drop itself
+ *   x, y: location affected
+ *   dlev: if !0 send to dlev near player
+ */
 /* player or missile impacts location, causing objects to fall down */
 void
-impact_drop(missile, x, y, dlev, dropall)
-struct obj *missile; /* caused impact, won't drop itself */
-xchar x, y;          /* location affected */
-xchar dlev;          /* if !0 send to dlev near player */
-boolean dropall;
+impact_drop(struct obj *missile, xchar x, xchar y, xchar dlev, boolean dropall)
 {
     schar toloc;
     struct obj *obj, *obj2;
@@ -2175,10 +2160,7 @@ boolean dropall;
  * otmp is either a kicked, dropped, or thrown object.
  */
 boolean
-ship_object(otmp, x, y, shop_floor_obj)
-xchar x, y;
-struct obj *otmp;
-boolean shop_floor_obj;
+ship_object(struct obj *otmp, xchar x, xchar y, boolean shop_floor_obj)
 {
     schar toloc;
     xchar ox, oy;
@@ -2305,8 +2287,7 @@ boolean shop_floor_obj;
 }
 
 void
-obj_delivery(near_hero)
-boolean near_hero;
+obj_delivery(boolean near_hero)
 {
     struct obj *otmp, *otmp2;
     int nx, ny;
@@ -2383,10 +2364,7 @@ boolean near_hero;
 }
 
 void
-deliver_obj_to_mon(mtmp, cnt, deliverflags)
-int cnt;
-struct monst *mtmp;
-uint64_t deliverflags;
+deliver_obj_to_mon(struct monst *mtmp, int cnt, uint64_t deliverflags)
 {
     struct obj *otmp, *otmp2;
     int where, maxobj = 1;
@@ -2434,11 +2412,8 @@ uint64_t deliverflags;
     }
 }
 
-STATIC_OVL void
-otransit_msg(otmp, nodrop, num)
-struct obj *otmp;
-boolean nodrop;
-int64_t num;
+static void
+otransit_msg(struct obj *otmp, boolean nodrop, int64_t num)
 {
     char *optr = 0, obuf[BUFSZ], xbuf[BUFSZ];
 
@@ -2467,8 +2442,7 @@ int64_t num;
 
 /* migration destination for objects which fall down to next level */
 schar
-down_gate(x, y)
-xchar x, y;
+down_gate(xchar x, xchar y)
 {
     struct trap *ttmp;
 
@@ -2498,7 +2472,7 @@ xchar x, y;
 }
 
 void
-reset_kick(VOID_ARGS)
+reset_kick(void)
 {
     maploc = 0;
     gate_str = 0;

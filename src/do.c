@@ -13,29 +13,27 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 
-STATIC_DCL void FDECL(trycall, (struct obj *));
-STATIC_DCL void NDECL(polymorph_sink);
-STATIC_DCL boolean NDECL(teleport_sink);
-STATIC_DCL void FDECL(dosinkring, (struct obj *));
-STATIC_PTR int NDECL(wipeoff);
-STATIC_DCL int FDECL(menu_drop, (int));
-STATIC_DCL int FDECL(menu_autostash, (int));
-STATIC_DCL int NDECL(currentlevel_rewrite);
-STATIC_DCL void NDECL(final_level);
-STATIC_DCL void FDECL(print_corpse_properties, (winid, int));
-STATIC_DCL void FDECL(revive_handle_magic_chest, (xchar*, struct obj**, int*, struct monst**));
-/* STATIC_DCL boolean FDECL(badspot, (XCHAR_P,XCHAR_P)); */
-STATIC_PTR int FDECL(CFDECLSPEC item_wiki_cmp, (const genericptr, const genericptr));
+static void trycall(struct obj *);
+static void polymorph_sink(void);
+static boolean teleport_sink(void);
+static void dosinkring(struct obj *);
+static int wipeoff(void);
+static int menu_drop(int);
+static int menu_autostash(int);
+static int currentlevel_rewrite(void);
+static void final_level(void);
+static void print_corpse_properties(winid, int);
+static void revive_handle_magic_chest(xchar*, struct obj**, int*, struct monst**);
+/* STATIC_DCL boolean badspot(xchar,xchar); */
+static int FDECL(CFDECLSPEC item_wiki_cmp, (const genericptr, const genericptr));
 
 extern int n_dgns; /* number of dungeons, from dungeon.c */
 
-STATIC_VAR NEARDATA const char drop_types[] = { ALLOW_COUNT, COIN_CLASS,
+static NEARDATA const char drop_types[] = { ALLOW_COUNT, COIN_CLASS,
                                             ALL_CLASSES, 0 };
 
-STATIC_OVL int CFDECLSPEC
-item_wiki_cmp(p, q)
-const genericptr p;
-const genericptr q;
+static int CFDECLSPEC
+item_wiki_cmp(const genericptr p, const genericptr q)
 {
     if (!p || !q)
         return 0;
@@ -51,7 +49,7 @@ const genericptr q;
 
 /* 'd' command: drop one inventory item */
 int
-dodrop(VOID_ARGS)
+dodrop(void)
 {
     int result, i = (invent) ? 0 : (SIZE(drop_types) - 1);
 
@@ -68,7 +66,7 @@ dodrop(VOID_ARGS)
 
 /* the '}' command - Character statistics */
 int
-docharacterstatistics(VOID_ARGS)
+docharacterstatistics(void)
 {
     int glyph = player_to_glyph_index(urole.rolenum, urace.racenum, Ufemale, u.ualign.type, 0) + GLYPH_PLAYER_OFF;
     int gui_glyph = maybe_get_replaced_glyph(glyph, u.ux, u.uy, data_to_replacement_info(glyph, LAYER_MONSTER, (struct obj*)0, &youmonst, 0UL, 0UL, 0UL, MAT_NONE, 0));
@@ -425,11 +423,11 @@ docharacterstatistics(VOID_ARGS)
 }
 
 
-STATIC_VAR NEARDATA const char item_description_objects[] = { ALL_CLASSES, ALLOW_NONE, 0 };
+static NEARDATA const char item_description_objects[] = { ALL_CLASSES, ALLOW_NONE, 0 };
 
 /* the M('x') command - Item descriptions */
 int
-doitemdescriptions(VOID_ARGS)
+doitemdescriptions(void)
 {
     boolean proceedtoinventory = getobj_autoselect_obj ? TRUE : floorexamine();
     if (!proceedtoinventory)
@@ -444,7 +442,7 @@ doitemdescriptions(VOID_ARGS)
  * Object may be either on floor or in inventory.
  */
 boolean
-floorexamine(VOID_ARGS)
+floorexamine(void)
 {
     struct obj* otmp;
     char qbuf[QBUFSZ];
@@ -492,8 +490,7 @@ floorexamine(VOID_ARGS)
 }
 
 void
-convert_dice_to_ranges(buf)
-char* buf;
+convert_dice_to_ranges(char *buf)
 {
     if (!buf || !*buf || !iflags.show_dice_as_ranges)
         return;
@@ -569,9 +566,7 @@ char* buf;
 }
 
 void
-printdice(buf, dice, diesize, plus)
-char* buf;
-int dice, diesize, plus;
+printdice(char *buf, int dice, int diesize, int plus)
 {
     if (!buf)
         return;
@@ -616,12 +611,7 @@ int dice, diesize, plus;
 }
 
 void
-printweight(buf, weight_in_ounces, weight_fixed_width, unit_fixed_width, allow_long)
-char* buf;
-int weight_in_ounces;
-boolean weight_fixed_width;
-boolean unit_fixed_width;
-boolean allow_long;
+printweight(char *buf, int weight_in_ounces, boolean weight_fixed_width, boolean unit_fixed_width, boolean allow_long)
 {
     double weight_in_pounds = ((double)weight_in_ounces) / 16;
     if (flags.metric_system)
@@ -701,10 +691,8 @@ boolean allow_long;
     }
 }
 
-STATIC_OVL
-void print_corpse_properties(datawin, mnum)
-winid datawin;
-int mnum;
+static
+void print_corpse_properties(winid datawin, int mnum)
 {
     struct permonst* ptr = &mons[mnum];
     char buf[BUFSZ];
@@ -934,8 +922,7 @@ int mnum;
 }
 
 int
-corpsedescription(obj)
-struct obj* obj;
+corpsedescription(struct obj *obj)
 {
     if (!obj || obj == &zeroobj || !is_obj_rotting_corpse(obj))
         return 0;
@@ -948,8 +935,7 @@ struct obj* obj;
 }
 
 int
-itemdescription(obj)
-struct obj* obj;
+itemdescription(struct obj *obj)
 {
     if (!obj || obj == &zeroobj)
         return 0;
@@ -957,11 +943,12 @@ struct obj* obj;
     return itemdescription_core(obj, obj->otyp, (struct item_description_stats*)0);
 }
 
+/*
+ * Parameters:
+ *   stats_ptr: If non-null, only returns item stats without printing anything
+ */
 int
-itemdescription_core(obj, otyp, stats_ptr)
-struct obj* obj;
-int otyp;
-struct item_description_stats* stats_ptr; /* If non-null, only returns item stats without printing anything */
+itemdescription_core(struct obj *obj, int otyp, struct item_description_stats *stats_ptr)
 {
     if (otyp <= STRANGE_OBJECT || otyp >= NUM_OBJECTS)
         return 0;
@@ -5355,7 +5342,7 @@ struct item_description_stats* stats_ptr; /* If non-null, only returns item stat
 
 
 
-STATIC_VAR const char* damage_type_names[] = {
+static const char* damage_type_names[] = {
     "physical", "magic", "fire", "cold", "sleep",
     "disintegrating", "electrical", "poisonous", "acidic", "deadly",
     "petrifying", "blinding", "stunning", "slowing", "paralyzing",
@@ -5369,7 +5356,7 @@ STATIC_VAR const char* damage_type_names[] = {
 
 };
 
-STATIC_VAR const char* damage_type_names_high[] = {
+static const char* damage_type_names_high[] = {
     "fire or poison gas", "disintegration or cold", "ancient gold dragon", "celestial", "magic",
     "random draconic", "demon", "controlled creatures", "gnolls", "ghouls",
     "undead", "minotaurs", "random eye stalk", "random eye stalk", "bison",
@@ -5377,8 +5364,7 @@ STATIC_VAR const char* damage_type_names_high[] = {
 };
 
 
-const char* get_damage_type_text(damagetype)
-short damagetype;
+const char* get_damage_type_text(short damagetype)
 {
     if (damagetype >= AD_RBGD && damagetype - AD_RBGD < SIZE(damage_type_names))
         return damage_type_names_high[damagetype - AD_RBGD];
@@ -5388,15 +5374,14 @@ short damagetype;
     return damage_type_names[damagetype];
 }
 
-STATIC_VAR const char* defense_type_names[] = {
+static const char* defense_type_names[] = {
     "physical damage resistance", "magic resistance", "fire resistance", "cold resistance", "",
     "", "", "shock resistance", "", "",
     "", "", "stun resistance", "", "",
     "drain resistance",
 };
 
-const char* get_defense_type_text(defensetype)
-int defensetype;
+const char* get_defense_type_text(int defensetype)
 {
     if (defensetype < 0 || defensetype >= SIZE(defense_type_names))
         return empty_string;
@@ -5405,8 +5390,7 @@ int defensetype;
 }
 
 int
-monsterdescription(mon)
-struct monst* mon;
+monsterdescription(struct monst *mon)
 {
     if (!mon)
         return 0;
@@ -5415,9 +5399,7 @@ struct monst* mon;
 }
 
 int
-monsterdescription_core(mon, ptr)
-struct monst* mon;
-struct permonst* ptr;
+monsterdescription_core(struct monst *mon, struct permonst *ptr)
 {
     if (!ptr)
         return 0;
@@ -5692,13 +5674,12 @@ struct permonst* ptr;
 }
 
 
-STATIC_VAR const char* monster_size_names[] = {
+static const char* monster_size_names[] = {
     "tiny", "small", "medium-sized", "large", "huge",
     "gigantic", "gigantic", "gigantic",
 };
 
-const char* get_monster_size_text(monsize)
-int monsize;
+const char* get_monster_size_text(int monsize)
 {
     if (monsize < 0 || monsize >= SIZE(monster_size_names))
         return empty_string;
@@ -5707,15 +5688,14 @@ int monsize;
 }
 
 
-STATIC_VAR const char* attack_type_names[] = {
+static const char* attack_type_names[] = {
     "none", "claw", "bite", "kick", "ram",
     "tail", "butt", "touch", "sting", "grab", "spit",
     "engulf", "breath weapon", "explosion", "explosion",
     "gaze", "tentacle", "eye stalk", "horn", "tusk"
 };
 
-const char* get_attack_type_text(aatyp)
-int aatyp;
+const char* get_attack_type_text(int aatyp)
 {
     if (aatyp == AT_SMMN)
         return "summoning";
@@ -5738,10 +5718,7 @@ int aatyp;
  * it's gone for good...  If the destination is not a pool, returns FALSE.
  */
 boolean
-boulder_hits_pool(otmp, rx, ry, pushing)
-struct obj *otmp;
-int rx, ry;
-boolean pushing;
+boulder_hits_pool(struct obj *otmp, int rx, int ry, boolean pushing)
 {
     if (!otmp || otmp->otyp != BOULDER) 
     {
@@ -5844,10 +5821,7 @@ boolean pushing;
  * away.
  */
 boolean
-flooreffects(obj, x, y, verb)
-struct obj *obj;
-int x, y;
-const char *verb;
+flooreffects(struct obj *obj, int x, int y, const char *verb)
 {
     struct trap *t;
     struct monst *mtmp;
@@ -6044,8 +6018,7 @@ const char *verb;
 
 /* obj is an object dropped on an altar */
 void
-doaltarobj(obj)
-struct obj *obj;
+doaltarobj(struct obj *obj)
 {
     if (Blind)
         return;
@@ -6089,9 +6062,8 @@ struct obj *obj;
     }
 }
 
-STATIC_OVL void
-trycall(obj)
-struct obj *obj;
+static void
+trycall(struct obj *obj)
 {
     if (!objects[obj->otyp].oc_name_known && !objects[obj->otyp].oc_uname)
         docall(obj, (char*)0);
@@ -6099,8 +6071,8 @@ struct obj *obj;
 
 /* Transforms the sink at the player's position into
    a fountain, throne, altar or grave. */
-STATIC_DCL void
-polymorph_sink(VOID_ARGS)
+static void
+polymorph_sink(void)
 {
     uchar sym = S_sink;
     boolean sinklooted;
@@ -6158,8 +6130,8 @@ polymorph_sink(VOID_ARGS)
 
 /* Teleports the sink at the player's position;
    return True if sink teleported. */
-STATIC_DCL boolean
-teleport_sink(VOID_ARGS)
+static boolean
+teleport_sink(void)
 {
     int cx, cy;
     int cnt = 0;
@@ -6185,9 +6157,8 @@ teleport_sink(VOID_ARGS)
 }
 
 /* obj is a ring being dropped over a kitchen sink */
-STATIC_OVL void
-dosinkring(obj)
-struct obj *obj;
+static void
+dosinkring(struct obj *obj)
 {
     struct obj *otmp, *otmp2;
     boolean ideed = TRUE;
@@ -6387,9 +6358,7 @@ struct obj *obj;
 
 /* some common tests when trying to drop or throw items */
 boolean
-canletgo(obj, word)
-struct obj *obj;
-const char *word;
+canletgo(struct obj *obj, const char *word)
 {
     if (obj->owornmask & W_WORN_NOT_WIELDED) {
         if (*word)
@@ -6439,8 +6408,7 @@ const char *word;
 }
 
 int
-drop(obj)
-struct obj *obj;
+drop(struct obj *obj)
 {
     if (!obj)
         return 0;
@@ -6525,8 +6493,7 @@ struct obj* obj;
    (eg ship_object() and dropy() -> sellobj() both produce output) */
 /* returns TRUE if obj is gone */
 boolean
-dropx(obj)
-struct obj *obj;
+dropx(struct obj *obj)
 {
     /* Ensure update when we drop gold objects */
     if (obj->oclass == COIN_CLASS)
@@ -6546,8 +6513,7 @@ struct obj *obj;
    (eg ship_object() and dropy() -> sellobj() both produce output) */
 /* returns TRUE if obj is gone */
 boolean
-dropxf(obj)
-struct obj* obj;
+dropxf(struct obj *obj)
 {
     /* Ensure update when we drop gold objects */
     if (obj->oclass == COIN_CLASS)
@@ -6566,8 +6532,7 @@ struct obj* obj;
 /* dropy - put dropped object at destination; called from lots of places */
 /* returns TRUE if obj is gone */
 boolean
-dropy(obj)
-struct obj *obj;
+dropy(struct obj *obj)
 {
     return dropz(obj, FALSE);
 }
@@ -6575,8 +6540,7 @@ struct obj *obj;
 /* dropyf - put dropped object at destination; called from lots of places */
 /* returns TRUE if obj is gone */
 boolean
-dropyf(obj)
-struct obj* obj;
+dropyf(struct obj *obj)
 {
     obj_set_found(obj);
     return dropz(obj, FALSE);
@@ -6585,9 +6549,7 @@ struct obj* obj;
 /* dropz - really put dropped object at its destination... */
 /* returns TRUE if obj is gone */
 boolean
-dropz(obj, with_impact)
-struct obj *obj;
-boolean with_impact;
+dropz(struct obj *obj, boolean with_impact)
 {
     if (obj == uwep)
         setuwep((struct obj *) 0, W_WEP);
@@ -6706,8 +6668,7 @@ boolean with_impact;
 /* things that must change when not held; recurse into containers.
    Called for both player and monsters */
 void
-obj_no_longer_held(obj)
-struct obj *obj;
+obj_no_longer_held(struct obj *obj)
 {
     if (!obj) {
         return;
@@ -6741,7 +6702,7 @@ struct obj *obj;
 
 /* '%' command: drop several things */
 int
-dodropmany(VOID_ARGS)
+dodropmany(void)
 {
     int result = 0;
 
@@ -6820,7 +6781,7 @@ dodropmany(VOID_ARGS)
 
 /* 'D' command: drop several things */
 int
-doddrop(VOID_ARGS)
+doddrop(void)
 {
     int result = 0;
 
@@ -6843,9 +6804,8 @@ doddrop(VOID_ARGS)
 }
 
 /* Drop things from the hero's inventory, using a menu. */
-STATIC_OVL int
-menu_drop(retry)
-int retry;
+static int
+menu_drop(int retry)
 {
     int n, i, n_dropped = 0;
     int64_t cnt;
@@ -6989,7 +6949,7 @@ int retry;
 
 /* autostash command: stash several things automatically */
 int
-doautostash(VOID_ARGS)
+doautostash(void)
 {
     int result = 0;
 
@@ -7014,9 +6974,8 @@ doautostash(VOID_ARGS)
 }
 
 /* Drop things from the hero's inventory, using a menu. */
-STATIC_OVL int
-menu_autostash(retry)
-int retry;
+static int
+menu_autostash(int retry)
 {
     int n, i, n_autobagged = 0;
     int64_t cnt;
@@ -7167,11 +7126,11 @@ autobag_done:
 
 
 /* on a ladder, used in goto_level */
-STATIC_VAR NEARDATA boolean at_ladder = FALSE;
+static NEARDATA boolean at_ladder = FALSE;
 
 /* the '>' command */
 int
-dodown(VOID_ARGS)
+dodown(void)
 {
     struct trap *trap = 0;
     boolean stairs_down = ((u.ux == xdnstair && u.uy == ydnstair)
@@ -7346,7 +7305,7 @@ dodown(VOID_ARGS)
 
 /* the '<' command */
 int
-doup(VOID_ARGS)
+doup(void)
 {
     if (u_rooted())
         return 1;
@@ -7404,8 +7363,8 @@ doup(VOID_ARGS)
 d_level save_dlevel = { 0, 0 };
 
 /* check that we can write out the current level */
-STATIC_OVL int
-currentlevel_rewrite(VOID_ARGS)
+static int
+currentlevel_rewrite(void)
 {
     int fd;
     char whynot[BUFSZ];
@@ -7441,7 +7400,7 @@ currentlevel_rewrite(VOID_ARGS)
 
 #ifdef INSURANCE
 void
-save_currentstate(VOID_ARGS)
+save_currentstate(void)
 {
     int fd;
     check_pointing = TRUE;
@@ -7463,9 +7422,8 @@ save_currentstate(VOID_ARGS)
 #endif
 
 /*
-STATIC_OVL boolean
-badspot(x, y)
-xchar x, y;
+static boolean
+badspot(xchar x, xchar y)
 {
     return (boolean) ((levl[x][y].typ != ROOM
                        && levl[x][y].typ != AIR
@@ -7477,8 +7435,7 @@ xchar x, y;
 /* when arriving on a level, if hero and a monster are trying to share same
    spot, move one; extracted from goto_level(); also used by wiz_makemap() */
 void
-u_collide_m(mtmp)
-struct monst *mtmp;
+u_collide_m(struct monst *mtmp)
 {
     coord cc;
 
@@ -7513,12 +7470,13 @@ struct monst *mtmp;
     }
 }
 
+/*
+ * Parameters:
+ *   at_location: 1 = at stairs, 2 = at altar
+ *   portal: 1 = Magic portal, 2 = Modron portal down (find portal up), 3 = Modron portal up (find portal down), 4 = Modron portal (random destination), 5 = Magic portal to special stairs down, 6 = Magic portal to special stairs up
+ */
 void
-goto_level(newlevel, at_location, falling, inside_tower, portal)
-d_level *newlevel;
-uchar at_location; /* 1 = at stairs, 2 = at altar */
-boolean falling, inside_tower;
-xchar portal; /* 1 = Magic portal, 2 = Modron portal down (find portal up), 3 = Modron portal up (find portal down), 4 = Modron portal (random destination), 5 = Magic portal to special stairs down, 6 = Magic portal to special stairs up */
+goto_level(d_level *newlevel, uchar at_location, boolean falling, boolean inside_tower, xchar portal)
 {
     int fd, l_idx;
     xchar new_ledger;
@@ -8402,8 +8360,7 @@ xchar portal; /* 1 = Magic portal, 2 = Modron portal down (find portal up), 3 = 
 
 
 void
-revival_at_altar(wakeupbuf)
-char* wakeupbuf;
+revival_at_altar(char *wakeupbuf)
 {
     int altar_x = 0, altar_y = 0;
 
@@ -8457,8 +8414,7 @@ char* wakeupbuf;
 }
 
 void
-revival_popup_message(wakeupbuf)
-char* wakeupbuf;
+revival_popup_message(char *wakeupbuf)
 {
     if (wakeupbuf && *wakeupbuf)
     {
@@ -8468,8 +8424,8 @@ char* wakeupbuf;
     }
 }
 
-STATIC_OVL void
-final_level(VOID_ARGS)
+static void
+final_level(void)
 {
     struct monst *mtmp;
 
@@ -8488,17 +8444,16 @@ final_level(VOID_ARGS)
     gain_guardian_angel(FALSE);
 }
 
-STATIC_VAR char *dfr_pre_msg = 0,  /* pline() before level change */
+static char *dfr_pre_msg = 0,  /* pline() before level change */
             *dfr_post_msg = 0; /* pline() after level change */
 
+/*
+ * Parameters:
+ *   at_location: 1 = at stairs, 2 = at altar
+ */
 /* change levels at the end of this turn, after monsters finish moving */
 void
-schedule_goto(tolev, at_location, falling, teleport, inside_tower, portal_flag, pre_msg, post_msg)
-d_level *tolev;
-uchar at_location; /* 1 = at stairs, 2 = at altar */
-boolean falling, teleport, inside_tower;
-int64_t portal_flag;
-const char *pre_msg, *post_msg;
+schedule_goto(d_level *tolev, uchar at_location, boolean falling, boolean teleport, boolean inside_tower, int64_t portal_flag, const char *pre_msg, const char *post_msg)
 {
     short typmask = UTOFLAGS_DEFERRED_GOTO; /* non-zero triggers `deferred_goto' */
     debugprint("schedule_goto: dnum=%d, dlevel=%d, portal_flag=%lld", tolev ? tolev->dnum : -1, tolev ? tolev->dlevel : -1, (long long)portal_flag);
@@ -8547,7 +8502,7 @@ const char *pre_msg, *post_msg;
 
 /* handle something like portal ejection */
 void
-deferred_goto(VOID_ARGS)
+deferred_goto(void)
 {
     if (!on_level(&u.uz, &u.utolev))
     {
@@ -8591,12 +8546,8 @@ deferred_goto(VOID_ARGS)
         free((genericptr_t) dfr_post_msg), dfr_post_msg = 0;
 }
 
-STATIC_OVL void
-revive_handle_magic_chest(where_ptr, container_ptr, container_where_ptr, mcarry_ptr)
-xchar* where_ptr;
-struct obj** container_ptr;
-int* container_where_ptr;
-struct monst** mcarry_ptr;
+static void
+revive_handle_magic_chest(xchar *where_ptr, struct obj **container_ptr, int *container_where_ptr, struct monst **mcarry_ptr)
 {
     if (!where_ptr || !container_where_ptr || !container_ptr || !mcarry_ptr)
         return;
@@ -8659,8 +8610,7 @@ struct monst** mcarry_ptr;
  * corpse is gone.
  */
 boolean
-revive_corpse(corpse)
-struct obj *corpse;
+revive_corpse(struct obj *corpse)
 {
     struct monst *mtmp, *mcarry;
     boolean is_uwep, chewed;
@@ -8763,13 +8713,15 @@ struct obj *corpse;
 }
 
 /*
+ * Parameters:
+ *   animateintomon: monstid to be animated into
+ */
+/*
  * Return TRUE if we created a monster for the corpse.  If successful, the
  * corpse is gone.
  */
 boolean
-animate_corpse(corpse, animateintomon)
-struct obj* corpse;
-int animateintomon; // monstid to be animated into
+animate_corpse(struct obj *corpse, int animateintomon)
 {
     if (animateintomon < 0 || animateintomon >= NUM_MONSTERS || !corpse || corpse->corpsenm < 0 || corpse->corpsenm >= NUM_MONSTERS)
         return FALSE;
@@ -8869,9 +8821,7 @@ int animateintomon; // monstid to be animated into
 /* Revive the corpse via a timeout. */
 /*ARGSUSED*/
 int
-revive_mon(arg, timeout)
-anything *arg;
-int64_t timeout UNUSED;
+revive_mon(anything *arg, int64_t timeout UNUSED)
 {
     struct obj *body = arg->a_obj;
     struct permonst *mptr = body->corpsenm >= LOW_PM ? &mons[body->corpsenm] : 0;
@@ -8934,7 +8884,7 @@ int64_t timeout UNUSED;
 }
 
 int
-donull(VOID_ARGS)
+donull(void)
 {
     if (context.first_time_cmd || !occupation)
     {
@@ -8944,8 +8894,8 @@ donull(VOID_ARGS)
     return 1; /* Do nothing, but let other things happen */
 }
 
-STATIC_PTR int
-wipeoff(VOID_ARGS)
+static int
+wipeoff(void)
 {
     if (u.ucreamed < 4)
         u.ucreamed = 0;
@@ -8973,7 +8923,7 @@ wipeoff(VOID_ARGS)
 }
 
 int
-dowipe(VOID_ARGS)
+dowipe(void)
 {
     if (u.ucreamed)
     {
@@ -8995,9 +8945,7 @@ dowipe(VOID_ARGS)
 }
 
 void
-set_wounded_legs(side, timex)
-int64_t side;
-int timex;
+set_wounded_legs(int64_t side, int timex)
 {
     /* KMH -- STEED
      * If you are riding, your steed gets the wounded legs instead.
@@ -9018,9 +8966,12 @@ int timex;
     (void) encumber_msg();
 }
 
+/*
+ * Parameters:
+ *   how: 0: ordinary, 1: dismounting steed, 2: limbs turn to stone
+ */
 void
-heal_legs(how)
-int how; /* 0: ordinary, 1: dismounting steed, 2: limbs turn to stone */
+heal_legs(int how)
 {
     if (Wounded_legs) {
         
@@ -9064,7 +9015,7 @@ int how; /* 0: ordinary, 1: dismounting steed, 2: limbs turn to stone */
 }
 
 int
-dotogglehpbars(VOID_ARGS)
+dotogglehpbars(void)
 {
     boolean main_flag = flags.show_tile_u_hp_bar;
     
@@ -9087,7 +9038,7 @@ dotogglehpbars(VOID_ARGS)
 }
 
 int
-dotogglegrid(VOID_ARGS)
+dotogglegrid(void)
 {
     flags.show_grid = !flags.show_grid;
     redraw_map();
@@ -9096,7 +9047,7 @@ dotogglegrid(VOID_ARGS)
 }
 
 int
-dotogglebufftimers(VOID_ARGS)
+dotogglebufftimers(void)
 {
     flags.show_buff_timer = !flags.show_buff_timer;
     newsym(u.ux, u.uy); //force_redraw_at(u.ux, u.uy);
@@ -9112,7 +9063,7 @@ dotogglebufftimers(VOID_ARGS)
 }
 
 int
-dotogglemonstertargeting(VOID_ARGS)
+dotogglemonstertargeting(void)
 {
     boolean current_flag = flags.show_tile_monster_target;
 
@@ -9130,7 +9081,7 @@ dotogglemonstertargeting(VOID_ARGS)
 }
 
 int
-dotoggleumark(VOID_ARGS)
+dotoggleumark(void)
 {
     boolean current_flag = flags.show_tile_u_mark;
 
@@ -9145,8 +9096,7 @@ dotoggleumark(VOID_ARGS)
 
 
 void
-delete_location(x, y)
-xchar x, y;
+delete_location(xchar x, xchar y)
 {
     debugprint("delete_location");
 
@@ -9189,8 +9139,7 @@ xchar x, y;
 }
 
 void
-delete_decoration(x, y)
-xchar x, y;
+delete_decoration(xchar x, xchar y)
 {
     if (levl[x][y].decoration_typ)
     {
@@ -9215,14 +9164,7 @@ xchar x, y;
 }
 
 void
-full_location_transform(x, y, type, subtype, vartype, location_flags, carpet_typ, carpet_piece, carpet_flags, decoration_typ, decoration_subtyp, decoration_dir, decoration_flags, floor_doodad, floortype, floorsubtype, floorvartype, facing_right, horizontal, key_otyp, special_quality, donewsym)
-xchar x, y;
-int type, subtype, vartype, floor_doodad, floortype, floorsubtype, floorvartype;
-schar carpet_typ, carpet_piece, decoration_typ, decoration_subtyp, decoration_dir;
-uchar carpet_flags, decoration_flags;
-unsigned short location_flags;
-boolean facing_right, horizontal, donewsym;
-short key_otyp, special_quality;
+full_location_transform(xchar x, xchar y, int type, int subtype, int vartype, unsigned short location_flags, schar carpet_typ, schar carpet_piece, uchar carpet_flags, schar decoration_typ, schar decoration_subtyp, schar decoration_dir, uchar decoration_flags, int floor_doodad, int floortype, int floorsubtype, int floorvartype, boolean facing_right, boolean horizontal, short key_otyp, short special_quality, boolean donewsym)
 {
     delete_location(x, y);
     levl[x][y].typ = type;
@@ -9258,14 +9200,7 @@ short key_otyp, special_quality;
 }
 
 void
-full_initial_location_transform(x, y, type, location_flags, carpet_typ, carpet_piece, carpet_flags, decoration_typ, decoration_subtyp, decoration_dir, decoration_flags, floor_doodad, floortype, facing_right, horizontal, key_otyp, special_quality, donewsym)
-xchar x, y;
-int type, floor_doodad, floortype;
-schar carpet_typ, carpet_piece, decoration_typ, decoration_subtyp, decoration_dir;
-uchar carpet_flags, decoration_flags;
-unsigned short location_flags;
-boolean facing_right, horizontal, donewsym;
-short key_otyp, special_quality;
+full_initial_location_transform(xchar x, xchar y, int type, unsigned short location_flags, schar carpet_typ, schar carpet_piece, uchar carpet_flags, schar decoration_typ, schar decoration_subtyp, schar decoration_dir, uchar decoration_flags, int floor_doodad, int floortype, boolean facing_right, boolean horizontal, short key_otyp, short special_quality, boolean donewsym)
 {
     int subtype = get_initial_location_subtype(type);
     int vartype = get_initial_location_vartype(type, subtype);
@@ -9278,57 +9213,35 @@ short key_otyp, special_quality;
 }
 
 void
-create_simple_location(x, y, type, subtype, vartype, location_flags, floor_doodad, floortype, floorsubtype, floorvartype, donewsym)
-xchar x, y;
-int type, subtype, vartype, floor_doodad, floortype, floorsubtype, floorvartype;
-unsigned short location_flags;
-boolean donewsym;
+create_simple_location(xchar x, xchar y, int type, int subtype, int vartype, unsigned short location_flags, int floor_doodad, int floortype, int floorsubtype, int floorvartype, boolean donewsym)
 {
     full_location_transform(x, y, type, subtype, vartype, location_flags, 0, 0, 0, 0, 0, 0, 0, floor_doodad, floortype, floorsubtype, floorvartype, FALSE, FALSE, 0, 0, donewsym);
     initialize_location(&levl[x][y]);
 }
 
 void
-create_simple_location_with_carpet(x, y, type, subtype, vartype, location_flags, carpet_typ, carpet_piece, carpet_flags, floor_doodad, floortype, floorsubtype, floorvartype, donewsym)
-xchar x, y;
-int type, subtype, vartype, floor_doodad, floortype, floorsubtype, floorvartype;
-unsigned short location_flags;
-schar carpet_typ, carpet_piece;
-uchar carpet_flags;
-boolean donewsym;
+create_simple_location_with_carpet(xchar x, xchar y, int type, int subtype, int vartype, unsigned short location_flags, schar carpet_typ, schar carpet_piece, uchar carpet_flags, int floor_doodad, int floortype, int floorsubtype, int floorvartype, boolean donewsym)
 {
     full_location_transform(x, y, type, subtype, vartype, location_flags, carpet_typ, carpet_piece, carpet_flags, 0, 0, 0, 0, floor_doodad, floortype, floorsubtype, floorvartype, FALSE, FALSE, 0, 0, donewsym);
     initialize_location(&levl[x][y]);
 }
 
 void
-create_simple_initial_location(x, y, type, location_flags, floor_doodad, floortype, donewsym)
-xchar x, y;
-int type, floor_doodad, floortype;
-unsigned short location_flags;
-boolean donewsym;
+create_simple_initial_location(xchar x, xchar y, int type, unsigned short location_flags, int floor_doodad, int floortype, boolean donewsym)
 {
     full_initial_location_transform(x, y, type, location_flags, 0, 0, 0, 0, 0, 0, 0, floor_doodad, floortype, FALSE, FALSE, 0, 0, donewsym);
     initialize_location(&levl[x][y]);
 }
 
 void
-create_location_with_current_floor(x, y, type, subtype, vartype, location_flags, floor_doodad, donewsym)
-xchar x, y;
-int type, subtype, vartype, floor_doodad;
-unsigned short location_flags;
-boolean donewsym;
+create_location_with_current_floor(xchar x, xchar y, int type, int subtype, int vartype, unsigned short location_flags, int floor_doodad, boolean donewsym)
 {
     boolean isfloor = IS_FLOOR(levl[x][y].typ);
     create_simple_location_with_carpet(x, y, type, subtype, vartype, location_flags, levl[x][y].carpet_typ, levl[x][y].carpet_piece, levl[x][y].carpet_flags, floor_doodad, isfloor ? levl[x][y].typ : levl[x][y].floortyp, isfloor ? levl[x][y].subtyp : levl[x][y].floorsubtyp, isfloor ? levl[x][y].vartyp : levl[x][y].floorvartyp, donewsym);
 }
 
 void
-create_initial_location_with_current_floor(x, y, type, location_flags, floor_doodad, donewsym)
-xchar x, y;
-int type, floor_doodad;
-unsigned short location_flags;
-boolean donewsym;
+create_initial_location_with_current_floor(xchar x, xchar y, int type, unsigned short location_flags, int floor_doodad, boolean donewsym)
 {
     int subtype = get_initial_location_subtype(type);
     int vartype = get_initial_location_vartype(type, subtype);
@@ -9336,11 +9249,7 @@ boolean donewsym;
 }
 
 void
-create_current_floor_location(x, y, location_flags, floor_doodad, donewsym)
-xchar x, y;
-int floor_doodad;
-unsigned short location_flags;
-boolean donewsym;
+create_current_floor_location(xchar x, xchar y, unsigned short location_flags, int floor_doodad, boolean donewsym)
 {
     if (IS_FLOOR(levl[x][y].typ))
         return; /* Do nothing, floor already */
@@ -9372,11 +9281,7 @@ boolean donewsym;
 }
 
 void
-create_basic_floor_location(x, y, type, subtype, location_flags, donewsym)
-xchar x, y;
-int type, subtype;
-unsigned short location_flags;
-boolean donewsym;
+create_basic_floor_location(xchar x, xchar y, int type, int subtype, unsigned short location_flags, boolean donewsym)
 {
     if (!isok(x, y))
         return;
@@ -9386,9 +9291,7 @@ boolean donewsym;
 }
 
 void
-transform_location_type(x, y, type, subtype)
-xchar x, y;
-int type, subtype;
+transform_location_type(xchar x, xchar y, int type, int subtype)
 {
     debugprint("transform_location_type");
 
@@ -9435,20 +9338,14 @@ int type, subtype;
 }
 
 void
-transform_location_type_and_flags(x, y, type, subtype, location_flags)
-xchar x, y;
-int type, subtype;
-unsigned short location_flags;
+transform_location_type_and_flags(xchar x, xchar y, int type, int subtype, unsigned short location_flags)
 {
     levl[x][y].flags = location_flags;
     transform_location_type(x, y, type, subtype); /* Does not clear flags */
 }
 
 void
-transform_location_type_and_flags_and_set_broken(x, y, type, subtype, location_flags, floor_doodad)
-xchar x, y;
-int type, subtype, floor_doodad;
-unsigned short location_flags;
+transform_location_type_and_flags_and_set_broken(xchar x, xchar y, int type, int subtype, unsigned short location_flags, int floor_doodad)
 {
     levl[x][y].flags = location_flags;
     levl[x][y].floor_doodad = floor_doodad;
@@ -9456,8 +9353,7 @@ unsigned short location_flags;
 }
 
 const char*
-get_obj_subtype_name(obj)
-struct obj* obj;
+get_obj_subtype_name(struct obj *obj)
 {
     if (!obj)
         return empty_string;
@@ -9468,8 +9364,7 @@ struct obj* obj;
 }
 
 const char*
-get_otyp_subtype_name(otyp)
-int otyp;
+get_otyp_subtype_name(int otyp)
 {
     if (otyp < 0 || otyp >= NUM_OBJECTS)
         return empty_string;
@@ -9529,8 +9424,7 @@ int otyp;
 }
 
 struct extended_create_window_info
-extended_create_window_info_from_obj(obj)
-struct obj* obj;
+extended_create_window_info_from_obj(struct obj *obj)
 {
     struct extended_create_window_info info = { 0 };
     info.object = obj;
@@ -9538,8 +9432,7 @@ struct obj* obj;
 }
 
 struct extended_create_window_info
-extended_create_window_info_from_mon(mon)
-struct monst* mon;
+extended_create_window_info_from_mon(struct monst *mon)
 {
     struct extended_create_window_info info = { 0 };
     info.monster = mon;
@@ -9547,9 +9440,7 @@ struct monst* mon;
 }
 
 struct extended_create_window_info
-extended_create_window_info_from_mon_with_flags(mon, cflags)
-struct monst* mon;
-uint64_t cflags;
+extended_create_window_info_from_mon_with_flags(struct monst *mon, uint64_t cflags)
 {
     struct extended_create_window_info info = { 0 };
     info.monster = mon;
@@ -9558,8 +9449,7 @@ uint64_t cflags;
 }
 
 void
-hint_via_pline(hint_text)
-const char* hint_text;
+hint_via_pline(const char *hint_text)
 {
     if (hint_text)
     {
@@ -9572,10 +9462,7 @@ const char* hint_text;
 }
 
 void
-pray_hint(pray_what, base_hint, hintflag_ptr)
-const char* pray_what;
-const char* base_hint;
-boolean* hintflag_ptr;
+pray_hint(const char *pray_what, const char *base_hint, boolean *hintflag_ptr)
 {
     if (!pray_what)
         return;
@@ -9596,9 +9483,7 @@ boolean* hintflag_ptr;
 }
 
 void
-standard_hint(hint_txt, hintflag_ptr)
-const char* hint_txt;
-boolean* hintflag_ptr;
+standard_hint(const char *hint_txt, boolean *hintflag_ptr)
 {
     if (!hint_txt)
         return;
@@ -9612,8 +9497,7 @@ boolean* hintflag_ptr;
 }
 
 void
-reviver_hint(mtmp)
-struct monst* mtmp;
+reviver_hint(struct monst *mtmp)
 {
     if (!mtmp || !is_reviver(mtmp->data))
         return;
@@ -9647,9 +9531,7 @@ struct monst* mtmp;
 }
 
 void
-item_destruction_hint(adtyp, isray)
-int adtyp;
-boolean isray;
+item_destruction_hint(int adtyp, boolean isray)
 {
     if (!(flags.force_hint || context.game_difficulty <= flags.max_hint_difficulty))
         return;
@@ -9684,8 +9566,7 @@ boolean isray;
 }
 
 void
-brain_hint(mtmp)
-struct monst* mtmp;
+brain_hint(struct monst *mtmp)
 {
     if ((flags.force_hint || context.game_difficulty <= flags.max_hint_difficulty) && !u.uhint.brain_got_eaten)
     {
@@ -9697,8 +9578,7 @@ struct monst* mtmp;
 }
 
 void
-grab_hint(mtmp)
-struct monst* mtmp;
+grab_hint(struct monst *mtmp)
 {
     if (!mtmp || mtmp != u.ustuck)
         return;
@@ -9729,7 +9609,7 @@ struct monst* mtmp;
 }
 
 void
-check_mobbed_hint(VOID_ARGS)
+check_mobbed_hint(void)
 {
     if (!(flags.force_hint || context.game_difficulty <= flags.max_hint_difficulty) || u.uhint.got_mobbed)
         return;
@@ -9768,7 +9648,7 @@ check_mobbed_hint(VOID_ARGS)
 }
 
 void
-check_closed_for_inventory_hint(VOID_ARGS)
+check_closed_for_inventory_hint(void)
 {
     struct engr* ep = engr_at(u.ux, u.uy);
     if ((flags.force_hint || context.game_difficulty <= flags.max_hint_difficulty) && !u.uhint.closed_for_inventory 
@@ -9785,7 +9665,7 @@ check_closed_for_inventory_hint(VOID_ARGS)
 }
 
 void
-death_hint(VOID_ARGS)
+death_hint(void)
 {
     if ((flags.force_hint || context.game_difficulty <= flags.max_hint_difficulty) && killer.name[0] && killer.hint_idx > 0)
     {
@@ -9898,7 +9778,7 @@ death_hint(VOID_ARGS)
 }
 
 void
-heal_ailments_upon_revival(VOID_ARGS)
+heal_ailments_upon_revival(void)
 {
     make_blinded(0L, FALSE);
     make_mummy_rotted(0L, (char*)0, FALSE, 0);
@@ -9917,44 +9797,40 @@ heal_ailments_upon_revival(VOID_ARGS)
 
 
 #if !defined (GNH_MOBILE) && defined (DEBUG)
-STATIC_DCL winid FDECL(write_create_nhwindow_ex, (int, int, int, struct extended_create_window_info));
-STATIC_DCL void FDECL(write_display_nhwindow, (winid, BOOLEAN_P));
-STATIC_DCL void FDECL(write_destroy_nhwindow, (winid));
-STATIC_DCL void FDECL(write_putstr_ex, (winid, const char*, int, int, int));
-STATIC_DCL void FDECL(write_putstr_ex2, (winid, const char*, const char*, const char*, int, int, int));
-STATIC_PTR int FDECL(CFDECLSPEC spell_wiki_cmp, (const genericptr, const genericptr));
-STATIC_PTR int FDECL(CFDECLSPEC monster_wiki_cmp, (const genericptr, const genericptr));
+static winid write_create_nhwindow_ex(int, int, int, struct extended_create_window_info);
+static void write_display_nhwindow(winid, boolean);
+static void write_destroy_nhwindow(winid);
+static void write_putstr_ex(winid, const char*, int, int, int);
+static void write_putstr_ex2(winid, const char*, const char*, const char*, int, int, int);
+static int FDECL(CFDECLSPEC spell_wiki_cmp, (const genericptr, const genericptr));
+static int FDECL(CFDECLSPEC monster_wiki_cmp, (const genericptr, const genericptr));
 
-STATIC_VAR int write_fd = -1;
+static int write_fd = -1;
 
-STATIC_OVL winid
-write_create_nhwindow_ex(type, style, glyph, info)
-int type UNUSED, style UNUSED, glyph UNUSED;
-struct extended_create_window_info info UNUSED;
+static winid
+write_create_nhwindow_ex(int type UNUSED, int style UNUSED, int glyph UNUSED, struct extended_create_window_info info UNUSED)
 {
     return 0;
 }
 
-STATIC_OVL void
-write_display_nhwindow(window, blocking)
-winid window UNUSED;
-boolean blocking UNUSED; /* with ttys, all windows are blocking */
+/*
+ * Parameters:
+ *   blocking: with ttys, all windows are blocking
+ */
+static void
+write_display_nhwindow(winid window UNUSED, boolean blocking UNUSED)
 {
     return;
 }
 
-STATIC_OVL void
-write_destroy_nhwindow(window)
-winid window UNUSED;
+static void
+write_destroy_nhwindow(winid window UNUSED)
 {
     return;
 }
 
-STATIC_OVL void
-write_putstr_ex(window, str, attr, color, app)
-winid window UNUSED;
-int attr, app, color UNUSED;
-const char* str;
+static void
+write_putstr_ex(winid window UNUSED, const char *str, int attr, int color UNUSED, int app)
 {
     if (!str || !*str)
         return;
@@ -10018,19 +9894,14 @@ const char* str;
     (void)write(write_fd, buf, strlen(buf));
 }
 
-STATIC_OVL void
-write_putstr_ex2(window, str, attrs, colors, attr, color, app)
-winid window;
-int attr, color, app;
-const char *str, *attrs UNUSED, *colors UNUSED;
+static void
+write_putstr_ex2(winid window, const char *str, const char *attrs UNUSED, const char *colors UNUSED, int attr, int color, int app)
 {
     write_putstr_ex(window, str, attr, color, app);
 }
 
-STATIC_OVL int CFDECLSPEC
-spell_wiki_cmp(p, q)
-const genericptr p;
-const genericptr q;
+static int CFDECLSPEC
+spell_wiki_cmp(const genericptr p, const genericptr q)
 {
     if (!p || !q)
         return 0;
@@ -10077,7 +9948,7 @@ const genericptr q;
 }
 
 void
-write_spells(VOID_ARGS)
+write_spells(void)
 {
     pline("Starting writing spells...");
 
@@ -10230,10 +10101,8 @@ write_spells(VOID_ARGS)
     pline("Done!");
 }
 
-STATIC_OVL int CFDECLSPEC
-monster_wiki_cmp(p, q)
-const genericptr p;
-const genericptr q;
+static int CFDECLSPEC
+monster_wiki_cmp(const genericptr p, const genericptr q)
 {
     if (!p || !q)
         return 0;
@@ -10249,7 +10118,7 @@ const genericptr q;
 
 
 void
-write_monsters(VOID_ARGS)
+write_monsters(void)
 {
     pline("Starting writing monsters...");
 
@@ -10448,7 +10317,7 @@ write_monsters(VOID_ARGS)
 
 
 void
-write_items(VOID_ARGS)
+write_items(void)
 {
     pline("Starting writing items...");
 
