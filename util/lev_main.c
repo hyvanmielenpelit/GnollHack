@@ -628,9 +628,7 @@ void add_opvars(sp_lev *sp, const char *fmt, ...)
 static void
 vadd_opvars(sp_lev *sp, const char *fmt, va_list the_args)
 {
-    const char *p, *lp;
-    int64_t la;
-    /* Do NOT use VA_START and VA_END in here... see above */
+    const char *p;
 
     for (p = fmt; *p != '\0'; p++) {
         switch (*p) {
@@ -715,8 +713,6 @@ vadd_opvars(sp_lev *sp, const char *fmt, va_list the_args)
             break;
         }
     }
-
-
 }
 
 void
