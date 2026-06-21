@@ -96,8 +96,8 @@ STATIC_VAR NEARDATA int64_t omoves;
 STATIC_OVL void
 find_lev_obj(VOID_ARGS)
 {
-    register struct obj *fobjtmp = (struct obj *) 0;
-    register struct obj *otmp;
+    struct obj *fobjtmp = (struct obj *) 0;
+    struct obj *otmp;
     int x, y;
 
     for (x = 0; x < COLNO; x++)
@@ -127,8 +127,8 @@ find_lev_obj(VOID_ARGS)
 STATIC_OVL void
 find_memory_obj(VOID_ARGS)
 {
-    register struct obj* memoryobjstmp = (struct obj*)0;
-    register struct obj* otmp;
+    struct obj* memoryobjstmp = (struct obj*)0;
+    struct obj* otmp;
     int x, y;
 
     for (x = 0; x < COLNO; x++)
@@ -164,7 +164,7 @@ void
 inven_inuse(quietly)
 boolean quietly;
 {
-    register struct obj *otmp, *otmp2;
+    struct obj *otmp, *otmp2;
 
     for (otmp = invent; otmp; otmp = otmp2) 
     {
@@ -205,7 +205,7 @@ boolean quietly;
 
 STATIC_OVL void
 restlevchn(fd)
-register int fd;
+int fd;
 {
     int cnt;
     s_level *tmplev, *x;
@@ -339,11 +339,11 @@ struct obj *otmp;
 
 STATIC_OVL struct obj *
 restobjchn(fd, ghostly, frozen)
-register int fd;
+int fd;
 boolean ghostly, frozen;
 {
-    register struct obj *otmp, *otmp2 = 0;
-    register struct obj *first = (struct obj *) 0;
+    struct obj *otmp, *otmp2 = 0;
+    struct obj *first = (struct obj *) 0;
     size_t buflen;
     //debugprint("restobjchn");
 
@@ -525,11 +525,11 @@ struct monst *mtmp;
 
 STATIC_OVL struct monst *
 restmonchn(fd, ghostly)
-register int fd;
+int fd;
 boolean ghostly;
 {
-    register struct monst *mtmp, *mtmp2 = 0;
-    register struct monst *first = (struct monst *) 0;
+    struct monst *mtmp, *mtmp2 = 0;
+    struct monst *first = (struct monst *) 0;
     size_t buflen;
     //debugprint("restmonchn");
 
@@ -607,7 +607,7 @@ STATIC_OVL struct fruit *
 loadfruitchn(fd)
 int fd;
 {
-    register struct fruit *flist, *fnext;
+    struct fruit *flist, *fnext;
     //debugprint("loadfruitchn");
 
     flist = 0;
@@ -622,9 +622,9 @@ int fd;
 
 STATIC_OVL void
 freefruitchn(flist)
-register struct fruit *flist;
+struct fruit *flist;
 {
-    register struct fruit *fnext;
+    struct fruit *fnext;
 
     while (flist) 
     {
@@ -636,9 +636,9 @@ register struct fruit *flist;
 
 STATIC_OVL void
 ghostfruit(otmp)
-register struct obj *otmp;
+struct obj *otmp;
 {
-    register struct fruit *oldf;
+    struct fruit *oldf;
 
     for (oldf = oldfruit; oldf; oldf = oldf->nextf)
         if (oldf->fid == otmp->special_quality)
@@ -664,7 +664,7 @@ register struct obj *otmp;
 STATIC_OVL
 boolean
 restgamestate(fd, stuckid, steedid)
-register int fd;
+int fd;
 unsigned int *stuckid, *steedid;
 {
     struct flag newgameflags;
@@ -877,7 +877,7 @@ STATIC_OVL void
 restlevelstate(stuckid, steedid)
 unsigned int stuckid, steedid;
 {
-    register struct monst *mtmp;
+    struct monst *mtmp;
 
     if (stuckid) {
         for (mtmp = fmon; mtmp; mtmp = mtmp->nmon)
@@ -968,7 +968,7 @@ xchar ltmp;
 
 int
 dorestore(fd, is_backup)
-register int fd;
+int fd;
 boolean is_backup;
 {
     int loadres = dorestore0(fd);
@@ -1002,9 +1002,9 @@ boolean is_backup;
 
 int
 dorestore0(fd)
-register int fd;
+int fd;
 {
-    unsigned int stuckid = 0, steedid = 0; /* not a register */
+    unsigned int stuckid = 0, steedid = 0;
     xchar ltmp;
     int rtmp;
     struct obj *otmp;
@@ -1362,8 +1362,8 @@ int fd, pid;
 xchar lev;
 boolean ghostly;
 {
-    register struct trap *trap;
-    register struct monst *mtmp;
+    struct trap *trap;
+    struct monst *mtmp;
     int64_t elapsed;
     branch *br;
     int hpid;
@@ -1600,7 +1600,7 @@ struct save_game_stats* stats_ptr;
 
 STATIC_OVL void
 restore_gamelog(fd)
-register int fd;
+int fd;
 {
     int slen = 0;
     struct gamelog_line tmp;
@@ -1623,7 +1623,7 @@ register int fd;
 
 STATIC_OVL void
 restore_msghistory(fd)
-register int fd;
+int fd;
 {
     int msgsize, msgcount = 0;
     char msg[BUFSZ];
@@ -2368,9 +2368,9 @@ minit(VOID_ARGS)
 
 void
 mread(fd, buf, len)
-register int fd;
-register genericptr_t buf;
-register size_t len;
+int fd;
+genericptr_t buf;
+size_t len;
 {
     (*restoreprocs.restore_mread)(fd, buf, len);
     return;
@@ -2546,9 +2546,9 @@ STATIC_OVL void
 zerocomp_mread(fd, buf, len)
 int fd;
 genericptr_t buf;
-register size_t len;
+size_t len;
 {
-    /*register int readlen = 0;*/
+    /*int readlen = 0;*/
     if (fd < 0)
         error("Restore error; mread attempting to read file %d.", fd);
     mreadfd = fd;
@@ -2557,7 +2557,7 @@ register size_t len;
             inrunlength--;
             *(*((char **) &buf))++ = '\0';
         } else {
-            register short ch = zerocomp_mgetc();
+            short ch = zerocomp_mgetc();
             if (ch < 0) {
                 restoreprocs.mread_flags = -1;
                 return;
@@ -2579,11 +2579,11 @@ def_minit(VOID_ARGS)
 
 STATIC_OVL void
 def_mread(fd, buf, len)
-register int fd;
-register genericptr_t buf;
-register size_t len;
+int fd;
+genericptr_t buf;
+size_t len;
 {
-    register int rlen;
+    int rlen;
 
     rlen = (int)read(fd, buf, (readLenType) len);
     if ((readLenType) rlen != (readLenType) len) {

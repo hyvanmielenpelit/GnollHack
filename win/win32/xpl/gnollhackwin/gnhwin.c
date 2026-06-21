@@ -19,7 +19,7 @@
 static int
 eraseoldlocks()
 {
-    register int i;
+    int i;
 
     /* cannot use maxledgerno() here, because we need to find a lock name
      * before starting everything (including the dungeon initialization
@@ -39,7 +39,7 @@ eraseoldlocks()
 void
 getlock()
 {
-    register int fd;
+    int fd;
     const char *fq_lock;
 
     if (!lock_file(HLOCK, LOCKPREFIX, 10))
@@ -119,7 +119,7 @@ check_crash()
     if (!wizard)
         Sprintf(recover_lock, "%d%s", (int)getuid(), recovery_plname);
 
-    register int fd;
+    int fd;
     const char* fq_lock;
 
     regularize(recover_lock);

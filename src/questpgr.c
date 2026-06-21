@@ -341,7 +341,7 @@ STATIC_OVL void
 convert_arg(c)
 char c;
 {
-    register const char *str = 0;
+    const char *str = 0;
     char buf[BUFSZ] = "";
 
     switch (c) {

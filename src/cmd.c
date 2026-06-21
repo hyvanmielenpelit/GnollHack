@@ -362,7 +362,7 @@ popch(VOID_ARGS)
 char
 pgetchar(VOID_ARGS) /* courtesy of aeb@cwi.nl */
 {
-    register int ch;
+    int ch;
 
     if (iflags.debug_fuzzer)
         return randomkey();
@@ -440,7 +440,7 @@ doextcmd(VOID_ARGS)
 int
 doextlist(VOID_ARGS)
 {
-    register const struct ext_func_tab *efp;
+    const struct ext_func_tab *efp;
     char buf[BUFSZ], searchbuf[BUFSZ], promptbuf[QBUFSZ];
     winid menuwin;
     anything any;
@@ -3368,7 +3368,7 @@ STATIC_OVL boolean
 cause_known(propindx)
 int propindx; /* index of a property which can be conveyed by worn item */
 {
-    register struct obj *o;
+    struct obj *o;
 
     /* simpler than from_what()/what_gives(); we don't attempt to
        handle artifacts and we deliberately ignore wielded items */
@@ -5494,7 +5494,7 @@ add_command_menu_items(menuwin, cmdflag)
 winid menuwin;
 int cmdflag;
 {
-    register const struct ext_func_tab* efp;
+    const struct ext_func_tab* efp;
     int n = 0;
     size_t maxcommandlength = 0;
     size_t maxdesclength = 0;
@@ -7648,7 +7648,7 @@ char *autocomplete;
 boolean condition;
 {
     struct ext_func_tab *efp;
-    register char *autoc;
+    char *autoc;
 
     /* break off first autocomplete from the rest; parse the rest */
     if ((autoc = index(autocomplete, ',')) != 0
@@ -7958,7 +7958,7 @@ int start,end;
 
 void
 rhack(cmd)
-register char *cmd;
+char *cmd;
 {
     int spkey;
     boolean prefix_seen, bad_command,
@@ -8266,7 +8266,7 @@ register char *cmd;
     } 
     else
     {
-        register const struct ext_func_tab *tlist;
+        const struct ext_func_tab *tlist;
         int res = 0, NDECL((*func));
 
         /* current - use *cmd to directly index cmdlist array */
@@ -8355,7 +8355,7 @@ int
 xytod(x, y)
 schar x, y;
 {
-    register int dd;
+    int dd;
 
     for (dd = 0; dd < 8; dd++)
         if (x == xdir[dd] && y == ydir[dd])
@@ -8367,7 +8367,7 @@ schar x, y;
 void
 dtoxy(cc, dd)
 coord *cc;
-register int dd;
+int dd;
 {
     cc->x = xdir[dd];
     cc->y = ydir[dd];
@@ -8379,7 +8379,7 @@ int
 movecmd(sym)
 char sym;
 {
-    register const char *dp = index(Cmd.dirchars, sym);
+    const char *dp = index(Cmd.dirchars, sym);
 
     u.dz = 0;
     if (!dp || !*dp)
@@ -8756,7 +8756,7 @@ const char *msg;
 void
 confdir(VOID_ARGS)
 {
-    register int x = NODIAG(u.umonnum) ? 2 * rn2(4) : rn2(8);
+    int x = NODIAG(u.umonnum) ? 2 * rn2(4) : rn2(8);
 
     u.dx = xdir[x];
     u.dy = ydir[x];
@@ -8781,7 +8781,7 @@ int dir;
 
 int
 isok(x, y)
-register int x, y;
+int x, y;
 {
     /* x corresponds to curx, so x==1 is the first column. Ach. %% */
     return x >= 1 && x <= COLNO - 1 && y >= 0 && y <= ROWNO - 1;
@@ -10028,7 +10028,7 @@ end_of_input(VOID_ARGS)
 char
 readchar(VOID_ARGS)
 {
-    register int sym;
+    int sym;
     int x = u.ux, y = u.uy, mod = 0;
 
     if (iflags.debug_fuzzer)
@@ -10040,7 +10040,7 @@ readchar(VOID_ARGS)
 
 #ifdef NR_OF_EOFS
     if (sym == EOF) {
-        register int cnt = NR_OF_EOFS;
+        int cnt = NR_OF_EOFS;
         /*
          * Some SYSV systems seem to return EOFs for various reasons
          * (?like when one hits break or for interrupted systemcalls?),

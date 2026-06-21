@@ -665,7 +665,7 @@ summon_minion(alignment, talk)
 aligntyp alignment;
 boolean talk;
 {
-    register struct monst *mon;
+    struct monst *mon;
     int mnum;
 
     switch ((int) alignment)

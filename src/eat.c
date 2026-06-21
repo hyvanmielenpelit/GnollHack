@@ -76,7 +76,7 @@ const char *hu_stat[] = { "Satiated", "        ", "Hungry  ", "Weak    ",
  */
 boolean
 is_edible(obj)
-register struct obj *obj;
+struct obj *obj;
 {
     /* protect invocation tools but not Rider corpses (handled elsewhere)*/
     /* if (obj->oclass != FOOD_CLASS && obj_resists(obj, 0, 0)) */
@@ -1105,7 +1105,7 @@ boolean allowmsg;
 
 STATIC_OVL void
 corpse_pre_effect(pm, gender)
-register int pm;
+int pm;
 uchar gender; /* 0 = male, 1 = female, 2 = unknown */
 {
     if (pm < LOW_PM)
@@ -1232,7 +1232,7 @@ fix_petrification(VOID_ARGS)
 boolean
 intrinsic_possible(type, ptr)
 int type;
-register struct permonst *ptr;
+struct permonst *ptr;
 {
     uint64_t conveyed = prop_to_conveyed(type);
     return !!(ptr->mconveys & conveyed);
@@ -1273,11 +1273,11 @@ int duration;
 STATIC_OVL void
 givit(type, ptr)
 int type;
-register struct permonst *ptr;
+struct permonst *ptr;
 {
     if (ptr)
     {
-        register int chance;
+        int chance;
 
         debugpline1("Attempting to give intrinsic %d", type);
         /* some intrinsics are easier to get than others */
@@ -1985,7 +1985,7 @@ set_tin_variety(obj, forcetype)
 struct obj *obj;
 int forcetype;
 {
-    register int r;
+    int r;
 
     if (forcetype == SPINACH_TIN
         || (forcetype == HEALTHY_TIN
@@ -2015,7 +2015,7 @@ tin_variety(obj, disp)
 struct obj *obj;
 boolean disp; /* we're just displaying so leave things alone */
 {
-    register int r;
+    int r;
 
     if (obj->special_quality == 1) {
         r = SPINACH_TIN;
@@ -2244,7 +2244,7 @@ start_tin(otmp)
 struct obj *otmp;
 {
     const char *mesg = 0;
-    register int tmp;
+    int tmp;
 
     if (metallivorous(youmonst.data)) 
     {
@@ -4813,7 +4813,7 @@ floorfood(verb, corpsecheck)
 const char *verb;
 int corpsecheck; /* 0, no check, 1, corpses, 2, tinnable corpses */
 {
-    register struct obj *otmp;
+    struct obj *otmp;
     char qbuf[QBUFSZ];
     char c;
     boolean feeding = !strcmp(verb, "eat"),    /* corpsecheck==0 */

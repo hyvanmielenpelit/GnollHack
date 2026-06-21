@@ -212,7 +212,7 @@ void cl_eos() /* clear to end of screen */
 
 void
 cmov(col, row)
-register int col, row;
+int col, row;
 {
     ttyDisplay->cury = (uchar) row;
     ttyDisplay->curx = (uchar) col;

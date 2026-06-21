@@ -207,8 +207,8 @@ int spellnum;
  */
 int
 castmu(mtmp, mattk, thinks_it_foundyou, foundyou)
-register struct monst *mtmp;
-register struct attack *mattk;
+struct monst *mtmp;
+struct attack *mattk;
 boolean thinks_it_foundyou;
 boolean foundyou;
 {
@@ -1288,8 +1288,8 @@ int spellnum;
 /* monster uses spell (ranged) */
 int
 buzzmu(mtmp, mattk)
-register struct monst *mtmp;
-register struct attack *mattk;
+struct monst *mtmp;
+struct attack *mattk;
 {
     //Sanity check
     if (!mtmp || !mattk)

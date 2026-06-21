@@ -479,7 +479,7 @@ const struct shclass shtypes[] = {
 void
 init_shop_selection(VOID_ARGS)
 {
-    register int i, j, item_prob, shop_prob;
+    int i, j, item_prob, shop_prob;
 
     for (shop_prob = 0, i = 0; i < SIZE(shtypes); i++) {
         shop_prob += shtypes[i].prob;
@@ -786,7 +786,7 @@ shkinit(shp, sroom)
 const struct shclass *shp;
 struct mkroom *sroom;
 {
-    register int sh, sx, sy;
+    int sh, sx, sy;
     struct monst *shk;
     struct eshk *eshkp;
 
@@ -827,7 +827,7 @@ struct mkroom *sroom;
         /* Said to happen sometimes, but I have never seen it. */
         /* Supposedly fixed by fdoor change in mklev.c */
         if (wizard) {
-            register int j = sroom->doorct;
+            int j = sroom->doorct;
 
             pline("Where is shopdoor?");
             pline("Room at (%d,%d),(%d,%d).", sroom->lx, sroom->ly, sroom->hx,
@@ -962,7 +962,7 @@ int origtype;
 void
 stock_room(shp_indx, sroom, deserted)
 int shp_indx;
-register struct mkroom *sroom;
+struct mkroom *sroom;
 boolean deserted;
 {
     /*
@@ -1002,7 +1002,7 @@ boolean deserted;
 
     if ((levl[sx][sy].doormask & D_MASK) == D_LOCKED) 
     {
-        register int m = sx, n = sy;
+        int m = sx, n = sy;
 
         if (inside_shop(sx + 1, sy))
             m--;
@@ -1108,7 +1108,7 @@ get_shop_item(type)
 int type;
 {
     const struct shclass *shp = shtypes + type;
-    register int i, j;
+    int i, j;
 
     /* select an appropriate object type at random */
     for (j = rnd(100), i = 0; (j -= shp->iprobs[i].iprob) > 0; i++)

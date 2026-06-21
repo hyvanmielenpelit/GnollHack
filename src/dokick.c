@@ -501,8 +501,8 @@ xchar x, y;
  */
 boolean
 ghitm(mtmp, gold, hitres_ptr)
-register struct monst *mtmp;
-register struct obj *gold;
+struct monst *mtmp;
+struct obj *gold;
 uchar* hitres_ptr;
 {
     boolean msg_given = FALSE;
@@ -1176,7 +1176,7 @@ boolean has_dir;
     int x, y;
     int avrg_attrib;
     int dmg = 0, glyph, oldglyph = -1;
-    register struct monst *mtmp;
+    struct monst *mtmp;
     boolean no_kick = FALSE;
     char buf[BUFSZ], kickobjnam[BUFSZ];
 
@@ -1524,7 +1524,7 @@ boolean has_dir;
         }
         if (IS_THRONE(maploc->typ)) 
         {
-            register int i;
+            int i;
             if (Levitation)
                 goto dumb;
             if ((Luck < 0 || maploc->flags) && !rn2(3)) 
@@ -2035,8 +2035,8 @@ xchar dlev;          /* if !0 send to dlev near player */
 boolean dropall;
 {
     schar toloc;
-    register struct obj *obj, *obj2;
-    register struct monst *shkp;
+    struct obj *obj, *obj2;
+    struct monst *shkp;
     int64_t oct, dct, price, debit, robbed;
     boolean angry, costly, isrock;
     coord cc;
@@ -2308,8 +2308,8 @@ void
 obj_delivery(near_hero)
 boolean near_hero;
 {
-    register struct obj *otmp, *otmp2;
-    register int nx, ny;
+    struct obj *otmp, *otmp2;
+    int nx, ny;
     int where;
     boolean nobreak, noscatter;
 
@@ -2436,8 +2436,8 @@ uint64_t deliverflags;
 
 STATIC_OVL void
 otransit_msg(otmp, nodrop, num)
-register struct obj *otmp;
-register boolean nodrop;
+struct obj *otmp;
+boolean nodrop;
 int64_t num;
 {
     char *optr = 0, obuf[BUFSZ], xbuf[BUFSZ];

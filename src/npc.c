@@ -178,9 +178,9 @@ struct monst* npc;
  * npc_move: return 1: moved  0: didn't  -1: let m_move do it  -2: died
  */
 int npc_move(npc)
-register struct monst* npc;
+struct monst* npc;
 {
-    register xchar gx, gy, omx, omy;
+    xchar gx, gy, omx, omy;
     schar npc_room;
     boolean avoid = FALSE; /* FALSE to avoid being stuck on a square in small rooms */
 
@@ -255,8 +255,8 @@ struct monst* npc;
 
 STATIC_OVL boolean
 his_npc_room_at(npc, x, y)
-register struct monst* npc;
-register xchar x, y;
+struct monst* npc;
+xchar x, y;
 {
     return (boolean)(npc && npc->isnpc
         && (ENPC(npc)->npc_room == *in_rooms(x, y, NPCROOM))
@@ -283,7 +283,7 @@ struct monst*
 findnpc(roomno)
 char roomno;
 {
-    register struct monst* mtmp;
+    struct monst* mtmp;
 
     for (mtmp = fmon; mtmp; mtmp = mtmp->nmon) {
         if (DEADMONSTER(mtmp))
@@ -388,9 +388,9 @@ boolean ignore_already_there;
 
 char
 npc_room_occupied(array)
-register char* array;
+char* array;
 {
-    register char* ptr;
+    char* ptr;
 
     for (ptr = array; *ptr; ptr++)
         if (rooms[*ptr - ROOMOFFSET].rtype == NPCROOM)
@@ -1120,7 +1120,7 @@ struct monst* mtmp;
 /* munge NPC-specific structure when restoring -dlc */
 void
 restnpc(mtmp, ghostly)
-register struct monst* mtmp;
+struct monst* mtmp;
 boolean ghostly;
 {
     if (u.uz.dlevel) 

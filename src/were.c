@@ -9,7 +9,7 @@
 
 void
 were_change(mon)
-register struct monst *mon;
+struct monst *mon;
 {
     if (!mon)
         return;
@@ -117,12 +117,12 @@ int pm;
 
 void
 new_were(mon)
-register struct monst *mon;
+struct monst *mon;
 {
     if (!mon)
         return;
 
-    register int pm;
+    int pm;
 
     pm = counter_were(mon->mnum);
     if (pm < LOW_PM) {

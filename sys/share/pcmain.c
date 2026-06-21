@@ -92,7 +92,7 @@ pcmain(argc, argv)
 int argc;
 char *argv[];
 {
-    register int fd;
+    int fd;
     register char *dir;
 #if defined(MSDOS)
     char *envp = NULL;

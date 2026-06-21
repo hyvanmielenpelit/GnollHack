@@ -406,8 +406,8 @@ add_line(mesg_info, s)
 struct mesg_info_t *mesg_info;
 const char *s;
 {
-    register struct line_element *curr = mesg_info->head;
-    register int new_line_length = strlen(s);
+    struct line_element *curr = mesg_info->head;
+    int new_line_length = strlen(s);
 
     if (new_line_length + 1 > curr->buf_length) {
         if (curr->line)
@@ -436,7 +436,7 @@ void
 set_last_pause(wp)
 struct xwindow *wp;
 {
-    register struct mesg_info_t *mesg_info = wp->mesg_information;
+    struct mesg_info_t *mesg_info = wp->mesg_information;
 
 #ifdef ERASE_LINE
     /*
@@ -465,8 +465,8 @@ redraw_message_window(wp)
 struct xwindow *wp;
 {
     struct mesg_info_t *mesg_info = wp->mesg_information;
-    register struct line_element *curr;
-    register int row, y_base;
+    struct line_element *curr;
+    int row, y_base;
 
     /*
      * Do this the cheap and easy way.  Clear the window and just redraw

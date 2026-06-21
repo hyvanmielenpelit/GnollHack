@@ -1285,8 +1285,8 @@ STATIC_OVL void
 get_valuables(list)
 struct obj *list; /* inventory or container contents */
 {
-    register struct obj *obj;
-    register int i;
+    struct obj *obj;
+    int i;
 
     /* find amulets and gems, ignoring all artifacts */
     for (obj = list; obj; obj = obj->nobj)
@@ -1330,7 +1330,7 @@ sort_valuables(list, size)
 struct valuable_data list[];
 int size; /* max value is less than 20 */
 {
-    register int i, j;
+    int i, j;
     struct valuable_data ltmp;
 
     /* move greater quantities to the front of the list */
@@ -2492,8 +2492,8 @@ int how;
 
 #if 0
             struct obj* otmp;
-            register struct val_list* val;
-            register int i;
+            struct val_list* val;
+            int i;
 
             for (val = valuables; val->list; val++)
                 for (i = 0; i < val->size; i++)
@@ -2776,7 +2776,7 @@ struct obj *list;
 boolean identified, all_containers, reportempty, show_quick;
 int show_weights;
 {
-    register struct obj *box, *obj;
+    struct obj *box, *obj;
     char buf[BUFSZ];
     boolean cat, dumping = iflags.in_dumplog;
     int count = 0;
@@ -2891,7 +2891,7 @@ magic_chest_contents(identified, all_containers, reportempty, show_weights, show
 boolean identified, all_containers, reportempty, show_quick;
 int show_weights;
 {
-    register struct obj* obj;
+    struct obj* obj;
     char buf[BUFSZ];
     boolean dumping = iflags.in_dumplog;
     int count = 0;
@@ -3217,7 +3217,7 @@ list_vanquished(defquery, ask, isend)
 char defquery;
 boolean ask, isend;
 {
-    register int i;
+    int i;
     int pfx, nkilled, fkilled;
     boolean all_female, no_female;
     unsigned ntypes, ni;
@@ -3607,7 +3607,7 @@ list_genocided(defquery, ask, isend)
 char defquery;
 boolean ask, isend;
 {
-    register int i;
+    int i;
     int ngenocided, nextinct;
     char c;
     winid klwin;
@@ -4197,7 +4197,7 @@ struct trap* trap;
 STATIC_OVL void
 reset_damage(VOID_ARGS)
 {
-    register struct damage* damageptr, * tmp_dam;
+    struct damage* damageptr, * tmp_dam;
     unsigned int xl = 0;
 
     damageptr = level.damagelist;

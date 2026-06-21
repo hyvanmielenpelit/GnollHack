@@ -13,7 +13,7 @@ STATIC_DCL const char *FDECL(equipname, (struct obj *));
 
 STATIC_OVL const char *
 equipname(otmp)
-register struct obj *otmp;
+struct obj *otmp;
 {
     return ((otmp == uarmu)
                 ? "shirt"
@@ -73,7 +73,7 @@ int64_t lmoney;
 */
 struct obj *
 findgold(chain)
-register struct obj *chain;
+struct obj *chain;
 {
     while (chain && chain->otyp != GOLD_PIECE)
         chain = chain->nobj;
@@ -82,7 +82,7 @@ register struct obj *chain;
 
 struct obj*
 findobjecttype(chain, otyp)
-register struct obj* chain;
+struct obj* chain;
 int otyp;
 {
     while (chain && chain->otyp != otyp)
@@ -95,11 +95,11 @@ int otyp;
 */
 void
 stealgold(mtmp)
-register struct monst *mtmp;
+struct monst *mtmp;
 {
-    register struct obj *fgold = g_at(u.ux, u.uy);
-    register struct obj *ygold;
-    register int64_t tmp;
+    struct obj *fgold = g_at(u.ux, u.uy);
+    struct obj *ygold;
+    int64_t tmp;
     struct monst *who;
     const char *whose, *what;
 
@@ -176,8 +176,8 @@ unsigned int stealmid; /* monster doing the stealing */
 STATIC_PTR int
 stealarm(VOID_ARGS)
 {
-    register struct monst *mtmp;
-    register struct obj *otmp;
+    struct monst *mtmp;
+    struct obj *otmp;
 
     for (otmp = invent; otmp; otmp = otmp->nobj) {
         if (otmp->o_id == stealoid) {
@@ -620,8 +620,8 @@ gotobj:
 /* Returns TRUE if otmp is free'd, FALSE otherwise. */
 boolean
 mpickobj(mtmp, otmp)
-register struct monst *mtmp;
-register struct obj *otmp;
+struct monst *mtmp;
+struct obj *otmp;
 {
     boolean freed_otmp;
     boolean snuff_otmp = FALSE;

@@ -862,7 +862,7 @@ STATIC_VAR const struct def_skill Skill_W_Init[] = {
 
 STATIC_OVL void
 knows_object(otyp)
-register int otyp;
+int otyp;
 {
     discover_object(otyp, TRUE, FALSE);
     objects[otyp].oc_pre_discovered = 1; /* not a "discovery" */
@@ -874,9 +874,9 @@ register int otyp;
  */
 STATIC_OVL void
 knows_class(sym)
-register char sym;
+char sym;
 {
-    register int ct;
+    int ct;
     for (ct = 1; ct < NUM_OBJECTS; ct++)
         if (objects[ct].oc_class == sym && !objects[ct].oc_magic)
             knows_object(ct);
@@ -886,7 +886,7 @@ register char sym;
 void
 u_init(VOID_ARGS)
 {
-    register int i;
+    int i;
     struct u_roleplay tmpuroleplay = u.uroleplay; /* set by rcfile options */
     debugprint("u_init");
 
@@ -1571,7 +1571,7 @@ int otyp;
 
 STATIC_OVL void
 ini_inv(trop)
-register const struct trobj * trop;
+const struct trobj * trop;
 {
     if (!trop)
         return;

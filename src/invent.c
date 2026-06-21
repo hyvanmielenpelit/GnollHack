@@ -617,11 +617,11 @@ boolean by_nexthere; /* T: traverse via obj->nexthere, F: via obj->nobj */
 
 void
 assigninvlet(otmp)
-register struct obj *otmp;
+struct obj *otmp;
 {
     boolean inuse[52];
-    register int i;
-    register struct obj *obj;
+    int i;
+    struct obj *obj;
 
     /* there should be at most one of these in inventory... */
     if (otmp->oclass == COIN_CLASS) {
@@ -739,7 +739,7 @@ boolean
 merged(potmp, pobj)
 struct obj **potmp, **pobj;
 {
-    register struct obj *otmp = *potmp, *obj = *pobj;
+    struct obj *otmp = *potmp, *obj = *pobj;
 
     if (mergable(otmp, obj)) {
         /* Approximate age: we do it this way because if we were to
@@ -2005,7 +2005,7 @@ struct obj *obj;
 
 void
 useup(obj)
-register struct obj *obj;
+struct obj *obj;
 {
     /* Note:  This works correctly for containers because they (containers)
        don't merge. */
@@ -2109,7 +2109,7 @@ struct obj *obj;
 /* remove an object from the hero's inventory */
 void
 freeinv(obj)
-register struct obj *obj;
+struct obj *obj;
 {
     if (obj->o_id == context.last_picked_obj_oid)
     {
@@ -2143,14 +2143,14 @@ int x, y;
 /* destroy object in fobj chain (if unpaid, it remains on the bill) */
 void
 delobj(obj)
-register struct obj* obj;
+struct obj* obj;
 {
     delobj_with_flags(obj, 0UL);
 }
 
 void
 delobj_with_flags(obj, newsym_flags)
-register struct obj *obj;
+struct obj *obj;
 uint64_t newsym_flags;
 {
     boolean update_map;
@@ -2181,7 +2181,7 @@ sobj_at(otyp, x, y)
 int otyp;
 int x, y;
 {
-    register struct obj *otmp;
+    struct obj *otmp;
 
     for (otmp = level.objects[x][y]; otmp; otmp = otmp->nexthere)
         if (otmp->otyp == otyp)
@@ -2196,7 +2196,7 @@ noncursed_sobj_at(otyp, x, y)
 int otyp;
 int x, y;
 {
-    register struct obj* otmp;
+    struct obj* otmp;
 
     for (otmp = level.objects[x][y]; otmp; otmp = otmp->nexthere)
         if (otmp->otyp == otyp && !otmp->cursed)
@@ -2214,7 +2214,7 @@ int x, y;
     if (!isok(x, y))
         return (struct obj*)0;
 
-    register struct obj* otmp;
+    struct obj* otmp;
 
     /* Memory objects first */
     for (otmp = level.locations[x][y].hero_memory_layers.memory_objchn; otmp; otmp = otmp->nexthere)
@@ -2288,7 +2288,7 @@ struct obj *obj;
 int type;
 boolean by_nexthere;
 {
-    register struct obj *otmp;
+    struct obj *otmp;
 
     otmp = obj; /* start with the object after this one */
     do {
@@ -2302,9 +2302,9 @@ boolean by_nexthere;
 
 struct obj *
 carrying(type)
-register int type;
+int type;
 {
-    register struct obj *otmp;
+    struct obj *otmp;
 
     for (otmp = invent; otmp; otmp = otmp->nobj)
         if (otmp->otyp == type)
@@ -2316,7 +2316,7 @@ struct obj *
 carrying_class(oclass)
 char oclass;
 {
-    register struct obj *otmp;
+    struct obj *otmp;
 
     for (otmp = invent; otmp; otmp = otmp->nobj)
         if (otmp->oclass == oclass)
@@ -2328,7 +2328,7 @@ char oclass;
 struct obj*
 carrying_leashed_leash(VOID_ARGS)
 {
-    register struct obj* otmp;
+    struct obj* otmp;
 
     for (otmp = invent; otmp; otmp = otmp->nobj)
         if (otmp->otyp == LEASH && otmp->leashmon != 0)
@@ -2344,7 +2344,7 @@ struct obj* box;
     if (!box)
         return (struct obj*)0;
 
-    register struct obj *otmp;
+    struct obj *otmp;
 
     /* is_unlocking_tool in order of preference */
 
@@ -2373,7 +2373,7 @@ struct rm* door;
     if (!door)
         return (struct obj*)0;
 
-    register struct obj* otmp;
+    struct obj* otmp;
 
     /* is_unlocking_tool in order of preference */
 
@@ -2437,7 +2437,7 @@ int64_t amount;
 boolean
 have_lizard(VOID_ARGS)
 {
-    register struct obj *otmp;
+    struct obj *otmp;
 
     for (otmp = invent; otmp; otmp = otmp->nobj)
         if (otmp->otyp == CORPSE && otmp->corpsenm == PM_LIZARD)
@@ -2449,7 +2449,7 @@ have_lizard(VOID_ARGS)
 struct obj *
 u_have_novel(VOID_ARGS)
 {
-    register struct obj *otmp;
+    struct obj *otmp;
 
     for (otmp = invent; otmp; otmp = otmp->nobj)
         if (otmp->otyp == SPE_NOVEL)
@@ -2460,7 +2460,7 @@ u_have_novel(VOID_ARGS)
 struct obj *
 o_on(id, objchn)
 unsigned int id;
-register struct obj *objchn;
+struct obj *objchn;
 {
     struct obj *temp;
 
@@ -2491,7 +2491,7 @@ unsigned int id;
 struct obj*
 o_on_memory(id, objchn)
 unsigned int id;
-register struct obj* objchn;
+struct obj* objchn;
 {
     struct obj* temp;
 
@@ -2508,7 +2508,7 @@ register struct obj* objchn;
 struct obj*
 m_on_memory(mid, objchn)
 unsigned int mid;
-register struct obj* objchn;
+struct obj* objchn;
 {
     struct obj* temp;
 
@@ -2524,7 +2524,7 @@ register struct obj* objchn;
 
 void
 reduce_item_cooldown(objchn)
-register struct obj *objchn;
+struct obj *objchn;
 {
     boolean reached_zero = FALSE;
 
@@ -2564,10 +2564,10 @@ register struct obj *objchn;
 
 boolean
 obj_here(obj, x, y)
-register struct obj *obj;
+struct obj *obj;
 int x, y;
 {
-    register struct obj *otmp;
+    struct obj *otmp;
 
     for (otmp = level.objects[x][y]; otmp; otmp = otmp->nexthere)
         if (obj == otmp)
@@ -2577,9 +2577,9 @@ int x, y;
 
 struct obj *
 g_at(x, y)
-register int x, y;
+int x, y;
 {
-    register struct obj *obj = level.objects[x][y];
+    struct obj *obj = level.objects[x][y];
 
     while (obj) {
         if (obj->oclass == COIN_CLASS)
@@ -2592,10 +2592,10 @@ register int x, y;
 /* compact a string of inventory letters by dashing runs of letters */
 STATIC_OVL void
 compactify(buf)
-register char *buf;
+char *buf;
 {
-    register int i1 = 1, i2 = 1;
-    register char ilet, ilet1, ilet2;
+    int i1 = 1, i2 = 1;
+    char ilet, ilet1, ilet2;
 
     ilet2 = buf[0];
     ilet1 = buf[1];
@@ -2671,7 +2671,7 @@ const char* action;
  */
 struct obj*
 getobj(let, word, show_weights, headertext)
-register const char* let, * word;
+const char* let, * word;
 int show_weights;
 const char* headertext;
 {
@@ -2680,7 +2680,7 @@ const char* headertext;
 
 struct obj *
 getobj_ex(let, word, show_weights, show_quick, headertext, validitemfunc, cost, getobjflags)
-register const char *let, *word;
+const char *let, *word;
 int show_weights;
 boolean show_quick;
 const char* headertext;
@@ -2688,8 +2688,8 @@ boolean (*validitemfunc)(struct obj*);
 int64_t cost;
 unsigned int getobjflags; /* 1 = cost is specified; 2 = header text is about cost */
 {
-    register struct obj *otmp;
-    register char ilet = 0;
+    struct obj *otmp;
+    char ilet = 0;
     char buf[BUFSZ], qbuf[QBUFSZ]; // , leftbuf[BUFSZ], rightbuf[BUFSZ];
     char lets[BUFSZ], altlets[BUFSZ]; //, * ap;
     int foo = 0;
@@ -2814,7 +2814,7 @@ unsigned int getobjflags; /* 1 = cost is specified; 2 = header text is about cos
         if (!*let || index(let, otmp->oclass)
             || (usegold && otmp->invlet == GOLD_SYM)
             || (useboulder && otmp->otyp == BOULDER)) {
-            register int otyp = otmp->otyp;
+            int otyp = otmp->otyp;
 
             bp[foo++] = otmp->invlet;
 /* clang-format off */
@@ -3213,7 +3213,7 @@ unsigned int getobjflags; /* 1 = cost is specified; 2 = header text is about cos
 
 void
 construct_getobj_letters(let, word, validitemfunc, lets, altlets, buf, lets_size, altlets_size, buf_size, foo_ptr, foox_ptr, bp_ptr, allowcnt_ptr, usegold_ptr, allowall_ptr, allownone_ptr, useboulder_ptr, otmp_only)
-register const char *let, *word;
+const char *let, *word;
 boolean (*validitemfunc)(struct obj*);
 char* lets, *altlets, *buf;
 size_t lets_size UNUSED, altlets_size, buf_size;
@@ -3223,7 +3223,7 @@ char** bp_ptr;
 boolean *usegold_ptr, *allowall_ptr, *allownone_ptr, *useboulder_ptr;
 struct obj* otmp_only;
 {
-    register struct obj* otmp;
+    struct obj* otmp;
     char leftbuf[BUFSZ], rightbuf[BUFSZ];
     char *ap;
     boolean is_dip_into = FALSE;
@@ -3329,7 +3329,7 @@ struct obj* otmp_only;
             || (usegold && otmp->invlet == GOLD_SYM)
             || (useboulder && otmp->otyp == BOULDER))
         {
-            register int otyp = otmp->otyp;
+            int otyp = otmp->otyp;
 
             bp[foo++] = otmp->invlet;
             /* clang-format off */
@@ -3541,13 +3541,13 @@ struct obj* otmp_only;
 boolean
 acceptable_getobj_obj(otmp, let, word)
 struct obj* otmp;
-register const char* let;
-register const char* word;
+const char* let;
+const char* word;
 {
     if (!otmp || !let || !word)
         return FALSE;
 
-    register char ilet = otmp->invlet;
+    char ilet = otmp->invlet;
     char buf[BUFSZ] = "";
     char lets[BUFSZ], altlets[BUFSZ];
     int foo = 0;
@@ -3906,7 +3906,7 @@ const char *olets, *word; /* olets is an Obj Class char array */
 int FDECL((*fn), (OBJ_P)), FDECL((*ckfn), (OBJ_P));
 {
     struct obj *otmp, *otmpo;
-    register char sym, ilet;
+    char sym, ilet;
     int cnt = 0, dud = 0, tmp;
     boolean takeoff, nodot, ident, take_out, put_in, first, ininv, bycat;
     char qbuf[QBUFSZ], qpfx[QBUFSZ];
@@ -4632,7 +4632,7 @@ boolean* return_to_inv_ptr;
         char cmdbuf[BUFSZ] = "";
         char shortcutbuf[BUFSZ] = "";
         char headerbuf[BUFSZ] = "";
-        register const struct ext_func_tab* efp;
+        const struct ext_func_tab* efp;
         int actioncount = 0;
         char class_list[BUFSZ] = "";
         int longest_len = 0;
@@ -5901,7 +5901,7 @@ dounpaid(VOID_ARGS)
 {
     winid win;
     struct obj *otmp, *marker, *contnr;
-    register char ilet;
+    char ilet;
     char *classlet = flags.inv_order;
     int classcount, count, num_so_far;
     int64_t cost, totcost;
@@ -6002,7 +6002,7 @@ dounidentified(VOID_ARGS)
 {
     winid win;
     struct obj* otmp;
-    register char ilet;
+    char ilet;
     char* classlet = flags.inv_order;
     int classcount, count;
 
@@ -6047,7 +6047,7 @@ dounknown(VOID_ARGS)
 {
     winid win;
     struct obj* otmp;
-    register char ilet;
+    char ilet;
     char* classlet = flags.inv_order;
     int classcount, count;
 
@@ -7070,7 +7070,7 @@ struct obj *obj;
 /* returns TRUE if obj & otmp can be merged; used in invent.c and mkobj.c */
 boolean
 mergable(otmp, obj)
-register struct obj *otmp, *obj;
+struct obj *otmp, *obj;
 {
     size_t objnamelth = 0, otmpnamelth = 0;
 
@@ -7239,7 +7239,7 @@ int
 doprarm(VOID_ARGS)
 {
     char lets[12];
-    register int ct = 0;
+    int ct = 0;
     /*
      * Note:  players sometimes get here by pressing a function key which
      * transmits ''ESC [ <something>'' rather than by pressing '[';
@@ -7281,7 +7281,7 @@ doprring(VOID_ARGS)
         You1("are not wearing any rings.");
     else {
         char lets[3];
-        register int ct = 0;
+        int ct = 0;
 
         if (uleft)
             lets[ct++] = obj_to_let(uleft);
@@ -7396,7 +7396,7 @@ doprinuse(VOID_ARGS)
  */
 void
 useupf(obj, numused)
-register struct obj* obj;
+struct obj* obj;
 int64_t numused;
 {
     useupf_with_flags(obj, numused, 0UL);
@@ -7404,11 +7404,11 @@ int64_t numused;
 
 void
 useupf_with_flags(obj, numused, newsym_flags)
-register struct obj *obj;
+struct obj *obj;
 int64_t numused;
 uint64_t newsym_flags;
 {
-    register struct obj *otmp;
+    struct obj *otmp;
     boolean at_u = (obj->ox == u.ux && obj->oy == u.uy);
 
     /* burn_floor_objects() keeps an object pointer that it tries to
@@ -7898,7 +7898,7 @@ struct obj *obj;
  */
 struct obj *
 display_minventory(mon, dflags, title)
-register struct monst *mon;
+struct monst *mon;
 int dflags;
 char *title;
 {
@@ -7949,7 +7949,7 @@ char *title;
  */
 struct obj *
 display_cinventory(obj)
-register struct obj *obj;
+struct obj *obj;
 {
     struct obj *ret;
     char qbuf[QBUFSZ];

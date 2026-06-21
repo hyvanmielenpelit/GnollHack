@@ -358,7 +358,7 @@ boolean givemsg;
 /* may kill you; cause may be poison or monster like 'a' */
 void
 losestr(num)
-register int num;
+int num;
 {
     int ustr = ABASE(A_STR) - num;
 
@@ -714,8 +714,8 @@ int
 stone_luck(uncursed_confers_extra_luck)
 boolean uncursed_confers_extra_luck; /* So I can't think up of a good name.  So sue me. --KAA */
 {
-    register struct obj *otmp;
-    register int64_t bonchance = 0;
+    struct obj *otmp;
+    int64_t bonchance = 0;
 
     for (otmp = invent; otmp; otmp = otmp->nobj)
     {
@@ -1480,9 +1480,9 @@ exerchk(VOID_ARGS)
 
 void
 init_attr(np)
-register int np;
+int np;
 {
-    register int i, x, tryct;
+    int i, x, tryct;
 
     for (i = 0; i < A_MAX; i++) 
     {
@@ -1537,7 +1537,7 @@ register int np;
 void
 redist_attr(VOID_ARGS)
 {
-    register int i, tmp;
+    int i, tmp;
 
     for (i = 0; i < A_MAX; i++) {
         if (i == A_INT || i == A_WIS)
@@ -1906,7 +1906,7 @@ void
 adjabil(oldlevel, newlevel)
 int oldlevel, newlevel;
 {
-    register const struct innate *abil, *rabil;
+    const struct innate *abil, *rabil;
     int64_t prevabil, mask = FROM_ROLE;
 
     abil = role_abil(Role_switch);
@@ -2510,7 +2510,7 @@ schar
 acurr(x)
 int x;
 {
-    register int tmp = (u.abonus.a[x] + u.atemp.a[x] + u.acurr.a[x]);
+    int tmp = (u.abonus.a[x] + u.atemp.a[x] + u.acurr.a[x]);
     
     if (u.afixmin.a[x] > 0 && u.afixmax.a[x] > 0 && u.afixmin.a[x] > u.afixmax.a[x])
     {
@@ -2550,7 +2550,7 @@ int x;
     if (mon == &youmonst)
         return acurr(x);
 
-    register int tmp = (mon->abonus.a[x] + mon->atemp.a[x] + mon->acurr.a[x]);
+    int tmp = (mon->abonus.a[x] + mon->atemp.a[x] + mon->acurr.a[x]);
 
     if (mon->afixmin.a[x] > 0 && mon->afixmax.a[x] > 0 && mon->afixmin.a[x] > mon->afixmax.a[x])
     {

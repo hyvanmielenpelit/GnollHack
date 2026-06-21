@@ -252,7 +252,7 @@ int
 c__translate(code)
 int code;
 {
-    register int trans;
+    int trans;
 
 /* clang-format off */
 /* *INDENT-OFF* */
@@ -313,7 +313,7 @@ const char *name;
 {
     unsigned len;
     char *base, *base_p;
-    register const char *name_p;
+    const char *name_p;
 
     /* skip directory/path */
     if ((name_p = strrchr(name, ']')) != 0)

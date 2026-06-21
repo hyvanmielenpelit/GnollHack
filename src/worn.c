@@ -46,7 +46,7 @@ const struct worn {
 
 void
 setworn(obj, mask)
-register struct obj* obj;
+struct obj* obj;
 int64_t mask;
 {
     setworncore(obj, mask, TRUE);
@@ -55,7 +55,7 @@ int64_t mask;
 /* Does not update stats */
 void
 setwornquietly(obj, mask)
-register struct obj* obj;
+struct obj* obj;
 int64_t mask;
 {
     setworncore(obj, mask, FALSE);
@@ -68,13 +68,13 @@ int64_t mask;
 /* Updated to use the extrinsic and blocked fields. */
 void
 setworncore(obj, mask, verbose_and_update_stats)
-register struct obj *obj;
+struct obj *obj;
 int64_t mask;
 boolean verbose_and_update_stats;
 {
-    register const struct worn *wp;
-    register struct obj* oobj = (struct obj*)0;
-//    register int p;
+    const struct worn *wp;
+    struct obj* oobj = (struct obj*)0;
+//    int p;
 
     int oldmanamax = u.uenmax;
     int oldhpmax = u.uhpmax;
@@ -281,14 +281,14 @@ boolean verbose_and_update_stats;
 
 boolean
 setnotworn(obj)
-register struct obj* obj;
+struct obj* obj;
 {
     return setnotworncore(obj, TRUE);
 }
 
 boolean
 setnotwornquietly(obj)
-register struct obj* obj;
+struct obj* obj;
 {
     return setnotworncore(obj, FALSE);
 }
@@ -297,10 +297,10 @@ register struct obj* obj;
 /* Updated to use the extrinsic and blocked fields. */
 boolean
 setnotworncore(obj, verbose)
-register struct obj *obj;
+struct obj *obj;
 boolean verbose;
 {
-    register const struct worn *wp;
+    const struct worn *wp;
 
     if (!obj)
         return FALSE;
@@ -1315,9 +1315,9 @@ boolean silently;
 
 int
 find_mac(mon)
-register struct monst *mon;
+struct monst *mon;
 {
-    register struct obj *obj;
+    struct obj *obj;
     int natural_ac_base = mon->data->ac;
     int natural_ac = natural_ac_base;
     int armor_bonus = 0;
@@ -1378,7 +1378,7 @@ register struct monst *mon;
  */
 void
 m_dowear(mon, creation, commanded)
-register struct monst *mon;
+struct monst *mon;
 boolean creation, commanded;
 {
 #define RACE_EXCEPTION TRUE
@@ -1873,7 +1873,7 @@ int64_t flag;
             return 0;
         }
     } else {
-        register struct obj *obj;
+        struct obj *obj;
 
         for (obj = mon->minvent; obj; obj = obj->nobj)
             if (obj->owornmask & flag)
@@ -2044,7 +2044,7 @@ mon_break_armor(mon, polyspot)
 struct monst *mon;
 boolean polyspot;
 {
-    register struct obj *otmp;
+    struct obj *otmp;
     struct permonst *mdat = mon->data;
     boolean vis = cansee(mon->mx, mon->my);
     boolean handless_or_tiny = (nohands(mdat) || verysmall(mdat));

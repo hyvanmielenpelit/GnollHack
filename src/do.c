@@ -446,7 +446,7 @@ doitemdescriptions(VOID_ARGS)
 boolean
 floorexamine(VOID_ARGS)
 {
-    register struct obj* otmp;
+    struct obj* otmp;
     char qbuf[QBUFSZ];
     char c;
     boolean res = TRUE;
@@ -935,7 +935,7 @@ int mnum;
 
 int
 corpsedescription(obj)
-register struct obj* obj;
+struct obj* obj;
 {
     if (!obj || obj == &zeroobj || !is_obj_rotting_corpse(obj))
         return 0;
@@ -949,7 +949,7 @@ register struct obj* obj;
 
 int
 itemdescription(obj)
-register struct obj* obj;
+struct obj* obj;
 {
     if (!obj || obj == &zeroobj)
         return 0;
@@ -5740,7 +5740,7 @@ int aatyp;
 boolean
 boulder_hits_pool(otmp, rx, ry, pushing)
 struct obj *otmp;
-register int rx, ry;
+int rx, ry;
 boolean pushing;
 {
     if (!otmp || otmp->otyp != BOULDER) 
@@ -6045,7 +6045,7 @@ const char *verb;
 /* obj is an object dropped on an altar */
 void
 doaltarobj(obj)
-register struct obj *obj;
+struct obj *obj;
 {
     if (Blind)
         return;
@@ -6091,7 +6091,7 @@ register struct obj *obj;
 
 STATIC_OVL void
 trycall(obj)
-register struct obj *obj;
+struct obj *obj;
 {
     if (!objects[obj->otyp].oc_name_known && !objects[obj->otyp].oc_uname)
         docall(obj, (char*)0);
@@ -6187,7 +6187,7 @@ teleport_sink(VOID_ARGS)
 /* obj is a ring being dropped over a kitchen sink */
 STATIC_OVL void
 dosinkring(obj)
-register struct obj *obj;
+struct obj *obj;
 {
     struct obj *otmp, *otmp2;
     boolean ideed = TRUE;
@@ -6440,7 +6440,7 @@ const char *word;
 
 int
 drop(obj)
-register struct obj *obj;
+struct obj *obj;
 {
     if (!obj)
         return 0;
@@ -6515,7 +6515,7 @@ register struct obj *obj;
 
 int
 autobag(obj) /* To inventory */
-register struct obj* obj;
+struct obj* obj;
 {
     return auto_bag_in(invent, obj, FALSE);
 }
@@ -6526,7 +6526,7 @@ register struct obj* obj;
 /* returns TRUE if obj is gone */
 boolean
 dropx(obj)
-register struct obj *obj;
+struct obj *obj;
 {
     /* Ensure update when we drop gold objects */
     if (obj->oclass == COIN_CLASS)
@@ -6547,7 +6547,7 @@ register struct obj *obj;
 /* returns TRUE if obj is gone */
 boolean
 dropxf(obj)
-register struct obj* obj;
+struct obj* obj;
 {
     /* Ensure update when we drop gold objects */
     if (obj->oclass == COIN_CLASS)
@@ -7407,7 +7407,7 @@ d_level save_dlevel = { 0, 0 };
 STATIC_OVL int
 currentlevel_rewrite(VOID_ARGS)
 {
-    register int fd;
+    int fd;
     char whynot[BUFSZ];
 
     /* since level change might be a bit slow, flush any buffered screen
@@ -7465,7 +7465,7 @@ save_currentstate(VOID_ARGS)
 /*
 STATIC_OVL boolean
 badspot(x, y)
-register xchar x, y;
+xchar x, y;
 {
     return (boolean) ((levl[x][y].typ != ROOM
                        && levl[x][y].typ != AIR
@@ -7790,7 +7790,7 @@ xchar portal; /* 1 = Magic portal, 2 = Modron portal down (find portal up), 3 = 
     if (portal == 1 && !In_endgame(&u.uz))
     {
         /* find the portal on the new level */
-        register struct trap *ttrap;
+        struct trap *ttrap;
 
         for (ttrap = ftrap; ttrap; ttrap = ttrap->ntrap)
             if (ttrap->ttyp == MAGIC_PORTAL && ttrap->dst.dlevel == fromlevel.dlevel && ttrap->dst.dnum == fromlevel.dnum)
@@ -7833,7 +7833,7 @@ xchar portal; /* 1 = Magic portal, 2 = Modron portal down (find portal up), 3 = 
     else if ((portal == 2 || portal == 3) && !In_endgame(&u.uz))
     {
         /* find the portal on the new level */
-        register struct trap* ttrap;
+        struct trap* ttrap;
 
         for (ttrap = ftrap; ttrap; ttrap = ttrap->ntrap)
             if ((portal == 2 && ttrap->ttyp == MODRON_PORTAL && (ttrap->tflags & TRAPFLAGS_LEVEL_TELEPORT_UP))
@@ -8996,8 +8996,8 @@ dowipe(VOID_ARGS)
 
 void
 set_wounded_legs(side, timex)
-register int64_t side;
-register int timex;
+int64_t side;
+int timex;
 {
     /* KMH -- STEED
      * If you are riding, your steed gets the wounded legs instead.
@@ -9770,7 +9770,7 @@ check_mobbed_hint(VOID_ARGS)
 void
 check_closed_for_inventory_hint(VOID_ARGS)
 {
-    register struct engr* ep = engr_at(u.ux, u.uy);
+    struct engr* ep = engr_at(u.ux, u.uy);
     if ((flags.force_hint || context.game_difficulty <= flags.max_hint_difficulty) && !u.uhint.closed_for_inventory 
         && ep && ep->engr_type == ENGR_SIGNPOST && ep->engr_txt && !strcmp(ep->engr_txt, Closed_for_inventory))
     {

@@ -32,7 +32,7 @@ extern void VDECL(panic, (const char *, ...)) PRINTF_F(1, 2);
 
 long *
 alloc(lth)
-register size_t lth;
+size_t lth;
 {
 #ifdef LINT
     /*
@@ -46,7 +46,7 @@ register size_t lth;
         dummy = 0; /* make sure arg is used */
     return &dummy;
 #else
-    register genericptr_t ptr;
+    genericptr_t ptr;
 
     ptr = malloc(lth);
 #ifndef MONITOR_HEAP

@@ -541,7 +541,7 @@ boolean
 ranged_attk(ptr)
 struct permonst *ptr;
 {
-    register int i, atyp;
+    int i, atyp;
     int64_t atk_mask = ((int64_t)1 << AT_EYES) | ((int64_t)1 << AT_BREA) | ((int64_t)1 << AT_SPIT) | ((int64_t)1 << AT_GAZE);
 
     /* was: (attacktype(ptr, AT_BREA) || attacktype(ptr, AT_WEAP)
@@ -571,7 +571,7 @@ struct monst *mon;
 /* True if monster-type is especially affected by silver weapons */
 boolean
 hates_silver(ptr)
-register struct permonst *ptr;
+struct permonst *ptr;
 {
     return (boolean) (is_were(ptr) || ptr->mlet == S_VAMPIRE || is_demon(ptr)
                       || is_special_silver_hater(ptr));
@@ -588,7 +588,7 @@ struct monst* mon;
 /* True if monster-type is especially affected by silver weapons */
 boolean
 hates_cursed(ptr)
-register struct permonst* ptr;
+struct permonst* ptr;
 {
     return is_angel(ptr);
 }
@@ -596,7 +596,7 @@ register struct permonst* ptr;
 /* True if monster-type is especially affected by silver weapons */
 boolean
 hates_blessed(ptr)
-register struct permonst* ptr;
+struct permonst* ptr;
 {
     return (is_demon(ptr) || is_undead(ptr));
 }
@@ -610,7 +610,7 @@ struct monst* mon;
 
 boolean
 eschews_cursed(ptr)
-register struct permonst* ptr;
+struct permonst* ptr;
 {
     return (innate_eschew_cursed(ptr) || is_animal(ptr) || hates_cursed(ptr));
 }
@@ -624,7 +624,7 @@ struct monst* mon;
 
 boolean
 eschews_blessed(ptr)
-register struct permonst* ptr;
+struct permonst* ptr;
 {
     return (innate_eschew_blessed(ptr) || hates_blessed(ptr));
 }
@@ -639,7 +639,7 @@ struct monst* mon;
 
 boolean
 eschews_silver(ptr)
-register struct permonst* ptr;
+struct permonst* ptr;
 {
     return (innate_eschew_silver(ptr) || hates_silver(ptr));
 }
@@ -746,7 +746,7 @@ struct monst *mon;
 /* returns True if monster can track well */
 boolean
 can_track(ptr)
-register struct permonst *ptr;
+struct permonst *ptr;
 {
     /* All monsters can track Excalibur */
     if ((uwep && uwep->oartifact && artifact_has_flag(uwep, AF_MONSTERS_CAN_TRACK_ARTIFACT)) 
@@ -760,7 +760,7 @@ register struct permonst *ptr;
 /* creature will slide out of armor */
 boolean
 sliparm(ptr)
-register struct permonst *ptr;
+struct permonst *ptr;
 {
     return (boolean) (is_whirly(ptr) || ptr->msize <= MZ_SMALL);
 }
@@ -768,7 +768,7 @@ register struct permonst *ptr;
 /* creature will break out of armor */
 boolean
 breakarm(ptr)
-register struct permonst *ptr;
+struct permonst *ptr;
 {
     if (sliparm(ptr))
         return FALSE;
@@ -783,7 +783,7 @@ register struct permonst *ptr;
 /* creature sticks other creatures it hits */
 boolean
 sticks(ptr)
-register struct permonst *ptr;
+struct permonst *ptr;
 {
     return (boolean) (dmgtype(ptr, AD_STCK) || dmgtype(ptr, AD_WRAP)
                       || attacktype(ptr, AT_HUGS));
@@ -856,7 +856,7 @@ int dtyp;
    a passive defense */
 int
 max_passive_dmg(mdef, magr)
-register struct monst *mdef, *magr;
+struct monst *mdef, *magr;
 {
     int i, dmg = 0, multi2 = 0;
     uchar adtyp;
@@ -1066,7 +1066,7 @@ int
 monsndx(ptr)
 struct permonst *ptr;
 {
-    register int i;
+    int i;
 
     i = (int) (ptr - &mons[0]);
     if (i < LOW_PM || i >= NUM_MONSTERS) 
@@ -1111,9 +1111,9 @@ int* fem_ptr;
      * This also permits plurals created by adding suffixes such as 's'
      * or 'es'.  Other plurals must still be handled explicitly.
      */
-    register int i;
-    register int mntmp = NON_PM;
-    register char *s, *str, *term;
+    int i;
+    int mntmp = NON_PM;
+    char *s, *str, *term;
     char buf[BUFSZ];
     size_t len, slen;
 
@@ -1247,7 +1247,7 @@ int* fem_ptr;
             /* end of list */
             { 0, NON_PM }
         };
-        register const struct alt_spl *namep;
+        const struct alt_spl *namep;
 
         for (namep = names; namep->name; namep++)
             if (!strncmpi(str, namep->name, strlen(namep->name)))
@@ -1411,7 +1411,7 @@ int *mndx_p;
 /* returns 3 values (0=male, 1=female, 2=none) */
 int
 gender(mtmp)
-register struct monst *mtmp;
+struct monst *mtmp;
 {
     if (is_neuter(mtmp->data))
         return 2;
@@ -1422,7 +1422,7 @@ register struct monst *mtmp;
    This is the one we want to use when printing messages. */
 int
 pronoun_gender(mtmp, override_vis)
-register struct monst *mtmp;
+struct monst *mtmp;
 boolean override_vis; /* if True then 'no it' unless neuter */
 {
     if (!override_vis && !canspotmon(mtmp))
@@ -1575,7 +1575,7 @@ int
 little_to_big(montype)
 int montype;
 {
-    register int i;
+    int i;
 
     for (i = 0; grownups[i][0] >= LOW_PM; i++)
         if (montype == grownups[i][0]) {
@@ -1589,7 +1589,7 @@ int
 big_to_little(montype)
 int montype;
 {
-    register int i;
+    int i;
 
     for (i = 0; grownups[i][0] >= LOW_PM; i++)
         if (montype == grownups[i][1]) {

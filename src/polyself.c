@@ -1144,7 +1144,7 @@ int attribute_index;
 STATIC_OVL void
 break_armor(VOID_ARGS)
 {
-    register struct obj *otmp;
+    struct obj *otmp;
 
     //Suit, cloak, robe, shirt
     if (breakarm(youmonst.data)) 
@@ -1950,7 +1950,7 @@ doremove(VOID_ARGS)
 int
 dospinweb(VOID_ARGS)
 {
-    register struct trap *ttmp = t_at(u.ux, u.uy);
+    struct trap *ttmp = t_at(u.ux, u.uy);
 
     if (Levitation || Is_airlevel(&u.uz) || Underwater
         || Is_waterlevel(&u.uz)) {
@@ -2091,7 +2091,7 @@ dosummon(VOID_ARGS)
 int
 dogaze(VOID_ARGS)
 {
-    register struct monst *mtmp;
+    struct monst *mtmp;
     int looked = 0;
     char qbuf[QBUFSZ];
     int i;

@@ -1273,7 +1273,7 @@ void print_status_field(int idx, boolean first_field)
 void lib_status_flush(void)
 {
     enum statusfields idx;
-    register int i, j;
+    int i, j;
 
     const enum statusfields** fieldorder = iflags.wc2_statuslines < 3 ? fieldorders_2statuslines : flags.fullstatuslineorder ? fieldorders_alt : fieldorders;
 

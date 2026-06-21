@@ -2044,7 +2044,7 @@ struct obj *otmp;
 void
 healup(nhp, nxtra, curesick, cureblind, curehallucination, curestun, cureconfusion)
 int nhp, nxtra;
-register boolean curesick, cureblind, curehallucination, curestun, cureconfusion;
+boolean curesick, cureblind, curehallucination, curestun, cureconfusion;
 {
     int cur_hp_before = (Upolyd ? u.mh : u.uhp);
     int max_hp_before = (Upolyd ? u.mhmax : u.uhpmax);

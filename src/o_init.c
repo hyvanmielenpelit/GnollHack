@@ -732,8 +732,8 @@ boolean domaterial;
 void
 init_objects(VOID_ARGS)
 {
-    register int i, first, last, sum;
-    register char oclass;
+    int i, first, last, sum;
+    char oclass;
 #ifdef TEXTCOLOR
 #define COPY_OBJ_DESCR(o_dst, o_src) \
     o_dst.oc_descr_idx = o_src.oc_descr_idx, o_dst.oc_color = o_src.oc_color
@@ -975,8 +975,8 @@ shuffle_all(VOID_ARGS)
 int
 find_skates(VOID_ARGS)
 {
-    register int i;
-    register const char *s;
+    int i;
+    const char *s;
 
     for (i = SPEED_BOOTS; i <= LEVITATION_BOOTS; i++)
         if ((s = OBJ_DESCR(objects[i])) != 0 && !strcmp(s, "snow boots"))
@@ -997,7 +997,7 @@ void
 savenames(fd, mode)
 int fd, mode;
 {
-    register int i;
+    int i;
     size_t len;
 
     if (perform_bwrite(mode)) {
@@ -1028,7 +1028,7 @@ int fd, mode;
 void
 reset_names(VOID_ARGS)
 {
-    register int i;
+    int i;
 
     memset((genericptr_t)bases, 0, sizeof bases);
     memset((genericptr_t)disco, 0, sizeof disco);
@@ -1051,9 +1051,9 @@ reset_names(VOID_ARGS)
 
 void
 restnames(fd)
-register int fd;
+int fd;
 {
-    register int i;
+    int i;
     size_t len;
     //debugprint("restnames");
 
@@ -1075,12 +1075,12 @@ register int fd;
 
 void
 discover_object(oindx, mark_as_known, credit_hero)
-register int oindx;
+int oindx;
 boolean mark_as_known;
 boolean credit_hero;
 {
     if (!objects[oindx].oc_name_known) {
-        register int dindx, acls = objects[oindx].oc_class;
+        int dindx, acls = objects[oindx].oc_class;
 
         /* Loop thru disco[] 'til we find the target (which may have been
            uname'd) or the next open slot; one or the other will be found
@@ -1108,12 +1108,12 @@ boolean credit_hero;
 /* if a class name has been cleared, we may need to purge it from disco[] */
 void
 undiscover_object(oindx)
-register int oindx;
+int oindx;
 {
     if (!objects[oindx].oc_name_known) // Checks that this object's oc_name_known has been already been set to false by the calling function
     {
-        register int dindx, acls = objects[oindx].oc_class;
-        register boolean found = FALSE;
+        int dindx, acls = objects[oindx].oc_class;
+        boolean found = FALSE;
 
         /* find the object; shift those behind it forward one slot */
         for (dindx = bases[acls]; dindx < NUM_OBJECTS && disco[dindx] != 0
@@ -1138,7 +1138,7 @@ register int oindx;
 
 STATIC_OVL boolean
 interesting_to_discover(i)
-register int i;
+int i;
 {
     /* Pre-discovered objects are now printed with a '*' */
     return (boolean) (objects[i].oc_uname != (char *) 0
@@ -1156,7 +1156,7 @@ STATIC_VAR const short uniq_objs[] = {
 int
 dodiscovered() /* free after Robert Viduya */
 {
-    register int i, dis;
+    int i, dis;
     int ct = 0;
     char *s, oclass, prev_class, classes[MAX_OBJECT_CLASSES], buf[OBUFSZ];
     winid tmpwin;
@@ -1398,7 +1398,7 @@ doclassdisco(VOID_ARGS)
 void
 rename_disco(VOID_ARGS)
 {
-    register int i, dis;
+    int i, dis;
     int ct = 0, mn = 0, sl;
     char *s, oclass, prev_class;
     winid tmpwin;

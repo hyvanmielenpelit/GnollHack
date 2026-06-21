@@ -37,8 +37,8 @@ int
 dosit(VOID_ARGS)
 {
     static const char sit_message[] = "sit on the %s.";
-    register struct trap *trap = t_at(u.ux, u.uy);
-    register int typ = levl[u.ux][u.uy].typ;
+    struct trap *trap = t_at(u.ux, u.uy);
+    int typ = levl[u.ux][u.uy].typ;
 
     if (u.usteed) {
         play_sfx_sound(SFX_GENERAL_ALREADY_DONE);
@@ -81,7 +81,7 @@ dosit(VOID_ARGS)
     if (OBJ_AT(u.ux, u.uy)
         /* ensure we're not standing on the precipice */
         && !uteetering_at_seen_pit(trap)) {
-        register struct obj *obj;
+        struct obj *obj;
 
         obj = level.objects[u.ux][u.uy];
         if (youmonst.data->mlet == S_DRAGON && obj->oclass == COIN_CLASS) {

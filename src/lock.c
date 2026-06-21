@@ -871,8 +871,8 @@ can_try_force(VOID_ARGS)
 int
 doforce(VOID_ARGS)
 {
-    register struct obj *otmp;
-    register int c, picktyp;
+    struct obj *otmp;
+    int c, picktyp;
     char qbuf[QBUFSZ];
 
     if (u.uswallow) {
@@ -981,7 +981,7 @@ doopen_indir(x, y)
 int x, y;
 {
     coord cc;
-    register struct rm *door;
+    struct rm *door;
     boolean portcullis;
     int res = 0;
 
@@ -1191,10 +1191,10 @@ int x, y;
 
 STATIC_OVL boolean
 obstructed(x, y, quietly)
-register int x, y;
+int x, y;
 boolean quietly;
 {
-    register struct monst *mtmp = m_at(x, y);
+    struct monst *mtmp = m_at(x, y);
 
     if (mtmp && M_AP_TYPE(mtmp) != M_AP_FURNITURE) {
         if (M_AP_TYPE(mtmp) == M_AP_OBJECT)
@@ -1232,8 +1232,8 @@ boolean quietly;
 int
 doclose(VOID_ARGS)
 {
-    register int x, y;
-    register struct rm *door;
+    int x, y;
+    struct rm *door;
     boolean portcullis;
     int res = 0;
 
@@ -1428,7 +1428,7 @@ doorlock(otmp, x, y)
 struct obj *otmp;
 int x, y;
 {
-    register struct rm *door = &levl[x][y];
+    struct rm *door = &levl[x][y];
     boolean res = TRUE;
     int loudness = 0;
     const char *msg = (const char *) 0;

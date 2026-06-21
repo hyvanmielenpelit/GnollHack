@@ -1092,9 +1092,9 @@ STATIC_VAR struct obj *propellor;
 /* select a ranged weapon for the monster */
 struct obj *
 select_rwep(mtmp)
-register struct monst *mtmp;
+struct monst *mtmp;
 {
-    register struct obj *otmp;
+    struct obj *otmp;
     struct obj *mwep;
     boolean mweponly;
     int i;
@@ -1329,12 +1329,12 @@ STATIC_VAR const NEARDATA short hwep[] =
 /* select a hand to hand weapon for the monster */
 struct obj *
 select_hwep(mtmp, poleok, tx, ty)
-register struct monst *mtmp;
+struct monst *mtmp;
 boolean poleok;
 xchar tx, ty;
 {
-    register struct obj *otmp;
-    register int i;
+    struct obj *otmp;
+    int i;
     boolean strong = (strongmonst(mtmp->data) || mtmp->data->str >= 10);
     boolean wearing_shield = (mtmp->worn_item_flags & W_ARMS) != 0;
 
@@ -1402,10 +1402,10 @@ xchar tx, ty;
 /* select a nth suitable hand to hand weapon for the marilith */
 struct obj*
 select_multiweapon_nth_hwep(mtmp, handindex)
-register struct monst* mtmp;
+struct monst* mtmp;
 int handindex;
 {
-    register struct obj* otmp;
+    struct obj* otmp;
     //boolean strong = (strongmonst(mtmp->data) || mtmp->data->str >= 13);
     boolean wearing_shield = (mtmp->worn_item_flags & W_ARMS) != 0;
     int weaponindex = 1; //Start with second hand, if free
@@ -1511,7 +1511,7 @@ boolean polyspot;
  */
 int
 mon_wield_item(mon, verbose_fail, tx, ty)
-register struct monst *mon;
+struct monst *mon;
 boolean verbose_fail;
 xchar tx, ty;
 {
@@ -4597,8 +4597,8 @@ const struct def_skill* class_skill_max;
 
 void
 setmnotwielded(mon, obj)
-register struct monst *mon;
-register struct obj *obj;
+struct monst *mon;
+struct obj *obj;
 {
     if (!mon || !obj)
         return;

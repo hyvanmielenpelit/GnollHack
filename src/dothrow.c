@@ -427,7 +427,7 @@ int *shotlimit_p; /* (see dothrow()) */
 int
 dothrow(VOID_ARGS)
 {
-    register struct obj *obj;
+    struct obj *obj;
     int shotlimit;
 
     /*
@@ -1395,8 +1395,8 @@ throwit(obj, wep_mask)
 struct obj *obj;
 int64_t wep_mask; /* used to re-equip returning boomerang / aklys / Mjollnir / Javelin of Returning */
 {
-    register struct monst *mon;
-    register int range, urange;
+    struct monst *mon;
+    int range, urange;
     boolean impaired = (Confusion || Stunned || Blind
                                      || Hallucination || Fumbling);
     boolean tethered_weapon = is_obj_tethered_weapon(obj, wep_mask);
@@ -1896,8 +1896,8 @@ uchar* hitres_ptr;
     if (!mon || !obj)
         return 0;
 
-    register int tmp;     /* Base chance to hit */
-    register int disttmp; /* distance modifier */
+    int tmp;     /* Base chance to hit */
+    int disttmp; /* distance modifier */
     int otyp = obj->otyp, hmode;
     boolean guaranteed_hit = (u.uswallow && mon == u.ustuck);
     int dieroll;
@@ -2310,8 +2310,8 @@ uchar* hitres_ptr;
 
 STATIC_OVL int
 gem_accept(mon, obj)
-register struct monst *mon;
-register struct obj *obj;
+struct monst *mon;
+struct obj *obj;
 {
     char buf[BUFSZ];
     boolean is_buddy = sgn(mon->data->maligntyp) == sgn(u.ualign.type);
@@ -2683,7 +2683,7 @@ throw_gold(obj)
 struct obj *obj;
 {
     int range, odx, ody;
-    register struct monst *mon;
+    struct monst *mon;
     uchar hitres = 0;
 
     if (!u.dx && !u.dy && !u.dz) {

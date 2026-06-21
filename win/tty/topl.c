@@ -54,7 +54,7 @@ int attr, color;
 int
 tty_doprev_message()
 {
-    register struct WinDesc *cw = wins[WIN_MESSAGE];
+    struct WinDesc *cw = wins[WIN_MESSAGE];
     winid prevmsg_win;
     int64_t i;
 
@@ -207,7 +207,7 @@ int attr, color;
 void
 remember_topl()
 {
-    register struct WinDesc *cw = wins[WIN_MESSAGE];
+    struct WinDesc *cw = wins[WIN_MESSAGE];
     int64_t idx = cw->maxrow;
     size_t len = strlen(toplines) + 1;
 
@@ -250,7 +250,7 @@ addtopl2(s, attrs, colors, attr, color)
 const char *s, *attrs, *colors;
 int attr, color;
 {
-    register struct WinDesc *cw = wins[WIN_MESSAGE];
+    struct WinDesc *cw = wins[WIN_MESSAGE];
 
     tty_curs(BASE_WINDOW, (int)cw->curx + 1, (int)cw->cury);
 
@@ -330,7 +330,7 @@ more()
 
 void
 update_topl(bp,  attr, color)
-register const char* bp;
+const char* bp;
 int attr, color;
 {
     update_topl2(bp, (char*)0, (char*)0, attr, color);
@@ -344,7 +344,7 @@ const char* colors;
 int attr, color;
 {
     register char *tl, *otl;
-    register int n0;
+    int n0;
     size_t len;
     int notdied = 1;
     struct WinDesc *cw = wins[WIN_MESSAGE];
@@ -434,7 +434,7 @@ void
 topl_putsym(c)
 int c;
 {
-    register struct WinDesc *cw = wins[WIN_MESSAGE];
+    struct WinDesc *cw = wins[WIN_MESSAGE];
 
     if (cw == (struct WinDesc*) 0)
     {
@@ -518,7 +518,7 @@ const char* str, *attrs, *colors;
 
 STATIC_OVL void
 removetopl(n)
-register int n;
+int n;
 {
     /* assume addtopl() has been done, so ttyDisplay->toplin is already set */
     while (n-- > 0)

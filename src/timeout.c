@@ -113,7 +113,7 @@ sick_dialogue(VOID_ARGS)
     if (!is_living(youmonst.data))
         return;
 
-    register int64_t i = (Sick & TIMEOUT);
+    int64_t i = (Sick & TIMEOUT);
 
     if (i > 0L && i <= SIZE(sick_texts)) {
         char buf[BUFSZ];
@@ -171,7 +171,7 @@ food_poisoned_dialogue(VOID_ARGS)
     if (!is_living(youmonst.data))
         return;
 
-    register int64_t i = (FoodPoisoned & TIMEOUT);
+    int64_t i = (FoodPoisoned & TIMEOUT);
 
     if (i > 0L && i <= SIZE(food_poisoned_texts)) {
         char buf[BUFSZ];
@@ -309,7 +309,7 @@ STATIC_VAR NEARDATA const char *const stoned_texts[] = {
 STATIC_OVL void
 stoned_dialogue(VOID_ARGS)
 {
-    register int64_t i = (Stoned & TIMEOUT);
+    int64_t i = (Stoned & TIMEOUT);
 
     if (i > 0L && i <= SIZE(stoned_texts)) {
         char buf[BUFSZ];
@@ -455,7 +455,7 @@ STATIC_VAR NEARDATA const char *const choke_texts2[] = {
 STATIC_OVL void
 choke_dialogue(VOID_ARGS)
 {
-    register int64_t i = (Strangled & TIMEOUT);
+    int64_t i = (Strangled & TIMEOUT);
 
     if (i > 0 && i <= SIZE(choke_texts)) {
         if (Breathless || !rn2(50))
@@ -515,7 +515,7 @@ STATIC_VAR NEARDATA const char *const slime_texts[] = {
 STATIC_OVL void
 slime_dialogue(VOID_ARGS)
 {
-    register int64_t i = (Slimed & TIMEOUT) / 2L;
+    int64_t i = (Slimed & TIMEOUT) / 2L;
 
     if (i == 1L) {
         /* display as green slime during "You have become green slime."
@@ -662,7 +662,7 @@ phaze_dialogue(VOID_ARGS)
 void
 nh_timeout(VOID_ARGS)
 {
-    register struct prop *upp;
+    struct prop *upp;
     struct kinfo *kptr;
     int sleeptime;
     int m_idx;
@@ -714,7 +714,7 @@ nh_timeout(VOID_ARGS)
          * neither is stopped if you don't have a luckstone.
          * Luck is based at 0 usually, +1 if a full moon and -1 on Friday 13th
          */
-        //register int time_luck = stone_luck(FALSE);
+        //int time_luck = stone_luck(FALSE);
         //boolean nostone = !carrying(LUCKSTONE) && !stone_luck(TRUE);
 
         if (u.uluck > baseluck  && !u.luck_does_not_timeout)//(u.uluck > baseluck && (nostone || time_luck < 0))
@@ -2887,7 +2887,7 @@ void
 do_storms(VOID_ARGS)
 {
     int nstrike;
-    register int x, y;
+    int x, y;
     int dirx, diry;
     int count;
 

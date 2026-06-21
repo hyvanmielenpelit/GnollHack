@@ -32,7 +32,7 @@ enum dig_types {
 STATIC_OVL boolean
 rm_waslit(VOID_ARGS)
 {
-    register xchar x, y;
+    xchar x, y;
 
     if (IS_FLOOR(levl[u.ux][u.uy].typ) && levl[u.ux][u.uy].waslit)
         return TRUE;
@@ -53,14 +53,14 @@ xchar x, y;
 int dist;
 boolean waslit, rockit;
 {
-    register struct rm *lev;
+    struct rm *lev;
 
     if (!isok(x, y))
         return;
     lev = &levl[x][y];
 
     if (rockit) {
-        register struct monst *mtmp;
+        struct monst *mtmp;
 
         if (IS_ROCK(lev->typ))
             return;
@@ -101,13 +101,13 @@ boolean waslit, rockit;
 
 STATIC_OVL void
 mkcavearea(rockit)
-register boolean rockit;
+boolean rockit;
 {
     int dist;
     xchar xmin = u.ux, xmax = u.ux;
     xchar ymin = u.uy, ymax = u.uy;
-    register xchar i;
-    register boolean waslit = rm_waslit();
+    xchar i;
+    boolean waslit = rm_waslit();
 
     if (rockit)
         pline_ex(ATR_NONE, CLR_MSG_WARNING, "Crash!  The ceiling collapses around you!");
@@ -283,14 +283,14 @@ int x, y;
 STATIC_OVL int
 dig(VOID_ARGS)
 {
-    register struct rm *lev;
-    register xchar dpx = context.digging.pos.x, dpy = context.digging.pos.y;
+    struct rm *lev;
+    xchar dpx = context.digging.pos.x, dpy = context.digging.pos.y;
     boolean use_right = uwep && (is_pick(uwep) || is_axe(uwep) || is_saw(uwep));
     boolean use_left = uarms && (is_pick(uarms) || is_axe(uarms) || is_saw(uarms));
     struct obj* wep = (use_right ? uwep : use_left ? uarms : (struct obj*)0);
-    register boolean ispick = wep && is_pick(wep);
-    register boolean isaxe = wep && is_axe(wep);
-    register boolean issaw = wep && is_saw(wep);
+    boolean ispick = wep && is_pick(wep);
+    boolean isaxe = wep && is_axe(wep);
+    boolean issaw = wep && is_saw(wep);
     const char *verb = (!wep || ispick) ? "dig into" : isaxe ? "chop through" : issaw ? "cut into" : "dig into";
 
     lev = &levl[dpx][dpy];
@@ -598,7 +598,7 @@ dig(VOID_ARGS)
 
         if (Is_earthlevel(&u.uz) && !rn2(3))
         {
-            register struct monst *mtmp;
+            struct monst *mtmp;
 
             switch (rn2(2)) 
             {
@@ -675,7 +675,7 @@ fillholetyp(x, y, fill_if_any)
 int x, y;
 boolean fill_if_any; /* force filling if it exists at all */
 {
-    register int x1, y1;
+    int x1, y1;
     int lo_x = max(1, x - 1), hi_x = min(x + 1, COLNO - 1),
         lo_y = max(0, y - 1), hi_y = min(y + 1, ROWNO - 1);
     int pool_cnt = 0, moat_cnt = 0, lava_cnt = 0;
@@ -709,12 +709,12 @@ boolean fill_if_any; /* force filling if it exists at all */
 
 void
 digactualhole(x, y, madeby, ttyp)
-register int x, y;
+int x, y;
 struct monst *madeby;
 int ttyp;
 {
     struct obj *oldobjs, *newobjs;
-    register struct trap *ttmp;
+    struct trap *ttmp;
     char surface_type[BUFSZ];
     struct rm *lev = &levl[x][y];
     boolean shopdoor;
@@ -948,7 +948,7 @@ dighole(pit_only, by_magic, cc)
 boolean pit_only, by_magic;
 coord *cc;
 {
-    register struct trap *ttmp;
+    struct trap *ttmp;
     struct rm *lev;
     struct obj *boulder_here;
     schar typ;
@@ -1304,8 +1304,8 @@ int
 use_pick_axe2(obj)
 struct obj *obj;
 {
-    register int rx, ry;
-    register struct rm *lev;
+    int rx, ry;
+    struct rm *lev;
     struct trap *trap, *trap_with_u;
     int dig_target;
     boolean ispick = is_pick(obj);
@@ -1754,9 +1754,9 @@ boolean zap;
 /* Return TRUE if monster died, FALSE otherwise.  Called from m_move(). */
 boolean
 mdig_tunnel(mtmp)
-register struct monst *mtmp;
+struct monst *mtmp;
 {
-    register struct rm *here;
+    struct rm *here;
     int pile = rnd(12);
 
     here = &levl[mtmp->mx][mtmp->my];

@@ -49,7 +49,7 @@ static int
 veryold(fd)
 int fd;
 {
-    register int i;
+    int i;
     time_t date;
     struct stat buf;
 
@@ -91,7 +91,7 @@ int fd;
 void
 getlock()
 {
-    register int i = 0, fd;
+    int i = 0, fd;
 
     /* idea from rpick%ucqais@uccba.uc.edu
      * prevent automated rerolling of characters

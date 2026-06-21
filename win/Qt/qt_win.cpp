@@ -3315,7 +3315,7 @@ static char** rip_line=0;
 
     /* Put death type on stone */
     for (line=DEATH_LINE, dpx = buf; line<YEAR_LINE; line++) {
-	register int i,i0;
+	int i,i0;
 	char tmpchar;
 
 	if ( (i0=strlen(dpx)) > STONE_LINE_LEN) {

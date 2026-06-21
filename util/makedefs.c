@@ -884,9 +884,9 @@ xcrypt(str)
 const char *str;
 { /* duplicated in src/hacklib.c */
     static char buf[BUFSZ];
-    register const char *p;
-    register char *q;
-    register int bitmask;
+    const char *p;
+    char *q;
+    int bitmask;
 
     for (bitmask = 1, p = str, q = buf; *p; q++) {
         *q = *p++;
@@ -1120,7 +1120,7 @@ rumors_failure:
 static void
 make_version()
 {
-    register int i;
+    int i;
 
     /*
      * integer version number
@@ -2148,7 +2148,7 @@ do_oracles()
     long fpos;
     unsigned long txt_offset, offset;
     int oracle_cnt;
-    register int i;
+    int i;
     char *line;
 
     Sprintf(tempfile, DATA_TEMPLATE, "oracles.tmp");
@@ -3448,7 +3448,7 @@ clear_path(you_row, you_col, y2, x2)
 int you_row, you_col, y2, x2;
 {
     int dx, dy, s1, s2;
-    register int i, error, x, y, dxs, dys;
+    int i, error, x, y, dxs, dys;
 
     x = you_col;
     y = you_row;

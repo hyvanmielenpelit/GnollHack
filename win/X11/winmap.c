@@ -882,7 +882,7 @@ void
 display_map_window(wp)
 struct xwindow *wp;
 {
-    register int row;
+    int row;
     struct map_info_t *map_info = wp->map_information;
 
     if ((Is_rogue_level(&u.uz) ? map_info->is_tile
@@ -1254,7 +1254,7 @@ boolean inverted;
     int win_start_row, win_start_col;
     struct map_info_t *map_info = wp->map_information;
     int row;
-    register int count;
+    int count;
 
     if (start_row < 0 || stop_row >= ROWNO) {
         impossible("map_update:  bad row range %d-%d\n", start_row, stop_row);

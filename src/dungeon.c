@@ -776,8 +776,8 @@ void
 init_dungeons(VOID_ARGS)
 {
     dlb *dgn_file;
-    register int i, cl = 0, cb = 0;
-    register s_level *x;
+    int i, cl = 0, cb = 0;
+    s_level *x;
     struct proto_dungeon pd;
     struct level_map *lev_map;
     struct version_info vers_info;
@@ -1109,9 +1109,9 @@ boolean noquest;
      * calculation.  _However_ the Quest is a difficult dungeon, so we
      * include it in the factor of difficulty calculations.
      */
-    register int i;
+    int i;
     d_level tmp;
-    register schar ret = 0;
+    schar ret = 0;
 
     for (i = 0; i < n_dgns; i++) {
         if (noquest && i == quest_dnum)
@@ -1157,7 +1157,7 @@ xchar
 ledger_to_dnum(ledgerno)
 xchar ledgerno;
 {
-    register int i;
+    int i;
 
     /* find i such that (i->base + 1) <= ledgerno <= (i->base + i->count) */
     for (i = 0; i < n_dgns; i++)

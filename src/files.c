@@ -1064,7 +1064,7 @@ clearlocks(VOID_ARGS)
         eraseall(permbones, alllevels);
 #else
     {
-        register int x;
+        int x;
 
 #ifndef NO_SIGNAL
         (void) signal(SIGINT, SIG_IGN);
@@ -1913,7 +1913,7 @@ boolean
 check_existing_save_file(VOID_ARGS)
 {
     const char* fq_save;
-    register int fd;
+    int fd;
     fq_save = fqname(SAVEF, SAVEPREFIX, 1); /* level files take 0 */
 
 #if defined(MICRO) && defined(MFLOPPY)
@@ -3211,7 +3211,7 @@ int retryct;
             return FALSE;
         }
 #else
-        register int errnosv = errno;
+        int errnosv = errno;
 
         switch (errnosv) { /* George Barbanis */
         case EEXIST:

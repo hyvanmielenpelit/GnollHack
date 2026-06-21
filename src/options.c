@@ -1421,7 +1421,7 @@ char *op;
 
 STATIC_OVL boolean
 warning_opts(opts, optype)
-register char *opts;
+char *opts;
 const char *optype;
 {
     nhsym translate[WARNCOUNT];
@@ -1448,7 +1448,7 @@ const char *optype;
 
 void
 assign_warnings(graph_chars)
-register nhsym *graph_chars;
+nhsym *graph_chars;
 {
     int i;
 
@@ -2403,7 +2403,7 @@ char c;
 
 boolean
 parseoptions(opts, tinitial, tfrom_file)
-register char *opts;
+char *opts;
 boolean tinitial, tfrom_file;
 {
     char *op;
@@ -3931,7 +3931,7 @@ boolean tinitial, tfrom_file;
                 DISCLOSE_YES_WITHOUT_PROMPT, DISCLOSE_NO_WITHOUT_PROMPT,
                 DISCLOSE_SPECIAL_WITHOUT_PROMPT, '\0'
             };
-            register char c, *dop;
+            char c, *dop;
 
             c = lowc(*op);
             if (c == 'k')
@@ -8079,7 +8079,7 @@ free_symsets(VOID_ARGS)
 /* Parse the value of a SYMBOLS line from a config file */
 boolean
 parsesymbols(opts)
-register char *opts;
+char *opts;
 {
     nhsym val;
     char *op, *symname, *strval;
@@ -8215,7 +8215,7 @@ void
 option_help(VOID_ARGS)
 {
     char buf[BUFSZ], buf2[BUFSZ];
-    register int i;
+    int i;
     winid datawin;
 
     datawin = create_nhwindow(NHW_TEXT);
@@ -8303,8 +8303,8 @@ fruitadd(str, replace_fruit)
 char *str;
 struct fruit *replace_fruit;
 {
-    register int i;
-    register struct fruit *f;
+    int i;
+    struct fruit *f;
     int highest_fruit_id = 0, globpfx;
     char buf[PL_FSIZ], altname[PL_FSIZ];
     boolean user_specified = (str == pl_fruit);

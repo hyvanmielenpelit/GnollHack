@@ -161,7 +161,7 @@ GetNHApp()
 static int
 eraseoldlocks()
 {
-    register int i;
+    int i;
 
     /* cannot use maxledgerno() here, because we need to find a lock name
      * before starting everything (including the dungeon initialization

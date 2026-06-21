@@ -1435,7 +1435,7 @@ update_bouldersym(VOID_ARGS)
 void
 init_showsyms(VOID_ARGS)
 {
-    register int i;
+    int i;
 
     for (i = 0; i < MAX_CMAPPED_CHARS; i++)
         showsyms[i + SYM_OFF_P] = (nhsym)defsyms[i].sym;
@@ -1459,7 +1459,7 @@ init_showsyms(VOID_ARGS)
 void
 init_l_symbols(VOID_ARGS)
 {
-    register int i;
+    int i;
 
     for (i = 0; i < MAX_CMAPPED_CHARS; i++)
         l_syms[i + SYM_OFF_P] = defsyms[i].sym;
@@ -1484,7 +1484,7 @@ init_l_symbols(VOID_ARGS)
 void
 init_r_symbols(VOID_ARGS)
 {
-    register int i;
+    int i;
 
     /* These are defaults that can get overwritten
        later by the roguesymbols option */
@@ -1520,7 +1520,7 @@ void
 assign_graphics(whichset)
 int whichset;
 {
-    register int i;
+    int i;
 
     switch (whichset) {
     case ROGUESET:
@@ -1554,7 +1554,7 @@ void
 switch_symbols(nondefault)
 int nondefault;
 {
-    register int i;
+    int i;
 
     if (nondefault) {
         for (i = 0; i < SYM_MAX; i++)

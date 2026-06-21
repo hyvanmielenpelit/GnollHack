@@ -3428,7 +3428,7 @@ struct monst *mon;
 /* cancel obj, possibly carried by you or a monster */
 void
 cancel_item(obj, update_inv)
-register struct obj *obj;
+struct obj *obj;
 boolean update_inv;
 {
     int otyp = obj->otyp;
@@ -3597,7 +3597,7 @@ polyuse(objhdr, mat, minwt)
 struct obj *objhdr;
 int mat, minwt;
 {
-    register struct obj *otmp, *otmp2;
+    struct obj *otmp, *otmp2;
 
     for (otmp = objhdr; minwt > 0 && otmp; otmp = otmp2) {
         otmp2 = otmp->nexthere;
@@ -4847,7 +4847,7 @@ uchar hit_only_one;
 boolean stop_at_first_hit_object;
 {
     int hitanything = 0;
-    register struct obj *otmp, *next_obj;
+    struct obj *otmp, *next_obj;
     int bucstatus = !obj || obj->cursed ? -1 : obj->blessed ? 1 : 0;
     int bhitlimit = hit_only_one == 1 ? 1 : 
         hit_only_one == 2 ? (bucstatus == -1 ? 1 : bucstatus == 0 ? 2 : 3) : 
@@ -5008,7 +5008,7 @@ struct monst* origmonst;
  */
 int
 zappable(wand)
-register struct obj *wand;
+struct obj *wand;
 {
     if (wand->charges < 0 || (wand->charges == 0 && rn2(121)))
         return 0;
@@ -5024,7 +5024,7 @@ register struct obj *wand;
  */
 void
 zapnodir(obj)
-register struct obj *obj;
+struct obj *obj;
 {
     boolean known = FALSE;
     int monstid = 0;
@@ -7885,8 +7885,8 @@ struct obj *obj; /* wand or spell */
  */
 boolean
 cancel_monst(mdef, obj, youattack, allow_cancel_kill, self_cancel, duration)
-register struct monst *mdef;
-register struct obj *obj;
+struct monst *mdef;
+struct obj *obj;
 boolean youattack, allow_cancel_kill, self_cancel;
 int duration;
 {
@@ -8003,8 +8003,8 @@ int duration;
 
 boolean
 add_temporary_property(mdef, obj, youattack, allow_cancel_kill, self_cancel, duration)
-register struct monst* mdef;
-register struct obj* obj;
+struct monst* mdef;
+struct obj* obj;
 boolean youattack, allow_cancel_kill, self_cancel;
 int duration;
 {
@@ -8629,8 +8629,8 @@ boolean show_hit_tile_always;
 
 void
 miss(str, mtmp)
-register const char *str;
-register struct monst *mtmp;
+const char *str;
+struct monst *mtmp;
 {
     pline(
         "%s %s %s.", The(str), vtense(str, "miss"),
@@ -8675,7 +8675,7 @@ int range, *skipstart, *skipend;
  */
 struct monst *
 bhit(ddx, ddy, range, radius, weapon, fhitm, fhito, fhitt, pobj, origmonst, hit_only_one, stop_at_first_hit_object)
-register int ddx, ddy, range, radius;          /* direction, range, and effect radius */
+int ddx, ddy, range, radius;          /* direction, range, and effect radius */
 enum bhit_call_types weapon;           /* defined in hack.h */
 int FDECL((*fhitm), (MONST_P, OBJ_P, MONST_P)), /* fns called when mon/obj hit */
     FDECL((*fhito), (OBJ_P, OBJ_P, MONST_P)),
@@ -9260,7 +9260,7 @@ boomhit(obj, dx, dy)
 struct obj *obj;
 int dx, dy;
 {
-    register int i, ct;
+    int i, ct;
     int boom; /* showsym[] index  */
     struct monst *mtmp;
     boolean counterclockwise = TRUE; /* right-handed throw */
@@ -9342,8 +9342,8 @@ int dx, dy;
    to mon; note: caller is responsible for killing mon if damage is fatal */
 double
 zhitm(mon, type, origobj, origmonst, dmgdice, dicesize, dmgplus, ootmp, out_flags_ptr)
-register struct monst *mon;
-register int type;
+struct monst *mon;
+int type;
 struct obj* origobj;
 struct monst* origmonst;
 int dmgdice, dicesize, dmgplus;
@@ -9352,7 +9352,7 @@ uchar* out_flags_ptr;
 {
     double damage = 0;
     int dmg = 0;
-    register int abstype = abs(type) % NUM_ZAP;
+    int abstype = abs(type) % NUM_ZAP;
     boolean sho_shieldeff = FALSE;
     boolean sho_hit_eff = TRUE;
     boolean sleep_eff = FALSE;
@@ -9537,7 +9537,7 @@ uchar* out_flags_ptr;
         if (!resists_blnd(mon)
             && !(type > 0 && u.uswallow && mon == u.ustuck)) 
         {
-            register unsigned rnd_tmp = rnd(50);
+            unsigned rnd_tmp = rnd(50);
             nonadditive_increase_mon_property(mon, BLINDED, rnd_tmp);
         }
         if (!rn2(3))
@@ -10220,16 +10220,16 @@ int type;
  */
 void
 dobuzz(type, origobj, origmonst, dmgdice, dicesize, dmgplus, sx, sy, dx, dy, say)
-register int type;
+int type;
 struct obj* origobj; //Originating item or spell, null if breath weapon
 struct monst* origmonst; //Originating monst, null if god, trap, etc.
 int dmgdice, dicesize, dmgplus;         //Damage ndd+p, used only for breath weapons
-register xchar sx, sy;
-register int dx, dy;
+xchar sx, sy;
+int dx, dy;
 boolean say; /* Announce out of sight hit/miss events if true */
 {
     int i, range, abstype = abs(type) % NUM_ZAP;
-    register xchar lsx = 0, lsy = 0;
+    xchar lsx = 0, lsy = 0;
     struct monst *mon;
     coord save_bhitpos;
     boolean shopdamage = FALSE;
@@ -11427,7 +11427,7 @@ short exploding_wand_typ;
 /* returns TRUE if obj is gone (should not happen normally) */
 boolean
 fracture_rock(obj, verbose)
-register struct obj *obj; /* no texts here! */
+struct obj *obj; /* no texts here! */
 boolean verbose;
 {
     if (!obj)
@@ -11488,7 +11488,7 @@ boolean verbose;
 /* handle statue hit by striking/force bolt/pick-axe */
 boolean
 pre_break_statue(obj)
-register struct obj* obj;
+struct obj* obj;
 {
     /* [obj is assumed to be on floor, so no get_obj_location() needed] */
     struct trap* trap = t_at(obj->ox, obj->oy);
@@ -11518,7 +11518,7 @@ register struct obj* obj;
 /* handle statue hit by striking/force bolt/pick-axe */
 boolean
 break_statue(obj)
-register struct obj *obj;
+struct obj *obj;
 {
     if (pre_break_statue(obj))
     {
@@ -11748,7 +11748,7 @@ void
 destroy_item(osym, dmgtyp)
 int osym, dmgtyp;
 {
-    register struct obj *obj;
+    struct obj *obj;
     int i, deferral_indx = 0;
     /* 1+52+1: try to handle a full inventory; it doesn't matter if
       inventory actually has more, even if everything should be deferred */

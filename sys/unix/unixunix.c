@@ -75,7 +75,7 @@ int fd;
 static int
 eraseoldlocks()
 {
-    register int i;
+    int i;
 
     program_state.preserve_locks = 0; /* not required but shows intent */
     /* cannot use maxledgerno() here, because we need to find a lock name
@@ -96,7 +96,7 @@ eraseoldlocks()
 void
 getlock()
 {
-    register int i = 0, fd, c;
+    int i = 0, fd, c;
     const char *fq_lock;
 
 #ifdef TTY_GRAPHICS
@@ -296,7 +296,7 @@ int
 child(wt)
 int wt;
 {
-    register int f;
+    int f;
 
     suspend_nhwindows((char *) 0); /* also calls end_screen() */
 #ifdef _M_UNIX

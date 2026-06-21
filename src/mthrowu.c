@@ -188,7 +188,7 @@ const char* verb_in_past_tense;
  */
 STATIC_OVL int
 drop_throw(obj, ohit, x, y)
-register struct obj *obj;
+struct obj *obj;
 boolean ohit;
 int x, y;
 {
@@ -1136,7 +1136,7 @@ thrwmm(mtmp, mtarg)
 struct monst *mtmp, *mtarg;
 {
     struct obj *otmp, *mwep;
-    register xchar x, y;
+    xchar x, y;
     boolean ispole;
 
     /* Polearms won't be applied by monsters against other monsters */
@@ -1922,7 +1922,7 @@ struct attack* mattk;
 
 boolean
 linedup(ax, ay, bx, by, boulderhandling, block_if_hostile_monster, block_if_peaceful_monster, block_if_tame_monster, dmgtype, attack_can_reflect, range)
-register xchar ax, ay, bx, by;
+xchar ax, ay, bx, by;
 int boulderhandling; /* 0=block, 1=ignore, 2=conditionally block */
 boolean block_if_hostile_monster;
 boolean block_if_peaceful_monster;
@@ -2052,7 +2052,7 @@ int range;
 /* is mtmp in position to use ranged attack? */
 boolean
 lined_up(mtmp, can_hit_others, dmgtype, attack_can_reflect, range)
-register struct monst *mtmp;
+struct monst *mtmp;
 boolean can_hit_others;
 int dmgtype;
 boolean attack_can_reflect;
@@ -2089,7 +2089,7 @@ m_carrying(mtmp, type)
 struct monst *mtmp;
 int type;
 {
-    register struct obj *otmp;
+    struct obj *otmp;
 
     for (otmp = mtmp->minvent; otmp; otmp = otmp->nobj)
         if (otmp->otyp == type)

@@ -122,7 +122,7 @@ uint64_t gpflags;
 boolean
 enexto(cc, xx, yy, mdat)
 coord *cc;
-register xchar xx, yy;
+xchar xx, yy;
 struct permonst *mdat;
 {
     return enexto_core(cc, xx, yy, mdat, 0);
@@ -131,7 +131,7 @@ struct permonst *mdat;
 boolean
 enexto_core(cc, xx, yy, mdat, entflags)
 coord *cc;
-register xchar xx, yy;
+xchar xx, yy;
 struct permonst *mdat;
 uint64_t entflags;
 {
@@ -257,7 +257,7 @@ boolean isyou;
 
 STATIC_OVL boolean
 teleok(x, y, trapok, verbose)
-register int x, y;
+int x, y;
 boolean trapok, verbose;
 {
     if (!trapok) 
@@ -279,7 +279,7 @@ boolean trapok, verbose;
 
 void
 teleds(nux, nuy, allow_drag, keep_effect_glyphs)
-register int nux, nuy;
+int nux, nuy;
 boolean allow_drag, keep_effect_glyphs;
 {
     boolean ball_active, ball_still_in_range;
@@ -424,7 +424,7 @@ boolean allow_drag, keep_effect_glyphs;
 
 void
 teleds_with_effects(nux, nuy, allow_drag, keep_effect_glyphs)
-register int nux, nuy;
+int nux, nuy;
 boolean allow_drag, keep_effect_glyphs;
 {
     play_special_effect_at(SPECIAL_EFFECT_TELEPORT_OUT, 0, u.ux, u.uy, TRUE);
@@ -444,7 +444,7 @@ boolean
 safe_teleds(allow_drag, keep_effect_glyphs)
 boolean allow_drag, keep_effect_glyphs;
 {
-    register int nux, nuy, tcnt = 0;
+    int nux, nuy, tcnt = 0;
 
     do {
         nux = rnd(COLNO - 1);
@@ -477,7 +477,7 @@ boolean allow_drag, keep_effect_glyphs;
 STATIC_OVL void
 vault_tele(VOID_ARGS)
 {
-    register struct mkroom *croom = search_special(VAULT);
+    struct mkroom *croom = search_special(VAULT);
     coord c;
 
     if (croom && somexy(croom, &c) && teleok(c.x, c.y, FALSE, FALSE)) {
@@ -489,10 +489,10 @@ vault_tele(VOID_ARGS)
 
 boolean
 teleport_pet(mtmp, force_it)
-register struct monst *mtmp;
+struct monst *mtmp;
 boolean force_it;
 {
-    register struct obj *otmp;
+    struct obj *otmp;
 
     if (mtmp == u.usteed)
         return FALSE;
@@ -1088,7 +1088,7 @@ int controltype; /* 0 = uncontrolled, 1 = controlled, 2 = town portal / other us
 d_level target_level;
 uchar tele_flags; /* 1 = teleport inside Wizard's Tower  */
 {
-    register int newlev;
+    int newlev;
     d_level newlevel;
     const char *escape_by_flying = 0; /* when surviving dest of -N */
     char buf[BUFSZ];
@@ -1405,7 +1405,7 @@ random_levtport:
 
 void
 domagicportal(ttmp)
-register struct trap *ttmp;
+struct trap *ttmp;
 {
     struct d_level target_level;
 
@@ -1548,10 +1548,10 @@ unsigned trflags;
 /* check whether monster can arrive at location <x,y> via Tport (or fall) */
 STATIC_OVL boolean
 rloc_pos_ok(x, y, mtmp)
-register int x, y; /* coordinates of candidate location */
+int x, y; /* coordinates of candidate location */
 struct monst *mtmp;
 {
-    register int xx, yy;
+    int xx, yy;
 
     if (!goodpos(x, y, mtmp, 0))
         return FALSE;
@@ -1620,9 +1620,9 @@ struct monst *mtmp;
 void
 rloc_to(mtmp, x, y)
 struct monst *mtmp;
-register int x, y;
+int x, y;
 {
-    register int oldx = mtmp->mx, oldy = mtmp->my;
+    int oldx = mtmp->mx, oldy = mtmp->my;
     boolean resident_shk = mtmp->isshk && inhishop(mtmp);
 
     if (x == mtmp->mx && y == mtmp->my && m_at(x, y) == mtmp)
@@ -1680,7 +1680,7 @@ rloc(mtmp, suppress_impossible)
 struct monst* mtmp; /* mx==0 implies migrating monster arrival */
 boolean suppress_impossible;
 {
-    register int x, y, trycount;
+    int x, y, trycount;
 
     if (mtmp == u.usteed) {
         tele();
@@ -1778,7 +1778,7 @@ boolean suppress_impossible, has_effects;
 void
 rloc_to_with_effects(mtmp, x, y)
 struct monst* mtmp;
-register int x, y;
+int x, y;
 {
     if (!mtmp)
         return;
@@ -1813,7 +1813,7 @@ STATIC_OVL void
 mvault_tele(mtmp)
 struct monst *mtmp;
 {
-    register struct mkroom *croom = search_special(VAULT);
+    struct mkroom *croom = search_special(VAULT);
     coord c;
 
     if (croom && somexy(croom, &c) && goodpos(c.x, c.y, mtmp, 0)) {
@@ -2035,9 +2035,9 @@ int in_sight;
 /* place object randomly, returns False if it's gone (eg broken) */
 boolean
 rloco(obj)
-register struct obj *obj;
+struct obj *obj;
 {
-    register xchar tx, ty, otx, oty;
+    xchar tx, ty, otx, oty;
     boolean restricted_fall;
     int try_limit = 4000;
 

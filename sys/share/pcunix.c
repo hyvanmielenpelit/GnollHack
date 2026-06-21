@@ -79,7 +79,7 @@ int fd;
 static int
 eraseoldlocks()
 {
-    register int i;
+    int i;
 
     /* cannot use maxledgerno() here, because we need to find a lock name
      * before starting everything (including the dungeon initialization
@@ -102,7 +102,7 @@ eraseoldlocks()
 void
 getlock()
 {
-    register int fd, c, ci, ct, ern;
+    int fd, c, ci, ct, ern;
     int fcmask = FCMASK;
     char tbuf[BUFSZ];
     const char *fq_lock;

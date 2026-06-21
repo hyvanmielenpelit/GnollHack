@@ -507,7 +507,7 @@ struct monst *mtmp;
 
 boolean
 quest_chat(mtmp, dopopup)
-register struct monst *mtmp;
+struct monst *mtmp;
 boolean dopopup;
 {
     if (mtmp->m_id == Qstat(leader_m_id)) 

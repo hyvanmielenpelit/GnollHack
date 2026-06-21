@@ -444,7 +444,7 @@ struct monst *oracle;
 boolean
 can_make_bones(VOID_ARGS)
 {
-    register struct trap *ttmp;
+    struct trap *ttmp;
 
     /* don't let multiple restarts generate multiple copies of objects
        in bones files */
@@ -742,8 +742,8 @@ make_bones:
 int
 getbones(VOID_ARGS)
 {
-    register int fd;
-    register int ok;
+    int fd;
+    int ok;
     char c, *bonesid, oldbonesid[40]; /* was [10]; more should be safer */
 
     if (discover || ModernMode || CasualMode) /* save bones files for classic mode games; note that in ModernMode bones files could work but since the player does not die, bones files are a bit pointless */
@@ -814,7 +814,7 @@ getbones(VOID_ARGS)
         }
         else 
         {
-            register struct monst *mtmp;
+            struct monst *mtmp;
 
             getlev(fd, 0, 0, TRUE);
 

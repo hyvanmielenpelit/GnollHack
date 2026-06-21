@@ -309,8 +309,8 @@ artifact_name(name, otyp)
 const char *name;
 short *otyp;
 {
-    register const struct artifact *a;
-    register const char *aname;
+    const struct artifact *a;
+    const char *aname;
 
     if (!strncmpi(name, "the ", 4))
         name += 4;
@@ -333,7 +333,7 @@ exist_artifact(otyp, name)
 int otyp;
 const char *name;
 {
-    register const struct artifact *a;
+    const struct artifact *a;
     boolean *arex;
 
     if (otyp && *name)
@@ -349,13 +349,13 @@ struct obj *otmp;
 const char *name;
 boolean mod;
 {
-    register const struct artifact *a;
+    const struct artifact *a;
 
     if (otmp && *name)
         for (a = artilist + 1; a->otyp; a++)
             if (a->otyp == otmp->otyp && !strcmp(a->name, name)) 
             {
-                register int m = (int) (a - artilist);
+                int m = (int) (a - artilist);
                 otmp->oartifact = (char) (mod ? m : 0);
                 otmp->age = 0;
                 if (otmp->otyp == RIN_INCREASE_DAMAGE)
@@ -724,7 +724,7 @@ restrict_name(otmp, name)
 struct obj *otmp;
 const char *name;
 {
-    register const struct artifact *a;
+    const struct artifact *a;
     const char *aname, *odesc, *other;
     boolean sametype[NUM_OBJECTS];
     int i, lo, hi, otyp = otmp->otyp, ocls = objects[otyp].oc_class;
@@ -777,7 +777,7 @@ artifact_attack_type(adtyp, otmp)
 int adtyp;
 struct obj *otmp;
 {
-    register const struct artifact *weap;
+    const struct artifact *weap;
 
     if ((weap = get_artifact(otmp)) != 0)
         return (boolean) (weap->attk.adtyp == adtyp);
@@ -795,9 +795,9 @@ struct obj *otmp;
 int64_t wp_mask;
 {
     int64_t *propptr = 0;
-    register const struct artifact *oart = get_artifact(otmp);
-    register uchar proptyp;
-    register uint64_t spfx;
+    const struct artifact *oart = get_artifact(otmp);
+    uchar proptyp;
+    uint64_t spfx;
 
     if (!oart)
         return;
@@ -853,7 +853,7 @@ struct monst *mon;
     if (!obj || !mon)
         return 1;
 
-    register const struct artifact* oart = get_artifact(obj);
+    const struct artifact* oart = get_artifact(obj);
     boolean badclass = FALSE, badalign = FALSE, badappropriate = FALSE, badexceptional = FALSE, self_willed, yours;
 
     touch_blasted = FALSE;
@@ -959,7 +959,7 @@ arti_immune(obj, dtyp)
 struct obj *obj;
 int dtyp;
 {
-    register const struct artifact *weap = get_artifact(obj);
+    const struct artifact *weap = get_artifact(obj);
 
     if (!weap)
         return FALSE;
@@ -990,7 +990,7 @@ struct monst *mon;
 /* decide whether an artifact's special attacks apply against mtmp */
 STATIC_OVL int
 spec_applies(weap, mtmp)
-register const struct artifact *weap;
+const struct artifact *weap;
 struct monst *mtmp;
 {
     struct permonst *ptr;
@@ -1164,7 +1164,7 @@ struct obj *otmp;
 struct monst *mon, *mattacker;
 double damage;
 {
-    register const struct artifact *weap = get_artifact(otmp);
+    const struct artifact *weap = get_artifact(otmp);
 
     if (!weap || (weap->attk.adtyp == AD_PHYS /* check for `NO_ATTK' */
                   && weap->attk.damn == 0 && weap->attk.damd == 0 && weap->attk.damp == 0))
@@ -2733,7 +2733,7 @@ struct obj *obj;
         return 0;
     }
 
-    register const struct artifact *oart = get_artifact(obj);
+    const struct artifact *oart = get_artifact(obj);
 
     /* No artifact or property */
     if (!oart || !oart->inv_prop)
@@ -3420,7 +3420,7 @@ void
 arti_speak(obj)
 struct obj *obj;
 {
-    register const struct artifact *oart = get_artifact(obj);
+    const struct artifact *oart = get_artifact(obj);
     const char *line;
     char buf[BUFSZ];
 

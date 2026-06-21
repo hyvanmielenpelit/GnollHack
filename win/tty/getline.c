@@ -60,7 +60,7 @@ const char* introline UNUSED;
 getlin_hook_proc hook;
 {
     register char *obufp = bufp;
-    register int c;
+    int c;
     struct WinDesc *cw = wins[WIN_MESSAGE];
     boolean doprev = 0;
     char promptbuf[PBUFSZ] = "";
@@ -275,9 +275,9 @@ getlin_hook_proc hook;
 
 void
 xwaitforspace(s)
-register const char *s; /* chars allowed besides return */
+const char *s; /* chars allowed besides return */
 {
-    register int c, x = ttyDisplay ? (int) ttyDisplay->dismiss_more : '\n';
+    int c, x = ttyDisplay ? (int) ttyDisplay->dismiss_more : '\n';
 
     morc = 0;
     while (

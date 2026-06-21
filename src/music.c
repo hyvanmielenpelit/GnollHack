@@ -62,8 +62,8 @@ awaken_monsters(distance, isscary)
 int distance;
 boolean isscary;
 {
-    register struct monst *mtmp;
-    register int distm;
+    struct monst *mtmp;
+    int distm;
     int cnt = 0;
 
     for (mtmp = fmon; mtmp; mtmp = mtmp->nmon) 
@@ -103,7 +103,7 @@ STATIC_OVL void
 put_monsters_to_sleep(otyp, distance)
 int otyp, distance;
 {
-    register struct monst *mtmp;
+    struct monst *mtmp;
     int duration = get_otyp_spell_duration(otyp);
 
     for (mtmp = fmon; mtmp; mtmp = mtmp->nmon) {
@@ -127,7 +127,7 @@ STATIC_OVL void
 charm_snakes(distance)
 int distance;
 {
-    register struct monst *mtmp;
+    struct monst *mtmp;
     int could_see_mon, was_peaceful;
 
     for (mtmp = fmon; mtmp; mtmp = mtmp->nmon) {
@@ -162,7 +162,7 @@ STATIC_OVL void
 calm_nymphs(distance)
 int distance;
 {
-    register struct monst *mtmp;
+    struct monst *mtmp;
 
     for (mtmp = fmon; mtmp; mtmp = mtmp->nmon) {
         if (DEADMONSTER(mtmp))
@@ -188,7 +188,7 @@ awaken_soldiers(bugler, isscary)
 struct monst *bugler; /* monster that played instrument */
 boolean isscary;
 {
-    register struct monst *mtmp;
+    struct monst *mtmp;
     int distance, distm, cnt = 0;
 
     /* distance of affected non-soldier monsters to bugler */
@@ -266,7 +266,7 @@ void
 do_earthquake(force)
 int force;
 {
-    register int x, y;
+    int x, y;
     struct monst *mtmp;
     struct obj *otmp;
     struct trap *chasm, *trap_at_u = t_at(u.ux, u.uy);

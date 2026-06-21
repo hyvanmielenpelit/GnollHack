@@ -1941,7 +1941,7 @@ doquickwhatis(VOID_ARGS)
 int
 doidtrap(VOID_ARGS)
 {
-    register struct trap *trap;
+    struct trap *trap;
     int x, y, tt, glyph;
 
     if (!getdir("^"))

@@ -60,7 +60,7 @@ nhsym *ochar;
 uint64_t *ospecial;
 {
     int signed_glyph = layers.glyph;
-    register int offset, idx;
+    int offset, idx;
     int color = NO_COLOR;
     nhsym ch = 0;
     unsigned special = 0;

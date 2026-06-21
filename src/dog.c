@@ -42,7 +42,7 @@ struct monst *mtmp;
 
 void
 initedog(mtmp, set_tameness)
-register struct monst *mtmp;
+struct monst *mtmp;
 boolean set_tameness;
 {
     if (set_tameness)
@@ -104,7 +104,7 @@ boolean verbose, nonpm_upon_random;
 
 struct monst *
 make_familiar(otmp, x, y, quietly)
-register struct obj *otmp;
+struct obj *otmp;
 xchar x, y;
 boolean quietly;
 {
@@ -491,8 +491,8 @@ boolean isfemale;
 struct monst *
 makedog(VOID_ARGS)
 {
-    register struct monst *mtmp;
-    register struct obj *otmp;
+    struct monst *mtmp;
+    struct obj *otmp;
     const char *petname = "";
     const char* petname_female = "";
     int pettype;
@@ -841,7 +841,7 @@ update_mlstmv(VOID_ARGS)
 void
 arrival_from_mydogs_and_migrating_mons(VOID_ARGS)
 {
-    register struct monst *mtmp, *mtmp0, *mtmp2;
+    struct monst *mtmp, *mtmp0, *mtmp2;
     int dismissKops = 0;
 
     /*
@@ -1400,8 +1400,8 @@ void
 move_monsters_to_mydogs(pets_only, nearby_only)
 boolean pets_only, nearby_only; /* pets_only is true for ascension or final escape */
 {
-    register struct monst *mtmp, *mtmp2;
-    register struct obj *obj;
+    struct monst *mtmp, *mtmp2;
+    struct obj *obj;
     int num_segs;
     boolean stay_behind;
 
@@ -1482,7 +1482,7 @@ boolean pets_only, nearby_only; /* pets_only is true for ascension or final esca
                 set_residency(mtmp, TRUE);
 
             if (mtmp->wormno) {
-                register int cnt;
+                int cnt;
                 /* NOTE: worm is truncated to # segs = max wormno size */
                 cnt = count_wsegs(mtmp);
                 num_segs = min(cnt, MAX_NUM_WORMS - 1);
@@ -1522,7 +1522,7 @@ boolean pets_only, nearby_only; /* pets_only is true for ascension or final esca
 
 void
 migrate_to_level(mtmp, tolev, xyloc, cc)
-register struct monst *mtmp;
+struct monst *mtmp;
 xchar tolev; /* destination level */
 xchar xyloc; /* MIGR_xxx destination xy location: */
 coord *cc;   /* optional destination coordinates */
@@ -1589,7 +1589,7 @@ coord *cc;   /* optional destination coordinates */
 int
 dogfood(mon, obj)
 struct monst *mon;
-register struct obj *obj;
+struct obj *obj;
 {
     if (!mon || !obj)
         return TABU;
@@ -1779,8 +1779,8 @@ register struct obj *obj;
  */
 boolean
 tamedog(mtmp, obj, forcetaming, charm_type, duration, verbose, thrown)
-register struct monst *mtmp;
-register struct obj *obj;
+struct monst *mtmp;
+struct obj *obj;
 uchar forcetaming; /* 0 = no force, 1 = force non-uniques, 2 = force all */
 int charm_type; /* 0 = permanent, 1 = charm, 2 = control undead */
 unsigned short duration;

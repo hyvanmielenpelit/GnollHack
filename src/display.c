@@ -218,10 +218,10 @@ int show;
  */
 void
 map_background(x, y, show)
-register xchar x, y;
-register int show;
+xchar x, y;
+int show;
 {
-    register int glyph = back_to_glyph(x, y);
+    int glyph = back_to_glyph(x, y);
     int symbol_index = generic_glyph_to_cmap(glyph);
     int gui_glyph = maybe_get_replaced_glyph(glyph, x, y, data_to_replacement_info(glyph, defsyms[symbol_index].layer, (struct obj*)0, (struct monst*)0, 0UL, 0UL, 0UL, MAT_NONE, 0));
 
@@ -357,11 +357,11 @@ register int show;
  */
 void
 map_trap(trap, show)
-register struct trap *trap;
-register int show;
+struct trap *trap;
+int show;
 {
-    register int x = trap->tx, y = trap->ty;
-    register int glyph = trap_to_glyph(trap, newsym_rn2);
+    int x = trap->tx, y = trap->ty;
+    int glyph = trap_to_glyph(trap, newsym_rn2);
     struct monst* mtmp = m_at(x, y);
     boolean utrapped = (x == u.ux && y == u.uy && u.utrap > 0);
     boolean mtrapped = (mtmp && mtmp->mtrapped);
@@ -408,32 +408,32 @@ register int show;
  */
 void
 map_object(obj, show)
-register struct obj* obj;
-register int show;
+struct obj* obj;
+int show;
 {
     map_object_core(obj, show, TRUE, FALSE, FALSE);
 }
 
 void
 map_object_for_detection(obj, show)
-register struct obj* obj;
-register int show;
+struct obj* obj;
+int show;
 {
     map_object_core(obj, show, TRUE, TRUE, FALSE);
 }
 
 void
 map_object_no_chain_check(obj, show)
-register struct obj* obj;
-register int show;
+struct obj* obj;
+int show;
 {
     map_object_core(obj, show, FALSE, FALSE, FALSE);
 }
 
 void
 map_object_no_chain_check_choose_ascii(obj, show, exclude_ascii)
-register struct obj* obj;
-register int show;
+struct obj* obj;
+int show;
 boolean exclude_ascii;
 {
     map_object_core(obj, show, FALSE, FALSE, exclude_ascii);
@@ -441,8 +441,8 @@ boolean exclude_ascii;
 
 void
 map_object_core(obj, show, chain_check, add_detection_mark, exclude_ascii)
-register struct obj *obj;
-register int show;
+struct obj *obj;
+int show;
 boolean chain_check;
 boolean add_detection_mark;
 boolean exclude_ascii;
@@ -450,11 +450,11 @@ boolean exclude_ascii;
     if (!obj)
         return;
 
-    register int x = obj->ox, y = obj->oy;
+    int x = obj->ox, y = obj->oy;
     if (!isok(x, y))
         return;
 
-    register int glyph = obj_to_glyph(obj, newsym_rn2);
+    int glyph = obj_to_glyph(obj, newsym_rn2);
     boolean draw_in_front = is_obj_drawn_in_front(obj);
     enum layer_types layer = draw_in_front ? LAYER_COVER_OBJECT : LAYER_OBJECT;
     boolean in_pit = FALSE;
@@ -534,8 +534,8 @@ boolean exclude_ascii;
 /*
 void
 map_object_and_update_chain(obj, show)
-register struct obj* obj;
-register int show;
+struct obj* obj;
+int show;
 {
     if (!obj || !isok(obj->ox, obj->oy))
         return;
@@ -558,7 +558,7 @@ register int show;
  */
 void
 map_invisible(x, y)
-register xchar x, y;
+xchar x, y;
 {
     if (x != u.ux || y != u.uy) { /* don't display I at hero's location */
         if (level.flags.hero_memory)
@@ -637,9 +637,9 @@ int x, y, spef_idx UNUSED;
  */
 void
 unmap_object(x, y)
-register int x, y;
+int x, y;
 {
-    register struct trap *trap;
+    struct trap *trap;
 
     if (!level.flags.hero_memory)
         return;
@@ -670,8 +670,8 @@ register int x, y;
 /*
 #define _map_location(x, y, show) \
     {                                                                       \
-        register struct obj *obj;                                           \
-        register struct trap *trap;                                         \
+        struct obj *obj;                                           \
+        struct trap *trap;                                         \
                                                                             \
         map_background(x, y, show);                                         \
         if ((trap = t_at(x, y)) && trap->tseen && !covers_traps(x, y))      \
@@ -753,8 +753,8 @@ int x, y, show;
  */
 STATIC_OVL void
 display_monster(x, y, mon, sightflags, worm_tail, dropping_piercer)
-register xchar x, y;        /* display position */
-register struct monst *mon; /* monster to display */
+xchar x, y;        /* display position */
+struct monst *mon; /* monster to display */
 int sightflags;             /* 1 if the monster is physically seen;
                                2 if detected using Detect_monsters */
 xchar worm_tail;            /* mon is actually a worm tail */
@@ -952,7 +952,7 @@ boolean dropping_piercer;
  */
 STATIC_OVL void
 display_warning(mon)
-register struct monst *mon;
+struct monst *mon;
 {
     int x = mon->mx, y = mon->my;
     int glyph;
@@ -1050,7 +1050,7 @@ xchar x, y;
 {
     struct rm *lev;
     struct obj *boulder;
-    register struct monst *mon;
+    struct monst *mon;
 
     if (!isok(x, y))
         return;
@@ -1211,14 +1211,14 @@ int x, y;
  */
 void
 newsym(x, y)
-register int x, y;
+int x, y;
 {
     newsym_with_extra_info_and_flags(x, y, 0UL, 0UL, 0, 0, 0UL);
 }
 
 void
 newsym_with_flags(x, y, newsym_flags)
-register int x, y;
+int x, y;
 uint64_t newsym_flags;
 {
     newsym_with_extra_info_and_flags(x, y, 0UL, 0UL, 0, 0, newsym_flags);
@@ -1226,7 +1226,7 @@ uint64_t newsym_flags;
 
 void
 newsym_with_extra_info_and_flags(x, y, disp_flags, disp_mflags, hit_tile_id, damage_shown, specific_newsym_flags)
-register int x, y;
+int x, y;
 uint64_t disp_flags, disp_mflags, specific_newsym_flags;
 int hit_tile_id, damage_shown;
 {
@@ -1236,10 +1236,10 @@ int hit_tile_id, damage_shown;
     /* Add global flags */
     uint64_t newsym_flags = (specific_newsym_flags | context.global_newsym_flags);
 
-    register struct monst *mon;
-    register struct rm *lev = &(levl[x][y]);
-    register int see_it;
-    register xchar worm_tail;
+    struct monst *mon;
+    struct rm *lev = &(levl[x][y]);
+    int see_it;
+    xchar worm_tail;
     //int orig_glyph = lev->hero_memory_layers.glyph;
 
     if (in_mklev)
@@ -1587,7 +1587,7 @@ void
 shieldeff(x, y)
 xchar x, y;
 {
-    register int i;
+    int i;
 
     if (!flags.sparkle)
         return;
@@ -1608,7 +1608,7 @@ void
 talkeff(x, y)
 xchar x, y;
 {
-    register int i;
+    int i;
 
     if (!flags.sparkle)
         return;
@@ -1757,7 +1757,7 @@ short missile_special_quality;
 
     case DISP_END:
         if (tglyph->style == DISP_BEAM || tglyph->style == DISP_BEAM_DIG || tglyph->style == DISP_ALL) {
-            register int i;
+            int i;
 
             /* Erase (reset) from source to end */
             for (i = 0; i < tglyph->sidx; i++)
@@ -1913,7 +1913,7 @@ int first;
     }
     else
     {
-        register int x, y;
+        int x, y;
 
         /* Clear old location */
         for (y = lastswy - 1; y <= lastswy + 1; y++)
@@ -2004,7 +2004,7 @@ void
 under_water(mode)
 int mode;
 {
-    register int x, y;
+    int x, y;
 
     /* swallowing has a higher precedence than under water */
     if (Is_waterlevel(&u.uz) || u.uswallow)
@@ -2094,7 +2094,7 @@ int mode;
 void
 see_monsters(VOID_ARGS)
 {
-    register struct monst *mon;
+    struct monst *mon;
     int new_warn_obj_cnt = 0;
     int new_demon_warn_obj_cnt = 0;
     int new_undead_warn_obj_cnt = 0;
@@ -2254,7 +2254,7 @@ see_monsters(VOID_ARGS)
 void
 set_mimic_blocking(VOID_ARGS)
 {
-    register struct monst *mon;
+    struct monst *mon;
 
     for (mon = fmon; mon; mon = mon->nmon) {
         if (DEADMONSTER(mon))
@@ -2276,7 +2276,7 @@ set_mimic_blocking(VOID_ARGS)
 void
 see_objects(VOID_ARGS)
 {
-    register struct obj *obj;
+    struct obj *obj;
     for (obj = fobj; obj; obj = obj->nobj)
         if (vobj_at(obj->ox, obj->oy) == obj)
             newsym(obj->ox, obj->oy);
@@ -2318,8 +2318,8 @@ doredraw(VOID_ARGS)
 void
 docrt(VOID_ARGS)
 {
-    register int x, y;
-    register struct rm *lev;
+    int x, y;
+    struct rm *lev;
 
     if (!u.ux)
         return; /* display isn't ready yet */
@@ -2432,7 +2432,7 @@ redraw_map(VOID_ARGS)
  * for update. */
 void
 newsym_force(x, y)
-register int x, y;
+int x, y;
 {
     newsym(x, y);
     force_redraw_at(x, y);
@@ -2440,7 +2440,7 @@ register int x, y;
 
 void
 force_redraw_at(x, y)
-register int x, y;
+int x, y;
 {
     gbuf[y][x].isnew = 1;
     if (gbuf_start[y] > x)
@@ -3351,8 +3351,8 @@ int x, y, glyph;
 void
 clear_glyph_buffer(VOID_ARGS)
 {
-    register int x, y;
-    register gbuf_entry *gptr;
+    int x, y;
+    gbuf_entry *gptr;
 
     for (y = 0; y < ROWNO; y++) {
         gptr = &gbuf[y][0];
@@ -3370,7 +3370,7 @@ void
 row_refresh(start, stop, y)
 int start, stop, y;
 {
-    register int x;
+    int x;
 
     for (x = start; x <= stop; x++)
         if (gbuf[y][x].layers.glyph != cmap_to_glyph(S_unexplored))
@@ -3439,7 +3439,7 @@ int cursor_on_u;
      *      flush_screen->print_glyph->impossible->pline->flush_screen
      */
 
-    register int x, y;
+    int x, y;
 
     if (cursor_on_u == -1)
         delay_flushing = !delay_flushing;
@@ -3459,10 +3459,10 @@ int cursor_on_u;
     memcpy(saved_gbuf_start, gbuf_start, ROWNO);
     memcpy(saved_gbuf_stop, gbuf_stop, ROWNO);
     int layer_idx, signed_glyph, repl;
-    register gbuf_entry* gptr_adj;
+    gbuf_entry* gptr_adj;
     for (y = 0; y < ROWNO; y++)
     {
-        register gbuf_entry* gptr = &gbuf[y][x = saved_gbuf_start[y]];
+        gbuf_entry* gptr = &gbuf[y][x = saved_gbuf_start[y]];
 
         for (; x <= saved_gbuf_stop[y]; gptr++, x++)
         {
@@ -3600,7 +3600,7 @@ int cursor_on_u;
     issue_simple_gui_command(Is_really_rogue_level(&u.uz) ? GUI_CMD_FORCE_ASCII : GUI_CMD_UNFORCE_ASCII);
     issue_simple_gui_command(GUI_CMD_START_FLUSH);
     for (y = 0; y < ROWNO; y++) {
-        register gbuf_entry *gptr = &gbuf[y][x = gbuf_start[y]];
+        gbuf_entry *gptr = &gbuf[y][x = gbuf_start[y]];
 
         for (; x <= gbuf_stop[y]; gptr++, x++)
             if (gptr->isnew) {
@@ -4093,7 +4093,7 @@ int loc;
  */
 int
 zapdir_to_glyph(dx, dy, beam_type)
-register int dx, dy;
+int dx, dy;
 int beam_type;
 {
     if (beam_type >= MAX_ZAP_TYPES) {
@@ -4106,7 +4106,7 @@ int beam_type;
 
 int
 dir_to_beam_index(dx, dy)
-register int dx, dy;
+int dx, dy;
 {
     boolean is_reverse = (dy > 0 || (dy == 0 && dx > 0));
     int dir_glyph_index = (dx == dy) ? 2 : (dx && dy) ? 3 : dx ? 1 : 0;
@@ -4116,7 +4116,7 @@ register int dx, dy;
 
 int
 zapbounce_to_glyph(orig_dx, orig_dy, new_dx, new_dy, beam_type)
-register int orig_dx, orig_dy, new_dx, new_dy;
+int orig_dx, orig_dy, new_dx, new_dy;
 int beam_type;
 {
     if (beam_type >= MAX_ZAP_TYPES) {
@@ -5007,7 +5007,7 @@ int
 wall_angle(lev)
 struct rm *lev;
 {
-    register unsigned int seenv = lev->seenv & 0xff;
+    unsigned int seenv = lev->seenv & 0xff;
     const int *row;
     int col, idx;
 

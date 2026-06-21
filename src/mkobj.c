@@ -621,8 +621,8 @@ struct obj *box;
     if (!box)
         return;
 
-    register int n;
-    register struct obj *otmp;
+    int n;
+    struct obj *otmp;
 
     //box->cobj = (struct obj *) 0; /* Box may have previous contents, such as a coffin corpse */
 
@@ -746,7 +746,7 @@ struct obj *box;
         }
         else
         {
-            register int tprob;
+            int tprob;
             const struct icp *iprobs = boxiprobs;
 
             for (tprob = rnd(100); (tprob -= iprobs->iprob) > 0; iprobs++)
@@ -803,8 +803,8 @@ struct obj *box;
 int
 rndmonnum(VOID_ARGS)
 {
-    register struct permonst *ptr;
-    register int i;
+    struct permonst *ptr;
+    int i;
     uint64_t excludeflags;
     uint64_t requiredflags;
     int trycnt = 0;
@@ -1148,9 +1148,9 @@ struct obj *obj;
  */
 void
 bill_dummy_object(otmp)
-register struct obj *otmp;
+struct obj *otmp;
 {
-    register struct obj *dummy;
+    struct obj *dummy;
     int64_t cost = 0L;
 
     if (otmp->unpaid) {
@@ -1184,12 +1184,12 @@ register struct obj *otmp;
 
 struct obj*
 memory_dummy_object(otmp)
-register struct obj* otmp;
+struct obj* otmp;
 {
     if (!otmp)
         return (struct obj*)0;
 
-    register struct obj* dummy;
+    struct obj* dummy;
     int x = otmp->ox, y = otmp->oy;
 
     if (!isok(x, y))
@@ -3257,7 +3257,7 @@ double old_volume;
 
 void
 bless(otmp)
-register struct obj *otmp;
+struct obj *otmp;
 {
     if (!otmp)
         return;
@@ -3288,7 +3288,7 @@ register struct obj *otmp;
 
 void
 unbless(otmp)
-register struct obj *otmp;
+struct obj *otmp;
 {
     if (!otmp)
         return;
@@ -3313,7 +3313,7 @@ register struct obj *otmp;
 
 void
 curse(otmp)
-register struct obj *otmp;
+struct obj *otmp;
 {
     if (!otmp)
         return;
@@ -3366,7 +3366,7 @@ register struct obj *otmp;
 
 void
 uncurse(otmp)
-register struct obj *otmp;
+struct obj *otmp;
 {
     if (!otmp)
         return;
@@ -3394,8 +3394,8 @@ register struct obj *otmp;
 
 void
 blessorcurse(otmp, chance)
-register struct obj *otmp;
-register int chance;
+struct obj *otmp;
+int chance;
 {
     if (!otmp)
         return;
@@ -3415,7 +3415,7 @@ register int chance;
 
 int
 bcsign(otmp)
-register struct obj *otmp;
+struct obj *otmp;
 {
     return (!!otmp->blessed - !!otmp->cursed);
 }
@@ -3449,7 +3449,7 @@ struct obj* obj;
 
 int
 weight(obj)
-register struct obj *obj;
+struct obj *obj;
 {
     int wt = (int)get_item_base_weight(obj);
 
@@ -3463,7 +3463,7 @@ register struct obj *obj;
         wt = obj->owt;
     if (Is_container(obj) || obj->otyp == STATUE) {
         struct obj *contents;
-        register int cwt = 0;
+        int cwt = 0;
 
         if (obj->otyp == STATUE && obj->corpsenm >= LOW_PM)
             wt = (int) obj->quan * ((int) mons[obj->corpsenm].cwt * 3 / 2);
@@ -3572,7 +3572,7 @@ mkgold(amount, x, y)
 int64_t amount;
 int x, y;
 {
-    register struct obj *gold = g_at(x, y);
+    struct obj *gold = g_at(x, y);
 
     if (amount <= 0L) {
         amount = get_random_gold_amount();
@@ -3608,7 +3608,7 @@ struct permonst *ptr;
 int x, y;
 unsigned corpstatflags;
 {
-    register struct obj *otmp;
+    struct obj *otmp;
     boolean init = ((corpstatflags & CORPSTAT_INIT) != 0);
     
     if (objtype != CORPSE && objtype != STATUE)
@@ -3771,9 +3771,9 @@ boolean copyof;
 struct obj *
 mk_tt_object(objtype, x, y)
 int objtype; /* CORPSE or STATUE */
-register int x, y;
+int x, y;
 {
-    register struct obj *otmp, *otmp2;
+    struct obj *otmp, *otmp2;
     boolean initialize_it;
 
     /* player statues never contain books */
@@ -3808,7 +3808,7 @@ const char *nm;
 
 boolean
 is_flammable(otmp)
-register struct obj *otmp;
+struct obj *otmp;
 {
     int omat = otmp->material;
 
@@ -3827,7 +3827,7 @@ register struct obj *otmp;
 
 boolean
 is_rottable(otmp)
-register struct obj *otmp;
+struct obj *otmp;
 {
     if (get_obj_oc_flags(otmp) & O1_ROT_RESISTANT)
         return FALSE;
@@ -3856,10 +3856,10 @@ struct obj* otmp;
 /* put the object at the given location */
 void
 place_object(otmp, x, y)
-register struct obj *otmp;
+struct obj *otmp;
 int x, y;
 {
-    register struct obj *otmp2 = level.objects[x][y];
+    struct obj *otmp2 = level.objects[x][y];
 
     if (otmp->where != OBJ_FREE)
     {
@@ -3900,10 +3900,10 @@ int x, y;
 /* put the memory object at the given location */
 void
 place_memory_object(otmp, x, y)
-register struct obj* otmp;
+struct obj* otmp;
 int x, y;
 {
-    register struct obj* otmp2 = level.locations[x][y].hero_memory_layers.memory_objchn;
+    struct obj* otmp2 = level.locations[x][y].hero_memory_layers.memory_objchn;
 
     if (otmp->where != OBJ_FREE)
     {
@@ -3942,7 +3942,7 @@ int x, y;
 
 void
 remove_memory_object(otmp)
-register struct obj* otmp;
+struct obj* otmp;
 {
     xchar x = otmp->ox;
     xchar y = otmp->oy;
@@ -4092,7 +4092,7 @@ int force; /* 0 = no force so do checks, <0 = force off, >0 force on */
 
 void
 remove_object(otmp)
-register struct obj *otmp;
+struct obj *otmp;
 {
     debugprint("remove_object, otyp=%d", otmp->otyp);
 

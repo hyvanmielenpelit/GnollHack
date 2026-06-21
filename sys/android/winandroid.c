@@ -1097,7 +1097,7 @@ void print_status_field(int idx, boolean first_field)
 void and_status_flush()
 {
 	enum statusfields idx, *fieldlist;
-	register int i;
+	int i;
 
 	static enum statusfields fieldorder_line1[] = {
 		BL_TITLE, BL_STR, BL_DX, BL_CO, BL_IN, BL_WI, BL_CH, BL_GOLD, BL_FLUSH,
@@ -2060,9 +2060,9 @@ const char* complete_ext_cmd(const char* base)
 
 void get_ext_cmd_auto(const char *query, register char *bufp)
 {
-	register int n = 0, nl = 0;
+	int n = 0, nl = 0;
 	const char* complete = 0;
-	register int c;
+	int c;
 	const int maxc = COLNO >= BUFSZ ? BUFSZ-1 : COLNO;
 
 	pline("%s ", query);

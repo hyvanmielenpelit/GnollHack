@@ -248,8 +248,8 @@ int rmtyp;
 void
 dosounds(VOID_ARGS)
 {
-    register struct mkroom *sroom;
-    register int hallu, vx, vy;
+    struct mkroom *sroom;
+    int hallu, vx, vy;
 #if defined(AMIGA) && defined(AZTEC_C_WORKAROUND)
     int xx;
 #endif
@@ -819,7 +819,7 @@ STATIC_VAR const char *const h_sounds[] = {
 
 const char *
 growl_sound(mtmp)
-register struct monst *mtmp;
+struct monst *mtmp;
 {
     const char *ret;
 
@@ -868,9 +868,9 @@ register struct monst *mtmp;
 /* the sounds of a seriously abused pet, including player attacking it */
 void
 growl(mtmp)
-register struct monst *mtmp;
+struct monst *mtmp;
 {
-    register const char *growl_verb = 0;
+    const char *growl_verb = 0;
 
     if (!mon_can_move(mtmp) || !mtmp->data->msound)
         return;
@@ -893,9 +893,9 @@ register struct monst *mtmp;
 /* the sounds of mistreated pets */
 void
 yelp(mtmp)
-register struct monst *mtmp;
+struct monst *mtmp;
 {
-    register const char *yelp_verb = 0;
+    const char *yelp_verb = 0;
 
     if (!mon_can_move(mtmp) || !mtmp->data->msound)
         return;
@@ -940,9 +940,9 @@ register struct monst *mtmp;
 /* the sounds of distressed pets */
 void
 whimper(mtmp)
-register struct monst *mtmp;
+struct monst *mtmp;
 {
-    register const char *whimper_verb = 0;
+    const char *whimper_verb = 0;
 
     if (!mon_can_move(mtmp) || !mtmp->data->msound)
         return;
@@ -975,7 +975,7 @@ register struct monst *mtmp;
 /* pet makes "I'm hungry" noises */
 void
 beg(mtmp)
-register struct monst *mtmp;
+struct monst *mtmp;
 {
     if (!mtmp)
         return;
@@ -1015,14 +1015,14 @@ struct monst *mon;
 
 STATIC_OVL int
 domonnoise_with_popup(mtmp)
-register struct monst* mtmp;
+struct monst* mtmp;
 {
     return domonnoise(mtmp, TRUE, TRUE, FALSE);
 }
 
 STATIC_OVL int
 domonnoise_with_popup_nonpc(mtmp)
-register struct monst* mtmp;
+struct monst* mtmp;
 {
     return domonnoise(mtmp, TRUE, TRUE, TRUE);
 }
@@ -1033,7 +1033,7 @@ struct monst *mtmp;
 boolean dopopup, fromchatmenu, disallow_npcnoise;
 {
     char verbuf[BUFSZ];
-    register const char *pline_msg = 0, /* Monnam(mtmp) will be prepended */
+    const char *pline_msg = 0, /* Monnam(mtmp) will be prepended */
         *verbl_msg = 0,                 /* verbalize_ex(ATR_NONE, CLR_MSG_TALK_NORMAL, ) */
         *verbl_msg_mcan = 0;            /* verbalize_ex(ATR_NONE, CLR_MSG_TALK_NORMAL, ) if cancelled */
     struct permonst *ptr = mtmp->data;
@@ -1126,7 +1126,7 @@ boolean dopopup, fromchatmenu, disallow_npcnoise;
     case MS_SELL: /* pitch, pay, total */
         if (mtmp->isshk)
         {
-            register struct eshk* eshkp = (struct eshk*)0;
+            struct eshk* eshkp = (struct eshk*)0;
             if (has_eshk(mtmp))
                 eshkp = ESHK(mtmp);
 
@@ -4622,7 +4622,7 @@ struct monst* mtmp;
 
     if (mtmp->isshk)
     {
-        register struct eshk* eshkp = (struct eshk*)0;
+        struct eshk* eshkp = (struct eshk*)0;
         if (has_eshk(mtmp))
             eshkp = ESHK(mtmp);
 
@@ -7199,8 +7199,8 @@ struct monst* mtmp;
 /* Returns the price of an arbitrary item per one item */
 int64_t
 get_cost_of_monster_item(obj, mtmp)
-register struct obj* obj;
-register struct monst* mtmp;
+struct obj* obj;
+struct monst* mtmp;
 {            
     struct obj* top;
     int64_t cost = 0L;
@@ -7223,7 +7223,7 @@ struct obj* obj;
 struct monst* mtmp;
 {
     int64_t price = 0;
-    register struct obj* otmp, * top;
+    struct obj* otmp, * top;
 
     for (top = obj; top->where == OBJ_CONTAINED; top = top->ocontainer)
         continue;

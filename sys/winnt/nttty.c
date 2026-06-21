@@ -523,7 +523,7 @@ really_move_cursor()
 
 void
 cmov(x, y)
-register int x, y;
+int x, y;
 {
     ttyDisplay->cury = y;
     ttyDisplay->curx = x;

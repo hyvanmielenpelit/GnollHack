@@ -120,13 +120,13 @@ boolean here;     /* flag for type of obj list linkage */
 int
 collect_obj_classes(ilets, otmp, here, filter, itemcount)
 char ilets[];
-register struct obj *otmp;
+struct obj *otmp;
 boolean here;
 boolean FDECL((*filter), (OBJ_P));
 int *itemcount;
 {
-    register int iletct = 0;
-    register char c;
+    int iletct = 0;
+    char c;
 
     *itemcount = 0;
     ilets[iletct] = '\0'; /* terminate ilets so that index() will work */
@@ -353,8 +353,8 @@ STATIC_OVL void
 check_here(picked_some)
 boolean picked_some;
 {
-    register struct obj *obj;
-    register int ct = 0;
+    struct obj *obj;
+    int ct = 0;
 
     /* count the objects here */
     for (obj = level.objects[u.ux][u.uy]; obj; obj = obj->nexthere) {
@@ -571,14 +571,14 @@ struct obj* obj;
 /* query_objlist callback: return TRUE if valid class and worn */
 boolean
 is_worn_by_type(otmp)
-register struct obj *otmp;
+struct obj *otmp;
 {
     return (is_worn(otmp) && allow_category(otmp)) ? TRUE : FALSE;
 }
 
 boolean
 is_wearable_by_type(otmp)
-register struct obj* otmp;
+struct obj* otmp;
 {
     return (is_wearable(otmp) && allow_category(otmp)) ? TRUE : FALSE;
 }
@@ -2648,7 +2648,7 @@ doloot_core(applymode)
 int applymode;
 {
     struct obj *cobj, *nobj;
-    register int c = -1;
+    int c = -1;
     int timepassed = 0;
     coord cc;
     boolean underfoot = TRUE;
@@ -3287,21 +3287,21 @@ struct obj* obj, *container;
 /* Returns: -1 to stop, 1 item was inserted, 0 item was not inserted. */
 STATIC_PTR int
 in_container(obj)
-register struct obj* obj;
+struct obj* obj;
 {
     return in_container_core(obj, TRUE);
 }
 
 STATIC_PTR int
 in_container_nobot(obj)
-register struct obj* obj;
+struct obj* obj;
 {
     return in_container_core(obj, FALSE);
 }
 
 STATIC_PTR int
 in_container_core(obj, dobot)
-register struct obj *obj;
+struct obj *obj;
 boolean dobot;
 {
     int res = 0;
@@ -3647,21 +3647,21 @@ struct obj *obj;
 /* Returns: -1 to stop, 1 item was moved, 0 item was not moved. */
 STATIC_PTR int
 move_container(obj)
-register struct obj* obj;
+struct obj* obj;
 {
     return move_container_core(obj, TRUE);
 }
 
 STATIC_PTR int
 move_container_nobot(obj)
-register struct obj* obj;
+struct obj* obj;
 {
     return move_container_core(obj, FALSE);
 }
 
 STATIC_PTR int
 move_container_core(obj, dobot)
-register struct obj* obj;
+struct obj* obj;
 boolean dobot;
 {
     if (!obj || !move_target_container)
@@ -3702,21 +3702,21 @@ boolean dobot;
 /* Returns: -1 to stop, 1 item was moved, 0 item was not moved. */
 STATIC_PTR int
 out_container_and_drop(obj)
-register struct obj* obj;
+struct obj* obj;
 {
     return out_container_and_drop_core(obj, TRUE);
 }
 
 STATIC_PTR int
 out_container_and_drop_nobot(obj)
-register struct obj* obj;
+struct obj* obj;
 {
     return out_container_and_drop_core(obj, FALSE);
 }
 
 STATIC_PTR int
 out_container_and_drop_core(obj, dobot)
-register struct obj* obj;
+struct obj* obj;
 boolean dobot;
 {
     if (!obj)
@@ -3752,21 +3752,21 @@ boolean dobot;
 /* Returns: -1 to stop, 1 item was moved, 0 item was not moved. */
 STATIC_PTR int
 pickup_and_in_container(obj)
-register struct obj* obj;
+struct obj* obj;
 {
     return pickup_and_in_container_core(obj, TRUE);
 }
 
 STATIC_PTR int
 pickup_and_in_container_nobot(obj)
-register struct obj* obj;
+struct obj* obj;
 {
     return pickup_and_in_container_core(obj, FALSE);
 }
 
 STATIC_PTR int
 pickup_and_in_container_core(obj, dobot)
-register struct obj* obj;
+struct obj* obj;
 boolean dobot;
 {
     if (!obj)
@@ -3799,7 +3799,7 @@ boolean dobot;
 /* Returns: -1 to stop, 1 item was moved, 0 item was not moved. */
 STATIC_PTR int
 out_container_and_autostash(obj)
-register struct obj* obj;
+struct obj* obj;
 {
     return out_container_core(obj, TRUE, TRUE, (uchar*)0);
 }
@@ -3807,7 +3807,7 @@ register struct obj* obj;
 /* Returns: -1 to stop, 1 item was moved, 0 item was not moved. */
 STATIC_PTR int
 out_container_and_autostash_nobot(obj)
-register struct obj* obj;
+struct obj* obj;
 {
     return out_container_core(obj, FALSE, TRUE, (uchar*)0);
 }
@@ -3816,25 +3816,25 @@ register struct obj* obj;
 /* Returns: -1 to stop, 1 item was removed, 0 item was not removed. */
 STATIC_PTR int
 out_container(obj)
-register struct obj* obj;
+struct obj* obj;
 {
     return out_container_core(obj, TRUE, FALSE, (uchar*)0);
 }
 
 STATIC_PTR int
 out_container_nobot(obj)
-register struct obj* obj;
+struct obj* obj;
 {
     return out_container_core(obj, FALSE, FALSE, (uchar*)0);
 }
 
 STATIC_PTR int
 out_container_core(obj, dobot, do_auto_in_bag, obj_gone_ptr)
-register struct obj *obj;
+struct obj *obj;
 boolean dobot, do_auto_in_bag;
 uchar* obj_gone_ptr;
 {
-    register struct obj *otmp;
+    struct obj *otmp;
     boolean is_gold = (obj->oclass == COIN_CLASS);
     int res = 0, loadlev;
     int64_t count;

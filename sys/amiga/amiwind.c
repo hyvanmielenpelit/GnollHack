@@ -19,7 +19,7 @@ static struct Message *FDECL(GetFMsg, (struct MsgPort *));
 #endif
 
 static int BufferGetchar(void);
-static void ProcessMessage(register struct IntuiMessage *message);
+static void ProcessMessage(struct IntuiMessage *message);
 
 #define BufferQueueChar(ch) (KbdBuffer[KbdBuffered++] = (ch))
 
@@ -88,7 +88,7 @@ struct Window *
 OpenShWindow(nw)
 struct NewWindow *nw;
 {
-    register struct Window *win;
+    struct Window *win;
     register ULONG idcmpflags;
 
     if (!HackPort) /* Sanity check */
@@ -116,7 +116,7 @@ void
 CloseShWindow(win)
 struct Window *win;
 {
-    register struct IntuiMessage *msg;
+    struct IntuiMessage *msg;
 
     if (!HackPort)
         panic("HackPort NULL in CloseShWindow");
@@ -139,7 +139,7 @@ struct Window *win;
 static int
 BufferGetchar()
 {
-    register int c;
+    int c;
 
     if (KbdBuffered > 0) {
         c = KbdBuffer[0];
@@ -166,7 +166,7 @@ BufferGetchar()
 
 int
 ConvertKey(message)
-register struct IntuiMessage *message;
+struct IntuiMessage *message;
 {
     static struct InputEvent theEvent;
     static char numpad[] = "bjnh.lyku";
@@ -175,7 +175,7 @@ register struct IntuiMessage *message;
 
     unsigned char buffer[10];
     struct Window *w = message->IDCMPWindow;
-    register int length;
+    int length;
     register ULONG qualifier;
     char numeric_pad, shift, control, alt;
 
@@ -359,7 +359,7 @@ register struct IntuiMessage *message;
 
 static void
 ProcessMessage(message)
-register struct IntuiMessage *message;
+struct IntuiMessage *message;
 {
     int c;
     int cnt;
@@ -534,7 +534,7 @@ kbhit()
 int
 amikbhit()
 {
-    register struct IntuiMessage *message;
+    struct IntuiMessage *message;
     while (KbdBuffered < KBDBUFFER / 2) {
 #ifdef AMIFLUSH
         message = (struct IntuiMessage *) GetFMsg(HackPort);
@@ -588,7 +588,7 @@ WindowGetevent()
 void
 amii_cleanup()
 {
-    register struct IntuiMessage *msg;
+    struct IntuiMessage *msg;
 
     /* Close things up */
     if (HackPort) {
@@ -833,8 +833,8 @@ void
 FreeNewWindow(win)
 struct NewWindow *win;
 {
-    register struct Gadget *gd, *pgd;
-    register struct StringInfo *sip;
+    struct Gadget *gd, *pgd;
+    struct StringInfo *sip;
 
     for (gd = win->FirstGadget; gd; gd = pgd) {
         pgd = gd->NextGadget;

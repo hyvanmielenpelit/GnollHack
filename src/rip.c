@@ -78,7 +78,7 @@ center(line, text)
 int line;
 char *text;
 {
-    register char *ip, *op;
+    char *ip, *op;
     ip = text;
     op = &rip[line][STONE_LINE_CENT - ((strlen(text) + 1) >> 1)];
     while (*ip)
@@ -91,11 +91,11 @@ winid tmpwin;
 int how;
 time_t when;
 {
-    register char **dp;
-    register char *dpx;
+    char **dp;
+    char *dpx;
     char buf[BUFSZ];
     int64_t year;
-    register int x;
+    int x;
     int line;
 
     rip = dp = (char **) alloc(sizeof(rip_txt));

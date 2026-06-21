@@ -227,8 +227,8 @@ struct obj *book2;
     /* KMH -- Need ->known to avoid "_a_ Book of the Dead" */
     book2->known = 1;
     if (invocation_pos(u.ux, u.uy) && !On_stairs(u.ux, u.uy)) {
-        register struct obj *otmp;
-        register boolean arti1_primed = FALSE, arti2_primed = FALSE,
+        struct obj *otmp;
+        boolean arti1_primed = FALSE, arti2_primed = FALSE,
                          arti_cursed = FALSE;
 
         if (book2->cursed) {
@@ -733,7 +733,7 @@ int booktype;
 
 int
 study_book(spellbook)
-register struct obj *spellbook;
+struct obj *spellbook;
 {
     if (!spellbook)
         return 0;

@@ -184,7 +184,7 @@ ReadImageFiles(char **filenames, struct BitMap **iffimg, char **errstrp)
     BitMapHeader *bmhd = NULL, bmhds;
     unsigned char *cmap;
     extern int errno;
-    register int i, j;
+    int i, j;
     struct IFFHandle *iff;
     struct StoredProperty *prop;
 
@@ -413,7 +413,7 @@ FreeTileImageFiles()
 void
 FreeImageFiles(char **filenames, struct BitMap **img)
 {
-    register int i;
+    int i;
 
     for (i = 0; filenames[i]; ++i) {
         if (img[i])
@@ -466,7 +466,7 @@ struct Window *vw;
     struct BitMap *imgbm = 0, *bm = 0;
     int i, k;
     int scaling_needed;
-    register struct RastPort *rp = vw->RPort;
+    struct RastPort *rp = vw->RPort;
 #endif
 
     /* If nothing is buffered, return before we do anything */
@@ -562,7 +562,7 @@ struct Window *vw;
         /* Go ahead and start dumping the stuff */
         for (i = 0; i < glyph_node_index; ++i) {
             /* Do it */
-            register int offx, offy, j;
+            int offx, offy, j;
             struct BitMap *nodebm = amiv_g_nodes[i].bitmap;
 
             /* Get the unclipped coordinates */
@@ -643,7 +643,7 @@ int color_index, glyph;
     int curx;
     int cury;
     int tbl, icon;
-    register int xoff, yoff;
+    int xoff, yoff;
 
     /* Get the real icon index */
     if (glyph != NO_GLYPH)
@@ -737,7 +737,7 @@ int color_index, glyph;
         ++glyph_node_index;
     } else {
         /* Do it */
-        register int j, k, x, y, apen;
+        int j, k, x, y, apen;
         struct RastPort *rp = w->RPort;
         x = rp->cp_x - pictdata.xsize - 3;
 #ifdef OPT_DISPMAP
@@ -975,7 +975,7 @@ amii_flush_glyph_buffer(w)
 struct Window *w;
 {
     short i, x, y;
-    register struct RastPort *rp = w->RPort;
+    struct RastPort *rp = w->RPort;
 
     /* If nothing is buffered, return before we do anything */
     if (glyph_node_index == 0)

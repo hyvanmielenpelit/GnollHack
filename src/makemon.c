@@ -95,7 +95,7 @@ struct monst *mtmp;
 int x, y, n, mmflags;
 {
     coord mm;
-    register int cnt = rnd(n);
+    int cnt = rnd(n);
     struct monst *mon;
 #if defined(__GNUC__) && (defined(HPUX) || defined(DGUX))
     /* There is an unresolved problem with several people finding that
@@ -168,7 +168,7 @@ int otyp, oquan_const, oquan_rnd;
 boolean poisoned;
 int elemental_enchantment, exceptionality, material;
 {
-    register struct obj *otmp;
+    struct obj *otmp;
 
     otmp = mksobj_with_flags(otyp, TRUE, FALSE, MKOBJ_TYPE_NORMAL, mtmp, material, 0L, 0L, 0UL);
     if(!(oquan_const == 0 && oquan_rnd == 0))
@@ -204,7 +204,7 @@ int64_t amount;
 
 STATIC_OVL void
 m_init_background(mtmp)
-register struct monst* mtmp;
+struct monst* mtmp;
 {
     if (!mtmp)
         return;
@@ -318,13 +318,13 @@ struct obj* obj;
 
 STATIC_OVL void
 m_initweap(mtmp)
-register struct monst *mtmp;
+struct monst *mtmp;
 {
     if (!mtmp)
         return;
 
-    register struct permonst *ptr = mtmp->data;
-    register int mm = mtmp->mnum;
+    struct permonst *ptr = mtmp->data;
+    int mm = mtmp->mnum;
     struct obj *otmp;
     int bias, spe2, w1, w2;
 
@@ -1284,14 +1284,14 @@ int64_t amount;
 
 STATIC_OVL void
 m_initinv(mtmp)
-register struct monst *mtmp;
+struct monst *mtmp;
 {
     if (!mtmp)
         return;
 
-    register int cnt;
-    register struct obj *otmp;
-    register struct permonst *ptr = mtmp->data;
+    int cnt;
+    struct obj *otmp;
+    struct permonst *ptr = mtmp->data;
     int mndx = mtmp->mnum;
     int n = 0;
     int i;
@@ -1361,7 +1361,7 @@ register struct monst *mtmp;
         break;
     case S_HUMAN:
         if (is_mercenary(ptr)) {
-            register int mac;
+            int mac;
 
             switch (mndx) {
             case PM_GUARD:
@@ -2686,8 +2686,8 @@ coord *cc;
 
 struct monst*
 makemon(ptr, x, y, mmflags)
-register struct permonst* ptr;
-register int x, y;
+struct permonst* ptr;
+int x, y;
 uint64_t mmflags;
 {
     return makemon_limited(ptr, x, y, mmflags, 0UL, 0, 0, 0, 0, 0, 0);
@@ -2695,8 +2695,8 @@ uint64_t mmflags;
 
 struct monst*
 makemon2(ptr, x, y, mmflags, mmflags2)
-register struct permonst* ptr;
-register int x, y;
+struct permonst* ptr;
+int x, y;
 uint64_t mmflags, mmflags2;
 {
     return makemon_limited(ptr, x, y, mmflags, mmflags2, 0, 0, 0, 0, 0, 0);
@@ -2704,8 +2704,8 @@ uint64_t mmflags, mmflags2;
 
 struct monst*
 makemon_ex(ptr, x, y, mmflags, mmflags2, subtype, npcsubtype, level_adjustment)
-register struct permonst* ptr;
-register int x, y;
+struct permonst* ptr;
+int x, y;
 uint64_t mmflags, mmflags2;
 unsigned short subtype;
 int npcsubtype, level_adjustment;
@@ -2722,15 +2722,15 @@ int npcsubtype, level_adjustment;
  */
 struct monst *
 makemon_limited(ptr, x, y, mmflags, mmflags2, subtype, subtype_female, npcsubtype, level_limit, level_adjustment, alignment)
-register struct permonst *ptr;
-register int x, y;
+struct permonst *ptr;
+int x, y;
 uint64_t mmflags, mmflags2;
 unsigned short subtype, subtype_female;
 int npcsubtype;
 int level_limit, level_adjustment;
 aligntyp alignment;
 {
-    register struct monst *mtmp;
+    struct monst *mtmp;
     int mndx = NON_PM, mcham, ct, mitem;
     //boolean anymon = (!ptr);
     boolean byyou = (x == u.ux && y == u.uy);
@@ -3198,7 +3198,7 @@ aligntyp alignment;
     /* Set roamer stuff */
     if ((mmflags & MM_ROAMER) && has_emin(mtmp))
     {
-        register boolean coaligned = (u.ualign.type == alignment);
+        boolean coaligned = (u.ualign.type == alignment);
         EMIN(mtmp)->min_align = alignment;
         EMIN(mtmp)->renegade = (mmflags2 & MM2_FORCE_RENEGADE) ? TRUE : (mmflags2 & MM2_FORCE_NONRENEGADE) ? FALSE : (coaligned && !mtmp->mpeaceful);
         mtmp->ispriest = 0;
@@ -3448,9 +3448,9 @@ STATIC_VAR NEARDATA s_level* align_lev;
 
 STATIC_OVL int
 align_shift(ptr)
-register struct permonst *ptr;
+struct permonst *ptr;
 {
-    register int alshift;
+    int alshift;
 
     if (oldmoves != moves) {
         align_lev = Is_special(&u.uz);
@@ -3501,8 +3501,8 @@ rndmonst_core(level_limit, rnd_type)
 int level_limit;
 int rnd_type; /* 0 = normal; 1 = pet or self polymorph (positive luck increases the chance of a higher level outcome); 2 = hostile polymorph (negative luck increases the chance of a higher level outcome) */
 {
-    register struct permonst *ptr;
-    register int mndx, ct;
+    struct permonst *ptr;
+    int mndx, ct;
 
     /* Special dungeons; note that these influence only wand of create monster, summon monster spells, and shapeshifters; random monster generation is handled in create_monster_or_encounter */
     if (u.uz.dnum == quest_dnum && rn2(7) && (ptr = qt_montype()) != 0)
@@ -3814,7 +3814,7 @@ aligntyp atyp;
 int difficulty_adj;
 uint64_t mflags;
 {
-    register int first = 0, last = 0, num = 0;
+    int first = 0, last = 0, num = 0;
     int k, nums[SPECIAL_PM + 1]; /* +1: insurance for final return value */
     int minmlev = 0, maxmlev = 0, mask = (G_NOGEN | G_UNIQ) & ~spc;
     boolean issummon = (mflags & MKCLASS_FLAGS_SUMMON) != 0;
@@ -3927,7 +3927,7 @@ int
 mkclass_poly(mclass)
 int mclass;
 {
-    register int first, last, num = 0;
+    int first, last, num = 0;
 
     for (first = LOW_PM; first < SPECIAL_PM; first++)
         if (mons[first].mlet == mclass)
@@ -3952,7 +3952,7 @@ int mclass;
 /* adjust strength of monsters based on u.uz and u.ulevel */
 int
 adj_lev(ptr, manual_adj)
-register struct permonst *ptr;
+struct permonst *ptr;
 int manual_adj;
 {
     int tmp, tmp2;
@@ -4193,7 +4193,7 @@ int oldtype, newtype;
 
 int
 mongets_return_enchantment(mtmp, otyp)
-register struct monst* mtmp;
+struct monst* mtmp;
 int otyp;
 {
     struct obj* otmp = mongets(mtmp, otyp);
@@ -4205,7 +4205,7 @@ int otyp;
 
 struct obj*
 mongets(mtmp, otyp)
-register struct monst* mtmp;
+struct monst* mtmp;
 int otyp;
 {
     return mongets_with_material(mtmp, otyp, MAT_NONE);
@@ -4213,11 +4213,11 @@ int otyp;
 
 struct obj*
 mongets_with_material(mtmp, otyp, material)
-register struct monst *mtmp;
+struct monst *mtmp;
 int otyp;
 uchar material;
 {
-    register struct obj *otmp;
+    struct obj *otmp;
     if (!otyp || !mtmp)
         return (struct obj*)0;
 
@@ -4424,7 +4424,7 @@ int type;
  */
 boolean
 peace_minded(ptr)
-register struct permonst *ptr;
+struct permonst *ptr;
 {
     aligntyp mal = ptr->maligntyp, ual = u.ualign.type;
 
@@ -4654,7 +4654,7 @@ struct obj* otmp;
 
 void
 set_mimic_sym(mtmp)
-register struct monst *mtmp;
+struct monst *mtmp;
 {
     int typ, roomno, rt;
     unsigned appear, ap_type;
@@ -4908,7 +4908,7 @@ int *seencount;  /* secondary output */
 
 struct monst*
 make_level_monster(x, y, mmflags, mmflags2)
-register int x, y;
+int x, y;
 uint64_t mmflags, mmflags2; 
 {
     if (level.flags.nmgeninfos <= 0)

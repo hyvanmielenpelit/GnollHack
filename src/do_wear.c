@@ -1009,7 +1009,7 @@ boolean observed;
 
 void
 Ring_on(obj)
-register struct obj *obj;
+struct obj *obj;
 {
     if (!obj)
         return;
@@ -1052,7 +1052,7 @@ register struct obj *obj;
 
 STATIC_OVL void
 Ring_off_or_gone(obj, gone)
-register struct obj *obj;
+struct obj *obj;
 boolean gone;
 {
     if (!obj)
@@ -1626,7 +1626,7 @@ doremring(VOID_ARGS)
 /* Check if something worn is cursed _and_ unremovable. */
 int
 cursed(otmp, verbose)
-register struct obj *otmp;
+struct obj *otmp;
 boolean verbose;
 {
     if (!otmp) {
@@ -1656,9 +1656,9 @@ boolean verbose;
 
 int
 armoroff(otmp)
-register struct obj *otmp;
+struct obj *otmp;
 {
-    register int delay = -objects[otmp->otyp].oc_delay;
+    int delay = -objects[otmp->otyp].oc_delay;
 
     if (cursed(otmp, TRUE))
         return 0;
@@ -3033,7 +3033,7 @@ get_role_MC_bonus(VOID_ARGS)
 void
 glibr(VOID_ARGS)
 {
-    register struct obj *otmp;
+    struct obj *otmp;
     int xfl = 0;
     boolean leftfall, rightfall, wastwoweap = FALSE;
     const char *otherwep = 0, *thiswep, *which, *hand;
@@ -3127,7 +3127,7 @@ struct obj *
 some_armor(victim)
 struct monst *victim;
 {
-    register struct obj *otmph, *otmp;
+    struct obj *otmph, *otmp;
 
     otmph = (victim == &youmonst) ? uarmc : which_armor(victim, W_ARMC);
     if (!otmph)
@@ -3195,7 +3195,7 @@ unchanger(VOID_ARGS)
 STATIC_PTR
 int
 select_off(otmp)
-register struct obj *otmp;
+struct obj *otmp;
 {
     struct obj *why;
     char buf[BUFSZ];
@@ -3355,7 +3355,7 @@ register struct obj *otmp;
 STATIC_PTR
 int
 select_on(otmp)
-register struct obj* otmp;
+struct obj* otmp;
 {
     if (!otmp)
         return 0;
@@ -3668,8 +3668,8 @@ STATIC_PTR
 int
 take_off(VOID_ARGS)
 {
-    register int i;
-    register struct obj *otmp;
+    int i;
+    struct obj *otmp;
     struct takeoff_info *doff = &context.takeoff;
     struct wear_info* don = &context.wear;
 
@@ -4155,9 +4155,9 @@ ddowear(VOID_ARGS)
 /* hit by destroy armor scroll/black dragon breath/monster spell */
 int
 destroy_arm(atmp)
-register struct obj *atmp;
+struct obj *atmp;
 {
-    register struct obj *otmp;
+    struct obj *otmp;
 #define DESTROY_ARM(o)                            \
     ((otmp = (o)) != 0 && (!atmp || atmp == otmp) \
              && (!obj_resists(otmp, 0, 90))       \
@@ -4317,8 +4317,8 @@ register struct obj *atmp;
 
 void
 adj_abon(otmp, delta)
-register struct obj *otmp;
-register schar delta;
+struct obj *otmp;
+schar delta;
 {
     /* OBSOLETE, DO NOT CALL*/
     if (uarmg && uarmg == otmp && otmp->otyp == GAUNTLETS_OF_DEXTERITY) {

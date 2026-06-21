@@ -289,15 +289,15 @@ struct obj *obj;
 /* returns 2 if pet dies, otherwise 1 */
 int
 dog_eat(mtmp, obj, x, y, devour)
-register struct monst *mtmp;
-register struct obj *obj; /* if unpaid, then thrown or kicked by hero */
+struct monst *mtmp;
+struct obj *obj; /* if unpaid, then thrown or kicked by hero */
 int x, y; /* dog's starting location, might be different from current */
 boolean devour;
 {
     if (!mtmp || !has_edog(mtmp) || !obj)
         return 0;
 
-    register struct edog* edog = EDOG(mtmp);
+    struct edog* edog = EDOG(mtmp);
     boolean poly, grow, heal, eyes, slimer, deadmimic, catavenged, curepetrification;
     int nutrit;
     int64_t oprice;
@@ -691,14 +691,14 @@ STATIC_OVL void
 m_givit(mon, type, ptr)
 struct monst* mon;
 int type;
-register struct permonst* ptr;
+struct permonst* ptr;
 {
     if (!mon || type < 1 || type > LAST_PROP)
         return;
 
     if (ptr)
     {
-        register int chance;
+        int chance;
 
         debugpline1("Attempting to give intrinsic %d", type);
         /* some intrinsics are easier to get than others */
@@ -1285,14 +1285,14 @@ struct edog *edog;
  */
 STATIC_OVL int
 dog_invent(mtmp, edog, udist)
-register struct monst *mtmp;
-register struct edog *edog;
+struct monst *mtmp;
+struct edog *edog;
 int udist;
 {
     if (!mtmp || !edog || !mon_can_move(mtmp) || !mtmp->mwantstomove)
         return 0;
 
-    register int omx, omy, carryamt = 0;
+    int omx, omy, carryamt = 0;
     struct obj *obj, *otmp;
 
     omx = mtmp->mx;
@@ -1410,14 +1410,14 @@ struct monst* mtmp;
    returns -1/0/1 (dog's desire to approach player) or -2 (abort move) */
 STATIC_OVL int
 dog_goal(mtmp, edog, after, udist, whappr)
-register struct monst *mtmp;
+struct monst *mtmp;
 struct edog *edog;
 int after, udist, whappr;
 {
     /* Note: edog can here be zero */
-    register int omx, omy;
+    int omx, omy;
     boolean in_masters_sight, using_yell_position = FALSE, dog_has_minvent;
-    register struct obj *obj;
+    struct obj *obj;
     xchar otyp;
     int appr;
 
@@ -1462,7 +1462,7 @@ int after, udist, whappr;
 #define DDIST(x, y) (dist2(x, y, omx, omy))
 #define SQSRCHRADIUS 5
         int min_x, max_x, min_y, max_y;
-        register int nx, ny;
+        int nx, ny;
 
         gtyp = UNDEF; /* no goal as yet */
         gx = gy = 0;  /* suppress 'used before set' message */
@@ -1573,7 +1573,7 @@ int after, udist, whappr;
 
     if (gx == u.ux && gy == u.uy && !in_masters_sight && !using_yell_position) 
     {
-        register coord *cp;
+        coord *cp;
 
         cp = gettrack(omx, omy);
         if (cp) 
@@ -1621,7 +1621,7 @@ int after, udist, whappr;
 
 STATIC_OVL struct monst *
 find_targ(mtmp, dx, dy, maxdist)
-register struct monst *mtmp;
+struct monst *mtmp;
 int dx, dy;
 int maxdist;
 {
@@ -1872,19 +1872,19 @@ struct monst *mtmp;   /* Pet */
 /* return 0 (no move), 1 (move) or 2 (dead) */
 int
 dog_move(mtmp, after)
-register struct monst *mtmp;
+struct monst *mtmp;
 int after; /* this is extra fast monster movement */
 {
     int omx, omy; /* original mtmp position */
     int appr, whappr, udist;
     int i, j, k;
-    register struct edog *edog = has_edog(mtmp) ? EDOG(mtmp) : 0;
+    struct edog *edog = has_edog(mtmp) ? EDOG(mtmp) : 0;
     struct obj *obj = (struct obj *) 0;
     xchar foodtyp;
     boolean cursemsg[9], do_eat = FALSE;
     boolean better_with_displacing = FALSE;
     xchar nix, niy;      /* position mtmp is (considering) moving to */
-    register int nx, ny; /* temporary coordinates */
+    int nx, ny; /* temporary coordinates */
     xchar cnt, uncursedcnt, chcnt;
     int chi = -1, nidist, ndist;
     coord poss[9];
@@ -2077,7 +2077,7 @@ int after; /* this is extra fast monster movement */
 //            continue;
 
         boolean monatres = MON_AT(nx, ny);
-        register struct monst* mtmp2 = m_at(nx, ny);
+        struct monst* mtmp2 = m_at(nx, ny);
         boolean allowres =((info[i] & ALLOW_M) && monatres) || ((info[i] & ALLOW_TM) && monatres && mtmp2 && is_tame(mtmp2));
 
         if (allowres)
@@ -2133,7 +2133,7 @@ int after; /* this is extra fast monster movement */
         if ((info[i] & ALLOW_MDISP) && MON_AT(nx, ny)
             && better_with_displacing && !undesirable_disp(mtmp, nx, ny)) {
             int mstatus;
-            register struct monst *mtmp3 = m_at(nx, ny);
+            struct monst *mtmp3 = m_at(nx, ny);
 
             mstatus = mdisplacem(mtmp, mtmp3, FALSE); /* displace monster */
             if (mstatus & MM_DEF_DIED)

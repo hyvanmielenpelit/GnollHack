@@ -509,8 +509,8 @@ int range;            /* number of lines affected, used for `*' delays */
 void (*output_func)(CHAR_P); /* actual output routine; return value ignored */
 {
     register char c;
-    register int num = 0;
-    register const char *p = string;
+    int num = 0;
+    const char *p = string;
 
     if (!p || !*p)
         return;

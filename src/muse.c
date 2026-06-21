@@ -460,7 +460,7 @@ boolean
 find_defensive(mtmp)
 struct monst *mtmp;
 {
-    register struct obj *obj = 0;
+    struct obj *obj = 0;
     struct trap *t;
     int x = mtmp->mx, y = mtmp->my;
     boolean stuck = (mtmp == u.ustuck);
@@ -1553,7 +1553,7 @@ boolean
 find_offensive(mtmp)
 struct monst *mtmp;
 {
-    register struct obj *obj;
+    struct obj *obj;
     boolean extremely_high_level_skip = (mtmp->data->difficulty > 60);
     boolean very_high_level_skip = (mtmp->data->difficulty > 30 && mtmp->data->difficulty <= 60);
     boolean high_level_skip = (mtmp->data->difficulty > 20 && mtmp->data->difficulty <= 30);
@@ -1782,9 +1782,9 @@ struct monst *mtmp;
 STATIC_PTR
 int
 mbhitm(mtmp, otmp, origmonst)
-register struct monst *mtmp;
-register struct obj *otmp;
-register struct monst* origmonst;
+struct monst *mtmp;
+struct obj *otmp;
+struct monst* origmonst;
 {
     int tmp;
     boolean reveal_invis = FALSE;
@@ -1915,14 +1915,14 @@ register struct monst* origmonst;
 STATIC_OVL void
 mbhit(mon, range, fhitm, fhito, obj)
 struct monst *mon;  /* monster shooting the wand */
-register int range; /* direction and range */
+int range; /* direction and range */
 int FDECL((*fhitm), (MONST_P, OBJ_P, MONST_P));
 int FDECL((*fhito), (OBJ_P, OBJ_P, MONST_P)); /* fns called when mon/obj hit */
 struct obj *obj;                     /* 2nd arg to fhitm/fhito */
 {
-    register struct monst *mtmp;
-    register struct obj *otmp;
-    register uchar typ;
+    struct monst *mtmp;
+    struct obj *otmp;
+    uchar typ;
     int ddx, ddy;
 
     bhitpos.x = mon->mx;
@@ -1960,7 +1960,7 @@ struct obj *obj;                     /* 2nd arg to fhitm/fhito */
         /* modified by GAN to hit all objects */
         if (fhito) {
             int hitanything = 0;
-            register struct obj *next_obj;
+            struct obj *next_obj;
 
             for (otmp = level.objects[bhitpos.x][bhitpos.y]; otmp;
                  otmp = next_obj) {
@@ -2105,7 +2105,7 @@ struct monst *mtmp;
         if (!otmp)
             return 2;
         /* TODO: handle steeds */
-        register int x, y;
+        int x, y;
         /* don't use monster fields after killing it */
         boolean confused = (is_confused(mtmp) ? TRUE : FALSE);
         int mmx = mtmp->mx, mmy = mtmp->my;
@@ -2435,7 +2435,7 @@ boolean
 find_misc(mtmp)
 struct monst *mtmp;
 {
-    register struct obj *obj;
+    struct obj *obj;
     struct permonst *mdat = mtmp->data;
     int x = mtmp->mx, y = mtmp->my;
     struct trap *t;
@@ -2808,7 +2808,7 @@ struct monst *mtmp;
         mquaffmsg(mtmp, otmp);
         if (otmp->cursed) {
             if (Can_rise_up(mtmp->mx, mtmp->my, &u.uz) && (!isdiluted || !rn2(2))) {
-                register int tolev = depth(&u.uz) - 1;
+                int tolev = depth(&u.uz) - 1;
                 d_level tolevel;
 
                 get_level(&tolevel, tolev);

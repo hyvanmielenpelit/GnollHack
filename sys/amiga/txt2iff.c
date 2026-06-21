@@ -281,7 +281,7 @@ main(int argc, char **argv)
 
 findcolor(register pixel *pix)
 {
-    register int i;
+    int i;
 
     for (i = 0; i < MAXCOLORMAPSIZE; ++i) {
         if ((pix->r == ColorMap[CM_RED][i])
@@ -296,9 +296,9 @@ findcolor(register pixel *pix)
 void
 packwritebody(pixel (*tile)[TILE_X], char **planes, int tileno)
 {
-    register int i, j, k, col;
+    int i, j, k, col;
     register char *buf;
-    register int across, rowbytes, xoff, yoff;
+    int across, rowbytes, xoff, yoff;
 
     /* how many tiles fit across? */
     across = COLS;

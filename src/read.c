@@ -180,7 +180,7 @@ char *buf;
 int
 doread(VOID_ARGS)
 {
-    register struct obj *scroll;
+    struct obj *scroll;
     boolean confused, nodisappear;
 
     known = FALSE;
@@ -575,7 +575,7 @@ struct obj* otmp;
 
 void
 strip_charges(obj, verbose, dopopup)
-register struct obj *obj;
+struct obj *obj;
 boolean verbose, dopopup;
 {
     if (obj->blessed || obj->charges <= 0)
@@ -606,8 +606,8 @@ boolean verbose, dopopup;
 
 void
 p_glow1(otmp, pline_attr, pline_color, title, dopopup)
-register struct obj *otmp;
-register int pline_attr, pline_color;
+struct obj *otmp;
+int pline_attr, pline_color;
 const char* title;
 boolean dopopup;
 {
@@ -619,9 +619,9 @@ boolean dopopup;
 
 void
 p_glow2(otmp, color, pline_attr, pline_color, title, dopopup)
-register struct obj *otmp;
-register const char *color;
-register int pline_attr, pline_color;
+struct obj *otmp;
+const char *color;
+int pline_attr, pline_color;
 const char* title;
 boolean dopopup;
 {
@@ -658,7 +658,7 @@ boolean verbose, dopopup;
     if (!obj)
         return;
 
-    register int n;
+    int n;
     boolean is_cursed, is_blessed;
     boolean play_effect = FALSE;
     char effbuf[BUFSZ] = "";
@@ -1550,7 +1550,7 @@ void
 forget_map(howmuch)
 int howmuch;
 {
-    register int zx, zy;
+    int zx, zy;
 
     if (Sokoban)
         return;
@@ -1572,7 +1572,7 @@ int howmuch;
 void
 forget_traps(VOID_ARGS)
 {
-    register struct trap *trap;
+    struct trap *trap;
 
     /* forget all traps (except the one the hero is in :-) */
     for (trap = ftrap; trap; trap = trap->ntrap)
@@ -1918,7 +1918,7 @@ struct monst* targetmonst;
     case SPE_ENCHANT_ARMOR:
     case SCR_ENCHANT_ARMOR: 
     {
-        //register schar s;
+        //schar s;
         //boolean same_color;
 
         if (otyp == SPE_PROTECT_ARMOR || otyp == SPE_ENCHANT_ARMOR)
@@ -2274,8 +2274,8 @@ struct monst* targetmonst;
         break;
     case SCR_SCARE_MONSTER:
     case SPE_MASS_FEAR: {
-        register int ct = 0;
-        register struct monst* mtmp;
+        int ct = 0;
+        struct monst* mtmp;
 
         for (mtmp = fmon; mtmp; mtmp = mtmp->nmon) 
         {
@@ -3126,7 +3126,7 @@ struct monst* targetmonst;
             break;
         }
         if (sblessed) {
-            register int x, y;
+            int x, y;
             boolean foundsdoor = FALSE;
             for (x = 1; x < COLNO; x++)
                 for (y = 0; y < ROWNO; y++)
@@ -3303,7 +3303,7 @@ struct monst* targetmonst;
         if (!Is_really_rogue_level(&u.uz) && has_ceiling(&u.uz)
             && (!In_endgame(&u.uz) || Is_earthlevel(&u.uz))) 
         {
-            register int x, y;
+            int x, y;
             int nboulders = 0;
             boolean spef_on = FALSE;
             /* Identify the scroll */
@@ -3579,8 +3579,8 @@ drop_boulder_on_monster(x, y, confused, byu)
 int x, y;
 boolean confused, byu;
 {
-    register struct obj *otmp2;
-    register struct monst *mtmp;
+    struct obj *otmp2;
+    struct monst *mtmp;
 
     /* Make the object(s) */
     otmp2 = mksobj(confused ? ROCK : BOULDER, FALSE, FALSE, FALSE);
@@ -3754,7 +3754,7 @@ genericptr_t val;
 
 void
 litroom(on, obj)
-register boolean on;
+boolean on;
 struct obj *obj;
 {
     char is_lit; /* value is irrelevant; we use its address
@@ -3762,7 +3762,7 @@ struct obj *obj;
 
     /* first produce the text (provided you're not blind) */
     if (!on) {
-        register struct obj *otmp;
+        struct obj *otmp;
 
         if (!Blind) {
             if (u.uswallow) {
@@ -3953,7 +3953,7 @@ do_class_genocide(VOID_ARGS)
             else if (immunecnt || class == S_invisible)
                 You("aren't permitted to genocide such monsters.");
             else if (wizard && buf[0] == '*') {
-                register struct monst *mtmp, *mtmp2;
+                struct monst *mtmp, *mtmp2;
 
                 gonecnt = 0;
                 for (mtmp = fmon; mtmp; mtmp = mtmp2) 
@@ -4106,9 +4106,9 @@ int how;
 /* 5 (4 | 1) = normal genocide from throne */
 {
     char buf[BUFSZ] = DUMMY;
-    register int i, killplayer = 0;
-    register int mndx;
-    register struct permonst *ptr;
+    int i, killplayer = 0;
+    int mndx;
+    struct permonst *ptr;
     const char *which;
 
     if (how & PLAYER)
@@ -4862,7 +4862,7 @@ boolean confused; /* Is caster confused */
     boolean sblessed = sobj->blessed;
     boolean isyou = (mtmp == &youmonst);
     struct obj* objchn = isyou ? invent : mtmp->minvent;
-    register struct obj* obj;
+    struct obj* obj;
     xchar tx = isyou ? u.ux : mtmp->mx;
     xchar ty = isyou ? u.uy : mtmp->my;
 

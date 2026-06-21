@@ -161,10 +161,10 @@ updatemaxen(VOID_ARGS)
 /* return # of exp points for mtmp after nk killed */
 int
 experience(mtmp, nk)
-register struct monst *mtmp;
-register int nk;
+struct monst *mtmp;
+int nk;
 {
-    register struct permonst *ptr = mtmp->data;
+    struct permonst *ptr = mtmp->data;
     int i, tmp, tmp2;
 
     tmp = 1 + ptr->difficulty * ptr->difficulty; //mtmp->m_lev * mtmp->m_lev;
@@ -247,7 +247,7 @@ int64_t points_added;
 
 void
 more_experienced(exper, gamescore)
-register int exper, gamescore;
+int exper, gamescore;
 {
     int64_t added_experience = exper == 0 ? 0 : max(1, exper + (exper * max(-9, u.uexperiencebonus)) / 10);
     int64_t added_gamescore = gamescore;
@@ -290,7 +290,7 @@ void
 losexp(drainer)
 const char *drainer; /* cause of death, if drain should be fatal */
 {
-    register int num;
+    int num;
 
     /* override life-drain resistance when handling an explicit
        wizard mode request to reduce level; never fatal though */

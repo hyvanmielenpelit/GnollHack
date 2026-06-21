@@ -19,7 +19,7 @@ const char *str;
     int fudge;
     int len;
     struct Window *w;
-    register struct amii_WinDesc *cw;
+    struct amii_WinDesc *cw;
     char *ob;
     int i, j, n0, bottom, totalvis, wheight;
     static int wrapping = 0;
@@ -293,8 +293,8 @@ const char* str, attrs, colors;
 
 void
 amii_scrollmsg(w, cw)
-register struct Window *w;
-register struct amii_WinDesc *cw;
+struct Window *w;
+struct amii_WinDesc *cw;
 {
     int bottom, wheight;
 
@@ -320,7 +320,7 @@ int
 amii_msgborder(w)
 struct Window *w;
 {
-    register int bottom;
+    int bottom;
 
     /* There is a one pixel border at the borders, so subtract two */
     bottom = w->Height - w->BorderTop - w->BorderBottom - 2;
@@ -332,7 +332,7 @@ struct Window *w;
 
 void
 outmore(cw)
-register struct amii_WinDesc *cw;
+struct amii_WinDesc *cw;
 {
     struct Window *w = cw->win;
 
@@ -366,7 +366,7 @@ register struct amii_WinDesc *cw;
 
 void
 outsubstr(cw, str, len, fudge)
-register struct amii_WinDesc *cw;
+struct amii_WinDesc *cw;
 char *str;
 int len;
 int fudge;
@@ -408,7 +408,7 @@ void
 amii_addtopl(s)
 const char *s;
 {
-    register struct amii_WinDesc *cw = amii_wins[WIN_MESSAGE];
+    struct amii_WinDesc *cw = amii_wins[WIN_MESSAGE];
 
     while (*s) {
         if (cw->curx == cw->cols - 1)

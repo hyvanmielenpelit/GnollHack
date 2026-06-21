@@ -49,7 +49,7 @@ clear_fcorr(grd, forceshow)
 struct monst *grd;
 boolean forceshow;
 {
-    register int fcx, fcy, fcbeg;
+    int fcx, fcy, fcbeg;
     struct monst *mtmp;
     boolean sawcorridor = FALSE,
             silently = program_state.stopprint ? TRUE : FALSE;
@@ -196,7 +196,7 @@ in_fcorridor(grd, x, y)
 struct monst *grd;
 int x, y;
 {
-    register int fci;
+    int fci;
     struct egd *egrd = EGD(grd);
 
     for (fci = egrd->fcbeg; fci < egrd->fcend; fci++)
@@ -208,7 +208,7 @@ int x, y;
 struct monst *
 findgd(VOID_ARGS)
 {
-    register struct monst *mtmp;
+    struct monst *mtmp;
 
     for (mtmp = fmon; mtmp; mtmp = mtmp->nmon) {
         if (DEADMONSTER(mtmp))
@@ -230,7 +230,7 @@ char
 vault_occupied(array)
 char *array;
 {
-    register char *ptr;
+    char *ptr;
 
     for (ptr = array; *ptr; ptr++)
         if (rooms[*ptr - ROOMOFFSET].rtype == VAULT)
@@ -270,7 +270,7 @@ find_guard_dest(guard, rx, ry)
 struct monst *guard;
 xchar *rx, *ry;
 {
-    register int x, y, dd, lx = 0, ly = 0;
+    int x, y, dd, lx = 0, ly = 0;
 
     for (dd = 2; (dd < ROWNO || dd < COLNO); dd++) {
         for (y = u.uy - dd; y <= u.uy + dd; ly = y, y++) {
@@ -323,7 +323,7 @@ invault(VOID_ARGS)
     if (++u.uinvault % VAULT_GUARD_TIME == 0 && !guard) {
         /* if time ok and no guard now. */
         char buf[BUFSZ];
-        register int x, y, gx, gy;
+        int x, y, gx, gy;
         xchar rx, ry;
         int64_t umoney;
 
@@ -359,7 +359,7 @@ invault(VOID_ARGS)
             }
         }
         while (levl[x][y].typ == ROOM) {
-            register int dx, dy;
+            int dx, dy;
 
             dx = (gx > x) ? 1 : (gx < x) ? -1 : 0;
             dy = (gy > y) ? 1 : (gy < y) ? -1 : 0;
@@ -699,7 +699,7 @@ struct monst *grd;
 
 STATIC_OVL void
 gd_mv_monaway(grd, nx, ny)
-register struct monst *grd;
+struct monst *grd;
 int nx, ny;
 {
     if (MON_AT(nx, ny) && !(nx == grd->mx && ny == grd->my)) {
@@ -810,14 +810,14 @@ int goldx, goldy; /* <gold->ox, gold->oy> */
  */
 int
 gd_move(grd)
-register struct monst *grd;
+struct monst *grd;
 {
     int x, y, nx, ny, m, n;
     int dx, dy, gx = 0, gy = 0, fci;
     uchar typ; // , subtyp;
     struct rm *crm;
     struct fakecorridor *fcp;
-    register struct egd *egrd = EGD(grd);
+    struct egd *egrd = EGD(grd);
     int64_t umoney = 0L;
     boolean goldincorridor = FALSE, u_in_vault = FALSE, grd_in_vault = FALSE,
             disappear_msg_seen = FALSE, semi_dead = DEADMONSTER(grd),
@@ -1235,7 +1235,7 @@ void
 paygd(silently)
 boolean silently;
 {
-    register struct monst *grd = findgd();
+    struct monst *grd = findgd();
     int64_t umoney = money_cnt(invent);
     struct obj *coins, *nextcoins;
     int gx, gy;
@@ -1311,8 +1311,8 @@ int64_t
 contained_gem_value(obj)
 struct obj* obj;
 {
-    register struct obj* otmp;
-    register int64_t value = 0L;
+    struct obj* otmp;
+    int64_t value = 0L;
 
     /* accumulate contained gold */
     for (otmp = obj->cobj; otmp; otmp = otmp->nobj)

@@ -34,7 +34,7 @@ main(argc, argv)
 int argc;
 char *argv[];
 {
-    register int fd;
+    int fd;
 #ifdef CHDIR
     register char *dir;
 #endif

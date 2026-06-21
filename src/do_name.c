@@ -1503,7 +1503,7 @@ STATIC_VAR int via_naming = 0;
 STATIC_OVL
 void
 do_uoname(obj)
-register struct obj *obj;
+struct obj *obj;
 {
     if (!obj)
         return;
@@ -1988,7 +1988,7 @@ rndghostname(VOID_ARGS)
  */
 char *
 x_monnam(mtmp, article, adjective, suppress, called)
-register struct monst *mtmp;
+struct monst *mtmp;
 int article;
 /* ARTICLE_NONE, ARTICLE_THE, ARTICLE_A: obvious
  * ARTICLE_YOUR: "your" on pets, "the" on everything else
@@ -2255,7 +2255,7 @@ char *
 Monnam(mtmp)
 struct monst *mtmp;
 {
-    register char *bp = mon_nam(mtmp);
+    char *bp = mon_nam(mtmp);
 
     *bp = highc(*bp);
     return  bp;
@@ -2265,7 +2265,7 @@ char *
 noit_Monnam(mtmp)
 struct monst *mtmp;
 {
-    register char *bp = noit_mon_nam(mtmp);
+    char *bp = noit_mon_nam(mtmp);
 
     *bp = highc(*bp);
     return  bp;

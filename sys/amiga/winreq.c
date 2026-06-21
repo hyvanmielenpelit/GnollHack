@@ -60,11 +60,11 @@ EditColor()
     extern char configfile[];
     int i, done = 0, okay = 0;
     long code, qual, class;
-    register struct Gadget *gd, *dgad;
-    register struct Window *nw;
-    register struct IntuiMessage *imsg;
-    register struct PropInfo *pip;
-    register struct Screen *scrn;
+    struct Gadget *gd, *dgad;
+    struct Window *nw;
+    struct IntuiMessage *imsg;
+    struct PropInfo *pip;
+    struct Screen *scrn;
     long aidx;
     int msx, msy;
     int curcol = 0, drag = 0;
@@ -344,11 +344,11 @@ EditClipping(void)
     char buf[40];
     int done = 0, okay = 0;
     long code, qual, class;
-    register struct Gadget *gd, *dgad;
-    register struct Window *nw;
-    register struct IntuiMessage *imsg;
-    register struct PropInfo *pip;
-    register struct Screen *scrn;
+    struct Gadget *gd, *dgad;
+    struct Window *nw;
+    struct IntuiMessage *imsg;
+    struct PropInfo *pip;
+    struct Screen *scrn;
     long aidx;
     int lmxsize = mxsize, lmysize = mysize;
     int lxclipbord = xclipbord, lyclipbord = yclipbord;
@@ -845,11 +845,11 @@ char *bufp;
 const char *dflt;
 {
 #ifndef TOPL_GETLINE
-    register struct Window *cwin;
-    register struct IntuiMessage *imsg;
+    struct Window *cwin;
+    struct IntuiMessage *imsg;
     register long class, code, qual;
-    register int aredone = 0;
-    register struct Gadget *gd;
+    int aredone = 0;
+    struct Gadget *gd;
     static int once;
 
     *StrString = 0;

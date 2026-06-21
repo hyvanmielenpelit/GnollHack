@@ -826,8 +826,8 @@ int blastforce; /* force behind the scattering */
 unsigned int scflags;
 struct obj *obj; /* only scatter this obj        */
 {
-    register struct obj *otmp;
-    register int tmp;
+    struct obj *otmp;
+    int tmp;
     int farthest = 0;
     uchar typ;
     int64_t qtmp;

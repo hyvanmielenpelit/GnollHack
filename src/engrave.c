@@ -190,9 +190,9 @@ boolean up, check_pit;
 
 const char *
 surface(x, y)
-register int x, y;
+int x, y;
 {
-    register struct rm *lev = &levl[x][y];
+    struct rm *lev = &levl[x][y];
 
     if (x == u.ux && y == u.uy && u.uswallow && is_animal(u.ustuck->data))
         return "maw";
@@ -227,9 +227,9 @@ register int x, y;
 
 const char *
 ceiling(x, y)
-register int x, y;
+int x, y;
 {
-    register struct rm *lev = &levl[x][y];
+    struct rm *lev = &levl[x][y];
     const char *what;
 
     /* other room types will no longer exist when we're interested --
@@ -265,7 +265,7 @@ struct engr *
 engr_at(x, y)
 xchar x, y;
 {
-    register struct engr *ep = head_engr;
+    struct engr *ep = head_engr;
 
     while (ep) {
         if (x == ep->engr_x && y == ep->engr_y)
@@ -288,7 +288,7 @@ const char *s;
 xchar x, y;
 boolean strict;
 {
-    register struct engr *ep = engr_at(x, y);
+    struct engr *ep = engr_at(x, y);
 
     if (ep && ep->engr_type != ENGR_HEADSTONE && ep->engr_time <= moves) {
         return strict ? (fuzzymatch(ep->engr_txt, s, "", TRUE))
@@ -314,7 +314,7 @@ void
 wipe_engr_at(x, y, cnt, magical)
 xchar x, y, cnt, magical;
 {
-    register struct engr *ep = engr_at(x, y);
+    struct engr *ep = engr_at(x, y);
 
     /* Headstones are indelible */
     if (ep && ep->engr_type != ENGR_HEADSTONE && ep->engr_type != ENGR_SIGNPOST && !(ep->engr_flags & ENGR_FLAGS_NON_SMUDGING)) {
@@ -337,7 +337,7 @@ void
 read_engr_at(x, y)
 int x, y;
 {
-    register struct engr *ep = engr_at(x, y);
+    struct engr *ep = engr_at(x, y);
     int sensed = 0;
     char buf[BUFSZ];
 
@@ -450,7 +450,7 @@ void
 del_engr_at(x, y)
 int x, y;
 {
-    register struct engr *ep = engr_at(x, y);
+    struct engr *ep = engr_at(x, y);
 
     if (ep)
         del_engr(ep);
@@ -459,7 +459,7 @@ int x, y;
 size_t
 count_engravings(VOID_ARGS)
 {
-    register struct engr* ep = head_engr;
+    struct engr* ep = head_engr;
     size_t cnt = 0;
 
     while (ep) {
@@ -481,7 +481,7 @@ size_t* array_size_ptr;
         if (coordarray)
         {
             memset((genericptr_t)coordarray, 0, cnt * sizeof(coord));
-            register struct engr* ep = head_engr;
+            struct engr* ep = head_engr;
             size_t idx;
             for (idx = 0; idx < cnt && ep; idx++, ep = ep->nxt_engr)
             {
@@ -501,7 +501,7 @@ size_t* array_size_ptr;
 void
 unsee_engravings(VOID_ARGS)
 {
-    register struct engr* ep = head_engr;
+    struct engr* ep = head_engr;
     while (ep) {
         ep->engr_flags &= ~ENGR_FLAGS_SEEN;
         ep = ep->nxt_engr;
@@ -511,7 +511,7 @@ unsee_engravings(VOID_ARGS)
 void
 forget_engravings(VOID_ARGS)
 {
-    register struct engr* ep = head_engr;
+    struct engr* ep = head_engr;
     while (ep) {
         if(ep->engr_x != u.ux || ep->engr_y != u.uy)
             ep->engr_flags &= ~ENGR_FLAGS_SEEN;
@@ -1150,7 +1150,7 @@ uchar item_selection_style;
      * possible) by now.
      */
     if (oep) {
-        register char c = 'n';
+        char c = 'n';
 
         /* Give player the choice to add to engraving. */
         if (type == ENGR_HEADSTONE || type == ENGR_SIGNPOST) {
@@ -1535,12 +1535,12 @@ size_t* size;
 
 void
 del_engr(ep)
-register struct engr *ep;
+struct engr *ep;
 {
     if (ep == head_engr) {
         head_engr = ep->nxt_engr;
     } else {
-        register struct engr *ept;
+        struct engr *ept;
 
         for (ept = head_engr; ept; ept = ept->nxt_engr)
             if (ept->nxt_engr == ep) {

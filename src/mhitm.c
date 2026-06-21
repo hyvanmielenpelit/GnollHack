@@ -67,8 +67,8 @@ struct monst *mon, *other_mon;
 
 STATIC_OVL void
 noises(magr, mattk)
-register struct monst *magr;
-register struct attack *mattk;
+struct monst *magr;
+struct attack *mattk;
 {
     boolean farq = (distu(magr->mx, magr->my) > 15);
 
@@ -85,7 +85,7 @@ register struct attack *mattk;
 STATIC_OVL
 void
 missmm(magr, mdef, mattk)
-register struct monst *magr, *mdef;
+struct monst *magr, *mdef;
 struct attack *mattk;
 {
     const char *fmt;
@@ -125,10 +125,10 @@ struct attack *mattk;
  /* have monsters fight each other */
 int
 fightm(mtmp, attack_only_hostiles)
-register struct monst *mtmp;
+struct monst *mtmp;
 boolean attack_only_hostiles;
 {
-    register struct monst *mon, *nmon;
+    struct monst *mon, *nmon;
     int result, has_u_swallowed;
 #ifdef LINT
     nmon = 0;
@@ -217,7 +217,7 @@ boolean attack_only_hostiles;
  */
 int
 mdisplacem(magr, mdef, quietly)
-register struct monst *magr, *mdef;
+struct monst *magr, *mdef;
 boolean quietly;
 {
     struct permonst *pa, *pd;
@@ -324,7 +324,7 @@ boolean quietly;
  */
 int
 mattackm(magr, mdef)
-register struct monst *magr, *mdef;
+struct monst *magr, *mdef;
 {
     int i,          /* loop counter */
         tmp,        /* amour class difference */
@@ -858,7 +858,7 @@ register struct monst *magr, *mdef;
 /* Returns the result of mdamagem(). */
 STATIC_OVL int
 hitmm(magr, mdef, mattk, omonwep)
-register struct monst *magr, *mdef;
+struct monst *magr, *mdef;
 struct attack *mattk;
 struct obj* omonwep;
 {
@@ -937,7 +937,7 @@ struct obj* omonwep;
 /* Returns the same values as mdamagem(). */
 STATIC_OVL int
 gazemm(magr, mdef, mattk)
-register struct monst *magr, *mdef;
+struct monst *magr, *mdef;
 struct attack *mattk;
 {
     if (!magr || !mdef || !mattk)
@@ -1051,8 +1051,8 @@ struct monst *magr, *mdef;
 /* Returns the same values as mattackm(). */
 STATIC_OVL int
 gulpmm(magr, mdef, mattk)
-register struct monst *magr, *mdef;
-register struct attack *mattk;
+struct monst *magr, *mdef;
+struct attack *mattk;
 {
     xchar ax, ay, dx, dy;
     int status;
@@ -1261,9 +1261,9 @@ struct attack *mattk;
  */
 STATIC_OVL int
 mdamagem(magr, mdef, mattk, omonwep)
-register struct monst *magr, *mdef;
-register struct attack *mattk;
-register struct obj* omonwep;
+struct monst *magr, *mdef;
+struct attack *mattk;
+struct obj* omonwep;
 {
     struct obj *obj;
     char buf[BUFSZ];
@@ -1737,7 +1737,7 @@ register struct obj* omonwep;
     case AD_BLND:
         if (can_blnd(magr, mdef, mattk->aatyp, (struct obj *) 0)) 
         {
-            register unsigned rnd_tmp;
+            unsigned rnd_tmp;
 
             if (vis && !is_blinded(mdef) && canspotmon(mdef))
                 pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s is blinded.", Monnam(mdef));
@@ -2470,15 +2470,15 @@ int strikeindex;
  */
 STATIC_OVL int
 passivemm(magr, mdef, mhit, mdead)
-register struct monst *magr, *mdef;
+struct monst *magr, *mdef;
 boolean mhit;
 int mdead;
 {
     if (!magr || !mdef)
         return 0;
 
-    register struct permonst *mddat = mdef->data;
-    register struct permonst *madat = magr->data;
+    struct permonst *mddat = mdef->data;
+    struct permonst *madat = magr->data;
     char buf[BUFSZ];
     int i;
     double damage = 0;

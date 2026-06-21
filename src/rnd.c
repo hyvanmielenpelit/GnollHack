@@ -72,7 +72,7 @@ RND(int x)
    want to give users easy control over the main RNG sequence. */
 int
 rn2_on_display_rng(x)
-register int x;
+int x;
 {
     return (isaac64_next_uint64(&rnglist[DISP].rng_state) % x);
 }
@@ -93,7 +93,7 @@ extern int NDECL(rand);
 #endif /* LINT */
 int
 rn2_on_display_rng(x)
-register int x;
+int x;
 {
     static unsigned seed = 1;
     seed *= 2739110765;
@@ -104,7 +104,7 @@ register int x;
 /* 0 <= rn2(x) < x */
 int
 rn2(x)
-register int x;
+int x;
 {
 #ifdef BETA
     if (x <= 0) {
@@ -122,9 +122,9 @@ register int x;
    good luck approaches 0, bad luck approaches (x-1) */
 int
 rnl(x)
-register int x;
+int x;
 {
-    register int i, adjustment;
+    int i, adjustment;
 
 #ifdef BETA
     if (x <= 0) {
@@ -166,7 +166,7 @@ register int x;
 /* 1 <= rnd(x) <= x */
 int
 rnd(x)
-register int x;
+int x;
 {
 #ifdef BETA
     if (x <= 0) {
@@ -181,12 +181,12 @@ register int x;
 /* d(N,X) == NdX == dX+dX+...+dX N times; n <= d(n,x) <= (n*x) */
 int
 d(n, x)
-register int n, x;
+int n, x;
 {
     if (n <= 0 || x <= 0)
         return 0;
 
-    register int tmp = n;
+    int tmp = n;
 
 #ifdef BETA
     if (x < 0 || n < 0 || (x == 0 && n != 0)) {
@@ -203,9 +203,9 @@ register int n, x;
 /* 1 <= rne(x) <= max(u.ulevel/3,5) */
 int
 rne(x)
-register int x;
+int x;
 {
-    register int tmp, utmp;
+    int tmp, utmp;
 
     utmp = (u.ulevel < 15) ? 5 : u.ulevel / 3;
     tmp = 1;
@@ -226,9 +226,9 @@ register int x;
 /* 1 <= rne(3) <= x */
 int
 rngh(x, limit)
-register int x, limit;
+int x, limit;
 {
-    register int tmp, utmp;
+    int tmp, utmp;
 
     utmp = limit;
     tmp = 1;
@@ -248,8 +248,8 @@ int i;
     int x = i;
     int tmp = 1000;
 #else
-    register int64_t x = (int64_t) i;
-    register int64_t tmp = 1000L;
+    int64_t x = (int64_t) i;
+    int64_t tmp = 1000L;
 #endif
 
     tmp += rn2(1000);

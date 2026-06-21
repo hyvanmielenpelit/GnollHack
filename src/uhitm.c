@@ -100,7 +100,7 @@ int hurt;
 /* FALSE means it's OK to attack */
 boolean
 attack_checks(mtmp, wep)
-register struct monst *mtmp;
+struct monst *mtmp;
 struct obj *wep; /* uwep for attack(), null for kick_monster() */
 {
     int glyph;
@@ -267,7 +267,7 @@ struct monst *mtmp;
 
 int
 find_roll_to_hit(mtmp, aatyp, weapon, attk_count, role_roll_penalty)
-register struct monst *mtmp;
+struct monst *mtmp;
 uchar aatyp;        /* usually AT_WEAP or AT_KICK */
 struct obj *weapon; /* uwep or uarms or NULL */
 int *attk_count, *role_roll_penalty;
@@ -391,14 +391,14 @@ int *attk_count, *role_roll_penalty;
    u.dx and u.dy must be set */
 boolean
 attack(mtmp)
-register struct monst *mtmp;
+struct monst *mtmp;
 {
     if (!mtmp)
         return FALSE;
 
     update_u_facing(TRUE);
 
-    register struct permonst *mdat = mtmp->data;
+    struct permonst *mdat = mtmp->data;
 
     /* This section of code provides protection against accidentally
      * hitting peaceful (like '@') and tame (like 'd') monsters.
@@ -631,7 +631,7 @@ register struct monst *mtmp;
 /* really hit target monster; returns TRUE if it still lives */
 STATIC_OVL boolean
 known_hitum(mon, weapon, mhit, rollneeded, armorpenalty, uattk, dieroll)
-register struct monst *mon;
+struct monst *mon;
 struct obj *weapon;
 int *mhit;
 int rollneeded, armorpenalty; /* for monks */
@@ -2849,12 +2849,12 @@ struct attack *mattk;
 
 int
 damageum(mdef, mattk, omonwep, specialdmg)
-register struct monst *mdef;
-register struct attack *mattk;
+struct monst *mdef;
+struct attack *mattk;
 struct obj* omonwep;
 int specialdmg; /* blessed and/or silver bonus against various things */
 {
-    register struct permonst *pd = mdef->data;
+    struct permonst *pd = mdef->data;
     boolean negated;
     struct obj *mongold;
     int chance = 0;
@@ -3452,8 +3452,8 @@ struct monst* mdef;
 
 STATIC_OVL int
 explum(mdef, mattk)
-register struct monst *mdef;
-register struct attack *mattk;
+struct monst *mdef;
+struct attack *mattk;
 {
     boolean resistance; /* only for cold/fire/elec */
     double damage = adjust_damage(d((int) mattk->damn, (int) mattk->damd), &youmonst, mdef, mattk->adtyp, ADFLAGS_NONE);
@@ -3607,16 +3607,16 @@ end_engulf(VOID_ARGS)
 
 STATIC_OVL int
 gulpum(mdef, mattk)
-register struct monst *mdef;
-register struct attack *mattk;
+struct monst *mdef;
+struct attack *mattk;
 {
 #ifdef LINT /* static char msgbuf[BUFSZ]; */
     char msgbuf[BUFSZ];
 #else
     static char msgbuf[BUFSZ]; /* for nomovemsg */
 #endif
-    register int tmp;
-    //register int dam = d((int) mattk->damn, (int) mattk->damd);
+    int tmp;
+    //int dam = d((int) mattk->damn, (int) mattk->damd);
     double damage = adjust_damage(d((int)mattk->damn, (int)mattk->damd), &youmonst, mdef, mattk->adtyp, ADFLAGS_NONE);
     boolean fatal_gulp;
     struct obj *otmp;
@@ -3855,8 +3855,8 @@ register struct attack *mattk;
 
 void
 missum(mdef, mattk, wouldhavehit)
-register struct monst *mdef;
-register struct attack *mattk;
+struct monst *mdef;
+struct attack *mattk;
 boolean wouldhavehit;
 {
     if (wouldhavehit) /* monk is missing due to penalty for wearing suit */
@@ -3875,7 +3875,7 @@ boolean wouldhavehit;
 /* attack monster as a monster; returns True if mon survives */
 STATIC_OVL boolean
 hmonas(mon)
-register struct monst *mon;
+struct monst *mon;
 {
     if (!mon)
         return FALSE;
@@ -4364,8 +4364,8 @@ int malive;
 uchar aatyp;
 boolean wep_was_destroyed;
 {
-    register struct permonst *ptr = mon->data;
-    register int i, basedmg = 0;
+    struct permonst *ptr = mon->data;
+    int i, basedmg = 0;
     double damage = 0;
     enum hit_tile_types hit_tile = HIT_GENERAL;
 

@@ -104,7 +104,7 @@ revive_nasty(x, y, msg)
 int x, y;
 const char *msg;
 {
-    register struct obj *otmp, *otmp2;
+    struct obj *otmp, *otmp2;
     struct monst *mtmp;
     coord cc;
     boolean revived = FALSE;
@@ -147,10 +147,10 @@ STATIC_VAR NEARDATA int64_t lastmovetime;
 STATIC_OVL int
 moverock(VOID_ARGS)
 {
-    register xchar rx, ry, sx, sy;
-    register struct obj *otmp;
-    register struct trap *ttmp;
-    register struct monst *mtmp;
+    xchar rx, ry, sx, sy;
+    struct obj *otmp;
+    struct trap *ttmp;
+    struct monst *mtmp;
     char pushbuf[QBUFSZ + BUFSZ * 2] = "";
     int pushcolor = NO_COLOR;
 
@@ -756,8 +756,8 @@ xchar x, y;
 
 void
 movobj(obj, ox, oy)
-register struct obj *obj;
-register xchar ox, oy;
+struct obj *obj;
+xchar ox, oy;
 {
     /* optimize by leaving on the fobj chain? */
     xchar ox0 = obj->ox;
@@ -776,7 +776,7 @@ STATIC_VAR NEARDATA const char fell_on_sink[] = "fell onto a sink";
 STATIC_OVL void
 dosinkfall(VOID_ARGS)
 {
-    register struct obj *obj;
+    struct obj *obj;
     int dmg;
     boolean lev_boots = (uarmf && uarmf->otyp == LEVITATION_BOOTS),
             innate_lev = ((HLevitation & (FROM_ACQUIRED | FROM_FORM)) != 0L),
@@ -863,7 +863,7 @@ dosinkfall(VOID_ARGS)
 /* intended to be called only on ROCKs or TREEs */
 boolean
 may_dig(x, y)
-register xchar x, y;
+xchar x, y;
 {
     struct rm *lev = &levl[x][y];
 
@@ -873,7 +873,7 @@ register xchar x, y;
 
 boolean
 may_passwall(x, y)
-register xchar x, y;
+xchar x, y;
 {
     return (boolean) !((IS_STWALL(levl[x][y].typ)
                        && (levl[x][y].wall_info & W_NONPASSWALL)));
@@ -882,7 +882,7 @@ register xchar x, y;
 boolean
 bad_rock(mdat, x, y)
 struct permonst *mdat;
-register xchar x, y;
+xchar x, y;
 {
     return (boolean) ((Sokoban && sobj_at(BOULDER, x, y))
                       || (IS_ROCK(levl[x][y].typ)
@@ -940,8 +940,8 @@ int mode;
 {
     int x = ux + dx;
     int y = uy + dy;
-    register struct rm *tmpr = &levl[x][y];
-    register struct rm *ust;
+    struct rm *tmpr = &levl[x][y];
+    struct rm *ust;
 
     context.door_opened = FALSE;
     /*
@@ -1741,9 +1741,9 @@ domove(VOID_ARGS)
 void
 domove_core(VOID_ARGS)
 {
-    register struct monst *mtmp;
-    register struct rm *tmpr;
-    register xchar x, y;
+    struct monst *mtmp;
+    struct rm *tmpr;
+    xchar x, y;
     struct trap *trap = NULL;
     int wtcap;
     boolean on_ice;
@@ -1856,7 +1856,7 @@ domove_core(VOID_ARGS)
         y = u.uy + u.dy;
         if (Stunned || (Confusion && !rn2(5))) 
         {
-            register int tries = 0;
+            int tries = 0;
 
             do
             {
@@ -2940,7 +2940,7 @@ monstinroom(mdat, roomno)
 struct permonst *mdat;
 int roomno;
 {
-    register struct monst *mtmp;
+    struct monst *mtmp;
 
     for (mtmp = fmon; mtmp; mtmp = mtmp->nmon) {
         if (DEADMONSTER(mtmp))
@@ -2954,13 +2954,13 @@ int roomno;
 
 char *
 in_rooms(x, y, typewanted)
-register xchar x, y;
-register int typewanted;
+xchar x, y;
+int typewanted;
 {
     static char buf[5];
     char rno, *ptr = &buf[4];
     int typefound, min_x, min_y, max_x, max_y_offset, step;
-    register struct rm *lev;
+    struct rm *lev;
 
 #define goodtype(rno) \
     (!typewanted                                                   \
@@ -3022,10 +3022,10 @@ register int typewanted;
 /* is (x,y) in a town? */
 boolean
 in_town(x, y)
-register int x, y;
+int x, y;
 {
     s_level *slev = Is_special(&u.uz);
-    register struct mkroom *sroom;
+    struct mkroom *sroom;
     boolean has_subrooms = FALSE;
 
     if (!slev || !slev->flags.town)
@@ -3048,7 +3048,7 @@ register int x, y;
 
 STATIC_OVL void
 move_update(newlev)
-register boolean newlev;
+boolean newlev;
 {
     char *ptr1, *ptr2, *ptr3, *ptr4;
 
@@ -3089,9 +3089,9 @@ register boolean newlev;
 /* possibly deliver a one-time room entry message */
 void
 check_special_room(newlev)
-register boolean newlev;
+boolean newlev;
 {
-    register struct monst *mtmp;
+    struct monst *mtmp;
     char *ptr;
 
     move_update(newlev);
@@ -3356,7 +3356,7 @@ pickup_checks(VOID_ARGS)
         }
     }
     if (!OBJ_AT(u.ux, u.uy)) {
-        register struct rm *lev = &levl[u.ux][u.uy];
+        struct rm *lev = &levl[u.ux][u.uy];
 
         if (IS_THRONE(lev->typ))
         {
@@ -3480,7 +3480,7 @@ doput2bag(VOID_ARGS)
 void
 lookaround(VOID_ARGS)
 {
-    register int x, y;
+    int x, y;
     int i, x0 = 0, y0 = 0, m0 = 1, i0 = 9;
     int corrct = 0, noturn = 0;
     struct monst *mtmp;
@@ -3703,8 +3703,8 @@ int x, y;
 int
 monster_nearby(VOID_ARGS)
 {
-    register int x, y;
-    register struct monst *mtmp;
+    int x, y;
+    struct monst *mtmp;
 
     /* Also see the similar check in dochugw() in monmove.c */
     for (x = u.ux - 1; x <= u.ux + 1; x++)
@@ -3731,7 +3731,7 @@ monster_nearby(VOID_ARGS)
 
 void
 nomul(nval)
-register int nval;
+int nval;
 {
     if (multi < nval)
         return;              /* This is a bug fix by ab@unido */
@@ -3824,7 +3824,7 @@ maybe_wail(VOID_ARGS)
 
 void
 you_die(knam, k_format)
-register const char* knam;
+const char* knam;
 int k_format;
 {
     killer.format = k_format;
@@ -3837,7 +3837,7 @@ int k_format;
 
 void
 kill_player(knam, k_format)
-register const char* knam;
+const char* knam;
 int k_format;
 {
     clear_run_and_travel();
@@ -3855,7 +3855,7 @@ int k_format;
 void
 losehp(n, knam, k_format)
 double n;
-register const char* knam;
+const char* knam;
 int k_format;
 {
     losehp_core(n, knam, k_format, FALSE);
@@ -3864,7 +3864,7 @@ int k_format;
 void
 losehp_core(n, knam, k_format, verbose)
 double n;
-register const char *knam;
+const char *knam;
 int k_format;
 boolean verbose;
 {
@@ -4005,8 +4005,8 @@ STATIC_VAR int wc; /* current weight_cap(); valid after call to inv_weight() */
 int
 inv_weight(VOID_ARGS)
 {
-    register struct obj *otmp = invent;
-    register int wt = 0;
+    struct obj *otmp = invent;
+    int wt = 0;
 
     while (otmp) {
         if (otmp->oclass == COIN_CLASS)
@@ -4077,8 +4077,8 @@ int
 inv_cnt_ex(incl_gold, worn_only)
 boolean incl_gold, worn_only;
 {
-    register struct obj *otmp = invent;
-    register int ct = 0;
+    struct obj *otmp = invent;
+    int ct = 0;
 
     while (otmp) {
         if ((incl_gold || otmp->invlet != GOLD_SYM) && (!worn_only || otmp->owornmask))

@@ -36,7 +36,7 @@ const char *what;
 STATIC_OVL void
 dowatersnakes(VOID_ARGS)
 {
-    register int num = rn1(5, 2);
+    int num = rn1(5, 2);
     struct monst *mtmp;
 
     if (!(mvitals[PM_WATER_MOCCASIN].mvflags & MV_GONE)) {
@@ -90,7 +90,7 @@ dowaterdemon(VOID_ARGS)
 STATIC_OVL void
 dowaternymph(VOID_ARGS)
 {
-    register struct monst *mtmp;
+    struct monst *mtmp;
 
     if (!(mvitals[PM_WATER_NYMPH].mvflags & MV_GONE)
         && (mtmp = makemon(&mons[PM_WATER_NYMPH], u.ux, u.uy,
@@ -129,8 +129,8 @@ gush(x, y, poolcnt)
 int x, y;
 genericptr_t poolcnt;
 {
-    register struct monst *mtmp;
-    register struct trap *ttmp;
+    struct monst *mtmp;
+    struct trap *ttmp;
 
     if (((x + y) % 2) || (x == u.ux && y == u.uy)
         || (rn2(1 + distmin(u.ux, u.uy, x, y))) || (levl[x][y].typ != ROOM && levl[x][y].typ != GRASS && levl[x][y].typ != GROUND)
@@ -235,10 +235,10 @@ void
 drinkfountain(VOID_ARGS)
 {
     /* What happens when you drink from a fountain? */
-    register boolean mgkftn = (levl[u.ux][u.uy].blessedftn == 1);
-    register int fate = rnd(30);
+    boolean mgkftn = (levl[u.ux][u.uy].blessedftn == 1);
+    int fate = rnd(30);
 
-    register int zlevel;
+    int zlevel;
     zlevel = level_difficulty();
     boolean fountain_blessed = levl[u.ux][u.uy].blessedftn;
     int ftyp = levl[u.ux][u.uy].subtyp; // (levl[u.ux][u.uy].fountainmask & FOUNTAIN_TYPE_MASK);
@@ -510,7 +510,7 @@ drinkfountain(VOID_ARGS)
             break;
         case 24: /* Curse an item */
         {
-            register struct obj *obj;
+            struct obj *obj;
 
             pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "This water's no good!");
             morehungry(rn1(20, 11));
@@ -571,7 +571,7 @@ drinkfountain(VOID_ARGS)
             break;
         case 29: /* Scare */
         {
-            register struct monst *mtmp;
+            struct monst *mtmp;
 
             pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "This %s gives you bad breath!",
                   hliquid("water"));
@@ -613,7 +613,7 @@ static const char* const excalmsgs[] = {
 
 void
 dipfountain(obj)
-register struct obj *obj;
+struct obj *obj;
 {
     if (Levitation && !Levitation_control)
     {
@@ -621,7 +621,7 @@ register struct obj *obj;
         return;
     }
 
-    register int zlevel;
+    int zlevel;
     zlevel = level_difficulty();
     boolean nowaterdamage = FALSE;
     boolean nodryup = FALSE;

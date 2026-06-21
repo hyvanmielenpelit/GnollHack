@@ -127,7 +127,7 @@ char *path;
 #else
     register long freeBytes = 0;
 #endif
-    register struct InfoData *infoData; /* Remember... longword aligned */
+    struct InfoData *infoData; /* Remember... longword aligned */
     char fileName[32];
 
     /*
@@ -189,7 +189,7 @@ filesize(file)
 char *file;
 {
     register BPTR fileLock;
-    register struct FileInfoBlock *fileInfoBlock;
+    struct FileInfoBlock *fileInfoBlock;
     register long size = 0;
 
     fileInfoBlock =
@@ -389,7 +389,7 @@ const char *str;
 
 FILE *
 fopenp(name, mode)
-register const char *name, *mode;
+const char *name, *mode;
 {
     register char *bp, *pp, lastch;
     register FILE *fp;

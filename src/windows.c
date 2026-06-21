@@ -460,7 +460,7 @@ STATIC_OVL struct win_choices *
 win_choices_find(s)
 const char *s;
 {
-    register int i;
+    int i;
 
     for (i = 0; winchoices[i].procs; i++) {
         if (!strcmpi(s, winchoices[i].procs->name)) {
@@ -555,7 +555,7 @@ void
 addto_windowchain(s)
 const char *s;
 {
-    register int i;
+    int i;
 
     for (i = 0; winchoices[i].procs; i++) {
         if ('+' != winchoices[i].procs->name[0])
@@ -1236,7 +1236,7 @@ uint64_t *colormasks UNUSED;
 {
     char newbot1[MAXCO], newbot2[MAXCO];
     int64_t cond, *condptr = (int64_t *) ptr;
-    register int i;
+    int i;
     unsigned pass, lndelta;
     enum statusfields idx1, idx2, *fieldlist;
     char *nb, *text = (char *) ptr;

@@ -85,7 +85,7 @@ STATIC_DCL int FDECL(ready_weapon, (struct obj *, int64_t));
 
 void
 setuwep(obj, mask)
-register struct obj* obj;
+struct obj* obj;
 int64_t mask;
 {
     setuwepcore(obj, mask, TRUE);
@@ -93,7 +93,7 @@ int64_t mask;
 
 void
 setuwepquietly(obj, mask)
-register struct obj* obj;
+struct obj* obj;
 int64_t mask;
 {
     setuwepcore(obj, mask, FALSE);
@@ -101,7 +101,7 @@ int64_t mask;
 
 void
 setuwepcore(obj, mask, verbose)
-register struct obj *obj;
+struct obj *obj;
 int64_t mask;
 boolean verbose;
 {
@@ -328,7 +328,7 @@ int64_t mask;
 
 void
 setuqwep(obj)
-register struct obj *obj;
+struct obj *obj;
 {
     setworncore(obj, W_QUIVER, TRUE);
     context.botl = context.botlx = TRUE;
@@ -340,7 +340,7 @@ register struct obj *obj;
 
 void
 setuswapwep(obj, mask)
-register struct obj *obj;
+struct obj *obj;
 int64_t mask;
 {
     setworncore(obj, mask, TRUE);
@@ -349,7 +349,7 @@ int64_t mask;
 
 void
 setuqwepquietly(obj)
-register struct obj* obj;
+struct obj* obj;
 {
     setworncore(obj, W_QUIVER, FALSE);
     /* no extra handling needed; this used to include a call to
@@ -359,7 +359,7 @@ register struct obj* obj;
 
 void
 setuswapwepquietly(obj, mask)
-register struct obj* obj;
+struct obj* obj;
 int64_t mask;
 {
     setworncore(obj, mask, FALSE);
@@ -770,8 +770,8 @@ int
 dosingleswapweapon(swap_wep_mask, swap_target_mask)
 int64_t swap_wep_mask, swap_target_mask; // swap_wep_mask = mask of original weapon in swapwep, swap_target_mask is the mask it is going to swapped to
 {
-    register struct obj *oldwep, * oldswap;
-    register struct obj *wep = (struct obj*)0, *altwep = (struct obj*)0, *swapwep = (struct obj*)0, *altswapwep = (struct obj*)0;
+    struct obj *oldwep, * oldswap;
+    struct obj *wep = (struct obj*)0, *altwep = (struct obj*)0, *swapwep = (struct obj*)0, *altswapwep = (struct obj*)0;
     int result = 0;
 
     if (swap_wep_mask == W_SWAPWEP)
@@ -920,8 +920,8 @@ doswapweapon_right_or_both(VOID_ARGS)
 int
 doswapweapon(VOID_ARGS)
 {
-    register struct obj *oldwep, *oldswap;
-    register struct obj* oldwep2, * oldswap2;
+    struct obj *oldwep, *oldswap;
+    struct obj* oldwep2, * oldswap2;
     int result = 0;
     int result2 = 0;
 
@@ -1809,9 +1809,9 @@ untwoweapon(VOID_ARGS)
 
 int
 enchant_weapon(otmp, weapon, amount, dopopup)
-register struct obj *otmp;
-register struct obj* weapon;
-register int amount;
+struct obj *otmp;
+struct obj* weapon;
+int amount;
 boolean dopopup;
 {
     const char *color = (amount < 0) ? NH_BLACK : NH_BLUE;
@@ -2055,8 +2055,8 @@ boolean dopopup;
 
 int
 welded(obj, mon)
-register struct obj *obj;
-register struct monst* mon;
+struct obj *obj;
+struct monst* mon;
 {
     if (obj && mon && (obj == uwep || obj == uarms) && will_weld(obj, mon)) 
     {
@@ -2073,7 +2073,7 @@ register struct monst* mon;
 
 void
 weldmsg(obj)
-register struct obj *obj;
+struct obj *obj;
 {
     int64_t savewornmask;
 

@@ -326,7 +326,7 @@ mswin_init_nhwindows(int *argc, char **argv)
         static char buf[BUFSZ * 2], shortcutbuf[BUFSZ * 2];
         uchar altmask = 0x80;
         uchar ctrlmask = 0x20 | 0x40;
-        register const struct ext_func_tab* efp;
+        const struct ext_func_tab* efp;
         uchar cmd_id;
 
         for (int i = 0; menus[i].menu_item_id > 0; i++)

@@ -860,7 +860,7 @@ maybe_close_drawbridge(x, y, by_u_intentionally)
 int x, y;
 boolean by_u_intentionally;
 {
-    register struct rm* lev1;
+    struct rm* lev1;
     int x2, y2;
 
     lev1 = &levl[x][y];
@@ -927,7 +927,7 @@ close_drawbridge(x, y, by_u_intentionally)
 int x, y;
 boolean by_u_intentionally;
 {
-    register struct rm *lev1, *lev2;
+    struct rm *lev1, *lev2;
     struct trap *t;
     int x2, y2;
 
@@ -994,7 +994,7 @@ open_drawbridge(x, y, by_u_intentionally)
 int x, y;
 boolean by_u_intentionally;
 {
-    register struct rm *lev1, *lev2;
+    struct rm *lev1, *lev2;
     struct trap *t;
     int x2, y2;
 
@@ -1046,7 +1046,7 @@ destroy_drawbridge(x, y, is_disintegrated)
 int x, y;
 boolean is_disintegrated;
 {
-    register struct rm *lev1, *lev2;
+    struct rm *lev1, *lev2;
     struct trap *t;
     struct obj *otmp;
     int x2, y2, i;

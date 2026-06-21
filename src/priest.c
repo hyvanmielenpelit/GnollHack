@@ -72,14 +72,14 @@ struct monst* mtmp;
  */
 int
 move_special(mtmp, in_his_shop, appr, uondoor, avoid, omx, omy, gx, gy)
-register struct monst *mtmp;
+struct monst *mtmp;
 boolean in_his_shop;
 schar appr;
 boolean uondoor, avoid;
-register xchar omx, omy, gx, gy;
+xchar omx, omy, gx, gy;
 {
-    register xchar nx, ny, nix, niy;
-    register schar i;
+    xchar nx, ny, nix, niy;
+    schar i;
     schar chcnt, cnt;
     coord poss[9];
     int64_t info[9];
@@ -192,9 +192,9 @@ pick_move:
 
 char
 temple_occupied(array)
-register char *array;
+char *array;
 {
-    register char *ptr;
+    char *ptr;
 
     for (ptr = array; *ptr; ptr++)
         if (rooms[*ptr - ROOMOFFSET].rtype == TEMPLE)
@@ -204,9 +204,9 @@ register char *array;
 
 char
 smithy_occupied(array)
-register char* array;
+char* array;
 {
-    register char* ptr;
+    char* ptr;
 
     for (ptr = array; *ptr; ptr++)
         if (rooms[*ptr - ROOMOFFSET].rtype == SMITHY)
@@ -216,8 +216,8 @@ register char* array;
 
 STATIC_OVL boolean
 histemple_at(priest, x, y)
-register struct monst *priest;
-register xchar x, y;
+struct monst *priest;
+xchar x, y;
 {
     return (boolean) (priest && priest->ispriest
                       && (EPRI(priest)->shroom == *in_rooms(x, y, TEMPLE))
@@ -241,8 +241,8 @@ struct monst *priest;
 
 STATIC_OVL boolean
 hissmithy_at(smith, x, y)
-register struct monst* smith;
-register xchar x, y;
+struct monst* smith;
+xchar x, y;
 {
     return (boolean)(smith && smith->issmith
         && (ESMI(smith)->smithy_room == *in_rooms(x, y, SMITHY))
@@ -269,9 +269,9 @@ struct monst* smith;
  */
 int
 pri_move(priest)
-register struct monst *priest;
+struct monst *priest;
 {
-    register xchar gx, gy, omx, omy;
+    xchar gx, gy, omx, omy;
     schar temple;
     boolean avoid = TRUE;
 
@@ -647,9 +647,9 @@ int mtype;
  */
 int
 smith_move(smith)
-register struct monst* smith;
+struct monst* smith;
 {
-    register xchar gx, gy, omx, omy;
+    xchar gx, gy, omx, omy;
     schar smithy;
     boolean avoid = TRUE;
 
@@ -814,7 +814,7 @@ struct monst *mon;
  */
 char *
 priestname(mon, pname)
-register struct monst *mon;
+struct monst *mon;
 char *pname; /* caller-supplied output buffer */
 {
     boolean do_hallu = Hallucination,
@@ -897,7 +897,7 @@ struct monst *
 findpriest(roomno)
 char roomno;
 {
-    register struct monst *mtmp;
+    struct monst *mtmp;
 
     for (mtmp = fmon; mtmp; mtmp = mtmp->nmon) 
     {
@@ -933,7 +933,7 @@ struct monst*
 findsmith(roomno)
 char roomno;
 {
-    register struct monst* mtmp;
+    struct monst* mtmp;
 
     for (mtmp = fmon; mtmp; mtmp = mtmp->nmon) 
     {
@@ -1238,7 +1238,7 @@ int roomno;
 
 void
 priest_talk(priest)
-register struct monst *priest;
+struct monst *priest;
 {
     boolean coaligned = p_coaligned(priest);
     boolean strayed = (u.ualign.record < 0);
@@ -1402,13 +1402,13 @@ register struct monst *priest;
 
 struct monst *
 mk_roamer(ptr, alignment, x, y, peaceful)
-register struct permonst *ptr;
+struct permonst *ptr;
 aligntyp alignment;
 xchar x, y;
 boolean peaceful;
 {
-    register struct monst *roamer;
-    //register boolean coaligned = (u.ualign.type == alignment);
+    struct monst *roamer;
+    //boolean coaligned = (u.ualign.type == alignment);
 
 #if 0 /* this was due to permonst's pxlth field which is now gone */
     if (ptr != &mons[PM_ALIGNED_PRIEST] && ptr != &mons[PM_ANGEL])
@@ -1436,7 +1436,7 @@ boolean peaceful;
 
 void
 reset_hostility(roamer)
-register struct monst *roamer;
+struct monst *roamer;
 {
     if (!roamer || !roamer->isminion || !has_emin(roamer))
         return;
@@ -1460,8 +1460,8 @@ in_your_sanctuary(mon, x, y)
 struct monst *mon; /* if non-null, <mx,my> overrides <x,y> */
 xchar x, y;
 {
-    register char roomno;
-    register struct monst *priest;
+    char roomno;
+    struct monst *priest;
 
     if (mon) 
     {
@@ -1574,7 +1574,7 @@ struct monst *priest;
 void
 angry_priest(VOID_ARGS)
 {
-    register struct monst *priest;
+    struct monst *priest;
     struct rm *lev;
 
     if ((priest = findpriest(temple_occupied(u.urooms))) != 0)
@@ -1634,7 +1634,7 @@ clearpriests(VOID_ARGS)
 /* munge priest-specific structure when restoring -dlc */
 void
 restpriest(mtmp, ghostly)
-register struct monst *mtmp;
+struct monst *mtmp;
 boolean ghostly;
 {
     if (u.uz.dlevel) 
@@ -1661,7 +1661,7 @@ clearsmiths(VOID_ARGS)
 /* munge smith-specific structure when restoring -dlc */
 void
 restsmith(mtmp, ghostly)
-register struct monst* mtmp;
+struct monst* mtmp;
 boolean ghostly;
 {
     if (u.uz.dlevel) 

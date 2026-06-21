@@ -104,10 +104,10 @@ STATIC_OVL struct Jitem Japanese_items[] = { { SHORT_SWORD, "wakizashi" },
 
 STATIC_OVL char *
 strprepend(s, pref)
-register char *s;
-register const char *pref;
+char *s;
+const char *pref;
 {
-    register int i = (int) strlen(pref);
+    int i = (int) strlen(pref);
 
     if (i > PREFIXBUFSZ) {
         impossible("PREFIXBUFSZ too short (for %d).", i);
@@ -156,7 +156,7 @@ char *bufp;
 
 char *
 obj_typename(otyp)
-register int otyp;
+int otyp;
 {
     char *buf = next_offset_init_obuf();
     struct objclass *ocl = &objects[otyp];
@@ -475,10 +475,10 @@ struct obj* obj;
 
 char *
 xname_flags(obj, cxn_flags)
-register struct obj *obj;
+struct obj *obj;
 unsigned cxn_flags; /* bitmask of CXN_xxx values */
 {
-    register char* buf;
+    char* buf;
 
     if (!obj)
     {
@@ -489,8 +489,8 @@ unsigned cxn_flags; /* bitmask of CXN_xxx values */
 
     boolean artifact_description_exists = obj->oartifact && artilist[obj->oartifact].desc && strcmp(artilist[obj->oartifact].desc, "");
     /* Note: maskotyp is relevant here when artifact description does not exist */
-    register int typ = ((obj->oartifact && artilist[obj->oartifact].maskotyp != STRANGE_OBJECT) ? artilist[obj->oartifact].maskotyp : obj->otyp);
-    register struct objclass *ocl = &objects[typ];
+    int typ = ((obj->oartifact && artilist[obj->oartifact].maskotyp != STRANGE_OBJECT) ? artilist[obj->oartifact].maskotyp : obj->otyp);
+    struct objclass *ocl = &objects[typ];
     /* Note: when its description exists, an artifact always uses the unknown name format instead of oc_name_known;
      * if the artifact is known, then it jumps to "the Artifact" format */
     /* Note: artifact uses nknown and aknown to determine if it is in the format of "the Artifact"; this is in obj_is_pname function */
@@ -2758,7 +2758,7 @@ size_t lenlimit;
  */
 const char *
 singular(otmp, func)
-register struct obj *otmp;
+struct obj *otmp;
 char *FDECL((*func), (OBJ_P));
 {
     int64_t savequan;
@@ -2888,7 +2888,7 @@ const char *str;
         insert_the = TRUE;
     } else {
         /* Probably a proper name, might not need an article */
-        register char *tmp, *named, *called, *entitled, *labeled;
+        char *tmp, *named, *called, *entitled, *labeled;
         size_t l;
 
         /* some objects have capitalized adjectives in their names */
@@ -2986,7 +2986,7 @@ Yobjnam2(obj, verb)
 struct obj *obj;
 const char *verb;
 {
-    register char *s = yobjnam(obj, verb);
+    char *s = yobjnam(obj, verb);
 
     *s = highc(*s);
     return s;
@@ -3269,8 +3269,8 @@ STATIC_VAR const char *const special_subjs[] = {
 /* return form of the verb (input plural) for present tense 3rd person subj */
 char *
 vtense(subj, verb)
-register const char *subj;
-register const char *verb;
+const char *subj;
+const char *verb;
 {
     //char verbbuf[OBUFSZ] = ""; /* Just in case str and buf happen to be randomly the same obuf */
     //if (verb)
@@ -3548,7 +3548,7 @@ const char *oldstr;
     //if (oldstr)
     //    Strcpy(oldbuf, oldstr);
     //char* oldbufptr = oldbuf;
-    register char *spot;
+    char *spot;
     char lo_c, *str = next_offset_init_obuf();
     const char *excess = (char *) 0;
     size_t len;
@@ -3717,7 +3717,7 @@ const char *oldstr;
     //if (oldstr)
     //    Strcpy(oldbuf, oldstr);
     //char* oldbufptr = oldbuf;
-    register char *p, *bp;
+    char *p, *bp;
     const char *excess = 0;
     char *str = next_offset_init_obuf();
 
@@ -4194,7 +4194,7 @@ int xtra_prob; /* to force 0% random generation items to also be considered */
 {
     int i, n = 0;
     short validobjs[NUM_OBJECTS];
-    register const char *zn;
+    const char *zn;
     int prob, maxprob = 0;
 
     if (!name || !*name)
@@ -4254,14 +4254,14 @@ char oclass;
  */
 struct obj *
 readobjnam(bp, no_wish, is_wiz_wish, removed_from_game_ptr)
-register char *bp;
+char *bp;
 struct obj *no_wish;
 boolean is_wiz_wish;
 boolean* removed_from_game_ptr;
 {
-    register char *p;
-    register int i;
-    register struct obj *otmp;
+    char *p;
+    int i;
+    struct obj *otmp;
     int cnt, enchantment, spesgn, typ, very, rechrg;
     int charges, chargesfound;
     int blessed, uncursed, iscursed, ispoisoned, isgreased;
@@ -4329,7 +4329,7 @@ boolean* removed_from_game_ptr;
     int foundkey = FALSE;
     for (;;) 
     {
-        register int l;
+        int l;
 
         if (!bp || !*bp)
             goto any;
@@ -4952,7 +4952,7 @@ boolean* removed_from_game_ptr;
         && strncmpi(bp, "meat ring", 9))
         for (i = 0; i < (int) (sizeof wrpsym); i++)
         {
-            register size_t j = strlen(wrp[i]);
+            size_t j = strlen(wrp[i]);
 
             if (!strncmpi(bp, wrp[i], j))
             {
@@ -5039,7 +5039,7 @@ retry:
     } else if (!strcmpi(bp, "looking glass")) {
         ; /* avoid false hit on "* glass" */
     } else if (!BSTRCMPI(bp, p - 6, " glass") || !strcmpi(bp, "glass")) {
-        register char *g = bp;
+        char *g = bp;
 
         /* treat "broken glass" as a non-existent item; since "broken" is
            also a chest/box prefix it might have been stripped off above */
@@ -5076,7 +5076,7 @@ retry:
     /* check real names of gems first */
     if (!oclass && actualn) {
         for (i = bases[GEM_CLASS]; i <= LAST_GEM; i++) {
-            register const char *zn;
+            const char *zn;
 
             if ((zn = OBJ_NAME(objects[i])) != 0 && !strcmpi(actualn, zn)) {
                 typ = i;

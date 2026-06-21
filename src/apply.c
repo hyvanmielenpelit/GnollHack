@@ -659,7 +659,7 @@ STATIC_VAR const char hollow_str[] = "a hollow sound.  This must be a secret %s!
    uses up the turn; this makes curse status have a tangible effect. */
 STATIC_OVL int
 use_stethoscope(obj)
-register struct obj *obj;
+struct obj *obj;
 {
     struct monst *mtmp;
     struct rm *lev;
@@ -851,7 +851,7 @@ void
 use_magic_whistle(obj)
 struct obj *obj;
 {
-    register struct monst *mtmp, *nextmon, *selmon;
+    struct monst *mtmp, *nextmon, *selmon;
     selmon = (struct monst*)0;
 
     if (obj && !can_blow(&youmonst))
@@ -954,9 +954,9 @@ number_leashed(VOID_ARGS)
 /* otmp is about to be destroyed or stolen */
 void
 o_unleash(otmp)
-register struct obj *otmp;
+struct obj *otmp;
 {
-    register struct monst *mtmp;
+    struct monst *mtmp;
 
     for (mtmp = fmon; mtmp; mtmp = mtmp->nmon)
         if (mtmp->m_id == (unsigned) otmp->leashmon)
@@ -967,13 +967,13 @@ register struct obj *otmp;
 /* mtmp is about to die, or become untame */
 void
 m_unleash(mtmp, feedback)
-register struct monst *mtmp;
+struct monst *mtmp;
 boolean feedback;
 {
     if (!mtmp)
         return;
 
-    register struct obj *otmp;
+    struct obj *otmp;
 
     if (feedback) {
         if (canseemon(mtmp))
@@ -991,8 +991,8 @@ boolean feedback;
 void
 unleash_all(VOID_ARGS)
 {
-    register struct obj *otmp;
-    register struct monst *mtmp;
+    struct obj *otmp;
+    struct monst *mtmp;
 
     for (otmp = invent; otmp; otmp = otmp->nobj)
         if (otmp->otyp == LEASH)
@@ -1166,8 +1166,8 @@ struct monst *mtmp;
 boolean
 next_to_u(VOID_ARGS)
 {
-    register struct monst *mtmp;
-    register struct obj *otmp;
+    struct monst *mtmp;
+    struct obj *otmp;
 
     for (mtmp = fmon; mtmp; mtmp = mtmp->nmon) {
         if (DEADMONSTER(mtmp))
@@ -1199,10 +1199,10 @@ next_to_u(VOID_ARGS)
 
 void
 check_leash(x, y)
-register xchar x, y;
+xchar x, y;
 {
-    register struct obj *otmp;
-    register struct monst *mtmp;
+    struct obj *otmp;
+    struct monst *mtmp;
 
     for (otmp = invent; otmp; otmp = otmp->nobj) 
     {
@@ -1903,7 +1903,7 @@ STATIC_OVL void
 use_bell(optr)
 struct obj **optr;
 {
-    register struct obj *obj = *optr;
+    struct obj *obj = *optr;
     struct monst *mtmp;
     boolean wakem = FALSE, learno = FALSE,
             ordinary = (obj->otyp != BELL_OF_OPENING || !obj->charges),
@@ -2075,7 +2075,7 @@ struct obj **optr;
 
 void
 use_candelabrum(obj)
-register struct obj *obj;
+struct obj *obj;
 {
     const char *s = (obj->special_quality != 1) ? "candles" : "candle";
 
@@ -2155,8 +2155,8 @@ int
 use_candle(optr)
 struct obj **optr;
 {
-    register struct obj *obj = *optr;
-    register struct obj *otmp;
+    struct obj *obj = *optr;
+    struct obj *otmp;
     const char *s = (obj->quan != 1) ? "candles" : "candle";
     char qbuf[QBUFSZ], qsfx[QBUFSZ], *q;
     const char tools[] = { TOOL_CLASS, 0 };
@@ -2456,7 +2456,7 @@ int
 use_torch(optr)
 struct obj** optr;
 {
-    register struct obj* obj = *optr;
+    struct obj* obj = *optr;
 
     if (u.uswallow)
     {
@@ -3914,7 +3914,7 @@ STATIC_OVL void
 use_figurine(optr)
 struct obj **optr;
 {
-    register struct obj *obj = *optr;
+    struct obj *obj = *optr;
     xchar x, y;
     coord cc;
 
@@ -5822,8 +5822,8 @@ do_break_wand(obj)
 struct obj *obj;
 {
     static const char nothing_else_happens[] = "But nothing else happens...";
-    register int i, x, y;
-    register struct monst *mon;
+    int i, x, y;
+    struct monst *mon;
     int dmg_n = 0, dmg_d = 6;
     double damage = 0;
     boolean affects_objects;
@@ -6113,7 +6113,7 @@ void
 setapplyclasses(class_list)
 char class_list[];
 {
-    register struct obj *otmp;
+    struct obj *otmp;
     int otyp;
     boolean knowoil, knowtouchstone, addpotions, addstones, addfood, addmisc;
 
@@ -6157,7 +6157,7 @@ void
 setbreakclasses(class_list)
 char* class_list;
 {
-    register struct obj* otmp;
+    struct obj* otmp;
 
     for (otmp = invent; otmp; otmp = otmp->nobj) {
         if ((breaktest(otmp) || otmp->oclass == WAND_CLASS) && !strchr(class_list, otmp->oclass))
@@ -6242,7 +6242,7 @@ doapply_core(applymode)
 int applymode; /* 0 = normal, 1 = take out items, 2 = put in items */
 {
     struct obj *obj;
-    register int res = 1;
+    int res = 1;
     char class_list[MAX_OBJECT_CLASSES + 2];
 
     if (check_capacity((char *) 0))
@@ -6784,7 +6784,7 @@ struct obj* obj;
     int x, y;
     //int avrg_attrib;
     int glyph, oldglyph = -1;
-    register struct monst* mtmp;
+    struct monst* mtmp;
     boolean no_golf_swing = FALSE;
     char kickobjnam[BUFSZ];
 
@@ -7124,7 +7124,7 @@ thump:
 int
 floorapply(VOID_ARGS)
 {
-    register struct trap* ttmp = t_at(u.ux, u.uy);
+    struct trap* ttmp = t_at(u.ux, u.uy);
     char qbuf[QBUFSZ];
     char c;
     int res = -1;

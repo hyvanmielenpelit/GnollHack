@@ -332,7 +332,7 @@ winch_handler(sig_unused) /* signal handler is called with at least 1 arg */
 int sig_unused UNUSED;
 {
     int oldLI = LI, oldCO = CO, i;
-    register struct WinDesc *cw;
+    struct WinDesc *cw;
 
 #ifdef WINCHAIN
     {
@@ -1274,7 +1274,7 @@ void
 tty_askname()
 {
     static const char who_are_you[] = "Who are you? ";
-    register int c, ct, tryct = 0;
+    int c, ct, tryct = 0;
 
 #ifdef SELECTSAVED
     if (iflags.wc2_selectsaved && !iflags.renameinprogress)
@@ -1706,7 +1706,7 @@ tty_clear_nhwindow(window)
 winid window;
 {
     int64_t i, j, m, n;
-    register struct WinDesc *cw = 0;
+    struct WinDesc *cw = 0;
 
     HUPSKIP();
     if (window == WIN_ERR || (cw = wins[window]) == (struct WinDesc*) 0)
@@ -1803,7 +1803,7 @@ int64_t count;
 
 STATIC_OVL void
 dmore(cw, s)
-register struct WinDesc *cw;
+struct WinDesc *cw;
 const char *s; /* valid responses */
 {
     const char *prompt = cw->morestr ? cw->morestr : defmorestr;
@@ -2487,7 +2487,7 @@ tty_display_nhwindow(window, blocking)
 winid window;
 boolean blocking; /* with ttys, all windows are blocking */
 {
-    register struct WinDesc *cw = 0;
+    struct WinDesc *cw = 0;
     short s_maxcol;
 
     HUPSKIP();
@@ -2585,7 +2585,7 @@ void
 tty_dismiss_nhwindow(window)
 winid window;
 {
-    register struct WinDesc *cw = 0;
+    struct WinDesc *cw = 0;
 
     HUPSKIP();
     if (window == WIN_ERR || (cw = wins[window]) == (struct WinDesc *) 0)
@@ -2634,7 +2634,7 @@ void
 tty_destroy_nhwindow(window)
 winid window;
 {
-    register struct WinDesc *cw = 0;
+    struct WinDesc *cw = 0;
 
     if (window == WIN_ERR || (cw = wins[window]) == (struct WinDesc *) 0)
     {
@@ -2657,7 +2657,7 @@ winid window;
 void
 tty_curs(window, x, y)
 winid window;
-register int x, y; /* not xchar: perhaps xchar is unsigned and
+int x, y; /* not xchar: perhaps xchar is unsigned and
                       curx-x would be unsigned as well */
 {
     struct WinDesc *cw = 0;
@@ -2765,7 +2765,7 @@ winid window;
 int x, y;
 nhsym ch;
 {
-    register struct WinDesc *cw = 0;
+    struct WinDesc *cw = 0;
 
     HUPSKIP();
     if (window == WIN_ERR || (cw = wins[window]) == (struct WinDesc *) 0)
@@ -2844,12 +2844,12 @@ winid window;
 int attr, color, app;
 const char *str, *attrs, *colors;
 {
-    register struct WinDesc *cw = 0;
+    struct WinDesc *cw = 0;
     register char *ob;
-    register int64_t i, n0;
+    int64_t i, n0;
 #ifndef STATUS_HILITES
-    register const char *nb;
-    register int64_t j;
+    const char *nb;
+    int64_t j;
 #endif
 
     HUPSKIP();
@@ -3091,7 +3091,7 @@ boolean complain;
 #ifdef DEF_PAGER /* this implies that UNIX is defined */
     {
         /* use external pager; this may give security problems */
-        register int fd = open(fname, 0);
+        int fd = open(fname, 0);
 
         if (fd < 0) {
             if (complain)
@@ -3225,7 +3225,7 @@ const char* str;            /* menu string */
 boolean preselected;        /* item is marked as selected */
 struct extended_menu_info info;
 {
-    register struct WinDesc* cw = 0;
+    struct WinDesc* cw = 0;
     tty_menu_item* item;
     const char* newstr;
     char buf[4 + BUFSZ];
@@ -3415,7 +3415,7 @@ winid window;
 int how;
 menu_item **menu_list;
 {
-    register struct WinDesc *cw = 0;
+    struct WinDesc *cw = 0;
     tty_menu_item *curr;
     menu_item *mi;
     int n, cancelled;
@@ -3536,10 +3536,10 @@ tty_wait_synch()
 
 void
 docorner(xmin, ymax)
-register int xmin, ymax;
+int xmin, ymax;
 {
-    register int y;
-    register struct WinDesc *cw = wins[WIN_MAP];
+    int y;
+    struct WinDesc *cw = wins[WIN_MAP];
 
     HUPSKIP();
 #if 0   /* this optimization is not valuable enough to justify

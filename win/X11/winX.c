@@ -420,7 +420,7 @@ XColor *color;     /* the X color structure; changed only if successful */
     long cdiff = 16777216; /* 2^24; hopefully our map is smaller */
     XColor tmp;
     static XColor *table = 0;
-    register int i, j;
+    int i, j;
     register long tdiff;
 
     /* if the screen doesn't have a big colormap, don't waste our time

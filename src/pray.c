@@ -297,7 +297,7 @@ in_trouble(VOID_ARGS)
 STATIC_OVL struct obj *
 worst_cursed_item(VOID_ARGS)
 {
-    register struct obj *otmp;
+    struct obj *otmp;
 
     /* if strained or worse, check for loadstone first */
     if (near_capacity() >= HVY_ENCUMBER) {
@@ -2214,7 +2214,7 @@ aligntyp g_align;
             break;
         case 4: 
         {
-            register struct obj *otmp;
+            struct obj *otmp;
             int any = 0;
 
             play_sfx_sound(SFX_PRAY_UNCURSE);
@@ -2366,8 +2366,8 @@ STATIC_OVL boolean
 water_prayer(bless_water)
 boolean bless_water;
 {
-    register struct obj *otmp;
-    register int64_t changed = 0;
+    struct obj *otmp;
+    int64_t changed = 0;
     boolean other = FALSE, bc_known = !(Blind || Hallucination);
 
     for (otmp = level.objects[u.ux][u.uy]; otmp; otmp = otmp->nexthere) 
@@ -2408,8 +2408,8 @@ STATIC_OVL boolean
 symbol_prayer(bless_stuff)
 boolean bless_stuff;
 {
-    register struct obj* otmp;
-    register int64_t changed = 0;
+    struct obj* otmp;
+    int64_t changed = 0;
     boolean other = FALSE, bc_known = !(Blind || Hallucination);
     char buf[BUFSZ];
     Strcpy(buf, "");
@@ -2525,7 +2525,7 @@ aligntyp g_align;
 
 STATIC_OVL void
 consume_offering(otmp)
-register struct obj *otmp;
+struct obj *otmp;
 {
     if (Hallucination)
     {
@@ -2570,7 +2570,7 @@ dosacrifice(VOID_ARGS)
 {
     STATIC_VAR NEARDATA const char cloud_of_smoke[] =
         "A cloud of %s smoke surrounds you...";
-    register struct obj* otmp;
+    struct obj* otmp;
     int value = 0, mndx;
     boolean highaltar, molochaltar, godlessaltar;
     aligntyp altaralign = a_align(u.ux, u.uy);
@@ -2607,7 +2607,7 @@ dosacrifice(VOID_ARGS)
 
     if (otmp->otyp == CORPSE) 
     {
-        register struct permonst *ptr = otmp->corpsenm >= LOW_PM ? &mons[otmp->corpsenm] : 0;
+        struct permonst *ptr = otmp->corpsenm >= LOW_PM ? &mons[otmp->corpsenm] : 0;
         struct monst *mtmp;
 
         /* KMH, conduct */
@@ -4107,7 +4107,7 @@ aligntyp alignment;
 
 void
 altar_wrath(x, y)
-register int x, y;
+int x, y;
 {
     aligntyp altaralign = a_align(x, y);
 
@@ -4131,7 +4131,7 @@ STATIC_OVL boolean
 blocked_boulder(dx, dy)
 int dx, dy;
 {
-    register struct obj *otmp;
+    struct obj *otmp;
     int nx, ny;
     int64_t count = 0L;
 

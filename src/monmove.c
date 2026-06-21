@@ -343,7 +343,7 @@ struct monst* mon;
 
 STATIC_OVL void
 watch_on_duty(mtmp)
-register struct monst *mtmp;
+struct monst *mtmp;
 {
     int x, y;
 
@@ -377,7 +377,7 @@ register struct monst *mtmp;
 
 int
 dochugw(mtmp)
-register struct monst *mtmp;
+struct monst *mtmp;
 {
     int x = mtmp->mx, y = mtmp->my;
 
@@ -640,7 +640,7 @@ boolean digest_meal;
  */
 STATIC_OVL int
 disturb(mtmp)
-register struct monst *mtmp;
+struct monst *mtmp;
 {
     /*
      * + Ettins are hard to surprise.
@@ -792,7 +792,7 @@ int fleetime;
 
 STATIC_OVL void
 distfleeck(mtmp, inrange, nearby, scared)
-register struct monst *mtmp;
+struct monst *mtmp;
 int *inrange, *nearby, *scared;
 {
     int seescaryx, seescaryy;
@@ -846,10 +846,10 @@ struct monst *mon;
  */
 int
 dochug(mtmp)
-register struct monst *mtmp;
+struct monst *mtmp;
 {
-    register struct permonst *mdat;
-    register int tmp = 0;
+    struct permonst *mdat;
+    int tmp = 0;
     int inrange, nearby, scared;
 
     /*  Pre-movement adjustments
@@ -1019,7 +1019,7 @@ register struct monst *mtmp;
         else if (!u.uinvulnerable && !Invulnerable && !Mind_shielding) 
         {
             play_sfx_sound(SFX_WAVE_OF_PSYCHIC_ENERGY);
-            register boolean m_sen = sensemon(mtmp);
+            boolean m_sen = sensemon(mtmp);
             if (m_sen || ((Blind_telepat || Unblind_telepat) && rn2(2)) || !rn2(10)) 
             {
                 pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "It locks on to your %s!",
@@ -1270,7 +1270,7 @@ STATIC_VAR NEARDATA const char gem_class[] = { GEM_CLASS, 0 };
 
 boolean
 itsstuck(mtmp)
-register struct monst *mtmp;
+struct monst *mtmp;
 {
     if (sticks(youmonst.data) && mtmp == u.ustuck && !u.uswallow) {
         pline("%s cannot escape from you!", Monnam(mtmp));
@@ -1297,7 +1297,7 @@ xchar gx, gy;
     int shortest_with_displacing = -1;
     int shortest_without_displacing = -1;
     int count_without_displacing = 0;
-    register int i, nx, ny;
+    int i, nx, ny;
     int ndist;
 
     for (i = 0; i < cnt; i++) {
@@ -1363,13 +1363,13 @@ xchar nix,niy;
  */
 int
 m_move(mtmp, after)
-register struct monst *mtmp;
-register int after;
+struct monst *mtmp;
+int after;
 {
     if (!mtmp)
         return 3;
 
-    register int appr;
+    int appr;
     xchar gx, gy, nix, niy, chcnt;
     int chi; /* could be schar except for stupid Sun-2 compiler */
     boolean likegold = 0, likegems = 0, likeobjs = 0, likemagic = 0,
@@ -1573,7 +1573,7 @@ register int after;
 
         if (!should_see && can_track(ptr)) 
         {
-            register coord *cp;
+            coord *cp;
 
             cp = gettrack(omx, omy);
             if (cp)
@@ -1584,7 +1584,7 @@ register int after;
         }
     }
 
-    register int pctload = 0;
+    int pctload = 0;
 
     if ((!is_peaceful(mtmp) || !rn2(10)) && (!Is_really_rogue_level(&u.uz)))
     {
@@ -1615,9 +1615,9 @@ register int after;
 #define SQSRCHRADIUS 5
 
     {
-        register int minr = SQSRCHRADIUS; /* not too far away */
-        register struct obj *otmp;
-        register int xx, yy;
+        int minr = SQSRCHRADIUS; /* not too far away */
+        struct obj *otmp;
+        int xx, yy;
         int oomx, oomy, lmx, lmy;
 
         /* cut down the search radius if it thinks character is closer. */
@@ -1772,10 +1772,10 @@ register int after;
     if (doorbuster)
         flag |= BUSTDOOR;
     {
-        register int i, j, nx, ny, nearer;
+        int i, j, nx, ny, nearer;
         int jcnt, cnt;
         int ndist, nidist;
-        register coord *mtrk;
+        coord *mtrk;
         coord poss[9];
 
         cnt = mfndpos(mtmp, poss, info, flag);
@@ -1832,7 +1832,7 @@ register int after;
 
     if (mmoved)
     {
-        register int j;
+        int j;
 
         if (mmoved == 1 && (u.ux != nix || u.uy != niy) && itsstuck(mtmp))
             return 3;
@@ -2286,7 +2286,7 @@ register int after;
 
 void
 dissolve_bars(x, y)
-register int x, y;
+int x, y;
 {
     boolean floor_is_room = (Is_special(&u.uz) || *in_rooms(x, y, 0));
     levl[x][y].typ = levl[x][y].floortyp ? levl[x][y].floortyp : floor_is_room ? ROOM : CORR;
@@ -2299,7 +2299,7 @@ register int x, y;
 
 boolean
 closed_door(x, y)
-register int x, y;
+int x, y;
 {
     return (boolean) (IS_DOOR(levl[x][y].typ)
                       && (levl[x][y].doormask & (D_LOCKED | D_CLOSED)));
@@ -2307,7 +2307,7 @@ register int x, y;
 
 boolean
 accessible(x, y)
-register int x, y;
+int x, y;
 {
     int levtyp = levl[x][y].typ;
 
@@ -2321,10 +2321,10 @@ register int x, y;
 /* decide where the monster thinks you are standing */
 void
 set_apparxy(mtmp)
-register struct monst *mtmp;
+struct monst *mtmp;
 {
     boolean notseen, gotu;
-    register int disp, mx = mtmp->mux, my = mtmp->muy;
+    int disp, mx = mtmp->mux, my = mtmp->muy;
     int64_t umoney = money_cnt(invent);
 
     /*
@@ -2368,7 +2368,7 @@ register struct monst *mtmp;
 
     if (!gotu) 
     {
-        register int try_cnt = 0;
+        int try_cnt = 0;
 
         do 
         {

@@ -58,7 +58,7 @@ const genericptr vy;
     */
     return (vx == vy) ? 0 : -1;
 #else
-    register const struct mkroom *x, *y;
+    const struct mkroom *x, *y;
 
     x = (const struct mkroom *) vx;
     y = (const struct mkroom *) vy;
@@ -73,7 +73,7 @@ finddpos(cc, xl, yl, xh, yh)
 coord *cc;
 xchar xl, yl, xh, yh;
 {
-    register xchar x, y;
+    xchar x, y;
 
     x = rn1(xh - xl + 1, xl);
     y = rn1(yh - yl + 1, yl);
@@ -112,9 +112,9 @@ sort_rooms(VOID_ARGS)
 
 STATIC_OVL void
 do_room_or_subroom(croom, lowx, lowy, hix, hiy, lit, rtype, special, floortyp, floorsubtyp, mtype, tileset, decotyp, is_room)
-register struct mkroom *croom;
+struct mkroom *croom;
 int lowx, lowy;
-register int hix, hiy;
+int hix, hiy;
 boolean lit;
 schar rtype;
 boolean special;
@@ -122,7 +122,7 @@ boolean is_room;
 short decotyp;
 int floortyp, floorsubtyp, mtype, tileset;
 {
-    register int x, y;
+    int x, y;
     struct rm *lev;
 
     /* locations might bump level edges in wall-less rooms */
@@ -599,7 +599,7 @@ boolean special;
 short decotyp;
 int floortyp, floorsubtyp, mtype, tileset;
 {
-    register struct mkroom *croom;
+    struct mkroom *croom;
 
     croom = &rooms[nroom];
     do_room_or_subroom(croom, lowx, lowy, hix, hiy, lit, rtype, special, floortyp, floorsubtyp, mtype, tileset, decotyp,
@@ -619,7 +619,7 @@ boolean special;
 short decotyp;
 int floortyp, floorsubtyp, mtype, tileset;
 {
-    register struct mkroom *croom;
+    struct mkroom *croom;
 
     croom = &subrooms[nsubroom];
     do_room_or_subroom(croom, lowx, lowy, hix, hiy, lit, rtype, special, floortyp, floorsubtyp, mtype, tileset, decotyp,
@@ -653,13 +653,13 @@ makerooms(VOID_ARGS)
 
 STATIC_OVL void
 join(a, b, nxcor)
-register int a, b;
+int a, b;
 boolean nxcor;
 {
     coord cc, tt, org, dest;
-    register xchar tx, ty, xx, yy;
-    register struct mkroom *croom, *troom;
-    register int dx, dy;
+    xchar tx, ty, xx, yy;
+    struct mkroom *croom, *troom;
+    int dx, dy;
 
     croom = &rooms[a];
     troom = &rooms[b];
@@ -759,11 +759,11 @@ makecorridors(VOID_ARGS)
 
 void
 add_door(x, y, aroom)
-register int x, y;
-register struct mkroom *aroom;
+int x, y;
+struct mkroom *aroom;
 {
-    register struct mkroom *broom;
-    register int tmp;
+    struct mkroom *broom;
+    int tmp;
     int i;
 
     if (aroom->doorct == 0)
@@ -792,7 +792,7 @@ register struct mkroom *aroom;
 
 STATIC_OVL void
 dosdoor(x, y, aroom, type, dmask)
-register xchar x, y;
+xchar x, y;
 struct mkroom *aroom;
 int type;
 uchar dmask;
@@ -872,7 +872,7 @@ uchar dmask;
 
 STATIC_OVL boolean
 place_niche(aroom, dy, xx, yy)
-register struct mkroom *aroom;
+struct mkroom *aroom;
 int *dy, *xx, *yy;
 {
     coord dd;
@@ -907,7 +907,7 @@ STATIC_OVL void
 makeniche(trap_type)
 int trap_type;
 {
-    register struct mkroom *aroom;
+    struct mkroom *aroom;
     struct rm *rm;
     int vct = 8;
     int dy, xx, yy;
@@ -1100,8 +1100,8 @@ clear_level_structures(VOID_ARGS)
 {
     static struct rm zerorm = { nul_layerinfo,
                                 0, 0, 0, 0, 0,  0, 0, 0,  0, 0, 0, 0, 0, 0, 0, 0,  0, 0, 0, 0, 0,  0, 0, 0, 0, 0,  0, 0, 0, 0 };
-    register int x, y;
-    register struct rm *lev;
+    int x, y;
+    struct rm *lev;
 
     for (x = 0; x < COLNO; x++) {
         lev = &levl[x][0];
@@ -1185,9 +1185,9 @@ clear_level_structures(VOID_ARGS)
 STATIC_OVL void
 makelevel(VOID_ARGS)
 {
-    register struct mkroom *croom, *troom;
-    register int tryct;
-    register int x, y;
+    struct mkroom *croom, *troom;
+    int tryct;
+    int x, y;
     struct monst *tmonst; /* always put a web with a spider */
     branch *branchp;
     int room_threshold;
@@ -1209,7 +1209,7 @@ makelevel(VOID_ARGS)
             }
 
     {
-        register s_level *slev = Is_special(&u.uz);
+        s_level *slev = Is_special(&u.uz);
 
         /* check for special levels */
         if (slev && !Is_rogue_level(&u.uz)) 
@@ -1333,7 +1333,7 @@ makelevel(VOID_ARGS)
     }
 
     {
-        register int u_depth = depth(&u.uz);
+        int u_depth = depth(&u.uz);
 
         int res = 0;
 
@@ -1418,9 +1418,9 @@ makelevel(VOID_ARGS)
     place_branch(branchp, 0, 0);
 
     /* for each room: put things inside */
-    register int altarsplaced = 0;
-    register int chance = 60;
-    register int u_depth = depth(&u.uz);
+    int altarsplaced = 0;
+    int chance = 60;
+    int u_depth = depth(&u.uz);
     int level_dif = level_difficulty();
 
     /* Put items and other stuff in the rooms */
@@ -1892,7 +1892,7 @@ topologize(croom)
 struct mkroom *croom;
 #endif
 {
-    register int x, y, roomno = (int) ((croom - rooms) + ROOMOFFSET);
+    int x, y, roomno = (int) ((croom - rooms) + ROOMOFFSET);
     int lowx = croom->lx, lowy = croom->ly;
     int hix = croom->hx, hiy = croom->hy;
 #ifdef SPECIALIZATION
@@ -2097,9 +2097,9 @@ xchar x, y; /* location */
 
 STATIC_OVL boolean
 bydoor(x, y)
-register xchar x, y;
+xchar x, y;
 {
-    register int typ;
+    int typ;
 
     if (isok(x + 1, y)) {
         typ = levl[x + 1][y].typ;
@@ -2151,7 +2151,7 @@ struct mkroom *aroom;
 
 boolean
 occupied(x, y)
-register xchar x, y;
+xchar x, y;
 {
     return (boolean) (t_at(x, y) || IS_FURNITURE(levl[x][y].typ)
                       || is_lava(x, y) || is_pool(x, y)
@@ -2166,7 +2166,7 @@ int num, mazeflag;
 struct mkroom *croom;
 coord *tm;
 {
-    register int kind;
+    int kind;
     struct trap *t = 0;
     unsigned lvl = level_difficulty();
     coord m;
@@ -2266,7 +2266,7 @@ coord *tm;
     if (tm) {
         m = *tm;
     } else {
-        register int tryct = 0;
+        int tryct = 0;
         boolean avoid_boulder = (is_pit(kind) || is_hole(kind));
 
         do {
@@ -2577,7 +2577,7 @@ int mazeflag;
 struct mkroom *croom;
 {
     coord m;
-    register int tryct = 0;
+    int tryct = 0;
 
     do {
         if (++tryct > 200)
@@ -2622,7 +2622,7 @@ mksink(croom)
 struct mkroom *croom;
 {
     coord m;
-    register int tryct = 0;
+    int tryct = 0;
 
     do {
         if (++tryct > 200)
@@ -2658,7 +2658,7 @@ struct mkroom *croom;
 boolean match_player_alignment;
 {
     coord m;
-    register int tryct = 0;
+    int tryct = 0;
     aligntyp al;
 
     if (croom->rtype != OROOM)
@@ -2703,8 +2703,8 @@ mkgrave(croom)
 struct mkroom *croom;
 {
     coord m;
-    register int tryct = 0;
-    register struct obj *otmp;
+    int tryct = 0;
+    struct obj *otmp;
     boolean dobell = !rn2(10);
 
     if (croom->rtype != OROOM)
@@ -2768,7 +2768,7 @@ mkinvokearea(VOID_ARGS)
     int dist;
     xchar xmin = inv_pos.x, xmax = inv_pos.x;
     xchar ymin = inv_pos.y, ymax = inv_pos.y;
-    register xchar i;
+    xchar i;
 
     play_sfx_sound(SFX_RUMBLING_EARTH);
     pline_The_ex1(ATR_NONE, CLR_MSG_WARNING, "floor shakes violently under you!");
@@ -2824,7 +2824,7 @@ int dist;
     struct trap *ttmp;
     struct obj *otmp;
     boolean make_rocks;
-    register struct rm *lev = &levl[x][y];
+    struct rm *lev = &levl[x][y];
     struct monst *mon;
 
     /* clip at existing map borders if necessary */

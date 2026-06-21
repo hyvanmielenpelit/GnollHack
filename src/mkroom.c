@@ -81,9 +81,9 @@ extern const struct shclass shtypes[]; /* defined in shknam.c */
 
 STATIC_OVL boolean
 isbig(sroom)
-register struct mkroom *sroom;
+struct mkroom *sroom;
 {
-    register int area = (sroom->hx - sroom->lx + 1)
+    int area = (sroom->hx - sroom->lx + 1)
                         * (sroom->hy - sroom->ly + 1);
 
     return (boolean) (area > 20);
@@ -159,7 +159,7 @@ int roomtype;
 STATIC_OVL int
 mkshop(VOID_ARGS)
 {
-    register struct mkroom *sroom;
+    struct mkroom *sroom;
     int i = -1;
     char *ep = (char *) 0; /* (init == lint suppression) */
 
@@ -253,7 +253,7 @@ gottype:
     }
 
     if (i < 0) { /* shoptype not yet determined */
-        register int j;
+        int j;
 
         /* pick a shop type at random */
         for (j = rnd(100), i = 0; (j -= shtypes[i].prob) > 0; i++)
@@ -331,7 +331,7 @@ gottype:
 STATIC_OVL int
 mkdesertedshop(VOID_ARGS)
 {
-    register struct mkroom* sroom;
+    struct mkroom* sroom;
     int i = -1;
     char* ep = (char*)0; /* (init == lint suppression) */
 
@@ -362,7 +362,7 @@ mkdesertedshop(VOID_ARGS)
             
 
     if (i < 0) { /* shoptype not yet determined */
-        register int j;
+        int j;
 
         /* pick a shop type at random */
         for (j = rnd(100), i = 0; (j -= shtypes[i].prob) > 0; i++)
@@ -426,10 +426,10 @@ mkdesertedshop(VOID_ARGS)
 /* pick an unused room, preferably with only one door */
 STATIC_OVL struct mkroom *
 pick_room(strict)
-register boolean strict;
+boolean strict;
 {
-    register struct mkroom *sroom;
-    register int i = nroom;
+    struct mkroom *sroom;
+    int i = nroom;
 
     for (sroom = &rooms[rn2(nroom)]; i--; sroom++) {
         if (sroom == &rooms[nroom])
@@ -455,7 +455,7 @@ int type;
 {
     debugprint("mkzoo: %d", type);
 
-    register struct mkroom *sroom;
+    struct mkroom *sroom;
     int x, y;
 
     if ((sroom = pick_room(FALSE)) != 0) {
@@ -608,14 +608,14 @@ fill_zoo(sroom)
 struct mkroom *sroom;
 {
     //struct monst *mon;
-    register int sx, sy, i;
+    int sx, sy, i;
     int sh, tx = 0, ty = 0, goldlim = 0, type = sroom->rtype;
     int rmno = (int) ((sroom - rooms) + ROOMOFFSET);
     coord mm;
     int librarytype = 0;
     debugprint("fill_zoo: %d", type);
 
-    register int roll = rn2(4);
+    int roll = rn2(4);
     int hd = level_difficulty();
     struct permonst* main_monster = 0;
     int special_item_chance = 0;
@@ -1215,7 +1215,7 @@ int mm_flags;
 STATIC_OVL struct permonst *
 morguemon(VOID_ARGS)
 {
-    register int i = rn2(100), hd = rn2(level_difficulty());
+    int i = rn2(100), hd = rn2(level_difficulty());
 
     if (hd > 15 && i < 3)
         return &mons[PM_KING_WRAITH];
@@ -1253,7 +1253,7 @@ librarymon(type)
 int type;
 {
     int hd = level_difficulty();
-    register int i = rn2(100);
+    int i = rn2(100);
 
     if(type == 0) // Gnomes
     {
@@ -1332,8 +1332,8 @@ antholemon(VOID_ARGS)
 STATIC_OVL int
 mkswamp() /* Michiel Huisjes & Fred de Wilde */
 {
-    register struct mkroom *sroom;
-    register int sx, sy, i, eelct = 0;
+    struct mkroom *sroom;
+    int sx, sy, i, eelct = 0;
     int swampnumber = 0;
     debugprint("mkswamp");
 
@@ -1417,8 +1417,8 @@ mkswamp() /* Michiel Huisjes & Fred de Wilde */
 STATIC_OVL int
 mkgarden(VOID_ARGS) 
 {
-    register struct mkroom* sroom = (struct mkroom*)0;
-    register int sx, sy, i;
+    struct mkroom* sroom = (struct mkroom*)0;
+    int sx, sy, i;
     debugprint("mkgarden");
 
     for (i = 0; i < nroom; i++) { /* turn up to 1 rooms gardenlike */
@@ -1679,8 +1679,8 @@ mkgarden(VOID_ARGS)
 STATIC_OVL int
 mkdragonlair(VOID_ARGS)
 {
-    register struct mkroom* sroom = (struct mkroom*)0;
-    register int sx, sy, i, j;
+    struct mkroom* sroom = (struct mkroom*)0;
+    int sx, sy, i, j;
     debugprint("mkdragonlair");
 
     for (i = 0; i < nroom; i++) { /* turn up to 1 rooms into a dragon lair */
@@ -1897,9 +1897,9 @@ int roomno;
 STATIC_OVL int
 mktemple(VOID_ARGS)
 {
-    register struct mkroom *sroom;
+    struct mkroom *sroom;
     coord *shrine_spot;
-    register struct rm *lev;
+    struct rm *lev;
 
     if (!(sroom = pick_room(TRUE)))
         return 0;
@@ -2026,9 +2026,9 @@ mktemple(VOID_ARGS)
 STATIC_OVL int
 mksmithy(VOID_ARGS)
 {
-    register struct mkroom* sroom;
+    struct mkroom* sroom;
     coord* anvil_spot;
-    register struct rm* lev;
+    struct rm* lev;
 
     if (!(sroom = pick_room(TRUE)))
         return 0;
@@ -2101,7 +2101,7 @@ int
 mknpcroom(npctyp)
 int npctyp;
 {
-    register struct mkroom* sroom;
+    struct mkroom* sroom;
 
     if (!(sroom = pick_room(TRUE)))
         return 0;
@@ -2270,10 +2270,10 @@ struct mkroom* sroom;
 
 boolean
 nexttodoor(sx, sy)
-register int sx, sy;
+int sx, sy;
 {
-    register int dx, dy;
-    register struct rm *lev;
+    int dx, dy;
+    struct rm *lev;
 
     for (dx = -1; dx <= 1; dx++)
         for (dy = -1; dy <= 1; dy++) {
@@ -2288,10 +2288,10 @@ register int sx, sy;
 
 boolean
 nexttotree(sx, sy)
-register int sx, sy;
+int sx, sy;
 {
-    register int dx, dy;
-    register struct rm* lev;
+    int dx, dy;
+    struct rm* lev;
 
     for (dx = -1; dx <= 1; dx++)
         for (dy = -1; dy <= 1; dy++) {
@@ -2306,7 +2306,7 @@ register int sx, sy;
 
 boolean
 has_dnstairs(sroom)
-register struct mkroom *sroom;
+struct mkroom *sroom;
 {
     if (sroom == dnstairs_room)
         return TRUE;
@@ -2317,7 +2317,7 @@ register struct mkroom *sroom;
 
 boolean
 has_upstairs(sroom)
-register struct mkroom *sroom;
+struct mkroom *sroom;
 {
     if (sroom == upstairs_room)
         return TRUE;
@@ -2328,14 +2328,14 @@ register struct mkroom *sroom;
 
 int
 somex(croom)
-register struct mkroom *croom;
+struct mkroom *croom;
 {
     return rn1(croom->hx - croom->lx + 1, croom->lx);
 }
 
 int
 somey(croom)
-register struct mkroom *croom;
+struct mkroom *croom;
 {
     return rn1(croom->hy - croom->ly + 1, croom->ly);
 }
@@ -2572,7 +2572,7 @@ struct mkroom *
 search_special(type)
 schar type;
 {
-    register struct mkroom *croom;
+    struct mkroom *croom;
 
     for (croom = &rooms[0]; croom->hx >= 0; croom++)
         if ((type == ANY_TYPE && croom->rtype != OROOM)

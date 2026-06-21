@@ -29,7 +29,7 @@ char *s;
 static int
 eraseoldlocks()
 {
-	register int i;
+	int i;
 
 	/* cannot use maxledgerno() here, because we need to find a lock name
 	 * before starting everything (including the dungeon initialization
@@ -49,7 +49,7 @@ eraseoldlocks()
 void
 getlock()
 {
-	register int i = 0, fd, c;
+	int i = 0, fd, c;
 	const char *fq_lock;
 
 	if (!lock_file(HLOCK, LOCKPREFIX, 10))

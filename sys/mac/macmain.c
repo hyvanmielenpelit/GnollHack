@@ -37,7 +37,7 @@ QDGlobals qd;
 int
 main(void)
 {
-    register int fd = -1;
+    int fd = -1;
     int argc = 1;
     uchar resuming = FALSE; /* assume new game */
     boolean is_backup = FALSE;

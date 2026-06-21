@@ -72,7 +72,7 @@ int GnollHackMain(int argc, char** argv)
 	}
 
 
-	register int fd;
+	int fd;
 	boolean exact_username;
 	FILE* fp;
 

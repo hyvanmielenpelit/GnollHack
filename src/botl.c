@@ -112,8 +112,8 @@ char *
 do_statusline1(VOID_ARGS)
 {
     static char newbot1[BUFSZ];
-    register char *nb;
-    register int i, j;
+    char *nb;
+    int i, j;
 
     Strcpy(newbot1, plname);
     if ('a' <= newbot1[0] && newbot1[0] <= 'z')
@@ -646,8 +646,8 @@ int lev;
 short monnum;
 boolean female;
 {
-    register const struct Role *role;
-    register int i;
+    const struct Role *role;
+    int i;
 
     static NEARDATA const char player_name[] = "Player";
 
@@ -686,7 +686,7 @@ const char *str;
 int* rank_indx;
 size_t* title_length;
 {
-    register int i, j;
+    int i, j;
 
     /* Loop through each of the roles */
     for (i = 0; roles[i].name.m; i++)
@@ -716,7 +716,7 @@ size_t* title_length;
 void
 max_rank_sz(VOID_ARGS)
 {
-    register int i;
+    int i;
     size_t r, maxr = 0;
     for (i = 0; i < NUM_RANKS; i++) {
         if (urole.rank[i].m && (r = strlen(urole.rank[i].m)) > maxr)
@@ -1018,7 +1018,7 @@ bot_via_windowport(VOID_ARGS)
 {
     char buf[BUFSZ];
     const char *titl;
-    register char *nb;
+    char *nb;
     int i, idx, cap;
     int64_t money;
 
