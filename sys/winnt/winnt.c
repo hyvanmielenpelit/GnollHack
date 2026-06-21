@@ -53,9 +53,9 @@ typedef HWND(WINAPI *GETCONSOLEWINDOW)();
 static HWND GetConsoleHandle(void);
 static HWND GetConsoleHwnd(void);
 #if !defined(TTY_GRAPHICS)
-extern void NDECL(backsp);
+extern void backsp(void);
 #endif
-int NDECL(windows_console_custom_nhgetch);
+int windows_console_custom_nhgetch(void);
 
 /* The function pointer nt_kbhit contains a kbhit() equivalent
  * which varies depending on which window port is active.
@@ -76,8 +76,7 @@ switchar()
 
 
 int64_t
-freediskspace(path)
-char *path;
+freediskspace(char *path)
 {
     char tmppath[4];
     DWORD SectorsPerCluster = 0;
@@ -98,8 +97,7 @@ char *path;
  * Functions to get filenames using wildcards
  */
 int
-findfirst(path)
-const char *path;
+findfirst(const char *path)
 {
     if (ffhandle) {
         FindClose(ffhandle);
@@ -122,8 +120,7 @@ foundfile_buffer()
 }
 
 int64_t
-filesize(file)
-const char *file;
+filesize(const char *file)
 {
     if (findfirst(file)) {
         return ((int64_t) ffd.nFileSizeLow);
@@ -135,8 +132,7 @@ const char *file;
  * Chdrive() changes the default drive.
  */
 void
-chdrive(str)
-char *str;
+chdrive(char *str)
 {
     char *ptr;
     char drive;
@@ -186,8 +182,7 @@ register char *s;
  * This is used in nhlan.c to implement some of the LAN_FEATURES.
  */
 char *
-get_username(lan_username_size)
-size_t *lan_username_size;
+get_username(size_t *lan_username_size)
 {
     static TCHAR username_buffer[BUFSZ];
     unsigned int status;
@@ -289,11 +284,7 @@ static char interjection_buf[INTERJECTION_TYPES][1024];
 static int interjection[INTERJECTION_TYPES];
 
 void
-interject_assistance(num, interjection_type, ptr1, ptr2)
-int num;
-int interjection_type;
-genericptr_t ptr1;
-genericptr_t ptr2;
+interject_assistance(int num, int interjection_type, genericptr_t ptr1, genericptr_t ptr2)
 {
     switch (num) {
     case 1: {
@@ -338,8 +329,7 @@ genericptr_t ptr2;
 }
 
 void
-interject(interjection_type)
-int interjection_type;
+interject(int interjection_type)
 {
     if (interjection_type >= 0 && interjection_type < INTERJECTION_TYPES)
         msmsg(interjection_buf[interjection_type]);
@@ -347,8 +337,7 @@ int interjection_type;
 
 #ifdef RUNTIME_PASTEBUF_SUPPORT
 
-void port_insert_pastebuf(buf)
-char *buf;
+void port_insert_pastebuf(char *buf)
 {
     /* This implementation will utilize the windows clipboard
      * to accomplish this.
@@ -482,8 +471,7 @@ GetConsoleHwnd(void)
 #endif
 
 char *
-get_port_id(buf)
-char *buf;
+get_port_id(char *buf)
 {
     Strcpy(buf, TARGET_PORT);
     return buf;
@@ -508,8 +496,7 @@ void nhassert_failed(const char * exp, const char * file, int line)
 }
 
 void
-gnollhack_exit(code)
-int code;
+gnollhack_exit(int code)
 {
     /* Only if we started from the GUI, not the command prompt,
      * we need to get one last return, so the score board does
@@ -543,15 +530,14 @@ int code;
 #include <conio.h>
 
 int
-windows_console_custom_nhgetch(VOID_ARGS)
+windows_console_custom_nhgetch(void)
 {
     return _getch();
 }
 
 
 void
-getreturn(str)
-const char *str;
+getreturn(const char *str)
 {
     char buf[BUFSZ];
 
@@ -660,8 +646,7 @@ BOOL winos_font_support_cp437(HFONT hFont)
 }
 
 int
-windows_early_options(window_opt)
-const char *window_opt;
+windows_early_options(const char *window_opt)
 {
     /*
      * If you return 2, the game will exit before it begins.
@@ -684,8 +669,7 @@ const char *window_opt;
  * be room for the \
  */
 void
-append_slash(name)
-char *name;
+append_slash(char *name)
 {
     char *ptr;
 
@@ -712,7 +696,7 @@ char *name;
 #endif
 
 uint64_t
-sys_random_seed(VOID_ARGS)
+sys_random_seed(void)
 {
     uint64_t ourseed = 0UL;
     BCRYPT_ALG_HANDLE hRa = (BCRYPT_ALG_HANDLE) 0;

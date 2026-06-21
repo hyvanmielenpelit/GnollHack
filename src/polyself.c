@@ -23,24 +23,24 @@
 
 #include "hack.h"
 
-STATIC_DCL void FDECL(check_strangling, (BOOLEAN_P));
-STATIC_DCL void FDECL(polyman, (const char *, const char *));
-STATIC_DCL void NDECL(break_armor);
-STATIC_DCL void FDECL(drop_weapon, (int));
-STATIC_DCL int FDECL(armor_to_dragon, (int));
-STATIC_DCL void NDECL(newman);
-STATIC_DCL void NDECL(polysense);
+static void check_strangling(boolean);
+static void polyman(const char *, const char *);
+static void break_armor(void);
+static void drop_weapon(int);
+static int armor_to_dragon(int);
+static void newman(void);
+static void polysense(void);
 
-STATIC_VAR const char no_longer_petrify_resistant[] =
+static const char no_longer_petrify_resistant[] =
     "No longer petrify-resistant, you";
 
 /* controls whether taking on new form or becoming new man can also
    change sex (ought to be an arg to polymon() and newman() instead) */
-STATIC_VAR int sex_change_ok = 0;
+static int sex_change_ok = 0;
 
 /* update the youmonst.data structure pointer and intrinsics */
 void
-set_uasmon(VOID_ARGS)
+set_uasmon(void)
 {
     struct permonst *mdat = &mons[u.umonnum];
     int i;
@@ -123,7 +123,7 @@ set_uasmon(VOID_ARGS)
 
 /* Levitation overrides Flying; set or clear BFlying|I_SPECIAL */
 void
-float_vs_flight(VOID_ARGS)
+float_vs_flight(void)
 {
     boolean stuck_in_floor = (u.utrap && u.utraptype != TT_PIT);
 
@@ -144,9 +144,8 @@ float_vs_flight(VOID_ARGS)
 }
 
 /* for changing into form that's immune to strangulation */
-STATIC_OVL void
-check_strangling(on)
-boolean on;
+static void
+check_strangling(boolean on)
 {
     /* on -- maybe resume strangling */
     if (on) {
@@ -173,9 +172,8 @@ boolean on;
 }
 
 /* make a (new) human out of the player */
-STATIC_OVL void
-polyman(fmt, arg)
-const char *fmt, *arg;
+static void
+polyman(const char *fmt, const char *arg)
 {
     boolean sticky = (sticks(youmonst.data) && u.ustuck && !u.uswallow),
             was_mimicking = (U_AP_TYPE == M_AP_OBJECT);
@@ -243,7 +241,7 @@ const char *fmt, *arg;
 }
 
 void
-change_sex(VOID_ARGS)
+change_sex(void)
 {
     /* setting u.umonster for caveman/cavewoman or priest/priestess
        swap unintentionally makes `Upolyd' appear to be true */
@@ -272,8 +270,8 @@ change_sex(VOID_ARGS)
     }
 }
 
-STATIC_OVL void
-newman(VOID_ARGS)
+static void
+newman(void)
 {
     int i, oldlvl, newlvl, hpmax, enmax;
 
@@ -425,8 +423,7 @@ newman(VOID_ARGS)
 }
 
 void
-polyself(psflags)
-int psflags;
+polyself(int psflags)
 {
     char buf[BUFSZ] = DUMMY;
     int old_light, new_light, old_ambient, new_ambient, mntmp, class, tryct;
@@ -734,8 +731,7 @@ made_change:
 /* (try to) make a mntmp monster out of the player;
    returns 1 if polymorph successful */
 int
-polymon(mntmp)
-int mntmp;
+polymon(int mntmp)
 {
     char buf[BUFSZ];
     boolean sticky = sticks(youmonst.data) && u.ustuck && !u.uswallow,
@@ -1048,9 +1044,7 @@ int mntmp;
 }
 
 int
-monster_attribute_maximum(monster_class_ptr, attribute_index)
-struct permonst *monster_class_ptr;
-int attribute_index;
+monster_attribute_maximum(struct permonst *monster_class_ptr, int attribute_index)
 {
     if (!monster_class_ptr)
         return 0;
@@ -1104,9 +1098,7 @@ int attribute_index;
 }
 
 int
-monster_attribute_minimum(monster_class_ptr, attribute_index)
-struct permonst* monster_class_ptr;
-int attribute_index;
+monster_attribute_minimum(struct permonst *monster_class_ptr, int attribute_index)
 {
     if (!monster_class_ptr)
         return 0;
@@ -1141,8 +1133,8 @@ int attribute_index;
         return 3;
 }
 
-STATIC_OVL void
-break_armor(VOID_ARGS)
+static void
+break_armor(void)
 {
     struct obj *otmp;
 
@@ -1595,9 +1587,8 @@ break_armor(VOID_ARGS)
     }
 }
 
-STATIC_OVL void
-drop_weapon(alone)
-int alone;
+static void
+drop_weapon(int alone)
 {
     struct obj *otmp;
     const char *what, *which, *whichtoo;
@@ -1653,7 +1644,7 @@ int alone;
 }
 
 void
-rehumanize(VOID_ARGS)
+rehumanize(void)
 {
     boolean was_flying = (Flying != 0);
 
@@ -1701,7 +1692,7 @@ rehumanize(VOID_ARGS)
 }
 
 int
-dobreathe(VOID_ARGS)
+dobreathe(void)
 {
     struct attack *mattk;
 
@@ -1752,8 +1743,7 @@ int ray1_effect_choices[3] = { AD_DISN, AD_ELEC, AD_COLD }; /* Elemental */
 int ray2_effect_choices[3] = { AD_DRAY, AD_STON, AD_SLEE }; /* Magic */
 
 int
-get_ray_adtyp(adtyp)
-uchar adtyp;
+get_ray_adtyp(uchar adtyp)
 {
     int typ = (adtyp == AD_RBRE) ? rnd(AD_ACID) :
         (adtyp == AD_REY1) ? ray1_effect_choices[rn2(3)] :
@@ -1765,12 +1755,8 @@ uchar adtyp;
     return typ;
 }
 
-STATIC_OVL int 
-choose_random_breath_weapon(intarr_ptr, arrsize, attk_name, mon)
-int* intarr_ptr;
-int arrsize;
-const char* attk_name;
-struct monst* mon;
+static int 
+choose_random_breath_weapon(int *intarr_ptr, int arrsize, const char *attk_name, struct monst *mon)
 {
     int typ = -1;
     char buf[BUFSZ];
@@ -1822,10 +1808,7 @@ struct monst* mon;
 }
 
 int
-get_ray_adtyp_choose(adtyp, attk_name, mon)
-uchar adtyp;
-const char* attk_name;
-struct monst* mon;
+get_ray_adtyp_choose(uchar adtyp, const char *attk_name, struct monst *mon)
 {
     int typ = (adtyp == AD_RBRE) ? choose_random_breath_weapon(NULL, 0, attk_name, mon) :
         (adtyp == AD_REY1) ? choose_random_breath_weapon(ray1_effect_choices, SIZE(ray1_effect_choices), attk_name, mon) :
@@ -1838,14 +1821,13 @@ struct monst* mon;
 }
 
 int
-dosteedbreathe(VOID_ARGS)
+dosteedbreathe(void)
 {
     return dosteedbreathemon(u.usteed);
 }
 
 int
-dosteedbreathemon(mon)
-struct monst* mon;
+dosteedbreathemon(struct monst *mon)
 {
     struct attack* mattk;
 
@@ -1900,7 +1882,7 @@ struct monst* mon;
 
 
 int
-dospit(VOID_ARGS)
+dospit(void)
 {
     struct obj *otmp;
     struct attack *mattk;
@@ -1932,7 +1914,7 @@ dospit(VOID_ARGS)
 }
 
 int
-doremove(VOID_ARGS)
+doremove(void)
 {
     if (!Punished) {
         if (u.utrap && u.utraptype == TT_BURIEDBALL) {
@@ -1948,7 +1930,7 @@ doremove(VOID_ARGS)
 }
 
 int
-dospinweb(VOID_ARGS)
+dospinweb(void)
 {
     struct trap *ttmp = t_at(u.ux, u.uy);
 
@@ -2071,7 +2053,7 @@ dospinweb(VOID_ARGS)
 }
 
 int
-dosummon(VOID_ARGS)
+dosummon(void)
 {
     int placeholder;
     if (u.uen < WERE_SUMMON_MANA_COST) {
@@ -2089,7 +2071,7 @@ dosummon(VOID_ARGS)
 }
 
 int
-dogaze(VOID_ARGS)
+dogaze(void)
 {
     struct monst *mtmp;
     int looked = 0;
@@ -2356,7 +2338,7 @@ dogaze(VOID_ARGS)
 }
 
 int
-doeyestalk(VOID_ARGS)
+doeyestalk(void)
 {
     if (Blind) {
         You_cant_ex(ATR_NONE, CLR_MSG_FAIL, "see anything to gaze at.");
@@ -2426,7 +2408,7 @@ doeyestalk(VOID_ARGS)
 }
 
 int
-dohide(VOID_ARGS)
+dohide(void)
 {
     boolean ismimic = is_mimic(youmonst.data),
             on_ceiling = is_clinger(youmonst.data) || Flying;
@@ -2499,7 +2481,7 @@ dohide(VOID_ARGS)
 }
 
 int
-dopoly(VOID_ARGS)
+dopoly(void)
 {
     struct permonst *savedat = youmonst.data;
 
@@ -2514,7 +2496,7 @@ dopoly(VOID_ARGS)
 }
 
 int
-dodryfountain(VOID_ARGS)
+dodryfountain(void)
 {
     if (IS_FOUNTAIN(levl[u.ux][u.uy].typ)) {
         if (split_mon(&youmonst, (struct monst*) 0))
@@ -2528,7 +2510,7 @@ dodryfountain(VOID_ARGS)
 }
 
 int
-douseunicornhorn(VOID_ARGS)
+douseunicornhorn(void)
 {
     if (u.uen < UNICORN_HORN_MANA_COST) {
         play_sfx_sound(SFX_NOT_ENOUGH_MANA);
@@ -2549,7 +2531,7 @@ douseunicornhorn(VOID_ARGS)
 }
 
 int
-doshriek(VOID_ARGS)
+doshriek(void)
 {
     play_monster_chat_sound(&youmonst, 0);
     You("shriek.");
@@ -2561,7 +2543,7 @@ doshriek(VOID_ARGS)
 }
 
 int
-dolayegg(VOID_ARGS)
+dolayegg(void)
 {
     struct obj* uegg;
 
@@ -2611,7 +2593,7 @@ dolayegg(VOID_ARGS)
 
 
 int
-domindblast(VOID_ARGS)
+domindblast(void)
 {
     struct monst *mtmp, *nmon;
 
@@ -2649,7 +2631,7 @@ domindblast(VOID_ARGS)
 }
 
 void
-uunstick(VOID_ARGS)
+uunstick(void)
 {
     if (!u.ustuck) {
         impossible("uunstick: no ustuck?");
@@ -2660,8 +2642,7 @@ uunstick(VOID_ARGS)
 }
 
 void
-skinback(silently)
-boolean silently;
+skinback(boolean silently)
 {
     if (uskin) {
         if (!silently)
@@ -2674,9 +2655,7 @@ boolean silently;
 }
 
 const char *
-mbodypart(mon, part)
-struct monst *mon;
-int part;
+mbodypart(struct monst *mon, int part)
 {
     static NEARDATA const char
         *humanoid_parts[] = { "arm",       "eye",  "face",         "finger",
@@ -2835,14 +2814,13 @@ int part;
 }
 
 const char *
-body_part(part)
-int part;
+body_part(int part)
 {
     return mbodypart(&youmonst, part);
 }
 
 int
-poly_gender(VOID_ARGS)
+poly_gender(void)
 {
     /* Returns gender of polymorphed player;
      * 0/1=same meaning as flags.female, 2=none.
@@ -2853,9 +2831,7 @@ poly_gender(VOID_ARGS)
 }
 
 void
-ugolemeffects(damtype, dam)
-int damtype;
-double dam;
+ugolemeffects(int damtype, double dam)
 {
     double heal = 0;
 
@@ -2885,9 +2861,8 @@ double dam;
     }
 }
 
-STATIC_OVL int
-armor_to_dragon(atyp)
-int atyp;
+static int
+armor_to_dragon(int atyp)
 {
     switch (atyp) {
     case GRAY_DRAGON_SCALE_MAIL:
@@ -2923,8 +2898,8 @@ int atyp;
 }
 
 /* some species have awareness of other species */
-STATIC_OVL void
-polysense(VOID_ARGS)
+static void
+polysense(void)
 {
     short warnidx = NON_PM;
 
@@ -2954,7 +2929,7 @@ polysense(VOID_ARGS)
 
 /* True iff hero's role or race has been genocided */
 boolean
-ugenocided(VOID_ARGS)
+ugenocided(void)
 {
     return (boolean) ((mvitals[urole.monsternum].mvflags & MV_GENOCIDED)
                       || (mvitals[urace.monsternum].mvflags & MV_GENOCIDED)
@@ -2963,7 +2938,7 @@ ugenocided(VOID_ARGS)
 
 /* how hero feels "inside" after self-genocide of role or race */
 const char *
-udeadinside(VOID_ARGS)
+udeadinside(void)
 {
     /* self-genocide used to always say "you feel dead inside" but that
        seems silly when you're polymorphed into something undead;
@@ -2977,7 +2952,7 @@ udeadinside(VOID_ARGS)
 }
 
 void
-reset_polyself(VOID_ARGS)
+reset_polyself(void)
 {
     sex_change_ok = 0;
 }

@@ -450,13 +450,7 @@ move_bc(int before, int control, xchar ballx, xchar bally, xchar chainx, xchar c
  * and chain.
  */
 boolean
-drag_ball(x, y, bc_control, ballx, bally, chainx, chainy, cause_delay,
-          allow_drag)
-xchar x, y;
-int *bc_control;
-xchar *ballx, *bally, *chainx, *chainy;
-boolean *cause_delay;
-boolean allow_drag;
+drag_ball(xchar x, xchar y, int *bc_control, xchar *ballx, xchar *bally, xchar *chainx, xchar *chainy, boolean *cause_delay, boolean allow_drag)
 {
     if (!uball || !uchain)
         return FALSE;

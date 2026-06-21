@@ -64,17 +64,16 @@ const struct condition_t condition_definitions[NUM_BL_CONDITIONS] = {
     { BL_MASK_WOUNDED_LEGS,{ "Legs",   "Leg",   "Lg"  } },
 };
 
-STATIC_OVL NEARDATA size_t mrank_sz = 0; /* loaded by max_rank_sz (from u_init) */
-STATIC_DCL void NDECL(bot_via_windowport);
-STATIC_DCL void NDECL(stat_update_time);
-STATIC_DCL char* FDECL(conditionbitmask2str, (uint64_t));
+static NEARDATA size_t mrank_sz = 0; /* loaded by max_rank_sz (from u_init) */
+static void bot_via_windowport(void);
+static void stat_update_time(void);
+static char* conditionbitmask2str(uint64_t);
 
-STATIC_VAR struct _status_hilite_line_str* status_hilite_str = 0;
-STATIC_VAR int status_hilite_str_id = 0;
+static struct _status_hilite_line_str* status_hilite_str = 0;
+static int status_hilite_str_id = 0;
 
 char*
-get_strength_string(st)
-int st;
+get_strength_string(int st)
 {
     static char buf[32];
 
@@ -167,9 +166,12 @@ do_statusline1(VOID_ARGS)
     return newbot1;
 }
 
+/*
+ * Parameters:
+ *   cond: buffer
+ */
 size_t
-print_conditions(cond)
-char* cond; /* buffer */
+print_conditions(char *cond)
 {
     if (!cond)
         return 0;
@@ -243,7 +245,7 @@ char* cond; /* buffer */
 }
 
 char *
-do_statusline2(VOID_ARGS)
+do_statusline2(void)
 {
     static char newbot2[BUFSZ * 2], /* MAXCO: botl.h */
          /* dungeon location (and gold), hero health (HP, PW, AC),
@@ -498,7 +500,7 @@ do_statusline2(VOID_ARGS)
 }
 
 char*
-do_statusline3(VOID_ARGS)
+do_statusline3(void)
 {
     static char newbot3[BUFSZ * 2] = "", cond[QBUFSZ * 2] = "", moneybuf[QBUFSZ] = "";
     size_t cln;
@@ -582,7 +584,7 @@ do_statusline3(VOID_ARGS)
 }
 
 void
-bot(VOID_ARGS)
+bot(void)
 {
     if (context.skip_botl)
         return;
@@ -607,7 +609,7 @@ bot(VOID_ARGS)
 }
 
 void
-timebot(VOID_ARGS)
+timebot(void)
 {
     if (flags.time && iflags.status_updates) {
         if (VIA_WINDOWPORT()) {
@@ -622,8 +624,7 @@ timebot(VOID_ARGS)
 
 /* convert experience level (1...MAXULEV) to rank index (0...NUM_RANKS - 1) */
 int
-xlev_to_rank(xlev)
-int xlev;
+xlev_to_rank(int xlev)
 {
     int limited_xlev = (xlev <= MAXULEV) ? xlev : MAXULEV;
     int raw_rank = (limited_xlev <= RANK_MIN_THRESHOLD) ? 0 : ((limited_xlev + RANK_ADD_CONSTANT) / RANK_LEVEL_INCREMENT);
@@ -633,18 +634,14 @@ int xlev;
 #if 0 /* not currently needed */
 /* convert rank index (0..8) to experience level (1..30) */
 int
-rank_to_xlev(rank)
-int rank;
+rank_to_xlev(int rank)
 {
     return (rank <= 0) ? 1 : (rank <= 8) ? ((rank * 4) - 2) : 30;
 }
 #endif
 
 const char *
-rank_of(lev, monnum, female)
-int lev;
-short monnum;
-boolean female;
+rank_of(int lev, short monnum, boolean female)
 {
     const struct Role *role;
     int i;
@@ -675,16 +672,13 @@ boolean female;
 }
 
 const char *
-rank(VOID_ARGS)
+rank(void)
 {
     return rank_of(u.ulevel, Role_switch, flags.female);
 }
 
 int
-title_to_mon(str, rank_indx, title_length)
-const char *str;
-int* rank_indx;
-size_t* title_length;
+title_to_mon(const char *str, int *rank_indx, size_t *title_length)
 {
     int i, j;
 
@@ -714,7 +708,7 @@ size_t* title_length;
 }
 
 void
-max_rank_sz(VOID_ARGS)
+max_rank_sz(void)
 {
     int i;
     size_t r, maxr = 0;
@@ -729,15 +723,14 @@ max_rank_sz(VOID_ARGS)
 }
 
 int64_t
-botl_score(VOID_ARGS)
+botl_score(void)
 {
     return get_current_game_score();
 }
 
 /* Returns a human readable formatted duration (e.g. 2h:03m:ss). */
 char*
-format_duration_with_units(seconds)
-int64_t seconds;
+format_duration_with_units(int64_t seconds)
 {
     static char buf_fmt_duration[BUFSZ];
     int64_t minutes = seconds / 60;
@@ -761,7 +754,7 @@ int64_t seconds;
 }
 
 int64_t
-get_current_game_duration(VOID_ARGS)
+get_current_game_duration(void)
 {
     int64_t res = 0L;
     res = calculate_current_game_duration(urealtime);
@@ -769,8 +762,7 @@ get_current_game_duration(VOID_ARGS)
 }
 
 int64_t
-calculate_current_game_duration(used_realtime)
-struct u_realtime used_realtime;
+calculate_current_game_duration(struct u_realtime used_realtime)
 {
     int64_t res = 0L;
     res = !context.game_started ? 0 : iflags.in_dumplog ? used_realtime.realtime : used_realtime.realtime + ((int64_t)getnow() - used_realtime.start_timing);
@@ -778,7 +770,7 @@ struct u_realtime used_realtime;
 }
 
 char*
-botl_realtime(VOID_ARGS)
+botl_realtime(void)
 {
     int64_t currenttime = get_current_game_duration();
     char* duration = format_duration_with_units(currenttime);
@@ -791,8 +783,7 @@ botl_realtime(VOID_ARGS)
 
 /* provide the name of the current level for display by various ports */
 int
-describe_level(buf)
-char *buf;
+describe_level(char *buf)
 {
     int ret = 1;
 
@@ -833,8 +824,7 @@ char *buf;
 
 /* provide the game mode string */
 int
-describe_mode(buf)
-char* buf;
+describe_mode(char *buf)
 {
     int ret = 0;
     char modebuf[BUFSZ];
@@ -887,47 +877,47 @@ struct istat_s {
 #endif
 };
 
-STATIC_DCL boolean FDECL(eval_notify_windowport_field, (int, boolean *, int));
-STATIC_DCL void FDECL(evaluate_and_notify_windowport, (boolean *, int));
-STATIC_DCL void NDECL(init_blstats);
-STATIC_DCL int FDECL(compare_blstats, (struct istat_s *, struct istat_s *));
-STATIC_DCL char *FDECL(anything_to_s, (char *, anything *, int));
-STATIC_DCL int FDECL(percentage, (struct istat_s *, struct istat_s *));
+static boolean eval_notify_windowport_field(int, boolean *, int);
+static void evaluate_and_notify_windowport(boolean *, int);
+static void init_blstats(void);
+static int compare_blstats(struct istat_s *, struct istat_s *);
+static char *anything_to_s(char *, anything *, int);
+static int percentage(struct istat_s *, struct istat_s *);
 
 #ifdef STATUS_HILITES
-STATIC_DCL void FDECL(s_to_anything, (anything *, char *, int));
-STATIC_DCL enum statusfields FDECL(fldname_to_bl_indx, (const char *));
-STATIC_DCL boolean FDECL(hilite_reset_needed, (struct istat_s *, int64_t));
-STATIC_DCL boolean FDECL(noneoftheabove, (const char *));
-STATIC_DCL struct hilite_s *FDECL(get_hilite, (int, int, genericptr_t,
-                                               int, int, int *));
-STATIC_DCL void FDECL(split_clridx, (int, int *, int *));
-STATIC_DCL boolean FDECL(is_ltgt_percentnumber, (const char *));
-STATIC_DCL boolean FDECL(has_ltgt_percentnumber, (const char *));
-STATIC_DCL int FDECL(splitsubfields, (char *, char ***, int));
-STATIC_DCL boolean FDECL(is_fld_arrayvalues, (const char *,
+static void s_to_anything(anything *, char *, int);
+static enum statusfields fldname_to_bl_indx(const char *);
+static boolean hilite_reset_needed(struct istat_s *, int64_t);
+static boolean noneoftheabove(const char *);
+static struct hilite_s *get_hilite(int, int, genericptr_t,
+                                               int, int, int *);
+static void split_clridx(int, int *, int *);
+static boolean is_ltgt_percentnumber(const char *);
+static boolean has_ltgt_percentnumber(const char *);
+static int splitsubfields(char *, char ***, int);
+static boolean is_fld_arrayvalues(const char *,
                                               const char *const *,
-                                              int, int, int *));
-STATIC_DCL int FDECL(query_arrayvalue, (const char *, const char *const *,
-                                        int, int));
-STATIC_DCL void FDECL(status_hilite_add_threshold, (int, struct hilite_s *));
-STATIC_DCL boolean FDECL(parse_status_hl2, (char (*)[QBUFSZ], BOOLEAN_P));
-STATIC_DCL uint64_t FDECL(match_str2conditionbitmask, (const char *));
-STATIC_DCL uint64_t FDECL(str2conditionbitmask, (char *));
-STATIC_DCL boolean FDECL(parse_condition, (char (*)[QBUFSZ], int));
-STATIC_DCL char *FDECL(hlattr2attrname, (int, char *, size_t));
-STATIC_DCL void FDECL(status_hilite_linestr_add, (int, struct hilite_s *,
-                                                uint64_t, const char *));
-STATIC_DCL void NDECL(status_hilite_linestr_done);
-STATIC_DCL int FDECL(status_hilite_linestr_countfield, (int));
-STATIC_DCL void NDECL(status_hilite_linestr_gather_conditions);
-STATIC_DCL void NDECL(status_hilite_linestr_gather);
-STATIC_DCL char *FDECL(status_hilite2str, (struct hilite_s *));
-STATIC_DCL int NDECL(status_hilite_menu_choose_field);
-STATIC_DCL int FDECL(status_hilite_menu_choose_behavior, (int));
-STATIC_DCL int FDECL(status_hilite_menu_choose_updownboth, (int, const char *,
-                                                       BOOLEAN_P, BOOLEAN_P));
-STATIC_DCL boolean FDECL(status_hilite_menu_add, (int));
+                                              int, int, int *);
+static int query_arrayvalue(const char *, const char *const *,
+                                        int, int);
+static void status_hilite_add_threshold(int, struct hilite_s *);
+static boolean parse_status_hl2(char (*)[QBUFSZ], boolean);
+static uint64_t match_str2conditionbitmask(const char *);
+static uint64_t str2conditionbitmask(char *);
+static boolean parse_condition(char (*)[QBUFSZ], int);
+static char *hlattr2attrname(int, char *, size_t);
+static void status_hilite_linestr_add(int, struct hilite_s *,
+                                                uint64_t, const char *);
+static void status_hilite_linestr_done(void);
+static int status_hilite_linestr_countfield(int);
+static void status_hilite_linestr_gather_conditions(void);
+static void status_hilite_linestr_gather(void);
+static char *status_hilite2str(struct hilite_s *);
+static int status_hilite_menu_choose_field(void);
+static int status_hilite_menu_choose_behavior(int);
+static int status_hilite_menu_choose_updownboth(int, const char *,
+                                                       boolean, boolean);
+static boolean status_hilite_menu_add(int);
 #define has_hilite(i) (blstats[0][(i)].thresholds)
 /* TH_UPDOWN encompasses specific 'up' and 'down' also general 'changed' */
 #define Is_Temp_Hilite(rule) ((rule) && (rule)->behavior == BL_TH_UPDOWN)
@@ -949,7 +939,7 @@ STATIC_DCL boolean FDECL(status_hilite_menu_add, (int));
       wid,  -1, currfld, fld INIT_THRESH }
 
 /* If entries are added to this, botl.h will require updating too */
-STATIC_VAR const struct istat_s initblstats[MAXBLSTATS] = {
+static const struct istat_s initblstats[MAXBLSTATS] = {
     INIT_BLSTAT("title", "%s", ANY_STR, MAXVALWIDTH, BL_TITLE),
     INIT_BLSTAT("strength", " St:%s", ANY_INT, 10, BL_STR),
     INIT_BLSTAT("dexterity", " Dx:%s", ANY_INT,  10, BL_DX),
@@ -997,10 +987,10 @@ STATIC_VAR const struct istat_s initblstats[MAXBLSTATS] = {
 #undef INIT_THRESH
 
 struct istat_s blstats[2][MAXBLSTATS];
-STATIC_VAR boolean blinit = FALSE, update_all = FALSE;
-STATIC_VAR boolean valset[MAXBLSTATS];
+static boolean blinit = FALSE, update_all = FALSE;
+static boolean valset[MAXBLSTATS];
 #ifdef STATUS_HILITES
-STATIC_VAR int64_t bl_hilite_moves = 0L;
+static int64_t bl_hilite_moves = 0L;
 #endif
 
 /* we don't put this next declaration in #ifdef STATUS_HILITES.
@@ -1010,11 +1000,11 @@ STATIC_VAR int64_t bl_hilite_moves = 0L;
  * the final argument of status_update, with or
  * without STATUS_HILITES.
  */
-STATIC_VAR uint64_t cond_hilites[BL_ATTCLR_MAX];
-STATIC_VAR int now_or_before_idx = 0; /* 0..1 for array[2][] first index */
+static uint64_t cond_hilites[BL_ATTCLR_MAX];
+static int now_or_before_idx = 0; /* 0..1 for array[2][] first index */
 
-STATIC_OVL void
-bot_via_windowport(VOID_ARGS)
+static void
+bot_via_windowport(void)
 {
     char buf[BUFSZ];
     const char *titl;
@@ -1234,7 +1224,7 @@ bot_via_windowport(VOID_ARGS)
 }
 
 uint64_t
-get_u_condition_bits(VOID_ARGS)
+get_u_condition_bits(void)
 {
     uint64_t conditions = 0UL;
 
@@ -1296,8 +1286,7 @@ get_u_condition_bits(VOID_ARGS)
 }
 
 uint64_t
-get_m_condition_bits(mon)
-struct monst* mon;
+get_m_condition_bits(struct monst *mon)
 {
     if (!mon)
         return 0UL;
@@ -1364,9 +1353,7 @@ struct monst* mon;
 }
 
 uint64_t
-get_m_status_bits(mtmp, loc_is_you, ispeaceful, ispet, isdetected)
-struct monst* mtmp;
-boolean loc_is_you, ispeaceful, ispet, isdetected;
+get_m_status_bits(struct monst *mtmp, boolean loc_is_you, boolean ispeaceful, boolean ispet, boolean isdetected)
 {
     if (!mtmp)
         return 0UL;
@@ -1524,10 +1511,7 @@ boolean loc_is_you, ispeaceful, ispet, isdetected;
 
 
 void 
-get_m_buff_bits(mtmp, buff_bits, loc_is_you)
-struct monst* mtmp;
-uint64_t* buff_bits;
-boolean loc_is_you;
+get_m_buff_bits(struct monst *mtmp, uint64_t *buff_bits, boolean loc_is_you)
 {
     if (!mtmp || !buff_bits)
         return;
@@ -1558,13 +1542,7 @@ boolean loc_is_you;
 }
 
 void
-compose_partystatline(outbuf, outbuf2, outbuf3, outbuf4, outbuf5, bufsize)
-char* outbuf;
-char* outbuf2;
-char* outbuf3;
-char* outbuf4;
-char* outbuf5;
-size_t bufsize;
+compose_partystatline(char *outbuf, char *outbuf2, char *outbuf3, char *outbuf4, char *outbuf5, size_t bufsize)
 {
     Strcpy(outbuf, "");
     Strcpy(outbuf2, "");
@@ -1731,8 +1709,8 @@ size_t bufsize;
 }
 
 /* update just the status lines' 'time' field */
-STATIC_OVL void
-stat_update_time(VOID_ARGS)
+static void
+stat_update_time(void)
 {
     int idx = now_or_before_idx; /* no 0/1 toggle */
     int fld = BL_TIME;
@@ -1755,13 +1733,11 @@ stat_update_time(VOID_ARGS)
     return;
 }
 
-STATIC_VAR int oldrndencode = 0;
-STATIC_VAR nhsym oldgoldsym = 0;
+static int oldrndencode = 0;
+static nhsym oldgoldsym = 0;
 
-STATIC_OVL boolean
-eval_notify_windowport_field(fld, valsetlist, idx)
-int fld, idx;
-boolean *valsetlist;
+static boolean
+eval_notify_windowport_field(int fld, boolean *valsetlist, int idx)
 {
     int pc, chg, chgmax = 0, color = NO_COLOR;
     unsigned anytype;
@@ -1867,10 +1843,8 @@ boolean *valsetlist;
     return updated;
 }
 
-STATIC_OVL void
-evaluate_and_notify_windowport(valsetlist, idx)
-int idx;
-boolean *valsetlist;
+static void
+evaluate_and_notify_windowport(boolean *valsetlist, int idx)
 {
     int i, updated = 0 /*, notpresent = 0 */;
 
@@ -1930,11 +1904,14 @@ boolean *valsetlist;
     update_all = FALSE;
 }
 
-STATIC_VAR boolean initalready = FALSE;
+static boolean initalready = FALSE;
 
+/*
+ * Parameters:
+ *   reassessment: TRUE: just recheck fields w/o other initialization
+ */
 void
-status_initialize(reassessment)
-boolean reassessment; /* TRUE: just recheck fields w/o other initialization */
+status_initialize(boolean reassessment)
 {
     enum statusfields fld;
     boolean fldenabl;
@@ -1979,7 +1956,7 @@ boolean reassessment; /* TRUE: just recheck fields w/o other initialization */
 }
 
 void
-status_finish(VOID_ARGS)
+status_finish(void)
 {
     issue_breadcrumb3("status_finish", (int)blinit, (int)initalready);
     if (blinit) /* Changed to blinit instead of VIA_WINDOWPORT() because exit_nhwindows may set VIA_WINDOWPORT() to false --JG */
@@ -2016,7 +1993,7 @@ status_finish(VOID_ARGS)
 }
 
 void
-status_reassess(VOID_ARGS)
+status_reassess(void)
 {
 #ifdef STATUS_HILITES
     if (VIA_WINDOWPORT())
@@ -2024,8 +2001,8 @@ status_reassess(VOID_ARGS)
 #endif
 }
 
-STATIC_OVL void
-init_blstats(VOID_ARGS)
+static void
+init_blstats(void)
 {
     int i, j;
 
@@ -2061,7 +2038,7 @@ init_blstats(VOID_ARGS)
 
 
 void
-reset_blstats(VOID_ARGS)
+reset_blstats(void)
 {
     int i, j;
     for (i = 0; i <= 1; ++i)
@@ -2111,9 +2088,8 @@ reset_blstats(VOID_ARGS)
  *     - for strings,  0 = stayed the same, 1 = changed
  *
  */
-STATIC_OVL int
-compare_blstats(bl1, bl2)
-struct istat_s *bl1, *bl2;
+static int
+compare_blstats(struct istat_s *bl1, struct istat_s *bl2)
 {
     if (!bl1 || !bl2)
         return 0;
@@ -2210,11 +2186,8 @@ struct istat_s *bl1, *bl2;
     return result;
 }
 
-STATIC_OVL char *
-anything_to_s(buf, a, anytype)
-char *buf;
-anything *a;
-int anytype;
+static char *
+anything_to_s(char *buf, anything *a, int anytype)
 {
     if (!buf)
         return (char *) 0;
@@ -2263,11 +2236,8 @@ int anytype;
 }
 
 #ifdef STATUS_HILITES
-STATIC_OVL void
-s_to_anything(a, buf, anytype)
-anything *a;
-char *buf;
-int anytype;
+static void
+s_to_anything(anything *a, char *buf, int anytype)
 {
     if (!buf || !a)
         return;
@@ -2318,9 +2288,8 @@ int anytype;
 }
 #endif /* STATUS_HILITES */
 
-STATIC_OVL int
-percentage(bl, maxbl)
-struct istat_s *bl, *maxbl;
+static int
+percentage(struct istat_s *bl, struct istat_s *maxbl)
 {
     int result = 0;
     int anytype;
@@ -2397,7 +2366,7 @@ struct istat_s *bl, *maxbl;
    to reconstruct that from the encumbrance string or asking the general
    core what the value is */
 int
-stat_cap_indx(VOID_ARGS)
+stat_cap_indx(void)
 {
     int cap;
 
@@ -2412,7 +2381,7 @@ stat_cap_indx(VOID_ARGS)
 /* callback so that interface can get hunger index rather than trying to
    reconstruct that from the hunger string or dipping into core internals */
 int
-stat_hunger_indx(VOID_ARGS)
+stat_hunger_indx(void)
 {
     int uhs;
 
@@ -2426,8 +2395,7 @@ stat_hunger_indx(VOID_ARGS)
 
 /* used by X11 for "tty status" even when STATUS_HILITES is disabled */
 const char *
-bl_idx_to_fldname(idx)
-int idx;
+bl_idx_to_fldname(int idx)
 {
     if (idx >= 0 && idx < MAXBLSTATS)
         return initblstats[idx].fldname;
@@ -2442,7 +2410,7 @@ int idx;
 
 struct hilite_s status_hilites[MAXBLSTATS];
 
-STATIC_VAR const struct fieldid_t {
+static const struct fieldid_t {
     const char *fieldname;
     enum statusfields fldid;
 } fieldids_alias[] = {
@@ -2477,14 +2445,13 @@ STATIC_VAR const struct fieldid_t {
 };
 
 /* format arguments */
-STATIC_VAR const char threshold_value[] = "hilite_status threshold ",
+static const char threshold_value[] = "hilite_status threshold ",
                   is_out_of_range[] = " is out of range";
 
 
 /* field name to bottom line index */
-STATIC_OVL enum statusfields
-fldname_to_bl_indx(name)
-const char *name;
+static enum statusfields
+fldname_to_bl_indx(const char *name)
 {
     int i, nmatches = 0, fld = 0;
 
@@ -2521,11 +2488,8 @@ const char *name;
     return (nmatches == 1) ? fld : BL_FLUSH;
 }
 
-STATIC_OVL boolean
-hilite_reset_needed(bl_p, augmented_time)
-struct istat_s *bl_p;
-int64_t augmented_time; /* no longer augmented; it once encoded fractional
-                      * amounts for multiple moves within same turn     */
+static boolean
+hilite_reset_needed(struct istat_s *bl_p, int64_t augmented_time)
 {
     /*
      * This 'multi' handling may need some tuning...
@@ -2544,7 +2508,7 @@ int64_t augmented_time; /* no longer augmented; it once encoded fractional
 
 /* called from moveloop(); sets context.botl if temp hilites have timed out */
 void
-status_eval_next_unhilite(VOID_ARGS)
+status_eval_next_unhilite(void)
 {
     int i;
     struct istat_s *curr;
@@ -2585,7 +2549,7 @@ status_eval_next_unhilite(VOID_ARGS)
 
 /* called by options handling when 'statushilites' value is changed */
 void
-reset_status_hilites(VOID_ARGS)
+reset_status_hilites(void)
 {
     if (iflags.hilite_delta) {
         int i;
@@ -2599,9 +2563,8 @@ reset_status_hilites(VOID_ARGS)
 
 /* test whether the text from a title rule matches the string for
    title-while-polymorphed in the 'textmatch' menu */
-STATIC_OVL boolean
-noneoftheabove(hl_text)
-const char *hl_text;
+static boolean
+noneoftheabove(const char *hl_text)
 {
     if (fuzzymatch(hl_text, "none of the above", "\" -_", TRUE)
         || fuzzymatch(hl_text, "(polymorphed)", "\"()", TRUE)
@@ -2628,11 +2591,8 @@ const char *hl_text;
  * Get back:
  *     pointer to rule that applies; Null if no rule does.
  */
-STATIC_OVL struct hilite_s *
-get_hilite(idx, fldidx, vp, chg, pc, colorptr)
-int idx, fldidx, chg, pc;
-genericptr_t vp;
-int *colorptr;
+static struct hilite_s *
+get_hilite(int idx, int fldidx, genericptr_t vp, int chg, int pc, int *colorptr)
 {
     struct hilite_s *hl, *rule = 0;
     anything *value = (anything *) vp;
@@ -2820,10 +2780,8 @@ int *colorptr;
     return rule;
 }
 
-STATIC_OVL void
-split_clridx(idx, coloridx, attrib)
-int idx;
-int *coloridx, *attrib;
+static void
+split_clridx(int idx, int *coloridx, int *attrib)
 {
     if (coloridx)
         *coloridx = idx & 0x00FF;
@@ -2840,9 +2798,7 @@ int *coloridx, *attrib;
  * and configure the hilite.
  */
 boolean
-parse_status_hl1(op, from_configfile)
-char *op;
-boolean from_configfile;
+parse_status_hl1(char *op, boolean from_configfile)
 {
 #define MAX_THRESH 21
     char hsbuf[MAX_THRESH][QBUFSZ];
@@ -2896,9 +2852,8 @@ boolean from_configfile;
 }
 
 /* is str in the format of "[<>]?=?[-+]?[0-9]+%?" regex */
-STATIC_OVL boolean
-is_ltgt_percentnumber(str)
-const char *str;
+static boolean
+is_ltgt_percentnumber(const char *str)
 {
     const char *s = str;
 
@@ -2918,9 +2873,8 @@ const char *str;
 }
 
 /* does str only contain "<>=-+0-9%" chars */
-STATIC_OVL boolean
-has_ltgt_percentnumber(str)
-const char *str;
+static boolean
+has_ltgt_percentnumber(const char *str)
 {
     const char *s = str;
 
@@ -2936,11 +2890,8 @@ const char *str;
  * returns number of strings, or -1 if more than maxsf or MAX_SUBFIELDS
  */
 #define MAX_SUBFIELDS 16
-STATIC_OVL int
-splitsubfields(str, sfarr, maxsf)
-char *str;
-char ***sfarr;
-int maxsf;
+static int
+splitsubfields(char *str, char ***sfarr, int maxsf)
 {
     static char *subfields[MAX_SUBFIELDS];
     char *st = (char *) 0;
@@ -2980,12 +2931,8 @@ int maxsf;
 }
 #undef MAX_SUBFIELDS
 
-STATIC_OVL boolean
-is_fld_arrayvalues(str, arr, arrmin, arrmax, retidx)
-const char *str;
-const char *const *arr;
-int arrmin, arrmax;
-int *retidx;
+static boolean
+is_fld_arrayvalues(const char *str, const char *const *arr, int arrmin, int arrmax, int *retidx)
 {
     int i;
 
@@ -2997,11 +2944,8 @@ int *retidx;
     return FALSE;
 }
 
-STATIC_OVL int
-query_arrayvalue(querystr, arr, arrmin, arrmax)
-const char *querystr;
-const char *const *arr;
-int arrmin, arrmax;
+static int
+query_arrayvalue(const char *querystr, const char *const *arr, int arrmin, int arrmax)
 {
     int i, res, ret = arrmin - 1;
     winid tmpwin;
@@ -3031,10 +2975,8 @@ int arrmin, arrmax;
     return ret;
 }
 
-STATIC_OVL void
-status_hilite_add_threshold(fld, hilite)
-int fld;
-struct hilite_s *hilite;
+static void
+status_hilite_add_threshold(int fld, struct hilite_s *hilite)
 {
     struct hilite_s *new_hilite;
 
@@ -3056,10 +2998,8 @@ struct hilite_s *hilite;
 }
 
 
-STATIC_OVL boolean
-parse_status_hl2(s, from_configfile)
-char (*s)[QBUFSZ];
-boolean from_configfile;
+static boolean
+parse_status_hl2(char (*s)[QBUFSZ], boolean from_configfile)
 {
     char *tmp, *how;
     int sidx = 0, i = -1, dt = -1;
@@ -3415,7 +3355,7 @@ const struct condmap condition_aliases[] = {
 };
 
 uint64_t
-query_conditions(VOID_ARGS)
+query_conditions(void)
 {
     int i,res;
     uint64_t ret = 0UL;
@@ -3445,10 +3385,9 @@ query_conditions(VOID_ARGS)
     return ret;
 }
 
-STATIC_OVL
+static
 char *
-conditionbitmask2str(ul)
-uint64_t ul;
+conditionbitmask2str(uint64_t ul)
 {
     static char buf[BUFSZ];
     int i;
@@ -3478,8 +3417,7 @@ uint64_t ul;
 }
 
 const char*
-get_condition_name(ul)
-uint64_t ul;
+get_condition_name(uint64_t ul)
 {
     int i;
     for (i = 0; i < SIZE(valid_conditions); i++)
@@ -3490,9 +3428,8 @@ uint64_t ul;
 }
 
 
-STATIC_OVL uint64_t
-match_str2conditionbitmask(str)
-const char *str;
+static uint64_t
+match_str2conditionbitmask(const char *str)
 {
     int i, nmatches = 0;
     uint64_t mask = 0UL;
@@ -3529,9 +3466,8 @@ const char *str;
     return mask;
 }
 
-STATIC_OVL uint64_t
-str2conditionbitmask(str)
-char *str;
+static uint64_t
+str2conditionbitmask(char *str)
 {
     uint64_t conditions_bitmask = 0UL;
     char **subfields;
@@ -3554,10 +3490,8 @@ char *str;
     return conditions_bitmask;
 }
 
-STATIC_OVL boolean
-parse_condition(s, sidx)
-char (*s)[QBUFSZ];
-int sidx;
+static boolean
+parse_condition(char (*s)[QBUFSZ], int sidx)
 {
     int i;
     int coloridx = NO_COLOR;
@@ -3678,7 +3612,7 @@ int sidx;
 }
 
 void
-clear_status_hilites(VOID_ARGS)
+clear_status_hilites(void)
 {
     int i;
 
@@ -3695,11 +3629,8 @@ clear_status_hilites(VOID_ARGS)
     }
 }
 
-STATIC_OVL char*
-hlattr2attrname(attrib, buf, bufsz)
-int attrib;
-char *buf;
-size_t bufsz;
+static char*
+hlattr2attrname(int attrib, char *buf, size_t bufsz)
 {
     if (attrib && buf) {
         char attbuf[BUFSZ];
@@ -3741,12 +3672,8 @@ struct _status_hilite_line_str {
     struct _status_hilite_line_str *next;
 };
 
-STATIC_OVL void
-status_hilite_linestr_add(fld, hl, mask, str)
-int fld;
-struct hilite_s *hl;
-uint64_t mask;
-const char *str;
+static void
+status_hilite_linestr_add(int fld, struct hilite_s *hl, uint64_t mask, const char *str)
 {
     struct _status_hilite_line_str *tmp, *nxt;
 
@@ -3772,8 +3699,8 @@ const char *str;
     }
 }
 
-STATIC_OVL void
-status_hilite_linestr_done(VOID_ARGS)
+static void
+status_hilite_linestr_done(void)
 {
     struct _status_hilite_line_str *nxt, *tmp = status_hilite_str;
 
@@ -3786,9 +3713,8 @@ status_hilite_linestr_done(VOID_ARGS)
     status_hilite_str_id = 0;
 }
 
-STATIC_OVL int
-status_hilite_linestr_countfield(fld)
-int fld;
+static int
+status_hilite_linestr_countfield(int fld)
 {
     struct _status_hilite_line_str *tmp;
     boolean countall = (fld == BL_FLUSH);
@@ -3804,7 +3730,7 @@ int fld;
 
 /* used by options handling, doset(options.c) */
 int
-count_status_hilites(VOID_ARGS)
+count_status_hilites(void)
 {
     int count;
 
@@ -3814,8 +3740,8 @@ count_status_hilites(VOID_ARGS)
     return count;
 }
 
-STATIC_OVL void
-status_hilite_linestr_gather_conditions(VOID_ARGS)
+static void
+status_hilite_linestr_gather_conditions(void)
 {
     int i;
     struct _cond_map {
@@ -3894,8 +3820,8 @@ status_hilite_linestr_gather_conditions(VOID_ARGS)
         }
 }
 
-STATIC_OVL void
-status_hilite_linestr_gather(VOID_ARGS)
+static void
+status_hilite_linestr_gather(void)
 {
     int i;
     struct hilite_s *hl;
@@ -3915,8 +3841,7 @@ status_hilite_linestr_gather(VOID_ARGS)
 
 
 char *
-status_hilite2str(hl)
-struct hilite_s *hl;
+status_hilite2str(struct hilite_s *hl)
 {
     static char buf[BUFSZ];
     int clr = 0, attr = 0;
@@ -3993,8 +3918,8 @@ struct hilite_s *hl;
     return buf;
 }
 
-STATIC_OVL int
-status_hilite_menu_choose_field(VOID_ARGS)
+static int
+status_hilite_menu_choose_field(void)
 {
     winid tmpwin;
     int i, res, fld = BL_FLUSH;
@@ -4028,9 +3953,8 @@ status_hilite_menu_choose_field(VOID_ARGS)
     return fld;
 }
 
-STATIC_OVL int
-status_hilite_menu_choose_behavior(fld)
-int fld;
+static int
+status_hilite_menu_choose_behavior(int fld)
 {
     winid tmpwin;
     int res = 0, beh = BL_TH_NONE-1;
@@ -4120,11 +4044,8 @@ int fld;
     return beh;
 }
 
-STATIC_OVL int
-status_hilite_menu_choose_updownboth(fld, str, ltok, gtok)
-int fld;
-const char *str;
-boolean ltok, gtok;
+static int
+status_hilite_menu_choose_updownboth(int fld, const char *str, boolean ltok, boolean gtok)
 {
     int res, ret = NO_LTEQGT;
     winid tmpwin;
@@ -4198,9 +4119,8 @@ boolean ltok, gtok;
     return ret;
 }
 
-STATIC_OVL boolean
-status_hilite_menu_add(origfld)
-int origfld;
+static boolean
+status_hilite_menu_add(int origfld)
 {
     int fld;
     int behavior;
@@ -4638,8 +4558,7 @@ choose_color:
 }
 
 boolean
-status_hilite_remove(id)
-int id;
+status_hilite_remove(int id)
 {
     struct _status_hilite_line_str *hlstr = status_hilite_str;
 
@@ -4688,8 +4607,7 @@ int id;
 }
 
 boolean
-status_hilite_menu_fld(fld)
-int fld;
+status_hilite_menu_fld(int fld)
 {
     winid tmpwin;
     int i, res;
@@ -4808,7 +4726,7 @@ shlmenu_free:
 }
 
 void
-status_hilites_viewall(VOID_ARGS)
+status_hilites_viewall(void)
 {
     winid datawin;
     struct _status_hilite_line_str *hlstr = status_hilite_str;
@@ -4829,7 +4747,7 @@ status_hilites_viewall(VOID_ARGS)
 }
 
 boolean
-status_hilite_menu(VOID_ARGS)
+status_hilite_menu(void)
 {
     winid tmpwin;
     int i, res;
@@ -4906,10 +4824,10 @@ shlmenu_redo:
     return TRUE;
 }
 
-STATIC_VAR struct hilite_s* saved_hilites[MAXBLSTATS] = { 0 };
+static struct hilite_s* saved_hilites[MAXBLSTATS] = { 0 };
 
 void
-botl_save_hilites(VOID_ARGS)
+botl_save_hilites(void)
 {
     int i;
     for (i = 0; i < MAXBLSTATS; i++)
@@ -4921,7 +4839,7 @@ botl_save_hilites(VOID_ARGS)
 }
 
 void
-botl_restore_hilites(VOID_ARGS)
+botl_restore_hilites(void)
 {
     int i;
     for (i = 0; i < MAXBLSTATS; i++)

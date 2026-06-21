@@ -17,14 +17,13 @@
 #include "func_tab.h"
 
 char morc = 0; /* tell the outside world what char you chose */
-STATIC_VAR boolean suppress_history;
-STATIC_DCL boolean FDECL(ext_cmd_getlin_hook, (char *));
+static boolean suppress_history;
+static boolean ext_cmd_getlin_hook(char *);
 
-typedef boolean FDECL((*getlin_hook_proc), (char *));
+typedef boolean (*getlin_hook_proc)(char *);
 
-STATIC_DCL void FDECL(hooked_tty_getlin_ex,
-                      (int, int, int, const char *, char *, const char*, const char*, const char*, getlin_hook_proc));
-extern int NDECL(extcmd_via_menu); /* cmd.c */
+static void hooked_tty_getlin_ex(int, int, int, const char *, char *, const char*, const char*, const char*, getlin_hook_proc);
+extern int extcmd_via_menu(void); /* cmd.c */
 
 extern char erase_char, kill_char; /* from appropriate tty.c file */
 
@@ -35,13 +34,7 @@ extern char erase_char, kill_char; /* from appropriate tty.c file */
  * resulting string is "\033".
  */
 void
-tty_getlin_ex(style, attr, color, query, bufp, placeholder, linesuffix, introline)
-int style, attr, color;
-const char *query;
-const char* placeholder;
-const char* linesuffix;
-const char* introline;
-register char *bufp;
+tty_getlin_ex(int style, int attr, int color, const char *query, char *bufp, const char *placeholder, const char *linesuffix, const char *introline)
 {
     suppress_history = FALSE;
     hooked_tty_getlin_ex(style, attr, color, query, bufp, placeholder, linesuffix, introline, (getlin_hook_proc) 0);
@@ -49,15 +42,8 @@ register char *bufp;
 
 boolean skip_utf8 = FALSE;
 
-STATIC_OVL void
-hooked_tty_getlin_ex(style, attr, color, query, bufp, placeholder, linesuffix, introline, hook)
-int style UNUSED, attr, color;
-const char *query;
-register char *bufp;
-const char* placeholder;
-const char* linesuffix;
-const char* introline UNUSED;
-getlin_hook_proc hook;
+static void
+hooked_tty_getlin_ex(int style UNUSED, int attr, int color, const char *query, char *bufp, const char *placeholder, const char *linesuffix, const char *introline UNUSED, getlin_hook_proc hook)
 {
     register char *obufp = bufp;
     int c;
@@ -273,9 +259,12 @@ getlin_hook_proc hook;
     }
 }
 
+/*
+ * Parameters:
+ *   s: chars allowed besides return
+ */
 void
-xwaitforspace(s)
-const char *s; /* chars allowed besides return */
+xwaitforspace(const char *s)
 {
     int c, x = ttyDisplay ? (int) ttyDisplay->dismiss_more : '\n';
 
@@ -338,9 +327,8 @@ const char *s; /* chars allowed besides return */
  *    + we don't change the characters that are already in base
  *    + base has enough room to hold our string
  */
-STATIC_OVL boolean
-ext_cmd_getlin_hook(base)
-char *base;
+static boolean
+ext_cmd_getlin_hook(char *base)
 {
     int oindex, com_index;
 

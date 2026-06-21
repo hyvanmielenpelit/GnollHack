@@ -16,8 +16,8 @@
 #include <string.h>
 #endif
 
-static void FDECL(grow_ld, (libdir **, int *, int));
-static void FDECL(xexit, (int));
+static void grow_ld(libdir **, int *, int);
+static void xexit(int);
 
 #ifdef DLB
 #ifdef DLBLIB
@@ -26,17 +26,16 @@ static void FDECL(xexit, (int));
 #define LIBLISTFILE "dlb.lst"     /* default list file */
 
 /* library functions (from dlb.c) */
-extern boolean FDECL(open_library, (const char *, library *));
-extern void FDECL(close_library, (library *));
+extern boolean open_library(const char *, library *);
+extern void close_library(library *);
 
-char *FDECL(eos, (char *)); /* also used by dlb.c */
-FILE *FDECL(fopen_datafile, (const char *, const char *));
+char *eos(char *); /* also used by dlb.c */
+FILE *fopen_datafile(const char *, const char *);
 
-static void FDECL(Write, (int, char *, long));
-static void NDECL(usage);
-static void NDECL(verbose_help);
-static void FDECL(write_dlb_directory,
-                  (int, int, libdir *, size_t, size_t, size_t));
+static void Write(int, char *, long);
+static void usage(void);
+static void verbose_help(void);
+static void write_dlb_directory(int, int, libdir *, size_t, size_t, size_t);
 
 static char default_progname[] = "dlb";
 static char *progname = default_progname;
@@ -110,10 +109,7 @@ verbose_help()
 }
 
 static void
-Write(out, buf, len)
-int out;
-char *buf;
-long len;
+Write(int out, char *buf, long len)
 {
 #if defined(MSDOS) && !defined(__DJGPP__)
     unsigned short slen;
@@ -134,8 +130,7 @@ long len;
 }
 
 char *
-eos(s)
-char *s;
+eos(char *s)
 {
     while (*s)
         s++;
@@ -144,8 +139,7 @@ char *s;
 
 /* open_library(dlb.c) needs this (which normally comes from src/files.c) */
 FILE *
-fopen_datafile(filename, mode)
-const char *filename, *mode;
+fopen_datafile(const char *filename, const char *mode)
 {
     return fopen(filename, mode);
 }
@@ -154,9 +148,7 @@ const char *filename, *mode;
 #endif /* DLB */
 
 int
-main(argc, argv)
-int argc;
-char **argv;
+main(int argc, char **argv)
 {
 #ifdef DLB
 #ifdef DLBLIB
@@ -484,10 +476,7 @@ char **argv;
 #ifdef DLBLIB
 
 static void
-grow_ld(ld_p, ldlimit_p, alloc_incr)
-libdir **ld_p;
-int *ldlimit_p;
-int alloc_incr;
+grow_ld(libdir **ld_p, int *ldlimit_p, int alloc_incr)
 {
     static libdir zerolibdir;
     int i = 0, newlimit = *ldlimit_p + alloc_incr;
@@ -504,10 +493,7 @@ int alloc_incr;
 }
 
 static void
-write_dlb_directory(out, nfiles, ld, slen, dir_size, flen)
-int out, nfiles;
-libdir *ld;
-size_t slen, dir_size, flen;
+write_dlb_directory(int out, int nfiles, libdir *ld, size_t slen, size_t dir_size, size_t flen)
 {
     char buf[BUFSIZ];
     int i;
@@ -537,8 +523,7 @@ size_t slen, dir_size, flen;
 #endif /* DLB */
 
 static void
-xexit(retcd)
-int retcd;
+xexit(int retcd)
 {
 #ifdef DLB
 #ifdef AMIGA

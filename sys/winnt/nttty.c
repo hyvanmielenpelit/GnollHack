@@ -73,19 +73,18 @@ cell_t undefined_cell = { CONSOLE_UNDEFINED_CHARACTER,
  * GetConsoleOutputCP
  */
 
-static BOOL FDECL(CtrlHandler, (DWORD));
-static void FDECL(xputc_core, (int));
-void FDECL(cmov, (int, int));
-void FDECL(nocmov, (int, int));
-int FDECL(process_keystroke,
-          (INPUT_RECORD *, boolean *, BOOLEAN_P numberpad, int portdebug));
-static void NDECL(init_ttycolor);
-static void NDECL(really_move_cursor);
-static void NDECL(check_and_set_font);
-static boolean NDECL(check_font_widths);
-static void NDECL(set_known_good_console_font);
-static void NDECL(restore_original_console_font);
-extern void NDECL(safe_routines);
+static BOOL CtrlHandler(DWORD);
+static void xputc_core(int);
+void cmov(int, int);
+void nocmov(int, int);
+int process_keystroke(INPUT_RECORD *, boolean *, boolean numberpad, int portdebug);
+static void init_ttycolor(void);
+static void really_move_cursor(void);
+static void check_and_set_font(void);
+static boolean check_font_widths(void);
+static void set_known_good_console_font(void);
+static void restore_original_console_font(void);
+extern void safe_routines(void);
 
 /* Win32 Screen buffer,coordinate,console I/O information */
 COORD ntcoord;
@@ -108,8 +107,8 @@ static boolean init_ttycolor_completed;
 static boolean display_cursor_info = FALSE;
 #endif
 #ifdef CHANGE_COLOR
-static void NDECL(adjust_palette);
-static int FDECL(match_color_name, (const char *));
+static void adjust_palette(void);
+static int match_color_name(const char *);
 typedef HWND(WINAPI *GETCONSOLEWINDOW)();
 static HWND GetConsoleHandle(void);
 static HWND GetConsoleHwnd(void);
@@ -184,11 +183,11 @@ char erase_char, kill_char;
 
 /* dynamic keystroke handling .DLL support */
 typedef int(__stdcall *PROCESS_KEYSTROKE)(HANDLE, INPUT_RECORD *, boolean *,
-                                          BOOLEAN_P, int);
+                                          boolean, int);
 
 typedef int(__stdcall *NHKBHIT)(HANDLE, INPUT_RECORD *);
 
-typedef int(__stdcall *CHECKINPUT)(HANDLE, INPUT_RECORD *, DWORD *, BOOLEAN_P,
+typedef int(__stdcall *CHECKINPUT)(HANDLE, INPUT_RECORD *, DWORD *, boolean,
                                    int, int *, coord *);
 
 typedef int(__stdcall *SOURCEWHERE)(char **);
@@ -308,8 +307,7 @@ gettty()
 
 /* reset terminal to original state */
 void
-settty(s)
-const char *s;
+settty(const char *s)
 {
     cmov(ttyDisplay->curx, ttyDisplay->cury);
     end_screen();
@@ -337,8 +335,7 @@ setftty()
 }
 
 void
-tty_startup(wid, hgt)
-int *wid, *hgt;
+tty_startup(int *wid, int *hgt)
 {
     *wid = console.width;
     *hgt = console.height;
@@ -346,8 +343,7 @@ int *wid, *hgt;
 }
 
 void
-tty_number_pad(state)
-int state;
+tty_number_pad(int state)
 {
     // do nothing
 }
@@ -370,8 +366,7 @@ tty_end_screen()
 }
 
 static BOOL
-CtrlHandler(ctrltype)
-DWORD ctrltype;
+CtrlHandler(DWORD ctrltype)
 {
     switch (ctrltype) {
     /*    case CTRL_C_EVENT: */
@@ -393,10 +388,13 @@ DWORD ctrltype;
     }
 }
 
+/*
+ * Parameters:
+ *   mode: unused
+ */
 /* called by pcmain() and process_command_line_arguments() */
 void
-nttty_open(mode)
-int mode; // unused
+nttty_open(int mode)
 {
     DWORD cmode;
 
@@ -424,11 +422,7 @@ nttty_exit()
 }
 
 int
-process_keystroke(ir, valid, numberpad, portdebug)
-INPUT_RECORD *ir;
-boolean *valid;
-boolean numberpad;
-int portdebug;
+process_keystroke(INPUT_RECORD *ir, boolean *valid, boolean numberpad, int portdebug)
 {
     int ch = keyboard_handler.pProcessKeystroke(
                     console.hConIn, ir, valid, numberpad, portdebug);
@@ -469,8 +463,7 @@ tgetch()
 }
 
 int
-ntposkey(x, y, mod)
-int *x, *y, *mod;
+ntposkey(int *x, int *y, int *mod)
 {
     int ch;
     coord cc;
@@ -522,8 +515,7 @@ really_move_cursor()
 }
 
 void
-cmov(x, y)
-int x, y;
+cmov(int x, int y)
 {
     ttyDisplay->cury = y;
     ttyDisplay->curx = x;
@@ -532,8 +524,7 @@ int x, y;
 }
 
 void
-nocmov(x, y)
-int x, y;
+nocmov(int x, int y)
 {
     ttyDisplay->curx = x;
     ttyDisplay->cury = y;
@@ -542,8 +533,7 @@ int x, y;
 }
 
 void
-xputc(ch)
-int ch;
+xputc(int ch)
 {
     set_console_cursor(ttyDisplay->curx, ttyDisplay->cury);
 
@@ -554,8 +544,7 @@ int ch;
 }
 
 void
-xputs(s)
-const char *s;
+xputs(const char *s)
 {
     size_t k;
     size_t slen = strlen(s);
@@ -574,8 +563,7 @@ const char *s;
  * on the display.
  */
 void
-xputc_core(ch)
-int ch;
+xputc_core(int ch)
 {
     nhassert(console.cursor.X >= 0 && console.cursor.X < console.width);
     nhassert(console.cursor.Y >= 0 && console.cursor.Y < console.height);
@@ -637,9 +625,7 @@ int ch;
  */
 
 void
-g_putch(in_ch, is_CP437)
-int in_ch;
-boolean is_CP437;
+g_putch(int in_ch, boolean is_CP437)
 {
     boolean inverse = FALSE;
     nhsym ch = in_ch;
@@ -739,8 +725,7 @@ tty_delay_output()
 }
 
 void
-tty_delay_output_milliseconds(interval)
-int interval;
+tty_delay_output_milliseconds(int interval)
 {
     /* delay 50 ms - uses ANSI C clock() function now */
     clock_t goal;
@@ -757,8 +742,7 @@ int interval;
 }
 
 void
-tty_delay_output_intervals(intervals)
-int intervals;
+tty_delay_output_intervals(int intervals)
 {
     /* delay 50 ms - uses ANSI C clock() function now */
     clock_t goal;
@@ -978,8 +962,7 @@ toggle_mouse_support()
 
 /* handle tty options updates here */
 void
-nttty_preference_update(pref)
-const char *pref;
+nttty_preference_update(const char *pref)
 {
     if (stricmp(pref, "mouse_support") == 0) {
 #ifndef NO_MOUSE_ALLOWED
@@ -1047,8 +1030,7 @@ win32con_toggle_cursor_info()
 #endif
 
 void
-map_subkeyvalue(op)
-register char *op;
+map_subkeyvalue(char *op)
 {
     char digits[] = "0123456789";
     size_t length, i;
@@ -1184,9 +1166,7 @@ synch_cursor()
 
 #ifdef CHANGE_COLOR
 void
-tty_change_color(color_number, rgb, reverse)
-int color_number, reverse;
-int64_t rgb;
+tty_change_color(int color_number, int64_t rgb, int reverse)
 {
     /* Map GnollHack color index to NT Console palette index */
     int idx, win32_color_number[] = {
@@ -1231,8 +1211,7 @@ tty_get_color_string()
 }
 
 int
-match_color_name(c)
-const char *c;
+match_color_name(const char *c)
 {
     const struct others {
         int idx;
@@ -1261,8 +1240,7 @@ const char *c;
  * Returns 0 if badoption syntax
  */
 int
-alternative_palette(op)
-char *op;
+alternative_palette(char *op)
 {
     /*
      *    palette:color-R-G-B
@@ -1403,7 +1381,7 @@ static void GetConsoleSizeInfo(CONSOLE_INFO *pci);
 VOID WINAPI SetConsolePalette(COLORREF crPalette[16]);
 
 void
-adjust_palette(VOID_ARGS)
+adjust_palette(void)
 {
     SetConsolePalette(UserDefinedColors);
     altered_palette = 0;

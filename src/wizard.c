@@ -13,13 +13,13 @@
 #include "hack.h"
 #include "qtext.h"
 
-STATIC_DCL short FDECL(which_arti, (uint64_t));
-STATIC_DCL boolean FDECL(mon_has_arti, (struct monst *, SHORT_P));
-STATIC_DCL struct monst *FDECL(other_mon_has_arti, (struct monst *, SHORT_P));
-STATIC_DCL struct obj *FDECL(on_ground, (SHORT_P));
-STATIC_DCL boolean FDECL(you_have_item, (uint64_t));
-STATIC_DCL uint64_t FDECL(target_on, (uint64_t, struct monst *));
-STATIC_DCL uint64_t FDECL(strategy, (struct monst *));
+static short which_arti(uint64_t);
+static boolean mon_has_arti(struct monst *, short);
+static struct monst *other_mon_has_arti(struct monst *, short);
+static struct obj *on_ground(short);
+static boolean you_have_item(uint64_t);
+static uint64_t target_on(uint64_t, struct monst *);
+static uint64_t strategy(struct monst *);
 
 /* adding more neutral creatures will tend to reduce the number of monsters
    summoned by summon_nasties(); adding more lawful creatures will reduce the number
@@ -28,7 +28,7 @@ STATIC_DCL uint64_t FDECL(strategy, (struct monst *));
    only four lawful candidates, so lawful summoners tended to summon more
    (trying to get lawful or neutral but obtaining chaotic instead) than
    their chaotic counterparts */
-STATIC_VAR NEARDATA const int nasties[] = {
+static NEARDATA const int nasties[] = {
     /* neutral */
     PM_GARGANTUAN_COCKATRICE, PM_GIANT_COCKATRICE, PM_MINOTAUR,
     PM_OWLBEAR_PATRIARCH, PM_OWLBEAR_MATRIARCH, PM_PURPLE_WORM, 
@@ -50,7 +50,7 @@ STATIC_VAR NEARDATA const int nasties[] = {
        they're summoners so would aggravate excessive summoning) */
 };
 
-STATIC_VAR NEARDATA const unsigned wizapp[] = {
+static NEARDATA const unsigned wizapp[] = {
     PM_HUMAN,      PM_WATER_DEMON,  PM_VAMPIRE,       PM_RED_DRAGON,
     PM_TROLL,      PM_UMBRAL_HULK,   PM_XORN,          PM_XAN,
     PM_COCKATRICE, PM_FLOATING_EYE, PM_GUARDIAN_NAGA, PM_TRAPPER,
@@ -59,7 +59,7 @@ STATIC_VAR NEARDATA const unsigned wizapp[] = {
 /* If you've found the Amulet, make the Wizard appear after some time */
 /* Also, give hints about portal locations, if amulet is worn/wielded -dlc */
 void
-amulet(VOID_ARGS)
+amulet(void)
 {
     struct monst *mtmp;
     struct trap *ttmp;
@@ -108,8 +108,7 @@ amulet(VOID_ARGS)
 }
 
 int
-mon_has_amulet(mtmp)
-struct monst *mtmp;
+mon_has_amulet(struct monst *mtmp)
 {
     struct obj *otmp;
 
@@ -120,8 +119,7 @@ struct monst *mtmp;
 }
 
 int
-mon_has_special(mtmp)
-struct monst *mtmp;
+mon_has_special(struct monst *mtmp)
 {
     struct obj *otmp;
 
@@ -148,9 +146,8 @@ struct monst *mtmp;
 
 #define M_Wants(mask) (mtmp->data->mflags3 & (mask))
 
-STATIC_OVL short
-which_arti(mask)
-uint64_t mask;
+static short
+which_arti(uint64_t mask)
 {
     switch (mask) {
     case M3_WANTSAMUL:
@@ -172,10 +169,8 @@ uint64_t mask;
  *      since bell, book, candle, and amulet are all objects, not really
  *      artifacts right now.  [MRS]
  */
-STATIC_OVL boolean
-mon_has_arti(mtmp, otyp)
-struct monst *mtmp;
-short otyp;
+static boolean
+mon_has_arti(struct monst *mtmp, short otyp)
 {
     struct obj *otmp;
 
@@ -189,10 +184,8 @@ short otyp;
     return 0;
 }
 
-STATIC_OVL struct monst *
-other_mon_has_arti(mtmp, otyp)
-struct monst *mtmp;
-short otyp;
+static struct monst *
+other_mon_has_arti(struct monst *mtmp, short otyp)
 {
     struct monst *mtmp2;
 
@@ -205,9 +198,8 @@ short otyp;
     return (struct monst *) 0;
 }
 
-STATIC_OVL struct obj *
-on_ground(otyp)
-short otyp;
+static struct obj *
+on_ground(short otyp)
 {
     struct obj *otmp;
 
@@ -220,9 +212,8 @@ short otyp;
     return (struct obj *) 0;
 }
 
-STATIC_OVL boolean
-you_have_item(mask)
-uint64_t mask;
+static boolean
+you_have_item(uint64_t mask)
 {
     switch (mask) {
     case M3_WANTSAMUL:
@@ -241,10 +232,8 @@ uint64_t mask;
     return 0;
 }
 
-STATIC_OVL uint64_t
-target_on(mask, mtmp)
-uint64_t mask;
-struct monst *mtmp;
+static uint64_t
+target_on(uint64_t mask, struct monst *mtmp)
 {
     short otyp;
     struct obj *otmp;
@@ -269,9 +258,8 @@ struct monst *mtmp;
     return (uint64_t) STRAT_NONE;
 }
 
-STATIC_OVL uint64_t
-strategy(mtmp)
-struct monst *mtmp;
+static uint64_t
+strategy(struct monst *mtmp)
 {
     uint64_t strat, dstrat;
 
@@ -332,9 +320,7 @@ struct monst *mtmp;
 }
 
 void
-choose_stairs(sx, sy)
-xchar *sx;
-xchar *sy;
+choose_stairs(xchar *sx, xchar *sy)
 {
     xchar x = 0, y = 0;
 
@@ -369,8 +355,7 @@ xchar *sy;
 }
 
 int
-tactics(mtmp)
-struct monst *mtmp;
+tactics(struct monst *mtmp)
 {
     uint64_t strat = strategy(mtmp);
     xchar sx = 0, sy = 0;
@@ -474,8 +459,7 @@ struct monst *mtmp;
 
 /* are there any monsters mon could aggravate? */
 boolean
-has_aggravatables(mon)
-struct monst *mon;
+has_aggravatables(struct monst *mon)
 {
     struct monst *mtmp;
     boolean in_w_tower = In_W_tower(mon->mx, mon->my, &u.uz);
@@ -496,7 +480,7 @@ struct monst *mon;
 }
 
 void
-aggravate(VOID_ARGS)
+aggravate(void)
 {
     struct monst *mtmp;
     boolean in_w_tower = In_W_tower(u.ux, u.uy, &u.uz);
@@ -532,7 +516,7 @@ aggravate(VOID_ARGS)
 }
 
 void
-clonewiz(VOID_ARGS)
+clonewiz(void)
 {
     struct monst *mtmp2;
 
@@ -552,9 +536,7 @@ clonewiz(VOID_ARGS)
 
 /* also used by newcham() */
 int
-pick_nasty(summoner_level, rnd_type)
-int summoner_level;
-int rnd_type;
+pick_nasty(int summoner_level, int rnd_type)
 {
     int res = NON_PM;
     int roguetrycnt = 0;
@@ -604,8 +586,7 @@ int rnd_type;
    creatures on average (in 3.6.0 and earlier, Null was treated as chaotic);
    returns the number of monsters created */
 int
-summon_nasties(summoner)
-struct monst *summoner;
+summon_nasties(struct monst *summoner)
 {
     struct monst *mtmp;
     int i;
@@ -696,8 +677,7 @@ struct monst *summoner;
 }
 
 int
-summon_level_appropriate_monsters(summoner)
-struct monst* summoner;
+summon_level_appropriate_monsters(struct monst *summoner)
 {
     struct monst* mtmp;
     int i;
@@ -783,7 +763,7 @@ struct monst* summoner;
 
 /* Let's resurrect the wizard, for some unexpected fun. */
 void
-resurrect(VOID_ARGS)
+resurrect(void)
 {
     struct monst *mtmp, **mmtmp;
     int64_t elapsed;
@@ -854,7 +834,7 @@ resurrect(VOID_ARGS)
 /* Here, we make trouble for the poor shmuck who actually
    managed to do in the Wizard. */
 void
-intervene(VOID_ARGS)
+intervene(void)
 {
     int which = Is_astralevel(&u.uz) ? rnd(4) : rn2(6);
     /* cases 0 and 5 don't apply on the Astral level */
@@ -882,7 +862,7 @@ intervene(VOID_ARGS)
 }
 
 void
-wizdead(VOID_ARGS)
+wizdead(void)
 {
     context.no_of_wizards--;
     if (!u.uevent.ukilled_wizard) {
@@ -914,8 +894,7 @@ const char *const random_malediction[] = {
 
 /* Insult or intimidate the player */
 boolean
-cuss(mtmp)
-struct monst *mtmp;
+cuss(struct monst *mtmp)
 {
     if (Deaf)
         return FALSE;

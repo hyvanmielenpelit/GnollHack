@@ -15,41 +15,41 @@ extern int dotrow; /* shared with save */
 #endif
 
 #ifdef ZEROCOMP
-STATIC_DCL void NDECL(zerocomp_minit);
-STATIC_DCL void FDECL(zerocomp_mread, (int, genericptr_t, size_t));
-STATIC_DCL int NDECL(zerocomp_mgetc);
+static void zerocomp_minit(void);
+static void zerocomp_mread(int, genericptr_t, size_t);
+static int zerocomp_mgetc(void);
 #endif
 
-STATIC_DCL void NDECL(def_minit);
-STATIC_DCL void FDECL(def_mread, (int, genericptr_t, size_t));
+static void def_minit(void);
+static void def_mread(int, genericptr_t, size_t);
 
-STATIC_DCL int FDECL(check_save_file_tracking, (int64_t));
-STATIC_DCL void NDECL(find_lev_obj);
-STATIC_DCL void NDECL(find_memory_obj);
-STATIC_DCL void FDECL(restlevchn, (int));
-STATIC_DCL void FDECL(restdamage, (int, BOOLEAN_P));
-STATIC_DCL void FDECL(restobj, (int, struct obj *));
-STATIC_DCL struct obj *FDECL(restobjchn, (int, BOOLEAN_P, BOOLEAN_P));
-STATIC_DCL void FDECL(restmon, (int, struct monst *));
-STATIC_DCL struct monst *FDECL(restmonchn, (int, BOOLEAN_P));
-STATIC_DCL struct fruit *FDECL(loadfruitchn, (int));
-STATIC_DCL void FDECL(freefruitchn, (struct fruit *));
-STATIC_DCL void FDECL(ghostfruit, (struct obj *));
-STATIC_DCL boolean FDECL(restgamestate, (int, unsigned int *, unsigned int *));
-STATIC_DCL void FDECL(restlevelstate, (unsigned int, unsigned int));
-STATIC_DCL int FDECL(restlevelfile, (int, XCHAR_P));
-STATIC_DCL void FDECL(restore_msghistory, (int));
-STATIC_DCL void FDECL(reset_oattached_mids, (BOOLEAN_P));
-STATIC_DCL void FDECL(rest_levl, (int, BOOLEAN_P));
-STATIC_DCL void FDECL(restore_gamelog, (int));
-STATIC_DCL void FDECL(post_restore_to_forum, (struct u_realtime));
+static int check_save_file_tracking(int64_t);
+static void find_lev_obj(void);
+static void find_memory_obj(void);
+static void restlevchn(int);
+static void restdamage(int, boolean);
+static void restobj(int, struct obj *);
+static struct obj *restobjchn(int, boolean, boolean);
+static void restmon(int, struct monst *);
+static struct monst *restmonchn(int, boolean);
+static struct fruit *loadfruitchn(int);
+static void freefruitchn(struct fruit *);
+static void ghostfruit(struct obj *);
+static boolean restgamestate(int, unsigned int *, unsigned int *);
+static void restlevelstate(unsigned int, unsigned int);
+static int restlevelfile(int, xchar);
+static void restore_msghistory(int);
+static void reset_oattached_mids(boolean);
+static void rest_levl(int, boolean);
+static void restore_gamelog(int);
+static void post_restore_to_forum(struct u_realtime);
 
-STATIC_VAR struct restore_procs {
+static struct restore_procs {
     const char *name;
     int mread_flags;
     void NDECL((*restore_minit));
-    void FDECL((*restore_mread), (int, genericptr_t, size_t));
-    void FDECL((*restore_bclose), (int));
+    void (*restore_mread)(int, genericptr_t, size_t);
+    void (*restore_bclose)(int);
 } restoreprocs = {
 #if !defined(ZEROCOMP) || (defined(COMPRESS) || defined(ZLIB_COMP))
     "externalcomp", 0, def_minit, def_mread, def_bclose,
@@ -71,14 +71,14 @@ struct bucket {
     } map[N_PER_BUCKET];
 };
 
-STATIC_DCL void NDECL(clear_id_mapping);
-STATIC_DCL void FDECL(add_id_mapping, (unsigned, unsigned));
+static void clear_id_mapping(void);
+static void add_id_mapping(unsigned, unsigned);
 
-STATIC_VAR int n_ids_mapped = 0;
-STATIC_VAR struct bucket *id_map = 0;
+static int n_ids_mapped = 0;
+static struct bucket *id_map = 0;
 
 #ifdef AMII_GRAPHICS
-void FDECL(amii_setpens, (int)); /* use colors from save file */
+void amii_setpens(int); /* use colors from save file */
 extern int amii_numcolors;
 #endif
 
@@ -87,14 +87,14 @@ extern int amii_numcolors;
 boolean restoring = FALSE;
 boolean reseting = FALSE;
 
-STATIC_VAR NEARDATA struct fruit *oldfruit;
-STATIC_VAR NEARDATA int64_t omoves;
+static NEARDATA struct fruit *oldfruit;
+static NEARDATA int64_t omoves;
 
 #define Is_IceBox(o) ((o)->otyp == ICE_BOX ? TRUE : FALSE)
 
 /* Recalculate level.objects[x][y], since this info was not saved. */
-STATIC_OVL void
-find_lev_obj(VOID_ARGS)
+static void
+find_lev_obj(void)
 {
     struct obj *fobjtmp = (struct obj *) 0;
     struct obj *otmp;
@@ -124,8 +124,8 @@ find_lev_obj(VOID_ARGS)
     }
 }
 
-STATIC_OVL void
-find_memory_obj(VOID_ARGS)
+static void
+find_memory_obj(void)
 {
     struct obj* memoryobjstmp = (struct obj*)0;
     struct obj* otmp;
@@ -161,8 +161,7 @@ find_memory_obj(VOID_ARGS)
  * infamous "HUP" cheat) get used up here.
  */
 void
-inven_inuse(quietly)
-boolean quietly;
+inven_inuse(boolean quietly)
 {
     struct obj *otmp, *otmp2;
 
@@ -203,9 +202,8 @@ boolean quietly;
     }
 }
 
-STATIC_OVL void
-restlevchn(fd)
-int fd;
+static void
+restlevchn(int fd)
 {
     int cnt;
     s_level *tmplev, *x;
@@ -230,10 +228,8 @@ int fd;
     }
 }
 
-STATIC_OVL void
-restdamage(fd, ghostly)
-int fd;
-boolean ghostly;
+static void
+restdamage(int fd, boolean ghostly)
 {
     int counter;
     struct damage *tmp_dam;
@@ -276,10 +272,8 @@ boolean ghostly;
 }
 
 /* restore one object */
-STATIC_OVL void
-restobj(fd, otmp)
-int fd;
-struct obj *otmp;
+static void
+restobj(int fd, struct obj *otmp)
 {
     size_t buflen;
     //debugprint("restobj");
@@ -337,10 +331,8 @@ struct obj *otmp;
     }
 }
 
-STATIC_OVL struct obj *
-restobjchn(fd, ghostly, frozen)
-int fd;
-boolean ghostly, frozen;
+static struct obj *
+restobjchn(int fd, boolean ghostly, boolean frozen)
 {
     struct obj *otmp, *otmp2 = 0;
     struct obj *first = (struct obj *) 0;
@@ -432,10 +424,8 @@ boolean ghostly, frozen;
 }
 
 /* restore one monster */
-STATIC_OVL void
-restmon(fd, mtmp)
-int fd;
-struct monst *mtmp;
+static void
+restmon(int fd, struct monst *mtmp)
 {
     size_t buflen;
     //debugprint("restmon");
@@ -523,10 +513,8 @@ struct monst *mtmp;
     mtmp->data = &mons[mtmp->mnum];
 }
 
-STATIC_OVL struct monst *
-restmonchn(fd, ghostly)
-int fd;
-boolean ghostly;
+static struct monst *
+restmonchn(int fd, boolean ghostly)
 {
     struct monst *mtmp, *mtmp2 = 0;
     struct monst *first = (struct monst *) 0;
@@ -603,9 +591,8 @@ boolean ghostly;
     return first;
 }
 
-STATIC_OVL struct fruit *
-loadfruitchn(fd)
-int fd;
+static struct fruit *
+loadfruitchn(int fd)
 {
     struct fruit *flist, *fnext;
     //debugprint("loadfruitchn");
@@ -620,9 +607,8 @@ int fd;
     return flist;
 }
 
-STATIC_OVL void
-freefruitchn(flist)
-struct fruit *flist;
+static void
+freefruitchn(struct fruit *flist)
 {
     struct fruit *fnext;
 
@@ -634,9 +620,8 @@ struct fruit *flist;
     }
 }
 
-STATIC_OVL void
-ghostfruit(otmp)
-struct obj *otmp;
+static void
+ghostfruit(struct obj *otmp)
 {
     struct fruit *oldf;
 
@@ -661,11 +646,9 @@ struct obj *otmp;
 #endif
 
 
-STATIC_OVL
+static
 boolean
-restgamestate(fd, stuckid, steedid)
-int fd;
-unsigned int *stuckid, *steedid;
+restgamestate(int fd, unsigned int *stuckid, unsigned int *steedid)
 {
     struct flag newgameflags;
 #ifdef SYSFLAGS
@@ -873,9 +856,8 @@ unsigned int *stuckid, *steedid;
 /* update game state pointers to those valid for the current level (so we
  * don't dereference a wild u.ustuck when saving the game state, for instance)
  */
-STATIC_OVL void
-restlevelstate(stuckid, steedid)
-unsigned int stuckid, steedid;
+static void
+restlevelstate(unsigned int stuckid, unsigned int steedid)
 {
     struct monst *mtmp;
 
@@ -906,11 +888,13 @@ unsigned int stuckid, steedid;
     }
 }
 
+/*
+ * Parameters:
+ *   fd: fd used in MFLOPPY only
+ */
 /*ARGSUSED*/
-STATIC_OVL int
-restlevelfile(fd, ltmp)
-int fd; /* fd used in MFLOPPY only */
-xchar ltmp;
+static int
+restlevelfile(int fd, xchar ltmp)
 {
     int nfd;
     char whynot[BUFSZ];
@@ -967,9 +951,7 @@ xchar ltmp;
 }
 
 int
-dorestore(fd, is_backup)
-int fd;
-boolean is_backup;
+dorestore(int fd, boolean is_backup)
 {
     int loadres = dorestore0(fd);
     if (!loadres && !is_backup)
@@ -1001,8 +983,7 @@ boolean is_backup;
 }
 
 int
-dorestore0(fd)
-int fd;
+dorestore0(int fd)
 {
     unsigned int stuckid = 0, steedid = 0;
     xchar ltmp;
@@ -1206,9 +1187,8 @@ int fd;
     return 1;
 }
 
-STATIC_OVL int
-check_save_file_tracking(time_stamp)
-int64_t time_stamp;
+static int
+check_save_file_tracking(int64_t time_stamp)
 {
     if (wizard || discover || CasualMode || iflags.save_file_secure)
         return 1;
@@ -1274,9 +1254,8 @@ int64_t time_stamp;
     return 1;
 }
 
-STATIC_OVL void
-post_restore_to_forum(restored_realtime)
-struct u_realtime restored_realtime;
+static void
+post_restore_to_forum(struct u_realtime restored_realtime)
 {
     char dgnlvlbuf[BUFSZ * 2];
     print_current_dgnlvl(dgnlvlbuf);
@@ -1284,9 +1263,7 @@ struct u_realtime restored_realtime;
 }
 
 void
-restcemetery(fd, cemeteryaddr)
-int fd;
-struct cemetery **cemeteryaddr;
+restcemetery(int fd, struct cemetery **cemeteryaddr)
 {
     struct cemetery *bonesinfo, **bonesaddr;
     int flag;
@@ -1307,10 +1284,8 @@ struct cemetery **cemeteryaddr;
 }
 
 /*ARGSUSED*/
-STATIC_OVL void
-rest_levl(fd, rlecomp)
-int fd;
-boolean rlecomp;
+static void
+rest_levl(int fd, boolean rlecomp)
 {
 #ifdef RLECOMP
     short i, j;
@@ -1346,8 +1321,7 @@ boolean rlecomp;
 }
 
 void
-trickery(reason)
-char *reason;
+trickery(char *reason)
 {
     pline("Strange, this map is not as I remember it.");
     pline("Somebody is trying some trickery here...");
@@ -1357,10 +1331,7 @@ char *reason;
 }
 
 void
-getlev(fd, pid, lev, ghostly)
-int fd, pid;
-xchar lev;
-boolean ghostly;
+getlev(int fd, int pid, xchar lev, boolean ghostly)
 {
     struct trap *trap;
     struct monst *mtmp;
@@ -1576,10 +1547,7 @@ boolean ghostly;
 }
 
 boolean
-get_plname_from_file(fd, plbuf, plbuf_size)
-int fd;
-char *plbuf;
-size_t plbuf_size;
+get_plname_from_file(int fd, char *plbuf, size_t plbuf_size)
 {
     int pltmpsiz = 0;
     (void) read(fd, (genericptr_t) &pltmpsiz, (readLenType)sizeof(pltmpsiz));
@@ -1590,17 +1558,14 @@ size_t plbuf_size;
 }
 
 void
-get_save_game_stats_from_file(fd, stats_ptr)
-int fd;
-struct save_game_stats* stats_ptr;
+get_save_game_stats_from_file(int fd, struct save_game_stats *stats_ptr)
 {
     (void)read(fd, (genericptr_t)stats_ptr, (readLenType)sizeof(struct save_game_stats));
     return;
 }
 
-STATIC_OVL void
-restore_gamelog(fd)
-int fd;
+static void
+restore_gamelog(int fd)
 {
     int slen = 0;
     struct gamelog_line tmp;
@@ -1621,9 +1586,8 @@ int fd;
 }
 
 
-STATIC_OVL void
-restore_msghistory(fd)
-int fd;
+static void
+restore_msghistory(int fd)
 {
     int msgsize, msgcount = 0;
     char msg[BUFSZ];
@@ -1656,8 +1620,8 @@ int fd;
 }
 
 /* Clear all structures for object and monster ID mapping. */
-STATIC_OVL void
-clear_id_mapping(VOID_ARGS)
+static void
+clear_id_mapping(void)
 {
     struct bucket *curr;
 
@@ -1669,9 +1633,8 @@ clear_id_mapping(VOID_ARGS)
 }
 
 /* Add a mapping to the ID map. */
-STATIC_OVL void
-add_id_mapping(gid, nid)
-unsigned gid, nid;
+static void
+add_id_mapping(unsigned gid, unsigned nid)
 {
     int idx;
 
@@ -1695,8 +1658,7 @@ unsigned gid, nid;
  * ID.
  */
 boolean
-lookup_id_mapping(gid, nidp)
-unsigned gid, *nidp;
+lookup_id_mapping(unsigned gid, unsigned *nidp)
 {
     int i;
     struct bucket *curr;
@@ -1729,9 +1691,8 @@ unsigned gid, *nidp;
     return FALSE;
 }
 
-STATIC_OVL void
-reset_oattached_mids(ghostly)
-boolean ghostly;
+static void
+reset_oattached_mids(boolean ghostly)
 {
     struct obj *otmp;
     unsigned oldid, nid;
@@ -1756,8 +1717,7 @@ boolean ghostly;
 }
 
 void
-print_current_dgnlvl(buf)
-char* buf;
+print_current_dgnlvl(char *buf)
 {
     if (!buf)
         return;
@@ -1777,11 +1737,7 @@ char* buf;
 }
 
 void
-print_dgnlvl_buf(lvlbuf, dgnbuf, lvl_name, dgn_name, dlevel, has_lvl_name_ptr)
-char* lvlbuf, * dgnbuf;
-const char* lvl_name, *dgn_name;
-int dlevel;
-boolean* has_lvl_name_ptr;
+print_dgnlvl_buf(char *lvlbuf, char *dgnbuf, const char *lvl_name, const char *dgn_name, int dlevel, boolean *has_lvl_name_ptr)
 {
     if (!lvlbuf || !dgnbuf)
         return;
@@ -1822,14 +1778,7 @@ boolean* has_lvl_name_ptr;
 }
 
 void
-print_character_description(characterbuf, ulevel, rolenum, racenum, gender, aligntype, prefix)
-char* characterbuf;
-short ulevel;
-short rolenum;
-short racenum;
-boolean gender;
-aligntyp aligntype;
-const char* prefix;
+print_character_description(char *characterbuf, short ulevel, short rolenum, short racenum, boolean gender, aligntyp aligntype, const char *prefix)
 {
     if (!characterbuf)
         return;
@@ -1862,13 +1811,7 @@ const char* prefix;
 }
 
 void
-print_location_description(adventuringbuf, level_name, dgn_name, dlevel, dgn_depth, prefix)
-char* adventuringbuf;
-const char* level_name;
-const char* dgn_name;
-int dlevel;
-schar dgn_depth;
-const char* prefix;
+print_location_description(char *adventuringbuf, const char *level_name, const char *dgn_name, int dlevel, schar dgn_depth, const char *prefix)
 {
     if (!adventuringbuf)
         return;
@@ -1886,12 +1829,7 @@ const char* prefix;
 }
 
 void
-print_mode_duration_description(playingbuf, difficulty, umoves, debug_mode, explore_mode, modern_mode, casual_mode, is_non_scoring, tournament_mode, prefix)
-char* playingbuf;
-schar difficulty;
-int64_t umoves;
-boolean debug_mode, explore_mode, modern_mode, casual_mode, is_non_scoring, tournament_mode;
-const char* prefix;
+print_mode_duration_description(char *playingbuf, schar difficulty, int64_t umoves, boolean debug_mode, boolean explore_mode, boolean modern_mode, boolean casual_mode, boolean is_non_scoring, boolean tournament_mode, const char *prefix)
 {
     if (!playingbuf)
         return;
@@ -1905,10 +1843,7 @@ const char* prefix;
 }
 
 void
-print_timestamp_description(savedbuf, descr, stamp, prefix)
-char* savedbuf;
-time_t stamp;
-const char* descr, * prefix;
+print_timestamp_description(char *savedbuf, const char *descr, time_t stamp, const char *prefix)
 {
     if (!savedbuf)
         return;
@@ -1933,11 +1868,14 @@ const char* descr, * prefix;
 
 
 #ifdef SELECTSAVED
+/*
+ * Parameters:
+ *   bannerwin: if not WIN_ERR, clear window and show copyright in menu
+ */
 /* put up a menu listing each character from this player's saved games;
    returns 1: use plname[], 0: new game, -1: quit */
 int
-restore_menu(bannerwin)
-winid bannerwin; /* if not WIN_ERR, clear window and show copyright in menu */
+restore_menu(winid bannerwin)
 {
     winid tmpwin;
     anything any;
@@ -2124,11 +2062,12 @@ winid bannerwin; /* if not WIN_ERR, clear window and show copyright in menu */
     return (ch > 0) ? 1 : ch;
 }
 
+/*
+ * Parameters:
+ *   bannerwin: if not WIN_ERR, clear window and show copyright in menu
+ */
 int
-select_saved_game(bannerwin, style, saved)
-winid bannerwin; /* if not WIN_ERR, clear window and show copyright in menu */
-uchar style;
-struct save_game_data* saved;
+select_saved_game(winid bannerwin, uchar style, struct save_game_data *saved)
 {
     if (!saved)
         return 0;
@@ -2360,17 +2299,14 @@ check_saved_game_exists(void)
 
 
 void
-minit(VOID_ARGS)
+minit(void)
 {
     (*restoreprocs.restore_minit)();
     return;
 }
 
 void
-mread(fd, buf, len)
-int fd;
-genericptr_t buf;
-size_t len;
+mread(int fd, genericptr_t buf, size_t len)
 {
     (*restoreprocs.restore_mread)(fd, buf, len);
     return;
@@ -2384,9 +2320,7 @@ size_t len;
    Return -1 if it failed for some unknown reason.
  */
 int
-validate(fd, name)
-int fd;
-const char *name;
+validate(int fd, const char *name)
 {
     int rlen;
     struct savefile_info sfi;
@@ -2458,7 +2392,7 @@ const char *name;
 }
 
 void
-reset_restpref(VOID_ARGS)
+reset_restpref(void)
 {
 #ifdef ZEROCOMP
     if (iflags.zerocomp)
@@ -2475,8 +2409,7 @@ reset_restpref(VOID_ARGS)
 }
 
 void
-set_restpref(suitename)
-const char *suitename;
+set_restpref(const char *suitename)
 {
     if (!strcmpi(suitename, "externalcomp")) {
         restoreprocs.name = "externalcomp";
@@ -2512,14 +2445,14 @@ const char *suitename;
 #ifndef ZEROCOMP_BUFSIZ
 #define ZEROCOMP_BUFSIZ BUFSZ
 #endif
-STATIC_VAR NEARDATA unsigned char inbuf[ZEROCOMP_BUFSIZ];
-STATIC_VAR NEARDATA unsigned short inbufp = 0;
-STATIC_VAR NEARDATA unsigned short inbufsz = 0;
-STATIC_VAR NEARDATA short inrunlength = -1;
-STATIC_VAR NEARDATA int mreadfd;
+static NEARDATA unsigned char inbuf[ZEROCOMP_BUFSIZ];
+static NEARDATA unsigned short inbufp = 0;
+static NEARDATA unsigned short inbufsz = 0;
+static NEARDATA short inrunlength = -1;
+static NEARDATA int mreadfd;
 
-STATIC_OVL int
-zerocomp_mgetc(VOID_ARGS)
+static int
+zerocomp_mgetc(void)
 {
     if (inbufp >= inbufsz) {
         inbufsz = read(mreadfd, (genericptr_t) inbuf, sizeof inbuf);
@@ -2534,19 +2467,16 @@ zerocomp_mgetc(VOID_ARGS)
     return inbuf[inbufp++];
 }
 
-STATIC_OVL void
-zerocomp_minit(VOID_ARGS)
+static void
+zerocomp_minit(void)
 {
     inbufsz = 0;
     inbufp = 0;
     inrunlength = -1;
 }
 
-STATIC_OVL void
-zerocomp_mread(fd, buf, len)
-int fd;
-genericptr_t buf;
-size_t len;
+static void
+zerocomp_mread(int fd, genericptr_t buf, size_t len)
 {
     /*int readlen = 0;*/
     if (fd < 0)
@@ -2571,17 +2501,14 @@ size_t len;
 }
 #endif /* ZEROCOMP */
 
-STATIC_OVL void
-def_minit(VOID_ARGS)
+static void
+def_minit(void)
 {
     return;
 }
 
-STATIC_OVL void
-def_mread(fd, buf, len)
-int fd;
-genericptr_t buf;
-size_t len;
+static void
+def_mread(int fd, genericptr_t buf, size_t len)
 {
     int rlen;
 
@@ -2612,7 +2539,7 @@ size_t len;
 }
 
 void
-reset_restore(VOID_ARGS)
+reset_restore(void)
 {
     clear_id_mapping();
     freefruitchn(oldfruit), oldfruit = 0;

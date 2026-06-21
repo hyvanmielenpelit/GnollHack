@@ -11,7 +11,7 @@
  */
 
 #if defined(GNOLLHACK_MAIN_PROGRAM) && (defined(__BEOS__) || defined(MICRO) || defined(OS2) || defined(ANDROID) || defined(GNH_MOBILE) || defined(WIN32))
-extern void FDECL(gnollhack_exit, (int));
+extern void gnollhack_exit(int);
 #else
 #ifndef gnollhack_exit
 #define gnollhack_exit exit
@@ -25,12 +25,12 @@ extern void FDECL(gnollhack_exit, (int));
 #define abort() exit()
 #endif
 #ifdef VMS
-extern void NDECL(vms_abort);
+extern void vms_abort(void);
 #endif
 
 /*VARARGS1*/
 boolean panicking;
-void VDECL(panic, (const char *, ...));
+void panic(const char *, ...);
 
 void panic
 VA_DECL(const char *, str)
@@ -64,8 +64,7 @@ VA_DECL(const char *, str)
  * systems, but they should either use yacc or get a real alloca routine.
  */
 long *
-alloca(cnt)
-unsigned cnt;
+alloca(unsigned cnt)
 {
     return cnt ? alloc((size_t)cnt) : (long *) 0;
 }

@@ -644,14 +644,11 @@ savelev(int fd, xchar lev, int mode)
 }
 
 static void
-savelev0(fd, lev, mode)
+savelev0(int fd, xchar lev, int mode)
 #else
 void
-savelev(fd, lev, mode)
+savelev(int fd, xchar lev, int mode)
 #endif
-int fd;
-xchar lev;
-int mode;
 {
 #ifdef TOS
     short tlev;

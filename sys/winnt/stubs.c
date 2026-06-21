@@ -39,9 +39,7 @@ extern char default_window_sys[];
 extern int mingw_main(int argc, char **argv);
 
 int
-main(argc, argv)
-int argc;
-char *argv[];
+main(int argc, char *argv[])
 {
     boolean resuming;
 
@@ -64,29 +62,25 @@ int GUILaunched;
 struct window_procs tty_procs = { "-ttystubs" };
 
 void
-win_tty_init(dir)
-int dir;
+win_tty_init(int dir)
 {
     return;
 }
 
 void
-nttty_open(mode)
-int mode;
+nttty_open(int mode)
 {
     return;
 }
 
 void
-xputc(ch)
-int ch;
+xputc(int ch)
 {
     return;
 }
 
 void
-xputs(s)
-const char *s;
+xputs(const char *s)
 {
     return;
 }
@@ -137,8 +131,7 @@ win32con_handler_info()
 #endif
 
 void
-map_subkeyvalue(op)
-register char *op;
+map_subkeyvalue(char *op)
 {
     return;
 }

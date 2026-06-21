@@ -6,9 +6,9 @@
 
 #include "hack.h"
 
-STATIC_DCL const char *NDECL(dev_name);
-STATIC_DCL void FDECL(get_mplname, (struct monst *, char *));
-STATIC_DCL void FDECL(mk_mplayer_armor, (struct monst *, SHORT_P));
+static const char *dev_name(void);
+static void get_mplname(struct monst *, char *);
+static void mk_mplayer_armor(struct monst *, short);
 
 /* These are the names of those who
  * contributed to the development of GnollHack 3.2/3.3/3.4/3.6.
@@ -16,7 +16,7 @@ STATIC_DCL void FDECL(mk_mplayer_armor, (struct monst *, SHORT_P));
  * Keep in alphabetical order within teams.
  * Same first name is entered once within each team.
  */
-STATIC_VAR const char *developers[] = {
+static const char *developers[] = {
     /* devteam */
     "Alex",    "Dave",   "Dean",    "Derek",   "Eric",    "Izchak",
     "Janet",   "Jessie", "Ken",     "Kevin",   "Michael", "Mike",
@@ -42,8 +42,8 @@ STATIC_VAR const char *developers[] = {
 };
 
 /* return a randomly chosen developer name */
-STATIC_OVL const char *
-dev_name(VOID_ARGS)
+static const char *
+dev_name(void)
 {
     int i, m = 0, n = SIZE(developers);
     struct monst *mtmp;
@@ -69,10 +69,8 @@ dev_name(VOID_ARGS)
     return (developers[i]);
 }
 
-STATIC_OVL void
-get_mplname(mtmp, nam)
-struct monst *mtmp;
-char *nam;
+static void
+get_mplname(struct monst *mtmp, char *nam)
 {
     boolean fmlkind = is_female(mtmp->data);
     const char *devnam;
@@ -94,10 +92,8 @@ char *nam;
                         (boolean) mtmp->female));
 }
 
-STATIC_OVL void
-mk_mplayer_armor(mon, typ)
-struct monst *mon;
-short typ;
+static void
+mk_mplayer_armor(struct monst *mon, short typ)
 {
     struct obj *obj;
 
@@ -119,10 +115,7 @@ short typ;
 }
 
 struct monst *
-mk_mplayer(ptr, x, y, special)
-struct permonst *ptr;
-xchar x, y;
-boolean special;
+mk_mplayer(struct permonst *ptr, xchar x, xchar y, boolean special)
 {
     struct monst *mtmp;
     char nam[PL_NSIZ];
@@ -340,9 +333,7 @@ boolean special;
  * fill up the overflow.
  */
 void
-create_mplayers(num, special)
-int num;
-boolean special;
+create_mplayers(int num, boolean special)
 {
     int pm, x, y;
     struct monst fakemon;
@@ -371,8 +362,7 @@ boolean special;
 }
 
 void
-mplayer_talk(mtmp)
-struct monst *mtmp;
+mplayer_talk(struct monst *mtmp)
 {
     static const char
         *same_class_msg[3] = {

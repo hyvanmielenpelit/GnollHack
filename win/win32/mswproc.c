@@ -996,7 +996,7 @@ mswin_clear_nhwindow(winid wid)
                    --more--, if necessary, in the tty window-port.
 */
 void
-mswin_display_nhwindow(winid wid, BOOLEAN_P block)
+mswin_display_nhwindow(winid wid, boolean block)
 {
     logDebug("mswin_display_nhwindow(%d, %d)\n", wid, block);
     if (GetNHApp()->windowlist[wid].win != NULL) {
@@ -1223,7 +1223,7 @@ mswin_putstr_ex2(winid wid, const char* text, const char* attrs, const char* col
                    iff complain is TRUE.
 */
 void
-mswin_display_file(const char *filename, BOOLEAN_P must_exist)
+mswin_display_file(const char *filename, boolean must_exist)
 {
     dlb *f;
     TCHAR wbuf[BUFSZ];
@@ -1319,8 +1319,8 @@ identifier
 */
 void
 mswin_add_extended_menu(winid wid, int glyph, const ANY_P *identifier,
-               CHAR_P accelerator, CHAR_P group_accel, int attr, int color,
-               const char *str, BOOLEAN_P presel, struct extended_menu_info info)
+               char accelerator, char group_accel, int attr, int color,
+               const char *str, boolean presel, struct extended_menu_info info)
 {
     logDebug("mswin_add_menu(%d, %d, %p, %c, %c, %d, %s, %d)\n", wid, glyph,
              identifier, (char) accelerator, (char) group_accel, attr, str,
@@ -1350,8 +1350,8 @@ mswin_add_extended_menu(winid wid, int glyph, const ANY_P *identifier,
 
 void
 mswin_add_menu(winid wid, int glyph, const ANY_P* identifier,
-    CHAR_P accelerator, CHAR_P group_accel, int attr, int color,
-    const char* str, BOOLEAN_P presel)
+    char accelerator, char group_accel, int attr, int color,
+    const char* str, boolean presel)
 {
     mswin_add_extended_menu(wid, glyph, identifier,
         accelerator, group_accel, attr, color,
@@ -1472,7 +1472,7 @@ cliparound(x, y)-- Make sure that the user is more-or-less centered on the
                 -- This function is only defined if CLIPPING is defined.
 */
 void
-mswin_cliparound(int x, int y, BOOLEAN_P force)
+mswin_cliparound(int x, int y, boolean force)
 {
     winid wid = WIN_MAP;
 
@@ -1489,7 +1489,7 @@ mswin_cliparound(int x, int y, BOOLEAN_P force)
     }
 }
 
-STATIC_VAR double saved_zoom = 1.0;
+static double saved_zoom = 1.0;
 void
 mswin_issue_gui_command(int cmd_id, int cmd_param, int cmd_param2, const char* cmd_str)
 {
@@ -1548,7 +1548,7 @@ print_glyph(window, x, y, layers)
                    
 */
 void
-mswin_print_glyph(winid wid, XCHAR_P x, XCHAR_P y, struct layer_info layers)
+mswin_print_glyph(winid wid, xchar x, xchar y, struct layer_info layers)
 {
     int glyph = layers.glyph;
     int bkglyph = layers.bkglyph;
@@ -1753,7 +1753,7 @@ char yn_function(const char *ques, const char *choices, char default)
                    ports might use a popup.
 */
 char
-mswin_yn_function_ex(int style, int attr, int color, int glyph, const char* title, const char *question, const char *choices, CHAR_P def, const char* resp_desc, const char* introline, uint64_t ynflags)
+mswin_yn_function_ex(int style, int attr, int color, int glyph, const char* title, const char *question, const char *choices, char def, const char* resp_desc, const char* introline, uint64_t ynflags)
 {
     char ch;
     char yn_esc_map = '\033';
@@ -2368,7 +2368,7 @@ mswin_preference_update(const char *pref)
 }
 
 char *
-mswin_getmsghistory_ex(char** attrs_ptr, char** colors_ptr, BOOLEAN_P init)
+mswin_getmsghistory_ex(char **attrs_ptr, char **colors_ptr, boolean init)
 {
     if (attrs_ptr)
         *attrs_ptr = (char*)0;
@@ -2444,7 +2444,7 @@ mswin_getmsghistory_ex(char** attrs_ptr, char** colors_ptr, BOOLEAN_P init)
 }
 
 void
-mswin_putmsghistory_ex(const char *msg, const char* attrs, const char* colors, BOOLEAN_P restoring)
+mswin_putmsghistory_ex(const char *msg, const char* attrs, const char* colors, boolean restoring)
 {
     BOOL save_sound_opt;
 
@@ -3489,9 +3489,7 @@ mswin_status_enablefield(int fieldidx, const char *nm, const char *fmt,
 
 /* TODO: turn this into a commmon helper; multiple identical implementations */
 static int
-mswin_condcolor(bm, bmarray)
-long bm;
-uint64_t *bmarray;
+mswin_condcolor(uint64_t bm, uint64_t *bmarray)
 {
     int i;
 
@@ -3504,9 +3502,7 @@ uint64_t *bmarray;
 }
 
 static int
-mswin_condattr(bm, bmarray)
-long bm;
-uint64_t *bmarray;
+mswin_condattr(uint64_t bm, uint64_t *bmarray)
 {
     if (bm && bmarray) {
         if (bm & bmarray[HL_ATTCLR_DIM]) return HL_DIM;
@@ -3796,7 +3792,7 @@ mswin_play_ghsound_environment_ambient(struct ghsound_environment_ambient_info i
 }
 
 void
-mswin_adjust_ghsound_general_volumes(VOID_ARGS)
+mswin_adjust_ghsound_general_volumes(void)
 {
     float new_general_volume = ((float)flags.sound_volume_general) / 100.0f;
     float new_music_volume = ((float)flags.sound_volume_music) / 100.0f;
@@ -3839,7 +3835,7 @@ mswin_set_ambient_ghsound_volume(struct soundsource_t* soundsource)
 }
 
 void
-mswin_init_platform(VOID_ARGS)
+mswin_init_platform(void)
 {
     /* GDI+ */
     StartGdiplus();
@@ -3896,7 +3892,7 @@ mswin_exit_hack(int status)
 
 
 void
-mswin_clear_context_menu(VOID_ARGS)
+mswin_clear_context_menu(void)
 {
     return;
 }
@@ -3987,7 +3983,7 @@ mswin_update_cursor(int style, int force_paint, int show_on_you)
 }
 
 int
-mswin_ui_has_input(VOID_ARGS)
+mswin_ui_has_input(void)
 {
     return FALSE;
 }

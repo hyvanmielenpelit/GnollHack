@@ -156,8 +156,7 @@ struct termstruct inittyb, curttyb;
 
 #ifdef POSIX_TYPES
 static int
-speednum(speed)
-speed_t speed;
+speednum(speed_t speed)
 {
     switch (speed) {
     case B0:
@@ -233,8 +232,7 @@ gettty()
 
 /* reset terminal to original state */
 void
-settty(s)
-const char *s;
+settty(const char *s)
 {
     end_screen();
     if (s)
@@ -350,10 +348,10 @@ int sco_flag_console = 0;
 int sco_map_valid = -1;
 unsigned char sco_chanmap_buf[BSIZE];
 
-void NDECL(sco_mapon);
-void NDECL(sco_mapoff);
-void NDECL(check_sco_console);
-void NDECL(init_sco_cons);
+void sco_mapon(void);
+void sco_mapoff(void);
+void check_sco_console(void);
+void init_sco_cons(void);
 
 void
 sco_mapon()
@@ -414,10 +412,10 @@ init_sco_cons()
 
 int linux_flag_console = 0;
 
-void NDECL(linux_mapon);
-void NDECL(linux_mapoff);
-void NDECL(check_linux_console);
-void NDECL(init_linux_cons);
+void linux_mapon(void);
+void linux_mapoff(void);
+void check_linux_console(void);
+void init_linux_cons(void);
 
 void
 linux_mapon()

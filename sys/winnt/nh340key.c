@@ -26,7 +26,7 @@ char *shortdllname;
 
 int FDECL(__declspec(dllexport) __stdcall ProcessKeystroke,
           (HANDLE hConIn, INPUT_RECORD *ir, boolean *valid,
-           BOOLEAN_P numberpad, int portdebug));
+           boolean numberpad, int portdebug));
 
 int WINAPI
 DllMain(HINSTANCE hInstance, DWORD fdwReason, PVOID pvReserved)
@@ -171,9 +171,7 @@ int portdebug;
     return ch;
 }
 
-int __declspec(dllexport) __stdcall NHkbhit(hConIn, ir)
-HANDLE hConIn;
-INPUT_RECORD *ir;
+int __declspec(dllexport) __stdcall NHkbhit(HANDLE hConIn, INPUT_RECORD *ir)
 {
     int done = 0; /* true =  "stop searching"        */
     int retval;   /* true =  "we had a match"        */
@@ -282,8 +280,7 @@ coord *cc;
     return mode ? 0 : ch;
 }
 
-int __declspec(dllexport) __stdcall SourceWhere(buf)
-char **buf;
+int __declspec(dllexport) __stdcall SourceWhere(char **buf)
 {
     if (!buf)
         return 0;
@@ -291,8 +288,7 @@ char **buf;
     return 1;
 }
 
-int __declspec(dllexport) __stdcall SourceAuthor(buf)
-char **buf;
+int __declspec(dllexport) __stdcall SourceAuthor(char **buf)
 {
     if (!buf)
         return 0;
@@ -300,9 +296,7 @@ char **buf;
     return 1;
 }
 
-int __declspec(dllexport) __stdcall KeyHandlerName(buf, full)
-char **buf;
-int full;
+int __declspec(dllexport) __stdcall KeyHandlerName(char **buf, int full)
 {
     if (!buf)
         return 0;

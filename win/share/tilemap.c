@@ -14,15 +14,15 @@
 
 #define Fprintf (void) fprintf
 
-const char *FDECL(tilename, (int, int));
-void NDECL(init_tilemap);
-void FDECL(process_substitutions, (FILE *));
-boolean FDECL(acceptable_tilename, (int, const char *, const char *));
+const char *tilename(int, int);
+void init_tilemap(void);
+void process_substitutions(FILE *);
+boolean acceptable_tilename(int, const char *, const char *);
 
 #if defined(MICRO) || defined(WIN32)
 #undef exit
 #if !defined(MSDOS) && !defined(WIN32)
-extern void FDECL(exit, (int));
+extern void exit(int);
 #endif
 #endif
 
@@ -104,8 +104,7 @@ struct substitute {
  * entry is the position of the tile within the monsters/objects/other set
  */
 const char *
-tilename(set, entry)
-int set, entry;
+tilename(int set, int entry)
 {
     int i, j, condnum, tilenum;
     static char buf[BUFSZ];
@@ -419,8 +418,7 @@ const char *epilog[] = { "    return;", "}" };
 
 /* write out the substitutions in an easily-used form. */
 void
-process_substitutions(ofp)
-FILE *ofp;
+process_substitutions(FILE *ofp)
 {
     static const char Dent[] = "    "; /* 4 space indentation */
     int i, j, k, span, start;
@@ -660,9 +658,7 @@ struct {
 };
 
 boolean
-acceptable_tilename(idx, encountered, expected)
-int idx;
-const char *encountered, *expected;
+acceptable_tilename(int idx, const char *encountered, const char *expected)
 {
     if (idx >= 0 && idx < SIZE(altlabels)) {
         if (!strcmp(altlabels[idx].expectedlabel, expected)) {

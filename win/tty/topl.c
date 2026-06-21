@@ -16,18 +16,16 @@
 #define C(c) (0x40 & (c) ? 0x1f & (c) : (0x80 | (0x1f & (c))))
 #endif
 
-STATIC_DCL void FDECL(redotoplin, (const char *, const char*, const char*));
-STATIC_DCL void FDECL(topl_putsym, (int));
-STATIC_DCL void FDECL(removetopl, (int));
-STATIC_DCL void FDECL(msghistory_snapshot, (BOOLEAN_P));
-STATIC_DCL void FDECL(free_msghistory_snapshot, (BOOLEAN_P));
-STATIC_DCL void FDECL(toggle_topl_attr, (BOOLEAN_P, int, int));
+static void redotoplin(const char *, const char*, const char*);
+static void topl_putsym(int);
+static void removetopl(int);
+static void msghistory_snapshot(boolean);
+static void free_msghistory_snapshot(boolean);
+static void toggle_topl_attr(boolean, int, int);
 
 /* support for topline colors */
-STATIC_OVL void
-toggle_topl_attr(on, attr, color)
-boolean on;
-int attr, color;
+static void
+toggle_topl_attr(boolean on, int attr, int color)
 {
     if (on) {
         if (attr != ATR_NONE)
@@ -154,9 +152,8 @@ tty_doprev_message()
     return 0;
 }
 
-STATIC_OVL void
-redotoplin(str, attrs, colors)
-const char *str, *attrs, *colors;
+static void
+redotoplin(const char *str, const char *attrs, const char *colors)
 {
     int otoplin = ttyDisplay->toplin;
 
@@ -177,20 +174,14 @@ const char *str, *attrs, *colors;
 
 /* for use by tty_putstr() */
 void
-show_topl(str, attr, color)
-const char *str;
-int attr, color;
+show_topl(const char *str, int attr, int color)
 {
     show_topl2(str, (char*)0, (char*)0, attr, color);
 }
 
 /* for use by tty_putstr() */
 void
-show_topl2(str, attrs, colors, attr, color)
-const char* str;
-const char* attrs;
-const char* colors;
-int attr, color;
+show_topl2(const char *str, const char *attrs, const char *colors, int attr, int color)
 {
     struct WinDesc* cw = wins[WIN_MESSAGE];
 
@@ -238,17 +229,13 @@ remember_topl()
 }
 
 void
-addtopl(s, attr, color)
-const char* s;
-int attr, color;
+addtopl(const char *s, int attr, int color)
 {
     addtopl2(s, (char*)0, (char*)0, attr, color);
 }
 
 void
-addtopl2(s, attrs, colors, attr, color)
-const char *s, *attrs, *colors;
-int attr, color;
+addtopl2(const char *s, const char *attrs, const char *colors, int attr, int color)
 {
     struct WinDesc *cw = wins[WIN_MESSAGE];
 
@@ -329,19 +316,13 @@ more()
 }
 
 void
-update_topl(bp,  attr, color)
-const char* bp;
-int attr, color;
+update_topl(const char *bp, int attr, int color)
 {
     update_topl2(bp, (char*)0, (char*)0, attr, color);
 }
 
 void
-update_topl2(bp, attrs, colors, attr, color)
-const char *bp;
-const char* attrs;
-const char* colors;
-int attr, color;
+update_topl2(const char *bp, const char *attrs, const char *colors, int attr, int color)
 {
     register char *tl, *otl;
     int n0;
@@ -429,10 +410,9 @@ int attr, color;
         redotoplin(toplines, toplineattrs, toplinecolors);
 }
 
-STATIC_OVL
+static
 void
-topl_putsym(c)
-int c;
+topl_putsym(int c)
 {
     struct WinDesc *cw = wins[WIN_MESSAGE];
 
@@ -485,16 +465,14 @@ int c;
 }
 
 void
-putsyms(str)
-const char *str;
+putsyms(const char *str)
 {
     while (*str)
         topl_putsym(*str++);
 }
 
 void
-putsyms_ex(str, attrs, colors)
-const char* str, *attrs, *colors;
+putsyms_ex(const char *str, const char *attrs, const char *colors)
 {
     int attr = ATR_NONE, color = NO_COLOR;
     while (*str)
@@ -516,9 +494,8 @@ const char* str, *attrs, *colors;
         toggle_topl_attr(FALSE, attr, color);
 }
 
-STATIC_OVL void
-removetopl(n)
-int n;
+static void
+removetopl(int n)
 {
     /* assume addtopl() has been done, so ttyDisplay->toplin is already set */
     while (n-- > 0)
@@ -527,13 +504,6 @@ int n;
 
 extern char erase_char; /* from xxxtty.c; don't need kill_char */
 
-/* returns a single keystroke; also sets 'yn_number' */
-char
-tty_yn_function_ex(style, attr, color, glyph, title, query, resp, def, resp_desc, introline, ynflags)
-int style UNUSED, attr UNUSED, color UNUSED, glyph UNUSED;
-const char *title UNUSED, *query, *resp, *resp_desc UNUSED, *introline UNUSED;
-char def;
-uint64_t ynflags UNUSED;
 /*
  *   Generic yes/no function. 'def' is the default (returned by space or
  *   return; 'esc' returns 'q', or 'n', or the default, depending on
@@ -545,6 +515,9 @@ uint64_t ynflags UNUSED;
  *   are allowed); if it includes an <esc>, anything beyond that won't
  *   be shown in the prompt to the user but will be acceptable as input.
  */
+ /* returns a single keystroke; also sets 'yn_number' */
+char
+tty_yn_function_ex(int style UNUSED, int attr UNUSED, int color UNUSED, int glyph UNUSED, const char *title UNUSED, const char *query, const char *resp, char def, const char *resp_desc UNUSED, const char *introline UNUSED, uint64_t ynflags UNUSED)
 {
     register char q;
     char rtmp[40];
@@ -720,14 +693,17 @@ uint64_t ynflags UNUSED;
 
 /* shared by tty_getmsghistory() and tty_putmsghistory() */
 static char **snapshot_mesgs = 0;
-static char** snapshot_mesg_attrs = 0;
-static char** snapshot_mesg_colors = 0;
+static char **snapshot_mesg_attrs = 0;
+static char **snapshot_mesg_colors = 0;
 
+/*
+ * Parameters:
+ *   purge: clear message history buffer as we copy it
+ */
 /* collect currently available message history data into a sequential array;
    optionally, purge that data from the active circular buffer set as we go */
-STATIC_OVL void
-msghistory_snapshot(purge)
-boolean purge; /* clear message history buffer as we copy it */
+static void
+msghistory_snapshot(boolean purge)
 {
     char *mesg, *mesg_color, * mesg_attr;
     int64_t i, inidx, outidx;
@@ -747,8 +723,8 @@ boolean purge; /* clear message history buffer as we copy it */
         cw->flags |= WIN_LOCKHISTORY;
 
     snapshot_mesgs = (char **) alloc(((size_t)cw->rows + 1) * sizeof(char *));
-    snapshot_mesg_colors = (char**)alloc(((size_t)cw->rows + 1) * sizeof(char*));
-    snapshot_mesg_attrs = (char**)alloc(((size_t)cw->rows + 1) * sizeof(char*));
+    snapshot_mesg_colors = (char **)alloc(((size_t)cw->rows + 1) * sizeof(char*));
+    snapshot_mesg_attrs = (char **)alloc(((size_t)cw->rows + 1) * sizeof(char*));
     outidx = 0;
     inidx = cw->maxrow;
     for (i = 0; i < cw->rows; ++i) {
@@ -783,10 +759,13 @@ boolean purge; /* clear message history buffer as we copy it */
         cw->maxcol = cw->maxrow = 0;
 }
 
+/*
+ * Parameters:
+ *   purged: True: took history's pointers, False: just cloned them
+ */
 /* release memory allocated to message history snapshot */
-STATIC_OVL void
-free_msghistory_snapshot(purged)
-boolean purged; /* True: took history's pointers, False: just cloned them */
+static void
+free_msghistory_snapshot(boolean purged)
 {
     if (snapshot_mesgs) {
         /* snapshot pointers are no longer in use */
@@ -815,7 +794,7 @@ boolean purged; /* True: took history's pointers, False: just cloned them */
             }
         }
 
-        free((genericptr_t)snapshot_mesg_colors), snapshot_mesg_colors = (char**)0;
+        free((genericptr_t)snapshot_mesg_colors), snapshot_mesg_colors = (char **)0;
 
     }
     if (snapshot_mesg_attrs) {
@@ -829,7 +808,7 @@ boolean purged; /* True: took history's pointers, False: just cloned them */
             }
         }
 
-        free((genericptr_t)snapshot_mesg_attrs), snapshot_mesg_attrs = (char**)0;
+        free((genericptr_t)snapshot_mesg_attrs), snapshot_mesg_attrs = (char **)0;
     }
 }
 
@@ -844,9 +823,7 @@ boolean purged; /* True: took history's pointers, False: just cloned them */
  * included among the output of the subsequent calls.
  */
 char*
-tty_getmsghistory_ex(attrs_ptr, colors_ptr, init)
-char** attrs_ptr, ** colors_ptr;
-boolean init;
+tty_getmsghistory_ex(char **attrs_ptr, char **colors_ptr, boolean init)
 {
     static int nxtidx;
     char *nextmesg;
@@ -901,10 +878,7 @@ boolean init;
  * into message history for ^P recall without having displayed it.
  */
 void
-tty_putmsghistory_ex(msg, attrs, colors, restoring_msghist)
-const char *msg;
-const char* attrs UNUSED, *colors UNUSED;
-boolean restoring_msghist;
+tty_putmsghistory_ex(const char *msg, const char *attrs UNUSED, const char *colors UNUSED, boolean restoring_msghist)
 {
     static boolean initd = FALSE;
     int idx;
