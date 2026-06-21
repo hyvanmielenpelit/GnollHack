@@ -14,17 +14,17 @@
 #define Not_firsttime (on_level(&u.uz0, &u.uz))
 #define Qstat(x) (quest_status.x)
 
-STATIC_DCL void NDECL(on_start);
-STATIC_DCL void NDECL(on_locate);
-STATIC_DCL void NDECL(on_goal);
-STATIC_DCL void FDECL(expulsion, (BOOLEAN_P));
-STATIC_DCL boolean FDECL(chat_with_leader, (struct monst*, BOOLEAN_P));
-STATIC_DCL boolean FDECL(chat_with_nemesis, (struct monst*, BOOLEAN_P));
-STATIC_DCL boolean FDECL(chat_with_guardian, (struct monst*, BOOLEAN_P));
-STATIC_DCL boolean FDECL(prisoner_speaks, (struct monst *));
+static void NDECL(on_start);
+static void NDECL(on_locate);
+static void NDECL(on_goal);
+static void FDECL(expulsion, (BOOLEAN_P));
+static boolean FDECL(chat_with_leader, (struct monst*, BOOLEAN_P));
+static boolean FDECL(chat_with_nemesis, (struct monst*, BOOLEAN_P));
+static boolean FDECL(chat_with_guardian, (struct monst*, BOOLEAN_P));
+static boolean FDECL(prisoner_speaks, (struct monst *));
 
-STATIC_OVL void
-on_start(VOID_ARGS)
+static void
+on_start(void)
 {
     if (!Qstat(first_start)) {
         qt_pager_ex((struct monst*)0, QT_FIRSTTIME, ATR_NONE, CLR_MSG_HINT, FALSE);
@@ -42,8 +42,8 @@ on_start(VOID_ARGS)
     }
 }
 
-STATIC_OVL void
-on_locate(VOID_ARGS)
+static void
+on_locate(void)
 {
     /* the locate messages are phrased in a manner such that they only
        make sense when arriving on the level from above */
@@ -68,8 +68,8 @@ on_locate(VOID_ARGS)
     }
 }
 
-STATIC_OVL void
-on_goal(VOID_ARGS)
+static void
+on_goal(void)
 {
     if (Qstat(killed_nemesis)) {
         return;
@@ -97,7 +97,7 @@ on_goal(VOID_ARGS)
 }
 
 void
-onquest(VOID_ARGS)
+onquest(void)
 {
     if (u.uevent.qcompleted || Not_firsttime)
         return;
@@ -114,7 +114,7 @@ onquest(VOID_ARGS)
 }
 
 void
-nemdead(VOID_ARGS)
+nemdead(void)
 {
     if (!Qstat(killed_nemesis)) {
         Qstat(killed_nemesis) = TRUE;
@@ -124,8 +124,7 @@ nemdead(VOID_ARGS)
 }
 
 void
-artitouch(obj)
-struct obj *obj;
+artitouch(struct obj *obj)
 {
     if (!Qstat(touched_artifact)) {
         /* in case we haven't seen the item yet (ie, currently blinded),
@@ -143,21 +142,20 @@ struct obj *obj;
 
 /* external hook for do.c (level change check) */
 boolean
-ok_to_quest(VOID_ARGS)
+ok_to_quest(void)
 {
     return (boolean) ((Qstat(got_quest) || Qstat(got_thanks) || Qstat(leader_is_dead))
                       && is_pure(FALSE) > 0);
 }
 
 boolean
-not_capable(VOID_ARGS)
+not_capable(void)
 {
     return (boolean) (u.ulevel < MIN_QUEST_LEVEL);
 }
 
 int
-is_pure(talk)
-boolean talk;
+is_pure(boolean talk)
 {
     int purity;
     aligntyp original_alignment = u.ualignbase[A_ORIGINAL];
@@ -189,9 +187,8 @@ boolean talk;
  * This assumes that the hero is currently _in_ the quest dungeon and that
  * there is a single branch to and from it.
  */
-STATIC_OVL void
-expulsion(seal)
-boolean seal;
+static void
+expulsion(boolean seal)
 {
     branch *br;
     d_level *dest;
@@ -233,8 +230,7 @@ boolean seal;
    give another message about the character keeping the artifact
    and using the magic portal to return to the dungeon. */
 void
-finish_quest(obj)
-struct obj *obj; /* quest artifact; possibly null if carrying Amulet */
+finish_quest(struct obj *obj)
 {
     struct obj *otmp;
 
@@ -267,10 +263,8 @@ struct obj *obj; /* quest artifact; possibly null if carrying Amulet */
     }
 }
 
-STATIC_OVL boolean
-chat_with_leader(mtmp, dopopup)
-struct monst* mtmp;
-boolean dopopup;
+static boolean
+chat_with_leader(struct monst *mtmp, boolean dopopup)
 {
     boolean res = FALSE;
     /*  Rule 0: Cheater checks. */
@@ -378,8 +372,7 @@ boolean dopopup;
 }
 
 boolean
-leader_speaks(mtmp)
-struct monst *mtmp;
+leader_speaks(struct monst *mtmp)
 {
     /* maybe you attacked leader? */
     if (!is_peaceful(mtmp)) 
@@ -404,10 +397,8 @@ struct monst *mtmp;
     return FALSE;
 }
 
-STATIC_OVL boolean
-chat_with_nemesis(mtmp, dopopup)
-struct monst* mtmp;
-boolean dopopup;
+static boolean
+chat_with_nemesis(struct monst *mtmp, boolean dopopup)
 {
     /*  The nemesis will do most of the talking, but... */
     if (!Qstat(met_nemesis))
@@ -424,8 +415,7 @@ boolean dopopup;
 }
 
 boolean
-nemesis_speaks(mtmp)
-struct monst* mtmp;
+nemesis_speaks(struct monst *mtmp)
 {
     boolean res = TRUE;
     if (!Qstat(in_battle) || !Qstat(met_nemesis))
@@ -459,10 +449,8 @@ struct monst* mtmp;
     return res;
 }
 
-STATIC_OVL boolean
-chat_with_guardian(mtmp, dopopup)
-struct monst* mtmp;
-boolean dopopup;
+static boolean
+chat_with_guardian(struct monst *mtmp, boolean dopopup)
 {
     /*  These guys/gals really don't have much to say... */
     if (u.uhave.questart && Qstat(killed_nemesis))
@@ -477,9 +465,8 @@ boolean dopopup;
     return TRUE;
 }
 
-STATIC_OVL boolean
-prisoner_speaks(mtmp)
-struct monst *mtmp;
+static boolean
+prisoner_speaks(struct monst *mtmp)
 {
     if (!mtmp)
         return FALSE;
@@ -506,9 +493,7 @@ struct monst *mtmp;
 }
 
 boolean
-quest_chat(mtmp, dopopup)
-struct monst *mtmp;
-boolean dopopup;
+quest_chat(struct monst *mtmp, boolean dopopup)
 {
     if (mtmp->m_id == Qstat(leader_m_id)) 
     {
@@ -530,9 +515,7 @@ boolean dopopup;
 }
 
 boolean
-quest_talk(mtmp, nearby)
-struct monst *mtmp;
-boolean nearby;
+quest_talk(struct monst *mtmp, boolean nearby)
 {
     if (!mtmp || !mon_can_move(mtmp))
         return FALSE;
@@ -560,8 +543,7 @@ boolean nearby;
 }
 
 void
-quest_stat_check(mtmp)
-struct monst *mtmp;
+quest_stat_check(struct monst *mtmp)
 {
     if (mtmp->data->msound == MS_NEMESIS)
         Qstat(in_battle) = (mon_can_move(mtmp)
@@ -569,8 +551,7 @@ struct monst *mtmp;
 }
 
 void
-achievement_gained(achievement_name)
-const char* achievement_name;
+achievement_gained(const char *achievement_name)
 {
     play_sfx_sound(SFX_ACHIEVEMENT);
     custompline_ex_prefix(ATR_NONE, CLR_MSG_HINT, "ACHIEVEMENT", ATR_NONE, NO_COLOR, " - ", ATR_BOLD, CLR_MSG_HIGHLIGHT, 0U, "%s", achievement_name);

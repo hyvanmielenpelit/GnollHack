@@ -30,32 +30,30 @@ const char *GnollHack_git_sha = GnollHack_GIT_SHA;
 const char *GnollHack_git_branch = GnollHack_GIT_BRANCH;
 #endif
 
-STATIC_DCL void FDECL(insert_rtoption, (char *));
+static void insert_rtoption(char *);
 
 /* fill buffer with short version (so caller can avoid including date.h) */
 char *
-version_string(buf)
-char *buf;
+version_string(char *buf)
 {
     return strcpy(buf, VERSION_STRING);
 }
 
 uint64_t
-get_version_number(VOID_ARGS)
+get_version_number(void)
 {
     return VERSION_NUMBER;
 }
 
 uint64_t
-get_version_compatibility(VOID_ARGS)
+get_version_compatibility(void)
 {
     return EARLIEST_COMPATIBLE_VERSION_NUMBER;
 }
 
 /* fill and return the given buffer with the long GnollHack version string */
 char *
-getversionstring(buf)
-char *buf;
+getversionstring(char *buf)
 {
     Strcpy(buf, VERSION_ID);
 
@@ -102,7 +100,7 @@ char *buf;
 
 /* the 'v' command */
 int
-doversion(VOID_ARGS)
+doversion(void)
 {
     char buf[BUFSZ];
 
@@ -112,7 +110,7 @@ doversion(VOID_ARGS)
 
 /* the '#version' command; also a choice for '?' */
 int
-doextversion(VOID_ARGS)
+doextversion(void)
 {
     dlb *f;
     char buf[BUFSZ], *p = 0;
@@ -194,8 +192,7 @@ doextversion(VOID_ARGS)
     return 0;
 }
 
-void early_version_info(pastebuf)
-boolean pastebuf;
+void early_version_info(boolean pastebuf)
 {
     char buf[BUFSZ], buf2[BUFSZ];
     char *tmp = getversionstring(buf);
@@ -247,9 +244,8 @@ STATIC_VAR const struct rt_opt {
  * it depends which of several object files got linked into the
  * game image, so we insert those options here.
  */
-STATIC_OVL void
-insert_rtoption(buf)
-char *buf;
+static void
+insert_rtoption(char *buf)
 {
     int i;
 
@@ -263,8 +259,7 @@ char *buf;
 
 #ifdef MICRO
 boolean
-comp_times(filetime)
-int64_t filetime;
+comp_times(int64_t filetime)
 {
     /* BUILD_TIME is constant but might have L suffix rather than UL;
        'filetime' is historically signed but ought to have been unsigned */
@@ -273,10 +268,7 @@ int64_t filetime;
 #endif
 
 boolean
-check_version(version_data, filename, complain)
-struct version_info *version_data;
-const char *filename;
-boolean complain;
+check_version(struct version_info *version_data, const char *filename, boolean complain)
 {
     uint64_t vsan1 = VERSION_SANITY1;
     uint64_t vsan2 = VERSION_SANITY2;
@@ -327,9 +319,7 @@ boolean complain;
 /* this used to be based on file date and somewhat OS-dependant,
    but now examines the initial part of the file's contents */
 boolean
-uptodate(fd, name)
-int fd;
-const char *name;
+uptodate(int fd, const char *name)
 {
     int rlen;
     struct version_info vers_info;
@@ -353,8 +343,7 @@ const char *name;
 }
 
 void
-store_version(fd)
-int fd;
+store_version(int fd)
 {
     static const struct version_info version_data = {
         VERSION_NUMBER, VERSION_FEATURES,
@@ -376,8 +365,7 @@ const char amiga_version_string[] = AMIGA_VERSION_STRING;
 #endif
 
 uint64_t
-get_feature_notice_ver(str)
-char *str;
+get_feature_notice_ver(char *str)
 {
     char buf[BUFSZ];
     int ver_maj, ver_min, patch;
@@ -410,15 +398,14 @@ char *str;
 }
 
 uint64_t
-get_current_feature_ver(VOID_ARGS)
+get_current_feature_ver(void)
 {
     return FEATURE_NOTICE_VER(VERSION_MAJOR, VERSION_MINOR, PATCHLEVEL);
 }
 
 /*ARGUSED*/
 const char *
-copyright_banner_line(indx)
-int indx;
+copyright_banner_line(int indx)
 {
 #ifdef COPYRIGHT_BANNER_A
     if (indx == 1)

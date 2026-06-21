@@ -7,17 +7,17 @@
 
 #include "hack.h"
 
-STATIC_VAR NEARDATA boolean did_dig_msg;
+static NEARDATA boolean did_dig_msg;
 
-STATIC_DCL boolean NDECL(rm_waslit);
-STATIC_DCL void FDECL(mkcavepos,
+static boolean NDECL(rm_waslit);
+static void FDECL(mkcavepos,
                       (XCHAR_P, XCHAR_P, int, BOOLEAN_P, BOOLEAN_P));
-STATIC_DCL void FDECL(mkcavearea, (BOOLEAN_P));
-STATIC_DCL int NDECL(dig);
-STATIC_DCL void FDECL(dig_up_grave, (coord *));
-STATIC_DCL int FDECL(adj_pit_checks, (coord *, char *));
-STATIC_DCL void FDECL(pit_flow, (struct trap *, SCHAR_P));
-STATIC_OVL void FDECL(create_tree_remnants, (int, int, boolean*));
+static void FDECL(mkcavearea, (BOOLEAN_P));
+static int NDECL(dig);
+static void FDECL(dig_up_grave, (coord *));
+static int FDECL(adj_pit_checks, (coord *, char *));
+static void FDECL(pit_flow, (struct trap *, SCHAR_P));
+static void FDECL(create_tree_remnants, (int, int, boolean*));
 
 /* Indices returned by dig_typ() */
 enum dig_types {
@@ -29,8 +29,8 @@ enum dig_types {
     DIGTYP_TREE
 };
 
-STATIC_OVL boolean
-rm_waslit(VOID_ARGS)
+static boolean
+rm_waslit(void)
 {
     xchar x, y;
 
@@ -47,11 +47,8 @@ rm_waslit(VOID_ARGS)
  * boulders in the name of a nice effect.  Vision will get fixed up again
  * immediately after the effect is complete.
  */
-STATIC_OVL void
-mkcavepos(x, y, dist, waslit, rockit)
-xchar x, y;
-int dist;
-boolean waslit, rockit;
+static void
+mkcavepos(xchar x, xchar y, int dist, boolean waslit, boolean rockit)
 {
     struct rm *lev;
 
@@ -99,9 +96,8 @@ boolean waslit, rockit;
     feel_newsym(x, y);
 }
 
-STATIC_OVL void
-mkcavearea(rockit)
-boolean rockit;
+static void
+mkcavearea(boolean rockit)
 {
     int dist;
     xchar xmin = u.ux, xmax = u.ux;
@@ -155,9 +151,7 @@ boolean rockit;
 
 /* When digging into location <x,y>, what are you actually digging into? */
 int
-dig_typ(otmp, x, y)
-struct obj *otmp;
-xchar x, y;
+dig_typ(struct obj *otmp, xchar x, xchar y)
 {
     boolean ispick, isaxe, issaw;
 
@@ -184,7 +178,7 @@ xchar x, y;
 }
 
 boolean
-is_digging(VOID_ARGS)
+is_digging(void)
 {
     if (occupation == dig) {
         return TRUE;
@@ -196,10 +190,7 @@ is_digging(VOID_ARGS)
 #define BY_OBJECT ((struct monst *) 0)
 
 boolean
-dig_check(madeby, verbose, x, y)
-struct monst *madeby;
-boolean verbose;
-int x, y;
+dig_check(struct monst *madeby, boolean verbose, int x, int y)
 {
     struct trap *ttmp = t_at(x, y);
     const char *verb =
@@ -280,8 +271,8 @@ int x, y;
     return TRUE;
 }
 
-STATIC_OVL int
-dig(VOID_ARGS)
+static int
+dig(void)
 {
     struct rm *lev;
     xchar dpx = context.digging.pos.x, dpy = context.digging.pos.y;
@@ -662,7 +653,7 @@ dig(VOID_ARGS)
 
 /* When will hole be finished? Very rough indication used by shopkeeper. */
 int
-holetime(VOID_ARGS)
+holetime(void)
 {
     if (occupation != dig || !*u.ushops)
         return -1;
@@ -671,9 +662,7 @@ holetime(VOID_ARGS)
 
 /* Return typ of liquid to fill a hole with, or GROUND, if no liquid nearby */
 schar
-fillholetyp(x, y, fill_if_any)
-int x, y;
-boolean fill_if_any; /* force filling if it exists at all */
+fillholetyp(int x, int y, boolean fill_if_any)
 {
     int x1, y1;
     int lo_x = max(1, x - 1), hi_x = min(x + 1, COLNO - 1),
@@ -708,10 +697,7 @@ boolean fill_if_any; /* force filling if it exists at all */
 }
 
 void
-digactualhole(x, y, madeby, ttyp)
-int x, y;
-struct monst *madeby;
-int ttyp;
+digactualhole(int x, int y, struct monst *madeby, int ttyp)
 {
     struct obj *oldobjs, *newobjs;
     struct trap *ttmp;
@@ -919,11 +905,7 @@ int ttyp;
  * in apply.c.
  */
 void
-liquid_flow(x, y, typ, ttmp, fillmsg)
-xchar x, y;
-schar typ;
-struct trap *ttmp;
-const char *fillmsg;
+liquid_flow(xchar x, xchar y, schar typ, struct trap *ttmp, const char *fillmsg)
 {
     boolean u_spot = (x == u.ux && y == u.uy);
 
@@ -944,9 +926,7 @@ const char *fillmsg;
 
 /* return TRUE if digging succeeded, FALSE otherwise */
 boolean
-dighole(pit_only, by_magic, cc)
-boolean pit_only, by_magic;
-coord *cc;
+dighole(boolean pit_only, boolean by_magic, coord *cc)
 {
     struct trap *ttmp;
     struct rm *lev;
@@ -1102,9 +1082,8 @@ coord *cc;
     return FALSE;
 }
 
-STATIC_OVL void
-dig_up_grave(cc)
-coord *cc;
+static void
+dig_up_grave(coord *cc)
 {
     struct obj *otmp = (struct obj*)0;
     xchar dig_x, dig_y;
@@ -1203,8 +1182,7 @@ coord *cc;
 }
 
 int
-use_pick_axe(obj)
-struct obj *obj;
+use_pick_axe(struct obj *obj)
 {
     if (!obj)
         return 0;
@@ -1301,8 +1279,7 @@ struct obj *obj;
 /*       the "In what direction do you want to dig?" query.        */
 /*       use_pick_axe2() uses the existing u.dx, u.dy and u.dz    */
 int
-use_pick_axe2(obj)
-struct obj *obj;
+use_pick_axe2(struct obj *obj)
 {
     int rx, ry;
     struct rm *lev;
@@ -1686,10 +1663,7 @@ struct obj *obj;
  * zap == TRUE if wand/spell of digging, FALSE otherwise (chewing)
  */
 void
-watch_dig(mtmp, x, y, zap)
-struct monst *mtmp;
-xchar x, y;
-boolean zap;
+watch_dig(struct monst *mtmp, xchar x, xchar y, boolean zap)
 {
     struct rm *lev = &levl[x][y];
 
@@ -1753,8 +1727,7 @@ boolean zap;
 
 /* Return TRUE if monster died, FALSE otherwise.  Called from m_move(). */
 boolean
-mdig_tunnel(mtmp)
-struct monst *mtmp;
+mdig_tunnel(struct monst *mtmp)
 {
     struct rm *here;
     int pile = rnd(12);
@@ -1930,8 +1903,7 @@ struct monst *mtmp;
 /* draft refers to air currents, but can be a pun on "draft" as conscription
    for military service (probably not a good pun if it has to be explained) */
 void
-draft_message(unexpected)
-boolean unexpected;
+draft_message(boolean unexpected)
 {
     /*
      * [Bug or TODO?  Have caller pass coordinates and use the travel
@@ -1973,10 +1945,8 @@ boolean unexpected;
     }
 }
 
-STATIC_OVL void
-create_tree_remnants(x, y, done_feelnewsym_ptr)
-int x, y;
-boolean* done_feelnewsym_ptr;
+static void
+create_tree_remnants(int x, int y, boolean *done_feelnewsym_ptr)
 {
     if (!isok(x, y))
         return;
@@ -2012,8 +1982,7 @@ boolean* done_feelnewsym_ptr;
 }
 
 void
-zap_try_destroy_tree(x, y)
-int x, y;
+zap_try_destroy_tree(int x, int y)
 {
     if (!isok(x, y) || !IS_TREE(levl[x][y].typ))
         return;
@@ -2038,8 +2007,7 @@ int x, y;
 
 /* digging via wand zap or spell cast */
 void
-zap_dig(origobj)
-struct obj* origobj;
+zap_dig(struct obj *origobj)
 {
     struct rm *room;
     struct monst *mtmp;
@@ -2466,8 +2434,7 @@ struct obj* origobj;
 
 /* evaporation via wand zap or spell cast */
 void
-zap_evaporation(origobj)
-struct obj* origobj;
+zap_evaporation(struct obj *origobj)
 {
     struct monst* mtmp;
     int zx, zy, lzx, lzy, digdepth;
@@ -2767,10 +2734,8 @@ struct obj* origobj;
  * you're zapping a wand of digging laterally while
  * down in the pit.
  */
-STATIC_OVL int
-adj_pit_checks(cc, msg)
-coord *cc;
-char *msg;
+static int
+adj_pit_checks(coord *cc, char *msg)
 {
     int ltyp;
     struct rm *room;
@@ -2860,10 +2825,8 @@ char *msg;
 /*
  * Ensure that all conjoined pits fill up.
  */
-STATIC_OVL void
-pit_flow(trap, filltyp)
-struct trap *trap;
-schar filltyp;
+static void
+pit_flow(struct trap *trap, schar filltyp)
 {
     if (trap && !IS_FLOOR(filltyp) && is_pit(trap->ttyp)) {
         struct trap t;
@@ -2898,8 +2861,7 @@ schar filltyp;
 }
 
 struct obj *
-buried_ball(cc)
-coord *cc;
+buried_ball(coord *cc)
 {
     int odist, bdist = COLNO;
     struct obj *otmp, *ball = 0;
@@ -2945,7 +2907,7 @@ coord *cc;
 }
 
 void
-buried_ball_to_punishment(VOID_ARGS)
+buried_ball_to_punishment(void)
 {
     coord cc;
     struct obj *ball;
@@ -2969,7 +2931,7 @@ buried_ball_to_punishment(VOID_ARGS)
 }
 
 void
-buried_ball_to_freedom(VOID_ARGS)
+buried_ball_to_freedom(void)
 {
     coord cc;
     struct obj *ball;
@@ -2996,9 +2958,7 @@ buried_ball_to_freedom(VOID_ARGS)
 /* move objects from fobj/nexthere lists to buriedobjlist, keeping position
    information */
 struct obj *
-bury_an_obj(otmp, dealloced)
-struct obj *otmp;
-boolean *dealloced;
+bury_an_obj(struct obj *otmp, boolean *dealloced)
 {
     struct obj *otmp2;
     boolean under_ice;
@@ -3078,8 +3038,7 @@ boolean *dealloced;
 }
 
 void
-bury_objs(x, y)
-int x, y;
+bury_objs(int x, int y)
 {
     struct obj *otmp, *otmp2;
     struct monst *shkp;
@@ -3114,10 +3073,7 @@ int x, y;
 
 /* move objects from buriedobjlist to fobj/nexthere lists */
 int
-unearth_objs(mtmp, x, y, verbose, buriedsearchableonly)
-struct monst *mtmp;
-int x, y;
-boolean verbose, buriedsearchableonly;
+unearth_objs(struct monst *mtmp, int x, int y, boolean verbose, boolean buriedsearchableonly)
 {
     struct obj *otmp, *otmp2, *bball;
     coord cc;
@@ -3174,9 +3130,7 @@ boolean verbose, buriedsearchableonly;
  */
 /* ARGSUSED */
 int
-rot_organic(arg, timeout)
-anything *arg;
-int64_t timeout UNUSED;
+rot_organic(anything *arg, int64_t timeout UNUSED)
 {
     struct obj *obj = arg->a_obj;
 
@@ -3206,9 +3160,7 @@ int64_t timeout UNUSED;
  * Called when a corpse has rotted completely away.
  */
 int
-rot_corpse(arg, timeout)
-anything *arg;
-int64_t timeout;
+rot_corpse(anything *arg, int64_t timeout)
 {
     xchar x = 0, y = 0;
     struct obj *obj = arg->a_obj;
@@ -3276,8 +3228,7 @@ int64_t timeout;
 
 #if 0
 void
-bury_monst(mtmp)
-struct monst *mtmp;
+bury_monst(struct monst *mtmp)
 {
     debugpline1("bury_monst: %s", mon_nam(mtmp));
     if (canseemon(mtmp)) {
@@ -3296,7 +3247,7 @@ struct monst *mtmp;
 }
 
 void
-bury_you(VOID_ARGS)
+bury_you(void)
 {
     debugpline0("bury_you");
     if (!Levitation && !Flying) {
@@ -3314,7 +3265,7 @@ bury_you(VOID_ARGS)
 }
 
 void
-unearth_you(VOID_ARGS)
+unearth_you(void)
 {
     debugpline0("unearth_you");
     u.uburied = FALSE;
@@ -3326,7 +3277,7 @@ unearth_you(VOID_ARGS)
 }
 
 void
-escape_tomb(VOID_ARGS)
+escape_tomb(void)
 {
     debugpline0("escape_tomb");
     if ((Teleportation || has_innate_teleportation(youmonst.data))
@@ -3358,8 +3309,7 @@ escape_tomb(VOID_ARGS)
 }
 
 void
-bury_obj(otmp)
-struct obj *otmp;
+bury_obj(struct obj *otmp)
 {
     debugpline0("bury_obj");
     if (cansee(otmp->ox, otmp->oy))
@@ -3373,7 +3323,7 @@ struct obj *otmp;
 #ifdef DEBUG
 /* bury everything at your loc and around */
 int
-wiz_debug_cmd_bury(VOID_ARGS)
+wiz_debug_cmd_bury(void)
 {
     int x, y;
 
@@ -3389,7 +3339,7 @@ wiz_debug_cmd_bury(VOID_ARGS)
 
 /* the C('d') command - Dig ground with hands or your weapon */
 int
-dodig(VOID_ARGS)
+dodig(void)
 {
     if (uwep && (uwep->otyp == PICK_AXE || uwep->otyp == DWARVISH_MATTOCK || uwep->otyp == SPADE_OF_COLOSSAL_EXCAVATION))
     {
@@ -3473,8 +3423,7 @@ dodig(VOID_ARGS)
 
 
 void
-uncatch_tree_objects(x, y)
-int x, y;
+uncatch_tree_objects(int x, int y)
 {
     if (!isok(x, y))
         return;
@@ -3489,7 +3438,7 @@ int x, y;
 }
 
 void
-reset_dig(VOID_ARGS)
+reset_dig(void)
 {
     did_dig_msg = 0;
 }

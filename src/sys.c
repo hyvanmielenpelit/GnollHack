@@ -22,7 +22,7 @@ struct startup_flags initial_flags = DUMMY; /* flags.h */
 
 
 void
-sys_early_init(VOID_ARGS)
+sys_early_init(void)
 {
     reset_global_variables();
 
@@ -119,7 +119,7 @@ sys_early_init(VOID_ARGS)
 }
 
 void
-sysopt_release(VOID_ARGS)
+sysopt_release(void)
 {
     if (sysopt.support)
         free((genericptr_t) sysopt.support), sysopt.support = (char *) 0;
@@ -187,8 +187,7 @@ extern const struct attack sa_yes[NATTK];
 extern const struct attack sa_no[NATTK];
 
 void
-sysopt_seduce_set(val)
-int val;
+sysopt_seduce_set(int val)
 {
 #if 0
 /*
@@ -209,7 +208,7 @@ int val;
 
 
 void
-reset_global_variables(VOID_ARGS)
+reset_global_variables(void)
 {
     wizard = discover = ModernMode = CasualMode = TournamentMode = FALSE;
     save_initial_objects_values();
@@ -324,7 +323,7 @@ reset_global_variables(VOID_ARGS)
 }
 
 void
-reset_item_global_variables(VOID_ARGS)
+reset_item_global_variables(void)
 {
     invent = (struct obj*)0;
     uwep = (struct obj*)0;

@@ -31,8 +31,7 @@ extern void FDECL(set_panic_handling, (int, BOOLEAN_P));
 extern void VDECL(panic, (const char *, ...)) PRINTF_F(1, 2);
 
 long *
-alloc(lth)
-size_t lth;
+alloc(size_t lth)
 {
 #ifdef LINT
     /*
@@ -87,8 +86,7 @@ static int ptrbufidx = 0;
 
 /* format a pointer for display purposes; returns a static buffer */
 char *
-fmt_ptr(ptr)
-const genericptr ptr;
+fmt_ptr(const genericptr ptr)
 {
     char *buf;
 
@@ -104,8 +102,8 @@ const genericptr ptr;
 
 /* If ${NH_HEAPLOG} is defined and we can create a file by that name,
    then we'll log the allocation and release information to that file. */
-STATIC_OVL void
-heapmon_init(VOID_ARGS)
+static void
+heapmon_init(void)
 {
     char *logname = getenv("NH_HEAPLOG");
 
@@ -115,10 +113,7 @@ heapmon_init(VOID_ARGS)
 }
 
 long *
-nhalloc(lth, file, line)
-size_t lth;
-const char *file;
-int line;
+nhalloc(size_t lth, const char *file, int line)
 {
     long *ptr = alloc(lth);
 
@@ -135,10 +130,7 @@ int line;
 }
 
 void
-nhfree(ptr, file, line)
-genericptr_t ptr;
-const char *file;
-int line;
+nhfree(genericptr_t ptr, const char *file, int line)
 {
     if (!tried_heaplog)
         heapmon_init();
@@ -152,10 +144,7 @@ int line;
 /* strdup() which uses our alloc() rather than libc's malloc(),
    with caller tracking */
 char *
-nhdupstr(string, file, line)
-const char *string;
-const char *file;
-int line;
+nhdupstr(const char *string, const char *file, int line)
 {
     return strcpy((char *) nhalloc(strlen(string) + 1, file, line), string);
 }
@@ -167,18 +156,15 @@ int line;
    not used when MONITOR_HEAP is enabled, but included unconditionally
    in case utility programs get built using a different setting for that */
 char *
-dupstr(string)
-const char *string;
+dupstr(const char *string)
 {
     char* cptr = (char*)alloc(strlen(string) + 1);
     Strcpy(cptr, string);
     return cptr;
 }
 
-char*
-setstr(string, initval)
-const char* string;
-char initval;
+char *
+setstr(const char *string, char initval)
 {
     if (!string)
         return (char*)0;
@@ -190,10 +176,8 @@ char initval;
     return cptr;
 }
 
-char*
-cpystr(string, initvals)
-const char* string;
-const char* initvals;
+char *
+cpystr(const char *string, const char *initvals)
 {
     if (!string)
         return (char*)0;

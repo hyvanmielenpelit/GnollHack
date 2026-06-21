@@ -10,24 +10,23 @@
 #define HEIGHT (ROWNO - 1)
 #define WIDTH (COLNO - 2)
 
-STATIC_DCL void FDECL(init_map, (lev_init*));
-STATIC_DCL void FDECL(init_fill, (lev_init*));
-STATIC_DCL schar FDECL(get_map, (int, int, SCHAR_P));
-STATIC_DCL void FDECL(pass_one, (lev_init*));
-STATIC_DCL void FDECL(pass_two, (lev_init*));
-STATIC_DCL void FDECL(pass_three, (lev_init*));
-STATIC_DCL void FDECL(join_map, (lev_init*));
-STATIC_DCL void FDECL(finish_map, (lev_init*));
-STATIC_DCL void FDECL(remove_room, (unsigned));
+static void FDECL(init_map, (lev_init*));
+static void FDECL(init_fill, (lev_init*));
+static schar FDECL(get_map, (int, int, SCHAR_P));
+static void FDECL(pass_one, (lev_init*));
+static void FDECL(pass_two, (lev_init*));
+static void FDECL(pass_three, (lev_init*));
+static void FDECL(join_map, (lev_init*));
+static void FDECL(finish_map, (lev_init*));
+static void FDECL(remove_room, (unsigned));
 void FDECL(mkmap, (lev_init *));
 
-STATIC_VAR char *new_locations;
+static char *new_locations;
 int min_rx, max_rx, min_ry, max_ry; /* rectangle bounds for regions */
-STATIC_VAR int n_loc_filled;
+static int n_loc_filled;
 
-STATIC_OVL void
-init_map(init_lev)
-lev_init* init_lev;
+static void
+init_map(lev_init *init_lev)
 {
     schar bg_typ = init_lev->bg;
     int i, j;
@@ -44,9 +43,8 @@ lev_init* init_lev;
         }
 }
 
-STATIC_OVL void
-init_fill(init_lev)
-lev_init* init_lev;
+static void
+init_fill(lev_init *init_lev)
 {
     int i, j;
     int64_t limit, count;
@@ -71,22 +69,19 @@ lev_init* init_lev;
     }
 }
 
-STATIC_OVL schar
-get_map(col, row, bg_typ)
-int col, row;
-schar bg_typ;
+static schar
+get_map(int col, int row, schar bg_typ)
 {
     if (col <= 0 || row < 0 || col > WIDTH || row >= HEIGHT)
         return bg_typ;
     return levl[col][row].typ;
 }
 
-STATIC_VAR const int dirs[16] = { -1, -1 /**/, -1, 0 /**/,  -1, 1 /**/, 0, -1 /**/,
+static const int dirs[16] = { -1, -1 /**/, -1, 0 /**/,  -1, 1 /**/, 0, -1 /**/,
                         0,  1 /**/,  1,  -1 /**/, 1,  0 /**/, 1, 1 };
 
-STATIC_OVL void
-pass_one(init_lev)
-lev_init* init_lev;
+static void
+pass_one(lev_init *init_lev)
 {
     int i, j;
     short count, dr;
@@ -131,9 +126,8 @@ lev_init* init_lev;
 
 #define new_loc(i, j) *(new_locations + (((size_t)j) * (size_t)(WIDTH + 1)) + ((size_t)i))
 
-STATIC_OVL void
-pass_two(init_lev)
-lev_init* init_lev;
+static void
+pass_two(lev_init *init_lev)
 {
     int i, j;
     short count, dr;
@@ -164,9 +158,8 @@ lev_init* init_lev;
         }
 }
 
-STATIC_OVL void
-pass_three(init_lev)
-lev_init* init_lev;
+static void
+pass_three(lev_init *init_lev)
 {
     int i, j;
     short count, dr;
@@ -205,12 +198,7 @@ lev_init* init_lev;
  * exactly matching levl[sx][sy].typ and walls are included as well.
  */
 void
-flood_fill_rm(sx, sy, rmno, lit, anyroom)
-int sx;
-int sy;
-int rmno;
-boolean lit;
-boolean anyroom;
+flood_fill_rm(int sx, int sy, int rmno, boolean lit, boolean anyroom)
 {
     int i;
     int nx;
@@ -314,7 +302,7 @@ boolean anyroom;
  * auto-magically wallify it.  Taken from lev_main.c.
  */
 void
-wallify_entire_map(VOID_ARGS)
+wallify_entire_map(void)
 {
     int x, y, xx, yy;
 
@@ -338,9 +326,8 @@ wallify_entire_map(VOID_ARGS)
             }
 }
 
-STATIC_OVL void
-join_map(init_lev)
-lev_init* init_lev;
+static void
+join_map(lev_init *init_lev)
 {
     struct mkroom *croom, *croom2;
     schar bg_typ = init_lev->bg, fg_typ = init_lev->fg;
@@ -427,9 +414,8 @@ joinm:
     }
 }
 
-STATIC_OVL void
-finish_map(init_lev)
-lev_init* init_lev;
+static void
+finish_map(lev_init *init_lev)
 {
     int i, j;
     schar bg_typ = init_lev->bg, fg_typ = init_lev->fg;
@@ -473,8 +459,7 @@ lev_init* init_lev;
  * region are all set.
  */
 void
-remove_rooms(lx, ly, hx, hy)
-int lx, ly, hx, hy;
+remove_rooms(int lx, int ly, int hx, int hy)
 {
     int i;
     struct mkroom *croom;
@@ -508,9 +493,8 @@ int lx, ly, hx, hy;
  * level structure contents corresponding to roomno have already been reset.
  * Currently handles only the removal of rooms that have no subrooms.
  */
-STATIC_OVL void
-remove_room(roomno)
-unsigned roomno;
+static void
+remove_room(unsigned roomno)
 {
     struct mkroom *croom = &rooms[roomno];
     struct mkroom *maxroom = &rooms[--nroom];
@@ -544,8 +528,7 @@ unsigned roomno;
 #define N_P3_ITER 2 /* tune map smoothing via this value */
 
 void
-mkmap(init_lev)
-lev_init *init_lev;
+mkmap(lev_init *init_lev)
 {
     boolean smooth = init_lev->smoothed, join = init_lev->joined;
     xchar lit = init_lev->lit, walled = init_lev->walled;

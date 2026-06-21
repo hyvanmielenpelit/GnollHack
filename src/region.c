@@ -13,9 +13,9 @@
  * structure eventually.
  */
 
-STATIC_VAR NhRegion **regions;
-STATIC_VAR int n_regions = 0;
-STATIC_VAR int max_regions = 0;
+static NhRegion **regions;
+static int n_regions = 0;
+static int max_regions = 0;
 
 boolean FDECL(enter_special_level_seen, (genericptr, genericptr));
 boolean FDECL(enter_special_level_true_nature_revealed, (genericptr, genericptr));
@@ -45,7 +45,7 @@ boolean FDECL(enter_force_field, (genericptr,genericptr));
 NhRegion *FDECL(create_force_field, (XCHAR_P,XCHAR_P,int,int64_t));
 #endif
 
-STATIC_DCL void FDECL(reset_region_mids, (NhRegion *));
+static void FDECL(reset_region_mids, (NhRegion *));
 
 struct region_type_definition region_type_definitions[MAX_REGION_TYPES] =
 {
@@ -71,9 +71,7 @@ struct region_type_definition region_type_definitions[MAX_REGION_TYPES] =
 
 /* Should be inlined. */
 boolean
-inside_rect(r, x, y)
-NhRect *r;
-int x, y;
+inside_rect(NhRect *r, int x, int y)
 {
     return (boolean) (x >= r->lx && x <= r->hx && y >= r->ly && y <= r->hy);
 }
@@ -82,9 +80,7 @@ int x, y;
  * Check if a point is inside a region.
  */
 boolean
-inside_region(reg, x, y)
-NhRegion *reg;
-int x, y;
+inside_region(NhRegion *reg, int x, int y)
 {
     int i;
 
@@ -100,10 +96,7 @@ int x, y;
  * Create a region. It does not activate it.
  */
 NhRegion*
-create_region(typ, rects, nrect)
-enum region_types typ;
-NhRect *rects;
-int nrect;
+create_region(enum region_types typ, NhRect *rects, int nrect)
 {
     int i;
     NhRegion *reg;
@@ -167,9 +160,7 @@ int nrect;
  * Add rectangle to region.
  */
 void
-add_rect_to_reg(reg, rect)
-NhRegion *reg;
-NhRect *rect;
+add_rect_to_reg(NhRegion *reg, NhRect *rect)
 {
     NhRect *tmp_rect;
 
@@ -197,9 +188,7 @@ NhRect *rect;
  * Add a monster to the region
  */
 void
-add_mon_to_reg(reg, mon)
-NhRegion *reg;
-struct monst *mon;
+add_mon_to_reg(NhRegion *reg, struct monst *mon)
 {
     int i;
     unsigned *tmp_m;
@@ -221,9 +210,7 @@ struct monst *mon;
  * Remove a monster from the region list (it left or died...)
  */
 void
-remove_mon_from_reg(reg, mon)
-NhRegion *reg;
-struct monst *mon;
+remove_mon_from_reg(NhRegion *reg, struct monst *mon)
 {
     int i;
 
@@ -241,9 +228,7 @@ struct monst *mon;
  * than to check for coordinates.
  */
 boolean
-mon_in_region(reg, mon)
-NhRegion *reg;
-struct monst *mon;
+mon_in_region(NhRegion *reg, struct monst *mon)
 {
     int i;
 
@@ -260,8 +245,7 @@ struct monst *mon;
  * Clone (make a standalone copy) the region.
  */
 NhRegion *
-clone_region(reg)
-NhRegion *reg;
+clone_region(NhRegion *reg)
 {
     NhRegion *ret_reg;
 
@@ -289,8 +273,7 @@ NhRegion *reg;
  * Free mem from region.
  */
 void
-free_region(reg)
-NhRegion *reg;
+free_region(NhRegion *reg)
 {
     if (reg) {
         if (reg->rects)
@@ -310,8 +293,7 @@ NhRegion *reg;
  * This actually activates the region.
  */
 void
-add_region(reg)
-NhRegion *reg;
+add_region(NhRegion *reg)
 {
     NhRegion **tmp_reg;
     int i, j;
@@ -371,8 +353,7 @@ NhRegion *reg;
  * Remove a region from the list & free it.
  */
 void
-remove_region(reg)
-NhRegion *reg;
+remove_region(NhRegion *reg)
 {
     int i, x, y;
 
@@ -407,7 +388,7 @@ NhRegion *reg;
  * when changing level, for instance).
  */
 void
-clear_regions(VOID_ARGS)
+clear_regions(void)
 {
     int i;
 
@@ -426,7 +407,7 @@ clear_regions(VOID_ARGS)
  * callbacks when needed.
  */
 void
-run_regions(VOID_ARGS)
+run_regions(void)
 {
     int i, j, k;
 //    int f_indx;
@@ -473,8 +454,7 @@ run_regions(VOID_ARGS)
  * check whether player enters/leaves one or more regions.
  */
 boolean
-in_out_region(x, y)
-xchar x, y;
+in_out_region(xchar x, xchar y)
 {
     int i; // , f_indx;
 
@@ -521,9 +501,7 @@ xchar x, y;
  * check whether a monster enters/leaves one or more region.
 */
 boolean
-m_in_out_region(mon, x, y)
-struct monst *mon;
-xchar x, y;
+m_in_out_region(struct monst *mon, xchar x, xchar y)
 {
     int i; // , f_indx;
 
@@ -569,7 +547,7 @@ xchar x, y;
  * Checks player's regions after a teleport for instance.
  */
 void
-update_player_regions(VOID_ARGS)
+update_player_regions(void)
 {
     int i;
 
@@ -584,8 +562,7 @@ update_player_regions(VOID_ARGS)
  * Ditto for a specified monster.
  */
 void
-update_monster_region(mon)
-struct monst *mon;
+update_monster_region(struct monst *mon)
 {
     int i;
 
@@ -609,8 +586,7 @@ struct monst *mon;
  * need a new structure (internally that is).
  */
 void
-replace_mon_regions(monold, monnew)
-struct monst *monold, *monnew;
+replace_mon_regions(struct monst *monold, struct *monnew)
 {
     int i;
 
@@ -625,8 +601,7 @@ struct monst *monold, *monnew;
  * Remove monster from all regions it was in (ie monster just died)
  */
 void
-remove_mon_from_regions(mon)
-struct monst *mon;
+remove_mon_from_regions(struct monst *mon)
 {
     int i;
 
@@ -642,8 +617,7 @@ struct monst *mon;
  * Returns NULL if not, otherwise returns region.
  */
 NhRegion *
-visible_region_at(x, y)
-xchar x, y;
+visible_region_at(xchar x, xchar y)
 {
     int i;
 
@@ -655,9 +629,7 @@ xchar x, y;
 }
 
 void
-show_region(reg, x, y)
-NhRegion *reg;
-xchar x, y;
+show_region(NhRegion *reg, xchar x, xchar y)
 {
     show_glyph_ascii(x, y, reg->glyph);
     show_glyph_on_layer(x, y, reg->glyph, LAYER_ENVIRONMENT);
@@ -667,9 +639,7 @@ xchar x, y;
  * save_regions :
  */
 void
-save_regions(fd, mode)
-int fd;
-int mode;
+save_regions(int fd, int mode)
 {
     int i, j;
     size_t n;
@@ -733,9 +703,7 @@ skip_lots:
 }
 
 void
-rest_regions(fd, ghostly)
-int fd;
-boolean ghostly; /* If a bones file restore */
+rest_regions(int fd, boolean ghostly)
 {
     int i, j;
     size_t n;
@@ -830,8 +798,7 @@ boolean ghostly; /* If a bones file restore */
 }
 
 void
-remove_expired_regions(ghostly)
-boolean ghostly;
+remove_expired_regions(boolean ghostly)
 {
     int i;
     /* remove expired regions, do not trigger the expire_f callback (yet!);
@@ -845,11 +812,7 @@ boolean ghostly;
 
 /* to support '#stats' wizard-mode command */
 void
-region_stats(hdrfmt, hdrbuf, count, size)
-const char *hdrfmt;
-char *hdrbuf;
-int64_t* count;
-size_t *size;
+region_stats(const char *hdrfmt, char *hdrbuf, int64_t *count, size_t *size)
 {
     NhRegion *rg;
     int i;
@@ -871,9 +834,8 @@ size_t *size;
 }
 
 /* update monster IDs for region being loaded from bones; `ghostly' implied */
-STATIC_OVL void
-reset_region_mids(reg)
-NhRegion *reg;
+static void
+reset_region_mids(NhRegion *reg)
 {
     int i = 0, n = reg->n_monst;
     unsigned *mid_list = reg->monsters;
@@ -900,11 +862,7 @@ NhRegion *reg;
  *--------------------------------------------------------------*/
 
 NhRegion *
-create_msg_region(x, y, w, h, msg_enter, msg_leave)
-xchar x, y;
-xchar w, h;
-const char *msg_enter;
-const char *msg_leave;
+create_msg_region(xchar x, xchar y, xchar w, xchar h, const char *msg_enter, const char *msg_leave)
 {
     NhRect tmprect;
     NhRegion *reg = create_region(REGION_GENERAL, (NhRect *) 0, 0);
@@ -939,9 +897,7 @@ const char *msg_leave;
  *--------------------------------------------------------------*/
 
 boolean
-enter_force_field(p1, p2)
-genericptr_t p1;
-genericptr_t p2;
+enter_force_field(genericptr_t p1, genericptr_t p2)
 {
     struct monst *mtmp;
 
@@ -962,10 +918,7 @@ genericptr_t p2;
 }
 
 NhRegion *
-create_force_field(x, y, radius, time_to_live)
-xchar x, y;
-int radius;
-int64_t time_to_live;
+create_force_field(xchar x, xchar y, int radius, int64_t time_to_live)
 {
     int i;
     NhRegion *ff;
@@ -1006,9 +959,7 @@ int64_t time_to_live;
  */
 /*ARGSUSED*/
 boolean
-expire_gas_cloud(p1, p2)
-genericptr_t p1;
-genericptr_t p2 UNUSED;
+expire_gas_cloud(genericptr_t p1, genericptr_t p2 UNUSED)
 {
     NhRegion *reg;
 
@@ -1025,9 +976,7 @@ genericptr_t p2 UNUSED;
 }
 
 boolean
-inside_gas_cloud(p1, p2)
-genericptr_t p1;
-genericptr_t p2;
+inside_gas_cloud(genericptr_t p1, genericptr_t p2)
 {
     NhRegion *reg;
     struct monst *mtmp;
@@ -1125,11 +1074,7 @@ genericptr_t p2;
 }
 
 NhRegion *
-create_gas_cloud(x, y, type, radius, dmg_dice, dmg_diesize, dmg_plus)
-xchar x, y;
-enum region_types type;
-int radius;
-int dmg_dice, dmg_diesize, dmg_plus;
+create_gas_cloud(xchar x, xchar y, enum region_types type, int radius, int dmg_dice, int dmg_diesize, int dmg_plus)
 {
     NhRegion *cloud;
     int i, nrect;
@@ -1161,9 +1106,7 @@ int dmg_dice, dmg_diesize, dmg_plus;
 }
 
 NhRegion*
-create_simple_permanent_region(x1, y1, x2, y2, type)
-xchar x1, y1, x2, y2;
-enum region_types type;
+create_simple_permanent_region(xchar x1, xchar y1, xchar x2, xchar y2, enum region_types type)
 {
     NhRegion* reg;
     NhRect tmprect;
@@ -1181,7 +1124,7 @@ enum region_types type;
 
 /* for checking troubles during prayer; is hero at risk? */
 boolean
-region_danger(VOID_ARGS)
+region_danger(void)
 {
     int i, n = 0; //f_indx, 
 
@@ -1207,7 +1150,7 @@ region_danger(VOID_ARGS)
 /* for fixing trouble at end of prayer;
    danger detected at start of prayer might have expired by now */
 void
-region_safety(VOID_ARGS)
+region_safety(void)
 {
     NhRegion *r = 0;
     int i, n = 0; //f_indx, 
@@ -1240,8 +1183,7 @@ region_safety(VOID_ARGS)
 }
 
 struct nhregion* 
-find_rid(nid)
-int nid;
+find_rid(int nid)
 {
     if (nid < 0 || nid >= n_regions)
         return (struct nhregion*)0;
@@ -1250,8 +1192,7 @@ int nid;
 }
 
 int
-get_rid(reg)
-struct nhregion* reg;
+get_rid(struct nhregion *reg)
 {
     if (!reg)
         return -1;
@@ -1267,8 +1208,7 @@ struct nhregion* reg;
 
 
 void
-do_light_regions(cs_rows)
-char** cs_rows;
+do_light_regions(char **cs_rows)
 {
     char* row;
     for (int i = 0; i < n_regions; i++)
@@ -1295,9 +1235,7 @@ char** cs_rows;
 }
 
 boolean
-enter_special_level_seen(p1, p2)
-genericptr_t p1;
-genericptr_t p2;
+enter_special_level_seen(genericptr_t p1, genericptr_t p2)
 {
     NhRegion* reg;
     reg = (NhRegion*)p1;
@@ -1313,9 +1251,7 @@ genericptr_t p2;
 
 
 boolean
-enter_special_level_true_nature_revealed(p1, p2)
-genericptr_t p1;
-genericptr_t p2;
+enter_special_level_true_nature_revealed(genericptr_t p1, genericptr_t p2)
 {
     NhRegion* reg;
     reg = (NhRegion*)p1;

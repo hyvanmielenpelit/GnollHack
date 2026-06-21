@@ -30,191 +30,191 @@ typedef void FDECL((*select_iter_func5), (int, int, genericptr, genericptr, gene
 
 extern void FDECL(mkmap, (lev_init *));
 
-STATIC_DCL void NDECL(solidify_map);
-STATIC_DCL void FDECL(splev_stack_init, (struct splevstack *));
-STATIC_DCL void FDECL(splev_stack_done, (struct splevstack *));
-STATIC_DCL void FDECL(splev_stack_push, (struct splevstack *,
+static void NDECL(solidify_map);
+static void FDECL(splev_stack_init, (struct splevstack *));
+static void FDECL(splev_stack_done, (struct splevstack *));
+static void FDECL(splev_stack_push, (struct splevstack *,
                                          struct opvar *));
-STATIC_DCL struct opvar *FDECL(splev_stack_pop, (struct splevstack *));
-STATIC_DCL struct splevstack *FDECL(splev_stack_reverse,
+static struct opvar *FDECL(splev_stack_pop, (struct splevstack *));
+static struct splevstack *FDECL(splev_stack_reverse,
                                     (struct splevstack *));
-STATIC_DCL struct opvar *FDECL(opvar_new_str, (char *));
-STATIC_DCL struct opvar *FDECL(opvar_new_int, (int64_t));
-STATIC_DCL struct opvar *FDECL(opvar_new_coord, (int, int));
+static struct opvar *FDECL(opvar_new_str, (char *));
+static struct opvar *FDECL(opvar_new_int, (int64_t));
+static struct opvar *FDECL(opvar_new_coord, (int, int));
 #if 0
-STATIC_DCL struct opvar * FDECL(opvar_new_region, (int,int, int,int));
+static struct opvar * FDECL(opvar_new_region, (int,int, int,int));
 #endif /*0*/
-STATIC_DCL struct opvar *FDECL(opvar_clone, (struct opvar *));
-STATIC_DCL struct opvar *FDECL(opvar_var_conversion, (struct sp_coder *,
+static struct opvar *FDECL(opvar_clone, (struct opvar *));
+static struct opvar *FDECL(opvar_var_conversion, (struct sp_coder *,
                                                       struct opvar *));
-STATIC_DCL struct splev_var *FDECL(opvar_var_defined, (struct sp_coder *,
+static struct splev_var *FDECL(opvar_var_defined, (struct sp_coder *,
                                                        char *));
-STATIC_DCL struct opvar *FDECL(splev_stack_getdat, (struct sp_coder *,
+static struct opvar *FDECL(splev_stack_getdat, (struct sp_coder *,
                                                     XCHAR_P));
-STATIC_DCL struct opvar *FDECL(splev_stack_getdat_any, (struct sp_coder *));
-STATIC_DCL void FDECL(variable_list_del, (struct splev_var *));
-STATIC_DCL void FDECL(lvlfill_maze_grid, (int, int, int, int, SCHAR_P));
-STATIC_DCL void FDECL(lvlfill_solid, (SCHAR_P, SCHAR_P));
-STATIC_DCL void FDECL(set_wall_property, (XCHAR_P, XCHAR_P, XCHAR_P, XCHAR_P,
+static struct opvar *FDECL(splev_stack_getdat_any, (struct sp_coder *));
+static void FDECL(variable_list_del, (struct splev_var *));
+static void FDECL(lvlfill_maze_grid, (int, int, int, int, SCHAR_P));
+static void FDECL(lvlfill_solid, (SCHAR_P, SCHAR_P));
+static void FDECL(set_wall_property, (XCHAR_P, XCHAR_P, XCHAR_P, XCHAR_P,
                                           int));
-STATIC_DCL void NDECL(shuffle_alignments);
-STATIC_DCL void NDECL(count_features);
-STATIC_DCL void NDECL(remove_boundary_syms);
-STATIC_DCL void FDECL(set_door_orientation, (int, int));
-STATIC_DCL void FDECL(maybe_add_door, (int, int, struct mkroom *));
-STATIC_DCL void NDECL(link_doors_rooms);
-STATIC_DCL void NDECL(fill_rooms);
-STATIC_DCL int NDECL(rnddoor);
-STATIC_DCL int NDECL(rndtrap);
-STATIC_DCL void FDECL(get_location, (schar *, schar *, int, struct mkroom *));
-STATIC_DCL boolean FDECL(is_ok_location, (SCHAR_P, SCHAR_P, int));
-STATIC_DCL unpacked_coord FDECL(get_unpacked_coord, (int64_t, int));
-STATIC_DCL void FDECL(get_location_coord, (schar *, schar *, int,
+static void NDECL(shuffle_alignments);
+static void NDECL(count_features);
+static void NDECL(remove_boundary_syms);
+static void FDECL(set_door_orientation, (int, int));
+static void FDECL(maybe_add_door, (int, int, struct mkroom *));
+static void NDECL(link_doors_rooms);
+static void NDECL(fill_rooms);
+static int NDECL(rnddoor);
+static int NDECL(rndtrap);
+static void FDECL(get_location, (schar *, schar *, int, struct mkroom *));
+static boolean FDECL(is_ok_location, (SCHAR_P, SCHAR_P, int));
+static unpacked_coord FDECL(get_unpacked_coord, (int64_t, int));
+static void FDECL(get_location_coord, (schar *, schar *, int,
                                            struct mkroom *, int64_t));
-STATIC_DCL void FDECL(get_room_loc, (schar *, schar *, struct mkroom *));
-STATIC_DCL void FDECL(get_free_room_loc, (schar *, schar *,
+static void FDECL(get_room_loc, (schar *, schar *, struct mkroom *));
+static void FDECL(get_free_room_loc, (schar *, schar *,
                                           struct mkroom *, packed_coord));
-STATIC_DCL boolean FDECL(create_subroom, (struct mkroom *, XCHAR_P, XCHAR_P,
+static boolean FDECL(create_subroom, (struct mkroom *, XCHAR_P, XCHAR_P,
                                           XCHAR_P, XCHAR_P, XCHAR_P, XCHAR_P, int, int, int, int, SHORT_P));
-STATIC_DCL void FDECL(create_door, (room_door *, struct mkroom *));
-STATIC_DCL void FDECL(create_trap, (spltrap *, struct mkroom *));
-STATIC_DCL int FDECL(noncoalignment, (ALIGNTYP_P));
-STATIC_DCL boolean FDECL(m_bad_boulder_spot, (int, int));
-STATIC_DCL int FDECL(pm_to_humidity, (struct permonst *));
-STATIC_DCL void FDECL(create_monster, (monster *, struct mkroom *));
-STATIC_DCL void FDECL(create_object, (object *, struct mkroom *));
-STATIC_DCL void FDECL(create_lever, (spllever*, struct mkroom*));
-STATIC_DCL void FDECL(create_altar, (altar *, struct mkroom *));
-STATIC_DCL void FDECL(create_anvil, (anvil*, struct mkroom*));
-STATIC_DCL void FDECL(create_decoration, (decoration*, struct mkroom*));
-STATIC_DCL void FDECL(create_modron_portal, (modron_portal*, struct mkroom*));
-STATIC_DCL void FDECL(create_npc, (npc_create_info*, struct mkroom*));
-STATIC_DCL void FDECL(replace_terrain, (replaceterrain *, struct mkroom *));
-STATIC_DCL boolean FDECL(search_door, (struct mkroom *,
+static void FDECL(create_door, (room_door *, struct mkroom *));
+static void FDECL(create_trap, (spltrap *, struct mkroom *));
+static int FDECL(noncoalignment, (ALIGNTYP_P));
+static boolean FDECL(m_bad_boulder_spot, (int, int));
+static int FDECL(pm_to_humidity, (struct permonst *));
+static void FDECL(create_monster, (monster *, struct mkroom *));
+static void FDECL(create_object, (object *, struct mkroom *));
+static void FDECL(create_lever, (spllever*, struct mkroom*));
+static void FDECL(create_altar, (altar *, struct mkroom *));
+static void FDECL(create_anvil, (anvil*, struct mkroom*));
+static void FDECL(create_decoration, (decoration*, struct mkroom*));
+static void FDECL(create_modron_portal, (modron_portal*, struct mkroom*));
+static void FDECL(create_npc, (npc_create_info*, struct mkroom*));
+static void FDECL(replace_terrain, (replaceterrain *, struct mkroom *));
+static boolean FDECL(search_door, (struct mkroom *,
                                        xchar *, xchar *, XCHAR_P, int));
-STATIC_DCL void NDECL(fix_stair_rooms);
-STATIC_DCL void FDECL(create_corridor, (corridor *));
-STATIC_DCL struct mkroom *FDECL(build_room, (room *, struct mkroom *));
-STATIC_DCL void FDECL(light_region, (region *));
-STATIC_DCL void FDECL(wallify_map, (int, int, int, int));
-STATIC_DCL void FDECL(maze1xy, (coord *, int));
-STATIC_DCL void NDECL(fill_empty_maze);
-STATIC_DCL boolean FDECL(sp_level_loader, (dlb *, sp_lev *));
-STATIC_DCL boolean FDECL(sp_level_free, (sp_lev *));
-STATIC_DCL void FDECL(splev_initlev, (lev_init *));
-STATIC_DCL struct sp_frame *FDECL(frame_new, (int64_t));
-STATIC_DCL void FDECL(frame_del, (struct sp_frame *));
-STATIC_DCL void FDECL(spo_frame_push, (struct sp_coder *));
-STATIC_DCL void FDECL(spo_frame_pop, (struct sp_coder *));
-STATIC_DCL int64_t FDECL(sp_code_jmpaddr, (int64_t, int64_t));
-STATIC_DCL void FDECL(spo_call, (struct sp_coder *));
-STATIC_DCL void FDECL(spo_return, (struct sp_coder *));
-STATIC_DCL void FDECL(spo_end_moninvent, (struct sp_coder *));
-STATIC_DCL void FDECL(spo_pop_container, (struct sp_coder *));
-STATIC_DCL void FDECL(spo_message, (struct sp_coder *));
-STATIC_DCL void FDECL(spo_monster, (struct sp_coder *));
-STATIC_DCL void FDECL(spo_object, (struct sp_coder *));
-STATIC_DCL void FDECL(spo_lever, (struct sp_coder*));
-STATIC_DCL void FDECL(spo_modron_portal, (struct sp_coder*));
-STATIC_DCL void FDECL(spo_modron_level_teleporter, (struct sp_coder*));
-STATIC_DCL void FDECL(spo_magic_portal, (struct sp_coder*));
-STATIC_DCL void FDECL(spo_level_flags, (struct sp_coder *));
-STATIC_DCL void FDECL(spo_initlevel, (struct sp_coder *));
-STATIC_DCL void FDECL(spo_tileset, (struct sp_coder*));
-STATIC_DCL void FDECL(spo_forest, (struct sp_coder*));
-STATIC_DCL void FDECL(spo_monster_generation, (struct sp_coder*));
-STATIC_DCL void FDECL(spo_boundary_type, (struct sp_coder*));
-STATIC_DCL void FDECL(spo_engraving, (struct sp_coder *));
-STATIC_DCL void FDECL(spo_mineralize, (struct sp_coder *));
-STATIC_DCL void FDECL(spo_room, (struct sp_coder *));
-STATIC_DCL void FDECL(spo_endroom, (struct sp_coder *));
-STATIC_DCL void FDECL(spo_stair, (struct sp_coder *));
-STATIC_DCL void FDECL(spo_ladder, (struct sp_coder *));
-STATIC_DCL void FDECL(spo_grave, (struct sp_coder *));
-STATIC_DCL void FDECL(spo_brazier, (struct sp_coder*));
-STATIC_DCL void FDECL(spo_signpost, (struct sp_coder*));
-STATIC_DCL void FDECL(spo_tree, (struct sp_coder*));
-STATIC_DCL void FDECL(spo_altar, (struct sp_coder *));
-STATIC_DCL void FDECL(spo_trap, (struct sp_coder *));
-STATIC_DCL void FDECL(spo_gold, (struct sp_coder *));
-STATIC_DCL void FDECL(spo_corridor, (struct sp_coder *));
-STATIC_DCL void FDECL(selection_setpoint, (int, int, struct opvar *, XCHAR_P));
-STATIC_DCL struct opvar *FDECL(selection_not, (struct opvar *));
-STATIC_DCL struct opvar *FDECL(selection_logical_oper, (struct opvar *,
+static void NDECL(fix_stair_rooms);
+static void FDECL(create_corridor, (corridor *));
+static struct mkroom *FDECL(build_room, (room *, struct mkroom *));
+static void FDECL(light_region, (region *));
+static void FDECL(wallify_map, (int, int, int, int));
+static void FDECL(maze1xy, (coord *, int));
+static void NDECL(fill_empty_maze);
+static boolean FDECL(sp_level_loader, (dlb *, sp_lev *));
+static boolean FDECL(sp_level_free, (sp_lev *));
+static void FDECL(splev_initlev, (lev_init *));
+static struct sp_frame *FDECL(frame_new, (int64_t));
+static void FDECL(frame_del, (struct sp_frame *));
+static void FDECL(spo_frame_push, (struct sp_coder *));
+static void FDECL(spo_frame_pop, (struct sp_coder *));
+static int64_t FDECL(sp_code_jmpaddr, (int64_t, int64_t));
+static void FDECL(spo_call, (struct sp_coder *));
+static void FDECL(spo_return, (struct sp_coder *));
+static void FDECL(spo_end_moninvent, (struct sp_coder *));
+static void FDECL(spo_pop_container, (struct sp_coder *));
+static void FDECL(spo_message, (struct sp_coder *));
+static void FDECL(spo_monster, (struct sp_coder *));
+static void FDECL(spo_object, (struct sp_coder *));
+static void FDECL(spo_lever, (struct sp_coder*));
+static void FDECL(spo_modron_portal, (struct sp_coder*));
+static void FDECL(spo_modron_level_teleporter, (struct sp_coder*));
+static void FDECL(spo_magic_portal, (struct sp_coder*));
+static void FDECL(spo_level_flags, (struct sp_coder *));
+static void FDECL(spo_initlevel, (struct sp_coder *));
+static void FDECL(spo_tileset, (struct sp_coder*));
+static void FDECL(spo_forest, (struct sp_coder*));
+static void FDECL(spo_monster_generation, (struct sp_coder*));
+static void FDECL(spo_boundary_type, (struct sp_coder*));
+static void FDECL(spo_engraving, (struct sp_coder *));
+static void FDECL(spo_mineralize, (struct sp_coder *));
+static void FDECL(spo_room, (struct sp_coder *));
+static void FDECL(spo_endroom, (struct sp_coder *));
+static void FDECL(spo_stair, (struct sp_coder *));
+static void FDECL(spo_ladder, (struct sp_coder *));
+static void FDECL(spo_grave, (struct sp_coder *));
+static void FDECL(spo_brazier, (struct sp_coder*));
+static void FDECL(spo_signpost, (struct sp_coder*));
+static void FDECL(spo_tree, (struct sp_coder*));
+static void FDECL(spo_altar, (struct sp_coder *));
+static void FDECL(spo_trap, (struct sp_coder *));
+static void FDECL(spo_gold, (struct sp_coder *));
+static void FDECL(spo_corridor, (struct sp_coder *));
+static void FDECL(selection_setpoint, (int, int, struct opvar *, XCHAR_P));
+static struct opvar *FDECL(selection_not, (struct opvar *));
+static struct opvar *FDECL(selection_logical_oper, (struct opvar *,
                                                      struct opvar *, CHAR_P));
-STATIC_DCL struct opvar *FDECL(selection_filter_mapchar, (struct opvar *,
+static struct opvar *FDECL(selection_filter_mapchar, (struct opvar *,
                                                           struct opvar *));
-STATIC_DCL void FDECL(selection_filter_percent, (struct opvar *, int));
-STATIC_DCL int FDECL(selection_rndcoord, (struct opvar *, schar *, schar *,
+static void FDECL(selection_filter_percent, (struct opvar *, int));
+static int FDECL(selection_rndcoord, (struct opvar *, schar *, schar *,
                                           BOOLEAN_P));
-STATIC_DCL void FDECL(selection_do_grow, (struct opvar *, int));
-STATIC_DCL int FDECL(floodfillchk_match_under, (int, int));
-STATIC_DCL int FDECL(floodfillchk_match_accessible, (int, int));
-STATIC_DCL boolean FDECL(sel_flood_havepoint, (int, int,
+static void FDECL(selection_do_grow, (struct opvar *, int));
+static int FDECL(floodfillchk_match_under, (int, int));
+static int FDECL(floodfillchk_match_accessible, (int, int));
+static boolean FDECL(sel_flood_havepoint, (int, int,
                                                xchar *, xchar *, int));
-STATIC_DCL void FDECL(selection_do_ellipse, (struct opvar *, int, int,
+static void FDECL(selection_do_ellipse, (struct opvar *, int, int,
                                              int, int, int));
-STATIC_DCL int64_t FDECL(line_dist_coord, (int64_t, int64_t, int64_t, int64_t, int64_t, int64_t));
-STATIC_DCL void FDECL(selection_do_gradient, (struct opvar *, int64_t, int64_t, int64_t,
+static int64_t FDECL(line_dist_coord, (int64_t, int64_t, int64_t, int64_t, int64_t, int64_t));
+static void FDECL(selection_do_gradient, (struct opvar *, int64_t, int64_t, int64_t,
                                               int64_t, int64_t, int64_t, int64_t, int64_t));
-STATIC_DCL void FDECL(selection_do_line, (SCHAR_P, SCHAR_P, SCHAR_P, SCHAR_P,
+static void FDECL(selection_do_line, (SCHAR_P, SCHAR_P, SCHAR_P, SCHAR_P,
                                           struct opvar *));
-STATIC_DCL void FDECL(selection_do_randline, (SCHAR_P, SCHAR_P, SCHAR_P,
+static void FDECL(selection_do_randline, (SCHAR_P, SCHAR_P, SCHAR_P,
                                               SCHAR_P, SCHAR_P, SCHAR_P,
                                               struct opvar *));
-STATIC_DCL void FDECL(selection_iterate, (struct opvar *, select_iter_func,
+static void FDECL(selection_iterate, (struct opvar *, select_iter_func,
                                           genericptr_t));
-STATIC_DCL void FDECL(selection_iterate2, (struct opvar*, select_iter_func2,
+static void FDECL(selection_iterate2, (struct opvar*, select_iter_func2,
     genericptr_t, genericptr_t));
-STATIC_DCL void FDECL(selection_iterate3, (struct opvar*, select_iter_func3,
+static void FDECL(selection_iterate3, (struct opvar*, select_iter_func3,
     genericptr_t, genericptr_t, genericptr_t));
 #if 0 /* UNUSED */
-STATIC_DCL void FDECL(selection_iterate4, (struct opvar*, select_iter_func4,
+static void FDECL(selection_iterate4, (struct opvar*, select_iter_func4,
     genericptr_t, genericptr_t, genericptr_t, genericptr_t));
 #endif
-STATIC_DCL void FDECL(selection_iterate5, (struct opvar*, select_iter_func5,
+static void FDECL(selection_iterate5, (struct opvar*, select_iter_func5,
     genericptr_t, genericptr_t, genericptr_t, genericptr_t, genericptr_t));
-STATIC_DCL void FDECL(sel_set_ter, (int, int, genericptr_t));
-STATIC_DCL void FDECL(sel_set_feature, (int, int, genericptr_t));
-STATIC_DCL void FDECL(sel_set_feature2, (int, int, genericptr_t, genericptr_t));
-STATIC_DCL void FDECL(sel_set_floor, (int, int, genericptr_t, genericptr_t));
-STATIC_DCL void FDECL(sel_set_subtype, (int, int, genericptr_t, genericptr_t));
-STATIC_DCL void FDECL(sel_set_carpet_piece, (int, int, genericptr_t, genericptr_t, genericptr_t));
-STATIC_DCL void FDECL(sel_set_door, (int, int, genericptr_t, genericptr_t, genericptr_t, genericptr_t, genericptr_t));
-STATIC_DCL void FDECL(sel_set_tileset, (int, int, genericptr_t));
-STATIC_DCL void FDECL(spo_door, (struct sp_coder *));
-STATIC_DCL void FDECL(spo_feature, (struct sp_coder *));
-STATIC_DCL void FDECL(spo_fountain, (struct sp_coder*));
-STATIC_DCL void FDECL(spo_anvil, (struct sp_coder*));
-STATIC_DCL void FDECL(spo_decoration, (struct sp_coder*));
-STATIC_DCL void FDECL(spo_floor, (struct sp_coder*));
-STATIC_DCL void FDECL(spo_subtype, (struct sp_coder*));
-STATIC_DCL void FDECL(spo_carpet, (struct sp_coder*));
-STATIC_DCL void FDECL(spo_npc, (struct sp_coder*));
-STATIC_DCL void FDECL(spo_terrain, (struct sp_coder *));
-STATIC_DCL void FDECL(spo_replace_terrain, (struct sp_coder *));
-STATIC_DCL boolean FDECL(generate_way_out_method, (int, int, struct opvar *));
-STATIC_DCL void NDECL(ensure_way_out);
-STATIC_DCL void FDECL(spo_levregion, (struct sp_coder *));
-STATIC_DCL void FDECL(spo_region, (struct sp_coder *));
-STATIC_DCL void FDECL(spo_special_region, (struct sp_coder*));
-STATIC_DCL void FDECL(spo_special_tileset, (struct sp_coder*));
-STATIC_DCL void FDECL(spo_naming, (struct sp_coder*));
-STATIC_DCL void FDECL(spo_drawbridge, (struct sp_coder *));
-STATIC_DCL void FDECL(spo_mazewalk, (struct sp_coder *));
-STATIC_DCL void FDECL(spo_wall_property, (struct sp_coder *));
-STATIC_DCL void FDECL(spo_room_door, (struct sp_coder *));
-STATIC_DCL void FDECL(sel_set_wallify, (int, int, genericptr_t));
-STATIC_DCL void FDECL(spo_wallify, (struct sp_coder *));
-STATIC_DCL void FDECL(spo_map, (struct sp_coder *));
-STATIC_DCL void FDECL(spo_jmp, (struct sp_coder *, sp_lev *));
-STATIC_DCL void FDECL(spo_conditional_jump, (struct sp_coder *, sp_lev *));
-STATIC_DCL void FDECL(spo_var_init, (struct sp_coder *));
+static void FDECL(sel_set_ter, (int, int, genericptr_t));
+static void FDECL(sel_set_feature, (int, int, genericptr_t));
+static void FDECL(sel_set_feature2, (int, int, genericptr_t, genericptr_t));
+static void FDECL(sel_set_floor, (int, int, genericptr_t, genericptr_t));
+static void FDECL(sel_set_subtype, (int, int, genericptr_t, genericptr_t));
+static void FDECL(sel_set_carpet_piece, (int, int, genericptr_t, genericptr_t, genericptr_t));
+static void FDECL(sel_set_door, (int, int, genericptr_t, genericptr_t, genericptr_t, genericptr_t, genericptr_t));
+static void FDECL(sel_set_tileset, (int, int, genericptr_t));
+static void FDECL(spo_door, (struct sp_coder *));
+static void FDECL(spo_feature, (struct sp_coder *));
+static void FDECL(spo_fountain, (struct sp_coder*));
+static void FDECL(spo_anvil, (struct sp_coder*));
+static void FDECL(spo_decoration, (struct sp_coder*));
+static void FDECL(spo_floor, (struct sp_coder*));
+static void FDECL(spo_subtype, (struct sp_coder*));
+static void FDECL(spo_carpet, (struct sp_coder*));
+static void FDECL(spo_npc, (struct sp_coder*));
+static void FDECL(spo_terrain, (struct sp_coder *));
+static void FDECL(spo_replace_terrain, (struct sp_coder *));
+static boolean FDECL(generate_way_out_method, (int, int, struct opvar *));
+static void NDECL(ensure_way_out);
+static void FDECL(spo_levregion, (struct sp_coder *));
+static void FDECL(spo_region, (struct sp_coder *));
+static void FDECL(spo_special_region, (struct sp_coder*));
+static void FDECL(spo_special_tileset, (struct sp_coder*));
+static void FDECL(spo_naming, (struct sp_coder*));
+static void FDECL(spo_drawbridge, (struct sp_coder *));
+static void FDECL(spo_mazewalk, (struct sp_coder *));
+static void FDECL(spo_wall_property, (struct sp_coder *));
+static void FDECL(spo_room_door, (struct sp_coder *));
+static void FDECL(sel_set_wallify, (int, int, genericptr_t));
+static void FDECL(spo_wallify, (struct sp_coder *));
+static void FDECL(spo_map, (struct sp_coder *));
+static void FDECL(spo_jmp, (struct sp_coder *, sp_lev *));
+static void FDECL(spo_conditional_jump, (struct sp_coder *, sp_lev *));
+static void FDECL(spo_var_init, (struct sp_coder *));
 #if 0
-STATIC_DCL int64_t FDECL(opvar_array_length, (struct sp_coder *));
+static int64_t FDECL(opvar_array_length, (struct sp_coder *));
 #endif /*0*/
-STATIC_DCL void FDECL(spo_shuffle_array, (struct sp_coder *));
-STATIC_DCL boolean FDECL(sp_level_coder, (sp_lev *));
+static void FDECL(spo_shuffle_array, (struct sp_coder *));
+static boolean FDECL(sp_level_coder, (sp_lev *));
 
 #define LEFT 1
 #define H_LEFT 2
@@ -241,29 +241,29 @@ extern struct engr *head_engr;
 extern int min_rx, max_rx, min_ry, max_ry; /* from mkmap.c */
 
 /* positions touched by level elements explicitly defined in the des-file */
-STATIC_VAR char SpLev_Map[COLNO][ROWNO];
+static char SpLev_Map[COLNO][ROWNO];
 
-STATIC_VAR aligntyp ralign[3] = { AM_CHAOTIC, AM_NEUTRAL, AM_LAWFUL };
-STATIC_VAR NEARDATA xchar xstart, ystart;
-STATIC_VAR NEARDATA char xsize, ysize;
+static aligntyp ralign[3] = { AM_CHAOTIC, AM_NEUTRAL, AM_LAWFUL };
+static NEARDATA xchar xstart, ystart;
+static NEARDATA char xsize, ysize;
 
 struct lev_msg *lev_message = 0;
 
 lev_region *lregions = 0;
 int num_lregions = 0;
 
-STATIC_VAR boolean splev_init_present = FALSE;
-STATIC_VAR boolean icedpools = FALSE;
-STATIC_VAR int mines_prize_count = 0, soko_prize_count = 0; /* achievements */
+static boolean splev_init_present = FALSE;
+static boolean icedpools = FALSE;
+static int mines_prize_count = 0, soko_prize_count = 0; /* achievements */
 
-STATIC_VAR struct obj *container_obj[MAX_CONTAINMENT];
-STATIC_VAR int container_idx = 0;
-STATIC_VAR struct monst *invent_carrying_monster = NULL;
+static struct obj *container_obj[MAX_CONTAINMENT];
+static int container_idx = 0;
+static struct monst *invent_carrying_monster = NULL;
 
 #define SPLEV_STACK_RESERVE 128
 
 void
-solidify_map(VOID_ARGS)
+solidify_map(void)
 {
     xchar x, y;
 
@@ -274,8 +274,7 @@ solidify_map(VOID_ARGS)
 }
 
 void
-splev_stack_init(st)
-struct splevstack *st;
+splev_stack_init(struct splevstack *st)
 {
     if (st) {
         st->depth = 0;
@@ -286,8 +285,7 @@ struct splevstack *st;
 }
 
 void
-splev_stack_done(st)
-struct splevstack *st;
+splev_stack_done(struct splevstack *st)
 {
     if (st) {
         int i;
@@ -323,9 +321,7 @@ struct splevstack *st;
 }
 
 void
-splev_stack_push(st, v)
-struct splevstack *st;
-struct opvar *v;
+splev_stack_push(struct splevstack *st, struct opvar *v)
 {
     if (!st || !v)
         return;
@@ -352,8 +348,7 @@ struct opvar *v;
 }
 
 struct opvar *
-splev_stack_pop(st)
-struct splevstack *st;
+splev_stack_pop(struct splevstack *st)
 {
     struct opvar *ret = NULL;
 
@@ -379,8 +374,7 @@ struct splevstack *st;
 }
 
 struct splevstack *
-splev_stack_reverse(st)
-struct splevstack *st;
+splev_stack_reverse(struct splevstack *st)
 {
     int64_t i;
     struct opvar *tmp;
@@ -415,8 +409,7 @@ struct splevstack *st;
 #define OV_pop_typ(x, typ) (x = splev_stack_getdat(coder, typ))
 
 struct opvar *
-opvar_new_str(s)
-char *s;
+opvar_new_str(char *s)
 {
     struct opvar *tmpov = (struct opvar *) alloc(sizeof (struct opvar));
 
@@ -433,8 +426,7 @@ char *s;
 }
 
 struct opvar *
-opvar_new_int(i)
-int64_t i;
+opvar_new_int(int64_t i)
 {
     struct opvar *tmpov = (struct opvar *) alloc(sizeof (struct opvar));
 
@@ -444,8 +436,7 @@ int64_t i;
 }
 
 struct opvar *
-opvar_new_coord(x, y)
-int x, y;
+opvar_new_coord(int x, int y)
 {
     struct opvar *tmpov = (struct opvar *) alloc(sizeof (struct opvar));
 
@@ -456,8 +447,7 @@ int x, y;
 
 #if 0
 struct opvar *
-opvar_new_region(x1,y1,x2,y2)
-     int x1,y1,x2,y2;
+opvar_new_region(int x1, int y1, int x2, int y2)
 {
     struct opvar *tmpov = (struct opvar *) alloc(sizeof (struct opvar));
 
@@ -468,8 +458,7 @@ opvar_new_region(x1,y1,x2,y2)
 #endif /*0*/
 
 void
-opvar_free_x(ov)
-struct opvar *ov;
+opvar_free_x(struct opvar *ov)
 {
     if (!ov)
         return;
@@ -511,8 +500,7 @@ struct opvar *ov;
     } while (0)
 
 struct opvar *
-opvar_clone(ov)
-struct opvar *ov;
+opvar_clone(struct opvar *ov)
 {
     struct opvar *tmpov;
 
@@ -545,9 +533,7 @@ struct opvar *ov;
 }
 
 struct opvar *
-opvar_var_conversion(coder, ov)
-struct sp_coder *coder;
-struct opvar *ov;
+opvar_var_conversion(struct sp_coder *coder, struct opvar *ov)
 {
     static const char nhFunc[] = "opvar_var_conversion";
     struct splev_var *tmp;
@@ -589,9 +575,7 @@ struct opvar *ov;
 }
 
 struct splev_var *
-opvar_var_defined(coder, name)
-struct sp_coder *coder;
-char *name;
+opvar_var_defined(struct sp_coder *coder, char *name)
 {
     struct splev_var *tmp;
 
@@ -607,9 +591,7 @@ char *name;
 }
 
 struct opvar *
-splev_stack_getdat(coder, typ)
-struct sp_coder *coder;
-xchar typ;
+splev_stack_getdat(struct sp_coder *coder, xchar typ)
 {
     static const char nhFunc[] = "splev_stack_getdat";
     if (coder && coder->stack) {
@@ -635,8 +617,7 @@ xchar typ;
 }
 
 struct opvar *
-splev_stack_getdat_any(coder)
-struct sp_coder *coder;
+splev_stack_getdat_any(struct sp_coder *coder)
 {
     static const char nhFunc[] = "splev_stack_getdat_any";
     if (coder && coder->stack) {
@@ -652,8 +633,7 @@ struct sp_coder *coder;
 }
 
 void
-variable_list_del(varlist)
-struct splev_var *varlist;
+variable_list_del(struct splev_var *varlist)
 {
     static const char nhFunc[] = "variable_list_del";
     struct splev_var *tmp = varlist;
@@ -679,9 +659,7 @@ struct splev_var *varlist;
 }
 
 void
-lvlfill_maze_grid(x1, y1, x2, y2, filling)
-int x1, y1, x2, y2;
-schar filling;
+lvlfill_maze_grid(int x1, int y1, int x2, int y2, schar filling)
 {
     int x, y, typ;
 
@@ -699,9 +677,7 @@ schar filling;
 }
 
 void
-lvlfill_solid(filling, lit)
-schar filling;
-schar lit;
+lvlfill_solid(schar filling, schar lit)
 {
     int x, y;
 
@@ -714,10 +690,8 @@ schar lit;
 /*
  * Make walls of the area (x1, y1, x2, y2) non diggable/non passwall-able
  */
-STATIC_OVL void
-set_wall_property(x1, y1, x2, y2, prop)
-xchar x1, y1, x2, y2;
-int prop;
+static void
+set_wall_property(xchar x1, xchar y1, xchar x2, xchar y2, int prop)
 {
     xchar x, y;
     struct rm *lev;
@@ -737,8 +711,8 @@ int prop;
         }
 }
 
-STATIC_OVL void
-shuffle_alignments(VOID_ARGS)
+static void
+shuffle_alignments(void)
 {
     int i;
     aligntyp atmp;
@@ -758,8 +732,8 @@ shuffle_alignments(VOID_ARGS)
 /*
  * Count the different features (sinks, fountains) in the level.
  */
-STATIC_OVL void
-count_features(VOID_ARGS)
+static void
+count_features(void)
 {
     xchar x, y;
 
@@ -775,7 +749,7 @@ count_features(VOID_ARGS)
 }
 
 void
-remove_boundary_syms(VOID_ARGS)
+remove_boundary_syms(void)
 {
     /*
      * If any CROSSWALLs are found, must change to ROOM after REGION's
@@ -804,9 +778,8 @@ remove_boundary_syms(VOID_ARGS)
 }
 
 /* used by sel_set_door() and link_doors_rooms() */
-STATIC_OVL void
-set_door_orientation(x, y)
-int x, y;
+static void
+set_door_orientation(int x, int y)
 {
     boolean wleft, wright, wup, wdown;
 
@@ -851,17 +824,15 @@ int x, y;
     levl[x][y].horizontal = ((wleft || wright) && !(wup && wdown)) ? 1 : 0;
 }
 
-STATIC_OVL void
-maybe_add_door(x, y, droom)
-int x, y;
-struct mkroom *droom;
+static void
+maybe_add_door(int x, int y, struct mkroom *droom)
 {
     if (droom->hx >= 0 && doorindex < DOORMAX && inside_room(droom, x, y))
         add_door(x, y, droom);
 }
 
-STATIC_OVL void
-link_doors_rooms(VOID_ARGS)
+static void
+link_doors_rooms(void)
 {
     int x, y;
     int tmpi, m;
@@ -884,7 +855,7 @@ link_doors_rooms(VOID_ARGS)
 }
 
 void
-fill_rooms(VOID_ARGS)
+fill_rooms(void)
 {
     int tmpi, m;
 
@@ -900,8 +871,8 @@ fill_rooms(VOID_ARGS)
 /*
  * Choose randomly the state (nodoor, open, closed or locked) for a door
  */
-STATIC_OVL int
-rnddoor(VOID_ARGS)
+static int
+rnddoor(void)
 {
     int i = 1 << rn2(5);
 
@@ -912,8 +883,8 @@ rnddoor(VOID_ARGS)
 /*
  * Select a random trap
  */
-STATIC_OVL int
-rndtrap(VOID_ARGS)
+static int
+rndtrap(void)
 {
     int rtrap;
 
@@ -956,11 +927,8 @@ rndtrap(VOID_ARGS)
  *      The "humidity" flag is used to insure that engravings aren't
  *      created underwater, or eels on dry land.
  */
-STATIC_OVL void
-get_location(x, y, humidity, croom)
-schar *x, *y;
-int humidity;
-struct mkroom *croom;
+static void
+get_location(schar *x, schar *y, int humidity, struct mkroom *croom)
 {
     int cpt = 0;
     int mx, my, sx, sy;
@@ -1026,10 +994,8 @@ found_it:
     }
 }
 
-STATIC_OVL boolean
-is_ok_location(x, y, humidity)
-schar x, y;
-int humidity;
+static boolean
+is_ok_location(schar x, schar y, int humidity)
 {
     if (Is_waterlevel(&u.uz))
         return TRUE; /* accept any spot */
@@ -1056,9 +1022,7 @@ int humidity;
 }
 
 unpacked_coord
-get_unpacked_coord(loc, defhumidity)
-int64_t loc;
-int defhumidity;
+get_unpacked_coord(int64_t loc, int defhumidity)
 {
     static unpacked_coord c;
 
@@ -1077,12 +1041,8 @@ int defhumidity;
     return c;
 }
 
-STATIC_OVL void
-get_location_coord(x, y, humidity, croom, crd)
-schar *x, *y;
-int humidity;
-struct mkroom *croom;
-int64_t crd;
+static void
+get_location_coord(schar *x, schar *y, int humidity, struct mkroom *croom, int64_t crd)
 {
     unpacked_coord c;
 
@@ -1100,10 +1060,8 @@ int64_t crd;
  * negative values for x or y means RANDOM!
  */
 
-STATIC_OVL void
-get_room_loc(x, y, croom)
-schar *x, *y;
-struct mkroom *croom;
+static void
+get_room_loc(schar *x, schar *y, struct mkroom *croom)
 {
     coord c;
 
@@ -1135,11 +1093,8 @@ struct mkroom *croom;
  * Get a relative position inside a room.
  * negative values for x or y means RANDOM!
  */
-STATIC_OVL void
-get_free_room_loc(x, y, croom, pos)
-schar *x, *y;
-struct mkroom *croom;
-packed_coord pos;
+static void
+get_free_room_loc(schar *x, schar *y, struct mkroom *croom, packed_coord pos)
 {
     schar try_x, try_y;
     int trycnt = 0;
@@ -1161,9 +1116,7 @@ packed_coord pos;
 }
 
 boolean
-check_room(lowx, ddx, lowy, ddy, vault)
-xchar *lowx, *ddx, *lowy, *ddy;
-boolean vault;
+check_room(xchar *lowx, xchar *ddx, xchar *lowy, xchar *ddy, boolean vault)
 {
     int x, y, hix = *lowx + *ddx, hiy = *lowy + *ddy;
     struct rm *lev;
@@ -1224,13 +1177,7 @@ chk:
  * This is still very incomplete...
  */
 boolean
-create_room(x, y, w, h, xal, yal, rtype, rlit, floortyp, floorsubtyp, mtype, tileset, decotyp)
-xchar x, y;
-xchar w, h;
-xchar xal, yal;
-xchar rtype, rlit;
-short decotyp;
-int floortyp, floorsubtyp, mtype, tileset;
+create_room(xchar x, xchar y, xchar w, xchar h, xchar xal, xchar yal, xchar rtype, xchar rlit, int floortyp, int floorsubtyp, int mtype, int tileset, short decotyp)
 {
     xchar xabs = 0, yabs = 0;
     int wtmp, htmp, xaltmp, yaltmp, xtmp, ytmp;
@@ -1397,14 +1344,8 @@ int floortyp, floorsubtyp, mtype, tileset;
  * Create a subroom in room proom at pos x,y with width w & height h.
  * x & y are relative to the parent room.
  */
-STATIC_OVL boolean
-create_subroom(proom, x, y, w, h, rtype, rlit, floortyp, floorsubtyp, mtype, tileset, decotyp)
-struct mkroom *proom;
-xchar x, y;
-xchar w, h;
-xchar rtype, rlit;
-short decotyp;
-int floortyp, floorsubtyp, mtype, tileset;
+static boolean
+create_subroom(struct mkroom *proom, xchar x, xchar y, xchar w, xchar h, xchar rtype, xchar rlit, int floortyp, int floorsubtyp, int mtype, int tileset, short decotyp)
 {
     xchar width, height;
 
@@ -1446,10 +1387,8 @@ int floortyp, floorsubtyp, mtype, tileset;
  * Create a new door in a room.
  * It's placed on a wall (north, south, east or west).
  */
-STATIC_OVL void
-create_door(dd, broom)
-room_door *dd;
-struct mkroom *broom;
+static void
+create_door(room_door *dd, struct mkroom *broom)
 {
     int x = 0, y = 0;
     int trycnt = 0, wtry = 0;
@@ -1567,9 +1506,7 @@ struct mkroom *broom;
  * Create a secret door in croom on any one of the specified walls.
  */
 void
-create_secret_door(croom, walls)
-struct mkroom *croom;
-xchar walls; /* any of W_NORTH | W_SOUTH | W_EAST | W_WEST (or W_ANY) */
+create_secret_door(struct mkroom *croom, xchar walls)
 {
     xchar sx, sy; /* location of the secret door */
     int count;
@@ -1617,10 +1554,8 @@ xchar walls; /* any of W_NORTH | W_SOUTH | W_EAST | W_WEST (or W_ANY) */
 /*
  * Create a trap in a room.
  */
-STATIC_OVL void
-create_trap(t, croom)
-spltrap *t;
-struct mkroom *croom;
+static void
+create_trap(spltrap *t, struct mkroom *croom)
 {
     schar x = -1, y = -1;
     coord tm;
@@ -1644,9 +1579,7 @@ struct mkroom *croom;
 }
 
 void
-create_carpet(x1, y1, x2, y2, type)
-xchar x1, y1, x2, y2;
-int type;
+create_carpet(xchar x1, xchar y1, xchar x2, xchar y2, int type)
 {
     if (!isok(x1, y1) || !isok(x2, y2) || type < 0 || type >= MAX_CARPETS)
         return;
@@ -1707,9 +1640,8 @@ int type;
 /*
  * Create a monster in a room.
  */
-STATIC_OVL int
-noncoalignment(alignment)
-aligntyp alignment;
+static int
+noncoalignment(aligntyp alignment)
 {
     int k;
 
@@ -1720,9 +1652,8 @@ aligntyp alignment;
 }
 
 /* attempt to screen out locations where a mimic-as-boulder shouldn't occur */
-STATIC_OVL boolean
-m_bad_boulder_spot(x, y)
-int x, y;
+static boolean
+m_bad_boulder_spot(int x, int y)
 {
     struct rm *lev;
 
@@ -1741,9 +1672,8 @@ int x, y;
     return FALSE;
 }
 
-STATIC_OVL int
-pm_to_humidity(pm)
-struct permonst *pm;
+static int
+pm_to_humidity(struct permonst *pm)
 {
     int loc = DRY;
     if (!pm || is_mimic(pm))
@@ -1759,10 +1689,8 @@ struct permonst *pm;
     return loc;
 }
 
-STATIC_OVL void
-create_monster(m, croom)
-monster *m;
-struct mkroom *croom;
+static void
+create_monster(monster *m, struct mkroom *croom)
 {
     struct monst *mtmp;
     schar x = -1, y = -1;
@@ -2182,10 +2110,8 @@ struct mkroom *croom;
 /*
  * Create an object in a room.
  */
-STATIC_OVL void
-create_object(o, croom)
-object *o;
-struct mkroom *croom;
+static void
+create_object(object *o, struct mkroom *croom)
 {
     struct obj *otmp = 0;
     schar x, y;
@@ -2799,10 +2725,8 @@ struct mkroom *croom;
 /*
  * Create a lever in a room.
  */
-STATIC_OVL void
-create_lever(lever, croom)
-spllever* lever;
-struct mkroom* croom;
+static void
+create_lever(spllever *lever, struct mkroom *croom)
 {
     schar x = -1, y = -1;
     schar t_x = -1, t_y = -1;
@@ -2890,10 +2814,8 @@ struct mkroom* croom;
 /*
  * Create an altar in a room.
  */
-STATIC_OVL void
-create_altar(a, croom)
-altar *a;
-struct mkroom *croom;
+static void
+create_altar(altar *a, struct mkroom *croom)
 {
     schar sproom, x = -1, y = -1;
     aligntyp amask;
@@ -2966,10 +2888,8 @@ struct mkroom *croom;
 /*
  * Create an anvil in a room.
  */
-STATIC_OVL void
-create_anvil(a, croom)
-anvil* a;
-struct mkroom* croom;
+static void
+create_anvil(anvil *a, struct mkroom *croom)
 {
     schar sproom, x = -1, y = -1;
     boolean croom_is_smithy = TRUE;
@@ -3020,10 +2940,8 @@ struct mkroom* croom;
 /*
  * Create a decoration in a room.
  */
-STATIC_OVL void
-create_decoration(d, croom)
-decoration* d;
-struct mkroom* croom;
+static void
+create_decoration(decoration *d, struct mkroom *croom)
 {
     schar x = -1, y = -1;
 
@@ -3053,10 +2971,8 @@ struct mkroom* croom;
 /*
  * Create an anvil in a room.
  */
-STATIC_OVL void
-create_npc(a, croom)
-npc_create_info* a;
-struct mkroom* croom;
+static void
+create_npc(npc_create_info *a, struct mkroom *croom)
 {
     schar sproom, x = -1, y = -1;
     boolean croom_is_npc_room = TRUE;
@@ -3085,10 +3001,8 @@ struct mkroom* croom;
 /*
  * Create an modron portal in a room.
  */
-STATIC_OVL void
-create_modron_portal(a, croom)
-modron_portal* a;
-struct mkroom* croom;
+static void
+create_modron_portal(modron_portal *a, struct mkroom *croom)
 {
     schar x = -1, y = -1;
     schar t_x = -1, t_y = -1;
@@ -3134,10 +3048,8 @@ struct mkroom* croom;
 /*
  * Create an modron portal in a room.
  */
-STATIC_OVL void
-create_magic_portal(a, croom)
-magic_portal* a;
-struct mkroom* croom;
+static void
+create_magic_portal(magic_portal *a, struct mkroom *croom)
 {
     schar x = -1, y = -1;
     uint64_t pflags = a->activated ? TRAPFLAGS_ACTIVATED : TRAPFLAGS_NONE;
@@ -3201,9 +3113,7 @@ struct mkroom* croom;
 }
 
 void
-replace_terrain(terr, croom)
-replaceterrain *terr;
-struct mkroom *croom;
+replace_terrain(replaceterrain *terr, struct mkroom *croom)
 {
     schar x, y, x1, y1, x2, y2;
 
@@ -3228,12 +3138,8 @@ struct mkroom *croom;
 /*
  * Search for a door in a room on a specified wall.
  */
-STATIC_OVL boolean
-search_door(croom, x, y, wall, cnt)
-struct mkroom *croom;
-xchar *x, *y;
-xchar wall;
-int cnt;
+static boolean
+search_door(struct mkroom *croom, xchar *x, xchar *y, xchar wall, int cnt)
 {
     int dx, dy;
     int xx, yy;
@@ -3286,10 +3192,7 @@ int cnt;
  * Dig a corridor between two points.
  */
 boolean
-dig_corridor(org, dest, nxcor, ftyp, btyp)
-coord *org, *dest;
-boolean nxcor;
-schar ftyp, btyp;
+dig_corridor(coord *org, coord *dest, boolean nxcor, schar ftyp, schar btyp)
 {
     int dx = 0, dy = 0, dix, diy, cct;
     struct rm *crm;
@@ -3432,8 +3335,8 @@ schar ftyp, btyp;
  * and dnstairs_room after the rooms have been sorted.  On normal levels,
  * stairs don't get created until _after_ sorting takes place.
  */
-STATIC_OVL void
-fix_stair_rooms(VOID_ARGS)
+static void
+fix_stair_rooms(void)
 {
     int i;
     struct mkroom *croom;
@@ -3481,9 +3384,8 @@ fix_stair_rooms(VOID_ARGS)
  * Basically we search for door coordinates or for endpoints coordinates
  * (from a distance).
  */
-STATIC_OVL void
-create_corridor(c)
-corridor *c;
+static void
+create_corridor(corridor *c)
 {
     coord org, dest;
 
@@ -3537,9 +3439,7 @@ corridor *c;
  * Fill a room (shop, zoo, etc...) with appropriate stuff.
  */
 void
-fill_room(croom, prefilled)
-struct mkroom *croom;
-boolean prefilled;
+fill_room(struct mkroom *croom, boolean prefilled)
 {
     if (!croom || croom->rtype == OROOM)
         return;
@@ -3616,9 +3516,7 @@ boolean prefilled;
 }
 
 struct mkroom *
-build_room(r, mkr)
-room *r;
-struct mkroom *mkr;
+build_room(room *r, struct mkroom *mkr)
 {
     boolean okroom;
     struct mkroom *aroom;
@@ -3649,9 +3547,8 @@ struct mkroom *mkr;
 /*
  * set lighting in a region that will not become a room.
  */
-STATIC_OVL void
-light_region(tmpregion)
-region *tmpregion;
+static void
+light_region(region *tmpregion)
 {
     boolean litstate = tmpregion->rlit ? 1 : 0;
     int hiy = tmpregion->y2;
@@ -3682,9 +3579,8 @@ region *tmpregion;
     }
 }
 
-STATIC_OVL void
-wallify_map(x1, y1, x2, y2)
-int x1, y1, x2, y2;
+static void
+wallify_map(int x1, int y1, int x2, int y2)
 {
     int x, y, xx, yy, lo_xx, lo_yy, hi_xx, hi_yy;
 
@@ -3720,10 +3616,8 @@ int x1, y1, x2, y2;
  * We want a place not 'touched' by the loader.  That is, a place in
  * the maze outside every part of the special level.
  */
-STATIC_OVL void
-maze1xy(m, humidity)
-coord *m;
-int humidity;
+static void
+maze1xy(coord *m, int humidity)
 {
     int x, y, tryct = 2000;
     /* tryct:  normally it won't take more than ten or so tries due
@@ -3748,8 +3642,8 @@ int humidity;
  * Makes the number of traps, monsters, etc. proportional
  * to the size of the maze.
  */
-STATIC_OVL void
-fill_empty_maze(VOID_ARGS)
+static void
+fill_empty_maze(void)
 {
     int mapcountmax, mapcount, mapfact;
     xchar x, y;
@@ -3802,10 +3696,8 @@ fill_empty_maze(VOID_ARGS)
 /*
  * special level loader
  */
-STATIC_OVL boolean
-sp_level_loader(fd, lvl)
-dlb *fd;
-sp_lev *lvl;
+static boolean
+sp_level_loader(dlb *fd, sp_lev *lvl)
 {
     int64_t n_opcode = 0;
     struct opvar *opdat;
@@ -3877,9 +3769,8 @@ sp_lev *lvl;
 }
 
 /* Frees the memory allocated for special level creation structs */
-STATIC_OVL boolean
-sp_level_free(lvl)
-sp_lev *lvl;
+static boolean
+sp_level_free(sp_lev *lvl)
 {
     static const char nhFunc[] = "sp_level_free";
     int64_t n_opcode = 0;
@@ -3901,8 +3792,7 @@ sp_lev *lvl;
 }
 
 void
-splev_initlev(linit)
-lev_init *linit;
+splev_initlev(lev_init *linit)
 {
     switch (linit->init_style) {
     default:
@@ -3933,8 +3823,7 @@ lev_init *linit;
 }
 
 struct sp_frame *
-frame_new(execptr)
-int64_t execptr;
+frame_new(int64_t execptr)
 {
     struct sp_frame *frame =
         (struct sp_frame *) alloc(sizeof(struct sp_frame));
@@ -3948,8 +3837,7 @@ int64_t execptr;
 }
 
 void
-frame_del(frame)
-struct sp_frame *frame;
+frame_del(struct sp_frame *frame)
 {
     if (!frame)
         return;
@@ -3965,8 +3853,7 @@ struct sp_frame *frame;
 }
 
 void
-spo_frame_push(coder)
-struct sp_coder *coder;
+spo_frame_push(struct sp_coder *coder)
 {
     struct sp_frame *tmpframe = frame_new(coder->frame->n_opcode);
 
@@ -3975,8 +3862,7 @@ struct sp_coder *coder;
 }
 
 void
-spo_frame_pop(coder)
-struct sp_coder *coder;
+spo_frame_pop(struct sp_coder *coder)
 {
     if (coder->frame && coder->frame->next) {
         struct sp_frame *tmpframe = coder->frame->next;
@@ -3988,15 +3874,13 @@ struct sp_coder *coder;
 }
 
 int64_t
-sp_code_jmpaddr(curpos, jmpaddr)
-int64_t curpos, jmpaddr;
+sp_code_jmpaddr(int64_t curpos, int64_t jmpaddr)
 {
     return (curpos + jmpaddr);
 }
 
 void
-spo_call(coder)
-struct sp_coder *coder;
+spo_call(struct sp_coder *coder)
 {
     static const char nhFunc[] = "spo_call";
     struct opvar *addr;
@@ -4025,8 +3909,7 @@ struct sp_coder *coder;
 }
 
 void
-spo_return(coder)
-struct sp_coder *coder;
+spo_return(struct sp_coder *coder)
 {
     static const char nhFunc[] = "spo_return";
     struct opvar *params;
@@ -4061,8 +3944,7 @@ struct sp_coder *coder;
 
 /*ARGUSED*/
 void
-spo_end_moninvent(coder)
-struct sp_coder *coder UNUSED;
+spo_end_moninvent(struct sp_coder *coder UNUSED)
 {
     if (invent_carrying_monster)
         m_dowear(invent_carrying_monster, TRUE, FALSE);
@@ -4071,8 +3953,7 @@ struct sp_coder *coder UNUSED;
 
 /*ARGUSED*/
 void
-spo_pop_container(coder)
-struct sp_coder *coder UNUSED;
+spo_pop_container(struct sp_coder *coder UNUSED)
 {
     if (container_idx > 0) {
         container_idx--;
@@ -4081,8 +3962,7 @@ struct sp_coder *coder UNUSED;
 }
 
 void
-spo_message(coder)
-struct sp_coder *coder;
+spo_message(struct sp_coder *coder)
 {
     static const char nhFunc[] = "spo_message";
     struct opvar *op, * mtype_opvar, * mattr_opvar, *mcolor_opvar, *soundtyp_opvar, *soundid_opvar, *soundparam_opvar, *msgflags_opvar;
@@ -4141,11 +4021,10 @@ struct sp_coder *coder;
     opvar_free(msgflags_opvar);
 }
 
-STATIC_VAR const monster emptymons; /* Initialized to zero automatically */
+static const monster emptymons; /* Initialized to zero automatically */
 
 void
-spo_monster(coder)
-struct sp_coder *coder;
+spo_monster(struct sp_coder *coder)
 {
     static const char nhFunc[] = "spo_monster";
     int nparams = 0;
@@ -4336,11 +4215,10 @@ struct sp_coder *coder;
 }
 
 
-STATIC_VAR const object emptyobject; /* Initialized to zero automatically */
+static const object emptyobject; /* Initialized to zero automatically */
 
 void
-spo_object(coder)
-struct sp_coder *coder;
+spo_object(struct sp_coder *coder)
 {
     static const char nhFunc[] = "spo_object";
     int nparams = 0;
@@ -4591,8 +4469,7 @@ struct sp_coder *coder;
 }
 
 void
-spo_lever(coder)
-struct sp_coder* coder;
+spo_lever(struct sp_coder *coder)
 {
     static const char nhFunc[] = "spo_lever";
     int nparams = 0;
@@ -4730,8 +4607,7 @@ struct sp_coder* coder;
 }
 
 void
-spo_level_flags(coder)
-struct sp_coder *coder;
+spo_level_flags(struct sp_coder *coder)
 {
     static const char nhFunc[] = "spo_level_flags";
     struct opvar *flagdata;
@@ -4808,8 +4684,7 @@ struct sp_coder *coder;
 }
 
 void
-spo_tileset(coder)
-struct sp_coder* coder;
+spo_tileset(struct sp_coder *coder)
 {
     static const char nhFunc[] = "spo_tileset";
     struct opvar* tilesetdata;
@@ -4833,8 +4708,7 @@ struct sp_coder* coder;
 }
 
 void
-spo_forest(coder)
-struct sp_coder* coder;
+spo_forest(struct sp_coder *coder)
 {
     static const char nhFunc[] = "spo_forest";
     struct opvar* forest_type, *initialize_type;
@@ -4877,8 +4751,7 @@ struct sp_coder* coder;
 }
 
 void
-spo_monster_generation(coder)
-struct sp_coder* coder;
+spo_monster_generation(struct sp_coder *coder)
 {
     static const char nhFunc[] = "spo_monster_generation";
     struct opvar* prob_var, *monnum_var, *id;
@@ -4936,8 +4809,7 @@ struct sp_coder* coder;
 }
 
 void
-spo_boundary_type(coder)
-struct sp_coder* coder;
+spo_boundary_type(struct sp_coder *coder)
 {
     static const char nhFunc[] = "spo_boundary_type";
     struct opvar* bt_opvar;
@@ -4959,8 +4831,7 @@ struct sp_coder* coder;
 }
 
 void
-spo_initlevel(coder)
-struct sp_coder *coder;
+spo_initlevel(struct sp_coder *coder)
 {
     static const char nhFunc[] = "spo_initlevel";
     lev_init init_lev;
@@ -5001,8 +4872,7 @@ struct sp_coder *coder;
 }
 
 void
-spo_engraving(coder)
-struct sp_coder *coder;
+spo_engraving(struct sp_coder *coder)
 {
     static const char nhFunc[] = "spo_engraving";
     struct opvar *etyp, *txt, *ecoord;
@@ -5020,8 +4890,7 @@ struct sp_coder *coder;
 }
 
 void
-spo_mineralize(coder)
-struct sp_coder *coder;
+spo_mineralize(struct sp_coder *coder)
 {
     static const char nhFunc[] = "spo_mineralize";
     struct opvar *kelp_pool, *kelp_moat, *gold_prob, *gem_prob;
@@ -5040,8 +4909,7 @@ struct sp_coder *coder;
 }
 
 void
-spo_room(coder)
-struct sp_coder *coder;
+spo_room(struct sp_coder *coder)
 {
     static const char nhFunc[] = "spo_room";
 
@@ -5126,8 +4994,7 @@ struct sp_coder *coder;
 }
 
 void
-spo_endroom(coder)
-struct sp_coder *coder;
+spo_endroom(struct sp_coder *coder)
 {
     if (coder->n_subroom > 1) {
         coder->n_subroom--;
@@ -5150,8 +5017,7 @@ struct sp_coder *coder;
 }
 
 void
-spo_stair(coder)
-struct sp_coder *coder;
+spo_stair(struct sp_coder *coder)
 {
     static const char nhFunc[] = "spo_stair";
     xchar x, y;
@@ -5172,8 +5038,7 @@ struct sp_coder *coder;
 }
 
 void
-spo_ladder(coder)
-struct sp_coder *coder;
+spo_ladder(struct sp_coder *coder)
 {
     static const char nhFunc[] = "spo_ladder";
     xchar x, y;
@@ -5217,8 +5082,7 @@ struct sp_coder *coder;
 }
 
 void
-spo_grave(coder)
-struct sp_coder *coder;
+spo_grave(struct sp_coder *coder)
 {
     static const char nhFunc[] = "spo_grave";
     struct opvar *gcoord, *typ, *txt;
@@ -5268,8 +5132,7 @@ struct sp_coder *coder;
 }
 
 void
-spo_signpost(coder)
-struct sp_coder* coder;
+spo_signpost(struct sp_coder *coder)
 {
     static const char nhFunc[] = "spo_signpost";
     struct opvar* gcoord, * typ, * txt, *subtyp;
@@ -5320,8 +5183,7 @@ struct sp_coder* coder;
 }
 
 void
-spo_brazier(coder)
-struct sp_coder* coder;
+spo_brazier(struct sp_coder *coder)
 {
     static const char nhFunc[] = "spo_brazier";
     struct opvar* gcoord, * lamplit, * subtyp;
@@ -5373,8 +5235,7 @@ struct sp_coder* coder;
 }
 
 void
-spo_tree(coder)
-struct sp_coder* coder;
+spo_tree(struct sp_coder *coder)
 {
     static const char nhFunc[] = "spo_tree";
     struct opvar* gcoord, * subtyp, * foresttyp;
@@ -5418,8 +5279,7 @@ struct sp_coder* coder;
 }
 
 void
-spo_altar(coder)
-struct sp_coder *coder;
+spo_altar(struct sp_coder *coder)
 {
     static const char nhFunc[] = "spo_altar";
     struct opvar *al, *shrine, *acoord, *mtype, *subtype;
@@ -5458,8 +5318,7 @@ struct sp_coder *coder;
 }
 
 void
-spo_trap(coder)
-struct sp_coder *coder;
+spo_trap(struct sp_coder *coder)
 {
     static const char nhFunc[] = "spo_trap";
     struct opvar *type;
@@ -5478,8 +5337,7 @@ struct sp_coder *coder;
 }
 
 void
-spo_gold(coder)
-struct sp_coder *coder;
+spo_gold(struct sp_coder *coder)
 {
     static const char nhFunc[] = "spo_gold";
     struct opvar *gcoord, *amt;
@@ -5498,8 +5356,7 @@ struct sp_coder *coder;
 }
 
 void
-spo_corridor(coder)
-struct sp_coder *coder;
+spo_corridor(struct sp_coder *coder)
 {
     static const char nhFunc[] = "spo_corridor";
     struct opvar *deswall, *desdoor, *desroom, *srcwall, *srcdoor, *srcroom;
@@ -5527,8 +5384,7 @@ struct sp_coder *coder;
 }
 
 struct opvar *
-selection_opvar(nbuf)
-char *nbuf;
+selection_opvar(char *nbuf)
 {
     struct opvar *ov;
     char buf[(COLNO * ROWNO) + 1];
@@ -5545,9 +5401,7 @@ char *nbuf;
 }
 
 xchar
-selection_getpoint(x, y, ov)
-int x, y;
-struct opvar *ov;
+selection_getpoint(int x, int y, struct opvar *ov)
 {
     if (!ov || ov->spovartyp != SPOVAR_SEL)
         return 0;
@@ -5558,10 +5412,7 @@ struct opvar *ov;
 }
 
 void
-selection_setpoint(x, y, ov, c)
-int x, y;
-struct opvar *ov;
-xchar c;
+selection_setpoint(int x, int y, struct opvar *ov, xchar c)
 {
     if (!ov || ov->spovartyp != SPOVAR_SEL)
         return;
@@ -5572,8 +5423,7 @@ xchar c;
 }
 
 struct opvar *
-selection_not(s)
-struct opvar *s;
+selection_not(struct opvar *s)
 {
     struct opvar *ov;
     int x, y;
@@ -5591,9 +5441,7 @@ struct opvar *s;
 }
 
 struct opvar *
-selection_logical_oper(s1, s2, oper)
-struct opvar *s1, *s2;
-char oper;
+selection_logical_oper(struct opvar *s1, struct opvar*s2, char oper)
 {
     struct opvar *ov;
     int x, y;
@@ -5623,9 +5471,7 @@ char oper;
 }
 
 struct opvar *
-selection_filter_mapchar(ov, mc)
-struct opvar *ov;
-struct opvar *mc;
+selection_filter_mapchar(struct opvar *ov, struct opvar *mc)
 {
     int x, y;
     schar mapc;
@@ -5658,9 +5504,7 @@ struct opvar *mc;
 }
 
 void
-selection_filter_percent(ov, percent)
-struct opvar *ov;
-int percent;
+selection_filter_percent(struct opvar *ov, int percent)
 {
     int x, y;
 
@@ -5672,11 +5516,8 @@ int percent;
                 selection_setpoint(x, y, ov, 0);
 }
 
-STATIC_OVL int
-selection_rndcoord(ov, x, y, removeit)
-struct opvar *ov;
-schar *x, *y;
-boolean removeit;
+static int
+selection_rndcoord(struct opvar *ov, schar *x, schar *y, boolean removeit)
 {
     int idx = 0;
     int c;
@@ -5706,9 +5547,7 @@ boolean removeit;
 }
 
 void
-selection_do_grow(ov, dir)
-struct opvar *ov;
-int dir;
+selection_do_grow(struct opvar *ov, int dir)
 {
     int x, y;
     char tmp[COLNO][ROWNO];
@@ -5748,26 +5587,23 @@ int dir;
                 selection_setpoint(x, y, ov, 1);
 }
 
-STATIC_VAR int FDECL((*selection_flood_check_func), (int, int));
-STATIC_VAR schar floodfillchk_match_under_typ;
+static int FDECL((*selection_flood_check_func), (int, int));
+static schar floodfillchk_match_under_typ;
 
 void
-set_selection_floodfillchk(f)
-int FDECL((*f), (int, int));
+set_selection_floodfillchk(int FDECL(( *f), (int, int)))
 {
     selection_flood_check_func = f;
 }
 
-STATIC_OVL int
-floodfillchk_match_under(x,y)
-int x,y;
+static int
+floodfillchk_match_under(int x, int y)
 {
     return (floodfillchk_match_under_typ == levl[x][y].typ);
 }
 
-STATIC_OVL int
-floodfillchk_match_accessible(x, y)
-int x, y;
+static int
+floodfillchk_match_accessible(int x, int y)
 {
     return (ACCESSIBLE(levl[x][y].typ)
             || levl[x][y].typ == SDOOR
@@ -5775,11 +5611,8 @@ int x, y;
 }
 
 /* check whethere <x,y> is already in xs[],ys[] */
-STATIC_OVL boolean
-sel_flood_havepoint(x, y, xs, ys, n)
-int x, y;
-xchar xs[], ys[];
-int n;
+static boolean
+sel_flood_havepoint(int x, int y, xchar xs[], xchar ys[], int n)
 {
     xchar xx = (xchar) x, yy = (xchar) y;
 
@@ -5792,10 +5625,7 @@ int n;
 }
 
 void
-selection_floodfill(ov, x, y, diagonals)
-struct opvar *ov;
-int x, y;
-boolean diagonals;
+selection_floodfill(struct opvar *ov, int x, int y, boolean diagonals)
 {
     static const char nhFunc[] = "selection_floodfill";
     struct opvar *tmp = selection_opvar((char *) 0);
@@ -5938,8 +5768,7 @@ int xc, yc, a, b, filled;
 
 /* distance from line segment (x1,y1, x2,y2) to point (x3,y3) */
 int64_t
-line_dist_coord(x1, y1, x2, y2, x3, y3)
-int64_t x1, y1, x2, y2, x3, y3;
+line_dist_coord(int64_t x1, int64_t y1, int64_t x2, int64_t y2, int64_t x3, int64_t y3)
 {
     int64_t px = x2 - x1;
     int64_t py = y2 - y1;
@@ -5966,9 +5795,7 @@ int64_t x1, y1, x2, y2, x3, y3;
 }
 
 void
-selection_do_gradient(ov, x, y, x2, y2, gtyp, mind, maxd, limit)
-struct opvar *ov;
-int64_t x, y, x2, y2, gtyp, mind, maxd, limit;
+selection_do_gradient(struct opvar *ov, int64_t x, int64_t y, int64_t x2, int64_t y2, int64_t gtyp, int64_t mind, int64_t maxd, int64_t limit)
 {
     int64_t dx, dy, dofs;
 
@@ -6017,9 +5844,7 @@ int64_t x, y, x2, y2, gtyp, mind, maxd, limit;
 
 /* bresenham line algo */
 void
-selection_do_line(x1, y1, x2, y2, ov)
-schar x1, y1, x2, y2;
-struct opvar *ov;
+selection_do_line(schar x1, schar y1, schar x2, schar y2, struct opvar *ov)
 {
     int d0, dx, dy, ai, bi, xi, yi;
 
@@ -6071,9 +5896,7 @@ struct opvar *ov;
 }
 
 void
-selection_do_randline(x1, y1, x2, y2, rough, rec, ov)
-schar x1, y1, x2, y2, rough, rec;
-struct opvar *ov;
+selection_do_randline(schar x1, schar y1, schar x2, schar y2, schar rough, schar rec, struct opvar *ov)
 {
     int mx, my;
     int dx, dy;
@@ -6113,10 +5936,7 @@ struct opvar *ov;
 }
 
 void
-selection_iterate(ov, func, arg)
-struct opvar *ov;
-select_iter_func func;
-genericptr_t arg;
+selection_iterate(struct opvar *ov, select_iter_func func, genericptr_t arg)
 {
     int x, y;
 
@@ -6128,10 +5948,7 @@ genericptr_t arg;
 }
 
 void
-selection_iterate2(ov, func, arg, arg2)
-struct opvar* ov;
-select_iter_func2 func;
-genericptr_t arg, arg2;
+selection_iterate2(struct opvar *ov, select_iter_func2 func, genericptr_t arg, genericptr_t arg2)
 {
     int x, y;
 
@@ -6143,10 +5960,7 @@ genericptr_t arg, arg2;
 }
 
 void
-selection_iterate3(ov, func, arg, arg2, arg3)
-struct opvar* ov;
-select_iter_func3 func;
-genericptr_t arg, arg2, arg3;
+selection_iterate3(struct opvar *ov, select_iter_func3 func, genericptr_t arg, genericptr_t arg2, genericptr_t arg3)
 {
     int x, y;
 
@@ -6159,10 +5973,7 @@ genericptr_t arg, arg2, arg3;
 
 #if 0 /* UNUSED */
 void
-selection_iterate4(ov, func, arg, arg2, arg3, arg4)
-struct opvar* ov;
-select_iter_func4 func;
-genericptr_t arg, arg2, arg3, arg4;
+selection_iterate4(struct opvar *ov, select_iter_func4 func, genericptr_t arg, genericptr_t arg2, genericptr_t arg3, genericptr_t arg4)
 {
     int x, y;
 
@@ -6175,10 +5986,7 @@ genericptr_t arg, arg2, arg3, arg4;
 #endif
 
 void
-selection_iterate5(ov, func, arg, arg2, arg3, arg4, arg5)
-struct opvar* ov;
-select_iter_func5 func;
-genericptr_t arg, arg2, arg3, arg4, arg5;
+selection_iterate5(struct opvar *ov, select_iter_func5 func, genericptr_t arg, genericptr_t arg2, genericptr_t arg3, genericptr_t arg4, genericptr_t arg5)
 {
     int x, y;
 
@@ -6191,9 +5999,7 @@ genericptr_t arg, arg2, arg3, arg4, arg5;
 
 
 void
-sel_set_ter(x, y, arg)
-int x, y;
-genericptr_t arg;
+sel_set_ter(int x, int y, genericptr_t arg)
 {
     terrain terr;
     terr = *(terrain *) arg;
@@ -6219,9 +6025,7 @@ genericptr_t arg;
 }
 
 void
-sel_set_feature(x, y, arg)
-int x, y;
-genericptr_t arg;
+sel_set_feature(int x, int y, genericptr_t arg)
 {
     /* Do nothing if there is already a feature */
     if (IS_FURNITURE(levl[x][y].typ))
@@ -6255,9 +6059,7 @@ genericptr_t arg;
 }
 
 void
-sel_set_feature2(x, y, arg, arg2)
-int x, y;
-genericptr_t arg, arg2;
+sel_set_feature2(int x, int y, genericptr_t arg, genericptr_t arg2)
 {
     /* Do nothing if there is already a feature */
     if (IS_FURNITURE(levl[x][y].typ))
@@ -6291,9 +6093,7 @@ genericptr_t arg, arg2;
 }
 
 void
-sel_set_floor(x, y, arg, arg2)
-int x, y;
-genericptr_t arg, arg2;
+sel_set_floor(int x, int y, genericptr_t arg, genericptr_t arg2)
 {
     if (IS_FLOOR(levl[x][y].typ))
     {
@@ -6315,9 +6115,7 @@ genericptr_t arg, arg2;
 }
 
 void
-sel_set_subtype(x, y, arg1, arg2)
-int x, y;
-genericptr_t arg1, arg2;
+sel_set_subtype(int x, int y, genericptr_t arg1, genericptr_t arg2)
 {
     int typ = (*(int*)arg1);
     if (typ < 0 || levl[x][y].typ == typ)
@@ -6328,9 +6126,7 @@ genericptr_t arg1, arg2;
 }
 
 void
-sel_set_carpet_piece(x, y, arg1, arg2, arg3)
-int x, y;
-genericptr_t arg1, arg2, arg3;
+sel_set_carpet_piece(int x, int y, genericptr_t arg1, genericptr_t arg2, genericptr_t arg3)
 {
     schar typ = (schar)(*(int*)arg1);
     if(typ >= 0 && typ < MAX_CARPETS)
@@ -6344,9 +6140,7 @@ genericptr_t arg1, arg2, arg3;
 }
 
 void
-sel_set_door(dx, dy, arg, arg2, arg3, arg4, arg5)
-int dx, dy;
-genericptr_t arg, arg2, arg3, arg4, arg5;
+sel_set_door(int dx, int dy, genericptr_t arg, genericptr_t arg2, genericptr_t arg3, genericptr_t arg4, genericptr_t arg5)
 {
     unsigned short dmask = *(unsigned short*) arg;
     int subtyp = *(int*)arg2;
@@ -6407,8 +6201,7 @@ genericptr_t arg, arg2, arg3, arg4, arg5;
 }
 
 void
-spo_door(coder)
-struct sp_coder *coder;
+spo_door(struct sp_coder *coder)
 {
     static const char nhFunc[] = "spo_door";
     struct opvar *msk, *sel;
@@ -6506,8 +6299,7 @@ struct sp_coder *coder;
 }
 
 void
-spo_feature(coder)
-struct sp_coder *coder;
+spo_feature(struct sp_coder *coder)
 {
     static const char nhFunc[] = "spo_feature";
     struct opvar *sel;
@@ -6535,8 +6327,7 @@ struct sp_coder *coder;
     opvar_free(sel);
 }
 
-void spo_fountain(coder)
-struct sp_coder* coder;
+void spo_fountain(struct sp_coder *coder)
 {
     static const char nhFunc[] = "spo_fountain";
     struct opvar* sel;
@@ -6558,8 +6349,7 @@ struct sp_coder* coder;
 
 }
 
-void spo_anvil(coder)
-struct sp_coder* coder;
+void spo_anvil(struct sp_coder *coder)
 {
     static const char nhFunc[] = "spo_anvil";
     struct opvar* acoord, *mtype;
@@ -6591,8 +6381,7 @@ struct sp_coder* coder;
     opvar_free(acoord);
 }
 
-void spo_decoration(coder)
-struct sp_coder* coder;
+void spo_decoration(struct sp_coder *coder)
 {
     static const char nhFunc[] = "spo_decoration";
     struct opvar* acoord, *typ_opvar, *subtyp_opvar, *dir_opvar, *flags_opvar, *lit_opvar;
@@ -6619,8 +6408,7 @@ struct sp_coder* coder;
 }
 
 void
-spo_floor(coder)
-struct sp_coder* coder;
+spo_floor(struct sp_coder *coder)
 {
     static const char nhFunc[] = "spo_floor";
     struct opvar* sel;
@@ -6641,8 +6429,7 @@ struct sp_coder* coder;
 
 
 void
-spo_subtype(coder)
-struct sp_coder* coder;
+spo_subtype(struct sp_coder *coder)
 {
     static const char nhFunc[] = "spo_subtype";
     struct opvar* sel;
@@ -6663,8 +6450,7 @@ struct sp_coder* coder;
 
 
 void
-spo_carpet(coder)
-struct sp_coder* coder;
+spo_carpet(struct sp_coder *coder)
 {
     static const char nhFunc[] = "spo_carpet";
     struct opvar* carpet_type, * area;
@@ -6690,8 +6476,7 @@ struct sp_coder* coder;
 }
 
 void
-spo_carpet_piece(coder)
-struct sp_coder* coder;
+spo_carpet_piece(struct sp_coder *coder)
 {
     static const char nhFunc[] = "spo_carpet_piece";
     struct opvar* sel;
@@ -6712,8 +6497,7 @@ struct sp_coder* coder;
     opvar_free(sel);
 }
 
-void spo_npc(coder)
-struct sp_coder* coder;
+void spo_npc(struct sp_coder *coder)
 {
     static const char nhFunc[] = "spo_npc";
     struct opvar *acoord, *typ, *mtype;
@@ -6747,8 +6531,7 @@ struct sp_coder* coder;
     opvar_free(acoord);
 }
 
-void spo_modron_portal(coder)
-struct sp_coder* coder;
+void spo_modron_portal(struct sp_coder *coder)
 {
     static const char nhFunc[] = "spo_modron_portal";
     struct opvar* acoord, *tcoord, *activated, *typ;
@@ -6773,8 +6556,7 @@ struct sp_coder* coder;
     opvar_free(acoord);
 }
 
-void spo_modron_level_teleporter(coder)
-struct sp_coder* coder;
+void spo_modron_level_teleporter(struct sp_coder *coder)
 {
     static const char nhFunc[] = "spo_modron_level_teleporter";
     struct opvar* acoord, *activated, *typ, *dir, *endt;
@@ -6801,8 +6583,7 @@ struct sp_coder* coder;
     opvar_free(acoord);
 }
 
-void spo_magic_portal(coder)
-struct sp_coder* coder;
+void spo_magic_portal(struct sp_coder *coder)
 {
     static const char nhFunc[] = "spo_magic_portal";
     struct opvar* acoord, * activated, * portal_typ, * seen;
@@ -6828,8 +6609,7 @@ struct sp_coder* coder;
 
 
 void
-spo_terrain(coder)
-struct sp_coder *coder;
+spo_terrain(struct sp_coder *coder)
 {
     static const char nhFunc[] = "spo_terrain";
     terrain tmpterrain;
@@ -6849,8 +6629,7 @@ struct sp_coder *coder;
 }
 
 void
-spo_replace_terrain(coder)
-struct sp_coder *coder;
+spo_replace_terrain(struct sp_coder *coder)
 {
     static const char nhFunc[] = "spo_replace_terrain";
     replaceterrain rt;
@@ -6878,10 +6657,8 @@ struct sp_coder *coder;
     opvar_free(chance);
 }
 
-STATIC_OVL boolean
-generate_way_out_method(nx,ny, ov)
-int nx,ny;
-struct opvar *ov;
+static boolean
+generate_way_out_method(int nx, int ny, struct opvar *ov)
 {
     static const char nhFunc[] = "generate_way_out_method";
     const int escapeitems[] = { PICK_AXE,
@@ -7019,8 +6796,8 @@ struct opvar *ov;
     return res;
 }
 
-STATIC_OVL void
-ensure_way_out(VOID_ARGS)
+static void
+ensure_way_out(void)
 {
     static const char nhFunc[] = "ensure_way_out";
     struct opvar *ov = selection_opvar((char *) 0);
@@ -7064,8 +6841,7 @@ ensure_way_out(VOID_ARGS)
 }
 
 void
-spo_levregion(coder)
-struct sp_coder *coder;
+spo_levregion(struct sp_coder *coder)
 {
     static const char nhFunc[] = "spo_levregion";
     struct opvar *rname, *padding, *rtype, *del_islev, *dy2, *dx2, *dy1, *dx1,
@@ -7147,8 +6923,7 @@ struct sp_coder *coder;
 }
 
 void
-spo_region(coder)
-struct sp_coder *coder;
+spo_region(struct sp_coder *coder)
 {
     static const char nhFunc[] = "spo_region";
     struct opvar *rtype, *rlit, *rflags, *area, *rfloortyp, * rfloorsubtyp, * rtileset, * rdecotyp, *mtype;
@@ -7290,8 +7065,7 @@ struct sp_coder *coder;
 }
 
 void
-spo_special_region(coder)
-struct sp_coder* coder;
+spo_special_region(struct sp_coder *coder)
 {
     static const char nhFunc[] = "spo_special_region";
     struct opvar* rtype, * area;
@@ -7317,8 +7091,7 @@ struct sp_coder* coder;
 }
 
 void
-spo_special_tileset(coder)
-struct sp_coder* coder;
+spo_special_tileset(struct sp_coder *coder)
 {
     static const char nhFunc[] = "spo_special_tileset";
     struct opvar*rtype, *sel;
@@ -7336,17 +7109,14 @@ struct sp_coder* coder;
 }
 
 void
-sel_set_tileset(x, y, arg)
-int x, y;
-genericptr_t arg;
+sel_set_tileset(int x, int y, genericptr_t arg)
 {
     levl[x][y].use_special_tileset = 1;
     levl[x][y].special_tileset = (*(int*)arg);
 }
 
 void
-spo_naming(coder)
-struct sp_coder* coder;
+spo_naming(struct sp_coder *coder)
 {
     static const char nhFunc[] = "spo_naming";
     struct opvar* typ_opvar, *montype_opvar, *name_opvar;
@@ -7379,8 +7149,7 @@ struct sp_coder* coder;
 }
 
 void
-spo_drawbridge(coder)
-struct sp_coder *coder;
+spo_drawbridge(struct sp_coder *coder)
 {
     static const char nhFunc[] = "spo_drawbridge";
     xchar x, y;
@@ -7403,8 +7172,7 @@ struct sp_coder *coder;
 }
 
 void
-spo_mazewalk(coder)
-struct sp_coder *coder;
+spo_mazewalk(struct sp_coder *coder)
 {
     static const char nhFunc[] = "spo_mazewalk";
     xchar x, y;
@@ -7484,8 +7252,7 @@ struct sp_coder *coder;
 }
 
 void
-spo_wall_property(coder)
-struct sp_coder *coder;
+spo_wall_property(struct sp_coder *coder)
 {
     static const char nhFunc[] = "spo_wall_property";
     struct opvar *r;
@@ -7511,8 +7278,7 @@ struct sp_coder *coder;
 }
 
 void
-spo_room_door(coder)
-struct sp_coder *coder;
+spo_room_door(struct sp_coder *coder)
 {
     static const char nhFunc[] = "spo_room_door";
     struct opvar *wall, *secret, *mask, *pos, *varparam;
@@ -7594,16 +7360,13 @@ struct sp_coder *coder;
 
 /*ARGSUSED*/
 void
-sel_set_wallify(x, y, arg)
-int x, y;
-genericptr_t arg UNUSED;
+sel_set_wallify(int x, int y, genericptr_t arg UNUSED)
 {
     wallify_map(x, y, x, y);
 }
 
 void
-spo_wallify(coder)
-struct sp_coder *coder;
+spo_wallify(struct sp_coder *coder)
 {
     static const char nhFunc[] = "spo_wallify";
     struct opvar *typ, *r;
@@ -7641,8 +7404,7 @@ struct sp_coder *coder;
 }
 
 void
-spo_map(coder)
-struct sp_coder *coder;
+spo_map(struct sp_coder *coder)
 {
     static const char nhFunc[] = "spo_map";
     mazepart tmpmazepart;
@@ -7823,9 +7585,7 @@ struct sp_coder *coder;
 }
 
 void
-spo_jmp(coder, lvl)
-struct sp_coder *coder;
-sp_lev *lvl;
+spo_jmp(struct sp_coder *coder, sp_lev *lvl)
 {
     static const char nhFunc[] = "spo_jmp";
     struct opvar *tmpa;
@@ -7840,9 +7600,7 @@ sp_lev *lvl;
 }
 
 void
-spo_conditional_jump(coder, lvl)
-struct sp_coder *coder;
-sp_lev *lvl;
+spo_conditional_jump(struct sp_coder *coder, sp_lev *lvl)
 {
     static const char nhFunc[] = "spo_conditional_jump";
     struct opvar *oa, *oc;
@@ -7888,8 +7646,7 @@ sp_lev *lvl;
 }
 
 void
-spo_var_init(coder)
-struct sp_coder *coder;
+spo_var_init(struct sp_coder *coder)
 {
     static const char nhFunc[] = "spo_var_init";
     struct opvar *vname;
@@ -8014,9 +7771,8 @@ struct sp_coder *coder;
 }
 
 #if 0
-STATIC_OVL int64_t
-opvar_array_length(coder)
-struct sp_coder *coder;
+static int64_t
+opvar_array_length(struct sp_coder *coder)
 {
     static const char nhFunc[] = "opvar_array_length";
     struct opvar *vname;
@@ -8052,8 +7808,7 @@ pass:
 #endif /*0*/
 
 void
-spo_shuffle_array(coder)
-struct sp_coder *coder;
+spo_shuffle_array(struct sp_coder *coder)
 {
     static const char nhFunc[] = "spo_shuffle_array";
     struct opvar *vname;
@@ -8083,9 +7838,8 @@ struct sp_coder *coder;
 /* Special level coder, creates the special level from the sp_lev codes.
  * Does not free the allocated memory.
  */
-STATIC_OVL boolean
-sp_level_coder(lvl)
-sp_lev *lvl;
+static boolean
+sp_level_coder(sp_lev *lvl)
 {
     static const char nhFunc[] = "sp_level_coder";
     uint64_t exec_opcodes = 0;
@@ -8891,8 +8645,7 @@ sp_lev *lvl;
  * General loader
  */
 boolean
-load_special(name)
-const char *name;
+load_special(const char *name)
 {
     dlb *fd;
     sp_lev *lvl = NULL;
@@ -8923,7 +8676,7 @@ give_up:
 }
 
 void
-reset_splev(VOID_ARGS)
+reset_splev(void)
 {
     selection_flood_check_func = 0;
     floodfillchk_match_under_typ = 0;

@@ -11,8 +11,7 @@
 #endif
 
 int64_t
-newuexp(lev)
-int lev;
+newuexp(int lev)
 {
     if (lev <= 0)
         return 0;
@@ -64,7 +63,7 @@ int lev;
 
 /* calculate spell power/energy points for new level */
 int
-newpw(VOID_ARGS)
+newpw(void)
 {
     int en = 0, enrnd, enfix;
 
@@ -97,7 +96,7 @@ newpw(VOID_ARGS)
 }
 
 int
-enmaxadjustment(VOID_ARGS)
+enmaxadjustment(void)
 {
     int baseen = u.ubaseenmax;
     int baseadj = (int)((max(0.0, (2.0 * (double)ACURR(A_INT) + (double)ACURR(A_WIS)) / 3.0 - 1.0) * (double)(u.ulevel + 3)) / 6.0) + u.ubaseendrain;
@@ -143,7 +142,7 @@ enmaxadjustment(VOID_ARGS)
 
 
 void
-updatemaxen(VOID_ARGS)
+updatemaxen(void)
 {
     u.uenmax = u.ubaseenmax + enmaxadjustment();
     if (u.uenmax < 0)
@@ -160,9 +159,7 @@ updatemaxen(VOID_ARGS)
 
 /* return # of exp points for mtmp after nk killed */
 int
-experience(mtmp, nk)
-struct monst *mtmp;
-int nk;
+experience(struct monst *mtmp, int nk)
 {
     struct permonst *ptr = mtmp->data;
     int i, tmp, tmp2;
@@ -211,8 +208,7 @@ int nk;
 }
 
 int64_t
-game_score_difficulty_adjustment(points_added)
-int64_t points_added;
+game_score_difficulty_adjustment(int64_t points_added)
 {
     int64_t added_gamescore = points_added;
 
@@ -246,8 +242,7 @@ int64_t points_added;
 
 
 void
-more_experienced(exper, gamescore)
-int exper, gamescore;
+more_experienced(int exper, int gamescore)
 {
     int64_t added_experience = exper == 0 ? 0 : max(1, exper + (exper * max(-9, u.uexperiencebonus)) / 10);
     int64_t added_gamescore = gamescore;
@@ -287,8 +282,7 @@ int exper, gamescore;
 
 /* e.g., hit by drain life attack */
 void
-losexp(drainer)
-const char *drainer; /* cause of death, if drain should be fatal */
+losexp(const char *drainer)
 {
     int num;
 
@@ -370,15 +364,14 @@ const char *drainer; /* cause of death, if drain should be fatal */
  * at a dragon created with a wand of polymorph??
  */
 void
-newexplevel(VOID_ARGS)
+newexplevel(void)
 {
     if (u.ulevel < MAXULEV && u.uexp >= newuexp(u.ulevel))
         pluslvl(TRUE);
 }
 
 void
-pluslvl(incr)
-boolean incr; /* true iff via incremental experience growth */
+pluslvl(boolean incr)
 {             /*        (false for potion of gain level)    */
     int hpinc, eninc;
 
@@ -495,8 +488,7 @@ boolean incr; /* true iff via incremental experience growth */
    experience level:  base number of points needed to reach the current
    level plus a random portion of what it takes to get to the next level */
 int64_t
-rndexp(gaining)
-boolean gaining; /* gaining XP via potion vs setting XP for polyself */
+rndexp(boolean gaining)
 {
     int64_t minexp, maxexp, diff, factor, result;
 

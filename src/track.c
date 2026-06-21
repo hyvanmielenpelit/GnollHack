@@ -14,14 +14,14 @@ STATIC_VAR NEARDATA int utcnt, utpnt;
 STATIC_VAR NEARDATA coord utrack[UTSZ];
 
 void
-initrack(VOID_ARGS)
+initrack(void)
 {
     utcnt = utpnt = 0;
 }
 
 /* add to track */
 void
-settrack(VOID_ARGS)
+settrack(void)
 {
     if (utcnt < UTSZ)
         utcnt++;
@@ -33,8 +33,7 @@ settrack(VOID_ARGS)
 }
 
 coord *
-gettrack(x, y)
-int x, y;
+gettrack(int x, int y)
 {
     int cnt, ndist;
     coord *tc;
@@ -63,7 +62,7 @@ int x, y;
 }
 
 void
-reest_track(VOID_ARGS)
+reest_track(void)
 {
     memset((genericptr_t)&utrack, 0, sizeof(utrack));
     utcnt = utpnt = 0;

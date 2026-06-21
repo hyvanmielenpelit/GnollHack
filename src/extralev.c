@@ -22,16 +22,14 @@ struct rogueroom {
 #define LEFT 4
 #define RIGHT 8
 
-STATIC_VAR NEARDATA struct rogueroom r[3][3];
-STATIC_DCL void FDECL(roguejoin, (int, int, int, int, int));
-STATIC_DCL void FDECL(roguecorr, (int, int, int));
-STATIC_DCL void FDECL(miniwalk, (int, int));
+static NEARDATA struct rogueroom r[3][3];
+static void FDECL(roguejoin, (int, int, int, int, int));
+static void FDECL(roguecorr, (int, int, int));
+static void FDECL(miniwalk, (int, int));
 
-STATIC_OVL
+static
 void
-roguejoin(x1, y1, x2, y2, horiz)
-int x1, y1, x2, y2;
-int horiz;
+roguejoin(int x1, int y1, int x2, int y2, int horiz)
 {
     int x, y, middle;
     if (horiz) {
@@ -53,10 +51,9 @@ int horiz;
     }
 }
 
-STATIC_OVL
+static
 void
-roguecorr(x, y, dir)
-int x, y, dir;
+roguecorr(int x, int y, int dir)
 {
     int fromx, fromy, tox, toy;
 
@@ -157,10 +154,9 @@ int x, y, dir;
 }
 
 /* Modified walkfrom() from mkmaze.c */
-STATIC_OVL
+static
 void
-miniwalk(x, y)
-int x, y;
+miniwalk(int x, int y)
 {
     int q, dir;
     int dirs[4];
@@ -213,7 +209,7 @@ int x, y;
 }
 
 void
-makeroguerooms(VOID_ARGS)
+makeroguerooms(void)
 {
     int x, y;
     /* Rogue levels are structured 3 by 3, with each section containing
@@ -297,8 +293,7 @@ makeroguerooms(VOID_ARGS)
 }
 
 void
-corr(x, y)
-int x, y;
+corr(int x, int y)
 {
     if (rn2(50)) {
         levl[x][y].typ = CORR;
@@ -308,7 +303,7 @@ int x, y;
 }
 
 void
-makerogueghost(VOID_ARGS)
+makerogueghost(void)
 {
     struct monst *ghost;
     struct obj *ghostobj;
@@ -376,7 +371,7 @@ makerogueghost(VOID_ARGS)
 }
 
 void
-reset_extralev(VOID_ARGS)
+reset_extralev(void)
 {
     memset((genericptr_t)&r, 0, sizeof(r));
 }

@@ -13,24 +13,24 @@
 extern lev_region *lregions;
 extern int num_lregions;
 /* for preserving the insect legs when wallifying baalz level */
-STATIC_VAR lev_region bughack = { {COLNO, ROWNO, 0, 0}, {COLNO, ROWNO, 0, 0} };
+static lev_region bughack = { {COLNO, ROWNO, 0, 0}, {COLNO, ROWNO, 0, 0} };
 
-STATIC_DCL int FDECL(iswall, (int, int));
-STATIC_DCL int FDECL(iswall_or_stone, (int, int));
-STATIC_DCL boolean FDECL(is_solid, (int, int));
-STATIC_DCL int FDECL(extend_spine, (int[3][3], int, int, int));
-STATIC_DCL boolean FDECL(okay, (int, int, int));
-STATIC_DCL void FDECL(maze0xy, (coord *));
-STATIC_DCL boolean FDECL(put_lregion_here, (XCHAR_P, XCHAR_P, XCHAR_P,
+static int FDECL(iswall, (int, int));
+static int FDECL(iswall_or_stone, (int, int));
+static boolean FDECL(is_solid, (int, int));
+static int FDECL(extend_spine, (int[3][3], int, int, int));
+static boolean FDECL(okay, (int, int, int));
+static void FDECL(maze0xy, (coord *));
+static boolean FDECL(put_lregion_here, (XCHAR_P, XCHAR_P, XCHAR_P,
                                             XCHAR_P, XCHAR_P, XCHAR_P,
                                             XCHAR_P, BOOLEAN_P, d_level *));
-STATIC_DCL void NDECL(baalz_fixup);
-STATIC_DCL void NDECL(setup_waterlevel);
-STATIC_DCL void NDECL(unsetup_waterlevel);
-STATIC_DCL void FDECL(check_ransacked, (char *));
-STATIC_DCL void FDECL(migr_booty_item, (int, const char *));
-STATIC_DCL void FDECL(migrate_orc, (struct monst *, uint64_t));
-STATIC_DCL void NDECL(stolen_booty);
+static void NDECL(baalz_fixup);
+static void NDECL(setup_waterlevel);
+static void NDECL(unsetup_waterlevel);
+static void FDECL(check_ransacked, (char *));
+static void FDECL(migr_booty_item, (int, const char *));
+static void FDECL(migrate_orc, (struct monst *, uint64_t));
+static void NDECL(stolen_booty);
 
 /* adjust a coordinate one step in the specified direction */
 #define mz_move(X, Y, dir) \
@@ -44,9 +44,8 @@ STATIC_DCL void NDECL(stolen_booty);
         }                                                        \
     } while (0)
 
-STATIC_OVL int
-iswall(x, y)
-int x, y;
+static int
+iswall(int x, int y)
 {
     int type;
 
@@ -57,9 +56,8 @@ int x, y;
             || type == SDOOR || type == IRONBARS);
 }
 
-STATIC_OVL int
-iswall_or_stone(x, y)
-int x, y;
+static int
+iswall_or_stone(int x, int y)
 {
     /* out of bounds = stone */
     if (!isok(x, y))
@@ -69,9 +67,8 @@ int x, y;
 }
 
 /* return TRUE if out of bounds, wall or rock */
-STATIC_OVL boolean
-is_solid(x, y)
-int x, y;
+static boolean
+is_solid(int x, int y)
 {
     return (boolean) (!isok(x, y) || IS_STWALL(levl[x][y].typ));
 }
@@ -94,10 +91,8 @@ int x, y;
  *              W x W           This would extend a spine from x down.
  *              . W W
  */
-STATIC_OVL int
-extend_spine(locale, wall_there, dx, dy)
-int locale[3][3];
-int wall_there, dx, dy;
+static int
+extend_spine(int locale[3][3], int wall_there, int dx, int dy)
 {
     int spine, nx, ny;
 
@@ -129,8 +124,7 @@ int wall_there, dx, dy;
 
 /* Remove walls totally surrounded by stone */
 void
-wall_cleanup(x1, y1, x2, y2)
-int x1, y1, x2, y2;
+wall_cleanup(int x1, int y1, int x2, int y2)
 {
     uchar type;
     int x, y;
@@ -171,8 +165,7 @@ int x1, y1, x2, y2;
 
 /* Correct wall types so they extend and connect to each other */
 void
-fix_wall_spines(x1, y1, x2, y2)
-int x1, y1, x2, y2;
+fix_wall_spines(int x1, int y1, int x2, int y2)
 {
     uchar type;
     int x, y;
@@ -236,17 +229,14 @@ int x1, y1, x2, y2;
 }
 
 void
-wallification(x1, y1, x2, y2)
-int x1, y1, x2, y2;
+wallification(int x1, int y1, int x2, int y2)
 {
     wall_cleanup(x1, y1, x2, y2);
     fix_wall_spines(x1, y1, x2, y2);
 }
 
-STATIC_OVL boolean
-okay(x, y, dir)
-int x, y;
-int dir;
+static boolean
+okay(int x, int y, int dir)
 {
     mz_move(x, y, dir);
     mz_move(x, y, dir);
@@ -257,9 +247,8 @@ int dir;
 }
 
 /* find random starting point for maze generation */
-STATIC_OVL void
-maze0xy(cc)
-coord *cc;
+static void
+maze0xy(coord *cc)
 {
     cc->x = 3 + 2 * rn2((x_maze_max >> 1) - 1);
     cc->y = 3 + 2 * rn2((y_maze_max >> 1) - 1);
@@ -273,9 +262,7 @@ coord *cc;
  *      NOT (pos is corridor and a maze level OR pos is a room OR pos is air)
  */
 boolean
-bad_location(x, y, lx, ly, hx, hy)
-xchar x, y;
-xchar lx, ly, hx, hy;
+bad_location(xchar x, xchar y, xchar lx, xchar ly, xchar hx, xchar hy)
 {
     return (boolean) (occupied(x, y)
                       || within_bounded_area(x, y, lx, ly, hx, hy)
@@ -289,11 +276,7 @@ xchar lx, ly, hx, hy;
 /* pick a location in area (lx, ly, hx, hy) but not in (nlx, nly, nhx, nhy)
    and place something (based on rtype) in that region */
 void
-place_lregion(lx, ly, hx, hy, nlx, nly, nhx, nhy, rtype, lev)
-xchar lx, ly, hx, hy;
-xchar nlx, nly, nhx, nhy;
-xchar rtype;
-d_level *lev;
+place_lregion(xchar lx, xchar ly, xchar hx, xchar hy, xchar nlx, xchar nly, xchar nhx, xchar nhy, xchar rtype, d_level *lev)
 {
     int trycnt;
     boolean oneshot;
@@ -335,13 +318,8 @@ d_level *lev;
     impossible("Couldn't place lregion type %d!", rtype);
 }
 
-STATIC_OVL boolean
-put_lregion_here(x, y, nlx, nly, nhx, nhy, rtype, oneshot, lev)
-xchar x, y;
-xchar nlx, nly, nhx, nhy;
-xchar rtype;
-boolean oneshot;
-d_level *lev;
+static boolean
+put_lregion_here(xchar x, xchar y, xchar nlx, xchar nly, xchar nhx, xchar nhy, xchar rtype, boolean oneshot, d_level *lev)
 {
     struct monst *mtmp;
 
@@ -397,8 +375,8 @@ d_level *lev;
 /* fix up Baalzebub's lair, which depicts a level-sized beetle;
    its legs are walls within solid rock--regular wallification
    classifies them as superfluous and gets rid of them */
-STATIC_OVL void
-baalz_fixup(VOID_ARGS)
+static void
+baalz_fixup(void)
 {
     struct monst *mtmp;
     int x, y, lastx, lasty;
@@ -482,11 +460,11 @@ baalz_fixup(VOID_ARGS)
     bughack.inarea.y2 = bughack.delarea.y2 = 0;
 }
 
-STATIC_VAR boolean was_waterlevel; /* ugh... this shouldn't be needed */
+static boolean was_waterlevel; /* ugh... this shouldn't be needed */
 
 /* this is special stuff that the level compiler cannot (yet) handle */
 void
-fixup_special(VOID_ARGS)
+fixup_special(void)
 {
     lev_region *r = lregions;
     struct d_level lev;
@@ -657,20 +635,17 @@ fixup_special(VOID_ARGS)
 }
 
 void
-check_ransacked(s)
-char *s;
+check_ransacked(char *s)
 {
     /* this kludge only works as long as orctown is minetn-1 */
     ransacked = (u.uz.dnum == mines_dnum && !strcmp(s, "minetn-1"));
 }
 
 #define ORC_LEADER 1
-STATIC_VAR const char *orcfruit[] = { "paddle cactus", "dwarven root" };
+static const char *orcfruit[] = { "paddle cactus", "dwarven root" };
 
 void
-migrate_orc(mtmp, mflags)
-struct monst *mtmp;
-uint64_t mflags;
+migrate_orc(struct monst *mtmp, uint64_t mflags)
 {
     int nlev, max_depth, cur_depth;
     d_level dest;
@@ -701,8 +676,7 @@ uint64_t mflags;
 }
 
 void
-shiny_orc_stuff(mtmp)
-struct monst *mtmp;
+shiny_orc_stuff(struct monst *mtmp)
 {
     int gemprob, goldprob, otyp;
     struct obj *otmp;
@@ -734,9 +708,7 @@ struct monst *mtmp;
     }
 }
 void
-migr_booty_item(otyp, gang)
-int otyp;
-const char *gang;
+migr_booty_item(int otyp, const char *gang)
 {
     struct obj *otmp;
 
@@ -755,7 +727,7 @@ const char *gang;
 }
 
 void
-stolen_booty(VOID_ARGS)
+stolen_booty(void)
 {
     char *gang, gang_name[BUFSZ];
     char lootlabel[BUFSZ * 2] = "";
@@ -852,7 +824,7 @@ stolen_booty(VOID_ARGS)
 #undef ORC_LEADER
 
 void
-maze_init(VOID_ARGS)
+maze_init(void)
 {
     x_maze_max = COLNO - 1;
     if (x_maze_max % 2)
@@ -864,16 +836,14 @@ maze_init(VOID_ARGS)
 }
 
 boolean
-maze_inbounds(x, y)
-int x, y;
+maze_inbounds(int x, int y)
 {
     return (x >= 2 && y >= 2
             && x < x_maze_max && y < y_maze_max && isok(x, y));
 }
 
 void
-maze_remove_deadends(typ)
-xchar typ;
+maze_remove_deadends(xchar typ)
 {
     char dirok[4];
     int x, y, dir, idx, idx2, dx, dy, dx2, dy2;
@@ -925,9 +895,7 @@ xchar typ;
  * TODO: rewrite walkfrom so it works on temp space, not levl
  */
 void
-create_maze(corrwid, wallthick)
-int corrwid;
-int wallthick;
+create_maze(int corrwid, int wallthick)
 {
     int x,y;
     coord mm;
@@ -1033,8 +1001,7 @@ int wallthick;
 
 
 void
-makemaz(s)
-const char *s;
+makemaz(const char *s)
 {
     int x, y;
     char protofile[20];
@@ -1255,9 +1222,7 @@ const char *s;
  * that is totally safe.
  */
 void
-walkfrom(x, y, typ)
-int x, y;
-schar typ;
+walkfrom(int x, int y, schar typ)
 {
 #define CELLS (ROWNO * COLNO) / 4            /* a maze cell is 4 squares */
     char mazex[CELLS + 1], mazey[CELLS + 1]; /* char's are OK */
@@ -1305,9 +1270,7 @@ schar typ;
 #else /* !MICRO */
 
 void
-walkfrom(x, y, typ)
-int x, y;
-schar typ;
+walkfrom(int x, int y, schar typ)
 {
     int q, a, dir;
     int dirs[4];
@@ -1356,8 +1319,7 @@ schar typ;
 /* find random point in generated corridors,
    so we don't create items in moats, bunkers, or walls */
 void
-mazexy(cc)
-coord *cc;
+mazexy(coord *cc)
 {
     int cpt = 0;
 
@@ -1396,7 +1358,7 @@ coord *cc;
  * that provides a window of abuse for wallified special levels
  */
 void
-bound_digging(VOID_ARGS)
+bound_digging(void)
 {
     int x, y;
     unsigned typ;
@@ -1480,11 +1442,7 @@ bound_digging(VOID_ARGS)
 }
 
 void
-mkportal(x, y, todnum, todlevel, subtyp, portal_flags, seen)
-xchar x, y, todnum, todlevel;
-uchar subtyp;
-uint64_t portal_flags;
-boolean seen;
+mkportal(xchar x, xchar y, xchar todnum, xchar todlevel, uchar subtyp, uint64_t portal_flags, boolean seen)
 {
     /* a portal "trap" must be matched by a
        portal in the destination dungeon/dlevel */
@@ -1505,7 +1463,7 @@ boolean seen;
 }
 
 void
-fumaroles(VOID_ARGS)
+fumaroles(void)
 {
     xchar n;
     boolean snd = FALSE, loud = FALSE;
@@ -1534,22 +1492,22 @@ fumaroles(VOID_ARGS)
  * other source files, but they are all so nicely encapsulated here.
  */
 
-STATIC_VAR struct bubble *bbubbles, *ebubbles;
+static struct bubble *bbubbles, *ebubbles;
 
-STATIC_VAR struct trap *wportal;
-STATIC_VAR int xmin, ymin, xmax, ymax; /* level boundaries */
+static struct trap *wportal;
+static int xmin, ymin, xmax, ymax; /* level boundaries */
 /* bubble movement boundaries */
 #define bxmin (xmin + 1)
 #define bymin (ymin + 1)
 #define bxmax (xmax - 1)
 #define bymax (ymax - 1)
 
-STATIC_DCL void NDECL(set_wportal);
-STATIC_DCL void FDECL(mk_bubble, (int, int, int));
-STATIC_DCL void FDECL(mv_bubble, (struct bubble *, int, int, BOOLEAN_P));
+static void NDECL(set_wportal);
+static void FDECL(mk_bubble, (int, int, int));
+static void FDECL(mv_bubble, (struct bubble *, int, int, BOOLEAN_P));
 
 void
-movebubbles(VOID_ARGS)
+movebubbles(void)
 {
     static boolean up;
     struct bubble *b;
@@ -1698,7 +1656,7 @@ movebubbles(VOID_ARGS)
 
 /* when moving in water, possibly (1 in 3) alter the intended destination */
 void
-water_friction(VOID_ARGS)
+water_friction(void)
 {
     int x, y, dx, dy;
     boolean eff = FALSE;
@@ -1732,8 +1690,7 @@ water_friction(VOID_ARGS)
 }
 
 void
-save_waterlevel(fd, mode)
-int fd, mode;
+save_waterlevel(int fd, int mode)
 {
     struct bubble *b;
 
@@ -1757,7 +1714,7 @@ int fd, mode;
 }
 
 void
-reset_waterlevel(VOID_ARGS)
+reset_waterlevel(void)
 {
     xmin = ymin = xmax = ymax = 0;
     unsetup_waterlevel();
@@ -1765,8 +1722,7 @@ reset_waterlevel(VOID_ARGS)
 
 
 void
-restore_waterlevel(fd)
-int fd;
+restore_waterlevel(int fd)
 {
     struct bubble *b = (struct bubble *) 0, *btmp;
     int i, n;
@@ -1808,8 +1764,7 @@ int fd;
 }
 
 const char *
-waterbody_name(x, y)
-xchar x, y;
+waterbody_name(xchar x, xchar y)
 {
     struct rm *lev;
     schar ltyp;
@@ -1837,8 +1792,8 @@ xchar x, y;
     return hliquid("water");
 }
 
-STATIC_OVL void
-set_wportal(VOID_ARGS)
+static void
+set_wportal(void)
 {
     /* there better be only one magic portal on water level... */
     for (wportal = ftrap; wportal; wportal = wportal->ntrap)
@@ -1847,8 +1802,8 @@ set_wportal(VOID_ARGS)
     impossible("set_wportal(): no portal!");
 }
 
-STATIC_OVL void
-setup_waterlevel(VOID_ARGS)
+static void
+setup_waterlevel(void)
 {
     int x, y;
     int xskip, yskip;
@@ -1883,8 +1838,8 @@ setup_waterlevel(VOID_ARGS)
             mk_bubble(x, y, rn2(7));
 }
 
-STATIC_OVL void
-unsetup_waterlevel(VOID_ARGS)
+static void
+unsetup_waterlevel(void)
 {
     struct bubble *b, *bb;
 
@@ -1897,9 +1852,8 @@ unsetup_waterlevel(VOID_ARGS)
     bbubbles = ebubbles = (struct bubble *) 0;
 }
 
-STATIC_OVL void
-mk_bubble(x, y, n)
-int x, y, n;
+static void
+mk_bubble(int x, int y, int n)
 {
     /*
      * These bit masks make visually pleasing bubbles on a normal aspect
@@ -1961,11 +1915,8 @@ int x, y, n;
  * in the immediate neighborhood of one, he/she may get sucked inside.
  * This property also makes leaving a bubble slightly difficult.
  */
-STATIC_OVL void
-mv_bubble(b, dx, dy, ini)
-struct bubble *b;
-int dx, dy;
-boolean ini;
+static void
+mv_bubble(struct bubble *b, int dx, int dy, boolean ini)
 {
     int x, y, i, j, colli = 0;
     struct container *cons, *ctemp;

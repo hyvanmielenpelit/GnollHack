@@ -8,7 +8,7 @@
 
 int FDECL(get_rect_ind, (NhRect *));
 
-STATIC_DCL boolean FDECL(intersect, (NhRect *, NhRect *, NhRect *));
+static boolean intersect(NhRect *, NhRect *, NhRect *);
 
 /*
  * In this file, we will handle the various rectangle functions we
@@ -28,7 +28,7 @@ STATIC_VAR int rect_cnt;
  */
 
 void
-init_rect(VOID_ARGS)
+init_rect(void)
 {
     rect_cnt = 1;
     rect[0].lx = rect[0].ly = 0;
@@ -42,8 +42,7 @@ init_rect(VOID_ARGS)
  */
 
 int
-get_rect_ind(r)
-NhRect *r;
+get_rect_ind(NhRect *r)
 {
     NhRect *rectp;
     int lx, ly, hx, hy;
@@ -65,8 +64,7 @@ NhRect *r;
  */
 
 NhRect *
-get_rect(r)
-NhRect *r;
+get_rect(NhRect *r)
 {
     NhRect *rectp;
     int lx, ly, hx, hy;
@@ -88,7 +86,7 @@ NhRect *r;
  */
 
 NhRect *
-rnd_rect(VOID_ARGS)
+rnd_rect(void)
 {
     return rect_cnt > 0 ? &rect[rn2(rect_cnt)] : 0;
 }
@@ -99,9 +97,8 @@ rnd_rect(VOID_ARGS)
  * otherwise returns FALSE
  */
 
-STATIC_OVL boolean
-intersect(r1, r2, r3)
-NhRect *r1, *r2, *r3;
+static boolean
+intersect(NhRect *r1, NhRect *r2, NhRect *r3)
 {
     if (r2->lx > r1->hx || r2->ly > r1->hy || r2->hx < r1->lx
         || r2->hy < r1->ly)
@@ -122,8 +119,7 @@ NhRect *r1, *r2, *r3;
  */
 
 void
-remove_rect(r)
-NhRect *r;
+remove_rect(NhRect *r)
 {
     int ind;
 
@@ -137,8 +133,7 @@ NhRect *r;
  */
 
 void
-add_rect(r)
-NhRect *r;
+add_rect(NhRect *r)
 {
     if (rect_cnt >= MAXRECT) {
         if (wizard)
@@ -160,8 +155,7 @@ NhRect *r;
  */
 
 void
-split_rects(r1, r2)
-NhRect *r1, *r2;
+split_rects(NhRect *r1, NhRect *r2)
 {
     NhRect r, old_r;
     int i;
