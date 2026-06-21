@@ -81,11 +81,11 @@ void lib_set_effect_ambient_volume(struct effect_ambient_volume_info info);
 void lib_play_ghsound_music(struct ghsound_music_info info);
 void lib_play_ghsound_level_ambient(struct ghsound_level_ambient_info info);
 void lib_play_ghsound_environment_ambient(struct ghsound_environment_ambient_info info);
-void lib_adjust_ghsound_general_volumes(VOID_ARGS);
+void lib_adjust_ghsound_general_volumes(void);
 void lib_add_ambient_ghsound(struct soundsource_t* soundsource);
 void lib_delete_ambient_ghsound(struct soundsource_t* soundsource);
 void lib_set_ambient_ghsound_volume(struct soundsource_t* soundsource);
-void lib_clear_context_menu(VOID_ARGS);
+void lib_clear_context_menu(void);
 void lib_add_context_menu(int cmd_def_char, int cmd_cur_char, int style, int glyph, const char* cmd_text, const char* target_text, int attr, int color);
 void lib_update_status_button(int cmd, int btn, int val, uint64_t bflags);
 void lib_toggle_animation_timer(int timertype, int timerid, int state, int x, int y, int layer, uint64_t tflags);
@@ -94,15 +94,15 @@ void lib_display_screen_text(const char* text, const char* supertext, const char
 void lib_display_popup_text(const char* text, const char* title, int style, int attr, int color, int glyph, uint64_t tflags);
 void lib_display_gui_effect(int style, int subtype, int x, int y, int x2, int y2, uint64_t tflags);
 void lib_update_cursor(int style, int force_paint, int show_on_u);
-int lib_ui_has_input(VOID_ARGS);
+int lib_ui_has_input(void);
 void lib_exit_hack(int status);
 
 /* Helper functions */
 void lib_bail(const char* mesg);
-void lib_init_platform(VOID_ARGS);
+void lib_init_platform(void);
 void lib_exit_platform(int);
 void libdef_raw_print(const char*);
 void libdef_raw_print_bold(const char*);
-void libdef_wait_synch(VOID_ARGS);
+void libdef_wait_synch(void);
 
 #endif

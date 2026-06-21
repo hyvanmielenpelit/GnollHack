@@ -111,7 +111,7 @@ int attr, color;
    this data isn't saved and restored); end-of-game releases saved_pline[]
    while writing its contents to the final dump log */
 void
-dumplogfreemessages(VOID_ARGS)
+dumplogfreemessages(void)
 {
     unsigned indx;
 
@@ -979,7 +979,7 @@ size_t siz;
 }
 
 void
-free_youbuf(VOID_ARGS)
+free_youbuf(void)
 {
     if (you_buf)
         free((genericptr_t) you_buf), you_buf = (char *) 0;
@@ -1437,7 +1437,7 @@ VA_DECL(const char *, str)
 }
 
 void
-reset_pline(VOID_ARGS)
+reset_pline(void)
 {
     pline_attr = 0;
     pline_color = NO_COLOR;
@@ -1461,7 +1461,7 @@ reset_pline(VOID_ARGS)
 }
 
 int*
-get_colorless_multicolor_buffer(VOID_ARGS)
+get_colorless_multicolor_buffer(void)
 {
     int i;
     int buflen = SIZE(multicolor_buffer);

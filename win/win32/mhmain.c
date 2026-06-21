@@ -935,7 +935,7 @@ onWMCommand(HWND hWnd, WPARAM wParam, LPARAM lParam)
         {
             uchar search_char = 0;
             const char* search_text = 0;
-            int (*search_func)(VOID_ARGS) = 0;
+            int (*search_func)(void) = 0;
 
             switch (wmId)
             {

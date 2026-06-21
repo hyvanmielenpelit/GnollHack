@@ -216,11 +216,11 @@ void mswin_set_effect_ambient_volume(struct effect_ambient_volume_info info);
 void mswin_play_ghsound_music(struct ghsound_music_info info);
 void mswin_play_ghsound_level_ambient(struct ghsound_level_ambient_info info);
 void mswin_play_ghsound_environment_ambient(struct ghsound_environment_ambient_info info);
-void mswin_adjust_ghsound_general_volumes(VOID_ARGS);
+void mswin_adjust_ghsound_general_volumes(void);
 void mswin_add_ambient_ghsound(struct soundsource_t* soundsource);
 void mswin_delete_ambient_ghsound(struct soundsource_t* soundsource);
 void mswin_set_ambient_ghsound_volume(struct soundsource_t* soundsource);
-void mswin_clear_context_menu(VOID_ARGS);
+void mswin_clear_context_menu(void);
 void mswin_add_context_menu(int cmd_def_char, int cmd_cur_char, int style, int glyph, const char* cmd_text, const char* target_text, int attr, int color);
 void mswin_update_status_button(int cmd, int btn, int val, uint64_t bflags);
 void mswin_toggle_animation_timer(int timertype, int timerid, int state, int x, int y, int layer, uint64_t tflags);
@@ -229,7 +229,7 @@ void mswin_display_screen_text(const char* text, const char* supertext, const ch
 void mswin_display_popup_text(const char* text, const char* title, int style, int attr, int color, int glyph, uint64_t tflags);
 void mswin_display_gui_effect(int style, int subtype, int x, int y, int x2, int y2, uint64_t tflags);
 void mswin_update_cursor(int style, int force_paint, int show_on_u);
-int mswin_ui_has_input(VOID_ARGS);
+int mswin_ui_has_input(void);
 void mswin_exit_hack(int status);
 
 /* helper function */
@@ -250,7 +250,7 @@ void mswin_get_window_placement(int type, LPRECT rt);
 void mswin_update_window_placement(int type, LPRECT rt);
 void mswin_apply_window_style(HWND hwnd);
 
-void mswin_init_platform(VOID_ARGS);
+void mswin_init_platform(void);
 void mswin_exit_platform(int status);
 //void convertUTF8toTCHAR(char* buf, size_t bufsize);
 

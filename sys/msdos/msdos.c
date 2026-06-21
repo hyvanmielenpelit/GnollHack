@@ -522,7 +522,7 @@ unsigned setvalue;
 }
 
 uint64_t
-sys_random_seed(VOID_ARGS)
+sys_random_seed(void)
 {
     uint64_t ourseed = 0UL;
     time_t datetime = 0;

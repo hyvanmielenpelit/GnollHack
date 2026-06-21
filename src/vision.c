@@ -118,7 +118,7 @@ STATIC_DCL void rogue_vision(char **, char *, char *);
  * or before a game restore.   Else we die a horrible death.
  */
 void
-vision_init(VOID_ARGS)
+vision_init(void)
 {
     int i;
 
@@ -196,7 +196,7 @@ struct rm *lev;
  * level and the level monsters and objects are in place.
  */
 void
-vision_reset(VOID_ARGS)
+vision_reset(void)
 {
     int y;
     int x, i, dig_left, block;
@@ -1680,7 +1680,7 @@ STATIC_DCL int far_shadow(int, int, int, int);
  * then we do 3D table lookups.  Verrrry slow.
  */
 STATIC_OVL void
-view_init(VOID_ARGS)
+view_init(void)
 {
     int i;
 
@@ -2358,7 +2358,7 @@ STATIC_DCL void left_side(int, int, int, char *);
 
 /* Initialize algorithm C (nothing). */
 STATIC_OVL void
-view_init(VOID_ARGS)
+view_init(void)
 {
 }
 
@@ -2900,7 +2900,7 @@ struct monst *mon;
 }
 
 void
-reset_vision(VOID_ARGS)
+reset_vision(void)
 {
     memset((genericptr_t)&colbump, 0, sizeof(colbump));
 }

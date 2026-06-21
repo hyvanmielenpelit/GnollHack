@@ -93,14 +93,14 @@ get_strength_string(int st)
 
 
 char *
-get_strength_str(VOID_ARGS)
+get_strength_str(void)
 {
     int st = ACURR(A_STR);
     return get_strength_string(st);
 }
 
 void
-check_gold_symbol(VOID_ARGS)
+check_gold_symbol(void)
 {
     nhsym goldch = showsyms[COIN_CLASS + SYM_OFF_O];
 
@@ -108,7 +108,7 @@ check_gold_symbol(VOID_ARGS)
 }
 
 char *
-do_statusline1(VOID_ARGS)
+do_statusline1(void)
 {
     static char newbot1[BUFSZ];
     char *nb;
