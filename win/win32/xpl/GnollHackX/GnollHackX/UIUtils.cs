@@ -1305,14 +1305,14 @@ namespace GnollHackX
             return useTwoRows;
         }
 
-        public static void AdjustRootLayout(Layout layout)
-        {
-            /* Hopefully a temporary workaround for Maui Windows modal bug */
-#if WINDOWS
-            if (!GHApp.WindowedMode)
-                layout.Margin = new(0, -32, 0, 0);
-#endif
-        }
+//        public static void AdjustRootLayout(Layout layout)
+//        {
+//            /* Hopefully a temporary workaround for Maui Windows modal bug */
+//#if WINDOWS
+//            if (!GHApp.WindowedMode)
+//                layout.Margin = new(0, -32, 0, 0);
+//#endif
+//        }
 
         public static void ChangeElementCursor(View layout, GameCursorType cursorType)
         {
