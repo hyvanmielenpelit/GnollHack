@@ -513,7 +513,7 @@ E int vprintf(const char *, va_list);
 
 #ifdef MICRO
 E int tgetent(const char *, const char *);
-E void tputs(const char *, int, void (*)(char));
+E void tputs(const char *, int, void (*)(int));
 E int tgetnum(const char *);
 E int tgetflag(const char *);
 E char *tgetstr(const char *, char **);
@@ -521,7 +521,7 @@ E char *tgoto(const char *, int, int);
 #else
 #if !(defined(HPUX) && defined(_POSIX_SOURCE))
 E int tgetent(char *, const char *);
-E void tputs(const char *, int, void (*)(char));
+E void tputs(const char *, int, void (*)(int));
 #endif
 E int tgetnum(const char *);
 E int tgetflag(const char *);

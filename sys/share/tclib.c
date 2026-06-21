@@ -29,7 +29,7 @@ int tgetnum(const char *);
 char *tgetstr(const char *, char **);
 char *tgoto(const char *, int, int);
 char *tparam(const char *, char *, int, int, int, int, int);
-void tputs(const char *, int, void (*)(char));
+void tputs(const char *, int, void (*)(int));
 
 /* local support data */
 static char *tc_entry;
@@ -498,7 +498,7 @@ tparam(const char *ctl, char *buf, int buflen, int row, int col, int row2, int c
  */
 /* send a string to the terminal, possibly padded with trailing NULs */
 void
-tputs(const char *string, int range, void (*output_func)(char))
+tputs(const char *string, int range, void (*output_func)(int))
 {
     register char c;
     int num = 0;
