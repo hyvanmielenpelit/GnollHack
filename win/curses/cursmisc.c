@@ -860,8 +860,7 @@ curses_read_attrs(const char *attrs)
 /* format iflags.wc2_petattr into "+a+b..." for set bits a, b, ...
    (used by core's 'O' command; return value points past leading '+') */
 char *
-curses_fmt_attrs(outbuf)
-char *outbuf;
+curses_fmt_attrs(char *outbuf)
 {
     int attr = iflags.wc2_petattr;
 
@@ -1058,4 +1057,3 @@ parse_escape_sequence(void)
     return '\033';
 #endif /* !PDCURSES */
 }
-

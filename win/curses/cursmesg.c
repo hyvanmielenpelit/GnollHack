@@ -864,9 +864,7 @@ get_msg_line(boolean reverse, int mindex)
    puts it into save file; if any new messages are added to the list while
    that is taking place, the results are likely to be scrambled */
 char*
-curses_getmsghistory_ex(attrs_ptr, colors_ptr, init)
-char** attrs_ptr, **colors_ptr;
-boolean init;
+curses_getmsghistory_ex(char **attrs_ptr, char **colors_ptr, boolean init)
 {
     static int nxtidx;
     nhprev_mesg *mesg;
@@ -927,10 +925,7 @@ boolean init;
  * into message history for ^P recall without having displayed it.
  */
 void
-curses_putmsghistory_ex(msg, attrs, colors, restoring_msghist)
-const char *msg;
-const char* attrs, *colors;
-boolean restoring_msghist;
+curses_putmsghistory_ex(const char *msg, const char *attrs, const char *colors, boolean restoring_msghist)
 {
     static boolean initd = FALSE;
     static int stash_count;

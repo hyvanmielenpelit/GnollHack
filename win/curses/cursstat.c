@@ -143,11 +143,7 @@ curses_status_finish()
 static int changed_fields = 0;
 
 void
-curses_status_update(fldidx, ptr, chg, percent, color_and_attr, colormasks)
-int fldidx, chg UNUSED,
-    percent, color_and_attr;
-genericptr_t ptr;
-uint64_t *colormasks;
+curses_status_update(int fldidx, genericptr_t ptr, int chg UNUSED, int percent, int color_and_attr, uint64_t *colormasks)
 {
     int64_t *condptr = (int64_t *) ptr;
     char *text = (char *) ptr;
@@ -253,8 +249,7 @@ draw_status()
 
 /* horizontal layout on 2 or 3 lines */
 static void
-draw_horizontal(border)
-boolean border;
+draw_horizontal(boolean border)
 {
     const enum statusfields** fieldorder;
     xchar spacing[MAXBLSTATS], valline[MAXBLSTATS];
@@ -803,14 +798,9 @@ static const char* status_strings[] = { "Hungry", "Weak", "TermIll", "FoodPois",
                                         "Paral", "Stun", "Slow", "Strgnl", "Suffoc", 
                                         "Cooldown", "Rot", "Lyca" };
 
-STATIC_OVL
+static
 void
-curses_print_rest_partyline(win, border, restbuf, x_ptr, y_ptr)
-WINDOW* win;
-boolean border;
-char* restbuf;
-int* x_ptr;
-int* y_ptr;
+curses_print_rest_partyline(WINDOW *win, boolean border, char *restbuf, int *x_ptr, int *y_ptr)
 {
     int status_colors[] = { CLR_YELLOW, CLR_RED, CLR_RED, CLR_RED, CLR_YELLOW,
                             CLR_YELLOW, CLR_YELLOW, CLR_RED, CLR_RED, CLR_RED,
@@ -932,8 +922,7 @@ int* y_ptr;
 
 /* vertical layout, to left or right of map */
 static void
-draw_vertical(border)
-boolean border;
+draw_vertical(boolean border)
 {
     /* for blank lines, the digit prefix is the order in which they get
        removed if we need to shrink to fit within height limit (very rare) */
@@ -1554,9 +1543,7 @@ curs_vert_status_vals(int win_width)
  * be displayed in based on user settings.
  */
 static int
-condcolor(bm, bmarray)
-int64_t bm;
-uint64_t *bmarray;
+condcolor(int64_t bm, uint64_t *bmarray)
 {
     int i;
 
@@ -1570,9 +1557,7 @@ uint64_t *bmarray;
 #endif /* TEXTCOLOR */
 
 static int
-condattr(bm, bmarray)
-int64_t bm;
-uint64_t *bmarray;
+condattr(int64_t bm, uint64_t *bmarray)
 {
     int i, attr = 0;
 
@@ -1606,8 +1591,7 @@ uint64_t *bmarray;
 /* convert tty attributes to curses attributes;
    despite similar names, the mask fields have different values */
 static int
-nhattr2curses(attrmask)
-int attrmask;
+nhattr2curses(int attrmask)
 {
     int result = 0;
 
@@ -2461,8 +2445,7 @@ draw_vertical(int x, int y, int hp, int hpmax)
 }
 
 static void
-curses_add_statuses(WINDOW *win, boolean align_right,
-                    boolean vertical, int *x, int *y)
+curses_add_statuses(WINDOW *win, boolean align_right, boolean vertical, int *x, int *y)
 {
     if (align_right) {
         /* Right-aligned statuses. Since add_status decrease one x more
@@ -2501,8 +2484,7 @@ curses_add_statuses(WINDOW *win, boolean align_right,
 }
 
 static void
-curses_add_status(WINDOW *win, boolean align_right, boolean vertical,
-                  int *x, int *y, const char *str, int trouble)
+curses_add_status(WINDOW *win, boolean align_right, boolean vertical, int *x, int *y, const char *str, int trouble)
 {
     /* If vertical is TRUE here with no x/y, that's an error. But handle
        it gracefully since NH3 doesn't recover well in crashes. */

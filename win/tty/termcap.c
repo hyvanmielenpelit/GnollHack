@@ -36,15 +36,15 @@ static void kill_hilite(void);
 /* (see tcap.h) -- nh_CM, nh_ND, nh_CD, nh_HI,nh_HE, nh_US,nh_UE, ul_hack */
 struct tc_lcl_data tc_lcl_data = { 0, 0, 0, 0, 0, 0, 0, FALSE };
 
-STATIC_VAR char *HO, *CL, *CE, *UP, *XD, *BC, *SO, *SE, *TI, *TE;
-STATIC_VAR char *VS, *VE;
-STATIC_VAR char *ME, *MR, *MB, *MH, *MD;
+static char *HO, *CL, *CE, *UP, *XD, *BC, *SO, *SE, *TI, *TE;
+static char *VS, *VE;
+static char *ME, *MR, *MB, *MH, *MD;
 
 #ifdef TERMLIB
 boolean dynamic_HIHE = FALSE;
-STATIC_VAR int SG;
-STATIC_OVL char PC = '\0';
-STATIC_VAR char tbuf[512];
+static int SG;
+static char PC = '\0';
+static char tbuf[512];
 #endif /*TERMLIB*/
 
 #ifdef TEXTCOLOR
@@ -63,7 +63,7 @@ extern boolean HE_resets_AS;
 #endif
 
 #ifndef TERMLIB
-STATIC_VAR char tgotobuf[20];
+static char tgotobuf[20];
 #ifdef TOS
 #define tgoto(fmt, x, y) (Sprintf(tgotobuf, fmt, y + ' ', x + ' '), tgotobuf)
 #else
@@ -72,8 +72,7 @@ STATIC_VAR char tgotobuf[20];
 #endif /* TERMLIB */
 
 void
-tty_startup(wid, hgt)
-int *wid, *hgt;
+tty_startup(int *wid, int *hgt)
 {
     int i;
 #ifdef TERMLIB
@@ -342,8 +341,7 @@ tty_shutdown()
 }
 
 void
-tty_number_pad(state)
-int state;
+tty_number_pad(int state)
 {
     switch (state) {
     case -1: /* activate keypad mode (escape sequences) */
@@ -505,8 +503,7 @@ tty_end_screen()
    in trampoli.[ch]. */
 
 void
-nocmov(x, y)
-int x, y;
+nocmov(int x, int y)
 {
     if ((int) ttyDisplay->cury > y) {
         if (UP) {
@@ -555,8 +552,7 @@ int x, y;
 }
 
 void
-cmov(x, y)
-int x, y;
+cmov(int x, int y)
 {
     xputs(tgoto(nh_CM, x, y));
     ttyDisplay->cury = y;
@@ -565,15 +561,13 @@ int x, y;
 
 /* See note above. xputc() is a special function. */
 void
-xputc(c)
-int c;
+xputc(int c)
 {
     (void) putchar(c);
 }
 
 void
-xputs(s)
-const char *s;
+xputs(const char *s)
 {
 #ifndef TERMLIB
     (void) fputs(s, stdout);
@@ -783,8 +777,7 @@ tty_delay_output()
 
 /* delay interval ms */
 void
-tty_delay_output_milliseconds(interval)
-int interval;
+tty_delay_output_milliseconds(int interval)
 {
 #if defined(MICRO)
     int i;
@@ -840,8 +833,7 @@ int interval;
 
 /* delay intervals ms */
 void
-tty_delay_output_intervals(intervals)
-int intervals;
+tty_delay_output_intervals(int intervals)
 {
 #if defined(MICRO)
     int i;
@@ -1099,9 +1091,7 @@ kill_hilite()
 #ifndef TOS
 /* find the foreground and background colors set by nh_HI or nh_HE */
 static void
-analyze_seq(str, fg, bg)
-char *str;
-int *fg, *bg;
+analyze_seq(char *str, int *fg, int *bg)
 {
     int c, code;
     int len;
@@ -1266,8 +1256,7 @@ kill_hilite()
 static char nulstr[] = "";
 
 static char *
-s_atr2str(n)
-int n;
+s_atr2str(int n)
 {
     switch (n) {
     case ATR_BLINK:
@@ -1299,8 +1288,7 @@ int n;
 }
 
 static char *
-e_atr2str(n)
-int n;
+e_atr2str(int n)
 {
     switch (n) {
     case ATR_ULINE:
@@ -1324,8 +1312,7 @@ int n;
 /* suppress nonfunctional highlights so render_status() might be able to
    optimize more; keep this in sync with s_atr2str() */
 int
-term_attr_fixup(msk)
-int msk;
+term_attr_fixup(int msk)
 {
     /* underline is converted to bold if its start sequence isn't available */
     if ((msk & (1 << ATR_ULINE)) && (!nh_US || !*nh_US)) {
@@ -1345,8 +1332,7 @@ int msk;
 }
 
 void
-term_start_attr(attr)
-int attr;
+term_start_attr(int attr)
 {
     if (attr) {
         const char *astr = s_atr2str(attr);
@@ -1357,8 +1343,7 @@ int attr;
 }
 
 void
-term_end_attr(attr)
-int attr;
+term_end_attr(int attr)
 {
     if (attr) {
         const char *astr = e_atr2str(attr);
@@ -1389,8 +1374,7 @@ term_end_color()
 }
 
 void
-term_start_color(color)
-int color;
+term_start_color(int color)
 {
     if (color < CLR_MAX)
         xputs(hilites[color]);
@@ -1398,8 +1382,7 @@ int color;
 
 /* not to be confused with has_colors() in unixtty.c */
 int
-has_color(color)
-int color;
+has_color(int color)
 {
 #ifdef X11_GRAPHICS
     /* XXX has_color() should be added to windowprocs */
