@@ -151,7 +151,7 @@ void
 chainout_display_nhwindow(vp, window, blocking)
 void *vp;
 winid window;
-BOOLEAN_P blocking;
+boolean blocking;
 {
     struct chainout_data *tdp = vp;
 

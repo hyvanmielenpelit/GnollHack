@@ -37,7 +37,7 @@ static void FDECL(vesa_FillRect, (
         unsigned color));
 
 static void NDECL(vesa_redrawmap);
-static void FDECL(vesa_cliparound, (int, int, BOOLEAN_P));
+static void FDECL(vesa_cliparound, (int, int, boolean));
 static void FDECL(decal_packed, (const struct TileImage *tile, unsigned special));
 static void FDECL(vesa_SwitchMode, (unsigned mode));
 static boolean FDECL(vesa_SetPalette, (const struct Pixel *));
@@ -47,7 +47,7 @@ static void FDECL(vesa_DisplayCell, (const struct TileImage *tile, int, int));
 static void FDECL(vesa_DisplayCellInMemory, (const struct TileImage *tile,
         int, char buf[TILE_Y][640*2]));
 static unsigned FDECL(vesa_FindMode, (unsigned long mode_addr, unsigned bits));
-static void FDECL(vesa_WriteChar, (int, int, int, int, BOOLEAN_P));
+static void FDECL(vesa_WriteChar, (int, int, int, int, boolean));
 static void FDECL(vesa_WriteCharInMemory, (int, int, char buf[TILE_Y][640*2],
         int));
 static void FDECL(vesa_WriteStr, (const char *, int, int, int, int));

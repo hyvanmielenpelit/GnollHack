@@ -31,31 +31,31 @@ struct window_procs {
     void NDECL((*win_resume_nhwindows));
     winid FDECL((*win_create_nhwindow_ex), (int, int, int, struct extended_create_window_info));
     void FDECL((*win_clear_nhwindow), (winid));
-    void FDECL((*win_display_nhwindow), (winid, BOOLEAN_P));
+    void FDECL((*win_display_nhwindow), (winid, boolean));
     void FDECL((*win_destroy_nhwindow), (winid));
     void FDECL((*win_curs), (winid, int, int));
     void FDECL((*win_putstr_ex), (winid, const char *, int, int, int));
     void FDECL((*win_putstr_ex2), (winid, const char*, const char*, const char*, int, int, int));
     void FDECL((*win_putmixed_ex), (winid, const char *, int, int, int));
-    void FDECL((*win_display_file), (const char *, BOOLEAN_P));
+    void FDECL((*win_display_file), (const char *, boolean));
     void FDECL((*win_start_menu_ex), (winid, int));
-    void FDECL((*win_add_menu), (winid, int, const ANY_P *, CHAR_P, CHAR_P,
-                                 int, int, const char *, BOOLEAN_P));
-    void FDECL((*win_add_extended_menu), (winid, int, const ANY_P*, CHAR_P, CHAR_P,
-        int, int, const char*, BOOLEAN_P, struct extended_menu_info));
+    void FDECL((*win_add_menu), (winid, int, const ANY_P *, char, char,
+                                 int, int, const char *, boolean));
+    void FDECL((*win_add_extended_menu), (winid, int, const ANY_P*, char, char,
+        int, int, const char*, boolean, struct extended_menu_info));
     void FDECL((*win_end_menu_ex), (winid, const char *, const char*));
     int FDECL((*win_select_menu), (winid, int, MENU_ITEM_P **));
-    char FDECL((*win_message_menu), (CHAR_P, int, const char *));
+    char FDECL((*win_message_menu), (char, int, const char *));
     void NDECL((*win_update_inventory));
     void NDECL((*win_mark_synch));
     void NDECL((*win_wait_synch));
 #ifdef CLIPPING
-    void FDECL((*win_cliparound), (int, int, BOOLEAN_P));
+    void FDECL((*win_cliparound), (int, int, boolean));
 #endif
 #ifdef POSITIONBAR
     void FDECL((*win_update_positionbar), (char *));
 #endif
-    void FDECL((*win_print_glyph), (winid, XCHAR_P, XCHAR_P, struct layer_info));
+    void FDECL((*win_print_glyph), (winid, xchar, xchar, struct layer_info));
     void FDECL((*win_issue_gui_command), (int, int, int, const char*));
     void FDECL((*win_raw_print), (const char *));
     void FDECL((*win_raw_print_bold), (const char *));
@@ -63,7 +63,7 @@ struct window_procs {
     int FDECL((*win_nh_poskey), (int *, int *, int *));
     void NDECL((*win_nhbell));
     int NDECL((*win_doprev_message));
-    char FDECL((*win_yn_function_ex), (int, int, int, int, const char*, const char *, const char *, CHAR_P, const char*, const char*, uint64_t));
+    char FDECL((*win_yn_function_ex), (int, int, int, int, const char*, const char *, const char *, char, const char*, const char*, uint64_t));
     void FDECL((*win_getlin_ex), (int, int, int, const char *, char *, const char*, const char*, const char*));
     int NDECL((*win_get_ext_cmd));
     void FDECL((*win_number_pad), (int));
@@ -85,12 +85,12 @@ struct window_procs {
 
     void FDECL((*win_outrip), (winid, int, time_t));
     void FDECL((*win_preference_update), (const char *));
-    char *FDECL((*win_getmsghistory_ex), (char**, char**, BOOLEAN_P));
-    void FDECL((*win_putmsghistory_ex), (const char *, const char *, const char *, BOOLEAN_P));
+    char *FDECL((*win_getmsghistory_ex), (char**, char**, boolean));
+    void FDECL((*win_putmsghistory_ex), (const char *, const char *, const char *, boolean));
     void FDECL((*win_status_init), (int));
     void NDECL((*win_status_finish));
     void FDECL((*win_status_enablefield),
-               (int, const char *, const char *, BOOLEAN_P));
+               (int, const char *, const char *, boolean));
     void FDECL((*win_status_update), (int, genericptr_t, int, int, int, uint64_t *));
     boolean NDECL((*win_can_suspend));
     void NDECL((*win_stretch_window));
@@ -434,31 +434,31 @@ struct chain_procs {
     void FDECL((*win_resume_nhwindows), (CARGS));
     winid FDECL((*win_create_nhwindow_ex), (CARGS, int, int, int, struct extended_create_window_info));
     void FDECL((*win_clear_nhwindow), (CARGS, winid));
-    void FDECL((*win_display_nhwindow), (CARGS, winid, BOOLEAN_P));
+    void FDECL((*win_display_nhwindow), (CARGS, winid, boolean));
     void FDECL((*win_destroy_nhwindow), (CARGS, winid));
     void FDECL((*win_curs), (CARGS, winid, int, int));
     void FDECL((*win_putstr_ex), (CARGS, winid, const char *, int, int, int));
     void FDECL((*win_putstr_ex2), (CARGS, winid, const char*, const char*, const char*, int, int, int));
     void FDECL((*win_putmixed_ex), (CARGS, winid, const char *, int, int, int));
-    void FDECL((*win_display_file), (CARGS, const char *, BOOLEAN_P));
+    void FDECL((*win_display_file), (CARGS, const char *, boolean));
     void FDECL((*win_start_menu_ex), (CARGS, winid, int));
-    void FDECL((*win_add_menu), (CARGS, winid, int, const ANY_P *, CHAR_P,
-                                 CHAR_P, int, int, const char *, BOOLEAN_P));
-    void FDECL((*win_add_extended_menu), (CARGS, winid, int, const ANY_P*, CHAR_P,
-        CHAR_P, int, int, const char*, BOOLEAN_P, struct extended_menu_info));
+    void FDECL((*win_add_menu), (CARGS, winid, int, const ANY_P *, char,
+                                 char, int, int, const char *, boolean));
+    void FDECL((*win_add_extended_menu), (CARGS, winid, int, const ANY_P*, char,
+        char, int, int, const char*, boolean, struct extended_menu_info));
     void FDECL((*win_end_menu_ex), (CARGS, winid, const char *, const char*));
     int FDECL((*win_select_menu), (CARGS, winid, int, MENU_ITEM_P **));
-    char FDECL((*win_message_menu), (CARGS, CHAR_P, int, const char *));
+    char FDECL((*win_message_menu), (CARGS, char, int, const char *));
     void FDECL((*win_update_inventory), (CARGS));
     void FDECL((*win_mark_synch), (CARGS));
     void FDECL((*win_wait_synch), (CARGS));
 #ifdef CLIPPING
-    void FDECL((*win_cliparound), (CARGS, int, int, BOOLEAN_P));
+    void FDECL((*win_cliparound), (CARGS, int, int, boolean));
 #endif
 #ifdef POSITIONBAR
     void FDECL((*win_update_positionbar), (CARGS, char *));
 #endif
-    void FDECL((*win_print_glyph), (CARGS, winid, XCHAR_P, XCHAR_P, struct layer_info));
+    void FDECL((*win_print_glyph), (CARGS, winid, xchar, xchar, struct layer_info));
     void FDECL((*win_issue_gui_command), (int, int, int, const char*));
     void FDECL((*win_raw_print), (CARGS, const char *));
     void FDECL((*win_raw_print_bold), (CARGS, const char *));
@@ -467,7 +467,7 @@ struct chain_procs {
     void FDECL((*win_nhbell), (CARGS));
     int FDECL((*win_doprev_message), (CARGS));
     char FDECL((*win_yn_function_ex),
-               (CARGS, int, int, int, int, const char *, const char *, CHAR_P, const char*, const char*, uint64_t));
+               (CARGS, int, int, int, int, const char *, const char *, char, const char*, const char*, uint64_t));
     void FDECL((*win_getlin_ex), (CARGS, int, int, int, const char *, char *, const char*, const char*, const char*));
     int FDECL((*win_get_ext_cmd), (CARGS));
     void FDECL((*win_number_pad), (CARGS, int));
@@ -489,12 +489,12 @@ struct chain_procs {
 
     void FDECL((*win_outrip), (CARGS, winid, int, time_t));
     void FDECL((*win_preference_update), (CARGS, const char *));
-    char *FDECL((*win_getmsghistory_ex), (CARGS, char**, char**, BOOLEAN_P));
-    void FDECL((*win_putmsghistory_ex), (CARGS, const char *, const char*, const char*, BOOLEAN_P));
+    char *FDECL((*win_getmsghistory_ex), (CARGS, char**, char**, boolean));
+    void FDECL((*win_putmsghistory_ex), (CARGS, const char *, const char*, const char*, boolean));
     void FDECL((*win_status_init), (CARGS, int));
     void FDECL((*win_status_finish), (CARGS));
     void FDECL((*win_status_enablefield),
-               (CARGS, int, const char *, const char *, BOOLEAN_P));
+               (CARGS, int, const char *, const char *, boolean));
     void FDECL((*win_status_update), (CARGS, int, genericptr_t, int, int, int, uint64_t *));
     boolean FDECL((*win_can_suspend), (CARGS));
     void FDECL((*win_stretch_window, (CARGS)));
@@ -540,31 +540,31 @@ extern void FDECL(safe_suspend_nhwindows, (const char *));
 extern void NDECL(safe_resume_nhwindows);
 extern winid FDECL(safe_create_nhwindow_ex, (int, int, int, struct extended_create_window_info));
 extern void FDECL(safe_clear_nhwindow, (winid));
-extern void FDECL(safe_display_nhwindow, (winid, BOOLEAN_P));
+extern void FDECL(safe_display_nhwindow, (winid, boolean));
 extern void FDECL(safe_destroy_nhwindow, (winid));
 extern void FDECL(safe_curs, (winid, int, int));
 extern void FDECL(safe_putstr_ex, (winid, const char *, int, int, int));
 extern void FDECL(safe_putstr_ex2, (winid, const char*, const char*, const char*, int, int, int));
 extern void FDECL(safe_putmixed_ex, (winid, const char *, int, int, int));
-extern void FDECL(safe_display_file, (const char *, BOOLEAN_P));
+extern void FDECL(safe_display_file, (const char *, boolean));
 extern void FDECL(safe_start_menu_ex, (winid, int));
-extern void FDECL(safe_add_menu, (winid, int, const ANY_P *, CHAR_P, CHAR_P,
-                                  int, int, const char *, BOOLEAN_P));
-extern void FDECL(safe_add_extended_menu, (winid, int, const ANY_P*, CHAR_P, CHAR_P,
-    int, int, const char*, BOOLEAN_P, struct extended_menu_info));
+extern void FDECL(safe_add_menu, (winid, int, const ANY_P *, char, char,
+                                  int, int, const char *, boolean));
+extern void FDECL(safe_add_extended_menu, (winid, int, const ANY_P*, char, char,
+    int, int, const char*, boolean, struct extended_menu_info));
 extern void FDECL(safe_end_menu_ex, (winid, const char *, const char*));
 extern int FDECL(safe_select_menu, (winid, int, MENU_ITEM_P **));
-extern char FDECL(safe_message_menu, (CHAR_P, int, const char *));
+extern char FDECL(safe_message_menu, (char, int, const char *));
 extern void NDECL(safe_update_inventory);
 extern void NDECL(safe_mark_synch);
 extern void NDECL(safe_wait_synch);
 #ifdef CLIPPING
-extern void FDECL(safe_cliparound, (int, int, BOOLEAN_P));
+extern void FDECL(safe_cliparound, (int, int, boolean));
 #endif
 #ifdef POSITIONBAR
 extern void FDECL(safe_update_positionbar, (char *));
 #endif
-extern void FDECL(safe_print_glyph, (winid, XCHAR_P, XCHAR_P, struct layer_info));
+extern void FDECL(safe_print_glyph, (winid, xchar, xchar, struct layer_info));
 extern void FDECL(safe_issue_gui_command, (int, int, int, const char*));
 extern void FDECL(safe_raw_print, (const char *));
 extern void FDECL(safe_raw_print_bold, (const char *));
@@ -572,7 +572,7 @@ extern int NDECL(safe_nhgetch);
 extern int FDECL(safe_nh_poskey, (int *, int *, int *));
 extern void NDECL(safe_nhbell);
 extern int NDECL(safe_doprev_message);
-extern char FDECL(safe_yn_function_ex, (int, int, int, int, const char *, const char *, const char *, CHAR_P, const char*, const char*, uint64_t));
+extern char FDECL(safe_yn_function_ex, (int, int, int, int, const char *, const char *, const char *, char, const char*, const char*, uint64_t));
 extern void FDECL(safe_getlin_ex, (int, int, int, const char *, char *, const char*, const char*, const char*));
 extern int NDECL(safe_get_ext_cmd);
 extern void FDECL(safe_number_pad, (int));
@@ -591,12 +591,12 @@ extern void NDECL(safe_start_screen);
 extern void NDECL(safe_end_screen);
 extern void FDECL(safe_outrip, (winid, int, time_t));
 extern void FDECL(safe_preference_update, (const char *));
-extern char *FDECL(safe_getmsghistory_ex, (char**, char**, BOOLEAN_P));
-extern void FDECL(safe_putmsghistory_ex, (const char *, const char *, const char *, BOOLEAN_P));
+extern char *FDECL(safe_getmsghistory_ex, (char**, char**, boolean));
+extern void FDECL(safe_putmsghistory_ex, (const char *, const char *, const char *, boolean));
 extern void FDECL(safe_status_init, (int));
 extern void NDECL(safe_status_finish);
 extern void FDECL(safe_status_enablefield,
-                    (int, const char *, const char *, BOOLEAN_P));
+                    (int, const char *, const char *, boolean));
 extern void FDECL(safe_status_update, (int, genericptr_t, int, int, int, uint64_t *));
 extern boolean NDECL(safe_can_suspend);
 extern void NDECL(safe_stretch_window);

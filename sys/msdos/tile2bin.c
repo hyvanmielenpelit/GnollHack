@@ -70,7 +70,7 @@ struct tibhdr_struct tibheader;
 
 static void FDECL(write_tibtile, (int));
 static void FDECL(write_tibheader, (FILE *, struct tibhdr_struct *));
-static void FDECL(build_tibtile, (pixel(*) [TILE_X], BOOLEAN_P));
+static void FDECL(build_tibtile, (pixel(*) [TILE_X], boolean));
 static void NDECL(remap_colors);
 
 #ifndef OVERVIEW_FILE

@@ -327,7 +327,7 @@ extern char *FDECL(nhdupstr, (const char *, const char *, int));
 extern long *FDECL(alloc, (size_t));  /* alloc.c */
 extern char *FDECL(dupstr, (const char *)); /* ditto */
 #endif
-extern char* FDECL(setstr, (const char*, CHAR_P)); /* ditto */
+extern char* FDECL(setstr, (const char*, char)); /* ditto */
 extern char* FDECL(cpystr, (const char*, const char*)); /* ditto */
 
 #include "integer.h"

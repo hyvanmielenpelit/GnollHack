@@ -528,7 +528,7 @@ gnome_clear_nhwindow(winid wid)
                    --more--, if necessary, in the tty window-port.
 */
 void
-gnome_display_nhwindow(winid wid, BOOLEAN_P block)
+gnome_display_nhwindow(winid wid, boolean block)
 {
     if (gnome_windowlist[wid].win != NULL) {
         gtk_signal_emit(GTK_OBJECT(gnome_windowlist[wid].win),
@@ -618,7 +618,7 @@ gnome_putstr_ex2(winid wid, const char* text, const char* attrs, const char* col
                    iff complain is TRUE.
 */
 void
-gnome_display_file(const char *filename, BOOLEAN_P must_exist)
+gnome_display_file(const char *filename, boolean must_exist)
 {
     /* Strange -- for some reason it makes us create a new text window
      * instead of reusing any existing ones -- perhaps we can work out
@@ -750,8 +750,8 @@ identifier
 */
 void
 gnome_add_menu(winid wid, int glyph, const ANY_P *identifier,
-               CHAR_P accelerator, CHAR_P group_accel, int attr, int color,
-               const char *str, BOOLEAN_P presel)
+               char accelerator, char group_accel, int attr, int color,
+               const char *str, boolean presel)
 {
     GHackMenuItem item;
     item.glyph = glyph;
@@ -770,8 +770,8 @@ gnome_add_menu(winid wid, int glyph, const ANY_P *identifier,
 
 void
 gnome_add_extended_menu(winid wid, int glyph, const ANY_P* identifier,
-    CHAR_P accelerator, CHAR_P group_accel, int attr, int color,
-    const char* str, BOOLEAN_P presel, struct extended_menu_info info)
+    char accelerator, char group_accel, int attr, int color,
+    const char* str, boolean presel, struct extended_menu_info info)
 {
         gnome_add_menu(wid, glyph, identifier,
             accelerator, group_accel, attr, color,
@@ -877,7 +877,7 @@ cliparound(x, y)-- Make sure that the user is more-or-less centered on the
                 -- This function is only defined if CLIPPING is defined.
 */
 void
-gnome_cliparound(int x, int y, BOOLEAN_P force UNUSED)
+gnome_cliparound(int x, int y, boolean force UNUSED)
 {
     /* FIXME!!!  winid should be a parameter!!!
      * Call a function that Does The Right Thing(tm).
@@ -909,7 +909,7 @@ print_glyph(window, x, y, layers)
                    a 1-1 map between glyphs and distinct things on the map).
 */
 void
-gnome_print_glyph(winid wid, XCHAR_P x, XCHAR_P y, struct layer_info layers)
+gnome_print_glyph(winid wid, xchar x, xchar y, struct layer_info layers)
 {
     int glyph = layers.glyph;
     int bkglyph = layes.bkglyph;
@@ -1082,7 +1082,7 @@ char yn_function(const char *ques, const char *choices, char default)
                    ports might use a popup.
 */
 char
-gnome_yn_function_ex(int style, int attr, int color, int glyph, const char* title, const char *question, const char *choices, CHAR_P def, const char* resp_desc, const char* introline, uint64_t ynflags)
+gnome_yn_function_ex(int style, int attr, int color, int glyph, const char* title, const char *question, const char *choices, char def, const char* resp_desc, const char* introline, uint64_t ynflags)
 {
     int ch;
     int result = -1;

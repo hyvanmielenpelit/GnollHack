@@ -50,32 +50,32 @@ void gnome_resume_nhwindows(void);
 winid gnome_create_nhwindow_ex(int type, int style, int glyph, struct extended_create_window_info info);
 void gnome_create_nhwindow_ex_by_id(int type, winid i);
 void gnome_clear_nhwindow(winid wid);
-void gnome_display_nhwindow(winid wid, BOOLEAN_P block);
+void gnome_display_nhwindow(winid wid, boolean block);
 void gnome_destroy_nhwindow(winid wid);
 void gnome_curs(winid wid, int x, int y);
 void gnome_putstr(winid wid, int attr, const char *text);
 void gnome_putstr_ex(winid wid, const char* text, int attr, int color, int app);
 void gnome_putstr_ex2(winid wid, const char* text, const char* attrs, const char* colors, int attr, int color, int app);
-void gnome_display_file(const char *filename, BOOLEAN_P must_exist);
+void gnome_display_file(const char *filename, boolean must_exist);
 void gnome_start_menu_ex(winid wid, int style);
 void gnome_add_menu(winid wid, int glyph, const ANY_P *identifier,
-                    CHAR_P accelerator, CHAR_P group_accel, int attr,
-                    const char *str, BOOLEAN_P presel);
+                    char accelerator, char group_accel, int attr,
+                    const char *str, boolean presel);
 void gnome_add_extended_menu(winid wid, int glyph, const ANY_P* identifier,
-    CHAR_P accelerator, CHAR_P group_accel, int attr, int color,
-    const char* str, BOOLEAN_P presel, struct extended_menu_info info);
+    char accelerator, char group_accel, int attr, int color,
+    const char* str, boolean presel, struct extended_menu_info info);
 void gnome_end_menu_ex(winid wid, const char *prompt, const char* subtitle);
 int gnome_select_menu(winid wid, int how, MENU_ITEM_P **selected);
 /* No need for message_menu -- we'll use genl_message_menu instead */
 void gnome_update_inventory(void);
 void gnome_mark_synch(void);
 void gnome_wait_synch(void);
-void gnome_cliparound(int x, int y, BOOLEAN_P force);
+void gnome_cliparound(int x, int y, boolean force);
 /* The following function does the right thing.  The nethack
  * gnome_cliparound (which lacks the winid) simply calls this function.
 */
 void gnome_cliparound_proper(winid wid, int x, int y);
-void gnome_print_glyph(winid wid, XCHAR_P x, XCHAR_P y, int glyph);
+void gnome_print_glyph(winid wid, xchar x, xchar y, int glyph);
 void gnome_issue_gui_command(int cmd_id, int cmd_param, int cmd_param2, const char* cmd_str);
 void gnome_raw_print(const char *str);
 void gnome_raw_print_bold(const char *str);
@@ -83,7 +83,7 @@ int gnome_nhgetch(void);
 int gnome_nh_poskey(int *x, int *y, int *mod);
 void gnome_nhbell(void);
 int gnome_doprev_message(void);
-char gnome_yn_function_ex(int style, int attr, int color, int glyph, const char* title, const char *question, const char *choices, CHAR_P def, const char* resp_desc, const char* introline, uint64_t ynflags);
+char gnome_yn_function_ex(int style, int attr, int color, int glyph, const char* title, const char *question, const char *choices, char def, const char* resp_desc, const char* introline, uint64_t ynflags);
 void gnome_getlin_ex(int style, int attr, int color, const char *question, char *input, const char* placeholder, const char* linesuffix, const char* introline);
 int gnome_get_ext_cmd(void);
 void gnome_number_pad(int state);

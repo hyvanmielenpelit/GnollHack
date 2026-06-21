@@ -348,7 +348,7 @@ curses_clear_nhwindow(winid wid)
                    --more--, if necessary, in the tty window-port.
 */
 void
-curses_display_nhwindow(winid wid, BOOLEAN_P block)
+curses_display_nhwindow(winid wid, boolean block)
 {
     menu_item *selected = NULL;
 
@@ -485,7 +485,7 @@ curses_putstr_ex2(winid wid, const char* text, const char* attrs, const char* co
                    iff complain is TRUE.
 */
 void
-curses_display_file(const char *filename, BOOLEAN_P must_exist)
+curses_display_file(const char *filename, boolean must_exist)
 {
     curses_view_file(filename, must_exist);
 }
@@ -537,8 +537,8 @@ add_menu(winid wid, int glyph, const anything identifier,
 */
 void
 curses_add_menu(winid wid, int glyph, const ANY_P * identifier,
-                CHAR_P accelerator, CHAR_P group_accel, int attr, int color,
-                const char *str, BOOLEAN_P presel)
+                char accelerator, char group_accel, int attr, int color,
+                const char *str, boolean presel)
 {
     attr &= ~(ATR_LINE_ATTR_MASK);
 
@@ -561,8 +561,8 @@ curses_add_menu(winid wid, int glyph, const ANY_P * identifier,
 
 void
 curses_add_menu_ex(winid wid, int glyph, const ANY_P* identifier,
-    CHAR_P accelerator, CHAR_P group_accel, int attr, int color,
-    const char* str, const char* attrs, const char* colors, BOOLEAN_P presel)
+    char accelerator, char group_accel, int attr, int color,
+    const char* str, const char* attrs, const char* colors, boolean presel)
 {
     struct extended_menu_info info = { 0 };
     info.attrs = attrs;
@@ -573,8 +573,8 @@ curses_add_menu_ex(winid wid, int glyph, const ANY_P* identifier,
 
 void
 curses_add_extended_menu(winid wid, int glyph, const ANY_P* identifier,
-    CHAR_P accelerator, CHAR_P group_accel, int attr, int color,
-    const char* str, BOOLEAN_P presel, struct extended_menu_info info)
+    char accelerator, char group_accel, int attr, int color,
+    const char* str, boolean presel, struct extended_menu_info info)
 {
     attr &= ~(ATR_LINE_ATTR_MASK);
 
@@ -699,7 +699,7 @@ cliparound(x, y)-- Make sure that the user is more-or-less centered on the
                 -- This function is only defined if CLIPPING is defined.
 */
 void
-curses_cliparound(int x, int y, BOOLEAN_P force UNUSED)
+curses_cliparound(int x, int y, boolean force UNUSED)
 {
     int sx, sy, ex, ey;
     boolean redraw = curses_map_borders(&sx, &sy, &ex, &ey, x, y);
@@ -729,7 +729,7 @@ print_glyph(window, x, y, glyph, bkglyph)
                    It's not used here.
 */
 void
-curses_print_glyph(winid wid, XCHAR_P x, XCHAR_P y, struct layer_info layers)
+curses_print_glyph(winid wid, xchar x, xchar y, struct layer_info layers)
 {
     nhsym ch;
     int cch;
@@ -899,7 +899,7 @@ char yn_function(const char *ques, const char *choices, char default)
                    ports might use a popup.
 */
 char
-curses_yn_function_ex(int style UNUSED, int attr, int color, int glyph UNUSED, const char* title UNUSED, const char *question, const char *choices, CHAR_P def, const char* resp_desc UNUSED, const char* introline UNUSED, uint64_t ynflags UNUSED)
+curses_yn_function_ex(int style UNUSED, int attr, int color, int glyph UNUSED, const char* title UNUSED, const char *question, const char *choices, char def, const char* resp_desc UNUSED, const char* introline UNUSED, uint64_t ynflags UNUSED)
 {
     return (char) curses_character_input_dialog(attr, color, question, choices, def);
 }

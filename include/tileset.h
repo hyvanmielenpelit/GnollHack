@@ -18,7 +18,7 @@ struct TileImage {
     unsigned char *indexes; /* for paletted images */
 };
 
-boolean FDECL(read_tiles, (const char *filename, BOOLEAN_P true_color));
+boolean FDECL(read_tiles, (const char *filename, boolean true_color));
 const struct Pixel *NDECL(get_palette);
 void NDECL(free_tiles);
 const struct TileImage *FDECL(get_tile, (unsigned tile_index));

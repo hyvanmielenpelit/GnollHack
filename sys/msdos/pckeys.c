@@ -16,9 +16,9 @@
 #include "pcvideo.h"
 
 boolean FDECL(pckeys, (unsigned char, unsigned char));
-static void FDECL(userpan, (BOOLEAN_P));
-static void FDECL(overview, (BOOLEAN_P));
-static void FDECL(traditional, (BOOLEAN_P));
+static void FDECL(userpan, (boolean));
+static void FDECL(overview, (boolean));
+static void FDECL(traditional, (boolean));
 static void NDECL(refresh);
 
 extern struct WinDesc *wins[MAXWIN]; /* from wintty.c */

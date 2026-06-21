@@ -33,8 +33,8 @@ static int hpbar_percent, hpbar_color;
 static int vert_status_dirty;
 
 static void NDECL(draw_status);
-static void FDECL(draw_vertical, (BOOLEAN_P));
-static void FDECL(draw_horizontal, (BOOLEAN_P));
+static void FDECL(draw_vertical, (boolean));
+static void FDECL(draw_horizontal, (boolean));
 static void curs_HPbar(char *, int);
 static void curs_stat_conds(int, int *, int *, char *, boolean *, boolean);
 static void curs_vert_status_vals(int);

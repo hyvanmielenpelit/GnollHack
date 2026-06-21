@@ -68,7 +68,7 @@ register char gch;
 int attr;
 int color;
 const char *str;
-register BOOLEAN_P preselected;
+register boolean preselected;
 {
     struct amii_WinDesc *cw;
     amii_menu_item *mip;
@@ -133,7 +133,7 @@ register char gch;
 int attr;
 int color;
 const char* str;
-register BOOLEAN_P preselected;
+register boolean preselected;
 struct extended_menu_info info;
 {
     amii_add_menu(window, glyph, id, ch, gch, attr, color, str, preselected);

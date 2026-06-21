@@ -110,10 +110,10 @@ extern int glyph2tile[];
 void FDECL(vga_gotoloc, (int, int)); /* This should be made a macro */
 void NDECL(vga_backsp);
 #ifdef SCROLLMAP
-STATIC_DCL void FDECL(vga_scrollmap, (BOOLEAN_P));
+STATIC_DCL void FDECL(vga_scrollmap, (boolean));
 #endif
-STATIC_DCL void FDECL(vga_redrawmap, (BOOLEAN_P));
-static void FDECL(vga_cliparound, (int, int, BOOLEAN_P));
+STATIC_DCL void FDECL(vga_redrawmap, (boolean));
+static void FDECL(vga_cliparound, (int, int, boolean));
 STATIC_OVL void FDECL(decal_planar, (struct planar_cell_struct *, unsigned));
 
 #ifdef POSITIONBAR

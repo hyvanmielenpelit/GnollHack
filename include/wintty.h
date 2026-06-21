@@ -182,9 +182,9 @@ E void NDECL(setclipped);
 #endif
 E void FDECL(docorner, (int, int));
 E void NDECL(end_glyphout);
-E void FDECL(g_putch, (int, BOOLEAN_P));
+E void FDECL(g_putch, (int, boolean));
 E void FDECL(win_tty_init, (int));
-E int FDECL(doputchar, (nhsym, BOOLEAN_P));
+E int FDECL(doputchar, (nhsym, boolean));
 
 /* external declarations */
 E void FDECL(tty_init_nhwindows, (int *, char **));
@@ -197,32 +197,32 @@ E void FDECL(tty_suspend_nhwindows, (const char *));
 E void NDECL(tty_resume_nhwindows);
 E winid FDECL(tty_create_nhwindow_ex, (int, int, int, struct extended_create_window_info));
 E void FDECL(tty_clear_nhwindow, (winid));
-E void FDECL(tty_display_nhwindow, (winid, BOOLEAN_P));
+E void FDECL(tty_display_nhwindow, (winid, boolean));
 E void FDECL(tty_dismiss_nhwindow, (winid));
 E void FDECL(tty_destroy_nhwindow, (winid));
 E void FDECL(tty_curs, (winid, int, int));
 E void FDECL(tty_putstr_ex, (winid, const char *, int, int, int));
 E void FDECL(tty_putstr_ex2, (winid, const char*, const char*, const char*, int, int, int));
 #define tty_putstr(x, y, z) tty_putstr_ex(x, z, y, NO_COLOR, 0);
-E void FDECL(tty_display_file, (const char *, BOOLEAN_P));
+E void FDECL(tty_display_file, (const char *, boolean));
 E void FDECL(tty_start_menu_ex, (winid, int));
-E void FDECL(tty_add_menu, (winid, int, const ANY_P *, CHAR_P, CHAR_P, int, int,
-                            const char *, BOOLEAN_P));
-E void FDECL(tty_add_extended_menu, (winid, int, const ANY_P*, CHAR_P, CHAR_P, int, int,
-    const char*, BOOLEAN_P, struct extended_menu_info));
+E void FDECL(tty_add_menu, (winid, int, const ANY_P *, char, char, int, int,
+                            const char *, boolean));
+E void FDECL(tty_add_extended_menu, (winid, int, const ANY_P*, char, char, int, int,
+    const char*, boolean, struct extended_menu_info));
 E void FDECL(tty_end_menu_ex, (winid, const char *, const char*));
 E int FDECL(tty_select_menu, (winid, int, MENU_ITEM_P **));
-E char FDECL(tty_message_menu, (CHAR_P, int, const char *));
+E char FDECL(tty_message_menu, (char, int, const char *));
 E void NDECL(tty_update_inventory);
 E void NDECL(tty_mark_synch);
 E void NDECL(tty_wait_synch);
 #ifdef CLIPPING
-E void FDECL(tty_cliparound, (int, int, BOOLEAN_P));
+E void FDECL(tty_cliparound, (int, int, boolean));
 #endif
 #ifdef POSITIONBAR
 E void FDECL(tty_update_positionbar, (char *));
 #endif
-E void FDECL(tty_print_glyph, (winid, XCHAR_P, XCHAR_P, struct layer_info));
+E void FDECL(tty_print_glyph, (winid, xchar, xchar, struct layer_info));
 E void FDECL(tty_issue_gui_command, (int, int, int, const char*));
 E void FDECL(tty_raw_print, (const char *));
 E void FDECL(tty_raw_print_bold, (const char *));
@@ -230,7 +230,7 @@ E int NDECL(tty_nhgetch);
 E int FDECL(tty_nh_poskey, (int *, int *, int *));
 E void NDECL(tty_nhbell);
 E int NDECL(tty_doprev_message);
-E char FDECL(tty_yn_function_ex, (int, int, int, int, const char *, const char *, const char *, CHAR_P, const char*, const char*, uint64_t));
+E char FDECL(tty_yn_function_ex, (int, int, int, int, const char *, const char *, const char *, char, const char*, const char*, uint64_t));
 E void FDECL(tty_getlin_ex, (int, int, int, const char *, char *, const char*, const char*, const char*));
 E int NDECL(tty_get_ext_cmd);
 E void FDECL(tty_number_pad, (int));
@@ -246,7 +246,7 @@ E short FDECL(set_tty_font_name, (winid, char *));
 E char *NDECL(tty_get_color_string);
 #endif
 E void FDECL(tty_status_enablefield,
-             (int, const char *, const char *, BOOLEAN_P));
+             (int, const char *, const char *, boolean));
 E void FDECL(tty_status_init, (int));
 E void FDECL(tty_status_update, (int, genericptr_t, int, int, int, uint64_t *));
 
@@ -256,8 +256,8 @@ E void NDECL(tty_end_screen);
 
 E void FDECL(genl_outrip, (winid, int, time_t));
 
-E char *FDECL(tty_getmsghistory_ex, (char**, char**, BOOLEAN_P));
-E void FDECL(tty_putmsghistory_ex, (const char *, const char *, const char *, BOOLEAN_P));
+E char *FDECL(tty_getmsghistory_ex, (char**, char**, boolean));
+E void FDECL(tty_putmsghistory_ex, (const char *, const char *, const char *, boolean));
 E int FDECL(tty_open_special_view, (struct special_view_info));
 
 #ifdef NO_TERMS

@@ -297,7 +297,7 @@ void NetHackQtBind::qt_clear_nhwindow(winid wid)
     window->Clear();
 }
 
-void NetHackQtBind::qt_display_nhwindow(winid wid, BOOLEAN_P block)
+void NetHackQtBind::qt_display_nhwindow(winid wid, boolean block)
 {
     NetHackQtWindow* window=id_to_window[(int)wid];
     window->Display(block);
@@ -348,7 +348,7 @@ void NetHackQtBind::qt_putstr(winid wid, int attr, const QString& text)
     window->PutStr(attr,text);
 }
 
-void NetHackQtBind::qt_display_file(const char *filename, BOOLEAN_P must_exist)
+void NetHackQtBind::qt_display_file(const char *filename, boolean must_exist)
 {
     NetHackQtTextWindow* window=new NetHackQtTextWindow(mainWidget());
     bool complain = false;
@@ -389,8 +389,8 @@ void NetHackQtBind::qt_start_menu_ex(winid wid, int style)
 }
 
 void NetHackQtBind::qt_add_menu(winid wid, int glyph,
-    const ANY_P * identifier, CHAR_P ch, CHAR_P gch, int attr,
-    const char *str, BOOLEAN_P presel)
+    const ANY_P * identifier, char ch, char gch, int attr,
+    const char *str, boolean presel)
 {
     NetHackQtWindow* window=id_to_window[(int)wid];
     window->AddMenu(glyph, identifier, ch, gch, attr,
@@ -399,8 +399,8 @@ void NetHackQtBind::qt_add_menu(winid wid, int glyph,
 }
 
 void NetHackQtBind::qt_add_menu(winid wid, int glyph,
-    const ANY_P* identifier, struct obj* otmp, CHAR_P ch, CHAR_P gch, int attr,
-    const char* str, BOOLEAN_P presel)
+    const ANY_P* identifier, struct obj* otmp, char ch, char gch, int attr,
+    const char* str, boolean presel)
 {
     NetHackQtWindow* window = id_to_window[(int)wid];
     window->AddMenu(glyph, identifier, ch, gch, attr,
@@ -438,7 +438,7 @@ void NetHackQtBind::qt_wait_synch()
 {
 }
 
-void NetHackQtBind::qt_cliparound(int x, int y, BOOLEAN_P force)
+void NetHackQtBind::qt_cliparound(int x, int y, boolean force)
 {
     // XXXNH - winid should be a parameter!
     qt_cliparound_window(WIN_MAP,x,y);
@@ -453,7 +453,7 @@ void NetHackQtBind::qt_issue_gui_command(int cmd_id, int cmd_param, int cmd_para
 {
 
 }
-void NetHackQtBind::qt_print_glyph(winid wid,XCHAR_P x,XCHAR_P y,struct layer_info layers)
+void NetHackQtBind::qt_print_glyph(winid wid,xchar x,xchar y,struct layer_info layers)
 {
     /* TODO: bkglyph */
     NetHackQtWindow* window=id_to_window[(int)wid];
@@ -522,7 +522,7 @@ int NetHackQtBind::qt_doprev_message()
     return 0;
 }
 
-char NetHackQtBind::qt_yn_function_ex(int style, int attr, int color, int glyph, const char* title, const char *question_, const char *choices, CHAR_P def, const char* resp_desc, const char* introline, uint64_t ynflags)
+char NetHackQtBind::qt_yn_function_ex(int style, int attr, int color, int glyph, const char* title, const char *question_, const char *choices, char def, const char* resp_desc, const char* introline, uint64_t ynflags)
 {
     QString question(QString::fromLatin1(question_));
     QString message;
@@ -665,7 +665,7 @@ void NetHackQtBind::qt_outrip(winid wid, int how, time_t when)
     window->UseRIP(how, when);
 }
 
-char * NetHackQtBind::qt_getmsghistory_ex(char **attrs_ptr, char **colors_ptr, BOOLEAN_P init)
+char * NetHackQtBind::qt_getmsghistory_ex(char **attrs_ptr, char **colors_ptr, boolean init)
 {
     NetHackQtMessageWindow* window = main->GetMessageWindow();
     if (window)
@@ -673,7 +673,7 @@ char * NetHackQtBind::qt_getmsghistory_ex(char **attrs_ptr, char **colors_ptr, B
     return NULL;
 }
 
-void NetHackQtBind::qt_putmsghistory_ex(const char *msg, const char* attrs, const char* colors, BOOLEAN_P is_restoring)
+void NetHackQtBind::qt_putmsghistory_ex(const char *msg, const char* attrs, const char* colors, boolean is_restoring)
 {
     NetHackQtMessageWindow* window = main->GetMessageWindow();
     if (!window)

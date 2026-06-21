@@ -10,7 +10,7 @@
 static void m_lose_armor(struct monst *, struct obj *);
 static boolean m_dowear_type(struct monst *, int64_t, boolean, boolean);
 static int extra_pref(struct monst *, struct obj *);
-static void set_mon_temporary_property(struct monst*, int, UNSIGNED_SHORT_P);
+static void set_mon_temporary_property(struct monst*, int, unsigned short);
 static boolean mon_wears_misc_subtype(struct monst*, schar);
 
 const struct worn {

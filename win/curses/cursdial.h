@@ -12,12 +12,12 @@
 
 void curses_line_input_dialog(int style, int attr, int color, const char *prompt, char *answer, int buffer);
 int curses_character_input_dialog(int attr UNUSED, int color UNUSED, const char *prompt, const char *choices,
-                                  CHAR_P def);
+                                  char def);
 int curses_ext_cmd(void);
 void curses_create_nhmenu(winid wid, int menu_style);
 void curses_add_nhmenu_item(winid wid, int glyph, const ANY_P *identifier,
-                            CHAR_P accelerator, CHAR_P group_accel, int attr, int color,
-                            const char *str, const char* attrs, const char* colors, BOOLEAN_P presel, int app);
+                            char accelerator, char group_accel, int attr, int color,
+                            const char *str, const char* attrs, const char* colors, boolean presel, int app);
 void curs_menu_set_bottom_heavy(winid);
 void curses_finalize_nhmenu(winid wid, const char *prompt, const char *subtitle);
 int curses_display_nhmenu(winid wid, int how, MENU_ITEM_P **_selected);
