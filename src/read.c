@@ -15,25 +15,24 @@
 
 boolean known;
 
-STATIC_VAR NEARDATA const char readable[] = { ALL_CLASSES, SCROLL_CLASS,
+static NEARDATA const char readable[] = { ALL_CLASSES, SCROLL_CLASS,
                                           SPBOOK_CLASS, 0 };
-STATIC_VAR const char all_count[] = { ALLOW_COUNT, ALL_CLASSES, 0 };
+static const char all_count[] = { ALLOW_COUNT, ALL_CLASSES, 0 };
 
-STATIC_DCL boolean FDECL(learnscrolltyp, (SHORT_P));
-STATIC_DCL char *FDECL(erode_obj_text, (struct obj *, char *));
-STATIC_DCL char *FDECL(apron_text, (struct obj *, char *buf));
-STATIC_DCL void FDECL(forget_single_object, (int));
+static boolean learnscrolltyp(short);
+static char *erode_obj_text(struct obj *, char *);
+static char *apron_text(struct obj *, char *buf);
+static void forget_single_object(int);
 #if 0 /* not used */
-STATIC_DCL void FDECL(forget_objclass, (int));
+static void forget_objclass(int);
 #endif
-STATIC_DCL void FDECL(randomize, (int *, int));
-STATIC_DCL void FDECL(forget, (int));
-STATIC_PTR void FDECL(set_lit, (int, int, genericptr));
-STATIC_DCL void NDECL(do_class_genocide);
+static void randomize(int *, int);
+static void forget(int);
+static void set_lit(int, int, genericptr);
+static void do_class_genocide(void);
 
-STATIC_OVL boolean
-learnscrolltyp(scrolltyp)
-short scrolltyp;
+static boolean
+learnscrolltyp(short scrolltyp)
 {
     if (!objects[scrolltyp].oc_name_known) {
         makeknown(scrolltyp);
@@ -45,8 +44,7 @@ short scrolltyp;
 
 /* also called from teleport.c for scroll of teleportation */
 void
-learnscroll(sobj)
-struct obj *sobj;
+learnscroll(struct obj *sobj)
 {
     /* it's implied that sobj->dknown is set;
        we couldn't be reading this scroll otherwise */
@@ -54,10 +52,8 @@ struct obj *sobj;
         (void) learnscrolltyp(sobj->otyp);
 }
 
-STATIC_OVL char *
-erode_obj_text(otmp, buf)
-struct obj *otmp;
-char *buf;
+static char *
+erode_obj_text(struct obj *otmp, char *buf)
 {
     int erosion = greatest_erosion(otmp);
 
@@ -68,9 +64,7 @@ char *buf;
 }
 
 char *
-tshirt_text(tshirt, buf)
-struct obj *tshirt;
-char *buf;
+tshirt_text(struct obj *tshirt, char *buf)
 {
     static const char *shirt_msgs[] = {
         /* Scott Bigham */
@@ -156,10 +150,8 @@ char *buf;
     return erode_obj_text(tshirt, buf);
 }
 
-STATIC_OVL char *
-apron_text(apron, buf)
-struct obj *apron;
-char *buf;
+static char *
+apron_text(struct obj *apron, char *buf)
 {
     static const char *apron_msgs[] = {
         "Kiss the cook",
@@ -178,7 +170,7 @@ char *buf;
 }
 
 int
-doread(VOID_ARGS)
+doread(void)
 {
     struct obj *scroll;
     boolean confused, nodisappear;
@@ -534,8 +526,7 @@ doread(VOID_ARGS)
 }
 
 void
-read_the_ruling_ring(otmp)
-struct obj* otmp;
+read_the_ruling_ring(struct obj *otmp)
 {
     if (!otmp || otmp->oartifact != ART_RULING_RING_OF_YENDOR)
         return;
@@ -574,9 +565,7 @@ struct obj* otmp;
 }
 
 void
-strip_charges(obj, verbose, dopopup)
-struct obj *obj;
-boolean verbose, dopopup;
+strip_charges(struct obj *obj, boolean verbose, boolean dopopup)
 {
     if (obj->blessed || obj->charges <= 0)
     {
@@ -605,11 +594,7 @@ boolean verbose, dopopup;
 }
 
 void
-p_glow1(otmp, pline_attr, pline_color, title, dopopup)
-struct obj *otmp;
-int pline_attr, pline_color;
-const char* title;
-boolean dopopup;
+p_glow1(struct obj *otmp, int pline_attr, int pline_color, const char *title, boolean dopopup)
 {
     play_sfx_sound(SFX_AURA_GLOW);
     char effbuf[BUFSZ];
@@ -618,12 +603,7 @@ boolean dopopup;
 }
 
 void
-p_glow2(otmp, color, pline_attr, pline_color, title, dopopup)
-struct obj *otmp;
-const char *color;
-int pline_attr, pline_color;
-const char* title;
-boolean dopopup;
+p_glow2(struct obj *otmp, const char *color, int pline_attr, int pline_color, const char *title, boolean dopopup)
 {
     play_sfx_sound(SFX_AURA_GLOW);
     pline_multi_ex_popup(pline_attr, pline_color, no_multiattrs, multicolor_buffer, title ? title : Blind ? "Magical Vibration" : "Magical Glow", dopopup, 
@@ -633,8 +613,7 @@ boolean dopopup;
 /* Is the object chargeable?  For purposes of inventory display; it is
    possible to be able to charge things for which this returns FALSE. */
 boolean
-is_chargeable(obj)
-struct obj *obj;
+is_chargeable(struct obj *obj)
 {
     if (obj->oclass == WAND_CLASS)
         return TRUE;
@@ -649,11 +628,7 @@ struct obj *obj;
 /* recharge an object; curse_bless is -1 if the recharging implement
    was cursed, +1 if blessed, 0 otherwise. */
 void
-recharge(obj, curse_bless, verbose, title, dopopup)
-struct obj *obj;
-int curse_bless;
-const char* title;
-boolean verbose, dopopup;
+recharge(struct obj *obj, int curse_bless, boolean verbose, const char *title, boolean dopopup)
 {
     if (!obj)
         return;
@@ -1242,10 +1217,7 @@ boolean verbose, dopopup;
 }
 
 void
-enchant_armor(otmp, curse_bless, amount, dopopup)
-struct obj* otmp;
-int curse_bless, amount;
-boolean dopopup;
+enchant_armor(struct obj *otmp, int curse_bless, int amount, boolean dopopup)
 {
     if (!otmp)
         return;
@@ -1382,10 +1354,7 @@ boolean dopopup;
 }
 
 void
-enchant_ring(obj, curse_bless, amount, dopopup)
-struct obj* obj;
-int curse_bless, amount;
-boolean dopopup;
+enchant_ring(struct obj *obj, int curse_bless, int amount, boolean dopopup)
 {
     boolean is_cursed, is_blessed;
 
@@ -1466,9 +1435,8 @@ boolean dopopup;
 }
 
 /* Forget known information about this object type. */
-STATIC_OVL void
-forget_single_object(obj_id)
-int obj_id;
+static void
+forget_single_object(int obj_id)
 {
     boolean was_known = objects[obj_id].oc_name_known;
     objects[obj_id].oc_name_known = 0;
@@ -1485,9 +1453,8 @@ int obj_id;
 
 #if 0 /* here if anyone wants it.... */
 /* Forget everything known about a particular object class. */
-STATIC_OVL void
-forget_objclass(oclass)
-int oclass;
+static void
+forget_objclass(int oclass)
 {
     int i;
 
@@ -1498,10 +1465,8 @@ int oclass;
 #endif
 
 /* randomize the given list of numbers  0 <= i < count */
-STATIC_OVL void
-randomize(indices, count)
-int *indices;
-int count;
+static void
+randomize(int *indices, int count)
 {
     int i, iswap, temp;
 
@@ -1516,8 +1481,7 @@ int count;
 
 /* Forget % of known objects. */
 void
-forget_objects(percent)
-int percent;
+forget_objects(int percent)
 {
     int i, count;
     int indices[NUM_OBJECTS];
@@ -1547,8 +1511,7 @@ int percent;
 
 /* Forget some or all of map (depends on parameters). */
 void
-forget_map(howmuch)
-int howmuch;
+forget_map(int howmuch)
 {
     int zx, zy;
 
@@ -1570,7 +1533,7 @@ int howmuch;
 
 /* Forget all traps on the level. */
 void
-forget_traps(VOID_ARGS)
+forget_traps(void)
 {
     struct trap *trap;
 
@@ -1585,8 +1548,7 @@ forget_traps(VOID_ARGS)
  * except this one.
  */
 void
-forget_levels(percent)
-int percent;
+forget_levels(int percent)
 {
     int i, count;
     xchar maxl, this_lev;
@@ -1645,9 +1607,8 @@ int percent;
  *      howmuch & ALL_MAP       = forget whole map
  *      howmuch & ALL_SPELLS    = forget all spells
  */
-STATIC_OVL void
-forget(howmuch)
-int howmuch;
+static void
+forget(int howmuch)
 {
     if (Punished)
         u.bc_felt = 0; /* forget felt ball&chain */
@@ -1683,10 +1644,7 @@ int howmuch;
 
 /* monster is hit by scroll of taming's effect */
 int
-maybe_tame(mtmp, sobj, origmonst)
-struct monst *mtmp;
-struct obj *sobj;
-struct monst* origmonst;
+maybe_tame(struct monst *mtmp, struct obj *sobj, struct monst *origmonst)
 {
     boolean was_tame = is_tame(mtmp);
     boolean was_peaceful = is_peaceful(mtmp);
@@ -1752,10 +1710,7 @@ struct monst* origmonst;
 
 /* Control Undead */
 int
-maybe_controlled(mtmp, sobj, origmonst)
-struct monst* mtmp;
-struct obj* sobj;
-struct monst* origmonst;
+maybe_controlled(struct monst *mtmp, struct obj *sobj, struct monst *origmonst)
 {
     if (!mtmp || !sobj)
         return 0;
@@ -1812,8 +1767,7 @@ struct monst* origmonst;
 }
 
 boolean
-get_valid_targeted_position(x, y, otyp)
-int x, y, otyp;
+get_valid_targeted_position(int x, int y, int otyp)
 {
     if (!isok(x, y) || !isok(u.ux, u.uy) || otyp <= STRANGE_OBJECT || otyp >= NUM_OBJECTS)
         return FALSE;
@@ -1824,8 +1778,7 @@ int x, y, otyp;
 }
 
 int
-get_invalid_stinking_cloud_pos(x, y)
-int x, y;
+get_invalid_stinking_cloud_pos(int x, int y)
 {
     return !isok(x,y) || !cansee(x, y)
               || !ACCESSIBLE(levl[x][y].typ) ? 1 :
@@ -1833,9 +1786,7 @@ int x, y;
 }
 
 boolean
-is_valid_stinking_cloud_pos(x, y, showmsg)
-int x, y;
-boolean showmsg;
+is_valid_stinking_cloud_pos(int x, int y, boolean showmsg)
 {
     if (get_invalid_stinking_cloud_pos(x,y)) {
         if (showmsg)
@@ -1846,8 +1797,7 @@ boolean showmsg;
 }
 
 void
-display_stinking_cloud_positions(state)
-int state;
+display_stinking_cloud_positions(int state)
 {
     if (state == 0) {
         tmp_at(DISP_BEAM, cmap_to_glyph(S_goodpos));
@@ -1867,13 +1817,14 @@ int state;
     }
 }
 
+/*
+ * Parameters:
+ *   sobj: scroll, or fake spellbook object for scroll-like spell
+ */
 /* scroll effects; return 1 if we use up the scroll and possibly make it
    become discovered, 0 if caller should take care of those side-effects */
 int
-seffects(sobj, effect_happened_ptr, targetmonst)
-struct obj *sobj; /* scroll, or fake spellbook object for scroll-like spell */
-boolean *effect_happened_ptr;
-struct monst* targetmonst;
+seffects(struct obj *sobj, boolean *effect_happened_ptr, struct monst *targetmonst)
 {
     int cval, otyp = sobj->otyp;
     boolean confused = (Confusion != 0), sblessed = sobj->blessed, sbcsign = bcsign(sobj),
@@ -3525,8 +3476,7 @@ struct monst* targetmonst;
 
 
 void
-drop_boulder_on_player(confused, helmet_protects, byu, skip_uswallow)
-boolean confused, helmet_protects, byu, skip_uswallow;
+drop_boulder_on_player(boolean confused, boolean helmet_protects, boolean byu, boolean skip_uswallow)
 {
     int dmg;
     struct obj *otmp2;
@@ -3575,9 +3525,7 @@ boolean confused, helmet_protects, byu, skip_uswallow;
 }
 
 boolean
-drop_boulder_on_monster(x, y, confused, byu)
-int x, y;
-boolean confused, byu;
+drop_boulder_on_monster(int x, int y, boolean confused, boolean byu)
 {
     struct obj *otmp2;
     struct monst *mtmp;
@@ -3657,11 +3605,13 @@ boolean confused, byu;
     return TRUE;
 }
 
+/*
+ * Parameters:
+ *   chg: recharging
+ */
 /* overcharging any wand or zapping/engraving cursed wand */
 void
-wand_explode(obj, chg)
-struct obj *obj;
-int chg; /* recharging */
+wand_explode(struct obj *obj, int chg)
 {
     const char *expl = !chg ? "suddenly" : "vibrates violently and";
     int dmg, n, k;
@@ -3725,15 +3675,13 @@ struct litmon {
     struct monst *mon;
     struct litmon *nxt;
 };
-STATIC_VAR struct litmon *gremlins = 0;
+static struct litmon *gremlins = 0;
 
 /*
  * Low-level lit-field update routine.
  */
-STATIC_PTR void
-set_lit(x, y, val)
-int x, y;
-genericptr_t val;
+static void
+set_lit(int x, int y, genericptr_t val)
 {
     struct monst *mtmp;
     struct litmon *gremlin;
@@ -3753,9 +3701,7 @@ genericptr_t val;
 }
 
 void
-litroom(on, obj)
-boolean on;
-struct obj *obj;
+litroom(boolean on, struct obj *obj)
 {
     char is_lit; /* value is irrelevant; we use its address
                     as a `not null' flag for set_lit() */
@@ -3859,8 +3805,8 @@ struct obj *obj;
     }
 }
 
-STATIC_OVL void
-do_class_genocide(VOID_ARGS)
+static void
+do_class_genocide(void)
 {
     int i, j, immunecnt, gonecnt, goodcnt, class, feel_dead = 0, ll_done = 0;
     char buf[BUFSZ] = DUMMY;
@@ -4097,13 +4043,12 @@ do_class_genocide(VOID_ARGS)
 #define REALLY 1
 #define PLAYER 2
 #define ONTHRONE 4
-void
-do_genocide(how)
-int how;
 /* 0 = no genocide; create monsters (cursed scroll) */
 /* 1 = normal genocide */
 /* 3 = forced genocide of player */
 /* 5 (4 | 1) = normal genocide from throne */
+void
+do_genocide(int how)
 {
     char buf[BUFSZ] = DUMMY;
     int i, killplayer = 0;
@@ -4310,8 +4255,7 @@ int how;
 }
 
 void
-punish(sobj)
-struct obj *sobj;
+punish(struct obj *sobj)
 {
     if (!sobj)
         return;
@@ -4363,7 +4307,7 @@ struct obj *sobj;
 
 /* remove the ball and chain */
 void
-unpunish(VOID_ARGS)
+unpunish(void)
 {
     struct obj *savechain = uchain;
 
@@ -4381,10 +4325,7 @@ unpunish(VOID_ARGS)
  * revive one, the disoriented creature becomes a zombie
  */
 boolean
-cant_revive(mtype, revival, from_obj)
-int *mtype;
-boolean revival;
-struct obj *from_obj;
+cant_revive(int *mtype, boolean revival, struct obj *from_obj)
 {
     /* SHOPKEEPERS can be revived now */
     if (*mtype == PM_GUARD || (*mtype == PM_SHOPKEEPER && !revival)
@@ -4418,9 +4359,7 @@ struct _create_particular_data {
 };
 
 boolean
-create_particular_parse(str, d)
-char *str;
-struct _create_particular_data *d;
+create_particular_parse(char *str, struct _create_particular_data *d)
 {
     char *bufp = str;
     char *tmpp;
@@ -4497,8 +4436,7 @@ struct _create_particular_data *d;
 }
 
 boolean
-create_particular_creation(d)
-struct _create_particular_data *d;
+create_particular_creation(struct _create_particular_data *d)
 {
     struct permonst *whichpm = NULL;
     int i, firstchoice = NON_PM;
@@ -4611,7 +4549,7 @@ struct _create_particular_data *d;
  * this code was also used for the scroll/spell in explore mode.
  */
 boolean
-create_particular(VOID_ARGS)
+create_particular(void)
 {
     char buf[BUFSZ] = DUMMY, *bufp;
     int  tryct = 5;
@@ -4639,9 +4577,7 @@ create_particular(VOID_ARGS)
 }
 
 void
-dragon_scales_to_scale_mail(otmp, sblessed, dopopup)
-struct obj* otmp;
-boolean sblessed, dopopup;
+dragon_scales_to_scale_mail(struct obj *otmp, boolean sblessed, boolean dopopup)
 {
     if (!otmp || !is_dragon_scales(otmp))
         return;
@@ -4686,11 +4622,12 @@ boolean sblessed, dopopup;
 #define COST_alter (-2)
 #define COST_none (-1)
 
+/*
+ * Parameters:
+ *   confused: Is caster confused
+ */
 int
-bless_or_curse(sobj, mtmp, confused)
-struct obj* sobj;
-struct monst* mtmp;
-boolean confused; /* Is caster confused */
+bless_or_curse(struct obj *sobj, struct monst *mtmp, boolean confused)
 {
     if (!mtmp || !sobj)
         return 0;
@@ -4702,7 +4639,7 @@ boolean confused; /* Is caster confused */
     boolean is_serviced_spell = !!(sobj->speflags & SPEFLAGS_SERVICED_SPELL);
     const char* glowcolor = 0;
     int costchange = COST_none;
-    void FDECL((*func), (OBJ_P)) = 0;
+    void (*func)(struct obj *) = 0;
     boolean altfmt = FALSE;
     char effbuf[BUFSZ];
     int n;
@@ -4849,11 +4786,12 @@ boolean confused; /* Is caster confused */
     return 1;
 }
 
+/*
+ * Parameters:
+ *   confused: Is caster confused
+ */
 int
-remove_curse(sobj, mtmp, confused)
-struct obj* sobj;
-struct monst* mtmp;
-boolean confused; /* Is caster confused */
+remove_curse(struct obj *sobj, struct monst *mtmp, boolean confused)
 {
     if (!mtmp || !sobj)
         return 0;
@@ -4991,7 +4929,7 @@ boolean confused; /* Is caster confused */
 }
 
 void
-reset_read(VOID_ARGS)
+reset_read(void)
 {
     memset((genericptr_t)&gremlins, 0, sizeof(gremlins));
 }

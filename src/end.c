@@ -28,12 +28,12 @@ struct valuable_data {
     int typ;
 };
 
-STATIC_VAR struct valuable_data
+static struct valuable_data
     gems[LAST_GEM + 1 - FIRST_GEM + 1], /* 1 extra for glass */
     amulets[LAST_AMULET + 1 - FIRST_AMULET],
     miscellaneousitems[LAST_MISCITEM + 1 - FIRST_MISCITEM];
 
-STATIC_VAR struct val_list {
+static struct val_list {
     struct valuable_data *list;
     int size;
 } valuables[] = { { gems, sizeof gems / sizeof *gems },
@@ -43,42 +43,42 @@ STATIC_VAR struct val_list {
 #endif
 
 #ifndef NO_SIGNAL
-STATIC_PTR void FDECL(done_intr, (int));
+static void done_intr(int);
 #if defined(UNIX) || defined(VMS) || defined(__EMX__)
-STATIC_DCL void FDECL(done_hangup, (int));
+static void done_hangup(int);
 #endif
 #endif
-STATIC_DCL void FDECL(disclose, (int, BOOLEAN_P));
+static void disclose(int, boolean);
 #if 0
-STATIC_DCL void FDECL(get_valuables, (struct obj *));
-STATIC_DCL void FDECL(sort_valuables, (struct valuable_data *, int));
-STATIC_DCL void FDECL(artifact_score, (struct obj *, BOOLEAN_P, winid));
+static void get_valuables(struct obj *);
+static void sort_valuables(struct valuable_data *, int);
+static void artifact_score(struct obj *, boolean, winid);
 #endif
-STATIC_DCL void FDECL(really_done, (int)) NORETURN;
-STATIC_DCL void FDECL(savelife, (int));
-STATIC_PTR int FDECL(CFDECLSPEC vanqsort_cmp, (const genericptr,
+static void really_done(int) NORETURN;
+static void savelife(int);
+static int FDECL(CFDECLSPEC vanqsort_cmp, (const genericptr,
                                                const genericptr));
-STATIC_DCL int NDECL(set_vanq_order);
-STATIC_DCL void FDECL(list_vanquished, (CHAR_P, BOOLEAN_P, BOOLEAN_P));
-STATIC_DCL void FDECL(list_genocided, (CHAR_P, BOOLEAN_P, BOOLEAN_P));
-STATIC_DCL boolean FDECL(should_query_disclose_option, (int, char *));
+static int set_vanq_order(void);
+static void list_vanquished(char, boolean, boolean);
+static void list_genocided(char, boolean, boolean);
+static boolean should_query_disclose_option(int, char *);
 #if defined (DUMPLOG) || defined (DUMPHTML)
-STATIC_DCL void NDECL(dump_plines);
+static void dump_plines(void);
 #endif
-STATIC_DCL void FDECL(dump_everything, (int, time_t));
-STATIC_DCL int NDECL(num_extinct);
+static void dump_everything(int, time_t);
+static int num_extinct(void);
 
-STATIC_DCL void FDECL(reset_objchn, (struct obj*));
-STATIC_DCL void FDECL(reset_monchn, (struct monst*));
-STATIC_DCL void FDECL(reset_trapchn, (struct trap*));
-STATIC_DCL void NDECL(reset_lev);
-STATIC_DCL void NDECL(reset_levchn);
-STATIC_DCL void NDECL(reset_damage);
-STATIC_DCL void NDECL(reset_msghistory);
-STATIC_DCL void NDECL(reset_remaining_dynamic_data);
-STATIC_DCL void NDECL(reset_remaining_static_variables);
+static void reset_objchn(struct obj*);
+static void reset_monchn(struct monst*);
+static void reset_trapchn(struct trap*);
+static void reset_lev(void);
+static void reset_levchn(void);
+static void reset_damage(void);
+static void reset_msghistory(void);
+static void reset_remaining_dynamic_data(void);
+static void reset_remaining_static_variables(void);
 
-STATIC_DCL char FDECL(special_yn_query, (const char*, const char*));
+static char special_yn_query(const char*, const char*);
 
 #define done_stopprint program_state.stopprint
 
@@ -134,19 +134,18 @@ STATIC_DCL char FDECL(special_yn_query, (const char*, const char*));
 #endif
 #endif
 
-STATIC_DCL void NDECL(NH_abort);
+static void NH_abort(void);
 #ifndef NO_SIGNAL
-STATIC_DCL void FDECL(panictrace_handler, (int));
+static void panictrace_handler(int);
 #endif
-STATIC_DCL boolean NDECL(NH_panictrace_libc);
-STATIC_DCL boolean NDECL(NH_panictrace_gdb);
+static boolean NH_panictrace_libc(void);
+static boolean NH_panictrace_gdb(void);
 
 #ifndef NO_SIGNAL
 /* called as signal() handler, so sent at least one arg */
 /*ARGUSED*/
 void
-panictrace_handler(sig_unused)
-int sig_unused UNUSED;
+panictrace_handler(int sig_unused UNUSED)
 {
 #define SIG_MSG "\nSignal received.\n"
     int f2;
@@ -157,8 +156,7 @@ int sig_unused UNUSED;
 }
 
 void
-panictrace_setsignals(set)
-boolean set;
+panictrace_setsignals(boolean set)
 {
 #define SETSIGNAL(sig) \
     (void) signal(sig, set ? (SIG_RET_TYPE) panictrace_handler : SIG_DFL);
@@ -193,8 +191,8 @@ boolean set;
 }
 #endif /* NO_SIGNAL */
 
-STATIC_VAR boolean aborting = FALSE;
-STATIC_OVL void
+static boolean aborting = FALSE;
+static void
 NH_abort()
 {
     int gdb_prio = SYSOPT_PANICTRACE_GDB;
@@ -229,8 +227,8 @@ NH_abort()
     NH_abort_();
 }
 
-STATIC_OVL boolean
-NH_panictrace_libc(VOID_ARGS)
+static boolean
+NH_panictrace_libc(void)
 {
 #ifdef PANICTRACE_LIBC
     void *bt[20];
@@ -264,8 +262,8 @@ NH_panictrace_libc(VOID_ARGS)
 #endif /* SYSCF */
 #endif /* PANICTRACE_GDB */
 
-STATIC_OVL boolean
-NH_panictrace_gdb(VOID_ARGS)
+static boolean
+NH_panictrace_gdb(void)
 {
 #ifdef PANICTRACE_GDB
     /* A (more) generic method to get a stack trace - invoke
@@ -302,7 +300,7 @@ NH_panictrace_gdb(VOID_ARGS)
 /*
  * The order of these needs to match the macros in hack.h.
  */
-STATIC_VAR NEARDATA const char *deaths[NUM_GAME_END_TYPES] = {
+static NEARDATA const char *deaths[NUM_GAME_END_TYPES] = {
     /* the array of death */
     "died", "choked", "poisoned", "starvation", "drowning", "drowned", "burning",
     "dissolving under the heat and pressure", "crushed", "strangled", "suffocated", "turned to stone", "disintegrated",
@@ -310,7 +308,7 @@ STATIC_VAR NEARDATA const char *deaths[NUM_GAME_END_TYPES] = {
     "escaped", "ascended", "snapshot"
 };
 
-STATIC_VAR NEARDATA const char *ends[NUM_GAME_END_TYPES] = {
+static NEARDATA const char *ends[NUM_GAME_END_TYPES] = {
     /* "when you %s" */
     "died", "choked", "were poisoned",
     "starved", "drowned", "were drowned", "burned",
@@ -321,7 +319,7 @@ STATIC_VAR NEARDATA const char *ends[NUM_GAME_END_TYPES] = {
     "escaped", "ascended", "snapshot"
 };
 
-STATIC_VAR boolean Schroedingers_cat = FALSE;
+static boolean Schroedingers_cat = FALSE;
 
 /*ARGSUSED*/
 void
@@ -347,7 +345,7 @@ int sig_unused UNUSED;
 
 /* "#quit" command or keyboard interrupt */
 int
-done2(VOID_ARGS)
+done2(void)
 {
     if (iflags.debug_fuzzer)
         return 0;
@@ -405,7 +403,7 @@ done2(VOID_ARGS)
 
 #ifndef NO_SIGNAL
 /*ARGSUSED*/
-STATIC_PTR void
+static void
 done_intr(sig_unused) /* called as signal() handler, so sent at least 1 arg */
 int sig_unused UNUSED;
 {
@@ -419,9 +417,8 @@ int sig_unused UNUSED;
 
 #if (defined(UNIX) || defined(VMS) || defined(__EMX__))  && !defined(GNH_MOBILE)
 /* signal() handler */
-STATIC_OVL void
-done_hangup(sig)
-int sig;
+static void
+done_hangup(int sig)
 {
     program_state.done_hup++;
     sethanguphandler((void FDECL((*), (int) )) SIG_IGN);
@@ -432,10 +429,7 @@ int sig;
 #endif /* NO_SIGNAL */
 
 void
-get_killer_name_and_format(mtmp, buf, fmt_ptr)
-struct monst* mtmp;
-char* buf;
-int* fmt_ptr;
+get_killer_name_and_format(struct monst *mtmp, char *buf, int *fmt_ptr)
 {
     struct permonst* mptr = mtmp->data,
         * champtr = ((mtmp->cham >= LOW_PM)
@@ -531,9 +525,7 @@ int* fmt_ptr;
 }
 
 void
-done_in_by(mtmp, how)
-struct monst *mtmp;
-int how;
+done_in_by(struct monst *mtmp, int how)
 {
     char buf[BUFSZ];
     Strcpy(buf, "");
@@ -675,7 +667,7 @@ int how;
 }
 
 /* some special cases for overriding while-helpless reason */
-STATIC_VAR const struct {
+static const struct {
     int why, unmulti;
     const char *exclude, *include;
 } death_fixups[] = {
@@ -691,9 +683,8 @@ STATIC_VAR const struct {
 
 /* clear away while-helpless when the cause of death caused that
    helplessness (ie, "petrified by <foo> while getting stoned") */
-STATIC_DCL void
-fixup_death(how)
-int how;
+static void
+fixup_death(int how)
 {
     int i;
 
@@ -717,16 +708,14 @@ int how;
 #endif
 
 void
-set_panic_handling(handling, require_restoring)
-int handling;
-boolean require_restoring;
+set_panic_handling(int handling, boolean require_restoring)
 {
     if (!require_restoring || restoring)
         program_state.panic_handling = handling;
 }
 
 #ifdef GNOLLHACK_MAIN_PROGRAM
-STATIC_VAR char* dbufs = 0;
+static char* dbufs = 0;
 #endif
 
 /*VARARGS1*/
@@ -863,10 +852,8 @@ VA_DECL(const char *, str)
     really_done(PANICKED);
 }
 
-STATIC_OVL boolean
-should_query_disclose_option(category, defquery)
-int category;
-char *defquery;
+static boolean
+should_query_disclose_option(int category, char *defquery)
 {
     int idx;
     char disclose, *dop;
@@ -907,8 +894,8 @@ char *defquery;
 }
 
 #if defined (DUMPLOG) || defined (DUMPHTML)
-STATIC_OVL void
-dump_plines(VOID_ARGS)
+static void
+dump_plines(void)
 {
     int i, j;
     char buf[BUFSZ], buf2[BUFSZ], buf3[BUFSZ], ** strp;
@@ -941,11 +928,13 @@ dump_plines(VOID_ARGS)
 #endif
 
 
+/*
+ * Parameters:
+ *   when: date+time at end of game
+ */
 /*ARGSUSED*/
-STATIC_OVL void
-dump_everything(how, when)
-int how;
-time_t when; /* date+time at end of game */
+static void
+dump_everything(int how, time_t when)
 {
 #if defined (DUMPLOG) || defined (DUMPHTML)
     char pbuf[BUFSZ], datetimebuf[24]; /* [24]: room for 64-bit bogus value */
@@ -1060,7 +1049,7 @@ time_t when; /* date+time at end of game */
 
 /* #wizdumplog command - test dump_everything(). */
 int
-wiz_dumplog(VOID_ARGS)
+wiz_dumplog(void)
 {
 #if defined (DUMPLOG) || defined (DUMPHTML)
     if (wizard) {
@@ -1095,7 +1084,7 @@ wiz_dumplog(VOID_ARGS)
 }
 
 int
-dosnapshot(VOID_ARGS)
+dosnapshot(void)
 {
 #if (defined (DUMPLOG) || defined (DUMPHTML)) && defined(ALLOW_SNAPSHOT)
     time_t dumptime = getnow();
@@ -1139,10 +1128,8 @@ dosnapshot(VOID_ARGS)
 
 
 
-STATIC_OVL void
-disclose(how, taken)
-int how;
-boolean taken;
+static void
+disclose(int how, boolean taken)
 {
     char c = '\0', defquery;
     char qbuf[QBUFSZ];
@@ -1215,9 +1202,8 @@ boolean taken;
 }
 
 /* try to get the player back in a viable state after being killed */
-STATIC_OVL void
-savelife(how)
-int how;
+static void
+savelife(int how)
 {
     int uhpmin = max(2 * u.ulevel, 10);
 
@@ -1278,12 +1264,15 @@ int how;
 
 #if 0
 /*
+ * Parameters:
+ *   list: inventory or container contents
+ */
+/*
  * Get valuables from the given list.  Revised code: the list always remains
  * intact.
  */
-STATIC_OVL void
-get_valuables(list)
-struct obj *list; /* inventory or container contents */
+static void
+get_valuables(struct obj *list)
 {
     struct obj *obj;
     int i;
@@ -1322,13 +1311,15 @@ struct obj *list; /* inventory or container contents */
 }
 
 /*
+ * Parameters:
+ *   size: max value is less than 20
+ */
+/*
  *  Sort collected valuables, most frequent to least.  We could just
  *  as easily use qsort, but we don't care about efficiency here.
  */
-STATIC_OVL void
-sort_valuables(list, size)
-struct valuable_data list[];
-int size; /* max value is less than 20 */
+static void
+sort_valuables(struct valuable_data list[], int size)
 {
     int i, j;
     struct valuable_data ltmp;
@@ -1355,14 +1346,12 @@ int size; /* max value is less than 20 */
  * odds_and_ends() was used for 3.6.0 and 3.6.1.
  * Schroedinger's Cat is handled differently starting with 3.6.2.
  */
-STATIC_DCL boolean FDECL(odds_and_ends, (struct obj *, int));
+static boolean odds_and_ends(struct obj *, int);
 
 #define CAT_CHECK 2
 
-STATIC_OVL boolean
-odds_and_ends(list, what)
-struct obj *list;
-int what;
+static boolean
+odds_and_ends(struct obj *list, int what)
 {
     struct obj *otmp;
 
@@ -1383,12 +1372,13 @@ int what;
 
 
 #if 0
+/*
+ * Parameters:
+ *   counting: true => add up points; false => display them
+ */
 /* called twice; first to calculate total, then to list relevant items */
-STATIC_OVL void
-artifact_score(list, counting, endwin)
-struct obj *list;
-boolean counting; /* true => add up points; false => display them */
-winid endwin;
+static void
+artifact_score(struct obj *list, boolean counting, winid endwin)
 {
     char pbuf[BUFSZ];
     struct obj *otmp;
@@ -1422,8 +1412,7 @@ winid endwin;
 #endif
 
 int64_t
-count_archaeologist_item_score(list)
-struct obj* list;
+count_archaeologist_item_score(struct obj *list)
 {
     struct obj* otmp;
     int64_t score = 0;
@@ -1460,8 +1449,7 @@ struct obj* list;
 }
 
 struct item_score_count_result
-count_artifacts(list)
-struct obj* list;
+count_artifacts(struct obj *list)
 {
     struct obj* otmp;
     struct item_score_count_result cnt = { 0 };
@@ -1483,8 +1471,7 @@ struct obj* list;
 }
 
 struct item_score_count_result
-count_historic_statues(list)
-struct obj* list;
+count_historic_statues(struct obj *list)
 {
     struct obj* otmp;
     struct item_score_count_result cnt = { 0 };
@@ -1506,8 +1493,7 @@ struct obj* list;
 }
 
 struct item_score_count_result
-count_sarcophaguses(list)
-struct obj* list;
+count_sarcophaguses(struct obj *list)
 {
     struct obj* otmp;
     struct item_score_count_result cnt = { 0 };
@@ -1529,8 +1515,7 @@ struct obj* list;
 }
 
 struct item_score_count_result
-count_mummy_wrappings(list)
-struct obj* list;
+count_mummy_wrappings(struct obj *list)
 {
     struct obj* otmp;
     struct item_score_count_result cnt = { 0 };
@@ -1552,8 +1537,7 @@ struct obj* list;
 }
 
 struct item_score_count_result
-count_valuable_art_objects(list)
-struct obj* list;
+count_valuable_art_objects(struct obj *list)
 {
     struct obj* otmp;
     struct item_score_count_result cnt = { 0 };
@@ -1575,8 +1559,7 @@ struct obj* list;
 }
 
 struct item_score_count_result
-count_powerful_melee_weapon_score(list)
-struct obj* list;
+count_powerful_melee_weapon_score(struct obj *list)
 {
     struct obj* otmp;
     struct item_score_count_result cnt = { 0 };
@@ -1600,8 +1583,7 @@ struct obj* list;
 }
 
 struct item_score_count_result
-count_powerful_ranged_weapon_score(list)
-struct obj* list;
+count_powerful_ranged_weapon_score(struct obj *list)
 {
     struct obj* otmp;
     struct item_score_count_result cnt = { 0 };
@@ -1636,8 +1618,7 @@ struct obj* list;
 }
 
 struct item_score_count_result
-count_powerful_Japanese_item_score(list)
-struct obj* list;
+count_powerful_Japanese_item_score(struct obj *list)
 {
     struct obj* otmp;
     struct item_score_count_result cnt = { 0 };
@@ -1672,8 +1653,7 @@ struct obj* list;
 }
 
 struct item_score_count_result
-count_powerful_valkyrie_item_score(list)
-struct obj* list;
+count_powerful_valkyrie_item_score(struct obj *list)
 {
     struct obj* otmp;
     struct item_score_count_result cnt = { 0 };
@@ -1706,8 +1686,7 @@ struct obj* list;
 }
 
 struct amulet_count_result
-count_amulets(list)
-struct obj* list;
+count_amulets(struct obj *list)
 {
     struct obj* otmp;
     struct amulet_count_result cnt = { 0, 0 };
@@ -1741,8 +1720,7 @@ struct obj* list;
 
 /* Be careful not to call panic from here! */
 void
-done(how)
-int how;
+done(int how)
 {
     boolean survive = FALSE;
     if (how == TRICKED) {
@@ -1977,9 +1955,8 @@ int how;
 }
 
 /* separated from done() in order to specify the __noreturn__ attribute */
-STATIC_OVL void
-really_done(how)
-int how;
+static void
+really_done(int how)
 {
     boolean taken;
     char pbuf[BUFSZ];
@@ -2771,10 +2748,7 @@ int how;
 }
 
 void
-container_contents(list, identified, all_containers, reportempty, show_weights, show_quick)
-struct obj *list;
-boolean identified, all_containers, reportempty, show_quick;
-int show_weights;
+container_contents(struct obj *list, boolean identified, boolean all_containers, boolean reportempty, int show_weights, boolean show_quick)
 {
     struct obj *box, *obj;
     char buf[BUFSZ];
@@ -2829,7 +2803,7 @@ int show_weights;
                                      ? SORTLOOT_LOOT : 0)
                                  | (flags.sortpack ? SORTLOOT_PACK : 0));
                     sortedcobj = sortloot(contained_object_chain_ptr(box), sortflags, FALSE,
-                                          (boolean FDECL((*), (OBJ_P))) 0);
+                                          (boolean FDECL((*), (struct obj *))) 0);
                     totalweight = 0;
                     for (srtc = sortedcobj; ((obj = srtc->obj) != 0); ++srtc) 
                     {
@@ -2887,9 +2861,7 @@ int show_weights;
 }
 
 void
-magic_chest_contents(identified, all_containers, reportempty, show_weights, show_quick)
-boolean identified, all_containers, reportempty, show_quick;
-int show_weights;
+magic_chest_contents(boolean identified, boolean all_containers, boolean reportempty, int show_weights, boolean show_quick)
 {
     struct obj* obj;
     char buf[BUFSZ];
@@ -2919,7 +2891,7 @@ int show_weights;
                 ? SORTLOOT_LOOT : 0)
                 | (flags.sortpack ? SORTLOOT_PACK : 0));
             sortedcobj = sortloot(&magic_objs, sortflags, FALSE,
-                (boolean FDECL((*), (OBJ_P))) 0);
+                (boolean FDECL((*), (struct obj *))) 0);
             totalweight = 0;
             for (srtc = sortedcobj; ((obj = srtc->obj) != 0); ++srtc)
             {
@@ -2970,10 +2942,7 @@ int show_weights;
 /* should be called with either EXIT_SUCCESS or EXIT_FAILURE */
 /* called between displaying gamewindows and before newgame / restore, after getlock doclearlocks must be set to TRUE */
 void
-nh_bail(status, mesg, fullterminate)
-int status;
-const char* mesg;
-boolean fullterminate;
+nh_bail(int status, const char *mesg, boolean fullterminate)
 {
     issue_breadcrumb3("nh_bail", status, (int)fullterminate);
     clearlocks();
@@ -2994,8 +2963,7 @@ boolean fullterminate;
 
 /* should be called with either EXIT_SUCCESS or EXIT_FAILURE */
 void
-nh_terminate(status)
-int status;
+nh_terminate(int status)
 {
     issue_breadcrumb2("nh_terminate", status);
     program_state.in_moveloop = 0; /* won't be returning to normal play */
@@ -3062,7 +3030,7 @@ enum vanq_order_modes {
 };
 
 
-STATIC_VAR const char *vanqorders[NUM_VANQ_ORDER_MODES] = {
+static const char *vanqorders[NUM_VANQ_ORDER_MODES] = {
     "traditional: by monster level, by internal monster index",
     "by monster toughness, by internal monster index",
     "alphabetically, first unique monsters, then others",
@@ -3072,12 +3040,10 @@ STATIC_VAR const char *vanqorders[NUM_VANQ_ORDER_MODES] = {
     "by count, high to low, by internal index within tied count",
     "by count, low to high, by internal index within tied count",
 };
-STATIC_VAR int vanq_sortmode = VANQ_MLVL_MNDX;
+static int vanq_sortmode = VANQ_MLVL_MNDX;
 
-STATIC_PTR int CFDECLSPEC
-vanqsort_cmp(vptr1, vptr2)
-const genericptr vptr1;
-const genericptr vptr2;
+static int CFDECLSPEC
+vanqsort_cmp(const genericptr vptr1, const genericptr vptr2)
 {
     int indx1 = *(short *) vptr1, indx2 = *(short *) vptr2,
         mlev1, mlev2, mstr1, mstr2, uniq1, uniq2, died1, died2, res;
@@ -3155,8 +3121,8 @@ const genericptr vptr2;
 }
 
 /* returns -1 if cancelled via ESC */
-STATIC_OVL int
-set_vanq_order(VOID_ARGS)
+static int
+set_vanq_order(void)
 {
     winid tmpwin;
     menu_item *selected;
@@ -3190,7 +3156,7 @@ set_vanq_order(VOID_ARGS)
 
 /* #vanquished command */
 int
-dovanquished(VOID_ARGS)
+dovanquished(void)
 {
     list_vanquished('a', FALSE, FALSE);
     return 0;
@@ -3198,7 +3164,7 @@ dovanquished(VOID_ARGS)
 
 /* #killed command */
 int
-dokilledmonsters(VOID_ARGS)
+dokilledmonsters(void)
 {
     list_vanquished('b', FALSE, FALSE);
     return 0;
@@ -3206,16 +3172,14 @@ dokilledmonsters(VOID_ARGS)
 
 /* #genocided command */
 int
-dogenocidedmonsters(VOID_ARGS)
+dogenocidedmonsters(void)
 {
     list_genocided('a', FALSE, FALSE);
     return 0;
 }
 
-STATIC_OVL void
-list_vanquished(defquery, ask, isend)
-char defquery;
-boolean ask, isend;
+static void
+list_vanquished(char defquery, boolean ask, boolean isend)
 {
     int i;
     int pfx, nkilled, fkilled;
@@ -3372,9 +3336,7 @@ boolean ask, isend;
 }
 
 void
-print_selfies(enwin, final)
-winid enwin;
-int final;
+print_selfies(winid enwin, int final)
 {
     short mindx[NUM_MONSTERS] = { 0 };
     int ntypes = 0;
@@ -3441,9 +3403,7 @@ int final;
 }
 
 void
-print_knight_slayings(enwin, final)
-winid enwin;
-int final;
+print_knight_slayings(winid enwin, int final)
 {
     short mindx[NUM_MONSTERS] = { 0 };
     int ntypes = 0;
@@ -3541,7 +3501,7 @@ int final;
 }
 
 void
-recalculate_knight_slaying_score(VOID_ARGS)
+recalculate_knight_slaying_score(void)
 {
     int i;
     int64_t score = 0L;
@@ -3573,7 +3533,7 @@ recalculate_knight_slaying_score(VOID_ARGS)
 
 /* number of monster species which have been genocided */
 int
-num_genocides(VOID_ARGS)
+num_genocides(void)
 {
     int i, n = 0;
 
@@ -3588,8 +3548,8 @@ num_genocides(VOID_ARGS)
     return n;
 }
 
-STATIC_OVL int
-num_extinct(VOID_ARGS)
+static int
+num_extinct(void)
 {
     int i, n = 0;
 
@@ -3602,10 +3562,8 @@ num_extinct(VOID_ARGS)
     return n;
 }
 
-STATIC_OVL void
-list_genocided(defquery, ask, isend)
-char defquery;
-boolean ask, isend;
+static void
+list_genocided(char defquery, boolean ask, boolean isend)
 {
     int i;
     int ngenocided, nextinct;
@@ -3705,11 +3663,7 @@ boolean ask, isend;
 
 /* set a delayed killer, ensure non-delayed killer is cleared out */
 void
-delayed_killer(id, format, killername, killerhintidx)
-int id;
-int format;
-const char *killername;
-int killerhintidx;
+delayed_killer(int id, int format, const char *killername, int killerhintidx)
 {
     struct kinfo *k = find_delayed_killer(id);
 
@@ -3729,8 +3683,7 @@ int killerhintidx;
 }
 
 struct kinfo *
-find_delayed_killer(id)
-int id;
+find_delayed_killer(int id)
 {
     struct kinfo *k;
 
@@ -3742,8 +3695,7 @@ int id;
 }
 
 void
-dealloc_killer(kptr)
-struct kinfo *kptr;
+dealloc_killer(struct kinfo *kptr)
 {
     struct kinfo *prev = &killer, *k;
 
@@ -3765,9 +3717,7 @@ struct kinfo *kptr;
 }
 
 void
-save_killers(fd, mode)
-int fd;
-int mode;
+save_killers(int fd, int mode)
 {
     struct kinfo *kptr;
 
@@ -3786,7 +3736,7 @@ int mode;
 }
 
 void
-reset_killers(VOID_ARGS)
+reset_killers(void)
 {
     struct kinfo* kptr;
     while (killer.next) {
@@ -3798,8 +3748,7 @@ reset_killers(VOID_ARGS)
 }
 
 void
-restore_killers(fd)
-int fd;
+restore_killers(int fd)
 {
     struct kinfo *kptr;
     //debugprint("restore_killers");
@@ -3812,9 +3761,8 @@ int fd;
     }
 }
 
-STATIC_OVL int
-wordcount(p)
-char *p;
+static int
+wordcount(char *p)
 {
     int words = 0;
 
@@ -3829,9 +3777,8 @@ char *p;
     return words;
 }
 
-STATIC_OVL void
-bel_copy1(inp, out)
-char **inp, *out;
+static void
+bel_copy1(char **inp, char *out)
 {
     char *in = *inp;
 
@@ -3845,8 +3792,7 @@ char **inp, *out;
 }
 
 char *
-build_english_list(in)
-char *in;
+build_english_list(char *in)
 {
     char *out, *p = in;
     size_t len = strlen(p), words = (size_t)wordcount(p);
@@ -3885,7 +3831,7 @@ char *in;
 }
 
 int64_t
-get_conduct_score_upon_ascension(VOID_ARGS)
+get_conduct_score_upon_ascension(void)
 {
     return (int64_t)(
         50 * (u.uconduct.food == 0)
@@ -3913,7 +3859,7 @@ get_conduct_score_upon_ascension(VOID_ARGS)
 }
 
 int64_t
-get_current_game_score(VOID_ARGS)
+get_current_game_score(void)
 {
 #if 0
     /* Old NetHack score */
@@ -4131,9 +4077,8 @@ get_current_game_score(VOID_ARGS)
 
 
 
-STATIC_OVL void
-reset_objchn(otmp)
-struct obj* otmp;
+static void
+reset_objchn(struct obj *otmp)
 {
     struct obj* otmp2;
     while (otmp) {
@@ -4151,9 +4096,8 @@ struct obj* otmp;
     }
 }
 
-STATIC_OVL void
-reset_monchn(mtmp)
-struct monst* mtmp;
+static void
+reset_monchn(struct monst *mtmp)
 {
     struct monst* mtmp2;
     while (mtmp)
@@ -4168,8 +4112,7 @@ struct monst* mtmp;
 }
 
 void
-reset_cemetery(cemeteryaddr)
-struct cemetery** cemeteryaddr;
+reset_cemetery(struct cemetery **cemeteryaddr)
 {
     struct cemetery* thisbones, * nextbones;
 
@@ -4182,9 +4125,8 @@ struct cemetery** cemeteryaddr;
 }
 
 /* save traps; ftrap is the only trap chain so the 2nd arg is superfluous */
-STATIC_OVL void
-reset_trapchn(trap)
-struct trap* trap;
+static void
+reset_trapchn(struct trap *trap)
 {
     struct trap* trap2;
     while (trap) {
@@ -4194,8 +4136,8 @@ struct trap* trap;
     }
 }
 
-STATIC_OVL void
-reset_damage(VOID_ARGS)
+static void
+reset_damage(void)
 {
     struct damage* damageptr, * tmp_dam;
     unsigned int xl = 0;
@@ -4213,8 +4155,8 @@ reset_damage(VOID_ARGS)
 }
 
 
-STATIC_OVL void
-reset_lev(VOID_ARGS)
+static void
+reset_lev(void)
 {
     reset_cemetery(&level.bonesinfo);
     memset((genericptr_t)levl, 0, sizeof levl);
@@ -4265,8 +4207,8 @@ reset_lev(VOID_ARGS)
     clear_regions();
 }
 
-STATIC_OVL void
-reset_levchn(VOID_ARGS)
+static void
+reset_levchn(void)
 {
     s_level* tmplev, * tmplev2;
     //int cnt = 0;
@@ -4281,8 +4223,8 @@ reset_levchn(VOID_ARGS)
     sp_levchn = 0;
 }
 
-STATIC_OVL void
-reset_msghistory(VOID_ARGS)
+static void
+reset_msghistory(void)
 {
     issue_simple_gui_command(GUI_CMD_CLEAR_MESSAGE_HISTORY);
 
@@ -4293,8 +4235,8 @@ reset_msghistory(VOID_ARGS)
 }
 
 
-STATIC_OVL void
-reset_gamestate(VOID_ARGS)
+static void
+reset_gamestate(void)
 {
     memset((genericptr_t)&context, 0, sizeof(struct context_info));
     memset((genericptr_t)&urealtime.realtime, 0, sizeof urealtime.realtime);
@@ -4352,8 +4294,8 @@ reset_gamestate(VOID_ARGS)
     reset_gamelog();
 }
 
-STATIC_DCL void
-reset_remaining_static_variables(VOID_ARGS)
+static void
+reset_remaining_static_variables(void)
 {
 #ifdef PANICTRACE
     aborting = FALSE;
@@ -4396,8 +4338,8 @@ reset_remaining_static_variables(VOID_ARGS)
     reset_zap();
 }
 
-STATIC_DCL void
-reset_remaining_dynamic_data(VOID_ARGS)
+static void
+reset_remaining_dynamic_data(void)
 {
     free_dynamic_data_A();
     free_dynamic_data_B();
@@ -4405,7 +4347,7 @@ reset_remaining_dynamic_data(VOID_ARGS)
 }
 
 void
-reset_game(VOID_ARGS)
+reset_game(void)
 {
     issue_breadcrumb("reset_game");
     debugprint("%s", "reset_game");
@@ -4427,7 +4369,7 @@ reset_game(VOID_ARGS)
 }
 
 void
-reset_gamestate_ex(VOID_ARGS)
+reset_gamestate_ex(void)
 {
     reset_lev();
     reset_rooms(); /* no dynamic memory to reclaim */
@@ -4436,7 +4378,7 @@ reset_gamestate_ex(VOID_ARGS)
 }
 
 void
-tally_realtime(VOID_ARGS)
+tally_realtime(void)
 {
     if (!context.game_started)
         return;
@@ -4448,10 +4390,8 @@ tally_realtime(VOID_ARGS)
 }
 
 /* yes/no question via GUI when the game windows may already have been closed */
-STATIC_OVL char
-special_yn_query(title, query)
-const char* title;
-const char* query;
+static char
+special_yn_query(const char *title, const char *query)
 {
     struct special_view_info info = { 0 };
     info.viewtype = SPECIAL_VIEW_GUI_YN_CONFIRMATION_DEFAULT_N;

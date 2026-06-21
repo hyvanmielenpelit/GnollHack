@@ -7,10 +7,14 @@
 #include "hack.h"
 
 /* Note: Arrays are column first, while the screen is row first */
-STATIC_VAR const int explosion[3][3] = { { S_explode1, S_explode4, S_explode7 },
+static const int explosion[3][3] = { { S_explode1, S_explode4, S_explode7 },
                                { S_explode2, S_explode5, S_explode8 },
                                { S_explode3, S_explode6, S_explode9 } };
 
+/*
+ * Parameters:
+ *   type: the same as in zap.c; passes -(wand typ) for some WAND_CLASS
+ */
 /* Note: I had to choose one of three possible kinds of "type" when writing
  * this function: a wand type (like in zap.c), an adtyp, or an object type.
  * Wand types get complex because they must be converted to adtyps for
@@ -27,14 +31,7 @@ STATIC_VAR const int explosion[3][3] = { { S_explode1, S_explode4, S_explode7 },
  *      that Half_physical_damage only affects the damage applied to the hero.
  */
 void
-explode(x, y, type, origmonst, dmg_n, dmg_d, dmg_p, objtype, olet, expltype)
-int x, y;
-int type; /* the same as in zap.c; passes -(wand typ) for some WAND_CLASS */
-struct monst* origmonst;
-int dmg_n, dmg_d, dmg_p;
-int objtype;
-char olet;
-int expltype;
+explode(int x, int y, int type, struct monst *origmonst, int dmg_n, int dmg_d, int dmg_p, int objtype, char olet, int expltype)
 {
     if (!isok(x, y))
         return;
@@ -818,13 +815,15 @@ struct scatter_chain {
  *      MAY_FRACTURE    Stone objects can be fractured (statues, boulders)
  */
 
+/*
+ * Parameters:
+ *   sx, sy: location of objects to scatter
+ *   blastforce: force behind the scattering
+ *   obj: only scatter this obj
+ */
 /* returns number of scattered objects */
 int64_t
-scatter(sx, sy, blastforce, scflags, obj)
-int sx, sy;     /* location of objects to scatter */
-int blastforce; /* force behind the scattering */
-unsigned int scflags;
-struct obj *obj; /* only scatter this obj        */
+scatter(int sx, int sy, int blastforce, unsigned int scflags, struct obj *obj)
 {
     struct obj *otmp;
     int tmp;
@@ -1041,9 +1040,7 @@ struct obj *obj; /* only scatter this obj        */
  * For now, just perform a "regular" explosion.
  */
 void
-splatter_burning_oil(x, y, diluted_oil)
-int x, y;
-boolean diluted_oil;
+splatter_burning_oil(int x, int y, boolean diluted_oil)
 {
 /* ZT_SPELL(ZT_FIRE) = ZT_SPELL(AD_FIRE-1) = 10+(2-1) = 11 */
 #define ZT_SPELL_O_FIRE 11 /* value kludge, see zap.c */
@@ -1053,9 +1050,7 @@ boolean diluted_oil;
 /* lit potion of oil is exploding; extinguish it as a light source before
    possibly killing the hero and attempting to save bones */
 void
-explode_oil(obj, x, y)
-struct obj *obj;
-int x, y;
+explode_oil(struct obj *obj, int x, int y)
 {
     boolean diluted_oil = obj->odiluted;
 
@@ -1067,9 +1062,7 @@ int x, y;
 }
 
 void
-play_explosion_animation_at(x, y, expltype)
-int x, y;
-enum explosion_types expltype;
+play_explosion_animation_at(int x, int y, enum explosion_types expltype)
 {
     if (!isok(x, y))
         return;
@@ -1136,7 +1129,7 @@ enum explosion_types expltype;
 }
 
 void
-explosion_wait_until_action(VOID_ARGS)
+explosion_wait_until_action(void)
 {
     if (context.expl_intervals_to_wait_until_action > 0UL)
     {
@@ -1146,7 +1139,7 @@ explosion_wait_until_action(VOID_ARGS)
 }
 
 void
-explosion_wait_until_end(VOID_ARGS)
+explosion_wait_until_end(void)
 {
     if (context.expl_intervals_to_wait_until_end > 0)
     {

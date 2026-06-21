@@ -43,26 +43,25 @@
  * and placed there by 'makedefs'.
  */
 
-STATIC_DCL void FDECL(init_rumors, (dlb *));
-STATIC_DCL void FDECL(init_oracles, (dlb *));
-STATIC_DCL void FDECL(couldnt_open_file, (const char *));
-STATIC_DCL int NDECL(num_oracles);
-STATIC_DCL int NDECL(count_remaining_major_consultations);
+static void init_rumors(dlb *);
+static void init_oracles(dlb *);
+static void couldnt_open_file(const char *);
+static int num_oracles(void);
+static int count_remaining_major_consultations(void);
 
 /* rumor size variables are signed so that value -1 can be used as a flag */
-STATIC_VAR long true_rumor_size = 0L, false_rumor_size;
+static long true_rumor_size = 0L, false_rumor_size;
 /* rumor start offsets are unsigned because they're handled via %lx format */
-STATIC_VAR uint64_t true_rumor_start, false_rumor_start;
+static uint64_t true_rumor_start, false_rumor_start;
 /* rumor end offsets are signed because they're compared with [dlb_]ftell() */
-STATIC_VAR long true_rumor_end, false_rumor_end;
+static long true_rumor_end, false_rumor_end;
 /* oracles are handled differently from rumors... */
-STATIC_VAR int oracle_flg = 0; /* -1=>don't use, 0=>need init, 1=>init done */
-STATIC_VAR size_t oracle_cnt = 0;
-STATIC_VAR int64_t *oracle_loc = 0;
+static int oracle_flg = 0; /* -1=>don't use, 0=>need init, 1=>init done */
+static size_t oracle_cnt = 0;
+static int64_t *oracle_loc = 0;
 
-STATIC_OVL void
-init_rumors(fp)
-dlb *fp;
+static void
+init_rumors(dlb *fp)
 {
     static const char rumors_header[] = "%d,%ld,%lx;%d,%ld,%lx;0,0,%lx\n";
     int true_count, false_count; /* in file but not used here */
@@ -86,16 +85,17 @@ dlb *fp;
     }
 }
 
+/*
+ * Parameters:
+ *   truth: 1=true, -1=false, 0=either
+ */
 /* exclude_cookie is a hack used because we sometimes want to get rumors in a
  * context where messages such as "You swallowed the fortune!" that refer to
  * cookies should not appear.  This has no effect for true rumors since none
  * of them contain such references anyway.
  */
 char *
-getrumor(truth, rumor_buf, exclude_cookie)
-int truth; /* 1=true, -1=false, 0=either */
-char *rumor_buf;
-boolean exclude_cookie;
+getrumor(int truth, char *rumor_buf, boolean exclude_cookie)
 {
     dlb *rumors;
     long tidbit, beginning;
@@ -189,7 +189,7 @@ boolean exclude_cookie;
  * test that the true/false rumor boundaries are valid.
  */
 void
-rumor_check(VOID_ARGS)
+rumor_check(void)
 {
     dlb *rumors = 0;
     winid tmpwin;
@@ -291,10 +291,7 @@ rumor_check(VOID_ARGS)
 /* Gets a random line of text from file 'fname', and returns it.
    rng is the random number generator to use, and should act like rn2 does. */
 char *
-get_rnd_text(fname, buf, rng)
-const char *fname;
-char *buf;
-int FDECL((*rng), (int));
+get_rnd_text(const char *fname, char *buf, int (*rng)(int))
 {
     dlb *fh;
 
@@ -334,12 +331,12 @@ int FDECL((*rng), (int));
     return buf;
 }
 
+/*
+ * Parameters:
+ *   truth: 1=true, -1=false, 0=either
+ */
 void
-outrumor(mtmp, otmp, truth, mechanism)
-struct monst* mtmp;
-struct obj* otmp;
-int truth; /* 1=true, -1=false, 0=either */
-int mechanism;
+outrumor(struct monst *mtmp, struct obj *otmp, int truth, int mechanism)
 {
     static const char fortune_msg[] =
         "This cookie has a scrap of paper inside.";
@@ -407,9 +404,8 @@ int mechanism;
 
 }
 
-STATIC_OVL void
-init_oracles(fp)
-dlb *fp;
+static void
+init_oracles(dlb *fp)
 {
     int i;
     char line[BUFSZ];
@@ -431,8 +427,8 @@ dlb *fp;
     return;
 }
 
-STATIC_OVL int
-num_oracles(VOID_ARGS)
+static int
+num_oracles(void)
 {
     int res = 0;
     boolean is_dlb_init = dlb_is_initialized();
@@ -457,8 +453,8 @@ num_oracles(VOID_ARGS)
 }
 
 
-STATIC_OVL int
-count_remaining_major_consultations(VOID_ARGS)
+static int
+count_remaining_major_consultations(void)
 {
     int cnt = 0;
     size_t i;
@@ -471,7 +467,7 @@ count_remaining_major_consultations(VOID_ARGS)
 }
 
 int
-get_number_of_oracle_major_consultations(VOID_ARGS)
+get_number_of_oracle_major_consultations(void)
 {
     if (!oracle_cnt)
         return num_oracles();
@@ -480,8 +476,7 @@ get_number_of_oracle_major_consultations(VOID_ARGS)
 }
 
 void
-save_oracles(fd, mode)
-int fd, mode;
+save_oracles(int fd, int mode)
 {
     if (perform_bwrite(mode)) {
         bwrite(fd, (genericptr_t) &oracle_cnt, sizeof oracle_cnt);
@@ -496,14 +491,13 @@ int fd, mode;
     }
 }
 void
-reset_oracles(VOID_ARGS)
+reset_oracles(void)
 {
     save_oracles(0, FREE_SAVE);
 }
 
 void
-restore_oracles(fd)
-int fd;
+restore_oracles(int fd)
 {
     //debugprint("restore_oracles");
     mread(fd, (genericptr_t) &oracle_cnt, sizeof oracle_cnt);
@@ -514,12 +508,12 @@ int fd;
     }
 }
 
+/*
+ * Parameters:
+ *   oraclesstyle: 0 = cookie, 1 = oracle, 2 = spell
+ */
 void
-outoracle(mtmp, otmp, special, oraclesstyle)
-struct monst* mtmp;
-struct obj* otmp UNUSED;
-boolean special;
-int oraclesstyle; /* 0 = cookie, 1 = oracle, 2 = spell */
+outoracle(struct monst *mtmp, struct obj *otmp UNUSED, boolean special, int oraclesstyle)
 {
     winid tmpwin;
     dlb *oracles;
@@ -626,8 +620,7 @@ int oraclesstyle; /* 0 = cookie, 1 = oracle, 2 = spell */
 }
 
 int
-doconsult(oracl)
-struct monst *oracl;
+doconsult(struct monst *oracl)
 {
     int64_t umoney;
     int64_t u_pay, minor_cost = max(1L, (int64_t)(25.0 * service_cost_charisma_adjustment(ACURR(A_CHA)))), major_cost = max(1, (int)((double)(250 + 25 * u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
@@ -745,8 +738,7 @@ struct monst *oracl;
 }
 
 int
-do_oracle_identify(oracl)
-struct monst* oracl;
+do_oracle_identify(struct monst *oracl)
 {
     int64_t umoney;
     int64_t minor_id_cost = max(1L, (int64_t)((double)(150 + 10 * u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA)))) ; // 175 + 15 * u.ulevel;
@@ -853,8 +845,7 @@ struct monst* oracl;
 }
 
 int
-do_oracle_enlightenment(oracl)
-struct monst* oracl;
+do_oracle_enlightenment(struct monst *oracl)
 {
     int64_t umoney, u_pay;
     int64_t enl_cost = max(1, (int)((double)(objects[POT_ENLIGHTENMENT].oc_cost + 5L * (int64_t)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
@@ -911,9 +902,8 @@ struct monst* oracl;
 }
 
 
-STATIC_OVL void
-couldnt_open_file(filename)
-const char *filename;
+static void
+couldnt_open_file(const char *filename)
 {
     int save_something = program_state.something_worth_saving;
 

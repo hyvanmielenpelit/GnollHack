@@ -11,39 +11,38 @@
 #include "hack.h"
 #include "dlb.h"
 
-STATIC_DCL boolean FDECL(is_swallow_sym, (nhsym));
-STATIC_DCL int FDECL(append_str, (char *, const char *));
-STATIC_DCL void FDECL(look_at_object, (char *, int, int, int));
-STATIC_DCL void FDECL(look_at_monster, (char *, char *, char*,
-                                        struct monst *, int, int));
-STATIC_DCL struct permonst *FDECL(lookat, (int, int, char *, char*, char *));
-STATIC_DCL void FDECL(checkfile, (char *, struct permonst *,
-                                  BOOLEAN_P, BOOLEAN_P, char *));
-STATIC_DCL void FDECL(look_all, (BOOLEAN_P,BOOLEAN_P));
-STATIC_DCL void FDECL(do_supplemental_info, (char *, struct permonst *,
-                                             BOOLEAN_P));
-STATIC_DCL void FDECL(print_decoration_ending, (char*, int, int));
-STATIC_DCL void NDECL(whatdoes_help);
-STATIC_DCL void NDECL(docontact);
-STATIC_DCL void NDECL(dispfile_help);
-STATIC_DCL void NDECL(dispfile_shelp);
-STATIC_DCL void NDECL(dispfile_optionfile);
-STATIC_DCL void NDECL(dispfile_license);
-STATIC_DCL void NDECL(dispfile_credits);
-STATIC_DCL void NDECL(dispfile_debughelp);
-STATIC_DCL void NDECL(hmenu_doextversion);
-STATIC_DCL void NDECL(hmenu_dohistory);
-STATIC_DCL void NDECL(hmenu_dowhatis);
-STATIC_DCL void NDECL(hmenu_dowhatdoes);
-STATIC_DCL void NDECL(hmenu_doextlist);
+static boolean is_swallow_sym(nhsym);
+static int append_str(char *, const char *);
+static void look_at_object(char *, int, int, int);
+static void look_at_monster(char *, char *, char*,
+                                        struct monst *, int, int);
+static struct permonst *lookat(int, int, char *, char*, char *);
+static void checkfile(char *, struct permonst *,
+                                  boolean, boolean, char *);
+static void look_all(boolean,boolean);
+static void do_supplemental_info(char *, struct permonst *,
+                                             boolean);
+static void print_decoration_ending(char*, int, int);
+static void whatdoes_help(void);
+static void docontact(void);
+static void dispfile_help(void);
+static void dispfile_shelp(void);
+static void dispfile_optionfile(void);
+static void dispfile_license(void);
+static void dispfile_credits(void);
+static void dispfile_debughelp(void);
+static void hmenu_doextversion(void);
+static void hmenu_dohistory(void);
+static void hmenu_dowhatis(void);
+static void hmenu_dowhatdoes(void);
+static void hmenu_doextlist(void);
 #ifdef PORT_HELP
-extern void NDECL(port_help);
+extern void port_help(void);
 #endif
 
 /* Returns "true" for characters that could represent a monster's stomach. */
-STATIC_OVL boolean
-is_swallow_sym(c)
-nhsym c;
+static boolean
+is_swallow_sym(nhsym c)
 {
     int i;
 
@@ -58,10 +57,8 @@ nhsym c;
  * a substring of buf.  Return 1 if the string was appended, 0 otherwise.
  * It is expected that buf is of size BUFSZ.
  */
-STATIC_OVL int
-append_str(buf, new_str)
-char *buf;
-const char *new_str;
+static int
+append_str(char *buf, const char *new_str)
 {
     size_t space_left; /* space remaining in buf */
 
@@ -78,8 +75,7 @@ const char *new_str;
 
 /* shared by monster probing (via query_objlist!) as well as lookat() */
 char *
-self_lookat(outbuf)
-char *outbuf;
+self_lookat(char *outbuf)
 {
     char race[QBUFSZ];
 
@@ -98,13 +94,14 @@ char *outbuf;
     return outbuf;
 }
 
+/*
+ * Parameters:
+ *   altmon: for probing: if mimicking a monster, say so
+ */
 /* describe a hidden monster; used for look_at during extended monster
    detection and for probing; also when looking at self */
 void
-mhidden_description(mon, altmon, outbuf)
-struct monst *mon;
-boolean altmon; /* for probing: if mimicking a monster, say so */
-char *outbuf;
+mhidden_description(struct monst *mon, boolean altmon, char *outbuf)
 {
     struct obj *otmp;
     boolean fakeobj, isyou = (mon == &youmonst);
@@ -161,9 +158,7 @@ char *outbuf;
 
 /* extracted from lookat(); also used by namefloorobj() */
 boolean
-object_from_map(glyph, x, y, obj_p)
-int glyph, x, y;
-struct obj **obj_p;
+object_from_map(int glyph, int x, int y, struct obj **obj_p)
 {
     boolean fakeobj = FALSE, mimic_obj = FALSE;
     struct monst *mtmp;
@@ -291,10 +286,12 @@ struct obj **obj_p;
     return fakeobj; /* when True, caller needs to dealloc *obj_p */
 }
 
-STATIC_OVL void
-look_at_object(buf, x, y, glyph)
-char *buf; /* output buffer */
-int x, y, glyph;
+/*
+ * Parameters:
+ *   buf: output buffer
+ */
+static void
+look_at_object(char *buf, int x, int y, int glyph)
 {
     if (!isok(x, y))
         return;
@@ -335,11 +332,12 @@ int x, y, glyph;
     return;
 }
 
-STATIC_OVL void
-look_at_monster(buf, simplebuf, extrabuf, mtmp, x, y)
-char *buf, *simplebuf, *extrabuf; /* buf: output, simplebuf: for searching encyclopedia, extrabuf: optional output */
-struct monst *mtmp;
-int x, y;
+/*
+ * Parameters:
+ *   buf, simplebuf, extrabuf: buf: output, simplebuf: for searching encyclopedia, extrabuf: optional output
+ */
+static void
+look_at_monster(char *buf, char *simplebuf, char *extrabuf, struct monst *mtmp, int x, int y)
 {
     char *name, monnambuf[BUFSZ], headbuf[BUFSZ], tmpbuf[BUFSZ];
     boolean accurate = !Hallucination;
@@ -497,10 +495,8 @@ int x, y;
     } /* extrabuf is non-null */
 }
 
-STATIC_OVL
-void print_decoration_ending(buf, x, y)
-char* buf;
-int x, y;
+static
+void print_decoration_ending(char *buf, int x, int y)
 {
     if (levl[x][y].decoration_typ > 0 && (decoration_type_definitions[levl[x][y].decoration_typ].dflags & DECORATION_TYPE_FLAGS_ADD_OTHER_ITEM_DESCRIPTIONS) != 0)
     {
@@ -534,10 +530,8 @@ int x, y;
  * Return the name of the glyph found at (x,y).
  * If not hallucinating and the glyph is a monster, also monster data.
  */
-STATIC_OVL struct permonst *
-lookat(x, y, buf, simplebuf, extrabuf)
-int x, y;
-char *buf, *simplebuf, *extrabuf;
+static struct permonst *
+lookat(int x, int y, char *buf, char *simplebuf, char *extrabuf)
 {
     if (!buf || !simplebuf || !extrabuf)
         return (struct permonst*)0;
@@ -819,12 +813,8 @@ char *buf, *simplebuf, *extrabuf;
  *       lcase() for data.base lookup so that we can have a clean key.
  *       Therefore, we create a copy of inp _just_ for data.base lookup.
  */
-STATIC_OVL void
-checkfile(inp, pm, user_typed_name, without_asking, supplemental_name)
-char *inp;
-struct permonst *pm;
-boolean user_typed_name, without_asking;
-char *supplemental_name;
+static void
+checkfile(char *inp, struct permonst *pm, boolean user_typed_name, boolean without_asking, char *supplemental_name)
 {
     dlb *fp;
     char buf[BUFSZ], newstr[BUFSZ], givenname[BUFSZ];
@@ -1097,13 +1087,7 @@ char *supplemental_name;
 }
 
 int
-do_screen_description(cc, looked, sym, out_str, firstmatch, for_supplement)
-coord cc;
-boolean looked;
-nhsym sym;
-char *out_str;
-const char **firstmatch;
-struct permonst **for_supplement;
+do_screen_description(coord cc, boolean looked, nhsym sym, char *out_str, const char **firstmatch, struct permonst **for_supplement)
 {
     static const char mon_interior[] = "the interior of a monster",
                       unreconnoitered[] = "unreconnoitered";
@@ -1529,9 +1513,7 @@ struct permonst **for_supplement;
 const char what_is_an_unknown_object[] = "an unknown object";
 
 int
-do_look(mode, click_cc)
-int mode;
-coord *click_cc;
+do_look(int mode, coord *click_cc)
 {
     boolean quick = (mode == 1); /* use cursor; don't search for "more info" */
     boolean clicklook = (mode == 2); /* right mouse-click method */
@@ -1747,10 +1729,13 @@ coord *click_cc;
     return 0;
 }
 
-STATIC_OVL void
-look_all(nearby, do_mons)
-boolean nearby; /* True => within BOLTLIM, False => entire map */
-boolean do_mons; /* True => monsters, False => objects */
+/*
+ * Parameters:
+ *   nearby: True => within BOLTLIM, False => entire map
+ *   do_mons: True => monsters, False => objects
+ */
+static void
+look_all(boolean nearby, boolean do_mons)
 {
     winid win;
     int x, y, lo_x, lo_y, hi_x, hi_y, glyph, count = 0;
@@ -1835,7 +1820,7 @@ boolean do_mons; /* True => monsters, False => objects */
     destroy_nhwindow(win);
 }
 
-STATIC_VAR const char *suptext1[] = {
+static const char *suptext1[] = {
     "%s is a member of a marauding horde of orcs",
     "rumored to have brutally attacked and plundered",
     "the ordinarily sheltered town that is located ",
@@ -1847,7 +1832,7 @@ STATIC_VAR const char *suptext1[] = {
     (char *) 0,
 };
 
-STATIC_VAR const char *suptext2[] = {
+static const char *suptext2[] = {
     "\"%s\" is the common dungeon name of",
     "a nefarious orc who is known to acquire property",
     "from thieves and sell it off for profit.",
@@ -1858,10 +1843,7 @@ STATIC_VAR const char *suptext2[] = {
 };
 
 void
-do_supplemental_info(name, pm, without_asking)
-char *name;
-struct permonst *pm;
-boolean without_asking;
+do_supplemental_info(char *name, struct permonst *pm, boolean without_asking)
 {
     const char **textp;
     winid datawin = WIN_ERR;
@@ -1925,21 +1907,21 @@ boolean without_asking;
 
 /* the '/' command */
 int
-dowhatis(VOID_ARGS)
+dowhatis(void)
 {
     return do_look(0, (coord *) 0);
 }
 
 /* the ';' command */
 int
-doquickwhatis(VOID_ARGS)
+doquickwhatis(void)
 {
     return do_look(1, (coord *) 0);
 }
 
 /* the '^' command */
 int
-doidtrap(VOID_ARGS)
+doidtrap(void)
 {
     struct trap *trap;
     int x, y, tt, glyph;
@@ -2023,8 +2005,8 @@ doidtrap(VOID_ARGS)
     rest_on_space, #if SHELL, #if SUSPEND) are booleans.
 */
 
-STATIC_DCL void
-whatdoes_help(VOID_ARGS)
+static void
+whatdoes_help(void)
 {
     dlb *fp;
     char *p, buf[BUFSZ];
@@ -2057,14 +2039,11 @@ struct wd_stack_frame {
     Bitfield(else_seen, 1);
 };
 
-STATIC_DCL boolean FDECL(whatdoes_cond, (char *, struct wd_stack_frame *,
-                                         int *, int));
+static boolean whatdoes_cond(char *, struct wd_stack_frame *,
+                                         int *, int);
 
-STATIC_OVL boolean
-whatdoes_cond(buf, stack, depth, lnum)
-char *buf;
-struct wd_stack_frame *stack;
-int *depth, lnum;
+static boolean
+whatdoes_cond(char *buf, struct wd_stack_frame *stack, int *depth, int lnum)
 {
     const char badstackfmt[] = "cmdhlp: too many &%c directives at line %d.";
     boolean newcond, neg, gotopt;
@@ -2183,9 +2162,7 @@ int *depth, lnum;
 #endif /* 0 */
 
 char *
-dowhatdoes_core(q, cbuf)
-char q;
-char *cbuf;
+dowhatdoes_core(char q, char *cbuf)
 {
     char buf[BUFSZ];
 #if 0
@@ -2264,7 +2241,7 @@ char *cbuf;
 }
 
 int
-dowhatdoes(VOID_ARGS)
+dowhatdoes(void)
 {
     static boolean once = FALSE;
     char bufr[BUFSZ];
@@ -2308,8 +2285,8 @@ dowhatdoes(VOID_ARGS)
     return 0;
 }
 
-STATIC_OVL void
-docontact(VOID_ARGS)
+static void
+docontact(void)
 {
     winid cwin = create_nhwindow(NHW_TEXT);
     char buf[BUFSZ];
@@ -2339,74 +2316,74 @@ docontact(VOID_ARGS)
 }
 
 void
-dispfile_help(VOID_ARGS)
+dispfile_help(void)
 {
     display_file(HELP, TRUE);
 }
 
 void
-dispfile_shelp(VOID_ARGS)
+dispfile_shelp(void)
 {
     display_file(SHELP, TRUE);
 }
 
 void
-dispfile_optionfile(VOID_ARGS)
+dispfile_optionfile(void)
 {
     display_file(OPTIONFILE, TRUE);
 }
 
 void
-dispfile_license(VOID_ARGS)
+dispfile_license(void)
 {
     display_file(LICENSE, TRUE);
 }
 
 void
-dispfile_credits(VOID_ARGS)
+dispfile_credits(void)
 {
     display_file(CREDITSFILE, TRUE);
 }
 
 
 void
-dispfile_debughelp(VOID_ARGS)
+dispfile_debughelp(void)
 {
     display_file(DEBUGHELP, TRUE);
 }
 
 void
-hmenu_doextversion(VOID_ARGS)
+hmenu_doextversion(void)
 {
     (void) doextversion();
 }
 
 void
-hmenu_dohistory(VOID_ARGS)
+hmenu_dohistory(void)
 {
     (void) dohistory();
 }
 
 void
-hmenu_dowhatis(VOID_ARGS)
+hmenu_dowhatis(void)
 {
     (void) dowhatis();
 }
 
 void
-hmenu_dowhatdoes(VOID_ARGS)
+hmenu_dowhatdoes(void)
 {
     (void) dowhatdoes();
 }
 
 void
-hmenu_doextlist(VOID_ARGS)
+hmenu_doextlist(void)
 {
     (void) doextlist();
 }
 
 void
-domenucontrols(VOID_ARGS)
+domenucontrols(void)
 {
     winid cwin = create_nhwindow(NHW_TEXT);
     show_menu_controls(cwin, FALSE);
@@ -2415,7 +2392,7 @@ domenucontrols(VOID_ARGS)
 }
 
 /* data for dohelp() */
-STATIC_VAR const struct {
+static const struct {
     void NDECL((*f));
     const char *text;
 } help_menu_items[] = {
@@ -2442,7 +2419,7 @@ STATIC_VAR const struct {
 
 /* the '?' command */
 int
-dohelp(VOID_ARGS)
+dohelp(void)
 {
     winid tmpwin = create_nhwindow(NHW_MENU);
     char helpbuf[QBUFSZ];
@@ -2479,7 +2456,7 @@ dohelp(VOID_ARGS)
 
 /* the 'V' command; also a choice for '?' */
 int
-dohistory(VOID_ARGS)
+dohistory(void)
 {
     display_file(HISTORY, TRUE);
     return 0;
