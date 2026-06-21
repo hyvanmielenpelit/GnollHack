@@ -155,7 +155,7 @@ static void print_error_savefile_extension(char*);
 static void print_imported_savefile_extension(char*);
 #endif
 #ifdef WHEREIS_FILE
-static void write_whereis(int);
+static void write_whereis(boolean);
 #endif
 
 #ifdef AMIGA
