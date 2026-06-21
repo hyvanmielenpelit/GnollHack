@@ -38,10 +38,10 @@
  *                       random intervals.
  */
 
-STATIC_DCL boolean FDECL(md_start, (coord *));
-STATIC_DCL boolean FDECL(md_stop, (coord *, coord *));
-STATIC_DCL boolean FDECL(md_rush, (struct monst *, int, int));
-STATIC_DCL void FDECL(newmail, (struct mail_info *));
+static boolean md_start(coord *);
+static boolean md_stop(coord *, coord *);
+static boolean md_rush(struct monst *, int, int);
+static void newmail(struct mail_info *);
 
 extern char *viz_rmin, *viz_rmax; /* line-of-sight limits (vision.c) */
 
@@ -57,15 +57,15 @@ int mustgetmail = -1;
 #if !defined(SUNOS4) && !(defined(ULTRIX) && defined(__GNUC__))
 /* DO trust all SVR4 to typedef uid_t in <sys/types.h> (probably to a int64_t) */
 #if defined(POSIX_TYPES) || defined(SVR4) || defined(HPUX)
-extern struct passwd *FDECL(getpwuid, (uid_t));
+extern struct passwd *getpwuid(uid_t);
 #else
-extern struct passwd *FDECL(getpwuid, (int));
+extern struct passwd *getpwuid(int);
 #endif
 #endif
 #endif
-STATIC_VAR struct stat omstat, nmstat;
-STATIC_VAR char *mailbox = (char *) 0;
-STATIC_VAR int64_t laststattime;
+static struct stat omstat, nmstat;
+static char *mailbox = (char *) 0;
+static int64_t laststattime;
 
 #if !defined(MAILPATH) && defined(AMS) /* Just a placeholder for AMS */
 #define MAILPATH "/dev/null"
@@ -84,14 +84,14 @@ STATIC_VAR int64_t laststattime;
 #endif
 
 void
-free_maildata(VOID_ARGS)
+free_maildata(void)
 {
     if (mailbox)
         free((genericptr_t) mailbox), mailbox = (char *) 0;
 }
 
 void
-getmailstatus(VOID_ARGS)
+getmailstatus(void)
 {
     if (mailbox) {
         ; /* no need to repeat the setup */
@@ -142,9 +142,8 @@ getmailstatus(VOID_ARGS)
  * Pick coordinates for a starting position for the mail daemon.  Called
  * from newmail() and newphone().
  */
-STATIC_OVL boolean
-md_start(startp)
-coord *startp;
+static boolean
+md_start(coord *startp)
 {
     coord testcc;     /* scratch coordinates */
     int row;          /* current row we are checking */
@@ -237,15 +236,18 @@ coord *startp;
 }
 
 /*
+ * Parameters:
+ *   stopp: stopping position (we fill it in)
+ *   startp: starting position (read only)
+ */
+/*
  * Try to choose a stopping point as near as possible to the starting
  * position while still adjacent to the hero.  If all else fails, try
  * enexto().  Use enexto() as a last resort because enexto() chooses
  * its point randomly, which is not what we want.
  */
-STATIC_OVL boolean
-md_stop(stopp, startp)
-coord *stopp;  /* stopping position (we fill it in) */
-coord *startp; /* starting position (read only) */
+static boolean
+md_stop(coord *stopp, coord *startp)
 {
     int x, y, distance, min_distance = -1;
 
@@ -273,20 +275,22 @@ coord *startp; /* starting position (read only) */
 }
 
 /* Let the mail daemon have a larger vocabulary. */
-STATIC_VAR NEARDATA const char *mail_text[] = { "Gangway!", "Look out!",
+static NEARDATA const char *mail_text[] = { "Gangway!", "Look out!",
                                             "Pardon me!" };
 #define md_exclamations() (mail_text[rn2(3)])
 
+/*
+ * Parameters:
+ *   tx, ty: destination of mail daemon
+ */
 /*
  * Make the mail daemon run through the dungeon.  The daemon will run over
  * any monsters that are in its path, but will replace them later.  Return
  * FALSE if the md gets stuck in a position where there is a monster.  Return
  * TRUE otherwise.
  */
-STATIC_OVL boolean
-md_rush(md, tx, ty)
-struct monst *md;
-int tx, ty; /* destination of mail daemon */
+static boolean
+md_rush(struct monst *md, int tx, int ty)
 {
     struct monst *mon;            /* displaced monster */
     int dx, dy;          /* direction counters */
@@ -386,9 +390,8 @@ int tx, ty; /* destination of mail daemon */
 
 /* Deliver a scroll of mail. */
 /*ARGSUSED*/
-STATIC_OVL void
-newmail(info)
-struct mail_info *info;
+static void
+newmail(struct mail_info *info)
 {
     struct monst *md;
     coord start, stop;
@@ -438,7 +441,7 @@ struct mail_info *info;
 #if !defined(UNIX) && !defined(VMS)
 
 void
-ckmailstatus(VOID_ARGS)
+ckmailstatus(void)
 {
     if (u.uswallow || !flags.biff)
         return;
@@ -459,8 +462,7 @@ ckmailstatus(VOID_ARGS)
 
 /*ARGSUSED*/
 void
-readmail(otmp)
-struct obj *otmp UNUSED;
+readmail(struct obj *otmp UNUSED)
 {
     static const char *junk[] = {
         NULL, /* placeholder for "Report bugs to <devteam@GnollHack.org>.", */
@@ -496,7 +498,7 @@ struct obj *otmp UNUSED;
 #ifdef UNIX
 
 void
-ckmailstatus(VOID_ARGS)
+ckmailstatus(void)
 {
     ck_server_admin_msg();
 
@@ -534,9 +536,7 @@ ckmailstatus(VOID_ARGS)
 
 #if defined(SIMPLE_MAIL) || defined(SERVER_ADMIN_MSG)
 void
-read_simplemail(mbox, adminmsg)
-char *mbox;
-boolean adminmsg;
+read_simplemail(char *mbox, boolean adminmsg)
 {
     FILE* mb = fopen(mbox, "r");
     char curline[128], *msg;
@@ -621,7 +621,7 @@ boolean adminmsg;
 #endif /* SIMPLE_MAIL */
 
 void
-ck_server_admin_msg(VOID_ARGS)
+ck_server_admin_msg(void)
 {
 #ifdef SERVER_ADMIN_MSG
     static struct stat ost,nst;
@@ -640,8 +640,7 @@ ck_server_admin_msg(VOID_ARGS)
 
 /*ARGSUSED*/
 void
-readmail(otmp)
-struct obj *otmp UNUSED;
+readmail(struct obj *otmp UNUSED)
 {
 #ifdef DEF_MAILREADER /* This implies that UNIX is defined */
     const char *mr = 0;
@@ -681,7 +680,7 @@ extern NDECL(struct mail_info *parse_next_broadcast);
 volatile int broadcasts = 0;
 
 void
-ckmailstatus(VOID_ARGS)
+ckmailstatus(void)
 {
     struct mail_info *brdcst;
 
@@ -700,8 +699,7 @@ ckmailstatus(VOID_ARGS)
 }
 
 void
-readmail(otmp)
-struct obj *otmp;
+readmail(struct obj *otmp)
 {
 #ifdef SHELL /* can't access mail reader without spawning subprocess */
     const char *txt, *cmd;

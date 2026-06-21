@@ -885,13 +885,12 @@ NEARDATA const struct special_effect_definition special_effects[MAX_SPECIAL_EFFE
     {"black-light-flash",       0, 0, 3,        LAYER_GENERAL_EFFECT, NO_REPLACEMENT, BLACK_LIGHT_FLASH_ANIMATION, NO_ENLARGEMENT },
 };
 
-STATIC_DCL int FDECL(get_shore_tile_index, (struct rm*, struct rm*));
-STATIC_DCL int FDECL(get_solid_floor_tile_index, (struct rm*));
-STATIC_DCL int FDECL(get_shore_and_floor_adjusted_tile_index, (struct rm*, struct rm*, struct rm*, struct rm*));
+static int get_shore_tile_index(struct rm*, struct rm*);
+static int get_solid_floor_tile_index(struct rm*);
+static int get_shore_and_floor_adjusted_tile_index(struct rm*, struct rm*, struct rm*, struct rm*);
 
 int
-get_player_action_glyph_offset(action)
-enum action_tile_types action;
+get_player_action_glyph_offset(enum action_tile_types action)
 {
     /* relies on aligned ordering of glyph offsets and action_tile_types */
     int res = GLYPH_PLAYER_OFF + action * NUM_PLAYER_CHARACTERS;
@@ -899,9 +898,7 @@ enum action_tile_types action;
 }
 
 int
-get_monster_action_glyph_offset(action, genderidx)
-enum action_tile_types action;
-int genderidx;
+get_monster_action_glyph_offset(enum action_tile_types action, int genderidx)
 {
     /* relies on aligned ordering of glyph offsets and action_tile_types */
     int res = (genderidx == 0 ? GLYPH_MON_OFF : GLYPH_FEMALE_MON_OFF) + action * NUM_MONSTERS;
@@ -909,9 +906,7 @@ int genderidx;
 }
 
 short
-get_player_replacement(action, roleidx, raceidx, genderidx, alignmentidx, levelidx)
-enum action_tile_types action;
-int roleidx, raceidx, genderidx, alignmentidx, levelidx;
+get_player_replacement(enum action_tile_types action, int roleidx, int raceidx, int genderidx, int alignmentidx, int levelidx)
 {
     /* Write here the code that returns the right replacement for the combination that has a replacement */
     /* To remove gcc warning */
@@ -959,9 +954,7 @@ int roleidx, raceidx, genderidx, alignmentidx, levelidx;
 }
 
 short
-get_player_animation(action, roleidx, raceidx, genderidx, alignmentidx, levelidx)
-enum action_tile_types action;
-int roleidx, raceidx, genderidx, alignmentidx, levelidx;
+get_player_animation(enum action_tile_types action, int roleidx, int raceidx, int genderidx, int alignmentidx, int levelidx)
 {
     /* Write here the code that returns the right animation for the combination that has an animation */
     /* To remove gcc warning */
@@ -1425,13 +1418,7 @@ int roleidx, raceidx, genderidx, alignmentidx, levelidx;
 }
 
 struct replacement_info
-data_to_replacement_info(signed_glyph, layer, otmp, mtmp, layer_flags, monster_flags, missile_flags, missile_material, missile_special_quality)
-int signed_glyph, layer;
-struct obj* otmp;
-struct monst* mtmp;
-uint64_t layer_flags, monster_flags, missile_flags;
-uchar missile_material;
-short missile_special_quality;
+data_to_replacement_info(int signed_glyph, int layer, struct obj *otmp, struct monst *mtmp, uint64_t layer_flags, uint64_t monster_flags, uint64_t missile_flags, uchar missile_material, short missile_special_quality)
 {
     struct replacement_info info = { 0 };
     info.signed_glyph = signed_glyph;
@@ -1448,12 +1435,20 @@ short missile_special_quality;
 }
 
 int
-maybe_get_replaced_glyph(glyph, x, y, info)
+maybe_get_replaced_glyph(
 #if defined(USE_TILES)
-int glyph;
-int x, y;
-struct replacement_info info;
+    int glyph,
+    int x,
+    int y,
+    struct replacement_info info)
+#else
+    int glyph UNUSED,
+    int x UNUSED,
+    int y UNUSED,
+    struct replacement_info info UNUSED)
+#endif
 {
+#if defined(USE_TILES)
     int sign = sgn(glyph);
     int absglyph = abs(glyph);
     struct obj* otmp = info.object;
@@ -2284,20 +2279,14 @@ struct replacement_info info;
             break;
         }
     }
-#else
-int glyph UNUSED;
-int x UNUSED, y UNUSED;
-struct replacement_info info UNUSED;
-{
 #endif
     return glyph;
 }
 
 
 
-STATIC_OVL int
-get_shore_tile_index(mainlev, lev)
-struct rm* mainlev, *lev;
+static int
+get_shore_tile_index(struct rm *mainlev, struct rm *lev)
 {
     if (!mainlev || !lev)
         return -1;
@@ -2426,9 +2415,8 @@ struct rm* mainlev, *lev;
 }
 
 
-STATIC_OVL int
-get_solid_floor_tile_index(lev)
-struct rm* lev;
+static int
+get_solid_floor_tile_index(struct rm *lev)
 {
     if (lev->typ == CORR)
     {
@@ -2466,9 +2454,8 @@ struct rm* lev;
     return 0;
 }
 
-STATIC_OVL int
-get_shore_and_floor_adjusted_tile_index(lev, above_lev, left_lev, right_lev)
-struct rm *lev, *above_lev, *left_lev, *right_lev;
+static int
+get_shore_and_floor_adjusted_tile_index(struct rm *lev, struct rm *above_lev, struct rm *left_lev, struct rm *right_lev)
 {
     int typ = 0;
 
@@ -2519,14 +2506,7 @@ struct rm *lev, *above_lev, *left_lev, *right_lev;
 }
 
 int
-maybe_get_animated_tile(ntile, tile_animation_idx, play_type, interval_counter, frame_idx_ptr, main_tile_idx_ptr, mapAnimated, autodraw_ptr)
-int ntile;
-int tile_animation_idx;
-enum animation_play_types play_type;
-int64_t interval_counter;
-int *frame_idx_ptr, *main_tile_idx_ptr;
-char* mapAnimated;
-enum autodraw_types* autodraw_ptr;
+maybe_get_animated_tile(int ntile, int tile_animation_idx, enum animation_play_types play_type, int64_t interval_counter, int *frame_idx_ptr, int *main_tile_idx_ptr, char *mapAnimated, enum autodraw_types *autodraw_ptr)
 {
 #ifdef USE_TILES
     if (frame_idx_ptr)
@@ -2609,8 +2589,7 @@ enum autodraw_types* autodraw_ptr;
 
 
 int
-get_tile_animation_index_from_glyph(glyph)
-int glyph;
+get_tile_animation_index_from_glyph(int glyph)
 {
     int absglyph = abs(glyph);
     if (glyph_is_swallow(absglyph))
@@ -2643,9 +2622,7 @@ int glyph;
 }
 
 short
-get_player_enlargement(action, roleidx, raceidx, genderidx, alignmentidx, levelidx)
-enum action_tile_types action;
-int roleidx, raceidx, genderidx, alignmentidx, levelidx;
+get_player_enlargement(enum action_tile_types action, int roleidx, int raceidx, int genderidx, int alignmentidx, int levelidx)
 {
     /* Write here the code that returns the right enlargement for the combination that has an enlargement */
     if (roleidx == 0 && raceidx == 0 && genderidx == 0 && alignmentidx == 0 && levelidx == 0)
@@ -2693,8 +2670,7 @@ int roleidx, raceidx, genderidx, alignmentidx, levelidx;
 
 
 int
-get_animation_base_tile(animidx)
-short animidx;
+get_animation_base_tile(short animidx)
 {
 #ifdef USE_TILES
     int i, j, cmap_idx;
@@ -2879,8 +2855,7 @@ short animidx;
 
 
 int
-get_enlargement_base_tile(enlidx, enl_anim_tile_idx)
-short enlidx, enl_anim_tile_idx;
+get_enlargement_base_tile(short enlidx, short enl_anim_tile_idx)
 {
 #ifdef USE_TILES
     int i, j, cmap_idx;
@@ -3052,8 +3027,7 @@ short enlidx, enl_anim_tile_idx;
 }
 
 int
-get_animation_frame_with_tile(animidx, tileidx)
-int animidx, tileidx;
+get_animation_frame_with_tile(int animidx, int tileidx)
 {
     int i;
     for (i = 0; i < animations[animidx].number_of_frames; i++)
@@ -3066,8 +3040,7 @@ int animidx, tileidx;
 }
 
 int
-get_replacement_base_tile(replacement_idx)
-short replacement_idx;
+get_replacement_base_tile(short replacement_idx)
 {
 #ifdef USE_TILES
     int i, j, k, cmap_idx;
@@ -3256,10 +3229,7 @@ short replacement_idx;
 }
 
 void
-play_special_effect_at(sp_effect, spef_number, x, y, force_visibility)
-enum special_effect_types sp_effect;
-int spef_number, x, y;
-boolean force_visibility;
+play_special_effect_at(enum special_effect_types sp_effect, int spef_number, int x, int y, boolean force_visibility)
 {
     enum layer_types layer = special_effects[sp_effect].layer;
     short anim = special_effects[sp_effect].animation;
@@ -3269,12 +3239,12 @@ boolean force_visibility;
     play_special_effect_with_details_at(spef_number, x, y, sp_effect + GLYPH_SPECIAL_EFFECT_OFF, layer, anim, frames_to_sound, frames_from_sound_to_action, frames_from_action_to_end, force_visibility);
 }
 
+/*
+ * Parameters:
+ *   anim: -1 = fade glyph in, -2: fade glyph out
+ */
 void
-play_special_effect_with_details_at(spef_number, x, y, glyph, layer, anim, frames_to_sound, frames_from_sound_to_action, frames_from_action_to_end, force_visibility)
-enum layer_types layer;
-short anim; /* -1 = fade glyph in, -2: fade glyph out */
-int glyph, spef_number, frames_to_sound, frames_from_sound_to_action, frames_from_action_to_end, x, y;
-boolean force_visibility;
+play_special_effect_with_details_at(int spef_number, int x, int y, int glyph, enum layer_types layer, short anim, int frames_to_sound, int frames_from_sound_to_action, int frames_from_action_to_end, boolean force_visibility)
 {
     if (iflags.using_gui_tiles && isok(x, y) && spef_number >= 0 && spef_number < MAX_PLAYED_SPECIAL_EFFECTS && (force_visibility || cansee(x, y)))
     {
@@ -3356,8 +3326,7 @@ boolean force_visibility;
 }
 
 void
-special_effect_wait_until_action(spef_number)
-int spef_number;
+special_effect_wait_until_action(int spef_number)
 {
     if (context.spef_intervals_to_wait_until_action[spef_number] > 0UL)
     {
@@ -3367,8 +3336,7 @@ int spef_number;
 }
 
 void
-special_effect_wait_until_end(spef_number)
-int spef_number;
+special_effect_wait_until_end(int spef_number)
 {
     if (context.spef_intervals_to_wait_until_end[spef_number] > 0)
     {
@@ -3391,8 +3359,7 @@ int spef_number;
 }
 
 void
-reduce_counters(milliseconds)
-int milliseconds;
+reduce_counters(int milliseconds)
 {
     if (milliseconds < 0)
         return;
@@ -3405,8 +3372,7 @@ int milliseconds;
 
 
 void
-reduce_counters_intervals(intervals)
-int intervals;
+reduce_counters_intervals(int intervals)
 {
     int i;
 
@@ -3464,7 +3430,7 @@ int intervals;
 }
 
 void
-stop_animations(VOID_ARGS)
+stop_animations(void)
 {
     if (toggle_animation_timer)
     {
@@ -3481,8 +3447,7 @@ stop_animations(VOID_ARGS)
 
 
 boolean
-glyph_is_specific_cmap_or_its_variation(glyph, s_idx)
-int glyph, s_idx;
+glyph_is_specific_cmap_or_its_variation(int glyph, int s_idx)
 {
     if (s_idx == S_unexplored)
     {
@@ -3526,8 +3491,7 @@ int glyph, s_idx;
 }
 
 boolean
-no_wall_end_autodraw(x, y)
-int x, y;
+no_wall_end_autodraw(int x, int y)
 {
     if(!isok(x, y))
         return TRUE;

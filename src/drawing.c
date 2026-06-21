@@ -1307,7 +1307,7 @@ const struct symdef_cmap_variation defsym_variations[MAX_VARIATIONS] =
 
 
 /* default rogue level symbols */
-STATIC_VAR const uchar def_r_oc_syms[MAX_OBJECT_CLASSES] = {
+static const uchar def_r_oc_syms[MAX_OBJECT_CLASSES] = {
 /* 0*/ '\0', ILLOBJ_SYM, WEAPON_SYM, ']', /* armor */
        RING_SYM,
 /* 5*/ ',',                     /* amulet */
@@ -1340,8 +1340,7 @@ void NDECL((*cursesgraphics_mode_callback)) = 0;
  * objnam.c, options.c, pickup.c, sp_lev.c, lev_main.c, and tilemap.c.
  */
 int
-def_char_to_objclass(ch)
-char ch;
+def_char_to_objclass(char ch)
 {
     int i;
     for (i = 1; i < MAX_OBJECT_CLASSES; i++)
@@ -1356,8 +1355,7 @@ char ch;
  * Used in detect.c, options.c, read.c, sp_lev.c, and lev_main.c
  */
 int
-def_char_to_monclass(ch)
-char ch;
+def_char_to_monclass(char ch)
 {
     int i;
     for (i = 1; i < MAX_MONSTER_CLASSES; i++)
@@ -1413,7 +1411,7 @@ char ch;
  */
 
 void
-init_symbols(VOID_ARGS)
+init_symbols(void)
 {
     init_l_symbols();
     init_showsyms();
@@ -1421,7 +1419,7 @@ init_symbols(VOID_ARGS)
 }
 
 void
-update_bouldersym(VOID_ARGS)
+update_bouldersym(void)
 {
     nhsym boulder = iflags.bouldersym;
 
@@ -1433,7 +1431,7 @@ update_bouldersym(VOID_ARGS)
 }
 
 void
-init_showsyms(VOID_ARGS)
+init_showsyms(void)
 {
     int i;
 
@@ -1457,7 +1455,7 @@ init_showsyms(VOID_ARGS)
 
 /* initialize defaults for the loadable symset */
 void
-init_l_symbols(VOID_ARGS)
+init_l_symbols(void)
 {
     int i;
 
@@ -1482,7 +1480,7 @@ init_l_symbols(VOID_ARGS)
 }
 
 void
-init_r_symbols(VOID_ARGS)
+init_r_symbols(void)
 {
     int i;
 
@@ -1517,8 +1515,7 @@ init_r_symbols(VOID_ARGS)
 }
 
 void
-assign_graphics(whichset)
-int whichset;
+assign_graphics(int whichset)
 {
     int i;
 
@@ -1551,8 +1548,7 @@ int whichset;
 }
 
 void
-switch_symbols(nondefault)
-int nondefault;
+switch_symbols(int nondefault)
 {
     int i;
 
@@ -1580,25 +1576,19 @@ int nondefault;
 }
 
 void
-update_l_symset(symp, val)
-struct symparse *symp;
-nhsym val;
+update_l_symset(struct symparse *symp, nhsym val)
 {
     l_syms[symp->idx] = val;
 }
 
 void
-update_r_symset(symp, val)
-struct symparse *symp;
-nhsym val;
+update_r_symset(struct symparse *symp, nhsym val)
 {
     r_syms[symp->idx] = val;
 }
 
 void
-clear_symsetentry(which_set, name_too)
-int which_set;
-boolean name_too;
+clear_symsetentry(int which_set, boolean name_too)
 {
     if (symset[which_set].desc)
         free((genericptr_t) symset[which_set].desc);
@@ -1865,8 +1855,7 @@ struct symparse loadsyms[] = {
 };
 
 const char*
-get_cmap_tilename(idx)
-int idx;
+get_cmap_tilename(int idx)
 {
     if (idx >= 0 && idx < MAX_CMAPPED_CHARS)
     {

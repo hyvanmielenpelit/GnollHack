@@ -7,46 +7,46 @@
 #include "hack.h"
 #include <math.h>
 
-STATIC_DCL boolean FDECL(mon_is_gecko, (struct monst *));
-STATIC_DCL int FDECL(domonnoise, (struct monst *, BOOLEAN_P, BOOLEAN_P, BOOLEAN_P));
-STATIC_DCL int FDECL(domonnoise_with_popup, (struct monst*));
-STATIC_DCL int FDECL(domonnoise_with_popup_nonpc, (struct monst*));
-STATIC_DCL boolean NDECL(speak_check);
-STATIC_DCL boolean NDECL(yell_check);
-STATIC_DCL boolean FDECL(m_speak_check, (struct monst*));
-STATIC_DCL boolean FDECL(m_general_talk_check, (struct monst*, const char*));
-STATIC_DCL int NDECL(dochat);
-STATIC_DCL int FDECL(do_chat_whoareyou, (struct monst*));
-STATIC_DCL int FDECL(do_chat_rumors, (struct monst*));
-STATIC_DCL struct monst* FDECL(ask_target_monster, (struct monst*));
-STATIC_DCL int FDECL(count_takeable_items, (struct monst*));
+static boolean mon_is_gecko(struct monst *);
+static int domonnoise(struct monst *, boolean, boolean, boolean);
+static int domonnoise_with_popup(struct monst*);
+static int domonnoise_with_popup_nonpc(struct monst*);
+static boolean speak_check(void);
+static boolean yell_check(void);
+static boolean m_speak_check(struct monst*);
+static boolean m_general_talk_check(struct monst*, const char*);
+static int dochat(void);
+static int do_chat_whoareyou(struct monst*);
+static int do_chat_rumors(struct monst*);
+static struct monst* ask_target_monster(struct monst*);
+static int count_takeable_items(struct monst*);
 
-STATIC_DCL void FDECL(hermit_talk, (struct monst*, const char**, enum ghsound_types));
-STATIC_DCL void FDECL(popup_talk, (struct monst*, const char**, enum ghsound_types, int, int, BOOLEAN_P, BOOLEAN_P));
-STATIC_DCL void FDECL(popup_talk_core, (struct monst*, const char**, enum ghsound_types, UCHAR_P, int, int, int, BOOLEAN_P, BOOLEAN_P));
+static void hermit_talk(struct monst*, const char **, enum ghsound_types);
+static void popup_talk(struct monst*, const char **, enum ghsound_types, int, int, boolean, boolean);
+static void popup_talk_core(struct monst*, const char **, enum ghsound_types, uchar, int, int, int, boolean, boolean);
 
-STATIC_DCL int FDECL(do_chat_hermit_dungeons, (struct monst*));
-STATIC_DCL int FDECL(do_chat_hermit_quests, (struct monst*));
-STATIC_DCL int FDECL(do_chat_hermit_gnomish_mines, (struct monst*));
-STATIC_DCL int FDECL(do_chat_hermit_sokoban, (struct monst*));
-STATIC_DCL int FDECL(do_chat_hermit_further_advice, (struct monst*));
-STATIC_DCL int FDECL(do_chat_hermit_castle, (struct monst*));
-STATIC_DCL int FDECL(do_chat_hermit_gehennom, (struct monst*));
-STATIC_DCL int FDECL(do_chat_hermit_wizard_of_yendor, (struct monst*));
+static int do_chat_hermit_dungeons(struct monst*);
+static int do_chat_hermit_quests(struct monst*);
+static int do_chat_hermit_gnomish_mines(struct monst*);
+static int do_chat_hermit_sokoban(struct monst*);
+static int do_chat_hermit_further_advice(struct monst*);
+static int do_chat_hermit_castle(struct monst*);
+static int do_chat_hermit_gehennom(struct monst*);
+static int do_chat_hermit_wizard_of_yendor(struct monst*);
 
-STATIC_DCL int FDECL(do_chat_hermit2_castle, (struct monst*));
-STATIC_DCL int FDECL(do_chat_hermit2_gehennom, (struct monst*));
-STATIC_DCL int FDECL(do_chat_hermit2_wizard_of_yendor, (struct monst*));
-STATIC_DCL int FDECL(do_chat_hermit2_vampire_lord, (struct monst*));
-STATIC_DCL int FDECL(do_chat_hermit2_silver_bell, (struct monst*));
-STATIC_DCL int FDECL(do_chat_hermit2_candelabrum, (struct monst*));
-STATIC_DCL int FDECL(do_chat_hermit2_book_of_the_dead, (struct monst*));
-STATIC_DCL int FDECL(do_chat_hermit2_ritual, (struct monst*));
+static int do_chat_hermit2_castle(struct monst*);
+static int do_chat_hermit2_gehennom(struct monst*);
+static int do_chat_hermit2_wizard_of_yendor(struct monst*);
+static int do_chat_hermit2_vampire_lord(struct monst*);
+static int do_chat_hermit2_silver_bell(struct monst*);
+static int do_chat_hermit2_candelabrum(struct monst*);
+static int do_chat_hermit2_book_of_the_dead(struct monst*);
+static int do_chat_hermit2_ritual(struct monst*);
 
-STATIC_DCL int FDECL(do_chat_hermit3_gnomish_mines, (struct monst*));
-STATIC_DCL int FDECL(do_chat_hermit3_luckstone, (struct monst*));
-STATIC_DCL int FDECL(do_chat_orc_hermit3_gnomish_mines, (struct monst*));
-STATIC_DCL int FDECL(do_chat_orc_hermit3_luckstone, (struct monst*));
+static int do_chat_hermit3_gnomish_mines(struct monst*);
+static int do_chat_hermit3_luckstone(struct monst*);
+static int do_chat_orc_hermit3_gnomish_mines(struct monst*);
+static int do_chat_orc_hermit3_luckstone(struct monst*);
 
 #define hermit_told_dungeon special_talk_flag1
 #define hermit_told_quests special_talk_flag2
@@ -68,149 +68,146 @@ STATIC_DCL int FDECL(do_chat_orc_hermit3_luckstone, (struct monst*));
 
 #define hermit3_told_gnomish_mines special_talk_flag1
 
-STATIC_DCL int FDECL(do_chat_quantum_experiments, (struct monst*));
-STATIC_DCL int FDECL(do_chat_quantum_large_circular_dungeon, (struct monst*));
-STATIC_DCL int FDECL(do_chat_quantum_special_wand, (struct monst*));
-STATIC_DCL int FDECL(do_chat_quantum_disintegration_wand, (struct monst*));
-STATIC_DCL int FDECL(do_chat_quantum_teleportation_wand, (struct monst*));
+static int do_chat_quantum_experiments(struct monst*);
+static int do_chat_quantum_large_circular_dungeon(struct monst*);
+static int do_chat_quantum_special_wand(struct monst*);
+static int do_chat_quantum_disintegration_wand(struct monst*);
+static int do_chat_quantum_teleportation_wand(struct monst*);
 
 #define quantum_told_experiments special_talk_flag1
 
-STATIC_DCL int FDECL(do_chat_pet_sit, (struct monst*));
-STATIC_DCL int FDECL(do_chat_pet_givepaw, (struct monst*));
-STATIC_DCL int FDECL(do_chat_pet_pet, (struct monst*));
-STATIC_DCL int FDECL(do_chat_pet_good_boy_girl, (struct monst*));
-STATIC_DCL int FDECL(do_chat_pet_stay, (struct monst*));
-STATIC_DCL int FDECL(do_chat_pet_standup, (struct monst*));
-STATIC_DCL int FDECL(do_chat_pet_follow, (struct monst*));
-STATIC_DCL int FDECL(do_chat_pet_unfollow, (struct monst*));
-STATIC_DCL int FDECL(do_chat_pet_display_inventory, (struct monst*));
-STATIC_DCL int FDECL(do_chat_pet_dropitems, (struct monst*));
-STATIC_DCL int FDECL(do_chat_pet_pickitems, (struct monst*));
-STATIC_DCL int FDECL(do_chat_pet_giveitems, (struct monst*));
-STATIC_DCL int FDECL(do_chat_pet_takeitems, (struct monst*));
-STATIC_DCL int FDECL(do_chat_pet_dowear, (struct monst*));
-STATIC_DCL int FDECL(do_chat_pet_dotakeoff, (struct monst*));
-STATIC_DCL int FDECL(do_chat_pet_dowield_hth, (struct monst*));
-STATIC_DCL int FDECL(do_chat_pet_dowield_ranged, (struct monst*));
-STATIC_DCL int FDECL(do_chat_pet_dowield_pickaxe, (struct monst*));
-STATIC_DCL int FDECL(do_chat_pet_dowield_axe, (struct monst*));
-STATIC_DCL int FDECL(do_chat_pet_dounwield, (struct monst*));
-STATIC_DCL int FDECL(do_chat_feed, (struct monst*));
-STATIC_DCL int FDECL(do_chat_quaff, (struct monst*));
-STATIC_DCL int FDECL(do_chat_unicorn_horn, (struct monst*));
-STATIC_DCL int FDECL(do_chat_uncurse_items, (struct monst*));
-STATIC_DCL int FDECL(do_chat_buy_items, (struct monst*));
-STATIC_DCL int FDECL(do_chat_join_party, (struct monst*));
-STATIC_DCL int FDECL(do_chat_explain_statistics, (struct monst*));
-STATIC_DCL int FDECL(do_chat_oracle_consult, (struct monst*));
-STATIC_DCL int FDECL(do_chat_oracle_identify, (struct monst*));
-STATIC_DCL int FDECL(do_chat_oracle_enlightenment, (struct monst*));
-STATIC_DCL int FDECL(do_chat_priest_blesscurse, (struct monst*));
-STATIC_DCL int FDECL(do_chat_priest_full_healing, (struct monst*));
-STATIC_DCL int FDECL(do_chat_priest_normal_healing, (struct monst*));
-STATIC_DCL int FDECL(do_chat_priest_cure_sickness, (struct monst*));
-STATIC_DCL int FDECL(do_chat_priest_chat, (struct monst*));
-STATIC_DCL int FDECL(do_chat_priest_divination, (struct monst*));
-STATIC_DCL int FDECL(do_chat_priest_teach_spells, (struct monst*));
-STATIC_DCL int FDECL(do_chat_oracle_teach_spells, (struct monst*));
-STATIC_DCL int FDECL(do_chat_shk_payitems, (struct monst*));
-STATIC_DCL int FDECL(do_chat_shk_pricequote, (struct monst*));
-STATIC_DCL int FDECL(do_chat_shk_chat, (struct monst*));
-STATIC_DCL int FDECL(do_chat_shk_identify, (struct monst*));
-STATIC_DCL int FDECL(do_chat_shk_credit, (struct monst*));
-STATIC_DCL int FDECL(do_chat_shk_reconciliation, (struct monst*));
-STATIC_DCL int FDECL(do_chat_smith_reconciliation, (struct monst*));
-STATIC_DCL int FDECL(do_chat_smith_enchant_armor, (struct monst*));
-STATIC_DCL int FDECL(do_chat_smith_enchant_weapon, (struct monst*));
-STATIC_DCL int FDECL(do_chat_smith_repair_armor, (struct monst*));
-STATIC_DCL int FDECL(do_chat_smith_repair_weapon, (struct monst*));
-STATIC_DCL int FDECL(do_chat_smith_protect_armor, (struct monst*));
-STATIC_DCL int FDECL(do_chat_smith_protect_weapon, (struct monst*));
-STATIC_DCL int FDECL(do_chat_smith_refill_lantern, (struct monst*));
-STATIC_DCL int FDECL(do_chat_forge_menu, (struct monst*, int, int, const char*));
-STATIC_DCL int FDECL(do_chat_smith_forge_standard_armor, (struct monst*));
-STATIC_DCL int FDECL(do_chat_smith_forge_special_armor, (struct monst*));
-STATIC_DCL int FDECL(do_chat_smith_identify, (struct monst*));
-STATIC_DCL int FDECL(do_chat_smith_sell_ore, (struct monst*));
-STATIC_DCL int FDECL(do_chat_quantum_mechanic_research_support, (struct monst*));
-STATIC_DCL int FDECL(do_chat_quantum_observe_position, (struct monst*));
-STATIC_DCL int FDECL(do_chat_quantum_observe_speed, (struct monst*));
-STATIC_DCL int FDECL(do_chat_npc_special_hints, (struct monst*));
-STATIC_DCL int FDECL(do_chat_npc_sing_song, (struct monst*));
-STATIC_DCL int FDECL(do_chat_npc_reconciliation, (struct monst*));
-STATIC_DCL int FDECL(do_chat_npc_identify_items, (struct monst*));
-STATIC_DCL int FDECL(do_chat_npc_identify_gems_and_stones, (struct monst*));
-STATIC_DCL int FDECL(do_chat_npc_identify_accessories_and_charged_items, (struct monst*));
-STATIC_DCL int FDECL(do_chat_npc_identify_gems_stones_and_charged_items, (struct monst*));
-STATIC_DCL int FDECL(do_chat_npc_general_identify, (struct monst*, const char*, int, int64_t, int, int));
-STATIC_DCL int FDECL(do_chat_npc_sell_gems_and_stones, (struct monst*));
-STATIC_DCL int FDECL(do_chat_npc_forge_sling_bullets, (struct monst*));
-STATIC_DCL int FDECL(do_chat_npc_sell_dilithium_crystals, (struct monst*));
-STATIC_DCL int FDECL(do_chat_npc_sell_spellbooks, (struct monst*));
-STATIC_DCL int FDECL(do_chat_npc_forge_cubic_gate, (struct monst*));
-STATIC_DCL int FDECL(do_chat_npc_forge_artificial_wings, (struct monst*));
-STATIC_DCL int FDECL(do_chat_npc_branch_portal, (struct monst*));
-STATIC_DCL int FDECL(sell_to_npc, (struct obj*, struct monst*, int, BOOLEAN_P));
-STATIC_DCL int FDECL(sell_many_to_npc, (struct monst*, boolean FDECL((*), (OBJ_P))));
-STATIC_DCL int FDECL(do_chat_npc_enchant_accessory, (struct monst*));
-STATIC_DCL int FDECL(do_chat_npc_recharge, (struct monst*));
-STATIC_DCL int FDECL(do_chat_npc_blessed_recharge, (struct monst*));
-STATIC_DCL int FDECL(do_chat_npc_teach_spells, (struct monst*));
-STATIC_DCL int FDECL(do_chat_watchman_reconciliation, (struct monst*));
-STATIC_DCL int FDECL(do_chat_quest_chat, (struct monst*));
-STATIC_DCL int FDECL(mon_in_room, (struct monst *, int));
-STATIC_DCL int FDECL(spell_service_query, (struct monst*, int, int, const char*, int64_t, const char*, int));
-STATIC_DCL int FDECL(general_service_query, (struct monst*, int (*)(struct monst*), const char*, int64_t, const char*, int));
-STATIC_DCL int FDECL(general_service_query_with_extra, (struct monst*, int (*)(struct monst*), const char*, int64_t, const char*, int, const char*, int));
-STATIC_DCL int FDECL(general_service_query_with_item_cost_adjustment_and_extra, (struct monst*, int (*)(struct monst*, struct obj*), const char*, const char*, int64_t, int64_t, int64_t, int64_t, int64_t, const char*, int, const char*, int));
-STATIC_DCL int FDECL(item_enchant_service_query, (struct monst*, int, int64_t));
-STATIC_DCL int FDECL(recharge_item_func, (struct monst*, struct obj*));
-STATIC_DCL int FDECL(blessed_recharge_item_func, (struct monst*, struct obj*));
-STATIC_DCL int FDECL(repair_armor_func, (struct monst*));
-STATIC_DCL int FDECL(repair_weapon_func, (struct monst*));
-STATIC_DCL int FDECL(refill_lantern_func, (struct monst*));
-STATIC_DCL int FDECL(forge_special_func, (struct monst*, int, int64_t, int, int64_t, int, UCHAR_P, BOOLEAN_P));
-STATIC_DCL int FDECL(forge_any_special_func, (struct monst*));
-STATIC_DCL int FDECL(forge_cubic_gate_func, (struct monst*));
-STATIC_DCL int FDECL(forge_artificial_wings_func, (struct monst*));
-STATIC_DCL int FDECL(forge_dragon_scale_mail_func, (struct monst*));
-//STATIC_DCL int FDECL(forge_shield_of_reflection_func, (struct monst*));
-//STATIC_DCL int FDECL(forge_crystal_plate_mail_func, (struct monst*));
-//STATIC_DCL int FDECL(forge_adamantium_full_plate_mail_func, (struct monst*));
-//STATIC_DCL int FDECL(forge_mithril_full_plate_mail_func, (struct monst*));
-//STATIC_DCL int FDECL(forge_orichalcum_full_plate_mail_func, (struct monst*));
-//STATIC_DCL int FDECL(forge_plate_mail_func, (struct monst*));
-//STATIC_DCL int FDECL(forge_bronze_plate_mail_func, (struct monst*));
-//STATIC_DCL int FDECL(forge_field_plate_mail_func, (struct monst*));
-//STATIC_DCL int FDECL(forge_full_plate_mail_func, (struct monst*));
-//STATIC_DCL int FDECL(forge_iron_sling_bullets_func, (struct monst*));
-//STATIC_DCL int FDECL(forge_ex_iron_sling_bullets_func, (struct monst*));
-//STATIC_DCL int FDECL(forge_el_iron_sling_bullets_func, (struct monst*));
-//STATIC_DCL int FDECL(forge_silver_sling_bullets_func, (struct monst*));
-//STATIC_DCL int FDECL(forge_ex_silver_sling_bullets_func, (struct monst*));
-//STATIC_DCL int FDECL(forge_el_silver_sling_bullets_func, (struct monst*));
-STATIC_DCL int FDECL(learn_spell_func, (struct monst*));
-STATIC_DCL int FDECL(spell_teaching, (struct monst*, int*));
-STATIC_DCL boolean FDECL(maybe_dilithium_crystal, (struct obj*));
-STATIC_DCL boolean FDECL(maybe_forgeable_ore, (struct obj*));
-STATIC_DCL boolean FDECL(maybe_gem, (struct obj*));
-STATIC_DCL boolean FDECL(maybe_spellbook, (struct obj*));
-STATIC_DCL boolean FDECL(maybe_dragon_scales, (struct obj*));
-STATIC_DCL boolean FDECL(maybe_otyp, (struct obj*));
-STATIC_VAR int otyp_for_maybe_otyp = 0;
-STATIC_VAR boolean stop_chat = FALSE;
-STATIC_PTR int FDECL(CFDECLSPEC available_chat_cmp, (const genericptr, const genericptr));
+static int do_chat_pet_sit(struct monst*);
+static int do_chat_pet_givepaw(struct monst*);
+static int do_chat_pet_pet(struct monst*);
+static int do_chat_pet_good_boy_girl(struct monst*);
+static int do_chat_pet_stay(struct monst*);
+static int do_chat_pet_standup(struct monst*);
+static int do_chat_pet_follow(struct monst*);
+static int do_chat_pet_unfollow(struct monst*);
+static int do_chat_pet_display_inventory(struct monst*);
+static int do_chat_pet_dropitems(struct monst*);
+static int do_chat_pet_pickitems(struct monst*);
+static int do_chat_pet_giveitems(struct monst*);
+static int do_chat_pet_takeitems(struct monst*);
+static int do_chat_pet_dowear(struct monst*);
+static int do_chat_pet_dotakeoff(struct monst*);
+static int do_chat_pet_dowield_hth(struct monst*);
+static int do_chat_pet_dowield_ranged(struct monst*);
+static int do_chat_pet_dowield_pickaxe(struct monst*);
+static int do_chat_pet_dowield_axe(struct monst*);
+static int do_chat_pet_dounwield(struct monst*);
+static int do_chat_feed(struct monst*);
+static int do_chat_quaff(struct monst*);
+static int do_chat_unicorn_horn(struct monst*);
+static int do_chat_uncurse_items(struct monst*);
+static int do_chat_buy_items(struct monst*);
+static int do_chat_join_party(struct monst*);
+static int do_chat_explain_statistics(struct monst*);
+static int do_chat_oracle_consult(struct monst*);
+static int do_chat_oracle_identify(struct monst*);
+static int do_chat_oracle_enlightenment(struct monst*);
+static int do_chat_priest_blesscurse(struct monst*);
+static int do_chat_priest_full_healing(struct monst*);
+static int do_chat_priest_normal_healing(struct monst*);
+static int do_chat_priest_cure_sickness(struct monst*);
+static int do_chat_priest_chat(struct monst*);
+static int do_chat_priest_divination(struct monst*);
+static int do_chat_priest_teach_spells(struct monst*);
+static int do_chat_oracle_teach_spells(struct monst*);
+static int do_chat_shk_payitems(struct monst*);
+static int do_chat_shk_pricequote(struct monst*);
+static int do_chat_shk_chat(struct monst*);
+static int do_chat_shk_identify(struct monst*);
+static int do_chat_shk_credit(struct monst*);
+static int do_chat_shk_reconciliation(struct monst*);
+static int do_chat_smith_reconciliation(struct monst*);
+static int do_chat_smith_enchant_armor(struct monst*);
+static int do_chat_smith_enchant_weapon(struct monst*);
+static int do_chat_smith_repair_armor(struct monst*);
+static int do_chat_smith_repair_weapon(struct monst*);
+static int do_chat_smith_protect_armor(struct monst*);
+static int do_chat_smith_protect_weapon(struct monst*);
+static int do_chat_smith_refill_lantern(struct monst*);
+static int do_chat_forge_menu(struct monst*, int, int, const char*);
+static int do_chat_smith_forge_standard_armor(struct monst*);
+static int do_chat_smith_forge_special_armor(struct monst*);
+static int do_chat_smith_identify(struct monst*);
+static int do_chat_smith_sell_ore(struct monst*);
+static int do_chat_quantum_mechanic_research_support(struct monst*);
+static int do_chat_quantum_observe_position(struct monst*);
+static int do_chat_quantum_observe_speed(struct monst*);
+static int do_chat_npc_special_hints(struct monst*);
+static int do_chat_npc_sing_song(struct monst*);
+static int do_chat_npc_reconciliation(struct monst*);
+static int do_chat_npc_identify_items(struct monst*);
+static int do_chat_npc_identify_gems_and_stones(struct monst*);
+static int do_chat_npc_identify_accessories_and_charged_items(struct monst*);
+static int do_chat_npc_identify_gems_stones_and_charged_items(struct monst*);
+static int do_chat_npc_general_identify(struct monst*, const char*, int, int64_t, int, int);
+static int do_chat_npc_sell_gems_and_stones(struct monst*);
+static int do_chat_npc_forge_sling_bullets(struct monst*);
+static int do_chat_npc_sell_dilithium_crystals(struct monst*);
+static int do_chat_npc_sell_spellbooks(struct monst*);
+static int do_chat_npc_forge_cubic_gate(struct monst*);
+static int do_chat_npc_forge_artificial_wings(struct monst*);
+static int do_chat_npc_branch_portal(struct monst*);
+static int sell_to_npc(struct obj*, struct monst*, int, boolean);
+static int sell_many_to_npc(struct monst*, boolean FDECL((*), (struct obj *)));
+static int do_chat_npc_enchant_accessory(struct monst*);
+static int do_chat_npc_recharge(struct monst*);
+static int do_chat_npc_blessed_recharge(struct monst*);
+static int do_chat_npc_teach_spells(struct monst*);
+static int do_chat_watchman_reconciliation(struct monst*);
+static int do_chat_quest_chat(struct monst*);
+static int mon_in_room(struct monst *, int);
+static int spell_service_query(struct monst*, int, int, const char*, int64_t, const char*, int);
+static int general_service_query(struct monst*, int (*)(struct monst*), const char*, int64_t, const char*, int);
+static int general_service_query_with_extra(struct monst*, int (*)(struct monst*), const char*, int64_t, const char*, int, const char*, int);
+static int general_service_query_with_item_cost_adjustment_and_extra(struct monst*, int (*)(struct monst*, struct obj*), const char*, const char*, int64_t, int64_t, int64_t, int64_t, int64_t, const char*, int, const char*, int);
+static int item_enchant_service_query(struct monst*, int, int64_t);
+static int recharge_item_func(struct monst*, struct obj*);
+static int blessed_recharge_item_func(struct monst*, struct obj*);
+static int repair_armor_func(struct monst*);
+static int repair_weapon_func(struct monst*);
+static int refill_lantern_func(struct monst*);
+static int forge_special_func(struct monst*, int, int64_t, int, int64_t, int, uchar, boolean);
+static int forge_any_special_func(struct monst*);
+static int forge_cubic_gate_func(struct monst*);
+static int forge_artificial_wings_func(struct monst*);
+static int forge_dragon_scale_mail_func(struct monst*);
+//STATIC_DCL int forge_shield_of_reflection_func(struct monst*);
+//STATIC_DCL int forge_crystal_plate_mail_func(struct monst*);
+//STATIC_DCL int forge_adamantium_full_plate_mail_func(struct monst*);
+//STATIC_DCL int forge_mithril_full_plate_mail_func(struct monst*);
+//STATIC_DCL int forge_orichalcum_full_plate_mail_func(struct monst*);
+//STATIC_DCL int forge_plate_mail_func(struct monst*);
+//STATIC_DCL int forge_bronze_plate_mail_func(struct monst*);
+//STATIC_DCL int forge_field_plate_mail_func(struct monst*);
+//STATIC_DCL int forge_full_plate_mail_func(struct monst*);
+//STATIC_DCL int forge_iron_sling_bullets_func(struct monst*);
+//STATIC_DCL int forge_ex_iron_sling_bullets_func(struct monst*);
+//STATIC_DCL int forge_el_iron_sling_bullets_func(struct monst*);
+//STATIC_DCL int forge_silver_sling_bullets_func(struct monst*);
+//STATIC_DCL int forge_ex_silver_sling_bullets_func(struct monst*);
+//STATIC_DCL int forge_el_silver_sling_bullets_func(struct monst*);
+static int learn_spell_func(struct monst*);
+static int spell_teaching(struct monst*, int*);
+static boolean maybe_dilithium_crystal(struct obj*);
+static boolean maybe_forgeable_ore(struct obj*);
+static boolean maybe_gem(struct obj*);
+static boolean maybe_spellbook(struct obj*);
+static boolean maybe_dragon_scales(struct obj*);
+static boolean maybe_otyp(struct obj*);
+static int otyp_for_maybe_otyp = 0;
+static boolean stop_chat = FALSE;
+static int FDECL(CFDECLSPEC available_chat_cmp, (const genericptr, const genericptr));
 
 extern const struct shclass shtypes[]; /* defined in shknam.c */
 
 #define QUERY_STYLE_COMPONENTS 0
 #define QUERY_STYLE_SPELL 1
 
-void You_ex1_popup(txt, title, attr, color, glyph, pflags)
-const char* txt, *title;
-int attr, color, glyph;
-uint64_t pflags;
+void You_ex1_popup(const char *txt, const char *title, int attr, int color, int glyph, uint64_t pflags)
 {
     if (!txt)
         return;
@@ -221,8 +218,7 @@ uint64_t pflags;
 }
 
 int
-ask_shk_reconciliation(mtmp)
-struct monst* mtmp;
+ask_shk_reconciliation(struct monst *mtmp)
 {
     if (!mtmp || !mtmp->isshk || !has_eshk(mtmp))
         return 0;
@@ -234,10 +230,8 @@ struct monst* mtmp;
 }
 
 /* this easily could be a macro, but it might overtax dumb compilers */
-STATIC_OVL int
-mon_in_room(mon, rmtyp)
-struct monst *mon;
-int rmtyp;
+static int
+mon_in_room(struct monst *mon, int rmtyp)
 {
     int rno = levl[mon->mx][mon->my].roomno;
     if (rno >= ROOMOFFSET)
@@ -246,7 +240,7 @@ int rmtyp;
 }
 
 void
-dosounds(VOID_ARGS)
+dosounds(void)
 {
     struct mkroom *sroom;
     int hallu, vx, vy;
@@ -808,7 +802,7 @@ dosounds(VOID_ARGS)
     }
 }
 
-STATIC_VAR const char *const h_sounds[] = {
+static const char *const h_sounds[] = {
     "beep",   "boing",   "sing",   "belche", "creak",   "cough",
     "rattle", "ululate", "pop",    "jingle", "sniffle", "tinkle",
     "eep",    "clatter", "hum",    "sizzle", "twitter", "wheeze",
@@ -818,8 +812,7 @@ STATIC_VAR const char *const h_sounds[] = {
 };
 
 const char *
-growl_sound(mtmp)
-struct monst *mtmp;
+growl_sound(struct monst *mtmp)
 {
     const char *ret;
 
@@ -867,8 +860,7 @@ struct monst *mtmp;
 
 /* the sounds of a seriously abused pet, including player attacking it */
 void
-growl(mtmp)
-struct monst *mtmp;
+growl(struct monst *mtmp)
 {
     const char *growl_verb = 0;
 
@@ -892,8 +884,7 @@ struct monst *mtmp;
 
 /* the sounds of mistreated pets */
 void
-yelp(mtmp)
-struct monst *mtmp;
+yelp(struct monst *mtmp)
 {
     const char *yelp_verb = 0;
 
@@ -939,8 +930,7 @@ struct monst *mtmp;
 
 /* the sounds of distressed pets */
 void
-whimper(mtmp)
-struct monst *mtmp;
+whimper(struct monst *mtmp)
 {
     const char *whimper_verb = 0;
 
@@ -974,8 +964,7 @@ struct monst *mtmp;
 
 /* pet makes "I'm hungry" noises */
 void
-beg(mtmp)
-struct monst *mtmp;
+beg(struct monst *mtmp)
 {
     if (!mtmp)
         return;
@@ -994,9 +983,8 @@ struct monst *mtmp;
 }
 
 /* return True if mon is a gecko or seems to look like one (hallucination) */
-STATIC_OVL boolean
-mon_is_gecko(mon)
-struct monst *mon;
+static boolean
+mon_is_gecko(struct monst *mon)
 {
     int glyph;
 
@@ -1013,24 +1001,20 @@ struct monst *mon;
     return (boolean) (glyph_to_mon(glyph) == PM_GECKO);
 }
 
-STATIC_OVL int
-domonnoise_with_popup(mtmp)
-struct monst* mtmp;
+static int
+domonnoise_with_popup(struct monst *mtmp)
 {
     return domonnoise(mtmp, TRUE, TRUE, FALSE);
 }
 
-STATIC_OVL int
-domonnoise_with_popup_nonpc(mtmp)
-struct monst* mtmp;
+static int
+domonnoise_with_popup_nonpc(struct monst *mtmp)
 {
     return domonnoise(mtmp, TRUE, TRUE, TRUE);
 }
 
-STATIC_OVL int
-domonnoise(mtmp, dopopup, fromchatmenu, disallow_npcnoise)
-struct monst *mtmp;
-boolean dopopup, fromchatmenu, disallow_npcnoise;
+static int
+domonnoise(struct monst *mtmp, boolean dopopup, boolean fromchatmenu, boolean disallow_npcnoise)
 {
     char verbuf[BUFSZ];
     const char *pline_msg = 0, /* Monnam(mtmp) will be prepended */
@@ -1995,7 +1979,7 @@ bark_here:
 
 /* #yell command */
 int
-doyell(VOID_ARGS)
+doyell(void)
 {
     int result = 0;
 
@@ -2027,7 +2011,7 @@ doyell(VOID_ARGS)
 
 /* #chat command */
 int
-dotalk(VOID_ARGS)
+dotalk(void)
 {
     int result;
 
@@ -2036,7 +2020,7 @@ dotalk(VOID_ARGS)
 }
 
 int
-dotalksteed(VOID_ARGS)
+dotalksteed(void)
 {
     if (!u.usteed)
         return 0;
@@ -2045,7 +2029,7 @@ dotalksteed(VOID_ARGS)
 }
 
 int
-dotalknearby(VOID_ARGS)
+dotalknearby(void)
 {
     int x, y;
     int nummonfound = 0;
@@ -2076,8 +2060,8 @@ dotalknearby(VOID_ARGS)
         return 0; /* Should not happen */
 }
 
-STATIC_OVL boolean
-speak_check(VOID_ARGS)
+static boolean
+speak_check(void)
 {
     if (is_silent(youmonst.data) || !can_speak_language(youmonst.data))
     {
@@ -2112,8 +2096,8 @@ speak_check(VOID_ARGS)
     return 1;
 }
 
-STATIC_OVL boolean
-yell_check(VOID_ARGS)
+static boolean
+yell_check(void)
 {
     if (is_silent(youmonst.data) || !can_speak_language(youmonst.data))
     {
@@ -2138,9 +2122,8 @@ yell_check(VOID_ARGS)
     return 1;
 }
 
-STATIC_OVL boolean
-m_speak_check(mtmp)
-struct monst* mtmp;
+static boolean
+m_speak_check(struct monst *mtmp)
 {
     if (is_silenced(mtmp))
     {
@@ -2154,10 +2137,8 @@ struct monst* mtmp;
     return 1;
 }
 
-STATIC_OVL boolean
-m_general_talk_check(mtmp, nomoodstr)
-struct monst* mtmp;
-const char* nomoodstr;
+static boolean
+m_general_talk_check(struct monst *mtmp, const char *nomoodstr)
 {
     if (!nomoodstr || !mtmp)
         return 0;
@@ -2179,7 +2160,7 @@ const char* nomoodstr;
 }
 
 void
-genl_chat_message(VOID_ARGS)
+genl_chat_message(void)
 {
     while (1)
     {
@@ -2192,8 +2173,8 @@ genl_chat_message(VOID_ARGS)
     }
 }
 
-STATIC_OVL int
-dochat(VOID_ARGS)
+static int
+dochat(void)
 {
     struct monst* mtmp;
     int tx, ty;
@@ -2314,10 +2295,8 @@ struct available_chat_item available_chat_list[MAXCHATNUM] = { {0} };
 const char* available_chat_category_titles[NUM_CHAT_CATEGORIES] =
 { "General", "Information", "Interaction" , "Combat" , "Service", "Commerce", "Statistics" };
 
-STATIC_OVL int CFDECLSPEC
-available_chat_cmp(p, q)
-const genericptr p;
-const genericptr q;
+static int CFDECLSPEC
+available_chat_cmp(const genericptr p, const genericptr q)
 {
     if (!p || !q)
         return 0;
@@ -2334,9 +2313,8 @@ const genericptr q;
     return strcmpi(item1.name, item2.name);
 }
 
-STATIC_OVL int
-count_takeable_items(mtmp)
-struct monst* mtmp;
+static int
+count_takeable_items(struct monst *mtmp)
 {
     if (!mtmp)
         return 0;
@@ -2352,8 +2330,7 @@ struct monst* mtmp;
 }
 
 int
-dochatmon(mtmp)
-struct monst* mtmp;
+dochatmon(struct monst *mtmp)
 {
     if (!mtmp || 
         ((!canspotmon(mtmp) || mtmp->mundetected || M_AP_TYPE(mtmp) == M_AP_FURNITURE || M_AP_TYPE(mtmp) == M_AP_OBJECT) && !is_tame(mtmp)))
@@ -4601,9 +4578,8 @@ end_of_chat_here:
 
 
 
-STATIC_OVL int
-do_chat_whoareyou(mtmp)
-struct monst* mtmp;
+static int
+do_chat_whoareyou(struct monst *mtmp)
 {
     if (!mtmp)
         return 0;
@@ -4976,9 +4952,8 @@ struct monst* mtmp;
 }
 
 
-STATIC_OVL int
-do_chat_rumors(mtmp)
-struct monst* mtmp;
+static int
+do_chat_rumors(struct monst *mtmp)
 {
     if (!mtmp)
         return 0;
@@ -5068,9 +5043,8 @@ struct monst* mtmp;
 }
 
 
-STATIC_OVL int
-do_chat_pet_sit(mtmp)
-struct monst* mtmp;
+static int
+do_chat_pet_sit(struct monst *mtmp)
 {
     if (!mtmp)
         return 0;
@@ -5093,9 +5067,8 @@ struct monst* mtmp;
 }
 
 
-STATIC_OVL int
-do_chat_pet_givepaw(mtmp)
-struct monst* mtmp;
+static int
+do_chat_pet_givepaw(struct monst *mtmp)
 {
     if (!mtmp)
         return 0;
@@ -5138,9 +5111,8 @@ struct monst* mtmp;
     return 1;
 }
 
-STATIC_OVL int
-do_chat_pet_good_boy_girl(mtmp)
-struct monst* mtmp;
+static int
+do_chat_pet_good_boy_girl(struct monst *mtmp)
 {
     if (!mtmp)
         return 0;
@@ -5195,9 +5167,8 @@ struct monst* mtmp;
     return 1;
 }
 
-STATIC_OVL int
-do_chat_pet_pet(mtmp)
-struct monst* mtmp;
+static int
+do_chat_pet_pet(struct monst *mtmp)
 {
     if (!mtmp)
         return 0;
@@ -5311,9 +5282,8 @@ struct monst* mtmp;
 }
 
 
-STATIC_OVL int
-do_chat_pet_stay(mtmp)
-struct monst* mtmp;
+static int
+do_chat_pet_stay(struct monst *mtmp)
 {
     if (!mtmp)
         return 0;
@@ -5342,9 +5312,8 @@ struct monst* mtmp;
 }
 
 
-STATIC_OVL int
-do_chat_pet_standup(mtmp)
-struct monst* mtmp;
+static int
+do_chat_pet_standup(struct monst *mtmp)
 {
     if (!mtmp)
         return 0;
@@ -5372,9 +5341,8 @@ struct monst* mtmp;
     return 1;
 }
 
-STATIC_OVL int
-do_chat_pet_follow(mtmp)
-struct monst* mtmp;
+static int
+do_chat_pet_follow(struct monst *mtmp)
 {
     if (!mtmp)
         return 0;
@@ -5400,9 +5368,8 @@ struct monst* mtmp;
     return 0;
 }
 
-STATIC_OVL int
-do_chat_pet_unfollow(mtmp)
-struct monst* mtmp;
+static int
+do_chat_pet_unfollow(struct monst *mtmp)
 {
     if (!mtmp)
         return 0;
@@ -5430,9 +5397,8 @@ struct monst* mtmp;
 }
 
 
-STATIC_OVL int
-do_chat_pet_display_inventory(mtmp)
-struct monst* mtmp;
+static int
+do_chat_pet_display_inventory(struct monst *mtmp)
 {
     if (!mtmp)
         return 0;
@@ -5441,9 +5407,8 @@ struct monst* mtmp;
     return 0;
 }
 
-STATIC_OVL int
-do_chat_pet_dropitems(mtmp)
-struct monst* mtmp;
+static int
+do_chat_pet_dropitems(struct monst *mtmp)
 {
     if (!mtmp)
         return 0;
@@ -5479,9 +5444,8 @@ struct monst* mtmp;
     return 1;
 }
 
-STATIC_OVL int
-do_chat_pet_pickitems(mtmp)
-struct monst* mtmp;
+static int
+do_chat_pet_pickitems(struct monst *mtmp)
 {
     if (!mtmp)
         return 0;
@@ -5546,9 +5510,8 @@ struct monst* mtmp;
 }
 
 
-STATIC_OVL int
-do_chat_pet_giveitems(mtmp)
-struct monst* mtmp;
+static int
+do_chat_pet_giveitems(struct monst *mtmp)
 {
     if (!mtmp)
         return 0;
@@ -5732,9 +5695,8 @@ struct monst* mtmp;
 }
 
 
-STATIC_OVL int
-do_chat_feed(mtmp)
-struct monst* mtmp;
+static int
+do_chat_feed(struct monst *mtmp)
 {
     if (!mtmp)
         return 0;
@@ -5896,9 +5858,8 @@ struct monst* mtmp;
     return (n_given > 0);
 }
 
-STATIC_OVL int
-do_chat_uncurse_items(mtmp)
-struct monst* mtmp;
+static int
+do_chat_uncurse_items(struct monst *mtmp)
 {
     if (!mtmp)
         return 0;
@@ -6101,9 +6062,8 @@ struct monst* mtmp;
     return 0;
 }
 
-STATIC_OVL int
-do_chat_quaff(mtmp)
-struct monst* mtmp;
+static int
+do_chat_quaff(struct monst *mtmp)
 {
     if (!mtmp)
         return 0;
@@ -6257,9 +6217,8 @@ struct monst* mtmp;
     return (n_given > 0) && res;
 }
 
-STATIC_OVL int
-do_chat_unicorn_horn(mtmp)
-struct monst* mtmp;
+static int
+do_chat_unicorn_horn(struct monst *mtmp)
 {
     if (!mtmp)
         return 0;
@@ -6345,8 +6304,7 @@ struct monst* mtmp;
 }
 
 int
-release_item_from_hero_inventory(obj)
-struct obj* obj;
+release_item_from_hero_inventory(struct obj *obj)
 {
     if (!obj)
         return 0;
@@ -6392,9 +6350,8 @@ struct obj* obj;
     return 1;
 }
 
-STATIC_OVL int
-do_chat_pet_dowear(mtmp)
-struct monst* mtmp;
+static int
+do_chat_pet_dowear(struct monst *mtmp)
 {
     if (!mtmp)
         return 0;
@@ -6403,9 +6360,8 @@ struct monst* mtmp;
     return 1;
 }
 
-STATIC_OVL int
-do_chat_pet_dotakeoff(mtmp)
-struct monst* mtmp;
+static int
+do_chat_pet_dotakeoff(struct monst *mtmp)
 {
     if (!mtmp)
         return 0;
@@ -6494,9 +6450,8 @@ struct monst* mtmp;
     return 0;
 }
 
-STATIC_OVL int
-do_chat_pet_dowield_hth(mtmp)
-struct monst* mtmp;
+static int
+do_chat_pet_dowield_hth(struct monst *mtmp)
 {
     if (!mtmp)
         return 0;
@@ -6507,9 +6462,8 @@ struct monst* mtmp;
     return wielded;
 }
 
-STATIC_OVL int
-do_chat_pet_dowield_ranged(mtmp)
-struct monst* mtmp;
+static int
+do_chat_pet_dowield_ranged(struct monst *mtmp)
 {
     if (!mtmp)
         return 0;
@@ -6519,9 +6473,8 @@ struct monst* mtmp;
     return wielded;
 }
 
-STATIC_OVL int
-do_chat_pet_dowield_pickaxe(mtmp)
-struct monst* mtmp;
+static int
+do_chat_pet_dowield_pickaxe(struct monst *mtmp)
 {
     if (!mtmp)
         return 0;
@@ -6532,9 +6485,8 @@ struct monst* mtmp;
 
 }
 
-STATIC_OVL int
-do_chat_pet_dowield_axe(mtmp)
-struct monst* mtmp;
+static int
+do_chat_pet_dowield_axe(struct monst *mtmp)
 {
     if (!mtmp)
         return 0;
@@ -6545,9 +6497,8 @@ struct monst* mtmp;
 
 }
 
-STATIC_OVL int
-do_chat_pet_dounwield(mtmp)
-struct monst* mtmp;
+static int
+do_chat_pet_dounwield(struct monst *mtmp)
 {
     if (!mtmp)
         return 0;
@@ -6574,9 +6525,8 @@ struct monst* mtmp;
 
 
 
-STATIC_OVL int
-do_chat_join_party(mtmp)
-struct monst* mtmp;
+static int
+do_chat_join_party(struct monst *mtmp)
 {
     if (!mtmp)
         return 0;
@@ -6681,9 +6631,8 @@ struct monst* mtmp;
     return 1;
 }
 
-STATIC_OVL int
-do_chat_explain_statistics(mtmp)
-struct monst* mtmp;
+static int
+do_chat_explain_statistics(struct monst *mtmp)
 {
     if (!mtmp)
         return 0;
@@ -6756,9 +6705,8 @@ struct monst* mtmp;
 }
 
 
-STATIC_OVL int
-do_chat_buy_items(mtmp)
-struct monst* mtmp;
+static int
+do_chat_buy_items(struct monst *mtmp)
 {
     if (!m_general_talk_check(mtmp, "doing any business") || !m_speak_check(mtmp))
         return 0;
@@ -7019,9 +6967,8 @@ struct monst* mtmp;
 }
 
 
-STATIC_OVL int
-do_chat_pet_takeitems(mtmp)
-struct monst* mtmp;
+static int
+do_chat_pet_takeitems(struct monst *mtmp)
 {
     int item_count = 0, selectable_item_count = 0;;
 
@@ -7198,9 +7145,7 @@ struct monst* mtmp;
 
 /* Returns the price of an arbitrary item per one item */
 int64_t
-get_cost_of_monster_item(obj, mtmp)
-struct obj* obj;
-struct monst* mtmp;
+get_cost_of_monster_item(struct obj *obj, struct monst *mtmp)
 {            
     struct obj* top;
     int64_t cost = 0L;
@@ -7218,9 +7163,7 @@ struct monst* mtmp;
 
 
 int64_t
-m_contained_cost(obj, mtmp)
-struct obj* obj;
-struct monst* mtmp;
+m_contained_cost(struct obj *obj, struct monst *mtmp)
 {
     int64_t price = 0;
     struct obj* otmp, * top;
@@ -7242,8 +7185,7 @@ struct monst* mtmp;
 
 
 int
-count_sellable_items(mtmp)
-struct monst* mtmp;
+count_sellable_items(struct monst *mtmp)
 {
     if (!mtmp || !mtmp->minvent)
         return 0;
@@ -7259,8 +7201,7 @@ struct monst* mtmp;
 }
 
 struct obj*
-get_first_sellable_item(mtmp)
-struct monst* mtmp;
+get_first_sellable_item(struct monst *mtmp)
 {
     if (!mtmp || !mtmp->minvent)
         return (struct obj*)0;
@@ -7278,9 +7219,7 @@ struct monst* mtmp;
 
 
 boolean
-m_sellable_item(otmp, mtmp)
-struct obj* otmp;
-struct monst* mtmp;
+m_sellable_item(struct obj *otmp, struct monst *mtmp)
 {
     if (!otmp || !mtmp)
         return FALSE;
@@ -7313,9 +7252,8 @@ struct monst* mtmp;
 
 
 
-STATIC_OVL int
-do_chat_oracle_consult(mtmp)
-struct monst* mtmp;
+static int
+do_chat_oracle_consult(struct monst *mtmp)
 {
     if (!m_general_talk_check(mtmp, "consulatations") || !m_speak_check(mtmp))
         return 0;
@@ -7323,9 +7261,8 @@ struct monst* mtmp;
     return doconsult(mtmp);
 }
 
-STATIC_OVL int
-do_chat_oracle_identify(mtmp)
-struct monst* mtmp;
+static int
+do_chat_oracle_identify(struct monst *mtmp)
 {
     if (!m_general_talk_check(mtmp, "identification") || !m_speak_check(mtmp))
         return 0;
@@ -7333,9 +7270,8 @@ struct monst* mtmp;
     return do_oracle_identify(mtmp);
 }
 
-STATIC_OVL int
-do_chat_oracle_enlightenment(mtmp)
-struct monst* mtmp;
+static int
+do_chat_oracle_enlightenment(struct monst *mtmp)
 {
     if (!m_general_talk_check(mtmp, "providing any enlightenment") || !m_speak_check(mtmp))
         return 0;
@@ -7344,9 +7280,8 @@ struct monst* mtmp;
 }
 
 
-STATIC_OVL int
-do_chat_priest_blesscurse(mtmp)
-struct monst* mtmp;
+static int
+do_chat_priest_blesscurse(struct monst *mtmp)
 {
 
     int64_t umoney = money_cnt(invent);
@@ -7443,9 +7378,8 @@ struct monst* mtmp;
 }
 
 
-STATIC_OVL int
-do_chat_priest_normal_healing(mtmp)
-struct monst* mtmp;
+static int
+do_chat_priest_normal_healing(struct monst *mtmp)
 {
 
     int64_t umoney = money_cnt(invent);
@@ -7502,9 +7436,8 @@ struct monst* mtmp;
     return 1;
 }
 
-STATIC_OVL int
-do_chat_priest_full_healing(mtmp)
-struct monst* mtmp;
+static int
+do_chat_priest_full_healing(struct monst *mtmp)
 {
 
     int64_t umoney = money_cnt(invent);
@@ -7561,9 +7494,8 @@ struct monst* mtmp;
     return 1;
 }
 
-STATIC_OVL int
-do_chat_priest_cure_sickness(mtmp)
-struct monst* mtmp;
+static int
+do_chat_priest_cure_sickness(struct monst *mtmp)
 {
 
     int64_t umoney = money_cnt(invent);
@@ -7620,9 +7552,8 @@ struct monst* mtmp;
     return 1;
 }
 
-STATIC_OVL int
-do_chat_priest_chat(mtmp)
-struct monst* mtmp;
+static int
+do_chat_priest_chat(struct monst *mtmp)
 {
     if (!m_speak_check(mtmp))
         return 0;
@@ -7754,9 +7685,8 @@ struct monst* mtmp;
     return 1;
 }
 
-STATIC_OVL int
-do_chat_priest_divination(mtmp)
-struct monst* mtmp;
+static int
+do_chat_priest_divination(struct monst *mtmp)
 {
     int64_t umoney = money_cnt(invent);
     int64_t u_pay, divination_cost = max(1L, (int64_t)(25 * service_cost_charisma_adjustment(ACURR(A_CHA))));
@@ -7886,9 +7816,8 @@ struct monst* mtmp;
     return 1;
 }
 
-STATIC_OVL int
-do_chat_shk_payitems(mtmp)
-struct monst* mtmp;
+static int
+do_chat_shk_payitems(struct monst *mtmp)
 {
     if (!mtmp)
         return 0;
@@ -7903,9 +7832,8 @@ struct monst* mtmp;
 }
 
 
-STATIC_OVL int
-do_chat_shk_pricequote(mtmp)
-struct monst* mtmp;
+static int
+do_chat_shk_pricequote(struct monst *mtmp)
 {
     if (!mtmp)
     {
@@ -7919,9 +7847,8 @@ struct monst* mtmp;
     return 1;
 }
 
-STATIC_OVL int
-do_chat_shk_chat(mtmp)
-struct monst* mtmp;
+static int
+do_chat_shk_chat(struct monst *mtmp)
 {
     if (!m_speak_check(mtmp))
         return 0;
@@ -7930,9 +7857,8 @@ struct monst* mtmp;
     return 1;
 }
 
-STATIC_OVL int
-do_chat_shk_identify(mtmp)
-struct monst* mtmp;
+static int
+do_chat_shk_identify(struct monst *mtmp)
 {
     if (!mtmp || !has_eshk(mtmp))
         return 0;
@@ -8027,9 +7953,8 @@ struct monst* mtmp;
     return (res > 0);
 }
 
-STATIC_OVL int
-do_chat_shk_credit(mtmp)
-struct monst* mtmp;
+static int
+do_chat_shk_credit(struct monst *mtmp)
 {
     if (!mtmp || !has_eshk(mtmp))
         return 0;
@@ -8056,9 +7981,7 @@ struct monst* mtmp;
 }
 
 boolean
-is_shop_item_type(otmp, shtype_index)
-struct obj* otmp;
-int shtype_index;
+is_shop_item_type(struct obj *otmp, int shtype_index)
 {
     if (!otmp)
         return FALSE;
@@ -8093,9 +8016,8 @@ int shtype_index;
 }
 
 
-STATIC_OVL int
-do_chat_shk_reconciliation(mtmp)
-struct monst* mtmp;
+static int
+do_chat_shk_reconciliation(struct monst *mtmp)
 {
     if (!mtmp || !mtmp->isshk || !has_eshk(mtmp))
         return 0;
@@ -8160,9 +8082,8 @@ struct monst* mtmp;
 }
 
 
-STATIC_OVL int
-do_chat_smith_reconciliation(mtmp)
-struct monst* mtmp;
+static int
+do_chat_smith_reconciliation(struct monst *mtmp)
 {
     if (!mtmp || !mtmp->issmith || !mtmp->mextra || !ESMI(mtmp))
         return 0;
@@ -8225,9 +8146,8 @@ struct monst* mtmp;
     return 1;
 }
 
-STATIC_OVL int
-do_chat_smith_enchant_armor(mtmp)
-struct monst* mtmp;
+static int
+do_chat_smith_enchant_armor(struct monst *mtmp)
 {
     if (!mtmp || !mtmp->issmith || !mtmp->mextra || !ESMI(mtmp))
         return 0;
@@ -8237,9 +8157,8 @@ struct monst* mtmp;
     return item_enchant_service_query(mtmp, 1, cost);
 }
 
-STATIC_OVL int
-do_chat_smith_enchant_weapon(mtmp)
-struct monst* mtmp;
+static int
+do_chat_smith_enchant_weapon(struct monst *mtmp)
 {
     if (!mtmp || !mtmp->issmith || !mtmp->mextra || !ESMI(mtmp))
         return 0;
@@ -8249,9 +8168,8 @@ struct monst* mtmp;
     return item_enchant_service_query(mtmp, 0, cost);
 }
 
-STATIC_OVL int
-do_chat_smith_repair_armor(mtmp)
-struct monst* mtmp;
+static int
+do_chat_smith_repair_armor(struct monst *mtmp)
 {
     if (!mtmp || !mtmp->issmith || !mtmp->mextra || !ESMI(mtmp))
         return 0;
@@ -8260,9 +8178,8 @@ struct monst* mtmp;
     return general_service_query(mtmp, repair_armor_func, "repair an armor", cost, "repairing an armor", SMITH_LINE_WOULD_YOU_LIKE_TO_REPAIR_AN_ARMOR);
 }
 
-STATIC_OVL int
-do_chat_smith_repair_weapon(mtmp)
-struct monst* mtmp;
+static int
+do_chat_smith_repair_weapon(struct monst *mtmp)
 {
     if (!mtmp || !mtmp->issmith || !mtmp->mextra || !ESMI(mtmp))
         return 0;
@@ -8272,9 +8189,8 @@ struct monst* mtmp;
 }
 
 
-STATIC_OVL int
-do_chat_smith_protect_armor(mtmp)
-struct monst* mtmp;
+static int
+do_chat_smith_protect_armor(struct monst *mtmp)
 {
     if (!mtmp || !mtmp->issmith || !mtmp->mextra || !ESMI(mtmp))
         return 0;
@@ -8283,9 +8199,8 @@ struct monst* mtmp;
     return spell_service_query(mtmp, SPE_PROTECT_ARMOR, 0, "protect an armor", cost, "protecting an armor", SMITH_LINE_WOULD_YOU_LIKE_TO_PROTECT_AN_ARMOR);
 }
 
-STATIC_OVL int
-do_chat_smith_protect_weapon(mtmp)
-struct monst* mtmp;
+static int
+do_chat_smith_protect_weapon(struct monst *mtmp)
 {
     if (!mtmp || !mtmp->issmith || !mtmp->mextra || !ESMI(mtmp))
         return 0;
@@ -8294,9 +8209,8 @@ struct monst* mtmp;
     return spell_service_query(mtmp, SPE_PROTECT_WEAPON, 0, "protect a weapon", cost, "protecting a weapon", SMITH_LINE_WOULD_YOU_LIKE_TO_PROTECT_A_WEAPON);
 }
 
-STATIC_OVL int
-do_chat_smith_refill_lantern(mtmp)
-struct monst* mtmp;
+static int
+do_chat_smith_refill_lantern(struct monst *mtmp)
 {
     if (!mtmp || !mtmp->issmith || !mtmp->mextra || !ESMI(mtmp))
         return 0;
@@ -8305,15 +8219,15 @@ struct monst* mtmp;
     return general_service_query(mtmp, refill_lantern_func, "refill a lamp or lantern", cost, "refilling a lamp or lantern", SMITH_LINE_WOULD_YOU_LIKE_TO_REFILL_A_LAMP_OR_LANTERN);
 }
 
-STATIC_VAR int forge_any_target_otyp = STRANGE_OBJECT;
-STATIC_VAR int64_t forge_any_target_quan = 1;
-STATIC_VAR int forge_any_target_exceptionality = EXCEPTIONALITY_NORMAL;
-STATIC_VAR uchar forge_any_target_material = MAT_NONE;
-STATIC_VAR int forge_any_material_component_otyp = STRANGE_OBJECT;
-STATIC_VAR int64_t forge_any_material_component_quan = 0;
+static int forge_any_target_otyp = STRANGE_OBJECT;
+static int64_t forge_any_target_quan = 1;
+static int forge_any_target_exceptionality = EXCEPTIONALITY_NORMAL;
+static uchar forge_any_target_material = MAT_NONE;
+static int forge_any_material_component_otyp = STRANGE_OBJECT;
+static int64_t forge_any_material_component_quan = 0;
 
-STATIC_OVL void
-reset_forge_any_special(VOID_ARGS)
+static void
+reset_forge_any_special(void)
 {
     forge_any_target_otyp = STRANGE_OBJECT;
     forge_any_target_quan = 1;
@@ -8343,7 +8257,7 @@ struct forge_service_data_item {
     const char* extra_cost_descr;
 };
 
-STATIC_VAR struct forge_service_data_item forge_services[] = 
+static struct forge_service_data_item forge_services[] = 
 {
     /* Smith special armor */
     { 
@@ -8471,7 +8385,7 @@ STATIC_VAR struct forge_service_data_item forge_services[] =
 //int* query_style_ptr, * special_dialogue_sound_id_ptr;
 //int* forge_any_target_otyp_ptr, * forge_any_target_quan_ptr, * forge_any_material_component_otyp_ptr, * forge_any_material_component_quan_ptr, * forge_any_target_exceptionality_ptr, * forge_any_target_material_ptr;
 //int64_t *cost_ptr;
-//const char** text_ptr, ** verb_ptr, ** nomood_ptr, ** extra_cost_descr_ptr;
+//const char **text_ptr, ** verb_ptr, ** nomood_ptr, ** extra_cost_descr_ptr;
 //int (**func_ptr_ptr)(struct monst*);
 //{
 //    switch (forge_idx)
@@ -8766,21 +8680,16 @@ STATIC_VAR struct forge_service_data_item forge_services[] =
 //    }
 //}
 
-STATIC_OVL int
-do_chat_smith_forge_special_armor(mtmp)
-struct monst* mtmp;
+static int
+do_chat_smith_forge_special_armor(struct monst *mtmp)
 {
     if (!mtmp || !mtmp->issmith || !mtmp->mextra || !ESMI(mtmp))
         return 0;
     return do_chat_forge_menu(mtmp, 0, 5, "Which type of armor do you want to forge?");
 }
 
-STATIC_OVL int
-do_chat_forge_menu(mtmp, forge_idx_start, forge_idx_end, title_text)
-struct monst* mtmp;
-int forge_idx_start;
-int forge_idx_end;
-const char* title_text;
+static int
+do_chat_forge_menu(struct monst *mtmp, int forge_idx_start, int forge_idx_end, const char *title_text)
 {
     if (!mtmp)
         return 0;
@@ -8973,9 +8882,8 @@ const char* title_text;
     //return 0;
 }
 
-STATIC_OVL int
-do_chat_smith_forge_standard_armor(mtmp)
-struct monst* mtmp;
+static int
+do_chat_smith_forge_standard_armor(struct monst *mtmp)
 {
     if (!mtmp || !mtmp->issmith || !mtmp->mextra || !ESMI(mtmp))
         return 0;
@@ -9069,16 +8977,14 @@ struct monst* mtmp;
 //    return 0;
 //}
 
-STATIC_OVL int
-do_chat_smith_identify(mtmp)
-struct monst* mtmp;
+static int
+do_chat_smith_identify(struct monst *mtmp)
 {
     return do_chat_npc_general_identify(mtmp, "weapon or armor", -1, max(1L, (int64_t)((double)(75 + 5 * u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA)))), SMITH_LINE_WOULD_YOU_LIKE_TO_IDENTIFY_A_WEAPON_OR_ARMOR, SMITH_LINE_WOULD_YOU_LIKE_TO_IDENTIFY_ONE_MORE_WEAPON_OR_ARMOR);
 }
 
-STATIC_OVL int
-do_chat_npc_forge_sling_bullets(mtmp)
-struct monst* mtmp;
+static int
+do_chat_npc_forge_sling_bullets(struct monst *mtmp)
 {
     if (!mtmp || !mtmp->isnpc || !mtmp->mextra || !ENPC(mtmp))
         return 0;
@@ -9195,9 +9101,8 @@ struct monst* mtmp;
 //    return 0;
 //}
 
-STATIC_OVL int
-do_chat_npc_forge_cubic_gate(mtmp)
-struct monst* mtmp;
+static int
+do_chat_npc_forge_cubic_gate(struct monst *mtmp)
 {
     if (!mtmp || !mtmp->isnpc || !mtmp->mextra || !ENPC(mtmp))
         return 0;
@@ -9206,9 +9111,8 @@ struct monst* mtmp;
     return general_service_query_with_extra(mtmp, forge_cubic_gate_func, "forge a cubic gate", cost, "forging any cubic gates", QUERY_STYLE_COMPONENTS, "a dilithium crystal", NPC_LINE_WOULD_YOU_LIKE_TO_FORGE_A_CUBIC_GATE);
 }
 
-STATIC_OVL int
-do_chat_npc_forge_artificial_wings(mtmp)
-struct monst* mtmp;
+static int
+do_chat_npc_forge_artificial_wings(struct monst *mtmp)
 {
     if (!mtmp || !mtmp->isnpc || !mtmp->mextra || !ENPC(mtmp))
         return 0;
@@ -9217,9 +9121,8 @@ struct monst* mtmp;
     return general_service_query_with_extra(mtmp, forge_artificial_wings_func, "forge a pair of artificial wings", cost, "forging any artificial wings", QUERY_STYLE_COMPONENTS, "12 feathers", NPC_LINE_WOULD_YOU_LIKE_TO_FORGE_A_PAIR_OF_ARTIFICIAL_WINGS);
 }
 
-STATIC_OVL boolean
-maybe_forgeable_ore(otmp)
-struct obj* otmp;
+static boolean
+maybe_forgeable_ore(struct obj *otmp)
 {
     if (!otmp)
         return FALSE;
@@ -9227,9 +9130,8 @@ struct obj* otmp;
     return is_ore(otmp) && otmp->otyp != NUGGET_OF_GOLD_ORE && otmp->otyp != NUGGET_OF_PLATINUM_ORE;
 }
 
-STATIC_OVL boolean
-maybe_gem(otmp)
-struct obj* otmp;
+static boolean
+maybe_gem(struct obj *otmp)
 {
     if (!otmp)
         return FALSE;
@@ -9237,9 +9139,8 @@ struct obj* otmp;
     return (otmp->oclass == GEM_CLASS);
 }
 
-STATIC_OVL boolean
-maybe_spellbook(otmp)
-struct obj* otmp;
+static boolean
+maybe_spellbook(struct obj *otmp)
 {
     if (!otmp)
         return FALSE;
@@ -9247,9 +9148,8 @@ struct obj* otmp;
     return (otmp->oclass == SPBOOK_CLASS);
 }
 
-STATIC_OVL boolean
-maybe_dragon_scales(otmp)
-struct obj* otmp;
+static boolean
+maybe_dragon_scales(struct obj *otmp)
 {
     if (!otmp)
         return FALSE;
@@ -9258,8 +9158,7 @@ struct obj* otmp;
 }
 
 boolean
-maybe_refillable_with_oil(otmp)
-struct obj* otmp;
+maybe_refillable_with_oil(struct obj *otmp)
 {
     if (!otmp)
         return FALSE;
@@ -9267,9 +9166,8 @@ struct obj* otmp;
     return !!is_refillable_with_oil(otmp);
 }
 
-STATIC_OVL boolean
-maybe_otyp(otmp)
-struct obj* otmp;
+static boolean
+maybe_otyp(struct obj *otmp)
 {
     if (!otmp)
         return FALSE;
@@ -9278,10 +9176,12 @@ struct obj* otmp;
 }
 
 
-STATIC_OVL int
-sell_many_to_npc(mtmp, allow)
-struct monst* mtmp;
-boolean FDECL((*allow), (OBJ_P)); /* allow function */
+/*
+ * Parameters:
+ *   allow: allow function
+ */
+static int
+sell_many_to_npc(struct monst *mtmp, boolean (*allow)(struct obj*))
 {
     int n, n_sold = 0, i;
     int64_t cnt;
@@ -9350,9 +9250,8 @@ boolean FDECL((*allow), (OBJ_P)); /* allow function */
     return n_sold;
 }
 
-STATIC_OVL int
-do_chat_smith_sell_ore(mtmp)
-struct monst* mtmp;
+static int
+do_chat_smith_sell_ore(struct monst *mtmp)
 {
     if (!mtmp || !has_esmi(mtmp))
         return 0;
@@ -9366,9 +9265,8 @@ struct monst* mtmp;
     return 1;
 }
 
-STATIC_OVL int
-do_chat_npc_branch_portal(mtmp)
-struct monst* mtmp;
+static int
+do_chat_npc_branch_portal(struct monst *mtmp)
 {
     if (!mtmp || !mtmp->isnpc || !mtmp->mextra || !ENPC(mtmp))
         return 0;
@@ -9427,9 +9325,7 @@ struct monst* mtmp;
 }
 
 boolean
-is_npc_item_identification_type(otmp, npc_identification_type_index)
-struct obj* otmp;
-int npc_identification_type_index;
+is_npc_item_identification_type(struct obj *otmp, int npc_identification_type_index)
 {
     if (!otmp)
         return FALSE;
@@ -9459,9 +9355,8 @@ int npc_identification_type_index;
     return TRUE;
 }
 
-STATIC_OVL int
-do_chat_npc_sing_song(mtmp)
-struct monst* mtmp;
+static int
+do_chat_npc_sing_song(struct monst *mtmp)
 {
     if (!mtmp || !m_speak_check(mtmp) || !mtmp->isnpc || !has_enpc(mtmp))
         return 0;
@@ -9546,9 +9441,8 @@ struct monst* mtmp;
     return 1;
 }
 
-STATIC_OVL int
-do_chat_npc_special_hints(mtmp)
-struct monst* mtmp;
+static int
+do_chat_npc_special_hints(struct monst *mtmp)
 {
     if (!mtmp || !m_speak_check(mtmp) || !mtmp->isnpc || !has_enpc(mtmp))
         return 0;
@@ -9586,9 +9480,8 @@ struct monst* mtmp;
     return 1;
 }
 
-STATIC_OVL int
-do_chat_quantum_mechanic_research_support(mtmp)
-struct monst* mtmp;
+static int
+do_chat_quantum_mechanic_research_support(struct monst *mtmp)
 {
     if (!mtmp)
         return 0;
@@ -9651,9 +9544,8 @@ struct monst* mtmp;
     return 1;
 }
 
-STATIC_OVL int
-do_chat_quantum_observe_position(mtmp)
-struct monst* mtmp;
+static int
+do_chat_quantum_observe_position(struct monst *mtmp)
 {
     if (!mtmp)
         return 0;
@@ -9739,9 +9631,8 @@ struct monst* mtmp;
     return 1;
 }
 
-STATIC_OVL int
-do_chat_quantum_observe_speed(mtmp)
-struct monst* mtmp;
+static int
+do_chat_quantum_observe_speed(struct monst *mtmp)
 {
     if (!mtmp)
         return 0;
@@ -9820,9 +9711,8 @@ struct monst* mtmp;
     return 1;
 }
 
-STATIC_OVL int
-do_chat_npc_reconciliation(mtmp)
-struct monst* mtmp;
+static int
+do_chat_npc_reconciliation(struct monst *mtmp)
 {
     if (!mtmp || !mtmp->isnpc || !mtmp->mextra || !ENPC(mtmp))
         return 0;
@@ -9891,9 +9781,8 @@ struct monst* mtmp;
     return 1;
 }
 
-STATIC_OVL int
-do_chat_npc_enchant_accessory(mtmp)
-struct monst* mtmp;
+static int
+do_chat_npc_enchant_accessory(struct monst *mtmp)
 {
     if (!mtmp || !mtmp->isnpc || !mtmp->mextra || !ENPC(mtmp))
         return 0;
@@ -9903,9 +9792,8 @@ struct monst* mtmp;
     return item_enchant_service_query(mtmp, 2, cost);
 }
 
-STATIC_OVL int
-do_chat_npc_recharge(mtmp)
-struct monst* mtmp;
+static int
+do_chat_npc_recharge(struct monst *mtmp)
 {
     if (!mtmp || !mtmp->isnpc || !mtmp->mextra || !ENPC(mtmp))
         return 0;
@@ -9915,9 +9803,8 @@ struct monst* mtmp;
     return general_service_query_with_item_cost_adjustment_and_extra(mtmp, recharge_item_func, "charge", "recharging", cost, objects[WAN_WISHING].oc_cost, 50L, 3L, 2L, "recharging an item", QUERY_STYLE_COMPONENTS, (char*)0, NPC_LINE_WHAT_WOULD_YOU_LIKE_TO_CHARGE);
 }
 
-STATIC_OVL int
-do_chat_npc_blessed_recharge(mtmp)
-struct monst* mtmp;
+static int
+do_chat_npc_blessed_recharge(struct monst *mtmp)
 {
     if (!mtmp || !mtmp->isnpc || !mtmp->mextra || !ENPC(mtmp))
         return 0;
@@ -9927,9 +9814,8 @@ struct monst* mtmp;
     return general_service_query_with_item_cost_adjustment_and_extra(mtmp, blessed_recharge_item_func, "charge", "fully recharging", cost, objects[WAN_WISHING].oc_cost, 50L, 3L, 2L, "recharging an item", QUERY_STYLE_COMPONENTS, (char*)0, NPC_LINE_WHAT_WOULD_YOU_LIKE_TO_CHARGE);
 }
 
-STATIC_OVL int
-do_chat_npc_teach_spells(mtmp)
-struct monst* mtmp;
+static int
+do_chat_npc_teach_spells(struct monst *mtmp)
 {
     if (!mtmp || !mtmp->isnpc || !mtmp->mextra || !ENPC(mtmp))
         return 0;
@@ -9993,9 +9879,8 @@ struct monst* mtmp;
     return spell_teaching(mtmp, spell_otyps);
 }
 
-STATIC_OVL int
-do_chat_priest_teach_spells(mtmp)
-struct monst* mtmp;
+static int
+do_chat_priest_teach_spells(struct monst *mtmp)
 {
     if (!mtmp || !mtmp->ispriest || !mtmp->mextra || !EPRI(mtmp))
         return 0;
@@ -10038,9 +9923,8 @@ struct monst* mtmp;
     return spell_teaching(mtmp, spell_otyps);
 }
 
-STATIC_OVL int
-do_chat_oracle_teach_spells(mtmp)
-struct monst* mtmp;
+static int
+do_chat_oracle_teach_spells(struct monst *mtmp)
 {
     if (!mtmp || mtmp->mnum != PM_ORACLE)
         return 0;
@@ -10055,9 +9939,8 @@ struct monst* mtmp;
     return spell_teaching(mtmp, spell_otyps);
 }
 
-STATIC_OVL int
-do_chat_watchman_reconciliation(mtmp)
-struct monst* mtmp;
+static int
+do_chat_watchman_reconciliation(struct monst *mtmp)
 {
     if (!mtmp)
         return 0;
@@ -10132,18 +10015,16 @@ struct monst* mtmp;
     return 1;
 }
 
-STATIC_OVL int
-do_chat_npc_identify_gems_and_stones(mtmp)
-struct monst* mtmp;
+static int
+do_chat_npc_identify_gems_and_stones(struct monst *mtmp)
 {
     return do_chat_npc_general_identify(mtmp, "gem or stone", 1, 
         max(1L, (int64_t)((double)(100 + 10 * u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA)))),
         NPC_LINE_WOULD_YOU_LIKE_TO_IDENTIFY_A_GEM_OR_STONE, NPC_LINE_WOULD_YOU_LIKE_TO_IDENTIFY_ONE_MORE_GEM_OR_STONE);
 }
 
-STATIC_OVL int
-do_chat_npc_sell_gems_and_stones(mtmp)
-struct monst* mtmp;
+static int
+do_chat_npc_sell_gems_and_stones(struct monst *mtmp)
 {
     if (!mtmp || !has_enpc(mtmp))
         return 0;
@@ -10157,9 +10038,8 @@ struct monst* mtmp;
     return 1;
 }
 
-STATIC_OVL boolean
-maybe_dilithium_crystal(otmp)
-struct obj* otmp;
+static boolean
+maybe_dilithium_crystal(struct obj *otmp)
 {
     if (!otmp)
         return FALSE;
@@ -10167,9 +10047,8 @@ struct obj* otmp;
     return maybe_gem(otmp);
 }
 
-STATIC_OVL int
-do_chat_npc_sell_dilithium_crystals(mtmp)
-struct monst* mtmp;
+static int
+do_chat_npc_sell_dilithium_crystals(struct monst *mtmp)
 {
     if (!mtmp || !has_enpc(mtmp))
         return 0;
@@ -10183,9 +10062,8 @@ struct monst* mtmp;
     return 1;
 }
 
-STATIC_OVL int
-do_chat_npc_sell_spellbooks(mtmp)
-struct monst* mtmp;
+static int
+do_chat_npc_sell_spellbooks(struct monst *mtmp)
 {
     if (!mtmp || !has_enpc(mtmp))
         return 0;
@@ -10199,27 +10077,24 @@ struct monst* mtmp;
     return 1;
 }
 
-STATIC_OVL int
-do_chat_npc_identify_items(mtmp)
-struct monst* mtmp;
+static int
+do_chat_npc_identify_items(struct monst *mtmp)
 {
     return do_chat_npc_general_identify(mtmp, "item", 0,
         max(1L, (int64_t)((double)(150 + 10 * u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA)))),
         NPC_LINE_NONE, NPC_LINE_NONE);
 }
 
-STATIC_OVL int
-do_chat_npc_identify_accessories_and_charged_items(mtmp)
-struct monst* mtmp;
+static int
+do_chat_npc_identify_accessories_and_charged_items(struct monst *mtmp)
 {
     return do_chat_npc_general_identify(mtmp, "accessory or charged item", 2,
         max(1L, (int64_t)((double)(100 + 10 * u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA)))),
         NPC_LINE_WOULD_YOU_LIKE_TO_IDENTIFY_AN_ACCESSORY_OR_CHARGED_ITEM, NPC_LINE_WOULD_YOU_LIKE_TO_IDENTIFY_ONE_MORE_ACCESSORY_OR_CHARGED_ITEM);
 }
 
-STATIC_OVL int
-do_chat_npc_identify_gems_stones_and_charged_items(mtmp)
-struct monst* mtmp;
+static int
+do_chat_npc_identify_gems_stones_and_charged_items(struct monst *mtmp)
 {
 
     return do_chat_npc_general_identify(mtmp, "gem, stone or a charged item", 3,
@@ -10227,12 +10102,8 @@ struct monst* mtmp;
         NPC_LINE_WOULD_YOU_LIKE_TO_IDENTIFY_A_GEM_STONE_OR_CHARGED_ITEM, NPC_LINE_WOULD_YOU_LIKE_TO_IDENTIFY_ONE_MORE_GEM_STONE_OR_CHARGED_ITEM);
 }
 
-STATIC_OVL int
-do_chat_npc_general_identify(mtmp, identify_item_str, id_idx, minor_id_cost, spdialogue1, spdialogue2)
-struct monst* mtmp;
-const char* identify_item_str;
-int id_idx, spdialogue1, spdialogue2 UNUSED;
-int64_t minor_id_cost;
+static int
+do_chat_npc_general_identify(struct monst *mtmp, const char *identify_item_str, int id_idx, int64_t minor_id_cost, int spdialogue1, int spdialogue2 UNUSED)
 {
     if (!mtmp)
         return 0;
@@ -10287,9 +10158,7 @@ int64_t minor_id_cost;
 
 /* menu of unidentified objects */
 int
-service_identify(mtmp, id_cost)
-struct monst* mtmp;
-int64_t id_cost;
+service_identify(struct monst *mtmp, int64_t id_cost)
 {
     menu_item* pick_list;
     int n, i;
@@ -10408,12 +10277,8 @@ int64_t id_cost;
     return res;
 }
 
-STATIC_OVL int
-sell_to_npc(obj, mtmp, items_left_in_list, auto_yes)
-struct obj* obj;
-struct monst* mtmp;
-int items_left_in_list UNUSED;
-boolean auto_yes;
+static int
+sell_to_npc(struct obj *obj, struct monst *mtmp, int items_left_in_list UNUSED, boolean auto_yes)
 {
     if (!obj)
         return 0;
@@ -10596,9 +10461,8 @@ merge_obj_back:
     return res;
 }
 
-STATIC_OVL int
-do_chat_quest_chat(mtmp)
-struct monst* mtmp;
+static int
+do_chat_quest_chat(struct monst *mtmp)
 {
     if (!m_speak_check(mtmp))
         return 0;
@@ -10608,8 +10472,7 @@ struct monst* mtmp;
 }
 
 double
-service_cost_charisma_adjustment(cha)
-int cha;
+service_cost_charisma_adjustment(int cha)
 {
     if (cha < 1 || cha > 25)
         return 1.0;
@@ -10618,17 +10481,13 @@ int cha;
 }
 
 void
-popup_talk_lines(mtmp, linearray)
-struct monst* mtmp;
-const char** linearray;
+popup_talk_lines(struct monst *mtmp, const char **linearray)
 {
     hermit_talk(mtmp, linearray, GHSOUND_NONE);
 }
 
 void
-popup_talk_line(mtmp, line)
-struct monst* mtmp;
-const char* line;
+popup_talk_line(struct monst *mtmp, const char *line)
 {
     const char* linearray[2] = { 0, 0 };
     linearray[0] = line;
@@ -10636,9 +10495,7 @@ const char* line;
 }
 
 void
-popup_talk_line_noquotes(mtmp, line)
-struct monst* mtmp;
-const char* line;
+popup_talk_line_noquotes(struct monst *mtmp, const char *line)
 {
     const char* linearray[2] = { 0, 0 };
     linearray[0] = line;
@@ -10646,11 +10503,7 @@ const char* line;
 }
 
 void
-popup_talk_line_ex(mtmp, line, attr, color, printtext, addquotes)
-struct monst* mtmp;
-const char* line;
-int attr, color;
-boolean printtext, addquotes;
+popup_talk_line_ex(struct monst *mtmp, const char *line, int attr, int color, boolean printtext, boolean addquotes)
 {
     const char* linearray[2] = { 0, 0 };
     linearray[0] = line;
@@ -10658,10 +10511,7 @@ boolean printtext, addquotes;
 }
 
 void
-popup_talk_line_with_know_mname(mtmp, line, know_mname)
-struct monst* mtmp;
-const char* line;
-boolean know_mname;
+popup_talk_line_with_know_mname(struct monst *mtmp, const char *line, boolean know_mname)
 {
     boolean saved_know_mname = mtmp->u_know_mname;
     mtmp->u_know_mname = know_mname;
@@ -10669,37 +10519,25 @@ boolean know_mname;
     mtmp->u_know_mname = saved_know_mname;
 }
 
-STATIC_OVL void
-hermit_talk(mtmp, linearray, soundid)
-struct monst* mtmp;
-const char** linearray;
-enum ghsound_types soundid;
+static void
+hermit_talk(struct monst *mtmp, const char **linearray, enum ghsound_types soundid)
 {
     popup_talk(mtmp, linearray, soundid, ATR_NONE, CLR_MSG_TALK_NORMAL, TRUE, TRUE);
 }
 
-STATIC_OVL void
-popup_talk(mtmp, linearray, soundid, attr, color, printtext, addquotes)
-struct monst* mtmp;
-const char** linearray;
-enum ghsound_types soundid;
-int attr, color;
-boolean printtext;
-boolean addquotes;
+static void
+popup_talk(struct monst *mtmp, const char **linearray, enum ghsound_types soundid, int attr, int color, boolean printtext, boolean addquotes)
 {
     popup_talk_core(mtmp, linearray, soundid, 0, 0, attr, color, printtext, addquotes);
 }
 
-STATIC_OVL void
-popup_talk_core(mtmp, linearray, soundid, soundindextype, startlineidx, attr, color, printtext, addquotes)
-struct monst* mtmp;
-const char** linearray;
-enum ghsound_types soundid;
-uchar soundindextype; /* 0 = line indexed, 1 = msg indexed, 2 = unindexed (ignore startlineidx) */
-int startlineidx; /* Index number to start */
-int attr, color;
-boolean printtext;
-boolean addquotes;
+/*
+ * Parameters:
+ *   soundindextype: 0 = line indexed, 1 = msg indexed, 2 = unindexed (ignore startlineidx)
+ *   startlineidx: Index number to start
+ */
+static void
+popup_talk_core(struct monst *mtmp, const char **linearray, enum ghsound_types soundid, uchar soundindextype, int startlineidx, int attr, int color, boolean printtext, boolean addquotes)
 {
     if (!mtmp || !linearray)
         return;
@@ -10731,9 +10569,8 @@ boolean addquotes;
     }
 }
 
-STATIC_OVL int
-do_chat_quantum_experiments(mtmp)
-struct monst* mtmp;
+static int
+do_chat_quantum_experiments(struct monst *mtmp)
 {
     if (!mtmp || !m_speak_check(mtmp))
         return 0;
@@ -10749,9 +10586,8 @@ struct monst* mtmp;
     return 1;
 }
 
-STATIC_OVL int
-do_chat_quantum_large_circular_dungeon(mtmp)
-struct monst* mtmp;
+static int
+do_chat_quantum_large_circular_dungeon(struct monst *mtmp)
 {
     if (!mtmp || !m_speak_check(mtmp))
         return 0;
@@ -10766,9 +10602,8 @@ struct monst* mtmp;
     return 1;
 }
 
-STATIC_OVL int
-do_chat_quantum_special_wand(mtmp)
-struct monst* mtmp;
+static int
+do_chat_quantum_special_wand(struct monst *mtmp)
 {
     if (!mtmp || !m_speak_check(mtmp))
         return 0;
@@ -10785,9 +10620,8 @@ struct monst* mtmp;
     return 1;
 }
 
-STATIC_OVL int
-do_chat_quantum_disintegration_wand(mtmp)
-struct monst* mtmp;
+static int
+do_chat_quantum_disintegration_wand(struct monst *mtmp)
 {
     if (!mtmp || !m_speak_check(mtmp))
         return 0;
@@ -10803,9 +10637,8 @@ struct monst* mtmp;
     return 1;
 }
 
-STATIC_OVL int
-do_chat_quantum_teleportation_wand(mtmp)
-struct monst* mtmp;
+static int
+do_chat_quantum_teleportation_wand(struct monst *mtmp)
 {
     if (!mtmp || !m_speak_check(mtmp))
         return 0;
@@ -10821,9 +10654,8 @@ struct monst* mtmp;
     return 1;
 }
 
-STATIC_OVL int 
-do_chat_hermit_dungeons(mtmp)
-struct monst* mtmp;
+static int 
+do_chat_hermit_dungeons(struct monst *mtmp)
 {
     if (!mtmp || !m_speak_check(mtmp))
         return 0;
@@ -10839,9 +10671,8 @@ struct monst* mtmp;
     return 1;
 }
 
-STATIC_OVL int
-do_chat_hermit_quests(mtmp)
-struct monst* mtmp;
+static int
+do_chat_hermit_quests(struct monst *mtmp)
 {
     if (!m_speak_check(mtmp))
         return 0;
@@ -10859,9 +10690,8 @@ struct monst* mtmp;
     return 1;
 }
 
-STATIC_OVL int
-do_chat_hermit_gnomish_mines(mtmp)
-struct monst* mtmp;
+static int
+do_chat_hermit_gnomish_mines(struct monst *mtmp)
 {
     if (!m_speak_check(mtmp))
         return 0;
@@ -10878,9 +10708,8 @@ struct monst* mtmp;
     return 1;
 }
 
-STATIC_OVL int
-do_chat_hermit3_gnomish_mines(mtmp)
-struct monst* mtmp;
+static int
+do_chat_hermit3_gnomish_mines(struct monst *mtmp)
 {
     if (!m_speak_check(mtmp))
         return 0;
@@ -10895,9 +10724,8 @@ struct monst* mtmp;
     return 1;
 }
 
-STATIC_OVL int
-do_chat_hermit3_luckstone(mtmp)
-struct monst* mtmp;
+static int
+do_chat_hermit3_luckstone(struct monst *mtmp)
 {
     if (!m_speak_check(mtmp))
         return 0;
@@ -10913,9 +10741,8 @@ struct monst* mtmp;
     return 1;
 }
 
-STATIC_OVL int
-do_chat_orc_hermit3_gnomish_mines(mtmp)
-struct monst* mtmp;
+static int
+do_chat_orc_hermit3_gnomish_mines(struct monst *mtmp)
 {
     if (!m_speak_check(mtmp))
         return 0;
@@ -10931,9 +10758,8 @@ struct monst* mtmp;
     return 1;
 }
 
-STATIC_OVL int
-do_chat_orc_hermit3_luckstone(mtmp)
-struct monst* mtmp;
+static int
+do_chat_orc_hermit3_luckstone(struct monst *mtmp)
 {
     if (!m_speak_check(mtmp))
         return 0;
@@ -10948,9 +10774,8 @@ struct monst* mtmp;
     return 1;
 }
 
-STATIC_OVL int
-do_chat_hermit_sokoban(mtmp)
-struct monst* mtmp;
+static int
+do_chat_hermit_sokoban(struct monst *mtmp)
 {
     if (!m_speak_check(mtmp))
         return 0;
@@ -10966,9 +10791,8 @@ struct monst* mtmp;
     return 1;
 }
 
-STATIC_OVL int
-do_chat_hermit_castle(mtmp)
-struct monst* mtmp;
+static int
+do_chat_hermit_castle(struct monst *mtmp)
 {
     if (!m_speak_check(mtmp))
         return 0;
@@ -10984,9 +10808,8 @@ struct monst* mtmp;
     return 1;
 }
 
-STATIC_OVL int
-do_chat_hermit_gehennom(mtmp)
-struct monst* mtmp;
+static int
+do_chat_hermit_gehennom(struct monst *mtmp)
 {
     if (!m_speak_check(mtmp))
         return 0;
@@ -11000,9 +10823,8 @@ struct monst* mtmp;
     return 1;
 }
 
-STATIC_OVL int
-do_chat_hermit_wizard_of_yendor(mtmp)
-struct monst* mtmp;
+static int
+do_chat_hermit_wizard_of_yendor(struct monst *mtmp)
 {
     if (!m_speak_check(mtmp))
         return 0;
@@ -11017,9 +10839,8 @@ struct monst* mtmp;
     return 1;
 }
 
-STATIC_OVL int
-do_chat_hermit2_castle(mtmp)
-struct monst* mtmp;
+static int
+do_chat_hermit2_castle(struct monst *mtmp)
 {
     if (!m_speak_check(mtmp))
         return 0;
@@ -11034,9 +10855,8 @@ struct monst* mtmp;
     return 1;
 }
 
-STATIC_OVL int
-do_chat_hermit2_gehennom(mtmp)
-struct monst* mtmp;
+static int
+do_chat_hermit2_gehennom(struct monst *mtmp)
 {
     if (!m_speak_check(mtmp))
         return 0;
@@ -11052,9 +10872,8 @@ struct monst* mtmp;
     return 1;
 }
 
-STATIC_OVL int
-do_chat_hermit2_vampire_lord(mtmp)
-struct monst* mtmp;
+static int
+do_chat_hermit2_vampire_lord(struct monst *mtmp)
 {
     if (!m_speak_check(mtmp))
         return 0;
@@ -11071,9 +10890,8 @@ struct monst* mtmp;
 
     return 1;
 }
-STATIC_OVL int
-do_chat_hermit2_wizard_of_yendor(mtmp)
-struct monst* mtmp;
+static int
+do_chat_hermit2_wizard_of_yendor(struct monst *mtmp)
 {
     if (!m_speak_check(mtmp))
         return 0;
@@ -11090,9 +10908,8 @@ struct monst* mtmp;
 
     return 1;
 }
-STATIC_OVL int
-do_chat_hermit2_silver_bell(mtmp)
-struct monst* mtmp;
+static int
+do_chat_hermit2_silver_bell(struct monst *mtmp)
 {
     if (!m_speak_check(mtmp))
         return 0;
@@ -11115,9 +10932,8 @@ struct monst* mtmp;
 
     return 1;
 }
-STATIC_OVL int
-do_chat_hermit2_candelabrum(mtmp)
-struct monst* mtmp;
+static int
+do_chat_hermit2_candelabrum(struct monst *mtmp)
 {
     if (!m_speak_check(mtmp))
         return 0;
@@ -11133,9 +10949,8 @@ struct monst* mtmp;
 
     return 1;
 }
-STATIC_OVL int
-do_chat_hermit2_book_of_the_dead(mtmp)
-struct monst* mtmp;
+static int
+do_chat_hermit2_book_of_the_dead(struct monst *mtmp)
 {
     if (!m_speak_check(mtmp))
         return 0;
@@ -11151,9 +10966,8 @@ struct monst* mtmp;
 
     return 1;
 }
-STATIC_OVL int
-do_chat_hermit2_ritual(mtmp)
-struct monst* mtmp;
+static int
+do_chat_hermit2_ritual(struct monst *mtmp)
 {
     if (!m_speak_check(mtmp))
         return 0;
@@ -11171,9 +10985,8 @@ struct monst* mtmp;
 
     return 1;
 }
-STATIC_OVL int
-do_chat_hermit_further_advice(mtmp)
-struct monst* mtmp;
+static int
+do_chat_hermit_further_advice(struct monst *mtmp)
 {
     if (!m_speak_check(mtmp))
         return 0;
@@ -11194,10 +11007,10 @@ struct monst* mtmp;
 #ifdef USER_SOUNDS
 
 #ifdef ANDROID
-extern void FDECL(load_usersound, (const char*));
+extern void load_usersound(const char*);
 #endif
 
-extern void FDECL(play_usersound, (const char *, int));
+extern void play_usersound(const char *, int);
 
 typedef struct audio_mapping_rec {
     struct nhregex *regex;
@@ -11206,14 +11019,13 @@ typedef struct audio_mapping_rec {
     struct audio_mapping_rec *next;
 } audio_mapping;
 
-STATIC_VAR audio_mapping *soundmap = 0;
+static audio_mapping *soundmap = 0;
 
 char *sounddir = ".";
 
 /* adds a sound file mapping, returns 0 on failure, 1 on success */
 int
-add_sound_mapping(mapping)
-const char *mapping;
+add_sound_mapping(const char *mapping)
 {
     char text[256];
     char filename[256];
@@ -11264,8 +11076,7 @@ const char *mapping;
 }
 
 void
-play_sound_for_message(msg)
-const char *msg;
+play_sound_for_message(const char *msg)
 {
     audio_mapping *cursor = soundmap;
 
@@ -11283,14 +11094,8 @@ const char *msg;
 
 
 
-STATIC_OVL int
-spell_service_query(mtmp, service_spell_id, buc, service_verb, service_cost, no_mood_string, special_dialogue_sound_id)
-struct monst* mtmp;
-int service_spell_id, buc;
-int64_t service_cost;
-const char* service_verb;
-const char* no_mood_string;
-int special_dialogue_sound_id;
+static int
+spell_service_query(struct monst *mtmp, int service_spell_id, int buc, const char *service_verb, int64_t service_cost, const char *no_mood_string, int special_dialogue_sound_id)
 {
 
     int64_t umoney = money_cnt(invent);
@@ -11356,29 +11161,15 @@ int special_dialogue_sound_id;
     return 1;
 }
 
-STATIC_OVL int
-general_service_query(mtmp, service_func, service_verb, service_cost, no_mood_string, special_dialogue_sound_id)
-struct monst* mtmp;
-int (*service_func)(struct monst*);
-const char* service_verb;
-int64_t service_cost;
-const char* no_mood_string;
-int special_dialogue_sound_id;
+static int
+general_service_query(struct monst *mtmp, int (*service_func)(struct monst*), const char *service_verb, int64_t service_cost, const char *no_mood_string, int special_dialogue_sound_id)
 {
 
     return general_service_query_with_extra(mtmp, service_func, service_verb, service_cost, no_mood_string, QUERY_STYLE_COMPONENTS, (const char* )0, special_dialogue_sound_id);
 }
 
-STATIC_OVL int
-general_service_query_with_extra(mtmp, service_func, service_verb, service_cost, no_mood_string, query_style, extra_string, special_dialogue_sound_id)
-struct monst* mtmp;
-int (*service_func)(struct monst*);
-const char* service_verb;
-int64_t service_cost;
-const char* no_mood_string;
-int query_style;
-const char* extra_string;
-int special_dialogue_sound_id;
+static int
+general_service_query_with_extra(struct monst *mtmp, int (*service_func)(struct monst*), const char *service_verb, int64_t service_cost, const char *no_mood_string, int query_style, const char *extra_string, int special_dialogue_sound_id)
 {
 
     int64_t umoney = money_cnt(invent);
@@ -11440,16 +11231,8 @@ int special_dialogue_sound_id;
     return 1;
 }
 
-STATIC_OVL int
-general_service_query_with_item_cost_adjustment_and_extra(mtmp, service_item_func, service_verb, service_verb_ing, service_base_cost, item_cost_at_base, minimum_cost, maximum_multiplier, maximum_divisor, no_mood_string, query_style, extra_string, special_dialogue_sound_id)
-struct monst* mtmp;
-int (*service_item_func)(struct monst*, struct obj*);
-const char* service_verb, *service_verb_ing;
-int64_t service_base_cost, item_cost_at_base, minimum_cost, maximum_multiplier, maximum_divisor;
-const char* no_mood_string;
-int query_style;
-const char* extra_string;
-int special_dialogue_sound_id;
+static int
+general_service_query_with_item_cost_adjustment_and_extra(struct monst *mtmp, int (*service_item_func)(struct monst*, struct obj*), const char *service_verb, const char *service_verb_ing, int64_t service_base_cost, int64_t item_cost_at_base, int64_t minimum_cost, int64_t maximum_multiplier, int64_t maximum_divisor, const char *no_mood_string, int query_style, const char *extra_string, int special_dialogue_sound_id)
 {
     int64_t umoney = money_cnt(invent);
     int64_t u_pay;
@@ -11518,11 +11301,12 @@ int special_dialogue_sound_id;
     return 1;
 }
 
-STATIC_OVL int
-item_enchant_service_query(mtmp, enchant_type, service_cost)
-struct monst* mtmp;
-int enchant_type;/* 0 = enchant weapon, 1 = enchant armor, 2 = enchant accessory */
-int64_t service_cost;
+/*
+ * Parameters:
+ *   enchant_type: 0 = enchant weapon, 1 = enchant armor, 2 = enchant accessory
+ */
+static int
+item_enchant_service_query(struct monst *mtmp, int enchant_type, int64_t service_cost)
 {
 
     int64_t umoney = money_cnt(invent);
@@ -11760,10 +11544,8 @@ int64_t service_cost;
 }
 
 
-STATIC_OVL int
-recharge_item_func(mtmp, otmp)
-struct monst* mtmp UNUSED;
-struct obj* otmp;
+static int
+recharge_item_func(struct monst *mtmp UNUSED, struct obj *otmp)
 {
 
     if (otmp)
@@ -11774,10 +11556,8 @@ struct obj* otmp;
     return 1;
 }
 
-STATIC_OVL int
-blessed_recharge_item_func(mtmp, otmp)
-struct monst* mtmp UNUSED;
-struct obj* otmp;
+static int
+blessed_recharge_item_func(struct monst *mtmp UNUSED, struct obj *otmp)
 {
 
     if (otmp)
@@ -11789,9 +11569,8 @@ struct obj* otmp;
 }
 
 
-STATIC_OVL int
-repair_armor_func(mtmp)
-struct monst* mtmp;
+static int
+repair_armor_func(struct monst *mtmp)
 {
     const char repair_armor_objects[] = { ALL_CLASSES, ARMOR_CLASS, 0 };
     struct obj* otmp = getobj(repair_armor_objects, "repair", 0, "");
@@ -11846,9 +11625,8 @@ struct monst* mtmp;
     return 1;
 }
 
-STATIC_OVL int
-repair_weapon_func(mtmp)
-struct monst* mtmp;
+static int
+repair_weapon_func(struct monst *mtmp)
 {
     const char repair_weapon_objects[] = { ALL_CLASSES, WEAPON_CLASS, 0 };
     struct obj* otmp = getobj(repair_weapon_objects, "repair", 0, "");
@@ -11904,9 +11682,8 @@ struct monst* mtmp;
     return 1;
 }
 
-STATIC_OVL int
-refill_lantern_func(mtmp)
-struct monst* mtmp;
+static int
+refill_lantern_func(struct monst *mtmp)
 {
     const char refill_lantern_objects[] = { ALL_CLASSES, TOOL_CLASS, 0 };
     struct obj* otmp = getobj_ex(refill_lantern_objects, "refill", 0, TRUE, "", maybe_refillable_with_oil, 0, 0U);
@@ -11976,9 +11753,8 @@ struct monst* mtmp;
     return 1;
 }
 
-STATIC_OVL int
-forge_any_special_func(mtmp)
-struct monst* mtmp;
+static int
+forge_any_special_func(struct monst *mtmp)
 {
     if (forge_any_target_otyp == STRANGE_OBJECT)
         return 0;
@@ -11986,23 +11762,20 @@ struct monst* mtmp;
     return forge_special_func(mtmp, forge_any_material_component_otyp, forge_any_material_component_quan, forge_any_target_otyp, forge_any_target_quan, forge_any_target_exceptionality, forge_any_target_material, FALSE);
 }
 
-STATIC_OVL int
-forge_cubic_gate_func(mtmp)
-struct monst* mtmp;
+static int
+forge_cubic_gate_func(struct monst *mtmp)
 {
     return forge_special_func(mtmp, DILITHIUM_CRYSTAL, 1, CUBIC_GATE, 0, 0, MAT_NONE,TRUE);
 }
 
-STATIC_OVL int
-forge_artificial_wings_func(mtmp)
-struct monst* mtmp;
+static int
+forge_artificial_wings_func(struct monst *mtmp)
 {
     return forge_special_func(mtmp, FEATHER, 12, WINGS_OF_FLYING, 0, 0, MAT_NONE, FALSE);
 }
 
-STATIC_OVL int
-forge_dragon_scale_mail_func(mtmp)
-struct monst* mtmp;
+static int
+forge_dragon_scale_mail_func(struct monst *mtmp)
 {
     const char forge_objects[] = { ALL_CLASSES, ARMOR_CLASS, 0 };
     struct obj* otmp = getobj_ex(forge_objects, "forge into a dragon scale mail", 0, TRUE, "", maybe_dragon_scales, 0, 0U);
@@ -12151,13 +11924,8 @@ struct monst* mtmp;
 //}
 
 
-STATIC_OVL int
-forge_special_func(mtmp, forge_source_otyp, forge_source_quan, forge_dest_otyp, quan, exceptionality, material, initialize)
-struct monst* mtmp;
-int forge_source_otyp, forge_dest_otyp, exceptionality;
-int64_t forge_source_quan, quan;
-uchar material;
-boolean initialize;
+static int
+forge_special_func(struct monst *mtmp, int forge_source_otyp, int64_t forge_source_quan, int forge_dest_otyp, int64_t quan, int exceptionality, uchar material, boolean initialize)
 {
     char talkbuf[BUFSZ];
     char forge_objects[3] = { 0, 0, 0 };
@@ -12282,10 +12050,8 @@ boolean initialize;
     return 1;
 }
 
-STATIC_OVL int
-spell_teaching(mtmp, spell_otyps)
-struct monst* mtmp;
-int* spell_otyps;
+static int
+spell_teaching(struct monst *mtmp, int *spell_otyps)
 {
     if(!mtmp || !spell_otyps)
         return 0;
@@ -12444,9 +12210,8 @@ int* spell_otyps;
         return 0;
 }
 
-STATIC_OVL int
-learn_spell_func(mtmp)
-struct monst* mtmp;
+static int
+learn_spell_func(struct monst *mtmp)
 {
     if (!mtmp || !context.spbook.book)
         return 0;
@@ -12541,10 +12306,9 @@ struct monst* mtmp;
     return 1;
 }
 
-STATIC_OVL
+static
 struct monst*
-ask_target_monster(mtmp)
-struct monst* mtmp;
+ask_target_monster(struct monst *mtmp)
 {
     if (iflags.spell_target_monster)
         return iflags.spell_target_monster;

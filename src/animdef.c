@@ -13486,7 +13486,7 @@ NEARDATA const struct replacement_definition replacements[MAX_REPLACEMENTS] =
 
 
 void
-init_animations(VOID_ARGS)
+init_animations(void)
 {
     /* force linkage */
     return;

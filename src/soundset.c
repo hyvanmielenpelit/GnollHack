@@ -12,7 +12,7 @@
 #define SSF_SILENCE_SOURCE 0x4 /* emits silence rather than sound */
 
 NEARDATA struct soundsource_t* sound_base = 0;
-STATIC_DCL void FDECL(set_hearing_array, (int, int, double, int));
+static void set_hearing_array(int, int, double, int);
 
 NEARDATA const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_NONE, "", 0.0f },
@@ -16494,7 +16494,7 @@ struct container_soundset_definition container_soundsets[MAX_CONTAINER_SOUNDSETS
 
 
 void
-update_game_music(VOID_ARGS)
+update_game_music(void)
 {
     struct ghsound_music_info musicinfo = { 0 };
     musicinfo.volume = 1.0f;
@@ -16529,7 +16529,7 @@ update_game_music(VOID_ARGS)
 }
 
 void
-play_level_ambient_sounds(VOID_ARGS)
+play_level_ambient_sounds(void)
 {
     struct ghsound_level_ambient_info lainfo = { 0 };
     lainfo.volume = 1.0f;
@@ -16563,7 +16563,7 @@ play_level_ambient_sounds(VOID_ARGS)
 }
 
 void
-play_environment_ambient_sounds(VOID_ARGS)
+play_environment_ambient_sounds(void)
 {
     struct ghsound_environment_ambient_info eainfo = { 0 };
     eainfo.volume = 1.0f;
@@ -16585,9 +16585,7 @@ play_environment_ambient_sounds(VOID_ARGS)
 }
 
 enum floor_surface_types
-get_floor_surface_type(x, y, is_underwater)
-int x, y;
-boolean is_underwater;
+get_floor_surface_type(int x, int y, boolean is_underwater)
 {
     if (!isok(x, y))
         return FLOOR_SURFACE_NONE;
@@ -16605,9 +16603,7 @@ boolean is_underwater;
 }
 
 void
-play_movement_sound(mtmp, climbingid)
-struct monst* mtmp;
-enum climbing_types climbingid;
+play_movement_sound(struct monst *mtmp, enum climbing_types climbingid)
 {
     if (!iflags.using_gui_sounds || Deaf)
         return;
@@ -16832,9 +16828,7 @@ enum climbing_types climbingid;
 }
 
 void
-play_simple_object_sound(obj, sound_type)
-struct obj* obj;
-enum object_sound_types sound_type;
+play_simple_object_sound(struct obj *obj, enum object_sound_types sound_type)
 {
     /* Do not use for hit sounds */
     if (!iflags.using_gui_sounds || Deaf)
@@ -16883,10 +16877,7 @@ enum object_sound_types sound_type;
 }
 
 void
-play_simple_object_sound_at_location(obj, x, y, sound_type)
-struct obj* obj;
-int x, y;
-enum object_sound_types sound_type;
+play_simple_object_sound_at_location(struct obj *obj, int x, int y, enum object_sound_types sound_type)
 {
     /* Do not use for hit sounds */
     if (!iflags.using_gui_sounds || Deaf)
@@ -16927,11 +16918,7 @@ enum object_sound_types sound_type;
 }
 
 void
-set_simple_object_sound_id_and_volume(oss, sound_type, sound_id_ptr, volume_ptr)
-enum object_soundset_types oss;
-enum object_sound_types sound_type;
-enum ghsound_types* sound_id_ptr;
-float* volume_ptr;
+set_simple_object_sound_id_and_volume(enum object_soundset_types oss, enum object_sound_types sound_type, enum ghsound_types *sound_id_ptr, float *volume_ptr)
 {
     if (!sound_id_ptr || !volume_ptr)
         return;
@@ -16961,9 +16948,7 @@ float* volume_ptr;
 
 
 void
-play_simple_container_sound(obj, sound_type)
-struct obj* obj;
-enum container_sound_types sound_type;
+play_simple_container_sound(struct obj *obj, enum container_sound_types sound_type)
 {
     /* Do not use for hit sounds */
 
@@ -16980,10 +16965,7 @@ enum container_sound_types sound_type;
 }
 
 void
-play_simple_container_sound_at_location(obj, x, y, sound_type)
-struct obj* obj;
-int x, y;
-enum container_sound_types sound_type;
+play_simple_container_sound_at_location(struct obj *obj, int x, int y, enum container_sound_types sound_type)
 {
     /* Do not use for hit sounds */
     if (!iflags.using_gui_sounds || Deaf)
@@ -17024,11 +17006,7 @@ enum container_sound_types sound_type;
 }
 
 void
-set_simple_container_sound_id_and_volume(oss, sound_type, sound_id_ptr, volume_ptr)
-enum object_soundset_types oss;
-enum container_sound_types sound_type;
-enum ghsound_types* sound_id_ptr;
-float* volume_ptr;
+set_simple_container_sound_id_and_volume(enum object_soundset_types oss, enum container_sound_types sound_type, enum ghsound_types *sound_id_ptr, float *volume_ptr)
 {
     if (!sound_id_ptr || !volume_ptr)
         return;
@@ -17058,11 +17036,7 @@ float* volume_ptr;
 
 
 void
-set_simple_location_sound_id_and_volume(lss, sound_type, sound_id_ptr, volume_ptr)
-enum location_soundset_types lss;
-enum location_sound_types sound_type;
-enum ghsound_types* sound_id_ptr;
-float* volume_ptr;
+set_simple_location_sound_id_and_volume(enum location_soundset_types lss, enum location_sound_types sound_type, enum ghsound_types *sound_id_ptr, float *volume_ptr)
 {
     if (!sound_id_ptr || !volume_ptr)
         return;
@@ -17093,11 +17067,7 @@ float* volume_ptr;
 
 
 void
-set_simple_player_sound_id_and_volume(pss, sound_type, sound_id_ptr, volume_ptr)
-enum player_soundset_types pss;
-enum monster_sound_types sound_type;
-enum ghsound_types* sound_id_ptr;
-float* volume_ptr;
+set_simple_player_sound_id_and_volume(enum player_soundset_types pss, enum monster_sound_types sound_type, enum ghsound_types *sound_id_ptr, float *volume_ptr)
 {
     if (!sound_id_ptr || !volume_ptr)
         return;
@@ -17126,11 +17096,7 @@ float* volume_ptr;
 }
 
 void
-set_simple_player_voice_id_and_volume(pss, sound_type, sound_id_ptr, volume_ptr)
-enum player_soundset_types pss;
-enum player_voice_types sound_type;
-enum ghsound_types* sound_id_ptr;
-float* volume_ptr;
+set_simple_player_voice_id_and_volume(enum player_soundset_types pss, enum player_voice_types sound_type, enum ghsound_types *sound_id_ptr, float *volume_ptr)
 {
     if (!sound_id_ptr || !volume_ptr)
         return;
@@ -17159,11 +17125,7 @@ float* volume_ptr;
 }
 
 void
-set_simple_monster_sound_id_and_volume(mss, sound_type, sound_id_ptr, volume_ptr)
-enum monster_soundset_types mss;
-enum monster_sound_types sound_type;
-enum ghsound_types* sound_id_ptr;
-float* volume_ptr;
+set_simple_monster_sound_id_and_volume(enum monster_soundset_types mss, enum monster_sound_types sound_type, enum ghsound_types *sound_id_ptr, float *volume_ptr)
 {
     if (!sound_id_ptr || !volume_ptr)
         return;
@@ -17192,8 +17154,7 @@ float* volume_ptr;
 }
 
 enum ghsound_types
-get_monster_ambient_sound_id(mss)
-enum monster_soundset_types mss;
+get_monster_ambient_sound_id(enum monster_soundset_types mss)
 {
     enum ghsound_types sound_id = GHSOUND_NONE;
     float volume = 0.0f;
@@ -17203,8 +17164,7 @@ enum monster_soundset_types mss;
 }
 
 float
-get_monster_ambient_sound_volume(mss)
-enum monster_soundset_types mss;
+get_monster_ambient_sound_volume(enum monster_soundset_types mss)
 {
     enum ghsound_types sound_id = GHSOUND_NONE;
     float volume = 0.0f;
@@ -17215,11 +17175,7 @@ enum monster_soundset_types mss;
 
 
 void
-play_object_floor_sound_at_location(obj, sound_type, x, y, is_underwater)
-struct obj* obj;
-enum object_sound_types sound_type;
-int x, y;
-boolean is_underwater;
+play_object_floor_sound_at_location(struct obj *obj, enum object_sound_types sound_type, int x, int y, boolean is_underwater)
 {
     if (!iflags.using_gui_sounds || Deaf)
         return;
@@ -17271,10 +17227,7 @@ boolean is_underwater;
 
 
 void
-play_object_floor_sound(obj, sound_type, is_underwater)
-struct obj* obj;
-enum object_sound_types sound_type;
-boolean is_underwater;
+play_object_floor_sound(struct obj *obj, enum object_sound_types sound_type, boolean is_underwater)
 {
     if (!iflags.using_gui_sounds || Deaf)
         return;
@@ -17293,9 +17246,7 @@ boolean is_underwater;
 }
 
 void
-play_object_container_in_sound(obj, container)
-struct obj* obj;
-struct obj* container;
+play_object_container_in_sound(struct obj *obj, struct obj *container)
 {
     if (!iflags.using_gui_sounds || Deaf)
         return;
@@ -17339,9 +17290,7 @@ struct obj* container;
 
 
 void
-play_simple_location_sound(x, y, sound_type)
-xchar x, y;
-enum location_sound_types sound_type;
+play_simple_location_sound(xchar x, xchar y, enum location_sound_types sound_type)
 {
     if (!iflags.using_gui_sounds || Deaf)
         return;
@@ -17392,16 +17341,13 @@ enum location_sound_types sound_type;
 }
 
 void
-play_simple_player_sound(sound_type)
-enum monster_sound_types sound_type;
+play_simple_player_sound(enum monster_sound_types sound_type)
 {
     play_simple_player_sound_with_flags(sound_type, 0UL);
 }
 
 void
-play_simple_player_sound_with_flags(sound_type, play_flags)
-enum monster_sound_types sound_type;
-unsigned int play_flags;
+play_simple_player_sound_with_flags(enum monster_sound_types sound_type, unsigned int play_flags)
 {
     /* Do not use for hit sounds */
     if (!iflags.using_gui_sounds || Deaf)
@@ -17447,12 +17393,7 @@ unsigned int play_flags;
 }
 
 void
-play_player_line_indexed_sound(sound_type, line_id, play_group, sfx_sound_type, pflags)
-enum monster_sound_types sound_type;
-int line_id;
-enum sound_play_groups play_group;
-enum immediate_sound_types sfx_sound_type;
-unsigned int pflags;
+play_player_line_indexed_sound(enum monster_sound_types sound_type, int line_id, enum sound_play_groups play_group, enum immediate_sound_types sfx_sound_type, unsigned int pflags)
 {
     /* Do not use for hit sounds */
     if (!iflags.using_gui_sounds || Deaf)
@@ -17504,16 +17445,14 @@ unsigned int pflags;
 
 
 void
-play_player_ouch_sound(line_id)
-enum monster_ouch_sounds line_id;
+play_player_ouch_sound(enum monster_ouch_sounds line_id)
 {
     play_player_line_indexed_sound(MONSTER_SOUND_TYPE_OUCH, line_id, SOUND_PLAY_GROUP_NORMAL, IMMEDIATE_SOUND_SFX, 0UL);
 }
 
 
 void
-play_simple_player_voice(sound_type)
-enum player_voice_types sound_type;
+play_simple_player_voice(enum player_voice_types sound_type)
 {
     /* Do not use for hit sounds */
     if (!iflags.using_gui_sounds || Deaf)
@@ -17550,18 +17489,13 @@ enum player_voice_types sound_type;
 }
 
 void
-play_simple_monster_sound(mon, sound_type)
-struct monst* mon;
-enum monster_sound_types sound_type;
+play_simple_monster_sound(struct monst *mon, enum monster_sound_types sound_type)
 {
     play_simple_monster_sound_with_flags(mon, sound_type, PLAY_FLAGS_NO_PLAY_IF_ALREADY_PLAYING_OR_QUEUED);
 }
 
 void
-play_simple_monster_sound_with_flags(mon, sound_type, play_flags)
-struct monst* mon;
-enum monster_sound_types sound_type;
-unsigned int play_flags;
+play_simple_monster_sound_with_flags(struct monst *mon, enum monster_sound_types sound_type, unsigned int play_flags)
 {
     /* Do not use for hit sounds */
     if (!iflags.using_gui_sounds || Deaf)
@@ -17632,11 +17566,7 @@ unsigned int play_flags;
 }
 
 void
-play_monster_simple_weapon_sound(magr, attack_number, weapon, sound_type)
-struct monst* magr;
-int attack_number;
-struct obj* weapon;
-enum object_sound_types sound_type;
+play_monster_simple_weapon_sound(struct monst *magr, int attack_number, struct obj *weapon, enum object_sound_types sound_type)
 {
     /* Do not use for hit sounds */
     if (!iflags.using_gui_sounds || Deaf)
@@ -17704,19 +17634,13 @@ enum object_sound_types sound_type;
 }
 
 void
-play_monster_attack_sound(mtmp, attack_number, sound_type)
-struct monst* mtmp;
-int attack_number;
-enum object_sound_types sound_type;
+play_monster_attack_sound(struct monst *mtmp, int attack_number, enum object_sound_types sound_type)
 {
     play_monster_simple_weapon_sound(mtmp, attack_number, (struct obj*)0, sound_type);
 }
 
 void
-play_monster_attack_floor_sound(mtmp, attack_number, sound_type)
-struct monst* mtmp;
-int attack_number;
-enum object_sound_types sound_type;
+play_monster_attack_floor_sound(struct monst *mtmp, int attack_number, enum object_sound_types sound_type)
 {
     if (!iflags.using_gui_sounds || Deaf)
         return;
@@ -17768,10 +17692,7 @@ enum object_sound_types sound_type;
 }
 
 void
-get_hit_location(surface_type, surface_source_ptr, defx_ptr, defy_ptr)
-enum hit_surface_source_types surface_type;
-anything* surface_source_ptr;
-xchar* defx_ptr, * defy_ptr;
+get_hit_location(enum hit_surface_source_types surface_type, anything *surface_source_ptr, xchar *defx_ptr, xchar *defy_ptr)
 {
     if (!surface_source_ptr || !defx_ptr || !defy_ptr)
         return;
@@ -17848,9 +17769,7 @@ xchar* defx_ptr, * defy_ptr;
 
 
 enum hit_surface_types
-get_hit_surface_type(surface_type, surface_source_ptr)
-enum hit_surface_source_types surface_type;
-anything* surface_source_ptr;
+get_hit_surface_type(enum hit_surface_source_types surface_type, anything *surface_source_ptr)
 {
     enum hit_surface_types surfaceid = HIT_SURFACE_NONE;
     enum obj_material_types surface_material = MAT_NONE;
@@ -17906,15 +17825,12 @@ anything* surface_source_ptr;
     return surfaceid;
 }
 
+/*
+ * Parameters:
+ *   attack_number: attack_number == NATTK indicates kicking
+ */
 void
-play_monster_weapon_hit_sound(magr, surface_type, surface_source_ptr, attack_number, weapon, damage, thrown)
-struct monst* magr;
-enum hit_surface_source_types surface_type;
-anything* surface_source_ptr;
-int attack_number; /* attack_number == NATTK indicates kicking */
-struct obj* weapon;
-double damage;
-enum hmon_atkmode_types thrown;
+play_monster_weapon_hit_sound(struct monst *magr, enum hit_surface_source_types surface_type, anything *surface_source_ptr, int attack_number, struct obj *weapon, double damage, enum hmon_atkmode_types thrown)
 {
     if (!iflags.using_gui_sounds || Deaf)
         return;
@@ -17930,16 +17846,12 @@ enum hmon_atkmode_types thrown;
     play_monster_weapon_hit_sound_at_location(magr, surface_type, surface_source_ptr, attack_number, weapon, damage, thrown, defx, defy);
 }
 
+/*
+ * Parameters:
+ *   attack_number: attack_number == NATTK indicates kicking
+ */
 void
-play_monster_weapon_hit_sound_at_location(magr, surface_type, surface_source_ptr, attack_number, weapon, damage, thrown, x, y)
-struct monst* magr;
-enum hit_surface_source_types surface_type;
-anything* surface_source_ptr;
-int attack_number; /* attack_number == NATTK indicates kicking */
-struct obj* weapon;
-double damage;
-enum hmon_atkmode_types thrown;
-xchar x, y;
+play_monster_weapon_hit_sound_at_location(struct monst *magr, enum hit_surface_source_types surface_type, anything *surface_source_ptr, int attack_number, struct obj *weapon, double damage, enum hmon_atkmode_types thrown, xchar x, xchar y)
 {
     if (!iflags.using_gui_sounds || Deaf)
         return;
@@ -18005,12 +17917,7 @@ xchar x, y;
 }
 
 void
-play_object_hit_sound(obj, surface_type, surface_source_ptr, damage, thrown)
-struct obj* obj;
-enum hit_surface_source_types surface_type;
-anything* surface_source_ptr;
-double damage;
-enum hmon_atkmode_types thrown;
+play_object_hit_sound(struct obj *obj, enum hit_surface_source_types surface_type, anything *surface_source_ptr, double damage, enum hmon_atkmode_types thrown)
 {
     if (!iflags.using_gui_sounds || Deaf)
         return;
@@ -18027,13 +17934,7 @@ enum hmon_atkmode_types thrown;
 }
 
 void
-play_object_hit_sound_at_location(obj, surface_type, surface_source_ptr, damage, thrown, x, y)
-struct obj* obj;
-enum hit_surface_source_types surface_type;
-anything* surface_source_ptr;
-double damage;
-enum hmon_atkmode_types thrown;
-xchar x, y;
+play_object_hit_sound_at_location(struct obj *obj, enum hit_surface_source_types surface_type, anything *surface_source_ptr, double damage, enum hmon_atkmode_types thrown, xchar x, xchar y)
 {
     if (!iflags.using_gui_sounds || Deaf)
         return;
@@ -18090,16 +17991,13 @@ xchar x, y;
 }
 
 void
-play_sfx_sound(sfx_sound_id)
-enum sfx_sound_types sfx_sound_id;
+play_sfx_sound(enum sfx_sound_types sfx_sound_id)
 {
     play_sfx_sound_with_flags(sfx_sound_id, 0UL);
 }
 
 void
-play_sfx_sound_with_flags(sfx_sound_id, play_flags)
-enum sfx_sound_types sfx_sound_id;
-unsigned int play_flags;
+play_sfx_sound_with_flags(enum sfx_sound_types sfx_sound_id, unsigned int play_flags)
 {
     if (!iflags.using_gui_sounds)
         return;
@@ -18128,8 +18026,7 @@ unsigned int play_flags;
 }
 
 void
-play_ui_sound(ui_sound_id)
-enum ui_sound_types ui_sound_id;
+play_ui_sound(enum ui_sound_types ui_sound_id)
 {
     if (!iflags.using_gui_sounds)
         return;
@@ -18151,18 +18048,13 @@ enum ui_sound_types ui_sound_id;
 }
 
 void
-play_sfx_sound_at_location(sfx_sound_id, x, y)
-enum sfx_sound_types sfx_sound_id;
-int x, y;
+play_sfx_sound_at_location(enum sfx_sound_types sfx_sound_id, int x, int y)
 {
     play_sfx_sound_at_location_with_minimum_volume(sfx_sound_id, x, y, 0.0);
 }
 
 void
-play_sfx_sound_at_location_with_minimum_volume(sfx_sound_id, x, y, min_volume_d)
-enum sfx_sound_types sfx_sound_id;
-int x, y;
-double min_volume_d;
+play_sfx_sound_at_location_with_minimum_volume(enum sfx_sound_types sfx_sound_id, int x, int y, double min_volume_d)
 {
     if (!iflags.using_gui_sounds)
         return;
@@ -18199,19 +18091,14 @@ double min_volume_d;
 
 
 void
-play_immediate_instrument_sound(instrument_soundset_id, instrument_sound_type)
-enum object_instrument_soundset_types instrument_soundset_id;
-enum instrument_sound_types instrument_sound_type;
+play_immediate_instrument_sound(enum object_instrument_soundset_types instrument_soundset_id, enum instrument_sound_types instrument_sound_type)
 {
     play_immediate_instrument_sound_at_location(instrument_soundset_id, instrument_sound_type, u.ux, u.uy);
 }
 
 
 void
-play_immediate_instrument_sound_at_location(instrument_soundset_id, instrument_sound_type, x, y)
-enum object_instrument_soundset_types instrument_soundset_id;
-enum instrument_sound_types instrument_sound_type;
-int x, y;
+play_immediate_instrument_sound_at_location(enum object_instrument_soundset_types instrument_soundset_id, enum instrument_sound_types instrument_sound_type, int x, int y)
 {
     if (!iflags.using_gui_sounds || Deaf)
         return;
@@ -18240,10 +18127,7 @@ int x, y;
 }
 
 void
-play_immediate_ray_sound_at_location(ray_soundset_id, ray_sound_type, x, y)
-int ray_soundset_id;
-enum ray_sound_types ray_sound_type;
-int x, y;
+play_immediate_ray_sound_at_location(int ray_soundset_id, enum ray_sound_types ray_sound_type, int x, int y)
 {
     if (!iflags.using_gui_sounds || Deaf)
         return;
@@ -18272,9 +18156,7 @@ int x, y;
 }
 
 void
-start_ambient_ray_sound_at_location(ray_type, x, y)
-int ray_type;
-int x, y;
+start_ambient_ray_sound_at_location(int ray_type, int x, int y)
 {
     int typ = ray_type;
     if (ray_soundsets[typ].sounds[RAY_SOUND_TYPE_AMBIENT].ghsound == GHSOUND_NONE || ray_soundsets[typ].sounds[RAY_SOUND_TYPE_AMBIENT].ghsound == MAX_GHSOUNDS)
@@ -18292,9 +18174,7 @@ int x, y;
 }
 
 void
-update_ambient_ray_sound_to_location(ray_type, x, y)
-int ray_type;
-int x, y;
+update_ambient_ray_sound_to_location(int ray_type, int x, int y)
 {
     int typ = ray_type;
     if (ray_soundsets[typ].sounds[RAY_SOUND_TYPE_AMBIENT].ghsound == GHSOUND_NONE || ray_soundsets[typ].sounds[RAY_SOUND_TYPE_AMBIENT].ghsound == MAX_GHSOUNDS)
@@ -18311,8 +18191,7 @@ int x, y;
 }
 
 void
-stop_ambient_ray_sound(ray_type)
-int ray_type;
+stop_ambient_ray_sound(int ray_type)
 {
     int typ = ray_type;
 
@@ -18326,9 +18205,7 @@ int ray_type;
 }
 
 void
-start_occupation_ambient_sound(object_soundset_id, occupation_type)
-enum object_soundset_types object_soundset_id;
-enum object_occupation_types occupation_type;
+start_occupation_ambient_sound(enum object_soundset_types object_soundset_id, enum object_occupation_types occupation_type)
 {
     if (occupation_soundset_definitions[object_soundsets[object_soundset_id].occupation_soundsets[occupation_type]].sounds[OCCUPATION_SOUND_TYPE_AMBIENT].ghsound == GHSOUND_NONE
         || occupation_soundset_definitions[object_soundsets[object_soundset_id].occupation_soundsets[occupation_type]].sounds[OCCUPATION_SOUND_TYPE_AMBIENT].ghsound == MAX_GHSOUNDS)
@@ -18342,9 +18219,7 @@ enum object_occupation_types occupation_type;
 }
 
 void
-stop_occupation_ambient_sound(object_soundset_id, occupation_type)
-enum object_soundset_types object_soundset_id;
-enum object_occupation_types occupation_type;
+stop_occupation_ambient_sound(enum object_soundset_types object_soundset_id, enum object_occupation_types occupation_type)
 {
     if (occupation_soundset_definitions[object_soundsets[object_soundset_id].occupation_soundsets[occupation_type]].sounds[OCCUPATION_SOUND_TYPE_AMBIENT].ghsound == GHSOUND_NONE
         || occupation_soundset_definitions[object_soundsets[object_soundset_id].occupation_soundsets[occupation_type]].sounds[OCCUPATION_SOUND_TYPE_AMBIENT].ghsound == MAX_GHSOUNDS)
@@ -18357,10 +18232,7 @@ enum object_occupation_types occupation_type;
 }
 
 void
-play_occupation_immediate_sound(object_soundset_id, occupation_type, sound_type)
-enum object_soundset_types object_soundset_id;
-enum object_occupation_types occupation_type;
-enum occupation_sound_types sound_type;
+play_occupation_immediate_sound(enum object_soundset_types object_soundset_id, enum object_occupation_types occupation_type, enum occupation_sound_types sound_type)
 {
     if (!iflags.using_gui_sounds || Deaf)
         return;
@@ -18377,11 +18249,7 @@ enum occupation_sound_types sound_type;
 }
 
 void
-play_occupation_immediate_sound_at_location(object_soundset_id, occupation_type, sound_type, x, y)
-enum object_soundset_types object_soundset_id;
-enum object_occupation_types occupation_type;
-enum occupation_sound_types sound_type;
-int x, y;
+play_occupation_immediate_sound_at_location(enum object_soundset_types object_soundset_id, enum object_occupation_types occupation_type, enum occupation_sound_types sound_type, int x, int y)
 {
     if (!iflags.using_gui_sounds || Deaf)
         return;
@@ -18400,7 +18268,7 @@ int x, y;
 }
 
 enum player_soundset_types
-get_player_soundset(VOID_ARGS)
+get_player_soundset(void)
 {
     if (Upolyd)
     {
@@ -18475,16 +18343,19 @@ get_player_soundset(VOID_ARGS)
 }
 
 void
-dosetsoundvolume(VOID_ARGS)
+dosetsoundvolume(void)
 {
     adjust_ghsound_general_volumes();
 }
 
-STATIC_VAR float prev_hearing_array[COLNO][ROWNO];
+static float prev_hearing_array[COLNO][ROWNO];
 
+/*
+ * Parameters:
+ *   mode: 0 = normal, 1 = clear
+ */
 void
-update_hearing_array(mode)
-int mode; /* 0 = normal, 1 = clear */
+update_hearing_array(int mode)
 {
     /* Clear array*/
     memset(hearing_array, 0, sizeof(hearing_array));
@@ -18664,11 +18535,8 @@ int mode; /* 0 = normal, 1 = clear */
 
 }
 
-STATIC_OVL
-void set_hearing_array(x, y, prev_hearing, radius)
-int x, y;
-double prev_hearing;
-int radius;
+static
+void set_hearing_array(int x, int y, double prev_hearing, int radius)
 {
     float multiplier = 1.0f;
     if (radius <= 0)
@@ -18729,7 +18597,7 @@ int radius;
 }
 
 void
-update_ambient_sounds(VOID_ARGS)
+update_ambient_sounds(void)
 {
     struct soundsource_t* curr;
     for (curr = sound_base; curr; curr = curr->next)
@@ -18810,14 +18678,14 @@ update_ambient_sounds(VOID_ARGS)
 }
 
 void
-update_hearing_array_and_ambient_sounds(VOID_ARGS)
+update_hearing_array_and_ambient_sounds(void)
 {
     update_hearing_array(0);
     update_ambient_sounds();
 }
 
 void
-clear_hearing_array_and_ambient_sounds(VOID_ARGS)
+clear_hearing_array_and_ambient_sounds(void)
 {
     update_hearing_array(1);
     update_ambient_sounds();
@@ -18829,8 +18697,7 @@ int get_max_hearing_distance()
 }
 
 void
-update_hearing_array_and_ambient_sounds_if_point_within_hearing_range(px, py)
-int px, py;
+update_hearing_array_and_ambient_sounds_if_point_within_hearing_range(int px, int py)
 {
     int max_hear_dist = get_max_hearing_distance();
     if (abs(u.ux - px) <= max_hear_dist && abs(u.uy - py) <= max_hear_dist)
@@ -18838,16 +18705,14 @@ int px, py;
 }
 
 void
-unblock_vision_and_hearing_at_point(x, y)
-int x, y;
+unblock_vision_and_hearing_at_point(int x, int y)
 {
     unblock_point(x, y);
     update_hearing_array_and_ambient_sounds_if_point_within_hearing_range(x, y);
 }
 
 void
-block_vision_and_hearing_at_point(x, y)
-int x, y;
+block_vision_and_hearing_at_point(int x, int y)
 {
     block_point(x, y);
     update_hearing_array_and_ambient_sounds_if_point_within_hearing_range(x, y);
@@ -18879,19 +18744,13 @@ int x, y;
  * across saves and restores.
  */
 
-STATIC_DCL void FDECL(write_soundsource, (int, sound_source*));
-STATIC_DCL int FDECL(maybe_write_soundsource, (int, int, BOOLEAN_P));
+static void write_soundsource(int, sound_source*);
+static int maybe_write_soundsource(int, int, boolean);
 
 
 /* Create a new sound source.  */
 void
-new_sound_source(x, y, ghsound, volume, type, subtype, id)
-xchar x, y;
-enum ghsound_types ghsound;
-double volume;
-enum soundsource_types type;
-enum soundsource_ambient_subtypes subtype;
-anything* id;
+new_sound_source(xchar x, xchar y, enum ghsound_types ghsound, double volume, enum soundsource_types type, enum soundsource_ambient_subtypes subtype, anything *id)
 {
     sound_source* ss;
     double absvolume = volume > 0.0 ? volume : -volume;
@@ -18925,9 +18784,7 @@ anything* id;
  * to an object at a time.
  */
 void
-del_sound_source(type, id)
-enum soundsource_types type;
-anything* id;
+del_sound_source(enum soundsource_types type, anything *id)
 {
     sound_source* curr, * prev;
     anything tmp_id;
@@ -18986,8 +18843,7 @@ anything* id;
 
 /* Save all sound sources of the given volume. */
 void
-save_sound_sources(fd, mode, volume)
-int fd, mode, volume;
+save_sound_sources(int fd, int mode, int volume)
 {
     int count, actual, is_global;
     sound_source** prev, * curr;
@@ -19052,7 +18908,7 @@ int fd, mode, volume;
 }
 
 void
-reset_sound_sources(VOID_ARGS)
+reset_sound_sources(void)
 {
     sound_source *curr, *next_source;
 
@@ -19072,8 +18928,7 @@ reset_sound_sources(VOID_ARGS)
  * pointers.
  */
 void
-restore_sound_sources(fd)
-int fd;
+restore_sound_sources(int fd)
 {
     int count;
     sound_source* ss;
@@ -19094,11 +18949,7 @@ int fd;
 
 /* to support '#stats' wizard-mode command */
 void
-sound_stats(hdrfmt, hdrbuf, count, size)
-const char* hdrfmt;
-char* hdrbuf;
-int64_t* count;
-size_t* size;
+sound_stats(const char *hdrfmt, char *hdrbuf, int64_t *count, size_t *size)
 {
     sound_source* ss;
 
@@ -19112,8 +18963,7 @@ size_t* size;
 
 /* Relink all sounds that are so marked. */
 void
-relink_sound_sources(ghostly)
-boolean ghostly;
+relink_sound_sources(boolean ghostly)
 {
     char which;
     unsigned nid;
@@ -19172,10 +19022,8 @@ boolean ghostly;
  * sources that would be written.  If write_it is true, actually write
  * the sound source out.
  */
-STATIC_OVL int
-maybe_write_soundsource(fd, volume, write_it)
-int fd, volume;
-boolean write_it;
+static int
+maybe_write_soundsource(int fd, int volume, boolean write_it)
 {
     int count = 0, is_global;
     sound_source* ss;
@@ -19221,7 +19069,7 @@ boolean write_it;
 }
 
 void
-sound_sources_sanity_check(VOID_ARGS)
+sound_sources_sanity_check(void)
 {
     sound_source* ss;
     struct monst* mtmp;
@@ -19290,10 +19138,8 @@ sound_sources_sanity_check(VOID_ARGS)
 }
 
 /* Write a sound source structure to disk. */
-STATIC_OVL void
-write_soundsource(fd, ss)
-int fd;
-sound_source* ss;
+static void
+write_soundsource(int fd, sound_source *ss)
 {
     anything arg_save;
     struct obj* otmp;
@@ -19356,8 +19202,7 @@ sound_source* ss;
 
 /* Change sound source's ID from src to dest. */
 void
-obj_move_sound_source(src, dest)
-struct obj* src, * dest;
+obj_move_sound_source(struct obj *src, struct obj *dest)
 {
     sound_source* ss;
 
@@ -19373,7 +19218,7 @@ struct obj* src, * dest;
 
 /* return true if there exist any sound sources */
 boolean
-any_sound_source(VOID_ARGS)
+any_sound_source(void)
 {
     return (boolean)(sound_base != (sound_source*)0);
 }
@@ -19383,8 +19228,7 @@ any_sound_source(VOID_ARGS)
  * only for burning sound sources.
  */
 void
-snuff_sound_source(x, y)
-int x, y;
+snuff_sound_source(int x, int y)
 {
     sound_source* ss;
     struct obj* obj;
@@ -19425,8 +19269,7 @@ int x, y;
 
 /* copy the sound source(s) attached to src, and attach it/them to dest */
 void
-obj_split_sound_source(src, dest)
-struct obj* src, * dest;
+obj_split_sound_source(struct obj *src, struct obj *dest)
 {
     sound_source* ss, * new_ss;
 
@@ -19450,8 +19293,7 @@ struct obj* src, * dest;
 /* sound source `src' has been folded into sound source `dest';
    used for merging lit candles and adding candle(s) to lit candelabrum */
 void
-obj_merge_sound_sources(src, dest)
-struct obj* src, * dest;
+obj_merge_sound_sources(struct obj *src, struct obj *dest)
 {
     sound_source* ss;
 
@@ -19472,9 +19314,7 @@ struct obj* src, * dest;
 
 /* sound source `obj' is being made brighter or dimmer */
 void
-obj_adjust_sound_volume(obj, new_volume)
-struct obj* obj;
-double new_volume;
+obj_adjust_sound_volume(struct obj *obj, double new_volume)
 {
     sound_source* ss;
 
@@ -19489,9 +19329,7 @@ double new_volume;
 }
 
 void
-begin_sound(obj, already_making_noise)
-struct obj* obj;
-boolean already_making_noise;
+begin_sound(struct obj *obj, boolean already_making_noise)
 {
     int64_t turns = 0;
     boolean do_timer = TRUE;
@@ -19541,9 +19379,7 @@ boolean already_making_noise;
  * light source.
  */
 void
-end_sound(obj, timer_attached)
-struct obj* obj;
-boolean timer_attached;
+end_sound(struct obj *obj, boolean timer_attached)
 {
     if (!obj->makingsound)
     {
@@ -19568,15 +19404,13 @@ boolean timer_attached;
 }
 
 boolean
-obj_has_sound_source(obj)
-struct obj* obj;
+obj_has_sound_source(struct obj *obj)
 {
     return (obj->makingsound == TRUE);
 }
 
 enum ghsound_types
-obj_ambient_sound(obj)
-struct obj* obj;
+obj_ambient_sound(struct obj *obj)
 {
     if (!obj || objects[obj->otyp].oc_soundset == OBJECT_SOUNDSET_NONE)
         return GHSOUND_NONE;
@@ -19590,8 +19424,7 @@ struct obj* obj;
 }
 
 double
-obj_ambient_sound_volume(obj)
-struct obj* obj;
+obj_ambient_sound_volume(struct obj *obj)
 {
     if (!obj || objects[obj->otyp].oc_soundset == OBJECT_SOUNDSET_NONE)
         return 0.0;
@@ -19605,10 +19438,7 @@ struct obj* obj;
 }
 
 enum ghsound_types
-get_location_ambient_sound_type(x, y, volume_ptr, subtype_ptr)
-xchar x, y;
-double* volume_ptr;
-enum soundsource_ambient_subtypes* subtype_ptr;
+get_location_ambient_sound_type(xchar x, xchar y, double *volume_ptr, enum soundsource_ambient_subtypes *subtype_ptr)
 {
     if (!isok(x, y))
         return GHSOUND_NONE;
@@ -19634,8 +19464,7 @@ enum soundsource_ambient_subtypes* subtype_ptr;
 }
 
 enum ghsound_types
-get_dungeon_music(dnum)
-int dnum;
+get_dungeon_music(int dnum)
 {
     enum ghsound_types res = GHSOUND_NONE;
 
@@ -19668,8 +19497,7 @@ int dnum;
 }
 
 enum ghsound_types
-get_level_music(dlvl)
-struct d_level* dlvl;
+get_level_music(struct d_level *dlvl)
 {
     if (!dlvl)
         return GHSOUND_NONE;
@@ -19715,8 +19543,7 @@ struct d_level* dlvl;
 }
 
 enum ghsound_types
-get_room_music(room)
-struct mkroom* room;
+get_room_music(struct mkroom *room)
 {
     enum roomtype_types rtype = room->orig_rtype;
     enum ghsound_types res = get_level_music(&u.uz);
@@ -19939,8 +19766,7 @@ struct mkroom* room;
 
 
 enum ghsound_types
-get_level_ambient_sounds(dlvl)
-struct d_level* dlvl;
+get_level_ambient_sounds(struct d_level *dlvl)
 {
     if (!dlvl)
         return GHSOUND_NONE;
@@ -19956,8 +19782,7 @@ struct d_level* dlvl;
 }
 
 enum ghsound_types
-get_room_ambient_sounds(room)
-struct mkroom* room;
+get_room_ambient_sounds(struct mkroom *room)
 {
     enum roomtype_types rtype = room->orig_rtype;
     enum ghsound_types res = get_level_ambient_sounds(&u.uz);
@@ -20041,7 +19866,7 @@ struct mkroom* room;
 }
 
 enum ghsound_types
-get_environment_ambient_sounds(VOID_ARGS)
+get_environment_ambient_sounds(void)
 {
     enum ghsound_types res = GHSOUND_NONE;
 
@@ -20061,9 +19886,7 @@ get_environment_ambient_sounds(VOID_ARGS)
 }
 
 void
-get_god_indices(godindex_ptr, titleandgodindex_ptr)
-int* godindex_ptr;
-int* titleandgodindex_ptr;
+get_god_indices(int *godindex_ptr, int *titleandgodindex_ptr)
 {
     if (!godindex_ptr || !titleandgodindex_ptr)
         return;
@@ -20392,7 +20215,7 @@ int* titleandgodindex_ptr;
 }
 
 void
-play_intro_text(VOID_ARGS)
+play_intro_text(void)
 {
     int godindex = 7;
     int titleandgodindex = 9;
@@ -20413,10 +20236,7 @@ play_intro_text(VOID_ARGS)
 }
 
 void
-play_voice_com_pager(mon, msgnum, via_pline)
-struct monst* mon;
-int msgnum;
-boolean via_pline;
+play_voice_com_pager(struct monst *mon, int msgnum, boolean via_pline)
 {
     if (!iflags.using_gui_sounds)
         return;
@@ -20466,10 +20286,7 @@ boolean via_pline;
 }
 
 void
-play_voice_quest_pager(mon, msgnum, via_pline)
-struct monst* mon;
-int msgnum;
-boolean via_pline;
+play_voice_quest_pager(struct monst *mon, int msgnum, boolean via_pline)
 {
     if (!iflags.using_gui_sounds)
         return;
@@ -20517,7 +20334,7 @@ boolean via_pline;
 }
 
 void
-stop_all_immediate_sounds(VOID_ARGS)
+stop_all_immediate_sounds(void)
 {
     struct stop_all_info info = { 0 };
     info.stop_flags = STOP_SOUNDS_FLAGS_IMMEDIATE_ALL;
@@ -20525,7 +20342,7 @@ stop_all_immediate_sounds(VOID_ARGS)
 }
 
 void
-stop_all_long_immediate_sounds(VOID_ARGS)
+stop_all_long_immediate_sounds(void)
 {
     struct stop_all_info info = { 0 };
     info.stop_flags = STOP_SOUNDS_FLAGS_IMMEDIATE_LONG;
@@ -20533,22 +20350,22 @@ stop_all_long_immediate_sounds(VOID_ARGS)
 }
 
 void
-stop_all_dialogue_of_mon_on_mobile(mon)
+stop_all_dialogue_of_mon_on_mobile(
 #ifdef GNH_MOBILE
-struct monst* mon;
-{
-    stop_all_dialogue_of_mon(mon);
-}
+    struct monst *mon)
 #else
-struct monst* mon UNUSED;
-{
-    //Nothing
-}
+    struct monst *mon UNUSED)
 #endif
+{
+#ifdef GNH_MOBILE
+    stop_all_dialogue_of_mon(mon);
+#else
+    //Nothing
+#endif
+}
 
 void
-stop_all_dialogue_of_mon(mon)
-struct monst* mon;
+stop_all_dialogue_of_mon(struct monst *mon)
 {
     if (!mon)
         return;
@@ -20560,9 +20377,7 @@ struct monst* mon;
 }
 
 void
-play_voice_shopkeeper_welcome(shkp, rt)
-struct monst* shkp;
-int rt;
+play_voice_shopkeeper_welcome(struct monst *shkp, int rt)
 {
     if (!iflags.using_gui_sounds || !shkp || !has_eshk(shkp) || Deaf)
         return;
@@ -20611,9 +20426,7 @@ int rt;
 
 
 void
-play_voice_shopkeeper_simple_line(shkp, line_idx)
-struct monst* shkp;
-enum shopkeeper_lines line_idx;
+play_voice_shopkeeper_simple_line(struct monst *shkp, enum shopkeeper_lines line_idx)
 {
     if (!iflags.using_gui_sounds || !shkp || (!has_eshk(shkp) && line_idx != SHOPKEEPER_LINE_SEEN_UNTENDED_SHOPS) || line_idx == SHOPKEEPER_LINE_NONE || Deaf)
         return;
@@ -21066,11 +20879,7 @@ enum shopkeeper_lines line_idx;
 
 
 void
-play_voice_shopkeeper_leave_pick_outside(shkp, tool_str, cnt, is_angry)
-struct monst* shkp;
-const char* tool_str;
-int cnt;
-boolean is_angry;
+play_voice_shopkeeper_leave_pick_outside(struct monst *shkp, const char *tool_str, int cnt, boolean is_angry)
 {
     if (!iflags.using_gui_sounds || !shkp || !has_eshk(shkp) || Deaf)
         return;
@@ -21140,10 +20949,7 @@ boolean is_angry;
 }
 
 void
-play_voice_shopkeeper_cad_line(shkp, line_id, cad_str)
-struct monst* shkp;
-enum shopkeeper_cad_lines line_id;
-const char* cad_str;
+play_voice_shopkeeper_cad_line(struct monst *shkp, enum shopkeeper_cad_lines line_id, const char *cad_str)
 {
     if (!iflags.using_gui_sounds || !shkp || !has_eshk(shkp) || Deaf || line_id == SHOPKEEPER_CAD_LINE_NONE)
         return;
@@ -21227,9 +21033,7 @@ const char* cad_str;
 
 
 void
-play_voice_shopkeeper_candelabrum_candles(shkp, candelabrum)
-struct monst* shkp;
-struct obj* candelabrum;
+play_voice_shopkeeper_candelabrum_candles(struct monst *shkp, struct obj *candelabrum)
 {
     if (!iflags.using_gui_sounds || !shkp || !has_eshk(shkp) || !candelabrum || Deaf)
         return;
@@ -21269,9 +21073,7 @@ struct obj* candelabrum;
 
 
 void
-play_voice_shopkeeper_izchak_talks(shkp, line_idx)
-struct monst* shkp;
-int line_idx;
+play_voice_shopkeeper_izchak_talks(struct monst *shkp, int line_idx)
 {
     if (!iflags.using_gui_sounds || !shkp || !has_eshk(shkp) || Deaf)
         return;
@@ -21310,10 +21112,7 @@ int line_idx;
 
 
 void
-play_voice_shopkeeper_for_you(shkp, honorific_idx, base_line_idx, quan)
-struct monst* shkp;
-int honorific_idx, base_line_idx;
-int64_t quan;
+play_voice_shopkeeper_for_you(struct monst *shkp, int honorific_idx, int base_line_idx, int64_t quan)
 {
     if (!iflags.using_gui_sounds || !shkp || !has_eshk(shkp) || Deaf)
         return;
@@ -21364,9 +21163,7 @@ int64_t quan;
 
 
 void
-play_voice_shopkeeper_pay_before_buying(shkp, obj_quan, save_quan)
-struct monst* shkp;
-int64_t obj_quan, save_quan;
+play_voice_shopkeeper_pay_before_buying(struct monst *shkp, int64_t obj_quan, int64_t save_quan)
 {
     if (!iflags.using_gui_sounds || !shkp || !has_eshk(shkp) || Deaf)
         return;
@@ -21474,11 +21271,7 @@ int64_t obj_quan, save_quan;
 
 
 void
-play_voice_shopkeeper_how_dare_you_damage(shkp, style, dmg_str, is_shop)
-struct monst* shkp;
-uchar style;
-const char* dmg_str;
-boolean is_shop;
+play_voice_shopkeeper_how_dare_you_damage(struct monst *shkp, uchar style, const char *dmg_str, boolean is_shop)
 {
     if (!iflags.using_gui_sounds || !shkp || !has_eshk(shkp) || Deaf)
         return;
@@ -21578,10 +21371,7 @@ boolean is_shop;
 }
 
 void
-play_voice_shopkeeper_costly_alteration(shkp, otmp, alteration_type)
-struct monst* shkp;
-struct obj* otmp;
-enum cost_alteration_types alteration_type;
+play_voice_shopkeeper_costly_alteration(struct monst *shkp, struct obj *otmp, enum cost_alteration_types alteration_type)
 {
     if (!iflags.using_gui_sounds || !shkp || !has_eshk(shkp) || Deaf || !otmp)
         return;
@@ -21622,8 +21412,7 @@ enum cost_alteration_types alteration_type;
 }
 
 void
-play_voice_quest_leader_whoareyou(mtmp)
-struct monst* mtmp;
+play_voice_quest_leader_whoareyou(struct monst *mtmp)
 {
     if (!iflags.using_gui_sounds || !mtmp || Deaf)
         return;
@@ -21658,9 +21447,7 @@ struct monst* mtmp;
 
 /* cuss_id = 0 is aspirations on your ancestry or something general; positive integers indicate lines from pager */
 void
-play_voice_monster_cuss(mtmp, cuss_id)
-struct monst* mtmp;
-int cuss_id;
+play_voice_monster_cuss(struct monst *mtmp, int cuss_id)
 {
     if (!iflags.using_gui_sounds || !mtmp || Deaf)
         return;
@@ -21697,9 +21484,7 @@ int cuss_id;
 
 /* cuss_id = 0 is aspirations on your ancestry or something general; positive integers indicate lines from pager */
 void
-play_voice_monster_cuss_with_god_name(mtmp, cuss_id)
-struct monst* mtmp;
-int cuss_id;
+play_voice_monster_cuss_with_god_name(struct monst *mtmp, int cuss_id)
 {
     if (!iflags.using_gui_sounds || !mtmp || Deaf)
         return;
@@ -21742,9 +21527,7 @@ int cuss_id;
 }
 
 void
-play_voice_monster_advice(mtmp, has_advice)
-struct monst* mtmp;
-boolean has_advice;
+play_voice_monster_advice(struct monst *mtmp, boolean has_advice)
 {
     if (!iflags.using_gui_sounds || !mtmp || Deaf)
         return;
@@ -21779,9 +21562,7 @@ boolean has_advice;
 }
 
 void
-play_voice_wizard_of_yendor_cuss(mtmp, malediction_id, insult_id)
-struct monst* mtmp;
-int malediction_id, insult_id;
+play_voice_wizard_of_yendor_cuss(struct monst *mtmp, int malediction_id, int insult_id)
 {
     if (!iflags.using_gui_sounds || !mtmp || Deaf)
         return;
@@ -21818,9 +21599,7 @@ int malediction_id, insult_id;
 
 
 void
-play_voice_wizard_of_yendor_simple_line(mtmp, line_id)
-struct monst* mtmp;
-enum wizard_of_yendor_simple_lines line_id;
+play_voice_wizard_of_yendor_simple_line(struct monst *mtmp, enum wizard_of_yendor_simple_lines line_id)
 {
     if (!iflags.using_gui_sounds || !mtmp || Deaf)
         return;
@@ -21883,42 +21662,20 @@ enum wizard_of_yendor_simple_lines line_id;
 }
 
 void
-play_monster_line_indexed_sound(mtmp, sound_id, line_id, play_group, sfx_sound_type, minimum_volume, pflags)
-struct monst* mtmp;
-enum monster_sound_types sound_id;
-int line_id;
-enum sound_play_groups play_group;
-enum immediate_sound_types sfx_sound_type;
-double minimum_volume;
-unsigned int pflags;
+play_monster_line_indexed_sound(struct monst *mtmp, enum monster_sound_types sound_id, int line_id, enum sound_play_groups play_group, enum immediate_sound_types sfx_sound_type, double minimum_volume, unsigned int pflags)
 {
     play_monster_simply_indexed_sound(mtmp, sound_id, line_id, play_group, sfx_sound_type, minimum_volume, "LineIndex", pflags);
 }
 
 void
-play_monster_msg_indexed_sound(mtmp, sound_id, line_id, play_group, sfx_sound_type, minimum_volume, pflags)
-struct monst* mtmp;
-enum monster_sound_types sound_id;
-int line_id;
-enum sound_play_groups play_group;
-enum immediate_sound_types sfx_sound_type;
-double minimum_volume;
-unsigned int pflags;
+play_monster_msg_indexed_sound(struct monst *mtmp, enum monster_sound_types sound_id, int line_id, enum sound_play_groups play_group, enum immediate_sound_types sfx_sound_type, double minimum_volume, unsigned int pflags)
 {
     play_monster_simply_indexed_sound(mtmp, sound_id, line_id, play_group, sfx_sound_type, minimum_volume, "MsgIndex", pflags);
 }
 
 
 void
-play_monster_simply_indexed_sound(mtmp, sound_id, line_id, play_group, sfx_sound_type, minimum_volume, index_name, pflags)
-struct monst* mtmp;
-enum monster_sound_types sound_id;
-int line_id;
-enum sound_play_groups play_group;
-enum immediate_sound_types sfx_sound_type;
-double minimum_volume;
-const char* index_name;
-unsigned int pflags;
+play_monster_simply_indexed_sound(struct monst *mtmp, enum monster_sound_types sound_id, int line_id, enum sound_play_groups play_group, enum immediate_sound_types sfx_sound_type, double minimum_volume, const char *index_name, unsigned int pflags)
 {
     if (!iflags.using_gui_sounds || !mtmp || Deaf)
         return;
@@ -21952,85 +21709,62 @@ unsigned int pflags;
 }
 
 void
-play_monster_standard_dialogue_line(mtmp, line_id)
-struct monst* mtmp;
-enum monster_standard_dialogue_lines line_id;
+play_monster_standard_dialogue_line(struct monst *mtmp, enum monster_standard_dialogue_lines line_id)
 {
     play_monster_line_indexed_sound(mtmp, MONSTER_SOUND_TYPE_STANDARD_DIALOGUE_LINE, line_id, SOUND_PLAY_GROUP_LONG, IMMEDIATE_SOUND_DIALOGUE, 0.15f, 0UL);
 }
 
 void
-play_monster_item_trading_line(mtmp, line_id)
-struct monst* mtmp;
-enum monster_item_trading_lines line_id;
+play_monster_item_trading_line(struct monst *mtmp, enum monster_item_trading_lines line_id)
 {
     play_monster_line_indexed_sound(mtmp, MONSTER_SOUND_TYPE_ITEM_TRADING, line_id, SOUND_PLAY_GROUP_LONG, IMMEDIATE_SOUND_DIALOGUE, 0.15f, 0UL);
 }
 
 
 void
-play_monster_special_dialogue_line(mtmp, line_id)
-struct monst* mtmp;
-int line_id;
+play_monster_special_dialogue_line(struct monst *mtmp, int line_id)
 {
     play_monster_special_dialogue_line_with_flags(mtmp, line_id, 0U);
 }
 
 void
-play_monster_special_dialogue_line_with_flags(mtmp, line_id, pflags)
-struct monst* mtmp;
-int line_id;
-unsigned int pflags;
+play_monster_special_dialogue_line_with_flags(struct monst *mtmp, int line_id, unsigned int pflags)
 {
     play_monster_msg_indexed_sound(mtmp, MONSTER_SOUND_TYPE_SPECIAL_DIALOGUE_LINE, line_id, SOUND_PLAY_GROUP_LONG, IMMEDIATE_SOUND_DIALOGUE, 0.15f, pflags);
 }
 
 void
-play_monster_standard_sound(mtmp, line_id)
-struct monst* mtmp;
-enum monster_standard_sounds line_id;
+play_monster_standard_sound(struct monst *mtmp, enum monster_standard_sounds line_id)
 {
     play_monster_line_indexed_sound(mtmp, MONSTER_SOUND_TYPE_STANDARD_SOUND, line_id, SOUND_PLAY_GROUP_NORMAL, IMMEDIATE_SOUND_SFX, 0.0f, 0UL);
 }
 
 void
-play_monster_special_sound(mtmp, line_id)
-struct monst* mtmp;
-int line_id;
+play_monster_special_sound(struct monst *mtmp, int line_id)
 {
     play_monster_special_sound_with_flags(mtmp, line_id, 0U);
 }
 
 void
-play_monster_special_sound_with_flags(mtmp, line_id, pflags)
-struct monst* mtmp;
-int line_id;
-unsigned int pflags;
+play_monster_special_sound_with_flags(struct monst *mtmp, int line_id, unsigned int pflags)
 {
     play_monster_msg_indexed_sound(mtmp, MONSTER_SOUND_TYPE_SPECIAL_SOUND, line_id, SOUND_PLAY_GROUP_NORMAL, IMMEDIATE_SOUND_SFX, 0.0f, pflags);
 }
 
 void
-play_monster_ouch_sound(mtmp, line_id)
-struct monst* mtmp;
-enum monster_ouch_sounds line_id;
+play_monster_ouch_sound(struct monst *mtmp, enum monster_ouch_sounds line_id)
 {
     play_monster_line_indexed_sound(mtmp, MONSTER_SOUND_TYPE_OUCH, line_id, SOUND_PLAY_GROUP_NORMAL, IMMEDIATE_SOUND_SFX, 0.0f, 0UL);
 }
 
 void
-play_monster_who_sound(mtmp, line_id)
-struct monst* mtmp;
-enum monster_who_sounds line_id;
+play_monster_who_sound(struct monst *mtmp, enum monster_who_sounds line_id)
 {
     play_monster_line_indexed_sound(mtmp, MONSTER_SOUND_TYPE_WHO, line_id, SOUND_PLAY_GROUP_LONG, IMMEDIATE_SOUND_SFX, 0.0f, 0UL);
 }
 
 void
-play_monster_switchable_who_sound(mtmp, who_line_id, standard_line_id)
-struct monst* mtmp;
-enum monster_who_sounds who_line_id;
-enum monster_standard_dialogue_lines standard_line_id;
+play_monster_switchable_who_sound(struct monst *mtmp, enum monster_who_sounds who_line_id, enum monster_standard_dialogue_lines standard_line_id)
 {
     enum ghsound_types soundid = GHSOUND_NONE;
     float volume = 1.0f;
@@ -22049,72 +21783,57 @@ enum monster_standard_dialogue_lines standard_line_id;
 }
 
 void
-play_monster_happy_sound(mtmp, line_id)
-struct monst* mtmp;
-enum monster_happy_sounds line_id;
+play_monster_happy_sound(struct monst *mtmp, enum monster_happy_sounds line_id)
 {
     play_monster_line_indexed_sound(mtmp, MONSTER_SOUND_TYPE_HAPPY, line_id, SOUND_PLAY_GROUP_NORMAL, IMMEDIATE_SOUND_SFX, 0.0f, 0UL);
 }
 
 void
-play_monster_unhappy_sound(mtmp, line_id)
-struct monst* mtmp;
-enum monster_unhappy_sounds line_id;
+play_monster_unhappy_sound(struct monst *mtmp, enum monster_unhappy_sounds line_id)
 {
     play_monster_line_indexed_sound(mtmp, MONSTER_SOUND_TYPE_UNHAPPY, line_id, SOUND_PLAY_GROUP_NORMAL, IMMEDIATE_SOUND_SFX, 0.0f, 0UL);
 }
 
 void
-play_monster_flounder_sound(mtmp, line_id)
-struct monst* mtmp;
-enum monster_flounder_sounds line_id;
+play_monster_flounder_sound(struct monst *mtmp, enum monster_flounder_sounds line_id)
 {
     play_monster_line_indexed_sound(mtmp, MONSTER_SOUND_TYPE_FLOUNDER, line_id, SOUND_PLAY_GROUP_NORMAL, IMMEDIATE_SOUND_SFX, 0.0f, 0UL);
 }
 
 void
-play_monster_pissed_sound(mtmp, line_id)
-struct monst* mtmp;
-enum monster_pissed_sounds line_id;
+play_monster_pissed_sound(struct monst *mtmp, enum monster_pissed_sounds line_id)
 {
     play_monster_line_indexed_sound(mtmp, MONSTER_SOUND_TYPE_PISSED, line_id, SOUND_PLAY_GROUP_LONG, IMMEDIATE_SOUND_DIALOGUE, 0.0f, PLAY_FLAGS_NO_PLAY_IF_ALREADY_PLAYING_OR_QUEUED);
 }
 
 void
-play_monster_chat_sound(mtmp, line_id)
-struct monst* mtmp;
-int line_id;
+play_monster_chat_sound(struct monst *mtmp, int line_id)
 {
     play_monster_line_indexed_sound(mtmp, MONSTER_SOUND_TYPE_CHAT, line_id, SOUND_PLAY_GROUP_LONG, IMMEDIATE_SOUND_DIALOGUE, 0.0f, 0UL);
 }
 
 void
-play_player_flounder_sound(line_id)
-enum monster_flounder_sounds line_id;
+play_player_flounder_sound(enum monster_flounder_sounds line_id)
 {
     play_player_line_indexed_sound(MONSTER_SOUND_TYPE_FLOUNDER, line_id, SOUND_PLAY_GROUP_NORMAL, IMMEDIATE_SOUND_SFX, 0UL);
 }
 
 void
-play_player_pissed_sound(line_id)
-enum monster_pissed_sounds line_id;
+play_player_pissed_sound(enum monster_pissed_sounds line_id)
 {
     play_player_line_indexed_sound(MONSTER_SOUND_TYPE_PISSED, line_id, SOUND_PLAY_GROUP_LONG, IMMEDIATE_SOUND_DIALOGUE, PLAY_FLAGS_NO_PLAY_IF_ALREADY_PLAYING_OR_QUEUED);
 }
 
 
 enum monster_soundset_types
-get_monster_soundset(mtmp)
-struct monst* mtmp;
+get_monster_soundset(struct monst *mtmp)
 {
     int dummy = 0;
     return get_monster_soundset_with_subtype(mtmp, &dummy);
 }
 
 enum monster_soundset_types
-get_monster_soundset_with_subtype(mtmp, subtyp_ptr)
-struct monst* mtmp;
-int* subtyp_ptr;
+get_monster_soundset_with_subtype(struct monst *mtmp, int *subtyp_ptr)
 {
     if (subtyp_ptr)
         *subtyp_ptr = NO_SOUNDSET_SUBTYPE;
@@ -22185,11 +21904,7 @@ int* subtyp_ptr;
 }
 
 void
-play_hermit_dialogue_line(mtmp, soundid, soundindextype, lineid)
-struct monst* mtmp;
-enum ghsound_types soundid;
-uchar soundindextype;
-int lineid;
+play_hermit_dialogue_line(struct monst *mtmp, enum ghsound_types soundid, uchar soundindextype, int lineid)
 {
     if (!iflags.using_gui_sounds || !mtmp || Deaf)
         return;
@@ -22235,9 +21950,7 @@ int lineid;
 }
 
 void
-play_voice_god_simple_line_at(x, y, line_id)
-xchar x, y;
-enum god_simple_lines line_id;
+play_voice_god_simple_line_at(xchar x, xchar y, enum god_simple_lines line_id)
 {
     if (!iflags.using_gui_sounds)
         return;
@@ -22256,9 +21969,7 @@ enum god_simple_lines line_id;
 }
 
 void
-play_voice_god_simple_line_by_align(godalign, line_id)
-aligntyp godalign;
-enum god_simple_lines line_id;
+play_voice_god_simple_line_by_align(aligntyp godalign, enum god_simple_lines line_id)
 {
     /* You will hear the god even if you are deaf */
     if (!iflags.using_gui_sounds)
@@ -22283,9 +21994,7 @@ enum god_simple_lines line_id;
 }
 
 void
-play_voice_oracle_major_consultation(mtmp, line_idx)
-struct monst* mtmp;
-int line_idx;
+play_voice_oracle_major_consultation(struct monst *mtmp, int line_idx)
 {
     if (!iflags.using_gui_sounds || !mtmp || Deaf)
         return;

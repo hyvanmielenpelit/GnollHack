@@ -30,27 +30,27 @@
 
 #include "hack.h"
 
-STATIC_DCL void FDECL(put_monsters_to_sleep, (int, int));
-STATIC_DCL void FDECL(charm_snakes, (int));
-STATIC_DCL void FDECL(calm_nymphs, (int));
-STATIC_DCL void FDECL(charm_monsters, (int, int));
-STATIC_DCL int FDECL(do_improvisation, (struct obj *));
+static void put_monsters_to_sleep(int, int);
+static void charm_snakes(int);
+static void calm_nymphs(int);
+static void charm_monsters(int, int);
+static int do_improvisation(struct obj *);
 
 #ifdef UNIX386MUSIC
-STATIC_DCL int NDECL(atconsole);
-STATIC_DCL void FDECL(speaker, (struct obj *, char *));
+static int atconsole(void);
+static void speaker(struct obj *, char *);
 #endif
 #ifdef VPIX_MUSIC
 extern int sco_flag_console; /* will need changing if not _M_UNIX */
-STATIC_DCL void NDECL(playinit);
-STATIC_DCL void FDECL(playstring, (char *, size_t));
-STATIC_DCL void FDECL(speaker, (struct obj *, char *));
+static void playinit(void);
+static void playstring(char *, size_t);
+static void speaker(struct obj *, char *);
 #endif
 #ifdef PCMUSIC
-void FDECL(pc_speaker, (struct obj *, char *));
+void pc_speaker(struct obj *, char *);
 #endif
 #ifdef AMIGA
-void FDECL(amii_speaker, (struct obj *, char *, int));
+void amii_speaker(struct obj *, char *, int);
 #endif
 
 /*
@@ -58,9 +58,7 @@ void FDECL(amii_speaker, (struct obj *, char *, int));
  */
 
 void
-awaken_monsters(distance, isscary)
-int distance;
-boolean isscary;
+awaken_monsters(int distance, boolean isscary)
 {
     struct monst *mtmp;
     int distm;
@@ -99,9 +97,8 @@ boolean isscary;
  * Make monsters fall asleep.  Note that they may resist the spell.
  */
 
-STATIC_OVL void
-put_monsters_to_sleep(otyp, distance)
-int otyp, distance;
+static void
+put_monsters_to_sleep(int otyp, int distance)
 {
     struct monst *mtmp;
     int duration = get_otyp_spell_duration(otyp);
@@ -123,9 +120,8 @@ int otyp, distance;
  * Charm snakes in range.  Note that the snakes are NOT tamed.
  */
 
-STATIC_OVL void
-charm_snakes(distance)
-int distance;
+static void
+charm_snakes(int distance)
 {
     struct monst *mtmp;
     int could_see_mon, was_peaceful;
@@ -158,9 +154,8 @@ int distance;
  * Calm nymphs in range.
  */
 
-STATIC_OVL void
-calm_nymphs(distance)
-int distance;
+static void
+calm_nymphs(int distance)
 {
     struct monst *mtmp;
 
@@ -182,11 +177,13 @@ int distance;
     }
 }
 
+/*
+ * Parameters:
+ *   bugler: monster that played instrument
+ */
 /* Awake soldiers anywhere the level (and any nearby monster). */
 void
-awaken_soldiers(bugler, isscary)
-struct monst *bugler; /* monster that played instrument */
-boolean isscary;
+awaken_soldiers(struct monst *bugler, boolean isscary)
 {
     struct monst *mtmp;
     int distance, distm, cnt = 0;
@@ -231,9 +228,8 @@ boolean isscary;
 /* Charm monsters in range.  Note that they may resist the spell.
  * If swallowed, range is reduced to 0.
  */
-STATIC_OVL void
-charm_monsters(distance, saving_throw_adjustment)
-int distance, saving_throw_adjustment;
+static void
+charm_monsters(int distance, int saving_throw_adjustment)
 {
     struct monst *mtmp, *mtmp2;
 
@@ -263,8 +259,7 @@ int distance, saving_throw_adjustment;
  * That is:  create random chasms (pits).
  */
 void
-do_earthquake(force)
-int force;
+do_earthquake(int force)
 {
     int x, y;
     struct monst *mtmp;
@@ -502,7 +497,7 @@ int force;
 }
 
 const char *
-generic_lvl_desc(VOID_ARGS)
+generic_lvl_desc(void)
 {
     if (Is_astralevel(&u.uz))
         return "astral plane";
@@ -526,9 +521,8 @@ const char *beats[] = {
 /*
  * The player is trying to extract something from his/her instrument.
  */
-STATIC_OVL int
-do_improvisation(instr)
-struct obj *instr;
+static int
+do_improvisation(struct obj *instr)
 {
     if (!instr)
         return 0;
@@ -771,8 +765,7 @@ struct obj *instr;
  * So you want music...
  */
 int
-do_play_instrument(instr)
-struct obj *instr;
+do_play_instrument(struct obj *instr)
 {
     if (!instr)
         return 0;
@@ -1038,8 +1031,8 @@ nevermind:
  * Play audible music on the machine's speaker if appropriate.
  */
 
-STATIC_OVL int
-atconsole(VOID_ARGS)
+static int
+atconsole(void)
 {
     /*
      * Kluge alert: This code assumes that your [34]86 has no X terminals
@@ -1056,10 +1049,8 @@ atconsole(VOID_ARGS)
     return (!strcmp(termtype, "AT386") || !strcmp(termtype, "xterm"));
 }
 
-STATIC_OVL void
-speaker(instr, buf)
-struct obj *instr;
-char *buf;
+static void
+speaker(struct obj *instr, char *buf)
 {
     /*
      * For this to work, you need to have installed the PD speaker-control
@@ -1110,9 +1101,8 @@ char *buf;
 #define noDEBUG
 
 /* emit tone of frequency hz for given number of ticks */
-STATIC_OVL void
-tone(hz, ticks)
-unsigned int hz, ticks;
+static void
+tone(unsigned int hz, unsigned int ticks)
 {
     ioctl(0, KDMKTONE, hz | ((ticks * 10) << 16));
 #ifdef DEBUG
@@ -1122,9 +1112,8 @@ unsigned int hz, ticks;
 }
 
 /* rest for given number of ticks */
-STATIC_OVL void
-rest(ticks)
-int ticks;
+static void
+rest(int ticks)
 {
     nap(ticks * 10);
 #ifdef DEBUG
@@ -1134,10 +1123,8 @@ int ticks;
 
 #include "interp.c" /* from snd86unx.shr */
 
-STATIC_OVL void
-speaker(instr, buf)
-struct obj *instr;
-char *buf;
+static void
+speaker(struct obj *instr, char *buf)
 {
     /* emit a prefix to modify instrumental `timbre' */
     playinit();
@@ -1164,9 +1151,7 @@ char *buf;
 }
 
 #ifdef VPIX_DEBUG
-main(argc, argv)
-int argc;
-char *argv[];
+main(int argc, char *argv[])
 {
     if (argc == 2) {
         playinit();

@@ -17,7 +17,7 @@ extern struct window_procs curses_procs;
 /* Cannot just blindly include winX.h without including all of X11 stuff
    and must get the order of include files right.  Don't bother. */
 extern struct window_procs X11_procs;
-extern void FDECL(win_X11_init, (int));
+extern void win_X11_init(int);
 #endif
 #ifdef QT_GRAPHICS
 extern struct window_procs Qt_procs;
@@ -30,13 +30,13 @@ extern struct window_procs mac_procs;
 #endif
 #ifdef BEOS_GRAPHICS
 extern struct window_procs beos_procs;
-extern void FDECL(be_win_init, (int));
+extern void be_win_init(int);
 FAIL /* be_win_init doesn't exist? XXX*/
 #endif
 #ifdef AMIGA_INTUITION
 extern struct window_procs amii_procs;
 extern struct window_procs amiv_procs;
-extern void FDECL(ami_wininit_data, (int));
+extern void ami_wininit_data(int);
 #endif
 #ifdef WIN32_GRAPHICS
 extern struct window_procs win32_procs;
@@ -62,56 +62,56 @@ extern struct window_procs and_procs;
 #endif
 #ifdef WINCHAIN
 extern struct window_procs chainin_procs;
-extern void FDECL(chainin_procs_init, (int));
-extern void *FDECL(chainin_procs_chain, (int, int, void *, void *, void *));
+extern void chainin_procs_init(int);
+extern void *chainin_procs_chain(int, int, void *, void *, void *);
 
 extern struct chain_procs chainout_procs;
-extern void FDECL(chainout_procs_init, (int));
-extern void *FDECL(chainout_procs_chain, (int, int, void *, void *, void *));
+extern void chainout_procs_init(int);
+extern void *chainout_procs_chain(int, int, void *, void *, void *);
 
 extern struct chain_procs trace_procs;
-extern void FDECL(trace_procs_init, (int));
-extern void *FDECL(trace_procs_chain, (int, int, void *, void *, void *));
+extern void trace_procs_init(int);
+extern void *trace_procs_chain(int, int, void *, void *, void *);
 #endif
 
-STATIC_DCL void FDECL(def_raw_print, (const char *s));
-STATIC_DCL void NDECL(def_wait_synch);
-STATIC_DCL void FDECL(itemdesc_putstr_ex, (winid, const char*, int, int, int));
-STATIC_DCL void FDECL(itemdesc_putstr_ex2, (winid, const char*, const char*, const char*, int, int, int));
+static void def_raw_print(const char *s);
+static void def_wait_synch(void);
+static void itemdesc_putstr_ex(winid, const char*, int, int, int);
+static void itemdesc_putstr_ex2(winid, const char*, const char*, const char*, int, int, int);
 
 #if defined (DUMPLOG) || defined (DUMPHTML)
-STATIC_DCL winid FDECL(dump_create_nhwindow_ex, (int, int, int, struct extended_create_window_info));
-STATIC_DCL void FDECL(dump_clear_nhwindow, (winid));
-STATIC_DCL void FDECL(dump_display_nhwindow, (winid, BOOLEAN_P));
-STATIC_DCL void FDECL(dump_destroy_nhwindow, (winid));
-STATIC_DCL void FDECL(dump_start_menu_ex, (winid, int));
-STATIC_DCL void FDECL(dump_add_menu, (winid, int, const ANY_P *, CHAR_P,
-                                      CHAR_P, int, int, const char *, BOOLEAN_P));
-STATIC_DCL void FDECL(dump_add_extended_menu, (winid, int, const ANY_P*, CHAR_P,
-    CHAR_P, int, int, const char*, BOOLEAN_P, struct extended_menu_info));
-STATIC_DCL void FDECL(dump_end_menu_ex, (winid, const char *, const char*));
-STATIC_DCL int FDECL(dump_select_menu, (winid, int, MENU_ITEM_P **));
-STATIC_DCL void FDECL(dump_putstr_ex, (winid, const char *, int, int, int));
-STATIC_DCL void FDECL(dump_putstr_ex2, (winid, const char*, const char*, const char*, int, int, int));
-STATIC_DCL void NDECL(dump_headers);
-STATIC_DCL void NDECL(dump_footers);
-STATIC_DCL void FDECL(dump_status_update, (int, genericptr_t, int, int, int, uint64_t*));
-STATIC_DCL void NDECL(dump_render_status);
+static winid dump_create_nhwindow_ex(int, int, int, struct extended_create_window_info);
+static void dump_clear_nhwindow(winid);
+static void dump_display_nhwindow(winid, boolean);
+static void dump_destroy_nhwindow(winid);
+static void dump_start_menu_ex(winid, int);
+static void dump_add_menu(winid, int, const ANY_P *, char,
+                                      char, int, int, const char *, boolean);
+static void dump_add_extended_menu(winid, int, const ANY_P*, char,
+    char, int, int, const char*, boolean, struct extended_menu_info);
+static void dump_end_menu_ex(winid, const char *, const char*);
+static int dump_select_menu(winid, int, MENU_ITEM_P **);
+static void dump_putstr_ex(winid, const char *, int, int, int);
+static void dump_putstr_ex2(winid, const char*, const char*, const char*, int, int, int);
+static void dump_headers(void);
+static void dump_footers(void);
+static void dump_status_update(int, genericptr_t, int, int, int, uint64_t*);
+static void dump_render_status(void);
 #if defined (DUMPHTML)
-STATIC_DCL void FDECL(dump_set_color_attr, (int, int, BOOLEAN_P, BOOLEAN_P));
-STATIC_DCL void NDECL(html_init_sym);
-STATIC_DCL void NDECL(dump_css);
-STATIC_DCL void FDECL(dump_outrip, (winid, int, time_t));
-STATIC_DCL void FDECL(html_dump_char, (FILE*, nhsym, BOOLEAN_P));
-STATIC_DCL void FDECL(html_dump_str, (FILE*, const char*, const char*, const char*, int, int));
-STATIC_DCL void FDECL(html_dump_line, (FILE*, winid, const char*, const char*, int, int, int, const char*));
-STATIC_DCL void FDECL(html_write_tags, (FILE*, winid, int, int, int, BOOLEAN_P, struct extended_menu_info, BOOLEAN_P)); /* Tags before/after string */
+static void dump_set_color_attr(int, int, boolean, boolean);
+static void html_init_sym(void);
+static void dump_css(void);
+static void dump_outrip(winid, int, time_t);
+static void html_dump_char(FILE*, nhsym, boolean);
+static void html_dump_str(FILE*, const char*, const char*, const char*, int, int);
+static void html_dump_line(FILE*, winid, const char*, const char*, int, int, int, const char*);
+static void html_write_tags(FILE*, winid, int, int, int, boolean, struct extended_menu_info, boolean); /* Tags before/after string */
 #endif
 #if defined (DUMPLOG)
-STATIC_VAR FILE* dumplog_file;
+static FILE* dumplog_file;
 #endif
 #if defined (DUMPHTML)
-STATIC_VAR FILE* dumphtml_file;
+static FILE* dumphtml_file;
 #endif
 #endif /* DUMPLOG */
 
@@ -127,11 +127,11 @@ NEARDATA struct window_procs windowprocs;
 #define CHAINR(x)
 #endif
 
-STATIC_VAR struct win_choices {
+static struct win_choices {
     struct window_procs *procs;
-    void FDECL((*ini_routine), (int)); /* optional (can be 0) */
+    void (*ini_routine)(int); /* optional (can be 0) */
 #ifdef WINCHAIN
-    void *FDECL((*chain_routine), (int, int, void *, void *, void *));
+    void *(*chain_routine)(int, int, void *, void *, void *);
 #endif
 } winchoices[] = {
 #ifdef TTY_GRAPHICS
@@ -201,10 +201,10 @@ struct winlink {
 };
 /* NB: this chain does not contain the terminal real window system pointer */
 
-STATIC_VAR struct winlink *chain = 0;
+static struct winlink *chain = 0;
 
-STATIC_OVL struct winlink *
-wl_new(VOID_ARGS)
+static struct winlink *
+wl_new(void)
 {
     struct winlink *wl = (struct winlink *) alloc(sizeof *wl);
 
@@ -215,14 +215,14 @@ wl_new(VOID_ARGS)
     return wl;
 }
 
-STATIC_OVL void
+static void
 wl_addhead(struct winlink *wl)
 {
     wl->nextlink = chain;
     chain = wl;
 }
 
-STATIC_OVL void
+static void
 wl_addtail(struct winlink *wl)
 {
     struct winlink *p = chain;
@@ -239,36 +239,34 @@ wl_addtail(struct winlink *wl)
 }
 #endif /* WINCHAIN */
 
-STATIC_VAR struct win_choices *last_winchoice = 0;
+static struct win_choices *last_winchoice = 0;
 
 boolean
-genl_can_suspend_no(VOID_ARGS)
+genl_can_suspend_no(void)
 {
     return FALSE;
 }
 
 boolean
-genl_can_suspend_yes(VOID_ARGS)
+genl_can_suspend_yes(void)
 {
     return TRUE;
 }
 
 void
-genl_stretch_window(VOID_ARGS)
+genl_stretch_window(void)
 {
     return;
 }
 
 void
-genl_set_animation_timer_interval(interval)
-unsigned int interval UNUSED;
+genl_set_animation_timer_interval(unsigned int interval UNUSED)
 {
     return;
 }
 
 int
-genl_open_special_view(info)
-struct special_view_info info;
+genl_open_special_view(struct special_view_info info)
 {
     switch (info.viewtype)
     {
@@ -286,63 +284,55 @@ struct special_view_info info;
 }
 
 void
-genl_stop_all_sounds(info)
-struct stop_all_info info UNUSED;
+genl_stop_all_sounds(struct stop_all_info info UNUSED)
 {
     return;
 }
 
 void
-genl_play_immediate_ghsound(info)
-struct ghsound_immediate_info info UNUSED;
+genl_play_immediate_ghsound(struct ghsound_immediate_info info UNUSED)
 {
     return;
 }
 
 void
-genl_play_ghsound_occupation_ambient(info)
-struct ghsound_occupation_ambient_info info UNUSED;
+genl_play_ghsound_occupation_ambient(struct ghsound_occupation_ambient_info info UNUSED)
 {
     return;
 }
 
 void
-genl_play_ghsound_effect_ambient(info)
-struct ghsound_effect_ambient_info info UNUSED;
+genl_play_ghsound_effect_ambient(struct ghsound_effect_ambient_info info UNUSED)
 {
     return;
 }
 
 void
-genl_set_effect_ambient_volume(info)
-struct effect_ambient_volume_info info UNUSED;
+genl_set_effect_ambient_volume(struct effect_ambient_volume_info info UNUSED)
 {
     return;
 }
 
 void
-genl_play_ghsound_music(info)
-struct ghsound_music_info info UNUSED;
+genl_play_ghsound_music(struct ghsound_music_info info UNUSED)
 {
     return;
 }
 
 void
-genl_play_ghsound_level_ambient(info)
-struct ghsound_level_ambient_info info UNUSED;
+genl_play_ghsound_level_ambient(struct ghsound_level_ambient_info info UNUSED)
 {
     return;
 }
 
 void
-genl_play_ghsound_environment_ambient(info)
-struct ghsound_environment_ambient_info info UNUSED;
+genl_play_ghsound_environment_ambient(struct ghsound_environment_ambient_info info UNUSED)
 {
     return;
 }
 
 void
-genl_adjust_ghsound_general_volumes(VOID_ARGS)
+genl_adjust_ghsound_general_volumes(void)
 {
     return;
 }
@@ -366,7 +356,7 @@ genl_set_ambient_ghsound_volume(struct soundsource_t* soundsource UNUSED)
 }
 
 void
-genl_clear_context_menu(VOID_ARGS)
+genl_clear_context_menu(void)
 {
     return;
 }
@@ -420,7 +410,7 @@ genl_update_cursor(int style UNUSED, int force_paint UNUSED, int show_on_u UNUSE
 }
 
 int
-genl_ui_has_input(VOID_ARGS)
+genl_ui_has_input(void)
 {
     return FALSE;
 }
@@ -431,17 +421,16 @@ genl_exit_hack(int status UNUSED)
     
 }
 
-STATIC_OVL
+static
 void
-def_raw_print(s)
-const char *s;
+def_raw_print(const char *s)
 {
     puts(s);
 }
 
-STATIC_OVL
+static
 void
-def_wait_synch(VOID_ARGS)
+def_wait_synch(void)
 {
     /* Config file error handling routines
      * call wait_sync() without checking to
@@ -456,9 +445,8 @@ def_wait_synch(VOID_ARGS)
 }
 
 #ifdef WINCHAIN
-STATIC_OVL struct win_choices *
-win_choices_find(s)
-const char *s;
+static struct win_choices *
+win_choices_find(const char *s)
 {
     int i;
 
@@ -472,8 +460,7 @@ const char *s;
 #endif
 
 void
-choose_windows(s)
-const char *s;
+choose_windows(const char *s)
 {
     int i;
     char* tmps = 0;
@@ -552,8 +539,7 @@ const char *s;
 
 #ifdef WINCHAIN
 void
-addto_windowchain(s)
-const char *s;
+addto_windowchain(const char *s)
 {
     int i;
 
@@ -583,7 +569,7 @@ const char *s;
 }
 
 void
-commit_windowchain(VOID_ARGS)
+commit_windowchain(void)
 {
     struct winlink *p;
     int n;
@@ -664,10 +650,7 @@ commit_windowchain(VOID_ARGS)
  */
 /*ARGSUSED*/
 char
-genl_message_menu(let, how, mesg)
-char let UNUSED;
-int how UNUSED;
-const char *mesg;
+genl_message_menu(char let UNUSED, int how UNUSED, const char *mesg)
 {
     pline("%s", mesg);
     return 0;
@@ -675,8 +658,7 @@ const char *mesg;
 
 /*ARGSUSED*/
 void
-genl_preference_update(pref)
-const char *pref UNUSED;
+genl_preference_update(const char *pref UNUSED)
 {
     /* window ports are expected to provide
        their own preference update routine
@@ -687,9 +669,7 @@ const char *pref UNUSED;
 }
 
 char *
-genl_getmsghistory_ex(attrs_ptr, colors_ptr, init)
-char** attrs_ptr, **colors_ptr;
-boolean init UNUSED;
+genl_getmsghistory_ex(char **attrs_ptr, char **colors_ptr, boolean init UNUSED)
 {
     if (attrs_ptr)
         *attrs_ptr = (char*)0;
@@ -711,10 +691,7 @@ boolean init UNUSED;
 }
 
 void
-genl_putmsghistory_ex(msg, attrs, colors, is_restoring)
-const char *msg;
-const char* attrs, *colors;
-boolean is_restoring;
+genl_putmsghistory_ex(const char *msg, const char *attrs, const char *colors, boolean is_restoring)
 {
     /* window ports can provide
        their own putmsghistory() routine to
@@ -748,48 +725,48 @@ boolean is_restoring;
  * in order to avoid all terminal I/O after hangup/disconnect.
  */
 
-STATIC_DCL int NDECL(hup_nhgetch);
-STATIC_DCL char FDECL(hup_yn_function_ex, (int, int, int, int, const char *, const char *, const char *, CHAR_P, const char*, const char*, uint64_t));
-STATIC_DCL int FDECL(hup_nh_poskey, (int *, int *, int *));
-STATIC_DCL void FDECL(hup_getlin_ex, (int, int, int, const char *, char *, const char*, const char*, const char*));
-STATIC_DCL void FDECL(hup_init_nhwindows, (int *, char **));
-STATIC_DCL void FDECL(hup_exit_nhwindows, (const char *));
-STATIC_DCL winid FDECL(hup_create_nhwindow_ex, (int, int, int, struct extended_create_window_info));
-STATIC_DCL void FDECL(hup_start_menu_ex, (winid, int));
-STATIC_DCL int FDECL(hup_select_menu, (winid, int, MENU_ITEM_P **));
-STATIC_DCL void FDECL(hup_add_menu, (winid, int, const anything *, CHAR_P, CHAR_P,
-                                 int, int, const char *, BOOLEAN_P));
-STATIC_DCL void FDECL(hup_add_extended_menu, (winid, int, const anything*, CHAR_P, CHAR_P,
-    int, int, const char*, BOOLEAN_P, struct extended_menu_info));
-STATIC_DCL void FDECL(hup_end_menu_ex, (winid, const char *, const char*));
-STATIC_DCL void FDECL(hup_putstr_ex, (winid, const char *, int, int, int));
-STATIC_DCL void FDECL(hup_putstr_ex2, (winid, const char*, const char*, const char*, int, int, int));
-STATIC_DCL void FDECL(hup_print_glyph, (winid, XCHAR_P, XCHAR_P, struct layer_info));
-STATIC_DCL void FDECL(hup_issue_gui_command, (int, int, int, const char*));
-STATIC_DCL void FDECL(hup_outrip, (winid, int, time_t));
-STATIC_DCL void FDECL(hup_curs, (winid, int, int));
-STATIC_DCL void FDECL(hup_display_nhwindow, (winid, BOOLEAN_P));
-STATIC_DCL void FDECL(hup_display_file, (const char *, BOOLEAN_P));
+static int hup_nhgetch(void);
+static char hup_yn_function_ex(int, int, int, int, const char *, const char *, const char *, char, const char*, const char*, uint64_t);
+static int hup_nh_poskey(int *, int *, int *);
+static void hup_getlin_ex(int, int, int, const char *, char *, const char*, const char*, const char*);
+static void hup_init_nhwindows(int *, char **);
+static void hup_exit_nhwindows(const char *);
+static winid hup_create_nhwindow_ex(int, int, int, struct extended_create_window_info);
+static void hup_start_menu_ex(winid, int);
+static int hup_select_menu(winid, int, MENU_ITEM_P **);
+static void hup_add_menu(winid, int, const anything *, char, char,
+                                 int, int, const char *, boolean);
+static void hup_add_extended_menu(winid, int, const anything*, char, char,
+    int, int, const char*, boolean, struct extended_menu_info);
+static void hup_end_menu_ex(winid, const char *, const char*);
+static void hup_putstr_ex(winid, const char *, int, int, int);
+static void hup_putstr_ex2(winid, const char*, const char*, const char*, int, int, int);
+static void hup_print_glyph(winid, xchar, xchar, struct layer_info);
+static void hup_issue_gui_command(int, int, int, const char*);
+static void hup_outrip(winid, int, time_t);
+static void hup_curs(winid, int, int);
+static void hup_display_nhwindow(winid, boolean);
+static void hup_display_file(const char *, boolean);
 #ifdef CLIPPING
-STATIC_DCL void FDECL(hup_cliparound, (int, int, BOOLEAN_P));
+static void hup_cliparound(int, int, boolean);
 #endif
 #ifdef CHANGE_COLOR
-STATIC_DCL void FDECL(hup_change_color, (int, int64_t, int));
+static void hup_change_color(int, int64_t, int);
 #ifdef MAC
-STATIC_DCL short FDECL(hup_set_font_name, (winid, char *));
+static short hup_set_font_name(winid, char *);
 #endif
-STATIC_DCL char *NDECL(hup_get_color_string);
+static char *hup_get_color_string(void);
 #endif /* CHANGE_COLOR */
-STATIC_DCL void FDECL(hup_status_update, (int, genericptr_t, int, int, int,
-                                      uint64_t *));
+static void hup_status_update(int, genericptr_t, int, int, int,
+                                      uint64_t *);
 
-STATIC_DCL int NDECL(hup_int_ndecl);
-STATIC_DCL void NDECL(hup_void_ndecl);
-STATIC_DCL void FDECL(hup_void_fdecl_int, (int));
-STATIC_DCL void FDECL(hup_void_fdecl_winid, (winid));
-STATIC_DCL void FDECL(hup_void_fdecl_constchar_p, (const char *));
+static int hup_int_ndecl(void);
+static void hup_void_ndecl(void);
+static void hup_void_fdecl_int(int);
+static void hup_void_fdecl_winid(winid);
+static void hup_void_fdecl_constchar_p(const char *);
 
-STATIC_VAR struct window_procs hup_procs = {
+static struct window_procs hup_procs = {
     "hup", 0L, 0L, hup_init_nhwindows,
     hup_void_ndecl,                                    /* player_selection */
     hup_void_ndecl,                                    /* askname */
@@ -840,13 +817,13 @@ STATIC_VAR struct window_procs hup_procs = {
     genl_can_suspend_no,
 };
 
-STATIC_VAR void FDECL((*previnterface_exit_nhwindows), (const char *)) = 0;
+static void (*previnterface_exit_nhwindows)(const char *) = 0;
 
 /* hangup has occurred; switch to no-op user interface */
 void
-nhwindows_hangup(VOID_ARGS)
+nhwindows_hangup(void)
 {
-    char *FDECL((*previnterface_getmsghistory_ex), (char**, char**, BOOLEAN_P)) = 0;
+    char *(*previnterface_getmsghistory_ex)(char **, char **, boolean) = 0;
 
 #ifdef ALTMETA
     /* command processor shouldn't look for 2nd char after seeing ESC */
@@ -871,9 +848,8 @@ nhwindows_hangup(VOID_ARGS)
         windowprocs.win_getmsghistory_ex = previnterface_getmsghistory_ex;
 }
 
-STATIC_OVL void
-hup_exit_nhwindows(lastgasp)
-const char *lastgasp;
+static void
+hup_exit_nhwindows(const char *lastgasp)
 {
     /* core has called exit_nhwindows(); call the previous interface's
        shutdown routine now; xxx_exit_nhwindows() needs to call other
@@ -886,19 +862,15 @@ const char *lastgasp;
     iflags.window_inited = 0;
 }
 
-STATIC_OVL int
-hup_nhgetch(VOID_ARGS)
+static int
+hup_nhgetch(void)
 {
     return '\033'; /* ESC */
 }
 
 /*ARGSUSED*/
-STATIC_OVL char
-hup_yn_function_ex(style, attr, color, glyph, title, prompt, resp, deflt, resp_desc, introline, ynflags)
-int style UNUSED, attr UNUSED, color UNUSED, glyph UNUSED;
-const char *title UNUSED, *prompt UNUSED, *resp UNUSED, *resp_desc UNUSED, *introline UNUSED;
-char deflt;
-uint64_t ynflags UNUSED;
+static char
+hup_yn_function_ex(int style UNUSED, int attr UNUSED, int color UNUSED, int glyph UNUSED, const char *title UNUSED, const char *prompt UNUSED, const char *resp UNUSED, char deflt, const char *resp_desc UNUSED, const char *introline UNUSED, uint64_t ynflags UNUSED)
 {
     if (!deflt)
         deflt = '\033';
@@ -906,183 +878,127 @@ uint64_t ynflags UNUSED;
 }
 
 /*ARGSUSED*/
-STATIC_OVL int
-hup_nh_poskey(x, y, mod)
-int *x UNUSED, *y UNUSED, *mod UNUSED;
+static int
+hup_nh_poskey(int *x UNUSED, int *y UNUSED, int *mod UNUSED)
 {
     return '\033';
 }
 
 /*ARGSUSED*/
-STATIC_OVL void
-hup_getlin_ex(style, attr, color, prompt, outbuf, placeholder, linesuffix, introline)
-int style UNUSED, attr UNUSED, color UNUSED;
-const char *prompt UNUSED;
-const char* placeholder UNUSED;
-const char* linesuffix UNUSED;
-const char* introline UNUSED;
-char *outbuf;
+static void
+hup_getlin_ex(int style UNUSED, int attr UNUSED, int color UNUSED, const char *prompt UNUSED, char *outbuf, const char *placeholder UNUSED, const char *linesuffix UNUSED, const char *introline UNUSED)
 {
     Strcpy(outbuf, "\033");
 }
 
 /*ARGSUSED*/
-STATIC_OVL void
-hup_init_nhwindows(argc_p, argv)
-int *argc_p UNUSED;
-char **argv UNUSED;
+static void
+hup_init_nhwindows(int *argc_p UNUSED, char **argv UNUSED)
 {
     iflags.window_inited = 1;
 }
 
 /*ARGUSED*/
-STATIC_OVL winid
-hup_create_nhwindow_ex(type, style, glyph, info)
-int type UNUSED;
-int style UNUSED;
-int glyph UNUSED;
-struct extended_create_window_info info UNUSED;
+static winid
+hup_create_nhwindow_ex(int type UNUSED, int style UNUSED, int glyph UNUSED, struct extended_create_window_info info UNUSED)
 {
     return WIN_ERR;
 }
 
 /*ARGUSED*/
-STATIC_OVL void
-hup_start_menu_ex(window, style)
-winid window UNUSED;
-int style UNUSED;
+static void
+hup_start_menu_ex(winid window UNUSED, int style UNUSED)
 {
     return;
 }
 
 /*ARGSUSED*/
-STATIC_OVL int
-hup_select_menu(window, how, menu_list)
-winid window UNUSED;
-int how UNUSED;
-struct mi **menu_list UNUSED;
+static int
+hup_select_menu(winid window UNUSED, int how UNUSED, struct mi **menu_list UNUSED)
 {
     return -1;
 }
 
 /*ARGSUSED*/
-STATIC_OVL void
-hup_add_menu(window, glyph, identifier, sel, grpsel, attr, color, txt, preselected)
-winid window UNUSED;
-int glyph UNUSED, attr UNUSED, color UNUSED;
-const anything *identifier UNUSED;
-char sel UNUSED, grpsel UNUSED;
-const char *txt UNUSED;
-boolean preselected UNUSED;
+static void
+hup_add_menu(winid window UNUSED, int glyph UNUSED, const anything *identifier UNUSED, char sel UNUSED, char grpsel UNUSED, int attr UNUSED, int color UNUSED, const char *txt UNUSED, boolean preselected UNUSED)
 {
     return;
 }
 
-STATIC_OVL void
-hup_add_extended_menu(window, glyph, identifier, sel, grpsel, attr, color, txt, preselected, info)
-winid window UNUSED;
-int glyph UNUSED, attr UNUSED, color UNUSED;
-const anything* identifier UNUSED;
-char sel UNUSED, grpsel UNUSED;
-const char* txt UNUSED;
-boolean preselected UNUSED;
-struct extended_menu_info info UNUSED;
+static void
+hup_add_extended_menu(winid window UNUSED, int glyph UNUSED, const anything *identifier UNUSED, char sel UNUSED, char grpsel UNUSED, int attr UNUSED, int color UNUSED, const char *txt UNUSED, boolean preselected UNUSED, struct extended_menu_info info UNUSED)
 {
     return;
 }
 
 /*ARGSUSED*/
-STATIC_OVL void
-hup_end_menu_ex(window, prompt, subtitle)
-winid window UNUSED;
-const char *prompt UNUSED;
-const char *subtitle UNUSED;
+static void
+hup_end_menu_ex(winid window UNUSED, const char *prompt UNUSED, const char *subtitle UNUSED)
 {
     return;
 }
 
 /*ARGSUSED*/
-STATIC_OVL void
-hup_putstr_ex(window, text, attr, color, app)
-winid window UNUSED;
-int attr UNUSED, app UNUSED, color UNUSED;
-const char *text UNUSED;
+static void
+hup_putstr_ex(winid window UNUSED, const char *text UNUSED, int attr UNUSED, int color UNUSED, int app UNUSED)
 {
     return;
 }
 
 /*ARGSUSED*/
-STATIC_OVL void
-hup_putstr_ex2(window, text, attrs, colors, attr, color, app)
-winid window UNUSED;
-int attr UNUSED, color UNUSED, app UNUSED;
-const char* text UNUSED, *attrs UNUSED, *colors UNUSED;
+static void
+hup_putstr_ex2(winid window UNUSED, const char *text UNUSED, const char *attrs UNUSED, const char *colors UNUSED, int attr UNUSED, int color UNUSED, int app UNUSED)
 {
     return;
 }
 
 /*ARGSUSED*/
-STATIC_OVL void
-hup_print_glyph(window, x, y, layers)
-winid window UNUSED;
-xchar x UNUSED, y UNUSED;
-struct layer_info layers UNUSED;
+static void
+hup_print_glyph(winid window UNUSED, xchar x UNUSED, xchar y UNUSED, struct layer_info layers UNUSED)
 {
     return;
 }
 
 /*ARGSUSED*/
-STATIC_OVL void
-hup_issue_gui_command(cmd_id, cmd_param, cmd_param2, cmd_str)
-int cmd_id UNUSED, cmd_param UNUSED, cmd_param2 UNUSED;
-const char* cmd_str UNUSED;
+static void
+hup_issue_gui_command(int cmd_id UNUSED, int cmd_param UNUSED, int cmd_param2 UNUSED, const char *cmd_str UNUSED)
 {
     return;
 }
 
 /*ARGSUSED*/
-STATIC_OVL void
-hup_outrip(tmpwin, how, when)
-winid tmpwin UNUSED;
-int how UNUSED;
-time_t when UNUSED;
+static void
+hup_outrip(winid tmpwin UNUSED, int how UNUSED, time_t when UNUSED)
 {
     return;
 }
 
 /*ARGSUSED*/
-STATIC_OVL void
-hup_curs(window, x, y)
-winid window UNUSED;
-int x UNUSED, y UNUSED;
+static void
+hup_curs(winid window UNUSED, int x UNUSED, int y UNUSED)
 {
     return;
 }
 
 /*ARGSUSED*/
-STATIC_OVL void
-hup_display_nhwindow(window, blocking)
-winid window UNUSED;
-boolean blocking UNUSED;
+static void
+hup_display_nhwindow(winid window UNUSED, boolean blocking UNUSED)
 {
     return;
 }
 
 /*ARGSUSED*/
-STATIC_OVL void
-hup_display_file(fname, complain)
-const char *fname UNUSED;
-boolean complain UNUSED;
+static void
+hup_display_file(const char *fname UNUSED, boolean complain UNUSED)
 {
     return;
 }
 
 #ifdef CLIPPING
 /*ARGSUSED*/
-STATIC_OVL void
-hup_cliparound(x, y, force)
-int x UNUSED, y UNUSED;
-boolean force UNUSED;
+static void
+hup_cliparound(int x UNUSED, int y UNUSED, boolean force UNUSED)
 {
     return;
 }
@@ -1090,40 +1006,31 @@ boolean force UNUSED;
 
 #ifdef CHANGE_COLOR
 /*ARGSUSED*/
-STATIC_OVL void
-hup_change_color(color, rgb, reverse)
-int color, reverse;
-int64_t rgb;
+static void
+hup_change_color(int color, int64_t rgb, int reverse)
 {
     return;
 }
 
 #ifdef MAC
 /*ARGSUSED*/
-STATIC_OVL short
-hup_set_font_name(window, fontname)
-winid window;
-char *fontname;
+static short
+hup_set_font_name(winid window, char *fontname)
 {
     return 0;
 }
 #endif /* MAC */
 
-STATIC_OVL char *
-hup_get_color_string(VOID_ARGS)
+static char *
+hup_get_color_string(void)
 {
     return (char *) 0;
 }
 #endif /* CHANGE_COLOR */
 
 /*ARGSUSED*/
-STATIC_OVL void
-hup_status_update(idx, ptr, chg, pc, color, colormasks)
-int idx UNUSED;
-genericptr_t ptr UNUSED;
-int chg UNUSED, pc UNUSED, color UNUSED;
-uint64_t *colormasks UNUSED;
-
+static void
+hup_status_update(int idx UNUSED, genericptr_t ptr UNUSED, int chg UNUSED, int pc UNUSED, int color UNUSED, uint64_t *colormasks UNUSED)
 {
     return;
 }
@@ -1132,38 +1039,35 @@ uint64_t *colormasks UNUSED;
  * Non-specific stubs.
  */
 
-STATIC_OVL int
-hup_int_ndecl(VOID_ARGS)
+static int
+hup_int_ndecl(void)
 {
     return -1;
 }
 
-STATIC_OVL void
-hup_void_ndecl(VOID_ARGS)
+static void
+hup_void_ndecl(void)
 {
     return;
 }
 
 /*ARGUSED*/
-STATIC_OVL void
-hup_void_fdecl_int(arg)
-int arg UNUSED;
+static void
+hup_void_fdecl_int(int arg UNUSED)
 {
     return;
 }
 
 /*ARGUSED*/
-STATIC_OVL void
-hup_void_fdecl_winid(window)
-winid window UNUSED;
+static void
+hup_void_fdecl_winid(winid window UNUSED)
 {
     return;
 }
 
 /*ARGUSED*/
-STATIC_OVL void
-hup_void_fdecl_constchar_p(string)
-const char *string UNUSED;
+static void
+hup_void_fdecl_constchar_p(const char *string UNUSED)
 {
     return;
 }
@@ -1182,8 +1086,7 @@ boolean status_activefields[MAXBLSTATS];
 //NEARDATA winid WIN_STATUS;
 
 void
-genl_status_init(reassessment)
-int reassessment;
+genl_status_init(int reassessment)
 {
     if (reassessment)
         return;
@@ -1202,7 +1105,7 @@ int reassessment;
 }
 
 void
-genl_status_finish(VOID_ARGS)
+genl_status_finish(void)
 {
     /* tear down routine */
     int i;
@@ -1215,11 +1118,7 @@ genl_status_finish(VOID_ARGS)
 }
 
 void
-genl_status_enablefield(fieldidx, nm, fmt, enable)
-int fieldidx;
-const char *nm;
-const char *fmt;
-boolean enable;
+genl_status_enablefield(int fieldidx, const char *nm, const char *fmt, boolean enable)
 {
     status_fieldfmt[fieldidx] = fmt;
     status_fieldnm[fieldidx] = nm;
@@ -1228,11 +1127,7 @@ boolean enable;
 
 /* call once for each field, then call with BL_FLUSH to output the result */
 void
-genl_status_update(idx, ptr, chg, percent, color, colormasks)
-int idx;
-genericptr_t ptr;
-int chg UNUSED, percent UNUSED, color UNUSED;
-uint64_t *colormasks UNUSED;
+genl_status_update(int idx, genericptr_t ptr, int chg UNUSED, int percent UNUSED, int color UNUSED, uint64_t *colormasks UNUSED)
 {
     char newbot1[MAXCO], newbot2[MAXCO];
     int64_t cond, *condptr = (int64_t *) ptr;
@@ -1449,14 +1344,13 @@ uint64_t *colormasks UNUSED;
 }
 
 #if defined (DUMPLOG) || defined (DUMPHTML)
-STATIC_VAR struct window_procs dumplog_windowprocs_backup;
-STATIC_VAR int menu_headings_backup;
-STATIC_VAR time_t dumplog_now;
-STATIC_VAR boolean dumplog_is_snapshot;
+static struct window_procs dumplog_windowprocs_backup;
+static int menu_headings_backup;
+static time_t dumplog_now;
+static boolean dumplog_is_snapshot;
 
 char*
-print_snapshot_json_filename_to_buffer(buf)
-char* buf;
+print_snapshot_json_filename_to_buffer(char *buf)
 {
     char* fname;
 
@@ -1472,8 +1366,7 @@ char* buf;
 
 #ifdef DUMPLOG
 char*
-print_dumplog_filename_to_buffer(buf)
-char* buf;
+print_dumplog_filename_to_buffer(char *buf)
 {
     char* fname;
 
@@ -1491,8 +1384,7 @@ char* buf;
 
 #ifdef DUMPHTML
 char*
-print_dumphtml_filename_to_buffer(buf)
-char* buf;
+print_dumphtml_filename_to_buffer(char *buf)
 {
     char* fname;
 
@@ -1509,9 +1401,7 @@ char* buf;
 #endif
 
 char *
-dump_fmtstr(fmt, buf)
-const char *fmt;
-char *buf;
+dump_fmtstr(const char *fmt, char *buf)
 {
     const char *fp = fmt;
     char *bp = buf;
@@ -1615,9 +1505,7 @@ static int hpbar_percent, hpbar_color;
  */
 
 static int
-condcolor(bm, bmarray)
-int64_t bm;
-uint64_t* bmarray;
+condcolor(int64_t bm, uint64_t *bmarray)
 {
 #if defined(STATUS_HILITES) && defined(TEXTCOLOR)
     int i;
@@ -1631,10 +1519,8 @@ uint64_t* bmarray;
     return NO_COLOR;
 }
 
-STATIC_OVL int
-condattr(bm, bmarray)
-int64_t bm;
-uint64_t* bmarray;
+static int
+condattr(int64_t bm, uint64_t *bmarray)
 {
     int attr = 0;
 #ifdef STATUS_HILITES
@@ -1671,8 +1557,8 @@ uint64_t* bmarray;
 
 
 
-STATIC_OVL void
-dump_render_status(VOID_ARGS)
+static void
+dump_render_status(void)
 {
     int64_t mask, bits;
     int i, idx, c, row, num_rows, coloridx = 0, attrmask = 0;
@@ -1810,11 +1696,8 @@ dump_render_status(VOID_ARGS)
 }
 
 
-STATIC_OVL void
-dump_status_update(fldidx, ptr, chg, percent, color, colormasks)
-int fldidx, chg UNUSED, percent, color;
-genericptr_t ptr;
-uint64_t* colormasks;
+static void
+dump_status_update(int fldidx, genericptr_t ptr, int chg UNUSED, int percent, int color, uint64_t *colormasks)
 {
     int attrmask;
     int64_t* condptr = (int64_t*)ptr;
@@ -1919,15 +1802,17 @@ uint64_t* colormasks;
 
 
 /*ARGSUSED*/
-STATIC_OVL void
-dump_putstr_ex(win, str, attr, color, app)
+static void
+dump_putstr_ex(
 #ifdef DUMPHTML
-winid win;
+    winid win,
 #else
-winid win UNUSED;
+    winid win UNUSED,
 #endif
-int attr UNUSED, app UNUSED, color UNUSED;
-const char *str;
+    const char *str,
+    int attr UNUSED,
+    int color UNUSED,
+    int app UNUSED)
 {
     char buf[UTF8BUFSZ * 2] = "";
     if(str)
@@ -1948,11 +1833,8 @@ const char *str;
 }
 
 /*ARGSUSED*/
-STATIC_OVL void
-dump_putstr_ex2(win, str, attrs, colors, attr, color, app)
-winid win;
-int attr, color, app;
-const char* str, *attrs, *colors;
+static void
+dump_putstr_ex2(winid win, const char *str, const char *attrs, const char *colors, int attr, int color, int app)
 {
     char buf[UTF8BUFSZ * 2] = "";
     if (str)
@@ -1974,10 +1856,7 @@ const char* str, *attrs, *colors;
 
 /*ARGSUSED*/
 void
-dump_putstr_no_utf8(win, attr, str)
-winid win UNUSED;
-int attr UNUSED;
-const char* str;
+dump_putstr_no_utf8(winid win UNUSED, int attr UNUSED, const char *str)
 {
 #ifdef DUMPLOG
     if (dumplog_file)
@@ -1985,79 +1864,50 @@ const char* str;
 #endif
 }
 
-STATIC_OVL winid
-dump_create_nhwindow_ex(dummy, style, glyph, info)
-int dummy;
-int style UNUSED;
-int glyph UNUSED;
-struct extended_create_window_info info UNUSED;
+static winid
+dump_create_nhwindow_ex(int dummy, int style UNUSED, int glyph UNUSED, struct extended_create_window_info info UNUSED)
 {
     return dummy;
 }
 
 /*ARGUSED*/
-STATIC_OVL void
-dump_clear_nhwindow(win)
-winid win UNUSED;
+static void
+dump_clear_nhwindow(winid win UNUSED)
 {
     return;
 }
 
 /*ARGSUSED*/
-STATIC_OVL void
-dump_display_nhwindow(win, p)
-winid win UNUSED;
-boolean p UNUSED;
+static void
+dump_display_nhwindow(winid win UNUSED, boolean p UNUSED)
 {
     return;
 }
 
 /*ARGUSED*/
-STATIC_OVL void
-dump_destroy_nhwindow(win)
-winid win UNUSED;
+static void
+dump_destroy_nhwindow(winid win UNUSED)
 {
     return;
 }
 
 /*ARGUSED*/
-STATIC_OVL void
-dump_start_menu_ex(win, style)
-winid win UNUSED;
-int style UNUSED;
+static void
+dump_start_menu_ex(winid win UNUSED, int style UNUSED)
 {
     return;
 }
 
 /*ARGSUSED*/
-STATIC_OVL void
-dump_add_menu(win, glyph, identifier, ch, gch, attr, color, str, preselected)
-winid win;
-int glyph;
-const anything *identifier;
-char ch;
-char gch;
-int attr;
-int color;
-const char *str;
-boolean preselected;
+static void
+dump_add_menu(winid win, int glyph, const anything *identifier, char ch, char gch, int attr, int color, const char *str, boolean preselected)
 {
     dump_add_extended_menu(win, glyph, identifier, ch, gch, attr, color, str, preselected, zeroextendedmenuinfo);
 }
 
 /*ARGSUSED*/
-STATIC_OVL void
-dump_add_extended_menu(win, glyph, identifier, ch, gch, attr, color, str, preselected, info)
-winid win UNUSED;
-int glyph UNUSED;
-const anything* identifier UNUSED;
-char ch UNUSED;
-char gch UNUSED;
-int attr UNUSED;
-int color UNUSED;
-const char* str;
-boolean preselected UNUSED;
-struct extended_menu_info info UNUSED;
+static void
+dump_add_extended_menu(winid win UNUSED, int glyph UNUSED, const anything *identifier UNUSED, char ch UNUSED, char gch UNUSED, int attr UNUSED, int color UNUSED, const char *str, boolean preselected UNUSED, struct extended_menu_info info UNUSED)
 {
     if (!str || ((!*str || !strcmp(str, " ")) && (attr & ATR_HALF_SIZE)))
         return;
@@ -2110,10 +1960,8 @@ struct extended_menu_info info UNUSED;
 }
 
 /*ARGSUSED*/
-STATIC_OVL void
-dump_end_menu_ex(win, str, str2)
-winid win UNUSED;
-const char *str UNUSED, *str2 UNUSED;
+static void
+dump_end_menu_ex(winid win UNUSED, const char *str UNUSED, const char *str2 UNUSED)
 {
 #ifdef DUMPLOG
     if (dumplog_file) 
@@ -2150,19 +1998,15 @@ const char *str UNUSED, *str2 UNUSED;
 //#endif
 }
 
-STATIC_OVL int
-dump_select_menu(win, how, item)
-winid win UNUSED;
-int how UNUSED;
-menu_item **item;
+static int
+dump_select_menu(winid win UNUSED, int how UNUSED, menu_item **item)
 {
     *item = (menu_item *) 0;
     return 0;
 }
 
 void
-dump_redirect(onoff_flag)
-boolean onoff_flag;
+dump_redirect(boolean onoff_flag)
 {
 #if defined (DUMPLOG) && defined (DUMPHTML)
     if (dumplog_file || dumphtml_file)
@@ -2212,7 +2056,7 @@ boolean onoff_flag;
 }
 
 
-STATIC_VAR int prev_app = 0;
+static int prev_app = 0;
 
 #ifdef DUMPHTML
 /****************************/
@@ -2273,17 +2117,16 @@ STATIC_VAR int prev_app = 0;
    for preformatted text, we don't mess with any existing bullet list, but try to
    keep consecutive preformatted strings in a single block.  */
 
-STATIC_VAR uchar in_list = FALSE;
+static uchar in_list = FALSE;
 //STATIC_VAR boolean in_preform = FALSE;
 
-STATIC_OVL
+/*
+ * Parameters:
+ *   before, usebr: Tags before/after string
+ */
+static
 void
-html_write_tags(fp, win, attr, color, app, before, info, usebr)
-FILE* fp;
-winid win;
-int attr, color UNUSED, app;
-boolean before, usebr; /* Tags before/after string */
-struct extended_menu_info info; 
+html_write_tags(FILE *fp, winid win, int attr, int color UNUSED, int app, boolean before, struct extended_menu_info info, boolean usebr)
 {
     if (!fp) return;
 
@@ -2378,12 +2221,13 @@ struct extended_menu_info info;
 
 extern const nhsym cp437toUnicode[256]; /* From hacklib.c */
 
+/*
+ * Parameters:
+ *   c: assumed to be either CP437 or Unicode
+ */
 /* Write HTML-escaped char to a file */
-STATIC_OVL void
-html_dump_char(fp, c, replacespace)
-FILE* fp;
-nhsym c; /* assumed to be either CP437 or Unicode */
-boolean replacespace;
+static void
+html_dump_char(FILE *fp, nhsym c, boolean replacespace)
 {
     if (!fp) return;
     switch (c) {
@@ -2438,8 +2282,8 @@ boolean replacespace;
 #define DUMPHTML_DEFAULT_URL_FONT_BOLD_ITALIC "https://fonts.cdnfonts.com/s/108/DejaVuSansMono-BoldOblique.woff"
 #endif
 
-STATIC_OVL void
-dump_css(VOID_ARGS)
+static void
+dump_css(void)
 {
     int c = 0;
     FILE* css = 0;
@@ -2744,11 +2588,8 @@ dump_css(VOID_ARGS)
     }
 }
 
-STATIC_OVL void
-dump_outrip(win, how, when)
-winid win UNUSED;
-int how;
-time_t when;
+static void
+dump_outrip(winid win UNUSED, int how, time_t when)
 {
     if (dumphtml_file) 
     {
@@ -2774,11 +2615,8 @@ time_t when;
 }
 
 /* Write HTML-escaped string to a file */
-STATIC_OVL void
-html_dump_str(fp, str, attrs, colors, attr, color)
-FILE* fp;
-const char* str, *attrs, *colors;
-int attr, color;
+static void
+html_dump_str(FILE *fp, const char *str, const char *attrs, const char *colors, int attr, int color)
 {
     if (!fp || !str) return;
 
@@ -2887,12 +2725,8 @@ int attr, color;
     }
 }
 
-STATIC_OVL void
-html_dump_line(fp, win, attrs, colors, attr, color, app, str)
-FILE* fp;
-winid win;
-int attr, color, app;
-const char* str, *attrs, *colors;
+static void
+html_dump_line(FILE *fp, winid win, const char *attrs, const char *colors, int attr, int color, int app, const char *str)
 {
     if ((strlen(str) == 0 || !strcmp(str, " ")) && !app && !prev_app) 
     {
@@ -2916,8 +2750,8 @@ const char* str, *attrs, *colors;
 
 static int htmlsym[SYM_MAX] = DUMMY;
 
-STATIC_OVL void
-html_init_sym(VOID_ARGS)
+static void
+html_init_sym(void)
 {
     /* see https://html-css-js.com/html/character-codes/drawing/ */
 
@@ -2947,9 +2781,8 @@ html_init_sym(VOID_ARGS)
 
 /* convert 'special' flags returned from mapglyph to
   highlight attrs (currently just inverse) */
-STATIC_OVL unsigned
-mg_hl_attr(special)
-uint64_t special;
+static unsigned
+mg_hl_attr(uint64_t special)
 {
     unsigned hl = 0;
     if ((special & MG_PET) && iflags.hilite_pet)
@@ -2964,10 +2797,7 @@ uint64_t special;
 }
 
 void
-html_dump_glyph(x, y, sym, ch, color, special)
-int x, y, sym, color;
-nhsym ch;
-uint64_t special;
+html_dump_glyph(int x, int y, int sym, nhsym ch, int color, uint64_t special)
 {
     if (!dumphtml_file)
         return;
@@ -3000,10 +2830,8 @@ uint64_t special;
 }
 
 /* Status and map highlighting */
-STATIC_OVL void
-dump_set_color_attr(coloridx, attrmask, onoff, usediv)
-int coloridx, attrmask;
-boolean onoff, usediv;
+static void
+dump_set_color_attr(int coloridx, int attrmask, boolean onoff, boolean usediv)
 {
     if (!dumphtml_file) return;
     if (onoff) {
@@ -3037,8 +2865,8 @@ boolean onoff, usediv;
 
 /** HTML Headers and footers **/
 
-STATIC_OVL void
-dump_headers(VOID_ARGS)
+static void
+dump_headers(void)
 {
 #ifdef DUMPHTML
     char vers[BUFSZ]; /* buffer for short version string */
@@ -3072,8 +2900,8 @@ dump_headers(VOID_ARGS)
 #endif
 }
 
-STATIC_OVL void
-dump_footers(VOID_ARGS)
+static void
+dump_footers(void)
 {
 #ifdef DUMPHTML
     if (dumphtml_file) {
@@ -3086,7 +2914,7 @@ dump_footers(VOID_ARGS)
 /** HTML Map and status bar (collectively, the 'screendump') **/
 
 void
-dump_start_screendump(VOID_ARGS)
+dump_start_screendump(void)
 {
 #ifdef DUMPHTML
     if (!dumphtml_file) return;
@@ -3098,7 +2926,7 @@ dump_start_screendump(VOID_ARGS)
 }
 
 void
-dump_end_screendump(VOID_ARGS)
+dump_end_screendump(void)
 {
 #ifdef DUMPHTML
     if (dumphtml_file)
@@ -3113,9 +2941,7 @@ dump_end_screendump(VOID_ARGS)
 
 
 void
-dump_open_log(now, is_snapshot)
-time_t now;
-boolean is_snapshot;
+dump_open_log(time_t now, boolean is_snapshot)
 {
 #if defined (DUMPLOG) || defined (DUMPHTML)
     char buf[BUFSZ];
@@ -3147,7 +2973,7 @@ boolean is_snapshot;
 }
 
 void
-dump_close_log(VOID_ARGS)
+dump_close_log(void)
 {
 #if defined(DUMPLOG) || defined (DUMPHTML)
     dump_footers();
@@ -3167,11 +2993,7 @@ dump_close_log(VOID_ARGS)
 }
 
 void
-dump_forward_putstr(win, attr, str, no_forward, app)
-winid win;
-int attr;
-const char* str;
-int no_forward, app;
+dump_forward_putstr(winid win, int attr, const char *str, int no_forward, int app)
 {
 #if defined(DUMPLOG) || defined (DUMPHTML)
     dump_putstr_ex(win == NHW_DUMPTXT || win == NHW_DUMPHTML ? win : 0, str, attr, NO_COLOR, app);
@@ -3181,10 +3003,7 @@ int no_forward, app;
 }
 
 void
-write_snapshot_json(now, dumplog_filepath, dumphtml_filepath)
-time_t now;
-const char* dumplog_filepath;
-const char* dumphtml_filepath;
+write_snapshot_json(time_t now, const char *dumplog_filepath, const char *dumphtml_filepath)
 {
 #if (defined (DUMPLOG) || defined (DUMPHTML)) && defined(WRITE_SNAPSHOT_JSON)
     char buf[BUFSZ];
@@ -3294,26 +3113,20 @@ const char* dumphtml_filepath;
 }
 
 
-STATIC_OVL void
-itemdesc_putstr_ex(win, str, attr, color, app)
-winid win UNUSED;
-int attr UNUSED, app UNUSED, color UNUSED;
-const char* str UNUSED;
+static void
+itemdesc_putstr_ex(winid win UNUSED, const char *str UNUSED, int attr UNUSED, int color UNUSED, int app UNUSED)
 {
     return;
 }
 
-STATIC_OVL void
-itemdesc_putstr_ex2(win, str, attrs, colors, attr, color, app)
-winid win UNUSED;
-int attr UNUSED, color UNUSED, app UNUSED;
-const char* str UNUSED, * attrs UNUSED, * colors UNUSED;
+static void
+itemdesc_putstr_ex2(winid win UNUSED, const char *str UNUSED, const char *attrs UNUSED, const char *colors UNUSED, int attr UNUSED, int color UNUSED, int app UNUSED)
 {
     return;
 }
 
 void
-itemdesc_redirect(VOID_ARGS)
+itemdesc_redirect(void)
 {
     windowprocs.win_create_nhwindow_ex = dump_create_nhwindow_ex;
     windowprocs.win_clear_nhwindow = dump_clear_nhwindow;
@@ -3324,7 +3137,7 @@ itemdesc_redirect(VOID_ARGS)
 }
 
 void
-reset_windows(VOID_ARGS)
+reset_windows(void)
 {
     prev_app = 0;
 #ifdef DUMPHTML

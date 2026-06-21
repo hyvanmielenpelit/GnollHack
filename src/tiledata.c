@@ -4,8 +4,8 @@
 
 #include "hack.h"
 
-STATIC_DCL void FDECL(set_base_tileset_cmap, (int*, int, int));
-STATIC_DCL void FDECL(set_base_tileset_cmap_variation, (int*, int, int));
+static void set_base_tileset_cmap(int*, int, int);
+static void set_base_tileset_cmap_variation(int*, int, int);
 
 #ifdef USE_TILES
 int glyph2tile[MAX_GLYPH] = { 0 }; /* moved here from tile.c */
@@ -156,8 +156,7 @@ NEARDATA struct command_tile_definition command_tile_definitions[MAX_COMMAND_TIL
 };
 
 boolean
-has_generic_player_action_tile(action)
-enum action_tile_types action;
+has_generic_player_action_tile(enum action_tile_types action)
 {
     if (action > 0)
     {
@@ -167,9 +166,7 @@ enum action_tile_types action;
 }
 
 void
-replace_char(buf, search_ch, repl_ch)
-char* buf;
-char search_ch, repl_ch;
+replace_char(char *buf, char search_ch, char repl_ch)
 {
     if (!buf)
         return;
@@ -184,7 +181,7 @@ char search_ch, repl_ch;
 }
 
 void
-init_tiledata(VOID_ARGS)
+init_tiledata(void)
 {
     /* fill out condition names*/
     int i;
@@ -3617,10 +3614,8 @@ uchar* tilemapflags;
 #endif
 }
 
-STATIC_OVL void
-set_base_tileset_cmap(dest_var_ptr, sym_idx, cmap_idx)
-int* dest_var_ptr;
-int sym_idx, cmap_idx;
+static void
+set_base_tileset_cmap(int *dest_var_ptr, int sym_idx, int cmap_idx)
 {
     if (!dest_var_ptr)
         return;
@@ -3638,10 +3633,8 @@ int sym_idx, cmap_idx;
     }
 }
 
-STATIC_OVL void
-set_base_tileset_cmap_variation(dest_var_ptr, sym_idx, cmap_idx)
-int* dest_var_ptr;
-int sym_idx, cmap_idx;
+static void
+set_base_tileset_cmap_variation(int *dest_var_ptr, int sym_idx, int cmap_idx)
 {
     if (!dest_var_ptr)
         return;
@@ -3660,9 +3653,7 @@ int sym_idx, cmap_idx;
 }
 
 boolean
-is_dir_from_base_dir(dir_index, base_dir_index, hflip_ptr, vflip_ptr)
-int dir_index, base_dir_index;
-boolean *hflip_ptr, *vflip_ptr;
+is_dir_from_base_dir(int dir_index, int base_dir_index, boolean *hflip_ptr, boolean *vflip_ptr)
 {
     if (!hflip_ptr || !vflip_ptr)
         return FALSE;
@@ -3733,9 +3724,7 @@ boolean *hflip_ptr, *vflip_ptr;
 }
 
 boolean
-is_zap_char_from_base_zap_char(zap_char_index, base_zap_char_index, hflip_ptr, vflip_ptr)
-int zap_char_index, base_zap_char_index;
-boolean* hflip_ptr, * vflip_ptr;
+is_zap_char_from_base_zap_char(int zap_char_index, int base_zap_char_index, boolean *hflip_ptr, boolean *vflip_ptr)
 {
     if (!hflip_ptr || !vflip_ptr)
         return FALSE;
@@ -4354,8 +4343,7 @@ boolean* hflip_ptr, * vflip_ptr;
 }
 
 int
-get_enlargement_animation(enlargement_idx)
-int enlargement_idx;
+get_enlargement_animation(int enlargement_idx)
 {
     for (int i = 0; i < MAX_ANIMATIONS; i++)
     {

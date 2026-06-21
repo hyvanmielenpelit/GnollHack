@@ -5786,8 +5786,7 @@ short glyph2tile[MAX_GLYPH] = {
 short std_tiles0[] = { 3145, 3146, 3147, 3148, 3149, 3150, 3151, 3152, 3153, 3154, 3155 };
 
 void
-substitute_tiles(plev)
-d_level *plev;
+substitute_tiles(d_level *plev)
 {
     int i;
 
