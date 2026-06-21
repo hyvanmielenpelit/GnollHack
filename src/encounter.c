@@ -13,7 +13,7 @@
 #define NAMELIST_ARCH_LICH 3
 #define NAMELIST_QUANTUM_MECHANIC 4
 
-STATIC_VAR const char namelists[][MAX_NAMELIST_NAMES][BUFSZ * 2] =
+static const char namelists[][MAX_NAMELIST_NAMES][BUFSZ * 2] =
 {
     {"", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
     {"Urok", "Golluk", "Grimsh", "Urum", "", "", "", "", "", "", "", "", "", "", "", "" },
@@ -1019,22 +1019,22 @@ struct encounterdef encounter_definitions[] =
 };
 
 
-STATIC_VAR struct encounter zeroencounter = { 0 };
+static struct encounter zeroencounter = { 0 };
 #define MAX_ENCOUNTERS 2048
-STATIC_VAR struct encounter encounter_list[MAX_ENCOUNTERS];
+static struct encounter encounter_list[MAX_ENCOUNTERS];
 
 
 
 
 void encounter_init();
 
-STATIC_DCL void FDECL(write_encounter_monsterdata, (int, int, int*, int*, double));
-STATIC_DCL void FDECL(calculate_encounter_difficulty, (int, int));
+static void write_encounter_monsterdata(int, int, int*, int*, double);
+static void calculate_encounter_difficulty(int, int);
 
 
 
 void
-encounter_init(VOID_ARGS)
+encounter_init(void)
 {
     for (int j = 0; j < MAX_ENCOUNTERS; j++)
     {
@@ -1071,14 +1071,9 @@ encounter_init(VOID_ARGS)
     return;
 }
 
-STATIC_OVL
+static
 void 
-write_encounter_monsterdata(encounter_definition_index, monster_type_index, active_encounter_monster_index_ptr, active_encounter_index_ptr, encprob)
-int encounter_definition_index;
-int monster_type_index;
-int* active_encounter_monster_index_ptr;
-int* active_encounter_index_ptr;
-double encprob;
+write_encounter_monsterdata(int encounter_definition_index, int monster_type_index, int *active_encounter_monster_index_ptr, int *active_encounter_index_ptr, double encprob)
 {
     if (monster_type_index >= MAX_ENCOUNTER_MONSTER_TYPES)
         return;
@@ -1181,11 +1176,9 @@ double encprob;
 
 
 
-STATIC_OVL
+static
 void
-calculate_encounter_difficulty(encounter_index, max_attk_monsters)
-int encounter_index;
-int max_attk_monsters;
+calculate_encounter_difficulty(int encounter_index, int max_attk_monsters)
 {
 
     if (max_attk_monsters < 0 || max_attk_monsters >= MAX_ENCOUNTER_ATTACKING_MONSTERS + 1 || encounter_index < 0 || encounter_index >= MAX_ENCOUNTERS)
@@ -1248,8 +1241,7 @@ int max_attk_monsters;
 
 
 void
-randomize_encounter(x, y)
-int x, y;
+randomize_encounter(int x, int y)
 {
     double totalrollprob = 0;
     int selected_encounter = 0;
@@ -1337,8 +1329,7 @@ int x, y;
 
 
 void
-create_encounter(selected_encounter, x, y, max_attk_monsters)
-int selected_encounter, x, y, max_attk_monsters;
+create_encounter(int selected_encounter, int x, int y, int max_attk_monsters)
 {
     /* Check minimum level for encounter monsters */
     int minlevel, maxlevel;
@@ -1574,7 +1565,7 @@ int selected_encounter, x, y, max_attk_monsters;
 #if !defined(GNH_MOBILE) && defined(DEBUG)
 /* Save encounter list */
 int
-wiz_save_encounters(VOID_ARGS) /* Save a csv file for encounters */
+wiz_save_encounters(void) /* Save a csv file for encounters */
 {
     if (wizard)
     {

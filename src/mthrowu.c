@@ -8,10 +8,10 @@
 #include "hack.h"
 #include <math.h>
 
-STATIC_DCL int FDECL(monmulti, (struct monst *, struct obj *, struct obj *));
-STATIC_DCL void FDECL(monshoot, (struct monst *, struct obj *, struct obj *));
-STATIC_DCL int FDECL(drop_throw, (struct obj *, BOOLEAN_P, int, int));
-STATIC_DCL boolean FDECL(m_lined_up, (struct monst *, struct monst *, BOOLEAN_P, int, BOOLEAN_P, int));
+static int monmulti(struct monst *, struct obj *, struct obj *);
+static void monshoot(struct monst *, struct obj *, struct obj *);
+static int drop_throw(struct obj *, boolean, int, int);
+static boolean m_lined_up(struct monst *, struct monst *, boolean, int, boolean, int);
 
 extern const char* const flash_types[]; /* from zap.c */
 
@@ -23,29 +23,29 @@ extern const char* const flash_types[]; /* from zap.c */
 /*
  * Keep consistent with breath weapons in zap.c, and AD_* in monattk.h.
  */
-STATIC_OVL NEARDATA const char *breathwep[] = {
+static NEARDATA const char *breathwep[] = {
     "fragments", "fire", "frost", "sleep gas", "a disintegration blast",
     "lightning", "poison gas", "acid", "a death ray",
     "a cloud of petrifying vapors"
 };
 
-STATIC_OVL NEARDATA const char* eyestalk[] = {
+static NEARDATA const char* eyestalk[] = {
     "a ray of magical energy", "a fire ray", "a frost ray", "a sleep ray", "a disintegration ray",
     "a ray of lightning", "a ray of negative energy", "an acid ray", "a death ray",
     "a petrification ray"
 };
 
 extern boolean notonhead; /* for long worms */
-STATIC_VAR int mesg_given; /* for m_throw()/thitu() 'miss' message */
+static int mesg_given; /* for m_throw()/thitu() 'miss' message */
 
+/*
+ * Parameters:
+ *   name: if null, then format `*objp'
+ *   origmonst: monster who threw the item, if any
+ */
 /* hero is hit by something other than a monster */
 int
-thitu(tlev, dam, objp, name, origmonst, verb_in_past_tense)
-int tlev, dam;
-struct obj **objp;
-const char *name; /* if null, then format `*objp' */
-struct monst* origmonst; /* monster who threw the item, if any */
-const char* verb_in_past_tense;
+thitu(int tlev, int dam, struct obj **objp, const char *name, struct monst *origmonst, const char *verb_in_past_tense)
 {
     struct obj *obj = objp ? *objp : 0;
     const char *onm, *knm;
@@ -186,11 +186,8 @@ const char* verb_in_past_tense;
  * dothrow.c (for consistency). --KAA
  * Returns 0 if object still exists (not destroyed).
  */
-STATIC_OVL int
-drop_throw(obj, ohit, x, y)
-struct obj *obj;
-boolean ohit;
-int x, y;
+static int
+drop_throw(struct obj *obj, boolean ohit, int x, int y)
 {
     if (!obj)
         return 1;
@@ -244,16 +241,14 @@ int x, y;
 }
 
 /* The monster that's being shot at when one monster shoots at another */
-STATIC_OVL struct monst *target = 0;
+static struct monst *target = 0;
 /* The monster that's doing the shooting/throwing */
-STATIC_OVL struct monst *archer = 0;
+static struct monst *archer = 0;
 
 /* calculate multishot volley count for mtmp throwing otmp (if not ammo) or
    shooting otmp with mwep (if otmp is ammo and mwep appropriate launcher) */
-STATIC_OVL int
-monmulti(mtmp, otmp, mwep)
-struct monst *mtmp;
-struct obj *otmp, *mwep;
+static int
+monmulti(struct monst *mtmp, struct obj *otmp, struct obj *mwep)
 {
     //int skill = (int) objects[otmp->otyp].oc_skill;
     int multishot = 1;
@@ -278,10 +273,8 @@ struct obj *otmp, *mwep;
 }
 
 /* mtmp throws otmp, or shoots otmp with mwep, at hero or at monster mtarg */
-STATIC_OVL void
-monshoot(mtmp, otmp, mwep)
-struct monst *mtmp;
-struct obj *otmp, *mwep;
+static void
+monshoot(struct monst *mtmp, struct obj *otmp, struct obj *mwep)
 {
     if (!mtmp || !otmp)
         return;
@@ -360,16 +353,17 @@ struct obj *otmp, *mwep;
 
 }
 
+/*
+ * Parameters:
+ *   mtmp: accidental target, located at <bhitpos.x,.y>
+ *   otmp: missile; might be destroyed by drop_throw
+ *   range: how much farther will object travel if it misses; use -1 to signify to keep going even after hit, unless it's gone (used for rolling_boulder_traps)
+ *   verbose: give message(s) even when you can't see what happened
+ */
 /* an object launched by someone/thing other than player attacks a monster;
    return 1 if the object has stopped moving (hit or its range used up) */
 int
-ohitmon(mtmp, otmp, range, verbose)
-struct monst *mtmp; /* accidental target, located at <bhitpos.x,.y> */
-struct obj *otmp;   /* missile; might be destroyed by drop_throw */
-int range;          /* how much farther will object travel if it misses;
-                       use -1 to signify to keep going even after hit,
-                       unless it's gone (used for rolling_boulder_traps) */
-boolean verbose;    /* give message(s) even when you can't see what happened */
+ohitmon(struct monst *mtmp, struct obj *otmp, int range, boolean verbose)
 {
     if (!mtmp || !otmp)
         return 1;
@@ -782,11 +776,14 @@ boolean verbose;    /* give message(s) even when you can't see what happened */
      /* Thrown objects "sink" */                                        \
      || (!(pre) && IS_SINK(levl[bhitpos.x][bhitpos.y].typ)))
 
+/*
+ * Parameters:
+ *   mon: launching monster
+ *   x, y, dx, dy, range: launch point, direction, and range
+ *   obj: missile (or stack providing it)
+ */
 void
-m_throw(mon, x, y, dx, dy, range, obj)
-struct monst *mon;       /* launching monster */
-int x, y, dx, dy, range; /* launch point, direction, and range */
-struct obj *obj;         /* missile (or stack providing it) */
+m_throw(struct monst *mon, int x, int y, int dx, int dy, int range, struct obj *obj)
 {
     struct monst *mtmp;
     struct obj *singleobj;
@@ -1132,8 +1129,7 @@ struct obj *obj;         /* missile (or stack providing it) */
 
 /* Monster throws item at another monster */
 int
-thrwmm(mtmp, mtarg)
-struct monst *mtmp, *mtarg;
+thrwmm(struct monst *mtmp, struct monst *mtarg)
 {
     struct obj *otmp, *mwep;
     xchar x, y;
@@ -1184,9 +1180,7 @@ struct monst *mtmp, *mtarg;
 
 /* monster spits substance at monster */
 int
-spitmm(mtmp, mattk, mtarg)
-struct monst *mtmp, *mtarg;
-struct attack *mattk;
+spitmm(struct monst *mtmp, struct attack *mattk, struct monst *mtarg)
 {
     if (!mtmp || !mtarg || !mattk)
         return 0;
@@ -1246,9 +1240,7 @@ struct attack *mattk;
 
 /* monster breathes at monster (ranged) */
 int
-breamm(mtmp, mattk, mtarg)
-struct monst *mtmp, *mtarg;
-struct attack  *mattk;
+breamm(struct monst *mtmp, struct attack *mattk, struct monst *mtarg)
 {
     if (!mtmp || !mtarg || !mattk)
         return 0;
@@ -1309,9 +1301,7 @@ struct attack  *mattk;
 
 /* gazer gazes at monster (ranged) */
 int
-eyesmm(mtmp, mattk, mtarg)
-struct monst* mtmp, * mtarg;
-struct attack* mattk;
+eyesmm(struct monst *mtmp, struct attack *mattk, struct monst *mtarg)
 {
     if (!mtmp || !mtarg || !mattk)
         return 0;
@@ -1344,23 +1334,19 @@ struct attack* mattk;
     return 1;
 }
 
-const char* get_eyestalk_ray_name(typ)
-int typ;
+const char* get_eyestalk_ray_name(int typ)
 {
     return eyestalk[typ - 1];
 }
 
-const char* get_breath_weapon_name(typ)
-int typ;
+const char* get_breath_weapon_name(int typ)
 {
     return breathwep[typ - 1];
 }
 
 /* monster casts a ray spell at monster (ranged) */
 int
-buzzmm(mtmp, mattk, mtarg)
-struct monst* mtmp, * mtarg;
-struct attack* mattk;
+buzzmm(struct monst *mtmp, struct attack *mattk, struct monst *mtarg)
 {
     if (!mtmp || !mattk)
         return 0;
@@ -1433,11 +1419,7 @@ struct attack* mattk;
 }
 
 void
-set_m_ray_spell_stats(mtmp, mattk, mtarg, typ, damn, damd, damp)
-struct monst* mtmp;
-struct attack* mattk;
-struct monst* mtarg;
-int *typ, *damn, *damd, *damp;
+set_m_ray_spell_stats(struct monst *mtmp, struct attack *mattk, struct monst *mtarg, int *typ, int *damn, int *damd, int *damp)
 {
     /* Currently only arcane spell-casters */
     if (mattk->adtyp != AD_SPEL)
@@ -1599,9 +1581,7 @@ int *typ, *damn, *damd, *damp;
 
 /* remove an entire item from a monster's inventory; destroy that item */
 void
-m_useupall(mon, obj)
-struct monst *mon;
-struct obj *obj;
+m_useupall(struct monst *mon, struct obj *obj)
 {
     debugprint("m_useupall1: %d", obj->otyp);
     obj_extract_self(obj);
@@ -1620,9 +1600,7 @@ struct obj *obj;
 
 /* remove one instance of an item from a monster's inventory */
 void
-m_useup(mon, obj)
-struct monst *mon;
-struct obj *obj;
+m_useup(struct monst *mon, struct obj *obj)
 {
     if (obj->quan > 1L) {
         obj->quan--;
@@ -1634,8 +1612,7 @@ struct obj *obj;
 
 /* monster attempts ranged weapon attack against player */
 void
-thrwmu(mtmp)
-struct monst *mtmp;
+thrwmu(struct monst *mtmp)
 {
     struct obj *otmp, *mwep;
     xchar x, y;
@@ -1730,9 +1707,7 @@ struct monst *mtmp;
 
 /* monster spits substance at you */
 int
-spitmu(mtmp, mattk)
-struct monst *mtmp;
-struct attack *mattk;
+spitmu(struct monst *mtmp, struct attack *mattk)
 {
     if (!mtmp || !mattk)
         return 0;
@@ -1801,9 +1776,7 @@ struct attack *mattk;
 
 /* gazer fires an eyestalk at you (ranged) */
 int
-eyesmu(mtmp, mattk)
-struct monst *mtmp;
-struct attack *mattk;
+eyesmu(struct monst *mtmp, struct attack *mattk)
 {
     //Sanity check
     if (!mtmp || !mattk)
@@ -1852,9 +1825,7 @@ struct attack *mattk;
 
 /* monster breathes at you (ranged) */
 int
-breamu(mtmp, mattk)
-struct monst* mtmp;
-struct attack* mattk;
+breamu(struct monst *mtmp, struct attack *mattk)
 {
     //Sanity check
     if (!mtmp || !mattk)
@@ -1920,16 +1891,12 @@ struct attack* mattk;
 }
 
 
+/*
+ * Parameters:
+ *   boulderhandling: 0=block, 1=ignore, 2=conditionally block
+ */
 boolean
-linedup(ax, ay, bx, by, boulderhandling, block_if_hostile_monster, block_if_peaceful_monster, block_if_tame_monster, dmgtype, attack_can_reflect, range)
-xchar ax, ay, bx, by;
-int boulderhandling; /* 0=block, 1=ignore, 2=conditionally block */
-boolean block_if_hostile_monster;
-boolean block_if_peaceful_monster;
-boolean block_if_tame_monster;
-int dmgtype;
-boolean attack_can_reflect;
-int range;
+linedup(xchar ax, xchar ay, xchar bx, xchar by, int boulderhandling, boolean block_if_hostile_monster, boolean block_if_peaceful_monster, boolean block_if_tame_monster, int dmgtype, boolean attack_can_reflect, int range)
 {
     int dx, dy, boulderspots;
 
@@ -2024,13 +1991,8 @@ int range;
     return FALSE;
 }
 
-STATIC_OVL boolean
-m_lined_up(mtarg, mtmp, can_hit_others, dmgtype, attack_can_reflect, range)
-struct monst *mtarg, *mtmp;
-boolean can_hit_others;
-int dmgtype;
-boolean attack_can_reflect;
-int range;
+static boolean
+m_lined_up(struct monst *mtarg, struct monst *mtmp, boolean can_hit_others, int dmgtype, boolean attack_can_reflect, int range)
 {
 
     boolean block_if_hostile_monster = 0;
@@ -2051,12 +2013,7 @@ int range;
 
 /* is mtmp in position to use ranged attack? */
 boolean
-lined_up(mtmp, can_hit_others, dmgtype, attack_can_reflect, range)
-struct monst *mtmp;
-boolean can_hit_others;
-int dmgtype;
-boolean attack_can_reflect;
-int range;
+lined_up(struct monst *mtmp, boolean can_hit_others, int dmgtype, boolean attack_can_reflect, int range)
 {
     boolean ignore_boulders;
 
@@ -2085,9 +2042,7 @@ int range;
 
 /* check if a monster is carrying a particular item */
 struct obj *
-m_carrying(mtmp, type)
-struct monst *mtmp;
-int type;
+m_carrying(struct monst *mtmp, int type)
 {
     struct obj *otmp;
 
@@ -2098,9 +2053,7 @@ int type;
 }
 
 struct obj *
-m_carrying_with_best_bounded_exceptionality(mtmp, type, lowestexc, highestexc)
-struct monst *mtmp;
-int type, lowestexc, highestexc;
+m_carrying_with_best_bounded_exceptionality(struct monst *mtmp, int type, int lowestexc, int highestexc)
 {
     if (!mtmp->minvent)
         return (struct obj*)0;
@@ -2117,9 +2070,7 @@ int type, lowestexc, highestexc;
 }
 
 struct obj *
-m_carrying_with_best_exceptionality(mtmp, type)
-struct monst *mtmp;
-int type;
+m_carrying_with_best_exceptionality(struct monst *mtmp, int type)
 {
     if (!mtmp->minvent)
         return (struct obj*)0;
@@ -2140,11 +2091,12 @@ int type;
 }
 
 
+/*
+ * Parameters:
+ *   objp: *objp will be set to NULL if object breaks
+ */
 void
-hit_bars(objp, objx, objy, barsx, barsy, your_fault, from_invent)
-struct obj **objp;      /* *objp will be set to NULL if object breaks */
-int objx, objy, barsx, barsy;
-boolean your_fault, from_invent;
+hit_bars(struct obj **objp, int objx, int objy, int barsx, int barsy, boolean your_fault, boolean from_invent)
 {
     struct obj *otmp = *objp;
     int obj_type = otmp->otyp;
@@ -2181,13 +2133,15 @@ boolean your_fault, from_invent;
         pline("Clonk!");
 }
 
+/*
+ * Parameters:
+ *   obj_p: *obj_p will be set to NULL if object breaks
+ *   always_hit: caller can force a hit for items which would fit through
+ *   whodidit: 1==hero, 0=other, -1==just check whether it'll pass thru
+ */
 /* TRUE iff thrown/kicked/rolled object doesn't pass through iron bars */
 boolean
-hits_bars(obj_p, x, y, barsx, barsy, always_hit, whodidit)
-struct obj **obj_p; /* *obj_p will be set to NULL if object breaks */
-int x, y, barsx, barsy;
-int always_hit; /* caller can force a hit for items which would fit through */
-int whodidit;   /* 1==hero, 0=other, -1==just check whether it'll pass thru */
+hits_bars(struct obj **obj_p, int x, int y, int barsx, int barsy, int always_hit, int whodidit)
 {
     struct obj *otmp = *obj_p;
     int obj_type = otmp->otyp;
@@ -2243,7 +2197,7 @@ int whodidit;   /* 1==hero, 0=other, -1==just check whether it'll pass thru */
 }
 
 void
-reset_mthrowu(VOID_ARGS)
+reset_mthrowu(void)
 {
     mesg_given = 0;
     notonhead = FALSE;

@@ -10,42 +10,40 @@
 
 extern boolean notonhead;
 
-STATIC_VAR NEARDATA boolean vis, far_noise;
-STATIC_VAR NEARDATA int64_t noisetime;
-STATIC_VAR NEARDATA struct obj *otmp;
+static NEARDATA boolean vis, far_noise;
+static NEARDATA int64_t noisetime;
+static NEARDATA struct obj *otmp;
 
-STATIC_VAR const char brief_feeling[] =
+static const char brief_feeling[] =
     "have a %s feeling for a moment, then it passes.";
 
-STATIC_DCL char *FDECL(mon_nam_too, (char *, struct monst *, struct monst *));
-STATIC_DCL int FDECL(hitmm, (struct monst *, struct monst *, struct attack *, struct obj*));
-STATIC_DCL int FDECL(gazemm, (struct monst *, struct monst *,
-                              struct attack *));
-STATIC_DCL int FDECL(gulpmm, (struct monst *, struct monst *,
-                              struct attack *));
-STATIC_DCL int FDECL(explmm, (struct monst *, struct monst *,
-                              struct attack *));
-STATIC_DCL int FDECL(mdamagem, (struct monst *, struct monst *, struct attack *, struct obj*));
-STATIC_DCL void FDECL(mswingsm, (struct monst *, struct monst *,
-                                 struct obj *, int));
-STATIC_DCL void FDECL(noises, (struct monst *, struct attack *));
-STATIC_DCL void FDECL(missmm, (struct monst *, struct monst *,
-                               struct attack *));
-STATIC_DCL int FDECL(passivemm, (struct monst *, struct monst *,
-                                 BOOLEAN_P, int));
+static char *mon_nam_too(char *, struct monst *, struct monst *);
+static int hitmm(struct monst *, struct monst *, struct attack *, struct obj*);
+static int gazemm(struct monst *, struct monst *,
+                              struct attack *);
+static int gulpmm(struct monst *, struct monst *,
+                              struct attack *);
+static int explmm(struct monst *, struct monst *,
+                              struct attack *);
+static int mdamagem(struct monst *, struct monst *, struct attack *, struct obj*);
+static void mswingsm(struct monst *, struct monst *,
+                                 struct obj *, int);
+static void noises(struct monst *, struct attack *);
+static void missmm(struct monst *, struct monst *,
+                               struct attack *);
+static int passivemm(struct monst *, struct monst *,
+                                 boolean, int);
 
 /* Needed for the special case of monsters wielding vorpal blades (rare).
  * If we use this a lot it should probably be a parameter to mdamagem()
  * instead of a global variable.
  */
-STATIC_VAR int dieroll;
+static int dieroll;
 
 /* returns mon_nam(mon) relative to other_mon; normal name unless they're
    the same, in which case the reference is to {him|her|it} self */
-STATIC_OVL char *
-mon_nam_too(outbuf, mon, other_mon)
-char *outbuf;
-struct monst *mon, *other_mon;
+static char *
+mon_nam_too(char *outbuf, struct monst *mon, struct monst *other_mon)
 {
     if (mon != other_mon)
         Strcpy(outbuf, mon_nam(mon));
@@ -65,10 +63,8 @@ struct monst *mon, *other_mon;
     return outbuf;
 }
 
-STATIC_OVL void
-noises(magr, mattk)
-struct monst *magr;
-struct attack *mattk;
+static void
+noises(struct monst *magr, struct attack *mattk)
 {
     boolean farq = (distu(magr->mx, magr->my) > 15);
 
@@ -82,11 +78,9 @@ struct attack *mattk;
     }
 }
 
-STATIC_OVL
+static
 void
-missmm(magr, mdef, mattk)
-struct monst *magr, *mdef;
-struct attack *mattk;
+missmm(struct monst *magr, struct monst *mdef, struct attack *mattk)
 {
     const char *fmt;
     char buf[BUFSZ], mdef_name[BUFSZ];
@@ -124,9 +118,7 @@ struct attack *mattk;
  */
  /* have monsters fight each other */
 int
-fightm(mtmp, attack_only_hostiles)
-struct monst *mtmp;
-boolean attack_only_hostiles;
+fightm(struct monst *mtmp, boolean attack_only_hostiles)
 {
     struct monst *mon, *nmon;
     int result, has_u_swallowed;
@@ -216,9 +208,7 @@ boolean attack_only_hostiles;
  *                 returns same results as mattackm().
  */
 int
-mdisplacem(magr, mdef, quietly)
-struct monst *magr, *mdef;
-boolean quietly;
+mdisplacem(struct monst *magr, struct monst *mdef, boolean quietly)
 {
     struct permonst *pa, *pd;
     int tx, ty, fx, fy;
@@ -323,8 +313,7 @@ boolean quietly;
  * In the case of exploding monsters, the monster dies as well.
  */
 int
-mattackm(magr, mdef)
-struct monst *magr, *mdef;
+mattackm(struct monst *magr, struct monst *mdef)
 {
     int i,          /* loop counter */
         tmp,        /* amour class difference */
@@ -856,11 +845,8 @@ struct monst *magr, *mdef;
 }
 
 /* Returns the result of mdamagem(). */
-STATIC_OVL int
-hitmm(magr, mdef, mattk, omonwep)
-struct monst *magr, *mdef;
-struct attack *mattk;
-struct obj* omonwep;
+static int
+hitmm(struct monst *magr, struct monst *mdef, struct attack *mattk, struct obj *omonwep)
 {
     if (vis) 
     {
@@ -935,10 +921,8 @@ struct obj* omonwep;
 }
 
 /* Returns the same values as mdamagem(). */
-STATIC_OVL int
-gazemm(magr, mdef, mattk)
-struct monst *magr, *mdef;
-struct attack *mattk;
+static int
+gazemm(struct monst *magr, struct monst *mdef, struct attack *mattk)
 {
     if (!magr || !mdef || !mattk)
         return 0;
@@ -1014,8 +998,7 @@ struct attack *mattk;
 
 /* return True if magr is allowed to swallow mdef, False otherwise */
 boolean
-engulf_target(magr, mdef)
-struct monst *magr, *mdef;
+engulf_target(struct monst *magr, struct monst *mdef)
 {
     struct rm *lev;
     int dx, dy;
@@ -1049,10 +1032,8 @@ struct monst *magr, *mdef;
 }
 
 /* Returns the same values as mattackm(). */
-STATIC_OVL int
-gulpmm(magr, mdef, mattk)
-struct monst *magr, *mdef;
-struct attack *mattk;
+static int
+gulpmm(struct monst *magr, struct monst *mdef, struct attack *mattk)
 {
     xchar ax, ay, dx, dy;
     int status;
@@ -1151,10 +1132,8 @@ struct attack *mattk;
     return status;
 }
 
-STATIC_OVL int
-explmm(magr, mdef, mattk)
-struct monst *magr, *mdef;
-struct attack *mattk;
+static int
+explmm(struct monst *magr, struct monst *mdef, struct attack *mattk)
 {
     int result;
 
@@ -1259,11 +1238,8 @@ struct attack *mattk;
 /*
  *  See comment at top of mattackm(), for return values.
  */
-STATIC_OVL int
-mdamagem(magr, mdef, mattk, omonwep)
-struct monst *magr, *mdef;
-struct attack *mattk;
-struct obj* omonwep;
+static int
+mdamagem(struct monst *magr, struct monst *mdef, struct attack *mattk, struct obj *omonwep)
 {
     struct obj *obj;
     char buf[BUFSZ];
@@ -2313,10 +2289,7 @@ struct obj* omonwep;
 }
 
 void
-paralyze_monst(mon, amt, verbosely)
-struct monst *mon;
-int amt;
-boolean verbosely;
+paralyze_monst(struct monst *mon, int amt, boolean verbosely)
 {
     if (verbosely)
     {
@@ -2334,10 +2307,7 @@ boolean verbosely;
 /* `mon' is hit by a sleep attack; return 1 if it's affected, 0 otherwise */
 /* lvl needs to specified only if otmp == 0, level -1 == cannot be resisted */
 int
-sleep_monst(mon, origobj, origmonst, amt, saving_throw_adjustment, tellstyle)
-struct monst *mon, *origmonst;
-struct obj* origobj;
-int amt, saving_throw_adjustment, tellstyle;
+sleep_monst(struct monst *mon, struct obj *origobj, struct monst *origmonst, int amt, int saving_throw_adjustment, int tellstyle)
 {
     if (!mon)
         return 0;
@@ -2404,8 +2374,7 @@ int amt, saving_throw_adjustment, tellstyle;
 
 /* sleeping grabber releases, engulfer doesn't; don't use for paralysis! */
 void
-slept_monst(mon)
-struct monst *mon;
+slept_monst(struct monst *mon)
 {
     if (!mon)
         return;
@@ -2420,9 +2389,7 @@ struct monst *mon;
 }
 
 void
-rustm(mdef, obj)
-struct monst *mdef;
-struct obj *obj;
+rustm(struct monst *mdef, struct obj *obj)
 {
     int dmgtyp = -1, chance = 1;
 
@@ -2449,11 +2416,8 @@ struct obj *obj;
         (void) erode_obj(obj, (char *) 0, dmgtyp, EF_GREASE | EF_VERBOSE);
 }
 
-STATIC_OVL void
-mswingsm(magr, mdef, otemp, strikeindex)
-struct monst *magr, *mdef;
-struct obj *otemp;
-int strikeindex;
+static void
+mswingsm(struct monst *magr, struct monst *mdef, struct obj *otemp, int strikeindex)
 {
     if (flags.verbose && !Blind && mon_visible(magr)) 
     {
@@ -2468,11 +2432,8 @@ int strikeindex;
  * Passive responses by defenders.  Does not replicate responses already
  * handled above.  Returns same values as mattackm.
  */
-STATIC_OVL int
-passivemm(magr, mdef, mhit, mdead)
-struct monst *magr, *mdef;
-boolean mhit;
-int mdead;
+static int
+passivemm(struct monst *magr, struct monst *mdef, boolean mhit, int mdead)
 {
     if (!magr || !mdef)
         return 0;
@@ -2712,9 +2673,7 @@ assess_dmg:
 
 /* hero or monster has successfully hit target mon with drain energy attack */
 void
-xdrainenergym(mon, givemsg)
-struct monst *mon;
-boolean givemsg;
+xdrainenergym(struct monst *mon, boolean givemsg)
 {
     if (mon->mspec_used < 20 /* limit draining */
         && (attacktype(mon->data, AT_MAGC)
@@ -2729,8 +2688,7 @@ boolean givemsg;
 /* "aggressive defense"; what type of armor prevents specified attack
    from touching its target? */
 int64_t
-attk_protection(aatyp)
-int aatyp;
+attk_protection(int aatyp)
 {
     int64_t w_mask = 0L;
 
@@ -2778,7 +2736,7 @@ int aatyp;
 }
 
 void
-reset_mhitm(VOID_ARGS)
+reset_mhitm(void)
 {
     vis = far_noise = FALSE;
     noisetime = 0L;

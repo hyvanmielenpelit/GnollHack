@@ -1820,7 +1820,7 @@ E void FDECL(dealloc_mextra, (struct monst *));
 E struct monst *FDECL(makemon, (struct permonst *, int, int, uint64_t));
 E struct monst* FDECL(makemon2, (struct permonst*, int, int, uint64_t, uint64_t));
 E struct monst* FDECL(makemon_ex, (struct permonst*, int, int, uint64_t, uint64_t, UNSIGNED_SHORT_P, int, int));
-E struct monst* FDECL(makemon_limited, (struct permonst*, int, int, uint64_t, uint64_t, UNSIGNED_SHORT_P, int, int, int, int, ALIGNTYP_P));
+E struct monst* FDECL(makemon_limited, (struct permonst*, int, int, uint64_t, uint64_t, UNSIGNED_SHORT_P, UNSIGNED_SHORT_P, int, int, int, ALIGNTYP_P));
 E boolean FDECL(create_critters, (int, struct permonst *, BOOLEAN_P));
 E struct permonst *NDECL(rndmonst);
 E struct permonst* FDECL(rndmonst_core, (int, int));

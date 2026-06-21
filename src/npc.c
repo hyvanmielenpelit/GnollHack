@@ -4,8 +4,8 @@
 
 #include "hack.h"
 
-STATIC_DCL boolean FDECL(his_npc_room_at, (struct monst*, XCHAR_P, XCHAR_P));
-STATIC_DCL boolean FDECL(has_npc_room, (struct monst*));
+static boolean his_npc_room_at(struct monst*, xchar, xchar);
+static boolean has_npc_room(struct monst*);
 
 
 struct npc_subtype_definition npc_subtype_definitions[MAX_NPC_SUBTYPES] = 
@@ -148,7 +148,7 @@ struct npc_subtype_definition npc_subtype_definitions[MAX_NPC_SUBTYPES] =
 };
 
 schar
-min_npc_appearance_depth(VOID_ARGS)
+min_npc_appearance_depth(void)
 {
     schar minlvl = -1;
     int i;
@@ -161,8 +161,7 @@ min_npc_appearance_depth(VOID_ARGS)
 }
 
 void
-forget_npc_entry(npc)
-struct monst* npc;
+forget_npc_entry(struct monst *npc)
 {
     struct enpc* enpc_p = npc->isnpc ? ENPC(npc) : 0;
 
@@ -177,8 +176,7 @@ struct monst* npc;
 /*
  * npc_move: return 1: moved  0: didn't  -1: let m_move do it  -2: died
  */
-int npc_move(npc)
-struct monst* npc;
+int npc_move(struct monst *npc)
 {
     xchar gx, gy, omx, omy;
     schar npc_room;
@@ -234,9 +232,8 @@ struct monst* npc;
 }
 
 
-STATIC_OVL boolean
-has_npc_room(npc)
-struct monst* npc;
+static boolean
+has_npc_room(struct monst *npc)
 {
     struct enpc* enpc_p;
 
@@ -253,10 +250,8 @@ struct monst* npc;
     return TRUE;
 }
 
-STATIC_OVL boolean
-his_npc_room_at(npc, x, y)
-struct monst* npc;
-xchar x, y;
+static boolean
+his_npc_room_at(struct monst *npc, xchar x, xchar y)
 {
     return (boolean)(npc && npc->isnpc
         && (ENPC(npc)->npc_room == *in_rooms(x, y, NPCROOM))
@@ -264,8 +259,7 @@ xchar x, y;
 }
 
 boolean
-in_his_npc_room(npc)
-struct monst* npc;
+in_his_npc_room(struct monst *npc)
 {
     /* make sure we have an npc */
     if (!npc || !npc->isnpc)
@@ -280,8 +274,7 @@ struct monst* npc;
 }
 
 struct monst*
-findnpc(roomno)
-char roomno;
+findnpc(char roomno)
 {
     struct monst* mtmp;
 
@@ -297,9 +290,7 @@ char roomno;
 
 /* called from check_special_room() when the player enters the residence */
 void
-in_npc_room(roomno, ignore_already_there)
-int roomno;
-boolean ignore_already_there;
+in_npc_room(int roomno, boolean ignore_already_there)
 {
     struct monst* npc;
     struct enpc* enpc_p;
@@ -387,8 +378,7 @@ boolean ignore_already_there;
 }
 
 char
-npc_room_occupied(array)
-char* array;
+npc_room_occupied(char *array)
 {
     char* ptr;
 
@@ -400,12 +390,7 @@ char* array;
 
 /* exclusively for mknpcroom() */
 void
-npcini(lvl, sroom, sx, sy, npctype, mtype)
-d_level* lvl;
-struct mkroom* sroom;
-int sx, sy;
-uchar npctype;
-int mtype;
+npcini(d_level *lvl, struct mkroom *sroom, int sx, int sy, uchar npctype, int mtype)
 {
     if (!sroom)
         return;
@@ -1094,8 +1079,7 @@ int mtype;
 }
 
 void
-newenpc(mtmp)
-struct monst* mtmp;
+newenpc(struct monst *mtmp)
 {
     if (!mtmp->mextra)
         mtmp->mextra = newmextra();
@@ -1106,8 +1090,7 @@ struct monst* mtmp;
 }
 
 void
-free_enpc(mtmp)
-struct monst* mtmp;
+free_enpc(struct monst *mtmp)
 {
     if (has_enpc(mtmp))
     {
@@ -1119,9 +1102,7 @@ struct monst* mtmp;
 
 /* munge NPC-specific structure when restoring -dlc */
 void
-restnpc(mtmp, ghostly)
-struct monst* mtmp;
-boolean ghostly;
+restnpc(struct monst *mtmp, boolean ghostly)
 {
     if (u.uz.dlevel) 
     {
@@ -1135,7 +1116,7 @@ boolean ghostly;
 }
 
 void
-clearnpcs(VOID_ARGS)
+clearnpcs(void)
 {
     struct monst* mtmp;
 

@@ -2818,12 +2818,14 @@ dooverview(void)
     return 0;
 }
 
+/*
+ * Parameters:
+ *   why: 0 => #overview command, 1 or 2 => final disclosure (1: hero lived, 2: hero died)
+ *   reason: how hero died; used when disclosing end-of-game level
+ */
 /* called for #overview or for end of game disclosure */
 void
-show_overview(why, reason)
-int why;    /* 0 => #overview command,
-               1 or 2 => final disclosure (1: hero lived, 2: hero died) */
-int reason; /* how hero died; used when disclosing end-of-game level */
+show_overview(int why, int reason)
 {
     winid win;
     int lastdun = -1;

@@ -42,26 +42,24 @@ enum mcast_cleric_spells {
     MAX_CLERIC_SPELLS
 };
 
-STATIC_DCL void FDECL(cursetxt, (struct monst *, BOOLEAN_P));
-STATIC_DCL int FDECL(choose_magic_spell, (int));
-STATIC_DCL int FDECL(choose_clerical_spell, (int));
-STATIC_DCL double FDECL(m_cure_self, (struct monst *, double));
-STATIC_DCL void FDECL(cast_wizard_spell, (struct monst *, double, int));
-STATIC_DCL void FDECL(cast_cleric_spell, (struct monst *, double, int));
-STATIC_DCL boolean FDECL(is_undirected_spell, (unsigned int, int));
-STATIC_DCL boolean FDECL(is_ultimate_spell, (unsigned int, int));
-STATIC_DCL boolean FDECL(is_intermediate_spell, (unsigned int, int));
-STATIC_DCL boolean
-FDECL(spell_would_be_useless, (struct monst *, unsigned int, int));
+static void cursetxt(struct monst *, boolean);
+static int choose_magic_spell(int);
+static int choose_clerical_spell(int);
+static double m_cure_self(struct monst *, double);
+static void cast_wizard_spell(struct monst *, double, int);
+static void cast_cleric_spell(struct monst *, double, int);
+static boolean is_undirected_spell(unsigned int, int);
+static boolean is_ultimate_spell(unsigned int, int);
+static boolean is_intermediate_spell(unsigned int, int);
+static boolean
+spell_would_be_useless(struct monst *, unsigned int, int);
 
 extern const char *const flash_types[]; /* from zap.c */
 
 /* feedback when frustrated monster couldn't cast a spell */
-STATIC_OVL
+static
 void
-cursetxt(mtmp, undirected)
-struct monst *mtmp;
-boolean undirected;
+cursetxt(struct monst *mtmp, boolean undirected)
 {
     if (canseemon(mtmp) && couldsee(mtmp->mx, mtmp->my)) {
         const char *point_msg; /* spellcasting monsters are impolite */
@@ -93,9 +91,8 @@ boolean undirected;
 
 /* convert a level based random selection into a specific mage spell;
    inappropriate choices will be screened out by spell_would_be_useless() */
-STATIC_OVL int
-choose_magic_spell(spellval)
-int spellval;
+static int
+choose_magic_spell(int spellval)
 {
     /* for 3.4.3 and earlier, val greater than 22 selected the default spell
      */
@@ -150,9 +147,8 @@ int spellval;
 }
 
 /* convert a level based random selection into a specific cleric spell */
-STATIC_OVL int
-choose_clerical_spell(spellnum)
-int spellnum;
+static int
+choose_clerical_spell(int spellnum)
 {
     /* for 3.4.3 and earlier, num greater than 13 selected the default spell
      */
@@ -206,11 +202,7 @@ int spellnum;
  * 0: unsuccessful spell
  */
 int
-castmu(mtmp, mattk, thinks_it_foundyou, foundyou)
-struct monst *mtmp;
-struct attack *mattk;
-boolean thinks_it_foundyou;
-boolean foundyou;
+castmu(struct monst *mtmp, struct attack *mattk, boolean thinks_it_foundyou, boolean foundyou)
 {
     double damage;
     int ret;
@@ -475,10 +467,8 @@ boolean foundyou;
     return (ret);
 }
 
-STATIC_OVL double
-m_cure_self(mtmp, damage)
-struct monst *mtmp;
-double damage;
+static double
+m_cure_self(struct monst *mtmp, double damage)
 {
     if (mtmp->mhp < mtmp->mhpmax)
     {
@@ -502,12 +492,9 @@ double damage;
    If you modify either of these, be sure to change is_undirected_spell()
    and spell_would_be_useless().
  */
-STATIC_OVL
+static
 void
-cast_wizard_spell(mtmp, damage, spellnum)
-struct monst *mtmp;
-double damage;
-int spellnum;
+cast_wizard_spell(struct monst *mtmp, double damage, int spellnum)
 {
     //if (damage == 0 && !is_undirected_spell(AD_SPEL, spellnum)) {
     //    impossible("cast directed wizard spell (%d) with damage=0?", spellnum);
@@ -777,12 +764,9 @@ int spellnum;
         mdamageu_with_hit_tile(mtmp, damage, TRUE, hit_tile);
 }
 
-STATIC_OVL
+static
 void
-cast_cleric_spell(mtmp, damage, spellnum)
-struct monst *mtmp;
-double damage;
-int spellnum;
+cast_cleric_spell(struct monst *mtmp, double damage, int spellnum)
 {
     if (!mtmp)
         return;
@@ -1070,11 +1054,9 @@ int spellnum;
         mdamageu_with_hit_tile(mtmp, damage, TRUE, hit_tile);
 }
 
-STATIC_DCL
+static
 boolean
-is_undirected_spell(adtyp, spellnum)
-unsigned int adtyp;
-int spellnum;
+is_undirected_spell(unsigned int adtyp, int spellnum)
 {
     if (adtyp == AD_SPEL) 
     {
@@ -1107,11 +1089,9 @@ int spellnum;
     return FALSE;
 }
 
-STATIC_DCL
+static
 boolean
-is_ultimate_spell(adtyp, spellnum)
-unsigned int adtyp;
-int spellnum;
+is_ultimate_spell(unsigned int adtyp, int spellnum)
 {
     if (adtyp == AD_SPEL)
     {
@@ -1139,11 +1119,9 @@ int spellnum;
     return FALSE;
 }
 
-STATIC_DCL
+static
 boolean
-is_intermediate_spell(adtyp, spellnum)
-unsigned int adtyp;
-int spellnum;
+is_intermediate_spell(unsigned int adtyp, int spellnum)
 {
     if (adtyp == AD_SPEL) 
     {
@@ -1170,12 +1148,9 @@ int spellnum;
 }
 
 /* Some spells are useless under some circumstances. */
-STATIC_DCL
+static
 boolean
-spell_would_be_useless(mtmp, adtyp, spellnum)
-struct monst *mtmp;
-unsigned int adtyp;
-int spellnum;
+spell_would_be_useless(struct monst *mtmp, unsigned int adtyp, int spellnum)
 {
     /* Some spells don't require the player to really be there and can be cast
      * by the monster when you're invisible, yet still shouldn't be cast when
@@ -1287,9 +1262,7 @@ int spellnum;
 
 /* monster uses spell (ranged) */
 int
-buzzmu(mtmp, mattk)
-struct monst *mtmp;
-struct attack *mattk;
+buzzmu(struct monst *mtmp, struct attack *mattk)
 {
     //Sanity check
     if (!mtmp || !mattk)
