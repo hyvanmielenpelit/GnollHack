@@ -13,59 +13,59 @@
 
 #define CONTAINED_SYM '>' /* from invent.c */
 
-STATIC_DCL void FDECL(simple_look, (struct obj *, BOOLEAN_P));
-STATIC_DCL boolean FDECL(query_classes, (char *, boolean *, boolean *,
+static void simple_look(struct obj *, boolean);
+static boolean query_classes(char *, boolean *, boolean *,
                                          const char *, struct obj *,
-                                         BOOLEAN_P, int *, int));
-STATIC_DCL boolean FDECL(fatal_corpse_mistake, (struct obj *, BOOLEAN_P));
-STATIC_DCL void FDECL(check_here, (BOOLEAN_P));
-STATIC_DCL boolean FDECL(n_or_more, (struct obj *));
-STATIC_DCL boolean FDECL(all_but_uchain, (struct obj *));
+                                         boolean, int *, int);
+static boolean fatal_corpse_mistake(struct obj *, boolean);
+static void check_here(boolean);
+static boolean n_or_more(struct obj *);
+static boolean all_but_uchain(struct obj *);
 #if 0 /* not used */
-STATIC_DCL boolean FDECL(allow_cat_no_uchain, (struct obj *));
+static boolean allow_cat_no_uchain(struct obj *);
 #endif
-STATIC_DCL int FDECL(autopick, (struct obj *, int, menu_item **));
-STATIC_DCL int FDECL(count_categories, (struct obj *, int));
-STATIC_DCL int FDECL(delta_cwt, (struct obj *, struct obj *));
-STATIC_DCL int64_t FDECL(carry_count, (struct obj *, struct obj *, int64_t,
-                                    BOOLEAN_P, int *, int *));
-STATIC_DCL int FDECL(lift_object, (struct obj *, struct obj *, int64_t *,
-                                   BOOLEAN_P));
-STATIC_DCL boolean FDECL(mbag_explodes, (struct obj *, struct obj*, int));
-STATIC_DCL int64_t FDECL(boh_loss, (struct obj *container, int));
-STATIC_PTR int FDECL(in_container_core, (struct obj*, BOOLEAN_P));
-STATIC_PTR int FDECL(out_container_core, (struct obj*, BOOLEAN_P, BOOLEAN_P, uchar*));
-STATIC_PTR int FDECL(move_container_core, (struct obj*, BOOLEAN_P));
-STATIC_PTR int FDECL(out_container_and_drop_core, (struct obj*, BOOLEAN_P));
-STATIC_PTR int FDECL(pickup_and_in_container_core, (struct obj*, BOOLEAN_P));
-STATIC_PTR int FDECL(in_container, (struct obj*));
-STATIC_PTR int FDECL(out_container, (struct obj*));
-STATIC_PTR int FDECL(move_container, (struct obj*));
-STATIC_PTR int FDECL(out_container_and_drop, (struct obj*));
-STATIC_PTR int FDECL(pickup_and_in_container, (struct obj*));
-STATIC_PTR int FDECL(out_container_and_autostash, (struct obj*));
-STATIC_PTR int FDECL(out_container_and_autostash_nobot, (struct obj*));
-STATIC_PTR int FDECL(in_container_nobot, (struct obj*));
-STATIC_PTR int FDECL(out_container_nobot, (struct obj*));
-STATIC_PTR int FDECL(move_container_nobot, (struct obj*));
-STATIC_PTR int FDECL(out_container_and_drop_nobot, (struct obj*));
-STATIC_PTR int FDECL(pickup_and_in_container_nobot, (struct obj*));
-STATIC_DCL void FDECL(removed_from_icebox, (struct obj *));
-STATIC_DCL int64_t FDECL(mbag_item_gone, (int, struct obj *));
-STATIC_DCL void FDECL(explain_container_prompt, (BOOLEAN_P));
-STATIC_DCL int FDECL(traditional_loot, (int, struct obj*, struct obj*, int));
-STATIC_DCL int FDECL(menu_loot, (int, int, struct obj*, struct obj*, int));
-STATIC_DCL char FDECL(in_or_out_menu, (const char *, struct obj *, BOOLEAN_P,
-                                       BOOLEAN_P, BOOLEAN_P, BOOLEAN_P, int));
-STATIC_DCL boolean FDECL(able_to_loot, (int, int, BOOLEAN_P));
-STATIC_DCL boolean NDECL(reverse_loot);
-//STATIC_DCL boolean FDECL(mon_beside, (int, int));
-STATIC_DCL int FDECL(do_loot_cont, (struct obj **, int, int, int));
-STATIC_DCL void FDECL(tipcontainer, (struct obj *));
-STATIC_DCL void FDECL(loot_decoration, (int, int, int, boolean*));
-STATIC_OVL boolean FDECL(check_nonmergeable_nobj, (struct obj*));
-STATIC_DCL boolean FDECL(check_nonmergeable_pick_list, (menu_item*, int, int));
-STATIC_DCL int FDECL(doloot_core, (int));
+static int autopick(struct obj *, int, menu_item **);
+static int count_categories(struct obj *, int);
+static int delta_cwt(struct obj *, struct obj *);
+static int64_t carry_count(struct obj *, struct obj *, int64_t,
+                                    boolean, int *, int *);
+static int lift_object(struct obj *, struct obj *, int64_t *,
+                                   boolean);
+static boolean mbag_explodes(struct obj *, struct obj*, int);
+static int64_t boh_loss(struct obj *container, int);
+static int in_container_core(struct obj*, boolean);
+static int out_container_core(struct obj*, boolean, boolean, uchar*);
+static int move_container_core(struct obj*, boolean);
+static int out_container_and_drop_core(struct obj*, boolean);
+static int pickup_and_in_container_core(struct obj*, boolean);
+static int in_container(struct obj*);
+static int out_container(struct obj*);
+static int move_container(struct obj*);
+static int out_container_and_drop(struct obj*);
+static int pickup_and_in_container(struct obj*);
+static int out_container_and_autostash(struct obj*);
+static int out_container_and_autostash_nobot(struct obj*);
+static int in_container_nobot(struct obj*);
+static int out_container_nobot(struct obj*);
+static int move_container_nobot(struct obj*);
+static int out_container_and_drop_nobot(struct obj*);
+static int pickup_and_in_container_nobot(struct obj*);
+static void removed_from_icebox(struct obj *);
+static int64_t mbag_item_gone(int, struct obj *);
+static void explain_container_prompt(boolean);
+static int traditional_loot(int, struct obj*, struct obj*, int);
+static int menu_loot(int, int, struct obj*, struct obj*, int);
+static char in_or_out_menu(const char *, struct obj *, boolean,
+                                       boolean, boolean, boolean, int);
+static boolean able_to_loot(int, int, boolean);
+static boolean reverse_loot(void);
+//STATIC_DCL boolean mon_beside(int, int);
+static int do_loot_cont(struct obj **, int, int, int);
+static void tipcontainer(struct obj *);
+static void loot_decoration(int, int, int, boolean*);
+static boolean check_nonmergeable_nobj(struct obj*);
+static boolean check_nonmergeable_pick_list(menu_item*, int, int);
+static int doloot_core(int);
 
 /* define for query_objlist() and autopickup() */
 #define FOLLOW(curr, flags) \
@@ -78,23 +78,26 @@ STATIC_DCL int FDECL(doloot_core, (int));
 /* A variable set in use_container(), to be used by the callback routines
    in_container() and out_container() from askchain() and use_container().
    Also used by menu_loot() and container_gone(). */
-STATIC_VAR NEARDATA struct obj *current_container;
-STATIC_VAR NEARDATA struct obj* move_target_container;
-STATIC_VAR NEARDATA boolean abort_looting;
+static NEARDATA struct obj *current_container;
+static NEARDATA struct obj* move_target_container;
+static NEARDATA boolean abort_looting;
 #define Icebox (current_container->otyp == ICE_BOX)
 
-STATIC_VAR const char
+static const char
         moderateloadmsg[] = "You have a little trouble lifting",
         nearloadmsg[] = "You have much trouble lifting",
         overloadmsg[] = "You have extreme difficulty lifting";
 
+/*
+ * Parameters:
+ *   otmp: list of objects
+ *   here: flag for type of obj list linkage
+ */
 /* BUG: this lets you look at cockatrice corpses while blind without
    touching them */
 /* much simpler version of the look-here code; used by query_classes() */
-STATIC_OVL void
-simple_look(otmp, here)
-struct obj *otmp; /* list of objects */
-boolean here;     /* flag for type of obj list linkage */
+static void
+simple_look(struct obj *otmp, boolean here)
 {
     /* Neither of the first two cases is expected to happen, since
      * we're only called after multiple classes of objects have been
@@ -118,12 +121,7 @@ boolean here;     /* flag for type of obj list linkage */
 }
 
 int
-collect_obj_classes(ilets, otmp, here, filter, itemcount)
-char ilets[];
-struct obj *otmp;
-boolean here;
-boolean FDECL((*filter), (OBJ_P));
-int *itemcount;
+collect_obj_classes(char ilets[], struct obj *otmp, boolean here, boolean (*filter)(struct obj*), int *itemcount)
 {
     int iletct = 0;
     char c;
@@ -153,15 +151,8 @@ int *itemcount;
  *      "?/a" or "a?/" or "/a?",&c picks all '?' even though no '/'
  *          (ie, treated as if it had just been "?a").
  */
-STATIC_OVL boolean
-query_classes(oclasses, one_at_a_time, everything, action, objs, here, menu_on_demand, applymode)
-char oclasses[];
-boolean *one_at_a_time, *everything;
-const char *action;
-struct obj *objs;
-boolean here;
-int *menu_on_demand;
-int applymode;
+static boolean
+query_classes(char oclasses[], boolean *one_at_a_time, boolean *everything, const char *action, struct obj *objs, boolean here, int *menu_on_demand, int applymode)
 {
     char ilets[BUFSZ], inbuf[BUFSZ] = DUMMY; /* FIXME: hardcoded ilets[] length */
     int iletct, oclassct;
@@ -175,7 +166,7 @@ int applymode;
     *one_at_a_time = *everything = m_seen = FALSE;
     if (menu_on_demand)
         *menu_on_demand = 0;
-    iletct = collect_obj_classes(ilets, objs, here, (boolean FDECL((*), (OBJ_P))) 0, &itemcount);
+    iletct = collect_obj_classes(ilets, objs, here, (boolean FDECL((*), (struct obj *))) 0, &itemcount);
     if (iletct == 0)
         return FALSE;
 
@@ -308,10 +299,8 @@ int applymode;
 }
 
 /* check whether hero is bare-handedly touching a cockatrice corpse */
-STATIC_OVL boolean
-fatal_corpse_mistake(obj, remotely)
-struct obj *obj;
-boolean remotely;
+static boolean
+fatal_corpse_mistake(struct obj *obj, boolean remotely)
 {
     if (uarmg || remotely || obj->otyp != CORPSE
         || (obj->corpsenm >= LOW_PM && !touch_petrifies(&mons[obj->corpsenm])) || Stone_resistance)
@@ -331,10 +320,7 @@ boolean remotely;
 
 /* attempting to manipulate a Rider's corpse triggers its revival */
 boolean
-rider_corpse_revival(obj, remotely, was_revived_ptr)
-struct obj *obj;
-boolean remotely;
-boolean* was_revived_ptr;
+rider_corpse_revival(struct obj *obj, boolean remotely, boolean *was_revived_ptr)
 {
     if (!obj || obj->otyp != CORPSE || obj->corpsenm < LOW_PM || !is_rider(&mons[obj->corpsenm]))
         return FALSE;
@@ -349,9 +335,8 @@ boolean* was_revived_ptr;
 }
 
 /* look at the objects at our location, unless there are too many of them */
-STATIC_OVL void
-check_here(picked_some)
-boolean picked_some;
+static void
+check_here(boolean picked_some)
 {
     struct obj *obj;
     int ct = 0;
@@ -377,12 +362,11 @@ boolean picked_some;
 }
 
 /* Value set by query_objlist() for n_or_more(). */
-STATIC_VAR int64_t val_for_n_or_more;
+static int64_t val_for_n_or_more;
 
 /* query_objlist callback: return TRUE if obj's count is >= reference value */
-STATIC_OVL boolean
-n_or_more(obj)
-struct obj *obj;
+static boolean
+n_or_more(struct obj *obj)
 {
     if (obj == uchain)
         return FALSE;
@@ -391,20 +375,18 @@ struct obj *obj;
 
 /* list of valid menu classes for query_objlist() and allow_category callback
    (with room for all object classes, 'u'npaid, IK, BUCX, and terminator) */
-STATIC_VAR char valid_menu_classes[MAX_OBJECT_CLASSES + 3 + 4 + 1];
-STATIC_VAR boolean class_filter, bucx_filter, shop_filter, unidentified_filter, unknown_filter;
+static char valid_menu_classes[MAX_OBJECT_CLASSES + 3 + 4 + 1];
+static boolean class_filter, bucx_filter, shop_filter, unidentified_filter, unknown_filter;
 
 /* check valid_menu_classes[] for an entry; also used by askchain() */
 boolean
-menu_class_present(c)
-int c;
+menu_class_present(int c)
 {
     return (c && index(valid_menu_classes, c)) ? TRUE : FALSE;
 }
 
 void
-add_valid_menu_class(c)
-int c;
+add_valid_menu_class(int c)
 {
     static int vmc_count = 0;
 
@@ -439,24 +421,21 @@ int c;
 }
 
 /* query_objlist callback: return TRUE if not uchain */
-STATIC_OVL boolean
-all_but_uchain(obj)
-struct obj *obj;
+static boolean
+all_but_uchain(struct obj *obj)
 {
     return (boolean) (obj != uchain);
 }
 
 /* query_objlist callback: return TRUE if not a coin */
 boolean
-allow_all_but_coins(obj)
-struct obj* obj;
+allow_all_but_coins(struct obj *obj)
 {
     return (boolean)(obj->oclass != COIN_CLASS);
 }
 
 boolean
-allow_unicorn_horn(obj)
-struct obj* obj UNUSED;
+allow_unicorn_horn(struct obj *obj UNUSED)
 {
     return (boolean)(obj->otyp == UNICORN_HORN);
 }
@@ -464,15 +443,13 @@ struct obj* obj UNUSED;
 /* query_objlist callback: return TRUE */
 /*ARGUSED*/
 boolean
-allow_all(obj)
-struct obj *obj UNUSED;
+allow_all(struct obj *obj UNUSED)
 {
     return TRUE;
 }
 
 boolean
-allow_category(obj)
-struct obj *obj;
+allow_category(struct obj *obj)
 {
     /* For coins, if any class filter is specified, accept if coins
      * are included regardless of whether either unpaid or BUC-status
@@ -541,9 +518,8 @@ struct obj *obj;
 
 #if 0 /* not used */
 /* query_objlist callback: return TRUE if valid category (class), no uchain */
-STATIC_OVL boolean
-allow_cat_no_uchain(obj)
-struct obj *obj;
+static boolean
+allow_cat_no_uchain(struct obj *obj)
 {
     if (obj != uchain
         && ((index(valid_menu_classes, 'u') && obj->unpaid)
@@ -554,15 +530,13 @@ struct obj *obj;
 #endif
 
 boolean
-is_potion_of_water(obj)
-struct obj* obj;
+is_potion_of_water(struct obj *obj)
 {
     return (obj && obj->otyp == POT_WATER);
 }
 
 boolean
-is_scroll_of_remove_curse(obj)
-struct obj* obj;
+is_scroll_of_remove_curse(struct obj *obj)
 {
     return (obj && obj->otyp == SCR_REMOVE_CURSE);
 }
@@ -570,19 +544,21 @@ struct obj* obj;
 
 /* query_objlist callback: return TRUE if valid class and worn */
 boolean
-is_worn_by_type(otmp)
-struct obj *otmp;
+is_worn_by_type(struct obj *otmp)
 {
     return (is_worn(otmp) && allow_category(otmp)) ? TRUE : FALSE;
 }
 
 boolean
-is_wearable_by_type(otmp)
-struct obj* otmp;
+is_wearable_by_type(struct obj *otmp)
 {
     return (is_wearable(otmp) && allow_category(otmp)) ? TRUE : FALSE;
 }
 
+/*
+ * Parameters:
+ *   what: should be a int64_t
+ */
 /*
  * Have the hero pick things from the ground
  * or a monster's inventory if swallowed.
@@ -596,9 +572,7 @@ struct obj* otmp;
  * or not it succeeded.
  */
 int
-pickup(what, do_auto_in_bag)
-int what; /* should be a int64_t */
-boolean do_auto_in_bag;
+pickup(int what, boolean do_auto_in_bag)
 {
     int i, n, res = 0, count, n_tried = 0, n_picked = 0;
     menu_item *pick_list = (menu_item *) 0;
@@ -858,12 +832,7 @@ boolean do_auto_in_bag;
 }
 
 int
-handle_knapsack_prefull(res, container_cnt, do_auto_in_bag_ptr, used_container_ptr, obj, i, n, noncoin_nonmergeable_found)
-int res, container_cnt, i, n;
-boolean* do_auto_in_bag_ptr;
-struct obj** used_container_ptr;
-struct obj* obj;
-uchar noncoin_nonmergeable_found;
+handle_knapsack_prefull(int res, int container_cnt, boolean *do_auto_in_bag_ptr, struct obj **used_container_ptr, struct obj *obj, int i, int n, uchar noncoin_nonmergeable_found)
 {
     if (res > 0 && container_cnt > 0 && !*do_auto_in_bag_ptr)
     {
@@ -916,7 +885,7 @@ uchar noncoin_nonmergeable_found;
 }
 
 int
-handle_knapsack_full(VOID_ARGS)
+handle_knapsack_full(void)
 {
     int more_action = 0;
     struct obj* last_container = 0;
@@ -971,10 +940,12 @@ handle_knapsack_full(VOID_ARGS)
     return more_action;
 }
 
+/*
+ * Parameters:
+ *   grab: forced pickup, rather than forced leave behind?
+ */
 boolean
-is_autopickup_exception(obj, grab)
-struct obj *obj;
-boolean grab; /* forced pickup, rather than forced leave behind? */
+is_autopickup_exception(struct obj *obj, boolean grab)
 {
     /*
      *  Does the text description of this match an exception?
@@ -996,9 +967,7 @@ boolean grab; /* forced pickup, rather than forced leave behind? */
 }
 
 boolean
-autopick_testobj(otmp, calc_costly)
-struct obj *otmp;
-boolean calc_costly;
+autopick_testobj(struct obj *otmp, boolean calc_costly)
 {
     static boolean costly = FALSE;
     const char *otypes = flags.pickup_types;
@@ -1031,17 +1000,20 @@ boolean calc_costly;
 }
 
 /*
+ * Parameters:
+ *   olist: the object list
+ *   follow: how to follow the object list
+ *   pick_list: list of objects and counts to pick up
+ */
+/*
  * Pick from the given list using flags.pickup_types.  Return the number
  * of items picked (not counts).  Create an array that returns pointers
  * and counts of the items to be picked up.  If the number of items
  * picked is zero, the pickup list is left alone.  The caller of this
  * function must free the pickup list.
  */
-STATIC_OVL int
-autopick(olist, follow, pick_list)
-struct obj *olist;     /* the object list */
-int follow;            /* how to follow the object list */
-menu_item **pick_list; /* list of objects and counts to pick up */
+static int
+autopick(struct obj *olist, int follow, menu_item **pick_list)
 {
     menu_item *pi; /* pick item */
     struct obj *curr;
@@ -1069,8 +1041,7 @@ menu_item **pick_list; /* list of objects and counts to pick up */
 }
 
 boolean
-loadstone_weight_shown_correctly(show_weights)
-int show_weights;
+loadstone_weight_shown_correctly(int show_weights)
 {
     boolean loadstonecorrectly = FALSE;
 
@@ -1089,6 +1060,15 @@ int show_weights;
     return loadstonecorrectly;
 }
 
+/*
+ * Parameters:
+ *   qstr: query string
+ *   olist_p: the list to pick from
+ *   qflags: options to control the query
+ *   pick_list: return list of items picked
+ *   how: type of query
+ *   allow: allow function
+ */
 /*
  * Put up a menu using the given object list.  Only those objects on the
  * list that meet the approval of the allow function are displayed.  Return
@@ -1109,14 +1089,7 @@ int show_weights;
  *      FEEL_COCKATRICE   - touch corpse.
  */
 int
-query_objlist(qstr, olist_p, qflags, pick_list, how, allow, show_weights)
-const char *qstr;                 /* query string */
-struct obj **olist_p;             /* the list to pick from */
-int qflags;                       /* options to control the query */
-menu_item **pick_list;            /* return list of items picked */
-int how;                          /* type of query */
-boolean FDECL((*allow), (OBJ_P)); /* allow function */
-int show_weights;
+query_objlist(const char *qstr, struct obj **olist_p, int qflags, menu_item **pick_list, int how, boolean (*allow)(struct obj*), int show_weights)
 {
     int i, n;
     winid win;
@@ -1322,17 +1295,19 @@ int show_weights;
 }
 
 /*
+ * Parameters:
+ *   qstr: query string
+ *   olist: the list to pick from
+ *   qflags: behaviour modification flags
+ *   pick_list: return list of items picked
+ *   how: type of query
+ */
+/*
  * allow menu-based category (class) selection (for Drop,take off etc.)
  *
  */
 int
-query_category(qstr, olist, qflags, pick_list, how, applymode)
-const char *qstr;      /* query string */
-struct obj *olist;     /* the list to pick from */
-int qflags;            /* behaviour modification flags */
-menu_item **pick_list; /* return list of items picked */
-int how;               /* type of query */
-int applymode;
+query_category(const char *qstr, struct obj *olist, int qflags, menu_item **pick_list, int how, int applymode)
 {
     int n;
     winid win;
@@ -1342,7 +1317,7 @@ int applymode;
     boolean collected_type_name;
     char invlet;
     int ccount;
-    boolean FDECL((*ofilter), (OBJ_P)) = (boolean FDECL((*), (OBJ_P))) 0;
+    boolean (*ofilter)(struct obj *) = (boolean FDECL((*), (struct obj *))) 0;
     boolean do_unpaid = FALSE;
     boolean do_blessed = FALSE, do_cursed = FALSE, do_uncursed = FALSE,
             do_buc_unknown = FALSE, do_unidentified = FALSE, do_unknown = FALSE;
@@ -1572,10 +1547,8 @@ int applymode;
     return n;
 }
 
-STATIC_OVL int
-count_categories(olist, qflags)
-struct obj *olist;
-int qflags;
+static int
+count_categories(struct obj *olist, int qflags)
 {
     char *pack;
     boolean counted_category;
@@ -1609,9 +1582,8 @@ int qflags;
  *  object is removed from it.  Use before and after weight amounts rather
  *  than trying to match the calculation used by weight() in mkobj.c.
  */
-STATIC_OVL int
-delta_cwt(container, obj)
-struct obj *container, *obj;
+static int
+delta_cwt(struct obj *container, struct obj *obj)
 {
     struct obj **prev;
     int owt, nwt;
@@ -1636,13 +1608,13 @@ struct obj *container, *obj;
     return owt - nwt;
 }
 
+/*
+ * Parameters:
+ *   obj, container: object to pick up, bag it's coming out of
+ */
 /* could we carry `obj'? if not, could we carry some of it/them? */
-STATIC_OVL int64_t
-carry_count(obj, container, count, telekinesis, wt_before, wt_after)
-struct obj *obj, *container; /* object to pick up, bag it's coming out of */
-int64_t count;
-boolean telekinesis;
-int *wt_before, *wt_after;
+static int64_t
+carry_count(struct obj *obj, struct obj *container, int64_t count, boolean telekinesis, int *wt_before, int *wt_after)
 {
     boolean adjust_wt = container && carried(container),
             is_gold = obj->oclass == COIN_CLASS;
@@ -1773,13 +1745,14 @@ int *wt_before, *wt_after;
     return 0L;
 }
 
+/*
+ * Parameters:
+ *   obj, container: object to pick up, bag it's coming out of
+ */
 /* determine whether character is able and player is willing to carry `obj' */
-STATIC_OVL
+static
 int
-lift_object(obj, container, cnt_p, telekinesis)
-struct obj *obj, *container; /* object to pick up, bag it's coming out of */
-int64_t *cnt_p;
-boolean telekinesis;
+lift_object(struct obj *obj, struct obj *container, int64_t *cnt_p, boolean telekinesis)
 {
     int result, old_wt, new_wt, prev_encumbr, next_encumbr;
 
@@ -1871,16 +1844,17 @@ boolean telekinesis;
 }
 
 /*
+ * Parameters:
+ *   telekinesis, do_auto_in_bag: not picking it up directly by hand
+ *   obj_gone_ptr: 1 = merged, 2 = put in bag, 3 = gone
+ */
+/*
  * Pick up <count> of obj from the ground and add it to the hero's inventory.
  * Returns -1 if caller should break out of its loop, 0 if nothing picked
  * up, 1 if otherwise.
  */
 int
-pickup_object(obj, count, telekinesis, do_auto_in_bag, obj_gone_ptr)
-struct obj *obj;
-int64_t count;
-boolean telekinesis, do_auto_in_bag; /* not picking it up directly by hand */
-uchar* obj_gone_ptr; /* 1 = merged, 2 = put in bag, 3 = gone */
+pickup_object(struct obj *obj, int64_t count, boolean telekinesis, boolean do_auto_in_bag, uchar *obj_gone_ptr)
 {
     int res, nearload;
     struct obj* origobj = obj;
@@ -1987,9 +1961,7 @@ uchar* obj_gone_ptr; /* 1 = merged, 2 = put in bag, 3 = gone */
 }
 
 int
-auto_bag_in(objchn_container, obj, bynexthere)
-struct obj* objchn_container, * obj;
-boolean bynexthere;
+auto_bag_in(struct obj *objchn_container, struct obj *obj, boolean bynexthere)
 {
     if (!objchn_container || !obj || Is_container(obj) || unfit_for_container(obj))
         return 0;
@@ -2099,9 +2071,7 @@ boolean bynexthere;
 }
 
 int
-count_bags_for_stashing(objchn_container, objchn, bynexthere_container, bynexthere_obj)
-struct obj* objchn_container, *objchn;
-boolean bynexthere_container, bynexthere_obj;
+count_bags_for_stashing(struct obj *objchn_container, struct obj *objchn, boolean bynexthere_container, boolean bynexthere_obj)
 {
     if (!can_stash_objs())
         return 0;
@@ -2192,8 +2162,7 @@ boolean bynexthere_container, bynexthere_obj;
  * from otmp because of merging.
  */
 struct obj *
-pick_obj(otmp)
-struct obj *otmp;
+pick_obj(struct obj *otmp)
 {
     struct obj *result;
     int ox = otmp->ox, oy = otmp->oy;
@@ -2248,7 +2217,7 @@ struct obj *otmp;
  * returns the new encumbrance value (from near_capacity()).
  */
 int
-encumber_msg(VOID_ARGS)
+encumber_msg(void)
 {
     int oldcap = u.carrying_capacity_level;
     int newcap = near_capacity();
@@ -2301,9 +2270,7 @@ encumber_msg(VOID_ARGS)
 
 /* Is there a container at x,y. Optional: return count of containers at x,y */
 int
-container_at(x, y, countem)
-int x, y;
-boolean countem;
+container_at(int x, int y, boolean countem)
 {
     struct obj *cobj, *nobj;
     int container_count = 0;
@@ -2319,10 +2286,12 @@ boolean countem;
     return container_count;
 }
 
-STATIC_OVL boolean
-able_to_loot(x, y, looting)
-int x, y;
-boolean looting; /* loot vs tip */
+/*
+ * Parameters:
+ *   looting: loot vs tip
+ */
+static boolean
+able_to_loot(int x, int y, boolean looting)
 {
     const char *verb = looting ? "loot" : "tip";
 
@@ -2359,9 +2328,8 @@ boolean looting; /* loot vs tip */
 }
 
 #if 0
-STATIC_OVL boolean
-mon_beside(x, y)
-int x, y;
+static boolean
+mon_beside(int x, int y)
 {
     int i, j, nx, ny;
 
@@ -2376,10 +2344,12 @@ int x, y;
 }
 #endif
 
+/*
+ * Parameters:
+ *   cindex, ccount, applymode: index of this container (1..N), number of them (N)
+ */
 int
-do_loot_cont(cobjp, cindex, ccount, applymode)
-struct obj **cobjp;
-int cindex, ccount, applymode; /* index of this container (1..N), number of them (N) */
+do_loot_cont(struct obj **cobjp, int cindex, int ccount, int applymode)
 {
     if (!cobjp)
         return 0;
@@ -2482,8 +2452,7 @@ int cindex, ccount, applymode; /* index of this container (1..N), number of them
 }
 
 boolean
-maybe_disturb_container_monster(cobj)
-struct obj* cobj;
+maybe_disturb_container_monster(struct obj *cobj)
 {
     if (!cobj)
         return FALSE;
@@ -2542,10 +2511,8 @@ struct obj* cobj;
 
 }
 
-STATIC_OVL void
-loot_decoration(x, y, itemnumber, got_something_ptr)
-int x, y, itemnumber;
-boolean* got_something_ptr;
+static void
+loot_decoration(int x, int y, int itemnumber, boolean *got_something_ptr)
 {
     if (itemnumber == 1)
     {
@@ -2623,29 +2590,28 @@ boolean* got_something_ptr;
 
 /* loot a container on the floor or loot saddle from mon. */
 int
-doloot(VOID_ARGS)
+doloot(void)
 {
     int res = doloot_core(0);
     return res;
 }
 
 int
-dolootout(VOID_ARGS)
+dolootout(void)
 {
     int res = doloot_core(1);
     return res;
 }
 
 int
-dolootin(VOID_ARGS)
+dolootin(void)
 {
     int res = doloot_core(2);
     return res;
 }
 
-STATIC_OVL int
-doloot_core(applymode)
-int applymode;
+static int
+doloot_core(int applymode)
 {
     struct obj *cobj, *nobj;
     int c = -1;
@@ -3044,8 +3010,8 @@ int applymode;
 }
 
 /* called when attempting to #loot while confused */
-STATIC_OVL boolean
-reverse_loot(VOID_ARGS)
+static boolean
+reverse_loot(void)
 {
     struct obj *goldob = 0, *coffers, *otmp, boxdummy;
     struct monst *mon;
@@ -3126,11 +3092,7 @@ reverse_loot(VOID_ARGS)
 /* loot_mon() returns amount of time passed.
  */
 int
-loot_mon(mtmp, passed_info, prev_loot, do_auto_in_bag)
-struct monst *mtmp;
-int *passed_info;
-boolean *prev_loot;
-boolean do_auto_in_bag;
+loot_mon(struct monst *mtmp, int *passed_info, boolean *prev_loot, boolean do_auto_in_bag)
 {
     int c = -1;
     int timepassed = 0;
@@ -3207,10 +3169,8 @@ boolean do_auto_in_bag;
  * Decide whether an object being placed into a magic bag will cause
  * it to explode.  If the object is a bag itself, check recursively.
  */
-STATIC_OVL boolean
-mbag_explodes(obj, container, depthin)
-struct obj *obj, *container;
-int depthin;
+static boolean
+mbag_explodes(struct obj *obj, struct obj *container, int depthin)
 {
     /* these won't cause an explosion when they're empty */
     if (is_obj_mbag_destroying(obj) && obj->charges <= 0)
@@ -3243,10 +3203,8 @@ int depthin;
     return FALSE;
 }
 
-STATIC_OVL int64_t
-boh_loss(container, held)
-struct obj *container;
-int held;
+static int64_t
+boh_loss(struct obj *container, int held)
 {
     /* sometimes toss objects if a cursed magic bag */
     if (Is_mbag(container) && container->cursed && Has_contents(container))
@@ -3271,8 +3229,7 @@ int held;
 
 /* Returns: -1 to stop, 1 item was inserted, 0 item was not inserted. */
 int
-stash_obj_in_container(obj, container)
-struct obj* obj, *container;
+stash_obj_in_container(struct obj *obj, struct obj *container)
 {
     if (!obj || !container)
         return -1;
@@ -3285,24 +3242,20 @@ struct obj* obj, *container;
 }
 
 /* Returns: -1 to stop, 1 item was inserted, 0 item was not inserted. */
-STATIC_PTR int
-in_container(obj)
-struct obj* obj;
+static int
+in_container(struct obj *obj)
 {
     return in_container_core(obj, TRUE);
 }
 
-STATIC_PTR int
-in_container_nobot(obj)
-struct obj* obj;
+static int
+in_container_nobot(struct obj *obj)
 {
     return in_container_core(obj, FALSE);
 }
 
-STATIC_PTR int
-in_container_core(obj, dobot)
-struct obj *obj;
-boolean dobot;
+static int
+in_container_core(struct obj *obj, boolean dobot)
 {
     int res = 0;
     if (!dobot)
@@ -3638,31 +3591,26 @@ default_incontainer_end_here:
  * also used by getobj() when picking a single item to stash
  */
 int
-ck_bag(obj)
-struct obj *obj;
+ck_bag(struct obj *obj)
 {
     return (current_container && obj != current_container);
 }
 
 /* Returns: -1 to stop, 1 item was moved, 0 item was not moved. */
-STATIC_PTR int
-move_container(obj)
-struct obj* obj;
+static int
+move_container(struct obj *obj)
 {
     return move_container_core(obj, TRUE);
 }
 
-STATIC_PTR int
-move_container_nobot(obj)
-struct obj* obj;
+static int
+move_container_nobot(struct obj *obj)
 {
     return move_container_core(obj, FALSE);
 }
 
-STATIC_PTR int
-move_container_core(obj, dobot)
-struct obj* obj;
-boolean dobot;
+static int
+move_container_core(struct obj *obj, boolean dobot)
 {
     if (!obj || !move_target_container)
         return -1;
@@ -3700,24 +3648,20 @@ boolean dobot;
 }
 
 /* Returns: -1 to stop, 1 item was moved, 0 item was not moved. */
-STATIC_PTR int
-out_container_and_drop(obj)
-struct obj* obj;
+static int
+out_container_and_drop(struct obj *obj)
 {
     return out_container_and_drop_core(obj, TRUE);
 }
 
-STATIC_PTR int
-out_container_and_drop_nobot(obj)
-struct obj* obj;
+static int
+out_container_and_drop_nobot(struct obj *obj)
 {
     return out_container_and_drop_core(obj, FALSE);
 }
 
-STATIC_PTR int
-out_container_and_drop_core(obj, dobot)
-struct obj* obj;
-boolean dobot;
+static int
+out_container_and_drop_core(struct obj *obj, boolean dobot)
 {
     if (!obj)
         return -1;
@@ -3750,24 +3694,20 @@ boolean dobot;
 
 
 /* Returns: -1 to stop, 1 item was moved, 0 item was not moved. */
-STATIC_PTR int
-pickup_and_in_container(obj)
-struct obj* obj;
+static int
+pickup_and_in_container(struct obj *obj)
 {
     return pickup_and_in_container_core(obj, TRUE);
 }
 
-STATIC_PTR int
-pickup_and_in_container_nobot(obj)
-struct obj* obj;
+static int
+pickup_and_in_container_nobot(struct obj *obj)
 {
     return pickup_and_in_container_core(obj, FALSE);
 }
 
-STATIC_PTR int
-pickup_and_in_container_core(obj, dobot)
-struct obj* obj;
-boolean dobot;
+static int
+pickup_and_in_container_core(struct obj *obj, boolean dobot)
 {
     if (!obj)
         return -1;
@@ -3797,42 +3737,35 @@ boolean dobot;
 }
 
 /* Returns: -1 to stop, 1 item was moved, 0 item was not moved. */
-STATIC_PTR int
-out_container_and_autostash(obj)
-struct obj* obj;
+static int
+out_container_and_autostash(struct obj *obj)
 {
     return out_container_core(obj, TRUE, TRUE, (uchar*)0);
 }
 
 /* Returns: -1 to stop, 1 item was moved, 0 item was not moved. */
-STATIC_PTR int
-out_container_and_autostash_nobot(obj)
-struct obj* obj;
+static int
+out_container_and_autostash_nobot(struct obj *obj)
 {
     return out_container_core(obj, FALSE, TRUE, (uchar*)0);
 }
 
 
 /* Returns: -1 to stop, 1 item was removed, 0 item was not removed. */
-STATIC_PTR int
-out_container(obj)
-struct obj* obj;
+static int
+out_container(struct obj *obj)
 {
     return out_container_core(obj, TRUE, FALSE, (uchar*)0);
 }
 
-STATIC_PTR int
-out_container_nobot(obj)
-struct obj* obj;
+static int
+out_container_nobot(struct obj *obj)
 {
     return out_container_core(obj, FALSE, FALSE, (uchar*)0);
 }
 
-STATIC_PTR int
-out_container_core(obj, dobot, do_auto_in_bag, obj_gone_ptr)
-struct obj *obj;
-boolean dobot, do_auto_in_bag;
-uchar* obj_gone_ptr;
+static int
+out_container_core(struct obj *obj, boolean dobot, boolean do_auto_in_bag, uchar *obj_gone_ptr)
 {
     struct obj *otmp;
     boolean is_gold = (obj->oclass == COIN_CLASS);
@@ -3922,9 +3855,8 @@ default_outcountainer_end:
 }
 
 /* taking a corpse out of an ice box needs a couple of adjustments */
-STATIC_OVL void
-removed_from_icebox(obj)
-struct obj *obj;
+static void
+removed_from_icebox(struct obj *obj)
 {
     if (!age_is_relative(obj)) 
     {
@@ -3935,10 +3867,8 @@ struct obj *obj;
 }
 
 /* an object inside a cursed bag of holding is being destroyed */
-STATIC_OVL int64_t
-mbag_item_gone(held, item)
-int held;
-struct obj *item;
+static int64_t
+mbag_item_gone(int held, struct obj *item)
 {
     struct monst *shkp;
     int64_t loss = 0L;
@@ -3962,9 +3892,7 @@ struct obj *item;
 
 /* used for #loot/apply, #tip, and final disclosure */
 void
-observe_quantum_cat(box, makecat, givemsg)
-struct obj *box;
-boolean makecat, givemsg;
+observe_quantum_cat(struct obj *box, boolean makecat, boolean givemsg)
 {
     STATIC_VAR NEARDATA const char sc[] = "Schroedinger's Cat";
     struct obj *deadcat;
@@ -4038,8 +3966,7 @@ boolean makecat, givemsg;
 
 /* used by askchain() to check for magic bag explosion */
 boolean
-container_gone(fn)
-int FDECL((*fn), (OBJ_P));
+container_gone(int (*fn)(struct obj*))
 {
     /* result is only meaningful while use_container() is executing */
     return ((fn == in_container || fn == autobag || fn == out_container || fn == move_container || fn == pickup_and_in_container || fn == out_container_and_drop || fn == out_container_and_autostash
@@ -4047,9 +3974,8 @@ int FDECL((*fn), (OBJ_P));
             && !current_container);
 }
 
-STATIC_OVL void
-explain_container_prompt(more_containers)
-boolean more_containers;
+static void
+explain_container_prompt(boolean more_containers)
 {
     static const char *const explaintext[] = {
         "Container actions:",
@@ -4081,7 +4007,7 @@ boolean more_containers;
 }
 
 boolean
-u_handsy(VOID_ARGS)
+u_handsy(void)
 {
     if (nohands(youmonst.data)) {
         play_sfx_sound(SFX_GENERAL_CURRENT_FORM_DOES_NOT_ALLOW);
@@ -4095,14 +4021,15 @@ u_handsy(VOID_ARGS)
     return TRUE;
 }
 
-STATIC_VAR const char stashable[] = { ALLOW_COUNT, COIN_CLASS, ALL_CLASSES, 0 };
+static const char stashable[] = { ALLOW_COUNT, COIN_CLASS, ALL_CLASSES, 0 };
 
+/*
+ * Parameters:
+ *   more_containers: True iff #loot multiple and this isn't last one
+ *   applymode: 0 = normal, 1 = take out items, 2 = put in items
+ */
 int
-use_container(objp, held, more_containers, applymode)
-struct obj **objp;
-int held;
-boolean more_containers; /* True iff #loot multiple and this isn't last one */
-int applymode; /* 0 = normal, 1 = take out items, 2 = put in items */
+use_container(struct obj **objp, int held, boolean more_containers, int applymode)
 {
     struct obj *otmp, *obj = *objp;
     boolean quantum_cat, cursed_mbag, loot_out, loot_in, loot_in_first,
@@ -4441,12 +4368,8 @@ containerdone:
         abort_looting = TRUE;
     return used;
 }
-
-/* loot current_container (take things out or put things in), by prompting */
-STATIC_OVL int
-traditional_loot(command_id, applied_container, other_container, applymode)
-int command_id;
-/* 0 = take out,
+/* command_id:
+   0 = take out,
    1 = put in,
    2 = move items in a container to a(nother) container in inventory,
    3 = move items in a container to a(nother) container on floor,
@@ -4454,11 +4377,12 @@ int command_id;
    5 = take items out of a container and stash automatically, and
    6 = pick up items from floor and put them in a container
  */
-struct obj* applied_container;
-struct obj* other_container;
-int applymode;
+
+/* loot current_container (take things out or put things in), by prompting */
+static int
+traditional_loot(int command_id, struct obj *applied_container, struct obj *other_container, int applymode)
 {
-    int FDECL((*actionfunc), (OBJ_P)), FDECL((*checkfunc), (OBJ_P));
+    int (*actionfunc)(struct obj *), (*checkfunc)(struct obj *);
     struct obj **objlist;
     char selection[MAX_OBJECT_CLASSES + 10]; /* +10: room for B,U,C,X plus slop */
     const char *action;
@@ -4472,7 +4396,7 @@ int applymode;
         action = "take out";
         objlist = contained_object_chain_ptr(current_container);
         actionfunc = out_container;
-        checkfunc = (int FDECL((*), (OBJ_P))) 0;
+        checkfunc = (int FDECL((*), (struct obj *))) 0;
         break;
     case 1:
         action = "put in";
@@ -4497,7 +4421,7 @@ int applymode;
         action = "move to another container in inventory";
         objlist = contained_object_chain_ptr(current_container);
         actionfunc = move_container;
-        checkfunc = (int FDECL((*), (OBJ_P))) 0;
+        checkfunc = (int FDECL((*), (struct obj *))) 0;
         break;
     case 3:
 #if 0
@@ -4517,19 +4441,19 @@ int applymode;
         action = "move to another container on floor";
         objlist = contained_object_chain_ptr(current_container);
         actionfunc = move_container;
-        checkfunc = (int FDECL((*), (OBJ_P))) 0;
+        checkfunc = (int FDECL((*), (struct obj *))) 0;
         break;
     case 4:
         action = "take out and drop";
         objlist = contained_object_chain_ptr(current_container);
         actionfunc = out_container_and_drop;
-        checkfunc = (int FDECL((*), (OBJ_P))) 0;
+        checkfunc = (int FDECL((*), (struct obj *))) 0;
         break;
     case 5:
         action = "take out and auto-stash";
         objlist = contained_object_chain_ptr(current_container);
         actionfunc = out_container_and_autostash;
-        checkfunc = (int FDECL((*), (OBJ_P))) 0;
+        checkfunc = (int FDECL((*), (struct obj *))) 0;
         break;
     case 6:
         action = "pick up and put in";
@@ -4557,23 +4481,19 @@ int applymode;
 
     return used;
 }
-
-/* loot current_container (take things out or put things in), using a menu */
-STATIC_OVL int
-menu_loot(retry, command_id, applied_container, other_container, applymode)
-int retry;
-int command_id; 
-/* 0 = take out, 
-   1 = put in, 
-   2 = move items in a container to a(nother) container in inventory, 
+/* command_id:
+   0 = take out,
+   1 = put in,
+   2 = move items in a container to a(nother) container in inventory,
    3 = move items in a container to a(nother) container on floor,
    4 = take items out of a container and drop them on floor,
    5 = take items out of a container and stash them automatically, and
    6 = pick up items from the floor and put them in a container
  */
-struct obj* applied_container;
-struct obj* other_container UNUSED;
-int applymode;
+
+/* loot current_container (take things out or put things in), using a menu */
+static int
+menu_loot(int retry, int command_id, struct obj *applied_container, struct obj *other_container UNUSED, int applymode)
 {
     int n, i, n_looted = 0;
     boolean all_categories = TRUE, loot_everything = FALSE;
@@ -4912,10 +4832,9 @@ int applymode;
     return n_looted + more_action;
 }
 
-STATIC_OVL
+static
 boolean
-check_nonmergeable_nobj(objchn)
-struct obj* objchn;
+check_nonmergeable_nobj(struct obj *objchn)
 {
     struct obj* otmp;
     for (otmp = objchn; otmp; otmp = otmp->nobj)
@@ -4926,11 +4845,9 @@ struct obj* objchn;
     return FALSE;
 }
 
-STATIC_OVL
+static
 boolean
-check_nonmergeable_pick_list(pick_list, i, n)
-menu_item* pick_list;
-int i, n;
+check_nonmergeable_pick_list(menu_item *pick_list, int i, int n)
 {
     struct obj* otmp;
     int j;
@@ -4943,12 +4860,8 @@ int i, n;
     return FALSE;
 }
 
-STATIC_OVL char
-in_or_out_menu(prompt, obj, outokay, inokay, alreadyused, more_containers, applymode)
-const char *prompt;
-struct obj *obj;
-boolean outokay, inokay, alreadyused, more_containers;
-int applymode;
+static char
+in_or_out_menu(const char *prompt, struct obj *obj, boolean outokay, boolean inokay, boolean alreadyused, boolean more_containers, int applymode)
 {
     /* underscore is not a choice; it's used to skip element [0] */
     static const char lootchars[] = "_:oibrsnqmcdpa", abc_chars[] = "_:abcdenqfghij";
@@ -5081,11 +4994,11 @@ int applymode;
     return (n == 0 && more_containers) ? 'n' : 'q'; /* next or quit */
 }
 
-STATIC_VAR const char tippables[] = { ALL_CLASSES, TOOL_CLASS, 0 };
+static const char tippables[] = { ALL_CLASSES, TOOL_CLASS, 0 };
 
 /* #tip command -- empty container contents onto floor */
 int
-dotip(VOID_ARGS)
+dotip(void)
 {
     struct obj *cobj, *nobj;
     coord cc;
@@ -5240,9 +5153,12 @@ dotip(VOID_ARGS)
     return 0;
 }
 
-STATIC_OVL void
-tipcontainer(box)
-struct obj *box; /* or bag */
+/*
+ * Parameters:
+ *   box: or bag
+ */
+static void
+tipcontainer(struct obj *box)
 {
     xchar ox = u.ux, oy = u.uy; /* #tip only works at hero's location */
     boolean empty_it = FALSE, maybeshopgoods;
@@ -5398,7 +5314,7 @@ struct obj *box; /* or bag */
 }
 
 boolean
-can_stash_objs(VOID_ARGS)
+can_stash_objs(void)
 {
     struct obj* otmp;
     for (otmp = invent; otmp; otmp = otmp->nobj)
@@ -5410,7 +5326,7 @@ can_stash_objs(VOID_ARGS)
 }
 
 boolean
-can_floor_stash_objs(VOID_ARGS)
+can_floor_stash_objs(void)
 {
     if (!can_reach_floor(TRUE))
         return FALSE;
@@ -5425,24 +5341,24 @@ can_floor_stash_objs(VOID_ARGS)
 }
 
 
-STATIC_VAR struct obj dummy_container = { 0 };
+static struct obj dummy_container = { 0 };
 
 void
-set_current_container_to_dummyobj(VOID_ARGS)
+set_current_container_to_dummyobj(void)
 {
     current_container = &dummy_container;
 }
 
 
 void
-set_current_container_to_null(VOID_ARGS)
+set_current_container_to_null(void)
 {
     current_container = 0;
 }
 
 /* the stash command */
 int
-dostash(VOID_ARGS)
+dostash(void)
 {
     struct obj* otmp = (struct obj*)0;
 
@@ -5489,7 +5405,7 @@ dostash(VOID_ARGS)
 
 /* the stashfloor command */
 int
-dostashfloor(VOID_ARGS)
+dostashfloor(void)
 {
     struct obj* otmp = (struct obj*)0;
 
@@ -5531,7 +5447,7 @@ dostashfloor(VOID_ARGS)
 }
 
 void
-reset_pickup(VOID_ARGS)
+reset_pickup(void)
 {
     current_container = 0;
     move_target_container = 0;

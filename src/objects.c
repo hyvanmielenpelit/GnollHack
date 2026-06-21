@@ -5513,11 +5513,11 @@ OBJECT(OBJ(None, None, None, None, None, 0, OD_NONE, 0, 0, 0),
 /* clang-format on */
 /* *INDENT-ON* */
 
-void NDECL(objects_init);
+void objects_init(void);
 
 /* dummy routine used to force linkage */
 void
-objects_init(VOID_ARGS)
+objects_init(void)
 {
     return;
 }
