@@ -11,32 +11,32 @@
 /* croom->lx etc are schar (width <= int), so % arith ensures that */
 /* conversion of result to int is reasonable */
 
-static void FDECL(mkfount, (int, struct mkroom *));
-static void FDECL(mksink, (struct mkroom *));
-static void FDECL(mkaltar, (struct mkroom *, BOOLEAN_P));
-static void FDECL(mkgrave, (struct mkroom *));
-static void NDECL(makevtele);
-static void NDECL(clear_level_structures);
-static void NDECL(makelevel);
-static boolean FDECL(bydoor, (XCHAR_P, XCHAR_P));
-static struct mkroom *FDECL(find_branch_room, (coord *));
-static struct mkroom *FDECL(pos_to_room, (XCHAR_P, XCHAR_P));
-static boolean FDECL(place_niche, (struct mkroom *, int *, int *, int *));
-static void FDECL(makeniche, (int));
-static void NDECL(make_niches);
+static void mkfount(int, struct mkroom *);
+static void mksink(struct mkroom *);
+static void mkaltar(struct mkroom *, boolean);
+static void mkgrave(struct mkroom *);
+static void makevtele(void);
+static void clear_level_structures(void);
+static void makelevel(void);
+static boolean bydoor(xchar, xchar);
+static struct mkroom *find_branch_room(coord *);
+static struct mkroom *pos_to_room(xchar, xchar);
+static boolean place_niche(struct mkroom *, int *, int *, int *);
+static void makeniche(int);
+static void make_niches(void);
 static int FDECL(CFDECLSPEC do_comp, (const genericptr,
                                           const genericptr));
-static void FDECL(dosdoor, (XCHAR_P, XCHAR_P, struct mkroom *, int, UCHAR_P));
-static void FDECL(join, (int, int, BOOLEAN_P));
-static void FDECL(do_room_or_subroom, (struct mkroom *, int, int,
-                                           int, int, BOOLEAN_P,
-                                           SCHAR_P, BOOLEAN_P, int, int, int, int, SHORT_P, BOOLEAN_P));
-static void NDECL(makerooms);
-static void FDECL(finddpos, (coord *, XCHAR_P, XCHAR_P,
-                                 XCHAR_P, XCHAR_P));
-static void FDECL(mkinvpos, (XCHAR_P, XCHAR_P, int));
-static void FDECL(mk_knox_portal, (XCHAR_P, XCHAR_P));
-static void FDECL(clear_nearby_fireplaces, (XCHAR_P, XCHAR_P));
+static void dosdoor(xchar, xchar, struct mkroom *, int, uchar);
+static void join(int, int, boolean);
+static void do_room_or_subroom(struct mkroom *, int, int,
+                                           int, int, boolean,
+                                           schar, boolean, int, int, int, int, short, boolean);
+static void makerooms(void);
+static void finddpos(coord *, xchar, xchar,
+                                 xchar, xchar);
+static void mkinvpos(xchar, xchar, int);
+static void mk_knox_portal(xchar, xchar);
+static void clear_nearby_fireplaces(xchar, xchar);
 
 #define create_vault() create_room(-1, -1, 2, 2, -1, -1, VAULT, TRUE, ROOM, 0, NON_PM, -1, 0)
 #define init_vault() vault_x = -1

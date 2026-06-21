@@ -8,11 +8,11 @@
 
 #include "hack.h"
 
-static void NDECL(dowatersnakes);
-static void NDECL(dowaterdemon);
-static void NDECL(dowaternymph);
-static void FDECL(gush, (int, int, genericptr_t));
-static void NDECL(dofindgem);
+static void dowatersnakes(void);
+static void dowaterdemon(void);
+static void dowaternymph(void);
+static void gush(int, int, genericptr_t);
+static void dofindgem(void);
 
 /* used when trying to dip in or drink from fountain or sink or pool while
    levitating above it, or when trying to move downwards in that state */

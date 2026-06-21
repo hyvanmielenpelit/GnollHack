@@ -43,7 +43,7 @@ typedef struct dlb_procs {
 } dlb_procs_t;
 
 /* without extern.h via hack.h, these haven't been declared for us */
-extern FILE* FDECL(fopen_datafile, (const char*, const char*, int));
+extern FILE* fopen_datafile(const char*, const char*, int);
 
 #ifdef DLBLIB
 /*
@@ -63,7 +63,7 @@ extern FILE* FDECL(fopen_datafile, (const char*, const char*, int));
  */
 
 #define MAX_LIBS 4
-STATIC_VAR library dlb_libs[MAX_LIBS];
+static library dlb_libs[MAX_LIBS];
 
 static boolean readlibdir(library* lp);
 static boolean find_file(const char* name, library** lib,
@@ -83,7 +83,7 @@ boolean open_library(const char* lib_name, library* lp);
 void close_library(library* lp);
 
 /* without extern.h via hack.h, these haven't been declared for us */
-extern char* FDECL(eos, (char*));
+extern char* eos(char*);
 
 /*
  * Read the directory out of the library.  Return 1 if successful,
@@ -417,8 +417,8 @@ const dlb_procs_t rsrc_dlb_procs = { rsrc_dlb_init,  rsrc_dlb_cleanup,
 #define do_dlb_fgetc (*dlb_procs->dlb_fgetc_proc)
 #define do_dlb_ftell (*dlb_procs->dlb_ftell_proc)
 
-STATIC_VAR const dlb_procs_t* dlb_procs;
-STATIC_VAR boolean dlb_initialized = FALSE;
+static const dlb_procs_t* dlb_procs;
+static boolean dlb_initialized = FALSE;
 
 boolean
 dlb_init(void)

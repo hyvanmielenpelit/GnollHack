@@ -21,20 +21,20 @@
 
 #include "hack.h"
 
-static void FDECL(get_wall_for_db, (int *, int *));
-static struct entity *FDECL(e_at, (int, int));
-static void FDECL(m_to_e, (struct monst *, int, int, struct entity *));
-static void FDECL(u_to_e, (struct entity *));
-static void FDECL(set_entity, (int, int, struct entity *));
-static const char *FDECL(e_nam, (struct entity *));
-static const char *FDECL(E_phrase, (struct entity *, const char *));
-static boolean FDECL(e_survives_at, (struct entity *, int, int));
-static void FDECL(e_died, (struct entity *, int, int));
-static void FDECL(e_damage, (struct entity*, int, int, uint64_t, const char*, int));
-static boolean FDECL(automiss, (struct entity *));
-static boolean FDECL(e_missed, (struct entity *, BOOLEAN_P));
-static boolean FDECL(e_jumps, (struct entity *));
-static void FDECL(do_entity, (struct entity *));
+static void get_wall_for_db(int *, int *);
+static struct entity *e_at(int, int);
+static void m_to_e(struct monst *, int, int, struct entity *);
+static void u_to_e(struct entity *);
+static void set_entity(int, int, struct entity *);
+static const char *e_nam(struct entity *);
+static const char *E_phrase(struct entity *, const char *);
+static boolean e_survives_at(struct entity *, int, int);
+static void e_died(struct entity *, int, int);
+static void e_damage(struct entity*, int, int, uint64_t, const char*, int);
+static boolean automiss(struct entity *);
+static boolean e_missed(struct entity *, boolean);
+static boolean e_jumps(struct entity *);
+static void do_entity(struct entity *);
 
 boolean
 is_pool(int x, int y)

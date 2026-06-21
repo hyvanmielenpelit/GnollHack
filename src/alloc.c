@@ -12,23 +12,23 @@
 #define EXTERN_H /* comment line for pre-compiled headers */
 #include "config.h"
 
-char *FDECL(fmt_ptr, (const genericptr));
+char *fmt_ptr(const genericptr);
 
 #ifdef MONITOR_HEAP
 #undef alloc
 #undef free
-extern void FDECL(free, (genericptr_t));
-static void NDECL(heapmon_init);
+extern void free(genericptr_t);
+static void heapmon_init(void);
 
 static FILE *heaplog = 0;
 static boolean tried_heaplog = FALSE;
 #endif
 
-long *FDECL(alloc, (size_t));
+long *alloc(size_t);
 #ifdef GNOLLHACK_MAIN_PROGRAM
-extern void FDECL(set_panic_handling, (int, BOOLEAN_P));
+extern void set_panic_handling(int, boolean);
 #endif
-extern void VDECL(panic, (const char *, ...)) PRINTF_F(1, 2);
+extern void panic(const char *, ...) PRINTF_F(1, 2);
 
 long *
 alloc(size_t lth)

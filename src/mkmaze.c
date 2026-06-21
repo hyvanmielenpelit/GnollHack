@@ -15,22 +15,22 @@ extern int num_lregions;
 /* for preserving the insect legs when wallifying baalz level */
 static lev_region bughack = { {COLNO, ROWNO, 0, 0}, {COLNO, ROWNO, 0, 0} };
 
-static int FDECL(iswall, (int, int));
-static int FDECL(iswall_or_stone, (int, int));
-static boolean FDECL(is_solid, (int, int));
-static int FDECL(extend_spine, (int[3][3], int, int, int));
-static boolean FDECL(okay, (int, int, int));
-static void FDECL(maze0xy, (coord *));
-static boolean FDECL(put_lregion_here, (XCHAR_P, XCHAR_P, XCHAR_P,
-                                            XCHAR_P, XCHAR_P, XCHAR_P,
-                                            XCHAR_P, BOOLEAN_P, d_level *));
-static void NDECL(baalz_fixup);
-static void NDECL(setup_waterlevel);
-static void NDECL(unsetup_waterlevel);
-static void FDECL(check_ransacked, (char *));
-static void FDECL(migr_booty_item, (int, const char *));
-static void FDECL(migrate_orc, (struct monst *, uint64_t));
-static void NDECL(stolen_booty);
+static int iswall(int, int);
+static int iswall_or_stone(int, int);
+static boolean is_solid(int, int);
+static int extend_spine(int[3][3], int, int, int);
+static boolean okay(int, int, int);
+static void maze0xy(coord *);
+static boolean put_lregion_here(xchar, xchar, xchar,
+                                            xchar, xchar, xchar,
+                                            xchar, boolean, d_level *);
+static void baalz_fixup(void);
+static void setup_waterlevel(void);
+static void unsetup_waterlevel(void);
+static void check_ransacked(char *);
+static void migr_booty_item(int, const char *);
+static void migrate_orc(struct monst *, uint64_t);
+static void stolen_booty(void);
 
 /* adjust a coordinate one step in the specified direction */
 #define mz_move(X, Y, dir) \
@@ -1502,9 +1502,9 @@ static int xmin, ymin, xmax, ymax; /* level boundaries */
 #define bxmax (xmax - 1)
 #define bymax (ymax - 1)
 
-static void NDECL(set_wportal);
-static void FDECL(mk_bubble, (int, int, int));
-static void FDECL(mv_bubble, (struct bubble *, int, int, BOOLEAN_P));
+static void set_wportal(void);
+static void mk_bubble(int, int, int);
+static void mv_bubble(struct bubble *, int, int, boolean);
 
 void
 movebubbles(void)

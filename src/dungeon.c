@@ -41,44 +41,44 @@ struct lchoice {
     char menuletter;
 };
 
-static void FDECL(Fread, (genericptr_t, long, long, dlb *));
-static xchar FDECL(dname_to_dnum, (const char *));
-static int FDECL(find_branch, (const char *, struct proto_dungeon *));
-static xchar FDECL(parent_dnum, (const char *, struct proto_dungeon *));
-static int FDECL(level_range, (XCHAR_P, int, int, int,
-                                   struct proto_dungeon *, int *));
-static xchar FDECL(parent_dlevel, (const char *, struct proto_dungeon *));
-static int FDECL(correct_branch_type, (struct tmpbranch *));
-static branch *FDECL(add_branch, (int, int, struct proto_dungeon *));
-static void FDECL(add_level, (s_level *));
-static void FDECL(init_level, (int, int, struct proto_dungeon *));
-static int FDECL(possible_places, (int, boolean *,
-                                       struct proto_dungeon *));
-static xchar FDECL(pick_level, (boolean *, int));
-static boolean FDECL(place_level, (int, struct proto_dungeon *));
-static boolean FDECL(unplaced_floater, (struct dungeon *));
-static boolean FDECL(unreachable_level, (d_level *, BOOLEAN_P));
-static void FDECL(tport_menu, (winid, char *, struct lchoice *, d_level *,
-                                   BOOLEAN_P));
-static const char *FDECL(br_string, (int));
-static char FDECL(chr_u_on_lvl, (d_level *));
-static void FDECL(print_branch, (winid, int, int, int, BOOLEAN_P,
-                                     struct lchoice *));
-static mapseen *FDECL(load_mapseen, (int));
-static void FDECL(save_mapseen, (int, mapseen *));
-static mapseen *FDECL(find_mapseen_by_str, (const char *));
-static void FDECL(print_mapseen, (winid, mapseen *, int, int, BOOLEAN_P));
-static boolean FDECL(interest_mapseen, (mapseen *));
-static void FDECL(traverse_mapseenchn, (BOOLEAN_P, winid,
-                                            int, int, int *));
-static const char *FDECL(seen_string, (XCHAR_P, const char *));
-static const char *FDECL(br_string2, (branch *));
-static const char *FDECL(shop_string, (int));
-static char *FDECL(tunesuffix, (mapseen *, char *));
+static void Fread(genericptr_t, long, long, dlb *);
+static xchar dname_to_dnum(const char *);
+static int find_branch(const char *, struct proto_dungeon *);
+static xchar parent_dnum(const char *, struct proto_dungeon *);
+static int level_range(xchar, int, int, int,
+                                   struct proto_dungeon *, int *);
+static xchar parent_dlevel(const char *, struct proto_dungeon *);
+static int correct_branch_type(struct tmpbranch *);
+static branch *add_branch(int, int, struct proto_dungeon *);
+static void add_level(s_level *);
+static void init_level(int, int, struct proto_dungeon *);
+static int possible_places(int, boolean *,
+                                       struct proto_dungeon *);
+static xchar pick_level(boolean *, int);
+static boolean place_level(int, struct proto_dungeon *);
+static boolean unplaced_floater(struct dungeon *);
+static boolean unreachable_level(d_level *, boolean);
+static void tport_menu(winid, char *, struct lchoice *, d_level *,
+                                   boolean);
+static const char *br_string(int);
+static char chr_u_on_lvl(d_level *);
+static void print_branch(winid, int, int, int, boolean,
+                                     struct lchoice *);
+static mapseen *load_mapseen(int);
+static void save_mapseen(int, mapseen *);
+static mapseen *find_mapseen_by_str(const char *);
+static void print_mapseen(winid, mapseen *, int, int, boolean);
+static boolean interest_mapseen(mapseen *);
+static void traverse_mapseenchn(boolean, winid,
+                                            int, int, int *);
+static const char *seen_string(xchar, const char *);
+static const char *br_string2(branch *);
+static const char *shop_string(int);
+static char *tunesuffix(mapseen *, char *);
 
 #ifdef DEBUG
 #define DD dungeons[i]
-static void NDECL(dumpit);
+static void dumpit(void);
 
 static void
 dumpit(void)
@@ -633,7 +633,7 @@ pick_level(boolean *map, int nth)
 }
 
 #ifdef DDEBUG
-static void FDECL(indent, (int));
+static void indent(int);
 
 static void
 indent(int d)

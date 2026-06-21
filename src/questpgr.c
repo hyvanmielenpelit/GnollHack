@@ -21,23 +21,23 @@
 /* from sp_lev.c, for deliver_splev_message() */
 extern struct lev_msg *lev_message;
 
-static void NDECL(dump_qtlist);
-static void FDECL(Fread, (genericptr_t, long, long, dlb *));
-static struct qtmsg *FDECL(construct_qtlist, (int64_t));
-static const char *NDECL(intermed);
-static struct obj *FDECL(find_qarti, (struct obj *));
-static const char *NDECL(guardname);
-static const char *NDECL(homebase);
-static void FDECL(qtext_pronoun, (CHAR_P, CHAR_P));
-static struct qtmsg *FDECL(msg_in, (struct qtmsg *, int));
-static void FDECL(convert_arg, (CHAR_P));
-static void FDECL(convert_line, (char *,char *));
-static void FDECL(deliver_by_pline, (struct qtmsg *, int, int, struct monst*, BOOLEAN_P));
-static void FDECL(deliver_by_window, (struct qtmsg *, int, int, int));
-static void FDECL(deliver_by_file_write, (dlb*, struct qtmsg*, int, int));
-static void FDECL(file_write_pager, (dlb*, struct qtmsg*, int, int));
-static boolean FDECL(skip_pager, (BOOLEAN_P));
-static void FDECL(printout_popupbuf, (char*, int));
+static void dump_qtlist(void);
+static void Fread(genericptr_t, long, long, dlb *);
+static struct qtmsg *construct_qtlist(int64_t);
+static const char *intermed(void);
+static struct obj *find_qarti(struct obj *);
+static const char *guardname(void);
+static const char *homebase(void);
+static void qtext_pronoun(char, char);
+static struct qtmsg *msg_in(struct qtmsg *, int);
+static void convert_arg(char);
+static void convert_line(char *,char *);
+static void deliver_by_pline(struct qtmsg *, int, int, struct monst*, boolean);
+static void deliver_by_window(struct qtmsg *, int, int, int);
+static void deliver_by_file_write(dlb*, struct qtmsg*, int, int);
+static void file_write_pager(dlb*, struct qtmsg*, int, int);
+static boolean skip_pager(boolean);
+static void printout_popupbuf(char*, int);
 
 static char cvt_buf[64];
 static struct qtlists qt_list;

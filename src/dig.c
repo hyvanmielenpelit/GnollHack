@@ -9,15 +9,14 @@
 
 static NEARDATA boolean did_dig_msg;
 
-static boolean NDECL(rm_waslit);
-static void FDECL(mkcavepos,
-                      (XCHAR_P, XCHAR_P, int, BOOLEAN_P, BOOLEAN_P));
-static void FDECL(mkcavearea, (BOOLEAN_P));
-static int NDECL(dig);
-static void FDECL(dig_up_grave, (coord *));
-static int FDECL(adj_pit_checks, (coord *, char *));
-static void FDECL(pit_flow, (struct trap *, SCHAR_P));
-static void FDECL(create_tree_remnants, (int, int, boolean*));
+static boolean rm_waslit(void);
+static void mkcavepos(xchar, xchar, int, boolean, boolean);
+static void mkcavearea(boolean);
+static int dig(void);
+static void dig_up_grave(coord *);
+static int adj_pit_checks(coord *, char *);
+static void pit_flow(struct trap *, schar);
+static void create_tree_remnants(int, int, boolean*);
 
 /* Indices returned by dig_typ() */
 enum dig_types {

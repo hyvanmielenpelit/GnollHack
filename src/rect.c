@@ -6,7 +6,7 @@
 
 #include "hack.h"
 
-int FDECL(get_rect_ind, (NhRect *));
+int get_rect_ind(NhRect *);
 
 static boolean intersect(NhRect *, NhRect *, NhRect *);
 
@@ -19,8 +19,8 @@ static boolean intersect(NhRect *, NhRect *, NhRect *);
 #define XLIM 4
 #define YLIM 3
 
-STATIC_VAR NhRect rect[MAXRECT + 1];
-STATIC_VAR int rect_cnt;
+static NhRect rect[MAXRECT + 1];
+static int rect_cnt;
 
 /*
  * Initialisation of internal structures. Should be called for every

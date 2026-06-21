@@ -79,8 +79,8 @@
 #define Static static
 #endif
 
-static boolean FDECL(pmatch_internal, (const char *, const char *,
-                                       BOOLEAN_P, const char *));
+static boolean pmatch_internal(const char *, const char *,
+                                       boolean, const char *);
 
 
 const nhsym cp437toUnicode[256] = {
@@ -865,9 +865,9 @@ fuzzymatch(const char *s1, const char *s2, const char *ignore_chars, boolean cas
 
 #if defined(AMIGA) && !defined(AZTEC_C) && !defined(__SASC_60) \
     && !defined(_DCC) && !defined(__GNUC__)
-extern struct tm *FDECL(localtime, (time_t *));
+extern struct tm *localtime(time_t *);
 #endif
-static struct tm *NDECL(getlt);
+static struct tm *getlt(void);
 
 /* Sets the seed for the random number generator */
 #ifdef USE_ISAAC64
@@ -911,7 +911,7 @@ set_random(uint64_t seed, int (*fn)(int) UNUSED)
 /* An appropriate version of this must always be provided in
    port-specific code somewhere. It returns a number suitable
    as seed for the random number generator */
-extern uint64_t NDECL(sys_random_seed);
+extern uint64_t sys_random_seed(void);
 
 /*
  * Initializes the random number generator.

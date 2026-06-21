@@ -58,22 +58,22 @@ NEARDATA struct room_definition room_definitions[NUM_ROOM_TYPES] =
     { "candle shop", TRUE, CMAP_CITYSCAPE },
 };
 
-static boolean FDECL(isbig, (struct mkroom *));
-static struct mkroom *FDECL(pick_room, (BOOLEAN_P));
-static int NDECL(mkshop), NDECL(mkdesertedshop);
-static int FDECL(mkzoo, (int)), NDECL(mkswamp), NDECL(mkgarden), NDECL(mkdragonlair);
-static int NDECL(mktemple);
-static coord* FDECL(shrine_pos, (int));
-static int NDECL(mksmithy);
-static coord* FDECL(anvil_pos, (int));
-static struct permonst *NDECL(morguemon);
-static struct permonst *FDECL(librarymon, (int));
-static struct permonst *NDECL(squadmon);
-static struct permonst* FDECL(armorymon, (BOOLEAN_P));
-static struct permonst* NDECL(yeenaghumon);
-static void FDECL(save_room, (int, struct mkroom *));
-static void FDECL(rest_room, (int, struct mkroom *));
-static void FDECL(reset_room, (struct mkroom*));
+static boolean isbig(struct mkroom *);
+static struct mkroom *pick_room(boolean);
+static int mkshop(void), mkdesertedshop(void);
+static int mkzoo(int), mkswamp(void), mkgarden(void), mkdragonlair(void);
+static int mktemple(void);
+static coord* shrine_pos(int);
+static int mksmithy(void);
+static coord* anvil_pos(int);
+static struct permonst *morguemon(void);
+static struct permonst *librarymon(int);
+static struct permonst *squadmon(void);
+static struct permonst* armorymon(boolean);
+static struct permonst* yeenaghumon(void);
+static void save_room(int, struct mkroom *);
+static void rest_room(int, struct mkroom *);
+static void reset_room(struct mkroom*);
 
 #define sq(x) ((x) * (x))
 

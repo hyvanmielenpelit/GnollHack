@@ -10,16 +10,16 @@
 #define HEIGHT (ROWNO - 1)
 #define WIDTH (COLNO - 2)
 
-static void FDECL(init_map, (lev_init*));
-static void FDECL(init_fill, (lev_init*));
-static schar FDECL(get_map, (int, int, SCHAR_P));
-static void FDECL(pass_one, (lev_init*));
-static void FDECL(pass_two, (lev_init*));
-static void FDECL(pass_three, (lev_init*));
-static void FDECL(join_map, (lev_init*));
-static void FDECL(finish_map, (lev_init*));
-static void FDECL(remove_room, (unsigned));
-void FDECL(mkmap, (lev_init *));
+static void init_map(lev_init*);
+static void init_fill(lev_init*);
+static schar get_map(int, int, schar);
+static void pass_one(lev_init*);
+static void pass_two(lev_init*);
+static void pass_three(lev_init*);
+static void join_map(lev_init*);
+static void finish_map(lev_init*);
+static void remove_room(unsigned);
+void mkmap(lev_init *);
 
 static char *new_locations;
 int min_rx, max_rx, min_ry, max_ry; /* rectangle bounds for regions */

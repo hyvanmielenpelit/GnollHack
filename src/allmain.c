@@ -1209,8 +1209,7 @@ display_gamewindows(void)
 }
 
 const char*
-get_game_difficulty_text(dif_level)
-int dif_level;
+get_game_difficulty_text(int dif_level)
 {
     
     switch (dif_level)
@@ -1237,8 +1236,7 @@ int dif_level;
 }
 
 const char*
-get_game_difficulty_symbol(dif_level)
-int dif_level;
+get_game_difficulty_symbol(int dif_level)
 {
 
     switch (dif_level)
@@ -1265,15 +1263,13 @@ int dif_level;
 }
 
 const char*
-get_game_mode_text(display_nonscoring)
-boolean display_nonscoring;
+get_game_mode_text(boolean display_nonscoring)
 {
     return get_game_mode_text_core(wizard, discover, ModernMode, CasualMode, flags.non_scoring, TournamentMode, display_nonscoring);
 }
 
 const char*
-get_game_mode_text_core(iswizardmode, isexporemode, ismodernmode, iscasualmode, isnonscoring, istournamentmode, display_nonscoring)
-boolean display_nonscoring, iswizardmode, isexporemode, ismodernmode, iscasualmode, isnonscoring, istournamentmode;
+get_game_mode_text_core(boolean iswizardmode, boolean isexporemode, boolean ismodernmode, boolean iscasualmode, boolean isnonscoring, boolean istournamentmode, boolean display_nonscoring)
 {
     if (iswizardmode)
     {
@@ -1772,7 +1768,7 @@ static const struct early_opt earlyopts[] = {
 };
 
 #ifdef WIN32
-extern int FDECL(windows_early_options, (const char *));
+extern int windows_early_options(const char *);
 #endif
 
 /*
@@ -1916,8 +1912,7 @@ debug_fields(const char* opts)
 
 
 int
-get_u_move_speed(return_expected_value)
-boolean return_expected_value;
+get_u_move_speed(boolean return_expected_value)
 {
     int wtcap = near_capacity();
     int moveamt = 0;

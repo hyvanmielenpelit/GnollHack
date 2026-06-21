@@ -14,14 +14,14 @@
 #define Not_firsttime (on_level(&u.uz0, &u.uz))
 #define Qstat(x) (quest_status.x)
 
-static void NDECL(on_start);
-static void NDECL(on_locate);
-static void NDECL(on_goal);
-static void FDECL(expulsion, (BOOLEAN_P));
-static boolean FDECL(chat_with_leader, (struct monst*, BOOLEAN_P));
-static boolean FDECL(chat_with_nemesis, (struct monst*, BOOLEAN_P));
-static boolean FDECL(chat_with_guardian, (struct monst*, BOOLEAN_P));
-static boolean FDECL(prisoner_speaks, (struct monst *));
+static void on_start(void);
+static void on_locate(void);
+static void on_goal(void);
+static void expulsion(boolean);
+static boolean chat_with_leader(struct monst*, boolean);
+static boolean chat_with_nemesis(struct monst*, boolean);
+static boolean chat_with_guardian(struct monst*, boolean);
+static boolean prisoner_speaks(struct monst *);
 
 static void
 on_start(void)
