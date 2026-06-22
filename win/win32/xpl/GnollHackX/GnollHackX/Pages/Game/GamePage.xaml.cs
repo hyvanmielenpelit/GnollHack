@@ -16945,35 +16945,41 @@ namespace GnollHackX.Pages.Game
 
         public async Task FadeToBlack(uint milliseconds)
         {
-            MainGrid.IsEnabled = false;
+            //MainGrid.IsEnabled = false;
 #if WINDOWS
             FadeFrame.Opacity = 0.0;
             FadeFrame.IsVisible = true;
+            await Task.Yield(); /* Just in case */
             await FadeFrame.FadeToAsync(1.0, milliseconds);
 #else
             MainCanvasView.Opacity = 1.0;
+            await Task.Yield(); /* Just in case */
 #if GNH_MAUI
             await MainCanvasView.FadeToAsync(0.0, milliseconds);
 #else
             await MainCanvasView.FadeTo(0.0, milliseconds);
 #endif
+            MainCanvasView.Opacity = 0.0; /* Just in case */
 #endif
         }
 
         public async Task FadeFromBlack(uint milliseconds)
         {
-            MainGrid.IsEnabled = true;
+            //MainGrid.IsEnabled = true;
 #if WINDOWS
             FadeFrame.Opacity = 1.0;
+            await Task.Yield(); /* Just in case */
             await FadeFrame.FadeToAsync(0.0, milliseconds);
             FadeFrame.IsVisible = false;
 #else
             MainCanvasView.Opacity = 0.0;
+            await Task.Yield(); /* Just in case */
 #if GNH_MAUI
             await MainCanvasView.FadeToAsync(1.0, milliseconds);
 #else
             await MainCanvasView.FadeTo(1.0, milliseconds);
 #endif
+            MainCanvasView.Opacity = 1.0; /* Just in case */
 #endif
         }
 
