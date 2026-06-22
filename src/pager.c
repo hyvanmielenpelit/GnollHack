@@ -301,6 +301,11 @@ look_at_object(char *buf, int x, int y, int glyph)
 
     if (otmp)
     {
+        debugprint("look_at_object: otyp=%d, hallu=%d, fakeobj=%d, hasname=%d, hasdescr=%d, dump=%d, dknown=%d", 
+            otmp->otyp, Hallucination, (int)fakeobj, 
+            otmp->otyp > STRANGE_OBJECT && otmp->otyp < NUM_OBJECTS ? OBJ_NAME(objects[otmp->otyp]) != 0 : -1, 
+            otmp->otyp > STRANGE_OBJECT && otmp->otyp < NUM_OBJECTS ? OBJ_DESCR(objects[otmp->otyp]) != 0 : -1,
+            (int)iflags.in_dumplog, (int)otmp->dknown);
         const char* used_obj_name = (otmp->otyp > STRANGE_OBJECT && otmp->otyp < NUM_OBJECTS && OBJ_NAME(objects[otmp->otyp]))
             ? (iflags.in_dumplog ? aqcxname(otmp) : distant_name(otmp, otmp->dknown ? doname_with_price : doname_vague_quan))
             : obj_descr[STRANGE_OBJECT].oc_name;
@@ -309,7 +314,6 @@ look_at_object(char *buf, int x, int y, int glyph)
 
         if (fakeobj) 
         {
-            debugprint("look_at_object");
             otmp->where = OBJ_FREE; /* object_from_map set it to OBJ_FLOOR */
             dealloc_obj(otmp), otmp = 0;
         }
