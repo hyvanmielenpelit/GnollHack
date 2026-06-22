@@ -21,6 +21,9 @@
 
 #ifdef NEED_VARARGS
 #include <stdarg.h>
+#ifndef va_copy
+#define va_copy(dest, src) (dest) = (src)
+#endif
 #endif
 
 #define genericptr void *
@@ -150,6 +153,9 @@ typedef void *genericptr_t;
 
 #ifdef USE_STDARG
 #include <stdarg.h>
+#ifndef va_copy
+#define va_copy(dest, src) (dest) = (src)
+#endif
 #endif
 
 #if 0 /* Retired as part of the ANSI C89 migration */

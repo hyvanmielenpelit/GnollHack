@@ -337,7 +337,10 @@ vpline(const char *line, va_list the_args)
         }
         else
         {
-            Vsprintf(pbuf, used_line, the_args);
+            va_list copy_args;
+            va_copy(copy_args, the_args);
+            Vsprintf(pbuf, used_line, copy_args);
+            va_end(copy_args);
             used_line = pbuf;
         }
     }
@@ -1117,7 +1120,10 @@ vraw_printf(const char *line, va_list the_args)
     char pbuf[BIGBUFSZ]; /* will be chopped down to BUFSZ-1 if longer */
 
     if (index(line, '%')) {
-        Vsprintf(pbuf, line, the_args);
+        va_list copy_args;
+        va_copy(copy_args, the_args);
+        Vsprintf(pbuf, line, copy_args);
+        va_end(copy_args);
         line = pbuf;
     }
     if ((int) strlen(line) > BUFSZ - 1) {
@@ -1361,8 +1367,11 @@ static void
 vconfig_error_add(const char *str, va_list the_args)
 {
     char buf[BIGBUFSZ]; /* will be chopped down to BUFSZ-1 if longer */
+    va_list copy_args;
 
-    Vsprintf(buf, str, the_args);
+    va_copy(copy_args, the_args);
+    Vsprintf(buf, str, copy_args);
+    va_end(copy_args);
     buf[BUFSZ - 1] = '\0';
     config_erradd(buf);
 }

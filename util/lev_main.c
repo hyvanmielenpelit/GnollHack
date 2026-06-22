@@ -430,7 +430,10 @@ lc_vpline(const char *line, va_list the_args)
     if (!line || !*line)
         line = nomsg; /* shouldn't happen */
     if (index(line, '%')) {
-        Vsprintf(pbuf, line, the_args);
+        va_list copy_args;
+        va_copy(copy_args, the_args);
+        Vsprintf(pbuf, line, copy_args);
+        va_end(copy_args);
         pbuf[BUFSZ - 1] = '\0'; /* truncate if int64_t */
         line = pbuf;
     }
