@@ -188,7 +188,7 @@ pline(const char *line, ...)
 
 static void
 vpline(const char *line, va_list the_args)
-{       /* start of vpline() or of nested block in USE_OLDARG's pline() */
+{
     static int in_pline = 0;
     static char pbuf[VERYBIGBUFSZ], combined_line[VERYBIGBUFSZ]; /* will get chopped down to BUFSZ-1 if longer */
     char multi_line[BIGBUFSZ], attrs[BIGBUFSZ], colors[BIGBUFSZ];
@@ -200,7 +200,6 @@ vpline(const char *line, va_list the_args)
     combined_line[0] = 0;
     attrs[0] = 0;
     colors[0] = 0;
-    /* Do NOT use VA_START and VA_END in here... see above */
 
     if (!line || !*line)
         return;

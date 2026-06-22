@@ -422,11 +422,10 @@ void lc_pline(const char *line, ...)
 
 static void
 lc_vpline(const char *line, va_list the_args)
-{   /* opening brace for lc_vpline, nested block for USE_OLDARGS lc_pline */
+{
 
     char pbuf[3 * BUFSZ];
     static char nomsg[] = "(no message)";
-    /* Do NOT use VA_START and VA_END in here... see above */
 
     if (!line || !*line)
         line = nomsg; /* shouldn't happen */
@@ -448,9 +447,6 @@ lc_vpline(const char *line, va_list the_args)
     }
     lc_pline_mode = LC_PLINE_MESSAGE; /* reset to default */
     return;
-#if !(defined(USE_STDARG) || defined(USE_VARARGS))
-    VA_END();  /* closing brace ofr USE_OLDARGS's nested block */
-#endif
 }
 
 /*VARARGS1*/

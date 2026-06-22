@@ -131,12 +131,7 @@ error (const char *line, ...)
 		line = pbuf;
 	}
 	showerror("of an internal error",line);
-
-#if !(defined(USE_STDARG) || defined(USE_VARARGS))
-        VA_END();  /* provides closing brace for USE_OLDARGS's nested block */
-#endif
 }
-
 
 void attemptingto(char * activity)
 /* Say what we are trying to do for subsequent error-handling: will appear as x in an
