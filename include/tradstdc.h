@@ -8,6 +8,74 @@
 #ifndef TRADSTDC_H
 #define TRADSTDC_H
 
+#if defined(__STDC__) || defined(__cplusplus) || defined(_MSC_VER) || defined(__GNUC__) || defined(__clang__)
+/* ======================================================================== */
+/* Modern C89/C99/C11 & C++ Compiler Section                               */
+/* ======================================================================== */
+
+#define NHSTDC
+
+#ifndef USE_STDARG
+#define USE_STDARG
+#endif
+
+#define NDECL(f) f(void)
+#define FDECL(f, p) f p
+#define VDECL(f, p) f p
+
+#define VOID_ARGS void
+
+#ifdef NEED_VARARGS
+#include <stdarg.h>
+#endif
+
+#define genericptr void *
+typedef void *genericptr_t;
+
+#define CHAR_P char
+#define SCHAR_P schar
+#define UCHAR_P uchar
+#define XCHAR_P xchar
+#define SHORT_P short
+#define UNSIGNED_SHORT_P unsigned short
+#define BOOLEAN_P boolean
+#define ALIGNTYP_P aligntyp
+
+#define OBJ_P struct obj *
+#define MONST_P struct monst *
+#define TRAP_P struct trap *
+
+#ifdef __GNUC__
+#if defined(ANDROID) || defined(GNH_MOBILE) 
+#define PRINTF_F(f,v) __attribute__ ((format (__printf__, f, v)))
+#elif (__GNUC__ >= 2)
+#define PRINTF_F(f, v) __attribute__((format(printf, f, v)))
+#endif
+#if __GNUC__ >= 3
+#define UNUSED __attribute__((unused))
+#define NORETURN __attribute__((noreturn))
+#if defined(GCC_URWARN)
+#define __warn_unused_result__ /*empty*/
+#define warn_unused_result /*empty*/
+#endif
+#endif
+#endif
+
+#ifndef PRINTF_F
+#define PRINTF_F(f, v)
+#endif
+#ifndef UNUSED
+#define UNUSED
+#endif
+#ifndef NORETURN
+#define NORETURN
+#endif
+
+#else
+/* ======================================================================== */
+/* Legacy K&R C Compiler Section (Archaic Fallback)                         */
+/* ======================================================================== */
+
 #if defined(DUMB) && !defined(NOVOID)
 #define NOVOID
 #endif
@@ -484,6 +552,8 @@ typedef genericptr genericptr_t; /* (void *) or (char *) */
 #endif
 #ifndef NORETURN
 #define NORETURN
+#endif
+
 #endif
 
 #endif /* TRADSTDC_H */
