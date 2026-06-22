@@ -1990,11 +1990,7 @@ race_alignmentcount(int racenum)
 }
 
 char *
-root_plselection_prompt(suppliedbuf, buflen, rolenum, racenum, gendnum,
-                        alignnum)
-char *suppliedbuf;
-size_t buflen;
-int rolenum, racenum, gendnum, alignnum;
+root_plselection_prompt(char *suppliedbuf, size_t buflen, int rolenum, int racenum, int gendnum, int alignnum)
 {
     int k, gendercount = 0, aligncount = 0;
     char buf[BUFSZ];

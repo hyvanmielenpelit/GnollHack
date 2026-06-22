@@ -26,9 +26,7 @@ static void process_command_line_arguments(int, char **);
 
 static void wd_message(void);
 
-static char *make_lockname(filename, lockname)
-const char *filename;
-char *lockname;
+static char *make_lockname(const char *filename, char *lockname)
 {
 #  ifdef NO_FILE_LINKS
 	Strcpy(lockname, LOCKDIR);
@@ -58,7 +56,7 @@ void gnollhack_exit(int code)
 	longjmp(env, code);
 }
 
-int GnollHackMain(int argc, char** argv)
+int GnollHackMain(int argc, char **argv)
 {
 	debuglog("Starting GnollHack!");
 
@@ -228,8 +226,7 @@ boolean authorize_wizard_mode()
 }
 
 
-static void process_command_line_arguments(argc, argv)
-	int argc;char *argv[];
+static void process_command_line_arguments(int argc, char *argv[])
 {
 	int i;
 
@@ -375,8 +372,7 @@ static void wd_message()
  * Add a slash to any name not ending in /. There must
  * be room for the /
  */
-void append_slash(name)
-	char *name;
+void append_slash(char *name)
 {
 	char *ptr;
 

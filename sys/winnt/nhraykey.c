@@ -301,13 +301,7 @@ is_altseq(unsigned long shiftstate)
     }
 }
 
-int __declspec(dllexport) __stdcall ProcessKeystroke(hConIn, ir, valid,
-                                                     numberpad, portdebug)
-HANDLE hConIn;
-INPUT_RECORD *ir;
-boolean *valid;
-boolean numberpad;
-int portdebug;
+int __declspec(dllexport) __stdcall ProcessKeystroke(HANDLE hConIn, INPUT_RECORD *ir, boolean *valid, boolean numberpad, int portdebug)
 {
     int metaflags = 0, k = 0;
     int keycode, vk;
@@ -470,15 +464,7 @@ process_keystroke2(HANDLE hConIn, INPUT_RECORD *ir, boolean *valid)
     return ch;
 }
 
-int __declspec(dllexport) __stdcall CheckInput(hConIn, ir, count, numpad,
-                                               mode, mod, cc)
-HANDLE hConIn;
-INPUT_RECORD *ir;
-DWORD *count;
-int mode;
-int *mod;
-boolean numpad;
-coord *cc;
+int __declspec(dllexport) __stdcall CheckInput(HANDLE hConIn, INPUT_RECORD *ir, DWORD *count, boolean numpad, int mode, int *mod, coord *cc)
 {
 #if defined(SAFERHANGUP)
     DWORD dwWait;

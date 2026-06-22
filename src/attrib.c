@@ -130,12 +130,15 @@ static const struct innate *check_innate_abil(int64_t *, int64_t);
 static int innately(int64_t *);
 #endif
 
+/*
+ * Parameters:
+ *   msgflg: positive => no message, zero => message, and
+ *           negative => conditional (msg if change made)
+ */
 /* adjust an attribute; return TRUE if change is made, FALSE otherwise, +2 to the previous if a change would have reduced the attribute below its minimum (possibly implying character death in some cases) */
 uchar
-adjattrib(ndx, incr, msgflg)
-int ndx, incr;
-int msgflg; /* positive => no message, zero => message, and */
-{           /* negative => conditional (msg if change made) */
+adjattrib(int ndx, int incr, int msgflg)
+{
     int old_acurr, old_abase, old_amin, old_amax, decr;
     boolean abonflg;
     const char *attrstr;
@@ -2588,8 +2591,7 @@ acurrstr_base(int str)
    to distinguish between observable +0 result and no-visible-effect
    due to an attribute not being able to exceed maximum or minimum */
 boolean
-extremeattr(attrindx) /* does attrindx's value match its max or min? */
-int attrindx;
+extremeattr(int attrindx) /* does attrindx's value match its max or min? */
 {
     /* Fixed_abil and racial MINATTR/MAXATTR aren't relevant here */
     int lolimit = 3, hilimit = (attrindx == A_STR ? STR19(25) : 25), curval = ACURR(attrindx);

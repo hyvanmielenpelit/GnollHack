@@ -47,9 +47,7 @@ WriteTileStrip()
 }
 
 boolean
-fopen_ppm_file(filename, type)
-const char *filename;
-const char *type;
+fopen_ppm_file(const char *filename, const char *type)
 {
     int i;
 
@@ -86,8 +84,7 @@ const char *type;
 }
 
 boolean
-write_ppm_tile(pixels)
-pixel (*pixels)[TILE_X];
+write_ppm_tile(pixel (*pixels)[TILE_X])
 {
     int i, j;
 
@@ -141,9 +138,7 @@ fclose_ppm_file()
 }
 
 int
-main(argc, argv)
-int argc;
-char *argv[];
+main(int argc, char *argv[])
 {
     pixel pixels[TILE_Y][TILE_X];
 

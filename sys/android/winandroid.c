@@ -62,13 +62,13 @@ static char * and_get_color_string(void);
 #endif
 static void and_start_screen(void);
 static void and_end_screen(void);
-static char* and_getmsghistory_ex(char**, char**, boolean);
+static char* and_getmsghistory_ex(char **, char **, boolean);
 static void and_putmsghistory_ex(const char *, const char *, const char *, boolean);
 static void save_msg(const char* msg);
 static void and_status_update(int, genericptr_t, int, int, int, uint64_t *);
 static void and_status_flush();
 
-int GnollHackMain(int argc, char** argv);
+int GnollHackMain(int argc, char **argv);
 
 extern int glyph2tile[];
 
@@ -396,7 +396,7 @@ void debuglog(const char *fmt, ...)
 //		   all plines() will be done via raw_print().
 //		** Why not have init_nhwindows() create all of the "standard"
 //		** windows?  Or at least all but WIN_INFO?	-dean
-void and_init_nhwindows(int* argcp, char** argv)
+void and_init_nhwindows(int* argcp, char **argv)
 {
 	//debuglog("and_init_nhwindows()");
 	iflags.window_inited = TRUE;
@@ -728,22 +728,19 @@ const char* colname(int color)
 }
 
 void
-term_start_attr(attr)
-int attr;
+term_start_attr(int attr)
 {
 	text_attribs |= 1<<attr;
 }
 
 void
-term_end_attr(attr)
-int attr;
+term_end_attr(int attr)
 {
 	text_attribs &= ~(1<<attr);
 }
 
 void
-term_start_color(color)
-int color;
+term_start_color(int color)
 {
 	//debuglog("term_start_color %s", colname(color));
 	text_color = color;
@@ -1016,7 +1013,7 @@ int get_condition_attr(int cond_mask)
 	return attr;
 }
 
-void print_conditions(const char** names)
+void print_conditions(const char **names)
 {
 	int i;
 	for(i = 0; i < MAXBLCONDITIONS; i++) {
@@ -1123,10 +1120,7 @@ void and_status_flush()
 }
 
 //____________________________________________________________________________________
-void and_putmixed_ex(window, str, attr, color, app)
-winid window;
-int attr, app, color;
-const char *str;
+void and_putmixed_ex(winid window, const char *str, int attr, int color, int app)
 {
 	//debuglog("put mixed: %s", str);
 	genl_putmixed_ex(window, str, attr, color, app);
@@ -1939,7 +1933,7 @@ void and_askname()
 	const jchar* pChars;
 	jstring jstr;
 
-	char** saves = get_saved_games();
+	char **saves = get_saved_games();
 
 	int nSaves = 0;
 	while(saves && saves[nSaves])
@@ -2226,7 +2220,7 @@ int add_msghistory_idx(int idx)
 static char tmpattrs[BUFSIZ] = "";
 static char tmpcolors[BUFSIZ] = "";
 
-char* and_getmsghistory_ex(char** attrs_ptr, char** colors_ptr, boolean init)
+char* and_getmsghistory_ex(char **attrs_ptr, char **colors_ptr, boolean init)
 {
 	memset(tmpattrs, 0, sizeof(tmpattrs));
 	memset(tmpcolors, NO_COLOR, sizeof(tmpcolors));
@@ -2347,4 +2341,3 @@ void and_get_dumplog_dir(char* buf)
 	destroy_jobject(jstr);
 }
 #endif
-

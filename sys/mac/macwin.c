@@ -272,8 +272,7 @@ CheckNhWin(WindowPtr mac_win)
 }
 
 static pascal OSErr
-AppleEventHandler(const AppleEvent *inAppleEvent, AppleEvent *outAEReply,
-                  long inRefCon)
+AppleEventHandler(const AppleEvent *inAppleEvent, AppleEvent *outAEReply, long inRefCon)
 {
 #if defined(__SC__) || defined(__MRC__)
 #pragma unused(outAEReply, inRefCon)
@@ -1965,8 +1964,7 @@ mac_start_menu_ex(winid win, int style)
 }
 
 void
-mac_add_menu(winid win, int glyph, const anything *any, char menuChar,
-             char groupAcc, int attr, int color, const char *inStr, int preselected)
+mac_add_menu(winid win, int glyph, const anything *any, char menuChar, char groupAcc, int attr, int color, const char *inStr, int preselected)
 {
 #if defined(__SC__) || defined(__MRC__)
 #pragma unused(glyph)
@@ -2043,8 +2041,7 @@ mac_add_menu(winid win, int glyph, const anything *any, char menuChar,
 }
 
 void
-mac_add_extended_menu(winid win, int glyph, const anything* any, char menuChar,
-    char groupAcc, int attr, int color, const char* inStr, int preselected, struct extended_menu_info info)
+mac_add_extended_menu(winid win, int glyph, const anything* any, char menuChar, char groupAcc, int attr, int color, const char* inStr, int preselected, struct extended_menu_info info)
 {
     mac_add_menu(win, glyph, any, menuChar,
         groupAcc, attr, color, inStr, preselected);
@@ -2120,10 +2117,12 @@ mac_select_menu(winid win, int how, menu_item **selected_list)
 
 #include "dlb.h"
 
+/*
+ * Parameters:
+ *   name: not ANSI prototype because of boolean parameter
+ */
 static void
-mac_display_file(name, complain)
-const char *name; /* not ANSI prototype because of boolean parameter */
-boolean complain;
+mac_display_file(const char *name, boolean complain)
 {
     Ptr buf;
     int win;

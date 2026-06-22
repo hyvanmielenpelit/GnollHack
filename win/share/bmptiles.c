@@ -77,9 +77,7 @@ static boolean read_palette(FILE *, struct Pixel *, unsigned);
 /* Read a .BMP file into the image structure */
 /* Return TRUE if successful, FALSE on any error */
 boolean
-read_bmp_tiles(filename, image)
-const char *filename;
-struct TileSetImage *image;
+read_bmp_tiles(const char *filename, struct TileSetImage *image)
 {
     struct BitmapHeader header1;
     struct BitmapInfoHeader header2;
@@ -336,9 +334,7 @@ error:
 
 /* Read and decode the first header */
 static boolean
-read_header(fp, header)
-FILE *fp;
-struct BitmapHeader *header;
+read_header(FILE *fp, struct BitmapHeader *header)
 {
     unsigned char buf[14];
     size_t size;
@@ -355,9 +351,7 @@ struct BitmapHeader *header;
 
 /* Read and decode the second header */
 static boolean
-read_info_header(fp, header)
-FILE *fp;
-struct BitmapInfoHeader *header;
+read_info_header(FILE *fp, struct BitmapInfoHeader *header)
 {
     unsigned char buf[124]; /* maximum size */
     size_t size;
@@ -452,8 +446,7 @@ struct BitmapInfoHeader *header;
 
 /* Check the second header for consistency and unsupported features */
 static boolean
-check_info_header(header)
-const struct BitmapInfoHeader *header;
+check_info_header(const struct BitmapInfoHeader *header)
 {
     if (header->NumPlanes != 1) return FALSE;
     switch (header->BitsPerPixel) {
@@ -503,8 +496,7 @@ const struct BitmapInfoHeader *header;
 
 /* Return the number of palette entries to read from the file */
 static unsigned
-get_palette_size(header)
-const struct BitmapInfoHeader *header;
+get_palette_size(const struct BitmapInfoHeader *header)
 {
     switch (header->BitsPerPixel) {
     case 1:
@@ -528,10 +520,7 @@ const struct BitmapInfoHeader *header;
  * Return TRUE if successful, FALSE on any error
  */
 static boolean
-read_palette(fp, palette, palette_size)
-FILE *fp;
-struct Pixel *palette;
-unsigned palette_size;
+read_palette(FILE *fp, struct Pixel *palette, unsigned palette_size)
 {
     unsigned i;
     unsigned char buf[4];
@@ -558,8 +547,7 @@ unsigned palette_size;
 
 /* Decode an unsigned 16 bit quantity */
 static uint16
-read_u16(buf)
-const unsigned char buf[2];
+read_u16(const unsigned char buf[2])
 {
     return ((uint16)buf[0] << 0)
          | ((uint16)buf[1] << 8);
@@ -567,8 +555,7 @@ const unsigned char buf[2];
 
 /* Decode an unsigned 32 bit quantity */
 static uint32
-read_u32(buf)
-const unsigned char buf[4];
+read_u32(const unsigned char buf[4])
 {
     return ((uint32)buf[0] <<  0)
          | ((uint32)buf[1] <<  8)
@@ -578,8 +565,7 @@ const unsigned char buf[4];
 
 /* Decode a signed 32 bit quantity */
 static int32
-read_s32(buf)
-const unsigned char buf[4];
+read_s32(const unsigned char buf[4])
 {
     return (int32)((read_u32(buf) ^ 0x80000000) - 0x80000000);
 }
@@ -587,9 +573,7 @@ const unsigned char buf[4];
 /* Build a pixel structure, given the mask words in the second header and
  * a packed 16 or 32 bit pixel */
 static struct Pixel
-build_pixel(header, color)
-const struct BitmapInfoHeader *header;
-uint32 color;
+build_pixel(const struct BitmapInfoHeader *header, uint32 color)
 {
     struct Pixel pixel;
 
@@ -602,9 +586,7 @@ uint32 color;
 
 /* Extract one element (red, green, blue or alpha) from a pixel */
 static unsigned char
-pixel_element(mask, color)
-uint32 mask;
-uint32 color;
+pixel_element(uint32 mask, uint32 color)
 {
     uint32 bits, shift;
 

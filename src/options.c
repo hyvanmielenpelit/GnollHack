@@ -5771,14 +5771,14 @@ show_menu_controls(winid win, boolean dolist)
 static char fmtstr_doset_notab_buf[BUFSZ] = "%s%-15s [%s]   ";
 static const char* fmtstr_doset_tab = "%s\t[%s]";
 
+/*
+ * Parameters:
+ *   win: window to add to
+ *   option: option name
+ */
 /* doset('O' command) menu entries for compound options */
 static void
-doset_add_menu(win, option, idx, indexoffset, notruncate)
-winid win;          /* window to add to */
-const char *option; /* option name */
-int indexoffset;    /* value to add to index in compopt[], or zero
-                       if option cannot be changed */
-int idx, notruncate;
+doset_add_menu(winid win, const char *option, int idx, int indexoffset, int notruncate)
 {
     if (!option)
         return;

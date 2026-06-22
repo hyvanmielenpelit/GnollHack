@@ -32,9 +32,7 @@ regex_init()
 }
 
 boolean
-regex_compile(s, re)
-const char *s;
-struct nhregex *re;
+regex_compile(const char *s, struct nhregex *re)
 {
     if (!re)
         return FALSE;
@@ -46,16 +44,13 @@ struct nhregex *re;
 }
 
 const char *
-regex_error_desc(re)
-struct nhregex *re UNUSED;
+regex_error_desc(struct nhregex *re UNUSED)
 {
     return "pattern match compilation error";
 }
 
 boolean
-regex_match(s, re)
-const char *s;
-struct nhregex *re;
+regex_match(const char *s, struct nhregex *re)
 {
     if (!re || !re->pat || !s)
         return FALSE;
@@ -64,8 +59,7 @@ struct nhregex *re;
 }
 
 void
-regex_free(re)
-struct nhregex *re;
+regex_free(struct nhregex *re)
 {
     if (re) {
         if (re->pat)

@@ -5590,7 +5590,7 @@ static int (*selection_flood_check_func)(int, int);
 static schar floodfillchk_match_under_typ;
 
 void
-set_selection_floodfillchk(int ( *f)(int, int))
+set_selection_floodfillchk(int (*f)(int, int))
 {
     selection_flood_check_func = f;
 }
@@ -5683,9 +5683,7 @@ selection_floodfill(struct opvar *ov, int x, int y, boolean diagonals)
 
 /* McIlroy's Ellipse Algorithm */
 void
-selection_do_ellipse(ov, xc, yc, a, b, filled)
-struct opvar *ov;
-int xc, yc, a, b, filled;
+selection_do_ellipse(struct opvar *ov, int xc, int yc, int a, int b, int filled)
 { /* e(x,y) = b^2*x^2 + a^2*y^2 - a^2*b^2 */
     int x = 0, y = b;
     int64_t a2 = (int64_t) a * a, b2 = (int64_t) b * b;

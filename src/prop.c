@@ -459,8 +459,7 @@ props_init(void)
 }
 
 const char* 
-get_property_name(prop_index)
-int prop_index;
+get_property_name(int prop_index)
 {
     int idx;
     for (idx = 0; propertynames[idx].prop_num; idx++)
@@ -475,8 +474,7 @@ int prop_index;
 }
 
 struct propname
-get_property_name_ex(prop_index)
-int prop_index;
+get_property_name_ex(int prop_index)
 {
     int idx;
     for (idx = 0; propertynames[idx].prop_num; idx++)
@@ -493,9 +491,7 @@ int prop_index;
 
 
 const char*
-get_status_name(mtmp, status_index)
-struct monst* mtmp;
-int status_index;
+get_status_name(struct monst *mtmp, int status_index)
 {
     switch (status_index)
     {

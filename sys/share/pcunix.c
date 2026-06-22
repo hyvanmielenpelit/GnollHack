@@ -38,8 +38,7 @@ static int eraseoldlocks(void);
 
 #if 0
 int
-uptodate(fd)
-int fd;
+uptodate(int fd)
 {
 #ifdef WANT_GETHDATE
     if(fstat(fd, &buf)) {
@@ -242,12 +241,7 @@ gotlock:
 #endif /* PC_LOCKING */
 
 void
-regularize(s)
-/*
- * normalize file name - we don't like .'s, /'s, spaces, and
- * lots of other things
- */
-register char *s;
+regularize(char *s)
 {
     register char *lp;
 

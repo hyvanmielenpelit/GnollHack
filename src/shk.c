@@ -2598,14 +2598,13 @@ gem_learned(int oindx)
     }
 }
 
+/* amt: if 0, use regular shop pricing, otherwise force amount;
+        if negative, use abs(amt) even if it's less than old cost */
 /* called when an item's value has been enhanced; if it happens to be
    on any shop bill, update that bill to reflect the new higher price
    [if the new price drops for some reason, keep the old one in place] */
 void
-alter_cost(obj, amt)
-struct obj *obj;
-int64_t amt; /* if 0, use regular shop pricing, otherwise force amount;
-             if negative, use abs(amt) even if it's less than old cost */
+alter_cost(struct obj *obj, int64_t amt)
 {
     struct bill_x *bp = 0;
     struct monst *shkp;
