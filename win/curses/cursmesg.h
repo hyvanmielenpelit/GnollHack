@@ -22,7 +22,7 @@ void curses_last_messages(void);
 void curses_init_mesg_history(void);
 void curses_prev_mesg(void);
 void curses_count_window(const char *count_text);
-char *curses_getmsghistory_ex(char**, char**, BOOLEAN_P);
-void curses_putmsghistory_ex(const char *, const char *, const char *, BOOLEAN_P);
+char *curses_getmsghistory_ex(char**, char**, boolean);
+void curses_putmsghistory_ex(const char *, const char *, const char *, boolean);
 
 #endif /* CURSMESG_H */

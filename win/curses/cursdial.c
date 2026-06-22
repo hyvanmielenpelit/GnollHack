@@ -22,12 +22,12 @@
 /*
  * Note:
  *
- *  Prototypes need to use the widened/unwidened type macros (CHAR_P, &c)
+ *  Prototypes need to use the widened/unwidened type macros (char, &c)
  *  in order to match fields of the window_procs struct (see winprocs.h).
  *  But for a standard-conforming compiler, we'll end up with the widened
  *  types necessary to match the mixed prototype/old-style function
  *  definition environment as used by nethack's core.  Prototype
-int func(CHAR_P);
+int func(char);
  *  becomes
 int func(int);
  *  after expansion, which matches the definition
@@ -41,7 +41,7 @@ int func(char arg) { ... }
  *
  *  So, the code here (also cursmain.c and cursinvt.c) is mis-using the
  *  widening macros for variable types
-int func(CHAR_P arg) { ... }
+int func(char arg) { ... }
  *  (no doubt modelling it after the C++ code in win/Qt where the option
  *  to switch the applicable definitions to old-style isn't available).
  *  Other alternatives aren't significantly better so just live with it.
@@ -58,14 +58,14 @@ typedef struct nhmi {
     winid wid;                  /* NetHack window id */
     int glyph;                  /* Menu glyphs */
     anything identifier;        /* Value returned if item selected */
-    CHAR_P accelerator;         /* Character used to select item from menu */
-    CHAR_P group_accel;         /* Group accelerator for menu item, if any */
+    char accelerator;         /* Character used to select item from menu */
+    char group_accel;         /* Group accelerator for menu item, if any */
     attr_t attr;                /* Text attributes for item */
     int color;                  /* Text color for item */
     const char *str;            /* Text of menu item */
     const char* attrs;          /* Text attributes of menu item */
     const char* colors;         /* Text colors of menu item */
-    BOOLEAN_P presel;           /* Whether menu item should be preselected */
+    boolean presel;           /* Whether menu item should be preselected */
     int append;
     boolean selected;           /* Whether item is currently selected */
     int page_num;               /* Display page number for entry */
@@ -199,8 +199,7 @@ curses_line_input_dialog(int style UNUSED, int attr, int color, const char *prom
 /* Get a single character response from the player, such as a y/n prompt */
 
 int
-curses_character_input_dialog(int attr, int color, const char *prompt, const char *choices,
-                              CHAR_P def)
+curses_character_input_dialog(int attr, int color, const char *prompt, const char *choices, char def)
 {
     WINDOW *askwin = NULL;
 #ifdef PDCURSES
@@ -375,7 +374,7 @@ curses_character_input_dialog(int attr, int color, const char *prompt, const cha
 /* Return an extended command from the user */
 
 int
-curses_ext_cmd()
+curses_ext_cmd(void)
 {
     int count, letter, prompt_width, startx, starty, winx, winy;
     int messageh, messagew, maxlen = BUFSZ - 1;
@@ -605,9 +604,7 @@ curs_new_menu_item(winid wid, const char *str, const char* attrs, const char* co
 /* Add a menu item to the given menu window */
 
 void
-curses_add_nhmenu_item(winid wid, int glyph, const ANY_P *identifier,
-                       CHAR_P accelerator, CHAR_P group_accel, int attr, int color,
-                       const char *str, const char* attrs, const char* colors, BOOLEAN_P presel, int app)
+curses_add_nhmenu_item(winid wid, int glyph, const ANY_P *identifier, char accelerator, char group_accel, int attr, int color, const char *str, const char* attrs, const char* colors, boolean presel, int app)
 {
     nhmenu_item *new_item, *current_items, *menu_item_ptr;
     nhmenu *current_menu = get_menu(wid);
@@ -1700,8 +1697,7 @@ on the given menu page.  If menu_page is 0, then perform opetation on
 all pages in menu.  Returns last page displayed.  */
 
 static int
-menu_operation(WINDOW * win, nhmenu *menu, menu_op
-               operation, int page_num)
+menu_operation(WINDOW * win, nhmenu *menu, menu_op operation, int page_num)
 {
     int first_page, last_page, current_page;
     nhmenu_item *menu_item_ptr = menu->entries;

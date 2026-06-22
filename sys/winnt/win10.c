@@ -13,7 +13,7 @@
 
 Win10 gWin10 = { 0 };
 
-void win10_init()
+void win10_init(void)
 {
     if (IsWindows10OrGreater())
     {

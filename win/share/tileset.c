@@ -7,9 +7,9 @@
 #include "hack.h"
 #include "tileset.h"
 
-static void FDECL(get_tile_map, (const char *));
-static void FDECL(split_tiles, (const struct TileSetImage *));
-static void FDECL(free_image, (struct TileSetImage *));
+static void get_tile_map(const char *);
+static void split_tiles(const struct TileSetImage *);
+static void free_image(struct TileSetImage *);
 
 static struct TileImage *tiles;
 static unsigned num_tiles;
@@ -19,9 +19,7 @@ static boolean have_palette;
 static struct Pixel palette[256];
 
 boolean
-read_tiles(filename, true_color)
-const char *filename;
-boolean true_color;
+read_tiles(const char *filename, boolean true_color)
 {
     static const unsigned char png_sig[] = {
         0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A
@@ -103,21 +101,20 @@ error:
 }
 
 const struct Pixel *
-get_palette()
+get_palette(void)
 {
     return have_palette ? palette : NULL;
 }
 
 /* TODO: derive tile_map from image_desc */
 static void
-get_tile_map(image_desc)
-const char *image_desc;
+get_tile_map(const char *image_desc)
 {
     return;
 }
 
 void
-free_tiles()
+free_tiles(void)
 {
     unsigned i;
 
@@ -137,8 +134,7 @@ free_tiles()
 }
 
 static void
-free_image(image)
-struct TileSetImage *image;
+free_image(struct TileSetImage *image)
 {
     if (image->pixels)
         free((genericptr_t) image->pixels), image->pixels = NULL;
@@ -149,8 +145,7 @@ struct TileSetImage *image;
 }
 
 const struct TileImage *
-get_tile(tile_index)
-unsigned tile_index;
+get_tile(unsigned tile_index)
 {
     if (tile_index >= num_tiles)
         return &blank_tile;
@@ -158,8 +153,7 @@ unsigned tile_index;
 }
 
 static void
-split_tiles(image)
-const struct TileSetImage *image;
+split_tiles(const struct TileSetImage *image)
 {
     unsigned tile_rows, tile_cols;
     size_t tile_size, i, j;
@@ -221,9 +215,7 @@ const struct TileSetImage *image;
 }
 
 boolean
-read_png_tiles(filename, image)
-const char *filename;
-struct TileSetImage *image;
+read_png_tiles(const char *filename, struct TileSetImage *image)
 {
     /* stub */
     return FALSE;

@@ -60,11 +60,11 @@ EditColor()
     extern char configfile[];
     int i, done = 0, okay = 0;
     long code, qual, class;
-    register struct Gadget *gd, *dgad;
-    register struct Window *nw;
-    register struct IntuiMessage *imsg;
-    register struct PropInfo *pip;
-    register struct Screen *scrn;
+    struct Gadget *gd, *dgad;
+    struct Window *nw;
+    struct IntuiMessage *imsg;
+    struct PropInfo *pip;
+    struct Screen *scrn;
     long aidx;
     int msx, msy;
     int curcol = 0, drag = 0;
@@ -344,11 +344,11 @@ EditClipping(void)
     char buf[40];
     int done = 0, okay = 0;
     long code, qual, class;
-    register struct Gadget *gd, *dgad;
-    register struct Window *nw;
-    register struct IntuiMessage *imsg;
-    register struct PropInfo *pip;
-    register struct Screen *scrn;
+    struct Gadget *gd, *dgad;
+    struct Window *nw;
+    struct IntuiMessage *imsg;
+    struct PropInfo *pip;
+    struct Screen *scrn;
     long aidx;
     int lmxsize = mxsize, lmysize = mysize;
     int lxclipbord = xclipbord, lyclipbord = yclipbord;
@@ -534,8 +534,7 @@ EditClipping(void)
 }
 
 char *
-dirname(str)
-char *str;
+dirname(char *str)
 {
     char *t, c;
     static char dir[300];
@@ -555,8 +554,7 @@ char *str;
 }
 
 char *
-basename(str)
-char *str;
+basename(char *str)
 {
     char *t;
 
@@ -645,10 +643,7 @@ ClearCol(struct Window *w)
 }
 
 void
-DrawCol(w, idx, colors)
-struct Window *w;
-int idx;
-UWORD *colors;
+DrawCol(struct Window *w, int idx, UWORD *colors)
 {
     int bxorx, bxory, bxxlen, bxylen;
     int i, incx, incy, r, g, b;
@@ -730,10 +725,7 @@ UWORD *colors;
 }
 
 void
-DispCol(w, idx, colors)
-struct Window *w;
-int idx;
-UWORD *colors;
+DispCol(struct Window *w, int idx, UWORD *colors)
 {
     char buf[50];
     char *colname, *defval;
@@ -812,13 +804,7 @@ amii_setpens(int count)
 /* Generate a requester for a string value. */
 
 void
-amii_getlin_ex(style, attr, color, prompt, bufp, placeholder, linesuffix, introline)
-int style, attr, color;
-const char *prompt;
-const char* placeholder;
-const char* linesuffix;
-const char* introline;
-char *bufp;
+amii_getlin_ex(int style, int attr, int color, const char *prompt, char *bufp, const char *placeholder, const char *linesuffix, const char *introline)
 {
     char promptbuf[PBUFSZ] = "";
     //Do not show introline
@@ -839,17 +825,14 @@ char *bufp;
 
 /* and with default */
 void
-getlind(prompt, bufp, dflt)
-const char *prompt;
-char *bufp;
-const char *dflt;
+getlind(const char *prompt, char *bufp, const char *dflt)
 {
 #ifndef TOPL_GETLINE
-    register struct Window *cwin;
-    register struct IntuiMessage *imsg;
+    struct Window *cwin;
+    struct IntuiMessage *imsg;
     register long class, code, qual;
-    register int aredone = 0;
-    register struct Gadget *gd;
+    int aredone = 0;
+    struct Gadget *gd;
     static int once;
 
     *StrString = 0;
@@ -1012,9 +995,7 @@ const char *dflt;
 }
 
 void
-amii_change_color(pen, val, rev)
-int pen, rev;
-long val;
+amii_change_color(int pen, long val, int rev)
 {
     if (rev)
         sysflags.amii_curmap[pen] = ~val;

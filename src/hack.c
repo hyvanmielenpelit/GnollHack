@@ -9,26 +9,25 @@
 
 /* #define DEBUG */ /* uncomment for debugging */
 
-STATIC_DCL void NDECL(maybe_wail);
-STATIC_DCL int NDECL(moverock);
-STATIC_DCL int FDECL(still_chewing, (XCHAR_P, XCHAR_P));
-STATIC_DCL void NDECL(dosinkfall);
-STATIC_DCL boolean FDECL(findtravelpath, (int));
-STATIC_DCL boolean FDECL(trapmove, (int, int, struct trap *));
-STATIC_DCL struct monst *FDECL(monstinroom, (struct permonst *, int));
-STATIC_DCL boolean FDECL(doorless_door, (int, int));
-STATIC_DCL void FDECL(move_update, (BOOLEAN_P));
-STATIC_DCL void FDECL(maybe_smudge_engr, (int, int, int, int));
-STATIC_DCL void NDECL(domove_core);
+static void maybe_wail(void);
+static int moverock(void);
+static int still_chewing(xchar, xchar);
+static void dosinkfall(void);
+static boolean findtravelpath(int);
+static boolean trapmove(int, int, struct trap *);
+static struct monst *monstinroom(struct permonst *, int);
+static boolean doorless_door(int, int);
+static void move_update(boolean);
+static void maybe_smudge_engr(int, int, int, int);
+static void domove_core(void);
 
 #define IS_SHOP(x) (rooms[x].rtype >= SHOPBASE)
-STATIC_VAR int skates = 0;
+static int skates = 0;
 
-STATIC_VAR anything tmp_anything;
+static anything tmp_anything;
 
 anything *
-uint_to_any(ui)
-unsigned ui;
+uint_to_any(unsigned ui)
 {
     tmp_anything = zeroany;
     tmp_anything.a_uint = ui;
@@ -36,8 +35,7 @@ unsigned ui;
 }
 
 anything *
-long_to_any(lng)
-long lng;
+long_to_any(long lng)
 {
     tmp_anything = zeroany;
     tmp_anything.a_long = lng;
@@ -45,8 +43,7 @@ long lng;
 }
 
 anything *
-monst_to_any(mtmp)
-struct monst *mtmp;
+monst_to_any(struct monst *mtmp)
 {
     tmp_anything = zeroany;
     tmp_anything.a_monst = mtmp;
@@ -54,8 +51,7 @@ struct monst *mtmp;
 }
 
 anything *
-obj_to_any(obj)
-struct obj *obj;
+obj_to_any(struct obj *obj)
 {
     tmp_anything = zeroany;
     tmp_anything.a_obj = obj;
@@ -63,8 +59,7 @@ struct obj *obj;
 }
 
 anything*
-trap_to_any(t)
-struct trap* t;
+trap_to_any(struct trap *t)
 {
     tmp_anything = zeroany;
     tmp_anything.a_trap = t;
@@ -72,8 +67,7 @@ struct trap* t;
 }
 
 anything*
-coord_to_any(c)
-coord c;
+coord_to_any(coord c)
 {
     tmp_anything = zeroany;
     tmp_anything.a_coord = c;
@@ -81,8 +75,7 @@ coord c;
 }
 
 anything*
-xy_to_any(x, y)
-xchar x, y;
+xy_to_any(xchar x, xchar y)
 {
     tmp_anything = zeroany;
     tmp_anything.a_coord.x = x;
@@ -91,8 +84,7 @@ xchar x, y;
 }
 
 anything*
-region_to_any(reg)
-struct nhregion* reg;
+region_to_any(struct nhregion *reg)
 {
     tmp_anything = zeroany;
     tmp_anything.a_nhregion = reg;
@@ -100,11 +92,9 @@ struct nhregion* reg;
 }
 
 boolean
-revive_nasty(x, y, msg)
-int x, y;
-const char *msg;
+revive_nasty(int x, int y, const char *msg)
 {
-    register struct obj *otmp, *otmp2;
+    struct obj *otmp, *otmp2;
     struct monst *mtmp;
     coord cc;
     boolean revived = FALSE;
@@ -141,16 +131,16 @@ const char *msg;
 }
 
 #ifndef LINT /* static int64_t lastmovetime; */
-STATIC_VAR NEARDATA int64_t lastmovetime;
+static NEARDATA int64_t lastmovetime;
 #endif
 
-STATIC_OVL int
-moverock(VOID_ARGS)
+static int
+moverock(void)
 {
-    register xchar rx, ry, sx, sy;
-    register struct obj *otmp;
-    register struct trap *ttmp;
-    register struct monst *mtmp;
+    xchar rx, ry, sx, sy;
+    struct obj *otmp;
+    struct trap *ttmp;
+    struct monst *mtmp;
     char pushbuf[QBUFSZ + BUFSZ * 2] = "";
     int pushcolor = NO_COLOR;
 
@@ -499,9 +489,8 @@ nopushmsg:
  *  Chew on a wall, door, or boulder.  [What about statues?]
  *  Returns TRUE if still eating, FALSE when done.
  */
-STATIC_OVL int
-still_chewing(x, y)
-xchar x, y;
+static int
+still_chewing(xchar x, xchar y)
 {
     struct rm *lev = &levl[x][y];
     struct obj *boulder = sobj_at(BOULDER, x, y);
@@ -755,9 +744,7 @@ xchar x, y;
 }
 
 void
-movobj(obj, ox, oy)
-register struct obj *obj;
-register xchar ox, oy;
+movobj(struct obj *obj, xchar ox, xchar oy)
 {
     /* optimize by leaving on the fobj chain? */
     xchar ox0 = obj->ox;
@@ -771,12 +758,12 @@ register xchar ox, oy;
     newsym(ox, oy);
 }
 
-STATIC_VAR NEARDATA const char fell_on_sink[] = "fell onto a sink";
+static NEARDATA const char fell_on_sink[] = "fell onto a sink";
 
-STATIC_OVL void
-dosinkfall(VOID_ARGS)
+static void
+dosinkfall(void)
 {
-    register struct obj *obj;
+    struct obj *obj;
     int dmg;
     boolean lev_boots = (uarmf && uarmf->otyp == LEVITATION_BOOTS),
             innate_lev = ((HLevitation & (FROM_ACQUIRED | FROM_FORM)) != 0L),
@@ -862,8 +849,7 @@ dosinkfall(VOID_ARGS)
 
 /* intended to be called only on ROCKs or TREEs */
 boolean
-may_dig(x, y)
-register xchar x, y;
+may_dig(xchar x, xchar y)
 {
     struct rm *lev = &levl[x][y];
 
@@ -872,17 +858,14 @@ register xchar x, y;
 }
 
 boolean
-may_passwall(x, y)
-register xchar x, y;
+may_passwall(xchar x, xchar y)
 {
     return (boolean) !((IS_STWALL(levl[x][y].typ)
                        && (levl[x][y].wall_info & W_NONPASSWALL)));
 }
 
 boolean
-bad_rock(mdat, x, y)
-struct permonst *mdat;
-register xchar x, y;
+bad_rock(struct permonst *mdat, xchar x, xchar y)
 {
     return (boolean) ((Sokoban && sobj_at(BOULDER, x, y))
                       || (IS_ROCK(levl[x][y].typ)
@@ -896,8 +879,7 @@ register xchar x, y;
    the reason why:  1: can't fit, 2: possessions won't fit, 3: sokoban
    returns 0 if we can squeeze through */
 int
-cant_squeeze_thru(mon)
-struct monst *mon;
+cant_squeeze_thru(struct monst *mon)
 {
     int amt;
     struct permonst *ptr = mon->data;
@@ -923,8 +905,7 @@ struct monst *mon;
 }
 
 boolean
-invocation_pos(x, y)
-xchar x, y;
+invocation_pos(xchar x, xchar y)
 {
     return (boolean) (Invocation_lev(&u.uz)
                       && x == inv_pos.x && y == inv_pos.y);
@@ -934,14 +915,12 @@ xchar x, y;
  * mode is one of DO_MOVE, TEST_MOVE, TEST_TRAV, or TEST_TRAP
  */
 boolean
-test_move(ux, uy, dx, dy, mode)
-int ux, uy, dx, dy;
-int mode;
+test_move(int ux, int uy, int dx, int dy, int mode)
 {
     int x = ux + dx;
     int y = uy + dy;
-    register struct rm *tmpr = &levl[x][y];
-    register struct rm *ust;
+    struct rm *tmpr = &levl[x][y];
+    struct rm *ust;
 
     context.door_opened = FALSE;
     /*
@@ -1270,9 +1249,8 @@ int mode;
  * inaccessible locations as valid intermediate path points.
  * Returns TRUE if a path was found.
  */
-STATIC_OVL boolean
-findtravelpath(mode)
-int mode;
+static boolean
+findtravelpath(int mode)
 {
     /* if travel to adjacent, reachable location, use normal movement rules */
     if ((mode == TRAVP_TRAVEL || mode == TRAVP_VALID) && context.travel1
@@ -1515,8 +1493,7 @@ int mode;
 }
 
 boolean
-is_valid_travelpt(x,y)
-int x,y;
+is_valid_travelpt(int x, int y)
 {
     int tx = u.tx;
     int ty = u.ty;
@@ -1535,13 +1512,16 @@ int x,y;
     return ret;
 }
 
+/*
+ * Parameters:
+ *   x, y: targetted destination, <u.ux+u.dx,u.uy+u.dy>
+ *   desttrap: nonnull if another trap at <x,y>
+ */
 /* try to escape being stuck in a trapped state by walking out of it;
    return true iff moving should continue to intended destination
    (all failures and most successful escapes leave hero at original spot) */
-STATIC_OVL boolean
-trapmove(x, y, desttrap)
-int x, y;              /* targetted destination, <u.ux+u.dx,u.uy+u.dy> */
-struct trap *desttrap; /* nonnull if another trap at <x,y> */
+static boolean
+trapmove(int x, int y, struct trap *desttrap)
 {
     boolean anchored = FALSE;
     const char *predicament, *culprit;
@@ -1712,7 +1692,7 @@ struct trap *desttrap; /* nonnull if another trap at <x,y> */
 }
 
 boolean
-u_rooted(VOID_ARGS)
+u_rooted(void)
 {
     if (!youmonst.data->mmove) {
         You("are rooted %s.",
@@ -1726,7 +1706,7 @@ u_rooted(VOID_ARGS)
 }
 
 void
-domove(VOID_ARGS)
+domove(void)
 {
         int ux1 = u.ux, uy1 = u.uy;
 
@@ -1739,11 +1719,11 @@ domove(VOID_ARGS)
 }
 
 void
-domove_core(VOID_ARGS)
+domove_core(void)
 {
-    register struct monst *mtmp;
-    register struct rm *tmpr;
-    register xchar x, y;
+    struct monst *mtmp;
+    struct rm *tmpr;
+    xchar x, y;
     struct trap *trap = NULL;
     int wtcap;
     boolean on_ice;
@@ -1856,7 +1836,7 @@ domove_core(VOID_ARGS)
         y = u.uy + u.dy;
         if (Stunned || (Confusion && !rn2(5))) 
         {
-            register int tries = 0;
+            int tries = 0;
 
             do
             {
@@ -2546,8 +2526,7 @@ finish_move:
 }
 
 void
-maybe_smudge_engr(x1,y1,x2,y2)
-int x1, y1, x2, y2;
+maybe_smudge_engr(int x1, int y1, int x2, int y2)
 {
     struct engr *ep;
 
@@ -2562,7 +2541,7 @@ int x1, y1, x2, y2;
 
 /* combat increases metabolism */
 boolean
-overexertion(VOID_ARGS)
+overexertion(void)
 {
     /* this used to be part of domove() when moving to a monster's
        position, but is now called by attack() so that it doesn't
@@ -2583,7 +2562,7 @@ overexertion(VOID_ARGS)
 }
 
 void
-invocation_message(VOID_ARGS)
+invocation_message(void)
 {
     /* a special clue-msg when on the Invocation position */
     if (invocation_pos(u.ux, u.uy) && !On_stairs(u.ux, u.uy)) {
@@ -2613,7 +2592,7 @@ invocation_message(VOID_ARGS)
    might be going into solid rock, inhibiting levitation or flight,
    or coming back out of such, reinstating levitation/flying */
 void
-switch_terrain(VOID_ARGS)
+switch_terrain(void)
 {
     boolean blocklev = loc_blocks_flying_and_leviation(u.ux, u.uy),
             was_levitating = !!Levitation, was_flying = !!Flying;
@@ -2648,12 +2627,15 @@ switch_terrain(VOID_ARGS)
         context.botl = context.botlx = TRUE; /* update Lev/Fly status condition */
 }
 
+/*
+ * Parameters:
+ *   newspot: true if called by spoteffects
+ */
 /* extracted from spoteffects; called by spoteffects to check for entering or
    leaving a pool of water/lava, and by moveloop to check for staying on one;
    returns true to skip rest of spoteffects */
 boolean
-pooleffects(newspot)
-boolean newspot;             /* true if called by spoteffects */
+pooleffects(boolean newspot)
 {
     /* check for leaving water */
     if (u.uinwater) {
@@ -2728,15 +2710,14 @@ boolean newspot;             /* true if called by spoteffects */
     return FALSE;
 }
 
-STATIC_VAR int inspoteffects = 0;
-STATIC_VAR coord spotloc;
-STATIC_VAR int spotterrain;
-STATIC_VAR struct trap* spottrap = (struct trap*)0;
-STATIC_VAR unsigned spottraptyp = NO_TRAP;
+static int inspoteffects = 0;
+static coord spotloc;
+static int spotterrain;
+static struct trap* spottrap = (struct trap*)0;
+static unsigned spottraptyp = NO_TRAP;
 
 void
-spoteffects(pick)
-boolean pick;
+spoteffects(boolean pick)
 {
 
     struct monst *mtmp;
@@ -2935,12 +2916,10 @@ boolean pick;
 }
 
 /* returns first matching monster */
-STATIC_OVL struct monst *
-monstinroom(mdat, roomno)
-struct permonst *mdat;
-int roomno;
+static struct monst *
+monstinroom(struct permonst *mdat, int roomno)
 {
-    register struct monst *mtmp;
+    struct monst *mtmp;
 
     for (mtmp = fmon; mtmp; mtmp = mtmp->nmon) {
         if (DEADMONSTER(mtmp))
@@ -2953,14 +2932,12 @@ int roomno;
 }
 
 char *
-in_rooms(x, y, typewanted)
-register xchar x, y;
-register int typewanted;
+in_rooms(xchar x, xchar y, int typewanted)
 {
     static char buf[5];
     char rno, *ptr = &buf[4];
     int typefound, min_x, min_y, max_x, max_y_offset, step;
-    register struct rm *lev;
+    struct rm *lev;
 
 #define goodtype(rno) \
     (!typewanted                                                   \
@@ -3021,11 +2998,10 @@ register int typewanted;
 
 /* is (x,y) in a town? */
 boolean
-in_town(x, y)
-register int x, y;
+in_town(int x, int y)
 {
     s_level *slev = Is_special(&u.uz);
-    register struct mkroom *sroom;
+    struct mkroom *sroom;
     boolean has_subrooms = FALSE;
 
     if (!slev || !slev->flags.town)
@@ -3046,9 +3022,8 @@ register int x, y;
     return !has_subrooms;
 }
 
-STATIC_OVL void
-move_update(newlev)
-register boolean newlev;
+static void
+move_update(boolean newlev)
 {
     char *ptr1, *ptr2, *ptr3, *ptr4;
 
@@ -3088,10 +3063,9 @@ register boolean newlev;
 
 /* possibly deliver a one-time room entry message */
 void
-check_special_room(newlev)
-register boolean newlev;
+check_special_room(boolean newlev)
 {
-    register struct monst *mtmp;
+    struct monst *mtmp;
     char *ptr;
 
     move_update(newlev);
@@ -3309,7 +3283,7 @@ register boolean newlev;
   -1 = do normal pickup
   -2 = loot the monster */
 int
-pickup_checks(VOID_ARGS)
+pickup_checks(void)
 {
     /* uswallow case added by GAN 01/29/87 */
     if (u.uswallow) {
@@ -3356,7 +3330,7 @@ pickup_checks(VOID_ARGS)
         }
     }
     if (!OBJ_AT(u.ux, u.uy)) {
-        register struct rm *lev = &levl[u.ux][u.uy];
+        struct rm *lev = &levl[u.ux][u.uy];
 
         if (IS_THRONE(lev->typ))
         {
@@ -3434,7 +3408,7 @@ pickup_checks(VOID_ARGS)
 
 /* the ',' command */
 int
-dopickup(VOID_ARGS)
+dopickup(void)
 {
     int count, tmpcount, ret;
 
@@ -3455,7 +3429,7 @@ dopickup(VOID_ARGS)
 
 /* the pick up and stash command */
 int
-doput2bag(VOID_ARGS)
+doput2bag(void)
 {
     int count, tmpcount, ret;
 
@@ -3478,9 +3452,9 @@ doput2bag(VOID_ARGS)
 /* turn around a corner if that is the only way we can proceed */
 /* do not turn left or right twice */
 void
-lookaround(VOID_ARGS)
+lookaround(void)
 {
-    register int x, y;
+    int x, y;
     int i, x0 = 0, y0 = 0, m0 = 1, i0 = 9;
     int corrct = 0, noturn = 0;
     struct monst *mtmp;
@@ -3657,9 +3631,8 @@ lookaround(VOID_ARGS)
 }
 
 /* check for a doorway which lacks its door (NODOOR or BROKEN) */
-STATIC_OVL boolean
-doorless_door(x, y)
-int x, y;
+static boolean
+doorless_door(int x, int y)
 {
     struct rm *lev_p = &levl[x][y];
 
@@ -3674,8 +3647,7 @@ int x, y;
 
 /* used by drown() to check whether hero can crawl from water to <x,y> */
 boolean
-crawl_destination(x, y)
-int x, y;
+crawl_destination(int x, int y)
 {
     /* is location ok in general? */
     if (!goodpos(x, y, &youmonst, 0))
@@ -3701,10 +3673,10 @@ int x, y;
 /* something like lookaround, but we are not running */
 /* react only to monsters that might hit us */
 int
-monster_nearby(VOID_ARGS)
+monster_nearby(void)
 {
-    register int x, y;
-    register struct monst *mtmp;
+    int x, y;
+    struct monst *mtmp;
 
     /* Also see the similar check in dochugw() in monmove.c */
     for (x = u.ux - 1; x <= u.ux + 1; x++)
@@ -3730,8 +3702,7 @@ monster_nearby(VOID_ARGS)
 }
 
 void
-nomul(nval)
-register int nval;
+nomul(int nval)
 {
     if (multi < nval)
         return;              /* This is a bug fix by ab@unido */
@@ -3745,16 +3716,13 @@ register int nval;
 
 /* called when a non-movement, multi-turn action has completed */
 void
-unmul(msg_override)
-const char* msg_override;
+unmul(const char *msg_override)
 {
     unmul_ex(ATR_NONE, NO_COLOR, msg_override);
 }
 
 void
-unmul_ex(attr, color, msg_override)
-int attr, color;
-const char *msg_override;
+unmul_ex(int attr, int color, const char *msg_override)
 {
     multi = 0; /* caller will usually have done this already */
     if (msg_override)
@@ -3777,19 +3745,19 @@ const char *msg_override;
     u.usleep = 0;
     multi_reason = NULL;
     if (afternmv) {
-        int NDECL((*f)) = afternmv;
+        int (*f)(void) = afternmv;
 
         /* clear afternmv before calling it (to override the
            encumbrance hack for levitation--see weight_cap()) */
-        afternmv = (int NDECL((*))) 0;
+        afternmv = (int (*)(void)) 0;
         (void) (*f)();
         /* for finishing Armor/Boots/&c_on() */
         update_inventory();
     }
 }
 
-STATIC_OVL void
-maybe_wail(VOID_ARGS)
+static void
+maybe_wail(void)
 {
     static const short powers[] = { TELEPORT, SEE_INVISIBLE, POISON_RESISTANCE, COLD_IMMUNITY,
                               SHOCK_IMMUNITY, FIRE_IMMUNITY, SLEEP_RESISTANCE, DISINTEGRATION_RESISTANCE,
@@ -3823,9 +3791,7 @@ maybe_wail(VOID_ARGS)
 }
 
 void
-you_die(knam, k_format)
-register const char* knam;
-int k_format;
+you_die(const char *knam, int k_format)
 {
     killer.format = k_format;
     if (killer.name != knam) /* the thing that killed you */
@@ -3836,9 +3802,7 @@ int k_format;
 
 
 void
-kill_player(knam, k_format)
-register const char* knam;
-int k_format;
+kill_player(const char *knam, int k_format)
 {
     clear_run_and_travel();
     if (Upolyd)
@@ -3853,20 +3817,13 @@ int k_format;
 }
 
 void
-losehp(n, knam, k_format)
-double n;
-register const char* knam;
-int k_format;
+losehp(double n, const char *knam, int k_format)
 {
     losehp_core(n, knam, k_format, FALSE);
 }
 
 void
-losehp_core(n, knam, k_format, verbose)
-double n;
-register const char *knam;
-int k_format;
-boolean verbose;
+losehp_core(double n, const char *knam, int k_format, boolean verbose)
 {
     if (Invulnerable) //Note you must set damage to zero so it does not get displayed to the player
         return;
@@ -3912,7 +3869,7 @@ boolean verbose;
 }
 
 int
-weight_cap(VOID_ARGS)
+weight_cap(void)
 {
     int64_t carrcap, save_ELev = ELevitation, save_BLev = HBlocks_Levitation;
 
@@ -3998,15 +3955,15 @@ weight_cap(VOID_ARGS)
     return (int) carrcap;
 }
 
-STATIC_VAR int wc; /* current weight_cap(); valid after call to inv_weight() */
+static int wc; /* current weight_cap(); valid after call to inv_weight() */
 
 /* returns how far beyond the normal capacity the player is currently. */
 /* inv_weight() is negative if the player is below normal capacity. */
 int
-inv_weight(VOID_ARGS)
+inv_weight(void)
 {
-    register struct obj *otmp = invent;
-    register int wt = 0;
+    struct obj *otmp = invent;
+    int wt = 0;
 
     while (otmp) {
         if (otmp->oclass == COIN_CLASS)
@@ -4024,8 +3981,7 @@ inv_weight(VOID_ARGS)
  * over the normal capacity the player is loaded.  Max is 5.
  */
 int
-calc_capacity(xtra_wt)
-int xtra_wt;
+calc_capacity(int xtra_wt)
 {
     int cap, wt = inv_weight() + xtra_wt;
 
@@ -4038,13 +3994,13 @@ int xtra_wt;
 }
 
 int
-near_capacity(VOID_ARGS)
+near_capacity(void)
 {
     return calc_capacity(0);
 }
 
 int
-max_capacity(VOID_ARGS)
+max_capacity(void)
 {
     int wt = inv_weight();
 
@@ -4052,8 +4008,7 @@ max_capacity(VOID_ARGS)
 }
 
 boolean
-check_capacity(str)
-const char *str;
+check_capacity(const char *str)
 {
     if (near_capacity() >= EXT_ENCUMBER) {
         play_sfx_sound(SFX_GENERAL_TOO_MUCH_ENCUMBRANCE);
@@ -4067,18 +4022,16 @@ const char *str;
 }
 
 int
-inv_cnt(incl_gold)
-boolean incl_gold;
+inv_cnt(boolean incl_gold)
 {
     return inv_cnt_ex(incl_gold, FALSE);
 }
 
 int
-inv_cnt_ex(incl_gold, worn_only)
-boolean incl_gold, worn_only;
+inv_cnt_ex(boolean incl_gold, boolean worn_only)
 {
-    register struct obj *otmp = invent;
-    register int ct = 0;
+    struct obj *otmp = invent;
+    int ct = 0;
 
     while (otmp) {
         if ((incl_gold || otmp->invlet != GOLD_SYM) && (!worn_only || otmp->owornmask))
@@ -4093,8 +4046,7 @@ boolean incl_gold, worn_only;
 /* now that u.gold/m.gold is gone.*/
 /* Counting money in a container might be possible too. */
 int64_t
-money_cnt(otmp)
-struct obj *otmp;
+money_cnt(struct obj *otmp)
 {
     while (otmp) {
         /* Must change when silver & copper is implemented: */
@@ -4107,8 +4059,7 @@ struct obj *otmp;
 
 
 struct extended_menu_info
-obj_to_extended_menu_info(otmp)
-struct obj* otmp;
+obj_to_extended_menu_info(struct obj *otmp)
 {
     struct extended_menu_info info = zeroextendedmenuinfo;
     info.object = otmp;
@@ -4117,7 +4068,7 @@ struct obj* otmp;
 }
 
 struct extended_menu_info
-menu_heading_info(VOID_ARGS)
+menu_heading_info(void)
 {
     struct extended_menu_info info = zeroextendedmenuinfo;
     info.menu_flags = MENU_FLAGS_IS_HEADING;
@@ -4126,7 +4077,7 @@ menu_heading_info(VOID_ARGS)
 }
 
 struct extended_menu_info
-active_menu_info(VOID_ARGS)
+active_menu_info(void)
 {
     struct extended_menu_info info = zeroextendedmenuinfo;
     info.menu_flags = MENU_FLAGS_ACTIVE;
@@ -4134,8 +4085,7 @@ active_menu_info(VOID_ARGS)
     return info;
 }
 struct extended_menu_info
-menu_group_heading_info(groupaccel)
-char groupaccel;
+menu_group_heading_info(char groupaccel)
 {
     struct extended_menu_info info = zeroextendedmenuinfo;
     info.menu_flags = MENU_FLAGS_IS_HEADING | MENU_FLAGS_IS_GROUP_HEADING;
@@ -4145,8 +4095,7 @@ char groupaccel;
 }
 
 struct extended_menu_info
-menu_special_mark_info(special_mark)
-char special_mark;
+menu_special_mark_info(char special_mark)
 {
     struct extended_menu_info info = zeroextendedmenuinfo;
     info.special_mark = special_mark;
@@ -4173,7 +4122,7 @@ get_cmap_or_cmap_variation_glyph_explanation(int glyph)
 }
 
 void
-adjusted_delay_output(VOID_ARGS)
+adjusted_delay_output(void)
 {
     if (flags.animation_frame_interval_in_milliseconds > 0)
     {
@@ -4186,7 +4135,7 @@ adjusted_delay_output(VOID_ARGS)
 }
 
 void
-clear_run_and_travel(VOID_ARGS)
+clear_run_and_travel(void)
 {
     if (context.run)
     {
@@ -4198,7 +4147,7 @@ clear_run_and_travel(VOID_ARGS)
 }
 
 void
-mark_spotted_monsters_in_run(VOID_ARGS)
+mark_spotted_monsters_in_run(void)
 {
     struct monst* mtmp;
     for (mtmp = fmon; mtmp; mtmp = mtmp->nmon)
@@ -4211,7 +4160,7 @@ mark_spotted_monsters_in_run(VOID_ARGS)
 }
 
 void
-reset_hack(VOID_ARGS)
+reset_hack(void)
 {
     skates = 0;
     inspoteffects = 0;

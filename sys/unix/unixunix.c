@@ -17,12 +17,12 @@
 #include <signal.h>
 
 #ifdef _M_UNIX
-extern void NDECL(sco_mapon);
-extern void NDECL(sco_mapoff);
+extern void sco_mapon(void);
+extern void sco_mapoff(void);
 #endif
 #ifdef __linux__
-extern void NDECL(linux_mapon);
-extern void NDECL(linux_mapoff);
+extern void linux_mapon(void);
+extern void linux_mapoff(void);
 #endif
 
 #ifndef NHSTDC
@@ -34,8 +34,7 @@ static struct stat buf;
 /* see whether we should throw away this xlock file;
    if yes, close it, otherwise leave it open */
 static int
-veryold(fd)
-int fd;
+veryold(int fd)
 {
     time_t date;
 
@@ -75,7 +74,7 @@ int fd;
 static int
 eraseoldlocks()
 {
-    register int i;
+    int i;
 
     program_state.preserve_locks = 0; /* not required but shows intent */
     /* cannot use maxledgerno() here, because we need to find a lock name
@@ -96,7 +95,7 @@ eraseoldlocks()
 void
 getlock()
 {
-    register int i = 0, fd, c;
+    int i = 0, fd, c;
     const char *fq_lock;
 
 #ifdef TTY_GRAPHICS
@@ -217,8 +216,7 @@ gotlock:
 
 /* normalize file name - we don't like .'s, /'s, spaces */
 void
-regularize(s)
-register char *s;
+regularize(char *s)
 {
     register char *lp;
 
@@ -251,9 +249,12 @@ register char *s;
 #if defined(TIMED_DELAY) && !defined(msleep) && defined(SYSV)
 #include <poll.h>
 
+/*
+ * Parameters:
+ *   msec: milliseconds
+ */
 void
-msleep(msec)
-unsigned msec; /* milliseconds */
+msleep(unsigned msec)
 {
     struct pollfd unused;
     int msecs = msec; /* poll API is signed */
@@ -293,10 +294,9 @@ dosh()
 
 #if defined(SHELL) || defined(DEF_PAGER) || defined(DEF_MAILREADER)
 int
-child(wt)
-int wt;
+child(int wt)
 {
-    register int f;
+    int f;
 
     suspend_nhwindows((char *) 0); /* also calls end_screen() */
 #ifdef _M_UNIX
@@ -345,12 +345,12 @@ int wt;
 
 #ifdef GETRES_SUPPORT
 
-extern int FDECL(nh_getresuid, (uid_t *, uid_t *, uid_t *));
-extern uid_t NDECL(nh_getuid);
-extern uid_t NDECL(nh_geteuid);
-extern int FDECL(nh_getresgid, (gid_t *, gid_t *, gid_t *));
-extern gid_t NDECL(nh_getgid);
-extern gid_t NDECL(nh_getegid);
+extern int nh_getresuid(uid_t *, uid_t *, uid_t *);
+extern uid_t nh_getuid(void);
+extern uid_t nh_geteuid(void);
+extern int nh_getresgid(gid_t *, gid_t *, gid_t *);
+extern gid_t nh_getgid(void);
+extern gid_t nh_getegid(void);
 
 /* the following several functions assume __STDC__ where parentheses
    around the name of a function-like macro prevent macro expansion */
@@ -392,8 +392,7 @@ gid_t (getegid)()
 /* XXX should be ifdef PANICTRACE_GDB, but there's no such symbol yet */
 #ifdef PANICTRACE
 boolean
-file_exists(path)
-const char *path;
+file_exists(const char *path)
 {
     struct stat sb;
 

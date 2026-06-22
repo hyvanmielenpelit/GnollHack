@@ -8,23 +8,23 @@
 #include "hack.h"
 #include <math.h>
 
-STATIC_DCL boolean FDECL(known_hitum, (struct monst *, struct obj *, int *,
-                                       int, int, struct attack *, int));
-STATIC_DCL boolean FDECL(theft_petrifies, (struct obj *));
-STATIC_DCL void FDECL(steal_it, (struct monst *, struct attack *));
-STATIC_DCL boolean FDECL(hitum_cleave, (struct monst *, struct attack *, struct obj*));
-STATIC_DCL boolean FDECL(hitum, (struct monst *, struct attack *));
-STATIC_DCL boolean FDECL(hmon_hitmon, (struct monst *, struct obj *, int,
-                                       int, boolean *));
-STATIC_DCL int FDECL(joust, (struct monst *, struct obj *));
-STATIC_DCL void NDECL(demonpet);
-STATIC_DCL int FDECL(explum, (struct monst *, struct attack *));
-STATIC_DCL void FDECL(start_engulf, (struct monst *));
-STATIC_DCL void NDECL(end_engulf);
-STATIC_DCL int FDECL(gulpum, (struct monst *, struct attack *));
-STATIC_DCL boolean FDECL(hmonas, (struct monst *));
-STATIC_DCL void FDECL(nohandglow, (struct monst *));
-STATIC_DCL boolean FDECL(shade_aware, (struct obj *));
+static boolean known_hitum(struct monst *, struct obj *, int *,
+                                       int, int, struct attack *, int);
+static boolean theft_petrifies(struct obj *);
+static void steal_it(struct monst *, struct attack *);
+static boolean hitum_cleave(struct monst *, struct attack *, struct obj*);
+static boolean hitum(struct monst *, struct attack *);
+static boolean hmon_hitmon(struct monst *, struct obj *, int,
+                                       int, boolean *);
+static int joust(struct monst *, struct obj *);
+static void demonpet(void);
+static int explum(struct monst *, struct attack *);
+static void start_engulf(struct monst *);
+static void end_engulf(void);
+static int gulpum(struct monst *, struct attack *);
+static boolean hmonas(struct monst *);
+static void nohandglow(struct monst *);
+static boolean shade_aware(struct obj *);
 
 extern boolean notonhead; /* for long worms */
 
@@ -34,9 +34,7 @@ static boolean override_confirmation = FALSE;
 #define PROJECTILE(obj) ((obj) && is_ammo(obj))
 
 void
-erode_armor(mdef, hurt)
-struct monst *mdef;
-int hurt;
+erode_armor(struct monst *mdef, int hurt)
 {
     struct obj *target;
 
@@ -97,11 +95,13 @@ int hurt;
     }
 }
 
+/*
+ * Parameters:
+ *   wep: uwep for attack(), null for kick_monster()
+ */
 /* FALSE means it's OK to attack */
 boolean
-attack_checks(mtmp, wep)
-register struct monst *mtmp;
-struct obj *wep; /* uwep for attack(), null for kick_monster() */
+attack_checks(struct monst *mtmp, struct obj *wep)
 {
     int glyph;
 
@@ -242,8 +242,7 @@ struct obj *wep; /* uwep for attack(), null for kick_monster() */
  * It is unchivalrous for a knight to attack the defenseless or from behind.
  */
 void
-check_caitiff(mtmp)
-struct monst *mtmp;
+check_caitiff(struct monst *mtmp)
 {
     if (u.ualign.record <= -10)
         return;
@@ -265,12 +264,13 @@ struct monst *mtmp;
     }
 }
 
+/*
+ * Parameters:
+ *   aatyp: usually AT_WEAP or AT_KICK
+ *   weapon: uwep or uarms or NULL
+ */
 int
-find_roll_to_hit(mtmp, aatyp, weapon, attk_count, role_roll_penalty)
-register struct monst *mtmp;
-uchar aatyp;        /* usually AT_WEAP or AT_KICK */
-struct obj *weapon; /* uwep or uarms or NULL */
-int *attk_count, *role_roll_penalty;
+find_roll_to_hit(struct monst *mtmp, uchar aatyp, struct obj *weapon, int *attk_count, int *role_roll_penalty)
 {
     int tmp, tmp2;
     int polytmp = 0, nonpolytmp = 0;
@@ -390,15 +390,14 @@ int *attk_count, *role_roll_penalty;
 /* try to attack; return False if monster evaded;
    u.dx and u.dy must be set */
 boolean
-attack(mtmp)
-register struct monst *mtmp;
+attack(struct monst *mtmp)
 {
     if (!mtmp)
         return FALSE;
 
     update_u_facing(TRUE);
 
-    register struct permonst *mdat = mtmp->data;
+    struct permonst *mdat = mtmp->data;
 
     /* This section of code provides protection against accidentally
      * hitting peaceful (like '@') and tame (like 'd') monsters.
@@ -628,15 +627,13 @@ register struct monst *mtmp;
     return TRUE;
 }
 
+/*
+ * Parameters:
+ *   rollneeded, armorpenalty: for monks
+ */
 /* really hit target monster; returns TRUE if it still lives */
-STATIC_OVL boolean
-known_hitum(mon, weapon, mhit, rollneeded, armorpenalty, uattk, dieroll)
-register struct monst *mon;
-struct obj *weapon;
-int *mhit;
-int rollneeded, armorpenalty; /* for monks */
-struct attack *uattk;
-int dieroll;
+static boolean
+known_hitum(struct monst *mon, struct obj *weapon, int *mhit, int rollneeded, int armorpenalty, struct attack *uattk, int dieroll)
 {
     boolean malive = TRUE,
             /* hmon() might destroy weapon; remember aspect for cutworm */
@@ -699,13 +696,15 @@ int dieroll;
     return malive;
 }
 
+/*
+ * Parameters:
+ *   target: non-Null; forcefight at nothing doesn't cleave...
+ *   uattk: ... but we don't enforce that here; Null works ok
+ */
 /* hit the monster next to you and the monsters to the left and right of it;
    return False if the primary target is killed, True otherwise */
-STATIC_OVL boolean
-hitum_cleave(target, uattk, weapon)
-struct monst *target; /* non-Null; forcefight at nothing doesn't cleave... */
-struct attack *uattk; /* ... but we don't enforce that here; Null works ok */
-struct obj* weapon;
+static boolean
+hitum_cleave(struct monst *target, struct attack *uattk, struct obj *weapon)
 {
     /* swings will be delivered in alternate directions; with consecutive
        attacks it will simulate normal swing and backswing; when swings
@@ -786,10 +785,8 @@ struct obj* weapon;
 }
 
 /* hit target monster; returns TRUE if it still lives */
-STATIC_OVL boolean
-hitum(mon, uattk)
-struct monst *mon;
-struct attack *uattk;
+static boolean
+hitum(struct monst *mon, struct attack *uattk)
 {
     boolean malive = TRUE, wep_was_destroyed = FALSE;
     int armorpenalty, attknum = 0, x = u.ux + u.dx, y = u.uy + u.dy;
@@ -962,14 +959,13 @@ struct attack *uattk;
     return malive;
 }
 
+/*
+ * Parameters:
+ *   thrown: HMON_xxx (0 => hand-to-hand, other => ranged)
+ */
 /* general "damage monster" routine; return True if mon still alive */
 boolean
-hmon(mon, obj, thrown, dieroll, obj_destroyed)
-struct monst *mon;
-struct obj *obj;
-int thrown; /* HMON_xxx (0 => hand-to-hand, other => ranged) */
-int dieroll;
-boolean* obj_destroyed;
+hmon(struct monst *mon, struct obj *obj, int thrown, int dieroll, boolean *obj_destroyed)
 {
     boolean result, anger_guards;
 
@@ -983,14 +979,13 @@ boolean* obj_destroyed;
     return result;
 }
 
+/*
+ * Parameters:
+ *   thrown: HMON_xxx (0 => hand-to-hand, other => ranged)
+ */
 /* guts of hmon() */
-STATIC_OVL boolean
-hmon_hitmon(mon, obj, thrown, dieroll, obj_destroyed)
-struct monst *mon;
-struct obj *obj;
-int thrown; /* HMON_xxx (0 => hand-to-hand, other => ranged) */
-int dieroll;
-boolean* obj_destroyed;
+static boolean
+hmon_hitmon(struct monst *mon, struct obj *obj, int thrown, int dieroll, boolean *obj_destroyed)
 {
     int extratmp = 0;
     double damage = 0;
@@ -2592,9 +2587,8 @@ boolean* obj_destroyed;
     return destroyed ? FALSE : TRUE;
 }
 
-STATIC_OVL boolean
-shade_aware(obj)
-struct obj *obj;
+static boolean
+shade_aware(struct obj *obj)
 {
     if (!obj)
         return FALSE;
@@ -2619,9 +2613,7 @@ struct obj *obj;
 /* check whether slippery clothing protects from hug or wrap attack */
 /* [currently assumes that you are the attacker] */
 boolean
-m_slips_free(mdef, mattk)
-struct monst *mdef;
-struct attack *mattk;
+m_slips_free(struct monst *mdef, struct attack *mattk)
 {
     struct obj *obj;
 
@@ -2660,12 +2652,15 @@ struct attack *mattk;
     return FALSE;
 }
 
+/*
+ * Parameters:
+ *   mon: target
+ *   obj: weapon
+ */
 /* used when hitting a monster with a lance while mounted;
    1: joust hit; 0: ordinary hit; -1: joust but break lance */
-STATIC_OVL int
-joust(mon, obj)
-struct monst *mon; /* target */
-struct obj *obj;   /* weapon */
+static int
+joust(struct monst *mon, struct obj *obj)
 {
     int skill_chance = 0, joust_dieroll;
 
@@ -2698,8 +2693,8 @@ struct obj *obj;   /* weapon */
  * Send in a demon pet for the hero.  Exercise wisdom.
  *
  */
-STATIC_OVL void
-demonpet(VOID_ARGS)
+static void
+demonpet(void)
 {
     int i;
     struct permonst *pm;
@@ -2733,9 +2728,8 @@ demonpet(VOID_ARGS)
     exercise(A_WIS, TRUE);
 }
 
-STATIC_OVL boolean
-theft_petrifies(otmp)
-struct obj *otmp;
+static boolean
+theft_petrifies(struct obj *otmp)
 {
     if (uarmg || otmp->otyp != CORPSE || otmp->corpsenm < LOW_PM
         || !touch_petrifies(&mons[otmp->corpsenm]) || Stone_resistance)
@@ -2761,10 +2755,8 @@ struct obj *otmp;
  * If the target is wearing body armor, take all of its possessions;
  * otherwise, take one object.  [Is this really the behavior we want?]
  */
-STATIC_OVL void
-steal_it(mdef, mattk)
-struct monst *mdef;
-struct attack *mattk;
+static void
+steal_it(struct monst *mdef, struct attack *mattk)
 {
     struct obj *otmp, *stealoid, **minvent_ptr;
     int64_t unwornmask;
@@ -2847,14 +2839,14 @@ struct attack *mattk;
     }
 }
 
+/*
+ * Parameters:
+ *   specialdmg: blessed and/or silver bonus against various things
+ */
 int
-damageum(mdef, mattk, omonwep, specialdmg)
-register struct monst *mdef;
-register struct attack *mattk;
-struct obj* omonwep;
-int specialdmg; /* blessed and/or silver bonus against various things */
+damageum(struct monst *mdef, struct attack *mattk, struct obj *omonwep, int specialdmg)
 {
-    register struct permonst *pd = mdef->data;
+    struct permonst *pd = mdef->data;
     boolean negated;
     struct obj *mongold;
     int chance = 0;
@@ -3433,8 +3425,7 @@ int specialdmg; /* blessed and/or silver bonus against various things */
 }
 
 void
-remove_monster_and_nearby_waitforu(mdef)
-struct monst* mdef;
+remove_monster_and_nearby_waitforu(struct monst *mdef)
 {
     if (!mdef)
         return;
@@ -3450,10 +3441,8 @@ struct monst* mdef;
     }
 }
 
-STATIC_OVL int
-explum(mdef, mattk)
-register struct monst *mdef;
-register struct attack *mattk;
+static int
+explum(struct monst *mdef, struct attack *mattk)
 {
     boolean resistance; /* only for cold/fire/elec */
     double damage = adjust_damage(d((int) mattk->damn, (int) mattk->damd), &youmonst, mdef, mattk->adtyp, ADFLAGS_NONE);
@@ -3581,9 +3570,8 @@ register struct attack *mattk;
     return 1;
 }
 
-STATIC_OVL void
-start_engulf(mdef)
-struct monst *mdef;
+static void
+start_engulf(struct monst *mdef)
 {
     if (!Invisib) 
     {
@@ -3596,8 +3584,8 @@ struct monst *mdef;
     adjusted_delay_output();
 }
 
-STATIC_OVL void
-end_engulf(VOID_ARGS)
+static void
+end_engulf(void)
 {
     if (!Invisib) {
         tmp_at(DISP_END, 0);
@@ -3605,18 +3593,16 @@ end_engulf(VOID_ARGS)
     }
 }
 
-STATIC_OVL int
-gulpum(mdef, mattk)
-register struct monst *mdef;
-register struct attack *mattk;
+static int
+gulpum(struct monst *mdef, struct attack *mattk)
 {
 #ifdef LINT /* static char msgbuf[BUFSZ]; */
     char msgbuf[BUFSZ];
 #else
     static char msgbuf[BUFSZ]; /* for nomovemsg */
 #endif
-    register int tmp;
-    //register int dam = d((int) mattk->damn, (int) mattk->damd);
+    int tmp;
+    //int dam = d((int) mattk->damn, (int) mattk->damd);
     double damage = adjust_damage(d((int)mattk->damn, (int)mattk->damd), &youmonst, mdef, mattk->adtyp, ADFLAGS_NONE);
     boolean fatal_gulp;
     struct obj *otmp;
@@ -3854,10 +3840,7 @@ register struct attack *mattk;
 }
 
 void
-missum(mdef, mattk, wouldhavehit)
-register struct monst *mdef;
-register struct attack *mattk;
-boolean wouldhavehit;
+missum(struct monst *mdef, struct attack *mattk, boolean wouldhavehit)
 {
     if (wouldhavehit) /* monk is missing due to penalty for wearing suit */
         Your("armor is rather cumbersome...");
@@ -3873,9 +3856,8 @@ boolean wouldhavehit;
 }
 
 /* attack monster as a monster; returns True if mon survives */
-STATIC_OVL boolean
-hmonas(mon)
-register struct monst *mon;
+static boolean
+hmonas(struct monst *mon)
 {
     if (!mon)
         return FALSE;
@@ -4353,19 +4335,17 @@ register struct monst *mon;
     return !DEADMONSTER(mon);
 }
 
+/*
+ * Parameters:
+ *   weapon: uwep or uarms or uarmg or uarmf or Null
+ */
 /*      Special (passive) attacks on you by monsters done here.
  */
 int
-passive(mon, weapon, mhit, malive, aatyp, wep_was_destroyed)
-struct monst *mon;
-struct obj *weapon; /* uwep or uarms or uarmg or uarmf or Null */
-boolean mhit;
-int malive;
-uchar aatyp;
-boolean wep_was_destroyed;
+passive(struct monst *mon, struct obj *weapon, boolean mhit, int malive, uchar aatyp, boolean wep_was_destroyed)
 {
-    register struct permonst *ptr = mon->data;
-    register int i, basedmg = 0;
+    struct permonst *ptr = mon->data;
+    int i, basedmg = 0;
     double damage = 0;
     enum hit_tile_types hit_tile = HIT_GENERAL;
 
@@ -4644,14 +4624,16 @@ boolean wep_was_destroyed;
 }
 
 /*
+ * Parameters:
+ *   obj: null means pick uwep, uswapwep or uarmg
+ *   mattk: null means we find one internally
+ */
+/*
  * Special (passive) attacks on an attacking object by monsters done here.
  * Assumes the attack was successful.
  */
 void
-passive_obj(mon, obj, mattk)
-struct monst *mon;
-struct obj *obj;          /* null means pick uwep, uswapwep or uarmg */
-struct attack *mattk;     /* null means we find one internally */
+passive_obj(struct monst *mon, struct obj *obj, struct attack *mattk)
 {
     struct permonst *ptr = mon->data;
     int i;
@@ -4718,8 +4700,7 @@ struct attack *mattk;     /* null means we find one internally */
 
 /* Note: caller must ascertain mtmp is mimicking... */
 void
-stumble_onto_mimic(mtmp)
-struct monst *mtmp;
+stumble_onto_mimic(struct monst *mtmp)
 {
     const char *fmt = "Wait!  That's %s!", *generic = "a monster", *what = 0;
 
@@ -4773,9 +4754,8 @@ struct monst *mtmp;
     flush_screen(1);
 }
 
-STATIC_OVL void
-nohandglow(mon)
-struct monst *mon;
+static void
+nohandglow(struct monst *mon)
 {
     char *hands = makeplural(body_part(HAND));
 
@@ -4795,10 +4775,12 @@ struct monst *mon;
     u.umconf--;
 }
 
+/*
+ * Parameters:
+ *   otmp: source of flash
+ */
 int
-flash_hits_mon(mtmp, otmp)
-struct monst *mtmp;
-struct obj *otmp; /* source of flash */
+flash_hits_mon(struct monst *mtmp, struct obj *otmp)
 {
     if (!mtmp)
         return 0;
@@ -4846,9 +4828,7 @@ struct obj *otmp; /* source of flash */
 }
 
 void
-light_hits_gremlin(mon, dmg)
-struct monst *mon;
-int dmg;
+light_hits_gremlin(struct monst *mon, int dmg)
 {
     pline("%s %s!", Monnam(mon),
           (dmg > mon->mhp / 2) ? "wails in agony" : "cries out in pain");
@@ -4866,12 +4846,7 @@ int dmg;
 }
 
 double
-adjust_damage(basedamage, magr, mdef, adtyp, ad_flags)
-int basedamage;
-struct monst* magr;
-struct monst* mdef;
-short adtyp;
-uint64_t ad_flags;
+adjust_damage(int basedamage, struct monst *magr, struct monst *mdef, short adtyp, uint64_t ad_flags)
 {
     double base_dmg_d = (double)basedamage;
     boolean you_attack = (magr && magr == &youmonst);
@@ -5036,18 +5011,13 @@ uint64_t ad_flags;
 }
 
 void
-get_game_difficulty_multipliers(monster_damage_multiplier_ptr, monster_hp_multiplier_ptr)
-double* monster_damage_multiplier_ptr;
-double* monster_hp_multiplier_ptr;
+get_game_difficulty_multipliers(double *monster_damage_multiplier_ptr, double *monster_hp_multiplier_ptr)
 {
     get_game_difficulty_multipliers_by_level(monster_damage_multiplier_ptr, monster_hp_multiplier_ptr, context.game_difficulty);
 }
 
 void
-get_game_difficulty_multipliers_by_level(monster_damage_multiplier_ptr, monster_hp_multiplier_ptr, difficulty_level)
-double *monster_damage_multiplier_ptr;
-double *monster_hp_multiplier_ptr;
-schar difficulty_level;
+get_game_difficulty_multipliers_by_level(double *monster_damage_multiplier_ptr, double *monster_hp_multiplier_ptr, schar difficulty_level)
 {
     if (!monster_damage_multiplier_ptr || !monster_hp_multiplier_ptr)
         return;
@@ -5091,8 +5061,7 @@ schar difficulty_level;
 }
 
 int
-calculate_damage_dealt_to_player(hp_d)
-double hp_d;
+calculate_damage_dealt_to_player(double hp_d)
 {
     int integer_hp = (int)hp_d;
     double fracionalpart_hp_d = hp_d - (double)integer_hp;
@@ -5144,8 +5113,7 @@ double hp_d;
 }
 
 int
-deduct_player_hp(hp_d)
-double hp_d;
+deduct_player_hp(double hp_d)
 {
     int integer_hp = (int)hp_d;
     double fracionalpart_hp_d = hp_d - (double)integer_hp;
@@ -5230,9 +5198,7 @@ double hp_d;
 
 
 int
-deduct_monster_hp(mtmp, hp_d)
-struct monst* mtmp;
-double hp_d;
+deduct_monster_hp(struct monst *mtmp, double hp_d)
 {
     if (!mtmp)
         return 0;
@@ -5294,8 +5260,7 @@ double hp_d;
 }
 
 void
-update_u_facing(update_symbol)
-uchar update_symbol;
+update_u_facing(uchar update_symbol)
 {
     if (u.dx != 0)
     {
@@ -5325,33 +5290,27 @@ uchar update_symbol;
 }
 
 void
-update_u_action(action)
-enum action_tile_types action;
+update_u_action(enum action_tile_types action)
 {
     update_u_action_core(action, 3, NEWSYM_FLAGS_KEEP_OLD_EFFECT_MISSILE_ZAP_GLYPHS | NEWSYM_FLAGS_KEEP_OLD_FLAGS);
 }
 
 void
-update_u_action_revert(action)
-enum action_tile_types action;
+update_u_action_revert(enum action_tile_types action)
 {
     update_u_action_core(action, 0, NEWSYM_FLAGS_KEEP_OLD_EFFECT_MISSILE_ZAP_GLYPHS | NEWSYM_FLAGS_KEEP_OLD_FLAGS);
     u_wait_until_action();
 }
 
 void
-update_u_action_and_wait(action)
-enum action_tile_types action;
+update_u_action_and_wait(enum action_tile_types action)
 {
     update_u_action_core(action, 3, NEWSYM_FLAGS_KEEP_OLD_EFFECT_MISSILE_ZAP_GLYPHS | NEWSYM_FLAGS_KEEP_OLD_FLAGS);
     u_wait_until_action();
 }
 
 void
-update_u_action_core(action, simple_wait_multiplier, additional_newsym_flags)
-enum action_tile_types action;
-uint64_t simple_wait_multiplier;
-uint64_t additional_newsym_flags;
+update_u_action_core(enum action_tile_types action, uint64_t simple_wait_multiplier, uint64_t additional_newsym_flags)
 {
     enum action_tile_types action_before = u.action;
     if (iflags.using_gui_tiles && action == ACTION_TILE_NO_ACTION)
@@ -5423,17 +5382,13 @@ uint64_t additional_newsym_flags;
 }
 
 void
-update_m_action(mtmp, action)
-struct monst* mtmp;
-enum action_tile_types action;
+update_m_action(struct monst *mtmp, enum action_tile_types action)
 {
     update_m_action_core(mtmp, action, 2, NEWSYM_FLAGS_KEEP_OLD_EFFECT_MISSILE_ZAP_GLYPHS | NEWSYM_FLAGS_KEEP_OLD_FLAGS);
 }
 
 void
-update_m_action_revert(mtmp, action)
-struct monst* mtmp;
-enum action_tile_types action;
+update_m_action_revert(struct monst *mtmp, enum action_tile_types action)
 {
     if (!mtmp)
         return;
@@ -5445,9 +5400,7 @@ enum action_tile_types action;
 }
 
 void
-update_m_action_and_wait(mtmp, action)
-struct monst* mtmp;
-enum action_tile_types action;
+update_m_action_and_wait(struct monst *mtmp, enum action_tile_types action)
 {
     if (!mtmp)
         return;
@@ -5461,11 +5414,7 @@ enum action_tile_types action;
 
 
 void
-update_m_action_core(mtmp, action, simple_wait_multiplier, additional_newsym_flags)
-struct monst* mtmp;
-enum action_tile_types action;
-uint64_t simple_wait_multiplier;
-uint64_t additional_newsym_flags;
+update_m_action_core(struct monst *mtmp, enum action_tile_types action, uint64_t simple_wait_multiplier, uint64_t additional_newsym_flags)
 {
     if (!mtmp)
         return;
@@ -5552,7 +5501,7 @@ uint64_t additional_newsym_flags;
 }
 
 void 
-u_wait_until_action(VOID_ARGS)
+u_wait_until_action(void)
 {
     if (context.u_intervals_to_wait_until_action > 0UL)
     {
@@ -5562,9 +5511,7 @@ u_wait_until_action(VOID_ARGS)
 }
 
 void
-m_wait_until_action(mon, action)
-struct monst* mon;
-enum action_tile_types action;
+m_wait_until_action(struct monst *mon, enum action_tile_types action)
 {
     if (context.m_intervals_to_wait_until_action > 0UL)
     {
@@ -5575,7 +5522,7 @@ enum action_tile_types action;
 }
 
 void
-u_wait_until_end(VOID_ARGS)
+u_wait_until_end(void)
 {
     if (context.u_intervals_to_wait_until_end > 0UL)
     {
@@ -5585,9 +5532,7 @@ u_wait_until_end(VOID_ARGS)
 }
 
 void
-m_wait_until_end(mon, action)
-struct monst* mon;
-enum action_tile_types action;
+m_wait_until_end(struct monst *mon, enum action_tile_types action)
 {
     if (context.m_intervals_to_wait_until_end > 0UL)
     {
@@ -5598,12 +5543,7 @@ enum action_tile_types action;
 }
 
 void
-display_being_hit(mon, x, y, hit_symbol_shown, damage_shown, extra_mflags)
-struct monst* mon;
-int x, y;
-enum hit_tile_types hit_symbol_shown;
-int damage_shown;
-uint64_t extra_mflags;
+display_being_hit(struct monst *mon, int x, int y, enum hit_tile_types hit_symbol_shown, int damage_shown, uint64_t extra_mflags)
 {
     if (!iflags.using_gui_tiles || hit_symbol_shown >= MAX_HIT_TILES || hit_symbol_shown < 0)
         return;
@@ -5622,21 +5562,13 @@ uint64_t extra_mflags;
 }
 
 void
-display_u_being_hit(hit_symbol_shown, damage_shown, extra_mflags)
-enum hit_tile_types hit_symbol_shown;
-int damage_shown;
-uint64_t extra_mflags;
+display_u_being_hit(enum hit_tile_types hit_symbol_shown, int damage_shown, uint64_t extra_mflags)
 {
     display_being_hit(&youmonst, u.ux, u.uy, hit_symbol_shown, damage_shown, extra_mflags);
 }
 
 void
-display_m_being_hit(mon, hit_symbol_shown, damage_shown, extra_mflags, use_bhitpos)
-struct monst* mon;
-enum hit_tile_types hit_symbol_shown;
-int damage_shown;
-uint64_t extra_mflags;
-boolean use_bhitpos;
+display_m_being_hit(struct monst *mon, enum hit_tile_types hit_symbol_shown, int damage_shown, uint64_t extra_mflags, boolean use_bhitpos)
 {
     if (!mon)
         return;

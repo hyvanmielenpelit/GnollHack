@@ -18,33 +18,33 @@
 #define Tgetstr(key) (tgetstr(key, &tbufptr))
 #endif /* MICROPORT_286_BUG **/
 
-static char *FDECL(s_atr2str, (int));
-static char *FDECL(e_atr2str, (int));
+static char *s_atr2str(int);
+static char *e_atr2str(int);
 
-void FDECL(cmov, (int, int));
-void FDECL(nocmov, (int, int));
+void cmov(int, int);
+void nocmov(int, int);
 #if defined(TEXTCOLOR) && defined(TERMLIB)
 #if !defined(UNIX) || !defined(TERMINFO)
 #ifndef TOS
-static void FDECL(analyze_seq, (char *, int *, int *));
+static void analyze_seq(char *, int *, int *);
 #endif
 #endif
-static void NDECL(init_hilite);
-static void NDECL(kill_hilite);
+static void init_hilite(void);
+static void kill_hilite(void);
 #endif
 
 /* (see tcap.h) -- nh_CM, nh_ND, nh_CD, nh_HI,nh_HE, nh_US,nh_UE, ul_hack */
 struct tc_lcl_data tc_lcl_data = { 0, 0, 0, 0, 0, 0, 0, FALSE };
 
-STATIC_VAR char *HO, *CL, *CE, *UP, *XD, *BC, *SO, *SE, *TI, *TE;
-STATIC_VAR char *VS, *VE;
-STATIC_VAR char *ME, *MR, *MB, *MH, *MD;
+static char *HO, *CL, *CE, *UP, *XD, *BC, *SO, *SE, *TI, *TE;
+static char *VS, *VE;
+static char *ME, *MR, *MB, *MH, *MD;
 
 #ifdef TERMLIB
 boolean dynamic_HIHE = FALSE;
-STATIC_VAR int SG;
-STATIC_OVL char PC = '\0';
-STATIC_VAR char tbuf[512];
+static int SG;
+static char PC = '\0';
+static char tbuf[512];
 #endif /*TERMLIB*/
 
 #ifdef TEXTCOLOR
@@ -63,7 +63,7 @@ extern boolean HE_resets_AS;
 #endif
 
 #ifndef TERMLIB
-STATIC_VAR char tgotobuf[20];
+static char tgotobuf[20];
 #ifdef TOS
 #define tgoto(fmt, x, y) (Sprintf(tgotobuf, fmt, y + ' ', x + ' '), tgotobuf)
 #else
@@ -72,12 +72,11 @@ STATIC_VAR char tgotobuf[20];
 #endif /* TERMLIB */
 
 void
-tty_startup(wid, hgt)
-int *wid, *hgt;
+tty_startup(int *wid, int *hgt)
 {
-    register int i;
+    int i;
 #ifdef TERMLIB
-    register const char *term;
+    const char *term;
     register char *tptr;
     char *tbufptr, *pc;
 
@@ -325,7 +324,7 @@ int *wid, *hgt;
  */
 /* deallocate resources prior to final termination */
 void
-tty_shutdown()
+tty_shutdown(void)
 {
     /* we only attempt to clean up a few individual termcap variables */
 #ifdef TERMLIB
@@ -342,8 +341,7 @@ tty_shutdown()
 }
 
 void
-tty_number_pad(state)
-int state;
+tty_number_pad(int state)
 {
     switch (state) {
     case -1: /* activate keypad mode (escape sequences) */
@@ -361,8 +359,8 @@ int state;
 }
 
 #ifdef TERMLIB
-extern void NDECL((*decgraphics_mode_callback)); /* defined in drawing.c */
-static void NDECL(tty_decgraphics_termcap_fixup);
+extern void (*decgraphics_mode_callback)(void); /* defined in drawing.c */
+static void tty_decgraphics_termcap_fixup(void);
 
 /*
    We call this routine whenever DECgraphics mode is enabled, even if it
@@ -372,7 +370,7 @@ static void NDECL(tty_decgraphics_termcap_fixup);
    so this is a convenient hook.
  */
 static void
-tty_decgraphics_termcap_fixup()
+tty_decgraphics_termcap_fixup(void)
 {
     static char ctrlN[] = "\016";
     static char ctrlO[] = "\017";
@@ -434,17 +432,17 @@ tty_decgraphics_termcap_fixup()
 #endif /* TERMLIB */
 
 #if defined(ASCIIGRAPH) && defined(PC9800)
-extern void NDECL((*ibmgraphics_mode_callback)); /* defined in drawing.c */
+extern void (*ibmgraphics_mode_callback)(void); /* defined in drawing.c */
 #endif
 
 #ifdef PC9800
-extern void NDECL((*ascgraphics_mode_callback)); /* defined in drawing.c */
-static void NDECL(tty_ascgraphics_hilite_fixup);
+extern void (*ascgraphics_mode_callback)(void); /* defined in drawing.c */
+static void tty_ascgraphics_hilite_fixup(void);
 
 static void
-tty_ascgraphics_hilite_fixup()
+tty_ascgraphics_hilite_fixup(void)
 {
-    register int c;
+    int c;
 
     for (c = 0; c < CLR_MAX / 2; c++)
         if (c != CLR_BLACK) {
@@ -459,7 +457,7 @@ tty_ascgraphics_hilite_fixup()
 #endif /* PC9800 */
 
 void
-tty_start_screen()
+tty_start_screen(void)
 {
     xputs(TI);
     xputs(VS);
@@ -487,7 +485,7 @@ tty_start_screen()
 }
 
 void
-tty_end_screen()
+tty_end_screen(void)
 {
     clear_screen();
     xputs(VE);
@@ -505,8 +503,7 @@ tty_end_screen()
    in trampoli.[ch]. */
 
 void
-nocmov(x, y)
-int x, y;
+nocmov(int x, int y)
 {
     if ((int) ttyDisplay->cury > y) {
         if (UP) {
@@ -555,8 +552,7 @@ int x, y;
 }
 
 void
-cmov(x, y)
-register int x, y;
+cmov(int x, int y)
 {
     xputs(tgoto(nh_CM, x, y));
     ttyDisplay->cury = y;
@@ -565,15 +561,13 @@ register int x, y;
 
 /* See note above. xputc() is a special function. */
 void
-xputc(c)
-int c;
+xputc(int c)
 {
     (void) putchar(c);
 }
 
 void
-xputs(s)
-const char *s;
+xputs(const char *s)
 {
 #ifndef TERMLIB
     (void) fputs(s, stdout);
@@ -587,12 +581,12 @@ const char *s;
 }
 
 void
-cl_end()
+cl_end(void)
 {
     if (CE) {
         xputs(CE);
     } else { /* no-CE fix - free after Harold Rynes */
-        register int cx = ttyDisplay->curx + 1;
+        int cx = ttyDisplay->curx + 1;
 
         /* this looks terrible, especially on a slow terminal
            but is better than nothing */
@@ -606,7 +600,7 @@ cl_end()
 }
 
 void
-clear_screen()
+clear_screen(void)
 {
     /* note: if CL is null, then termcap initialization failed,
             so don't attempt screen-oriented I/O during final cleanup.
@@ -618,7 +612,7 @@ clear_screen()
 }
 
 void
-home()
+home(void)
 {
     if (HO)
         xputs(HO);
@@ -630,14 +624,14 @@ home()
 }
 
 void
-standoutbeg()
+standoutbeg(void)
 {
     if (SO)
         xputs(SO);
 }
 
 void
-standoutend()
+standoutend(void)
 {
     if (SE)
         xputs(SE);
@@ -645,28 +639,28 @@ standoutend()
 
 #if 0 /* if you need one of these, uncomment it (here and in extern.h) */
 void
-revbeg()
+revbeg(void)
 {
     if (MR)
         xputs(MR);
 }
 
 void
-boldbeg()
+boldbeg(void)
 {
     if (MD)
         xputs(MD);
 }
 
 void
-blinkbeg()
+blinkbeg(void)
 {
     if (MB)
         xputs(MB);
 }
 
 void
-dimbeg()
+dimbeg(void)
 {
     /* not in most termcap entries */
     if (MH)
@@ -674,7 +668,7 @@ dimbeg()
 }
 
 void
-m_end()
+m_end(void)
 {
     if (ME)
         xputs(ME);
@@ -682,13 +676,13 @@ m_end()
 #endif /*0*/
 
 void
-backsp()
+backsp(void)
 {
     xputs(BC);
 }
 
 void
-tty_nhbell()
+tty_nhbell(void)
 {
     if (flags.silent)
         return;
@@ -698,14 +692,14 @@ tty_nhbell()
 
 #ifdef ASCIIGRAPH
 void
-graph_on()
+graph_on(void)
 {
     if (AS)
         xputs(AS);
 }
 
 void
-graph_off()
+graph_off(void)
 {
     if (AE)
         xputs(AE);
@@ -728,10 +722,10 @@ static const short tmspc10[] = { /* from termcap */
 
 /* delay 50 ms */
 void
-tty_delay_output()
+tty_delay_output(void)
 {
 #if defined(MICRO)
-    register int i;
+    int i;
 #endif
     if (iflags.debug_fuzzer)
         return;
@@ -769,9 +763,9 @@ tty_delay_output()
 
     } else if (ospeed > 0 && ospeed < SIZE(tmspc10) && nh_CM) {
         /* delay by sending cm(here) an appropriate number of times */
-        register int cmlen =
+        int cmlen =
             strlen(tgoto(nh_CM, ttyDisplay->curx, ttyDisplay->cury));
-        register int i = 500 + tmspc10[ospeed] / 2;
+        int i = 500 + tmspc10[ospeed] / 2;
 
         while (i > 0) {
             cmov((int) ttyDisplay->curx, (int) ttyDisplay->cury);
@@ -783,11 +777,10 @@ tty_delay_output()
 
 /* delay interval ms */
 void
-tty_delay_output_milliseconds(interval)
-int interval;
+tty_delay_output_milliseconds(int interval)
 {
 #if defined(MICRO)
-    register int i;
+    int i;
 #endif
     if (iflags.debug_fuzzer)
         return;
@@ -826,9 +819,9 @@ int interval;
     }
     else if (ospeed > 0 && ospeed < SIZE(tmspc10) && nh_CM) {
         /* delay by sending cm(here) an appropriate number of times */
-        register int cmlen =
+        int cmlen =
             strlen(tgoto(nh_CM, ttyDisplay->curx, ttyDisplay->cury));
-        register int i = 500 + tmspc10[ospeed] / 2;
+        int i = 500 + tmspc10[ospeed] / 2;
 
         while (i > 0) {
             cmov((int)ttyDisplay->curx, (int)ttyDisplay->cury);
@@ -840,11 +833,10 @@ int interval;
 
 /* delay intervals ms */
 void
-tty_delay_output_intervals(intervals)
-int intervals;
+tty_delay_output_intervals(int intervals)
 {
 #if defined(MICRO)
-    register int i;
+    int i;
 #endif
     if (iflags.debug_fuzzer)
         return;
@@ -883,9 +875,9 @@ int intervals;
     }
     else if (ospeed > 0 && ospeed < SIZE(tmspc10) && nh_CM) {
         /* delay by sending cm(here) an appropriate number of times */
-        register int cmlen =
+        int cmlen =
             strlen(tgoto(nh_CM, ttyDisplay->curx, ttyDisplay->cury));
-        register int i = 500 + tmspc10[ospeed] / 2;
+        int i = 500 + tmspc10[ospeed] / 2;
 
         while (i > 0) {
             cmov((int)ttyDisplay->curx, (int)ttyDisplay->cury);
@@ -897,12 +889,12 @@ int intervals;
 
 /* must only be called with curx = 1 */
 void
-cl_eos() /* free after Robert Viduya */
+cl_eos(void) /* free after Robert Viduya */
 {
     if (nh_CD) {
         xputs(nh_CD);
     } else {
-        register int cy = ttyDisplay->cury + 1;
+        int cy = ttyDisplay->cury + 1;
 
         while (cy <= LI - 2) {
             cl_end();
@@ -993,9 +985,9 @@ const struct {
 static char nilstring[] = "";
 
 static void
-init_hilite()
+init_hilite(void)
 {
-    register int c;
+    int c;
     char *setf, *scratch;
     int md_len;
 
@@ -1068,7 +1060,7 @@ init_hilite()
 }
 
 static void
-kill_hilite()
+kill_hilite(void)
 {
     /* if colors weren't available, no freeing needed */
     if (hilites[CLR_BLACK] == nh_HI)
@@ -1099,11 +1091,9 @@ kill_hilite()
 #ifndef TOS
 /* find the foreground and background colors set by nh_HI or nh_HE */
 static void
-analyze_seq(str, fg, bg)
-char *str;
-int *fg, *bg;
+analyze_seq(char *str, int *fg, int *bg)
 {
-    register int c, code;
+    int c, code;
     int len;
 
 #ifdef MICRO
@@ -1162,9 +1152,9 @@ int *fg, *bg;
  */
 
 static void
-init_hilite()
+init_hilite(void)
 {
-    register int c;
+    int c;
 #ifdef TOS
     extern unsigned long tos_numcolors; /* in tos.c */
     static char NOCOL[] = "\033b0", COLHE[] = "\033q\033b0";
@@ -1244,10 +1234,10 @@ init_hilite()
 }
 
 static void
-kill_hilite()
+kill_hilite(void)
 {
 #ifndef TOS
-    register int c;
+    int c;
 
     for (c = 0; c < CLR_MAX / 2; c++) {
         if (hilites[c | BRIGHT] == hilites[c])
@@ -1266,8 +1256,7 @@ kill_hilite()
 static char nulstr[] = "";
 
 static char *
-s_atr2str(n)
-int n;
+s_atr2str(int n)
 {
     switch (n) {
     case ATR_BLINK:
@@ -1299,8 +1288,7 @@ int n;
 }
 
 static char *
-e_atr2str(n)
-int n;
+e_atr2str(int n)
 {
     switch (n) {
     case ATR_ULINE:
@@ -1324,8 +1312,7 @@ int n;
 /* suppress nonfunctional highlights so render_status() might be able to
    optimize more; keep this in sync with s_atr2str() */
 int
-term_attr_fixup(msk)
-int msk;
+term_attr_fixup(int msk)
 {
     /* underline is converted to bold if its start sequence isn't available */
     if ((msk & (1 << ATR_ULINE)) && (!nh_US || !*nh_US)) {
@@ -1345,8 +1332,7 @@ int msk;
 }
 
 void
-term_start_attr(attr)
-int attr;
+term_start_attr(int attr)
 {
     if (attr) {
         const char *astr = s_atr2str(attr);
@@ -1357,8 +1343,7 @@ int attr;
 }
 
 void
-term_end_attr(attr)
-int attr;
+term_end_attr(int attr)
 {
     if (attr) {
         const char *astr = e_atr2str(attr);
@@ -1369,13 +1354,13 @@ int attr;
 }
 
 void
-term_start_raw_bold()
+term_start_raw_bold(void)
 {
     xputs(nh_HI);
 }
 
 void
-term_end_raw_bold()
+term_end_raw_bold(void)
 {
     xputs(nh_HE);
 }
@@ -1383,14 +1368,13 @@ term_end_raw_bold()
 #ifdef TEXTCOLOR
 
 void
-term_end_color()
+term_end_color(void)
 {
     xputs(nh_HE);
 }
 
 void
-term_start_color(color)
-int color;
+term_start_color(int color)
 {
     if (color < CLR_MAX)
         xputs(hilites[color]);
@@ -1398,8 +1382,7 @@ int color;
 
 /* not to be confused with has_colors() in unixtty.c */
 int
-has_color(color)
-int color;
+has_color(int color)
 {
 #ifdef X11_GRAPHICS
     /* XXX has_color() should be added to windowprocs */

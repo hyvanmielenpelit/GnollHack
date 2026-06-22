@@ -18,29 +18,29 @@ boolean m_using = FALSE;
  * are confused don't know not to read scrolls, etc....
  */
 
-STATIC_DCL struct permonst *FDECL(muse_newcham_mon, (struct monst *));
-STATIC_DCL int FDECL(precheck, (struct monst *, struct obj *));
-STATIC_DCL void FDECL(mzapmsg, (struct monst *, struct obj *, BOOLEAN_P));
-STATIC_DCL void FDECL(minvokemsg, (struct monst*, struct obj*, BOOLEAN_P));
-STATIC_DCL void FDECL(mreadmsg, (struct monst *, struct obj *));
-STATIC_DCL void FDECL(mquaffmsg, (struct monst *, struct obj *));
-STATIC_DCL boolean FDECL(m_use_healing, (struct monst *));
-STATIC_PTR int FDECL(mbhitm, (struct monst *, struct obj *, struct monst*));
-STATIC_DCL void FDECL(mbhit, (struct monst *, int,
-                              int FDECL((*), (MONST_P, OBJ_P, MONST_P)),
-                              int FDECL((*), (OBJ_P, OBJ_P, MONST_P)), struct obj *));
-STATIC_DCL void FDECL(you_aggravate, (struct monst *));
-STATIC_DCL void FDECL(mon_consume_unstone, (struct monst *, struct obj *,
-                                            BOOLEAN_P, BOOLEAN_P));
-STATIC_DCL boolean FDECL(cures_stoning, (struct monst *, struct obj *,
-                                         BOOLEAN_P));
-STATIC_DCL boolean FDECL(mcould_eat_tin, (struct monst *));
-STATIC_DCL boolean FDECL(muse_unslime, (struct monst *, struct obj *,
-                                        struct trap *, BOOLEAN_P));
-STATIC_DCL int FDECL(cures_sliming, (struct monst *, struct obj *));
-STATIC_DCL boolean FDECL(green_mon, (struct monst *));
+static struct permonst *muse_newcham_mon(struct monst *);
+static int precheck(struct monst *, struct obj *);
+static void mzapmsg(struct monst *, struct obj *, boolean);
+static void minvokemsg(struct monst*, struct obj*, boolean);
+static void mreadmsg(struct monst *, struct obj *);
+static void mquaffmsg(struct monst *, struct obj *);
+static boolean m_use_healing(struct monst *);
+static int mbhitm(struct monst *, struct obj *, struct monst*);
+static void mbhit(struct monst *, int,
+                              int FDECL((*), (struct monst *, struct obj *, struct monst *)),
+                              int FDECL((*), (struct obj *, struct obj *, struct monst *)), struct obj *);
+static void you_aggravate(struct monst *);
+static void mon_consume_unstone(struct monst *, struct obj *,
+                                            boolean, boolean);
+static boolean cures_stoning(struct monst *, struct obj *,
+                                         boolean);
+static boolean mcould_eat_tin(struct monst *);
+static boolean muse_unslime(struct monst *, struct obj *,
+                                        struct trap *, boolean);
+static int cures_sliming(struct monst *, struct obj *);
+static boolean green_mon(struct monst *);
 
-STATIC_VAR struct musable {
+static struct musable {
     struct obj *offensive;
     struct obj *defensive;
     struct obj *misc;
@@ -49,8 +49,8 @@ STATIC_VAR struct musable {
      * If it's an object, the object is also set (it's 0 otherwise).
      */
 } m;
-STATIC_VAR int trapx, trapy;
-STATIC_VAR boolean zap_oseen; /* for wands which use mbhitm and are zapped at
+static int trapx, trapy;
+static boolean zap_oseen; /* for wands which use mbhitm and are zapped at
                            * players.  We usually want an oseen local to
                            * the function, but this is impossible since the
                            * function mbhitm has to be compatible with the
@@ -61,10 +61,8 @@ STATIC_VAR boolean zap_oseen; /* for wands which use mbhitm and are zapped at
  * the item.  Returns 0 if nothing happened, 2 if the monster can't do
  * anything (i.e. it teleported) and 1 if it's dead.
  */
-STATIC_OVL int
-precheck(mon, obj)
-struct monst *mon;
-struct obj *obj;
+static int
+precheck(struct monst *mon, struct obj *obj)
 {
     boolean vis;
 
@@ -194,11 +192,8 @@ struct obj *obj;
     return 0;
 }
 
-STATIC_OVL void
-mzapmsg(mtmp, otmp, self)
-struct monst *mtmp;
-struct obj *otmp;
-boolean self;
+static void
+mzapmsg(struct monst *mtmp, struct obj *otmp, boolean self)
 {
     if (!mtmp || !otmp)
         return;
@@ -222,11 +217,8 @@ boolean self;
     }
 }
 
-STATIC_OVL void
-minvokemsg(mtmp, otmp, self)
-struct monst* mtmp;
-struct obj* otmp;
-boolean self;
+static void
+minvokemsg(struct monst *mtmp, struct obj *otmp, boolean self)
 {
     if (!mtmp || !otmp)
         return;
@@ -274,10 +266,8 @@ boolean self;
     }
 }
 
-STATIC_OVL void
-mreadmsg(mtmp, otmp)
-struct monst *mtmp;
-struct obj *otmp;
+static void
+mreadmsg(struct monst *mtmp, struct obj *otmp)
 {
     if (!mtmp || !otmp)
         return;
@@ -318,10 +308,8 @@ struct obj *otmp;
               vismon ? mon_nam(mtmp) : mhe(mtmp));
 }
 
-STATIC_OVL void
-mquaffmsg(mtmp, otmp)
-struct monst *mtmp;
-struct obj *otmp;
+static void
+mquaffmsg(struct monst *mtmp, struct obj *otmp)
 {
     play_simple_object_sound(otmp, OBJECT_SOUND_TYPE_QUAFF);
 
@@ -368,16 +356,14 @@ struct obj *otmp;
  */
 
 void
-clear_defensive(VOID_ARGS)
+clear_defensive(void)
 {
     m.defensive = (struct obj*)0;
     m.has_defense = 0;
 }
 
 boolean
-set_defensive_potion(mtmp, obj)
-struct monst* mtmp;
-struct obj* obj;
+set_defensive_potion(struct monst *mtmp, struct obj *obj)
 {
     m.defensive = (struct obj*)0;
     m.has_defense = 0;
@@ -408,9 +394,7 @@ struct obj* obj;
 }
 
 boolean
-set_defensive_unicorn_horn(mtmp, obj)
-struct monst* mtmp;
-struct obj* obj;
+set_defensive_unicorn_horn(struct monst *mtmp, struct obj *obj)
 {
     if (!mtmp || !obj || obj->otyp != UNICORN_HORN)
     {
@@ -426,9 +410,8 @@ struct obj* obj;
 
 
 
-STATIC_OVL boolean
-m_use_healing(mtmp)
-struct monst *mtmp;
+static boolean
+m_use_healing(struct monst *mtmp)
 {
     struct obj *obj = 0;
     if ((obj = m_carrying(mtmp, POT_FULL_HEALING)) != 0) {
@@ -457,10 +440,9 @@ struct monst *mtmp;
 /* Select a defensive item/action for a monster.  Returns TRUE iff one is
    found. */
 boolean
-find_defensive(mtmp)
-struct monst *mtmp;
+find_defensive(struct monst *mtmp)
 {
-    register struct obj *obj = 0;
+    struct obj *obj = 0;
     struct trap *t;
     int x = mtmp->mx, y = mtmp->my;
     boolean stuck = (mtmp == u.ustuck);
@@ -826,8 +808,7 @@ struct monst *mtmp;
  * 2: did something and can't attack again (i.e. teleported).
  */
 int
-use_defensive(mtmp)
-struct monst *mtmp;
+use_defensive(struct monst *mtmp)
 {
     if (!mtmp)
         return 0;
@@ -1474,8 +1455,7 @@ struct monst *mtmp;
 }
 
 int
-rnd_defensive_item(mtmp)
-struct monst *mtmp;
+rnd_defensive_item(struct monst *mtmp)
 {
     struct permonst *pm = mtmp->data;
     int difficulty = mons[mtmp->mnum].difficulty;
@@ -1550,10 +1530,9 @@ try_again:
  * found.
  */
 boolean
-find_offensive(mtmp)
-struct monst *mtmp;
+find_offensive(struct monst *mtmp)
 {
-    register struct obj *obj;
+    struct obj *obj;
     boolean extremely_high_level_skip = (mtmp->data->difficulty > 60);
     boolean very_high_level_skip = (mtmp->data->difficulty > 30 && mtmp->data->difficulty <= 60);
     boolean high_level_skip = (mtmp->data->difficulty > 20 && mtmp->data->difficulty <= 30);
@@ -1779,12 +1758,9 @@ struct monst *mtmp;
 #undef nomore
 }
 
-STATIC_PTR
+static
 int
-mbhitm(mtmp, otmp, origmonst)
-register struct monst *mtmp;
-register struct obj *otmp;
-register struct monst* origmonst;
+mbhitm(struct monst *mtmp, struct obj *otmp, struct monst *origmonst)
 {
     int tmp;
     boolean reveal_invis = FALSE;
@@ -1907,22 +1883,24 @@ register struct monst* origmonst;
     return 0;
 }
 
+/*
+ * Parameters:
+ *   mon: monster shooting the wand
+ *   range: direction and range
+ *   fhito, obj: fns called when mon/obj hit
+ *   obj: 2nd arg to fhitm/fhito
+ */
 /* A modified bhit() for monsters.  Based on bhit() in zap.c.  Unlike
  * buzz(), bhit() doesn't take into account the possibility of a monster
  * zapping you, so we need a special function for it.  (Unless someone wants
  * to merge the two functions...)
  */
-STATIC_OVL void
-mbhit(mon, range, fhitm, fhito, obj)
-struct monst *mon;  /* monster shooting the wand */
-register int range; /* direction and range */
-int FDECL((*fhitm), (MONST_P, OBJ_P, MONST_P));
-int FDECL((*fhito), (OBJ_P, OBJ_P, MONST_P)); /* fns called when mon/obj hit */
-struct obj *obj;                     /* 2nd arg to fhitm/fhito */
+static void
+mbhit(struct monst *mon, int range, int (*fhitm)(struct monst*, struct obj*, struct monst*), int (*fhito)(struct obj*, struct obj*, struct monst*), struct obj *obj)
 {
-    register struct monst *mtmp;
-    register struct obj *otmp;
-    register uchar typ;
+    struct monst *mtmp;
+    struct obj *otmp;
+    uchar typ;
     int ddx, ddy;
 
     bhitpos.x = mon->mx;
@@ -1960,7 +1938,7 @@ struct obj *obj;                     /* 2nd arg to fhitm/fhito */
         /* modified by GAN to hit all objects */
         if (fhito) {
             int hitanything = 0;
-            register struct obj *next_obj;
+            struct obj *next_obj;
 
             for (otmp = level.objects[bhitpos.x][bhitpos.y]; otmp;
                  otmp = next_obj) {
@@ -2005,8 +1983,7 @@ struct obj *obj;                     /* 2nd arg to fhitm/fhito */
  * after find_offensive().  Return values are same as use_defensive().
  */
 int
-use_offensive(mtmp)
-struct monst *mtmp;
+use_offensive(struct monst *mtmp)
 {
     if (!mtmp)
         return 0;
@@ -2105,7 +2082,7 @@ struct monst *mtmp;
         if (!otmp)
             return 2;
         /* TODO: handle steeds */
-        register int x, y;
+        int x, y;
         /* don't use monster fields after killing it */
         boolean confused = (is_confused(mtmp) ? TRUE : FALSE);
         int mmx = mtmp->mx, mmy = mtmp->my;
@@ -2229,8 +2206,7 @@ struct monst *mtmp;
 }
 
 int
-rnd_offensive_item(mtmp)
-struct monst *mtmp;
+rnd_offensive_item(struct monst *mtmp)
 {
     struct permonst *pm = mtmp->data;
     int difficulty = mons[mtmp->mnum].difficulty;
@@ -2318,9 +2294,7 @@ struct monst *mtmp;
 #define MUSE_POT_RESTORE_ABILITY 34
 
 boolean
-set_misc_potion(mtmp, obj)
-struct monst* mtmp;
-struct obj* obj;
+set_misc_potion(struct monst *mtmp, struct obj *obj)
 {
     m.misc = (struct obj*)0;
     m.has_misc = 0;
@@ -2432,10 +2406,9 @@ struct obj* obj;
 }
 
 boolean
-find_misc(mtmp)
-struct monst *mtmp;
+find_misc(struct monst *mtmp)
 {
-    register struct obj *obj;
+    struct obj *obj;
     struct permonst *mdat = mtmp->data;
     int x = mtmp->mx, y = mtmp->my;
     struct trap *t;
@@ -2747,9 +2720,8 @@ struct monst *mtmp;
 
 /* type of monster to polymorph into; defaults to one suitable for the
    current level rather than the totally arbitrary choice of newcham() */
-STATIC_OVL struct permonst *
-muse_newcham_mon(mon)
-struct monst *mon;
+static struct permonst *
+muse_newcham_mon(struct monst *mon)
 {
     struct obj *m_armr;
 
@@ -2763,8 +2735,7 @@ struct monst *mon;
 }
 
 int
-use_misc(mtmp)
-struct monst *mtmp;
+use_misc(struct monst *mtmp)
 {
     if (!mtmp)
         return 0;
@@ -2808,7 +2779,7 @@ struct monst *mtmp;
         mquaffmsg(mtmp, otmp);
         if (otmp->cursed) {
             if (Can_rise_up(mtmp->mx, mtmp->my, &u.uz) && (!isdiluted || !rn2(2))) {
-                register int tolev = depth(&u.uz) - 1;
+                int tolev = depth(&u.uz) - 1;
                 d_level tolevel;
 
                 get_level(&tolevel, tolev);
@@ -3225,9 +3196,8 @@ struct monst *mtmp;
     return 0;
 }
 
-STATIC_OVL void
-you_aggravate(mtmp)
-struct monst *mtmp;
+static void
+you_aggravate(struct monst *mtmp)
 {
     pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "For some reason, %s presence is known to you.",
           s_suffix(noit_mon_nam(mtmp)));
@@ -3255,8 +3225,7 @@ struct monst *mtmp;
 }
 
 int
-rnd_misc_item(mtmp)
-struct monst *mtmp;
+rnd_misc_item(struct monst *mtmp)
 {
     struct permonst *pm = mtmp->data;
     int difficulty = mons[mtmp->mnum].difficulty;
@@ -3291,9 +3260,7 @@ struct monst *mtmp;
 }
 
 boolean
-searches_for_item(mon, obj)
-struct monst *mon;
-struct obj *obj;
+searches_for_item(struct monst *mon, struct obj *obj)
 {
     int typ = obj->otyp;
 
@@ -3390,9 +3357,7 @@ struct obj *obj;
 }
 
 boolean
-mon_reflects(mon, str)
-struct monst *mon;
-const char *str;
+mon_reflects(struct monst *mon, const char *str)
 {
     if (!mon)
         return FALSE;
@@ -3459,9 +3424,7 @@ const char *str;
 }
 
 struct obj*
-what_gives_monster(mon, prop_index)
-struct monst* mon;
-int prop_index;
+what_gives_monster(struct monst *mon, int prop_index)
 {
     if (!mon)
         return (struct obj*)0;
@@ -3476,8 +3439,7 @@ int prop_index;
 }
 
 boolean
-ureflects(fmt, str)
-const char *fmt, *str;
+ureflects(const char *fmt, const char *str)
 {
     /* Check from outermost to innermost objects */
     if (EReflecting & W_ARMS) 
@@ -3674,9 +3636,7 @@ const char *fmt, *str;
 
 /* cure mon's blindness (use_defensive, dog_eat, meatobj) */
 void
-mcureblindness(mon, verbos)
-struct monst *mon;
-boolean verbos;
+mcureblindness(struct monst *mon, boolean verbos)
 {
     if (is_blinded(mon)) 
     {
@@ -3687,9 +3647,7 @@ boolean verbos;
 }
 
 void
-mcuresickness(mtmp, verbos)
-struct monst* mtmp;
-boolean verbos;
+mcuresickness(struct monst *mtmp, boolean verbos)
 {
     if (!mtmp)
         return;
@@ -3713,9 +3671,7 @@ boolean verbos;
 }
 
 void
-mcurehallucination(mtmp, verbos)
-struct monst* mtmp;
-boolean verbos;
+mcurehallucination(struct monst *mtmp, boolean verbos)
 {
     if (!mtmp)
         return;
@@ -3727,9 +3683,7 @@ boolean verbos;
 }
 
 void
-mcureconfusion(mtmp, verbos)
-struct monst* mtmp;
-boolean verbos;
+mcureconfusion(struct monst *mtmp, boolean verbos)
 {
     if (!mtmp)
         return;
@@ -3741,9 +3695,7 @@ boolean verbos;
 }
 
 void
-mcurestun(mtmp, verbos)
-struct monst* mtmp;
-boolean verbos;
+mcurestun(struct monst *mtmp, boolean verbos)
 {
     if (!mtmp)
         return;
@@ -3756,9 +3708,7 @@ boolean verbos;
 
 /* TRUE if the monster ate something */
 boolean
-munstone(mon, by_you)
-struct monst *mon;
-boolean by_you;
+munstone(struct monst *mon, boolean by_you)
 {
     struct obj *obj;
     boolean tinok;
@@ -3779,12 +3729,12 @@ boolean by_you;
     return FALSE;
 }
 
-STATIC_OVL void
-mon_consume_unstone(mon, obj, by_you, stoning)
-struct monst *mon;
-struct obj *obj;
-boolean by_you;
-boolean stoning; /* True: stop petrification, False: cure stun && confusion */
+/*
+ * Parameters:
+ *   stoning: True: stop petrification, False: cure stun && confusion
+ */
+static void
+mon_consume_unstone(struct monst *mon, struct obj *obj, boolean by_you, boolean stoning)
 {
     boolean vis = canseemon(mon), tinned = obj->otyp == TIN,
             food = obj->otyp == CORPSE || tinned,
@@ -3861,11 +3811,8 @@ boolean stoning; /* True: stop petrification, False: cure stun && confusion */
 }
 
 /* decide whether obj can cure petrification; also used when picking up */
-STATIC_OVL boolean
-cures_stoning(mon, obj, tinok)
-struct monst *mon;
-struct obj *obj;
-boolean tinok;
+static boolean
+cures_stoning(struct monst *mon, struct obj *obj, boolean tinok)
 {
     if (obj->otyp == POT_ACID)
         return TRUE;
@@ -3880,9 +3827,8 @@ boolean tinok;
                               || resists_slime(mon))));
 }
 
-STATIC_OVL boolean
-mcould_eat_tin(mon)
-struct monst *mon;
+static boolean
+mcould_eat_tin(struct monst *mon)
 {
     struct obj *obj, *mwep;
     boolean welded_wep;
@@ -3911,9 +3857,7 @@ struct monst *mon;
 
 /* TRUE if monster does something to avoid turning into green slime */
 boolean
-munslime(mon, by_you)
-struct monst *mon;
-boolean by_you;
+munslime(struct monst *mon, boolean by_you)
 {
     struct obj *obj, odummy;
     struct permonst *mptr = mon->data;
@@ -3984,13 +3928,13 @@ boolean by_you;
     return FALSE;
 }
 
+/*
+ * Parameters:
+ *   by_you: true: if mon kills itself, hero gets credit/blame
+ */
 /* mon uses an item--selected by caller--to burn away incipient slime */
-STATIC_OVL boolean
-muse_unslime(mon, obj, trap, by_you)
-struct monst *mon;
-struct obj *obj;
-struct trap *trap;
-boolean by_you; /* true: if mon kills itself, hero gets credit/blame */
+static boolean
+muse_unslime(struct monst *mon, struct obj *obj, struct trap *trap, boolean by_you)
 {               /* [by_you not honored if 'mon' triggers fire trap]. */
     struct obj *odummyp;
     uchar zhitm_out_flags = 0;
@@ -4124,10 +4068,8 @@ boolean by_you; /* true: if mon kills itself, hero gets credit/blame */
 }
 
 /* decide whether obj can be used to cure green slime */
-STATIC_OVL int
-cures_sliming(mon, obj)
-struct monst *mon;
-struct obj *obj;
+static int
+cures_sliming(struct monst *mon, struct obj *obj)
 {
     /* scroll of fire, non-empty wand or horn of fire */
     if (obj->otyp == SCR_FIRE)
@@ -4141,9 +4083,8 @@ struct obj *obj;
 /* TRUE if monster appears to be green; for active TEXTCOLOR, we go by
    the display color, otherwise we just pick things that seem plausibly
    green (which doesn't necessarily match the TEXTCOLOR categorization) */
-STATIC_OVL boolean
-green_mon(mon)
-struct monst *mon;
+static boolean
+green_mon(struct monst *mon)
 {
     struct permonst *ptr = mon->data;
 
@@ -4179,8 +4120,7 @@ struct monst *mon;
 }
 
 void
-mmake_wish(mon)
-struct monst* mon;
+mmake_wish(struct monst *mon)
 {
     struct obj* otmp;
     char* oname;

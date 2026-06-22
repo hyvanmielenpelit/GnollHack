@@ -32,7 +32,7 @@ typedef union any {
     unsigned long *a_ulptr;
     unsigned *a_uptr;
     const char *a_string;
-    int NDECL((*a_nfunc));
+    int (*a_nfunc)(void);
     uint64_t a_mask64; /* used by status highlighting */
     coord a_coord;
     struct nhregion *a_nhregion;

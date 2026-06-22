@@ -326,7 +326,7 @@ mswin_init_nhwindows(int *argc, char **argv)
         static char buf[BUFSZ * 2], shortcutbuf[BUFSZ * 2];
         uchar altmask = 0x80;
         uchar ctrlmask = 0x20 | 0x40;
-        register const struct ext_func_tab* efp;
+        const struct ext_func_tab* efp;
         uchar cmd_id;
 
         for (int i = 0; menus[i].menu_item_id > 0; i++)
@@ -875,7 +875,7 @@ mswin_suspend_nhwindows(const char *str)
 
 /* Restore the windows after being suspended. */
 void
-mswin_resume_nhwindows()
+mswin_resume_nhwindows(void)
 {
     logDebug("mswin_resume_nhwindows()\n");
 
@@ -996,7 +996,7 @@ mswin_clear_nhwindow(winid wid)
                    --more--, if necessary, in the tty window-port.
 */
 void
-mswin_display_nhwindow(winid wid, BOOLEAN_P block)
+mswin_display_nhwindow(winid wid, boolean block)
 {
     logDebug("mswin_display_nhwindow(%d, %d)\n", wid, block);
     if (GetNHApp()->windowlist[wid].win != NULL) {
@@ -1223,7 +1223,7 @@ mswin_putstr_ex2(winid wid, const char* text, const char* attrs, const char* col
                    iff complain is TRUE.
 */
 void
-mswin_display_file(const char *filename, BOOLEAN_P must_exist)
+mswin_display_file(const char *filename, boolean must_exist)
 {
     dlb *f;
     TCHAR wbuf[BUFSZ];
@@ -1318,9 +1318,7 @@ identifier
                    menu is displayed, set preselected to TRUE.
 */
 void
-mswin_add_extended_menu(winid wid, int glyph, const ANY_P *identifier,
-               CHAR_P accelerator, CHAR_P group_accel, int attr, int color,
-               const char *str, BOOLEAN_P presel, struct extended_menu_info info)
+mswin_add_extended_menu(winid wid, int glyph, const ANY_P *identifier, char accelerator, char group_accel, int attr, int color, const char *str, boolean presel, struct extended_menu_info info)
 {
     logDebug("mswin_add_menu(%d, %d, %p, %c, %c, %d, %s, %d)\n", wid, glyph,
              identifier, (char) accelerator, (char) group_accel, attr, str,
@@ -1349,9 +1347,7 @@ mswin_add_extended_menu(winid wid, int glyph, const ANY_P *identifier,
 }
 
 void
-mswin_add_menu(winid wid, int glyph, const ANY_P* identifier,
-    CHAR_P accelerator, CHAR_P group_accel, int attr, int color,
-    const char* str, BOOLEAN_P presel)
+mswin_add_menu(winid wid, int glyph, const ANY_P* identifier, char accelerator, char group_accel, int attr, int color, const char* str, boolean presel)
 {
     mswin_add_extended_menu(wid, glyph, identifier,
         accelerator, group_accel, attr, color,
@@ -1434,7 +1430,7 @@ mswin_select_menu(winid wid, int how, MENU_ITEM_P **selected)
         window up, otherwise empty.
 */
 void
-mswin_update_inventory()
+mswin_update_inventory(void)
 {
     logDebug("mswin_update_inventory()\n");
     if (iflags.perm_invent && program_state.something_worth_saving
@@ -1448,7 +1444,7 @@ mark_synch()    -- Don't go beyond this point in I/O on any channel until
                    for the moment
 */
 void
-mswin_mark_synch()
+mswin_mark_synch(void)
 {
     logDebug("mswin_mark_synch()\n");
 }
@@ -1460,7 +1456,7 @@ wait_synch()    -- Wait until all pending output is complete (*flush*() for
                    display is OK when return from wait_synch().
 */
 void
-mswin_wait_synch()
+mswin_wait_synch(void)
 {
     logDebug("mswin_wait_synch()\n");
     mswin_raw_print_flush();
@@ -1472,7 +1468,7 @@ cliparound(x, y)-- Make sure that the user is more-or-less centered on the
                 -- This function is only defined if CLIPPING is defined.
 */
 void
-mswin_cliparound(int x, int y, BOOLEAN_P force)
+mswin_cliparound(int x, int y, boolean force)
 {
     winid wid = WIN_MAP;
 
@@ -1489,7 +1485,7 @@ mswin_cliparound(int x, int y, BOOLEAN_P force)
     }
 }
 
-STATIC_VAR double saved_zoom = 1.0;
+static double saved_zoom = 1.0;
 void
 mswin_issue_gui_command(int cmd_id, int cmd_param, int cmd_param2, const char* cmd_str)
 {
@@ -1548,7 +1544,7 @@ print_glyph(window, x, y, layers)
                    
 */
 void
-mswin_print_glyph(winid wid, XCHAR_P x, XCHAR_P y, struct layer_info layers)
+mswin_print_glyph(winid wid, xchar x, xchar y, struct layer_info layers)
 {
     int glyph = layers.glyph;
     int bkglyph = layers.bkglyph;
@@ -1586,7 +1582,7 @@ mswin_raw_print_accumulate(const char * str, boolean bold)
  *   dialog box and clear raw_print_strbuf.
  */
 void
-mswin_raw_print_flush()
+mswin_raw_print_flush(void)
 {
     if (raw_print_strbuf.str != NULL) {
         size_t wlen = strlen(raw_print_strbuf.str) + 1;
@@ -1650,7 +1646,7 @@ int nhgetch()   -- Returns a single character input from the user.
                    Returned character _must_ be non-zero.
 */
 int
-mswin_nhgetch()
+mswin_nhgetch(void)
 {
     PMSNHEvent event;
     int key = 0;
@@ -1714,7 +1710,7 @@ nhbell()        -- Beep at user.  [This will exist at least until sounds are
 anyway.]
 */
 void
-mswin_nhbell()
+mswin_nhbell(void)
 {
     logDebug("mswin_nhbell()\n");
 }
@@ -1725,7 +1721,7 @@ doprev_message()
                 -- On the tty-port this scrolls WIN_MESSAGE back one line.
 */
 int
-mswin_doprev_message()
+mswin_doprev_message(void)
 {
     logDebug("mswin_doprev_message()\n");
     SendMessage(mswin_hwnd_from_winid(WIN_MESSAGE), WM_VSCROLL,
@@ -1753,7 +1749,7 @@ char yn_function(const char *ques, const char *choices, char default)
                    ports might use a popup.
 */
 char
-mswin_yn_function_ex(int style, int attr, int color, int glyph, const char* title, const char *question, const char *choices, CHAR_P def, const char* resp_desc, const char* introline, uint64_t ynflags)
+mswin_yn_function_ex(int style, int attr, int color, int glyph, const char* title, const char *question, const char *choices, char def, const char* resp_desc, const char* introline, uint64_t ynflags)
 {
     char ch;
     char yn_esc_map = '\033';
@@ -2000,7 +1996,7 @@ int get_ext_cmd(void)
                selection, -1 otherwise.
 */
 int
-mswin_get_ext_cmd()
+mswin_get_ext_cmd(void)
 {
     int ret;
     logDebug("mswin_get_ext_cmd()\n");
@@ -2103,7 +2099,7 @@ delay_output()  -- Causes a visible delay of 50ms in the output.
                by a nap(50ms), but allows asynchronous operation.
 */
 void
-mswin_delay_output()
+mswin_delay_output(void)
 {
     logDebug("mswin_delay_output()\n");
     //Sleep(50);
@@ -2133,13 +2129,13 @@ mswin_delay_output_intervals(int intervals)
 
 
 void
-mswin_change_color()
+mswin_change_color(void)
 {
     logDebug("mswin_change_color()\n");
 }
 
 char *
-mswin_get_color_string()
+mswin_get_color_string(void)
 {
     logDebug("mswin_get_color_string()\n");
     return ("");
@@ -2153,7 +2149,7 @@ start_screen()  -- Only used on Unix tty ports, but must be declared for
                just declare an empty function.
 */
 void
-mswin_start_screen()
+mswin_start_screen(void)
 {
     /* Do Nothing */
     logDebug("mswin_start_screen()\n");
@@ -2164,7 +2160,7 @@ end_screen()    -- Only used on Unix tty ports, but must be declared for
                completeness.  The complement of start_screen().
 */
 void
-mswin_end_screen()
+mswin_end_screen(void)
 {
     /* Do Nothing */
     logDebug("mswin_end_screen()\n");
@@ -2368,7 +2364,7 @@ mswin_preference_update(const char *pref)
 }
 
 char *
-mswin_getmsghistory_ex(char** attrs_ptr, char** colors_ptr, BOOLEAN_P init)
+mswin_getmsghistory_ex(char **attrs_ptr, char **colors_ptr, boolean init)
 {
     if (attrs_ptr)
         *attrs_ptr = (char*)0;
@@ -2444,7 +2440,7 @@ mswin_getmsghistory_ex(char** attrs_ptr, char** colors_ptr, BOOLEAN_P init)
 }
 
 void
-mswin_putmsghistory_ex(const char *msg, const char* attrs, const char* colors, BOOLEAN_P restoring)
+mswin_putmsghistory_ex(const char *msg, const char* attrs, const char* colors, boolean restoring)
 {
     BOOL save_sound_opt;
 
@@ -2463,7 +2459,7 @@ mswin_putmsghistory_ex(const char *msg, const char* attrs, const char* colors, B
 }
 
 void
-mswin_main_loop()
+mswin_main_loop(void)
 {
     MSG msg;
 
@@ -2855,7 +2851,7 @@ logDebug(const char *fmt, ...)
 #define INTFKEY "Interface"
 
 void
-mswin_read_reg()
+mswin_read_reg(void)
 {
     HKEY key;
     DWORD size;
@@ -2967,7 +2963,7 @@ mswin_read_reg()
 }
 
 void
-mswin_write_reg()
+mswin_write_reg(void)
 {
     HKEY key;
     DWORD disposition;
@@ -3045,7 +3041,7 @@ mswin_write_reg()
 }
 
 void
-mswin_destroy_reg()
+mswin_destroy_reg(void)
 {
     char keystring[MAX_PATH];
     HKEY key;
@@ -3148,8 +3144,7 @@ static color_table_brush_value color_table_brush[] = {
 };
 
 static void
-mswin_color_from_string(char *colorstring, HBRUSH *brushptr,
-                        COLORREF *colorptr)
+mswin_color_from_string(char *colorstring, HBRUSH *brushptr, COLORREF *colorptr)
 {
     color_table_value *ctv_ptr = color_table;
     color_table_brush_value *ctbv_ptr = color_table_brush;
@@ -3458,8 +3453,7 @@ status_enablefield(int fldindex, char fldname, char fieldfmt, boolean enable)
                 -- There are MAXBLSTATS status fields (from botl.h)
 */
 void
-mswin_status_enablefield(int fieldidx, const char *nm, const char *fmt,
-                         boolean enable)
+mswin_status_enablefield(int fieldidx, const char *nm, const char *fmt, boolean enable)
 {
     logDebug("mswin_status_enablefield(%d, %s, %s, %d)\n", fieldidx, nm, fmt,
              (int) enable);
@@ -3489,9 +3483,7 @@ mswin_status_enablefield(int fieldidx, const char *nm, const char *fmt,
 
 /* TODO: turn this into a commmon helper; multiple identical implementations */
 static int
-mswin_condcolor(bm, bmarray)
-long bm;
-uint64_t *bmarray;
+mswin_condcolor(uint64_t bm, uint64_t *bmarray)
 {
     int i;
 
@@ -3504,9 +3496,7 @@ uint64_t *bmarray;
 }
 
 static int
-mswin_condattr(bm, bmarray)
-long bm;
-uint64_t *bmarray;
+mswin_condattr(uint64_t bm, uint64_t *bmarray)
 {
     if (bm && bmarray) {
         if (bm & bmarray[HL_ATTCLR_DIM]) return HL_DIM;
@@ -3796,7 +3786,7 @@ mswin_play_ghsound_environment_ambient(struct ghsound_environment_ambient_info i
 }
 
 void
-mswin_adjust_ghsound_general_volumes(VOID_ARGS)
+mswin_adjust_ghsound_general_volumes(void)
 {
     float new_general_volume = ((float)flags.sound_volume_general) / 100.0f;
     float new_music_volume = ((float)flags.sound_volume_music) / 100.0f;
@@ -3839,7 +3829,7 @@ mswin_set_ambient_ghsound_volume(struct soundsource_t* soundsource)
 }
 
 void
-mswin_init_platform(VOID_ARGS)
+mswin_init_platform(void)
 {
     /* GDI+ */
     StartGdiplus();
@@ -3896,7 +3886,7 @@ mswin_exit_hack(int status)
 
 
 void
-mswin_clear_context_menu(VOID_ARGS)
+mswin_clear_context_menu(void)
 {
     return;
 }
@@ -3987,7 +3977,7 @@ mswin_update_cursor(int style, int force_paint, int show_on_you)
 }
 
 int
-mswin_ui_has_input(VOID_ARGS)
+mswin_ui_has_input(void)
 {
     return FALSE;
 }
@@ -4059,5 +4049,4 @@ mswin_ui_has_input(VOID_ARGS)
 //
 //    Strcpy(buf, copybuf);
 //}
-
 

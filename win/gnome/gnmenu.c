@@ -132,8 +132,7 @@ ghack_menu_window_clear(GtkWidget *menuWin, gpointer data)
 }
 
 void
-ghack_menu_window_display(GtkWidget *menuWin, gboolean blocking,
-                          gpointer data)
+ghack_menu_window_display(GtkWidget *menuWin, gboolean blocking, gpointer data)
 {
     // if(blocking) {
     gnome_dialog_close_hides(GNOME_DIALOG(menuWin), TRUE);
@@ -203,8 +202,7 @@ ghack_menu_window_start_menu_ex(GtkWidget *menuWin, gpointer data)
 }
 
 int
-ghack_menu_window_select_menu(GtkWidget *menuWin, MENU_ITEM_P **_selected,
-                              gint how)
+ghack_menu_window_select_menu(GtkWidget *menuWin, MENU_ITEM_P **_selected, gint how)
 {
     gint rc;
     guint num_sel, i, idx;
@@ -267,8 +265,7 @@ ghack_menu_window_select_menu(GtkWidget *menuWin, MENU_ITEM_P **_selected,
 }
 
 void
-ghack_menu_window_add_menu(GtkWidget *menuWin, gpointer menu_item,
-                           gpointer data)
+ghack_menu_window_add_menu(GtkWidget *menuWin, gpointer menu_item, gpointer data)
 {
     GHackMenuItem *item;
     GtkWidget *clist;
@@ -469,8 +466,7 @@ ghack_menu_window_end_menu_ex(GtkWidget *menuWin, gpointer data)
 }
 
 void
-ghack_menu_window_put_string(GtkWidget *menuWin, int attr, const char *text,
-                             gpointer data)
+ghack_menu_window_put_string(GtkWidget *menuWin, int attr, const char *text, gpointer data)
 {
     GnomeLess *gless;
     MenuWinType isMenu;

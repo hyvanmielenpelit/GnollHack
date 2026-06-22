@@ -8,8 +8,7 @@
 #include "hack.h"
 
 void
-newemin(mtmp)
-struct monst *mtmp;
+newemin(struct monst *mtmp)
 {
     if (!mtmp->mextra)
         mtmp->mextra = newmextra();
@@ -21,8 +20,7 @@ struct monst *mtmp;
 }
 
 void
-free_emin(mtmp)
-struct monst *mtmp;
+free_emin(struct monst *mtmp)
 {
     if (has_emin(mtmp)) 
     {
@@ -32,10 +30,13 @@ struct monst *mtmp;
     mtmp->isminion = 0;
 }
 
+/*
+ * Parameters:
+ *   spotted: seen|sensed vs all
+ */
 /* count the number of monsters on the level */
 int
-monster_census(spotted)
-boolean spotted; /* seen|sensed vs all */
+monster_census(boolean spotted)
 {
     struct monst *mtmp;
     int count = 0;
@@ -52,8 +53,7 @@ boolean spotted; /* seen|sensed vs all */
 
 /* mon summons a monster */
 int
-msummon(mon)
-struct monst *mon;
+msummon(struct monst *mon)
 {
     struct permonst *ptr;
     int dtype = NON_PM, cnt = 0, result = 0, census;
@@ -233,8 +233,7 @@ struct monst *mon;
 
 /* Yeenaghu summons gnolls */
 int
-yeenaghu_gnoll_summon(summoner)
-struct monst* summoner;
+yeenaghu_gnoll_summon(struct monst *summoner)
 {
     pline_ex(ATR_NONE, CLR_MSG_SPELL, "%s summons some gnolls!", Monnam(summoner));
 
@@ -338,8 +337,7 @@ struct monst* summoner;
 
 /* Yeenaghu summons ghouls */
 int
-yeenaghu_ghoul_summon(summoner)
-struct monst* summoner;
+yeenaghu_ghoul_summon(struct monst *summoner)
 {
     pline_ex(ATR_NONE, CLR_MSG_SPELL, "%s summons some undead assistance!", Monnam(summoner));
 
@@ -421,7 +419,7 @@ struct monst* summoner;
 
 /* Yacc summons bison */
 int
-yacc_bison_summon(VOID_ARGS)
+yacc_bison_summon(void)
 {
     int dtype = NON_PM, cnt = 0, result = 0, census;
     struct monst* mtmp = (struct monst*) 0;
@@ -499,7 +497,7 @@ yacc_bison_summon(VOID_ARGS)
 
 /* Orcus summons undead */
 int
-orcus_undead_summon(VOID_ARGS)
+orcus_undead_summon(void)
 {
     int dtype = NON_PM, cnt = 0, result = 0, census;
     struct monst* mtmp = (struct monst*) 0;
@@ -661,11 +659,9 @@ orcus_undead_summon(VOID_ARGS)
 
 
 void
-summon_minion(alignment, talk)
-aligntyp alignment;
-boolean talk;
+summon_minion(aligntyp alignment, boolean talk)
 {
-    register struct monst *mon;
+    struct monst *mon;
     int mnum;
 
     switch ((int) alignment)
@@ -741,9 +737,7 @@ boolean talk;
 
 /* returns 1 if it won't attack. */
 int
-demon_talk(mtmp, stop_chat_ptr)
-struct monst *mtmp;
-boolean* stop_chat_ptr;
+demon_talk(struct monst *mtmp, boolean *stop_chat_ptr)
 {
     int64_t cash, demand, offer;
 
@@ -938,8 +932,7 @@ boolean* stop_chat_ptr;
 }
 
 int64_t
-bribe(mtmp)
-struct monst *mtmp;
+bribe(struct monst *mtmp)
 {
     char buf[BUFSZ] = DUMMY;
     long long_offer;
@@ -972,9 +965,7 @@ struct monst *mtmp;
 }
 
 int
-dprince(atyp, ignore_difficulty, is_summon)
-aligntyp atyp;
-boolean ignore_difficulty, is_summon;
+dprince(aligntyp atyp, boolean ignore_difficulty, boolean is_summon)
 {
     int tryct, pm;
 
@@ -988,9 +979,7 @@ boolean ignore_difficulty, is_summon;
 }
 
 int
-dlord(atyp, ignore_difficulty, is_summon)
-aligntyp atyp;
-boolean ignore_difficulty, is_summon;
+dlord(aligntyp atyp, boolean ignore_difficulty, boolean is_summon)
 {
     int tryct, pm;
 
@@ -1005,8 +994,7 @@ boolean ignore_difficulty, is_summon;
 
 /* create lawful (good) lord */
 int
-llord(ignore_difficulty, is_summon)
-boolean ignore_difficulty, is_summon;
+llord(boolean ignore_difficulty, boolean is_summon)
 {
     if (!(mvitals[PM_ARCHON].mvflags & MV_GONE))
         return PM_ARCHON;
@@ -1015,8 +1003,7 @@ boolean ignore_difficulty, is_summon;
 }
 
 int
-lminion(ignore_difficulty, is_summon)
-boolean ignore_difficulty, is_summon;
+lminion(boolean ignore_difficulty, boolean is_summon)
 {
     int tryct;
     struct permonst *ptr;
@@ -1030,10 +1017,12 @@ boolean ignore_difficulty, is_summon;
     return NON_PM;
 }
 
+/*
+ * Parameters:
+ *   atyp: A_NONE is used for 'any alignment'
+ */
 int
-ndemon(atyp, ignore_difficulty, is_summon)
-aligntyp atyp; /* A_NONE is used for 'any alignment' */
-boolean ignore_difficulty, is_summon;
+ndemon(aligntyp atyp, boolean ignore_difficulty, boolean is_summon)
 {
     struct permonst *ptr;
 
@@ -1058,10 +1047,13 @@ boolean ignore_difficulty, is_summon;
         return NON_PM;
 }
 
+/*
+ * Parameters:
+ *   mon: if null, angel hasn't been created yet
+ */
 /* guardian angel has been affected by conflict so is abandoning hero */
 void
-lose_guardian_angel(mon)
-struct monst *mon; /* if null, angel hasn't been created yet */
+lose_guardian_angel(struct monst *mon)
 {
     coord mm;
     int i;
@@ -1094,8 +1086,7 @@ struct monst *mon; /* if null, angel hasn't been created yet */
 
 /* just entered the Astral Plane; receive tame guardian angel if worthy */
 void
-gain_guardian_angel(fromspell)
-boolean fromspell;
+gain_guardian_angel(boolean fromspell)
 {
     struct monst *mtmp;
     struct obj *otmp;

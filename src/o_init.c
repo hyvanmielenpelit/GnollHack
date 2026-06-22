@@ -597,17 +597,17 @@ NEARDATA const struct mythic_power_definition mythic_suffix_powers[MAX_MYTHIC_SU
     { "Warning", "Warning", MYTHIC_POWER_TYPE_CONFERS_PROPERTY, WARNING, 0.0, 0, 0UL, MYTHIC_POWER_FLAG_NO_THROWN_OR_AMMO },
 };
 
-//STATIC_DCL void FDECL(setgemprobs, (d_level *));
-STATIC_DCL void FDECL(shuffle, (int, int, BOOLEAN_P));
-STATIC_DCL void NDECL(shuffle_all);
-STATIC_DCL boolean FDECL(interesting_to_discover, (int));
-STATIC_DCL char *FDECL(oclass_to_name, (CHAR_P, char *));
+//static void setgemprobs(d_level *);
+static void shuffle(int, int, boolean);
+static void shuffle_all(void);
+static boolean interesting_to_discover(int);
+static char *oclass_to_name(char, char *);
 
-STATIC_VAR NEARDATA short disco[NUM_OBJECTS] = DUMMY;
+static NEARDATA short disco[NUM_OBJECTS] = DUMMY;
 
 
 #ifdef USE_TILES
-STATIC_DCL void NDECL(shuffle_tiles);
+static void shuffle_tiles(void);
 
 /* Shuffle tile assignments to match descriptions, so a red potion isn't
  * displayed with a blue tile and so on.
@@ -618,8 +618,8 @@ STATIC_DCL void NDECL(shuffle_tiles);
  * is restored.  So might as well do that the first time instead of writing
  * another routine.
  */
-STATIC_OVL void
-shuffle_tiles(VOID_ARGS)
+static void
+shuffle_tiles(void)
 {
     int i;
     int tmp_tilemap[NUM_OBJECTS];
@@ -659,9 +659,8 @@ shuffle_tiles(VOID_ARGS)
 #endif /* USE_TILES */
 
 #if 0
-STATIC_OVL void
-setgemprobs(dlev)
-d_level *dlev;
+static void
+setgemprobs(d_level *dlev)
 {
     int j, first, lev;
 
@@ -687,10 +686,8 @@ d_level *dlev;
 #endif
 
 /* shuffle descriptions on objects o_low to o_high */
-STATIC_OVL void
-shuffle(o_low, o_high, domaterial)
-int o_low, o_high;
-boolean domaterial;
+static void
+shuffle(int o_low, int o_high, boolean domaterial)
 {
     int i, j, num_to_shuffle;
     uchar ucsw;
@@ -730,10 +727,10 @@ boolean domaterial;
 }
 
 void
-init_objects(VOID_ARGS)
+init_objects(void)
 {
-    register int i, first, last, sum;
-    register char oclass;
+    int i, first, last, sum;
+    char oclass;
 #ifdef TEXTCOLOR
 #define COPY_OBJ_DESCR(o_dst, o_src) \
     o_dst.oc_descr_idx = o_src.oc_descr_idx, o_dst.oc_color = o_src.oc_color
@@ -816,11 +813,14 @@ init_objects(VOID_ARGS)
 
 }
 
+/*
+ * Parameters:
+ *   otyp: input: representative item
+ *   lo_p, hi_p: output: range that item belongs among
+ */
 /* retrieve the range of objects that otyp shares descriptions with */
 void
-obj_shuffle_range(otyp, lo_p, hi_p)
-int otyp;         /* input: representative item */
-int *lo_p, *hi_p; /* output: range that item belongs among */
+obj_shuffle_range(int otyp, int *lo_p, int *hi_p)
 {
     int i, ocls = objects[otyp].oc_class;
 
@@ -933,8 +933,8 @@ int *lo_p, *hi_p; /* output: range that item belongs among */
 }
 
 /* randomize object descriptions */
-STATIC_OVL void
-shuffle_all(VOID_ARGS)
+static void
+shuffle_all(void)
 {
     /* entire classes; obj_shuffle_range() handles their exceptions */
     static const char shuffle_classes[] = {
@@ -973,10 +973,10 @@ shuffle_all(VOID_ARGS)
 
 /* find the object index for snow boots; used [once] by slippery ice code */
 int
-find_skates(VOID_ARGS)
+find_skates(void)
 {
-    register int i;
-    register const char *s;
+    int i;
+    const char *s;
 
     for (i = SPEED_BOOTS; i <= LEVITATION_BOOTS; i++)
         if ((s = OBJ_DESCR(objects[i])) != 0 && !strcmp(s, "snow boots"))
@@ -988,16 +988,15 @@ find_skates(VOID_ARGS)
 
 /* level dependent initialization */
 void
-oinit(VOID_ARGS)
+oinit(void)
 {
     //setgemprobs(&u.uz);
 }
 
 void
-savenames(fd, mode)
-int fd, mode;
+savenames(int fd, int mode)
 {
-    register int i;
+    int i;
     size_t len;
 
     if (perform_bwrite(mode)) {
@@ -1026,9 +1025,9 @@ int fd, mode;
 }
 
 void
-reset_names(VOID_ARGS)
+reset_names(void)
 {
-    register int i;
+    int i;
 
     memset((genericptr_t)bases, 0, sizeof bases);
     memset((genericptr_t)disco, 0, sizeof disco);
@@ -1050,10 +1049,9 @@ reset_names(VOID_ARGS)
 
 
 void
-restnames(fd)
-register int fd;
+restnames(int fd)
 {
-    register int i;
+    int i;
     size_t len;
     //debugprint("restnames");
 
@@ -1074,13 +1072,10 @@ register int fd;
 }
 
 void
-discover_object(oindx, mark_as_known, credit_hero)
-register int oindx;
-boolean mark_as_known;
-boolean credit_hero;
+discover_object(int oindx, boolean mark_as_known, boolean credit_hero)
 {
     if (!objects[oindx].oc_name_known) {
-        register int dindx, acls = objects[oindx].oc_class;
+        int dindx, acls = objects[oindx].oc_class;
 
         /* Loop thru disco[] 'til we find the target (which may have been
            uname'd) or the next open slot; one or the other will be found
@@ -1107,13 +1102,12 @@ boolean credit_hero;
 
 /* if a class name has been cleared, we may need to purge it from disco[] */
 void
-undiscover_object(oindx)
-register int oindx;
+undiscover_object(int oindx)
 {
     if (!objects[oindx].oc_name_known) // Checks that this object's oc_name_known has been already been set to false by the calling function
     {
-        register int dindx, acls = objects[oindx].oc_class;
-        register boolean found = FALSE;
+        int dindx, acls = objects[oindx].oc_class;
+        boolean found = FALSE;
 
         /* find the object; shift those behind it forward one slot */
         for (dindx = bases[acls]; dindx < NUM_OBJECTS && disco[dindx] != 0
@@ -1136,9 +1130,8 @@ register int oindx;
     }
 }
 
-STATIC_OVL boolean
-interesting_to_discover(i)
-register int i;
+static boolean
+interesting_to_discover(int i)
 {
     /* Pre-discovered objects are now printed with a '*' */
     return (boolean) (objects[i].oc_uname != (char *) 0
@@ -1147,16 +1140,16 @@ register int i;
 }
 
 /* items that should stand out once they're known */
-STATIC_VAR const short uniq_objs[] = {
+static const short uniq_objs[] = {
     AMULET_OF_YENDOR, SPE_BOOK_OF_THE_DEAD, CANDELABRUM_OF_INVOCATION,
     BELL_OF_OPENING,
 };
 
 /* the '\' command - show discovered object types */
 int
-dodiscovered() /* free after Robert Viduya */
+dodiscovered(void) /* free after Robert Viduya */
 {
-    register int i, dis;
+    int i, dis;
     int ct = 0;
     char *s, oclass, prev_class, classes[MAX_OBJECT_CLASSES], buf[OBUFSZ];
     winid tmpwin;
@@ -1212,10 +1205,8 @@ dodiscovered() /* free after Robert Viduya */
 }
 
 /* lower case let_to_name() output, which differs from def_oc_syms[].name */
-STATIC_OVL char *
-oclass_to_name(oclass, buf)
-char oclass;
-char *buf;
+static char *
+oclass_to_name(char oclass, char *buf)
 {
     char *s;
 
@@ -1227,9 +1218,9 @@ char *buf;
 
 /* the '`' command - show discovered object types for one class */
 int
-doclassdisco(VOID_ARGS)
+doclassdisco(void)
 {
-    STATIC_VAR NEARDATA const char
+    static NEARDATA const char
         prompt[] = "View discoveries for which sort of objects?",
         havent_discovered_any[] = "haven't discovered any %s yet.",
         unique_items[] = "unique items",
@@ -1396,9 +1387,9 @@ doclassdisco(VOID_ARGS)
 
 /* put up nameable subset of discoveries list as a menu */
 void
-rename_disco(VOID_ARGS)
+rename_disco(void)
 {
-    register int i, dis;
+    int i, dis;
     int ct = 0, mn = 0, sl;
     char *s, oclass, prev_class;
     winid tmpwin;
@@ -1471,8 +1462,7 @@ rename_disco(VOID_ARGS)
 }
 
 void
-exceptionality_checks(otmp)
-struct obj* otmp;
+exceptionality_checks(struct obj *otmp)
 {
     if (!otmp)
         return;
@@ -1488,11 +1478,12 @@ struct obj* otmp;
         otmp->exceptionality = EXCEPTIONALITY_ELITE;
 }
 
+/*
+ * Parameters:
+ *   is_wish: 1 = mythic wishing, 2 = legendary wishing
+ */
 void
-randomize_mythic_quality(obj, is_wish, prefix_ptr, suffix_ptr)
-struct obj* obj;
-uchar is_wish; /* 1 = mythic wishing, 2 = legendary wishing */
-uchar *prefix_ptr, *suffix_ptr;
+randomize_mythic_quality(struct obj *obj, uchar is_wish, uchar *prefix_ptr, uchar *suffix_ptr)
 {
     if (!obj || !prefix_ptr || !suffix_ptr)
         return;
@@ -1609,12 +1600,13 @@ uchar *prefix_ptr, *suffix_ptr;
     }
 }
 
+/*
+ * Parameters:
+ *   affix_type: 0 = prefix, 1 = suffix
+ *   is_wish: 1 = mythic wishing, 2 = legendary wishing
+ */
 boolean
-is_mythic_affix_ok(affix_type, affix_idx, obj, is_wish)
-uchar affix_type; /* 0 = prefix, 1 = suffix  */
-uchar affix_idx;
-struct obj* obj;
-uchar is_wish; /* 1 = mythic wishing, 2 = legendary wishing */
+is_mythic_affix_ok(uchar affix_type, uchar affix_idx, struct obj *obj, uchar is_wish)
 {
     const struct mythic_definition* mythic_definitions = (affix_type == 0 ? mythic_prefix_qualities : mythic_suffix_qualities);
 
@@ -1694,10 +1686,7 @@ uchar is_wish; /* 1 = mythic wishing, 2 = legendary wishing */
 }
 
 double
-get_mythic_dmg_multiplier(otmp, mon, mattacker)
-struct obj* otmp;
-struct monst* mon;
-struct monst* mattacker UNUSED;
+get_mythic_dmg_multiplier(struct obj *otmp, struct monst *mon, struct monst *mattacker UNUSED)
 {
     if (!otmp || !mon || (otmp->mythic_prefix == 0 && otmp->mythic_suffix == 0))
         return 1.0;
@@ -1743,8 +1732,7 @@ struct monst* mattacker UNUSED;
 }
 
 int 
-get_object_base_ac(obj)
-struct obj* obj;
+get_object_base_ac(struct obj *obj)
 {
     if (!obj)
         return 0;
@@ -1759,8 +1747,7 @@ struct obj* obj;
 }
 
 int
-get_object_base_mc(obj)
-struct obj* obj;
+get_object_base_mc(struct obj *obj)
 {
     if (!obj)
         return 0;
@@ -1775,8 +1762,7 @@ struct obj* obj;
 }
 
 int
-get_obj_exceptionality_ac_bonus(obj)
-struct obj* obj;
+get_obj_exceptionality_ac_bonus(struct obj *obj)
 {
     if (!obj)
         return 0;
@@ -1795,8 +1781,7 @@ struct obj* obj;
 }
 
 int
-get_obj_material_and_exceptionality_ac_bonus(obj)
-struct obj* obj;
+get_obj_material_and_exceptionality_ac_bonus(struct obj *obj)
 {
     if (!obj)
         return 0;
@@ -1811,8 +1796,7 @@ struct obj* obj;
 
 
 int
-get_obj_exceptionality_mc_bonus(obj)
-struct obj* obj;
+get_obj_exceptionality_mc_bonus(struct obj *obj)
 {
     if (!obj)
         return 0;
@@ -1821,8 +1805,7 @@ struct obj* obj;
 }
 
 int
-get_obj_material_and_exceptionality_mc_bonus(obj)
-struct obj* obj;
+get_obj_material_and_exceptionality_mc_bonus(struct obj *obj)
 {
     if (!obj)
         return 0;
@@ -1836,8 +1819,7 @@ struct obj* obj;
 }
 
 uint64_t
-get_obj_oc_flags(obj)
-struct obj* obj;
+get_obj_oc_flags(struct obj *obj)
 {
     if (!obj)
         return 0UL;
@@ -1851,8 +1833,7 @@ struct obj* obj;
 }
 
 uint64_t
-get_obj_oc_flags2(obj)
-struct obj* obj;
+get_obj_oc_flags2(struct obj *obj)
 {
     if (!obj)
         return 0UL;
@@ -1866,8 +1847,7 @@ struct obj* obj;
 }
 
 uint64_t
-get_obj_oc_flags3(obj)
-struct obj* obj;
+get_obj_oc_flags3(struct obj *obj)
 {
     if (!obj)
         return 0UL;
@@ -1881,8 +1861,7 @@ struct obj* obj;
 }
 
 uint64_t
-get_obj_oc_flags4(obj)
-struct obj* obj;
+get_obj_oc_flags4(struct obj *obj)
 {
     if (!obj)
         return 0UL;
@@ -1896,8 +1875,7 @@ struct obj* obj;
 }
 
 uint64_t
-get_obj_oc_flags5(obj)
-struct obj* obj;
+get_obj_oc_flags5(struct obj *obj)
 {
     if (!obj)
         return 0UL;
@@ -1911,8 +1889,7 @@ struct obj* obj;
 }
 
 uint64_t
-get_obj_oc_flags6(obj)
-struct obj* obj;
+get_obj_oc_flags6(struct obj *obj)
 {
     if (!obj)
         return 0UL;
@@ -1926,9 +1903,7 @@ struct obj* obj;
 }
 
 boolean
-can_wear_miscellaneous(ptr, otyp)
-struct permonst* ptr;
-int otyp;
+can_wear_miscellaneous(struct permonst *ptr, int otyp)
 {
     if (!ptr || otyp <= STRANGE_OBJECT || otyp >= NUM_OBJECTS || objects[otyp].oc_class != MISCELLANEOUS_CLASS)
         return FALSE;
@@ -1965,10 +1940,10 @@ int otyp;
 }
 
 
-STATIC_VAR boolean object_init_values_saved = FALSE;
+static boolean object_init_values_saved = FALSE;
 
 void
-save_initial_objects_values(VOID_ARGS)
+save_initial_objects_values(void)
 {
     if (!object_init_values_saved)
     {

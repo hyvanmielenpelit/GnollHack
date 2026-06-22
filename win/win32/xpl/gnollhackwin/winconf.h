@@ -78,9 +78,8 @@
   /* Stuff to help the user with some common, yet significant errors */
 #define INTERJECT_PANIC 0
 #define INTERJECTION_TYPES (INTERJECT_PANIC + 1)
-extern void FDECL(interject_assistance,
-    (int, int, genericptr_t, genericptr_t));
-extern void FDECL(interject, (int));
+extern void interject_assistance(int, int, genericptr_t, genericptr_t);
+extern void interject(int);
 
 /*
  *===============================================
@@ -202,7 +201,7 @@ extern void FDECL(interject, (int));
 #define ABORT C('a')
 #define getuid() 1
 #define getlogin() ((char *) 0)
-extern void NDECL(win32_abort);
+extern void win32_abort(void);
 
 #include <fcntl.h>
 #include <io.h>
@@ -216,8 +215,8 @@ extern void NDECL(win32_abort);
 #ifdef NDEBUG
 #define nhassert(expression) ((void)0)
 #else
-extern void FDECL(nhassert_failed, (const char* exp, const char* file,
-    int line));
+extern void nhassert_failed(const char* exp, const char* file,
+    int line);
 
 #define nhassert(expression) (void)((!!(expression)) || \
         (nhassert_failed(#expression, __FILE__, __LINE__), 0))

@@ -6,24 +6,24 @@
 
 #include "hack.h"
 
-STATIC_PTR int NDECL(prayer_done);
-STATIC_DCL struct obj *NDECL(worst_cursed_item);
-STATIC_DCL int NDECL(in_trouble);
-STATIC_DCL void FDECL(fix_worst_trouble, (int));
-STATIC_DCL void FDECL(angrygods, (ALIGNTYP_P));
-STATIC_DCL void FDECL(at_your_feet, (const char *));
-STATIC_DCL void NDECL(gcrownu);
-STATIC_DCL void FDECL(pleased, (ALIGNTYP_P));
-STATIC_DCL void FDECL(godvoice, (ALIGNTYP_P, const char *));
-STATIC_DCL void FDECL(god_zaps_you, (ALIGNTYP_P));
-STATIC_DCL void FDECL(fry_by_god, (ALIGNTYP_P, BOOLEAN_P));
-STATIC_DCL void FDECL(gods_angry, (ALIGNTYP_P));
-STATIC_DCL void FDECL(gods_upset, (ALIGNTYP_P));
-STATIC_DCL void FDECL(consume_offering, (struct obj *));
-STATIC_DCL boolean FDECL(water_prayer, (BOOLEAN_P));
-STATIC_DCL boolean FDECL(symbol_prayer, (BOOLEAN_P));
-STATIC_DCL boolean FDECL(altar_prayer, (BOOLEAN_P));
-STATIC_DCL boolean FDECL(blocked_boulder, (int, int));
+static int prayer_done(void);
+static struct obj *worst_cursed_item(void);
+static int in_trouble(void);
+static void fix_worst_trouble(int);
+static void angrygods(aligntyp);
+static void at_your_feet(const char *);
+static void gcrownu(void);
+static void pleased(aligntyp);
+static void godvoice(aligntyp, const char *);
+static void god_zaps_you(aligntyp);
+static void fry_by_god(aligntyp, boolean);
+static void gods_angry(aligntyp);
+static void gods_upset(aligntyp);
+static void consume_offering(struct obj *);
+static boolean water_prayer(boolean);
+static boolean symbol_prayer(boolean);
+static boolean altar_prayer(boolean);
+static boolean blocked_boulder(int, int);
 
 /* simplify a few tests */
 #define Cursed_obj(obj, typ) ((obj) && (obj)->otyp == (typ) && (obj)->cursed)
@@ -45,14 +45,14 @@ STATIC_DCL boolean FDECL(blocked_boulder, (int, int));
  *      responsible for the theft of the Amulet from Marduk, the Creator.
  *      Moloch is unaligned.
  */
-STATIC_VAR const char *godvoices[] = {
+static const char *godvoices[] = {
     "booms out", "thunders", "rings out", "booms",
 };
 
 /* values calculated when prayer starts, and used when completed */
-STATIC_VAR aligntyp p_aligntyp;
-STATIC_VAR int p_trouble;
-STATIC_VAR int p_type; /* (-1)-3: (-1)=really naughty, 3=really good */
+static aligntyp p_aligntyp;
+static int p_trouble;
+static int p_type; /* (-1)-3: (-1)=really naughty, 3=really good */
 
 #define PIOUS 20
 #define DEVOUT 14
@@ -99,10 +99,13 @@ STATIC_VAR int p_type; /* (-1)-3: (-1)=really naughty, 3=really good */
 #define TROUBLE_TELEPORTITIS (-13)
 
 
+/*
+ * Parameters:
+ *   only_if_injured: determines whether maxhp <= 5 matters
+ */
 /* critically low hit points if hp <= 5 or hp <= maxhp/N for some N */
 boolean
-critically_low_hp(only_if_injured)
-boolean only_if_injured; /* determines whether maxhp <= 5 matters */
+critically_low_hp(boolean only_if_injured)
 {
     int divisor, hplim, curhp = Upolyd ? u.mh : u.uhp,
                         maxhp = Upolyd ? u.mhmax : u.uhpmax;
@@ -150,7 +153,7 @@ boolean only_if_injured; /* determines whether maxhp <= 5 matters */
 /* return True if surrounded by impassible rock, regardless of the state
    of your own location (for example, inside a doorless closet) */
 boolean
-stuck_in_wall(VOID_ARGS)
+stuck_in_wall(void)
 {
     int i, j, x, y, count = 0;
 
@@ -186,8 +189,8 @@ stuck_in_wall(VOID_ARGS)
  * 3.4.2: make an exception if polymorphed into a form which lacks
  * hands; that's a case where the ramifications override this doubt.
  */
-STATIC_OVL int
-in_trouble(VOID_ARGS)
+static int
+in_trouble(void)
 {
     struct obj *otmp;
     int i;
@@ -294,10 +297,10 @@ in_trouble(VOID_ARGS)
 }
 
 /* select an item for TROUBLE_CURSED_ITEMS */
-STATIC_OVL struct obj *
-worst_cursed_item(VOID_ARGS)
+static struct obj *
+worst_cursed_item(void)
 {
-    register struct obj *otmp;
+    struct obj *otmp;
 
     /* if strained or worse, check for loadstone first */
     if (near_capacity() >= HVY_ENCUMBER) {
@@ -381,14 +384,13 @@ worst_cursed_item(VOID_ARGS)
     return otmp;
 }
 
-STATIC_OVL void
-fix_worst_trouble(trouble)
-int trouble;
+static void
+fix_worst_trouble(int trouble)
 {
     int i;
     struct obj *otmp = 0;
     const char *what = (const char *) 0;
-    STATIC_VAR NEARDATA const char leftglow[] = "Your left ring softly glows",
+    static NEARDATA const char leftglow[] = "Your left ring softly glows",
                                rightglow[] = "Your right ring softly glows";
 
     switch (trouble) {
@@ -681,9 +683,8 @@ int trouble;
  * bathroom walls, but who is foiled by bathrobes." --Bertrand Russell, 1943
  * Divine wrath, dungeon walls, and armor follow the same principle.
  */
-STATIC_OVL void
-god_zaps_you(resp_god)
-aligntyp resp_god;
+static void
+god_zaps_you(aligntyp resp_god)
 {
     if (u.uswallow) {
         pline_ex(ATR_NONE, CLR_MSG_NEGATIVE,
@@ -775,10 +776,8 @@ aligntyp resp_god;
     }
 }
 
-STATIC_OVL void
-fry_by_god(resp_god, via_disintegration)
-aligntyp resp_god;
-boolean via_disintegration;
+static void
+fry_by_god(aligntyp resp_god, boolean via_disintegration)
 {
     if (via_disintegration)
         play_sfx_sound(SFX_DISINTEGRATE);
@@ -790,9 +789,8 @@ boolean via_disintegration;
     done(DIED);
 }
 
-STATIC_OVL void
-angrygods(resp_god)
-aligntyp resp_god;
+static void
+angrygods(aligntyp resp_god)
 {
     int maxanger;
 
@@ -893,9 +891,8 @@ aligntyp resp_god;
 }
 
 /* helper to print "str appears at your feet", or appropriate */
-STATIC_OVL void
-at_your_feet(str)
-const char *str;
+static void
+at_your_feet(const char *str)
 {
     if (Blind)
         str = Something;
@@ -910,8 +907,8 @@ const char *str;
     }
 }
 
-STATIC_OVL void
-gcrownu(VOID_ARGS)
+static void
+gcrownu(void)
 {
     struct obj *obj, *obj2;
     boolean in_hand, in_hand2;
@@ -1949,9 +1946,8 @@ gcrownu(VOID_ARGS)
     return;
 }
 
-STATIC_OVL void
-pleased(g_align)
-aligntyp g_align;
+static void
+pleased(aligntyp g_align)
 {
     /* don't use p_trouble, worst trouble may get fixed while praying */
     int trouble = in_trouble(); /* what's your worst difficulty? */
@@ -2214,7 +2210,7 @@ aligntyp g_align;
             break;
         case 4: 
         {
-            register struct obj *otmp;
+            struct obj *otmp;
             int any = 0;
 
             play_sfx_sound(SFX_PRAY_UNCURSE);
@@ -2249,7 +2245,7 @@ aligntyp g_align;
         }
         case 5: 
         {
-            STATIC_VAR NEARDATA const char msg[] =
+            static NEARDATA const char msg[] =
                 "\"and thus I grant thee the gift of %s!\"";
 
             play_sfx_sound(SFX_PRAY_GIFT);
@@ -2362,12 +2358,11 @@ crown_here:
 /* either blesses or curses water on the altar,
  * returns true if it found any water here.
  */
-STATIC_OVL boolean
-water_prayer(bless_water)
-boolean bless_water;
+static boolean
+water_prayer(boolean bless_water)
 {
-    register struct obj *otmp;
-    register int64_t changed = 0;
+    struct obj *otmp;
+    int64_t changed = 0;
     boolean other = FALSE, bc_known = !(Blind || Hallucination);
 
     for (otmp = level.objects[u.ux][u.uy]; otmp; otmp = otmp->nexthere) 
@@ -2404,12 +2399,11 @@ boolean bless_water;
 /* either blesses or curses holy symbols and prayer stones on the altar, and either charges a holy symbol or strips charges to zero
  * returns true if it found any holy�symbols here.
  */
-STATIC_OVL boolean
-symbol_prayer(bless_stuff)
-boolean bless_stuff;
+static boolean
+symbol_prayer(boolean bless_stuff)
 {
-    register struct obj* otmp;
-    register int64_t changed = 0;
+    struct obj* otmp;
+    int64_t changed = 0;
     boolean other = FALSE, bc_known = !(Blind || Hallucination);
     char buf[BUFSZ];
     Strcpy(buf, "");
@@ -2478,19 +2472,16 @@ boolean bless_stuff;
     return (boolean)(changed > 0L);
 }
 
-STATIC_OVL boolean
-altar_prayer(bless_stuff)
-boolean bless_stuff;
+static boolean
+altar_prayer(boolean bless_stuff)
 {
     boolean water = water_prayer(bless_stuff);
     boolean symbol = symbol_prayer(bless_stuff);
     return (water || symbol);
 }
 
-STATIC_OVL void
-godvoice(g_align, words)
-aligntyp g_align;
-const char *words;
+static void
+godvoice(aligntyp g_align, const char *words)
 {
     const char *quot = "";
 
@@ -2503,18 +2494,16 @@ const char *words;
               godvoices[rn2(SIZE(godvoices))], quot, words, quot);
 }
 
-STATIC_OVL void
-gods_angry(g_align)
-aligntyp g_align;
+static void
+gods_angry(aligntyp g_align)
 {
     play_voice_god_simple_line_by_align(g_align, GOD_LINE_THOU_HAST_ANGERED_ME);
     godvoice(g_align, "Thou hast angered me.");
 }
 
 /* The g_align god is upset with you. */
-STATIC_OVL void
-gods_upset(g_align)
-aligntyp g_align;
+static void
+gods_upset(aligntyp g_align)
 {
     if (g_align == u.ualign.type)
         u.ugangr++;
@@ -2523,9 +2512,8 @@ aligntyp g_align;
     angrygods(g_align);
 }
 
-STATIC_OVL void
-consume_offering(otmp)
-register struct obj *otmp;
+static void
+consume_offering(struct obj *otmp)
 {
     if (Hallucination)
     {
@@ -2566,11 +2554,11 @@ register struct obj *otmp;
 }
 
 int
-dosacrifice(VOID_ARGS)
+dosacrifice(void)
 {
-    STATIC_VAR NEARDATA const char cloud_of_smoke[] =
+    static NEARDATA const char cloud_of_smoke[] =
         "A cloud of %s smoke surrounds you...";
-    register struct obj* otmp;
+    struct obj* otmp;
     int value = 0, mndx;
     boolean highaltar, molochaltar, godlessaltar;
     aligntyp altaralign = a_align(u.ux, u.uy);
@@ -2607,7 +2595,7 @@ dosacrifice(VOID_ARGS)
 
     if (otmp->otyp == CORPSE) 
     {
-        register struct permonst *ptr = otmp->corpsenm >= LOW_PM ? &mons[otmp->corpsenm] : 0;
+        struct permonst *ptr = otmp->corpsenm >= LOW_PM ? &mons[otmp->corpsenm] : 0;
         struct monst *mtmp;
 
         /* KMH, conduct */
@@ -3463,7 +3451,7 @@ dosacrifice(VOID_ARGS)
 }
 
 void
-removealtarsummons(VOID_ARGS)
+removealtarsummons(void)
 {
     int cnt = 0;
     struct monst* mtmp, *mtmp2;
@@ -3487,7 +3475,7 @@ removealtarsummons(VOID_ARGS)
 }
 
 int
-get_artifact_replacement_item_otyp(VOID_ARGS)
+get_artifact_replacement_item_otyp(void)
 {
     /* Non-artifact replacement in the case an artifact couldn't be made (most likely a case for monk) */
     int repl_otyp = ACURR(A_STR) < STR19(19) && !rn2(2) && !carrying(BELT_OF_STORM_GIANT_STRENGTH) && !carrying(BELT_OF_STONE_GIANT_STRENGTH) && !carrying(BELT_OF_FIRE_GIANT_STRENGTH) && !carrying(BELT_OF_FROST_GIANT_STRENGTH) && !carrying(BELT_OF_HILL_GIANT_STRENGTH) ? BELT_OF_STORM_GIANT_STRENGTH :
@@ -3504,10 +3492,13 @@ get_artifact_replacement_item_otyp(VOID_ARGS)
 
     return repl_otyp;
 }
+/*
+ * Parameters:
+ *   praying: false means no messages should be given
+ */
 /* determine prayer results in advance; also used for enlightenment */
 boolean
-can_pray(praying)
-boolean praying; /* false means no messages should be given */
+can_pray(boolean praying)
 {
     int alignment;
 
@@ -3558,7 +3549,7 @@ boolean praying; /* false means no messages should be given */
 
 /* #pray commmand */
 int
-dopray(VOID_ARGS)
+dopray(void)
 {
     if (!context.spellpray)
     {
@@ -3653,8 +3644,8 @@ dopray(VOID_ARGS)
     return 1;
 }
 
-STATIC_PTR int
-prayer_done() /* M. Stephenson (1.0.3b) */
+static int
+prayer_done(void) /* M. Stephenson (1.0.3b) */
 {
     aligntyp alignment = p_aligntyp;
 
@@ -3733,7 +3724,7 @@ prayer_done() /* M. Stephenson (1.0.3b) */
 
 
 int
-absolution_spell(VOID_ARGS)
+absolution_spell(void)
 {
     /* You are absolved for your sins */
     boolean sins_absolved = FALSE;
@@ -3762,7 +3753,7 @@ absolution_spell(VOID_ARGS)
 /* OBSOLETE --JG */
 /* #turn command */
 int
-doturn(VOID_ARGS)
+doturn(void)
 {
     /* Knights & Priest(esse)s only please */
     struct monst *mtmp, *mtmp2;
@@ -3875,15 +3866,14 @@ doturn(VOID_ARGS)
 }
 
 const char *
-a_gname(VOID_ARGS)
+a_gname(void)
 {
     return a_gname_at(u.ux, u.uy);
 }
 
 /* returns the name of an altar's deity */
 const char *
-a_gname_at(x, y)
-xchar x, y;
+a_gname_at(xchar x, xchar y)
 {
     if (!IS_ALTAR(levl[x][y].typ))
         return (char *) 0;
@@ -3899,14 +3889,13 @@ xchar x, y;
 
 /* returns the name of the hero's deity */
 const char *
-u_gname(VOID_ARGS)
+u_gname(void)
 {
     return align_gname(u.ualign.type);
 }
 
 boolean
-align_gfemale(alignment)
-aligntyp alignment;
+align_gfemale(aligntyp alignment)
 {
     const char* gnam = 0;
 
@@ -3935,8 +3924,7 @@ aligntyp alignment;
 }
 
 const char *
-align_gname(alignment)
-aligntyp alignment;
+align_gname(aligntyp alignment)
 {
     const char *gnam;
 
@@ -3964,8 +3952,7 @@ aligntyp alignment;
 }
 
 const char*
-align_gdesc(alignment)
-aligntyp alignment;
+align_gdesc(aligntyp alignment)
 {
     const char* result;
     boolean isfemale = align_gfemale(alignment);
@@ -3993,8 +3980,7 @@ aligntyp alignment;
 }
 
 const char*
-align_ghisher(alignment)
-aligntyp alignment;
+align_ghisher(aligntyp alignment)
 {
     if (align_gfemale(alignment))
         return "her";
@@ -4003,13 +3989,13 @@ aligntyp alignment;
 }
 
 const char*
-u_ghisher(VOID_ARGS)
+u_ghisher(void)
 {
     return align_ghisher(u.ualign.type);
 }
 
 
-STATIC_VAR const char *hallu_gods[] = {
+static const char *hallu_gods[] = {
     "the Flying Spaghetti Monster", /* Church of the FSM */
     "Eris",                         /* Discordianism */
     "the Martians",                 /* every science fiction ever */
@@ -4029,8 +4015,7 @@ STATIC_VAR const char *hallu_gods[] = {
 /* hallucination handling for priest/minion names: select a random god
    iff character is hallucinating */
 const char *
-halu_gname(alignment)
-aligntyp alignment;
+halu_gname(aligntyp alignment)
 {
     const char *gnam = NULL;
     int which;
@@ -4081,8 +4066,7 @@ aligntyp alignment;
 
 /* deity's title */
 const char *
-align_gtitle(alignment)
-aligntyp alignment;
+align_gtitle(aligntyp alignment)
 {
     const char *gnam, *result = "god";
 
@@ -4106,8 +4090,7 @@ aligntyp alignment;
 }
 
 void
-altar_wrath(x, y)
-register int x, y;
+altar_wrath(int x, int y)
 {
     aligntyp altaralign = a_align(x, y);
 
@@ -4127,11 +4110,10 @@ register int x, y;
 }
 
 /* assumes isok() at one space away, but not necessarily at two */
-STATIC_OVL boolean
-blocked_boulder(dx, dy)
-int dx, dy;
+static boolean
+blocked_boulder(int dx, int dy)
 {
-    register struct obj *otmp;
+    struct obj *otmp;
     int nx, ny;
     int64_t count = 0L;
 
@@ -4173,7 +4155,7 @@ int dx, dy;
 }
 
 int
-wiz_crown(VOID_ARGS)
+wiz_crown(void)
 {
     gcrownu();
     return 0;

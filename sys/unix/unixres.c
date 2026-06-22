@@ -26,8 +26,7 @@
 #include <dlfcn.h>
 
 static int
-real_getresuid(ruid, euid, suid)
-uid_t *ruid, *euid, *suid;
+real_getresuid(uid_t *ruid, uid_t *euid, uid_t *suid)
 {
     int (*f)(uid_t *, uid_t *, uid_t *); /* getresuid signature */
 
@@ -39,8 +38,7 @@ uid_t *ruid, *euid, *suid;
 }
 
 static int
-real_getresgid(rgid, egid, sgid)
-gid_t *rgid, *egid, *sgid;
+real_getresgid(gid_t *rgid, gid_t *egid, gid_t *sgid)
 {
     int (*f)(gid_t *, gid_t *, gid_t *); /* getresgid signature */
 
@@ -57,8 +55,7 @@ gid_t *rgid, *egid, *sgid;
 #ifdef SYS_getresuid
 
 static int
-real_getresuid(ruid, euid, suid)
-uid_t *ruid, *euid, *suid;
+real_getresuid(uid_t *ruid, uid_t *euid, uid_t *suid)
 {
     return syscall(SYS_getresuid, ruid, euid, suid);
 }
@@ -70,8 +67,7 @@ uid_t *ruid, *euid, *suid;
 #endif /* SVR4 */
 
 static int
-real_getresuid(ruid, euid, suid)
-uid_t *ruid, *euid, *suid;
+real_getresuid(uid_t *ruid, uid_t *euid, uid_t *suid)
 {
     int retval;
     int pfd[2];
@@ -95,8 +91,7 @@ uid_t *ruid, *euid, *suid;
 #ifdef SYS_getresgid
 
 static int
-real_getresgid(rgid, egid, sgid)
-gid_t *rgid, *egid, *sgid;
+real_getresgid(gid_t *rgid, gid_t *egid, gid_t *sgid)
 {
     return syscall(SYS_getresgid, rgid, egid, sgid);
 }
@@ -104,8 +99,7 @@ gid_t *rgid, *egid, *sgid;
 #else /* SYS_getresgid */
 
 static int
-real_getresgid(rgid, egid, sgid)
-gid_t *rgid, *egid, *sgid;
+real_getresgid(gid_t *rgid, gid_t *egid, gid_t *sgid)
 {
     int retval;
     int pfd[2];
@@ -135,8 +129,7 @@ static unsigned int hiding_privileges = 0;
  */
 
 int
-hide_privileges(flag)
-boolean flag;
+hide_privileges(boolean flag)
 {
     if (flag)
         hiding_privileges++;
@@ -146,8 +139,7 @@ boolean flag;
 }
 
 int
-nh_getresuid(ruid, euid, suid)
-uid_t *ruid, *euid, *suid;
+nh_getresuid(uid_t *ruid, uid_t *euid, uid_t *suid)
 {
     int retval = real_getresuid(ruid, euid, suid);
 
@@ -177,8 +169,7 @@ nh_geteuid()
 }
 
 int
-nh_getresgid(rgid, egid, sgid)
-gid_t *rgid, *egid, *sgid;
+nh_getresgid(gid_t *rgid, gid_t *egid, gid_t *sgid)
 {
     int retval = real_getresgid(rgid, egid, sgid);
 
@@ -211,8 +202,7 @@ nh_getegid()
 
 #ifdef GNOME_GRAPHICS
 int
-hide_privileges(flag)
-boolean flag;
+hide_privileges(boolean flag)
 {
     return 0;
 }

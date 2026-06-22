@@ -17,26 +17,26 @@ void lib_suspend_nhwindows(const char*);
 void lib_resume_nhwindows(void);
 winid lib_create_nhwindow_ex(int type, int style, int glyph, struct extended_create_window_info info);
 void lib_clear_nhwindow(winid wid);
-void lib_display_nhwindow(winid wid, BOOLEAN_P block);
+void lib_display_nhwindow(winid wid, boolean block);
 void lib_destroy_nhwindow(winid wid);
 void lib_curs(winid wid, int x, int y);
 void lib_putstr_ex(winid wid, const char* text, int attr, int color, int app);
 void lib_putstr_ex2(winid wid,const char* text, const char* attrs, const char* colors, int attr, int color, int append);
-void lib_display_file(const char* filename, BOOLEAN_P must_exist);
+void lib_display_file(const char* filename, boolean must_exist);
 void lib_start_menu_ex(winid wid, int style);
 void lib_add_menu(winid wid, int glyph, const ANY_P* identifier,
-    CHAR_P accelerator, CHAR_P group_accel, int attr, int color,
-    const char* str, BOOLEAN_P presel);
+    char accelerator, char group_accel, int attr, int color,
+    const char* str, boolean presel);
 void lib_add_extended_menu(winid wid, int glyph, const ANY_P* identifier,
-    CHAR_P accelerator, CHAR_P group_accel, int attr, int color,
-    const char* str, BOOLEAN_P presel, struct extended_menu_info info);
+    char accelerator, char group_accel, int attr, int color,
+    const char* str, boolean presel, struct extended_menu_info info);
 void lib_end_menu_ex(winid wid, const char* prompt, const char* subtitle);
 int lib_select_menu(winid wid, int how, MENU_ITEM_P** selected);
 void lib_update_inventory(void);
 void lib_mark_synch(void);
 void lib_wait_synch(void);
-void lib_cliparound(int x, int y, BOOLEAN_P force);
-void lib_print_glyph(winid wid, XCHAR_P x, XCHAR_P y, struct layer_info layers);
+void lib_cliparound(int x, int y, boolean force);
+void lib_print_glyph(winid wid, xchar x, xchar y, struct layer_info layers);
 void lib_issue_gui_command(int cmd_id, int cmd_param, int cmd_param2, const char* cmd_str);
 void lib_raw_print(const char* str);
 void lib_raw_print_bold(const char* str);
@@ -44,7 +44,7 @@ int lib_nhgetch(void);
 int lib_nh_poskey(int* x, int* y, int* mod);
 void lib_nhbell(void);
 int lib_doprev_message(void);
-char lib_yn_function_ex(int style, int attr, int color, int glyph, const char* title, const char* question, const char* choices, CHAR_P def, const char* resp_desc, const char* introline, uint64_t ynflags);
+char lib_yn_function_ex(int style, int attr, int color, int glyph, const char* title, const char* question, const char* choices, char def, const char* resp_desc, const char* introline, uint64_t ynflags);
 void lib_getlin_ex(int style, int attr, int color, const char* question, char* input, const char* placeholder, const char* linesuffix, const char* introline);
 int lib_get_ext_cmd(void);
 void lib_number_pad(int state);
@@ -54,8 +54,8 @@ void lib_delay_output_intervals(int intervals);
 #ifdef CHANGE_COLOR
 void lib_change_color(int, int64_t, int);
 #ifdef MAC
-void FDECL(lib_change_background, (int));
-short FDECL(lib_set_font_name, (winid, char*));
+void lib_change_background(int);
+short lib_set_font_name(winid, char*);
 #endif
 char* lib_get_color_string(void);
 #endif
@@ -63,12 +63,12 @@ void lib_start_screen(void);
 void lib_end_screen(void);
 void lib_outrip(winid wid, int how, time_t when);
 void lib_preference_update(const char* pref);
-char* lib_getmsghistory_ex(char** attrs_ptr, char** colors_ptr, BOOLEAN_P init);
-void lib_putmsghistory_ex(const char* msg, const char* attrs, const char* colors, BOOLEAN_P restoring);
+char* lib_getmsghistory_ex(char** attrs_ptr, char** colors_ptr, boolean init);
+void lib_putmsghistory_ex(const char* msg, const char* attrs, const char* colors, boolean restoring);
 
 void lib_status_init(int);
 void lib_status_finish(void);
-void lib_status_enablefield(int fieldidx, const char* nm, const char* fmt, BOOLEAN_P enable);
+void lib_status_enablefield(int fieldidx, const char* nm, const char* fmt, boolean enable);
 void lib_status_update(int idx, genericptr_t ptr, int chg, int percent, int color, uint64_t* colormasks);
 void lib_stretch_window(void);
 void lib_set_animation_timer_interval(unsigned int);
@@ -81,11 +81,11 @@ void lib_set_effect_ambient_volume(struct effect_ambient_volume_info info);
 void lib_play_ghsound_music(struct ghsound_music_info info);
 void lib_play_ghsound_level_ambient(struct ghsound_level_ambient_info info);
 void lib_play_ghsound_environment_ambient(struct ghsound_environment_ambient_info info);
-void lib_adjust_ghsound_general_volumes(VOID_ARGS);
+void lib_adjust_ghsound_general_volumes(void);
 void lib_add_ambient_ghsound(struct soundsource_t* soundsource);
 void lib_delete_ambient_ghsound(struct soundsource_t* soundsource);
 void lib_set_ambient_ghsound_volume(struct soundsource_t* soundsource);
-void lib_clear_context_menu(VOID_ARGS);
+void lib_clear_context_menu(void);
 void lib_add_context_menu(int cmd_def_char, int cmd_cur_char, int style, int glyph, const char* cmd_text, const char* target_text, int attr, int color);
 void lib_update_status_button(int cmd, int btn, int val, uint64_t bflags);
 void lib_toggle_animation_timer(int timertype, int timerid, int state, int x, int y, int layer, uint64_t tflags);
@@ -94,15 +94,15 @@ void lib_display_screen_text(const char* text, const char* supertext, const char
 void lib_display_popup_text(const char* text, const char* title, int style, int attr, int color, int glyph, uint64_t tflags);
 void lib_display_gui_effect(int style, int subtype, int x, int y, int x2, int y2, uint64_t tflags);
 void lib_update_cursor(int style, int force_paint, int show_on_u);
-int lib_ui_has_input(VOID_ARGS);
+int lib_ui_has_input(void);
 void lib_exit_hack(int status);
 
 /* Helper functions */
 void lib_bail(const char* mesg);
-void lib_init_platform(VOID_ARGS);
+void lib_init_platform(void);
 void lib_exit_platform(int);
 void libdef_raw_print(const char*);
 void libdef_raw_print_bold(const char*);
-void libdef_wait_synch(VOID_ARGS);
+void libdef_wait_synch(void);
 
 #endif

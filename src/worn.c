@@ -7,12 +7,11 @@
 
 #include "hack.h"
 
-STATIC_DCL void FDECL(m_lose_armor, (struct monst *, struct obj *));
-STATIC_DCL boolean FDECL(m_dowear_type,
-                      (struct monst *, int64_t, BOOLEAN_P, BOOLEAN_P));
-STATIC_DCL int FDECL(extra_pref, (struct monst *, struct obj *));
-STATIC_DCL void FDECL(set_mon_temporary_property, (struct monst*, int, UNSIGNED_SHORT_P));
-STATIC_DCL boolean FDECL(mon_wears_misc_subtype, (struct monst*, SCHAR_P));
+static void m_lose_armor(struct monst *, struct obj *);
+static boolean m_dowear_type(struct monst *, int64_t, boolean, boolean);
+static int extra_pref(struct monst *, struct obj *);
+static void set_mon_temporary_property(struct monst*, int, unsigned short);
+static boolean mon_wears_misc_subtype(struct monst*, schar);
 
 const struct worn {
     int64_t w_mask;
@@ -45,18 +44,14 @@ const struct worn {
 };
 
 void
-setworn(obj, mask)
-register struct obj* obj;
-int64_t mask;
+setworn(struct obj *obj, int64_t mask)
 {
     setworncore(obj, mask, TRUE);
 }
 
 /* Does not update stats */
 void
-setwornquietly(obj, mask)
-register struct obj* obj;
-int64_t mask;
+setwornquietly(struct obj *obj, int64_t mask)
 {
     setworncore(obj, mask, FALSE);
 }
@@ -67,14 +62,11 @@ int64_t mask;
 
 /* Updated to use the extrinsic and blocked fields. */
 void
-setworncore(obj, mask, verbose_and_update_stats)
-register struct obj *obj;
-int64_t mask;
-boolean verbose_and_update_stats;
+setworncore(struct obj *obj, int64_t mask, boolean verbose_and_update_stats)
 {
-    register const struct worn *wp;
-    register struct obj* oobj = (struct obj*)0;
-//    register int p;
+    const struct worn *wp;
+    struct obj* oobj = (struct obj*)0;
+//    int p;
 
     int oldmanamax = u.uenmax;
     int oldhpmax = u.uhpmax;
@@ -280,15 +272,13 @@ boolean verbose_and_update_stats;
 
 
 boolean
-setnotworn(obj)
-register struct obj* obj;
+setnotworn(struct obj *obj)
 {
     return setnotworncore(obj, TRUE);
 }
 
 boolean
-setnotwornquietly(obj)
-register struct obj* obj;
+setnotwornquietly(struct obj *obj)
 {
     return setnotworncore(obj, FALSE);
 }
@@ -296,11 +286,9 @@ register struct obj* obj;
 /* called e.g. when obj is destroyed */
 /* Updated to use the extrinsic and blocked fields. */
 boolean
-setnotworncore(obj, verbose)
-register struct obj *obj;
-boolean verbose;
+setnotworncore(struct obj *obj, boolean verbose)
 {
-    register const struct worn *wp;
+    const struct worn *wp;
 
     if (!obj)
         return FALSE;
@@ -367,8 +355,7 @@ boolean verbose;
 
 /* return item worn in slot indiciated by wornmask; needed by poly_obj() */
 struct obj *
-wearmask_to_obj(wornmask)
-int64_t wornmask;
+wearmask_to_obj(int64_t wornmask)
 {
     const struct worn *wp;
 
@@ -380,8 +367,7 @@ int64_t wornmask;
 
 /* return a bitmask of the equipment slot(s) a given item might be worn in */
 int64_t
-wearslot(obj)
-struct obj *obj;
+wearslot(struct obj *obj)
 {
     int otyp = obj->otyp;
     /* practically any item can be wielded or quivered; it's up to
@@ -464,29 +450,19 @@ struct obj *obj;
 }
 
 void
-nonadditive_increase_mon_property(mon, prop_index, amount)
-struct monst* mon;
-int prop_index;
-int amount;
+nonadditive_increase_mon_property(struct monst *mon, int prop_index, int amount)
 {
     set_mon_property(mon, prop_index, max(get_mon_property(mon, prop_index), amount));
 }
 
 boolean
-nonadditive_increase_mon_property_verbosely(mtmp, prop_index, amount)
-struct monst* mtmp;
-int prop_index;
-int amount;
+nonadditive_increase_mon_property_verbosely(struct monst *mtmp, int prop_index, int amount)
 {
     return set_mon_property_verbosely(mtmp, prop_index, max(get_mon_property(mtmp, prop_index), amount));
 }
 
 boolean
-nonadditive_increase_mon_property_b(mtmp, prop_index, duration, verbose)
-struct monst* mtmp;
-int prop_index;
-int duration;
-boolean verbose;
+nonadditive_increase_mon_property_b(struct monst *mtmp, int prop_index, int duration, boolean verbose)
 {
     if (verbose)
         return nonadditive_increase_mon_property_verbosely(mtmp, prop_index, duration);
@@ -499,10 +475,7 @@ boolean verbose;
 
 
 void
-increase_mon_property(mtmp, prop_index, duration)
-struct monst* mtmp;
-int prop_index;
-int duration;
+increase_mon_property(struct monst *mtmp, int prop_index, int duration)
 {
     int maxvalue = (int)M_TIMEOUT;
     unsigned short value = (unsigned short)max(0, min(maxvalue, (get_mon_property(mtmp, prop_index) + duration)));
@@ -511,10 +484,7 @@ int duration;
 }
 
 boolean
-increase_mon_property_verbosely(mtmp, prop_index, duration)
-struct monst* mtmp;
-int prop_index;
-int duration;
+increase_mon_property_verbosely(struct monst *mtmp, int prop_index, int duration)
 {
     int maxvalue = (int)M_TIMEOUT;
     unsigned short value = (unsigned short)max(0, min(maxvalue, (get_mon_property(mtmp, prop_index) + duration)));
@@ -523,11 +493,7 @@ int duration;
 }
 
 boolean
-increase_mon_property_b(mtmp, prop_index, duration, verbose)
-struct monst* mtmp;
-int prop_index;
-int duration;
-boolean verbose;
+increase_mon_property_b(struct monst *mtmp, int prop_index, int duration, boolean verbose)
 {
     if (verbose)
         return increase_mon_property_verbosely(mtmp, prop_index, duration);
@@ -540,11 +506,8 @@ boolean verbose;
 
 
 
-STATIC_OVL void
-set_mon_temporary_property(mon, prop_index, amount)
-struct monst* mon;
-int prop_index;
-unsigned short amount;
+static void
+set_mon_temporary_property(struct monst *mon, int prop_index, unsigned short amount)
 {
     if (!mon)
         return;
@@ -567,12 +530,12 @@ unsigned short amount;
 }
 
 
+/*
+ * Parameters:
+ *   value: -1 sets the intrinsic and -2 clears it; -3 clears both temporary and permanent instrinsic
+ */
 boolean
-set_mon_property_b(mtmp, prop_index, value, verbose)
-struct monst* mtmp;
-int prop_index;
-int value; /* -1 sets the intrinsic and -2 clears it; -3 clears both temporary and permanent instrinsic */
-boolean verbose;
+set_mon_property_b(struct monst *mtmp, int prop_index, int value, boolean verbose)
 {
     if (verbose)
         return set_mon_property_verbosely(mtmp, prop_index, value);
@@ -583,11 +546,12 @@ boolean verbose;
     }
 }
 
+/*
+ * Parameters:
+ *   value: -1 sets the intrinsic and -2 clears it; -3 clears both temporary and permanent instrinsic
+ */
 void
-set_mon_property(mtmp, prop_index, value)
-struct monst* mtmp;
-int prop_index;
-int value; /* -1 sets the intrinsic and -2 clears it; -3 clears both temporary and permanent instrinsic */
+set_mon_property(struct monst *mtmp, int prop_index, int value)
 {
 
     if (!mtmp)
@@ -624,9 +588,7 @@ int value; /* -1 sets the intrinsic and -2 clears it; -3 clears both temporary a
 }
 
 int
-get_mon_property(mon, prop_index)
-struct monst* mon;
-int prop_index;
+get_mon_property(struct monst *mon, int prop_index)
 {
     if (!mon)
         return 0;
@@ -643,23 +605,19 @@ int prop_index;
     return (int)amount;
 }
 
+/*
+ * Parameters:
+ *   value: -1 sets the intrinsic and -2 clears it; -3 clears both temporary and permanent instrinsic
+ */
 boolean
-set_mon_property_verbosely(mtmp, prop_index, value)
-struct monst* mtmp;
-int prop_index;
-int value; /* -1 sets the intrinsic and -2 clears it; -3 clears both temporary and permanent instrinsic */
+set_mon_property_verbosely(struct monst *mtmp, int prop_index, int value)
 {
     return verbose_wrapper(VERBOSE_FUNCTION_SET_MON_PROPERTY, mtmp, prop_index, value, FALSE);
 }
 
 /* return TRUE if a visible effect (something was printed in pline) */
 boolean
-verbose_wrapper(function_choice, mtmp, prop_index, value, silently)
-enum verbose_function_types function_choice;
-struct monst* mtmp;
-int prop_index;
-int value;
-boolean silently;
+verbose_wrapper(enum verbose_function_types function_choice, struct monst *mtmp, int prop_index, int value, boolean silently)
 {
     boolean res = FALSE;
 
@@ -1100,9 +1058,7 @@ boolean silently;
 
 
 void
-update_all_mon_statistics_core(mon, silently)
-struct monst* mon;
-boolean silently;
+update_all_mon_statistics_core(struct monst *mon, boolean silently)
 {
     update_mon_extrinsics(mon, silently);
     update_mon_abon(mon);
@@ -1111,9 +1067,7 @@ boolean silently;
 }
 
 void
-update_all_mon_statistics(mon, silently)
-struct monst* mon;
-boolean silently;
+update_all_mon_statistics(struct monst *mon, boolean silently)
 {
     (void)verbose_wrapper(VERBOSE_FUNCTION_UPDATE_MON_STATISTICS, mon, 0, 0, silently);
 }
@@ -1121,9 +1075,7 @@ boolean silently;
 
 /* armor put on or taken off; might be magical variety */
 void
-update_mon_extrinsics(mon, silently)
-struct monst *mon;
-boolean silently;
+update_mon_extrinsics(struct monst *mon, boolean silently)
 {
 
     if (!mon)
@@ -1314,10 +1266,9 @@ boolean silently;
 
 
 int
-find_mac(mon)
-register struct monst *mon;
+find_mac(struct monst *mon)
 {
-    register struct obj *obj;
+    struct obj *obj;
     int natural_ac_base = mon->data->ac;
     int natural_ac = natural_ac_base;
     int armor_bonus = 0;
@@ -1377,9 +1328,7 @@ register struct monst *mon;
  * already worn body armor is too obviously buggy...
  */
 void
-m_dowear(mon, creation, commanded)
-register struct monst *mon;
-boolean creation, commanded;
+m_dowear(struct monst *mon, boolean creation, boolean commanded)
 {
 #define RACE_EXCEPTION TRUE
     /* Note the restrictions here are the same as in dowear in do_wear.c
@@ -1588,10 +1537,8 @@ boolean creation, commanded;
     }
 }
 
-STATIC_OVL boolean
-mon_wears_misc_subtype(mon, subtyp)
-struct monst* mon;
-schar subtyp;
+static boolean
+mon_wears_misc_subtype(struct monst *mon, schar subtyp)
 {
     if (!mon)
         return FALSE;
@@ -1610,12 +1557,8 @@ schar subtyp;
 }
 
 /* 0 if nothing happened, TRUE if new was worn (and old consequently removed, if any) */
-STATIC_OVL boolean
-m_dowear_type(mon, flag, creation, racialexception)
-struct monst *mon;
-int64_t flag;
-boolean creation;
-boolean racialexception;
+static boolean
+m_dowear_type(struct monst *mon, int64_t flag, boolean creation, boolean racialexception)
 {
     struct obj *old, *best, *obj;
     int unseen = !canseemon(mon);
@@ -1824,9 +1767,7 @@ outer_break:
 
 
 struct obj *
-which_armor(mon, flag)
-struct monst *mon;
-int64_t flag;
+which_armor(struct monst *mon, int64_t flag)
 {
     if (mon == &youmonst) {
         switch (flag) {
@@ -1873,7 +1814,7 @@ int64_t flag;
             return 0;
         }
     } else {
-        register struct obj *obj;
+        struct obj *obj;
 
         for (obj = mon->minvent; obj; obj = obj->nobj)
             if (obj->owornmask & flag)
@@ -1884,10 +1825,8 @@ int64_t flag;
 
 
 /* remove an item of armor and then drop it */
-STATIC_OVL void
-m_lose_armor(mon, obj)
-struct monst *mon;
-struct obj *obj;
+static void
+m_lose_armor(struct monst *mon, struct obj *obj)
 {
     mon->worn_item_flags &= ~obj->owornmask;
     if (obj->owornmask)
@@ -1909,7 +1848,7 @@ struct obj *obj;
 
 /* all objects with their bypass bit set should now be reset to normal */
 void
-clear_bypasses(VOID_ARGS)
+clear_bypasses(void)
 {
     struct obj *otmp, *nobj;
     struct monst *mtmp;
@@ -1974,19 +1913,20 @@ clear_bypasses(VOID_ARGS)
 
 
 void
-bypass_obj(obj)
-struct obj *obj;
+bypass_obj(struct obj *obj)
 {
     obj->bypass = 1;
     context.bypasses = TRUE;
 }
 
 
+/*
+ * Parameters:
+ *   on: TRUE => set, FALSE => clear
+ */
 /* set or clear the bypass bit in a list of objects */
 void
-bypass_objlist(objchain, on)
-struct obj *objchain;
-boolean on; /* TRUE => set, FALSE => clear */
+bypass_objlist(struct obj *objchain, boolean on)
 {
     if (on && objchain)
         context.bypasses = TRUE;
@@ -2000,8 +1940,7 @@ boolean on; /* TRUE => set, FALSE => clear */
 /* return the first object without its bypass bit set; set that bit
    before returning so that successive calls will find further objects */
 struct obj *
-nxt_unbypassed_obj(objchain)
-struct obj *objchain;
+nxt_unbypassed_obj(struct obj *objchain)
 {
     while (objchain) {
         if (!objchain->bypass) {
@@ -2019,9 +1958,7 @@ struct obj *objchain;
    there's an added complication that the array may have stale pointers
    for deleted objects (see Multiple-Drop case in askchain(invent.c)) */
 struct obj *
-nxt_unbypassed_loot(lootarray, listhead)
-Loot *lootarray;
-struct obj *listhead;
+nxt_unbypassed_loot(Loot *lootarray, struct obj *listhead)
 {
     struct obj *o, *obj;
 
@@ -2040,11 +1977,9 @@ struct obj *listhead;
 
 
 void
-mon_break_armor(mon, polyspot)
-struct monst *mon;
-boolean polyspot;
+mon_break_armor(struct monst *mon, boolean polyspot)
 {
-    register struct obj *otmp;
+    struct obj *otmp;
     struct permonst *mdat = mon->data;
     boolean vis = cansee(mon->mx, mon->my);
     boolean handless_or_tiny = (nohands(mdat) || verysmall(mdat));
@@ -2202,10 +2137,8 @@ boolean polyspot;
 
 
 /* bias a monster's preferences towards armor that has special benefits. */
-STATIC_OVL int
-extra_pref(mon, obj)
-struct monst *mon;
-struct obj *obj;
+static int
+extra_pref(struct monst *mon, struct obj *obj)
 {
     /* currently only does speed boots, but might be expanded if monsters
      * get to use more armor abilities
@@ -2238,9 +2171,7 @@ struct obj *obj;
  *      -1 If the race/object combination is unacceptable.
  */
 int
-racial_exception(mon, obj)
-struct monst *mon;
-struct obj *obj;
+racial_exception(struct monst *mon, struct obj *obj)
 {
     const struct permonst *ptr = raceptr(mon);
 

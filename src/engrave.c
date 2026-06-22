@@ -8,13 +8,12 @@
 #include "hack.h"
 #include "lev.h"
 
-STATIC_VAR NEARDATA struct engr *head_engr;
-STATIC_DCL const char *NDECL(blengr);
-STATIC_DCL int FDECL(doengrave_core, (const char*, UCHAR_P));
+static NEARDATA struct engr *head_engr;
+static const char *blengr(void);
+static int doengrave_core(const char*, uchar);
 
 char *
-random_engraving(outbuf)
-char *outbuf;
+random_engraving(char *outbuf)
 {
     const char *rumor;
 
@@ -36,7 +35,7 @@ char *outbuf;
 }
 
 /* Partial rubouts for engraving characters. -3. */
-STATIC_VAR const struct {
+static const struct {
     char wipefrom;
     const char *wipeto;
 } rubouts[] = { { 'A', "^" },
@@ -88,12 +87,13 @@ STATIC_VAR const struct {
                 { '7', "/" },
                 { '8', "3o" } };
 
+/*
+ * Parameters:
+ *   seed: for semi-controlled randomization
+ */
 /* degrade some of the characters in a string */
 void
-wipeout_text(engr, cnt, seed)
-char *engr;
-int cnt;
-unsigned seed; /* for semi-controlled randomization */
+wipeout_text(char *engr, int cnt, unsigned seed)
 {
     char *s;
     int i, j, nxt, use_rubout, lth = (int) strlen(engr);
@@ -154,8 +154,7 @@ unsigned seed; /* for semi-controlled randomization */
 
 /* check whether hero can reach something at ground level */
 boolean
-can_reach_floor(check_pit)
-boolean check_pit;
+can_reach_floor(boolean check_pit)
 {
     struct trap *t;
 
@@ -176,9 +175,7 @@ boolean check_pit;
 
 /* give a message after caller has determined that hero can't reach */
 void
-cant_reach_floor(x, y, up, check_pit)
-int x, y;
-boolean up, check_pit;
+cant_reach_floor(int x, int y, boolean up, boolean check_pit)
 {
     play_sfx_sound(SFX_GENERAL_CANNOT_REACH);
     You_ex(ATR_NONE, CLR_MSG_FAIL, "can't reach the %s.",
@@ -189,10 +186,9 @@ boolean up, check_pit;
 }
 
 const char *
-surface(x, y)
-register int x, y;
+surface(int x, int y)
 {
-    register struct rm *lev = &levl[x][y];
+    struct rm *lev = &levl[x][y];
 
     if (x == u.ux && y == u.uy && u.uswallow && is_animal(u.ustuck->data))
         return "maw";
@@ -226,10 +222,9 @@ register int x, y;
 }
 
 const char *
-ceiling(x, y)
-register int x, y;
+ceiling(int x, int y)
 {
-    register struct rm *lev = &levl[x][y];
+    struct rm *lev = &levl[x][y];
     const char *what;
 
     /* other room types will no longer exist when we're interested --
@@ -262,10 +257,9 @@ register int x, y;
 }
 
 struct engr *
-engr_at(x, y)
-xchar x, y;
+engr_at(xchar x, xchar y)
 {
-    register struct engr *ep = head_engr;
+    struct engr *ep = head_engr;
 
     while (ep) {
         if (x == ep->engr_x && y == ep->engr_y)
@@ -283,12 +277,9 @@ xchar x, y;
  * present if it is intact and is the entire content of the engraving.
  */
 int
-sengr_at(s, x, y, strict)
-const char *s;
-xchar x, y;
-boolean strict;
+sengr_at(const char *s, xchar x, xchar y, boolean strict)
 {
-    register struct engr *ep = engr_at(x, y);
+    struct engr *ep = engr_at(x, y);
 
     if (ep && ep->engr_type != ENGR_HEADSTONE && ep->engr_time <= moves) {
         return strict ? (fuzzymatch(ep->engr_txt, s, "", TRUE))
@@ -299,8 +290,7 @@ boolean strict;
 }
 
 void
-u_wipe_engr(cnt)
-int cnt;
+u_wipe_engr(int cnt)
 {
     if (can_reach_floor(TRUE))
     {
@@ -311,10 +301,9 @@ int cnt;
 }
 
 void
-wipe_engr_at(x, y, cnt, magical)
-xchar x, y, cnt, magical;
+wipe_engr_at(xchar x, xchar y, xchar cnt, xchar magical)
 {
-    register struct engr *ep = engr_at(x, y);
+    struct engr *ep = engr_at(x, y);
 
     /* Headstones are indelible */
     if (ep && ep->engr_type != ENGR_HEADSTONE && ep->engr_type != ENGR_SIGNPOST && !(ep->engr_flags & ENGR_FLAGS_NON_SMUDGING)) {
@@ -334,10 +323,9 @@ xchar x, y, cnt, magical;
 }
 
 void
-read_engr_at(x, y)
-int x, y;
+read_engr_at(int x, int y)
 {
-    register struct engr *ep = engr_at(x, y);
+    struct engr *ep = engr_at(x, y);
     int sensed = 0;
     char buf[BUFSZ];
 
@@ -416,12 +404,7 @@ int x, y;
 }
 
 void
-make_engr_at(x, y, s, e_time, e_type, e_flags)
-int x, y;
-const char *s;
-int64_t e_time;
-xchar e_type;
-unsigned short e_flags;
+make_engr_at(int x, int y, const char *s, int64_t e_time, xchar e_type, unsigned short e_flags)
 {
     struct engr *ep;
     size_t smem = strlen(s) + 1;
@@ -447,19 +430,18 @@ unsigned short e_flags;
 
 /* delete any engraving at location <x,y> */
 void
-del_engr_at(x, y)
-int x, y;
+del_engr_at(int x, int y)
 {
-    register struct engr *ep = engr_at(x, y);
+    struct engr *ep = engr_at(x, y);
 
     if (ep)
         del_engr(ep);
 }
 
 size_t
-count_engravings(VOID_ARGS)
+count_engravings(void)
 {
-    register struct engr* ep = head_engr;
+    struct engr* ep = head_engr;
     size_t cnt = 0;
 
     while (ep) {
@@ -470,8 +452,7 @@ count_engravings(VOID_ARGS)
 }
 
 coord*
-get_engraving_coords(array_size_ptr)
-size_t* array_size_ptr;
+get_engraving_coords(size_t *array_size_ptr)
 {
     coord* coordarray = 0;
     size_t cnt = count_engravings();   
@@ -481,7 +462,7 @@ size_t* array_size_ptr;
         if (coordarray)
         {
             memset((genericptr_t)coordarray, 0, cnt * sizeof(coord));
-            register struct engr* ep = head_engr;
+            struct engr* ep = head_engr;
             size_t idx;
             for (idx = 0; idx < cnt && ep; idx++, ep = ep->nxt_engr)
             {
@@ -499,9 +480,9 @@ size_t* array_size_ptr;
 }
 
 void
-unsee_engravings(VOID_ARGS)
+unsee_engravings(void)
 {
-    register struct engr* ep = head_engr;
+    struct engr* ep = head_engr;
     while (ep) {
         ep->engr_flags &= ~ENGR_FLAGS_SEEN;
         ep = ep->nxt_engr;
@@ -509,9 +490,9 @@ unsee_engravings(VOID_ARGS)
 }
 
 void
-forget_engravings(VOID_ARGS)
+forget_engravings(void)
 {
-    register struct engr* ep = head_engr;
+    struct engr* ep = head_engr;
     while (ep) {
         if(ep->engr_x != u.ux || ep->engr_y != u.uy)
             ep->engr_flags &= ~ENGR_FLAGS_SEEN;
@@ -523,13 +504,13 @@ forget_engravings(VOID_ARGS)
  * freehand - returns true if player has a free hand
  */
 int
-freehand(VOID_ARGS)
+freehand(void)
 {
     return (!uwep || !welded(uwep, &youmonst)
             || (!bimanual(uwep) && (!uarms || !uarms->cursed)));
 }
 
-STATIC_VAR NEARDATA const char styluses[] = { ALL_CLASSES, ALLOW_NONE,
+static NEARDATA const char styluses[] = { ALL_CLASSES, ALLOW_NONE,
                                           TOOL_CLASS,  WEAPON_CLASS,
                                           WAND_CLASS,  GEM_CLASS,
                                           RING_CLASS,  0 };
@@ -563,13 +544,13 @@ STATIC_VAR NEARDATA const char styluses[] = { ALL_CLASSES, ALLOW_NONE,
 
 /* return 1 if action took 1 (or more) moves, 0 if error or aborted */
 int
-doengrave(VOID_ARGS)
+doengrave(void)
 {
     return doengrave_core((const char*)0, 0);
 }
 
 int
-doengravequick(VOID_ARGS)
+doengravequick(void)
 {
     if (!*iflags.engrave_quicktext)
     {
@@ -581,9 +562,7 @@ doengravequick(VOID_ARGS)
 }
 
 int
-doengrave_core(engrave_text, item_selection_style)
-const char* engrave_text;
-uchar item_selection_style;
+doengrave_core(const char *engrave_text, uchar item_selection_style)
 {
     boolean dengr = FALSE;    /* TRUE if we wipe out the current engraving */
     boolean doblind = FALSE;  /* TRUE if engraving blinds the player */
@@ -1150,7 +1129,7 @@ uchar item_selection_style;
      * possible) by now.
      */
     if (oep) {
-        register char c = 'n';
+        char c = 'n';
 
         /* Give player the choice to add to engraving. */
         if (type == ENGR_HEADSTONE || type == ENGR_SIGNPOST) {
@@ -1446,7 +1425,7 @@ uchar item_selection_style;
 /* while loading bones, clean up text which might accidentally
    or maliciously disrupt player's terminal when displayed */
 void
-sanitize_engravings(VOID_ARGS)
+sanitize_engravings(void)
 {
     struct engr *ep;
 
@@ -1456,8 +1435,7 @@ sanitize_engravings(VOID_ARGS)
 }
 
 void
-save_engravings(fd, mode)
-int fd, mode;
+save_engravings(int fd, int mode)
 {
     struct engr *ep, *ep2;
     size_t no_more_engr = 0;
@@ -1478,7 +1456,7 @@ int fd, mode;
 }
 
 void
-reset_engravings(VOID_ARGS)
+reset_engravings(void)
 {
     struct engr* ep, * ep2;
     for (ep = head_engr; ep; ep = ep2) {
@@ -1489,8 +1467,7 @@ reset_engravings(VOID_ARGS)
 }
 
 void
-rest_engravings(fd)
-int fd;
+rest_engravings(int fd)
 {
     struct engr *ep;
     size_t lth;
@@ -1516,11 +1493,7 @@ int fd;
 
 /* to support '#stats' wizard-mode command */
 void
-engr_stats(hdrfmt, hdrbuf, count, size)
-const char *hdrfmt;
-char *hdrbuf;
-int64_t* count;
-size_t* size;
+engr_stats(const char *hdrfmt, char *hdrbuf, int64_t *count, size_t *size)
 {
     struct engr *ep;
 
@@ -1534,13 +1507,12 @@ size_t* size;
 }
 
 void
-del_engr(ep)
-register struct engr *ep;
+del_engr(struct engr *ep)
 {
     if (ep == head_engr) {
         head_engr = ep->nxt_engr;
     } else {
-        register struct engr *ept;
+        struct engr *ept;
 
         for (ept = head_engr; ept; ept = ept->nxt_engr)
             if (ept->nxt_engr == ep) {
@@ -1557,8 +1529,7 @@ register struct engr *ep;
 
 /* randomly relocate an engraving */
 void
-rloc_engr(ep)
-struct engr *ep;
+rloc_engr(struct engr *ep)
 {
     int tx, ty, tryct = 200;
 
@@ -1578,10 +1549,7 @@ struct engr *ep;
  * The caller is responsible for newsym(x, y).
  */
 void
-make_grave(x, y, str, in_mklev_var)
-int x, y;
-const char *str;
-boolean in_mklev_var;
+make_grave(int x, int y, const char *str, boolean in_mklev_var)
 {
     char buf[BUFSZ];
 
@@ -1627,10 +1595,7 @@ boolean in_mklev_var;
  * The caller is responsible for newsym(x, y).
  */
 void
-make_signpost(x, y, str, in_mklev_var)
-int x, y;
-const char* str;
-boolean in_mklev_var;
+make_signpost(int x, int y, const char *str, boolean in_mklev_var)
 {
     /* Can we put a grave here? */
     if ((levl[x][y].typ != ROOM && levl[x][y].typ != GRASS && levl[x][y].typ != GROUND && levl[x][y].typ != SIGNPOST) || t_at(x, y))
@@ -1670,7 +1635,7 @@ boolean in_mklev_var;
     return;
 }
 
-STATIC_VAR const char blind_writing[][21] = {
+static const char blind_writing[][21] = {
     {0x44, 0x66, 0x6d, 0x69, 0x62, 0x65, 0x22, 0x45, 0x7b, 0x71,
      0x65, 0x6d, 0x72, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 },
     {0x51, 0x67, 0x60, 0x7a, 0x7f, 0x21, 0x40, 0x71, 0x6b, 0x71,
@@ -1691,8 +1656,8 @@ STATIC_VAR const char blind_writing[][21] = {
      0x69, 0x76, 0x6b, 0x66, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00},
 };
 
-STATIC_OVL const char *
-blengr(VOID_ARGS)
+static const char *
+blengr(void)
 {
     return blind_writing[rn2(SIZE(blind_writing))];
 }

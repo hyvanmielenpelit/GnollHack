@@ -13,15 +13,14 @@ extern char bones[]; /* from files.c */
 extern int64_t bytes_counted;
 #endif
 
-STATIC_DCL boolean FDECL(no_bones_level, (d_level *));
-STATIC_DCL void FDECL(goodfruit, (int));
-STATIC_DCL void FDECL(resetobjs, (struct obj *, BOOLEAN_P));
-STATIC_DCL boolean FDECL(fixuporacle, (struct monst *));
-STATIC_DCL void FDECL(mark_all_fruits_good, (struct obj*));
+static boolean no_bones_level(d_level *);
+static void goodfruit(int);
+static void resetobjs(struct obj *, boolean);
+static boolean fixuporacle(struct monst *);
+static void mark_all_fruits_good(struct obj*);
 
-STATIC_OVL boolean
-no_bones_level(lev)
-d_level *lev;
+static boolean
+no_bones_level(d_level *lev)
 {
     extern d_level save_dlevel; /* in do.c */
     s_level *sptr;
@@ -46,9 +45,8 @@ d_level *lev;
  * ID is positive instead of negative).  This way, when we later save the
  * chain of fruit types, we know to only save the types that exist.
  */
-STATIC_OVL void
-goodfruit(id)
-int id;
+static void
+goodfruit(int id)
 {
     struct fruit *f = fruit_from_indx(-id);
 
@@ -56,10 +54,8 @@ int id;
         f->fid = id;
 }
 
-STATIC_OVL void
-resetobjs(ochain, restore)
-struct obj *ochain;
-boolean restore;
+static void
+resetobjs(struct obj *ochain, boolean restore)
 {
     struct obj *otmp, *nobj;
     debugprint("resetobjs");
@@ -304,8 +300,7 @@ boolean restore;
 /* while loading bones, strip out text possibly supplied by old player
    that might accidentally or maliciously disrupt new player's display */
 void
-sanitize_name(namebuf)
-char *namebuf;
+sanitize_name(char *namebuf)
 {
     int c;
     boolean strip_8th_bit = (WINDOWPORT("tty")
@@ -329,12 +324,14 @@ char *namebuf;
     }
 }
 
+/*
+ * Parameters:
+ *   mtmp: monster if hero turned into one (other than ghost)
+ *   cont: container if hero is turned into a statue
+ */
 /* called by savebones(); also by finish_paybill(shk.c) */
 void
-drop_upon_death(mtmp, cont, x, y)
-struct monst *mtmp; /* monster if hero turned into one (other than ghost) */
-struct obj *cont; /* container if hero is turned into a statue */
-int x, y;
+drop_upon_death(struct monst *mtmp, struct obj *cont, int x, int y)
 {
     struct obj *otmp;
 
@@ -370,10 +367,9 @@ int x, y;
         cont->owt = weight(cont);
 }
 
-STATIC_OVL
+static
 void
-mark_all_fruits_good(objchn)
-struct obj* objchn;
+mark_all_fruits_good(struct obj *objchn)
 {
     if (!objchn)
         return;
@@ -390,9 +386,8 @@ struct obj* objchn;
 
 /* possibly restore oracle's room and/or put her back inside it; returns
    False if she's on the wrong level and should be removed, True otherwise */
-STATIC_OVL boolean
-fixuporacle(oracle)
-struct monst *oracle;
+static boolean
+fixuporacle(struct monst *oracle)
 {
     coord cc;
     int ridx, o_ridx;
@@ -442,9 +437,9 @@ struct monst *oracle;
 
 /* check whether bones are feasible */
 boolean
-can_make_bones(VOID_ARGS)
+can_make_bones(void)
 {
-    register struct trap *ttmp;
+    struct trap *ttmp;
 
     /* don't let multiple restarts generate multiple copies of objects
        in bones files */
@@ -479,10 +474,7 @@ can_make_bones(VOID_ARGS)
 
 /* save bones and possessions of a deceased adventurer */
 void
-savebones(how, when, corpse)
-int how;
-time_t when;
-struct obj *corpse;
+savebones(int how, time_t when, struct obj *corpse)
 {
     int fd, x, y;
     struct trap *ttmp;
@@ -740,10 +732,10 @@ make_bones:
 }
 
 int
-getbones(VOID_ARGS)
+getbones(void)
 {
-    register int fd;
-    register int ok;
+    int fd;
+    int ok;
     char c, *bonesid, oldbonesid[40]; /* was [10]; more should be safer */
 
     if (discover || ModernMode || CasualMode) /* save bones files for classic mode games; note that in ModernMode bones files could work but since the player does not die, bones files are a bit pointless */
@@ -814,7 +806,7 @@ getbones(VOID_ARGS)
         }
         else 
         {
-            register struct monst *mtmp;
+            struct monst *mtmp;
 
             getlev(fd, 0, 0, TRUE);
 

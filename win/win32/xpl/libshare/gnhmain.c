@@ -5,15 +5,13 @@
 #include "hack.h"
 #include "libproc.h"
 #include "dlb.h"
-extern void NDECL(gnh_umask);
+extern void gnh_umask(void);
 
-STATIC_DCL void FDECL(process_command_line_arguments, (int, char **));
-STATIC_DCL void NDECL(notify_gui_pregame);
+static void process_command_line_arguments(int, char **);
+static void notify_gui_pregame(void);
 
-STATIC_OVL char*
-make_lockname(filename, lockname)
-const char *filename;
-char *lockname;
+static char*
+make_lockname(const char *filename, char *lockname)
 {
 #  ifdef NO_FILE_LINKS
     Strcpy(lockname, LOCKDIR);
@@ -26,9 +24,8 @@ char *lockname;
     return lockname;
 }
 
-STATIC_OVL void
-remove_lock_file(filename)
-const char* filename;
+static void
+remove_lock_file(const char *filename)
 {
     char locknambuf[BUFSZ];
     const char *lockname;
@@ -38,9 +35,7 @@ const char* filename;
 }
 
 int
-GnollHackMain(argc, argv)
-int argc;
-char** argv;
+GnollHackMain(int argc, char **argv)
 {
     FILE* fp;
     uchar resuming = FALSE; /* assume new game */
@@ -139,8 +134,8 @@ char** argv;
     return (0);
 }
 
-STATIC_OVL void
-notify_gui_pregame(VOID_ARGS)
+static void
+notify_gui_pregame(void)
 {
     issue_simple_gui_command(wizard ? GUI_CMD_ENABLE_WIZARD_MODE : GUI_CMD_DISABLE_WIZARD_MODE); /* Notification may be needed if loaded a wizard mode saved game */
     issue_simple_gui_command(CasualMode ? GUI_CMD_ENABLE_CASUAL_MODE : GUI_CMD_DISABLE_CASUAL_MODE); /* Notification may be needed if loaded a casual mode saved game */
@@ -179,15 +174,13 @@ notify_gui_pregame(VOID_ARGS)
 }
 
 boolean 
-authorize_wizard_mode(VOID_ARGS)
+authorize_wizard_mode(void)
 {
     return TRUE;
 }
 
-STATIC_OVL void 
-process_command_line_arguments(argc, argv)
-int argc;
-char *argv[];
+static void 
+process_command_line_arguments(int argc, char *argv[])
 {
     int i;
 
@@ -289,8 +282,8 @@ char *argv[];
 }
 
 #if 0
-STATIC_OVL boolean
-whoami()
+static boolean
+whoami(void)
 {
     /*
      * Who am i? Algorithm: 1. Use name as specified in NETHACKOPTIONS
@@ -314,7 +307,7 @@ whoami()
 
 #ifdef PORT_HELP
 void
-port_help()
+port_help(void)
 {
     /*
      * Display unix-specific help.   Just show contents of the helpfile

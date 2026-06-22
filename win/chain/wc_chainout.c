@@ -19,12 +19,7 @@ struct chainout_data {
 };
 
 void *
-chainout_procs_chain(cmd, n, me, nextprocs, nextdata)
-int cmd;
-int n;
-void *me;
-void *nextprocs;
-void *nextdata UNUSED;
+chainout_procs_chain(int cmd, int n, void *me, void *nextprocs, void *nextdata UNUSED)
 {
     struct chainout_data *tdp = 0;
 
@@ -47,8 +42,7 @@ void *nextdata UNUSED;
 
 /* XXX if we don't need this, take it out of the table */
 void
-chainout_procs_init(dir)
-int dir UNUSED;
+chainout_procs_init(int dir UNUSED)
 {
 }
 
@@ -57,10 +51,7 @@ int dir UNUSED;
  ***/
 
 void
-chainout_init_nhwindows(vp, argcp, argv)
-void *vp;
-int *argcp;
-char **argv;
+chainout_init_nhwindows(void *vp, int *argcp, char **argv)
 {
     struct chainout_data *tdp = vp;
 
@@ -68,8 +59,7 @@ char **argv;
 }
 
 void
-chainout_player_selection(vp)
-void *vp;
+chainout_player_selection(void *vp)
 {
     struct chainout_data *tdp = vp;
 
@@ -77,8 +67,7 @@ void *vp;
 }
 
 void
-chainout_askname(vp)
-void *vp;
+chainout_askname(void *vp)
 {
     struct chainout_data *tdp = vp;
 
@@ -86,8 +75,7 @@ void *vp;
 }
 
 void
-chainout_get_nh_event(vp)
-void *vp;
+chainout_get_nh_event(void *vp)
 {
     struct chainout_data *tdp = vp;
 
@@ -95,9 +83,7 @@ void *vp;
 }
 
 void
-chainout_exit_nhwindows(vp, str)
-void *vp;
-const char *str;
+chainout_exit_nhwindows(void *vp, const char *str)
 {
     struct chainout_data *tdp = vp;
 
@@ -105,9 +91,7 @@ const char *str;
 }
 
 void
-chainout_suspend_nhwindows(vp, str)
-void *vp;
-const char *str;
+chainout_suspend_nhwindows(void *vp, const char *str)
 {
     struct chainout_data *tdp = vp;
 
@@ -115,8 +99,7 @@ const char *str;
 }
 
 void
-chainout_resume_nhwindows(vp)
-void *vp;
+chainout_resume_nhwindows(void *vp)
 {
     struct chainout_data *tdp = vp;
 
@@ -124,10 +107,7 @@ void *vp;
 }
 
 winid
-chainout_create_nhwindow_ex(vp, type, style, glyph, info)
-void *vp;
-int type, style, glyph;
-struct extended_create_window_info;
+chainout_create_nhwindow_ex(void *vp, int type, int style, int glyph, struct extended_create_window_info *info)
 {
     struct chainout_data *tdp = vp;
     winid rv;
@@ -138,9 +118,7 @@ struct extended_create_window_info;
 }
 
 void
-chainout_clear_nhwindow(vp, window)
-void *vp;
-winid window;
+chainout_clear_nhwindow(void *vp, winid window)
 {
     struct chainout_data *tdp = vp;
 
@@ -148,10 +126,7 @@ winid window;
 }
 
 void
-chainout_display_nhwindow(vp, window, blocking)
-void *vp;
-winid window;
-BOOLEAN_P blocking;
+chainout_display_nhwindow(void *vp, winid window, boolean blocking)
 {
     struct chainout_data *tdp = vp;
 
@@ -159,9 +134,7 @@ BOOLEAN_P blocking;
 }
 
 void
-chainout_destroy_nhwindow(vp, window)
-void *vp;
-winid window;
+chainout_destroy_nhwindow(void *vp, winid window)
 {
     struct chainout_data *tdp = vp;
 
@@ -169,11 +142,7 @@ winid window;
 }
 
 void
-chainout_curs(vp, window, x, y, force)
-void *vp;
-winid window;
-int x;
-int y;
+chainout_curs(void *vp, winid window, int x, int y)
 {
     struct chainout_data *tdp = vp;
 
@@ -181,11 +150,7 @@ int y;
 }
 
 void
-chainout_putstr_ex(vp, window, str, attr, color, app)
-void *vp;
-winid window;
-int attr, app, color;
-const char *str;
+chainout_putstr_ex(void *vp, winid window, const char *str, int attr, int color, int app)
 {
     struct chainout_data *tdp = vp;
 
@@ -194,11 +159,7 @@ const char *str;
 
 
 void
-chainout_putstr_ex2(vp, window, str, attrs, colors, attr, color, app)
-void* vp;
-winid window;
-int attr, color, app;
-const char* str, *attrs, *colors;
+chainout_putstr_ex2(void *vp, winid window, const char *str, const char *attrs, const char *colors, int attr, int color, int app)
 {
     struct chainout_data* tdp = vp;
 
@@ -206,11 +167,7 @@ const char* str, *attrs, *colors;
 }
 
 void
-chainout_putmixed_ex(vp, window, str, attr, color, app)
-void *vp;
-winid window;
-int attr, app, color;
-const char *str;
+chainout_putmixed_ex(void *vp, winid window, const char *str, int attr, int color, int app)
 {
     struct chainout_data *tdp = vp;
 
@@ -218,10 +175,7 @@ const char *str;
 }
 
 void
-chainout_display_file(vp, fname, complain)
-void *vp;
-const char *fname;
-boolean complain;
+chainout_display_file(void *vp, const char *fname, boolean complain)
 {
     struct chainout_data *tdp = vp;
 
@@ -229,29 +183,27 @@ boolean complain;
 }
 
 void
-chainout_start_menu_ex(vp, window, style)
-void *vp;
-winid window;
-int style;
+chainout_start_menu_ex(void *vp, winid window, int style)
 {
     struct chainout_data *tdp = vp;
 
     (*tdp->nprocs->win_start_menu_ex)(window, style);
 }
 
+/*
+ * Parameters:
+ *   window: window to use, must be of type NHW_MENU
+ *   glyph: glyph to display with item (unused)
+ *   identifier: what to return if selected
+ *   ch: keyboard accelerator (0 = pick our own)
+ *   gch: group accelerator (0 = no group)
+ *   attr: attribute for string (like tty_putstr())
+ *   color: color for string (like tty_putstr_ex())
+ *   str: menu string
+ *   preselected: item is marked as selected
+ */
 void
-chainout_add_menu(vp, window, glyph, identifier, ch, gch, attr, color, str,
-                  preselected)
-void *vp;
-winid window;               /* window to use, must be of type NHW_MENU */
-int glyph;                  /* glyph to display with item (unused) */
-const anything *identifier; /* what to return if selected */
-char ch;                    /* keyboard accelerator (0 = pick our own) */
-char gch;                   /* group accelerator (0 = no group) */
-int attr;                   /* attribute for string (like tty_putstr()) */
-int color;                  /* color for string (like tty_putstr_ex()) */
-const char *str;            /* menu string */
-boolean preselected;        /* item is marked as selected */
+chainout_add_menu(void *vp, winid window, int glyph, const anything *identifier, char ch, char gch, int attr, int color, const char *str, boolean preselected)
 {
     struct chainout_data *tdp = vp;
 
@@ -259,29 +211,26 @@ boolean preselected;        /* item is marked as selected */
                                  str, preselected);
 }
 
+/*
+ * Parameters:
+ *   window: window to use, must be of type NHW_MENU
+ *   glyph: glyph to display with item (unused)
+ *   identifier: what to return if selected
+ *   ch: keyboard accelerator (0 = pick our own)
+ *   gch: group accelerator (0 = no group)
+ *   attr: attribute for string (like tty_putstr())
+ *   color: color for string (like tty_putstr_ex())
+ *   str: menu string
+ *   preselected: item is marked as selected
+ */
 void
-chainout_add_extended_menu(vp, window, glyph, identifier, ch, gch, attr, color, str,
-    preselected, info)
-    void* vp;
-winid window;               /* window to use, must be of type NHW_MENU */
-int glyph;                  /* glyph to display with item (unused) */
-const anything* identifier; /* what to return if selected */
-char ch;                    /* keyboard accelerator (0 = pick our own) */
-char gch;                   /* group accelerator (0 = no group) */
-int attr;                   /* attribute for string (like tty_putstr()) */
-int color;                  /* color for string (like tty_putstr_ex()) */
-const char* str;            /* menu string */
-boolean preselected;        /* item is marked as selected */
-struct extended_menu_info info;
+chainout_add_extended_menu(void *vp, winid window, int glyph, const anything *identifier, char ch, char gch, int attr, int color, const char *str, boolean preselected, struct extended_menu_info info)
 {
     (*tdp->nprocs->win_add_extended_menu)(window, glyph, identifier, ch, gch, attr, color,
         str, preselected, info);
 }
 void
-chainout_end_menu_ex(vp, window, prompt, subtitle)
-void *vp;
-winid window;
-const char *prompt, *subtitle;
+chainout_end_menu_ex(void *vp, winid window, const char *prompt, const char *subtitle)
 {
     struct chainout_data *tdp = vp;
 
@@ -289,11 +238,7 @@ const char *prompt, *subtitle;
 }
 
 int
-chainout_select_menu(vp, window, how, menu_list)
-void *vp;
-winid window;
-int how;
-menu_item **menu_list;
+chainout_select_menu(void *vp, winid window, int how, menu_item **menu_list)
 {
     struct chainout_data *tdp = vp;
     int rv;
@@ -304,11 +249,7 @@ menu_item **menu_list;
 }
 
 char
-chainout_message_menu(vp, let, how, mesg)
-void *vp;
-char let;
-int how;
-const char *mesg;
+chainout_message_menu(void *vp, char let, int how, const char *mesg)
 {
     struct chainout_data *tdp = vp;
     char rv;
@@ -319,8 +260,7 @@ const char *mesg;
 }
 
 void
-chainout_update_inventory(vp)
-void *vp;
+chainout_update_inventory(void *vp)
 {
     struct chainout_data *tdp = vp;
 
@@ -328,8 +268,7 @@ void *vp;
 }
 
 void
-chainout_mark_synch(vp)
-void *vp;
+chainout_mark_synch(void *vp)
 {
     struct chainout_data *tdp = vp;
 
@@ -337,8 +276,7 @@ void *vp;
 }
 
 void
-chainout_wait_synch(vp)
-void *vp;
+chainout_wait_synch(void *vp)
 {
     struct chainout_data *tdp = vp;
 
@@ -347,11 +285,7 @@ void *vp;
 
 #ifdef CLIPPING
 void
-chainout_cliparound(vp, x, y, force)
-void *vp;
-int x;
-int y;
-boolean force;
+chainout_cliparound(void *vp, int x, int y, boolean force)
 {
     struct chainout_data *tdp = vp;
 
@@ -361,9 +295,7 @@ boolean force;
 
 #ifdef POSITIONBAR
 void
-chainout_update_positionbar(vp, posbar)
-void *vp;
-char *posbar;
+chainout_update_positionbar(void *vp, char *posbar)
 {
     struct chainout_data *tdp = vp;
 
@@ -372,10 +304,7 @@ char *posbar;
 #endif
 
 void
-chainout_issue_gui_command(vp, cmd_id, cmd_param, cmd_param2, cmd_str)
-void* vp;
-int cmd_id, cmd_param, cmd_param2;
-const char* cmd_str;
+chainout_issue_gui_command(void *vp, int cmd_id, int cmd_param, int cmd_param2, const char *cmd_str)
 {
     struct chainout_data* tdp = vp;
 
@@ -383,11 +312,7 @@ const char* cmd_str;
 }
 
 void
-chainout_print_glyph(vp, window, x, y, layers)
-void *vp;
-winid window;
-xchar x, y;
-struct layer_info layers;
+chainout_print_glyph(void *vp, winid window, xchar x, xchar y, struct layer_info layers)
 {
     struct chainout_data *tdp = vp;
 
@@ -395,9 +320,7 @@ struct layer_info layers;
 }
 
 void
-chainout_raw_print(vp, str)
-void *vp;
-const char *str;
+chainout_raw_print(void *vp, const char *str)
 {
     struct chainout_data *tdp = vp;
 
@@ -405,9 +328,7 @@ const char *str;
 }
 
 void
-chainout_raw_print_bold(vp, str)
-void *vp;
-const char *str;
+chainout_raw_print_bold(void *vp, const char *str)
 {
     struct chainout_data *tdp = vp;
 
@@ -415,8 +336,7 @@ const char *str;
 }
 
 int
-chainout_nhgetch(vp)
-void *vp;
+chainout_nhgetch(void *vp)
 {
     struct chainout_data *tdp = vp;
     int rv;
@@ -427,11 +347,7 @@ void *vp;
 }
 
 int
-chainout_nh_poskey(vp, x, y, mod)
-void *vp;
-int *x;
-int *y;
-int *mod;
+chainout_nh_poskey(void *vp, int *x, int *y, int *mod)
 {
     struct chainout_data *tdp = vp;
     int rv;
@@ -442,8 +358,7 @@ int *mod;
 }
 
 void
-chainout_nhbell(vp)
-void *vp;
+chainout_nhbell(void *vp)
 {
     struct chainout_data *tdp = vp;
 
@@ -451,8 +366,7 @@ void *vp;
 }
 
 int
-chainout_doprev_message(vp)
-void *vp;
+chainout_doprev_message(void *vp)
 {
     struct chainout_data *tdp = vp;
     int rv;
@@ -463,12 +377,7 @@ void *vp;
 }
 
 char
-chainout_yn_function_ex(vp, style, attr, color, glyph, title, query, resp, def, resp_desc, introline, ynflags)
-void *vp;
-int style, attr, color, glyph;
-const char *title, *query, *resp, *resp_desc, *introline;
-char def;
-uint64_t ynflags;
+chainout_yn_function_ex(void *vp, int style, int attr, int color, int glyph, const char *title, const char *query, const char *resp, char def, const char *resp_desc, const char *introline, uint64_t ynflags)
 {
     struct chainout_data *tdp = vp;
     int rv;
@@ -479,11 +388,7 @@ uint64_t ynflags;
 }
 
 void
-chainout_getlin(vp, attr, color, query, bufp)
-void *vp;
-int attr, color;
-const char *query;
-char *bufp;
+chainout_getlin(void *vp, int attr, int color, const char *query, char *bufp)
 {
     struct chainout_data *tdp = vp;
 
@@ -491,8 +396,7 @@ char *bufp;
 }
 
 int
-chainout_get_ext_cmd(vp)
-void *vp;
+chainout_get_ext_cmd(void *vp)
 {
     struct chainout_data *tdp = vp;
     int rv;
@@ -503,9 +407,7 @@ void *vp;
 }
 
 void
-chainout_number_pad(vp, state)
-void *vp;
-int state;
+chainout_number_pad(void *vp, int state)
 {
     struct chainout_data *tdp = vp;
 
@@ -513,8 +415,7 @@ int state;
 }
 
 void
-chainout_delay_output(vp)
-void *vp;
+chainout_delay_output(void *vp)
 {
     struct chainout_data *tdp = vp;
 
@@ -522,9 +423,7 @@ void *vp;
 }
 
 void
-chainout_delay_output_milliseconds(vp, intreval)
-void* vp;
-int interval;
+chainout_delay_output_milliseconds(void *vp, int interval)
 {
     struct chainout_data* tdp = vp;
 
@@ -532,9 +431,7 @@ int interval;
 }
 
 void
-chainout_delay_output_intervals(vp, intrevals)
-void* vp;
-int intervals;
+chainout_delay_output_intervals(void *vp, int intervals)
 {
     struct chainout_data* tdp = vp;
 
@@ -543,11 +440,7 @@ int intervals;
 
 #ifdef CHANGE_COLOR
 void
-chainout_change_color(vp, color, value, reverse)
-void *vp;
-int color;
-int64_t value;
-int reverse;
+chainout_change_color(void *vp, int color, int64_t value, int reverse)
 {
     struct chainout_data *tdp = vp;
 
@@ -556,9 +449,7 @@ int reverse;
 
 #ifdef MAC
 void
-chainout_change_background(vp, bw)
-void *vp;
-int bw;
+chainout_change_background(void *vp, int bw)
 {
     struct chainout_data *tdp = vp;
 
@@ -566,10 +457,7 @@ int bw;
 }
 
 short
-chainout_set_font_name(vp, window, font)
-void *vp;
-winid window;
-char *font;
+chainout_set_font_name(void *vp, winid window, char *font)
 {
     struct chainout_data *tdp = vp;
     short rv;
@@ -581,8 +469,7 @@ char *font;
 #endif
 
 char *
-trace_get_color_string(vp)
-void *vp;
+trace_get_color_string(void *vp)
 {
     struct chainout_data *tdp = vp;
     char *rv;
@@ -596,8 +483,7 @@ void *vp;
 
 /* other defs that really should go away (they're tty specific) */
 void
-chainout_start_screen(vp)
-void *vp;
+chainout_start_screen(void *vp)
 {
     struct chainout_data *tdp = vp;
 
@@ -605,8 +491,7 @@ void *vp;
 }
 
 void
-chainout_end_screen(vp)
-void *vp;
+chainout_end_screen(void *vp)
 {
     struct chainout_data *tdp = vp;
 
@@ -614,11 +499,7 @@ void *vp;
 }
 
 void
-chainout_outrip(vp, tmpwin, how, when)
-void *vp;
-winid tmpwin;
-int how;
-time_t when;
+chainout_outrip(void *vp, winid tmpwin, int how, time_t when)
 {
     struct chainout_data *tdp = vp;
 
@@ -626,9 +507,7 @@ time_t when;
 }
 
 void
-chainout_preference_update(vp, pref)
-void *vp;
-const char *pref;
+chainout_preference_update(void *vp, const char *pref)
 {
     struct chainout_data *tdp = vp;
 
@@ -636,10 +515,7 @@ const char *pref;
 }
 
 char *
-chainout_getmsghistory_ex(vp, attrs_ptr, colors_ptr, init)
-void *vp;
-char** attrs_ptr, **colors_ptr;
-boolean init;
+chainout_getmsghistory_ex(void *vp, char **attrs_ptr, char **colors_ptr, boolean init)
 {
     struct chainout_data *tdp = vp;
     char *rv;
@@ -650,11 +526,7 @@ boolean init;
 }
 
 void
-chainout_putmsghistory_ex(vp, msg, attrs, colors, is_restoring)
-void *vp;
-const char *msg;
-const char* attrs, *colors;
-boolean is_restoring;
+chainout_putmsghistory_ex(void *vp, const char *msg, const char *attrs, const char *colors, boolean is_restoring)
 {
     struct chainout_data *tdp = vp;
 
@@ -662,9 +534,7 @@ boolean is_restoring;
 }
 
 void
-chainout_status_init(vp, reassessment)
-void *vp;
-int reassessment;
+chainout_status_init(void *vp, int reassessment)
 {
     struct chainout_data *tdp = vp;
 
@@ -672,8 +542,7 @@ int reassessment;
 }
 
 void
-chainout_status_finish(vp)
-void *vp;
+chainout_status_finish(void *vp)
 {
     struct chainout_data *tdp = vp;
 
@@ -681,12 +550,7 @@ void *vp;
 }
 
 void
-chainout_status_enablefield(vp, fieldidx, nm, fmt, enable)
-void *vp;
-int fieldidx;
-const char *nm;
-const char *fmt;
-boolean enable;
+chainout_status_enablefield(void *vp, int fieldidx, const char *nm, const char *fmt, boolean enable)
 {
     struct chainout_data *tdp = vp;
 
@@ -694,11 +558,7 @@ boolean enable;
 }
 
 void
-chainout_status_update(vp, idx, ptr, chg, percent, color, colormasks)
-void *vp;
-int idx, chg, percent, color;
-genericptr_t ptr;
-uint64_t *colormasks;
+chainout_status_update(void *vp, int idx, genericptr_t ptr, int chg, int percent, int color, uint64_t *colormasks)
 {
     struct chainout_data *tdp = vp;
 
@@ -706,8 +566,7 @@ uint64_t *colormasks;
 }
 
 boolean
-chainout_can_suspend(vp)
-void *vp;
+chainout_can_suspend(void *vp)
 {
     struct chainout_data *tdp = vp;
     boolean rv;

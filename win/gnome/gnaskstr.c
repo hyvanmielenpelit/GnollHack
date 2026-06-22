@@ -19,8 +19,7 @@ ghack_ask_string_callback(gchar *string, gpointer data)
 }
 
 int
-ghack_ask_string_dialog(const char *szMessageStr, const char *szDefaultStr,
-                        const char *szTitleStr, char *buffer)
+ghack_ask_string_dialog(const char *szMessageStr, const char *szDefaultStr, const char *szTitleStr, char *buffer)
 {
     int i;
     GtkWidget *dialog;

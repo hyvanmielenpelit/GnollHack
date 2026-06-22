@@ -8,6 +8,74 @@
 #ifndef TRADSTDC_H
 #define TRADSTDC_H
 
+#if defined(__STDC__) || defined(__cplusplus) || defined(_MSC_VER) || defined(__GNUC__) || defined(__clang__)
+/* ======================================================================== */
+/* Modern C89/C99/C11 & C++ Compiler Section                               */
+/* ======================================================================== */
+
+#define NHSTDC
+
+#ifndef USE_STDARG
+#define USE_STDARG
+#endif
+
+#define NDECL(f) f(void)
+#define FDECL(f, p) f p
+#define VDECL(f, p) f p
+
+#define VOID_ARGS void
+
+#ifdef NEED_VARARGS
+#include <stdarg.h>
+#endif
+
+#define genericptr void *
+typedef void *genericptr_t;
+
+#define CHAR_P char
+#define SCHAR_P schar
+#define UCHAR_P uchar
+#define XCHAR_P xchar
+#define SHORT_P short
+#define UNSIGNED_SHORT_P unsigned short
+#define BOOLEAN_P boolean
+#define ALIGNTYP_P aligntyp
+
+#define OBJ_P struct obj *
+#define MONST_P struct monst *
+#define TRAP_P struct trap *
+
+#ifdef __GNUC__
+#if defined(ANDROID) || defined(GNH_MOBILE) 
+#define PRINTF_F(f,v) __attribute__ ((format (__printf__, f, v)))
+#elif (__GNUC__ >= 2)
+#define PRINTF_F(f, v) __attribute__((format(printf, f, v)))
+#endif
+#if __GNUC__ >= 3
+#define UNUSED __attribute__((unused))
+#define NORETURN __attribute__((noreturn))
+#if defined(GCC_URWARN)
+#define __warn_unused_result__ /*empty*/
+#define warn_unused_result /*empty*/
+#endif
+#endif
+#endif
+
+#ifndef PRINTF_F
+#define PRINTF_F(f, v)
+#endif
+#ifndef UNUSED
+#define UNUSED
+#endif
+#ifndef NORETURN
+#define NORETURN
+#endif
+
+#else
+/* ======================================================================== */
+/* Legacy K&R C Compiler Section (Archaic Fallback)                         */
+/* ======================================================================== */
+
 #if defined(DUMB) && !defined(NOVOID)
 #define NOVOID
 #endif
@@ -27,9 +95,9 @@
 #endif
 
 #if defined(ultrix) && defined(__STDC__) && !defined(__LANGUAGE_C)
-/* Ultrix seems to be in a constant state of flux.  This check attempts to
- * set up ansi compatibility if it wasn't set up correctly by the compiler.
- */
+ /* Ultrix seems to be in a constant state of flux.  This check attempts to
+  * set up ansi compatibility if it wasn't set up correctly by the compiler.
+  */
 #ifdef mips
 #define __mips mips
 #endif
@@ -38,23 +106,23 @@
 #endif
 #endif
 
-/*
- * ANSI X3J11 detection.
- * Makes substitutes for compatibility with the old C standard.
- */
+  /*
+   * ANSI X3J11 detection.
+   * Makes substitutes for compatibility with the old C standard.
+   */
 
-/* Decide how to handle variable parameter lists:
- * USE_STDARG means use the ANSI <stdarg.h> facilities (only ANSI compilers
- * should do this, and only if the library supports it).
- * USE_VARARGS means use the <varargs.h> facilities.  Again, this should only
- * be done if the library supports it.  ANSI is *not* required for this.
- * Otherwise, the kludgy old methods are used.
- * The defaults are USE_STDARG for ANSI compilers, and USE_OLDARGS for
- * others.
- */
+   /* Decide how to handle variable parameter lists:
+    * USE_STDARG means use the ANSI <stdarg.h> facilities (only ANSI compilers
+    * should do this, and only if the library supports it).
+    * USE_VARARGS means use the <varargs.h> facilities.  Again, this should only
+    * be done if the library supports it.  ANSI is *not* required for this.
+    * Otherwise, the kludgy old methods are used.
+    * The defaults are USE_STDARG for ANSI compilers, and USE_OLDARGS for
+    * others.
+    */
 
-/* #define USE_VARARGS */ /* use <varargs.h> instead of <stdarg.h> */
-/* #define USE_OLDARGS */ /* don't use any variable argument facilities */
+    /* #define USE_VARARGS */ /* use <varargs.h> instead of <stdarg.h> */
+    /* #define USE_OLDARGS */ /* don't use any variable argument facilities */
 
 #if defined(apollo) /* Apollos have stdarg(3) but not stdarg.h */
 #define USE_VARARGS
@@ -88,6 +156,10 @@
 
 #ifdef USE_STDARG
 #include <stdarg.h>
+#endif
+
+#if 0 /* Retired as part of the ANSI C89 migration */
+#ifdef USE_STDARG
 #define VA_DECL(typ1, var1) \
     (typ1 var1, ...)        \
     {                       \
@@ -156,16 +228,16 @@
 #define VA_PASS1(a1) a1
 #else
 
-/*USE_OLDARGS*/
-/*
- * CAVEAT:  passing double (including float promoted to double) will
- * almost certainly break this, as would any integer type bigger than
- * sizeof (char *).
- * GnollHack avoids floating point, and any configuration able to use
- * 'int64_t int64_t int' or I64P32 or the like should be using USE_STDARG.
- */
+ /*USE_OLDARGS*/
+ /*
+  * CAVEAT:  passing double (including float promoted to double) will
+  * almost certainly break this, as would any integer type bigger than
+  * sizeof (char *).
+  * GnollHack avoids floating point, and any configuration able to use
+  * 'int64_t int64_t int' or I64P32 or the like should be using USE_STDARG.
+  */
 #ifndef VA_TYPE
-typedef const char *vA;
+typedef const char* vA;
 #define VA_TYPE
 #endif
 #define VA_ARGS arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9
@@ -191,9 +263,10 @@ typedef const char *vA;
      arg6 = arg7, arg7 = arg8, arg8 = arg9, arg9 = 0)
 #define VA_NEXT(var1, typ1) ((var1 = (typ1) arg1), VA_SHIFT(), var1)
 #define VA_END() }
-/* needed in pline.c, where full number of arguments is known and expected */
+ /* needed in pline.c, where full number of arguments is known and expected */
 #define VA_PASS1(a1)                                                  \
     (vA) a1, (vA) 0, (vA) 0, (vA) 0, (vA) 0, (vA) 0, (vA) 0, (vA) 0, (vA) 0
+#endif
 #endif
 #endif
 
@@ -224,14 +297,14 @@ typedef const char *vA;
 #define VDECL(f, p) f()
 #endif
 
-/*
- * Used for definitions of functions which take no arguments to force
- * an explicit match with the NDECL prototype.  Needed in some cases
- * (MS Visual C 2005) for functions called through pointers.
- */
+ /*
+  * Used for definitions of functions which take no arguments to force
+  * an explicit match with the NDECL prototype.  Needed in some cases
+  * (MS Visual C 2005) for functions called through pointers.
+  */
 #define VOID_ARGS void
 
-/* generic pointer, always a macro; genericptr_t is usually a typedef */
+  /* generic pointer, always a macro; genericptr_t is usually a typedef */
 #define genericptr void *
 
 #if (defined(ULTRIX_PROTO) && !defined(__GNUC__)) || defined(OS2_CSET2)
@@ -240,7 +313,7 @@ typedef const char *vA;
  *   extern void a(void(*)(int, genericptr_t));
  * Using the #define is OK for other compiler versions too.
  */
-/* And IBM CSet/2.  The redeclaration of free hoses the compile. */
+ /* And IBM CSet/2.  The redeclaration of free hoses the compile. */
 #define genericptr_t genericptr
 #else
 #if !defined(NHSTDC) && !defined(MAC)
@@ -257,7 +330,7 @@ typedef const char *vA;
  * This has been observed with Lattice, MPW, and High C.
  */
 #if (defined(ULTRIX_PROTO) && !defined(NHSTDC)) || defined(apollo)
-/* the system header files don't use `const' properly */
+ /* the system header files don't use `const' properly */
 #ifndef const
 #define const
 #endif
@@ -303,18 +376,18 @@ typedef genericptr genericptr_t; /* (void *) or (char *) */
 #define HAS_PTR_FMT
 #endif
 
-/*
- * According to ANSI C, prototypes for old-style function definitions like
- *   int func(arg) short arg; { ... }
- * must specify widened arguments (char and short to int, float to double),
- *   int func(int);
- * same as how narrow arguments get passed when there is no prototype info.
- * However, various compilers accept shorter arguments (char, short, etc.)
- * in prototypes and do typechecking with them.  Therefore this mess to
- * allow the better typechecking while also allowing some prototypes for
- * the ANSI compilers so people quit trying to fix the prototypes to match
- * the standard and thus lose the typechecking.
- */
+ /*
+  * According to ANSI C, prototypes for old-style function definitions like
+  *   int func(arg) short arg; { ... }
+  * must specify widened arguments (char and short to int, float to double),
+  *   int func(int);
+  * same as how narrow arguments get passed when there is no prototype info.
+  * However, various compilers accept shorter arguments (char, short, etc.)
+  * in prototypes and do typechecking with them.  Therefore this mess to
+  * allow the better typechecking while also allowing some prototypes for
+  * the ANSI compilers so people quit trying to fix the prototypes to match
+  * the standard and thus lose the typechecking.
+  */
 #if defined(MSDOS) && !defined(__GO32__)
 #define UNWIDENED_PROTOTYPES
 #endif
@@ -346,7 +419,7 @@ typedef genericptr genericptr_t; /* (void *) or (char *) */
 #endif
 #endif
 
-/* this applies to both VMS and Digital Unix/HP Tru64 */
+  /* this applies to both VMS and Digital Unix/HP Tru64 */
 #ifdef WIDENED_PROTOTYPES
 /* ANSI C uses "value preserving rules", where 'unsigned char' and
    'unsigned short' promote to 'int' if signed int is big enough to hold
@@ -362,8 +435,8 @@ typedef genericptr genericptr_t; /* (void *) or (char *) */
 #endif
 #endif
 
-/* These are used for arguments within FDECL/VDECL prototype declarations.
- */
+   /* These are used for arguments within FDECL/VDECL prototype declarations.
+    */
 #ifdef UNWIDENED_PROTOTYPES
 #define CHAR_P char
 #define SCHAR_P schar
@@ -388,19 +461,19 @@ typedef genericptr genericptr_t; /* (void *) or (char *) */
 #define BOOLEAN_P int
 #define ALIGNTYP_P int
 #else
-/* Neither widened nor unwidened prototypes.  Argument list expansion
- * by FDECL/VDECL always empty; all xxx_P vanish so defs aren't needed. */
+    /* Neither widened nor unwidened prototypes.  Argument list expansion
+     * by FDECL/VDECL always empty; all xxx_P vanish so defs aren't needed. */
 #endif
 #endif
 
-/* OBJ_P and MONST_P should _only_ be used for declaring function pointers.
- */
+     /* OBJ_P and MONST_P should _only_ be used for declaring function pointers.
+      */
 #if defined(ULTRIX_PROTO) && !defined(__STDC__)
-/* The ultrix 2.0 and 2.1 compilers (on Ultrix 4.0 and 4.2 respectively) can't
- * handle "struct obj *" constructs in prototypes.  Their bugs are different,
- * but both seem to work if we put "void*" in the prototype instead.  This
- * gives us minimal prototype checking but avoids the compiler bugs.
- */
+      /* The ultrix 2.0 and 2.1 compilers (on Ultrix 4.0 and 4.2 respectively) can't
+       * handle "struct obj *" constructs in prototypes.  Their bugs are different,
+       * but both seem to work if we put "void*" in the prototype instead.  This
+       * gives us minimal prototype checking but avoids the compiler bugs.
+       */
 #define OBJ_P void *
 #define MONST_P void *
 #define TRAP_P void *
@@ -411,19 +484,19 @@ typedef genericptr genericptr_t; /* (void *) or (char *) */
 #endif
 
 #if 0
-/* The problem below is still the case through 4.0.5F, but the suggested
- * compiler flags in the Makefiles suppress the nasty messages, so we don't
- * need to be quite so drastic.
- */
+      /* The problem below is still the case through 4.0.5F, but the suggested
+       * compiler flags in the Makefiles suppress the nasty messages, so we don't
+       * need to be quite so drastic.
+       */
 #if defined(__sgi) && !defined(__GNUC__)
-/*
- * As of IRIX 4.0.1, /bin/cc claims to be an ANSI compiler, but it thinks
- * it's impossible for a prototype to match an old-style definition with
- * unwidened argument types.  Thus, we have to turn off all GnollHack
- * prototypes, and avoid declaring several system functions, since the system
- * include files have prototypes and the compiler also complains that
- * prototyped and unprototyped declarations don't match.
- */
+       /*
+        * As of IRIX 4.0.1, /bin/cc claims to be an ANSI compiler, but it thinks
+        * it's impossible for a prototype to match an old-style definition with
+        * unwidened argument types.  Thus, we have to turn off all GnollHack
+        * prototypes, and avoid declaring several system functions, since the system
+        * include files have prototypes and the compiler also complains that
+        * prototyped and unprototyped declarations don't match.
+        */
 #undef NDECL
 #undef FDECL
 #undef VDECL
@@ -435,8 +508,8 @@ typedef genericptr genericptr_t; /* (void *) or (char *) */
 #endif
 #endif
 
-/* MetaWare High-C defaults to unsigned chars */
-/* AIX 3.2 needs this also */
+        /* MetaWare High-C defaults to unsigned chars */
+        /* AIX 3.2 needs this also */
 #if defined(__HC__) || defined(_AIX32)
 #undef signed
 #endif
@@ -462,8 +535,8 @@ typedef genericptr genericptr_t; /* (void *) or (char *) */
 #define UNUSED __attribute__((unused))
 #define NORETURN __attribute__((noreturn))
 #if defined(GCC_URWARN)
-/* disable gcc's __attribute__((__warn_unused_result__)) since explicitly
-   discarding the result by casting to (void) is not accepted as a 'use' */
+ /* disable gcc's __attribute__((__warn_unused_result__)) since explicitly
+    discarding the result by casting to (void) is not accepted as a 'use' */
 #define __warn_unused_result__ /*empty*/
 #define warn_unused_result /*empty*/
 #endif
@@ -479,6 +552,8 @@ typedef genericptr genericptr_t; /* (void *) or (char *) */
 #endif
 #ifndef NORETURN
 #define NORETURN
+#endif
+
 #endif
 
 #endif /* TRADSTDC_H */

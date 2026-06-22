@@ -67,36 +67,35 @@
   *      Check whether object has a timer of type timer_type.
   */
 
-STATIC_DCL const char* FDECL(kind_name, (SHORT_P));
-STATIC_DCL void FDECL(print_queue, (winid, timer_element*));
-STATIC_DCL void FDECL(insert_timer, (timer_element*));
-STATIC_DCL timer_element* FDECL(remove_timer,
-    (timer_element**, SHORT_P, ANY_P*));
-STATIC_DCL void FDECL(write_timer, (int, timer_element*));
-STATIC_DCL boolean FDECL(mon_is_local, (struct monst*));
-STATIC_DCL boolean FDECL(timer_is_local, (timer_element*));
-STATIC_DCL int FDECL(maybe_write_timer, (int, int, BOOLEAN_P)); 
+static const char* kind_name(short);
+static void print_queue(winid, timer_element*);
+static void insert_timer(timer_element*);
+static timer_element* remove_timer(timer_element**, short, ANY_P*);
+static void write_timer(int, timer_element*);
+static boolean mon_is_local(struct monst*);
+static boolean timer_is_local(timer_element*);
+static int maybe_write_timer(int, int, boolean); 
 
-STATIC_DCL void NDECL(stoned_dialogue);
-STATIC_DCL void NDECL(vomiting_dialogue);
-STATIC_DCL void NDECL(choke_dialogue);
-STATIC_DCL void NDECL(levitation_dialogue);
-STATIC_DCL void NDECL(slime_dialogue);
-STATIC_DCL void FDECL(slimed_to_death, (struct kinfo *));
-STATIC_DCL void NDECL(slip_or_trip);
-STATIC_DCL void NDECL(laugh_uncontrollably);
-STATIC_DCL void NDECL(get_odd_idea);
-STATIC_DCL void FDECL(see_lamp_flicker, (struct obj *, const char *));
-STATIC_DCL void FDECL(lantern_message, (struct obj *));
-STATIC_DCL int FDECL(cleanup_burn, (ANY_P *, int64_t));
-STATIC_DCL int FDECL(cleanup_sound, (ANY_P*, int64_t));
-STATIC_DCL void NDECL(sick_dialogue);
-STATIC_DCL void NDECL(food_poisoned_dialogue);
-STATIC_DCL void NDECL(mummy_rot_dialogue);
+static void stoned_dialogue(void);
+static void vomiting_dialogue(void);
+static void choke_dialogue(void);
+static void levitation_dialogue(void);
+static void slime_dialogue(void);
+static void slimed_to_death(struct kinfo *);
+static void slip_or_trip(void);
+static void laugh_uncontrollably(void);
+static void get_odd_idea(void);
+static void see_lamp_flicker(struct obj *, const char *);
+static void lantern_message(struct obj *);
+static int cleanup_burn(ANY_P *, int64_t);
+static int cleanup_sound(ANY_P*, int64_t);
+static void sick_dialogue(void);
+static void food_poisoned_dialogue(void);
+static void mummy_rot_dialogue(void);
 
-STATIC_VAR boolean alternate_sick_text = FALSE;
+static boolean alternate_sick_text = FALSE;
 
-STATIC_VAR NEARDATA const char* const sick_texts[] = {
+static NEARDATA const char* const sick_texts[] = {
     "You are starting to feel badly feverish.",        /* 8 */
     "Your fever is rising very high.",    /* 7 */
     "You are feeling extremely feverish.",          /* 6 */
@@ -107,13 +106,13 @@ STATIC_VAR NEARDATA const char* const sick_texts[] = {
     "The sickness is fatal."            /* 1 */
 };
 
-STATIC_OVL void
-sick_dialogue(VOID_ARGS)
+static void
+sick_dialogue(void)
 {
     if (!is_living(youmonst.data))
         return;
 
-    register int64_t i = (Sick & TIMEOUT);
+    int64_t i = (Sick & TIMEOUT);
 
     if (i > 0L && i <= SIZE(sick_texts)) {
         char buf[BUFSZ];
@@ -154,7 +153,7 @@ sick_dialogue(VOID_ARGS)
 }
 
 
-STATIC_VAR NEARDATA const char* const food_poisoned_texts[] = {
+static NEARDATA const char* const food_poisoned_texts[] = {
     "You are feeling very feverish.",        /* 8 */
     "Your stomach is hurting terribly.",    /* 7 */
     "You are feeling extremely feverish.",          /* 6 */
@@ -165,13 +164,13 @@ STATIC_VAR NEARDATA const char* const food_poisoned_texts[] = {
     "The food poisoning is fatal."            /* 1 */
 };
 
-STATIC_OVL void
-food_poisoned_dialogue(VOID_ARGS)
+static void
+food_poisoned_dialogue(void)
 {
     if (!is_living(youmonst.data))
         return;
 
-    register int64_t i = (FoodPoisoned & TIMEOUT);
+    int64_t i = (FoodPoisoned & TIMEOUT);
 
     if (i > 0L && i <= SIZE(food_poisoned_texts)) {
         char buf[BUFSZ];
@@ -213,8 +212,8 @@ food_poisoned_dialogue(VOID_ARGS)
 }
 
 
-STATIC_OVL void
-mummy_rot_dialogue(VOID_ARGS)
+static void
+mummy_rot_dialogue(void)
 {
     if (!is_living(youmonst.data) || Sick_resistance)
         return;
@@ -298,7 +297,7 @@ mummy_rot_dialogue(VOID_ARGS)
 
 
 /* He is being petrified - dialogue by inmet!tower */
-STATIC_VAR NEARDATA const char *const stoned_texts[] = {
+static NEARDATA const char *const stoned_texts[] = {
     "You are slowing down.",            /* 5 */
     "Your limbs are stiffening.",       /* 4 */
     "Your limbs have turned to stone.", /* 3 */
@@ -306,10 +305,10 @@ STATIC_VAR NEARDATA const char *const stoned_texts[] = {
     "You are a statue."                 /* 1 */
 };
 
-STATIC_OVL void
-stoned_dialogue(VOID_ARGS)
+static void
+stoned_dialogue(void)
 {
-    register int64_t i = (Stoned & TIMEOUT);
+    int64_t i = (Stoned & TIMEOUT);
 
     if (i > 0L && i <= SIZE(stoned_texts)) {
         char buf[BUFSZ];
@@ -363,7 +362,7 @@ stoned_dialogue(VOID_ARGS)
 }
 
 /* hero is getting sicker and sicker prior to vomiting */
-STATIC_VAR NEARDATA const char *const vomiting_texts[] = {
+static NEARDATA const char *const vomiting_texts[] = {
     "are feeling mildly nauseated.", /* 14 */
     "feel slightly confused.",       /* 11 */
     "can't seem to think straight.", /* 8 */
@@ -371,8 +370,8 @@ STATIC_VAR NEARDATA const char *const vomiting_texts[] = {
     "are about to vomit."            /* 2 */
 };
 
-STATIC_OVL void
-vomiting_dialogue(VOID_ARGS)
+static void
+vomiting_dialogue(void)
 {
     const char *txt = 0;
     int64_t v = (Vomiting & TIMEOUT);
@@ -436,7 +435,7 @@ vomiting_dialogue(VOID_ARGS)
     exercise(A_CON, FALSE);
 }
 
-STATIC_VAR NEARDATA const char *const choke_texts[] = {
+static NEARDATA const char *const choke_texts[] = {
     "You find it hard to breathe.",
     "You're gasping for air.",
     "You can no longer breathe.",
@@ -444,7 +443,7 @@ STATIC_VAR NEARDATA const char *const choke_texts[] = {
     "You suffocate."
 };
 
-STATIC_VAR NEARDATA const char *const choke_texts2[] = {
+static NEARDATA const char *const choke_texts2[] = {
     "Your %s is becoming constricted.",
     "Your blood is having trouble reaching your brain.",
     "The pressure on your %s increases.",
@@ -452,10 +451,10 @@ STATIC_VAR NEARDATA const char *const choke_texts2[] = {
     "You suffocate."
 };
 
-STATIC_OVL void
-choke_dialogue(VOID_ARGS)
+static void
+choke_dialogue(void)
 {
-    register int64_t i = (Strangled & TIMEOUT);
+    int64_t i = (Strangled & TIMEOUT);
 
     if (i > 0 && i <= SIZE(choke_texts)) {
         if (Breathless || !rn2(50))
@@ -472,13 +471,13 @@ choke_dialogue(VOID_ARGS)
     exercise(A_STR, FALSE);
 }
 
-STATIC_VAR NEARDATA const char *const levi_texts[] = {
+static NEARDATA const char *const levi_texts[] = {
     "You float slightly lower.",
     "You wobble unsteadily %s the %s."
 };
 
-STATIC_OVL void
-levitation_dialogue(VOID_ARGS)
+static void
+levitation_dialogue(void)
 {
     /* -1 because the last message comes via float_down() */
     int64_t i = (((HLevitation & TIMEOUT) - 1L) / 2L);
@@ -504,7 +503,7 @@ levitation_dialogue(VOID_ARGS)
     }
 }
 
-STATIC_VAR NEARDATA const char *const slime_texts[] = {
+static NEARDATA const char *const slime_texts[] = {
     "You are turning a little %s.",   /* 5 */
     "Your limbs are getting oozy.",   /* 4 */
     "Your skin begins to peel away.", /* 3 */
@@ -512,10 +511,10 @@ STATIC_VAR NEARDATA const char *const slime_texts[] = {
     "You have become %s."             /* 1 */
 };
 
-STATIC_OVL void
-slime_dialogue(VOID_ARGS)
+static void
+slime_dialogue(void)
 {
-    register int64_t i = (Slimed & TIMEOUT) / 2L;
+    int64_t i = (Slimed & TIMEOUT) / 2L;
 
     if (i == 1L) {
         /* display as green slime during "You have become green slime."
@@ -567,7 +566,7 @@ slime_dialogue(VOID_ARGS)
 }
 
 void
-burn_away_slime(VOID_ARGS)
+burn_away_slime(void)
 {
     if (Slimed) {
         make_slimed(0L, "The slime that covers you is burned away!", 0, (char*)0, 0);
@@ -575,9 +574,8 @@ burn_away_slime(VOID_ARGS)
 }
 
 /* countdown timer for turning into green slime has run out; kill our hero */
-STATIC_OVL void
-slimed_to_death(kptr)
-struct kinfo *kptr;
+static void
+slimed_to_death(struct kinfo *kptr)
 {
     uchar save_mvflags;
 
@@ -642,13 +640,13 @@ struct kinfo *kptr;
    Message given is "you feel much slimmer" as a joke hint that you can
    move between things which are closely packed--like the substance of
    solid rock! */
-STATIC_VAR NEARDATA const char *const phaze_texts[] = {
+static NEARDATA const char *const phaze_texts[] = {
     "You start to feel bloated.",
     "You are feeling rather flabby.",
 };
 
-STATIC_OVL void
-phaze_dialogue(VOID_ARGS)
+static void
+phaze_dialogue(void)
 {
     int64_t i = ((HPasses_walls & TIMEOUT) / 2L);
 
@@ -660,9 +658,9 @@ phaze_dialogue(VOID_ARGS)
 }
 
 void
-nh_timeout(VOID_ARGS)
+nh_timeout(void)
 {
-    register struct prop *upp;
+    struct prop *upp;
     struct kinfo *kptr;
     int sleeptime;
     int m_idx;
@@ -714,7 +712,7 @@ nh_timeout(VOID_ARGS)
          * neither is stopped if you don't have a luckstone.
          * Luck is based at 0 usually, +1 if a full moon and -1 on Friday 13th
          */
-        //register int time_luck = stone_luck(FALSE);
+        //int time_luck = stone_luck(FALSE);
         //boolean nostone = !carrying(LUCKSTONE) && !stone_luck(TRUE);
 
         if (u.uluck > baseluck  && !u.luck_does_not_timeout)//(u.uluck > baseluck && (nostone || time_luck < 0))
@@ -1473,9 +1471,7 @@ nh_timeout(VOID_ARGS)
 }
 
 void
-fall_asleep(how_long, wakeup_msg)
-int how_long;
-boolean wakeup_msg;
+fall_asleep(int how_long, boolean wakeup_msg)
 {
     stop_occupation();
     incr_itimeout(&HSleeping, abs(how_long));
@@ -1493,9 +1489,7 @@ boolean wakeup_msg;
  *             existing hatch timer. Pass 0L for random hatch time.
  */
 void
-attach_egg_hatch_timeout(egg, when)
-struct obj *egg;
-int64_t when;
+attach_egg_hatch_timeout(struct obj *egg, int64_t when)
 {
     int i;
 
@@ -1523,8 +1517,7 @@ int64_t when;
 
 /* prevent an egg from ever hatching */
 void
-kill_egg(egg)
-struct obj *egg;
+kill_egg(struct obj *egg)
 {
     /* stop previous timer, if any */
     (void) stop_timer(HATCH_EGG, obj_to_any(egg));
@@ -1532,9 +1525,7 @@ struct obj *egg;
 
 /* timer callback routine: hatch the given egg */
 int
-hatch_egg(arg, timeout)
-anything *arg;
-int64_t timeout;
+hatch_egg(anything *arg, int64_t timeout)
 {
     struct obj *egg;
     struct monst *mon, *mon2;
@@ -1754,8 +1745,7 @@ int64_t timeout;
 
 /* Learn to recognize eggs of the given type. */
 void
-learn_egg_type(mnum)
-int mnum;
+learn_egg_type(int mnum)
 {
     /* baby monsters hatch from grown-up eggs */
     if (mnum > NON_PM && mnum < NUM_MONSTERS)
@@ -1769,8 +1759,7 @@ int mnum;
 
 /* Learn to recognize eggs of the given type. */
 void
-learn_corpse_type(mnum)
-int mnum;
+learn_corpse_type(int mnum)
 {
     if(mnum > NON_PM && mnum < NUM_MONSTERS)
         mvitals[mnum].mvflags |= MV_KNOWS_CORPSE;
@@ -1778,8 +1767,7 @@ int mnum;
 
 /* Attach a fig_transform timeout to the given figurine. */
 void
-attach_fig_transform_timeout(figurine)
-struct obj *figurine;
+attach_fig_transform_timeout(struct obj *figurine)
 {
     int i;
 
@@ -1796,8 +1784,8 @@ struct obj *figurine;
 }
 
 /* give a fumble message */
-STATIC_OVL void
-slip_or_trip(VOID_ARGS)
+static void
+slip_or_trip(void)
 {
     struct obj *otmp = vobj_at(u.ux, u.uy), *otmp2;
     const char *what;
@@ -1895,8 +1883,8 @@ slip_or_trip(VOID_ARGS)
 }
 
 /* give a fumble message */
-STATIC_OVL void
-laugh_uncontrollably(VOID_ARGS)
+static void
+laugh_uncontrollably(void)
 {
     play_simple_player_sound(MONSTER_SOUND_TYPE_LAUGHTER);
     switch (rn2(4)) {
@@ -1916,8 +1904,8 @@ laugh_uncontrollably(VOID_ARGS)
 }
 
 /* give an odd idea message */
-STATIC_OVL void
-get_odd_idea(VOID_ARGS)
+static void
+get_odd_idea(void)
 {
     context.oddideacnt++;
     switch (context.oddideacnt)
@@ -1952,10 +1940,8 @@ get_odd_idea(VOID_ARGS)
 }
 
 /* Print a lamp flicker message with tailer. */
-STATIC_OVL void
-see_lamp_flicker(obj, tailer)
-struct obj *obj;
-const char *tailer;
+static void
+see_lamp_flicker(struct obj *obj, const char *tailer)
 {
     switch (obj->where) {
     case OBJ_INVENT:
@@ -1971,9 +1957,8 @@ const char *tailer;
 }
 
 /* Print a dimming message for brass lanterns. */
-STATIC_OVL void
-lantern_message(obj)
-struct obj *obj;
+static void
+lantern_message(struct obj *obj)
 {
     /* from adventure */
     switch (obj->where) {
@@ -1996,9 +1981,7 @@ struct obj *obj;
  * See begin_burn() for meanings of obj->age and obj->enchantment.
  */
 int
-burn_object(arg, timeout)
-anything *arg;
-int64_t timeout;
+burn_object(anything *arg, int64_t timeout)
 {
     struct obj *obj = arg->a_obj;
     boolean canseeit, many, is_candelabrum, need_newsym, need_invupdate;
@@ -2441,9 +2424,7 @@ int64_t timeout;
  * This is a "silent" routine - it should not print anything out.
  */
 void
-begin_burn(obj, already_lit)
-struct obj *obj;
-boolean already_lit;
+begin_burn(struct obj *obj, boolean already_lit)
 {
     if (!obj)
         return;
@@ -2582,9 +2563,7 @@ boolean already_lit;
  * light source.
  */
 void
-end_burn(obj, timer_attached)
-struct obj *obj;
-boolean timer_attached;
+end_burn(struct obj *obj, boolean timer_attached)
 {
     if (!obj->lamplit) 
     {
@@ -2612,10 +2591,8 @@ boolean timer_attached;
 /*
  * Cleanup a burning object if timer stopped.
  */
-STATIC_OVL int
-cleanup_burn(arg, expire_time)
-anything *arg;
-int64_t expire_time;
+static int
+cleanup_burn(anything *arg, int64_t expire_time)
 {
     struct obj *obj = arg->a_obj;
     if (!obj->lamplit) {
@@ -2640,9 +2617,7 @@ int64_t expire_time;
  * Timeout callback for for Black Blade and other summonable objects, very similar to rot_corpse
  */
 int
-unsummon_item(arg, timeout)
-anything* arg;
-int64_t timeout;
+unsummon_item(anything *arg, int64_t timeout)
 {
     xchar x = 0, y = 0;
     struct obj* obj = arg->a_obj;
@@ -2781,8 +2756,7 @@ int64_t timeout;
  * Start an existence timeout on the given object. 
  */
 void
-begin_existence(obj)
-struct obj* obj;
+begin_existence(struct obj *obj)
 {
     if (start_timer(obj->age, TIMER_OBJECT, ITEM_UNSUMMON, obj_to_any(obj))) {
         obj->age = 0; //Not strictly necessary
@@ -2795,9 +2769,7 @@ struct obj* obj;
  * Timeout callback for for summon monster spells
  */
 int
-unsummon_monster(arg, timeout)
-anything* arg;
-int64_t timeout;
+unsummon_monster(anything *arg, int64_t timeout)
 {
     struct monst* mon = arg->a_monst;
 
@@ -2842,8 +2814,7 @@ int64_t timeout;
  * Start a summon timeout on the given monster.
  */
 void
-begin_summontimer(mon)
-struct monst* mon;
+begin_summontimer(struct monst *mon)
 {
     if (start_timer(mon->summonduration, TIMER_MONSTER, MONSTER_UNSUMMON, monst_to_any(mon))) {
         mon->summonduration = 0; //Not strictly necessary
@@ -2856,8 +2827,7 @@ struct monst* mon;
  * Start a timeout for the time stop spell.
  */
 void
-begin_timestoptimer(duration)
-int64_t duration;
+begin_timestoptimer(int64_t duration)
 {
     anything any = zeroany;
     if (start_timer(duration, TIMER_GLOBAL, TIME_RESTART, &any))
@@ -2868,9 +2838,7 @@ int64_t duration;
 
 
 int
-restart_time(arg, timeout)
-anything* arg;
-int64_t timeout;
+restart_time(anything *arg, int64_t timeout)
 {
     if (!arg && timeout)
     {
@@ -2884,10 +2852,10 @@ int64_t timeout;
 
 
 void
-do_storms(VOID_ARGS)
+do_storms(void)
 {
     int nstrike;
-    register int x, y;
+    int x, y;
     int dirx, diry;
     int count;
 
@@ -2933,8 +2901,8 @@ do_storms(VOID_ARGS)
 }
 
 /* ordered timer list */
-STATIC_VAR timer_element *timer_base; /* "active" */
-STATIC_VAR uint64_t timer_id = 1;
+static timer_element *timer_base; /* "active" */
+static uint64_t timer_id = 1;
 
 /* If defined, then include names when printing out the timer queue */
 #define VERBOSE_TIMER
@@ -2956,7 +2924,7 @@ typedef struct {
 } ttable;
 
 /* table of timeout functions */
-STATIC_VAR const ttable timeout_funcs[NUM_TIME_FUNCS] = {
+static const ttable timeout_funcs[NUM_TIME_FUNCS] = {
     TTAB(rot_organic, (timeout_proc) 0, "rot_organic"),
     TTAB(rot_corpse, (timeout_proc) 0, "rot_corpse"),
     TTAB(revive_mon, (timeout_proc) 0, "revive_mon"),
@@ -2971,9 +2939,8 @@ STATIC_VAR const ttable timeout_funcs[NUM_TIME_FUNCS] = {
 };
 #undef TTAB
 
-STATIC_OVL const char *
-kind_name(kind)
-short kind;
+static const char *
+kind_name(short kind)
 {
     switch (kind) {
     case TIMER_LEVEL:
@@ -2988,10 +2955,8 @@ short kind;
     return "unknown";
 }
 
-STATIC_OVL void
-print_queue(win, base)
-winid win;
-timer_element *base;
+static void
+print_queue(winid win, timer_element *base)
 {
     timer_element *curr;
     char buf[BUFSZ];
@@ -3017,7 +2982,7 @@ timer_element *base;
 }
 
 int
-wiz_timeout_queue(VOID_ARGS)
+wiz_timeout_queue(void)
 {
     winid win;
     char buf[BUFSZ];
@@ -3083,7 +3048,7 @@ wiz_timeout_queue(VOID_ARGS)
 }
 
 void
-timer_sanity_check(VOID_ARGS)
+timer_sanity_check(void)
 {
     timer_element *curr;
 
@@ -3114,7 +3079,7 @@ timer_sanity_check(VOID_ARGS)
  * Do this until their time is less than or equal to the move count.
  */
 void
-run_timers(VOID_ARGS)
+run_timers(void)
 {
     timer_element *curr;
 
@@ -3164,11 +3129,7 @@ run_timers(VOID_ARGS)
  * Start a timer.  Return TRUE if successful.
  */
 boolean
-start_timer(when, kind, func_index, arg)
-int64_t when;
-short kind;
-short func_index;
-anything *arg;
+start_timer(int64_t when, short kind, short func_index, anything *arg)
 {
     timer_element* gnu;
 
@@ -3206,9 +3167,7 @@ anything *arg;
  * remaining until it would have gone off, 0 if not found.
  */
 int64_t
-stop_timer(func_index, arg)
-short func_index;
-anything *arg;
+stop_timer(short func_index, anything *arg)
 {
     timer_element *doomed;
     int64_t timeout;
@@ -3238,9 +3197,7 @@ anything *arg;
  * Find the timeout of specified timer; return 0 if none.
  */
 int64_t
-peek_timer(type, arg)
-short type;
-anything *arg;
+peek_timer(short type, anything *arg)
 {
     timer_element *curr;
 
@@ -3256,8 +3213,7 @@ anything *arg;
  * Move all object timers from src to dest, leaving src untimed.
  */
 void
-obj_move_timers(src, dest)
-struct obj *src, *dest;
+obj_move_timers(struct obj *src, struct obj *dest)
 {
     int count;
     timer_element *curr;
@@ -3280,8 +3236,7 @@ struct obj *src, *dest;
  * Move all object timers from src to dest, leaving src untimed.
  */
 void
-mon_move_timers(src, dest)
-struct monst* src, * dest;
+mon_move_timers(struct monst *src, struct monst *dest)
 {
     int count;
     timer_element* curr;
@@ -3304,8 +3259,7 @@ struct monst* src, * dest;
  * Find all object timers and duplicate them for the new object "dest".
  */
 void
-obj_split_timers(src, dest)
-struct obj *src, *dest;
+obj_split_timers(struct obj *src, struct obj *dest)
 {
     timer_element *curr, *next_timer = 0;
 
@@ -3324,8 +3278,7 @@ struct obj *src, *dest;
  * Find all monster timers and duplicate them for the new monster "dest".
  */
 void
-mon_split_timers(src, dest)
-struct monst* src, * dest;
+mon_split_timers(struct monst *src, struct monst *dest)
 {
     timer_element* curr, * next_timer = 0;
 
@@ -3345,8 +3298,7 @@ struct monst* src, * dest;
  * all object pointers are unique.
  */
 void
-obj_stop_timers(obj)
-struct obj *obj;
+obj_stop_timers(struct obj *obj)
 {
     timer_element *curr, *prev, *next_timer = 0;
 
@@ -3373,8 +3325,7 @@ struct obj *obj;
 
 /* This is for the situation where obj has been freed, and timers pointing to it must be removed */
 void
-obj_remove_timers(obj)
-struct obj* obj;
+obj_remove_timers(struct obj *obj)
 {
     timer_element* curr, * prev, * next_timer = 0;
 
@@ -3401,8 +3352,7 @@ struct obj* obj;
  * all object pointers are unique.
  */
 void
-mon_stop_timers(mon)
-struct monst* mon;
+mon_stop_timers(struct monst *mon)
 {
     timer_element* curr, * prev, * next_timer = 0;
 
@@ -3429,8 +3379,7 @@ struct monst* mon;
 
 /* This is for the situation where mon has been freed, and timers pointing to it must be removed */
 void
-mon_remove_timers(mon)
-struct monst* mon;
+mon_remove_timers(struct monst *mon)
 {
     timer_element* curr, * prev, * next_timer = 0;
 
@@ -3457,9 +3406,7 @@ struct monst* mon;
  * Check whether object has a timer of type timer_type.
  */
 boolean
-obj_has_timer(object, timer_type)
-struct obj *object;
-short timer_type;
+obj_has_timer(struct obj *object, short timer_type)
 {
     int64_t timeout = peek_timer(timer_type, obj_to_any(object));
 
@@ -3470,9 +3417,7 @@ short timer_type;
  * Check whether object has a timer of type timer_type.
  */
 boolean
-mon_has_timer(mon, timer_type)
-struct monst* mon;
-short timer_type;
+mon_has_timer(struct monst *mon, short timer_type)
 {
     int64_t timeout = peek_timer(timer_type, monst_to_any(mon));
 
@@ -3484,9 +3429,7 @@ short timer_type;
  *
  */
 void
-spot_stop_timers(x, y, func_index)
-xchar x, y;
-short func_index;
+spot_stop_timers(xchar x, xchar y, short func_index)
 {
     timer_element *curr, *prev, *next_timer = 0;
     int64_t where = (((int64_t) x << 16) | ((int64_t) y));
@@ -3517,9 +3460,7 @@ short func_index;
  * Returns 0L if no such timer.
  */
 int64_t
-spot_time_expires(x, y, func_index)
-xchar x, y;
-short func_index;
+spot_time_expires(xchar x, xchar y, short func_index)
 {
     timer_element *curr;
     int64_t where = (((int64_t) x << 16) | ((int64_t) y));
@@ -3534,18 +3475,15 @@ short func_index;
 }
 
 int64_t
-spot_time_left(x, y, func_index)
-xchar x, y;
-short func_index;
+spot_time_left(xchar x, xchar y, short func_index)
 {
     int64_t expires = spot_time_expires(x, y, func_index);
     return (expires > 0L) ? expires - monstermoves : 0L;
 }
 
 /* Insert timer into the global queue */
-STATIC_OVL void
-insert_timer(gnu)
-timer_element *gnu;
+static void
+insert_timer(timer_element *gnu)
 {
     timer_element *curr, *prev;
 
@@ -3560,11 +3498,8 @@ timer_element *gnu;
         timer_base = gnu;
 }
 
-STATIC_OVL timer_element *
-remove_timer(base, func_index, arg)
-timer_element **base;
-short func_index;
-anything *arg;
+static timer_element *
+remove_timer(timer_element **base, short func_index, anything *arg)
 {
     timer_element *prev, *curr;
 
@@ -3582,10 +3517,8 @@ anything *arg;
     return curr;
 }
 
-STATIC_OVL void
-write_timer(fd, timer)
-int fd;
-timer_element *timer;
+static void
+write_timer(int fd, timer_element *timer)
 {
     anything arg_save;
 
@@ -3638,8 +3571,7 @@ timer_element *timer;
  * saved.
  */
 boolean
-obj_is_local(obj)
-struct obj *obj;
+obj_is_local(struct obj *obj)
 {
     switch (obj->where) {
     case OBJ_INVENT:
@@ -3662,9 +3594,8 @@ struct obj *obj;
  * Return TRUE if the given monster will stay on the level when the
  * level is saved.
  */
-STATIC_OVL boolean
-mon_is_local(mon)
-struct monst *mon;
+static boolean
+mon_is_local(struct monst *mon)
 {
     struct monst *curr;
 
@@ -3682,9 +3613,8 @@ struct monst *mon;
  * Return TRUE if the timer is attached to something that will stay on the
  * level when the level is saved.
  */
-STATIC_OVL boolean
-timer_is_local(timer)
-timer_element *timer;
+static boolean
+timer_is_local(timer_element *timer)
 {
     switch (timer->kind) {
     case TIMER_LEVEL:
@@ -3704,10 +3634,8 @@ timer_element *timer;
  * Part of the save routine.  Count up the number of timers that would
  * be written.  If write_it is true, actually write the timer.
  */
-STATIC_OVL int
-maybe_write_timer(fd, range, write_it)
-int fd, range;
-boolean write_it;
+static int
+maybe_write_timer(int fd, int range, boolean write_it)
 {
     int count = 0;
     timer_element *curr;
@@ -3750,8 +3678,7 @@ boolean write_it;
  *      + timeouts that stay with the level (obj & monst)
  */
 void
-save_timers(fd, mode, range)
-int fd, mode, range;
+save_timers(int fd, int mode, int range)
 {
     timer_element *curr, *prev, *next_timer = 0;
     int count;
@@ -3784,14 +3711,16 @@ int fd, mode, range;
 }
 
 /*
+ * Parameters:
+ *   ghostly: restoring from a ghost level
+ *   adjust: how much to adjust timeout
+ */
+/*
  * Pull in the structures from disk, but don't recalculate the object and
  * monster pointers.
  */
 void
-restore_timers(fd, range, ghostly, adjust)
-int fd, range;
-boolean ghostly; /* restoring from a ghost level */
-int64_t adjust;     /* how much to adjust timeout */
+restore_timers(int fd, int range, boolean ghostly, int64_t adjust)
 {
     int count;
     timer_element *curr;
@@ -3812,7 +3741,7 @@ int64_t adjust;     /* how much to adjust timeout */
 }
 
 void
-reset_timers(VOID_ARGS)
+reset_timers(void)
 {
     timer_element* curr, * next_timer = 0;
 
@@ -3828,11 +3757,7 @@ reset_timers(VOID_ARGS)
 
 /* to support '#stats' wizard-mode command */
 void
-timer_stats(hdrfmt, hdrbuf, count, size)
-const char *hdrfmt;
-char *hdrbuf;
-int64_t* count;
-size_t *size;
+timer_stats(const char *hdrfmt, char *hdrbuf, int64_t *count, size_t *size)
 {
     timer_element *te;
 
@@ -3846,8 +3771,7 @@ size_t *size;
 
 /* reset all timers that are marked for reseting */
 void
-relink_timers(ghostly)
-boolean ghostly;
+relink_timers(boolean ghostly)
 {
     timer_element *curr;
     unsigned nid;
@@ -3902,9 +3826,7 @@ boolean ghostly;
  * Timeout callback for for objects that are making noise.
  */
 int
-make_sound_object(arg, timeout)
-anything* arg;
-int64_t timeout;
+make_sound_object(anything *arg, int64_t timeout)
 {
     if (!arg && timeout)
     {
@@ -3917,10 +3839,8 @@ int64_t timeout;
 /*
  * Cleanup an object making sound if timer stopped.
  */
-STATIC_OVL int
-cleanup_sound(arg, expire_time)
-anything* arg;
-int64_t expire_time;
+static int
+cleanup_sound(anything *arg, int64_t expire_time)
 {
     struct obj* obj = arg->a_obj;
     if (!obj->makingsound)
@@ -3942,9 +3862,7 @@ int64_t expire_time;
 }
 
 void
-property_expiry_message(propidx, was_flying)
-int propidx;
-boolean was_flying;
+property_expiry_message(int propidx, boolean was_flying)
 {
     switch (propidx)
     {

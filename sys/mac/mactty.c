@@ -273,8 +273,7 @@ create_tty(WindowRef *window, short resource_id, Boolean in_color)
 }
 
 short
-init_tty_number(WindowPtr window, short font_number, short font_size,
-                short x_size, short y_size)
+init_tty_number(WindowPtr window, short font_number, short font_size, short x_size, short y_size)
 {
     RECORD_EXISTS(record);
 
@@ -454,8 +453,7 @@ select_onscreen_window(tty_record *record)
  * Do bits copy depending on if we're using color or not
  */
 static void
-copy_bits(tty_record *record, Rect *bounds, short xfer_mode,
-          RgnHandle mask_rgn)
+copy_bits(tty_record *record, Rect *bounds, short xfer_mode, RgnHandle mask_rgn)
 {
     GWorldFlags pix_state;
     BitMap *source;
@@ -557,10 +555,7 @@ Rect r_screen;
  * Read a lot of interesting and useful information from the current tty
  */
 short
-get_tty_metrics(WindowPtr window, short *x_size, short *y_size,
-                short *x_size_pixels, short *y_size_pixels,
-                short *font_number, short *font_size, short *char_width,
-                short *row_height)
+get_tty_metrics(WindowPtr window, short *x_size, short *y_size, short *x_size_pixels, short *y_size_pixels, short *font_number, short *font_size, short *char_width, short *row_height)
 {
     RECORD_EXISTS(record);
 
@@ -589,8 +584,7 @@ get_tty_metrics(WindowPtr window, short *x_size, short *y_size,
  * Map a position on the map to screen coordinates
  */
 static void
-pos_rect(tty_record *record, Rect *r, short x_pos, short y_pos, short x_end,
-         short y_end)
+pos_rect(tty_record *record, Rect *r, short x_pos, short y_pos, short x_end, short y_end)
 {
     SetRect(r, x_pos * (record->char_width), y_pos * (record->row_height),
             (1 + x_end) * (record->char_width),
@@ -869,8 +863,8 @@ add_tty_char(WindowPtr window, short character)
 short
 add_tty_string(WindowPtr window, const char *string)
 {
-    register const unsigned char *start_c;
-    register const unsigned char *the_c;
+    const unsigned char *start_c;
+    const unsigned char *the_c;
     register unsigned char ch, is_control = 0, tty_wrap;
     register short max_x, pos_x;
     RECORD_EXISTS(record);
@@ -1085,8 +1079,7 @@ image_tty(EventRecord *theEvent, WindowPtr window)
  * Clear an area
  */
 short
-clear_tty_window(WindowPtr window, short from_x, short from_y, short to_x,
-                 short to_y)
+clear_tty_window(WindowPtr window, short from_x, short from_y, short to_x, short to_y)
 {
     Rect r;
     RECORD_EXISTS(record);
@@ -1112,8 +1105,7 @@ clear_tty_window(WindowPtr window, short from_x, short from_y, short to_x,
  * specified. Negative values for num_ mean delete, zero means no effect.
  */
 short
-mangle_tty_rows_columns(WindowPtr window, short from_row, short num_rows,
-                        short from_column, short num_columns)
+mangle_tty_rows_columns(WindowPtr window, short from_row, short num_rows, short from_column, short num_columns)
 {
     Rect r;
     RgnHandle rh = NewRgn();
@@ -1162,8 +1154,7 @@ mangle_tty_rows_columns(WindowPtr window, short from_row, short num_rows,
  * Frame an area in an aesthetically pleasing way.
  */
 short
-frame_tty_window(WindowPtr window, short from_x, short from_y, short to_x,
-                 short to_y, short frame_fatness)
+frame_tty_window(WindowPtr window, short from_x, short from_y, short to_x, short to_y, short frame_fatness)
 {
     Rect r;
     RECORD_EXISTS(record);
@@ -1187,8 +1178,7 @@ frame_tty_window(WindowPtr window, short from_x, short from_y, short to_x,
  * Highlighting a specific part of the tty window
  */
 short
-invert_tty_window(WindowPtr window, short from_x, short from_y, short to_x,
-                  short to_y)
+invert_tty_window(WindowPtr window, short from_x, short from_y, short to_x, short to_y)
 {
     Rect r;
     RECORD_EXISTS(record);
@@ -1228,8 +1218,7 @@ canonical_rect(Rect *r, short x1, short y1, short x2, short y2)
  * Line drawing - very device dependent
  */
 short
-draw_tty_line(WindowPtr window, short from_x, short from_y, short to_x,
-              short to_y)
+draw_tty_line(WindowPtr window, short from_x, short from_y, short to_x, short to_y)
 {
     Rect r;
     RECORD_EXISTS(record);

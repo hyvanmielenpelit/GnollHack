@@ -305,7 +305,7 @@ static boolean plselRandomize(plsel_data_t * data);
 static BOOL plselDrawItem(HWND hWnd, WPARAM wParam, LPARAM lParam);
 
 boolean
-mswin_player_selection_window()
+mswin_player_selection_window(void)
 {
     INT_PTR ret;
     plsel_data_t data;

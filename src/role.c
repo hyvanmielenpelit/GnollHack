@@ -1306,29 +1306,27 @@ const struct Align aligns[] = {
 };
 
 /* Filters */
-STATIC_VAR struct {
+static struct {
     boolean roles[SIZE(roles)];
     uint64_t mask;
 } rfilter;
 
-STATIC_DCL int NDECL(randrole_filtered);
-STATIC_DCL char *FDECL(promptsep, (char *, int));
-STATIC_DCL int FDECL(role_gendercount, (int));
-STATIC_DCL int FDECL(race_alignmentcount, (int));
+static int randrole_filtered(void);
+static char *promptsep(char *, int);
+static int role_gendercount(int);
+static int race_alignmentcount(int);
 
 /* used by str2XXX() */
-STATIC_VAR const char NEARDATA randomstr[] = "random";
+static const char NEARDATA randomstr[] = "random";
 
 boolean
-validrole(rolenum)
-int rolenum;
+validrole(int rolenum)
 {
     return (boolean) (rolenum >= 0 && rolenum < SIZE(roles) - 1);
 }
 
 int
-randrole(for_display)
-boolean for_display;
+randrole(boolean for_display)
 {
     int res = SIZE(roles) - 1;
 
@@ -1339,8 +1337,8 @@ boolean for_display;
     return res;
 }
 
-STATIC_OVL int
-randrole_filtered(VOID_ARGS)
+static int
+randrole_filtered(void)
 {
     int i, n = 0, set[SIZE(roles)];
 
@@ -1356,8 +1354,7 @@ randrole_filtered(VOID_ARGS)
 }
 
 int
-str2role(str)
-const char *str;
+str2role(const char *str)
 {
     int i;
     size_t len;
@@ -1389,8 +1386,7 @@ const char *str;
 }
 
 boolean
-validrace(rolenum, racenum)
-int rolenum, racenum;
+validrace(int rolenum, int racenum)
 {
     /* Assumes validrole */
     return (boolean) (racenum >= 0 && racenum < SIZE(races) - 1
@@ -1399,8 +1395,7 @@ int rolenum, racenum;
 }
 
 int
-randrace(rolenum)
-int rolenum;
+randrace(int rolenum)
 {
     int i, n = 0;
 
@@ -1426,8 +1421,7 @@ int rolenum;
 }
 
 int
-str2race(str)
-const char *str;
+str2race(const char *str)
 {
     int i;
     size_t len;
@@ -1456,8 +1450,7 @@ const char *str;
 }
 
 boolean
-validgend(rolenum, racenum, gendnum)
-int rolenum, racenum, gendnum;
+validgend(int rolenum, int racenum, int gendnum)
 {
     /* Assumes validrole and validrace */
     return (boolean) (gendnum >= 0 && gendnum < ROLE_GENDERS
@@ -1466,8 +1459,7 @@ int rolenum, racenum, gendnum;
 }
 
 int
-randgend(rolenum, racenum)
-int rolenum, racenum;
+randgend(int rolenum, int racenum)
 {
     int i, n = 0;
 
@@ -1494,8 +1486,7 @@ int rolenum, racenum;
 }
 
 int
-str2gend(str)
-const char *str;
+str2gend(const char *str)
 {
     int i;
     size_t len;
@@ -1523,8 +1514,7 @@ const char *str;
 }
 
 boolean
-validalign(rolenum, racenum, alignnum)
-int rolenum, racenum, alignnum;
+validalign(int rolenum, int racenum, int alignnum)
 {
     /* Assumes validrole and validrace */
     return (boolean) (alignnum >= 0 && alignnum < ROLE_ALIGNS
@@ -1533,8 +1523,7 @@ int rolenum, racenum, alignnum;
 }
 
 int
-randalign(rolenum, racenum)
-int rolenum, racenum;
+randalign(int rolenum, int racenum)
 {
     int i, n = 0;
 
@@ -1561,8 +1550,7 @@ int rolenum, racenum;
 }
 
 int
-str2align(str)
-const char *str;
+str2align(const char *str)
 {
     int i;
     size_t len;
@@ -1591,8 +1579,7 @@ const char *str;
 
 /* is rolenum compatible with any racenum/gendnum/alignnum constraints? */
 boolean
-ok_role(rolenum, racenum, gendnum, alignnum)
-int rolenum, racenum, gendnum, alignnum;
+ok_role(int rolenum, int racenum, int gendnum, int alignnum)
 {
     int i;
     uint64_t allow;
@@ -1636,8 +1623,7 @@ int rolenum, racenum, gendnum, alignnum;
 /* If pickhow == PICK_RIGID a role is returned only if there is  */
 /* a single possibility */
 int
-pick_role(racenum, gendnum, alignnum, pickhow)
-int racenum, gendnum, alignnum, pickhow;
+pick_role(int racenum, int gendnum, int alignnum, int pickhow)
 {
     int i;
     int roles_ok = 0, set[SIZE(roles)];
@@ -1659,8 +1645,7 @@ int racenum, gendnum, alignnum, pickhow;
 
 /* is racenum compatible with any rolenum/gendnum/alignnum constraints? */
 boolean
-ok_race(rolenum, racenum, gendnum, alignnum)
-int rolenum, racenum, gendnum, alignnum;
+ok_race(int rolenum, int racenum, int gendnum, int alignnum)
 {
     int i;
     uint64_t allow;
@@ -1704,8 +1689,7 @@ int rolenum, racenum, gendnum, alignnum;
    If pickhow == PICK_RIGID a race is returned only if there is
    a single possibility. */
 int
-pick_race(rolenum, gendnum, alignnum, pickhow)
-int rolenum, gendnum, alignnum, pickhow;
+pick_race(int rolenum, int gendnum, int alignnum, int pickhow)
 {
     int i;
     int races_ok = 0;
@@ -1731,9 +1715,7 @@ int rolenum, gendnum, alignnum, pickhow;
 /* is gendnum compatible with any rolenum/racenum/alignnum constraints? */
 /* gender and alignment are not comparable (and also not constrainable) */
 boolean
-ok_gend(rolenum, racenum, gendnum, alignnum)
-int rolenum, racenum, gendnum;
-int alignnum UNUSED;
+ok_gend(int rolenum, int racenum, int gendnum, int alignnum UNUSED)
 {
     int i;
     uint64_t allow;
@@ -1772,8 +1754,7 @@ int alignnum UNUSED;
 /* If pickhow == PICK_RIGID a gender is returned only if there is  */
 /* a single possibility */
 int
-pick_gend(rolenum, racenum, alignnum, pickhow)
-int rolenum, racenum, alignnum, pickhow;
+pick_gend(int rolenum, int racenum, int alignnum, int pickhow)
 {
     int i;
     int gends_ok = 0;
@@ -1799,10 +1780,7 @@ int rolenum, racenum, alignnum, pickhow;
 /* is alignnum compatible with any rolenum/racenum/gendnum constraints? */
 /* alignment and gender are not comparable (and also not constrainable) */
 boolean
-ok_align(rolenum, racenum, gendnum, alignnum)
-int rolenum, racenum;
-int gendnum UNUSED;
-int alignnum;
+ok_align(int rolenum, int racenum, int gendnum UNUSED, int alignnum)
 {
     int i;
     uint64_t allow;
@@ -1841,8 +1819,7 @@ int alignnum;
    If pickhow == PICK_RIGID an alignment is returned only if there is
    a single possibility. */
 int
-pick_align(rolenum, racenum, gendnum, pickhow)
-int rolenum, racenum, gendnum, pickhow;
+pick_align(int rolenum, int racenum, int gendnum, int pickhow)
 {
     int i;
     int aligns_ok = 0;
@@ -1866,7 +1843,7 @@ int rolenum, racenum, gendnum, pickhow;
 }
 
 void
-rigid_role_checks(VOID_ARGS)
+rigid_role_checks(void)
 {
     int tmp;
 
@@ -1915,8 +1892,7 @@ rigid_role_checks(VOID_ARGS)
 }
 
 boolean
-setrolefilter(bufp)
-const char *bufp;
+setrolefilter(const char *bufp)
 {
     int i;
     boolean reslt = TRUE;
@@ -1935,7 +1911,7 @@ const char *bufp;
 }
 
 boolean
-gotrolefilter(VOID_ARGS)
+gotrolefilter(void)
 {
     int i;
 
@@ -1948,7 +1924,7 @@ gotrolefilter(VOID_ARGS)
 }
 
 void
-clearrolefilter(VOID_ARGS)
+clearrolefilter(void)
 {
     int i;
 
@@ -1963,13 +1939,11 @@ clearrolefilter(VOID_ARGS)
 #define BP_ROLE 3
 #define NUM_BP 4
 
-STATIC_VAR char pa[NUM_BP];
-STATIC_VAR char post_attribs;
+static char pa[NUM_BP];
+static char post_attribs;
 
-STATIC_OVL char *
-promptsep(buf, num_post_attribs)
-char *buf;
-int num_post_attribs;
+static char *
+promptsep(char *buf, int num_post_attribs)
 {
     const char *conjuct = "and ";
 
@@ -1983,9 +1957,8 @@ int num_post_attribs;
     return buf;
 }
 
-STATIC_OVL int
-role_gendercount(rolenum)
-int rolenum;
+static int
+role_gendercount(int rolenum)
 {
     int gendcount = 0;
 
@@ -2000,9 +1973,8 @@ int rolenum;
     return gendcount;
 }
 
-STATIC_OVL int
-race_alignmentcount(racenum)
-int racenum;
+static int
+race_alignmentcount(int racenum)
 {
     int aligncount = 0;
 
@@ -2018,11 +1990,7 @@ int racenum;
 }
 
 char *
-root_plselection_prompt(suppliedbuf, buflen, rolenum, racenum, gendnum,
-                        alignnum)
-char *suppliedbuf;
-size_t buflen;
-int rolenum, racenum, gendnum, alignnum;
+root_plselection_prompt(char *suppliedbuf, size_t buflen, int rolenum, int racenum, int gendnum, int alignnum)
 {
     int k, gendercount = 0, aligncount = 0;
     char buf[BUFSZ];
@@ -2178,11 +2146,7 @@ int rolenum, racenum, gendnum, alignnum;
 }
 
 char *
-build_plselection_prompt(buf, buflen, rolenum, racenum, gendnum, alignnum, add_ynq)
-char *buf;
-size_t buflen;
-int rolenum, racenum, gendnum, alignnum;
-boolean add_ynq;
+build_plselection_prompt(char *buf, size_t buflen, int rolenum, int racenum, int gendnum, int alignnum, boolean add_ynq)
 {
     const char *defprompt = "Shall I pick a character for you?";
     const char *defprompt_ynq = "Shall I pick a character for you? [ynaq] ";
@@ -2265,7 +2229,7 @@ boolean add_ynq;
 #undef NUM_BP
 
 void
-plnamesuffix(VOID_ARGS)
+plnamesuffix(void)
 {
     char *sptr, *eptr;
     int i;
@@ -2318,9 +2282,7 @@ plnamesuffix(VOID_ARGS)
 /* show current settings for name, role, race, gender, and alignment
    in the specified window */
 void
-role_selection_prolog(which, where)
-int which;
-winid where;
+role_selection_prolog(int which, winid where)
 {
     static const char NEARDATA choosing[] = " choosing now",
                                not_yet[] = " not yet specified",
@@ -2408,10 +2370,7 @@ winid where;
 
 /* add a "pick alignment first"-type entry to the specified menu */
 void
-role_menu_extra(which, where, preselect)
-int which;
-winid where;
-boolean preselect;
+role_menu_extra(int which, winid where, boolean preselect)
 {
     static NEARDATA const char RS_menu_let[] = {
         '=',  /* name */
@@ -2570,7 +2529,7 @@ boolean preselect;
  * This code also replaces quest_init().
  */
 void
-role_init(VOID_ARGS)
+role_init(void)
 {
     int alignmnt;
     struct permonst *pm;
@@ -2699,8 +2658,7 @@ role_init(VOID_ARGS)
 }
 
 const char *
-Hello(mtmp)
-struct monst *mtmp;
+Hello(struct monst *mtmp)
 {
     switch (Role_switch) {
     case PM_KNIGHT:
@@ -2721,7 +2679,7 @@ struct monst *mtmp;
 }
 
 const char *
-Goodbye(VOID_ARGS)
+Goodbye(void)
 {
     switch (Role_switch) {
     case PM_KNIGHT:
@@ -2738,7 +2696,7 @@ Goodbye(VOID_ARGS)
 }
 
 int
-u_to_glyph(VOID_ARGS)
+u_to_glyph(void)
 {
 
     if (Upolyd || (uarmo && uarmo->otyp == MUMMY_WRAPPING))
@@ -2790,8 +2748,7 @@ u_to_glyph(VOID_ARGS)
 }
 
 int
-player_to_glyph_index(roleidx, raceidx, genderidx, alignmentidx, levelidx)
-int roleidx, raceidx, genderidx, alignmentidx, levelidx;
+player_to_glyph_index(int roleidx, int raceidx, int genderidx, int alignmentidx, int levelidx)
 {
     //int number_of_roles = NUM_ROLES;
     int number_of_races = NUM_RACES;
@@ -2816,9 +2773,7 @@ int roleidx, raceidx, genderidx, alignmentidx, levelidx;
 
 
 boolean
-player_has_action_tile(action, roleidx, raceidx, genderidx, alignmentidx, levelidx)
-enum action_tile_types action;
-int roleidx, raceidx, genderidx, alignmentidx, levelidx;
+player_has_action_tile(enum action_tile_types action, int roleidx, int raceidx, int genderidx, int alignmentidx, int levelidx)
 {
     /* There's always a stand tile */
     if (action == ACTION_TILE_NO_ACTION)
@@ -2976,9 +2931,7 @@ int roleidx, raceidx, genderidx, alignmentidx, levelidx;
 }
 
 uint64_t
-get_player_action_flags(action, roleidx, raceidx, genderidx, alignmentidx, levelidx)
-enum action_tile_types action;
-int roleidx, raceidx, genderidx UNUSED, alignmentidx UNUSED, levelidx;
+get_player_action_flags(enum action_tile_types action, int roleidx, int raceidx, int genderidx UNUSED, int alignmentidx UNUSED, int levelidx)
 {
     /* There's always a stand tile */
     if (action == ACTION_TILE_NO_ACTION)
@@ -3036,22 +2989,20 @@ int roleidx, raceidx, genderidx UNUSED, alignmentidx UNUSED, levelidx;
 }
 
 uint64_t
-u_action_flags(action)
-enum action_tile_types action; 
+u_action_flags(enum action_tile_types action)
 {
     return Upolyd ? 0UL /* Monster action flags here */ :
         get_player_action_flags(action, urole.rolenum, urace.racenum, flags.female, u.ualign.type + 1, 0);
 }
 
 uint64_t 
-u_item_use_flags(VOID_ARGS)
+u_item_use_flags(void)
 {
     return u_action_flags(ACTION_TILE_ITEM_USE);
 }
 
 int
-glyph_to_player_mon(glyph)
-int glyph;
+glyph_to_player_mon(int glyph)
 {
     int offset = glyph - GLYPH_PLAYER_OFF;
 
@@ -3078,100 +3029,85 @@ int glyph;
 }
 
 int
-attack_glyph_to_player_mon(glyph)
-int glyph;
+attack_glyph_to_player_mon(int glyph)
 {
     return glyph_to_player_mon(glyph - GLYPH_PLAYER_ATTACK_OFF + GLYPH_PLAYER_OFF);
 }
 
 int
-throw_glyph_to_player_mon(glyph)
-int glyph;
+throw_glyph_to_player_mon(int glyph)
 {
     return glyph_to_player_mon(glyph - GLYPH_PLAYER_THROW_OFF + GLYPH_PLAYER_OFF);
 }
 
 int
-fire_glyph_to_player_mon(glyph)
-int glyph;
+fire_glyph_to_player_mon(int glyph)
 {
     return glyph_to_player_mon(glyph - GLYPH_PLAYER_FIRE_OFF + GLYPH_PLAYER_OFF);
 }
 
 int
-nodir_cast_glyph_to_player_mon(glyph)
-int glyph;
+nodir_cast_glyph_to_player_mon(int glyph)
 {
     return glyph_to_player_mon(glyph - GLYPH_PLAYER_CAST_NODIR_OFF + GLYPH_PLAYER_OFF);
 }
 
 int
-dir_cast_glyph_to_player_mon(glyph)
-int glyph;
+dir_cast_glyph_to_player_mon(int glyph)
 {
     return glyph_to_player_mon(glyph - GLYPH_PLAYER_CAST_DIR_OFF + GLYPH_PLAYER_OFF);
 }
 
 int
-special_attack_glyph_to_player_mon(glyph)
-int glyph;
+special_attack_glyph_to_player_mon(int glyph)
 {
     return glyph_to_player_mon(glyph - GLYPH_PLAYER_SPECIAL_ATTACK_OFF + GLYPH_PLAYER_OFF);
 }
 
 int
-kick_glyph_to_player_mon(glyph)
-int glyph;
+kick_glyph_to_player_mon(int glyph)
 {
     return glyph_to_player_mon(glyph - GLYPH_PLAYER_KICK_OFF + GLYPH_PLAYER_OFF);
 }
 
 int
-item_use_glyph_to_player_mon(glyph)
-int glyph;
+item_use_glyph_to_player_mon(int glyph)
 {
     return glyph_to_player_mon(glyph - GLYPH_PLAYER_ITEM_USE_OFF + GLYPH_PLAYER_OFF);
 }
 
 int
-door_use_glyph_to_player_mon(glyph)
-int glyph;
+door_use_glyph_to_player_mon(int glyph)
 {
     return glyph_to_player_mon(glyph - GLYPH_PLAYER_DOOR_USE_OFF + GLYPH_PLAYER_OFF);
 }
 
 int
-death_glyph_to_player_mon(glyph)
-int glyph;
+death_glyph_to_player_mon(int glyph)
 {
     return glyph_to_player_mon(glyph - GLYPH_PLAYER_DEATH_OFF + GLYPH_PLAYER_OFF);
 }
 
 int
-special_attack3_glyph_to_player_mon(glyph)
-int glyph;
+special_attack3_glyph_to_player_mon(int glyph)
 {
     return glyph_to_player_mon(glyph - GLYPH_PLAYER_SPECIAL_ATTACK_3_OFF + GLYPH_PLAYER_OFF);
 }
 
 int
-passive_defense_glyph_to_player_mon(glyph)
-int glyph;
+passive_defense_glyph_to_player_mon(int glyph)
 {
     return glyph_to_player_mon(glyph - GLYPH_PLAYER_PASSIVE_DEFENSE_OFF + GLYPH_PLAYER_OFF);
 }
 
 int
-special_attack2_glyph_to_player_mon(glyph)
-int glyph;
+special_attack2_glyph_to_player_mon(int glyph)
 {
     return glyph_to_player_mon(glyph - GLYPH_PLAYER_SPECIAL_ATTACK_2_OFF + GLYPH_PLAYER_OFF);
 }
 
 const char*
-get_advancement_description(roleid, raceid, advtype, ismana)
-int roleid, raceid, advtype;
-boolean ismana;
+get_advancement_description(int roleid, int raceid, int advtype, boolean ismana)
 {
     if (roleid < 0 || raceid < 0 || roleid >= NUM_ROLES || raceid >= NUM_RACES)
         return "";
@@ -3226,10 +3162,10 @@ boolean ismana;
 
 NEARDATA struct Role saved_urole;
 NEARDATA struct Race saved_urace;
-STATIC_VAR boolean urolerace_values_saved = FALSE;
+static boolean urolerace_values_saved = FALSE;
 
 void
-save_initial_urolerace_values(VOID_ARGS)
+save_initial_urolerace_values(void)
 {
     if (!urolerace_values_saved)
     {
@@ -3243,7 +3179,7 @@ save_initial_urolerace_values(VOID_ARGS)
 }
 
 void
-reset_urolerace(VOID_ARGS)
+reset_urolerace(void)
 {
     memcpy((genericptr_t)&urole, (genericptr_t)&saved_urole,
         sizeof(struct Role));

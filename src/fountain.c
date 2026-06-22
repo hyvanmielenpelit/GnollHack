@@ -8,17 +8,16 @@
 
 #include "hack.h"
 
-STATIC_DCL void NDECL(dowatersnakes);
-STATIC_DCL void NDECL(dowaterdemon);
-STATIC_DCL void NDECL(dowaternymph);
-STATIC_PTR void FDECL(gush, (int, int, genericptr_t));
-STATIC_DCL void NDECL(dofindgem);
+static void dowatersnakes(void);
+static void dowaterdemon(void);
+static void dowaternymph(void);
+static void gush(int, int, genericptr_t);
+static void dofindgem(void);
 
 /* used when trying to dip in or drink from fountain or sink or pool while
    levitating above it, or when trying to move downwards in that state */
 void
-floating_above(what)
-const char *what;
+floating_above(const char *what)
 {
     const char *umsg = "are floating high above the %s.";
 
@@ -33,10 +32,10 @@ const char *what;
 }
 
 /* Fountain of snakes! */
-STATIC_OVL void
-dowatersnakes(VOID_ARGS)
+static void
+dowatersnakes(void)
 {
-    register int num = rn1(5, 2);
+    int num = rn1(5, 2);
     struct monst *mtmp;
 
     if (!(mvitals[PM_WATER_MOCCASIN].mvflags & MV_GONE)) {
@@ -55,8 +54,8 @@ dowatersnakes(VOID_ARGS)
 }
 
 /* Water demon */
-STATIC_OVL void
-dowaterdemon(VOID_ARGS)
+static void
+dowaterdemon(void)
 {
     struct monst *mtmp;
     if (!(mvitals[PM_WATER_DEMON].mvflags & MV_GONE)) 
@@ -87,10 +86,10 @@ dowaterdemon(VOID_ARGS)
 }
 
 /* Water Nymph */
-STATIC_OVL void
-dowaternymph(VOID_ARGS)
+static void
+dowaternymph(void)
 {
-    register struct monst *mtmp;
+    struct monst *mtmp;
 
     if (!(mvitals[PM_WATER_NYMPH].mvflags & MV_GONE)
         && (mtmp = makemon(&mons[PM_WATER_NYMPH], u.ux, u.uy,
@@ -110,8 +109,7 @@ dowaternymph(VOID_ARGS)
 
 /* Gushing forth along LOS from (u.ux, u.uy) */
 void
-dogushforth(drinking)
-int drinking;
+dogushforth(int drinking)
 {
     int madepool = 0;
 
@@ -124,13 +122,11 @@ int drinking;
     }
 }
 
-STATIC_PTR void
-gush(x, y, poolcnt)
-int x, y;
-genericptr_t poolcnt;
+static void
+gush(int x, int y, genericptr_t poolcnt)
 {
-    register struct monst *mtmp;
-    register struct trap *ttmp;
+    struct monst *mtmp;
+    struct trap *ttmp;
 
     if (((x + y) % 2) || (x == u.ux && y == u.uy)
         || (rn2(1 + distmin(u.ux, u.uy, x, y))) || (levl[x][y].typ != ROOM && levl[x][y].typ != GRASS && levl[x][y].typ != GROUND)
@@ -157,8 +153,8 @@ genericptr_t poolcnt;
 }
 
 /* Find a gem in the sparkling waters. */
-STATIC_OVL void
-dofindgem(VOID_ARGS)
+static void
+dofindgem(void)
 {
     if (!Blind)
         You("spot a gem in the sparkling waters!");
@@ -172,9 +168,7 @@ dofindgem(VOID_ARGS)
 }
 
 void
-dryup(x, y, isyou)
-xchar x, y;
-boolean isyou;
+dryup(xchar x, xchar y, boolean isyou)
 {
     int ftyp = levl[x][y].subtyp; // (levl[x][y].fountainmask& FOUNTAIN_TYPE_MASK);
 
@@ -232,13 +226,13 @@ boolean isyou;
 }
 
 void
-drinkfountain(VOID_ARGS)
+drinkfountain(void)
 {
     /* What happens when you drink from a fountain? */
-    register boolean mgkftn = (levl[u.ux][u.uy].blessedftn == 1);
-    register int fate = rnd(30);
+    boolean mgkftn = (levl[u.ux][u.uy].blessedftn == 1);
+    int fate = rnd(30);
 
-    register int zlevel;
+    int zlevel;
     zlevel = level_difficulty();
     boolean fountain_blessed = levl[u.ux][u.uy].blessedftn;
     int ftyp = levl[u.ux][u.uy].subtyp; // (levl[u.ux][u.uy].fountainmask & FOUNTAIN_TYPE_MASK);
@@ -510,7 +504,7 @@ drinkfountain(VOID_ARGS)
             break;
         case 24: /* Curse an item */
         {
-            register struct obj *obj;
+            struct obj *obj;
 
             pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "This water's no good!");
             morehungry(rn1(20, 11));
@@ -571,7 +565,7 @@ drinkfountain(VOID_ARGS)
             break;
         case 29: /* Scare */
         {
-            register struct monst *mtmp;
+            struct monst *mtmp;
 
             pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "This %s gives you bad breath!",
                   hliquid("water"));
@@ -612,8 +606,7 @@ static const char* const excalmsgs[] = {
 };
 
 void
-dipfountain(obj)
-register struct obj *obj;
+dipfountain(struct obj *obj)
 {
     if (Levitation && !Levitation_control)
     {
@@ -621,7 +614,7 @@ register struct obj *obj;
         return;
     }
 
-    register int zlevel;
+    int zlevel;
     zlevel = level_difficulty();
     boolean nowaterdamage = FALSE;
     boolean nodryup = FALSE;
@@ -1227,8 +1220,7 @@ register struct obj *obj;
         dryup(u.ux, u.uy, TRUE);
 }
 
-const char* get_fountain_name(x, y)
-int x, y;
+const char* get_fountain_name(int x, int y)
 {
     if (!isok(x, y))
         return "invalid coordinates";
@@ -1242,8 +1234,7 @@ int x, y;
 }
 
 
-const char* fountain_type_text(ftyp)
-int ftyp;
+const char* fountain_type_text(int ftyp)
 {
     switch (ftyp)
     {
@@ -1275,8 +1266,7 @@ int ftyp;
 }
 
 void
-breaksink(x, y)
-int x, y;
+breaksink(int x, int y)
 {
     if (iflags.using_gui_sounds)
     {
@@ -1298,7 +1288,7 @@ int x, y;
 }
 
 void
-drinksink(VOID_ARGS)
+drinksink(void)
 {
     struct obj *otmp;
     struct monst *mtmp;
@@ -1434,7 +1424,7 @@ drinksink(VOID_ARGS)
 }
 
 void
-init_fountains(VOID_ARGS)
+init_fountains(void)
 {
     /*Initialize fountain variations */
     int i;

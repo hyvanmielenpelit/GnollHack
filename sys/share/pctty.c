@@ -20,7 +20,7 @@ char erase_char, kill_char;
  * Called by startup() in termcap.c and after returning from ! or ^Z
  */
 void
-gettty()
+gettty(void)
 {
     erase_char = '\b';
     kill_char = 21; /* cntl-U */
@@ -35,8 +35,7 @@ gettty()
 
 /* reset terminal to original state */
 void
-settty(s)
-const char *s;
+settty(const char *s)
 {
 #if defined(MSDOS) && defined(NO_TERMS)
     gr_finish();
@@ -51,15 +50,14 @@ const char *s;
 
 /* called by init_nhwindows() and resume_nhwindows() */
 void
-setftty()
+setftty(void)
 {
     start_screen();
 }
 
 #if defined(TIMED_DELAY) && defined(_MSC_VER)
 void
-msleep(mseconds)
-unsigned mseconds;
+msleep(unsigned mseconds)
 {
     /* now uses clock() which is ANSI C */
     clock_t goal;
@@ -75,17 +73,17 @@ unsigned mseconds;
 /*VARARGS1*/
 
 void error
-VA_DECL(const char *, s)
+(const char *s, ...)
 {
-    VA_START(s);
-    VA_INIT(s, const char *);
+    va_list the_args;
+    va_start(the_args, s);
     /* error() may get called before tty is initialized */
     if (iflags.window_inited)
         end_screen();
     putchar('\n');
-    Vprintf(s, VA_ARGS);
+    Vprintf(s, the_args);
     putchar('\n');
-    VA_END();
+    va_end(the_args);
     exit(EXIT_FAILURE);
 }
 

@@ -37,15 +37,15 @@
 #include "hack.h"
 #include "winX.h"
 
-static struct line_element *FDECL(get_previous, (struct line_element *));
-static void FDECL(set_circle_buf, (struct mesg_info_t *, int));
-static char *FDECL(split, (char *, XFontStruct *, DIMENSION_P));
-static void FDECL(add_line, (struct mesg_info_t *, const char *));
-static void FDECL(redraw_message_window, (struct xwindow *));
-static void FDECL(mesg_check_size_change, (struct xwindow *));
-static void FDECL(mesg_exposed, (Widget, XtPointer, XtPointer));
-static void FDECL(get_gc, (Widget, struct mesg_info_t *));
-static void FDECL(mesg_resized, (Widget, XtPointer, XtPointer));
+static struct line_element *get_previous(struct line_element *);
+static void set_circle_buf(struct mesg_info_t *, int);
+static char *split(char *, XFontStruct *, DIMENSION_P);
+static void add_line(struct mesg_info_t *, const char *);
+static void redraw_message_window(struct xwindow *);
+static void mesg_check_size_change(struct xwindow *);
+static void mesg_exposed(Widget, XtPointer, XtPointer);
+static void get_gc(Widget, struct mesg_info_t *);
+static void mesg_resized(Widget, XtPointer, XtPointer);
 
 static char mesg_translations[] = "#override\n\
  <Key>Left:     scroll(4)\n\
@@ -58,8 +58,7 @@ static char mesg_translations[] = "#override\n\
 
 /* Move the message window's vertical scrollbar's slider to the bottom. */
 void
-set_message_slider(wp)
-struct xwindow *wp;
+set_message_slider(struct xwindow *wp)
 {
     Widget scrollbar;
     float top;
@@ -72,11 +71,12 @@ struct xwindow *wp;
     }
 }
 
+/*
+ * Parameters:
+ *   wp: window pointer
+ */
 void
-create_message_window(wp, create_popup, parent)
-struct xwindow *wp; /* window pointer */
-boolean create_popup;
-Widget parent;
+create_message_window(struct xwindow *wp, boolean create_popup, Widget parent)
 {
     Arg args[8];
     Cardinal num_args;
@@ -211,8 +211,7 @@ Widget parent;
 }
 
 void
-destroy_message_window(wp)
-struct xwindow *wp;
+destroy_message_window(struct xwindow *wp)
 {
     if (wp->popup) {
         nh_XtPopdown(wp->popup);
@@ -232,8 +231,7 @@ struct xwindow *wp;
 
 /* Redraw message window if new lines have been added. */
 void
-display_message_window(wp)
-struct xwindow *wp;
+display_message_window(struct xwindow *wp)
 {
     set_message_slider(wp);
     if (wp->mesg_information->dirty)
@@ -245,9 +243,7 @@ struct xwindow *wp;
  * rendering of the text is too long for the window.
  */
 void
-append_message(wp, str)
-struct xwindow *wp;
-const char *str;
+append_message(struct xwindow *wp, const char *str)
 {
     char *mark, *remainder, buf[BUFSZ];
 
@@ -272,8 +268,7 @@ const char *str;
  * element.
  */
 static struct line_element *
-get_previous(mark)
-struct line_element *mark;
+get_previous(struct line_element *mark)
 {
     struct line_element *curr;
 
@@ -292,9 +287,7 @@ struct line_element *mark;
  * are no longer used.
  */
 static void
-set_circle_buf(mesg_info, count)
-struct mesg_info_t *mesg_info;
-int count;
+set_circle_buf(struct mesg_info_t *mesg_info, int count)
 {
     int i;
     struct line_element *tail, *curr, *head;
@@ -365,14 +358,15 @@ int count;
 }
 
 /*
+ * Parameters:
+ *   fs: Font for the window.
+ */
+/*
  * Make sure the given string is shorter than the given pixel width.  If
  * not, back up from the end by words until we find a place to split.
  */
 static char *
-split(s, fs, pixel_width)
-char *s;
-XFontStruct *fs; /* Font for the window. */
-Dimension pixel_width;
+split(char *s, XFontStruct *fs, Dimension pixel_width)
 {
     char save, *end, *remainder;
 
@@ -402,12 +396,10 @@ Dimension pixel_width;
  * one.
  */
 static void
-add_line(mesg_info, s)
-struct mesg_info_t *mesg_info;
-const char *s;
+add_line(struct mesg_info_t *mesg_info, const char *s)
 {
-    register struct line_element *curr = mesg_info->head;
-    register int new_line_length = strlen(s);
+    struct line_element *curr = mesg_info->head;
+    int new_line_length = strlen(s);
 
     if (new_line_length + 1 > curr->buf_length) {
         if (curr->line)
@@ -433,10 +425,9 @@ const char *s;
  * line above this saved pointer.
  */
 void
-set_last_pause(wp)
-struct xwindow *wp;
+set_last_pause(struct xwindow *wp)
 {
-    register struct mesg_info_t *mesg_info = wp->mesg_information;
+    struct mesg_info_t *mesg_info = wp->mesg_information;
 
 #ifdef ERASE_LINE
     /*
@@ -461,12 +452,11 @@ struct xwindow *wp;
 }
 
 static void
-redraw_message_window(wp)
-struct xwindow *wp;
+redraw_message_window(struct xwindow *wp)
 {
     struct mesg_info_t *mesg_info = wp->mesg_information;
-    register struct line_element *curr;
-    register int row, y_base;
+    struct line_element *curr;
+    int row, y_base;
 
     /*
      * Do this the cheap and easy way.  Clear the window and just redraw
@@ -506,8 +496,7 @@ struct xwindow *wp;
  * move the vertical slider to the bottom.
  */
 static void
-mesg_check_size_change(wp)
-struct xwindow *wp;
+mesg_check_size_change(struct xwindow *wp)
 {
     struct mesg_info_t *mesg_info = wp->mesg_information;
     Arg arg[2];
@@ -530,13 +519,15 @@ struct xwindow *wp;
     mesg_info->viewport_height = new_height;
 }
 
+/*
+ * Parameters:
+ *   client_data: unused
+ *   widget_data: expose event from Window widget
+ */
 /* Event handler for message window expose events. */
 /*ARGSUSED*/
 static void
-mesg_exposed(w, client_data, widget_data)
-Widget w;
-XtPointer client_data; /* unused */
-XtPointer widget_data; /* expose event from Window widget */
+mesg_exposed(Widget w, XtPointer client_data, XtPointer widget_data)
 {
     XExposeEvent *event = (XExposeEvent *) widget_data;
 
@@ -566,9 +557,7 @@ XtPointer widget_data; /* expose event from Window widget */
 }
 
 static void
-get_gc(w, mesg_info)
-Widget w;
-struct mesg_info_t *mesg_info;
+get_gc(Widget w, struct mesg_info_t *mesg_info)
 {
     XGCValues values;
     XtGCMask mask = GCFunction | GCForeground | GCBackground | GCFont;
@@ -598,9 +587,7 @@ struct mesg_info_t *mesg_info;
  */
 /* ARGSUSED */
 static void
-mesg_resized(w, client_data, call_data)
-Widget w;
-XtPointer call_data, client_data;
+mesg_resized(Widget w, XtPointer client_data, XtPointer call_data)
 {
     Arg args[4];
     Cardinal num_args;

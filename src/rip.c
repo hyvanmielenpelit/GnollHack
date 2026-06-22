@@ -18,11 +18,11 @@
 #endif
 
 #ifdef TEXT_TOMBSTONE
-STATIC_DCL void FDECL(center, (int, char *));
+static void center(int, char *);
 
 #ifndef NH320_DEDICATION
 /* A normal tombstone for end of game display. */
-STATIC_VAR const char *rip_txt[] = {
+static const char *rip_txt[] = {
     "                       ----------",
     "                      /          \\",
     "                     /    REST    \\",
@@ -42,7 +42,7 @@ STATIC_VAR const char *rip_txt[] = {
 #define STONE_LINE_CENT 28 /* char[] element of center of stone face */
 #else                      /* NH320_DEDICATION */
 /* GnollHack 3.2.x displayed a dual tombstone as a tribute to Izchak. */
-STATIC_VAR const char *rip_txt[] = {
+static const char *rip_txt[] = {
     "              ----------                      ----------",
     "             /          \\                    /          \\",
     "            /    REST    \\                  /    This    \\",
@@ -71,14 +71,12 @@ STATIC_VAR const char *rip_txt[] = {
 #define DEATH_LINE 8 /* *char[] line # for death description */
 #define YEAR_LINE 12 /* *char[] line # for year */
 
-STATIC_VAR char **rip;
+static char **rip;
 
-STATIC_OVL void
-center(line, text)
-int line;
-char *text;
+static void
+center(int line, char *text)
 {
-    register char *ip, *op;
+    char *ip, *op;
     ip = text;
     op = &rip[line][STONE_LINE_CENT - ((strlen(text) + 1) >> 1)];
     while (*ip)
@@ -86,16 +84,13 @@ char *text;
 }
 
 void
-genl_outrip(tmpwin, how, when)
-winid tmpwin;
-int how;
-time_t when;
+genl_outrip(winid tmpwin, int how, time_t when)
 {
-    register char **dp;
-    register char *dpx;
+    char **dp;
+    char *dpx;
     char buf[BUFSZ];
     int64_t year;
-    register int x;
+    int x;
     int line;
 
     rip = dp = (char **) alloc(sizeof(rip_txt));

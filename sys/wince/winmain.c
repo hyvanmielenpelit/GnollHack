@@ -9,12 +9,11 @@
 
 #define MAX_CMDLINE_PARAM 255
 
-extern int FDECL(main, (int, char **));
+extern int main(int, char **);
 static TCHAR *_get_cmd_arg(TCHAR *pCmdLine);
 
 int APIENTRY
-WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLine,
-        int nCmdShow)
+WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLine, int nCmdShow)
 {
     int argc;
     char *argv[MAX_CMDLINE_PARAM];
@@ -94,15 +93,16 @@ _get_cmd_arg(TCHAR *pCmdLine)
 }
 
 #ifndef STRNCMPI
-char lowc(c) /* force 'c' into lowercase */
-char c;
+char lowc(char c) /* force 'c' into lowercase */
 {
     return ((char) (('A' <= c && c <= 'Z') ? (c | 040) : c));
 }
 
-int strncmpi(s1, s2, n) /* case insensitive counted string comparison */
-register const char *s1, *s2;
-register int n; /*(should probably be size_t, which is usually unsigned)*/
+/*
+ * Parameters:
+ *   n: (should probably be size_t, which is usually unsigned)
+ */
+int strncmpi(const char *s1, const char *s2, int n) /* case insensitive counted string comparison */
 {               /*{ aka strncasecmp }*/
     register char t1, t2;
 

@@ -7,13 +7,12 @@
 
 #include "hack.h"
 
-STATIC_PTR int NDECL(stealarm);
+static int stealarm(void);
 
-STATIC_DCL const char *FDECL(equipname, (struct obj *));
+static const char *equipname(struct obj *);
 
-STATIC_OVL const char *
-equipname(otmp)
-register struct obj *otmp;
+static const char *
+equipname(struct obj *otmp)
 {
     return ((otmp == uarmu)
                 ? "shirt"
@@ -36,8 +35,7 @@ register struct obj *otmp;
 
 /* proportional subset of gold; return value actually fits in an int */
 int64_t
-somegold(lmoney)
-int64_t lmoney;
+somegold(int64_t lmoney)
 {
 #ifdef LINT /* int64_t conv. ok */
     int igold = 0;
@@ -72,8 +70,7 @@ int64_t lmoney;
  * Deals in gold only, as leprechauns don't care for lesser coins.
 */
 struct obj *
-findgold(chain)
-register struct obj *chain;
+findgold(struct obj *chain)
 {
     while (chain && chain->otyp != GOLD_PIECE)
         chain = chain->nobj;
@@ -81,9 +78,7 @@ register struct obj *chain;
 }
 
 struct obj*
-findobjecttype(chain, otyp)
-register struct obj* chain;
-int otyp;
+findobjecttype(struct obj *chain, int otyp)
 {
     while (chain && chain->otyp != otyp)
         chain = chain->nobj;
@@ -94,12 +89,11 @@ int otyp;
  * Steal gold coins only.  Leprechauns don't care for lesser coins.
 */
 void
-stealgold(mtmp)
-register struct monst *mtmp;
+stealgold(struct monst *mtmp)
 {
-    register struct obj *fgold = g_at(u.ux, u.uy);
-    register struct obj *ygold;
-    register int64_t tmp;
+    struct obj *fgold = g_at(u.ux, u.uy);
+    struct obj *ygold;
+    int64_t tmp;
     struct monst *who;
     const char *whose, *what;
 
@@ -173,11 +167,11 @@ register struct monst *mtmp;
 unsigned int stealoid; /* object to be stolen */
 unsigned int stealmid; /* monster doing the stealing */
 
-STATIC_PTR int
-stealarm(VOID_ARGS)
+static int
+stealarm(void)
 {
-    register struct monst *mtmp;
-    register struct obj *otmp;
+    struct monst *mtmp;
+    struct obj *otmp;
 
     for (otmp = invent; otmp; otmp = otmp->nobj) {
         if (otmp->o_id == stealoid) {
@@ -212,8 +206,7 @@ botm:
 }
 
 int
-add_to_obj_tracking(obj)
-struct obj* obj;
+add_to_obj_tracking(struct obj *obj)
 {
     if (!obj)
         return -1;
@@ -235,8 +228,7 @@ struct obj* obj;
 }
 
 boolean
-finish_obj_tracking(saved_item_idx)
-int saved_item_idx;
+finish_obj_tracking(int saved_item_idx)
 {
     if (saved_item_idx < 0)
         return FALSE; /* No object was destroyed since obj was zero */
@@ -261,21 +253,25 @@ int saved_item_idx;
     return obj_gone;
 }
 
+/*
+ * Parameters:
+ *   unchain_ball: whether to unpunish or just unwield
+ */
 /* An object you're wearing has been taken off by a monster (theft or
    seduction).  Also used if a worn item gets transformed (stone to flesh). */
 boolean
-remove_worn_item(obj, unchain_ball)
-struct obj* obj;
-boolean unchain_ball; /* whether to unpunish or just unwield */
+remove_worn_item(struct obj *obj, boolean unchain_ball)
 {
     return remove_worn_item_ex(obj, unchain_ball, FALSE);
 }
 
+/*
+ * Parameters:
+ *   unchain_ball: whether to unpunish or just unwield
+ *   being_taken_away: shoud not be destroyed by lava_effects etc.
+ */
 boolean
-remove_worn_item_ex(obj, unchain_ball, being_taken_away)
-struct obj *obj;
-boolean unchain_ball; /* whether to unpunish or just unwield */
-boolean being_taken_away; /* shoud not be destroyed by lava_effects etc. */
+remove_worn_item_ex(struct obj *obj, boolean unchain_ball, boolean being_taken_away)
 {
     if (donning(obj))
         cancel_don();
@@ -371,9 +367,7 @@ boolean being_taken_away; /* shoud not be destroyed by lava_effects etc. */
  * Nymphs and monkeys won't steal coins
  */
 int
-steal(mtmp, objnambuf)
-struct monst *mtmp;
-char *objnambuf;
+steal(struct monst *mtmp, char *objnambuf)
 {
     struct obj *otmp;
     int tmp, could_petrify, armordelay, olddelay, named = 0, retrycnt = 0;
@@ -619,9 +613,7 @@ gotobj:
 
 /* Returns TRUE if otmp is free'd, FALSE otherwise. */
 boolean
-mpickobj(mtmp, otmp)
-register struct monst *mtmp;
-register struct obj *otmp;
+mpickobj(struct monst *mtmp, struct obj *otmp)
 {
     boolean freed_otmp;
     boolean snuff_otmp = FALSE;
@@ -663,8 +655,7 @@ register struct obj *otmp;
 
 /* called for AD_SAMU (the Wizard and quest nemeses) */
 void
-stealamulet(mtmp)
-struct monst *mtmp;
+stealamulet(struct monst *mtmp)
 {
     char buf[BUFSZ];
     struct obj *otmp = 0, *obj = 0;
@@ -777,13 +768,14 @@ struct monst *mtmp;
     }
 }
 
+/*
+ * Parameters:
+ *   ochance, achance: percent chance for ordinary item, artifact
+ */
 /* when a mimic gets poked with something, it might take that thing
    (at present, only implemented for when the hero does the poking) */
 void
-maybe_absorb_item(mon, obj, ochance, achance)
-struct monst *mon;
-struct obj *obj;
-int ochance, achance; /* percent chance for ordinary item, artifact */
+maybe_absorb_item(struct monst *mon, struct obj *obj, int ochance, int achance)
 {
     if (obj == uball || obj == uchain || obj->oclass == ROCK_CLASS
         || obj_resists(obj, 100 - ochance, 100 - achance)
@@ -829,10 +821,7 @@ int ochance, achance; /* percent chance for ordinary item, artifact */
 
 /* drop one object taken from a (possibly dead) monster's inventory */
 void
-mdrop_obj(mon, obj, verbosely, set_found)
-struct monst *mon;
-struct obj *obj;
-boolean verbosely, set_found;
+mdrop_obj(struct monst *mon, struct obj *obj, boolean verbosely, boolean set_found)
 {
     int omx = mon->mx, omy = mon->my;
     boolean update_mon = FALSE;
@@ -891,8 +880,7 @@ boolean verbosely, set_found;
    even leaving the game entirely; when that happens, prevent them from
    taking the Amulet, invocation items, or quest artifact with them */
 void
-mdrop_special_objs(mon)
-struct monst *mon;
+mdrop_special_objs(struct monst *mon)
 {
     struct obj *obj, *otmp;
 
@@ -927,13 +915,13 @@ struct monst *mon;
     }
 }
 
+/*
+ * Parameters:
+ *   is_pet: If true, pet should keep wielded/worn items
+ */
 /* release the objects the creature is carrying */
 void
-release_monster_objects(mtmp, show, is_pet, is_mon_dead)
-struct monst *mtmp;
-int show;
-boolean is_pet; /* If true, pet should keep wielded/worn items */
-boolean is_mon_dead;
+release_monster_objects(struct monst *mtmp, int show, boolean is_pet, boolean is_mon_dead)
 {
     struct obj *otmp;
     int omx = mtmp->mx, omy = mtmp->my;
@@ -1019,8 +1007,7 @@ boolean is_mon_dead;
 
 /* drop all objects the pet is carrying */
 void
-mdrop_droppable_objs(mtmp)
-struct monst* mtmp;
+mdrop_droppable_objs(struct monst *mtmp)
 {
     struct obj* otmp;
     int omx = mtmp->mx, omy = mtmp->my;

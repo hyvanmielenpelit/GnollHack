@@ -22,27 +22,27 @@
     strcat((YouPrefix(pointer, prefix, text), pointer), text)
 
 
-STATIC_VAR int pline_attr = 0;
-STATIC_VAR int pline_color = NO_COLOR;
-STATIC_VAR unsigned pline_flags = 0;
-STATIC_VAR int pline_prefix_attr = 0;
-STATIC_VAR int pline_prefix_color = NO_COLOR;
-STATIC_VAR const char* pline_prefix_text = 0;
-STATIC_VAR int pline_separator_attr = 0;
-STATIC_VAR int pline_separator_color = NO_COLOR;
-STATIC_VAR const char* pline_separator_text = 0;
-STATIC_VAR const int* pline_multiattrs = 0;
-STATIC_VAR const int* pline_multicolors = 0;
-STATIC_VAR const char* pline_title = 0;
-STATIC_VAR int pline_dopopup = 0;
+static int pline_attr = 0;
+static int pline_color = NO_COLOR;
+static unsigned pline_flags = 0;
+static int pline_prefix_attr = 0;
+static int pline_prefix_color = NO_COLOR;
+static const char* pline_prefix_text = 0;
+static int pline_separator_attr = 0;
+static int pline_separator_color = NO_COLOR;
+static const char* pline_separator_text = 0;
+static const int* pline_multiattrs = 0;
+static const int* pline_multicolors = 0;
+static const char* pline_title = 0;
+static int pline_dopopup = 0;
 
-STATIC_VAR char prevmsg[BUFSZ];
+static char prevmsg[BUFSZ];
 
-STATIC_DCL void FDECL(putmesg, (const char *));
-STATIC_DCL void FDECL(putmesg_ex2, (const char*, const char*, const char*));
-STATIC_DCL char *FDECL(You_buf, (size_t));
+static void putmesg(const char *);
+static void putmesg_ex2(const char*, const char*, const char*);
+static char *You_buf(size_t);
 #if defined(MSGHANDLER) && (defined(POSIX_TYPES) || defined(__GNUC__))
-STATIC_DCL void FDECL(execplinehandler, (const char *));
+static void execplinehandler(const char *);
 #endif
 
 #if defined (DUMPLOG) || defined (DUMPHTML)
@@ -54,9 +54,7 @@ char* saved_pline_colors[DUMPLOG_MSG_COUNT] = { (char*)0 };
 
 /* keep the most recent DUMPLOG_MSG_COUNT messages */
 void
-dumplogmsg(line, attrs, colors, attr, color)
-const char *line, *attrs, *colors;
-int attr, color;
+dumplogmsg(const char *line, const char *attrs, const char *colors, int attr, int color)
 {
     /*
      * TODO:
@@ -111,7 +109,7 @@ int attr, color;
    this data isn't saved and restored); end-of-game releases saved_pline[]
    while writing its contents to the final dump log */
 void
-dumplogfreemessages(VOID_ARGS)
+dumplogfreemessages(void)
 {
     unsigned indx;
 
@@ -129,9 +127,8 @@ dumplogfreemessages(VOID_ARGS)
 #endif
 
 /* keeps windowprocs usage out of pline() */
-STATIC_OVL void
-putmesg(line)
-const char *line;
+static void
+putmesg(const char *line)
 {
     if (!line)
         return;
@@ -153,9 +150,8 @@ const char *line;
     putstr_ex(WIN_MESSAGE, line, attr, color, 0);
 }
 
-STATIC_OVL void
-putmesg_ex2(line, attrs, colors)
-const char* line, *attrs, *colors;
+static void
+putmesg_ex2(const char *line, const char *attrs, const char *colors)
 {
     if (!line)
         return;
@@ -178,40 +174,21 @@ const char* line, *attrs, *colors;
  * of the variable argument handling stuff in "tradstdc.h"
  */
 
-#if defined(USE_STDARG) || defined(USE_VARARGS)
-STATIC_DCL void FDECL(vpline, (const char *, va_list));
+static void vpline(const char *line, va_list the_args);
 
 /*VARARGS1*/
 void
-pline
-VA_DECL(const char *, line)
+pline(const char *line, ...)
 {
-    VA_START(line);
-    VA_INIT(line, char *);
-    vpline(line, VA_ARGS);
-    VA_END();
+    va_list the_args;
+    va_start(the_args, line);
+    vpline(line, the_args);
+    va_end(the_args);
 }
 
-# ifdef USE_STDARG
-STATIC_OVL void
+static void
 vpline(const char *line, va_list the_args)
-# else
-STATIC_OVL void
-vpline(line, the_args)
-const char *line;
-va_list the_args;
-# endif
-
-#else /* USE_STDARG | USE_VARARG */
-
-# define vpline pline
-
-/*VARARGS1*/
-void
-pline
-VA_DECL(const char *, line)
-#endif /* USE_STDARG | USE_VARARG */
-{       /* start of vpline() or of nested block in USE_OLDARG's pline() */
+{
     static int in_pline = 0;
     static char pbuf[VERYBIGBUFSZ], combined_line[VERYBIGBUFSZ]; /* will get chopped down to BUFSZ-1 if longer */
     char multi_line[BIGBUFSZ], attrs[BIGBUFSZ], colors[BIGBUFSZ];
@@ -223,7 +200,6 @@ VA_DECL(const char *, line)
     combined_line[0] = 0;
     attrs[0] = 0;
     colors[0] = 0;
-    /* Do NOT use VA_START and VA_END in here... see above */
 
     if (!line || !*line)
         return;
@@ -298,7 +274,7 @@ VA_DECL(const char *, line)
                     switch (typechar)
                     {
                     case 'c':
-                        Sprintf(cbuf, sbuf, va_arg(the_args, CHAR_P));
+                        Sprintf(cbuf, sbuf, (char) va_arg(the_args, int)); /* int represents the char type promoted to int */
                         break;
                     case 'f':
                         Sprintf(cbuf, sbuf, va_arg(the_args, double));
@@ -307,7 +283,7 @@ VA_DECL(const char *, line)
                     case 'i':
                     case 'd':
                         if (ep > p && *(ep - 1) == 'h')
-                            Sprintf(cbuf, sbuf, va_arg(the_args, SHORT_P));
+                            Sprintf(cbuf, sbuf, (short) va_arg(the_args, int)); /* int represents the short type promoted to int */
                         else if (ep > p && *(ep - 1) == 'l')
                         {
                             if (ep > p + 1 && *(ep - 2) == 'l')
@@ -328,7 +304,7 @@ VA_DECL(const char *, line)
                     case 'X':
                     case 'u':
                         if(ep > p && *(ep - 1) == 'h')
-                            Sprintf(cbuf, sbuf, va_arg(the_args, UNSIGNED_SHORT_P));
+                            Sprintf(cbuf, sbuf, (unsigned short) va_arg(the_args, int)); /* int represents the unsigned short type promoted to int */
                         else if (ep > p && *(ep - 1) == 'l')
                         {
                             if (ep > p + 1 && *(ep - 2) == 'l')
@@ -361,7 +337,7 @@ VA_DECL(const char *, line)
         }
         else
         {
-            Vsprintf(pbuf, used_line, VA_ARGS);
+            Vsprintf(pbuf, used_line, the_args);
             used_line = pbuf;
         }
     }
@@ -511,16 +487,14 @@ VA_DECL(const char *, line)
 
 #if !(defined(USE_STDARG) || defined(USE_VARARGS))
     /* provide closing brace for the nested block
-       which immediately follows USE_OLDARGS's VA_DECL() */
-    VA_END();
+       which immediately follows USE_OLDARGS's (...) */
+    va_end(the_args);
 #endif
 }
 
 
 void
-pline1_multi_ex(line, attrs, colors, attr, color)
-const char* line, * attrs, * colors;
-int attr, color;
+pline1_multi_ex(const char *line, const char *attrs, const char *colors, int attr, int color)
 {
 
     if (!line || !*line)
@@ -555,38 +529,38 @@ int attr, color;
    they shouldn't be blockable via MSGTYPE=hide) */
 /*VARARGS2*/
 void custompline
-VA_DECL2(unsigned, pflags, const char *, line)
+(unsigned pflags, const char *line, ...)
 {
-    VA_START(line);
-    VA_INIT(line, const char *);
+    va_list the_args;
+    va_start(the_args, line);
     pline_flags = pflags;
-    vpline(line, VA_ARGS);
+    vpline(line, the_args);
     pline_flags = 0;
-    VA_END();
+    va_end(the_args);
     return;
 }
 
 void custompline_ex
-VA_DECL4(int, attr, int, color, unsigned, pflags, const char*, line)
+(int attr, int color, unsigned pflags, const char *line, ...)
 {
-    VA_START(line);
-    VA_INIT(line, const char*);
+    va_list the_args;
+    va_start(the_args, line);
     pline_attr = attr;
     pline_color = color;
     pline_flags = pflags;
-    vpline(line, VA_ARGS);
+    vpline(line, the_args);
     pline_attr = ATR_NONE;
     pline_color = NO_COLOR;
     pline_flags = 0;
-    VA_END();
+    va_end(the_args);
     return;
 }
 
 void custompline_ex_prefix
-VA_DECL10(int, prefix_attr, int, prefix_color, const char*, prefix_line, int, separator_attr, int, separator_color, const char*, separator_line, int, attr, int, color, unsigned, pflags, const char*, line)
+(int prefix_attr, int prefix_color, const char *prefix_line, int separator_attr, int separator_color, const char *separator_line, int attr, int color, unsigned pflags, const char *line, ...)
 {
-    VA_START(line);
-    VA_INIT(line, const char*);
+    va_list the_args;
+    va_start(the_args, line);
     pline_prefix_attr = prefix_attr;
     pline_prefix_color = prefix_color;
     pline_prefix_text = prefix_line;
@@ -596,7 +570,7 @@ VA_DECL10(int, prefix_attr, int, prefix_color, const char*, prefix_line, int, se
     pline_attr = attr;
     pline_color = color;
     pline_flags = pflags;
-    vpline(line, VA_ARGS);
+    vpline(line, the_args);
     pline_attr = ATR_NONE;
     pline_color = NO_COLOR;
     pline_flags = 0;
@@ -606,274 +580,274 @@ VA_DECL10(int, prefix_attr, int, prefix_color, const char*, prefix_line, int, se
     pline_separator_attr = ATR_NONE;
     pline_separator_color = NO_COLOR;
     pline_separator_text = 0;
-    VA_END();
+    va_end(the_args);
     return;
 }
 
 
 void pline_ex
-VA_DECL3(int, attr, int, color, const char*, line)
+(int attr, int color, const char *line, ...)
 {
-    VA_START(line);
-    VA_INIT(line, const char*);
+    va_list the_args;
+    va_start(the_args, line);
     pline_attr = attr;
     pline_color = color;
-    vpline(line, VA_ARGS);
+    vpline(line, the_args);
     pline_attr = ATR_NONE;
     pline_color = NO_COLOR;
-    VA_END();
+    va_end(the_args);
     return;
 }
 
 void pline_multi_ex
-VA_DECL5(int, attr, int, color, const int*, multiattrs, const int*, multicolors, const char*, line)
+(int attr, int color, const int *multiattrs, const int *multicolors, const char *line, ...)
 {
-    VA_START(line);
-    VA_INIT(line, const char*);
+    va_list the_args;
+    va_start(the_args, line);
     pline_multiattrs = multiattrs;
     pline_multicolors = multicolors;
     pline_attr = attr;
     pline_color = color;
-    vpline(line, VA_ARGS);
+    vpline(line, the_args);
     pline_multiattrs = 0;
     pline_multicolors = 0;
     pline_attr = ATR_NONE;
     pline_color = NO_COLOR;
-    VA_END();
+    va_end(the_args);
     return;
 }
 
 void pline_multi_ex_popup
-VA_DECL7(int, attr, int, color, const int*, multiattrs, const int*, multicolors, const char*, title, int, dopopup, const char*, line)
+(int attr, int color, const int *multiattrs, const int *multicolors, const char *title, int dopopup, const char *line, ...)
 {
-    VA_START(line);
-    VA_INIT(line, const char*);
+    va_list the_args;
+    va_start(the_args, line);
     pline_multiattrs = multiattrs;
     pline_multicolors = multicolors;
     pline_attr = attr;
     pline_color = color;
     pline_dopopup = dopopup;
     pline_title = title;
-    vpline(line, VA_ARGS);
+    vpline(line, the_args);
     pline_dopopup = 0;
     pline_title = 0;
     pline_multiattrs = 0;
     pline_multicolors = 0;
     pline_attr = ATR_NONE;
     pline_color = NO_COLOR;
-    VA_END();
+    va_end(the_args);
     return;
 }
 
 void pline_multi_ex_flags
-VA_DECL6(int, attr, int, color, const int*, multiattrs, const int*, multicolors, unsigned, pflags, const char*, line)
+(int attr, int color, const int *multiattrs, const int *multicolors, unsigned pflags, const char *line, ...)
 {
-    VA_START(line);
-    VA_INIT(line, const char*);
+    va_list the_args;
+    va_start(the_args, line);
     pline_multiattrs = multiattrs;
     pline_multicolors = multicolors;
     pline_attr = attr;
     pline_color = color;
     pline_flags = pflags;
-    vpline(line, VA_ARGS);
+    vpline(line, the_args);
     pline_multiattrs = 0;
     pline_multicolors = 0;
     pline_attr = ATR_NONE;
     pline_color = NO_COLOR;
     pline_flags = 0;
-    VA_END();
+    va_end(the_args);
     return;
 }
 
 /*VARARGS1*/
 void You_ex
-VA_DECL3(int, attr, int, color, const char*, line)
+(int attr, int color, const char *line, ...)
 {
     char* tmp;
 
-    VA_START(line);
-    VA_INIT(line, const char*);
+    va_list the_args;
+    va_start(the_args, line);
     pline_attr = attr;
     pline_color = color;
-    vpline(YouMessage(tmp, "You ", line), VA_ARGS);
+    vpline(YouMessage(tmp, "You ", line), the_args);
     pline_attr = ATR_NONE;
     pline_color = NO_COLOR;
-    VA_END();
+    va_end(the_args);
 }
 
 void You_multi_ex
-VA_DECL5(int, attr, int, color, const int*, multiattrs, const int*, multicolors, const char*, line)
+(int attr, int color, const int *multiattrs, const int *multicolors, const char *line, ...)
 {
     char* tmp;
 
-    VA_START(line);
-    VA_INIT(line, const char*);
+    va_list the_args;
+    va_start(the_args, line);
     pline_attr = attr;
     pline_color = color;
     pline_multiattrs = multiattrs;
     pline_multicolors = multicolors;
-    vpline(YouMessage(tmp, "You ", line), VA_ARGS);
+    vpline(YouMessage(tmp, "You ", line), the_args);
     pline_multiattrs = 0;
     pline_multicolors = 0;
     pline_attr = ATR_NONE;
     pline_color = NO_COLOR;
-    VA_END();
+    va_end(the_args);
 }
 
 /*VARARGS1*/
 void Your_ex
-VA_DECL3(int, attr, int, color, const char*, line)
+(int attr, int color, const char *line, ...)
 {
     char* tmp;
 
-    VA_START(line);
-    VA_INIT(line, const char*);
+    va_list the_args;
+    va_start(the_args, line);
     pline_attr = attr;
     pline_color = color;
-    vpline(YouMessage(tmp, "Your ", line), VA_ARGS);
+    vpline(YouMessage(tmp, "Your ", line), the_args);
     pline_attr = ATR_NONE;
     pline_color = NO_COLOR;
-    VA_END();
+    va_end(the_args);
 }
 
 /*VARARGS1*/
 void Your_multi_ex
-VA_DECL5(int, attr, int, color, const int*, multiattrs, const int*, multicolors, const char*, line)
+(int attr, int color, const int *multiattrs, const int *multicolors, const char *line, ...)
 {
     char* tmp;
 
-    VA_START(line);
-    VA_INIT(line, const char*);
+    va_list the_args;
+    va_start(the_args, line);
     pline_attr = attr;
     pline_color = color;
     pline_multiattrs = multiattrs;
     pline_multicolors = multicolors;
-    vpline(YouMessage(tmp, "Your ", line), VA_ARGS);
+    vpline(YouMessage(tmp, "Your ", line), the_args);
     pline_multiattrs = 0;
     pline_multicolors = 0;
     pline_attr = ATR_NONE;
     pline_color = NO_COLOR;
-    VA_END();
+    va_end(the_args);
 }
 
 /*VARARGS1*/
 void You_feel_ex
-VA_DECL3(int, attr, int, color, const char*, line)
+(int attr, int color, const char *line, ...)
 {
     char* tmp;
 
-    VA_START(line);
-    VA_INIT(line, const char*);
+    va_list the_args;
+    va_start(the_args, line);
     pline_attr = attr;
     pline_color = color;
     if (Unaware)
         YouPrefix(tmp, "You dream that you feel ", line);
     else
         YouPrefix(tmp, "You feel ", line);
-    vpline(strcat(tmp, line), VA_ARGS);
+    vpline(strcat(tmp, line), the_args);
     pline_attr = ATR_NONE;
     pline_color = NO_COLOR;
-    VA_END();
+    va_end(the_args);
 }
 
 /*VARARGS1*/
 void You_cant_ex
-VA_DECL3(int, attr, int, color, const char*, line)
+(int attr, int color, const char *line, ...)
 {
     char* tmp;
 
-    VA_START(line);
-    VA_INIT(line, const char*);
+    va_list the_args;
+    va_start(the_args, line);
     pline_attr = attr;
     pline_color = color;
-    vpline(YouMessage(tmp, "You can't ", line), VA_ARGS);
+    vpline(YouMessage(tmp, "You can't ", line), the_args);
     pline_attr = ATR_NONE;
     pline_color = NO_COLOR;
-    VA_END();
+    va_end(the_args);
 }
 
 /*VARARGS1*/
 void pline_The_ex
-VA_DECL3(int, attr, int, color, const char*, line)
+(int attr, int color, const char *line, ...)
 {
     char* tmp;
 
-    VA_START(line);
-    VA_INIT(line, const char*);
+    va_list the_args;
+    va_start(the_args, line);
     pline_attr = attr;
     pline_color = color;
-    vpline(YouMessage(tmp, "The ", line), VA_ARGS);
+    vpline(YouMessage(tmp, "The ", line), the_args);
     pline_attr = ATR_NONE;
     pline_color = NO_COLOR;
-    VA_END();
+    va_end(the_args);
 }
 
 /*VARARGS1*/
 void pline_The_multi_ex
-VA_DECL5(int, attr, int, color, const int*, multiattrs, const int*, multicolors, const char*, line)
+(int attr, int color, const int *multiattrs, const int *multicolors, const char *line, ...)
 {
     char* tmp;
 
-    VA_START(line);
-    VA_INIT(line, const char*);
+    va_list the_args;
+    va_start(the_args, line);
     pline_attr = attr;
     pline_color = color;
     pline_multiattrs = multiattrs;
     pline_multicolors = multicolors;
-    vpline(YouMessage(tmp, "The ", line), VA_ARGS);
+    vpline(YouMessage(tmp, "The ", line), the_args);
     pline_multiattrs = 0;
     pline_multicolors = 0;
     pline_attr = ATR_NONE;
     pline_color = NO_COLOR;
-    VA_END();
+    va_end(the_args);
 }
 
 
 /*VARARGS1*/
 void There_ex
-VA_DECL3(int, attr, int, color, const char*, line)
+(int attr, int color, const char *line, ...)
 {
     char* tmp;
 
-    VA_START(line);
-    VA_INIT(line, const char*);
+    va_list the_args;
+    va_start(the_args, line);
     pline_attr = attr;
     pline_color = color;
-    vpline(YouMessage(tmp, "There ", line), VA_ARGS);
+    vpline(YouMessage(tmp, "There ", line), the_args);
     pline_attr = ATR_NONE;
     pline_color = NO_COLOR;
-    VA_END();
+    va_end(the_args);
 }
 
 void There_multi_ex
-VA_DECL5(int, attr, int, color, const int*, multiattrs, const int*, multicolors, const char*, line)
+(int attr, int color, const int *multiattrs, const int *multicolors, const char *line, ...)
 {
     char* tmp;
 
-    VA_START(line);
-    VA_INIT(line, const char*);
+    va_list the_args;
+    va_start(the_args, line);
     pline_attr = attr;
     pline_color = color;
     pline_multiattrs = multiattrs;
     pline_multicolors = multicolors;
-    vpline(YouMessage(tmp, "There ", line), VA_ARGS);
+    vpline(YouMessage(tmp, "There ", line), the_args);
     pline_multiattrs = 0;
     pline_multicolors = 0;
     pline_attr = ATR_NONE;
     pline_color = NO_COLOR;
-    VA_END();
+    va_end(the_args);
 }
 
 /*VARARGS1*/
 void You_hear_ex
-VA_DECL3(int, attr, int, color, const char*, line)
+(int attr, int color, const char *line, ...)
 {
     char* tmp;
 
     if (Deaf || !flags.acoustics)
         return;
-    VA_START(line);
-    VA_INIT(line, const char*);
+    va_list the_args;
+    va_start(the_args, line);
     pline_attr = attr;
     pline_color = color;
     if (Underwater)
@@ -882,20 +856,20 @@ VA_DECL3(int, attr, int, color, const char*, line)
         YouPrefix(tmp, "You dream that you hear ", line);
     else
         YouPrefix(tmp, "You hear ", line);
-    vpline(strcat(tmp, line), VA_ARGS);
+    vpline(strcat(tmp, line), the_args);
     pline_attr = ATR_NONE;
     pline_color = NO_COLOR;
-    VA_END();
+    va_end(the_args);
 }
 
 /*VARARGS1*/
 void You_see_ex
-VA_DECL3(int, attr, int, color, const char*, line)
+(int attr, int color, const char *line, ...)
 {
     char* tmp;
 
-    VA_START(line);
-    VA_INIT(line, const char*);
+    va_list the_args;
+    va_start(the_args, line);
     pline_attr = attr;
     pline_color = color;
     if (Unaware)
@@ -904,70 +878,69 @@ VA_DECL3(int, attr, int, color, const char*, line)
         YouPrefix(tmp, "You sense ", line);
     else
         YouPrefix(tmp, "You see ", line);
-    vpline(strcat(tmp, line), VA_ARGS);
+    vpline(strcat(tmp, line), the_args);
     pline_attr = ATR_NONE;
     pline_color = NO_COLOR;
-    VA_END();
+    va_end(the_args);
 }
 
 /*VARARGS1*/
 void verbalize_ex
-VA_DECL3(int, attr, int, color, const char*, line)
+(int attr, int color, const char *line, ...)
 {
     char* tmp;
 
-    VA_START(line);
-    VA_INIT(line, const char*);
+    va_list the_args;
+    va_start(the_args, line);
     pline_attr = attr;
     pline_color = color;
     tmp = You_buf(strlen(line) + sizeof "\"\"");
     Strcpy(tmp, "\"");
     Strcat(tmp, line);
     Strcat(tmp, "\"");
-    vpline(tmp, VA_ARGS);
+    vpline(tmp, the_args);
     pline_attr = ATR_NONE;
     pline_color = NO_COLOR;
-    VA_END();
+    va_end(the_args);
 }
 
 
 
 /*VARARGS1*/
 void Norep
-VA_DECL(const char *, line)
+(const char *line, ...)
 {
-    VA_START(line);
-    VA_INIT(line, const char *);
+    va_list the_args;
+    va_start(the_args, line);
     pline_flags = PLINE_NOREPEAT;
-    vpline(line, VA_ARGS);
+    vpline(line, the_args);
     pline_flags = 0;
-    VA_END();
+    va_end(the_args);
     return;
 }
 
 void Norep_ex
-VA_DECL3(int, attr, int, color, const char*, line)
+(int attr, int color, const char *line, ...)
 {
-    VA_START(line);
-    VA_INIT(line, const char*);
+    va_list the_args;
+    va_start(the_args, line);
     pline_attr = attr;
     pline_color = color;
     pline_flags = PLINE_NOREPEAT;
-    vpline(line, VA_ARGS);
+    vpline(line, the_args);
     pline_attr = ATR_NONE;
     pline_color = NO_COLOR;
     pline_flags = 0;
-    VA_END();
+    va_end(the_args);
     return;
 }
 
 /* work buffer for You(), &c and verbalize_ex(ATR_NONE, CLR_MSG_TALK_NORMAL, ) */
-STATIC_VAR char *you_buf = 0;
-STATIC_VAR size_t you_buf_siz = 0;
+static char *you_buf = 0;
+static size_t you_buf_siz = 0;
 
-STATIC_OVL char *
-You_buf(siz)
-size_t siz;
+static char *
+You_buf(size_t siz)
 {
     if (siz > you_buf_siz) {
         if (you_buf)
@@ -979,7 +952,7 @@ size_t siz;
 }
 
 void
-free_youbuf(VOID_ARGS)
+free_youbuf(void)
 {
     if (you_buf)
         free((genericptr_t) you_buf), you_buf = (char *) 0;
@@ -990,116 +963,116 @@ free_youbuf(VOID_ARGS)
 
 /*VARARGS1*/
 void You
-VA_DECL(const char *, line)
+(const char *line, ...)
 {
     char *tmp;
 
-    VA_START(line);
-    VA_INIT(line, const char *);
-    vpline(YouMessage(tmp, "You ", line), VA_ARGS);
-    VA_END();
+    va_list the_args;
+    va_start(the_args, line);
+    vpline(YouMessage(tmp, "You ", line), the_args);
+    va_end(the_args);
 }
 
 /*VARARGS1*/
 void Your
-VA_DECL(const char *, line)
+(const char *line, ...)
 {
     char *tmp;
 
-    VA_START(line);
-    VA_INIT(line, const char *);
-    vpline(YouMessage(tmp, "Your ", line), VA_ARGS);
-    VA_END();
+    va_list the_args;
+    va_start(the_args, line);
+    vpline(YouMessage(tmp, "Your ", line), the_args);
+    va_end(the_args);
 }
 
 /*VARARGS1*/
 void You_feel
-VA_DECL(const char *, line)
+(const char *line, ...)
 {
     char *tmp;
 
-    VA_START(line);
-    VA_INIT(line, const char *);
+    va_list the_args;
+    va_start(the_args, line);
     if (Unaware)
         YouPrefix(tmp, "You dream that you feel ", line);
     else
         YouPrefix(tmp, "You feel ", line);
-    vpline(strcat(tmp, line), VA_ARGS);
-    VA_END();
+    vpline(strcat(tmp, line), the_args);
+    va_end(the_args);
 }
 
 /*VARARGS1*/
 void You_cant
-VA_DECL(const char *, line)
+(const char *line, ...)
 {
     char *tmp;
 
-    VA_START(line);
-    VA_INIT(line, const char *);
-    vpline(YouMessage(tmp, "You can't ", line), VA_ARGS);
-    VA_END();
+    va_list the_args;
+    va_start(the_args, line);
+    vpline(YouMessage(tmp, "You can't ", line), the_args);
+    va_end(the_args);
 }
 
 /*VARARGS1*/
 void pline_The
-VA_DECL(const char *, line)
+(const char *line, ...)
 {
     char *tmp;
 
-    VA_START(line);
-    VA_INIT(line, const char *);
-    vpline(YouMessage(tmp, "The ", line), VA_ARGS);
-    VA_END();
+    va_list the_args;
+    va_start(the_args, line);
+    vpline(YouMessage(tmp, "The ", line), the_args);
+    va_end(the_args);
 }
 
 /*VARARGS1*/
 void There
-VA_DECL(const char *, line)
+(const char *line, ...)
 {
     char *tmp;
 
-    VA_START(line);
-    VA_INIT(line, const char *);
-    vpline(YouMessage(tmp, "There ", line), VA_ARGS);
-    VA_END();
+    va_list the_args;
+    va_start(the_args, line);
+    vpline(YouMessage(tmp, "There ", line), the_args);
+    va_end(the_args);
 }
 
 /*VARARGS1*/
 void You_hear
-VA_DECL(const char *, line)
+(const char *line, ...)
 {
     char *tmp;
 
     if (Deaf || !flags.acoustics)
         return;
-    VA_START(line);
-    VA_INIT(line, const char *);
+    va_list the_args;
+    va_start(the_args, line);
     if (Underwater)
         YouPrefix(tmp, "You barely hear ", line);
     else if (Unaware)
         YouPrefix(tmp, "You dream that you hear ", line);
     else
         YouPrefix(tmp, "You hear ", line);
-    vpline(strcat(tmp, line), VA_ARGS);
-    VA_END();
+    vpline(strcat(tmp, line), the_args);
+    va_end(the_args);
 }
 
 /*VARARGS1*/
 void You_see
-VA_DECL(const char *, line)
+(const char *line, ...)
 {
     char *tmp;
 
-    VA_START(line);
-    VA_INIT(line, const char *);
+    va_list the_args;
+    va_start(the_args, line);
     if (Unaware)
         YouPrefix(tmp, "You dream that you see ", line);
     else if (Blind) /* caller should have caught this... */
         YouPrefix(tmp, "You sense ", line);
     else
         YouPrefix(tmp, "You see ", line);
-    vpline(strcat(tmp, line), VA_ARGS);
-    VA_END();
+    vpline(strcat(tmp, line), the_args);
+    va_end(the_args);
 }
 
 /* Print a message inside double-quotes.
@@ -1108,18 +1081,18 @@ VA_DECL(const char *, line)
  */
 /*VARARGS1*/
 void verbalize
-VA_DECL(const char *, line)
+(const char *line, ...)
 {
     char *tmp;
 
-    VA_START(line);
-    VA_INIT(line, const char *);
+    va_list the_args;
+    va_start(the_args, line);
     tmp = You_buf(strlen(line) + sizeof "\"\"");
     Strcpy(tmp, "\"");
     Strcat(tmp, line);
     Strcat(tmp, "\"");
-    vpline(tmp, VA_ARGS);
-    VA_END();
+    vpline(tmp, the_args);
+    va_end(the_args);
 }
 
 /*VARARGS1*/
@@ -1127,39 +1100,24 @@ VA_DECL(const char *, line)
  * of the variable argument handling stuff in "tradstdc.h"
  */
 
-#if defined(USE_STDARG) || defined(USE_VARARGS)
-STATIC_DCL void FDECL(vraw_printf, (const char *, va_list));
+static void vraw_printf(const char *line, va_list the_args);
 
 void raw_printf
-VA_DECL(const char *, line)
+(const char *line, ...)
 {
-    VA_START(line);
-    VA_INIT(line, char *);
-    vraw_printf(line, VA_ARGS);
-    VA_END();
+    va_list the_args;
+    va_start(the_args, line);
+    vraw_printf(line, the_args);
+    va_end(the_args);
 }
 
-# ifdef USE_STDARG
-STATIC_OVL void
+static void
 vraw_printf(const char *line, va_list the_args)
-# else
-STATIC_OVL void
-vraw_printf(line, the_args)
-const char *line;
-va_list the_args;
-# endif
-
-#else /* USE_STDARG | USE_VARARG */
-
-void raw_printf
-VA_DECL(const char *, line)
-#endif
 {
     char pbuf[BIGBUFSZ]; /* will be chopped down to BUFSZ-1 if longer */
-    /* Do NOT use VA_START and VA_END in here... see above */
 
     if (index(line, '%')) {
-        Vsprintf(pbuf, line, VA_ARGS);
+        Vsprintf(pbuf, line, the_args);
         line = pbuf;
     }
     if ((int) strlen(line) > BUFSZ - 1) {
@@ -1172,29 +1130,26 @@ VA_DECL(const char *, line)
 #if defined(MSGHANDLER) && (defined(POSIX_TYPES) || defined(__GNUC__))
     execplinehandler(line);
 #endif
-#if !(defined(USE_STDARG) || defined(USE_VARARGS))
-    VA_END(); /* (see vpline) */
-#endif
 }
 
 /*VARARGS1*/
 void impossible
-VA_DECL(const char *, s)
+(const char *s, ...)
 {
     char pbuf[BIGBUFSZ]; /* will be chopped down to BUFSZ-1 if longer */
 
-    VA_START(s);
-    VA_INIT(s, const char *);
+    va_list the_args;
+    va_start(the_args, s);
     if (program_state.in_impossible)
     {
-        Vsnprintf(pbuf, BUFSZ, s, VA_ARGS);
+        Vsnprintf(pbuf, BUFSZ, s, the_args);
         pbuf[BUFSZ - 1] = '\0';
         panic("impossible called impossible: %s", pbuf);
         return;
     }
 
     program_state.in_impossible = 1;
-    Vsnprintf(pbuf, BUFSZ, s, VA_ARGS);
+    Vsnprintf(pbuf, BUFSZ, s, the_args);
     pbuf[BUFSZ - 1] = '\0'; /* sanity */
     paniclog("impossible", pbuf);
     if (iflags.debug_fuzzer)
@@ -1213,30 +1168,29 @@ VA_DECL(const char *, s)
         }
     }
 
-    pline_ex(ATR_NONE, CLR_MSG_ERROR, "impossible: %s", VA_PASS1(pbuf));
+    pline_ex(ATR_NONE, CLR_MSG_ERROR, "impossible: %s", pbuf);
 
     /* reuse pbuf[] */
     Strcpy(pbuf, "Program in disorder!");
     if (program_state.something_worth_saving)
         Strcat(pbuf, "  (Saving and reloading may fix this problem.)");
-    pline_ex(ATR_NONE, CLR_MSG_ERROR, "%s", VA_PASS1(pbuf));
+    pline_ex(ATR_NONE, CLR_MSG_ERROR, "%s", pbuf);
 
     program_state.in_impossible = 0;
-    VA_END();
+    va_end(the_args);
 }
 
 /*VARARGS1*/
 void silent_impossible
-VA_DECL(const char*, s)
+(const char *s, ...)
 {
     if (iflags.debug_fuzzer || program_state.in_impossible)
         return;
 
-    VA_START(s);
-    VA_INIT(s, const char*);
-
+    va_list the_args;
+    va_start(the_args, s);
     char pbuf[BIGBUFSZ]; /* will be chopped down to BUFSZ-1 if longer */
-    Vsnprintf(pbuf, BUFSZ, s, VA_ARGS);
+    Vsnprintf(pbuf, BUFSZ, s, the_args);
     pbuf[BUFSZ - 1] = '\0'; /* sanity */
 
 #ifndef DEBUG
@@ -1263,12 +1217,11 @@ VA_DECL(const char*, s)
 #endif
         pline_ex(ATR_NONE, CLR_MSG_ERROR, "impossible (silent): %s", pbuf);
 
-    VA_END();
+    va_end(the_args);
 }
 
 
-const char* basefilename(filepath)
-const char* filepath;
+const char* basefilename(const char *filepath)
 {
     if (!filepath)
         return 0;
@@ -1287,7 +1240,7 @@ const char* filepath;
 
 /*VARARGS1*/
 void debugprint
-VA_DECL(const char*, s)
+(const char *s, ...)
 {
     if (debug_buf_count < NUM_DEBUGBUFS)
     {
@@ -1299,16 +1252,15 @@ VA_DECL(const char*, s)
     }
     int debug_buf_idx = (debug_buf_start + debug_buf_count - 1) % NUM_DEBUGBUFS;
     char* pbuf = debug_buf_array[debug_buf_idx];
-    VA_START(s);
-    VA_INIT(s, const char*);
-    Vsnprintf(pbuf, DEBUGBUFSIZ, s, VA_ARGS);
+    va_list the_args;
+    va_start(the_args, s);
+    Vsnprintf(pbuf, DEBUGBUFSIZ, s, the_args);
     pbuf[DEBUGBUFSIZ - 1] = '\0'; /* sanity */
-    VA_END();
+    va_end(the_args);
 }
 
 char*
-allocate_buffer_with_debug_buffers(message)
-const char* message;
+allocate_buffer_with_debug_buffers(const char *message)
 {
     char* long_buffer = (char*)alloc((message ? strlen(message) + 3 : 0) + (DEBUGBUFSIZ + 5) * NUM_DEBUGBUFS + 1);
     if (!long_buffer)
@@ -1349,11 +1301,10 @@ const char* message;
 
 
 #if defined(MSGHANDLER) && (defined(POSIX_TYPES) || defined(__GNUC__))
-STATIC_VAR boolean use_pline_handler = TRUE;
+static boolean use_pline_handler = TRUE;
 
-STATIC_OVL void
-execplinehandler(line)
-const char *line;
+static void
+execplinehandler(const char *line)
 {
     int f;
     const char *args[3];
@@ -1385,7 +1336,7 @@ const char *line;
     } else if (f == -1) {
         perror((char *) 0);
         use_pline_handler = FALSE;
-        pline("%s", VA_PASS1("Fork to message handler failed."));
+        pline("%s", "Fork to message handler failed.");
     }
 }
 #endif /* MSGHANDLER && (POSIX_TYPES || __GNUC__) */
@@ -1393,51 +1344,30 @@ const char *line;
 /*
  * varargs handling for files.c
  */
-#if defined(USE_STDARG) || defined(USE_VARARGS)
-STATIC_DCL void FDECL(vconfig_error_add, (const char *, va_list));
+static void vconfig_error_add(const char *str, va_list the_args);
 
 /*VARARGS1*/
 void
 config_error_add
-VA_DECL(const char *, str)
+(const char *str, ...)
 {
-    VA_START(str);
-    VA_INIT(str, char *);
-    vconfig_error_add(str, VA_ARGS);
-    VA_END();
+    va_list the_args;
+    va_start(the_args, str);
+    vconfig_error_add(str, the_args);
+    va_end(the_args);
 }
 
-# ifdef USE_STDARG
-STATIC_OVL void
+static void
 vconfig_error_add(const char *str, va_list the_args)
-# else
-STATIC_OVL void
-vconfig_error_add(str, the_args)
-const char *str;
-va_list the_args;
-# endif
-
-#else /* !(USE_STDARG || USE_VARARG) => USE_OLDARGS */
-
-/*VARARGS1*/
-void
-config_error_add
-VA_DECL(const char *, str)
-#endif /* ?(USE_STDARG || USE_VARARG) */
-{       /* start of vconf...() or of nested block in USE_OLDARG's conf...() */
+{
     char buf[BIGBUFSZ]; /* will be chopped down to BUFSZ-1 if longer */
-
-    Vsprintf(buf, str, VA_ARGS);
+    Vsprintf(buf, str, the_args);
     buf[BUFSZ - 1] = '\0';
     config_erradd(buf);
-
-#if !(defined(USE_STDARG) || defined(USE_VARARGS))
-    VA_END(); /* (see pline/vpline -- ends nested block for USE_OLDARGS) */
-#endif
 }
 
 void
-reset_pline(VOID_ARGS)
+reset_pline(void)
 {
     pline_attr = 0;
     pline_color = NO_COLOR;
@@ -1461,7 +1391,7 @@ reset_pline(VOID_ARGS)
 }
 
 int*
-get_colorless_multicolor_buffer(VOID_ARGS)
+get_colorless_multicolor_buffer(void)
 {
     int i;
     int buflen = SIZE(multicolor_buffer);
@@ -1472,10 +1402,7 @@ get_colorless_multicolor_buffer(VOID_ARGS)
 }
 
 void
-concatenate_colored_text(prefix, suffix, attr, color, text_buf, attrs_buf, colors_buf)
-const char* prefix, * suffix;
-int attr, color;
-char* text_buf, * attrs_buf, * colors_buf;
+concatenate_colored_text(const char *prefix, const char *suffix, int attr, int color, char *text_buf, char *attrs_buf, char *colors_buf)
 {
     if (!prefix || !suffix || !text_buf || !attrs_buf || !colors_buf)
         return;

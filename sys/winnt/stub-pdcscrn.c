@@ -14,4 +14,3 @@
 
 #pragma warning(disable : 4996)
 #include "pdcscrn.c"
-

@@ -7,37 +7,37 @@
 
 #include "hack.h"
 
-STATIC_DCL char *NDECL(nextmbuf);
-STATIC_DCL void FDECL(getpos_help, (BOOLEAN_P, const char *));
-STATIC_DCL int FDECL(CFDECLSPEC cmp_coord_distu, (const void *, const void *));
-STATIC_DCL boolean FDECL(gather_locs_interesting, (int, int, int));
-STATIC_DCL void FDECL(gather_locs, (coord **, int *, int));
-STATIC_DCL int FDECL(gloc_filter_floodfill_matcharea, (int, int));
-STATIC_DCL void FDECL(auto_describe, (int, int));
-STATIC_DCL void NDECL(do_mname);
-STATIC_DCL boolean FDECL(alreadynamed, (struct monst *, char *, char *));
-STATIC_DCL void FDECL(do_uoname, (struct obj *));
-STATIC_PTR char *FDECL(docall_xname, (struct obj *));
-STATIC_DCL void NDECL(namefloorobj);
-STATIC_DCL char *FDECL(bogusmon, (char *,char *));
-STATIC_DCL void FDECL(print_catalogue, (winid, struct obj*, int, uint64_t));
-STATIC_DCL void FDECL(print_artifact_catalogue, (winid, struct obj*));
-STATIC_DCL void FDECL(print_mythic_power_catalogue, (winid, struct obj*));
-STATIC_DCL int FDECL(CFDECLSPEC citemsortcmp, (const void*, const void*));
-STATIC_DCL int FDECL(CFDECLSPEC artilistsortcmp, (const void*, const void*));
-STATIC_DCL int FDECL(CFDECLSPEC mythicprefixsortcmp, (const void*, const void*));
-STATIC_DCL int FDECL(CFDECLSPEC mythicsuffixsortcmp, (const void*, const void*));
-STATIC_DCL const char* FDECL(gettitle, (short*, const char* const*, int, int, uint64_t, uint64_t));
-STATIC_DCL void NDECL(set_valid_pos_flags);
-STATIC_DCL void NDECL(clear_valid_pos_flags);
+static char *nextmbuf(void);
+static void getpos_help(boolean, const char *);
+static int FDECL(CFDECLSPEC cmp_coord_distu, (const void *, const void *));
+static boolean gather_locs_interesting(int, int, int);
+static void gather_locs(coord **, int *, int);
+static int gloc_filter_floodfill_matcharea(int, int);
+static void auto_describe(int, int);
+static void do_mname(void);
+static boolean alreadynamed(struct monst *, char *, char *);
+static void do_uoname(struct obj *);
+static char *docall_xname(struct obj *);
+static void namefloorobj(void);
+static char *bogusmon(char *,char *);
+static void print_catalogue(winid, struct obj*, int, uint64_t);
+static void print_artifact_catalogue(winid, struct obj*);
+static void print_mythic_power_catalogue(winid, struct obj*);
+static int FDECL(CFDECLSPEC citemsortcmp, (const void*, const void*));
+static int FDECL(CFDECLSPEC artilistsortcmp, (const void*, const void*));
+static int FDECL(CFDECLSPEC mythicprefixsortcmp, (const void*, const void*));
+static int FDECL(CFDECLSPEC mythicsuffixsortcmp, (const void*, const void*));
+static const char* gettitle(short*, const char* const*, int, int, uint64_t, uint64_t);
+static void set_valid_pos_flags(void);
+static void clear_valid_pos_flags(void);
 
 extern const char what_is_an_unknown_object[]; /* from pager.c */
 
 #define NUMMBUF 5
 
 /* manage a pool of BUFSZ buffers, so callers don't have to */
-STATIC_OVL char *
-nextmbuf(VOID_ARGS)
+static char *
+nextmbuf(void)
 {
     static char NEARDATA bufs[NUMMBUF][BUFSZ];
     static int bufidx = 0;
@@ -49,12 +49,12 @@ nextmbuf(VOID_ARGS)
 /* function for getpos() to highlight desired map locations.
  * parameter value 0 = initialize, 1 = highlight, 2 = done
  */
-STATIC_DCL void FDECL((*getpos_hilitefunc), (int)) = (void FDECL((*), (int))) 0;
-STATIC_DCL int FDECL((*getpos_getinvalid), (int, int)) =
+static void (*getpos_hilitefunc)(int) = (void FDECL((*), (int))) 0;
+static int (*getpos_getinvalid)(int, int) =
                                            (int FDECL((*), (int, int))) 0;
 
-STATIC_OVL void
-set_valid_pos_flags(VOID_ARGS)
+static void
+set_valid_pos_flags(void)
 {
     if (!getpos_getinvalid)
         return;
@@ -74,8 +74,8 @@ set_valid_pos_flags(VOID_ARGS)
         }
 }
 
-STATIC_OVL void
-clear_valid_pos_flags(VOID_ARGS)
+static void
+clear_valid_pos_flags(void)
 {
     int x, y;
     for (x = 1; x < COLNO; x++)
@@ -84,16 +84,14 @@ clear_valid_pos_flags(VOID_ARGS)
 }
 
 void
-getpos_sethilite(gp_hilitef, gp_getinvalidf)
-void FDECL((*gp_hilitef), (int));
-int FDECL((*gp_getinvalidf), (int, int));
+getpos_sethilite(void (*gp_hilitef)(int), int (*gp_getinvalidf)(int, int))
 {
     getpos_hilitefunc = gp_hilitef;
     getpos_getinvalid = gp_getinvalidf;
     set_valid_pos_flags();
 }
 
-STATIC_VAR const char *const gloc_descr[NUM_GLOCS][4] = {
+static const char *const gloc_descr[NUM_GLOCS][4] = {
     { "any monsters", "monster", "next/previous monster", "monsters" },
     { "any items", "item", "next/previous object", "objects" },
     { "any doors", "door", "next/previous door or doorway", "doors or doorways" },
@@ -105,18 +103,14 @@ STATIC_VAR const char *const gloc_descr[NUM_GLOCS][4] = {
       "valid locations" }
 };
 
-STATIC_VAR const char *const gloc_filtertxt[NUM_GFILTER] = {
+static const char *const gloc_filtertxt[NUM_GFILTER] = {
     "",
     " in view",
     " in this area"
 };
 
 void
-getpos_help_keyxhelp(tmpwin, k1, k2, gloc)
-winid tmpwin;
-const char *k1;
-const char *k2;
-int gloc;
+getpos_help_keyxhelp(winid tmpwin, const char *k1, const char *k2, int gloc)
 {
     char sbuf[BUFSZ];
 
@@ -130,10 +124,8 @@ int gloc;
 }
 
 /* the response for '?' help request in getpos() */
-STATIC_OVL void
-getpos_help(force, goal)
-boolean force;
-const char *goal;
+static void
+getpos_help(boolean force, const char *goal)
 {
     static const char *const fastmovemode[2] = { "8 units at a time",
                                                  "skipping same glyphs" };
@@ -259,10 +251,8 @@ const char *goal;
     destroy_nhwindow(tmpwin);
 }
 
-STATIC_OVL int
-cmp_coord_distu(a, b)
-const void *a;
-const void *b;
+static int
+cmp_coord_distu(const void *a, const void *b)
 {
     const coord *c1 = a;
     const coord *c2 = b;
@@ -287,17 +277,16 @@ const void *b;
      && generic_glyph_to_cmap(levl[(x)][(y)].hero_memory_layers.glyph) == S_unexplored  \
      && !levl[(x)][(y)].seenv)
 
-STATIC_VAR struct opvar *gloc_filter_map = (struct opvar *) 0;
+static struct opvar *gloc_filter_map = (struct opvar *) 0;
 
 #define GLOC_SAME_AREA(x,y)                                     \
     (isok((x), (y))                                             \
      && (selection_getpoint((x),(y), gloc_filter_map)))
 
-STATIC_VAR int gloc_filter_floodfill_match_glyph;
+static int gloc_filter_floodfill_match_glyph;
 
 int
-gloc_filter_classify_glyph(glyph)
-int glyph;
+gloc_filter_classify_glyph(int glyph)
 {
     int c;
 
@@ -319,9 +308,8 @@ int glyph;
     return 0;
 }
 
-STATIC_OVL int
-gloc_filter_floodfill_matcharea(x, y)
-int x, y;
+static int
+gloc_filter_floodfill_matcharea(int x, int y)
 {
     int glyph = back_to_glyph(x, y);
 
@@ -339,8 +327,7 @@ int x, y;
 }
 
 void
-gloc_filter_floodfill(x, y)
-int x, y;
+gloc_filter_floodfill(int x, int y)
 {
     gloc_filter_floodfill_match_glyph = back_to_glyph(x, y);
 
@@ -349,7 +336,7 @@ int x, y;
 }
 
 void
-gloc_filter_init(VOID_ARGS)
+gloc_filter_init(void)
 {
     if (iflags.getloc_filter == GFILTER_AREA) {
         if (!gloc_filter_map) {
@@ -370,7 +357,7 @@ gloc_filter_init(VOID_ARGS)
 }
 
 void
-gloc_filter_done(VOID_ARGS)
+gloc_filter_done(void)
 {
     if (gloc_filter_map) {
         opvar_free_x(gloc_filter_map);
@@ -378,9 +365,8 @@ gloc_filter_done(VOID_ARGS)
     }
 }
 
-STATIC_OVL boolean
-gather_locs_interesting(x, y, gloc)
-int x, y, gloc;
+static boolean
+gather_locs_interesting(int x, int y, int gloc)
 {
     /* TODO: if glyph is a pile glyph, convert to ordinary one
      *       in order to keep tail/boulder/rock check simple.
@@ -469,11 +455,8 @@ int x, y, gloc;
 }
 
 /* gather locations for monsters or objects shown on the map */
-STATIC_OVL void
-gather_locs(arr_p, cnt_p, gloc)
-coord **arr_p;
-int *cnt_p;
-int gloc;
+static void
+gather_locs(coord **arr_p, int *cnt_p, int gloc)
 {
     int x, y, pass, idx;
 
@@ -517,9 +500,7 @@ int gloc;
 }
 
 char *
-dxdy_to_dist_descr(dx, dy, fulldir)
-int dx, dy;
-boolean fulldir;
+dxdy_to_dist_descr(int dx, int dy, boolean fulldir)
 {
     static char buf[30];
     int dst;
@@ -555,9 +536,7 @@ boolean fulldir;
 
 /* coordinate formatting for 'whatis_coord' option */
 char *
-coord_desc(x, y, outbuf, cmode)
-int x, y;
-char *outbuf, cmode;
+coord_desc(int x, int y, char *outbuf, char cmode)
 {
     static char screen_fmt[16]; /* [12] suffices: "[%02d,%02d]" */
     int dx, dy;
@@ -596,9 +575,8 @@ char *outbuf, cmode;
     return outbuf;
 }
 
-STATIC_OVL void
-auto_describe(cx, cy)
-int cx, cy;
+static void
+auto_describe(int cx, int cy)
 {
     coord cc;
     nhsym sym = 0;
@@ -627,9 +605,7 @@ int cx, cy;
 }
 
 boolean
-getpos_menu(ccp, gloc)
-coord *ccp;
-int gloc;
+getpos_menu(coord *ccp, int gloc)
 {
     coord *garr = DUMMY;
     int gcount = 0;
@@ -693,11 +669,7 @@ int gloc;
 }
 
 int
-getpos(ccp, force, goal, cursor_style)
-coord *ccp;
-boolean force;
-const char *goal;
-enum game_cursor_types cursor_style;
+getpos(coord *ccp, boolean force, const char *goal, enum game_cursor_types cursor_style)
 {
     const char *cp;
     static struct {
@@ -1154,11 +1126,13 @@ enum game_cursor_types cursor_style;
     return result;
 }
 
+/*
+ * Parameters:
+ *   lth: desired length (caller handles adding 1 for terminator)
+ */
 /* allocate space for a monster's name; removes old name if there is one */
 void
-new_mname(mon, lth)
-struct monst *mon;
-size_t lth; /* desired length (caller handles adding 1 for terminator) */
+new_mname(struct monst *mon, size_t lth)
 {
     if (lth) {
         /* allocate mextra if necessary; otherwise get rid of old name */
@@ -1176,8 +1150,7 @@ size_t lth; /* desired length (caller handles adding 1 for terminator) */
 
 /* release a monster's name; retains mextra even if all fields are now null */
 void
-free_mname(mon)
-struct monst *mon;
+free_mname(struct monst *mon)
 {
     if (has_mname(mon)) {
         free((genericptr_t) MNAME(mon));
@@ -1185,11 +1158,13 @@ struct monst *mon;
     }
 }
 
+/*
+ * Parameters:
+ *   lth: desired length (caller handles adding 1 for terminator)
+ */
 /* allocate space for a monster's uname; removes old uname if there is one */
 void
-new_umname(mon, lth)
-struct monst* mon;
-size_t lth; /* desired length (caller handles adding 1 for terminator) */
+new_umname(struct monst *mon, size_t lth)
 {
     if (lth) 
     {
@@ -1209,8 +1184,7 @@ size_t lth; /* desired length (caller handles adding 1 for terminator) */
 
 /* release a monster's uname; retains mextra even if all fields are now null */
 void
-free_umname(mon)
-struct monst* mon;
+free_umname(struct monst *mon)
 {
     if (has_umname(mon)) {
         free((genericptr_t)UMNAME(mon));
@@ -1218,11 +1192,13 @@ struct monst* mon;
     }
 }
 
+/*
+ * Parameters:
+ *   lth: desired length (caller handles adding 1 for terminator)
+ */
 /* allocate space for an object's name; removes old name if there is one */
 void
-new_oname(obj, lth)
-struct obj *obj;
-size_t lth; /* desired length (caller handles adding 1 for terminator) */
+new_oname(struct obj *obj, size_t lth)
 {
     if (lth) {
         /* allocate oextra if necessary; otherwise get rid of old name */
@@ -1240,8 +1216,7 @@ size_t lth; /* desired length (caller handles adding 1 for terminator) */
 
 /* release an object's name; retains oextra even if all fields are now null */
 void
-free_oname(obj)
-struct obj *obj;
+free_oname(struct obj *obj)
 {
     if (has_oname(obj)) {
         free((genericptr_t) ONAME(obj));
@@ -1255,8 +1230,7 @@ struct obj *obj;
  *  if it doesn't.
  */
 const char *
-safe_oname(obj)
-struct obj *obj;
+safe_oname(struct obj *obj)
 {
     if (has_oname(obj))
         return ONAME(obj);
@@ -1264,11 +1238,13 @@ struct obj *obj;
 }
 
 
+/*
+ * Parameters:
+ *   lth: desired length (caller handles adding 1 for terminator)
+ */
 /* allocate space for an object's name; removes old name if there is one */
 void
-new_uoname(obj, lth)
-struct obj* obj;
-size_t lth; /* desired length (caller handles adding 1 for terminator) */
+new_uoname(struct obj *obj, size_t lth)
 {
     if (lth) {
         /* allocate oextra if necessary; otherwise get rid of old name */
@@ -1287,8 +1263,7 @@ size_t lth; /* desired length (caller handles adding 1 for terminator) */
 
 /* release an object's name; retains oextra even if all fields are now null */
 void
-free_uoname(obj)
-struct obj* obj;
+free_uoname(struct obj *obj)
 {
     if (has_uoname(obj)) {
         free((genericptr_t)UONAME(obj));
@@ -1302,8 +1277,7 @@ struct obj* obj;
  *  if it doesn't.
  */
 const char*
-safe_uoname(obj)
-struct obj* obj;
+safe_uoname(struct obj *obj)
 {
     if (has_uoname(obj))
         return UONAME(obj);
@@ -1314,9 +1288,7 @@ struct obj* obj;
 /* historical note: this returns a monster pointer because it used to
    allocate a new bigger block of memory to hold the monster and its name */
 struct monst *
-christen_monst(mtmp, name)
-struct monst *mtmp;
-const char *name;
+christen_monst(struct monst *mtmp, const char *name)
 {
     size_t lth;
     char buf[PL_PSIZ];
@@ -1335,9 +1307,7 @@ const char *name;
 }
 
 struct monst*
-u_name_monst(mtmp, name)
-struct monst* mtmp;
-const char* name;
+u_name_monst(struct monst *mtmp, const char *name)
 {
     size_t lth;
     char buf[PL_PSIZ];
@@ -1357,10 +1327,8 @@ const char* name;
 
 /* check whether user-supplied name matches or nearly matches an unnameable
    monster's name; if so, give an alternate reject message for do_mname() */
-STATIC_OVL boolean
-alreadynamed(mtmp, monnambuf, usrbuf)
-struct monst *mtmp;
-char *monnambuf, *usrbuf;
+static boolean
+alreadynamed(struct monst *mtmp, char *monnambuf, char *usrbuf)
 {
     char pronounbuf[10], *p;
 
@@ -1387,8 +1355,8 @@ char *monnambuf, *usrbuf;
 }
 
 /* allow player to assign a name to some chosen monster */
-STATIC_OVL void
-do_mname(VOID_ARGS)
+static void
+do_mname(void)
 {
     char buf[BUFSZ] = DUMMY, monnambuf[BUFSZ], qbuf[QBUFSZ];
     coord cc;
@@ -1493,17 +1461,16 @@ do_mname(VOID_ARGS)
     }
 }
 
-STATIC_VAR int via_naming = 0;
+static int via_naming = 0;
 
 /*
  * This routine used to change the address of 'obj' so be unsafe if not
  * used with extreme care.  Applying a name to an object no longer
  * allocates a replacement object, so that old risk is gone.
  */
-STATIC_OVL
+static
 void
-do_uoname(obj)
-register struct obj *obj;
+do_uoname(struct obj *obj)
 {
     if (!obj)
         return;
@@ -1542,9 +1509,7 @@ register struct obj *obj;
 }
 
 struct obj *
-oname(obj, name)
-struct obj *obj;
-const char *name;
+oname(struct obj *obj, const char *name)
 {
     size_t lth;
     char buf[PL_PSIZ];
@@ -1588,9 +1553,7 @@ const char *name;
 
 
 struct obj*
-uoname(obj, name)
-struct obj* obj;
-const char* name;
+uoname(struct obj *obj, const char *name)
 {
     size_t lth;
     char buf[PL_PSIZ];
@@ -1610,14 +1573,13 @@ const char* name;
     return obj;
 }
 
-STATIC_VAR NEARDATA const char callable[] = {
+static NEARDATA const char callable[] = {
     SCROLL_CLASS, POTION_CLASS, WAND_CLASS,  RING_CLASS, AMULET_CLASS, FOOD_CLASS,
     GEM_CLASS, SPBOOK_CLASS, ARMOR_CLASS, TOOL_CLASS, MISCELLANEOUS_CLASS, WEAPON_CLASS, 0
 };
 
 boolean
-objtyp_is_callable(i)
-int i;
+objtyp_is_callable(int i)
 {
     return (boolean) (objects[i].oc_uname
                       || (OBJ_DESCR(objects[i])
@@ -1625,7 +1587,7 @@ int i;
 }
 
 int
-doname_specific_object(VOID_ARGS)
+doname_specific_object(void)
 {
     struct obj* obj = 0;
     char allowall[2];
@@ -1639,7 +1601,7 @@ doname_specific_object(VOID_ARGS)
 }
 
 int
-doname_type_of_object(VOID_ARGS)
+doname_type_of_object(void)
 {
     struct obj* obj = 0;
     obj = getobj(callable, "call", 0, "");
@@ -1662,7 +1624,7 @@ doname_type_of_object(VOID_ARGS)
 
 /* C and #name commands - player can name monster or object or type of obj */
 int
-docallcmd(VOID_ARGS)
+docallcmd(void)
 {
     struct obj *obj;
     winid win;
@@ -1762,9 +1724,8 @@ docallcmd(VOID_ARGS)
 }
 
 /* for use by safe_qbuf() */
-STATIC_PTR char *
-docall_xname(obj)
-struct obj *obj;
+static char *
+docall_xname(struct obj *obj)
 {
     struct obj otemp;
 
@@ -1801,9 +1762,7 @@ struct obj *obj;
 }
 
 void
-docall(obj, introline)
-struct obj *obj;
-const char* introline;
+docall(struct obj *obj, const char *introline)
 {
     char buf[BUFSZ] = DUMMY, qbuf[QBUFSZ];
     char **str1;
@@ -1863,8 +1822,8 @@ const char* introline;
     }
 }
 
-STATIC_OVL void
-namefloorobj(VOID_ARGS)
+static void
+namefloorobj(void)
 {
     coord cc;
     int glyph;
@@ -1946,7 +1905,7 @@ namefloorobj(VOID_ARGS)
     }
 }
 
-STATIC_VAR const char *const ghostnames[] = {
+static const char *const ghostnames[] = {
     /* these names should have length < PL_NSIZ */
     /* Capitalize the names for aesthetics -dgk */
     "Adri",    "Andries",       "Andreas",     "Bert",    "David",  "Dirk",
@@ -1959,7 +1918,7 @@ STATIC_VAR const char *const ghostnames[] = {
 
 /* ghost names formerly set by x_monnam(), now by makemon() instead */
 const char *
-rndghostname(VOID_ARGS)
+rndghostname(void)
 {
     return rn2(7) ? ghostnames[rn2(SIZE(ghostnames))] : (const char *) plname;
 }
@@ -1982,28 +1941,25 @@ rndghostname(VOID_ARGS)
  * noname_monnam(mon,article):
  *              article newt    art xan art invisible orc       art dog
  */
+ /* ARTICLE_NONE, ARTICLE_THE, ARTICLE_A: obvious
+  * ARTICLE_YOUR: "your" on pets, "the" on everything else
+  *
+  * If the monster would be referred to as "it" or if the monster has a name
+  * _and_ there is no adjective, "invisible", "saddled", etc., override this
+  * and always use no article.
+  */
+  /* SUPPRESS_IT, SUPPRESS_INVISIBLE, SUPPRESS_HALLUCINATION, SUPPRESS_SADDLE.
+   * EXACT_NAME: combination of all the above
+   * SUPPRESS_NAME: omit monster's assigned name (unless uniq w/ pname).
+   */
+
+
 
 /* Bug: if the monster is a priest or shopkeeper, not every one of these
  * options works, since those are special cases.
  */
 char *
-x_monnam(mtmp, article, adjective, suppress, called)
-register struct monst *mtmp;
-int article;
-/* ARTICLE_NONE, ARTICLE_THE, ARTICLE_A: obvious
- * ARTICLE_YOUR: "your" on pets, "the" on everything else
- *
- * If the monster would be referred to as "it" or if the monster has a name
- * _and_ there is no adjective, "invisible", "saddled", etc., override this
- * and always use no article.
- */
-const char *adjective;
-int suppress;
-/* SUPPRESS_IT, SUPPRESS_INVISIBLE, SUPPRESS_HALLUCINATION, SUPPRESS_SADDLE.
- * EXACT_NAME: combination of all the above
- * SUPPRESS_NAME: omit monster's assigned name (unless uniq w/ pname).
- */
-boolean called;
+x_monnam(struct monst *mtmp, int article, const char *adjective, int suppress, boolean called)
 {
     char *buf = nextmbuf();
     struct permonst *mdat = mtmp->data;
@@ -2212,16 +2168,14 @@ boolean called;
 }
 
 char *
-l_monnam(mtmp)
-struct monst *mtmp;
+l_monnam(struct monst *mtmp)
 {
     return x_monnam(mtmp, ARTICLE_NONE, (char *) 0,
                     (has_mname(mtmp)) ? SUPPRESS_SADDLE : 0, TRUE);
 }
 
 char *
-mon_nam(mtmp)
-struct monst *mtmp;
+mon_nam(struct monst *mtmp)
 {
     return x_monnam(mtmp, ARTICLE_THE, (char *) 0,
                     (has_mname(mtmp)) ? SUPPRESS_SADDLE : 0, FALSE);
@@ -2232,8 +2186,7 @@ struct monst *mtmp;
  * the player with a cursed potion of invisibility
  */
 char *
-noit_mon_nam(mtmp)
-struct monst *mtmp;
+noit_mon_nam(struct monst *mtmp)
 {
     return x_monnam(mtmp, ARTICLE_THE, (char *) 0,
                     (has_mname(mtmp)) ? (SUPPRESS_SADDLE | SUPPRESS_IT)
@@ -2242,8 +2195,7 @@ struct monst *mtmp;
 }
 
 char*
-noittame_mon_nam(mtmp)
-struct monst* mtmp;
+noittame_mon_nam(struct monst *mtmp)
 {
     if (mtmp && is_tame(mtmp))
         return noit_mon_nam(mtmp);
@@ -2252,28 +2204,25 @@ struct monst* mtmp;
 }
 
 char *
-Monnam(mtmp)
-struct monst *mtmp;
+Monnam(struct monst *mtmp)
 {
-    register char *bp = mon_nam(mtmp);
+    char *bp = mon_nam(mtmp);
 
     *bp = highc(*bp);
     return  bp;
 }
 
 char *
-noit_Monnam(mtmp)
-struct monst *mtmp;
+noit_Monnam(struct monst *mtmp)
 {
-    register char *bp = noit_mon_nam(mtmp);
+    char *bp = noit_mon_nam(mtmp);
 
     *bp = highc(*bp);
     return  bp;
 }
 
 char*
-noittame_Monnam(mtmp)
-struct monst* mtmp;
+noittame_Monnam(struct monst *mtmp)
 {
     if (mtmp && is_tame(mtmp))
         return noit_Monnam(mtmp);
@@ -2283,9 +2232,7 @@ struct monst* mtmp;
 
 /* return "a dog" rather than "Fido", honoring hallucination and visibility */
 char *
-noname_monnam(mtmp, article)
-struct monst *mtmp;
-int article;
+noname_monnam(struct monst *mtmp, int article)
 {
     return x_monnam(mtmp, article, (char *) 0, SUPPRESS_NAME, FALSE);
 }
@@ -2293,16 +2240,14 @@ int article;
 /* monster's own name -- overrides hallucination and [in]visibility
    so shouldn't be used in ordinary messages (mainly for disclosure) */
 char *
-m_monnam(mtmp)
-struct monst *mtmp;
+m_monnam(struct monst *mtmp)
 {
     return x_monnam(mtmp, ARTICLE_NONE, (char *) 0, EXACT_NAME, FALSE);
 }
 
 /* pet name: "your little dog" */
 char *
-y_monnam(mtmp)
-struct monst *mtmp;
+y_monnam(struct monst *mtmp)
 {
     int prefix, suppression_flag;
 
@@ -2318,16 +2263,13 @@ struct monst *mtmp;
 
 /* pet name: "Your little dog" */
 char*
-Ymonnam(mtmp)
-struct monst* mtmp;
+Ymonnam(struct monst *mtmp)
 {
     return upstart(y_monnam(mtmp));
 }
 
 char *
-Adjmonnam(mtmp, adj)
-struct monst *mtmp;
-const char *adj;
+Adjmonnam(struct monst *mtmp, const char *adj)
 {
     char *bp = x_monnam(mtmp, ARTICLE_THE, adj,
                         has_mname(mtmp) ? SUPPRESS_SADDLE : 0, FALSE);
@@ -2337,16 +2279,14 @@ const char *adj;
 }
 
 char *
-a_monnam(mtmp)
-struct monst *mtmp;
+a_monnam(struct monst *mtmp)
 {
     return x_monnam(mtmp, ARTICLE_A, (char *) 0,
                     has_mname(mtmp) ? SUPPRESS_SADDLE : 0, FALSE);
 }
 
 char *
-Amonnam(mtmp)
-struct monst *mtmp;
+Amonnam(struct monst *mtmp)
 {
     char *bp = a_monnam(mtmp);
 
@@ -2354,13 +2294,14 @@ struct monst *mtmp;
     return  bp;
 }
 
+/*
+ * Parameters:
+ *   article: only ARTICLE_NONE and ARTICLE_THE are handled here
+ */
 /* used for monster ID by the '/', ';', and 'C' commands to block remote
    identification of the endgame altars via their attending priests */
 char *
-distant_monnam(mon, article, outbuf)
-struct monst *mon;
-int article; /* only ARTICLE_NONE and ARTICLE_THE are handled here */
-char *outbuf;
+distant_monnam(struct monst *mon, int article, char *outbuf)
 {
     /* high priest(ess)'s identity is concealed on the Astral Plane,
        unless you're adjacent (overridden for hallucination which does
@@ -2391,9 +2332,8 @@ char *outbuf;
 }
 
 /* fake monsters used to be in a hard-coded array, now in a data file */
-STATIC_OVL char *
-bogusmon(buf, code)
-char *buf, *code;
+static char *
+bogusmon(char *buf, char *code)
 {
     char *mname = buf;
 
@@ -2412,8 +2352,7 @@ char *buf, *code;
 
 /* return a random monster name, for hallucination */
 char *
-rndmonnam(code)
-char *code;
+rndmonnam(char *code)
 {
     static char buf[BUFSZ];
     char *mname;
@@ -2439,8 +2378,7 @@ char *code;
 
 /* check bogusmon prefix to decide whether it's a personal name */
 boolean
-bogon_is_pname(code)
-char code;
+bogon_is_pname(char code)
 {
     if (!code)
         return FALSE;
@@ -2449,7 +2387,7 @@ char code;
 
 /* name of a Rogue player */
 const char *
-roguename(VOID_ARGS)
+roguename(void)
 {
     char *i, *opts;
 
@@ -2467,7 +2405,7 @@ roguename(VOID_ARGS)
 }
 
 #define NUM_HCOLORS 34
-STATIC_VAR NEARDATA const char *const hcolors[NUM_HCOLORS] = {
+static NEARDATA const char *const hcolors[NUM_HCOLORS] = {
     "ultraviolet", "infrared", "bluish-orange", "reddish-green", "dark white",
     "light black", "sky blue-pink", "salty", "sweet", "sour", "bitter",
     "striped", "spiral", "swirly", "plaid", "checkered", "argyle", "paisley",
@@ -2477,7 +2415,7 @@ STATIC_VAR NEARDATA const char *const hcolors[NUM_HCOLORS] = {
     "octarine", /* Discworld: the Colour of Magic */
 };
 
-STATIC_VAR NEARDATA uchar const hcolors2nhcolor[NUM_HCOLORS] = {
+static NEARDATA uchar const hcolors2nhcolor[NUM_HCOLORS] = {
     CLR_MAGENTA, CLR_RED, CLR_ORANGE, CLR_GREEN, CLR_GRAY,
     CLR_GRAY, CLR_BRIGHT_MAGENTA, CLR_MAX, CLR_MAX, CLR_MAX, CLR_MAX,
     CLR_MAX, CLR_MAX, CLR_MAX, CLR_MAX, CLR_MAX, CLR_MAX, CLR_MAX,
@@ -2488,8 +2426,7 @@ STATIC_VAR NEARDATA uchar const hcolors2nhcolor[NUM_HCOLORS] = {
 };
 
 const char *
-hcolor(colorpref)
-const char *colorpref;
+hcolor(const char *colorpref)
 {
     return hcolor_multi(colorpref, (int*)0, 0);
     //return (Hallucination || !colorpref)
@@ -2498,45 +2435,37 @@ const char *colorpref;
 }
 
 const char*
-hcolor_multi_buf0(colorpref)
-const char* colorpref;
+hcolor_multi_buf0(const char *colorpref)
 {
     return hcolor_multi(colorpref, get_colorless_multicolor_buffer(), 0);
 }
 
 const char*
-hcolor_multi_buf1(colorpref)
-const char* colorpref;
+hcolor_multi_buf1(const char *colorpref)
 {
     return hcolor_multi(colorpref, get_colorless_multicolor_buffer(), 1);
 }
 
 const char*
-hcolor_multi_buf2(colorpref)
-const char* colorpref;
+hcolor_multi_buf2(const char *colorpref)
 {
     return hcolor_multi(colorpref, get_colorless_multicolor_buffer(), 2);
 }
 
 const char*
-hcolor_multi_buf3(colorpref)
-const char* colorpref;
+hcolor_multi_buf3(const char *colorpref)
 {
     return hcolor_multi(colorpref, get_colorless_multicolor_buffer(), 3);
 }
 
 const char*
-hcolor_multi_buf4(colorpref)
-const char* colorpref;
+hcolor_multi_buf4(const char *colorpref)
 {
     return hcolor_multi(colorpref, get_colorless_multicolor_buffer(), 4);
 }
 
 const char*
-hcolor_multi(colorpref, multicolors_buf, multicolor_idx)
-const char* colorpref;
-int* multicolors_buf;
-int multicolor_idx;
+hcolor_multi(const char *colorpref, int *multicolors_buf, int multicolor_idx)
 {
     if (colorpref && !*colorpref)
     {
@@ -2567,8 +2496,7 @@ int multicolor_idx;
 }
 
 int
-color_name_to_nhcolor(colorpref)
-const char* colorpref;
+color_name_to_nhcolor(const char *colorpref)
 {
     int nhcolor;
     if (!colorpref || !*colorpref || colorpref == NH_COLORLESS)
@@ -2610,7 +2538,7 @@ const char* colorpref;
 
 /* return a random real color unless hallucinating */
 const char *
-rndcolor(VOID_ARGS)
+rndcolor(void)
 {
     int k = rn2(CLR_MAX);
 
@@ -2619,7 +2547,7 @@ rndcolor(VOID_ARGS)
                                            : c_obj_colors[k];
 }
 
-STATIC_VAR NEARDATA const char *const hliquids[] = {
+static NEARDATA const char *const hliquids[] = {
     "yoghurt", "oobleck", "clotted blood", "diluted water", "purified water",
     "instant coffee", "tea", "herbal infusion", "liquid rainbow",
     "creamy foam", "mulled wine", "bouillon", "nectar", "grog", "flubber",
@@ -2630,8 +2558,7 @@ STATIC_VAR NEARDATA const char *const hliquids[] = {
 };
 
 const char *
-hliquid(liquidpref)
-const char *liquidpref;
+hliquid(const char *liquidpref)
 {
     return (Hallucination || !liquidpref) ? hliquids[rn2(SIZE(hliquids))]
                                           : liquidpref;
@@ -2639,7 +2566,7 @@ const char *liquidpref;
 
 /* Aliases for road-runner nemesis
  */
-STATIC_VAR const char *const coynames[] = {
+static const char *const coynames[] = {
     "Carnivorous Vulgaris", "Road-Runnerus Digestus", "Eatibus Anythingus",
     "Famishus-Famishus", "Eatibus Almost Anythingus", "Eatius Birdius",
     "Famishius Fantasticus", "Eternalii Famishiis", "Famishus Vulgarus",
@@ -2651,9 +2578,7 @@ STATIC_VAR const char *const coynames[] = {
 };
 
 char *
-coyotename(mtmp, buf)
-struct monst *mtmp;
-char *buf;
+coyotename(struct monst *mtmp, char *buf)
 {
     if (mtmp && buf) {
         Sprintf(buf, "%s - %s",
@@ -2665,8 +2590,7 @@ char *buf;
 }
 
 char *
-rndorcname(s)
-char *s;
+rndorcname(char *s)
 {
     static const char *v[] = { "a", "ai", "og", "u" };
     static const char *snd[] = { "gor", "gris", "un", "bane", "ruk",
@@ -2686,8 +2610,7 @@ char *s;
 
 
 char*
-randomize_dwarf_name(s)
-char* s;
+randomize_dwarf_name(char *s)
 {
     static const char* start[] = { "th", "m", "d", "thr", "g",
         "d", "t", "l", "b", "", "n", "f", "fr", "gr", "aggr" };
@@ -2719,8 +2642,7 @@ char* s;
 }
 
 char*
-randomize_elf_name(s)
-char* s;
+randomize_elf_name(char *s)
 {
     static const char* start[] = { "", "", "", "g", "gal", "b", "c", "cel",
         "d", "l", "b", "n", "f", "f", "gl", "gw" };
@@ -2757,8 +2679,7 @@ char* s;
 }
 
 char*
-randomize_gnome_name(s)
-char* s;
+randomize_gnome_name(char *s)
 {
     static const char* start[] = { "", "", "", "g", "h", "b", "p",
         "d", "l", "br", "n", "f", "sh", "w", "r", "z", "t", "fr", "gl", "v", "wr", "sch", "gn" };
@@ -2795,8 +2716,7 @@ char* s;
 
 
 char*
-randomize_hobbit_name(s)
-char* s;
+randomize_hobbit_name(char *s)
 {
     static const char* start[] = { "", "b", "bl", "s", "br",
         "d", "dr", "f", "fl", "fr", "g", "gr", "h", "l", "m", "p", "pr", "s", "t" };
@@ -2833,8 +2753,7 @@ char* s;
 }
 
 char*
-randomize_modron_name(s)
-char* s;
+randomize_modron_name(char *s)
 {
     static const char* start[] = { "alph", "bet", "gamm", "thet", "kapp", "zet", "iot", "delt", "et", "sigm", "omeg", "ypsil", "omicr" };
     static const char* v[] = { "a", "i", "o", "ati", "adri", "ahe" };
@@ -2850,8 +2769,7 @@ char* s;
 }
 
 char*
-randomize_gnoll_name(s)
-char* s;
+randomize_gnoll_name(char *s)
 {
     static const char* start[] = { "bh", "gh", "gn", "ghn", "gr" "th", "dh", "dr", "dhr", "br", "bhr", "rr", "rh" };
     static const char* v[] = { "a", "e", "o", "u", "y"  };
@@ -2867,8 +2785,7 @@ char* s;
 }
 
 char*
-randomize_flind_name(s)
-char* s;
+randomize_flind_name(char *s)
 {
     if (s)
     {
@@ -2882,8 +2799,7 @@ char* s;
 
 
 char*
-randomize_male_human_name(s)
-char* s;
+randomize_male_human_name(char *s)
 {
     static const char* names[] = { 
         "Ackley",
@@ -3185,8 +3101,7 @@ char* s;
 
 
 char*
-randomize_female_human_name(s)
-char* s;
+randomize_female_human_name(char *s)
 {
     static const char* names[] = {
         "Abby",
@@ -3577,8 +3492,7 @@ char* s;
 }
 
 char*
-randomize_demon_name(s)
-char* s;
+randomize_demon_name(char *s)
 {
     static const char* names[] = {
         "Baalzephon",
@@ -3701,8 +3615,7 @@ char* s;
 }
 
 char*
-randomize_undead_spellcaster_name(s)
-char* s;
+randomize_undead_spellcaster_name(char *s)
 {
     static const char* names[] = {
         "Arklem Greeth",
@@ -3733,8 +3646,7 @@ char* s;
 }
 
 char*
-randomize_angel_name(s)
-char* s;
+randomize_angel_name(char *s)
 {
     static const char* names[] = {
         "Aglibol",
@@ -3907,9 +3819,7 @@ char* s;
 
 
 struct monst *
-christen_orc(mtmp, gang, other)
-struct monst *mtmp;
-const char *gang, *other;
+christen_orc(struct monst *mtmp, const char *gang, const char *other)
 {
     int sz = 0;
     char buf[BUFSZ], buf2[BUFSZ], *orcname;
@@ -3940,7 +3850,7 @@ const char *gang, *other;
 }
 
 /* make sure "The Colour of Magic" remains the first entry in here */
-STATIC_VAR const char *const sir_Terry_novels[] = {
+static const char *const sir_Terry_novels[] = {
     "The Colour of Magic", "The Light Fantastic", "Equal Rites", "Mort",
     "Sourcery", "Wyrd Sisters", "Pyramids", "Guards! Guards!", "Eric",
     "Moving Pictures", "Reaper Man", "Witches Abroad", "Small Gods",
@@ -3954,14 +3864,14 @@ STATIC_VAR const char *const sir_Terry_novels[] = {
     "Raising Steam", "The Shepherd's Crown"
 };
 
-STATIC_OVL
+/*
+ * Parameters:
+ *   numrandomized: Only this first elements are included in randomization
+ *   excludedtitles, excludedtitles2: Requires a 64-bit long to work for more than 32 novels
+ */
+static
 const char*
-gettitle(titleidx, titlearray, arraysize, numrandomized, excludedtitles, excludedtitles2)
-short* titleidx;
-const char* const* titlearray;
-int arraysize;
-int numrandomized; /* Only this first elements are included in randomization */
-uint64_t excludedtitles, excludedtitles2; /* Requires a 64-bit long to work for more than 32 novels */
+gettitle(short *titleidx, const char* const *titlearray, int arraysize, int numrandomized, uint64_t excludedtitles, uint64_t excludedtitles2)
 {
     short num = (short)min(arraysize, numrandomized); /* num is the titles randomized before exclusions */
     short j, k = num; /* k is the titles randomized after exclusions */
@@ -4032,9 +3942,7 @@ uint64_t excludedtitles, excludedtitles2; /* Requires a 64-bit long to work for 
 }
 
 const char *
-noveltitle(novidx, excludedtitles, excludedtitles2)
-short* novidx;
-uint64_t excludedtitles, excludedtitles2;
+noveltitle(short *novidx, uint64_t excludedtitles, uint64_t excludedtitles2)
 {
     if (novidx && *novidx == -1)
         return (const char*)0; /* Blank */
@@ -4042,7 +3950,7 @@ uint64_t excludedtitles, excludedtitles2;
 }
 
 
-STATIC_VAR const char* const manual_names[MAX_MANUAL_TYPES] = {
+static const char* const manual_names[MAX_MANUAL_TYPES] = {
     /* Manuals */
     "Wands 101", "Armor 101", "Weapons 101", "Gray Stones 101",
     "Basics of Kicking", "Basics of Enchantment", "Basics of Eating and Drinking", "Introduction to Dangerous Monsters",
@@ -4060,10 +3968,12 @@ STATIC_VAR const char* const manual_names[MAX_MANUAL_TYPES] = {
     "Catalogue of Comestibles", "Catalogue of Gems and Stones", "Catalogue of Artifacts", "Catalogue of Amulets", "Catalogue of Mythic Powers",
 };
 
+/*
+ * Parameters:
+ *   mnlidx: >= 0 from array, -1 = blank, -2 = random
+ */
 const char*
-manualtitle(mnlidx, excludedtitles, excludedtitles2)
-short* mnlidx; /* >= 0 from array, -1 = blank, -2 = random */
-uint64_t excludedtitles, excludedtitles2;
+manualtitle(short *mnlidx, uint64_t excludedtitles, uint64_t excludedtitles2)
 {
     if (mnlidx && *mnlidx == -1)
         return (const char*)0; /* Blank */
@@ -4071,10 +3981,8 @@ uint64_t excludedtitles, excludedtitles2;
 }
 
 /* qsort comparison routine */
-STATIC_OVL int
-citemsortcmp(p, q)
-const void* p;
-const void* q;
+static int
+citemsortcmp(const void *p, const void *q)
 {
     short sp = *(short*)p;
     short sq = *(short*)q;
@@ -4095,10 +4003,8 @@ const void* q;
 }
 
 /* qsort comparison routine */
-STATIC_OVL int
-artilistsortcmp(p, q)
-const void* p;
-const void* q;
+static int
+artilistsortcmp(const void *p, const void *q)
 {
     short sp = *(short*)p;
     short sq = *(short*)q;
@@ -4113,10 +4019,8 @@ const void* q;
     return namediff;
 }
 
-STATIC_OVL int
-mythicprefixsortcmp(p, q)
-const void* p;
-const void* q;
+static int
+mythicprefixsortcmp(const void *p, const void *q)
 {
     short sp = *(short*)p;
     short sq = *(short*)q;
@@ -4127,10 +4031,8 @@ const void* q;
     return namediff;
 }
 
-STATIC_OVL int
-mythicsuffixsortcmp(p, q)
-const void* p;
-const void* q;
+static int
+mythicsuffixsortcmp(const void *p, const void *q)
 {
     short sp = *(short*)p;
     short sq = *(short*)q;
@@ -4142,17 +4044,13 @@ const void* q;
 }
 
 
-STATIC_VAR short sorted_citems[NUM_OBJECTS];
+static short sorted_citems[NUM_OBJECTS];
 
 #define CATALOGUE_MAGICAL 1
 #define CATALOGUE_CLERICAL 2
 
-STATIC_OVL void
-print_catalogue(datawin, obj, objectclass, cflags)
-winid datawin;
-struct obj* obj;
-int objectclass;
-uint64_t cflags;
+static void
+print_catalogue(winid datawin, struct obj *obj, int objectclass, uint64_t cflags)
 {
     short i, cnt = 0;
     char buf[BUFSZ];
@@ -4259,10 +4157,8 @@ uint64_t cflags;
     }
 }
 
-STATIC_OVL void
-print_artifact_catalogue(datawin, obj)
-winid datawin;
-struct obj* obj;
+static void
+print_artifact_catalogue(winid datawin, struct obj *obj)
 {
     short i, cnt = 0;
     char buf[BUFSZ];
@@ -4306,10 +4202,12 @@ struct obj* obj;
     }
 }
 
-STATIC_OVL void
-print_mythic_power_catalogue(datawin, obj)
-winid datawin;
-struct obj* obj UNUSED; /* Could be used to check for cursed status etc. */
+/*
+ * Parameters:
+ *   obj: Could be used to check for cursed status etc.
+ */
+static void
+print_mythic_power_catalogue(winid datawin, struct obj *obj UNUSED)
 {
     int prefixcnt = 0;
     int suffixcnt = 0;
@@ -4388,8 +4286,7 @@ struct obj* obj UNUSED; /* Could be used to check for cursed status etc. */
 }
 
 void
-read_manual(obj)
-struct obj* obj;
+read_manual(struct obj *obj)
 {
     if (!obj)
         return;
@@ -4797,9 +4694,7 @@ struct obj* obj;
 }
 
 const char *
-lookup_novel(lookname, idx)
-const char *lookname;
-short* idx;
+lookup_novel(const char *lookname, short *idx)
 {
     short k;
     /* Take American or U.K. spelling of this one */
@@ -4822,9 +4717,7 @@ short* idx;
 }
 
 const char*
-lookup_manual(lookname, idx)
-const char* lookname;
-short* idx;
+lookup_manual(const char *lookname, short *idx)
 {
     short k;
     for (k = 0; k < SIZE(manual_names); ++k) {
@@ -4843,7 +4736,7 @@ short* idx;
 }
 
 void
-reset_doname(VOID_ARGS)
+reset_doname(void)
 {
     via_naming = 0;
 }

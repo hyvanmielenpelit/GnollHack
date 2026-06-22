@@ -12,16 +12,16 @@
  */
 #include "hack.h"
 
-STATIC_DCL void FDECL(give_may_advance_msg, (int));
-STATIC_DCL boolean FDECL(could_advance, (int));
-STATIC_DCL boolean FDECL(peaked_skill, (int));
-STATIC_DCL int FDECL(slots_required, (int));
-STATIC_DCL int FDECL(slots_required_core, (int, int));
-STATIC_DCL void FDECL(skill_advance, (int));
-STATIC_DCL void FDECL(open_skill_cmd_menu, (int, BOOLEAN_P));
-STATIC_DCL void FDECL(doskilldescription, (int));
-STATIC_DCL const char* FDECL(get_skill_range_name, (int, BOOLEAN_P));
-STATIC_DCL int FDECL(adjust_skill_level, (enum p_skills, int));
+static void give_may_advance_msg(int);
+static boolean could_advance(int);
+static boolean peaked_skill(int);
+static int slots_required(int);
+static int slots_required_core(int, int);
+static void skill_advance(int);
+static void open_skill_cmd_menu(int, boolean);
+static void doskilldescription(int);
+static const char* get_skill_range_name(int, boolean);
+static int adjust_skill_level(enum p_skills, int);
 
 /* Categories whose names don't come from OBJ_NAME(objects[type])
  */
@@ -98,12 +98,11 @@ NEARDATA const char* const odd_skill_names_plural[NUM_PN_CATEGORIES] = {
                : odd_skill_names_plural[-skill_names_indices[type]])
 
 
-STATIC_VAR NEARDATA const char kebabable[] = { S_XORN, S_DRAGON, S_JABBERWOCK,
+static NEARDATA const char kebabable[] = { S_XORN, S_DRAGON, S_JABBERWOCK,
                                            S_NAGA, S_GIANT,  '\0' };
 
-STATIC_OVL void
-give_may_advance_msg(skill)
-int skill;
+static void
+give_may_advance_msg(int skill)
 {
     play_sfx_sound(SFX_GAIN_SKILL);
 
@@ -115,8 +114,7 @@ int skill;
 }
 
 const char*
-get_skill_name(skill_id)
-int skill_id;
+get_skill_name(int skill_id)
 {
     int absid = abs(skill_id);
     if (absid >= P_NUM_SKILLS)
@@ -126,8 +124,7 @@ int skill_id;
 }
 
 const char*
-get_skill_plural_name(skill_id)
-int skill_id;
+get_skill_plural_name(int skill_id)
 {
     int absid = abs(skill_id);
     if (absid >= P_NUM_SKILLS)
@@ -137,8 +134,7 @@ int skill_id;
 }
 
 const char*
-otyp_weapon_skill_name(otyp)
-int otyp;
+otyp_weapon_skill_name(int otyp)
 {
     schar type = objects[otyp].oc_skill;
     int skill = ((type < 0) ? -type : type);
@@ -147,8 +143,7 @@ int otyp;
 }
 
 const char*
-weapon_skill_name(obj)
-struct obj* obj;
+weapon_skill_name(struct obj *obj)
 {
     if (!obj)
         return "";
@@ -162,8 +157,7 @@ struct obj* obj;
    mostly used to shorten "you drop your <weapon>" messages when slippery
    fingers or polymorph causes hero to involuntarily drop wielded weapon(s) */
 const char *
-weapon_descr(obj)
-struct obj *obj;
+weapon_descr(struct obj *obj)
 {
     if (!obj)
         return empty_string;
@@ -244,9 +238,7 @@ struct obj *obj;
 }
 
 int
-weapon_range(ammo, launcher)
-struct obj* ammo;
-struct obj* launcher;
+weapon_range(struct obj *ammo, struct obj *launcher)
 {
     if (!ammo && !launcher)
         return 0;
@@ -255,10 +247,7 @@ struct obj* launcher;
 }
 
 int
-m_weapon_range(mtmp, ammo, launcher)
-struct monst* mtmp;
-struct obj* ammo;
-struct obj* launcher;
+m_weapon_range(struct monst *mtmp, struct obj *ammo, struct obj *launcher)
 {
     if (!mtmp)
         return 0;
@@ -343,14 +332,14 @@ struct obj* launcher;
 }
 
 /*
+ * Parameters:
+ *   use_type: 0 = Melee weapon (full enchantment bonuses), 1 = thrown weapon or missile (half, +1 damage has priority), 2 = launcher (half, +1 to-hit has priority)
+ */
+/*
  *      weapon_to_hit_value returns an integer representing the "to hit" bonuses
  *      of "otmp" against the monster.
  */
-int basehitval(otmp, mon, mattacker, use_type)
-struct obj* otmp;
-struct monst* mon;
-struct monst* mattacker;
-int use_type; // OBSOLETE: /* 0 = Melee weapon (full enchantment bonuses), 1 = thrown weapon or missile (half, +1 damage has priority), 2 = launcher (half, +1 to-hit has priority) */
+int basehitval(struct obj *otmp, struct monst *mon, struct monst *mattacker, int use_type)
 {
     if (!otmp || !mon)
         return 0;
@@ -399,11 +388,7 @@ int use_type; // OBSOLETE: /* 0 = Melee weapon (full enchantment bonuses), 1 = t
 }
 
 int
-weapon_to_hit_value(otmp, mon, mattacker, use_type)
-struct obj *otmp;
-struct monst *mon;
-struct monst* mattacker;
-int use_type;
+weapon_to_hit_value(struct obj *otmp, struct monst *mon, struct monst *mattacker, int use_type)
 {
     int tmp = 0;
     struct permonst *ptr = mon->data;
@@ -463,15 +448,15 @@ int use_type;
  */
 
 /*
+ * Parameters:
+ *   use_type: 0 = Melee weapon (full enchantment bonuses), 1 = thrown weapon or missile (half, +1 damage has priority), 2 = launcher (half, +1 to-hit has priority)
+ */
+/*
  *      weapon_dmg_value returns an integer representing the damage bonuses
  *      of "otmp" against the monster.
  */
 int
-weapon_dmg_value(otmp, mon, mattacker, use_type)
-struct obj *otmp;
-struct monst *mon;
-struct monst* mattacker;
-int use_type; //OBSOLETE /* 0 = Melee weapon (full enchantment bonuses), 1 = thrown weapon or missile (half, +1 damage has priority), 2 = launcher (half, +1 to-hit has priority) */
+weapon_dmg_value(struct obj *otmp, struct monst *mon, struct monst *mattacker, int use_type)
 {
     if (!otmp || !mon)
         return 0;
@@ -652,11 +637,7 @@ int use_type; //OBSOLETE /* 0 = Melee weapon (full enchantment bonuses), 1 = thr
 
 
 int
-weapon_total_dmg_value(otmp, mon, mattacker, use_type)
-struct obj* otmp;
-struct monst* mon;
-struct monst* mattacker;
-int use_type;
+weapon_total_dmg_value(struct obj *otmp, struct monst *mon, struct monst *mattacker, int use_type)
 {
     int basedmg = weapon_dmg_value(otmp, mon, mattacker, use_type);
     int edmg = weapon_extra_dmg_value(otmp, mon, mattacker, basedmg);
@@ -665,9 +646,7 @@ int use_type;
 }
 
 int
-get_critical_strike_percentage_chance(weapon, mon, mattacker)
-struct obj* weapon;
-struct monst *mon, *mattacker;
+get_critical_strike_percentage_chance(struct obj *weapon, struct monst *mon, struct monst *mattacker)
 {
     if (!mon || !mattacker)
     {
@@ -683,11 +662,7 @@ struct monst *mon, *mattacker;
 }
 
 int
-weapon_extra_dmg_value(otmp, mon, mattacker, basedmg)
-struct obj* otmp;
-struct monst* mon;
-struct monst* mattacker;
-int basedmg;
+weapon_extra_dmg_value(struct obj *otmp, struct monst *mon, struct monst *mattacker, int basedmg)
 {
     if (!otmp || !mon)
         return 0;
@@ -759,10 +734,7 @@ int basedmg;
 }
 
 boolean
-eligible_for_extra_damage(otmp, mon, mattacker)
-struct obj* otmp;
-struct monst* mon;
-struct monst* mattacker;
+eligible_for_extra_damage(struct obj *otmp, struct monst *mon, struct monst *mattacker)
 {
     int otyp = otmp->otyp;
     struct permonst* ptr = mon->data;
@@ -787,14 +759,14 @@ struct monst* mattacker;
         return FALSE;
 }
 
+/*
+ * Parameters:
+ *   silverhit_p: output flag mask for silver bonus
+ */
 /* check whether blessed and/or silver damage applies for *non-weapon* hit;
    return value is the amount of the extra damage */
 int
-special_dmgval(magr, mdef, armask, silverhit_p)
-struct monst *magr, *mdef;
-int64_t armask; /* armor mask, multiple bits accepted for W_ARMC|W_ARM|W_ARMU
-              * or W_ARMG|W_RINGL|W_RINGR only */
-int64_t *silverhit_p; /* output flag mask for silver bonus */
+special_dmgval(struct monst *magr, struct monst *mdef, int64_t armask, int64_t *silverhit_p)
 {
     struct obj *obj;
     struct permonst *ptr = mdef->data;
@@ -882,10 +854,7 @@ int64_t *silverhit_p; /* output flag mask for silver bonus */
 /* give a "silver <item> sears <target>" message;
    not used for weapon hit, so we only handle rings */
 void
-silver_sears(magr, mdef, silverhit)
-struct monst *magr UNUSED;
-struct monst *mdef;
-int64_t silverhit;
+silver_sears(struct monst *magr UNUSED, struct monst *mdef, int64_t silverhit)
 {
     char rings[20]; /* plenty of room for "rings" */
     int ltyp = ((uleft && (silverhit & W_RINGL) != 0L)
@@ -918,13 +887,13 @@ int64_t silverhit;
     }
 }
 
-STATIC_DCL struct obj *FDECL(oselect, (struct monst *, int));
-STATIC_DCL struct obj* FDECL(oselect_with_best_exceptionality, (struct monst*, int));
-STATIC_DCL struct obj* FDECL(oselect_with_best_bounded_exceptionality, (struct monst*, int, int, int));
-//STATIC_DCL struct obj* FDECL(oskillselect_with_best_exceptionality, (struct monst*, SCHAR_P));
-STATIC_DCL struct obj* FDECL(oskillselect_with_best_bounded_exceptionality, (struct monst*, SCHAR_P, int, int));
-STATIC_DCL struct obj* FDECL(oselect_with_exceptionality, (struct monst*, int, int));
-STATIC_DCL struct obj* FDECL(oskillselect_with_exceptionality, (struct monst*, SCHAR_P, int));
+static struct obj *oselect(struct monst *, int);
+static struct obj* oselect_with_best_exceptionality(struct monst*, int);
+static struct obj* oselect_with_best_bounded_exceptionality(struct monst*, int, int, int);
+//static struct obj* oskillselect_with_best_exceptionality(struct monst*, schar);
+static struct obj* oskillselect_with_best_bounded_exceptionality(struct monst*, schar, int, int);
+static struct obj* oselect_with_exceptionality(struct monst*, int, int);
+static struct obj* oskillselect_with_exceptionality(struct monst*, schar, int);
 #define Oselect(x)                      \
     if ((otmp = oselect(mtmp, x)) != 0) \
         return otmp;
@@ -933,18 +902,14 @@ STATIC_DCL struct obj* FDECL(oskillselect_with_exceptionality, (struct monst*, S
     if ((otmp = oselect_with_exceptionality(mtmp, x, e)) != 0) \
         return otmp;
 
-STATIC_OVL struct obj*
-oselect(mtmp, otyp)
-struct monst* mtmp;
-int otyp;
+static struct obj*
+oselect(struct monst *mtmp, int otyp)
 {
     return oselect_with_exceptionality(mtmp, otyp, -1);
 }
 
-STATIC_OVL struct obj *
-oselect_with_exceptionality(mtmp, otyp, exceptionality)
-struct monst *mtmp;
-int otyp, exceptionality;
+static struct obj *
+oselect_with_exceptionality(struct monst *mtmp, int otyp, int exceptionality)
 {
     struct obj *otmp;
 
@@ -963,11 +928,8 @@ int otyp, exceptionality;
     return (struct obj *) 0;
 }
 
-STATIC_OVL struct obj*
-oskillselect_with_exceptionality(mtmp, oskill, exceptionality)
-struct monst* mtmp;
-schar oskill;
-int exceptionality;
+static struct obj*
+oskillselect_with_exceptionality(struct monst *mtmp, schar oskill, int exceptionality)
 {
     struct obj* otmp;
 
@@ -983,10 +945,8 @@ int exceptionality;
     return (struct obj*)0;
 }
 
-STATIC_OVL struct obj*
-oselect_with_best_bounded_exceptionality(mtmp, otyp, lowestexc, highestexc)
-struct monst* mtmp;
-int otyp, lowestexc, highestexc;
+static struct obj*
+oselect_with_best_bounded_exceptionality(struct monst *mtmp, int otyp, int lowestexc, int highestexc)
 {
     if (!mtmp->minvent)
         return (struct obj*)0;
@@ -1002,10 +962,8 @@ int otyp, lowestexc, highestexc;
     return (struct obj*)0;
 }
 
-STATIC_OVL struct obj*
-oselect_with_best_exceptionality(mtmp, otyp)
-struct monst* mtmp;
-int otyp;
+static struct obj*
+oselect_with_best_exceptionality(struct monst *mtmp, int otyp)
 {
     if (!mtmp->minvent)
         return (struct obj*)0;
@@ -1025,11 +983,8 @@ int otyp;
     return oselect_with_best_bounded_exceptionality(mtmp, otyp, lowestexc, highestexc);
 }
 
-STATIC_OVL struct obj*
-oskillselect_with_best_bounded_exceptionality(mtmp, oskill, lowestexc, highestexc)
-struct monst* mtmp;
-schar oskill;
-int lowestexc, highestexc;
+static struct obj*
+oskillselect_with_best_bounded_exceptionality(struct monst *mtmp, schar oskill, int lowestexc, int highestexc)
 {
     if (!mtmp->minvent)
         return (struct obj*)0;
@@ -1046,10 +1001,8 @@ int lowestexc, highestexc;
 }
 
 #if 0
-STATIC_OVL struct obj*
-oskillselect_with_best_exceptionality(mtmp, oskill)
-struct monst* mtmp;
-schar oskill;
+static struct obj*
+oskillselect_with_best_exceptionality(struct monst *mtmp, schar oskill)
 {
     if (!mtmp->minvent)
         return (struct obj*)0;
@@ -1071,7 +1024,7 @@ schar oskill;
 #endif
 
 /* TODO: have monsters use aklys' throw-and-return */
-STATIC_VAR NEARDATA const int rwep[] = {
+static NEARDATA const int rwep[] = {
     DWARVISH_SPEAR, ELVEN_SPEAR, SPEAR, ORCISH_SPEAR, JAVELIN,
     SHURIKEN, YA, ELVEN_ARROW, ARROW, ORCISH_ARROW,
     CROSSBOW_BOLT, GNOLLISH_QUARREL, 
@@ -1081,20 +1034,19 @@ STATIC_VAR NEARDATA const int rwep[] = {
     /* BOOMERANG, */ CREAM_PIE
 };
 
-STATIC_VAR NEARDATA const int pwep[] = { HALBERD,  BARDICHE, SPETUM,
+static NEARDATA const int pwep[] = { HALBERD,  BARDICHE, SPETUM,
                                      BILL_GUISARME, VOULGE,   RANSEUR,
                                      GUISARME,      GLAIVE,   LUCERN_HAMMER,
                                      BEC_DE_CORBIN, FAUCHARD, PARTISAN,
                                      LANCE };
 
-STATIC_VAR struct obj *propellor;
+static struct obj *propellor;
 
 /* select a ranged weapon for the monster */
 struct obj *
-select_rwep(mtmp)
-register struct monst *mtmp;
+select_rwep(struct monst *mtmp)
 {
-    register struct obj *otmp;
+    struct obj *otmp;
     struct obj *mwep;
     boolean mweponly;
     int i;
@@ -1292,8 +1244,7 @@ register struct monst *mtmp;
 
 /* is 'obj' a type of weapon that any monster knows how to throw? */
 boolean
-monmightthrowwep(obj)
-struct obj *obj;
+monmightthrowwep(struct obj *obj)
 {
     short idx;
 
@@ -1304,7 +1255,7 @@ struct obj *obj;
 }
 
 /* Weapons in order of preference */
-STATIC_VAR const NEARDATA short hwep[] = 
+static const NEARDATA short hwep[] = 
 {
     BLACK_BLADE_OF_DISINTEGRATION, GLASS_SWORD, SWORD_OF_NINE_LIVES_STEALING, WRAITHBLADE,
     TSURUGI, RUNESWORD, RUNED_FLAIL, HEAVENLY_OAK_MACE,
@@ -1328,13 +1279,10 @@ STATIC_VAR const NEARDATA short hwep[] =
 
 /* select a hand to hand weapon for the monster */
 struct obj *
-select_hwep(mtmp, poleok, tx, ty)
-register struct monst *mtmp;
-boolean poleok;
-xchar tx, ty;
+select_hwep(struct monst *mtmp, boolean poleok, xchar tx, xchar ty)
 {
-    register struct obj *otmp;
-    register int i;
+    struct obj *otmp;
+    int i;
     boolean strong = (strongmonst(mtmp->data) || mtmp->data->str >= 10);
     boolean wearing_shield = (mtmp->worn_item_flags & W_ARMS) != 0;
 
@@ -1401,11 +1349,9 @@ xchar tx, ty;
 
 /* select a nth suitable hand to hand weapon for the marilith */
 struct obj*
-select_multiweapon_nth_hwep(mtmp, handindex)
-register struct monst* mtmp;
-int handindex;
+select_multiweapon_nth_hwep(struct monst *mtmp, int handindex)
 {
-    register struct obj* otmp;
+    struct obj* otmp;
     //boolean strong = (strongmonst(mtmp->data) || mtmp->data->str >= 13);
     boolean wearing_shield = (mtmp->worn_item_flags & W_ARMS) != 0;
     int weaponindex = 1; //Start with second hand, if free
@@ -1450,9 +1396,7 @@ int handindex;
  * otherwise never unwield stuff on their own.  Might print message.
  */
 void
-possibly_unwield(mon, polyspot)
-struct monst *mon;
-boolean polyspot;
+possibly_unwield(struct monst *mon, boolean polyspot)
 {
     struct obj *obj, *mw_tmp;
 
@@ -1510,10 +1454,7 @@ boolean polyspot;
  * Returns 1 if the monster took time to do it, 0 if it did not.
  */
 int
-mon_wield_item(mon, verbose_fail, tx, ty)
-register struct monst *mon;
-boolean verbose_fail;
-xchar tx, ty;
+mon_wield_item(struct monst *mon, boolean verbose_fail, xchar tx, xchar ty)
 {
     if (!mon)
         return 0;
@@ -1660,8 +1601,7 @@ xchar tx, ty;
 
 /* force monster to stop wielding current weapon, if any */
 void
-mwepgone(mon)
-struct monst *mon;
+mwepgone(struct monst *mon)
 {
     struct obj *mwep = MON_WEP(mon);
 
@@ -1673,7 +1613,7 @@ struct monst *mon;
 
 /* attack bonus for strength & dexterity */
 int
-u_strdex_to_hit_bonus(VOID_ARGS)
+u_strdex_to_hit_bonus(void)
 {
     int sbon = 0;
     int str = ACURR(A_STR), dex = ACURR(A_DEX);
@@ -1689,7 +1629,7 @@ u_strdex_to_hit_bonus(VOID_ARGS)
 
 /* attack bonus for dexterity only for ranged*/
 int
-u_ranged_strdex_to_hit_bonus(VOID_ARGS)
+u_ranged_strdex_to_hit_bonus(void)
 {
     int sbon = 0;
     int /*str = ACURR(A_STR),*/ dex = ACURR(A_DEX);
@@ -1700,15 +1640,12 @@ u_ranged_strdex_to_hit_bonus(VOID_ARGS)
     return sbon;
 }
 
-int strength_tohit_bonus(str)
-int str;
+int strength_tohit_bonus(int str)
 {
     return (int)strength_tohit_bonus_core(str, FALSE);
 }
 
-double strength_tohit_bonus_core(str, is_average)
-int str;
-boolean is_average;
+double strength_tohit_bonus_core(int str, boolean is_average)
 {
     double sbon = 0;
     if (str <= 18)
@@ -1748,7 +1685,7 @@ boolean is_average;
 
 /* damage bonus for strength */
 int
-u_str_dmg_bonus(VOID_ARGS)
+u_str_dmg_bonus(void)
 {
     int str = ACURR(A_STR);
 
@@ -1757,22 +1694,19 @@ u_str_dmg_bonus(VOID_ARGS)
 
 /* damage bonus for strength for thrown weapons (bows get full strength)*/
 int
-u_thrown_str_dmg_bonus(VOID_ARGS)
+u_thrown_str_dmg_bonus(void)
 {
     return u_str_dmg_bonus() / 2;
 }
 
 int
-strength_damage_bonus(str)
-int str;
+strength_damage_bonus(int str)
 {
     return (int)strength_damage_bonus_core(str, FALSE);
 }
 
 double
-strength_damage_bonus_core(str, is_average)
-int str;
-boolean is_average;
+strength_damage_bonus_core(int str, boolean is_average)
 {
     double sbon = 0;
     if (str <= 18)
@@ -1814,8 +1748,7 @@ boolean is_average;
 
 /* monster damage bonus for strength*/
 int
-m_str_dmg_bonus(mon)
-struct monst* mon;
+m_str_dmg_bonus(struct monst *mon)
 {
     int bonus = 0;
 
@@ -1830,8 +1763,7 @@ struct monst* mon;
 
 /* monster damage bonus for strength for throw weapons (bows get full damage bonus)*/
 int
-m_thrown_str_dmg_bonus(mon)
-struct monst* mon;
+m_thrown_str_dmg_bonus(struct monst *mon)
 {
     int bonus = 0;
 
@@ -1846,8 +1778,7 @@ struct monst* mon;
 
 /* monster to hit bonus for strength and dex*/
 int
-m_strdex_to_hit_bonus(mon)
-struct monst* mon;
+m_strdex_to_hit_bonus(struct monst *mon)
 {
     int bonus = 0;
 
@@ -1862,8 +1793,7 @@ struct monst* mon;
 
 /* monster to hit bonus for dex only for ranged*/
 int
-m_ranged_strdex_to_hit_bonus(mon)
-struct monst* mon;
+m_ranged_strdex_to_hit_bonus(struct monst *mon)
 {
     int bonus = 0;
 
@@ -1876,37 +1806,34 @@ struct monst* mon;
 }
 
 int
-dexterity_ac_bonus(dex)
-int dex;
+dexterity_ac_bonus(int dex)
 {
     return max(-3, (min(25, dex) - 8) / 2);
 }
 
-int dexterity_tohit_bonus(dex)
-int dex;
+int dexterity_tohit_bonus(int dex)
 {
     return max(-3, (min(25, dex) - 9) / 2);
 }
 
-int dexterity_ranged_tohit_bonus(dex)
-int dex;
+int dexterity_ranged_tohit_bonus(int dex)
 {
     return max(-6, (min(25, dex) - 9));
 }
 
-double constitution_hp_bonus(con)
-int con;
+double constitution_hp_bonus(int con)
 {
     return  max(-2.0, (double)(min(25, con) - 7) / 2.0);
 }
 
 
+/*
+ * Parameters:
+ *   amt: positive: new value; negative: increment by -amt; zero: no-op
+ */
 /* increase a towel's wetness */
 void
-wet_a_towel(obj, amt, verbose)
-struct obj *obj;
-int amt; /* positive: new value; negative: increment by -amt; zero: no-op */
-boolean verbose;
+wet_a_towel(struct obj *obj, int amt, boolean verbose)
 {
     int newspe = (amt <= 0) ? obj->special_quality - amt : amt;
 
@@ -1936,12 +1863,13 @@ boolean verbose;
     */
 }
 
+/*
+ * Parameters:
+ *   amt: positive: new value; negative: decrement by -amt; zero: no-op
+ */
 /* decrease a towel's wetness */
 void
-dry_a_towel(obj, amt, verbose)
-struct obj *obj;
-int amt; /* positive: new value; negative: decrement by -amt; zero: no-op */
-boolean verbose;
+dry_a_towel(struct obj *obj, int amt, boolean verbose)
 {
     int newspe = (amt <= 0) ? obj->special_quality + amt : amt;
 
@@ -1969,8 +1897,7 @@ boolean verbose;
 }
 
 const char*
-skill_level_name_core(lvl)
-int lvl;
+skill_level_name_core(int lvl)
 {
     const char* ptr;
     switch (lvl) {
@@ -2001,12 +1928,13 @@ int lvl;
     return ptr;
 }
 
+/*
+ * Parameters:
+ *   style: 0 = normal, 1 = max, 2 = next level
+ */
 /* copy the skill level name into the given buffer */
 char *
-skill_level_name(skill, buf, style)
-int skill;
-char *buf;
-uchar style; /* 0 = normal, 1 = max, 2 = next level */
+skill_level_name(int skill, char *buf, uchar style)
 {
     int lvl = style == 1 ? P_MAX_SKILL_LEVEL(skill) : style == 2 ? min(P_MAX_SKILL_LEVEL(skill), P_SKILL_LEVEL(skill) + 1) : P_SKILL_LEVEL(skill);
     const char* ptr = skill_level_name_core(lvl);
@@ -2015,17 +1943,13 @@ uchar style; /* 0 = normal, 1 = max, 2 = next level */
 }
 
 const char *
-skill_name(skill, plural)
-int skill;
-boolean plural;
+skill_name(int skill, boolean plural)
 {
     return plural ? P_NAME_PLURAL(skill) : P_NAME(skill);
 }
 
 int
-limited_skill_level(skill, nextlevel, limit_by_twoweap)
-enum p_skills skill;
-boolean nextlevel, limit_by_twoweap;
+limited_skill_level(enum p_skills skill, boolean nextlevel, boolean limit_by_twoweap)
 {
     int res = P_SKILL_LEVEL(skill);
     if (nextlevel)
@@ -2038,10 +1962,8 @@ boolean nextlevel, limit_by_twoweap;
     return res;
 }
 
-STATIC_OVL int
-adjust_skill_level(skill, undjusted_skill_level)
-enum p_skills skill;
-int undjusted_skill_level;
+static int
+adjust_skill_level(enum p_skills skill, int undjusted_skill_level)
 {
     int res = undjusted_skill_level;
     if (skill == P_BARE_HANDED_COMBAT)
@@ -2068,25 +1990,21 @@ int undjusted_skill_level;
 }
 
 int
-adjusted_limited_skill_level(skill, nextlevel, limit_by_twoweap)
-enum p_skills skill;
-boolean nextlevel, limit_by_twoweap;
+adjusted_limited_skill_level(enum p_skills skill, boolean nextlevel, boolean limit_by_twoweap)
 {
     int res = limited_skill_level(skill, nextlevel, limit_by_twoweap);
     return adjust_skill_level(skill, res);
 }
 
 int
-adjusted_skill_level(skill)
-enum p_skills skill;
+adjusted_skill_level(enum p_skills skill)
 {
     int res = P_SKILL_LEVEL(skill);
     return adjust_skill_level(skill, res);
 }
 
 int
-two_handed_weapon_multishot_percentage_chance(skill_level)
-int skill_level;
+two_handed_weapon_multishot_percentage_chance(int skill_level)
 {
     int percentage = 0;
     switch (skill_level)
@@ -2114,8 +2032,7 @@ int skill_level;
 }
 
 int
-martial_arts_multishot_percentage_chance(skill_level)
-int skill_level;
+martial_arts_multishot_percentage_chance(int skill_level)
 {
     int percentage = 0;
     switch (skill_level)
@@ -2142,16 +2059,14 @@ int skill_level;
     return percentage;
 }
 
-STATIC_OVL int
-slots_required(skill)
-int skill;
+static int
+slots_required(int skill)
 {
     return slots_required_core(skill, 0);
 }
     /* return the # of slots required to advance the skill */
-STATIC_OVL int
-slots_required_core(skill, lvl)
-int skill, lvl;
+static int
+slots_required_core(int skill, int lvl)
 {
     int tmp = lvl > 0 ? lvl : P_SKILL_LEVEL(skill);
 
@@ -2205,8 +2120,7 @@ int skill, lvl;
 
 
 int
-practice_needed_to_advance(skill_id, skill_level)
-int skill_id, skill_level;
+practice_needed_to_advance(int skill_id, int skill_level)
 {
     int res = 0, i;
     switch (skill_id)
@@ -2230,9 +2144,7 @@ int skill_id, skill_level;
 
 /* return true if this skill can be advanced */
 boolean
-can_advance(skill, speedy)
-int skill;
-boolean speedy;
+can_advance(int skill, boolean speedy)
 {
     if (P_RESTRICTED(skill)
         || P_SKILL_LEVEL(skill) >= P_MAX_SKILL_LEVEL(skill)
@@ -2249,9 +2161,8 @@ boolean speedy;
 }
 
 /* return true if this skill could be advanced if more slots were available */
-STATIC_OVL boolean
-could_advance(skill)
-int skill;
+static boolean
+could_advance(int skill)
 {
     if (P_RESTRICTED(skill)
         || P_SKILL_LEVEL(skill) >= P_MAX_SKILL_LEVEL(skill)
@@ -2268,9 +2179,8 @@ int skill;
 
 /* return true if this skill has reached its maximum and there's been enough
    practice to become eligible for the next step if that had been possible */
-STATIC_OVL boolean
-peaked_skill(skill)
-int skill;
+static boolean
+peaked_skill(int skill)
 {
     if (P_RESTRICTED(skill))
         return FALSE;
@@ -2284,9 +2194,8 @@ int skill;
                          ));
 }
 
-STATIC_OVL void
-skill_advance(skill)
-int skill;
+static void
+skill_advance(int skill)
 {
     u.weapon_slots -= slots_required(skill);
     P_SKILL_LEVEL(skill)++;
@@ -2325,7 +2234,7 @@ int skill;
     update_can_advance_any_skill();
 }
 
-STATIC_VAR const struct skill_range {
+static const struct skill_range {
     short first, last;
     const char *name;
     const char* singular;
@@ -2338,7 +2247,7 @@ STATIC_VAR const struct skill_range {
 
 /* 'S' command  */
 int
-doskill(VOID_ARGS)
+doskill(void)
 {
     if(iflags.skill_table_format)
         return enhance_weapon_skill();
@@ -2347,7 +2256,7 @@ doskill(VOID_ARGS)
 }
 
 int
-doskill_core(VOID_ARGS)
+doskill_core(void)
 {
     int pass, i, n;
     int color = CLR_WHITE;
@@ -2490,10 +2399,8 @@ doskill_core(VOID_ARGS)
     return 0;
 }
 
-STATIC_OVL void
-open_skill_cmd_menu(skill_id, speedy)
-int skill_id;
-boolean speedy;
+static void
+open_skill_cmd_menu(int skill_id, boolean speedy)
 {
     int cmd_idx = 0;
     menu_item* pick_list = (menu_item*)0;
@@ -2658,9 +2565,8 @@ boolean speedy;
     }
 }
 
-STATIC_OVL void
-doskilldescription(skill_id)
-int skill_id;
+static void
+doskilldescription(int skill_id)
 {
     winid win = WIN_ERR;
     int glyph = GLYPH_SKILL_TILE_OFF + skill_id;
@@ -3061,10 +2967,8 @@ int skill_id;
 
 }
 
-STATIC_OVL const char*
-get_skill_range_name(skill_id, singular)
-int skill_id;
-boolean singular;
+static const char*
+get_skill_range_name(int skill_id, boolean singular)
 {
     int i;
     for (i = 0; i < SIZE(skill_ranges); i++)
@@ -3087,7 +2991,7 @@ boolean singular;
  * others unselectable.
  */
 int
-enhance_weapon_skill(VOID_ARGS)
+enhance_weapon_skill(void)
 {
     int pass, i, n, to_advance, eventually_advance, maxxed_cnt;
     size_t len, longest;
@@ -3711,7 +3615,7 @@ enhance_weapon_skill(VOID_ARGS)
 }
 
 void
-update_can_advance_any_skill(VOID_ARGS)
+update_can_advance_any_skill(void)
 {
     int i = 0;
     /* check for more skills able to advance, if so then .. */
@@ -3734,8 +3638,7 @@ update_can_advance_any_skill(VOID_ARGS)
  * function may be called with with P_NONE.  Used in pray.c as well as below.
  */
 void
-unrestrict_weapon_skill(skill)
-enum p_skills skill;
+unrestrict_weapon_skill(enum p_skills skill)
 {
     if (skill < P_NUM_SKILLS) 
     {
@@ -3753,8 +3656,7 @@ enum p_skills skill;
 }
 
 void
-add_weapon_skill_maximum_by_one(skill)
-enum p_skills skill;
+add_weapon_skill_maximum_by_one(enum p_skills skill)
 {
     if (skill < P_NUM_SKILLS && P_MAX_SKILL_LEVEL(skill) < P_GRAND_MASTER)
     {
@@ -3768,9 +3670,7 @@ enum p_skills skill;
 }
 
 void
-use_skill(skill, degree)
-int skill;
-int degree;
+use_skill(int skill, int degree)
 {
     boolean advance_before;
 
@@ -3789,9 +3689,12 @@ int degree;
     }
 }
 
+/*
+ * Parameters:
+ *   n: number of slots to gain; normally one
+ */
 void
-add_weapon_skill(n)
-int n; /* number of slots to gain; normally one */
+add_weapon_skill(int n)
 {
     int i, before, after;
 
@@ -3812,9 +3715,12 @@ int n; /* number of slots to gain; normally one */
     update_can_advance_any_skill();
 }
 
+/*
+ * Parameters:
+ *   n: number of slots to lose; normally one
+ */
 void
-lose_weapon_skill(n)
-int n; /* number of slots to lose; normally one */
+lose_weapon_skill(int n)
 {
     int skill;
     boolean shield_or_dodge_lost = FALSE;
@@ -3852,8 +3758,7 @@ int n; /* number of slots to lose; normally one */
 }
 
 enum p_skills
-weapon_skill_type(obj)
-struct obj *obj;
+weapon_skill_type(struct obj *obj)
 {
     if (!obj || (is_gloves(obj) && (obj->owornmask & W_ARMG)))
         return (P_SKILL_LEVEL(P_MARTIAL_ARTS) >= P_UNSKILLED && P_SKILL_LEVEL(P_BARE_HANDED_COMBAT) >= P_GRAND_MASTER  ? P_MARTIAL_ARTS : P_BARE_HANDED_COMBAT); /* Not using a weapon */
@@ -3869,7 +3774,7 @@ struct obj *obj;
 }
 
 enum p_skills
-uwep_skill_type(VOID_ARGS)
+uwep_skill_type(void)
 {
     //if (u.twoweap)
     //    return P_DUAL_WEAPON_COMBAT;
@@ -3877,15 +3782,15 @@ uwep_skill_type(VOID_ARGS)
 }
 
 /*
+ * Parameters:
+ *   apply_extra_bonuses: 1 = normal bonus and extra bonuses, 2 = Just the extra bonus
+ */
+/*
  * Return hit bonus/penalty based on skill of weapon.
  * Treat restricted weapons as unskilled.
  */
 int
-weapon_skill_hit_bonus(weapon, use_this_skill, nextlevel, limit_by_twoweap, apply_extra_bonuses, use_this_level, use_adjusted_sklvl, being_thrown)
-struct obj *weapon;
-int use_this_skill, use_this_level;
-boolean nextlevel, limit_by_twoweap, use_adjusted_sklvl, being_thrown;
-uchar apply_extra_bonuses; /* 1 = normal bonus and extra bonuses, 2 = Just the extra bonus */
+weapon_skill_hit_bonus(struct obj *weapon, int use_this_skill, boolean nextlevel, boolean limit_by_twoweap, uchar apply_extra_bonuses, int use_this_level, boolean use_adjusted_sklvl, boolean being_thrown)
 {
     int bonus = 0;
     static const char bad_skill[] = "weapon_skill_hit_bonus: bad skill %d";
@@ -4098,15 +4003,15 @@ uchar apply_extra_bonuses; /* 1 = normal bonus and extra bonuses, 2 = Just the e
 }
 
 /*
+ * Parameters:
+ *   apply_extra_bonuses: 1 = normal bonus and extra bonuses, 2 = Just the extra bonus
+ */
+/*
  * Return damage bonus/penalty based on skill of weapon.
  * Treat restricted weapons as unskilled.
  */
 int
-weapon_skill_dmg_bonus(weapon, use_this_skill, nextlevel, limit_by_twoweap, apply_extra_bonuses, use_this_level, use_adjusted_sklvl, being_thrown)
-struct obj *weapon;
-int use_this_skill, use_this_level;
-boolean nextlevel, limit_by_twoweap, use_adjusted_sklvl, being_thrown;
-uchar apply_extra_bonuses; /* 1 = normal bonus and extra bonuses, 2 = Just the extra bonus */
+weapon_skill_dmg_bonus(struct obj *weapon, int use_this_skill, boolean nextlevel, boolean limit_by_twoweap, uchar apply_extra_bonuses, int use_this_level, boolean use_adjusted_sklvl, boolean being_thrown)
 {
     int bonus = 0;
     boolean apply_two_weapon_bonus = apply_extra_bonuses && (u.twoweap && (!weapon || (weapon && !bimanual(weapon) && (weapon == uwep || weapon == uarms))));
@@ -4312,57 +4217,49 @@ uchar apply_extra_bonuses; /* 1 = normal bonus and extra bonuses, 2 = Just the e
 }
 
 int
-dodge_skill_ac_bonus(skill_level)
-int skill_level;
+dodge_skill_ac_bonus(int skill_level)
 {
     return 3 * max(0, skill_level - 1);
 }
 
 int
-shield_skill_ac_bonus(skill_level)
-int skill_level;
+shield_skill_ac_bonus(int skill_level)
 {
     return 5 * max(0, skill_level - 1);
 }
 
 int
-shield_skill_mc_bonus(skill_level)
-int skill_level;
+shield_skill_mc_bonus(int skill_level)
 {
     return 1 * max(0, skill_level - 1);
 }
 
 int
-digging_skill_speed_bonus(skill_level)
-int skill_level;
+digging_skill_speed_bonus(int skill_level)
 {
     return 50 * (max(0, skill_level - 1));
 }
 
 int
-whip_skill_weapon_disarm_bonus(lvl)
-int lvl;
+whip_skill_weapon_disarm_bonus(int lvl)
 {
     return 2 * max(0, lvl - 1);
 }
 
 int
-spear_skill_jousting_bonus(lvl)
-int lvl;
+spear_skill_jousting_bonus(int lvl)
 {
     return 10 * max(0, lvl - 1);
 }
 
 int
-riding_skill_jousting_bonus(lvl)
-int lvl;
+riding_skill_jousting_bonus(int lvl)
 {
     return 10 * max(0, lvl - 1);
 }
 
 int
-wand_skill_hit_bonus(skill_level)
-int skill_level;
+wand_skill_hit_bonus(int skill_level)
 {
     int hit_bon = 0;
 
@@ -4393,8 +4290,7 @@ int skill_level;
 }
 
 int
-riding_skill_hit_bonus(skill_level)
-int skill_level;
+riding_skill_hit_bonus(int skill_level)
 {
     int bonus = 0;
     switch (skill_level)
@@ -4423,8 +4319,7 @@ int skill_level;
 }
 
 int
-riding_skill_dmg_bonus(skill_level)
-int skill_level;
+riding_skill_dmg_bonus(int skill_level)
 {
     int bonus = 0;
     switch (skill_level)
@@ -4452,8 +4347,7 @@ int skill_level;
 }
 
 int
-riding_skill_saddling_bonus(skill_level)
-int skill_level;
+riding_skill_saddling_bonus(int skill_level)
 {
     int chance = 0;
     switch (skill_level)
@@ -4483,8 +4377,7 @@ int skill_level;
 }
 
 int
-riding_skill_mount_bonus(skill_level)
-int skill_level;
+riding_skill_mount_bonus(int skill_level)
 {
     int bonus = 0;
     switch (skill_level)
@@ -4521,9 +4414,7 @@ int skill_level;
  * maximums.
  */
 void
-skill_init(class_skill_initial, class_skill_max)
-const struct def_skill *class_skill_initial;
-const struct def_skill* class_skill_max;
+skill_init(const struct def_skill *class_skill_initial, const struct def_skill *class_skill_max)
 {
     struct obj *obj;
     int sklvl, skill;
@@ -4596,9 +4487,7 @@ const struct def_skill* class_skill_max;
 }
 
 void
-setmnotwielded(mon, obj)
-register struct monst *mon;
-register struct obj *obj;
+setmnotwielded(struct monst *mon, struct obj *obj)
 {
     if (!mon || !obj)
         return;
@@ -4618,10 +4507,7 @@ register struct obj *obj;
 }
 
 int
-get_skill_critical_strike_chance(skill_type, nextlevel, limit_by_twoweap, use_this_level, use_adjusted_sklvl, being_thrown)
-enum p_skills skill_type;
-boolean nextlevel, limit_by_twoweap, use_adjusted_sklvl, being_thrown;
-int use_this_level;
+get_skill_critical_strike_chance(enum p_skills skill_type, boolean nextlevel, boolean limit_by_twoweap, int use_this_level, boolean use_adjusted_sklvl, boolean being_thrown)
 {
     /* Note that P_NONE returns also 0 */
     if (skill_type <= P_NONE || skill_type >= P_NUM_SKILLS)
@@ -4737,8 +4623,7 @@ int use_this_level;
 }
 
 double
-get_wand_skill_damage_multiplier(skill_level)
-int skill_level;
+get_wand_skill_damage_multiplier(int skill_level)
 {
     double res = 0.5;
 
@@ -4770,8 +4655,7 @@ int skill_level;
 }
 
 double
-get_wand_exceptionality_damage_multiplier(exceptionality)
-uchar exceptionality;
+get_wand_exceptionality_damage_multiplier(uchar exceptionality)
 {
     if (exceptionality <= EXCEPTIONALITY_NORMAL || exceptionality >= MAX_EXCEPTIONALITY_TYPES)
         return 1.0;
@@ -4784,8 +4668,7 @@ uchar exceptionality;
 }
 
 int
-get_exceptionality_multiplier(exceptionality)
-uchar exceptionality;
+get_exceptionality_multiplier(uchar exceptionality)
 {
     if (exceptionality <= EXCEPTIONALITY_NORMAL || exceptionality >= MAX_EXCEPTIONALITY_TYPES)
         return 1;
@@ -4799,9 +4682,7 @@ uchar exceptionality;
 }
 
 void
-print_weapon_style_string(buf, is_left_arm)
-char* buf;
-boolean is_left_arm;
+print_weapon_style_string(char *buf, boolean is_left_arm)
 {
     if (!buf)
         return;
@@ -4898,8 +4779,7 @@ boolean is_left_arm;
 }
 
 void
-print_quivered_weapon_style_string(buf)
-char* buf;
+print_quivered_weapon_style_string(char *buf)
 {
     if (uquiver)
     {
@@ -4930,8 +4810,7 @@ char* buf;
 }
 
 int
-exceptionality_digging_speed_bonus(obj)
-struct obj* obj;
+exceptionality_digging_speed_bonus(struct obj *obj)
 {
     if (!obj)
         return 0;
@@ -4940,8 +4819,7 @@ struct obj* obj;
 }
 
 int
-exceptionality_weapon_disarm_bonus(obj)
-struct obj* obj;
+exceptionality_weapon_disarm_bonus(struct obj *obj)
 {
     if (!obj)
         return 0;
@@ -4950,7 +4828,7 @@ struct obj* obj;
 }
 
 void
-dump_skills(VOID_ARGS)
+dump_skills(void)
 {
     int i;
     char buf[BUFSZ];
@@ -4988,8 +4866,7 @@ dump_skills(VOID_ARGS)
 }
 
 short
-get_obj_wsdice(obj)
-struct obj* obj;
+get_obj_wsdice(struct obj *obj)
 {
     if (!obj)
         return 0;
@@ -5003,8 +4880,7 @@ struct obj* obj;
 }
 
 short
-get_obj_wsdam(obj)
-struct obj* obj;
+get_obj_wsdam(struct obj *obj)
 {
     if (!obj)
         return 0;
@@ -5018,8 +4894,7 @@ struct obj* obj;
 }
 
 short
-get_obj_wsdmgplus(obj)
-struct obj* obj;
+get_obj_wsdmgplus(struct obj *obj)
 {
     if (!obj)
         return 0;
@@ -5033,8 +4908,7 @@ struct obj* obj;
 }
 
 short
-get_obj_wldice(obj)
-struct obj* obj;
+get_obj_wldice(struct obj *obj)
 {
     if (!obj)
         return 0;
@@ -5048,8 +4922,7 @@ struct obj* obj;
 }
 
 short
-get_obj_wldam(obj)
-struct obj* obj;
+get_obj_wldam(struct obj *obj)
 {
     if (!obj)
         return 0;
@@ -5063,8 +4936,7 @@ struct obj* obj;
 }
 
 short
-get_obj_wldmgplus(obj)
-struct obj* obj;
+get_obj_wldmgplus(struct obj *obj)
 {
     if (!obj)
         return 0;

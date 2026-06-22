@@ -452,15 +452,14 @@ const char* status_names[MAX_STATUS_MARKS] = {
 enum game_ui_status_mark_types statusmarkorder[MAX_STATUS_MARKS] = { STATUS_MARK_TOWNGUARD_PEACEFUL, STATUS_MARK_TOWNGUARD_HOSTILE, STATUS_MARK_HIGH_LEVEL, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, STATUS_MARK_EATING, STATUS_MARK_FROZEN };
 
 void
-props_init(VOID_ARGS)
+props_init(void)
 {
     /* Force linkage */
     return;
 }
 
 const char* 
-get_property_name(prop_index)
-int prop_index;
+get_property_name(int prop_index)
 {
     int idx;
     for (idx = 0; propertynames[idx].prop_num; idx++)
@@ -475,8 +474,7 @@ int prop_index;
 }
 
 struct propname
-get_property_name_ex(prop_index)
-int prop_index;
+get_property_name_ex(int prop_index)
 {
     int idx;
     for (idx = 0; propertynames[idx].prop_num; idx++)
@@ -493,9 +491,7 @@ int prop_index;
 
 
 const char*
-get_status_name(mtmp, status_index)
-struct monst* mtmp;
-int status_index;
+get_status_name(struct monst *mtmp, int status_index)
 {
     switch (status_index)
     {

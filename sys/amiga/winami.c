@@ -12,7 +12,7 @@
 
 #ifdef AMIGA_INTUITION
 
-static int FDECL(put_ext_cmd, (char *, int, struct amii_WinDesc *, int));
+static int put_ext_cmd(char *, int, struct amii_WinDesc *, int);
 
 struct amii_DisplayDesc *amiIDisplay; /* the Amiga Intuition descriptor */
 struct Rectangle lastinvent, lastmsg;
@@ -474,10 +474,10 @@ amii_askname()
 void
 amii_player_selection()
 {
-    register struct Window *cwin;
-    register struct IntuiMessage *imsg;
-    register int aredone = 0;
-    register struct Gadget *gd;
+    struct Window *cwin;
+    struct IntuiMessage *imsg;
+    int aredone = 0;
+    struct Gadget *gd;
     static int once = 0;
     long class, code;
 
@@ -613,8 +613,7 @@ amii_player_selection()
 #include "NH:sys/amiga/randwin.c"
 
 void
-RandomWindow( name )
-    char *name;
+RandomWindow(char *name)
 {
     struct MsgPort *tport;
     struct timerequest *trq;
@@ -783,7 +782,7 @@ amii_get_ext_cmd(void)
     struct Window *w;
     char obufp[100];
     register char *bufp = obufp;
-    register int c;
+    int c;
     int com_index, oindex;
     int did_comp = 0; /* did successful completion? */
     int sel = -1;
@@ -959,10 +958,7 @@ amii_get_ext_cmd(void)
 }
 
 static int
-put_ext_cmd(obufp, colx, cw, bottom)
-char * obufp;
-int colx, bottom;
-struct amii_WinDesc *cw;
+put_ext_cmd(char *obufp, int colx, struct amii_WinDesc *cw, int bottom)
 {
     struct Window *w = cw->win;
     char *t;
@@ -1007,10 +1003,7 @@ struct amii_WinDesc *cw;
 
 /* Ask a question and get a response */
 char
-amii_yn_function_ex(style, attr, color, title, query, resp, def, resp_desc)
-int style, attr, color;
-const char *title, * query, * resp, *resp_desc;
-char def;
+amii_yn_function_ex(int style, int attr, int color, const char *title, const char *query, const char *resp, char def, const char *resp_desc)
 {
     /*
      *   Generic yes/no function. 'def' is the default (returned by space or
@@ -1027,7 +1020,7 @@ char def;
     char rtmp[40];
     boolean digit_ok, allow_num;
     char prompt[BUFSZ];
-    register struct amii_WinDesc *cw;
+    struct amii_WinDesc *cw;
 
     if (cw = amii_wins[WIN_MESSAGE])
         cw->disprows = 0;
@@ -1157,12 +1150,10 @@ char def;
 }
 
 void
-amii_display_file(fn, complain)
-const char * fn;
-boolean complain;
+amii_display_file(const char *fn, boolean complain)
 {
-    register struct amii_WinDesc *cw;
-    register int win;
+    struct amii_WinDesc *cw;
+    int win;
     register dlb *fp;
     register char *t;
     register char buf[200];
@@ -1213,12 +1204,11 @@ boolean complain;
  * are rendered in the up position by default.
  */
 void
-SetBorder(gd)
-register struct Gadget * gd;
+SetBorder(struct Gadget *gd)
 {
-    register struct Border *bp;
+    struct Border *bp;
     register short *sp;
-    register int i, inc = -1, dec = -1;
+    int i, inc = -1, dec = -1;
     int borders = 6;
     int hipen = sysflags.amii_dripens[SHINEPEN],
         shadowpen = sysflags.amii_dripens[SHADOWPEN];

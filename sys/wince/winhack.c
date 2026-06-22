@@ -13,7 +13,7 @@
 
 extern char orgdir[PATHLEN]; /* also used in pcsys.c, amidos.c */
 
-extern void FDECL(gnollhack_exit, (int));
+extern void gnollhack_exit(int);
 static TCHAR *_get_cmd_arg(TCHAR *pCmdLine);
 
 // Global Variables:
@@ -26,13 +26,12 @@ static void win_hack_init(int, char **);
 static void __cdecl mswin_moveloop(void *);
 static BOOL setMapTiles(const char *fname);
 
-extern boolean FDECL(pcmain, (int, char **));
+extern boolean pcmain(int, char **);
 
 #define MAX_CMDLINE_PARAM 255
 
 int APIENTRY
-WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLine,
-        int nCmdShow)
+WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLine, int nCmdShow)
 {
     INITCOMMONCONTROLSEX InitCtrls;
     HWND nethackWnd;
@@ -161,7 +160,7 @@ GetNHApp()
 static int
 eraseoldlocks()
 {
-    register int i;
+    int i;
 
     /* cannot use maxledgerno() here, because we need to find a lock name
      * before starting everything (including the dungeon initialization
@@ -240,19 +239,19 @@ gotlock:
 
 /* misc functions */
 void error
-VA_DECL(const char *, s)
+(const char *s, ...)
 {
     TCHAR wbuf[1024];
     char buf[1024];
     DWORD last_error = GetLastError();
 
-    VA_START(s);
-    VA_INIT(s, const char *);
+    va_list the_args;
+    va_start(the_args, s);
     /* error() may get called before tty is initialized */
     if (iflags.window_inited)
         end_screen();
 
-    vsprintf(buf, s, VA_ARGS);
+    vsprintf(buf, s, the_args);
     NH_A2W(buf, wbuf, sizeof(wbuf) / sizeof(wbuf[0]));
     if (last_error > 0) {
         LPVOID lpMsgBuf;
@@ -272,7 +271,7 @@ VA_DECL(const char *, s)
         }
     }
     MessageBox(NULL, wbuf, TEXT("Error"), MB_OK | MB_ICONERROR);
-    VA_END();
+    va_end(the_args);
     exit(EXIT_FAILURE);
 }
 
@@ -325,8 +324,7 @@ _get_cmd_arg(TCHAR *pCmdLine)
  * Strip out troublesome file system characters.
  */
 
-void nt_regularize(s) /* normalize file name */
-register char *s;
+void nt_regularize(char *s) /* normalize file name */
 {
     register unsigned char *lp;
 
@@ -346,8 +344,7 @@ win32_abort()
 }
 
 void
-append_port_id(buf)
-char *buf;
+append_port_id(char *buf)
 {
     char *portstr = PORT_CE_PLATFORM " " PORT_CE_CPU;
     Sprintf(eos(buf), " %s", portstr);

@@ -10,12 +10,11 @@
 
 #include "hack.h"
 
-STATIC_DCL int NDECL(bc_order);
-STATIC_DCL void NDECL(litter);
+static int bc_order(void);
+static void litter(void);
 
 void
-ballrelease(showmsg)
-boolean showmsg;
+ballrelease(boolean showmsg)
 {
     if (carried(uball)) {
         if (showmsg)
@@ -39,7 +38,7 @@ boolean showmsg;
 
 /* ball&chain might hit hero when falling through a trap door */
 void
-ballfall(VOID_ARGS)
+ballfall(void)
 {
     boolean gets_hit;
 
@@ -113,7 +112,7 @@ ballfall(VOID_ARGS)
  *  Should not be called while swallowed except on waterlevel.
  */
 void
-placebc(VOID_ARGS)
+placebc(void)
 {
     if (!uchain || !uball) {
         impossible("Where are your ball and chain?");
@@ -139,7 +138,7 @@ placebc(VOID_ARGS)
 }
 
 void
-unplacebc(VOID_ARGS)
+unplacebc(void)
 {
     if (u.uswallow) {
         if (Is_waterlevel(&u.uz)) {
@@ -180,8 +179,8 @@ unplacebc(VOID_ARGS)
  *  Return the stacking of the hero's ball & chain.  This assumes that the
  *  hero is being punished.
  */
-STATIC_OVL int
-bc_order(VOID_ARGS)
+static int
+bc_order(void)
 {
     struct obj *obj;
 
@@ -207,8 +206,7 @@ bc_order(VOID_ARGS)
  *  Set up the ball and chain variables so that the ball and chain are "felt".
  */
 void
-set_bc(already_blind)
-int already_blind;
+set_bc(int already_blind)
 {
     int ball_on_floor = !carried(uball);
 
@@ -255,6 +253,10 @@ int already_blind;
 }
 
 /*
+ * Parameters:
+ *   ballx, bally, chainx, chainy: only matter !before
+ */
+/*
  *  move_bc()
  *
  *  Move the ball and chain.  This is called twice for every move.  The first
@@ -265,9 +267,7 @@ int already_blind;
  *  Should not be called while swallowed.
  */
 void
-move_bc(before, control, ballx, bally, chainx, chainy)
-int before, control;
-xchar ballx, bally, chainx, chainy; /* only matter !before */
+move_bc(int before, int control, xchar ballx, xchar bally, xchar chainx, xchar chainy)
 {
     if (!uchain || !uball)
         return;
@@ -450,13 +450,7 @@ xchar ballx, bally, chainx, chainy; /* only matter !before */
  * and chain.
  */
 boolean
-drag_ball(x, y, bc_control, ballx, bally, chainx, chainy, cause_delay,
-          allow_drag)
-xchar x, y;
-int *bc_control;
-xchar *ballx, *bally, *chainx, *chainy;
-boolean *cause_delay;
-boolean allow_drag;
+drag_ball(xchar x, xchar y, int *bc_control, xchar *ballx, xchar *bally, xchar *chainx, xchar *chainy, boolean *cause_delay, boolean allow_drag)
 {
     if (!uball || !uchain)
         return FALSE;
@@ -765,8 +759,7 @@ boolean allow_drag;
  *  Should not be called while swallowed.
  */
 void
-drop_ball(x, y)
-xchar x, y;
+drop_ball(xchar x, xchar y)
 {
     if (Blind) {
         /* get the order */
@@ -776,7 +769,7 @@ xchar x, y;
     }
 
     if (x != u.ux || y != u.uy) {
-        STATIC_VAR const char *pullmsg = "The ball pulls you out of the %s!";
+        static const char *pullmsg = "The ball pulls you out of the %s!";
         struct trap *t;
         int64_t side;
 
@@ -848,8 +841,8 @@ xchar x, y;
 }
 
 /* ball&chain cause hero to randomly lose stuff from inventory */
-STATIC_OVL void
-litter(VOID_ARGS)
+static void
+litter(void)
 {
     struct obj *otmp, *nextobj = 0;
     int capacity = weight_cap();
@@ -869,7 +862,7 @@ litter(VOID_ARGS)
 }
 
 void
-drag_down(VOID_ARGS)
+drag_down(void)
 {
     boolean forward;
     uchar dragchance = 3;
@@ -916,7 +909,7 @@ drag_down(VOID_ARGS)
 }
 
 void
-bc_sanity_check(VOID_ARGS)
+bc_sanity_check(void)
 {
     int otyp;
     unsigned save_nameknown;

@@ -27,52 +27,52 @@
 #define spellet(spell) \
     ((char) ((spell < 26) ? ('a' + spell) : ('A' + spell - 26)))  /* Obsolete! Do not use! */
 
-STATIC_DCL void FDECL(print_spell_level_symbol, (char*, int));
-STATIC_DCL int FDECL(spell_let_to_idx, (CHAR_P));
-STATIC_DCL boolean FDECL(cursed_book, (struct obj * bp));
-STATIC_DCL boolean FDECL(confused_book, (struct obj *));
-STATIC_DCL void FDECL(deadbook, (struct obj *));
-STATIC_DCL void FDECL(modronbook, (struct obj*));
-STATIC_PTR int NDECL(learn);
-STATIC_DCL boolean NDECL(rejectcasting);
-STATIC_DCL boolean FDECL(reject_specific_spell_casting, (int));
-STATIC_DCL boolean FDECL(getspell, (int *, int));
-STATIC_PTR int FDECL(CFDECLSPEC spell_cmp, (const genericptr,
+static void print_spell_level_symbol(char*, int);
+static int spell_let_to_idx(char);
+static boolean cursed_book(struct obj * bp);
+static boolean confused_book(struct obj *);
+static void deadbook(struct obj *);
+static void modronbook(struct obj*);
+static int learn(void);
+static boolean rejectcasting(void);
+static boolean reject_specific_spell_casting(int);
+static boolean getspell(int *, int);
+static int FDECL(CFDECLSPEC spell_cmp, (const genericptr,
                                             const genericptr));
-STATIC_DCL boolean NDECL(spellsortmenu);
-STATIC_DCL boolean FDECL(dospellmenu, (const char *, int, int *));
-STATIC_DCL boolean FDECL(dotradspellmenu, (const char*, int, int*));
-STATIC_DCL boolean FDECL(doaltspellmenu, (const char*, int, int*));
-STATIC_DCL int FDECL(percent_success, (int, BOOLEAN_P));
-STATIC_DCL int FDECL(attribute_value_for_spellbook, (int));
+static boolean spellsortmenu(void);
+static boolean dospellmenu(const char *, int, int *);
+static boolean dotradspellmenu(const char*, int, int*);
+static boolean doaltspellmenu(const char*, int, int*);
+static int percent_success(int, boolean);
+static int attribute_value_for_spellbook(int);
 #if 0
-STATIC_DCL char *FDECL(spellretention, (int, char *));
-STATIC_DCL int FDECL(throwspell, (int));
-STATIC_DCL void FDECL(spell_backfire, (int));
-STATIC_DCL boolean FDECL(spell_aim_step, (genericptr_t, int, int));
+static char *spellretention(int, char *);
+static int throwspell(int);
+static void spell_backfire(int);
+static boolean spell_aim_step(genericptr_t, int, int);
 #endif
-STATIC_DCL const char* FDECL(spelltypesymbol, (int));
-STATIC_DCL int FDECL(domaterialcomponentsmenu, (int));
-STATIC_DCL void FDECL(add_spell_cast_menu_item, (winid, int, int, int, BOOLEAN_P));
-STATIC_DCL void FDECL(add_spell_cast_menu_heading, (winid, int, BOOLEAN_P));
-STATIC_DCL void FDECL(add_spell_prepare_menu_item, (winid, int, int, int, int, BOOLEAN_P));
-STATIC_DCL void FDECL(add_spell_prepare_menu_heading, (winid, int, int, BOOLEAN_P));
-STATIC_DCL void FDECL(add_alt_spell_cast_menu_item, (winid, int, int));
-STATIC_DCL void FDECL(add_alt_spell_prepare_menu_item, (winid, int, int));
-STATIC_DCL boolean FDECL(is_acceptable_component_object_type, (const struct materialcomponent*, int));
-STATIC_DCL boolean FDECL(is_acceptable_component_monster_type, (const struct materialcomponent*, int));
-STATIC_DCL uchar FDECL(is_obj_acceptable_component, (const struct materialcomponent*, struct obj* otmp, BOOLEAN_P));
-STATIC_DCL int FDECL(count_matcomp_alternatives, (const struct materialcomponent*));
-STATIC_DCL struct extended_create_window_info FDECL(extended_create_window_info_for_spell, (BOOLEAN_P));
-STATIC_DCL const char* FDECL(get_spell_attribute_description, (int));
-STATIC_DCL const char* FDECL(get_targeting_description, (int));
-STATIC_DCL void FDECL(move_spell_to_top, (int));
-STATIC_DCL void FDECL(move_spell_to_bottom, (int));
-STATIC_DCL int FDECL(dosetquickspell_core, (int));
+static const char* spelltypesymbol(int);
+static int domaterialcomponentsmenu(int);
+static void add_spell_cast_menu_item(winid, int, int, int, boolean);
+static void add_spell_cast_menu_heading(winid, int, boolean);
+static void add_spell_prepare_menu_item(winid, int, int, int, int, boolean);
+static void add_spell_prepare_menu_heading(winid, int, int, boolean);
+static void add_alt_spell_cast_menu_item(winid, int, int);
+static void add_alt_spell_prepare_menu_item(winid, int, int);
+static boolean is_acceptable_component_object_type(const struct materialcomponent*, int);
+static boolean is_acceptable_component_monster_type(const struct materialcomponent*, int);
+static uchar is_obj_acceptable_component(const struct materialcomponent*, struct obj* otmp, boolean);
+static int count_matcomp_alternatives(const struct materialcomponent*);
+static struct extended_create_window_info extended_create_window_info_for_spell(boolean);
+static const char* get_spell_attribute_description(int);
+static const char* get_targeting_description(int);
+static void move_spell_to_top(int);
+static void move_spell_to_bottom(int);
+static int dosetquickspell_core(int);
 
 
 /* since the spellbook itself doesn't blow up, don't say just "explodes" */
-STATIC_VAR const char explodes[] = "radiates explosive energy";
+static const char explodes[] = "radiates explosive energy";
 
 NEARDATA const char* spl_sortchoices[NUM_SPELL_SORTBY] = {
     "no sorting, by casting letter",
@@ -89,9 +89,8 @@ NEARDATA const char* spl_sortchoices[NUM_SPELL_SORTBY] = {
 
 NEARDATA short spl_orderindx[MAXSPELL] = { 0 }; /* array of spl_book[] indices */
 
-STATIC_OVL struct extended_create_window_info
-extended_create_window_info_for_spell(active)
-boolean active;
+static struct extended_create_window_info
+extended_create_window_info_for_spell(boolean active)
 {
     struct extended_create_window_info info = { 0 };
     if (active)
@@ -100,9 +99,8 @@ boolean active;
 }
 
 /* convert a letter into a number in the range 0..51, or -1 if not a letter */
-STATIC_OVL int
-spell_let_to_idx(ilet)
-char ilet;
+static int
+spell_let_to_idx(char ilet)
 {
     int indx;
 
@@ -116,9 +114,8 @@ char ilet;
 }
 
 /* TRUE: book should be destroyed by caller */
-STATIC_OVL boolean
-cursed_book(bp)
-struct obj *bp;
+static boolean
+cursed_book(struct obj *bp)
 {
     boolean was_in_use;
     int lev = (int)objects[bp->otyp].oc_spell_level;
@@ -183,9 +180,8 @@ struct obj *bp;
 }
 
 /* study while confused: returns TRUE if the book is destroyed */
-STATIC_OVL boolean
-confused_book(spellbook)
-struct obj *spellbook;
+static boolean
+confused_book(struct obj *spellbook)
 {
     boolean gone = FALSE;
 
@@ -215,9 +211,8 @@ struct obj *spellbook;
 }
 
 /* special effects for The Book of the Dead */
-STATIC_OVL void
-deadbook(book2)
-struct obj *book2;
+static void
+deadbook(struct obj *book2)
 {
     struct monst *mtmp, *mtmp2;
     coord mm;
@@ -227,8 +222,8 @@ struct obj *book2;
     /* KMH -- Need ->known to avoid "_a_ Book of the Dead" */
     book2->known = 1;
     if (invocation_pos(u.ux, u.uy) && !On_stairs(u.ux, u.uy)) {
-        register struct obj *otmp;
-        register boolean arti1_primed = FALSE, arti2_primed = FALSE,
+        struct obj *otmp;
+        boolean arti1_primed = FALSE, arti2_primed = FALSE,
                          arti_cursed = FALSE;
 
         if (book2->cursed) {
@@ -364,9 +359,8 @@ struct obj *book2;
 }
 
 /* special effects for The Prime Codex */
-STATIC_OVL void
-modronbook(book2)
-struct obj* book2;
+static void
+modronbook(struct obj *book2)
 {
     You("finish reading one paragraph of the Prime Codex...");
     book2->aknown = book2->nknown = book2->dknown = 1;
@@ -389,16 +383,15 @@ struct obj* book2;
 /* 'book' has just become cursed; if we're reading it and realize it is
    now cursed, interrupt */
 void
-book_cursed(book)
-struct obj *book;
+book_cursed(struct obj *book)
 {
     if (occupation == learn && context.spbook.book == book
         && book->cursed && book->bknown && multi >= 0)
         stop_occupation();
 }
 
-STATIC_PTR int
-learn(VOID_ARGS)
+static int
+learn(void)
 {
     int i;
     short booktype;
@@ -661,11 +654,7 @@ check_added_to_your_bill_here:
 }
 
 void
-print_spell_level_text(buf, booktype, includeschool, capitalize_style, include_level)
-char* buf;
-int booktype;
-boolean includeschool, include_level;
-uchar capitalize_style;
+print_spell_level_text(char *buf, int booktype, boolean includeschool, uchar capitalize_style, boolean include_level)
 {
     if (!buf)
         return;
@@ -709,11 +698,9 @@ uchar capitalize_style;
 
 }
 
-STATIC_OVL
+static
 void
-print_spell_level_symbol(buf, booktype)
-char* buf;
-int booktype;
+print_spell_level_symbol(char *buf, int booktype)
 {
     if (!buf)
         return;
@@ -732,8 +719,7 @@ int booktype;
 }
 
 int
-study_book(spellbook)
-register struct obj *spellbook;
+study_book(struct obj *spellbook)
 {
     if (!spellbook)
         return 0;
@@ -1009,8 +995,7 @@ register struct obj *spellbook;
 /* a spellbook has been destroyed or the character has changed levels;
    the stored address for the current book is no longer valid */
 void
-book_disappears(obj)
-struct obj *obj;
+book_disappears(struct obj *obj)
 {
     if (obj == context.spbook.book) {
         context.spbook.book = (struct obj *) 0;
@@ -1022,8 +1007,7 @@ struct obj *obj;
    so the sequence start reading, get interrupted, name the book, resume
    reading would read the "new" book from scratch */
 void
-book_substitution(old_obj, new_obj)
-struct obj *old_obj, *new_obj;
+book_substitution(struct obj *old_obj, struct obj *new_obj)
 {
     if (old_obj == context.spbook.book) {
         context.spbook.book = new_obj;
@@ -1034,7 +1018,7 @@ struct obj *old_obj, *new_obj;
 
 /* called from moveloop() */
 void
-age_spells(VOID_ARGS)
+age_spells(void)
 {
     int i;
     /*
@@ -1051,8 +1035,8 @@ age_spells(VOID_ARGS)
 
 /* return True if spellcasting is inhibited;
    only covers a small subset of reasons why casting won't work */
-STATIC_OVL boolean
-rejectcasting(VOID_ARGS)
+static boolean
+rejectcasting(void)
 {
     /* rejections which take place before selecting a particular spell */
     if (Stunned)
@@ -1072,9 +1056,8 @@ rejectcasting(VOID_ARGS)
 
 /* return True if spellcasting is inhibited;
    only covers a small subset of reasons why casting won't work */
-STATIC_OVL boolean
-reject_specific_spell_casting(spell)
-int spell;
+static boolean
+reject_specific_spell_casting(int spell)
 {
     /* rejections which take place before selecting a particular spell */
     int spellbookid = spellid(spell);
@@ -1119,10 +1102,8 @@ int spell;
  * Return TRUE if a spell was picked, with the spell index in the return
  * parameter.  Otherwise return FALSE.
  */
-STATIC_OVL boolean
-getspell(spell_no, spell_list_type)
-int *spell_no;
-int spell_list_type;
+static boolean
+getspell(int *spell_no, int spell_list_type)
 {
     if (spell_list_type < 0 || spell_list_type >= MAX_SPELL_LIST_TYPES)
         return FALSE;
@@ -1191,11 +1172,12 @@ int spell_list_type;
     return dospellmenu(titlebuf, splaction, spell_no);
 }
 
-STATIC_OVL boolean
-dospellmenu(prompt, splaction, spell_no)
-const char* prompt;
-int splaction; /* SPELLMENU_CAST, SPELLMENU_REORDER, or spl_book[] index */
-int* spell_no;
+/*
+ * Parameters:
+ *   splaction: SPELLMENU_CAST, SPELLMENU_REORDER, or spl_book[] index
+ */
+static boolean
+dospellmenu(const char *prompt, int splaction, int *spell_no)
 {
     if (iflags.spell_table_format)
     {
@@ -1207,12 +1189,13 @@ int* spell_no;
     }
 }
 
+/*
+ * Parameters:
+ *   splaction: SPELLMENU_CAST, SPELLMENU_REORDER, or spl_book[] index
+ */
 /* an alternative implementation of the '+' command, designed to work better on mobile phones */
-STATIC_OVL boolean
-doaltspellmenu(prompt, splaction, spell_no)
-const char* prompt;
-int splaction; /* SPELLMENU_CAST, SPELLMENU_REORDER, or spl_book[] index */
-int* spell_no;
+static boolean
+doaltspellmenu(const char *prompt, int splaction, int *spell_no)
 {
     winid tmpwin;
     int i, n, how, splnum;
@@ -1543,11 +1526,11 @@ int* spell_no;
 
 
 
-STATIC_VAR int docast_spell_no = -1;
+static int docast_spell_no = -1;
 
 /* the 'Z' command -- cast a spell */
 int
-docast(VOID_ARGS)
+docast(void)
 {
     if (in_doagain && docast_spell_no > -1)
     {
@@ -1565,14 +1548,13 @@ docast(VOID_ARGS)
 
 /* cast a quick spell (via right-click) */
 int
-docastquick(VOID_ARGS)
+docastquick(void)
 {
     return docastquick_core((boolean*)0);
 }
 
 int
-docastquick_core(stop_readchar_ptr)
-boolean* stop_readchar_ptr;
+docastquick_core(boolean *stop_readchar_ptr)
 {
     if (context.quick_cast_spell_set && context.quick_cast_spell_no > -1)
     {
@@ -1590,7 +1572,7 @@ boolean* stop_readchar_ptr;
 
 
 int
-dospellmanage(VOID_ARGS)
+dospellmanage(void)
 {
     int spell_no;
     int action = dospellmanagemenu();
@@ -1611,7 +1593,7 @@ dospellmanage(VOID_ARGS)
 
 /* the M('z') command -- spell info / descriptions */
 int
-dospellview(VOID_ARGS)
+dospellview(void)
 {
     int spell_no;
     boolean didselect = FALSE;
@@ -1625,7 +1607,7 @@ dospellview(VOID_ARGS)
 }
 
 int
-dosetquickspell(VOID_ARGS)
+dosetquickspell(void)
 {
     int spell_no = -1;
     boolean didselect = getspell(&spell_no, 6);
@@ -1636,9 +1618,8 @@ dosetquickspell(VOID_ARGS)
     return 0;
 }
 
-STATIC_OVL int
-dosetquickspell_core(spell_no)
-int spell_no;
+static int
+dosetquickspell_core(int spell_no)
 {
     if (spell_no < 0)
     {
@@ -1659,8 +1640,7 @@ int spell_no;
 }
 
 const char *
-spelltypemnemonic(skill)
-int skill;
+spelltypemnemonic(int skill)
 {
     switch (skill) {
     case P_ARCANE_SPELL:
@@ -1693,9 +1673,8 @@ int skill;
     }
 }
 
-STATIC_OVL const char*
-spelltypesymbol(skill)
-int skill;
+static const char*
+spelltypesymbol(int skill)
 {
     if ((windowprocs.wincap2 & WC2_SPECIAL_SYMBOLS) != 0)
     {
@@ -1764,17 +1743,15 @@ int skill;
 }
 
 int
-spell_skilltype(booktype)
-int booktype;
+spell_skilltype(int booktype)
 {
     return objects[booktype].oc_skill;
 }
 
 #if 0
 /* attempting to cast a forgotten spell will cause disorientation */
-STATIC_OVL void
-spell_backfire(spell)
-int spell;
+static void
+spell_backfire(int spell)
 {
     int64_t duration = (int64_t) ((spellev(spell) + 1) * 3), /* 6..24 */
          old_stun = (HStun & TIMEOUT), old_conf = (HConfusion & TIMEOUT);
@@ -1818,8 +1795,7 @@ int spell;
 #endif
 
 double
-get_spell_mana_cost(spell)
-int spell;
+get_spell_mana_cost(int spell)
 {
     if (spell < 0)
         return 0;
@@ -1830,8 +1806,7 @@ int spell;
 }
 
 double
-get_spellbook_adjusted_mana_cost(otyp)
-int otyp;
+get_spellbook_adjusted_mana_cost(int otyp)
 {
     if (otyp <= STRANGE_OBJECT || otyp >= NUM_OBJECTS)
         return 0;
@@ -1848,8 +1823,7 @@ int otyp;
 }
 
 double
-spell_skill_mana_cost_multiplier(skill_level)
-int skill_level;
+spell_skill_mana_cost_multiplier(int skill_level)
 {
     double multiplier = 1.1;
     switch (skill_level)
@@ -1881,8 +1855,7 @@ int skill_level;
 }
 
 const char*
-get_obj_saving_throw_description(obj)
-struct obj* obj;
+get_obj_saving_throw_description(struct obj *obj)
 {
     if (!obj)
         return "";
@@ -1891,8 +1864,7 @@ struct obj* obj;
 }
 
 const char*
-get_otyp_saving_throw_description(otyp)
-int otyp;
+get_otyp_saving_throw_description(int otyp)
 {
     if (objects[otyp].oc_spell_flags & S1_FLAGS_EFFECT_USES_SAVING_THROW_VS_MAGIC_CANCELLATION)
         return "magic cancellation";
@@ -1912,9 +1884,8 @@ int otyp;
         return "unknown type";
 }
 
-STATIC_OVL const char*
-get_spell_attribute_description(booktype)
-int booktype;
+static const char*
+get_spell_attribute_description(int booktype)
 {
     int64_t attrno = objects[booktype].oc_spell_attribute;
     if (attrno >= 0)
@@ -1956,9 +1927,8 @@ int booktype;
     return "None";
 }
 
-STATIC_OVL const char*
-get_targeting_description(booktype)
-int booktype;
+static const char*
+get_targeting_description(int booktype)
 {
     unsigned int dirtype = objects[booktype].oc_dir;
     if (dirtype > 0)
@@ -1995,8 +1965,7 @@ int booktype;
 }
 
 int
-spelldescription(spell)
-int spell;
+spelldescription(int spell)
 {
 
     if (spellknow(spell) <= 0)
@@ -2011,8 +1980,7 @@ int spell;
 }
 
 int
-spelldescription_core(spell, booktype)
-int spell, booktype;
+spelldescription_core(int spell, int booktype)
 {
     char buf[BUFSZ];
     char buf2[BUFSZ];
@@ -2520,11 +2488,7 @@ int spell, booktype;
 }
 
 int
-spelleffects(spell, atme, targetmonst, stop_readchar_ptr)
-int spell;
-boolean atme;
-struct monst* targetmonst;
-boolean* stop_readchar_ptr;
+spelleffects(int spell, boolean atme, struct monst *targetmonst, boolean *stop_readchar_ptr)
 {
     double damage = 0;
     int chance, n; // , intell;
@@ -3423,8 +3387,7 @@ boolean* stop_readchar_ptr;
 }
 
 void
-addspellintrinsictimeout(otyp)
-int otyp;
+addspellintrinsictimeout(int otyp)
 {
     if (otyp <= 0)
         return;
@@ -3570,8 +3533,7 @@ int otyp;
 }
 
 int
-subdirtype2explosiontype(subdir)
-int subdir;
+subdirtype2explosiontype(int subdir)
 {
     int expltype = 0;
     switch (subdir)
@@ -3624,10 +3586,8 @@ deduct_mana_cost(double dmana)
 
 #if 0
 /*ARGSUSED*/
-STATIC_OVL boolean
-spell_aim_step(arg, x, y)
-genericptr_t arg UNUSED;
-int x, y;
+static boolean
+spell_aim_step(genericptr_t arg UNUSED, int x, int y)
 {
     if (!isok(x,y))
         return FALSE;
@@ -3638,9 +3598,8 @@ int x, y;
 }
 
 /* Choose location where spell takes effect. */
-STATIC_OVL int
-throwspell(otyp)
-int otyp;
+static int
+throwspell(int otyp)
 {
     coord cc, uc;
     struct monst *mtmp;
@@ -3694,7 +3653,7 @@ int otyp;
 }
 #endif
 
-STATIC_VAR struct tport_hideaway {
+static struct tport_hideaway {
     struct spell savespell;
     int tport_indx;
 } save_tport;
@@ -3702,8 +3661,7 @@ STATIC_VAR struct tport_hideaway {
 /* add/hide/remove/unhide teleport-away on behalf of dotelecmd() to give
    more control to behavior of ^T when used in wizard mode */
 int
-tport_spell(what)
-int what;
+tport_spell(int what)
 {
     int i;
 /* also defined in teleport.c */
@@ -3762,7 +3720,7 @@ int what;
    they used to be lost entirely, as if never learned, but now we
    just set the memory retention to zero so that they can't be cast */
 void
-losespells(VOID_ARGS)
+losespells(void)
 {
     int n, nzap, i;
 
@@ -3842,10 +3800,8 @@ losespells(VOID_ARGS)
  */
 
 /* qsort callback routine */
-STATIC_PTR int CFDECLSPEC
-spell_cmp(vptr1, vptr2)
-const genericptr vptr1;
-const genericptr vptr2;
+static int CFDECLSPEC
+spell_cmp(const genericptr vptr1, const genericptr vptr2)
 {
     /*
      * gather up all of the possible parameters except spell name
@@ -3901,7 +3857,7 @@ const genericptr vptr2;
    list (sortmode == SORTBY_xxx), or sort the spellbook itself to make
    the current display order stick (sortmode == SORTRETAINORDER) */
 void
-sortspells(VOID_ARGS)
+sortspells(void)
 {
     short i;
 #if defined(SYSV) || defined(DGUX)
@@ -3951,8 +3907,8 @@ sortspells(VOID_ARGS)
 }
 
 /* called if the [sort spells] entry in the view spells menu gets chosen */
-STATIC_OVL boolean
-spellsortmenu(VOID_ARGS)
+static boolean
+spellsortmenu(void)
 {
     winid tmpwin;
     menu_item *selected;
@@ -3995,7 +3951,7 @@ spellsortmenu(VOID_ARGS)
 }
 
 int
-dosortspell(VOID_ARGS)
+dosortspell(void)
 {
     if (spellsortmenu())
         sortspells();
@@ -4004,7 +3960,7 @@ dosortspell(VOID_ARGS)
 }
 
 int
-dovspell(VOID_ARGS)
+dovspell(void)
 {
     char qbuf[QBUFSZ];
     int splnum, othnum;
@@ -4046,12 +4002,13 @@ dovspell(VOID_ARGS)
     return 0;
 }
 
+/*
+ * Parameters:
+ *   splaction: SPELLMENU_CAST, SPELLMENU_REORDER, or spl_book[] index
+ */
 /* the '+' command -- view known spells */
-STATIC_OVL boolean
-dotradspellmenu(prompt, splaction, spell_no)
-const char *prompt;
-int splaction; /* SPELLMENU_CAST, SPELLMENU_REORDER, or spl_book[] index */
-int *spell_no;
+static boolean
+dotradspellmenu(const char *prompt, int splaction, int *spell_no)
 {
     winid tmpwin;
     int i, n, how, splnum;
@@ -4351,13 +4308,9 @@ int *spell_no;
 } 
 
 
-STATIC_OVL
+static
 void
-add_spell_prepare_menu_heading(tmpwin, namelength, extraspaces, addemptyline)
-winid tmpwin;
-int namelength;
-int extraspaces;
-boolean addemptyline;
+add_spell_prepare_menu_heading(winid tmpwin, int namelength, int extraspaces, boolean addemptyline)
 {
     char buf[BUFSZ], fmt[BUFSZ];
     anything any = zeroany;
@@ -4395,15 +4348,9 @@ boolean addemptyline;
 
 }
 
-STATIC_OVL
+static
 void
-add_spell_prepare_menu_item(tmpwin, i, splaction, namelength, extraspaces, usehotkey)
-winid tmpwin;
-int i;
-int splaction;
-int namelength;
-int extraspaces;
-boolean usehotkey;
+add_spell_prepare_menu_item(winid tmpwin, int i, int splaction, int namelength, int extraspaces, boolean usehotkey)
 {
     int splnum = !flags.spellorder || usehotkey ? i : (int)spl_orderindx[i];
     char buf[BUFSZ], availablebuf[BUFSZ], matcompbuf[BUFSZ], levelbuf[10], fmt[BUFSZ];
@@ -4516,12 +4463,9 @@ boolean usehotkey;
 
 }
 
-STATIC_OVL
+static
 void
-add_spell_cast_menu_heading(tmpwin, namelength, addemptyline)
-winid tmpwin;
-int namelength;
-boolean addemptyline;
+add_spell_cast_menu_heading(winid tmpwin, int namelength, boolean addemptyline)
 {
     char buf[BUFSZ], fmt[BUFSZ];
     anything any = zeroany;
@@ -4551,12 +4495,9 @@ boolean addemptyline;
 
 }
 
-STATIC_OVL
+static
 void
-add_alt_spell_cast_menu_item(tmpwin, i, splaction)
-winid tmpwin;
-int i;
-int splaction;
+add_alt_spell_cast_menu_item(winid tmpwin, int i, int splaction)
 {
     int splnum = !flags.spellorder ? i : (int)spl_orderindx[i];
     char buf[BUFSZ * 2], availablebuf[BUFSZ], descbuf[BUFSZ], levelbuf[BUFSZ] = "";
@@ -4656,12 +4597,9 @@ int splaction;
 
 }
 
-STATIC_OVL
+static
 void
-add_alt_spell_prepare_menu_item(tmpwin, i, splaction)
-winid tmpwin;
-int i;
-int splaction;
+add_alt_spell_prepare_menu_item(winid tmpwin, int i, int splaction)
 {
     int splnum = !flags.spellorder ? i : (int)spl_orderindx[i];
     char buf[BUFSZ * 2], availablebuf[BUFSZ], matcompbuf[BUFSZ];
@@ -4719,14 +4657,9 @@ int splaction;
         (splnum == splaction) ? MENU_SELECTED : MENU_UNSELECTED, info);
 }
 
-STATIC_OVL
+static
 void
-add_spell_cast_menu_item(tmpwin, i, splaction, namelength, usehotkey)
-winid tmpwin;
-int i;
-int splaction;
-int namelength;
-boolean usehotkey;
+add_spell_cast_menu_item(winid tmpwin, int i, int splaction, int namelength, boolean usehotkey)
 {
     int splnum = !flags.spellorder || usehotkey ? i : (int)spl_orderindx[i];
     char buf[BUFSZ], availablebuf[BUFSZ], levelbuf[10], statbuf[10], fmt[BUFSZ];
@@ -4919,7 +4852,7 @@ boolean usehotkey;
 }
 
 int
-dospellmanagemenu(VOID_ARGS)
+dospellmanagemenu(void)
 {
     int i = '\0';
 
@@ -5035,8 +4968,7 @@ dospellmanagemenu(VOID_ARGS)
 
 
 int
-setspellhotkey(spell)
-int spell;
+setspellhotkey(int spell)
 {
     char promptbuf[BUFSZ] = "";
     //char answerbuf[BUFSZ] = "";
@@ -5096,8 +5028,7 @@ int spell;
 }
 
 int
-forgetspell(spell)
-int spell;
+forgetspell(int spell)
 {
     if (spell < 0 || spell >= MAXSPELL || spellid(spell) == NO_SPELL)
         return 0;
@@ -5170,8 +5101,7 @@ int spell;
 
 /* Now a percentage */
 int64_t
-get_object_spell_casting_penalty(obj)
-struct obj* obj;
+get_object_spell_casting_penalty(struct obj *obj)
 {
     if (!obj)
         return 0L;
@@ -5192,10 +5122,8 @@ struct obj* obj;
     return (int64_t)(res * (double)ARMOR_SPELL_CASTING_PENALTY_MULTIPLIER);
 }
 
-STATIC_OVL int
-percent_success(spell, limited)
-int spell;
-boolean limited;
+static int
+percent_success(int spell, boolean limited)
 {
     /* Intrinsic and learned ability are combined to calculate
      * the probability of player's success at cast a given spell.
@@ -5276,29 +5204,25 @@ boolean limited;
     return chance;
 }
 
-int spell_skill_base_success_bonus(skill_level)
-int skill_level;
+int spell_skill_base_success_bonus(int skill_level)
 {
     return 100 * max(0, skill_level - 1);
 }
 
-double spell_skill_ulevel_success_bonus_per_level(skill_level)
-int skill_level;
+double spell_skill_ulevel_success_bonus_per_level(int skill_level)
 {
     return ((double)max(1, skill_level)) / 4.0f;
 }
 
-int spell_skill_ulevel_success_bonus(skill_level)
-int skill_level;
+int spell_skill_ulevel_success_bonus(int skill_level)
 {
     double bonusperlevel = spell_skill_ulevel_success_bonus_per_level(skill_level);
     return (int)((double)u.ulevel * bonusperlevel);
 }
 
-STATIC_OVL
+static
 int
-attribute_value_for_spellbook(objectid)
-int objectid;
+attribute_value_for_spellbook(int objectid)
 {
     int statused = 0;
 
@@ -5326,10 +5250,8 @@ int objectid;
 }
 
 #if 0
-STATIC_OVL char *
-spellretention(idx, outbuf)
-int idx;
-char *outbuf;
+static char *
+spellretention(int idx, char *outbuf)
 {
     int64_t turnsleft, percent, accuracy;
     int skill;
@@ -5374,8 +5296,7 @@ char *outbuf;
 #endif
 
 boolean
-already_learnt_spell_type(otyp)
-int otyp;
+already_learnt_spell_type(int otyp)
 {
     if (otyp <= STRANGE_OBJECT || otyp >= NUM_OBJECTS)
         return FALSE;
@@ -5396,8 +5317,7 @@ int otyp;
 
 /* Learn a spell during creation of the initial inventory */
 void
-initialspell(obj)
-struct obj *obj;
+initialspell(struct obj *obj)
 {
     int i, otyp = obj->otyp;
 
@@ -5429,10 +5349,10 @@ struct obj *obj;
 
 
 /* Mixing starts here*/
-STATIC_VAR int domix_spell_no = -1;
+static int domix_spell_no = -1;
 /* the 'X' command, two-weapon moved to M(x) */
 int
-domix(VOID_ARGS)
+domix(void)
 {
     if (in_doagain && domix_spell_no > -1)
     {
@@ -5452,9 +5372,8 @@ domix(VOID_ARGS)
 }
 
 
-STATIC_OVL int
-domaterialcomponentsmenu(spell)
-int spell;
+static int
+domaterialcomponentsmenu(int spell)
 {
     int i;
     int j;
@@ -5800,10 +5719,9 @@ int spell;
 
 }
 
-STATIC_OVL
+static
 int
-count_matcomp_alternatives(mc)
-const struct materialcomponent* mc;
+count_matcomp_alternatives(const struct materialcomponent *mc)
 {
     int cnt = 0;
     int i;
@@ -5819,11 +5737,9 @@ const struct materialcomponent* mc;
 }
 
 
-STATIC_OVL
+static
 boolean
-is_acceptable_component_object_type(mc, otyp)
-const struct materialcomponent *mc;
-int otyp;
+is_acceptable_component_object_type(const struct materialcomponent *mc, int otyp)
 {
     int i;
     for (i = 0; i < MAX_MATCOMP_ALTERNATIVES; i++)
@@ -5837,11 +5753,9 @@ int otyp;
     return FALSE;
 }
 
-STATIC_OVL
+static
 boolean
-is_acceptable_component_monster_type(mc, mnum)
-const struct materialcomponent* mc;
-int mnum;
+is_acceptable_component_monster_type(const struct materialcomponent *mc, int mnum)
 {
     int i;
     for (i = 0; i < MAX_MATCOMP_MONSTER_ALTERNATIVES; i++)
@@ -5855,12 +5769,9 @@ int mnum;
     return FALSE;
 }
 
-STATIC_OVL
+static
 uchar
-is_obj_acceptable_component(mc, otmp, also_possible)
-const struct materialcomponent* mc;
-struct obj* otmp;
-boolean also_possible;
+is_obj_acceptable_component(const struct materialcomponent *mc, struct obj *otmp, boolean also_possible)
 {
     boolean acceptable = is_acceptable_component_object_type(mc, otmp->otyp);
     boolean buc_acceptable = TRUE;
@@ -5888,9 +5799,7 @@ boolean also_possible;
 }
 
 uchar
-is_obj_component_for(spell, otmp)
-int spell;
-struct obj* otmp;
+is_obj_component_for(int spell, struct obj *otmp)
 {
     int j;
     uchar res;
@@ -5906,10 +5815,7 @@ struct obj* otmp;
 
 
 uchar
-is_otyp_component_for_spellbook(booktype, otyp, flags_ptr, corpsenm_ptr)
-int booktype, otyp;
-uint64_t* flags_ptr;
-int* corpsenm_ptr;
+is_otyp_component_for_spellbook(int booktype, int otyp, uint64_t *flags_ptr, int *corpsenm_ptr)
 {
     int j;
     uchar res;
@@ -5930,8 +5836,7 @@ int* corpsenm_ptr;
 }
 
 const char*
-domatcompname(mc)
-const struct materialcomponent* mc;
+domatcompname(const struct materialcomponent *mc)
 {
     /* in general, use the description for complicated (e.g., multialternative) cases */
     if(mc->description && strcmp(mc->description, ""))
@@ -5992,8 +5897,7 @@ const struct materialcomponent* mc;
 }
 
 int
-getspellcooldown(spell)
-int spell;
+getspellcooldown(int spell)
 {
     if (spell < 0)
         return 0;
@@ -6018,9 +5922,8 @@ int spell;
     return cooldown;
 }
 
-STATIC_OVL
-void move_spell_to_top(splidx)
-int splidx;
+static
+void move_spell_to_top(int splidx)
 {
     if (splidx < 0 || splidx >= MAXSPELL)
         return;
@@ -6048,9 +5951,8 @@ int splidx;
     sortspells();
 }
 
-STATIC_OVL
-void move_spell_to_bottom(splidx)
-int splidx;
+static
+void move_spell_to_bottom(int splidx)
 {
     if (splidx < 0 || splidx >= MAXSPELL)
         return;
@@ -6084,7 +5986,7 @@ int splidx;
 
 #if defined (DUMPLOG) || defined (DUMPHTML)
 void
-dump_spells(VOID_ARGS)
+dump_spells(void)
 {
     if (spellid(0) == NO_SPELL)
     {
@@ -6123,7 +6025,7 @@ dump_spells(VOID_ARGS)
 #endif
 
 void
-reset_spells(VOID_ARGS)
+reset_spells(void)
 {
     docast_spell_no = -1;
     domix_spell_no = -1;

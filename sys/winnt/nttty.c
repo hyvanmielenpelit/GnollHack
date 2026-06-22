@@ -73,19 +73,18 @@ cell_t undefined_cell = { CONSOLE_UNDEFINED_CHARACTER,
  * GetConsoleOutputCP
  */
 
-static BOOL FDECL(CtrlHandler, (DWORD));
-static void FDECL(xputc_core, (int));
-void FDECL(cmov, (int, int));
-void FDECL(nocmov, (int, int));
-int FDECL(process_keystroke,
-          (INPUT_RECORD *, boolean *, BOOLEAN_P numberpad, int portdebug));
-static void NDECL(init_ttycolor);
-static void NDECL(really_move_cursor);
-static void NDECL(check_and_set_font);
-static boolean NDECL(check_font_widths);
-static void NDECL(set_known_good_console_font);
-static void NDECL(restore_original_console_font);
-extern void NDECL(safe_routines);
+static BOOL CtrlHandler(DWORD);
+static void xputc_core(int);
+void cmov(int, int);
+void nocmov(int, int);
+int process_keystroke(INPUT_RECORD *, boolean *, boolean numberpad, int portdebug);
+static void init_ttycolor(void);
+static void really_move_cursor(void);
+static void check_and_set_font(void);
+static boolean check_font_widths(void);
+static void set_known_good_console_font(void);
+static void restore_original_console_font(void);
+extern void safe_routines(void);
 
 /* Win32 Screen buffer,coordinate,console I/O information */
 COORD ntcoord;
@@ -108,8 +107,8 @@ static boolean init_ttycolor_completed;
 static boolean display_cursor_info = FALSE;
 #endif
 #ifdef CHANGE_COLOR
-static void NDECL(adjust_palette);
-static int FDECL(match_color_name, (const char *));
+static void adjust_palette(void);
+static int match_color_name(const char *);
 typedef HWND(WINAPI *GETCONSOLEWINDOW)();
 static HWND GetConsoleHandle(void);
 static HWND GetConsoleHwnd(void);
@@ -184,11 +183,11 @@ char erase_char, kill_char;
 
 /* dynamic keystroke handling .DLL support */
 typedef int(__stdcall *PROCESS_KEYSTROKE)(HANDLE, INPUT_RECORD *, boolean *,
-                                          BOOLEAN_P, int);
+                                          boolean, int);
 
 typedef int(__stdcall *NHKBHIT)(HANDLE, INPUT_RECORD *);
 
-typedef int(__stdcall *CHECKINPUT)(HANDLE, INPUT_RECORD *, DWORD *, BOOLEAN_P,
+typedef int(__stdcall *CHECKINPUT)(HANDLE, INPUT_RECORD *, DWORD *, boolean,
                                    int, int *, coord *);
 
 typedef int(__stdcall *SOURCEWHERE)(char **);
@@ -213,7 +212,7 @@ keyboard_handler_t keyboard_handler;
 
 /* Console buffer flipping support */
 
-static void back_buffer_flip()
+static void back_buffer_flip(void)
 {
     cell_t * back = console.back_buffer;
     cell_t * front = console.front_buffer;
@@ -290,7 +289,7 @@ void buffer_write(cell_t * buffer, cell_t * cell, COORD pos)
  * Called after returning from ! or ^Z
  */
 void
-gettty()
+gettty(void)
 {
 #ifndef TEXTCOLOR
     int k;
@@ -308,8 +307,7 @@ gettty()
 
 /* reset terminal to original state */
 void
-settty(s)
-const char *s;
+settty(const char *s)
 {
     cmov(ttyDisplay->curx, ttyDisplay->cury);
     end_screen();
@@ -327,7 +325,7 @@ const char *s;
 
 /* called by init_nhwindows() and resume_nhwindows() */
 void
-setftty()
+setftty(void)
 {
 #ifdef CHANGE_COLOR
     if (altered_palette)
@@ -337,8 +335,7 @@ setftty()
 }
 
 void
-tty_startup(wid, hgt)
-int *wid, *hgt;
+tty_startup(int *wid, int *hgt)
 {
     *wid = console.width;
     *hgt = console.height;
@@ -346,21 +343,20 @@ int *wid, *hgt;
 }
 
 void
-tty_number_pad(state)
-int state;
+tty_number_pad(int state)
 {
     // do nothing
 }
 
 void
-tty_start_screen()
+tty_start_screen(void)
 {
     if (iflags.num_pad)
         tty_number_pad(1); /* make keypad send digits */
 }
 
 void
-tty_end_screen()
+tty_end_screen(void)
 {
     clear_screen();
     really_move_cursor();
@@ -370,8 +366,7 @@ tty_end_screen()
 }
 
 static BOOL
-CtrlHandler(ctrltype)
-DWORD ctrltype;
+CtrlHandler(DWORD ctrltype)
 {
     switch (ctrltype) {
     /*    case CTRL_C_EVENT: */
@@ -393,10 +388,13 @@ DWORD ctrltype;
     }
 }
 
+/*
+ * Parameters:
+ *   mode: unused
+ */
 /* called by pcmain() and process_command_line_arguments() */
 void
-nttty_open(mode)
-int mode; // unused
+nttty_open(int mode)
 {
     DWORD cmode;
 
@@ -417,18 +415,14 @@ int mode; // unused
 }
 
 void
-nttty_exit()
+nttty_exit(void)
 {
     /* go back to using the safe routines */
     safe_routines();
 }
 
 int
-process_keystroke(ir, valid, numberpad, portdebug)
-INPUT_RECORD *ir;
-boolean *valid;
-boolean numberpad;
-int portdebug;
+process_keystroke(INPUT_RECORD *ir, boolean *valid, boolean numberpad, int portdebug)
 {
     int ch = keyboard_handler.pProcessKeystroke(
                     console.hConIn, ir, valid, numberpad, portdebug);
@@ -439,13 +433,13 @@ int portdebug;
 }
 
 int
-nttty_kbhit()
+nttty_kbhit(void)
 {
     return keyboard_handler.pNHkbhit(console.hConIn, &ir);
 }
 
 int
-tgetch()
+tgetch(void)
 {
     int mod;
     coord cc;
@@ -469,8 +463,7 @@ tgetch()
 }
 
 int
-ntposkey(x, y, mod)
-int *x, *y, *mod;
+ntposkey(int *x, int *y, int *mod)
 {
     int ch;
     coord cc;
@@ -499,7 +492,7 @@ static void set_console_cursor(int x, int y)
 }
 
 static void
-really_move_cursor()
+really_move_cursor(void)
 {
 #ifdef PORT_DEBUG
     char oldtitle[BUFSZ], newtitle[BUFSZ];
@@ -522,8 +515,7 @@ really_move_cursor()
 }
 
 void
-cmov(x, y)
-register int x, y;
+cmov(int x, int y)
 {
     ttyDisplay->cury = y;
     ttyDisplay->curx = x;
@@ -532,8 +524,7 @@ register int x, y;
 }
 
 void
-nocmov(x, y)
-int x, y;
+nocmov(int x, int y)
 {
     ttyDisplay->curx = x;
     ttyDisplay->cury = y;
@@ -542,8 +533,7 @@ int x, y;
 }
 
 void
-xputc(ch)
-int ch;
+xputc(int ch)
 {
     set_console_cursor(ttyDisplay->curx, ttyDisplay->cury);
 
@@ -554,8 +544,7 @@ int ch;
 }
 
 void
-xputs(s)
-const char *s;
+xputs(const char *s)
 {
     size_t k;
     size_t slen = strlen(s);
@@ -574,8 +563,7 @@ const char *s;
  * on the display.
  */
 void
-xputc_core(ch)
-int ch;
+xputc_core(int ch)
 {
     nhassert(console.cursor.X >= 0 && console.cursor.X < console.width);
     nhassert(console.cursor.Y >= 0 && console.cursor.Y < console.height);
@@ -637,9 +625,7 @@ int ch;
  */
 
 void
-g_putch(in_ch, is_CP437)
-int in_ch;
-boolean is_CP437;
+g_putch(int in_ch, boolean is_CP437)
 {
     boolean inverse = FALSE;
     nhsym ch = in_ch;
@@ -668,7 +654,7 @@ boolean is_CP437;
 }
 
 void
-cl_end()
+cl_end(void)
 {
     set_console_cursor(ttyDisplay->curx, ttyDisplay->cury);
     buffer_clear_to_end_of_line(console.back_buffer, console.cursor.X,
@@ -677,34 +663,34 @@ cl_end()
 }
 
 void
-raw_clear_screen()
+raw_clear_screen(void)
 {
     buffer_fill_to_end(console.back_buffer, &clear_cell, 0, 0);
 }
 
 void
-clear_screen()
+clear_screen(void)
 {
     raw_clear_screen();
     home();
 }
 
 void
-home()
+home(void)
 {
     ttyDisplay->curx = ttyDisplay->cury = 0;
     set_console_cursor(ttyDisplay->curx, ttyDisplay->cury);
 }
 
 void
-backsp()
+backsp(void)
 {
     set_console_cursor(ttyDisplay->curx, ttyDisplay->cury);
     xputc_core('\b');
 }
 
 void
-cl_eos()
+cl_eos(void)
 {
     buffer_fill_to_end(console.back_buffer, &clear_cell, ttyDisplay->curx,
                         ttyDisplay->cury);
@@ -712,7 +698,7 @@ cl_eos()
 }
 
 void
-tty_nhbell()
+tty_nhbell(void)
 {
     if (flags.silent || iflags.debug_fuzzer)
         return;
@@ -722,7 +708,7 @@ tty_nhbell()
 volatile int junk; /* prevent optimizer from eliminating loop below */
 
 void
-tty_delay_output()
+tty_delay_output(void)
 {
     /* delay 50 ms - uses ANSI C clock() function now */
     clock_t goal;
@@ -739,8 +725,7 @@ tty_delay_output()
 }
 
 void
-tty_delay_output_milliseconds(interval)
-int interval;
+tty_delay_output_milliseconds(int interval)
 {
     /* delay 50 ms - uses ANSI C clock() function now */
     clock_t goal;
@@ -757,8 +742,7 @@ int interval;
 }
 
 void
-tty_delay_output_intervals(intervals)
-int intervals;
+tty_delay_output_intervals(int intervals)
 {
     /* delay 50 ms - uses ANSI C clock() function now */
     clock_t goal;
@@ -797,7 +781,7 @@ int intervals;
  */
 
 static void
-init_ttycolor()
+init_ttycolor(void)
 {
 #ifdef TEXTCOLOR
     ttycolors[CLR_BLACK]        = FOREGROUND_INTENSITY; /* fix by Quietust */
@@ -933,20 +917,20 @@ term_end_color(void)
 }
 
 void
-standoutbeg()
+standoutbeg(void)
 {
     term_start_attr(ATR_BOLD);
 }
 
 void
-standoutend()
+standoutend(void)
 {
     term_end_attr(ATR_BOLD);
 }
 
 #ifndef NO_MOUSE_ALLOWED
 void
-toggle_mouse_support()
+toggle_mouse_support(void)
 {
     static int qeinit = 0;
     DWORD cmode;
@@ -978,8 +962,7 @@ toggle_mouse_support()
 
 /* handle tty options updates here */
 void
-nttty_preference_update(pref)
-const char *pref;
+nttty_preference_update(const char *pref)
 {
     if (stricmp(pref, "mouse_support") == 0) {
 #ifndef NO_MOUSE_ALLOWED
@@ -993,7 +976,7 @@ const char *pref;
 
 #ifdef PORT_DEBUG
 void
-win32con_debug_keystrokes()
+win32con_debug_keystrokes(void)
 {
     DWORD count;
     boolean valid = 0;
@@ -1008,7 +991,7 @@ win32con_debug_keystrokes()
     (void) doredraw();
 }
 void
-win32con_handler_info()
+win32con_handler_info(void)
 {
     char *buf;
     int ci;
@@ -1040,15 +1023,14 @@ win32con_handler_info()
 }
 
 void
-win32con_toggle_cursor_info()
+win32con_toggle_cursor_info(void)
 {
     display_cursor_info = !display_cursor_info;
 }
 #endif
 
 void
-map_subkeyvalue(op)
-register char *op;
+map_subkeyvalue(char *op)
 {
     char digits[] = "0123456789";
     size_t length, i;
@@ -1081,7 +1063,7 @@ register char *op;
     key_overrides[idx] = val;
 }
 
-void unload_keyboard_handler()
+void unload_keyboard_handler(void)
 {
     nhassert(keyboard_handler.hLibrary != NULL);
 
@@ -1160,33 +1142,31 @@ void set_altkeyhandler(const char * inName)
 /* fatal error */
 /*VARARGS1*/
 void nttty_error
-VA_DECL(const char *, s)
+(const char *s, ...)
 {
     char buf[BUFSZ];
-    VA_START(s);
-    VA_INIT(s, const char *);
+    va_list the_args;
+    va_start(the_args, s);
     /* error() may get called before tty is initialized */
     if (iflags.window_inited)
         end_screen();
     buf[0] = '\n';
-    (void) vsprintf(&buf[1], s, VA_ARGS);
+    (void) vsprintf(&buf[1], s, the_args);
     msmsg(buf);
     really_move_cursor();
-    VA_END();
+    va_end(the_args);
     gnollhack_exit(EXIT_FAILURE);
 }
 
 void
-synch_cursor()
+synch_cursor(void)
 {
     really_move_cursor();
 }
 
 #ifdef CHANGE_COLOR
 void
-tty_change_color(color_number, rgb, reverse)
-int color_number, reverse;
-int64_t rgb;
+tty_change_color(int color_number, int64_t rgb, int reverse)
 {
     /* Map GnollHack color index to NT Console palette index */
     int idx, win32_color_number[] = {
@@ -1225,14 +1205,13 @@ int64_t rgb;
 }
 
 char *
-tty_get_color_string()
+tty_get_color_string(void)
 {
     return "";
 }
 
 int
-match_color_name(c)
-const char *c;
+match_color_name(const char *c)
 {
     const struct others {
         int idx;
@@ -1261,8 +1240,7 @@ const char *c;
  * Returns 0 if badoption syntax
  */
 int
-alternative_palette(op)
-char *op;
+alternative_palette(char *op)
 {
     /*
      *    palette:color-R-G-B
@@ -1403,7 +1381,7 @@ static void GetConsoleSizeInfo(CONSOLE_INFO *pci);
 VOID WINAPI SetConsolePalette(COLORREF crPalette[16]);
 
 void
-adjust_palette(VOID_ARGS)
+adjust_palette(void)
 {
     SetConsolePalette(UserDefinedColors);
     altered_palette = 0;
@@ -1576,8 +1554,7 @@ GetConsoleHwnd(void)
 }
 #endif /*CHANGE_COLOR*/
 
-static int CALLBACK EnumFontCallback(
-    const LOGFONTW * lf, const TEXTMETRICW * tm, DWORD fontType, LPARAM lParam)
+static int CALLBACK EnumFontCallback( const LOGFONTW * lf, const TEXTMETRICW * tm, DWORD fontType, LPARAM lParam)
 {
     LOGFONTW * lf_ptr = (LOGFONTW *) lParam;
     *lf_ptr = *lf;
@@ -1589,7 +1566,7 @@ static int CALLBACK EnumFontCallback(
  * correctly, then it will change the font to a known good font.
  */
 void
-check_and_set_font()
+check_and_set_font(void)
 {
     if (!check_font_widths()) {
         raw_print("WARNING: glyphs too wide in console font."
@@ -1602,7 +1579,7 @@ check_and_set_font()
  * fit within the width of a single console cell.
  */
 boolean
-check_font_widths()
+check_font_widths(void)
 {
     CONSOLE_FONT_INFOEX console_font_info;
     console_font_info.cbSize = sizeof(console_font_info);
@@ -1705,7 +1682,7 @@ clean_up:
  * settings so that they can be restored prior to GnollHack exit.
  */
 void
-set_known_good_console_font()
+set_known_good_console_font(void)
 {
     CONSOLE_FONT_INFOEX console_font_info;
     console_font_info.cbSize = sizeof(console_font_info);
@@ -1732,7 +1709,7 @@ set_known_good_console_font()
  * settings to what they were when GnollHack was launched.
  */
 void
-restore_original_console_font()
+restore_original_console_font(void)
 {
     if (console.font_changed) {
         BOOL success;
@@ -1756,7 +1733,7 @@ restore_original_console_font()
  * wish to print to the console.
  */
 
-void set_cp_map()
+void set_cp_map(void)
 {
     if (console.has_unicode) {
         UINT codePage = GetConsoleOutputCP();
@@ -1868,7 +1845,7 @@ void early_raw_print(const char *s)
  *
  */
 
-void GnollHack_enter_nttty()
+void GnollHack_enter_nttty(void)
 {
 #if 0
     /* set up state needed by early_raw_print() */
@@ -1979,12 +1956,12 @@ void GnollHack_enter_nttty()
  * system isn't initialized yet
  */
 void msmsg
-VA_DECL(const char *, fmt)
+(const char *fmt, ...)
 {
     char buf[ROWNO * COLNO]; /* worst case scenario */
-    VA_START(fmt);
-    VA_INIT(fmt, const char *);
-    Vsprintf(buf, fmt, VA_ARGS);
+    va_list the_args;
+    va_start(the_args, fmt);
+    Vsprintf(buf, fmt, the_args);
     if (redirect_stdout)
         fprintf(stdout, "%s", buf);
     else {
@@ -2008,7 +1985,7 @@ VA_DECL(const char *, fmt)
         fprintf(stdout, "%s", buf);
 #endif
     }
-    VA_END();
+    va_end(the_args);
     return;
 }
 

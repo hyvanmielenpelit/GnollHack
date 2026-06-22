@@ -11,13 +11,13 @@
 
 extern boolean notonhead;
 
-STATIC_DCL void FDECL(watch_on_duty, (struct monst *));
-STATIC_DCL int FDECL(disturb, (struct monst *));
-STATIC_DCL void FDECL(release_hero, (struct monst *));
-STATIC_DCL void FDECL(distfleeck, (struct monst *, int *, int *, int *));
-STATIC_DCL int FDECL(m_arrival, (struct monst *));
-STATIC_DCL boolean FDECL(stuff_prevents_passage, (struct monst *));
-STATIC_DCL int FDECL(vamp_shift, (struct monst *, struct permonst *, BOOLEAN_P));
+static void watch_on_duty(struct monst *);
+static int disturb(struct monst *);
+static void release_hero(struct monst *);
+static void distfleeck(struct monst *, int *, int *, int *);
+static int m_arrival(struct monst *);
+static boolean stuff_prevents_passage(struct monst *);
+static int vamp_shift(struct monst *, struct permonst *, boolean);
 
 #define mon_wants_to_pick_up_obj(m, o) \
     ((m) && mon_can_move(m) && !(m)->issummoned && mon_can_reach_floor(m) && !onnopickup((m)->mx, (m)->my, m) \
@@ -25,8 +25,7 @@ STATIC_DCL int FDECL(vamp_shift, (struct monst *, struct permonst *, BOOLEAN_P))
 
 /* True if mtmp died */
 boolean
-mb_trapped(mtmp)
-struct monst *mtmp;
+mb_trapped(struct monst *mtmp)
 {
     boolean spef_on = FALSE;
     if (cansee(mtmp->mx, mtmp->my) && !Unaware)
@@ -67,8 +66,7 @@ struct monst *mtmp;
 }
 
 boolean
-check_mon_wants_to_attack_target(mtmp, mtarg)
-struct monst* mtmp, * mtarg;
+check_mon_wants_to_attack_target(struct monst *mtmp, struct monst *mtarg)
 {
     if (!mtmp || !mtarg)
         return FALSE;
@@ -158,11 +156,13 @@ struct monst* mtmp, * mtarg;
     return !haspassive || resistspassive || (self_strong_enough && target_weak && has_enough_hp && !is_insta_kill);
 }
 
+/*
+ * Parameters:
+ *   for_unlocking: true => credit card ok, false => not ok
+ */
 /* check whether a monster is carrying a locking/unlocking tool */
 boolean
-monhaskey(mon, for_unlocking)
-struct monst *mon;
-boolean for_unlocking; /* true => credit card ok, false => not ok */
+monhaskey(struct monst *mon, boolean for_unlocking)
 {
     if (for_unlocking && m_carrying(mon, CREDIT_CARD))
         return TRUE;
@@ -170,12 +170,7 @@ boolean for_unlocking; /* true => credit card ok, false => not ok */
 }
 
 void
-mon_yells(mon, shout, verb, adverb, usethe, isangry)
-struct monst *mon;
-const char *shout;
-const char* verb;
-const char* adverb;
-boolean usethe, isangry;
+mon_yells(struct monst *mon, const char *shout, const char *verb, const char *adverb, boolean usethe, boolean isangry)
 {
     if (Deaf)
     {
@@ -211,8 +206,7 @@ boolean usethe, isangry;
 
 
 void
-check_mon_talk(mon)
-struct monst* mon;
+check_mon_talk(struct monst *mon)
 {
     if (!mon || DEADMONSTER(mon) || !mon_can_move(mon) || is_tame(mon) || is_fleeing(mon))
         return;
@@ -341,9 +335,8 @@ struct monst* mon;
 }
 
 
-STATIC_OVL void
-watch_on_duty(mtmp)
-register struct monst *mtmp;
+static void
+watch_on_duty(struct monst *mtmp)
 {
     int x, y;
 
@@ -376,8 +369,7 @@ register struct monst *mtmp;
 }
 
 int
-dochugw(mtmp)
-register struct monst *mtmp;
+dochugw(struct monst *mtmp)
 {
     int x = mtmp->mx, y = mtmp->my;
 
@@ -415,9 +407,7 @@ register struct monst *mtmp;
 }
 
 boolean
-onscary(x, y, mtmp)
-int x, y;
-struct monst *mtmp;
+onscary(int x, int y, struct monst *mtmp)
 {
     /* creatures who are directly resistant to magical scaring:
      * Rodney, lawful minions, Angels, the Riders, shopkeepers
@@ -472,9 +462,7 @@ struct monst *mtmp;
 }
 
 boolean
-onnopickup(x, y, mtmp)
-int x, y;
-struct monst* mtmp;
+onnopickup(int x, int y, struct monst *mtmp)
 {
     if (onscary(x, y, mtmp))
         return TRUE;
@@ -487,9 +475,7 @@ struct monst* mtmp;
 
 /* regenerate lost hit points */
 void
-monster_regeneration_and_timeout(mon, digest_meal)
-struct monst *mon;
-boolean digest_meal;
+monster_regeneration_and_timeout(struct monst *mon, boolean digest_meal)
 {
     int roundstofull = 
         has_divine_regeneration(mon) ? max(1, min(mon->mhpmax / 16, 10)) :
@@ -638,9 +624,8 @@ boolean digest_meal;
  * Possibly awaken the given monster.  Return a 1 if the monster has been
  * jolted awake.
  */
-STATIC_OVL int
-disturb(mtmp)
-register struct monst *mtmp;
+static int
+disturb(struct monst *mtmp)
 {
     /*
      * + Ettins are hard to surprise.
@@ -674,9 +659,8 @@ register struct monst *mtmp;
 }
 
 /* ungrab/expel held/swallowed hero */
-STATIC_OVL void
-release_hero(mon)
-struct monst *mon;
+static void
+release_hero(struct monst *mon)
 {
     if (mon == u.ustuck) {
         if (u.uswallow) {
@@ -700,11 +684,7 @@ struct monst *mon;
  * if first, only adds fleetime if monster isn't already fleeing
  * if fleemsg, prints a message about new flight, otherwise, caller should */
 void
-monflee(mtmp, fleetime, first, fleemsg)
-struct monst *mtmp;
-int fleetime;
-boolean first;
-boolean fleemsg;
+monflee(struct monst *mtmp, int fleetime, boolean first, boolean fleemsg)
 {
     if (!mtmp)
         return;
@@ -763,9 +743,7 @@ boolean fleemsg;
 
 
 void
-make_mon_fearful(mtmp, fleetime)
-struct monst* mtmp;
-int fleetime;
+make_mon_fearful(struct monst *mtmp, int fleetime)
 {
     /* shouldn't happen; maybe warrants impossible()? */
     if (DEADMONSTER(mtmp))
@@ -790,10 +768,8 @@ int fleetime;
 
 
 
-STATIC_OVL void
-distfleeck(mtmp, inrange, nearby, scared)
-register struct monst *mtmp;
-int *inrange, *nearby, *scared;
+static void
+distfleeck(struct monst *mtmp, int *inrange, int *nearby, int *scared)
 {
     int seescaryx, seescaryy;
     boolean sawscary = FALSE, bravegremlin = (rn2(5) == 0);
@@ -831,9 +807,8 @@ int *inrange, *nearby, *scared;
 
 /* perform a special one-time action for a monster; returns -1 if nothing
    special happened, 0 if monster uses up its turn, 1 if monster is killed */
-STATIC_OVL int
-m_arrival(mon)
-struct monst *mon;
+static int
+m_arrival(struct monst *mon)
 {
     mon->mstrategy &= ~STRAT_ARRIVE; /* always reset */
 
@@ -845,11 +820,10 @@ struct monst *mon;
  * code. --KAA
  */
 int
-dochug(mtmp)
-register struct monst *mtmp;
+dochug(struct monst *mtmp)
 {
-    register struct permonst *mdat;
-    register int tmp = 0;
+    struct permonst *mdat;
+    int tmp = 0;
     int inrange, nearby, scared;
 
     /*  Pre-movement adjustments
@@ -1019,7 +993,7 @@ register struct monst *mtmp;
         else if (!u.uinvulnerable && !Invulnerable && !Mind_shielding) 
         {
             play_sfx_sound(SFX_WAVE_OF_PSYCHIC_ENERGY);
-            register boolean m_sen = sensemon(mtmp);
+            boolean m_sen = sensemon(mtmp);
             if (m_sen || ((Blind_telepat || Unblind_telepat) && rn2(2)) || !rn2(10)) 
             {
                 pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "It locks on to your %s!",
@@ -1217,8 +1191,7 @@ register struct monst *mtmp;
 
 
 void
-check_boss_fight(mtmp)
-struct monst* mtmp;
+check_boss_fight(struct monst *mtmp)
 {
     if (!mtmp)
         return;
@@ -1250,7 +1223,7 @@ struct monst* mtmp;
 }
 
 void
-check_seen_bosses(VOID_ARGS)
+check_seen_bosses(void)
 {
     struct monst* mtmp;
     for (mtmp = fmon; mtmp; mtmp = mtmp->nmon)
@@ -1259,18 +1232,17 @@ check_seen_bosses(VOID_ARGS)
 }
 
 
-STATIC_VAR NEARDATA const char practical[] = { WEAPON_CLASS, ARMOR_CLASS,
+static NEARDATA const char practical[] = { WEAPON_CLASS, ARMOR_CLASS,
                                            GEM_CLASS, FOOD_CLASS, MISCELLANEOUS_CLASS, 0 };
-STATIC_VAR NEARDATA const char magical[] = { AMULET_CLASS, POTION_CLASS,
+static NEARDATA const char magical[] = { AMULET_CLASS, POTION_CLASS,
                                          SCROLL_CLASS, WAND_CLASS,
                                          RING_CLASS,   SPBOOK_CLASS, MISCELLANEOUS_CLASS, 0 };
-STATIC_VAR NEARDATA const char indigestion[] = { BALL_CLASS, ROCK_CLASS, 0 };
-STATIC_VAR NEARDATA const char boulder_class[] = { ROCK_CLASS, 0 };
-STATIC_VAR NEARDATA const char gem_class[] = { GEM_CLASS, 0 };
+static NEARDATA const char indigestion[] = { BALL_CLASS, ROCK_CLASS, 0 };
+static NEARDATA const char boulder_class[] = { ROCK_CLASS, 0 };
+static NEARDATA const char gem_class[] = { GEM_CLASS, 0 };
 
 boolean
-itsstuck(mtmp)
-register struct monst *mtmp;
+itsstuck(struct monst *mtmp)
 {
     if (sticks(youmonst.data) && mtmp == u.ustuck && !u.uswallow) {
         pline("%s cannot escape from you!", Monnam(mtmp));
@@ -1280,6 +1252,11 @@ register struct monst *mtmp;
 }
 
 /*
+ * Parameters:
+ *   poss: coord poss[9]
+ *   info: int64_t info[9]
+ */
+/*
  * should_displace()
  *
  * Displacement of another monster is a last resort and only
@@ -1287,17 +1264,12 @@ register struct monst *mtmp;
  * those should be used instead. This function does that evaluation.
  */
 boolean
-should_displace(mtmp, poss, info, cnt, gx, gy)
-struct monst *mtmp;
-coord *poss; /* coord poss[9] */
-int64_t *info;  /* int64_t info[9] */
-int cnt;
-xchar gx, gy;
+should_displace(struct monst *mtmp, coord *poss, int64_t *info, int cnt, xchar gx, xchar gy)
 {
     int shortest_with_displacing = -1;
     int shortest_without_displacing = -1;
     int count_without_displacing = 0;
-    register int i, nx, ny;
+    int i, nx, ny;
     int ndist;
 
     for (i = 0; i < cnt; i++) {
@@ -1324,9 +1296,7 @@ xchar gx, gy;
 }
 
 boolean
-m_digweapon_check(mtmp, nix, niy)
-struct monst *mtmp;
-xchar nix,niy;
+m_digweapon_check(struct monst *mtmp, xchar nix, xchar niy)
 {
     boolean can_tunnel = 0;
     struct obj *mw_tmp = MON_WEP(mtmp);
@@ -1362,14 +1332,12 @@ xchar nix,niy;
  * 3: did not move, and can't do anything else either.
  */
 int
-m_move(mtmp, after)
-register struct monst *mtmp;
-register int after;
+m_move(struct monst *mtmp, int after)
 {
     if (!mtmp)
         return 3;
 
-    register int appr;
+    int appr;
     xchar gx, gy, nix, niy, chcnt;
     int chi; /* could be schar except for stupid Sun-2 compiler */
     boolean likegold = 0, likegems = 0, likeobjs = 0, likemagic = 0,
@@ -1573,7 +1541,7 @@ register int after;
 
         if (!should_see && can_track(ptr)) 
         {
-            register coord *cp;
+            coord *cp;
 
             cp = gettrack(omx, omy);
             if (cp)
@@ -1584,7 +1552,7 @@ register int after;
         }
     }
 
-    register int pctload = 0;
+    int pctload = 0;
 
     if ((!is_peaceful(mtmp) || !rn2(10)) && (!Is_really_rogue_level(&u.uz)))
     {
@@ -1615,9 +1583,9 @@ register int after;
 #define SQSRCHRADIUS 5
 
     {
-        register int minr = SQSRCHRADIUS; /* not too far away */
-        register struct obj *otmp;
-        register int xx, yy;
+        int minr = SQSRCHRADIUS; /* not too far away */
+        struct obj *otmp;
+        int xx, yy;
         int oomx, oomy, lmx, lmy;
 
         /* cut down the search radius if it thinks character is closer. */
@@ -1772,10 +1740,10 @@ register int after;
     if (doorbuster)
         flag |= BUSTDOOR;
     {
-        register int i, j, nx, ny, nearer;
+        int i, j, nx, ny, nearer;
         int jcnt, cnt;
         int ndist, nidist;
-        register coord *mtrk;
+        coord *mtrk;
         coord poss[9];
 
         cnt = mfndpos(mtmp, poss, info, flag);
@@ -1832,7 +1800,7 @@ register int after;
 
     if (mmoved)
     {
-        register int j;
+        int j;
 
         if (mmoved == 1 && (u.ux != nix || u.uy != niy) && itsstuck(mtmp))
             return 3;
@@ -2285,8 +2253,7 @@ register int after;
 }
 
 void
-dissolve_bars(x, y)
-register int x, y;
+dissolve_bars(int x, int y)
 {
     boolean floor_is_room = (Is_special(&u.uz) || *in_rooms(x, y, 0));
     levl[x][y].typ = levl[x][y].floortyp ? levl[x][y].floortyp : floor_is_room ? ROOM : CORR;
@@ -2298,16 +2265,14 @@ register int x, y;
 }
 
 boolean
-closed_door(x, y)
-register int x, y;
+closed_door(int x, int y)
 {
     return (boolean) (IS_DOOR(levl[x][y].typ)
                       && (levl[x][y].doormask & (D_LOCKED | D_CLOSED)));
 }
 
 boolean
-accessible(x, y)
-register int x, y;
+accessible(int x, int y)
 {
     int levtyp = levl[x][y].typ;
 
@@ -2320,11 +2285,10 @@ register int x, y;
 
 /* decide where the monster thinks you are standing */
 void
-set_apparxy(mtmp)
-register struct monst *mtmp;
+set_apparxy(struct monst *mtmp)
 {
     boolean notseen, gotu;
-    register int disp, mx = mtmp->mux, my = mtmp->muy;
+    int disp, mx = mtmp->mux, my = mtmp->muy;
     int64_t umoney = money_cnt(invent);
 
     /*
@@ -2368,7 +2332,7 @@ register struct monst *mtmp;
 
     if (!gotu) 
     {
-        register int try_cnt = 0;
+        int try_cnt = 0;
 
         do 
         {
@@ -2405,9 +2369,7 @@ register struct monst *mtmp;
  * location however.
  */
 boolean
-undesirable_disp(mtmp, x, y)
-struct monst *mtmp;
-xchar x, y;
+undesirable_disp(struct monst *mtmp, xchar x, xchar y)
 {
     if (!mtmp)
         return TRUE;
@@ -2436,9 +2398,8 @@ xchar x, y;
  * Inventory prevents passage under door.
  * Used by can_ooze() and can_fog().
  */
-STATIC_OVL boolean
-stuff_prevents_passage(mtmp)
-struct monst *mtmp;
+static boolean
+stuff_prevents_passage(struct monst *mtmp)
 {
     struct obj *chain, *obj;
 
@@ -2481,8 +2442,7 @@ struct monst *mtmp;
 }
 
 boolean
-can_ooze(mtmp)
-struct monst *mtmp;
+can_ooze(struct monst *mtmp)
 {
     if (!amorphous(mtmp->data) || stuff_prevents_passage(mtmp))
         return FALSE;
@@ -2491,8 +2451,7 @@ struct monst *mtmp;
 
 /* monster can change form into a fog if necessary */
 boolean
-can_fog(mtmp)
-struct monst *mtmp;
+can_fog(struct monst *mtmp)
 {
     if (!(mvitals[PM_FOG_CLOUD].mvflags & MV_GENOCIDED) && is_vampshifter(mtmp)
         && !Protection_from_shape_changers && !stuff_prevents_passage(mtmp))
@@ -2500,11 +2459,8 @@ struct monst *mtmp;
     return FALSE;
 }
 
-STATIC_OVL int
-vamp_shift(mon, ptr, domsg)
-struct monst *mon;
-struct permonst *ptr;
-boolean domsg;
+static int
+vamp_shift(struct monst *mon, struct permonst *ptr, boolean domsg)
 {
     if (!mon)
         return 0;
@@ -2536,12 +2492,7 @@ boolean domsg;
 }
 
 boolean
-m_findtravelpath(mon, mode, mon_dx_ptr, mon_dy_ptr, allowflags)
-struct monst* mon;
-int mode;
-xchar* mon_dx_ptr;
-xchar* mon_dy_ptr;
-int64_t allowflags;
+m_findtravelpath(struct monst *mon, int mode, xchar *mon_dx_ptr, xchar *mon_dy_ptr, int64_t allowflags)
 {
     if (!mon || !mon_dx_ptr || !mon_dy_ptr)
         return FALSE;
@@ -2812,11 +2763,7 @@ found:
 }
 
 boolean
-m_test_move(mon, mx, my, dx, dy, mode, allowflags)
-struct monst* mon;
-xchar mx, my, dx, dy;
-int mode;
-int64_t allowflags;
+m_test_move(struct monst *mon, xchar mx, xchar my, xchar dx, xchar dy, int mode, int64_t allowflags)
 {
     coord poss[9];
     int64_t info[9];

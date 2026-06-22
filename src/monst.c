@@ -31,7 +31,7 @@
 #define C(color)
 #endif
 
-void NDECL(monst_init);
+void monst_init(void);
 /*
  *      Entry Format:   (from permonst.h)
  *
@@ -6440,7 +6440,7 @@ struct permonst _mons2[] = {
 #ifndef SPLITMON_1
 /* dummy routine used to force linkage */
 void
-monst_init(VOID_ARGS)
+monst_init(void)
 {
     return;
 }

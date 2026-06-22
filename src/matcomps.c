@@ -3926,7 +3926,7 @@ void matcomps_init();
 
 /* dummy routine used to force linkage */
 void
-matcomps_init(VOID_ARGS)
+matcomps_init(void)
 {
     return;
 }

@@ -570,14 +570,13 @@ NEARDATA const struct decoration_lit_color_definition decoration_lit_colors[CLR_
 
 /* force linkage */
 void
-init_rm(VOID_ARGS)
+init_rm(void)
 {
     return;
 }
 
 enum obj_material_types
-get_location_type_material(typ, subtyp)
-int typ, subtyp;
+get_location_type_material(int typ, int subtyp)
 {
     if (subtyp <= 0)
         return typ >= 0 && typ < MAX_LEVTYPE ? location_type_definitions[typ].material : MAT_NONE;
@@ -605,8 +604,7 @@ int typ, subtyp;
 }
 
 int
-get_initial_tree_subtype(forest_type)
-schar forest_type;
+get_initial_tree_subtype(schar forest_type)
 {
     if (forest_type < 0 || forest_type >= MAX_FOREST_TYPES)
     {
@@ -640,8 +638,7 @@ schar forest_type;
 
 
 int
-get_initial_location_subtype(ltype)
-int ltype;
+get_initial_location_subtype(int ltype)
 {
     int res = 0;
     switch (ltype)
@@ -677,8 +674,7 @@ int ltype;
 }
 
 int
-get_initial_location_vartype(typ, subtyp)
-int typ, subtyp;
+get_initial_location_vartype(int typ, int subtyp)
 {
     const struct location_subtype_definition* sub_def = 0;
     int num_subs = 0;
@@ -740,8 +736,7 @@ int typ, subtyp;
 }
 
 const char*
-get_door_name_at(x, y)
-xchar x, y;
+get_door_name_at(xchar x, xchar y)
 {
     if (!isok(x, y))
         return "illegal door location";
@@ -752,8 +747,7 @@ xchar x, y;
 }
 
 const char*
-get_door_name_at_ptr(door)
-struct rm* door;
+get_door_name_at_ptr(struct rm *door)
 {
     if (!door)
         return "no door pointer";
@@ -770,8 +764,7 @@ struct rm* door;
 }
 
 const char*
-get_short_door_name_at(x, y)
-xchar x, y;
+get_short_door_name_at(xchar x, xchar y)
 {
     if (!isok(x, y))
         return "illegal door location";
@@ -782,8 +775,7 @@ xchar x, y;
 }
 
 const char*
-get_short_door_name_at_ptr(door)
-struct rm* door;
+get_short_door_name_at_ptr(struct rm *door)
 {
     if (!door)
         return "no door pointer";
@@ -800,10 +792,7 @@ struct rm* door;
 }
 
 boolean
-m_can_destroy_door(mtmp, door, include_eating)
-struct monst* mtmp;
-struct rm* door;
-boolean include_eating;
+m_can_destroy_door(struct monst *mtmp, struct rm *door, boolean include_eating)
 {
     if (!mtmp || !door || !IS_DOOR_OR_SDOOR(door->typ))
         return FALSE;
@@ -829,8 +818,7 @@ boolean include_eating;
 }
 
 boolean
-is_door_indestructible_at(x, y)
-xchar x, y;
+is_door_indestructible_at(xchar x, xchar y)
 {
     if (!isok(x, y))
         return FALSE;
@@ -842,8 +830,7 @@ xchar x, y;
 
 
 boolean
-is_door_indestructible_at_ptr(door)
-struct rm* door;
+is_door_indestructible_at_ptr(struct rm *door)
 {
     if (!door || !IS_DOOR_OR_SDOOR(door->typ))
         return FALSE;
@@ -858,8 +845,7 @@ struct rm* door;
 }
 
 boolean
-is_door_nonpassable_at(x, y)
-xchar x, y;
+is_door_nonpassable_at(xchar x, xchar y)
 {
     if (!isok(x, y))
         return FALSE;
@@ -871,8 +857,7 @@ xchar x, y;
 
 
 boolean
-is_door_nonpassable_at_ptr(door)
-struct rm* door;
+is_door_nonpassable_at_ptr(struct rm *door)
 {
     if (!door || !IS_DOOR_OR_SDOOR(door->typ))
         return FALSE;
@@ -887,8 +872,7 @@ struct rm* door;
 }
 
 boolean
-has_door_normal_lock_at(x, y)
-xchar x, y;
+has_door_normal_lock_at(xchar x, xchar y)
 {
     if (!isok(x, y))
         return FALSE;
@@ -900,8 +884,7 @@ xchar x, y;
 
 
 boolean
-has_door_normal_lock_at_ptr(door)
-struct rm* door;
+has_door_normal_lock_at_ptr(struct rm *door)
 {
     if (!door || !IS_DOOR_OR_SDOOR(door->typ))
         return FALSE;
@@ -914,8 +897,7 @@ struct rm* door;
 }
 
 boolean
-has_box_normal_lock(box)
-struct obj* box;
+has_box_normal_lock(struct obj *box)
 {
     if (!box || !Is_box(box))
         return FALSE;
@@ -928,8 +910,7 @@ struct obj* box;
 }
 
 boolean
-is_door_diggable_at(x, y)
-xchar x, y;
+is_door_diggable_at(xchar x, xchar y)
 {
     if (!isok(x, y))
         return FALSE;
@@ -941,8 +922,7 @@ xchar x, y;
 
 
 boolean
-is_door_diggable_at_ptr(door)
-struct rm* door;
+is_door_diggable_at_ptr(struct rm *door)
 {
     if (!door || !IS_DOOR_OR_SDOOR(door->typ))
         return FALSE;
@@ -960,8 +940,7 @@ struct rm* door;
 }
 
 boolean
-is_door_kickable_at(x, y)
-xchar x, y;
+is_door_kickable_at(xchar x, xchar y)
 {
     if (!isok(x, y))
         return FALSE;
@@ -973,8 +952,7 @@ xchar x, y;
 
 
 boolean
-is_door_kickable_at_ptr(door)
-struct rm* door;
+is_door_kickable_at_ptr(struct rm *door)
 {
     if (!door || !IS_DOOR_OR_SDOOR(door->typ))
         return FALSE;
@@ -992,8 +970,7 @@ struct rm* door;
 }
 
 boolean
-is_door_destroyed_by_booby_trap_at(x, y)
-xchar x, y;
+is_door_destroyed_by_booby_trap_at(xchar x, xchar y)
 {
     if (!isok(x, y))
         return FALSE;
@@ -1005,8 +982,7 @@ xchar x, y;
 
 
 boolean
-is_door_destroyed_by_booby_trap_at_ptr(door)
-struct rm* door;
+is_door_destroyed_by_booby_trap_at_ptr(struct rm *door)
 {
     if (!door || !IS_DOOR_OR_SDOOR(door->typ))
         return FALSE;
@@ -1024,8 +1000,7 @@ struct rm* door;
 }
 
 boolean
-is_door_destroyed_by_striking_at(x, y)
-xchar x, y;
+is_door_destroyed_by_striking_at(xchar x, xchar y)
 {
     if (!isok(x, y))
         return FALSE;
@@ -1037,8 +1012,7 @@ xchar x, y;
 
 
 boolean
-is_door_destroyed_by_striking_at_ptr(door)
-struct rm* door;
+is_door_destroyed_by_striking_at_ptr(struct rm *door)
 {
     if (!door || !IS_DOOR_OR_SDOOR(door->typ))
         return FALSE;
@@ -1056,8 +1030,7 @@ struct rm* door;
 }
 
 boolean
-is_door_destroyed_by_monsters_at(x, y)
-xchar x, y;
+is_door_destroyed_by_monsters_at(xchar x, xchar y)
 {
     if (!isok(x, y))
         return FALSE;
@@ -1069,8 +1042,7 @@ xchar x, y;
 
 
 boolean
-is_door_destroyed_by_monsters_at_ptr(door)
-struct rm* door;
+is_door_destroyed_by_monsters_at_ptr(struct rm *door)
 {
     if (!door || !IS_DOOR_OR_SDOOR(door->typ))
         return FALSE;
@@ -1088,8 +1060,7 @@ struct rm* door;
 }
 
 boolean
-door_blocks_vision_at(x, y)
-xchar x, y;
+door_blocks_vision_at(xchar x, xchar y)
 {
     if (!isok(x, y))
         return FALSE;
@@ -1101,8 +1072,7 @@ xchar x, y;
 
 
 boolean
-door_blocks_vision_at_ptr(door)
-struct rm* door;
+door_blocks_vision_at_ptr(struct rm *door)
 {
     if (!door || !IS_DOOR_OR_SDOOR(door->typ))
         return FALSE;
@@ -1121,8 +1091,7 @@ struct rm* door;
 }
 
 boolean
-is_door_normally_without_lock_at(x, y)
-xchar x, y;
+is_door_normally_without_lock_at(xchar x, xchar y)
 {
     if (!isok(x, y))
         return TRUE;
@@ -1134,8 +1103,7 @@ xchar x, y;
 
 
 boolean
-is_door_normally_without_lock_at_ptr(door)
-struct rm* door;
+is_door_normally_without_lock_at_ptr(struct rm *door)
 {
     if (!door || !IS_DOOR_OR_SDOOR(door->typ))
         return TRUE;
@@ -1149,9 +1117,7 @@ struct rm* door;
 }
 
 void
-set_initial_location_floortype(lev, fountain_on_grass, fountain_on_ground, tree_on_ground, throne_on_ground)
-struct rm* lev;
-boolean fountain_on_grass, fountain_on_ground, tree_on_ground, throne_on_ground;
+set_initial_location_floortype(struct rm *lev, boolean fountain_on_grass, boolean fountain_on_ground, boolean tree_on_ground, boolean throne_on_ground)
 {
     if (!lev)
         return;
@@ -1189,8 +1155,7 @@ boolean fountain_on_grass, fountain_on_ground, tree_on_ground, throne_on_ground;
 }
 
 void
-initialize_location(lev)
-struct rm* lev;
+initialize_location(struct rm *lev)
 {
     if (!lev)
         return;
@@ -1212,9 +1177,7 @@ struct rm* lev;
 }
 
 void
-set_initial_location_type_at(x, y, typ)
-xchar x, y;
-int typ;
+set_initial_location_type_at(xchar x, xchar y, int typ)
 {
     if (x < 0 || y < 0 || x >= COLNO || y >= ROWNO)
         return;
@@ -1223,9 +1186,7 @@ int typ;
 }
 
 void
-set_initial_location_type_ptr(lev, typ)
-struct rm* lev;
-int typ;
+set_initial_location_type_ptr(struct rm *lev, int typ)
 {
     if (!lev)
         return;

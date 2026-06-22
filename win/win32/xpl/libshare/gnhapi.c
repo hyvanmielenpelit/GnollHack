@@ -14,11 +14,11 @@
 #include "date.h"
 #endif
 
-extern int FDECL(GnollHackMain, (int, char**));
-extern void FDECL(set_wincaps, (uint64_t, uint64_t));
+extern int GnollHackMain(int, char **);
+extern void set_wincaps(uint64_t, uint64_t);
 
 
-DLLEXPORT void LibInitializeTileData(VOID_ARGS)
+DLLEXPORT void LibInitializeTileData(void)
 {
     init_tiledata();
 #ifdef USE_TILES
@@ -130,7 +130,7 @@ DLLEXPORT void GetReplacementOffsets(int** reoff_ptr, int* size_ptr)
 #endif
 }
 
-DLLEXPORT int CountTotalTiles(VOID_ARGS)
+DLLEXPORT int CountTotalTiles(void)
 {
     return process_tiledata(2, (const char*)0, (int*)0, (uchar*)0);
 }
@@ -173,99 +173,99 @@ DLLEXPORT void LibSetTile2AnimationArray(short* ti2an, int size_ti2an)
 #endif
 }
 
-DLLEXPORT int LibGetUnexploredGlyph(VOID_ARGS)
+DLLEXPORT int LibGetUnexploredGlyph(void)
 {
     return base_cmap_to_glyph(S_unexplored);
 }
 
-DLLEXPORT int LibGetNoGlyph(VOID_ARGS)
+DLLEXPORT int LibGetNoGlyph(void)
 {
     return NO_GLYPH;
 }
 
-DLLEXPORT int LibGetAnimationOff(VOID_ARGS)
+DLLEXPORT int LibGetAnimationOff(void)
 {
     return GLYPH_ANIMATION_OFF;
 }
 
-DLLEXPORT int LibGetEnlargementOff(VOID_ARGS)
+DLLEXPORT int LibGetEnlargementOff(void)
 {
     return GLYPH_ENLARGEMENT_OFF;
 }
 
-DLLEXPORT int LibGetReplacementOff(VOID_ARGS)
+DLLEXPORT int LibGetReplacementOff(void)
 {
     return GLYPH_ANIMATION_OFF;
 }
 
-DLLEXPORT int LibGetGeneralTileOff(VOID_ARGS)
+DLLEXPORT int LibGetGeneralTileOff(void)
 {
     return GLYPH_GENERAL_TILE_OFF;
 }
 
-DLLEXPORT int LibGetHitTileOff(VOID_ARGS)
+DLLEXPORT int LibGetHitTileOff(void)
 {
     return GLYPH_HIT_TILE_OFF;
 }
 
-DLLEXPORT int LibGetUITileOff(VOID_ARGS)
+DLLEXPORT int LibGetUITileOff(void)
 {
     return GLYPH_UI_TILE_OFF;
 }
 
-DLLEXPORT int LibGetSpellTileOff(VOID_ARGS)
+DLLEXPORT int LibGetSpellTileOff(void)
 {
     return GLYPH_SPELL_TILE_OFF;
 }
 
-DLLEXPORT int LibGetSkillTileOff(VOID_ARGS)
+DLLEXPORT int LibGetSkillTileOff(void)
 {
     return GLYPH_SKILL_TILE_OFF;
 }
 
-DLLEXPORT int LibGetCommandTileOff(VOID_ARGS)
+DLLEXPORT int LibGetCommandTileOff(void)
 {
     return GLYPH_COMMAND_TILE_OFF;
 }
 
-DLLEXPORT int LibGetBuffTileOff(VOID_ARGS)
+DLLEXPORT int LibGetBuffTileOff(void)
 {
     return GLYPH_BUFF_OFF;
 }
 
-DLLEXPORT int LibGetCursorOff(VOID_ARGS)
+DLLEXPORT int LibGetCursorOff(void)
 {
     return GLYPH_CURSOR_OFF;
 }
 
-DLLEXPORT int LibTest(VOID_ARGS)
+DLLEXPORT int LibTest(void)
 {
     return 5;
 }
 
-DLLEXPORT const char* LibGetVersionString(VOID_ARGS)
+DLLEXPORT const char* LibGetVersionString(void)
 {
     return VERSION_STRING;
 }
 
-DLLEXPORT const char* LibGetVersionId(VOID_ARGS)
+DLLEXPORT const char* LibGetVersionId(void)
 {
     return VERSION_ID;
 }
 
-DLLEXPORT uint64_t LibGetVersionNumber(VOID_ARGS)
+DLLEXPORT uint64_t LibGetVersionNumber(void)
 {
     return VERSION_NUMBER;
 }
 
-DLLEXPORT uint64_t LibGetVersionCompatibility(VOID_ARGS)
+DLLEXPORT uint64_t LibGetVersionCompatibility(void)
 {
     return EARLIEST_COMPATIBLE_VERSION_NUMBER;
 }
 
 static const char* extcmdnames[256] = { 0 };
 
-DLLEXPORT const char** LibGetExtendedCommands(VOID_ARGS)
+DLLEXPORT const char **LibGetExtendedCommands(void)
 {
     int i = 0, j = 0;
     for (i = 0; i < 256; i++)
@@ -288,22 +288,19 @@ DLLEXPORT const char** LibGetExtendedCommands(VOID_ARGS)
     return extcmdnames;
 }
 
-DLLEXPORT void LibSetPetMID(m_id)
-unsigned int m_id;
+DLLEXPORT void LibSetPetMID(unsigned int m_id)
 {
     context.view_pet_mid = m_id;
 }
 
-DLLEXPORT const char* LibGetPropertyName(prop_index)
-int prop_index;
+DLLEXPORT const char* LibGetPropertyName(int prop_index)
 {
     return get_property_name(prop_index);
 }
 
 char _dumplogbuf[BUFSZ];
 
-DLLEXPORT char* LibDumplogDateString(startdate)
-long startdate;
+DLLEXPORT char* LibDumplogDateString(long startdate)
 {
     Sprintf(_dumplogbuf, "%08lld%06lld",
         (long long)yyyymmdd(startdate), (long long)hhmmss(startdate));
@@ -311,79 +308,67 @@ long startdate;
     return _dumplogbuf;
 }
 
-DLLEXPORT int LibGetAnimationArraySize(VOID_ARGS)
+DLLEXPORT int LibGetAnimationArraySize(void)
 {
     return MAX_ANIMATIONS;
 }
 
-DLLEXPORT struct animation_definition LibGetAnimationArrayElement(idx)
-int idx;
+DLLEXPORT struct animation_definition LibGetAnimationArrayElement(int idx)
 {
     return animations[idx];
 }
 
-DLLEXPORT int LibGetEnlargementArraySize(VOID_ARGS)
+DLLEXPORT int LibGetEnlargementArraySize(void)
 {
     return MAX_ENLARGEMENTS;
 }
 
-DLLEXPORT struct enlargement_definition LibGetEnlargementArrayElement(idx)
-int idx;
+DLLEXPORT struct enlargement_definition LibGetEnlargementArrayElement(int idx)
 {
     return enlargements[idx];
 }
 
-DLLEXPORT int LibGetReplacementArraySize(VOID_ARGS)
+DLLEXPORT int LibGetReplacementArraySize(void)
 {
     return MAX_REPLACEMENTS;
 }
 
-DLLEXPORT struct replacement_definition LibGetReplacementArrayElement(idx)
-int idx;
+DLLEXPORT struct replacement_definition LibGetReplacementArrayElement(int idx)
 {
     return replacements[idx];
 }
 
-DLLEXPORT int LibGetAutoDrawArraySize(VOID_ARGS)
+DLLEXPORT int LibGetAutoDrawArraySize(void)
 {
     return MAX_AUTODRAWS;
 }
 
-DLLEXPORT struct autodraw_definition LibGetAutoDrawArrayElement(idx)
-int idx;
+DLLEXPORT struct autodraw_definition LibGetAutoDrawArrayElement(int idx)
 {
     return autodraws[idx];
 }
 
-DLLEXPORT boolean LibGlyphIsExplosion(glyph)
-int glyph;
+DLLEXPORT boolean LibGlyphIsExplosion(int glyph)
 {
     return glyph_is_explosion(glyph);
 }
 
-DLLEXPORT boolean LibGlyphIsZap(glyph)
-int glyph;
+DLLEXPORT boolean LibGlyphIsZap(int glyph)
 {
     return glyph_is_zap(glyph);
 }
 
-DLLEXPORT boolean LibGlyphIsAnyDying(glyph)
-int glyph;
+DLLEXPORT boolean LibGlyphIsAnyDying(int glyph)
 {
     return glyph_is_dying_monster(glyph) || glyph_is_female_dying_monster(glyph) || glyph_is_dying_player(glyph);
 }
 
-DLLEXPORT int LibZapGlyphToCornerGlyph(adjglyph, adjflags, source_dir)
-int adjglyph;
-uint64_t adjflags;
-int source_dir;
+DLLEXPORT int LibZapGlyphToCornerGlyph(int adjglyph, uint64_t adjflags, int source_dir)
 {
     return zap_glyph_to_corner_glyph(adjglyph, adjflags, source_dir);
 }
 
-DLLEXPORT int LibChmod(filename, mode)
-const char* filename;
-unsigned int mode;
+DLLEXPORT int LibChmod(const char *filename, unsigned int mode)
 {
 #ifdef WIN32
     return 0;
@@ -392,8 +377,7 @@ unsigned int mode;
 #endif
 }
 
-DLLEXPORT void LibSaveAndRestoreSavedGame(save_style)
-int save_style;
+DLLEXPORT void LibSaveAndRestoreSavedGame(int save_style)
 {
     if (context.game_started && program_state.something_worth_saving && !program_state.gameover 
         && !program_state.panicking && !program_state.in_tricked
@@ -446,20 +430,19 @@ int save_style;
 }
 
 DLLEXPORT void
-LibTallyRealTime(VOID_ARGS)
+LibTallyRealTime(void)
 {
     tally_realtime();
 }
 
 DLLEXPORT int
-LibGetMaxManuals(VOID_ARGS)
+LibGetMaxManuals(void)
 {
     return MAX_MANUAL_TYPES;
 }
 
 DLLEXPORT int
-LibGetMaxMajorConsultations(gnhdir)
-const char* gnhdir;
+LibGetMaxMajorConsultations(const char *gnhdir)
 {
     int res = chdir(gnhdir);
     if (res != 0)
@@ -471,19 +454,19 @@ const char* gnhdir;
 }
 
 DLLEXPORT int
-LibGetFirstCatalogue()
+LibGetFirstCatalogue(void)
 {
     return FIRST_CATALOGUE;
 }
 
 DLLEXPORT int
-LibGetNumCatalogues()
+LibGetNumCatalogues(void)
 {
     return NUM_CATALOGUES;
 }
 
 DLLEXPORT int
-LibIsDebug(VOID_ARGS)
+LibIsDebug(void)
 {
 #ifdef DEBUG
     return 1;
@@ -499,14 +482,7 @@ LibGetTileAnimationIndexFromGlyph(int glyph)
 }
 
 DLLEXPORT int
-LibMaybeGetAnimatedTile(ntile, tile_animation_idx, play_type, interval_counter, frame_idx_ptr, main_tile_idx_ptr, mapAnimated, autodraw_ptr)
-int ntile;
-int tile_animation_idx;
-enum animation_play_types play_type;
-long interval_counter;
-int* frame_idx_ptr, * main_tile_idx_ptr;
-char* mapAnimated;
-enum autodraw_types* autodraw_ptr; 
+LibMaybeGetAnimatedTile(int ntile, int tile_animation_idx, enum animation_play_types play_type, long interval_counter, int *frame_idx_ptr, int *main_tile_idx_ptr, char *mapAnimated, enum autodraw_types *autodraw_ptr)
 {
     return maybe_get_animated_tile(ntile, tile_animation_idx, play_type, interval_counter, frame_idx_ptr, main_tile_idx_ptr, mapAnimated, autodraw_ptr);
 }
@@ -625,7 +601,7 @@ LibCheckCurrentFileDescriptor(const char* dir)
 }
 
 DLLEXPORT void
-LibReportFileDescriptors(VOID_ARGS)
+LibReportFileDescriptors(void)
 {
     maybe_report_file_descriptors("File Descriptor Report Requested", 24);
 }
@@ -657,7 +633,7 @@ LibSetCharacterClickAction(int new_value)
 }
 
 DLLEXPORT int
-LibGetCharacterClickAction(VOID_ARGS)
+LibGetCharacterClickAction(void)
 {
     return (int)flags.self_click_action;
 }
@@ -675,7 +651,7 @@ LibSetGetPositionArrows(int new_value)
 }
 
 DLLEXPORT int
-LibGetGetPositionArrows(VOID_ARGS)
+LibGetGetPositionArrows(void)
 {
     return (int)iflags.getpos_arrows;
 }
@@ -693,7 +669,7 @@ LibSetDamageFormula(int new_value)
 }
 
 DLLEXPORT int
-LibGetDiceAsRanges(VOID_ARGS)
+LibGetDiceAsRanges(void)
 {
     return (int)iflags.show_dice_as_ranges;
 }
@@ -705,7 +681,7 @@ LibSetWornShowsEquipment(int new_value)
 }
 
 DLLEXPORT int
-LibGetWornShowsEquipment(VOID_ARGS)
+LibGetWornShowsEquipment(void)
 {
     return (int)iflags.worn_shows_equipment;
 }
@@ -717,7 +693,7 @@ LibSetNoPetsPreference(int new_value)
 }
 
 DLLEXPORT int
-LibGetNoPetsPreference(VOID_ARGS)
+LibGetNoPetsPreference(void)
 {
     return (int)flags.pets_not_gifted;
 }
@@ -821,8 +797,7 @@ LibGetCommandFunctionPointer(int cmd)
     return (void*)Cmd.commands[cmd]->ef_funct;
 }
 
-DLLEXPORT int GnollHackStart(cmdlineargs)
-char* cmdlineargs;
+DLLEXPORT int GnollHackStart(char *cmdlineargs)
 {
 #define MAX_CMD_PARAMS 24
 
@@ -877,118 +852,7 @@ char* cmdlineargs;
 
 extern struct callback_procs lib_callbacks;
 
-DLLEXPORT int RunGnollHack(
-    char* gnhdir,
-    char* cmdlineargs,
-    char* engrave_quicktext,
-    char* last_used_player_name,
-    int right_mouse_button,
-    int middle_mouse_button,
-    int engrave_quickstyle,
-    int reserved_int,
-    uint64_t runflags,
-    uint64_t foundmanuals,
-    uint64_t wincap1,
-    uint64_t wincap2,
-    InitWindowsCallback callback_init_nhwindows,
-    PlayerSelectionCallback callback_player_selection,
-    AskNameCallback callback_askname,
-    GetEventCallback callback_get_nh_event,
-    ExitWindowsCallback callback_exit_nhwindows,
-    SuspendWindowsCallback callback_suspend_nhwindows,
-    ResumeWindowsCallback callback_resume_nhwindows,
-    CreateWindowCallback callback_create_nhwindow_ex,
-    ClearWindowCallback callback_clear_nhwindow,
-    DisplayWindowCallback callback_display_nhwindow,
-    DestroyWindowCallback callback_destroy_nhwindow,
-    CursCallback callback_curs,
-    PutStrExCallback callback_putstr_ex,
-    PutStrEx2Callback callback_putstr_ex2,
-    PutMixedCallback callback_putmixed_ex,
-    DisplayFileCallback callback_display_file,
-    StartMenuCallback callback_start_menu_ex,
-    AddMenuCallback callback_add_menu,
-    AddExtendedMenuCallback callback_add_extended_menu,
-    EndMenuCallback callback_end_menu_ex,
-    SelectMenuCallback callback_select_menu,
-    MessageMenuCallback callback_message_menu,
-    UpdateInventoryCallback callback_update_inventory,
-    MarkSynchCallback callback_mark_synch,
-    WaitSynchCallback callback_wait_synch,
-
-    /* If clipping is on */
-    ClipAroundCallback callback_cliparound,
-    /* If positionbar is on */
-    UpdatePositionBarCallback callback_update_positionbar,
-
-    PrintGlyphCallback callback_print_glyph,
-    IssueGuiCommandCallback callback_issue_gui_command,
-    RawPrintCallback callback_raw_print,
-    RawPrintBoldCallback callback_raw_print_bold,
-    GetChCallback callback_nhgetch,
-    PosKeyCallback callback_nh_poskey,
-    BellCallback callback_nhbell,
-    DoPrevMessageCallback callback_doprev_message,
-    YnFunctionCallback callback_yn_function_ex,
-    GetLineCallback callback_getlin_ex,
-    GetExtCmdCallback callback_get_ext_cmd,
-    NumberPadCallback callback_number_pad,
-    DelayOutputCallback callback_delay_output,
-    DelayOutputMillisecondsCallback callback_delay_output_milliseconds,
-    DelayOutputIntervalsCallback callback_delay_output_intervals,
-
-    ChangeColorCallback callback_change_color,
-    ChangeBackgroundCallback callback_change_background,
-    SetFontNameCallback callback_set_font_name,
-    GetColorStringCallback callback_get_color_string,
-
-    StartScreenCallback callback_start_screen,
-    EndScreenCallback callback_end_screen,
-    OutRipCallback callback_outrip,
-    PreferenceUpdateCallback callback_preference_update,
-    GetMsgHistoryCallback callback_getmsghistory,
-    PutMsgHistoryCallback callback_putmsghistory,
-    StatusInitCallback callback_status_init,
-    StatusFinishCallback callback_status_finish,
-    StatusEnableFieldCallback callback_status_enablefield,
-    StatusUpdateCallback callback_status_update,
-    CanSuspendYesCallback callback_can_suspend_yes,
-    StretchWindowCallback callback_stretch_window,
-    SetAnimationTimerCallback callback_set_animation_timer_interval,
-    OpenSpecialViewCallback callback_open_special_view,
-    StopAllSoundsCallback callback_stop_all_sounds,
-    PlayImmediateSoundCallback callback_play_immediate_ghsound,
-    PlayOccupationAmbientCallback callback_play_ghsound_occupation_ambient,
-    PlayEffectAmbientCallback callback_play_ghsound_effect_ambient,
-    SetEffectAmbientVolumeCallback callback_set_effect_ambient_volume,
-    PlayMusicCallback callback_play_ghsound_music,
-    PlayLevelAmbientCallback callback_play_ghsound_level_ambient,
-    PlayEnvironmentAmbientCallback callback_play_ghsound_environment_ambient,
-    AdjustGeneralVolumesCallback callback_adjust_ghsound_general_volumes,
-    AddAmbientSoundCallback callback_add_ambient_ghsound,
-    DeleteAmbientSoundCallback callback_delete_ambient_ghsound,
-    SetAmbientVolumeCallback callback_set_ambient_ghsound_volume,
-    ClearContextMenuCallback callback_clear_context_menu,
-    AddContextMenuCallback callback_add_context_menu,
-    UpdateStatusButtonCallback callback_update_status_button,
-    ToggleAnimationTimerCallback callback_toggle_animation_timer,
-    DisplayFloatingTextCallback callback_display_floating_text,
-    DisplayScreenTextCallback callback_display_screen_text,
-    DisplayPopupTextCallback callback_display_popup_text,
-    DisplayGUIEffectCallback callback_display_gui_effect,
-    UpdateCursorCallback callback_update_cursor,
-    UIHasInputCallback callback_ui_has_input,
-    ExitHackCallback callback_exit_hack,
-
-    GetCwdCallback callback_getcwd,
-    MessageBoxCallback callback_messagebox,
-    FreeMemoryCallback callback_free_memory,
-    ReportPlayerNameCallback callback_report_player_name,
-    ReportPlayTimeCallback callback_report_play_time,
-    SendObjectDataCallback callback_send_object_data,
-    SendMonsterDataCallback callback_send_monster_data,
-    SendEngravingDataCallback callback_send_engraving_data
-)
+DLLEXPORT int RunGnollHack( char* gnhdir, char* cmdlineargs, char* engrave_quicktext, char* last_used_player_name, int right_mouse_button, int middle_mouse_button, int engrave_quickstyle, int reserved_int, uint64_t runflags, uint64_t foundmanuals, uint64_t wincap1, uint64_t wincap2, InitWindowsCallback callback_init_nhwindows, PlayerSelectionCallback callback_player_selection, AskNameCallback callback_askname, GetEventCallback callback_get_nh_event, ExitWindowsCallback callback_exit_nhwindows, SuspendWindowsCallback callback_suspend_nhwindows, ResumeWindowsCallback callback_resume_nhwindows, CreateWindowCallback callback_create_nhwindow_ex, ClearWindowCallback callback_clear_nhwindow, DisplayWindowCallback callback_display_nhwindow, DestroyWindowCallback callback_destroy_nhwindow, CursCallback callback_curs, PutStrExCallback callback_putstr_ex, PutStrEx2Callback callback_putstr_ex2, PutMixedCallback callback_putmixed_ex, DisplayFileCallback callback_display_file, StartMenuCallback callback_start_menu_ex, AddMenuCallback callback_add_menu, AddExtendedMenuCallback callback_add_extended_menu, EndMenuCallback callback_end_menu_ex, SelectMenuCallback callback_select_menu, MessageMenuCallback callback_message_menu, UpdateInventoryCallback callback_update_inventory, MarkSynchCallback callback_mark_synch, WaitSynchCallback callback_wait_synch,  /* If clipping is on */ ClipAroundCallback callback_cliparound, /* If positionbar is on */ UpdatePositionBarCallback callback_update_positionbar,  PrintGlyphCallback callback_print_glyph, IssueGuiCommandCallback callback_issue_gui_command, RawPrintCallback callback_raw_print, RawPrintBoldCallback callback_raw_print_bold, GetChCallback callback_nhgetch, PosKeyCallback callback_nh_poskey, BellCallback callback_nhbell, DoPrevMessageCallback callback_doprev_message, YnFunctionCallback callback_yn_function_ex, GetLineCallback callback_getlin_ex, GetExtCmdCallback callback_get_ext_cmd, NumberPadCallback callback_number_pad, DelayOutputCallback callback_delay_output, DelayOutputMillisecondsCallback callback_delay_output_milliseconds, DelayOutputIntervalsCallback callback_delay_output_intervals,  ChangeColorCallback callback_change_color, ChangeBackgroundCallback callback_change_background, SetFontNameCallback callback_set_font_name, GetColorStringCallback callback_get_color_string,  StartScreenCallback callback_start_screen, EndScreenCallback callback_end_screen, OutRipCallback callback_outrip, PreferenceUpdateCallback callback_preference_update, GetMsgHistoryCallback callback_getmsghistory, PutMsgHistoryCallback callback_putmsghistory, StatusInitCallback callback_status_init, StatusFinishCallback callback_status_finish, StatusEnableFieldCallback callback_status_enablefield, StatusUpdateCallback callback_status_update, CanSuspendYesCallback callback_can_suspend_yes, StretchWindowCallback callback_stretch_window, SetAnimationTimerCallback callback_set_animation_timer_interval, OpenSpecialViewCallback callback_open_special_view, StopAllSoundsCallback callback_stop_all_sounds, PlayImmediateSoundCallback callback_play_immediate_ghsound, PlayOccupationAmbientCallback callback_play_ghsound_occupation_ambient, PlayEffectAmbientCallback callback_play_ghsound_effect_ambient, SetEffectAmbientVolumeCallback callback_set_effect_ambient_volume, PlayMusicCallback callback_play_ghsound_music, PlayLevelAmbientCallback callback_play_ghsound_level_ambient, PlayEnvironmentAmbientCallback callback_play_ghsound_environment_ambient, AdjustGeneralVolumesCallback callback_adjust_ghsound_general_volumes, AddAmbientSoundCallback callback_add_ambient_ghsound, DeleteAmbientSoundCallback callback_delete_ambient_ghsound, SetAmbientVolumeCallback callback_set_ambient_ghsound_volume, ClearContextMenuCallback callback_clear_context_menu, AddContextMenuCallback callback_add_context_menu, UpdateStatusButtonCallback callback_update_status_button, ToggleAnimationTimerCallback callback_toggle_animation_timer, DisplayFloatingTextCallback callback_display_floating_text, DisplayScreenTextCallback callback_display_screen_text, DisplayPopupTextCallback callback_display_popup_text, DisplayGUIEffectCallback callback_display_gui_effect, UpdateCursorCallback callback_update_cursor, UIHasInputCallback callback_ui_has_input, ExitHackCallback callback_exit_hack,  GetCwdCallback callback_getcwd, MessageBoxCallback callback_messagebox, FreeMemoryCallback callback_free_memory, ReportPlayerNameCallback callback_report_player_name, ReportPlayTimeCallback callback_report_play_time, SendObjectDataCallback callback_send_object_data, SendMonsterDataCallback callback_send_monster_data, SendEngravingDataCallback callback_send_engraving_data )
 {
     char cmdbuf[BUFSZ] = "";
     if(cmdlineargs)

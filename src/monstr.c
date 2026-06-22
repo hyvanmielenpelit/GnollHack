@@ -16,10 +16,10 @@ monstr[] is deprecated.  Replace monstr[x] with
 monstr_init() is deprecated.  Remove all references to it.
 */
 
-void NDECL(monstr_init);
+void monstr_init(void);
 
 void
-monstr_init(VOID_ARGS)
+monstr_init(void)
 {
     return;
 }

@@ -6,12 +6,12 @@
 
 #include "hack.h"
 
-STATIC_DCL boolean FDECL(landing_spot, (coord *, int, int));
-STATIC_DCL void FDECL(maybewakesteed, (struct monst *));
+static boolean landing_spot(coord *, int, int);
+static void maybewakesteed(struct monst *);
 
 /* caller has decided that hero can't reach something while mounted */
 void
-rider_cant_reach(VOID_ARGS)
+rider_cant_reach(void)
 {
     play_sfx_sound(SFX_GENERAL_NOT_SKILLED_ENOUGH);
     You_ex(ATR_NONE, CLR_MSG_FAIL, "aren't skilled enough to reach from %s.", y_monnam(u.usteed));
@@ -21,8 +21,7 @@ rider_cant_reach(VOID_ARGS)
 
 /* Can this monster wear a saddle? */
 boolean
-can_saddle(mtmp)
-struct monst *mtmp;
+can_saddle(struct monst *mtmp)
 {
     if (!mtmp)
         return FALSE;
@@ -31,8 +30,7 @@ struct monst *mtmp;
 }
 
 int
-use_saddle(otmp)
-struct obj *otmp;
+use_saddle(struct obj *otmp)
 {
     struct monst *mtmp;
     struct permonst *ptr;
@@ -142,9 +140,7 @@ struct obj *otmp;
 }
 
 void
-put_saddle_on_mon(saddle, mtmp)
-struct obj *saddle;
-struct monst *mtmp;
+put_saddle_on_mon(struct obj *saddle, struct monst *mtmp)
 {
     if (!can_saddle(mtmp) || which_armor(mtmp, W_SADDLE))
         return;
@@ -160,8 +156,7 @@ struct monst *mtmp;
 
 /* Can we ride this monster?  Caller should also check can_saddle() */
 boolean
-can_ride(mtmp)
-struct monst *mtmp;
+can_ride(struct monst *mtmp)
 {
     return (is_tame(mtmp) && humanoid(youmonst.data)
             && !verysmall(youmonst.data) && !bigmonst(youmonst.data)
@@ -169,7 +164,7 @@ struct monst *mtmp;
 }
 
 int
-doride(VOID_ARGS)
+doride(void)
 {
     if (u.usteed) 
     {
@@ -191,7 +186,7 @@ doride(VOID_ARGS)
 }
 
 int
-doridenearby(VOID_ARGS)
+doridenearby(void)
 {
     if (u.usteed)
     {
@@ -235,10 +230,13 @@ doridenearby(VOID_ARGS)
     return 1;
 }
 
+/*
+ * Parameters:
+ *   mtmp: The animal
+ */
 /* Start riding, with the given monster */
 boolean
-mount_steed(mtmp)
-struct monst *mtmp; /* The animal */
+mount_steed(struct monst *mtmp)
 {
     struct obj *otmp;
     char buf[BUFSZ];
@@ -538,7 +536,7 @@ struct monst *mtmp; /* The animal */
 
 /* You and your steed have moved */
 void
-exercise_steed(VOID_ARGS)
+exercise_steed(void)
 {
     if (!u.usteed)
         return;
@@ -553,7 +551,7 @@ exercise_steed(VOID_ARGS)
 
 /* The player kicks or whips the steed */
 void
-kick_steed(VOID_ARGS)
+kick_steed(void)
 {
     char He[4];
     if (!u.usteed)
@@ -604,17 +602,18 @@ kick_steed(VOID_ARGS)
 }
 
 /*
+ * Parameters:
+ *   spot: landing position (we fill it in)
+ */
+/*
  * Try to find a dismount point adjacent to the steed's location.
  * If all else fails, try enexto().  Use enexto() as a last resort because
  * enexto() chooses its point randomly, possibly even outside the
  * room's walls, which is not what we want.
  * Adapted from mail daemon code.
  */
-STATIC_OVL boolean
-landing_spot(spot, reason, forceit)
-coord *spot; /* landing position (we fill it in) */
-int reason;
-int forceit;
+static boolean
+landing_spot(coord *spot, int reason, int forceit)
 {
     int i = 0, x, y, distance, min_distance = -1;
     boolean found = FALSE;
@@ -654,10 +653,13 @@ int forceit;
     return found;
 }
 
+/*
+ * Parameters:
+ *   reason: Player was thrown off etc.
+ */
 /* Stop riding the current steed */
 void
-dismount_steed(reason)
-int reason; /* Player was thrown off etc. */
+dismount_steed(int reason)
 {
     struct monst *mtmp;
     struct obj *otmp;
@@ -876,9 +878,8 @@ int reason; /* Player was thrown off etc. */
 
 /* when attempting to saddle or mount a sleeping steed, try to wake it up
    (for the saddling case, it won't be u.usteed yet) */
-STATIC_OVL void
-maybewakesteed(steed)
-struct monst *steed;
+static void
+maybewakesteed(struct monst *steed)
 {
     int frozen = (int) steed->mfrozen;
     boolean wasimmobile = !mon_can_move(steed);
@@ -908,8 +909,7 @@ struct monst *steed;
 /* decide whether hero's steed is able to move;
    doesn't check for holding traps--those affect the hero directly */
 boolean
-stucksteed(checkfeeding)
-boolean checkfeeding;
+stucksteed(boolean checkfeeding)
 {
     struct monst *steed = u.usteed;
 
@@ -929,9 +929,7 @@ boolean checkfeeding;
 }
 
 void
-place_monster(mon, x, y)
-struct monst *mon;
-int x, y;
+place_monster(struct monst *mon, int x, int y)
 {
     if (!mon)
         return;

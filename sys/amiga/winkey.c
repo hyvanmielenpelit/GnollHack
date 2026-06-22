@@ -79,7 +79,7 @@ amii_get_nh_event()
 void
 amii_getret()
 {
-    register int c;
+    int c;
 
     raw_print("");
     raw_print("Press Return...");

@@ -426,8 +426,7 @@ warmup()
 
 /* align a window-related template to the main screen */
 static Handle
-alignTemplate(ResType rezType, short rezID, short vOff, short vDenom,
-              Point *pPt)
+alignTemplate(ResType rezType, short rezID, short vOff, short vDenom, Point *pPt)
 {
     Handle rtnHnd;
     Rect *pRct;

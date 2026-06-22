@@ -79,8 +79,8 @@
 #define Static static
 #endif
 
-STATIC_DCL boolean FDECL(pmatch_internal, (const char *, const char *,
-                                       BOOLEAN_P, const char *));
+static boolean pmatch_internal(const char *, const char *,
+                                       boolean, const char *);
 
 
 const nhsym cp437toUnicode[256] = {
@@ -121,42 +121,37 @@ const nhsym cp437toUnicode[256] = {
 
 /* is 'c' a digit? */
 boolean
-digit(c)
-char c;
+digit(char c)
 {
     return !!('0' <= c && c <= '9');
 }
 
 /* is 'c' a letter?  note: '@' classed as letter */
 boolean
-letter(c)
-char c;
+letter(char c)
 {
     return (boolean) ('@' <= c && c <= 'Z') || ('a' <= c && c <= 'z');
 }
 
 /* force 'c' into uppercase */
 char
-highc(c)
-char c;
+highc(char c)
 {
     return (char) (('a' <= c && c <= 'z') ? (c & ~040) : c);
 }
 
 /* force 'c' into lowercase */
 char
-lowc(c)
-char c;
+lowc(char c)
 {
     return (char) (('A' <= c && c <= 'Z') ? (c | 040) : c);
 }
 
 /* convert a string into all lowercase */
 char *
-lcase(s)
-char *s;
+lcase(char *s)
 {
-    register char *p;
+    char *p;
 
     for (p = s; *p; p++)
         if ('A' <= *p && *p <= 'Z')
@@ -166,10 +161,9 @@ char *s;
 
 /* convert a string into all uppercase */
 char *
-ucase(s)
-char *s;
+ucase(char *s)
 {
-    register char *p;
+    char *p;
 
     for (p = s; *p; p++)
         if ('a' <= *p && *p <= 'z')
@@ -179,8 +173,7 @@ char *s;
 
 /* convert first character of a string to uppercase */
 char *
-upstart(s)
-char *s;
+upstart(char *s)
 {
     if (s)
         *s = highc(*s);
@@ -189,10 +182,9 @@ char *s;
 
 /* remove excess whitespace from a string buffer (in place) */
 char *
-mungspaces(bp)
-char *bp;
+mungspaces(char *bp)
 {
-    register char c, *p, *p2;
+    char c, *p, *p2;
     boolean was_space = TRUE;
 
     for (p = p2 = bp; (c = *p) != '\0'; p++) {
@@ -212,8 +204,7 @@ char *bp;
 
 /* skip leading whitespace; remove trailing whitespace, in place */
 char *
-trimspaces(txt)
-char *txt;
+trimspaces(char *txt)
 {
     if (!txt)
         return (char*)0;
@@ -232,8 +223,7 @@ char *txt;
 
 /* remove \n from end of line; remove \r too if one is there */
 char *
-strip_newline(str)
-char *str;
+strip_newline(char *str)
 {
     char *p = rindex(str, '\n');
 
@@ -247,8 +237,7 @@ char *str;
 
 /* return the end of a string (pointing at '\0') */
 char *
-eos(s)
-register char *s;
+eos(char *s)
 {
     while (*s)
         s++; /* s += strlen(s); */
@@ -257,8 +246,7 @@ register char *s;
 
 /* determine whether 'str' ends in 'chkstr' */
 boolean
-str_end_is(str, chkstr)
-const char *str, *chkstr;
+str_end_is(const char *str, const char *chkstr)
 {
     int clen = (int) strlen(chkstr);
 
@@ -269,9 +257,7 @@ const char *str, *chkstr;
 
 /* append a character to a string (in place): strcat(s, {c,'\0'}); */
 char *
-strkitten(s, c)
-char *s;
-char c;
+strkitten(char *s, char c)
 {
     char *p = eos(s);
 
@@ -282,9 +268,7 @@ char c;
 
 
 char*
-strcpy_capitalized_for_title(dest_buffer, source)
-char* dest_buffer;
-const char* source;
+strcpy_capitalized_for_title(char *dest_buffer, const char *source)
 {
     if (!dest_buffer || !source)
         return dest_buffer;
@@ -309,10 +293,7 @@ const char* source;
 
 /* truncating string copy */
 void
-copynchars(dst, src, n)
-char *dst;
-const char *src;
-int n;
+copynchars(char *dst, const char *src, int n)
 {
     /* copies at most n characters, stopping sooner if terminator reached;
        treats newline as input terminator; unlike strncpy, always supplies
@@ -326,8 +307,7 @@ int n;
 
 /* convert char nc into oc's case; mostly used by strcasecpy */
 char
-chrcasecpy(oc, nc)
-int oc, nc;
+chrcasecpy(int oc, int nc)
 {
 #if 0 /* this will be necessary if we switch to <ctype.h> */
     oc = (int) (unsigned char) oc;
@@ -349,9 +329,7 @@ int oc, nc;
    for case-insensitive editions of makeplural() and makesingular();
    src might be shorter, same length, or longer than dst */
 char *
-strcasecpy(dst, src)
-char *dst;
-const char *src;
+strcasecpy(char *dst, const char *src)
 {
     char *result = dst;
     int ic, oc, dst_exhausted = 0;
@@ -373,8 +351,7 @@ const char *src;
 
 /* return a name converted to possessive */
 char *
-s_suffix(s)
-const char *s;
+s_suffix(const char *s)
 {
     Static char buf[BUFSZ];
 
@@ -392,8 +369,7 @@ const char *s;
 
 /* construct a gerund (a verb formed by appending "ing" to a noun) */
 char *
-ing_suffix(s)
-const char *s;
+ing_suffix(const char *s)
 {
     static const char vowel[] = "aeiouwy";
     static char buf[BUFSZ];
@@ -428,13 +404,11 @@ const char *s;
 
 /* trivial text encryption routine (see makedefs) */
 char *
-xcrypt(str, buf)
-const char *str;
-char *buf;
+xcrypt(const char *str, char *buf)
 {
-    register const char *p;
-    register char *q;
-    register int bitmask;
+    const char *p;
+    char *q;
+    int bitmask;
 
     for (bitmask = 1, p = str, q = buf; *p; q++) {
         *q = *p++;
@@ -449,8 +423,7 @@ char *buf;
 
 /* is a string entirely whitespace? */
 boolean
-onlyspace(s)
-const char *s;
+onlyspace(const char *s)
 {
     for (; *s; s++)
         if (*s != ' ' && *s != '\t')
@@ -460,12 +433,11 @@ const char *s;
 
 /* expand tabs into proper number of spaces */
 char *
-tabexpand(sbuf)
-char *sbuf;
+tabexpand(char *sbuf)
 {
     char buf[BUFSZ];
-    register char *bp, *s = sbuf;
-    register int idx;
+    char *bp, *s = sbuf;
+    int idx;
 
     if (!*s)
         return sbuf;
@@ -486,12 +458,11 @@ char *sbuf;
 #define VISCTRL_NBUF 5
 /* make a displayable string from a character */
 char *
-visctrl(c)
-char c;
+visctrl(char c)
 {
     Static char visctrl_bufs[VISCTRL_NBUF][5];
     static int nbuf = 0;
-    register int i = 0;
+    int i = 0;
     char *ccc = visctrl_bufs[nbuf];
     nbuf = (nbuf + 1) % VISCTRL_NBUF;
 
@@ -517,9 +488,7 @@ char c;
 /* caller is responsible for ensuring that bp is a
    valid pointer to a BUFSZ buffer */
 char *
-stripchars(bp, stuff_to_strip, orig)
-char *bp;
-const char *stuff_to_strip, *orig;
+stripchars(char *bp, const char *stuff_to_strip, const char *orig)
 {
     int i = 0;
     char *s = bp;
@@ -541,9 +510,7 @@ const char *stuff_to_strip, *orig;
 /* substitute a word or phrase in a string (in place) */
 /* caller is responsible for ensuring that bp points to big enough buffer */
 char *
-strsubst(bp, orig, replacement)
-char *bp;
-const char *orig, *replacement;
+strsubst(char *bp, const char *orig, const char *replacement)
 {
     char *found, buf[BUFSZ];
 
@@ -563,11 +530,7 @@ const char *orig, *replacement;
    if N is 0, substitute all occurrences; returns the number of subsitutions;
    maximum output length is BUFSZ (BUFSZ-1 chars + terminating '\0') */
 int
-strNsubst(inoutbuf, orig, replacement, n)
-char *inoutbuf; /* current string, and result buffer */
-const char *orig, /* old substring; if "" then insert in front of Nth char */
-           *replacement; /* new substring; if "" then delete old substring */
-int n; /* which occurrence to replace; 0 => all */
+strNsubst(char *inoutbuf, const char* orig, const char* replacement, int n)
 {
     char *bp, *op, workbuf[BUFSZ];
     const char *rp;
@@ -607,10 +570,9 @@ int n; /* which occurrence to replace; 0 => all */
 
 /* return the ordinal suffix of a number */
 const char *
-ordin(n)
-int n;               /* note: should be non-negative */
+ordin(int n)
 {
-    register int dd = n % 10;
+    int dd = n % 10;
 
     return (dd == 0 || dd > 3 || (n % 100) / 10 == 1) ? "th"
                : (dd == 1) ? "st" : (dd == 2) ? "nd" : "rd";
@@ -618,8 +580,7 @@ int n;               /* note: should be non-negative */
 
 /* make a signed digit string from a number */
 char *
-sitoa(n)
-int n;
+sitoa(int n)
 {
     Static char buf[13];
 
@@ -629,17 +590,14 @@ int n;
 
 /* return the sign of a number: -1, 0, or 1 */
 int
-sgn(n)
-int n;
+sgn(int n)
 {
     return (n < 0) ? -1 : (n != 0);
 }
 
 /* calculate x/y, rounding as appropriate */
 int
-rounddiv(x, y)
-int x;
-int y;
+rounddiv(int x, int y)
 {
     int r, m;
     int divsgn = 1;
@@ -667,10 +625,9 @@ int y;
 
 /* distance between two points, in moves */
 int
-distmin(x0, y0, x1, y1)
-int x0, y0, x1, y1;
+distmin(int x0, int y0, int x1, int y1)
 {
-    register int dx = x0 - x1, dy = y0 - y1;
+    int dx = x0 - x1, dy = y0 - y1;
 
     if (dx < 0)
         dx = -dx;
@@ -684,18 +641,16 @@ int x0, y0, x1, y1;
 
 /* square of euclidean distance between pair of pts */
 int
-dist2(x0, y0, x1, y1)
-int x0, y0, x1, y1;
+dist2(int x0, int y0, int x1, int y1)
 {
-    register int dx = x0 - x1, dy = y0 - y1;
+    int dx = x0 - x1, dy = y0 - y1;
 
     return dx * dx + dy * dy;
 }
 
 /* integer square root function without using floating point */
 int
-isqrt(val)
-int val;
+isqrt(int val)
 {
     int rt = 0;
     int odd = 1;
@@ -717,8 +672,7 @@ int val;
 
 /* are two points lined up (on a straight line)? */
 boolean
-online2(x0, y0, x1, y1)
-int x0, y0, x1, y1;
+online2(int x0, int y0, int x1, int y1)
 {
     int dx = x0 - x1, dy = y0 - y1;
     /*  If either delta is zero then they're on an orthogonal line,
@@ -729,11 +683,8 @@ int x0, y0, x1, y1;
 
 /* guts of pmatch(), pmatchi(), and pmatchz();
    match a string against a pattern */
-STATIC_OVL boolean
-pmatch_internal(patrn, strng, ci, sk)
-const char *patrn, *strng;
-boolean ci;     /* True => case-insensitive, False => case-sensitive */
-const char *sk; /* set of characters to skip */
+static boolean
+pmatch_internal(const char *patrn, const char *strng, boolean ci, const char *sk)
 {
     char s, p;
     /*
@@ -770,24 +721,21 @@ pmatch_top:
 
 /* case-sensitive wildcard match */
 boolean
-pmatch(patrn, strng)
-const char *patrn, *strng;
+pmatch(const char *patrn, const char *strng)
 {
     return pmatch_internal(patrn, strng, FALSE, (const char *) 0);
 }
 
 /* case-insensitive wildcard match */
 boolean
-pmatchi(patrn, strng)
-const char *patrn, *strng;
+pmatchi(const char *patrn, const char *strng)
 {
     return pmatch_internal(patrn, strng, TRUE, (const char *) 0);
 }
 
 /* case-insensitive wildcard fuzzymatch */
 boolean
-pmatchz(patrn, strng)
-const char *patrn, *strng;
+pmatchz(const char *patrn, const char *strng)
 {
     /* ignore spaces, tabs (just in case), dashes, and underscores */
     static const char fuzzychars[] = " \t-_";
@@ -799,10 +747,10 @@ const char *patrn, *strng;
 /* case insensitive counted string comparison */
 int
 strncmpi(s1, s2, n) /*{ aka strncasecmp }*/
-register const char *s1, *s2;
-register size_t n;
+const char *s1, *s2;
+size_t n;
 {
-    register char t1, t2;
+    char t1, t2;
     if (!n)
         return 0;
 
@@ -823,12 +771,10 @@ register size_t n;
 #ifndef STRSTRI
 /* case insensitive substring search */
 char *
-strstri(str, sub)
-const char *str;
-const char *sub;
+strstri(const char *str, const char *sub)
 {
-    register const char *s1, *s2;
-    register int i, k;
+    const char *s1, *s2;
+    int i, k;
 #define TABSIZ 0x20                  /* 0x40 would be case-sensitive */
     char tstr[TABSIZ], tsub[TABSIZ]; /* nibble count tables */
 #if 0
@@ -870,12 +816,9 @@ const char *sub;
 /* compare two strings for equality, ignoring the presence of specified
    characters (typically whitespace) and possibly ignoring case */
 boolean
-fuzzymatch(s1, s2, ignore_chars, caseblind)
-const char *s1, *s2;
-const char *ignore_chars;
-boolean caseblind;
+fuzzymatch(const char *s1, const char *s2, const char *ignore_chars, boolean caseblind)
 {
-    register char c1, c2;
+    char c1, c2;
 
     do {
         while ((c1 = *s1++) != '\0' && index(ignore_chars, c1) != 0)
@@ -922,17 +865,15 @@ boolean caseblind;
 
 #if defined(AMIGA) && !defined(AZTEC_C) && !defined(__SASC_60) \
     && !defined(_DCC) && !defined(__GNUC__)
-extern struct tm *FDECL(localtime, (time_t *));
+extern struct tm *localtime(time_t *);
 #endif
-STATIC_DCL struct tm *NDECL(getlt);
+static struct tm *getlt(void);
 
 /* Sets the seed for the random number generator */
 #ifdef USE_ISAAC64
 
-STATIC_OVL void
-set_random(seed, fn)
-uint64_t seed;
-int FDECL((*fn), (int));
+static void
+set_random(uint64_t seed, int (*fn)(int))
 {
     init_isaac64(seed, fn);
 }
@@ -940,10 +881,8 @@ int FDECL((*fn), (int));
 #else /* USE_ISAAC64 */
 
 /*ARGSUSED*/
-STATIC_OVL void
-set_random(seed, fn)
-uint64_t seed;
-int FDECL((*fn), (int)) UNUSED;
+static void
+set_random(uint64_t seed, int (*fn)(int) UNUSED)
 {
     /* the types are different enough here that sweeping the different
      * routine names into one via #defines is even more confusing
@@ -972,23 +911,21 @@ int FDECL((*fn), (int)) UNUSED;
 /* An appropriate version of this must always be provided in
    port-specific code somewhere. It returns a number suitable
    as seed for the random number generator */
-extern uint64_t NDECL(sys_random_seed);
+extern uint64_t sys_random_seed(void);
 
 /*
  * Initializes the random number generator.
  * Only call once.
  */
 void
-init_random(fn)
-int FDECL((*fn), (int));
+init_random(int (*fn)(int))
 {
     set_random(sys_random_seed(), fn);
 }
 
 /* Reshuffles the random number generator. */
 void
-reseed_random(fn)
-int FDECL((*fn), (int));
+reseed_random(int (*fn)(int))
 {
    /* only reseed if we are certain that the seed generation is unguessable
     * by the players. */
@@ -997,7 +934,7 @@ int FDECL((*fn), (int));
 }
 
 time_t
-getnow(VOID_ARGS)
+getnow(void)
 {
     time_t datetime = 0;
 
@@ -1006,28 +943,27 @@ getnow(VOID_ARGS)
 }
 
 time_t
-convert2UTC(raw_time)
-time_t raw_time;
+convert2UTC(time_t raw_time)
 {
     struct tm* utctm = gmtime((TIME_type)&raw_time);
     return mktime(utctm);
 }
 
 time_t
-getUTC(VOID_ARGS)
+getUTC(void)
 {
     return convert2UTC(getnow());
 }
 
-STATIC_OVL struct tm *
-getlt(VOID_ARGS)
+static struct tm *
+getlt(void)
 {
     time_t date = getnow();
     return localtime((LOCALTIME_type) &date);
 }
 
 int
-getyear(VOID_ARGS)
+getyear(void)
 {
     return (1900 + getlt()->tm_year);
 }
@@ -1035,8 +971,7 @@ getyear(VOID_ARGS)
 #if 0
 /* This routine is no longer used since in 20YY it yields "1YYmmdd". */
 char *
-yymmdd(date)
-time_t date;
+yymmdd(time_t date)
 {
     Static char datestr[10];
     struct tm *lt;
@@ -1053,8 +988,7 @@ time_t date;
 #endif
 
 int64_t
-yyyymmdd(date)
-time_t date;
+yyyymmdd(time_t date)
 {
     int64_t datenum;
     struct tm *lt;
@@ -1078,8 +1012,7 @@ time_t date;
 }
 
 int64_t
-hhmmss(date)
-time_t date;
+hhmmss(time_t date)
 {
     int64_t timenum;
     struct tm *lt;
@@ -1094,8 +1027,7 @@ time_t date;
 }
 
 char *
-yyyymmddhhmmss(date)
-time_t date;
+yyyymmddhhmmss(time_t date)
 {
     int64_t datenum;
     static char datestr[15];
@@ -1123,9 +1055,7 @@ time_t date;
 }
 
 void
-print_realtime(buf, realtime)
-char* buf;
-int64_t realtime;
+print_realtime(char *buf, int64_t realtime)
 {
     if (!buf)
         return;
@@ -1144,8 +1074,7 @@ int64_t realtime;
 }
 
 time_t
-time_from_yyyymmddhhmmss(buf)
-char *buf;
+time_from_yyyymmddhhmmss(char *buf)
 {
     int k;
     time_t timeresult = (time_t) 0;
@@ -1212,10 +1141,10 @@ char *buf;
  * + 11/22 for rounding
  */
 int
-phase_of_the_moon() /* 0-7, with 0: new, 4: full */
+phase_of_the_moon(void) /* 0-7, with 0: new, 4: full */
 {
-    register struct tm *lt = getlt();
-    register int epact, diy, goldn;
+    struct tm *lt = getlt();
+    int epact, diy, goldn;
 
     diy = lt->tm_yday;
     goldn = (lt->tm_year % 19) + 1;
@@ -1227,32 +1156,31 @@ phase_of_the_moon() /* 0-7, with 0: new, 4: full */
 }
 
 boolean
-friday_13th(VOID_ARGS)
+friday_13th(void)
 {
-    register struct tm *lt = getlt();
+    struct tm *lt = getlt();
 
     /* tm_wday (day of week; 0==Sunday) == 5 => Friday */
     return (boolean) (lt->tm_wday == 5 && lt->tm_mday == 13);
 }
 
 int
-night(VOID_ARGS)
+night(void)
 {
-    register int hour = getlt()->tm_hour;
+    int hour = getlt()->tm_hour;
 
     return (hour < 6 || hour > 21);
 }
 
 int
-midnight(VOID_ARGS)
+midnight(void)
 {
     return (getlt()->tm_hour == 0);
 }
 
 /* strbuf_init() initializes strbuf state for use */
 void
-strbuf_init(strbuf)
-strbuf_t *strbuf;
+strbuf_init(strbuf_t *strbuf)
 {
     strbuf->str = NULL;
     strbuf->len = 0;
@@ -1260,9 +1188,7 @@ strbuf_t *strbuf;
 
 /* strbuf_append() appends given str to strbuf->str */
 void
-strbuf_append(strbuf, str)
-strbuf_t *strbuf;
-const char *str;
+strbuf_append(strbuf_t *strbuf, const char *str)
 {
     if (!strbuf || !strbuf->str)
         return;
@@ -1276,9 +1202,7 @@ const char *str;
 
 /* strbuf_reserve() ensure strbuf->str has storage for len characters */
 void
-strbuf_reserve(strbuf, len)
-strbuf_t *strbuf;
-size_t len;
+strbuf_reserve(strbuf_t *strbuf, size_t len)
 {
     if (strbuf->str == NULL) 
     {
@@ -1301,8 +1225,7 @@ size_t len;
 
 /* strbuf_empty() frees allocated memory and set strbuf to initial state */
 void
-strbuf_empty(strbuf)
-strbuf_t *strbuf;
+strbuf_empty(strbuf_t *strbuf)
 {
     if (strbuf->str != NULL && strbuf->str != strbuf->buf)
         free((genericptr_t) strbuf->str);
@@ -1311,8 +1234,7 @@ strbuf_t *strbuf;
 
 /* strbuf_nl_to_crlf() converts all occurences of \n to \r\n */
 void
-strbuf_nl_to_crlf(strbuf)
-strbuf_t *strbuf;
+strbuf_nl_to_crlf(strbuf_t *strbuf)
 {
     if (strbuf->str) {
         size_t len = strlen(strbuf->str);
@@ -1335,9 +1257,7 @@ strbuf_t *strbuf;
 
 #if 0
 void
-convertUTF8toCharUnicode(buf, bufsize)
-char* buf;
-size_t bufsize;
+convertUTF8toCharUnicode(char *buf, size_t bufsize)
 {
     if (!buf || !*buf)
         return;
@@ -1418,9 +1338,7 @@ size_t bufsize;
 #endif
 
 void
-copyUTF8toCP437(cp437destbuf, cp437destbufsize, utf8sourcebuf, utf8sourcebufsize)
-char* cp437destbuf,* utf8sourcebuf;
-size_t cp437destbufsize, utf8sourcebufsize;
+copyUTF8toCP437(char *cp437destbuf, size_t cp437destbufsize, char *utf8sourcebuf, size_t utf8sourcebufsize)
 {
     if (!cp437destbuf || !utf8sourcebuf || !cp437destbufsize || !utf8sourcebufsize)
         return;
@@ -1542,9 +1460,7 @@ size_t cp437destbufsize, utf8sourcebufsize;
 }
 
 void
-convertUTF8toCP437(buf, bufsize)
-char* buf;
-size_t bufsize;
+convertUTF8toCP437(char *buf, size_t bufsize)
 {
     if (!buf || !*buf || !bufsize)
         return;
@@ -1559,8 +1475,7 @@ size_t bufsize;
 }
 
 char
-unicode_to_CP437(ch)
-nhsym ch;
+unicode_to_CP437(nhsym ch)
 {
     int i;
 
@@ -1575,8 +1490,7 @@ nhsym ch;
 }
 
 int
-converted_nh_poskey(x, y, mod)
-int* x, * y, * mod;
+converted_nh_poskey(int *x, int *y, int *mod)
 {
     int c = nh_poskey(x, y, mod);
 
@@ -1629,7 +1543,7 @@ int* x, * y, * mod;
 
 
 boolean
-use_utf8_encoding(VOID_ARGS)
+use_utf8_encoding(void)
 {
     /* Windows ASCII GnollHack does not use UTF-8 encoding with Unicode */
 #ifdef WIN32
@@ -1646,16 +1560,13 @@ extern int unix_is_stdin_empty(); /* From unixmain.c */
 #endif
 
 int
-tty_arrow_key_support_enabled(VOID_ARGS)
+tty_arrow_key_support_enabled(void)
 {
     return iflags.enablettyarrowkeys;
 }
 
 void
-write_nhsym_utf8(buf_ptr, ch, is_CP437, also_control_chars)
-char** buf_ptr;
-nhsym ch;
-boolean is_CP437, also_control_chars; /* if false, then ch is assumed to be unicode */
+write_nhsym_utf8(char **buf_ptr, nhsym ch, boolean is_CP437, boolean also_control_chars)
 {
     if (!buf_ptr)
         return;
@@ -1694,10 +1605,7 @@ boolean is_CP437, also_control_chars; /* if false, then ch is assumed to be unic
 }
 
 void
-write_text2buf_utf8(buf, bufsize, text)
-char* buf;
-size_t bufsize;
-const char* text;
+write_text2buf_utf8(char *buf, size_t bufsize, const char *text)
 {
     nhsym sym;
     const char* tp = text;
@@ -1712,10 +1620,7 @@ const char* text;
 }
 
 void
-write_CP437_to_buf_unicode(buf, bufsize, text)
-char* buf;
-size_t bufsize;
-const char* text;
+write_CP437_to_buf_unicode(char *buf, size_t bufsize, const char *text)
 {
     int ch;
     const char* tp = text;
@@ -1731,8 +1636,7 @@ const char* text;
 }
 
 void
-write_gui_debuglog(str)
-const char* str;
+write_gui_debuglog(const char *str)
 {
     if (!str || open_special_view == 0)
         return;
@@ -1744,8 +1648,7 @@ const char* str;
 }
 
 int
-hl_attridx_to_attrmask(idx)
-int idx;
+hl_attridx_to_attrmask(int idx)
 {
     switch (idx)
     {
@@ -1759,8 +1662,7 @@ int idx;
 }
 
 int 
-hl_attrmask_to_attridx(mask)
-int mask;
+hl_attrmask_to_attridx(int mask)
 {
     int attr = 0;
     if (mask & HL_DIM) attr |= (1 << ATR_DIM);
@@ -1772,8 +1674,7 @@ int mask;
 }
 
 int
-hl_attrmask_to_atr(mask)
-int mask;
+hl_attrmask_to_atr(int mask)
 {
     if (mask & HL_BOLD) return ATR_BOLD;
     if (mask & HL_DIM) return ATR_DIM;
@@ -1784,8 +1685,7 @@ int mask;
 }
 
 int
-hl_attridx_to_atr(idx)
-int idx;
+hl_attridx_to_atr(int idx)
 {
     switch (idx)
     {

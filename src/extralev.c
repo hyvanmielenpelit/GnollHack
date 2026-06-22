@@ -22,18 +22,16 @@ struct rogueroom {
 #define LEFT 4
 #define RIGHT 8
 
-STATIC_VAR NEARDATA struct rogueroom r[3][3];
-STATIC_DCL void FDECL(roguejoin, (int, int, int, int, int));
-STATIC_DCL void FDECL(roguecorr, (int, int, int));
-STATIC_DCL void FDECL(miniwalk, (int, int));
+static NEARDATA struct rogueroom r[3][3];
+static void roguejoin(int, int, int, int, int);
+static void roguecorr(int, int, int);
+static void miniwalk(int, int);
 
-STATIC_OVL
+static
 void
-roguejoin(x1, y1, x2, y2, horiz)
-int x1, y1, x2, y2;
-int horiz;
+roguejoin(int x1, int y1, int x2, int y2, int horiz)
 {
-    register int x, y, middle;
+    int x, y, middle;
     if (horiz) {
         middle = x1 + rn2(x2 - x1 + 1);
         for (x = min(x1, middle); x <= max(x1, middle); x++)
@@ -53,12 +51,11 @@ int horiz;
     }
 }
 
-STATIC_OVL
+static
 void
-roguecorr(x, y, dir)
-int x, y, dir;
+roguecorr(int x, int y, int dir)
 {
-    register int fromx, fromy, tox, toy;
+    int fromx, fromy, tox, toy;
 
     if (dir == DOWN) {
         r[x][y].doortable &= ~DOWN;
@@ -157,12 +154,11 @@ int x, y, dir;
 }
 
 /* Modified walkfrom() from mkmaze.c */
-STATIC_OVL
+static
 void
-miniwalk(x, y)
-int x, y;
+miniwalk(int x, int y)
 {
-    register int q, dir;
+    int q, dir;
     int dirs[4];
 
     while (1) {
@@ -213,9 +209,9 @@ int x, y;
 }
 
 void
-makeroguerooms(VOID_ARGS)
+makeroguerooms(void)
 {
-    register int x, y;
+    int x, y;
     /* Rogue levels are structured 3 by 3, with each section containing
      * a room or an intersection.  The minimum width is 2 each way.
      * One difference between these and "real" Rogue levels: real Rogue
@@ -297,8 +293,7 @@ makeroguerooms(VOID_ARGS)
 }
 
 void
-corr(x, y)
-int x, y;
+corr(int x, int y)
 {
     if (rn2(50)) {
         levl[x][y].typ = CORR;
@@ -308,9 +303,9 @@ int x, y;
 }
 
 void
-makerogueghost(VOID_ARGS)
+makerogueghost(void)
 {
-    register struct monst *ghost;
+    struct monst *ghost;
     struct obj *ghostobj;
     struct mkroom *croom;
     int x, y;
@@ -376,7 +371,7 @@ makerogueghost(VOID_ARGS)
 }
 
 void
-reset_extralev(VOID_ARGS)
+reset_extralev(void)
 {
     memset((genericptr_t)&r, 0, sizeof(r));
 }

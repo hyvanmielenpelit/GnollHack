@@ -23,13 +23,13 @@ char *BC, *UP;
 short ospeed;
 
 /* exported routines */
-int FDECL(tgetent, (char *, const char *));
-int FDECL(tgetflag, (const char *));
-int FDECL(tgetnum, (const char *));
-char *FDECL(tgetstr, (const char *, char **));
-char *FDECL(tgoto, (const char *, int, int));
-char *FDECL(tparam, (const char *, char *, int, int, int, int, int));
-void FDECL(tputs, (const char *, int, void (*)(CHAR_P)));
+int tgetent(char *, const char *);
+int tgetflag(const char *);
+int tgetnum(const char *);
+char *tgetstr(const char *, char **);
+char *tgoto(const char *, int, int);
+char *tparam(const char *, char *, int, int, int, int, int);
+void tputs(const char *, int, void (*)(int));
 
 /* local support data */
 static char *tc_entry;
@@ -51,20 +51,22 @@ static short baud_rates[] = {
 #endif /* !NO_DELAY_PADDING */
 
 /* local support code */
-static int FDECL(tc_store, (const char *, const char *));
-static char *FDECL(tc_find, (FILE *, const char *, char *, int));
-static char *FDECL(tc_name, (const char *, char *));
-static const char *FDECL(tc_field, (const char *, const char **));
+static int tc_store(const char *, const char *);
+static char *tc_find(FILE *, const char *, char *, int);
+static char *tc_name(const char *, char *);
+static const char *tc_field(const char *, const char **);
 
 #ifndef min
 #define min(a, b) ((a) < (b) ? (a) : (b))
 #endif
 
+/*
+ * Parameters:
+ *   entbuf: size must be at least [TCBUFSIZ]
+ */
 /* retrieve the specified terminal entry and return it in `entbuf' */
 int
-tgetent(entbuf, term)
-char *entbuf; /* size must be at least [TCBUFSIZ] */
-const char *term;
+tgetent(char *entbuf, const char *term)
 {
     int result;
     FILE *fp;
@@ -98,8 +100,7 @@ const char *term;
 
 /* copy the entry into the output buffer */
 static int
-tc_store(trm, ent)
-const char *trm, *ent;
+tc_store(const char *trm, const char *ent)
 {
     const char *bar, *col;
     char *s;
@@ -139,11 +140,7 @@ const char *trm, *ent;
 
 /* search for an entry in the termcap file */
 static char *
-tc_find(fp, term, buffer, bufsiz)
-FILE *fp;
-const char *term;
-char *buffer;
-int bufsiz;
+tc_find(FILE *fp, const char *term, char *buffer, int bufsiz)
 {
     int in, len, first, skip;
     char *ip, *op, *tc_fetch, tcbuf[TCBUFSIZ];
@@ -200,9 +197,7 @@ int bufsiz;
 
 /* check whether `ent' contains `nam'; return start of field entries */
 static char *
-tc_name(nam, ent)
-const char *nam;
-char *ent;
+tc_name(const char *nam, char *ent)
 {
     char *nxt, *lst, *p = ent;
     size_t n = strlen(nam);
@@ -222,8 +217,7 @@ char *ent;
 
 /* look up a numeric entry */
 int
-tgetnum(which)
-const char *which;
+tgetnum(const char *which)
 {
     const char *q, *p = tc_field(which, &q);
     char numbuf[32];
@@ -241,8 +235,7 @@ const char *which;
 
 /* look up a boolean entry */
 int
-tgetflag(which)
-const char *which;
+tgetflag(const char *which)
 {
     const char *p = tc_field(which, (const char **) 0);
 
@@ -251,9 +244,7 @@ const char *which;
 
 /* look up a string entry; update `*outptr' */
 char *
-tgetstr(which, outptr)
-const char *which;
-char **outptr;
+tgetstr(const char *which, char **outptr)
 {
     int n;
     char c, *r, *result;
@@ -328,9 +319,7 @@ char **outptr;
 
 /* look for a particular field name */
 static const char *
-tc_field(field, tc_end)
-const char *field;
-const char **tc_end;
+tc_field(const char *field, const char **tc_end)
 {
     const char *end, *q, *p = tc_entry;
 
@@ -358,20 +347,20 @@ static char cmbuf[64];
 
 /* produce a string which will position the cursor at <row,col> if output */
 char *
-tgoto(cm, col, row)
-const char *cm;
-int col, row;
+tgoto(const char *cm, int col, int row)
 {
     return tparam(cm, cmbuf, (int) (sizeof cmbuf), row, col, 0, 0);
 }
 
+/*
+ * Parameters:
+ *   ctl: parameter control string
+ *   buf: output buffer
+ *   buflen: ought to have been `size_t'...
+ */
 /* format a parameterized string, ala sprintf */
 char *
-tparam(ctl, buf, buflen, row, col, row2, col2)
-const char *ctl; /* parameter control string */
-char *buf;       /* output buffer */
-int buflen;      /* ought to have been `size_t'... */
-int row, col, row2, col2;
+tparam(const char *ctl, char *buf, int buflen, int row, int col, int row2, int col2)
 {
     int atmp, ac, av[5];
     char c, *r, *z, *bufend, numbuf[32];
@@ -501,16 +490,19 @@ int row, col, row2, col2;
     return buf;
 }
 
+/*
+ * Parameters:
+ *   string: characters to output
+ *   range: number of lines affected, used for `*' delays
+ *   output_func: actual output routine; return value ignored
+ */
 /* send a string to the terminal, possibly padded with trailing NULs */
 void
-tputs(string, range, output_func)
-const char *string;   /* characters to output */
-int range;            /* number of lines affected, used for `*' delays */
-void (*output_func)(CHAR_P); /* actual output routine; return value ignored */
+tputs(const char *string, int range, void (*output_func)(int))
 {
     register char c;
-    register int num = 0;
-    register const char *p = string;
+    int num = 0;
+    const char *p = string;
 
     if (!p || !*p)
         return;

@@ -17,50 +17,50 @@
 
 #ifdef MFLOPPY
 int64_t bytes_counted;
-STATIC_VAR int count_only;
+static int count_only;
 #endif
 
 #ifdef MICRO
 int dotcnt, dotrow; /* also used in restore */
 #endif
 
-STATIC_DCL boolean FDECL(precheck_save_file_tracking, (const char*));
+static boolean precheck_save_file_tracking(const char*);
 
-STATIC_DCL void FDECL(savelevchn, (int, int));
-STATIC_DCL void FDECL(savedamage, (int, int));
-STATIC_DCL void FDECL(saveobj, (int, struct obj *));
-STATIC_DCL void FDECL(saveobjchn, (int, struct obj *, int));
-STATIC_DCL void FDECL(savemon, (int, struct monst *));
-STATIC_DCL void FDECL(savemonchn, (int, struct monst *, int));
-STATIC_DCL void FDECL(savetrapchn, (int, struct trap *, int));
-STATIC_DCL void FDECL(savegamestate, (int, int, int64_t));
-STATIC_DCL void FDECL(save_msghistory, (int, int));
-STATIC_DCL void FDECL(save_gamelog, (int, int));
+static void savelevchn(int, int);
+static void savedamage(int, int);
+static void saveobj(int, struct obj *);
+static void saveobjchn(int, struct obj *, int);
+static void savemon(int, struct monst *);
+static void savemonchn(int, struct monst *, int);
+static void savetrapchn(int, struct trap *, int);
+static void savegamestate(int, int, int64_t);
+static void save_msghistory(int, int);
+static void save_gamelog(int, int);
 #ifdef MFLOPPY
-STATIC_DCL void FDECL(savelev0, (int, XCHAR_P, int));
-STATIC_DCL boolean NDECL(swapout_oldest);
-STATIC_DCL void FDECL(copyfile, (char *, char *));
+static void savelev0(int, xchar, int);
+static boolean swapout_oldest(void);
+static void copyfile(char *, char *);
 #endif /* MFLOPPY */
-STATIC_DCL void FDECL(savelevl, (int fd, BOOLEAN_P));
-STATIC_DCL void FDECL(def_bufon, (int));
-STATIC_DCL void FDECL(def_bufoff, (int));
-STATIC_DCL void FDECL(def_bflush, (int));
-STATIC_DCL void FDECL(def_bwrite, (int, genericptr_t, size_t));
+static void savelevl(int fd, boolean);
+static void def_bufon(int);
+static void def_bufoff(int);
+static void def_bflush(int);
+static void def_bwrite(int, genericptr_t, size_t);
 #ifdef ZEROCOMP
-STATIC_DCL void FDECL(zerocomp_bufon, (int));
-STATIC_DCL void FDECL(zerocomp_bufoff, (int));
-STATIC_DCL void FDECL(zerocomp_bflush, (int));
-STATIC_DCL void FDECL(zerocomp_bwrite, (int, genericptr_t, size_t));
-STATIC_DCL void FDECL(zerocomp_bputc, (int));
+static void zerocomp_bufon(int);
+static void zerocomp_bufoff(int);
+static void zerocomp_bflush(int);
+static void zerocomp_bwrite(int, genericptr_t, size_t);
+static void zerocomp_bputc(int);
 #endif
 
-STATIC_VAR struct save_procs {
+static struct save_procs {
     const char *name;
-    void FDECL((*save_bufon), (int));
-    void FDECL((*save_bufoff), (int));
-    void FDECL((*save_bflush), (int));
-    void FDECL((*save_bwrite), (int, genericptr_t, size_t));
-    void FDECL((*save_bclose), (int));
+    void (*save_bufon)(int);
+    void (*save_bufoff)(int);
+    void (*save_bflush)(int);
+    void (*save_bwrite)(int, genericptr_t, size_t);
+    void (*save_bclose)(int);
 } saveprocs = {
 #if !defined(ZEROCOMP) || (defined(COMPRESS) || defined(ZLIB_COMP))
     "externalcomp", def_bufon, def_bufoff, def_bflush, def_bwrite, def_bclose,
@@ -77,13 +77,13 @@ STATIC_VAR struct save_procs {
 #endif
 
 /* need to preserve these during save to avoid accessing freed memory */
-STATIC_VAR unsigned ustuck_id = 0, usteed_id = 0;
+static unsigned ustuck_id = 0, usteed_id = 0;
 boolean saving = FALSE;
 boolean check_pointing = FALSE;
 boolean ignore_onsleep_autosave = FALSE;
 
 int
-dosave(VOID_ARGS)
+dosave(void)
 {
     if (iflags.debug_fuzzer)
         return 0;
@@ -156,11 +156,10 @@ char saved_dgnlvl_name_buf[BUFSZ * 2] = "";
 
 /* returns 1 if save successful */
 int
-dosave0(quietly)
-boolean quietly;
+dosave0(boolean quietly)
 {
     const char *fq_save;
-    register int fd, ofd;
+    int fd, ofd;
     xchar ltmp;
     d_level uz_save;
     char whynot[BUFSZ];
@@ -372,9 +371,8 @@ boolean quietly;
     return 1;
 }
 
-STATIC_OVL boolean
-precheck_save_file_tracking(fq_save)
-const char* fq_save;
+static boolean
+precheck_save_file_tracking(const char *fq_save)
 {
     if (wizard || discover || CasualMode || iflags.save_file_secure || !iflags.save_file_tracking_supported)
         return TRUE;
@@ -403,9 +401,7 @@ const char* fq_save;
 }
 
 void 
-track_new_save_file(filename, time_stamp)
-const char* filename;
-int64_t time_stamp;
+track_new_save_file(const char *filename, int64_t time_stamp)
 {
     if (wizard || discover || CasualMode || iflags.save_file_secure || !iflags.save_file_tracking_supported)
         return;
@@ -425,9 +421,8 @@ int64_t time_stamp;
     }
 }
 
-STATIC_OVL void
-save_gamelog(fd, mode)
-int fd, mode;
+static void
+save_gamelog(int fd, int mode)
 {
     struct gamelog_line* tmp = gamelog, * tmp2;
     int slen;
@@ -455,10 +450,8 @@ int fd, mode;
         gamelog = 0;
 }
 
-STATIC_OVL void
-savegamestate(fd, mode, time_stamp)
-register int fd, mode;
-int64_t time_stamp;
+static void
+savegamestate(int fd, int mode, int64_t time_stamp)
 {
     uint64_t uid;
 
@@ -539,9 +532,7 @@ int64_t time_stamp;
 }
 
 boolean
-tricked_fileremoved(fd, whynot)
-int fd;
-char *whynot;
+tricked_fileremoved(int fd, char *whynot)
 {
     if (fd < 0) {
         program_state.in_tricked = 1;
@@ -555,11 +546,11 @@ char *whynot;
     return FALSE;
 }
 
-STATIC_VAR boolean havestate = TRUE;
+static boolean havestate = TRUE;
 
 #ifdef INSURANCE
 void
-savestateinlock(VOID_ARGS)
+savestateinlock(void)
 {
     int fd, hpid;
     char whynot[BUFSZ];
@@ -626,10 +617,7 @@ savestateinlock(VOID_ARGS)
 
 #ifdef MFLOPPY
 boolean
-savelev(fd, lev, mode)
-int fd;
-xchar lev;
-int mode;
+savelev(int fd, xchar lev, int mode)
 {
     if (mode & COUNT_SAVE) {
         bytes_counted = 0;
@@ -655,15 +643,12 @@ int mode;
     return TRUE;
 }
 
-STATIC_OVL void
-savelev0(fd, lev, mode)
+static void
+savelev0(int fd, xchar lev, int mode)
 #else
 void
-savelev(fd, lev, mode)
+savelev(int fd, xchar lev, int mode)
 #endif
-int fd;
-xchar lev;
-int mode;
 {
 #ifdef TOS
     short tlev;
@@ -757,10 +742,8 @@ skip_lots:
         bflush(fd);
 }
 
-STATIC_OVL void
-savelevl(fd, rlecomp)
-int fd;
-boolean rlecomp;
+static void
+savelevl(int fd, boolean rlecomp)
 {
 #ifdef RLECOMP
     struct rm *prm, *rgrm;
@@ -815,8 +798,7 @@ boolean rlecomp;
 
 /*ARGSUSED*/
 void
-bufon(fd)
-int fd;
+bufon(int fd)
 {
     (*saveprocs.save_bufon)(fd);
     return;
@@ -824,8 +806,7 @@ int fd;
 
 /*ARGSUSED*/
 void
-bufoff(fd)
-int fd;
+bufoff(int fd)
 {
     (*saveprocs.save_bufoff)(fd);
     return;
@@ -833,38 +814,32 @@ int fd;
 
 /* flush run and buffer */
 void
-bflush(fd)
-register int fd;
+bflush(int fd)
 {
     (*saveprocs.save_bflush)(fd);
     return;
 }
 
 void
-bwrite(fd, loc, num)
-int fd;
-genericptr_t loc;
-register size_t num;
+bwrite(int fd, genericptr_t loc, size_t num)
 {
     (*saveprocs.save_bwrite)(fd, loc, num);
     return;
 }
 
 void
-bclose(fd)
-int fd;
+bclose(int fd)
 {
     (*saveprocs.save_bclose)(fd);
     return;
 }
 
-STATIC_VAR int bw_fd = -1;
-STATIC_VAR FILE *bw_FILE = 0;
-STATIC_VAR boolean buffering = FALSE;
+static int bw_fd = -1;
+static FILE *bw_FILE = 0;
+static boolean buffering = FALSE;
 
-STATIC_OVL void
-def_bufon(fd)
-int fd;
+static void
+def_bufon(int fd)
 {
 #ifdef UNIX
     if (bw_fd != fd) {
@@ -884,17 +859,15 @@ int fd;
     buffering = TRUE;
 }
 
-STATIC_OVL void
-def_bufoff(fd)
-int fd;
+static void
+def_bufoff(int fd)
 {
     def_bflush(fd);
     buffering = FALSE;
 }
 
-STATIC_OVL void
-def_bflush(fd)
-int fd;
+static void
+def_bflush(int fd)
 {
 #ifdef UNIX
     if (fd == bw_fd) {
@@ -905,11 +878,8 @@ int fd;
     return;
 }
 
-STATIC_OVL void
-def_bwrite(fd, loc, num)
-register int fd;
-register genericptr_t loc;
-register size_t num;
+static void
+def_bwrite(int fd, genericptr_t loc, size_t num)
 {
     boolean failed;
 
@@ -947,8 +917,7 @@ register size_t num;
 }
 
 void
-def_bclose(fd)
-int fd;
+def_bclose(int fd)
 {
     bufoff(fd);
 #ifdef UNIX
@@ -977,20 +946,19 @@ int fd;
 #ifndef ZEROCOMP_BUFSIZ
 #define ZEROCOMP_BUFSIZ BUFSZ
 #endif
-STATIC_VAR NEARDATA unsigned char outbuf[ZEROCOMP_BUFSIZ];
-STATIC_VAR NEARDATA unsigned short outbufp = 0;
-STATIC_VAR NEARDATA short outrunlength = -1;
-STATIC_VAR NEARDATA int bwritefd;
-STATIC_VAR NEARDATA boolean compressing = FALSE;
+static NEARDATA unsigned char outbuf[ZEROCOMP_BUFSIZ];
+static NEARDATA unsigned short outbufp = 0;
+static NEARDATA short outrunlength = -1;
+static NEARDATA int bwritefd;
+static NEARDATA boolean compressing = FALSE;
 
 /*dbg()
 {
     HUP printf("outbufp %d outrunlength %d\n", outbufp,outrunlength);
 }*/
 
-STATIC_OVL void
-zerocomp_bputc(c)
-int c;
+static void
+zerocomp_bputc(int c)
 {
 #ifdef MFLOPPY
     bytes_counted++;
@@ -1005,18 +973,16 @@ int c;
 }
 
 /*ARGSUSED*/
-void STATIC_OVL
-zerocomp_bufon(fd)
-int fd;
+static void
+zerocomp_bufon(int fd)
 {
     compressing = TRUE;
     return;
 }
 
 /*ARGSUSED*/
-STATIC_OVL void
-zerocomp_bufoff(fd)
-int fd;
+static void
+zerocomp_bufoff(int fd)
 {
     if (outbufp) {
         outbufp = 0;
@@ -1028,9 +994,8 @@ int fd;
 }
 
 /* flush run and buffer */
-STATIC_OVL void
-zerocomp_bflush(fd)
-register int fd;
+static void
+zerocomp_bflush(int fd)
 {
     bwritefd = fd;
     if (outrunlength >= 0) { /* flush run */
@@ -1054,13 +1019,10 @@ register int fd;
     }
 }
 
-STATIC_OVL void
-zerocomp_bwrite(fd, loc, num)
-int fd;
-genericptr_t loc;
-register size_t num;
+static void
+zerocomp_bwrite(int fd, genericptr_t loc, size_t num)
 {
-    register unsigned char *bp = (unsigned char *) loc;
+    unsigned char *bp = (unsigned char *) loc;
 
     if (!compressing) {
 #ifdef MFLOPPY
@@ -1094,8 +1056,7 @@ register size_t num;
 }
 
 void
-zerocomp_bclose(fd)
-int fd;
+zerocomp_bclose(int fd)
 {
     zerocomp_bufoff(fd);
     (void) nhclose(fd);
@@ -1103,9 +1064,8 @@ int fd;
 }
 #endif /* ZEROCOMP */
 
-STATIC_OVL void
-savelevchn(fd, mode)
-register int fd, mode;
+static void
+savelevchn(int fd, int mode)
 {
     s_level *tmplev, *tmplev2;
     int cnt = 0;
@@ -1128,10 +1088,7 @@ register int fd, mode;
 
 /* used when saving a level and also when saving dungeon overview data */
 void
-savecemetery(fd, mode, cemeteryaddr)
-int fd;
-int mode;
-struct cemetery **cemeteryaddr;
+savecemetery(int fd, int mode, struct cemetery **cemeteryaddr)
 {
     struct cemetery *thisbones, *nextbones;
     int flag;
@@ -1151,11 +1108,10 @@ struct cemetery **cemeteryaddr;
         *cemeteryaddr = 0;
 }
 
-STATIC_OVL void
-savedamage(fd, mode)
-register int fd, mode;
+static void
+savedamage(int fd, int mode)
 {
-    register struct damage *damageptr, *tmp_dam;
+    struct damage *damageptr, *tmp_dam;
     unsigned int xl = 0;
 
     damageptr = level.damagelist;
@@ -1176,10 +1132,8 @@ register int fd, mode;
         level.damagelist = 0;
 }
 
-STATIC_OVL void
-saveobj(fd, otmp)
-int fd;
-struct obj *otmp;
+static void
+saveobj(int fd, struct obj *otmp)
 {
     size_t buflen, zerobuf = 0;
 
@@ -1235,12 +1189,10 @@ struct obj *otmp;
     }
 }
 
-STATIC_OVL void
-saveobjchn(fd, otmp, mode)
-register int fd, mode;
-register struct obj *otmp;
+static void
+saveobjchn(int fd, struct obj *otmp, int mode)
 {
-    register struct obj *otmp2;
+    struct obj *otmp2;
     //int minusone = -1;
     size_t zero = 0;
 
@@ -1284,10 +1236,8 @@ register struct obj *otmp;
         bwrite(fd, (genericptr_t) &zero, sizeof(zero));
 }
 
-STATIC_OVL void
-savemon(fd, mtmp)
-int fd;
-struct monst *mtmp;
+static void
+savemon(int fd, struct monst *mtmp)
 {
     size_t buflen, zerobuf = 0;
 
@@ -1384,12 +1334,10 @@ struct monst *mtmp;
     }
 }
 
-STATIC_OVL void
-savemonchn(fd, mtmp, mode)
-register int fd, mode;
-register struct monst *mtmp;
+static void
+savemonchn(int fd, struct monst *mtmp, int mode)
 {
-    register struct monst *mtmp2;
+    struct monst *mtmp2;
     //int minusone = -1;
     size_t zero = 0;
 
@@ -1425,14 +1373,11 @@ register struct monst *mtmp;
 
 
 /* save traps; ftrap is the only trap chain so the 2nd arg is superfluous */
-STATIC_OVL void
-savetrapchn(fd, trap, mode)
-int fd;
-register struct trap *trap;
-int mode;
+static void
+savetrapchn(int fd, struct trap *trap, int mode)
 {
     static const struct trap zerotrap;
-    register struct trap *trap2;
+    struct trap *trap2;
 
     while (trap) {
         trap2 = trap->ntrap;
@@ -1452,11 +1397,10 @@ int mode;
  * level routine marks nonexistent fruits by making the fid negative.
  */
 void
-savefruitchn(fd, mode)
-int fd, mode;
+savefruitchn(int fd, int mode)
 {
     static const struct fruit zerofruit = { { 0 }, 0, 0 };
-    register struct fruit *f2, *f1;
+    struct fruit *f2, *f1;
 
     f1 = ffruit;
     while (f1) {
@@ -1474,15 +1418,14 @@ int fd, mode;
 }
 
 void
-reset_fruitchn(VOID_ARGS)
+reset_fruitchn(void)
 {
     savefruitchn(0, FREE_SAVE);
 
 }
 
 void
-store_plname_in_file(fd)
-int fd;
+store_plname_in_file(int fd)
 {
     int plsiztmp = PL_NSIZ;
 
@@ -1497,9 +1440,7 @@ int fd;
 
 
 void
-store_save_game_stats_in_file(fd, time_stamp)
-int fd;
-int64_t time_stamp;
+store_save_game_stats_in_file(int fd, int64_t time_stamp)
 {
     struct save_game_stats gamestats = { 0 };
     gamestats.glyph = abs(u_to_glyph());
@@ -1543,9 +1484,8 @@ int64_t time_stamp;
     return;
 }
 
-STATIC_OVL void
-save_msghistory(fd, mode)
-int fd, mode;
+static void
+save_msghistory(int fd, int mode)
 {
     char *msg, *attrs, *colors;
     //int msgcount = 0;
@@ -1577,8 +1517,7 @@ int fd, mode;
 }
 
 void
-store_savefileinfo(fd)
-int fd;
+store_savefileinfo(int fd)
 {
     /* sfcap (decl.c) describes the savefile feature capabilities
      * that are supported by this port/platform build.
@@ -1601,8 +1540,7 @@ int fd;
 }
 
 void
-set_savepref(suitename)
-const char *suitename;
+set_savepref(const char *suitename)
 {
     if (!strcmpi(suitename, "externalcomp")) {
         saveprocs.name = "externalcomp";
@@ -1638,7 +1576,7 @@ const char *suitename;
 
 /* also called by prscore(); this probably belongs in dungeon.c... */
 void
-free_dungeons(VOID_ARGS)
+free_dungeons(void)
 {
 #ifdef FREE_ALL_MEMORY
     savelevchn(0, FREE_SAVE);
@@ -1648,7 +1586,7 @@ free_dungeons(VOID_ARGS)
 }
 
 void
-free_dynamic_data_A(VOID_ARGS)
+free_dynamic_data_A(void)
 {
 #if defined(UNIX) && defined(MAIL)
     free_maildata();
@@ -1662,7 +1600,7 @@ free_dynamic_data_A(VOID_ARGS)
 }
 
 void
-free_dynamic_data_B(VOID_ARGS)
+free_dynamic_data_B(void)
 {
 #define free_animals() mon_animal_list(FALSE)
     free_animals();
@@ -1691,7 +1629,7 @@ free_dynamic_data_B(VOID_ARGS)
 }
 
 void
-free_dynamic_data_C(VOID_ARGS)
+free_dynamic_data_C(void)
 {
 #if defined (DUMPLOG) || defined (DUMPHTML)
     dumplogfreemessages();
@@ -1703,7 +1641,7 @@ free_dynamic_data_C(VOID_ARGS)
 }
 
 void
-freedynamicdata(VOID_ARGS)
+freedynamicdata(void)
 {
     free_dynamic_data_A();
     tmp_at(DISP_FREEMEM, 0); /* temporary display effects */
@@ -1772,7 +1710,7 @@ freedynamicdata(VOID_ARGS)
 }
 
 void
-reset_save(VOID_ARGS)
+reset_save(void)
 {
     havestate = TRUE;
 
@@ -1804,8 +1742,7 @@ reset_save(VOID_ARGS)
 
 #ifdef MFLOPPY
 boolean
-swapin_file(lev)
-int lev;
+swapin_file(int lev)
 {
     char to[PATHLEN], from[PATHLEN];
 
@@ -1828,8 +1765,8 @@ int lev;
     return TRUE;
 }
 
-STATIC_OVL boolean
-swapout_oldest(VOID_ARGS)
+static boolean
+swapout_oldest(void)
 {
     char to[PATHLEN], from[PATHLEN];
     int i, oldest;
@@ -1859,9 +1796,8 @@ swapout_oldest(VOID_ARGS)
     return TRUE;
 }
 
-STATIC_OVL void
-copyfile(from, to)
-char *from, *to;
+static void
+copyfile(char *from, char *to)
 {
 #ifdef TOS
     if (_copyfile(from, to))
@@ -1888,7 +1824,7 @@ char *from, *to;
 
 /* see comment in bones.c */
 void
-co_false(VOID_ARGS)
+co_false(void)
 {
     count_only = FALSE;
     return;

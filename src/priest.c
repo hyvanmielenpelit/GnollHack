@@ -7,15 +7,14 @@
 #include "hack.h"
 #include "mfndpos.h"
 
-STATIC_DCL boolean FDECL(histemple_at, (struct monst *, XCHAR_P, XCHAR_P));
-STATIC_DCL boolean FDECL(has_shrine, (struct monst *));
+static boolean histemple_at(struct monst *, xchar, xchar);
+static boolean has_shrine(struct monst *);
 
-STATIC_DCL boolean FDECL(hissmithy_at, (struct monst*, XCHAR_P, XCHAR_P));
-STATIC_DCL boolean FDECL(has_smithy, (struct monst*));
+static boolean hissmithy_at(struct monst*, xchar, xchar);
+static boolean has_smithy(struct monst*);
 
 void
-newepri(mtmp)
-struct monst *mtmp;
+newepri(struct monst *mtmp)
 {
     if (!mtmp->mextra)
         mtmp->mextra = newmextra();
@@ -28,8 +27,7 @@ struct monst *mtmp;
 }
 
 void
-free_epri(mtmp)
-struct monst *mtmp;
+free_epri(struct monst *mtmp)
 {
     if (has_epri(mtmp)) 
     {
@@ -40,8 +38,7 @@ struct monst *mtmp;
 }
 
 void
-newesmi(mtmp)
-struct monst* mtmp;
+newesmi(struct monst *mtmp)
 {
     if (!mtmp->mextra)
         mtmp->mextra = newmextra();
@@ -54,8 +51,7 @@ struct monst* mtmp;
 }
 
 void
-free_esmi(mtmp)
-struct monst* mtmp;
+free_esmi(struct monst *mtmp)
 {
     if (has_esmi(mtmp)) 
     {
@@ -71,15 +67,10 @@ struct monst* mtmp;
  * Valid returns are  1: moved  0: didn't  -1: let m_move do it  -2: died.
  */
 int
-move_special(mtmp, in_his_shop, appr, uondoor, avoid, omx, omy, gx, gy)
-register struct monst *mtmp;
-boolean in_his_shop;
-schar appr;
-boolean uondoor, avoid;
-register xchar omx, omy, gx, gy;
+move_special(struct monst *mtmp, boolean in_his_shop, schar appr, boolean uondoor, boolean avoid, xchar omx, xchar omy, xchar gx, xchar gy)
 {
-    register xchar nx, ny, nix, niy;
-    register schar i;
+    xchar nx, ny, nix, niy;
+    schar i;
     schar chcnt, cnt;
     coord poss[9];
     int64_t info[9];
@@ -191,10 +182,9 @@ pick_move:
 }
 
 char
-temple_occupied(array)
-register char *array;
+temple_occupied(char *array)
 {
-    register char *ptr;
+    char *ptr;
 
     for (ptr = array; *ptr; ptr++)
         if (rooms[*ptr - ROOMOFFSET].rtype == TEMPLE)
@@ -203,10 +193,9 @@ register char *array;
 }
 
 char
-smithy_occupied(array)
-register char* array;
+smithy_occupied(char *array)
 {
-    register char* ptr;
+    char* ptr;
 
     for (ptr = array; *ptr; ptr++)
         if (rooms[*ptr - ROOMOFFSET].rtype == SMITHY)
@@ -214,10 +203,8 @@ register char* array;
     return '\0';
 }
 
-STATIC_OVL boolean
-histemple_at(priest, x, y)
-register struct monst *priest;
-register xchar x, y;
+static boolean
+histemple_at(struct monst *priest, xchar x, xchar y)
 {
     return (boolean) (priest && priest->ispriest
                       && (EPRI(priest)->shroom == *in_rooms(x, y, TEMPLE))
@@ -225,8 +212,7 @@ register xchar x, y;
 }
 
 boolean
-inhistemple(priest)
-struct monst *priest;
+inhistemple(struct monst *priest)
 {
     /* make sure we have a priest */
     if (!priest || !priest->ispriest)
@@ -239,10 +225,8 @@ struct monst *priest;
 }
 
 
-STATIC_OVL boolean
-hissmithy_at(smith, x, y)
-register struct monst* smith;
-register xchar x, y;
+static boolean
+hissmithy_at(struct monst *smith, xchar x, xchar y)
 {
     return (boolean)(smith && smith->issmith
         && (ESMI(smith)->smithy_room == *in_rooms(x, y, SMITHY))
@@ -250,8 +234,7 @@ register xchar x, y;
 }
 
 boolean
-inhissmithy(smith)
-struct monst* smith;
+inhissmithy(struct monst *smith)
 {
     /* make sure we have a priest */
     if (!smith || !smith->issmith)
@@ -268,10 +251,9 @@ struct monst* smith;
  * pri_move: return 1: moved  0: didn't  -1: let m_move do it  -2: died
  */
 int
-pri_move(priest)
-register struct monst *priest;
+pri_move(struct monst *priest)
 {
-    register xchar gx, gy, omx, omy;
+    xchar gx, gy, omx, omy;
     schar temple;
     boolean avoid = TRUE;
 
@@ -316,14 +298,13 @@ register struct monst *priest;
     return move_special(priest, FALSE, TRUE, FALSE, avoid, omx, omy, gx, gy);
 }
 
+/*
+ * Parameters:
+ *   sanctum: is it the seat of the high priest?
+ */
 /* exclusively for mktemple() */
 void
-priestini(lvl, sroom, sx, sy, sanctum, mtype)
-d_level *lvl;
-struct mkroom *sroom;
-int sx, sy;
-boolean sanctum; /* is it the seat of the high priest? */
-int mtype;
+priestini(d_level *lvl, struct mkroom *sroom, int sx, int sy, boolean sanctum, int mtype)
 {
     struct monst *priest;
     struct obj *otmp;
@@ -646,10 +627,9 @@ int mtype;
  * smith_move: return 1: moved  0: didn't  -1: let m_move do it  -2: died
  */
 int
-smith_move(smith)
-register struct monst* smith;
+smith_move(struct monst *smith)
 {
-    register xchar gx, gy, omx, omy;
+    xchar gx, gy, omx, omy;
     schar smithy;
     boolean avoid = TRUE;
 
@@ -696,12 +676,7 @@ register struct monst* smith;
 
 /* exclusively for mksmithy() */
 void
-smithini(lvl, sroom, sx, sy, smithtype, mtype)
-d_level* lvl;
-struct mkroom* sroom;
-int sx, sy;
-uchar smithtype;
-int mtype;
+smithini(d_level *lvl, struct mkroom *sroom, int sx, int sy, uchar smithtype, int mtype)
 {
     struct monst* smith;
     int smith_loc_x = sx + 1;
@@ -790,8 +765,7 @@ int mtype;
 
 /* get a monster's alignment type without caller needing EPRI & EMIN */
 aligntyp
-mon_aligntyp(mon)
-struct monst *mon;
+mon_aligntyp(struct monst *mon)
 {
     aligntyp algn = mon->ispriest && has_epri(mon) ? EPRI(mon)->shralign
                                   : mon->isminion && has_emin(mon) ? EMIN(mon)->min_align
@@ -803,6 +777,10 @@ struct monst *mon;
 }
 
 /*
+ * Parameters:
+ *   pname: caller-supplied output buffer
+ */
+/*
  * Specially aligned monsters are named specially.
  *      - aligned priests with ispriest and high priests have shrines
  *              they retain ispriest and epri when polymorphed
@@ -813,9 +791,7 @@ struct monst *mon;
  *              the true name even when under that influence
  */
 char *
-priestname(mon, pname)
-register struct monst *mon;
-char *pname; /* caller-supplied output buffer */
+priestname(struct monst *mon, char *pname)
 {
     boolean do_hallu = Hallucination,
             aligned_priest = mon->data == &mons[PM_ALIGNED_PRIEST],
@@ -870,15 +846,13 @@ char *pname; /* caller-supplied output buffer */
 }
 
 boolean
-p_coaligned(priest)
-struct monst *priest;
+p_coaligned(struct monst *priest)
 {
     return (boolean) (u.ualign.type == mon_aligntyp(priest));
 }
 
-STATIC_OVL boolean
-has_shrine(pri)
-struct monst *pri;
+static boolean
+has_shrine(struct monst *pri)
 {
     struct rm *lev;
     struct epri *epri_p;
@@ -894,10 +868,9 @@ struct monst *pri;
 }
 
 struct monst *
-findpriest(roomno)
-char roomno;
+findpriest(char roomno)
 {
-    register struct monst *mtmp;
+    struct monst *mtmp;
 
     for (mtmp = fmon; mtmp; mtmp = mtmp->nmon) 
     {
@@ -910,9 +883,8 @@ char roomno;
     return (struct monst *) 0;
 }
 
-STATIC_OVL boolean
-has_smithy(smith)
-struct monst* smith;
+static boolean
+has_smithy(struct monst *smith)
 {
     struct rm* lev;
     struct esmi* esmi_p;
@@ -930,10 +902,9 @@ struct monst* smith;
 }
 
 struct monst*
-findsmith(roomno)
-char roomno;
+findsmith(char roomno)
 {
-    register struct monst* mtmp;
+    struct monst* mtmp;
 
     for (mtmp = fmon; mtmp; mtmp = mtmp->nmon) 
     {
@@ -948,8 +919,7 @@ char roomno;
 
 /* called from check_special_room() when the player enters the temple room */
 void
-intemple(roomno)
-int roomno;
+intemple(int roomno)
 {
     struct monst *priest, *mtmp;
     struct epri *epri_p;
@@ -1133,8 +1103,7 @@ int roomno;
 /* reset the move counters used to limit temple entry feedback;
    leaving the level and then returning yields a fresh start */
 void
-forget_temple_entry(priest)
-struct monst *priest;
+forget_temple_entry(struct monst *priest)
 {
     struct epri *epri_p = priest->ispriest ? EPRI(priest) : 0;
 
@@ -1149,8 +1118,7 @@ struct monst *priest;
 }
 
 void
-forget_smithy_entry(smith)
-struct monst* smith;
+forget_smithy_entry(struct monst *smith)
 {
     struct esmi* esmi_p = smith->issmith ? ESMI(smith) : 0;
 
@@ -1166,8 +1134,7 @@ struct monst* smith;
 
 /* called from check_special_room() when the player enters the smithy */
 void
-insmithy(roomno)
-int roomno;
+insmithy(int roomno)
 {
     struct monst* smith;
     struct esmi* esmi_p;
@@ -1237,8 +1204,7 @@ int roomno;
 
 
 void
-priest_talk(priest)
-register struct monst *priest;
+priest_talk(struct monst *priest)
 {
     boolean coaligned = p_coaligned(priest);
     boolean strayed = (u.ualign.record < 0);
@@ -1401,14 +1367,10 @@ register struct monst *priest;
 }
 
 struct monst *
-mk_roamer(ptr, alignment, x, y, peaceful)
-register struct permonst *ptr;
-aligntyp alignment;
-xchar x, y;
-boolean peaceful;
+mk_roamer(struct permonst *ptr, aligntyp alignment, xchar x, xchar y, boolean peaceful)
 {
-    register struct monst *roamer;
-    //register boolean coaligned = (u.ualign.type == alignment);
+    struct monst *roamer;
+    //boolean coaligned = (u.ualign.type == alignment);
 
 #if 0 /* this was due to permonst's pxlth field which is now gone */
     if (ptr != &mons[PM_ALIGNED_PRIEST] && ptr != &mons[PM_ANGEL])
@@ -1435,8 +1397,7 @@ boolean peaceful;
 }
 
 void
-reset_hostility(roamer)
-register struct monst *roamer;
+reset_hostility(struct monst *roamer)
 {
     if (!roamer || !roamer->isminion || !has_emin(roamer))
         return;
@@ -1455,13 +1416,15 @@ register struct monst *roamer;
     newsym(roamer->mx, roamer->my);
 }
 
+/*
+ * Parameters:
+ *   mon: if non-null, <mx,my> overrides <x,y>
+ */
 boolean
-in_your_sanctuary(mon, x, y)
-struct monst *mon; /* if non-null, <mx,my> overrides <x,y> */
-xchar x, y;
+in_your_sanctuary(struct monst *mon, xchar x, xchar y)
 {
-    register char roomno;
-    register struct monst *priest;
+    char roomno;
+    struct monst *priest;
 
     if (mon) 
     {
@@ -1483,8 +1446,7 @@ xchar x, y;
 
 /* when attacking "priest" in his temple */
 void
-ghod_hitsu(priest)
-struct monst *priest;
+ghod_hitsu(struct monst *priest)
 {
     int x, y, ax, ay, roomno = (int) temple_occupied(u.urooms);
     struct mkroom *troom;
@@ -1572,9 +1534,9 @@ struct monst *priest;
 }
 
 void
-angry_priest(VOID_ARGS)
+angry_priest(void)
 {
-    register struct monst *priest;
+    struct monst *priest;
     struct rm *lev;
 
     if ((priest = findpriest(temple_occupied(u.urooms))) != 0)
@@ -1618,7 +1580,7 @@ angry_priest(VOID_ARGS)
  * [Perhaps we should convert them into roamers instead?]
  */
 void
-clearpriests(VOID_ARGS)
+clearpriests(void)
 {
     struct monst *mtmp;
 
@@ -1633,9 +1595,7 @@ clearpriests(VOID_ARGS)
 
 /* munge priest-specific structure when restoring -dlc */
 void
-restpriest(mtmp, ghostly)
-register struct monst *mtmp;
-boolean ghostly;
+restpriest(struct monst *mtmp, boolean ghostly)
 {
     if (u.uz.dlevel) 
     {
@@ -1645,7 +1605,7 @@ boolean ghostly;
 }
 
 void
-clearsmiths(VOID_ARGS)
+clearsmiths(void)
 {
     struct monst* mtmp;
 
@@ -1660,9 +1620,7 @@ clearsmiths(VOID_ARGS)
 
 /* munge smith-specific structure when restoring -dlc */
 void
-restsmith(mtmp, ghostly)
-register struct monst* mtmp;
-boolean ghostly;
+restsmith(struct monst *mtmp, boolean ghostly)
 {
     if (u.uz.dlevel) 
     {
@@ -1689,8 +1647,7 @@ boolean ghostly;
  */
 
 const char *
-align_str(alignment)
-aligntyp alignment;
+align_str(aligntyp alignment)
 {
     switch ((int) alignment) 
     {
@@ -1708,9 +1665,7 @@ aligntyp alignment;
 
 /* used for self-probing */
 char *
-piousness(showneg, suffix)
-boolean showneg;
-const char *suffix;
+piousness(boolean showneg, const char *suffix)
 {
     static char buf[32]; /* bigger than "insufficiently neutral" */
     const char *pio;
@@ -1751,8 +1706,7 @@ const char *suffix;
 
 /* stethoscope or probing applied to monster -- one-line feedback */
 void
-mstatusline(mtmp)
-struct monst *mtmp;
+mstatusline(struct monst *mtmp)
 {
     char buf[BUFSZ * 5];
     print_mstatusline(buf, mtmp, ARTICLE_THE, FALSE);
@@ -1761,11 +1715,7 @@ struct monst *mtmp;
 
 /* stethoscope or probing applied to monster -- one-line feedback */
 void
-print_mstatusline(buf, mtmp, monsternamearticle, showheads)
-char* buf;
-struct monst* mtmp;
-int monsternamearticle;
-boolean showheads;
+print_mstatusline(char *buf, struct monst *mtmp, int monsternamearticle, boolean showheads)
 {
     aligntyp alignment = mon_aligntyp(mtmp);
     char info[BUFSZ], monnambuf[BUFSZ];
@@ -1905,7 +1855,7 @@ boolean showheads;
 
 /* stethoscope or probing applied to hero -- one-line feedback */
 void
-ustatusline(VOID_ARGS)
+ustatusline(void)
 {
     char info[BUFSZ * 2];
 

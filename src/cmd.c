@@ -31,10 +31,10 @@
 
 
 #ifdef ALTMETA
-STATIC_VAR boolean alt_esc = FALSE;
+static boolean alt_esc = FALSE;
 #endif
-STATIC_VAR boolean escape_sequence_key_start_allowed = FALSE;
-STATIC_VAR NEARDATA int last_multi;
+static boolean escape_sequence_key_start_allowed = FALSE;
+static NEARDATA int last_multi;
 
 struct cmd Cmd = { 0 }; /* flag.h */
 
@@ -62,210 +62,210 @@ extern const char *enc_stat[]; /* encumbrance status from botl.c */
  /* Meta-DB available */
 
 #ifdef DEBUG
-extern int NDECL(wiz_debug_cmd_bury);
+extern int wiz_debug_cmd_bury(void);
 #endif
 
 #ifdef DUMB /* stuff commented out in extern.h, but needed here */
-extern int NDECL(doapply);            /**/
-extern int NDECL(dorub);              /**/
-extern int NDECL(dojump);             /**/
-extern int NDECL(doextlist);          /**/
-extern int NDECL(enter_explore_mode); /**/
-extern int NDECL(dodrop);             /**/
-extern int NDECL(doddrop);            /**/
-extern int NDECL(dodropmany);         /**/
-extern int NDECL(doautostash);        /**/
-extern int NDECL(dodown);             /**/
-extern int NDECL(doup);               /**/
-extern int NDECL(donull);             /**/
-extern int NDECL(dowipe);             /**/
-extern int NDECL(docallcnd);          /**/
-extern int NDECL(dotakeoff);          /**/
-extern int NDECL(doremring);          /**/
-extern int NDECL(dowear);             /**/
-extern int NDECL(doputon);            /**/
-extern int NDECL(doddoremarm);        /**/
-extern int NDECL(ddowear);            /**/
-extern int NDECL(dokick);             /**/
-extern int NDECL(dofire);             /**/
-extern int NDECL(dothrow);            /**/
-extern int NDECL(doeat);              /**/
-extern int NDECL(done2);              /**/
-extern int NDECL(vanquished);         /**/
-extern int NDECL(doengrave);          /**/
-extern int NDECL(dopickup);           /**/
-extern int NDECL(ddoinv);             /**/
-extern int NDECL(dotypeinv);          /**/
-extern int NDECL(dolook);             /**/
-extern int NDECL(doprgold);           /**/
-extern int NDECL(doprwep);            /**/
-extern int NDECL(doprarm);            /**/
-extern int NDECL(doprring);           /**/
-extern int NDECL(dopramulet);         /**/
-extern int NDECL(doprtool);           /**/
-extern int NDECL(dosuspend);          /**/
-extern int NDECL(doforce);            /**/
-extern int NDECL(doopen);             /**/
-extern int NDECL(doclose);            /**/
-extern int NDECL(dosh);               /**/
-extern int NDECL(dodiscovered);       /**/
-extern int NDECL(doclassdisco);       /**/
-extern int NDECL(doset);              /**/
-extern int NDECL(dotogglepickup);     /**/
-extern int NDECL(dotoggledecorations);/**/
-extern int NDECL(dowhatis);           /**/
-extern int NDECL(doquickwhatis);      /**/
-extern int NDECL(dowhatdoes);         /**/
-extern int NDECL(dohelp);             /**/
-extern int NDECL(dohistory);          /**/
-extern int NDECL(doloot);             /**/
-extern int NDECL(dodrink);            /**/
-extern int NDECL(dodip);              /**/
-extern int NDECL(dosacrifice);        /**/
-extern int NDECL(dopray);             /**/
-extern int NDECL(dotip);              /**/
-extern int NDECL(doturn);             /**/
-extern int NDECL(doredraw);           /**/
-extern int NDECL(doread);             /**/
-extern int NDECL(dosave);             /**/
-extern int NDECL(dosearch);           /**/
-extern int NDECL(doidtrap);           /**/
-extern int NDECL(dopay);              /**/
-extern int NDECL(dosit);              /**/
-extern int NDECL(dotalk);             /**/
-extern int NDECL(docast);             /**/
-extern int NDECL(dovspell);           /**/
-extern int NDECL(dosortspell);        /**/
-extern int NDECL(dotelecmd);          /**/
-extern int NDECL(dountrap);           /**/
-extern int NDECL(doversion);          /**/
-extern int NDECL(doextversion);       /**/
-extern int NDECL(doswapweapon);       /**/
-extern int NDECL(dowield);            /**/
-extern int NDECL(dowieldquiver);      /**/
-extern int NDECL(dounwield);          /**/
-extern int NDECL(dostash);            /**/
-extern int NDECL(dostashfloor);       /**/
-extern int NDECL(dozap);              /**/
-extern int NDECL(doorganize);         /**/
+extern int doapply(void);            /**/
+extern int dorub(void);              /**/
+extern int dojump(void);             /**/
+extern int doextlist(void);          /**/
+extern int enter_explore_mode(void); /**/
+extern int dodrop(void);             /**/
+extern int doddrop(void);            /**/
+extern int dodropmany(void);         /**/
+extern int doautostash(void);        /**/
+extern int dodown(void);             /**/
+extern int doup(void);               /**/
+extern int donull(void);             /**/
+extern int dowipe(void);             /**/
+extern int docallcnd(void);          /**/
+extern int dotakeoff(void);          /**/
+extern int doremring(void);          /**/
+extern int dowear(void);             /**/
+extern int doputon(void);            /**/
+extern int doddoremarm(void);        /**/
+extern int ddowear(void);            /**/
+extern int dokick(void);             /**/
+extern int dofire(void);             /**/
+extern int dothrow(void);            /**/
+extern int doeat(void);              /**/
+extern int done2(void);              /**/
+extern int vanquished(void);         /**/
+extern int doengrave(void);          /**/
+extern int dopickup(void);           /**/
+extern int ddoinv(void);             /**/
+extern int dotypeinv(void);          /**/
+extern int dolook(void);             /**/
+extern int doprgold(void);           /**/
+extern int doprwep(void);            /**/
+extern int doprarm(void);            /**/
+extern int doprring(void);           /**/
+extern int dopramulet(void);         /**/
+extern int doprtool(void);           /**/
+extern int dosuspend(void);          /**/
+extern int doforce(void);            /**/
+extern int doopen(void);             /**/
+extern int doclose(void);            /**/
+extern int dosh(void);               /**/
+extern int dodiscovered(void);       /**/
+extern int doclassdisco(void);       /**/
+extern int doset(void);              /**/
+extern int dotogglepickup(void);     /**/
+extern int dotoggledecorations(void);/**/
+extern int dowhatis(void);           /**/
+extern int doquickwhatis(void);      /**/
+extern int dowhatdoes(void);         /**/
+extern int dohelp(void);             /**/
+extern int dohistory(void);          /**/
+extern int doloot(void);             /**/
+extern int dodrink(void);            /**/
+extern int dodip(void);              /**/
+extern int dosacrifice(void);        /**/
+extern int dopray(void);             /**/
+extern int dotip(void);              /**/
+extern int doturn(void);             /**/
+extern int doredraw(void);           /**/
+extern int doread(void);             /**/
+extern int dosave(void);             /**/
+extern int dosearch(void);           /**/
+extern int doidtrap(void);           /**/
+extern int dopay(void);              /**/
+extern int dosit(void);              /**/
+extern int dotalk(void);             /**/
+extern int docast(void);             /**/
+extern int dovspell(void);           /**/
+extern int dosortspell(void);        /**/
+extern int dotelecmd(void);          /**/
+extern int dountrap(void);           /**/
+extern int doversion(void);          /**/
+extern int doextversion(void);       /**/
+extern int doswapweapon(void);       /**/
+extern int dowield(void);            /**/
+extern int dowieldquiver(void);      /**/
+extern int dounwield(void);          /**/
+extern int dostash(void);            /**/
+extern int dostashfloor(void);       /**/
+extern int dozap(void);              /**/
+extern int doorganize(void);         /**/
 #endif /* DUMB */
 
 #ifdef ANDROID
-extern void NDECL(quit_possible);
+extern void quit_possible(void);
 #endif
 
-STATIC_DCL int NDECL((*timed_occ_fn));
+static int (*timed_occ_fn)(void);
 
-STATIC_PTR int NDECL(dosuspend_core);
-STATIC_PTR int NDECL(dosh_core);
-STATIC_PTR int NDECL(doherecmdmenu);
-STATIC_PTR int NDECL(dotherecmdmenu);
-STATIC_PTR int NDECL(doprev_message);
-STATIC_PTR int NDECL(dolight);
-STATIC_PTR int NDECL(timed_occupation);
-STATIC_PTR int NDECL(doextcmd);
-STATIC_PTR int NDECL(dotravel);
-STATIC_PTR int NDECL(doterrain);
-STATIC_PTR int NDECL(wiz_wish);
-STATIC_PTR int NDECL(wiz_identify);
-STATIC_PTR int NDECL(wiz_intrinsic);
-STATIC_PTR int NDECL(wiz_map);
-STATIC_PTR int NDECL(wiz_makemap);
-STATIC_PTR int NDECL(wiz_files);
-STATIC_PTR int NDECL(wiz_genesis);
-STATIC_PTR int NDECL(wiz_where);
-STATIC_PTR int NDECL(wiz_detect);
+static int dosuspend_core(void);
+static int dosh_core(void);
+static int doherecmdmenu(void);
+static int dotherecmdmenu(void);
+static int doprev_message(void);
+static int dolight(void);
+static int timed_occupation(void);
+static int doextcmd(void);
+static int dotravel(void);
+static int doterrain(void);
+static int wiz_wish(void);
+static int wiz_identify(void);
+static int wiz_intrinsic(void);
+static int wiz_map(void);
+static int wiz_makemap(void);
+static int wiz_files(void);
+static int wiz_genesis(void);
+static int wiz_where(void);
+static int wiz_detect(void);
 #if defined(DEBUG)
-STATIC_PTR int NDECL(wiz_panic);
-STATIC_PTR int NDECL(wiz_debug);
-STATIC_PTR int NDECL(wiz_deleteitem);
+static int wiz_panic(void);
+static int wiz_debug(void);
+static int wiz_deleteitem(void);
 #endif
-STATIC_PTR int NDECL(wiz_polyself);
-STATIC_PTR int NDECL(wiz_level_tele);
-STATIC_PTR int NDECL(wiz_level_change);
-STATIC_PTR int NDECL(wiz_show_seenv);
-STATIC_PTR int NDECL(wiz_show_vision);
-STATIC_PTR int NDECL(wiz_smell);
-STATIC_PTR int NDECL(wiz_intrinsic);
-STATIC_PTR int NDECL(wiz_show_wmodes);
-STATIC_DCL void NDECL(wiz_map_levltyp);
+static int wiz_polyself(void);
+static int wiz_level_tele(void);
+static int wiz_level_change(void);
+static int wiz_show_seenv(void);
+static int wiz_show_vision(void);
+static int wiz_smell(void);
+static int wiz_intrinsic(void);
+static int wiz_show_wmodes(void);
+static void wiz_map_levltyp(void);
 #if !defined(GNH_MOBILE) && defined(DEBUG)
-STATIC_DCL int NDECL(wiz_save_monsters);
-STATIC_DCL int NDECL(wiz_save_tiledata);
-STATIC_DCL int NDECL(wiz_count_tiles);
-STATIC_DCL int NDECL(wiz_save_glyph2tiles);
-STATIC_DCL int NDECL(wiz_save_quest_texts);
+static int wiz_save_monsters(void);
+static int wiz_save_tiledata(void);
+static int wiz_count_tiles(void);
+static int wiz_save_glyph2tiles(void);
+static int wiz_save_quest_texts(void);
 #endif
-STATIC_DCL void NDECL(wiz_levltyp_legend);
+static void wiz_levltyp_legend(void);
 #if defined(__BORLANDC__) && !defined(_WIN32)
-extern void FDECL(show_borlandc_stats, (winid));
+extern void show_borlandc_stats(winid);
 #endif
 #ifdef DEBUG_MIGRATING_MONS
-STATIC_PTR int NDECL(wiz_migrate_mons);
+static int wiz_migrate_mons(void);
 #endif
-STATIC_DCL size_t FDECL(size_monst, (struct monst *, BOOLEAN_P));
-STATIC_DCL size_t FDECL(size_obj, (struct obj *));
-STATIC_DCL void FDECL(count_obj, (struct obj *, int64_t *, size_t *,
-                                  BOOLEAN_P, BOOLEAN_P));
-STATIC_DCL void FDECL(obj_chain, (winid, const char *, struct obj *,
-                                  BOOLEAN_P, int64_t *, size_t *));
-STATIC_DCL void FDECL(mon_invent_chain, (winid, const char *, struct monst *,
-                                         int64_t *, size_t *));
-STATIC_DCL void FDECL(mon_chain, (winid, const char *, struct monst *,
-                                  BOOLEAN_P, int64_t *, size_t *));
-STATIC_DCL void FDECL(contained_stats, (winid, const char *, int64_t *, size_t *));
-STATIC_DCL void FDECL(misc_stats, (winid, int64_t *, size_t *));
-STATIC_PTR int NDECL(wiz_show_stats);
-STATIC_DCL boolean FDECL(accept_menu_prefix, (int NDECL((*))));
-STATIC_PTR int NDECL(wiz_rumor_check);
-STATIC_PTR int NDECL(doattributes);
-STATIC_PTR int NDECL(dopolyformstatistics);
-STATIC_DCL int FDECL(doviewpetstatistics, (struct monst*));
+static size_t size_monst(struct monst *, boolean);
+static size_t size_obj(struct obj *);
+static void count_obj(struct obj *, int64_t *, size_t *,
+                                  boolean, boolean);
+static void obj_chain(winid, const char *, struct obj *,
+                                  boolean, int64_t *, size_t *);
+static void mon_invent_chain(winid, const char *, struct monst *,
+                                         int64_t *, size_t *);
+static void mon_chain(winid, const char *, struct monst *,
+                                  boolean, int64_t *, size_t *);
+static void contained_stats(winid, const char *, int64_t *, size_t *);
+static void misc_stats(winid, int64_t *, size_t *);
+static int wiz_show_stats(void);
+static boolean accept_menu_prefix(int (*)(void));
+static int wiz_rumor_check(void);
+static int doattributes(void);
+static int dopolyformstatistics(void);
+static int doviewpetstatistics(struct monst*);
 
-STATIC_DCL void FDECL(enlght_out, (const char *, int));
-STATIC_DCL void FDECL(enlght_line, (const char *, const char *, const char *,
-                                    const char *, BOOLEAN_P));
-STATIC_DCL char *FDECL(enlght_combatinc, (const char *, int, int, char *));
-STATIC_DCL void FDECL(enlght_halfdmg, (int, int));
-STATIC_DCL boolean NDECL(walking_on_water);
-STATIC_DCL boolean FDECL(cause_known, (int));
-STATIC_DCL char *FDECL(attrval, (int, int, char *));
-STATIC_DCL void FDECL(background_enlightenment, (int, int));
-STATIC_DCL void FDECL(basics_enlightenment, (int, int));
-STATIC_DCL void FDECL(game_enlightenment, (int, int));
-STATIC_DCL void FDECL(characteristics_enlightenment, (int, int));
-STATIC_DCL void FDECL(one_characteristic, (int, int, int));
-STATIC_DCL void FDECL(status_enlightenment, (int, int));
-STATIC_DCL void FDECL(attributes_enlightenment, (int, int));
+static void enlght_out(const char *, int);
+static void enlght_line(const char *, const char *, const char *,
+                                    const char *, boolean);
+static char *enlght_combatinc(const char *, int, int, char *);
+static void enlght_halfdmg(int, int);
+static boolean walking_on_water(void);
+static boolean cause_known(int);
+static char *attrval(int, int, char *);
+static void background_enlightenment(int, int);
+static void basics_enlightenment(int, int);
+static void game_enlightenment(int, int);
+static void characteristics_enlightenment(int, int);
+static void one_characteristic(int, int, int);
+static void status_enlightenment(int, int);
+static void attributes_enlightenment(int, int);
 
-STATIC_DCL void FDECL(add_herecmd_menuitem, (winid, int NDECL((*)),
-                                             const char *));
-STATIC_DCL char FDECL(here_cmd_menu, (BOOLEAN_P));
-STATIC_DCL char FDECL(there_cmd_menu, (BOOLEAN_P, int, int));
-STATIC_DCL char *NDECL(parse);
-STATIC_DCL void FDECL(show_direction_keys, (winid, CHAR_P, BOOLEAN_P));
-STATIC_DCL boolean FDECL(help_dir, (CHAR_P, int, const char *));
-STATIC_DCL void FDECL(add_command_menu_items, (winid, int));
-STATIC_DCL void NDECL(check_gui_special_effect);
-STATIC_DCL int FDECL(print_monster_abilities, (winid, int));
-STATIC_DCL int FDECL(print_steed_abilities, (winid, int));
-STATIC_DCL void FDECL(print_weapon_skill_line_core, (enum p_skills, BOOLEAN_P, int));
-STATIC_DCL void FDECL(print_weapon_skill_line, (struct obj*, BOOLEAN_P, int));
+static void add_herecmd_menuitem(winid, int (*)(void),
+                                             const char *);
+static char here_cmd_menu(boolean);
+static char there_cmd_menu(boolean, int, int);
+static char *parse(void);
+static void show_direction_keys(winid, char, boolean);
+static boolean help_dir(char, int, const char *);
+static void add_command_menu_items(winid, int);
+static void check_gui_special_effect(void);
+static int print_monster_abilities(winid, int);
+static int print_steed_abilities(winid, int);
+static void print_weapon_skill_line_core(enum p_skills, boolean, int);
+static void print_weapon_skill_line(struct obj*, boolean, int);
 
-STATIC_VAR const char *readchar_queue = "";
-STATIC_VAR coord clicklook_cc;
-STATIC_VAR coord clickpole_cc;
-STATIC_VAR boolean special_effect_shown = FALSE;
+static const char *readchar_queue = "";
+static coord clicklook_cc;
+static coord clickpole_cc;
+static boolean special_effect_shown = FALSE;
 
-STATIC_PTR int
-doprev_message(VOID_ARGS)
+static int
+doprev_message(void)
 {
     return nh_doprev_message();
 }
 
 /* Count down by decrementing multi */
-STATIC_PTR int
-timed_occupation(VOID_ARGS)
+static int
+timed_occupation(void)
 {
     (*timed_occ_fn)();
     if (multi > 0)
@@ -288,7 +288,7 @@ timed_occupation(VOID_ARGS)
  *                      Setting traps.
  */
 void
-reset_occupations(VOID_ARGS)
+reset_occupations(void)
 {
     reset_remarm();
     reset_pick();
@@ -299,13 +299,7 @@ reset_occupations(VOID_ARGS)
  * function times out by its own means.
  */
 void
-set_occupation(fn, txt, attr, color, soundset_id, occ_type, sound_type, xtime)
-int NDECL((*fn));
-const char *txt;
-enum object_soundset_types soundset_id;
-enum object_occupation_types occ_type;
-enum occupation_sound_types sound_type;
-int xtime, attr, color;
+set_occupation(int (*fn)(void), const char *txt, int attr, int color, enum object_soundset_types soundset_id, enum object_occupation_types occ_type, enum occupation_sound_types sound_type, int xtime)
 {
     if (xtime) 
     {
@@ -331,7 +325,7 @@ int xtime, attr, color;
     return;
 }
 
-STATIC_DCL char NDECL(popch);
+static char popch(void);
 
 /* Provide a means to redo the last command.  The flag `in_doagain' is set
  * to true while redoing the command.  This flag is tested in commands that
@@ -340,11 +334,11 @@ STATIC_DCL char NDECL(popch);
  * TRUE, no keystrokes can be saved into the saveq.
  */
 #define BSIZE 20
-STATIC_VAR char pushq[BSIZE], saveq[BSIZE];
-STATIC_VAR NEARDATA int phead, ptail, shead, stail;
+static char pushq[BSIZE], saveq[BSIZE];
+static NEARDATA int phead, ptail, shead, stail;
 
-STATIC_OVL char
-popch(VOID_ARGS)
+static char
+popch(void)
 {
     /* If occupied, return '\0', letting tgetch know a character should
      * be read from the keyboard.  If the character read is not the
@@ -360,9 +354,9 @@ popch(VOID_ARGS)
 }
 
 char
-pgetchar(VOID_ARGS) /* courtesy of aeb@cwi.nl */
+pgetchar(void) /* courtesy of aeb@cwi.nl */
 {
-    register int ch;
+    int ch;
 
     if (iflags.debug_fuzzer)
         return randomkey();
@@ -373,8 +367,7 @@ pgetchar(VOID_ARGS) /* courtesy of aeb@cwi.nl */
 
 /* A ch == 0 resets the pushq */
 void
-pushch(ch)
-char ch;
+pushch(char ch)
 {
     if (!ch)
         phead = ptail = 0;
@@ -387,8 +380,7 @@ char ch;
  * replaying a previous command.
  */
 void
-savech(ch)
-char ch;
+savech(char ch)
 {
     if (!in_doagain && !skip_savech) {
         if (!ch)
@@ -400,11 +392,11 @@ char ch;
 }
 
 /* here after # - now read a full-word command */
-STATIC_PTR int
-doextcmd(VOID_ARGS)
+static int
+doextcmd(void)
 {
     int idx, retval;
-    int NDECL((*func));
+    int (*func)(void);
 
     /* keep repeating until we don't run help or quit */
     do {
@@ -438,9 +430,9 @@ doextcmd(VOID_ARGS)
 /* here after #? - now list all full-word commands and provid
    some navigation capability through the long list */
 int
-doextlist(VOID_ARGS)
+doextlist(void)
 {
-    register const struct ext_func_tab *efp;
+    const struct ext_func_tab *efp;
     char buf[BUFSZ], searchbuf[BUFSZ], promptbuf[QBUFSZ];
     winid menuwin;
     anything any;
@@ -637,7 +629,7 @@ doextlist(VOID_ARGS)
  * Here after # - now show pick-list of possible commands.
  */
 int
-extcmd_via_menu(VOID_ARGS)
+extcmd_via_menu(void)
 {
     const struct ext_func_tab *efp;
     menu_item *pick_list = (menu_item *) 0;
@@ -781,10 +773,10 @@ struct available_ability
     struct monst* target_mtmp;
 };
 
-STATIC_VAR struct available_ability available_ability_list[MAXABILITYNUM] = { {"", 0, 0, 0} };
+static struct available_ability available_ability_list[MAXABILITYNUM] = { {"", 0, 0, 0} };
 
 int
-doability(VOID_ARGS)
+doability(void)
 {
     int i;
     int res = 0;
@@ -1122,7 +1114,7 @@ doability(VOID_ARGS)
 
 /* #monster command - use special monster ability while polymorphed */
 int
-domonsterability(VOID_ARGS)
+domonsterability(void)
 {
     int i = '\0';
 
@@ -1166,11 +1158,9 @@ domonsterability(VOID_ARGS)
     return res;
 }
 
-STATIC_OVL
+static
 int
-print_monster_abilities(win, abilitynum)
-winid win;
-int abilitynum;
+print_monster_abilities(winid win, int abilitynum)
 {
     anything any;
     int glyph = 0, gui_glyph = 0;
@@ -1489,11 +1479,9 @@ int abilitynum;
     return abilitynum;
 }
 
-STATIC_OVL
+static
 int
-print_steed_abilities(win, abilitynum)
-winid win;
-int abilitynum;
+print_steed_abilities(winid win, int abilitynum)
 {
     if (!u.usteed)
         return 0;
@@ -1545,7 +1533,7 @@ int abilitynum;
 
 /* #monster command - use special monster ability while polymorphed -- OBSOLETE --JG, use domonsterability instead */
 int
-domonability(VOID_ARGS)
+domonability(void)
 {
     if (can_breathe(youmonst.data))
         return dobreathe();
@@ -1587,7 +1575,7 @@ domonability(VOID_ARGS)
 }
 
 int
-enter_explore_mode(VOID_ARGS)
+enter_explore_mode(void)
 {
     if (wizard)
     {
@@ -1646,8 +1634,8 @@ enter_explore_mode(VOID_ARGS)
 }
 
 /* ^W command - wish for something */
-STATIC_PTR int
-wiz_wish(VOID_ARGS) /* Unlimited wishes for debug mode by Paul Polderman */
+static int
+wiz_wish(void) /* Unlimited wishes for debug mode by Paul Polderman */
 {
     if (wizard) {
         boolean save_verbose = flags.verbose;
@@ -1662,8 +1650,8 @@ wiz_wish(VOID_ARGS) /* Unlimited wishes for debug mode by Paul Polderman */
 }
 
 /* ^I command - reveal and optionally identify hero's inventory */
-STATIC_PTR int
-wiz_identify(VOID_ARGS)
+static int
+wiz_identify(void)
 {
     if (wizard) {
         iflags.override_ID = (int) cmd_from_func(wiz_identify);
@@ -1683,8 +1671,8 @@ wiz_identify(VOID_ARGS)
 }
 
 /* #wizmakemap - discard current dungeon level and replace with a new one */
-STATIC_PTR int
-wiz_makemap(VOID_ARGS)
+static int
+wiz_makemap(void)
 {
     if (wizard) {
         struct monst *mtmp;
@@ -1771,8 +1759,8 @@ wiz_makemap(VOID_ARGS)
 }
 
 /* ^F command - reveal the level map and any traps on it */
-STATIC_PTR int
-wiz_map(VOID_ARGS)
+static int
+wiz_map(void)
 {
     if (wizard) {
         struct trap *t;
@@ -1792,8 +1780,8 @@ wiz_map(VOID_ARGS)
 }
 
 /* ^G command - generate monster(s); a count prefix will be honored */
-STATIC_PTR int
-wiz_genesis(VOID_ARGS)
+static int
+wiz_genesis(void)
 {
     if (wizard)
         (void) create_particular();
@@ -1803,8 +1791,8 @@ wiz_genesis(VOID_ARGS)
 }
 
 /* ^O command - display dungeon layout */
-STATIC_PTR int
-wiz_where(VOID_ARGS)
+static int
+wiz_where(void)
 {
     if (wizard)
         (void) print_dungeon(FALSE, (schar *) 0, (xchar *) 0);
@@ -1813,8 +1801,8 @@ wiz_where(VOID_ARGS)
     return 0;
 }
 
-STATIC_PTR int
-wiz_files(VOID_ARGS)
+static int
+wiz_files(void)
 {
     if (wizard)
         list_files();
@@ -1824,8 +1812,8 @@ wiz_files(VOID_ARGS)
 }
 
 /* ^E command - detect unseen (secret doors, traps, hidden monsters) */
-STATIC_PTR int
-wiz_detect(VOID_ARGS)
+static int
+wiz_detect(void)
 {
     if (wizard)
         (void) findit();
@@ -1835,8 +1823,8 @@ wiz_detect(VOID_ARGS)
 }
 
 /* ^V command - level teleport */
-STATIC_PTR int
-wiz_level_tele(VOID_ARGS)
+static int
+wiz_level_tele(void)
 {
     if (wizard)
         level_tele(1, TRUE, zerodlevel, 0);
@@ -1846,8 +1834,8 @@ wiz_level_tele(VOID_ARGS)
 }
 
 /* #levelchange command - adjust hero's experience level */
-STATIC_PTR int
-wiz_level_change(VOID_ARGS)
+static int
+wiz_level_change(void)
 {
     char buf[BUFSZ] = DUMMY;
     int newlevel = 0;
@@ -1891,8 +1879,8 @@ wiz_level_change(VOID_ARGS)
 
 /* #panic command - test program's panic handling */
 #if defined(DEBUG)
-STATIC_PTR int
-wiz_panic(VOID_ARGS)
+static int
+wiz_panic(void)
 {
     if (wizard)
     {
@@ -1909,8 +1897,8 @@ wiz_panic(VOID_ARGS)
     return 0;
 }
 
-STATIC_PTR int
-wiz_debug(VOID_ARGS)
+static int
+wiz_debug(void)
 {
     if (wizard)
     {
@@ -2057,8 +2045,8 @@ wiz_debug(VOID_ARGS)
         pline(unavailcmd, visctrl((int)cmd_from_func(wiz_debug)));
     return 0;
 }
-STATIC_PTR int
-wiz_deleteitem(VOID_ARGS)
+static int
+wiz_deleteitem(void)
 {
     if (wizard)
     {
@@ -2077,8 +2065,8 @@ wiz_deleteitem(VOID_ARGS)
 #endif
 
 /* #polyself command - change hero's form */
-STATIC_PTR int
-wiz_polyself(VOID_ARGS)
+static int
+wiz_polyself(void)
 {
     if (wizard)
         polyself(1);
@@ -2088,8 +2076,8 @@ wiz_polyself(VOID_ARGS)
 }
 
 /* #seenv command */
-STATIC_PTR int
-wiz_show_seenv(VOID_ARGS)
+static int
+wiz_show_seenv(void)
 {
     winid win;
     int x, y, v, startx, stopx, curx;
@@ -2132,8 +2120,8 @@ wiz_show_seenv(VOID_ARGS)
 }
 
 /* #vision command */
-STATIC_PTR int
-wiz_show_vision(VOID_ARGS)
+static int
+wiz_show_vision(void)
 {
     winid win;
     int x, y, v;
@@ -2170,8 +2158,8 @@ wiz_show_vision(VOID_ARGS)
 }
 
 /* #wmode command */
-STATIC_PTR int
-wiz_show_wmodes(VOID_ARGS)
+static int
+wiz_show_wmodes(void)
 {
     winid win;
     int x, y;
@@ -2206,8 +2194,8 @@ wiz_show_wmodes(VOID_ARGS)
 }
 
 /* wizard mode variant of #terrain; internal levl[][].typ values in base-36 */
-STATIC_OVL void
-wiz_map_levltyp(VOID_ARGS)
+static void
+wiz_map_levltyp(void)
 {
     winid win;
     int x, y, terrain;
@@ -2364,8 +2352,8 @@ wiz_map_levltyp(VOID_ARGS)
 
 #if !defined(GNH_MOBILE) && defined(DEBUG)
 /* Save monster list */
-STATIC_PTR int
-wiz_save_monsters(VOID_ARGS) /* Save a csv file for monsters */
+static int
+wiz_save_monsters(void) /* Save a csv file for monsters */
 {
     if (wizard) 
     {
@@ -2513,8 +2501,8 @@ wiz_save_monsters(VOID_ARGS) /* Save a csv file for monsters */
 
 
 /* Save tile data */
-STATIC_PTR int
-wiz_save_tiledata(VOID_ARGS) /* Save a csv file for tile data */
+static int
+wiz_save_tiledata(void) /* Save a csv file for tile data */
 {
 #ifdef USE_TILES
     if (wizard)
@@ -2531,8 +2519,8 @@ wiz_save_tiledata(VOID_ARGS) /* Save a csv file for tile data */
 }
 
 /* Count tiles */
-STATIC_PTR int
-wiz_count_tiles(VOID_ARGS) /* Save a csv file for tile data */
+static int
+wiz_count_tiles(void) /* Save a csv file for tile data */
 {
 #ifdef USE_TILES
     if (wizard)
@@ -2546,8 +2534,8 @@ wiz_count_tiles(VOID_ARGS) /* Save a csv file for tile data */
     return 0;
 }
 
-STATIC_PTR int
-wiz_save_glyph2tiles(VOID_ARGS) /* Save a csv file for tile data */
+static int
+wiz_save_glyph2tiles(void) /* Save a csv file for tile data */
 {
 #ifdef USE_TILES
     if (wizard)
@@ -2790,8 +2778,8 @@ wiz_save_glyph2tiles(VOID_ARGS) /* Save a csv file for tile data */
 
 
 /* Save monster list */
-STATIC_PTR int
-wiz_save_quest_texts(VOID_ARGS) /* Save a csv file for monsters */
+static int
+wiz_save_quest_texts(void) /* Save a csv file for monsters */
 {
     if (wizard)
     {
@@ -2818,8 +2806,8 @@ wiz_save_quest_texts(VOID_ARGS) /* Save a csv file for monsters */
 }
 
 /* Save spells into .md files */
-STATIC_PTR int
-wiz_save_spells(VOID_ARGS)
+static int
+wiz_save_spells(void)
 {
     if (wizard)
     {
@@ -2832,8 +2820,8 @@ wiz_save_spells(VOID_ARGS)
 }
 
 /* Save monsters into .md files */
-STATIC_PTR int
-wiz_save_monsters_md(VOID_ARGS)
+static int
+wiz_save_monsters_md(void)
 {
     if (wizard)
     {
@@ -2846,8 +2834,8 @@ wiz_save_monsters_md(VOID_ARGS)
 }
 
 /* Save items into .md files */
-STATIC_PTR int
-wiz_save_items_md(VOID_ARGS)
+static int
+wiz_save_items_md(void)
 {
     if (wizard)
     {
@@ -2863,7 +2851,7 @@ wiz_save_items_md(VOID_ARGS)
 
 /* temporary? hack, since level type codes aren't the same as screen
    symbols and only the latter have easily accessible descriptions */
-STATIC_VAR const char *levltyp[MAX_LEVTYPE + 2] = {
+static const char *levltyp[MAX_LEVTYPE + 2] = {
     "stone", 
     "vertical wall", 
     "horizontal wall", 
@@ -2913,8 +2901,8 @@ STATIC_VAR const char *levltyp[MAX_LEVTYPE + 2] = {
 };
 
 /* explanation of base-36 output from wiz_map_levltyp() */
-STATIC_OVL void
-wiz_levltyp_legend(VOID_ARGS)
+static void
+wiz_levltyp_legend(void)
 {
     winid win;
     int i, j, last, c;
@@ -2953,8 +2941,8 @@ wiz_levltyp_legend(VOID_ARGS)
 }
 
 /* #wizsmell command - test usmellmon(). */
-STATIC_PTR int
-wiz_smell(VOID_ARGS)
+static int
+wiz_smell(void)
 {
     int ans = 0;
     int mndx;  /* monster index */
@@ -2993,8 +2981,8 @@ wiz_smell(VOID_ARGS)
 }
 
 /* #wizinstrinsic command to set some intrinsics for testing */
-STATIC_PTR int
-wiz_intrinsic(VOID_ARGS)
+static int
+wiz_intrinsic(void)
 {
     if (wizard) 
     {
@@ -3134,16 +3122,16 @@ wiz_intrinsic(VOID_ARGS)
 }
 
 /* #wizrumorcheck command - verify each rumor access */
-STATIC_PTR int
-wiz_rumor_check(VOID_ARGS)
+static int
+wiz_rumor_check(void)
 {
     rumor_check();
     return 0;
 }
 
 /* #terrain command -- show known map, inspired by crawl's '|' command */
-STATIC_PTR int
-doterrain(VOID_ARGS)
+static int
+doterrain(void)
 {
     winid men;
     menu_item *sel;
@@ -3234,12 +3222,12 @@ doterrain(VOID_ARGS)
 }
 
 /* -enlightenment and conduct- */
-STATIC_VAR winid en_win = WIN_ERR;
-STATIC_VAR boolean en_via_menu = FALSE;
-STATIC_VAR const char You_[] = "You ", are[] = "are ", were[] = "were ",
+static winid en_win = WIN_ERR;
+static boolean en_via_menu = FALSE;
+static const char You_[] = "You ", are[] = "are ", were[] = "were ",
                   have[] = "have ", had[] = "had ", can[] = "can ",
                   could[] = "could ", cannot[] = "cannot ", could_not[] = "could not ";
-STATIC_VAR const char have_been[] = "have been ", have_never[] = "have never ", have_not[] = "have not ", had_not[] = "had not ",
+static const char have_been[] = "have been ", have_never[] = "have never ", have_not[] = "have not ", had_not[] = "had not ",
                   never[] = "never ";
 
 #define enl_msg(prefix, present, past, suffix, ps) \
@@ -3258,10 +3246,8 @@ STATIC_VAR const char have_been[] = "have been ", have_never[] = "have never ", 
 #define you_have_X(something) \
     enl_msg(You_, have, (const char *) "", something, "")
 
-STATIC_OVL void
-enlght_out(buf, attr)
-const char *buf;
-int attr;
+static void
+enlght_out(const char *buf, int attr)
 {
     if (en_via_menu) {
         anything any;
@@ -3272,10 +3258,8 @@ int attr;
         putstr(en_win, attr, buf);
 }
 
-STATIC_OVL void
-enlght_line(start, middle, end, ps, parentheses)
-const char *start, *middle, *end, *ps;
-boolean parentheses;
+static void
+enlght_line(const char *start, const char *middle, const char *end, const char *ps, boolean parentheses)
 {
     char buf[BUFSZ];
 
@@ -3284,11 +3268,8 @@ boolean parentheses;
 }
 
 /* format increased chance to hit or damage or defense (Protection) */
-STATIC_OVL char *
-enlght_combatinc(inctyp, incamt, final, outbuf)
-const char *inctyp;
-int incamt, final;
-char *outbuf;
+static char *
+enlght_combatinc(const char *inctyp, int incamt, int final, char *outbuf)
 {
     const char *modif, *bonus;
     boolean invrt;
@@ -3324,10 +3305,8 @@ char *outbuf;
 }
 
 /* report half physical or half spell damage */
-STATIC_OVL void
-enlght_halfdmg(category, final)
-int category;
-int final;
+static void
+enlght_halfdmg(int category, int final)
 {
     const char *category_name;
     char buf[BUFSZ];
@@ -3352,8 +3331,8 @@ int final;
 }
 
 /* is hero actively using water walking capability on water (or lava)? */
-STATIC_OVL boolean
-walking_on_water(VOID_ARGS)
+static boolean
+walking_on_water(void)
 {
     if (u.uinwater || Moves_above_ground)
         return FALSE;
@@ -3361,14 +3340,17 @@ walking_on_water(VOID_ARGS)
                       && (is_pool(u.ux, u.uy) || is_lava(u.ux, u.uy)));
 }
 
+/*
+ * Parameters:
+ *   propindx: index of a property which can be conveyed by worn item
+ */
 /* check whether hero is wearing something that player definitely knows
    confers the target property; item must have been seen and its type
    discovered but it doesn't necessarily have to be fully identified */
-STATIC_OVL boolean
-cause_known(propindx)
-int propindx; /* index of a property which can be conveyed by worn item */
+static boolean
+cause_known(int propindx)
 {
-    register struct obj *o;
+    struct obj *o;
 
     /* simpler than from_what()/what_gives(); we don't attempt to
        handle artifacts and we deliberately ignore wielded items */
@@ -3385,8 +3367,7 @@ int propindx; /* index of a property which can be conveyed by worn item */
 }
 
 boolean 
-object_stats_known(obj)
-struct obj* obj;
+object_stats_known(struct obj *obj)
 {
     if (!obj)
         return FALSE;
@@ -3397,11 +3378,13 @@ struct obj* obj;
 }
 
 
+/*
+ * Parameters:
+ *   resultbuf: should be at least [7] to hold "18/100\0"
+ */
 /* format a characteristic value, accommodating Strength's strangeness */
-STATIC_OVL char *
-attrval(attrindx, attrvalue, resultbuf)
-int attrindx, attrvalue;
-char resultbuf[]; /* should be at least [7] to hold "18/100\0" */
+static char *
+attrval(int attrindx, int attrvalue, char resultbuf[])
 {
     if (attrindx != A_STR || attrvalue <= 18)
         Sprintf(resultbuf, "%d", attrvalue);
@@ -3412,10 +3395,13 @@ char resultbuf[]; /* should be at least [7] to hold "18/100\0" */
     return resultbuf;
 }
 
+/*
+ * Parameters:
+ *   mode: BASICENLIGHTENMENT | MAGICENLIGHTENMENT | GAMEENLIGHTENMENT
+ *   final: ENL_GAMEINPROGRESS:0, ENL_GAMEOVERALIVE, ENL_GAMEOVERDEAD
+ */
 void
-enlightenment(mode, final)
-int mode;  /* BASICENLIGHTENMENT | MAGICENLIGHTENMENT | GAMEENLIGHTENMENT  */
-int final; /* ENL_GAMEINPROGRESS:0, ENL_GAMEOVERALIVE, ENL_GAMEOVERDEAD */
+enlightenment(int mode, int final)
 {
     char buf[BUFSZ], tmpbuf[BUFSZ];
     int glyph = player_to_glyph_index(urole.rolenum, urace.racenum, Ufemale, u.ualign.type, 0) + GLYPH_PLAYER_OFF;
@@ -3505,10 +3491,8 @@ int final; /* ENL_GAMEINPROGRESS:0, ENL_GAMEOVERALIVE, ENL_GAMEOVERDEAD */
 
 /*ARGSUSED*/
 /* display role, race, alignment and such to en_win */
-STATIC_OVL void
-background_enlightenment(unused_mode, final)
-int unused_mode UNUSED;
-int final;
+static void
+background_enlightenment(int unused_mode UNUSED, int final)
 {
     const char *role_titl, *rank_titl;
     int innategend, difgend, difalgn;
@@ -3702,10 +3686,8 @@ int final;
 /* hit points, energy points, armor class -- essential information which
    doesn't fit very well in other categories */
 /*ARGSUSED*/
-STATIC_OVL void
-basics_enlightenment(mode, final)
-int mode UNUSED;
-int final;
+static void
+basics_enlightenment(int mode UNUSED, int final)
 {
     static const char Power[] = "mana";
     char buf[BUFSZ];
@@ -3791,10 +3773,8 @@ int final;
     enl_msg("Autopickup ", "is ", "was ", buf, "");
 }
 
-STATIC_OVL void
-game_enlightenment(mode, final)
-int mode UNUSED;
-int final;
+static void
+game_enlightenment(int mode UNUSED, int final)
 {
     char buf[BUFSZ];
 
@@ -3852,10 +3832,8 @@ int final;
 }
 
 /* characteristics: expanded version of bottom line strength, dexterity, &c */
-STATIC_OVL void
-characteristics_enlightenment(mode, final)
-int mode;
-int final;
+static void
+characteristics_enlightenment(int mode, int final)
 {
     char buf[BUFSZ];
 
@@ -3873,9 +3851,8 @@ int final;
 }
 
 /* display one attribute value for characteristics_enlightenment() */
-STATIC_OVL void
-one_characteristic(mode, final, attrindx)
-int mode, final, attrindx;
+static void
+one_characteristic(int mode, int final, int attrindx)
 {
     extern const char *const attrname[]; /* attrib.c */
     boolean hide_innate_value = FALSE, interesting_alimit;
@@ -4005,10 +3982,8 @@ int mode, final, attrindx;
 }
 
 /* status: selected obvious capabilities, assorted troubles */
-STATIC_OVL void
-status_enlightenment(mode, final)
-int mode;
-int final;
+static void
+status_enlightenment(int mode, int final)
 {
     boolean magic = (mode & MAGICENLIGHTENMENT) ? TRUE : FALSE;
     int cap;
@@ -4431,12 +4406,9 @@ int final;
     }
 }
 
-STATIC_OVL
+static
 void
-print_weapon_skill_line_core(wtype, printweaponstats, final)
-enum p_skills wtype;
-boolean printweaponstats;
-int final;
+print_weapon_skill_line_core(enum p_skills wtype, boolean printweaponstats, int final)
 {
     char buf[BUFSZ];
     if (wtype != P_NONE)
@@ -4498,12 +4470,9 @@ int final;
     }
 }
 
-STATIC_OVL
+static
 void
-print_weapon_skill_line(wep, printweaponstats, final)
-struct obj* wep;
-boolean printweaponstats;
-int final;
+print_weapon_skill_line(struct obj *wep, boolean printweaponstats, int final)
 {
     if (!wep)
         return;
@@ -4514,9 +4483,7 @@ int final;
 
 /* attributes: intrinsics and the like, other non-obvious capabilities */
 void
-attributes_enlightenment(unused_mode, final)
-int unused_mode UNUSED;
-int final;
+attributes_enlightenment(int unused_mode UNUSED, int final)
 {
     static NEARDATA const char if_surroundings_permitted[] =
         " if surroundings permitted";
@@ -5288,15 +5255,15 @@ int final;
 }
 
 #if 0  /* no longer used */
-STATIC_DCL boolean NDECL(minimal_enlightenment);
+static boolean minimal_enlightenment(void);
 
 /*
  * Courtesy function for non-debug, non-explorer mode players
  * to help refresh them about who/what they are.
  * Returns FALSE if menu cancelled (dismissed with ESC), TRUE otherwise.
  */
-STATIC_OVL boolean
-minimal_enlightenment(VOID_ARGS)
+static boolean
+minimal_enlightenment(void)
 {
     winid tmpwin;
     menu_item *selected;
@@ -5401,14 +5368,14 @@ minimal_enlightenment(VOID_ARGS)
 #endif /*0*/
 
 
-STATIC_PTR int
-dopolyformstatistics(VOID_ARGS)
+static int
+dopolyformstatistics(void)
 {
     issue_breadcrumb("dopolyformstatistics");
     return monsterdescription(&youmonst);
 }
 
-STATIC_PTR int
+static int
 doviewpetstatistics(struct monst* mon)
 {
     issue_breadcrumb("doviewpetstatistics");
@@ -5417,8 +5384,8 @@ doviewpetstatistics(struct monst* mon)
 
 
 /* ^X command */
-STATIC_PTR int
-doattributes(VOID_ARGS)
+static int
+doattributes(void)
 {
     int mode = BASICENLIGHTENMENT | GAMEENLIGHTENMENT;
 
@@ -5432,7 +5399,7 @@ doattributes(VOID_ARGS)
 
 /* M('c') command */
 int
-docommandmenu(VOID_ARGS)
+docommandmenu(void)
 {
     winid menuwin;
     menu_item* selected = (menu_item*)0;
@@ -5462,7 +5429,7 @@ docommandmenu(VOID_ARGS)
 
 /* '+' command */
 int
-dospellmainmenu(VOID_ARGS)
+dospellmainmenu(void)
 {
     winid menuwin;
     menu_item* selected = (menu_item*)0;
@@ -5488,13 +5455,11 @@ dospellmainmenu(VOID_ARGS)
     return 0;
 }
 
-STATIC_OVL
+static
 void
-add_command_menu_items(menuwin, cmdflag)
-winid menuwin;
-int cmdflag;
+add_command_menu_items(winid menuwin, int cmdflag)
 {
-    register const struct ext_func_tab* efp;
+    const struct ext_func_tab* efp;
     int n = 0;
     size_t maxcommandlength = 0;
     size_t maxdesclength = 0;
@@ -5571,10 +5536,13 @@ int cmdflag;
 }
 
 
+/*
+ * Parameters:
+ *   via_enlghtmt: englightment line vs topl message
+ *   msgflag: for variant message phrasing
+ */
 void
-youhiding(via_enlghtmt, msgflag)
-boolean via_enlghtmt; /* englightment line vs topl message */
-int msgflag;          /* for variant message phrasing */
+youhiding(boolean via_enlghtmt, int msgflag)
 {
     char *bp, buf[BUFSZ];
 
@@ -5631,7 +5599,7 @@ int msgflag;          /* for variant message phrasing */
 }
 
 int
-dodeletesavedgame(VOID_ARGS)
+dodeletesavedgame(void)
 {
     if (wizard || discover || CasualMode)
     {
@@ -5664,15 +5632,14 @@ dodeletesavedgame(VOID_ARGS)
  * (shares enlightenment's tense handling)
  */
 int
-doconduct(VOID_ARGS)
+doconduct(void)
 {
     show_conduct(0);
     return 0;
 }
 
 void
-show_conduct(final)
-int final;
+show_conduct(int final)
 {
     char buf[BUFSZ];
     char goalbuf[BUFSZ];
@@ -6665,8 +6632,7 @@ struct ext_func_tab extcmdlist[] = {
 int extcmdlist_length = SIZE(extcmdlist) - 1;
 
 const char *
-key2extcmddesc(key)
-uchar key;
+key2extcmddesc(uchar key)
 {
     if (Cmd.commands[key] && Cmd.commands[key]->ef_txt)
         return Cmd.commands[key]->ef_desc;
@@ -6674,8 +6640,7 @@ uchar key;
 }
 
 uchar
-cmd_from_txt(command)
-const char* command;
+cmd_from_txt(const char *command)
 {
     if (!command)
         return '\0';
@@ -6689,8 +6654,7 @@ const char* command;
 }
 
 int
-ext_cmd_from_txt(ext_command)
-const char* ext_command;
+ext_cmd_from_txt(const char *ext_command)
 {
     if (!ext_command)
         return -1;
@@ -6705,9 +6669,7 @@ const char* ext_command;
 
 
 boolean
-bind_key(key, command)
-uchar key;
-const char *command;
+bind_key(uchar key, const char *command)
 {
     if (!command)
         return FALSE;
@@ -6740,7 +6702,7 @@ const char *command;
 
 /* initialize all keyboard commands */
 void
-commands_init(VOID_ARGS)
+commands_init(void)
 {
     struct ext_func_tab *extcmd;
 
@@ -6801,12 +6763,12 @@ commands_init(VOID_ARGS)
     update_bindings_list();
 }
 
+/*
+ * Parameters:
+ *   keys_used: boolean keys_used[256]
+ */
 int
-dokeylist_putcmds(datawin, docount, cmdflags, exflags, keys_used)
-winid datawin;
-boolean docount;
-int cmdflags, exflags;
-boolean *keys_used; /* boolean keys_used[256] */
+dokeylist_putcmds(winid datawin, boolean docount, int cmdflags, int exflags, boolean *keys_used)
 {
     int i;
     char buf[BUFSZ];
@@ -6841,7 +6803,7 @@ boolean *keys_used; /* boolean keys_used[256] */
 
 /* list all keys and their bindings, like dat/hh but dynamic */
 void
-dokeylist(VOID_ARGS)
+dokeylist(void)
 {
     char buf[BUFSZ], buf2[BUFSZ];
     uchar key;
@@ -6970,8 +6932,7 @@ dokeylist(VOID_ARGS)
 }
 
 char
-cmd_from_func(fn)
-int NDECL((*fn));
+cmd_from_func(int (*fn)(void))
 {
     int i;
 
@@ -6982,8 +6943,7 @@ int NDECL((*fn));
 }
 
 char
-cmd_unctrl(c)
-char c;
+cmd_unctrl(char c)
 {
     // C(c) (0x40 & (c) ? 0x1f & (c) : (0x80 | (0x1f & (c))))
     if (c > 0 && c < 32) /* 1-26 are letters, map them back to small letters */
@@ -6999,8 +6959,7 @@ char c;
 }
 
 char
-nondir_cmd_from_func(fn)
-int NDECL((*fn));
+nondir_cmd_from_func(int (*fn)(void))
 {
     int i;
 
@@ -7015,13 +6974,12 @@ int NDECL((*fn));
  * wizard mode sanity_check code
  */
 
-STATIC_VAR const char template[] = "%-27s  %4ld  %6zu";
-STATIC_VAR const char stats_hdr[] = "                             count  bytes";
-STATIC_VAR const char stats_sep[] = "---------------------------  ----- -------";
+static const char template[] = "%-27s  %4ld  %6zu";
+static const char stats_hdr[] = "                             count  bytes";
+static const char stats_sep[] = "---------------------------  ----- -------";
 
-STATIC_OVL size_t
-size_obj(otmp)
-struct obj *otmp;
+static size_t
+size_obj(struct obj *otmp)
 {
     size_t sz = sizeof (struct obj);
 
@@ -7043,13 +7001,8 @@ struct obj *otmp;
     return sz;
 }
 
-STATIC_OVL void
-count_obj(chain, total_count, total_size, top, recurse)
-struct obj *chain;
-int64_t *total_count;
-size_t *total_size;
-boolean top;
-boolean recurse;
+static void
+count_obj(struct obj *chain, int64_t *total_count, size_t *total_size, boolean top, boolean recurse)
 {
     int64_t count;
     size_t size;
@@ -7067,14 +7020,8 @@ boolean recurse;
     *total_size += size;
 }
 
-STATIC_OVL void
-obj_chain(win, src, chain, force, total_count, total_size)
-winid win;
-const char *src;
-struct obj *chain;
-boolean force;
-int64_t *total_count;
-size_t *total_size;
+static void
+obj_chain(winid win, const char *src, struct obj *chain, boolean force, int64_t *total_count, size_t *total_size)
 {
     char buf[BUFSZ];
     int64_t count = 0L;
@@ -7090,13 +7037,8 @@ size_t *total_size;
     }
 }
 
-STATIC_OVL void
-mon_invent_chain(win, src, chain, total_count, total_size)
-winid win;
-const char *src;
-struct monst *chain;
-int64_t *total_count;
-size_t *total_size;
+static void
+mon_invent_chain(winid win, const char *src, struct monst *chain, int64_t *total_count, size_t *total_size)
 {
     char buf[BUFSZ];
     int64_t count = 0;
@@ -7114,12 +7056,8 @@ size_t *total_size;
     }
 }
 
-STATIC_OVL void
-contained_stats(win, src, total_count, total_size)
-winid win;
-const char *src;
-int64_t *total_count;
-size_t *total_size;
+static void
+contained_stats(winid win, const char *src, int64_t *total_count, size_t *total_size)
 {
     char buf[BUFSZ];
     int64_t count = 0;
@@ -7146,10 +7084,8 @@ size_t *total_size;
     }
 }
 
-STATIC_OVL size_t
-size_monst(mtmp, incl_wsegs)
-struct monst *mtmp;
-boolean incl_wsegs;
+static size_t
+size_monst(struct monst *mtmp, boolean incl_wsegs)
 {
     size_t sz = sizeof (struct monst);
 
@@ -7185,14 +7121,8 @@ boolean incl_wsegs;
     return sz;
 }
 
-STATIC_OVL void
-mon_chain(win, src, chain, force, total_count, total_size)
-winid win;
-const char *src;
-struct monst *chain;
-boolean force;
-int64_t *total_count;
-size_t *total_size;
+static void
+mon_chain(winid win, const char *src, struct monst *chain, boolean force, int64_t *total_count, size_t *total_size)
 {
     char buf[BUFSZ];
     int64_t count = 0L;
@@ -7213,11 +7143,8 @@ size_t *total_size;
     }
 }
 
-STATIC_OVL void
-misc_stats(win, total_count, total_size)
-winid win;
-int64_t *total_count;
-size_t *total_size;
+static void
+misc_stats(winid win, int64_t *total_count, size_t *total_size)
 {
     char buf[BUFSZ], hdrbuf[QBUFSZ];
     int64_t count = 0L;
@@ -7353,8 +7280,8 @@ size_t *total_size;
 /*
  * Display memory usage of all monsters and objects on the level.
  */
-STATIC_OVL int
-wiz_show_stats(VOID_ARGS)
+static int
+wiz_show_stats(void)
 {
     char buf[BUFSZ];
     winid win;
@@ -7439,7 +7366,7 @@ wiz_show_stats(VOID_ARGS)
 }
 
 void
-sanity_check(VOID_ARGS)
+sanity_check(void)
 {
     obj_sanity_check();
     timer_sanity_check();
@@ -7450,8 +7377,8 @@ sanity_check(VOID_ARGS)
 }
 
 #ifdef DEBUG_MIGRATING_MONS
-STATIC_OVL int
-wiz_migrate_mons(VOID_ARGS)
+static int
+wiz_migrate_mons(void)
 {
     int mcount = 0;
     char inbuf[BUFSZ] = DUMMY;
@@ -7540,9 +7467,7 @@ struct {
 };
 
 boolean
-bind_specialkey(key, command)
-char key;
-const char *command;
+bind_specialkey(char key, const char *command)
 {
     if (!command)
         return FALSE;
@@ -7560,8 +7485,7 @@ const char *command;
 /* returns a one-byte character from the text (it may massacre the txt
  * buffer) */
 char
-txt2key(txt)
-char *txt;
+txt2key(char *txt)
 {
     if (!txt)
         return '\0';
@@ -7619,12 +7543,14 @@ char *txt;
     return '\0';
 }
 
+/*
+ * Parameters:
+ *   txt: sufficiently long buffer
+ */
 /* returns the text for a one-byte encoding;
  * must be shorter than a tab for proper formatting */
 char *
-key2txt(c, txt)
-uchar c;
-char *txt; /* sufficiently long buffer */
+key2txt(uchar c, char *txt)
 {
     /* should probably switch to "SPC", "ESC", "RET"
        since GnollHack's documentation uses ESC for <escape> */
@@ -7643,12 +7569,10 @@ char *txt; /* sufficiently long buffer */
 
 
 void
-parseautocomplete(autocomplete, condition)
-char *autocomplete;
-boolean condition;
+parseautocomplete(char *autocomplete, boolean condition)
 {
     struct ext_func_tab *efp;
-    register char *autoc;
+    char *autoc;
 
     /* break off first autocomplete from the rest; parse the rest */
     if ((autoc = index(autocomplete, ',')) != 0
@@ -7689,12 +7613,11 @@ boolean condition;
     wait_synch();
 }
 
-STATIC_VAR boolean backed_dir_cmd = FALSE;
+static boolean backed_dir_cmd = FALSE;
 
 /* called at startup and after number_pad is twiddled */
 void
-reset_commands(initial)
-boolean initial;
+reset_commands(boolean initial)
 {
     static const char sdir[] = "hykulnjb><",
                       sdir_swap_yz[] = "hzkulnjb><",
@@ -7845,7 +7768,7 @@ boolean initial;
 }
 
 void
-update_bindings_list(VOID_ARGS)
+update_bindings_list(void)
 {
     struct ext_func_tab* efp;
     for (efp = extcmdlist; efp->ef_txt; efp++) 
@@ -7870,9 +7793,8 @@ update_bindings_list(VOID_ARGS)
 }
 
 /* non-movement commands which accept 'm' prefix to request menu operation */
-STATIC_OVL boolean
-accept_menu_prefix(cmd_func)
-int NDECL((*cmd_func));
+static boolean
+accept_menu_prefix(int (*cmd_func)(void))
 {
     if (cmd_func == dopickup || cmd_func == doput2bag || cmd_func == dotip
         /* eat, #offer, and apply tinning-kit all use floorfood() to pick
@@ -7893,7 +7815,7 @@ int NDECL((*cmd_func));
 }
 
 char
-randomkey(VOID_ARGS)
+randomkey(void)
 {
     static int i = 0;
     char c;
@@ -7916,9 +7838,7 @@ randomkey(VOID_ARGS)
 }
 
 void
-random_response(buf, sz)
-char *buf;
-int sz;
+random_response(char *buf, int sz)
 {
     char c;
     int count = 0;
@@ -7938,15 +7858,13 @@ int sz;
 }
 
 int
-rnd_extcmd_idx(VOID_ARGS)
+rnd_extcmd_idx(void)
 {
     return rn2(extcmdlist_length + 1) - 1;
 }
 
 int
-ch2spkeys(c, start, end)
-char c;
-int start,end;
+ch2spkeys(char c, int start, int end)
 {
     int i;
 
@@ -7957,8 +7875,7 @@ int start,end;
 }
 
 void
-rhack(cmd)
-register char *cmd;
+rhack(char *cmd)
 {
     int spkey;
     boolean prefix_seen, bad_command,
@@ -8215,7 +8132,7 @@ register char *cmd;
     {
         /* (for func_tab cast, see below) */
         const struct ext_func_tab *ft = Cmd.commands[cmd[1] & 0xff];
-        int NDECL((*func)) = ft ? ((struct ext_func_tab *) ft)->ef_funct : 0;
+        int (*func)(void) = ft ? ((struct ext_func_tab *) ft)->ef_funct : 0;
 
         if (func && accept_menu_prefix(func)) 
         {
@@ -8266,8 +8183,8 @@ register char *cmd;
     } 
     else
     {
-        register const struct ext_func_tab *tlist;
-        int res = 0, NDECL((*func));
+        const struct ext_func_tab *tlist;
+        int res = 0, (*func)(void);
 
         /* current - use *cmd to directly index cmdlist array */
         if ((tlist = Cmd.commands[(unsigned char)(*cmd & 0xff)]) != 0)
@@ -8334,8 +8251,8 @@ register char *cmd;
 }
 
 
-STATIC_OVL void
-check_gui_special_effect(VOID_ARGS)
+static void
+check_gui_special_effect(void)
 {
     if (u.uz.dnum != mines_dnum && depth(&u.uz) > GUI_SPECIAL_EFFECT_LEVEL_DEPTH_THRESHOLD)
     {
@@ -8352,10 +8269,9 @@ check_gui_special_effect(VOID_ARGS)
 
 /* convert an x,y pair into a direction code */
 int
-xytod(x, y)
-schar x, y;
+xytod(schar x, schar y)
 {
-    register int dd;
+    int dd;
 
     for (dd = 0; dd < 8; dd++)
         if (x == xdir[dd] && y == ydir[dd])
@@ -8365,9 +8281,7 @@ schar x, y;
 
 /* convert a direction code into an x,y pair */
 void
-dtoxy(cc, dd)
-coord *cc;
-register int dd;
+dtoxy(coord *cc, int dd)
 {
     cc->x = xdir[dd];
     cc->y = ydir[dd];
@@ -8376,10 +8290,9 @@ register int dd;
 
 /* also sets u.dz, but returns false for <> */
 int
-movecmd(sym)
-char sym;
+movecmd(char sym)
 {
-    register const char *dp = index(Cmd.dirchars, sym);
+    const char *dp = index(Cmd.dirchars, sym);
 
     u.dz = 0;
     if (!dp || !*dp)
@@ -8398,7 +8311,7 @@ char sym;
 
 /* grid bug handling which used to be in movecmd() */
 int
-dxdy_moveok(VOID_ARGS)
+dxdy_moveok(void)
 {
     if (u.dx && u.dy && NODIAG(u.umonnum))
         u.dx = u.dy = 0;
@@ -8407,16 +8320,14 @@ dxdy_moveok(VOID_ARGS)
 
 /* decide whether a character (user input keystroke) requests screen repaint */
 boolean
-redraw_cmd(c)
-char c;
+redraw_cmd(char c)
 {
     return (boolean) (c == Cmd.spkeys[NHKF_REDRAW]
                       || (Cmd.num_pad && c == Cmd.spkeys[NHKF_REDRAW2]));
 }
 
 boolean
-prefix_cmd(c)
-char c;
+prefix_cmd(char c)
 {
     return (c == Cmd.spkeys[NHKF_RUSH]
             || c == Cmd.spkeys[NHKF_RUN]
@@ -8438,10 +8349,7 @@ char c;
  * Returns non-zero if coordinates in cc are valid.
  */
 int
-get_adjacent_loc(prompt, emsg, x, y, cc)
-const char *prompt, *emsg;
-xchar x, y;
-coord *cc;
+get_adjacent_loc(const char *prompt, const char *emsg, xchar x, xchar y, coord *cc)
 {
     xchar new_x, new_y;
     if (!getdir(prompt)) {
@@ -8462,16 +8370,13 @@ coord *cc;
 }
 
 int
-getdir(s)
-const char* s;
+getdir(const char *s)
 {
     return getdir_ex(s, FALSE);
 }
 
 int
-getdir_ex(s, self_always_ok)
-const char *s;
-boolean self_always_ok;
+getdir_ex(const char *s, boolean self_always_ok)
 {
     char dirsym;
     int is_mov;
@@ -8541,11 +8446,13 @@ retry:
     return 1;
 }
 
-STATIC_OVL void
-show_direction_keys(win, centerchar, nodiag)
-winid win; /* should specify a window which is using a fixed-width font... */
-char centerchar; /* '.' or '@' or ' ' */
-boolean nodiag;
+/*
+ * Parameters:
+ *   win: should specify a window which is using a fixed-width font...
+ *   centerchar: '.' or '@' or ' '
+ */
+static void
+show_direction_keys(winid win, char centerchar, boolean nodiag)
 {
     char buf[BUFSZ];
 
@@ -8577,14 +8484,15 @@ boolean nodiag;
     };
 }
 
+/*
+ * Parameters:
+ *   spkey: NHKF_ code for prefix key, if one was used, or for ESC
+ */
 /* explain choices if player has asked for getdir() help or has given
    an invalid direction after a prefix key ('F', 'g', 'm', &c), which
    might be bogus but could be up, down, or self when not applicable */
-STATIC_OVL boolean
-help_dir(sym, spkey, msg)
-char sym;
-int spkey; /* NHKF_ code for prefix key, if one was used, or for ESC */
-const char *msg;
+static boolean
+help_dir(char sym, int spkey, const char *msg)
 {
     static const char wiz_only_list[] = "EFGIVW";
     char ctrl;
@@ -8754,9 +8662,9 @@ const char *msg;
 }
 
 void
-confdir(VOID_ARGS)
+confdir(void)
 {
-    register int x = NODIAG(u.umonnum) ? 2 * rn2(4) : rn2(8);
+    int x = NODIAG(u.umonnum) ? 2 * rn2(4) : rn2(8);
 
     u.dx = xdir[x];
     u.dy = ydir[x];
@@ -8764,8 +8672,7 @@ confdir(VOID_ARGS)
 }
 
 const char *
-directionname(dir)
-int dir;
+directionname(int dir)
 {
     static NEARDATA const char *const dirnames[] = {
         "west",      "northwest", "north",     "northeast", "east",
@@ -8780,16 +8687,15 @@ int dir;
 }
 
 int
-isok(x, y)
-register int x, y;
+isok(int x, int y)
 {
     /* x corresponds to curx, so x==1 is the first column. Ach. %% */
     return x >= 1 && x <= COLNO - 1 && y >= 0 && y <= ROWNO - 1;
 }
 
 /* #herecmdmenu command */
-STATIC_PTR int
-doherecmdmenu(VOID_ARGS)
+static int
+doherecmdmenu(void)
 {
     char ch = here_cmd_menu(TRUE);
 
@@ -8797,8 +8703,8 @@ doherecmdmenu(VOID_ARGS)
 }
 
 /* #therecmdmenu command, a way to test there_cmd_menu without mouse */
-STATIC_PTR int
-dotherecmdmenu(VOID_ARGS)
+static int
+dotherecmdmenu(void)
 {
     char ch;
 
@@ -8813,11 +8719,8 @@ dotherecmdmenu(VOID_ARGS)
     return ch ? 1 : 0;
 }
 
-STATIC_OVL void
-add_herecmd_menuitem(win, func, text)
-winid win;
-int NDECL((*func));
-const char *text;
+static void
+add_herecmd_menuitem(winid win, int (*func)(void), const char *text)
 {
     char ch;
     anything any;
@@ -8829,10 +8732,8 @@ const char *text;
     }
 }
 
-STATIC_OVL char
-there_cmd_menu(doit, x, y)
-boolean doit;
-int x, y;
+static char
+there_cmd_menu(boolean doit, int x, int y)
 {
     winid win;
     char ch;
@@ -8923,7 +8824,7 @@ int x, y;
     destroy_nhwindow(win);
     ch = '\0';
     if (npick > 0) {
-        int NDECL((*func)) = picks->item.a_nfunc;
+        int (*func)(void) = picks->item.a_nfunc;
         free((genericptr_t) picks);
 
         if (doit) {
@@ -8937,9 +8838,8 @@ int x, y;
     return ch;
 }
 
-STATIC_OVL char
-here_cmd_menu(doit)
-boolean doit;
+static char
+here_cmd_menu(boolean doit)
 {
     winid win;
     char ch;
@@ -9036,7 +8936,7 @@ boolean doit;
     ch = '\0';
     if (npick > 0) 
     {
-        int NDECL((*func)) = picks->item.a_nfunc;
+        int (*func)(void) = picks->item.a_nfunc;
         free((genericptr_t) picks);
 
         if (doit) 
@@ -9058,8 +8958,7 @@ boolean doit;
  * convert a MAP window position into a movecmd
  */
 const char *
-click_to_cmd(x, y, mod)
-int x, y, mod;
+click_to_cmd(int x, int y, int mod)
 {
     int dir;
     static char cmd[4];
@@ -9809,13 +9708,12 @@ int x, y, mod;
     return cmd;
 }
 
+/*
+ * Parameters:
+ *   historical: whether to include in message history: True => yes
+ */
 char
-get_count(allowchars, inkey, maxcount, count, historical)
-char *allowchars;
-char inkey;
-int64_t maxcount;
-int64_t *count;
-boolean historical; /* whether to include in message history: True => yes */
+get_count(char *allowchars, char inkey, int64_t maxcount, int64_t *count, boolean historical)
 {
     char qbuf[QBUFSZ];
     int key;
@@ -9871,8 +9769,8 @@ boolean historical; /* whether to include in message history: True => yes */
 }
 
 
-STATIC_OVL char *
-parse(VOID_ARGS)
+static char *
+parse(void)
 {
 #ifdef LINT /* static char in_line[COLNO]; */
     char in_line[COLNO];
@@ -9975,8 +9873,7 @@ parse(VOID_ARGS)
    the return value so we should be safe using `void' unconditionally */
 /*ARGUSED*/
 void
-hangup(sig_unused) /* called as signal() handler, so sent at least one arg */
-int sig_unused UNUSED;
+hangup(int sig_unused UNUSED) /* called as signal() handler, so sent at least one arg */
 {
     if (program_state.exiting)
         program_state.in_moveloop = 0;
@@ -9997,7 +9894,7 @@ int sig_unused UNUSED;
 }
 
 void
-end_of_input(VOID_ARGS)
+end_of_input(void)
 {
 #ifdef NOSAVEONHANGUP
 #ifdef INSURANCE
@@ -10026,9 +9923,9 @@ end_of_input(VOID_ARGS)
 #endif /* HANGUPHANDLING */
 
 char
-readchar(VOID_ARGS)
+readchar(void)
 {
-    register int sym;
+    int sym;
     int x = u.ux, y = u.uy, mod = 0;
 
     if (iflags.debug_fuzzer)
@@ -10040,7 +9937,7 @@ readchar(VOID_ARGS)
 
 #ifdef NR_OF_EOFS
     if (sym == EOF) {
-        register int cnt = NR_OF_EOFS;
+        int cnt = NR_OF_EOFS;
         /*
          * Some SYSV systems seem to return EOFs for various reasons
          * (?like when one hits break or for interrupted systemcalls?),
@@ -10120,8 +10017,8 @@ readchar(VOID_ARGS)
 }
 
 /* '_' command, #travel, via keyboard rather than mouse click */
-STATIC_PTR int
-dotravel(VOID_ARGS)
+static int
+dotravel(void)
 {
     static char cmd[2];
     coord cc;
@@ -10170,16 +10067,16 @@ dotravel(VOID_ARGS)
 }
 
 /*
+ * Parameters:
+ *   ynflags: 1 means use upper side for half-sized tile
+ */
+/*
  *   Parameter validator for generic yes/no function to prevent
  *   the core from sending too long a prompt string to the
  *   window port causing a buffer overflow there.
  */
 char
-yn_function_core(style, attr, color, glyph, title, query, resp, def, resp_desc, introline, ynflags)
-int style, attr, color, glyph;
-const char *title, *query, *resp, *resp_desc, * introline;
-char def;
-uint64_t ynflags; /* 1 means use upper side for half-sized tile */
+yn_function_core(int style, int attr, int color, int glyph, const char *title, const char *query, const char *resp, char def, const char *resp_desc, const char *introline, uint64_t ynflags)
 {
     char res, qbuf[QBUFSZ];
 #if defined(DUMPLOG) || defined(DUMPHTML)
@@ -10218,27 +10115,19 @@ uint64_t ynflags; /* 1 means use upper side for half-sized tile */
 }
 
 char
-yn_function(query, resp, def, resp_desc)
-const char* query, *resp, *resp_desc;
-char def;
+yn_function(const char *query, const char *resp, char def, const char *resp_desc)
 {
     return yn_function_core(YN_STYLE_GENERAL, ATR_NONE, NO_COLOR, NO_GLYPH, (const char*)0, query, resp, def, resp_desc, (const char*)0, 0UL);
 }
 
 char
-yn_function_end(query, resp, def, resp_desc)
-const char* query, * resp, * resp_desc;
-char def;
+yn_function_end(const char *query, const char *resp, char def, const char *resp_desc)
 {
     return yn_function_core(YN_STYLE_END, ATR_NONE, NO_COLOR, NO_GLYPH, (const char*)0, query, resp, def, resp_desc, (const char*)0, 0UL);
 }
 
 char
-yn_function_mon(mtmp, query, chars, def, descs)
-struct monst* mtmp;
-const char* query;
-const char* chars, *descs;
-char def;
+yn_function_mon(struct monst *mtmp, const char *query, const char *chars, char def, const char *descs)
 {
     if (!mtmp)
         return yn_query(query);
@@ -10251,44 +10140,33 @@ char def;
 }
 
 char
-yn_query_mon(mtmp, query)
-struct monst* mtmp;
-const char* query;
+yn_query_mon(struct monst *mtmp, const char *query)
 {
     return yn_function_mon(mtmp, query, ynchars, 'n', yndescs);
 }
 
 char
-ynq_mon(mtmp, query)
-struct monst* mtmp;
-const char* query;
+ynq_mon(struct monst *mtmp, const char *query)
 {
     return yn_function_mon(mtmp, query, ynqchars, 'q', ynqdescs);
 }
 
 char
-ynaq_mon(mtmp, query)
-struct monst* mtmp;
-const char* query;
+ynaq_mon(struct monst *mtmp, const char *query)
 {
     return yn_function_mon(mtmp, query, ynaqchars, 'q', ynaqdescs);
 }
 
 /* for paranoid_confirm:quit,die,attack prompting */
 boolean
-paranoid_query(be_paranoid, prompt)
-boolean be_paranoid;
-const char* prompt;
+paranoid_query(boolean be_paranoid, const char *prompt)
 {
     return paranoid_query_ex(ATR_NONE, CLR_MSG_WARNING, be_paranoid, (char*)0, prompt);
 }
 
 /* for paranoid_confirm:quit,die,attack prompting */
 boolean
-paranoid_query_ex(attr, color, be_paranoid, title, prompt)
-int attr, color;
-boolean be_paranoid;
-const char *prompt, *title;
+paranoid_query_ex(int attr, int color, boolean be_paranoid, const char *title, const char *prompt)
 {
     boolean confirmed_ok;
 
@@ -10323,8 +10201,8 @@ const char *prompt, *title;
 }
 
 /* ^Z command, #suspend */
-STATIC_PTR int
-dosuspend_core(VOID_ARGS)
+static int
+dosuspend_core(void)
 {
 #if defined(SUSPEND) && !defined(GNH_MOBILE)
     /* Does current window system support suspend? */
@@ -10338,8 +10216,8 @@ dosuspend_core(VOID_ARGS)
 }
 
 /* '!' command, #shell */
-STATIC_PTR int
-dosh_core(VOID_ARGS)
+static int
+dosh_core(void)
 {
 #ifdef SHELL
     /* access restrictions, if any, are handled in port code */
@@ -10352,7 +10230,7 @@ dosh_core(VOID_ARGS)
 
 
 int
-dozoomnormal(VOID_ARGS)
+dozoomnormal(void)
 {
     issue_simple_gui_command(GUI_CMD_ZOOM_NORMAL);
     stretch_window();
@@ -10360,7 +10238,7 @@ dozoomnormal(VOID_ARGS)
 }
 
 int
-dozoomin(VOID_ARGS)
+dozoomin(void)
 {
     issue_simple_gui_command(GUI_CMD_ZOOM_IN);
     stretch_window();
@@ -10368,7 +10246,7 @@ dozoomin(VOID_ARGS)
 }
 
 int
-dozoomout(VOID_ARGS)
+dozoomout(void)
 {
     issue_simple_gui_command(GUI_CMD_ZOOM_OUT);
     stretch_window();
@@ -10376,7 +10254,7 @@ dozoomout(VOID_ARGS)
 }
 
 int
-dozoommini(VOID_ARGS)
+dozoommini(void)
 {
     issue_simple_gui_command(GUI_CMD_ZOOM_MINI);
     stretch_window();
@@ -10384,7 +10262,7 @@ dozoommini(VOID_ARGS)
 }
 
 int
-dozoomhalf(VOID_ARGS)
+dozoomhalf(void)
 {
     issue_simple_gui_command(GUI_CMD_ZOOM_HALF);
     stretch_window();
@@ -10392,15 +10270,14 @@ dozoomhalf(VOID_ARGS)
 }
 
 void
-zoomtoscale(scale)
-double scale;
+zoomtoscale(double scale)
 {
     issue_gui_command(GUI_CMD_ZOOM_TO_SCALE, (int)(scale * 10000), 0, (char*)0);
     stretch_window();
 }
 
 int
-doviewpet(VOID_ARGS)
+doviewpet(void)
 {
     if (context.view_pet_mid > 0)
     {
@@ -10426,8 +10303,8 @@ doviewpet(VOID_ARGS)
 }
 
 
-STATIC_PTR int
-dolight(VOID_ARGS)
+static int
+dolight(void)
 {
     if (get_location_light_range(u.ux, u.uy) != 0)
     {
@@ -10574,7 +10451,7 @@ dolight(VOID_ARGS)
 }
 
 void
-reset_found_this_turn(VOID_ARGS)
+reset_found_this_turn(void)
 {
     /* Clear out finds from last turn */
     struct obj* otmp;
@@ -10583,8 +10460,7 @@ reset_found_this_turn(VOID_ARGS)
 }
 
 void
-clear_found_this_turn_at(x, y)
-int x, y;
+clear_found_this_turn_at(int x, int y)
 {
     if (!isok(x, y))
         return;
@@ -10597,8 +10473,7 @@ int x, y;
 
 
 void
-create_context_menu(menu_type)
-enum create_context_menu_types menu_type;
+create_context_menu(enum create_context_menu_types menu_type)
 {
     if (!clear_context_menu)
         return;
@@ -10881,7 +10756,7 @@ enum create_context_menu_types menu_type;
 }
 
 int
-dofavorite(VOID_ARGS)
+dofavorite(void)
 {
     struct obj* obj = getobj(getobj_favorites, "mark as favorite", 0, "");
     if (!obj)
@@ -10909,7 +10784,7 @@ dofavorite(VOID_ARGS)
 }
 
 int
-dounfavorite(VOID_ARGS)
+dounfavorite(void)
 {
     struct obj* obj = getobj(getobj_favorites, "unmark as favorite", 0, "");
     if (!obj)
@@ -10929,7 +10804,7 @@ dounfavorite(VOID_ARGS)
 }
 
 int
-dosetquickengraveitem(VOID_ARGS)
+dosetquickengraveitem(void)
 {
     struct obj* obj = getobj(getobj_styluses, "set as quick engrave item", 0, "");
     if (!obj)
@@ -10952,7 +10827,7 @@ dosetquickengraveitem(VOID_ARGS)
 }
 
 int
-dounsetquickengraveitem(VOID_ARGS)
+dounsetquickengraveitem(void)
 {
     struct obj* obj = getobj(getobj_styluses, "unset as quick engrave item", 0, "");
     if (!obj)
@@ -10975,7 +10850,7 @@ dounsetquickengraveitem(VOID_ARGS)
 }
 
 int
-dosetquickpickaxeitem(VOID_ARGS)
+dosetquickpickaxeitem(void)
 {
     struct obj* obj = getobj(getobj_quick_pickaxes, "set as quick pick-axe", 0, "");
     if (!obj)
@@ -11003,7 +10878,7 @@ dosetquickpickaxeitem(VOID_ARGS)
 }
 
 int
-dounsetquickpickaxeitem(VOID_ARGS)
+dounsetquickpickaxeitem(void)
 {
     struct obj* obj = getobj(getobj_quick_pickaxes, "unset as quick pick-axe", 0, "");
     if (!obj)
@@ -11026,7 +10901,7 @@ dounsetquickpickaxeitem(VOID_ARGS)
 }
 
 int
-dosetquickbag(VOID_ARGS)
+dosetquickbag(void)
 {
     struct obj* obj = getobj(getobj_quick_bags, "set as quick bag", 0, "");
     if (!obj)
@@ -11084,7 +10959,7 @@ dosetquickbag(VOID_ARGS)
 }
 
 int
-dounsetquickbag(VOID_ARGS)
+dounsetquickbag(void)
 {
     struct obj* obj = getobj(getobj_quick_bags, "unset as quick bag", 0, "");
     if (!obj)
@@ -11108,8 +10983,7 @@ dounsetquickbag(VOID_ARGS)
 
 
 struct monst*
-spotted_linedup_monster_in_way(x1, y1, x2, y2)
-int x1, y1, x2, y2;
+spotted_linedup_monster_in_way(int x1, int y1, int x2, int y2)
 {
     if(!isok(x1, y1) || !isok(x2,y2))
         return 0;
@@ -11150,7 +11024,7 @@ int x1, y1, x2, y2;
 
 /* #chronicle command */
 int
-do_gamelog(VOID_ARGS)
+do_gamelog(void)
 {
     if (gamelog) {
         show_gamelog(ENL_GAMEINPROGRESS);

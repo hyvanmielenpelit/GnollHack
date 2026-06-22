@@ -15,25 +15,24 @@
 #endif
 
 #ifdef POSITIONBAR
-STATIC_DCL void NDECL(do_positionbar);
+static void do_positionbar(void);
 #endif
-STATIC_DCL int FDECL(regenerate_hp_turns_to_full, (int, boolean*));
-STATIC_DCL void NDECL(regenerate_hp);
-STATIC_DCL int FDECL(regenerate_mana_turns_to_full, (boolean*));
-STATIC_DCL void NDECL(regenerate_mana);
-STATIC_DCL void FDECL(interrupt_multi, (const char *, int, int));
-STATIC_DCL void FDECL(debug_fields, (const char *));
-STATIC_DCL void NDECL(create_monster_or_encounter);
-STATIC_DCL int NDECL(select_rwraith);
-STATIC_DCL boolean NDECL(maybe_create_rwraith);
+static int regenerate_hp_turns_to_full(int, boolean *);
+static void regenerate_hp(void);
+static int regenerate_mana_turns_to_full(boolean *);
+static void regenerate_mana(void);
+static void interrupt_multi(const char *, int, int);
+static void debug_fields(const char *);
+static void create_monster_or_encounter(void);
+static int select_rwraith(void);
+static boolean maybe_create_rwraith(void);
 
 #ifdef EXTRAINFO_FN
 static int64_t prev_dgl_extrainfo = 0;
 #endif
 
 void
-moveloop(resuming)
-uchar resuming; /* 0 = new game, 1 = loaded a saved game, 2 = continued playing after saving (restart) */
+moveloop(uchar resuming)
 {
 #if defined(MICRO) || defined(WIN32)
     char ch;
@@ -584,8 +583,7 @@ uchar resuming; /* 0 = new game, 1 = loaded a saved game, 2 = continued playing 
 }
 
 void 
-reset_monster_origin_coordinates(mtmp)
-struct monst* mtmp;
+reset_monster_origin_coordinates(struct monst *mtmp)
 {
     if (!mtmp)
         return;
@@ -604,7 +602,7 @@ struct monst* mtmp;
 }
 
 void
-reset_all_monster_origin_coordinates(VOID_ARGS)
+reset_all_monster_origin_coordinates(void)
 {
     struct monst* mtmp;
     for (mtmp = fmon; mtmp; mtmp = mtmp->nmon)
@@ -614,8 +612,7 @@ reset_all_monster_origin_coordinates(VOID_ARGS)
 }
 
 void
-reset_object_origin_coordinates(obj)
-struct obj* obj;
+reset_object_origin_coordinates(struct obj *obj)
 {
     if (!obj)
         return;
@@ -627,7 +624,7 @@ struct obj* obj;
 }
 
 void
-reset_all_object_origin_coordinates(VOID_ARGS)
+reset_all_object_origin_coordinates(void)
 {
     struct obj* obj;
     for (obj = fobj; obj; obj = obj->nobj)
@@ -641,7 +638,7 @@ reset_all_object_origin_coordinates(VOID_ARGS)
 }
 
 void
-reduce_last_item_show_duration(VOID_ARGS)
+reduce_last_item_show_duration(void)
 {
     if (context.last_picked_obj_show_duration_left > 0)
     {
@@ -651,9 +648,8 @@ reduce_last_item_show_duration(VOID_ARGS)
     }
 }
 
-STATIC_OVL
-void
-create_monster_or_encounter(VOID_ARGS)
+static void
+create_monster_or_encounter(void)
 {
 
     /* Special wraith appearance for the Ruling Ring of Yendor */
@@ -678,9 +674,8 @@ create_monster_or_encounter(VOID_ARGS)
 }
 
 
-STATIC_OVL
-int
-select_rwraith(VOID_ARGS)
+static int
+select_rwraith(void)
 {
     /* Special wraith appearance for the Ruling Ring of Yendor */
     int minlevel = 0, maxlevel = 1;
@@ -722,9 +717,8 @@ select_rwraith(VOID_ARGS)
     return mdx;
 }
 
-STATIC_OVL
-boolean
-maybe_create_rwraith(VOID_ARGS)
+static boolean
+maybe_create_rwraith(void)
 {
     struct monst* rwraith = (struct monst*)0;
     boolean rwraith_appeared = FALSE;
@@ -772,10 +766,8 @@ maybe_create_rwraith(VOID_ARGS)
     return rwraith_appeared;
 }
 
-STATIC_OVL int
-regenerate_hp_turns_to_full(relevant_hpmax, known_props)
-int relevant_hpmax;
-boolean* known_props;
+static int
+regenerate_hp_turns_to_full(int relevant_hpmax, boolean *known_props)
 {
     int roundstofull =
         ((!known_props || known_props[DIVINE_REGENERATION]) && Divine_regeneration) ? max(1, min(relevant_hpmax / 16, 10)) :
@@ -788,8 +780,7 @@ boolean* known_props;
 }
 
 double
-calculate_hp_regeneration(known_props)
-boolean* known_props;
+calculate_hp_regeneration(boolean *known_props)
 {
     if (!known_props)
         return 0.0;
@@ -848,8 +839,8 @@ boolean* known_props;
 
 
 /* maybe recover some lost health (or lose some when an eel out of water) */
-STATIC_OVL void
-regenerate_hp(VOID_ARGS)
+static void
+regenerate_hp(void)
 {
     /* regenerate hp */
     int relevant_hpmax = Upolyd ? u.mhmax : u.uhpmax;
@@ -1097,9 +1088,8 @@ regenerate_hp(VOID_ARGS)
 #endif
 }
 
-STATIC_OVL int
-regenerate_mana_turns_to_full(known_props)
-boolean* known_props;
+static int
+regenerate_mana_turns_to_full(boolean *known_props)
 {
     /* regenerate mana */
     int roundstofull =
@@ -1111,8 +1101,8 @@ boolean* known_props;
     return roundstofull;
 }
 
-STATIC_OVL void
-regenerate_mana(VOID_ARGS)
+static void
+regenerate_mana(void)
 {
     /* regenerate mana */
     int roundstofull = regenerate_mana_turns_to_full((boolean*)0);
@@ -1143,8 +1133,7 @@ regenerate_mana(VOID_ARGS)
 }
 
 double
-calculate_mana_regeneration(known_props)
-boolean* known_props;
+calculate_mana_regeneration(boolean *known_props)
 {
     int roundstofull = regenerate_mana_turns_to_full(known_props);
     return (double)u.uenmax / (double)roundstofull;
@@ -1152,7 +1141,7 @@ boolean* known_props;
 
 
 void
-stop_occupation(VOID_ARGS)
+stop_occupation(void)
 {
     if (occupation) {
         if (!maybe_finished_meal(TRUE))
@@ -1173,7 +1162,7 @@ stop_occupation(VOID_ARGS)
 }
 
 void
-display_gamewindows(VOID_ARGS)
+display_gamewindows(void)
 {
     WIN_MESSAGE = create_nhwindow(NHW_MESSAGE);
     if (VIA_WINDOWPORT()) {
@@ -1220,8 +1209,7 @@ display_gamewindows(VOID_ARGS)
 }
 
 const char*
-get_game_difficulty_text(dif_level)
-int dif_level;
+get_game_difficulty_text(int dif_level)
 {
     
     switch (dif_level)
@@ -1248,8 +1236,7 @@ int dif_level;
 }
 
 const char*
-get_game_difficulty_symbol(dif_level)
-int dif_level;
+get_game_difficulty_symbol(int dif_level)
 {
 
     switch (dif_level)
@@ -1276,15 +1263,13 @@ int dif_level;
 }
 
 const char*
-get_game_mode_text(display_nonscoring)
-boolean display_nonscoring;
+get_game_mode_text(boolean display_nonscoring)
 {
     return get_game_mode_text_core(wizard, discover, ModernMode, CasualMode, flags.non_scoring, TournamentMode, display_nonscoring);
 }
 
 const char*
-get_game_mode_text_core(iswizardmode, isexporemode, ismodernmode, iscasualmode, isnonscoring, istournamentmode, display_nonscoring)
-boolean display_nonscoring, iswizardmode, isexporemode, ismodernmode, iscasualmode, isnonscoring, istournamentmode;
+get_game_mode_text_core(boolean iswizardmode, boolean isexporemode, boolean ismodernmode, boolean iscasualmode, boolean isnonscoring, boolean istournamentmode, boolean display_nonscoring)
 {
     if (iswizardmode)
     {
@@ -1351,14 +1336,13 @@ boolean display_nonscoring, iswizardmode, isexporemode, ismodernmode, iscasualmo
 }
 
 const char*
-get_game_mode_description(VOID_ARGS)
+get_game_mode_description(void)
 {
     return get_game_mode_description_core(wizard, discover, ModernMode, CasualMode);
 }
 
 const char*
-get_game_mode_description_core(iswizardmode, isexporemode, ismodernmode, iscasualmode)
-boolean iswizardmode, isexporemode, ismodernmode, iscasualmode;
+get_game_mode_description_core(boolean iswizardmode, boolean isexporemode, boolean ismodernmode, boolean iscasualmode)
 {
     if (iswizardmode)
         return "immortal mode with debug commands";
@@ -1380,7 +1364,7 @@ boolean iswizardmode, isexporemode, ismodernmode, iscasualmode;
 
 #define QUIT_DUMMY 100
 void 
-choose_game_difficulty(VOID_ARGS)
+choose_game_difficulty(void)
 {
     int mindifficulty = TournamentMode ? max(0, sysopt.min_difficulty) : sysopt.min_difficulty;
     int maxdifficulty = sysopt.max_difficulty;
@@ -1461,7 +1445,7 @@ choose_game_difficulty(VOID_ARGS)
 #undef QUIT_DUMMY
 
 void
-set_mouse_buttons(VOID_ARGS)
+set_mouse_buttons(void)
 {
     if (flags.right_click_command == DEFCLICK_ROLE)
     {
@@ -1516,7 +1500,7 @@ set_mouse_buttons(VOID_ARGS)
 }
 
 void
-newgame(VOID_ARGS)
+newgame(void)
 {
     int i;
 
@@ -1641,7 +1625,7 @@ newgame(VOID_ARGS)
 }
 
 void
-show_gui_tips(VOID_ARGS)
+show_gui_tips(void)
 {
     struct special_view_info info = { 0 };
     info.viewtype = SPECIAL_VIEW_GUI_TIPS;
@@ -1650,8 +1634,7 @@ show_gui_tips(VOID_ARGS)
 
 /* show "welcome [back] to GnollHack" message at program startup */
 void
-welcome(new_game)
-boolean new_game; /* false => restoring an old game */
+welcome(boolean new_game)
 {
     char buf[BUFSZ];
     boolean currentgend = Ufemale;
@@ -1697,8 +1680,8 @@ boolean new_game; /* false => restoring an old game */
 }
 
 #ifdef POSITIONBAR
-STATIC_DCL void
-do_positionbar(VOID_ARGS)
+static void
+do_positionbar(void)
 {
     static char pbar[COLNO];
     char *p;
@@ -1752,10 +1735,8 @@ do_positionbar(VOID_ARGS)
 }
 #endif
 
-STATIC_DCL void
-interrupt_multi(msg, attr, color)
-const char *msg;
-int attr, color;
+static void
+interrupt_multi(const char *msg, int attr, int color)
 {
     if (multi > 0 && !context.travel && !context.run) 
     {
@@ -1787,7 +1768,7 @@ static const struct early_opt earlyopts[] = {
 };
 
 #ifdef WIN32
-extern int FDECL(windows_early_options, (const char *));
+extern int windows_early_options(const char *);
 #endif
 
 /*
@@ -1798,10 +1779,7 @@ extern int FDECL(windows_early_options, (const char *));
  */
 
 int
-argcheck(argc, argv, e_arg)
-int argc;
-char *argv[];
-enum earlyarg e_arg;
+argcheck(int argc, char *argv[], enum earlyarg e_arg)
 {
     int i, idx;
     boolean match = FALSE;
@@ -1887,8 +1865,7 @@ enum earlyarg e_arg;
  *                    can be debugged without buffering.
  */
 void
-debug_fields(opts)
-const char *opts;
+debug_fields(const char* opts)
 {
     char *op;
     boolean negated = FALSE;
@@ -1935,8 +1912,7 @@ const char *opts;
 
 
 int
-get_u_move_speed(return_expected_value)
-boolean return_expected_value;
+get_u_move_speed(boolean return_expected_value)
 {
     int wtcap = near_capacity();
     int moveamt = 0;
@@ -2037,7 +2013,7 @@ boolean return_expected_value;
 }
 
 void
-lock_thread_lock(VOID_ARGS)
+lock_thread_lock(void)
 {
 #if defined(UNIX) && defined(GNH_MOBILE)
     thread_lock_lock();
@@ -2047,7 +2023,7 @@ lock_thread_lock(VOID_ARGS)
 }
 
 void
-unlock_thread_lock(VOID_ARGS)
+unlock_thread_lock(void)
 {
 #if defined(UNIX) && defined(GNH_MOBILE)
     thread_lock_unlock();
@@ -2057,7 +2033,7 @@ unlock_thread_lock(VOID_ARGS)
 }
 
 void
-reset_allmain(VOID_ARGS)
+reset_allmain(void)
 {
 #ifdef EXTRAINFO_FN
     prev_dgl_extrainfo = 0;

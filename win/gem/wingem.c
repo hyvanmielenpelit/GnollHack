@@ -20,8 +20,8 @@
 static char nullstr[] = "", winpanicstr[] = "Bad window id %d";
 static int curr_status_line;
 
-static char *FDECL(copy_of, (const char *));
-static void FDECL(bail, (const char *)); /* __attribute__((noreturn)) */
+static char *copy_of(const char *);
+static void bail(const char *); /* __attribute__((noreturn)) */
 
 extern int mar_set_tile_mode(int);
 extern void mar_set_font(int, const char *, int);
@@ -79,15 +79,12 @@ struct window_procs Gem_procs = {
 
 #ifdef MAC
 void *
-Gem_change_background(dummy)
-int dummy;
+Gem_change_background(int dummy)
 {
 }
 
 short *
-Gem_set_font_name(foo, bar)
-winid foo;
-char *bar;
+Gem_set_font_name(winid foo, char *bar)
 {
 }
 #endif
@@ -121,8 +118,7 @@ mar_get_msg_visible()
 }
 /* clean up and quit */
 static void
-bail(mesg)
-const char *mesg;
+bail(const char *mesg)
 {
     nh_bail(EXIT_SUCCESS, mesg, TRUE);
     /*NOTREACHED*/
@@ -141,9 +137,7 @@ const char *mesg;
 /*$$$*/
 /*ARGSUSED*/
 void
-Gem_init_nhwindows(argcp, argv)
-int *argcp;
-char **argv;
+Gem_init_nhwindows(int *argcp, char **argv)
 {
     argv = argv, argcp = argcp;
     colors_changed = TRUE;
@@ -508,8 +502,7 @@ Gem_get_nh_event()
 }
 
 void
-Gem_suspend_nhwindows(str)
-const char *str;
+Gem_suspend_nhwindows(const char *str)
 {
     const char *foo;
 
@@ -535,8 +528,7 @@ extern void mar_exit_nhwindows(void);
 extern boolean run_from_desktop;
 
 void
-Gem_exit_nhwindows(str)
-const char *str;
+Gem_exit_nhwindows(const char *str)
 {
     if (str)
         Gem_raw_print(str);
@@ -547,9 +539,7 @@ const char *str;
 }
 
 winid
-Gem_create_nhwindow_ex(type, style, glyph, info)
-int type, style, glyph;
-struct extended_create_window_info info;
+Gem_create_nhwindow_ex(int type, int style, int glyph, struct extended_create_window_info info)
 {
     winid newid;
 
@@ -592,8 +582,7 @@ Gem_nhbell()
 extern void mar_clear_map(void);
 
 void
-Gem_clear_nhwindow(window)
-winid window;
+Gem_clear_nhwindow(winid window)
 {
     if (window == WIN_ERR)
         panic(winpanicstr, window);
@@ -616,9 +605,7 @@ extern void mar_more(void);
 
 /*ARGSUSED*/
 void
-Gem_display_nhwindow(window, blocking)
-winid window;
-boolean blocking;
+Gem_display_nhwindow(winid window, boolean blocking)
 {
     if (window == WIN_ERR)
         panic(winpanicstr, window);
@@ -643,8 +630,7 @@ boolean blocking;
 }
 
 void
-Gem_destroy_nhwindow(window)
-winid window;
+Gem_destroy_nhwindow(winid window)
 {
     if (window == WIN_ERR) /* MAR -- test existence */
         panic(winpanicstr, window);
@@ -655,9 +641,7 @@ winid window;
 extern void mar_curs(int, int); /* mar_curs is only for map */
 
 void
-Gem_curs(window, x, y)
-winid window;
-register int x, y;
+Gem_curs(winid window, int x, int y)
 {
     if (window == WIN_ERR) /* MAR -- test existence */
         panic(winpanicstr, window);
@@ -675,10 +659,7 @@ extern void mar_putstr_text(winid, int, const char*);
 #define Gem_putstr(window, attr, str) Gem_putstr_ex(window, str, attr, NO_COLOR, 0)
 
 void
-Gem_putstr_ex(window, str, attr, color, app)
-winid window;
-int attr, app, color;
-const char *str;
+Gem_putstr_ex(winid window, const char *str, int attr, int color, int app)
 {
     int win_type;
 
@@ -721,18 +702,13 @@ const char *str;
 }
 
 void
-Gem_putstr_ex2(window, str, attrs, colors, attr, color, app)
-winid window;
-int attr, color, app;
-const char* str, * attrs, * colors;
+Gem_putstr_ex2(winid window, const char *str, const char *attrs, const char *colors, int attr, int color, int app)
 {
     Gem_putstr_ex(window, str, attrs ? attrs[0] : attr, colors ? colors[0] : color, app);
 }
 
 void
-Gem_display_file(fname, complain)
-const char *fname;
-boolean complain;
+Gem_display_file(const char *fname, boolean complain)
 {
     dlb *f;
     char buf[BUFSZ];
@@ -759,22 +735,25 @@ boolean complain;
     }
 }
 
+/*
+ * Parameters:
+ *   window: window to use, must be of type NHW_MENU
+ *   glyph: glyph to display with item (unused)
+ *   identifier: what to return if selected
+ *   ch: keyboard accelerator (0 = pick our own)
+ *   gch: group accelerator (0 = no group)
+ *   attr: attribute for string (like Gem_putstr())
+ *   color: color for string (like Gem_putstr_ex())
+ *   str: menu string
+ *   preselected: item is marked as selected
+ */
 /*ARGSUSED*/
 /*
  * Add a menu item to the beginning of the menu list.  This list is reversed
  * later.
  */
 void
-Gem_add_menu(window, glyph, identifier, ch, gch, attr, color, str, preselected)
-winid window;               /* window to use, must be of type NHW_MENU */
-int glyph;                  /* glyph to display with item (unused) */
-const anything *identifier; /* what to return if selected */
-char ch;                    /* keyboard accelerator (0 = pick our own) */
-char gch;                   /* group accelerator (0 = no group) */
-int attr;                   /* attribute for string (like Gem_putstr()) */
-int color;                  /* color for string (like Gem_putstr_ex()) */
-const char *str;            /* menu string */
-boolean preselected;        /* item is marked as selected */
+Gem_add_menu(winid window, int glyph, const anything *identifier, char ch, char gch, int attr, int color, const char *str, boolean preselected)
 {
     Gem_menu_item *G_item;
     const char *newstr;
@@ -804,32 +783,36 @@ boolean preselected;        /* item is marked as selected */
     mar_add_menu(window, G_item);
 }
 
+/*
+ * Parameters:
+ *   window: window to use, must be of type NHW_MENU
+ *   glyph: glyph to display with item (unused)
+ *   identifier: what to return if selected
+ *   ch: keyboard accelerator (0 = pick our own)
+ *   gch: group accelerator (0 = no group)
+ *   attr: attribute for string (like Gem_putstr())
+ *   color: color for string (like Gem_putstr_ex())
+ *   str: menu string
+ *   preselected: item is marked as selected
+ */
 void
-Gem_add_extended_menu(window, glyph, identifier, ch, gch, attr, color, str, preselected, info)
-winid window;               /* window to use, must be of type NHW_MENU */
-int glyph;                  /* glyph to display with item (unused) */
-const anything* identifier; /* what to return if selected */
-struct obj* otmp;
-char ch;                    /* keyboard accelerator (0 = pick our own) */
-char gch;                   /* group accelerator (0 = no group) */
-int attr;                   /* attribute for string (like Gem_putstr()) */
-int color;                  /* color for string (like Gem_putstr_ex()) */
-const char* str;            /* menu string */
-boolean preselected;        /* item is marked as selected */
-struct extended_menu_info info;
+Gem_add_extended_menu(winid window, int glyph, const anything *identifier, char ch, char gch, int attr, int color, const char *str, boolean preselected, struct extended_menu_info info)
 {
     Gem_add_menu(window, glyph, identifier, ch, gch, attr, color, str, preselected);
 }
 
 
 /*
+ * Parameters:
+ *   window: menu to use
+ *   prompt, subtitle: prompt to for menu
+ */
+/*
  * End a menu in this window, window must a type NHW_MENU.
  * We assign the keyboard accelerators as needed.
  */
 void
-Gem_end_menu_ex(window, prompt, subtitle)
-winid window;       /* menu to use */
-const char *prompt, *subtitle; /* prompt to for menu */
+Gem_end_menu_ex(winid window, const char *prompt, const char *subtitle)
 {
     if (window == WIN_ERR || mar_hol_win_type(window) != NHW_MENU)
         panic(winpanicstr, window);
@@ -844,10 +827,7 @@ const char *prompt, *subtitle; /* prompt to for menu */
 }
 
 int
-Gem_select_menu(window, how, menu_list)
-winid window;
-int how;
-menu_item **menu_list;
+Gem_select_menu(winid window, int how, menu_item **menu_list)
 {
     Gem_menu_item *Gmit;
     menu_item *mi;
@@ -902,9 +882,7 @@ Gem_wait_synch()
 #ifdef CLIPPING
 extern void mar_cliparound(void);
 void
-Gem_cliparound(x, y, force)
-int x, y;
-boolean force;
+Gem_cliparound(int x, int y, boolean force)
 {
     mar_curs(x - 1, y);
     mar_cliparound();
@@ -927,18 +905,13 @@ extern int mar_set_rogue(int);
 extern void mar_add_pet_sign(winid, int, int);
 
 void
-Gem_issue_gui_command(cmd_id, cmd_param, cmd_param2, cmd_str)
-int cmd_id, cmd_param, cmd_param2;
-const char* cmd_str;
+Gem_issue_gui_command(int cmd_id, int cmd_param, int cmd_param2, const char *cmd_str)
 {
     return;
 }
 
 void
-Gem_print_glyph(window, x, y, layers)
-winid window;
-xchar x, y;
-struct layer_info layers;
+Gem_print_glyph(winid window, xchar x, xchar y, struct layer_info layers)
 {
     int glyph = layers.glyph;
     int bkglyph = layers.bkglyph;
@@ -964,10 +937,7 @@ struct layer_info layers;
 void mar_print_char(winid, xchar, xchar, char, int);
 
 void
-mar_print_gl_char(window, x, y, layers)
-winid window;
-xchar x, y;
-struct layer_info layers;
+mar_print_gl_char(winid window, xchar x, xchar y, struct layer_info layers)
 {
     nhsym ch;
     int color;
@@ -989,8 +959,7 @@ extern void mar_raw_print(const char *);
 extern void mar_raw_print_bold(const char *);
 
 void
-Gem_raw_print(str)
-const char *str;
+Gem_raw_print(const char *str)
 {
     if (str && *str) {
         if (iflags.window_inited)
@@ -1001,8 +970,7 @@ const char *str;
 }
 
 void
-Gem_raw_print_bold(str)
-const char *str;
+Gem_raw_print_bold(const char *str)
 {
     if (str && *str) {
         if (iflags.window_inited)
@@ -1068,8 +1036,7 @@ Gem_get_ext_cmd()
 }
 
 void
-Gem_number_pad(state)
-int state;
+Gem_number_pad(int state)
 {
     state = state;
 }
@@ -1081,8 +1048,7 @@ win_Gem_init()
 
 #ifdef POSITIONBAR
 void
-Gem_update_positionbar(posbar)
-char *posbar;
+Gem_update_positionbar(char *posbar)
 {
 }
 #endif
@@ -1092,10 +1058,7 @@ void mar_set_text_to_rip(winid);
 char **rip_line = 0;
 
 void
-Gem_outrip(w, how, when)
-winid w;
-int how;
-time_t when;
+Gem_outrip(winid w, int how, time_t when)
 {
 /* Code from X11 windowport */
 #define STONE_LINE_LEN 15 /* # chars that fit on one line */
@@ -1126,7 +1089,7 @@ time_t when;
 
     /* Put death type on stone */
     for (line = DEATH_LINE, dpx = buf; line < YEAR_LINE; line++) {
-        register int i, i0;
+        int i, i0;
         char tmpchar;
         if ((i0 = strlen(dpx)) > STONE_LINE_LEN) {
             for (i = STONE_LINE_LEN; ((i0 > STONE_LINE_LEN) && i); i--)
@@ -1153,10 +1116,7 @@ time_t when;
         putstr(w, 0, "");
 }
 void
-mar_get_font(type, p_fname, psize)
-int type;
-char **p_fname;
-int *psize;
+mar_get_font(int type, char **p_fname, int *psize)
 {
     switch (type) {
     case NHW_MESSAGE:
@@ -1184,8 +1144,7 @@ int *psize;
     }
 }
 void
-Gem_preference_update(pref)
-const char *pref;
+Gem_preference_update(const char *pref)
 {
     if (stricmp(pref, "font_message") == 0
         || stricmp(pref, "font_size_message") == 0) {
@@ -1263,8 +1222,7 @@ const char *pref;
  * This is an exact duplicate of copy_of() in X11/winmenu.c.
  */
 static char *
-copy_of(s)
-const char *s;
+copy_of(const char *s)
 {
     if (!s)
         s = nullstr;

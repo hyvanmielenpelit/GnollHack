@@ -20,8 +20,8 @@ extern char orgdir[];
 #endif
 
 #if defined(TTY_GRAPHICS)
-extern void NDECL(backsp);
-extern void NDECL(clear_screen);
+extern void backsp(void);
+extern void clear_screen(void);
 #endif
 
 #if 0
@@ -33,13 +33,12 @@ static struct stat hbuf;
 #endif
 
 #ifdef PC_LOCKING
-static int NDECL(eraseoldlocks);
+static int eraseoldlocks(void);
 #endif
 
 #if 0
 int
-uptodate(fd)
-int fd;
+uptodate(int fd)
 {
 #ifdef WANT_GETHDATE
     if(fstat(fd, &buf)) {
@@ -77,9 +76,9 @@ int fd;
 
 #ifdef PC_LOCKING
 static int
-eraseoldlocks()
+eraseoldlocks(void)
 {
-    register int i;
+    int i;
 
     /* cannot use maxledgerno() here, because we need to find a lock name
      * before starting everything (including the dungeon initialization
@@ -100,9 +99,9 @@ eraseoldlocks()
 }
 
 void
-getlock()
+getlock(void)
 {
-    register int fd, c, ci, ct, ern;
+    int fd, c, ci, ct, ern;
     int fcmask = FCMASK;
     char tbuf[BUFSZ];
     const char *fq_lock;
@@ -242,12 +241,7 @@ gotlock:
 #endif /* PC_LOCKING */
 
 void
-regularize(s)
-/*
- * normalize file name - we don't like .'s, /'s, spaces, and
- * lots of other things
- */
-register char *s;
+regularize(char *s)
 {
     register char *lp;
 

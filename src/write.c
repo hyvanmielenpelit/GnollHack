@@ -5,15 +5,14 @@
 
 #include "hack.h"
 
-STATIC_DCL boolean FDECL(label_known, (int, struct obj *));
-STATIC_DCL char *FDECL(new_book_description, (int, char *));
+static boolean label_known(int, struct obj *);
+static char *new_book_description(int, char *);
 
 /*
  * returns basecost of a scroll or a spellbook
  */
 int
-ink_cost(otmp)
-register struct obj* otmp;
+ink_cost(struct obj *otmp)
 {
     if (!otmp)
         return 0;
@@ -22,8 +21,7 @@ register struct obj* otmp;
 }
 
 int
-otyp_ink_cost(otyp)
-int otyp;
+otyp_ink_cost(int otyp)
 {
     if (objects[otyp].oc_class == SPBOOK_CLASS)
     {
@@ -85,10 +83,8 @@ int otyp;
    unfortunately, we can't track things that haven't been added to
    the discoveries list and aren't present in current inventory,
    so some scrolls with ought to yield True will end up False */
-STATIC_OVL boolean
-label_known(scrolltype, objlist)
-int scrolltype;
-struct obj *objlist;
+static boolean
+label_known(int scrolltype, struct obj *objlist)
 {
     struct obj *otmp;
 
@@ -111,16 +107,15 @@ struct obj *objlist;
     return FALSE;
 }
 
-STATIC_VAR NEARDATA const char write_on[] = { SCROLL_CLASS, SPBOOK_CLASS, 0 };
+static NEARDATA const char write_on[] = { SCROLL_CLASS, SPBOOK_CLASS, 0 };
 
 /* write -- applying a magic marker */
 int
-dowrite(pen)
-register struct obj *pen;
+dowrite(struct obj *pen)
 {
-    register struct obj *paper;
+    struct obj *paper;
     char namebuf[OBUFSZ] = DUMMY, *nm, *bp;
-    register struct obj *new_obj;
+    struct obj *new_obj;
     int basecost, actualcost;
     int curseval;
     char qbuf[QBUFSZ];
@@ -485,10 +480,8 @@ found_novel_or_manual:
    looks funny, so we want to insert "into " prior to such descriptions;
    even that's rather iffy, indicating that such descriptions probably
    ought to be eliminated (especially "cloth"!) */
-STATIC_OVL char *
-new_book_description(booktype, outbuf)
-int booktype;
-char *outbuf;
+static char *
+new_book_description(int booktype, char *outbuf)
 {
     /* subset of description strings from objects.c; if it grows
        much, we may need to add a new flag field to objects[] instead */

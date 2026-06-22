@@ -39,28 +39,28 @@ long _stksize = 16 * 1024;
 
 #ifdef AMIGA
 extern int bigscreen;
-void NDECL(preserve_icon);
+void preserve_icon(void);
 #endif
 
-STATIC_DCL void FDECL(process_command_line_arguments, (int argc, char **argv));
-STATIC_DCL void NDECL(nhusage);
+static void process_command_line_arguments(int argc, char **argv);
+static void nhusage(void);
 
 #if defined(MICRO) || defined(OS2)
-extern void FDECL(gnollhack_exit, (int));
+extern void gnollhack_exit(int);
 #else
 #define gnollhack_exit exit
 #endif
 
 #ifdef EXEPATH
-STATIC_DCL char *FDECL(exepath, (char *));
+static char *exepath(char *);
 #endif
 
-int FDECL(main, (int, char **));
+int main(int, char **);
 
-extern boolean FDECL(pcmain, (int, char **));
+extern boolean pcmain(int, char **);
 
 #if defined(__BORLANDC__)
-void NDECL(startup);
+void startup(void);
 unsigned _stklen = STKSIZ;
 #endif
 
@@ -88,11 +88,9 @@ char *argv[];
 }
 
 boolean
-pcmain(argc, argv)
-int argc;
-char *argv[];
+pcmain(int argc, char *argv[])
 {
-    register int fd;
+    int fd;
     register char *dir;
 #if defined(MSDOS)
     char *envp = NULL;
@@ -530,10 +528,8 @@ attempt_restore:
     return resuming;
 }
 
-STATIC_OVL void
-process_command_line_arguments(argc, argv)
-int argc;
-char *argv[];
+static void
+process_command_line_arguments(int argc, char *argv[])
 {
     int i;
 
@@ -680,8 +676,8 @@ char *argv[];
     }
 }
 
-STATIC_OVL void
-nhusage()
+static void
+nhusage(void)
 {
     char buf1[BUFSZ], buf2[BUFSZ], *bufptr;
 
@@ -727,9 +723,7 @@ nhusage()
 
 #ifdef CHDIR
 void
-chdirx(dir, wr)
-char *dir;
-boolean wr;
+chdirx(char *dir, boolean wr)
 {
 #ifdef AMIGA
     static char thisdir[] = "";
@@ -757,7 +751,7 @@ boolean wr;
 #ifdef PORT_HELP
 #if defined(MSDOS)
 void
-port_help()
+port_help(void)
 {
     /* display port specific help file */
     display_file(PORT_HELP, 1);
@@ -767,7 +761,7 @@ port_help()
 
 /* validate wizard mode if player has requested access to it */
 boolean
-authorize_wizard_mode()
+authorize_wizard_mode(void)
 {
     if (!strcmp(plname, WIZARD_NAME))
         return TRUE;
@@ -785,8 +779,7 @@ authorize_wizard_mode()
 char exepathbuf[EXEPATHBUFSZ];
 
 char *
-exepath(str)
-char *str;
+exepath(char *str)
 {
     char *tmp, *tmp2;
     int bsize;

@@ -22,103 +22,102 @@ struct window_procs {
                            * '+' are reserved for processors. */
     uint64_t wincap; /* window port capability options supported */
     uint64_t wincap2; /* additional window port capability options */
-    void FDECL((*win_init_nhwindows), (int *, char **));
-    void NDECL((*win_player_selection));
-    void NDECL((*win_askname));
-    void NDECL((*win_get_nh_event));
-    void FDECL((*win_exit_nhwindows), (const char *));
-    void FDECL((*win_suspend_nhwindows), (const char *));
-    void NDECL((*win_resume_nhwindows));
-    winid FDECL((*win_create_nhwindow_ex), (int, int, int, struct extended_create_window_info));
-    void FDECL((*win_clear_nhwindow), (winid));
-    void FDECL((*win_display_nhwindow), (winid, BOOLEAN_P));
-    void FDECL((*win_destroy_nhwindow), (winid));
-    void FDECL((*win_curs), (winid, int, int));
-    void FDECL((*win_putstr_ex), (winid, const char *, int, int, int));
-    void FDECL((*win_putstr_ex2), (winid, const char*, const char*, const char*, int, int, int));
-    void FDECL((*win_putmixed_ex), (winid, const char *, int, int, int));
-    void FDECL((*win_display_file), (const char *, BOOLEAN_P));
-    void FDECL((*win_start_menu_ex), (winid, int));
-    void FDECL((*win_add_menu), (winid, int, const ANY_P *, CHAR_P, CHAR_P,
-                                 int, int, const char *, BOOLEAN_P));
-    void FDECL((*win_add_extended_menu), (winid, int, const ANY_P*, CHAR_P, CHAR_P,
-        int, int, const char*, BOOLEAN_P, struct extended_menu_info));
-    void FDECL((*win_end_menu_ex), (winid, const char *, const char*));
-    int FDECL((*win_select_menu), (winid, int, MENU_ITEM_P **));
-    char FDECL((*win_message_menu), (CHAR_P, int, const char *));
-    void NDECL((*win_update_inventory));
-    void NDECL((*win_mark_synch));
-    void NDECL((*win_wait_synch));
+    void (*win_init_nhwindows)(int *, char **);
+    void (*win_player_selection)(void);
+    void (*win_askname)(void);
+    void (*win_get_nh_event)(void);
+    void (*win_exit_nhwindows)(const char *);
+    void (*win_suspend_nhwindows)(const char *);
+    void (*win_resume_nhwindows)(void);
+    winid (*win_create_nhwindow_ex)(int, int, int, struct extended_create_window_info);
+    void (*win_clear_nhwindow)(winid);
+    void (*win_display_nhwindow)(winid, boolean);
+    void (*win_destroy_nhwindow)(winid);
+    void (*win_curs)(winid, int, int);
+    void (*win_putstr_ex)(winid, const char *, int, int, int);
+    void (*win_putstr_ex2)(winid, const char*, const char*, const char*, int, int, int);
+    void (*win_putmixed_ex)(winid, const char *, int, int, int);
+    void (*win_display_file)(const char *, boolean);
+    void (*win_start_menu_ex)(winid, int);
+    void (*win_add_menu)(winid, int, const ANY_P *, char, char,
+                                 int, int, const char *, boolean);
+    void (*win_add_extended_menu)(winid, int, const ANY_P*, char, char,
+        int, int, const char*, boolean, struct extended_menu_info);
+    void (*win_end_menu_ex)(winid, const char *, const char*);
+    int (*win_select_menu)(winid, int, MENU_ITEM_P **);
+    char (*win_message_menu)(char, int, const char *);
+    void (*win_update_inventory)(void);
+    void (*win_mark_synch)(void);
+    void (*win_wait_synch)(void);
 #ifdef CLIPPING
-    void FDECL((*win_cliparound), (int, int, BOOLEAN_P));
+    void (*win_cliparound)(int, int, boolean);
 #endif
 #ifdef POSITIONBAR
-    void FDECL((*win_update_positionbar), (char *));
+    void (*win_update_positionbar)(char *);
 #endif
-    void FDECL((*win_print_glyph), (winid, XCHAR_P, XCHAR_P, struct layer_info));
-    void FDECL((*win_issue_gui_command), (int, int, int, const char*));
-    void FDECL((*win_raw_print), (const char *));
-    void FDECL((*win_raw_print_bold), (const char *));
-    int NDECL((*win_nhgetch));
-    int FDECL((*win_nh_poskey), (int *, int *, int *));
-    void NDECL((*win_nhbell));
-    int NDECL((*win_doprev_message));
-    char FDECL((*win_yn_function_ex), (int, int, int, int, const char*, const char *, const char *, CHAR_P, const char*, const char*, uint64_t));
-    void FDECL((*win_getlin_ex), (int, int, int, const char *, char *, const char*, const char*, const char*));
-    int NDECL((*win_get_ext_cmd));
-    void FDECL((*win_number_pad), (int));
-    void NDECL((*win_delay_output));
-    void FDECL((*win_delay_output_milliseconds), (int));
-    void FDECL((*win_delay_output_intervals), (int));
+    void (*win_print_glyph)(winid, xchar, xchar, struct layer_info);
+    void (*win_issue_gui_command)(int, int, int, const char*);
+    void (*win_raw_print)(const char *);
+    void (*win_raw_print_bold)(const char *);
+    int (*win_nhgetch)(void);
+    int (*win_nh_poskey)(int *, int *, int *);
+    void (*win_nhbell)(void);
+    int (*win_doprev_message)(void);
+    char (*win_yn_function_ex)(int, int, int, int, const char*, const char *, const char *, char, const char*, const char*, uint64_t);
+    void (*win_getlin_ex)(int, int, int, const char *, char *, const char*, const char*, const char*);
+    int (*win_get_ext_cmd)(void);
+    void (*win_number_pad)(int);
+    void (*win_delay_output)(void);
+    void (*win_delay_output_milliseconds)(int);
+    void (*win_delay_output_intervals)(int);
 #ifdef CHANGE_COLOR
-    void FDECL((*win_change_color), (int, int64_t, int));
+    void (*win_change_color)(int, int64_t, int);
 #ifdef MAC
-    void FDECL((*win_change_background), (int));
-    short FDECL((*win_set_font_name), (winid, char *));
+    void (*win_change_background)(int);
+    short (*win_set_font_name)(winid, char *);
 #endif
-    char *NDECL((*win_get_color_string));
+    char *(*win_get_color_string)(void);
 #endif
 
     /* other defs that really should go away (they're tty specific) */
-    void NDECL((*win_start_screen));
-    void NDECL((*win_end_screen));
+    void (*win_start_screen)(void);
+    void (*win_end_screen)(void);
 
-    void FDECL((*win_outrip), (winid, int, time_t));
-    void FDECL((*win_preference_update), (const char *));
-    char *FDECL((*win_getmsghistory_ex), (char**, char**, BOOLEAN_P));
-    void FDECL((*win_putmsghistory_ex), (const char *, const char *, const char *, BOOLEAN_P));
-    void FDECL((*win_status_init), (int));
-    void NDECL((*win_status_finish));
-    void FDECL((*win_status_enablefield),
-               (int, const char *, const char *, BOOLEAN_P));
-    void FDECL((*win_status_update), (int, genericptr_t, int, int, int, uint64_t *));
-    boolean NDECL((*win_can_suspend));
-    void NDECL((*win_stretch_window));
-    void FDECL((*win_set_animation_timer_interval), (unsigned int));
-    int FDECL((*win_open_special_view), (struct special_view_info));
-    void FDECL((*win_stop_all_sounds), (struct stop_all_info));
-    void FDECL((*win_play_immediate_ghsound), (struct ghsound_immediate_info));
-    void FDECL((*win_play_ghsound_occupation_ambient), (struct ghsound_occupation_ambient_info));
-    void FDECL((*win_play_ghsound_effect_ambient), (struct ghsound_effect_ambient_info));
-    void FDECL((*win_set_effect_ambient_volume), (struct effect_ambient_volume_info));
-    void FDECL((*win_play_ghsound_music), (struct ghsound_music_info));
-    void FDECL((*win_play_ghsound_level_ambient), (struct ghsound_level_ambient_info));
-    void FDECL((*win_play_ghsound_environment_ambient), (struct ghsound_environment_ambient_info));
-    void NDECL((*win_adjust_ghsound_general_volumes));
-    void FDECL((*win_add_ambient_ghsound), (sound_source*));
-    void FDECL((*win_delete_ambient_ghsound), (sound_source*));
-    void FDECL((*win_set_ambient_ghsound_volume), (sound_source*));
-    void NDECL((*win_clear_context_menu));
-    void FDECL((*win_add_context_menu), (int, int, int, int, const char*, const char*, int, int));
-    void FDECL((*win_update_status_button), (int, int, int, uint64_t));
-    void FDECL((*win_toggle_animation_timer), (int, int, int, int, int, int, uint64_t)); /* timettype, id, state = on/off, x, y, flags */
-    void FDECL((*win_display_floating_text), (int, int, const char*, int, int, int, uint64_t));
-    void FDECL((*win_display_screen_text), (const char*, const char*, const char*, int, int, int, uint64_t));
-    void FDECL((*win_display_popup_text), (const char*, const char*, int, int, int, int, uint64_t));
-    void FDECL((*win_display_gui_effect), (int, int, int, int, int, int, uint64_t));
-    void FDECL((*win_update_cursor), (int, int, int));
-    int NDECL((*win_ui_has_input));
-    void FDECL((*win_exit_hack), (int));
+    void (*win_outrip)(winid, int, time_t);
+    void (*win_preference_update)(const char *);
+    char *(*win_getmsghistory_ex)(char**, char**, boolean);
+    void (*win_putmsghistory_ex)(const char *, const char *, const char *, boolean);
+    void (*win_status_init)(int);
+    void (*win_status_finish)(void);
+    void (*win_status_enablefield)(int, const char *, const char *, boolean);
+    void (*win_status_update)(int, genericptr_t, int, int, int, uint64_t *);
+    boolean (*win_can_suspend)(void);
+    void (*win_stretch_window)(void);
+    void (*win_set_animation_timer_interval)(unsigned int);
+    int (*win_open_special_view)(struct special_view_info);
+    void (*win_stop_all_sounds)(struct stop_all_info);
+    void (*win_play_immediate_ghsound)(struct ghsound_immediate_info);
+    void (*win_play_ghsound_occupation_ambient)(struct ghsound_occupation_ambient_info);
+    void (*win_play_ghsound_effect_ambient)(struct ghsound_effect_ambient_info);
+    void (*win_set_effect_ambient_volume)(struct effect_ambient_volume_info);
+    void (*win_play_ghsound_music)(struct ghsound_music_info);
+    void (*win_play_ghsound_level_ambient)(struct ghsound_level_ambient_info);
+    void (*win_play_ghsound_environment_ambient)(struct ghsound_environment_ambient_info);
+    void (*win_adjust_ghsound_general_volumes)(void);
+    void (*win_add_ambient_ghsound)(sound_source*);
+    void (*win_delete_ambient_ghsound)(sound_source*);
+    void (*win_set_ambient_ghsound_volume)(sound_source*);
+    void (*win_clear_context_menu)(void);
+    void (*win_add_context_menu)(int, int, int, int, const char*, const char*, int, int);
+    void (*win_update_status_button)(int, int, int, uint64_t);
+    void (*win_toggle_animation_timer)(int, int, int, int, int, int, uint64_t); /* timettype, id, state = on/off, x, y, flags */
+    void (*win_display_floating_text)(int, int, const char*, int, int, int, uint64_t);
+    void (*win_display_screen_text)(const char*, const char*, const char*, int, int, int, uint64_t);
+    void (*win_display_popup_text)(const char*, const char*, int, int, int, int, uint64_t);
+    void (*win_display_gui_effect)(int, int, int, int, int, int, uint64_t);
+    void (*win_update_cursor)(int, int, int);
+    int (*win_ui_has_input)(void);
+    void (*win_exit_hack)(int);
 };
 
 extern
@@ -425,104 +424,102 @@ struct chain_procs {
                            * '+' are reserved for processors. */
     uint64_t wincap; /* window port capability options supported */
     uint64_t wincap2; /* additional window port capability options */
-    void FDECL((*win_init_nhwindows), (CARGS, int *, char **));
-    void FDECL((*win_player_selection), (CARGS));
-    void FDECL((*win_askname), (CARGS));
-    void FDECL((*win_get_nh_event), (CARGS));
-    void FDECL((*win_exit_nhwindows), (CARGS, const char *));
-    void FDECL((*win_suspend_nhwindows), (CARGS, const char *));
-    void FDECL((*win_resume_nhwindows), (CARGS));
-    winid FDECL((*win_create_nhwindow_ex), (CARGS, int, int, int, struct extended_create_window_info));
-    void FDECL((*win_clear_nhwindow), (CARGS, winid));
-    void FDECL((*win_display_nhwindow), (CARGS, winid, BOOLEAN_P));
-    void FDECL((*win_destroy_nhwindow), (CARGS, winid));
-    void FDECL((*win_curs), (CARGS, winid, int, int));
-    void FDECL((*win_putstr_ex), (CARGS, winid, const char *, int, int, int));
-    void FDECL((*win_putstr_ex2), (CARGS, winid, const char*, const char*, const char*, int, int, int));
-    void FDECL((*win_putmixed_ex), (CARGS, winid, const char *, int, int, int));
-    void FDECL((*win_display_file), (CARGS, const char *, BOOLEAN_P));
-    void FDECL((*win_start_menu_ex), (CARGS, winid, int));
-    void FDECL((*win_add_menu), (CARGS, winid, int, const ANY_P *, CHAR_P,
-                                 CHAR_P, int, int, const char *, BOOLEAN_P));
-    void FDECL((*win_add_extended_menu), (CARGS, winid, int, const ANY_P*, CHAR_P,
-        CHAR_P, int, int, const char*, BOOLEAN_P, struct extended_menu_info));
-    void FDECL((*win_end_menu_ex), (CARGS, winid, const char *, const char*));
-    int FDECL((*win_select_menu), (CARGS, winid, int, MENU_ITEM_P **));
-    char FDECL((*win_message_menu), (CARGS, CHAR_P, int, const char *));
-    void FDECL((*win_update_inventory), (CARGS));
-    void FDECL((*win_mark_synch), (CARGS));
-    void FDECL((*win_wait_synch), (CARGS));
+    void (*win_init_nhwindows)(CARGS, int *, char **);
+    void (*win_player_selection)(CARGS);
+    void (*win_askname)(CARGS);
+    void (*win_get_nh_event)(CARGS);
+    void (*win_exit_nhwindows)(CARGS, const char *);
+    void (*win_suspend_nhwindows)(CARGS, const char *);
+    void (*win_resume_nhwindows)(CARGS);
+    winid (*win_create_nhwindow_ex)(CARGS, int, int, int, struct extended_create_window_info);
+    void (*win_clear_nhwindow)(CARGS, winid);
+    void (*win_display_nhwindow)(CARGS, winid, boolean);
+    void (*win_destroy_nhwindow)(CARGS, winid);
+    void (*win_curs)(CARGS, winid, int, int);
+    void (*win_putstr_ex)(CARGS, winid, const char *, int, int, int);
+    void (*win_putstr_ex2)(CARGS, winid, const char*, const char*, const char*, int, int, int);
+    void (*win_putmixed_ex)(CARGS, winid, const char *, int, int, int);
+    void (*win_display_file)(CARGS, const char *, boolean);
+    void (*win_start_menu_ex)(CARGS, winid, int);
+    void (*win_add_menu)(CARGS, winid, int, const ANY_P *, char,
+                                 char, int, int, const char *, boolean);
+    void (*win_add_extended_menu)(CARGS, winid, int, const ANY_P*, char,
+        char, int, int, const char*, boolean, struct extended_menu_info);
+    void (*win_end_menu_ex)(CARGS, winid, const char *, const char*);
+    int (*win_select_menu)(CARGS, winid, int, MENU_ITEM_P **);
+    char (*win_message_menu)(CARGS, char, int, const char *);
+    void (*win_update_inventory)(CARGS);
+    void (*win_mark_synch)(CARGS);
+    void (*win_wait_synch)(CARGS);
 #ifdef CLIPPING
-    void FDECL((*win_cliparound), (CARGS, int, int, BOOLEAN_P));
+    void (*win_cliparound)(CARGS, int, int, boolean);
 #endif
 #ifdef POSITIONBAR
-    void FDECL((*win_update_positionbar), (CARGS, char *));
+    void (*win_update_positionbar)(CARGS, char *);
 #endif
-    void FDECL((*win_print_glyph), (CARGS, winid, XCHAR_P, XCHAR_P, struct layer_info));
-    void FDECL((*win_issue_gui_command), (int, int, int, const char*));
-    void FDECL((*win_raw_print), (CARGS, const char *));
-    void FDECL((*win_raw_print_bold), (CARGS, const char *));
-    int FDECL((*win_nhgetch), (CARGS));
-    int FDECL((*win_nh_poskey), (CARGS, int *, int *, int *));
-    void FDECL((*win_nhbell), (CARGS));
-    int FDECL((*win_doprev_message), (CARGS));
-    char FDECL((*win_yn_function_ex),
-               (CARGS, int, int, int, int, const char *, const char *, CHAR_P, const char*, const char*, uint64_t));
-    void FDECL((*win_getlin_ex), (CARGS, int, int, int, const char *, char *, const char*, const char*, const char*));
-    int FDECL((*win_get_ext_cmd), (CARGS));
-    void FDECL((*win_number_pad), (CARGS, int));
-    void FDECL((*win_delay_output), (CARGS));
-    void FDECL((*win_delay_output_milliseconds), (CARGS, int));
-    void FDECL((*win_delay_output_intervals), (CARGS, int));
+    void (*win_print_glyph)(CARGS, winid, xchar, xchar, struct layer_info);
+    void (*win_issue_gui_command)(int, int, int, const char*);
+    void (*win_raw_print)(CARGS, const char *);
+    void (*win_raw_print_bold)(CARGS, const char *);
+    int (*win_nhgetch)(CARGS);
+    int (*win_nh_poskey)(CARGS, int *, int *, int *);
+    void (*win_nhbell)(CARGS);
+    int (*win_doprev_message)(CARGS);
+    char (*win_yn_function_ex)(CARGS, int, int, int, int, const char *, const char *, char, const char*, const char*, uint64_t);
+    void (*win_getlin_ex)(CARGS, int, int, int, const char *, char *, const char*, const char*, const char*);
+    int (*win_get_ext_cmd)(CARGS);
+    void (*win_number_pad)(CARGS, int);
+    void (*win_delay_output)(CARGS);
+    void (*win_delay_output_milliseconds)(CARGS, int);
+    void (*win_delay_output_intervals)(CARGS, int);
 #ifdef CHANGE_COLOR
-    void FDECL((*win_change_color), (CARGS, int, int64_t, int));
+    void (*win_change_color)(CARGS, int, int64_t, int);
 #ifdef MAC
-    void FDECL((*win_change_background), (CARGS, int));
-    short FDECL((*win_set_font_name), (CARGS, winid, char *));
+    void (*win_change_background)(CARGS, int);
+    short (*win_set_font_name)(CARGS, winid, char *);
 #endif
-    char *FDECL((*win_get_color_string), (CARGS));
+    char *(*win_get_color_string)(CARGS);
 #endif
 
     /* other defs that really should go away (they're tty specific) */
-    void FDECL((*win_start_screen), (CARGS));
-    void FDECL((*win_end_screen), (CARGS));
+    void (*win_start_screen)(CARGS);
+    void (*win_end_screen)(CARGS);
 
-    void FDECL((*win_outrip), (CARGS, winid, int, time_t));
-    void FDECL((*win_preference_update), (CARGS, const char *));
-    char *FDECL((*win_getmsghistory_ex), (CARGS, char**, char**, BOOLEAN_P));
-    void FDECL((*win_putmsghistory_ex), (CARGS, const char *, const char*, const char*, BOOLEAN_P));
-    void FDECL((*win_status_init), (CARGS, int));
-    void FDECL((*win_status_finish), (CARGS));
-    void FDECL((*win_status_enablefield),
-               (CARGS, int, const char *, const char *, BOOLEAN_P));
-    void FDECL((*win_status_update), (CARGS, int, genericptr_t, int, int, int, uint64_t *));
-    boolean FDECL((*win_can_suspend), (CARGS));
-    void FDECL((*win_stretch_window, (CARGS)));
-    void FDECL((*win_set_animation_timer_interval), (CARGS, unsigned int));
-    int FDECL((*win_open_special_view), (CARGS, struct special_view_info));
-    void FDECL((*win_stop_all_sounds), (CARGS, struct stop_all_info));
-    void FDECL((*win_play_immediate_ghsound), (CARGS, struct ghsound_immediate_info));
-    void FDECL((*win_play_ghsound_occupation_ambient), (CARGS, struct ghsound_occupation_ambient_info));
-    void FDECL((*win_play_ghsound_effect_ambient), (CARGS, struct ghsound_effect_ambient_info));
-    void FDECL((*win_set_effect_ambient_volume), (CARGS, struct effect_ambient_volume_info));
-    void FDECL((*win_play_ghsound_music), (CARGS, struct ghsound_music_info));
-    void FDECL((*win_play_ghsound_level_ambient), (CARGS, struct ghsound_level_ambient_info));
-    void FDECL((*win_play_ghsound_environment_ambient), (CARGS, struct ghsound_environment_ambient_info));
-    void FDECL((*win_adjust_ghsound_general_volumes, (CARGS))));
-    void FDECL((*win_add_ambient_ghsound), (CARGS, sound_source*));
-    void FDECL((*win_delete_ambient_ghsound), (CARGS, sound_source*));
-    void FDECL((*win_set_ambient_ghsound_volume), (CARGS, sound_source*));
-    void FDECL((*win_clear_context_menu), (CARGS));
-    void FDECL((*win_add_context_menu), (CARGS, int, int, int, int, const char*, const char*, int, int));
-    void FDECL((*win_update_status_button), (CARGS, int, int, int, uint64_t));
-    void FDECL((*win_toggle_animation_timer), (CARGS, int, int, int, int, int, int, uint64_t));
-    void FDECL((*win_display_floating_text), (CARGS, int, int, const char*, int, int, int, uint64_t));
-    void FDECL((*win_display_screen_text), (CARGS, const char*, const char*, const char*, int, int, int, uint64_t));
-    void FDECL((*win_display_popup_text), (CARGS, const char*, const char*, int, int, int, int, uint64_t));
-    void FDECL((*win_display_gui_effect), (CARGS, int, int, int, int, int, int, uint64_t));
-    void FDECL((*win_update_cursor), (CARGS, int, int, int));
-    int FDECL((*win_ui_has_input), (CARGS));
-    void FDECL((*win_exit_hack), (CARGS, int));
+    void (*win_outrip)(CARGS, winid, int, time_t);
+    void (*win_preference_update)(CARGS, const char *);
+    char *(*win_getmsghistory_ex)(CARGS, char**, char**, boolean);
+    void (*win_putmsghistory_ex)(CARGS, const char *, const char*, const char*, boolean);
+    void (*win_status_init)(CARGS, int);
+    void (*win_status_finish)(CARGS);
+    void (*win_status_enablefield)(CARGS, int, const char *, const char *, boolean);
+    void (*win_status_update)(CARGS, int, genericptr_t, int, int, int, uint64_t *);
+    boolean (*win_can_suspend)(CARGS);
+    void (*win_stretch_window(CARGS));
+    void (*win_set_animation_timer_interval)(CARGS, unsigned int);
+    int (*win_open_special_view)(CARGS, struct special_view_info);
+    void (*win_stop_all_sounds)(CARGS, struct stop_all_info);
+    void (*win_play_immediate_ghsound)(CARGS, struct ghsound_immediate_info);
+    void (*win_play_ghsound_occupation_ambient)(CARGS, struct ghsound_occupation_ambient_info);
+    void (*win_play_ghsound_effect_ambient)(CARGS, struct ghsound_effect_ambient_info);
+    void (*win_set_effect_ambient_volume)(CARGS, struct effect_ambient_volume_info);
+    void (*win_play_ghsound_music)(CARGS, struct ghsound_music_info);
+    void (*win_play_ghsound_level_ambient)(CARGS, struct ghsound_level_ambient_info);
+    void (*win_play_ghsound_environment_ambient)(CARGS, struct ghsound_environment_ambient_info);
+    void (*win_adjust_ghsound_general_volumes(CARGS)));
+    void (*win_add_ambient_ghsound)(CARGS, sound_source*);
+    void (*win_delete_ambient_ghsound)(CARGS, sound_source*);
+    void (*win_set_ambient_ghsound_volume)(CARGS, sound_source*);
+    void (*win_clear_context_menu)(CARGS);
+    void (*win_add_context_menu)(CARGS, int, int, int, int, const char*, const char*, int, int);
+    void (*win_update_status_button)(CARGS, int, int, int, uint64_t);
+    void (*win_toggle_animation_timer)(CARGS, int, int, int, int, int, int, uint64_t);
+    void (*win_display_floating_text)(CARGS, int, int, const char*, int, int, int, uint64_t);
+    void (*win_display_screen_text)(CARGS, const char*, const char*, const char*, int, int, int, uint64_t);
+    void (*win_display_popup_text)(CARGS, const char*, const char*, int, int, int, int, uint64_t);
+    void (*win_display_gui_effect)(CARGS, int, int, int, int, int, int, uint64_t);
+    void (*win_update_cursor)(CARGS, int, int, int);
+    int (*win_ui_has_input)(CARGS);
+    void (*win_exit_hack)(CARGS, int);
 };
 #endif /* WINCHAIN */
 
@@ -530,106 +527,105 @@ struct chain_procs {
 /*
  * window port routines available in sys/share/safeproc.c
  */
-extern struct window_procs *FDECL(get_safe_procs, (int));
-extern void FDECL(safe_init_nhwindows, (int *, char **));
-extern void NDECL(safe_player_selection);
-extern void NDECL(safe_askname);
-extern void NDECL(safe_get_nh_event);
-extern void FDECL(safe_exit_nhwindows, (const char *));
-extern void FDECL(safe_suspend_nhwindows, (const char *));
-extern void NDECL(safe_resume_nhwindows);
-extern winid FDECL(safe_create_nhwindow_ex, (int, int, int, struct extended_create_window_info));
-extern void FDECL(safe_clear_nhwindow, (winid));
-extern void FDECL(safe_display_nhwindow, (winid, BOOLEAN_P));
-extern void FDECL(safe_destroy_nhwindow, (winid));
-extern void FDECL(safe_curs, (winid, int, int));
-extern void FDECL(safe_putstr_ex, (winid, const char *, int, int, int));
-extern void FDECL(safe_putstr_ex2, (winid, const char*, const char*, const char*, int, int, int));
-extern void FDECL(safe_putmixed_ex, (winid, const char *, int, int, int));
-extern void FDECL(safe_display_file, (const char *, BOOLEAN_P));
-extern void FDECL(safe_start_menu_ex, (winid, int));
-extern void FDECL(safe_add_menu, (winid, int, const ANY_P *, CHAR_P, CHAR_P,
-                                  int, int, const char *, BOOLEAN_P));
-extern void FDECL(safe_add_extended_menu, (winid, int, const ANY_P*, CHAR_P, CHAR_P,
-    int, int, const char*, BOOLEAN_P, struct extended_menu_info));
-extern void FDECL(safe_end_menu_ex, (winid, const char *, const char*));
-extern int FDECL(safe_select_menu, (winid, int, MENU_ITEM_P **));
-extern char FDECL(safe_message_menu, (CHAR_P, int, const char *));
-extern void NDECL(safe_update_inventory);
-extern void NDECL(safe_mark_synch);
-extern void NDECL(safe_wait_synch);
+extern struct window_procs *get_safe_procs(int);
+extern void safe_init_nhwindows(int *, char **);
+extern void safe_player_selection(void);
+extern void safe_askname(void);
+extern void safe_get_nh_event(void);
+extern void safe_exit_nhwindows(const char *);
+extern void safe_suspend_nhwindows(const char *);
+extern void safe_resume_nhwindows(void);
+extern winid safe_create_nhwindow_ex(int, int, int, struct extended_create_window_info);
+extern void safe_clear_nhwindow(winid);
+extern void safe_display_nhwindow(winid, boolean);
+extern void safe_destroy_nhwindow(winid);
+extern void safe_curs(winid, int, int);
+extern void safe_putstr_ex(winid, const char *, int, int, int);
+extern void safe_putstr_ex2(winid, const char*, const char*, const char*, int, int, int);
+extern void safe_putmixed_ex(winid, const char *, int, int, int);
+extern void safe_display_file(const char *, boolean);
+extern void safe_start_menu_ex(winid, int);
+extern void safe_add_menu(winid, int, const ANY_P *, char, char,
+                                  int, int, const char *, boolean);
+extern void safe_add_extended_menu(winid, int, const ANY_P*, char, char,
+    int, int, const char*, boolean, struct extended_menu_info);
+extern void safe_end_menu_ex(winid, const char *, const char*);
+extern int safe_select_menu(winid, int, MENU_ITEM_P **);
+extern char safe_message_menu(char, int, const char *);
+extern void safe_update_inventory(void);
+extern void safe_mark_synch(void);
+extern void safe_wait_synch(void);
 #ifdef CLIPPING
-extern void FDECL(safe_cliparound, (int, int, BOOLEAN_P));
+extern void safe_cliparound(int, int, boolean);
 #endif
 #ifdef POSITIONBAR
-extern void FDECL(safe_update_positionbar, (char *));
+extern void safe_update_positionbar(char *);
 #endif
-extern void FDECL(safe_print_glyph, (winid, XCHAR_P, XCHAR_P, struct layer_info));
-extern void FDECL(safe_issue_gui_command, (int, int, int, const char*));
-extern void FDECL(safe_raw_print, (const char *));
-extern void FDECL(safe_raw_print_bold, (const char *));
-extern int NDECL(safe_nhgetch);
-extern int FDECL(safe_nh_poskey, (int *, int *, int *));
-extern void NDECL(safe_nhbell);
-extern int NDECL(safe_doprev_message);
-extern char FDECL(safe_yn_function_ex, (int, int, int, int, const char *, const char *, const char *, CHAR_P, const char*, const char*, uint64_t));
-extern void FDECL(safe_getlin_ex, (int, int, int, const char *, char *, const char*, const char*, const char*));
-extern int NDECL(safe_get_ext_cmd);
-extern void FDECL(safe_number_pad, (int));
-extern void NDECL(safe_delay_output);
-extern void FDECL(safe_delay_output_milliseconds, (int));
-extern void FDECL(safe_delay_output_intervals, (int));
+extern void safe_print_glyph(winid, xchar, xchar, struct layer_info);
+extern void safe_issue_gui_command(int, int, int, const char*);
+extern void safe_raw_print(const char *);
+extern void safe_raw_print_bold(const char *);
+extern int safe_nhgetch(void);
+extern int safe_nh_poskey(int *, int *, int *);
+extern void safe_nhbell(void);
+extern int safe_doprev_message(void);
+extern char safe_yn_function_ex(int, int, int, int, const char *, const char *, const char *, char, const char*, const char*, uint64_t);
+extern void safe_getlin_ex(int, int, int, const char *, char *, const char*, const char*, const char*);
+extern int safe_get_ext_cmd(void);
+extern void safe_number_pad(int);
+extern void safe_delay_output(void);
+extern void safe_delay_output_milliseconds(int);
+extern void safe_delay_output_intervals(int);
 #ifdef CHANGE_COLOR
-extern void FDECL(safe_change_color, (int, int64_t, int));
+extern void safe_change_color(int, int64_t, int);
 #ifdef MAC
-extern void FDECL(safe_change_background, (int));
-extern short FDECL(safe_set_font_name, (winid, char *));
+extern void safe_change_background(int);
+extern short safe_set_font_name(winid, char *);
 #endif
-extern char *NDECL(safe_get_color_string);
+extern char *safe_get_color_string(void);
 #endif
-extern void NDECL(safe_start_screen);
-extern void NDECL(safe_end_screen);
-extern void FDECL(safe_outrip, (winid, int, time_t));
-extern void FDECL(safe_preference_update, (const char *));
-extern char *FDECL(safe_getmsghistory_ex, (char**, char**, BOOLEAN_P));
-extern void FDECL(safe_putmsghistory_ex, (const char *, const char *, const char *, BOOLEAN_P));
-extern void FDECL(safe_status_init, (int));
-extern void NDECL(safe_status_finish);
-extern void FDECL(safe_status_enablefield,
-                    (int, const char *, const char *, BOOLEAN_P));
-extern void FDECL(safe_status_update, (int, genericptr_t, int, int, int, uint64_t *));
-extern boolean NDECL(safe_can_suspend);
-extern void NDECL(safe_stretch_window);
-extern void FDECL(safe_set_animation_timer_interval, (unsigned int));
-extern int FDECL(safe_open_special_view, (struct special_view_info));
-extern void FDECL(safe_stop_all_sounds, (struct stop_all_info));
-extern void FDECL(safe_play_ghsound_occupation_ambient, (struct ghsound_occupation_ambient_info));
-extern void FDECL(safe_play_ghsound_effect_ambient, (struct ghsound_effect_ambient_info));
-extern void FDECL(safe_set_effect_ambient_volume, (struct effect_ambient_volume_info));
-extern void FDECL(safe_play_ghsound_level_ambient, (struct ghsound_level_ambient_info));
-extern void FDECL(safe_play_ghsound_environment_ambient, (struct ghsound_environment_ambient_info));
-extern void FDECL(safe_play_ghsound_music, (struct ghsound_music_info));
-extern void FDECL(safe_play_immediate_ghsound, (struct ghsound_immediate_info));
-extern void NDECL(safe_adjust_ghsound_general_volumes);
-extern void FDECL(safe_add_ambient_ghsound, (struct soundsource_t*));
-extern void FDECL(safe_delete_ambient_ghsound, (struct soundsource_t*));
-extern void FDECL(safe_set_ambient_ghsound_volume, (struct soundsource_t*));
-extern void NDECL(safe_clear_context_menu);
-extern void FDECL(safe_add_context_menu, (int, int, int, int, const char*, const char*, int, int));
-extern void FDECL(safe_update_status_button, (int, int, int, uint64_t));
-extern void FDECL(safe_toggle_animation_timer, (int, int, int, int, int, int, uint64_t));
-extern void FDECL(safe_display_floating_text, (int, int, const char*, int, int, int, uint64_t));
-extern void FDECL(safe_display_screen_text, (const char*, const char*, const char*, int, int, int, uint64_t));
-extern void FDECL(safe_display_popup_text, (const char*, const char*, int, int, int, int, uint64_t));
-extern void FDECL(safe_display_gui_effect, (int, int, int, int, int, int, uint64_t));
-extern void FDECL(safe_update_cursor, (int, int, int));
-extern int NDECL(safe_ui_has_input);
-extern void FDECL(safe_exit_hack, (int));
+extern void safe_start_screen(void);
+extern void safe_end_screen(void);
+extern void safe_outrip(winid, int, time_t);
+extern void safe_preference_update(const char *);
+extern char *safe_getmsghistory_ex(char**, char**, boolean);
+extern void safe_putmsghistory_ex(const char *, const char *, const char *, boolean);
+extern void safe_status_init(int);
+extern void safe_status_finish(void);
+extern void safe_status_enablefield(int, const char *, const char *, boolean);
+extern void safe_status_update(int, genericptr_t, int, int, int, uint64_t *);
+extern boolean safe_can_suspend(void);
+extern void safe_stretch_window(void);
+extern void safe_set_animation_timer_interval(unsigned int);
+extern int safe_open_special_view(struct special_view_info);
+extern void safe_stop_all_sounds(struct stop_all_info);
+extern void safe_play_ghsound_occupation_ambient(struct ghsound_occupation_ambient_info);
+extern void safe_play_ghsound_effect_ambient(struct ghsound_effect_ambient_info);
+extern void safe_set_effect_ambient_volume(struct effect_ambient_volume_info);
+extern void safe_play_ghsound_level_ambient(struct ghsound_level_ambient_info);
+extern void safe_play_ghsound_environment_ambient(struct ghsound_environment_ambient_info);
+extern void safe_play_ghsound_music(struct ghsound_music_info);
+extern void safe_play_immediate_ghsound(struct ghsound_immediate_info);
+extern void safe_adjust_ghsound_general_volumes(void);
+extern void safe_add_ambient_ghsound(struct soundsource_t*);
+extern void safe_delete_ambient_ghsound(struct soundsource_t*);
+extern void safe_set_ambient_ghsound_volume(struct soundsource_t*);
+extern void safe_clear_context_menu(void);
+extern void safe_add_context_menu(int, int, int, int, const char*, const char*, int, int);
+extern void safe_update_status_button(int, int, int, uint64_t);
+extern void safe_toggle_animation_timer(int, int, int, int, int, int, uint64_t);
+extern void safe_display_floating_text(int, int, const char*, int, int, int, uint64_t);
+extern void safe_display_screen_text(const char*, const char*, const char*, int, int, int, uint64_t);
+extern void safe_display_popup_text(const char*, const char*, int, int, int, int, uint64_t);
+extern void safe_display_gui_effect(int, int, int, int, int, int, uint64_t);
+extern void safe_update_cursor(int, int, int);
+extern int safe_ui_has_input(void);
+extern void safe_exit_hack(int);
 
-extern void FDECL(stdio_raw_print, (const char *));
-extern void FDECL(stdio_raw_print_bold, (const char *));
-extern void NDECL(stdio_wait_synch);
-extern int NDECL(stdio_nhgetch);
+extern void stdio_raw_print(const char *);
+extern void stdio_raw_print_bold(const char *);
+extern void stdio_wait_synch(void);
+extern int stdio_nhgetch(void);
 #endif /* SAFEPROCS */
 #endif /* WINPROCS_H */
 

@@ -14,24 +14,24 @@
 #include "mfndpos.h"
 #include <ctype.h>
 
-STATIC_VAR boolean vamp_rise_msg;
+static boolean vamp_rise_msg;
 
-STATIC_DCL void FDECL(sanity_check_single_mon, (struct monst *, BOOLEAN_P,
-                                                const char *));
-STATIC_DCL boolean FDECL(restrap, (struct monst *));
-STATIC_DCL int64_t FDECL(mm_aggression, (struct monst *, struct monst *));
-STATIC_DCL int64_t FDECL(mm_displacement, (struct monst *, struct monst *));
-//STATIC_DCL int NDECL(pick_animal);
-STATIC_DCL void FDECL(kill_eggs, (struct obj *));
-STATIC_DCL int FDECL(pickvampshape, (struct monst *));
-STATIC_DCL boolean FDECL(isspecmon, (struct monst *));
-STATIC_DCL boolean FDECL(validspecmon, (struct monst *, int));
-STATIC_DCL struct permonst *FDECL(accept_newcham_form, (int));
-STATIC_DCL struct obj *FDECL(make_corpse, (struct monst *, unsigned, BOOLEAN_P));
-STATIC_DCL void FDECL(lifesaved_monster, (struct monst *));
-STATIC_DCL void FDECL(save_traits_mon, (struct monst*, BOOLEAN_P));
-STATIC_DCL struct monst* FDECL(get_saved_traits_mon, (struct monst*, BOOLEAN_P));
-STATIC_DCL void FDECL(add_knight_slaying_score, (struct monst*));
+static void sanity_check_single_mon(struct monst *, boolean,
+                                                const char *);
+static boolean restrap(struct monst *);
+static int64_t mm_aggression(struct monst *, struct monst *);
+static int64_t mm_displacement(struct monst *, struct monst *);
+//static int pick_animal(void);
+static void kill_eggs(struct obj *);
+static int pickvampshape(struct monst *);
+static boolean isspecmon(struct monst *);
+static boolean validspecmon(struct monst *, int);
+static struct permonst *accept_newcham_form(int);
+static struct obj *make_corpse(struct monst *, unsigned, boolean);
+static void lifesaved_monster(struct monst *);
+static void save_traits_mon(struct monst*, boolean);
+static struct monst* get_saved_traits_mon(struct monst*, boolean);
+static void add_knight_slaying_score(struct monst*);
 
 /* note: duplicated in dog.c */
 #define LEVEL_SPECIFIC_NOCORPSE(mdat) \
@@ -51,10 +51,7 @@ const char *warnings[] = {
 
 
 void
-sanity_check_single_mon(mtmp, chk_geno, msg)
-struct monst *mtmp;
-boolean chk_geno;
-const char *msg;
+sanity_check_single_mon(struct monst *mtmp, boolean chk_geno, const char *msg)
 {
     if (mtmp->data < &mons[LOW_PM] || mtmp->data >= &mons[NUM_MONSTERS]) {
         impossible("illegal mon data %s; mnum=%d (%s)",
@@ -99,7 +96,7 @@ const char *msg;
 }
 
 void
-mon_sanity_check(VOID_ARGS)
+mon_sanity_check(void)
 {
     int x, y;
     struct monst *mtmp, *m;
@@ -155,8 +152,7 @@ mon_sanity_check(VOID_ARGS)
 
 /* convert the monster index of an undead to its living counterpart */
 int
-undead_to_corpse(mndx)
-int mndx;
+undead_to_corpse(int mndx)
 {
     switch (mndx) {
     case PM_KOBOLD_ZOMBIE:
@@ -212,8 +208,7 @@ int mndx;
  * if mode is 1.
  */
 int
-genus(mndx, mode)
-int mndx, mode;
+genus(int mndx, int mode)
 {
     switch (mndx) {
     /* Quest guardians */
@@ -280,8 +275,7 @@ int mndx, mode;
 
 /* return monster index if chameleon, or NON_PM if not */
 int
-pm_to_cham(mndx)
-int mndx;
+pm_to_cham(int mndx)
 {
     int mcham = NON_PM;
 
@@ -309,16 +303,13 @@ int mndx;
  * G_NOCORPSE set in order to prevent wishing for one, finding tins of one,
  * etc....
  */
-STATIC_OVL struct obj *
-make_corpse(mtmp, corpseflags, createcorpse)
-register struct monst *mtmp;
-unsigned corpseflags;
-boolean createcorpse;
+static struct obj *
+make_corpse(struct monst *mtmp, unsigned corpseflags, boolean createcorpse)
 {
     if (!mtmp)
         return (struct obj*) 0;
 
-    register struct permonst *mdat = mtmp->data;
+    struct permonst *mdat = mtmp->data;
     int mndx = mtmp->mnum;
     int num;
     struct obj *obj = (struct obj *) 0;
@@ -968,16 +959,18 @@ boolean createcorpse;
 
 
 int
-randomtruegem(VOID_ARGS)
+randomtruegem(void)
 {
     return rnd_class(FIRST_GEM, LAST_GEM);
 }
 
 
+/*
+ * Parameters:
+ *   reagentstyle: 0 = all, 1 = priest only, 2 = wizard (no priest specific reagents)
+ */
 int
-random_reagent_otyp(alsotruegems, evenoreprobs, reagentstyle)
-boolean alsotruegems, evenoreprobs;
-int reagentstyle; //0 = all, 1 = priest only, 2 = wizard (no priest specific reagents)
+random_reagent_otyp(boolean alsotruegems, boolean evenoreprobs, int reagentstyle)
 {
     int otyp = 0;
 
@@ -1018,8 +1011,7 @@ int reagentstyle; //0 = all, 1 = priest only, 2 = wizard (no priest specific rea
 
 
 int
-randomore(evenprobs)
-boolean evenprobs;
+randomore(boolean evenprobs)
 {
     int totalprob = 0, i;
 
@@ -1054,8 +1046,7 @@ boolean evenprobs;
 
 /* check mtmp and water/lava for compatibility, 0 (survived), 1 (died) */
 int
-minliquid(mtmp)
-register struct monst *mtmp;
+minliquid(struct monst *mtmp)
 {
     boolean inpool, inlava, infountain;
 
@@ -1229,9 +1220,7 @@ register struct monst *mtmp;
 }
 
 int
-mcalcmove(mon, return_expected_value)
-struct monst *mon;
-boolean return_expected_value;
+mcalcmove(struct monst *mon, boolean return_expected_value)
 {
     int mmove = mon->data->mmove;
     int mmove_adj;
@@ -1287,7 +1276,7 @@ boolean return_expected_value;
    individual monster's metabolism; some of these might need to
    be reclassified to occur more in proportion with movement rate */
 void
-update_monster_timeouts(VOID_ARGS)
+update_monster_timeouts(void)
 {
     struct monst *mtmp;
     int i;
@@ -1624,10 +1613,10 @@ update_monster_timeouts(VOID_ARGS)
 }
 
 int
-movemon(VOID_ARGS)
+movemon(void)
 {
-    register struct monst *mtmp, *nmtmp;
-    register boolean somebody_can_move = FALSE;
+    struct monst *mtmp, *nmtmp;
+    boolean somebody_can_move = FALSE;
 
     /*
      * Some of you may remember the former assertion here that
@@ -1802,10 +1791,9 @@ movemon(VOID_ARGS)
  * has young and old forms).
  */
 int
-meatmetal(mtmp)
-register struct monst *mtmp;
+meatmetal(struct monst *mtmp)
 {
-    register struct obj *otmp;
+    struct obj *otmp;
     struct permonst *ptr;
     int poly, grow, heal, mstone;
 
@@ -1940,10 +1928,9 @@ register struct monst *mtmp;
  * has young and old forms).
  */
 int
-meatrock(mtmp)
-register struct monst* mtmp;
+meatrock(struct monst *mtmp)
 {
-    register struct obj* otmp;
+    struct obj* otmp;
     struct permonst* ptr;
     int poly, grow, heal, mstone;
 
@@ -2162,7 +2149,7 @@ struct monst *mtmp;
             }
             if (Has_contents(otmp))
             {
-                register struct obj *otmp3;
+                struct obj *otmp3;
 
                 /* contents of eaten containers become engulfed; this
                    is arbitrary, but otherwise g.cubes are too powerful */
@@ -2222,10 +2209,9 @@ struct monst *mtmp;
 }
 
 void
-mpickgold(mtmp)
-register struct monst *mtmp;
+mpickgold(struct monst *mtmp)
 {
-    register struct obj *gold;
+    struct obj *gold;
     int mat_idx;
 
     if (onnopickup(mtmp->mx, mtmp->my, mtmp))
@@ -2250,11 +2236,9 @@ register struct monst *mtmp;
 }
 
 boolean
-mpickstuff(mtmp, str)
-register struct monst *mtmp;
-register const char *str;
+mpickstuff(struct monst *mtmp, const char *str)
 {
-    register struct obj *otmp, *otmp2, *otmp3;
+    struct obj *otmp, *otmp2, *otmp3;
     int carryamt = 0;
 
     /* prevent shopkeepers from leaving the door of their shop */
@@ -2321,8 +2305,7 @@ register const char *str;
 }
 
 int
-curr_mon_load(mtmp)
-struct monst *mtmp;
+curr_mon_load(struct monst *mtmp)
 {
     int curload = 0;
     struct obj *obj;
@@ -2337,8 +2320,7 @@ struct monst *mtmp;
 }
 
 int
-max_mon_load(mtmp)
-struct monst *mtmp;
+max_mon_load(struct monst *mtmp)
 {
     int64_t carrcap = 0;
 
@@ -2380,18 +2362,13 @@ struct monst *mtmp;
  *       likesgold handling m_move results in picking up the whole stack.
  */
 int
-can_carry(mtmp, otmp)
-struct monst* mtmp;
-struct obj* otmp;
+can_carry(struct monst *mtmp, struct obj *otmp)
 {
     return can_carry_core(mtmp, otmp, FALSE);
 }
 
 int
-can_carry_core(mtmp, otmp, steed_ok)
-struct monst *mtmp;
-struct obj *otmp;
-boolean steed_ok;
+can_carry_core(struct monst *mtmp, struct obj *otmp, boolean steed_ok)
 {
     int iquan, otyp = otmp->otyp, newload = otmp->owt;
     struct permonst *mdat = mtmp->data;
@@ -2465,13 +2442,14 @@ boolean steed_ok;
     return iquan;
 }
 
+/*
+ * Parameters:
+ *   poss: coord poss[9]
+ *   info: int64_t info[9]
+ */
 /* return number of acceptable neighbour positions */
 int
-mfndpos(mon, poss, info, flag)
-struct monst* mon;
-coord* poss; /* coord poss[9] */
-int64_t* info;  /* int64_t info[9] */
-int64_t flag;
+mfndpos(struct monst *mon, coord *poss, int64_t *info, int64_t flag)
 {
     xchar x = mon->mx;
     xchar y = mon->my;
@@ -2479,17 +2457,17 @@ int64_t flag;
 }
 
 
+/*
+ * Parameters:
+ *   poss: coord poss[9]
+ *   info: int64_t info[9]
+ */
 /* return number of acceptable neighbour positions */
 int
-mfndpos_xy(mon, x, y, poss, info, flag)
-struct monst *mon;
-xchar x, y;
-coord *poss; /* coord poss[9] */
-int64_t *info;  /* int64_t info[9] */
-int64_t flag;
+mfndpos_xy(struct monst *mon, xchar x, xchar y, coord *poss, int64_t *info, int64_t flag)
 {
     struct permonst *mdat = mon->data;
-    register struct trap *ttmp;
+    struct trap *ttmp;
     xchar nx, ny;
     int cnt = 0;
     uchar ntyp;
@@ -2783,15 +2761,18 @@ nexttry: /* eels prefer the water, but if there is no water nearby,
     return cnt;
 }
 
+/*
+ * Parameters:
+ *   magr: monster that is currently deciding where to move
+ *   mdef: another monster which is next to it
+ */
 /* Monster against monster special attacks; for the specified monster
    combinations, this allows one monster to attack another adjacent one
    in the absence of Conflict.  There is no provision for targetting
    other monsters; just hand to hand fighting when they happen to be
    next to each other. */
-STATIC_OVL int64_t
-mm_aggression(magr, mdef)
-struct monst *magr, /* monster that is currently deciding where to move */
-             *mdef; /* another monster which is next to it */
+static int64_t
+mm_aggression(struct monst *magr, struct monst *mdef)
 {
     /* peaceful NPCs should not attack anyone; if they are attacked, they will retaliate */
     if (is_peaceful(magr) && (magr->issmith || magr->ispriest || magr->isnpc || magr->isshk))
@@ -2834,11 +2815,14 @@ struct monst *magr, /* monster that is currently deciding where to move */
     return 0L;
 }
 
+/*
+ * Parameters:
+ *   magr: monster that is currently deciding where to move
+ *   mdef: another monster which is next to it
+ */
 /* Monster displacing another monster out of the way */
-STATIC_OVL int64_t
-mm_displacement(magr, mdef)
-struct monst *magr, /* monster that is currently deciding where to move */
-             *mdef; /* another monster which is next to it */
+static int64_t
+mm_displacement(struct monst *magr, struct monst *mdef)
 {
     struct permonst *pa = magr->data, *pd = mdef->data;
 
@@ -2860,9 +2844,7 @@ struct monst *magr, /* monster that is currently deciding where to move */
 
 /* Is the square close enough for the monster to move or attack into? */
 boolean
-monnear(mon, x, y)
-struct monst *mon;
-int x, y;
+monnear(struct monst *mon, int x, int y)
 {
     int distance = dist2(mon->mx, mon->my, x, y);
 
@@ -2873,9 +2855,7 @@ int x, y;
 
 /* Is the square close enough for a tame monster to follow you to the next level? */
 boolean
-mon_somewhat_near(mon, x, y)
-struct monst* mon;
-int x, y;
+mon_somewhat_near(struct monst *mon, int x, int y)
 {
     int distance = dist2(mon->mx, mon->my, x, y);
 
@@ -2885,7 +2865,7 @@ int x, y;
 
 /* really free dead monsters */
 void
-dmonsfree(VOID_ARGS)
+dmonsfree(void)
 {
     struct monst **mtmp, *freetmp;
     int count = 0;
@@ -2937,8 +2917,7 @@ dmonsfree(VOID_ARGS)
 
 /* called when monster is moved to larger structure */
 void
-replmon(mtmp, mtmp2)
-struct monst *mtmp, *mtmp2;
+replmon(struct monst *mtmp, struct monst *mtmp2)
 {
     struct obj *otmp;
 
@@ -2997,12 +2976,14 @@ struct monst *mtmp, *mtmp2;
     dealloc_monst(mtmp);
 }
 
+/*
+ * Parameters:
+ *   monst_list: &migrating_mons or &mydogs or null
+ */
 /* release mon from the display and the map's monster list,
    maybe transfer it to one of the other monster lists */
 void
-relmon(mon, monst_list)
-struct monst *mon;
-struct monst **monst_list; /* &migrating_mons or &mydogs or null */
+relmon(struct monst *mon, struct monst **monst_list)
 {
     if (!mon)
         return;
@@ -3071,8 +3052,7 @@ struct monst **monst_list; /* &migrating_mons or &mydogs or null */
 }
 
 void
-copy_mextra(mtmp2, mtmp1)
-struct monst *mtmp2, *mtmp1;
+copy_mextra(struct monst *mtmp2, struct monst *mtmp1)
 {
     if (!mtmp2 || !mtmp1 || !mtmp1->mextra)
         return;
@@ -3182,8 +3162,7 @@ struct monst *mtmp2, *mtmp1;
 }
 
 void
-dealloc_mextra(m)
-struct monst *m;
+dealloc_mextra(struct monst *m)
 {
     struct mextra *x = m->mextra;
 
@@ -3219,8 +3198,7 @@ struct monst *m;
 }
 
 void
-dealloc_monst(mon)
-struct monst *mon;
+dealloc_monst(struct monst *mon)
 {
     if (mon->nmon)
     {
@@ -3240,12 +3218,13 @@ struct monst *mon;
     free((genericptr_t) mon);
 }
 
+/*
+ * Parameters:
+ *   mptr: reflects mtmp->data _prior_ to mtmp's death
+ */
 /* remove effects of mtmp from other data structures */
 void
-m_detach(mtmp, mptr, is_mon_dead)
-struct monst *mtmp;
-struct permonst *mptr; /* reflects mtmp->data _prior_ to mtmp's death */
-boolean is_mon_dead;
+m_detach(struct monst *mtmp, struct permonst *mptr, boolean is_mon_dead)
 {
     boolean onmap = (mtmp->mx > 0);
 
@@ -3296,8 +3275,7 @@ boolean is_mon_dead;
 
 /* find the worn amulet of life saving which will save a monster */
 struct obj *
-mlifesaver(mon)
-struct monst *mon;
+mlifesaver(struct monst *mon)
 {
     if (!is_not_living(mon->data) || is_vampshifter(mon)) 
     {
@@ -3309,9 +3287,8 @@ struct monst *mon;
     return (struct obj *) 0;
 }
 
-STATIC_OVL void
-lifesaved_monster(mtmp)
-struct monst *mtmp;
+static void
+lifesaved_monster(struct monst *mtmp)
 {
     if (!mtmp)
         return;
@@ -3380,16 +3357,13 @@ struct monst *mtmp;
 }
 
 void
-mondead(mtmp)
-register struct monst* mtmp;
+mondead(struct monst *mtmp)
 {
     mondead_with_flags(mtmp, 0UL);
 }
 
 void
-mondead_with_flags(mtmp, mondeadflags)
-register struct monst *mtmp;
-uint64_t mondeadflags;
+mondead_with_flags(struct monst *mtmp, uint64_t mondeadflags)
 {
     if (!mtmp)
         return;
@@ -3807,9 +3781,8 @@ uint64_t mondeadflags;
     m_detach(mtmp, mptr, TRUE);
 }
 
-STATIC_OVL void
-add_knight_slaying_score(mtmp)
-struct monst* mtmp;
+static void
+add_knight_slaying_score(struct monst *mtmp)
 {
     if (!mtmp)
         return;
@@ -3832,12 +3805,14 @@ struct monst* mtmp;
     }
 }
 
+/*
+ * Parameters:
+ *   magr: killer, if swallowed
+ *   was_swallowed: digestion
+ */
 /* TRUE if corpse might be dropped, magr may die if mon was swallowed */
 boolean
-corpse_chance(mon, magr, was_swallowed)
-struct monst *mon;
-struct monst *magr;    /* killer, if swallowed */
-boolean was_swallowed; /* digestion */
+corpse_chance(struct monst *mon, struct monst *magr, boolean was_swallowed)
 {
     struct permonst *mdat = mon->data;
     int i, tmp;
@@ -3932,7 +3907,7 @@ boolean was_swallowed; /* digestion */
 /* drop (perhaps) a cadaver and remove monster */
 void
 mondied(mdef) /* mondead + perhaps make a corpse */
-register struct monst *mdef;
+struct monst *mdef;
 {
     mondead(mdef);
     if (!DEADMONSTER(mdef))
@@ -3944,8 +3919,7 @@ register struct monst *mdef;
 
 /* monster disappears, not dies */
 void
-mongone(mdef)
-struct monst *mdef;
+mongone(struct monst *mdef)
 {
     if (!mdef)
         return;
@@ -3990,8 +3964,7 @@ struct monst *mdef;
 
 /* drop a statue or rock and remove monster */
 void
-monstone(mdef)
-struct monst *mdef;
+monstone(struct monst *mdef)
 {
     struct obj *otmp, *obj, *oldminvent;
     xchar x = mdef->mx, y = mdef->my;
@@ -4093,10 +4066,7 @@ struct monst *mdef;
 
 /* another monster has killed the monster mdef */
 void
-monkilled(mdef, fltxt, adtyp, xkill_flags)
-struct monst *mdef;
-const char *fltxt;
-int adtyp, xkill_flags;
+monkilled(struct monst *mdef, const char *fltxt, int adtyp, int xkill_flags)
 {
     if (!mdef)
         return;
@@ -4135,8 +4105,7 @@ int adtyp, xkill_flags;
 }
 
 void
-unstuck(mtmp)
-struct monst *mtmp;
+unstuck(struct monst *mtmp)
 {
     if (u.ustuck == mtmp) {
         if (u.uswallow) {
@@ -4162,31 +4131,30 @@ struct monst *mtmp;
 }
 
 void
-killed(mtmp)
-struct monst *mtmp;
+killed(struct monst *mtmp)
 {
     xkilled(mtmp, XKILL_GIVEMSG);
 }
 
 void
-killed_by_stoning(mtmp)
-struct monst* mtmp;
+killed_by_stoning(struct monst *mtmp)
 {
     xkilled(mtmp, XKILL_GIVEMSG | XKILL_STONED);
 }
 
 void
-killed_by_disintegration(mtmp)
-struct monst* mtmp;
+killed_by_disintegration(struct monst *mtmp)
 {
     xkilled(mtmp, XKILL_GIVEMSG | XKILL_DISINTEGRATED);
 }
 
+/*
+ * Parameters:
+ *   xkill_flags: 1: suppress message, 2: suppress corpse, 4: pacifist
+ */
 /* the player has killed the monster mtmp */
 void
-xkilled(mtmp, xkill_flags)
-struct monst *mtmp;
-int xkill_flags; /* 1: suppress message, 2: suppress corpse, 4: pacifist */
+xkilled(struct monst *mtmp, int xkill_flags)
 {
     if (!mtmp)
         return;
@@ -4469,8 +4437,7 @@ cleanup:
 /* changes the monster into a stone monster of the same type
    this should only be called when poly_when_stoned() is true */
 void
-mon_to_stone(mtmp)
-struct monst *mtmp;
+mon_to_stone(struct monst *mtmp)
 {
     if (!mtmp)
         return;
@@ -4497,8 +4464,7 @@ struct monst *mtmp;
 }
 
 boolean
-vamp_stone(mtmp)
-struct monst *mtmp;
+vamp_stone(struct monst *mtmp)
 {
     if (is_vampshifter(mtmp)) 
     {
@@ -4575,9 +4541,7 @@ struct monst *mtmp;
 
 /* drop monster into "limbo" - that is, migrate to the current level */
 void
-m_into_limbo(mtmp, has_effects)
-struct monst *mtmp;
-boolean has_effects;
+m_into_limbo(struct monst *mtmp, boolean has_effects)
 {
     if (!mtmp)
         return;
@@ -4605,16 +4569,13 @@ boolean has_effects;
 /* make monster mtmp next to you (if possible);
    might place monst on far side of a wall or boulder */
 void
-mnexto(mtmp)
-struct monst* mtmp;
+mnexto(struct monst *mtmp)
 {
     mnexto2(mtmp, FALSE);
 }
 
 void
-mnexto2(mtmp, has_effects)
-struct monst *mtmp;
-boolean has_effects;
+mnexto2(struct monst *mtmp, boolean has_effects)
 {
     coord mm;
     boolean couldspot = canspotmon(mtmp);
@@ -4649,8 +4610,7 @@ boolean has_effects;
 
 /* like mnexto() but requires destination to be directly accessible */
 void
-maybe_mnexto(mtmp)
-struct monst *mtmp;
+maybe_mnexto(struct monst *mtmp)
 {
     coord mm;
     struct permonst *ptr = mtmp->data;
@@ -4669,6 +4629,10 @@ struct monst *mtmp;
     } while (--tryct > 0);
 }
 
+/*
+ * Parameters:
+ *   move_other, has_effects: make sure mtmp gets to x, y! so move m_at(x, y)
+ */
 /* mnearto()
  * Put monster near (or at) location if possible.
  * Returns:
@@ -4681,10 +4645,7 @@ struct monst *mtmp;
  * will be False on the nested call so there won't be any further recursion.
  */
 int
-mnearto(mtmp, x, y, move_other, has_effects)
-register struct monst *mtmp;
-xchar x, y;
-boolean move_other, has_effects; /* make sure mtmp gets to x, y! so move m_at(x, y) */
+mnearto(struct monst *mtmp, xchar x, xchar y, boolean move_other, boolean has_effects)
 {
     struct monst *othermon = (struct monst *) 0;
     xchar newx, newy;
@@ -4737,8 +4698,7 @@ boolean move_other, has_effects; /* make sure mtmp gets to x, y! so move m_at(x,
 /* monster responds to player action; not the same as a passive attack;
    assumes reason for response has been tested, and response _must_ be made */
 void
-m_respond(mtmp)
-struct monst *mtmp;
+m_respond(struct monst *mtmp)
 {
     if (mtmp->data->msound == MS_SHRIEK) 
     {
@@ -4762,7 +4722,7 @@ struct monst *mtmp;
     }
     if (is_medusa(mtmp->data))
     {
-        register int i;
+        int i;
         for (i = 0; i < NATTK; i++)
             if (mtmp->data->mattk[i].aatyp == AT_GAZE)
             {
@@ -4778,9 +4738,7 @@ struct monst *mtmp;
    where mtmp was already hostile; it checks for situations where the player
    shouldn't be attacking and any ramifications /that/ might have. */
 void
-setmangry(mtmp, via_attack)
-struct monst *mtmp;
-boolean via_attack;
+setmangry(struct monst *mtmp, boolean via_attack)
 {
     boolean Elbereth_Hypocrite = FALSE;
 
@@ -5006,9 +4964,7 @@ boolean via_attack;
 
 /* wake up a monster, possibly making it angry in the process */
 void
-wakeup(mtmp, via_attack)
-register struct monst *mtmp;
-boolean via_attack;
+wakeup(struct monst *mtmp, boolean via_attack)
 {
     mtmp->msleeping = 0;
     if (M_AP_TYPE(mtmp)) 
@@ -5029,15 +4985,14 @@ boolean via_attack;
 
 /* Wake up nearby monsters without angering them. */
 void
-wake_nearby(VOID_ARGS)
+wake_nearby(void)
 {
     wake_nearto(u.ux, u.uy, u.ulevel * 20);
 }
 
 /* Wake up monsters near some particular location. */
 void
-wake_nearto(x, y, distance)
-int x, y, distance;
+wake_nearto(int x, int y, int distance)
 {
     struct monst *mtmp;
     int cnt = 0;
@@ -5069,8 +5024,7 @@ int x, y, distance;
 
 /* NOTE: we must check for mimicry before calling this routine */
 void
-seemimic(mtmp)
-register struct monst *mtmp;
+seemimic(struct monst *mtmp)
 {
     boolean is_blocker_appear = (is_lightblocker_mappear(mtmp));
 
@@ -5094,9 +5048,9 @@ register struct monst *mtmp;
 
 /* force all chameleons to become normal */
 void
-rescham(VOID_ARGS)
+rescham(void)
 {
-    register struct monst *mtmp;
+    struct monst *mtmp;
     int mcham;
 
     for (mtmp = fmon; mtmp; mtmp = mtmp->nmon) {
@@ -5122,9 +5076,9 @@ rescham(VOID_ARGS)
 
 /* Let the chameleons change again -dgk */
 void
-restartcham(VOID_ARGS)
+restartcham(void)
 {
-    register struct monst *mtmp;
+    struct monst *mtmp;
 
     for (mtmp = fmon; mtmp; mtmp = mtmp->nmon) 
     {
@@ -5148,8 +5102,7 @@ restartcham(VOID_ARGS)
    against shape-changing might be different now than it was at the
    time the level was saved. */
 void
-restore_cham(mon)
-struct monst *mon;
+restore_cham(struct monst *mon)
 {
     int mcham;
 
@@ -5175,9 +5128,8 @@ struct monst *mon;
 }
 
 /* unwatched hiders may hide again; if so, returns True */
-STATIC_OVL boolean
-restrap(mtmp)
-register struct monst *mtmp;
+static boolean
+restrap(struct monst *mtmp)
 {
     struct trap *t;
 
@@ -5207,8 +5159,7 @@ register struct monst *mtmp;
 
 /* monster/hero tries to hide under something at the current location */
 boolean
-hideunder(mtmp)
-struct monst *mtmp;
+hideunder(struct monst *mtmp)
 {
     struct trap *t;
     boolean undetected = FALSE, is_u = (mtmp == &youmonst);
@@ -5244,8 +5195,7 @@ struct monst *mtmp;
 
 /* called when returning to a previously visited level */
 void
-hide_monst(mon)
-struct monst *mon;
+hide_monst(struct monst *mon)
 {
     boolean hider_under = hides_under(mon->data) || mon->data->mlet == S_EEL;
 
@@ -5267,12 +5217,11 @@ struct monst *mon;
     }
 }
 
-STATIC_VAR short *animal_list = 0; /* list of PM values for animal monsters */
-STATIC_VAR int animal_list_count;
+static short *animal_list = 0; /* list of PM values for animal monsters */
+static int animal_list_count;
 
 void
-mon_animal_list(construct)
-boolean construct;
+mon_animal_list(boolean construct)
 {
     if (construct) {
         short animal_temp[SPECIAL_PM];
@@ -5297,8 +5246,8 @@ boolean construct;
 }
 
 #if 0
-STATIC_OVL int
-pick_animal(VOID_ARGS)
+static int
+pick_animal(void)
 {
     int res = PM_NEWT;
 
@@ -5319,9 +5268,7 @@ pick_animal(VOID_ARGS)
 #endif
 
 void
-decide_to_shapeshift(mon, shiftflags)
-struct monst *mon;
-int shiftflags;
+decide_to_shapeshift(struct monst *mon, int shiftflags)
 {
     if (!mon)
         return;
@@ -5389,9 +5336,8 @@ int shiftflags;
     }
 }
 
-STATIC_OVL int
-pickvampshape(mon)
-struct monst *mon;
+static int
+pickvampshape(struct monst *mon)
 {
     int mndx = mon->cham, wolfchance = 10;
     /* avoid picking monsters with lowercase display symbols ('d' for wolf
@@ -5421,9 +5367,8 @@ struct monst *mon;
 }
 
 /* nonshapechangers who warrant special polymorph handling */
-STATIC_OVL boolean
-isspecmon(mon)
-struct monst *mon;
+static boolean
+isspecmon(struct monst *mon)
 {
     return (mon->isshk || mon->ispriest || mon->issmith || mon->isnpc || mon->isgd
             || mon->m_id == quest_status.leader_m_id);
@@ -5432,10 +5377,8 @@ struct monst *mon;
 /* restrict certain special monsters (shopkeepers, aligned priests,
    vault guards) to forms that allow them to behave sensibly (catching
    gold, speaking?) so that they don't need too much extra code */
-STATIC_OVL boolean
-validspecmon(mon, mndx)
-struct monst *mon;
-int mndx;
+static boolean
+validspecmon(struct monst *mon, int mndx)
 {
     if (mndx == NON_PM)
         return TRUE; /* caller wants random */
@@ -5457,9 +5400,7 @@ int mndx;
 
 /* prevent wizard mode user from specifying invalid vampshifter shape */
 boolean
-validvamp(mon, mndx_p, monclass)
-struct monst *mon;
-int *mndx_p, monclass;
+validvamp(struct monst *mon, int *mndx_p, int monclass)
 {
     /* simplify caller's usage */
     if (!is_vampshifter(mon))
@@ -5510,8 +5451,7 @@ int *mndx_p, monclass;
 }
 
 int
-select_newcham_form(mon)
-struct monst *mon;
+select_newcham_form(struct monst *mon)
 {
     int mndx = NON_PM, tryct;
 
@@ -5932,9 +5872,8 @@ struct monst *mon;
 }
 
 /* this used to be inline within newcham() but monpolycontrol needs it too */
-STATIC_OVL struct permonst *
-accept_newcham_form(mndx)
-int mndx;
+static struct permonst *
+accept_newcham_form(int mndx)
 {
     struct permonst *mdat;
 
@@ -5955,9 +5894,7 @@ int mndx;
 }
 
 void
-mgender_from_permonst(mtmp, mdat)
-struct monst *mtmp;
-struct permonst *mdat;
+mgender_from_permonst(struct monst *mtmp, struct permonst *mdat)
 {
     if (is_male(mdat)) {
         if (mtmp->female)
@@ -5971,16 +5908,16 @@ struct permonst *mdat;
     }
 }
 
+/*
+ * Parameters:
+ *   polyspot: change is the result of wand or spell of polymorph
+ *   msg: "The oldmon turns into a newmon!"
+ */
 /* make a chameleon take on another shape, or a polymorph target
    (possibly self-inflicted) become a different monster;
    returns 1 if it actually changes form */
 int
-newcham(mtmp, mdat, subtype, polyspot, msg)
-struct monst *mtmp;
-struct permonst *mdat;
-unsigned short subtype;
-boolean polyspot; /* change is the result of wand or spell of polymorph */
-boolean msg;      /* "The oldmon turns into a newmon!" */
+newcham(struct monst *mtmp, struct permonst *mdat, unsigned short subtype, boolean polyspot, boolean msg)
 {
     if (!mtmp)
         return 0;
@@ -6224,7 +6161,7 @@ boolean msg;      /* "The oldmon turns into a newmon!" */
      */
     /* former giants can't continue carrying boulders */
     if (mtmp->minvent && !throws_rocks(mdat)) {
-        register struct obj *otmp, *otmp2;
+        struct obj *otmp, *otmp2;
 
         for (otmp = mtmp->minvent; otmp; otmp = otmp2) {
             otmp2 = otmp->nobj;
@@ -6255,8 +6192,7 @@ boolean msg;      /* "The oldmon turns into a newmon!" */
  * NON_PM if the given monster can't be hatched.
  */
 int
-can_be_hatched(mnum)
-int mnum;
+can_be_hatched(int mnum)
 {
     /* ranger quest nemesis has the oviparous bit set, making it
        be possible to wish for eggs of that unique monster; turn
@@ -6281,11 +6217,13 @@ int mnum;
     return NON_PM;
 }
 
+/*
+ * Parameters:
+ *   mnum: parent monster; caller must handle lays_eggs() check
+ */
 /* type of egg laid by #sit; usually matches parent */
 int
-egg_type_from_parent(mnum, force_ordinary)
-int mnum; /* parent monster; caller must handle lays_eggs() check */
-boolean force_ordinary;
+egg_type_from_parent(int mnum, boolean force_ordinary)
 {
     if (mons[mnum].mflags6 & M6_HATCHLING)
         mnum = little_to_big(mnum);
@@ -6304,9 +6242,7 @@ boolean force_ordinary;
 /* decide whether an egg of the indicated monster type is viable;
    also used to determine whether an egg or tin can be created... */
 boolean
-dead_species(m_idx, egg)
-int m_idx;
-boolean egg;
+dead_species(int m_idx, boolean egg)
 {
     int alt_idx;
 
@@ -6326,9 +6262,8 @@ boolean egg;
 }
 
 /* kill off any eggs of genocided monsters */
-STATIC_OVL void
-kill_eggs(obj_list)
-struct obj *obj_list;
+static void
+kill_eggs(struct obj *obj_list)
 {
     struct obj *otmp;
 
@@ -6358,7 +6293,7 @@ struct obj *obj_list;
 
 /* kill all members of genocided species */
 void
-kill_genocided_monsters(VOID_ARGS)
+kill_genocided_monsters(void)
 {
     struct monst *mtmp, *mtmp2;
     boolean kill_cham;
@@ -6401,10 +6336,7 @@ kill_genocided_monsters(VOID_ARGS)
 }
 
 void
-golemeffects(mon, damtype, damage)
-register struct monst *mon;
-int damtype;
-double damage;
+golemeffects(struct monst *mon, int damtype, double damage)
 {
     double heal = 0;
     int slow = 0;
@@ -6445,8 +6377,7 @@ double damage;
 }
 
 boolean
-angry_guards(silent)
-boolean silent;
+angry_guards(boolean silent)
 {
     struct monst *mtmp;
     int ct = 0, nct = 0, sct = 0, slct = 0;
@@ -6495,7 +6426,7 @@ boolean silent;
 }
 
 void
-pacify_guards(VOID_ARGS)
+pacify_guards(void)
 {
     struct monst *mtmp;
 
@@ -6511,9 +6442,7 @@ pacify_guards(VOID_ARGS)
 }
 
 void
-mimic_hit_msg(mtmp, otyp)
-struct monst *mtmp;
-short otyp;
+mimic_hit_msg(struct monst *mtmp, short otyp)
 {
     short ap = mtmp->mappearance;
 
@@ -6535,8 +6464,7 @@ short otyp;
 }
 
 boolean
-usmellmon(mdat)
-struct permonst *mdat;
+usmellmon(struct permonst *mdat)
 {
     if (!mdat)
         return FALSE;
@@ -6663,10 +6591,12 @@ struct permonst *mdat;
     return msg_given ? TRUE : FALSE;
 }
 
+/*
+ * Parameters:
+ *   isfemale: 1 = female, 2 = neuter, transgender or the like
+ */
 const char* 
-pm_monster_name(ptr, isfemale)
-struct permonst* ptr;
-uchar isfemale; /* 1 = female, 2 = neuter, transgender or the like */
+pm_monster_name(struct permonst *ptr, uchar isfemale)
 {
     if (!ptr)
         return "";
@@ -6680,8 +6610,7 @@ uchar isfemale; /* 1 = female, 2 = neuter, transgender or the like */
 
 }
 
-const char* mon_monster_name(mon)
-struct monst* mon;
+const char* mon_monster_name(struct monst *mon)
 {
     if (!mon)
         return "";
@@ -6691,8 +6620,7 @@ struct monst* mon;
 
 }
 
-const char* corpse_monster_name(corpse)
-struct obj* corpse;
+const char* corpse_monster_name(struct obj *corpse)
 {
     if (!corpse || !(corpse->otyp == CORPSE || corpse->otyp == STATUE || corpse->otyp == EGG))
         return "";
@@ -6724,8 +6652,7 @@ struct obj* corpse;
     }
 }
 
-const char* pm_female_name(ptr)
-struct permonst* ptr;
+const char* pm_female_name(struct permonst *ptr)
 {
     if (!ptr)
         return "";
@@ -6738,9 +6665,11 @@ struct permonst* ptr;
 }
 
 
-const char* pm_general_name(ptr, gender)
-struct permonst* ptr;
-uchar gender; /* 0 = male, 1 = female, 2 = unknown */
+/*
+ * Parameters:
+ *   gender: 0 = male, 1 = female, 2 = unknown
+ */
+const char* pm_general_name(struct permonst *ptr, uchar gender)
 {
     if (!ptr)
         return "";
@@ -6757,8 +6686,7 @@ uchar gender; /* 0 = male, 1 = female, 2 = unknown */
     }
 }
 
-const char* pm_common_name(ptr)
-struct permonst* ptr;
+const char* pm_common_name(struct permonst *ptr)
 {
     if (!ptr)
         return "";
@@ -6770,8 +6698,7 @@ struct permonst* ptr;
 
 }
 
-const char* mon_common_name(mon)
-struct monst* mon;
+const char* mon_common_name(struct monst *mon)
 {
     if (!mon)
         return "";
@@ -6780,8 +6707,7 @@ struct monst* mon;
 
 }
 
-const char* corpse_common_name(corpse)
-struct obj* corpse;
+const char* corpse_common_name(struct obj *corpse)
 {
     if (!corpse || !(corpse->otyp == CORPSE || corpse->otyp == STATUE || corpse->otyp == EGG))
         return "";
@@ -6805,12 +6731,12 @@ struct obj* corpse;
     }
 }
 
-const char* pm_plural_name(ptr, style)
-struct permonst* ptr;
-uchar style; /* 0 = dwarf lords and dwarf ladies, 1 = dwarf lords and ladies, 
-                2 = dwarf lords or dwarf ladies, 3 = dwarf lords or ladies, 
+/* uchar style: 0 = dwarf lords and dwarf ladies, 1 = dwarf lords and ladies,
+                2 = dwarf lords or dwarf ladies, 3 = dwarf lords or ladies,
                 4 = dwarf royals
                 Note: There is no difference if there is no female / common name */
+
+const char* pm_plural_name(struct permonst *ptr, uchar style)
 {
     if (!ptr)
         return "";
@@ -6859,8 +6785,7 @@ uchar style; /* 0 = dwarf lords and dwarf ladies, 1 = dwarf lords and ladies,
 
 
 boolean 
-is_female_corpse_or_statue(corpse)
-struct obj* corpse;
+is_female_corpse_or_statue(struct obj *corpse)
 {
     if (!corpse || !(corpse->otyp == CORPSE || corpse->otyp == STATUE || corpse->otyp == EGG))
         return FALSE;
@@ -6894,8 +6819,7 @@ struct obj* corpse;
 
 
 boolean
-is_corpse_or_statue_facing_right(corpse)
-struct obj* corpse;
+is_corpse_or_statue_facing_right(struct obj *corpse)
 {
     if (!corpse || !(corpse->otyp == CORPSE || corpse->otyp == STATUE || corpse->otyp == EGG))
         return FALSE;
@@ -6916,8 +6840,7 @@ struct obj* corpse;
 }
 
 int
-count_mon_runeswords(mon)
-struct monst* mon;
+count_mon_runeswords(struct monst *mon)
 {
     if (!mon || !mon->minvent)
         return 0;
@@ -6932,10 +6855,8 @@ struct monst* mon;
     return cnt;
 }
 
-STATIC_OVL void
-save_traits_mon(mtmp, save_mextra)
-struct monst* mtmp;
-boolean save_mextra;
+static void
+save_traits_mon(struct monst *mtmp, boolean save_mextra)
 {
     if (mtmp->ispriest)
         forget_temple_entry(mtmp); /* EPRI() */
@@ -6977,10 +6898,8 @@ boolean save_mextra;
 /* returns a pointer to a new monst structure based on
  * the one contained within the obj.
  */
-STATIC_OVL struct monst*
-get_saved_traits_mon(mtmp, copyof)
-struct monst* mtmp;
-boolean copyof;
+static struct monst*
+get_saved_traits_mon(struct monst *mtmp, boolean copyof)
 {
     struct monst* mtmp2 = (struct monst*)0;
     struct monst* mnew = (struct monst*)0;
@@ -7008,9 +6927,7 @@ boolean copyof;
 }
 
 int
-revert_mon_polymorph(mtmp, override_mextra, polyspot, msg)
-struct monst* mtmp;
-boolean override_mextra, polyspot, msg;
+revert_mon_polymorph(struct monst *mtmp, boolean override_mextra, boolean polyspot, boolean msg)
 {
     if (!mtmp)
         return 0;
@@ -7299,7 +7216,7 @@ boolean override_mextra, polyspot, msg;
      */
      /* former giants can't continue carrying boulders */
     if (mtmp->minvent && !throws_rocks(mdat)) {
-        register struct obj* otmp, * otmp2;
+        struct obj* otmp, * otmp2;
 
         for (otmp = mtmp->minvent; otmp; otmp = otmp2) {
             otmp2 = otmp->nobj;
@@ -7323,7 +7240,7 @@ boolean override_mextra, polyspot, msg;
 
 
 void
-reset_mon(VOID_ARGS)
+reset_mon(void)
 {
     vamp_rise_msg = 0;
 }

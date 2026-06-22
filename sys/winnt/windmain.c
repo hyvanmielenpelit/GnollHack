@@ -21,35 +21,35 @@
 #endif
 
 #define E extern
-static void FDECL(process_command_line_arguments, (int argc, char **argv));
-static void NDECL(nhusage);
-static char *FDECL(exepath, (char *));
-char *NDECL(exename);
-boolean NDECL(fakeconsole);
-void NDECL(freefakeconsole);
-E void FDECL(gnollhack_exit, (int));
+static void process_command_line_arguments(int argc, char **argv);
+static void nhusage(void);
+static char *exepath(char *);
+char *exename(void);
+boolean fakeconsole(void);
+void freefakeconsole(void);
+E void gnollhack_exit(int);
 E char chosen_windowtype[WINTYPELEN];   /* flag.h */
 #if defined(MSWIN_GRAPHICS) || defined(NUKLEAR_GRAPHICS) || defined(DLL_GRAPHICS)
-E void NDECL(mswin_destroy_reg);
+E void mswin_destroy_reg(void);
 #endif
 #ifdef TTY_GRAPHICS
-extern void NDECL(backsp);
+extern void backsp(void);
 #endif
-extern void NDECL(clear_screen);
+extern void clear_screen(void);
 #undef E
 
 #ifdef PC_LOCKING
-static int NDECL(eraseoldlocks);
+static int eraseoldlocks(void);
 #endif
-int NDECL(windows_nhgetch);
-void NDECL(windows_nhbell);
-int FDECL(windows_nh_poskey, (int *, int *, int *));
-void FDECL(windows_raw_print, (const char *));
-char FDECL(windows_yn_function_ex, (int, int, int, int, const char *, const char *, const char *, CHAR_P, const char*, const char*, uint64_t));
-static void FDECL(windows_getlin_ex, (int, int, int, const char *, char *, const char*, const char*, const char*));
-extern int NDECL(windows_console_custom_nhgetch);
-void NDECL(safe_routines);
-static void NDECL(windows_init_platform);
+int windows_nhgetch(void);
+void windows_nhbell(void);
+int windows_nh_poskey(int *, int *, int *);
+void windows_raw_print(const char *);
+char windows_yn_function_ex(int, int, int, int, const char *, const char *, const char *, char, const char*, const char*, uint64_t);
+static void windows_getlin_ex(int, int, int, const char *, char *, const char*, const char*, const char*);
+extern int windows_console_custom_nhgetch(void);
+void safe_routines(void);
+static void windows_init_platform(void);
 
 char orgdir[PATHLEN];
 char *dir;
@@ -454,10 +454,8 @@ attempt_restore:
     return EXIT_SUCCESS;
 }
 
-STATIC_OVL void
-process_command_line_arguments(argc, argv)
-int argc;
-char *argv[];
+static void
+process_command_line_arguments(int argc, char *argv[])
 {
     int i;
 
@@ -633,8 +631,8 @@ char *argv[];
 
 }
 
-STATIC_OVL void
-nhusage()
+static void
+nhusage(void)
 {
     char buf1[BUFSZ], buf2[BUFSZ], *bufptr;
 
@@ -668,7 +666,7 @@ nhusage()
 }
 
 void
-safe_routines(VOID_ARGS)
+safe_routines(void)
 {
     /*
      * Get a set of valid safe windowport function
@@ -682,7 +680,7 @@ safe_routines(VOID_ARGS)
 
 #ifdef PORT_HELP
 void
-port_help()
+port_help(void)
 {
     /* display port specific help file */
     display_file(PORT_HELP, 1);
@@ -691,7 +689,7 @@ port_help()
 
 /* validate wizard mode if player has requested access to it */
 boolean
-authorize_wizard_mode()
+authorize_wizard_mode(void)
 {
     if (!strcmp(plname, WIZARD_NAME))
         return TRUE;
@@ -707,7 +705,7 @@ extern HANDLE hConOut;
 boolean has_fakeconsole;
 
 char *
-exename()
+exename(void)
 {
     int bsize = PATHLEN;
     char *tmp = exenamebuf, *tmp2;
@@ -757,7 +755,7 @@ fakeconsole(void)
 #endif
     return has_fakeconsole;
 }
-void freefakeconsole()
+void freefakeconsole(void)
 {
     if (has_fakeconsole) {
         FreeConsole();
@@ -769,8 +767,7 @@ void freefakeconsole()
 char exepathbuf[EXEPATHBUFSZ];
 
 char *
-exepath(str)
-char *str;
+exepath(char *str)
 {
     char *tmp, *tmp2;
     int bsize;
@@ -796,8 +793,7 @@ char *str;
 
 /*ARGSUSED*/
 void
-windows_raw_print(str)
-const char *str;
+windows_raw_print(const char *str)
 {
     if (str)
         fprintf(stdout, "%s\n", str);
@@ -807,67 +803,51 @@ const char *str;
 
 /*ARGSUSED*/
 void
-windows_raw_print_bold(str)
-const char *str;
+windows_raw_print_bold(const char *str)
 {
     windows_raw_print(str);
     return;
 }
 
 int
-windows_nhgetch()
+windows_nhgetch(void)
 {
     return getchar();
 }
 
 
 void
-windows_nhbell()
+windows_nhbell(void)
 {
     return;
 }
 
 /*ARGSUSED*/
 int
-windows_nh_poskey(x, y, mod)
-int *x, *y, *mod;
+windows_nh_poskey(int *x, int *y, int *mod)
 {
     return '\033';
 }
 
 /*ARGSUSED*/
 char
-windows_yn_function_ex(style, attr, color, glyph, title, query, resp, def, resp_desc, introline, ynflags)
-int style, attr, color, glyph;
-const char *title;
-const char *query;
-const char *resp;
-const char* resp_desc;
-const char* introline;
-char def;
-uint64_t ynflags;
+windows_yn_function_ex(int style, int attr, int color, int glyph, const char *title, const char *query, const char *resp, char def, const char *resp_desc, const char *introline, uint64_t ynflags)
 {
     return '\033';
 }
 
 /*ARGSUSED*/
 static void
-windows_getlin_ex(style, attr, color, prompt, outbuf, placeholder, linesuffix, introline)
-int style UNUSED, attr UNUSED, color UNUSED;
-const char *prompt UNUSED;
-const char* placeholder UNUSED;
-const char* linesuffix UNUSED;
-const char* introline UNUSED;
-char *outbuf;
+windows_getlin_ex(int style UNUSED, int attr UNUSED, int color UNUSED, const char *prompt UNUSED, char *outbuf, const char *placeholder UNUSED, const char *linesuffix UNUSED, const char *introline UNUSED)
 {
     Strcpy(outbuf, "\033");
 }
 
 #ifdef PC_LOCKING
 static int
-eraseoldlocks()
+eraseoldlocks(void)
 {
-    register int i;
+    int i;
 
     /* cannot use maxledgerno() here, because we need to find a lock name
      * before starting everything (including the dungeon initialization
@@ -888,9 +868,9 @@ eraseoldlocks()
 }
 
 void
-getlock()
+getlock(void)
 {
-    register int fd, c, ci, ct, ern;
+    int fd, c, ci, ct, ern;
     int fcmask = FCMASK;
     char tbuf[BUFSZ];
     const char *fq_lock;
@@ -1044,7 +1024,7 @@ gotlock:
 #endif /* PC_LOCKING */
 
 static void
-windows_init_platform(VOID_ARGS)
+windows_init_platform(void)
 {
     /* Tiles */
 #ifdef USE_TILES

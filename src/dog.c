@@ -7,18 +7,17 @@
 
 #include "hack.h"
 
-STATIC_DCL int FDECL(pet_type, (BOOLEAN_P, BOOLEAN_P));
-STATIC_DCL int NDECL(choose_cat_or_dog);
-STATIC_DCL short FDECL(choose_pet_gender, (int));
-STATIC_DCL unsigned short FDECL(choose_pet_breed, (int, BOOLEAN_P));
-STATIC_PTR int FDECL(CFDECLSPEC breed_cmp, (const genericptr, const genericptr));
+static int pet_type(boolean, boolean);
+static int choose_cat_or_dog(void);
+static short choose_pet_gender(int);
+static unsigned short choose_pet_breed(int, boolean);
+static int FDECL(CFDECLSPEC breed_cmp, (const genericptr, const genericptr));
 
-STATIC_VAR boolean petdetails_used = FALSE;
-STATIC_VAR int petname_used = 0;
+static boolean petdetails_used = FALSE;
+static int petname_used = 0;
 
 void
-newedog(mtmp)
-struct monst *mtmp;
+newedog(struct monst *mtmp)
 {
     if (!mtmp->mextra)
         mtmp->mextra = newmextra();
@@ -29,8 +28,7 @@ struct monst *mtmp;
 }
 
 void
-free_edog(mtmp)
-struct monst *mtmp;
+free_edog(struct monst *mtmp)
 {
     if (has_edog(mtmp)) {
         free((genericptr_t) EDOG(mtmp));
@@ -41,9 +39,7 @@ struct monst *mtmp;
 }
 
 void
-initedog(mtmp, set_tameness)
-register struct monst *mtmp;
-boolean set_tameness;
+initedog(struct monst *mtmp, boolean set_tameness)
 {
     if (set_tameness)
     {
@@ -69,9 +65,8 @@ boolean set_tameness;
     EDOG(mtmp)->killed_by_u = 0;
 }
 
-STATIC_OVL int
-pet_type(verbose, nonpm_upon_random)
-boolean verbose, nonpm_upon_random;
+static int
+pet_type(boolean verbose, boolean nonpm_upon_random)
 {
     if (urole.petnum != NON_PM)
     {
@@ -103,10 +98,7 @@ boolean verbose, nonpm_upon_random;
 }
 
 struct monst *
-make_familiar(otmp, x, y, quietly)
-register struct obj *otmp;
-xchar x, y;
-boolean quietly;
+make_familiar(struct obj *otmp, xchar x, xchar y, boolean quietly)
 {
     struct permonst *pm;
     struct monst *mtmp = 0;
@@ -206,9 +198,9 @@ boolean quietly;
     return mtmp;
 }
 
-STATIC_OVL
+static
 int
-choose_cat_or_dog(VOID_ARGS)
+choose_cat_or_dog(void)
 {
     int res = NON_PM;
     const char* pet_names[2] = { "Cat", "Dog" };
@@ -266,10 +258,9 @@ choose_cat_or_dog(VOID_ARGS)
     return res;
 }
 
-STATIC_OVL
+static
 short
-choose_pet_gender(mnum)
-int mnum;
+choose_pet_gender(int mnum)
 {
     short res = 0;
 
@@ -336,12 +327,10 @@ int mnum;
     return res;
 }
 
-STATIC_VAR const struct breed_definition* breed_def_ptr = 0;
+static const struct breed_definition* breed_def_ptr = 0;
 
-STATIC_OVL int CFDECLSPEC
-breed_cmp(p, q)
-const genericptr p;
-const genericptr q;
+static int CFDECLSPEC
+breed_cmp(const genericptr p, const genericptr q)
 {
     if (!p || !q || !breed_def_ptr)
         return 0;
@@ -375,11 +364,9 @@ const genericptr q;
     return breedres;
 }
 
-STATIC_OVL
+static
 unsigned short
-choose_pet_breed(mnum, isfemale)
-int mnum;
-boolean isfemale;
+choose_pet_breed(int mnum, boolean isfemale)
 {
     unsigned short res = 0;
 
@@ -489,10 +476,10 @@ boolean isfemale;
 }
 
 struct monst *
-makedog(VOID_ARGS)
+makedog(void)
 {
-    register struct monst *mtmp;
-    register struct obj *otmp;
+    struct monst *mtmp;
+    struct obj *otmp;
     const char *petname = "";
     const char* petname_female = "";
     int pettype;
@@ -825,7 +812,7 @@ makedog(VOID_ARGS)
 /* record `last move time' for all monsters prior to level save so that
    mon_arrive() can catch up for lost time when they're restored later */
 void
-update_mlstmv(VOID_ARGS)
+update_mlstmv(void)
 {
     struct monst *mon;
 
@@ -839,9 +826,9 @@ update_mlstmv(VOID_ARGS)
 }
 
 void
-arrival_from_mydogs_and_migrating_mons(VOID_ARGS)
+arrival_from_mydogs_and_migrating_mons(void)
 {
-    register struct monst *mtmp, *mtmp0, *mtmp2;
+    struct monst *mtmp, *mtmp0, *mtmp2;
     int dismissKops = 0;
 
     /*
@@ -924,9 +911,7 @@ arrival_from_mydogs_and_migrating_mons(VOID_ARGS)
 
 /* called from resurrect() in addition to arrival_from_mydogs_and_migrating_mons() */
 void
-mon_arrive(mtmp, with_you)
-struct monst *mtmp;
-boolean with_you;
+mon_arrive(struct monst *mtmp, boolean with_you)
 {
     struct trap *t;
     xchar xlocale, ylocale, xyloc, xyflags, wander;
@@ -1141,11 +1126,13 @@ boolean with_you;
         m_into_limbo(mtmp, FALSE); /* try again next time hero comes to this level */
 }
 
+/*
+ * Parameters:
+ *   nmv: number of moves
+ */
 /* heal monster for time spent elsewhere */
 void
-mon_catchup_elapsed_time(mtmp, nmv)
-struct monst *mtmp;
-int64_t nmv; /* number of moves */
+mon_catchup_elapsed_time(struct monst *mtmp, int64_t nmv)
 {
     int imv = 0; /* avoid zillions of casts and lint warnings */
 
@@ -1395,13 +1382,16 @@ int64_t nmv; /* number of moves */
 
 }
 
+/*
+ * Parameters:
+ *   pets_only, nearby_only: pets_only is true for ascension or final escape
+ */
 /* called when you move to another level */
 void
-move_monsters_to_mydogs(pets_only, nearby_only)
-boolean pets_only, nearby_only; /* pets_only is true for ascension or final escape */
+move_monsters_to_mydogs(boolean pets_only, boolean nearby_only)
 {
-    register struct monst *mtmp, *mtmp2;
-    register struct obj *obj;
+    struct monst *mtmp, *mtmp2;
+    struct obj *obj;
     int num_segs;
     boolean stay_behind;
 
@@ -1482,7 +1472,7 @@ boolean pets_only, nearby_only; /* pets_only is true for ascension or final esca
                 set_residency(mtmp, TRUE);
 
             if (mtmp->wormno) {
-                register int cnt;
+                int cnt;
                 /* NOTE: worm is truncated to # segs = max wormno size */
                 cnt = count_wsegs(mtmp);
                 num_segs = min(cnt, MAX_NUM_WORMS - 1);
@@ -1520,12 +1510,14 @@ boolean pets_only, nearby_only; /* pets_only is true for ascension or final esca
     }
 }
 
+/*
+ * Parameters:
+ *   tolev: destination level
+ *   xyloc: MIGR_xxx destination xy location:
+ *   cc: optional destination coordinates
+ */
 void
-migrate_to_level(mtmp, tolev, xyloc, cc)
-register struct monst *mtmp;
-xchar tolev; /* destination level */
-xchar xyloc; /* MIGR_xxx destination xy location: */
-coord *cc;   /* optional destination coordinates */
+migrate_to_level(struct monst *mtmp, xchar tolev, xchar xyloc, coord *cc)
 {
     struct obj *obj;
     d_level new_lev;
@@ -1587,9 +1579,7 @@ coord *cc;   /* optional destination coordinates */
 /* return quality of food; the lower the better */
 /* fungi will eat even tainted food */
 int
-dogfood(mon, obj)
-struct monst *mon;
-register struct obj *obj;
+dogfood(struct monst *mon, struct obj *obj)
 {
     if (!mon || !obj)
         return TABU;
@@ -1773,19 +1763,17 @@ register struct obj *obj;
 }
 
 /*
+ * Parameters:
+ *   forcetaming: 0 = no force, 1 = force non-uniques, 2 = force all
+ *   charm_type: 0 = permanent, 1 = charm, 2 = control undead
+ */
+/*
  * With the separate mextra structure added in 3.6.x this always
  * operates on the original mtmp. It now returns TRUE if the taming
  * succeeded.
  */
 boolean
-tamedog(mtmp, obj, forcetaming, charm_type, duration, verbose, thrown)
-register struct monst *mtmp;
-register struct obj *obj;
-uchar forcetaming; /* 0 = no force, 1 = force non-uniques, 2 = force all */
-int charm_type; /* 0 = permanent, 1 = charm, 2 = control undead */
-unsigned short duration;
-boolean verbose;
-boolean thrown;
+tamedog(struct monst *mtmp, struct obj *obj, uchar forcetaming, int charm_type, unsigned short duration, boolean verbose, boolean thrown)
 {
     /* The Wiz, Medusa and the quest nemeses aren't even made peaceful. */
     if (!mtmp || mtmp->iswiz || is_medusa(mtmp->data)
@@ -1963,9 +1951,7 @@ boolean thrown;
 }
 
 void
-break_charm(mtmp, verbose)
-struct monst* mtmp;
-boolean verbose;
+break_charm(struct monst *mtmp, boolean verbose)
 {
     /* break charm */
     if (has_charmed(mtmp))
@@ -1992,9 +1978,7 @@ boolean verbose;
  * If the pet wasn't abused and was very tame, it might revive tame.
  */
 void
-wary_dog(mtmp, was_dead)
-struct monst *mtmp;
-boolean was_dead;
+wary_dog(struct monst *mtmp, boolean was_dead)
 {
     if (!mtmp)
         return;
@@ -2079,8 +2063,7 @@ boolean was_dead;
 }
 
 void
-abuse_dog(mtmp)
-struct monst *mtmp;
+abuse_dog(struct monst *mtmp)
 {
     if (!mtmp || !mtmp->mtame || mindless(mtmp->data))
         return;
@@ -2113,7 +2096,7 @@ struct monst *mtmp;
 }
 
 void
-reset_dogs(VOID_ARGS)
+reset_dogs(void)
 {
     petname_used = 0;
 }

@@ -81,22 +81,22 @@ static pascal OSStatus GlobalEvent(EventHandlerCallRef, EventRef, void *);
 
 #else
 
-static void FDECL(GeneralKey, (EventRecord *, WindowPtr));
-static void FDECL(macKeyMenu, (EventRecord *, WindowPtr));
-static void FDECL(macKeyText, (EventRecord *, WindowPtr));
+static void GeneralKey(EventRecord *, WindowPtr);
+static void macKeyMenu(EventRecord *, WindowPtr);
+static void macKeyText(EventRecord *, WindowPtr);
 
-static void FDECL(macClickMessage, (EventRecord *, WindowPtr));
-static void FDECL(macClickTerm, (EventRecord *, WindowPtr));
-static void FDECL(macClickMenu, (EventRecord *, WindowPtr));
-static void FDECL(macClickText, (EventRecord *, WindowPtr));
+static void macClickMessage(EventRecord *, WindowPtr);
+static void macClickTerm(EventRecord *, WindowPtr);
+static void macClickMenu(EventRecord *, WindowPtr);
+static void macClickText(EventRecord *, WindowPtr);
 
-static short FDECL(macDoNull, (EventRecord *, WindowPtr));
-static short FDECL(macUpdateMessage, (EventRecord *, WindowPtr));
-static short FDECL(macUpdateMenu, (EventRecord *, WindowPtr));
-static short FDECL(GeneralUpdate, (EventRecord *, WindowPtr));
+static short macDoNull(EventRecord *, WindowPtr);
+static short macUpdateMessage(EventRecord *, WindowPtr);
+static short macUpdateMenu(EventRecord *, WindowPtr);
+static short GeneralUpdate(EventRecord *, WindowPtr);
 
-static void FDECL(macCursorTerm, (EventRecord *, WindowPtr, RgnHandle));
-static void FDECL(GeneralCursor, (EventRecord *, WindowPtr, RgnHandle));
+static void macCursorTerm(EventRecord *, WindowPtr, RgnHandle);
+static void GeneralCursor(EventRecord *, WindowPtr, RgnHandle);
 #endif
 
 static void TextUpdate(NhWindow *wind);
@@ -217,12 +217,12 @@ Boolean small_screen = 0;
 //#endif
 //#define NHW_BASE 0
 
-static int FDECL(filter_scroll_key, (const int, NhWindow *));
+static int filter_scroll_key(const int, NhWindow *);
 
 #if 1 //!TARGET_API_MAC_CARBON
-static void FDECL(DoScrollBar, (Point, short, ControlHandle, NhWindow *));
+static void DoScrollBar(Point, short, ControlHandle, NhWindow *);
 #endif
-static pascal void FDECL(MoveScrollBar, (ControlHandle, short));
+static pascal void MoveScrollBar(ControlHandle, short);
 
 #if 1 //!TARGET_API_MAC_CARBON
 typedef void (*CbFunc)(EventRecord *, WindowPtr);
@@ -272,8 +272,7 @@ CheckNhWin(WindowPtr mac_win)
 }
 
 static pascal OSErr
-AppleEventHandler(const AppleEvent *inAppleEvent, AppleEvent *outAEReply,
-                  long inRefCon)
+AppleEventHandler(const AppleEvent *inAppleEvent, AppleEvent *outAEReply, long inRefCon)
 {
 #if defined(__SC__) || defined(__MRC__)
 #pragma unused(outAEReply, inRefCon)
@@ -1295,7 +1294,7 @@ adjust_window_pos(NhWindow *aWin, short width, short height)
  * until presumed seen.
  */
 void
-mac_display_nhwindow(winid win, BOOLEAN_P f)
+mac_display_nhwindow(winid win, boolean f)
 {
     NhWindow *aWin = &theWindows[win];
     WindowPtr theWindow = aWin->its_window;
@@ -1795,7 +1794,7 @@ mac_delay_output_milliseconds(int intervals)
 
 #ifdef CLIPPING
 static void
-mac_cliparound(int x, int y, BOOLEAN_P force)
+mac_cliparound(int x, int y, boolean force)
 {
 #if defined(__SC__) || defined(__MRC__)
 #pragma unused(x, y, force)
@@ -1965,8 +1964,7 @@ mac_start_menu_ex(winid win, int style)
 }
 
 void
-mac_add_menu(winid win, int glyph, const anything *any, CHAR_P menuChar,
-             CHAR_P groupAcc, int attr, int color, const char *inStr, int preselected)
+mac_add_menu(winid win, int glyph, const anything *any, char menuChar, char groupAcc, int attr, int color, const char *inStr, int preselected)
 {
 #if defined(__SC__) || defined(__MRC__)
 #pragma unused(glyph)
@@ -2043,8 +2041,7 @@ mac_add_menu(winid win, int glyph, const anything *any, CHAR_P menuChar,
 }
 
 void
-mac_add_extended_menu(winid win, int glyph, const anything* any, CHAR_P menuChar,
-    CHAR_P groupAcc, int attr, int color, const char* inStr, int preselected, struct extended_menu_info info)
+mac_add_extended_menu(winid win, int glyph, const anything* any, char menuChar, char groupAcc, int attr, int color, const char* inStr, int preselected, struct extended_menu_info info)
 {
     mac_add_menu(win, glyph, any, menuChar,
         groupAcc, attr, color, inStr, preselected);
@@ -2120,10 +2117,12 @@ mac_select_menu(winid win, int how, menu_item **selected_list)
 
 #include "dlb.h"
 
+/*
+ * Parameters:
+ *   name: not ANSI prototype because of boolean parameter
+ */
 static void
-mac_display_file(name, complain)
-const char *name; /* not ANSI prototype because of boolean parameter */
-boolean complain;
+mac_display_file(const char *name, boolean complain)
 {
     Ptr buf;
     int win;

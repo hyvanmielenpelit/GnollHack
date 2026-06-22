@@ -53,14 +53,10 @@
 
 /*ARGSUSED*/
 int
-mapglyph(layers, ochar, ocolor, ospecial, x, y)
-struct layer_info layers;
-int *ocolor, x, y;
-nhsym *ochar;
-uint64_t *ospecial;
+mapglyph(struct layer_info layers, nhsym *ochar, int *ocolor, uint64_t *ospecial, int x, int y)
 {
     int signed_glyph = layers.glyph;
-    register int offset, idx;
+    int offset, idx;
     int color = NO_COLOR;
     nhsym ch = 0;
     unsigned special = 0;
@@ -585,8 +581,7 @@ normal_monster_here:
 }
 
 char *
-encglyph(glyph)
-int glyph;
+encglyph(int glyph)
 {
     static char encbuf[20]; /* 10+1 would suffice */
 
@@ -595,9 +590,7 @@ int glyph;
 }
 
 char *
-decode_mixed(buf, str)
-char *buf;
-const char *str;
+decode_mixed(char *buf, const char *str)
 {
     static const char hex[] = "00112233445566778899aAbBcCdDeEfF";
     char *put = buf;
@@ -684,10 +677,7 @@ const char *str;
  */
 
 void
-genl_putmixed_ex(window,  str, attr, color, app)
-winid window;
-int attr, app, color;
-const char *str;
+genl_putmixed_ex(winid window, const char *str, int attr, int color, int app)
 {
     char buf[BUFSZ];
 
@@ -696,8 +686,7 @@ const char *str;
 }
 
 int
-zap_glyph_to_cmap(glyph)
-int glyph;
+zap_glyph_to_cmap(int glyph)
 {
     if (!glyph_is_zap(glyph))
         return 0;

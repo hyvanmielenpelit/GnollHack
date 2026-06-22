@@ -203,11 +203,9 @@ static long *end_ptr = &randtbl[DEG_3 + 1];
  */
 
 void
-srandom(x)
-
-unsigned x;
+srandom(unsigned x)
 {
-    register int i;
+    int i;
 
     if (rand_type == TYPE_0) {
         state[0] = x;
@@ -239,12 +237,14 @@ unsigned x;
  * Returns a pointer to the old state.
  */
 
+/*
+ * Parameters:
+ *   seed: seed for R. N. G.
+ *   arg_state: pointer to state array
+ *   n: # bytes of state info
+ */
 char *
-initstate(seed, arg_state, n)
-
-unsigned seed;   /* seed for R. N. G. */
-char *arg_state; /* pointer to state array */
-int n;           /* # bytes of state info */
+initstate(unsigned seed, char *arg_state, int n)
 {
     register char *ostate = (char *) (&state[-1]);
 
@@ -308,13 +308,11 @@ int n;           /* # bytes of state info */
  */
 
 char *
-setstate(arg_state)
-
-char *arg_state;
+setstate(char *arg_state)
 {
     register long *new_state = (long *) arg_state;
-    register int type = new_state[0] % MAX_TYPES;
-    register int rear = new_state[0] / MAX_TYPES;
+    int type = new_state[0] % MAX_TYPES;
+    int rear = new_state[0] / MAX_TYPES;
     char *ostate = (char *) (&state[-1]);
 
     if (rand_type == TYPE_0)
@@ -362,7 +360,7 @@ char *arg_state;
  */
 
 long
-random()
+random(void)
 {
     long i;
 
@@ -382,6 +380,5 @@ random()
     return (i);
 }
 #endif /* else defined(USE_ISAAC64) && !defined(RANDOM) */
-
 
 

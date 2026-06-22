@@ -65,19 +65,19 @@ const char* critical_strike_special_percentage_names[MAX_CRITICAL_STRIKE_SPECIAL
 #define SCHAR_LIM 127
 #define NUMOBUF 24
 
-STATIC_DCL char *FDECL(strprepend, (char *, const char *));
-STATIC_DCL short FDECL(rnd_otyp_by_wpnskill, (SCHAR_P));
-STATIC_DCL short FDECL(rnd_otyp_by_namedesc, (const char *, CHAR_P, int));
-STATIC_DCL boolean FDECL(wishymatch, (const char *, const char *, BOOLEAN_P));
-STATIC_DCL void FDECL(releaseobuf, (char *));
-STATIC_DCL char *FDECL(minimal_xname, (struct obj *));
-STATIC_DCL char *FDECL(just_an, (char *str, const char *));
-STATIC_DCL boolean FDECL(singplur_lookup, (char *, char *, BOOLEAN_P,
-                                           const char *const *));
-STATIC_DCL char *FDECL(singplur_compound, (char *));
-STATIC_DCL char *FDECL(xname_flags, (struct obj *, unsigned));
-STATIC_DCL boolean FDECL(badman, (const char *, BOOLEAN_P));
-STATIC_DCL boolean FDECL(material_wish_success, (int, int));
+static char *strprepend(char *, const char *);
+static short rnd_otyp_by_wpnskill(schar);
+static short rnd_otyp_by_namedesc(const char *, char, int);
+static boolean wishymatch(const char *, const char *, boolean);
+static void releaseobuf(char *);
+static char *minimal_xname(struct obj *);
+static char *just_an(char *str, const char *);
+static boolean singplur_lookup(char *, char *, boolean,
+                                           const char *const *);
+static char *singplur_compound(char *);
+static char *xname_flags(struct obj *, unsigned);
+static boolean badman(const char *, boolean);
+static boolean material_wish_success(int, int);
 
 struct Jitem {
     int item;
@@ -89,7 +89,7 @@ struct Jitem {
     ((ptr) < base || strncmpi((ptr), str, num))
 #define Strcasecpy(dst, src) (void) strcasecpy(dst, src)
 
-STATIC_OVL struct Jitem Japanese_items[] = { { SHORT_SWORD, "wakizashi" },
+static struct Jitem Japanese_items[] = { { SHORT_SWORD, "wakizashi" },
                                              { BROADSWORD, "ninja-to" },
                                              { FLAIL, "nunchaku" },
                                              { GLAIVE, "naginata" },
@@ -102,12 +102,10 @@ STATIC_OVL struct Jitem Japanese_items[] = { { SHORT_SWORD, "wakizashi" },
                                              { FOOD_RATION, "gunyoki" },
                                              { 0, "" } };
 
-STATIC_OVL char *
-strprepend(s, pref)
-register char *s;
-register const char *pref;
+static char *
+strprepend(char *s, const char *pref)
 {
-    register int i = (int) strlen(pref);
+    int i = (int) strlen(pref);
 
     if (i > PREFIXBUFSZ) {
         impossible("PREFIXBUFSZ too short (for %d).", i);
@@ -119,18 +117,18 @@ register const char *pref;
 }
 
 /* manage a pool of BUFSZ buffers, so callers don't have to */
-STATIC_VAR char NEARDATA obufs[NUMOBUF][OBUFSZ];
-STATIC_VAR int obufidx = 0;
+static char NEARDATA obufs[NUMOBUF][OBUFSZ];
+static int obufidx = 0;
 
 char *
-nextobuf(VOID_ARGS)
+nextobuf(void)
 {
     obufidx = (obufidx + 1) % NUMOBUF;
     return obufs[obufidx];
 }
 
 char*
-next_offset_init_obuf(VOID_ARGS)
+next_offset_init_obuf(void)
 {
     char* buf = nextobuf() + PREFIXBUFSZ;
     buf[0] = '\0';
@@ -140,9 +138,8 @@ next_offset_init_obuf(VOID_ARGS)
 }
 
 /* put the most recently allocated buffer back if possible */
-STATIC_OVL void
-releaseobuf(bufp)
-char *bufp;
+static void
+releaseobuf(char *bufp)
 {
     /* caller may not know whether bufp is the most recently allocated
        buffer; if it isn't, do nothing; note that because of the somewhat
@@ -155,8 +152,7 @@ char *bufp;
 }
 
 char *
-obj_typename(otyp)
-register int otyp;
+obj_typename(int otyp)
 {
     char *buf = next_offset_init_obuf();
     struct objclass *ocl = &objects[otyp];
@@ -238,8 +234,7 @@ register int otyp;
 /* less verbose result than obj_typename(); either the actual name
    or the description (but not both); user-assigned name is ignored */
 char *
-simple_typename(otyp)
-int otyp;
+simple_typename(int otyp)
 {
     char *bufp, *pp, *save_uname = objects[otyp].oc_uname;
 
@@ -252,8 +247,7 @@ int otyp;
 }
 
 boolean
-obj_is_pname(obj)
-struct obj *obj;
+obj_is_pname(struct obj *obj)
 {
     if (!obj->oartifact || !has_oname(obj))
         return FALSE;
@@ -267,15 +261,13 @@ struct obj *obj;
 /* used by distant_name() to pass extra information to xname_flags();
    it would be much cleaner if this were a parameter, but that would
    require all of the xname() and doname() calls to be modified */
-STATIC_VAR int distantname = 0;
+static int distantname = 0;
 
 /* Give the name of an object seen at a distance.  Unlike xname/doname,
  * we don't want to set dknown if it's not set already.
  */
 char *
-distant_name(obj, func)
-struct obj *obj;
-char *FDECL((*func), (OBJ_P));
+distant_name(struct obj *obj, char *(*func)(struct obj*))
 {
     char *str;
 
@@ -293,11 +285,14 @@ char *FDECL((*func), (OBJ_P));
     return str;
 }
 
+/*
+ * Parameters:
+ *   juice: whether or not to append " juice" to the name
+ */
 /* convert player specified fruit name into corresponding fruit juice name
    ("slice of pizza" -> "pizza juice" rather than "slice of pizza juice") */
 char *
-fruitname(juice)
-boolean juice; /* whether or not to append " juice" to the name */
+fruitname(boolean juice)
 {
     char *buf = next_offset_init_obuf();
     const char *fruit_nam = strstri(pl_fruit, " of ");
@@ -313,8 +308,7 @@ boolean juice; /* whether or not to append " juice" to the name */
 
 /* look up a named fruit by index (1..127) */
 struct fruit *
-fruit_from_indx(indx)
-int indx;
+fruit_from_indx(int indx)
 {
     struct fruit *f;
 
@@ -324,12 +318,14 @@ int indx;
     return f;
 }
 
+/*
+ * Parameters:
+ *   exact: False => prefix or exact match, True = exact match only
+ *   highest_fid: optional output; only valid if 'fname' isn't found
+ */
 /* look up a named fruit by name */
 struct fruit *
-fruit_from_name(fname, exact, highest_fid)
-const char *fname;
-boolean exact; /* False => prefix or exact match, True = exact match only */
-int *highest_fid; /* optional output; only valid if 'fname' isn't found */
+fruit_from_name(const char *fname, boolean exact, int *highest_fid)
 {
     struct fruit *f, *tentativef;
     char *altfname;
@@ -406,8 +402,7 @@ int *highest_fid; /* optional output; only valid if 'fname' isn't found */
 
 /* sort the named-fruit linked list by fruit index number */
 void
-reorder_fruit(forward)
-boolean forward;
+reorder_fruit(boolean forward)
 {
     struct fruit *f, *allfr[1 + 127];
     int i, j, k = SIZE(allfr);
@@ -440,8 +435,7 @@ boolean forward;
     }
 }
 char*
-str_upper_start(str)
-const char* str;
+str_upper_start(const char *str)
 {
     char* buf = 0;
     if (!str)
@@ -460,25 +454,25 @@ const char* str;
 }
 
 char *
-xname(obj)
-struct obj *obj;
+xname(struct obj *obj)
 {
     return xname_flags(obj, CXN_NORMAL);
 }
 
 char*
-xname_bare(obj)
-struct obj* obj;
+xname_bare(struct obj *obj)
 {
     return xname_flags(obj, CXN_BARE);
 }
 
+/*
+ * Parameters:
+ *   cxn_flags: bitmask of CXN_xxx values
+ */
 char *
-xname_flags(obj, cxn_flags)
-register struct obj *obj;
-unsigned cxn_flags; /* bitmask of CXN_xxx values */
+xname_flags(struct obj *obj, unsigned cxn_flags)
 {
-    register char* buf;
+    char* buf;
 
     if (!obj)
     {
@@ -489,8 +483,8 @@ unsigned cxn_flags; /* bitmask of CXN_xxx values */
 
     boolean artifact_description_exists = obj->oartifact && artilist[obj->oartifact].desc && strcmp(artilist[obj->oartifact].desc, "");
     /* Note: maskotyp is relevant here when artifact description does not exist */
-    register int typ = ((obj->oartifact && artilist[obj->oartifact].maskotyp != STRANGE_OBJECT) ? artilist[obj->oartifact].maskotyp : obj->otyp);
-    register struct objclass *ocl = &objects[typ];
+    int typ = ((obj->oartifact && artilist[obj->oartifact].maskotyp != STRANGE_OBJECT) ? artilist[obj->oartifact].maskotyp : obj->otyp);
+    struct objclass *ocl = &objects[typ];
     /* Note: when its description exists, an artifact always uses the unknown name format instead of oc_name_known;
      * if the artifact is known, then it jumps to "the Artifact" format */
     /* Note: artifact uses nknown and aknown to determine if it is in the format of "the Artifact"; this is in obj_is_pname function */
@@ -1126,9 +1120,8 @@ unsigned cxn_flags; /* bitmask of CXN_xxx values */
      brown potion               -- if oc_name_known not set
      potion of object detection -- if discovered
  */
-STATIC_OVL char *
-minimal_xname(obj)
-struct obj *obj;
+static char *
+minimal_xname(struct obj *obj)
 {
     char *bufp;
     struct obj bareobj;
@@ -1174,8 +1167,7 @@ struct obj *obj;
 
 /* xname() output augmented for multishot missile feedback */
 char *
-mshot_xname(obj)
-struct obj *obj;
+mshot_xname(struct obj *obj)
 {
     char tmpbuf[PREFIXBUFSZ];
     char *onm = xname(obj);
@@ -1191,8 +1183,7 @@ struct obj *obj;
 
 /* used for naming "the unique_item" instead of "a unique_item" */
 boolean
-the_unique_obj(obj)
-struct obj *obj;
+the_unique_obj(struct obj *obj)
 {
     boolean known = (obj->known || iflags.override_ID);
 
@@ -1207,8 +1198,7 @@ struct obj *obj;
 
 /* should monster type be prefixed with "the"? (mostly used for corpses) */
 boolean
-the_unique_pm(ptr)
-struct permonst *ptr;
+the_unique_pm(struct permonst *ptr)
 {
     boolean uniq;
 
@@ -1230,9 +1220,7 @@ struct permonst *ptr;
 }
 
 void
-add_erosion_words(obj, prefix)
-struct obj *obj;
-char *prefix;
+add_erosion_words(struct obj *obj, char *prefix)
 {
     boolean iscrys = (obj->otyp == CRYSKNIFE);
     boolean rknown;
@@ -1290,8 +1278,7 @@ char *prefix;
 
 /* used to prevent rust on items where rust makes no difference */
 boolean
-erosion_matters(obj)
-struct obj *obj;
+erosion_matters(struct obj *obj)
 {
     switch (obj->oclass) {
     case TOOL_CLASS:
@@ -1314,10 +1301,7 @@ struct obj *obj;
 }
 
 char *
-doname_with_flags(obj, doname_flags, attrs_ptr, colors_ptr)
-struct obj *obj;
-unsigned doname_flags;
-char** attrs_ptr, ** colors_ptr;
+doname_with_flags(struct obj *obj, unsigned doname_flags, char **attrs_ptr, char **colors_ptr)
 {
     if (!obj)
         return xname(obj); /* Returns an empty string */
@@ -2197,81 +2181,65 @@ weapon_here:
 }
 
 char *
-doname(obj)
-struct obj *obj;
+doname(struct obj *obj)
 {
-    return doname_with_flags(obj, 0U, (char**)0, (char**)0);
+    return doname_with_flags(obj, 0U, (char **)0, (char **)0);
 }
 
 char*
-doname_payobj(obj)
-struct obj* obj;
+doname_payobj(struct obj *obj)
 {
-    return doname_with_flags(obj, DONAME_HIDE_UNPAID | DONAME_USE_SPECIAL_QUAN, (char**)0, (char**)0);
+    return doname_with_flags(obj, DONAME_HIDE_UNPAID | DONAME_USE_SPECIAL_QUAN, (char **)0, (char **)0);
 }
 
 char*
-doname_in_text(obj)
-struct obj* obj;
+doname_in_text(struct obj *obj)
 {
-    return doname_with_flags(obj, DONAME_LIT_IN_FRONT, (char**)0, (char**)0);
+    return doname_with_flags(obj, DONAME_LIT_IN_FRONT, (char **)0, (char **)0);
 }
 
 /* Name of object including price. */
 char *
-doname_with_price(obj)
-struct obj *obj;
+doname_with_price(struct obj *obj)
 {
-    return doname_with_flags(obj, DONAME_WITH_PRICE, (char**)0, (char**)0);
+    return doname_with_flags(obj, DONAME_WITH_PRICE, (char **)0, (char **)0);
 }
 
 char*
-doname_with_price_quick(obj)
-struct obj* obj;
+doname_with_price_quick(struct obj *obj)
 {
-    return doname_with_flags(obj, DONAME_WITH_PRICE | DONAME_SHOW_QUICK_ITEMS, (char**)0, (char**)0);
+    return doname_with_flags(obj, DONAME_WITH_PRICE | DONAME_SHOW_QUICK_ITEMS, (char **)0, (char **)0);
 }
 
 char*
-doname_with_price_and_comparison(obj, comparison_stats, attrs_ptr, colors_ptr)
-struct obj* obj;
-boolean comparison_stats;
-char** attrs_ptr, ** colors_ptr;
+doname_with_price_and_comparison(struct obj *obj, boolean comparison_stats, char **attrs_ptr, char **colors_ptr)
 {
     return doname_with_flags(obj, DONAME_WITH_PRICE | (comparison_stats ? DONAME_COMPARISON : 0), attrs_ptr, colors_ptr);
 }
 
 /* Name of object including price. */
 char*
-doname_with_price_and_weight_last(obj,  loadstonecorrectly, show_quick)
-struct obj* obj;
-boolean loadstonecorrectly, show_quick;
+doname_with_price_and_weight_last(struct obj *obj, boolean loadstonecorrectly, boolean show_quick)
 {
-    return doname_with_flags(obj, DONAME_WITH_PRICE | DONAME_WITH_WEIGHT_LAST | (show_quick ? DONAME_SHOW_QUICK_ITEMS : 0) | (loadstonecorrectly ? DONAME_LOADSTONE_CORRECTLY : 0), (char**)0, (char**)0);
+    return doname_with_flags(obj, DONAME_WITH_PRICE | DONAME_WITH_WEIGHT_LAST | (show_quick ? DONAME_SHOW_QUICK_ITEMS : 0) | (loadstonecorrectly ? DONAME_LOADSTONE_CORRECTLY : 0), (char **)0, (char **)0);
 }
 
 char*
-doname_with_price_and_weight_last_and_comparison(obj, loadstonecorrectly, comparison_stats, attrs_ptr, colors_ptr)
-struct obj* obj;
-boolean loadstonecorrectly, comparison_stats;
-char** attrs_ptr, ** colors_ptr;
+doname_with_price_and_weight_last_and_comparison(struct obj *obj, boolean loadstonecorrectly, boolean comparison_stats, char **attrs_ptr, char **colors_ptr)
 {
     return doname_with_flags(obj, DONAME_WITH_PRICE | DONAME_WITH_WEIGHT_LAST | (loadstonecorrectly ? DONAME_LOADSTONE_CORRECTLY : 0) | (comparison_stats ? DONAME_COMPARISON : 0), attrs_ptr, colors_ptr);
 }
 
 /* Name of object including price. */
 char*
-doname_in_text_with_price_and_weight_last(obj)
-struct obj* obj;
+doname_in_text_with_price_and_weight_last(struct obj *obj)
 {
-    return doname_with_flags(obj, DONAME_LIT_IN_FRONT | DONAME_WITH_PRICE | DONAME_WITH_WEIGHT_LAST | (objects[LOADSTONE].oc_name_known ? DONAME_LOADSTONE_CORRECTLY : 0), (char**)0, (char**)0);
+    return doname_with_flags(obj, DONAME_LIT_IN_FRONT | DONAME_WITH_PRICE | DONAME_WITH_WEIGHT_LAST | (objects[LOADSTONE].oc_name_known ? DONAME_LOADSTONE_CORRECTLY : 0), (char **)0, (char **)0);
 }
 
 /* Name of object including price. */
 char*
-doname_in_text_with_price_and_weight_last_and_comparison(obj, attrs_ptr, colors_ptr)
-struct obj* obj;
-char** attrs_ptr, ** colors_ptr;
+doname_in_text_with_price_and_weight_last_and_comparison(struct obj *obj, char **attrs_ptr, char **colors_ptr)
 {
     return doname_with_flags(obj, DONAME_LIT_IN_FRONT | DONAME_WITH_PRICE | DONAME_WITH_WEIGHT_LAST | DONAME_COMPARISON | (objects[LOADSTONE].oc_name_known ? DONAME_LOADSTONE_CORRECTLY : 0), attrs_ptr, colors_ptr);
 }
@@ -2279,26 +2247,20 @@ char** attrs_ptr, ** colors_ptr;
 
 /* Name of object including price. */
 char*
-doname_with_price_and_weight_first(obj, loadstonecorrectly, show_quick)
-struct obj* obj;
-boolean loadstonecorrectly, show_quick;
+doname_with_price_and_weight_first(struct obj *obj, boolean loadstonecorrectly, boolean show_quick)
 {
-    return doname_with_flags(obj, DONAME_WITH_PRICE | DONAME_WITH_WEIGHT_FIRST | (show_quick ? DONAME_SHOW_QUICK_ITEMS : 0) | (loadstonecorrectly ? DONAME_LOADSTONE_CORRECTLY : 0), (char**)0, (char**)0);
+    return doname_with_flags(obj, DONAME_WITH_PRICE | DONAME_WITH_WEIGHT_FIRST | (show_quick ? DONAME_SHOW_QUICK_ITEMS : 0) | (loadstonecorrectly ? DONAME_LOADSTONE_CORRECTLY : 0), (char **)0, (char **)0);
 }
 
 char*
-doname_with_price_and_weight_first_and_comparison(obj, loadstonecorrectly, comparison_stats, attrs_ptr, colors_ptr)
-struct obj* obj;
-boolean loadstonecorrectly, comparison_stats;
-char** attrs_ptr, ** colors_ptr;
+doname_with_price_and_weight_first_and_comparison(struct obj *obj, boolean loadstonecorrectly, boolean comparison_stats, char **attrs_ptr, char **colors_ptr)
 {
     return doname_with_flags(obj, DONAME_WITH_PRICE | DONAME_WITH_WEIGHT_FIRST | (loadstonecorrectly ? DONAME_LOADSTONE_CORRECTLY : 0) | (comparison_stats ? DONAME_COMPARISON : 0), attrs_ptr, colors_ptr);
 }
 
 /* "some" instead of precise quantity if obj->dknown not set */
 char *
-doname_vague_quan(obj)
-struct obj *obj;
+doname_vague_quan(struct obj *obj)
 {
     /* Used by farlook.
      * If it hasn't been seen up close and quantity is more than one,
@@ -2312,47 +2274,38 @@ struct obj *obj;
      * TODO: add obj->qknown flag for 'quantity known' on stackable
      * items; it could overlay obj->cknown since no containers stack.
      */
-    return doname_with_flags(obj, DONAME_VAGUE_QUAN, (char**)0, (char**)0);
+    return doname_with_flags(obj, DONAME_VAGUE_QUAN, (char **)0, (char **)0);
 }
 
 char*
-doname_with_weight_first(obj, loadstonecorrectly, is_perm_inv, addflags)
-struct obj* obj;
-boolean loadstonecorrectly, is_perm_inv;
-unsigned addflags;
+doname_with_weight_first(struct obj *obj, boolean loadstonecorrectly, boolean is_perm_inv, unsigned addflags)
 {
-    return doname_with_flags(obj, DONAME_WITH_WEIGHT_FIRST | addflags | (loadstonecorrectly ? DONAME_LOADSTONE_CORRECTLY : 0) | (is_perm_inv ? DONAME_HIDE_REMAINING_LIT_TURNS : 0), (char**)0, (char**)0);
+    return doname_with_flags(obj, DONAME_WITH_WEIGHT_FIRST | addflags | (loadstonecorrectly ? DONAME_LOADSTONE_CORRECTLY : 0) | (is_perm_inv ? DONAME_HIDE_REMAINING_LIT_TURNS : 0), (char **)0, (char **)0);
 }
 
 char*
-doname_with_weight_first_true(obj)
-struct obj* obj;
+doname_with_weight_first_true(struct obj *obj)
 {
-    return doname_with_flags(obj, DONAME_WITH_WEIGHT_FIRST | DONAME_LOADSTONE_CORRECTLY, (char**)0, (char**)0);
+    return doname_with_flags(obj, DONAME_WITH_WEIGHT_FIRST | DONAME_LOADSTONE_CORRECTLY, (char **)0, (char **)0);
 }
 
 char*
-doname_with_weight_last_true(obj)
-struct obj* obj;
+doname_with_weight_last_true(struct obj *obj)
 {
-    return doname_with_flags(obj, DONAME_WITH_WEIGHT_LAST | DONAME_LOADSTONE_CORRECTLY, (char**)0, (char**)0);
+    return doname_with_flags(obj, DONAME_WITH_WEIGHT_LAST | DONAME_LOADSTONE_CORRECTLY, (char **)0, (char **)0);
 }
 
 
 
 char*
-doname_with_weight_last(obj, loadstonecorrectly, is_perm_inv, addflags)
-struct obj* obj;
-boolean loadstonecorrectly, is_perm_inv;
-unsigned addflags;
+doname_with_weight_last(struct obj *obj, boolean loadstonecorrectly, boolean is_perm_inv, unsigned addflags)
 {
-    return doname_with_flags(obj, DONAME_WITH_WEIGHT_LAST | addflags | (loadstonecorrectly ? DONAME_LOADSTONE_CORRECTLY : 0) | (is_perm_inv ? DONAME_HIDE_REMAINING_LIT_TURNS : 0), (char**)0, (char**)0);
+    return doname_with_flags(obj, DONAME_WITH_WEIGHT_LAST | addflags | (loadstonecorrectly ? DONAME_LOADSTONE_CORRECTLY : 0) | (is_perm_inv ? DONAME_HIDE_REMAINING_LIT_TURNS : 0), (char **)0, (char **)0);
 }
 
 /* used from invent.c */
 boolean
-not_fully_identified(otmp)
-struct obj *otmp;
+not_fully_identified(struct obj *otmp)
 {
     /* gold doesn't have any interesting attributes [yet?] */
     if (otmp->oclass == COIN_CLASS)
@@ -2399,21 +2352,21 @@ struct obj *otmp;
 }
 
 boolean
-is_obj_unknown(otmp)
-struct obj* otmp;
+is_obj_unknown(struct obj *otmp)
 {
     if (!otmp)
         return FALSE;
     return !objects[otmp->otyp].oc_name_known || (otmp->oartifact && otmp->nknown && !otmp->aknown);
 }
 
+/*
+ * Parameters:
+ *   cxn_flags: bitmask of CXN_xxx values
+ */
 /* format a corpse name (xname() omits monster type; doname() calls us);
    eatcorpse() also uses us for death reason when eating tainted glob */
 char *
-corpse_xname(otmp, adjective, cxn_flags)
-struct obj *otmp;
-const char *adjective;
-unsigned cxn_flags; /* bitmask of CXN_xxx values */
+corpse_xname(struct obj *otmp, const char *adjective, unsigned cxn_flags)
 {
     char *nambuf = next_offset_init_obuf();
     int omndx = otmp->corpsenm;
@@ -2524,8 +2477,7 @@ unsigned cxn_flags; /* bitmask of CXN_xxx values */
 
 /* xname doesn't include monster type for "corpse"; cxname does */
 char *
-cxname(obj)
-struct obj *obj;
+cxname(struct obj *obj)
 {
     if (obj->otyp == CORPSE)
         return corpse_xname(obj, (const char *) 0, CXN_NORMAL);
@@ -2533,18 +2485,19 @@ struct obj *obj;
 }
 
 char*
-acxname(obj)
-struct obj* obj;
+acxname(struct obj *obj)
 {
     if (obj->otyp == CORPSE)
         return corpse_xname(obj, (const char*)0, CXN_ARTICLE);
     return obj->oartifact && obj->aknown ? the(xname(obj)) : obj->quan != 1 ? xname(obj) : an(xname(obj));
 }
 
+/*
+ * Parameters:
+ *   name: Should be already in plural
+ */
 char*
-prepend_quan(quan, name)
-int64_t quan;
-const char* name; /* Should be already in plural */
+prepend_quan(int64_t quan, const char *name)
 {
     //char namebuf[OBUFSZ] = ""; /* Just in case name and buf happen to be randomly the same obuf */
     //if (name)
@@ -2555,8 +2508,7 @@ const char* name; /* Should be already in plural */
 }
 
 char*
-aqcxname(obj)
-struct obj* obj;
+aqcxname(struct obj *obj)
 {
     if (obj->otyp == CORPSE)
         return obj->quan == 1 ? corpse_xname(obj, (const char*)0, CXN_ARTICLE) : prepend_quan(obj->quan, corpse_xname(obj, (const char*)0, CXN_NORMAL));
@@ -2564,8 +2516,7 @@ struct obj* obj;
 }
 
 char*
-thecxname(obj)
-struct obj* obj;
+thecxname(struct obj *obj)
 {
     if (obj->otyp == CORPSE)
         return corpse_xname(obj, (const char*)0, CXN_PFX_THE);
@@ -2574,8 +2525,7 @@ struct obj* obj;
 
 /* like cxname, but ignores quantity */
 char *
-cxname_singular(obj)
-struct obj *obj;
+cxname_singular(struct obj *obj)
 {
     if (obj->otyp == CORPSE)
         return corpse_xname(obj, (const char *) 0, CXN_SINGULAR);
@@ -2584,16 +2534,13 @@ struct obj *obj;
 
 /* treat an object as fully ID'd when it might be used as reason for death */
 char*
-killer_xname(obj)
-struct obj* obj;
+killer_xname(struct obj *obj)
 {
     return killer_xname_flags(obj, 0);
 }
 
 char *
-killer_xname_flags(obj, kxnflags)
-struct obj *obj;
-unsigned kxnflags;
+killer_xname_flags(struct obj *obj, unsigned kxnflags)
 {
     struct obj save_obj;
     unsigned save_ocknown;
@@ -2673,13 +2620,14 @@ unsigned kxnflags;
     return buf;
 }
 
+/*
+ * Parameters:
+ *   obj, func: main formatting routine
+ *   obj, altfunc: alternate for shortest result
+ */
 /* xname,doname,&c with long results reformatted to omit some stuff */
 char *
-short_oname(obj, func, altfunc, lenlimit)
-struct obj *obj;
-char *FDECL((*func), (OBJ_P)),    /* main formatting routine */
-     *FDECL((*altfunc), (OBJ_P)); /* alternate for shortest result */
-size_t lenlimit;
+short_oname(struct obj *obj, char *(*func)(struct obj*), char *(*altfunc)(struct obj*), size_t lenlimit)
 {
     struct obj save_obj;
     char unamebuf[12], onamebuf[12], *save_oname, *save_uname, *outbuf;
@@ -2757,9 +2705,7 @@ size_t lenlimit;
  * Used if only one of a collection of objects is named (e.g. in eat.c).
  */
 const char *
-singular(otmp, func)
-register struct obj *otmp;
-char *FDECL((*func), (OBJ_P));
+singular(struct obj *otmp, char *(*func)(struct obj*))
 {
     int64_t savequan;
     char *nam;
@@ -2776,10 +2722,8 @@ char *FDECL((*func), (OBJ_P));
 }
 
 /* pick "", "a ", or "an " as article for 'str'; used by an() and doname() */
-STATIC_OVL char *
-just_an(outbuf, str)
-char *outbuf;
-const char *str;
+static char *
+just_an(char *outbuf, const char *str)
 {
     char c0;
 
@@ -2804,8 +2748,7 @@ const char *str;
 }
 
 char *
-an(str)
-const char *str;
+an(const char *str)
 {
     if (!str || !*str) 
     {
@@ -2821,8 +2764,7 @@ const char *str;
 }
 
 char *
-An(str)
-const char *str;
+An(const char *str)
 {
     char *tmp = an(str);
 
@@ -2831,8 +2773,7 @@ const char *str;
 }
 
 char*
-an_prefix(str)
-const char* str;
+an_prefix(const char *str)
 {
     if (!str || !*str) 
     {
@@ -2847,8 +2788,7 @@ const char* str;
 }
 
 char*
-An_prefix(str)
-const char* str;
+An_prefix(const char *str)
 {
     char* tmp = an_prefix(str);
 
@@ -2861,8 +2801,7 @@ const char* str;
  * Use is_mname_proper_name() for monster names, not the().  the() is idempotent.
  */
 char *
-the(str)
-const char *str;
+the(const char *str)
 {
     if (!str || !*str) 
     {
@@ -2888,7 +2827,7 @@ const char *str;
         insert_the = TRUE;
     } else {
         /* Probably a proper name, might not need an article */
-        register char *tmp, *named, *called, *entitled, *labeled;
+        char *tmp, *named, *called, *entitled, *labeled;
         size_t l;
 
         /* some objects have capitalized adjectives in their names */
@@ -2928,8 +2867,7 @@ const char *str;
 }
 
 char *
-The(str)
-const char *str;
+The(const char *str)
 {
     char *tmp = the(str);
 
@@ -2939,9 +2877,7 @@ const char *str;
 
 /* returns "count cxname(otmp)" or just cxname(otmp) if count == 1 */
 char *
-aobjnam(otmp, verb)
-struct obj *otmp;
-const char *verb;
+aobjnam(struct obj *otmp, const char *verb)
 {
     char prefix[PREFIXBUFSZ];
     char *bp = cxname(otmp);
@@ -2959,9 +2895,7 @@ const char *verb;
 
 /* combine yname and aobjnam eg "your count cxname(otmp)" */
 char *
-yobjnam(obj, verb)
-struct obj *obj;
-const char *verb;
+yobjnam(struct obj *obj, const char *verb)
 {
     char *s = aobjnam(obj, verb);
 
@@ -2982,11 +2916,9 @@ const char *verb;
 
 /* combine Yname2 and aobjnam eg "Your count cxname(otmp)" */
 char *
-Yobjnam2(obj, verb)
-struct obj *obj;
-const char *verb;
+Yobjnam2(struct obj *obj, const char *verb)
 {
-    register char *s = yobjnam(obj, verb);
+    char *s = yobjnam(obj, verb);
 
     *s = highc(*s);
     return s;
@@ -2994,9 +2926,7 @@ const char *verb;
 
 /* like aobjnam, but prepend "The", not count, and use xname */
 char *
-Tobjnam(otmp, verb)
-struct obj *otmp;
-const char *verb;
+Tobjnam(struct obj *otmp, const char *verb)
 {
     char *bp = The(xname(otmp));
 
@@ -3009,8 +2939,7 @@ const char *verb;
 
 /* capitalized variant of doname() */
 char *
-Doname2(obj)
-struct obj *obj;
+Doname2(struct obj *obj)
 {
     char *s = doname(obj);
 
@@ -3019,8 +2948,7 @@ struct obj *obj;
 }
 
 char*
-Doname_payobj2(obj)
-struct obj* obj;
+Doname_payobj2(struct obj *obj)
 {
     char* s = doname_payobj(obj);
 
@@ -3030,8 +2958,7 @@ struct obj* obj;
 
 /* returns "[your ]xname(obj)" or "Foobar's xname(obj)" or "the xname(obj)" */
 char *
-yname(obj)
-struct obj *obj;
+yname(struct obj *obj)
 {
     char *s = cxname(obj);
 
@@ -3062,8 +2989,7 @@ struct obj *obj;
 
 /* capitalized variant of yname() */
 char *
-Yname2(obj)
-struct obj *obj;
+Yname2(struct obj *obj)
 {
     char *s = yname(obj);
 
@@ -3076,8 +3002,7 @@ struct obj *obj;
  * or "the minimal_xname(obj)"
  */
 char *
-ysimple_name(obj)
-struct obj *obj;
+ysimple_name(struct obj *obj)
 {
     char* outbuf = next_offset_init_obuf();
     char *s = shk_your(outbuf, obj); /* assert( s == outbuf ); */
@@ -3092,8 +3017,7 @@ struct obj *obj;
 
 /* capitalized variant of ysimple_name() */
 char *
-Ysimple_name2(obj)
-struct obj *obj;
+Ysimple_name2(struct obj *obj)
 {
     char *s = ysimple_name(obj);
 
@@ -3103,8 +3027,7 @@ struct obj *obj;
 
 /* "scroll" or "scrolls" */
 char *
-simpleonames(obj)
-struct obj *obj;
+simpleonames(struct obj *obj)
 {
     char *simpleoname = minimal_xname(obj);
 
@@ -3114,8 +3037,7 @@ struct obj *obj;
 }
 
 char*
-simpleonames_payobj(obj)
-struct obj* obj;
+simpleonames_payobj(struct obj *obj)
 {
     char* simpleoname = minimal_xname(obj);
 
@@ -3125,8 +3047,7 @@ struct obj* obj;
 }
 /* "a scroll" or "scrolls"; "a silver bell" or "the Bell of Opening" */
 char *
-ansimpleoname(obj)
-struct obj *obj;
+ansimpleoname(struct obj *obj)
 {
     char *simpleoname = simpleonames(obj);
     int otyp = obj->otyp;
@@ -3147,8 +3068,7 @@ struct obj *obj;
 }
 
 char*
-ansimpleoname_payobj(obj)
-struct obj* obj;
+ansimpleoname_payobj(struct obj *obj)
 {
     char* simpleoname = simpleonames_payobj(obj);
     int otyp = obj->otyp;
@@ -3170,8 +3090,7 @@ struct obj* obj;
 
 /* "the scroll" or "the scrolls" */
 char *
-thesimpleoname(obj)
-struct obj *obj;
+thesimpleoname(struct obj *obj)
 {
     char *simpleoname = simpleonames(obj);
 
@@ -3179,8 +3098,7 @@ struct obj *obj;
 }
 
 char*
-thesimpleoname_payobj(obj)
-struct obj* obj;
+thesimpleoname_payobj(struct obj *obj)
 {
     char* simpleoname = simpleonames_payobj(obj);
 
@@ -3188,8 +3106,7 @@ struct obj* obj;
 }
 
 char*
-actualoname(obj)
-struct obj* obj;
+actualoname(struct obj *obj)
 {
     char* res;
 
@@ -3201,8 +3118,7 @@ struct obj* obj;
 
 /* artifact's name without any object type or known/dknown/&c feedback */
 char *
-bare_artifactname(obj)
-struct obj *obj;
+bare_artifactname(struct obj *obj)
 {
     char *outbuf;
 
@@ -3217,13 +3133,13 @@ struct obj *obj;
     return outbuf;
 }
 
-STATIC_VAR const char *wrp[] = {
+static const char *wrp[] = {
     "wand",   "ring",      "potion",     "scroll", "gem",
     "amulet", "spellbook", "spell book",
     /* for non-specific wishes */
     "weapon", "armor",     "tool",  "reagent",  "miscellaneous item",   "miscellaneous",     "food",   "comestible",
 };
-STATIC_VAR const char wrpsym[] = { WAND_CLASS,   RING_CLASS,   POTION_CLASS,
+static const char wrpsym[] = { WAND_CLASS,   RING_CLASS,   POTION_CLASS,
                                SCROLL_CLASS, GEM_CLASS,    AMULET_CLASS,
                                SPBOOK_CLASS, SPBOOK_CLASS, WEAPON_CLASS,
                                ARMOR_CLASS,  TOOL_CLASS, REAGENT_CLASS, MISCELLANEOUS_CLASS, MISCELLANEOUS_CLASS,
@@ -3231,9 +3147,7 @@ STATIC_VAR const char wrpsym[] = { WAND_CLASS,   RING_CLASS,   POTION_CLASS,
 
 /* return form of the verb (input plural) if xname(otmp) were the subject */
 char *
-otense(otmp, verb)
-struct obj *otmp;
-const char *verb;
+otense(struct obj *otmp, const char *verb)
 {
     char *buf;
 
@@ -3255,7 +3169,7 @@ const char *verb;
 
 /* various singular words that vtense would otherwise categorize as plural;
    also used by makesingular() to catch some special cases */
-STATIC_VAR const char *const special_subjs[] = {
+static const char *const special_subjs[] = {
     "erinys",  "manes", /* this one is ambiguous */
     "Cyclops", "Hippocrates",     "Pelias",    "aklys",
     "amnesia", "detect monsters", "paralysis", "shape changers",
@@ -3268,9 +3182,7 @@ STATIC_VAR const char *const special_subjs[] = {
 
 /* return form of the verb (input plural) for present tense 3rd person subj */
 char *
-vtense(subj, verb)
-register const char *subj;
-register const char *verb;
+vtense(const char *subj, const char *verb)
 {
     //char verbbuf[OBUFSZ] = ""; /* Just in case str and buf happen to be randomly the same obuf */
     //if (verb)
@@ -3372,7 +3284,7 @@ struct sing_plur {
 /* word pairs that don't fit into formula-based transformations;
    also some suffices which have very few--often one--matches or
    which aren't systematically reversible (knives, staves) */
-STATIC_VAR const struct sing_plur one_off[] = {
+static const struct sing_plur one_off[] = {
     { "child",
       "children" },      /* (for wise guys who give their food funny names) */
     { "cubus", "cubi" }, /* in-/suc-cubus */
@@ -3398,7 +3310,7 @@ STATIC_VAR const struct sing_plur one_off[] = {
     { 0, 0 }
 };
 
-STATIC_VAR const char *const as_is[] = {
+static const char *const as_is[] = {
     /* makesingular() leaves these plural due to how they're used */
     "boots",   "shoes",     "slippers",  "sandals", "gloves", "lenses", "goggles", "glasses", "eye glasses", "eyeglasses", "scales",
     "eyes",    "gauntlets", "iron bars", "bracers", "wings", "earrings",
@@ -3415,12 +3327,15 @@ STATIC_VAR const char *const as_is[] = {
        variant instead of attempting to support both. */
 };
 
+/*
+ * Parameters:
+ *   basestr, endstring: base string, pointer to eos(string)
+ *   to_plural: true => makeplural, false => makesingular
+ *   alt_as_is: another set like as_is[]
+ */
 /* singularize/pluralize decisions common to both makesingular & makeplural */
-STATIC_OVL boolean
-singplur_lookup(basestr, endstring, to_plural, alt_as_is)
-char *basestr, *endstring;    /* base string, pointer to eos(string) */
-boolean to_plural;            /* true => makeplural, false => makesingular */
-const char *const *alt_as_is; /* another set like as_is[] */
+static boolean
+singplur_lookup(char *basestr, char *endstring, boolean to_plural, const char *const *alt_as_is)
 {
     const struct sing_plur *sp;
     const char *same, *other, *const *as;
@@ -3487,9 +3402,8 @@ const char *const *alt_as_is; /* another set like as_is[] */
 }
 
 /* searches for common compounds, ex. lump of royal jelly */
-STATIC_OVL char *
-singplur_compound(str)
-char *str;
+static char *
+singplur_compound(char *str)
 {
     /* if new entries are added, be sure to keep compound_start[] in sync */
     static const char *const compounds[] =
@@ -3541,14 +3455,13 @@ char *str;
  * 3.6.0: made case-insensitive.
  */
 char *
-makeplural(oldstr)
-const char *oldstr;
+makeplural(const char *oldstr)
 {
     //char oldbuf[OBUFSZ] = ""; /* Just in case oldstr and buf happen to be randomly the same obuf */
     //if (oldstr)
     //    Strcpy(oldbuf, oldstr);
     //char* oldbufptr = oldbuf;
-    register char *spot;
+    char *spot;
     char lo_c, *str = next_offset_init_obuf();
     const char *excess = (char *) 0;
     size_t len;
@@ -3710,14 +3623,13 @@ const char *oldstr;
  * 3.6.0: made case-insensitive.
  */
 char *
-makesingular(oldstr)
-const char *oldstr;
+makesingular(const char *oldstr)
 {
     //char oldbuf[OBUFSZ] = ""; /* Just in case oldstr and buf happen to be randomly the same obuf */
     //if (oldstr)
     //    Strcpy(oldbuf, oldstr);
     //char* oldbufptr = oldbuf;
-    register char *p, *bp;
+    char *p, *bp;
     const char *excess = 0;
     char *str = next_offset_init_obuf();
 
@@ -3828,10 +3740,12 @@ const char *oldstr;
     return bp;
 }
 
+/*
+ * Parameters:
+ *   to_plural: true => makeplural, false => makesingular
+ */
 boolean
-badman(basestr, to_plural)
-const char *basestr;
-boolean to_plural;            /* true => makeplural, false => makesingular */
+badman(const char *basestr, boolean to_plural)
 {
     /* these are all the prefixes for *man that don't have a *men plural */
     static const char *no_men[] = {
@@ -3877,14 +3791,17 @@ boolean to_plural;            /* true => makeplural, false => makesingular */
     return FALSE;
 }
 
+/*
+ * Parameters:
+ *   u_str: from user, so might be variant spelling
+ *   o_str: from objects[], so is in canonical form
+ *   retry_inverted: optional extra "of" handling
+ */
 /* compare user string against object name string using fuzzy matching */
-STATIC_OVL boolean
-wishymatch(u_str, o_str, retry_inverted)
-const char *u_str;      /* from user, so might be variant spelling */
-const char *o_str;      /* from objects[], so is in canonical form */
-boolean retry_inverted; /* optional extra "of" handling */
+static boolean
+wishymatch(const char *u_str, const char *o_str, boolean retry_inverted)
 {
-    STATIC_VAR NEARDATA const char detect_SP[] = "detect ",
+    static NEARDATA const char detect_SP[] = "detect ",
                                SP_detection[] = " detection";
     char *p, buf[OBUFSZ] = "";
 
@@ -3977,7 +3894,7 @@ struct o_range {
 };
 
 /* wishable subranges of objects */
-STATIC_OVL NEARDATA const struct o_range o_ranges[] = {
+static NEARDATA const struct o_range o_ranges[] = {
     { "bag", TOOL_CLASS, LEATHER_BAG, ORIENTAL_SILK_SACK },
     { "lamp", TOOL_CLASS, OIL_LAMP, MAGIC_LAMP },
     { "candle", TOOL_CLASS, TALLOW_CANDLE, MAGIC_CANDLE },
@@ -4027,7 +3944,7 @@ STATIC_OVL NEARDATA const struct o_range o_ranges[] = {
    absence of spaces and/or hyphens (such as "pickaxe" vs "pick axe"
    vs "pick-axe") then there is no need for inclusion in this list;
    likewise for ``"of" inversions'' ("boots of speed" vs "speed boots") */
-STATIC_VAR const struct alt_spellings {
+static const struct alt_spellings {
     const char *sp;
     int ob;
 } spellings[] = {
@@ -4162,9 +4079,8 @@ STATIC_VAR const struct alt_spellings {
     { (const char *) 0, 0 },
 };
 
-STATIC_OVL short
-rnd_otyp_by_wpnskill(skill)
-schar skill;
+static short
+rnd_otyp_by_wpnskill(schar skill)
 {
     int i, n = 0;
     short otyp = STRANGE_OBJECT;
@@ -4186,15 +4102,16 @@ schar skill;
     return otyp;
 }
 
-STATIC_OVL short
-rnd_otyp_by_namedesc(name, oclass, xtra_prob)
-const char *name;
-char oclass;
-int xtra_prob; /* to force 0% random generation items to also be considered */
+/*
+ * Parameters:
+ *   xtra_prob: to force 0% random generation items to also be considered
+ */
+static short
+rnd_otyp_by_namedesc(const char *name, char oclass, int xtra_prob)
 {
     int i, n = 0;
     short validobjs[NUM_OBJECTS];
-    register const char *zn;
+    const char *zn;
     int prob, maxprob = 0;
 
     if (!name || !*name)
@@ -4239,8 +4156,7 @@ int xtra_prob; /* to force 0% random generation items to also be considered */
 }
 
 int
-shiny_obj(oclass)
-char oclass;
+shiny_obj(char oclass)
 {
     return (int) rnd_otyp_by_namedesc("shiny", oclass, 0);
 }
@@ -4253,15 +4169,11 @@ char oclass;
  * return null.
  */
 struct obj *
-readobjnam(bp, no_wish, is_wiz_wish, removed_from_game_ptr)
-register char *bp;
-struct obj *no_wish;
-boolean is_wiz_wish;
-boolean* removed_from_game_ptr;
+readobjnam(char *bp, struct obj *no_wish, boolean is_wiz_wish, boolean *removed_from_game_ptr)
 {
-    register char *p;
-    register int i;
-    register struct obj *otmp;
+    char *p;
+    int i;
+    struct obj *otmp;
     int cnt, enchantment, spesgn, typ, very, rechrg;
     int charges, chargesfound;
     int blessed, uncursed, iscursed, ispoisoned, isgreased;
@@ -4329,7 +4241,7 @@ boolean* removed_from_game_ptr;
     int foundkey = FALSE;
     for (;;) 
     {
-        register int l;
+        int l;
 
         if (!bp || !*bp)
             goto any;
@@ -4952,7 +4864,7 @@ boolean* removed_from_game_ptr;
         && strncmpi(bp, "meat ring", 9))
         for (i = 0; i < (int) (sizeof wrpsym); i++)
         {
-            register size_t j = strlen(wrp[i]);
+            size_t j = strlen(wrp[i]);
 
             if (!strncmpi(bp, wrp[i], j))
             {
@@ -5039,7 +4951,7 @@ retry:
     } else if (!strcmpi(bp, "looking glass")) {
         ; /* avoid false hit on "* glass" */
     } else if (!BSTRCMPI(bp, p - 6, " glass") || !strcmpi(bp, "glass")) {
-        register char *g = bp;
+        char *g = bp;
 
         /* treat "broken glass" as a non-existent item; since "broken" is
            also a chest/box prefix it might have been stripped off above */
@@ -5076,7 +4988,7 @@ retry:
     /* check real names of gems first */
     if (!oclass && actualn) {
         for (i = bases[GEM_CLASS]; i <= LAST_GEM; i++) {
-            register const char *zn;
+            const char *zn;
 
             if ((zn = OBJ_NAME(objects[i])) != 0 && !strcmpi(actualn, zn)) {
                 typ = i;
@@ -6005,8 +5917,7 @@ retry:
 }
 
 int
-rnd_class(first, last)
-int first, last;
+rnd_class(int first, int last)
 {
     int i, x, sum = 0;
 
@@ -6024,8 +5935,7 @@ int first, last;
 }
 
 const char *
-Japanese_item_name(i)
-int i;
+Japanese_item_name(int i)
 {
     struct Jitem *j = Japanese_items;
 
@@ -6038,8 +5948,7 @@ int i;
 }
 
 const char *
-suit_simple_name(suit)
-struct obj *suit;
+suit_simple_name(struct obj *suit)
 {
     const char *suitnm, *esuitp;
 
@@ -6060,8 +5969,7 @@ struct obj *suit;
 }
 
 const char *
-cloak_simple_name(cloak)
-struct obj *cloak;
+cloak_simple_name(struct obj *cloak)
 {
     if (cloak) {
         switch (cloak->otyp) {
@@ -6077,8 +5985,7 @@ struct obj *cloak;
 }
 
 const char*
-robe_simple_name(robe)
-struct obj* robe;
+robe_simple_name(struct obj *robe)
 {
     if (robe) {
         switch (robe->otyp) {
@@ -6094,8 +6001,7 @@ struct obj* robe;
 }
 
 const char*
-miscitem_simple_name(miscitem)
-struct obj* miscitem;
+miscitem_simple_name(struct obj *miscitem)
 {
     if (!miscitem)
         return "invalid miscellaneous item";
@@ -6105,8 +6011,7 @@ struct obj* miscitem;
 
 
 const char*
-armor_class_simple_name(item)
-struct obj* item;
+armor_class_simple_name(struct obj *item)
 {
     if (!item)
         return "armor";
@@ -6124,8 +6029,7 @@ struct obj* item;
 }
 
 const char*
-otyp_armor_class_simple_name(otyp)
-int otyp;
+otyp_armor_class_simple_name(int otyp)
 {
     if (objects[otyp].oc_subtyp >= 0 && objects[otyp].oc_subtyp < MAX_ARMOR_TYPES)
         return armor_type_names[objects[otyp].oc_subtyp];
@@ -6135,8 +6039,7 @@ int otyp;
 
 /* helm vs hat for messages */
 const char *
-helm_simple_name(helmet)
-struct obj *helmet;
+helm_simple_name(struct obj *helmet)
 {
     /*
      *  There is some wiggle room here; the result has been chosen
@@ -6154,8 +6057,7 @@ struct obj *helmet;
 }
 
 const char *
-mimic_obj_name(mtmp)
-struct monst *mtmp;
+mimic_obj_name(struct monst *mtmp)
 {
     if (M_AP_TYPE(mtmp) == M_AP_OBJECT) {
         if (mtmp->mappearance == GOLD_PIECE)
@@ -6167,18 +6069,17 @@ struct monst *mtmp;
 }
 
 /*
+ * Parameters:
+ *   qbuf: output buffer
+ */
+/*
  * Construct a query prompt string, based around an object name, which is
  * guaranteed to fit within [QBUFSZ].  Takes an optional prefix, three
  * choices for filling in the middle (two object formatting functions and a
  * last resort literal which should be very short), and an optional suffix.
  */
 char *
-safe_qbuf(qbuf, qprefix, qsuffix, obj, func, altfunc, lastR)
-char *qbuf; /* output buffer */
-const char *qprefix, *qsuffix;
-struct obj *obj;
-char *FDECL((*func), (OBJ_P)), *FDECL((*altfunc), (OBJ_P));
-const char *lastR;
+safe_qbuf(char *qbuf, const char *qprefix, const char *qsuffix, struct obj *obj, char *(*func)(struct obj*), char *(*altfunc)(struct obj*), const char *lastR)
 {
     if (!qbuf)
         return qbuf;
@@ -6262,8 +6163,7 @@ const char *lastR;
 
 
 const char*
-get_key_special_quality_description(obj)
-struct obj* obj;
+get_key_special_quality_description(struct obj *obj)
 {
     if (!obj || !is_key(obj) || obj->special_quality == 0)
         return "";
@@ -6307,9 +6207,7 @@ struct key_special_description key_special_descriptions[] =
 };
 
 boolean
-find_key_otyp_by_description(inbuf, otyp_ptr, sq_ptr)
-char * inbuf;
-int *otyp_ptr, *sq_ptr;
+find_key_otyp_by_description(char *inbuf, int *otyp_ptr, int *sq_ptr)
 {
     if (strstr(inbuf, " key") == 0)
         return FALSE;
@@ -6333,8 +6231,7 @@ int *otyp_ptr, *sq_ptr;
 }
 
 const char*
-get_key_special_quality_description_by_otyp(otyp, sq)
-int otyp, sq;
+get_key_special_quality_description_by_otyp(int otyp, int sq)
 {
     int i;
     for (i = 0; key_special_descriptions[i].otyp > STRANGE_OBJECT; i++)
@@ -6345,9 +6242,7 @@ int otyp, sq;
 }
 
 const char*
-get_lock_description_by_otyp(otyp, sq, normally_without_lock)
-int otyp, sq;
-boolean normally_without_lock;
+get_lock_description_by_otyp(int otyp, int sq, boolean normally_without_lock)
 {
     if (Blind)
         return "";
@@ -6380,10 +6275,7 @@ boolean normally_without_lock;
 }
 
 void
-print_lock_with_buf(lbuf, key_otyp, special_quality, normally_without_lock)
-char* lbuf;
-int key_otyp, special_quality;
-boolean normally_without_lock;
+print_lock_with_buf(char *lbuf, int key_otyp, int special_quality, boolean normally_without_lock)
 {
     if (!lbuf)
         return;
@@ -6398,9 +6290,8 @@ boolean normally_without_lock;
     }
 }
 
-STATIC_OVL
-boolean material_wish_success(otyp, material)
-int otyp, material;
+static
+boolean material_wish_success(int otyp, int material)
 {
     if (otyp <= STRANGE_OBJECT || otyp >= NUM_OBJECTS)
         return FALSE;
@@ -6423,14 +6314,13 @@ int otyp, material;
     return FALSE;
 }
 
+/*
+ * Parameters:
+ *   attr, color: for putstr only
+ *   add_parentheses: 1 = add parentheses, 2 = add ", " instead to start and close with ")"
+ */
 void
-print_comparison_stats(obj, buf, datawin, attr, color, add_parentheses, use_symbols, objbuf, attrs, colors)
-struct obj* obj;
-char *buf, *objbuf, *attrs, *colors;
-winid datawin;
-int attr, color; /* for putstr only */
-uchar add_parentheses; /* 1 = add parentheses, 2 = add ", " instead to start and close with ")" */
-boolean use_symbols;
+print_comparison_stats(struct obj *obj, char *buf, winid datawin, int attr, int color, uchar add_parentheses, boolean use_symbols, char *objbuf, char *attrs, char *colors)
 {
     if (!obj || obj->owornmask)
         return;
@@ -6732,8 +6622,7 @@ boolean use_symbols;
 }
 
 boolean
-is_obj_semi_transparent(otmp)
-struct obj* otmp;
+is_obj_semi_transparent(struct obj *otmp)
 {
     if (otmp && otmp->otyp == CORPSE)
     {

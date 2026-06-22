@@ -184,7 +184,7 @@ ReadImageFiles(char **filenames, struct BitMap **iffimg, char **errstrp)
     BitMapHeader *bmhd = NULL, bmhds;
     unsigned char *cmap;
     extern int errno;
-    register int i, j;
+    int i, j;
     struct IFFHandle *iff;
     struct StoredProperty *prop;
 
@@ -386,8 +386,7 @@ MyFreeBitMap(struct BitMap *bmp)
 
 #ifdef TESTING
 void
-panic(s, a1, a2, a3, a4)
-char *s;
+panic(char *s, long a1, long a2, long a3, long a4)
 {
     printf(s, a1, a2, a3, a4);
     putchar('\n');
@@ -413,7 +412,7 @@ FreeTileImageFiles()
 void
 FreeImageFiles(char **filenames, struct BitMap **img)
 {
-    register int i;
+    int i;
 
     for (i = 0; filenames[i]; ++i) {
         if (img[i])
@@ -441,8 +440,7 @@ struct amiv_glyph_node amiv_g_nodes[NUMBER_GLYPH_NODES];
 static char amiv_glyph_buffer[GLYPH_BUFFER_SIZE];
 
 void
-flush_glyph_buffer(vw)
-struct Window *vw;
+flush_glyph_buffer(struct Window *vw)
 {
     if (WINVERS_AMIV)
         amiv_flush_glyph_buffer(vw);
@@ -454,8 +452,7 @@ struct Window *vw;
  * Routine to flush whatever is buffered
  */
 void
-amiv_flush_glyph_buffer(vw)
-struct Window *vw;
+amiv_flush_glyph_buffer(struct Window *vw)
 {
 #if !defined(DISPMAP) || defined(OPT_DISPMAP)
     int xsize, ysize, x, y;
@@ -466,7 +463,7 @@ struct Window *vw;
     struct BitMap *imgbm = 0, *bm = 0;
     int i, k;
     int scaling_needed;
-    register struct RastPort *rp = vw->RPort;
+    struct RastPort *rp = vw->RPort;
 #endif
 
     /* If nothing is buffered, return before we do anything */
@@ -562,7 +559,7 @@ struct Window *vw;
         /* Go ahead and start dumping the stuff */
         for (i = 0; i < glyph_node_index; ++i) {
             /* Do it */
-            register int offx, offy, j;
+            int offx, offy, j;
             struct BitMap *nodebm = amiv_g_nodes[i].bitmap;
 
             /* Get the unclipped coordinates */
@@ -633,9 +630,7 @@ struct Window *vw;
  * Glyph buffering routine.  Called instead of WindowPuts().
  */
 void
-amiv_lprint_glyph(window, color_index, glyph)
-winid window;
-int color_index, glyph;
+amiv_lprint_glyph(winid window, int color_index, int glyph)
 {
     int base;
     struct amii_WinDesc *cw;
@@ -643,7 +638,7 @@ int color_index, glyph;
     int curx;
     int cury;
     int tbl, icon;
-    register int xoff, yoff;
+    int xoff, yoff;
 
     /* Get the real icon index */
     if (glyph != NO_GLYPH)
@@ -737,7 +732,7 @@ int color_index, glyph;
         ++glyph_node_index;
     } else {
         /* Do it */
-        register int j, k, x, y, apen;
+        int j, k, x, y, apen;
         struct RastPort *rp = w->RPort;
         x = rp->cp_x - pictdata.xsize - 3;
 #ifdef OPT_DISPMAP
@@ -809,8 +804,7 @@ static int usecolor;
  */
 
 void
-amiv_start_glyphout(window)
-winid window;
+amiv_start_glyphout(winid window)
 {
     struct amii_WinDesc *cw;
     struct Window *w;
@@ -845,8 +839,7 @@ winid window;
  * General cleanup routine -- flushes and restores cursor
  */
 void
-amii_end_glyphout(window)
-winid window;
+amii_end_glyphout(winid window)
 {
     struct amii_WinDesc *cw;
     struct Window *w;
@@ -971,11 +964,10 @@ int backg[AMII_MAXCOLORS] = {
  * Routine to simply flush whatever is buffered
  */
 void
-amii_flush_glyph_buffer(w)
-struct Window *w;
+amii_flush_glyph_buffer(struct Window *w)
 {
     short i, x, y;
-    register struct RastPort *rp = w->RPort;
+    struct RastPort *rp = w->RPort;
 
     /* If nothing is buffered, return before we do anything */
     if (glyph_node_index == 0)
@@ -1013,9 +1005,7 @@ struct Window *w;
     glyph_node_index = glyph_buffer_index = 0;
 }
 void
-amiga_print_glyph(window, color_index, glyph)
-winid window;
-int color_index, glyph;
+amiga_print_glyph(winid window, int color_index, int glyph)
 {
     if (WINVERS_AMIV)
         amiv_lprint_glyph(window, color_index, glyph);
@@ -1027,9 +1017,7 @@ int color_index, glyph;
  * Glyph buffering routine.  Called instead of WindowPuts().
  */
 void
-amii_lprint_glyph(window, color_index, glyph)
-winid window;
-int color_index, glyph;
+amii_lprint_glyph(winid window, int color_index, int glyph)
 {
     int fg_color, bg_color;
     struct amii_WinDesc *cw;
@@ -1109,8 +1097,7 @@ static int usecolor;
  */
 
 void
-amii_start_glyphout(window)
-winid window;
+amii_start_glyphout(winid window)
 {
     struct amii_WinDesc *cw;
     struct Window *w;
@@ -1147,8 +1134,7 @@ winid window;
  * General cleanup routine -- flushes and restores cursor
  */
 void
-amii_end_glyphout(window)
-    winid window;
+amii_end_glyphout(winid window)
 {
     struct amii_WinDesc *cw;
     struct Window *w;
@@ -1192,8 +1178,7 @@ dispmap_sanity()
     }
 }
 int
-dispmap_sanity1(x)
-int x;
+dispmap_sanity1(int x)
 {
     static unsigned char valid[] = { 8, 16, 24, 32, 48, 0 };
     return !!strchr(valid, x);

@@ -32,12 +32,12 @@ typedef struct mswin_menu_item {
     int glyph;
     ANY_P identifier;
     struct obj object_data;
-    CHAR_P accelerator;
-    CHAR_P group_accel;
+    char accelerator;
+    char group_accel;
     int attr;
     int color;
     char str[NHMENU_STR_SIZE];
-    BOOLEAN_P presel;
+    boolean presel;
     int count;
     BOOL has_focus;
     boolean is_animated;
@@ -139,8 +139,7 @@ mswin_init_menu_window(int type)
 }
 /*-----------------------------------------------------------------------------*/
 int
-mswin_menu_window_select_menu(HWND hWnd, int how, MENU_ITEM_P **_selected,
-                              BOOL activate)
+mswin_menu_window_select_menu(HWND hWnd, int how, MENU_ITEM_P **_selected, BOOL activate)
 {
     PNHMenuWindow data;
     int ret_val;

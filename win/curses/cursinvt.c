@@ -57,9 +57,7 @@ curses_update_inv(void)
 
 /* Adds an inventory item. */
 void
-curses_add_inv(int y,
-               int glyph UNUSED,
-               CHAR_P accelerator, int attr, int nhcolor, const char *str, const char* attrs, const char* colors)
+curses_add_inv(int y, int glyph UNUSED, char accelerator, int attr, int nhcolor, const char *str, const char* attrs, const char* colors)
 {
     WINDOW *win = curses_get_nhwin(INV_WIN);
     int color = NO_COLOR;

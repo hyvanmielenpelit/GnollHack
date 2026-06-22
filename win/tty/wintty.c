@@ -171,8 +171,8 @@ winid BASE_WINDOW;
 struct WinDesc *wins[MAXWIN];
 struct DisplayDesc *ttyDisplay; /* the tty display descriptor */
 
-extern void FDECL(cmov, (int, int));   /* from termcap.c */
-extern void FDECL(nocmov, (int, int)); /* from termcap.c */
+extern void cmov(int, int);   /* from termcap.c */
+extern void nocmov(int, int); /* from termcap.c */
 #if defined(UNIX) || defined(VMS)
 static char obuf[BUFSIZ]; /* BUFSIZ is defined in stdio.h */
 #endif
@@ -192,7 +192,7 @@ static int clipy = 0, clipymax = 0;
 #endif /* CLIPPING */
 
 #if defined(USE_TILES) && defined(MSDOS)
-extern void FDECL(adjust_cursor_flags, (struct WinDesc *));
+extern void adjust_cursor_flags(struct WinDesc *);
 #endif
 
 #if defined(ASCIIGRAPH) && !defined(NO_TERMS)
@@ -204,49 +204,49 @@ boolean HE_resets_AS; /* see termcap.c */
 static const char to_continue[] = "to continue";
 #define getret() getreturn(to_continue)
 #else
-STATIC_DCL void NDECL(getret);
+static void getret(void);
 #endif
-STATIC_DCL void FDECL(bail, (const char *)); /* __attribute__((noreturn)) */
-STATIC_DCL void NDECL(new_status_window);
-STATIC_DCL void FDECL(erase_menu_or_text, (winid, struct WinDesc *,
-                                           BOOLEAN_P));
-STATIC_DCL void FDECL(free_window_info, (struct WinDesc *, BOOLEAN_P));
-STATIC_DCL void FDECL(dmore, (struct WinDesc *, const char *));
-STATIC_DCL void FDECL(set_item_state, (winid, int, tty_menu_item *));
-STATIC_DCL void FDECL(set_all_on_page, (winid, tty_menu_item *,
-                                        tty_menu_item *));
-STATIC_DCL void FDECL(unset_all_on_page, (winid, tty_menu_item *,
-                                          tty_menu_item *));
-STATIC_DCL void FDECL(invert_all_on_page, (winid, tty_menu_item *,
-                                           tty_menu_item *, CHAR_P));
-STATIC_DCL void FDECL(invert_all, (winid, tty_menu_item *,
-                                   tty_menu_item *, CHAR_P));
-STATIC_DCL void FDECL(toggle_menu_attr, (BOOLEAN_P, int, int));
-STATIC_DCL void FDECL(process_menu_window, (winid, struct WinDesc *));
-STATIC_DCL void FDECL(process_text_window, (winid, struct WinDesc *));
-STATIC_DCL tty_menu_item *FDECL(reverse, (tty_menu_item *));
-STATIC_DCL const char *FDECL(compress_str, (const char *));
-STATIC_DCL void FDECL(tty_putsym, (winid, int, int, nhsym));
-STATIC_DCL void FDECL(setup_rolemenu, (winid, BOOLEAN_P, int, int, int));
-STATIC_DCL void FDECL(setup_racemenu, (winid, BOOLEAN_P, int, int, int));
-STATIC_DCL void FDECL(setup_gendmenu, (winid, BOOLEAN_P, int, int, int));
-STATIC_DCL void FDECL(setup_algnmenu, (winid, BOOLEAN_P, int, int, int));
-STATIC_DCL boolean NDECL(reset_role_filtering);
+static void bail(const char *); /* __attribute__((noreturn)) */
+static void new_status_window(void);
+static void erase_menu_or_text(winid, struct WinDesc *,
+                                           boolean);
+static void free_window_info(struct WinDesc *, boolean);
+static void dmore(struct WinDesc *, const char *);
+static void set_item_state(winid, int, tty_menu_item *);
+static void set_all_on_page(winid, tty_menu_item *,
+                                        tty_menu_item *);
+static void unset_all_on_page(winid, tty_menu_item *,
+                                          tty_menu_item *);
+static void invert_all_on_page(winid, tty_menu_item *,
+                                           tty_menu_item *, char);
+static void invert_all(winid, tty_menu_item *,
+                                   tty_menu_item *, char);
+static void toggle_menu_attr(boolean, int, int);
+static void process_menu_window(winid, struct WinDesc *);
+static void process_text_window(winid, struct WinDesc *);
+static tty_menu_item *reverse(tty_menu_item *);
+static const char *compress_str(const char *);
+static void tty_putsym(winid, int, int, nhsym);
+static void setup_rolemenu(winid, boolean, int, int, int);
+static void setup_racemenu(winid, boolean, int, int, int);
+static void setup_gendmenu(winid, boolean, int, int, int);
+static void setup_algnmenu(winid, boolean, int, int, int);
+static boolean reset_role_filtering(void);
 #ifdef STATUS_HILITES
-STATIC_DCL boolean FDECL(check_fields, (BOOLEAN_P, int *));
-STATIC_DCL void NDECL(render_status);
-STATIC_DCL void FDECL(tty_putstatusfield, (const char *, int, int));
-STATIC_DCL boolean NDECL(check_windowdata);
+static boolean check_fields(boolean, int[MAX_STATUS_LINES]);
+static void render_status(void);
+static void tty_putstatusfield(const char *, int, int);
+static boolean check_windowdata(void);
 #if 0
-STATIC_DCL int NDECL(condition_size);
+static int condition_size(void);
 #endif
-STATIC_DCL int FDECL(make_things_fit, (BOOLEAN_P));
-STATIC_DCL void FDECL(shrink_enc, (int));
-STATIC_DCL void FDECL(shrink_dlvl, (int));
-STATIC_DCL void FDECL(print_rest_partyline, (char*, int*, int*));
+static int make_things_fit(boolean);
+static void shrink_enc(int);
+static void shrink_dlvl(int);
+static void print_rest_partyline(char*, int*, int*);
 #endif
 
-STATIC_DCL int FDECL(putcharutf8, (nhsym));
+static int putcharutf8(nhsym);
 
 /*
  * A string containing all the default commands -- to add to a list
@@ -264,8 +264,7 @@ static const char default_menu_cmds[] = {
 static int vt_tile_current_window = -2;
 
 void
-print_vt_code(i, c, d)
-int i, c, d;
+print_vt_code(int i, int c, int d)
 {
     HUPSKIP();
     if (iflags.vt_tiledata) {
@@ -306,16 +305,15 @@ int i, c, d;
 
 
 /* clean up and quit */
-STATIC_OVL void
-bail(mesg)
-const char *mesg;
+static void
+bail(const char *mesg)
 {
     nh_bail(EXIT_SUCCESS, mesg, TRUE);
     /*NOTREACHED*/
 }
 
 #if defined(SIGWINCH) && defined(CLIPPING)
-STATIC_DCL void FDECL(winch_handler, (int));
+static void winch_handler(int);
 
     /*
      * This really ought to just set a flag like the hangup handler does,
@@ -327,12 +325,11 @@ STATIC_DCL void FDECL(winch_handler, (int));
      * 'winch_seen' has been "notyet" for a long time....
      */
 /*ARGUSED*/
-STATIC_OVL void
-winch_handler(sig_unused) /* signal handler is called with at least 1 arg */
-int sig_unused UNUSED;
+static void
+winch_handler(int sig_unused UNUSED) /* signal handler is called with at least 1 arg */
 {
     int oldLI = LI, oldCO = CO, i;
-    register struct WinDesc *cw;
+    struct WinDesc *cw;
 
 #ifdef WINCHAIN
     {
@@ -393,8 +390,8 @@ int sig_unused UNUSED;
 
 /* destroy and recreate status window; extracted from winch_handler()
    and augmented for use by tty_preference_update() */
-STATIC_OVL void
-new_status_window()
+static void
+new_status_window(void)
 {
     if (WIN_STATUS != WIN_ERR) {
         /* if it's shrinking, clear it before destroying so that
@@ -428,9 +425,7 @@ new_status_window()
 
 /*ARGSUSED*/
 void
-tty_init_nhwindows(argcp, argv)
-int *argcp UNUSED;
-char **argv UNUSED;
+tty_init_nhwindows(int *argcp UNUSED, char **argv UNUSED)
 {
     int wid, hgt, i;
 
@@ -498,8 +493,7 @@ char **argv UNUSED;
 }
 
 void
-tty_preference_update(pref)
-const char *pref;
+tty_preference_update(const char *pref)
 {
     if (!strcmp(pref, "statuslines") && iflags.window_inited) {
         new_status_window();
@@ -520,7 +514,7 @@ const char *pref;
 #define ALGN flags.initalign
 
 void
-tty_player_selection()
+tty_player_selection(void)
 {
     int i, k, n, choice, nextpick;
     boolean getconfirmation, picksomething;
@@ -1072,8 +1066,8 @@ tty_player_selection()
     return;
 }
 
-STATIC_OVL boolean
-reset_role_filtering()
+static boolean
+reset_role_filtering(void)
 {
     winid win;
     anything any;
@@ -1125,12 +1119,14 @@ reset_role_filtering()
 #undef GEND
 #undef ALGN
 
+/*
+ * Parameters:
+ *   filtering: True => exclude filtered roles; False => filter reset
+ *   race, gend, algn: all ROLE_NONE for !filtering case
+ */
 /* add entries a-Archaeologist, b-Barbarian, &c to menu being built in 'win' */
-STATIC_OVL void
-setup_rolemenu(win, filtering, race, gend, algn)
-winid win;
-boolean filtering; /* True => exclude filtered roles; False => filter reset */
-int race, gend, algn; /* all ROLE_NONE for !filtering case */
+static void
+setup_rolemenu(winid win, boolean filtering, int race, int gend, int algn)
 {
     anything any;
     int i;
@@ -1169,11 +1165,8 @@ int race, gend, algn; /* all ROLE_NONE for !filtering case */
     }
 }
 
-STATIC_OVL void
-setup_racemenu(win, filtering, role, gend, algn)
-winid win;
-boolean filtering;
-int role, gend, algn;
+static void
+setup_racemenu(winid win, boolean filtering, int role, int gend, int algn)
 {
     anything any;
     boolean race_ok;
@@ -1202,11 +1195,8 @@ int role, gend, algn;
     }
 }
 
-STATIC_DCL void
-setup_gendmenu(win, filtering, role, race, algn)
-winid win;
-boolean filtering;
-int role, race, algn;
+static void
+setup_gendmenu(winid win, boolean filtering, int role, int race, int algn)
 {
     anything any;
     boolean gend_ok;
@@ -1233,11 +1223,8 @@ int role, race, algn;
     }
 }
 
-STATIC_DCL void
-setup_algnmenu(win, filtering, role, race, gend)
-winid win;
-boolean filtering;
-int role, race, gend;
+static void
+setup_algnmenu(winid win, boolean filtering, int role, int race, int gend)
 {
     anything any;
     boolean algn_ok;
@@ -1271,10 +1258,10 @@ int role, race, gend;
  * Always called after init_nhwindows() and before display_gamewindows().
  */
 void
-tty_askname()
+tty_askname(void)
 {
     static const char who_are_you[] = "Who are you? ";
-    register int c, ct, tryct = 0;
+    int c, ct, tryct = 0;
 
 #ifdef SELECTSAVED
     if (iflags.wc2_selectsaved && !iflags.renameinprogress)
@@ -1407,14 +1394,14 @@ tty_askname()
 }
 
 void
-tty_get_nh_event()
+tty_get_nh_event(void)
 {
     return;
 }
 
 #if !defined(MICRO) && !defined(WIN32CON)
-STATIC_OVL void
-getret()
+static void
+getret(void)
 {
     HUPSKIP();
     xputs("\n");
@@ -1430,8 +1417,7 @@ getret()
 #endif
 
 void
-tty_suspend_nhwindows(str)
-const char *str;
+tty_suspend_nhwindows(const char *str)
 {
     settty(str); /* calls end_screen, perhaps raw_print */
     if (!str)
@@ -1439,7 +1425,7 @@ const char *str;
 }
 
 void
-tty_resume_nhwindows()
+tty_resume_nhwindows(void)
 {
     gettty();
     setftty(); /* calls start_screen */
@@ -1447,8 +1433,7 @@ tty_resume_nhwindows()
 }
 
 void
-tty_exit_nhwindows(str)
-const char *str;
+tty_exit_nhwindows(const char *str)
 {
     winid i;
 
@@ -1491,9 +1476,7 @@ const char *str;
 }
 
 winid
-tty_create_nhwindow_ex(type, style, glyph, info)
-int type, style, glyph UNUSED;
-struct extended_create_window_info info UNUSED;
+tty_create_nhwindow_ex(int type, int style, int glyph UNUSED, struct extended_create_window_info info UNUSED)
 {
     struct WinDesc *newwin;
     int i, rowoffset;
@@ -1587,8 +1570,8 @@ struct extended_create_window_info info UNUSED;
 
     if (newwin->maxrow) {
         newwin->data = (char **) alloc(((size_t)newwin->maxrow * sizeof (char *)));
-        newwin->datattrs = (char**)alloc(((size_t)newwin->maxrow * sizeof(char*)));
-        newwin->datcolors = (char**) alloc(((size_t)newwin->maxrow * sizeof(char*)));
+        newwin->datattrs = (char **)alloc(((size_t)newwin->maxrow * sizeof(char*)));
+        newwin->datcolors = (char **) alloc(((size_t)newwin->maxrow * sizeof(char*)));
         newwin->datlen = (short *) alloc(((size_t)newwin->maxrow * sizeof (short)));
         for (i = 0; i < newwin->maxrow; i++) {
             if (newwin->maxcol) { /* WIN_STATUS */
@@ -1607,7 +1590,7 @@ struct extended_create_window_info info UNUSED;
             newwin->maxrow = 0;
     } else {
         newwin->data = (char **) 0;
-        newwin->datattrs = (char**)0;
+        newwin->datattrs = (char **)0;
         newwin->datcolors = (char **) 0;
         newwin->datlen = (short *) 0;
     }
@@ -1615,11 +1598,8 @@ struct extended_create_window_info info UNUSED;
     return newid;
 }
 
-STATIC_OVL void
-erase_menu_or_text(window, cw, clear)
-winid window;
-struct WinDesc *cw;
-boolean clear;
+static void
+erase_menu_or_text(winid window, struct WinDesc *cw, boolean clear)
 {
     if (cw->offx == 0) {
         if (cw->offy) {
@@ -1635,10 +1615,8 @@ boolean clear;
     }
 }
 
-STATIC_OVL void
-free_window_info(cw, free_data)
-struct WinDesc *cw;
-boolean free_data;
+static void
+free_window_info(struct WinDesc *cw, boolean free_data)
 {
     int i;
 
@@ -1666,9 +1644,9 @@ boolean free_data;
             free((genericptr_t) cw->data);
             cw->data = (char **) 0;
             free((genericptr_t)cw->datattrs);
-            cw->datattrs = (char**)0;
+            cw->datattrs = (char **)0;
             free((genericptr_t)cw->datcolors);
-            cw->datcolors = (char**)0;
+            cw->datcolors = (char **)0;
             if (cw->datlen)
                 free((genericptr_t) cw->datlen);
             cw->datlen = (short *) 0;
@@ -1702,11 +1680,10 @@ boolean free_data;
 }
 
 void
-tty_clear_nhwindow(window)
-winid window;
+tty_clear_nhwindow(winid window)
 {
     int64_t i, j, m, n;
-    register struct WinDesc *cw = 0;
+    struct WinDesc *cw = 0;
 
     HUPSKIP();
     if (window == WIN_ERR || (cw = wins[window]) == (struct WinDesc*) 0)
@@ -1763,12 +1740,7 @@ winid window;
 }
 
 boolean
-toggle_menu_curr(window, curr, lineno, in_view, counting, count)
-winid window;
-tty_menu_item *curr;
-int lineno;
-boolean in_view, counting;
-int64_t count;
+toggle_menu_curr(winid window, tty_menu_item *curr, int lineno, boolean in_view, boolean counting, int64_t count)
 {
     if (curr->selected) {
         if (counting && count > 0) {
@@ -1801,10 +1773,12 @@ int64_t count;
     return FALSE;
 }
 
-STATIC_OVL void
-dmore(cw, s)
-register struct WinDesc *cw;
-const char *s; /* valid responses */
+/*
+ * Parameters:
+ *   s: valid responses
+ */
+static void
+dmore(struct WinDesc *cw, const char *s)
 {
     const char *prompt = cw->morestr ? cw->morestr : defmorestr;
     int offset = (cw->type == NHW_TEXT) ? 1 : 2;
@@ -1822,11 +1796,8 @@ const char *s; /* valid responses */
     xwaitforspace(s);
 }
 
-STATIC_OVL void
-set_item_state(window, lineno, item)
-winid window;
-int lineno;
-tty_menu_item *item;
+static void
+set_item_state(winid window, int lineno, tty_menu_item *item)
 {
     char ch = item->selected ? (item->count == -1L ? '+' : '#') : '-';
 
@@ -1838,10 +1809,8 @@ tty_menu_item *item;
     term_end_attr(item->attr);
 }
 
-STATIC_OVL void
-set_all_on_page(window, page_start, page_end)
-winid window;
-tty_menu_item *page_start, *page_end;
+static void
+set_all_on_page(winid window, tty_menu_item *page_start, tty_menu_item *page_end)
 {
     tty_menu_item *curr;
     int n;
@@ -1853,10 +1822,8 @@ tty_menu_item *page_start, *page_end;
         }
 }
 
-STATIC_OVL void
-unset_all_on_page(window, page_start, page_end)
-winid window;
-tty_menu_item *page_start, *page_end;
+static void
+unset_all_on_page(winid window, tty_menu_item *page_start, tty_menu_item *page_end)
 {
     tty_menu_item *curr;
     int n;
@@ -1869,11 +1836,12 @@ tty_menu_item *page_start, *page_end;
         }
 }
 
-STATIC_OVL void
-invert_all_on_page(window, page_start, page_end, acc)
-winid window;
-tty_menu_item *page_start, *page_end;
-char acc; /* group accelerator, 0 => all */
+/*
+ * Parameters:
+ *   acc: group accelerator, 0 => all
+ */
+static void
+invert_all_on_page(winid window, tty_menu_item *page_start, tty_menu_item *page_end, char acc)
 {
     tty_menu_item *curr;
     int n;
@@ -1890,13 +1858,14 @@ char acc; /* group accelerator, 0 => all */
 }
 
 /*
+ * Parameters:
+ *   acc: group accelerator, 0 => all
+ */
+/*
  * Invert all entries that match the give group accelerator (or all if zero).
  */
-STATIC_OVL void
-invert_all(window, page_start, page_end, acc)
-winid window;
-tty_menu_item *page_start, *page_end;
-char acc; /* group accelerator, 0 => all */
+static void
+invert_all(winid window, tty_menu_item *page_start, tty_menu_item *page_end, char acc)
 {
     tty_menu_item *curr;
     boolean on_curr_page;
@@ -1923,10 +1892,8 @@ char acc; /* group accelerator, 0 => all */
 }
 
 /* support menucolor in addition to caller-supplied attribute */
-STATIC_OVL void
-toggle_menu_attr(on, color, attr)
-boolean on;
-int color, attr;
+static void
+toggle_menu_attr(boolean on, int color, int attr)
 {
     if (on) {
         term_start_attr(attr);
@@ -1947,10 +1914,8 @@ int color, attr;
 #endif
 }
 
-STATIC_OVL void
-process_menu_window(window, cw)
-winid window;
-struct WinDesc *cw;
+static void
+process_menu_window(winid window, struct WinDesc *cw)
 {
     tty_menu_item *page_start, *page_end, *curr;
     int64_t count;
@@ -2347,7 +2312,7 @@ struct WinDesc *cw;
             for (n = 0, curr = page_start; curr != page_end;
                  n++, curr = curr->next)
                 if (morc == curr->selector) {
-                    toggle_menu_curr(window, curr, n, TRUE, counting, count);
+                    toggle_menu_curr(window, curr, (int)n, TRUE, counting, count);
                     if (cw->how == PICK_ONE)
                         finished = TRUE;
                     break; /* from `for' loop */
@@ -2360,10 +2325,8 @@ struct WinDesc *cw;
     free((genericptr_t) morestr);
 }
 
-STATIC_OVL void
-process_text_window(window, cw)
-winid window;
-struct WinDesc *cw;
+static void
+process_text_window(winid window, struct WinDesc *cw)
 {
     int i, n, /* attr, */ ccolor = NO_COLOR, cattr = ATR_NONE;
     boolean linestart;
@@ -2481,13 +2444,15 @@ struct WinDesc *cw;
     issue_simple_gui_command(GUI_CMD_FINISH_FLUSH);
 }
 
+/*
+ * Parameters:
+ *   blocking: with ttys, all windows are blocking
+ */
 /*ARGSUSED*/
 void
-tty_display_nhwindow(window, blocking)
-winid window;
-boolean blocking; /* with ttys, all windows are blocking */
+tty_display_nhwindow(winid window, boolean blocking)
 {
-    register struct WinDesc *cw = 0;
+    struct WinDesc *cw = 0;
     short s_maxcol;
 
     HUPSKIP();
@@ -2582,10 +2547,9 @@ boolean blocking; /* with ttys, all windows are blocking */
 }
 
 void
-tty_dismiss_nhwindow(window)
-winid window;
+tty_dismiss_nhwindow(winid window)
 {
-    register struct WinDesc *cw = 0;
+    struct WinDesc *cw = 0;
 
     HUPSKIP();
     if (window == WIN_ERR || (cw = wins[window]) == (struct WinDesc *) 0)
@@ -2631,10 +2595,9 @@ winid window;
 }
 
 void
-tty_destroy_nhwindow(window)
-winid window;
+tty_destroy_nhwindow(winid window)
 {
-    register struct WinDesc *cw = 0;
+    struct WinDesc *cw = 0;
 
     if (window == WIN_ERR || (cw = wins[window]) == (struct WinDesc *) 0)
     {
@@ -2655,10 +2618,7 @@ winid window;
 }
 
 void
-tty_curs(window, x, y)
-winid window;
-register int x, y; /* not xchar: perhaps xchar is unsigned and
-                      curx-x would be unsigned as well */
+tty_curs(winid window, int x, int y)
 {
     struct WinDesc *cw = 0;
     int cx = ttyDisplay->curx;
@@ -2759,13 +2719,10 @@ register int x, y; /* not xchar: perhaps xchar is unsigned and
     ttyDisplay->cury = y;
 }
 
-STATIC_OVL void
-tty_putsym(window, x, y, ch)
-winid window;
-int x, y;
-nhsym ch;
+static void
+tty_putsym(winid window, int x, int y, nhsym ch)
 {
-    register struct WinDesc *cw = 0;
+    struct WinDesc *cw = 0;
 
     HUPSKIP();
     if (window == WIN_ERR || (cw = wins[window]) == (struct WinDesc *) 0)
@@ -2796,9 +2753,8 @@ nhsym ch;
     }
 }
 
-STATIC_OVL const char *
-compress_str(str)
-const char *str;
+static const char *
+compress_str(const char *str)
 {
     static char cbuf[BUFSZ];
 
@@ -2828,10 +2784,7 @@ const char *str;
 }
 
 void
-tty_putstr_ex(window, str, attr, color, app)
-winid window;
-int attr, app, color;
-const char* str;
+tty_putstr_ex(winid window, const char *str, int attr, int color, int app)
 {
     if (!str)
         return;
@@ -2839,17 +2792,14 @@ const char* str;
 }
 
 void
-tty_putstr_ex2(window, str, attrs, colors, attr, color, app)
-winid window;
-int attr, color, app;
-const char *str, *attrs, *colors;
+tty_putstr_ex2(winid window, const char *str, const char *attrs, const char *colors, int attr, int color, int app)
 {
-    register struct WinDesc *cw = 0;
+    struct WinDesc *cw = 0;
     register char *ob;
-    register int64_t i, n0;
+    int64_t i, n0;
 #ifndef STATUS_HILITES
-    register const char *nb;
-    register int64_t j;
+    const char *nb;
+    int64_t j;
 #endif
 
     HUPSKIP();
@@ -2994,8 +2944,8 @@ const char *str, *attrs, *colors;
             int64_t oldrows = cw->rows;
             cw->rows += 12;
             tmp = (char **) alloc(sizeof(char *) * (size_t)cw->rows);
-            tmp2 = (char**) alloc(sizeof(char *) * (size_t)cw->rows);
-            tmp3 = (char**) alloc(sizeof(char *) * (size_t)cw->rows);
+            tmp2 = (char **) alloc(sizeof(char *) * (size_t)cw->rows);
+            tmp3 = (char **) alloc(sizeof(char *) * (size_t)cw->rows);
             for (i = 0; i < oldrows; i++)
             {
                 tmp[i] = cw->data[i];
@@ -3084,14 +3034,12 @@ const char *str, *attrs, *colors;
 }
 
 void
-tty_display_file(fname, complain)
-const char *fname;
-boolean complain;
+tty_display_file(const char *fname, boolean complain)
 {
 #ifdef DEF_PAGER /* this implies that UNIX is defined */
     {
         /* use external pager; this may give security problems */
-        register int fd = open(fname, 0);
+        int fd = open(fname, 0);
 
         if (fd < 0) {
             if (complain)
@@ -3181,9 +3129,7 @@ boolean complain;
 }
 
 void
-tty_start_menu_ex(window, style)
-winid window;
-int style;
+tty_start_menu_ex(winid window, int style)
 {
     tty_clear_nhwindow(window);
     struct WinDesc* cw = 0;
@@ -3192,40 +3138,45 @@ int style;
     return;
 }
 
+/*
+ * Parameters:
+ *   window: window to use, must be of type NHW_MENU
+ *   glyph: glyph to display with item (not used)
+ *   identifier: what to return if selected
+ *   ch: keyboard accelerator (0 = pick our own)
+ *   gch: group accelerator (0 = no group)
+ *   attr: attribute for string (like tty_putstr())
+ *   color: color for string (like tty_putstr_ex())
+ *   str: menu string
+ *   preselected: item is marked as selected
+ */
 /*ARGSUSED*/
 /*
  * Add a menu item to the beginning of the menu list.  This list is reversed
  * later.
  */
 void
-tty_add_menu(window, glyph, identifier, ch, gch, attr, color, str, preselected)
-winid window;               /* window to use, must be of type NHW_MENU */
-int glyph UNUSED;           /* glyph to display with item (not used) */
-const anything *identifier; /* what to return if selected */
-char ch;                    /* keyboard accelerator (0 = pick our own) */
-char gch;                   /* group accelerator (0 = no group) */
-int attr;                   /* attribute for string (like tty_putstr()) */
-int color;                  /* color for string (like tty_putstr_ex()) */
-const char *str;            /* menu string */
-boolean preselected;        /* item is marked as selected */
+tty_add_menu(winid window, int glyph UNUSED, const anything *identifier, char ch, char gch, int attr, int color, const char *str, boolean preselected)
 {
     tty_add_extended_menu(window, glyph, identifier, ch, gch, attr, color, str, preselected, zeroextendedmenuinfo);
 }
 
+/*
+ * Parameters:
+ *   window: window to use, must be of type NHW_MENU
+ *   glyph: glyph to display with item (not used)
+ *   identifier: what to return if selected
+ *   ch: keyboard accelerator (0 = pick our own)
+ *   gch: group accelerator (0 = no group)
+ *   attr: attribute for string (like tty_putstr())
+ *   color: color for string (like tty_putstr_ex())
+ *   str: menu string
+ *   preselected: item is marked as selected
+ */
 void
-tty_add_extended_menu(window, glyph, identifier, ch, gch, attr, color, str, preselected, info)
-winid window;               /* window to use, must be of type NHW_MENU */
-int glyph UNUSED;           /* glyph to display with item (not used) */
-const anything* identifier; /* what to return if selected */
-char ch;                    /* keyboard accelerator (0 = pick our own) */
-char gch;                   /* group accelerator (0 = no group) */
-int attr;                   /* attribute for string (like tty_putstr()) */
-int color;                  /* color for string (like tty_putstr_ex()) */
-const char* str;            /* menu string */
-boolean preselected;        /* item is marked as selected */
-struct extended_menu_info info;
+tty_add_extended_menu(winid window, int glyph UNUSED, const anything *identifier, char ch, char gch, int attr, int color, const char *str, boolean preselected, struct extended_menu_info info)
 {
-    register struct WinDesc* cw = 0;
+    struct WinDesc* cw = 0;
     tty_menu_item* item;
     const char* newstr;
     char buf[4 + BUFSZ];
@@ -3279,9 +3230,8 @@ struct extended_menu_info info;
 }
 
 /* Invert the given list, can handle NULL as an input. */
-STATIC_OVL tty_menu_item *
-reverse(curr)
-tty_menu_item *curr;
+static tty_menu_item *
+reverse(tty_menu_item *curr)
 {
     tty_menu_item *next, *head = 0;
 
@@ -3295,15 +3245,18 @@ tty_menu_item *curr;
 }
 
 /*
+ * Parameters:
+ *   window: menu to use
+ *   prompt, subtitle: prompt to for menu
+ */
+/*
  * End a menu in this window, window must a type NHW_MENU.  This routine
  * processes the string list.  We calculate the # of pages, then assign
  * keyboard accelerators as needed.  Finally we decide on the width and
  * height of the window.
  */
 void
-tty_end_menu_ex(window, prompt, subtitle)
-winid window;       /* menu to use */
-const char *prompt, *subtitle; /* prompt to for menu */
+tty_end_menu_ex(winid window, const char *prompt, const char *subtitle)
 {
     struct WinDesc *cw = 0;
     tty_menu_item *curr;
@@ -3410,12 +3363,9 @@ const char *prompt, *subtitle; /* prompt to for menu */
 }
 
 int
-tty_select_menu(window, how, menu_list)
-winid window;
-int how;
-menu_item **menu_list;
+tty_select_menu(winid window, int how, menu_item **menu_list)
 {
-    register struct WinDesc *cw = 0;
+    struct WinDesc *cw = 0;
     tty_menu_item *curr;
     menu_item *mi;
     int n, cancelled;
@@ -3457,10 +3407,7 @@ menu_item **menu_list;
 
 /* special hack for treating top line --More-- as a one item menu */
 char
-tty_message_menu(let, how, mesg)
-char let;
-int how;
-const char *mesg;
+tty_message_menu(char let, int how, const char *mesg)
 {
     HUPSKIP();
     /* "menu" without selection; use ordinary pline, no more() */
@@ -3490,20 +3437,20 @@ const char *mesg;
 }
 
 void
-tty_update_inventory()
+tty_update_inventory(void)
 {
     return;
 }
 
 void
-tty_mark_synch()
+tty_mark_synch(void)
 {
     HUPSKIP();
     (void) fflush(stdout);
 }
 
 void
-tty_wait_synch()
+tty_wait_synch(void)
 {
     HUPSKIP();
     /* we just need to make sure all windows are synch'd */
@@ -3535,11 +3482,10 @@ tty_wait_synch()
 }
 
 void
-docorner(xmin, ymax)
-register int xmin, ymax;
+docorner(int xmin, int ymax)
 {
-    register int y;
-    register struct WinDesc *cw = wins[WIN_MAP];
+    int y;
+    struct WinDesc *cw = wins[WIN_MAP];
 
     HUPSKIP();
 #if 0   /* this optimization is not valuable enough to justify
@@ -3591,7 +3537,7 @@ register int xmin, ymax;
 }
 
 void
-end_glyphout()
+end_glyphout(void)
 {
     HUPSKIP();
 #if defined(ASCIIGRAPH) && !defined(NO_TERMS)
@@ -3608,9 +3554,8 @@ end_glyphout()
 #endif
 }
 
-STATIC_OVL int
-putcharutf8(ch)
-nhsym ch;
+static int
+putcharutf8(nhsym ch)
 {
     unsigned long c = (unsigned long)ch;
     if (c < 0x80) {
@@ -3633,9 +3578,7 @@ nhsym ch;
 }
 
 int
-doputchar(ch, is_CP437)
-nhsym ch;
-boolean is_CP437;
+doputchar(nhsym ch, boolean is_CP437)
 {
     if (use_utf8_encoding())
     {
@@ -3658,9 +3601,7 @@ boolean is_CP437;
 
 #ifndef WIN32
 void
-g_putch(in_ch, is_CP437)
-int in_ch;
-boolean is_CP437;
+g_putch(int in_ch, boolean is_CP437)
 {
     register nhsym ch = (nhsym)in_ch;
     if (use_utf8_encoding())
@@ -3707,7 +3648,7 @@ boolean is_CP437;
 
 #ifdef CLIPPING
 void
-setclipped()
+setclipped(void)
 {
     clipping = TRUE;
     clipx = clipy = 0;
@@ -3716,9 +3657,7 @@ setclipped()
 }
 
 void
-tty_cliparound(x, y, force)
-int x, y;
-boolean force UNUSED;
+tty_cliparound(int x, int y, boolean force UNUSED)
 {
     int oldx = clipx, oldy = clipy;
 
@@ -3746,9 +3685,7 @@ boolean force UNUSED;
 #endif /* CLIPPING */
 
 void
-tty_issue_gui_command(cmd_id, cmd_param, cmd_param2, cmd_str)
-int cmd_id, cmd_param UNUSED, cmd_param2 UNUSED;
-const char* cmd_str UNUSED;
+tty_issue_gui_command(int cmd_id, int cmd_param UNUSED, int cmd_param2 UNUSED, const char *cmd_str UNUSED)
 {
     if (use_utf8_encoding())
     {
@@ -3785,10 +3722,7 @@ const char* cmd_str UNUSED;
  */
 
 void
-tty_print_glyph(window, x, y, layers)
-winid window;
-xchar x, y;
-struct layer_info layers;
+tty_print_glyph(winid window, xchar x, xchar y, struct layer_info layers)
 {
     nhsym ch;
     boolean reverse_on = FALSE;
@@ -3883,8 +3817,7 @@ struct layer_info layers;
 }
 
 void
-tty_raw_print(str)
-const char *str;
+tty_raw_print(const char *str)
 {
     HUPSKIP();
     if (ttyDisplay)
@@ -3899,8 +3832,7 @@ const char *str;
 }
 
 void
-tty_raw_print_bold(str)
-const char *str;
+tty_raw_print_bold(const char *str)
 {
     HUPSKIP();
     if (ttyDisplay)
@@ -3922,7 +3854,7 @@ const char *str;
 }
 
 int
-tty_nhgetch()
+tty_nhgetch(void)
 {
     int i;
 #ifdef UNIX
@@ -3983,8 +3915,7 @@ tty_nhgetch()
  */
 /*ARGSUSED*/
 int
-tty_nh_poskey(x, y, mod)
-int *x, *y, *mod;
+tty_nh_poskey(int *x, int *y, int *mod)
 {
     int i;
 
@@ -4015,8 +3946,7 @@ int *x, *y, *mod;
 }
 
 int
-tty_open_special_view(info)
-struct special_view_info info;
+tty_open_special_view(struct special_view_info info)
 {
     switch (info.viewtype)
     {
@@ -4035,8 +3965,7 @@ struct special_view_info info;
 
 
 void
-win_tty_init(dir)
-int dir;
+win_tty_init(int dir)
 {
     if (dir != WININIT)
         return;
@@ -4045,8 +3974,7 @@ int dir;
 
 #ifdef POSITIONBAR
 void
-tty_update_positionbar(posbar)
-char *posbar;
+tty_update_positionbar(char *posbar)
 {
 #ifdef MSDOS
     video_update_positionbar(posbar);
@@ -4118,9 +4046,9 @@ extern winid WIN_STATUS;
 
 #ifdef STATUS_HILITES
 #ifdef TEXTCOLOR
-STATIC_DCL int FDECL(condcolor, (int64_t, uint64_t *));
+static int condcolor(int64_t, uint64_t *);
 #endif
-STATIC_DCL int FDECL(condattr, (int64_t, uint64_t *));
+static int condattr(int64_t, uint64_t *);
 static uint64_t *tty_colormasks;
 static int64_t tty_condition_bits;
 static struct tty_status_fields tty_status[2][MAXBLSTATS]; /* 2: NOW,BEFORE */
@@ -4165,8 +4093,7 @@ static int do_field_opt =
  *      -- call genl_status_init() to initialize the general data.
  */
 void
-tty_status_init(reassessment)
-int reassessment;
+tty_status_init(int reassessment)
 {
 #ifdef STATUS_HILITES
     int i;
@@ -4195,11 +4122,7 @@ int reassessment;
 }
 
 void
-tty_status_enablefield(fieldidx, nm, fmt, enable)
-int fieldidx;
-const char *nm;
-const char *fmt;
-boolean enable;
+tty_status_enablefield(int fieldidx, const char *nm, const char *fmt, boolean enable)
 {
     genl_status_enablefield(fieldidx, nm, fmt, enable);
 }
@@ -4264,10 +4187,7 @@ boolean enable;
  */
 
 void
-tty_status_update(fldidx, ptr, chg, percent, color, colormasks)
-int fldidx, chg UNUSED, percent, color;
-genericptr_t ptr;
-uint64_t *colormasks;
+tty_status_update(int fldidx, genericptr_t ptr, int chg UNUSED, int percent, int color, uint64_t *colormasks)
 {
     int attrmask;
     int64_t *condptr = (int64_t *) ptr;
@@ -4396,9 +4316,8 @@ uint64_t *colormasks;
     return;
 }
 
-STATIC_OVL int
-make_things_fit(force_update)
-boolean force_update;
+static int
+make_things_fit(boolean force_update)
 {
     int trycnt, fitting = -1, requirement;
     int rowsz[10], num_rows, condrow, otheroptions = 0;
@@ -4462,9 +4381,7 @@ boolean force_update;
  * This is now done at an individual field case-by-case level.
  */
 boolean
-check_fields(forcefields, sz)
-boolean forcefields;
-int sz[MAX_STATUS_LINES];
+check_fields(boolean forcefields, int sz[MAX_STATUS_LINES])
 {
     int c, i, row, col, num_rows, idx;
     boolean valid = TRUE, matchprev, update_right;
@@ -4566,10 +4483,8 @@ int sz[MAX_STATUS_LINES];
 /*
  * This is what places a field on the tty display.
  */
-STATIC_OVL void
-tty_putstatusfield(text, x, y)
-const char *text;
-int x, y;
+static void
+tty_putstatusfield(const char *text, int x, int y)
 {
     int64_t i, n, ncols, nrows, lth = 0;
     struct WinDesc *cw = 0;
@@ -4611,8 +4526,8 @@ int x, y;
 
 #if 0
 /* caller must set cond_shrinklvl (0..2) before calling us */
-STATIC_OVL int
-condition_size()
+static int
+condition_size(void)
 {
     int64_t mask;
     int c, lth;
@@ -4630,9 +4545,8 @@ condition_size()
 }
 #endif
 
-STATIC_OVL void
-shrink_enc(lvl)
-int lvl;
+static void
+shrink_enc(int lvl)
 {
     /* shrink or restore the encumbrance word */
     if (lvl <= 2) {
@@ -4642,9 +4556,8 @@ int lvl;
     tty_status[NOW][BL_CAP].lth = strlen(status_vals[BL_CAP]);
 }
 
-STATIC_OVL void
-shrink_dlvl(lvl)
-int lvl;
+static void
+shrink_dlvl(int lvl)
 {
     /* try changing Dlvl: to Dl: */
     char buf[BUFSZ];
@@ -4663,8 +4576,8 @@ int lvl;
  * Ensure the underlying status window data start out
  * blank and null-terminated.
  */
-STATIC_OVL boolean
-check_windowdata(VOID_ARGS)
+static boolean
+check_windowdata(void)
 {
     if (WIN_STATUS == WIN_ERR || wins[WIN_STATUS] == (struct WinDesc *) 0) {
         paniclog("check_windowdata", " null status window.");
@@ -4681,10 +4594,8 @@ check_windowdata(VOID_ARGS)
  * Return what color this condition should
  * be displayed in based on user settings.
  */
-STATIC_OVL int
-condcolor(bm, bmarray)
-int64_t bm;
-uint64_t *bmarray;
+static int
+condcolor(int64_t bm, uint64_t *bmarray)
 {
     int i;
 
@@ -4703,10 +4614,8 @@ uint64_t *bmarray;
 #define term_end_color(color) /*empty*/
 #endif /* TEXTCOLOR */
 
-STATIC_OVL int
-condattr(bm, bmarray)
-int64_t bm;
-uint64_t *bmarray;
+static int
+condattr(int64_t bm, uint64_t *bmarray)
 {
     int attr = 0;
     int i;
@@ -4769,8 +4678,8 @@ uint64_t *bmarray;
         }                                       \
     } while (0)
 
-STATIC_OVL void
-render_status(VOID_ARGS)
+static void
+render_status(void)
 {
     int64_t mask, bits;
     int i, x, y, idx, c, row, tlth, num_rows, coloridx = 0, attrmask = 0;
@@ -5121,12 +5030,9 @@ static const char* status_strings[] = { "Hungry", "Weak", "TermIll", "FoodPois",
                                         "Paral", "Stun", "Slow", "Strgnl", "Suffoc", 
                                         "Cooldown", "Rot", "Lyca" };
 
-STATIC_OVL
+static
 void
-print_rest_partyline(restbuf, x_ptr, y_ptr)
-char* restbuf;
-int* x_ptr;
-int* y_ptr;
+print_rest_partyline(char *restbuf, int *x_ptr, int *y_ptr)
 {
     int status_colors[] = { CLR_YELLOW, CLR_ORANGE, CLR_ORANGE, CLR_ORANGE, CLR_YELLOW,
                             CLR_YELLOW, CLR_YELLOW, CLR_ORANGE, CLR_ORANGE, CLR_ORANGE,

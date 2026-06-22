@@ -25,10 +25,7 @@
 /* void *memset(void *, int, size_t) -- fill chunk of memory.
 */
 char *
-memset(dst, fil, cnt)
-REG char *dst;
-REG char fil;
-REG int cnt;
+memset(REG char *dst, REG char fil, REG int cnt)
 {
     char *dst_p = dst;
     while (--cnt >= 0)
@@ -39,10 +36,7 @@ REG int cnt;
 /* void *memcpy(void *, const void *, size_t) -- copy chunk of memory.
 */
 char *
-memcpy(dst, src, cnt)
-REG char *dst;
-REG const char *src;
-REG int cnt;
+memcpy(REG char *dst, REG const char *src, REG int cnt)
 {
     char *dst_p = dst;
     while (--cnt >= 0)
@@ -54,10 +48,7 @@ REG int cnt;
  * mem.
 */
 char *
-memmove(dst, src, cnt)
-REG char *dst;
-REG const char *src;
-REG int cnt;
+memmove(REG char *dst, REG const char *src, REG int cnt)
 {
     char *dst_p = dst;
     if (src == dst || cnt <= 0) {
@@ -76,10 +67,7 @@ REG int cnt;
 /* void *memchr(const void *, int, size_t) -- search for a byte.
 */
 char *
-memchr(buf, byt, len)
-REG const char *buf;
-REG char byt;
-REG int len;
+memchr(REG const char *buf, REG char byt, REG int len)
 {
     while (--len >= 0)
         if (*buf++ == byt) /* found */
@@ -90,10 +78,7 @@ REG int len;
 /* int memcmp(const void *, const void *, size_t) -- compare two chunks.
 */
 int
-memcmp(buf1, buf2, len)
-REG const char *buf1;
-REG const char *buf2;
-REG int len;
+memcmp(REG const char *buf1, REG const char *buf2, REG int len)
 {
     while (--len >= 0)
         if (*buf1++ != *buf2++)
@@ -116,9 +101,12 @@ static struct {
 } ex_data[MAX_EXIT_FUNCS];   /* static handler data */
 extern unsigned long sys$dclexh();
 
+/*
+ * Parameters:
+ *   function: note: actually gets called with 1 arg
+ */
 int
-atexit(function)
-void (*function)(); /* note: actually gets called with 1 arg */
+atexit(void (*function)())
 {
     if (ex_cnt < MAX_EXIT_FUNCS) {
         ex_data[ex_cnt].dummy_arg = 0; /* ultimately receives exit reason */
@@ -144,9 +132,7 @@ void (*function)(); /* note: actually gets called with 1 arg */
 extern unsigned long lib$rename_file();
 
 int
-rename(old_name, new_name)
-const char *old_name;
-const char *new_name;
+rename(const char *old_name, const char *new_name)
 {
     struct dsc {
         unsigned short len, mbz;
@@ -174,11 +160,7 @@ extern char *malloc(); /* assume no alloca() available */
 extern void free();
 
 void
-qsort(base, count, size, compare)
-char *base;
-int count;
-REG int size;
-int (*compare)();
+qsort(char *base, int count, REG int size, int (*compare)())
 {
     REG int i, cmp;
     REG char *next, *prev, *tmp = 0;

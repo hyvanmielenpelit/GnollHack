@@ -1307,7 +1307,7 @@ const struct symdef_cmap_variation defsym_variations[MAX_VARIATIONS] =
 
 
 /* default rogue level symbols */
-STATIC_VAR const uchar def_r_oc_syms[MAX_OBJECT_CLASSES] = {
+static const uchar def_r_oc_syms[MAX_OBJECT_CLASSES] = {
 /* 0*/ '\0', ILLOBJ_SYM, WEAPON_SYM, ']', /* armor */
        RING_SYM,
 /* 5*/ ',',                     /* amulet */
@@ -1322,16 +1322,16 @@ STATIC_VAR const uchar def_r_oc_syms[MAX_OBJECT_CLASSES] = {
 #undef C
 
 #ifdef TERMLIB
-void NDECL((*decgraphics_mode_callback)) = 0; /* set in tty_start_screen() */
+void (*decgraphics_mode_callback)(void) = 0; /* set in tty_start_screen() */
 #endif /* TERMLIB */
 
 #ifdef PC9800
-void NDECL((*ibmgraphics_mode_callback)) = 0; /* set in tty_start_screen() */
-void NDECL((*ascgraphics_mode_callback)) = 0; /* set in tty_start_screen() */
+void (*ibmgraphics_mode_callback)(void) = 0; /* set in tty_start_screen() */
+void (*ascgraphics_mode_callback)(void) = 0; /* set in tty_start_screen() */
 #endif
 
 #ifdef CURSES_GRAPHICS
-void NDECL((*cursesgraphics_mode_callback)) = 0;
+void (*cursesgraphics_mode_callback)(void) = 0;
 #endif
 
 /*
@@ -1340,8 +1340,7 @@ void NDECL((*cursesgraphics_mode_callback)) = 0;
  * objnam.c, options.c, pickup.c, sp_lev.c, lev_main.c, and tilemap.c.
  */
 int
-def_char_to_objclass(ch)
-char ch;
+def_char_to_objclass(char ch)
 {
     int i;
     for (i = 1; i < MAX_OBJECT_CLASSES; i++)
@@ -1356,8 +1355,7 @@ char ch;
  * Used in detect.c, options.c, read.c, sp_lev.c, and lev_main.c
  */
 int
-def_char_to_monclass(ch)
-char ch;
+def_char_to_monclass(char ch)
 {
     int i;
     for (i = 1; i < MAX_MONSTER_CLASSES; i++)
@@ -1413,7 +1411,7 @@ char ch;
  */
 
 void
-init_symbols(VOID_ARGS)
+init_symbols(void)
 {
     init_l_symbols();
     init_showsyms();
@@ -1421,7 +1419,7 @@ init_symbols(VOID_ARGS)
 }
 
 void
-update_bouldersym(VOID_ARGS)
+update_bouldersym(void)
 {
     nhsym boulder = iflags.bouldersym;
 
@@ -1433,9 +1431,9 @@ update_bouldersym(VOID_ARGS)
 }
 
 void
-init_showsyms(VOID_ARGS)
+init_showsyms(void)
 {
-    register int i;
+    int i;
 
     for (i = 0; i < MAX_CMAPPED_CHARS; i++)
         showsyms[i + SYM_OFF_P] = (nhsym)defsyms[i].sym;
@@ -1457,9 +1455,9 @@ init_showsyms(VOID_ARGS)
 
 /* initialize defaults for the loadable symset */
 void
-init_l_symbols(VOID_ARGS)
+init_l_symbols(void)
 {
-    register int i;
+    int i;
 
     for (i = 0; i < MAX_CMAPPED_CHARS; i++)
         l_syms[i + SYM_OFF_P] = defsyms[i].sym;
@@ -1482,9 +1480,9 @@ init_l_symbols(VOID_ARGS)
 }
 
 void
-init_r_symbols(VOID_ARGS)
+init_r_symbols(void)
 {
-    register int i;
+    int i;
 
     /* These are defaults that can get overwritten
        later by the roguesymbols option */
@@ -1517,10 +1515,9 @@ init_r_symbols(VOID_ARGS)
 }
 
 void
-assign_graphics(whichset)
-int whichset;
+assign_graphics(int whichset)
 {
-    register int i;
+    int i;
 
     switch (whichset) {
     case ROGUESET:
@@ -1551,10 +1548,9 @@ int whichset;
 }
 
 void
-switch_symbols(nondefault)
-int nondefault;
+switch_symbols(int nondefault)
 {
-    register int i;
+    int i;
 
     if (nondefault) {
         for (i = 0; i < SYM_MAX; i++)
@@ -1580,25 +1576,19 @@ int nondefault;
 }
 
 void
-update_l_symset(symp, val)
-struct symparse *symp;
-nhsym val;
+update_l_symset(struct symparse *symp, nhsym val)
 {
     l_syms[symp->idx] = val;
 }
 
 void
-update_r_symset(symp, val)
-struct symparse *symp;
-nhsym val;
+update_r_symset(struct symparse *symp, nhsym val)
 {
     r_syms[symp->idx] = val;
 }
 
 void
-clear_symsetentry(which_set, name_too)
-int which_set;
-boolean name_too;
+clear_symsetentry(int which_set, boolean name_too)
 {
     if (symset[which_set].desc)
         free((genericptr_t) symset[which_set].desc);
@@ -1865,8 +1855,7 @@ struct symparse loadsyms[] = {
 };
 
 const char*
-get_cmap_tilename(idx)
-int idx;
+get_cmap_tilename(int idx)
 {
     if (idx >= 0 && idx < MAX_CMAPPED_CHARS)
     {

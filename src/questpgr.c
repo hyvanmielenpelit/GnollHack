@@ -21,36 +21,36 @@
 /* from sp_lev.c, for deliver_splev_message() */
 extern struct lev_msg *lev_message;
 
-STATIC_DCL void NDECL(dump_qtlist);
-STATIC_DCL void FDECL(Fread, (genericptr_t, long, long, dlb *));
-STATIC_DCL struct qtmsg *FDECL(construct_qtlist, (int64_t));
-STATIC_DCL const char *NDECL(intermed);
-STATIC_DCL struct obj *FDECL(find_qarti, (struct obj *));
-STATIC_DCL const char *NDECL(guardname);
-STATIC_DCL const char *NDECL(homebase);
-STATIC_DCL void FDECL(qtext_pronoun, (CHAR_P, CHAR_P));
-STATIC_DCL struct qtmsg *FDECL(msg_in, (struct qtmsg *, int));
-STATIC_DCL void FDECL(convert_arg, (CHAR_P));
-STATIC_DCL void FDECL(convert_line, (char *,char *));
-STATIC_DCL void FDECL(deliver_by_pline, (struct qtmsg *, int, int, struct monst*, BOOLEAN_P));
-STATIC_DCL void FDECL(deliver_by_window, (struct qtmsg *, int, int, int));
-STATIC_DCL void FDECL(deliver_by_file_write, (dlb*, struct qtmsg*, int, int));
-STATIC_DCL void FDECL(file_write_pager, (dlb*, struct qtmsg*, int, int));
-STATIC_DCL boolean FDECL(skip_pager, (BOOLEAN_P));
-STATIC_DCL void FDECL(printout_popupbuf, (char*, int));
+static void dump_qtlist(void);
+static void Fread(genericptr_t, long, long, dlb *);
+static struct qtmsg *construct_qtlist(int64_t);
+static const char *intermed(void);
+static struct obj *find_qarti(struct obj *);
+static const char *guardname(void);
+static const char *homebase(void);
+static void qtext_pronoun(char, char);
+static struct qtmsg *msg_in(struct qtmsg *, int);
+static void convert_arg(char);
+static void convert_line(char *,char *);
+static void deliver_by_pline(struct qtmsg *, int, int, struct monst*, boolean);
+static void deliver_by_window(struct qtmsg *, int, int, int);
+static void deliver_by_file_write(dlb*, struct qtmsg*, int, int);
+static void file_write_pager(dlb*, struct qtmsg*, int, int);
+static boolean skip_pager(boolean);
+static void printout_popupbuf(char*, int);
 
-STATIC_VAR char cvt_buf[64];
-STATIC_VAR struct qtlists qt_list;
-STATIC_VAR dlb *msg_file;
+static char cvt_buf[64];
+static struct qtlists qt_list;
+static dlb *msg_file;
 /* used by ldrname() and neminame(), then copied into cvt_buf */
-STATIC_VAR char nambuf[sizeof cvt_buf];
-STATIC_VAR char nambuf2[sizeof cvt_buf];
+static char nambuf[sizeof cvt_buf];
+static char nambuf2[sizeof cvt_buf];
 
 /* dump the character msg list to check appearance;
    build with DEBUG enabled and use DEBUGFILES=questpgr.c
    in sysconf file or environment */
-STATIC_OVL void
-dump_qtlist(VOID_ARGS)
+static void
+dump_qtlist(void)
 {
 #ifdef DEBUG
     struct qtmsg *msg;
@@ -66,11 +66,8 @@ dump_qtlist(VOID_ARGS)
     return;
 }
 
-STATIC_OVL void
-Fread(ptr, size, nitems, stream)
-genericptr_t ptr;
-long size, nitems;
-dlb *stream;
+static void
+Fread(genericptr_t ptr, long size, long nitems, dlb *stream)
 {
     long cnt;
 
@@ -80,9 +77,8 @@ dlb *stream;
     }
 }
 
-STATIC_OVL struct qtmsg *
-construct_qtlist(hdr_offset)
-int64_t hdr_offset;
+static struct qtmsg *
+construct_qtlist(int64_t hdr_offset)
 {
     struct qtmsg *msg_list;
     int n_msgs;
@@ -102,7 +98,7 @@ int64_t hdr_offset;
 }
 
 void
-load_qtlist(VOID_ARGS)
+load_qtlist(void)
 {
     int n_classes, i;
     char qt_classes[N_HDR][LEN_HDR];
@@ -150,7 +146,7 @@ load_qtlist(VOID_ARGS)
 
 /* called at program exit */
 void
-unload_qtlist(VOID_ARGS)
+unload_qtlist(void)
 {
     if (msg_file)
         (void) dlb_fclose(msg_file), msg_file = 0;
@@ -162,8 +158,7 @@ unload_qtlist(VOID_ARGS)
 }
 
 short
-quest_info(typ)
-int typ;
+quest_info(int typ)
 {
     switch (typ) {
     case 0:
@@ -182,7 +177,7 @@ int typ;
 
 /* return your role leader's name */
 const char *
-ldrname(VOID_ARGS)
+ldrname(void)
 {
     int i = urole.ldrnum;
 
@@ -192,22 +187,20 @@ ldrname(VOID_ARGS)
 }
 
 /* return your intermediate target string */
-STATIC_OVL const char *
-intermed(VOID_ARGS)
+static const char *
+intermed(void)
 {
     return urole.intermed;
 }
 
 boolean
-is_quest_artifact(otmp)
-struct obj *otmp;
+is_quest_artifact(struct obj *otmp)
 {
     return (boolean) (otmp->oartifact == urole.questarti);
 }
 
-STATIC_OVL struct obj *
-find_qarti(ochain)
-struct obj *ochain;
+static struct obj *
+find_qarti(struct obj *ochain)
 {
     struct obj *otmp, *qarti;
 
@@ -223,8 +216,7 @@ struct obj *ochain;
 /* check several object chains for the quest artifact to determine
    whether it is present on the current level */
 struct obj *
-find_quest_artifact(whichchains)
-unsigned whichchains;
+find_quest_artifact(unsigned whichchains)
 {
     struct monst *mtmp;
     struct obj *qarti = 0;
@@ -261,7 +253,7 @@ unsigned whichchains;
 
 /* return your role nemesis' name */
 const char *
-neminame(VOID_ARGS)
+neminame(void)
 {
     int i = urole.neminum;
 
@@ -270,26 +262,24 @@ neminame(VOID_ARGS)
     return nambuf;
 }
 
-STATIC_OVL const char *
-guardname() /* return your role leader's guard monster name */
+static const char *
+guardname(void) /* return your role leader's guard monster name */
 {
     int i = urole.guardnum;
 
     return mons[i].mname;
 }
 
-STATIC_OVL const char *
-homebase() /* return your role leader's location */
+static const char *
+homebase(void) /* return your role leader's location */
 {
     return urole.homebase;
 }
 
 /* replace deity, leader, nemesis, or artifact name with pronoun;
    overwrites cvt_buf[] */
-STATIC_OVL void
-qtext_pronoun(who, which)
-char who,  /* 'd' => deity, 'l' => leader, 'n' => nemesis, 'o' => artifact */
-    which; /* 'h'|'H'|'i'|'I'|'j'|'J' */
+static void
+qtext_pronoun(char who, char which)
 {
     const char *pnoun;
     int g;
@@ -323,10 +313,8 @@ char who,  /* 'd' => deity, 'l' => leader, 'n' => nemesis, 'o' => artifact */
     return;
 }
 
-STATIC_OVL struct qtmsg *
-msg_in(qtm_list, msgnum)
-struct qtmsg *qtm_list;
-int msgnum;
+static struct qtmsg *
+msg_in(struct qtmsg *qtm_list, int msgnum)
 {
     struct qtmsg *qt_msg;
 
@@ -337,11 +325,10 @@ int msgnum;
     return (struct qtmsg *) 0;
 }
 
-STATIC_OVL void
-convert_arg(c)
-char c;
+static void
+convert_arg(char c)
 {
-    register const char *str = 0;
+    const char *str = 0;
     char buf[BUFSZ] = "";
 
     switch (c) {
@@ -452,9 +439,8 @@ char c;
         Strcpy(cvt_buf, buf);
 }
 
-STATIC_OVL void
-convert_line(in_line, out_line)
-char *in_line, *out_line;
+static void
+convert_line(char *in_line, char *out_line)
 {
     char *c, *cc;
     char xbuf[BUFSZ];
@@ -557,12 +543,8 @@ char *in_line, *out_line;
     return;
 }
 
-STATIC_OVL void
-deliver_by_pline(qt_msg, attr, color, mtmp, dopopup)
-struct qtmsg *qt_msg;
-int attr, color;
-struct monst* mtmp;
-boolean dopopup;
+static void
+deliver_by_pline(struct qtmsg *qt_msg, int attr, int color, struct monst *mtmp, boolean dopopup)
 {
     int64_t size;
     char in_line[BUFSZ] = "", out_line[BUFSZ] = "";
@@ -595,10 +577,8 @@ boolean dopopup;
         pline_ex(attr, color, "%s", total_out_line);
 }
 
-STATIC_OVL void
-deliver_by_window(qt_msg, attr, color, how)
-struct qtmsg *qt_msg;
-int attr, color, how;
+static void
+deliver_by_window(struct qtmsg *qt_msg, int attr, int color, int how)
 {
     int64_t size;
     char in_line[BUFSZ], out_line[BUFSZ], attrs[BUFSZ], colors[BUFSZ];
@@ -653,8 +633,7 @@ int attr, color, how;
 }
 
 boolean
-skip_pager(common)
-boolean common;
+skip_pager(boolean common)
 {
     /* WIZKIT: suppress plot feedback if starting with quest artifact */
     if (program_state.wizkit_wishing)
@@ -670,18 +649,13 @@ boolean common;
 }
 
 void
-com_pager(mtmp, msgnum)
-struct monst* mtmp;
-int msgnum;
+com_pager(struct monst *mtmp, int msgnum)
 {
     com_pager_ex(mtmp, msgnum, ATR_NONE, NO_COLOR, FALSE);
 }
 
 void
-com_pager_ex(mtmp, msgnum, attr, color, dopopup)
-struct monst* mtmp;
-int msgnum, attr, color;
-boolean dopopup;
+com_pager_ex(struct monst *mtmp, int msgnum, int attr, int color, boolean dopopup)
 {
     struct qtmsg *qt_msg;
 
@@ -715,18 +689,13 @@ boolean dopopup;
 }
 
 void
-qt_pager(mtmp, msgnum)
-struct monst* mtmp;
-int msgnum;
+qt_pager(struct monst *mtmp, int msgnum)
 {
     qt_pager_ex(mtmp, msgnum, ATR_NONE, NO_COLOR, FALSE);
 }
 
 void
-qt_pager_ex(mtmp, msgnum, attr, color, dopopup)
-struct monst* mtmp;
-int msgnum, attr, color;
-boolean dopopup;
+qt_pager_ex(struct monst *mtmp, int msgnum, int attr, int color, boolean dopopup)
 {
     struct qtmsg *qt_msg;
 
@@ -769,7 +738,7 @@ boolean dopopup;
 }
 
 struct permonst *
-qt_montype(VOID_ARGS)
+qt_montype(void)
 {
     int qpm;
 
@@ -787,10 +756,8 @@ qt_montype(VOID_ARGS)
     return mkclass(urole.enemy2sym, 0);
 }
 
-STATIC_OVL void
-printout_popupbuf(popupbuf, msgtyp)
-char* popupbuf;
-int msgtyp;
+static void
+printout_popupbuf(char *popupbuf, int msgtyp)
 {
     if (!popupbuf || !*popupbuf)
         return;
@@ -828,7 +795,7 @@ int msgtyp;
 
 /* special levels can include a custom arrival message; display it */
 void
-deliver_splev_message(VOID_ARGS)
+deliver_splev_message(void)
 {
     char *str, *nl, in_line[BUFSZ], out_line[BUFSZ];
     struct lev_msg* lm, *nextlm;
@@ -894,11 +861,8 @@ deliver_splev_message(VOID_ARGS)
 }
 
 
-STATIC_OVL void
-deliver_by_file_write(temp_msg_file, qt_msg, fd, msgnum)
-dlb* temp_msg_file;
-struct qtmsg* qt_msg;
-int fd, msgnum;
+static void
+deliver_by_file_write(dlb *temp_msg_file, struct qtmsg *qt_msg, int fd, int msgnum)
 {
     int64_t size;
     char in_line[BUFSZ], out_line[BUFSZ];
@@ -953,12 +917,9 @@ int fd, msgnum;
     }
 }
 
-STATIC_OVL
+static
 void
-file_write_pager(temp_msg_file, msg_chain, fd, msgnum)
-dlb* temp_msg_file;
-struct qtmsg* msg_chain;
-int fd, msgnum;
+file_write_pager(dlb *temp_msg_file, struct qtmsg *msg_chain, int fd, int msgnum)
 {
     struct qtmsg* qt_msg;
 
@@ -990,8 +951,7 @@ int fd, msgnum;
 
 
 void
-write_quest_texts(fd)
-int fd;
+write_quest_texts(int fd)
 {
     int n_classes, i, j, k;
     char qt_classes[N_HDR][LEN_HDR];

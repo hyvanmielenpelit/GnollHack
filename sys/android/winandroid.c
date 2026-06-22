@@ -9,66 +9,66 @@
 #include "func_tab.h"   /* for extended commands */
 #include "dlb.h"
 
-static void FDECL(and_init_nhwindows, (int *, char **));
-static void NDECL(and_player_selection);
-static void NDECL(and_askname);
-static void NDECL(and_get_nh_event) ;
-static void FDECL(and_exit_nhwindows, (const char *));
-static void FDECL(and_suspend_nhwindows, (const char *));
-static void NDECL(and_resume_nhwindows);
-static winid FDECL(and_create_nhwindow_ex, (int, int, int, struct extended_create_window_info));
-static void FDECL(and_clear_nhwindow, (winid));
-static void FDECL(and_display_nhwindow, (winid, BOOLEAN_P));
-static void FDECL(and_dismiss_nhwindow, (winid));
-static void FDECL(and_destroy_nhwindow, (winid));
-static void FDECL(and_curs, (winid,int,int));
-static void FDECL(and_putstr_ex, (winid, const char *, int, int, int));
-static void FDECL(and_putstr_ex2, (winid, const char*, const char*, const char*, int, int, int));
-static void FDECL(and_putmixed_ex, (winid, const char *, int, int, int));
-static void FDECL(and_display_file, (const char *, BOOLEAN_P));
-static void FDECL(and_start_menu_ex, (winid, int));
-static void FDECL(and_add_menu, (winid,int,const ANY_P *, CHAR_P,CHAR_P,int,const char *, BOOLEAN_P));
-static void FDECL(and_add_extended_menu, (winid, int, const ANY_P*, CHAR_P, CHAR_P, int, int, const char*, BOOLEAN_P, struct extended_menu_info));
-static void FDECL(and_end_menu_ex, (winid, const char *, const char*));
-static int FDECL(and_select_menu, (winid, int, MENU_ITEM_P **));
-static char FDECL(and_message_menu, (CHAR_P, int, const char *));
-static void NDECL(and_update_inventory);
-static void NDECL(and_mark_synch);
-static void NDECL(and_wait_synch);
+static void and_init_nhwindows(int *, char **);
+static void and_player_selection(void);
+static void and_askname(void);
+static void and_get_nh_event(void) ;
+static void and_exit_nhwindows(const char *);
+static void and_suspend_nhwindows(const char *);
+static void and_resume_nhwindows(void);
+static winid and_create_nhwindow_ex(int, int, int, struct extended_create_window_info);
+static void and_clear_nhwindow(winid);
+static void and_display_nhwindow(winid, boolean);
+static void and_dismiss_nhwindow(winid);
+static void and_destroy_nhwindow(winid);
+static void and_curs(winid,int,int);
+static void and_putstr_ex(winid, const char *, int, int, int);
+static void and_putstr_ex2(winid, const char*, const char*, const char*, int, int, int);
+static void and_putmixed_ex(winid, const char *, int, int, int);
+static void and_display_file(const char *, boolean);
+static void and_start_menu_ex(winid, int);
+static void and_add_menu(winid,int,const ANY_P *, char,char,int,const char *, boolean);
+static void and_add_extended_menu(winid, int, const ANY_P*, char, char, int, int, const char*, boolean, struct extended_menu_info);
+static void and_end_menu_ex(winid, const char *, const char*);
+static int and_select_menu(winid, int, MENU_ITEM_P **);
+static char and_message_menu(char, int, const char *);
+static void and_update_inventory(void);
+static void and_mark_synch(void);
+static void and_wait_synch(void);
 #ifdef CLIPPING
-static void FDECL(and_cliparound, (int, int, BOOLEAN_P));
+static void and_cliparound(int, int, boolean);
 #endif
 #ifdef POSITIONBAR
-static void FDECL(and_update_positionbar, (char *));
+static void and_update_positionbar(char *);
 #endif
-static void FDECL(and_print_glyph, (winid,XCHAR_P,XCHAR_P,struct layer_info));
-static void FDECL(and_issue_gui_command, (int, int, int, const char*));
-static void FDECL(and_raw_print, (const char *));
-static void FDECL(and_raw_print_bold, (const char *));
-static int NDECL(and_nhgetch);
-static int FDECL(and_nh_poskey, (int *, int *, int *));
-static void NDECL(and_nhbell);
-static int NDECL(and_doprev_message);
-static char FDECL(and_yn_function_ex, (int, int, int, int, const char *, const char *, const char *, CHAR_P, const char*, const char*, uint64_t));
-static void FDECL(and_getlin_ex, (int, int, int, const char *,char *, const char*, const char*, const char*));
-static int NDECL(and_get_ext_cmd);
-static void FDECL(and_number_pad, (int));
-static void NDECL(and_delay_output);
-static void FDECL(and_delay_output_milliseconds, (int));
-static void FDECL(and_delay_output_intervals, (int));
+static void and_print_glyph(winid,xchar,xchar,struct layer_info);
+static void and_issue_gui_command(int, int, int, const char*);
+static void and_raw_print(const char *);
+static void and_raw_print_bold(const char *);
+static int and_nhgetch(void);
+static int and_nh_poskey(int *, int *, int *);
+static void and_nhbell(void);
+static int and_doprev_message(void);
+static char and_yn_function_ex(int, int, int, int, const char *, const char *, const char *, char, const char*, const char*, uint64_t);
+static void and_getlin_ex(int, int, int, const char *,char *, const char*, const char*, const char*);
+static int and_get_ext_cmd(void);
+static void and_number_pad(int);
+static void and_delay_output(void);
+static void and_delay_output_milliseconds(int);
+static void and_delay_output_intervals(int);
 #ifdef CHANGE_COLOR
-static void FDECL(and_change_color,(int color, int64_t rgb,int reverse));
-static char * NDECL(and_get_color_string);
+static void and_change_color(int color, int64_t rgb,int reverse);
+static char * and_get_color_string(void);
 #endif
-static void NDECL(and_start_screen);
-static void NDECL(and_end_screen);
-static char* FDECL(and_getmsghistory_ex, (char**, char**, BOOLEAN_P));
-static void FDECL(and_putmsghistory_ex, (const char *, const char *, const char *, BOOLEAN_P));
+static void and_start_screen(void);
+static void and_end_screen(void);
+static char* and_getmsghistory_ex(char **, char **, boolean);
+static void and_putmsghistory_ex(const char *, const char *, const char *, boolean);
 static void save_msg(const char* msg);
-static void FDECL(and_status_update, (int, genericptr_t, int, int, int, uint64_t *));
+static void and_status_update(int, genericptr_t, int, int, int, uint64_t *);
 static void and_status_flush();
 
-int GnollHackMain(int argc, char** argv);
+int GnollHackMain(int argc, char **argv);
 
 extern int glyph2tile[];
 
@@ -396,7 +396,7 @@ void debuglog(const char *fmt, ...)
 //		   all plines() will be done via raw_print().
 //		** Why not have init_nhwindows() create all of the "standard"
 //		** windows?  Or at least all but WIN_INFO?	-dean
-void and_init_nhwindows(int* argcp, char** argv)
+void and_init_nhwindows(int* argcp, char **argv)
 {
 	//debuglog("and_init_nhwindows()");
 	iflags.window_inited = TRUE;
@@ -636,7 +636,7 @@ void and_clear_nhwindow(winid wid)
 //		-- All calls are blocking in the tty window-port.
 //		-- Calling display_nhwindow(WIN_MESSAGE,???) will do a
 //		   --more--, if necessary, in the tty window-port.
-void and_display_nhwindow(winid wid, BOOLEAN_P blocking)
+void and_display_nhwindow(winid wid, boolean blocking)
 {
 	//debuglog("display_nhwindow(%d)", wid);
 	if(wid != WIN_MESSAGE && /*wid != WIN_STATUS && */wid != WIN_MAP)
@@ -728,22 +728,19 @@ const char* colname(int color)
 }
 
 void
-term_start_attr(attr)
-int attr;
+term_start_attr(int attr)
 {
 	text_attribs |= 1<<attr;
 }
 
 void
-term_end_attr(attr)
-int attr;
+term_end_attr(int attr)
 {
 	text_attribs &= ~(1<<attr);
 }
 
 void
-term_start_color(color)
-int color;
+term_start_color(int color)
 {
 	//debuglog("term_start_color %s", colname(color));
 	text_color = color;
@@ -1016,7 +1013,7 @@ int get_condition_attr(int cond_mask)
 	return attr;
 }
 
-void print_conditions(const char** names)
+void print_conditions(const char **names)
 {
 	int i;
 	for(i = 0; i < MAXBLCONDITIONS; i++) {
@@ -1097,7 +1094,7 @@ void print_status_field(int idx, boolean first_field)
 void and_status_flush()
 {
 	enum statusfields idx, *fieldlist;
-	register int i;
+	int i;
 
 	static enum statusfields fieldorder_line1[] = {
 		BL_TITLE, BL_STR, BL_DX, BL_CO, BL_IN, BL_WI, BL_CH, BL_GOLD, BL_FLUSH,
@@ -1123,10 +1120,7 @@ void and_status_flush()
 }
 
 //____________________________________________________________________________________
-void and_putmixed_ex(window, str, attr, color, app)
-winid window;
-int attr, app, color;
-const char *str;
+void and_putmixed_ex(winid window, const char *str, int attr, int color, int app)
 {
 	//debuglog("put mixed: %s", str);
 	genl_putmixed_ex(window, str, attr, color, app);
@@ -1136,7 +1130,7 @@ const char *str;
 //display_file(str, boolean complain)
 //		-- Display the file named str.  Complain about missing files
 //		   iff complain is TRUE.
-void and_display_file(const char *name, BOOLEAN_P complain)
+void and_display_file(const char *name, boolean complain)
 {
 	//debuglog("and_display_file(%s, %d)", name, complain);
 
@@ -1209,7 +1203,7 @@ void and_start_menu_ex(winid wid, int style)
 //		   with the default object class symbols.
 //		-- If you want this choice to be preselected when the
 //		   menu is displayed, set preselected to TRUE.
-void and_add_menu(winid wid, int glyph, const ANY_P *ident, CHAR_P accelerator, CHAR_P groupacc, int attr, const char *str, BOOLEAN_P preselected)
+void and_add_menu(winid wid, int glyph, const ANY_P *ident, char accelerator, char groupacc, int attr, const char *str, boolean preselected)
 {
 	int tile, color;
 	if(glyph == NO_GLYPH)
@@ -1233,7 +1227,7 @@ void and_add_menu(winid wid, int glyph, const ANY_P *ident, CHAR_P accelerator, 
 	destroy_jobject(jstr);
 }
 
-void and_add_extended_menu(winid wid, int glyph, const ANY_P* ident, CHAR_P accelerator, CHAR_P groupacc, int attr, int color, const char* str, BOOLEAN_P preselected, struct extended_menu_info info)
+void and_add_extended_menu(winid wid, int glyph, const ANY_P* ident, char accelerator, char groupacc, int attr, int color, const char* str, boolean preselected, struct extended_menu_info info)
 {
 	and_add_menu(wid, glyph, ident, accelerator, groupacc, attr, str, preselected);
 }
@@ -1345,7 +1339,7 @@ int and_select_menu(winid wid, int how, MENU_ITEM_P **selected)
 //		-- Interfaces which issue prompts and messages to separate
 //		   windows typically won't need this functionality, so can
 //		   substitute genl_message_menu (windows.c) instead.
-char and_message_menu(CHAR_P let, int how, const char* mesg)
+char and_message_menu(char let, int how, const char* mesg)
 {
 	//debuglog("message_menu: %s", mesg);
 
@@ -1388,7 +1382,7 @@ void and_wait_synch()
 //cliparound(x, y)-- Make sure that the user is more-or-less centered on the
 //		   screen if the playing area is larger than the screen.
 //		-- This function is only defined if CLIPPING is defined.
-void and_cliparound(int x, int y, BOOLEAN_P force)
+void and_cliparound(int x, int y, boolean force)
 {
 	//debuglog("and_cliparound %dx%d (%dx%d)", x, y, u.ux, u.uy);
 	JNICallV(jCliparound, x, y, u.ux, u.uy);
@@ -1427,7 +1421,7 @@ void and_issue_gui_command(int cmd_id, int cmd_param, int cmd_param2, const char
 	return;
 }
 
-void and_print_glyph(winid wid, XCHAR_P x, XCHAR_P y, struct layer_info layers)
+void and_print_glyph(winid wid, xchar x, xchar y, struct layer_info layers)
 {
 	int glyph = layers.glyph;
 	int bkglyph = layers.bkglyph;
@@ -1602,7 +1596,7 @@ int and_doprev_message()
 //		   returned, preserving case (upper or lower.) This means that
 //		   if the calling function needs an exact match, it must handle
 //		   user input correctness itself.
-char and_yn_function_ex(int style, int attr, int color, int glyph, const char* title, const char *question, const char *choices, CHAR_P def, const char* resp_desc, const char* introline, uint64_t ynflags)
+char and_yn_function_ex(int style, int attr, int color, int glyph, const char* title, const char *question, const char *choices, char def, const char* resp_desc, const char* introline, uint64_t ynflags)
 {
 	char ch;
 	char message[BUFSZ];
@@ -1939,7 +1933,7 @@ void and_askname()
 	const jchar* pChars;
 	jstring jstr;
 
-	char** saves = get_saved_games();
+	char **saves = get_saved_games();
 
 	int nSaves = 0;
 	while(saves && saves[nSaves])
@@ -1992,7 +1986,7 @@ void and_askname()
 //		-- Get an extended command in a window-port specific way.
 //		   An index into extcmdlist[] is returned on a successful
 //		   selection, -1 otherwise.
-int do_ext_cmd_menu(BOOLEAN_P complete)
+int do_ext_cmd_menu(boolean complete)
 {
 //	debuglog("and_get_ext_cmd");
 
@@ -2060,9 +2054,9 @@ const char* complete_ext_cmd(const char* base)
 
 void get_ext_cmd_auto(const char *query, register char *bufp)
 {
-	register int n = 0, nl = 0;
+	int n = 0, nl = 0;
 	const char* complete = 0;
-	register int c;
+	int c;
 	const int maxc = COLNO >= BUFSZ ? BUFSZ-1 : COLNO;
 
 	pline("%s ", query);
@@ -2226,7 +2220,7 @@ int add_msghistory_idx(int idx)
 static char tmpattrs[BUFSIZ] = "";
 static char tmpcolors[BUFSIZ] = "";
 
-char* and_getmsghistory_ex(char** attrs_ptr, char** colors_ptr, BOOLEAN_P init)
+char* and_getmsghistory_ex(char **attrs_ptr, char **colors_ptr, boolean init)
 {
 	memset(tmpattrs, 0, sizeof(tmpattrs));
 	memset(tmpcolors, NO_COLOR, sizeof(tmpcolors));
@@ -2271,7 +2265,7 @@ char* and_getmsghistory_ex(char** attrs_ptr, char** colors_ptr, BOOLEAN_P init)
 //		should it assume that another message will follow this
 //		one, so it should keep all pointers/indexes intact at the
 //		end of each call.
-void and_putmsghistory_ex(const char *msg, const char* attrs, const char* colors, BOOLEAN_P restoring)
+void and_putmsghistory_ex(const char *msg, const char* attrs, const char* colors, boolean restoring)
 {
 	if(!msg) return;
 	if(restoring)
@@ -2347,4 +2341,3 @@ void and_get_dumplog_dir(char* buf)
 	destroy_jobject(jstr);
 }
 #endif
-

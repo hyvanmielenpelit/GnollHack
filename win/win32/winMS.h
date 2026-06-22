@@ -154,27 +154,27 @@ void mswin_suspend_nhwindows(const char *);
 void mswin_resume_nhwindows(void);
 winid mswin_create_nhwindow_ex(int type, int style, int glyph, struct extended_create_window_info info);
 void mswin_clear_nhwindow(winid wid);
-void mswin_display_nhwindow(winid wid, BOOLEAN_P block);
+void mswin_display_nhwindow(winid wid, boolean block);
 void mswin_destroy_nhwindow(winid wid);
 void mswin_curs(winid wid, int x, int y);
 void mswin_putstr(winid wid, int attr, const char *text);
 void mswin_putstr_ex(winid wid, const char *text, int attr, int color, int app);
 void mswin_putstr_ex2(winid wid, const char* text, const char* attrs, const char* colors, int attr, int color, int app);
-void mswin_display_file(const char *filename, BOOLEAN_P must_exist);
+void mswin_display_file(const char *filename, boolean must_exist);
 void mswin_start_menu_ex(winid wid, int style);
 void mswin_add_menu(winid wid, int glyph, const ANY_P *identifier,
-                    CHAR_P accelerator, CHAR_P group_accel, int attr, int color,
-                    const char *str, BOOLEAN_P presel);
+                    char accelerator, char group_accel, int attr, int color,
+                    const char *str, boolean presel);
 void mswin_add_extended_menu(winid wid, int glyph, const ANY_P* identifier,
-    CHAR_P accelerator, CHAR_P group_accel, int attr, int color,
-    const char* str, BOOLEAN_P presel, struct extended_menu_info info);
+    char accelerator, char group_accel, int attr, int color,
+    const char* str, boolean presel, struct extended_menu_info info);
 void mswin_end_menu_ex(winid wid, const char *prompt, const char* subtitle);
 int mswin_select_menu(winid wid, int how, MENU_ITEM_P **selected);
 void mswin_update_inventory(void);
 void mswin_mark_synch(void);
 void mswin_wait_synch(void);
-void mswin_cliparound(int x, int y, BOOLEAN_P force);
-void mswin_print_glyph(winid wid, XCHAR_P x, XCHAR_P y, struct layer_info layers);
+void mswin_cliparound(int x, int y, boolean force);
+void mswin_print_glyph(winid wid, xchar x, xchar y, struct layer_info layers);
 void mswin_issue_gui_command(int cmd_id, int cmd_param, int cmd_param2, const char* cmd_str);
 void mswin_raw_print(const char *str);
 void mswin_raw_print_bold(const char *str);
@@ -183,7 +183,7 @@ int mswin_nhgetch(void);
 int mswin_nh_poskey(int *x, int *y, int *mod);
 void mswin_nhbell(void);
 int mswin_doprev_message(void);
-char mswin_yn_function_ex(int style, int attr, int color, int glyph, const char* title, const char *question, const char *choices, CHAR_P def, const char* resp_desc, const char* introline, uint64_t ynflags);
+char mswin_yn_function_ex(int style, int attr, int color, int glyph, const char* title, const char *question, const char *choices, char def, const char* resp_desc, const char* introline, uint64_t ynflags);
 void mswin_getlin_ex(int style, int attr, int color, const char *question, char *input, const char* placeholder, const char* linesuffix, const char* introline);
 int mswin_get_ext_cmd(void);
 void mswin_number_pad(int state);
@@ -196,8 +196,8 @@ void mswin_start_screen(void);
 void mswin_end_screen(void);
 void mswin_outrip(winid wid, int how, time_t when);
 void mswin_preference_update(const char *pref);
-char *mswin_getmsghistory_ex(char** attrs_ptr, char** colors_ptr, BOOLEAN_P init);
-void mswin_putmsghistory_ex(const char *msg, const char* attrs, const char* colors, BOOLEAN_P restoring);
+char *mswin_getmsghistory_ex(char** attrs_ptr, char** colors_ptr, boolean init);
+void mswin_putmsghistory_ex(const char *msg, const char* attrs, const char* colors, boolean restoring);
 
 void mswin_status_init(int);
 void mswin_statuslines_init(void);
@@ -216,11 +216,11 @@ void mswin_set_effect_ambient_volume(struct effect_ambient_volume_info info);
 void mswin_play_ghsound_music(struct ghsound_music_info info);
 void mswin_play_ghsound_level_ambient(struct ghsound_level_ambient_info info);
 void mswin_play_ghsound_environment_ambient(struct ghsound_environment_ambient_info info);
-void mswin_adjust_ghsound_general_volumes(VOID_ARGS);
+void mswin_adjust_ghsound_general_volumes(void);
 void mswin_add_ambient_ghsound(struct soundsource_t* soundsource);
 void mswin_delete_ambient_ghsound(struct soundsource_t* soundsource);
 void mswin_set_ambient_ghsound_volume(struct soundsource_t* soundsource);
-void mswin_clear_context_menu(VOID_ARGS);
+void mswin_clear_context_menu(void);
 void mswin_add_context_menu(int cmd_def_char, int cmd_cur_char, int style, int glyph, const char* cmd_text, const char* target_text, int attr, int color);
 void mswin_update_status_button(int cmd, int btn, int val, uint64_t bflags);
 void mswin_toggle_animation_timer(int timertype, int timerid, int state, int x, int y, int layer, uint64_t tflags);
@@ -229,7 +229,7 @@ void mswin_display_screen_text(const char* text, const char* supertext, const ch
 void mswin_display_popup_text(const char* text, const char* title, int style, int attr, int color, int glyph, uint64_t tflags);
 void mswin_display_gui_effect(int style, int subtype, int x, int y, int x2, int y2, uint64_t tflags);
 void mswin_update_cursor(int style, int force_paint, int show_on_u);
-int mswin_ui_has_input(VOID_ARGS);
+int mswin_ui_has_input(void);
 void mswin_exit_hack(int status);
 
 /* helper function */
@@ -250,7 +250,7 @@ void mswin_get_window_placement(int type, LPRECT rt);
 void mswin_update_window_placement(int type, LPRECT rt);
 void mswin_apply_window_style(HWND hwnd);
 
-void mswin_init_platform(VOID_ARGS);
+void mswin_init_platform(void);
 void mswin_exit_platform(int status);
 //void convertUTF8toTCHAR(char* buf, size_t bufsize);
 

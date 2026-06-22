@@ -78,7 +78,7 @@ makemon.c	Monster creation location bug fixed. (walz@mimsy)
 
 hack.c		"Elbereth" effectiveness increased under "HARD" option to
 		be reasonable. (walz@mimsy)
-		Declaration of "register struct monst *m_at()" fixed. (many)
+		Declaration of "struct monst *m_at()" fixed. (many)
 		Typo fixed. (tom@uw-warp)
 		Fixed scroll of scare monster pickup problems (and giveaway)
 		(polder@cs.vu)

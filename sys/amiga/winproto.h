@@ -23,7 +23,7 @@ void amii_putstr_ex(winid window, const char *str, int attr, int color, int app)
 void amii_putstr_ex2(winid window, const char* str, const char* attrs, const char* colors, int attr, int color, int app);
 void outmore(struct amii_WinDesc *cw);
 void outsubstr(struct amii_WinDesc *cw, char *str, int len, int fudge);
-void amii_putsym(winid st, int i, int y, CHAR_P c);
+void amii_putsym(winid st, int i, int y, char c);
 void amii_addtopl(const char *s);
 void TextSpaces(struct RastPort *rp, int nr);
 void amii_remember_topl(void);
@@ -32,8 +32,8 @@ long FindLine(winid, int);
 int amii_doprev_message(void);
 void flushIDCMP(struct MsgPort *);
 int amii_msgborder(struct Window *);
-void amii_scrollmsg(register struct Window *w,
-                    register struct amii_WinDesc *cw);
+void amii_scrollmsg(struct Window *w,
+                    struct amii_WinDesc *cw);
 
 /* winkey.c */
 int amii_nh_poskey(int *x, int *y, int *mod);
@@ -43,12 +43,12 @@ void amii_getret(void);
 
 /* winmenu.c */
 void amii_start_menu_ex(winid window, int style);
-void FDECL(amii_add_menu, (winid, int, const anything *, CHAR_P, CHAR_P, int, int,
-                           const char *, BOOLEAN_P));
-void FDECL(amii_add_extended_menu, (winid, int, const anything*, CHAR_P, CHAR_P, int, int,
-    const char*, BOOLEAN_P, struct extended_menu_info));
-void FDECL(amii_end_menu_ex, (winid, const char *, const char*));
-int FDECL(amii_select_menu, (winid, int, menu_item **));
+void amii_add_menu(winid, int, const anything *, char, char, int, int,
+                           const char *, boolean);
+void amii_add_extended_menu(winid, int, const anything*, char, char, int, int,
+    const char*, boolean, struct extended_menu_info);
+void amii_end_menu_ex(winid, const char *, const char*);
+int amii_select_menu(winid, int, menu_item **);
 int DoMenuScroll(int win, int blocking, int how, menu_item **);
 void ReDisplayData(winid win);
 void DisplayData(winid win, int start);
@@ -117,7 +117,7 @@ void amii_update_inventory(void);
 void amii_mark_synch(void);
 void amii_wait_synch(void);
 void amii_setclipped(void);
-void amii_cliparound(int x, int y, BOOLEAN_P force);
+void amii_cliparound(int x, int y, boolean force);
 void amii_set_text_font(char *font, int size);
 BitMapHeader ReadImageFiles(char **, struct BitMap **, char **);
 BitMapHeader ReadTileImageFiles(void);
@@ -150,7 +150,7 @@ void Abort(long rc);
 #endif
 
 /* amirip.c */
-void FDECL(amii_outrip, (winid tmpwin, int how, time_t when));
+void amii_outrip(winid tmpwin, int how, time_t when);
 
 /* winchar.c */
 void SetMazeType(MazeType);

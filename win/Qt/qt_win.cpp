@@ -3315,7 +3315,7 @@ static char** rip_line=0;
 
     /* Put death type on stone */
     for (line=DEATH_LINE, dpx = buf; line<YEAR_LINE; line++) {
-	register int i,i0;
+	int i,i0;
 	char tmpchar;
 
 	if ( (i0=strlen(dpx)) > STONE_LINE_LEN) {
@@ -4735,7 +4735,7 @@ void NetHackQtBind::qt_clear_nhwindow(winid wid)
     window->Clear();
 }
 
-void NetHackQtBind::qt_display_nhwindow(winid wid, BOOLEAN_P block)
+void NetHackQtBind::qt_display_nhwindow(winid wid, boolean block)
 {
     NetHackQtWindow* window=id_to_window[wid];
     window->Display(block);
@@ -4774,7 +4774,7 @@ void NetHackQtBind::qt_putstr_ex2(winid wid, const char* text, const char* attrs
     window->PutStr(attrs ? attrs[0] : attr, text);
 }
 
-void NetHackQtBind::qt_display_file(const char *filename, BOOLEAN_P must_exist)
+void NetHackQtBind::qt_display_file(const char *filename, boolean must_exist)
 {
     NetHackQtTextWindow* window=new NetHackQtTextWindow(keybuffer);
     bool complain = FALSE;
@@ -4831,16 +4831,16 @@ void NetHackQtBind::qt_start_menu_ex(winid wid, int style)
 }
 
 void NetHackQtBind::qt_add_menu(winid wid, int glyph,
-    const ANY_P * identifier, CHAR_P ch, CHAR_P gch, int attr, int color,
-    const char *str, BOOLEAN_P presel)
+    const ANY_P * identifier, char ch, char gch, int attr, int color,
+    const char *str, boolean presel)
 {
     NetHackQtWindow* window=id_to_window[wid];
     window->AddMenu(glyph, identifier, ch, gch, attr, color, str, presel);
 }
 
 void NetHackQtBind::qt_add_extended_menu(winid wid, int glyph,
-    const ANY_P* identifier, CHAR_P ch, CHAR_P gch, int attr, int color,
-    const char* str, BOOLEAN_P presel, struct extended_menu_info info)
+    const ANY_P* identifier, char ch, char gch, int attr, int color,
+    const char* str, boolean presel, struct extended_menu_info info)
 {
     NetHackQtWindow* window = id_to_window[wid];
     window->AddMenu(glyph, identifier, ch, gch, attr, color, str, presel);
@@ -4876,7 +4876,7 @@ void NetHackQtBind::qt_wait_synch()
 {
 }
 
-void NetHackQtBind::qt_cliparound(int x, int y, BOOLEAN_P force)
+void NetHackQtBind::qt_cliparound(int x, int y, boolean force)
 {
     // XXXNH - winid should be a parameter!
     qt_cliparound_window(WIN_MAP,x,y);
@@ -4887,12 +4887,12 @@ void NetHackQtBind::qt_cliparound_window(winid wid, int x, int y)
     NetHackQtWindow* window=id_to_window[wid];
     window->ClipAround(x,y);
 }
-void NetHackQtBind::qt_print_glyph(winid wid,XCHAR_P x,XCHAR_P y, struct layer_info layers)
+void NetHackQtBind::qt_print_glyph(winid wid,xchar x,xchar y, struct layer_info layers)
 {
     NetHackQtWindow* window=id_to_window[wid];
     window->PrintGlyph(x,y,layers.glyph);
 }
-//void NetHackQtBind::qt_print_glyph_compose(winid wid,XCHAR_P x,XCHAR_P y,int glyph1, int glyph2)
+//void NetHackQtBind::qt_print_glyph_compose(winid wid,xchar x,xchar y,int glyph1, int glyph2)
 //{
     //NetHackQtWindow* window=id_to_window[wid];
     //window->PrintGlyphCompose(x,y,glyph1,glyph2);
@@ -4969,7 +4969,7 @@ int NetHackQtBind::qt_doprev_message()
     return 0;
 }
 
-char NetHackQtBind::qt_yn_function_ex(int style, int attr, int color, int glyph, const char* title, const char *question, const char *choices, CHAR_P def, const char* resp_desc, const char* introline, uint64_t ynflags)
+char NetHackQtBind::qt_yn_function_ex(int style, int attr, int color, int glyph, const char* title, const char *question, const char *choices, char def, const char* resp_desc, const char* introline, uint64_t ynflags)
 {
     if (qt_settings->ynInMessages() && WIN_MESSAGE!=WIN_ERR) {
 	// Similar to X11 windowport `slow' feature.

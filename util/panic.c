@@ -11,7 +11,7 @@
  */
 
 #if defined(GNOLLHACK_MAIN_PROGRAM) && (defined(__BEOS__) || defined(MICRO) || defined(OS2) || defined(ANDROID) || defined(GNH_MOBILE) || defined(WIN32))
-extern void FDECL(gnollhack_exit, (int));
+extern void gnollhack_exit(int);
 #else
 #ifndef gnollhack_exit
 #define gnollhack_exit exit
@@ -25,18 +25,18 @@ extern void FDECL(gnollhack_exit, (int));
 #define abort() exit()
 #endif
 #ifdef VMS
-extern void NDECL(vms_abort);
+extern void vms_abort(void);
 #endif
 
 /*VARARGS1*/
 boolean panicking;
-void VDECL(panic, (const char *, ...));
+void panic(const char *, ...);
 
 void panic
-VA_DECL(const char *, str)
+(const char *str, ...)
 {
-    VA_START(str);
-    VA_INIT(str, char *);
+    va_list the_args;
+    va_start(the_args, str);
     if (panicking++)
 #ifdef SYSV
         (void)
@@ -44,7 +44,7 @@ VA_DECL(const char *, str)
             abort(); /* avoid loops - this should never happen*/
 
     (void) fputs(" ERROR:  ", stderr);
-    Vfprintf(stderr, str, VA_ARGS);
+    Vfprintf(stderr, str, the_args);
     (void) fflush(stderr);
 #if defined(UNIX) || defined(VMS)
 #ifdef SYSV
@@ -52,8 +52,7 @@ VA_DECL(const char *, str)
 #endif
         abort(); /* generate core dump */
 #endif
-    VA_END();
-
+    va_end(the_args);
     gnollhack_exit(EXIT_FAILURE);
 }
 
@@ -64,8 +63,7 @@ VA_DECL(const char *, str)
  * systems, but they should either use yacc or get a real alloca routine.
  */
 long *
-alloca(cnt)
-unsigned cnt;
+alloca(unsigned cnt)
 {
     return cnt ? alloc((size_t)cnt) : (long *) 0;
 }

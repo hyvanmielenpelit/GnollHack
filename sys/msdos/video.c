@@ -75,7 +75,7 @@
  */
 
 void
-get_scr_size()
+get_scr_size(void)
 {
 #ifdef SCREEN_VGA
     if (iflags.usevga) {
@@ -118,13 +118,13 @@ typedef long clock_t;
 #endif
 
 #ifdef SCREEN_BIOS
-void FDECL(get_cursor, (int *, int *));
+void get_cursor(int *, int *);
 #endif
 
-void FDECL(adjust_cursor_flags, (struct WinDesc *));
-void FDECL(cmov, (int, int));
-void FDECL(nocmov, (int, int));
-STATIC_DCL void NDECL(init_ttycolor);
+void adjust_cursor_flags(struct WinDesc *);
+void cmov(int, int);
+void nocmov(int, int);
+static void init_ttycolor(void);
 
 int savevmode;               /* store the original video mode in here */
 int curcol, currow;          /* graphics mode current cursor locations */
@@ -141,7 +141,7 @@ char ttycolors[CLR_MAX]; /* also used/set in options.c */
 #endif                   /* TEXTCOLOR */
 
 void
-backsp()
+backsp(void)
 {
     if (!iflags.grmode) {
         txt_backsp();
@@ -157,7 +157,7 @@ backsp()
 }
 
 void
-clear_screen()
+clear_screen(void)
 {
     if (!iflags.grmode) {
         txt_clear_screen();
@@ -172,7 +172,7 @@ clear_screen()
     }
 }
 
-void cl_end() /* clear to end of line */
+void cl_end(void) /* clear to end of line */
 {
     int col, row;
 
@@ -192,7 +192,7 @@ void cl_end() /* clear to end of line */
     tty_curs(BASE_WINDOW, (int) ttyDisplay->curx + 1, (int) ttyDisplay->cury);
 }
 
-void cl_eos() /* clear to end of screen */
+void cl_eos(void) /* clear to end of screen */
 {
     int cy = (int) ttyDisplay->cury + 1;
 
@@ -211,8 +211,7 @@ void cl_eos() /* clear to end of screen */
 }
 
 void
-cmov(col, row)
-register int col, row;
+cmov(int col, int row)
 {
     ttyDisplay->cury = (uchar) row;
     ttyDisplay->curx = (uchar) col;
@@ -241,7 +240,7 @@ has_color(int color)
 }
 
 void
-home()
+home(void)
 {
     tty_curs(BASE_WINDOW, 1, 0);
     ttyDisplay->curx = ttyDisplay->cury = (uchar) 0;
@@ -259,8 +258,7 @@ home()
 }
 
 void
-nocmov(col, row)
-int col, row;
+nocmov(int col, int row)
 {
     if (!iflags.grmode) {
         txt_gotoxy(col, row);
@@ -276,13 +274,13 @@ int col, row;
 }
 
 void
-standoutbeg()
+standoutbeg(void)
 {
     g_attribute = iflags.grmode ? attrib_gr_intense : attrib_text_intense;
 }
 
 void
-standoutend()
+standoutend(void)
 {
     g_attribute = iflags.grmode ? attrib_gr_normal : attrib_text_normal;
 }
@@ -379,7 +377,7 @@ term_start_raw_bold(void)
 }
 
 void
-tty_delay_output()
+tty_delay_output(void)
 {
 #ifdef TIMED_DELAY
     if (flags.nap) {
@@ -414,7 +412,7 @@ tty_delay_output_intervals(int intervals)
 #endif
 }
 void
-tty_end_screen()
+tty_end_screen(void)
 {
     if (!iflags.grmode) {
         txt_clear_screen();
@@ -433,21 +431,19 @@ tty_end_screen()
 }
 
 void
-tty_nhbell()
+tty_nhbell(void)
 {
     txt_nhbell();
 }
 
 void
-tty_number_pad(state)
-int state;
+tty_number_pad(int state)
 {
     ++state; /* prevents compiler warning (unref. param) */
 }
 
 void
-tty_startup(wid, hgt)
-int *wid, *hgt;
+tty_startup(int *wid, int *hgt)
 {
     /* code to sense display adapter is required here - MJA */
 
@@ -491,7 +487,7 @@ int *wid, *hgt;
 }
 
 void
-tty_start_screen()
+tty_start_screen(void)
 {
 #ifdef PC9800
     fputs("\033[>1h", stdout);
@@ -501,7 +497,7 @@ tty_start_screen()
 }
 
 void
-gr_init()
+gr_init(void)
 {
 #ifdef SCREEN_VGA
     if (iflags.usevga) {
@@ -522,7 +518,7 @@ gr_init()
 }
 
 void
-gr_finish()
+gr_finish(void)
 {
     if (iflags.grmode) {
 #ifdef SCREEN_VGA
@@ -575,8 +571,7 @@ gr_finish()
  */
 
 void
-xputs(s)
-const char *s;
+xputs(const char *s)
 {
     int col, row;
 
@@ -596,8 +591,7 @@ const char *s;
     }
 }
 
-void xputc(ch) /* write out character (and attribute) */
-int ch;
+void xputc(int ch) /* write out character (and attribute) */
 {
     int i;
     char attribute;
@@ -639,8 +633,7 @@ unsigned special;
 
 #ifdef POSITIONBAR
 void
-video_update_positionbar(posbar)
-char *posbar;
+video_update_positionbar(char *posbar)
 {
     if (!iflags.grmode)
         return;
@@ -656,8 +649,7 @@ char *posbar;
 #endif
 
 void
-adjust_cursor_flags(cw)
-struct WinDesc *cw;
+adjust_cursor_flags(struct WinDesc *cw)
 {
 #ifdef SIMULATE_CURSOR
 #if 0
@@ -684,7 +676,7 @@ int cursor_flag;
 
 /* The check for iflags.grmode is made BEFORE calling these. */
 void
-DrawCursor()
+DrawCursor(void)
 {
 #ifdef SCREEN_VGA
     if (iflags.usevga)
@@ -697,7 +689,7 @@ DrawCursor()
 }
 
 void
-HideCursor()
+HideCursor(void)
 {
 #ifdef SCREEN_VGA
     if (iflags.usevga)
@@ -744,8 +736,8 @@ char *schoice[3] = { "dark", "normal", "light" };
 char *shade[3];
 #endif /* VIDEOSHADES */
 
-STATIC_OVL void
-init_ttycolor()
+static void
+init_ttycolor(void)
 {
 #ifdef VIDEOSHADES
     if (!shadeflag) {
@@ -783,7 +775,7 @@ init_ttycolor()
 #endif
 }
 
-static int FDECL(convert_uchars, (char *, uchar *, int));
+static int convert_uchars(char *, uchar *, int);
 #ifdef VIDEOSHADES
 int
 assign_videoshades(char *choiceptr)
@@ -891,11 +883,13 @@ assign_videocolors(char *colorvals)
     return 1;
 }
 
+/*
+ * Parameters:
+ *   bufp: current pointer
+ *   list: return list
+ */
 static int
-convert_uchars(bufp, list, size)
-char *bufp;  /* current pointer */
-uchar *list; /* return list */
-int size;
+convert_uchars(char *bufp, uchar *list, int size)
 {
     unsigned int num = 0;
     int count = 0;
@@ -948,8 +942,7 @@ int size;
  *    vga	 (use vga adapter code)
  */
 int
-assign_video(sopt)
-char *sopt;
+assign_video(char *sopt)
 {
     /*
      * debug
@@ -1014,8 +1007,7 @@ char *sopt;
 }
 
 void
-tileview(enable)
-boolean enable;
+tileview(boolean enable)
 {
 #ifdef SCREEN_VGA
     if (iflags.grmode && iflags.usevga)
@@ -1031,8 +1023,7 @@ boolean enable;
 #else  /* STUBVIDEO */
 
 void
-tileview(enable)
-boolean enable;
+tileview(boolean enable)
 {
 }
 #endif /* STUBVIDEO */

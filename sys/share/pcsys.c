@@ -31,11 +31,11 @@
 #endif
 
 #if defined(MICRO) || defined(OS2)
-void FDECL(gnollhack_exit, (int));
+void gnollhack_exit(int);
 #else
 #define gnollhack_exit exit
 #endif
-STATIC_DCL void NDECL(msexit);
+static void msexit(void);
 
 #ifdef MOVERLAY
 extern void __far __cdecl _movepause(void);
@@ -47,16 +47,16 @@ extern unsigned short __far __cdecl _movefpaused;
 #endif                       /* MOVERLAY */
 
 #ifdef MFLOPPY
-STATIC_DCL boolean NDECL(record_exists);
+static boolean record_exists(void);
 #ifndef TOS
-STATIC_DCL boolean NDECL(comspec_exists);
+static boolean comspec_exists(void);
 #endif
 #endif
 
 #if defined(MICRO)
 
 void
-flushout()
+flushout(void)
 {
     (void) fflush(stdout);
     return;
@@ -73,7 +73,7 @@ static const char *COMSPEC =
 
 #ifdef SHELL
 int
-dosh()
+dosh(void)
 {
     extern char orgdir[];
     char *comspec;
@@ -138,8 +138,7 @@ dosh()
 #ifdef MFLOPPY
 
 void
-eraseall(path, files)
-const char *path, *files;
+eraseall(const char *path, const char *files)
 {
     char buf[PATHLEN];
     char *foundfile;
@@ -158,8 +157,7 @@ const char *path, *files;
  * Rewritten for version 3.3 to be faster
  */
 void
-copybones(mode)
-int mode;
+copybones(int mode)
 {
     char from[PATHLEN], to[PATHLEN], last[13];
     char *frompath, *topath;
@@ -248,7 +246,7 @@ error_copying:
 }
 
 void
-playwoRAMdisk()
+playwoRAMdisk(void)
 {
     int c;
 
@@ -270,8 +268,7 @@ playwoRAMdisk()
 }
 
 int
-saveDiskPrompt(start)
-int start;
+saveDiskPrompt(int start)
 {
     char buf[BUFSIZ], *bp;
     char qbuf[QBUFSZ];
@@ -307,8 +304,8 @@ int start;
 }
 
 /* Return 1 if the record file was found */
-STATIC_OVL boolean
-record_exists()
+static boolean
+record_exists(void)
 {
     FILE *fp;
 
@@ -326,8 +323,8 @@ record_exists()
 #else
 #ifdef MFLOPPY
 /* Return 1 if the comspec was found */
-STATIC_OVL boolean
-comspec_exists()
+static boolean
+comspec_exists(void)
 {
     int fd;
     char *comspec;
@@ -346,7 +343,7 @@ comspec_exists()
 /* Prompt for game disk, then check for record file.
  */
 void
-gameDiskPrompt()
+gameDiskPrompt(void)
 {
     if (sysflags.asksavedisk) {
         if (record_exists() && comspec_exists())
@@ -374,8 +371,7 @@ gameDiskPrompt()
  * be room for the \
  */
 void
-append_slash(name)
-char *name;
+append_slash(char *name)
 {
     char *ptr;
 
@@ -390,8 +386,7 @@ char *name;
 }
 
 void
-getreturn(str)
-const char *str;
+getreturn(const char *str)
 {
 #ifdef TOS
     msmsg("Hit <Return> %s.", str);
@@ -404,17 +399,17 @@ const char *str;
 }
 
 void msmsg
-VA_DECL(const char *, fmt)
+(const char *fmt, ...)
 {
-    VA_START(fmt);
-    VA_INIT(fmt, const char *);
+    va_list the_args;
+    va_start(the_args, fmt);
 #if defined(MSDOS) && defined(NO_TERMS)
     if (iflags.grmode)
         gr_finish();
 #endif
-    Vprintf(fmt, VA_ARGS);
+    Vprintf(fmt, the_args);
     flushout();
-    VA_END();
+    va_end(the_args);
     return;
 }
 
@@ -432,8 +427,7 @@ VA_DECL(const char *, fmt)
 #endif
 
 FILE *
-fopenp(name, mode)
-const char *name, *mode;
+fopenp(const char *name, const char *mode)
 {
     char buf[BUFSIZ], *bp, *pp, lastch = 0;
     FILE *fp;
@@ -481,8 +475,7 @@ const char *name, *mode;
 
 #if defined(MICRO) || defined(OS2)
 void
-gnollhack_exit(code)
-int code;
+gnollhack_exit(int code)
 {
     if (exit_hack)
         exit_hack(code);
@@ -497,8 +490,8 @@ int code;
 extern boolean run_from_desktop; /* set in pcmain.c */
 #endif
 
-STATIC_OVL void
-msexit()
+static void
+msexit(void)
 {
 #ifdef CHDIR
     extern char orgdir[];

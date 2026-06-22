@@ -147,8 +147,7 @@ init_nhwindows(int* argcp, char** argv)
                 ** windows?  Or at least all but WIN_INFO?      -dean
 */
 void
-curses_init_nhwindows(int *argcp UNUSED,
-                      char **argv UNUSED)
+curses_init_nhwindows(int *argcp UNUSED, char **argv UNUSED)
 {
 #ifdef PDCURSES
     char window_title[BUFSZ];
@@ -226,7 +225,7 @@ curses_init_nhwindows(int *argcp UNUSED,
    the process. You need to fill in pl_character[0].
 */
 void
-curses_player_selection()
+curses_player_selection(void)
 {
     curses_choose_character();
 }
@@ -234,7 +233,7 @@ curses_player_selection()
 
 /* Ask the user for a player name. */
 void
-curses_askname()
+curses_askname(void)
 {
     curses_line_input_dialog(GETLINE_GENERAL, ATR_NONE, NO_COLOR, "Who are you?", plname, PL_NSIZ);
 }
@@ -244,7 +243,7 @@ curses_askname()
    A noop for the tty and X window-ports.
 */
 void
-curses_get_nh_event()
+curses_get_nh_event(void)
 {
     boolean do_reset = FALSE;
 
@@ -303,7 +302,7 @@ curses_suspend_nhwindows(const char *str UNUSED)
 
 /* Restore the windows after being suspended. */
 void
-curses_resume_nhwindows()
+curses_resume_nhwindows(void)
 {
     curses_refresh_nethack_windows();
 }
@@ -348,7 +347,7 @@ curses_clear_nhwindow(winid wid)
                    --more--, if necessary, in the tty window-port.
 */
 void
-curses_display_nhwindow(winid wid, BOOLEAN_P block)
+curses_display_nhwindow(winid wid, boolean block)
 {
     menu_item *selected = NULL;
 
@@ -485,7 +484,7 @@ curses_putstr_ex2(winid wid, const char* text, const char* attrs, const char* co
                    iff complain is TRUE.
 */
 void
-curses_display_file(const char *filename, BOOLEAN_P must_exist)
+curses_display_file(const char *filename, boolean must_exist)
 {
     curses_view_file(filename, must_exist);
 }
@@ -536,9 +535,7 @@ add_menu(winid wid, int glyph, const anything identifier,
                    menu is displayed, set preselected to TRUE.
 */
 void
-curses_add_menu(winid wid, int glyph, const ANY_P * identifier,
-                CHAR_P accelerator, CHAR_P group_accel, int attr, int color,
-                const char *str, BOOLEAN_P presel)
+curses_add_menu(winid wid, int glyph, const ANY_P * identifier, char accelerator, char group_accel, int attr, int color, const char *str, boolean presel)
 {
     attr &= ~(ATR_LINE_ATTR_MASK);
 
@@ -560,9 +557,7 @@ curses_add_menu(winid wid, int glyph, const ANY_P * identifier,
 }
 
 void
-curses_add_menu_ex(winid wid, int glyph, const ANY_P* identifier,
-    CHAR_P accelerator, CHAR_P group_accel, int attr, int color,
-    const char* str, const char* attrs, const char* colors, BOOLEAN_P presel)
+curses_add_menu_ex(winid wid, int glyph, const ANY_P* identifier, char accelerator, char group_accel, int attr, int color, const char* str, const char* attrs, const char* colors, boolean presel)
 {
     struct extended_menu_info info = { 0 };
     info.attrs = attrs;
@@ -572,9 +567,7 @@ curses_add_menu_ex(winid wid, int glyph, const ANY_P* identifier,
 }
 
 void
-curses_add_extended_menu(winid wid, int glyph, const ANY_P* identifier,
-    CHAR_P accelerator, CHAR_P group_accel, int attr, int color,
-    const char* str, BOOLEAN_P presel, struct extended_menu_info info)
+curses_add_extended_menu(winid wid, int glyph, const ANY_P* identifier, char accelerator, char group_accel, int attr, int color, const char* str, boolean presel, struct extended_menu_info info)
 {
     attr &= ~(ATR_LINE_ATTR_MASK);
 
@@ -678,7 +671,7 @@ mark_synch()    -- Don't go beyond this point in I/O on any channel until
                    for the moment
 */
 void
-curses_mark_synch()
+curses_mark_synch(void)
 {
 }
 
@@ -689,7 +682,7 @@ wait_synch()    -- Wait until all pending output is complete (*flush*() for
                    display is OK when return from wait_synch().
 */
 void
-curses_wait_synch()
+curses_wait_synch(void)
 {
 }
 
@@ -699,7 +692,7 @@ cliparound(x, y)-- Make sure that the user is more-or-less centered on the
                 -- This function is only defined if CLIPPING is defined.
 */
 void
-curses_cliparound(int x, int y, BOOLEAN_P force UNUSED)
+curses_cliparound(int x, int y, boolean force UNUSED)
 {
     int sx, sy, ex, ey;
     boolean redraw = curses_map_borders(&sx, &sy, &ex, &ey, x, y);
@@ -729,7 +722,7 @@ print_glyph(window, x, y, glyph, bkglyph)
                    It's not used here.
 */
 void
-curses_print_glyph(winid wid, XCHAR_P x, XCHAR_P y, struct layer_info layers)
+curses_print_glyph(winid wid, xchar x, xchar y, struct layer_info layers)
 {
     nhsym ch;
     int cch;
@@ -816,7 +809,7 @@ int nhgetch()   -- Returns a single character input from the user.
                    Returned character _must_ be non-zero.
 */
 int
-curses_nhgetch()
+curses_nhgetch(void)
 {
     int ch;
 
@@ -862,7 +855,7 @@ nhbell()        -- Beep at user.  [This will exist at least until sounds are
                    redone, since sounds aren't attributable to windows anyway.]
 */
 void
-curses_nhbell()
+curses_nhbell(void)
 {
     beep();
 }
@@ -873,7 +866,7 @@ doprev_message()
                 -- On the tty-port this scrolls WIN_MESSAGE back one line.
 */
 int
-curses_doprev_message()
+curses_doprev_message(void)
 {
     curses_prev_mesg();
     return 0;
@@ -899,7 +892,7 @@ char yn_function(const char *ques, const char *choices, char default)
                    ports might use a popup.
 */
 char
-curses_yn_function_ex(int style UNUSED, int attr, int color, int glyph UNUSED, const char* title UNUSED, const char *question, const char *choices, CHAR_P def, const char* resp_desc UNUSED, const char* introline UNUSED, uint64_t ynflags UNUSED)
+curses_yn_function_ex(int style UNUSED, int attr, int color, int glyph UNUSED, const char* title UNUSED, const char *question, const char *choices, char def, const char* resp_desc UNUSED, const char* introline UNUSED, uint64_t ynflags UNUSED)
 {
     return (char) curses_character_input_dialog(attr, color, question, choices, def);
 }
@@ -934,7 +927,7 @@ int get_ext_cmd(void)
                selection, -1 otherwise.
 */
 int
-curses_get_ext_cmd()
+curses_get_ext_cmd(void)
 {
     return curses_ext_cmd();
 }
@@ -956,7 +949,7 @@ delay_output()  -- Causes a visible delay of 50ms in the output.
                by a nap(50ms), but allows asynchronous operation.
 */
 void
-curses_delay_output()
+curses_delay_output(void)
 {
     /* refreshing the whole display is a waste of time,
      * but that's why we're here */
@@ -990,7 +983,7 @@ start_screen()  -- Only used on Unix tty ports, but must be declared for
                just declare an empty function.
 */
 void
-curses_start_screen()
+curses_start_screen(void)
 {
 }
 
@@ -999,7 +992,7 @@ end_screen()    -- Only used on Unix tty ports, but must be declared for
                completeness.  The complement of start_screen().
 */
 void
-curses_end_screen()
+curses_end_screen(void)
 {
 }
 
@@ -1009,8 +1002,7 @@ outrip(winid, int)
                genl_outrip for the value and check the #if in rip.c.
 */
 void
-curses_outrip(winid wid UNUSED,
-              int how UNUSED)
+curses_outrip(winid wid UNUSED, int how UNUSED)
 {
      return;
 }

@@ -103,10 +103,7 @@ int wh; /* was local in outrip, but needed for SCALE macro */
 int cmap_white, cmap_black;
 
 void
-amii_outrip(tmpwin, how, when)
-winid tmpwin;
-int how;
-time_t when;
+amii_outrip(winid tmpwin, int how, time_t when)
 {
     int just_return = 0;
     int done, rtxth;
@@ -202,7 +199,7 @@ time_t when;
 
     /* Put death type on stone */
     for (line = DEATH_LINE, dpx = buf; line < YEAR_LINE; line++) {
-        register int i, i0;
+        int i, i0;
         char tmpchar;
 
         if ((i0 = strlen(dpx)) > STONE_LINE_LEN) {
@@ -292,8 +289,7 @@ cleanup:
 }
 
 static void
-tomb_text(p)
-char *p;
+tomb_text(char *p)
 {
     char buf[STONE_LINE_LEN * 2];
     int l;

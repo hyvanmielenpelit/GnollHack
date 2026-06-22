@@ -9,7 +9,7 @@
 #include "tile.h"
 
 #ifndef MONITOR_HEAP
-extern long *FDECL(alloc, (unsigned int));
+extern long *alloc(unsigned int);
 #endif
 
 FILE *ppm_file;
@@ -22,18 +22,18 @@ struct ppmscreen {
 static int tiles_across, tiles_down, curr_tiles_across;
 static pixel **image;
 
-static void NDECL(write_header);
-static void NDECL(WriteTileStrip);
+static void write_header(void);
+static void WriteTileStrip(void);
 
 static void
-write_header()
+write_header(void)
 {
     (void) fprintf(ppm_file, "P6 %03d %03d 255\n", PpmScreen.Width,
                    PpmScreen.Height);
 }
 
 static void
-WriteTileStrip()
+WriteTileStrip(void)
 {
     int i, j;
 
@@ -47,9 +47,7 @@ WriteTileStrip()
 }
 
 boolean
-fopen_ppm_file(filename, type)
-const char *filename;
-const char *type;
+fopen_ppm_file(const char *filename, const char *type)
 {
     int i;
 
@@ -86,8 +84,7 @@ const char *type;
 }
 
 boolean
-write_ppm_tile(pixels)
-pixel (*pixels)[TILE_X];
+write_ppm_tile(pixel (*pixels)[TILE_X])
 {
     int i, j;
 
@@ -106,7 +103,7 @@ pixel (*pixels)[TILE_X];
 }
 
 int
-fclose_ppm_file()
+fclose_ppm_file(void)
 {
     int i, j;
 
@@ -141,9 +138,7 @@ fclose_ppm_file()
 }
 
 int
-main(argc, argv)
-int argc;
-char *argv[];
+main(int argc, char *argv[])
 {
     pixel pixels[TILE_Y][TILE_X];
 

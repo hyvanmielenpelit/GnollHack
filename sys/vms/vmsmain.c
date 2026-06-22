@@ -11,9 +11,9 @@
 
 #include <signal.h>
 
-static void NDECL(whoami);
-static void FDECL(process_command_line_arguments, (int, char **));
-static void NDECL(byebye);
+static void whoami(void);
+static void process_command_line_arguments(int, char **);
+static void byebye(void);
 #ifndef SAVE_ON_FATAL_ERROR
 #ifndef __DECC
 #define vms_handler_type int
@@ -22,19 +22,17 @@ static void NDECL(byebye);
 #endif
 extern void FDECL(VAXC$ESTABLISH,
                          (vms_handler_type (*) (genericptr_t, genericptr_t)));
-static vms_handler_type FDECL(vms_handler, (genericptr_t, genericptr_t));
+static vms_handler_type vms_handler(genericptr_t, genericptr_t);
 #include <ssdef.h> /* system service status codes */
 #endif
 
-static void NDECL(wd_message);
+static void wd_message(void);
 static boolean wiz_error_flag = FALSE;
 
 int
-main(argc, argv)
-int argc;
-char *argv[];
+main(int argc, char *argv[])
 {
-    register int fd;
+    int fd;
 #ifdef CHDIR
     register char *dir;
 #endif
@@ -233,9 +231,7 @@ attempt_restore:
 }
 
 static void
-process_command_line_arguments(argc, argv)
-int argc;
-char *argv[];
+process_command_line_arguments(int argc, char *argv[])
 {
     int i;
 
@@ -349,9 +345,7 @@ char *argv[];
 
 #ifdef CHDIR
 void
-chdirx(dir, wr)
-const char *dir;
-boolean wr;
+chdirx(const char *dir, boolean wr)
 {
 #ifndef HACKDIR
     static const char *defdir = ".";
@@ -400,7 +394,7 @@ whoami()
 static void
 byebye()
 {
-    void FDECL((*hup), (int) );
+    void (*hup)(int);
 #ifdef SHELL
     extern unsigned long dosh_pid, mail_pid;
     extern unsigned long FDECL(sys$delprc,
@@ -427,12 +421,15 @@ byebye()
 }
 
 #ifndef SAVE_ON_FATAL_ERROR
+/*
+ * Parameters:
+ *   sigargs, mechargs: [0] is argc, [1..argc] are the real args
+ */
 /* Condition handler to prevent byebye's hangup simulation
    from saving the game after a fatal error has occurred.  */
 /*ARGSUSED*/
 static vms_handler_type         /* should be `unsigned long', but the -*/
-vms_handler(sigargs, mechargs)  /*+ prototype in <signal.h> is screwed */
-genericptr_t sigargs, mechargs; /* [0] is argc, [1..argc] are the real args */
+vms_handler(genericptr_t sigargs, genericptr_t mechargs)  /*+ prototype in <signal.h> is screwed */
 {
     unsigned long condition = ((unsigned long *) sigargs)[1];
 
@@ -450,8 +447,7 @@ genericptr_t sigargs, mechargs; /* [0] is argc, [1..argc] are the real args */
 #endif
 
 void
-sethanguphandler(handler)
-void FDECL((*handler), (int));
+sethanguphandler(void (*handler)(int))
 {
     (void) signal(SIGHUP, (SIG_RET_TYPE) handler);
 }

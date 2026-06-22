@@ -335,7 +335,7 @@ ghack_map_putstr(GtkWidget *win, int attr, const char *text, gpointer data)
  *     ghack_map_print_glyph( )
  *
  * ARGUMENTS:
- *     XCHAR_P x, y  -- The coordinates where which to print the glyph
+ *     xchar x, y  -- The coordinates where which to print the glyph
  *     GdkImlibImage*   glyph -- The glyph image to print
  *
  * RETURNS:
@@ -346,8 +346,7 @@ ghack_map_putstr(GtkWidget *win, int attr, const char *text, gpointer data)
 */
 
 void
-ghack_map_print_glyph(GtkObject *win, guint x, guint y, GdkImlibImage *im,
-                      gpointer data)
+ghack_map_print_glyph(GtkObject *win, guint x, guint y, GdkImlibImage *im, gpointer data)
 {
     GnomeCanvasGroup *group;
     int i = y * COLNO + x;

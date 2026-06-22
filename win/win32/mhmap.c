@@ -119,7 +119,7 @@ static void nhglyph2charcolor(short glyph, uchar *ch, int *color);
 extern boolean win32_cursorblink;       /* from sys\winnt\winnt.c */
 
 HWND
-mswin_init_map_window()
+mswin_init_map_window(void)
 {
     static int run_once = 0;
     HWND hWnd;
@@ -554,7 +554,7 @@ mswin_map_mode(HWND hWnd, int mode)
 
 /* register window class for map window */
 void
-register_map_window_class()
+register_map_window_class(void)
 {
     WNDCLASS wcex;
     ZeroMemory(&wcex, sizeof(wcex));
@@ -6176,4 +6176,3 @@ nhcolor_to_RGB(int c)
         return GetNHApp()->regMapColors[c];
     return RGB(0x00, 0x00, 0x00);
 }
-

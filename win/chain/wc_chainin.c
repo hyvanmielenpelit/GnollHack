@@ -22,12 +22,7 @@ struct chainin_data {
 static struct chainin_data *cibase;
 
 void *
-chainin_procs_chain(cmd, n, me, nextprocs, nextdata)
-int cmd;
-int n;
-void *me;
-void *nextprocs;
-void *nextdata;
+chainin_procs_chain(int cmd, int n, void *me, void *nextprocs, void *nextdata)
 {
     struct chainin_data *tdp = 0;
 
@@ -53,8 +48,7 @@ void *nextdata;
 
 /* XXX if we don't need this, take it out of the table */
 void
-chainin_procs_init(dir)
-int dir UNUSED;
+chainin_procs_init(int dir UNUSED)
 {
 }
 
@@ -63,9 +57,7 @@ int dir UNUSED;
  ***/
 
 void
-chainin_init_nhwindows(argcp, argv)
-int *argcp;
-char **argv;
+chainin_init_nhwindows(int *argcp, char **argv)
 {
     (*cibase->nprocs->win_init_nhwindows)(cibase->ndata, argcp, argv);
 }
@@ -89,15 +81,13 @@ chainin_get_nh_event()
 }
 
 void
-chainin_exit_nhwindows(str)
-const char *str;
+chainin_exit_nhwindows(const char *str)
 {
     (*cibase->nprocs->win_exit_nhwindows)(cibase->ndata, str);
 }
 
 void
-chainin_suspend_nhwindows(str)
-const char *str;
+chainin_suspend_nhwindows(const char *str)
 {
     (*cibase->nprocs->win_suspend_nhwindows)(cibase->ndata, str);
 }
@@ -109,9 +99,7 @@ chainin_resume_nhwindows()
 }
 
 winid
-chainin_create_nhwindow_ex(type, style, glyph, info)
-int type, style, glyph;
-struct extended_create_window_info info;
+chainin_create_nhwindow_ex(int type, int style, int glyph, struct extended_create_window_info info)
 {
     winid rv;
 
@@ -121,32 +109,25 @@ struct extended_create_window_info info;
 }
 
 void
-chainin_clear_nhwindow(window)
-winid window;
+chainin_clear_nhwindow(winid window)
 {
     (*cibase->nprocs->win_clear_nhwindow)(cibase->ndata, window);
 }
 
 void
-chainin_display_nhwindow(window, blocking)
-winid window;
-BOOLEAN_P blocking;
+chainin_display_nhwindow(winid window, boolean blocking)
 {
     (*cibase->nprocs->win_display_nhwindow)(cibase->ndata, window, blocking);
 }
 
 void
-chainin_destroy_nhwindow(window)
-winid window;
+chainin_destroy_nhwindow(winid window)
 {
     (*cibase->nprocs->win_destroy_nhwindow)(cibase->ndata, window);
 }
 
 void
-chainin_curs(window, x, y)
-winid window;
-int x;
-int y;
+chainin_curs(winid window, int x, int y)
 {
     (*cibase->nprocs->win_curs)(cibase->ndata, window, x, y);
 }
@@ -161,85 +142,74 @@ const char *str;
 }
 
 void
-chainin_putstr_ex2(window, str, attrs, colors, attr, color, app)
-winid window;
-int attr, color, app;
-const char* str, *attrs, *colors;
+chainin_putstr_ex2(winid window, const char *str, const char *attrs, const char *colors, int attr, int color, int app)
 {
     (*cibase->nprocs->win_putstr_ex2)(cibase->ndata, window, str, attrs, colors, attr, color, app);
 }
 
 void
-chainin_putmixed_ex(window, str, attr, color, app)
-winid window;
-int attr, app, color;
-const char *str;
+chainin_putmixed_ex(winid window, const char *str, int attr, int color, int app)
 {
     (*cibase->nprocs->win_putmixed_ex)(cibase->ndata, window, str, attr, color), app;
 }
 
 void
-chainin_display_file(fname, complain)
-const char *fname;
-boolean complain;
+chainin_display_file(const char *fname, boolean complain)
 {
     (*cibase->nprocs->win_display_file)(cibase->ndata, fname, complain);
 }
 
 void
-chainin_start_menu_ex(window, style)
-winid window;
-int style;
+chainin_start_menu_ex(winid window, int style)
 {
     (*cibase->nprocs->win_start_menu_ex)(cibase->ndata, window, style);
 }
 
+/*
+ * Parameters:
+ *   window: window to use, must be of type NHW_MENU
+ *   glyph: glyph to display with item (unused)
+ *   identifier: what to return if selected
+ *   ch: keyboard accelerator (0 = pick our own)
+ *   gch: group accelerator (0 = no group)
+ *   attr: attribute for string (like tty_putstr())
+ *   color: color for string (like tty_putstr_ex())
+ *   str: menu string
+ *   preselected: item is marked as selected
+ */
 void
-chainin_add_menu(window, glyph, identifier, ch, gch, attr, color, str, preselected)
-winid window;               /* window to use, must be of type NHW_MENU */
-int glyph;                  /* glyph to display with item (unused) */
-const anything *identifier; /* what to return if selected */
-char ch;                    /* keyboard accelerator (0 = pick our own) */
-char gch;                   /* group accelerator (0 = no group) */
-int attr;                   /* attribute for string (like tty_putstr()) */
-int color;                  /* color for string (like tty_putstr_ex()) */
-const char *str;            /* menu string */
-boolean preselected;        /* item is marked as selected */
+chainin_add_menu(winid window, int glyph, const anything *identifier, char ch, char gch, int attr, int color, const char *str, boolean preselected)
 {
     (*cibase->nprocs->win_add_menu)(cibase->ndata, window, glyph, identifier,
                                     ch, gch, attr, color, str, preselected);
 }
 
+/*
+ * Parameters:
+ *   window: window to use, must be of type NHW_MENU
+ *   glyph: glyph to display with item (unused)
+ *   identifier: what to return if selected
+ *   ch: keyboard accelerator (0 = pick our own)
+ *   gch: group accelerator (0 = no group)
+ *   attr: attribute for string (like tty_putstr())
+ *   color: color for string (like tty_putstr_ex())
+ *   str: menu string
+ *   preselected: item is marked as selected
+ */
 void
-chainin_add_extended_menu(window, glyph, identifier, ch, gch, attr, color, str, preselected, info)
-winid window;               /* window to use, must be of type NHW_MENU */
-int glyph;                  /* glyph to display with item (unused) */
-const anything* identifier; /* what to return if selected */
-char ch;                    /* keyboard accelerator (0 = pick our own) */
-char gch;                   /* group accelerator (0 = no group) */
-int attr;                   /* attribute for string (like tty_putstr()) */
-int color;                  /* color for string (like tty_putstr_ex()) */
-const char* str;            /* menu string */
-boolean preselected;        /* item is marked as selected */
-struct extended_menu_info info;
+chainin_add_extended_menu(winid window, int glyph, const anything *identifier, char ch, char gch, int attr, int color, const char *str, boolean preselected, struct extended_menu_info info)
 {
     (*cibase->nprocs->win_add_extended_menu)(cibase->ndata, window, glyph, identifier,
         ch, gch, attr, color, str, preselected, info);
 }
 void
-chainin_end_menu_ex(window, prompt, subtitle)
-winid window;
-const char *prompt;
-const char* subtitle;
+chainin_end_menu_ex(winid window, const char *prompt, const char *subtitle)
 {
     (*cibase->nprocs->win_end_menu_ex)(cibase->ndata, window, prompt, subtitle);
 }
 
 int
-chainin_select_menu(window, how, menu_list)
-winid window;
-int how;
-menu_item **menu_list;
+chainin_select_menu(winid window, int how, menu_item **menu_list)
 {
     int rv;
 
@@ -250,10 +220,7 @@ menu_item **menu_list;
 }
 
 char
-chainin_message_menu(let, how, mesg)
-char let;
-int how;
-const char *mesg;
+chainin_message_menu(char let, int how, const char *mesg)
 {
     char rv;
 
@@ -282,10 +249,7 @@ chainin_wait_synch()
 
 #ifdef CLIPPING
 void
-chainin_cliparound(x, y, force)
-int x;
-int y;
-boolean force;
+chainin_cliparound(int x, int y, boolean force)
 {
     (*cibase->nprocs->win_cliparound)(cibase->ndata, x, y, force);
 }
@@ -293,8 +257,7 @@ boolean force;
 
 #ifdef POSITIONBAR
 void
-chainin_update_positionbar(posbar)
-char *posbar;
+chainin_update_positionbar(char *posbar)
 {
     (*cibase->nprocs->win_update_positionbar)(cibase->ndata, posbar);
 }
@@ -302,32 +265,25 @@ char *posbar;
 
 /* XXX can we decode the glyph in a meaningful way? */
 void
-chainin_issue_gui_command(cmd_id, cmd_param, cmd_param2, cmd_str)
-int cmd_id, cmd_param, cmd_param2;
-const char* cmd_str;
+chainin_issue_gui_command(int cmd_id, int cmd_param, int cmd_param2, const char *cmd_str)
 {
     (*cibase->nprocs->win_issue_gui_command)(cibase->ndata, cmd_id, cmd_param, cmd_param2, cmd_str);
 }
 
 void
-chainin_print_glyph(window, x, y, layers)
-winid window;
-xchar x, y;
-struct layer_info layers;
+chainin_print_glyph(winid window, xchar x, xchar y, struct layer_info layers)
 {
     (*cibase->nprocs->win_print_glyph)(cibase->ndata, window, x, y, layers);
 }
 
 void
-chainin_raw_print(str)
-const char *str;
+chainin_raw_print(const char *str)
 {
     (*cibase->nprocs->win_raw_print)(cibase->ndata, str);
 }
 
 void
-chainin_raw_print_bold(str)
-const char *str;
+chainin_raw_print_bold(const char *str)
 {
     (*cibase->nprocs->win_raw_print_bold)(cibase->ndata, str);
 }
@@ -343,10 +299,7 @@ chainin_nhgetch()
 }
 
 int
-chainin_nh_poskey(x, y, mod)
-int *x;
-int *y;
-int *mod;
+chainin_nh_poskey(int *x, int *y, int *mod)
 {
     int rv;
 
@@ -372,11 +325,7 @@ chainin_doprev_message()
 }
 
 char
-chainin_yn_function_ex(style, attr, color, glyph, title, query, resp, def, resp_desc, introline, ynflags)
-int style, attr, color, glyph;
-const char *title, * query, * resp, *resp_desc, *introline;
-char def;
-uint64_t ynflags;
+chainin_yn_function_ex(int style, int attr, int color, int glyph, const char *title, const char *query, const char *resp, char def, const char *resp_desc, const char *introline, uint64_t ynflags)
 {
     int rv;
 
@@ -386,10 +335,7 @@ uint64_t ynflags;
 }
 
 void
-chainin_getlin(attr, color, query, bufp)
-int attr, color;
-const char *query;
-char *bufp;
+chainin_getlin(int attr, int color, const char *query, char *bufp)
 {
     (*cibase->nprocs->win_getlin)(cibase->ndata, query, bufp);
 }
@@ -405,8 +351,7 @@ chainin_get_ext_cmd()
 }
 
 void
-chainin_number_pad(state)
-int state;
+chainin_number_pad(int state)
 {
     (*cibase->nprocs->win_number_pad)(cibase->ndata, state);
 }
@@ -418,41 +363,33 @@ chainin_delay_output()
 }
 
 void
-chainin_delay_output_milliseconds(interval)
-int interval;
+chainin_delay_output_milliseconds(int interval)
 {
     (*cibase->nprocs->win_delay_output_milliseconds)(cibase->ndata, interval);
 }
 
 void
-chainin_delay_output_intervals(intervals)
-int intervals;
+chainin_delay_output_intervals(int intervals)
 {
     (*cibase->nprocs->win_delay_output_intervals)(cibase->ndata, intervals);
 }
 
 #ifdef CHANGE_COLOR
 void
-chainin_change_color(color, value, reverse)
-int color;
-int64_t value;
-int reverse;
+chainin_change_color(int color, int64_t value, int reverse)
 {
     (*cibase->nprocs->win_change_color)(cibase->ndata, color, value, reverse);
 }
 
 #ifdef MAC
 void
-chainin_change_background(bw)
-int bw;
+chainin_change_background(int bw)
 {
     (*cibase->nprocs->win_change_background)(cibase->ndata, bw);
 }
 
 short
-chainin_set_font_name(window, font)
-winid window;
-char *font;
+chainin_set_font_name(winid window, char *font)
 {
     short rv;
 
@@ -488,25 +425,19 @@ chainin_end_screen()
 }
 
 void
-chainin_outrip(tmpwin, how, when)
-winid tmpwin;
-int how;
-time_t when;
+chainin_outrip(winid tmpwin, int how, time_t when)
 {
     (*cibase->nprocs->win_outrip)(cibase->ndata, tmpwin, how, when);
 }
 
 void
-chainin_preference_update(pref)
-const char *pref;
+chainin_preference_update(const char *pref)
 {
     (*cibase->nprocs->win_preference_update)(cibase->ndata, pref);
 }
 
 char*
-chainin_getmsghistory_ex(init, attrs_ptr, colors_ptr)
-char **attrs_ptr, **colors_ptr;
-boolean init;
+chainin_getmsghistory_ex(boolean init, char **attrs_ptr, char **colors_ptr)
 {
     char *rv;
 
@@ -516,17 +447,13 @@ boolean init;
 }
 
 void
-chainin_putmsghistory_ex(msg, attrs, colors, is_restoring)
-const char *msg;
-const char* attr, *color;
-boolean is_restoring;
+chainin_putmsghistory_ex(const char *msg, const char *attrs, const char *colors, boolean is_restoring)
 {
     (*cibase->nprocs->win_putmsghistory_ex)(cibase->ndata, msg, attrs, colors, is_restoring);
 }
 
 void
-chainin_status_init(reassessment)
-int reassessment;
+chainin_status_init(int reassessment)
 {
     (*cibase->nprocs->win_status_init)(cibase->ndata, reassessment);
 }
@@ -538,21 +465,14 @@ chainin_status_finish()
 }
 
 void
-chainin_status_enablefield(fieldidx, nm, fmt, enable)
-int fieldidx;
-const char *nm;
-const char *fmt;
-boolean enable;
+chainin_status_enablefield(int fieldidx, const char *nm, const char *fmt, boolean enable)
 {
     (*cibase->nprocs->win_status_enablefield)(cibase->ndata, fieldidx, nm,
                                               fmt, enable);
 }
 
 void
-chainin_status_update(idx, ptr, chg, percent, color, colormasks)
-int idx, chg, percent, color;
-genericptr_t ptr;
-uint64_t *colormasks;
+chainin_status_update(int idx, genericptr_t ptr, int chg, int percent, int color, uint64_t *colormasks)
 {
     (*cibase->nprocs->win_status_update)(cibase->ndata, idx, ptr, chg,
                                          percent, color, colormasks);

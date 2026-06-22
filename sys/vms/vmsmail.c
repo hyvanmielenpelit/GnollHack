@@ -8,10 +8,10 @@
 #include "mail.h"
 
 /* lint supression due to lack of extern.h */
-unsigned long NDECL(init_broadcast_trapping);
-unsigned long NDECL(enable_broadcast_trapping);
-unsigned long NDECL(disable_broadcast_trapping);
-struct mail_info *NDECL(parse_next_broadcast);
+unsigned long init_broadcast_trapping(void);
+unsigned long enable_broadcast_trapping(void);
+unsigned long disable_broadcast_trapping(void);
+struct mail_info *parse_next_broadcast(void);
 
 #ifdef MAIL
 #include "wintype.h"
@@ -29,17 +29,17 @@ struct mail_info *NDECL(parse_next_broadcast);
 /* #include <string.h> */
 #define vms_ok(sts) ((sts) & 1)
 
-static struct mail_info *FDECL(parse_brdcst, (char *));
-static void FDECL(filter_brdcst, (char *));
-static void NDECL(flush_broadcasts);
-static void FDECL(broadcast_ast, (int));
-extern char *FDECL(eos, (char *));
-extern char *FDECL(strstri, (const char *, const char *));
-extern int FDECL(strncmpi, (const char *, const char *, int));
+static struct mail_info *parse_brdcst(char *);
+static void filter_brdcst(char *);
+static void flush_broadcasts(void);
+static void broadcast_ast(int);
+extern char *eos(char *);
+extern char *strstri(const char *, const char *);
+extern int strncmpi(const char *, const char *, int);
 
-extern size_t FDECL(strspn, (const char *, const char *));
+extern size_t strspn(const char *, const char *);
 #ifndef __DECC
-extern int VDECL(sscanf, (const char *, const char *, ...));
+extern int sscanf(const char *, const char *, ...);
 #endif
 extern unsigned long smg$create_pasteboard(), smg$get_broadcast_message(),
     smg$set_broadcast_trapping(), smg$disable_broadcast_trapping();
@@ -106,11 +106,14 @@ static char nam_buf[63],      /* maximum onamelth, size of ONAME(object) */
             cmd_buf[99],      /* arbitrary */
             txt_buf[255 + 1]; /* same size as used for message buf[] */
 
+/*
+ * Parameters:
+ *   buf: input: filtered broadcast text
+ */
 /* try to decipher and categorize broadcast message text
 */
 static struct mail_info *
-parse_brdcst(buf) /* called by parse_next_broadcast() */
-char *buf;        /* input: filtered broadcast text */
+parse_brdcst(char *buf) /* called by parse_next_broadcast() */
 {
     int typ;
     char *txt;
@@ -294,10 +297,13 @@ char *buf;        /* input: filtered broadcast text */
     return &msg;
 }
 
+/*
+ * Parameters:
+ *   buf: in: original text; out: filtered text
+ */
 /* filter out non-printable characters and redundant noise
 */
-static void filter_brdcst(buf) /* called by parse_next_broadcast() */
-register char *buf;            /* in: original text; out: filtered text */
+static void filter_brdcst(char *buf) /* called by parse_next_broadcast() */
 {
     register char c, *p, *buf_p;
 
@@ -378,8 +384,7 @@ static void flush_broadcasts() /* called from disable_broadcast_trapping() */
  */
 /*ARGSUSED*/
 static void
-broadcast_ast(dummy) /* called asynchronously by terminal driver */
-int dummy UNUSED;
+broadcast_ast(int dummy UNUSED) /* called asynchronously by terminal driver */
 {
     broadcasts++;
 }
@@ -477,8 +482,7 @@ parse_next_broadcast()
 volatile int broadcasts = 0;
 
 void
-newmail(foo)
-struct mail_info *foo;
+newmail(struct mail_info *foo)
 {
 #define STRING(s) ((s) ? (s) : "<null>")
     printf("\n\
@@ -528,16 +532,14 @@ main()
 }
 
 void
-panic(s)
-char *s;
+panic(char *s)
 {
     raw_print(s);
     exit(EXIT_FAILURE);
 }
 
 void
-raw_print(s)
-char *s;
+raw_print(char *s)
 {
     puts(s);
     fflush(stdout);

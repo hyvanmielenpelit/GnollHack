@@ -9,7 +9,7 @@
 #include "callback.h"
 #include "tradstdc.h"
 
-DLLEXPORT int FDECL(GnollHackStart, (char*));
+DLLEXPORT int GnollHackStart(char*);
 
 #define GHRUNFLAGS_NONE                     0x00000000UL
 #define GHRUNFLAGS_SET_WINCAPS              0x00000001UL

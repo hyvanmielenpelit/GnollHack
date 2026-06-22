@@ -156,8 +156,7 @@ struct termstruct inittyb, curttyb;
 
 #ifdef POSIX_TYPES
 static int
-speednum(speed)
-speed_t speed;
+speednum(speed_t speed)
 {
     switch (speed) {
     case B0:
@@ -199,7 +198,7 @@ speed_t speed;
 #endif
 
 static void
-setctty()
+setctty(void)
 {
     if (STTY(&curttyb) < 0 || STTY2(&curttyb2) < 0)
         perror("NetHack (setctty)");
@@ -211,7 +210,7 @@ setctty()
  * Called by startup() in termcap.c and after returning from ! or ^Z
  */
 void
-gettty()
+gettty(void)
 {
     if (GTTY(&inittyb) < 0 || GTTY2(&inittyb2) < 0)
         perror("NetHack (gettty)");
@@ -233,8 +232,7 @@ gettty()
 
 /* reset terminal to original state */
 void
-settty(s)
-const char *s;
+settty(const char *s)
 {
     end_screen();
     if (s)
@@ -248,7 +246,7 @@ const char *s;
 }
 
 void
-setftty()
+setftty(void)
 {
     unsigned ef, cf;
     int change = 0;
@@ -315,7 +313,7 @@ setftty()
     start_screen();
 }
 
-void intron() /* enable kbd interupts if enabled when game started */
+void intron(void) /* enable kbd interupts if enabled when game started */
 {
 #ifdef TTY_GRAPHICS
     /* Ugly hack to keep from changing tty modes for non-tty games -dlc */
@@ -327,7 +325,7 @@ void intron() /* enable kbd interupts if enabled when game started */
 #endif
 }
 
-void introff() /* disable kbd interrupts if required*/
+void introff(void) /* disable kbd interrupts if required*/
 {
 #ifdef TTY_GRAPHICS
     /* Ugly hack to keep from changing tty modes for non-tty games -dlc */
@@ -350,13 +348,13 @@ int sco_flag_console = 0;
 int sco_map_valid = -1;
 unsigned char sco_chanmap_buf[BSIZE];
 
-void NDECL(sco_mapon);
-void NDECL(sco_mapoff);
-void NDECL(check_sco_console);
-void NDECL(init_sco_cons);
+void sco_mapon(void);
+void sco_mapoff(void);
+void check_sco_console(void);
+void init_sco_cons(void);
 
 void
-sco_mapon()
+sco_mapon(void)
 {
 #ifdef TTY_GRAPHICS
     if (WINDOWPORT("tty") && sco_flag_console) {
@@ -369,7 +367,7 @@ sco_mapon()
 }
 
 void
-sco_mapoff()
+sco_mapoff(void)
 {
 #ifdef TTY_GRAPHICS
     if (WINDOWPORT("tty") && sco_flag_console) {
@@ -382,7 +380,7 @@ sco_mapoff()
 }
 
 void
-check_sco_console()
+check_sco_console(void)
 {
     if (isatty(0) && ioctl(0, CONS_GET, 0) != -1) {
         sco_flag_console = 1;
@@ -390,7 +388,7 @@ check_sco_console()
 }
 
 void
-init_sco_cons()
+init_sco_cons(void)
 {
 #ifdef TTY_GRAPHICS
     if (WINDOWPORT("tty") && sco_flag_console) {
@@ -414,13 +412,13 @@ init_sco_cons()
 
 int linux_flag_console = 0;
 
-void NDECL(linux_mapon);
-void NDECL(linux_mapoff);
-void NDECL(check_linux_console);
-void NDECL(init_linux_cons);
+void linux_mapon(void);
+void linux_mapoff(void);
+void check_linux_console(void);
+void init_linux_cons(void);
 
 void
-linux_mapon()
+linux_mapon(void)
 {
 #ifdef TTY_GRAPHICS
     if (WINDOWPORT("tty") && linux_flag_console) {
@@ -430,7 +428,7 @@ linux_mapon()
 }
 
 void
-linux_mapoff()
+linux_mapoff(void)
 {
 #ifdef TTY_GRAPHICS
     if (WINDOWPORT("tty") && linux_flag_console) {
@@ -440,7 +438,7 @@ linux_mapoff()
 }
 
 void
-check_linux_console()
+check_linux_console(void)
 {
     struct vt_mode vtm;
 
@@ -450,7 +448,7 @@ check_linux_console()
 }
 
 void
-init_linux_cons()
+init_linux_cons(void)
 {
 #ifdef TTY_GRAPHICS
     if (WINDOWPORT("tty") && linux_flag_console) {
@@ -469,15 +467,15 @@ init_linux_cons()
 /* fatal error */
 /*VARARGS1*/
 void error
-VA_DECL(const char *, s)
+(const char *s, ...)
 {
-    VA_START(s);
-    VA_INIT(s, const char *);
+    va_list the_args;
+    va_start(the_args, s);
     if (settty_needed)
         settty((char*)0);
-    Vprintf(s, VA_ARGS);
+    Vprintf(s, the_args);
     (void)putchar('\n');
-    VA_END();
+    va_end(the_args);
     exit(EXIT_FAILURE);
 }
 #endif /* !__begui__ */

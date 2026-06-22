@@ -10,7 +10,7 @@
 #include <ctype.h>
 
 /* part of the output on gain or loss of attribute */
-STATIC_VAR const char
+static const char
     *const plusattr[] = { "strong", "smart", "wise",
                           "agile",  "tough", "charismatic" },
     *const minusattr[] = { "weak",    "stupid",
@@ -21,7 +21,7 @@ const char
     *const attrname[] = { "strength", "intelligence", "wisdom",
                           "dexterity", "constitution", "charisma" };
 
-STATIC_VAR const struct innate 
+static const struct innate 
   arc_abil[] = { { 1, STEALTH, "", "" }, /* &(HStealth) */
                  { 1, FAST, "", "" },
                  { 7, CORPSE_PROPERTY_APPRAISAL, "sensitive to corpses", "" },
@@ -122,20 +122,23 @@ STATIC_VAR const struct innate
   hum_abil[] = { { 0, 0, 0, 0 } };
 
 
-STATIC_DCL void NDECL(exerper);
-STATIC_DCL void FDECL(postadjabil, (int));
+static void exerper(void);
+static void postadjabil(int);
 
 #if 0
-STATIC_DCL const struct innate *FDECL(check_innate_abil, (int64_t *, int64_t));
-STATIC_DCL int FDECL(innately, (int64_t *));
+static const struct innate *check_innate_abil(int64_t *, int64_t);
+static int innately(int64_t *);
 #endif
 
+/*
+ * Parameters:
+ *   msgflg: positive => no message, zero => message, and
+ *           negative => conditional (msg if change made)
+ */
 /* adjust an attribute; return TRUE if change is made, FALSE otherwise, +2 to the previous if a change would have reduced the attribute below its minimum (possibly implying character death in some cases) */
 uchar
-adjattrib(ndx, incr, msgflg)
-int ndx, incr;
-int msgflg; /* positive => no message, zero => message, and */
-{           /* negative => conditional (msg if change made) */
+adjattrib(int ndx, int incr, int msgflg)
+{
     int old_acurr, old_abase, old_amin, old_amax, decr;
     boolean abonflg;
     const char *attrstr;
@@ -249,10 +252,7 @@ int msgflg; /* positive => no message, zero => message, and */
 
 /* adjust monster's attribute; return TRUE if change is made, FALSE otherwise, +2 to previous if lower limit was exceeded */
 uchar
-m_adjattrib(mon, ndx, incr, verbose)
-struct monst* mon;
-int ndx, incr;
-boolean verbose;
+m_adjattrib(struct monst *mon, int ndx, int incr, boolean verbose)
 {           
     int old_acurr, /*old_abase, old_amin, old_amax,*/ decr;
     boolean limitexceeded = FALSE;
@@ -329,10 +329,7 @@ boolean verbose;
 
 
 void
-gainstr(otmp, incr, givemsg)
-struct obj *otmp;
-int incr;
-boolean givemsg;
+gainstr(struct obj *otmp, int incr, boolean givemsg)
 {
     int num = incr;
 
@@ -357,8 +354,7 @@ boolean givemsg;
 
 /* may kill you; cause may be poison or monster like 'a' */
 void
-losestr(num)
-register int num;
+losestr(int num)
 {
     int ustr = ABASE(A_STR) - num;
 
@@ -380,8 +376,8 @@ register int num;
 }
 
 
-STATIC_VAR const struct poison_effect_message {
-    void VDECL((*delivery_func), (const char *, ...));
+static const struct poison_effect_message {
+    void (*delivery_func)(const char *, ...);
     const char *effect_msg;
 } poiseff[] = {
     { You_feel, "weaker" },             /* A_STR */
@@ -392,13 +388,16 @@ STATIC_VAR const struct poison_effect_message {
     { You, "break out in hives" }       /* A_CHA */
 };
 
+/*
+ * Parameters:
+ *   typ: which attribute
+ *   exclaim: emphasis
+ */
 /* feedback for attribute loss due to poisoning */
 void
-poisontell(typ, exclaim)
-int typ;         /* which attribute */
-boolean exclaim; /* emphasis */
+poisontell(int typ, boolean exclaim)
 {
-    void VDECL((*func), (const char *, ...)) = poiseff[typ].delivery_func;
+    void (*func)(const char *, ...) = poiseff[typ].delivery_func;
     const char *msg_txt = poiseff[typ].effect_msg;
 
     /*
@@ -416,15 +415,17 @@ boolean exclaim; /* emphasis */
     (*func)("%s%c", msg_txt, exclaim ? '!' : '.');
 }
 
+/*
+ * Parameters:
+ *   reason: controls what messages we display
+ *   pkiller: for score+log file if fatal
+ *   typ, fatal: if fatal is 0, limit damage to adjattrib
+ *   thrown_weapon: thrown weapons are less deadly
+ *   poison_strength: d6 per level damage
+ */
 /* called when an attack or trap has poisoned hero (used to be in mon.c) */
 void
-poisoned(reason, typ, pkiller, fatal, thrown_weapon, poison_strength, mattacker)
-const char *reason,    /* controls what messages we display */
-           *pkiller;   /* for score+log file if fatal */
-int typ, fatal;        /* if fatal is 0, limit damage to adjattrib */
-boolean thrown_weapon; /* thrown weapons are less deadly */
-int poison_strength;   /* d6 per level damage*/
-struct monst* mattacker;
+poisoned(const char *reason, int typ, const char *pkiller, int fatal, boolean thrown_weapon, int poison_strength, struct monst *mattacker)
 {
     int i, loss, kprefix = KILLED_BY_AN;
     double damage = 0;
@@ -532,14 +533,14 @@ struct monst* mattacker;
 }
 
 
+/*
+ * Parameters:
+ *   reason: controls what messages we display
+ *   pkiller: for score+log file if fatal
+ */
 /* called when an attack with elemental enchantment has hit the hero (used to be in mon.c) */
 void
-extra_enchantment_damage(reason, elemental_enchantment, pkiller, lifesavedalready, mattacker)
-const char* reason,    /* controls what messages we display */
-* pkiller;   /* for score+log file if fatal */
-uchar elemental_enchantment;
-boolean lifesavedalready;
-struct monst* mattacker;
+extra_enchantment_damage(const char *reason, uchar elemental_enchantment, const char *pkiller, boolean lifesavedalready, struct monst *mattacker)
 {
     int kprefix = KILLED_BY_AN;
     double damage = 0;
@@ -655,9 +656,7 @@ struct monst* mattacker;
 
 
 void
-change_luck(n, verbose)
-int n;
-boolean verbose;
+change_luck(int n, boolean verbose)
 {
     if (!n)
         return;
@@ -709,13 +708,16 @@ boolean verbose;
 
 }
 
+/*
+ * Parameters:
+ *   uncursed_confers_extra_luck: So I can't think up of a good name.  So sue me. --KAA
+ */
 /* OBSOLETE -- JG */
 int
-stone_luck(uncursed_confers_extra_luck)
-boolean uncursed_confers_extra_luck; /* So I can't think up of a good name.  So sue me. --KAA */
+stone_luck(boolean uncursed_confers_extra_luck)
 {
-    register struct obj *otmp;
-    register int64_t bonchance = 0;
+    struct obj *otmp;
+    int64_t bonchance = 0;
 
     for (otmp = invent; otmp; otmp = otmp->nobj)
     {
@@ -738,8 +740,7 @@ boolean uncursed_confers_extra_luck; /* So I can't think up of a good name.  So 
 }
 
 boolean
-object_uses_spellbook_wand_flags_and_properties(uitem)
-struct obj* uitem;
+object_uses_spellbook_wand_flags_and_properties(struct obj *uitem)
 {
     if (!uitem)
         return FALSE;
@@ -747,7 +748,7 @@ struct obj* uitem;
 }
 
 void
-update_extrinsics(VOID_ARGS)
+update_extrinsics(void)
 {
     struct obj* uitem;
     int idx;
@@ -954,8 +955,7 @@ update_extrinsics(VOID_ARGS)
 }
 
 boolean
-inappropriate_character_type(uitem)
-struct obj* uitem;
+inappropriate_character_type(struct obj *uitem)
 {
     int otyp = uitem->otyp;
     if (objects[otyp].oc_power_permissions != 0)
@@ -1039,9 +1039,7 @@ struct obj* uitem;
 
 
 boolean
-inappropriate_monster_character_type(monster, uitem)
-struct monst* monster;
-struct obj* uitem;
+inappropriate_monster_character_type(struct monst *monster, struct obj *uitem)
 {
     if (!uitem)
         return TRUE;
@@ -1137,9 +1135,7 @@ struct obj* uitem;
 
 
 boolean
-inappropriate_exceptionality(monster, uitem)
-struct monst* monster;
-struct obj* uitem;
+inappropriate_exceptionality(struct monst *monster, struct obj *uitem)
 {
     if (!uitem || !monster)
         return TRUE;
@@ -1222,7 +1218,7 @@ struct obj* uitem;
 /* there has just been an inventory change affecting a luck-granting item */
 /* OBSOLETE --JG */
 void
-set_moreluck(VOID_ARGS)
+set_moreluck(void)
 {
     int luckbon = stone_luck(TRUE);
 
@@ -1235,7 +1231,7 @@ set_moreluck(VOID_ARGS)
 }
 
 void
-restore_attrib(VOID_ARGS)
+restore_attrib(void)
 {
     int i, equilibrium;;
 
@@ -1263,9 +1259,7 @@ restore_attrib(VOID_ARGS)
 #define AVAL 50 /* tune value for exercise gains */
 
 void
-exercise(i, inc_or_dec)
-int i UNUSED;
-boolean inc_or_dec UNUSED;
+exercise(int i UNUSED, boolean inc_or_dec UNUSED)
 {
     /* exercise system has been deactivated -- JG */
 #if 0
@@ -1299,8 +1293,8 @@ boolean inc_or_dec UNUSED;
 #endif
 }
 
-STATIC_OVL void
-exerper(VOID_ARGS)
+static void
+exerper(void)
 {
     if (!(moves % 10)) {
         /* Hunger Checks */
@@ -1370,7 +1364,7 @@ exerper(VOID_ARGS)
 
 /* exercise/abuse text (must be in attribute order, not botl order);
    phrased as "You must have been [][0]." or "You haven't been [][1]." */
-STATIC_VAR NEARDATA const char *const exertext[A_MAX][2] = {
+static NEARDATA const char *const exertext[A_MAX][2] = {
     { "exercising diligently", "exercising properly" },           /* Str */
     { 0, 0 },                                                     /* Int */
     { "very observant", "paying attention" },                     /* Wis */
@@ -1380,7 +1374,7 @@ STATIC_VAR NEARDATA const char *const exertext[A_MAX][2] = {
 };
 
 void
-exerchk(VOID_ARGS)
+exerchk(void)
 {
     int i, ax, mod_val, lolim, hilim;
 
@@ -1479,10 +1473,9 @@ exerchk(VOID_ARGS)
 }
 
 void
-init_attr(np)
-register int np;
+init_attr(int np)
 {
-    register int i, x, tryct;
+    int i, x, tryct;
 
     for (i = 0; i < A_MAX; i++) 
     {
@@ -1535,9 +1528,9 @@ register int np;
 }
 
 void
-redist_attr(VOID_ARGS)
+redist_attr(void)
 {
-    register int i, tmp;
+    int i, tmp;
 
     for (i = 0; i < A_MAX; i++) {
         if (i == A_INT || i == A_WIS)
@@ -1560,10 +1553,9 @@ redist_attr(VOID_ARGS)
     (void) encumber_msg();
 }
 
-STATIC_OVL
+static
 void
-postadjabil(propid)
-int propid;
+postadjabil(int propid)
 {
     if (!propid)
         return;
@@ -1575,8 +1567,7 @@ int propid;
 }
 
 const struct innate *
-role_abil(r)
-int r;
+role_abil(int r)
 {
     /*
     const struct {
@@ -1656,8 +1647,7 @@ int r;
 }
 
 const struct innate*
-race_abil(r)
-int r;
+race_abil(int r)
 {
     const struct innate* rabil = (struct innate*)0;
     switch (r) {
@@ -1686,10 +1676,8 @@ int r;
 
 #if 0
 
-STATIC_OVL const struct innate *
-check_innate_abil(ability, frommask)
-int64_t *ability;
-int64_t frommask;
+static const struct innate *
+check_innate_abil(int64_t *ability, int64_t frommask)
 {
     const struct innate *abil = 0;
 
@@ -1738,9 +1726,8 @@ int64_t frommask;
 
 #if 0
 /* check whether particular ability has been obtained via innate attribute */
-STATIC_OVL int
-innately(ability)
-int64_t *ability;
+static int
+innately(int64_t *ability)
 {
     const struct innate *iptr;
 
@@ -1757,8 +1744,7 @@ int64_t *ability;
 #endif
 
 int
-is_innate(propidx)
-int propidx;
+is_innate(int propidx)
 {
     if (u.uprops[propidx].intrinsic & FROM_RACE)
         return A_FROM_RACE;
@@ -1777,9 +1763,12 @@ int propidx;
     return A_FROM_NONE;
 }
 
+/*
+ * Parameters:
+ *   propidx: OBSOLETE: special cases can have negative values
+ */
 char *
-from_what(propidx)
-int propidx; /* OBSOLETE: special cases can have negative values */
+from_what(int propidx)
 {
     static char buf[BUFSZ];
 
@@ -1789,7 +1778,7 @@ int propidx; /* OBSOLETE: special cases can have negative values */
      */
     //if (wizard) // Always true
     {
-        STATIC_VAR NEARDATA const char because_of[] = " because of %s";
+        static NEARDATA const char because_of[] = " because of %s";
 
         if (propidx >= 0) 
         {
@@ -1903,10 +1892,9 @@ int propidx; /* OBSOLETE: special cases can have negative values */
 }
 
 void
-adjabil(oldlevel, newlevel)
-int oldlevel, newlevel;
+adjabil(int oldlevel, int newlevel)
 {
-    register const struct innate *abil, *rabil;
+    const struct innate *abil, *rabil;
     int64_t prevabil, mask = FROM_ROLE;
 
     abil = role_abil(Role_switch);
@@ -1962,7 +1950,7 @@ int oldlevel, newlevel;
 }
 
 int
-newhp(VOID_ARGS)
+newhp(void)
 {
     int hp; // , conplus;
 
@@ -2005,16 +1993,13 @@ newhp(VOID_ARGS)
 }
 
 int
-hpmaxadjustment(usemh)
-boolean usemh;
+hpmaxadjustment(boolean usemh)
 {
     return m_hpmaxadjustment(&youmonst, usemh);
 }
 
 int
-m_hpmaxadjustment(mon, usemh)
-struct monst* mon;
-boolean usemh;
+m_hpmaxadjustment(struct monst *mon, boolean usemh)
 {
     boolean is_you = (mon == &youmonst);
     int basehp = is_you ? u.ubasehpmax : mon->mbasehpmax;
@@ -2063,8 +2048,7 @@ boolean usemh;
 }
 
 void
-update_mon_maxhp(mon)
-struct monst* mon;
+update_mon_maxhp(struct monst *mon)
 {
     if (!mon)
         return;
@@ -2097,7 +2081,7 @@ struct monst* mon;
 }
 
 void
-updatemaxhp(VOID_ARGS)
+updatemaxhp(void)
 {
     u.uhpmax = u.ubasehpmax + hpmaxadjustment(FALSE);
 
@@ -2121,14 +2105,13 @@ updatemaxhp(VOID_ARGS)
 }
 
 void
-updateabon(VOID_ARGS)
+updateabon(void)
 {
     update_mon_abon(&youmonst);
 }
 
 void
-update_mon_abon(mon)
-struct monst* mon;
+update_mon_abon(struct monst *mon)
 {
     if (!mon)
         return;
@@ -2478,8 +2461,7 @@ struct monst* mon;
 
 }
 
-boolean is_obj_worn(uitem)
-struct obj* uitem;
+boolean is_obj_worn(struct obj *uitem)
 {
     return (
         (uitem == uwep && is_wielded_item(uitem))
@@ -2507,10 +2489,9 @@ struct obj* uitem;
 
 
 schar
-acurr(x)
-int x;
+acurr(int x)
 {
-    register int tmp = (u.abonus.a[x] + u.atemp.a[x] + u.acurr.a[x]);
+    int tmp = (u.abonus.a[x] + u.atemp.a[x] + u.acurr.a[x]);
     
     if (u.afixmin.a[x] > 0 && u.afixmax.a[x] > 0 && u.afixmin.a[x] > u.afixmax.a[x])
     {
@@ -2543,14 +2524,12 @@ int x;
 }
 
 schar
-m_acurr(mon, x)
-struct monst* mon;
-int x;
+m_acurr(struct monst *mon, int x)
 {
     if (mon == &youmonst)
         return acurr(x);
 
-    register int tmp = (mon->abonus.a[x] + mon->atemp.a[x] + mon->acurr.a[x]);
+    int tmp = (mon->abonus.a[x] + mon->atemp.a[x] + mon->acurr.a[x]);
 
     if (mon->afixmin.a[x] > 0 && mon->afixmax.a[x] > 0 && mon->afixmin.a[x] > mon->afixmax.a[x])
     {
@@ -2586,21 +2565,19 @@ int x;
 /* condense clumsy ACURR(A_STR) value into value that fits into game formulas
  */
 schar
-acurrstr(VOID_ARGS)
+acurrstr(void)
 {
     return acurrstr_base(ACURR(A_STR));
 }
 
 schar
-m_acurrstr(mon)
-struct monst* mon;
+m_acurrstr(struct monst *mon)
 {
     return acurrstr_base(m_acurr(mon, A_STR));
 }
 
 schar
-acurrstr_base(str)
-int str;
+acurrstr_base(int str)
 {
     if (str <= 18)
         return (schar)str;
@@ -2614,8 +2591,7 @@ int str;
    to distinguish between observable +0 result and no-visible-effect
    due to an attribute not being able to exceed maximum or minimum */
 boolean
-extremeattr(attrindx) /* does attrindx's value match its max or min? */
-int attrindx;
+extremeattr(int attrindx) /* does attrindx's value match its max or min? */
 {
     /* Fixed_abil and racial MINATTR/MAXATTR aren't relevant here */
     int lolimit = 3, hilimit = (attrindx == A_STR ? STR19(25) : 25), curval = ACURR(attrindx);
@@ -2655,8 +2631,7 @@ int attrindx;
 /* avoid possible problems with alignment overflow, and provide a centralized
    location for any future alignment limits */
 void
-adjalign(n)
-int n;
+adjalign(int n)
 {
     int newalign = u.ualign.record + n;
 
@@ -2670,11 +2645,13 @@ int n;
     }
 }
 
+/*
+ * Parameters:
+ *   reason: 0==conversion, 1==helm-of-OA on, 2==helm-of-OA off
+ */
 /* change hero's alignment type, possibly losing use of artifacts */
 void
-uchangealign(newalign, reason)
-int newalign;
-int reason; /* 0==conversion, 1==helm-of-OA on, 2==helm-of-OA off */
+uchangealign(int newalign, int reason)
 {
     aligntyp oldalign = u.ualign.type;
 
