@@ -10007,7 +10007,7 @@ maybe_disintegrate_mon(struct monst *mon, int type, const char *fltxt)
  * Parameters:
  *   type: hero vs other
  */
-void //STATIC_OVL 
+void
 disintegrate_mon(struct monst *mon, int type, const char *fltxt)
 {
     if (!mon)

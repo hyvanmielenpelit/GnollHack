@@ -59,7 +59,7 @@ static char in_or_out_menu(const char *, struct obj *, boolean,
                                        boolean, boolean, boolean, int);
 static boolean able_to_loot(int, int, boolean);
 static boolean reverse_loot(void);
-//STATIC_DCL boolean mon_beside(int, int);
+//static boolean mon_beside(int, int);
 static int do_loot_cont(struct obj **, int, int, int);
 static void tipcontainer(struct obj *);
 static void loot_decoration(int, int, int, boolean*);
@@ -3894,7 +3894,7 @@ mbag_item_gone(int held, struct obj *item)
 void
 observe_quantum_cat(struct obj *box, boolean makecat, boolean givemsg)
 {
-    STATIC_VAR NEARDATA const char sc[] = "Schroedinger's Cat";
+    static NEARDATA const char sc[] = "Schroedinger's Cat";
     struct obj *deadcat;
     struct monst *livecat = 0;
     xchar ox, oy;

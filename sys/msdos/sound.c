@@ -26,8 +26,7 @@
 #define printf pline
 
 int
-assign_soundcard(sopt)
-char *sopt;
+assign_soundcard(char *sopt)
 {
     iflags.hassound = 0;
 #ifdef PCMUSIC

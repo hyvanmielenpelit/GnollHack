@@ -14,13 +14,16 @@
                                  /* subject to change before release */
 
 /*
+ * Parameters:
+ *   minovl: minimum size of overlay heap
+ */
+/*
  * memavail() Returns the amount of RAM available (in paragraphs which are 16
  *  bytes) - the amount to be reserved for heap allocations.
  *
  */
 unsigned
-memavail(minovl)
-unsigned minovl; /* minimum size of overlay heap */
+memavail(unsigned minovl)
 {
     unsigned available;
 
@@ -118,8 +121,7 @@ startup()
 }
 
 void
-show_borlandc_stats(win)
-winid win;
+show_borlandc_stats(winid win)
 {
     char buf[BUFSZ];
 

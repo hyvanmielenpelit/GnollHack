@@ -3801,7 +3801,7 @@ badman(const char *basestr, boolean to_plural)
 static boolean
 wishymatch(const char *u_str, const char *o_str, boolean retry_inverted)
 {
-    STATIC_VAR NEARDATA const char detect_SP[] = "detect ",
+    static NEARDATA const char detect_SP[] = "detect ",
                                SP_detection[] = " detection";
     char *p, buf[OBUFSZ] = "";
 

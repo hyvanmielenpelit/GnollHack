@@ -1775,7 +1775,7 @@ from_what(int propidx)
      */
     //if (wizard) // Always true
     {
-        STATIC_VAR NEARDATA const char because_of[] = " because of %s";
+        static NEARDATA const char because_of[] = " because of %s";
 
         if (propidx >= 0) 
         {

@@ -625,7 +625,7 @@ dig(void)
     } 
     else 
     { /* not enough effort has been spent yet */
-        STATIC_VAR const char *const d_target[6] = { "",        "rock", "statue",
+        static const char *const d_target[6] = { "",        "rock", "statue",
                                                  "boulder", "door", "tree" };
         int dig_target = dig_typ(wep, dpx, dpy);
 
@@ -1483,21 +1483,21 @@ use_pick_axe2(struct obj *obj)
         }
         else 
         {
-            STATIC_VAR const char *const d_action[6] = { "swinging", 
+            static const char *const d_action[6] = { "swinging", 
                                                      "digging",
                                                      "chipping the statue",
                                                      "hitting the boulder",
                                                      "chopping at the door",
                                                      "cutting the tree" };
 
-            STATIC_VAR const char* const d_action_saw[6] = { "positioning the saw",
+            static const char* const d_action_saw[6] = { "positioning the saw",
                                          "cutting",
                                          "cutting the statue",
                                          "cutting the boulder",
                                          "cutting at the door",
                                          "cutting the tree" };
 
-            STATIC_VAR const int /*enum object_occupation_types*/ d_action_soundset[6] = { OCCUPATION_SWINGING,
+            static const int /*enum object_occupation_types*/ d_action_soundset[6] = { OCCUPATION_SWINGING,
                                          OCCUPATION_DIGGING_ROCK,
                                          OCCUPATION_DIGGING_ROCK,
                                          OCCUPATION_DIGGING_ROCK,
@@ -1929,7 +1929,7 @@ draft_message(boolean unexpected)
         } else {
             /* "marching" is deliberately ambiguous; it might mean drills
                 after entering military service or mean engaging in protests */
-            STATIC_VAR const char *draft_reaction[] = {
+            static const char *draft_reaction[] = {
                 "enlisting", "marching", "protesting", "fleeing",
             };
             int dridx;

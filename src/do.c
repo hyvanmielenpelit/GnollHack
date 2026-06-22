@@ -24,7 +24,7 @@ static int currentlevel_rewrite(void);
 static void final_level(void);
 static void print_corpse_properties(winid, int);
 static void revive_handle_magic_chest(xchar*, struct obj**, int*, struct monst**);
-/* STATIC_DCL boolean badspot(xchar,xchar); */
+/* static boolean badspot(xchar,xchar); */
 static int FDECL(CFDECLSPEC item_wiki_cmp, (const genericptr, const genericptr));
 
 extern int n_dgns; /* number of dungeons, from dungeon.c */
@@ -8171,12 +8171,12 @@ goto_level(d_level *newlevel, uchar at_location, boolean falling, boolean inside
 
     if (familiar) 
     {
-        STATIC_VAR const char *const fam_msgs[4] = {
+        static const char *const fam_msgs[4] = {
             "You have a sense of deja vu.",
             "You feel like you've been here before.",
             "This place %s familiar...", 0 /* no message */
         };
-        STATIC_VAR const char *const halu_fam_msgs[4] = {
+        static const char *const halu_fam_msgs[4] = {
             "Whoa!  Everything %s different.",
             "You are surrounded by twisty little passages, all alike.",
             "Gee, this %s like uncle Conan's place...", 0 /* no message */

@@ -34,9 +34,7 @@ extern boolean inmap;                /* from video.c */
  *
  */
 boolean
-pckeys(scancode, shift)
-unsigned char scancode;
-unsigned char shift;
+pckeys(unsigned char scancode, unsigned char shift)
 {
     boolean opening_dialog;
 
@@ -80,8 +78,7 @@ unsigned char shift;
 }
 
 static void
-userpan(on)
-boolean on;
+userpan(boolean on)
 {
 #ifdef SCREEN_VGA
     if (iflags.usevga)
@@ -94,8 +91,7 @@ boolean on;
 }
 
 static void
-overview(on)
-boolean on;
+overview(boolean on)
 {
 #ifdef SCREEN_VGA
     if (iflags.usevga)
@@ -108,8 +104,7 @@ boolean on;
 }
 
 static void
-traditional(on)
-boolean on;
+traditional(boolean on)
 {
 #ifdef SCREEN_VGA
     if (iflags.usevga)

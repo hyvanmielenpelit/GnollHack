@@ -51,12 +51,12 @@ void get_cursor(int *, int *);
 
 /* direct bios calls are used only when iflags.BIOS is set */
 
-STATIC_DCL char DOSgetch(void);
-STATIC_DCL char BIOSgetch(void);
+static char DOSgetch(void);
+static char BIOSgetch(void);
 #ifndef __GO32__
-STATIC_DCL char *getdta(void);
+static char *getdta(void);
 #endif
-STATIC_DCL unsigned int dos_ioctl(int, int, unsigned);
+static unsigned int dos_ioctl(int, int, unsigned);
 #ifdef USE_TILES
 extern boolean pckeys(unsigned char, unsigned char); /* pckeys.c */
 #endif
@@ -245,7 +245,7 @@ static const char numeric_scanmap[] = { /* ... */
 #define ALT 0x8
 #endif /* PC9800 */
 
-STATIC_OVL char
+static char
 BIOSgetch()
 {
     unsigned char scan, shift, ch = 0;
@@ -305,7 +305,7 @@ BIOSgetch()
     return ch;
 }
 
-STATIC_OVL char
+static char
 DOSgetch()
 {
     union REGS regs;
@@ -355,8 +355,7 @@ switchar()
 }
 
 long
-freediskspace(path)
-char *path;
+freediskspace(char *path)
 {
     union REGS regs;
 
@@ -377,8 +376,7 @@ char *path;
  * Functions to get filenames using wildcards
  */
 int
-findfirst_file(path)
-char *path;
+findfirst_file(char *path)
 {
     union REGS regs;
     struct SREGS sregs;
@@ -408,7 +406,7 @@ foundfile_buffer()
 }
 
 /* Get disk transfer area */
-STATIC_OVL char *
+static char *
 getdta()
 {
     union REGS regs;
@@ -427,8 +425,7 @@ getdta()
 }
 
 long
-filesize_nh(file)
-char *file;
+filesize_nh(char *file)
 {
     char *dta;
 
@@ -445,8 +442,7 @@ char *file;
  * Chdrive() changes the default drive.
  */
 void
-chdrive(str)
-char *str;
+chdrive(char *str)
 {
 #define SELECTDISK 0x0E
     char *ptr;
@@ -505,10 +501,8 @@ enable_ctrlP()
     return;
 }
 
-STATIC_OVL unsigned int
-dos_ioctl(handle, mode, setvalue)
-int handle, mode;
-unsigned setvalue;
+static unsigned int
+dos_ioctl(int handle, int mode, unsigned setvalue)
 {
     union REGS regs;
 

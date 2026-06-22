@@ -4820,7 +4820,7 @@ static const int cross_matrix[4][6] = {
 static void
 t_warn(struct rm *lev)
 {
-    STATIC_VAR const char warn_str[] = "wall_angle: %s: case %d: seenv = 0x%x";
+    static const char warn_str[] = "wall_angle: %s: case %d: seenv = 0x%x";
     const char *wname;
 
     if (lev->typ == TUWALL)

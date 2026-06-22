@@ -35,7 +35,7 @@ void gnollhack_exit(int);
 #else
 #define gnollhack_exit exit
 #endif
-STATIC_DCL void msexit(void);
+static void msexit(void);
 
 #ifdef MOVERLAY
 extern void __far __cdecl _movepause(void);
@@ -47,9 +47,9 @@ extern unsigned short __far __cdecl _movefpaused;
 #endif                       /* MOVERLAY */
 
 #ifdef MFLOPPY
-STATIC_DCL boolean record_exists(void);
+static boolean record_exists(void);
 #ifndef TOS
-STATIC_DCL boolean comspec_exists(void);
+static boolean comspec_exists(void);
 #endif
 #endif
 
@@ -138,8 +138,7 @@ dosh()
 #ifdef MFLOPPY
 
 void
-eraseall(path, files)
-const char *path, *files;
+eraseall(const char *path, const char *files)
 {
     char buf[PATHLEN];
     char *foundfile;
@@ -158,8 +157,7 @@ const char *path, *files;
  * Rewritten for version 3.3 to be faster
  */
 void
-copybones(mode)
-int mode;
+copybones(int mode)
 {
     char from[PATHLEN], to[PATHLEN], last[13];
     char *frompath, *topath;
@@ -270,8 +268,7 @@ playwoRAMdisk()
 }
 
 int
-saveDiskPrompt(start)
-int start;
+saveDiskPrompt(int start)
 {
     char buf[BUFSIZ], *bp;
     char qbuf[QBUFSZ];
@@ -307,7 +304,7 @@ int start;
 }
 
 /* Return 1 if the record file was found */
-STATIC_OVL boolean
+static boolean
 record_exists()
 {
     FILE *fp;
@@ -326,7 +323,7 @@ record_exists()
 #else
 #ifdef MFLOPPY
 /* Return 1 if the comspec was found */
-STATIC_OVL boolean
+static boolean
 comspec_exists()
 {
     int fd;
@@ -374,8 +371,7 @@ gameDiskPrompt()
  * be room for the \
  */
 void
-append_slash(name)
-char *name;
+append_slash(char *name)
 {
     char *ptr;
 
@@ -390,8 +386,7 @@ char *name;
 }
 
 void
-getreturn(str)
-const char *str;
+getreturn(const char *str)
 {
 #ifdef TOS
     msmsg("Hit <Return> %s.", str);
@@ -432,8 +427,7 @@ void msmsg
 #endif
 
 FILE *
-fopenp(name, mode)
-const char *name, *mode;
+fopenp(const char *name, const char *mode)
 {
     char buf[BUFSIZ], *bp, *pp, lastch = 0;
     FILE *fp;
@@ -481,8 +475,7 @@ const char *name, *mode;
 
 #if defined(MICRO) || defined(OS2)
 void
-gnollhack_exit(code)
-int code;
+gnollhack_exit(int code)
 {
     if (exit_hack)
         exit_hack(code);
@@ -497,7 +490,7 @@ int code;
 extern boolean run_from_desktop; /* set in pcmain.c */
 #endif
 
-STATIC_OVL void
+static void
 msexit()
 {
 #ifdef CHDIR

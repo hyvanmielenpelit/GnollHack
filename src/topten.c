@@ -92,7 +92,7 @@ static winid toptenwin = WIN_ERR;
 void
 formatkiller(char *buf, size_t siz, int how, boolean incl_helpless)
 {
-    STATIC_VAR NEARDATA const char *const killed_by_prefix[NUM_GAME_END_TYPES] = {
+    static NEARDATA const char *const killed_by_prefix[NUM_GAME_END_TYPES] = {
         /* DIED, CHOKING, POISONING, STARVING, */
         "killed by ", "choked on ", "poisoned by ", "died of ",
         /* DROWNING, DROWNED, BURNING, DISSOLVED, CRUSHING, STRANGULATION, SUFFOCATION,*/

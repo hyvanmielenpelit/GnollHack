@@ -597,7 +597,7 @@ NEARDATA const struct mythic_power_definition mythic_suffix_powers[MAX_MYTHIC_SU
     { "Warning", "Warning", MYTHIC_POWER_TYPE_CONFERS_PROPERTY, WARNING, 0.0, 0, 0UL, MYTHIC_POWER_FLAG_NO_THROWN_OR_AMMO },
 };
 
-//STATIC_DCL void setgemprobs(d_level *);
+//static void setgemprobs(d_level *);
 static void shuffle(int, int, boolean);
 static void shuffle_all(void);
 static boolean interesting_to_discover(int);
@@ -1220,7 +1220,7 @@ oclass_to_name(char oclass, char *buf)
 int
 doclassdisco(void)
 {
-    STATIC_VAR NEARDATA const char
+    static NEARDATA const char
         prompt[] = "View discoveries for which sort of objects?",
         havent_discovered_any[] = "haven't discovered any %s yet.",
         unique_items[] = "unique items",

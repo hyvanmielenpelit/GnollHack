@@ -390,7 +390,7 @@ fix_worst_trouble(int trouble)
     int i;
     struct obj *otmp = 0;
     const char *what = (const char *) 0;
-    STATIC_VAR NEARDATA const char leftglow[] = "Your left ring softly glows",
+    static NEARDATA const char leftglow[] = "Your left ring softly glows",
                                rightglow[] = "Your right ring softly glows";
 
     switch (trouble) {
@@ -2245,7 +2245,7 @@ pleased(aligntyp g_align)
         }
         case 5: 
         {
-            STATIC_VAR NEARDATA const char msg[] =
+            static NEARDATA const char msg[] =
                 "\"and thus I grant thee the gift of %s!\"";
 
             play_sfx_sound(SFX_PRAY_GIFT);
@@ -2556,7 +2556,7 @@ consume_offering(struct obj *otmp)
 int
 dosacrifice(void)
 {
-    STATIC_VAR NEARDATA const char cloud_of_smoke[] =
+    static NEARDATA const char cloud_of_smoke[] =
         "A cloud of %s smoke surrounds you...";
     struct obj* otmp;
     int value = 0, mndx;

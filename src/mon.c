@@ -21,7 +21,7 @@ static void sanity_check_single_mon(struct monst *, boolean,
 static boolean restrap(struct monst *);
 static int64_t mm_aggression(struct monst *, struct monst *);
 static int64_t mm_displacement(struct monst *, struct monst *);
-//STATIC_DCL int pick_animal(void);
+//static int pick_animal(void);
 static void kill_eggs(struct obj *);
 static int pickvampshape(struct monst *);
 static boolean isspecmon(struct monst *);

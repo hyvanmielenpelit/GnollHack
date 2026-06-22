@@ -1006,7 +1006,7 @@ really_kick_object(xchar x, xchar y, boolean is_golf_swing)
         {
             if (rn2(20)) 
             {
-                STATIC_VAR NEARDATA const char *const flyingcoinmsg[] = {
+                static NEARDATA const char *const flyingcoinmsg[] = {
                     "scatter the coins", "knock coins all over the place",
                     "send coins flying in all directions",
                 };

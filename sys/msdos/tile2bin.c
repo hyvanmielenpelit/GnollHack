@@ -86,9 +86,7 @@ int filenum;
 int paletteflag;
 
 int
-main(argc, argv)
-int argc;
-char *argv[];
+main(int argc, char *argv[])
 {
     int i;
     struct tm *newtime;
@@ -225,9 +223,7 @@ char *argv[];
 }
 
 static void
-write_tibheader(fileptr, tibhdr)
-FILE *fileptr;
-struct tibhdr_struct *tibhdr;
+write_tibheader(FILE *fileptr, struct tibhdr_struct *tibhdr)
 {
     if (fseek(fileptr, 0L, SEEK_SET)) {
         Fprintf(stderr, "Error writing header to tile file\n");
@@ -236,9 +232,7 @@ struct tibhdr_struct *tibhdr;
 }
 
 static void
-build_tibtile(pixels, statues)
-pixel (*pixels)[TILE_X];
-boolean statues;
+build_tibtile(pixel (*pixels)[TILE_X], boolean statues)
 {
     static int graymappings[] = {
         /* .  A  B  C  D  E  F  G  H  I  J  K  L  M  N  O  P  */
@@ -316,8 +310,7 @@ boolean statues;
 }
 
 static void
-write_tibtile(recnum)
-int recnum;
+write_tibtile(int recnum)
 {
     long fpos;
 

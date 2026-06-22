@@ -970,7 +970,7 @@ eat_brains(struct monst *magr, struct monst *mdef, boolean visflag, double *dmg_
 
         if (adjresult >= 2)
         {
-            STATIC_VAR NEARDATA const char brainlessness[] = "brainlessness";
+            static NEARDATA const char brainlessness[] = "brainlessness";
 
             if (Lifesaved)
             {

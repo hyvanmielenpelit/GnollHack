@@ -2292,11 +2292,11 @@ gem_accept(struct monst *mon, struct obj *obj)
     boolean is_gem = obj->material == MAT_GEMSTONE;
     int ret = 0;
     int luck_change = 0;
-    STATIC_VAR NEARDATA const char nogood[] = " is not interested in your junk.";
-    STATIC_VAR NEARDATA const char acceptgift[] = " accepts your gift.";
-    STATIC_VAR NEARDATA const char maybeluck[] = " hesitatingly";
-    STATIC_VAR NEARDATA const char noluck[] = " graciously";
-    STATIC_VAR NEARDATA const char addluck[] = " gratefully";
+    static NEARDATA const char nogood[] = " is not interested in your junk.";
+    static NEARDATA const char acceptgift[] = " accepts your gift.";
+    static NEARDATA const char maybeluck[] = " hesitatingly";
+    static NEARDATA const char noluck[] = " graciously";
+    static NEARDATA const char addluck[] = " gratefully";
 
     Strcpy(buf, Monnam(mon));
     mon->mpeaceful = 1;

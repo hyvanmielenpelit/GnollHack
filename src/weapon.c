@@ -890,7 +890,7 @@ silver_sears(struct monst *magr UNUSED, struct monst *mdef, int64_t silverhit)
 static struct obj *oselect(struct monst *, int);
 static struct obj* oselect_with_best_exceptionality(struct monst*, int);
 static struct obj* oselect_with_best_bounded_exceptionality(struct monst*, int, int, int);
-//STATIC_DCL struct obj* oskillselect_with_best_exceptionality(struct monst*, schar);
+//static struct obj* oskillselect_with_best_exceptionality(struct monst*, schar);
 static struct obj* oskillselect_with_best_bounded_exceptionality(struct monst*, schar, int, int);
 static struct obj* oselect_with_exceptionality(struct monst*, int, int);
 static struct obj* oskillselect_with_exceptionality(struct monst*, schar, int);

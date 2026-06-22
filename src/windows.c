@@ -2118,7 +2118,7 @@ static int prev_app = 0;
    keep consecutive preformatted strings in a single block.  */
 
 static uchar in_list = FALSE;
-//STATIC_VAR boolean in_preform = FALSE;
+//static boolean in_preform = FALSE;
 
 /*
  * Parameters:

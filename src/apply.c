@@ -3353,7 +3353,7 @@ use_tinning_kit(struct obj *obj)
 
     if ((can = mksobj(TIN, FALSE, FALSE, FALSE)) != 0) 
     {
-        STATIC_VAR const char you_buy_it[] = "You tin it, you bought it!";
+        static const char you_buy_it[] = "You tin it, you bought it!";
 
         can->corpsenm = corpse->corpsenm;
         can->cursed = obj->cursed;

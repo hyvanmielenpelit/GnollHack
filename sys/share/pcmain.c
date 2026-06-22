@@ -42,8 +42,8 @@ extern int bigscreen;
 void preserve_icon(void);
 #endif
 
-STATIC_DCL void process_command_line_arguments(int argc, char **argv);
-STATIC_DCL void nhusage(void);
+static void process_command_line_arguments(int argc, char **argv);
+static void nhusage(void);
 
 #if defined(MICRO) || defined(OS2)
 extern void gnollhack_exit(int);
@@ -52,7 +52,7 @@ extern void gnollhack_exit(int);
 #endif
 
 #ifdef EXEPATH
-STATIC_DCL char *exepath(char *);
+static char *exepath(char *);
 #endif
 
 int main(int, char **);
@@ -88,9 +88,7 @@ char *argv[];
 }
 
 boolean
-pcmain(argc, argv)
-int argc;
-char *argv[];
+pcmain(int argc, char *argv[])
 {
     int fd;
     register char *dir;
@@ -530,10 +528,8 @@ attempt_restore:
     return resuming;
 }
 
-STATIC_OVL void
-process_command_line_arguments(argc, argv)
-int argc;
-char *argv[];
+static void
+process_command_line_arguments(int argc, char *argv[])
 {
     int i;
 
@@ -680,7 +676,7 @@ char *argv[];
     }
 }
 
-STATIC_OVL void
+static void
 nhusage()
 {
     char buf1[BUFSZ], buf2[BUFSZ], *bufptr;
@@ -727,9 +723,7 @@ nhusage()
 
 #ifdef CHDIR
 void
-chdirx(dir, wr)
-char *dir;
-boolean wr;
+chdirx(char *dir, boolean wr)
 {
 #ifdef AMIGA
     static char thisdir[] = "";
@@ -785,8 +779,7 @@ authorize_wizard_mode()
 char exepathbuf[EXEPATHBUFSZ];
 
 char *
-exepath(str)
-char *str;
+exepath(char *str)
 {
     char *tmp, *tmp2;
     int bsize;
