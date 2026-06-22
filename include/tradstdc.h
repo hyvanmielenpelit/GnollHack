@@ -320,8 +320,6 @@ typedef genericptr genericptr_t; /* (void *) or (char *) */
  * the ANSI compilers so people quit trying to fix the prototypes to match
  * the standard and thus lose the typechecking.
  */
-#define UNWIDENED_PROTOTYPES
-
 #if defined(MSDOS) && !defined(__GO32__)
 #define UNWIDENED_PROTOTYPES
 #endif
