@@ -36,8 +36,7 @@ player_sel_row_selected(GtkCList *clist, int row, int col, GdkEvent *event)
 }
 
 int
-ghack_player_sel_dialog(const char **choices, const gchar *title,
-                        const gchar *prompt)
+ghack_player_sel_dialog(const char **choices, const gchar *title, const gchar *prompt)
 {
     int i;
     static GtkWidget *dialog;

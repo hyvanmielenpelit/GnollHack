@@ -166,8 +166,7 @@ def_kbhit(void)
  * Strip out troublesome file system characters.
  */
 
-void nt_regularize(s) /* normalize file name */
-register char *s;
+void nt_regularize(char *s) /* normalize file name */
 {
     register unsigned char *lp;
 

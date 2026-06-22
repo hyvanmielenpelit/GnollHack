@@ -45,8 +45,7 @@ int amii_otherBPen;
 long amii_libvers = LIBRARY_FONT_VERSION;
 
 void
-ami_wininit_data(dir)
-int dir;
+ami_wininit_data(int dir)
 {
     extern unsigned short amii_init_map[AMII_MAXCOLORS];
     extern unsigned short amiv_init_map[AMII_MAXCOLORS];
@@ -141,8 +140,7 @@ struct TagItem wintags[] = {
 };
 #endif
 
-void amii_destroy_nhwindow(win) /* just hide */
-register winid win;
+void amii_destroy_nhwindow(winid win) /* just hide */
 {
     int i;
     int type;
@@ -312,9 +310,7 @@ void
 }
 #endif
 
-amii_create_nhwindow_ex(type) 
-int type, style, glyph;
-struct extended_create_window_info info;
+amii_create_nhwindow_ex(int type) 
 {
     struct Window *w = NULL;
     struct NewWindow *nw = NULL;
@@ -853,9 +849,7 @@ int
 /* Initialize the windowing environment */
 
 void
-amii_init_nhwindows(argcp, argv)
-int *argcp;
-char **argv;
+amii_init_nhwindows(int *argcp, char **argv)
 {
     int i;
     struct Screen *wbscr;
@@ -1349,8 +1343,7 @@ amii_setdrawpens(struct Window *w, int type)
 /* Clear the indicated window */
 
 void
-amii_clear_nhwindow(win)
-register winid win;
+amii_clear_nhwindow(winid win)
 {
     struct amii_WinDesc *cw;
     struct Window *w;
@@ -1406,8 +1399,7 @@ register winid win;
 /* Dismiss the window from the screen */
 
 void
-dismiss_nhwindow(win)
-register winid win;
+dismiss_nhwindow(winid win)
 {
     struct Window *w;
     struct amii_WinDesc *cw;
@@ -1446,8 +1438,7 @@ register winid win;
 }
 
 void
-amii_exit_nhwindows(str)
-const char *str;
+amii_exit_nhwindows(const char *str)
 {
     /* Seems strange to have to do this... but we need the BASE window
      * left behind...
@@ -1463,9 +1454,7 @@ const char *str;
 }
 
 void
-amii_display_nhwindow(win, blocking)
-winid win;
-boolean blocking;
+amii_display_nhwindow(winid win, boolean blocking)
 {
     menu_item *mip;
     int cnt;
@@ -1501,10 +1490,7 @@ boolean blocking;
 }
 
 void
-amii_curs(window, x, y)
-winid window;
-int x, y; /* not xchar: perhaps xchar is unsigned and
-              curx-x would be unsigned as well */
+amii_curs(winid window, int x, int y)
 {
     struct amii_WinDesc *cw;
     struct Window *w;
@@ -1652,9 +1638,7 @@ printf("pos: (%d,%d)->(%d,%d)\n",x,y,qqx,qqy);
 }
 
 void
-amii_set_text_font(name, size)
-char *name;
-int size;
+amii_set_text_font(char *name, int size)
 {
     int i;
     struct amii_WinDesc *cw;
@@ -1698,8 +1682,7 @@ int size;
 }
 
 void
-kill_nhwindows(all)
-int all;
+kill_nhwindows(int all)
 {
     int i;
     struct amii_WinDesc *cw;
@@ -1715,9 +1698,7 @@ int all;
 }
 
 void
-amii_cl_end(cw, curs_pos)
-struct amii_WinDesc *cw;
-int curs_pos;
+amii_cl_end(struct amii_WinDesc *cw, int curs_pos)
 {
     struct Window *w = cw->win;
     int oy, ox;
@@ -1734,8 +1715,7 @@ int curs_pos;
 }
 
 void
-cursor_off(window)
-winid window;
+cursor_off(winid window)
 {
     struct amii_WinDesc *cw;
     struct Window *w;
@@ -1794,8 +1774,7 @@ winid window;
 }
 
 void
-cursor_on(window)
-winid window;
+cursor_on(winid window)
 {
     int x, y;
     struct amii_WinDesc *cw;
@@ -1859,9 +1838,7 @@ winid window;
 }
 
 static void
-cursor_common(rp, x, y)
-struct RastPort *rp;
-int x, y;
+cursor_common(struct RastPort *rp, int x, int y)
 {
     int x1, x2, y1, y2;
 
@@ -1884,8 +1861,7 @@ int x, y;
 }
 
 void
-amii_suspend_nhwindows(str)
-const char *str;
+amii_suspend_nhwindows(const char *str)
 {
     if (HackScreen)
         ScreenToBack(HackScreen);
@@ -1905,8 +1881,7 @@ amii_bell()
 }
 
 void
-removetopl(cnt)
-int cnt;
+removetopl(int cnt)
 {
     struct amii_WinDesc *cw = amii_wins[WIN_MESSAGE];
     /* NB - this is sufficient for
@@ -1940,18 +1915,13 @@ port_help()
  */
 
 void
-amii_issue_gui_command(cmd_id, cmd_param, cmd_param2, cmd_str)
-int cmd_id, cmd_param, cmd_param2;
-const char* cmd_str;
+amii_issue_gui_command(int cmd_id, int cmd_param, int cmd_param2, const char *cmd_str)
 {
     return;
 }
 
 void
-amii_print_glyph(win, x, y, layers)
-winid win;
-xchar x, y;
-struct layer_info layers;
+amii_print_glyph(winid win, xchar x, xchar y, struct layer_info layers)
 {
     int glyph = layers.glyph;
     int bkglyph = layers.bkglyph;
@@ -2020,8 +1990,7 @@ if(u.uz.dlevel != x){
 /* Make sure the user sees a text string when no windowing is available */
 
 void
-amii_raw_print(s)
-const char *s;
+amii_raw_print(const char *s)
 {
     int argc = 0;
 
@@ -2056,8 +2025,7 @@ const char *s;
  */
 
 void
-amii_raw_print_bold(s)
-const char *s;
+amii_raw_print_bold(const char *s)
 {
     int argc = 0;
 
@@ -2144,9 +2112,7 @@ amii_setclipped()
  * edge of the map is already displayed
  */
 void
-amii_cliparound(x, y, force)
-int x, y;
-boolean force;
+amii_cliparound(int x, int y, boolean force)
 {
 #ifdef CLIPPING
     int oldx = clipx, oldy = clipy;
@@ -2341,8 +2307,7 @@ boolean force;
 }
 
 void
-flushIDCMP(port)
-struct MsgPort *port;
+flushIDCMP(struct MsgPort *port)
 {
     struct Message *msg;
     while (msg = GetMsg(port))

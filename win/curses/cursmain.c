@@ -147,8 +147,7 @@ init_nhwindows(int* argcp, char** argv)
                 ** windows?  Or at least all but WIN_INFO?      -dean
 */
 void
-curses_init_nhwindows(int *argcp UNUSED,
-                      char **argv UNUSED)
+curses_init_nhwindows(int *argcp UNUSED, char **argv UNUSED)
 {
 #ifdef PDCURSES
     char window_title[BUFSZ];
@@ -536,9 +535,7 @@ add_menu(winid wid, int glyph, const anything identifier,
                    menu is displayed, set preselected to TRUE.
 */
 void
-curses_add_menu(winid wid, int glyph, const ANY_P * identifier,
-                char accelerator, char group_accel, int attr, int color,
-                const char *str, boolean presel)
+curses_add_menu(winid wid, int glyph, const ANY_P * identifier, char accelerator, char group_accel, int attr, int color, const char *str, boolean presel)
 {
     attr &= ~(ATR_LINE_ATTR_MASK);
 
@@ -560,9 +557,7 @@ curses_add_menu(winid wid, int glyph, const ANY_P * identifier,
 }
 
 void
-curses_add_menu_ex(winid wid, int glyph, const ANY_P* identifier,
-    char accelerator, char group_accel, int attr, int color,
-    const char* str, const char* attrs, const char* colors, boolean presel)
+curses_add_menu_ex(winid wid, int glyph, const ANY_P* identifier, char accelerator, char group_accel, int attr, int color, const char* str, const char* attrs, const char* colors, boolean presel)
 {
     struct extended_menu_info info = { 0 };
     info.attrs = attrs;
@@ -572,9 +567,7 @@ curses_add_menu_ex(winid wid, int glyph, const ANY_P* identifier,
 }
 
 void
-curses_add_extended_menu(winid wid, int glyph, const ANY_P* identifier,
-    char accelerator, char group_accel, int attr, int color,
-    const char* str, boolean presel, struct extended_menu_info info)
+curses_add_extended_menu(winid wid, int glyph, const ANY_P* identifier, char accelerator, char group_accel, int attr, int color, const char* str, boolean presel, struct extended_menu_info info)
 {
     attr &= ~(ATR_LINE_ATTR_MASK);
 
@@ -1009,8 +1002,7 @@ outrip(winid, int)
                genl_outrip for the value and check the #if in rip.c.
 */
 void
-curses_outrip(winid wid UNUSED,
-              int how UNUSED)
+curses_outrip(winid wid UNUSED, int how UNUSED)
 {
      return;
 }

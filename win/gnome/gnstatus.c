@@ -143,8 +143,7 @@ ghack_status_window_cursor_to(GtkWidget *win, int x, int y, gpointer data)
 }
 
 void
-ghack_status_window_put_string(GtkWidget *win, int attr, const char *text,
-                               gpointer data)
+ghack_status_window_put_string(GtkWidget *win, int attr, const char *text, gpointer data)
 {
     ghack_status_window_update_stats();
 }
@@ -876,8 +875,7 @@ ghack_fade_highlighting()
 
 /* Widget changed, so add it to the highlighing list */
 static void
-ghack_highlight_widget(GtkWidget *widget, GtkStyle *oldStyle,
-                       GtkStyle *newStyle)
+ghack_highlight_widget(GtkWidget *widget, GtkStyle *oldStyle, GtkStyle *newStyle)
 {
     Highlight *highlt;
     GList *item;

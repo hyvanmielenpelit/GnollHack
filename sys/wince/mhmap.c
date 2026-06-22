@@ -961,9 +961,7 @@ nhcolor_to_RGB(int c)
 /* apply bitmap pointed by sourceDc transparently over
    bitmap pointed by hDC */
 void
-nhapply_image_transparent(HDC hDC, int x, int y, int width, int height,
-                          HDC sourceDC, int s_x, int s_y, int s_width,
-                          int s_height, COLORREF cTransparent)
+nhapply_image_transparent(HDC hDC, int x, int y, int width, int height, HDC sourceDC, int s_x, int s_y, int s_width, int s_height, COLORREF cTransparent)
 {
     TransparentImage(hDC, x, y, width, height, sourceDC, s_x, s_y, s_width,
                      s_height, cTransparent);

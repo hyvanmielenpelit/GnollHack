@@ -534,8 +534,7 @@ EditClipping(void)
 }
 
 char *
-dirname(str)
-char *str;
+dirname(char *str)
 {
     char *t, c;
     static char dir[300];
@@ -555,8 +554,7 @@ char *str;
 }
 
 char *
-basename(str)
-char *str;
+basename(char *str)
 {
     char *t;
 
@@ -645,10 +643,7 @@ ClearCol(struct Window *w)
 }
 
 void
-DrawCol(w, idx, colors)
-struct Window *w;
-int idx;
-UWORD *colors;
+DrawCol(struct Window *w, int idx, UWORD *colors)
 {
     int bxorx, bxory, bxxlen, bxylen;
     int i, incx, incy, r, g, b;
@@ -730,10 +725,7 @@ UWORD *colors;
 }
 
 void
-DispCol(w, idx, colors)
-struct Window *w;
-int idx;
-UWORD *colors;
+DispCol(struct Window *w, int idx, UWORD *colors)
 {
     char buf[50];
     char *colname, *defval;
@@ -812,13 +804,7 @@ amii_setpens(int count)
 /* Generate a requester for a string value. */
 
 void
-amii_getlin_ex(style, attr, color, prompt, bufp, placeholder, linesuffix, introline)
-int style, attr, color;
-const char *prompt;
-const char* placeholder;
-const char* linesuffix;
-const char* introline;
-char *bufp;
+amii_getlin_ex(int style, int attr, int color, const char *prompt, char *bufp, const char *placeholder, const char *linesuffix, const char *introline)
 {
     char promptbuf[PBUFSZ] = "";
     //Do not show introline
@@ -839,10 +825,7 @@ char *bufp;
 
 /* and with default */
 void
-getlind(prompt, bufp, dflt)
-const char *prompt;
-char *bufp;
-const char *dflt;
+getlind(const char *prompt, char *bufp, const char *dflt)
 {
 #ifndef TOPL_GETLINE
     struct Window *cwin;
@@ -1012,9 +995,7 @@ const char *dflt;
 }
 
 void
-amii_change_color(pen, val, rev)
-int pen, rev;
-long val;
+amii_change_color(int pen, long val, int rev)
 {
     if (rev)
         sysflags.amii_curmap[pen] = ~val;

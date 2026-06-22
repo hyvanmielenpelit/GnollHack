@@ -362,9 +362,7 @@ void lib_start_menu_ex(winid wid, int style)
     lib_callbacks.callback_start_menu_ex(wid, style);
 }
 
-void lib_add_menu(winid wid, int glyph, const ANY_P* identifier,
-    char accelerator, char group_accel, int attr, int color,
-    const char* str, boolean presel)
+void lib_add_menu(winid wid, int glyph, const ANY_P* identifier, char accelerator, char group_accel, int attr, int color, const char* str, boolean presel)
 {
     if (!str)
         return;
@@ -379,9 +377,7 @@ void lib_add_menu(winid wid, int glyph, const ANY_P* identifier,
     lib_callbacks.callback_add_menu(wid, glyph, identifier->a_int64, (cschar)accelerator, (cschar)group_accel, attr, color, str ? _buf : 0, (uchar)presel);
 }
 
-void lib_add_extended_menu(winid wid, int glyph, const ANY_P* identifier,
-    char accelerator, char group_accel, int attr, int color,
-    const char* str, boolean presel, struct extended_menu_info info)
+void lib_add_extended_menu(winid wid, int glyph, const ANY_P* identifier, char accelerator, char group_accel, int attr, int color, const char* str, boolean presel, struct extended_menu_info info)
 {
     if (!str)
         return;
@@ -1730,5 +1726,4 @@ void debuglog(const char* fmt, ...)
     else if (lib_callbacks.callback_raw_print)
         lib_raw_print(buf);
 }
-
 

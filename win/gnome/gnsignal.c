@@ -145,8 +145,7 @@ ghack_delay(GtkWidget *win, int numMillisecs, gpointer data)
 }
 
 void
-ghack_handle_button_press(GtkWidget *widget, GdkEventButton *event,
-                          gpointer data)
+ghack_handle_button_press(GtkWidget *widget, GdkEventButton *event, gpointer data)
 {
     GHClick *click;
     double x1, y1;

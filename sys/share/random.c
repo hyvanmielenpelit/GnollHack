@@ -382,4 +382,3 @@ random(void)
 #endif /* else defined(USE_ISAAC64) && !defined(RANDOM) */
 
 
-

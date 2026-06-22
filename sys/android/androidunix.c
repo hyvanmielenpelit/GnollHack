@@ -17,8 +17,7 @@
 static struct stat buf;
 
 void
-regularize(s)	/* normalize file name - we don't like .'s, /'s, spaces */
-char *s;
+regularize(char *s)	/* normalize file name - we don't like .'s, /'s, spaces */
 {
 	register char *lp;
 

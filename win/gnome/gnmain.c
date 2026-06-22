@@ -451,8 +451,7 @@ GnomeUIInfo mainmenu[] = { GNOMEUIINFO_MENU_GAME_TREE(game_tree),
                            GNOMEUIINFO_END };
 
 static void
-ghack_main_window_key_press(GtkWidget *widget, GdkEventKey *event,
-                            gpointer data)
+ghack_main_window_key_press(GtkWidget *widget, GdkEventKey *event, gpointer data)
 {
     /* First, turn off the key press propogation.  We've got the
      * key, but we don't wan't the underlying Gtk widgets to get it,

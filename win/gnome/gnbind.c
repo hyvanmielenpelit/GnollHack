@@ -749,9 +749,7 @@ identifier
                    menu is displayed, set preselected to TRUE.
 */
 void
-gnome_add_menu(winid wid, int glyph, const ANY_P *identifier,
-               char accelerator, char group_accel, int attr, int color,
-               const char *str, boolean presel)
+gnome_add_menu(winid wid, int glyph, const ANY_P *identifier, char accelerator, char group_accel, int attr, int color, const char *str, boolean presel)
 {
     GHackMenuItem item;
     item.glyph = glyph;
@@ -769,9 +767,7 @@ gnome_add_menu(winid wid, int glyph, const ANY_P *identifier,
 }
 
 void
-gnome_add_extended_menu(winid wid, int glyph, const ANY_P* identifier,
-    char accelerator, char group_accel, int attr, int color,
-    const char* str, boolean presel, struct extended_menu_info info)
+gnome_add_extended_menu(winid wid, int glyph, const ANY_P* identifier, char accelerator, char group_accel, int attr, int color, const char* str, boolean presel, struct extended_menu_info info)
 {
         gnome_add_menu(wid, glyph, identifier,
             accelerator, group_accel, attr, color,

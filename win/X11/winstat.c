@@ -133,9 +133,7 @@ static Pixel X11_status_widget_fg, X11_status_widget_bg;
 
 
 int
-condcolor(bm, bmarray)
-int64_t bm;
-uint64_t *bmarray;
+condcolor(int64_t bm, uint64_t *bmarray)
 {
     int i;
 
@@ -148,9 +146,7 @@ uint64_t *bmarray;
 }
 
 int
-condattr(bm, bmarray)
-int64_t bm;
-uint64_t *bmarray;
+condattr(int64_t bm, uint64_t *bmarray)
 {
     int attr = 0;
     int i;
@@ -182,8 +178,7 @@ uint64_t *bmarray;
 }
 
 void
-X11_status_init(reassessment)
-int reassessment;
+X11_status_init(int reassessment)
 {
 #ifdef STATUS_HILITES
     int i;
@@ -204,19 +199,14 @@ X11_status_finish()
 }
 
 void
-X11_status_enablefield(fieldidx, nm, fmt, enable)
-int fieldidx;
-const char *nm;
-const char *fmt;
-boolean enable;
+X11_status_enablefield(int fieldidx, const char *nm, const char *fmt, boolean enable)
 {
     genl_status_enablefield(fieldidx, nm, fmt, enable);
 }
 
 
 int
-cond_bm2idx(bm)
-uint64_t bm;
+cond_bm2idx(uint64_t bm)
 {
     int i;
     for (i = 0; i < 32; i++)
@@ -226,10 +216,7 @@ uint64_t bm;
 }
 
 void
-MaybeDisplayCond(bm, colormasks, text)
-uint64_t bm;
-uint64_t *colormasks;
-const char *text;
+MaybeDisplayCond(uint64_t bm, uint64_t *colormasks, const char *text)
 {
     int idx = cond_bm2idx(bm);
     Widget label;
@@ -318,10 +305,7 @@ const char *text;
 
 
 void
-X11_status_update_tty(fld, ptr, chg, percent, color, colormasks)
-int fld, chg UNUSED, percent, color;
-genericptr_t ptr;
-uint64_t *colormasks;
+X11_status_update_tty(int fld, genericptr_t ptr, int chg UNUSED, int percent, int color, uint64_t *colormasks)
 {
     static boolean oncearound = FALSE; /* prevent premature partial display */
     int64_t *condptr = (int64_t *) ptr;
@@ -531,10 +515,7 @@ uint64_t *colormasks;
 
 /*ARGSUSED*/
 void
-X11_status_update_fancy(fld, ptr, chg, percent, color, colormasks)
-int fld, chg UNUSED, percent UNUSED, color UNUSED;
-genericptr_t ptr;
-uint64_t *colormasks UNUSED;
+X11_status_update_fancy(int fld, genericptr_t ptr, int chg UNUSED, int percent UNUSED, int color UNUSED, uint64_t *colormasks UNUSED)
 {
     static const struct {
         int bl, ff;
@@ -614,10 +595,7 @@ uint64_t *colormasks UNUSED;
 }
 
 void
-X11_status_update(fld, ptr, chg, percent, color, colormasks)
-int fld, chg UNUSED, percent UNUSED, color;
-genericptr_t ptr;
-uint64_t *colormasks;
+X11_status_update(int fld, genericptr_t ptr, int chg UNUSED, int percent UNUSED, int color, uint64_t *colormasks)
 {
     if (appResources.fancy_status)
         X11_status_update_fancy(fld, ptr, chg, percent, color, colormasks);
@@ -626,8 +604,7 @@ uint64_t *colormasks;
 }
 
 Widget
-create_tty_status(parent, top)
-Widget parent, top;
+create_tty_status(Widget parent, Widget top)
 {
     Widget form; /* The form that surrounds everything. */
     Widget w;
@@ -727,12 +704,13 @@ Widget parent, top;
     return w;
 }
 
+/*
+ * Parameters:
+ *   wp: window pointer
+ */
 /*ARGSUSED*/
 void
-create_status_window_tty(wp, create_popup, parent)
-struct xwindow *wp; /* window pointer */
-boolean create_popup UNUSED;
-Widget parent;
+create_status_window_tty(struct xwindow *wp, boolean create_popup UNUSED, Widget parent)
 {
     Arg args[10];
     Cardinal num_args;
@@ -747,8 +725,7 @@ Widget parent;
 }
 
 void
-destroy_status_window_tty(wp)
-struct xwindow *wp;
+destroy_status_window_tty(struct xwindow *wp)
 {
     /* If status_information is defined, then it a "text" status window. */
     if (wp->status_information) {
@@ -767,18 +744,17 @@ struct xwindow *wp;
 
 /*ARGSUSED*/
 void
-adjust_status_tty(wp, str)
-struct xwindow *wp UNUSED;
-const char *str UNUSED;
+adjust_status_tty(struct xwindow *wp UNUSED, const char *str UNUSED)
 {
     /* nothing */
 }
 
+/*
+ * Parameters:
+ *   wp: window pointer
+ */
 void
-create_status_window(wp, create_popup, parent)
-struct xwindow *wp; /* window pointer */
-boolean create_popup;
-Widget parent;
+create_status_window(struct xwindow *wp, boolean create_popup, Widget parent)
 {
     xw_status_win = wp;
     if (appResources.fancy_status)
@@ -788,8 +764,7 @@ Widget parent;
 }
 
 void
-destroy_status_window(wp)
-struct xwindow *wp;
+destroy_status_window(struct xwindow *wp)
 {
     if (appResources.fancy_status)
         destroy_status_window_fancy(wp);
@@ -798,9 +773,7 @@ struct xwindow *wp;
 }
 
 void
-adjust_status(wp, str)
-struct xwindow *wp;
-const char *str;
+adjust_status(struct xwindow *wp, const char *str)
 {
     if (appResources.fancy_status)
         adjust_status_fancy(wp, str);
@@ -811,11 +784,12 @@ const char *str;
 extern const char *hu_stat[];  /* from eat.c */
 extern const char *enc_stat[]; /* from botl.c */
 
+/*
+ * Parameters:
+ *   wp: window pointer
+ */
 void
-create_status_window_fancy(wp, create_popup, parent)
-struct xwindow *wp; /* window pointer */
-boolean create_popup;
-Widget parent;
+create_status_window_fancy(struct xwindow *wp, boolean create_popup, Widget parent)
 {
     XFontStruct *fs;
     Arg args[8];
@@ -903,8 +877,7 @@ Widget parent;
 }
 
 void
-destroy_status_window_fancy(wp)
-struct xwindow *wp;
+destroy_status_window_fancy(struct xwindow *wp)
 {
     /* If status_information is defined, then it a "text" status window. */
     if (wp->status_information) {
@@ -929,9 +902,7 @@ struct xwindow *wp;
  *	+ We didn't set stringInPlace on the widget.
  */
 void
-adjust_status_fancy(wp, str)
-struct xwindow *wp;
-const char *str;
+adjust_status_fancy(struct xwindow *wp, const char *str)
 {
     Arg args[2];
     Cardinal num_args;
@@ -1066,10 +1037,13 @@ null_out_status()
     }
 }
 
+/*
+ * Parameters:
+ *   w: label widget
+ */
 /* This is almost an exact duplicate of hilight_value() */
 static void
-hilight_label(w)
-Widget w; /* label widget */
+hilight_label(Widget w)
 {
     Arg args[2];
     Pixel fg, bg;
@@ -1084,9 +1058,7 @@ Widget w; /* label widget */
 }
 
 static void
-update_val(attr_rec, new_value)
-struct X_status_value *attr_rec;
-int64_t new_value;
+update_val(struct X_status_value *attr_rec, int64_t new_value)
 {
     char buf[BUFSZ];
     Arg args[4];
@@ -1297,8 +1269,7 @@ int64_t new_value;
  * [**] HD is shown instead of level and exp if Upolyd.
  */
 static void
-update_fancy_status_field(i)
-int i;
+update_fancy_status_field(int i)
 {
     struct X_status_value *sv = &shown_stats[i];
     int64_t val;
@@ -1448,8 +1419,7 @@ int i;
 
 /*ARGUSED*/
 static void
-update_fancy_status(wp)
-struct xwindow *wp UNUSED;
+update_fancy_status(struct xwindow *wp UNUSED)
 {
     int i;
 
@@ -1489,8 +1459,7 @@ check_turn_events()
 
 /* Return a string for the initial width. */
 static const char *
-width_string(sv_index)
-int sv_index;
+width_string(int sv_index)
 {
     switch (sv_index) {
     case F_DUMMY:
@@ -1554,10 +1523,7 @@ int sv_index;
 }
 
 static void
-create_widget(parent, sv, sv_index)
-Widget parent;
-struct X_status_value *sv;
-int sv_index;
+create_widget(Widget parent, struct X_status_value *sv, int sv_index)
 {
     Arg args[4];
     Cardinal num_args;
@@ -1601,9 +1567,7 @@ int sv_index;
  * Get current width of value.  width2p is only valid for SV_VALUE types.
  */
 static void
-get_widths(sv, width1p, width2p)
-struct X_status_value *sv;
-int *width1p, *width2p;
+get_widths(struct X_status_value *sv, int *width1p, int *width2p)
 {
     Arg args[1];
     Dimension width;
@@ -1626,9 +1590,7 @@ int *width1p, *width2p;
 }
 
 static void
-set_widths(sv, width1, width2)
-struct X_status_value *sv;
-int width1, width2;
+set_widths(struct X_status_value *sv, int width1, int width2)
 {
     Arg args[1];
 
@@ -1648,10 +1610,7 @@ int width1, width2;
 }
 
 static Widget
-init_column(name, parent, top, left, col_indices)
-const char *name;
-Widget parent, top, left;
-int *col_indices;
+init_column(const char *name, Widget parent, Widget top, Widget left, int *col_indices)
 {
     Widget form;
     Arg args[4];
@@ -1744,8 +1703,7 @@ static int col2_indices[] = { F_MAXHP, F_MAXPOWER, F_ALIGN, F_EXP,   F_TIME,
  * TODO:  increase the space between the two columns.
  */
 static Widget
-init_info_form(parent, top, left)
-Widget parent, top, left;
+init_info_form(Widget parent, Widget top, Widget left)
 {
     Widget form, col1;
     struct X_status_value *sv_name, *sv_dlevel;
@@ -1842,8 +1800,7 @@ fixup_cond_widths()
  * contains everything.
  */
 static Widget
-create_fancy_status(parent, top)
-Widget parent, top;
+create_fancy_status(Widget parent, Widget top)
 {
     Widget form; /* The form that surrounds everything. */
     Widget w;
@@ -1879,8 +1836,7 @@ Widget parent, top;
 }
 
 static void
-destroy_fancy_status(wp)
-struct xwindow *wp;
+destroy_fancy_status(struct xwindow *wp)
 {
     int i;
     struct X_status_value *sv;

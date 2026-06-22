@@ -11,9 +11,7 @@
 
 /* Start building the text for a menu */
 void
-amii_start_menu_ex(window, style)
-register winid window;
-int style;
+amii_start_menu_ex(winid window, int style)
 {
     int i;
     struct amii_WinDesc *cw;
@@ -59,16 +57,7 @@ int style;
 
 /* Add a string to a menu */
 void
-amii_add_menu(window, glyph, id, ch, gch, attr, color, str, preselected)
-register winid window;
-int glyph;
-const anything *id;
-register char ch;
-register char gch;
-int attr;
-int color;
-const char *str;
-register boolean preselected;
+amii_add_menu(winid window, int glyph, const anything *id, char ch, char gch, int attr, int color, const char *str, boolean preselected)
 {
     struct amii_WinDesc *cw;
     amii_menu_item *mip;
@@ -124,27 +113,14 @@ register boolean preselected;
 }
 
 void
-amii_add_extended_menu(window, glyph, id, ch, gch, attr, color, str, preselected, info)
-register winid window;
-int glyph;
-const anything* id;
-register char ch;
-register char gch;
-int attr;
-int color;
-const char* str;
-register boolean preselected;
-struct extended_menu_info info;
+amii_add_extended_menu(winid window, int glyph, const anything *id, char ch, char gch, int attr, int color, const char *str, boolean preselected, struct extended_menu_info info)
 {
     amii_add_menu(window, glyph, id, ch, gch, attr, color, str, preselected);
 }
 /* Done building a menu. */
 
 void
-amii_end_menu_ex(window, morestr, subtitle)
-register winid window;
-const char *morestr;
-const char* subtitle;
+amii_end_menu_ex(winid window, const char *morestr, const char *subtitle)
 {
     struct amii_WinDesc *cw;
 
@@ -189,10 +165,7 @@ const char* subtitle;
 /* Select something from the menu. */
 
 int
-amii_select_menu(window, how, mip)
-register winid window;
-int how;
-register menu_item **mip;
+amii_select_menu(winid window, int how, menu_item **mip)
 {
     int cnt;
     struct amii_WinDesc *cw;
@@ -247,9 +220,7 @@ make_menu_items(struct amii_WinDesc *cw, register menu_item **rmip)
 }
 
 int
-DoMenuScroll(win, blocking, how, retmip)
-int win, blocking, how;
-menu_item **retmip;
+DoMenuScroll(int win, int blocking, int how, menu_item **retmip)
 {
     amii_menu_item *amip;
     struct Window *w;
@@ -1103,8 +1074,7 @@ menu_item **retmip;
 }
 
 void
-ReDisplayData(win)
-winid win;
+ReDisplayData(winid win)
 {
     int totalvis;
     struct amii_WinDesc *cw;
@@ -1134,9 +1104,7 @@ winid win;
 }
 
 long
-FindLine(win, line)
-winid win;
-int line;
+FindLine(winid win, int line)
 {
     int txwd;
     register char *t;
@@ -1197,8 +1165,7 @@ int line;
 }
 
 long
-CountLines(win)
-winid win;
+CountLines(winid win)
 {
     int txwd;
     amii_menu_item *mip;
@@ -1261,9 +1228,7 @@ winid win;
 }
 
 void
-DisplayData(win, start)
-winid win;
-int start;
+DisplayData(winid win, int start)
 {
     int txwd;
     amii_menu_item *mip;
@@ -1438,10 +1403,7 @@ int start;
 }
 
 void
-SetPropInfo(win, gad, vis, total, top)
-struct Window *win;
-struct Gadget *gad;
-register long vis, total, top;
+SetPropInfo(struct Window *win, struct Gadget *gad, long vis, long total, long top)
 {
     long mflags;
     register long hidden;

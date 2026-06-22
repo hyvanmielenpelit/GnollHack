@@ -1554,8 +1554,7 @@ GetConsoleHwnd(void)
 }
 #endif /*CHANGE_COLOR*/
 
-static int CALLBACK EnumFontCallback(
-    const LOGFONTW * lf, const TEXTMETRICW * tm, DWORD fontType, LPARAM lParam)
+static int CALLBACK EnumFontCallback( const LOGFONTW * lf, const TEXTMETRICW * tm, DWORD fontType, LPARAM lParam)
 {
     LOGFONTW * lf_ptr = (LOGFONTW *) lParam;
     *lf_ptr = *lf;

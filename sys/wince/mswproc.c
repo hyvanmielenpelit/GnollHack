@@ -1063,9 +1063,7 @@ identifier
                    menu is displayed, set preselected to TRUE.
 */
 void
-mswin_add_menu(winid wid, int glyph, const ANY_P *identifier,
-               char accelerator, char group_accel, int attr, int color,
-               const char *str, boolean presel)
+mswin_add_menu(winid wid, int glyph, const ANY_P *identifier, char accelerator, char group_accel, int attr, int color, const char *str, boolean presel)
 {
     logDebug("mswin_add_menu(%d, %d, %p, %c, %c, %d, %s, %d)\n", wid, glyph,
              identifier, (char) accelerator, (char) group_accel, attr, str,
@@ -1089,9 +1087,7 @@ mswin_add_menu(winid wid, int glyph, const ANY_P *identifier,
 }
 
 void
-mswin_add_extended_menu(winid wid, int glyph, const ANY_P* identifier,
-    char accelerator, char group_accel, int attr, int color,
-    const char* str, boolean presel, struct extended_menu_info info)
+mswin_add_extended_menu(winid wid, int glyph, const ANY_P* identifier, char accelerator, char group_accel, int attr, int color, const char* str, boolean presel, struct extended_menu_info info)
 {
     mswin_add_menu(glyph, identifier,
         accelerator, group_accel, attr, color,
@@ -1935,8 +1931,7 @@ mswin_set_fullscreen(BOOL is_fullscreen)
 
 #if defined(WIN_CE_SMARTPHONE)
 void
-NHSPhoneDialogSetup(HWND hDlg, UINT nToolBarId, BOOL is_edit,
-                    BOOL is_fullscreen)
+NHSPhoneDialogSetup(HWND hDlg, UINT nToolBarId, BOOL is_edit, BOOL is_fullscreen)
 {
     SHMENUBARINFO mbi;
     HWND hOK, hCancel;

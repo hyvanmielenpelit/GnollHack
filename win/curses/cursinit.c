@@ -66,10 +66,7 @@ nhrgb orig_hiwhite;
    Negative minh/minw: as much as possible, but at least as much as
    specified. */
 static void
-set_window_position(int *winx, int *winy, int *winw, int *winh,
-                    int orientation,
-                    int *x, int *y, int *w, int *h, int border_space,
-                    int minh, int minw)
+set_window_position(int *winx, int *winy, int *winw, int *winh, int orientation, int *x, int *y, int *w, int *h, int border_space, int minh, int minw)
 {
     *winw = *w;
     *winh = *h;

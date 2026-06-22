@@ -79,8 +79,7 @@ extern boolean main(int, char **);
 #define MAX_CMDLINE_PARAM 255
 
 int APIENTRY
-WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine,
-        int nCmdShow)
+WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
     INITCOMMONCONTROLSEX InitCtrls;
     int argc;
@@ -404,9 +403,7 @@ GetComCtlVersion(LPDWORD pdwMajor, LPDWORD pdwMinor)
 /* apply bitmap pointed by sourceDc transparently over
 bitmap pointed by hDC */
 BOOL WINAPI
-_nhapply_image_transparent(HDC hDC, int x, int y, int width, int height,
-                           HDC sourceDC, int s_x, int s_y, int s_width,
-                           int s_height, UINT cTransparent)
+_nhapply_image_transparent(HDC hDC, int x, int y, int width, int height, HDC sourceDC, int s_x, int s_y, int s_width, int s_height, UINT cTransparent)
 {
     /* Don't use TransparentBlt; According to Microsoft, it contains a memory
      * leak in Window 95/98. */

@@ -177,8 +177,7 @@ mswin_get_color(int win_type, int color_index)
 }
 
 static void
-mswin_color_from_string(char *colorstring, HBRUSH *brushptr,
-                        COLORREF *colorptr)
+mswin_color_from_string(char *colorstring, HBRUSH *brushptr, COLORREF *colorptr)
 {
     color_table_value *ctv_ptr = color_table;
     color_table_brush_value *ctbv_ptr = color_table_brush;

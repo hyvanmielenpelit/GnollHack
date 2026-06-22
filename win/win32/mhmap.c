@@ -6176,4 +6176,3 @@ nhcolor_to_RGB(int c)
         return GetNHApp()->regMapColors[c];
     return RGB(0x00, 0x00, 0x00);
 }
-

@@ -98,11 +98,7 @@ static const char cancel_accelerators[] = "#override\n\
  *      an optional cancel button
  */
 Widget
-CreateDialog(parent, name, okay_callback, cancel_callback)
-Widget parent;
-String name;
-XtCallbackProc okay_callback;
-XtCallbackProc cancel_callback;
+CreateDialog(Widget parent, String name, XtCallbackProc okay_callback, XtCallbackProc cancel_callback)
 {
     Widget form, prompt, response, okay, cancel;
     Arg args[20];
@@ -219,8 +215,7 @@ XtCallbackProc cancel_callback;
 /* get the prompt from the dialog box.  Used a startup time to
  * save away the initial prompt */
 String
-GetDialogPrompt(w)
-    Widget w;
+GetDialogPrompt(Widget w)
 {
     Arg args[1];
     Widget label;
@@ -235,9 +230,7 @@ GetDialogPrompt(w)
 
 /* set the prompt.  This is used to put error information in the prompt */
 void
-SetDialogPrompt(w, newprompt)
-Widget w;
-String newprompt;
+SetDialogPrompt(Widget w, String newprompt)
 {
     Arg args[1];
     Widget label;
@@ -249,8 +242,7 @@ String newprompt;
 
 /* get what the user typed; caller must free the response */
 String
-GetDialogResponse(w)
-Widget w;
+GetDialogResponse(Widget w)
 {
     Arg args[1];
     Widget response;
@@ -264,10 +256,7 @@ Widget w;
 
 /* set the default reponse */
 void
-SetDialogResponse(w, s, ln)
-Widget w;
-String s;
-unsigned ln;
+SetDialogResponse(Widget w, String s, unsigned ln)
 {
     Arg args[4];
     Widget response;
@@ -297,8 +286,7 @@ unsigned ln;
 #if 0
 /* clear the response */
 void
-ClearDialogResponse(w)
-    Widget w;
+ClearDialogResponse(Widget w)
 {
     Arg args[2];
     Widget response;
@@ -312,11 +300,13 @@ ClearDialogResponse(w)
 
 /* Not a part of the original dialogs.c from ghostview -------------------- */
 
+/*
+ * Parameters:
+ *   bottom: position y on bottom?
+ */
 /* position popup window under the cursor */
 void
-positionpopup(w, bottom)
-Widget w;
-boolean bottom; /* position y on bottom? */
+positionpopup(Widget w, boolean bottom)
 {
     Arg args[3];
     Cardinal num_args;

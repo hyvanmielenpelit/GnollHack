@@ -49,9 +49,7 @@ static boolean wiz_error_flag = FALSE;
 static struct passwd *get_unix_pw(void);
 
 int
-main(argc, argv)
-int argc;
-char *argv[];
+main(int argc, char *argv[])
 {
     int fd;
 #ifdef CHDIR
@@ -362,9 +360,7 @@ attempt_restore:
 }
 
 static void
-process_command_line_arguments(argc, argv)
-int argc;
-char *argv[];
+process_command_line_arguments(int argc, char *argv[])
 {
     int i, l;
 
@@ -501,9 +497,7 @@ char *argv[];
 
 #ifdef CHDIR
 static void
-chdirx(dir, wr)
-const char *dir;
-boolean wr;
+chdirx(const char *dir, boolean wr)
 {
     if (dir /* User specified directory? */
 #ifdef HACKDIR
@@ -592,8 +586,7 @@ whoami()
 }
 
 void
-sethanguphandler(handler)
-void (*handler)(int);
+sethanguphandler(void (*handler)(int))
 {
 #ifdef SA_RESTART
     /* don't want reads to restart.  If SA_RESTART is defined, we know
@@ -668,8 +661,7 @@ wd_message()
  * be room for the /
  */
 void
-append_slash(name)
-char *name;
+append_slash(char *name)
 {
     char *ptr;
 
@@ -684,8 +676,7 @@ char *name;
 }
 
 boolean
-check_user_string(optstr)
-char *optstr;
+check_user_string(char *optstr)
 {
     struct passwd *pw = get_unix_pw();
     int pwlen;
@@ -769,8 +760,7 @@ get_login_name()
 extern int errno;
 
 void
-port_insert_pastebuf(buf)
-char *buf;
+port_insert_pastebuf(char *buf)
 {
     /* This should be replaced when there is a Cocoa port. */
     const char *errfmt;

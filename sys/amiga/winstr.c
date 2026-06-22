@@ -11,10 +11,7 @@
 /* Put a string into the indicated window using the indicated attribute */
 
 void
-amii_putstr_ex(window, str, attr, color, app)
-winid window;
-int attr app, color;
-const char *str;
+amii_putstr_ex(winid window, const char *str, int attr app, int color, int attr app)
 {
     int fudge;
     int len;
@@ -283,18 +280,13 @@ const char *str;
 }
 
 void
-amii_putstr_ex2(window, str, attrs, colors, attr, color, app)
-winid window;
-int attr, color, app;
-const char* str, attrs, colors;
+amii_putstr_ex2(winid window, const char *str, const char attrs, const char colors, int attr, int color, int app)
 {
     amii_putstr_ex(window, str, attrs ? attrs[0] : attr, colors ? colors[0] : color, app);
 }
 
 void
-amii_scrollmsg(w, cw)
-struct Window *w;
-struct amii_WinDesc *cw;
+amii_scrollmsg(struct Window *w, struct amii_WinDesc *cw)
 {
     int bottom, wheight;
 
@@ -317,8 +309,7 @@ struct amii_WinDesc *cw;
 }
 
 int
-amii_msgborder(w)
-struct Window *w;
+amii_msgborder(struct Window *w)
 {
     int bottom;
 
@@ -331,8 +322,7 @@ struct Window *w;
 }
 
 void
-outmore(cw)
-struct amii_WinDesc *cw;
+outmore(struct amii_WinDesc *cw)
 {
     struct Window *w = cw->win;
 
@@ -365,11 +355,7 @@ struct amii_WinDesc *cw;
 }
 
 void
-outsubstr(cw, str, len, fudge)
-struct amii_WinDesc *cw;
-char *str;
-int len;
-int fudge;
+outsubstr(struct amii_WinDesc *cw, char *str, int len, int fudge)
 {
     struct Window *w = cw->win;
 
@@ -393,10 +379,7 @@ int fudge;
 /* Put a graphics character onto the screen */
 
 void
-amii_putsym(st, i, y, c)
-winid st;
-int i, y;
-char c;
+amii_putsym(winid st, int i, int y, char c)
 {
     amii_curs(st, i, y);
     Text(amii_wins[st]->win->RPort, &c, 1);
@@ -405,8 +388,7 @@ char c;
 /* Add to the last line in the message window */
 
 void
-amii_addtopl(s)
-const char *s;
+amii_addtopl(const char *s)
 {
     struct amii_WinDesc *cw = amii_wins[WIN_MESSAGE];
 
@@ -419,9 +401,7 @@ const char *s;
 }
 
 void
-TextSpaces(rp, nr)
-struct RastPort *rp;
-int nr;
+TextSpaces(struct RastPort *rp, int nr)
 {
     if (nr < 1)
         return;

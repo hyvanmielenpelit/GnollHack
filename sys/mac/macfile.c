@@ -185,8 +185,7 @@ P2C(const unsigned char *p, char *c)
 }
 
 static void
-replace_resource(Handle new_res, ResType its_type, short its_id,
-                 Str255 its_name)
+replace_resource(Handle new_res, ResType its_type, short its_id, Str255 its_name)
 {
     Handle old_res;
 

@@ -34,8 +34,7 @@ static struct stat buf;
 /* see whether we should throw away this xlock file;
    if yes, close it, otherwise leave it open */
 static int
-veryold(fd)
-int fd;
+veryold(int fd)
 {
     time_t date;
 
@@ -217,8 +216,7 @@ gotlock:
 
 /* normalize file name - we don't like .'s, /'s, spaces */
 void
-regularize(s)
-register char *s;
+regularize(char *s)
 {
     register char *lp;
 
@@ -251,9 +249,12 @@ register char *s;
 #if defined(TIMED_DELAY) && !defined(msleep) && defined(SYSV)
 #include <poll.h>
 
+/*
+ * Parameters:
+ *   msec: milliseconds
+ */
 void
-msleep(msec)
-unsigned msec; /* milliseconds */
+msleep(unsigned msec)
 {
     struct pollfd unused;
     int msecs = msec; /* poll API is signed */
@@ -293,8 +294,7 @@ dosh()
 
 #if defined(SHELL) || defined(DEF_PAGER) || defined(DEF_MAILREADER)
 int
-child(wt)
-int wt;
+child(int wt)
 {
     int f;
 
@@ -392,8 +392,7 @@ gid_t (getegid)()
 /* XXX should be ifdef PANICTRACE_GDB, but there's no such symbol yet */
 #ifdef PANICTRACE
 boolean
-file_exists(path)
-const char *path;
+file_exists(const char *path)
 {
     struct stat sb;
 

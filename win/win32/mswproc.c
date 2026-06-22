@@ -1318,9 +1318,7 @@ identifier
                    menu is displayed, set preselected to TRUE.
 */
 void
-mswin_add_extended_menu(winid wid, int glyph, const ANY_P *identifier,
-               char accelerator, char group_accel, int attr, int color,
-               const char *str, boolean presel, struct extended_menu_info info)
+mswin_add_extended_menu(winid wid, int glyph, const ANY_P *identifier, char accelerator, char group_accel, int attr, int color, const char *str, boolean presel, struct extended_menu_info info)
 {
     logDebug("mswin_add_menu(%d, %d, %p, %c, %c, %d, %s, %d)\n", wid, glyph,
              identifier, (char) accelerator, (char) group_accel, attr, str,
@@ -1349,9 +1347,7 @@ mswin_add_extended_menu(winid wid, int glyph, const ANY_P *identifier,
 }
 
 void
-mswin_add_menu(winid wid, int glyph, const ANY_P* identifier,
-    char accelerator, char group_accel, int attr, int color,
-    const char* str, boolean presel)
+mswin_add_menu(winid wid, int glyph, const ANY_P* identifier, char accelerator, char group_accel, int attr, int color, const char* str, boolean presel)
 {
     mswin_add_extended_menu(wid, glyph, identifier,
         accelerator, group_accel, attr, color,
@@ -3148,8 +3144,7 @@ static color_table_brush_value color_table_brush[] = {
 };
 
 static void
-mswin_color_from_string(char *colorstring, HBRUSH *brushptr,
-                        COLORREF *colorptr)
+mswin_color_from_string(char *colorstring, HBRUSH *brushptr, COLORREF *colorptr)
 {
     color_table_value *ctv_ptr = color_table;
     color_table_brush_value *ctbv_ptr = color_table_brush;
@@ -3458,8 +3453,7 @@ status_enablefield(int fldindex, char fldname, char fieldfmt, boolean enable)
                 -- There are MAXBLSTATS status fields (from botl.h)
 */
 void
-mswin_status_enablefield(int fieldidx, const char *nm, const char *fmt,
-                         boolean enable)
+mswin_status_enablefield(int fieldidx, const char *nm, const char *fmt, boolean enable)
 {
     logDebug("mswin_status_enablefield(%d, %s, %s, %d)\n", fieldidx, nm, fmt,
              (int) enable);
@@ -4055,5 +4049,4 @@ mswin_ui_has_input(void)
 //
 //    Strcpy(buf, copybuf);
 //}
-
 

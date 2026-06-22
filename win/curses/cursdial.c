@@ -199,8 +199,7 @@ curses_line_input_dialog(int style UNUSED, int attr, int color, const char *prom
 /* Get a single character response from the player, such as a y/n prompt */
 
 int
-curses_character_input_dialog(int attr, int color, const char *prompt, const char *choices,
-                              char def)
+curses_character_input_dialog(int attr, int color, const char *prompt, const char *choices, char def)
 {
     WINDOW *askwin = NULL;
 #ifdef PDCURSES
@@ -605,9 +604,7 @@ curs_new_menu_item(winid wid, const char *str, const char* attrs, const char* co
 /* Add a menu item to the given menu window */
 
 void
-curses_add_nhmenu_item(winid wid, int glyph, const ANY_P *identifier,
-                       char accelerator, char group_accel, int attr, int color,
-                       const char *str, const char* attrs, const char* colors, boolean presel, int app)
+curses_add_nhmenu_item(winid wid, int glyph, const ANY_P *identifier, char accelerator, char group_accel, int attr, int color, const char *str, const char* attrs, const char* colors, boolean presel, int app)
 {
     nhmenu_item *new_item, *current_items, *menu_item_ptr;
     nhmenu *current_menu = get_menu(wid);
@@ -1700,8 +1697,7 @@ on the given menu page.  If menu_page is 0, then perform opetation on
 all pages in menu.  Returns last page displayed.  */
 
 static int
-menu_operation(WINDOW * win, nhmenu *menu, menu_op
-               operation, int page_num)
+menu_operation(WINDOW * win, nhmenu *menu, menu_op operation, int page_num)
 {
     int first_page, last_page, current_page;
     nhmenu_item *menu_item_ptr = menu->entries;

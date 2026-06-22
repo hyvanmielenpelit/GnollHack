@@ -65,8 +65,7 @@ ghack_text_window_display(GtkWidget *widget, boolean block, gpointer data)
 }
 
 void
-ghack_text_window_put_string(GtkWidget *widget, int attr, const char *text,
-                             gpointer data)
+ghack_text_window_put_string(GtkWidget *widget, int attr, const char *text, gpointer data)
 {
     if (text == NULL)
         return;

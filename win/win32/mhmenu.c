@@ -139,8 +139,7 @@ mswin_init_menu_window(int type)
 }
 /*-----------------------------------------------------------------------------*/
 int
-mswin_menu_window_select_menu(HWND hWnd, int how, MENU_ITEM_P **_selected,
-                              BOOL activate)
+mswin_menu_window_select_menu(HWND hWnd, int how, MENU_ITEM_P **_selected, BOOL activate)
 {
     PNHMenuWindow data;
     int ret_val;

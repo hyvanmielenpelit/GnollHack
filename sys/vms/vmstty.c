@@ -283,8 +283,7 @@ static const char *arrow_or_PF = "ABCDPQRS", /* suffix char */
 /* Ultimate return value is (index into smg_keypad_codes[] + 256). */
 
 static short
-parse_function_key(c)
-int c;
+parse_function_key(int c)
 {
     struct _rd_iosb iosb;
     unsigned long sts;
@@ -447,8 +446,7 @@ gettty()
 
 /* reset terminal to original state */
 void
-settty(s)
-const char *s;
+settty(const char *s)
 {
     if (!bombing)
         end_screen();
@@ -476,8 +474,7 @@ const char *s;
 
 /* same as settty, with no clearing of the screen */
 void
-shuttty(s)
-const char *s;
+shuttty(const char *s)
 {
     bombing = TRUE;
     settty(s);
@@ -534,11 +531,14 @@ extern unsigned long sys$schdwk(), sys$hiber();
 /* constant for conversion from milliseconds to VMS delta time (negative) */
 static const long mseconds_to_delta = VMS_UNITS_PER_SECOND / 1000L * -1L;
 
+/*
+ * Parameters:
+ *   mseconds: milliseconds
+ */
 /* sleep for specified number of milliseconds (note: the timer used
    generally only has 10-millisecond resolution at the hardware level...) */
 void
-msleep(mseconds)
-unsigned mseconds; /* milliseconds */
+msleep(unsigned mseconds)
 {
     long pid = 0L, zero = 0L, msec, qtime[2];
 

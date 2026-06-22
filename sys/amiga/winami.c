@@ -613,8 +613,7 @@ amii_player_selection()
 #include "NH:sys/amiga/randwin.c"
 
 void
-RandomWindow( name )
-    char *name;
+RandomWindow(char *name)
 {
     struct MsgPort *tport;
     struct timerequest *trq;
@@ -959,10 +958,7 @@ amii_get_ext_cmd(void)
 }
 
 static int
-put_ext_cmd(obufp, colx, cw, bottom)
-char * obufp;
-int colx, bottom;
-struct amii_WinDesc *cw;
+put_ext_cmd(char *obufp, int colx, struct amii_WinDesc *cw, int bottom)
 {
     struct Window *w = cw->win;
     char *t;
@@ -1007,10 +1003,7 @@ struct amii_WinDesc *cw;
 
 /* Ask a question and get a response */
 char
-amii_yn_function_ex(style, attr, color, title, query, resp, def, resp_desc)
-int style, attr, color;
-const char *title, * query, * resp, *resp_desc;
-char def;
+amii_yn_function_ex(int style, int attr, int color, const char *title, const char *query, const char *resp, char def, const char *resp_desc)
 {
     /*
      *   Generic yes/no function. 'def' is the default (returned by space or
@@ -1157,9 +1150,7 @@ char def;
 }
 
 void
-amii_display_file(fn, complain)
-const char * fn;
-boolean complain;
+amii_display_file(const char *fn, boolean complain)
 {
     struct amii_WinDesc *cw;
     int win;
@@ -1213,8 +1204,7 @@ boolean complain;
  * are rendered in the up position by default.
  */
 void
-SetBorder(gd)
-struct Gadget * gd;
+SetBorder(struct Gadget *gd)
 {
     struct Border *bp;
     register short *sp;

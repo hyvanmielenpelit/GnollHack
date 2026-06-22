@@ -214,8 +214,7 @@ curses_get_nhwin(winid wid)
 /* Add curses window pointer and window info to list for given NetHack winid */
 
 void
-curses_add_nhwin(winid wid, int height, int width, int y, int x,
-                 orient orientation, boolean border)
+curses_add_nhwin(winid wid, int height, int width, int y, int x, orient orientation, boolean border)
 {
     WINDOW *win;
     int real_width = width;
