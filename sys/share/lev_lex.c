@@ -2741,7 +2741,7 @@ YY_DECL
 	{
 	register yy_state_type yy_current_state;
 	register char *yy_cp, *yy_bp;
-	int yy_act;
+	register int yy_act;
 
 #line 116 "lev_comp.l"
 
@@ -5580,11 +5580,11 @@ case YY_STATE_EOF(MAPC):
  *	EOB_ACT_END_OF_FILE - end of file
  */
 
-static int yy_get_next_buffer(void)
+static int yy_get_next_buffer()
 	{
 	register char *dest = yy_current_buffer->yy_ch_buf;
 	register char *source = yytext_ptr;
-	int number_to_move, i;
+	register int number_to_move, i;
 	int ret_val;
 
 	if ( yy_c_buf_p > &yy_current_buffer->yy_ch_buf[yy_n_chars + 1] )
@@ -5712,7 +5712,7 @@ static int yy_get_next_buffer(void)
 
 /* yy_get_previous_state - get the state just before the EOB char was reached */
 
-static yy_state_type yy_get_previous_state(void)
+static yy_state_type yy_get_previous_state()
 	{
 	register yy_state_type yy_current_state;
 	register char *yy_cp;
@@ -5754,7 +5754,7 @@ static yy_state_type yy_try_NUL_trans( yy_current_state )
 yy_state_type yy_current_state;
 #endif
 	{
-	int yy_is_jam;
+	register int yy_is_jam;
 	register char *yy_cp = yy_c_buf_p;
 
 	register YY_CHAR yy_c = 1;
@@ -5793,7 +5793,7 @@ register char *yy_bp;
 	if ( yy_cp < yy_current_buffer->yy_ch_buf + 2 )
 		{ /* need to shift things up to make room */
 		/* +2 for EOB chars. */
-		int number_to_move = yy_n_chars + 2;
+		register int number_to_move = yy_n_chars + 2;
 		register char *dest = &yy_current_buffer->yy_ch_buf[
 					yy_current_buffer->yy_buf_size + 2];
 		register char *source =
@@ -5822,9 +5822,9 @@ register char *yy_bp;
 
 
 #ifdef __cplusplus
-static int yyinput(void)
+static int yyinput()
 #else
-static int input(void)
+static int input()
 #endif
 	{
 	int c;
@@ -5943,7 +5943,7 @@ YY_BUFFER_STATE new_buffer;
 #ifdef YY_USE_PROTOS
 void yy_load_buffer_state( void )
 #else
-void yy_load_buffer_state(void)
+void yy_load_buffer_state()
 #endif
 	{
 	yy_n_chars = yy_current_buffer->yy_n_chars;
@@ -6196,7 +6196,7 @@ int new_state;
 
 
 #ifndef YY_NO_POP_STATE
-static void yy_pop_state(void)
+static void yy_pop_state()
 	{
 	if ( --yy_start_stack_ptr < 0 )
 		YY_FATAL_ERROR( "start-condition stack underflow" );
@@ -6207,7 +6207,7 @@ static void yy_pop_state(void)
 
 
 #ifndef YY_NO_TOP_STATE
-static int yy_top_state(void)
+static int yy_top_state()
 	{
 	return yy_start_stack[yy_start_stack_ptr - 1];
 	}
@@ -6258,7 +6258,7 @@ yyconst char *s2;
 int n;
 #endif
 	{
-	int i;
+	register int i;
 	for ( i = 0; i < n; ++i )
 		s1[i] = s2[i];
 	}
@@ -6272,7 +6272,7 @@ static int yy_flex_strlen( s )
 yyconst char *s;
 #endif
 	{
-	int n;
+	register int n;
 	for ( n = 0; s[n]; ++n )
 		;
 
@@ -6320,7 +6320,7 @@ void *ptr;
 	}
 
 #if YY_MAIN
-int main(void)
+int main()
 	{
 	yylex();
 	return 0;
@@ -6358,7 +6358,7 @@ init_yyout(FILE *output_f)
 }
 
 int
-handle_varstring_check(void)
+handle_varstring_check()
 {
     struct lc_vardefs *vd;
 
@@ -6391,7 +6391,7 @@ handle_varstring_check(void)
 }
 
 void
-newline(void)
+newline()
 {
     nh_line_number++;
     token_start_pos = 0;

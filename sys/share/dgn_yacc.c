@@ -967,8 +967,7 @@ int yydebug;
 # define YYMAXDEPTH 10000
 #endif
 
-
-
+
 
 #if YYERROR_VERBOSE
 
@@ -1179,8 +1178,7 @@ yysyntax_error (char *yyresult, int yystate, int yychar)
     }
 }
 #endif /* YYERROR_VERBOSE */
-
-
+
 
 /*-----------------------------------------------.
 | Release the memory associated to this symbol.  |
@@ -1261,7 +1259,7 @@ int
 yyparse (void)
 #else
 int
-yyparse(void)
+yyparse ()
 
 #endif
 #endif
@@ -2156,7 +2154,7 @@ yyreturn:
 
 
 void
-init_dungeon(void)
+init_dungeon()
 {
 	if(++n_dgns > MAXDUNGEON) {
 	    (void) fprintf(stderr, "FATAL - Too many dungeons (limit: %d).\n",
@@ -2180,7 +2178,7 @@ init_dungeon(void)
 }
 
 void
-init_level(void)
+init_level()
 {
 	if(++n_levs > LEV_LIMIT) {
 
@@ -2198,7 +2196,7 @@ init_level(void)
 }
 
 void
-init_branch(void)
+init_branch()
 {
 	if(++n_brs > BRANCH_LIMIT) {
 
@@ -2237,7 +2235,7 @@ getchain(char *s)
  */
 
 int
-check_dungeon(void)
+check_dungeon()
 {
 	int i;
 
@@ -2274,7 +2272,7 @@ check_dungeon(void)
  */
 
 int
-check_level(void)
+check_level()
 {
 	int i;
 
@@ -2316,7 +2314,7 @@ check_level(void)
  */
 
 int
-check_branch(void)
+check_branch()
 {
 	int i;
 
@@ -2363,7 +2361,7 @@ check_branch(void)
  */
 
 void
-output_dgn(void)
+output_dgn()
 {
 	int	nd, cl = 0, nl = 0,
 		    cb = 0, nb = 0;
