@@ -1101,8 +1101,7 @@ void verbalize
  * of the variable argument handling stuff in "tradstdc.h"
  */
 
-#if defined(USE_STDARG) || defined(USE_VARARGS)
-static void vraw_printf(const char *, va_list);
+static void vraw_printf(const char *line, va_list the_args);
 
 void raw_printf
 (const char *line, ...)
@@ -1113,24 +1112,10 @@ void raw_printf
     va_end(the_args);
 }
 
-# ifdef USE_STDARG
 static void
 vraw_printf(const char *line, va_list the_args)
-# else
-static void
-vraw_printf(line, the_args)
-const char *line;
-va_list the_args;
-# endif
-
-#else /* USE_STDARG | USE_VARARG */
-
-void raw_printf
-(const char *line, ...)
-#endif
 {
     char pbuf[BIGBUFSZ]; /* will be chopped down to BUFSZ-1 if longer */
-    /* Do NOT use VA_START and VA_END in here... see above */
 
     if (index(line, '%')) {
         Vsprintf(pbuf, line, the_args);
@@ -1145,9 +1130,6 @@ void raw_printf
     raw_print(line);
 #if defined(MSGHANDLER) && (defined(POSIX_TYPES) || defined(__GNUC__))
     execplinehandler(line);
-#endif
-#if !(defined(USE_STDARG) || defined(USE_VARARGS))
-    VA_END(); /* (see vpline) */
 #endif
 }
 
@@ -1363,8 +1345,7 @@ execplinehandler(const char *line)
 /*
  * varargs handling for files.c
  */
-#if defined(USE_STDARG) || defined(USE_VARARGS)
-static void vconfig_error_add(const char *, va_list);
+static void vconfig_error_add(const char *str, va_list the_args);
 
 /*VARARGS1*/
 void
@@ -1377,33 +1358,14 @@ config_error_add
     va_end(the_args);
 }
 
-# ifdef USE_STDARG
 static void
 vconfig_error_add(const char *str, va_list the_args)
-# else
-static void
-vconfig_error_add(str, the_args)
-const char *str;
-va_list the_args;
-# endif
-
-#else /* !(USE_STDARG || USE_VARARG) => USE_OLDARGS */
-
-/*VARARGS1*/
-void
-config_error_add
-(const char *str, ...)
-#endif /* ?(USE_STDARG || USE_VARARG) */
-{       /* start of vconf...() or of nested block in USE_OLDARG's conf...() */
+{
     char buf[BIGBUFSZ]; /* will be chopped down to BUFSZ-1 if longer */
 
     Vsprintf(buf, str, the_args);
     buf[BUFSZ - 1] = '\0';
     config_erradd(buf);
-
-#if !(defined(USE_STDARG) || defined(USE_VARARGS))
-    VA_END(); /* (see pline/vpline -- ends nested block for USE_OLDARGS) */
-#endif
 }
 
 void
