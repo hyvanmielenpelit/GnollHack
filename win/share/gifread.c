@@ -628,7 +628,7 @@ read_gif_tile(pixel (*pixels)[TILE_X])
 }
 
 int
-fclose_gif_file()
+fclose_gif_file(void)
 {
     int i;
 

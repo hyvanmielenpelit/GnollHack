@@ -1141,7 +1141,7 @@ time_from_yyyymmddhhmmss(char *buf)
  * + 11/22 for rounding
  */
 int
-phase_of_the_moon() /* 0-7, with 0: new, 4: full */
+phase_of_the_moon(void) /* 0-7, with 0: new, 4: full */
 {
     struct tm *lt = getlt();
     int epact, diy, goldn;

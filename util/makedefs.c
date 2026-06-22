@@ -304,7 +304,7 @@ main(int argc, char *argv[])
 #endif
 
 static void
-link_sanity_check()
+link_sanity_check(void)
 {
     /* Note:  these initializers don't do anything except guarantee that
             we're linked properly.
@@ -637,7 +637,7 @@ static int grep_stack[GREP_STACK_SIZE] = { ST_LD(1, 0) };
 static int grep_lineno = 0;
 
 static void
-do_grep_showvars()
+do_grep_showvars(void)
 {
     int x;
 
@@ -790,7 +790,7 @@ do_grep_rewrite(char *buf)
 static void grep0(FILE *, FILE *);
 
 static void
-do_grep()
+do_grep(void)
 {
     if (!inputfp) {
         Fprintf(stderr, "--grep requires --input\n");
@@ -978,7 +978,7 @@ do_rnd_access_file(const char *fname)
 }
 
 void
-do_rumors()
+do_rumors(void)
 {
     char *line;
     static const char rumors_header[] =
@@ -1094,7 +1094,7 @@ rumors_failure:
      )
 
 static void
-make_version()
+make_version(void)
 {
     int i;
 
@@ -1269,7 +1269,7 @@ bannerc_string(char *outbuf, const char *build_date)
 }
 
 void
-do_date()
+do_date(void)
 {
 #ifdef KR1ED
     int64_t clocktim = 0;
@@ -1513,7 +1513,7 @@ case_insensitive_comp(const char *s1, const char *s2)
 static char save_bones_compat_buf[BUFSZ];
 
 static void
-build_savebones_compat_string()
+build_savebones_compat_string(void)
 {
 #ifdef VERSION_COMPATIBILITY
     unsigned long uver = VERSION_COMPATIBILITY;
@@ -1777,7 +1777,7 @@ static struct win_info window_opts[] = {
 };
 
 static void
-windowing_sanity()
+windowing_sanity(void)
 {
 #ifndef DEFAULT_WINDOW_SYS
     /* pre-standard compilers didn't support #error; wait til run-time */
@@ -1847,7 +1847,7 @@ opt_out_words(char *str, int *length_p)
 }
 
 void
-do_options()
+do_options(void)
 {
     char buf[BUFSZ];
     int i, length, winsyscnt;
@@ -1951,7 +1951,7 @@ text-b/text-c           at fseek(0x01234567L + 456L)
  */
 
 void
-do_data()
+do_data(void)
 {
     char infile[60], tempfile[60];
     boolean ok;
@@ -2108,7 +2108,7 @@ static const char *special_oracle[] = {
  */
 
 void
-do_oracles()
+do_oracles(void)
 {
     char infile[60], tempfile[60];
     boolean in_oracle, ok;
@@ -2270,7 +2270,7 @@ do_oracles()
 }
 
 void
-do_dungeon()
+do_dungeon(void)
 {
     char *line;
 
@@ -2312,7 +2312,7 @@ do_dungeon()
 }
 
 void
-do_monstr()
+do_monstr(void)
 {
     /* Don't break anything for ports that haven't been updated. */
     printf("DEPRECATION WARNINGS:\n");
@@ -2364,7 +2364,7 @@ do_monstr()
 }
 
 void
-do_permonst()
+do_permonst(void)
 {
     int i;
     char *c, *nam;
@@ -2401,7 +2401,7 @@ do_permonst()
 }
 
 void
-do_animation_offsets()
+do_animation_offsets(void)
 {
 
     int i;
@@ -2684,7 +2684,7 @@ do_qt_text(char *s)
 }
 
 static void
-adjust_qt_hdrs()
+adjust_qt_hdrs(void)
 {
     int i, j;
     int64_t count = 0L, hdr_offset = ((int64_t)sizeof(int)
@@ -2706,7 +2706,7 @@ adjust_qt_hdrs()
 }
 
 static void
-put_qt_hdrs()
+put_qt_hdrs(void)
 {
     int i;
 
@@ -2755,7 +2755,7 @@ put_qt_hdrs()
 }
 
 void
-do_questtxt()
+do_questtxt(void)
 {
     char *line;
 
@@ -2838,7 +2838,7 @@ int pref;
 }
 
 void
-do_objs()
+do_objs(void)
 {
     int i, sum = 0;
     char *c, *objnam;
@@ -3093,7 +3093,7 @@ eos(char *str)
  */
 
 void
-do_vision()
+do_vision(void)
 {
 #ifdef VISION_TABLES
     int i, j;
@@ -3230,7 +3230,7 @@ do_vision()
 \*--------------  vision tables  --------------*/
 
 static void
-H_close_gen()
+H_close_gen(void)
 {
     Fprintf(ofp, "\n/* Close */\n");
     Fprintf(ofp,
@@ -3251,7 +3251,7 @@ H_close_gen()
 }
 
 static void
-H_far_gen()
+H_far_gen(void)
 {
     Fprintf(ofp, "\n/* Far */\n");
     Fprintf(ofp, "#define FAR_MAX_SB_DY %2d\t/* |src row - block row|\t*/\n",
@@ -3270,7 +3270,7 @@ H_far_gen()
 }
 
 static void
-C_close_gen()
+C_close_gen(void)
 {
     int i, dx, dy;
     int src_row, src_col;     /* source */
@@ -3331,7 +3331,7 @@ C_close_gen()
 }
 
 static void
-C_far_gen()
+C_far_gen(void)
 {
     int i, dx, dy;
     int src_row, src_col;     /* source */

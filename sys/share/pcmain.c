@@ -677,7 +677,7 @@ process_command_line_arguments(int argc, char *argv[])
 }
 
 static void
-nhusage()
+nhusage(void)
 {
     char buf1[BUFSZ], buf2[BUFSZ], *bufptr;
 
@@ -751,7 +751,7 @@ chdirx(char *dir, boolean wr)
 #ifdef PORT_HELP
 #if defined(MSDOS)
 void
-port_help()
+port_help(void)
 {
     /* display port specific help file */
     display_file(PORT_HELP, 1);
@@ -761,7 +761,7 @@ port_help()
 
 /* validate wizard mode if player has requested access to it */
 boolean
-authorize_wizard_mode()
+authorize_wizard_mode(void)
 {
     if (!strcmp(plname, WIZARD_NAME))
         return TRUE;

@@ -331,7 +331,7 @@ pc_speaker(struct obj *instr, char *tune)
 
 #else
 
-main()
+main(void)
 {
     char s[80];
     int tool;

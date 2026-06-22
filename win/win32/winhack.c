@@ -301,7 +301,7 @@ WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine,
 }
 
 PNHWinApp
-GetNHApp()
+GetNHApp(void)
 {
     return &_GnollHack_app;
 }

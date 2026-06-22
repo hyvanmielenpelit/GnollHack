@@ -347,7 +347,7 @@ write_tibtile(int recnum)
 }
 
 static void
-remap_colors()
+remap_colors(void)
 {
     char swap;
 

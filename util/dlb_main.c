@@ -79,7 +79,7 @@ static char origdir[255] = "";
  */
 
 static void
-usage()
+usage(void)
 {
     (void) printf("Usage: %s [ctxCIfv] arguments... [files...]\n", progname);
     (void) printf("  default library is %s\n", library_file);
@@ -88,7 +88,7 @@ usage()
 }
 
 static void
-verbose_help()
+verbose_help(void)
 {
     static const char *long_help[] = {
         "", "dlb COMMANDoptions args... files...", "  commands:",

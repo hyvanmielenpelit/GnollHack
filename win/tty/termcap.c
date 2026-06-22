@@ -324,7 +324,7 @@ tty_startup(int *wid, int *hgt)
  */
 /* deallocate resources prior to final termination */
 void
-tty_shutdown()
+tty_shutdown(void)
 {
     /* we only attempt to clean up a few individual termcap variables */
 #ifdef TERMLIB
@@ -370,7 +370,7 @@ static void tty_decgraphics_termcap_fixup(void);
    so this is a convenient hook.
  */
 static void
-tty_decgraphics_termcap_fixup()
+tty_decgraphics_termcap_fixup(void)
 {
     static char ctrlN[] = "\016";
     static char ctrlO[] = "\017";
@@ -440,7 +440,7 @@ extern void (*ascgraphics_mode_callback)(void); /* defined in drawing.c */
 static void tty_ascgraphics_hilite_fixup(void);
 
 static void
-tty_ascgraphics_hilite_fixup()
+tty_ascgraphics_hilite_fixup(void)
 {
     int c;
 
@@ -457,7 +457,7 @@ tty_ascgraphics_hilite_fixup()
 #endif /* PC9800 */
 
 void
-tty_start_screen()
+tty_start_screen(void)
 {
     xputs(TI);
     xputs(VS);
@@ -485,7 +485,7 @@ tty_start_screen()
 }
 
 void
-tty_end_screen()
+tty_end_screen(void)
 {
     clear_screen();
     xputs(VE);
@@ -581,7 +581,7 @@ xputs(const char *s)
 }
 
 void
-cl_end()
+cl_end(void)
 {
     if (CE) {
         xputs(CE);
@@ -600,7 +600,7 @@ cl_end()
 }
 
 void
-clear_screen()
+clear_screen(void)
 {
     /* note: if CL is null, then termcap initialization failed,
             so don't attempt screen-oriented I/O during final cleanup.
@@ -612,7 +612,7 @@ clear_screen()
 }
 
 void
-home()
+home(void)
 {
     if (HO)
         xputs(HO);
@@ -624,14 +624,14 @@ home()
 }
 
 void
-standoutbeg()
+standoutbeg(void)
 {
     if (SO)
         xputs(SO);
 }
 
 void
-standoutend()
+standoutend(void)
 {
     if (SE)
         xputs(SE);
@@ -639,28 +639,28 @@ standoutend()
 
 #if 0 /* if you need one of these, uncomment it (here and in extern.h) */
 void
-revbeg()
+revbeg(void)
 {
     if (MR)
         xputs(MR);
 }
 
 void
-boldbeg()
+boldbeg(void)
 {
     if (MD)
         xputs(MD);
 }
 
 void
-blinkbeg()
+blinkbeg(void)
 {
     if (MB)
         xputs(MB);
 }
 
 void
-dimbeg()
+dimbeg(void)
 {
     /* not in most termcap entries */
     if (MH)
@@ -668,7 +668,7 @@ dimbeg()
 }
 
 void
-m_end()
+m_end(void)
 {
     if (ME)
         xputs(ME);
@@ -676,13 +676,13 @@ m_end()
 #endif /*0*/
 
 void
-backsp()
+backsp(void)
 {
     xputs(BC);
 }
 
 void
-tty_nhbell()
+tty_nhbell(void)
 {
     if (flags.silent)
         return;
@@ -692,14 +692,14 @@ tty_nhbell()
 
 #ifdef ASCIIGRAPH
 void
-graph_on()
+graph_on(void)
 {
     if (AS)
         xputs(AS);
 }
 
 void
-graph_off()
+graph_off(void)
 {
     if (AE)
         xputs(AE);
@@ -722,7 +722,7 @@ static const short tmspc10[] = { /* from termcap */
 
 /* delay 50 ms */
 void
-tty_delay_output()
+tty_delay_output(void)
 {
 #if defined(MICRO)
     int i;
@@ -889,7 +889,7 @@ tty_delay_output_intervals(int intervals)
 
 /* must only be called with curx = 1 */
 void
-cl_eos() /* free after Robert Viduya */
+cl_eos(void) /* free after Robert Viduya */
 {
     if (nh_CD) {
         xputs(nh_CD);
@@ -985,7 +985,7 @@ const struct {
 static char nilstring[] = "";
 
 static void
-init_hilite()
+init_hilite(void)
 {
     int c;
     char *setf, *scratch;
@@ -1060,7 +1060,7 @@ init_hilite()
 }
 
 static void
-kill_hilite()
+kill_hilite(void)
 {
     /* if colors weren't available, no freeing needed */
     if (hilites[CLR_BLACK] == nh_HI)
@@ -1152,7 +1152,7 @@ analyze_seq(char *str, int *fg, int *bg)
  */
 
 static void
-init_hilite()
+init_hilite(void)
 {
     int c;
 #ifdef TOS
@@ -1234,7 +1234,7 @@ init_hilite()
 }
 
 static void
-kill_hilite()
+kill_hilite(void)
 {
 #ifndef TOS
     int c;
@@ -1354,13 +1354,13 @@ term_end_attr(int attr)
 }
 
 void
-term_start_raw_bold()
+term_start_raw_bold(void)
 {
     xputs(nh_HI);
 }
 
 void
-term_end_raw_bold()
+term_end_raw_bold(void)
 {
     xputs(nh_HE);
 }
@@ -1368,7 +1368,7 @@ term_end_raw_bold()
 #ifdef TEXTCOLOR
 
 void
-term_end_color()
+term_end_color(void)
 {
     xputs(nh_HE);
 }

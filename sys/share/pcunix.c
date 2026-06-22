@@ -76,7 +76,7 @@ uptodate(int fd)
 
 #ifdef PC_LOCKING
 static int
-eraseoldlocks()
+eraseoldlocks(void)
 {
     int i;
 
@@ -99,7 +99,7 @@ eraseoldlocks()
 }
 
 void
-getlock()
+getlock(void)
 {
     int fd, c, ci, ct, ern;
     int fcmask = FCMASK;

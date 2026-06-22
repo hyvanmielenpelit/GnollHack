@@ -3645,7 +3645,7 @@ dopray(void)
 }
 
 static int
-prayer_done() /* M. Stephenson (1.0.3b) */
+prayer_done(void) /* M. Stephenson (1.0.3b) */
 {
     aligntyp alignment = p_aligntyp;
 

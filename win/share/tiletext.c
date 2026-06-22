@@ -233,7 +233,7 @@ write_txttile(FILE *txtfile, pixel (*pixels)[TILE_X])
 
 /* initialize main colormap from globally accessed ColorMap */
 void
-init_colormap()
+init_colormap(void)
 {
     int i;
 
@@ -247,7 +247,7 @@ init_colormap()
 
 /* merge new colors from ColorMap into MainColorMap */
 void
-merge_colormap()
+merge_colormap(void)
 {
     int i, j;
 
@@ -342,7 +342,7 @@ write_text_tile(pixel (*pixels)[TILE_X])
 }
 
 int
-fclose_text_file()
+fclose_text_file(void)
 {
     int ret;
 

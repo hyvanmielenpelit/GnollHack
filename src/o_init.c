@@ -1147,7 +1147,7 @@ static const short uniq_objs[] = {
 
 /* the '\' command - show discovered object types */
 int
-dodiscovered() /* free after Robert Viduya */
+dodiscovered(void) /* free after Robert Viduya */
 {
     int i, dis;
     int ct = 0;

@@ -22,7 +22,7 @@ struct nhregex {
 };
 
 struct nhregex *
-regex_init()
+regex_init(void)
 {
     struct nhregex *re;
 

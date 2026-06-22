@@ -5784,7 +5784,7 @@ doset_add_menu(winid win, const char *option, int idx, int indexoffset, int notr
         return;
 
     const char *value = "unknown"; /* current value */
-    char buf[BUFSZ] = "", buf2[BUFSZ] = "", buf3[BUFSZ] = "";
+    char buf[BUFSZ * 6] = "", buf2[BUFSZ * 4] = "", buf3[BUFSZ] = "";
     anything any;
     int i;
 
@@ -5813,7 +5813,13 @@ doset_add_menu(winid win, const char *option, int idx, int indexoffset, int notr
             Sprintf(eos(buf3), "\t%s", compopt[i].descr);
     }
 
-    issue_breadcrumb2("doset_add_menu", i);
+    char optbuf[BUFSZ];
+    Strncpy(optbuf, option ? option : "(null)", BUFSZ - 1);
+    optbuf[BUFSZ - 1] = 0;
+
+    char bcbuf[BUFSZ * 2];
+    Sprintf(bcbuf, "doset_add_menu: option: %s, %s", optbuf, compopt[i].name);
+    issue_breadcrumb3(bcbuf, i, indexoffset);
     if (indexoffset == 0) {
         any.a_int = 0;
         value = get_compopt_value(option, buf2);
@@ -5830,13 +5836,15 @@ doset_add_menu(winid win, const char *option, int idx, int indexoffset, int notr
     }
     /* "    " replaces "a - " -- assumes menus follow that style */
 
-    char valuebuf[BUFSZ] = "";
+    char valuebuf[BUFSZ * 4] = "";
 #ifdef GNH_MOBILE
-    Strcpy(valuebuf, value ? value : "null");
+    Strncpy(valuebuf, value ? value : "null", BUFSZ * 4 - 1);
+    valuebuf[BUFSZ * 4 - 1] = 0;
 #else
     if (notruncate && !iflags.menu_tab_sep)
     {
-        Strcpy(valuebuf, value ? value : "null");
+        Strncpy(valuebuf, value ? value : "null", BUFSZ * 4 - 1);
+        valuebuf[BUFSZ * 4 - 1] = 0;
     }
     else
     {
@@ -5859,12 +5867,12 @@ doset_add_menu(winid win, const char *option, int idx, int indexoffset, int notr
         *p = 0;
         Strcat(buf4, "  ");
 
-        Sprintf(buf, fmtstr_doset_notab_buf, any.a_int ? "" : "    ", option, valuebuf);
+        Sprintf(buf, fmtstr_doset_notab_buf, any.a_int ? "" : "    ", optbuf, valuebuf);
         Strcat(buf, buf4);
     }
     else
     {
-        Sprintf(buf, fmtstr_doset_tab, option, valuebuf);
+        Sprintf(buf, fmtstr_doset_tab, optbuf, valuebuf);
     }
     Strcat(buf, buf3);
     add_menu(win, NO_GLYPH, &any, 0, 0, ATR_INDENT_AT_DOUBLE_SPACE | ATR_ALT_DIVISORS, NO_COLOR, buf, MENU_UNSELECTED);

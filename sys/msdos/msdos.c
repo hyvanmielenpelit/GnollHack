@@ -62,7 +62,7 @@ extern boolean pckeys(unsigned char, unsigned char); /* pckeys.c */
 #endif
 
 int
-tgetch()
+tgetch(void)
 {
     char ch;
 
@@ -246,7 +246,7 @@ static const char numeric_scanmap[] = { /* ... */
 #endif /* PC9800 */
 
 static char
-BIOSgetch()
+BIOSgetch(void)
 {
     unsigned char scan, shift, ch = 0;
     const struct pad *kpad;
@@ -306,7 +306,7 @@ BIOSgetch()
 }
 
 static char
-DOSgetch()
+DOSgetch(void)
 {
     union REGS regs;
     char ch;
@@ -345,7 +345,7 @@ DOSgetch()
 }
 
 char
-switchar()
+switchar(void)
 {
     union REGS regs;
 
@@ -390,7 +390,7 @@ findfirst_file(char *path)
 }
 
 int
-findnext_file()
+findnext_file(void)
 {
     union REGS regs;
 
@@ -400,14 +400,14 @@ findnext_file()
 }
 
 char *
-foundfile_buffer()
+foundfile_buffer(void)
 {
     return (getdta() + 30);
 }
 
 /* Get disk transfer area */
 static char *
-getdta()
+getdta(void)
 {
     union REGS regs;
     struct SREGS sregs;
@@ -475,7 +475,7 @@ chdrive(char *str)
 static unsigned int old_stdin, old_stdout;
 
 void
-disable_ctrlP()
+disable_ctrlP(void)
 {
     if (!iflags.rawio)
         return;
@@ -490,7 +490,7 @@ disable_ctrlP()
 }
 
 void
-enable_ctrlP()
+enable_ctrlP(void)
 {
     if (!iflags.rawio)
         return;

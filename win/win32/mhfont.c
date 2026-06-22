@@ -233,7 +233,7 @@ mswin_get_font(int win_type, int attr, HDC hdc, BOOL replace)
 }
 
 UINT
-mswin_charset()
+mswin_charset(void)
 {
     CHARSETINFO cis;
     /* if (SYMHANDLING(H_IBM))
@@ -257,7 +257,7 @@ void __cdecl font_table_cleanup(void)
 }
 
 void
-init_resource_fonts()
+init_resource_fonts(void)
 {
     /* Install font from resource */
     HINSTANCE hResInstance = (HINSTANCE)GetModuleHandle(NULL);

@@ -74,7 +74,7 @@ curses_status_init(int reassessment)
 }
 
 void
-curses_status_finish()
+curses_status_finish(void)
 {
     int i;
 
@@ -210,7 +210,7 @@ curses_status_update(int fldidx, genericptr_t ptr, int chg UNUSED, int percent, 
 }
 
 static void
-draw_status()
+draw_status(void)
 {
     WINDOW *win = curses_get_nhwin(STATUS_WIN);
     int orientation = curses_get_window_orientation(STATUS_WIN);

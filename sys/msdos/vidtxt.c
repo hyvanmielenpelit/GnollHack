@@ -42,7 +42,7 @@ extern int attrib_text_intense; /* text mode intense attribute */
 extern int attrib_gr_intense;   /* graphics mode intense attribute */
 
 void
-txt_get_scr_size()
+txt_get_scr_size(void)
 {
     union REGS regs;
 
@@ -114,7 +114,7 @@ extern int g_attribute; /* Current attribute to use */
 extern int monoflag;    /* 0 = not monochrome, else monochrome */
 
 void
-txt_backsp()
+txt_backsp(void)
 {
 #ifdef PC9800
     union REGS regs;
@@ -136,7 +136,7 @@ txt_backsp()
 }
 
 void
-txt_nhbell()
+txt_nhbell(void)
 {
     union REGS regs;
 
@@ -148,7 +148,7 @@ txt_nhbell()
 }
 
 void
-txt_clear_screen()
+txt_clear_screen(void)
 /* djgpp provides ScreenClear(), but in version 1.09 it is broken
  * so for now we just use the BIOS Routines
  */
@@ -214,7 +214,7 @@ void txt_cl_end(int col, int row) /* clear to end of line */
 #endif
 }
 
-void txt_cl_eos() /* clear to end of screen */
+void txt_cl_eos(void) /* clear to end of screen */
 {
     union REGS regs;
 #ifndef PC9800
@@ -439,7 +439,7 @@ txt_gotoxy(int x, int y)
 
 #ifdef MONO_CHECK
 int
-txt_monoadapt_check()
+txt_monoadapt_check(void)
 {
     union REGS regs;
 

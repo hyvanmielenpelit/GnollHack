@@ -514,7 +514,7 @@ tty_preference_update(const char *pref)
 #define ALGN flags.initalign
 
 void
-tty_player_selection()
+tty_player_selection(void)
 {
     int i, k, n, choice, nextpick;
     boolean getconfirmation, picksomething;
@@ -1258,7 +1258,7 @@ setup_algnmenu(winid win, boolean filtering, int role, int race, int gend)
  * Always called after init_nhwindows() and before display_gamewindows().
  */
 void
-tty_askname()
+tty_askname(void)
 {
     static const char who_are_you[] = "Who are you? ";
     int c, ct, tryct = 0;
@@ -1394,7 +1394,7 @@ tty_askname()
 }
 
 void
-tty_get_nh_event()
+tty_get_nh_event(void)
 {
     return;
 }
@@ -1425,7 +1425,7 @@ tty_suspend_nhwindows(const char *str)
 }
 
 void
-tty_resume_nhwindows()
+tty_resume_nhwindows(void)
 {
     gettty();
     setftty(); /* calls start_screen */
@@ -3437,20 +3437,20 @@ tty_message_menu(char let, int how, const char *mesg)
 }
 
 void
-tty_update_inventory()
+tty_update_inventory(void)
 {
     return;
 }
 
 void
-tty_mark_synch()
+tty_mark_synch(void)
 {
     HUPSKIP();
     (void) fflush(stdout);
 }
 
 void
-tty_wait_synch()
+tty_wait_synch(void)
 {
     HUPSKIP();
     /* we just need to make sure all windows are synch'd */
@@ -3537,7 +3537,7 @@ docorner(int xmin, int ymax)
 }
 
 void
-end_glyphout()
+end_glyphout(void)
 {
     HUPSKIP();
 #if defined(ASCIIGRAPH) && !defined(NO_TERMS)
@@ -3648,7 +3648,7 @@ g_putch(int in_ch, boolean is_CP437)
 
 #ifdef CLIPPING
 void
-setclipped()
+setclipped(void)
 {
     clipping = TRUE;
     clipx = clipy = 0;
@@ -3854,7 +3854,7 @@ tty_raw_print_bold(const char *str)
 }
 
 int
-tty_nhgetch()
+tty_nhgetch(void)
 {
     int i;
 #ifdef UNIX
@@ -4527,7 +4527,7 @@ tty_putstatusfield(const char *text, int x, int y)
 #if 0
 /* caller must set cond_shrinklvl (0..2) before calling us */
 static int
-condition_size()
+condition_size(void)
 {
     int64_t mask;
     int c, lth;

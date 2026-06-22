@@ -18691,7 +18691,7 @@ clear_hearing_array_and_ambient_sounds(void)
     update_ambient_sounds();
 }
 
-int get_max_hearing_distance()
+int get_max_hearing_distance(void)
 {
     return (u.uswallow ? 1 : Underwater ? 2 : MAX_HEARING_DISTANCE);
 }

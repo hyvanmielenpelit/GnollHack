@@ -375,7 +375,7 @@ curses_character_input_dialog(int attr, int color, const char *prompt, const cha
 /* Return an extended command from the user */
 
 int
-curses_ext_cmd()
+curses_ext_cmd(void)
 {
     int count, letter, prompt_width, startx, starty, winx, winy;
     int messageh, messagew, maxlen = BUFSZ - 1;

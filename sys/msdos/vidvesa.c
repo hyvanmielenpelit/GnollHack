@@ -378,14 +378,14 @@ vesa_FillRect(unsigned left, unsigned top, unsigned width, unsigned height, unsi
 }
 
 void
-vesa_get_scr_size()
+vesa_get_scr_size(void)
 {
     CO = 80;
     LI = 29;
 }
 
 void
-vesa_backsp()
+vesa_backsp(void)
 {
     int col, row;
 
@@ -436,7 +436,7 @@ vesa_cl_eos(int cy)
 }
 
 void
-vesa_tty_end_screen()
+vesa_tty_end_screen(void)
 {
     vesa_clear_screen(BACKGROUND_VESA_COLOR);
     vesa_SwitchMode(MODETEXT);
@@ -590,7 +590,7 @@ vesa_cliparound(int x, int y, boolean force)
 }
 
 static void
-vesa_redrawmap()
+vesa_redrawmap(void)
 {
     int x, y, t;
     const struct TileImage *packcell;
@@ -695,7 +695,7 @@ vesa_traditional(boolean on)
 }
 
 void
-vesa_refresh()
+vesa_refresh(void)
 {
     positionbar();
     vesa_redrawmap();
@@ -858,7 +858,7 @@ vesa_FontPtrs(void)
  * returns a VbeInfoBlock describing the features of the VESA BIOS.
  */
 int
-vesa_detect()
+vesa_detect(void)
 {
     int vbe_info_sel = -1; /* custodial */
     int vbe_info_seg;
@@ -1345,7 +1345,7 @@ vesa_update_positionbar(char *posbar)
 }
 
 static void
-positionbar()
+positionbar(void)
 {
     char *posbar = pbar;
     int feature, ucol;
@@ -1433,7 +1433,7 @@ positionbar()
 static unsigned long undercursor[TILE_Y][TILE_X];
 
 void
-vesa_DrawCursor()
+vesa_DrawCursor(void)
 {
     unsigned x, y, left, top, right, bottom, width;
     boolean isrogue = Is_rogue_level(&u.uz);
@@ -1525,7 +1525,7 @@ vesa_DrawCursor()
 }
 
 void
-vesa_HideCursor()
+vesa_HideCursor(void)
 {
     unsigned x, y, left, top, width;
     boolean isrogue = Is_rogue_level(&u.uz);

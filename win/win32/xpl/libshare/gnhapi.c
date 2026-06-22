@@ -454,13 +454,13 @@ LibGetMaxMajorConsultations(const char *gnhdir)
 }
 
 DLLEXPORT int
-LibGetFirstCatalogue()
+LibGetFirstCatalogue(void)
 {
     return FIRST_CATALOGUE;
 }
 
 DLLEXPORT int
-LibGetNumCatalogues()
+LibGetNumCatalogues(void)
 {
     return NUM_CATALOGUES;
 }

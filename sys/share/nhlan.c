@@ -20,7 +20,7 @@
 #ifdef LAN_FEATURES
 
 void
-init_lan_features()
+init_lan_features(void)
 {
     lan_username();
 }
@@ -33,7 +33,7 @@ char lusername[MAX_LAN_USERNAME];
 size_t lusername_size = MAX_LAN_USERNAME;
 
 char *
-lan_username()
+lan_username(void)
 {
     char *lu;
     lu = get_username(&lusername_size);

@@ -50,7 +50,7 @@ toggle_topl_attr(boolean on, int attr, int color)
 }
 
 int
-tty_doprev_message()
+tty_doprev_message(void)
 {
     struct WinDesc *cw = wins[WIN_MESSAGE];
     winid prevmsg_win;
@@ -196,7 +196,7 @@ show_topl2(const char *str, const char *attrs, const char *colors, int attr, int
 
 /* used by update_topl(); also by tty_putstr() */
 void
-remember_topl()
+remember_topl(void)
 {
     struct WinDesc *cw = wins[WIN_MESSAGE];
     int64_t idx = cw->maxrow;
@@ -275,7 +275,7 @@ addtopl2(const char *s, const char *attrs, const char *colors, int attr, int col
 }
 
 void
-more()
+more(void)
 {
     struct WinDesc *cw = wins[WIN_MESSAGE];
 

@@ -68,7 +68,7 @@ int def_kbhit(void);
 int (*nt_kbhit)() = def_kbhit;
 
 char
-switchar()
+switchar(void)
 {
     /* Could not locate a WIN32 API call for this- MJA */
     return '-';
@@ -108,13 +108,13 @@ findfirst(const char *path)
 }
 
 int
-findnext()
+findnext(void)
 {
     return FindNextFile(ffhandle, &ffd) ? 1 : 0;
 }
 
 char *
-foundfile_buffer()
+foundfile_buffer(void)
 {
     return &ffd.cFileName[0];
 }
@@ -143,7 +143,7 @@ chdrive(char *str)
 }
 
 static int
-max_filename()
+max_filename(void)
 {
     DWORD maxflen;
     int status = 0;
@@ -157,7 +157,7 @@ max_filename()
 }
 
 int
-def_kbhit()
+def_kbhit(void)
 {
     return 0;
 }
@@ -200,7 +200,7 @@ get_username(size_t *lan_username_size)
 }
 
 #if 0
-char *getxxx()
+char *getxxx(void)
 {
 char     szFullPath[MAX_PATH] = "";
 HMODULE  hInst = NULL;      /* NULL gets the filename of this module */
@@ -244,7 +244,7 @@ Delay(int ms)
 }
 
 void
-win32_abort()
+win32_abort(void)
 {
     boolean is_tty = FALSE;
 
@@ -551,7 +551,7 @@ getreturn(const char *str)
 
 /* GnollHack_enter_winnt() is called from main immediately after
    initializing the window port */
-void GnollHack_enter_winnt()
+void GnollHack_enter_winnt(void)
 {
     if (WINDOWPORT("tty"))
         GnollHack_enter_nttty();

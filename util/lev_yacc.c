@@ -2498,7 +2498,8 @@ int yydebug;
 # define YYMAXDEPTH 10000
 #endif
 
-
+
+
 
 #if YYERROR_VERBOSE
 
@@ -2709,7 +2710,8 @@ yysyntax_error (char *yyresult, int yystate, int yychar)
     }
 }
 #endif /* YYERROR_VERBOSE */
-
+
+
 
 /*-----------------------------------------------.
 | Release the memory associated to this symbol.  |
@@ -2790,7 +2792,7 @@ int
 yyparse (void)
 #else
 int
-yyparse ()
+yyparse(void)
 
 #endif
 #endif

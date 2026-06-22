@@ -4882,7 +4882,7 @@ skipfloor:
 /* Side effects of vomiting */
 /* added nomul (MRS) - it makes sense, you're too busy being sick! */
 void
-vomit() /* A good idea from David Neves */
+vomit(void) /* A good idea from David Neves */
 {
     if (cantvomit(youmonst.data)) 
     {

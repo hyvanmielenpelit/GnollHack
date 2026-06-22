@@ -117,7 +117,7 @@ traditional(boolean on)
 }
 
 static void
-refresh()
+refresh(void)
 {
 #ifdef SCREEN_VGA
     if (iflags.usevga)

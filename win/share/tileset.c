@@ -101,7 +101,7 @@ error:
 }
 
 const struct Pixel *
-get_palette()
+get_palette(void)
 {
     return have_palette ? palette : NULL;
 }
@@ -114,7 +114,7 @@ get_tile_map(const char *image_desc)
 }
 
 void
-free_tiles()
+free_tiles(void)
 {
     unsigned i;
 

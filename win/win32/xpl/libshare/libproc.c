@@ -1133,7 +1133,7 @@ void lib_set_health_color(int nhcolor)
     //Callback set health color    
 }
 
-void lib_bot_updated()
+void lib_bot_updated(void)
 {
     //Callback redraw status??    
 }

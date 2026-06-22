@@ -359,7 +359,7 @@ ext_cmd_getlin_hook(char *base)
  * stop when we have found enough characters to make a unique command.
  */
 int
-tty_get_ext_cmd()
+tty_get_ext_cmd(void)
 {
     int i;
     char buf[BUFSZ];

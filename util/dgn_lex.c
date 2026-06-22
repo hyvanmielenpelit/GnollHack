@@ -1354,7 +1354,7 @@ case YY_STATE_EOF(INITIAL):
  *	EOB_ACT_END_OF_FILE - end of file
  */
 
-static int yy_get_next_buffer()
+static int yy_get_next_buffer(void)
 	{
 	register char *dest = yy_current_buffer->yy_ch_buf;
 	register char *source = yytext_ptr;
@@ -1486,7 +1486,7 @@ static int yy_get_next_buffer()
 
 /* yy_get_previous_state - get the state just before the EOB char was reached */
 
-static yy_state_type yy_get_previous_state()
+static yy_state_type yy_get_previous_state(void)
 	{
 	register yy_state_type yy_current_state;
 	register char *yy_cp;
@@ -1596,9 +1596,9 @@ register char *yy_bp;
 
 
 #ifdef __cplusplus
-static int yyinput()
+static int yyinput(void)
 #else
-static int input()
+static int input(void)
 #endif
 	{
 	int c;
@@ -1717,7 +1717,7 @@ YY_BUFFER_STATE new_buffer;
 #ifdef YY_USE_PROTOS
 void yy_load_buffer_state( void )
 #else
-void yy_load_buffer_state()
+void yy_load_buffer_state(void)
 #endif
 	{
 	yy_n_chars = yy_current_buffer->yy_n_chars;
@@ -1970,7 +1970,7 @@ int new_state;
 
 
 #ifndef YY_NO_POP_STATE
-static void yy_pop_state()
+static void yy_pop_state(void)
 	{
 	if ( --yy_start_stack_ptr < 0 )
 		YY_FATAL_ERROR( "start-condition stack underflow" );
@@ -1981,7 +1981,7 @@ static void yy_pop_state()
 
 
 #ifndef YY_NO_TOP_STATE
-static int yy_top_state()
+static int yy_top_state(void)
 	{
 	return yy_start_stack[yy_start_stack_ptr - 1];
 	}
@@ -2094,7 +2094,7 @@ void *ptr;
 	}
 
 #if YY_MAIN
-int main()
+int main(void)
 	{
 	yylex();
 	return 0;

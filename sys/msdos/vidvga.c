@@ -208,14 +208,14 @@ static struct overview_planar_cell_struct planecell_O;
 /* static int  g_attribute;	*/ /* Current attribute to use */
 
 void
-vga_get_scr_size()
+vga_get_scr_size(void)
 {
     CO = 80;
     LI = 29;
 }
 
 void
-vga_backsp()
+vga_backsp(void)
 {
     int col, row;
 
@@ -282,7 +282,7 @@ void vga_cl_eos(int cy) /* clear to end of screen */
 }
 
 void
-vga_tty_end_screen()
+vga_tty_end_screen(void)
 {
     vga_clear_screen(BACKGROUND_VGA_COLOR);
     vga_SwitchMode(MODETEXT);
@@ -556,7 +556,7 @@ vga_traditional(boolean on)
 }
 
 void
-vga_refresh()
+vga_refresh(void)
 {
     positionbar();
     vga_redrawmap(1);
@@ -884,7 +884,7 @@ vga_FontPtrs(void)
  * 0xB=MCGA(mono-monitor), 0xC=MCGA(color-monitor), 0xFF=unknown)
  */
 int
-vga_detect()
+vga_detect(void)
 {
     union REGS regs;
 
@@ -1090,7 +1090,7 @@ vga_update_positionbar(char *posbar)
 }
 
 static void
-positionbar()
+positionbar(void)
 {
     char *posbar = pbar;
     int feature, ucol;
@@ -1232,7 +1232,7 @@ static struct planar_cell_struct undercursor;
 static struct planar_cell_struct cursor;
 
 void
-vga_DrawCursor()
+vga_DrawCursor(void)
 {
     int i, pixx, pixy, x, y, p;
     char __far *tmp1;
@@ -1447,7 +1447,7 @@ vga_DrawCursor()
 }
 
 void
-vga_HideCursor()
+vga_HideCursor(void)
 {
     int i, pixx, pixy, x, y;
     char __far *tmp1;

@@ -261,7 +261,7 @@ int lastmontile, lastobjtile, lastothtile;
  * introduced in 3.3.1.
  */
 void
-init_tilemap()
+init_tilemap(void)
 {
     int i, j;
     short condnum, tilenum;
@@ -489,7 +489,7 @@ process_substitutions(FILE *ofp)
 }
 
 int
-main()
+main(void)
 {
     int i;
     char filename[30];

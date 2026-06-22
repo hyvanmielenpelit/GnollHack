@@ -87,7 +87,7 @@ extern void linux_mapoff(void);
 
 #ifdef AUX
 void
-catch_stp()
+catch_stp(void)
 {
     signal(SIGTSTP, SIG_DFL);
 #if !defined(GNH_MOBILE)
@@ -97,7 +97,7 @@ catch_stp()
 #endif /* AUX */
 
 void
-getwindowsz()
+getwindowsz(void)
 {
 #ifdef USE_WIN_IOCTL
     /*
@@ -120,7 +120,7 @@ getwindowsz()
 }
 
 void
-getioctls()
+getioctls(void)
 {
 #ifdef BSD_JOB_CONTROL
     (void) ioctl(fileno(stdin), (int) TIOCGLTC, (char *) &ltchars);
@@ -143,7 +143,7 @@ getioctls()
 }
 
 void
-setioctls()
+setioctls(void)
 {
 #ifdef BSD_JOB_CONTROL
     (void) ioctl(fileno(stdin), (int) TIOCSLTC, (char *) &ltchars);
@@ -162,7 +162,7 @@ setioctls()
 
 #if defined(SUSPEND) && !defined(GNH_MOBILE) /* No longer implies BSD */
 int
-dosuspend()
+dosuspend(void)
 {
 #ifdef SYSCF
     /* NB: check_user_string() is port-specific. */

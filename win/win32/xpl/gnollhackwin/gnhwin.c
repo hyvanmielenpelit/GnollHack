@@ -17,7 +17,7 @@
 //#include <pthread.h>
 
 static int
-eraseoldlocks()
+eraseoldlocks(void)
 {
     int i;
 
@@ -37,7 +37,7 @@ eraseoldlocks()
 }
 
 void
-getlock()
+getlock(void)
 {
     int fd;
     const char *fq_lock;
@@ -95,13 +95,13 @@ gotlock:
 }
 
 int
-dosh()
+dosh(void)
 {
     return 0;
 }
 
 void
-check_crash()
+check_crash(void)
 {
     if (!*recovery_plname)
         return;

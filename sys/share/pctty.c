@@ -20,7 +20,7 @@ char erase_char, kill_char;
  * Called by startup() in termcap.c and after returning from ! or ^Z
  */
 void
-gettty()
+gettty(void)
 {
     erase_char = '\b';
     kill_char = 21; /* cntl-U */
@@ -50,7 +50,7 @@ settty(const char *s)
 
 /* called by init_nhwindows() and resume_nhwindows() */
 void
-setftty()
+setftty(void)
 {
     start_screen();
 }

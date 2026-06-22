@@ -226,7 +226,7 @@ curses_init_nhwindows(int *argcp UNUSED,
    the process. You need to fill in pl_character[0].
 */
 void
-curses_player_selection()
+curses_player_selection(void)
 {
     curses_choose_character();
 }
@@ -234,7 +234,7 @@ curses_player_selection()
 
 /* Ask the user for a player name. */
 void
-curses_askname()
+curses_askname(void)
 {
     curses_line_input_dialog(GETLINE_GENERAL, ATR_NONE, NO_COLOR, "Who are you?", plname, PL_NSIZ);
 }
@@ -244,7 +244,7 @@ curses_askname()
    A noop for the tty and X window-ports.
 */
 void
-curses_get_nh_event()
+curses_get_nh_event(void)
 {
     boolean do_reset = FALSE;
 
@@ -303,7 +303,7 @@ curses_suspend_nhwindows(const char *str UNUSED)
 
 /* Restore the windows after being suspended. */
 void
-curses_resume_nhwindows()
+curses_resume_nhwindows(void)
 {
     curses_refresh_nethack_windows();
 }
@@ -678,7 +678,7 @@ mark_synch()    -- Don't go beyond this point in I/O on any channel until
                    for the moment
 */
 void
-curses_mark_synch()
+curses_mark_synch(void)
 {
 }
 
@@ -689,7 +689,7 @@ wait_synch()    -- Wait until all pending output is complete (*flush*() for
                    display is OK when return from wait_synch().
 */
 void
-curses_wait_synch()
+curses_wait_synch(void)
 {
 }
 
@@ -816,7 +816,7 @@ int nhgetch()   -- Returns a single character input from the user.
                    Returned character _must_ be non-zero.
 */
 int
-curses_nhgetch()
+curses_nhgetch(void)
 {
     int ch;
 
@@ -862,7 +862,7 @@ nhbell()        -- Beep at user.  [This will exist at least until sounds are
                    redone, since sounds aren't attributable to windows anyway.]
 */
 void
-curses_nhbell()
+curses_nhbell(void)
 {
     beep();
 }
@@ -873,7 +873,7 @@ doprev_message()
                 -- On the tty-port this scrolls WIN_MESSAGE back one line.
 */
 int
-curses_doprev_message()
+curses_doprev_message(void)
 {
     curses_prev_mesg();
     return 0;
@@ -934,7 +934,7 @@ int get_ext_cmd(void)
                selection, -1 otherwise.
 */
 int
-curses_get_ext_cmd()
+curses_get_ext_cmd(void)
 {
     return curses_ext_cmd();
 }
@@ -956,7 +956,7 @@ delay_output()  -- Causes a visible delay of 50ms in the output.
                by a nap(50ms), but allows asynchronous operation.
 */
 void
-curses_delay_output()
+curses_delay_output(void)
 {
     /* refreshing the whole display is a waste of time,
      * but that's why we're here */
@@ -990,7 +990,7 @@ start_screen()  -- Only used on Unix tty ports, but must be declared for
                just declare an empty function.
 */
 void
-curses_start_screen()
+curses_start_screen(void)
 {
 }
 
@@ -999,7 +999,7 @@ end_screen()    -- Only used on Unix tty ports, but must be declared for
                completeness.  The complement of start_screen().
 */
 void
-curses_end_screen()
+curses_end_screen(void)
 {
 }
 

@@ -74,7 +74,7 @@ int xmsstatus;
 void _resizeOvrBuffer(void);
 
 void
-_resizeOvrBuffer()
+_resizeOvrBuffer(void)
 {
     mem_top = (unsigned far *) MK_FP(_psp, 0x02);
     total = *mem_top - _psp;
@@ -101,7 +101,7 @@ _resizeOvrBuffer()
 #pragma startup _resizeOvrBuffer 0 /* Put function in table */
 
 void
-startup()
+startup(void)
 {
     if (appFail) {
         printf("NetHack fits in memory, but it cannot allocate memory");

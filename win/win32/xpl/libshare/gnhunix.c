@@ -30,7 +30,7 @@ char *s;
 }
 
 static int
-eraseoldlocks()
+eraseoldlocks(void)
 {
     int i;
 
@@ -51,7 +51,7 @@ eraseoldlocks()
 }
 
 void
-getlock()
+getlock(void)
 {
     int fd;
     const char *fq_lock;
@@ -109,13 +109,13 @@ gotlock:
 }
 
 int
-dosh()
+dosh(void)
 {
     return 0;
 }
 
 void
-check_crash()
+check_crash(void)
 {
     if (!*recovery_plname)
         return;
@@ -247,7 +247,7 @@ gnh_umask(void)
 }
 
 uint64_t
-sys_random_seed()
+sys_random_seed(void)
 {
     uint64_t seed = 0L;
     uint64_t pid = (uint64_t)getpid();

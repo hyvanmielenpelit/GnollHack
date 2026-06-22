@@ -632,7 +632,7 @@ process_command_line_arguments(int argc, char *argv[])
 }
 
 static void
-nhusage()
+nhusage(void)
 {
     char buf1[BUFSZ], buf2[BUFSZ], *bufptr;
 
@@ -680,7 +680,7 @@ safe_routines(void)
 
 #ifdef PORT_HELP
 void
-port_help()
+port_help(void)
 {
     /* display port specific help file */
     display_file(PORT_HELP, 1);
@@ -689,7 +689,7 @@ port_help()
 
 /* validate wizard mode if player has requested access to it */
 boolean
-authorize_wizard_mode()
+authorize_wizard_mode(void)
 {
     if (!strcmp(plname, WIZARD_NAME))
         return TRUE;
@@ -705,7 +705,7 @@ extern HANDLE hConOut;
 boolean has_fakeconsole;
 
 char *
-exename()
+exename(void)
 {
     int bsize = PATHLEN;
     char *tmp = exenamebuf, *tmp2;
@@ -755,7 +755,7 @@ fakeconsole(void)
 #endif
     return has_fakeconsole;
 }
-void freefakeconsole()
+void freefakeconsole(void)
 {
     if (has_fakeconsole) {
         FreeConsole();
@@ -810,14 +810,14 @@ windows_raw_print_bold(const char *str)
 }
 
 int
-windows_nhgetch()
+windows_nhgetch(void)
 {
     return getchar();
 }
 
 
 void
-windows_nhbell()
+windows_nhbell(void)
 {
     return;
 }
@@ -845,7 +845,7 @@ windows_getlin_ex(int style UNUSED, int attr UNUSED, int color UNUSED, const cha
 
 #ifdef PC_LOCKING
 static int
-eraseoldlocks()
+eraseoldlocks(void)
 {
     int i;
 
@@ -868,7 +868,7 @@ eraseoldlocks()
 }
 
 void
-getlock()
+getlock(void)
 {
     int fd, c, ci, ct, ern;
     int fcmask = FCMASK;

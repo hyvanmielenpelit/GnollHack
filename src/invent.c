@@ -7452,7 +7452,7 @@ reassign(void)
  *      is unnamed and source is named.
  */
 int
-doorganize() /* inventory organizer by Del Lamb */
+doorganize(void) /* inventory organizer by Del Lamb */
 {
     struct obj *obj, *otmp, *splitting, *bumped;
     int ix, cur, trycnt, goldstacks;

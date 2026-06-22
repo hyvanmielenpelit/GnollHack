@@ -26,14 +26,14 @@ static void write_header(void);
 static void WriteTileStrip(void);
 
 static void
-write_header()
+write_header(void)
 {
     (void) fprintf(ppm_file, "P6 %03d %03d 255\n", PpmScreen.Width,
                    PpmScreen.Height);
 }
 
 static void
-WriteTileStrip()
+WriteTileStrip(void)
 {
     int i, j;
 
@@ -103,7 +103,7 @@ write_ppm_tile(pixel (*pixels)[TILE_X])
 }
 
 int
-fclose_ppm_file()
+fclose_ppm_file(void)
 {
     int i, j;
 

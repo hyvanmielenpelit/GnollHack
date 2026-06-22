@@ -153,19 +153,19 @@ safe_init_nhwindows(int *argcp UNUSED, char **argv UNUSED)
 }
 
 void
-safe_player_selection()
+safe_player_selection(void)
 {
     return;
 }
 
 void
-safe_askname()
+safe_askname(void)
 {
     return;
 }
 
 void
-safe_get_nh_event()
+safe_get_nh_event(void)
 {
     return;
 }
@@ -177,7 +177,7 @@ safe_suspend_nhwindows(const char *str)
 }
 
 void
-safe_resume_nhwindows()
+safe_resume_nhwindows(void)
 {
     return;
 }
@@ -318,18 +318,18 @@ safe_message_menu(char let, int how, const char *mesg)
 }
 
 void
-safe_update_inventory()
+safe_update_inventory(void)
 {
     return;
 }
 
 void
-safe_mark_synch()
+safe_mark_synch(void)
 {
 }
 
 void
-safe_wait_synch()
+safe_wait_synch(void)
 {
 }
 
@@ -370,7 +370,7 @@ safe_raw_print_bold(const char *str)
 }
 
 int
-safe_nhgetch()
+safe_nhgetch(void)
 {
     return '\033';
 }
@@ -412,7 +412,7 @@ safe_status_init(int reassessment)
 }
 
 boolean
-safe_can_suspend()
+safe_can_suspend(void)
 {
     return FALSE;
 }
@@ -587,13 +587,13 @@ safe_exit_hack(int status)
 
 
 void
-safe_nhbell()
+safe_nhbell(void)
 {
     return;
 }
 
 int
-safe_doprev_message()
+safe_doprev_message(void)
 {
     return 0;
 }
@@ -612,7 +612,7 @@ safe_getlin_ex(int style UNUSED, int attr UNUSED, int color UNUSED, const char *
 }
 
 int
-safe_get_ext_cmd()
+safe_get_ext_cmd(void)
 {
     return '\033';
 }
@@ -624,7 +624,7 @@ safe_number_pad(int mode)
 }
 
 void
-safe_delay_output()
+safe_delay_output(void)
 {
     return;
 }
@@ -674,13 +674,13 @@ safe_get_color_string(void)
 
 
 void
-safe_start_screen()
+safe_start_screen(void)
 {
     return;
 }
 
 void
-safe_end_screen()
+safe_end_screen(void)
 {
     return;
 }
@@ -714,7 +714,7 @@ safe_putmsghistory_ex(const char *msg UNUSED, const char *attrs UNUSED, const ch
 }
 
 void
-safe_status_finish()
+safe_status_finish(void)
 {
 }
 
@@ -748,7 +748,7 @@ safe_status_update(int idx, genericptr_t ptr, int chg UNUSED, int percent UNUSED
 
 /* Add to your code: windowprocs.win_raw_print = stdio_wait_synch; */
 void
-stdio_wait_synch()
+stdio_wait_synch(void)
 {
     char valid[] = {' ', '\n', '\r', '\033', '\0'};
 
@@ -777,7 +777,7 @@ stdio_raw_print_bold(const char *str)
 
 /* Add to your code: windowprocs.win_nhgetch = stdio_nhgetch; */
 int
-stdio_nhgetch()
+stdio_nhgetch(void)
 {
     return getchar();
 }

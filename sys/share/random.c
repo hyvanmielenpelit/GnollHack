@@ -360,7 +360,7 @@ setstate(char *arg_state)
  */
 
 long
-random()
+random(void)
 {
     long i;
 

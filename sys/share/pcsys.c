@@ -56,7 +56,7 @@ static boolean comspec_exists(void);
 #if defined(MICRO)
 
 void
-flushout()
+flushout(void)
 {
     (void) fflush(stdout);
     return;
@@ -73,7 +73,7 @@ static const char *COMSPEC =
 
 #ifdef SHELL
 int
-dosh()
+dosh(void)
 {
     extern char orgdir[];
     char *comspec;
@@ -246,7 +246,7 @@ error_copying:
 }
 
 void
-playwoRAMdisk()
+playwoRAMdisk(void)
 {
     int c;
 
@@ -305,7 +305,7 @@ saveDiskPrompt(int start)
 
 /* Return 1 if the record file was found */
 static boolean
-record_exists()
+record_exists(void)
 {
     FILE *fp;
 
@@ -324,7 +324,7 @@ record_exists()
 #ifdef MFLOPPY
 /* Return 1 if the comspec was found */
 static boolean
-comspec_exists()
+comspec_exists(void)
 {
     int fd;
     char *comspec;
@@ -343,7 +343,7 @@ comspec_exists()
 /* Prompt for game disk, then check for record file.
  */
 void
-gameDiskPrompt()
+gameDiskPrompt(void)
 {
     if (sysflags.asksavedisk) {
         if (record_exists() && comspec_exists())
@@ -491,7 +491,7 @@ extern boolean run_from_desktop; /* set in pcmain.c */
 #endif
 
 static void
-msexit()
+msexit(void)
 {
 #ifdef CHDIR
     extern char orgdir[];

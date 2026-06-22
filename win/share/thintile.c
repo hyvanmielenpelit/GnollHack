@@ -29,7 +29,7 @@ static int filenum;
 static char comment[BUFSZ];
 
 static void
-copy_colormap()
+copy_colormap(void)
 {
     int r, g, b;
     char c[2];
@@ -41,7 +41,7 @@ copy_colormap()
 }
 
 static boolean
-read_txttile()
+read_txttile(void)
 {
     int i, j;
     char buf[BUFSZ];
@@ -84,7 +84,7 @@ read_txttile()
 }
 
 static void
-write_thintile()
+write_thintile(void)
 {
     int i, j;
 

@@ -307,7 +307,7 @@ whoami(void)
 
 #ifdef PORT_HELP
 void
-port_help()
+port_help(void)
 {
     /*
      * Display unix-specific help.   Just show contents of the helpfile

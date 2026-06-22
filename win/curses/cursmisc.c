@@ -40,7 +40,7 @@ static int parse_escape_sequence(void);
 /* Read a character of input from the user */
 
 int
-curses_read_char()
+curses_read_char(void)
 {
     int ch;
     
@@ -667,7 +667,7 @@ curses_move_cursor(winid wid, int x, int y)
 /* Perform actions that should be done every turn before nhgetch() */
 
 void
-curses_prehousekeeping()
+curses_prehousekeeping(void)
 {
 #ifndef PDCURSES
     WINDOW *win = curses_get_nhwin(MAP_WIN);
@@ -690,7 +690,7 @@ curses_prehousekeeping()
 /* Perform actions that should be done every turn after nhgetch() */
 
 void
-curses_posthousekeeping()
+curses_posthousekeeping(void)
 {
     curs_set(0);
     /* curses_decrement_highlights(FALSE); */

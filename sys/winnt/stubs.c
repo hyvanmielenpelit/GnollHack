@@ -25,7 +25,7 @@ struct window_procs Qt_procs = { "-guistubs" };
 int qt_tilewidth, qt_tileheight, qt_fontsize, qt_compact_mode;
 #endif
 void
-mswin_destroy_reg()
+mswin_destroy_reg(void)
 {
     return;
 }
@@ -86,19 +86,19 @@ xputs(const char *s)
 }
 
 void
-raw_clear_screen()
+raw_clear_screen(void)
 {
     return;
 }
 
 void
-clear_screen()
+clear_screen(void)
 {
     return;
 }
 
 void
-backsp()
+backsp(void)
 {
     return;
 }
@@ -111,7 +111,7 @@ has_color(int color)
 
 #ifndef NO_MOUSE_ALLOWED
 void
-toggle_mouse_support()
+toggle_mouse_support(void)
 {
     return;
 }
@@ -119,12 +119,12 @@ toggle_mouse_support()
 
 #ifdef PORT_DEBUG
 void
-win32con_debug_keystrokes()
+win32con_debug_keystrokes(void)
 {
     return;
 }
 void
-win32con_handler_info()
+win32con_handler_info(void)
 {
     return;
 }
@@ -160,20 +160,20 @@ void nttty_error
 
 #ifdef TTY_GRAPHICS
 void
-synch_cursor()
+synch_cursor(void)
 {
     return;
 }
 #endif
 
 void
-more()
+more(void)
 {
     return;
 }
 
 void
-GnollHack_enter_nttty()
+GnollHack_enter_nttty(void)
 {
     return;
 }

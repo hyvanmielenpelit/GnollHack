@@ -167,7 +167,7 @@ open_levelfile(int lev)
 }
 
 int
-create_savefile()
+create_savefile(void)
 {
     int fd;
 
