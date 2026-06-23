@@ -3889,7 +3889,7 @@ SPELL("enlightenment",    "illuminating", None, None, "Provides enlightenment ab
     3, 20, A_WIS, 0, 0, 200, 0, 1, NODIR, NODIR_NONE, 0, 0, 0, 0, 0, 0, 0,
     S1_NO_SOMATIC_COMPONENT, S2_NONE, ALL_TARGETS, AD_NONE, HI_ZAP, OBJECT_SOUNDSET_SPELLBOOK,
     O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE),
-SPELL("remove curse",     "wrinkled", None, None, "Removes curse from an item",
+SPELL("remove curse",     "wrinkled", None, None, "Removes curse from all worn items",
     P_CLERIC_SPELL,  4,  5, 0, 
     5, 40, A_WIS, 0, 0, 100, 0, 1, NODIR, NODIR_NONE, 0, 0, 0, 0, 0, 0, 0,
     S1_NO_SOMATIC_COMPONENT, S2_NONE, ALL_TARGETS, AD_NONE, HI_PAPER, OBJECT_SOUNDSET_SPELLBOOK,
