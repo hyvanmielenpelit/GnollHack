@@ -4128,6 +4128,7 @@ namespace GnollHackX
             new SelectableShortcutButton("Force Fight", "Fight", 'F', false, false, 0, AppResourceName + ".Assets.UI.fight.png"),
             new SelectableShortcutButton("Inventory", "Inventory", 'i', false, false, 0, AppResourceName + ".Assets.UI.inventory.png"),
             new SelectableShortcutButton("Kick", "Kick", 'd', true, false, 0, AppResourceName + ".Assets.UI.kick.png"),
+            new SelectableShortcutButton("Loot", "Loot", 'l', false, true, 0, AppResourceName + ".Assets.UI.loot.png"),
             new SelectableShortcutButton("Pick-axe", "Pick-axe", 'X', false, true, 0, AppResourceName + ".Assets.UI.pickaxe.png"),
             new SelectableShortcutButton("Polearm", "Polearm", 'P', false, true, 0, AppResourceName + ".Assets.UI.polearm.png"),
             new SelectableShortcutButton("Read", "Read", 'r', false, false, 0, AppResourceName + ".Assets.UI.read.png"),
