@@ -9237,6 +9237,7 @@ click_to_cmd(int x, int y, int mod)
     boolean has_swapped_launcher_and_ammo = (uswapwep && is_launcher(uswapwep) && ammo_and_launcher(uquiver, uswapwep));
     boolean has_throwing_weapon_quivered = (uquiver && throwing_weapon(uquiver) && !is_ammo(uquiver));
     boolean cursed_weapon_blocks_swap = (uswapwep && objects[uswapwep->otyp].oc_bimanual) || (uswapwep && uswapwep2 && !flags.swap_rhand_only) ? ((uwep && welded(uwep, &youmonst)) || (uarms && welded(uarms, &youmonst))) : (uwep && welded(uwep, &youmonst));
+    boolean use_fire_verb = has_launcher_and_ammo || (iflags.autoswap_launchers && has_swapped_launcher_and_ammo);
 
     /* Fire a bow */
     if (mod == CLICK_FIRE)
@@ -9267,26 +9268,26 @@ click_to_cmd(int x, int y, int mod)
                     else if (!path_is_clear)
                     {
                         play_sfx_sound(SFX_GENERAL_CANNOT);
-                        pline_ex(ATR_NONE, CLR_MSG_FAIL, "You cannot %s at %s; the path to it is not clear.", uwep && is_launcher(uwep) ? "fire" : "throw", mon_nam(mtmp));
+                        pline_ex(ATR_NONE, CLR_MSG_FAIL, "You cannot %s at %s; the path to it is not clear.", use_fire_verb ? "fire" : "throw", mon_nam(mtmp));
                         cmd[0] = '\0';
                     }
                     else if (mtmpinway)
                     {
                         play_sfx_sound(SFX_GENERAL_CANNOT);
-                        pline_ex(ATR_NONE, CLR_MSG_FAIL, "You cannot %s at %s; %s is in the way.", uwep && is_launcher(uwep) ? "fire" : "throw", mon_nam(mtmp), mon_nam(mtmpinway));
+                        pline_ex(ATR_NONE, CLR_MSG_FAIL, "You cannot %s at %s; %s is in the way.", use_fire_verb ? "fire" : "throw", mon_nam(mtmp), mon_nam(mtmpinway));
                         cmd[0] = '\0';
                     }
                     else
                     {
                         play_sfx_sound(SFX_GENERAL_CANNOT);
-                        pline_ex(ATR_NONE, CLR_MSG_FAIL, "You cannot %s at %s; there is something in the way.", uwep && is_launcher(uwep) ? "fire" : "throw", mon_nam(mtmp));
+                        pline_ex(ATR_NONE, CLR_MSG_FAIL, "You cannot %s at %s; there is something in the way.", use_fire_verb ? "fire" : "throw", mon_nam(mtmp));
                         cmd[0] = '\0';
                     }
                 }
                 else
                 {
                     play_sfx_sound(SFX_GENERAL_CANNOT);
-                    pline_ex(ATR_NONE, CLR_MSG_FAIL, "You cannot %s at %s; it is not lined up.", uwep && is_launcher(uwep) ? "fire" : "throw", mon_nam(mtmp));
+                    pline_ex(ATR_NONE, CLR_MSG_FAIL, "You cannot %s at %s; it is not lined up.", use_fire_verb ? "fire" : "throw", mon_nam(mtmp));
                     cmd[0] = '\0';
                 }
             }
@@ -9431,14 +9432,14 @@ click_to_cmd(int x, int y, int mod)
                                             if (!swapped_pole_inrange)
                                             {
                                                 play_sfx_sound(SFX_GENERAL_CANNOT);
-                                                pline_ex(ATR_NONE, CLR_MSG_FAIL, "You cannot swap and hit %s with %s; it is too %s. Nor is it lined up for %s.", mon_nam(mtmp), yname(uswapwep), swapped_too_far ? "far" : "close", uwep && is_launcher(uwep) ? "firing" : "throwing");
+                                                pline_ex(ATR_NONE, CLR_MSG_FAIL, "You cannot swap and hit %s with %s; it is too %s. Nor is it lined up for %s.", mon_nam(mtmp), yname(uswapwep), swapped_too_far ? "far" : "close", use_fire_verb ? "firing" : "throwing");
                                                 cmd[0] = '\0';
                                                 return cmd;
                                             }
                                             else if (cursed_weapon_blocks_swap)
                                             {
                                                 play_sfx_sound(SFX_GENERAL_CANNOT);
-                                                pline_ex(ATR_NONE, CLR_MSG_FAIL, "You cannot swap and hit %s with %s; a cursed weapon blocks swapping. Nor is it lined up for %s.", mon_nam(mtmp), yname(uswapwep), uwep && is_launcher(uwep) ? "firing" : "throwing");
+                                                pline_ex(ATR_NONE, CLR_MSG_FAIL, "You cannot swap and hit %s with %s; a cursed weapon blocks swapping. Nor is it lined up for %s.", mon_nam(mtmp), yname(uswapwep), use_fire_verb ? "firing" : "throwing");
                                                 cmd[0] = '\0';
                                                 return cmd;
                                             }
@@ -9506,26 +9507,26 @@ click_to_cmd(int x, int y, int mod)
                         else if(!path_is_clear)
                         {
                             play_sfx_sound(SFX_GENERAL_CANNOT);
-                            pline_ex(ATR_NONE, CLR_MSG_FAIL, "You cannot %s at %s; the path to it is not clear.", uwep && is_launcher(uwep) ? "fire" : "throw", mon_nam(mtmp));
+                            pline_ex(ATR_NONE, CLR_MSG_FAIL, "You cannot %s at %s; the path to it is not clear.", use_fire_verb ? "fire" : "throw", mon_nam(mtmp));
                             cmd[0] = '\0';
                         }
                         else if (mtmpinway)
                         {
                             play_sfx_sound(SFX_GENERAL_CANNOT);
-                            pline_ex(ATR_NONE, CLR_MSG_FAIL, "You cannot %s at %s; %s is in the way.", uwep && is_launcher(uwep) ? "fire" : "throw", mon_nam(mtmp), mon_nam(mtmpinway));
+                            pline_ex(ATR_NONE, CLR_MSG_FAIL, "You cannot %s at %s; %s is in the way.", use_fire_verb ? "fire" : "throw", mon_nam(mtmp), mon_nam(mtmpinway));
                             cmd[0] = '\0';
                         }
                         else
                         {
                             play_sfx_sound(SFX_GENERAL_CANNOT);
-                            pline_ex(ATR_NONE, CLR_MSG_FAIL, "You cannot %s at %s; there is something in the way.", uwep && is_launcher(uwep) ? "fire" : "throw", mon_nam(mtmp));
+                            pline_ex(ATR_NONE, CLR_MSG_FAIL, "You cannot %s at %s; there is something in the way.", use_fire_verb ? "fire" : "throw", mon_nam(mtmp));
                             cmd[0] = '\0';
                         }
                     }
                     else
                     {
                         play_sfx_sound(SFX_GENERAL_CANNOT);
-                        pline_ex(ATR_NONE, CLR_MSG_FAIL, "You cannot %s at %s; it is not lined up.", uwep && is_launcher(uwep) ? "fire" : "throw", mon_nam(mtmp));
+                        pline_ex(ATR_NONE, CLR_MSG_FAIL, "You cannot %s at %s; it is not lined up.", use_fire_verb ? "fire" : "throw", mon_nam(mtmp));
                         cmd[0] = '\0';
                     }
                 }
