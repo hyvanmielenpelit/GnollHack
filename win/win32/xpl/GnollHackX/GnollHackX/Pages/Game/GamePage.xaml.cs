@@ -14313,7 +14313,11 @@ namespace GnollHackX.Pages.Game
                             using (new SKAutoCanvasRestore(canvas, true))
                             {
                                 canvas.Translate(dest_x, dest_y);
-                                canvas.DrawBitmap(usedContentsBitmap, source_rt, target_rt, SKSamplingOptions.Default, paint);
+                                canvas.DrawBitmap(usedContentsBitmap, source_rt, target_rt
+#if GNH_MAUI
+                                    , SKSamplingOptions.Default
+#endif
+                                    , paint);
                             }
 
                             /* Middle contents */
@@ -14348,7 +14352,11 @@ namespace GnollHackX.Pages.Game
                                 using (new SKAutoCanvasRestore(canvas, true))
                                 {
                                     canvas.Translate(dest_x, dest_y);
-                                    canvas.DrawBitmap(usedContentsBitmap, source_rt, target_rt, SKSamplingOptions.Default, paint);
+                                    canvas.DrawBitmap(usedContentsBitmap, source_rt, target_rt
+#if GNH_MAUI
+                                        , SKSamplingOptions.Default
+#endif
+                                        , paint);
                                 }
 
                                 /* Top contents */
@@ -14385,7 +14393,11 @@ namespace GnollHackX.Pages.Game
                                 using (new SKAutoCanvasRestore(canvas, true))
                                 {
                                     canvas.Translate(dest_x, dest_y);
-                                    canvas.DrawBitmap(usedContentsBitmap, source_rt, target_rt, SKSamplingOptions.Default, paint);
+                                    canvas.DrawBitmap(usedContentsBitmap, source_rt, target_rt
+#if GNH_MAUI
+                                        , SKSamplingOptions.Default
+#endif
+                                        , paint);
                                 }
                             }
                         }
@@ -14510,7 +14522,11 @@ namespace GnollHackX.Pages.Game
                         using (new SKAutoCanvasRestore(canvas, true))
                         {
                             canvas.Translate(dest_x, dest_y);
-                            canvas.DrawBitmap(usedForegroundBitmap, source_rt, target_rt, SKSamplingOptions.Default, paint);
+                            canvas.DrawBitmap(usedForegroundBitmap, source_rt, target_rt
+#if GNH_MAUI
+                                , SKSamplingOptions.Default
+#endif
+                                , paint);
                         }
 
                     }
