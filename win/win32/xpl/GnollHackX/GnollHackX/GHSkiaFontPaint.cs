@@ -214,7 +214,7 @@ namespace GnollHackX
         public void DrawTextOnCanvas(SKCanvas canvas, string text, float x, float y)
         {
 #if GNH_MAUI
-            canvas.DrawText(text, x, y, _font, _paint);
+            canvas.DrawText(text, x, y, SKTextAlign.Left, _font, _paint);
 #else
             canvas.DrawText(text, x, y, _paint);
 #endif

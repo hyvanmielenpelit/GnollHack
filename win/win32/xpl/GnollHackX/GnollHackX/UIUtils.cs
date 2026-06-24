@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using SkiaSharp;
@@ -1242,7 +1242,11 @@ namespace GnollHackX
                 canvas.Translate(x, y);
                 canvas.Scale(scale);
                 canvas.RotateDegrees((float)((generalcounterdiff * 10) % 360));
+#if GNH_MAUI
+                using (SKPathBuilder path = new SKPathBuilder())
+#else
                 using (SKPath path = new SKPath())
+#endif
                 {
                     path.MoveTo(-0.1f, -0.1f);
                     path.LineTo(0f, -1f);
@@ -1256,7 +1260,12 @@ namespace GnollHackX
                     path.Close();
                     paint.Style = SKPaintStyle.Fill;
                     paint.Color = SKColors.White.WithAlpha((byte)(255 * _sparkleAnimation[generalcounterdiff % numRows, 1]));
+#if GNH_MAUI
+                    using (var finalPath = path.Detach())
+                        canvas.DrawPath(finalPath, paint);
+#else
                     canvas.DrawPath(path, paint);
+#endif
                 }
             }
             paint.Style = oldStyle;
