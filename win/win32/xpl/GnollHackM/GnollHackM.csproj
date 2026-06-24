@@ -1184,9 +1184,9 @@
 		<!--<PackageReference Include="System.Text.Json" Version="10.0.9" />-->
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
 
-		<PackageReference Include="SkiaSharp" Version="3.119.1" />
-		<PackageReference Include="SkiaSharp.Views.Maui.Controls" Version="3.119.1" />
-		<PackageReference Include="SkiaSharp.Views.Maui.Core" Version="3.119.1" />
+		<PackageReference Include="SkiaSharp" Version="4.148.0" />
+		<PackageReference Include="SkiaSharp.Views.Maui.Controls" Version="4.148.0" />
+		<PackageReference Include="SkiaSharp.Views.Maui.Core" Version="4.148.0" />
 
 		<PackageReference Include="Microsoft.Maui.Controls" Version="10.0.51" />
     <PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="10.0.51" />
