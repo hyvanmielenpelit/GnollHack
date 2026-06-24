@@ -243,7 +243,11 @@ namespace GnollHackX
                                 break;
                         }
                         targetRect = new SKRect(target_x, target_y, target_x + target_width, target_y + target_height);
-                        canvas.DrawImage(_caruselBitmaps[idx].Bitmap, sourceRect, targetRect, bmpPaint);
+                        canvas.DrawImage(_caruselBitmaps[idx].Bitmap, sourceRect, targetRect
+#if GNH_MAUI
+                        , SKSamplingOptions.Default
+#endif
+                        , bmpPaint);
 
                         if (cnt > 1)
                         {
@@ -293,7 +297,11 @@ namespace GnollHackX
 
                                     byte oldalpha = bmpPaint.Color.Alpha;
                                     bmpPaint.Color = bmpPaint.Color.WithAlpha(alpha);
-                                    canvas.DrawImage(_caruselBitmaps[idx2].Bitmap, sourceRect, targetRect, bmpPaint);
+                                    canvas.DrawImage(_caruselBitmaps[idx2].Bitmap, sourceRect, targetRect
+#if GNH_MAUI
+                                    , SKSamplingOptions.Default
+#endif
+                                    , bmpPaint);
                                     bmpPaint.Color = bmpPaint.Color.WithAlpha(oldalpha);
                                 }
                             }

@@ -5231,7 +5231,11 @@ namespace GnollHackX.Pages.Game
                 StartProfiling(GHProfilingStyle.Bitmap);
 #endif
                 GHApp.MaybeFixRects(ref sourcerect, ref targetrect, targetscale, usingGL, fixRects, fixFiltering);
-                canvas.DrawImage(TileMap[sheet_idx], sourcerect, targetrect);
+                canvas.DrawImage(TileMap[sheet_idx], sourcerect, targetrect
+#if GNH_MAUI
+                , SKSamplingOptions.Default
+#endif
+                );
 #if GNH_MAP_PROFILING && DEBUG
                 StopProfiling(GHProfilingStyle.Bitmap);
 #endif
@@ -5293,7 +5297,11 @@ namespace GnollHackX.Pages.Game
                 StartProfiling(GHProfilingStyle.Bitmap);
 #endif
                 GHApp.MaybeFixRects(ref sourcerect, ref targetrect, targetscale, usingGL, fixRects, fixFiltering);
-                canvas.DrawImage(TileMap[m_sheet_idx], sourcerect, targetrect);
+                canvas.DrawImage(TileMap[m_sheet_idx], sourcerect, targetrect
+#if GNH_MAUI
+                , SKSamplingOptions.Default
+#endif
+                );
 #if GNH_MAP_PROFILING && DEBUG
                 StopProfiling(GHProfilingStyle.Bitmap);
 #endif
@@ -5320,7 +5328,11 @@ namespace GnollHackX.Pages.Game
                 SKRect targetrect = new SKRect(tx, ty, tx + width, ty + height);
                 SKRect sourcerect = new SKRect(tile_x, tile_y, tile_x + GHConstants.TileWidth, tile_y + GHConstants.TileHeight);
                 GHApp.MaybeFixRects(ref sourcerect, ref targetrect, targetscale, usingGL, fixRects, fixFiltering);
-                canvas.DrawImage(TileMap[sheet_idx], sourcerect, targetrect);
+                canvas.DrawImage(TileMap[sheet_idx], sourcerect, targetrect
+#if GNH_MAUI
+                , SKSamplingOptions.Default
+#endif
+                );
 
                 if (_mapData[mapx, mapy].Symbol != null && _mapData[mapx, mapy].Symbol != "")
                 {
@@ -5348,7 +5360,11 @@ namespace GnollHackX.Pages.Game
                 SKRect targetrect = new SKRect(tx, ty, tx + width, ty + height);
                 SKRect sourcerect = new SKRect(tile_x, tile_y, tile_x + GHConstants.TileWidth, tile_y + GHConstants.TileHeight);
                 GHApp.MaybeFixRects(ref sourcerect, ref targetrect, targetscale, usingGL, fixRects, fixFiltering);
-                canvas.DrawImage(TileMap[sheet_idx], sourcerect, targetrect);
+                canvas.DrawImage(TileMap[sheet_idx], sourcerect, targetrect
+#if GNH_MAUI
+                , SKSamplingOptions.Default
+#endif
+                );
 
                 if (_mapData[mapx, mapy].Symbol != null && _mapData[mapx, mapy].Symbol != "")
                 {
@@ -5424,7 +5440,11 @@ namespace GnollHackX.Pages.Game
                             StartProfiling(GHProfilingStyle.Bitmap);
 #endif
                             GHApp.MaybeFixRects(ref source_rt, ref target_rt, targetscale, usingGL, fixRects, fixFiltering);
-                            canvas.DrawImage(TileMap[sheet_idx], source_rt, target_rt);
+                            canvas.DrawImage(TileMap[sheet_idx], source_rt, target_rt
+#if GNH_MAUI
+                            , SKSamplingOptions.Default
+#endif
+                            );
 #if GNH_MAP_PROFILING && DEBUG
                             StopProfiling(GHProfilingStyle.Bitmap);
 #endif
@@ -5478,7 +5498,11 @@ namespace GnollHackX.Pages.Game
                             StartProfiling(GHProfilingStyle.Bitmap);
 #endif
                             GHApp.MaybeFixRects(ref source_rt, ref target_rt, targetscale, usingGL, fixRects, fixFiltering);
-                            canvas.DrawImage(TileMap[sheet_idx], source_rt, target_rt);
+                            canvas.DrawImage(TileMap[sheet_idx], source_rt, target_rt
+#if GNH_MAUI
+                            , SKSamplingOptions.Default
+#endif
+                            );
 #if GNH_MAP_PROFILING && DEBUG
                             StopProfiling(GHProfilingStyle.Bitmap);
 #endif
@@ -5543,7 +5567,11 @@ namespace GnollHackX.Pages.Game
                                 StartProfiling(GHProfilingStyle.Bitmap);
 #endif
                                 GHApp.MaybeFixRects(ref source_rt, ref target_rt, targetscale, usingGL, fixRects, fixFiltering);
-                                canvas.DrawImage(TileMap[sheet_idx], source_rt, target_rt);
+                                canvas.DrawImage(TileMap[sheet_idx], source_rt, target_rt
+#if GNH_MAUI
+                                , SKSamplingOptions.Default
+#endif
+                                );
 #if GNH_MAP_PROFILING && DEBUG
                                 StopProfiling(GHProfilingStyle.Bitmap);
 #endif
@@ -5568,7 +5596,11 @@ namespace GnollHackX.Pages.Game
                 SKRect targetrect = new SKRect(tx, ty, tx + width, ty + height);
                 SKRect sourcerect = new SKRect(tile_x, tile_y, tile_x + GHConstants.TileWidth, tile_y + GHConstants.TileHeight);
                 GHApp.MaybeFixRects(ref sourcerect, ref targetrect, targetscale, usingGL, fixRects, fixFiltering);
-                canvas.DrawImage(TileMap[sheet_idx], sourcerect, targetrect);
+                canvas.DrawImage(TileMap[sheet_idx], sourcerect, targetrect
+#if GNH_MAUI
+                , SKSamplingOptions.Default
+#endif
+                );
             }
             else if ((_mapData[mapx, mapy].Layers.monster_flags & (ulong)LayerMonsterFlags.LMFLAGS_BEING_HIT) != 0)
             {
@@ -5584,7 +5616,11 @@ namespace GnollHackX.Pages.Game
                 SKRect targetrect = new SKRect(tx, ty, tx + width, ty + height);
                 SKRect sourcerect = new SKRect(tile_x, tile_y, tile_x + GHConstants.TileWidth, tile_y + GHConstants.TileHeight);
                 GHApp.MaybeFixRects(ref sourcerect, ref targetrect, targetscale, usingGL, fixRects, fixFiltering);
-                canvas.DrawImage(TileMap[sheet_idx], sourcerect, targetrect);
+                canvas.DrawImage(TileMap[sheet_idx], sourcerect, targetrect
+#if GNH_MAUI
+                , SKSamplingOptions.Default
+#endif
+                );
             }
         }
 
@@ -8436,7 +8472,11 @@ namespace GnollHackX.Pages.Game
                                                                             paint.ColorFilter = dc.PaintColorFilter;
                                                                             canvas.SetMatrix(dc.Matrix);
                                                                             GHApp.MaybeFixRects(ref sourceRect, ref destRect, targetscale, usingGL, fixRects, fixFiltering);
-                                                                            canvas.DrawImage(usedDarkenedBitmap, sourceRect, destRect, paint);
+                                                                            canvas.DrawImage(usedDarkenedBitmap, sourceRect, destRect
+#if GNH_MAUI
+                                                                            , SKSamplingOptions.Default
+#endif
+                                                                            , paint);
                                                                             paint.ColorFilter = null;
                                                                         }
                                                                         else
@@ -8480,7 +8520,11 @@ namespace GnollHackX.Pages.Game
 
                                                                             paint.ColorFilter = dc.PaintColorFilter;
                                                                             GHApp.MaybeFixRects(ref sourceRect, ref destRect, targetscale, usingGL, fixRects, fixFiltering);
-                                                                            canvas.DrawImage(usedDarkenedBitmap, sourceRect, destRect, paint);
+                                                                            canvas.DrawImage(usedDarkenedBitmap, sourceRect, destRect
+#if GNH_MAUI
+                                                                            , SKSamplingOptions.Default
+#endif
+                                                                            , paint);
                                                                             if (doDisposeImage)
                                                                                 usedDarkenedBitmap.Dispose();
                                                                             paint.ColorFilter = null;
@@ -8503,14 +8547,22 @@ namespace GnollHackX.Pages.Game
                                                                             paint.ColorFilter = dc.PaintColorFilter;
                                                                             canvas.SetMatrix(dc.Matrix);
                                                                             GHApp.MaybeFixRects(ref cacheRect, ref dc.DestinationRect, targetscale, usingGL, fixRects, fixFiltering);
-                                                                            canvas.DrawImage(usedDarkenedBitmap, cacheRect, dc.DestinationRect, paint);
+                                                                            canvas.DrawImage(usedDarkenedBitmap, cacheRect, dc.DestinationRect
+#if GNH_MAUI
+                                                                            , SKSamplingOptions.Default
+#endif
+                                                                            , paint);
                                                                             paint.ColorFilter = null;
                                                                         }
                                                                         else
                                                                         {
                                                                             /* Copy source bitmap to _paintCanvas and darken it */
                                                                             paint.Color = SKColors.Black;
-                                                                            darkeningCanvas.DrawImage(dc.SourceBitmap, dc.SourceRect, cacheRect, paint);
+                                                                            darkeningCanvas.DrawImage(dc.SourceBitmap, dc.SourceRect, cacheRect
+#if GNH_MAUI
+                                                                            , SKSamplingOptions.Default
+#endif
+                                                                            , paint);
                                                                             DoDarkening(darkeningCanvas, paint, cacheRect.Left, cacheRect.Top, cacheRect.Width, cacheRect.Height, darken_percentage);
 
                                                                             /* Save to cache as immutable */
@@ -8544,7 +8596,11 @@ namespace GnollHackX.Pages.Game
                                                                             paint.ColorFilter = dc.PaintColorFilter;
                                                                             canvas.SetMatrix(dc.Matrix);
                                                                             GHApp.MaybeFixRects(ref cacheRect, ref dc.DestinationRect, targetscale, usingGL, fixRects, fixFiltering);
-                                                                            canvas.DrawImage(usedDarkenedBitmap, cacheRect, dc.DestinationRect, paint);
+                                                                            canvas.DrawImage(usedDarkenedBitmap, cacheRect, dc.DestinationRect
+#if GNH_MAUI
+                                                                            , SKSamplingOptions.Default
+#endif
+                                                                            , paint);
                                                                             if (doDisposeImage)
                                                                                 usedDarkenedBitmap.Dispose();
                                                                             paint.ColorFilter = null;
@@ -8568,7 +8624,11 @@ namespace GnollHackX.Pages.Game
                                                                     else
                                                                     {
                                                                         GHApp.MaybeFixRects(ref dc.SourceRect, ref dc.DestinationRect, targetscale, usingGL, fixRects, fixFiltering);
-                                                                        canvas.DrawImage(dc.SourceBitmap, dc.SourceRect, dc.DestinationRect, paint);
+                                                                        canvas.DrawImage(dc.SourceBitmap, dc.SourceRect, dc.DestinationRect
+#if GNH_MAUI
+                                                                        , SKSamplingOptions.Default
+#endif
+                                                                        , paint);
                                                                     }
                                                                     paint.ColorFilter = null;
                                                                 }
@@ -8936,7 +8996,11 @@ namespace GnollHackX.Pages.Game
                                             SKRect effRect = new SKRect(rectleft, recttop, rectleft + rectsize, recttop + rectsize);
                                             SKRect sourcerect = new SKRect(0, 0, GHApp._searchBitmap.Width, GHApp._searchBitmap.Height);
                                             GHApp.MaybeFixRects(ref sourcerect, ref effRect, targetscale, usingGL, fixRects, fixFiltering);
-                                            canvas.DrawImage(GHApp._searchBitmap, sourcerect, effRect, textPaint.Paint);
+                                            canvas.DrawImage(GHApp._searchBitmap, sourcerect, effRect
+#if GNH_MAUI
+                                            , SKSamplingOptions.Default
+#endif
+                                            , textPaint.Paint);
                                         }
                                     }
                                     break;
@@ -8950,7 +9014,11 @@ namespace GnollHackX.Pages.Game
                                         SKRect effRect = new SKRect(rectleft, recttop, rectleft + rectsize, recttop + rectsize);
                                         SKRect sourcerect = new SKRect(0, 0, GHApp._waitBitmap.Width, GHApp._waitBitmap.Height);
                                         GHApp.MaybeFixRects(ref sourcerect, ref effRect, targetscale, usingGL, fixRects, fixFiltering);
-                                        canvas.DrawImage(GHApp._waitBitmap, effRect, textPaint.Paint);
+                                        canvas.DrawImage(GHApp._waitBitmap, effRect
+#if GNH_MAUI
+                                        , SKSamplingOptions.Default
+#endif
+                                        , textPaint.Paint);
                                     }
                                     break;
 #if GNH_MAUI && ENABLE_RUNTIME_EFFECTS
@@ -9040,7 +9108,11 @@ namespace GnollHackX.Pages.Game
                                                 length = (float)Math.Sqrt(Math.Pow(dx * width, 2) + Math.Pow(dy * height, 2));
                                             }
                                             /* Secondary drawing first */
+#if GNH_MAUI
+                                            using (SKPathBuilder path = new SKPathBuilder())
+#else
                                             using (SKPath path = new SKPath())
+#endif
                                             {
                                                 switch (eff.SubType)
                                                 {
@@ -9053,13 +9125,27 @@ namespace GnollHackX.Pages.Game
                                                         path.Close();
                                                         textPaint.Style = SKPaintStyle.Fill;
                                                         textPaint.Color = eff.GetSecondaryColor(maincountervalue);
+#if GNH_MAUI
+                                                        using (var finalPath = path.Snapshot())
+                                                            canvas.DrawPath(finalPath, textPaint.Paint);
+#else
                                                         canvas.DrawPath(path, textPaint.Paint);
+#endif
                                                         textPaint.Style = SKPaintStyle.Stroke;
                                                         textPaint.StrokeWidth = width * 0.02f;
                                                         textPaint.Color = eff.GetSecondaryOutlineColor(maincountervalue);
+#if GNH_MAUI
+                                                        using (var finalPath = path.Snapshot())
+                                                            canvas.DrawPath(finalPath, textPaint.Paint);
+#else
                                                         canvas.DrawPath(path, textPaint.Paint);
+#endif
                                                         textPaint.Style = SKPaintStyle.Fill;
+#if GNH_MAUI
+                                                        using (SKPathBuilder path2 = new SKPathBuilder())
+#else
                                                         using (SKPath path2 = new SKPath())
+#endif
                                                         {
                                                             path2.MoveTo(-0.015f * width, -0.05f * width);
                                                             path2.LineTo(0.015f * width, -0.05f * width);
@@ -9069,7 +9155,12 @@ namespace GnollHackX.Pages.Game
                                                             path2.Close();
                                                             textPaint.Style = SKPaintStyle.Fill;
                                                             textPaint.Color = eff.GetSecondaryInnerColor(maincountervalue);
+#if GNH_MAUI
+                                                            using (var finalPath = path2.Snapshot())
+                                                                canvas.DrawPath(finalPath, textPaint.Paint);
+#else
                                                             canvas.DrawPath(path2, textPaint.Paint);
+#endif
                                                         }
                                                         break;
                                                     default:
@@ -9077,7 +9168,11 @@ namespace GnollHackX.Pages.Game
                                                 }
                                             }
                                             /* Primary drawing */
+#if GNH_MAUI
+                                            using (SKPathBuilder path = new SKPathBuilder())
+#else
                                             using (SKPath path = new SKPath())
+#endif
                                             {
                                                 switch (eff.SubType)
                                                 {
@@ -9090,13 +9185,27 @@ namespace GnollHackX.Pages.Game
                                                         path.Close();
                                                         textPaint.Color = eff.GetColor(maincountervalue);
                                                         textPaint.Style = SKPaintStyle.Fill;
+#if GNH_MAUI
+                                                        using (var finalPath = path.Snapshot())
+                                                            canvas.DrawPath(finalPath, textPaint.Paint);
+#else
                                                         canvas.DrawPath(path, textPaint.Paint);
+#endif
                                                         textPaint.Style = SKPaintStyle.Stroke;
                                                         textPaint.StrokeWidth = width * 0.02f;
                                                         textPaint.Color = eff.GetOutlineColor(maincountervalue);
+#if GNH_MAUI
+                                                        using (var finalPath = path.Snapshot())
+                                                            canvas.DrawPath(finalPath, textPaint.Paint);
+#else
                                                         canvas.DrawPath(path, textPaint.Paint);
+#endif
                                                         textPaint.Style = SKPaintStyle.Fill;
+#if GNH_MAUI
+                                                        using (SKPathBuilder path2 = new SKPathBuilder())
+#else
                                                         using (SKPath path2 = new SKPath())
+#endif
                                                         {
                                                             path2.MoveTo(-0.015f * width, -0.05f * width);
                                                             path2.LineTo(0.015f * width, -0.05f * width);
@@ -9106,7 +9215,12 @@ namespace GnollHackX.Pages.Game
                                                             path2.Close();
                                                             textPaint.Style = SKPaintStyle.Fill;
                                                             textPaint.Color = eff.GetInnerColor(maincountervalue);
+#if GNH_MAUI
+                                                            using (var finalPath = path2.Snapshot())
+                                                                canvas.DrawPath(finalPath, textPaint.Paint);
+#else
                                                             canvas.DrawPath(path2, textPaint.Paint);
+#endif
                                                         }
                                                         break;
                                                     case (int)gui_polearm_types.GUI_POLEARM_LANCE:
@@ -9119,13 +9233,27 @@ namespace GnollHackX.Pages.Game
                                                         path.Close();
                                                         textPaint.Color = eff.GetColor(maincountervalue);
                                                         textPaint.Style = SKPaintStyle.Fill;
+#if GNH_MAUI
+                                                        using (var finalPath = path.Snapshot())
+                                                            canvas.DrawPath(finalPath, textPaint.Paint);
+#else
                                                         canvas.DrawPath(path, textPaint.Paint);
+#endif
                                                         textPaint.Style = SKPaintStyle.Stroke;
                                                         textPaint.StrokeWidth = width * 0.02f;
                                                         textPaint.Color = eff.GetOutlineColor(maincountervalue);
+#if GNH_MAUI
+                                                        using (var finalPath = path.Snapshot())
+                                                            canvas.DrawPath(finalPath, textPaint.Paint);
+#else
                                                         canvas.DrawPath(path, textPaint.Paint);
+#endif
                                                         textPaint.Style = SKPaintStyle.Fill;
+#if GNH_MAUI
+                                                        using (SKPathBuilder path2 = new SKPathBuilder())
+#else
                                                         using (SKPath path2 = new SKPath())
+#endif
                                                         {
                                                             path2.MoveTo(-0.08f * width, -0.58f * width);
                                                             path2.LineTo(0.08f * width, -0.58f * width);
@@ -9136,7 +9264,12 @@ namespace GnollHackX.Pages.Game
                                                             path2.Close();
                                                             textPaint.Style = SKPaintStyle.Fill;
                                                             textPaint.Color = eff.GetInnerColor(maincountervalue);
+#if GNH_MAUI
+                                                            using (var finalPath = path2.Snapshot())
+                                                                canvas.DrawPath(finalPath, textPaint.Paint);
+#else
                                                             canvas.DrawPath(path2, textPaint.Paint);
+#endif
                                                         }
                                                         break;
                                                     case (int)gui_polearm_types.GUI_POLEARM_THRUSTED:
@@ -9150,13 +9283,27 @@ namespace GnollHackX.Pages.Game
                                                         path.Close();
                                                         textPaint.Color = eff.GetColor(maincountervalue);
                                                         textPaint.Style = SKPaintStyle.Fill;
+#if GNH_MAUI
+                                                        using (var finalPath = path.Snapshot())
+                                                            canvas.DrawPath(finalPath, textPaint.Paint);
+#else
                                                         canvas.DrawPath(path, textPaint.Paint);
+#endif
                                                         textPaint.Style = SKPaintStyle.Stroke;
                                                         textPaint.StrokeWidth = width * 0.02f;
                                                         textPaint.Color = eff.GetOutlineColor(maincountervalue);
+#if GNH_MAUI
+                                                        using (var finalPath = path.Snapshot())
+                                                            canvas.DrawPath(finalPath, textPaint.Paint);
+#else
                                                         canvas.DrawPath(path, textPaint.Paint);
+#endif
                                                         textPaint.Style = SKPaintStyle.Fill;
+#if GNH_MAUI
+                                                        using (SKPathBuilder path2 = new SKPathBuilder())
+#else
                                                         using (SKPath path2 = new SKPath())
+#endif
                                                         {
                                                             path2.MoveTo(-0.02f * width, -0.05f * width);
                                                             path2.LineTo(0.02f * width, -0.05f * width);
@@ -9166,13 +9313,22 @@ namespace GnollHackX.Pages.Game
                                                             path2.Close();
                                                             textPaint.Style = SKPaintStyle.Fill;
                                                             textPaint.Color = eff.GetInnerColor(maincountervalue);
+#if GNH_MAUI
+                                                            using (var finalPath = path2.Snapshot())
+                                                                canvas.DrawPath(finalPath, textPaint.Paint);
+#else
                                                             canvas.DrawPath(path2, textPaint.Paint);
+#endif
                                                         }
                                                         break;
                                                 }
                                             }
                                             /* Secondary drawing last */
+#if GNH_MAUI
+                                            using (SKPathBuilder path = new SKPathBuilder())
+#else
                                             using (SKPath path = new SKPath())
+#endif
                                             {
                                                 switch (eff.SubType)
                                                 {
@@ -9184,13 +9340,27 @@ namespace GnollHackX.Pages.Game
                                                         path.Close();
                                                         textPaint.Style = SKPaintStyle.Fill;
                                                         textPaint.Color = eff.GetSecondaryColor(maincountervalue);
+#if GNH_MAUI
+                                                        using (var finalPath = path.Snapshot())
+                                                            canvas.DrawPath(finalPath, textPaint.Paint);
+#else
                                                         canvas.DrawPath(path, textPaint.Paint);
+#endif
                                                         textPaint.Style = SKPaintStyle.Stroke;
                                                         textPaint.StrokeWidth = width * 0.02f;
                                                         textPaint.Color = eff.GetSecondaryOutlineColor(maincountervalue);
+#if GNH_MAUI
+                                                        using (var finalPath = path.Snapshot())
+                                                            canvas.DrawPath(finalPath, textPaint.Paint);
+#else
                                                         canvas.DrawPath(path, textPaint.Paint);
+#endif
                                                         textPaint.Style = SKPaintStyle.Fill;
+#if GNH_MAUI
+                                                        using (SKPathBuilder path2 = new SKPathBuilder())
+#else
                                                         using (SKPath path2 = new SKPath())
+#endif
                                                         {
                                                             path2.MoveTo(-0.025f * width, -length + 0.35f * width);
                                                             path2.LineTo(0.025f * width, -length + 0.35f * width);
@@ -9199,7 +9369,12 @@ namespace GnollHackX.Pages.Game
                                                             path2.Close();
                                                             textPaint.Style = SKPaintStyle.Fill;
                                                             textPaint.Color = eff.GetSecondaryInnerColor(maincountervalue);
+#if GNH_MAUI
+                                                            using (var finalPath = path2.Snapshot())
+                                                                canvas.DrawPath(finalPath, textPaint.Paint);
+#else
                                                             canvas.DrawPath(path2, textPaint.Paint);
+#endif
                                                         }
                                                         break;
                                                     case (int)gui_polearm_types.GUI_POLEARM_POLEAXE: /* Polearm head */
@@ -9212,13 +9387,27 @@ namespace GnollHackX.Pages.Game
                                                         path.Close();
                                                         textPaint.Style = SKPaintStyle.Fill;
                                                         textPaint.Color = eff.GetSecondaryColor(maincountervalue);
+#if GNH_MAUI
+                                                        using (var finalPath = path.Snapshot())
+                                                            canvas.DrawPath(finalPath, textPaint.Paint);
+#else
                                                         canvas.DrawPath(path, textPaint.Paint);
+#endif
                                                         textPaint.Style = SKPaintStyle.Stroke;
                                                         textPaint.StrokeWidth = width * 0.02f;
                                                         textPaint.Color = eff.GetSecondaryOutlineColor(maincountervalue);
+#if GNH_MAUI
+                                                        using (var finalPath = path.Snapshot())
+                                                            canvas.DrawPath(finalPath, textPaint.Paint);
+#else
                                                         canvas.DrawPath(path, textPaint.Paint);
+#endif
                                                         textPaint.Style = SKPaintStyle.Fill;
+#if GNH_MAUI
+                                                        using (SKPathBuilder path2 = new SKPathBuilder())
+#else
                                                         using (SKPath path2 = new SKPath())
+#endif
                                                         {
                                                             path2.MoveTo(-0.02f * width, -length - 0.05f * width);
                                                             path2.LineTo(0.02f * width, -length - 0.05f * width);
@@ -9227,10 +9416,19 @@ namespace GnollHackX.Pages.Game
                                                             path2.Close();
                                                             textPaint.Style = SKPaintStyle.Fill;
                                                             textPaint.Color = eff.GetSecondaryInnerColor(maincountervalue);
+#if GNH_MAUI
+                                                            using (var finalPath = path2.Snapshot())
+                                                                canvas.DrawPath(finalPath, textPaint.Paint);
+#else
                                                             canvas.DrawPath(path2, textPaint.Paint);
+#endif
                                                         }
                                                         /* Left side */
+#if GNH_MAUI
+                                                        using (SKPathBuilder path2 = new SKPathBuilder())
+#else
                                                         using (SKPath path2 = new SKPath())
+#endif
                                                         {
                                                             /* Middle color part 1 */
                                                             path2.MoveTo(-0.04f * width, -length - 0.4f * width + 0.5f * width);
@@ -9245,9 +9443,18 @@ namespace GnollHackX.Pages.Game
                                                             path2.Close();
                                                             textPaint.Style = SKPaintStyle.Fill;
                                                             textPaint.Color = eff.GetSecondaryInner2Color(maincountervalue);
+#if GNH_MAUI
+                                                            using (var finalPath = path2.Snapshot())
+                                                                canvas.DrawPath(finalPath, textPaint.Paint);
+#else
                                                             canvas.DrawPath(path2, textPaint.Paint);
+#endif
                                                         }
+#if GNH_MAUI
+                                                        using (SKPathBuilder path2 = new SKPathBuilder())
+#else
                                                         using (SKPath path2 = new SKPath())
+#endif
                                                         {
                                                             /* Middle color part 2 */
                                                             path2.MoveTo(-0.1f * width, -length - 0.4f * width + 0.65f * width);
@@ -9262,9 +9469,18 @@ namespace GnollHackX.Pages.Game
                                                             path2.Close();
                                                             textPaint.Style = SKPaintStyle.Fill;
                                                             textPaint.Color = eff.GetSecondaryColor(maincountervalue);
+#if GNH_MAUI
+                                                            using (var finalPath = path2.Snapshot())
+                                                                canvas.DrawPath(finalPath, textPaint.Paint);
+#else
                                                             canvas.DrawPath(path2, textPaint.Paint);
+#endif
                                                         }
+#if GNH_MAUI
+                                                        using (SKPathBuilder path2 = new SKPathBuilder())
+#else
                                                         using (SKPath path2 = new SKPath())
+#endif
                                                         {
                                                             /* Outline */
                                                             path2.MoveTo(-0.04f * width, -length - 0.4f * width + 0.5f * width);
@@ -9279,10 +9495,19 @@ namespace GnollHackX.Pages.Game
                                                             textPaint.Style = SKPaintStyle.Stroke;
                                                             textPaint.StrokeWidth = width * 0.03f;
                                                             textPaint.Color = eff.GetSecondaryOutlineColor(maincountervalue);
+#if GNH_MAUI
+                                                            using (var finalPath = path2.Snapshot())
+                                                                canvas.DrawPath(finalPath, textPaint.Paint);
+#else
                                                             canvas.DrawPath(path2, textPaint.Paint);
+#endif
                                                             textPaint.Style = SKPaintStyle.Fill;
                                                         }
+#if GNH_MAUI
+                                                        using (SKPathBuilder path2 = new SKPathBuilder())
+#else
                                                         using (SKPath path2 = new SKPath())
+#endif
                                                         {
                                                             /* Inner color */
                                                             path2.MoveTo(-0.16f * width, -length - 0.4f * width + 0.60f * width);
@@ -9292,7 +9517,12 @@ namespace GnollHackX.Pages.Game
                                                             path2.Close();
                                                             textPaint.Style = SKPaintStyle.Fill;
                                                             textPaint.Color = eff.GetSecondaryInnerColor(maincountervalue);
+#if GNH_MAUI
+                                                            using (var finalPath = path2.Snapshot())
+                                                                canvas.DrawPath(finalPath, textPaint.Paint);
+#else
                                                             canvas.DrawPath(path2, textPaint.Paint);
+#endif
                                                         }
                                                         /* Right side */
                                                         //using (SKPath path2 = new SKPath())
@@ -9316,7 +9546,11 @@ namespace GnollHackX.Pages.Game
                                                         //    canvas.DrawPath(path2, textPaint);
                                                         //    textPaint.Style = SKPaintStyle.Fill;
                                                         //}
+#if GNH_MAUI
+                                                        using (SKPathBuilder path2 = new SKPathBuilder())
+#else
                                                         using (SKPath path2 = new SKPath())
+#endif
                                                         {
                                                             /* Middle color part 1 */
                                                             path2.MoveTo(0.04f * width, -length - 0.4f * width + 0.5f * width);
@@ -9331,9 +9565,18 @@ namespace GnollHackX.Pages.Game
                                                             path2.Close();
                                                             textPaint.Style = SKPaintStyle.Fill;
                                                             textPaint.Color = eff.GetSecondaryInner2Color(maincountervalue);
+#if GNH_MAUI
+                                                            using (var finalPath = path2.Snapshot())
+                                                                canvas.DrawPath(finalPath, textPaint.Paint);
+#else
                                                             canvas.DrawPath(path2, textPaint.Paint);
+#endif
                                                         }
+#if GNH_MAUI
+                                                        using (SKPathBuilder path2 = new SKPathBuilder())
+#else
                                                         using (SKPath path2 = new SKPath())
+#endif
                                                         {
                                                             /* Middle color part 2 */
                                                             path2.MoveTo(0.1f * width, -length - 0.4f * width + 0.65f * width);
@@ -9348,9 +9591,18 @@ namespace GnollHackX.Pages.Game
                                                             path2.Close();
                                                             textPaint.Style = SKPaintStyle.Fill;
                                                             textPaint.Color = eff.GetSecondaryColor(maincountervalue);
+#if GNH_MAUI
+                                                            using (var finalPath = path2.Snapshot())
+                                                                canvas.DrawPath(finalPath, textPaint.Paint);
+#else
                                                             canvas.DrawPath(path2, textPaint.Paint);
+#endif
                                                         }
+#if GNH_MAUI
+                                                        using (SKPathBuilder path2 = new SKPathBuilder())
+#else
                                                         using (SKPath path2 = new SKPath())
+#endif
                                                         {
                                                             /* Outline */
                                                             path2.MoveTo(0.04f * width, -length - 0.4f * width + 0.5f * width);
@@ -9365,10 +9617,19 @@ namespace GnollHackX.Pages.Game
                                                             textPaint.Style = SKPaintStyle.Stroke;
                                                             textPaint.StrokeWidth = width * 0.03f;
                                                             textPaint.Color = eff.GetSecondaryOutlineColor(maincountervalue);
+#if GNH_MAUI
+                                                            using (var finalPath = path2.Snapshot())
+                                                                canvas.DrawPath(finalPath, textPaint.Paint);
+#else
                                                             canvas.DrawPath(path2, textPaint.Paint);
+#endif
                                                             textPaint.Style = SKPaintStyle.Fill;
                                                         }
+#if GNH_MAUI
+                                                        using (SKPathBuilder path2 = new SKPathBuilder())
+#else
                                                         using (SKPath path2 = new SKPath())
+#endif
                                                         {
                                                             /* Inner color */
                                                             path2.MoveTo(0.16f * width, -length - 0.4f * width + 0.60f * width);
@@ -9378,7 +9639,12 @@ namespace GnollHackX.Pages.Game
                                                             path2.Close();
                                                             textPaint.Style = SKPaintStyle.Fill;
                                                             textPaint.Color = eff.GetSecondaryInnerColor(maincountervalue);
+#if GNH_MAUI
+                                                            using (var finalPath = path2.Snapshot())
+                                                                canvas.DrawPath(finalPath, textPaint.Paint);
+#else
                                                             canvas.DrawPath(path2, textPaint.Paint);
+#endif
                                                         }
                                                         break;
                                                     default:
@@ -9899,7 +10165,11 @@ namespace GnollHackX.Pages.Game
 #if GNH_MAP_PROFILING && DEBUG
                                     StartProfiling(GHProfilingStyle.Bitmap);
 #endif
-                                    canvas.DrawImage(GHApp._statusWizardBitmap, statusDest);
+                                    canvas.DrawImage(GHApp._statusWizardBitmap, statusDest
+#if GNH_MAUI
+                                    , SKSamplingOptions.Default
+#endif
+                                    );
 #if GNH_MAP_PROFILING && DEBUG
                                     StopProfiling(GHProfilingStyle.Bitmap);
 #endif
@@ -9915,7 +10185,11 @@ namespace GnollHackX.Pages.Game
 #if GNH_MAP_PROFILING && DEBUG
                                     StartProfiling(GHProfilingStyle.Bitmap);
 #endif
-                                    canvas.DrawImage(GHApp._statusCasualBitmap, statusDest);
+                                    canvas.DrawImage(GHApp._statusCasualBitmap, statusDest
+#if GNH_MAUI
+                                    , SKSamplingOptions.Default
+#endif
+                                    );
 #if GNH_MAP_PROFILING && DEBUG
                                     StopProfiling(GHProfilingStyle.Bitmap);
 #endif
@@ -9930,7 +10204,11 @@ namespace GnollHackX.Pages.Game
 #if GNH_MAP_PROFILING && DEBUG
                                     StartProfiling(GHProfilingStyle.Bitmap);
 #endif
-                                    canvas.DrawImage(GHApp._statusCasualClassicBitmap, statusDest);
+                                    canvas.DrawImage(GHApp._statusCasualClassicBitmap, statusDest
+#if GNH_MAUI
+                                    , SKSamplingOptions.Default
+#endif
+                                    );
 #if GNH_MAP_PROFILING && DEBUG
                                     StopProfiling(GHProfilingStyle.Bitmap);
 #endif
@@ -9945,7 +10223,11 @@ namespace GnollHackX.Pages.Game
 #if GNH_MAP_PROFILING && DEBUG
                                     StartProfiling(GHProfilingStyle.Bitmap);
 #endif
-                                    canvas.DrawImage(GHApp._statusModernBitmap, statusDest);
+                                    canvas.DrawImage(GHApp._statusModernBitmap, statusDest
+#if GNH_MAUI
+                                    , SKSamplingOptions.Default
+#endif
+                                    );
 #if GNH_MAP_PROFILING && DEBUG
                                     StopProfiling(GHProfilingStyle.Bitmap);
 #endif
@@ -9999,7 +10281,11 @@ namespace GnollHackX.Pages.Game
 #if GNH_MAP_PROFILING && DEBUG
                                     StartProfiling(GHProfilingStyle.Bitmap);
 #endif
-                                    canvas.DrawImage(difbmp, statusDest);
+                                    canvas.DrawImage(difbmp, statusDest
+#if GNH_MAUI
+                                    , SKSamplingOptions.Default
+#endif
+                                    );
 #if GNH_MAP_PROFILING && DEBUG
                                     StopProfiling(GHProfilingStyle.Bitmap);
 #endif
@@ -10048,7 +10334,11 @@ namespace GnollHackX.Pages.Game
                                             target_width = target_scale * statIcon.Width;
                                             target_height = target_scale * statIcon.Height;
                                             statusDest = new SKRect(curx, cury, curx + target_width, cury + target_height);
-                                            canvas.DrawImage(statIcon, statusDest);
+                                            canvas.DrawImage(statIcon, statusDest
+#if GNH_MAUI
+                                            , SKSamplingOptions.Default
+#endif
+                                            );
                                             curx += target_width;
                                             curx += innerspacing;
                                             float print_width = textPaint.MeasureText(valtext);
@@ -10179,7 +10469,11 @@ namespace GnollHackX.Pages.Game
 #if GNH_MAP_PROFILING && DEBUG
                                     StartProfiling(GHProfilingStyle.Bitmap);
 #endif
-                                    canvas.DrawImage(GHApp._statusACBitmap, statusDest);
+                                    canvas.DrawImage(GHApp._statusACBitmap, statusDest
+#if GNH_MAUI
+                                    , SKSamplingOptions.Default
+#endif
+                                    );
 #if GNH_MAP_PROFILING && DEBUG
                                     StopProfiling(GHProfilingStyle.Bitmap);
 #endif
@@ -10219,7 +10513,11 @@ namespace GnollHackX.Pages.Game
 #if GNH_MAP_PROFILING && DEBUG
                                     StartProfiling(GHProfilingStyle.Bitmap);
 #endif
-                                    canvas.DrawImage(GHApp._statusMCBitmap, statusDest);
+                                    canvas.DrawImage(GHApp._statusMCBitmap, statusDest
+#if GNH_MAUI
+                                    , SKSamplingOptions.Default
+#endif
+                                    );
 #if GNH_MAP_PROFILING && DEBUG
                                     StopProfiling(GHProfilingStyle.Bitmap);
 #endif
@@ -10440,7 +10738,11 @@ namespace GnollHackX.Pages.Game
 #if GNH_MAP_PROFILING && DEBUG
                                                     StartProfiling(GHProfilingStyle.Bitmap);
 #endif
-                                                    canvas.DrawImage(GHApp._statusEmptyHandedBitmap, emptyHandedSource, statusDest);
+                                                    canvas.DrawImage(GHApp._statusEmptyHandedBitmap, emptyHandedSource, statusDest
+#if GNH_MAUI
+                                                    , SKSamplingOptions.Default
+#endif
+                                                    );
 #if GNH_MAP_PROFILING && DEBUG
                                                     StopProfiling(GHProfilingStyle.Bitmap);
 #endif
@@ -10578,7 +10880,11 @@ namespace GnollHackX.Pages.Game
 #if GNH_MAP_PROFILING && DEBUG
                                                     StartProfiling(GHProfilingStyle.Bitmap);
 #endif
-                                                    canvas.DrawImage(GHApp._statusEmptyHandedBitmap, emptyHandedSource, statusDest);
+                                                    canvas.DrawImage(GHApp._statusEmptyHandedBitmap, emptyHandedSource, statusDest
+#if GNH_MAUI
+                                                    , SKSamplingOptions.Default
+#endif
+                                                    );
 #if GNH_MAP_PROFILING && DEBUG
                                                     StopProfiling(GHProfilingStyle.Bitmap);
 #endif
@@ -10687,7 +10993,11 @@ namespace GnollHackX.Pages.Game
                                     target_width = target_scale * GHApp._statusQuickWandBitmap.Width;
                                     target_height = target_scale * GHApp._statusQuickWandBitmap.Height;
                                     statusDest = new SKRect(curx, cury, curx + target_width, cury + target_height);
-                                    canvas.DrawImage(GHApp._statusQuickWandBitmap, statusDest);
+                                    canvas.DrawImage(GHApp._statusQuickWandBitmap, statusDest
+#if GNH_MAUI
+                                    , SKSamplingOptions.Default
+#endif
+                                    );
                                     curx += target_width;
                                     curx += innerspacing;
 
@@ -10715,7 +11025,11 @@ namespace GnollHackX.Pages.Game
                                     target_width = target_scale * GHApp._statusQuickSpellBitmap.Width;
                                     target_height = target_scale * GHApp._statusQuickSpellBitmap.Height;
                                     statusDest = new SKRect(curx, cury, curx + target_width, cury + target_height);
-                                    canvas.DrawImage(GHApp._statusQuickSpellBitmap, statusDest);
+                                    canvas.DrawImage(GHApp._statusQuickSpellBitmap, statusDest
+#if GNH_MAUI
+                                    , SKSamplingOptions.Default
+#endif
+                                    );
                                     curx += target_width;
                                     curx += innerspacing;
                                     using (new SKAutoCanvasRestore(canvas, true))
@@ -10766,7 +11080,11 @@ namespace GnollHackX.Pages.Game
 #if GNH_MAP_PROFILING && DEBUG
                                         StartProfiling(GHProfilingStyle.Bitmap);
 #endif
-                                        canvas.DrawImage(GHApp._statusTurnsBitmap, statusDest);
+                                        canvas.DrawImage(GHApp._statusTurnsBitmap, statusDest
+#if GNH_MAUI
+                                        , SKSamplingOptions.Default
+#endif
+                                        );
 #if GNH_MAP_PROFILING && DEBUG
                                         StopProfiling(GHProfilingStyle.Bitmap);
 #endif
@@ -10806,7 +11124,11 @@ namespace GnollHackX.Pages.Game
                                             curx = newcurx;
                                             goldleft = curx;
                                             statusDest = new SKRect(curx, cury, curx + target_width, cury + target_height);
-                                            canvas.DrawImage(GHApp._statusGoldBitmap, statusDest);
+                                            canvas.DrawImage(GHApp._statusGoldBitmap, statusDest
+#if GNH_MAUI
+                                            , SKSamplingOptions.Default
+#endif
+                                            );
                                             curx += target_width;
                                             curx += innerspacing;
                                             textPaint.DrawTextOnCanvas(canvas, printtext.Value, curx, cury - textPaint.FontMetrics.Ascent);
@@ -10836,7 +11158,11 @@ namespace GnollHackX.Pages.Game
                                                 curx = newcurx;
                                                 scoreleft = curx;
                                                 statusDest = new SKRect(curx, cury, curx + target_width, cury + target_height);
-                                                canvas.DrawImage(GHApp._statusScoreBitmap, statusDest);
+                                                canvas.DrawImage(GHApp._statusScoreBitmap, statusDest
+#if GNH_MAUI
+                                                , SKSamplingOptions.Default
+#endif
+                                                );
                                                 curx += target_width;
                                                 curx += innerspacing;
                                                 textPaint.DrawTextOnCanvas(canvas, valtext, curx, cury - textPaint.FontMetrics.Ascent);
@@ -10940,7 +11266,11 @@ namespace GnollHackX.Pages.Game
 #if GNH_MAP_PROFILING && DEBUG
                                                 StartProfiling(GHProfilingStyle.Bitmap);
 #endif
-                                                canvas.DrawImage(TileMap[sheet_idx], source_rt, target_rt);
+                                                canvas.DrawImage(TileMap[sheet_idx], source_rt, target_rt
+#if GNH_MAUI
+                                                , SKSamplingOptions.Default
+#endif
+                                                );
 #if GNH_MAP_PROFILING && DEBUG
                                                 StopProfiling(GHProfilingStyle.Bitmap);
 #endif
@@ -10985,7 +11315,11 @@ namespace GnollHackX.Pages.Game
 #if GNH_MAP_PROFILING && DEBUG
                                                 StartProfiling(GHProfilingStyle.Bitmap);
 #endif
-                                                canvas.DrawImage(TileMap[sheet_idx], source_rt, target_rt);
+                                                canvas.DrawImage(TileMap[sheet_idx], source_rt, target_rt
+#if GNH_MAUI
+                                                , SKSamplingOptions.Default
+#endif
+                                                );
 #if GNH_MAP_PROFILING && DEBUG
                                                 StopProfiling(GHProfilingStyle.Bitmap);
 #endif
@@ -11039,7 +11373,11 @@ namespace GnollHackX.Pages.Game
 #if GNH_MAP_PROFILING && DEBUG
                                                     StartProfiling(GHProfilingStyle.Bitmap);
 #endif
-                                                    canvas.DrawImage(TileMap[sheet_idx], source_rt, target_rt);
+                                                    canvas.DrawImage(TileMap[sheet_idx], source_rt, target_rt
+#if GNH_MAUI
+                                                    , SKSamplingOptions.Default
+#endif
+                                                    );
 #if GNH_MAP_PROFILING && DEBUG
                                                     StopProfiling(GHProfilingStyle.Bitmap);
 #endif
@@ -11118,7 +11456,11 @@ namespace GnollHackX.Pages.Game
 #if GNH_MAP_PROFILING && DEBUG
                                     StartProfiling(GHProfilingStyle.Bitmap);
 #endif
-                                    canvas.DrawImage(GHApp._statusDungeonLevelBitmap, statusDest);
+                                    canvas.DrawImage(GHApp._statusDungeonLevelBitmap, statusDest
+#if GNH_MAUI
+                                    , SKSamplingOptions.Default
+#endif
+                                    );
 #if GNH_MAP_PROFILING && DEBUG
                                     StopProfiling(GHProfilingStyle.Bitmap);
 #endif
@@ -11154,7 +11496,11 @@ namespace GnollHackX.Pages.Game
                                             curx = newcurx;
                                             desktopleft = curx;
                                             statusDest = new SKRect(curx, cury, curx + target_width, cury + target_height);
-                                            canvas.DrawImage(GHApp._statusGoldBitmap, statusDest);
+                                            canvas.DrawImage(GHApp._statusGoldBitmap, statusDest
+#if GNH_MAUI
+                                            , SKSamplingOptions.Default
+#endif
+                                            );
                                             curx += target_width;
                                             curx += innerspacing;
                                             textPaint.DrawTextOnCanvas(canvas, printtext.Value, curx, cury - textPaint.FontMetrics.Ascent);
@@ -11181,7 +11527,11 @@ namespace GnollHackX.Pages.Game
                                                 curx = newcurx;
                                                 desktopleft = curx;
                                                 statusDest = new SKRect(curx, cury, curx + target_width, cury + target_height);
-                                                canvas.DrawImage(GHApp._statusScoreBitmap, statusDest);
+                                                canvas.DrawImage(GHApp._statusScoreBitmap, statusDest
+#if GNH_MAUI
+                                                , SKSamplingOptions.Default
+#endif
+                                                );
                                                 curx += target_width;
                                                 curx += innerspacing;
                                                 textPaint.DrawTextOnCanvas(canvas, valtext, curx, cury - textPaint.FontMetrics.Ascent);
@@ -11208,7 +11558,11 @@ namespace GnollHackX.Pages.Game
                                                 curx = newcurx;
                                                 desktopleft = curx;
                                                 statusDest = new SKRect(curx, cury, curx + target_width, cury + target_height);
-                                                canvas.DrawImage(GHApp._statusXPPointsBitmap, statusDest);
+                                                canvas.DrawImage(GHApp._statusXPPointsBitmap, statusDest
+#if GNH_MAUI
+                                                , SKSamplingOptions.Default
+#endif
+                                                );
                                                 curx += target_width;
                                                 curx += innerspacing;
                                                 textPaint.DrawTextOnCanvas(canvas, valtext, curx, cury - textPaint.FontMetrics.Ascent);
@@ -11226,14 +11580,22 @@ namespace GnollHackX.Pages.Game
                                     target_height = target_scale * GHApp._batteryFrameBitmap.Height;
                                     curx = desktopleft - innerspacing * 5 - target_width;
                                     statusDest = new SKRect(curx, cury, curx + target_width, cury + target_height);
-                                    canvas.DrawImage(GHApp._batteryFrameBitmap, statusDest);
+                                    canvas.DrawImage(GHApp._batteryFrameBitmap, statusDest
+#if GNH_MAUI
+                                    , SKSamplingOptions.Default
+#endif
+                                    );
                                     desktopleft = curx;
 
                                     int alen = _shineAnimation.Length;
                                     if (chargePercentage <= GHConstants.CriticalBatteryChargeLevel)
                                     {
                                         textPaint.Color = _magicShineOutlineColor.WithAlpha((byte)(_shineAnimation[generalcountervalue % alen] * 255));
-                                        canvas.DrawImage(GHApp._batteryRedFrameBitmap, statusDest, textPaint.Paint);
+                                        canvas.DrawImage(GHApp._batteryRedFrameBitmap, statusDest
+#if GNH_MAUI
+                                        , SKSamplingOptions.Default
+#endif
+                                        , textPaint.Paint);
                                     }
 
                                     const int topMargin = 12, bottomMargin = 5, hMargin = 6;
@@ -11278,14 +11640,22 @@ namespace GnollHackX.Pages.Game
                                     target_height = target_scale * GHApp._diskBitmap.Height;
                                     curx = desktopleft - innerspacing * 5 - target_width;
                                     statusDest = new SKRect(curx, cury, curx + target_width, cury + target_height);
-                                    canvas.DrawImage(freeDiskSpaceInBytes <= GHConstants.DiskSpaceCriticalThresholdInBytes ? GHApp._diskRedBitmap : GHApp._diskYellowBitmap, statusDest);
+                                    canvas.DrawImage(freeDiskSpaceInBytes <= GHConstants.DiskSpaceCriticalThresholdInBytes ? GHApp._diskRedBitmap : GHApp._diskYellowBitmap, statusDest
+#if GNH_MAUI
+                                    , SKSamplingOptions.Default
+#endif
+                                    );
                                     desktopleft = curx;
 
                                     int alen = _shineAnimation.Length;
                                     if (freeDiskSpaceInBytes <= GHConstants.DiskSpaceSuperCriticalThresholdInBytes)
                                     {
                                         textPaint.Color = _magicShineOutlineColor.WithAlpha((byte)(_shineAnimation[generalcountervalue % alen] * 255));
-                                        canvas.DrawImage(GHApp._diskBitmap, statusDest, textPaint.Paint);
+                                        canvas.DrawImage(GHApp._diskBitmap, statusDest
+#if GNH_MAUI
+                                        , SKSamplingOptions.Default
+#endif
+                                        , textPaint.Paint);
                                     }
 
                                     curx += target_width;
@@ -11297,7 +11667,11 @@ namespace GnollHackX.Pages.Game
                                     target_height = target_scale * GHApp._fpsBitmap.Height;
                                     curx = desktopleft - innerspacing * 5 - target_width;
                                     statusDest = new SKRect(curx, cury, curx + target_width, cury + target_height);
-                                    canvas.DrawImage(GHApp._fpsBitmap, statusDest);
+                                    canvas.DrawImage(GHApp._fpsBitmap, statusDest
+#if GNH_MAUI
+                                    , SKSamplingOptions.Default
+#endif
+                                    );
                                     desktopleft = curx;
 
                                     string drawtext;
@@ -11339,7 +11713,11 @@ namespace GnollHackX.Pages.Game
                                     target_height = target_scale * GHApp._memoryBitmap.Height;
                                     curx = desktopleft - innerspacing * 5 - target_width;
                                     statusDest = new SKRect(curx, cury, curx + target_width, cury + target_height);
-                                    canvas.DrawImage(GHApp._memoryBitmap, statusDest);
+                                    canvas.DrawImage(GHApp._memoryBitmap, statusDest
+#if GNH_MAUI
+                                    , SKSamplingOptions.Default
+#endif
+                                    );
                                     desktopleft = curx;
 
                                     string drawtext;
@@ -11363,7 +11741,11 @@ namespace GnollHackX.Pages.Game
                                     target_height = target_scale * GHApp._zoomBitmap.Height;
                                     curx = desktopleft - innerspacing * 5 - target_width;
                                     statusDest = new SKRect(curx, cury, curx + target_width, cury + target_height);
-                                    canvas.DrawImage(GHApp._zoomBitmap, statusDest);
+                                    canvas.DrawImage(GHApp._zoomBitmap, statusDest
+#if GNH_MAUI
+                                    , SKSamplingOptions.Default
+#endif
+                                    );
                                     desktopleft = curx;
 
                                     float percentage = usedFontSize / DefaultMapFontSize;
@@ -11557,7 +11939,11 @@ namespace GnollHackX.Pages.Game
                                                                 StartProfiling(GHProfilingStyle.Bitmap);
 #endif
                                                                 GHApp.MaybeFixRects(ref source_rt, ref target_rt, 1.0f, usingGL, fixRects, fixFiltering);
-                                                                canvas.DrawImage(TileMap[sheet_idx], source_rt, target_rt);
+                                                                canvas.DrawImage(TileMap[sheet_idx], source_rt, target_rt
+#if GNH_MAUI
+                                                                , SKSamplingOptions.Default
+#endif
+                                                                );
 #if GNH_MAP_PROFILING && DEBUG
                                                                 StopProfiling(GHProfilingStyle.Bitmap);
 #endif
@@ -11605,7 +11991,11 @@ namespace GnollHackX.Pages.Game
                                                                 StartProfiling(GHProfilingStyle.Bitmap);
 #endif
                                                                 GHApp.MaybeFixRects(ref source_rt, ref target_rt, 1.0f, usingGL, fixRects, fixFiltering);
-                                                                canvas.DrawImage(TileMap[sheet_idx], source_rt, target_rt);
+                                                                canvas.DrawImage(TileMap[sheet_idx], source_rt, target_rt
+#if GNH_MAUI
+                                                                , SKSamplingOptions.Default
+#endif
+                                                                );
 #if GNH_MAP_PROFILING && DEBUG
                                                                 StopProfiling(GHProfilingStyle.Bitmap);
 #endif
@@ -11660,7 +12050,11 @@ namespace GnollHackX.Pages.Game
                                                                     StartProfiling(GHProfilingStyle.Bitmap);
 #endif
                                                                     GHApp.MaybeFixRects(ref source_rt, ref target_rt, 1.0f, usingGL, fixRects, fixFiltering);
-                                                                    canvas.DrawImage(TileMap[sheet_idx], source_rt, target_rt);
+                                                                    canvas.DrawImage(TileMap[sheet_idx], source_rt, target_rt
+#if GNH_MAUI
+                                                                    , SKSamplingOptions.Default
+#endif
+                                                                    );
 #if GNH_MAP_PROFILING && DEBUG
                                                                     StopProfiling(GHProfilingStyle.Bitmap);
 #endif
@@ -11799,7 +12193,11 @@ namespace GnollHackX.Pages.Game
                                 {
                                     btnPaint.ColorFilter = UIUtils.HighlightColorFilter;
                                 }
-                                canvas.DrawImage(GHApp._skillBitmap, skillDest, btnPaint);
+                                canvas.DrawImage(GHApp._skillBitmap, skillDest
+#if GNH_MAUI
+                                , SKSamplingOptions.Default
+#endif
+                                , btnPaint);
                             }
                             float text_x = (skillDest.Left + skillDest.Right) / 2;
                             float text_y = skillDest.Bottom - textPaint.FontMetrics.Ascent;
@@ -11831,7 +12229,11 @@ namespace GnollHackX.Pages.Game
                                 {
                                     btnPaint.ColorFilter = UIUtils.HighlightColorFilter;
                                 }
-                                canvas.DrawImage(GHApp._polearmBitmap, poleDest, btnPaint);
+                                canvas.DrawImage(GHApp._polearmBitmap, poleDest
+#if GNH_MAUI
+                                , SKSamplingOptions.Default
+#endif
+                                , btnPaint);
                             }
                             float text_x = (poleDest.Left + poleDest.Right) / 2;
                             float text_y = poleDest.Bottom - textPaint.FontMetrics.Ascent;
@@ -11863,7 +12265,11 @@ namespace GnollHackX.Pages.Game
                                 {
                                     btnPaint.ColorFilter = UIUtils.HighlightColorFilter;
                                 }
-                                canvas.DrawImage(isunwield ? GHApp._prevUnwieldBitmap : GHApp._prevWepBitmap, prevWepDest, btnPaint);
+                                canvas.DrawImage(isunwield ? GHApp._prevUnwieldBitmap : GHApp._prevWepBitmap, prevWepDest
+#if GNH_MAUI
+                                , SKSamplingOptions.Default
+#endif
+                                , btnPaint);
                             }
                             float text_x = (prevWepDest.Left + prevWepDest.Right) / 2;
                             float text_y = prevWepDest.Bottom - textPaint.FontMetrics.Ascent;
@@ -11920,7 +12326,11 @@ namespace GnollHackX.Pages.Game
                                 {
                                     btnPaint.ColorFilter = UIUtils.HighlightColorFilter;
                                 }
-                                canvas.DrawImage(cmb.Bitmap, imgDest, btnPaint);
+                                canvas.DrawImage(cmb.Bitmap, imgDest
+#if GNH_MAUI
+                                , SKSamplingOptions.Default
+#endif
+                                , btnPaint);
                             }
                             float text_x = (imgDest.Left + imgDest.Right) / 2;
                             float text_y = imgDest.Bottom - textPaint.FontMetrics.Ascent;
@@ -12008,7 +12418,11 @@ namespace GnollHackX.Pages.Game
                             float truesize = Math.Min(_localCanvasButtonRect.Width, _localCanvasButtonRect.Height) * buttonsize;
                             targetrect = new SKRect(tx + px, ty + py, tx + px + truesize, ty + py + truesize);
                         }
-                        canvas.DrawImage(GHApp._arrowBitmap[i], targetrect, textPaint.Paint);
+                        canvas.DrawImage(GHApp._arrowBitmap[i], targetrect
+#if GNH_MAUI
+                        , SKSamplingOptions.Default
+#endif
+                        , textPaint.Paint);
                     }
                     textPaint.Color = oldcolor;
                 }
@@ -12311,8 +12725,16 @@ namespace GnollHackX.Pages.Game
             textPaint.Color = SKColors.Black.WithAlpha(200);
             canvas.DrawRect(0, 0, canvaswidth, canvasheight, textPaint.Paint);
             textPaint.Color = SKColors.Black;
-            canvas.DrawImage(GHApp.ScrollBitmap, bkgrect);
-            canvas.DrawImage(GHApp.YouBitmap, urect);
+            canvas.DrawImage(GHApp.ScrollBitmap, bkgrect
+#if GNH_MAUI
+            , SKSamplingOptions.Default
+#endif
+            );
+            canvas.DrawImage(GHApp.YouBitmap, urect
+#if GNH_MAUI
+            , SKSamplingOptions.Default
+#endif
+            );
 
             /* Then the status contents */
             textPaint.Style = SKPaintStyle.Fill;
@@ -12415,7 +12837,11 @@ namespace GnollHackX.Pages.Game
                             icon_tx = icon_base_left + (icon_max_width - icon_width) / 2f;
                             icon_ty = ty + textPaint.FontMetrics.Ascent - textPaint.FontMetrics.Descent / 2 + (textPaint.FontSpacing - icon_height) / 2;
                             icon_rect = new SKRect(icon_tx, icon_ty, icon_tx + icon_width, icon_ty + icon_height);
-                            canvas.DrawImage(statIcon, icon_rect);
+                            canvas.DrawImage(statIcon, icon_rect
+#if GNH_MAUI
+                            , SKSamplingOptions.Default
+#endif
+                            );
                         }
                         ty += textPaint.FontSpacing;
                     }
@@ -12438,7 +12864,11 @@ namespace GnollHackX.Pages.Game
                         icon_tx = icon_base_left + (icon_max_width - icon_width) / 2f;
                         icon_ty = ty + textPaint.FontMetrics.Ascent - textPaint.FontMetrics.Descent / 2 + (textPaint.FontSpacing - icon_height) / 2;
                         icon_rect = new SKRect(icon_tx, icon_ty, icon_tx + icon_width, icon_ty + icon_height);
-                        canvas.DrawImage(GHApp._statusXPLevelBitmap, icon_rect);
+                        canvas.DrawImage(GHApp._statusXPLevelBitmap, icon_rect
+#if GNH_MAUI
+                        , SKSamplingOptions.Default
+#endif
+                        );
                     }
                     ty += textPaint.FontSpacing;
                 }
@@ -12458,7 +12888,11 @@ namespace GnollHackX.Pages.Game
                         icon_tx = icon_base_left + (icon_max_width - icon_width) / 2f;
                         icon_ty = ty + textPaint.FontMetrics.Ascent - textPaint.FontMetrics.Descent / 2 + (textPaint.FontSpacing - icon_height) / 2;
                         icon_rect = new SKRect(icon_tx, icon_ty, icon_tx + icon_width, icon_ty + icon_height);
-                        canvas.DrawImage(GHApp._statusXPPointsBitmap, icon_rect);
+                        canvas.DrawImage(GHApp._statusXPPointsBitmap, icon_rect
+#if GNH_MAUI
+                        , SKSamplingOptions.Default
+#endif
+                        );
                     }
                     ty += textPaint.FontSpacing;
                 }
@@ -12479,7 +12913,11 @@ namespace GnollHackX.Pages.Game
                         icon_tx = icon_base_left + (icon_max_width - icon_width) / 2f;
                         icon_ty = ty + textPaint.FontMetrics.Ascent - textPaint.FontMetrics.Descent / 2 + (textPaint.FontSpacing - icon_height) / 2;
                         icon_rect = new SKRect(icon_tx, icon_ty, icon_tx + icon_width, icon_ty + icon_height);
-                        canvas.DrawImage(GHApp._statusHDBitmap, icon_rect);
+                        canvas.DrawImage(GHApp._statusHDBitmap, icon_rect
+#if GNH_MAUI
+                        , SKSamplingOptions.Default
+#endif
+                        );
                     }
                     ty += textPaint.FontSpacing;
                 }
@@ -12499,7 +12937,11 @@ namespace GnollHackX.Pages.Game
                         icon_tx = icon_base_left + (icon_max_width - icon_width) / 2f;
                         icon_ty = ty + textPaint.FontMetrics.Ascent - textPaint.FontMetrics.Descent / 2 + (textPaint.FontSpacing - icon_height) / 2;
                         icon_rect = new SKRect(icon_tx, icon_ty, icon_tx + icon_width, icon_ty + icon_height);
-                        canvas.DrawImage(GetAlignmentIcon(valtext), icon_rect);
+                        canvas.DrawImage(GetAlignmentIcon(valtext), icon_rect
+#if GNH_MAUI
+                        , SKSamplingOptions.Default
+#endif
+                        );
                     }
                     ty += textPaint.FontSpacing;
                 }
@@ -12519,7 +12961,11 @@ namespace GnollHackX.Pages.Game
                         icon_tx = icon_base_left + (icon_max_width - icon_width) / 2f;
                         icon_ty = ty + textPaint.FontMetrics.Ascent - textPaint.FontMetrics.Descent / 2 + (textPaint.FontSpacing - icon_height) / 2;
                         icon_rect = new SKRect(icon_tx, icon_ty, icon_tx + icon_width, icon_ty + icon_height);
-                        canvas.DrawImage(GHApp._statusScoreBitmap, icon_rect);
+                        canvas.DrawImage(GHApp._statusScoreBitmap, icon_rect
+#if GNH_MAUI
+                        , SKSamplingOptions.Default
+#endif
+                        );
                     }
                     ty += textPaint.FontSpacing;
                 }
@@ -12545,7 +12991,11 @@ namespace GnollHackX.Pages.Game
                         icon_tx = icon_base_left + (icon_max_width - icon_width) / 2f;
                         icon_ty = ty + textPaint.FontMetrics.Ascent - textPaint.FontMetrics.Descent / 2 + (textPaint.FontSpacing - icon_height) / 2;
                         icon_rect = new SKRect(icon_tx, icon_ty, icon_tx + icon_width, icon_ty + icon_height);
-                        canvas.DrawImage(GHApp._statusACBitmap, icon_rect);
+                        canvas.DrawImage(GHApp._statusACBitmap, icon_rect
+#if GNH_MAUI
+                        , SKSamplingOptions.Default
+#endif
+                        );
                     }
                     ty += textPaint.FontSpacing;
                 }
@@ -12575,7 +13025,11 @@ namespace GnollHackX.Pages.Game
                         icon_tx = icon_base_left + (icon_max_width - icon_width) / 2f;
                         icon_ty = ty + textPaint.FontMetrics.Ascent - textPaint.FontMetrics.Descent / 2 + (textPaint.FontSpacing - icon_height) / 2;
                         icon_rect = new SKRect(icon_tx, icon_ty, icon_tx + icon_width, icon_ty + icon_height);
-                        canvas.DrawImage(GHApp._statusMCBitmap, icon_rect);
+                        canvas.DrawImage(GHApp._statusMCBitmap, icon_rect
+#if GNH_MAUI
+                        , SKSamplingOptions.Default
+#endif
+                        );
                     }
                     ty += textPaint.FontSpacing;
                 }
@@ -12599,7 +13053,11 @@ namespace GnollHackX.Pages.Game
                         icon_tx = icon_base_left + (icon_max_width - icon_width) / 2f;
                         icon_ty = ty + textPaint.FontMetrics.Ascent - textPaint.FontMetrics.Descent / 2 + (textPaint.FontSpacing - icon_height) / 2;
                         icon_rect = new SKRect(icon_tx, icon_ty, icon_tx + icon_width, icon_ty + icon_height);
-                        canvas.DrawImage(GHApp._statusMoveBitmap, icon_rect);
+                        canvas.DrawImage(GHApp._statusMoveBitmap, icon_rect
+#if GNH_MAUI
+                        , SKSamplingOptions.Default
+#endif
+                        );
                     }
                     ty += textPaint.FontSpacing;
                 }
@@ -12638,7 +13096,11 @@ namespace GnollHackX.Pages.Game
                         icon_tx = icon_base_left + (icon_max_width - icon_width) / 2f;
                         icon_ty = ty + textPaint.FontMetrics.Ascent - textPaint.FontMetrics.Descent / 2 + (textPaint.FontSpacing - icon_height) / 2;
                         icon_rect = new SKRect(icon_tx, icon_ty, icon_tx + icon_width, icon_ty + icon_height);
-                        canvas.DrawImage(GHApp._statusWeaponStyleBitmap, icon_rect);
+                        canvas.DrawImage(GHApp._statusWeaponStyleBitmap, icon_rect
+#if GNH_MAUI
+                        , SKSamplingOptions.Default
+#endif
+                        );
                     }
                     ty += textPaint.FontSpacing;
                 }
@@ -12665,7 +13127,11 @@ namespace GnollHackX.Pages.Game
                         icon_tx = icon_base_left + (icon_max_width - icon_width) / 2f;
                         icon_ty = ty + textPaint.FontMetrics.Ascent - textPaint.FontMetrics.Descent / 2 + (textPaint.FontSpacing - icon_height) / 2;
                         icon_rect = new SKRect(icon_tx, icon_ty, icon_tx + icon_width, icon_ty + icon_height);
-                        canvas.DrawImage(GHApp._statusGoldBitmap, icon_rect);
+                        canvas.DrawImage(GHApp._statusGoldBitmap, icon_rect
+#if GNH_MAUI
+                        , SKSamplingOptions.Default
+#endif
+                        );
                     }
                     ty += textPaint.FontSpacing;
                 }
@@ -12689,7 +13155,11 @@ namespace GnollHackX.Pages.Game
                         icon_tx = icon_base_left + (icon_max_width - icon_width) / 2f;
                         icon_ty = ty + textPaint.FontMetrics.Ascent - textPaint.FontMetrics.Descent / 2 + (textPaint.FontSpacing - icon_height) / 2;
                         icon_rect = new SKRect(icon_tx, icon_ty, icon_tx + icon_width, icon_ty + icon_height);
-                        canvas.DrawImage(GHApp._statusTurnsBitmap, icon_rect);
+                        canvas.DrawImage(GHApp._statusTurnsBitmap, icon_rect
+#if GNH_MAUI
+                        , SKSamplingOptions.Default
+#endif
+                        );
                     }
                     ty += textPaint.FontSpacing;
                 }
@@ -12741,7 +13211,11 @@ namespace GnollHackX.Pages.Game
                             if (ty <= box_bottom_draw_threshold && ty >= box_top_draw_threshold)
                             {
                                 GHApp.MaybeFixRects(ref source_rt, ref target_rt, 1.0f, usingGL, fixRects, fixFiltering);
-                                canvas.DrawImage(TileMap[sheet_idx], source_rt, target_rt);
+                                canvas.DrawImage(TileMap[sheet_idx], source_rt, target_rt
+#if GNH_MAUI
+                                , SKSamplingOptions.Default
+#endif
+                                );
                                 textPaint.DrawTextOnCanvas(canvas, statusname, tx + marksize + markpadding, ty);
                             }
                             //lock (_statusOffsetLock)
@@ -12789,7 +13263,11 @@ namespace GnollHackX.Pages.Game
                             if (ty <= box_bottom_draw_threshold && ty >= box_top_draw_threshold)
                             {
                                 GHApp.MaybeFixRects(ref source_rt, ref target_rt, 1.0f, usingGL, fixRects, fixFiltering);
-                                canvas.DrawImage(TileMap[sheet_idx], source_rt, target_rt);
+                                canvas.DrawImage(TileMap[sheet_idx], source_rt, target_rt
+#if GNH_MAUI
+                                , SKSamplingOptions.Default
+#endif
+                                );
                                 textPaint.DrawTextOnCanvas(canvas, conditionname, tx + marksize + markpadding, ty);
                             }
                             //lock (_statusOffsetLock)
@@ -12849,7 +13327,11 @@ namespace GnollHackX.Pages.Game
                                 if (ty <= box_bottom_draw_threshold && ty >= box_top_draw_threshold)
                                 {
                                     GHApp.MaybeFixRects(ref source_rt, ref target_rt, 1.0f, usingGL, fixRects, fixFiltering);
-                                    canvas.DrawImage(TileMap[sheet_idx], source_rt, target_rt);
+                                    canvas.DrawImage(TileMap[sheet_idx], source_rt, target_rt
+#if GNH_MAUI
+                                    , SKSamplingOptions.Default
+#endif
+                                    );
                                     if (propname != null)
                                         textPaint.DrawTextOnCanvas(canvas, propname, tx + marksize + markpadding, ty);
                                 }
@@ -13831,7 +14313,11 @@ namespace GnollHackX.Pages.Game
                             using (new SKAutoCanvasRestore(canvas, true))
                             {
                                 canvas.Translate(dest_x, dest_y);
-                                canvas.DrawBitmap(usedContentsBitmap, source_rt, target_rt, paint);
+                                canvas.DrawBitmap(usedContentsBitmap, source_rt, target_rt
+#if GNH_MAUI
+                                    , SKSamplingOptions.Default
+#endif
+                                    , paint);
                             }
 
                             /* Middle contents */
@@ -13866,7 +14352,11 @@ namespace GnollHackX.Pages.Game
                                 using (new SKAutoCanvasRestore(canvas, true))
                                 {
                                     canvas.Translate(dest_x, dest_y);
-                                    canvas.DrawBitmap(usedContentsBitmap, source_rt, target_rt, paint);
+                                    canvas.DrawBitmap(usedContentsBitmap, source_rt, target_rt
+#if GNH_MAUI
+                                        , SKSamplingOptions.Default
+#endif
+                                        , paint);
                                 }
 
                                 /* Top contents */
@@ -13903,7 +14393,11 @@ namespace GnollHackX.Pages.Game
                                 using (new SKAutoCanvasRestore(canvas, true))
                                 {
                                     canvas.Translate(dest_x, dest_y);
-                                    canvas.DrawBitmap(usedContentsBitmap, source_rt, target_rt, paint);
+                                    canvas.DrawBitmap(usedContentsBitmap, source_rt, target_rt
+#if GNH_MAUI
+                                        , SKSamplingOptions.Default
+#endif
+                                        , paint);
                                 }
                             }
                         }
@@ -14028,7 +14522,11 @@ namespace GnollHackX.Pages.Game
                         using (new SKAutoCanvasRestore(canvas, true))
                         {
                             canvas.Translate(dest_x, dest_y);
-                            canvas.DrawBitmap(usedForegroundBitmap, source_rt, target_rt, paint);
+                            canvas.DrawBitmap(usedForegroundBitmap, source_rt, target_rt
+#if GNH_MAUI
+                                , SKSamplingOptions.Default
+#endif
+                                , paint);
                         }
 
                     }
@@ -17785,7 +18283,11 @@ namespace GnollHackX.Pages.Game
                             textPaint.Paint.ColorFilter = UIUtils.HighlightColorFilter;
                         else if (isHighlighted)
                             textPaint.Paint.ColorFilter = UIUtils.MapHighlightColorFilter;
-                        canvas.DrawImage(slotBitmap, picRect, textPaint.Paint);
+                        canvas.DrawImage(slotBitmap, picRect
+#if GNH_MAUI
+                        , SKSamplingOptions.Default
+#endif
+                        , textPaint.Paint);
                         textPaint.Paint.ColorFilter = null;
                         textPaint.Color = oldColor;
                         if (foundItem != null && foundItemIndex >= 0)
@@ -17852,7 +18354,11 @@ namespace GnollHackX.Pages.Game
                             SKImage bitmap = GHApp.InventoryIconBitmaps[slotPicIndex];
                             textPaint.Paint.ColorFilter = isNotActive ? (isDarkMode ? UIUtils.InventoryDarkInactiveColorFilter : UIUtils.InventoryLightInactiveColorFilter) : (isDarkMode ? UIUtils.InventoryDarkUnwornColorFilter : UIUtils.InventoryLightUnwornColorFilter);
                             if (bitmap != null)
-                                canvas.DrawImage(bitmap, wornRect, textPaint.Paint);
+                                canvas.DrawImage(bitmap, wornRect
+#if GNH_MAUI
+                                , SKSamplingOptions.Default
+#endif
+                                , textPaint.Paint);
                             textPaint.Paint.ColorFilter = null;
 
                             y += pictureverticalpadding;
@@ -17897,7 +18403,11 @@ namespace GnollHackX.Pages.Game
                         bool isSwapHover = isMenuHovering && swapButtonRect.Contains(menuHoverPoint);
                         if (isSwapHover)
                             textPaint.Paint.ColorFilter = UIUtils.HighlightColorFilter;
-                        canvas.DrawImage(GHApp.GetCachedImageSourceBitmap(_swapButtonImagePath, true), swapButtonRect, textPaint.Paint);
+                        canvas.DrawImage(GHApp.GetCachedImageSourceBitmap(_swapButtonImagePath, true), swapButtonRect
+#if GNH_MAUI
+                        , SKSamplingOptions.Default
+#endif
+                        , textPaint.Paint);
                         textPaint.Paint.ColorFilter = null;
                     }
                     else 
@@ -18130,7 +18640,11 @@ namespace GnollHackX.Pages.Game
 #endif
                                     if (IsMiButton)
                                     {
-                                        canvas.DrawImage(isselected || mi.Highlighted ? GHApp.ButtonSelectedBitmap : isHover ? GHApp.ButtonNormalBitmap : GHApp.ButtonDisabledBitmap, selectionrect);
+                                        canvas.DrawImage(isselected || mi.Highlighted ? GHApp.ButtonSelectedBitmap : isHover ? GHApp.ButtonNormalBitmap : GHApp.ButtonDisabledBitmap, selectionrect
+#if GNH_MAUI
+                                        , SKSamplingOptions.Default
+#endif
+                                        );
                                     }
                                     else // if (!isEquipmentSideShown)
                                     {
@@ -18223,7 +18737,11 @@ namespace GnollHackX.Pages.Game
                                             SKRect wornRect = new SKRect(selectionrect.Right - minrowheight - wornmargin, selectionrect.Top + (selectionrect.Height - minrowheight) / 2, selectionrect.Right - wornmargin, selectionrect.Bottom - (selectionrect.Height - minrowheight) / 2);
                                             SKImage bitmap = GHApp.InventoryIconBitmaps[slotPicIndex];
                                             textPaint.Paint.ColorFilter = isDarkMode ? UIUtils.InventoryDarkWornColorFilter : UIUtils.InventoryLightWornColorFilter;
-                                            canvas.DrawImage(bitmap, wornRect, textPaint.Paint);
+                                            canvas.DrawImage(bitmap, wornRect
+#if GNH_MAUI
+                                            , SKSamplingOptions.Default
+#endif
+                                            , textPaint.Paint);
                                             textPaint.Paint.ColorFilter = null;
                                         }
                                     }
@@ -21513,7 +22031,11 @@ namespace GnollHackX.Pages.Game
                                         {
                                             textPaint.Color = paint.Color = notInFilter ? nonFilteredColor : SKColors.White;
                                         }
-                                        canvas.DrawImage(usedBitmap, targetrect, paint);
+                                        canvas.DrawImage(usedBitmap, targetrect
+#if GNH_MAUI
+                                        , SKSamplingOptions.Default
+#endif
+                                        , paint);
                                         textPaint.DrawTextOnCanvas(canvas, usedButtonItem.Text, text_x, text_y, SKTextAlign.Center);
                                         if (useKeyboardShortcuts && usedButtonItem.MappedGHCommand > 0 && !string.IsNullOrEmpty(usedButtonItem.ShortcutText))
                                         {
@@ -21575,7 +22097,11 @@ namespace GnollHackX.Pages.Game
                     float curx = canvaswidth - target_width - 24 * target_scale;
                     float cury = 16 * target_scale;
                     SKRect statusDest = new SKRect(curx, cury, curx + target_width, cury + target_height);
-                    canvas.DrawImage(GHApp._fpsBitmap, statusDest);
+                    canvas.DrawImage(GHApp._fpsBitmap, statusDest
+#if GNH_MAUI
+                    , SKSamplingOptions.Default
+#endif
+                    );
 
                     string drawtext;
                     //lockTaken = false;
@@ -22494,7 +23020,11 @@ namespace GnollHackX.Pages.Game
 #endif
                 if (isHighlighted)
                     paint.ColorFilter = UIUtils.HighlightColorFilter;
-                canvas.DrawImage(GHApp._orbBorderBitmap, orbBorderDest, paint);
+                canvas.DrawImage(GHApp._orbBorderBitmap, orbBorderDest
+#if GNH_MAUI
+                , SKSamplingOptions.Default
+#endif
+                , paint);
                 if (orbfillpercentage < 0)
                     orbfillpercentage = 0;
                 if (orbfillpercentage > 1)

@@ -267,7 +267,11 @@ namespace GnollHackX
                                         source_rect.Top = 0;
                                         source_rect.Right = target_rect.Width;
                                         source_rect.Bottom = target_rect.Height;
-                                        canvas.DrawImage(bmp, source_rect, target_rect);
+                                        canvas.DrawImage(bmp, source_rect, target_rect
+#if GNH_MAUI
+                                        , SKSamplingOptions.Default
+#endif
+                                        );
                                     }
                                 }
                             }
@@ -281,7 +285,11 @@ namespace GnollHackX
                             target_rect.Top = 0;
                             target_rect.Right = canvaswidth;
                             target_rect.Bottom = canvasheight;
-                            canvas.DrawImage(bmp, target_rect);
+                            canvas.DrawImage(bmp, target_rect
+#if GNH_MAUI
+                            , SKSamplingOptions.Default
+#endif
+                            );
                         }
                         break;
                     default:
@@ -320,7 +328,11 @@ namespace GnollHackX
                                     target_rect.Top = padding;
                                     target_rect.Bottom = target_rect.Top + target_bmpheight;
                                 }
-                                canvas.DrawImage(bmp, target_rect);
+                                canvas.DrawImage(bmp, target_rect
+#if GNH_MAUI
+                                , SKSamplingOptions.Default
+#endif
+                                );
                             }
                         }
                         break;
